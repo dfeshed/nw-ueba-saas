@@ -132,8 +132,8 @@ public class Alert extends AbstractElasticDocument {
         return classifications;
     }
 
-    public String getPreferredClassification() {
-        return CollectionUtils.isNotEmpty(classifications)?classifications.get(0): null;
+    public String alertPrimaryClassification() {
+        return CollectionUtils.isNotEmpty(classifications) ? classifications.get(0) : null;
     }
 
     public void setClassifications(List<String> classifications) {

@@ -22,7 +22,7 @@
               },
               "additional-models": [
                 {
-                  "name": "numberOfSensitiveGroupMembershipOperation.userId.prior.global.activeDirectory.hourly"
+                  "name": "numberOfSensitiveGroupMembershipOperation.userId.prior.activeDirectory.hourly"
                 }
               ],
               "global-influence": 15,
@@ -63,7 +63,7 @@
               },
               "additional-models": [
                 {
-                  "name": "numberOfGroupMembershipOperation.userId.prior.global.activeDirectory.hourly"
+                  "name": "numberOfGroupMembershipOperation.userId.prior.activeDirectory.hourly"
                 }
               ],
               "global-influence": 15,
@@ -104,7 +104,7 @@
               },
               "additional-models": [
                 {
-                  "name": "numberOfSuccessfulObjectManagementOperation.userId.prior.global.activeDirectory.hourly"
+                  "name": "numberOfSuccessfulObjectManagementOperation.userId.prior.activeDirectory.hourly"
                 }
               ],
               "global-influence": 15,
@@ -142,7 +142,7 @@
             },
             "additional-models": [
               {
-                "name": "numberOfFailedOperationType.userId.prior.global.activeDirectory.hourly"
+                "name": "numberOfFailedOperationType.userId.prior.activeDirectory.hourly"
               }
             ],
             "global-influence": 15,
@@ -174,7 +174,7 @@
               },
               "additional-models": [
                 {
-                  "name": "numberOfSuccessfulUserManagementSecuritySensitiveOperation.userId.prior.global.activeDirectory.hourly"
+                  "name": "numberOfSuccessfulUserManagementSecuritySensitiveOperation.userId.prior.activeDirectory.hourly"
                 }
               ],
               "global-influence": 15,

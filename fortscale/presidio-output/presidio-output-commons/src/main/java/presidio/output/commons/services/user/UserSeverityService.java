@@ -1,9 +1,5 @@
 package presidio.output.commons.services.user;
 
-import presidio.output.domain.records.users.User;
-
-import java.util.List;
-
 /**
  * Created by Efrat Noam on 12/4/17.
  */

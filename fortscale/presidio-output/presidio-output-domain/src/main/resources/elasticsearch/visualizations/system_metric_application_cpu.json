@@ -1,14 +1,16 @@
-{
-  "_id": "19386900-f9df-11e7-b812-a164759dcf12",
-  "_type": "visualization",
-  "_source": {
-    "title": "System metric: CPU time per application (in seconds)",
-    "visState": "{\"title\":\"System metric: CPU time per application (in seconds)\",\"type\":\"metrics\",\"params\":{\"id\":\"d3f0d080-f9de-11e7-b812-a164759dcf12\",\"type\":\"timeseries\",\"series\":[{\"id\":\"d3f0d081-f9de-11e7-b812-a164759dcf12\",\"color\":\"rgba(104,188,0,1)\",\"split_mode\":\"terms\",\"metrics\":[{\"id\":\"d3f0d082-f9de-11e7-b812-a164759dcf12\",\"type\":\"max\",\"field\":\"value.SYSTEM_CPU_TIME\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"bar\",\"line_width\":1,\"point_size\":1,\"fill\":0.5,\"stacked\":\"none\",\"label\":\"Cpu usage\",\"terms_field\":\"tags.APPLICATION_NAME\",\"split_color_mode\":\"rainbow\"}],\"time_field\":\"timestamp\",\"index_pattern\":\"*\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"filter\":\"name:cpu\"},\"aggs\":[],\"listeners\":{}}",
-    "uiStateJSON": "{}",
-    "description": "",
-    "version": 1,
-    "kibanaSavedObjectMeta": {
-      "searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\"}},\"filter\":[]}"
+[
+  {
+    "_id": "19386900-f9df-11e7-b812-a164759dcf12",
+    "_type": "visualization",
+    "_source": {
+      "title": "System metric: CPU time per application (in seconds)",
+      "visState": "{\"title\":\"System metric: CPU time per application (in seconds)\",\"type\":\"metrics\",\"params\":{\"id\":\"d3f0d080-f9de-11e7-b812-a164759dcf12\",\"type\":\"timeseries\",\"series\":[{\"id\":\"d3f0d081-f9de-11e7-b812-a164759dcf12\",\"color\":\"rgba(104,188,0,1)\",\"split_mode\":\"terms\",\"metrics\":[{\"id\":\"d3f0d082-f9de-11e7-b812-a164759dcf12\",\"type\":\"max\",\"field\":\"value.SYSTEM_CPU_TIME\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"line\",\"line_width\":1,\"point_size\":\"3\",\"fill\":\"0\",\"stacked\":\"none\",\"label\":\"Cpu usage\",\"terms_field\":\"tags.APPLICATION_NAME\",\"split_color_mode\":\"rainbow\"}],\"time_field\":\"timestamp\",\"index_pattern\":\"presidio-monitoring\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"filter\":\"name:cpu\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\"}},\"filter\":[]}"
+      }
     }
   }
-}
+]

@@ -1,14 +1,16 @@
-{
-  "_id": "82e31f10-f9e1-11e7-b812-a164759dcf12",
-  "_type": "visualization",
-  "_source": {
-    "title": "System metric: Memory heap used per application (in bytes)",
-    "visState": "{\"title\":\"System metric: Memory heap used per application (in bytes)\",\"type\":\"metrics\",\"params\":{\"id\":\"49f25be0-f9e0-11e7-b812-a164759dcf12\",\"type\":\"timeseries\",\"series\":[{\"id\":\"49f25be1-f9e0-11e7-b812-a164759dcf12\",\"color\":\"rgba(104,188,0,1)\",\"split_mode\":\"terms\",\"metrics\":[{\"id\":\"49f25be2-f9e0-11e7-b812-a164759dcf12\",\"type\":\"max\",\"field\":\"value.SYSTEM_HEAP_USED\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"bar\",\"line_width\":1,\"point_size\":1,\"fill\":0.5,\"stacked\":\"none\",\"label\":\"Memory used (heap)\",\"terms_field\":\"tags.APPLICATION_NAME\",\"split_filters\":[{\"filter\":\"name:heap.used\",\"label\":\"Memory used (heap)\",\"color\":\"#68BC00\",\"id\":\"ad733a90-f9e0-11e7-b812-a164759dcf12\"}],\"split_color_mode\":\"rainbow\"}],\"time_field\":\"timestamp\",\"index_pattern\":\"*\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"filter\":\"name:memory\"},\"aggs\":[],\"listeners\":{}}",
-    "uiStateJSON": "{}",
-    "description": "",
-    "version": 1,
-    "kibanaSavedObjectMeta": {
-      "searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\"}},\"filter\":[]}"
+[
+  {
+    "_id": "82e31f10-f9e1-11e7-b812-a164759dcf12",
+    "_type": "visualization",
+    "_source": {
+      "title": "System metric: Memory heap used per application (in bytes)",
+      "visState": "{\"title\":\"System metric: Memory heap used per application (in bytes)\",\"type\":\"metrics\",\"params\":{\"id\":\"49f25be0-f9e0-11e7-b812-a164759dcf12\",\"type\":\"timeseries\",\"series\":[{\"id\":\"49f25be1-f9e0-11e7-b812-a164759dcf12\",\"color\":\"rgba(104,188,0,1)\",\"split_mode\":\"terms\",\"metrics\":[{\"id\":\"49f25be2-f9e0-11e7-b812-a164759dcf12\",\"type\":\"max\",\"field\":\"value.SYSTEM_HEAP_USED\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"line\",\"line_width\":1,\"point_size\":\"3\",\"fill\":\"0\",\"stacked\":\"none\",\"label\":\"Memory used (heap)\",\"terms_field\":\"tags.APPLICATION_NAME\",\"split_filters\":[{\"filter\":\"name:heap.used\",\"label\":\"Memory used (heap)\",\"color\":\"#68BC00\",\"id\":\"ad733a90-f9e0-11e7-b812-a164759dcf12\"}],\"split_color_mode\":\"rainbow\"}],\"time_field\":\"timestamp\",\"index_pattern\":\"presidio-monitoring\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"filter\":\"name:memory\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\"}},\"filter\":[]}"
+      }
     }
   }
-}
+]

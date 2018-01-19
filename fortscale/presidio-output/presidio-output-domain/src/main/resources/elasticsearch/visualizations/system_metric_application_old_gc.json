@@ -1,14 +1,16 @@
-{
-  "_id": "98f7dbc0-fb52-11e7-9e9f-b7a4cd4fec88",
-  "_type": "visualization",
-  "_source": {
-    "title": "System metric: Old garbage collection time per application (in ms.)",
-    "visState": "{\"title\":\"System metric: Old garbage collection time per application (in ms.)\",\"type\":\"metrics\",\"params\":{\"axis_formatter\":\"number\",\"axis_position\":\"left\",\"filter\":\"name:garbageCollection\",\"id\":\"bf9a2720-f9e4-11e7-9884-edac053b34fe\",\"index_pattern\":\"*\",\"interval\":\"auto\",\"series\":[{\"axis_position\":\"right\",\"chart_type\":\"bar\",\"color\":\"rgba(104,188,0,1)\",\"fill\":0.5,\"formatter\":\"number\",\"id\":\"bf9a2721-f9e4-11e7-9884-edac053b34fe\",\"label\":\"GC time Old\",\"line_width\":1,\"metrics\":[{\"field\":\"value.SYSTEM_GC_OLD_TIME\",\"id\":\"bf9a2722-f9e4-11e7-9884-edac053b34fe\",\"type\":\"max\"}],\"point_size\":1,\"seperate_axis\":0,\"split_mode\":\"terms\",\"stacked\":\"none\",\"terms_field\":\"tags.APPLICATION_NAME\",\"split_color_mode\":\"rainbow\"}],\"show_legend\":1,\"time_field\":\"timestamp\",\"type\":\"timeseries\"},\"aggs\":[],\"listeners\":{}}",
-    "uiStateJSON": "{}",
-    "description": "",
-    "version": 1,
-    "kibanaSavedObjectMeta": {
-      "searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\"}},\"filter\":[]}"
+[
+  {
+    "_id": "98f7dbc0-fb52-11e7-9e9f-b7a4cd4fec88",
+    "_type": "visualization",
+    "_source": {
+      "title": "System metric: Old garbage collection time per application (in ms.)",
+      "visState": "{\"title\":\"System metric: Old garbage collection time per application (in ms.)\",\"type\":\"metrics\",\"params\":{\"axis_formatter\":\"number\",\"axis_position\":\"left\",\"filter\":\"name:garbageCollection\",\"id\":\"bf9a2720-f9e4-11e7-9884-edac053b34fe\",\"index_pattern\":\"presidio-monitoring\",\"interval\":\"auto\",\"series\":[{\"axis_position\":\"right\",\"chart_type\":\"line\",\"color\":\"rgba(104,188,0,1)\",\"fill\":\"0\",\"formatter\":\"number\",\"id\":\"bf9a2721-f9e4-11e7-9884-edac053b34fe\",\"label\":\"GC time Old\",\"line_width\":1,\"metrics\":[{\"field\":\"value.SYSTEM_GC_OLD_TIME\",\"id\":\"bf9a2722-f9e4-11e7-9884-edac053b34fe\",\"type\":\"max\"}],\"point_size\":\"3\",\"seperate_axis\":0,\"split_mode\":\"terms\",\"stacked\":\"none\",\"terms_field\":\"tags.APPLICATION_NAME\",\"split_color_mode\":\"rainbow\"}],\"show_legend\":1,\"time_field\":\"timestamp\",\"type\":\"timeseries\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\"}},\"filter\":[]}"
+      }
     }
   }
-}
+]

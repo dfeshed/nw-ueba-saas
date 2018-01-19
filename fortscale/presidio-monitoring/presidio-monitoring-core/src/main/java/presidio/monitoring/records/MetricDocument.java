@@ -3,9 +3,7 @@ package presidio.monitoring.records;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldIndex;
-import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.Mapping;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 
 import java.util.Date;
@@ -15,8 +13,8 @@ import java.util.UUID;
 import static presidio.monitoring.records.MetricDocument.METRIC_INDEX_NAME;
 import static presidio.monitoring.records.MetricDocument.TYPE;
 
-//@Document(indexName = METRIC_INDEX_NAME + "T(java.time.Instant).now().truncatedTo(T(java.time.temporal.ChronoUnit).DAYS)", type = TYPE)
 @Document(indexName = METRIC_INDEX_NAME, type = TYPE)
+@Mapping(mappingPath = "elasticsearch/templates/presidio-monitoring.json")
 public final class MetricDocument {
 
 
@@ -24,22 +22,16 @@ public final class MetricDocument {
     public static final String TYPE = "metric";
 
     @Id
-    @Field(type = FieldType.String, store = true)
     private String id;
 
-    @Field(type = FieldType.String, store = true)
     private String name;
 
-    @Field(type = FieldType.Object, store = true, index = FieldIndex.analyzed)
     private Map<MetricEnums.MetricValues, Number> value;
 
-    @Field(type = FieldType.Date, store = true)
     private Date timestamp;
 
-    @Field(type = FieldType.Object, store = true, index = FieldIndex.analyzed)
     private Map<MetricEnums.MetricTagKeysEnum, String> tags;
 
-    @Field(type = FieldType.Date, store = true)
     private Date logicTime;
 
     public MetricDocument(String name, Map<MetricEnums.MetricValues, Number> value, Date timestamp, Map<MetricEnums.MetricTagKeysEnum, String> tags, Date logicTime) {
