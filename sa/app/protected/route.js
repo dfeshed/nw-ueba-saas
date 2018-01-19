@@ -46,25 +46,6 @@ export default Route.extend(AuthenticatedRouteMixin, {
     iframedIntoClassic: {
       refreshModel: false,
       replace: true
-    },
-    /**
-     * The type of entity to be looked up in the Context Panel.
-     * Entity types are defined in configurable Admin settings, but typically include 'IP', 'USER', 'DOMAIN', 'HOST', etc.
-     * @type {string}
-     * @public
-     */
-    entityType: {
-      refreshModel: false,
-      replace: true
-    },
-    /**
-     * The ID of the entity to be looked up in the Context Panel (e.g., an IP address, a user name, a domain name, etc).
-     * @type {string|number}
-     * @public
-     */
-    entityId: {
-      refreshModel: false,
-      replace: true
     }
   },
 
