@@ -4,7 +4,8 @@ $contextTooltipDatumPadding: 0px;
 .rsa-context-tooltip {
   background-color: background-color(primary, darkest);
   padding: rsa-whitespace(less);
-  max-width: 5 * ($contextTooltipDatumWidth + $contextTooltipDatumPadding);
+  max-width: 5 * ($contextTooltipDatumWidth + $contextTooltipDatumPadding) + 2;
+  margin-top: 1px;
 
   &__header {
     @include rsa-font(default);
