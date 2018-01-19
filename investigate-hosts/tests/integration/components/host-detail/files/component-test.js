@@ -92,22 +92,6 @@ test('check sortyBy action is called', function(assert) {
   });
 });
 
-sinon.stub(DataCreators, 'setSelectedFile');
-test('check setSelectedFile action is called', function(assert) {
-  new ReduxDataHelper(setState)
-    .filesLoadMoreStatus('stopped')
-    .files(hostFiles.files).build();
-  this.render(hbs`{{host-detail/files}}`);
-
-  return wait().then(() => {
-    this.$('.rsa-data-table-body-row')[2].click();
-    assert.equal(DataCreators.setSelectedFile.calledOnce, true, 'setSelectedFile action is called');
-    assert.equal(DataCreators.setSelectedFile.args[0][0],
-      '29772d95b2488a5a7715a96270f827fbf2b2e1e0a627ae041a54a6faddd2686c', 'checksum is provided');
-    DataCreators.setSelectedFile.restore();
-  });
-});
-
 sinon.stub(DataCreators, 'getHostFiles');
 test('load more calls getHostFiles', function(assert) {
   new ReduxDataHelper(setState)

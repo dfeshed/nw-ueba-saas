@@ -3,7 +3,6 @@ import { inject as service } from '@ember/service';
 import { ping } from 'streaming-data/services/data-access/requests';
 
 export default Route.extend({
-  accessControl: service(),
 
   contextualHelp: service(),
 

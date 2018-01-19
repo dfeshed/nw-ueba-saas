@@ -24,9 +24,12 @@
           {{host-detail/utils/table-cell item=item column=column}}
         {{/rsa-data-table/body-cell}}
       {{/rsa-data-table/body}}
+      {{#if isPaginated}}
+        {{rsa-data-table/load-more status=loadMoreStatus click=getPagedItems}}
+      {{/if}}
     {{/if}}
   {{/rsa-data-table}}
 </box>
 <box class="files-footer" fit>
-  {{host-table-footer index=items.length total=items.length label=type}}
+  {{host-table-footer index=items.length total=total label=type}}
 </box>

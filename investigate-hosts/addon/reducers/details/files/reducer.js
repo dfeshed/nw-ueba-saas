@@ -37,7 +37,7 @@ const hostFilesReducer = handleActions({
 
   [ACTION_TYPES.RESET_HOST_FILES]: (state) => state.merge({ pageNumber: -1, files: [] }),
 
-  [ACTION_TYPES.SET_SELECTED_FILE]: (state, { payload }) => state.set('selectedFileHash', payload),
+  [ACTION_TYPES.SET_SELECTED_FILE]: (state, { payload: { checksumSha256 } }) => state.set('selectedFileHash', checksumSha256),
 
   [ACTION_TYPES.GET_HOST_FILES]: (state, action) => {
     return handle(state, action, {

@@ -1,6 +1,6 @@
 import Component from 'ember-component';
 import { connect } from 'ember-redux';
-import { alias } from 'ember-computed-decorators';
+import computed, { alias } from 'ember-computed-decorators';
 import { setHostDetailsDataTableSortConfig } from 'investigate-hosts/actions/data-creators/details';
 
 const dispatchToActions = {
@@ -13,29 +13,30 @@ const HostDetailsDataTable = Component.extend({
 
   classNames: ['host-detail__datatable'],
 
-  columnConfig: null,
+  customSort: null,
+
+  items: [],
 
   @alias('status')
   isDataLoading: true,
 
-  didRender() {
-    // Increase the rsa-data-table-body-rows border dynamically
-    const rsaDataTableBody = this.$('.rsa-data-table-body');
-    const dataTableTotalWidth = rsaDataTableBody[0] ? rsaDataTableBody[0].scrollWidth : 0;
-
-    if (dataTableTotalWidth) {
-      this.$('.rsa-data-table-body-rows').innerWidth(dataTableTotalWidth);
-      this.$('.rsa-data-table-header').innerWidth(dataTableTotalWidth);
-    }
+  @computed('items', 'totalItems')
+  total(items, totalItems) {
+    return totalItems ? totalItems : items.length;
   },
 
   actions: {
     sort(column) {
       column.set('isDescending', !column.isDescending);
-      this.send('setHostDetailsDataTableSortConfig', {
-        isDescending: column.isDescending,
-        field: column.field
-      });
+      const customSort = this.get('customSort');
+      if (customSort) {
+        this.customSort(column);
+      } else {
+        this.send('setHostDetailsDataTableSortConfig', {
+          isDescending: column.isDescending,
+          field: column.field
+        });
+      }
     },
 
     toggleSelectedRow(item, index, e, table) {

@@ -1,44 +1,18 @@
-<box xs='9'>
-  <box>
-    {{#rsa-data-table
-      lazy=true
-      items=files
-      selectedIndex=0
-      columnsConfig=columnsConfig
-      onRowClick=(action "handleRowClickAction")}}
-      {{#rsa-data-table/header as |column|}}
-        {{t column.label}}
-        {{#unless column.disableSort}}
-          {{rsa-icon
-            click=(action 'sort' column)
-            name=(if column.isDescending "arrow-down-7" "arrow-up-7")
-            class="sort"}}
-        {{/unless}}
-      {{/rsa-data-table/header}}
-      {{#if (eq status 'wait')}}
-        <centered>
-          {{rsa-loader size='larger'}}
-        </centered>
-      {{else}}
-        {{#rsa-data-table/body noResultsMessage=(t 'investigateHosts.hosts.list.noResultsMessage') as |item index column|}}
-          {{#rsa-data-table/body-cell item=item column=column}}
-            {{host-detail/utils/table-cell item=item column=column}}
-          {{/rsa-data-table/body-cell}}
-        {{/rsa-data-table/body}}
-        {{rsa-data-table/load-more status=filesLoadMoreStatus click=(action 'getHostFiles')}}
-      {{/if}}
-    {{/rsa-data-table}}
-  </box>
-  <box class="files-footer" fit>
-    {{!--Common component, passing the data down --}}
-    {{host-table-footer index=fileCount total=totalItems label=(t 'investigateHosts.hosts.footerLabel.files')}}
-  </box>
-</box>
-<box xs='3' class='file-property-panel'>
-  {{!--Common component, passing the data down --}}
-  {{host-detail/utils/file-property-panel
-  localeNameSpace='investigateHosts.property.file'
-  config=filePropertyConfig
-  data=fileProperty
-  title=(t 'investigateHosts.hosts.propertyPanelTitles.files')}}
-</box>
+{{host-detail/utils/simple-detail-display
+  detailDisplayInputs=(hash
+    localeNameSpace='investigateHosts.property.file'
+    status=status
+    tableItems=files
+    type=(t 'investigateHosts.hosts.footerLabel.files')
+    columnsConfig=columnsConfig
+    selectRowAction=(action 'setSelectedFile')
+    propertyConfig=filePropertyConfig
+    propertyData=fileProperty
+    propertyPanelTitle=(t 'investigateHosts.hosts.propertyPanelTitles.files')
+    isPaginated=true
+    totalItems=totalItems
+    loadMoreStatus=filesLoadMoreStatus
+    getPagedItems=(action 'getHostFiles')
+    customSort=(action 'sort')
+  )
+}}

@@ -3,6 +3,12 @@ import reselect from 'reselect';
 const { createSelector } = reselect;
 const _filesData = (state) => state.endpoint.hostFiles.files || [];
 const _selectedFileHash = (state) => state.endpoint.hostFiles.selectedFileHash;
+const _filesLoadingStatus = (state) => state.endpoint.hostFiles.filesLoadingStatus;
+
+export const isDataLoading = createSelector(
+  _filesLoadingStatus,
+  (filesLoadingStatus) => filesLoadingStatus === 'wait'
+);
 
 export const filesWithEnrichedData = createSelector(
   [_filesData],
@@ -35,9 +41,4 @@ export const fileProperty = createSelector(
       return filesData.find((item) => item.checksumSha256 === hash);
     }
   }
-);
-
-export const fileCount = createSelector(
-  [_filesData],
-  (filesData) => filesData.length
 );

@@ -3,7 +3,7 @@ import { generateColumns } from 'investigate-hosts/util/util';
 const defaultColumns = [
   {
     field: 'fileName',
-    title: 'File Name'
+    title: 'Filename'
   },
   {
     field: 'signature',

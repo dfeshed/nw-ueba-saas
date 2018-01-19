@@ -68,7 +68,7 @@ test('The SET_SELECTED_FILE will sets the selected file hash the state', functio
   const previous = Immutable.from({
     selectedFileHash: null
   });
-  const result = reducer(previous, { type: ACTION_TYPES.SET_SELECTED_FILE, payload: 'aaazza234aa2123' });
+  const result = reducer(previous, { type: ACTION_TYPES.SET_SELECTED_FILE, payload: { checksumSha256: 'aaazza234aa2123' } });
   assert.equal(result.selectedFileHash, 'aaazza234aa2123');
 });
 

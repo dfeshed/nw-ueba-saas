@@ -36,7 +36,7 @@ const _fetchHostFiles = () => {
   };
 };
 
-const setSelectedFile = (fileHash) => ({ type: ACTION_TYPES.SET_SELECTED_FILE, payload: fileHash });
+const setSelectedFile = ({ checksumSha256 }) => ({ type: ACTION_TYPES.SET_SELECTED_FILE, payload: { checksumSha256 } });
 
 
 export {
