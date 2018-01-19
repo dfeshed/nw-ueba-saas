@@ -38,7 +38,7 @@ const _handleAppendMachines = (action) => {
     return state.merge({
       hostList: [...hostList, ...data.items],
       pageNumber: data.pageNumber,
-      loadMoreHostStatus: data.totalItems >= 1000 ? 'stopped' : 'completed',
+      loadMoreHostStatus: data.hasNext ? 'stopped' : 'completed',
       hasNext: data.hasNext
     });
   };
@@ -113,7 +113,7 @@ const hosts = reduxActions.handleActions({
         hostFetchStatus: 'completed',
         pageNumber: action.payload.data.pageNumber,
         totalItems: action.payload.data.totalItems,
-        loadMoreHostStatus: (action.payload.data.hasNext) ? 'stopped' : ''
+        loadMoreHostStatus: (action.payload.data.hasNext) ? 'stopped' : 'completed'
       })
     });
   },

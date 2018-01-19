@@ -208,6 +208,31 @@ test('The FETCH_NEXT_MACHINES will set the paged response to state', function(as
   assert.equal(newEndState.hostList.length, 4);
 });
 
+test('The FETCH_NEXT_MACHINES sets load more state properly', function(assert) {
+  const previous = Immutable.from({
+    hostList: HOST_LIST,
+    loadMoreHostStatus: null
+  });
+  const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_NEXT_MACHINES });
+  const endState = reducer(previous, startAction);
+
+  assert.equal(endState.loadMoreHostStatus, 'streaming');
+
+  const successAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.FETCH_NEXT_MACHINES,
+    payload: { data: { hasNext: true, totalItems: 5, items: [ { id: 11 }] } }
+  });
+  const newEndState = reducer(previous, successAction);
+  assert.equal(newEndState.loadMoreHostStatus, 'stopped');
+
+  const loadMoreAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.FETCH_NEXT_MACHINES,
+    payload: { data: { hasNext: false, totalItems: 5, items: [ { id: 12 }, { id: 13 }] } }
+  });
+  const newEndState1 = reducer(previous, loadMoreAction);
+  assert.equal(newEndState1.loadMoreHostStatus, 'completed');
+});
+
 test('The RESET_HOST_DOWNLOAD_LINK action reset the HOST download link', function(assert) {
   const previous = Immutable.from({
     hostExportLinkId: '1awsseeeq'

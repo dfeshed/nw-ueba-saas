@@ -5,7 +5,6 @@ import {
   fileCount,
   hasFiles,
   fileExportLink,
-  loadMoreStatus,
   fileCountForDisplay
 } from 'investigate-files/reducers/file-list/selectors';
 
@@ -76,9 +75,4 @@ test('fileCountForDisplay', function(assert) {
     }
   }));
   assert.equal(newDisplay, '1000+', 'expected 1000+ files');
-});
-
-test('loadMoreStatus', function(assert) {
-  const result = loadMoreStatus(STATE);
-  assert.equal(result, 'completed', 'load more status is completed');
 });

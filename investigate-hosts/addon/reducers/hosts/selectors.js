@@ -13,7 +13,6 @@ const _hostExportLinkId = (state) => state.endpoint.machines.hostExportLinkId;
 const _hostDetailId = (state) => state.endpoint.detailsInput ? state.endpoint.detailsInput.agentId : null;
 const _agentId = (state) => state.endpoint.detailsInput.agentId;
 const _totalItems = (state) => state.endpoint.machines.totalItems;
-const _hasNext = (state) => state.endpoint.machines.hasNext;
 const _columnSort = (state) => state.endpoint.machines.hostColumnSort;
 
 const _agentVersion = createSelector(
@@ -156,13 +155,6 @@ export const hostCountForDisplay = createSelector(
       return `${totalItems}+`;
     }
     return `${totalItems}`;
-  }
-);
-
-export const loadMoreHostStatus = createSelector(
-  [_hasNext, hostCountForDisplay],
-  (hasNext, hostCountForDisplay) => {
-    return hostCountForDisplay.includes('+') || hasNext ? 'stopped' : 'completed';
   }
 );
 

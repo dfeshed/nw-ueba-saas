@@ -27,7 +27,7 @@ const _handleAppendFiles = (action) => {
       files: [...files, ...data.items],
       totalItems: data.totalItems,
       pageNumber: data.pageNumber,
-      loadMoreStatus: data.totalItems >= 1000 ? 'stopped' : 'completed',
+      loadMoreStatus: data.hasNext ? 'stopped' : 'completed',
       hasNext: data.hasNext
     });
   };

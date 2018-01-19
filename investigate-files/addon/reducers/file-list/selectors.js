@@ -6,7 +6,6 @@ const SUPPORTED_SERVICES = [ 'broker', 'concentrator', 'decoder', 'log-decoder',
 const files = (state) => state.files.fileList.files;
 const _fileExportLinkId = (state) => state.files.fileList.downloadId;
 const _totalItems = (state) => state.files.fileList.totalItems;
-const _hasNext = (state) => state.files.fileList.hasNext;
 const _serviceList = (state) => state.files.fileList.listOfServices;
 
 export const fileCount = createSelector(
@@ -42,13 +41,6 @@ export const fileCountForDisplay = createSelector(
       return `${totalItems}+`;
     }
     return `${totalItems}`;
-  }
-);
-
-export const loadMoreStatus = createSelector(
-  [_hasNext, fileCountForDisplay],
-  (hasNext, fileCountForDisplay) => {
-    return fileCountForDisplay.includes('+') || hasNext ? 'stopped' : 'completed';
   }
 );
 

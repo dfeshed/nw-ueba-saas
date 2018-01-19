@@ -116,3 +116,31 @@ test('The FETCH_NEXT_FILES will append the paged response to state', function(as
   assert.equal(newEndState.loadMoreStatus, 'completed');
   assert.equal(newEndState.files.length, 4);
 });
+
+test('The FETCH_NEXT_FILES sets load more state properly', function(assert) {
+  const previous = Immutable.from({
+    files: FILE_LIST,
+    loadMoreStatus: null
+  });
+  const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_NEXT_FILES });
+  const endState = reducer(previous, startAction);
+
+  assert.equal(endState.loadMoreStatus, 'streaming');
+
+  const successAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.FETCH_NEXT_FILES,
+    payload: { data: { hasNext: true, items: [{ id: 11 }] } }
+  });
+  const newEndState = reducer(previous, successAction);
+
+  assert.equal(newEndState.loadMoreStatus, 'stopped');
+  assert.equal(newEndState.files.length, 4);
+
+  const successAction1 = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.FETCH_NEXT_FILES,
+    payload: { data: { hasNext: false, items: [{ id: 11 }] } }
+  });
+  const newEndState1 = reducer(previous, successAction1);
+
+  assert.equal(newEndState1.loadMoreStatus, 'completed');
+});

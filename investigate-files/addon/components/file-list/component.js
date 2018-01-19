@@ -1,6 +1,6 @@
 import Component from 'ember-component';
 import { connect } from 'ember-redux';
-import { loadMoreStatus, serviceList } from 'investigate-files/reducers/file-list/selectors';
+import { fileCountForDisplay, serviceList } from 'investigate-files/reducers/file-list/selectors';
 import { columns } from 'investigate-files/reducers/schema/selectors';
 import computed from 'ember-computed-decorators';
 import _ from 'lodash';
@@ -12,10 +12,10 @@ import {
 const stateToComputed = (state) => ({
   serviceList: serviceList(state),
   columnConfig: columns(state),
-  loadMoreStatus: loadMoreStatus(state),
+  loadMoreStatus: state.files.fileList.loadMoreStatus,
   areFilesLoading: state.files.fileList.areFilesLoading,
   files: state.files.fileList.files, // All visible files
-  totalItems: state.files.fileList.totalItems,
+  totalItems: fileCountForDisplay(state),
   sortField: state.files.fileList.sortField, // Currently applied sort on file list
   isSortDescending: state.files.fileList.isSortDescending
 });

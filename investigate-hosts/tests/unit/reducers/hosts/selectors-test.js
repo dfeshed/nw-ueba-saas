@@ -13,8 +13,7 @@ import {
   hostCountForDisplay,
   warningMessages,
   isScanStartButtonDisabled,
-  extractAgentIds,
-  loadMoreHostStatus } from 'investigate-hosts/reducers/hosts/selectors';
+  extractAgentIds } from 'investigate-hosts/reducers/hosts/selectors';
 
 module('Unit | selectors | hosts');
 const STATE = Immutable.from({
@@ -245,11 +244,6 @@ test('hostCountForDisplay', function(assert) {
     }
   }));
   assert.equal(newDisplay, '1000+', 'expected 1000+ files');
-});
-
-test('loadMoreHostStatus', function(assert) {
-  const result = loadMoreHostStatus(STATE);
-  assert.equal(result, 'completed', 'load more status is completed');
 });
 
 test('warningMessages', function(assert) {
