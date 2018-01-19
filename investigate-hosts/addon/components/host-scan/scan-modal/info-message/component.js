@@ -4,6 +4,6 @@ export default Component.extend({
 
   tagName: 'hbox',
 
-  classNames: ['host-message-modal', 'alert-info']
+  classNames: ['info-message', 'alert-info']
 
 });

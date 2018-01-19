@@ -1,11 +1,11 @@
 $modalHeaderHeight: 52px;
 $footerHeight: 43px;
 
-.rsa-application-modal.start-scan-modal footer {
+.rsa-application-modal.scan-modal footer {
   display: none;
 }
 
-.rsa-application-modal-content.start-scan-modal {
+.rsa-application-modal-content.scan-modal {
   width: 40%;
   min-height: 165px;
   height: auto;
@@ -23,7 +23,7 @@ $footerHeight: 43px;
       @include rsa-font(paragraph);
       padding: rsa-whitespace();
     }
-    .host-message-modal {
+    .info-message {
       margin: rsa-whitespace();
     }
   }

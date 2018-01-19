@@ -15,5 +15,5 @@ export const generateColumns = (customColumns, defaultColumns) => {
  * @param selectedAgentList
  */
 export const getSelectedAgentIds = (selectedAgentList) => {
-  return _.map(selectedAgentList.filter((agent) => !agent.version.startsWith('4.4')), 'id');
+  return _.map(selectedAgentList.filter((agent) => agent && !agent.version.startsWith('4.4')), 'id');
 };

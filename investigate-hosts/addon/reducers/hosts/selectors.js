@@ -41,8 +41,12 @@ export const serviceList = createSelector(
 export const hostListForScanning = createSelector(
   [ _selectedHostList, _hostDetailId, _agentVersion ],
   (selectedHostList, hostDetailId, agentVersion) => {
-    if (hostDetailId && agentVersion && !agentVersion.startsWith('4.4')) {
-      return [{ id: hostDetailId, version: agentVersion }];
+    if (hostDetailId) {
+      if (agentVersion && !agentVersion.startsWith('4.4')) {
+        return [{ id: hostDetailId, version: agentVersion }];
+      } else {
+        return [];
+      }
     }
     return selectedHostList;
   }
@@ -134,13 +138,13 @@ export const warningClass = createSelector(
 );
 
 export const allAreEcatAgents = createSelector(
-  [ hostListForScanning, noHostsSelected ],
-  (selectedHostList, noHost) => noHost || selectedHostList.every((host) => host.version && host.version.startsWith('4.4'))
+  hostListForScanning,
+  (selectedHostList) => selectedHostList.every((host) => host && host.version && host.version.startsWith('4.4'))
 );
 
 export const hasEcatAgents = createSelector(
   hostListForScanning,
-  (selectedHostList) => selectedHostList.some((host) => host.version && host.version.startsWith('4.4'))
+  (selectedHostList) => selectedHostList.some((host) => host && host.version && host.version.startsWith('4.4'))
 );
 
 export const hostCountForDisplay = createSelector(
@@ -194,15 +198,20 @@ export const warningMessages = createSelector(
 );
 
 export const isScanStartButtonDisabled = createSelector(
-  [tooManyHostsSelected, hostListForScanning],
-  (tooManyHostsSelected, hostListForScanning) => {
-    return !hostListForScanning.length || tooManyHostsSelected;
+  [tooManyHostsSelected, hostListForScanning, allAreEcatAgents],
+  (tooManyHostsSelected, hostListForScanning, allAreEcatAgents) => {
+    return !hostListForScanning.length || tooManyHostsSelected || allAreEcatAgents;
   }
 );
 
 export const extractAgentIds = createSelector(
-  _selectedHostList,
-  (_selectedHostList) => {
-    return getSelectedAgentIds(_selectedHostList);
+  hostListForScanning,
+  (hostListForScanning) => {
+    return getSelectedAgentIds(hostListForScanning);
   }
+);
+
+export const scanCount = createSelector(
+  hostListForScanning,
+  (hostListForScanning) => hostListForScanning.length
 );

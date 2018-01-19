@@ -305,6 +305,17 @@ const startScan = (agentIds, callbacks = callbacksDefault) => {
       callbacks.onFailure(message.message);
     });
 };
+
+const stopScan = (agentIds, callbacks = callbacksDefault) => {
+  Machines.stopScanRequest(agentIds)
+    .then(() => {
+      callbacks.onSuccess();
+    }).catch(({ meta: message }) => {
+      callbacks.onFailure(message.message);
+    });
+};
+
+
 export {
   getAllServices,
   getAllSchemas,
@@ -317,6 +328,7 @@ export {
   deleteHosts,
   initializeHostPage,
   initializeHostsPreferences,
-  startScan
+  startScan,
+  stopScan
 };
 

@@ -63,19 +63,9 @@ test('it should show warning messages', function(assert) {
   this.render(hbs`{{host-scan/start-scan-button warningMessage=warningMessage}}`);
   this.$('.rsa-form-button').trigger('click');
   return wait().then(() => {
-    assert.equal($('#modalDestination .host-message-modal').length, 2, 'Expected to render warning message');
+    assert.equal($('#modalDestination .info-message').length, 2, 'Expected to render warning message');
   });
 });
-
-test('it should close the modal on clicking the close button', function(assert) {
-  this.render(hbs`{{host-scan/start-scan-button warningMessage=warningMessage}}`);
-  this.$('.rsa-form-button').trigger('click');
-  return wait().then(() => {
-    this.$('.close-modal').trigger('click');
-    assert.equal($('#modalDestination .host-message-modal').length, 0, 'Scan modal is closed');
-  });
-});
-
 
 test('it should show success message start scan is success', function(assert) {
   sinon.stub(Machines, 'startScanRequest');
@@ -91,8 +81,8 @@ test('it should show success message start scan is success', function(assert) {
 
   this.$('.rsa-form-button').trigger('click');
   return wait().then(() => {
-    this.$('.start-scan').trigger('click');
-    assert.equal($('#modalDestination .host-message-modal').length, 0, 'Scan modal is closed');
+    this.$('.scan-command').trigger('click');
+    assert.equal($('#modalDestination .info-message').length, 0, 'Scan modal is closed');
   });
 });
 
@@ -111,8 +101,8 @@ test('it should show error message when failed to start scan', function(assert) 
 
   this.$('.rsa-form-button').trigger('click');
   return wait().then(() => {
-    this.$('.start-scan').trigger('click');
-    assert.equal($('#modalDestination .host-message-modal').length, 0, 'Scan modal is closed');
+    this.$('.scan-command').trigger('click');
+    assert.equal($('#modalDestination .info-message').length, 0, 'Scan modal is closed');
   });
 });
 

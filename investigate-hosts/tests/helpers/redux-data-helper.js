@@ -173,8 +173,14 @@ export default class DataHelper {
     });
     return this;
   }
+
   isJsonExportCompleted(status) {
     _set(this.state, 'overview.exportJSONStatus', status ? 'completed' : 'streaming');
+    return this;
+  }
+
+  scanCount(count) {
+    _set(this.state, 'machines.selectedHostList', new Array(count));
     return this;
   }
 }

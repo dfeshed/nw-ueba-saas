@@ -4,10 +4,8 @@
 <hbox class='host-table__toolbar-buttons'>
 
   {{host-scan/scan-command command='START_SCAN'}}
+  {{host-scan/scan-command command='STOP_SCAN'}}
 
-  {{#rsa-form-button click=(action 'openCancelScanModal' ) isDisabled=allAreEcatAgents}}
-    {{t 'investigateHosts.hosts.moreActions.cancelScan'}}
-  {{/rsa-form-button}}
 
   {{host-list/host-table/action-bar/export-button}}
 

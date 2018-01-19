@@ -1,0 +1,17 @@
+{{#rsa-form-button isIconOnly=isIconOnly isDisabled=isDisabled click=(action 'toggleStopScanModal')}}
+  {{#if isIconOnly}}
+    {{rsa-icon name='stop-button'}}
+  {{else}}
+    {{buttonText}}
+  {{/if}}
+{{/rsa-form-button}}
+
+{{#if _showStopScanModal}}
+  {{host-scan/scan-modal
+    command='STOP_SCAN'
+    modalStyle='stop-scan-modal'
+    eventId='stop-scan'
+    modalTitle=modalTitle
+    onModalClose=(action 'onModalClose')
+    primaryAction=(action 'handleStopScan')}}
+{{/if}}

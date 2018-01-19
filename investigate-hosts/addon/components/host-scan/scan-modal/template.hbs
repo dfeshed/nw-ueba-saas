@@ -1,0 +1,25 @@
+{{#rsa-application-modal
+  style=style
+  eventId=eventId
+  autoOpen=true
+  onClose=(action onModalClose)
+  label=modalTitle}}
+  <div class="modal-content">
+    {{#each warningMessages as |message|}}
+      {{host-scan/scan-modal/info-message message=message}}
+    {{/each}}
+    <div class="scan-message">
+      <p>{{decorator.bodyMessage}}</p>
+    </div>
+  </div>
+  <footer>
+    <hbox class="modal-footer-buttons">
+      {{#rsa-form-button style='primary' class='scan-command' click=(action 'handleClick')}}
+        {{decorator.primaryButtonText}}
+      {{/rsa-form-button}}
+      {{#rsa-form-button class='close-modal' click=(action 'closeModal')}}
+        {{t 'investigateHosts.hosts.button.cancel'}}
+      {{/rsa-form-button}}
+    </hbox>
+  </footer>
+{{/rsa-application-modal}}
