@@ -138,7 +138,7 @@ public class AlertApiControllerModuleTest {
     }
 
     @Test
-    public void getIndicatorsSortedWithCorectPage() throws Exception {
+    public void getIndicatorsSortedWithCorrectPage() throws Exception {
         //save alerts in elastic
         Date startDate = new Date();
         Date endDate = new Date();
@@ -434,11 +434,6 @@ public class AlertApiControllerModuleTest {
         Assert.assertEquals(102, actualResponse.getTotal().intValue());
         List<Event> events = actualResponse.getEvents();
         Assert.assertEquals(10, events.size()); //default result size is 10
-        //verify that the events are sorted by evnet time descending-
-        for (int i=0; i < events.size() - 2; i++) {
-            Assert.assertEquals(events.get(i).getTime().compareTo(events.get(i + 1).getTime()), 1);
-        }
-        
     }
 
 
