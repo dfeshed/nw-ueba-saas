@@ -118,8 +118,9 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     @include rsa-font(paragraph, small);
     color: text-color(primary, lightest);
     border-top: 1px solid border-color(primary, dark);
-
-    &:hover,
+    &:hover {
+        background-color: background-color(primary, darker);
+    },
     &.has-focus,
     &.is-selected,
     &.has-focus:hover,
