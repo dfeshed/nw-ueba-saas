@@ -3,7 +3,6 @@ package presidio.output.processor.services.alert.supportinginformation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.general.CommonStrings;
 import fortscale.common.general.Schema;
-import fortscale.utils.ConversionUtils;
 import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.recordreader.ReflectionRecordReader;
 import fortscale.utils.time.TimeRange;
@@ -21,7 +20,6 @@ import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.events.ScoredEnrichedEvent;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.event.ScoredEventService;
-import presidio.output.processor.config.AnomalyFiltersConfig;
 import presidio.output.processor.config.IndicatorConfig;
 import presidio.output.processor.config.SupportingInformationConfig;
 import presidio.output.processor.services.alert.supportinginformation.historicaldata.HistoricalDataPopulator;
@@ -32,7 +30,6 @@ import presidio.output.processor.services.alert.supportinginformation.transforme
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Supporting information (indicators, events and historical data) for SCORE_AGGREGATION events (AKA 'P')
@@ -61,14 +58,17 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
 
     private ScoredEventService scoredEventService;
 
+    private SupportingInformationUtils supportingInfoUtils;
 
-    public SupportingInformationForScoreAggr(SupportingInformationConfig supportingInformationConfig, AdeManagerSdk adeManagerSdk, EventPersistencyService eventPersistencyService, HistoricalDataPopulatorFactory historicalDataPopulatorFactory, ScoredEventService scoredEventService) {
+
+    public SupportingInformationForScoreAggr(SupportingInformationConfig supportingInformationConfig, AdeManagerSdk adeManagerSdk, EventPersistencyService eventPersistencyService, HistoricalDataPopulatorFactory historicalDataPopulatorFactory, ScoredEventService scoredEventService, SupportingInformationUtils supportingInfoUtils) {
         this.config = supportingInformationConfig;
         this.adeManagerSdk = adeManagerSdk;
         this.eventPersistencyService = eventPersistencyService;
         this.historicalDataPopulatorFactory = historicalDataPopulatorFactory;
         this.scoredEventService = scoredEventService;
         this.objectMapper = ObjectMapperProvider.getInstance().getNoModulesObjectMapper();
+        this.supportingInfoUtils = supportingInfoUtils;
     }
 
 
@@ -110,23 +110,9 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
         String userId = adeAggregationRecord.getContext().get(CommonStrings.CONTEXT_USERID);
         TimeRange timeRange = new TimeRange(adeAggregationRecord.getStartInstant(), adeAggregationRecord.getEndInstant());
 
-        List<Pair<String, Object>> features = new ArrayList<>();
         String anomalyField = indicatorConfig.getAnomalyDescriptior().getAnomalyField();
         String anomalyValue = getAnomalyValue(indicator, indicatorConfig);
-        if (StringUtils.isNoneEmpty(anomalyValue, anomalyField)) {
-            Object featureValue = ConversionUtils.convertToObject(anomalyValue, eventPersistencyService.findFeatureType(indicatorConfig.getSchema(), anomalyField));
-            features.add(Pair.of(anomalyField, featureValue));
-        }
-        AnomalyFiltersConfig anomalyFiltersConfig = indicatorConfig.getAnomalyDescriptior().getAnomalyFilters();
-        if (anomalyFiltersConfig != null && StringUtils.isNoneEmpty(anomalyFiltersConfig.getFieldName(), anomalyFiltersConfig.getFieldValue())) {
-            String fieldName = anomalyFiltersConfig.getFieldName();
-            String fieldValue = anomalyFiltersConfig.getFieldValue();
-            String[] values = StringUtils.split(fieldValue, ",");
-            for (String value : values) {
-                Object featureValue = ConversionUtils.convertToObject(value, eventPersistencyService.findFeatureType(indicatorConfig.getSchema(), fieldName));
-                features.add(Pair.of(fieldName, featureValue));
-            }
-        }
+        List<Pair<String, Object>> features = supportingInfoUtils.buildAnomalyFeatures(indicatorConfig,anomalyValue);
 
         List<ScoredEnrichedEvent> rawEvents = scoredEventService.findEventsAndScores(indicatorConfig.getSchema(), indicatorConfig.getAdeEventType(), userId, timeRange, features, eventsLimit, eventsPageSize);
 
@@ -201,24 +187,8 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
         List<ScoredEnrichedEvent> distinctFeatureValues = new ArrayList<>();
 
         // get distinct values of all the scored events
-        List<Pair<String, Object>> features = new ArrayList<>();
-        String anomalyField = indicatorConfig.getAnomalyDescriptior().getAnomalyField();
-        String anomalyValue = indicatorConfig.getAnomalyDescriptior().getAnomalyValue();
-        if (StringUtils.isNoneEmpty(anomalyValue, anomalyField)) {
-            Object featureValue = ConversionUtils.convertToObject(anomalyValue, eventPersistencyService.findFeatureType(indicatorConfig.getSchema(), anomalyField));
-            features.add(Pair.of(anomalyField, featureValue));
-        }
+        List<Pair<String, Object>> features = supportingInfoUtils.buildAnomalyFeatures(indicatorConfig);
 
-        AnomalyFiltersConfig anomalyFiltersConfig = indicatorConfig.getAnomalyDescriptior().getAnomalyFilters();
-        if (anomalyFiltersConfig != null && StringUtils.isNoneEmpty(anomalyFiltersConfig.getFieldName(), anomalyFiltersConfig.getFieldValue())) {
-            String fieldName = anomalyFiltersConfig.getFieldName();
-            String fieldValue = anomalyFiltersConfig.getFieldValue();
-            String[] values = StringUtils.split(fieldValue, ",");
-            for (String value : values) {
-                Object featureValue = ConversionUtils.convertToObject(value, eventPersistencyService.findFeatureType(indicatorConfig.getSchema(), fieldName));
-                features.add(Pair.of(anomalyFiltersConfig.getFieldName(), featureValue));
-            }
-        }
         Collection<ScoredEnrichedEvent> featureValues =
                 scoredEventService.findDistinctScoredEnrichedEvent(indicatorConfig.getSchema(),
                         indicatorConfig.getAdeEventType(),
@@ -235,5 +205,6 @@ public class SupportingInformationForScoreAggr implements SupportingInformationG
         }
         return distinctFeatureValues;
     }
+
 
 }

@@ -43,14 +43,18 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
     private EventPersistencyService eventPersistencyService;
 
     private HistoricalDataPopulatorFactory historicalDataPopulatorFactory;
+
     private ObjectMapper objectMapper;
 
+    private SupportingInformationUtils supportingInfoUtils;
 
-    public SupportingInformationForFeatureAggr(SupportingInformationConfig config, EventPersistencyService eventPersistencyService, HistoricalDataPopulatorFactory historicalDataPopulatorFactory) {
+
+    public SupportingInformationForFeatureAggr(SupportingInformationConfig config, EventPersistencyService eventPersistencyService, HistoricalDataPopulatorFactory historicalDataPopulatorFactory, SupportingInformationUtils supportingInfoUtils) {
         this.config = config;
         this.eventPersistencyService = eventPersistencyService;
         this.historicalDataPopulatorFactory = historicalDataPopulatorFactory;
         this.objectMapper = ObjectMapperProvider.getInstance().getNoModulesObjectMapper();
+        this.supportingInfoUtils = supportingInfoUtils;
     }
 
     @Override
@@ -79,22 +83,7 @@ public class SupportingInformationForFeatureAggr implements SupportingInformatio
         IndicatorConfig indicatorConfig = config.getIndicatorConfig(adeAggregationRecord.getFeatureName());
         String userId = adeAggregationRecord.getContext().get(CommonStrings.CONTEXT_USERID);
         TimeRange timeRange = new TimeRange(adeAggregationRecord.getStartInstant(), adeAggregationRecord.getEndInstant());
-        List<Pair<String, Object>> features = new ArrayList<Pair<String, Object>>();
-        if (indicatorConfig.getAnomalyDescriptior() != null &&
-                StringUtils.isNoneEmpty(indicatorConfig.getAnomalyDescriptior().getAnomalyField(),
-                        indicatorConfig.getAnomalyDescriptior().getAnomalyValue())) {
-            String[] values = StringUtils.split(indicatorConfig.getAnomalyDescriptior().getAnomalyValue(), ",");
-            for (String value : values) {
-                features.add(Pair.of(indicatorConfig.getAnomalyDescriptior().getAnomalyField(), value));
-            }
-        }
-        AnomalyFiltersConfig anomalyFiltersConfig = indicatorConfig.getAnomalyDescriptior().getAnomalyFilters();
-        if (anomalyFiltersConfig != null && StringUtils.isNoneEmpty(anomalyFiltersConfig.getFieldName(), anomalyFiltersConfig.getFieldValue())) {
-            String fieldName = anomalyFiltersConfig.getFieldName();
-            String fieldValue = anomalyFiltersConfig.getFieldValue();
-            Object featureValue = ConversionUtils.convertToObject(fieldValue, eventPersistencyService.findFeatureType(indicatorConfig.getSchema(), fieldName));
-            features.add(Pair.of(fieldName, featureValue));
-        }
+        List<Pair<String, Object>> features = supportingInfoUtils.buildAnomalyFeatures(indicatorConfig);
 
         EventMongoPageIterator eventMongoPageIterator = new EventMongoPageIterator(eventPersistencyService, eventsPageSize, indicatorConfig.getSchema(), userId, timeRange, features, eventsLimit);
         List<IndicatorEvent> events = new ArrayList<>();
