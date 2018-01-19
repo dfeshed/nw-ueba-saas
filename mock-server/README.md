@@ -31,6 +31,16 @@ var socketUrl = 'http://localhost:' + mockPort + '/socket/';
 ```
 3. Run `ember test` and `ember s` passing in the same `MOCK_PORT` environment variable: `MOCK_PORT=1234 ember s`.
 
+### Response Delay
+
+The mock-server is fast and the data is hard-coded in most cases. There is no processing to do when hitting a mock endpoint, usually it just returns data. This causes issues when trying to ascertain the impact of network latency and back-end processing on the UI.
+
+The mock-server allows for several different delaying options.
+
+* Individual endpoints can be [configured to delay their responses](#subscription-file-parameters) (see `delay`).
+* If the endpoint has no `delay` configured a default random delay between 0 - 2000ms is used for each response.
+* If you wish to alter the max from `2000ms`, you can provide a RESPONSE_DELAY command line parameter when you start the mock-server. `RESPONSE_DELAY=5000 node mockserver.js` will choose random delays between 0 and 5000ms.
+
 ## Functions
 
 The `mock-server` node package provides the following functions and utilities.

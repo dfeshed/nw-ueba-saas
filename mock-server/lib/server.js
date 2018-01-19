@@ -7,6 +7,7 @@ import bodyParser from 'body-parser';
 import WebSocket from 'ws';
 import eWs from 'express-ws';
 import chalk from 'chalk';
+import clone from 'clone';
 
 import {
   parseMessage,
@@ -14,7 +15,8 @@ import {
   createMessage,
   discoverSubscriptions,
   subscriptionList,
-  mockAuthResponse
+  mockAuthResponse,
+  determineDelay
 } from './util';
 
 const start = function({ subscriptionLocations, routes }, cb) {
@@ -129,14 +131,17 @@ const _handleMessage = function(ws, frame) {
         return;
       }
 
-      const outMsg = createMessage(ws.subscriptionHandler, frame, body, _subscriptionHelpers);
+      const _handler = clone(ws.subscriptionHandler);
+      const delay = determineDelay(ws.subscriptionHandler.delay);
       setTimeout(function() {
         if (_isClosed(ws)) {
           console.info('Client disconnected, not sending message');
         } else {
+          const outMsg = createMessage(_handler, frame, body, _subscriptionHelpers);
           ws.send(outMsg);
+          console.info(`Sent [[ ${_handler.requestDestination} ]] message after [[ ${delay} ms ]] delay`);
         }
-      }, ws.subscriptionHandler.delay || 1);
+      }, delay);
     };
 
     // single message back
