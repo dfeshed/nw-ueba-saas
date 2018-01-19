@@ -41,7 +41,7 @@
 
 
 {{#if showSaveFilterModal}}
-  {{#rsa-application-modal style=decorator.style eventId='save-search' label=(t decorator.label)}}
+  {{#rsa-application-modal eventId='save-search' label=(t decorator.label)}}
     <div class='modal-content rsa-save-search rsa-p-md'>
       <label class="rsa-form-label">
         {{t 'investigateHosts.hosts.customFilter.save.description'}}
@@ -51,6 +51,7 @@
           label=(t 'investigateHosts.hosts.customFilter.save.name')
           isError=decorator.isError
           maxLength=255
+          focusIn=(action "filterNameFocus")
           value=saveFilterName }}
       </div>
       {{#if isNameEmpty}}

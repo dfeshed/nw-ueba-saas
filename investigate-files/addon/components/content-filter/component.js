@@ -50,20 +50,12 @@ const ContentFilter = Component.extend({
     }
   },
 
-  @computed('saveFilterName')
-  isNameEmpty(saveFilterName) {
-    if (saveFilterName === '') {
-      return true;
-    }
-  },
-
   @computed('isNameInvalid', 'isNameEmpty')
   decorator(isNameInvalid, isNameEmpty) {
     const label = isNameInvalid || isNameEmpty ? 'investigateFiles.filter.customFilters.save.errorHeader' :
       'investigateFiles.filter.customFilters.save.header';
-    const style = isNameInvalid || isNameEmpty ? 'error' : 'standard';
     const isError = isNameInvalid || isNameEmpty;
-    return { label, style, isError };
+    return { label, isError };
   },
 
   /**
@@ -109,6 +101,7 @@ const ContentFilter = Component.extend({
     },
 
     closeSaveFilterModal() {
+      this.set('saveFilterName', '');
       this.get('eventBus').trigger('rsa-application-modal-close-save-search');
     },
 
@@ -124,10 +117,15 @@ const ContentFilter = Component.extend({
         description: filterSelected.description
       };
 
+      if (saveFilterName === '') {
+        this.set('isNameEmpty', true);
+      }
+
       if (!saveFilterName) {
         this.set('saveFilterName', '');
         return;
       }
+
       //  checking if any of the added filter fields are empty.
       if (!expressionList.length || expressionList.some((item) => !item.propertyValues)) {
         this.get('flashMessage').showErrorMessage(this.get('i18n').t('investigateFiles.filter.customFilters.save.filterFieldEmptyMessage'));
@@ -143,6 +141,11 @@ const ContentFilter = Component.extend({
         };
         this.send('createCustomSearch', filter, expressionList, 'FILE', callBackOptions);
       }
+      this.set('saveFilterName', '');
+    },
+
+    filterNameFocus() {
+      this.set('isNameEmpty', false);
     }
   }
 });

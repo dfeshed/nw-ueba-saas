@@ -27,7 +27,7 @@
   {{t 'investigateFiles.button.reset'}}
 {{/rsa-form-button}}
 
-{{#rsa-application-modal style=decorator.style eventId='save-search' label=(t decorator.label)}}
+{{#rsa-application-modal eventId='save-search' label=(t decorator.label)}}
   <div class='modal-content rsa-save-search rsa-p-md'>
     <label class="rsa-form-label">
       {{t 'investigateFiles.filter.customFilters.save.description'}}
@@ -37,6 +37,7 @@
         label=(t 'investigateFiles.filter.customFilters.save.name')
         isError=decorator.isError
         maxLength=255
+        focusIn=(action "filterNameFocus")
         value=saveFilterName }}
     </div>
     {{#if isNameEmpty}}

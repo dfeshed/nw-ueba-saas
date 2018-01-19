@@ -58,24 +58,15 @@ const ContentFilter = Component.extend({
     }
   },
 
-  @computed('saveFilterName')
-  isNameEmpty(saveFilterName) {
-    if (saveFilterName === '') {
-      return true;
-    }
-  },
-
   @computed('isNameInvalid', 'isNameEmpty')
   decorator(isNameInvalid, isNameEmpty) {
-    let style = 'standard';
     let label = 'investigateHosts.hosts.customFilter.save.header';
     let isError = false;
     if (isNameInvalid || isNameEmpty) {
-      style = 'error';
       label = 'investigateHosts.hosts.customFilter.save.errorHeader';
       isError = true;
     }
-    return { style, isError, label };
+    return { isError, label };
   },
 
 
@@ -128,6 +119,7 @@ const ContentFilter = Component.extend({
     },
 
     closeSaveFilterModal() {
+      this.set('saveFilterName', '');
       this.toggleProperty('showSaveFilterModal');
       run.next(() => {
         this.get('eventBus').trigger('rsa-application-modal-close-save-search');
@@ -150,6 +142,10 @@ const ContentFilter = Component.extend({
         description: ''
       };
 
+      if (saveFilterName === '') {
+        this.set('isNameEmpty', true);
+      }
+
       if (!saveFilterName) {
         this.set('saveFilterName', '');
         return;
@@ -169,6 +165,11 @@ const ContentFilter = Component.extend({
         };
         this.send('createCustomSearch', filter, expressionList, 'MACHINE', callBackOptions);
       }
+      this.set('saveFilterName', '');
+    },
+
+    filterNameFocus() {
+      this.set('isNameEmpty', false);
     }
   }
 });
