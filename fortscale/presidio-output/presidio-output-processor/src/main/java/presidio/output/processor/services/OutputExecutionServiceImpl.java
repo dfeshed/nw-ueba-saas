@@ -126,6 +126,8 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         storeUsers(users); //Get the generated users with the new elasticsearch ID
         storeAlerts(alerts);
 
+        outputMonitoringService.reportTotalAnomalyEvents(alerts, startDate);
+
         logger.info("output process application completed for start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
         outputMonitoringService.reportTotalUsersCount(users.size(), startDate);
 
