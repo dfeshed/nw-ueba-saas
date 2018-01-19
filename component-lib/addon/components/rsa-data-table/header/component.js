@@ -62,7 +62,7 @@ export default Component.extend(HasTableParent, {
   filterColumnChooser(allFilters, searchTerm) {
     const list = [ ...allFilters ];
     const { i18n, translateTitles } = this.getProperties('i18n', 'translateTitles');
-    if (searchTerm && searchTerm.length > 2) {
+    if (searchTerm) {
       return list.filter((item) => {
         let name = item.title;
         if (translateTitles) {

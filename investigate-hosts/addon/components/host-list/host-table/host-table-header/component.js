@@ -27,7 +27,7 @@ const tableHeader = RSADataTableHeader.extend({
   @computed('table.sortedColumns', 'searchTerm')
   filterList(allFilters, searchTerm) {
     const list = [ ...allFilters ];
-    if (searchTerm && searchTerm.length > 3) {
+    if (searchTerm) {
       return list.filter((item) => {
         const name = this.get('i18n').t(item.title) || '';
         return capitalize(name.toString()).includes(capitalize(searchTerm));

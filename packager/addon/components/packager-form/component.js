@@ -64,13 +64,13 @@ const formComponent = Component.extend({
   secondaryDestination: '',
 
   selectedFrequency: '1 Hour',
+
   invalidTableItem: '-999999',
+
   selectedProtocol: 'TCP',
 
   testLog: true,
 
-
-  @alias('configData.packageConfig.autoUninstall')
   autoUninstall: null,
 
   @alias('configData.packageConfig.forceOverwrite')
@@ -124,6 +124,10 @@ const formComponent = Component.extend({
     });
   },
 
+  _getTimezoneTime(selectedTime) {
+    return moment(selectedTime).parseZone(selectedTime).format('YYYY-MM-DDTHH:mm:ssZ'); // Removing browser timezone information
+  },
+
   _scrollTo(target) {
     $(target)[0].scrollIntoView();
   },
@@ -165,9 +169,10 @@ const formComponent = Component.extend({
 
     generateAgent() {
       this.resetProperties();
-      const { autoUninstall } = this.get('configData.packageConfig');
+      const autoUninstall = this.get('autoUninstall');
       if (autoUninstall && autoUninstall.length) {
-        this.set('configData.packageConfig.autoUninstall', moment(autoUninstall[0]).toISOString());
+        const date = this._getTimezoneTime(autoUninstall[0]);
+        this.set('configData.packageConfig.autoUninstall', date);
       } else {
         this.set('configData.packageConfig.autoUninstall', null);
       }
