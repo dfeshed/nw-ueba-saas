@@ -8,7 +8,7 @@ import presidio.output.domain.records.users.UserSeverity;
 
 import java.util.Map;
 
-@Mapping(mappingPath = "elasticsearch/mappings/presidio-output-severities-range.json")
+@Mapping(mappingPath = "elasticsearch/mappings/presidio-output-user-severities-range.json")
 @Document(indexName = AbstractElasticDocument.INDEX_NAME + "-" + UserSeveritiesRangeDocument.USER_SEVERITY_RANGE_DOC_TYPE, type = UserSeveritiesRangeDocument.USER_SEVERITY_RANGE_DOC_TYPE)
 public class UserSeveritiesRangeDocument extends AbstractElasticDocument {
 
