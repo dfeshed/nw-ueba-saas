@@ -175,7 +175,8 @@
                             </sources>
                         </mapping>
                         <mapping>
-                            <directoryIncluded>false</directoryIncluded>
+                            <directoryIncluded>true</directoryIncluded>
+                            <recurseDirectories>true</recurseDirectories>
                             <directory>${rpm-maven-plugin.deployment_target_directory}/configurations</directory>
                             <username>presidio</username>
                             <groupname>presidio</groupname>
@@ -272,6 +273,19 @@
                             chmod 777 /home/presidio/presidio-core/
                             chmod 777 /home/presidio/
                             chmod 777 /home/
+
+                            <!-- making sure configserver HEAD is valid -->
+                            echo "verifying configserver HEAD is valid"
+                            cd /home/presidio/presidio-core/configurations/
+                            if git status &amp;> /dev/null ; then
+                                echo "configserver HEAD is valid"
+                            else
+                                echo "configserver HEAD is invalid. Fixing..."
+                                rm -f .git/index HEAD .
+                                git reset
+                            fi
+                            cd -
+
                             <!--end of post installation -->
                         </script>
                     </postinstallScriptlet>

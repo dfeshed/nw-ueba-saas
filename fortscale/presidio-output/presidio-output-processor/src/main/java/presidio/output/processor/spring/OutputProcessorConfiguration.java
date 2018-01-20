@@ -9,23 +9,21 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.ade.sdk.common.AdeManagerSdkConfig;
-import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 import presidio.output.commons.services.user.UserSeverityService;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.domain.spring.EventPersistencyServiceConfig;
 import presidio.output.processor.services.OutputExecutionService;
 import presidio.output.processor.services.OutputExecutionServiceImpl;
+import presidio.output.processor.services.OutputMonitoringService;
 import presidio.output.processor.services.alert.AlertService;
-import presidio.output.processor.services.user.UserPropertiesUpdateService;
-import presidio.output.processor.services.user.UserPropertiesUpdateServiceImpl;
 import presidio.output.processor.services.user.UserService;
 
 /**
  * Created by shays on 17/05/2017.
  */
 @Configuration
-@Import({EventPersistencyServiceConfig.class, MongoConfig.class, AdeManagerSdkConfig.class, AlertServiceElasticConfig.class, PresidioMonitoringConfiguration.class, ElasticsearchConfig.class})
+@Import({EventPersistencyServiceConfig.class, MongoConfig.class, AdeManagerSdkConfig.class, AlertServiceElasticConfig.class, OutputMonitoringConfiguration.class, ElasticsearchConfig.class})
 public class OutputProcessorConfiguration {
 
     @Autowired
@@ -46,7 +44,6 @@ public class OutputProcessorConfiguration {
     @Autowired
     private EventPersistencyService eventPersistencyService;
 
-
     @Value("${smart.threshold.score}")
     private int smartThreshold;
 
@@ -56,19 +53,14 @@ public class OutputProcessorConfiguration {
     @Value("${output.enriched.events.retention.in.days}")
     private long retentionEnrichedEventsDays;
 
-    @Value("${output.result.events.retention.in.days}")
-    private long retentionResultEventsDays;
+    @Value("${output.data.retention.in.days}")
+    private long retentionOutputDataDays;
 
-    @Value("${user.batch.size}")
-    private int defaultUsersBatchSize;
-
-    @Bean
-    private UserPropertiesUpdateService userPropertiesUpdateService() {
-        return new UserPropertiesUpdateServiceImpl(eventPersistencyService, userPersistencyService, defaultUsersBatchSize);
-    }
+    @Autowired
+    private OutputMonitoringService outputMonitoringService;
 
     @Bean
     public OutputExecutionService outputProcessService() {
-        return new OutputExecutionServiceImpl(adeManagerSdk, alertService, userService, userSeverityService, eventPersistencyService, userPropertiesUpdateService(), smartThreshold, smartPageSize, retentionEnrichedEventsDays, retentionResultEventsDays);
+        return new OutputExecutionServiceImpl(adeManagerSdk, alertService, userService, userSeverityService, eventPersistencyService, outputMonitoringService, smartThreshold, smartPageSize, retentionEnrichedEventsDays, retentionOutputDataDays);
     }
 }

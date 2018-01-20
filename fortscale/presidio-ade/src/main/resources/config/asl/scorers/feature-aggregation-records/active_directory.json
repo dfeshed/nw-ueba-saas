@@ -22,7 +22,7 @@
               },
               "additional-models": [
                 {
-                  "name": "numberOfSensitiveGroupMembershipOperation.userId.prior.global.activeDirectory.hourly"
+                  "name": "numberOfSensitiveGroupMembershipOperation.userId.prior.activeDirectory.hourly"
                 }
               ],
               "global-influence": 15,
@@ -63,7 +63,7 @@
               },
               "additional-models": [
                 {
-                  "name": "numberOfGroupMembershipOperation.userId.prior.global.activeDirectory.hourly"
+                  "name": "numberOfGroupMembershipOperation.userId.prior.activeDirectory.hourly"
                 }
               ],
               "global-influence": 15,
@@ -83,14 +83,14 @@
       ]
     },
     {
-      "ade-event-type": "aggr_event.numberOfSuccessfulObjectChangeOperationUserIdActiveDirectoryHourly",
+      "ade-event-type": "aggr_event.numberOfSuccessfulObjectManagementOperationUserIdActiveDirectoryHourly",
       "scorers": [
         {
           "type": "low-values-score-reducer",
-          "name": "numberOfSuccessfulObjectChangeOperation.userId.activeDirectory.hourly.scorer",
+          "name": "numberOfSuccessfulObjectManagementOperation.userId.activeDirectory.hourly.scorer",
           "base-scorer": {
             "type": "score-exponential-mapper",
-            "name": "numberOfSuccessfulObjectChangeOperation.userId.activeDirectory.hourly.mapper",
+            "name": "numberOfSuccessfulObjectManagementOperation.userId.activeDirectory.hourly.mapper",
             "score-mapping-conf": {
               "minScoreToMap": 95,
               "maxScoreToMap": 100,
@@ -98,13 +98,13 @@
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
-              "name": "numberOfSuccessfulObjectChangeOperation.userId.activeDirectory.hourly.base_scorer",
+              "name": "numberOfSuccessfulObjectManagementOperation.userId.activeDirectory.hourly.base_scorer",
               "model": {
-                "name": "numberOfSuccessfulObjectChangeOperation.userId.activeDirectory.hourly"
+                "name": "numberOfSuccessfulObjectManagementOperation.userId.activeDirectory.hourly"
               },
               "additional-models": [
                 {
-                  "name": "numberOfSuccessfulObjectChangeOperation.userId.prior.global.activeDirectory.hourly"
+                  "name": "numberOfSuccessfulObjectManagementOperation.userId.prior.activeDirectory.hourly"
                 }
               ],
               "global-influence": 15,
@@ -142,7 +142,7 @@
             },
             "additional-models": [
               {
-                "name": "numberOfFailedOperationType.userId.prior.global.activeDirectory.hourly"
+                "name": "numberOfFailedOperationType.userId.prior.activeDirectory.hourly"
               }
             ],
             "global-influence": 15,
@@ -153,14 +153,14 @@
       ]
     },
     {
-      "ade-event-type": "aggr_event.numberOfSuccessfulUserChangeSecuritySensitiveOperationUserIdActiveDirectoryHourly",
+      "ade-event-type": "aggr_event.numberOfSuccessfulUserManagementSecuritySensitiveOperationUserIdActiveDirectoryHourly",
       "scorers": [
         {
           "type": "low-values-score-reducer",
-          "name": "numberOfSuccessfulUserChangeSecuritySensitiveOperation.userId.activeDirectory.hourly.scorer",
+          "name": "numberOfSuccessfulUserManagementSecuritySensitiveOperation.userId.activeDirectory.hourly.scorer",
           "base-scorer": {
             "type": "score-exponential-mapper",
-            "name": "numberOfSuccessfulUserChangeSecuritySensitiveOperation.userId.activeDirectory.hourly.mapper",
+            "name": "numberOfSuccessfulUserManagementSecuritySensitiveOperation.userId.activeDirectory.hourly.mapper",
             "score-mapping-conf": {
               "minScoreToMap": 95,
               "maxScoreToMap": 100,
@@ -168,13 +168,13 @@
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
-              "name": "numberOfSuccessfulUserChangeSecuritySensitiveOperation.userId.activeDirectory.hourly.base_scorer",
+              "name": "numberOfSuccessfulUserManagementSecuritySensitiveOperation.userId.activeDirectory.hourly.base_scorer",
               "model": {
-                "name": "numberOfSuccessfulUserChangeSecuritySensitiveOperation.userId.activeDirectory.hourly"
+                "name": "numberOfSuccessfulUserManagementSecuritySensitiveOperation.userId.activeDirectory.hourly"
               },
               "additional-models": [
                 {
-                  "name": "numberOfSuccessfulUserChangeSecuritySensitiveOperation.userId.prior.global.activeDirectory.hourly"
+                  "name": "numberOfSuccessfulUserManagementSecuritySensitiveOperation.userId.prior.activeDirectory.hourly"
                 }
               ],
               "global-influence": 15,

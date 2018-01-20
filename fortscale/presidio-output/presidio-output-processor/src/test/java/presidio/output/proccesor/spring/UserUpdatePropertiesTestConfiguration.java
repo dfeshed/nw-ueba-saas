@@ -23,8 +23,6 @@ import presidio.output.processor.services.user.UserPropertiesUpdateServiceImpl;
 @ContextConfiguration(classes = {PropertiesConfiguration.class, ElasticsearchTestConfig.class, MongodbTestConfig.class, EventPersistencyServiceConfig.class})
 public class UserUpdatePropertiesTestConfiguration {
 
-    //@Value("${batch.size}")
-    //private int batchSize;
 
     @Autowired
     private MongoTemplate mongoTemplate;

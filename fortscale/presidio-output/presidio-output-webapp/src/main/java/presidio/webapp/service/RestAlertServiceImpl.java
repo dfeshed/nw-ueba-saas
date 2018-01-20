@@ -323,8 +323,6 @@ public class RestAlertServiceImpl implements RestAlertService {
     @Override
     public EventsWrapper getIndicatorEventsByIndicatorId(String indicatorId, EventQuery eventQuery) {
         List<presidio.webapp.model.Event> restEvents = new ArrayList<presidio.webapp.model.Event>();
-        //TODO: fix sort
-        //Sort sort = RestUtils.parseSortField(eventQuery.getSort());
         int pageNumber = eventQuery.getPageNumber() != null ? eventQuery.getPageNumber() : 0;
         int pageSize = eventQuery.getPageSize() != null ? eventQuery.getPageSize() : 10;
         PageRequest pageRequest = new PageRequest(pageNumber, pageSize);

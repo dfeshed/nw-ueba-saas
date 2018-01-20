@@ -4,7 +4,7 @@
     "_type": "visualization",
     "_source": {
       "title": "Scoring: amount of score>0 per adeEventType",
-      "visState": "{\"title\":\"Scoring: amount of score>0 per adeEventType\",\"type\":\"pie\",\"params\":{\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"right\",\"isDonut\":false},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"value.AMOUNT_OF_NON_ZERO_SCORE\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"tags.ADE_EVENT_TYPE.keyword\",\"include\":\"\",\"size\":10000,\"order\":\"desc\",\"orderBy\":\"_term\"}}],\"listeners\":{}}",
+      "visState": "{\"title\":\"Scoring: amount of score>0 per adeEventType\",\"type\":\"pie\",\"params\":{\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"right\",\"isDonut\":false},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"value.AMOUNT_OF_NON_ZERO_SCORE\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"tags.ADE_EVENT_TYPE\",\"include\":\"\",\"size\":10000,\"order\":\"desc\",\"orderBy\":\"_term\"}}],\"listeners\":{}}",
       "uiStateJSON": "{}",
       "description": "",
       "version": 1,

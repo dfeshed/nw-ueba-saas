@@ -1061,8 +1061,12 @@ class REST_API(BaseView):
                 schedule_interval = dag.schedule_interval
 
                 execution_date = item.execution_date
-                execution_time_range = {'start': format_date(execution_date),
+                if schedule_interval:
+                    execution_time_range = {'start': format_date(execution_date),
                                         'end': format_date(execution_date + schedule_interval)}
+                else:
+                    execution_time_range = {'start': format_date(execution_date),
+                                            'end': format_date(execution_date)}
                 res.setdefault(item_dag_id, []).append(execution_time_range)
             # create a payload response containing the execution dates for each dag_id
             payload = []

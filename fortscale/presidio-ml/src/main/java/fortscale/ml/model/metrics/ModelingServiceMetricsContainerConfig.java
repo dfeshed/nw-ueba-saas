@@ -22,7 +22,8 @@ import static java.util.stream.Collectors.toList;
         CategoryRarityModelRetrieverMetricsContainerConfig.class,
         TimeModelRetrieverMetricsContainerConfig.class,
         MaxContinuousModelRetrieverMetricsContainerConfig.class,
-        GaussianPriorModelBuilderMetricsContainerConfig.class
+        GaussianPriorModelBuilderMetricsContainerConfig.class,
+        WeightModeBuilderMetricsContainerConfig.class,
 })
 public class ModelingServiceMetricsContainerConfig {
     @Autowired

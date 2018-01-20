@@ -4,8 +4,6 @@ import fortscale.domain.core.EventResult;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.powermock.reflect.Whitebox;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -13,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import presidio.output.commons.services.user.UserSeverityService;
 import presidio.output.commons.services.user.UserSeverityServiceImpl;
+import presidio.output.domain.records.PresidioRange;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.users.User;
@@ -32,6 +31,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -67,7 +67,12 @@ public class UserServiceImplTest {
         mockUserScoreService = Mockito.mock(UserScoreService.class);
         mockAlertPersistency = Mockito.mock(AlertPersistencyServiceImpl.class);
         mockUserSeverityService = Mockito.mock(UserSeverityService.class);
-        Mockito.when(mockUserSeverityService.getSeveritiesMap(false)).thenReturn(new UserSeverityServiceImpl.UserScoreToSeverity(30, 60, 90));
+        Map<UserSeverity, PresidioRange<Double>> severityRangeMap = new LinkedHashMap<>();
+        severityRangeMap.put(UserSeverity.LOW, new PresidioRange<>(0d, 30d));
+        severityRangeMap.put(UserSeverity.MEDIUM, new PresidioRange<>(30d, 60d));
+        severityRangeMap.put(UserSeverity.HIGH, new PresidioRange<>(60d, 90d));
+        severityRangeMap.put(UserSeverity.CRITICAL, new PresidioRange<>(90d, 100d));
+        Mockito.when(mockUserSeverityService.getSeveritiesMap(false)).thenReturn(new UserSeverityServiceImpl.UserScoreToSeverity(severityRangeMap));
 
         userService = new UserServiceImpl(mockEventPersistency,
                 mockUserPresistency,
@@ -76,7 +81,7 @@ public class UserServiceImplTest {
                 mockUserSeverityService,
                 ALERT_EFFECTIVE_DURATION_IN_DAYS,
                 1000);
-        emptyAlertPage = new PageImpl<Alert>(Collections.emptyList());
+        emptyAlertPage = new PageImpl<>(Collections.emptyList());
     }
 
 
@@ -101,17 +106,14 @@ public class UserServiceImplTest {
         newUsersScore.put(usersWithOldScore.get(1).getId(), new UsersAlertData(50D, 1, null, new ArrayList<String>()));
         newUsersScore.put(usersWithOldScore.get(2).getId(), new UsersAlertData(30D, 1, null, new ArrayList<String>()));
 
-        Mockito.when(this.mockUserPresistency.findByIds(Mockito.any(Set.class), Mockito.any(PageRequest.class))).thenAnswer(new Answer<Page>() {
-            @Override
-            public Page answer(InvocationOnMock invocation) throws Throwable {
-                Set<String> userIds = (Set<String>) invocation.getArguments()[0];
-                PageRequest pageContext = (PageRequest) invocation.getArguments()[1];
+        Mockito.when(this.mockUserPresistency.findByIds(Mockito.any(Set.class), Mockito.any(PageRequest.class))).thenAnswer(invocation -> {
+            Set<String> userIds = (Set<String>) invocation.getArguments()[0];
+            PageRequest pageContext = (PageRequest) invocation.getArguments()[1];
 
-                if (pageContext.getPageNumber() == 0) {
-                    return usersPage;
-                } else {
-                    return null;
-                }
+            if (pageContext.getPageNumber() == 0) {
+                return usersPage;
+            } else {
+                return null;
             }
         });
 

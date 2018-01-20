@@ -52,7 +52,7 @@
       ]
     },
     {
-      "name": "operationTypeHistogramUserIdObjectChangeActiveDirectoryDaily",
+      "name": "operationTypeHistogramUserIdObjectManagementActiveDirectoryDaily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
@@ -73,7 +73,7 @@
             "type": "aggr_feature_histogram_func"
           },
           "filter": {
-            "jsonPath": "[?('OBJECT_CHANGE_OPERATION' in @['operationTypeCategories'])]"
+            "jsonPath": "[?('OBJECT_MANAGEMENT' in @['operationTypeCategories'])]"
           }
         }
       ]
