@@ -18,7 +18,6 @@
         "type": "string"
       },
       "severityToScoreRangeMap": {
-        "store": true,
         "type": "object"
       }
     }
