@@ -10,7 +10,7 @@
       click=(action 'sort' column)
       name=(if column.isDescending "arrow-down-12" "arrow-up-12")}}
   {{/rsa-data-table/header}}
-  {{#if processTreeLoading}}
+  {{#if isProcessTreeLoading}}
     <centered>
       {{rsa-loader size='medium'}}
     </centered>

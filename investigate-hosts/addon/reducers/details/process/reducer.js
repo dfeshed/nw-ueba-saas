@@ -13,7 +13,7 @@ const initialState = Immutable.from({
   processDetails: null,
 
   processDetailsLoading: false,
-  processTreeLoading: false
+  isProcessTreeLoading: false
 });
 
 const processReducer = handleActions({
@@ -28,15 +28,15 @@ const processReducer = handleActions({
 
   [ACTION_TYPES.GET_PROCESS_LIST]: (state, action) => {
     return handle(state, action, {
-      start: (s) => s.merge({ processDetails: null, processTreeLoading: true }),
-      success: (s) => s.merge({ processList: action.payload.data, processTreeLoading: false })
+      start: (s) => s.merge({ processDetails: null, isProcessTreeLoading: true }),
+      success: (s) => s.merge({ processList: action.payload.data, isProcessTreeLoading: false })
     });
   },
 
   [ACTION_TYPES.GET_PROCESS_TREE]: (state, action) => {
     return handle(state, action, {
-      start: (s) => s.merge({ processDetails: null, processTreeLoading: true }),
-      success: (s) => s.merge({ processTree: action.payload.data, processTreeLoading: false })
+      start: (s) => s.merge({ processDetails: null, isProcessTreeLoading: true }),
+      success: (s) => s.merge({ processTree: action.payload.data, isProcessTreeLoading: false })
     });
   },
 

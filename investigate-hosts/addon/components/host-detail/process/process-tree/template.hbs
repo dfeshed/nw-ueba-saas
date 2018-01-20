@@ -8,7 +8,7 @@
   {{#rsa-data-table/header as |column|}}
     {{t column.title}}
   {{/rsa-data-table/header}}
-  {{#if processTreeLoading}}
+  {{#if isProcessTreeLoading}}
     <centered>
       {{rsa-loader size='medium'}}
     </centered>

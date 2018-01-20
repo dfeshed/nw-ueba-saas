@@ -130,7 +130,7 @@ export default class DataHelper {
     return this;
   }
   isProcessTreeLoading(value) {
-    _set(this.state, 'process.processTreeLoading', value);
+    _set(this.state, 'process.isProcessTreeLoading', value);
     return this;
   }
   processList(value) {

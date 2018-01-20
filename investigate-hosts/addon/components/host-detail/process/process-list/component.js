@@ -12,7 +12,7 @@ const stateToComputed = (state) => ({
   processList: processList(state),
   sortField: state.endpoint.process.sortField,
   isDescOrder: state.endpoint.process.isDescOrder,
-  processTreeLoading: state.endpoint.process.processTreeLoading
+  isProcessTreeLoading: state.endpoint.process.isProcessTreeLoading
 });
 
 const ListComponent = Component.extend({
