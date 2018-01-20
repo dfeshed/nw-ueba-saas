@@ -1,9 +1,10 @@
 import Component from 'ember-component';
 import { connect } from 'ember-redux';
-import { getLoggedInUsers } from 'investigate-hosts/reducers/details/overview/selectors';
+import { getLoggedInUsers, isMachineLinux } from 'investigate-hosts/reducers/details/overview/selectors';
 
 const stateToComputed = (state) => ({
-  loggedInUsers: getLoggedInUsers(state)
+  loggedInUsers: getLoggedInUsers(state),
+  isMachineLinux: isMachineLinux(state)
 });
 
 const LoggedInUsers = Component.extend({

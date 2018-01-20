@@ -169,3 +169,8 @@ export const isEcatAgent = createSelector(
     return false;
   }
 );
+
+export const isMachineLinux = createSelector(
+  machineOsType,
+  (machineOsType) => machineOsType && (machineOsType.toLowerCase() === 'linux')
+);

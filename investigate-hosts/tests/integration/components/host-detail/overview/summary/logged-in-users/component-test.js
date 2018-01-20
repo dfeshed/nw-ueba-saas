@@ -133,7 +133,7 @@ test('it renders logged-in users labels count', function(assert) {
 
   return wait().then(() => {
     const labelCounts = this.$('.host-content__user-details > .user-details vbox h4.label').length;
-    assert.deepEqual(labelCounts, 6, 'total number of labels');
+    assert.deepEqual(labelCounts, 10, 'total number of labels');
   });
 });
 

@@ -12,7 +12,8 @@ import {
   getSecurityConfigurations,
   sameConfigStatus,
   arrangedSecurityConfigs,
-  isEcatAgent } from 'investigate-hosts/reducers/details/overview/selectors';
+  isEcatAgent,
+  isMachineLinux } from 'investigate-hosts/reducers/details/overview/selectors';
 
 test('machineOsType', function(assert) {
   const result = machineOsType(Immutable.from({ endpoint: { overview: { hostDetails } } }));
@@ -166,4 +167,19 @@ test('isEcatAgent, when hostDetails.machine is null', function(assert) {
   }));
 
   assert.deepEqual(result, false);
+});
+
+test('isMachineLinux, if the OS of the selected agent is undefined', function(assert) {
+  const result = isMachineLinux(Immutable.from({ endpoint: { overview: { hostDetails: {} } } }));
+  assert.equal(result, false, 'machineOsType of the Selected agent is undefined, vlaue is false');
+});
+
+test('isMachineLinux, if the OS of the selected agent is not Linux', function(assert) {
+  const result = isMachineLinux(Immutable.from({ endpoint: { overview: { hostDetails: { machine: { machineOsType: 'windows' } } } } }));
+  assert.equal(result, false, 'OS of the Selected agent is not Linux, value is false');
+});
+
+test('isMachineLinux, if the OS of the selected agent Linux', function(assert) {
+  const result = isMachineLinux(Immutable.from({ endpoint: { overview: { hostDetails } } }));
+  assert.equal(result, true, 'OS of the Selected agent is Linux, value is true');
 });

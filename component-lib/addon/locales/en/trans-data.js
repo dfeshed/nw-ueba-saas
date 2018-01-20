@@ -2108,7 +2108,9 @@ export default {
             administrator: 'Administrator',
             sessionId: 'Session ID',
             sessionType: 'Session Type',
-            groups: 'Groups'
+            groups: 'Groups',
+            host: 'Host',
+            deviceName: 'Device Name'
           }
         },
         securityConfig: {

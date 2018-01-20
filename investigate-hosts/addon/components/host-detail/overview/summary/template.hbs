@@ -13,7 +13,7 @@
   count=loggedInUsersCount)}}
   {{host-detail/overview/summary/logged-in-users}}
 {{/rsa-content-accordion}}
-{{#if (not-eq machineOsType 'linux')}}
+{{#unless isMachineLinux}}
   {{#rsa-content-accordion
     animate=true
     class='host-content__title'
@@ -22,4 +22,4 @@
       {{host-detail/overview/summary/security-configuration}}
     </box>
   {{/rsa-content-accordion}}
-{{/if}}
+{{/unless}}

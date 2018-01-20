@@ -2109,7 +2109,9 @@ export default {
             administrator: 'ja_Administrator',
             sessionId: 'ja_Session ID',
             sessionType: 'ja_Session Type',
-            groups: 'ja_Groups'
+            groups: 'ja_Groups',
+            host: 'ja_Host',
+            deviceName: 'ja_Device Name'
           }
         },
         securityConfig: {
