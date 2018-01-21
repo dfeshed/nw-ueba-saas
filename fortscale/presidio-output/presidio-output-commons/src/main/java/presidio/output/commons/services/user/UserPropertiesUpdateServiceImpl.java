@@ -1,6 +1,7 @@
 package presidio.output.commons.services.user;
 
 import fortscale.utils.logging.Logger;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.users.User;
@@ -34,7 +35,7 @@ public class UserPropertiesUpdateServiceImpl implements UserPropertiesUpdateServ
     public User userPropertiesUpdate(User user) {
         boolean isUpdated = false;
         List<String> collectionNames = new ArrayList<>(Arrays.asList("output_authentication_enriched_events",
-                "output_active_directory_enriched_events", "output_file_enriched_events"));
+                "output_file_enriched_events", "output_active_directory_enriched_events"));
         EnrichedEvent enrichedEvent = eventPersistencyService.findLatestEventForUser(user.getUserId(), collectionNames);
         if (!ObjectUtils.isEmpty(enrichedEvent)) {
             if (!user.getUserDisplayName().equals(enrichedEvent.getUserDisplayName())) {
@@ -50,13 +51,20 @@ public class UserPropertiesUpdateServiceImpl implements UserPropertiesUpdateServ
                 user.setIndexedUserName(enrichedEvent.getUserName());
                 isUpdated = true;
             }
-            List<String> tags;
-            if (enrichedEvent.getAdditionalInfo().get(EnrichedEvent.IS_USER_ADMIN) != null
-                    && Boolean.parseBoolean(enrichedEvent.getAdditionalInfo().get(EnrichedEvent.IS_USER_ADMIN))
-                    && !user.getTags().isEmpty() && !user.getTags().contains(TAG_ADMIN)) {
-                tags = user.getTags();
-                tags.add(TAG_ADMIN);
-                user.setTags(tags);
+            List<String> enrichedEventTags = null;
+            List<String> userTags = user.getTags();
+            if (!CollectionUtils.isEmpty(enrichedEvent.getAdditionalInfo()) && enrichedEvent.getAdditionalInfo().get(EnrichedEvent.IS_USER_ADMIN) != null
+                    && Boolean.parseBoolean(enrichedEvent.getAdditionalInfo().get(EnrichedEvent.IS_USER_ADMIN))) {
+                enrichedEventTags = new ArrayList<>();
+                enrichedEventTags.add(TAG_ADMIN);
+            }
+            if ((CollectionUtils.isEmpty(enrichedEventTags) && !CollectionUtils.isEmpty(userTags))
+                    || (!CollectionUtils.isEmpty(enrichedEventTags) && CollectionUtils.isEmpty(userTags))) {
+                if (!CollectionUtils.isEmpty(enrichedEventTags)) {
+                    user.setTags(enrichedEventTags);
+                } else {
+                    user.setTags(null);
+                }
                 isUpdated = true;
             }
         } else {

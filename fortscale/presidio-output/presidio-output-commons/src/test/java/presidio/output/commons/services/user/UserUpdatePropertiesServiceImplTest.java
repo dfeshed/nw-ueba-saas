@@ -8,8 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.output.commons.services.spring.UserUpdatePropertiesTestConfiguration;
@@ -52,16 +50,70 @@ public class UserUpdatePropertiesServiceImplTest {
 
 
     @Test
+    public void updateUserPropertiesWithAuthenticationEvent() {
+        Instant eventDate = Instant.now();
+        Map<String, String> additionalInfo = new HashMap<>();
+        additionalInfo.put("isUserAdmin", "true");
+        generateAuthenticationEnrichedEvent(eventDate, "userName1", "userId", "userDisplayName1", additionalInfo);
+        User user = generateUserAndSave("userId", "userName", "userDisplayName", false);
+        User userUpdated = userPropertiesUpdateService.userPropertiesUpdate(user);
+        Assert.assertEquals(user.getUserName(), userUpdated.getUserName());
+        Assert.assertEquals(user.getTags().get(0), userUpdated.getTags().get(0));
+
+    }
+
+    @Test
     public void updateUserPropertiesWithFileEvent() {
         Instant eventDate = Instant.now();
         Map<String, String> additionalInfo = new HashMap<>();
         additionalInfo.put("isUserAdmin", "true");
-        generateFileEnrichedEvent(eventDate, "userName1", "userId1", "userDisplayName1", additionalInfo);
+        generateFileEnrichedEvent(eventDate, "userName1", "userId", "userDisplayName1", additionalInfo);
+        User user = generateUserAndSave("userId", "userName", "userDisplayName", true);
+        User userUpdated = userPropertiesUpdateService.userPropertiesUpdate(user);
+        Assert.assertEquals(user.getUserName(), userUpdated.getUserName());
+        Assert.assertEquals(user.getTags().get(0), userUpdated.getTags().get(0));
+    }
+
+    @Test
+    public void updateUserPropertiesWithActiveDirectoryEvent() {
+        Instant eventDate = Instant.now();
+        Map<String, String> additionalInfo = new HashMap<>();
+        additionalInfo.put("isUserAdmin", "true");
+        generateActiveDirectoryEnrichedEvent(eventDate, "userName1", "userId", "userDisplayName1", null);
         User user = generateUserAndSave("userId", "userName", "userDisplayName", false);
-        userPropertiesUpdateService.userPropertiesUpdate(user);
-        PageRequest pageRequest = new PageRequest(0, 10);
-        Page<User> page = userPersistencyService.findByUserId("userId1", pageRequest);
-        Assert.assertNotNull(page.getContent());
+        User userUpdated = userPropertiesUpdateService.userPropertiesUpdate(user);
+        Assert.assertEquals(user.getUserName(), userUpdated.getUserName());
+        Assert.assertEquals(null, userUpdated.getTags());
+    }
+
+    @Test
+    public void updateUserPropertiesWithAuthenticationAndActiveDirectoryEvent() {
+        Instant eventDate = Instant.now();
+        Map<String, String> additionalInfo = new HashMap<>();
+        additionalInfo.put("isUserAdmin", "true");
+        generateActiveDirectoryEnrichedEvent(eventDate, "userName1", "userId", "userDisplayName1", additionalInfo);
+        generateAuthenticationEnrichedEvent(eventDate, "userName2", "userId", "userDisplayName2", additionalInfo);
+        User user = generateUserAndSave("userId", "userName", "userDisplayName", false);
+        User userUpdated = userPropertiesUpdateService.userPropertiesUpdate(user);
+        Assert.assertEquals("userName2", userUpdated.getUserName());
+    }
+
+    @Test
+    public void updateUserPropertiesNoEvents() {
+        User user = generateUserAndSave("userId", "userName", "userDisplayName", false);
+        User userUpdated = userPropertiesUpdateService.userPropertiesUpdate(user);
+        Assert.assertNull(userUpdated);
+    }
+
+    @Test
+    public void updateUserPropertiesNoChanges() {
+        Instant eventDate = Instant.now();
+        Map<String, String> additionalInfo = new HashMap<>();
+        additionalInfo.put("isUserAdmin", "true");
+        generateAuthenticationEnrichedEvent(eventDate, "userName", "userId", "userDisplayName", additionalInfo);
+        User user = generateUserAndSave("userId", "userName", "userDisplayName", true);
+        User userUpdated = userPropertiesUpdateService.userPropertiesUpdate(user);
+        Assert.assertNull(userUpdated);
     }
 
     private User generateUserAndSave(String userId, String userName, String displayName, boolean tagAdmin) {
