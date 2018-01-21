@@ -924,4 +924,40 @@ public class AlertPersistencyServiceTest {
         Page<Alert> alertsResult = alertPersistencyService.find(alertQuery);
         Assert.assertEquals(1, alertsResult.getTotalElements());
     }
+
+    @Test
+    public void findIndicatorEventsByIndicatorIdPaged_shouldGetSortedEvents() {
+        Date startDate = new Date();
+        Date endDate = new Date();
+        Alert alert =
+                new Alert("userId", "smartId", classifications1, "user1", startDate, endDate, 95.0d, 3, AlertTimeframe.HOURLY, AlertSeverity.HIGH, null, 5D);
+        Indicator indicator = new Indicator();
+        indicator.setAlertId(alert.getId());
+
+        IndicatorEvent event1 = new IndicatorEvent();
+        Instant instant1 = LocalDate.parse("2018-04-17").atTime(LocalTime.parse("03:00:10")).toInstant(ZoneOffset.UTC);
+        event1.setEventTime(new Date(instant1.toEpochMilli()));
+        event1.setIndicatorId(indicator.getId());
+
+        IndicatorEvent event2 = new IndicatorEvent();
+        Instant instant2 = LocalDate.parse("2018-04-11").atTime(LocalTime.parse("01:00:10")).toInstant(ZoneOffset.UTC);
+        event2.setEventTime(new Date(instant2.toEpochMilli()));
+        event2.setIndicatorId(indicator.getId());
+
+        IndicatorEvent event3 = new IndicatorEvent();
+        Instant instant3 = LocalDate.parse("2018-04-17").atTime(LocalTime.parse("01:00:10")).toInstant(ZoneOffset.UTC);
+        event3.setEventTime(new Date(instant3.toEpochMilli()));
+        event3.setIndicatorId(indicator.getId());
+
+        List<IndicatorEvent> eventsList = Arrays.asList(event1, event2, event3);
+        alert.setIndicators(Collections.singletonList(indicator));
+        indicator.setEvents(eventsList);
+        alertPersistencyService.save(alert);
+
+        Page<IndicatorEvent> eventsResult = alertPersistencyService.findIndicatorEventsByIndicatorId(indicator.getId(), new PageRequest(0, 10));
+        Assert.assertEquals(3, eventsResult.getTotalElements());
+        Assert.assertEquals(event1, eventsResult.getContent().get(0));
+        Assert.assertEquals(event3, eventsResult.getContent().get(1));
+        Assert.assertEquals(event2, eventsResult.getContent().get(2));
+    }
 }

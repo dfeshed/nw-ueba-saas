@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.general.Schema;
 import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.test.category.ModuleTestCategory;
+import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -163,6 +164,7 @@ public class AlertApiControllerModuleTest {
         Collections.sort(actualResponse.getAlerts(), defaultAlertComparator);
         Assert.assertEquals(expectedResponse, actualResponse);
     }
+
 
     @Test
     public void getIndicatorsSortedWithCorrectPage() throws Exception {
@@ -459,16 +461,18 @@ public class AlertApiControllerModuleTest {
         EventsWrapper actualResponse = objectMapper.readValue(actualResponseStr, EventsWrapper.class);
 
         Assert.assertEquals(102, actualResponse.getTotal().intValue());
-        Assert.assertEquals(10, actualResponse.getEvents().size()); //default result size is 10
+        List<Event> events = actualResponse.getEvents();
+        Assert.assertEquals(10, events.size()); //default result size is 10
     }
 
 
     private List<IndicatorEvent> generateEvents(int eventsNum, String indicatorId) {
+        Date baseDate = new Date();
         List<IndicatorEvent> events = new ArrayList<>();
         for (int i = 1; i <= eventsNum; i++) {
             IndicatorEvent event = new IndicatorEvent();
             event.setSchema(Schema.ACTIVE_DIRECTORY);
-            event.setEventTime(new Date());
+            event.setEventTime(DateUtils.addDays(baseDate, i));
             event.setIndicatorId(indicatorId);
             event.setFeatures(new HashMap<>());
             events.add(event);

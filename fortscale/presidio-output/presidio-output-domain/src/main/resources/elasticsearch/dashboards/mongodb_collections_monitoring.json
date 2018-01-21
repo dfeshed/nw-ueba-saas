@@ -1,0 +1,19 @@
+[
+  {
+    "_id": "de786fe0-fe16-11e7-98dd-5bdc838a94a4",
+    "_type": "dashboard",
+    "_source": {
+      "title": "Presidio MongoDB Collections Monitoring",
+      "hits": 0,
+      "description": "",
+      "panelsJSON": "[{\"col\":1,\"id\":\"bde6fe50-fe15-11e7-98dd-5bdc838a94a4\",\"panelIndex\":1,\"row\":10,\"size_x\":6,\"size_y\":3,\"type\":\"visualization\"},{\"col\":1,\"id\":\"c75404b0-fe15-11e7-98dd-5bdc838a94a4\",\"panelIndex\":2,\"row\":7,\"size_x\":6,\"size_y\":3,\"type\":\"visualization\"},{\"col\":1,\"id\":\"fd603b00-fe15-11e7-98dd-5bdc838a94a4\",\"panelIndex\":3,\"row\":4,\"size_x\":6,\"size_y\":3,\"type\":\"visualization\"},{\"col\":1,\"id\":\"e42185e0-fe15-11e7-98dd-5bdc838a94a4\",\"panelIndex\":4,\"row\":1,\"size_x\":6,\"size_y\":3,\"type\":\"visualization\"},{\"col\":1,\"id\":\"9f2afaf0-fe12-11e7-98dd-5bdc838a94a4\",\"panelIndex\":5,\"row\":16,\"size_x\":6,\"size_y\":3,\"type\":\"visualization\"},{\"col\":1,\"id\":\"d50e9340-fe15-11e7-98dd-5bdc838a94a4\",\"panelIndex\":7,\"row\":19,\"size_x\":6,\"size_y\":3,\"type\":\"visualization\"},{\"col\":1,\"id\":\"f018e0a0-fe15-11e7-98dd-5bdc838a94a4\",\"panelIndex\":8,\"row\":13,\"size_x\":6,\"size_y\":3,\"type\":\"visualization\"},{\"col\":1,\"id\":\"b3d0bfa0-fe15-11e7-98dd-5bdc838a94a4\",\"panelIndex\":9,\"row\":22,\"size_x\":6,\"size_y\":3,\"type\":\"visualization\"},{\"col\":7,\"id\":\"953c8830-fe15-11e7-98dd-5bdc838a94a4\",\"panelIndex\":11,\"row\":10,\"size_x\":6,\"size_y\":3,\"type\":\"visualization\"},{\"col\":7,\"id\":\"e64e1f50-fe14-11e7-98dd-5bdc838a94a4\",\"panelIndex\":12,\"row\":7,\"size_x\":6,\"size_y\":3,\"type\":\"visualization\"},{\"col\":7,\"id\":\"40a457d0-fe15-11e7-98dd-5bdc838a94a4\",\"panelIndex\":13,\"row\":4,\"size_x\":6,\"size_y\":3,\"type\":\"visualization\"},{\"col\":7,\"id\":\"a9320c80-fe14-11e7-98dd-5bdc838a94a4\",\"panelIndex\":15,\"row\":16,\"size_x\":6,\"size_y\":3,\"type\":\"visualization\"},{\"col\":7,\"id\":\"493fb650-fe15-11e7-98dd-5bdc838a94a4\",\"panelIndex\":16,\"row\":19,\"size_x\":6,\"size_y\":3,\"type\":\"visualization\"},{\"col\":7,\"id\":\"fc75a960-fe14-11e7-98dd-5bdc838a94a4\",\"panelIndex\":18,\"row\":13,\"size_x\":6,\"size_y\":3,\"type\":\"visualization\"},{\"col\":7,\"id\":\"aa0bae30-fe15-11e7-98dd-5bdc838a94a4\",\"panelIndex\":19,\"row\":22,\"size_x\":6,\"size_y\":3,\"type\":\"visualization\"},{\"col\":7,\"id\":\"c61119e0-fe14-11e7-98dd-5bdc838a94a4\",\"panelIndex\":20,\"row\":1,\"size_x\":6,\"size_y\":3,\"type\":\"visualization\"}]",
+      "optionsJSON": "{\"darkTheme\":false}",
+      "uiStateJSON": "{}",
+      "version": 1,
+      "timeRestore": false,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}}}],\"highlightAll\":true,\"version\":true}"
+      }
+    }
+  }
+]
