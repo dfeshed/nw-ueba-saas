@@ -3,7 +3,7 @@
     "_id": "7f42d9b0-fa98-11e7-aa6a-6f9e542b2e29",
     "_type": "dashboard",
     "_source": {
-      "title": "Table of content",
+      "title": "Table of contents",
       "hits": 0,
       "description": "",
       "panelsJSON": "[{\"col\":1,\"id\":\"8e568940-fa90-11e7-aa6a-6f9e542b2e29\",\"panelIndex\":1,\"row\":1,\"size_x\":12,\"size_y\":6,\"type\":\"visualization\"}]",

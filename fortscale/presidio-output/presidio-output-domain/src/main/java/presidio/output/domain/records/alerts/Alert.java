@@ -10,6 +10,7 @@ import presidio.output.domain.records.AbstractElasticDocument;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -238,5 +239,18 @@ public class Alert extends AbstractElasticDocument {
 
     public void setFeedback(AlertEnums.AlertFeedback feedback) {
         this.feedback = feedback;
+    }
+
+    public int countRelatedEvents() {
+        if(indicators == null || indicators.size() == 0) {
+            return 0;
+        }
+
+        // save events
+        List<IndicatorEvent> events = new ArrayList<IndicatorEvent>();
+        indicators.stream()
+                .filter(indicator -> indicator.getEvents() != null)
+                .forEach(indicator -> events.addAll(indicator.getEvents()));
+        return events.size();
     }
 }

@@ -1,0 +1,16 @@
+[
+  {
+    "_id": "c1bd94e0-fbbc-11e7-8b28-59081595c5f5",
+    "_type": "visualization",
+    "_source": {
+      "title": "alerts count",
+      "visState": "{\"title\":\"alerts count\",\"type\":\"metric\",\"params\":{\"handleNoResults\":true,\"fontSize\":60},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"value.DEFAULT_METRIC_VALUE\",\"customLabel\":\"alerts count (smarts crossed threshold)\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"presidio-monitoring-logical\",\"query\":{\"query_string\":{\"query\":\"name=\\\"output-processor.number_of_alerts_created\\\"\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  }
+]

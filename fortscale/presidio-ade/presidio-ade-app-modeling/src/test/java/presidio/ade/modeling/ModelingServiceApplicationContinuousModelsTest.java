@@ -110,7 +110,7 @@ public class ModelingServiceApplicationContinuousModelsTest {
         Assert.assertTrue(commandResult.isSuccess());
 
         List<ModelConf> modelConfs = DynamicModelConfServiceContainer.getModelConfService().getModelConfs();
-        List<ModelConf> priorModelConfs = modelConfs.stream().filter(x -> x.getName().contains("prior.global")).collect(Collectors.toList());
+        List<ModelConf> priorModelConfs = modelConfs.stream().filter(x -> x.getName().contains("prior")).collect(Collectors.toList());
         Assert.assertTrue("conf must have at least 1 prior model", priorModelConfs.size() > 0);
         priorModelConfs.forEach(modelConf -> {
             Collection<ModelDAO> modelDaos = modelStore.getAllContextsModelDaosWithLatestEndTimeLte(modelConf, Instant.now());

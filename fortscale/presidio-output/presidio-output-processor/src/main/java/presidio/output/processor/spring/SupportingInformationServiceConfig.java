@@ -15,6 +15,7 @@ import presidio.output.processor.config.SupportingInformationConfig;
 import presidio.output.processor.services.alert.supportinginformation.SupportingInformationForFeatureAggr;
 import presidio.output.processor.services.alert.supportinginformation.SupportingInformationForScoreAggr;
 import presidio.output.processor.services.alert.supportinginformation.SupportingInformationGeneratorFactory;
+import presidio.output.processor.services.alert.supportinginformation.SupportingInformationUtils;
 import presidio.output.processor.services.alert.supportinginformation.historicaldata.HistoricalDataCountByTimePopulator;
 import presidio.output.processor.services.alert.supportinginformation.historicaldata.HistoricalDataCountByValuePopulator;
 import presidio.output.processor.services.alert.supportinginformation.historicaldata.HistoricalDataCountByWeekdayPopulator;
@@ -78,13 +79,19 @@ public class SupportingInformationServiceConfig extends ApplicationConfiguration
     }
 
     @Bean
+    public SupportingInformationUtils supportingInformationUtils() {
+        return new SupportingInformationUtils(eventPersistencyService);
+    }
+
+    @Bean
     public SupportingInformationForScoreAggr supportingInformationForScoreAggr() {
         return new SupportingInformationForScoreAggr(
                 supportingInformationConfig,
                 adeManagerSdk,
                 eventPersistencyService,
                 historicalDataPopulatorFactory(),
-                scoredEventService);
+                scoredEventService,
+                supportingInformationUtils());
     }
 
     @Bean
@@ -92,7 +99,8 @@ public class SupportingInformationServiceConfig extends ApplicationConfiguration
         return new SupportingInformationForFeatureAggr(
                 supportingInformationConfig,
                 eventPersistencyService,
-                historicalDataPopulatorFactory());
+                historicalDataPopulatorFactory(),
+                supportingInformationUtils());
     }
 
 
