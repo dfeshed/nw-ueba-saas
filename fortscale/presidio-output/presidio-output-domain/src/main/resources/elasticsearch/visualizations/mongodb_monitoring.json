@@ -1,0 +1,175 @@
+[
+  {
+    "_id": "Top-slowest-MongoDB-queries",
+    "_type": "visualization",
+    "_source": {
+      "visState": "{\"type\":\"table\",\"params\":{\"perPage\":10,\"showPartialRows\":false,\"showMeticsAtAllLevels\":false},\"aggs\":[{\"id\":\"1\",\"type\":\"percentiles\",\"schema\":\"metric\",\"params\":{\"field\":\"responsetime\",\"percents\":[99]}},{\"id\":\"2\",\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"query\",\"size\":10,\"order\":\"desc\",\"orderBy\":\"1.99\"}}],\"listeners\":{}}",
+      "description": "",
+      "title": "Top slowest MongoDB queries",
+      "version": 1,
+      "savedSearchId": "MongoDB-transactions",
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "MongoDB-WiredTiger-Cache",
+    "_type": "visualization",
+    "_source": {
+      "title": "MongoDB WiredTiger Cache",
+      "visState": "{\"title\":\"MongoDB WiredTiger Cache\",\"type\":\"line\",\"params\":{\"addLegend\":true,\"addTimeMarker\":false,\"addTooltip\":true,\"categoryAxes\":[{\"id\":\"CategoryAxis-1\",\"labels\":{\"show\":true,\"truncate\":100},\"position\":\"bottom\",\"scale\":{\"type\":\"linear\"},\"show\":true,\"style\":{},\"title\":{},\"type\":\"category\"}],\"defaultYExtents\":false,\"drawLinesBetweenPoints\":true,\"grid\":{\"categoryLines\":false,\"style\":{\"color\":\"#eee\"}},\"interpolate\":\"linear\",\"legendPosition\":\"bottom\",\"mode\":\"overlap\",\"radiusRatio\":9,\"scale\":\"linear\",\"seriesParams\":[{\"data\":{\"id\":\"1\",\"label\":\"Count\"},\"drawLinesBetweenPoints\":true,\"interpolate\":\"step-after\",\"mode\":\"stacked\",\"show\":\"true\",\"showCircles\":true,\"type\":\"line\",\"valueAxis\":\"ValueAxis-1\"}],\"setYExtents\":false,\"shareYAxis\":true,\"showCircles\":true,\"smoothLines\":false,\"times\":[],\"valueAxes\":[{\"id\":\"ValueAxis-1\",\"labels\":{\"filter\":false,\"rotate\":0,\"show\":true,\"truncate\":100},\"name\":\"LeftAxis-1\",\"position\":\"left\",\"scale\":{\"mode\":\"normal\",\"type\":\"linear\"},\"show\":true,\"style\":{},\"title\":{},\"type\":\"value\"}],\"yAxis\":{}},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"mongodb.status.wired_tiger.cache.maximum.bytes\",\"customLabel\":\"max\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"@timestamp\",\"interval\":\"auto\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{}}},{\"id\":\"3\",\"enabled\":true,\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"mongodb.status.wired_tiger.cache.used.bytes\",\"customLabel\":\"used\"}},{\"id\":\"4\",\"enabled\":true,\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"mongodb.status.wired_tiger.cache.dirty.bytes\",\"customLabel\":\"dirty\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "savedSearchId": "MongoDB-search",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "afa68fe0-fd02-11e7-8aef-8b2b0ab0fd89",
+    "_type": "visualization",
+    "_source": {
+      "title": "MongoDB storage size",
+      "visState": "{\"title\":\"MongoDB storage size\",\"type\":\"metrics\",\"params\":{\"id\":\"4e4922e0-fd01-11e7-8aef-8b2b0ab0fd89\",\"type\":\"metric\",\"series\":[{\"id\":\"4e4922e1-fd01-11e7-8aef-8b2b0ab0fd89\",\"color\":\"#68BC00\",\"split_mode\":\"everything\",\"metrics\":[{\"id\":\"4e4922e2-fd01-11e7-8aef-8b2b0ab0fd89\",\"type\":\"max\",\"field\":\"mongodb.dbstats.data_size.bytes\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"bytes\",\"chart_type\":\"line\",\"line_width\":1,\"point_size\":1,\"fill\":0.5,\"stacked\":\"none\",\"filter\":\"\\\\\",\"label\":\"Storage size\"}],\"time_field\":\"@timestamp\",\"index_pattern\":\"metricbeat*\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"background_color_rules\":[{\"value\":50000000,\"id\":\"50984300-fd01-11e7-8aef-8b2b0ab0fd89\",\"background_color\":\"rgba(159,5,0,1)\",\"opperator\":\"gt\"},{\"value\":50000000,\"id\":\"13308bc0-fd02-11e7-8aef-8b2b0ab0fd89\",\"background_color\":\"rgba(104,188,0,1)\",\"opperator\":\"lte\"}],\"filter\":\"metricset.name:dbstats AND mongodb.dbstats.db:presidio\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\"}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "c1887bd0-fd14-11e7-95fe-0529ae9b13ac",
+    "_type": "visualization",
+    "_source": {
+      "title": "MongoDB response time",
+      "visState": "{\"title\":\"MongoDB response time\",\"type\":\"metrics\",\"params\":{\"id\":\"7e194cd0-fd14-11e7-95fe-0529ae9b13ac\",\"type\":\"timeseries\",\"series\":[{\"id\":\"7e194cd1-fd14-11e7-95fe-0529ae9b13ac\",\"color\":\"#68BC00\",\"split_mode\":\"everything\",\"metrics\":[{\"id\":\"7e194cd2-fd14-11e7-95fe-0529ae9b13ac\",\"type\":\"avg\",\"field\":\"responsetime\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"line\",\"line_width\":1,\"point_size\":1,\"fill\":0.5,\"stacked\":\"none\",\"label\":\"response time\",\"hide_in_legend\":1}],\"time_field\":\"@timestamp\",\"index_pattern\":\"*\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":0,\"filter\":\"resource:presidio*\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\"}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "MongoDB-response-times-by-collection",
+    "_type": "visualization",
+    "_source": {
+      "title": "MongoDB response time per operation",
+      "visState": "{\"aggs\":[{\"enabled\":true,\"id\":\"1\",\"params\":{\"field\":\"responsetime\"},\"schema\":\"metric\",\"type\":\"avg\"},{\"enabled\":true,\"id\":\"2\",\"params\":{\"customInterval\":\"2h\",\"extended_bounds\":{},\"field\":\"@timestamp\",\"interval\":\"auto\",\"min_doc_count\":1},\"schema\":\"segment\",\"type\":\"date_histogram\"},{\"enabled\":true,\"id\":\"3\",\"params\":{\"field\":\"method\",\"order\":\"desc\",\"orderBy\":\"1\",\"size\":5},\"schema\":\"group\",\"type\":\"terms\"}],\"listeners\":{},\"params\":{\"addLegend\":true,\"addTimeMarker\":false,\"addTooltip\":true,\"categoryAxes\":[{\"id\":\"CategoryAxis-1\",\"labels\":{\"show\":true,\"truncate\":100},\"position\":\"bottom\",\"scale\":{\"type\":\"linear\"},\"show\":true,\"style\":{},\"title\":{\"text\":\"@timestamp per 5 minutes\"},\"type\":\"category\"}],\"defaultYExtents\":false,\"drawLinesBetweenPoints\":false,\"grid\":{\"categoryLines\":false,\"style\":{\"color\":\"#eee\"}},\"interpolate\":\"linear\",\"legendPosition\":\"right\",\"radiusRatio\":\"9\",\"scale\":\"linear\",\"seriesParams\":[{\"data\":{\"id\":\"1\",\"label\":\"Average responsetime\"},\"drawLinesBetweenPoints\":true,\"interpolate\":\"linear\",\"lineWidth\":2,\"mode\":\"normal\",\"show\":true,\"showCircles\":true,\"type\":\"line\",\"valueAxis\":\"ValueAxis-1\"}],\"setYExtents\":false,\"shareYAxis\":true,\"showCircles\":true,\"smoothLines\":false,\"times\":[],\"valueAxes\":[{\"id\":\"ValueAxis-1\",\"labels\":{\"filter\":false,\"rotate\":0,\"show\":true,\"truncate\":100},\"name\":\"LeftAxis-1\",\"position\":\"left\",\"scale\":{\"mode\":\"normal\",\"type\":\"linear\"},\"show\":true,\"style\":{},\"title\":{\"text\":\"Average responsetime\"},\"type\":\"value\"}],\"yAxis\":{}},\"title\":\"MongoDB response time per operation\",\"type\":\"line\"}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "savedSearchId": "MongoDB-transactions",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "90cf29b0-fe1a-11e7-98dd-5bdc838a94a4",
+    "_type": "visualization",
+    "_source": {
+      "title": "MongoDB Performance By Collection link",
+      "visState": "{\"title\":\"MongoDB Performance By Collection link\",\"type\":\"metrics\",\"params\":{\"id\":\"97a970b0-fb7c-11e7-bc12-91a355a975c5\",\"type\":\"markdown\",\"series\":[{\"id\":\"97a970b1-fb7c-11e7-bc12-91a355a975c5\",\"color\":\"#68BC00\",\"split_mode\":\"everything\",\"metrics\":[{\"id\":\"97a970b2-fb7c-11e7-bc12-91a355a975c5\",\"type\":\"count\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"line\",\"line_width\":1,\"point_size\":1,\"fill\":0.5,\"stacked\":\"none\"}],\"time_field\":\"@timestamp\",\"index_pattern\":\"*\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"markdown\":\"***\\r\\n\\r\\n[Click for Performance per Collection](kibana#/dashboard/de786fe0-fe16-11e7-98dd-5bdc838a94a4?g=)\\r\\n\\r\\n\\r\\n***\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\"}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "ec98faa0-fd02-11e7-8aef-8b2b0ab0fd89",
+    "_type": "visualization",
+    "_source": {
+      "title": "MongoDB objects",
+      "visState": "{\"title\":\"MongoDB objects\",\"type\":\"metrics\",\"params\":{\"id\":\"4e4922e0-fd01-11e7-8aef-8b2b0ab0fd89\",\"type\":\"metric\",\"series\":[{\"id\":\"4e4922e1-fd01-11e7-8aef-8b2b0ab0fd89\",\"color\":\"#68BC00\",\"split_mode\":\"everything\",\"metrics\":[{\"id\":\"4e4922e2-fd01-11e7-8aef-8b2b0ab0fd89\",\"type\":\"max\",\"field\":\"mongodb.dbstats.objects\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"line\",\"line_width\":1,\"point_size\":1,\"fill\":0.5,\"stacked\":\"none\",\"filter\":\"\\\\\",\"label\":\"Objects\"}],\"time_field\":\"@timestamp\",\"index_pattern\":\"metricbeat*\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"background_color_rules\":[{\"value\":50000000,\"id\":\"13308bc0-fd02-11e7-8aef-8b2b0ab0fd89\",\"background_color\":null,\"opperator\":\"lte\"}],\"filter\":\"metricset.name:dbstats AND mongodb.dbstats.db:presidio\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\"}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "MongoDB-memory-stats",
+    "_type": "visualization",
+    "_source": {
+      "uiStateJSON": "{}",
+      "version": 1,
+      "savedSearchId": "MongoDB-search",
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[]}"
+      },
+      "visState": "{\"title\":\"MongoDB memory stats\",\"type\":\"line\",\"params\":{\"shareYAxis\":true,\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"bottom\",\"showCircles\":true,\"smoothLines\":false,\"interpolate\":\"linear\",\"scale\":\"log\",\"drawLinesBetweenPoints\":true,\"radiusRatio\":9,\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":false,\"setYExtents\":false,\"yAxis\":{}},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"mongodb.status.memory.mapped.mb\",\"customLabel\":\"Mapped\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"@timestamp\",\"interval\":\"auto\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{}}},{\"id\":\"3\",\"enabled\":true,\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"mongodb.status.memory.mapped_with_journal.mb\",\"customLabel\":\"Mapped with journal\"}},{\"id\":\"4\",\"enabled\":true,\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"mongodb.status.memory.resident.mb\",\"customLabel\":\"Rezident\"}},{\"id\":\"5\",\"enabled\":true,\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"mongodb.status.memory.virtual.mb\",\"customLabel\":\"Virtual\"}}],\"listeners\":{}}",
+      "description": "",
+      "title": "MongoDB memory stats"
+    }
+  },
+  {
+    "_id": "MongoDB-errors",
+    "_type": "visualization",
+    "_source": {
+      "version": 1,
+      "savedSearchId": "MongoDB-errors",
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[]}"
+      },
+      "visState": "{\"title\":\"MongoDB errors\",\"type\":\"line\",\"params\":{\"addLegend\":true,\"addTimeMarker\":false,\"addTooltip\":true,\"defaultYExtents\":false,\"drawLinesBetweenPoints\":true,\"interpolate\":\"linear\",\"radiusRatio\":9,\"scale\":\"linear\",\"setYExtents\":false,\"shareYAxis\":true,\"showCircles\":true,\"smoothLines\":false,\"spyPerPage\":10,\"times\":[],\"yAxis\":{}},\"aggs\":[{\"id\":\"1\",\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"@timestamp\",\"interval\":\"auto\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{}}},{\"id\":\"3\",\"type\":\"terms\",\"schema\":\"split\",\"params\":{\"field\":\"resource\",\"size\":3,\"order\":\"desc\",\"orderBy\":\"1\",\"row\":true}},{\"id\":\"4\",\"type\":\"terms\",\"schema\":\"group\",\"params\":{\"field\":\"method\",\"size\":5,\"order\":\"desc\",\"orderBy\":\"1\"}}],\"listeners\":{}}",
+      "description": "",
+      "title": "MongoDB errors",
+      "uiStateJSON": "{}"
+    }
+  },
+  {
+    "_id": "d70568a0-fd01-11e7-8aef-8b2b0ab0fd89",
+    "_type": "visualization",
+    "_source": {
+      "title": "MongoDB collections",
+      "visState": "{\"title\":\"MongoDB collections\",\"type\":\"metrics\",\"params\":{\"id\":\"4e4922e0-fd01-11e7-8aef-8b2b0ab0fd89\",\"type\":\"metric\",\"series\":[{\"id\":\"4e4922e1-fd01-11e7-8aef-8b2b0ab0fd89\",\"color\":\"#68BC00\",\"split_mode\":\"everything\",\"metrics\":[{\"id\":\"4e4922e2-fd01-11e7-8aef-8b2b0ab0fd89\",\"type\":\"max\",\"field\":\"mongodb.dbstats.collections\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"line\",\"line_width\":1,\"point_size\":1,\"fill\":0.5,\"stacked\":\"none\",\"filter\":\"\\\\\",\"label\":\"Collections\"}],\"time_field\":\"@timestamp\",\"index_pattern\":\"metricbeat*\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"background_color_rules\":[{\"value\":200,\"id\":\"50984300-fd01-11e7-8aef-8b2b0ab0fd89\",\"background_color\":\"rgba(159,5,0,1)\",\"opperator\":\"gt\"},{\"value\":200,\"id\":\"13308bc0-fd02-11e7-8aef-8b2b0ab0fd89\",\"background_color\":\"rgba(104,188,0,1)\",\"opperator\":\"lte\"}],\"filter\":\"metricset.name:dbstats AND mongodb.dbstats.db:presidio\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\"}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "de579df0-fd04-11e7-8aef-8b2b0ab0fd89",
+    "_type": "visualization",
+    "_source": {
+      "title": "MongoDB connections",
+      "visState": "{\"title\":\"MongoDB connections\",\"type\":\"metrics\",\"params\":{\"id\":\"4e4922e0-fd01-11e7-8aef-8b2b0ab0fd89\",\"type\":\"timeseries\",\"series\":[{\"id\":\"4e4922e1-fd01-11e7-8aef-8b2b0ab0fd89\",\"color\":\"#68BC00\",\"split_mode\":\"everything\",\"metrics\":[{\"id\":\"4e4922e2-fd01-11e7-8aef-8b2b0ab0fd89\",\"type\":\"sum\",\"field\":\"mongodb.status.connections.current\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"line\",\"line_width\":1,\"point_size\":1,\"fill\":0.5,\"stacked\":\"none\",\"filter\":\"\\\\\",\"label\":\"Connections\"},{\"id\":\"3f5ebf80-fd04-11e7-8aef-8b2b0ab0fd89\",\"color\":\"rgba(0,98,177,1)\",\"split_mode\":\"everything\",\"metrics\":[{\"id\":\"3f5ebf81-fd04-11e7-8aef-8b2b0ab0fd89\",\"type\":\"sum\",\"field\":\"mongodb.status.connections.available\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"line\",\"line_width\":1,\"point_size\":1,\"fill\":0.5,\"stacked\":\"none\",\"label\":\"Available connections\"}],\"time_field\":\"@timestamp\",\"index_pattern\":\"metricbeat*\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"background_color_rules\":[{\"value\":200,\"id\":\"50984300-fd01-11e7-8aef-8b2b0ab0fd89\",\"background_color\":\"rgba(159,5,0,1)\",\"opperator\":\"gt\"},{\"value\":200,\"id\":\"13308bc0-fd02-11e7-8aef-8b2b0ab0fd89\",\"background_color\":\"rgba(104,188,0,1)\",\"opperator\":\"lte\"}],\"filter\":\"metricset.name:dbstats AND mongodb.dbstats.db:presidio\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\"}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "f1ddcdb0-fe0b-11e7-b0dc-098075e6b2cc",
+    "_type": "visualization",
+    "_source": {
+      "title": "MongoDB count operations",
+      "visState": "{\"aggs\":[{\"enabled\":true,\"id\":\"1\",\"params\":{},\"schema\":\"metric\",\"type\":\"count\"},{\"enabled\":true,\"id\":\"2\",\"params\":{\"customInterval\":\"2h\",\"extended_bounds\":{},\"field\":\"@timestamp\",\"interval\":\"auto\",\"min_doc_count\":1},\"schema\":\"segment\",\"type\":\"date_histogram\"},{\"enabled\":true,\"id\":\"3\",\"params\":{\"field\":\"method\",\"order\":\"desc\",\"orderBy\":\"1\",\"size\":5},\"schema\":\"group\",\"type\":\"terms\"}],\"listeners\":{},\"params\":{\"addLegend\":true,\"addTimeMarker\":false,\"addTooltip\":true,\"categoryAxes\":[{\"id\":\"CategoryAxis-1\",\"labels\":{\"show\":true,\"truncate\":100},\"position\":\"bottom\",\"scale\":{\"type\":\"linear\"},\"show\":true,\"style\":{},\"title\":{\"text\":\"@timestamp per 5 minutes\"},\"type\":\"category\"}],\"defaultYExtents\":false,\"drawLinesBetweenPoints\":false,\"grid\":{\"categoryLines\":false,\"style\":{\"color\":\"#eee\"}},\"interpolate\":\"linear\",\"legendPosition\":\"right\",\"radiusRatio\":\"9\",\"scale\":\"linear\",\"seriesParams\":[{\"data\":{\"id\":\"1\",\"label\":\"Count\"},\"drawLinesBetweenPoints\":true,\"interpolate\":\"linear\",\"lineWidth\":2,\"mode\":\"normal\",\"show\":true,\"showCircles\":true,\"type\":\"line\",\"valueAxis\":\"ValueAxis-1\"}],\"setYExtents\":false,\"shareYAxis\":true,\"showCircles\":true,\"smoothLines\":false,\"times\":[],\"valueAxes\":[{\"id\":\"ValueAxis-1\",\"labels\":{\"filter\":false,\"rotate\":0,\"show\":true,\"truncate\":100},\"name\":\"LeftAxis-1\",\"position\":\"left\",\"scale\":{\"mode\":\"normal\",\"type\":\"linear\"},\"show\":true,\"style\":{},\"title\":{\"text\":\"Count\"},\"type\":\"value\"}],\"yAxis\":{}},\"title\":\"MongoDB count operations\",\"type\":\"line\"}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "savedSearchId": "MongoDB-transactions",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[]}"
+      }
+    }
+  }
+]
