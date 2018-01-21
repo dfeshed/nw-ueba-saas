@@ -57,13 +57,14 @@ public class UserUpdatePropertiesServiceImplTest {
         Map<String, String> additionalInfo = new HashMap<>();
         additionalInfo.put("isUserAdmin", "true");
         generateFileEnrichedEvent(eventDate, "userName1", "userId1", "userDisplayName1", additionalInfo);
-        generateUserAndSave("userId", "userName", "userDisplayName", false);
+        User user = generateUserAndSave("userId", "userName", "userDisplayName", false);
+        userPropertiesUpdateService.userPropertiesUpdate(user);
         PageRequest pageRequest = new PageRequest(0, 10);
         Page<User> page = userPersistencyService.findByUserId("userId1", pageRequest);
         Assert.assertNotNull(page.getContent());
     }
 
-    private void generateUserAndSave(String userId, String userName, String displayName, boolean tagAdmin) {
+    private User generateUserAndSave(String userId, String userName, String displayName, boolean tagAdmin) {
         List<String> tags = null;
         if (tagAdmin) {
             tags = new ArrayList<>();
@@ -71,6 +72,7 @@ public class UserUpdatePropertiesServiceImplTest {
         }
         User user1 = new User(userId, userName, displayName, 0d, null, null, tags, UserSeverity.LOW, 0);
         userPersistencyService.save(user1);
+        return user1;
     }
 
     private void saveEvent(EnrichedEvent event, Schema schema) {

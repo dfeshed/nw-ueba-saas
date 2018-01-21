@@ -17,7 +17,6 @@ public class PropertiesConfiguration {
         properties.put("elasticsearch.clustername", EmbeddedElasticsearchInitialiser.EL_TEST_CLUSTER);
         properties.put("elasticsearch.host", "localhost");
         properties.put("elasticsearch.port", EmbeddedElasticsearchInitialiser.EL_TEST_PORT);
-        properties.put("batch.size", 2000);
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
 
