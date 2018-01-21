@@ -20,8 +20,7 @@ import presidio.output.domain.translator.OutputToCollectionNameTranslator;
 public class UserUpdatePropertiesServiceConfig {
 
     @Autowired
-    private MongoTemplate mongoTemplate;
-
+    public MongoTemplate mongoTemplate;
 
     @Bean
     public EventPersistencyService eventPersistencyService() {
@@ -29,13 +28,12 @@ public class UserUpdatePropertiesServiceConfig {
     }
 
     @Bean
-    public UserPropertiesUpdateService userPropertiesUpdateService() {
-        return new UserPropertiesUpdateServiceImpl(eventPersistencyService());
-    }
-
-    @Bean
     public EventRepository eventRepository() {
         return new EventMongoRepositoryImpl(mongoTemplate);
     }
 
+    @Bean
+    public UserPropertiesUpdateService userPropertiesUpdateService() {
+        return new UserPropertiesUpdateServiceImpl(eventPersistencyService());
+    }
 }
