@@ -50,7 +50,6 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
     protected SourceFetcher sourceFetcher;
     protected Instant startDate;
     protected Instant endDate;
-    protected Schema schema;
 
     PresidioExternalMonitoringService presidioExternalMonitoringService;
 
@@ -85,11 +84,7 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
     }
 
     @Override
-    protected void doPresidioConfigure(Context context) {
-        final String schemaName = context.getString(CommonStrings.SCHEMA_NAME, null);
-        Preconditions.checkArgument(StringUtils.isNotEmpty(schemaName), CommonStrings.SCHEMA_NAME + " can not be empty.");
-        schema = Schema.createSchema(schemaName);
-    }
+    protected abstract void doPresidioConfigure(Context context);
 
 
     @Override
