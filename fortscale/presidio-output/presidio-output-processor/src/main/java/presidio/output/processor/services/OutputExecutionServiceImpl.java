@@ -44,6 +44,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     private final long retentionEnrichedEventsDays;
     private final long retentionOutputDataDays;
 
+
     private final int SMART_THRESHOLD_FOR_GETTING_SMART_ENTITIES = 0;
     private static final String ADE_SMART_USER_ID = "userId";
 

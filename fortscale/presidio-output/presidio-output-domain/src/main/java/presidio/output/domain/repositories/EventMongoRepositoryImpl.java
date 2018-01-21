@@ -14,7 +14,6 @@ import presidio.output.domain.records.events.EnrichedEvent;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -29,9 +28,6 @@ public class EventMongoRepositoryImpl implements EventRepository {
 
     @Autowired
     private MongoDbBulkOpUtil mongoDbBulkOpUtil;
-
-    private final List<String> collectionNames = new ArrayList<>(Arrays.asList(
-            "output_active_directory_enriched_events", "output_authentication_enriched_events", "output_file_enriched_events"));
 
     public EventMongoRepositoryImpl(MongoTemplate mongoTemplate) {
         this.mongoTemplate = mongoTemplate;
@@ -82,7 +78,7 @@ public class EventMongoRepositoryImpl implements EventRepository {
     }
 
     @Override
-    public EnrichedEvent findLatestEventForUser(String userId) {
+    public EnrichedEvent findLatestEventForUser(String userId, List<String> collectionNames) {
         Query query = new Query()
                 .addCriteria(Criteria.where(EnrichedEvent.USER_ID_FIELD).is(userId))
                 .limit(1);

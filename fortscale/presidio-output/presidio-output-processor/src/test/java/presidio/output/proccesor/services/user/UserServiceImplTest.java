@@ -26,7 +26,15 @@ import presidio.output.processor.services.user.UserServiceImpl;
 import presidio.output.processor.services.user.UsersAlertData;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 
@@ -47,6 +55,9 @@ public class UserServiceImplTest {
     private UserSeverityService mockUserSeverityService;
 
     private Page<Alert> emptyAlertPage;
+
+    private final List<String> collectionNames = new ArrayList<>(Arrays.asList("output_authentication_enriched_events",
+            "output_active_directory_enriched_events", "output_file_enriched_events"));
 
 
     @Before
@@ -161,7 +172,7 @@ public class UserServiceImplTest {
         additionalInfo.put("isUserAdmin", "false");
         EnrichedEvent enrichedEvent = new EnrichedEvent(Instant.now(), Instant.now(), "event1", "Active Directory", "userId1", "userName1",
                 "userDisplayName1", "Active Directory", "User Logged On", new ArrayList<>(), result, "success", additionalInfo);
-        Mockito.when(this.mockEventPersistency.findLatestEventForUser(Mockito.any(String.class))).thenReturn(enrichedEvent);
+        Mockito.when(this.mockEventPersistency.findLatestEventForUser(Mockito.any(String.class), collectionNames)).thenReturn(enrichedEvent);
 
         User user = userService.createUserEntity("userId1");
         assertEquals(0, user.getTags().size());
@@ -174,7 +185,7 @@ public class UserServiceImplTest {
         additionalInfo.put("isUserAdmin", "true");
         EnrichedEvent enrichedEvent = new EnrichedEvent(Instant.now(), Instant.now(), "event1", "Active Directory", "userId1", "userName1",
                 "userDisplayName1", "Active Directory", "User Logged On", new ArrayList<>(), result, "success", additionalInfo);
-        Mockito.when(this.mockEventPersistency.findLatestEventForUser(Mockito.any(String.class))).thenReturn(enrichedEvent);
+        Mockito.when(this.mockEventPersistency.findLatestEventForUser(Mockito.any(String.class), collectionNames)).thenReturn(enrichedEvent);
 
         User user = userService.createUserEntity("userId1");
         assertEquals(1, user.getTags().size());
@@ -191,7 +202,7 @@ public class UserServiceImplTest {
         String userDisplayName = "userDisplayName1";
         EnrichedEvent enrichedEvent = new EnrichedEvent(Instant.now(), Instant.now(), "event1", "Active Directory", userId, userName,
                 userDisplayName, "Active Directory", "User Logged On", new ArrayList<>(), result, "success", additionalInfo);
-        Mockito.when(this.mockEventPersistency.findLatestEventForUser(Mockito.any(String.class))).thenReturn(enrichedEvent);
+        Mockito.when(this.mockEventPersistency.findLatestEventForUser(Mockito.any(String.class), collectionNames)).thenReturn(enrichedEvent);
 
         User user = userService.createUserEntity(userId);
         assertEquals(0, user.getTags().size());
