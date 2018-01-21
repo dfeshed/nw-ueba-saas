@@ -1,4 +1,4 @@
-package presidio.output.proccesor.spring;
+package presidio.output.commons.services.spring;
 
 import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
+import presidio.output.commons.services.user.UserPropertiesUpdateService;
+import presidio.output.commons.services.user.UserPropertiesUpdateServiceImpl;
 import presidio.output.domain.repositories.EventMongoRepositoryImpl;
 import presidio.output.domain.repositories.EventRepository;
 import presidio.output.domain.services.event.EventPersistencyService;
@@ -15,8 +17,6 @@ import presidio.output.domain.services.users.UserPersistencyServiceImpl;
 import presidio.output.domain.spring.EventPersistencyServiceConfig;
 import presidio.output.domain.translator.OutputToClassNameTranslator;
 import presidio.output.domain.translator.OutputToCollectionNameTranslator;
-import presidio.output.processor.services.user.UserPropertiesUpdateService;
-import presidio.output.processor.services.user.UserPropertiesUpdateServiceImpl;
 
 
 @Configuration
@@ -34,7 +34,7 @@ public class UserUpdatePropertiesTestConfiguration {
 
     @Bean
     public UserPropertiesUpdateService userPropertiesUpdateService() {
-        return new UserPropertiesUpdateServiceImpl(eventPersistencyService, userPersistencyService(), 100);
+        return new UserPropertiesUpdateServiceImpl(eventPersistencyService);
     }
 
     @Autowired

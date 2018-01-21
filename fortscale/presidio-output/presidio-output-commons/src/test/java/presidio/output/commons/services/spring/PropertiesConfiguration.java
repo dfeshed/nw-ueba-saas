@@ -1,4 +1,4 @@
-package presidio.output.proccesor.spring;
+package presidio.output.commons.services.spring;
 
 import fortscale.utils.elasticsearch.config.EmbeddedElasticsearchInitialiser;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;

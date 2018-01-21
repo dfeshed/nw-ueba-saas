@@ -15,7 +15,13 @@ import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.repositories.UserSeveritiesRangeRepository;
 import presidio.output.domain.services.users.UserPersistencyService;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -33,11 +39,14 @@ public class UserSeverityServiceImpl implements UserSeverityService {
     @Autowired
     private UserPersistencyService userPersistencyService;
 
+    private UserPropertiesUpdateService userPropertiesUpdateService;
+
     @Value("${user.batch.size:2000}")
     private int defaultUsersBatchSize;
 
-    public UserSeverityServiceImpl(Map<UserSeverity, UserSeverityComputeData> severityToComputeDataMap) {
+    public UserSeverityServiceImpl(Map<UserSeverity, UserSeverityComputeData> severityToComputeDataMap, UserPropertiesUpdateService userPropertiesUpdateService) {
         this.severityToComputeDataMap = severityToComputeDataMap;
+        this.userPropertiesUpdateService = userPropertiesUpdateService;
     }
 
     /**
@@ -240,14 +249,23 @@ public class UserSeverityServiceImpl implements UserSeverityService {
         if (users == null) {
             return;
         }
+
         users.forEach(user -> {
+            User updatedUser;
             double userScore = user.getScore();
             UserSeverity newUserSeverity = severitiesMap.getUserSeverity(userScore);
-
+            updatedUser = userPropertiesUpdateService.userPropertiesUpdate(user);
             logger.debug("Updating user severity for userId: " + user.getUserId());
             if (!newUserSeverity.equals(user.getSeverity())) {
+                if (updatedUser != null) {
+                    user = updatedUser;
+                }
                 user.setSeverity(newUserSeverity);
                 updatedUsers.add(user); //Update user only if severity changes
+            } else {
+                if (updatedUser != null) {
+                    updatedUsers.add(updatedUser);
+                }
             }
         });
 

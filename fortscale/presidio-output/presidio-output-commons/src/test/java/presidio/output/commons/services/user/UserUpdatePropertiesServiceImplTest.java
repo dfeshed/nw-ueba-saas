@@ -1,4 +1,4 @@
-package presidio.output.proccesor.services.user;
+package presidio.output.commons.services.user;
 
 
 import fortscale.common.general.Schema;
@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.output.commons.services.spring.UserUpdatePropertiesTestConfiguration;
 import presidio.output.domain.records.events.ActiveDirectoryEnrichedEvent;
 import presidio.output.domain.records.events.AuthenticationEnrichedEvent;
 import presidio.output.domain.records.events.EnrichedEvent;
@@ -20,8 +21,6 @@ import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
-import presidio.output.proccesor.spring.UserUpdatePropertiesTestConfiguration;
-import presidio.output.processor.services.user.UserPropertiesUpdateService;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -59,7 +58,6 @@ public class UserUpdatePropertiesServiceImplTest {
         additionalInfo.put("isUserAdmin", "true");
         generateFileEnrichedEvent(eventDate, "userName1", "userId1", "userDisplayName1", additionalInfo);
         generateUserAndSave("userId", "userName", "userDisplayName", false);
-        userPropertiesUpdateService.updateAllUsers();
         PageRequest pageRequest = new PageRequest(0, 10);
         Page<User> page = userPersistencyService.findByUserId("userId1", pageRequest);
         Assert.assertNotNull(page.getContent());

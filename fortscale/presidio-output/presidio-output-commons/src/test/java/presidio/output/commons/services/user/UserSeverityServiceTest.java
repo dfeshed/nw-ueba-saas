@@ -2,15 +2,22 @@ package presidio.output.commons.services.user;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import presidio.output.commons.services.spring.UserUpdatePropertiesTestConfiguration;
 import presidio.output.domain.records.PresidioRange;
 import presidio.output.domain.records.users.UserSeverity;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@ContextConfiguration(classes = UserUpdatePropertiesTestConfiguration.class)
 public class UserSeverityServiceTest {
 
     private UserSeverityServiceImpl userSeverityService;
+
+    @Autowired
+    public UserPropertiesUpdateService userPropertiesUpdateService;
 
     public UserSeverityServiceTest() {
         Map<UserSeverity, UserSeverityComputeData> severityToComputeDataMap = new LinkedHashMap<>();
@@ -19,7 +26,7 @@ public class UserSeverityServiceTest {
         severityToComputeDataMap.put(UserSeverity.HIGH, new UserSeverityComputeData(4, 1.3, 10d));
         severityToComputeDataMap.put(UserSeverity.MEDIUM, new UserSeverityComputeData(10.0, 1.1));
         severityToComputeDataMap.put(UserSeverity.LOW, new UserSeverityComputeData(80));
-        userSeverityService = new UserSeverityServiceImpl(severityToComputeDataMap);
+        userSeverityService = new UserSeverityServiceImpl(severityToComputeDataMap, userPropertiesUpdateService);
     }
 
     @Test
