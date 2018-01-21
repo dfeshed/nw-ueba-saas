@@ -605,9 +605,9 @@ public class UserPersistencyServiceTest {
 
         List<String> tags = Arrays.asList("admin");
         List<String> indicators = Arrays.asList("a");
-        User user1 = new User("userId1", "W_userName", "displayName", 5d, null, indicators, tags, UserSeverity.CRITICAL, 0);
+        User user1 = new User("userId1", "w_userName", "displayName", 5d, null, indicators, tags, UserSeverity.CRITICAL, 0);
         User user2 = new User("userId2", "C_userName", "displayName", 10d, null, indicators, tags, UserSeverity.MEDIUM, 0);
-        User user3 = new User("userId3", "B_userName", "displayName", 20d, null, indicators, tags, UserSeverity.CRITICAL, 0);
+        User user3 = new User("userId3", "b_userName", "displayName", 20d, null, indicators, tags, UserSeverity.CRITICAL, 0);
 
 
         List<User> userList = Arrays.asList(user1, user2, user3);
@@ -622,9 +622,9 @@ public class UserPersistencyServiceTest {
         Page<User> result = userPersistencyService.find(userQuery);
         assertEquals(3L, result.getContent().size());
         Iterator<User> iterator = result.iterator();
-        Assert.assertEquals("B_userName", iterator.next().getUserName());
+        Assert.assertEquals("b_userName", iterator.next().getUserName());
         Assert.assertEquals("C_userName", iterator.next().getUserName());
-        Assert.assertEquals("W_userName", iterator.next().getUserName());
+        Assert.assertEquals("w_userName", iterator.next().getUserName());
     }
 
     @Test
