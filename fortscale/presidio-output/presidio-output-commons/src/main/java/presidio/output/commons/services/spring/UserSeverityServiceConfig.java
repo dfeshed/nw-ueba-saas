@@ -1,8 +1,11 @@
 package presidio.output.commons.services.spring;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import presidio.output.commons.services.user.UserPropertiesUpdateService;
 import presidio.output.commons.services.user.UserSeverityComputeData;
 import presidio.output.commons.services.user.UserSeverityService;
 import presidio.output.commons.services.user.UserSeverityServiceImpl;
@@ -12,6 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Configuration
+@Import(UserUpdatePropertiesServiceConfig.class)
 public class UserSeverityServiceConfig {
 
     @Value("${user.severity.compute.data.critical.percentage.of.users:1}")
@@ -41,6 +45,9 @@ public class UserSeverityServiceConfig {
     @Value("${user.severity.compute.data.low.percentage.of.users:80}")
     private String userSeverityComputeDataLowPercentageOfUsers;
 
+    @Autowired
+    private UserPropertiesUpdateService userPropertiesUpdateService;
+
     @Bean
     public UserSeverityService userSeverityService() {
 
@@ -54,7 +61,7 @@ public class UserSeverityServiceConfig {
 
         severityToComputeDataMap.put(UserSeverity.LOW, new UserSeverityComputeData(new Double(userSeverityComputeDataLowPercentageOfUsers)));
 
-        return new UserSeverityServiceImpl(severityToComputeDataMap);
+        return new UserSeverityServiceImpl(severityToComputeDataMap, userPropertiesUpdateService);
     }
 
 }
