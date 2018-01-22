@@ -15,7 +15,7 @@ import java.util.List;
 )
 public class SmartWeightsModel implements PartitionedDataModel {
     private List<ClusterConf> clusterConfs;
-    private long numOfPartitions;
+    private Long numOfPartitions;
 
     //This empty constructor is needed for mongo
     public SmartWeightsModel(){}

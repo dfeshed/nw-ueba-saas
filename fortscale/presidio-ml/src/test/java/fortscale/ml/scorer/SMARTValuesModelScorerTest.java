@@ -96,6 +96,12 @@ public class SMARTValuesModelScorerTest {
     public void shouldGiveScoreWhenEverythingIsOk() throws Exception {
         Instant modelEndTime = Instant.now();
         SMARTValuesModelScorer scorer = createScorer("additional model name", 0, 50D, modelEndTime);
-        scorer.calculateScore(new SMARTValuesModel(), new SMARTValuesPriorModel(), Mockito.mock(AdeRecordReader.class), modelEndTime);
+
+        SMARTValuesModel smartValuesModel = new SMARTValuesModel();
+        smartValuesModel.init(0L, 0L, 0D, 0L, null);
+        SMARTValuesPriorModel smartValuesPriorModel = new SMARTValuesPriorModel();
+        smartValuesPriorModel.init(0D);
+
+        scorer.calculateScore(smartValuesModel, smartValuesPriorModel, Mockito.mock(AdeRecordReader.class), modelEndTime);
     }
 }
