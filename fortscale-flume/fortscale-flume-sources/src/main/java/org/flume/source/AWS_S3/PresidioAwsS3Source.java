@@ -3,6 +3,7 @@ package org.flume.source.AWS_S3;
 import org.apache.flume.Context;
 import org.flume.source.AbstractPageablePresidioSource;
 import org.apache.flume.conf.Configurable;
+import fortscale.domain.core.AbstractDocument;
 
 import java.util.List;
 
