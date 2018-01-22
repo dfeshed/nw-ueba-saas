@@ -297,4 +297,9 @@ public class UserSeverityServiceImpl implements UserSeverityService {
             }
         }
     }
+
+    @Override
+    public List<String> collectionNamesByOrderForEvents() {
+        return userPropertiesUpdateService.collectionNamesByOrderForEvents();
+    }
 }
