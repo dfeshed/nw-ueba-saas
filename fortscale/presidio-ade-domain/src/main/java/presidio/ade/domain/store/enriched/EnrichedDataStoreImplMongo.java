@@ -175,12 +175,8 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
             aggregationOperations.add(limit(limit));
         }
 
-        Aggregation aggregation = newAggregation(aggregationOperations);
-
-        if(allowDiskUse) {
-            aggregation = aggregation.withOptions(Aggregation.newAggregationOptions().
-                    allowDiskUse(true).build());
-        }
+        Aggregation aggregation = newAggregation(aggregationOperations).withOptions(Aggregation.newAggregationOptions().
+                allowDiskUse(allowDiskUse).build());
 
         return mongoTemplate
                 .aggregate(aggregation, collectionName, ContextIdToNumOfItems.class)
