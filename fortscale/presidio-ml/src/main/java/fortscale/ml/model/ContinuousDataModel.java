@@ -7,19 +7,19 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 		fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE,
 		setterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
 public class ContinuousDataModel implements IContinuousDataModel {
-	private long N; // population size
-	private double mean; // average
-	private double sd; // standard deviation
-	private double maxValue; // the maximal value the model encountered
+	private Long N; // population size
+	private Double mean; // average
+	private Double sd; // standard deviation
+	private Double maxValue; // the maximal value the model encountered
 
 	/**
 	 * ContinuousDataModel constructor.
 	 */
 	public ContinuousDataModel() {
-		N = 0;
-		mean = 0;
-		sd = 0;
-		maxValue = 0;
+		N = 0L;
+		mean = 0D;
+		sd = 0D;
+		maxValue = 0D;
 	}
 
 	/**
@@ -48,7 +48,7 @@ public class ContinuousDataModel implements IContinuousDataModel {
 		if (N == 0) {
 			return o.N == 0;
 		}
-		return o.N == N && o.mean == mean && o.sd == sd && o.maxValue == maxValue;
+		return o.N == N && o.mean.equals(mean) && o.sd.equals(sd) && o.maxValue.equals(maxValue);
 	}
 
 	@Override

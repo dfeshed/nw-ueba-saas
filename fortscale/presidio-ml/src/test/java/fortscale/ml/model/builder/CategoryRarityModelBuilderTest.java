@@ -11,7 +11,9 @@ import org.junit.Test;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.DoubleStream;
 
@@ -41,7 +43,7 @@ public class CategoryRarityModelBuilderTest {
 	public void shouldBuildWithTheSpecifiedNumOfBuckets() {
 		Map<String, Long> featureValueToCountMap = new HashMap<>();
 		CategoryRarityModel model = (CategoryRarityModel) new CategoryRarityModelBuilder(getConfig(MAX_RARE_COUNT), categoryRarityMetricsContainer).build(castModelBuilderData(featureValueToCountMap));
-		Assert.assertEquals(MAX_RARE_COUNT, model.getBuckets().length);
+		Assert.assertEquals(MAX_RARE_COUNT, model.getBuckets().size());
 	}
 
 	@Test
@@ -54,9 +56,9 @@ public class CategoryRarityModelBuilderTest {
 		CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(getConfig(MAX_RARE_COUNT), categoryRarityMetricsContainer).build(castModelBuilderData(featureValueToCountMap));
 
 		Assert.assertEquals(1, model.getNumOfSamples());
-		double[] buckets = model.getBuckets();
-		Assert.assertEquals(1, DoubleStream.of(buckets).sum(), 0.001);
-		Assert.assertEquals(1, buckets[0], 0.001);
+		List<Double> buckets = model.getBuckets();
+		Assert.assertEquals(1, buckets.stream().mapToDouble(Double::doubleValue).sum(), 0.001);
+		Assert.assertEquals(1, buckets.get(0), 0.001);
 	}
 
 	@Test
@@ -71,9 +73,9 @@ public class CategoryRarityModelBuilderTest {
 		CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(getConfig(MAX_RARE_COUNT), categoryRarityMetricsContainer).build(castModelBuilderData(featureValueToCountMap));
 
 		Assert.assertEquals(1, model.getNumOfSamples());
-		double[] buckets = model.getBuckets();
-		Assert.assertEquals(1, DoubleStream.of(buckets).sum(), 0.001);
-		Assert.assertEquals(1, buckets[0], 0.001);
+		List<Double> buckets = model.getBuckets();
+		Assert.assertEquals(1, buckets.stream().mapToDouble(Double::doubleValue).sum(), 0.001);
+		Assert.assertEquals(1, buckets.get(0), 0.001);
 	}
 
 	@Test

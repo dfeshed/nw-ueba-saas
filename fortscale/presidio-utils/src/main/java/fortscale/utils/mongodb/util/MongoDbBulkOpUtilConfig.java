@@ -27,8 +27,8 @@ public class MongoDbBulkOpUtilConfig {
         return new MongoDbBulkOpUtil(cachedIsNewAwareAuditingHandler(), dynamicIndexingApplicationListener, mongoTemplate, mongoAsyncDatabase);
     }
 
-    public CachedIsNewAwareAuditingHandler cachedIsNewAwareAuditingHandler()
-    {
-        return new CachedIsNewAwareAuditingHandler(mappingContext,isNewStrategyFactory);
+
+    public CachedIsNewAwareAuditingHandler cachedIsNewAwareAuditingHandler() {
+        return new CachedIsNewAwareAuditingHandler(mappingContext, isNewStrategyFactory);
     }
 }

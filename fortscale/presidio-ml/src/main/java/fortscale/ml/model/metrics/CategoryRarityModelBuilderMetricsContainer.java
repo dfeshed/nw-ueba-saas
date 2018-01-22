@@ -10,6 +10,7 @@ import presidio.monitoring.services.export.MetricsExporter;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -33,7 +34,7 @@ public class CategoryRarityModelBuilderMetricsContainer extends ModelMetricsCont
      * @param numOfPartitions
      * @param buckets
      */
-    public void updateMetric(int sizeOfFeatureValues, long numOfPartitions, double[] buckets) {
+    public void updateMetric(int sizeOfFeatureValues, long numOfPartitions, List<Double> buckets) {
         Metric metric = getMetric();
         metric.getValue().compute(MetricEnums.MetricValues.MAX_SIZE_OF_FEATURE_VALUES, (k, v) -> Math.max(v.doubleValue(), sizeOfFeatureValues));
         metric.getValue().compute(MetricEnums.MetricValues.SUM_SIZE_OF_FEATURE_VALUES, (k, v) -> v.doubleValue() + sizeOfFeatureValues);
@@ -46,7 +47,7 @@ public class CategoryRarityModelBuilderMetricsContainer extends ModelMetricsCont
             metric.getValue().compute(MetricEnums.MetricValues.AVG_NUM_OF_PARTITIONS, (k, v) -> (double) metric.getValue().get(MetricEnums.MetricValues.SUM_NUM_OF_PARTITIONS).intValue() / numOfContexts);
         }
 
-        if (Arrays.stream(buckets).limit(5).sum() > 0.0) {
+        if (  buckets.stream().mapToDouble(Double::doubleValue).limit(5).sum() > 0.0) {
             metric.getValue().compute(MetricEnums.MetricValues.AMOUNT_OF_CONTEXTS_WITH_POSITIVE_BUCKET_VALUES, (k, v) -> v.longValue() + 1);
         }
     }

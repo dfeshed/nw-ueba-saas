@@ -22,7 +22,7 @@
               },
               "additional-models": [
                 {
-                  "name": "numberOfSuccessfulFilePermissionChanges.userId.prior.global.file.hourly"
+                  "name": "numberOfSuccessfulFilePermissionChanges.userId.prior.file.hourly"
                 }
               ],
               "global-influence": 15,
@@ -64,7 +64,7 @@
               },
               "additional-models": [
                 {
-                  "name": "numberOfSuccessfulFileActions.userId.prior.global.file.hourly"
+                  "name": "numberOfSuccessfulFileActions.userId.prior.file.hourly"
                 }
               ],
               "global-influence": 15,
@@ -105,7 +105,7 @@
               },
               "additional-models": [
                 {
-                  "name": "numberOfFailedFilePermissionChanges.userId.prior.global.file.hourly"
+                  "name": "numberOfFailedFilePermissionChanges.userId.prior.file.hourly"
                 }
               ],
               "global-influence": 15,
@@ -146,7 +146,7 @@
               },
               "additional-models": [
                 {
-                  "name": "numberOfFailedFileActions.userId.prior.global.file.hourly"
+                  "name": "numberOfFailedFileActions.userId.prior.file.hourly"
                 }
               ],
               "global-influence": 15,
@@ -187,7 +187,7 @@
               },
               "additional-models": [
                 {
-                  "name": "numberOfDistinctFileOpened.userId.prior.global.file.hourly"
+                  "name": "numberOfDistinctFileOpened.userId.prior.file.hourly"
                 }
               ],
               "global-influence": 15,
@@ -228,7 +228,7 @@
               },
               "additional-models": [
                 {
-                  "name": "numberOfDistinctFolderOpened.userId.prior.global.file.hourly"
+                  "name": "numberOfDistinctFolderOpened.userId.prior.file.hourly"
                 }
               ],
               "global-influence": 15,
@@ -269,7 +269,7 @@
               },
               "additional-models": [
                 {
-                  "name": "numberOfFileDeleted.userId.prior.global.file.hourly"
+                  "name": "numberOfFileDeleted.userId.prior.file.hourly"
                 }
               ],
               "global-influence": 15,
@@ -310,7 +310,7 @@
               },
               "additional-models": [
                 {
-                  "name": "numberOfSuccessfulFileRenamed.userId.prior.global.file.hourly"
+                  "name": "numberOfSuccessfulFileRenamed.userId.prior.file.hourly"
                 }
               ],
               "global-influence": 15,
@@ -351,7 +351,7 @@
               },
               "additional-models": [
                 {
-                  "name": "numberOfFileMoved.userId.prior.global.file.hourly"
+                  "name": "numberOfFileMoved.userId.prior.file.hourly"
                 }
               ],
               "global-influence": 15,
@@ -392,7 +392,7 @@
               },
               "additional-models": [
                 {
-                  "name": "numberOfFileMovedFromSharedDrive.userId.prior.global.file.hourly"
+                  "name": "numberOfFileMovedFromSharedDrive.userId.prior.file.hourly"
                 }
               ],
               "global-influence": 15,
@@ -433,7 +433,7 @@
               },
               "additional-models": [
                 {
-                  "name": "numberOfFileMovedToSharedDrive.userId.prior.global.file.hourly"
+                  "name": "numberOfFileMovedToSharedDrive.userId.prior.file.hourly"
                 }
               ],
               "global-influence": 15,
