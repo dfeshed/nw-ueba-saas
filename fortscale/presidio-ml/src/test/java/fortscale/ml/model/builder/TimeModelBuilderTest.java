@@ -28,7 +28,7 @@ public class TimeModelBuilderTest {
 		TimeModel model = (TimeModel) builder.build(new GenericHistogram());
 		Assert.assertEquals(timeResolution, Whitebox.getInternalState(model, "timeResolution"));
 		Assert.assertEquals(bucketSize, Whitebox.getInternalState(model, "bucketSize"));
-		Assert.assertEquals(maxRareTimestampCount * 2, model.getCategoryRarityModel().getBuckets().length);
+		Assert.assertEquals(maxRareTimestampCount * 2, model.getCategoryRarityModel().getBuckets().size());
 	}
 
 	@Test(expected = IllegalArgumentException.class)

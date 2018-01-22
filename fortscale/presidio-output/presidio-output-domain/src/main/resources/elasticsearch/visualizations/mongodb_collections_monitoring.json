@@ -1,0 +1,226 @@
+[
+  {
+    "_id": "bde6fe50-fe15-11e7-98dd-5bdc838a94a4",
+    "_type": "visualization",
+    "_source": {
+      "title": "MongoDB count accm",
+      "visState": "{\"title\":\"MongoDB count accm\",\"type\":\"metrics\",\"params\":{\"id\":\"0cdfa7e0-fe12-11e7-98dd-5bdc838a94a4\",\"type\":\"timeseries\",\"series\":[{\"id\":\"238904c0-fe15-11e7-98dd-5bdc838a94a4\",\"color\":\"rgba(12,121,125,1)\",\"split_mode\":\"terms\",\"metrics\":[{\"id\":\"238904c1-fe15-11e7-98dd-5bdc838a94a4\",\"type\":\"count\",\"field\":\"responsetime\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"line\",\"line_width\":\"1\",\"point_size\":1,\"fill\":\"0\",\"stacked\":\"none\",\"terms_field\":\"resource\",\"terms_size\":\"20\"}],\"time_field\":\"@timestamp\",\"index_pattern\":\"packetbeat-*\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"filter\":\"type:mongodb AND resource:presidio.accm*\",\"background_color\":null,\"legend_position\":\"right\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\"}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "c75404b0-fe15-11e7-98dd-5bdc838a94a4",
+    "_type": "visualization",
+    "_source": {
+      "title": "MongoDB count aggr",
+      "visState": "{\"title\":\"MongoDB count aggr\",\"type\":\"metrics\",\"params\":{\"id\":\"0cdfa7e0-fe12-11e7-98dd-5bdc838a94a4\",\"type\":\"timeseries\",\"series\":[{\"id\":\"238904c0-fe15-11e7-98dd-5bdc838a94a4\",\"color\":\"rgba(0,98,177,1)\",\"split_mode\":\"terms\",\"metrics\":[{\"id\":\"238904c1-fe15-11e7-98dd-5bdc838a94a4\",\"type\":\"count\",\"field\":\"responsetime\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"line\",\"line_width\":\"1\",\"point_size\":1,\"fill\":\"0\",\"stacked\":\"none\",\"terms_field\":\"resource\",\"terms_size\":\"20\",\"hide_in_legend\":0}],\"time_field\":\"@timestamp\",\"index_pattern\":\"packetbeat-*\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"filter\":\"type:mongodb AND resource:presidio.aggr*\",\"background_color\":null,\"legend_position\":\"right\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\"}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "fd603b00-fe15-11e7-98dd-5bdc838a94a4",
+    "_type": "visualization",
+    "_source": {
+      "title": "MongoDB count enriched",
+      "visState": "{\"title\":\"MongoDB count enriched\",\"type\":\"metrics\",\"params\":{\"id\":\"0cdfa7e0-fe12-11e7-98dd-5bdc838a94a4\",\"type\":\"timeseries\",\"series\":[{\"id\":\"238904c0-fe15-11e7-98dd-5bdc838a94a4\",\"color\":\"rgba(101,50,148,1)\",\"split_mode\":\"terms\",\"metrics\":[{\"id\":\"238904c1-fe15-11e7-98dd-5bdc838a94a4\",\"type\":\"count\",\"field\":\"responsetime\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"line\",\"line_width\":\"1\",\"point_size\":1,\"fill\":\"0\",\"stacked\":\"none\",\"terms_field\":\"resource\",\"terms_size\":\"20\"}],\"time_field\":\"@timestamp\",\"index_pattern\":\"packetbeat-*\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"filter\":\"type:mongodb AND resource:presidio.enriched*\",\"background_color\":null,\"legend_position\":\"right\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\"}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "e42185e0-fe15-11e7-98dd-5bdc838a94a4",
+    "_type": "visualization",
+    "_source": {
+      "title": "MongoDB count input",
+      "visState": "{\"title\":\"MongoDB count input\",\"type\":\"metrics\",\"params\":{\"id\":\"0cdfa7e0-fe12-11e7-98dd-5bdc838a94a4\",\"type\":\"timeseries\",\"series\":[{\"id\":\"238904c0-fe15-11e7-98dd-5bdc838a94a4\",\"color\":\"rgba(171,20,158,1)\",\"split_mode\":\"terms\",\"metrics\":[{\"id\":\"238904c1-fe15-11e7-98dd-5bdc838a94a4\",\"type\":\"count\",\"field\":\"responsetime\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"line\",\"line_width\":\"1\",\"point_size\":1,\"fill\":\"0\",\"stacked\":\"none\",\"terms_field\":\"resource\",\"terms_size\":\"20\"}],\"time_field\":\"@timestamp\",\"index_pattern\":\"packetbeat-*\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"filter\":\"type:mongodb AND resource:presidio.input*\",\"background_color\":null,\"legend_position\":\"right\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\"}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "9f2afaf0-fe12-11e7-98dd-5bdc838a94a4",
+    "_type": "visualization",
+    "_source": {
+      "title": "MongoDB count models",
+      "visState": "{\"title\":\"MongoDB count models\",\"type\":\"metrics\",\"params\":{\"id\":\"0cdfa7e0-fe12-11e7-98dd-5bdc838a94a4\",\"type\":\"timeseries\",\"series\":[{\"id\":\"0cdfa7e1-fe12-11e7-98dd-5bdc838a94a4\",\"color\":\"rgba(128,137,0,1)\",\"split_mode\":\"terms\",\"metrics\":[{\"id\":\"0cdfa7e2-fe12-11e7-98dd-5bdc838a94a4\",\"type\":\"count\",\"field\":\"responsetime\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"line\",\"line_width\":\"1\",\"point_size\":1,\"fill\":\"0\",\"stacked\":\"none\",\"terms_field\":\"resource\",\"terms_size\":\"20\"}],\"time_field\":\"@timestamp\",\"index_pattern\":\"packetbeat-*\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"filter\":\"type:mongodb AND resource:presidio.model*\",\"background_color\":null,\"legend_position\":\"right\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\"}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "d50e9340-fe15-11e7-98dd-5bdc838a94a4",
+    "_type": "visualization",
+    "_source": {
+      "title": "MongoDB count output",
+      "visState": "{\"title\":\"MongoDB count output\",\"type\":\"metrics\",\"params\":{\"id\":\"0cdfa7e0-fe12-11e7-98dd-5bdc838a94a4\",\"type\":\"timeseries\",\"series\":[{\"id\":\"238904c0-fe15-11e7-98dd-5bdc838a94a4\",\"color\":\"rgba(196,81,0,1)\",\"split_mode\":\"terms\",\"metrics\":[{\"id\":\"238904c1-fe15-11e7-98dd-5bdc838a94a4\",\"type\":\"count\",\"field\":\"responsetime\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"line\",\"line_width\":\"1\",\"point_size\":1,\"fill\":\"0\",\"stacked\":\"none\",\"terms_field\":\"resource\",\"terms_size\":\"20\"}],\"time_field\":\"@timestamp\",\"index_pattern\":\"packetbeat-*\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"filter\":\"type:mongodb AND resource:presidio.output*\",\"background_color\":null,\"legend_position\":\"right\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\"}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "f018e0a0-fe15-11e7-98dd-5bdc838a94a4",
+    "_type": "visualization",
+    "_source": {
+      "title": "MongoDB count scored",
+      "visState": "{\"title\":\"MongoDB count scored\",\"type\":\"metrics\",\"params\":{\"id\":\"0cdfa7e0-fe12-11e7-98dd-5bdc838a94a4\",\"type\":\"timeseries\",\"series\":[{\"id\":\"238904c0-fe15-11e7-98dd-5bdc838a94a4\",\"color\":\"rgba(25,77,51,1)\",\"split_mode\":\"terms\",\"metrics\":[{\"id\":\"238904c1-fe15-11e7-98dd-5bdc838a94a4\",\"type\":\"count\",\"field\":\"responsetime\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"line\",\"line_width\":\"1\",\"point_size\":1,\"fill\":\"0\",\"stacked\":\"none\",\"terms_field\":\"resource\",\"terms_size\":\"20\"}],\"time_field\":\"@timestamp\",\"index_pattern\":\"packetbeat-*\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"filter\":\"type:mongodb AND resource:presidio.scored*\",\"background_color\":null,\"legend_position\":\"right\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\"}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "b3d0bfa0-fe15-11e7-98dd-5bdc838a94a4",
+    "_type": "visualization",
+    "_source": {
+      "title": "MongoDB count smart",
+      "visState": "{\"title\":\"MongoDB count smart\",\"type\":\"metrics\",\"params\":{\"id\":\"0cdfa7e0-fe12-11e7-98dd-5bdc838a94a4\",\"type\":\"timeseries\",\"series\":[{\"id\":\"238904c0-fe15-11e7-98dd-5bdc838a94a4\",\"color\":\"rgba(159,5,0,1)\",\"split_mode\":\"terms\",\"metrics\":[{\"id\":\"238904c1-fe15-11e7-98dd-5bdc838a94a4\",\"type\":\"count\",\"field\":\"responsetime\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"line\",\"line_width\":\"1\",\"point_size\":1,\"fill\":\"0\",\"stacked\":\"none\",\"terms_field\":\"resource\",\"terms_size\":\"20\"}],\"time_field\":\"@timestamp\",\"index_pattern\":\"packetbeat-*\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"filter\":\"type:mongodb AND resource:presidio.smart*\",\"background_color\":null,\"legend_position\":\"right\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\"}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "953c8830-fe15-11e7-98dd-5bdc838a94a4",
+    "_type": "visualization",
+    "_source": {
+      "title": "MongoDB response time accm",
+      "visState": "{\"title\":\"MongoDB response time accm\",\"type\":\"metrics\",\"params\":{\"id\":\"0cdfa7e0-fe12-11e7-98dd-5bdc838a94a4\",\"type\":\"timeseries\",\"series\":[{\"id\":\"238904c0-fe15-11e7-98dd-5bdc838a94a4\",\"color\":\"rgba(12,121,125,1)\",\"split_mode\":\"terms\",\"metrics\":[{\"id\":\"238904c1-fe15-11e7-98dd-5bdc838a94a4\",\"type\":\"avg\",\"field\":\"responsetime\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"line\",\"line_width\":\"1\",\"point_size\":1,\"fill\":\"0\",\"stacked\":\"none\",\"terms_field\":\"resource\",\"terms_size\":\"20\"}],\"time_field\":\"@timestamp\",\"index_pattern\":\"packetbeat-*\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"filter\":\"type:mongodb AND resource:presidio.accm*\",\"background_color\":null,\"legend_position\":\"right\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\"}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "e64e1f50-fe14-11e7-98dd-5bdc838a94a4",
+    "_type": "visualization",
+    "_source": {
+      "title": "MongoDB response time aggr",
+      "visState": "{\"title\":\"MongoDB response time aggr\",\"type\":\"metrics\",\"params\":{\"id\":\"0cdfa7e0-fe12-11e7-98dd-5bdc838a94a4\",\"type\":\"timeseries\",\"series\":[{\"id\":\"0cdfa7e1-fe12-11e7-98dd-5bdc838a94a4\",\"color\":\"rgba(0,98,177,1)\",\"split_mode\":\"terms\",\"metrics\":[{\"id\":\"0cdfa7e2-fe12-11e7-98dd-5bdc838a94a4\",\"type\":\"avg\",\"field\":\"responsetime\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"line\",\"line_width\":\"1\",\"point_size\":1,\"fill\":\"0\",\"stacked\":\"none\",\"terms_field\":\"resource\",\"terms_size\":\"20\"}],\"time_field\":\"@timestamp\",\"index_pattern\":\"packetbeat-*\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"filter\":\"type:mongodb AND resource:presidio.aggr*\",\"background_color\":null,\"legend_position\":\"right\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\"}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "40a457d0-fe15-11e7-98dd-5bdc838a94a4",
+    "_type": "visualization",
+    "_source": {
+      "title": "MongoDB response time enriched",
+      "visState": "{\"title\":\"MongoDB response time enriched\",\"type\":\"metrics\",\"params\":{\"id\":\"0cdfa7e0-fe12-11e7-98dd-5bdc838a94a4\",\"type\":\"timeseries\",\"series\":[{\"id\":\"238904c0-fe15-11e7-98dd-5bdc838a94a4\",\"color\":\"rgba(101,50,148,1)\",\"split_mode\":\"terms\",\"metrics\":[{\"id\":\"238904c1-fe15-11e7-98dd-5bdc838a94a4\",\"type\":\"avg\",\"field\":\"responsetime\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"line\",\"line_width\":\"1\",\"point_size\":1,\"fill\":\"0\",\"stacked\":\"none\",\"terms_field\":\"resource\",\"terms_size\":\"20\"}],\"time_field\":\"@timestamp\",\"index_pattern\":\"packetbeat-*\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"filter\":\"type:mongodb AND resource:presidio.enriched*\",\"background_color\":null,\"legend_position\":\"right\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\"}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "c61119e0-fe14-11e7-98dd-5bdc838a94a4",
+    "_type": "visualization",
+    "_source": {
+      "title": "MongoDB response time input",
+      "visState": "{\"title\":\"MongoDB response time input\",\"type\":\"metrics\",\"params\":{\"id\":\"0cdfa7e0-fe12-11e7-98dd-5bdc838a94a4\",\"type\":\"timeseries\",\"series\":[{\"id\":\"0cdfa7e1-fe12-11e7-98dd-5bdc838a94a4\",\"color\":\"rgba(171,20,158,1)\",\"split_mode\":\"terms\",\"metrics\":[{\"id\":\"0cdfa7e2-fe12-11e7-98dd-5bdc838a94a4\",\"type\":\"avg\",\"field\":\"responsetime\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"line\",\"line_width\":\"1\",\"point_size\":1,\"fill\":\"0\",\"stacked\":\"none\",\"terms_field\":\"resource\",\"terms_size\":\"20\"}],\"time_field\":\"@timestamp\",\"index_pattern\":\"packetbeat-*\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"filter\":\"type:mongodb AND resource:presidio.input*\",\"background_color\":null,\"legend_position\":\"right\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\"}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "a9320c80-fe14-11e7-98dd-5bdc838a94a4",
+    "_type": "visualization",
+    "_source": {
+      "title": "MongoDB response time models",
+      "visState": "{\"title\":\"MongoDB response time models\",\"type\":\"metrics\",\"params\":{\"id\":\"0cdfa7e0-fe12-11e7-98dd-5bdc838a94a4\",\"type\":\"timeseries\",\"series\":[{\"id\":\"0cdfa7e1-fe12-11e7-98dd-5bdc838a94a4\",\"color\":\"rgba(128,137,0,1)\",\"split_mode\":\"terms\",\"metrics\":[{\"id\":\"0cdfa7e2-fe12-11e7-98dd-5bdc838a94a4\",\"type\":\"avg\",\"field\":\"responsetime\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"line\",\"line_width\":\"1\",\"point_size\":1,\"fill\":\"0\",\"stacked\":\"none\",\"terms_field\":\"resource\",\"terms_size\":\"20\"}],\"time_field\":\"@timestamp\",\"index_pattern\":\"packetbeat-*\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"filter\":\"type:mongodb AND resource:presidio.model*\",\"background_color\":null,\"legend_position\":\"right\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\"}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "493fb650-fe15-11e7-98dd-5bdc838a94a4",
+    "_type": "visualization",
+    "_source": {
+      "title": "MongoDB response time output",
+      "visState": "{\"title\":\"MongoDB response time output\",\"type\":\"metrics\",\"params\":{\"id\":\"0cdfa7e0-fe12-11e7-98dd-5bdc838a94a4\",\"type\":\"timeseries\",\"series\":[{\"id\":\"238904c0-fe15-11e7-98dd-5bdc838a94a4\",\"color\":\"rgba(196,81,0,1)\",\"split_mode\":\"terms\",\"metrics\":[{\"id\":\"238904c1-fe15-11e7-98dd-5bdc838a94a4\",\"type\":\"avg\",\"field\":\"responsetime\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"line\",\"line_width\":\"1\",\"point_size\":1,\"fill\":\"0\",\"stacked\":\"none\",\"terms_field\":\"resource\",\"terms_size\":\"20\"}],\"time_field\":\"@timestamp\",\"index_pattern\":\"packetbeat-*\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"filter\":\"type:mongodb AND resource:presidio.output*\",\"background_color\":null,\"legend_position\":\"right\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\"}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "fc75a960-fe14-11e7-98dd-5bdc838a94a4",
+    "_type": "visualization",
+    "_source": {
+      "title": "MongoDB response time scored",
+      "visState": "{\"title\":\"MongoDB response time scored\",\"type\":\"metrics\",\"params\":{\"id\":\"0cdfa7e0-fe12-11e7-98dd-5bdc838a94a4\",\"type\":\"timeseries\",\"series\":[{\"id\":\"0cdfa7e1-fe12-11e7-98dd-5bdc838a94a4\",\"color\":\"rgba(25,77,51,1)\",\"split_mode\":\"terms\",\"metrics\":[{\"id\":\"0cdfa7e2-fe12-11e7-98dd-5bdc838a94a4\",\"type\":\"avg\",\"field\":\"responsetime\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"line\",\"line_width\":\"1\",\"point_size\":1,\"fill\":\"0\",\"stacked\":\"none\",\"terms_field\":\"resource\",\"terms_size\":\"20\"}],\"time_field\":\"@timestamp\",\"index_pattern\":\"packetbeat-*\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"filter\":\"type:mongodb AND resource:presidio.scored*\",\"background_color\":null,\"legend_position\":\"right\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\"}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "aa0bae30-fe15-11e7-98dd-5bdc838a94a4",
+    "_type": "visualization",
+    "_source": {
+      "title": "MongoDB response time smart",
+      "visState": "{\"title\":\"MongoDB response time smart\",\"type\":\"metrics\",\"params\":{\"id\":\"0cdfa7e0-fe12-11e7-98dd-5bdc838a94a4\",\"type\":\"timeseries\",\"series\":[{\"id\":\"238904c0-fe15-11e7-98dd-5bdc838a94a4\",\"color\":\"rgba(159,5,0,1)\",\"split_mode\":\"terms\",\"metrics\":[{\"id\":\"238904c1-fe15-11e7-98dd-5bdc838a94a4\",\"type\":\"avg\",\"field\":\"responsetime\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"line\",\"line_width\":\"1\",\"point_size\":1,\"fill\":\"0\",\"stacked\":\"none\",\"terms_field\":\"resource\",\"terms_size\":\"20\"}],\"time_field\":\"@timestamp\",\"index_pattern\":\"packetbeat-*\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"filter\":\"type:mongodb AND resource:presidio.smart*\",\"background_color\":null,\"legend_position\":\"right\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\"}},\"filter\":[]}"
+      }
+    }
+  }
+]

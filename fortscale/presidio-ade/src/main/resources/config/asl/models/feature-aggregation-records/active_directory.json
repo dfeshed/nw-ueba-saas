@@ -18,7 +18,7 @@
       }
     },
     {
-      "name": "numberOfSensitiveGroupMembershipOperation.userId.prior.global.activeDirectory.hourly",
+      "name": "numberOfSensitiveGroupMembershipOperation.userId.prior.activeDirectory.hourly",
       "retriever": {
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
@@ -50,7 +50,7 @@
       }
     },
     {
-      "name": "numberOfGroupMembershipOperation.userId.prior.global.activeDirectory.hourly",
+      "name": "numberOfGroupMembershipOperation.userId.prior.activeDirectory.hourly",
       "retriever": {
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
@@ -82,7 +82,7 @@
       }
     },
     {
-      "name": "numberOfSuccessfulObjectManagementOperation.userId.prior.global.activeDirectory.hourly",
+      "name": "numberOfSuccessfulObjectManagementOperation.userId.prior.activeDirectory.hourly",
       "retriever": {
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
@@ -114,7 +114,7 @@
       }
     },
     {
-      "name": "numberOfFailedOperationType.userId.prior.global.activeDirectory.hourly",
+      "name": "numberOfFailedOperationType.userId.prior.activeDirectory.hourly",
       "retriever": {
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
@@ -146,7 +146,7 @@
       }
     },
     {
-      "name": "numberOfSuccessfulUserManagementSecuritySensitiveOperation.userId.prior.global.activeDirectory.hourly",
+      "name": "numberOfSuccessfulUserManagementSecuritySensitiveOperation.userId.prior.activeDirectory.hourly",
       "retriever": {
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,

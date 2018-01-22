@@ -6,8 +6,8 @@ import org.springframework.util.Assert;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class PersonalThresholdModel implements Model {
-	private double uniformThreshold;
-	private double normalizationFactor;
+	private Double uniformThreshold;
+	private Double normalizationFactor;
 
 	public PersonalThresholdModel(int numOfContexts, long numOfOrganizationScores, double uniformThreshold) {
 		Assert.isTrue(numOfContexts > 0);

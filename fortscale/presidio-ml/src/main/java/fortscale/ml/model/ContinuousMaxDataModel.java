@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
         fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE,
         setterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
 public class ContinuousMaxDataModel implements IContinuousDataModel,PartitionedDataModel {
-    private final long numOfPartitions;
+    private final Long numOfPartitions;
     private ContinuousDataModel continuousDataModel;
     private ContinuousDataModel continuousMaxDataModel;
 

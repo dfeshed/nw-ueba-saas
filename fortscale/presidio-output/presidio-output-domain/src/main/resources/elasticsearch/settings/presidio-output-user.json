@@ -11,6 +11,12 @@
               ],
               "type": "custom",
               "tokenizer": "standard"
+            },
+            "case_insensitive_sort": {
+              "tokenizer": "keyword",
+              "filter": [
+                "lowercase"
+              ]
             }
           }
         }

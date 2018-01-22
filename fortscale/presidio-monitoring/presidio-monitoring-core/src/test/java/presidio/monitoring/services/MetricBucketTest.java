@@ -88,7 +88,7 @@ public class MetricBucketTest {
             }
         });
         metricList = presidioMetricBucket.getSystemMetrics();
-        Assert.assertEquals(21, metricList.size());
+        Assert.assertEquals(5, metricList.size());
     }
 
     @Test

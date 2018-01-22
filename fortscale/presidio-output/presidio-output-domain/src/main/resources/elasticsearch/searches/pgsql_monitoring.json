@@ -1,0 +1,50 @@
+[
+  {
+    "_id": "PgSQL-errors",
+    "_type": "search",
+    "_source": {
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"packetbeat-*\",\"highlight\":{\"pre_tags\":[\"@kibana-highlighted-field@\"],\"post_tags\":[\"@/kibana-highlighted-field@\"],\"fields\":{\"*\":{}}},\"filter\":[{\"meta\":{\"disabled\":false,\"index\":\"packetbeat-*\",\"key\":\"type\",\"negate\":false,\"value\":\"pgsql\"},\"query\":{\"match\":{\"type\":{\"query\":\"pgsql\",\"type\":\"phrase\"}}}},{\"meta\":{\"index\":\"packetbeat-*\",\"negate\":true,\"key\":\"status\",\"value\":\"OK\",\"disabled\":false},\"query\":{\"match\":{\"status\":{\"query\":\"OK\",\"type\":\"phrase\"}}}}],\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}}}"
+      },
+      "columns": [
+        "method",
+        "type",
+        "path",
+        "responsetime",
+        "status"
+      ],
+      "sort": [
+        "@timestamp",
+        "desc"
+      ],
+      "hits": 0,
+      "description": "",
+      "title": "PgSQL errors"
+    }
+  },
+  {
+    "_id": "PgSQL-transactions",
+    "_type": "search",
+    "_source": {
+      "description": "",
+      "title": "PgSQL transactions",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"packetbeat-*\",\"highlight\":{\"pre_tags\":[\"@kibana-highlighted-field@\"],\"post_tags\":[\"@/kibana-highlighted-field@\"],\"fields\":{\"*\":{}}},\"filter\":[{\"meta\":{\"index\":\"packetbeat-*\",\"negate\":false,\"key\":\"type\",\"value\":\"pgsql\",\"disabled\":false},\"query\":{\"match\":{\"type\":{\"query\":\"pgsql\",\"type\":\"phrase\"}}}}],\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}}}"
+      },
+      "columns": [
+        "method",
+        "type",
+        "path",
+        "responsetime",
+        "status"
+      ],
+      "sort": [
+        "@timestamp",
+        "desc"
+      ],
+      "hits": 0
+    }
+  }
+]

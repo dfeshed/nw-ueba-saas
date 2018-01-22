@@ -9,10 +9,10 @@ import java.time.Instant;
 		fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE,
 		setterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
 public class SMARTValuesModel implements PartitionedDataModel {
-	private long numOfZeroValues;
-	private long numOfPositiveValues;
-	private double sumOfValues;
-	private long numOfPartitions;
+	private Long numOfZeroValues;
+	private Long numOfPositiveValues;
+	private Double sumOfValues;
+	private Long numOfPartitions;
 	private Instant weightsModelEndTime;
 
 	public void init(long numOfZeroValues, long numOfPositiveValues, double sumOfValues, long numOfPartitions, Instant weightsModelEndTime) {

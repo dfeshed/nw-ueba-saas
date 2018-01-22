@@ -153,7 +153,7 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
 
     @Override
     public Page<IndicatorEvent> findIndicatorEventsByIndicatorId(String indicatorId, PageRequest pageRequest) {
-        return indicatorEventRepository.findIndicatorEventsByIndicatorId(indicatorId, pageRequest);
+        return indicatorEventRepository.findIndicatorEventsByIndicatorIdOrderByEventTimeDesc(indicatorId, pageRequest);
     }
 
     @Override
