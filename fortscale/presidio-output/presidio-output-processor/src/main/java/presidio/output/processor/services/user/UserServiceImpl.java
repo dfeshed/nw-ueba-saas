@@ -16,7 +16,6 @@ import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -84,8 +83,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private UserDetails getUserDetails(String userId) {
-        List<String> collectionNames = new ArrayList<>(Arrays.asList("output_authentication_enriched_events",
-                "output_active_directory_enriched_events", "output_file_enriched_events"));
+        List<String> collectionNames = userSeverityService.collectionNamesByOrderForEvents();
         EnrichedEvent event = eventPersistencyService.findLatestEventForUser(userId, collectionNames);
         if (event == null) {
             log.error("no events were found for user {}", userId);
