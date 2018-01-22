@@ -34,7 +34,7 @@ public interface EventPersistencyService {
 
     List<? extends EnrichedEvent> readRecords(Schema schema, String userId, TimeRange timeRange, List<Pair<String, Object>> features, int numOfItemsToSkip, int pageSize);
 
-    EnrichedEvent findLatestEventForUser(String userId);
+    EnrichedEvent findLatestEventForUser(String userId, List<String> collectionNames);
 
     /**
      * Determine the feature property type

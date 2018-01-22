@@ -38,7 +38,7 @@ public class EventPersistencyServiceConfig {
 
     @Bean
     public ScoredEventService scoredEventService() {
-        return new ScoredEventServiceImpl(eventPersistencyService(),adeManagerSdk );
+        return new ScoredEventServiceImpl(eventPersistencyService(), adeManagerSdk);
     }
 
     @Bean
@@ -55,4 +55,5 @@ public class EventPersistencyServiceConfig {
     public OutputToClassNameTranslator outputToClassNameTranslator() {
         return new OutputToClassNameTranslator();
     }
+
 }
