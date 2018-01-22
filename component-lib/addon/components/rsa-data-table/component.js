@@ -1,3 +1,5 @@
+/* global addResizeListener */
+/* global removeResizeListener */
 import $ from 'jquery';
 import EmberObject from 'ember-object';
 import computed from 'ember-computed';
@@ -18,6 +20,16 @@ export default Component.extend(DomWatcher, EKMixin, {
   classNames: 'rsa-data-table',
   classNameBindings: ['fitToWidth'],
   whitespace: 14,
+
+  /**
+   * Flag which is set to true in case width has any units
+   * other than 'px' since we don't need to adjust the column
+   * widths if the units are other than 'px'
+   * @type {boolean}
+   * @private
+   */
+  needNotAdjustWidth: false,
+
 
   /**
    * Used by descendant components to find their data table ancestor.
@@ -212,7 +224,13 @@ export default Component.extend(DomWatcher, EKMixin, {
           if (isEmpty(get(column, 'width'))) {
             set(column, 'width', DEFAULT_COLUMN_WIDTH);
           }
-          columnWidths.push(get(column, 'width'));
+          const width = get(column, 'width');
+          // No need to adjust width in case of any other units except 'px'
+          // hence setting the flag for same
+          if (isNaN(width) && !width.includes('px')) {
+            this.set('needNotAdjustWidth', true);
+          }
+          columnWidths.push(width);
           if (isEmpty(get(column, 'visible'))) {
             set(column, 'visible', DEFAULT_COLUMN_VISIBILITY);
           }
@@ -273,12 +291,14 @@ export default Component.extend(DomWatcher, EKMixin, {
   _adjustWidthDiff(resizeColumn, resizeWidth) {
     const diff = get(resizeColumn, 'width') - resizeWidth;
     const columns = this.get('columns').filterBy('selected', true);
-    const len = columns.length > 1 ? (columns.length - 1) : 1;
+    const resizedColumns = this.get('columns').filterBy('resizedOnce', true).length;
+    const len = columns.length > resizedColumns ? (columns.length - resizedColumns) : 1;
     const adjust = diff / len;
     columns.forEach((column) => {
       if (column.displayIndex === resizeColumn.displayIndex) {
         set(column, 'width', resizeWidth);
-      } else {
+        set(column, 'resizedOnce', true);
+      } else if (!get(column, 'resizedOnce')) {
         // Every other time cell width will be addition of current width + adjustWidth.
         const width = adjust + get(column, 'width');
         set(column, 'width', width);
@@ -295,24 +315,29 @@ export default Component.extend(DomWatcher, EKMixin, {
    * @public
   */
   _applyColumnWidth(columns) {
-    const columnWidth = this._getColumnWidthSum(columns);
-    const sum = columnWidth.reduce((a, b) => a + b, 0);
-    if (isNaN(sum)) {
-      // No need to adjust width in case of any other units except 'px'
+    // No need to adjust width in case of any other units except 'px'
+    if (this.get('needNotAdjustWidth')) {
       return;
     }
+    const w = this.get('element.clientWidth') || 0;
+    this.set('currentClientWidth', w);
+    const columnWidth = this._getColumnWidthSum(columns);
+    const sum = columnWidth.reduce((a, b) => a + b, 0);
     const noOfColumns = columns.length;
+    const resizedColumns = this.get('columns').filterBy('resizedOnce', true).length;
     // Get view port width.
     const rowWidth = this.$().width();
     const diff = rowWidth - sum;
     // Need to adjust width only if view port is more than total cell width.
     if (diff > 0) {
       // Need to adjust only difference from view port.
-      const adjustWidth = (diff / noOfColumns - this.whitespace);
+      const adjustWidth = (diff / (noOfColumns - resizedColumns) - this.whitespace);
       columns.forEach((column, index) => {
         // Every time cell width will be addition of original width + adjustWidth.
-        const width = adjustWidth + columnWidth[index];
-        set(column, 'width', width);
+        if (!get(column, 'resizedOnce')) {
+          const width = adjustWidth + columnWidth[index];
+          set(column, 'width', width);
+        }
       });
     }
   },
@@ -326,10 +351,6 @@ export default Component.extend(DomWatcher, EKMixin, {
     const columnWidths = this.get('columnWidths');
     const columnWidth = columns.map((column) => {
       const currentColumnWidth = columnWidths[column.displayIndex];
-      // No need to adjust width in case of any other units except 'px'
-      if (isNaN(currentColumnWidth) && !currentColumnWidth.includes('px')) {
-        return;
-      }
       const match = String(currentColumnWidth).match(/([\d\.]+)([^\d]*)/);
       return match && Number(match[1]);
     });
@@ -403,8 +424,19 @@ export default Component.extend(DomWatcher, EKMixin, {
 
   didInsertElement() {
     this._super(...arguments);
+    // Need to recalculate column widths on change of data-table's viewport width
+    this._resizeListener = this.elementDidResize.bind(this);
+    addResizeListener(this.element, this._resizeListener);
     if (this.get('scrollToInitialSelectedIndex')) {
       run.schedule('afterRender', this, this._scrollToInitial);
+    }
+  },
+
+  willDestroyElement() {
+    this._super(...arguments);
+    if (this._resizeListener) {
+      removeResizeListener(this.element, this._resizeListener);
+      this._resizeListener = null;
     }
   },
 
@@ -446,6 +478,21 @@ export default Component.extend(DomWatcher, EKMixin, {
       }
     };
   }(),
+
+  /**
+   * @description This method is to re-calculate the cell width
+   * when the width of data-table's viewport changes
+   * @public
+   */
+  elementDidResize() {
+    run.throttle(() => {
+      const w = this.get('element.clientWidth') || 0;
+      if (!this.get('currentClientWidth') || w !== this.get('currentClientWidth')) {
+        const columns = this.get('columns').filterBy('selected', true).sortBy('displayIndex');
+        this._applyColumnWidth(columns);
+      }
+    }, 250);
+  },
 
   actions: {
     /**
@@ -493,6 +540,10 @@ export default Component.extend(DomWatcher, EKMixin, {
         if (!fn.apply(this, [column, width])) {
           return;
         }
+      }
+      if (this.get('needNotAdjustWidth')) {
+        set(column, 'width', width);
+        return;
       }
       this._adjustWidthDiff(column, width);
     },

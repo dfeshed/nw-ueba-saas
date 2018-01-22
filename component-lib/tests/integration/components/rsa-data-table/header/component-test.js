@@ -146,7 +146,7 @@ test('it should filter the columns', function(assert) {
   return wait().then(() => {
     assert.equal($('.rsa-data-table-column-selector-panel .rsa-form-checkbox').length, 4, 'Displaying all available columns on column-selector');
     this.set('searchTerm', 'xyz');
-    return wait('aaa').then(() => {
+    return wait().then(() => {
       assert.equal($('.rsa-data-table-column-selector-panel .rsa-form-checkbox').length, 2, 'Displaying all available columns on column-selector');
     });
   });

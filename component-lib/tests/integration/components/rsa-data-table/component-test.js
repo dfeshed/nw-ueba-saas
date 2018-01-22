@@ -1,6 +1,7 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import $ from 'jquery';
+import wait from 'ember-test-helpers/wait';
 
 const items = [ {
   service: 'notes',
@@ -72,4 +73,19 @@ test('since width is in some other units than px, so will not compute it', funct
 test('since combined cell width is more than viewport, so will not adjust the width', function(assert) {
   renderDifferentColumns(this, '600px');
   assert.equal($('.rsa-data-table-body-cell').attr('style'), 'width: 600px;');
+});
+
+test('when the width of ViewPort of data-table changes, it needs to recalculate the width for columns', function(assert) {
+  renderDifferentColumns(this);
+  $('.rsa-data-table').width(1000);
+  const match = $('.rsa-data-table-body-cell').attr('style').match(/([\d\.]+)([^\d]*)/);
+  const columnWidth = match && Number(match[1]);
+  $('.rsa-data-table').width(3000);
+  const done = assert.async();
+  return wait().then(() => {
+    const newMatch = $('.rsa-data-table-body-cell').attr('style').match(/([\d\.]+)([^\d]*)/);
+    const newColumnWidth = newMatch && Number(newMatch[1]);
+    assert.ok(columnWidth != newColumnWidth, true);
+    done();
+  });
 });
