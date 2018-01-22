@@ -251,24 +251,24 @@ public class UserSeverityServiceImpl implements UserSeverityService {
         }
 
         users.forEach(user -> {
+            boolean userInUpdatedUsers = false;
             User updatedUser;
             double userScore = user.getScore();
             UserSeverity newUserSeverity = severitiesMap.getUserSeverity(userScore);
             updatedUser = userPropertiesUpdateService.userPropertiesUpdate(user);
             logger.debug("Updating user severity for userId: " + user.getUserId());
+            if (updatedUser != null) {
+                user = updatedUser;
+                updatedUsers.add(user);
+                userInUpdatedUsers = true;
+            }
             if (!newUserSeverity.equals(user.getSeverity())) {
-                if (updatedUser != null) {
-                    user = updatedUser;
-                }
                 user.setSeverity(newUserSeverity);
-                updatedUsers.add(user); //Update user only if severity changes
-            } else {
-                if (updatedUser != null) {
-                    updatedUsers.add(updatedUser);
+                if (!userInUpdatedUsers) {
+                    updatedUsers.add(user);
                 }
             }
         });
-
         if (updatedUsers.size() > 0 && persistChanges) {
             userPersistencyService.save(updatedUsers);
         }
