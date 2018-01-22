@@ -136,6 +136,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void updateUserData() {
+        log.debug("Starting Updating all users alert data.");
+        updateAllUsersAlertData();
+        log.debug("finished updating all users alert data.");
+        userSeverityService.updateSeverities();
+    }
+
+    @Override
     public boolean updateAllUsersAlertData() {
 
         //Get map of users ids to new score and alerts count

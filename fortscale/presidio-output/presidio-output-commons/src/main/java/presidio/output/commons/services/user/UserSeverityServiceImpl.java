@@ -194,7 +194,7 @@ public class UserSeverityServiceImpl implements UserSeverityService {
 
         while (page != null && page.hasContent()) {
             logger.info("Updating severity for user's page: " + page.toString());
-            updateSeveritiesForUsersList(severitiesMap, page.getContent(), true);
+            updateUserSeveritiesAndProperties(severitiesMap, page.getContent(), true);
             page = getNextUserPage(userQueryBuilder, page);
 
         }
@@ -244,7 +244,7 @@ public class UserSeverityServiceImpl implements UserSeverityService {
         return page;
     }
 
-    private void updateSeveritiesForUsersList(UserSeverityServiceImpl.UserScoreToSeverity severitiesMap, List<User> users, boolean persistChanges) {
+    private void updateUserSeveritiesAndProperties(UserSeverityServiceImpl.UserScoreToSeverity severitiesMap, List<User> users, boolean persistChanges) {
         List<User> updatedUsers = new ArrayList<>();
         if (users == null) {
             return;

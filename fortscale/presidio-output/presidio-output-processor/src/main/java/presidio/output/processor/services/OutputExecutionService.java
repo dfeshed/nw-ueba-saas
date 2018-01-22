@@ -8,7 +8,7 @@ import java.time.Instant;
 public interface OutputExecutionService {
     void run(Instant startDate, Instant endDate) throws Exception;
 
-    void recalculateUserScore() throws Exception;
+    void updateAllUsersData() throws Exception;
 
     void clean(Instant startDate, Instant endDate) throws Exception;
 
