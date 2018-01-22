@@ -89,7 +89,7 @@ export const getNetworkInterfaces = createSelector(
         ipv6: networkInterface.ipv6 ? networkInterface.ipv6.filter((ip) => ip !== '::1') : []
       }));
       return validIPList.map(
-        (ip) => `${ip.ipv4 || ''} / ${ip.ipv6 || ''} | MAC Address: ${ip.macAddress || ''}`
+        (ip) => ({ ipv6: ip.ipv6 || '', macAddress: ip.macAddress || '', ipv4: ip.ipv4 || '' })
       );
     } else {
       return [];

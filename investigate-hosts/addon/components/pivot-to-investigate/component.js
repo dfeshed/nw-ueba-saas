@@ -5,14 +5,17 @@ import { next } from 'ember-runloop';
 import injectService from 'ember-service/inject';
 import get from 'ember-metal/get';
 import { connect } from 'ember-redux';
-import { getAllServices } from 'investigate-files/actions/data-creators';
+import { getAllServices } from 'investigate-hosts/actions/data-creators/host';
 import $ from 'jquery';
 
 const INVESTIGATE_META_MAPPING = {
-  'checksumSha256': 'checksum',
-  'checksumMd5': 'checksum',
-  'firstFileName': 'filename'
+  'machine.machineName': 'alias.host',
+  'userName': ['username', 'user.dst', 'user.src'],
+  'machineIpv4': ['ip.src', 'ip.dst', 'device.ip'],
+  'machineIpv6': ['ipv6.src', 'ipv6.dst', 'device.ipv6']
 };
+
+const SKIP_QUOTES = [ 'ip.src', 'ip.dst', 'ipv6.src', 'ipv6.dst', 'device.ip', 'device.ipv6' ];
 
 const dispatchToActions = {
   getAllServices
@@ -21,24 +24,48 @@ const dispatchToActions = {
 
 const PivotToInvestigate = Component.extend({
 
+  tagName: 'span',
+
   classNames: 'pivot-to-investigate',
 
   eventBus: injectService(),
+
+  timezone: injectService(),
+
+  showAsRightClick: false,
 
   showServiceModal: false,
 
   metaName: null,
 
+  metaValue: null,
+
   serviceList: null,
 
   item: null,
 
+
+  investigateText: null,
+
   timeRange: {
-    value: 24,
-    unit: 'hours'
+    value: 2,
+    unit: 'days'
   },
 
   selectedService: null,
+
+  @computed
+  contextItems() {
+    const cntx = this;
+    return [
+      {
+        label: 'Pivot to Investigate',
+        action() {
+          cntx.send('toggleServiceSelection');
+        }
+      }
+    ];
+  },
 
   @computed('selectedService')
   isDisabled(selectedService) {
@@ -64,10 +91,25 @@ const PivotToInvestigate = Component.extend({
   ],
 
   _buildFilter() {
-    const { metaName, item } = this.getProperties('metaName', 'item');
+    const { metaName, metaValue, item } = this.getProperties('metaName', 'metaValue', 'item');
     const investigateMeta = INVESTIGATE_META_MAPPING[metaName];
-    const value = get(item, metaName); // if metaValue not passed get the value from item
-    return `${investigateMeta} = "${value}"`;
+    const value = metaValue || get(item, metaName); // if metaValue not passed get the value from item
+    // If list meta then add || in query
+    if (Array.isArray(investigateMeta)) {
+      const query = investigateMeta.map((meta) => {
+        return this._getQuery(meta, value);
+      });
+      return query.join('||');
+    }
+    return this._getQuery(investigateMeta, value);
+  },
+
+
+  _getQuery(metaName, metaValue) {
+    if (SKIP_QUOTES.includes(metaName)) {
+      return `${metaName} = ${metaValue}`;
+    }
+    return `${metaName} = "${metaValue}"`;
   },
 
   _buildTimeRange() {
@@ -75,9 +117,16 @@ const PivotToInvestigate = Component.extend({
     const endTime = moment().endOf('minute');
     const startTime = moment(endTime).subtract(value, unit).add(1, 'minutes').startOf('minute');
     return {
-      startTime,
-      endTime
+      startTime: this._getTimezoneTime(startTime),
+      endTime: this._getTimezoneTime(endTime)
     };
+  },
+
+  _getTimezoneTime(browserTime) {
+    const { zoneId } = this.get('timezone.selected');
+    const timeWithoutZone = moment(browserTime).parseZone(browserTime).format('YYYY-MM-DD HH:mm:ss'); // Removing browser timezone information
+    const timeInUserTimeZone = moment.tz(timeWithoutZone, zoneId);
+    return timeInUserTimeZone;
   },
 
   /**
@@ -118,6 +167,7 @@ const PivotToInvestigate = Component.extend({
   _closeModal() {
     this.get('eventBus').trigger('rsa-application-modal-close-service-modal');
     this.set('showServiceModal', false);
+    this.set('selectedService', null);
   },
 
   actions: {
@@ -148,6 +198,7 @@ const PivotToInvestigate = Component.extend({
 
     onModalClose() {
       this.set('showServiceModal', false);
+      this.set('selectedService', null);
     }
   }
 });

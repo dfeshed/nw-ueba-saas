@@ -2660,6 +2660,7 @@ export default {
     pivotToInvestigate: {
       title: 'ja_Select Service',
       buttonText: 'ja_Navigate',
+      buttonText2: 'ja_Event Analysis',
       iconTitle: 'ja_Pivot to Investigate'
     }
   },

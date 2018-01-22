@@ -24,7 +24,7 @@ test('visiting /investigate-hosts', function(assert) {
     assert.equal(currentURL(), '/investigate-hosts');
   });
   /* Test delete flow */
-  waitFor(selectorToExist('.rsa-form-checkbox'));
+  waitFor(selectorToExist('.rsa-data-table-body-row'));
   andThen(() => {
     assert.equal($(deleteButton)[0].innerText, 'Delete');
     assert.equal($(deleteButton).attr('disabled'), 'disabled');

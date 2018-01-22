@@ -51,9 +51,7 @@ test('Get the length of visible items in datatable', function(assert) {
     assert.equal(this.$('.rsa-process-tree .rsa-data-table-body-row').length, 77, '77 visible items in datatable');
   });
 });
-
 sinon.stub(DataCreators, 'getProcessDetails');
-
 test('Check that row click action is handled', function(assert) {
   assert.expect(4);
   new ReduxDataHelper(setState)

@@ -1,6 +1,12 @@
 <hbox class="host-title" fit>
   {{rsa-icon  disabled=false  class='host-title-icon'  name='computer-notebook-2'}}
-  <div class="host-name">{{hostName}}</div>
+  {{#pivot-to-investigate
+    serviceList=serviceList
+    metaName='machine.machineName'
+    metaValue=hostName
+    showAsRightClick=true}}
+    <div class="host-name">{{hostName}}</div>
+  {{/pivot-to-investigate}}
   <div class='divider'/>
 </hbox>
 

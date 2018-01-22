@@ -4,11 +4,13 @@ import { setNewTabView } from 'investigate-hosts/actions/data-creators/details';
 import { toggleOverviewPanel } from 'investigate-hosts/actions/ui-state-creators';
 import { getHostDetailTabs } from 'investigate-hosts/reducers/visuals/selectors';
 import { hostName } from 'investigate-hosts/reducers/details/overview/selectors';
+import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
 import computed from 'ember-computed-decorators';
 
 const stateToComputed = (state) => ({
   hostDetailTabs: getHostDetailTabs(state),
   hostName: hostName(state),
+  serviceList: serviceList(state),
   isOverviewPanelVisible: state.endpoint.detailsInput.isOverviewPanelVisible
 });
 

@@ -10,7 +10,7 @@
       {{#link-to "hosts" (query-params machineId=item.id tabName='OVERVIEW')}}{{get item column.field}}{{/link-to}}
     </div>
     <div class="pivot-to-investigate">
-      {{host-list/host-table/pivot-to-investigate item=item metaName='machine.machineName' serviceList=serviceList}}
+      {{pivot-to-investigate item=item metaName='machine.machineName' serviceList=serviceList}}
     </div>
   </hbox>
 {{else if (eq column.field 'agentStatus.lastSeenTime')}}

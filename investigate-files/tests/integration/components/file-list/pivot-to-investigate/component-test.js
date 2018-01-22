@@ -52,7 +52,7 @@ test('should enable the navigate button on selecting the service', function(asse
     assert.equal($('#modalDestination .service-modal').length, 1, 'Expected to render service modal');
     assert.equal($('#modalDestination .rsa-data-table').length, 1, 'Expected to render rsa data table');
     assert.equal($('#modalDestination .rsa-data-table-body-row').length, 2, 'Expected to render 2 services');
-    assert.equal($('#modalDestination .is-disabled').length, 1, 'Expected to disable the navigate button');
+    assert.equal($('#modalDestination .is-disabled').length, 2, 'Expected to disable the navigate button');
     $('.rsa-data-table .rsa-data-table-body-row').first().click();
     return wait().then(() => {
       assert.equal($('#modalDestination .is-disabled').length, 0, 'Expected to enable the navigate button');
@@ -75,7 +75,7 @@ test('should open the investigate page in new window', function(assert) {
     $('.rsa-data-table .rsa-data-table-body-row').first().click();
     return wait().then(() => {
       assert.equal($('#modalDestination .is-disabled').length, 0, 'Expected to enable the navigate button');
-      $('.is-primary').trigger('click');
+      $('.is-primary:eq(0)').trigger('click');
       assert.ok(actionSpy.calledOnce);
       actionSpy.reset();
       actionSpy.restore();

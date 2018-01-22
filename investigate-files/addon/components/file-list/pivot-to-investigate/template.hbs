@@ -31,8 +31,11 @@
         {{#rsa-form-button defaultAction='onCancel'}}
           {{t 'forms.cancel'}}
         {{/rsa-form-button}}
-        {{#rsa-form-button isDisabled=isDisabled style='primary' click=(action 'pivotToInvestigate')}}
+        {{#rsa-form-button isDisabled=isDisabled style='primary' click=(action 'pivotToInvestigateNavigate')}}
           {{t 'investigateHosts.pivotToInvestigate.buttonText'}}
+        {{/rsa-form-button}}
+        {{#rsa-form-button isDisabled=isDisabled style='primary' click=(action 'pivotToInvestigateEventAnalysis')}}
+          {{t 'investigateHosts.pivotToInvestigate.buttonText2'}}
         {{/rsa-form-button}}
       </hbox>
     </footer>

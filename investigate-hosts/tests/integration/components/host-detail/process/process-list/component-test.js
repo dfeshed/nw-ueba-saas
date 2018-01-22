@@ -51,9 +51,7 @@ test('Process list is rendered', function(assert) {
   {{host-detail/process/process-list}}`);
   assert.equal(this.$('.rsa-data-table-body-row').length, 77, 'Row Length of process list rendered');
 });
-
 sinon.stub(DataCreators, 'getProcessDetails');
-
 test('Check that row click action is handled', function(assert) {
   assert.expect();
   new ReduxDataHelper(setState)

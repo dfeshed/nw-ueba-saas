@@ -6,7 +6,14 @@
       </span>
       <vbox class='user-info-content' fit>
         <box class='host-content__user-details__name'>
-          {{user.name}}
+          {{#pivot-to-investigate
+            serviceList=serviceList
+            metaName='userName'
+            metaValue=user.name
+            showAsRightClick=true}}
+            {{user.name}}
+          {{/pivot-to-investigate}}
+
         </box>
         <box class='host-content__user-details__administrator'>
           {{#if user.administrator}} {{t 'investigateHosts.hosts.summary.body.user.administrator'}} {{/if}}
