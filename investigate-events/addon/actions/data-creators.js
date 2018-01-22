@@ -1,6 +1,7 @@
 import RSVP from 'rsvp';
 import config from 'ember-get-config';
 import * as ACTION_TYPES from './types';
+import TIME_RANGES from 'investigate-events/constants/time-ranges';
 import { fetchServices, fetchSummary } from './fetch/services';
 import { fetchColumnGroups } from './fetch/column-groups';
 import { fetchAliases, fetchLanguage } from './fetch/dictionaries';
@@ -64,6 +65,10 @@ const _getPreferencesPromise = (dispatch, getState, modelName) => {
             payload: data
           });
         } else {
+          dispatch({
+            type: ACTION_TYPES.SET_PREFERENCES,
+            payload: { queryTimeFormat: TIME_RANGES.DATABASE_TIME }
+          });
           // Since there is no preference data for the current user, set the default column group.
           // This cannot be set as initial state in redux, since it results in the entire events table
           // rendering twice - the first time for default, then again for the persisted group when
