@@ -139,7 +139,7 @@ function buildMockServer {
   unsetWebProxy
 
   # Run eslint/tests on mock-server code
-  local shouldTestApp=${RUN_UNIT_TESTS} && $(doTestApp mock-server)
+  local shouldTestApp=$(doTestApp mock-server)
   if [[ "$shouldTestApp" == "false" ]]
   then
     info "No reason to test mock-server, skipping it"
@@ -149,7 +149,7 @@ function buildMockServer {
     checkError "ESLint failed for mock-server"
     info "Running mock-server tests"
     mockServerTestPort=${MOCK_SERVER_PORTS_ARRAY[$RANDOM % ${#MOCK_SERVER_PORTS_ARRAY[@]} ]}
-    MOCK_PORT=$mockServerTestPort yarn test
+    RESPONSE_DELAY=1 MOCK_PORT=$mockServerTestPort yarn test
     checkError "mock-server tests failed"
     success "mock-server tests passed"
   fi

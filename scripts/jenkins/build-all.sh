@@ -52,10 +52,8 @@ export IS_MASTER_BUILD
 echo "Is this a master build ${IS_MASTER_BUILD}"
 # Should we try building Docker images and run e2e test?
 export RUN_E2E_TEST=${RUN_E2E_TEST:-true}
-export RUN_UNIT_TESTS=${RUN_UNIT_TESTS:-true}
 
 echo "Run e2e test - ${RUN_E2E_TEST}"
-echo "Run unit test - ${RUN_UNIT_TESTS}"
 
 if [ -z ${EXTENT+x} ]
 then
