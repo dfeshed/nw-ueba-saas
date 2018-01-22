@@ -77,10 +77,6 @@ function runEmberBuild {
 # $3 = whether or not a mock server is needed
 # $4 = Used for coverage.
 
-# TO_DO Fix code coverage
-# For some apps/addons within `sa-ui` coverage fails as it is not able to parse ES6/ES7 syntax.
-# Hence passing 4th parameter as false for those addons. There is a WIP PR
-# https://github.com/kategengler/ember-cli-code-coverage/pull/141 that should address parsing issues.
 function buildEmberApp {
 
   cd $1
@@ -194,7 +190,7 @@ cd $CWD
 node scripts/node/check-translations.js sa/app/locales component-lib/addon/locales style-guide/app/locales
 checkError "Translations do not sync up between languages"
 
-# Code coverage does not work for investigate-events, investigate-hosts and respond, so passing false for the 4th option
+# Code coverage does not work for respond due to destructuring syntax (WIP), so passing COVERAGE=false for respond.
 buildMockServer
 buildEmberApp streaming-data false true true
 buildEmberApp component-lib false false true
@@ -205,8 +201,8 @@ buildEmberApp preferences false true true
 buildEmberApp test-helpers false false false
 buildEmberApp hosts-scan-configure false true true
 buildEmberApp style-guide true false false
-buildEmberApp investigate-events false true false
-buildEmberApp investigate-hosts false true false
+buildEmberApp investigate-events false true true
+buildEmberApp investigate-hosts false true true
 buildEmberApp investigate-files false true true
 buildEmberApp respond false true false
 buildEmberApp configure false true true

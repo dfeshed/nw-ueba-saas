@@ -34,7 +34,8 @@ export const eventsGetFirst = () => {
         }
       },
       onError(response = {}) {
-        const { code, meta: { message } = {} } = response;
+        const { code, meta } = response;
+        const message = (meta) ? meta.message : undefined;
         dispatch({
           type: ACTION_TYPES.SET_EVENTS_PAGE_ERROR,
           payload: { status: 'error', reason: code, message }
@@ -91,7 +92,8 @@ export const eventsGetMore = () => {
         }
       },
       onError(response = {}) {
-        const { code, meta: { message } = {} } = response;
+        const { code, meta } = response;
+        const message = (meta) ? meta.message : undefined;
         dispatch({
           type: ACTION_TYPES.SET_EVENTS_PAGE_ERROR,
           payload: { status: 'error', reason: code, message }

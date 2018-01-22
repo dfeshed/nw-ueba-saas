@@ -29,7 +29,8 @@ const Files = Component.extend({
 
   actions: {
     sort(column) {
-      const { field: sortField, isDescending: isDescOrder = true } = column;
+      const { field: sortField, isDescending } = column;
+      const isDescOrder = (isDescending === undefined) ? true : isDescending;
       this.send('sortBy', { sortField, isDescOrder });
     }
   }
