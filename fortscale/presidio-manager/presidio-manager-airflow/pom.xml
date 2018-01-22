@@ -6,10 +6,10 @@
     <parent>
         <groupId>fortscale</groupId>
         <artifactId>presidio-manager</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0-10</version>
     </parent>
     <artifactId>presidio-manager-airflow</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0-10</version>
 
     <dependencies>
         <dependency>
