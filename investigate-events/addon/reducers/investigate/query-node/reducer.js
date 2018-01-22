@@ -29,9 +29,16 @@ export default handleActions({
   },
 
   [ACTION_TYPES.REHYDRATE]: (state, { payload }) => {
-    let reducerState = {};
-    if (payload && payload.investigate && payload.investigate.queryNode) {
-      reducerState = payload.investigate.queryNode;
+    const reducerState = {};
+    const qn = (payload && payload.investigate && payload.investigate.queryNode) ? payload.investigate.queryNode : null;
+    if (qn) {
+      reducerState.previouslySelectedTimeRanges = qn.previouslySelectedTimeRanges;
+      // if state already has a serviceId, use that one instead, because
+      // that is coming from parsing the url and we do not want to use
+      // the one stored in localStorage
+      if (!state.serviceId) {
+        reducerState.serviceId = qn.serviceId;
+      }
     }
     return state.merge(reducerState);
   },

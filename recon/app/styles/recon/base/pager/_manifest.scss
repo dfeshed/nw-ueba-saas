@@ -93,12 +93,14 @@
           border-bottom: 0;
           font-weight: lighter;
           margin-left: rsa-whitespace(less);
+          width: 2.85rem;
           .ember-power-select-selected-item {
           margin-right: 0;
           }
 
         }
         .label-text {
+          color: text-color(primary, lightest);
           margin-left: rsa-whitespace(less);
         }
       }

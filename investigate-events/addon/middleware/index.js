@@ -17,7 +17,8 @@ if (config.environment !== 'test') {
   const investigateFilter = createFilter(
     'investigate',
     [
-      'queryNode.previouslySelectedTimeRanges'
+      'queryNode.previouslySelectedTimeRanges',
+      'queryNode.serviceId'
     ]
   );
 
