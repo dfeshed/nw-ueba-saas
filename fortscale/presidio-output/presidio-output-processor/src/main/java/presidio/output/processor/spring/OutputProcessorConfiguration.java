@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.ade.sdk.common.AdeManagerSdkConfig;
-import presidio.output.commons.services.user.UserSeverityService;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.domain.spring.EventPersistencyServiceConfig;
@@ -39,9 +38,6 @@ public class OutputProcessorConfiguration {
     private UserPersistencyService userPersistencyService;
 
     @Autowired
-    private UserSeverityService userSeverityService;
-
-    @Autowired
     private EventPersistencyService eventPersistencyService;
 
     @Value("${smart.threshold.score}")
@@ -61,6 +57,6 @@ public class OutputProcessorConfiguration {
 
     @Bean
     public OutputExecutionService outputProcessService() {
-        return new OutputExecutionServiceImpl(adeManagerSdk, alertService, userService, userSeverityService, eventPersistencyService, outputMonitoringService, smartThreshold, smartPageSize, retentionEnrichedEventsDays, retentionOutputDataDays);
+        return new OutputExecutionServiceImpl(adeManagerSdk, alertService, userService, eventPersistencyService, outputMonitoringService, smartThreshold, smartPageSize, retentionEnrichedEventsDays, retentionOutputDataDays);
     }
 }
