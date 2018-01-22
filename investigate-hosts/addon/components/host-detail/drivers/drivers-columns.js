@@ -9,14 +9,12 @@ const defaultColumns = [
     field: 'signature',
     title: 'Signature',
     format: 'SIGNATURE',
-    width: '10%',
-    disableSort: true
+    width: '10%'
   },
   {
     field: 'path',
     title: 'Path',
-    width: '20%',
-    disableSort: true
+    width: '20%'
   }
 ];
 

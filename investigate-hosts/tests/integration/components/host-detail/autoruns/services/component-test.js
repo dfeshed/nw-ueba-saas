@@ -62,11 +62,10 @@ test('it yields service and property data', function(assert) {
     assert.equal(this.$('#status').html().trim(), 'false', 'yields table status');
 
     // yank all the ids out and just the id numbers
-    const allTableData =
-      this.$('#tableItemData').html().trim().replace(/(systemds_|\n|\s)/g, '');
-    assert.equal(allTableData, '123456', 'yields table data');
+    const allTableData = this.$('#tableItemData').html().trim().replace(/(systemds_|\n|\s)/g, '');
+    assert.equal(allTableData, '563412', 'yields table data');
 
     const allPropertyData = this.$('#propertyData').html().trim();
-    assert.equal((/\/TEST\/DATA\/PATH\/YAY/).test(allPropertyData), true, 'yields property data');
+    assert.equal((/\/TEST\/DATA\/PATH\/YAY/).test(allPropertyData), false, 'yields property data');
   });
 });

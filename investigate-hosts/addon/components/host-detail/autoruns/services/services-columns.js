@@ -3,8 +3,7 @@ const defaultColumns = [
     field: 'signature',
     title: 'SIGNATURE',
     format: 'SIGNATURE',
-    width: '10%',
-    disableSort: true
+    width: '10%'
   },
   {
     field: 'path',

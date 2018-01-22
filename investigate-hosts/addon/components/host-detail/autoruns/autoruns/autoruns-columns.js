@@ -11,24 +11,21 @@ let columnsConfig = {
     {
       field: 'path',
       title: 'Path',
-      width: '80%',
-      disableSort: true
+      width: '80%'
     }
   ],
   windows: [
     {
       field: 'registryPath',
       title: 'REGISTRY PATH',
-      width: '80%',
-      disableSort: true
+      width: '80%'
     }
   ],
   linux: [
     {
       field: 'path',
       title: 'Path',
-      width: '80%',
-      disableSort: true
+      width: '80%'
     }
   ]
 };

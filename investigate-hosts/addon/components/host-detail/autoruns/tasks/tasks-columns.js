@@ -7,8 +7,7 @@ const defaultColumns = [
   {
     field: 'checksumSha256',
     title: 'HASH',
-    width: '10%',
-    disableSort: true
+    width: '10%'
   }
 ];
 let columnsConfig = {
@@ -16,7 +15,6 @@ let columnsConfig = {
     {
       field: 'triggerString',
       title: 'TRIGGER',
-      disableSort: true,
       width: '10%'
     }
   ],
@@ -36,15 +34,13 @@ let columnsConfig = {
     {
       field: 'triggerString',
       title: 'TRIGGER',
-      width: '10%',
-      disableSort: true
+      width: '10%'
     }
   ],
   linux: [
     {
       field: 'triggerString',
-      title: 'TRIGGER',
-      disableSort: true
+      title: 'TRIGGER'
     }
   ]
 };

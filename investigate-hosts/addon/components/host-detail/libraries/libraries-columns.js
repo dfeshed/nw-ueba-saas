@@ -11,14 +11,12 @@ const defaultColumns = [
   },
   {
     field: 'machineCount',
-    title: 'MACHINE COUNT',
-    disableSort: true
+    title: 'MACHINE COUNT'
   },
   {
     field: 'signature',
     title: 'SIGNATURE',
-    format: 'SIGNATURE',
-    disableSort: true
+    format: 'SIGNATURE'
   },
   {
     field: 'path',
@@ -26,8 +24,7 @@ const defaultColumns = [
   },
   {
     field: 'checksumSha256',
-    title: 'HASH',
-    disableSort: true
+    title: 'HASH'
   }
 ];
 let columnsConfig = {

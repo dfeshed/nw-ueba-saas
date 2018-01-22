@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 export const getValues = (selectedTab, tabName, data, sortConfig) => {
   if (data) {
-    let values = _.values(data);
+    let values = _.values(data).sortBy('fileName'); // default sorting
     const tab = tabName.toLowerCase(); // AUTORUNS -> autoruns
     if (sortConfig && sortConfig[tab]) {
       const config = sortConfig[tab];

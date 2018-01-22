@@ -61,10 +61,10 @@ test('it renders data and property panel for services', function(assert) {
 
     assert.equal(tableRows, 6, 'number of rows of data');
     assert.equal(fileInfoText, '6 of 6 services', 'number of rows of data in pager');
-    assert.equal(firstRowPathText, '/TEST/DATA/PATH/YAY', 'first row path text ');
+    assert.equal(firstRowPathText, '/usr/lib/systemd/system', 'first row path text ');
 
     // props checks
-    const propPanelItemWithText = this.$('.host-property-panel .host-text:contains("/TEST/DATA/PATH/YAY")');
+    const propPanelItemWithText = this.$('.host-property-panel .host-text:contains("/usr/lib/systemd/system")');
     assert.equal(propPanelItemWithText.length, 1, 'number of rows of data');
   });
 });

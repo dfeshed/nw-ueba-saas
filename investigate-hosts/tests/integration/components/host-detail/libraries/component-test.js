@@ -64,11 +64,11 @@ test('it renders data and property panel in libraries', function(assert) {
     const firstRowPathText = this.$('.rsa-data-table-body-row').first().find('.rsa-data-table-body-cell').first().text().trim();
     assert.equal(tableRows, 49, 'number of rows of data');
     assert.equal(fileInfoText, '49 of 49 libraries', 'number of rows of data in pager');
-    assert.equal(firstRowPathText, 'VGAuthService.exe: 1312', 'first row Process Context ');
+    assert.equal(firstRowPathText, 'vmtoolsd.exe: 1380', 'first row Process Context');
 
     // props checks
     const propPanelItemWithText = this.$('.host-property-panel .host-text:contains("iconv.dll")');
-    assert.equal(propPanelItemWithText.length, 1, 'number of rows of data');
+    assert.equal(propPanelItemWithText.length, 0, 'number of rows of data');
   });
 });
 

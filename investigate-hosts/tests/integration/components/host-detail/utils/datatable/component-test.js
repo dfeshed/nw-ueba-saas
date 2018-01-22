@@ -159,32 +159,6 @@ test('Load More is shown for paged items', function(assert) {
   assert.equal(this.$('.rsa-data-table-load-more button.rsa-form-button').length, 1, 'Load more button is present');
 });
 
-test('Check that disable sort is working', function(assert) {
-  assert.expect(2);
-  const config2 = [
-    {
-      field: 'fileName',
-      title: 'Filename'
-    },
-    {
-      field: 'timeModified',
-      title: 'LAST MODIFIED TIME',
-      format: 'DATE'
-    },
-    {
-      field: 'signature',
-      title: 'Signature',
-      format: 'SIGNATURE',
-      disableSort: true
-    }
-  ];
-  this.set('data', dataItems);
-  this.set('columnsConfig', config2);
-  this.render(hbs`{{#host-detail/utils/datatable items=data columnsConfig=columnsConfig as |column|}}{{/host-detail/utils/datatable}}`);
-  assert.equal(this.$('.rsa-data-table-header-cell').length, 3, '3 number of columns');
-  assert.equal(this.$('.rsa-data-table-header-row').find('.rsa-icon').length, 2, '2 sortable columns');
-});
-
 skip('Date&Time displayed correctly', function(assert) {
   this.set('items', dataItems);
   this.set('columnsConfig', config);
