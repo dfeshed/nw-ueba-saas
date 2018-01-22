@@ -14,7 +14,7 @@ import static presidio.monitoring.records.MetricDocument.METRIC_INDEX_NAME;
 import static presidio.monitoring.records.MetricDocument.TYPE;
 
 @Document(indexName = METRIC_INDEX_NAME, type = TYPE)
-@Mapping(mappingPath = "elasticsearch/templates/presidio-monitoring.json")
+@Mapping(mappingPath = "elasticsearch/mappings/presidio-monitoring.json")
 public final class MetricDocument {
 
 
