@@ -30,6 +30,7 @@ public class User extends AbstractElasticDocument {
     public static final String ALERTS_COUNT_FIELD_NAME = "alertsCount";
     public static final String UPDATED_BY_LOGICAL_START_DATE_FIELD_NAME = "updatedByLogicalStartDate";
     public static final String UPDATED_BY_LOGICAL_END_DATE_FIELD_NAME = "updatedByLogicalEndDate";
+    public static final String USER_DISPLAY_NAME_SORT_LOWERCASE_FIELD_NAME = "userDisplayNameSortLowercase";
 
 
     @JsonProperty(USER_ID_FIELD_NAME)
@@ -43,6 +44,9 @@ public class User extends AbstractElasticDocument {
 
     @JsonProperty(USER_DISPLAY_NAME_FIELD_NAME)
     private String userDisplayName;
+
+    @JsonProperty(USER_DISPLAY_NAME_SORT_LOWERCASE_FIELD_NAME)
+    private String userDisplayNameSortLowercase;
 
     @JsonProperty(SCORE_FIELD_NAME)
     private double score;
@@ -81,6 +85,7 @@ public class User extends AbstractElasticDocument {
         this.userName = userName;
         this.indexedUserName = userName;
         this.userDisplayName = userDisplayName;
+        this.userDisplayNameSortLowercase = userDisplayName;
         this.score = score;
         this.alertClassifications = alertClassifications;
         this.indicators = indicators;
@@ -95,6 +100,7 @@ public class User extends AbstractElasticDocument {
         this.userName = userName;
         this.indexedUserName = userName;
         this.userDisplayName = userDisplayName;
+        this.userDisplayNameSortLowercase = userDisplayName;
         this.severity = UserSeverity.LOW;
         this.tags = tags;
     }
@@ -214,10 +220,18 @@ public class User extends AbstractElasticDocument {
         this.tags = tags;
     }
 
+    public String getUserDisplayNameSortLowercase() {
+        return userDisplayNameSortLowercase;
+    }
+
+    public void setUserDisplayNameSortLowercase(String userDisplayNameSortLowercase) {
+        this.userDisplayNameSortLowercase = userDisplayNameSortLowercase;
+    }
+
     @Override
     public void updateFieldsBeforeSave() {
         super.updateFieldsBeforeSave();
-        if (ThreadLocalWithBatchInformation.getCurrentProcessedTime()!=null) {
+        if (ThreadLocalWithBatchInformation.getCurrentProcessedTime() != null) {
             setUpdatedByLogicalStartDate(ThreadLocalWithBatchInformation.getCurrentProcessedTime().getStartAsDate());
             setUpdatedByLogicalEndDate(ThreadLocalWithBatchInformation.getCurrentProcessedTime().getEndAsDate());
         }

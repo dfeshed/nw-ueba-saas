@@ -22,7 +22,7 @@
               },
               "additional-models": [
                 {
-                  "name": "numberOfSuccessfulAuthentications.userId.prior.global.authentication.hourly"
+                  "name": "numberOfSuccessfulAuthentications.userId.prior.authentication.hourly"
                 }
               ],
               "global-influence": 15,
@@ -63,7 +63,7 @@
               },
               "additional-models": [
                 {
-                  "name": "numberOfFailedAuthentications.userId.prior.global.authentication.hourly"
+                  "name": "numberOfFailedAuthentications.userId.prior.authentication.hourly"
                 }
               ],
               "global-influence": 15,
@@ -104,7 +104,7 @@
               },
               "additional-models": [
                 {
-                  "name": "numberOfDistinctDstMachineDomain.userId.prior.global.authentication.hourly"
+                  "name": "numberOfDistinctDstMachineDomain.userId.prior.authentication.hourly"
                 }
               ],
               "global-influence": 15,
@@ -145,7 +145,7 @@
               },
               "additional-models": [
                 {
-                  "name": "numberOfDistinctSrcMachineId.userId.prior.global.authentication.hourly"
+                  "name": "numberOfDistinctSrcMachineId.userId.prior.authentication.hourly"
                 }
               ],
               "global-influence": 15,
@@ -186,7 +186,7 @@
               },
               "additional-models": [
                 {
-                  "name": "numberOfDistinctDstMachineId.userId.prior.global.authentication.hourly"
+                  "name": "numberOfDistinctDstMachineId.userId.prior.authentication.hourly"
                 }
               ],
               "global-influence": 15,
@@ -227,7 +227,7 @@
               },
               "additional-models": [
                 {
-                  "name": "numberOfDistinctDstMachineNameRegexCluster.userId.prior.global.authentication.hourly"
+                  "name": "numberOfDistinctDstMachineNameRegexCluster.userId.prior.authentication.hourly"
                 }
               ],
               "global-influence": 15,
@@ -268,7 +268,7 @@
               },
               "additional-models": [
                 {
-                  "name": "numberOfDistinctSrcMachineNameRegexCluster.userId.prior.global.authentication.hourly"
+                  "name": "numberOfDistinctSrcMachineNameRegexCluster.userId.prior.authentication.hourly"
                 }
               ],
               "global-influence": 15,
@@ -309,7 +309,7 @@
               },
               "additional-models": [
                 {
-                  "name": "numberOfDistinctSite.userId.prior.global.authentication.hourly"
+                  "name": "numberOfDistinctSite.userId.prior.authentication.hourly"
                 }
               ],
               "global-influence": 15,

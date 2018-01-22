@@ -386,7 +386,7 @@ SSLSessionCacheTimeout  300
     KrbServiceName ${krbServiceName}
     Krb5Keytab /etc/krb5.keytab
     
-    krblocalUserMapping on
+    krblocalUserMapping off
     
     AuthBasicProvider ldap
     AuthLDAPURL ${ldapUrl}
@@ -412,7 +412,7 @@ SSLSessionCacheTimeout  300
     KrbServiceName ${krbServiceName}
     Krb5Keytab /etc/krb5.keytab
     
-    krblocalUserMapping on
+    krblocalUserMapping off
     
     AuthBasicProvider ldap
     AuthLDAPURL ${ldapUrl}

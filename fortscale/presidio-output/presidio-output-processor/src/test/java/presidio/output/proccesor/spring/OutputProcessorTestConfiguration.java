@@ -21,9 +21,11 @@ import presidio.output.domain.spring.EventPersistencyServiceConfig;
 import presidio.output.processor.OutputShellCommands;
 import presidio.output.processor.services.OutputExecutionService;
 import presidio.output.processor.services.OutputExecutionServiceImpl;
+import presidio.output.processor.services.OutputMonitoringService;
 import presidio.output.processor.services.alert.AlertService;
 import presidio.output.processor.services.user.UserService;
 import presidio.output.processor.spring.AlertServiceElasticConfig;
+import presidio.output.processor.spring.OutputMonitoringConfiguration;
 
 /**
  * Created by shays on 17/05/2017.
@@ -32,7 +34,8 @@ import presidio.output.processor.spring.AlertServiceElasticConfig;
 @Import({EventPersistencyServiceConfig.class,
         AlertServiceElasticConfig.class,
         OutputShellCommands.class,
-        BootShimConfig.class})
+        BootShimConfig.class,
+        OutputMonitoringConfiguration.class})
 public class OutputProcessorTestConfiguration {
 
     private final String APPLICATION_NAME = "output-core";
@@ -83,14 +86,17 @@ public class OutputProcessorTestConfiguration {
     @Value("${output.enriched.events.retention.in.days}")
     private long retentionEnrichedEventsDays;
 
-    @Value("${output.result.events.retention.in.days}")
-    private long retentionResultEventsDays;
+    @Value("${output.data.retention.in.days}")
+    private long retentionOutputDataDays;
 
     @Autowired
     private UserSeverityService userSeverityService;
 
+    @Autowired
+    private OutputMonitoringService outputMonitoringService;
+
     @Bean
     public OutputExecutionService outputProcessService() {
-        return new OutputExecutionServiceImpl(adeManagerSdk, alertService, userService, userSeverityService, eventPersistencyService, smartThreshold, smartPageSize, retentionEnrichedEventsDays, retentionResultEventsDays);
+        return new OutputExecutionServiceImpl(adeManagerSdk, alertService, userService, userSeverityService, eventPersistencyService, outputMonitoringService, smartThreshold, smartPageSize, retentionEnrichedEventsDays, retentionOutputDataDays);
     }
 }
