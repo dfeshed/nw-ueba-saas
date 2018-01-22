@@ -10,7 +10,19 @@ public class TimeModelScorerAlgorithm {
     }
 
     public double calculateScore(long time, TimeModel model) {
-        long smoothedTimeCounter = model.getSmoothedTimeCounter(time);
-        return algorithm.calculateScore(smoothedTimeCounter + 1, model.getCategoryRarityModel());
+        Double smoothedTimeCounter = model.getDoubleSmoothedTimeCounter(time);
+
+        Double floorSmoothedTimeCounter =  Math.floor(smoothedTimeCounter);
+        double floorScore = algorithm.calculateScore(floorSmoothedTimeCounter.longValue() + 1, model.getCategoryRarityModel());
+
+        Double ceilSmoothedTimeCounter =  Math.ceil(smoothedTimeCounter);
+        double ceilScore = algorithm.calculateScore(ceilSmoothedTimeCounter.longValue() + 1, model.getCategoryRarityModel());
+
+        double score = floorScore;
+        if(!floorSmoothedTimeCounter.equals(ceilSmoothedTimeCounter)) {
+             score = (ceilSmoothedTimeCounter - smoothedTimeCounter) * floorScore + (smoothedTimeCounter - floorSmoothedTimeCounter) * ceilScore;
+        }
+
+        return Math.floor(score);
     }
 }

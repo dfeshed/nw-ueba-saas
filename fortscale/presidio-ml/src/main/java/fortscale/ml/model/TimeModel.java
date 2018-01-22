@@ -116,6 +116,12 @@ public class TimeModel implements PartitionedDataModel {
 		return getRoundedCounter(getBucketIndex(time));
 	}
 
+
+	public Double getDoubleSmoothedTimeCounter(long time) {
+		return smoothedBuckets.get(getBucketIndex(time));
+	}
+
+
 	@Override
 	public long getNumOfSamples() {
 		return numOfSamples;
