@@ -142,7 +142,7 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
         String collectionName = translator.toCollectionName(recordsMetadata);
 
         try {
-            return aggregateContextIdToNumOfItems(startDate, endDate, fieldName, -1, 0, collectionName);
+            return aggregateContextIdToNumOfItems(startDate, endDate, fieldName, -1, 0, collectionName, false);
         } catch (InvalidDataAccessApiUsageException e) {
             long nextPageIndex = 0;
             List<ContextIdToNumOfItems> subList;
@@ -150,7 +150,7 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
 
             do {
                 subList = aggregateContextIdToNumOfItems(startDate, endDate, fieldName,
-                        nextPageIndex * contextIdToNumOfItemsPageSize, contextIdToNumOfItemsPageSize, collectionName);
+                        nextPageIndex * contextIdToNumOfItemsPageSize, contextIdToNumOfItemsPageSize, collectionName, true);
                 results.addAll(subList);
                 nextPageIndex++;
             } while (subList.size() == contextIdToNumOfItemsPageSize);
@@ -160,7 +160,7 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
     }
 
     private List<ContextIdToNumOfItems> aggregateContextIdToNumOfItems(
-            Date startDate, Date endDate, String fieldName, long skip, long limit, String collectionName) {
+            Date startDate, Date endDate, String fieldName, long skip, long limit, String collectionName, boolean allowDiskUse) {
 
         List<AggregationOperation> aggregationOperations = new LinkedList<>();
         aggregationOperations.add(match(where(AdeRecord.START_INSTANT_FIELD).gte(startDate).lt(endDate)));
@@ -175,8 +175,12 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
             aggregationOperations.add(limit(limit));
         }
 
-        Aggregation aggregation = newAggregation(aggregationOperations).withOptions(Aggregation.newAggregationOptions().
-                allowDiskUse(true).build());
+        Aggregation aggregation = newAggregation(aggregationOperations);
+
+        if(allowDiskUse) {
+            aggregation = aggregation.withOptions(Aggregation.newAggregationOptions().
+                    allowDiskUse(true).build());
+        }
 
         return mongoTemplate
                 .aggregate(aggregation, collectionName, ContextIdToNumOfItems.class)
