@@ -28,8 +28,14 @@ public class PresidioMetricBucket {
         metricConventionApplyer.apply(metric);
         MetricUniqueKey metricUniqueKey = new MetricUniqueKey(metric.getName(), metric.getLogicTime(), metric.getTags());
         if (applicationMetrics.containsKey(metricUniqueKey)) {
-            accumulateMetricValues(metric, applicationMetrics.get(metricUniqueKey).getValue());
+            synchronized (applicationMetrics) {
+                Metric metricToUpdate = applicationMetrics.get(metricUniqueKey);
+                if (metricToUpdate != null) {
+                    accumulateMetricValues(metric, metricToUpdate.getValue());
+                }
+            }
         }
+
         applicationMetrics.put(metricUniqueKey, metric);
     }
 
