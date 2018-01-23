@@ -73,7 +73,8 @@ public class CategoryRarityModelScorerConfTest {
                 params.getNumberOfSamplesToInfluenceEnough(),
                 params.getMinNumOfSamplesToInfluence(),
                 params.getUseCertaintyToCalculateScore(),
-                params.getModelName());
+                params.getModelName(),
+                params.getxWithValueHalfFactor());
     }
 
     static void assertConf(CategoryRarityModelScorerConf conf,
@@ -83,7 +84,8 @@ public class CategoryRarityModelScorerConfTest {
                             Integer numberOfSamplesToInfluenceEnough,
                             Integer minNumberOfSamplesToInfluence,
                             Boolean useCertaintyToCalculateScore,
-                            String modelName) {
+                            String modelName,
+                           Double xWithValueHalfFactor) {
 
         Assert.assertEquals(name, conf.getName());
         Assert.assertEquals((long)maxRareCount, conf.getMaxRareCount());
@@ -114,6 +116,11 @@ public class CategoryRarityModelScorerConfTest {
             Assert.assertEquals(ModelScorerConf.IS_USE_CERTAINTY_TO_CALCULATE_SCORE_DEFAULT_VALUE, conf.isUseCertaintyToCalculateScore());
         } else {
             Assert.assertEquals(useCertaintyToCalculateScore, conf.isUseCertaintyToCalculateScore());
+        }
+        if(xWithValueHalfFactor==null) {
+            Assert.assertTrue(CategoryRarityModelScorerConf.X_WITH_VALUE_HALF_FACTOR == conf.getXWithValueHalfFactor());
+        } else {
+            Assert.assertTrue(xWithValueHalfFactor == conf.getXWithValueHalfFactor());
         }
         Assert.assertEquals(modelName, conf.getModelInfo().getModelName());
     }
@@ -257,6 +264,12 @@ public class CategoryRarityModelScorerConfTest {
         doDeserialization(params, false);
     }
 
+    @Test
+    public void jsonDeserialization_Null_xWithValueHalfFactor_Test() throws IOException{
+        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams().setxWithValueHalfFactor(null);
+        doDeserialization(params, true);
+    }
+
     /**
      * CategoryRarityModelScorer params to ease the testing.
      * The default parameters here are intentionally different from the defaults in the conf itself.
@@ -273,6 +286,7 @@ public class CategoryRarityModelScorerConfTest {
         Boolean useCertaintyToCalculateScore = true;
         String modelName = "model1";
         List<String> additionalModelNames = Collections.emptyList();
+        Double xWithValueHalfFactor = 0.3333333333333333;
 
         public String getName() {
             return name;
@@ -362,6 +376,15 @@ public class CategoryRarityModelScorerConfTest {
 
         public List<String> getAdditionalModelNames() {
             return additionalModelNames;
+        }
+
+        public Double getxWithValueHalfFactor() {
+            return xWithValueHalfFactor;
+        }
+
+        public CategoryRarityModelScorerConfParams setxWithValueHalfFactor(Double xWithValueHalfFactor) {
+            this.xWithValueHalfFactor = xWithValueHalfFactor;
+            return this;
         }
     }
 }
