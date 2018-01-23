@@ -78,12 +78,12 @@ public class EventMongoRepositoryImpl implements EventRepository {
     }
 
     @Override
-    public EnrichedEvent findLatestEventForUser(String userId, List<String> collectionNames) {
+    public EnrichedEvent findLatestEventForUser(String userId, List<String> collectionNamesPrioritiezed) {
         Query query = new Query()
                 .addCriteria(Criteria.where(EnrichedEvent.USER_ID_FIELD).is(userId))
                 .limit(1);
         List<EnrichedEvent> enrichedEvents = null;
-        for (String collection : collectionNames) {
+        for (String collection : collectionNamesPrioritiezed) {
             enrichedEvents = mongoTemplate.find(query, EnrichedEvent.class, collection);
             if (enrichedEvents.size() > 0)
                 break;
