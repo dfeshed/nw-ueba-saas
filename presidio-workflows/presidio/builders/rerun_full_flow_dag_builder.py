@@ -177,15 +177,15 @@ def build_clean_adapter_operator(cleanup_dag, is_remove_ca_tables):
 def build_clean_collector_operator(cleanup_dag):
     collector_stop_service_command = "sudo systemctl stop presidio-collector %s"
 
-    collector_clean_bash_command = "&& sudo rm -rf /opt/flume/data/collector/*" \
-                                   " && sudo rm -rf /data/presidio/3p/flume/checkpoint/collector/file/*" \
-                                   " && sudo rm -rf /data/presidio/3p/flume/checkpoint/collector/authentication/*" \
-                                   " && sudo rm -rf /data/presidio/3p/flume/checkpoint/collector/active_directory/*" \
-                                   " && sudo rm -rf /data/presidio/3p/flume/checkpoint/collector/default/*" \
-                                   " && sudo rm -rf /data/presidio/3p/flume/data/collector/file/*" \
-                                   " && sudo rm -rf /data/presidio/3p/flume/data/collector/authentication/*" \
-                                   " && sudo rm -rf /data/presidio/3p/flume/data/collector/active_directory/*" \
-                                   " && sudo rm -rf /data/presidio/3p/flume/data/collector/default/*" \
+    collector_clean_bash_command = "&& rm -rf /opt/flume/data/collector/*" \
+                                   " && rm -rf /data/presidio/3p/flume/checkpoint/collector/file/*" \
+                                   " && rm -rf /data/presidio/3p/flume/checkpoint/collector/authentication/*" \
+                                   " && rm -rf /data/presidio/3p/flume/checkpoint/collector/active_directory/*" \
+                                   " && rm -rf /data/presidio/3p/flume/checkpoint/collector/default/*" \
+                                   " && rm -rf /data/presidio/3p/flume/data/collector/file/*" \
+                                   " && rm -rf /data/presidio/3p/flume/data/collector/authentication/*" \
+                                   " && rm -rf /data/presidio/3p/flume/data/collector/active_directory/*" \
+                                   " && rm -rf /data/presidio/3p/flume/data/collector/default/*" \
                                    " && rm -rf $PRESIDIO_HOME/flume/counters/source %s"
 
     collector_start_service_command = "&& sudo systemctl start presidio-collector"
