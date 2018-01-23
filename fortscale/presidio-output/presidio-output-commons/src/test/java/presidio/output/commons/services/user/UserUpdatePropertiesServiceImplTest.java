@@ -106,7 +106,7 @@ public class UserUpdatePropertiesServiceImplTest {
         Assert.assertEquals("userDisplayName1", userUpdated.getUserDisplayName());
         Assert.assertEquals("userName1", userUpdated.getIndexedUserName());
         Assert.assertEquals("userName1", userUpdated.getUserDisplayNameSortLowercase());
-        Assert.assertEquals(user.getTags().get(0), userUpdated.getTags().get(0));
+        Assert.assertEquals(null, userUpdated.getTags());
     }
 
     @Test
