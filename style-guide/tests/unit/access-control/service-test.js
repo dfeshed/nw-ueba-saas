@@ -192,8 +192,6 @@ test('respondCanManageAlertRules is set when required roles are included', funct
   assert.equal(service.get('respondCanManageAlertRules'), false);
   service.set('roles', ['respond-server.alertrule.manage']);
   assert.equal(service.get('respondCanManageAlertRules'), true);
-  service.set('roles', ['respond-server.alertrule.manage']);
-  assert.equal(service.get('respondCanManageAlertRules'), true);
 });
 
 test('hasRespondNotificationsAccess is set when required roles are included', function(assert) {

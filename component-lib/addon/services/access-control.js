@@ -101,8 +101,7 @@ export default Service.extend({
 
   @computed('roles.[]')
   respondCanManageAlertRules(roles) {
-    return this._hasPermission(roles, 'respond-server.alertrule.manage') ||
-      this._hasPermission(roles, 'accessManageAlertHandlingRules');
+    return this._hasPermission(roles, 'respond-server.alertrule.manage');
   },
 
   @computed('roles.[]')
