@@ -11,7 +11,7 @@ import java.util.Map;
 		setterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
 public class SMARTMaxValuesModel implements PartitionedDataModel {
 	private Map<Long, Double> startInstantToMaxSmartValue;
-	private long numOfPartitions;
+	private Long numOfPartitions;
 	private Instant weightsModelEndTime;
 
 	public void init(Map<Long, Double> startInstantToMaxSmartValue, long numOfPartitions, Instant weightsModelEndTime) {

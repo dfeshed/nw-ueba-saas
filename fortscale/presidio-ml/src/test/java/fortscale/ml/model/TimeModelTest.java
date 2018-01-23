@@ -8,6 +8,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.*;
@@ -50,9 +52,9 @@ public class TimeModelTest extends AbstractScorerTest {
 
 		Assert.assertEquals(1, model.getNumOfSamples());
 		Assert.assertEquals(1, model.getCategoryRarityModel().getNumOfSamples());
-		double[] buckets = model.getCategoryRarityModel().getBuckets();
-		Assert.assertEquals(1, DoubleStream.of(buckets).sum(), 0.001);
-		Assert.assertEquals(1, buckets[0], 0.001);
+		List<Double> buckets = model.getCategoryRarityModel().getBuckets();
+		Assert.assertEquals(1,         buckets.stream().mapToDouble(Double::doubleValue).sum()	, 0.001);
+		Assert.assertEquals(1, buckets.get(0), 0.001);
 	}
 
 	@Test
@@ -66,9 +68,9 @@ public class TimeModelTest extends AbstractScorerTest {
 
 		Assert.assertEquals(2, model.getNumOfSamples());
 		Assert.assertEquals(2, model.getCategoryRarityModel().getNumOfSamples());
-		double[] buckets = model.getCategoryRarityModel().getBuckets();
-		Assert.assertEquals(1, DoubleStream.of(buckets).sum(), 0.001);
-		Assert.assertEquals(1, buckets[1], 0.001);
+		List<Double> buckets = model.getCategoryRarityModel().getBuckets();
+		Assert.assertEquals(1,         buckets.stream().mapToDouble(Double::doubleValue).sum(), 0.001);
+		Assert.assertEquals(1, buckets.get(1), 0.001);
 	}
 
 	@Test
@@ -82,9 +84,9 @@ public class TimeModelTest extends AbstractScorerTest {
 
 		Assert.assertEquals(2, model.getNumOfSamples());
 		Assert.assertEquals(2, model.getCategoryRarityModel().getNumOfSamples());
-		double[] buckets = model.getCategoryRarityModel().getBuckets();
-		Assert.assertEquals(2, DoubleStream.of(buckets).sum(), 0.001);
-		Assert.assertEquals(2, buckets[0], 0.001);
+		List<Double> buckets = model.getCategoryRarityModel().getBuckets();
+		Assert.assertEquals(2,         buckets.stream().mapToDouble(Double::doubleValue).sum() ,0.001);
+		Assert.assertEquals(2, buckets.get(0), 0.001);
 	}
 
 	@Test

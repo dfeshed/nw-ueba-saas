@@ -32,4 +32,6 @@ public interface UserService {
      */
     boolean updateAllUsersAlertData();
 
+    void updateUserData();
+
 }

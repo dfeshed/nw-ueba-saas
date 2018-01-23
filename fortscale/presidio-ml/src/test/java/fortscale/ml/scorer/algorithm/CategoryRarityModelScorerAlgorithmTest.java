@@ -25,6 +25,7 @@ import static org.mockito.Mockito.mock;
 public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
 
     private CategoryRarityModelBuilderMetricsContainer categoryRarityMetricsContainer = mock(CategoryRarityModelBuilderMetricsContainer.class);
+    private static final double X_WITH_VALUE_HALF_FACTOR = 0.3333333333333333;
 
     private double calcScore(int maxRareCount,
                              int maxNumOfRareFeatures,
@@ -59,7 +60,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
         CategoryRarityModelBuilderConf config = new CategoryRarityModelBuilderConf(maxRareCount * 2);
         config.setPartitionsResolutionInSeconds(86400);
         CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(config, categoryRarityMetricsContainer).build(categoricalFeatureValue);
-        CategoryRarityModelScorerAlgorithm scorerAlgorithm = new CategoryRarityModelScorerAlgorithm(maxRareCount, maxNumOfRareFeatures);
+        CategoryRarityModelScorerAlgorithm scorerAlgorithm = new CategoryRarityModelScorerAlgorithm(maxRareCount, maxNumOfRareFeatures, X_WITH_VALUE_HALF_FACTOR);
         return scorerAlgorithm.calculateScore(featureCountToScore, model);
     }
 
@@ -106,12 +107,12 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailGivenNegativeAsMaxRareCount() {
-        new CategoryRarityModelScorerAlgorithm(-1, 1);
+        new CategoryRarityModelScorerAlgorithm(-1, 1, X_WITH_VALUE_HALF_FACTOR);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailGivenNegativeAsMaxNumOfRareFeatures() {
-        new CategoryRarityModelScorerAlgorithm(1, -1);
+        new CategoryRarityModelScorerAlgorithm(1, -1, X_WITH_VALUE_HALF_FACTOR);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -121,7 +122,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
         occurrencesToNumOfPartitions.put(1L, 1);
         int numOfBuckets = 10;
         model.init(occurrencesToNumOfPartitions, numOfBuckets, 0, 1);
-        new CategoryRarityModelScorerAlgorithm(numOfBuckets / 2 + 1, 1).calculateScore(1, model);
+        new CategoryRarityModelScorerAlgorithm(numOfBuckets / 2 + 1, 1, X_WITH_VALUE_HALF_FACTOR).calculateScore(1, model);
     }
 
     @Test

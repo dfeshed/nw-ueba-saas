@@ -43,7 +43,7 @@ public class OutputShellCommands implements CommandMarker {
     public void runDaily(
     ) throws Exception {
         Thread.currentThread().setName(DAILY_OUTPUT_PROCESSOR_RUN + Instant.now().toString());
-        executionService.recalculateUserScore();
+        executionService.updateAllUsersData();
     }
 
     @CliCommand(value = "cleanup", help = "clean application data for specified time range ")

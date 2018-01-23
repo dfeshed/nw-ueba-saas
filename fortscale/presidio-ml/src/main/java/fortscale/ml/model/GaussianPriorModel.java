@@ -16,10 +16,10 @@ import java.util.stream.Stream;
 public class GaussianPriorModel implements Model {
 	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 	public static class SegmentPrior {
-		public double mean;
-		public double priorAtMean;
-		public double supportFromLeftOfMean;
-		public double supportFromRightOfMean;
+		public Double mean;
+		public Double priorAtMean;
+		public Double supportFromLeftOfMean;
+		public Double supportFromRightOfMean;
 
 		public SegmentPrior init(double mean, double priorAtMean, double supportFromLeftOfMean, double supportFromRightOfMean) {
 			this.mean = mean;
