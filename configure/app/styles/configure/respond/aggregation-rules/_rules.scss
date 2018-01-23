@@ -156,6 +156,12 @@ $dragPadHighlightedColor: background-color(primary, lighter);
         }
       }
     }
+
+    &.not-editable {
+      th.reorder, td.reorder-rule-cell {
+        visibility: hidden;
+      }
+    }
   }
 
   // Green triangle

@@ -85,15 +85,18 @@
       </table>
     </div>
   </div>
-  <footer>
+  <footer class="respond-form-footer">
     <span class="form-warning">
-      {{#if hasUnsavedChanges}}
+      {{#if (not accessControl.respondCanManageNotifications)}}
+        {{rsa-icon name='report-problem-triangle'}}
+        {{t 'configure.notifications.noManagePermissions'}}
+      {{else if hasUnsavedChanges}}
         {{rsa-icon name='report-problem-triangle'}}
         {{t 'configure.notifications.hasUnsavedChanges'}}
       {{/if}}
     </span>
     <hbox class="form-save-controls">
-      {{#rsa-form-button style='primary' class='confirm-button' defaultAction='save' isDisabled=(or isMissingRequiredData (not hasUnsavedChanges))}}
+      {{#rsa-form-button style='primary' class='confirm-button' defaultAction='save' isDisabled=isApplyUnavailable}}
         {{t 'forms.apply'}}
       {{/rsa-form-button}}
     </hbox>

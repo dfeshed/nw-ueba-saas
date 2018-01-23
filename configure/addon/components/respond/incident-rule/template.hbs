@@ -96,19 +96,22 @@
       {{respond/incident-rule/grouping-options}}
     {{/if}}
   </section>
-  <footer>
-    {{#if isMissingRequiredData}}
-      <span class="missing-information-warning">
+  <footer class="respond-form-footer">
+    <span class="form-warning">
+      {{#if (not accessControl.respondCanManageAlertRules)}}
+        {{rsa-icon name='report-problem-triangle'}}
+        {{t 'configure.incidentRules.noManagePermissions'}}
+      {{else if isMissingRequiredData}}
         {{rsa-icon name='report-problem-triangle'}}
         {{t 'configure.incidentRules.missingRequiredInfo'}}
-      </span>
-    {{/if}}
+      {{/if}}
+    </span>
 
     <hbox class="form-save-controls">
       {{#rsa-form-button class='cancel-button' defaultAction=(route-action 'transitionToRules')}}
         {{t 'forms.cancel'}}
       {{/rsa-form-button}}
-      {{#rsa-form-button style='primary' class='confirm-button' defaultAction='save' isDisabled=isMissingRequiredData}}
+      {{#rsa-form-button style='primary' class='confirm-button' defaultAction='save' isDisabled=(or isMissingRequiredData (not accessControl.respondCanManageAlertRules))}}
         {{t 'forms.save'}}
       {{/rsa-form-button}}
     </hbox>

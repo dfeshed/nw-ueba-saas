@@ -176,6 +176,46 @@ test('hasRespondRemediationAccess is set when required roles are included', func
   assert.equal(service.get('hasRespondRemediationAccess'), true);
 });
 
+test('hasRespondAlertRulesAccess is set when required roles are included', function(assert) {
+  const service = this.subject();
+  service.set('roles', []);
+  assert.equal(service.get('hasRespondAlertRulesAccess'), false);
+  service.set('roles', ['respond-server.alertrule.read']);
+  assert.equal(service.get('hasRespondAlertRulesAccess'), true);
+  service.set('roles', ['respond-server.alertrule.manage']);
+  assert.equal(service.get('hasRespondAlertRulesAccess'), true);
+});
+
+test('respondCanManageAlertRules is set when required roles are included', function(assert) {
+  const service = this.subject();
+  service.set('roles', []);
+  assert.equal(service.get('respondCanManageAlertRules'), false);
+  service.set('roles', ['respond-server.alertrule.manage']);
+  assert.equal(service.get('respondCanManageAlertRules'), true);
+  service.set('roles', ['respond-server.alertrule.manage']);
+  assert.equal(service.get('respondCanManageAlertRules'), true);
+});
+
+test('hasRespondNotificationsAccess is set when required roles are included', function(assert) {
+  const service = this.subject();
+  service.set('roles', []);
+  assert.equal(service.get('hasRespondNotificationsAccess'), false);
+  service.set('roles', ['respond-server.notification.read']);
+  assert.equal(service.get('hasRespondNotificationsAccess'), false);
+  service.set('roles', ['integration-server.notification.read', 'respond-server.notification.read']);
+  assert.equal(service.get('hasRespondNotificationsAccess'), true);
+});
+
+test('respondCanManageNotifications is set when required roles are included', function(assert) {
+  const service = this.subject();
+  service.set('roles', []);
+  assert.equal(service.get('respondCanManageNotifications'), false);
+  service.set('roles', ['respond-server.notification.manage']);
+  assert.equal(service.get('respondCanManageNotifications'), false);
+  service.set('roles', ['integration-server.notification.manage', 'respond-server.notification.manage']);
+  assert.equal(service.get('respondCanManageNotifications'), true);
+});
+
 test('hasAdminAccess is set when required roles are included', function(assert) {
   const service = this.subject();
   assert.equal(service.get('hasAdminAccess'), false);

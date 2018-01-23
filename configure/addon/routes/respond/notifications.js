@@ -12,6 +12,12 @@ export default Route.extend({
     return this.get('i18n').t('configure.respondNotifications');
   },
 
+  beforeModel() {
+    if (!this.get('accessControl.hasRespondNotificationsAccess')) {
+      this.transitionToExternal('protected');
+    }
+  },
+
   model() {
     const redux = this.get('redux');
     redux.dispatch(getNotificationSettings());

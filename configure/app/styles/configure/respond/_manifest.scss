@@ -1,3 +1,25 @@
 @import "confirmation-dialog";
 @import "aggregation-rules/manifest";
 @import "email-notifications";
+
+footer.respond-form-footer {
+  box-sizing: border-box;
+  position: relative;
+  background-color: background-color(primary, darker);
+
+  .form-warning {
+    position: absolute;
+    color: text-color(accentFour);
+    top: 20px;
+    left: rsa-whitespace(more);
+  }
+
+  .form-save-controls {
+    padding: rsa-whitespace();
+    justify-content: flex-end;
+
+    .rsa-form-button-wrapper {
+      margin: 0 0 0 1rem;
+    }
+  }
+}

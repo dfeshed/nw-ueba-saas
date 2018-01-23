@@ -17,7 +17,7 @@
     </centered>
   {{else}}
     {{#sortable-group onChange="reorderRules" as |group|}}
-      <table>
+      <table class="{{if accessControl.respondCanManageAlertRules 'editable' 'not-editable'}}">
         <thead>
           <tr>
             <th class="reorder">&varr;</th>
@@ -33,11 +33,12 @@
         </thead>
         <tbody>
           {{#each rules as |rule|}}
+            {{!-- Only pass along the group if the user has permission to reorder/manage the rules --}}
             {{#respond/incident-rules/row
               rule=rule
-              group=group
+              group=(if accessControl.respondCanManageAlertRules group null)
               selectedItemId=selectedRuleId onRowClick=(action 'handleRowClick' rule)}}
-              <td>
+              <td class="reorder-rule-cell">
                 <centered>
                   <span class="handle"></span>
                 </centered>

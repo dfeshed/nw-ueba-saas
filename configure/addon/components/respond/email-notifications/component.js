@@ -1,5 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
+import { inject } from '@ember/service';
 import computed from 'ember-computed-decorators';
 import {
   getEnabledEmailServers,
@@ -62,6 +63,7 @@ const VALID_EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)
  * @public
  */
 const RespondNotifications = Component.extend({
+  accessControl: inject(),
   tagName: 'vbox',
   classNames: ['notifications', 'flexi-fit'],
   classNameBindings: ['isTransactionUnderway:transaction-in-progress'],
@@ -76,6 +78,12 @@ const RespondNotifications = Component.extend({
   @computed('emailToAdd')
   isEmailInvalid(emailToAdd) {
     return !VALID_EMAIL_REGEX.test(emailToAdd);
+  },
+  // determines whether the Apply button should be unavailable. That is, if the user has no permissions,
+  // the user is missing required information in the form, or the user has no changes that need to be saved.
+  @computed('accessControl.respondCanManageNotifications', 'isMissingRequiredData', 'hasUnsavedChanges')
+  isApplyUnavailable(hasManagePermissions, isMissingData, hasUnsavedChanges) {
+    return !hasManagePermissions || isMissingData || !hasUnsavedChanges;
   }
 });
 

@@ -68,8 +68,20 @@ export default Service.extend({
   },
 
   @computed('roles.[]')
-  hasRespondConfigureAccess(roles) {
+  hasRespondAlertRulesAccess(roles) {
     return this._hasPermission(roles, 'respond-server.alertrule');
+  },
+
+  @computed('roles.[]')
+  hasRespondNotificationsAccess(roles) {
+    return this._hasPermission(roles, 'integration-server.notification') &&
+      this._hasPermission(roles, 'respond-server.notification');
+  },
+
+  @computed('roles.[]')
+  respondCanManageNotifications(roles) {
+    return this._hasPermission(roles, 'integration-server.notification.manage') &&
+      this._hasPermission(roles, 'respond-server.notification.manage');
   },
 
   @computed('roles.[]')

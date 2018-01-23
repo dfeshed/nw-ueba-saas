@@ -510,6 +510,7 @@ export default {
     subscriptions: 'ja_Subscriptions',
     customFeeds: 'ja_Custom Feeds',
     incidentRules: {
+      noManagePermissions: 'You do not have permissions to make edits to Incident Rules',
       confirm: 'ja_Are you sure you want to do this?',
       assignee: {
         none: 'ja_(Unassigned)'
@@ -640,6 +641,7 @@ export default {
       },
       hasUnsavedChanges: 'ja_You have unsaved changes. Click Apply to save.',
       emailServerSettings: 'ja_Email Server Settings',
+      noManagePermissions: 'ja_You do not have permissions to make edits to Respond Notifications',
       actionMessages: {
         fetchFailure: 'ja_There was a problem loading the Respond notification settings',
         updateSuccess: 'ja_You successfully updated the Respond notification settings',

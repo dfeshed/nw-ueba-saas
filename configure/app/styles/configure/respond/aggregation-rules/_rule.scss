@@ -159,24 +159,4 @@
   .rule-control:first-of-type {
     padding-top: 0;
   }
-
-  > footer {
-    position: relative;
-    height: 40px;
-    padding: rsa-whitespace();
-    background-color: background-color(primary, darker);
-
-    .missing-information-warning {
-      position: absolute;
-      color: text-color(accentFour);
-      top: 20px;
-    }
-    .form-save-controls {
-      padding-right: rsa-whitespace();
-      justify-content: flex-end;
-      .rsa-form-button-wrapper {
-        margin: 0 0 0 1rem;
-      }
-    }
-  }
 }

@@ -72,7 +72,7 @@ const IncidentRule = Component.extend(Confirmable, {
   classNames: ['rsa-incident-rule'],
   classNameBindings: ['isTransactionUnderway:transaction-in-progress'],
   i18n: inject(),
-
+  accessControl: inject(),
   ruleId: null,
 
   /**

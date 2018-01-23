@@ -5,14 +5,16 @@
         <div class="label">{{t 'configure.liveContent'}}</div>
       {{/rsa-nav-tab}}
     {{/if}}
-    {{#if accessControl.respondCanManageAlertRules}}
+    {{#if accessControl.hasRespondAlertRulesAccess}}
       {{#rsa-nav-tab  align='left' isActive=(is-active 'protected.configure.respond.incident-rules') click=(route-action 'navigateTo' 'respond.incident-rules')}}
         <div class="label">{{t 'configure.incidentRulesTitle'}}</div>
       {{/rsa-nav-tab}}
     {{/if}}
-    {{#rsa-nav-tab  align='left' isActive=(is-active 'protected.configure.respond.notifications') click=(route-action 'navigateTo' 'respond.notifications')}}
-      <div class="label">{{t 'configure.respondNotifications'}}</div>
-    {{/rsa-nav-tab}}
+    {{#if accessControl.hasRespondNotificationsAccess}}
+      {{#rsa-nav-tab  align='left' isActive=(is-active 'protected.configure.respond.notifications') click=(route-action 'navigateTo' 'respond.notifications')}}
+        <div class="label">{{t 'configure.respondNotifications'}}</div>
+      {{/rsa-nav-tab}}
+    {{/if}}
     {{#if accessControl.hasESARulesAccess}}
       {{#rsa-nav-tab  align='left' isActive=false click=(action 'redirect' '/alerting/configure')}}
         <div class="label">{{t 'configure.esaRules'}}</div>

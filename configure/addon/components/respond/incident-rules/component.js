@@ -7,6 +7,7 @@ import {
 } from 'configure/reducers/respond/incident-rules/selectors';
 import { selectRule, reorderRules, getRules } from 'configure/actions/creators/respond/incident-rule-creators';
 import { connect } from 'ember-redux';
+import { inject } from '@ember/service';
 import _ from 'lodash';
 
 const stateToComputed = (state) => ({
@@ -40,6 +41,7 @@ const dispatchToActions = function(dispatch) {
  * @public
  */
 const IncidentRules = Component.extend({
+  accessControl: inject(),
   tagName: 'vbox',
   classNames: ['rsa-incident-rules', 'flexi-fit'],
   classNameBindings: ['isTransactionUnderway:transaction-in-progress'],

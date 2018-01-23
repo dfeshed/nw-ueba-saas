@@ -1,4 +1,5 @@
 import { moduleForComponent, test } from 'ember-qunit';
+import { getOwner } from '@ember/application';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 import engineResolverFor from '../../../../helpers/engine-resolver';
@@ -40,7 +41,8 @@ const selectors = {
   groupingOptions: '.incident-rule-grouping-options',
   transactionOverlay: '.transaction-overlay',
   missingInformationWarning: 'footer .missing-information-warning',
-  saveButton: 'footer .form-save-controls .confirm-button'
+  saveButton: 'footer .form-save-controls .confirm-button button',
+  formWarning: 'footer .form-warning'
 };
 
 moduleForComponent('respond/incident-rule', 'Integration | Component | Respond Incident Rule', {
@@ -61,6 +63,7 @@ moduleForComponent('respond/incident-rule', 'Integration | Component | Respond I
       applyPatch(Immutable.from(fullState));
       this.inject.service('redux');
     };
+    this.inject.service('accessControl');
   },
   afterEach() {
     revertPatch();
@@ -194,8 +197,21 @@ test('Overlay appears if a transaction is underway', function(assert) {
 });
 
 test('Footer Save Button is disabled and warning message is displayed when missing information', function(assert) {
+  const translation = getOwner(this).lookup('service:i18n');
   setState({ ...initialState, ruleInfo: { ...initialState.ruleInfo, name: '' } });
   this.render(hbs`{{respond/incident-rule ruleId='12345'}}`);
-  assert.ok(find(selectors.missingInformationWarning), 'There is a missing information warning displayed in the footer');
-  assert.ok(find(`${selectors.saveButton}.is-disabled`), 'The save buttton is diabled in the footer');
+  const warningMessage = translation.t('configure.incidentRules.missingRequiredInfo');
+  assert.equal(this.$(selectors.formWarning).text().trim(), warningMessage, 'There is a missing information warning displayed in the footer');
+  assert.equal(this.$(selectors.saveButton).is(':disabled'), true, 'The Save button is disabled');
+});
+
+test('Footer Save Button is disabled and warning message is displayed when user lacks permission to edit page', function(assert) {
+  setState({ ...initialState });
+  this.render(hbs`{{respond/incident-rule ruleId='12345'}}`);
+  assert.equal(this.$(selectors.saveButton).is(':disabled'), false, 'The Save button is not disabled');
+  const translation = getOwner(this).lookup('service:i18n');
+  this.set('accessControl.roles', []);
+  assert.equal(this.$(selectors.saveButton).is(':disabled'), true, 'The Save button is disabled');
+  const warningMessage = translation.t('configure.incidentRules.noManagePermissions');
+  assert.equal(this.$(selectors.formWarning).text().trim(), warningMessage, 'A warning is displayed to users that they have no permissions to edit');
 });

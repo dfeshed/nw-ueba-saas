@@ -43,6 +43,7 @@ moduleForComponent('respond/email-notifications', 'Integration | Component | Res
       applyPatch(Immutable.from(fullState));
       this.inject.service('redux');
     };
+    this.inject.service('accessControl');
     initialize(this);
   },
   afterEach() {
@@ -239,7 +240,7 @@ test('The apply button is disabled if the email server is not selected', functio
   });
 });
 
-test('The apply button is disabled if there are changes to the form', function(assert) {
+test('The apply button is disabled if there are no changes to the form and becomes enabled with a warning after a change', function(assert) {
   const settings = {
     selectedEmailServer: 'my-favorite-server',
     socManagers: ['admin@rsa.com'],
@@ -274,4 +275,13 @@ test('The apply button is disabled if there are changes to the form', function(a
     assert.equal(this.$(selectors.formWarning).text().trim(), warningMessage, 'A warning is displayed to users that they have unsaved changes');
     assert.equal(this.$(selectors.applyButton).is(':disabled'), false, 'The Apply button is enabled after the email server is selected');
   });
+});
+
+test('The apply button is disabled and a warning is displayed if the user does not have the expected permissions', function(assert) {
+  this.render(hbs`{{respond/email-notifications}}`);
+  const translation = getOwner(this).lookup('service:i18n');
+  this.set('accessControl.roles', []);
+  assert.equal(this.$(selectors.applyButton).is(':disabled'), true, 'The Apply button is disabled');
+  const warningMessage = translation.t('configure.notifications.noManagePermissions');
+  assert.equal(this.$(selectors.formWarning).text().trim(), warningMessage, 'A warning is displayed to users that they have no permissions to edit');
 });

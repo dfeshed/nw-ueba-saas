@@ -9,7 +9,8 @@ export default {
         'searchLiveResources',
         'accessInvestigationModule',
         'respond-server.*',
-        'investigate-server.*'
+        'investigate-server.*',
+        'integration-server.*'
       ]
     };
   }
