@@ -23,11 +23,12 @@ public class TimeModelScorer extends AbstractModelTerminalScorer {
                            boolean isUseCertaintyToCalculateScore,
                            int maxRareTimestampCount,
                            int maxNumOfRareTimestamps,
-                           EventModelsCacheService eventModelsCacheService) {
+                           EventModelsCacheService eventModelsCacheService,
+                           double xWithValueHalfFactor) {
 
         super(scorerName, modelName, additionalModelNames, contextFieldNames, additionalContextFieldNames, featureName,
                 minNumOfPartitionsToInfluence, enoughNumOfPartitionsToInfluence, isUseCertaintyToCalculateScore, eventModelsCacheService);
-        algorithm = new TimeModelScorerAlgorithm(maxRareTimestampCount, maxNumOfRareTimestamps);
+        algorithm = new TimeModelScorerAlgorithm(maxRareTimestampCount, maxNumOfRareTimestamps, xWithValueHalfFactor);
     }
 
     @Override
