@@ -119,7 +119,7 @@ public class SystemConfiguration {
      *
      * @return ldapUrl
      **/
-    @ApiModelProperty(value = "The Key Distribution Center URL")
+    @ApiModelProperty(value = "The Key Distribution Center URL", example = "ldap://192.168.0.31/DC=FORTSCALE,DC=DOM?userPrincipalName?sub")
     public String getLdapUrl() {
         return ldapUrl;
     }
