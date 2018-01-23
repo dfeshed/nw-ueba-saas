@@ -5,19 +5,17 @@
  * redirect to the default route.
  * @public
  */
-import Route from '@ember/routing/route';
-import { inject } from '@ember/service';
+import Route from 'ember-route';
+import service from 'ember-service/inject';
 
 export default Route.extend({
-  session: inject(),
-  router: inject(),
+  session: service(),
 
   redirect() {
     if (!this.get('session.isAuthenticated')) {
       this.transitionTo('login');
     } else {
-      const location = this.get('router.location');
-      const url = location && location.formatURL('/not-found');
+      const url = this._routerMicrolib.location.formatURL('/not-found');
       if (window.location.pathname !== url) {
         this.transitionTo('/not-found');
       }

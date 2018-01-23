@@ -4,7 +4,7 @@ import ApplicationRouteMixin from 'ember-simple-auth/mixins/application-route-mi
 import csrfToken from 'component-lib/mixins/csrf-token';
 import Route from 'ember-route';
 import RSVP from 'rsvp';
-import { inject } from '@ember/service';
+import service from 'ember-service/inject';
 import config from 'ember-get-config';
 
 const {
@@ -12,10 +12,10 @@ const {
 } = Ember;
 
 export default Route.extend(ApplicationRouteMixin, csrfToken, {
-  fatalErrors: inject(),
-  session: inject(),
-  userActivity: inject(),
-  userIdle: inject(),
+  fatalErrors: service(),
+  session: service(),
+  userActivity: service(),
+  userIdle: service(),
 
   persistStateOnLogout: true,
 
@@ -36,8 +36,8 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
     if (
       !this.get('session.isAuthenticated') &&
       transition.targetName !== 'login' &&
-      transition.targetName !== 'not-found' &&
-      !transition.targetName.includes('protected')
+      transition.targetName !== 'protected' &&
+      transition.targetName !== 'protected.index'
     ) {
       localStorage.setItem('rsa-post-auth-redirect', window.location.href);
     }
