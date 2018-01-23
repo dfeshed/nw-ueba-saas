@@ -1,7 +1,6 @@
 package presidio.input.sdk.impl.services;
 
 
-import edu.emory.mathcs.backport.java.util.Arrays;
 import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractAuditableDocument;
 import fortscale.domain.core.EventResult;
@@ -21,13 +20,12 @@ import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
 import presidio.sdk.api.domain.rawevents.FileRawEvent;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 import presidio.sdk.api.utils.InputToCollectionNameTranslator;
+import presidio.sdk.api.validation.InvalidInputDocument;
+import presidio.sdk.api.validation.ValidationResults;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {MongodbTestConfig.class, PresidioInputPersistencyServiceConfig.class})
@@ -124,6 +122,20 @@ public class PresidioInputPersistencyServiceMongoImplTest {
         Assert.assertEquals(1, storedEvetns.size());
         Assert.assertEquals(null, storedEvetns.get(0).getIsDstDriveShared());
         Assert.assertEquals(null, storedEvetns.get(0).getIsSrcDriveShared());
+    }
+
+    @Test
+    public void storeInvalidEvent_eventShouldBeFiltered() {
+        FileRawEvent event = createEvent(Instant.now());
+        event.setUserId(null);
+        event.setEventId(null);
+        ValidationResults validationResults = presidioInputPersistencyService.store(Schema.FILE, Arrays.asList(event));
+        Assert.assertEquals(0, validationResults.validDocuments.size());
+        Assert.assertEquals(1, validationResults.invalidDocuments.size());
+
+        List<InvalidInputDocument> filteredEvents = mongoTemplate.findAll(InvalidInputDocument.class, DataServiceImpl.INVALID_DOCUMENTS_COLLECTION_NAME);
+        Assert.assertEquals(1, filteredEvents.size());
+        Assert.assertEquals(2, filteredEvents.get(0).getViolations().size());
     }
 
     public FileRawEvent createEvent(Instant time) {
