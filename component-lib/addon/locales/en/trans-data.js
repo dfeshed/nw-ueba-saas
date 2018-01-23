@@ -1651,6 +1651,7 @@ export default {
       invalidPort: 'Please enter valid port number',
       invalidName: 'Please enter a valid name without special characters',
       passwordEmptyMessage: 'Please enter certificate password',
+      invalidPasswordString: 'The password can contain a-z, A-Z, 0-9 and keyboard special characters, and should contain a minimum of 3 characters.',
       NAME_EMPTY: 'Warning: The configuration name is empty.',
       SERVERS_EMPTY: 'Warning: No servers are found.',
       EVENT_ID_INVALID: 'Warning: Event ID is invalid.',

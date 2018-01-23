@@ -6,6 +6,7 @@ const VALID_NAME_PATTERN = /^[a-zA-Z0-9]+$/;
 const VALID_DISPLAY_NAME_PATTERN = /^[a-zA-Z0-9 ]+$/;
 const INVALID_CONFIG_NAME_PATTERN = /[!@#$%^&*()+\=\[\]{};':"\\|,.<>\/?]/g;
 const VALID_EVENT_PATTERN = /^[0-9-]+$/;
+const VALID_PASSWORD_PATTERN = /^[!-~]{3,}$/;
 
 export const validatePackageConfig = (formData) => {
   const { port, server, serviceName, displayName, certificatePassword } = formData;
@@ -26,9 +27,17 @@ export const validatePackageConfig = (formData) => {
   if (isEmpty(certificatePassword)) {
     return {
       isPasswordError: true,
-      passwordEmptyMessage: 'packager.errorMessages.passwordEmptyMessage'
+      passwordInvalidMessage: 'packager.errorMessages.passwordEmptyMessage'
     };
   }
+
+  if (!VALID_PASSWORD_PATTERN.test(certificatePassword)) {
+    return {
+      isPasswordError: true,
+      passwordInvalidMessage: 'packager.errorMessages.invalidPasswordString'
+    };
+  }
+
   if (!VALID_NAME_PATTERN.test(serviceName)) {
     return {
       isServiceNameError: true,

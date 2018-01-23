@@ -1650,6 +1650,7 @@ export default {
       invalidPort: 'ja_Please enter valid port number',
       invalidName: 'ja_Please enter a valid name without special characters',
       passwordEmptyMessage: 'ja_Please enter certificate password',
+      invalidPasswordString: 'ja_The password can contain a-z, A-Z, 0-9 and keyboard special characters, and should contain a minimum of 3 characters.',
       NAME_EMPTY: 'ja_Warning: The configuration name is empty.',
       SERVERS_EMPTY: 'ja_Warning: No servers are found.',
       EVENT_ID_INVALID: 'ja_Warning: Event ID is invalid.',

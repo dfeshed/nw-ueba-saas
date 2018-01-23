@@ -119,7 +119,7 @@ const formComponent = Component.extend({
       invalidDisplayNameMessage: null,
       invalidTableItem: null,
       isPasswordError: null,
-      passwordEmptyMessage: null,
+      passwordInvalidMessage: null,
       testLog: true
     });
   },
