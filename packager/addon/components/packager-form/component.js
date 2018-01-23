@@ -125,7 +125,10 @@ const formComponent = Component.extend({
   },
 
   _getTimezoneTime(selectedTime) {
-    return moment(selectedTime).parseZone(selectedTime).format('YYYY-MM-DDTHH:mm:ss.sssZ'); // Removing browser timezone information
+    // Removing browser timezone information
+    const timeWithoutZone = moment(selectedTime).parseZone(selectedTime).format('YYYY-MM-DDTHH:mm:ss');
+    // Setting the timezone as UTC
+    return moment(timeWithoutZone).parseZone().tz('UTC').format('YYYY-MM-DDTHH:mm:ss.sssZ');
   },
 
   _scrollTo(target) {
