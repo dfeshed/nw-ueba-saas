@@ -56,9 +56,6 @@ public class UserServiceImplTest {
 
     private Page<Alert> emptyAlertPage;
 
-    private final List<String> collectionNames = new ArrayList<>(Arrays.asList("output_authentication_enriched_events", "output_file_enriched_events",
-            "output_active_directory_enriched_events"));
-
 
     @Before
     public void setup() {

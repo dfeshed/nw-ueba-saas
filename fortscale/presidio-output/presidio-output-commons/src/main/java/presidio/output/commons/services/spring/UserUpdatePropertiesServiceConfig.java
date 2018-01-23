@@ -34,6 +34,6 @@ public class UserUpdatePropertiesServiceConfig {
 
     @Bean
     public UserPropertiesUpdateService userPropertiesUpdateService() {
-        return new UserPropertiesUpdateServiceImpl(eventPersistencyService());
+        return new UserPropertiesUpdateServiceImpl(eventPersistencyService(), new OutputToCollectionNameTranslator());
     }
 }

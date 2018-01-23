@@ -230,7 +230,7 @@ public class UserScoreServiceImplTest {
         map.put(UserSeverity.HIGH, new PresidioRange<>(50d, 90d));
         map.put(UserSeverity.CRITICAL, new PresidioRange<>(90d, 90d));
         UserSeverityServiceImpl.UserScoreToSeverity userScoreToSeverity = new UserSeverityServiceImpl.UserScoreToSeverity(map);
-        Whitebox.invokeMethod(userSeverityService, "updateSeveritiesForUsersList", userScoreToSeverity, page1.getContent(), true);
+        Whitebox.invokeMethod(userSeverityService, "updateUserSeveritiesAndProperties", userScoreToSeverity, page1.getContent(), true);
 
 
         Assert.assertEquals(UserSeverity.LOW, page.get(0).getSeverity());
