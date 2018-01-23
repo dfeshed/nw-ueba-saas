@@ -62,11 +62,11 @@ public class TimeModelScorerConf extends ModelScorerConf {
 	}
 
 
-	public double getxWithValueHalfFactor() {
+	public double getXWithValueHalfFactor() {
 		return xWithValueHalfFactor;
 	}
 
-	public void setxWithValueHalfFactor(double xWithValueHalfFactor) {
+	public void setXWithValueHalfFactor(double xWithValueHalfFactor) {
 		this.xWithValueHalfFactor = xWithValueHalfFactor;
 	}
 }
