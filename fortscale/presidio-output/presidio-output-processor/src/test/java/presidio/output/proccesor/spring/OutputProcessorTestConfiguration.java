@@ -15,7 +15,6 @@ import presidio.monitoring.services.MetricCollectingService;
 import presidio.monitoring.services.MetricCollectingServiceImpl;
 import presidio.monitoring.services.MetricConventionApplyer;
 import presidio.monitoring.services.PresidioMetricConventionApplyer;
-import presidio.output.commons.services.user.UserSeverityService;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.spring.EventPersistencyServiceConfig;
 import presidio.output.processor.OutputShellCommands;
@@ -90,13 +89,10 @@ public class OutputProcessorTestConfiguration {
     private long retentionOutputDataDays;
 
     @Autowired
-    private UserSeverityService userSeverityService;
-
-    @Autowired
     private OutputMonitoringService outputMonitoringService;
 
     @Bean
     public OutputExecutionService outputProcessService() {
-        return new OutputExecutionServiceImpl(adeManagerSdk, alertService, userService, userSeverityService, eventPersistencyService, outputMonitoringService, smartThreshold, smartPageSize, retentionEnrichedEventsDays, retentionOutputDataDays);
+        return new OutputExecutionServiceImpl(adeManagerSdk, alertService, userService, eventPersistencyService, outputMonitoringService, smartThreshold, smartPageSize, retentionEnrichedEventsDays, retentionOutputDataDays);
     }
 }
