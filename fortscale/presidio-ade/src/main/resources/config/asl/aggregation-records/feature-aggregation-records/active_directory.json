@@ -6,7 +6,6 @@
       "bucketConfName": "sensitiveGroupMembershipOperationCounterUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "sensitiveGroupMembershipOperationCounter"
@@ -22,7 +21,6 @@
       "bucketConfName": "groupMembershipOperationCounterUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "groupMembershipOperationCounter"
@@ -38,7 +36,6 @@
       "bucketConfName": "operationTypeResultHistogramUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "operationTypeResultHistogram"
@@ -55,7 +52,6 @@
       "bucketConfName": "userManagementSecuritySensitiveOperationResultHistogramUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "userManagementSecuritySensitiveOperationResultHistogram"
@@ -72,7 +68,6 @@
       "bucketConfName": "objectManagementOperationResultHistogramUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "objectManagementOperationResultHistogram"

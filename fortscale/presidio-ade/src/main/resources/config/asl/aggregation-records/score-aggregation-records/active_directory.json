@@ -6,8 +6,6 @@
       "bucketConfName": "highestStartInstantScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "highestStartInstantScore"
@@ -23,8 +21,6 @@
       "bucketConfName": "operationTypeToHighestScoreMapUserIdGroupMembershipSecuritySensitiveActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "operationTypeToHighestScoreMap"
@@ -40,8 +36,6 @@
       "bucketConfName": "operationTypeToHighestScoreMapUserIdObjectManagementActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "operationTypeToHighestScoreMap"
@@ -57,8 +51,6 @@
       "bucketConfName": "adminPasswordChangedScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "adminPasswordChangedScore"
@@ -76,8 +68,6 @@
       "bucketConfName": "nonAdminPasswordChangedScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "nonAdminPasswordChangedScore"
@@ -95,8 +85,6 @@
       "bucketConfName": "userAccountEnabledScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "userAccountEnabledScore"
@@ -115,8 +103,6 @@
       "bucketConfName": "userAccountDisabledScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "userAccountDisabledScore"
@@ -135,8 +121,6 @@
       "bucketConfName": "userAccountUnlockedScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "userAccountUnlockedScore"
@@ -154,8 +138,6 @@
       "bucketConfName": "userAccountTypeChangedScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "userAccountTypeChangedScore"
@@ -173,8 +155,6 @@
       "bucketConfName": "userAccountLockedScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "userAccountLockedScore"
@@ -192,8 +172,6 @@
       "bucketConfName": "userPasswordNeverExpiresOptionChangedScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "userPasswordNeverExpiresOptionChangedScore"
@@ -211,8 +189,6 @@
       "bucketConfName": "passwordChangedByNonOwnerScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "passwordChangedByNonOwnerScore"
@@ -230,8 +206,6 @@
       "bucketConfName": "memberAddedToCriticalEnterpriseGroupScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "memberAddedToCriticalEnterpriseGroupScore"

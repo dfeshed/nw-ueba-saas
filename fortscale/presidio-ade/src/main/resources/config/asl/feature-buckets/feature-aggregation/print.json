@@ -2,7 +2,6 @@
   "BucketConfs": [
     {
       "name": "resultHistogramUserIdPrintHourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -26,7 +25,6 @@
     },
     {
       "name": "srcMachineIdHistogramUserIdPrintHourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -50,7 +48,6 @@
     },
     {
       "name": "dstMachineIdHistogramUserIdPrintHourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -74,7 +71,6 @@
     },
     {
       "name": "srcMachineNameRegexClusterHistogramUserIdPrintHourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -98,7 +94,6 @@
     },
     {
       "name": "dstMachineNameRegexClusterHistogramUserIdPrintHourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -122,7 +117,6 @@
     },
     {
       "name": "absoluteFolderPathHistogramUserIdPrintHourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],

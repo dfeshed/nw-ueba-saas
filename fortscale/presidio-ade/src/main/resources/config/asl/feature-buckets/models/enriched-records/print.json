@@ -2,7 +2,6 @@
   "BucketConfs": [
     {
       "name": "startInstantHistogramUserIdPrintDaily",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -26,7 +25,6 @@
     },
     {
       "name": "srcMachineNameRegexClusterHistogramUserIdPrintDaily",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -50,7 +48,6 @@
     },
     {
       "name": "userIdHistogramSrcMachineIdPrintDaily",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "srcMachineId"
       ],
@@ -74,7 +71,6 @@
     },
     {
       "name": "dstMachineIdHistogramUserIdPrintDaily",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -98,7 +94,6 @@
     },
     {
       "name": "dstMachineNameRegexClusterHistogramUserIdPrintDaily",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -122,7 +117,6 @@
     },
     {
       "name": "userIdHistogramDstMachineIdPrintDaily",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "dstMachineId"
       ],
@@ -146,7 +140,6 @@
     },
     {
       "name": "startInstantToHighestNumOfPagesMapUserIdPrintDaily",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -173,7 +166,6 @@
     },
     {
       "name": "absoluteSharedFolderPathHistogramUserIdPrintDaily",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -200,7 +192,6 @@
     },
     {
       "name": "fileExtensionHistogramUserIdPrintDaily",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],

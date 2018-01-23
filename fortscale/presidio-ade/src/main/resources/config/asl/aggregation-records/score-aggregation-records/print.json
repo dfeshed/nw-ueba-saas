@@ -6,8 +6,6 @@
       "bucketConfName": "highestStartInstantScoreUserIdPrintHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "highestStartInstantScore"
@@ -23,8 +21,6 @@
       "bucketConfName": "srcMachineNameRegexClusterToHighestScoreMapUserIdPrintHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "srcMachineNameRegexClusterToHighestScoreMap"
@@ -40,8 +36,6 @@
       "bucketConfName": "dstMachineIdToHighestScoreMapUserIdPrintHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "dstMachineIdToHighestScoreMap"
@@ -57,8 +51,6 @@
       "bucketConfName": "dstMachineNameRegexClusterToHighestScoreMapUserIdPrintHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "dstMachineNameRegexClusterToHighestScoreMap"
@@ -74,8 +66,6 @@
       "bucketConfName": "highestNumOfPagesScoreUserIdPrintHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "highestNumOfPagesScore"
@@ -91,8 +81,6 @@
       "bucketConfName": "absoluteFolderPathToHighestScoreMapUserIdPrintHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "absoluteFolderPathToHighestScoreMap"
@@ -108,8 +96,6 @@
       "bucketConfName": "fileExtensionToHighestScoreMapUserIdPrintHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "fileExtensionToHighestScoreMap"
