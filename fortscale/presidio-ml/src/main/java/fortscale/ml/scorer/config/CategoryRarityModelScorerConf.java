@@ -66,11 +66,11 @@ public class CategoryRarityModelScorerConf extends ModelScorerConf{
         return maxNumOfRareFeatures;
     }
 
-    public double getxWithValueHalfFactor() {
+    public double getXWithValueHalfFactor() {
         return xWithValueHalfFactor;
     }
 
-    public void setxWithValueHalfFactor(double xWithValueHalfFactor) {
+    public void setXWithValueHalfFactor(double xWithValueHalfFactor) {
         this.xWithValueHalfFactor = xWithValueHalfFactor;
     }
 
