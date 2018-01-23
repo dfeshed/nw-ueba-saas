@@ -56,6 +56,8 @@ const TextFilter = Component.extend(FilterMixin, {
 
   isError: false,
 
+  errorMessage: '',
+
   FILTER_SEPERATOR: '||',
 
   /**
@@ -138,6 +140,10 @@ const TextFilter = Component.extend(FilterMixin, {
       const errors = propertyValues.filter((o) => o.value === 'error');
       if (propertyValues.length <= 0 || errors.length) {
         this.set('isError', true);
+        this.set('errorMessage', 'investigateHosts.hosts.filters.invalidFilterInput');
+      } else if (propertyValues[0].value.length > 256) {
+        this.set('isError', true);
+        this.set('errorMessage', 'investigateHosts.hosts.filters.invalidFilterInputLength');
       } else {
         this.set('isError', false);
         const restrictionTypeUpdated = propertyValues.length > 1 ? 'IN' : restrictionType;

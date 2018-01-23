@@ -1651,7 +1651,7 @@ export default {
       invalidPort: 'Please enter valid port number',
       invalidName: 'Please enter a valid name without special characters',
       passwordEmptyMessage: 'Please enter certificate password',
-      invalidPasswordString: 'The password can contain a-z, A-Z, 0-9 and keyboard special characters, and should contain a minimum of 3 characters.',
+      invalidPasswordString: 'Can contain alphanumeric or special characters, and a minimum of 3 characters.',
       NAME_EMPTY: 'Warning: The configuration name is empty.',
       SERVERS_EMPTY: 'Warning: No servers are found.',
       EVENT_ID_INVALID: 'Warning: Event ID is invalid.',
@@ -1742,6 +1742,8 @@ export default {
       linux: 'LINUX',
       favouriteFilters: 'Favorite Filters',
       addMore: 'Add Filter',
+      invalidFilterInput: 'Invalid filter input',
+      invalidFilterInputLength: 'Filter input longer than 256 characters',
       restrictionType: {
         moreThan: 'Greater than',
         lessThan: 'Less than',
@@ -2138,6 +2140,7 @@ export default {
         searchPlaceHolder: 'Enter the filter option',
         mutlipleValuesNote: 'Note: To search multiple values, use || as a separator',
         invalidFilterInput: 'Invalid filter input',
+        invalidFilterInputLength: 'Filter input longer than 256 characters',
         inTimeRange: 'In',
         notInTimeRange: 'Not In',
         agentStatus: {

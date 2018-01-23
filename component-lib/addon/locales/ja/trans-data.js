@@ -1650,7 +1650,7 @@ export default {
       invalidPort: 'ja_Please enter valid port number',
       invalidName: 'ja_Please enter a valid name without special characters',
       passwordEmptyMessage: 'ja_Please enter certificate password',
-      invalidPasswordString: 'ja_The password can contain a-z, A-Z, 0-9 and keyboard special characters, and should contain a minimum of 3 characters.',
+      invalidPasswordString: 'ja_Can contain alphanumeric or special characters, and a minimum of 3 characters.',
       NAME_EMPTY: 'ja_Warning: The configuration name is empty.',
       SERVERS_EMPTY: 'ja_Warning: No servers are found.',
       EVENT_ID_INVALID: 'ja_Warning: Event ID is invalid.',
@@ -1741,6 +1741,8 @@ export default {
       linux: 'ja_LINUX',
       favouriteFilters: 'ja_Favorite Filters',
       addMore: 'ja_Add More...',
+      invalidFilterInput: 'ja_Invalid filter input',
+      invalidFilterInputLength: 'ja_Filter input longer than 256 characters',
       restrictionType: {
         moreThan: 'ja_Greater than',
         lessThan: 'ja_Less than',
@@ -2139,6 +2141,7 @@ export default {
         searchPlaceHolder: 'ja_Enter the filter option',
         mutlipleValuesNote: 'ja_Note: To search multiple values, use || as a separator',
         invalidFilterInput: 'ja_Invalid filter input',
+        invalidFilterInputLength: 'ja_Filter input longer than 256 characters',
         inTimeRange: 'ja_In',
         notInTimeRange: 'ja_Not In',
         agentStatus: {

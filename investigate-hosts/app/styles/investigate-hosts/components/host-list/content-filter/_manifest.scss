@@ -15,6 +15,9 @@ $filterPanelMinWidth: 200px;
   max-height: 350px;
   overflow-y: scroll;
   overflow: auto;
+  li {
+    line-height: 1.25rem;
+  }
 }
 
 .save-button {

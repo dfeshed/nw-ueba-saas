@@ -37,6 +37,8 @@ const TextFilter = Component.extend(FilterMixin, {
 
   showRestrictionType: true,
 
+  errorMessage: '',
+
   /**
    * List of supported operators
    * @type []
@@ -97,7 +99,17 @@ const TextFilter = Component.extend(FilterMixin, {
         value
       } = this.getProperties('config', 'restrictionType', 'value');
       const propertyValues = value && !isEmpty(value) ? [{ value }] : null;
-      this.send('updateFilter', { restrictionType, propertyName, propertyValues });
+
+      if (!propertyValues) {
+        this.set('isError', true);
+        this.set('errorMessage', 'investigateFiles.filter.invalidFilterInput');
+      } else if (propertyValues[0].value.length > 256) {
+        this.set('isError', true);
+        this.set('errorMessage', 'investigateFiles.filter.invalidFilterInputLength');
+      } else {
+        this.set('isError', false);
+        this.send('updateFilter', { restrictionType, propertyName, propertyValues });
+      }
     }
   }
 });

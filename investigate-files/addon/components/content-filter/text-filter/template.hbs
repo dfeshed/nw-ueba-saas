@@ -9,7 +9,12 @@
   position='bottom-right' panelId=config.panelId}}
   <section class="text-filter__content">
     <div class='body__input body-input-js'>
-      {{rsa-form-input value=value placeholder='File Name'}}
+      {{rsa-form-input
+        value=value 
+        placeholder=(t config.label)
+        isError=isError
+        errorMessage=(t errorMessage)
+      }}
     </div>
     {{#if showRestrictionType}}
       <div class='rsa-form-radio-group body__radio'>
