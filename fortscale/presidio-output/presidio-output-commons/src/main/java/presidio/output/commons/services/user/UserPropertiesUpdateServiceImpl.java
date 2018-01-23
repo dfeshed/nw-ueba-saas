@@ -77,7 +77,6 @@ public class UserPropertiesUpdateServiceImpl implements UserPropertiesUpdateServ
         if (isUpdated) {
             return user;
         } else {
-            log.debug("User is up to date {}.", user.getUserId());
             return null;
         }
     }
