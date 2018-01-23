@@ -2124,7 +2124,8 @@ export default {
       },
       selected: 'ja_selected ({{count}})',
       list: {
-        noResultsMessage: 'ja_No Results Found'
+        noResultsMessage: 'ja_No Results Found',
+        errorOffline: 'ja_An error has occurred. The Endpoint Server may be offline or inaccessible.'
       },
       filters: {
         systemFilter: 'ja_This search is system defined and cannot be edited.',

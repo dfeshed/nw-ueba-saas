@@ -2123,7 +2123,8 @@ export default {
       },
       selected: 'selected ({{count}})',
       list: {
-        noResultsMessage: 'No Results Found.'
+        noResultsMessage: 'No Results Found.',
+        errorOffline: 'An error has occurred. The Endpoint Server may be offline or inaccessible.'
       },
       filters: {
         systemFilter: 'This search is system defined and cannot be edited.',

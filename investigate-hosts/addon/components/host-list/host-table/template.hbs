@@ -9,6 +9,10 @@
       <centered>
         {{rsa-loader size='larger'}}
       </centered>
+    {{else if (eq hostFetchStatus 'error')}}
+      <centered>
+        {{rsa-panel-message message=(t 'investigateHosts.hosts.list.errorOffline')}}
+      </centered>
     {{else}}
       {{#rsa-data-table/body noResultsMessage=(t 'investigateHosts.hosts.list.noResultsMessage') as |item index column|}}
         {{host-list/host-table/body-cell
