@@ -43,7 +43,11 @@
                 unsigned
               {{/if}}
             {{else if (eq column.dataType 'DATE')}}
-              {{rsa-content-datetime timestamp=(get item column.field)}}
+              {{#if (get item column.field)}}
+                {{rsa-content-datetime timestamp=(get item column.field)}}
+              {{else}}
+                N/A
+              {{/if}}
             {{else if (eq column.field 'firstFileName')}}
               <hbox>
                 {{get item column.field}}
