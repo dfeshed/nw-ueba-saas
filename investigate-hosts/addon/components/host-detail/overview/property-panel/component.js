@@ -30,7 +30,7 @@ export default PropertyPanel.extend({
           return {
             ...fieldItem,
             value,
-            displayName: i18n.t(label)
+            displayName: i18n.t(label).string
           };
         });
         return { ...item, fields };
