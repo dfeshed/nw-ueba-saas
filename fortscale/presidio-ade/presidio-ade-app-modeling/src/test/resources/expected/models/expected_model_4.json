@@ -1,0 +1,12 @@
+{
+  "type": "gaussian-prior-model",
+  "segmentPriors": [
+    {
+      "mean": 10.0,
+      "priorAtMean": 15.0,
+      "supportFromLeftOfMean": 1.0,
+      "supportFromRightOfMean": 1.0
+    }
+  ],
+  "minPrior": 15.0
+}
