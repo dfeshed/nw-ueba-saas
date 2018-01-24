@@ -100,3 +100,16 @@ $filterPanelMinWidth: 200px;
 #list-filter-content .rsa-form-checkbox-label::before {
   top: 8px;
 }
+
+.modal-content.save-search {
+  .rsa-form-label {
+    margin-top: 10px;
+    display: inline-block;
+    text-transform: none;
+    font-weight: normal;
+    font-size: 1rem;
+  }
+  input {
+    width:88%
+  }
+}

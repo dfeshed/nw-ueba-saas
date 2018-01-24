@@ -43,6 +43,7 @@
     padding-right: rsa-whitespace(most);
     text-transform: uppercase;
     height: 4rem;
+    padding-top: 3px;
   &.rsa-content-definition {
     .label {
       @include rsa-font(header, small);
