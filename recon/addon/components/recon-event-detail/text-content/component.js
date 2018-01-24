@@ -8,6 +8,7 @@ import ReconPagerMixin from 'recon/mixins/recon-pager';
 import StickyHeaderMixin from 'recon/mixins/sticky-header-mixin';
 import DelayBatchingMixin from 'recon/mixins/delay-batching-mixin';
 import layout from './template';
+import service from 'ember-service/inject';
 import { isEndpointEvent, isLogEvent } from 'recon/reducers/meta/selectors';
 import { packetTotal } from 'recon/reducers/header/selectors';
 import {
@@ -41,6 +42,7 @@ const TextReconComponent = Component.extend(ReconPagerMixin, StickyHeaderMixin, 
   stickyContentKey: 'renderedText',
   stickySelector: '.scroll-box .rsa-text-entry',
   stickyHeaderSelector: '.is-sticky.recon-request-response-header',
+  i18n: service(),
 
   @computed('maxPacketsReached', 'maxPacketsForText', 'packetTotal')
   maxPacketMessaging(maxPacketsReached, maxPacketCount, packetTotal) {
@@ -74,6 +76,12 @@ const TextReconComponent = Component.extend(ReconPagerMixin, StickyHeaderMixin, 
 
   @computed('renderedText.length', 'numberOfItems')
   hasMoreToDisplay: (numberDisplayed, numberToDisplay) => numberDisplayed < numberToDisplay,
+
+  @computed('isEndpointEvent')
+  noResultsMessage(isEndpointEvent) {
+    const i18n = this.get('i18n');
+    return isEndpointEvent ? i18n.t('recon.error.noRawDataEndpoint') : i18n.t('recon.error.noTextContentData');
+  },
 
   @alias('contextualHelp.invTextAnalysis') topic: null,
 
