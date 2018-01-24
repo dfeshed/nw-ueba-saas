@@ -195,7 +195,7 @@ export default {
       compressToggleTitle: 'ja_Display HTTP payloads as compressed or not',
       downloadCsv: 'ja_Download CSV',
       downloadEndpointEvent: 'ja_Download Endpoint Event',
-      pivotToEndpoint: 'ja_Pivot to Endpoint',
+      pivotToEndpoint: 'ja_Pivot to Endpoint Thick Client',
       pivotToEndpointTitle: 'ja_Applicable for hosts with 4.x Endpoint agents installed, please install the Netwitness Endpoint Thick Client.',
       downloadJson: 'ja_Download JSON',
       downloadLog: 'ja_Download Log',
@@ -331,7 +331,7 @@ export default {
       copy: 'ja_Copy',
       externalLinks: 'ja_External',
       livelookup: 'ja_Live Lookup',
-      endpointIoc: 'ja_Endpoint IOC Lookup',
+      endpointIoc: 'ja_Endpoint Thick Client Lookup',
       applyDrill: 'ja_Apply Drill in New Tab',
       applyNEDrill: 'ja_Apply !EQUALS Drill in New Tab',
       refocus: 'ja_Refocus Investigation in New Tab',
@@ -1345,7 +1345,7 @@ export default {
       operatingSystem: 'ja_Operating System',
       machineStatus: 'ja_Machine Status',
       ipAddress: 'ja_IPAddress',
-      endpoint: 'ja_To Pivot to Endpoint, please install the NetWitness Endpoint client for Windows.'
+      endpoint: 'ja_Applicable for hosts with 4.X Endpoint agents installed, please install Netwitness Endpoint Thick Client.'
     },
     ADdata: {
       title: 'ja_User Information',
@@ -1597,7 +1597,7 @@ export default {
       addToList: 'ja_Add/Remove from List',
       virusTotal: 'ja_Virus Total Lookup',
       googleLookup: 'ja_Google Lookup',
-      ecat: 'ja_Pivot to Endpoint',
+      ecat: 'ja_Pivot to Endpoint Thick Client',
       events: 'ja_Pivot to Events',
       contextUnavailable: 'ja_No context data available at this time.',
       dataSourceNames: {

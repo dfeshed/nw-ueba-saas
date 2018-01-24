@@ -196,7 +196,7 @@ export default {
       compressToggleTitle: 'Display HTTP payloads as compressed or not',
       downloadCsv: 'Download CSV',
       downloadEndpointEvent: 'Download Endpoint',
-      pivotToEndpoint: 'Pivot to Endpoint',
+      pivotToEndpoint: 'Pivot to Endpoint Thick Client',
       pivotToEndpointTitle: 'Applicable for hosts with 4.x Endpoint agents installed, please install the Netwitness Endpoint Thick Client.',
       downloadJson: 'Download JSON',
       downloadLog: 'Download Log',
@@ -332,7 +332,7 @@ export default {
       copy: 'Copy',
       externalLinks: 'External Lookup',
       livelookup: 'Live Lookup',
-      endpointIoc: 'Endpoint IOC Lookup',
+      endpointIoc: 'Endpoint Thick Client Lookup',
       applyDrill: 'Apply Drill in New Tab',
       applyNEDrill: 'Apply !EQUALS Drill in New Tab',
       refocus: 'Refocus Investigation in New Tab',
@@ -1346,7 +1346,7 @@ export default {
       operatingSystem: 'Operating System',
       machineStatus: 'Machine Status',
       ipAddress: 'IPAddress',
-      endpoint: 'To Pivot to Endpoint, please install the NetWitness Endpoint client for Windows.'
+      endpoint: 'Applicable for hosts with 4.X Endpoint agents installed, please install Netwitness Endpoint Thick Client.'
     },
     addToList: {
       title: 'Add/Remove from List',
@@ -1598,7 +1598,7 @@ export default {
       addToList: 'Add/Remove from List',
       virusTotal: 'Virus Total Lookup',
       googleLookup: 'Google Lookup',
-      ecat: 'Pivot to Endpoint',
+      ecat: 'Pivot to Endpoint Thick Client',
       events: 'Pivot to Events',
       contextUnavailable: 'No context data available at this time.',
       dataSourceNames: {
