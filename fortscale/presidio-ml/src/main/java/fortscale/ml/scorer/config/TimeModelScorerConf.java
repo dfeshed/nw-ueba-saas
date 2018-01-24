@@ -14,6 +14,7 @@ public class TimeModelScorerConf extends ModelScorerConf {
 	public static final String SCORER_TYPE = "time-model-scorer";
 	public static final int DEFAULT_MAX_RARE_TIMESTAMP_COUNT = 5;
 	public static final int DEFAULT_MAX_NUM_OF_RARE_TIMESTAMPS = 5;
+	public static final double X_WITH_VALUE_HALF_FACTOR = 0.3333333333333333;
 
 	/*
 	 * Inherited non mandatory fields:
@@ -26,6 +27,8 @@ public class TimeModelScorerConf extends ModelScorerConf {
 	private int maxRareTimestampCount = DEFAULT_MAX_RARE_TIMESTAMP_COUNT;
 	@JsonProperty("max-num-of-rare-timestamps")
 	private int maxNumOfRareTimestamps = DEFAULT_MAX_NUM_OF_RARE_TIMESTAMPS;
+	@JsonProperty("x-with-value-half-factor")
+	private double xWithValueHalfFactor = X_WITH_VALUE_HALF_FACTOR;
 
 	@JsonCreator
 	public TimeModelScorerConf(@JsonProperty("name") String name,
@@ -56,5 +59,14 @@ public class TimeModelScorerConf extends ModelScorerConf {
 	public void setMaxNumOfRareTimestamps(int maxNumOfRareTimestamps) {
 		Assert.isTrue(maxNumOfRareTimestamps >= 0);
 		this.maxNumOfRareTimestamps = maxNumOfRareTimestamps;
+	}
+
+
+	public double getXWithValueHalfFactor() {
+		return xWithValueHalfFactor;
+	}
+
+	public void setXWithValueHalfFactor(double xWithValueHalfFactor) {
+		this.xWithValueHalfFactor = xWithValueHalfFactor;
 	}
 }

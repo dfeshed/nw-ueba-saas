@@ -11,6 +11,7 @@ import presidio.output.commons.services.user.UserPropertiesUpdateServiceImpl;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyServiceImpl;
+import presidio.output.domain.translator.OutputToCollectionNameTranslator;
 
 
 @Configuration
@@ -26,7 +27,7 @@ public class UserUpdatePropertiesTestConfiguration {
 
     @Bean
     public UserPropertiesUpdateService userPropertiesUpdateService() {
-        return new UserPropertiesUpdateServiceImpl(eventPersistencyService);
+        return new UserPropertiesUpdateServiceImpl(eventPersistencyService, new OutputToCollectionNameTranslator());
     }
 
     @Autowired
