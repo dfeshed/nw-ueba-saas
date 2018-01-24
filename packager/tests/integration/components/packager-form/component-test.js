@@ -98,7 +98,7 @@ test('Add action creates another row in channel filter table', function(assert) 
   this.render(hbs`{{packager-form isLogCollectionEnabled=true}}`);
   const $button = this.$('.add-row .rsa-form-button');
   return waitFor(() => $button.trigger('click'))().then(() => {
-    assert.equal(this.$('.rsa-data-table-body-row').length, 2, 'There are 2 rows in the table');
+    assert.equal(this.$('.rsa-data-table-body-row').length, 3, 'There are 3 rows in the table');
   });
 });
 

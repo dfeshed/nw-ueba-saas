@@ -268,7 +268,7 @@ const formComponent = Component.extend({
 
     // adding an empty row to the channel filters table
     addRowFilter(item) {
-      if (item.target.classList.contains('rsa-icon')) {
+      if (item.target.classList.contains('rsa-icon') || item.target.classList.contains('rsa-form-button')) {
         this.get('configData.logCollectionConfig.channels').pushObject({ channel: '', filter: 'Include', eventId: 'ALL' });
       }
     },
