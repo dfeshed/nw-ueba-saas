@@ -1,5 +1,6 @@
 package presidio.webapp.spring;
 
+import fortscale.utils.mongodb.config.MongoConfig;
 import fortscale.utils.rest.HttpMethodOverrideHeaderFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,7 +25,7 @@ import presidio.webapp.service.RestAlertServiceImpl;
 import presidio.webapp.service.RestUserService;
 import presidio.webapp.service.RestUserServiceImpl;
 
-@Import({PresidioOutputPersistencyServiceConfig.class, AlertSeverityServiceConfig.class, UserSeverityServiceConfig.class})
+@Import({PresidioOutputPersistencyServiceConfig.class, AlertSeverityServiceConfig.class, UserSeverityServiceConfig.class, MongoConfig.class})
 @Configuration
 public class OutputWebappConfiguration {
 

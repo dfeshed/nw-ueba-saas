@@ -42,7 +42,7 @@ public class SystemConfiguration {
      *
      * @return username
      **/
-    @ApiModelProperty(example = "presidio@somecompany.dom", value = "a domain user, already havin Service Principal Name(SPN) for this tomcat")
+    @ApiModelProperty(example = "presidio@somecompany.dom", value = "a domain user, already having Service Principal Name(SPN)")
     public String getUsername() {
         return username;
     }
@@ -81,7 +81,7 @@ public class SystemConfiguration {
      *
      * @return analystGroup
      **/
-    @ApiModelProperty(example = "presidio-soc-team-somecompany", value = "Active directory group that represent presidio security analyst user")
+    @ApiModelProperty(example = "CN=admin-users,OU=Company-Users,DC=company,DC=dom", value = "Active directory group that represent presidio security analyst user ")
     public String getAnalystGroup() {
         return analystGroup;
     }
@@ -119,7 +119,7 @@ public class SystemConfiguration {
      *
      * @return ldapUrl
      **/
-    @ApiModelProperty(value = "The Key Distribution Center URL")
+    @ApiModelProperty(value = "URL specifying the LDAP search parameters", example = "ldap://192.168.0.31/DC=FORTSCALE,DC=DOM?userPrincipalName?sub")
     public String getLdapUrl() {
         return ldapUrl;
     }
