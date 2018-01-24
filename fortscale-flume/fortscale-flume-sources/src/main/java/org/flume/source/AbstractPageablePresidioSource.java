@@ -89,7 +89,7 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
 
     @Override
     protected void doStart() throws FlumeException {
-        logger.debug("{} is processing events for {}: {}, {}: {}.",
+        logger.info("{} is processing events for {}: {}, {}: {}.",
                 getName(), START_DATE, END_DATE, startDate, endDate);
         try {
             int pageNum = 0;// first page
@@ -120,8 +120,8 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
             }
 
         } catch (Exception e) {
-            logger.error("Failed to process events for {}: {}, {}: {}. There were no events to process",
-                    START_DATE, startDate, END_DATE, endDate);
+            logger.error("{} Failed to process events for {}: {}, {}: {}. There were no events to process",
+                    getName(), START_DATE, startDate, END_DATE, endDate);
             logger.error(e.getMessage());
 
         } finally {
@@ -141,17 +141,19 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
                 logger.info("Source {} is done. Starting source-is-done flow", getName());
             }
         } catch (Exception e) {
-
-            logger.error("Failed to start " + this, e);
+            logger.error("Failed to stop {}", this, e);
             setLifecycleState(LifecycleState.ERROR);
         }
     }
 
     @Override
     protected void doStop() throws FlumeException {
-        flumePresidioExternalMonitoringService.manualExportMetrics();
+        try {
+            flumePresidioExternalMonitoringService.manualExportMetrics();
+        } catch (Exception e) {
+            logger.error("Failed to send metrics during stop. Monitor Details: {} ", monitorDetails, e);
+        }
         sendDoneControlMessage();
-
     }
 
     protected abstract List<AbstractDocument> doFetch(int pageNum);
