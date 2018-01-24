@@ -134,7 +134,7 @@ test('table with data', function(assert) {
   });
 });
 
-test('suraj Property panel is rendered', function(assert) {
+test('Property panel is rendered', function(assert) {
   new ReduxDataHelper(setState)
     .filesLoadMoreStatus('stopped')
     .files(hostFiles.files).build();

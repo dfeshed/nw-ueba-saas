@@ -45,6 +45,8 @@ const resetHostDownloadLink = () => ({ type: ACTION_TYPES.RESET_HOST_DOWNLOAD_LI
 
 const arrangeSecurityConfigs = (arrangeBy) => ({ type: ACTION_TYPES.ARRANGE_SECURITY_CONFIGURATIONS, payload: { arrangeBy } });
 
+const setSystemInformationTab = (tabName) => ({ type: ACTION_TYPES.SET_SYSTEM_INFORMATION_TAB, payload: { tabName } });
+
 export {
   toggleCustomFilter,
   toggleMachineSelected,
@@ -61,5 +63,6 @@ export {
   toggleDeleteHostsModal,
   resetDetailsInputAndContent,
   resetHostDownloadLink,
-  arrangeSecurityConfigs
+  arrangeSecurityConfigs,
+  setSystemInformationTab
 };

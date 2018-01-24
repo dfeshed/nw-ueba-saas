@@ -1,6 +1,6 @@
 {{#liquid-bind hostFileEntries use=(if tableData animation 'default')}}
   <vbox class="system-information-wrapper">
-    {{host-detail/utils/host-title-bar tabs=tabList defaultAction=(action 'setTabView')}}
+    {{host-detail/utils/host-title-bar tabs=tabList defaultAction=(action 'setSystemInformationTab')}}
     <box class="system-information__content">
       {{#if isBashHistorySelected}}
         <div xs='6' class="user-filter">

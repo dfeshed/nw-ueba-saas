@@ -13,7 +13,8 @@ test('should return the initial state', function(assert) {
     isTreeView: true,
     showCancelScanModal: false,
     showDeleteHostsModal: false,
-    hostDetailsLoading: false
+    hostDetailsLoading: false,
+    activeSystemInformationTab: 'HOST_ENTRIES'
   });
 });
 
@@ -24,7 +25,8 @@ test('The RESET_INPUT_DATA action reset to initial state', function(assert) {
     isTreeView: true,
     showCancelScanModal: false,
     showDeleteHostsModal: false,
-    hostDetailsLoading: true
+    hostDetailsLoading: true,
+    activeSystemInformationTab: 'HOST_ENTRIES'
   });
 
   const expectedEndState = {
@@ -33,7 +35,8 @@ test('The RESET_INPUT_DATA action reset to initial state', function(assert) {
     isTreeView: true,
     showCancelScanModal: false,
     showDeleteHostsModal: false,
-    hostDetailsLoading: false
+    hostDetailsLoading: false,
+    activeSystemInformationTab: 'HOST_ENTRIES'
   };
 
   const result = reducer(previous, { type: ACTION_TYPES.RESET_INPUT_DATA });
@@ -107,6 +110,20 @@ test('The TOGGLE_PROCESS_VIEW action toggles the tree view state', function(asse
   };
 
   const result = reducer(previous, { type: ACTION_TYPES.TOGGLE_PROCESS_VIEW });
+
+  assert.deepEqual(result, expectedEndState);
+});
+
+test('The SET_SYSTEM_INFORMATION_TAB action sets the system information tab', function(assert) {
+  const previous = Immutable.from({
+    activeSystemInformationTab: 'HOST_ENTRIES'
+  });
+
+  const expectedEndState = {
+    activeSystemInformationTab: 'SECURITY_PRODUCTS'
+  };
+
+  const result = reducer(previous, { type: ACTION_TYPES.SET_SYSTEM_INFORMATION_TAB, payload: { tabName: 'SECURITY_PRODUCTS' } });
 
   assert.deepEqual(result, expectedEndState);
 });

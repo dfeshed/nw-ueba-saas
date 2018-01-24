@@ -4,36 +4,29 @@ import computed from 'ember-computed-decorators';
 import COLUMNS from './columns';
 import TABS from './tabsConfig';
 import {
-  getHostFileEntries,
-  getMountedPaths,
-  getNetworkShares,
-  getBashHistories,
+  hostFileEntries,
   machineOsType,
-  getWindowsPatches,
-  getSecurityProducts } from 'investigate-hosts/reducers/details/system-information/selectors';
+  selectedSystemInformationData,
+  bashHistories } from 'investigate-hosts/reducers/details/system-information/selectors';
+import { setSystemInformationTab, setBashHistoryFilteredData } from 'investigate-hosts/actions/ui-state-creators';
 
 const stateToComputed = (state) => ({
   animation: state.endpoint.detailsInput.animation,
-  hostFileEntries: getHostFileEntries(state),
-  mountedPaths: getMountedPaths(state),
-  networkShares: getNetworkShares(state),
-  bashHistories: getBashHistories(state),
+  hostFileEntries: hostFileEntries(state),
   machineOsType: machineOsType(state),
-  windowsPatches: getWindowsPatches(state),
-  securityProducts: getSecurityProducts(state)
+  systemInformationData: selectedSystemInformationData(state),
+  selectedTab: state.endpoint.visuals.activeSystemInformationTab,
+  bashHistories: bashHistories(state)
 });
-
+const dispatchToActions = {
+  setSystemInformationTab,
+  setBashHistoryFilteredData
+};
 const SystemInformation = Component.extend({
 
   tagName: 'box',
 
   classNames: ['system-information'],
-
-  /**
-   * Default selected tab
-   * @public
-   */
-  selectedTab: 'HOST_ENTRIES',
 
   selectedUser: 'ALL',
 
@@ -64,13 +57,9 @@ const SystemInformation = Component.extend({
    * @returns {{data, columns}}
    * @public
    */
-  @computed('selectedTab')
-  tableData(selectedTab) {
-    const { field, columns } = COLUMNS[selectedTab];
-    return {
-      data: this.get(field),
-      columns
-    };
+  @computed('systemInformationData')
+  tableData(systemInformationData) {
+    return { ...systemInformationData };
   },
 
   @computed('selectedTab')
@@ -85,10 +74,7 @@ const SystemInformation = Component.extend({
       const filteredData = value === 'ALL' ? data : data.filterBy('userName', value);
       this.set('selectedUser', value);
       this.set('tableData', { data: filteredData, columns });
-    },
-    setTabView(tabName) {
-      this.set('selectedTab', tabName);
     }
   }
 });
-export default connect(stateToComputed, undefined)(SystemInformation);
+export default connect(stateToComputed, dispatchToActions)(SystemInformation);

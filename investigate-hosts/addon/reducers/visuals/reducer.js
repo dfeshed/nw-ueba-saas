@@ -8,7 +8,8 @@ const visualsInitialState = Immutable.from({
   isTreeView: true,
   showCancelScanModal: false,
   showDeleteHostsModal: false,
-  hostDetailsLoading: false
+  hostDetailsLoading: false,
+  activeSystemInformationTab: 'HOST_ENTRIES'
 });
 
 const visuals = handleActions({
@@ -28,6 +29,10 @@ const visuals = handleActions({
 
   [ACTION_TYPES.TOGGLE_CANCEL_SCAN_MODAL]: (state) => {
     return state.set('showCancelScanModal', !state.showCancelScanModal);
+  },
+
+  [ACTION_TYPES.SET_SYSTEM_INFORMATION_TAB]: (state, { payload: { tabName } }) => {
+    return state.set('activeSystemInformationTab', tabName);
   }
 }, visualsInitialState);
 
