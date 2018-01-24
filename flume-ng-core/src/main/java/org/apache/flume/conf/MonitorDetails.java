@@ -1,5 +1,6 @@
 package org.apache.flume.conf;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import presidio.monitoring.sdk.api.services.PresidioExternalMonitoringService;
 
 import java.time.Instant;
@@ -36,5 +37,14 @@ public class MonitorDetails {
 
     public void setSchema(String schema) {
         this.schema = schema;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("logicalhour", logicalhour)
+                .append("presidioExternalMonitoringService", presidioExternalMonitoringService)
+                .append("schema", schema)
+                .toString();
     }
 }
