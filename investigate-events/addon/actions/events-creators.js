@@ -2,10 +2,6 @@ import fetchStreamingEvents from './fetch/events';
 import { fetchLog } from './fetch/logs';
 import * as ACTION_TYPES from './types';
 
-const {
-  log
-} = console;
-
 /**
  * Fetches a stream of events for the given query node.
  * @public
@@ -23,8 +19,17 @@ export const eventsGetFirst = () => {
       },
       onResponse(response) {
         const { data, goal } = getState().investigate.eventResults;
-        const payload = response && response.data;
-        if (Array.isArray(payload) && payload.length) {
+        const { data: _payload, meta } = response || {};
+        const description = meta ? meta.description : null;
+        // A streaming websocket call goes through different phases. First is
+        // `Queued`, then `Executing`, then actual data comes back until the
+        // stream is cancelled or it completes. For the first two phases, the
+        // data property will be an empty array. When we dispatch that, it will
+        // show a message that the query filters returned no data, which isn't
+        // necessarily true. So let's just skip doing anything if we're in one
+        // of the first two phases of a streaming request.
+        if (description !== 'Queued' && description !== 'Executing') {
+          const payload = Array.isArray(_payload) ? _payload : [];
           payload.forEach(_hasherizeEventMeta);
           const count = data.length + payload.length;
           if (count >= goal) {
@@ -132,7 +137,7 @@ export const eventsLogsGet = (events = []) => {
       onResponse(response) {
         dispatch({ type: ACTION_TYPES.SET_LOG, payload: response });
       },
-      onError(response) {
+      onError() {
         // The request won't complete, so mark any events still pending as error.
         const waiting = events.filter((el) => el.logStatus === 'wait');
         waiting.forEach((item) => {
@@ -142,18 +147,12 @@ export const eventsLogsGet = (events = []) => {
             status: 'rejected'
           });
         });
-        log('GET_LOG', response);
       }
     };
 
     dispatch({
       type: ACTION_TYPES.GET_LOG,
-      promise: fetchLog(serviceId, sessionIds, handlers),
-      meta: {
-        onFailure(response) {
-          log('GET_LOG', response);
-        }
-      }
+      promise: fetchLog(serviceId, sessionIds, handlers)
     });
   };
 };
