@@ -4,6 +4,7 @@ import config from 'ember-get-config';
 import computed from 'ember-computed-decorators';
 import { queryBodyClass } from 'investigate-events/reducers/investigate/data-selectors';
 import { selectedIndex } from 'investigate-events/reducers/investigate/event-results/selectors';
+import { getServices } from 'investigate-events/actions/data-creators';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 
 const stateToComputed = (state) => ({
@@ -15,8 +16,11 @@ const stateToComputed = (state) => ({
   eventResults: state.investigate.eventResults,
   language: state.investigate.dictionaries.language,
   queryNode: state.investigate.queryNode,
-  reconSize: state.investigate.data.reconSize
+  reconSize: state.investigate.data.reconSize,
+  isServicesRetrieveError: state.investigate.services.isServicesRetrieveError
 });
+
+const dispatchToActions = { getServices };
 
 const QueryContainerComponent = Component.extend({
   tagName: 'article',
@@ -35,4 +39,4 @@ const QueryContainerComponent = Component.extend({
   }
 });
 
-export default connect(stateToComputed)(QueryContainerComponent);
+export default connect(stateToComputed, dispatchToActions)(QueryContainerComponent);
