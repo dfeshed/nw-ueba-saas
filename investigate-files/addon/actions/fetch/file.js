@@ -101,31 +101,11 @@ const deleteFilter = (id) => {
   });
 };
 
-const getPreferences = () => {
-  return promiseRequest({
-    method: 'getPreferences',
-    modelName: 'filesPreferences',
-    query: {}
-  });
-};
-
-const setPreferences = (preferences) => {
-  return promiseRequest({
-    method: 'setPreferences',
-    modelName: 'filesPreferences',
-    query: {
-      data: preferences
-    }
-  });
-};
-
 export default {
   fetchFiles,
   fileExport,
   createCustomSearch,
   getSavedFilters,
   deleteFilter,
-  getPreferences,
-  setPreferences,
   getAllServices
 };

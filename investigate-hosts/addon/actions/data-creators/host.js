@@ -6,6 +6,7 @@ import { setAppliedHostFilter, resetDetailsInputAndContent, resetHostDownloadLin
 import { addExternalFilter } from 'investigate-hosts/actions/data-creators/filter';
 import { initializeAgentDetails, changeDetailTab } from 'investigate-hosts/actions/data-creators/details';
 import { parseQueryString } from 'investigate-hosts/actions/utils/query-util';
+import { lookup } from 'ember-dependency-lookup';
 import _ from 'lodash';
 import { next } from 'ember-runloop';
 
@@ -194,8 +195,9 @@ const _getVisibleColumnNames = (getState) => {
 };
 
 const _setPreferences = (getState) => {
+  const prefService = lookup('service:preferences');
   const { preferences } = getState().preferences;
-  Machines.setPreferences({ ...preferences });
+  prefService.setPreferences('endpoint-preferences', null, { ...preferences });
 };
 
 const updateColumnVisibility = (column) => {
@@ -275,22 +277,21 @@ const initializeHostPage = ({ machineId, filterId, tabName = 'OVERVIEW', query }
 
 const initializeHostsPreferences = () => {
   return (dispatch) => {
-    dispatch({
-      type: ACTION_TYPES.GET_PREFERENCES,
-      promise: Machines.getPreferences('endpoint-preferences'),
-      meta: {
-        onSuccess: ({ data }) => {
-          if (data && data.machinePreference) {
-            // Only if preferences is sent from api, set the preference state.
-            // Otherwise, initial state will be used.
-            const { sortField } = data.machinePreference;
-            if (sortField) {
-              dispatch({
-                type: ACTION_TYPES.SET_HOST_COLUMN_SORT,
-                payload: JSON.parse(sortField)
-              });
-            }
-          }
+    const prefService = lookup('service:preferences');
+    prefService.getPreferences('endpoint-preferences').then((data) => {
+      if (data && data.machinePreference) {
+        // Only if preferences is sent from api, set the preference state.
+        // Otherwise, initial state will be used.
+        dispatch({
+          type: ACTION_TYPES.SET_PREFERENCES,
+          payload: data
+        });
+        const { sortField } = data.machinePreference;
+        if (sortField) {
+          dispatch({
+            type: ACTION_TYPES.SET_HOST_COLUMN_SORT,
+            payload: JSON.parse(sortField)
+          });
         }
       }
     });

@@ -1,14 +1,7 @@
 import * as ACTION_TYPES from 'investigate-hosts/actions/types';
 import reduxActions from 'redux-actions';
-import { handle } from 'redux-pack';
 import Immutable from 'seamless-immutable';
 
-const preferencesInitialState = Immutable.from({
-  preferences: {
-    machinePreference: null,
-    filePreference: null
-  }
-});
 const DEFAULT_HOSTS_PREFERENCE = {
   machinePreference: {
     visibleColumns: [
@@ -18,21 +11,13 @@ const DEFAULT_HOSTS_PREFERENCE = {
       'agentStatus.lastSeenTime',
       'agentStatus.scanStatus'
     ],
-    sortField: { key: 'machine.scanStartTime', descending: true }
+    sortField: '{ "key": "machine.scanStartTime", "descending": true }'
   }
 };
 
-const _handleGetPreferences = ({ payload }) => {
-  return (state) => {
-    let preferences = payload.data;
-    if (!preferences) {
-      preferences = DEFAULT_HOSTS_PREFERENCE;
-    } else if (!preferences.machinePreference) {
-      preferences = { ...preferences, ...DEFAULT_HOSTS_PREFERENCE };
-    }
-    return state.set('preferences', preferences);
-  };
-};
+const preferencesInitialState = Immutable.from({
+  preferences: DEFAULT_HOSTS_PREFERENCE
+});
 
 const preferences = reduxActions.handleActions({
 
@@ -51,10 +36,8 @@ const preferences = reduxActions.handleActions({
     }
   },
 
-  [ACTION_TYPES.GET_PREFERENCES]: (state, action) => {
-    return handle(state, action, {
-      success: _handleGetPreferences(action)
-    });
+  [ACTION_TYPES.SET_PREFERENCES]: (state, { payload }) => {
+    return state.set('preferences', payload);
   }
 }, preferencesInitialState);
 

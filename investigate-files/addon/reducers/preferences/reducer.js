@@ -1,6 +1,5 @@
 import * as ACTION_TYPES from 'investigate-files/actions/types';
 import reduxActions from 'redux-actions';
-import { handle } from 'redux-pack';
 import Immutable from 'seamless-immutable';
 
 const DEFAULT_FILE_PREFERENCES = {
@@ -14,29 +13,13 @@ const DEFAULT_FILE_PREFERENCES = {
       'checksumSha256',
       'entropy'
     ],
-    sortField: { sortField: 'firstSeenTime', isSortDescending: false }
+    sortField: '{ "sortField": "firstSeenTime", "isSortDescending": false }'
   }
 };
 
 const filePreferencesInitialState = Immutable.from({
-  preferences: {
-    machinePreference: null,
-    filePreference: null
-  }
+  preferences: DEFAULT_FILE_PREFERENCES
 });
-
-
-const _handleGetPreferences = ({ payload }) => {
-  return (state) => {
-    let preferences = payload.data;
-    if (!preferences) {
-      preferences = DEFAULT_FILE_PREFERENCES;
-    } else if (!preferences.filePreference) {
-      preferences = { ...preferences, ...DEFAULT_FILE_PREFERENCES };
-    }
-    return state.set('preferences', preferences);
-  };
-};
 
 const filePreferences = reduxActions.handleActions({
 
@@ -55,10 +38,8 @@ const filePreferences = reduxActions.handleActions({
     }
   },
 
-  [ACTION_TYPES.GET_FILE_PREFERENCES]: (state, action) => {
-    return handle(state, action, {
-      success: _handleGetPreferences(action)
-    });
+  [ACTION_TYPES.SET_FILE_PREFERENCES]: (state, { payload }) => {
+    return state.set('preferences', payload);
   }
 }, filePreferencesInitialState);
 

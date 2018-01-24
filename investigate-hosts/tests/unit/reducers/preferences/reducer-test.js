@@ -21,8 +21,16 @@ test('should return the initial state', function(assert) {
   const result = reducer(undefined, {});
   assert.deepEqual(result, {
     preferences: {
-      machinePreference: null,
-      filePreference: null
+      machinePreference: {
+        visibleColumns: [
+          'machine.machineOsType',
+          'machine.scanStartTime',
+          'machine.users.name',
+          'agentStatus.lastSeenTime',
+          'agentStatus.scanStatus'
+        ],
+        sortField: '{ "key": "machine.scanStartTime", "descending": true }'
+      }
     }
   });
 });
@@ -36,34 +44,21 @@ test('The UPDATE_COLUMN_VISIBILITY action will set the selected column', functio
 });
 
 
-test('The GET_PREFERENCES  action will set visibleColumns', function(assert) {
+test('The SET_PREFERENCES  action will set visibleColumns', function(assert) {
 
   const response = {
-    data: {
-      machinePreference: {
-        visibleColumns: ['machine.machineOsType']
-      }
+    machinePreference: {
+      visibleColumns: ['machine.machineOsType']
     }
   };
 
   const newAction = makePackAction(LIFECYCLE.SUCCESS, {
-    type: ACTION_TYPES.GET_PREFERENCES,
+    type: ACTION_TYPES.SET_PREFERENCES,
     payload: response
   });
 
   const result = reducer(preferencesInitialState, newAction);
   assert.equal(result.preferences.machinePreference.visibleColumns.length, 1, 'expected to return 1 column');
-});
-
-test('The GET_PREFERENCES action will set default visibleColumns first time', function(assert) {
-
-  const response = {};
-  const newAction = makePackAction(LIFECYCLE.SUCCESS, {
-    type: ACTION_TYPES.GET_PREFERENCES,
-    payload: response
-  });
-  const result = reducer(preferencesInitialState, newAction);
-  assert.equal(result.preferences.machinePreference.visibleColumns.length, 5, 'Default visible columns length is set');
 });
 
 

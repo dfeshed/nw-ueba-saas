@@ -14,6 +14,7 @@ import Ember from 'ember';
 import * as ACTION_TYPES from './types';
 import { next } from 'ember-runloop';
 import { Schema, File } from './fetch';
+import { lookup } from 'ember-dependency-lookup';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
@@ -91,25 +92,24 @@ const fetchSchemaInfo = () => {
 
 const initializeFilesPreferences = () => {
   return (dispatch) => {
-    dispatch({
-      type: ACTION_TYPES.GET_FILE_PREFERENCES,
-      promise: File.getPreferences('endpoint-preferences'),
-      meta: {
-        onSuccess: ({ data }) => {
-          if (data && data.filePreference) {
-            // Only if preferences is sent from api, set the preference state.
-            // Otherwise, initial state will be used.
-            const { sortField } = data.filePreference;
-            if (sortField) {
-              dispatch({
-                type: ACTION_TYPES.SET_SORT_BY,
-                payload: JSON.parse(sortField)
-              });
-            }
-          }
-          dispatch(getFilter());
+    const prefService = lookup('service:preferences');
+    prefService.getPreferences('endpoint-preferences').then((data) => {
+      if (data && data.filePreference) {
+        // Only if preferences is sent from api, set the preference state.
+        // Otherwise, initial state will be used.
+        dispatch({
+          type: ACTION_TYPES.SET_FILE_PREFERENCES,
+          payload: data
+        });
+        const { sortField } = data.filePreference;
+        if (sortField) {
+          dispatch({
+            type: ACTION_TYPES.SET_SORT_BY,
+            payload: JSON.parse(sortField)
+          });
         }
       }
+      dispatch(getFilter());
     });
   };
 };
@@ -252,8 +252,9 @@ const setActiveFilter = (filter) => ({ type: ACTION_TYPES.SET_ACTIVE_FILTER, pay
 
 
 const _setPreferences = (getState) => {
+  const prefService = lookup('service:preferences');
   const { preferences } = getState().preferences;
-  File.setPreferences({ ...preferences });
+  prefService.setPreferences('endpoint-preferences', null, { ...preferences });
 };
 
 const updateColumnVisibility = (column) => {

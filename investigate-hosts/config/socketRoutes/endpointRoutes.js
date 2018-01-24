@@ -67,17 +67,6 @@ const hostsConfigGen = function(env) {
         subscriptionDestination: '/user/queue/endpoint/filter/remove',
         requestDestination: '/ws/endpoint/filter/remove'
       }
-    },
-    hostsPreferences: {
-      socketUrl,
-      getPreferences: {
-        subscriptionDestination: '/user/queue/endpoint/preferences/get',
-        requestDestination: '/ws/endpoint/preferences/get'
-      },
-      setPreferences: {
-        subscriptionDestination: '/user/queue/endpoint/preferences/set',
-        requestDestination: '/ws/endpoint/preferences/set'
-      }
     }
   };
 };

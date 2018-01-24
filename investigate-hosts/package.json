@@ -75,7 +75,8 @@
     "configPath": "tests/dummy/config",
     "paths": [
       "../component-lib",
-      "../streaming-data"
+      "../streaming-data",
+      "../preferences"
     ]
   },
   "private": true

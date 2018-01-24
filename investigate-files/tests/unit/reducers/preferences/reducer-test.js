@@ -21,8 +21,18 @@ test('should return the initial state', function(assert) {
   const result = reducer(undefined, {});
   assert.deepEqual(result, {
     preferences: {
-      machinePreference: null,
-      filePreference: null
+      filePreference: {
+        visibleColumns: [
+          'firstFileName',
+          'firstSeenTime',
+          'machineOsType',
+          'signature.features',
+          'size',
+          'checksumSha256',
+          'entropy'
+        ],
+        sortField: '{ "sortField": "firstSeenTime", "isSortDescending": false }'
+      }
     }
   });
 });
@@ -36,34 +46,21 @@ test('The UPDATE_COLUMN_VISIBILITY action will set the selected column', functio
 });
 
 
-test('The GET_FILE_PREFERENCES  action will set visibleColumns', function(assert) {
+test('The SET_FILE_PREFERENCES  action will set visibleColumns', function(assert) {
 
   const response = {
-    data: {
-      filePreference: {
-        visibleColumns: ['fileFirstName']
-      }
+    filePreference: {
+      visibleColumns: ['fileFirstName']
     }
   };
 
   const newAction = makePackAction(LIFECYCLE.SUCCESS, {
-    type: ACTION_TYPES.GET_FILE_PREFERENCES,
+    type: ACTION_TYPES.SET_FILE_PREFERENCES,
     payload: response
   });
 
   const result = reducer(preferencesInitialState, newAction);
   assert.equal(result.preferences.filePreference.visibleColumns.length, 1, 'expected to return 1 column');
-});
-
-test('The GET_FILE_PREFERENCES action will set default visibleColumns first time', function(assert) {
-
-  const response = {};
-  const newAction = makePackAction(LIFECYCLE.SUCCESS, {
-    type: ACTION_TYPES.GET_FILE_PREFERENCES,
-    payload: response
-  });
-  const result = reducer(preferencesInitialState, newAction);
-  assert.equal(result.preferences.filePreference.visibleColumns.length, 7, 'Default visible columns length is set');
 });
 
 

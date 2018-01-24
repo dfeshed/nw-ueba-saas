@@ -14,8 +14,7 @@ export default {
           'checksumSha256',
           'pe.sectionNames'
         ],
-        sortField: 'firstSeenTime',
-        filter: 'Linux'
+        sortField: '{ "sortField": "size", "isSortDescending": false }'
       },
       machinePreference: {
         visibleColumns: [
@@ -26,7 +25,7 @@ export default {
           'agentStatus.lastSeenTime',
           'agentStatus.scanStatus'
         ],
-        sortField: 'machine.scanStartTime'
+        sortField: '{ "key": "machine.machineOsType", "descending": true }'
       }
     };
     return {
