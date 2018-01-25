@@ -357,7 +357,7 @@ EnableSendfile on
 IncludeOptional conf.d/*.conf
 
 SSLSessionCache         shmcb:/run/httpd/sslcache(512000)
-SSLSessionCacheTimeout  300
+SSLSessionCacheTimeout  900
 
 <VirtualHost *:443>
   ServerAlias *
