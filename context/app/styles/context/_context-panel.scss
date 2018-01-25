@@ -96,6 +96,7 @@ radial-gradient(circle at 85% 85%, background-color(primary, darker, almost-tran
     position: relative;
     color: text-color(neutral);
     position: relative;
+    width: calc(100% - 50px);
     height: calc(100% - 100px);
     background-image: $panelBackgroundImage;
     background-color: background-color(primary, darkest);
