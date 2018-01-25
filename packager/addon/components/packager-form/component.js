@@ -53,8 +53,6 @@ const formComponent = Component.extend({
 
   className: 'power-select',
 
-  protocolClassName: 'power-select',
-
   isGenerateLogDisabled: true,
 
   isLogCollectionEnabled: false,
@@ -101,13 +99,12 @@ const formComponent = Component.extend({
     return `winLogCollectionTooltip-${this.get('elementId')}`;
   },
 
-  resetProperties() {
+  resetErrorProperties() {
     this.setProperties({
       errorMessage: null,
       isError: false,
       errorClass: null,
       className: 'power-select',
-      protocolClassName: 'power-select',
       isPortError: false,
       isConfigError: false,
       isServerError: false,
@@ -119,8 +116,14 @@ const formComponent = Component.extend({
       invalidDisplayNameMessage: null,
       invalidTableItem: null,
       isPasswordError: null,
-      passwordInvalidMessage: null,
-      testLog: true
+      passwordInvalidMessage: null
+    });
+  },
+
+  resetDefaultProperties() {
+    this.setProperties({
+      testLog: true,
+      selectedProtocol: 'TCP'
     });
   },
 
@@ -142,8 +145,8 @@ const formComponent = Component.extend({
         this.setProperties(error);
       },
       onSuccess: () => {
-        this.resetProperties();
-        this.set('selectedProtocol', 'TCP');
+        this.resetErrorProperties();
+        this.resetDefaultProperties();
         this.send('resetForm');
       }
     };
@@ -171,7 +174,7 @@ const formComponent = Component.extend({
   actions: {
 
     generateAgent() {
-      this.resetProperties();
+      this.resetErrorProperties();
       const autoUninstall = this.get('autoUninstall');
       if (autoUninstall && autoUninstall.length) {
         const date = this._getTimezoneTime(autoUninstall[0]);
@@ -211,6 +214,7 @@ const formComponent = Component.extend({
     },
 
     generateLogConfig() {
+      this.resetErrorProperties();
       const error = validateLogConfigFields(this.get('configData.logCollectionConfig'));
       this.setProperties(error);
       if (!error) {
@@ -228,7 +232,7 @@ const formComponent = Component.extend({
     enableLogCollection() {
       this.toggleProperty('isGenerateLogDisabled');
       this.toggleProperty('isLogCollectionEnabled');
-      this.resetProperties();
+      this.resetDefaultProperties();
     },
 
     toggleProperty(property) {
@@ -277,8 +281,8 @@ const formComponent = Component.extend({
       this.get('configData.logCollectionConfig.channels').removeAt(index);
     },
     reset() {
-      this.resetProperties();
-      this.set('selectedProtocol', 'TCP');
+      this.resetErrorProperties();
+      this.resetDefaultProperties();
       this.send('resetForm');
     }
   }
