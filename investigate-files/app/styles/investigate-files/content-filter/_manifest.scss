@@ -75,3 +75,16 @@
     font-size: 1.25rem;
   }
 }
+
+.modal-content.save-search {
+  .rsa-form-label {
+    margin-top: 10px;
+    display: inline-block;
+    text-transform: none;
+    font-weight: normal;
+    font-size: 1rem;
+  }
+  input {
+    width:90%
+  }
+}

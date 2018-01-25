@@ -40,13 +40,12 @@ const SystemInformation = Component.extend({
    * @public
    *
    */
-  @computed('selectedTab')
-  tabList(selectedTab) {
-    const os = this.get('machineOsType');
+  @computed('selectedTab', 'machineOsType')
+  tabList(selectedTab, machineOsType) {
     return TABS.map((tab) => {
       return {
         ...tab,
-        hidden: tab.hiddenFor ? tab.hiddenFor.includes(os) : false,
+        hidden: tab.hiddenFor ? tab.hiddenFor.includes(machineOsType) : false,
         selected: tab.name === selectedTab
       };
     });
