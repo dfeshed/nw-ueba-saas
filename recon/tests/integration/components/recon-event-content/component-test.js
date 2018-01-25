@@ -13,6 +13,7 @@ moduleForComponent('recon-event-content', 'Integration | Component | recon event
     this.set('accessControl.hasReconAccess', true);
 
     this.registry.injection('component:recon-event-content', 'i18n', 'service:i18n');
+    this.registry.injection('component:recon-event-detail/single-text', 'i18n', 'service:i18n');
     this.inject.service('redux');
     initialize(this);
   }
@@ -21,7 +22,8 @@ moduleForComponent('recon-event-content', 'Integration | Component | recon event
 test('it renders child view', function(assert) {
   new DataHelper(this.get('redux'))
     .initializeData()
-    .setViewToText();
+    .setViewToText()
+    .populateTexts();
   this.render(hbs`{{recon-event-content accessControl=accessControl}}`);
   return wait().then(() => {
     assert.equal(this.$().find('.recon-event-detail-text').length, 1, 'Child view missing');
@@ -51,7 +53,8 @@ test('it renders spinner', function(assert) {
 test('log events redirect to text view', function(assert) {
   new DataHelper(this.get('redux'))
     .initializeData({ eventId: 1, endpointId: 2, meta: [['medium', 32]] })
-    .setViewToText();
+    .setViewToText()
+    .populateTexts();
 
   this.render(hbs`{{recon-event-content accessControl=accessControl}}`);
   return wait().then(() => {

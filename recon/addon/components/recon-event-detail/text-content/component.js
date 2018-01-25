@@ -15,7 +15,8 @@ import {
   renderedText,
   hasTextContent,
   numberOfRenderableTextEntries,
-  allDataHidden
+  allDataHidden,
+  hasRenderIds
 } from 'recon/reducers/text/selectors';
 
 const stateToComputed = ({ recon }) => ({
@@ -30,7 +31,8 @@ const stateToComputed = ({ recon }) => ({
   metaToHighlight: recon.text.metaToHighlight,
   packetTotal: packetTotal(recon),
   numberOfItems: numberOfRenderableTextEntries(recon),
-  renderedText: renderedText(recon)
+  renderedText: renderedText(recon),
+  hasRenderIds: hasRenderIds(recon)
 });
 
 const TextReconComponent = Component.extend(ReconPagerMixin, StickyHeaderMixin, DelayBatchingMixin, ReconPanelHelp, {

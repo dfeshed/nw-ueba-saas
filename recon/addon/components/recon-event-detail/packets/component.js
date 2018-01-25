@@ -11,7 +11,8 @@ import {
   renderedPackets,
   numberOfPackets,
   hasPackets,
-  packetRenderingUnderWay
+  packetRenderingUnderWay,
+  hasRenderIds
 } from 'recon/reducers/packets/selectors';
 import { packetTotal } from 'recon/reducers/header/selectors';
 import { hidePacketTooltip } from 'recon/actions/interaction-creators';
@@ -27,7 +28,8 @@ const stateToComputed = ({ recon, recon: { data, packets } }) => ({
   packetFields: packets.packetFields,
   packetTotal: packetTotal(recon), // total number of packets, not just this page
   renderedPackets: renderedPackets(recon),
-  tooltipData: packets.packetTooltipData
+  tooltipData: packets.packetTooltipData,
+  hasRenderIds: hasRenderIds(recon)
 });
 
 const dispatchToActions = { hidePacketTooltip };

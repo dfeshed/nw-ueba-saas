@@ -25,6 +25,10 @@ export const hasTextContent = createSelector(
   (textContent) => !!textContent && textContent.length > 0
 );
 
+export const hasRenderIds = createSelector(
+  [_renderIds],
+  (renderIds) => !!renderIds && renderIds.length > 0
+);
 /**
  * A selector that returns an array of those items that are renderable
  *

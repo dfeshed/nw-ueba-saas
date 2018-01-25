@@ -22,6 +22,11 @@ const packetsRetrieved = createSelector(
   (packets) => packets !== null
 );
 
+export const hasRenderIds = createSelector(
+  [renderIds],
+  (renderIds) => !!renderIds && renderIds.length > 0
+);
+
 /**
  * Selector, determines packet set based on whether payloads are included
  *

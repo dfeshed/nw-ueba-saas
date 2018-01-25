@@ -236,7 +236,7 @@ const changePacketsPerPage = (packetsPerPage) => {
   return (dispatch) => {
     dispatch({
       type: ACTION_TYPES.CHANGE_PACKETS_PER_PAGE,
-      payload: Number(packetsPerPage)
+      payload: packetsPerPage
     });
     dispatch(pageFirst());
   };

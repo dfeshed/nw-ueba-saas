@@ -26,9 +26,9 @@ const dispatchToActions = {
 };
 
 const PACKETS_PER_PAGE = [
-  '100',
-  '300',
-  '500'
+  100,
+  300,
+  500
 ];
 
 const reconDataPagination = Component.extend({
