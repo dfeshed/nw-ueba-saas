@@ -17,7 +17,7 @@ class RerunFullFlowDagBuilder(object):
     """
 
     @classmethod
-    def build(cls, dag ,is_remove_ca_tables):
+    def build(cls, dag, is_remove_ca_tables):
         """
         Receives a rerun full flow DAG, creates the operators, links them to the DAG and
         configures the dependencies between them.
@@ -164,9 +164,9 @@ def build_clean_logs_operator(cleanup_dag):
 
 
 def build_clean_adapter_operator(cleanup_dag, is_remove_ca_tables):
-    adapter_clean_bash_command =  "rm -f /opt/flume/conf/adapter/file_*" \
-                                  " && rm -f /opt/flume/conf/adapter/authentication_*" \
-                                  " && rm -f /opt/flume/conf/adapter/active_directory_*"
+    adapter_clean_bash_command = "rm -f /opt/flume/conf/adapter/file_*" \
+                                 " && rm -f /opt/flume/conf/adapter/authentication_*" \
+                                 " && rm -f /opt/flume/conf/adapter/active_directory_*"
 
     clean_adapter_operator = BashOperator(task_id='clean_adapter',
                                           bash_command=adapter_clean_bash_command,
