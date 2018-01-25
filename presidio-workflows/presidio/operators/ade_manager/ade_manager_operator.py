@@ -22,6 +22,7 @@ class AdeManagerOperator(SpringBootJarOperator):
     @apply_defaults
     def __init__(self, command, *args, **kwargs):
         self.interval = kwargs.get('dag').schedule_interval
+        kwargs['retry_callback'] = AdeManagerOperator.handle_retry
         super(AdeManagerOperator, self).__init__(command=command, task_id=self.get_task_id(), *args, **kwargs)
 
     def execute(self, context):
@@ -44,3 +45,10 @@ class AdeManagerOperator(SpringBootJarOperator):
         :return: The task id
         """
         return 'ade_manager'
+
+    @staticmethod
+    def handle_retry(context):
+        """
+        The ade manager application does not need retries, as the "run" command itself manages the component retention.
+        """
+        pass
