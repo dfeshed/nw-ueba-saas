@@ -1,11 +1,12 @@
 package presidio.monitoring.services;
 
-import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
 import presidio.monitoring.endPoint.PresidioMetricBucket;
 import presidio.monitoring.endPoint.PresidioSystemMetricsFactory;
@@ -20,6 +21,7 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
+@RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {TestConfig.class, MetricPersistencyServiceTestConfig.class})
 @Ignore
 public class MetricBucketSyncTest {
@@ -34,37 +36,56 @@ public class MetricBucketSyncTest {
 
     @Test
     @Ignore
-    public void testSynchronization() {
+    public void testSynchronization() throws InterruptedException {
         Map<MetricEnums.MetricTagKeysEnum, String> tags = new HashMap<>();
         tags.put(MetricEnums.MetricTagKeysEnum.FEATURE_NAME, "feature1");
         Instant logicalTime = Instant.now();
 
-        new Thread(new Runnable() {
+        Thread t1 = new Thread(new Runnable() {
             @Override
             public void run() {
+                System.out.println("start");
                 MetricsExporter metricsExporter = new MetricsExporterElasticImpl(presidioMetricBucket, presidioMetricPersistencyService, taskScheduler());
 
                 while (true) {
-                    metricsExporter.export();
+                    try {
+                        System.out.println("loop");
+                        metricsExporter.export();
+                        System.out.println("end loop");
+                        Thread.sleep(50);
+                    } catch (Exception e) {
+                        System.out.println(e);
+                    }
+
                 }
             }
-        }).start();
+        });
 
-        MetricsExporter metricsExporter = new MetricsExporterElasticImpl(presidioMetricBucket, presidioMetricPersistencyService, taskScheduler());
-        metricsExporter.export();
+        Thread t2 = new Thread(new Runnable() {
+            @Override
+            public void run() {
 
-        try {
-            while (true)
-                presidioMetricBucket.addMetric(new Metric.MetricBuilder().
-                        setMetricName("testValue").
-                        setMetricValue(1).
-                        setMetricTags(tags).
-                        setMetricLogicTime(logicalTime).
-                        build());
-        } catch (Exception e){
-            Assert.fail();
-            throw e;
-        }
+                while (true) {
+                    try {
+                        System.out.println("add");
+                        presidioMetricBucket.addMetric(new Metric.MetricBuilder().
+                                setMetricName("testValue").
+                                setMetricValue(1).
+                                setMetricTags(tags).
+                                setMetricLogicTime(logicalTime).
+                                build());
+                    } catch (Exception e) {
+                        System.out.println(e);
+                    }
+                }
+            }
+        });
+
+        t1.start();
+        t2.start();
+        t1.join();
+        t2.join();
+
     }
 
     private ThreadPoolTaskScheduler taskScheduler() {

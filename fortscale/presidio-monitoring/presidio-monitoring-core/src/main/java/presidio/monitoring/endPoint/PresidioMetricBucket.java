@@ -6,11 +6,7 @@ import presidio.monitoring.records.MetricDocument;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.services.MetricConventionApplyer;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class PresidioMetricBucket {
 
@@ -24,18 +20,12 @@ public class PresidioMetricBucket {
         this.applicationMetrics = new HashMap<>();
     }
 
-    public void addMetric(Metric metric) {
+    public synchronized void addMetric(Metric metric) {
         metricConventionApplyer.apply(metric);
         MetricUniqueKey metricUniqueKey = new MetricUniqueKey(metric.getName(), metric.getLogicTime(), metric.getTags());
         if (applicationMetrics.containsKey(metricUniqueKey)) {
-            synchronized (applicationMetrics) {
-                Metric metricToUpdate = applicationMetrics.get(metricUniqueKey);
-                if (metricToUpdate != null) {
-                    accumulateMetricValues(metric, metricToUpdate.getValue());
-                }
-            }
+            accumulateMetricValues(metric, applicationMetrics.get(metricUniqueKey).getValue());
         }
-
         applicationMetrics.put(metricUniqueKey, metric);
     }
 
@@ -64,18 +54,19 @@ public class PresidioMetricBucket {
     }
 
 
-    public List<MetricDocument> getAllMetrics(boolean lastExport) {
+    public synchronized List<MetricDocument> getAllMetrics(boolean lastExport) {
         List<MetricDocument> allMetrics = new LinkedList<>();
         applicationMetrics.forEach((s, metric) -> {
             if (metric.isReportOneTime()) {
-                if (lastExport)
+                if (lastExport) {
                     allMetrics.add(buildPresidioMetric(metric));
+                }
             } else {
                 allMetrics.add(buildPresidioMetric(metric));
             }
         });
-        allMetrics.addAll(getSystemMetrics());
         applicationMetrics = new HashMap<>();
+        allMetrics.addAll(getSystemMetrics());
         return allMetrics;
     }
 
@@ -84,7 +75,7 @@ public class PresidioMetricBucket {
         applicationMetrics.forEach((s, metric) -> {
             allMetrics.add(buildPresidioMetric(metric));
         });
-        applicationMetrics = new HashMap<>();
+        applicationMetrics.clear();
         return allMetrics;
     }
 
