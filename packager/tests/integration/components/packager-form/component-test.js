@@ -5,8 +5,15 @@ import { clickTrigger } from '../../../helpers/ember-power-select';
 import $ from 'jquery';
 import { applyPatch, revertPatch } from '../../../helpers/patch-reducer';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
+import Packager from 'packager/actions/fetch';
+import Ember from 'ember';
+import sinon from 'sinon';
+import wait from 'ember-test-helpers/wait';
 
 let setState;
+
+const { RSVP: { Promise } } = Ember;
+const setPackagerConfigMethodStub = sinon.stub(Packager, 'setPackagerConfig');
 
 moduleForComponent('packager-form', 'Integration | Component | packager form', {
   integration: true,
@@ -20,6 +27,9 @@ moduleForComponent('packager-form', 'Integration | Component | packager form', {
   },
   afterEach() {
     revertPatch();
+  },
+  after() {
+    setPackagerConfigMethodStub.restore();
   }
 });
 
@@ -156,6 +166,69 @@ test('Channel filter regex validation when generate agent button clicked', funct
   return waitFor(() => $button.trigger('click'))().then(() => {
     const $eventId = this.$($('.event-id')).parent().attr('class');
     assert.ok($eventId.includes('is-error'));
+  });
+
+});
+
+test('Event Id server validation for out of range case when generate agent button clicked', function(assert) {
+  const channelFiltersWithInvalidData = {
+    'packageConfig': {
+      'id': '59894c9984518a5cfb8fbec2',
+      'server': '10.101.34.245',
+      'port': 443,
+      'certificatePassword': 'test'
+    },
+    'logCollectionConfig': {
+      'configName': 'test',
+      'protocol': 'UDP',
+      'primaryDestination': '10.10.10.10',
+      'channels': [{ channel: 'Security', filter: 'Include', eventId: '111111111111' }]
+    }
+  };
+  new ReduxDataHelper(setState)
+    .defaultConfig(channelFiltersWithInvalidData)
+    .setDevices(devices)
+    .build();
+  this.set('selectedProtocol', 'UDP');
+  this.render(hbs`{{packager-form isLogCollectionEnabled=true selectedProtocol=selectedProtocol}}`);
+  const error = { meta: { reason: 'EVENT_ID_INVALID', identifier: 1 } };
+  setPackagerConfigMethodStub.returns(Promise.reject(error));
+  const $button = this.$('.generate-button-js .rsa-form-button');
+  $button.trigger('click');
+  return wait().then(() => {
+    const $eventId = this.$($('.event-id')).parent().attr('class');
+    assert.ok($eventId.includes('is-error'));
+  });
+});
+
+test('Event Id server validation for success case to test callback action (reset form) when generate Log Configuration button clicked', function(assert) {
+  const channelFiltersWithInvalidData = {
+    'packageConfig': {
+      'id': '59894c9984518a5cfb8fbec2',
+      'server': '10.101.34.245',
+      'port': 443,
+      'certificatePassword': 'test'
+    },
+    'logCollectionConfig': {
+      'configName': 'test',
+      'protocol': 'UDP',
+      'primaryDestination': '10.10.10.10',
+      'channels': [{ channel: 'Security', filter: 'Include', eventId: '12' }]
+    }
+  };
+  new ReduxDataHelper(setState)
+    .defaultConfig(channelFiltersWithInvalidData)
+    .setDevices(devices)
+    .build();
+  this.set('selectedProtocol', 'UDP');
+  this.render(hbs`{{packager-form isLogCollectionEnabled=true selectedProtocol=selectedProtocol}}`);
+  const responseData = { data: { id: 'd3710823-c89c-470e-a91e-4c2dded20d54' } };
+  setPackagerConfigMethodStub.returns(Promise.resolve(responseData));
+  const $button = this.$('.generate-button-js .rsa-form-button');
+  $button.trigger('click');
+  return wait().then(() => {
+    const $eventId = this.$('.event-id').text();
+    assert.ok($eventId === '');
   });
 });
 

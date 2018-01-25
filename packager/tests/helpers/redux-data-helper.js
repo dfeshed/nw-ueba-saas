@@ -33,6 +33,11 @@ export default class DataHelper {
     return this;
   }
 
+  setDevices(data) {
+    _set(this.state, 'devices', data);
+    return this;
+  }
+
   setData(path, data) {
     _set(this.state, path, data);
     return this;
