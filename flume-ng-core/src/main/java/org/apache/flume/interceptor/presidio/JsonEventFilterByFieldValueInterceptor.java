@@ -64,7 +64,8 @@ public class JsonEventFilterByFieldValueInterceptor extends AbstractPresidioJson
             if (matcher.matches()) {
                 if (operation == Operation.OR) {
                     logger.trace("Filtering event {} because it matched the following filter: field: {}, fieldValue: {}, regex: {}.", eventBodyAsJson, currField, currFieldValue, currRegex);
-                    monitoringService.reportFailedEventMetric("EVENT_FILTERED_ACCORDING_TO_CONFIGURATION",1);
+                    String failureReason = String.format("Filtering event because field %s matched regular expression. The values was %s",currField,currFieldValue);
+                    monitoringService.reportFailedEventMetric(failureReason,1);
                     return null;
                 }
             } else {
