@@ -66,20 +66,20 @@
   .rsa-data-table-body-row {
     &.is-selected {
       .rsa-data-table-body-cell {
-        background-color: transparent;
+        background-color:  background-color(secondary);
       }
-      background-color: background-color(secondary);
+      background-color: transparent;
       &:hover {
         .rsa-data-table-body-cell {
-          background-color: transparent;
+          background-color:  background-color(secondary);
         }
-        background-color: background-color(secondary);
+        background-color: transparent;
       }
     }
     &:hover {
       cursor: pointer;
       .rsa-data-table-body-cell {
-        background-color: transparent;
+        background-color:  background-color(secondary);
       }
       background-color: background-color(primary, darker)
     }
