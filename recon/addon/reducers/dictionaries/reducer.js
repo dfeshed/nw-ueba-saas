@@ -37,7 +37,7 @@ const dictionariesReducer = handleActions({
     return handle(state, action, {
       start: (s) => s.merge({ language: null, languageError: null }),
       failure: (s) => s.set('languageError', true),
-      success: (s) => s.set('language', { data: action.payload.data })
+      success: (s) => s.set('language', action.payload.data)
     });
   },
 
