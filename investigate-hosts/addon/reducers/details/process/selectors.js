@@ -1,6 +1,5 @@
 import reselect from 'reselect';
 import { convertTreeToList } from './util';
-import { getValues } from 'investigate-hosts/reducers/details/selector-utils';
 import _ from 'lodash';
 
 const { createSelector } = reselect;
@@ -83,10 +82,9 @@ const _getProcessList = createSelector(
       return null;
     }
     const tabName = 'PROCESS';
-    const list = getValues(selectedTab, tabName, listData);
     const tree = _getTree(selectedTab, tabName, treeData.asMutable());
     return {
-      list,
+      list: listData,
       tree
     };
   }
@@ -146,3 +144,5 @@ export const isProcessLoading = createSelector(
   [ _processDetailsLoading, _isProcessTreeLoading ],
   (processDetailsLoading, isProcessTreeLoading) => isProcessTreeLoading || processDetailsLoading
 );
+
+export const noProcessData = createSelector(processTree, (tree) => !tree.length);

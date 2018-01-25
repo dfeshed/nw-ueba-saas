@@ -1,7 +1,11 @@
 import Component from 'ember-component';
 import { connect } from 'ember-redux';
 import CONFIG from './process-property-config';
-import { getProcessData, isNavigatedFromExplore, isProcessLoading } from 'investigate-hosts/reducers/details/process/selectors';
+import {
+  getProcessData,
+  isNavigatedFromExplore,
+  isProcessLoading,
+  noProcessData } from 'investigate-hosts/reducers/details/process/selectors';
 import computed from 'ember-computed-decorators';
 import { toggleProcessView } from 'investigate-hosts/actions/data-creators/process';
 import { getColumnsConfig } from 'investigate-hosts/reducers/details/selectors';
@@ -13,7 +17,8 @@ const stateToComputed = (state) => ({
   process: getProcessData(state),
   isNavigatedFromExplore: isNavigatedFromExplore(state),
   summaryConfig: getColumnsConfig(state, summaryItems),
-  isProcessLoading: isProcessLoading(state)
+  isProcessLoading: isProcessLoading(state),
+  isProcessDataEmpty: noProcessData(state)
 });
 
 const dispatchToActions = {

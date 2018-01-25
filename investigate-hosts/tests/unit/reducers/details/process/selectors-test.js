@@ -7,7 +7,8 @@ module('Unit | Selectors | process');
 import {
   getProcessData,
   processTree,
-  isNavigatedFromExplore
+  isNavigatedFromExplore,
+  noProcessData
 } from 'investigate-hosts/reducers/details/process/selectors';
 
 test('getProcessData', function(assert) {
@@ -51,4 +52,38 @@ test('isNavigatedFromExplore', function(assert) {
     }
   }));
   assert.equal(result, true);
+});
+
+test('noProcessData returns true when processTree is empty', function(assert) {
+  const result = noProcessData(Immutable.from({
+    endpoint: {
+      process: {
+        processTree: [],
+        processList: []
+      },
+      explore: {
+        selectedTab: {
+          tabName: 'PROCESS'
+        }
+      }
+    }
+  }));
+  assert.deepEqual(result, true);
+});
+
+test('noProcessData returns false when processTree is not empty', function(assert) {
+  const result = noProcessData(Immutable.from({
+    endpoint: {
+      process: {
+        processTree: processTreeData,
+        processList: processListData
+      },
+      explore: {
+        selectedTab: {
+          tabName: 'PROCESS'
+        }
+      }
+    }
+  }));
+  assert.deepEqual(result, false);
 });

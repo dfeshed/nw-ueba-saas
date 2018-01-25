@@ -21,7 +21,7 @@ const _handleAppendFiles = (action) => {
     const allFiles = [...files, ...data.items];
     return state.merge({
       totalItems: data.totalItems,
-      selectedFileHash: files.length === 0 ? allFiles[0].checksumSha256 : null,
+      selectedFileHash: !files.length && allFiles.length ? allFiles[0].checksumSha256 : null,
       files: allFiles,
       pageNumber: data.pageNumber,
       filesLoadMoreStatus: data.hasNext ? 'stopped' : 'completed'
