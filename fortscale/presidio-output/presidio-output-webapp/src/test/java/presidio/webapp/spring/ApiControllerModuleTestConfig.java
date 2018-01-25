@@ -3,16 +3,17 @@ package presidio.webapp.spring;
 import fortscale.utils.RestTemplateConfig;
 import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
 import fortscale.utils.elasticsearch.config.EmbeddedElasticsearchInitialiser;
+import fortscale.utils.mongodb.util.MongoDbBulkOpUtilConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
+import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import presidio.output.commons.services.spring.UserSeverityServiceConfig;
 
 import java.util.Properties;
 
 @Configuration
-@Import({OutputWebappTestConfiguration.class, RestTemplateConfig.class, ElasticsearchTestConfig.class, UserSeverityServiceConfig.class})
+@Import({OutputWebappTestConfiguration.class, RestTemplateConfig.class, ElasticsearchTestConfig.class, MongodbTestConfig.class, MongoDbBulkOpUtilConfig.class})
 public class ApiControllerModuleTestConfig {
 
     @Bean

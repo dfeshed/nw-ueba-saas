@@ -3,8 +3,6 @@ package presidio.webapp.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -18,9 +16,6 @@ public class EventQuery   {
 
   @JsonProperty("pageNumber")
   private Integer pageNumber = null;
-
-  @JsonProperty("sort")
-  private List<String> sort = new ArrayList<String>();
 
   public EventQuery pageSize(Integer pageSize) {
     this.pageSize = pageSize;
@@ -58,30 +53,6 @@ public class EventQuery   {
     this.pageNumber = pageNumber;
   }
 
-  public EventQuery sort(List<String> sort) {
-    this.sort = sort;
-    return this;
-  }
-
-  public EventQuery addSortItem(String sortItem) {
-    this.sort.add(sortItem);
-    return this;
-  }
-
-   /**
-   * Get sort
-   * @return sort
-  **/
-  @ApiModelProperty(value = "")
-  public List<String> getSort() {
-    return sort;
-  }
-
-  public void setSort(List<String> sort) {
-    this.sort = sort;
-  }
-
-
   @Override
   public boolean equals(java.lang.Object o) {
     if (this == o) {
@@ -92,13 +63,12 @@ public class EventQuery   {
     }
     EventQuery eventQuery = (EventQuery) o;
     return Objects.equals(this.pageSize, eventQuery.pageSize) &&
-        Objects.equals(this.pageNumber, eventQuery.pageNumber) &&
-        Objects.equals(this.sort, eventQuery.sort);
+        Objects.equals(this.pageNumber, eventQuery.pageNumber);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(pageSize, pageNumber, sort);
+    return Objects.hash(pageSize, pageNumber);
   }
 
   @Override
@@ -108,7 +78,6 @@ public class EventQuery   {
     
     sb.append("    pageSize: ").append(toIndentedString(pageSize)).append("\n");
     sb.append("    pageNumber: ").append(toIndentedString(pageNumber)).append("\n");
-    sb.append("    sort: ").append(toIndentedString(sort)).append("\n");
     sb.append("}");
     return sb.toString();
   }

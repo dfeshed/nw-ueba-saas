@@ -6,14 +6,9 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.monitoring.aspect.annotations.RunTime;
-import presidio.monitoring.records.Metric;
-import presidio.monitoring.sdk.api.services.enums.MetricEnums;
-import presidio.monitoring.services.MetricCollectingService;
-import presidio.output.commons.services.user.UserSeverityService;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.services.event.EventPersistencyService;
@@ -26,10 +21,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -39,39 +32,35 @@ import java.util.Set;
 public class OutputExecutionServiceImpl implements OutputExecutionService {
     private static final Logger logger = Logger.getLogger(OutputExecutionServiceImpl.class);
 
-    private final UserSeverityService userSeverityService;
     private final AdeManagerSdk adeManagerSdk;
     private final AlertService alertService;
     private final UserService userService;
     private final EventPersistencyService eventPersistencyService;
+    private final OutputMonitoringService outputMonitoringService;
     private final int smartThresholdScoreForCreatingAlert;
     private final int smartPageSize;
     private final long retentionEnrichedEventsDays;
-    private final long retentionResultEventsDays;
+    private final long retentionOutputDataDays;
+
 
     private final int SMART_THRESHOLD_FOR_GETTING_SMART_ENTITIES = 0;
-    private final String NUMBER_OF_ALERTS_METRIC_NAME = "number_of_alerts_created";
-    private final String ALERT_WITH_SEVERITY_METRIC_PREFIX = "alert_created_with_severity.";
-    private final String LAST_SMART_TIME_METRIC_NAME = "last_smart_time";
     private static final String ADE_SMART_USER_ID = "userId";
-
-    @Autowired
-    MetricCollectingService metricCollectingService;
 
     public OutputExecutionServiceImpl(AdeManagerSdk adeManagerSdk,
                                       AlertService alertService,
                                       UserService userService,
-                                      UserSeverityService userSeverityService, EventPersistencyService eventPersistencyService,
-                                      int smartThresholdScoreForCreatingAlert, int smartPageSize, long retentionEnrichedEventsDays, long retentionResultEventsDays) {
+                                      EventPersistencyService eventPersistencyService,
+                                      OutputMonitoringService outputMonitoringService,
+                                      int smartThresholdScoreForCreatingAlert, int smartPageSize, long retentionEnrichedEventsDays, long retentionOutputDataDays) {
         this.adeManagerSdk = adeManagerSdk;
         this.alertService = alertService;
         this.userService = userService;
-        this.userSeverityService = userSeverityService;
         this.eventPersistencyService = eventPersistencyService;
         this.smartPageSize = smartPageSize;
         this.smartThresholdScoreForCreatingAlert = smartThresholdScoreForCreatingAlert;
         this.retentionEnrichedEventsDays = retentionEnrichedEventsDays;
-        this.retentionResultEventsDays = retentionResultEventsDays;
+        this.retentionOutputDataDays = retentionOutputDataDays;
+        this.outputMonitoringService = outputMonitoringService;
     }
 
     /**
@@ -93,7 +82,6 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
         List<Alert> alerts = new ArrayList<>();
         List<User> users = new ArrayList<>();
-        Map<MetricEnums.MetricTagKeysEnum, String> tags = new HashMap<>();
         List<SmartRecord> smarts = null;
         while (smartPageIterator.hasNext()) {
             smarts = smartPageIterator.next();
@@ -119,15 +107,12 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
                 Alert alertEntity = alertService.generateAlert(smart, userEntity, smartThresholdScoreForCreatingAlert);
                 if (alertEntity != null) {
-                    UsersAlertData usersAlertData = new UsersAlertData(alertEntity.getContributionToUserScore(), 1, alertEntity.getPreferredClassification(), alertEntity.getIndicatorsNames());
+                    UsersAlertData usersAlertData = new UsersAlertData(alertEntity.getContributionToUserScore(), 1, alertEntity.alertPrimaryClassification(), alertEntity.getIndicatorsNames());
                     userService.addUserAlertData(userEntity, usersAlertData);
                     alerts.add(alertEntity);
-                    metricCollectingService.addMetric(new Metric.MetricBuilder().setMetricName(ALERT_WITH_SEVERITY_METRIC_PREFIX + alertEntity.getSeverity().name()).
-                            setMetricValue(1).
-                            setMetricTags(tags).
-                            setMetricUnit(MetricEnums.MetricUnitType.NUMBER).
-                            setMetricLogicTime(startDate).
-                            build());
+
+                    String classification = alertEntity.alertPrimaryClassification();
+                    outputMonitoringService.reportTotalAlertCount(1, alertEntity.getSeverity(), classification, startDate);
                 }
                 if (getCreatedUser(users, userEntity.getUserId()) == null) {
                     users.add(userEntity);
@@ -135,23 +120,16 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
             }
         }
 
-        users = storeUsers(users); //Get the generated users with the new elasticsearch ID
+        storeUsers(users); //Get the generated users with the new elasticsearch ID
         storeAlerts(alerts);
 
+        outputMonitoringService.reportTotalAnomalyEvents(alerts, startDate);
+
         logger.info("output process application completed for start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
-        metricCollectingService.addMetric(new Metric.MetricBuilder().setMetricName(NUMBER_OF_ALERTS_METRIC_NAME).
-                setMetricValue(alerts.size()).
-                setMetricTags(tags).
-                setMetricUnit(MetricEnums.MetricUnitType.NUMBER).
-                setMetricLogicTime(startDate).
-                build());
+        outputMonitoringService.reportTotalUsersCount(users.size(), startDate);
+
         if (CollectionUtils.isNotEmpty(smarts)) {
-            tags = new HashMap();
-            metricCollectingService.addMetric(new Metric.MetricBuilder().setMetricName(LAST_SMART_TIME_METRIC_NAME).
-                    setMetricValue(smarts.get(smarts.size() - 1).getStartInstant().toEpochMilli()).
-                    setMetricTags(tags).setMetricUnit(MetricEnums.MetricUnitType.NUMBER).
-                    setMetricLogicTime(startDate).
-                    build());
+            outputMonitoringService.reportLastSmartTimeProcessed(smarts.get(smarts.size() - 1).getStartInstant().toEpochMilli(), startDate);
         }
     }
 
@@ -176,13 +154,8 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         return null;
     }
 
-    public void recalculateUserScore() throws Exception {
-        logger.info("Start Recalculating User Alert Data");
-        this.userService.updateAllUsersAlertData();
-        logger.info("Finish Recalculating User Score");
-        logger.info("Start Updating UserSeverity");
-        this.userSeverityService.updateSeverities();
-        logger.info("Finish Updating Users Severity");
+    public void updateAllUsersData() throws Exception {
+        this.userService.updateUserData();
     }
 
     private void storeAlerts(List<Alert> alerts) {
@@ -222,7 +195,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
             logger.debug("Start retention clean to mongo for schema {}", schema);
             eventPersistencyService.remove(schema, Instant.EPOCH, endDate.minus(retentionEnrichedEventsDays, ChronoUnit.DAYS));
         });
-        clean(Instant.EPOCH, endDate.minus(retentionResultEventsDays, ChronoUnit.DAYS));
+        clean(Instant.EPOCH, endDate.minus(retentionOutputDataDays, ChronoUnit.DAYS));
     }
 
     private void updateUsersScoreFromDeletedAlerts(List<Alert> cleanedAlerts) {

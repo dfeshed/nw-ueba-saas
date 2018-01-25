@@ -25,11 +25,11 @@ public class TimeModel implements PartitionedDataModel {
 	private static final int SMOOTHING_DISTANCE = 10;
 	private static final double SMOOTH_BUCKET_MAX_VALUE = 1;
 
-	private int timeResolution;
-	private int bucketSize;
+	private Integer timeResolution;
+	private Integer bucketSize;
 	private List<Double> smoothedBuckets;
 	private CategoryRarityModel categoryRarityModel;
-	private long numOfSamples;
+	private Long numOfSamples;
 
 	public void init(int timeResolution, int bucketSize, int maxRareTimestampCount, Map<?, Double> timeToCounter, long numberOfPartitions,
 					 TimeModelBuilderMetricsContainer timeModelBuilderMetricsContainer, TimeModelBuilderPartitionsMetricsContainer timeModelBuilderPartitionsMetricsContainer, CategoryRarityModelBuilderMetricsContainer categoryRarityModelBuilderMetricsContainer) {
@@ -227,6 +227,12 @@ public class TimeModel implements PartitionedDataModel {
 		return getRoundedCounter(getBucketIndex(time));
 	}
 
+
+	public Double getDoubleSmoothedTimeCounter(long time) {
+		return smoothedBuckets.get(getBucketIndex(time));
+	}
+
+
 	@Override
 	public long getNumOfSamples() {
 		return numOfSamples;
@@ -257,9 +263,9 @@ public class TimeModel implements PartitionedDataModel {
 		if (this == o) return true;
 		if (!(o instanceof TimeModel)) return false;
 		TimeModel timeModel = (TimeModel)o;
-		if (timeResolution != timeModel.timeResolution) return false;
-		if (bucketSize != timeModel.bucketSize) return false;
-		if (numOfSamples != timeModel.numOfSamples) return false;
+		if (!timeResolution.equals(timeModel.timeResolution)) return false;
+		if (!bucketSize.equals(timeModel.bucketSize)) return false;
+		if (!numOfSamples.equals(timeModel.numOfSamples)) return false;
 		if (!smoothedBuckets.equals(timeModel.smoothedBuckets)) return false;
 		return categoryRarityModel.equals(timeModel.categoryRarityModel);
 	}

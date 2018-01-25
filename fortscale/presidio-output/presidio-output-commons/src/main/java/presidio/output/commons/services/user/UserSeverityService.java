@@ -1,7 +1,5 @@
 package presidio.output.commons.services.user;
 
-import presidio.output.domain.records.users.User;
-
 import java.util.List;
 
 /**
@@ -15,4 +13,6 @@ public interface UserSeverityService {
      * Iterate all users and re-calculate the severities percentiles - read users from DB and update severities in DB
      */
     void updateSeverities();
+
+    List<String> collectionNamesByOrderForEvents();
 }

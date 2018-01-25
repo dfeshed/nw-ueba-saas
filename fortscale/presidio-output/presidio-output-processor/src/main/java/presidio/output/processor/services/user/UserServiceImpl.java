@@ -83,7 +83,8 @@ public class UserServiceImpl implements UserService {
     }
 
     private UserDetails getUserDetails(String userId) {
-        EnrichedEvent event = eventPersistencyService.findLatestEventForUser(userId);
+        List<String> collectionNames = userSeverityService.collectionNamesByOrderForEvents();
+        EnrichedEvent event = eventPersistencyService.findLatestEventForUser(userId, collectionNames);
         if (event == null) {
             log.error("no events were found for user {}", userId);
             return null;
@@ -132,6 +133,14 @@ public class UserServiceImpl implements UserService {
         user.incrementUserScoreByNumber(usersAlertData.getUserScore());
         UserSeverity newSeverity = userSeverityService.getSeveritiesMap(false).getUserSeverity(user.getScore());
         user.setSeverity(newSeverity);
+    }
+
+    @Override
+    public void updateUserData() {
+        log.debug("Starting Updating all users alert data.");
+        updateAllUsersAlertData();
+        log.debug("finished updating all users alert data.");
+        userSeverityService.updateSeverities();
     }
 
     @Override
@@ -235,7 +244,7 @@ public class UserServiceImpl implements UserService {
         if (CollectionUtils.isNotEmpty(alerts)) {
             alerts.forEach(alert -> {
                 if (alert.getContributionToUserScore() > 0) {
-                    usersAlertData.addClassification(alert.getPreferredClassification());
+                    usersAlertData.addClassification(alert.alertPrimaryClassification());
                     usersAlertData.addIndicators(alert.getIndicatorsNames());
                     usersAlertData.incrementAlertsCount();
                     usersAlertData.incrementUserScore(alert.getContributionToUserScore());

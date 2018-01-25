@@ -9,9 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
@@ -53,9 +51,9 @@ public class TimeModelTest extends AbstractScorerTest {
 
 		Assert.assertEquals(1, model.getNumOfSamples());
 		Assert.assertEquals(1, model.getCategoryRarityModel().getNumOfSamples());
-		double[] buckets = model.getCategoryRarityModel().getBuckets();
-		Assert.assertEquals(1, DoubleStream.of(buckets).sum(), 0.001);
-		Assert.assertEquals(1, buckets[0], 0.001);
+		List<Double> buckets = model.getCategoryRarityModel().getBuckets();
+		Assert.assertEquals(1,         buckets.stream().mapToDouble(Double::doubleValue).sum()	, 0.001);
+		Assert.assertEquals(1, buckets.get(0), 0.001);
 	}
 
 	@Test
@@ -69,9 +67,9 @@ public class TimeModelTest extends AbstractScorerTest {
 
 		Assert.assertEquals(1, model.getNumOfSamples());
 		Assert.assertEquals(1, model.getCategoryRarityModel().getNumOfSamples());
-		double[] buckets = model.getCategoryRarityModel().getBuckets();
-		Assert.assertEquals(1, DoubleStream.of(buckets).sum(), 0.001);
-		Assert.assertEquals(1, buckets[0], 0.001);
+		List<Double> buckets = model.getCategoryRarityModel().getBuckets();
+        Assert.assertEquals(1,         buckets.stream().mapToDouble(Double::doubleValue).sum(), 0.001);
+		Assert.assertEquals(1, buckets.get(0), 0.001);
 	}
 
 	@Test
@@ -85,9 +83,9 @@ public class TimeModelTest extends AbstractScorerTest {
 
 		Assert.assertEquals(2, model.getNumOfSamples());
 		Assert.assertEquals(6, model.getCategoryRarityModel().getNumOfSamples());
-		double[] buckets = model.getCategoryRarityModel().getBuckets();
-		Assert.assertEquals(4, DoubleStream.of(buckets).sum(), 0.001);
-		Assert.assertEquals(2, buckets[0], 0.001);
+        List<Double> buckets = model.getCategoryRarityModel().getBuckets();
+        Assert.assertEquals(4,         buckets.stream().mapToDouble(Double::doubleValue).sum() ,0.001);
+		Assert.assertEquals(2, buckets.get(0), 0.001);
 	}
 
 	@Test

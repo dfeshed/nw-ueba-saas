@@ -22,7 +22,7 @@ public class TimeModelScorerConfTest {
 	private static String getTimeModelScorerConfString(
 			String scorerType, String name, JSONObject modelInfoJsonObject,
 			Integer minNumOfSamplesToInfluence, Integer enoughNumOfSamplesToInfluence,
-			Boolean isUseCertaintyToCalculateScore, Integer maxRareTimestampCount, Integer maxNumOfRareTimestamps) {
+			Boolean isUseCertaintyToCalculateScore, Integer maxRareTimestampCount, Integer maxNumOfRareTimestamps, Double xWithValueHalfFactor) {
 
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("type", scorerType);
@@ -38,6 +38,9 @@ public class TimeModelScorerConfTest {
 			jsonObject.put("max-rare-timestamp-count", maxRareTimestampCount);
 		if (maxNumOfRareTimestamps != null)
 			jsonObject.put("max-num-of-rare-timestamps", maxNumOfRareTimestamps);
+		if (xWithValueHalfFactor != null)
+			jsonObject.put("x-with-value-half-factor", xWithValueHalfFactor);
+
 		return jsonObject.toJSONString();
 	}
 
@@ -49,7 +52,7 @@ public class TimeModelScorerConfTest {
 	public void deserialize_json() throws IOException {
 		String jsonString = getTimeModelScorerConfString(
 				SCORER_TYPE, DEFAULT_SCORER_NAME, getModelInfoJsonObject(DEFAULT_MODEL_NAME),
-				50, 100, true, 36, 42);
+				50, 100, true, 36, 42, 0.25);
 
 		IScorerConf scorerConf = getScorerConf(jsonString);
 		Assert.assertNotNull(scorerConf);
@@ -63,13 +66,14 @@ public class TimeModelScorerConfTest {
 		Assert.assertEquals(true, conf.isUseCertaintyToCalculateScore());
 		Assert.assertEquals(36, conf.getMaxRareTimestampCount());
 		Assert.assertEquals(42, conf.getMaxNumOfRareTimestamps());
+		Assert.assertTrue(0.25 == conf.getXWithValueHalfFactor());
 	}
 
 	@Test
 	public void deserialize_json_without_non_mandatory_fields() throws IOException {
 		String jsonString = getTimeModelScorerConfString(
 				SCORER_TYPE, DEFAULT_SCORER_NAME, getModelInfoJsonObject(DEFAULT_MODEL_NAME),
-				null, null, null, null, null);
+				null, null, null, null, null, null);
 
 		IScorerConf scorerConf = getScorerConf(jsonString);
 		Assert.assertNotNull(scorerConf);
@@ -93,13 +97,15 @@ public class TimeModelScorerConfTest {
 		Assert.assertEquals(
 				TimeModelScorerConf.DEFAULT_MAX_NUM_OF_RARE_TIMESTAMPS,
 				conf.getMaxNumOfRareTimestamps());
+		Assert.assertTrue(
+				TimeModelScorerConf.X_WITH_VALUE_HALF_FACTOR == conf.getXWithValueHalfFactor());
 	}
 
 	@Test(expected = JsonMappingException.class)
 	public void deserialize_json_with_null_scorer_name() throws IOException {
 		String jsonString = getTimeModelScorerConfString(
 				SCORER_TYPE, null, getModelInfoJsonObject(DEFAULT_MODEL_NAME),
-				50, 100, false, 36, 42);
+				50, 100, false, 36, 42, 0.25);
 
 		getScorerConf(jsonString);
 	}
@@ -108,7 +114,7 @@ public class TimeModelScorerConfTest {
 	public void deserialize_json_with_empty_scorer_name() throws IOException {
 		String jsonString = getTimeModelScorerConfString(
 				SCORER_TYPE, "", getModelInfoJsonObject(DEFAULT_MODEL_NAME),
-				50, 100, true, 36, 42);
+				50, 100, true, 36, 42, 0.25);
 
 		getScorerConf(jsonString);
 	}
@@ -117,7 +123,7 @@ public class TimeModelScorerConfTest {
 	public void deserialize_json_with_blank_scorer_name() throws IOException {
 		String jsonString = getTimeModelScorerConfString(
 				SCORER_TYPE, "   ", getModelInfoJsonObject(DEFAULT_MODEL_NAME),
-				50, 100, false, 36, 42);
+				50, 100, false, 36, 42, 0.25);
 
 		getScorerConf(jsonString);
 	}
@@ -126,7 +132,7 @@ public class TimeModelScorerConfTest {
 	public void deserialize_json_with_null_model_name() throws IOException {
 		String jsonString = getTimeModelScorerConfString(
 				SCORER_TYPE, DEFAULT_SCORER_NAME, getModelInfoJsonObject(null),
-				50, 100, true, 36, 42);
+				50, 100, true, 36, 42, 0.25);
 
 		getScorerConf(jsonString);
 	}
@@ -135,7 +141,7 @@ public class TimeModelScorerConfTest {
 	public void deserialize_json_with_empty_model_name() throws IOException {
 		String jsonString = getTimeModelScorerConfString(
 				SCORER_TYPE, DEFAULT_SCORER_NAME, getModelInfoJsonObject(""),
-				50, 100, false, 36, 42);
+				50, 100, false, 36, 42, 0.25);
 
 		getScorerConf(jsonString);
 	}
@@ -144,7 +150,7 @@ public class TimeModelScorerConfTest {
 	public void deserialize_json_with_blank_model_name() throws IOException {
 		String jsonString = getTimeModelScorerConfString(
 				SCORER_TYPE, DEFAULT_SCORER_NAME, getModelInfoJsonObject("   "),
-				50, 100, true, 36, 42);
+				50, 100, true, 36, 42, 0.25);
 
 		getScorerConf(jsonString);
 	}
@@ -153,7 +159,7 @@ public class TimeModelScorerConfTest {
 	public void deserialize_json_with_invalid_min_num_of_samples_to_influence() throws IOException {
 		String jsonString = getTimeModelScorerConfString(
 				SCORER_TYPE, DEFAULT_SCORER_NAME, getModelInfoJsonObject(DEFAULT_MODEL_NAME),
-				0, 100, false, 36, 42);
+				0, 100, false, 36, 42, 0.25);
 
 		getScorerConf(jsonString);
 	}
@@ -162,7 +168,7 @@ public class TimeModelScorerConfTest {
 	public void deserialize_json_with_invalid_enough_num_of_samples_to_influence() throws IOException {
 		String jsonString = getTimeModelScorerConfString(
 				SCORER_TYPE, DEFAULT_SCORER_NAME, getModelInfoJsonObject(DEFAULT_MODEL_NAME),
-				50, -1, true, 36, 42);
+				50, -1, true, 36, 42, 0.25);
 
 		getScorerConf(jsonString);
 	}
@@ -171,7 +177,7 @@ public class TimeModelScorerConfTest {
 	public void deserialize_json_with_invalid_max_rare_timestamp_count() throws IOException {
 		String jsonString = getTimeModelScorerConfString(
 				SCORER_TYPE, DEFAULT_SCORER_NAME, getModelInfoJsonObject(DEFAULT_MODEL_NAME),
-				50, 100, false, -1, 42);
+				50, 100, false, -1, 42, 0.25);
 
 		getScorerConf(jsonString);
 	}
@@ -180,7 +186,7 @@ public class TimeModelScorerConfTest {
 	public void deserialize_json_with_invalid_max_num_of_rare_timestamps() throws IOException {
 		String jsonString = getTimeModelScorerConfString(
 				SCORER_TYPE, DEFAULT_SCORER_NAME, getModelInfoJsonObject(DEFAULT_MODEL_NAME),
-				50, 100, true, 36, -10);
+				50, 100, true, 36, -10, 0.25);
 
 		getScorerConf(jsonString);
 	}

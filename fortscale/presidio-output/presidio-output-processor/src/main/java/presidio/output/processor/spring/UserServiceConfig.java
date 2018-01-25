@@ -11,7 +11,10 @@ import presidio.output.commons.services.user.UserSeverityService;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
-import presidio.output.processor.services.user.*;
+import presidio.output.processor.services.user.UserScoreService;
+import presidio.output.processor.services.user.UserScoreServiceImpl;
+import presidio.output.processor.services.user.UserService;
+import presidio.output.processor.services.user.UserServiceImpl;
 
 /**
  * Created by efratn on 22/08/2017.
@@ -48,12 +51,12 @@ public class UserServiceConfig {
 
     @Bean
     public UserService userService() {
-        return new UserServiceImpl(eventPersistencyService, userPersistencyService, alertPersistencyService, userScoreService(),userSeverityService, alertEffectiveDurationInDays, defaultAlertsBatchSize);
+        return new UserServiceImpl(eventPersistencyService, userPersistencyService, alertPersistencyService, userScoreService(), userSeverityService, alertEffectiveDurationInDays, defaultAlertsBatchSize);
     }
 
     @Bean
-    public UserScoreService userScoreService(){
-        return new UserScoreServiceImpl(userPersistencyService,alertPersistencyService, alertSeverityService, defaultAlertsBatchSize, defaultUsersBatchSize);
+    public UserScoreService userScoreService() {
+        return new UserScoreServiceImpl(userPersistencyService, alertPersistencyService, alertSeverityService, defaultAlertsBatchSize, defaultUsersBatchSize);
     }
 
 }

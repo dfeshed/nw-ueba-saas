@@ -1,0 +1,19 @@
+[
+  {
+    "_id": "2a5e4e00-00ee-11e8-90fa-e36c768b8c99",
+    "_type": "dashboard",
+    "_source": {
+      "title": "Engine Funnel",
+      "hits": 0,
+      "description": "",
+      "panelsJSON": "[{\"col\":1,\"id\":\"e51ae030-a132-11e7-b962-5703fbc8bd55\",\"panelIndex\":3,\"row\":6,\"size_x\":6,\"size_y\":2,\"type\":\"visualization\"},{\"col\":1,\"id\":\"0d6cf120-00ee-11e8-b7dc-63e69023fe2a\",\"panelIndex\":5,\"row\":1,\"size_x\":6,\"size_y\":3,\"type\":\"visualization\"},{\"col\":1,\"id\":\"0dfa2b10-00f0-11e8-add0-8b3b67fce58a\",\"panelIndex\":6,\"row\":8,\"size_x\":6,\"size_y\":2,\"type\":\"visualization\"},{\"col\":1,\"id\":\"8dd50470-00f7-11e8-a5ef-9bb777aba8a3\",\"panelIndex\":7,\"row\":4,\"size_x\":6,\"size_y\":2,\"type\":\"visualization\"}]",
+      "optionsJSON": "{\"darkTheme\":false}",
+      "uiStateJSON": "{\"P-5\":{\"spy\":{\"mode\":{\"fill\":false,\"name\":null}}}}",
+      "version": 1,
+      "timeRestore": false,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}}}],\"highlightAll\":true,\"version\":true}"
+      }
+    }
+  }
+]

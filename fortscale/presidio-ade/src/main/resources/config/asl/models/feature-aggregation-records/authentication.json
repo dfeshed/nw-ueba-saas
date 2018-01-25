@@ -18,7 +18,7 @@
       }
     },
     {
-      "name": "numberOfSuccessfulAuthentications.userId.prior.global.authentication.hourly",
+      "name": "numberOfSuccessfulAuthentications.userId.prior.authentication.hourly",
       "retriever": {
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
@@ -50,7 +50,7 @@
       }
     },
     {
-      "name": "numberOfFailedAuthentications.userId.prior.global.authentication.hourly",
+      "name": "numberOfFailedAuthentications.userId.prior.authentication.hourly",
       "retriever": {
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
@@ -82,7 +82,7 @@
       }
     },
     {
-      "name": "numberOfDistinctDstMachineDomain.userId.prior.global.authentication.hourly",
+      "name": "numberOfDistinctDstMachineDomain.userId.prior.authentication.hourly",
       "retriever": {
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
@@ -114,7 +114,7 @@
       }
     },
     {
-      "name": "numberOfDistinctSrcMachineId.userId.prior.global.authentication.hourly",
+      "name": "numberOfDistinctSrcMachineId.userId.prior.authentication.hourly",
       "retriever": {
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
@@ -146,7 +146,7 @@
       }
     },
     {
-      "name": "numberOfDistinctDstMachineId.userId.prior.global.authentication.hourly",
+      "name": "numberOfDistinctDstMachineId.userId.prior.authentication.hourly",
       "retriever": {
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
@@ -178,7 +178,7 @@
       }
     },
     {
-      "name": "numberOfDistinctSrcMachineNameRegexCluster.userId.prior.global.authentication.hourly",
+      "name": "numberOfDistinctSrcMachineNameRegexCluster.userId.prior.authentication.hourly",
       "retriever": {
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
@@ -210,7 +210,7 @@
       }
     },
     {
-      "name": "numberOfDistinctDstMachineNameRegexCluster.userId.prior.global.authentication.hourly",
+      "name": "numberOfDistinctDstMachineNameRegexCluster.userId.prior.authentication.hourly",
       "retriever": {
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,
@@ -242,7 +242,7 @@
       }
     },
     {
-      "name": "numberOfDistinctSite.userId.prior.global.authentication.hourly",
+      "name": "numberOfDistinctSite.userId.prior.authentication.hourly",
       "retriever": {
         "type": "model_retriever",
         "timeRangeInSeconds": 7776000,

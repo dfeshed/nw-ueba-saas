@@ -7,6 +7,7 @@ import fortscale.utils.logging.Logger;
 import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.services.DataService;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
+import presidio.sdk.api.validation.ValidationResults;
 
 import java.time.Instant;
 import java.util.List;
@@ -21,7 +22,7 @@ public class PresidioInputPersistencyServiceMongoImpl implements PresidioInputPe
     }
 
     @Override
-    public boolean store(Schema schema, List<? extends AbstractAuditableDocument> records) {
+    public ValidationResults store(Schema schema, List<? extends AbstractAuditableDocument> records) {
         logger.trace("Storing {} records for data source {}",
                 records.size(), schema);
 

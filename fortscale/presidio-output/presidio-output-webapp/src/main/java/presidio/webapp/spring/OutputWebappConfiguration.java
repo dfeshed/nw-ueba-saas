@@ -1,5 +1,6 @@
 package presidio.webapp.spring;
 
+import fortscale.utils.mongodb.config.MongoConfig;
 import fortscale.utils.rest.HttpMethodOverrideHeaderFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,10 +9,8 @@ import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletCon
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import presidio.output.commons.services.spring.UserSeverityServiceConfig;
-import presidio.webapp.service.FeedbackService;
-import presidio.webapp.service.FeedbackServiceImpl;
 import presidio.output.commons.services.spring.AlertSeverityServiceConfig;
+import presidio.output.commons.services.spring.UserSeverityServiceConfig;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig;
@@ -19,12 +18,14 @@ import presidio.webapp.controllers.alerts.AlertsApi;
 import presidio.webapp.controllers.alerts.AlertsController;
 import presidio.webapp.controllers.users.UsersApi;
 import presidio.webapp.controllers.users.UsersApiController;
+import presidio.webapp.service.FeedbackService;
+import presidio.webapp.service.FeedbackServiceImpl;
 import presidio.webapp.service.RestAlertService;
 import presidio.webapp.service.RestAlertServiceImpl;
 import presidio.webapp.service.RestUserService;
 import presidio.webapp.service.RestUserServiceImpl;
 
-@Import({PresidioOutputPersistencyServiceConfig.class, AlertSeverityServiceConfig.class, UserSeverityServiceConfig.class})
+@Import({PresidioOutputPersistencyServiceConfig.class, AlertSeverityServiceConfig.class, UserSeverityServiceConfig.class, MongoConfig.class})
 @Configuration
 public class OutputWebappConfiguration {
 
