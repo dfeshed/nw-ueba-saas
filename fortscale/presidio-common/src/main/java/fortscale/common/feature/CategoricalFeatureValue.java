@@ -48,4 +48,8 @@ public class CategoricalFeatureValue implements FeatureValue,Serializable {
     public FixedDurationStrategy getStrategy() {
         return strategy;
     }
+
+    public void setHistogram(Map<Pair<String, Instant>, Double> histogram) {
+        this.histogram = histogram;
+    }
 }

@@ -1,5 +1,6 @@
 package fortscale.ml.model;
 
+import fortscale.ml.model.metrics.CategoryRarityModelBuilderMetricsContainer;
 import fortscale.ml.model.metrics.TimeModelBuilderMetricsContainer;
 import fortscale.ml.model.metrics.TimeModelBuilderPartitionsMetricsContainer;
 import fortscale.ml.scorer.algorithm.AbstractScorerTest;
@@ -21,8 +22,9 @@ import static org.mockito.Mockito.mock;
 @RunWith(JUnit4.class)
 public class TimeModelTest extends AbstractScorerTest {
 
-	TimeModelBuilderMetricsContainer timeModelBuilderMetricsContainer = mock(TimeModelBuilderMetricsContainer.class);
-	TimeModelBuilderPartitionsMetricsContainer timeModelBuilderPartitionsMetricsContainer = mock(TimeModelBuilderPartitionsMetricsContainer.class);
+	private TimeModelBuilderMetricsContainer timeModelBuilderMetricsContainer = mock(TimeModelBuilderMetricsContainer.class);
+	private TimeModelBuilderPartitionsMetricsContainer timeModelBuilderPartitionsMetricsContainer = mock(TimeModelBuilderPartitionsMetricsContainer.class);
+	private CategoryRarityModelBuilderMetricsContainer categoryRarityModelBuilderMetricsContainer = mock(CategoryRarityModelBuilderMetricsContainer.class);
 
 	private TimeModel createModel(int timeResolution, int bucketSize, int maxRareTimestampCount, Long... times) {
 		Map<Long, Double> timeToCounter = new HashMap<>();
@@ -32,7 +34,7 @@ public class TimeModelTest extends AbstractScorerTest {
 		}
 
 		TimeModel timeModel = new TimeModel();
-		timeModel.init(timeResolution, bucketSize, maxRareTimestampCount, timeToCounter, 1, timeModelBuilderMetricsContainer, timeModelBuilderPartitionsMetricsContainer);
+		timeModel.init(timeResolution, bucketSize, maxRareTimestampCount, timeToCounter, 1, timeModelBuilderMetricsContainer, timeModelBuilderPartitionsMetricsContainer, categoryRarityModelBuilderMetricsContainer);
 		return timeModel;
 	}
 
@@ -43,7 +45,7 @@ public class TimeModelTest extends AbstractScorerTest {
 
 	@Test
 	public void modelWithOneTimestamp() {
-		int timeResolution = 100;
+		int timeResolution = 86400;
 		int bucketSize = 1;
 		int maxRareTimestampCount = 10;
 		long time = 1;
@@ -58,39 +60,39 @@ public class TimeModelTest extends AbstractScorerTest {
 
 	@Test
 	public void modelWithTwoTimestampsInSameBucket() {
-		int timeResolution = 100;
+		int timeResolution = 86400;
 		int bucketSize = 10;
 		int maxRareTimestampCount = 10;
 		long time1 = 1;
 		long time2 = 2;
 		TimeModel model = createModel(timeResolution, bucketSize, maxRareTimestampCount, time1, time2);
 
-		Assert.assertEquals(2, model.getNumOfSamples());
-		Assert.assertEquals(2, model.getCategoryRarityModel().getNumOfSamples());
+		Assert.assertEquals(1, model.getNumOfSamples());
+		Assert.assertEquals(1, model.getCategoryRarityModel().getNumOfSamples());
 		double[] buckets = model.getCategoryRarityModel().getBuckets();
 		Assert.assertEquals(1, DoubleStream.of(buckets).sum(), 0.001);
-		Assert.assertEquals(1, buckets[1], 0.001);
+		Assert.assertEquals(1, buckets[0], 0.001);
 	}
 
 	@Test
 	public void modelWithTwoTimestampsInDifferentBuckets() {
-		int timeResolution = 100;
-		int bucketSize = 10;
+		int timeResolution = 86400;
+		int bucketSize = 10*60;
 		int maxRareTimestampCount = 10;
 		long time1 = 1;
-		long time2 = 102+bucketSize;
+		long time2 = timeResolution+102+bucketSize;
 		TimeModel model = createModel(timeResolution, bucketSize, maxRareTimestampCount, time1, time2);
 
 		Assert.assertEquals(2, model.getNumOfSamples());
-		Assert.assertEquals(2, model.getCategoryRarityModel().getNumOfSamples());
+		Assert.assertEquals(6, model.getCategoryRarityModel().getNumOfSamples());
 		double[] buckets = model.getCategoryRarityModel().getBuckets();
-		Assert.assertEquals(2, DoubleStream.of(buckets).sum(), 0.001);
+		Assert.assertEquals(4, DoubleStream.of(buckets).sum(), 0.001);
 		Assert.assertEquals(2, buckets[0], 0.001);
 	}
 
 	@Test
 	public void testSmoothingWithOneTimestamp() {
-		int timeResolution = 100;
+		int timeResolution = 86400;
 		int bucketSize = 1;
 		int maxRareTimestampCount = 10;
 		long time = 1;
@@ -101,7 +103,7 @@ public class TimeModelTest extends AbstractScorerTest {
 
 	@Test
 	public void testSmoothingWithOneTimestampAndOnlyOneBucket() {
-		int timeResolution = 100;
+		int timeResolution = 86400;
 		int bucketSize = timeResolution;
 		int maxRareTimestampCount = 10;
 		long time = 1;
@@ -112,7 +114,7 @@ public class TimeModelTest extends AbstractScorerTest {
 
 	@Test
 	public void testSmoothingIsCyclic() {
-		int timeResolution = 100;
+		int timeResolution = 86400;
 		int bucketSize = 1;
 		int maxRareTimestampCount = 10;
 		long time = 1;
@@ -127,7 +129,7 @@ public class TimeModelTest extends AbstractScorerTest {
 
 	@Test
 	public void testSmoothingSymmetricallyAcross10Buckets() {
-		int timeResolution = 1000;
+		int timeResolution = 86400;
 		int bucketSize = 5;
 		int maxRareTimestampCount = 10;
 		long time = timeResolution / 2;
@@ -154,7 +156,7 @@ public class TimeModelTest extends AbstractScorerTest {
 
 	@Test
 	public void testSmoothingTwoBucketsAddsUp() {
-		int timeResolution = 1000;
+		int timeResolution = 86400;
 		int bucketSize = 5;
 		int maxRareTimestampCount = 10;
 		long time1 = 0;
