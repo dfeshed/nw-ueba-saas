@@ -76,7 +76,7 @@ public class PresidioMetricBucket {
         return allMetrics;
     }
 
-    public List<MetricDocument> getApplicationMetricsAndResetApplicationMetrics() {
+    public synchronized List<MetricDocument> getApplicationMetricsAndResetApplicationMetrics() {
         List<MetricDocument> allMetrics = new LinkedList<>();
         applicationMetrics.forEach((s, metric) -> {
             allMetrics.add(buildPresidioMetric(metric));
