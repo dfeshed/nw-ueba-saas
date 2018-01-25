@@ -8,7 +8,7 @@ module('Unit | Helper | query utils');
 const params = {
   et: 0,
   eid: 1,
-  mf: 'a%3D"/b/"',
+  mf: 'a%3D"a/%3Db%3D/a"',
   mps: 'default',
   rs: 'max',
   sid: 2,
@@ -48,12 +48,12 @@ test('parseQueryParams correctly parses URI', function(assert) {
   assert.equal(result.startTime, params.st, '"st" was not parsed to "startTime"');
 });
 
-test('parseQueryParams correctly parses forward slashes in text format conditions', function(assert) {
+test('parseQueryParams correctly parses forward slashes and operators in text format conditions', function(assert) {
   assert.expect(3);
   const result = queryUtils.parseQueryParams(params);
   assert.equal(result.metaFilter.conditions[0].meta, 'a', 'forward slash was not parsed correctly');
   assert.equal(result.metaFilter.conditions[0].operator, '=', 'forward slash was not parsed correctly');
-  assert.equal(result.metaFilter.conditions[0].value, '"/b/"', 'forward slash was not parsed correctly');
+  assert.equal(result.metaFilter.conditions[0].value, '"a/=b=/a"', 'forward slash was not parsed correctly');
 });
 
 test('encodeMetaFilterConditions correctly encodes conditions', function(assert) {

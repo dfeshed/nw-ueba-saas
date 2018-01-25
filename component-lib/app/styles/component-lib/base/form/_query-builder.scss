@@ -1,12 +1,3 @@
-.rsa-query-fragment-dropdown {
-  max-width: 17.5rem;
-  min-width: 27.5rem;
-
-  li {
-    position: relative;
-  }
-}
-
 .rsa-icon.expensive-operator-indicator {
   display: inline-flex;
   align-self: center;
@@ -32,6 +23,19 @@
   }
 }
 
+.rsa-query-fragment-dropdown {
+  max-width: 17.5rem;
+  min-width: 27.5rem;
+
+  li {
+    position: relative;
+  }
+
+  &.without-options {
+    border: none;
+  }
+}
+
 .rsa-query-meta {
   display: flex;
   align-items: flex-start;
@@ -39,6 +43,7 @@
   flex-wrap: wrap;
   background-color: background-color(primary, darkest, translucent);
   @include border(1px, solid, primary, lighter);
+  min-width: 350px;
 
   flex: 1 1 auto;
   max-height: 12rem;
@@ -90,15 +95,10 @@
     position: relative;
     flex: 0 0 auto;
     align-self: center;
-    margin: rsa-whitespace(least);
+    margin: calc(#{rsa-whitespace(least)} - 1px);
     border-radius: rsa-whitespace(least);
     @include border(1px, solid, primary, lighter);
     color: text-color(primary, lightest);
-
-    &:not(.edit-active) {
-      margin-top: calc(#{rsa-whitespace(least)} - 1px});
-      margin-bottom: calc(#{rsa-whitespace(least)} - 2px});
-    }
 
     .rsa-icon.expensive-operator-indicator {
       color: text-color(primary, lightest);
@@ -123,8 +123,12 @@
 
     &:last-of-type {
       max-width: inherit;
-      .invisible-edit-trigger {
 
+      input {
+        display: block;
+      }
+
+      .invisible-edit-trigger {
         display: none;
       }
     }
@@ -149,6 +153,7 @@
 
     .ember-power-select-trigger {
       width: 100%;
+      padding-right: 0;
     }
 
     .invisible-edit-trigger {
@@ -194,6 +199,7 @@
 
     &.edit-active {
       border: none;
+      margin: rsa-whitespace(least);
 
       &:not(:last-of-type) {
         flex: 0 0 auto;

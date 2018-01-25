@@ -41,6 +41,7 @@ $investigateReconFullWidth: 100%;
   &__body {
     position: relative;   /* enables positioning of children */
     @include rsa-vendor-prefix(flex-grow, 1);
+    @include rsa-layer();
 
     &-tips {
       position: relative;

@@ -1,4 +1,6 @@
 .rsa-investigate-breadcrumb {
+  flex: 0 0 auto;
+
   &__crumbs {
     @include rsa-row(left, middle);
     flex-wrap: nowrap;
@@ -7,6 +9,7 @@
     .execute-query-button {
       margin-left: rsa-whitespace(least);
       white-space: nowrap;
+      flex-shrink: 0;
 
       button {
         padding-top: calc(#{rsa-whitespace(less)} + #{rsa-whitespace(least)});

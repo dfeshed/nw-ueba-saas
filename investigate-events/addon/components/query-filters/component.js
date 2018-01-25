@@ -9,6 +9,7 @@ import service from 'ember-service/inject';
 import on from 'ember-evented/on';
 import { setQueryFilterMeta } from 'investigate-events/actions/interaction-creators';
 import { queryParams } from 'investigate-events/reducers/investigate/query-node/selectors';
+import $ from 'jquery';
 
 const removeFilters = (list, toRemove) => {
   if (Array.isArray(toRemove)) {
@@ -114,6 +115,12 @@ const QueryFiltersComponent = Component.extend(EKMixin, {
       }
       insertEmptyFilter(filters, preloadedFilters.length);
     });
+  },
+
+  click(e) {
+    if ($(e.target).hasClass('rsa-query-meta')) {
+      this.$('.rsa-query-fragment:last-of-type input').focus();
+    }
   },
 
   prev: on(keyUp('ArrowLeft'), function() {

@@ -186,9 +186,10 @@ function _parseMetaFilterUri(uri) {
     '!=', '<=', '<', '>=', '>', '=', '!exists', 'exists', 'contains', 'begins', 'ends'
   ];
 
-  // look for forward slashes inside a set of double quotes
-  // replace found slashes with a temp placeholder because forward slashes are used to split the uri
-  const matches = uri.match(/"[^"]*\/"/g);
+  // look for a set of double quotes
+  // replace found forward slashes with a temp placeholder because forward slashes are used to split the uri
+  const matches = uri.match(/"([^"]*)"/g);
+
   if (matches) {
     matches.forEach((match) => {
       uri = uri.replace(match, match.replace(/\//g, '__slash_place_holder__'));
@@ -220,9 +221,19 @@ function _parseMetaFilterUri(uri) {
         }
       });
 
-      const [ meta, value ] = decodedQuery.split(operator);
+      const chunks = decodedQuery.split(operator);
 
-      return { meta, operator, value };
+      if (chunks.length > 2) {
+        const [ meta, ...value ] = chunks;
+        return {
+          meta,
+          operator,
+          value: value.join(operator)
+        };
+      } else {
+        const [ meta, value ] = chunks;
+        return { meta, operator, value };
+      }
     });
 }
 

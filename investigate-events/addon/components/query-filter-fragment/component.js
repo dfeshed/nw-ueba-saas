@@ -80,6 +80,21 @@ const QueryFragmentComponent = Component.extend({
   @notEmpty('operator') withOperator: false,
   @notEmpty('value') withValue: false,
 
+  @computed('isExpensive', 'filteredOptions.length', 'type')
+  dropdownClass(isExpensive, optionsLength, type) {
+    let dropdownClass = 'rsa-query-fragment-dropdown';
+
+    if (isExpensive) {
+      dropdownClass = `${dropdownClass} is-expensive`;
+    }
+
+    if (optionsLength === 0 || type === 'value') {
+      dropdownClass = `${dropdownClass} without-options`;
+    }
+
+    return dropdownClass;
+  },
+
   @computed('withMeta', 'withOperator', 'withValue', 'complexFilter')
   empty(withMeta, withOperator, withValue, complexFilter) {
     if (isEmpty(complexFilter)) {
@@ -223,12 +238,23 @@ const QueryFragmentComponent = Component.extend({
     }
   },
 
-  didInsertElement() {
+  click() {
     this._super(...arguments);
 
-    this.$('input')
-      .prop('type', 'text')
-      .prop('spellcheck', false);
+    if (this.get('editActive')) {
+      this.setTypeFromCursorPostion();
+    }
+  },
+
+  didInsertElement() {
+    this._super(...arguments);
+    const input = this.$('input');
+
+    if (!isEmpty(input)) {
+      input
+        .prop('type', 'text')
+        .prop('spellcheck', false);
+    }
   },
 
   didReceiveAttrs() {
@@ -357,6 +383,41 @@ const QueryFragmentComponent = Component.extend({
     });
   },
 
+  setTypeFromCursorPostion() {
+    const input = this.$('input');
+
+    const {
+      meta, operator
+    } = this.getProperties(
+      'meta', 'operator'
+    );
+
+    let metaLength = 0;
+    let operatorLength = 0;
+    if (!isEmpty(meta)) {
+      metaLength = meta.length;
+    }
+
+    if (!isEmpty(operator)) {
+      operatorLength = operator.length;
+    }
+
+    const updatedCursorPosition = input.get(0).selectionStart;
+    const metaAndOperatorLength = metaLength + operatorLength;
+
+    if (this.get('empty')) {
+      return;
+    }
+
+    if (updatedCursorPosition <= metaLength) {
+      this.set('type', 'meta');
+    } else if (updatedCursorPosition > metaLength && updatedCursorPosition <= metaAndOperatorLength + 1) {
+      this.set('type', 'operator');
+    } else if (updatedCursorPosition > metaAndOperatorLength) {
+      this.set('type', 'value');
+    }
+  },
+
   actions: {
     toggleSelect() {
       if (!this.get('editActive')) {
@@ -367,17 +428,48 @@ const QueryFragmentComponent = Component.extend({
     onblur() {
       this.setKeyboardPriority(0);
 
-      if (!this.get('saved') && !this.get('isLastInList') && this.get('empty')) {
-        run.next(() => {
-          const input = this.$('input');
-          if (!isEmpty(input)) {
-            const val = this.$('input').val();
-            if (isEmpty(val)) {
-              this.deleteFilter(this.get('filterRecord'));
-            }
+      const inputVal = this.$('input').val();
+
+      if (!isEmpty(this.get('meta')) && !isEmpty(this.get('operator'))) {
+        if (inputVal.length > this.get('filter').length) {
+          let updatedValue = inputVal.replace(this.get('meta'), '').replace(this.get('operator'), '').trim();
+
+          const isExistsOperator = inputVal.includes('exists');
+          if (this.get('metaFormat') === 'Text' && !isExistsOperator) {
+            updatedValue = `"${updatedValue.replace(/['"]/g, '')}"`;
           }
-        });
+
+          this.set('value', updatedValue);
+          this.set('editActive', false);
+          this.set('saved', true);
+
+          this._insertEmptyFilter(-1);
+        }
       }
+
+      run.next(() => {
+        const input = this.$('input');
+
+        if (isEmpty(input)) {
+          return;
+        }
+
+        if (!this.get('isLastInList')) {
+          const px = 8;
+          const valLength = input.val().length;
+          const newInputWidth = valLength * px;
+
+          input.width(newInputWidth);
+        }
+
+        if (this.get('saved') && isEmpty(input.val())) {
+          this.set('editActive', false);
+        } else if (this.get('saved') && !isEmpty(this.get('meta')) && !isEmpty(this.get('operator'))) {
+          if (this.get('filter').includes('exists') || !isEmpty(this.get('value'))) {
+            this.set('editActive', false);
+          }
+        }
+      });
     },
 
     onfocus(select) {
@@ -400,12 +492,22 @@ const QueryFragmentComponent = Component.extend({
         .without(this.get('filterRecord'));
 
       prunedList.setEach('selected', false);
-      prunedList.setEach('editActive', false);
 
       this.$('input')
         .prop('type', 'text')
         .prop('spellcheck', false);
+
       select.actions.open();
+
+      run.next(() => {
+        prunedList.forEach((pill) => {
+          if (isEmpty(pill.get('meta')) && isEmpty(pill.get('operator')) && isEmpty(pill.get('value'))) {
+            this.deleteFilter(pill);
+          } else if (!isEmpty(pill.get('meta')) && !isEmpty(pill.get('operator')) && !isEmpty(pill.get('value'))) {
+            pill.set('editActive', false);
+          }
+        });
+      });
     },
 
     // User takes action via keyboard
@@ -437,13 +539,13 @@ const QueryFragmentComponent = Component.extend({
           typing: false
         });
 
-        if (this.get('filterRecord') != this.get('filterList').get('lastObject')) {
+        if (!this.get('isLastInList')) {
           input.width(8);
         }
       } else {
         this.set('typing', true);
 
-        if (this.get('filterRecord') != this.get('filterList').get('lastObject')) {
+        if (!this.get('isLastInList')) {
           input.width((inputVal.length + 1) * 8);
         }
       }
@@ -529,7 +631,9 @@ const QueryFragmentComponent = Component.extend({
             let updatedValue;
 
             const updatedMeta = this.get('metaOptions').find((option) => {
-              return inputVal.includes(option.metaName) && inputVal.charAt(option.metaName.length) != '.';
+              const matchesMetaName = inputVal.includes(option.metaName) && inputVal.charAt(option.metaName.length) != '.';
+              const inMetaPosition = inputVal.slice(0, option.metaName.length) === option.metaName;
+              return matchesMetaName && inMetaPosition;
             });
 
             if (updatedMeta) {
@@ -597,7 +701,10 @@ const QueryFragmentComponent = Component.extend({
               }
 
               run.next(() => {
-                this.$().next('.rsa-query-fragment').find('input').focus();
+                const el = this.$();
+                if (!isEmpty(el)) {
+                  el.next('.rsa-query-fragment').find('input').focus();
+                }
               });
             }
           }
@@ -606,71 +713,45 @@ const QueryFragmentComponent = Component.extend({
 
       if (pressedLeft || pressedRight || pressedDelete || pressedBackspace) {
         run.next(() => {
-          let metaLength = 0;
-          let operatorLength = 0;
-          if (!isEmpty(meta)) {
-            metaLength = meta.length;
-          }
-
-          if (!isEmpty(operator)) {
-            operatorLength = operator.length;
-          }
-
-          const updatedCursorPosition = input.get(0).selectionStart;
-          const metaAndOperatorLength = metaLength + operatorLength;
-
-          if (this.get('empty')) {
-            return;
-          }
-
-          if (updatedCursorPosition <= metaLength) {
-            this.set('type', 'meta');
-          } else if (updatedCursorPosition > metaLength && updatedCursorPosition <= metaAndOperatorLength + 1) {
-            this.set('type', 'operator');
-          } else if (updatedCursorPosition > metaAndOperatorLength) {
-            this.set('type', 'value');
-          }
+          this.setTypeFromCursorPostion();
         });
       }
     },
 
-    // Filter displayed options
     lookup(searchTerm) {
       const {
-        options, type, onMeta, meta, operator, saved,
-        value, onOperator, withMeta, withOperator, withValue
+        options, onMeta, meta, operator,
+        value, onOperator
       } = this.getProperties(
-        'options', 'type', 'onOperator', 'meta', 'operator', 'saved',
-        'value', 'onMeta', 'withMeta', 'withOperator', 'withValue'
+        'options', 'onOperator', 'meta', 'operator',
+        'value', 'onMeta'
       );
 
-      if (isEmpty(options) || isEmpty(searchTerm)) {
+      if (isEmpty(options)) {
         return;
+      }
+
+      if (isEmpty(searchTerm)) {
+        return options;
       }
 
       searchTerm = searchTerm.toLowerCase();
 
-      return options.filter((option) => {
-        if (saved) {
-          if (onMeta) {
-            searchTerm = searchTerm.replace(` ${operator}`, '').replace(` ${value}`, '');
-          } else if (onOperator) {
-            searchTerm = searchTerm.replace(`${meta} `, '').replace(` ${value}`, '');
-          }
-        } else {
-          if (withMeta && withOperator && !withValue) {
-            searchTerm = searchTerm.replace(`${meta} `, '').replace(`${operator} `, '');
-          } else if (withMeta && !withOperator && !withValue) {
-            searchTerm = searchTerm.replace(`${meta} `, '');
-          }
-        }
-
-        if (type === 'meta') {
-          return option.metaName.indexOf(searchTerm) !== -1 || option.displayName.indexOf(searchTerm) !== -1;
-        } else {
-          return isEmpty(searchTerm) || option.displayName.slice(0, searchTerm.length) === searchTerm;
+      const filteredOptions = options.filter((option) => {
+        if (onMeta) {
+          searchTerm = searchTerm.replace(operator, '').replace(value, '').trim();
+          const matchesMetaName = option.metaName.includes(searchTerm);
+          const matchesDisplayName = option.displayName.includes(searchTerm);
+          return matchesMetaName || matchesDisplayName;
+        } else if (onOperator) {
+          searchTerm = searchTerm.replace(meta, '').replace(value, '').trim();
+          return option.displayName.includes(searchTerm);
         }
       });
+
+      this.set('filteredOptions', filteredOptions);
+
+      return filteredOptions;
     },
 
     // User makes selection via typeahead
@@ -691,11 +772,11 @@ const QueryFragmentComponent = Component.extend({
       }
 
       if (type === 'meta') {
-        if (inputVal.indexOf(this.get('value')) === -1) {
+        if (!isEmpty(inputVal) && inputVal.indexOf(this.get('value')) === -1) {
           this.set('value', null);
         }
 
-        if (inputVal.indexOf(this.get('operator')) === -1) {
+        if (!isEmpty(inputVal) && inputVal.indexOf(this.get('operator')) === -1) {
           this.set('operator', null);
         }
 
@@ -718,8 +799,20 @@ const QueryFragmentComponent = Component.extend({
         }
 
         run.next(() => {
-          if (!this.get('isLastInList')) {
-            input.width((input.val().length + 1) * 8);
+          const input = this.$('input');
+
+          if (!isEmpty(input.get(0))) {
+            if (!this.get('isLastInList')) {
+              input.width((input.length + 1) * 8);
+            }
+
+            if (!this.get('editActive')) {
+              this.$().closest('.rsa-query-meta').find('.rsa-query-fragment:last-of-type input').focus();
+            } else {
+              const position = this.get('meta').length;
+              input[0].setSelectionRange(position, position);
+              input.focus();
+            }
           }
         });
       } else if (type === 'operator') {
@@ -740,6 +833,14 @@ const QueryFragmentComponent = Component.extend({
           this.set('editActive', true);
         }
 
+        if (!this.get('editActive')) {
+          this.$().closest('.rsa-query-meta').find('.rsa-query-fragment:last-of-type input').focus();
+        } else {
+          const position = `${this.get('meta')} ${this.get('operator')}`.length;
+          input[0].setSelectionRange(position, position);
+          this.$('input').focus();
+        }
+
         if (['exists', '!exists'].includes(selection.displayName)) {
           this.setProperties({
             value: null,
@@ -749,29 +850,28 @@ const QueryFragmentComponent = Component.extend({
 
           if (this.get('isLastInList')) {
             this._insertEmptyFilter(filterList.indexOf(filterRecord) + 1);
-          }
 
-          run.next(() => {
-            input.width((input.val().length + 1) * 8);
-            this.$().next('.rsa-query-fragment').find('input').focus();
-          });
+            run.next(() => {
+              this.$().closest('.rsa-query-meta').find('.rsa-query-fragment:last-of-type input').focus();
+            });
+
+          }
         } else {
           this.set('type', 'value');
-
-          run.next(() => {
-            const input = this.$('input');
-
-            if (isEmpty(input)) {
-              return;
-            }
-
-            input.width((input.val().length + 1) * 8);
-            const position = `${this.get('meta')} ${this.get('operator')}`.length;
-            input[0].setSelectionRange(position, position);
-            input.focus();
-          });
         }
       }
+
+      run.next(() => {
+        if (!this.get('isLastInList')) {
+          const input = this.$('input');
+
+          if (isEmpty(input[0])) {
+            return;
+          }
+
+          input.width((input.val().length + 1) * 8);
+        }
+      });
     },
 
     editFilter() {
@@ -796,7 +896,7 @@ const QueryFragmentComponent = Component.extend({
 
     deleteFilter() {
       this.deleteFilter(this.get('filterRecord'));
-      this.$().closest('.rsa-query-meta').find('.rsa-query-fragment').last().find('input').focus();
+      this.$().closest('.rsa-query-meta').find('.rsa-query-fragment:last-of-type input').focus();
     }
   }
 
