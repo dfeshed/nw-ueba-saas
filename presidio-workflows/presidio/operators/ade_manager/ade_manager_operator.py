@@ -27,6 +27,7 @@ class AdeManagerOperator(SpringBootJarOperator):
 
         super(AdeManagerOperator, self).__init__(command=command,
                                                  retry_extra_params=retry_extra_params,
+                                                 retry_java_args_method=AdeManagerOperator.add_java_args,
                                                  task_id=self.get_task_id(),
                                                  *args, **kwargs)
 
