@@ -45,8 +45,8 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
 
     private Double calcScore(Map<Long, Double> timeToCounter, long timeToScore) {
         TimeModel model = new TimeModel();
-        model.init(DAILY_TIME_RESOLUTION, DAILY_BUCKET_SIZE, MAX_RARE_TIMESTAMP_COUNT, timeToCounter, 1, timeModelBuilderMetricsContainer, timeModelBuilderPartitionsMetricsContainer);
-        TimeModelScorerAlgorithm scorerAlgorithm = new TimeModelScorerAlgorithm(MAX_RARE_TIMESTAMP_COUNT, MAX_NUM_OF_RARE_TIMESTAMPS);
+        model.init(DAILY_TIME_RESOLUTION, DAILY_BUCKET_SIZE, MAX_RARE_TIMESTAMP_COUNT, timeToCounter, 1, timeModelBuilderMetricsContainer, timeModelBuilderPartitionsMetricsContainer,categoryRarityModelBuilderMetricsContainer);
+        TimeModelScorerAlgorithm scorerAlgorithm = new TimeModelScorerAlgorithm(MAX_RARE_TIMESTAMP_COUNT, MAX_NUM_OF_RARE_TIMESTAMPS,X_WITH_VALUE_HALF_FACTOR);
         return scorerAlgorithm.calculateScore(timeToScore, model);
     }
 
@@ -86,7 +86,7 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
         }
         long epochSeconds = 5000;
 
-        Assert.assertEquals(59D,calcScore(timeToCounter,epochSeconds),0.001);
+        Assert.assertEquals(27D,calcScore(timeToCounter,epochSeconds),0.001);
     }
 
     @Test
@@ -110,7 +110,7 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
             timeToCounter.put((long)(rnd.nextDouble( )* 6000)+i*DAILY_TIME_RESOLUTION,1D);
         }
         long isolatedTimes[] = new long[]{30000, 40000, 50000, 60000};
-        double scores[] = new double[]{77, 77, 29, 0};
+        double scores[] = new double[]{75, 75, 55, 24};
         for (int i = 0; i < scores.length; i++) {
             timeToCounter.put(isolatedTimes[i],scores[i]);
             Double score = calcScore(timeToCounter, isolatedTimes[i]);
@@ -138,7 +138,7 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
         }
 
         long[] timesToScore = new long[]{14000, 13000, 12000, 11000, 10000};
-        double[] scores = new double[]{94, 94, 89, 69, 0};
+        double[] scores = new double[]{91, 85, 82, 62, 0};
         for (int i = 0; i < timesToScore.length; i++) {
             Double score = calcScore(timeToCounter, amountOfDays*DAILY_TIME_RESOLUTION+timesToScore[i]);
             Assert.assertEquals(scores[i],score,0.01);
@@ -176,7 +176,7 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
         testTimeToCounterData.putAll(fillTimeToCounter(startInstant, endInstant, activityStartHour, activityEndHour, activityIntervalInSeconds));
 
         for (Long time: testTimeToCounterData.keySet()){
-            Assert.assertEquals(93,calcScore(trainTimeToCounterData,time),1);
+            Assert.assertEquals(87,calcScore(trainTimeToCounterData,time),1);
         }
     }
 
@@ -212,7 +212,7 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
         testTimeToCounterData.putAll(fillTimeToCounter(startInstant, endInstant, activityStartHour, activityEndHour, highDensityActivityIntervalInSeconds));
 
         for (Long time: testTimeToCounterData.keySet()){
-            Assert.assertEquals(93,calcScore(trainTimeToCounterData,time),1);
+            Assert.assertEquals(87,calcScore(trainTimeToCounterData,time),1);
         }
     }
 
@@ -246,8 +246,8 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
             }
         }
 
-        double scores[] = new double[]{100, 94, 60, 4};
-        double finalScore = 0;
+        double scores[] = new double[]{100, 87, 66, 47};
+        double finalScore = 30;
         long dispersedTimes[] = new long[scores.length];
         for (int i = 0; i < scores.length; i++) {
             dispersedTimes[i] = amountOfDays * DAILY_TIME_RESOLUTION + 3000 + (i + 1) * 6000;
