@@ -43,6 +43,7 @@ public class ContinuousDataModel implements IContinuousDataModel {
 	public boolean equals(Object obj) {
 		if (!(obj instanceof ContinuousDataModel)) return false;
 		ContinuousDataModel o = (ContinuousDataModel)obj;
+		if (N == 0) return o.N == 0;
 		return o.N.equals(N) && o.mean.equals(mean) && o.sd.equals(sd) && o.maxValue.equals(maxValue);
 	}
 
