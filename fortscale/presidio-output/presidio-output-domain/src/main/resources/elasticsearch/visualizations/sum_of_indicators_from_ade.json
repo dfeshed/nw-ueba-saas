@@ -4,7 +4,7 @@
     "_type": "visualization",
     "_source": {
       "title": "Sum of indicators from ade",
-      "visState": "{\"title\":\"Sum of indicators from ade\",\"type\":\"metric\",\"params\":{\"fontSize\":\"40\",\"handleNoResults\":true},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{}}],\"listeners\":{}}",
+      "visState": "{\"title\":\"Sum of indicators from ade\",\"type\":\"metric\",\"params\":{\"fontSize\":\"74\",\"handleNoResults\":true},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"Indicators\"}}],\"listeners\":{}}",
       "uiStateJSON": "{}",
       "description": "",
       "savedSearchId": "1106d960-00f1-11e8-b322-a102532858e6",
