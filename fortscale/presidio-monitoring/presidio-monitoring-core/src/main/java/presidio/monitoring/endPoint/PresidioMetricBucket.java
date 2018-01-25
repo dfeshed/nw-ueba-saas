@@ -20,26 +20,32 @@ public class PresidioMetricBucket {
         this.applicationMetrics = new HashMap<>();
     }
 
-    public synchronized void addMetric(Metric metric) {
+    public void addMetric(Metric metric) {
         metricConventionApplyer.apply(metric);
         MetricUniqueKey metricUniqueKey = new MetricUniqueKey(metric.getName(), metric.getLogicTime(), metric.getTags());
         if (applicationMetrics.containsKey(metricUniqueKey)) {
-            accumulateMetricValues(metric, applicationMetrics.get(metricUniqueKey).getValue());
+            accumulateMetricValues(metric, metricUniqueKey);
         }
         applicationMetrics.put(metricUniqueKey, metric);
     }
 
-    private void accumulateMetricValues(Metric metric, Map<MetricEnums.MetricValues, Number> value) {
-        Map<MetricEnums.MetricValues, Number> metricValues = metric.getValue();
-        for (Map.Entry<MetricEnums.MetricValues, Number> entry : metricValues.entrySet()) {
-            if (!ObjectUtils.isEmpty(value.get(entry.getKey()))) {
-                entry.setValue(operatorAddForNumber(value.get(entry.getKey()), entry.getValue()));
+    private synchronized void accumulateMetricValues(Metric metric, MetricUniqueKey metricUniqueKey) {
+        Metric existingMetric = applicationMetrics.get(metricUniqueKey);
+        if (existingMetric != null) {
+            Map<MetricEnums.MetricValues, Number> value = existingMetric.getValue();
+            Map<MetricEnums.MetricValues, Number> metricValues = metric.getValue();
+            for (Map.Entry<MetricEnums.MetricValues, Number> entry : metricValues.entrySet()) {
+                if (!ObjectUtils.isEmpty(value.get(entry.getKey()))) {
+                    entry.setValue(operatorAddForNumber(value.get(entry.getKey()), entry.getValue()));
+                }
             }
-        }
-        for (Map.Entry<MetricEnums.MetricValues, Number> entry : value.entrySet()) {
-            if (!metricValues.containsKey(entry.getKey())) {
-                metricValues.put(entry.getKey(), entry.getValue());
+            for (Map.Entry<MetricEnums.MetricValues, Number> entry : value.entrySet()) {
+                if (!metricValues.containsKey(entry.getKey())) {
+                    metricValues.put(entry.getKey(), entry.getValue());
+                }
             }
+        } else {
+            applicationMetrics.put(metricUniqueKey, metric);
         }
     }
 
@@ -65,8 +71,8 @@ public class PresidioMetricBucket {
                 allMetrics.add(buildPresidioMetric(metric));
             }
         });
-        applicationMetrics = new HashMap<>();
         allMetrics.addAll(getSystemMetrics());
+        applicationMetrics = new HashMap<>();
         return allMetrics;
     }
 
@@ -75,7 +81,7 @@ public class PresidioMetricBucket {
         applicationMetrics.forEach((s, metric) -> {
             allMetrics.add(buildPresidioMetric(metric));
         });
-        applicationMetrics.clear();
+        applicationMetrics = new HashMap<>();
         return allMetrics;
     }
 
