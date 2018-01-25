@@ -522,7 +522,7 @@ SSLSessionCacheTimeout  300
      AuthUserFile /etc/httpd/conf/.htpasswd
      require valid-user
      RewriteEngine on
-     RewriteRule /(.*) "http://localhost:7788/upgrade/$1" [P,L]
+     RewriteRule /upgrade/(.*)$ "http://localhost:7788/upgrade/$1" [NE,R,P]
   </Location>
 
 # version rest api
