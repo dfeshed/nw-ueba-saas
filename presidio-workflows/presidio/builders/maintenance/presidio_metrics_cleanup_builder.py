@@ -79,7 +79,7 @@ class PresidioMetircsCleanupDagBuilder(MaintenanceDagBuilder):
             sys.exit(1)
 
         try:
-            response = es.indices.delete(index='<packetbeat-6.1.1-{now/d-' + str(max_sys_metrics_age_in_days) + 'd}>', ignore=404)
+            response = es.indices.delete(index='<packetbeat-6.1.2-{now/d-' + str(max_sys_metrics_age_in_days) + 'd}>', ignore=404)
             logging.info("response: " + json.dumps(response))
 
         except Exception as e:
