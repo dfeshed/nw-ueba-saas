@@ -201,8 +201,8 @@ def clean_elastic_data():
     indexes = es.cat.indices(h="index").encode("utf-8").split("\n")
 
     for index in indexes:
-        if index not in [".kibana", ""]:
-            if index.startswith(('presidio-monitoring','metricbeat')):
+        if not index.startswith(".") and not index == "": #escape system metrics
+            if index.startswith(('presidio-monitoring','metricbeat','packetbeat')):
                 es.indices.delete(index=index, ignore=[404], request_timeout=360)
             else:
                 es.delete_by_query(index=index, body="{\"query\": {\"match_all\": {}}}", request_timeout=360)
