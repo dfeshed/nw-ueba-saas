@@ -1,5 +1,5 @@
 $respondBackgroundColor: background-color(custom, respond);
-$navbarHeight: 50px;
+$navbarHeight: 49px;
 @import "mixins";
 @import "respond/manifest";
 
@@ -8,10 +8,9 @@ $navbarHeight: 50px;
   background-color:$respondBackgroundColor;
 
   > .rsa-nav-tab-group {
-    height: $navbarHeight;
     background-color: background-color(primary, darker);
     > .rsa-nav-tab {
-      margin: 0 rsa-whitespace();
+      cursor: pointer;
     }
   }
 
