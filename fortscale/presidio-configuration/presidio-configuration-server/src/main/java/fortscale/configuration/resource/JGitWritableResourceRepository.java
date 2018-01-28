@@ -30,7 +30,7 @@ public class JGitWritableResourceRepository extends GenericWritableResourceRepos
     public JGitWritableResourceRepository(SearchPathLocator searchPathLocator, JGitEnvironmentRepository gitAccessor) {
         super(searchPathLocator);
         this.searchPathLocator = searchPathLocator;
-        this.gitAccessor = gitAccessor; // TODO: make sure that cloneOnStart is on
+        this.gitAccessor = gitAccessor;
     }
 
     @Override
