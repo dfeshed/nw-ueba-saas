@@ -9,9 +9,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
@@ -27,8 +28,8 @@ public class TimeModelTest extends AbstractScorerTest {
 	private TimeModel createModel(int timeResolution, int bucketSize, int maxRareTimestampCount, Long... times) {
 		Map<Long, Double> timeToCounter = new HashMap<>();
 
-		for (int i = 0; i < times.length; i++) {
-			timeToCounter.put(times[i],times[i].doubleValue());
+		for (int i=0; i< times.length;i++) {
+			timeToCounter.put(times[i]+ i*timeResolution,1D);
 		}
 
 		TimeModel timeModel = new TimeModel();
@@ -65,11 +66,11 @@ public class TimeModelTest extends AbstractScorerTest {
 		long time2 = 2;
 		TimeModel model = createModel(timeResolution, bucketSize, maxRareTimestampCount, time1, time2);
 
-		Assert.assertEquals(1, model.getNumOfSamples());
-		Assert.assertEquals(1, model.getCategoryRarityModel().getNumOfSamples());
+		Assert.assertEquals(2, model.getNumOfSamples());
+		Assert.assertEquals(2, model.getCategoryRarityModel().getNumOfSamples());
 		List<Double> buckets = model.getCategoryRarityModel().getBuckets();
         Assert.assertEquals(1,         buckets.stream().mapToDouble(Double::doubleValue).sum(), 0.001);
-		Assert.assertEquals(1, buckets.get(0), 0.001);
+		Assert.assertEquals(1, buckets.get(1), 0.001);
 	}
 
 	@Test
@@ -82,10 +83,10 @@ public class TimeModelTest extends AbstractScorerTest {
 		TimeModel model = createModel(timeResolution, bucketSize, maxRareTimestampCount, time1, time2);
 
 		Assert.assertEquals(2, model.getNumOfSamples());
-		Assert.assertEquals(6, model.getCategoryRarityModel().getNumOfSamples());
+		Assert.assertEquals(4, model.getCategoryRarityModel().getNumOfSamples());
         List<Double> buckets = model.getCategoryRarityModel().getBuckets();
-        Assert.assertEquals(4,         buckets.stream().mapToDouble(Double::doubleValue).sum() ,0.001);
-		Assert.assertEquals(2, buckets.get(0), 0.001);
+        Assert.assertEquals(2,         buckets.stream().mapToDouble(Double::doubleValue).sum() ,0.001);
+		Assert.assertEquals(2, buckets.get(1), 0.001);
 	}
 
 	@Test
@@ -128,14 +129,14 @@ public class TimeModelTest extends AbstractScorerTest {
 	@Test
 	public void testSmoothingSymmetricallyAcross10Buckets() {
 		int timeResolution = 86400;
-		int bucketSize = 5;
+		int bucketSize = 432;
 		int maxRareTimestampCount = 10;
 		long time = timeResolution / 2;
 		TimeModel model = createModel(
 				timeResolution,
 				bucketSize,
 				maxRareTimestampCount,
-				LongStream.range(0, 1000).boxed().map(l -> time).collect(Collectors.toList()).toArray(new Long[0])
+				LongStream.range(0, 5).boxed().map(l -> time).collect(Collectors.toList()).toArray(new Long[0])
 		);
 
 		List<Long> smoothedCounters = IntStream.range(0, timeResolution).mapToObj(model::getSmoothedTimeCounter).collect(Collectors.toList());

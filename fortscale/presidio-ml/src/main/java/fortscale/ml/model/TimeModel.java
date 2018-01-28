@@ -49,10 +49,10 @@ public class TimeModel implements PartitionedDataModel {
 		// fill smooth buckets and smoothedBucketsThatWereHitToNubOfBuckets (category rarity model data)
 		smoothedBuckets = createInitializedBuckets();
 		Map<Pair<String, Instant>/*i.e. smoothedbucket that was hit ,date of activity*/, /*1*/Double> smoothedBucketsThatWereHitToNubOfBuckets = new HashMap<>();
-		mergeSmoothBuckets(resolutionIdToSmoothedBuckets, smoothedBucketsThatWereHitToNubOfBuckets);
+		mergeSmoothBuckets(resolutionIdToSmoothedBuckets, smoothedBucketsThatWereHitToNubOfBuckets,bucketHits);
 
 		// build categorical model
-		builcCategoryRarityModel(maxRareTimestampCount, categoryRarityModelBuilderMetricsContainer, smoothedBucketsThatWereHitToNubOfBuckets);
+		buildCategoryRarityModel(maxRareTimestampCount, categoryRarityModelBuilderMetricsContainer, smoothedBucketsThatWereHitToNubOfBuckets);
 
 		// fill metrics data
 		long numDistinctFeatures = bucketHits.stream().filter(hits -> hits > 0).count();
@@ -68,32 +68,30 @@ public class TimeModel implements PartitionedDataModel {
 
 	}
 
-	private void builcCategoryRarityModel(int maxRareTimestampCount, CategoryRarityModelBuilderMetricsContainer categoryRarityModelBuilderMetricsContainer, Map<Pair<String, Instant>, Double> smoothedBucketsThatWereHitToNubOfBuckets) {
+	private void buildCategoryRarityModel(int maxRareTimestampCount, CategoryRarityModelBuilderMetricsContainer categoryRarityModelBuilderMetricsContainer, Map<Pair<String, Instant>, Double> smoothedBucketsThatWereHitToNumOfBuckets) {
 		CategoryRarityModelBuilderConf categoryRarityModelBuilderConf = new CategoryRarityModelBuilderConf(maxRareTimestampCount * 2);
 		categoryRarityModelBuilderConf.setPartitionsResolutionInSeconds(timeResolution);
 		categoryRarityModelBuilderConf.setEntriesToSaveInModel(getNumOfBuckets());
 
 		CategoryRarityModelBuilder categoryRarityModelBuilder = new CategoryRarityModelBuilder(categoryRarityModelBuilderConf, categoryRarityModelBuilderMetricsContainer);
 		CategoricalFeatureValue categoricalModelData = new CategoricalFeatureValue(FixedDurationStrategy.fromSeconds(timeResolution));
-		categoricalModelData.setHistogram(smoothedBucketsThatWereHitToNubOfBuckets);
+		categoricalModelData.setHistogram(smoothedBucketsThatWereHitToNumOfBuckets);
 		categoryRarityModel = (CategoryRarityModel) categoryRarityModelBuilder.build(categoricalModelData);
 	}
 
-	private void mergeSmoothBuckets(Map<Long, List<Double>> resolutionIdToSmoothedBuckets, Map<Pair<String, Instant>, Double> smoothedBcuektsThatWereHitToNumOfBuckets) {
-		Map<Pair<String,Instant>/*i.e. ,date of activity*/, Double> categoricalModelData;
+	private void mergeSmoothBuckets(Map<Long, List<Double>> resolutionIdToSmoothedBuckets, Map<Pair<String, Instant>, Double> smoothedBucketsThatWereHitToNumOfBuckets, List<Double> bucketHits) {
 		for (Map.Entry<Long, List<Double>> entry:resolutionIdToSmoothedBuckets.entrySet()){
-			List<Double> bucketHits = entry.getValue();
+			List<Double> resolutionIdBucketHits = entry.getValue();
 			Long date = entry.getKey()*timeResolution;
-			for (int i = 0; i < bucketHits.size(); i++) {
-				Double bucketHit = bucketHits.get(i);
-				smoothedBuckets.set(i,smoothedBuckets.get(i) + bucketHit);
-				if( bucketHit >0)
+			for (int i = 0; i < resolutionIdBucketHits.size(); i++) {
+				Double resolutionIdBucketHit = resolutionIdBucketHits.get(i);
+				smoothedBuckets.set(i,smoothedBuckets.get(i) + resolutionIdBucketHit);
+				if( bucketHits.get(i)>0 && resolutionIdBucketHit >0)
 				{
-					smoothedBcuektsThatWereHitToNumOfBuckets.put(new Pair<>(String.valueOf(i),Instant.ofEpochSecond(date)),SMOOTH_BUCKET_MAX_VALUE);
+					smoothedBucketsThatWereHitToNumOfBuckets.put(new Pair<>(String.valueOf(i),Instant.ofEpochSecond(date)),SMOOTH_BUCKET_MAX_VALUE);
 				}
 			}
 		}
-
 	}
 
 	private List<Double> mergeBuckets(Map<Long, List<Double>> resolutionIdToBucketHits) {
@@ -176,11 +174,7 @@ public class TimeModel implements PartitionedDataModel {
 		List<Double> bucketHits = createInitializedBuckets();
 		for (Map.Entry<Long, Double> timeAndCounter: timeToCounter.entrySet()) {
 			int bucketHit = getBucketIndex(timeAndCounter.getKey());
-			if(timeAndCounter.getValue()==0)
-			{
-				bucketHits.set(bucketHit, 0D);
-			}
-			else //(timeAndCounter.getValue()>0)
+			if(timeAndCounter.getValue()>=1)
 			{
 				bucketHits.set(bucketHit, 1D);
 			}

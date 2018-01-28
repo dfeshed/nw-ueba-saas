@@ -86,7 +86,7 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
         }
         long epochSeconds = 5000;
 
-        Assert.assertEquals(27D,calcScore(timeToCounter,epochSeconds),0.001);
+        Assert.assertEquals(38D,calcScore(timeToCounter,epochSeconds),0.001);
     }
 
     @Test
@@ -110,7 +110,7 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
             timeToCounter.put((long)(rnd.nextDouble( )* 6000)+i*DAILY_TIME_RESOLUTION,1D);
         }
         long isolatedTimes[] = new long[]{30000, 40000, 50000, 60000};
-        double scores[] = new double[]{75, 75, 55, 24};
+        double scores[] = new double[]{87, 87, 76, 65};
         for (int i = 0; i < scores.length; i++) {
             timeToCounter.put(isolatedTimes[i],scores[i]);
             Double score = calcScore(timeToCounter, isolatedTimes[i]);
@@ -138,7 +138,7 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
         }
 
         long[] timesToScore = new long[]{14000, 13000, 12000, 11000, 10000};
-        double[] scores = new double[]{91, 85, 82, 62, 0};
+        double[] scores = new double[]{92, 87, 84, 65, 0};
         for (int i = 0; i < timesToScore.length; i++) {
             Double score = calcScore(timeToCounter, amountOfDays*DAILY_TIME_RESOLUTION+timesToScore[i]);
             Assert.assertEquals(scores[i],score,0.01);
@@ -246,8 +246,8 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
             }
         }
 
-        double scores[] = new double[]{100, 87, 66, 47};
-        double finalScore = 30;
+        double scores[] = new double[]{100, 87, 74, 64};
+        double finalScore = 51;
         long dispersedTimes[] = new long[scores.length];
         for (int i = 0; i < scores.length; i++) {
             dispersedTimes[i] = amountOfDays * DAILY_TIME_RESOLUTION + 3000 + (i + 1) * 6000;
@@ -257,7 +257,7 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
         }
 
         for (int i = 0; i < scores.length; i++) {
-            Assert.assertEquals(finalScore,calcScore(timeToCounter,dispersedTimes[i]),0.001);
+            Assert.assertEquals(finalScore,calcScore(timeToCounter,dispersedTimes[i]),1);
         }
     }
 
