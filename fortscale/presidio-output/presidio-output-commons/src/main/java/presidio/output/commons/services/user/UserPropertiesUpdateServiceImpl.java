@@ -46,7 +46,7 @@ public class UserPropertiesUpdateServiceImpl implements UserPropertiesUpdateServ
                 user.setUserDisplayName(enrichedEvent.getUserDisplayName());
                 isUpdated = true;
             }
-            if (!Objects.equals(user.getUserId(), enrichedEvent.getUserId())) {
+            if (!Objects.equals(user.getUserId(), enrichedEvent.getUserId()) && enrichedEvent.getUserId() != null) {
                 user.setUserId(enrichedEvent.getUserId());
                 isUpdated = true;
             }

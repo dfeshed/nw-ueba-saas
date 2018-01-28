@@ -157,6 +157,18 @@ public class UserUpdatePropertiesServiceImplTest {
         Assert.assertNull(userUpdated.getUserDisplayName());
     }
 
+    @Test
+    public void updateUserPropertiesUserwithoutDisplayName_shouldSetUpdatedDisplayName() {
+        Instant eventDate = Instant.now();
+        Map<String, String> additionalInfo = new HashMap<>();
+        additionalInfo.put("isUserAdmin", "true");
+        generateAuthenticationEnrichedEvent(eventDate, "userName1", "userId", "displayName1", additionalInfo);
+        User user = generateUserAndSave("userId", "userName", null, true);
+        User userUpdated = userPropertiesUpdateService.userPropertiesUpdate(user);
+        Assert.assertEquals("userName1", userUpdated.getUserName());
+        Assert.assertEquals("displayName1", userUpdated.getUserDisplayName());
+    }
+
     private User generateUserAndSave(String userId, String userName, String displayName, boolean tagAdmin) {
         List<String> tags = null;
         if (tagAdmin) {
