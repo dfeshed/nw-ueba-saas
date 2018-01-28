@@ -2,6 +2,7 @@ package presidio.output.commons.services.user;
 
 import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import presidio.output.domain.records.events.EnrichedEvent;
@@ -46,7 +47,7 @@ public class UserPropertiesUpdateServiceImpl implements UserPropertiesUpdateServ
                 user.setUserDisplayName(enrichedEvent.getUserDisplayName());
                 isUpdated = true;
             }
-            if (!Objects.equals(user.getUserId(), enrichedEvent.getUserId()) && enrichedEvent.getUserId() != null) {
+            if (!Objects.equals(user.getUserId(), enrichedEvent.getUserId()) && ! StringUtils.isEmpty(enrichedEvent.getUserId())) {
                 user.setUserId(enrichedEvent.getUserId());
                 isUpdated = true;
             }
