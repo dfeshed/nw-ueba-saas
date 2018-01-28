@@ -143,6 +143,18 @@ public class UserUpdatePropertiesServiceImplTest {
         Assert.assertNull(userUpdated);
     }
 
+    @Test
+    public void updateUserPropertiesMissingDisplayName_shouldSetNullAsDisplayName() {
+        Instant eventDate = Instant.now();
+        Map<String, String> additionalInfo = new HashMap<>();
+        additionalInfo.put("isUserAdmin", "true");
+        generateAuthenticationEnrichedEvent(eventDate, "userName1", "userId", null, additionalInfo);
+        User user = generateUserAndSave("userId", "userName", "userDisplayName", true);
+        User userUpdated = userPropertiesUpdateService.userPropertiesUpdate(user);
+        Assert.assertEquals("userName1", userUpdated.getUserName());
+        Assert.assertNull(userUpdated.getUserDisplayName());
+    }
+
     private User generateUserAndSave(String userId, String userName, String displayName, boolean tagAdmin) {
         List<String> tags = null;
         if (tagAdmin) {

@@ -12,6 +12,7 @@ import presidio.output.domain.translator.OutputToCollectionNameTranslator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 
 public class UserPropertiesUpdateServiceImpl implements UserPropertiesUpdateService {
@@ -41,15 +42,15 @@ public class UserPropertiesUpdateServiceImpl implements UserPropertiesUpdateServ
         List<String> collectionNames = collectionNamesByOrderForEvents();
         EnrichedEvent enrichedEvent = eventPersistencyService.findLatestEventForUser(user.getUserId(), collectionNames);
         if (!ObjectUtils.isEmpty(enrichedEvent)) {
-            if (!user.getUserDisplayName().equals(enrichedEvent.getUserDisplayName())) {
+            if (!Objects.equals(user.getUserDisplayName(), enrichedEvent.getUserDisplayName())) {
                 user.setUserDisplayName(enrichedEvent.getUserDisplayName());
                 isUpdated = true;
             }
-            if (!user.getUserId().equals(enrichedEvent.getUserId())) {
+            if (!Objects.equals(user.getUserId(), enrichedEvent.getUserId())) {
                 user.setUserId(enrichedEvent.getUserId());
                 isUpdated = true;
             }
-            if (!user.getUserName().equals(enrichedEvent.getUserName())) {
+            if (!Objects.equals(user.getUserName(), enrichedEvent.getUserName())) {
                 user.setUserName(enrichedEvent.getUserName());
                 user.setUserDisplayNameSortLowercase(enrichedEvent.getUserName());
                 user.setIndexedUserName(enrichedEvent.getUserName());
