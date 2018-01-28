@@ -219,6 +219,18 @@
                                 </source>
                             </sources>
                         </mapping>
+                        <mapping>
+                            <directoryIncluded>false</directoryIncluded>
+                            <directory>${rpm-maven-plugin.deployment_target_directory}/scripts</directory>
+                            <username>presidio</username>
+                            <groupname>presidio</groupname>
+                            <filemode>770</filemode>
+                            <sources>
+                                <source>
+                                    <location>${project.basedir}/src/main/python/installation-scripts/service/run_configserver.sh</location>
+                                </source>
+                            </sources>
+                        </mapping>
                     </mappings>
                     <preinstallScriptlet>
                         <script>
