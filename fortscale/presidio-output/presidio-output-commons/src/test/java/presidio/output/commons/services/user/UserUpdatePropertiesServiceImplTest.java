@@ -21,6 +21,7 @@ import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,6 +54,7 @@ public class UserUpdatePropertiesServiceImplTest {
     public void updateUserPropertiesWithAuthenticationEvent() {
         Instant eventDate = Instant.now();
         Map<String, String> additionalInfo = new HashMap<>();
+        generateAuthenticationEnrichedEvent(eventDate.minus(1, ChronoUnit.MINUTES), "userName1", "userId", "userDisplayName1", additionalInfo);
         additionalInfo.put("isUserAdmin", "true");
         generateAuthenticationEnrichedEvent(eventDate, "userName1", "userId", "userDisplayName1", additionalInfo);
         User user = generateUserAndSave("userId", "userName", "userDisplayName", false);
