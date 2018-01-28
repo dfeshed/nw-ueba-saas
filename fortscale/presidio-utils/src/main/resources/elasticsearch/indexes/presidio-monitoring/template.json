@@ -1,0 +1,8 @@
+{
+  "presidio-monitoring_template": {
+    "template": "presidio-monitoring-*",
+    "settings": {},
+    "aliases": {},
+    "mappings": {}
+  }
+}

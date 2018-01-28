@@ -1,4 +1,4 @@
-package presidio.output.domain.mappings;
+package jsonValidation;
 
 
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
@@ -38,25 +38,27 @@ public class ElasticMappingsTests {
             path = windosMapping;
         }
         File folder = new File(path);
-        File[] listOfFiles = folder.listFiles();
-        for (int i = 0; i < listOfFiles.length; i++) {
-            BufferedReader br = new BufferedReader(new FileReader(listOfFiles[i].getAbsoluteFile()));
-            try {
-                StringBuilder sb = new StringBuilder();
-                String line = br.readLine();
-
-                while (line != null) {
-                    sb.append(line);
-                    sb.append(System.lineSeparator());
-                    line = br.readLine();
+        File[] listOfFolders = folder.listFiles();
+        for (File file : listOfFolders) {
+            File[] listOfFiles = file.listFiles();
+            for (int i = 0; i < listOfFiles.length; i++) {
+                BufferedReader br = new BufferedReader(new FileReader(listOfFiles[i].getAbsoluteFile()));
+                try {
+                    StringBuilder sb = new StringBuilder();
+                    String line = br.readLine();
+                    while (line != null) {
+                        sb.append(line);
+                        sb.append(System.lineSeparator());
+                        line = br.readLine();
+                    }
+                    String everything = sb.toString();
+                    JSONObject jsonObject = new JSONObject(everything);
+                    Assert.assertNotNull(jsonObject);
+                } catch (Exception ex) {
+                    Assert.fail();
+                } finally {
+                    br.close();
                 }
-                String everything = sb.toString();
-                JSONObject jsonObject = new JSONObject(everything);
-                Assert.assertNotNull(jsonObject);
-            } catch (Exception ex) {
-                Assert.fail();
-            } finally {
-                br.close();
             }
         }
     }
@@ -67,8 +69,8 @@ public class ElasticMappingsTests {
         @Bean
         public static TestPropertiesPlaceholderConfigurer mappingsTestPropertiesConfigurer() {
             Properties properties = new Properties();
-            properties.put("linux.mapping.path", "presidio/presidio-core/el-extensions/mappings/");
-            properties.put("windos.mapping.path", "src\\main\\resources\\elasticsearch\\mappings");
+            properties.put("linux.mapping.path", "presidio/presidio-core/el-extensions/indexes/");
+            properties.put("windos.mapping.path", "src\\main\\resources\\elasticsearch\\indexes");
             return new TestPropertiesPlaceholderConfigurer(properties);
         }
     }

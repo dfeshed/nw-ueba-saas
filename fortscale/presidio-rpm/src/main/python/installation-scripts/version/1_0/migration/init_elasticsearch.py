@@ -17,10 +17,7 @@ INDEX_PATTERN = ELASTICSEARCH_PATH + '/patterns'
 DASHBOARDS = ELASTICSEARCH_PATH + '/dashboards'
 SEARCHES = ELASTICSEARCH_PATH + '/searches'
 VISUALIZATION = ELASTICSEARCH_PATH + '/visualizations'
-INDEXES = ELASTICSEARCH_PATH + '/mappings'
-SETTINGS = ELASTICSEARCH_PATH + '/settings'
-TEMPLATES = ELASTICSEARCH_PATH + '/templates'
-ALIASES = ELASTICSEARCH_PATH + '/aliases'
+INDEXES = ELASTICSEARCH_PATH + '/indexes'
 DEFAULT = ELASTICSEARCH_PATH + '/default/kibana-default-pattern.json'
 HEADERS = {"Content-Type": "application/json"}
 URL_ALIASES = MACHINE_URL + "_aliases"
@@ -30,21 +27,21 @@ SETTING = "settings"
 
 def put_request(url, data):
     response = requests.put(url, data=data, headers=HEADERS)
-    if response.status_code not in [200,201]:
-        msg = "got response={} reason={} content={} data={}".format(response.status_code,response.reason,response.content,data)
+    if response.status_code not in [200, 201]:
+        msg = "got response={} reason={} content={} data={}".format(response.status_code, response.reason,
+                                                                    response.content, data)
         raise Exception(msg)
 
 
-def create_aliases(folder):
-    for indexJson in os.listdir(folder):
-        with open(folder + '/' + indexJson) as json_data:
-            obj = json.load(json_data)
-            data = json.dumps(obj)
-            response = requests.post(URL_ALIASES, data=data, headers=HEADERS)
-            if response.status_code not in [200,201]:
-                msg = "got response={} reason={} content={} data={}".format(response.status_code, response.reason,
-                                                                           response.content,data)
-                raise Exception(msg)
+def create_aliases(indexJson):
+    with open(indexJson) as json_data:
+        obj = json.load(json_data)
+        data = json.dumps(obj)
+        response = requests.post(URL_ALIASES, data=data, headers=HEADERS)
+        if response.status_code not in [200, 201]:
+            msg = "got response={} reason={} content={} data={}".format(response.status_code, response.reason,
+                                                                        response.content, data)
+            raise Exception(msg)
 
 
 def create_default_pattern(file):
@@ -57,30 +54,27 @@ def create_default_pattern(file):
         print(e)
 
 
-def create_indexes(folder):
-    for indexJson in os.listdir(folder):
-        try:
-            if not SETTING in indexJson:
-                name = indexJson.split(".")[0]
-                with open(folder + '/' + indexJson) as json_data:
-                    obj = json.load(json_data)
-                    print("INFO: creating index:" + name)
-                    data = json.dumps(dict.values(obj)[0])
-                    url = MACHINE_URL + name + '/_mappings/' + dict.keys(obj)[0]
-                    put_request(url, data)
-        except Exception as e:
-            print ("ERROR: failed to send file={} to elastic search url={}".format(indexJson,url))
-            print(e)
+def create_indexes(indexJson, name):
+    try:
+        with open(indexJson) as json_data:
+            obj = json.load(json_data)
+            print("INFO: creating index:" + name)
+            data = json.dumps(dict.values(obj)[0])
+            url = MACHINE_URL + name + '/_mappings/' + dict.keys(obj)[0]
+            put_request(url, data)
+    except Exception as e:
+        print ("ERROR: failed to send file={} to elastic search url={}".format(indexJson, url))
+        print(e)
 
 
 def update_kibana_index_from_file(folder, url):
     for indexJson in os.listdir(folder):
-        jsonfilepath = os.path.join(folder , indexJson)
+        jsonfilepath = os.path.join(folder, indexJson)
         name = ''
         try:
             with open(jsonfilepath) as json_data:
                 obj = json.load(json_data)
-                if(type(obj) is list):
+                if (type(obj) is list):
                     for item in obj:
                         data, name = convert_el_item(item)
                         requesturl = (url + name)
@@ -90,7 +84,7 @@ def update_kibana_index_from_file(folder, url):
                     requesturl = (url + name)
                     put_request(requesturl, data)
         except Exception as e:
-            print ("ERROR: failed to send file={} to elastic search url={}".format(jsonfilepath,url))
+            print ("ERROR: failed to send file={} to elastic search url={}".format(jsonfilepath, url))
             print(e)
 
 
@@ -99,27 +93,102 @@ def convert_el_item(item):
     data = json.dumps(item["_source"])
     return data, name
 
-def create_elastic_mapping_from_file(folder, url):
-    for indexJson in os.listdir(folder):
-        jsonfilepath = os.path.join(folder , indexJson)
-        name = ''
-        try:
-            with open(jsonfilepath) as json_data:
-                obj = json.load(json_data)
-                name = dict.keys(obj)[0]
-                data = json.dumps(dict.values(obj)[0])
-                requesturl = (url + name).replace(" ","")
-                put_request(requesturl, data)
-        except Exception as e:
-            print ("ERROR: failed to send file={} to elastic search url={}".format(jsonfilepath,url))
-            print(e)
+
+def create_elastic_mapping_from_file(jsonfilepath, url):
+    try:
+        with open(jsonfilepath) as json_data:
+            obj = json.load(json_data)
+            name = dict.keys(obj)[0]
+            data = json.dumps(dict.values(obj)[0])
+            requesturl = (url + name).replace(" ", "")
+            put_request(requesturl, data)
+            return True
+    except Exception as e:
+        print ("ERROR: failed to send file={} to elastic search url={}".format(jsonfilepath, url))
+        print(e)
+        return False
+
+
+def is_template(path):
+    if os.path.isfile(os.path.join(path, 'template.json')):
+        return True
+    else:
+        return False
+
+
+def create_settings(path):
+    if os.path.isfile(os.path.join(path, 'settings.json')):
+        return create_elastic_mapping_from_file(os.path.join(path, 'settings.json'), MACHINE_URL)
+    else:
+        print ('missing settings for ' + path)
+        return False
+
+
+def set_mappings_for_index(path, name):
+    file = os.path.join(path, 'mappings.json')
+    if os.path.isfile(file):
+        create_indexes(file, name)
+    else:
+        print ('missing mappings for ' + path)
+
+
+def set_aliases_for_index(path):
+    file = os.path.join(path, 'aliases.json')
+    if os.path.isfile(file):
+        create_aliases(file)
+    else:
+        print ('No aliases for' + path)
+
+
+def json_from_file(file):
+    if os.path.isfile(file):
+        with open(file) as json_data:
+            return json.load(json_data)
+    else:
+        return {}
+
+
+def create_template(path):
+    templatefile = os.path.join(path, 'template.json')
+    try:
+        with open(templatefile) as json_data:
+            obj = json.load(json_data)
+            mappings = json_from_file(os.path.join(path, 'mappings.json'))
+            settings = json_from_file(os.path.join(path, 'settings.json'))
+            aliases = json_from_file(os.path.join(path, 'aliases.json'))
+            obj2 = dict.values(obj)[0]
+            obj2['mappings'] = mappings
+            obj2['settings'] = settings
+            obj2['aliases'] = aliases
+            name = dict.keys(obj)[0]
+            data = json.dumps(dict.values(obj)[0])
+            print("INFO: creating index:" + name)
+            requesturl = (URL_TEMPLATES + name).replace(" ", "")
+            put_request(requesturl, data)
+    except Exception as e:
+        print ("ERROR: failed to send file={} to elastic search url={}".format(templatefile, URL_TEMPLATES))
+        print(e)
+
+
+def create_index_by_order(path, name):
+    if create_settings(path):
+        set_mappings_for_index(path, name)
+        set_aliases_for_index(path)
+    else:
+        print ('Index not created')
+
+
+def create_elasticsearch_indexes(path):
+    for subfolder in os.listdir(path):
+        newpath = os.path.join(path, subfolder)
+        if is_template(newpath):
+            create_template(newpath)
+        else:
+            create_index_by_order(newpath, subfolder)
 
 
 # when creating indexes important to start with the settings than mapping and finish with the aliases
-create_elastic_mapping_from_file(SETTINGS, MACHINE_URL)
-create_elastic_mapping_from_file(TEMPLATES, URL_TEMPLATES)
-create_indexes(INDEXES)
-#create_aliases(ALIASES)
+create_elasticsearch_indexes(INDEXES)
 update_kibana_index_from_file(INDEX_PATTERN, URL_KIBANA_PATTERNS)
 create_default_pattern(DEFAULT)
 update_kibana_index_from_file(SEARCHES, URL_KIBANA_SEARCHES)

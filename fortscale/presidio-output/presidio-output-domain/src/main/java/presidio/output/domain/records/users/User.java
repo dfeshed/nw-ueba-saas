@@ -9,11 +9,15 @@ import presidio.output.domain.records.AbstractElasticDocument;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Document(indexName = AbstractElasticDocument.INDEX_NAME + "-" + User.USER_DOC_TYPE, type = User.USER_DOC_TYPE)
-@Mapping(mappingPath = "elasticsearch/mappings/presidio-output-user.json")
-@Setting(settingPath = "elasticsearch/mappings/settings.json")
+@Mapping(mappingPath = "elasticsearch/indexes/presidio-output-user/mappings.json")
+@Setting(settingPath = "elasticsearch/indexes/presidio-output-user/settings.json")
 public class User extends AbstractElasticDocument {
 
     public static final String USER_DOC_TYPE = "user";
