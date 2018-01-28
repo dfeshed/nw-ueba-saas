@@ -21,6 +21,7 @@ import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,13 +54,31 @@ public class UserUpdatePropertiesServiceImplTest {
     public void updateUserPropertiesWithAuthenticationEvent() {
         Instant eventDate = Instant.now();
         Map<String, String> additionalInfo = new HashMap<>();
+        generateAuthenticationEnrichedEvent(eventDate.minus(1, ChronoUnit.MINUTES), "userName1", "userId", "userDisplayName1", additionalInfo);
         additionalInfo.put("isUserAdmin", "true");
         generateAuthenticationEnrichedEvent(eventDate, "userName1", "userId", "userDisplayName1", additionalInfo);
         User user = generateUserAndSave("userId", "userName", "userDisplayName", false);
         User userUpdated = userPropertiesUpdateService.userPropertiesUpdate(user);
-        Assert.assertEquals(user.getUserName(), userUpdated.getUserName());
+        Assert.assertEquals("userName1", userUpdated.getUserName());
+        Assert.assertEquals("userDisplayName1", userUpdated.getUserDisplayName());
+        Assert.assertEquals("userName1", userUpdated.getIndexedUserName());
+        Assert.assertEquals("userName1", userUpdated.getUserDisplayNameSortLowercase());
         Assert.assertEquals(user.getTags().get(0), userUpdated.getTags().get(0));
+    }
 
+    @Test
+    public void updateUserPropertiesWithAuthenticationEventDeleteTags() {
+        Instant eventDate = Instant.now();
+        Map<String, String> additionalInfo = new HashMap<>();
+        additionalInfo.put("isUserAdmin", "true");
+        generateAuthenticationEnrichedEvent(eventDate, "userName1", "userId", "userDisplayName1", null);
+        User user = generateUserAndSave("userId", "userName", "userDisplayName", true);
+        User userUpdated = userPropertiesUpdateService.userPropertiesUpdate(user);
+        Assert.assertEquals("userName1", userUpdated.getUserName());
+        Assert.assertEquals("userDisplayName1", userUpdated.getUserDisplayName());
+        Assert.assertEquals("userName1", userUpdated.getIndexedUserName());
+        Assert.assertEquals("userName1", userUpdated.getUserDisplayNameSortLowercase());
+        Assert.assertEquals(null, userUpdated.getTags());
     }
 
     @Test
@@ -70,7 +89,10 @@ public class UserUpdatePropertiesServiceImplTest {
         generateFileEnrichedEvent(eventDate, "userName1", "userId", "userDisplayName1", additionalInfo);
         User user = generateUserAndSave("userId", "userName", "userDisplayName", true);
         User userUpdated = userPropertiesUpdateService.userPropertiesUpdate(user);
-        Assert.assertEquals(user.getUserName(), userUpdated.getUserName());
+        Assert.assertEquals("userName1", userUpdated.getUserName());
+        Assert.assertEquals("userDisplayName1", userUpdated.getUserDisplayName());
+        Assert.assertEquals("userName1", userUpdated.getIndexedUserName());
+        Assert.assertEquals("userName1", userUpdated.getUserDisplayNameSortLowercase());
         Assert.assertEquals(user.getTags().get(0), userUpdated.getTags().get(0));
     }
 
@@ -82,7 +104,10 @@ public class UserUpdatePropertiesServiceImplTest {
         generateActiveDirectoryEnrichedEvent(eventDate, "userName1", "userId", "userDisplayName1", null);
         User user = generateUserAndSave("userId", "userName", "userDisplayName", false);
         User userUpdated = userPropertiesUpdateService.userPropertiesUpdate(user);
-        Assert.assertEquals(user.getUserName(), userUpdated.getUserName());
+        Assert.assertEquals("userName1", userUpdated.getUserName());
+        Assert.assertEquals("userDisplayName1", userUpdated.getUserDisplayName());
+        Assert.assertEquals("userName1", userUpdated.getIndexedUserName());
+        Assert.assertEquals("userName1", userUpdated.getUserDisplayNameSortLowercase());
         Assert.assertEquals(null, userUpdated.getTags());
     }
 
@@ -96,6 +121,10 @@ public class UserUpdatePropertiesServiceImplTest {
         User user = generateUserAndSave("userId", "userName", "userDisplayName", false);
         User userUpdated = userPropertiesUpdateService.userPropertiesUpdate(user);
         Assert.assertEquals("userName2", userUpdated.getUserName());
+        Assert.assertEquals("userDisplayName2", userUpdated.getUserDisplayName());
+        Assert.assertEquals("userName2", userUpdated.getIndexedUserName());
+        Assert.assertEquals("userName2", userUpdated.getUserDisplayNameSortLowercase());
+        Assert.assertEquals(user.getTags().get(0), userUpdated.getTags().get(0));
     }
 
     @Test

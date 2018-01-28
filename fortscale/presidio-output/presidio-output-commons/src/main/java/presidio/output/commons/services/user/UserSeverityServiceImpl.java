@@ -194,7 +194,7 @@ public class UserSeverityServiceImpl implements UserSeverityService {
 
         while (page != null && page.hasContent()) {
             logger.info("Updating severity for user's page: " + page.toString());
-            updateSeveritiesForUsersList(severitiesMap, page.getContent(), true);
+            updateUserSeveritiesAndProperties(severitiesMap, page.getContent(), true);
             page = getNextUserPage(userQueryBuilder, page);
 
         }
@@ -244,31 +244,31 @@ public class UserSeverityServiceImpl implements UserSeverityService {
         return page;
     }
 
-    private void updateSeveritiesForUsersList(UserSeverityServiceImpl.UserScoreToSeverity severitiesMap, List<User> users, boolean persistChanges) {
+    private void updateUserSeveritiesAndProperties(UserSeverityServiceImpl.UserScoreToSeverity severitiesMap, List<User> users, boolean persistChanges) {
         List<User> updatedUsers = new ArrayList<>();
         if (users == null) {
             return;
         }
 
         users.forEach(user -> {
+            boolean userInUpdatedUsers = false;
             User updatedUser;
             double userScore = user.getScore();
             UserSeverity newUserSeverity = severitiesMap.getUserSeverity(userScore);
             updatedUser = userPropertiesUpdateService.userPropertiesUpdate(user);
             logger.debug("Updating user severity for userId: " + user.getUserId());
+            if (updatedUser != null) {
+                user = updatedUser;
+                updatedUsers.add(user);
+                userInUpdatedUsers = true;
+            }
             if (!newUserSeverity.equals(user.getSeverity())) {
-                if (updatedUser != null) {
-                    user = updatedUser;
-                }
                 user.setSeverity(newUserSeverity);
-                updatedUsers.add(user); //Update user only if severity changes
-            } else {
-                if (updatedUser != null) {
-                    updatedUsers.add(updatedUser);
+                if (!userInUpdatedUsers) {
+                    updatedUsers.add(user);
                 }
             }
         });
-
         if (updatedUsers.size() > 0 && persistChanges) {
             userPersistencyService.save(updatedUsers);
         }
@@ -296,5 +296,10 @@ public class UserSeverityServiceImpl implements UserSeverityService {
                 return UserSeverity.LOW;
             }
         }
+    }
+
+    @Override
+    public List<String> collectionNamesByOrderForEvents() {
+        return userPropertiesUpdateService.collectionNamesByOrderForEvents();
     }
 }
