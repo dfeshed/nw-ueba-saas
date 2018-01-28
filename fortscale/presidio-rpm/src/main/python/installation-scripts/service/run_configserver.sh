@@ -11,5 +11,5 @@ else
 fi
 cd -
 
-echo "Running Presidio confsystemctl restartigserver"
+echo "Running Presidio config server"
 /usr/bin/java -jar /home/presidio/presidio-core/bin/presidio-configuration-server-*.jar
