@@ -2,7 +2,7 @@ package presidio.ade.processes.shell;
 
 import fortscale.accumulator.smart.SmartAccumulationsCache;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
-import fortscale.utils.store.record.StoreManagerMetadataProperties;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.store.StoreManager;
 import presidio.ade.domain.store.accumulator.smart.SmartAccumulationDataStore;
@@ -36,10 +36,10 @@ public class AccumulateSmartRecordsExecutionService {
         FixedDurationStrategy accumulationDuration = FixedDurationStrategy.fromSeconds(accumulationStrategy.longValue());
         AccumulateSmartRecordsService accumulateSmartRecordsService = new AccumulateSmartRecordsService(accumulationDuration, smartDataReader, pageSize, maxGroupSize, smartAccumulationsCache, smartAccumulationDataStore);
         TimeRange timeRange = new TimeRange(startDate, endDate);
-        StoreManagerMetadataProperties storeManagerMetadataProperties = createStoreManagerAwareMetadata(configurationName);
-        accumulateSmartRecordsService.execute(timeRange, configurationName, storeManagerMetadataProperties);
+        StoreMetadataProperties storeMetadataProperties = createStoreManagerAwareMetadata(configurationName);
+        accumulateSmartRecordsService.execute(timeRange, configurationName, storeMetadataProperties);
 
-        storeManager.cleanupCollections(storeManagerMetadataProperties.getProperties(), startDate);
+        storeManager.cleanupCollections(storeMetadataProperties.getProperties(), startDate);
     }
 
     public void clean(String configurationName, Instant startDate, Instant endDate) throws Exception {
@@ -47,14 +47,14 @@ public class AccumulateSmartRecordsExecutionService {
     }
 
     public void cleanup(String configurationName, Instant startDate, Instant endDate, Double accumulationStrategy) throws Exception {
-        StoreManagerMetadataProperties storeManagerMetadataProperties = createStoreManagerAwareMetadata(configurationName);
-        storeManager.cleanupCollections(storeManagerMetadataProperties.getProperties(), startDate, endDate);
+        StoreMetadataProperties storeMetadataProperties = createStoreManagerAwareMetadata(configurationName);
+        storeManager.cleanupCollections(storeMetadataProperties.getProperties(), startDate, endDate);
     }
 
-    private StoreManagerMetadataProperties createStoreManagerAwareMetadata(String configurationName){
-        StoreManagerMetadataProperties storeManagerMetadataProperties = new StoreManagerMetadataProperties();
-        storeManagerMetadataProperties.setProperties(CONFIGURATION_NAME, configurationName);
-        return storeManagerMetadataProperties;
+    private StoreMetadataProperties createStoreManagerAwareMetadata(String configurationName){
+        StoreMetadataProperties storeMetadataProperties = new StoreMetadataProperties();
+        storeMetadataProperties.setProperties(CONFIGURATION_NAME, configurationName);
+        return storeMetadataProperties;
     }
 }
 

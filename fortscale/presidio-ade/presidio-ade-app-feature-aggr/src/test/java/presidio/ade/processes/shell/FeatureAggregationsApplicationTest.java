@@ -13,7 +13,7 @@ import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.model.metrics.*;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStoreConfig;
-import fortscale.utils.store.record.StoreManagerMetadataProperties;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.test.category.ModuleTestCategory;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.time.TimeService;
@@ -423,7 +423,7 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
         List<EnrichedFileRecord> enrichedFileRecords = multiFileEventGenerator.generate();
 
         EnrichedRecordsMetadata recordsMetadata = new EnrichedRecordsMetadata("file", Instant.now(), Instant.now());
-        enrichedDataStore.store(recordsMetadata, enrichedFileRecords, new StoreManagerMetadataProperties());
+        enrichedDataStore.store(recordsMetadata, enrichedFileRecords, new StoreMetadataProperties());
 
         Instant start = enrichedFileRecords.stream().min(Comparator.comparing(EnrichedFileRecord::getStartInstant)).get().getStartInstant();
         Instant end = enrichedFileRecords.stream().max(Comparator.comparing(EnrichedFileRecord::getStartInstant)).get().getStartInstant();

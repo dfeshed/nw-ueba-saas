@@ -4,7 +4,7 @@ import fortscale.accumulator.aggregation.AccumulationsCache;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.common.general.Schema;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
-import fortscale.utils.store.record.StoreManagerMetadataProperties;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.store.StoreManager;
 import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataStore;
@@ -53,10 +53,10 @@ public class AccumulateAggregationsExecutionService {
         AccumulateAggregationsService featureAggregationBucketsService = new AccumulateAggregationsService(fixedDurationStrategy, bucketConfigurationService, enrichedDataStore, aggregationEventsAccumulationDataStore, pageSize, maxGroupSize, strategy, accumulateAggregationsBucketService, accumulationsCache);
         TimeRange timeRange = new TimeRange(startDate, endDate);
 
-        StoreManagerMetadataProperties storeManagerMetadataProperties = createStoreManagerAwareMetadata(schema, fixedDurationStrategy);
+        StoreMetadataProperties storeMetadataProperties = createStoreManagerAwareMetadata(schema, fixedDurationStrategy);
 
-        featureAggregationBucketsService.execute(timeRange, schema.getName(), storeManagerMetadataProperties);
-        storeManager.cleanupCollections(storeManagerMetadataProperties.getProperties(), startDate);
+        featureAggregationBucketsService.execute(timeRange, schema.getName(), storeMetadataProperties);
+        storeManager.cleanupCollections(storeMetadataProperties.getProperties(), startDate);
     }
 
     public void clean(Schema schema, Instant startDate, Instant endDate) throws Exception {
@@ -65,15 +65,15 @@ public class AccumulateAggregationsExecutionService {
 
     public void cleanup(Schema schema, Instant startDate, Instant endDate, Double fixedDuration, Double featureBucketStrategy) throws Exception {
         FixedDurationStrategy fixedDurationStrategy = FixedDurationStrategy.fromSeconds(fixedDuration.longValue());
-        StoreManagerMetadataProperties storeManagerMetadataProperties = createStoreManagerAwareMetadata(schema, fixedDurationStrategy);
-        storeManager.cleanupCollections(storeManagerMetadataProperties.getProperties(), startDate, endDate);
+        StoreMetadataProperties storeMetadataProperties = createStoreManagerAwareMetadata(schema, fixedDurationStrategy);
+        storeManager.cleanupCollections(storeMetadataProperties.getProperties(), startDate, endDate);
     }
 
-    private StoreManagerMetadataProperties createStoreManagerAwareMetadata(Schema schema, FixedDurationStrategy fixedDurationStrategy){
-        StoreManagerMetadataProperties storeManagerMetadataProperties = new StoreManagerMetadataProperties();
-        storeManagerMetadataProperties.setProperties(SCHEMA, schema.getName());
-        storeManagerMetadataProperties.setProperties(FIXED_DURATION_STRATEGY, fixedDurationStrategy.toStrategyName());
-        return storeManagerMetadataProperties;
+    private StoreMetadataProperties createStoreManagerAwareMetadata(Schema schema, FixedDurationStrategy fixedDurationStrategy){
+        StoreMetadataProperties storeMetadataProperties = new StoreMetadataProperties();
+        storeMetadataProperties.setProperties(SCHEMA, schema.getName());
+        storeMetadataProperties.setProperties(FIXED_DURATION_STRATEGY, fixedDurationStrategy.toStrategyName());
+        return storeMetadataProperties;
     }
 
 }

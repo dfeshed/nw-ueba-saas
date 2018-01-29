@@ -1,6 +1,6 @@
 package presidio.ade.domain.store.enriched;
 
-import fortscale.utils.store.record.StoreManagerMetadataProperties;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 
@@ -18,7 +18,7 @@ public interface EnrichedDataStore extends EnrichedDataReader {
 	 * @param recordsMetadata describing the records (which data source, etc.)
 	 * @param records         to be stored
 	 */
-	void store(EnrichedRecordsMetadata recordsMetadata, List<? extends EnrichedRecord> records, StoreManagerMetadataProperties storeManagerMetadataProperties);
+	void store(EnrichedRecordsMetadata recordsMetadata, List<? extends EnrichedRecord> records, StoreMetadataProperties storeMetadataProperties);
 
 	/**
 	 * cleanup store by filtering params

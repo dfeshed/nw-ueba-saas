@@ -3,7 +3,7 @@ package presidio.ade.processes.shell.accumulate;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.fixedduration.FixedDurationStrategyUtils;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.store.record.StoreManagerMetadataProperties;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
 
 import java.util.List;
@@ -26,14 +26,14 @@ public abstract class AccumulationStrategyExecutor {
      *
      * @param timeRange start and end time of data to be executed upon
      */
-    public void execute(TimeRange timeRange, String configurationName, StoreManagerMetadataProperties storeManagerMetadataProperties) {
+    public void execute(TimeRange timeRange, String configurationName, StoreMetadataProperties storeMetadataProperties) {
         logger.debug(String.format("got execution time range=%s", timeRange));
         List<TimeRange> partitionedTimeRanges = FixedDurationStrategyUtils.splitTimeRangeByStrategy(timeRange, strategy);
 
         for (TimeRange timePartition : partitionedTimeRanges) {
             logger.debug(String.format("executing on time partition=%s", timePartition));
             try {
-                executeSingleTimeRange(timePartition, configurationName, storeManagerMetadataProperties);
+                executeSingleTimeRange(timePartition, configurationName, storeMetadataProperties);
             } catch (Exception e) {
                 logger.error(String.format("an error occurred while executing on time partition=%s,configurationName=%s", timePartition, configurationName, e));
                 throw e;
@@ -44,6 +44,6 @@ public abstract class AccumulationStrategyExecutor {
     /**
      * runs calculation for single hour/day/other accumulation duration
      */
-    protected abstract void executeSingleTimeRange(TimeRange timeRange, String configurationName, StoreManagerMetadataProperties storeManagerMetadataProperties);
+    protected abstract void executeSingleTimeRange(TimeRange timeRange, String configurationName, StoreMetadataProperties storeMetadataProperties);
 
 }

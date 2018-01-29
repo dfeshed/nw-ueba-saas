@@ -19,7 +19,7 @@ import fortscale.ml.model.retriever.ContextHistogramRetrieverConf;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
-import fortscale.utils.store.record.StoreManagerMetadataProperties;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.test.category.ModuleTestCategory;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -179,7 +179,7 @@ public class ModelingServiceApplicationEnrichedRecordsModuleTest extends BaseApp
 
         // Generate and store the feature buckets
         List<FeatureBucket> featureBuckets = featureBucketGenerator.generate();
-        featureBucketStore.storeFeatureBucket(featureBucketConf, featureBuckets, new StoreManagerMetadataProperties());
+        featureBucketStore.storeFeatureBucket(featureBucketConf, featureBuckets, new StoreMetadataProperties());
     }
 
     private void generateDataForContextHistogramRetrieverAndTimeModelBuilder(ContextHistogramRetrieverConf retrieverConf) throws GeneratorException {

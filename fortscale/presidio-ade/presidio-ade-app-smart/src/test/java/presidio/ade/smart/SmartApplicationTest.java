@@ -12,7 +12,7 @@ import fortscale.ml.model.store.ModelStoreConfig;
 import fortscale.smart.record.conf.ClusterConf;
 import fortscale.smart.record.conf.SmartRecordConfService;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.store.record.StoreManagerMetadataProperties;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.test.category.ModuleTestCategory;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.time.TimeService;
@@ -580,8 +580,8 @@ public class SmartApplicationTest extends BaseAppTest {
                 new AdeAggregationRecordHourlyGenerator(aggregatedFeatureToValueGenerator, startInstantGenerator, contextIdGenerator);
         List<AdeAggregationRecord> adeAggregationRecords = adeAggregationGenerator.generate();
 
-        aggregatedDataStore.store(adeAggregationRecords, AggregatedFeatureType.SCORE_AGGREGATION, new StoreManagerMetadataProperties());
-        aggregatedDataStore.store(adeScoredAggregationRecords, AggregatedFeatureType.FEATURE_AGGREGATION, new StoreManagerMetadataProperties());
+        aggregatedDataStore.store(adeAggregationRecords, AggregatedFeatureType.SCORE_AGGREGATION, new StoreMetadataProperties());
+        aggregatedDataStore.store(adeScoredAggregationRecords, AggregatedFeatureType.FEATURE_AGGREGATION, new StoreMetadataProperties());
 
         Instant start = adeAggregationRecords.stream().min(Comparator.comparing(AdeAggregationRecord::getStartInstant)).get().getStartInstant();
         Instant end = adeAggregationRecords.stream().max(Comparator.comparing(AdeAggregationRecord::getEndInstant)).get().getStartInstant();

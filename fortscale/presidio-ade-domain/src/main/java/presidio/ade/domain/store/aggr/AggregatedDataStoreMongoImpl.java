@@ -3,7 +3,7 @@ package presidio.ade.domain.store.aggr;
 import com.mongodb.DBCollection;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.pagination.PageIterator;
-import fortscale.utils.store.record.StoreManagerMetadataProperties;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.store.StoreManager;
 import fortscale.utils.store.StoreManagerAware;
@@ -83,7 +83,7 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore, StoreM
     }
 
     @Override
-    public void store(List<? extends AdeAggregationRecord> records, AggregatedFeatureType aggregatedFeatureType, StoreManagerMetadataProperties storeManagerMetadataProperties) {
+    public void store(List<? extends AdeAggregationRecord> records, AggregatedFeatureType aggregatedFeatureType, StoreMetadataProperties storeMetadataProperties) {
         Map<String, ? extends List<? extends AdeAggregationRecord>> featureNameToAggregationRecords = records.stream().collect(Collectors.groupingBy(AdeAggregationRecord::getFeatureName));
 
         featureNameToAggregationRecords.keySet().forEach(featureName -> {
@@ -91,7 +91,7 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore, StoreM
             AggrRecordsMetadata metadata = new AggrRecordsMetadata(featureName, aggregatedFeatureType);
             String collectionName = translator.toCollectionName(metadata);
             mongoDbBulkOpUtil.insertUnordered(aggregationRecords, collectionName);
-            storeManager.registerWithTtl(getStoreName(), collectionName, storeManagerMetadataProperties);
+            storeManager.registerWithTtl(getStoreName(), collectionName, storeMetadataProperties);
         });
     }
 
