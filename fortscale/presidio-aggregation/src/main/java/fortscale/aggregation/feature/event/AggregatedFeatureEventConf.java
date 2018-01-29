@@ -24,8 +24,6 @@ public class AggregatedFeatureEventConf implements Serializable {
 	private FeatureBucketConf bucketConf;
 	private int numberOfBuckets;
 	private int bucketsLeap;
-	private long waitAfterBucketCloseSeconds;
-	private String anomalyType;
 	private Map<String, List<String>> aggregatedFeatureNamesMap;
 	private JSONObject aggregatedFeatureEventFunction;
 	private String type;
@@ -37,7 +35,6 @@ public class AggregatedFeatureEventConf implements Serializable {
 			@JsonProperty("bucketConfName") String bucketConfName,
 			@JsonProperty("numberOfBuckets") int numberOfBuckets,
 			@JsonProperty("bucketsLeap") int bucketsLeap,
-			@JsonProperty("waitAfterBucketCloseSeconds") long waitAfterBucketCloseSeconds,
 			@JsonProperty("aggregatedFeatureNamesMap") Map<String, List<String>> aggregatedFeatureNamesMap,
 			@JsonProperty("aggregatedFeatureEventFunction") JSONObject aggregatedFeatureEventFunction) {
 
@@ -47,7 +44,6 @@ public class AggregatedFeatureEventConf implements Serializable {
 		setBucketConf(null);
 		setNumberOfBuckets(numberOfBuckets);
 		setBucketsLeap(bucketsLeap);
-		setWaitAfterBucketCloseSeconds(waitAfterBucketCloseSeconds);
 		setAggregatedFeatureEventFunction(aggregatedFeatureEventFunction);
 		setAggregatedFeatureNamesMap(aggregatedFeatureNamesMap);
 	}
@@ -78,14 +74,6 @@ public class AggregatedFeatureEventConf implements Serializable {
 
 	public int getBucketsLeap() {
 		return bucketsLeap;
-	}
-
-	public long getWaitAfterBucketCloseSeconds() {
-		return waitAfterBucketCloseSeconds;
-	}
-
-	public String getAnomalyType() {
-		return anomalyType;
 	}
 
 	public Map<String, List<String>> getAggregatedFeatureNamesMap() {
@@ -130,15 +118,6 @@ public class AggregatedFeatureEventConf implements Serializable {
 	public void setBucketsLeap(int bucketsLeap) {
 		Assert.isTrue(bucketsLeap >= 1, "bucketsLeap must be larger than or equal to 1.");
 		this.bucketsLeap = bucketsLeap;
-	}
-
-	public void setWaitAfterBucketCloseSeconds(long waitAfterBucketCloseSeconds) {
-		Assert.isTrue(waitAfterBucketCloseSeconds >= 0, "waitAfterBucketCloseSeconds must be larger than or equal to 0.");
-		this.waitAfterBucketCloseSeconds = waitAfterBucketCloseSeconds;
-	}
-
-	public void setAnomalyType(String anomalyType) {
-		this.anomalyType = anomalyType;
 	}
 
 	public void setAggregatedFeatureNamesMap(Map<String, List<String>> aggregatedFeatureNamesMap) {

@@ -39,7 +39,7 @@ public interface AlertsApi {
     }
 
 
-    @ApiOperation(value = "Use this endpoint to get details about a single indication", notes = "Example: fields=schema,anomalyType", response = Indicator.class, tags={ "alerts", })
+    @ApiOperation(value = "Use this endpoint to get details about a single indication", notes = "Example: fields=schema", response = Indicator.class, tags={ "alerts", })
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Single indicator", response = Indicator.class) })
     @RequestMapping(value = "/alerts/{alertId}/indicators/{indicatorId}",

@@ -35,7 +35,7 @@ public class GaussianPriorModel implements Model {
 
 		@Override
 		public int hashCode() {
-			return new Double(mean).hashCode();
+			return mean.hashCode();
 		}
 
 		@Override
@@ -44,10 +44,10 @@ public class GaussianPriorModel implements Model {
 				return false;
 			}
 			SegmentPrior o = (SegmentPrior) obj;
-			return o.mean == mean &&
-					o.priorAtMean == priorAtMean &&
-					o.supportFromLeftOfMean == supportFromLeftOfMean &&
-					o.supportFromRightOfMean == supportFromRightOfMean;
+			return Objects.equals(o.mean, mean) &&
+					Objects.equals(o.priorAtMean, priorAtMean) &&
+					Objects.equals(o.supportFromLeftOfMean, supportFromLeftOfMean) &&
+					Objects.equals(o.supportFromRightOfMean, supportFromRightOfMean);
 		}
 
 		@Override
@@ -65,7 +65,7 @@ public class GaussianPriorModel implements Model {
 	}
 
 	public GaussianPriorModel init(List<SegmentPrior> segmentPriors) {
-		Assert.notNull(segmentPriors);
+		Assert.notNull(segmentPriors, "segmentPriors cannot be null.");
 		Set<Double> means = new HashSet<>();
 		segmentPriors.forEach(segmentPrior -> Assert.isTrue(means.add(segmentPrior.mean)));
 		this.segmentPriors = segmentPriors.toArray(new SegmentPrior[]{});
@@ -143,5 +143,21 @@ public class GaussianPriorModel implements Model {
 	@Override
 	public long getNumOfSamples() {
 		return 0;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof GaussianPriorModel)) return false;
+		GaussianPriorModel that = (GaussianPriorModel)o;
+		return Arrays.equals(segmentPriors, that.segmentPriors) &&
+				(minPrior == null ? that.minPrior == null : minPrior.equals(that.minPrior));
+	}
+
+	@Override
+	public int hashCode() {
+		int result = Arrays.hashCode(segmentPriors);
+		result = 31 * result + (minPrior != null ? minPrior.hashCode() : 0);
+		return result;
 	}
 }

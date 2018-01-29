@@ -1,0 +1,199 @@
+{
+  "ModelConfs": [
+    {
+      "name": "startInstant.userId.print",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "startInstantHistogramUserIdPrintDaily"
+      },
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "startInstantHistogramUserIdPrintDaily",
+        "featureName": "startInstantHistogram",
+        "partitionsResolutionInSeconds": 86400
+      },
+      "builder": {
+        "type": "time_model_builder",
+        "timeResolution": 86400,
+        "bucketSize": 600,
+        "maxRareTimestampCount": 10
+      }
+    },
+    {
+      "name": "srcMachineNameRegexCluster.userId.print",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "srcMachineNameRegexClusterHistogramUserIdPrintDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "srcMachineNameRegexClusterHistogramUserIdPrintDaily",
+        "featureName": "srcMachineNameRegexClusterHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "userId.srcMachineId.print",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "userIdHistogramSrcMachineIdPrintDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "userIdHistogramSrcMachineIdPrintDaily",
+        "featureName": "userIdHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "dstMachineId.userId.print",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "dstMachineIdHistogramUserIdPrintDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "dstMachineIdHistogramUserIdPrintDaily",
+        "featureName": "dstMachineIdHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "dstMachineNameRegexCluster.userId.print",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "dstMachineNameRegexClusterHistogramUserIdPrintDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "dstMachineNameRegexClusterHistogramUserIdPrintDaily",
+        "featureName": "dstMachineNameRegexClusterHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "userId.dstMachineId.print",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "userIdHistogramDstMachineIdPrintDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "userIdHistogramDstMachineIdPrintDaily",
+        "featureName": "userIdHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "numOfPages.userId.print",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "startInstantToHighestNumOfPagesMapUserIdPrintDaily"
+      },
+      "retriever": {
+        "type": "epochtime_to_highest_integer_map_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "startInstantToHighestNumOfPagesMapUserIdPrintDaily",
+        "featureName": "startInstantToHighestNumOfPagesMap",
+        "epochtimeResolutionInSeconds": 3600
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "numOfPages.userId.prior.print",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numOfPages.userId.print"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "minAllowedDistFromMean": 30,
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
+      "name": "absoluteFolderPath.userId.print",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "absoluteSharedFolderPathHistogramUserIdPrintDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "absoluteSharedFolderPathHistogramUserIdPrintDaily",
+        "featureName": "absoluteSharedFolderPathHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "fileExtension.userId.print",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "fileExtensionHistogramUserIdPrintDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "fileExtensionHistogramUserIdPrintDaily",
+        "featureName": "fileExtensionHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    }
+  ]
+}

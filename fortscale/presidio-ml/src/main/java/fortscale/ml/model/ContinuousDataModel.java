@@ -41,14 +41,19 @@ public class ContinuousDataModel implements IContinuousDataModel {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof ContinuousDataModel)) {
-			return false;
-		}
-		ContinuousDataModel o = (ContinuousDataModel) obj;
-		if (N == 0) {
-			return o.N == 0;
-		}
-		return o.N == N && o.mean.equals(mean) && o.sd.equals(sd) && o.maxValue.equals(maxValue);
+		if (!(obj instanceof ContinuousDataModel)) return false;
+		ContinuousDataModel o = (ContinuousDataModel)obj;
+		if (N == 0) return o.N == 0;
+		return o.N.equals(N) && o.mean.equals(mean) && o.sd.equals(sd) && o.maxValue.equals(maxValue);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = N != null ? N.hashCode() : 0;
+		result = 31 * result + (mean != null ? mean.hashCode() : 0);
+		result = 31 * result + (sd != null ? sd.hashCode() : 0);
+		result = 31 * result + (maxValue != null ? maxValue.hashCode() : 0);
+		return result;
 	}
 
 	@Override

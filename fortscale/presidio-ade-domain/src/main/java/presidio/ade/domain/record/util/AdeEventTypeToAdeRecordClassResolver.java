@@ -1,5 +1,7 @@
 package presidio.ade.domain.record.util;
 
+import fortscale.common.general.Schema;
+import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import presidio.ade.domain.record.AdeRecord;
@@ -10,6 +12,8 @@ import presidio.ade.domain.record.AdeRecord;
  * For example: dlp_file, EnrichedDlpFileRecord.class
  */
 public class AdeEventTypeToAdeRecordClassResolver<T extends AdeRecord> extends KeyToAdeRecordClassResolver<String,T> {
+    private static final Logger logger = Logger.getLogger(AdeEventTypeToAdeRecordClassResolver.class);
+
     /**
      * @param scanPackage class path to scan
      */
@@ -30,10 +34,11 @@ public class AdeEventTypeToAdeRecordClassResolver<T extends AdeRecord> extends K
             Class<?> pojoClass = Class.forName(beanDef.getBeanClassName());
             if (AdeRecord.class.isAssignableFrom(pojoClass)) {
                 AdeRecordMetadata adeRecord = pojoClass.getAnnotation(AdeRecordMetadata.class);
-                keyToAdeRecordClassMap.put(adeRecord.adeEventType(), (Class<? extends T>)pojoClass);
+                Schema adeEventType = adeRecord.adeEventType();
+                keyToAdeRecordClassMap.put(adeEventType.getName(), (Class<? extends T>)pojoClass);
             }
         } catch (Exception e) {
-            System.err.println("Got exception: " + e.getMessage());
+            logger.error("Got exception: {}", e.getMessage(), e);
         }
     }
 
@@ -43,10 +48,3 @@ public class AdeEventTypeToAdeRecordClassResolver<T extends AdeRecord> extends K
     }
 
 }
-
-
-
-
-
-
-

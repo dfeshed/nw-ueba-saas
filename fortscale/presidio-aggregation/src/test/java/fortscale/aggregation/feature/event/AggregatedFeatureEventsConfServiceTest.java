@@ -23,11 +23,11 @@ import java.util.Set;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 public class AggregatedFeatureEventsConfServiceTest {
-    private static final String BUCKET_CONF_AS_STRING1 = "{\"name\":\"bc1\",\"adeEventTypes\":[\"ssh\"],\"contextFieldNames\":[\"field1\",\"field2\"],\"strategyName\":\"strategy1\",\"aggrFeatureConfs\":[{\"name\":\"aggr-feature-1\",\"featureNamesMap\":{\"param1\":[\"feature1\",\"feature2\"]},\"aggrFeatureFuncJson\":{\"type\":\"func1\"},\"allFeatureNames\":[\"feature2\",\"feature1\"],\"filter\":null}],\"expireAfterSeconds\":null,\"allFeatureNames\":[\"feature2\",\"feature1\"]}";
+    private static final String BUCKET_CONF_AS_STRING1 = "{\"name\":\"bc1\",\"adeEventTypes\":[\"ssh\"],\"contextFieldNames\":[\"field1\",\"field2\"],\"strategyName\":\"strategy1\",\"aggrFeatureConfs\":[{\"name\":\"aggr-feature-1\",\"featureNamesMap\":{\"param1\":[\"feature1\",\"feature2\"]},\"aggrFeatureFuncJson\":{\"type\":\"func1\"},\"allFeatureNames\":[\"feature2\",\"feature1\"],\"filter\":null}],\"allFeatureNames\":[\"feature2\",\"feature1\"]}";
     private static final String AGGR_FEATURE_EVENT_FUNCTION_AS_STRING1 = "{\"params\":{\"param1\":\"valueOfParam1\",\"param2\":\"valueOfParam2\",\"param3\":\"valueOfParam3\"},\"type\":\"type1\"}";
     private static final String FEATURE_NAME_MAP_AS_STRING1 = "{functionArgument=[aggregatedFeatureName1, aggregatedFeatureName2, aggregatedFeatureName3]}";
     private static final String FEATURE_NAMES_AS_STRING1 = "[aggregatedFeatureName1, aggregatedFeatureName3, aggregatedFeatureName2]";
-    private static final String BUCKET_CONF_AS_STRING2 = "{\"name\":\"bc2\",\"adeEventTypes\":[\"vpn\"],\"contextFieldNames\":[\"field3\",\"field4\"],\"strategyName\":\"strategy1\",\"aggrFeatureConfs\":[{\"name\":\"aggr-feature-2\",\"featureNamesMap\":{\"param1\":[\"feature3\",\"feature4\"]},\"aggrFeatureFuncJson\":{\"type\":\"func2\"},\"allFeatureNames\":[\"feature4\",\"feature3\"],\"filter\":null}],\"expireAfterSeconds\":null,\"allFeatureNames\":[\"feature4\",\"feature3\"]}";
+    private static final String BUCKET_CONF_AS_STRING2 = "{\"name\":\"bc2\",\"adeEventTypes\":[\"vpn\"],\"contextFieldNames\":[\"field3\",\"field4\"],\"strategyName\":\"strategy1\",\"aggrFeatureConfs\":[{\"name\":\"aggr-feature-2\",\"featureNamesMap\":{\"param1\":[\"feature3\",\"feature4\"]},\"aggrFeatureFuncJson\":{\"type\":\"func2\"},\"allFeatureNames\":[\"feature4\",\"feature3\"],\"filter\":null}],\"allFeatureNames\":[\"feature4\",\"feature3\"]}";
     private static final String AGGR_FEATURE_EVENT_FUNCTION_AS_STRING2 = "{\"params\":{\"param1\":\"valueOfParam1\",\"param2\":\"valueOfParam2\",\"param3\":\"valueOfParam3\"},\"type\":\"type2\"}";
     private static final String FEATURE_NAMES_AS_STRING2 = "[aggregatedFeatureName1, aggregatedFeatureName3, aggregatedFeatureName2]";
 
@@ -76,7 +76,6 @@ public class AggregatedFeatureEventsConfServiceTest {
         int bucketLeap = aggregatedFeatureEventConf.getBucketsLeap();
         Map<String, List<String>> featureNameMap = aggregatedFeatureEventConf.getAggregatedFeatureNamesMap();
         Set<String> featureNames = aggregatedFeatureEventConf.getAllAggregatedFeatureNames();
-        String anomalyType = aggregatedFeatureEventConf.getAnomalyType();
         int numberOfBuckets = aggregatedFeatureEventConf.getNumberOfBuckets();
 
         Assert.assertEquals("bc1", bucketConfName);
@@ -86,7 +85,6 @@ public class AggregatedFeatureEventsConfServiceTest {
         Assert.assertEquals(1, bucketLeap);
         Assert.assertEquals(FEATURE_NAME_MAP_AS_STRING1, featureNameMap.toString());
         JSONAssert.assertEquals(FEATURE_NAMES_AS_STRING1, featureNames.toString(), false);
-        Assert.assertEquals("number_of_successful_ssh_events_hourly", anomalyType);
         Assert.assertEquals(1, numberOfBuckets);
     }
 
@@ -97,7 +95,6 @@ public class AggregatedFeatureEventsConfServiceTest {
         String name = aggregatedFeatureEventConf.getName();
         int bucketLeap = aggregatedFeatureEventConf.getBucketsLeap();
         Set<String> featureNames = aggregatedFeatureEventConf.getAllAggregatedFeatureNames();
-        String anomalyType = aggregatedFeatureEventConf.getAnomalyType();
         int numberOfBuckets = aggregatedFeatureEventConf.getNumberOfBuckets();
 
         Assert.assertEquals("bc2", bucketConfName);
@@ -106,7 +103,6 @@ public class AggregatedFeatureEventsConfServiceTest {
         Assert.assertEquals("name2", name);
         Assert.assertEquals(2, bucketLeap);
         JSONAssert.assertEquals(FEATURE_NAMES_AS_STRING2, featureNames.toString(), false);
-        Assert.assertEquals("number_of_successful_ssh_events_daily", anomalyType);
         Assert.assertEquals(2, numberOfBuckets);
     }
 
@@ -117,11 +113,5 @@ public class AggregatedFeatureEventsConfServiceTest {
         Assert.assertEquals(2, aggregatedFeatureEventConfs.size());
         assertAggregatedFeatureEventConf1(aggregatedFeatureEventConfs.get(0));
         assertAggregatedFeatureEventConf2(aggregatedFeatureEventConfs.get(1));
-    }
-
-    @Test
-    public void getAnomalyTypeTest() {
-        Assert.assertEquals("number_of_successful_ssh_events_hourly", aggregatedFeatureEventsConfService.getAnomalyType("name1"));
-        Assert.assertEquals("number_of_successful_ssh_events_daily", aggregatedFeatureEventsConfService.getAnomalyType("name2"));
     }
 }
