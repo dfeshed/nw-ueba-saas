@@ -7,8 +7,13 @@ import {
   eventHasLogData,
   eventLogDataIsPending
 } from 'component-lib/utils/log-utils';
+import { connect } from 'ember-redux';
 
-export default DataTableBody.extend({
+const stateToComputed = (state) => ({
+  status: state.investigate.eventResults.status
+});
+
+const EventsTableBody = DataTableBody.extend({
   // Responds to a change in the viewport by fetching log data for any visible log records that need it.
   // Debounces fetch call, because scrolling may fire this handler at rapid rates.
   _visibleItemsDidChange: observer('_visibleItems', function() {
@@ -36,3 +41,5 @@ export default DataTableBody.extend({
     }
   }
 });
+
+export default connect(stateToComputed)(EventsTableBody);

@@ -292,6 +292,57 @@ test('it renders a no results message when items.length === 0.', function(assert
   assert.equal(this.$('.rsa-data-table-body').text().trim(), 'No events found. Your filter criteria did not match any records.');
 });
 
+test('it does not render no-results message when status is passed in and is streaming', function(assert) {
+  this.setProperties({
+    items: [],
+    columnsConfig: mockColumnsConfig,
+    status: 'streaming'
+  });
+  this.render(hbs`
+    {{#rsa-data-table lazy=false items=items columnsConfig=columnsConfig}}
+      {{rsa-data-table/header}}
+      {{#rsa-data-table/body status=status noResultsMessage=noResultsMessage as |item index column|}}
+        {{#rsa-data-table/body-cell item=item index=index column=column~}}
+          {{get item column.field}}
+        {{~/rsa-data-table/body-cell}}
+      {{/rsa-data-table/body}}
+    {{/rsa-data-table}}
+  `);
+
+  assert.equal(this.$('.rsa-data-table').length, 1, 'data-table root dom element found.');
+
+  const rows = this.$('.rsa-data-table-body-row');
+  assert.equal(rows.length, 0, 'Correct number of body-row dom elements found.');
+  assert.equal(this.$('.rsa-panel-message .no-results-message').length, 0, 'status is streaming, so still loading');
+
+});
+
+test('it renders no-results message when status is passed in and is not streaming', function(assert) {
+  this.setProperties({
+    items: [],
+    columnsConfig: mockColumnsConfig,
+    status: 'complete'
+  });
+  this.render(hbs`
+    {{#rsa-data-table lazy=false items=items columnsConfig=columnsConfig}}
+      {{rsa-data-table/header}}
+      {{#rsa-data-table/body status=status noResultsMessage=noResultsMessage as |item index column|}}
+        {{#rsa-data-table/body-cell item=item index=index column=column~}}
+          {{get item column.field}}
+        {{~/rsa-data-table/body-cell}}
+      {{/rsa-data-table/body}}
+    {{/rsa-data-table}}
+  `);
+
+  assert.equal(this.$('.rsa-data-table').length, 1, 'data-table root dom element found.');
+
+  const rows = this.$('.rsa-data-table-body-row');
+  assert.equal(rows.length, 0, 'Correct number of body-row dom elements found.');
+  assert.equal(this.$('.rsa-data-table-body').text().trim(), 'No Results');
+  this.set('noResultsMessage', 'No events found. Your filter criteria did not match any records.');
+  assert.equal(this.$('.rsa-data-table-body').text().trim(), 'No events found. Your filter criteria did not match any records.');
+});
+
 test('it applies an is-error class to cells when isError=true.', function(assert) {
   this.setProperties({
     items: mockItems,

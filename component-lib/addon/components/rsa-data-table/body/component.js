@@ -47,6 +47,27 @@ export default Component.extend(HasTableParent, DomIsReady, SizeBindings, Scroll
   showNoResultMessage: true,
 
   /**
+   * Check along-side showNoResultMessage
+   * if status is passed in (recommended), _noResultMessage will not overlap with spinner
+   * If not, then the usual showNoResultMessage prop is used
+   * @param status The status of the data fetch
+   * @private
+   */
+  @computed('status', 'showNoResultMessage')
+  shouldShowNoResultMessage(status, showNoResultMessage) {
+    if (!status) {                // if status has not been passed in, default showNoResultMessage
+      return showNoResultMessage;
+    }
+    if (!showNoResultMessage) {   // if showNoResultMessage is explicitly passed boolean false
+      return false;
+    }
+    if (status === 'streaming') { // if status has been passed, but is streaming, don't show noResults message
+      return false;
+    }
+    return true;
+  },
+
+  /**
    * The message to display when there are no results in the table
    * @param message The optional message to display
    * @returns {*|string} either your passed message or 'No Results'
