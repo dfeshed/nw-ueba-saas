@@ -19,7 +19,7 @@ public abstract class AbstractPresidioInterceptorBuilder implements Interceptor.
     @Override
     public void configure(Context context) {
         applicationName = context.getString(CommonStrings.APPLICATION_NAME, this.getClass().getSimpleName());
-        interceptorName = context.getString(CommonStrings.APPLICATION_NAME, this.getClass().getSimpleName());
+        interceptorName = this.getClass().getSimpleName();
         doConfigure(context);
     }
 
