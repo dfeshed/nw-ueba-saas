@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Map;
 
 /**
  * Created by maria_dorohin on 8/30/17.
@@ -36,14 +37,17 @@ public class StoreMetadata {
     private Duration ttlDuration;
     @Field
     private Duration cleanupInterval;
+    @Field
+    private Map<String,String> properties;
 
 
-    public StoreMetadata(String applicationName, String storeName, String collectionName, Duration ttlDuration, Duration cleanupInterval){
+    public StoreMetadata(String applicationName, String storeName, String collectionName, Duration ttlDuration, Duration cleanupInterval, Map<String,String> properties){
         this.applicationName = applicationName;
         this.storeName = storeName;
         this.collectionName = collectionName;
         this.ttlDuration = ttlDuration;
         this.cleanupInterval = cleanupInterval;
+        this.properties = properties;
     }
 
     public String getApplicationName() {
@@ -84,5 +88,13 @@ public class StoreMetadata {
 
     public void setCleanupInterval(Duration cleanupInterval) {
         this.cleanupInterval = cleanupInterval;
+    }
+
+    public Map<String, String> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(Map<String, String> properties) {
+        this.properties = properties;
     }
 }

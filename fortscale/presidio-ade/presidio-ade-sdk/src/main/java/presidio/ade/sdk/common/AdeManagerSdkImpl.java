@@ -7,6 +7,7 @@ import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.smart.record.conf.SmartRecordConf;
 import fortscale.smart.record.conf.SmartRecordConfService;
 import fortscale.utils.pagination.PageIterator;
+import fortscale.utils.store.record.StoreManagerMetadataProperties;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.store.StoreManager;
 import org.springframework.data.util.Pair;
@@ -40,6 +41,8 @@ import static java.util.stream.Collectors.toMap;
  * @author Barak Schuster
  */
 public class AdeManagerSdkImpl implements AdeManagerSdk {
+    private static String SCHEMA = "schema";
+
     private StoreManagerAwareEnrichedDataStore storeManagerAwareEnrichedDataStore;
     private SmartDataReader smartDataReader;
     private ScoredEnrichedDataStore scoredEnrichedDataStore;
@@ -191,12 +194,17 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
 
     @Override
     public void storeEnrichedRecords(EnrichedRecordsMetadata metadata, List<? extends EnrichedRecord> records) {
-        storeManagerAwareEnrichedDataStore.store(metadata, records);
+        StoreManagerMetadataProperties storeManagerMetadataProperties = new StoreManagerMetadataProperties();
+        storeManagerMetadataProperties.setProperties(SCHEMA, metadata.getAdeEventType());
+        storeManagerAwareEnrichedDataStore.store(metadata, records, storeManagerMetadataProperties);
     }
 
     @Override
     public void cleanupEnrichedRecords(AdeDataStoreCleanupParams adeDataStoreCleanupParams) {
-        storeManagerAwareEnrichedDataStore.cleanup(adeDataStoreCleanupParams);
+        String storeName = storeManagerAwareEnrichedDataStore.getStoreName();
+        StoreManagerMetadataProperties storeManagerMetadataProperties = new StoreManagerMetadataProperties();
+        storeManagerMetadataProperties.setProperties(SCHEMA, adeDataStoreCleanupParams.getAdeEventType());
+        storeManager.cleanupCollections(storeName, new TimeRange(adeDataStoreCleanupParams.getStartDate(), adeDataStoreCleanupParams.getEndDate()), storeManagerMetadataProperties);
     }
 
     @Override
@@ -279,11 +287,5 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
     public void cleanupEnrichedData(Instant until, Duration enrichedTtl, Duration enrichedCleanupInterval) {
         String storeName = storeManagerAwareEnrichedDataStore.getStoreName();
         storeManager.cleanupCollections(storeName, until, enrichedTtl, enrichedCleanupInterval);
-    }
-
-    @Override
-    public void cleanupEnrichedData(TimeRange timeRange) {
-        String storeName = storeManagerAwareEnrichedDataStore.getStoreName();
-        storeManager.cleanupCollections(storeName, timeRange);
     }
 }

@@ -3,6 +3,7 @@ package presidio.ade.domain.pagination.aggregated;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.pagination.PageIterator;
+import fortscale.utils.store.record.StoreManagerMetadataProperties;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.store.StoreManager;
@@ -69,7 +70,7 @@ public class AggregatedRecordPaginationServiceTest {
                 Map<String, String> context = new HashMap<>();
                 context.put("userId", String.format("Gandalf%d", j));
                 List<AdeAggregationRecord> featureAggrRecords = generateFeatureAggrRecords(context, enumeratedFeatureName, featureValue, AMOUNT_OF_RECORDS_PER_FEATURE, startInstant, strategy);
-                aggregatedDataStore.store(featureAggrRecords, FEATURE_AGGREGATION);
+                aggregatedDataStore.store(featureAggrRecords, FEATURE_AGGREGATION, new StoreManagerMetadataProperties());
             }
         }
 
@@ -81,7 +82,7 @@ public class AggregatedRecordPaginationServiceTest {
                 Map<String, String> context = new HashMap<>();
                 context.put("userId", String.format("Gandalf%d", j));
                 List<AdeAggregationRecord> scoreAggrRecords = generateScoreAggrRecords(context, enumeratedFeatureName, featureValue, AMOUNT_OF_RECORDS_PER_FEATURE, startInstant, strategy);
-                aggregatedDataStore.store(scoreAggrRecords, SCORE_AGGREGATION);
+                aggregatedDataStore.store(scoreAggrRecords, SCORE_AGGREGATION, new StoreManagerMetadataProperties());
             }
         }
     }

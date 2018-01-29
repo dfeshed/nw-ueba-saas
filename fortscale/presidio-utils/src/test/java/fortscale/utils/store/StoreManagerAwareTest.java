@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.query.Query;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collections;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -43,17 +44,17 @@ public class StoreManagerAwareTest implements StoreManagerAware {
 
     public void save(StoreManagerRecordTest storeManagerRecordTest, String collectionName, Duration ttl, Duration cleanupInterval) {
         mongoTemplate.insert(storeManagerRecordTest, collectionName);
-        storeManager.registerWithTtl(getStoreName(), collectionName, ttl, cleanupInterval);
+        storeManager.registerWithTtl(getStoreName(), collectionName, ttl, cleanupInterval, Collections.emptyMap());
     }
 
     public void saveWithDefaultTtl(StoreManagerRecordTest storeManagerRecordTest, String collectionName) {
         mongoTemplate.insert(storeManagerRecordTest,collectionName);
-        storeManager.registerWithTtl(getStoreName(), collectionName);
+        storeManager.registerWithTtl(getStoreName(), collectionName, Collections.emptyMap());
     }
 
     public void register(StoreManagerRecordTest storeManagerRecordTest, String collectionName) {
         mongoTemplate.insert(storeManagerRecordTest, collectionName);
-        storeManager.register(getStoreName(), collectionName);
+        storeManager.register(getStoreName(), collectionName, Collections.emptyMap());
     }
 
 
