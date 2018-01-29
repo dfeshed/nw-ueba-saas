@@ -57,9 +57,7 @@
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_map_values_max_sum_func",
-        "includeValues": true,
-        "minScoreToInclude": 1
+        "type": "aggr_feature_map_values_max_sum_func"
       }
     },
     {
@@ -74,9 +72,7 @@
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_map_values_max_sum_func",
-        "includeValues": true,
-        "minScoreToInclude": 1
+        "type": "aggr_feature_map_values_max_sum_func"
       }
     },
     {
@@ -91,12 +87,9 @@
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_map_values_max_sum_func",
-        "includeValues": true,
-        "minScoreToInclude": 1
+        "type": "aggr_feature_map_values_max_sum_func"
       }
     },
-
     {
       "name": "userAccountDisabledScoreUserIdActiveDirectoryHourly",
       "type": "P",
@@ -109,12 +102,9 @@
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_map_values_max_sum_func",
-        "includeValues": true,
-        "minScoreToInclude": 1
+        "type": "aggr_feature_map_values_max_sum_func"
       }
     },
-
     {
       "name": "userAccountUnlockedScoreUserIdActiveDirectoryHourly",
       "type": "P",
@@ -127,9 +117,7 @@
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_map_values_max_sum_func",
-        "includeValues": true,
-        "minScoreToInclude": 1
+        "type": "aggr_feature_map_values_max_sum_func"
       }
     },
     {
@@ -144,9 +132,7 @@
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_map_values_max_sum_func",
-        "includeValues": true,
-        "minScoreToInclude": 1
+        "type": "aggr_feature_map_values_max_sum_func"
       }
     },
     {
@@ -161,9 +147,7 @@
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_map_values_max_sum_func",
-        "includeValues": true,
-        "minScoreToInclude": 1
+        "type": "aggr_feature_map_values_max_sum_func"
       }
     },
     {
@@ -178,9 +162,7 @@
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_map_values_max_sum_func",
-        "includeValues": true,
-        "minScoreToInclude": 1
+        "type": "aggr_feature_map_values_max_sum_func"
       }
     },
     {
@@ -195,9 +177,7 @@
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_map_values_max_sum_func",
-        "includeValues": true,
-        "minScoreToInclude": 1
+        "type": "aggr_feature_map_values_max_sum_func"
       }
     },
     {
@@ -212,9 +192,7 @@
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_map_values_max_sum_func",
-        "includeValues": true,
-        "minScoreToInclude": 1
+        "type": "aggr_feature_map_values_max_sum_func"
       }
     }
   ]
