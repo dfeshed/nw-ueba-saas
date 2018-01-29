@@ -11,29 +11,23 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.config.ServiceLocatorFactoryBean;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.*;
 import org.springframework.core.io.Resource;
 import presidio.input.core.services.converters.ConverterService;
 import presidio.input.core.services.converters.ConverterServiceImpl;
 import presidio.input.core.services.converters.ade.ActiveDirectoryInputToAdeConverter;
 import presidio.input.core.services.converters.ade.AuthenticationInputToAdeConverter;
 import presidio.input.core.services.converters.ade.FileInputToAdeConverter;
+import presidio.input.core.services.converters.ade.PrintInputToAdeConverter;
 import presidio.input.core.services.converters.output.ActiveDirectoryInputToOutputConverter;
 import presidio.input.core.services.converters.output.AuthenticationInputToOutputConverter;
 import presidio.input.core.services.converters.output.FileInputToOutputConverter;
+import presidio.input.core.services.converters.output.PrintInputToOutputConverter;
 import presidio.input.core.services.data.AdeDataService;
 import presidio.input.core.services.impl.InputCoreManager;
 import presidio.input.core.services.impl.InputExecutionServiceImpl;
 import presidio.input.core.services.impl.SchemaFactory;
-import presidio.input.core.services.transformation.managers.ActiveDirectoryTransformationManager;
-import presidio.input.core.services.transformation.managers.AuthenticationTransformerManager;
-import presidio.input.core.services.transformation.managers.FileTransformerManager;
-import presidio.input.core.services.transformation.managers.TransformationService;
-import presidio.input.core.services.transformation.managers.TransformationServiceImpl;
+import presidio.input.core.services.transformation.managers.*;
 import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
 import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 import presidio.output.sdk.api.OutputDataServiceSDK;
@@ -124,6 +118,12 @@ public class InputCoreConfiguration {
         return new FileTransformerManager(getOperationTypeToCategoryMapping());
     }
 
+    @Bean(name = "PRINT.transformer")
+    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public PrintTransformerManager printTransformerManager() {
+        return new PrintTransformerManager();
+    }
+
     @Bean(name = "FILE.input-output-converter")
     @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public FileInputToOutputConverter fileInputToOutputConverter() {
@@ -142,6 +142,12 @@ public class InputCoreConfiguration {
         return new AuthenticationInputToOutputConverter();
     }
 
+    @Bean(name = "PRINT.input-output-converter")
+    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public PrintInputToOutputConverter printeInputToOutputConverter() {
+        return new PrintInputToOutputConverter();
+    }
+
     @Bean(name = "FILE.input-ade-converter")
     @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public FileInputToAdeConverter fileInputToAdeConverter() {
@@ -158,5 +164,11 @@ public class InputCoreConfiguration {
     @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public AuthenticationInputToAdeConverter authenticationInputToAdeConverter() {
         return new AuthenticationInputToAdeConverter();
+    }
+
+    @Bean(name = "PRINT.input-ade-converter")
+    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public PrintInputToAdeConverter printInputToAdeConverter() {
+        return new PrintInputToAdeConverter();
     }
 }
