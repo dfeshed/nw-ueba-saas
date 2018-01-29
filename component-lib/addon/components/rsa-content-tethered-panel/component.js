@@ -253,6 +253,7 @@ export default Component.extend({
     this.get('eventBus').off(this.get('hideEventName'), this, this._didHide);
     this.get('eventBus').off(this.get('toggleEventName'), this, this._didToggle);
     this.get('eventBus').off('rsa-application-click', this, this._didApplicationClick);
+    this.get('eventBus').off('rsa-application-header-click', this, this._didApplicationClick);
   },
 
   didInsertElement() {
@@ -261,6 +262,7 @@ export default Component.extend({
       this.get('eventBus').on(this.get('hideEventName'), this, this._didHide);
       this.get('eventBus').on(this.get('toggleEventName'), this, this._didToggle);
       this.get('eventBus').on('rsa-application-click', this, this._didApplicationClick);
+      this.get('eventBus').on('rsa-application-header-click', this, this._didApplicationClick);
     });
   },
 
