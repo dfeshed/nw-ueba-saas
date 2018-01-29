@@ -30,6 +30,6 @@ public class PrintTransformerManager implements TransformationManager {
 
     @Override
     public <U extends AbstractInputDocument> U getTransformedDocument(AbstractInputDocument rawEvent) {
-        return null;
+        return (U) new PrintTransformedEvent((PrintRawEvent) rawEvent);
     }
 }
