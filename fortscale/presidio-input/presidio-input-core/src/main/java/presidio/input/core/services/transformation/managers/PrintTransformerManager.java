@@ -1,7 +1,7 @@
 package presidio.input.core.services.transformation.managers;
 
-import presidio.input.core.services.transformation.MachineNameTransformer;
-import presidio.input.core.services.transformation.Transformer;
+import presidio.input.core.services.transformation.transformer.MachineNameTransformer;
+import presidio.input.core.services.transformation.transformer.Transformer;
 import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.domain.rawevents.PrintRawEvent;
 import presidio.sdk.api.domain.transformedevents.PrintTransformedEvent;

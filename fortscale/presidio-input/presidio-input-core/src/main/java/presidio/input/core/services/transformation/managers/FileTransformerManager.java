@@ -2,9 +2,9 @@ package presidio.input.core.services.transformation.managers;
 
 import fortscale.common.general.Schema;
 import org.springframework.beans.factory.annotation.Value;
-import presidio.input.core.services.transformation.FolderPathTransformer;
-import presidio.input.core.services.transformation.OperationTypeCategoryTransformer;
-import presidio.input.core.services.transformation.Transformer;
+import presidio.input.core.services.transformation.transformer.FolderPathTransformer;
+import presidio.input.core.services.transformation.transformer.OperationTypeCategoryTransformer;
+import presidio.input.core.services.transformation.transformer.Transformer;
 import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.domain.rawevents.FileRawEvent;
 import presidio.sdk.api.domain.transformedevents.FileTransformedEvent;
