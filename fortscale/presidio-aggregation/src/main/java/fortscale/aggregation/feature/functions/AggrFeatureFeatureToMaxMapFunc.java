@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.common.feature.*;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
@@ -26,9 +25,9 @@ import java.util.*;
 @JsonTypeName(AggrFeatureFeatureToMaxMapFunc.AGGR_FEATURE_FUNCTION_TYPE)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class AggrFeatureFeatureToMaxMapFunc implements IAggrFeatureFunction {
-    protected static final String FEATURE_GROUP_SEPERATOR_KEY = "# # #";
-    protected static final String FEATURE_SEPERATOR_KEY = "#";
-    final static String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_feature_to_max_map_func";
+    public static final String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_feature_to_max_map_func";
+    public static final String FEATURE_GROUP_SEPARATOR_KEY = "# # #";
+    public static final String FEATURE_SEPARATOR_KEY = "#";
     public final static String GROUP_BY_FIELD_NAME = "groupBy";
     public final static String MAXIMIZE_FIELD_NAME = "maximize";
 
@@ -89,9 +88,9 @@ public class AggrFeatureFeatureToMaxMapFunc implements IAggrFeatureFunction {
                 return null;
             }
             if(builder.length() > 0){
-                builder.append(FEATURE_GROUP_SEPERATOR_KEY);
+                builder.append(FEATURE_GROUP_SEPARATOR_KEY);
             }
-            builder.append(groupByFeatureName).append(FEATURE_SEPERATOR_KEY).append(((FeatureStringValue) featureToGroupBy.getValue()).getValue());
+            builder.append(groupByFeatureName).append(FEATURE_SEPARATOR_KEY).append(featureToGroupBy.getValue().toString());
         }
         return builder.toString();
     }

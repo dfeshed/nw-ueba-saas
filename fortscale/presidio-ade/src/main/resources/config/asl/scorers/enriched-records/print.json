@@ -1,0 +1,164 @@
+{
+  "ade-event-type-scorers": [
+    {
+      "ade-event-type": "print",
+      "scorers": [
+        {
+          "type": "pareto-scorer",
+          "name": "print-event-score",
+          "highest-score-weight": 0.8,
+          "scorers": [
+            {
+              "type": "time-model-scorer",
+              "name": "startInstant.userId.print.score",
+              "additional-models": [],
+              "model": {
+                "name": "startInstant.userId.print"
+              },
+              "number-of-partitions-to-influence-enough": 10,
+              "min-number-of-partitions-to-influence": 1,
+              "max-rare-timestamp-count": 5,
+              "max-num-of-rare-timestamps": 5,
+              "use-certainty-to-calculate-score": true
+            },
+            {
+              "type": "reduction-scorer",
+              "name": "srcMachineNameRegexCluster.userId.print.score",
+              "main-scorer": {
+                "type": "category-rarity-model-scorer",
+                "name": "srcMachineNameRegexCluster.userId.print.score",
+                "model": {
+                  "name": "srcMachineNameRegexCluster.userId.print"
+                },
+                "max-rare-count": 8,
+                "max-num-of-rare-features": 15
+              },
+              "reduction-scorer": {
+                "type": "score-and-certainty-multiplier-scorer",
+                "name": "userId.srcMachineId.print.score",
+                "base-scorer": {
+                  "type": "category-rarity-model-scorer",
+                  "name": "userId.srcMachineId.print.score",
+                  "model": {
+                    "name": "userId.srcMachineId.print"
+                  },
+                  "max-rare-count": 8,
+                  "max-num-of-rare-features": 15
+                }
+              },
+              "reduction-weight": 0.5
+            },
+            {
+              "type": "reduction-scorer",
+              "name": "dstMachineId.userId.print.score",
+              "main-scorer": {
+                "type": "category-rarity-model-scorer",
+                "name": "dstMachineId.userId.print.score",
+                "model": {
+                  "name": "dstMachineId.userId.print"
+                },
+                "max-rare-count": 8,
+                "max-num-of-rare-features": 15
+              },
+              "reduction-scorer": {
+                "type": "score-and-certainty-multiplier-scorer",
+                "name": "userId.dstMachineId.print.score",
+                "base-scorer": {
+                  "type": "category-rarity-model-scorer",
+                  "name": "userId.dstMachineId.print.score",
+                  "model": {
+                    "name": "userId.dstMachineId.print"
+                  },
+                  "max-rare-count": 8,
+                  "max-num-of-rare-features": 15
+                }
+              },
+              "reduction-weight": 0.5
+            },
+            {
+              "type": "reduction-scorer",
+              "name": "dstMachineNameRegexCluster.userId.print.score",
+              "main-scorer": {
+                "type": "category-rarity-model-scorer",
+                "name": "dstMachineNameRegexCluster.userId.print.score",
+                "model": {
+                  "name": "dstMachineNameRegexCluster.userId.print"
+                },
+                "max-rare-count": 8,
+                "max-num-of-rare-features": 15
+              },
+              "reduction-scorer": {
+                "type": "score-and-certainty-multiplier-scorer",
+                "name": "userId.dstMachineId.print.score",
+                "base-scorer": {
+                  "type": "category-rarity-model-scorer",
+                  "name": "userId.dstMachineId.print.score",
+                  "model": {
+                    "name": "userId.dstMachineId.print"
+                  },
+                  "max-rare-count": 8,
+                  "max-num-of-rare-features": 15
+                }
+              },
+              "reduction-weight": 0.5
+            },
+            {
+              "type": "low-values-score-reducer",
+              "name": "numOfPages.userId.print.score",
+              "base-scorer": {
+                "type": "score-exponential-mapper",
+                "name": "numOfPages.userId.print.score",
+                "score-mapping-conf": {
+                  "minScoreToMap": 95,
+                  "maxScoreToMap": 100,
+                  "base": 2.5
+                },
+                "base-scorer": {
+                  "type": "gaussian-model-scorer",
+                  "name": "numOfPages.userId.print.score",
+                  "model": {
+                    "name": "numOfPages.userId.print"
+                  },
+                  "additional-models": [
+                    {
+                      "name": "numOfPages.userId.prior.print"
+                    }
+                  ],
+                  "global-influence": 15,
+                  "number-of-partitions-to-influence-enough": 10,
+                  "use-certainty-to-calculate-score": false
+                }
+              },
+              "reduction-configs": [
+                {
+                  "reducingFeatureName": "numOfPages",
+                  "reducingFactor": 0,
+                  "maxValueForFullyReduce": 30.0,
+                  "minValueForNotReduce": 60.0
+                }
+              ]
+            },
+            {
+              "type": "category-rarity-model-scorer",
+              "name": "absoluteFolderPath.userId.print.score",
+              "model": {
+                "name": "absoluteFolderPath.userId.print"
+              },
+              "max-rare-count": 8,
+              "max-num-of-rare-features": 15
+            },
+            {
+              "type": "category-rarity-model-scorer",
+              "name": "fileExtension.userId.print.score",
+              "model": {
+                "name": "fileExtension.userId.print"
+              },
+              "max-rare-count": 8,
+              "max-num-of-rare-features": 15
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

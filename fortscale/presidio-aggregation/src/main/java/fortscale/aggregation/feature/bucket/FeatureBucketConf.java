@@ -25,7 +25,6 @@ public class FeatureBucketConf implements Serializable {
 	private List<String> adeEventTypes;
 	private List<String> contextFieldNames;
 	private String strategyName;
-	private Integer expireAfterSeconds;
 	private List<AggregatedFeatureConf> aggrFeatureConfs;
 	private Set<String> allFeatureNames;
 
@@ -74,10 +73,6 @@ public class FeatureBucketConf implements Serializable {
 
 	public String getStrategyName() {
 		return strategyName;
-	}
-
-	public Integer getExpireAfterSeconds() {
-		return expireAfterSeconds;
 	}
 
 	public List<AggregatedFeatureConf> getAggrFeatureConfs() {

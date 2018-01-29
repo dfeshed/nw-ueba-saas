@@ -2,7 +2,6 @@
   "BucketConfs": [
     {
       "name": "normalized_username_dlpfile_hourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "context.userId"
       ],
@@ -29,7 +28,6 @@
     },
     {
       "name": "normalized_src_machine_dlpfile_daily",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "context.userId"
       ],

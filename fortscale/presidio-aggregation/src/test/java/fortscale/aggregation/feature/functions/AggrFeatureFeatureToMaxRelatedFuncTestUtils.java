@@ -21,7 +21,7 @@ public class AggrFeatureFeatureToMaxRelatedFuncTestUtils {
         pickFeatureNameList.add(pickFeatureName);
         Map<String, List<String>> map = new HashMap<>();
         map.put(AbstractAggrFeatureEventFeatureToMaxMapFunc.PICK_FIELD_NAME, pickFeatureNameList);
-        return new AggregatedFeatureEventConf(name, "F", "bucketConfName", 3, 1, 300, map, new JSONObject());
+        return new AggregatedFeatureEventConf(name, "F", "bucketConfName", 3, 1, map, new JSONObject());
     }
 
 

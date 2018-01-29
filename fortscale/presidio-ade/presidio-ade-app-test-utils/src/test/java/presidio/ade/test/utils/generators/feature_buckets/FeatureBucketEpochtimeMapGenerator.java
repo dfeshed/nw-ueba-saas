@@ -23,7 +23,7 @@ public class FeatureBucketEpochtimeMapGenerator implements IMapGenerator<String,
     private final Instant startInstant;
     private final Duration strategy;
     private final Map<Duration, Long> deltaToCountMap;
-    private final String featureName;
+    protected final String featureName;
     private Instant nextInstant;
 
     public FeatureBucketEpochtimeMapGenerator(

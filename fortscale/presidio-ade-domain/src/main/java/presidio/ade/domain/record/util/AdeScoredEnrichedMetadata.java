@@ -15,6 +15,5 @@ import java.lang.annotation.Target;
 // Allow to use only on types:
 @Target(ElementType.TYPE)
 public @interface AdeScoredEnrichedMetadata {
-
-    Class<? extends EnrichedRecord> erichedRecord();
+    Class<? extends EnrichedRecord> enrichedRecord();
 }

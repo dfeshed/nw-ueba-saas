@@ -6,8 +6,6 @@
       "bucketConfName": "highestStartInstantScoreUserIdFileHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "highestStartInstantScore"
@@ -23,8 +21,6 @@
       "bucketConfName": "operationTypeToHighestScoreMapUserIdFilePermissionChangeFileHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "operationTypeToHighestScoreMap"
@@ -42,8 +38,6 @@
       "bucketConfName": "operationTypeToHighestScoreMapUserIdFileActionFileHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "operationTypeToHighestScoreMap"

@@ -4,6 +4,7 @@ import fortscale.aggregation.feature.bucket.FeatureBucketReaderConfig;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.factories.CategoricalFeatureValueRetrieverFactory;
 import fortscale.ml.model.retriever.factories.ContextHistogramRetrieverFactory;
+import fortscale.ml.model.retriever.factories.EpochtimeToHighestIntegerMapRetrieverFactory;
 import fortscale.utils.factory.AbstractServiceAutowiringFactory;
 import fortscale.utils.factory.FactoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,8 @@ import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataRe
 import java.util.Collection;
 
 /**
- * Created by barak_schuster on 7/25/17.
+ * @author Barak Schuster
+ * @author Lior Govrin
  */
 @Configuration
 @Import({
@@ -23,6 +25,7 @@ import java.util.Collection;
         ModelScoreAggregationBucketConfigurationServiceConfig.class,
         CustomContextHistogramRetrieverFactoryConfig.class,
         CategoricalFeatureValueRetrieverFactoryConfig.class,
+        EpochtimeToHighestIntegerMapRetrieverFactoryConfig.class,
         // common application confs
         FeatureBucketReaderConfig.class,
         AggregationEventsAccumulationDataReaderConfig.class,
@@ -30,9 +33,10 @@ import java.util.Collection;
 })
 @ComponentScan(
         value = "fortscale.ml.model.retriever.factories",
-        // the custom context histogram retriever factory is used instead
-        excludeFilters = {@Filter(type = FilterType.ASSIGNABLE_TYPE, value = ContextHistogramRetrieverFactory.class),
+        excludeFilters = {
+                @Filter(type = FilterType.ASSIGNABLE_TYPE, value = ContextHistogramRetrieverFactory.class),
                 @Filter(type = FilterType.ASSIGNABLE_TYPE, value = CategoricalFeatureValueRetrieverFactory.class),
+                @Filter(type = FilterType.ASSIGNABLE_TYPE, value = EpochtimeToHighestIntegerMapRetrieverFactory.class),
                 @Filter(type = FilterType.REGEX, pattern = "fortscale.ml.model.retriever.factories.smart.*")
         }
 )
@@ -40,7 +44,7 @@ public class DataRetrieverFactoryServiceConfig {
     @Autowired
     private Collection<AbstractServiceAutowiringFactory<AbstractDataRetriever>> dataRetrieverFactories;
     @Autowired
-    AggregationEventsAccumulationDataReader aggregationEventsAccumulationDataReader;
+    private AggregationEventsAccumulationDataReader aggregationEventsAccumulationDataReader;
 
     @Bean
     public FactoryService<AbstractDataRetriever> dataRetrieverFactoryService() {

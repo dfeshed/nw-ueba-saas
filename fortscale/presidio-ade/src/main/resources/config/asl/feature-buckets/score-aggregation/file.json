@@ -3,7 +3,6 @@
   "BucketConfs": [
     {
       "name": "highestStartInstantScoreUserIdFileHourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -27,7 +26,6 @@
     },
     {
       "name": "operationTypeToHighestScoreMapUserIdFilePermissionChangeFileHourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -54,7 +52,6 @@
     },
     {
       "name": "operationTypeToHighestScoreMapUserIdFileActionFileHourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],

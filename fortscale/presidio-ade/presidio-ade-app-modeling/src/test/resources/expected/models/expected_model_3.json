@@ -1,0 +1,18 @@
+{
+  "type": "continuous-max-data-model",
+  "numOfPartitions": 90,
+  "continuousDataModel": {
+    "type": "continuous-data-model",
+    "N": 900,
+    "mean": 10.0,
+    "sd": 0.0,
+    "maxValue": 10.0
+  },
+  "continuousMaxDataModel": {
+    "type": "continuous-data-model",
+    "N": 30,
+    "mean": 10.0,
+    "sd": 0.0,
+    "maxValue": 10.0
+  }
+}

@@ -1,5 +1,6 @@
 package presidio.ade.domain.record.enriched.authentication;
 
+import fortscale.common.general.Schema;
 import fortscale.domain.feature.score.FeatureScore;
 import org.springframework.data.mongodb.core.mapping.Document;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
@@ -14,7 +15,7 @@ import java.util.List;
  * @author Barak Schuster
  */
 @Document
-@AdeScoredEnrichedMetadata(erichedRecord = EnrichedAuthenticationRecord.class)
+@AdeScoredEnrichedMetadata(enrichedRecord = EnrichedAuthenticationRecord.class)
 public class AdeScoredAuthenticationRecord extends AdeScoredEnrichedRecord<AdeEnrichedAuthenticationContext> {
     public AdeScoredAuthenticationRecord() {
         super();
@@ -26,7 +27,7 @@ public class AdeScoredAuthenticationRecord extends AdeScoredEnrichedRecord<AdeEn
 
     @Override
     public List<String> getDataSources() {
-        return Collections.singletonList(AdeAuthenticationRecord.AUTHENTICATION_STR);
+        return Collections.singletonList(Schema.AUTHENTICATION.getName());
     }
 
     @Override

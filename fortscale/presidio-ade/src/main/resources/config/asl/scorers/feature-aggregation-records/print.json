@@ -1,0 +1,291 @@
+{
+  "ade-event-type-scorers": [
+    {
+      "ade-event-type": "aggr_event.numberOfSuccessfulPrintsUserIdPrintHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "numberOfSuccessfulPrints.userId.print.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-mapper",
+            "name": "numberOfSuccessfulPrints.userId.print.hourly.scorer",
+            "score-mapping-conf": {
+              "minScoreToMap": 95,
+              "maxScoreToMap": 100,
+              "base": 2.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfSuccessfulPrints.userId.print.hourly.scorer",
+              "model": {
+                "name": "numberOfSuccessfulPrints.userId.print.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "numberOfSuccessfulPrints.userId.prior.print.hourly"
+                }
+              ],
+              "global-influence": 15,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.numberOfFailedPrintsUserIdPrintHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "numberOfFailedPrints.userId.print.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-mapper",
+            "name": "numberOfFailedPrints.userId.print.hourly.scorer",
+            "score-mapping-conf": {
+              "minScoreToMap": 95,
+              "maxScoreToMap": 100,
+              "base": 2.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfFailedPrints.userId.print.hourly.scorer",
+              "model": {
+                "name": "numberOfFailedPrints.userId.print.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "numberOfFailedPrints.userId.prior.print.hourly"
+                }
+              ],
+              "global-influence": 15,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.numberOfDistinctSrcMachineIdUserIdPrintHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "numberOfDistinctSrcMachineId.userId.print.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-mapper",
+            "name": "numberOfDistinctSrcMachineId.userId.print.hourly.scorer",
+            "score-mapping-conf": {
+              "minScoreToMap": 95,
+              "maxScoreToMap": 100,
+              "base": 2.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfDistinctSrcMachineId.userId.print.hourly.scorer",
+              "model": {
+                "name": "numberOfDistinctSrcMachineId.userId.print.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "numberOfDistinctSrcMachineId.userId.prior.print.hourly"
+                }
+              ],
+              "global-influence": 15,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.numberOfDistinctDstMachineIdUserIdPrintHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "numberOfDistinctDstMachineId.userId.print.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-mapper",
+            "name": "numberOfDistinctDstMachineId.userId.print.hourly.scorer",
+            "score-mapping-conf": {
+              "minScoreToMap": 95,
+              "maxScoreToMap": 100,
+              "base": 2.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfDistinctDstMachineId.userId.print.hourly.scorer",
+              "model": {
+                "name": "numberOfDistinctDstMachineId.userId.print.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "numberOfDistinctDstMachineId.userId.prior.print.hourly"
+                }
+              ],
+              "global-influence": 15,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.numberOfDistinctSrcMachineNameRegexClusterUserIdPrintHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "numberOfDistinctSrcMachineNameRegexCluster.userId.print.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-mapper",
+            "name": "numberOfDistinctSrcMachineNameRegexCluster.userId.print.hourly.scorer",
+            "score-mapping-conf": {
+              "minScoreToMap": 95,
+              "maxScoreToMap": 100,
+              "base": 2.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfDistinctSrcMachineNameRegexCluster.userId.print.hourly.scorer",
+              "model": {
+                "name": "numberOfDistinctSrcMachineNameRegexCluster.userId.print.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "numberOfDistinctSrcMachineNameRegexCluster.userId.prior.print.hourly"
+                }
+              ],
+              "global-influence": 15,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.numberOfDistinctDstMachineNameRegexClusterUserIdPrintHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "numberOfDistinctDstMachineNameRegexCluster.userId.print.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-mapper",
+            "name": "numberOfDistinctDstMachineNameRegexCluster.userId.print.hourly.scorer",
+            "score-mapping-conf": {
+              "minScoreToMap": 95,
+              "maxScoreToMap": 100,
+              "base": 2.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfDistinctDstMachineNameRegexCluster.userId.print.hourly.scorer",
+              "model": {
+                "name": "numberOfDistinctDstMachineNameRegexCluster.userId.print.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "numberOfDistinctDstMachineNameRegexCluster.userId.prior.print.hourly"
+                }
+              ],
+              "global-influence": 15,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.numberOfDistinctAbsoluteFolderPathUserIdPrintHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "numberOfDistinctAbsoluteFolderPath.userId.print.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-mapper",
+            "name": "numberOfDistinctAbsoluteFolderPath.userId.print.hourly.scorer",
+            "score-mapping-conf": {
+              "minScoreToMap": 95,
+              "maxScoreToMap": 100,
+              "base": 2.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfDistinctAbsoluteFolderPath.userId.print.hourly.scorer",
+              "model": {
+                "name": "numberOfDistinctAbsoluteFolderPath.userId.print.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "numberOfDistinctAbsoluteFolderPath.userId.prior.print.hourly"
+                }
+              ],
+              "global-influence": 15,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
