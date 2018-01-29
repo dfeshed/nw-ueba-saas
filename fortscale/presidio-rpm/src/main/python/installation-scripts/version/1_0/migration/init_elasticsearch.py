@@ -22,7 +22,13 @@ DEFAULT = ELASTICSEARCH_PATH + '/default/kibana-default-pattern.json'
 HEADERS = {"Content-Type": "application/json"}
 URL_ALIASES = MACHINE_URL + "_aliases"
 URL_TEMPLATES = MACHINE_URL + "_template/"
-SETTING = "settings"
+SETTING = 'settings'
+MAPPINGS = 'mappings'
+ALIASES = 'aliases'
+MAPPINGS_FILE_NAME = 'mappings.json'
+SETTINGS_FILE_NAME = 'settings.json'
+ALIASES_FILE_NAME = 'aliases.json'
+TEMPLATE_FILE_NAME = 'template.json'
 
 
 def put_request(url, data):
@@ -109,23 +115,17 @@ def create_elastic_mapping_from_file(jsonfilepath, url):
         return False
 
 
-def is_template(path):
-    if os.path.isfile(os.path.join(path, 'template.json')):
-        return True
-    else:
-        return False
-
-
 def create_settings(path):
-    if os.path.isfile(os.path.join(path, 'settings.json')):
-        return create_elastic_mapping_from_file(os.path.join(path, 'settings.json'), MACHINE_URL)
+    file = os.path.join(path, SETTINGS_FILE_NAME)
+    if os.path.isfile(file):
+        return create_elastic_mapping_from_file(file, MACHINE_URL)
     else:
         print ('missing settings for ' + path)
         return False
 
 
 def set_mappings_for_index(path, name):
-    file = os.path.join(path, 'mappings.json')
+    file = os.path.join(path, MAPPINGS_FILE_NAME)
     if os.path.isfile(file):
         create_indexes(file, name)
     else:
@@ -133,7 +133,7 @@ def set_mappings_for_index(path, name):
 
 
 def set_aliases_for_index(path):
-    file = os.path.join(path, 'aliases.json')
+    file = os.path.join(path, ALIASES_FILE_NAME)
     if os.path.isfile(file):
         create_aliases(file)
     else:
@@ -149,19 +149,19 @@ def json_from_file(file):
 
 
 def create_template(path):
-    templatefile = os.path.join(path, 'template.json')
+    templatefile = os.path.join(path, TEMPLATE_FILE_NAME)
     try:
         with open(templatefile) as json_data:
-            obj = json.load(json_data)
-            mappings = json_from_file(os.path.join(path, 'mappings.json'))
-            settings = json_from_file(os.path.join(path, 'settings.json'))
-            aliases = json_from_file(os.path.join(path, 'aliases.json'))
-            obj2 = dict.values(obj)[0]
-            obj2['mappings'] = mappings
-            obj2['settings'] = settings
-            obj2['aliases'] = aliases
-            name = dict.keys(obj)[0]
-            data = json.dumps(dict.values(obj)[0])
+            templatejson = json.load(json_data)
+            mappings = json_from_file(os.path.join(path, MAPPINGS_FILE_NAME))
+            settings = json_from_file(os.path.join(path, SETTINGS_FILE_NAME))
+            aliases = json_from_file(os.path.join(path, ALIASES_FILE_NAME))
+            templatefields = dict.values(templatejson)[0]
+            templatefields[MAPPINGS] = mappings
+            templatefields[SETTING] = settings
+            templatefields[ALIASES] = aliases
+            name = dict.keys(templatejson)[0]
+            data = json.dumps(dict.values(templatejson)[0])
             print("INFO: creating index:" + name)
             requesturl = (URL_TEMPLATES + name).replace(" ", "")
             put_request(requesturl, data)
@@ -181,7 +181,7 @@ def create_index_by_order(path, name):
 def create_elasticsearch_indexes(path):
     for subfolder in os.listdir(path):
         newpath = os.path.join(path, subfolder)
-        if is_template(newpath):
+        if os.path.isfile(os.path.join(newpath, TEMPLATE_FILE_NAME)):
             create_template(newpath)
         else:
             create_index_by_order(newpath, subfolder)
