@@ -4,7 +4,7 @@ import fortscale.domain.feature.score.FeatureScore;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.shell.BootShim;
 import fortscale.utils.shell.BootShimConfig;
-import fortscale.utils.store.record.StoreManagerMetadataProperties;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.test.category.ModuleTestCategory;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.time.TimeService;
@@ -122,7 +122,7 @@ public class AccumulateSmartApplicationTest {
             }
             start = TimeService.floorTime(start.plus(DURATION), DURATION);
         }
-        smartDataStore.storeSmartRecords(CONFIGURATION_NAME, smartRecords, new StoreManagerMetadataProperties(Collections.EMPTY_MAP));
+        smartDataStore.storeSmartRecords(CONFIGURATION_NAME, smartRecords, new StoreMetadataProperties(Collections.EMPTY_MAP));
     }
 
     /**

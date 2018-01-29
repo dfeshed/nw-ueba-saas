@@ -14,7 +14,7 @@ import fortscale.smart.record.conf.SmartRecordConfService;
 import fortscale.utils.shell.BootShim;
 import fortscale.utils.shell.BootShimConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
-import fortscale.utils.store.record.StoreManagerMetadataProperties;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.test.category.ModuleTestCategory;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import javafx.util.Pair;
@@ -322,7 +322,7 @@ public class ModelingServiceApplicationSmartModelsTest {
         TimeGenerator startInstantGenerator = new MinutesIncrementTimeGenerator(LocalTime.of(0, 0), LocalTime.of(0, 0), 1440, daysBackFrom, daysBackTo);
         AccumulatedSmartsDailyGenerator accumulatedSmartsGenerator = new AccumulatedSmartsDailyGenerator(contextIdGenerator, startInstantGenerator, featuresGroupToScoreAndProbabilityMap, numOfSmarts);
         List<AccumulatedSmartRecord> accumulatedSmartRecords = accumulatedSmartsGenerator.generate();
-        smartAccumulationDataStore.store(accumulatedSmartRecords, "userId_hourly", new StoreManagerMetadataProperties());
+        smartAccumulationDataStore.store(accumulatedSmartRecords, "userId_hourly", new StoreMetadataProperties());
     }
 
     /**

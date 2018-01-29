@@ -7,7 +7,7 @@ import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.smart.record.conf.SmartRecordConf;
 import fortscale.smart.record.conf.SmartRecordConfService;
 import fortscale.utils.pagination.PageIterator;
-import fortscale.utils.store.record.StoreManagerMetadataProperties;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.store.StoreManager;
 import org.springframework.data.util.Pair;
@@ -194,17 +194,17 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
 
     @Override
     public void storeEnrichedRecords(EnrichedRecordsMetadata metadata, List<? extends EnrichedRecord> records) {
-        StoreManagerMetadataProperties storeManagerMetadataProperties = new StoreManagerMetadataProperties();
-        storeManagerMetadataProperties.setProperties(SCHEMA, metadata.getAdeEventType());
-        storeManagerAwareEnrichedDataStore.store(metadata, records, storeManagerMetadataProperties);
+        StoreMetadataProperties storeMetadataProperties = new StoreMetadataProperties();
+        storeMetadataProperties.setProperties(SCHEMA, metadata.getAdeEventType());
+        storeManagerAwareEnrichedDataStore.store(metadata, records, storeMetadataProperties);
     }
 
     @Override
     public void cleanupEnrichedRecords(AdeDataStoreCleanupParams adeDataStoreCleanupParams) {
         String storeName = storeManagerAwareEnrichedDataStore.getStoreName();
-        StoreManagerMetadataProperties storeManagerMetadataProperties = new StoreManagerMetadataProperties();
-        storeManagerMetadataProperties.setProperties(SCHEMA, adeDataStoreCleanupParams.getAdeEventType());
-        storeManager.cleanupCollections(storeName, new TimeRange(adeDataStoreCleanupParams.getStartDate(), adeDataStoreCleanupParams.getEndDate()), storeManagerMetadataProperties);
+        StoreMetadataProperties storeMetadataProperties = new StoreMetadataProperties();
+        storeMetadataProperties.setProperties(SCHEMA, adeDataStoreCleanupParams.getAdeEventType());
+        storeManager.cleanupCollections(storeName, new TimeRange(adeDataStoreCleanupParams.getStartDate(), adeDataStoreCleanupParams.getEndDate()), storeMetadataProperties);
     }
 
     @Override

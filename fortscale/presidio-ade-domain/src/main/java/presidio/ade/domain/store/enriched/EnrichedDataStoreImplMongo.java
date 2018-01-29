@@ -6,7 +6,7 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.store.StoreManager;
-import fortscale.utils.store.record.StoreManagerMetadataProperties;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -54,11 +54,11 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
     }
 
     @Override
-    public void store(EnrichedRecordsMetadata recordsMetadata, List<? extends EnrichedRecord> records, StoreManagerMetadataProperties storeManagerMetadataProperties) {
+    public void store(EnrichedRecordsMetadata recordsMetadata, List<? extends EnrichedRecord> records, StoreMetadataProperties storeMetadataProperties) {
         logger.info("storing by recordsMetadata={}", recordsMetadata);
         String collectionName = translator.toCollectionName(recordsMetadata);
         mongoDbBulkOpUtil.insertUnordered(records, collectionName);
-        storeManager.registerWithTtl(getStoreName(), collectionName, storeManagerMetadataProperties);
+        storeManager.registerWithTtl(getStoreName(), collectionName, storeMetadataProperties);
     }
 
     @Override

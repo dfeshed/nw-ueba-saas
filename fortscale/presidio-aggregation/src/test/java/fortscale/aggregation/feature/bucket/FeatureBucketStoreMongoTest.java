@@ -3,7 +3,7 @@ package fortscale.aggregation.feature.bucket;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
-import fortscale.utils.store.record.StoreManagerMetadataProperties;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
 import org.junit.Assert;
 import org.junit.Before;
@@ -70,7 +70,7 @@ public class FeatureBucketStoreMongoTest {
 		FeatureBucketConf featureBucketConf = mock(FeatureBucketConf.class);
 		when(featureBucketConf.getName()).thenReturn("testFeatureBucketConf");
 		FeatureBucket featureBucket = new FeatureBucket();
-		store.storeFeatureBucket(featureBucketConf, featureBucket, new StoreManagerMetadataProperties());
+		store.storeFeatureBucket(featureBucketConf, featureBucket, new StoreMetadataProperties());
 
 		verify(featureBucketConf, times(1)).getName();
 		verify(mongoDbBulkOpUtil, times(1)).insertUnordered(anyList(),anyString());

@@ -1,13 +1,12 @@
 package fortscale.utils.store;
 
 
-import fortscale.utils.store.record.StoreManagerMetadataProperties;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collections;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -45,17 +44,17 @@ public class StoreManagerAwareTest implements StoreManagerAware {
 
     public void save(StoreManagerRecordTest storeManagerRecordTest, String collectionName, Duration ttl, Duration cleanupInterval) {
         mongoTemplate.insert(storeManagerRecordTest, collectionName);
-        storeManager.registerWithTtl(getStoreName(), collectionName, ttl, cleanupInterval, new StoreManagerMetadataProperties());
+        storeManager.registerWithTtl(getStoreName(), collectionName, ttl, cleanupInterval, new StoreMetadataProperties());
     }
 
     public void saveWithDefaultTtl(StoreManagerRecordTest storeManagerRecordTest, String collectionName) {
         mongoTemplate.insert(storeManagerRecordTest,collectionName);
-        storeManager.registerWithTtl(getStoreName(), collectionName, new StoreManagerMetadataProperties());
+        storeManager.registerWithTtl(getStoreName(), collectionName, new StoreMetadataProperties());
     }
 
     public void register(StoreManagerRecordTest storeManagerRecordTest, String collectionName) {
         mongoTemplate.insert(storeManagerRecordTest, collectionName);
-        storeManager.register(getStoreName(), collectionName, new StoreManagerMetadataProperties());
+        storeManager.register(getStoreName(), collectionName, new StoreMetadataProperties());
     }
 
 

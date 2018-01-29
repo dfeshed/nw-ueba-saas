@@ -1,6 +1,6 @@
 package fortscale.utils.store;
 
-import fortscale.utils.store.record.StoreManagerMetadataProperties;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.store.record.StoreMetadata;
 import fortscale.utils.time.TimeRange;
 
@@ -53,8 +53,8 @@ public class StoreManager {
      * @param storeName      store name
      * @param collectionName collection name
      */
-    public void register(String storeName, String collectionName, StoreManagerMetadataProperties storeManagerMetadataProperties) {
-        appSpecificStoreMetadataStore.save(storeName, collectionName, null, null, storeManagerMetadataProperties.getProperties());
+    public void register(String storeName, String collectionName, StoreMetadataProperties storeMetadataProperties) {
+        appSpecificStoreMetadataStore.save(storeName, collectionName, null, null, storeMetadataProperties.getProperties());
     }
 
 
@@ -66,8 +66,8 @@ public class StoreManager {
      * @param ttl             ttl
      * @param cleanupInterval clean up interval
      */
-    public void registerWithTtl(String storeName, String collectionName, Duration ttl, Duration cleanupInterval, StoreManagerMetadataProperties storeManagerMetadataProperties) {
-        appSpecificStoreMetadataStore.save(storeName, collectionName, ttl, cleanupInterval, storeManagerMetadataProperties.getProperties());
+    public void registerWithTtl(String storeName, String collectionName, Duration ttl, Duration cleanupInterval, StoreMetadataProperties storeMetadataProperties) {
+        appSpecificStoreMetadataStore.save(storeName, collectionName, ttl, cleanupInterval, storeMetadataProperties.getProperties());
     }
 
     /**
@@ -76,8 +76,8 @@ public class StoreManager {
      * @param storeName      store name
      * @param collectionName collection name
      */
-    public void registerWithTtl(String storeName, String collectionName, StoreManagerMetadataProperties storeManagerMetadataProperties) {
-        appSpecificStoreMetadataStore.save(storeName, collectionName, defaultTtl, defaultCleanupInterval, storeManagerMetadataProperties.getProperties());
+    public void registerWithTtl(String storeName, String collectionName, StoreMetadataProperties storeMetadataProperties) {
+        appSpecificStoreMetadataStore.save(storeName, collectionName, defaultTtl, defaultCleanupInterval, storeMetadataProperties.getProperties());
     }
 
     /**
@@ -153,10 +153,10 @@ public class StoreManager {
      * @param storeName store name
      * @param timeRange timeRange
      */
-    public void cleanupCollections(String storeName, TimeRange timeRange, StoreManagerMetadataProperties storeManagerMetadataProperties) {
+    public void cleanupCollections(String storeName, TimeRange timeRange, StoreMetadataProperties storeMetadataProperties) {
         List<StoreMetadata> storeMetadataList = storeMetadataRepository.findByStoreName(storeName);
         StoreManagerAware storeManagerAware = storeNameToStoreManagerAware.get(storeName);
-        storeMetadataList = storeMetadataList.stream().filter(storeMetadata -> storeMetadata.getProperties().equals(storeManagerMetadataProperties.getProperties())).collect(Collectors.toList());
+        storeMetadataList = storeMetadataList.stream().filter(storeMetadata -> storeMetadata.getProperties().equals(storeMetadataProperties.getProperties())).collect(Collectors.toList());
 
         storeMetadataList.forEach(storeMetadata -> {
                     String collectionName = storeMetadata.getCollectionName();

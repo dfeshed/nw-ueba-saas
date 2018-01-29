@@ -1,7 +1,7 @@
 package fortscale.aggregation.feature.bucket;
 
 import com.google.common.collect.Lists;
-import fortscale.utils.store.record.StoreManagerMetadataProperties;
+import fortscale.utils.store.record.StoreMetadataProperties;
 
 import java.util.List;
 
@@ -17,9 +17,9 @@ public interface FeatureBucketStore extends FeatureBucketReader {
 	 *  @param featureBucketConf the {@link FeatureBucketConf} from which the {@link FeatureBucket} was created
 	 * @param featureBuckets     the {@link FeatureBucket} to store
 	 */
-	void storeFeatureBucket(FeatureBucketConf featureBucketConf, List<FeatureBucket> featureBuckets, StoreManagerMetadataProperties storeManagerMetadataProperties);
-	default void storeFeatureBucket(FeatureBucketConf featureBucketConf, FeatureBucket featureBucket, StoreManagerMetadataProperties storeManagerMetadataProperties)
+	void storeFeatureBucket(FeatureBucketConf featureBucketConf, List<FeatureBucket> featureBuckets, StoreMetadataProperties storeMetadataProperties);
+	default void storeFeatureBucket(FeatureBucketConf featureBucketConf, FeatureBucket featureBucket, StoreMetadataProperties storeMetadataProperties)
 	{
-		storeFeatureBucket(featureBucketConf, Lists.newArrayList(featureBucket), storeManagerMetadataProperties);
+		storeFeatureBucket(featureBucketConf, Lists.newArrayList(featureBucket), storeMetadataProperties);
 	}
 }

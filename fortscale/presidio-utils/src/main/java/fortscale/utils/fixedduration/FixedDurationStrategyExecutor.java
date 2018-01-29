@@ -1,7 +1,7 @@
 package fortscale.utils.fixedduration;
 
 import fortscale.utils.logging.Logger;
-import fortscale.utils.store.record.StoreManagerMetadataProperties;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
 
 import java.util.List;
@@ -25,7 +25,7 @@ public abstract class FixedDurationStrategyExecutor {
      * @param timeRange start and end time of data to be executed upon
      * @param adeEventType ade event type
      */
-    public void execute(TimeRange timeRange, String adeEventType, StoreManagerMetadataProperties storeManagerMetadataProperties) {
+    public void execute(TimeRange timeRange, String adeEventType, StoreMetadataProperties storeMetadataProperties) {
         logger.debug("got execution time range={}",timeRange);
         List<TimeRange> partitionedTimeRanges = FixedDurationStrategyUtils.splitTimeRangeByStrategy(timeRange, strategy);
 
@@ -33,7 +33,7 @@ public abstract class FixedDurationStrategyExecutor {
             for (TimeRange timePartition : partitionedTimeRanges) {
                 logger.debug("executing on time partition={}", timePartition);
                 try {
-                    executeSingleTimeRange(timePartition, adeEventType,contextType, storeManagerMetadataProperties);
+                    executeSingleTimeRange(timePartition, adeEventType,contextType, storeMetadataProperties);
                 }
                 catch (Exception e)
                 {
@@ -47,7 +47,7 @@ public abstract class FixedDurationStrategyExecutor {
     /**
      * runs calculation for single hour/day/other fixed duration per adeEventType for all relvant contexts
      */
-    protected abstract void executeSingleTimeRange(TimeRange timeRange, String adeEventType, String contextType, StoreManagerMetadataProperties storeManagerMetadataProperties);
+    protected abstract void executeSingleTimeRange(TimeRange timeRange, String adeEventType, String contextType, StoreMetadataProperties storeMetadataProperties);
 
     protected abstract List<String> getDistinctContextTypes(String adeEventType);
 }

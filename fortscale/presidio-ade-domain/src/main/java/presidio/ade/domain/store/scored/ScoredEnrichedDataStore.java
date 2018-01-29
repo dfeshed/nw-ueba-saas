@@ -1,6 +1,6 @@
 package presidio.ade.domain.store.scored;
 
-import fortscale.utils.store.record.StoreManagerMetadataProperties;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
 import org.springframework.data.util.Pair;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
@@ -19,7 +19,7 @@ public interface ScoredEnrichedDataStore {
      *
      * @param records         to be stored
      */
-    void store(List<? extends AdeScoredEnrichedRecord> records, StoreManagerMetadataProperties storeManagerMetadataProperties);
+    void store(List<? extends AdeScoredEnrichedRecord> records, StoreMetadataProperties storeMetadataProperties);
 
     /**
      * cleanup store by filtering params

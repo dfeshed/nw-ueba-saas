@@ -2,7 +2,7 @@ package fortscale.aggregation.feature.bucket;
 
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
-import fortscale.utils.store.record.StoreManagerMetadataProperties;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.store.StoreManager;
 import fortscale.utils.store.StoreManagerAware;
@@ -78,15 +78,15 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore, StoreMan
 	}
 
 	/**
-	 * @see FeatureBucketStore#storeFeatureBucket(FeatureBucketConf, List, StoreManagerMetadataProperties)
+	 * @see FeatureBucketStore#storeFeatureBucket(FeatureBucketConf, List, StoreMetadataProperties)
 	 */
 	@Override
-	public void storeFeatureBucket(FeatureBucketConf featureBucketConf, List<FeatureBucket> featureBuckets, StoreManagerMetadataProperties storeManagerMetadataProperties) {
+	public void storeFeatureBucket(FeatureBucketConf featureBucketConf, List<FeatureBucket> featureBuckets, StoreMetadataProperties storeMetadataProperties) {
 		String collectionName = getCollectionName(featureBucketConf);
 
 		try {
 			mongoDbBulkOpUtil.insertUnordered(featureBuckets,collectionName);
-			storeManager.registerWithTtl(getStoreName(), collectionName, storeManagerMetadataProperties);
+			storeManager.registerWithTtl(getStoreName(), collectionName, storeMetadataProperties);
 		} catch (Exception e) {
 			logger.error("Failed storing Feature Bucket {} in Mongo collection {}.", featureBuckets, collectionName, e);
 		}

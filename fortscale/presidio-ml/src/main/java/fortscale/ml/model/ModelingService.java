@@ -5,7 +5,7 @@ import fortscale.aggregation.configuration.AslResourceFactory;
 import fortscale.ml.model.metrics.ModelingServiceMetricsContainer;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.store.StoreManager;
-import fortscale.utils.store.record.StoreManagerMetadataProperties;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import org.springframework.core.io.Resource;
 import presidio.monitoring.flush.MetricContainerFlusher;
 
@@ -67,7 +67,7 @@ public class ModelingService {
 			List<ModelConf> modelConfs = getModelConfs(groupName);
 
 			logger.info("Running modeling engines with sessionId {} and endInstant {} as input.", sessionId, endInstant);
-			StoreManagerMetadataProperties storeManagerMetadataProperties = createStoreManagerAwareMetadata(groupName);
+			StoreMetadataProperties storeMetadataProperties = createStoreManagerAwareMetadata(groupName);
 			for (ModelConf modelConf : modelConfs) {
 
 				modelingServiceMetricsContainer.addTags(groupName, modelConf.getName());
@@ -75,7 +75,7 @@ public class ModelingService {
 				ModelingEngine modelingEngine = modelingEngineFactory.getModelingEngine(modelConf);
 				String modelConfName = modelConf.getName();
 				try {
-					modelingEngine.process(sessionId, endInstant, storeManagerMetadataProperties);
+					modelingEngine.process(sessionId, endInstant, storeMetadataProperties);
 				}
 				catch (Exception e)
 				{
@@ -85,7 +85,7 @@ public class ModelingService {
 
 				logger.info("Finished modeling engine process of modelConf {}.", modelConfName);
 			}
-			storeManager.cleanupCollections(storeManagerMetadataProperties.getProperties(), endInstant);
+			storeManager.cleanupCollections(storeMetadataProperties.getProperties(), endInstant);
 
 			metricContainerFlusher.flush();
 		}
@@ -113,10 +113,10 @@ public class ModelingService {
 		logger.info("Clean: groupName {}, sessionId {}.", groupName, sessionId);
 	}
 
-	private StoreManagerMetadataProperties createStoreManagerAwareMetadata(String groupName){
-		StoreManagerMetadataProperties storeManagerMetadataProperties = new StoreManagerMetadataProperties();
-		storeManagerMetadataProperties.setProperties(GROUP_NAME, groupName);
-		return storeManagerMetadataProperties;
+	private StoreMetadataProperties createStoreManagerAwareMetadata(String groupName){
+		StoreMetadataProperties storeMetadataProperties = new StoreMetadataProperties();
+		storeMetadataProperties.setProperties(GROUP_NAME, groupName);
+		return storeMetadataProperties;
 	}
 
 }

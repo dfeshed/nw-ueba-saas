@@ -7,15 +7,15 @@ import java.util.Map;
 /**
  * Created by maria_dorohin on 8/30/17.
  */
-public class StoreManagerMetadataProperties {
+public class StoreMetadataProperties {
 
     private Map<String,String> properties;
 
-    public StoreManagerMetadataProperties(){
+    public StoreMetadataProperties(){
         this.properties = new HashMap<>();
     }
 
-    public StoreManagerMetadataProperties(Map<String,String> properties){
+    public StoreMetadataProperties(Map<String,String> properties){
         this.properties = properties;
     }
 

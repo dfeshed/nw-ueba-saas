@@ -7,7 +7,7 @@ import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.model.store.ModelStore;
-import fortscale.utils.store.record.StoreManagerMetadataProperties;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,7 +53,7 @@ public class ModelingEngineTest {
 		List<Boolean> successes = Arrays.asList(true, true, true);
 
 		ModelingEngine modelingEngine = prepareMocks(latestEndTime, contextIds, modelTimeRange, models, successes);
-		modelingEngine.process(DEFAULT_SESSION_ID, modelTimeRange.getEnd(), new StoreManagerMetadataProperties());
+		modelingEngine.process(DEFAULT_SESSION_ID, modelTimeRange.getEnd(), new StoreMetadataProperties());
 
 		verify(store).getLatestEndInstantLt(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(modelTimeRange.getEnd()));
 		verify(selector).getContexts(eq(new TimeRange(latestEndTime, modelTimeRange.getEnd())));
@@ -81,7 +81,7 @@ public class ModelingEngineTest {
 		List<Boolean> successes = Collections.singletonList(true);
 
 		ModelingEngine modelingEngine = prepareMocks(null, contextIds, modelTimeRange, models, successes);
-		modelingEngine.process(DEFAULT_SESSION_ID, modelTimeRange.getEnd(), new StoreManagerMetadataProperties());
+		modelingEngine.process(DEFAULT_SESSION_ID, modelTimeRange.getEnd(), new StoreMetadataProperties());
 
 		Date endTime = Date.from(modelTimeRange.getEnd());
 		verify(retriever).retrieve(eq(null), eq(endTime));
@@ -101,7 +101,7 @@ public class ModelingEngineTest {
 		List<Boolean> successes = Collections.singletonList(true);
 
 		ModelingEngine modelingEngine = prepareMocks(null, contextIds, modelTimeRange, models, successes);
-		modelingEngine.process(DEFAULT_SESSION_ID, modelTimeRange.getEnd(), new StoreManagerMetadataProperties());
+		modelingEngine.process(DEFAULT_SESSION_ID, modelTimeRange.getEnd(), new StoreMetadataProperties());
 
 		verify(store).getLatestEndInstantLt(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(modelTimeRange.getEnd()));
 		verify(selector).getContexts(eq(modelTimeRange));
@@ -123,7 +123,7 @@ public class ModelingEngineTest {
 		List<Boolean> successes = Collections.singletonList(false);
 
 		ModelingEngine modelingEngine = prepareMocks(null, contextIds, modelTimeRange, models, successes);
-		modelingEngine.process(DEFAULT_SESSION_ID, modelTimeRange.getEnd(), new StoreManagerMetadataProperties());
+		modelingEngine.process(DEFAULT_SESSION_ID, modelTimeRange.getEnd(), new StoreMetadataProperties());
 
 		Date endTime = Date.from(modelTimeRange.getEnd());
 		verify(retriever).retrieve(eq(null), eq(endTime));

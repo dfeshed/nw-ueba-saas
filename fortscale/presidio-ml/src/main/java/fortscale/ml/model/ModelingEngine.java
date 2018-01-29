@@ -7,14 +7,14 @@ import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.store.record.StoreManagerMetadataProperties;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
 
 import java.time.Instant;
 import java.util.*;
 
 /**
- * A {@link ModelingEngine} corresponds to a specific {@link ModelConf}. When the {@link #process(String, Instant, StoreManagerMetadataProperties)}
+ * A {@link ModelingEngine} corresponds to a specific {@link ModelConf}. When the {@link #process(String, Instant, StoreMetadataProperties)}
  * method is called, the engine selects the context IDs, retrieves their data, builds and stores their models.
  *
  * @author Lior Govrin
@@ -53,7 +53,7 @@ public class ModelingEngine {
 	 * @param sessionId  the session ID of the built models
 	 * @param endInstant the end time of the built models
 	 */
-	public void process(String sessionId, Instant endInstant, StoreManagerMetadataProperties storeManagerMetadataProperties) {
+	public void process(String sessionId, Instant endInstant, StoreMetadataProperties storeMetadataProperties) {
 		logger.info("Process: modelConf {}, sessionId {}, endInstant {}.", modelConf.getName(), sessionId, endInstant);
 		Set<String> contextIds = getContextIds(sessionId, endInstant);
 
@@ -66,7 +66,7 @@ public class ModelingEngine {
 		modelingServiceMetricsContainer.init(factoryNames, endInstant, contextIds.size());
 
 		for (String contextId : contextIds) {
-			boolean success = process(sessionId, endInstant, contextId, storeManagerMetadataProperties);
+			boolean success = process(sessionId, endInstant, contextId, storeMetadataProperties);
 			if (success) numOfSuccesses++;
 			else numOfFailures++;
 		}
@@ -115,7 +115,7 @@ public class ModelingEngine {
 	/*
 	 * Run the retriever, builder and store steps for the given context ID.
 	 */
-	private boolean process(String sessionId, Instant endInstant, String contextId, StoreManagerMetadataProperties storeManagerMetadataProperties) {
+	private boolean process(String sessionId, Instant endInstant, String contextId, StoreMetadataProperties storeMetadataProperties) {
 		ModelBuilderData modelBuilderData;
 		Model model;
 
@@ -149,7 +149,7 @@ public class ModelingEngine {
 		// Store
 		try {
 			TimeRange timeRange = new TimeRange(endInstant.minusSeconds(timeRangeInSeconds), endInstant);
-			modelStore.save(modelConf, sessionId, contextId, model, timeRange, storeManagerMetadataProperties);
+			modelStore.save(modelConf, sessionId, contextId, model, timeRange, storeMetadataProperties);
 		} catch (Exception e) {
 			logger.error("Failed to store model for context ID {}.", contextId, e);
 			return false;

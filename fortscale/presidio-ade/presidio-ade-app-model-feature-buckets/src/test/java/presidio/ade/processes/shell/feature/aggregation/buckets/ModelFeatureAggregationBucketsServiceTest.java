@@ -11,7 +11,7 @@ import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.shell.BootShim;
 import fortscale.utils.shell.BootShimConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
-import fortscale.utils.store.record.StoreManagerMetadataProperties;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.test.category.ModuleTestCategory;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.time.TimeRange;
@@ -114,7 +114,7 @@ public class ModelFeatureAggregationBucketsServiceTest {
 
         List<EnrichedFileRecord> enrichedFileRecordList = Collections.singletonList(enrichedFileRecord);
         EnrichedRecordsMetadata enrichedRecordsMetadata = new EnrichedRecordsMetadata(ADE_EVENT_TYPE, startTime, startTime.plus(1, ChronoUnit.SECONDS));
-        enrichedDataStore.store(enrichedRecordsMetadata, enrichedFileRecordList, new StoreManagerMetadataProperties());
+        enrichedDataStore.store(enrichedRecordsMetadata, enrichedFileRecordList, new StoreMetadataProperties());
         List<ContextIdToNumOfItems> contextIdToNumOfItemsList = enrichedDataStore.aggregateContextToNumOfEvents(enrichedRecordsMetadata, "userId");
         Assert.assertEquals(1, contextIdToNumOfItemsList.size());
     }

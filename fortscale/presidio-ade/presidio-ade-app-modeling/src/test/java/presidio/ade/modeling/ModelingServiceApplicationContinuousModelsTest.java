@@ -13,7 +13,7 @@ import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.shell.BootShim;
 import fortscale.utils.shell.BootShimConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
-import fortscale.utils.store.record.StoreManagerMetadataProperties;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.test.category.ModuleTestCategory;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.junit.Assert;
@@ -176,7 +176,7 @@ public class ModelingServiceApplicationContinuousModelsTest {
                     new AccumulatedAggregationFeatureRecordHourlyGenerator(featureName, GENERATOR_CONTEXT_ID_PATTERN,
                             aggregatedFeatureValuesMap, GENERATOR_START_HOUR_OF_DAY, GENERATOR_END_HOUR_OF_DAY);
             List<AccumulatedAggregationFeatureRecord> accumulatedAggregationFeatureRecords = generator.generate();
-            accumulationDataStore.store(accumulatedAggregationFeatureRecords, new StoreManagerMetadataProperties());
+            accumulationDataStore.store(accumulatedAggregationFeatureRecords, new StoreMetadataProperties());
         }
     }
 
