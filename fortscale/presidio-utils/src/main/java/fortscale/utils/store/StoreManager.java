@@ -53,8 +53,8 @@ public class StoreManager {
      * @param storeName      store name
      * @param collectionName collection name
      */
-    public void register(String storeName, String collectionName, Map<String,String> properties) {
-        appSpecificStoreMetadataStore.save(storeName, collectionName, null, null, properties);
+    public void register(String storeName, String collectionName, StoreManagerMetadataProperties storeManagerMetadataProperties) {
+        appSpecificStoreMetadataStore.save(storeName, collectionName, null, null, storeManagerMetadataProperties.getProperties());
     }
 
 
@@ -66,8 +66,8 @@ public class StoreManager {
      * @param ttl             ttl
      * @param cleanupInterval clean up interval
      */
-    public void registerWithTtl(String storeName, String collectionName, Duration ttl, Duration cleanupInterval, Map<String,String> properties) {
-        appSpecificStoreMetadataStore.save(storeName, collectionName, ttl, cleanupInterval, properties);
+    public void registerWithTtl(String storeName, String collectionName, Duration ttl, Duration cleanupInterval, StoreManagerMetadataProperties storeManagerMetadataProperties) {
+        appSpecificStoreMetadataStore.save(storeName, collectionName, ttl, cleanupInterval, storeManagerMetadataProperties.getProperties());
     }
 
     /**
@@ -76,8 +76,8 @@ public class StoreManager {
      * @param storeName      store name
      * @param collectionName collection name
      */
-    public void registerWithTtl(String storeName, String collectionName, Map<String,String> properties) {
-        appSpecificStoreMetadataStore.save(storeName, collectionName, defaultTtl, defaultCleanupInterval, properties);
+    public void registerWithTtl(String storeName, String collectionName, StoreManagerMetadataProperties storeManagerMetadataProperties) {
+        appSpecificStoreMetadataStore.save(storeName, collectionName, defaultTtl, defaultCleanupInterval, storeManagerMetadataProperties.getProperties());
     }
 
     /**

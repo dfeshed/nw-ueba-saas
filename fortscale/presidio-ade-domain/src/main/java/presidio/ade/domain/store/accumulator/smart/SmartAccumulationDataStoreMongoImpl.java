@@ -38,7 +38,7 @@ public class SmartAccumulationDataStoreMongoImpl implements SmartAccumulationDat
         SmartAccumulatedRecordsMetaData metadata = new SmartAccumulatedRecordsMetaData(configurationName);
         String collectionName = getCollectionName(metadata);
         mongoDbBulkOpUtil.insertUnordered(records, collectionName);
-        storeManager.registerWithTtl(getStoreName(), collectionName, storeManagerMetadataProperties.getProperties());
+        storeManager.registerWithTtl(getStoreName(), collectionName, storeManagerMetadataProperties);
     }
 
     /**

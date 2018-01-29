@@ -62,7 +62,7 @@ public class ScoredEnrichedDataStoreMongoImpl implements ScoredEnrichedDataStore
             List<AdeScoredEnrichedRecord> batchToSave = entry.getValue();
             String collectionName = entry.getKey();
             mongoDbBulkOpUtil.insertUnordered(batchToSave,collectionName);
-            storeManager.registerWithTtl(getStoreName(), collectionName, storeManagerMetadataProperties.getProperties());
+            storeManager.registerWithTtl(getStoreName(), collectionName, storeManagerMetadataProperties);
         }
     }
 
