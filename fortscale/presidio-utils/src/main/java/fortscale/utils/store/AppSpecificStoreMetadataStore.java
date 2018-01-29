@@ -42,8 +42,6 @@ public class AppSpecificStoreMetadataStore {
      * @param cleanupInterval cleanup interval
      */
     public void save(String storeName, String collectionName, Duration ttl, Duration cleanupInterval,StoreMetadataProperties storeMetadataProperties) {
-//        Map<String, String> properties = storeMetadataProperties.getProperties();
-
         Map<String, StoreMetadata> storeNameToStoreMetadata = StoreMetadataMap.get(storeName);
         if (storeNameToStoreMetadata != null) {
             StoreMetadata storeMetadata = storeNameToStoreMetadata.get(collectionName);
