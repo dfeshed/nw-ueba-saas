@@ -9,6 +9,7 @@ const dispatchToActions = {
 
 const Container = Component.extend({
   layout,
+  tagName: 'box',
   classNames: 'hosts-scan-configure-container',
 
   init() {

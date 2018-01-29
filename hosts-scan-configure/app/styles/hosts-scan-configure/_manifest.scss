@@ -1,7 +1,9 @@
 @import "recurrence-interval";
 
 .hosts-scan-configure-container {
-  padding: rsa-whitespace(more) 0 0 rsa-whitespace(most);
+  width: 100vw;
+  height: 100vh;
+  padding: rsa-whitespace();
 
   .noUi-target {
     border: none;
@@ -10,12 +12,12 @@
   .flatpickr-wrapper {
     width: 100%;
   }
+  overflow: auto;
 }
 
 .schedule-form__content-title {
   color: text-color(primary, lightest);
   font-size: 18px;
-  font-weight: bold;
 }
 
 .schedule-form__content-fields {
