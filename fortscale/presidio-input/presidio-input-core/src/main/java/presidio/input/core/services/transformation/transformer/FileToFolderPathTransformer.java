@@ -20,7 +20,7 @@ public class FileToFolderPathTransformer implements Transformer {
     public FileToFolderPathTransformer(String inputPathFieldName, String folderPathFieldName) {
         this.inputPathFieldName = inputPathFieldName;
         this.folderPathFieldName = folderPathFieldName;
-        pattern = Pattern.compile(".*\\\\(?!.*\\\\)|.*\\/(?!.*\\/)");
+        pattern = Pattern.compile(".*\\\\(?!.*\\\\)|.*/(?!.*/)");
     }
 
     @Override
