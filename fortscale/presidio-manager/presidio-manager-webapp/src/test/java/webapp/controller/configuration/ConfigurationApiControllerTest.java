@@ -74,7 +74,7 @@ public class ConfigurationApiControllerTest {
         final PresidioEncryptionUtils mockedPresidioEncryptionUtils = Mockito.mock(PresidioEncryptionUtils.class);
         when(mockedPresidioEncryptionUtils.encrypt(any())).thenReturn("mockedEncryptedPassword");
 
-        ConfigurationApiController controller = new ConfigurationApiController(configurationProcessingManager, configServerClient, null, null, new PresidioEncryptionUtils() );
+        ConfigurationApiController controller = new ConfigurationApiController(configurationProcessingManager, configServerClient, null, null, mockedPresidioEncryptionUtils);
 
         ObjectMapper mapper = ObjectMapperProvider.getInstance().getDefaultObjectMapper();
         File from = ctx.getResource(CONFIG_JSON_FILE_NAME).getFile();
