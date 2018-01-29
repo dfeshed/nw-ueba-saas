@@ -27,6 +27,8 @@ import presidio.input.core.services.data.AdeDataService;
 import presidio.input.core.services.impl.InputCoreManager;
 import presidio.input.core.services.impl.InputExecutionServiceImpl;
 import presidio.input.core.services.impl.SchemaFactory;
+import presidio.input.core.services.transformation.TransformationService;
+import presidio.input.core.services.transformation.TransformationServiceImpl;
 import presidio.input.core.services.transformation.managers.*;
 import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
 import presidio.monitoring.spring.PresidioMonitoringConfiguration;

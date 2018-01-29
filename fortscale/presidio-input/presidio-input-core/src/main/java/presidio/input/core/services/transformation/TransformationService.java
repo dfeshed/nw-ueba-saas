@@ -1,4 +1,4 @@
-package presidio.input.core.services.transformation.managers;
+package presidio.input.core.services.transformation;
 
 import fortscale.common.general.Schema;
 import presidio.sdk.api.domain.AbstractInputDocument;
