@@ -55,12 +55,11 @@ export default Component.extend(HasTableParent, {
       tableBody.on('scroll', () => {
         run.debounce(() => {
           const left = tableBody.scrollLeft();
-
           this.$().css({
             left,
             right: `-${left}px`
           });
-        }, 500);
+        }, 0);
       });
     });
   },

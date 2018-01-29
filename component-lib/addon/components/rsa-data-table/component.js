@@ -485,7 +485,11 @@ export default Component.extend(DomWatcher, EKMixin, {
    * @public
    */
   elementDidResize() {
-    run.throttle(() => {
+    run.later(() => {
+      if (this.get('isDestroying') || this.get('isDestroyed') || !this.element) {
+        // The element has been destroyed since the time when the delay started
+        return;
+      }
       const w = this.get('element.clientWidth') || 0;
       if (!this.get('currentClientWidth') || w !== this.get('currentClientWidth')) {
         const columns = this.get('columns').filterBy('selected', true).sortBy('displayIndex');
