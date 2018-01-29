@@ -1,12 +1,11 @@
 import Route from 'ember-route';
 import service from 'ember-service/inject';
-import { fetchInvestigateData, initializeInvestigate } from 'investigate-events/actions/data-creators';
+import { initializeInvestigate } from 'investigate-events/actions/data-creators';
 import { setMetaPanelSize, setQueryFilterMeta, setReconClosed, setReconOpen, setReconPanelSize, setSelectedEvent } from 'investigate-events/actions/interaction-creators';
 import { serializeQueryParams, uriEncodeMetaFilters } from 'investigate-events/actions/utils';
 import { META_PANEL_SIZES, RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 
 export default Route.extend({
-  accessControl: service(),
   contextualHelp: service(),
   redux: service(),
   _routing: service('-routing'),
@@ -42,22 +41,11 @@ export default Route.extend({
     this.set('contextualHelp.topic', null);
   },
 
-  beforeModel() {
-    // Re-route back to the parent's protected route if we don't have permission
-    if (!this.get('accessControl.hasInvestigateEventsAccess')) {
-      this.transitionToExternal('protected.permission-denied');
-    }
-  },
-
   model(params) {
     const uniqParamValues = Object.values(params).uniq();
     const hardReset = uniqParamValues.length === 1 && uniqParamValues[0] === undefined;
 
     this.get('redux').dispatch(initializeInvestigate(params, hardReset));
-  },
-
-  afterModel() {
-    this.get('redux').dispatch(fetchInvestigateData());
   },
 
   actions: {

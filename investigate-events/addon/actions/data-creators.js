@@ -20,6 +20,14 @@ const noop = () => {};
 const _showFutureFeatures = config.featureFlags.future;
 
 /**
+ * This property lets us know if we're running through the success handler for
+ * summary retrieval. This is important as it will help us prevent overwritting
+ * the time range if one was present in the query parameters.
+ * @private
+ */
+let _isFirstTime = true;
+
+/**
  * Promise version of `getServices()`.
  * @see getServices
  * @private
@@ -245,11 +253,20 @@ export const getServiceSummary = (resolve = noop, reject = noop) => {
         promise: fetchSummary(serviceId),
         meta: {
           onSuccess() {
-            // We always have a valid time range whether it's the default of
-            // 24 hours or a value pulled from localstorage. So get that range
-            // and set the query time range.
-            const range = selectedTimeRange(getState());
-            dispatch(setQueryTimeRange(range));
+            // The service summary returns the start/endTimes for the selected
+            // service.
+            // If a start/end time was specified in the URL, it will be set in
+            // state (non zero value), we don't need to dispatch the
+            // `setQueryTimeRange` action if this is the very first time through
+            // this code path.
+            // If it isn't specified in the URL, then get the selected time
+            // range and dispatch that.
+            const { endTime } = getState().investigate.queryNode;
+            if (!_isFirstTime || !endTime) {
+              const range = selectedTimeRange(getState());
+              dispatch(setQueryTimeRange(range));
+            }
+            _isFirstTime = false;
             resolve();
           },
           onFailure() {
@@ -304,7 +321,13 @@ export const initializeInvestigate = (params, hardReset = false) => {
       _getServicesPromise(dispatch, getState)
     ])
     .then(() => {
-      _getDictionariesPromise(dispatch, getState);
+      _getDictionariesPromise(dispatch, getState).then(() => {
+        const { sid, st, et } = params;
+        if (sid && st && et) {
+          // We have minimum required params for querying
+          dispatch(fetchInvestigateData());
+        }
+      });
     });
   };
 };
