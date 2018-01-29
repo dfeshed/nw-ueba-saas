@@ -10,9 +10,9 @@
               {{#power-select-multiple
                 options=fields
                 selected=selectedGroupByFields
+                searchField='name'
                 triggerClass=(if (and hasInvalidGroupByFields (contains 'ruleInfo.groupByFields' visited)) 'is-error')
                 placeholder=(t 'configure.incidentRules.groupByPlaceholder')
-                searchEnabled=false
                 onchange=(action 'handleGroupByChange') as |field|}}
 
                 {{field.name}}

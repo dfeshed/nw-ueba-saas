@@ -84,6 +84,7 @@
       text-transform: uppercase;
       font-size: .85rem;
       color: text-color(primary, lightest);
+      border-bottom: 1px solid border-color(accentOne);
     }
     &.incident-title, &.incident-summary {
       width: 700px;

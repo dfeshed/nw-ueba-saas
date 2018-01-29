@@ -5,7 +5,7 @@
       {{#power-select
         options=fields
         selected=selectedField
-        searchEnabled=false
+        searchField='name'
         onchange=(action 'handleConditionFieldChange') as |field|}}
         {{field.name}}
       {{/power-select}}
