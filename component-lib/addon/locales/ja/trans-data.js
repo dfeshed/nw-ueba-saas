@@ -621,7 +621,8 @@ export default {
         deleteSuccess: 'ja_You successfully deleted the selected rule',
         deleteFailure: 'ja_There was a problem deleting the selected rule',
         saveSuccess: 'ja_The changes to the rule were successfully saved',
-        saveFailure: 'ja_There was a problem saving the changes to the rule'
+        saveFailure: 'ja_There was a problem saving the changes to the rule',
+        duplicateNameFailure: 'ja_There is already another rule with the same name. Please modify the rule name so that it is unique.'
       },
       missingRequiredInfo: 'ja_There is required information missing from the incident rule'
     },

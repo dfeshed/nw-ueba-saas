@@ -1,4 +1,4 @@
-import { promiseRequest } from 'streaming-data/services/data-access/requests';
+import { lookup } from 'ember-dependency-lookup';
 
 export default {
   /**
@@ -9,7 +9,8 @@ export default {
    * @returns {Promise}
    */
   getAllUsers() {
-    return promiseRequest({
+    const request = lookup('service:request');
+    return request.promiseRequest({
       method: 'findAll',
       modelName: 'users',
       query: {
@@ -32,7 +33,8 @@ export default {
    * @returns {Promise}
    */
   getAllEnabledUsers() {
-    return promiseRequest({
+    const request = lookup('service:request');
+    return request.promiseRequest({
       method: 'findAll',
       modelName: 'users',
       query: {

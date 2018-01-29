@@ -85,8 +85,13 @@ function* saveRuleAsync(action) {
     success('configure.incidentRules.actionMessages.saveSuccess');
     onSuccess();
   } catch (e) {
+    const code = (e && e.code) || 1;
     yield put({ type: ACTION_TYPES.INCIDENT_RULES_SAVE_FAILED });
-    failure('configure.incidentRules.actionMessages.saveFailure');
+    if (code === 21) { // Error code 21: Duplicate rule name detected
+      failure('configure.incidentRules.actionMessages.duplicateNameFailure');
+    } else {
+      failure('configure.incidentRules.actionMessages.saveFailure');
+    }
   }
 }
 
@@ -99,8 +104,13 @@ function* createRuleAsync(action) {
     success('configure.incidentRules.actionMessages.createSuccess');
     onSuccess();
   } catch (e) {
+    const code = (e && e.code) || 1;
     yield put({ type: ACTION_TYPES.CREATE_INCIDENT_RULE_FAILED });
-    failure('configure.incidentRules.actionMessages.createFailure');
+    if (code === 21) { // Error code 21: Duplicate rule name detected
+      failure('configure.incidentRules.actionMessages.duplicateNameFailure');
+    } else {
+      failure('configure.incidentRules.actionMessages.createFailure');
+    }
   }
 }
 

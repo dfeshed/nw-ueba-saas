@@ -1,4 +1,4 @@
-import { promiseRequest } from 'streaming-data/services/data-access/requests';
+import { lookup } from 'ember-dependency-lookup';
 
 /**
  * Creates an incident rule using a pre-existing rule as a template
@@ -8,7 +8,8 @@ import { promiseRequest } from 'streaming-data/services/data-access/requests';
  * @public
  */
 function cloneIncidentRule(id) {
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'createRecord',
     modelName: 'incident-rule-clone',
     query: {
@@ -24,7 +25,8 @@ function cloneIncidentRule(id) {
  * @public
  */
 function createIncidentRule(rule) {
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'createRecord',
     modelName: 'incident-rules',
     query: {
@@ -41,7 +43,8 @@ function createIncidentRule(rule) {
  * @public
  */
 function deleteIncidentRule(id) {
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'deleteRecord',
     modelName: 'incident-rules',
     query: {
@@ -57,7 +60,8 @@ function deleteIncidentRule(id) {
  * @public
  */
 function getIncidentRules() {
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'findAll',
     modelName: 'incident-rules',
     query: {}
@@ -72,7 +76,8 @@ function getIncidentRules() {
  * @public
  */
 function getIncidentRule(ruleId) {
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'queryRecord',
     modelName: 'incident-rules',
     query: {
@@ -90,7 +95,8 @@ function getIncidentRule(ruleId) {
  * @public
  */
 function getIncidentFields() {
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'findAll',
     modelName: 'incident-fields',
     query: {}
@@ -105,7 +111,8 @@ function getIncidentFields() {
  * @public
  */
 function reorderIncidentRules(ruleIds) {
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'updateRecord',
     modelName: 'incident-rules-reorder',
     query: {
@@ -121,7 +128,8 @@ function reorderIncidentRules(ruleIds) {
  * @public
  */
 function saveIncidentRule(rule) {
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'updateRecord',
     modelName: 'incident-rules',
     query: {

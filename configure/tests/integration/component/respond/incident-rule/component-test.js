@@ -14,6 +14,9 @@ import { clickTrigger, selectChoose } from '../../../../helpers/ember-power-sele
 import { click, fillIn, find, triggerEvent } from 'ember-native-dom-helpers';
 import $ from 'jquery';
 import * as incidentRuleCreators from 'configure/actions/creators/respond/incident-rule-creators';
+import { patchFlash } from '../../../../helpers/patch-flash';
+import { throwSocket } from '../../../../helpers/patch-socket';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 const initialState = {
   ruleInfo,
@@ -63,7 +66,10 @@ moduleForComponent('respond/incident-rule', 'Integration | Component | Respond I
       applyPatch(Immutable.from(fullState));
       this.inject.service('redux');
     };
+    this.inject.service('i18n');
+    this.inject.service('flash-messages');
     this.inject.service('accessControl');
+    initialize(this);
   },
   afterEach() {
     revertPatch();
@@ -214,4 +220,19 @@ test('Footer Save Button is disabled and warning message is displayed when user 
   assert.equal(this.$(selectors.saveButton).is(':disabled'), true, 'The Save button is disabled');
   const warningMessage = translation.t('configure.incidentRules.noManagePermissions');
   assert.equal(this.$(selectors.formWarning).text().trim(), warningMessage, 'A warning is displayed to users that they have no permissions to edit');
+});
+
+test('If an error occurs during "Save", a general save error flash message is displayed to the user', function(assert) {
+  assert.expect(3);
+  setState({ ...initialState });
+  throwSocket();
+  patchFlash((flash) => {
+    const translation = getOwner(this).lookup('service:i18n');
+    const expectedError = translation.t('configure.incidentRules.actionMessages.saveFailure');
+    assert.equal(flash.type, 'error');
+    assert.equal(flash.message.string, expectedError);
+  });
+  this.render(hbs`{{respond/incident-rule ruleId='12345'}}`);
+  assert.equal(this.$(selectors.saveButton).is(':disabled'), false, 'The Save button is not disabled');
+  this.$(selectors.saveButton).click();
 });

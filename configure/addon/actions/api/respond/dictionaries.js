@@ -1,4 +1,4 @@
-import { promiseRequest } from 'streaming-data/services/data-access/requests';
+import { lookup } from 'ember-dependency-lookup';
 
 export default {
   /**
@@ -9,7 +9,8 @@ export default {
    * @returns {*}
    */
   getAllCategories() {
-    return promiseRequest({
+    const request = lookup('service:request');
+    return request.promiseRequest({
       method: 'findAll',
       modelName: 'category-tags',
       query: {}

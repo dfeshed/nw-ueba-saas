@@ -1,7 +1,6 @@
 import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
 import {
-  initializeRule,
   updateRule,
   saveRule,
   clearMatchConditions
@@ -33,10 +32,6 @@ const stateToComputed = (state) => {
 
 const dispatchToActions = function(dispatch) {
   return {
-    // bootstrap fetch of the rule and all other required information (e.g., fields, categories, users)
-    initializeRule(ruleId) {
-      dispatch(initializeRule(ruleId));
-    },
     // update the rule information using fully qualified field name (e.g., 'ruleInfo.incidentScoringOptions.type')
     update(field, value) {
       if (field && value !== undefined) {
@@ -92,10 +87,6 @@ const IncidentRule = Component.extend(Confirmable, {
   queryMode(hasAdvancedQuery) {
     return hasAdvancedQuery ? advancedQueryMode : ruleBuilderQueryMode;
   },
-
-  onInit: function() {
-    this.send('initializeRule', this.get('ruleId'));
-  }.on('init'),
 
   actions: {
     handleNameChange(value) {

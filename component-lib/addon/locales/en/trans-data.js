@@ -622,7 +622,8 @@ export default {
         deleteSuccess: 'You successfully deleted the selected rule',
         deleteFailure: 'There was a problem deleting the selected rule',
         saveSuccess: 'The changes to the rule were successfully saved',
-        saveFailure: 'There was a problem saving the changes to the rule'
+        saveFailure: 'There was a problem saving the changes to the rule',
+        duplicateNameFailure: 'There is already another rule with the same name. Please modify the rule name so that it is unique.'
       },
       missingRequiredInfo: 'There is required information missing from the incident rule'
     },

@@ -1,10 +1,12 @@
 import Route from '@ember/routing/route';
 import { inject } from '@ember/service';
+import { initializeRule } from 'configure/actions/creators/respond/incident-rule-creators';
 
 export default Route.extend({
   accessControl: inject(),
   contextualHelp: inject(),
   i18n: inject(),
+  redux: inject(),
 
   titleToken() {
     return this.get('i18n').t('configure.incidentRulesTitle');
@@ -17,9 +19,8 @@ export default Route.extend({
   },
 
   model({ rule_id: ruleId }) {
-    return {
-      ruleId
-    };
+    const redux = this.get('redux');
+    redux.dispatch(initializeRule(ruleId));
   },
 
   activate() {
