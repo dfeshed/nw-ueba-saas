@@ -20,7 +20,7 @@ module.exports = function(environment) {
     adminServerAvailable: true,
     timeFormatDefault: 'HR24',
     timezoneDefault: 'UTC',
-    landingPageDefault: '/respond',
+    landingPageDefault: '/unified',
     investigatePageDefault: '/navigate',
     i18n: {
       defaultLocale: 'en',
