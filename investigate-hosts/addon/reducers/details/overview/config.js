@@ -97,7 +97,7 @@ const SECURITY_CONFIG = {
       }
     },
     {
-      keyword: 'noWindowsUpdate',
+      keyword: 'windowsUpdate',
       value: 'Windows Update',
       label: {
         red: 'Can connect to Windows update website.',
