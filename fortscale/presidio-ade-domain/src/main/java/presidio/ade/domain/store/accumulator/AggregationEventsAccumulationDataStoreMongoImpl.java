@@ -2,6 +2,7 @@ package presidio.ade.domain.store.accumulator;
 
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
+import fortscale.utils.store.record.StoreManagerMetadataProperties;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.store.StoreManager;
 import fortscale.utils.store.StoreManagerAware;
@@ -38,7 +39,7 @@ public class AggregationEventsAccumulationDataStoreMongoImpl implements Aggregat
     }
 
     @Override
-    public void store(List<AccumulatedAggregationFeatureRecord> records) {
+    public void store(List<AccumulatedAggregationFeatureRecord> records, StoreManagerMetadataProperties storeManagerMetadataProperties) {
         Map<String, List<AccumulatedAggregationFeatureRecord>> featureToAggrList = records.stream().collect(Collectors.groupingBy(AccumulatedAggregationFeatureRecord::getFeatureName));
 
         featureToAggrList.keySet().forEach(
@@ -48,7 +49,7 @@ public class AggregationEventsAccumulationDataStoreMongoImpl implements Aggregat
                     String collectionName = getCollectionName(metadata);
                     List<AccumulatedAggregationFeatureRecord> aggrRecords = featureToAggrList.get(feature);
                     mongoDbBulkOpUtil.insertUnordered(aggrRecords, collectionName);
-                    storeManager.registerWithTtl(getStoreName(), collectionName);
+                    storeManager.registerWithTtl(getStoreName(), collectionName, storeManagerMetadataProperties.getProperties());
                 }
         );
     }

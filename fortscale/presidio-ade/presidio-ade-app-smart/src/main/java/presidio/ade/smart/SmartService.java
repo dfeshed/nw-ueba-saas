@@ -7,6 +7,7 @@ import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.fixedduration.FixedDurationStrategyUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.store.StoreManager;
+import fortscale.utils.store.record.StoreManagerMetadataProperties;
 import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.pagination.aggregated.AggregatedDataPaginationParam;
 import presidio.ade.domain.pagination.aggregated.AggregatedDataReader;
@@ -30,6 +31,7 @@ import java.util.Set;
  */
 public class SmartService {
 	private static final Logger logger = Logger.getLogger(SmartService.class);
+	private static String CONFIGURATION_NAME = "configuration_name";
 
 	private final SmartRecordConfService smartRecordConfService;
 	private final Double aggregationRecordsThreshold;
@@ -76,6 +78,8 @@ public class SmartService {
 		FixedDurationStrategy strategy = conf.getFixedDurationStrategy();
 		Set<AggregatedDataPaginationParam> params = smartRecordConfService.getPaginationParams(smartRecordConfName);
 
+		StoreManagerMetadataProperties storeManagerMetadataProperties = createStoreManagerAwareMetadata(smartRecordConfName);
+
 		for (TimeRange partition : FixedDurationStrategyUtils.splitTimeRangeByStrategy(timeRange, strategy)) {
 			try {
 
@@ -92,7 +96,7 @@ public class SmartService {
 					while (iterator.hasNext()) aggregator.updateSmartRecords(iterator.next());
 					Collection<SmartRecord> records = aggregator.getSmartRecords();
 					smartScoringService.score(records,timeRange);
-					smartDataStore.storeSmartRecords(smartRecordConfName, records);
+					smartDataStore.storeSmartRecords(smartRecordConfName, records, storeManagerMetadataProperties);
 				});
 
 				//Flush stored metrics to elasticsearch
@@ -106,10 +110,19 @@ public class SmartService {
 
 		}
 
-		storeManager.cleanupCollections(timeRange.getStart());
+		storeManager.cleanupCollections(storeManagerMetadataProperties.getProperties(), timeRange.getStart());
 	}
 
+
 	public void cleanup(String smartRecordConfName, TimeRange timeRange) throws Exception {
-		storeManager.cleanupCollections(timeRange.getStart(), timeRange.getEnd());
+		StoreManagerMetadataProperties storeManagerMetadataProperties = createStoreManagerAwareMetadata(smartRecordConfName);
+		storeManager.cleanupCollections(storeManagerMetadataProperties.getProperties(), timeRange.getStart(), timeRange.getEnd());
+	}
+
+
+	private StoreManagerMetadataProperties createStoreManagerAwareMetadata(String smartRecordConfName){
+		StoreManagerMetadataProperties storeManagerMetadataProperties = new StoreManagerMetadataProperties();
+		storeManagerMetadataProperties.setProperties(CONFIGURATION_NAME, smartRecordConfName);
+		return storeManagerMetadataProperties;
 	}
 }

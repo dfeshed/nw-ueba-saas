@@ -5,13 +5,18 @@ import fortscale.aggregation.feature.bucket.FeatureBucketStore;
 import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
 import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
+import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.store.StoreManager;
+import fortscale.utils.store.record.StoreManagerMetadataProperties;
 import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
 
 import java.time.Instant;
 
 public class ModelFeatureAggregationBucketsExecutionServiceImpl implements PresidioExecutionService {
+    private static String SCHEMA = "schema";
+    private static String FIXED_DURATION_STRATEGY = "fixed_duration_strategy";
+
     private final int maxGroupSize;
     private final int pageSize;
     private BucketConfigurationService bucketConfigurationService;
@@ -39,8 +44,11 @@ public class ModelFeatureAggregationBucketsExecutionServiceImpl implements Presi
     public void run(Schema schema, Instant startInstant, Instant endInstant, Double fixedDurationStrategyInSeconds) throws Exception {
         ModelFeatureAggregationBucketsService service = new ModelFeatureAggregationBucketsService(
                 bucketConfigurationService, enrichedDataStore, inMemoryFeatureBucketAggregator, featureBucketStore, pageSize, maxGroupSize);
-        service.execute(new TimeRange(startInstant, endInstant), schema.getName());
-        storeManager.cleanupCollections(startInstant);
+        FixedDurationStrategy fixedDurationStrategy = FixedDurationStrategy.fromSeconds(fixedDurationStrategyInSeconds.longValue());
+        StoreManagerMetadataProperties storeManagerMetadataProperties = createStoreManagerAwareMetadata(schema, fixedDurationStrategy);
+
+        service.execute(new TimeRange(startInstant, endInstant), schema.getName(), storeManagerMetadataProperties);
+        storeManager.cleanupCollections(storeManagerMetadataProperties.getProperties(), startInstant);
     }
 
     @Override
@@ -55,6 +63,17 @@ public class ModelFeatureAggregationBucketsExecutionServiceImpl implements Presi
 
     @Override
     public void cleanup(Schema schema, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
-        storeManager.cleanupCollections(startDate, endDate);
+        FixedDurationStrategy fixedDurationStrategy = FixedDurationStrategy.fromSeconds(fixedDuration.longValue());
+        StoreManagerMetadataProperties storeManagerMetadataProperties = createStoreManagerAwareMetadata(schema, fixedDurationStrategy);
+        storeManager.cleanupCollections(storeManagerMetadataProperties.getProperties(), startDate, endDate);
     }
+
+
+    private StoreManagerMetadataProperties createStoreManagerAwareMetadata(Schema schema, FixedDurationStrategy fixedDurationStrategy){
+        StoreManagerMetadataProperties storeManagerMetadataProperties = new StoreManagerMetadataProperties();
+        storeManagerMetadataProperties.setProperties(SCHEMA, schema.getName());
+        storeManagerMetadataProperties.setProperties(FIXED_DURATION_STRATEGY, fixedDurationStrategy.toStrategyName());
+        return storeManagerMetadataProperties;
+    }
+
 }

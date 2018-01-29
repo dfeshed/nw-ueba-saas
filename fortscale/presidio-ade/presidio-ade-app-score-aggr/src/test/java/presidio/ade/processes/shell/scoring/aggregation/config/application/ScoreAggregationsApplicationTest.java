@@ -23,6 +23,7 @@ import fortscale.ml.scorer.config.ScorerConfService;
 import fortscale.ml.scorer.config.ScorerContainerConf;
 import fortscale.utils.factory.FactoryService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
+import fortscale.utils.store.record.StoreManagerMetadataProperties;
 import fortscale.utils.test.category.ModuleTestCategory;
 import fortscale.utils.time.TimeService;
 import org.junit.Assert;
@@ -211,7 +212,7 @@ public class ScoreAggregationsApplicationTest extends EnrichedFileSourceBaseAppT
 
             List<ModelDAO> modelDAOS = modelDaoGenerator.generate();
             Assert.assertFalse("generator is expected to generate at least one model", modelDAOS.isEmpty());
-            modelDAOS.forEach(modelDAO -> modelStore.save(conf, modelDAO));
+            modelDAOS.forEach(modelDAO -> modelStore.save(conf, modelDAO, new StoreManagerMetadataProperties()));
         }
     }
 

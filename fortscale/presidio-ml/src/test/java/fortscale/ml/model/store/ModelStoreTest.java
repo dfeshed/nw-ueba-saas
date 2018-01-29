@@ -2,6 +2,7 @@ package fortscale.ml.model.store;
 
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
+import fortscale.utils.store.record.StoreManagerMetadataProperties;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.store.StoreManager;
@@ -32,7 +33,7 @@ public class ModelStoreTest {
 		Assert.assertFalse(mongoTemplate.getCollectionNames().contains(collectionName));
 		StoreManager storeManager = mock(StoreManager.class);
 		modelStore.setStoreManager(storeManager);
-		modelStore.save(modelConf, "sessionId", "contextId", mock(Model.class), new TimeRange(0, 0));
+		modelStore.save(modelConf, "sessionId", "contextId", mock(Model.class), new TimeRange(0, 0), new StoreManagerMetadataProperties());
 		Assert.assertTrue(mongoTemplate.getCollectionNames().contains(collectionName));
 	}
 }

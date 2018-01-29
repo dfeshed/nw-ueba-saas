@@ -39,26 +39,29 @@ public class AppSpecificStoreMetadataStore {
      * @param ttl             ttl duration of records
      * @param cleanupInterval cleanup interval
      */
-    public void save(String storeName, String collectionName, Duration ttl, Duration cleanupInterval) {
+    public void save(String storeName, String collectionName, Duration ttl, Duration cleanupInterval, Map<String,String> properties) {
         Map<String, StoreMetadata> storeNameToStoreMetadata = StoreMetadataMap.get(storeName);
         if (storeNameToStoreMetadata != null) {
             StoreMetadata storeMetadata = storeNameToStoreMetadata.get(collectionName);
             if (storeMetadata != null) {
                 //update exist storeMetadata if ttl or cleanupInterval changed
-                if (!Objects.equals(storeMetadata.getTtlDuration(), ttl) || !Objects.equals(storeMetadata.getCleanupInterval(), cleanupInterval)) {
+                if (!Objects.equals(storeMetadata.getTtlDuration(), ttl) ||
+                        !Objects.equals(storeMetadata.getCleanupInterval(), cleanupInterval) ||
+                        !Objects.equals(storeMetadata.getProperties(),properties)) {
                     storeMetadata.setTtlDuration(ttl);
                     storeMetadata.setCleanupInterval(cleanupInterval);
+                    storeMetadata.setProperties(properties);
                     storeMetadataRepository.save(storeMetadata);
                 }
             } else {
                 //create new storeMetadata if collection is not exist
-                storeMetadata = new StoreMetadata(appName, storeName, collectionName, ttl, cleanupInterval);
+                storeMetadata = new StoreMetadata(appName, storeName, collectionName, ttl, cleanupInterval, properties);
                 storeNameToStoreMetadata.put(collectionName, storeMetadata);
                 storeMetadataRepository.save(storeMetadata);
             }
         } else {
             //create new record if store is not exist in the Map.
-            createNewStoreData(storeName, collectionName, ttl, cleanupInterval);
+            createNewStoreData(storeName, collectionName, ttl, cleanupInterval, properties);
         }
     }
 
@@ -81,8 +84,8 @@ public class AppSpecificStoreMetadataStore {
      * @param ttl             ttl
      * @param cleanupInterval cleanup interval
      */
-    private void createNewStoreData(String storeName, String collectionName, Duration ttl, Duration cleanupInterval) {
-        StoreMetadata storeMetadata = new StoreMetadata(appName, storeName, collectionName, ttl, cleanupInterval);
+    private void createNewStoreData(String storeName, String collectionName, Duration ttl, Duration cleanupInterval, Map<String,String> tags) {
+        StoreMetadata storeMetadata = new StoreMetadata(appName, storeName, collectionName, ttl, cleanupInterval, tags);
         Map<String, StoreMetadata> collectionToStoreMetadata = new HashMap<>();
         collectionToStoreMetadata.put(collectionName, storeMetadata);
         StoreMetadataMap.put(storeName, collectionToStoreMetadata);

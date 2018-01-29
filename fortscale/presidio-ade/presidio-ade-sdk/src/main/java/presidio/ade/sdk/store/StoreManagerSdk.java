@@ -2,6 +2,8 @@ package presidio.ade.sdk.store;
 
 
 import fortscale.utils.time.TimeRange;
+import presidio.ade.domain.record.enriched.EnrichedRecord;
+import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -19,10 +21,10 @@ public interface StoreManagerSdk {
 	 */
 	void cleanupEnrichedData(Instant until, Duration enrichedTtl, Duration enrichedCleanupInterval);
 
-
 	/**
-	 * cleanup enriched data in mentioned timeRange
-	 * @param timeRange timeRange, when enriched data should be cleaned.
+	 * Cleanup {@link EnrichedRecord}s that match the given parameters from the database.
+	 *
+	 * @param adeDataStoreCleanupParams the cleanup parameters
 	 */
-	void cleanupEnrichedData(TimeRange timeRange);
+	void cleanupEnrichedRecords(AdeDataStoreCleanupParams adeDataStoreCleanupParams);
 }

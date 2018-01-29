@@ -2,6 +2,7 @@ package presidio.ade.processes.shell;
 
 import fortscale.accumulator.smart.SmartAccumulationsCache;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
+import fortscale.utils.store.record.StoreManagerMetadataProperties;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.store.StoreManager;
 import presidio.ade.domain.store.accumulator.smart.SmartAccumulationDataStore;
@@ -11,6 +12,7 @@ import presidio.ade.processes.shell.accumulate.AccumulateSmartRecordsService;
 import java.time.Instant;
 
 public class AccumulateSmartRecordsExecutionService {
+    private static String CONFIGURATION_NAME = "configuration_name";
     private final SmartDataReader smartDataReader;
     private final SmartAccumulationsCache smartAccumulationsCache;
     private final SmartAccumulationDataStore smartAccumulationDataStore;
@@ -34,9 +36,10 @@ public class AccumulateSmartRecordsExecutionService {
         FixedDurationStrategy accumulationDuration = FixedDurationStrategy.fromSeconds(accumulationStrategy.longValue());
         AccumulateSmartRecordsService accumulateSmartRecordsService = new AccumulateSmartRecordsService(accumulationDuration, smartDataReader, pageSize, maxGroupSize, smartAccumulationsCache, smartAccumulationDataStore);
         TimeRange timeRange = new TimeRange(startDate, endDate);
-        accumulateSmartRecordsService.execute(timeRange, configurationName);
+        StoreManagerMetadataProperties storeManagerMetadataProperties = createStoreManagerAwareMetadata(configurationName);
+        accumulateSmartRecordsService.execute(timeRange, configurationName, storeManagerMetadataProperties);
 
-        storeManager.cleanupCollections(startDate);
+        storeManager.cleanupCollections(storeManagerMetadataProperties.getProperties(), startDate);
     }
 
     public void clean(String configurationName, Instant startDate, Instant endDate) throws Exception {
@@ -44,7 +47,14 @@ public class AccumulateSmartRecordsExecutionService {
     }
 
     public void cleanup(String configurationName, Instant startDate, Instant endDate, Double accumulationStrategy) throws Exception {
-        storeManager.cleanupCollections(startDate, endDate);
+        StoreManagerMetadataProperties storeManagerMetadataProperties = createStoreManagerAwareMetadata(configurationName);
+        storeManager.cleanupCollections(storeManagerMetadataProperties.getProperties(), startDate, endDate);
+    }
+
+    private StoreManagerMetadataProperties createStoreManagerAwareMetadata(String configurationName){
+        StoreManagerMetadataProperties storeManagerMetadataProperties = new StoreManagerMetadataProperties();
+        storeManagerMetadataProperties.setProperties(CONFIGURATION_NAME, configurationName);
+        return storeManagerMetadataProperties;
     }
 }
 

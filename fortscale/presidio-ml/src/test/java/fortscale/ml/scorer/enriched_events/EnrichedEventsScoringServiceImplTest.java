@@ -3,6 +3,7 @@ package fortscale.ml.scorer.enriched_events;
 import fortscale.domain.feature.score.FeatureScore;
 import fortscale.ml.scorer.ScoringService;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
+import fortscale.utils.store.record.StoreManagerMetadataProperties;
 import fortscale.utils.time.TimeRange;
 import org.junit.Assert;
 import org.junit.Test;
@@ -64,11 +65,11 @@ public class EnrichedEventsScoringServiceImplTest {
     @Test
     public void testEmptyEnrichedRecordListAsInput() {
         List<EnrichedRecord> enrichedRecordList = new ArrayList<>();
-        List<AdeScoredEnrichedRecord> ret = enrichedEventsScoringService.scoreAndStoreEvents(enrichedRecordList, true, timeRange);
+        List<AdeScoredEnrichedRecord> ret = enrichedEventsScoringService.scoreAndStoreEvents(enrichedRecordList, true, timeRange, new StoreManagerMetadataProperties());
         Assert.assertEquals(0, ret.size());
         verify(scoringService, times(0)).score(any(), eq(timeRange));
         verify(adeEnrichedScoredRecordBuilder, times(0)).fill(any(), any(), any());
-        verify(scoredEnrichedDataStore, times(0)).store(any());
+        verify(scoredEnrichedDataStore, times(0)).store(any(), any());
     }
 
     @Test
@@ -80,10 +81,10 @@ public class EnrichedEventsScoringServiceImplTest {
         List<FeatureScore> featureScoreList = mock(List.class);
         when(recordReaderFactoryService.getRecordReader(eq(mockedEnrichedRecord))).thenReturn(mockedAdeRecordReader);
         when(scoringService.score(eq(mockedAdeRecordReader), eq(timeRange))).thenReturn(featureScoreList);
-        enrichedEventsScoringService.scoreAndStoreEvents(enrichedRecordList, true, timeRange);
+        enrichedEventsScoringService.scoreAndStoreEvents(enrichedRecordList, true, timeRange, new StoreManagerMetadataProperties());
         verify(scoringService, times(1)).score(eq(mockedAdeRecordReader), eq(timeRange));
         verify(adeEnrichedScoredRecordBuilder, times(1)).fill(any(), eq(mockedEnrichedRecord), eq(featureScoreList));
-        verify(scoredEnrichedDataStore, times(1)).store(any());
+        verify(scoredEnrichedDataStore, times(1)).store(any(), any());
     }
 
     @Test
@@ -105,7 +106,8 @@ public class EnrichedEventsScoringServiceImplTest {
         List<FeatureScore> featureScoreList2 = mock(List.class);
         when(recordReaderFactoryService.getRecordReader(eq(mockedEnrichedRecord2))).thenReturn(mockedAdeRecordReader2);
         when(scoringService.score(eq(mockedAdeRecordReader2), eq(timeRange))).thenReturn(featureScoreList2);
-        enrichedEventsScoringService.scoreAndStoreEvents(enrichedRecordList, true, timeRange);
+
+        enrichedEventsScoringService.scoreAndStoreEvents(enrichedRecordList, true, timeRange, new StoreManagerMetadataProperties());
 
         //verifying first enrich record processed
         verify(scoringService, times(1)).score(eq(mockedAdeRecordReader1), eq(timeRange));
@@ -116,6 +118,6 @@ public class EnrichedEventsScoringServiceImplTest {
         verify(adeEnrichedScoredRecordBuilder, times(1)).fill(any(), eq(mockedEnrichedRecord2), eq(featureScoreList2));
 
         //verifying store was called.
-        verify(scoredEnrichedDataStore, times(1)).store(any());
+        verify(scoredEnrichedDataStore, times(1)).store(any(),  any());
     }
 }

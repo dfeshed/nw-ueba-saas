@@ -7,6 +7,7 @@ import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.fixedduration.FixedDurationStrategyExecutor;
 import fortscale.utils.pagination.PageIterator;
+import fortscale.utils.store.record.StoreManagerMetadataProperties;
 import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.pagination.enriched.EnrichedRecordPaginationService;
 import presidio.ade.domain.record.AdeRecord;
@@ -47,7 +48,7 @@ public class AccumulateAggregationsService extends FixedDurationStrategyExecutor
     }
 
     @Override
-    protected void executeSingleTimeRange(TimeRange timeRange, String adeEventType, String contextType) {
+    protected void executeSingleTimeRange(TimeRange timeRange, String adeEventType, String contextType, StoreManagerMetadataProperties storeManagerMetadataProperties) {
         //For now we don't have multiple contexts so we pass just list of size 1.
         List<String> contextTypes = Collections.singletonList(contextType);
 
@@ -63,8 +64,7 @@ public class AccumulateAggregationsService extends FixedDurationStrategyExecutor
             //get all accumulated records and clean the store
             List<AccumulatedAggregationFeatureRecord> accumulatedRecords = accumulationsCache.getAllAccumulatedRecords();
             accumulationsCache.clean();
-
-            aggregationEventsAccumulationDataStore.store(accumulatedRecords);
+            aggregationEventsAccumulationDataStore.store(accumulatedRecords, storeManagerMetadataProperties);
         }
     }
 

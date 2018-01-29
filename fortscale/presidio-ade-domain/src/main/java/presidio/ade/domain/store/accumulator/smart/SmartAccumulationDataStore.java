@@ -1,7 +1,7 @@
 package presidio.ade.domain.store.accumulator.smart;
 
+import fortscale.utils.store.record.StoreManagerMetadataProperties;
 import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
-import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 
 import java.util.List;
 
@@ -12,6 +12,6 @@ public interface SmartAccumulationDataStore extends SmartAccumulationDataReader 
      *
      * @param records to be stored
      */
-    void store(List<? extends AdeContextualAggregatedRecord> records, String configurationName);
+    void store(List<? extends AdeContextualAggregatedRecord> records, String configurationName, StoreManagerMetadataProperties storeManagerMetadataProperties);
 
 }

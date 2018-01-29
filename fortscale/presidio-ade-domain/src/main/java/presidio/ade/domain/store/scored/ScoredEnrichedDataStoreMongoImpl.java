@@ -4,6 +4,7 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
+import fortscale.utils.store.record.StoreManagerMetadataProperties;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.store.StoreManager;
 import fortscale.utils.store.StoreManagerAware;
@@ -45,7 +46,7 @@ public class ScoredEnrichedDataStoreMongoImpl implements ScoredEnrichedDataStore
     }
 
     @Override
-    public void store(List<? extends AdeScoredEnrichedRecord> recordList) {
+    public void store(List<? extends AdeScoredEnrichedRecord> recordList, StoreManagerMetadataProperties storeManagerMetadataProperties) {
         Map<String, List<AdeScoredEnrichedRecord>> collectionNameToRecordList = new HashMap<>();
         for(AdeScoredEnrichedRecord record: recordList){
             String collectionName = translator.toCollectionName(record);
@@ -61,7 +62,7 @@ public class ScoredEnrichedDataStoreMongoImpl implements ScoredEnrichedDataStore
             List<AdeScoredEnrichedRecord> batchToSave = entry.getValue();
             String collectionName = entry.getKey();
             mongoDbBulkOpUtil.insertUnordered(batchToSave,collectionName);
-            storeManager.registerWithTtl(getStoreName(), collectionName);
+            storeManager.registerWithTtl(getStoreName(), collectionName, storeManagerMetadataProperties.getProperties());
         }
     }
 

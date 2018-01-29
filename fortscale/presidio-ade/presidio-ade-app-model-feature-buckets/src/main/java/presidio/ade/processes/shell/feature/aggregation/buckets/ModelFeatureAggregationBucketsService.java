@@ -5,6 +5,7 @@ import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.fixedduration.FixedDurationStrategyExecutor;
 import fortscale.utils.pagination.PageIterator;
+import fortscale.utils.store.record.StoreManagerMetadataProperties;
 import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.pagination.enriched.EnrichedRecordPaginationService;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
@@ -37,7 +38,7 @@ public class ModelFeatureAggregationBucketsService extends FixedDurationStrategy
     }
 
     @Override
-    protected void executeSingleTimeRange(TimeRange timeRange, String adeEventType, String contextType) {
+    protected void executeSingleTimeRange(TimeRange timeRange, String adeEventType, String contextType, StoreManagerMetadataProperties storeManagerMetadataProperties) {
         //For now we don't have multiple contexts so we pass just list of size 1.
         List<String> contextTypes = Collections.singletonList(contextType);
         EnrichedRecordPaginationService enrichedRecordPaginationService = new EnrichedRecordPaginationService(enrichedDataStore, pageSize, maxGroupSize, contextType);
@@ -46,11 +47,11 @@ public class ModelFeatureAggregationBucketsService extends FixedDurationStrategy
 
         for (PageIterator<EnrichedRecord> pageIterator : pageIterators) {
             List<FeatureBucket> featureBucketsToInsert = featureBucketAggregator.aggregate(pageIterator, contextTypes, featureBucketStrategyData);
-            storeFeatureBuckets(featureBucketsToInsert);
+            storeFeatureBuckets(featureBucketsToInsert, storeManagerMetadataProperties);
         }
     }
 
-    private void storeFeatureBuckets(List<FeatureBucket> featureBucketList){
+    private void storeFeatureBuckets(List<FeatureBucket> featureBucketList, StoreManagerMetadataProperties storeManagerMetadataProperties){
         Map<String,List<FeatureBucket>> confnameToFeatureBucketsMap = new HashMap<>();
         for(FeatureBucket featureBucket: featureBucketList){
             List<FeatureBucket> confFeatureBucketList = confnameToFeatureBucketsMap.get(featureBucket.getFeatureBucketConfName());
@@ -63,7 +64,7 @@ public class ModelFeatureAggregationBucketsService extends FixedDurationStrategy
 
         for(Map.Entry<String,List<FeatureBucket>> entry: confnameToFeatureBucketsMap.entrySet()){
             FeatureBucketConf featureBucketConf = bucketConfigurationService.getBucketConf(entry.getKey());
-            featureBucketStore.storeFeatureBucket(featureBucketConf, entry.getValue());
+            featureBucketStore.storeFeatureBucket(featureBucketConf, entry.getValue(), storeManagerMetadataProperties);
         }
     }
 

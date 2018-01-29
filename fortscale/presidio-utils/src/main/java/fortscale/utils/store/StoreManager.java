@@ -1,14 +1,13 @@
 package fortscale.utils.store;
 
+import fortscale.utils.store.record.StoreManagerMetadataProperties;
 import fortscale.utils.store.record.StoreMetadata;
 import fortscale.utils.time.TimeRange;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * StoreManager responsible for:
@@ -54,8 +53,8 @@ public class StoreManager {
      * @param storeName      store name
      * @param collectionName collection name
      */
-    public void register(String storeName, String collectionName) {
-        appSpecificStoreMetadataStore.save(storeName, collectionName, null, null);
+    public void register(String storeName, String collectionName, Map<String,String> properties) {
+        appSpecificStoreMetadataStore.save(storeName, collectionName, null, null, properties);
     }
 
 
@@ -67,8 +66,8 @@ public class StoreManager {
      * @param ttl             ttl
      * @param cleanupInterval clean up interval
      */
-    public void registerWithTtl(String storeName, String collectionName, Duration ttl, Duration cleanupInterval) {
-        appSpecificStoreMetadataStore.save(storeName, collectionName, ttl, cleanupInterval);
+    public void registerWithTtl(String storeName, String collectionName, Duration ttl, Duration cleanupInterval, Map<String,String> properties) {
+        appSpecificStoreMetadataStore.save(storeName, collectionName, ttl, cleanupInterval, properties);
     }
 
     /**
@@ -77,8 +76,8 @@ public class StoreManager {
      * @param storeName      store name
      * @param collectionName collection name
      */
-    public void registerWithTtl(String storeName, String collectionName) {
-        appSpecificStoreMetadataStore.save(storeName, collectionName, defaultTtl, defaultCleanupInterval);
+    public void registerWithTtl(String storeName, String collectionName, Map<String,String> properties) {
+        appSpecificStoreMetadataStore.save(storeName, collectionName, defaultTtl, defaultCleanupInterval, properties);
     }
 
     /**
@@ -91,13 +90,13 @@ public class StoreManager {
      *                e.g: startInstant => store remove all records, where startInstant is less than (startInstant - tll)
      *                e.g: endInstant => store remove all records, where endInstant is less or equal than (endInstant - tll)
      */
-    public void cleanupCollections(Instant instant) {
+    public void cleanupCollections(Map<String, String> properties, Instant instant) {
         if (executeTtlCleanup) {
             List<StoreMetadata> storeMetadataList = appSpecificStoreMetadataStore.getStoreDataList();
+            storeMetadataList = storeMetadataList.stream().filter(storeMetadata -> storeMetadata.getProperties().equals(properties)).collect(Collectors.toList());
             storeMetadataList.forEach(storeMetadata -> {
                         StoreManagerAware storeManagerAware = storeNameToStoreManagerAware.get(storeMetadata.getStoreName());
                         String collectionName = storeMetadata.getCollectionName();
-
                         Duration ttl = storeMetadata.getTtlDuration();
                         Duration cleanupInterval = storeMetadata.getCleanupInterval();
 
@@ -115,8 +114,9 @@ public class StoreManager {
      * @param start start instant
      * @param end end instant
      */
-    public void cleanupCollections(Instant start, Instant end) {
+    public void cleanupCollections(Map<String, String> properties, Instant start, Instant end) {
         List<StoreMetadata> storeMetadataList = appSpecificStoreMetadataStore.getStoreDataList();
+        storeMetadataList = storeMetadataList.stream().filter(storeMetadata -> storeMetadata.getProperties().equals(properties)).collect(Collectors.toList());
         storeMetadataList.forEach(storeMetadata -> {
                     StoreManagerAware storeManagerAware = storeNameToStoreManagerAware.get(storeMetadata.getStoreName());
                     String collectionName = storeMetadata.getCollectionName();
@@ -153,9 +153,11 @@ public class StoreManager {
      * @param storeName store name
      * @param timeRange timeRange
      */
-    public void cleanupCollections(String storeName, TimeRange timeRange) {
+    public void cleanupCollections(String storeName, TimeRange timeRange, StoreManagerMetadataProperties storeManagerMetadataProperties) {
         List<StoreMetadata> storeMetadataList = storeMetadataRepository.findByStoreName(storeName);
         StoreManagerAware storeManagerAware = storeNameToStoreManagerAware.get(storeName);
+        storeMetadataList = storeMetadataList.stream().filter(storeMetadata -> storeMetadata.getProperties().equals(storeManagerMetadataProperties.getProperties())).collect(Collectors.toList());
+
         storeMetadataList.forEach(storeMetadata -> {
                     String collectionName = storeMetadata.getCollectionName();
                     storeManagerAware.remove(collectionName, timeRange.getStart(), timeRange.getEnd());

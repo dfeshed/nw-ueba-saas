@@ -1,5 +1,6 @@
 package presidio.ade.domain.store.smart;
 
+import fortscale.utils.store.record.StoreManagerMetadataProperties;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 
 import java.util.Collection;
@@ -10,5 +11,5 @@ import java.util.Collection;
  * @author Lior Govrin
  */
 public interface SmartDataStore extends SmartDataReader {
-	void storeSmartRecords(String smartRecordConfName, Collection<SmartRecord> smartRecords);
+	void storeSmartRecords(String smartRecordConfName, Collection<SmartRecord> smartRecords, StoreManagerMetadataProperties storeManagerMetadataProperties);
 }

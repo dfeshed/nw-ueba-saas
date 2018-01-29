@@ -1,5 +1,6 @@
 package presidio.ade.test.utils.tests;
 
+import fortscale.utils.store.record.StoreManagerMetadataProperties;
 import fortscale.utils.time.TimeRange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -76,7 +77,7 @@ public abstract class EnrichedDataBaseAppTest extends BaseAppTest{
 
     private void storeEnrichedData(List<? extends EnrichedRecord> records, TimeRange dataTimeRange){
         EnrichedRecordsMetadata recordsMetadata = new EnrichedRecordsMetadata("file", dataTimeRange.getStart(), dataTimeRange.getEnd());
-        enrichedDataStore.store(recordsMetadata, records);
+        enrichedDataStore.store(recordsMetadata, records, new StoreManagerMetadataProperties());
     }
 
     private TimeRange getEnrichedFileRecordsTimeRange(List<EnrichedFileRecord> enrichedFileRecords){
