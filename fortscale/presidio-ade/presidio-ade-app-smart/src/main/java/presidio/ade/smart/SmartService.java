@@ -31,7 +31,7 @@ import java.util.Set;
  */
 public class SmartService {
 	private static final Logger logger = Logger.getLogger(SmartService.class);
-	private static String CONFIGURATION_NAME = "configuration_name";
+	private static final String CONFIGURATION_NAME = "configuration_name";
 
 	private final SmartRecordConfService smartRecordConfService;
 	private final Double aggregationRecordsThreshold;
@@ -78,7 +78,7 @@ public class SmartService {
 		FixedDurationStrategy strategy = conf.getFixedDurationStrategy();
 		Set<AggregatedDataPaginationParam> params = smartRecordConfService.getPaginationParams(smartRecordConfName);
 
-		StoreMetadataProperties storeMetadataProperties = createStoreManagerAwareMetadata(smartRecordConfName);
+		StoreMetadataProperties storeMetadataProperties = createStoreMetadataProperties(smartRecordConfName);
 
 		for (TimeRange partition : FixedDurationStrategyUtils.splitTimeRangeByStrategy(timeRange, strategy)) {
 			try {
@@ -110,19 +110,19 @@ public class SmartService {
 
 		}
 
-		storeManager.cleanupCollections(storeMetadataProperties.getProperties(), timeRange.getStart());
+		storeManager.cleanupCollections(storeMetadataProperties, timeRange.getStart());
 	}
 
 
 	public void cleanup(String smartRecordConfName, TimeRange timeRange) throws Exception {
-		StoreMetadataProperties storeMetadataProperties = createStoreManagerAwareMetadata(smartRecordConfName);
-		storeManager.cleanupCollections(storeMetadataProperties.getProperties(), timeRange.getStart(), timeRange.getEnd());
+		StoreMetadataProperties storeMetadataProperties = createStoreMetadataProperties(smartRecordConfName);
+		storeManager.cleanupCollections(storeMetadataProperties, timeRange.getStart(), timeRange.getEnd());
 	}
 
 
-	private StoreMetadataProperties createStoreManagerAwareMetadata(String smartRecordConfName){
+	private StoreMetadataProperties createStoreMetadataProperties(String smartRecordConfName){
 		StoreMetadataProperties storeMetadataProperties = new StoreMetadataProperties();
-		storeMetadataProperties.setProperties(CONFIGURATION_NAME, smartRecordConfName);
+		storeMetadataProperties.setProperty(CONFIGURATION_NAME, smartRecordConfName);
 		return storeMetadataProperties;
 	}
 }

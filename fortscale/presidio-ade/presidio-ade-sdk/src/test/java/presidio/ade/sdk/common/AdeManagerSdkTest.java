@@ -149,6 +149,7 @@ public class AdeManagerSdkTest {
         String collectionName = translator.toCollectionName(metaData);
         List<MockedEnrichedRecord> insertedRecords = mongoTemplate.findAll(MockedEnrichedRecord.class, collectionName);
 
+        Assert.assertTrue(records.size() == insertedRecords.size());
         insertedRecords = insertedRecords.stream().filter(data -> data.getStartInstant().isBefore(removeTo) && data.getStartInstant().isAfter(removeFrom)).collect(Collectors.toList());
         Assert.assertTrue(!insertedRecords.isEmpty());
     }

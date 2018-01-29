@@ -122,7 +122,7 @@ public class AccumulateSmartApplicationTest {
             }
             start = TimeService.floorTime(start.plus(DURATION), DURATION);
         }
-        smartDataStore.storeSmartRecords(CONFIGURATION_NAME, smartRecords, new StoreMetadataProperties(Collections.EMPTY_MAP));
+        smartDataStore.storeSmartRecords(CONFIGURATION_NAME, smartRecords, new StoreMetadataProperties());
     }
 
     /**

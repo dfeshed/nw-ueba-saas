@@ -54,7 +54,7 @@ public class StoreManager {
      * @param collectionName collection name
      */
     public void register(String storeName, String collectionName, StoreMetadataProperties storeMetadataProperties) {
-        appSpecificStoreMetadataStore.save(storeName, collectionName, null, null, storeMetadataProperties.getProperties());
+        appSpecificStoreMetadataStore.save(storeName, collectionName, null, null, storeMetadataProperties);
     }
 
 
@@ -67,7 +67,7 @@ public class StoreManager {
      * @param cleanupInterval clean up interval
      */
     public void registerWithTtl(String storeName, String collectionName, Duration ttl, Duration cleanupInterval, StoreMetadataProperties storeMetadataProperties) {
-        appSpecificStoreMetadataStore.save(storeName, collectionName, ttl, cleanupInterval, storeMetadataProperties.getProperties());
+        appSpecificStoreMetadataStore.save(storeName, collectionName, ttl, cleanupInterval, storeMetadataProperties);
     }
 
     /**
@@ -77,7 +77,7 @@ public class StoreManager {
      * @param collectionName collection name
      */
     public void registerWithTtl(String storeName, String collectionName, StoreMetadataProperties storeMetadataProperties) {
-        appSpecificStoreMetadataStore.save(storeName, collectionName, defaultTtl, defaultCleanupInterval, storeMetadataProperties.getProperties());
+        appSpecificStoreMetadataStore.save(storeName, collectionName, defaultTtl, defaultCleanupInterval, storeMetadataProperties);
     }
 
     /**
@@ -90,10 +90,10 @@ public class StoreManager {
      *                e.g: startInstant => store remove all records, where startInstant is less than (startInstant - tll)
      *                e.g: endInstant => store remove all records, where endInstant is less or equal than (endInstant - tll)
      */
-    public void cleanupCollections(Map<String, String> properties, Instant instant) {
+    public void cleanupCollections(StoreMetadataProperties storeMetadataProperties, Instant instant) {
         if (executeTtlCleanup) {
             List<StoreMetadata> storeMetadataList = appSpecificStoreMetadataStore.getStoreDataList();
-            storeMetadataList = storeMetadataList.stream().filter(storeMetadata -> storeMetadata.getProperties().equals(properties)).collect(Collectors.toList());
+            storeMetadataList = storeMetadataList.stream().filter(storeMetadata -> storeMetadata.getStoreMetadataProperties().equals(storeMetadataProperties)).collect(Collectors.toList());
             storeMetadataList.forEach(storeMetadata -> {
                         StoreManagerAware storeManagerAware = storeNameToStoreManagerAware.get(storeMetadata.getStoreName());
                         String collectionName = storeMetadata.getCollectionName();
@@ -114,9 +114,9 @@ public class StoreManager {
      * @param start start instant
      * @param end end instant
      */
-    public void cleanupCollections(Map<String, String> properties, Instant start, Instant end) {
+    public void cleanupCollections(StoreMetadataProperties storeMetadataProperties, Instant start, Instant end) {
         List<StoreMetadata> storeMetadataList = appSpecificStoreMetadataStore.getStoreDataList();
-        storeMetadataList = storeMetadataList.stream().filter(storeMetadata -> storeMetadata.getProperties().equals(properties)).collect(Collectors.toList());
+        storeMetadataList = storeMetadataList.stream().filter(storeMetadata -> storeMetadata.getStoreMetadataProperties().equals(storeMetadataProperties)).collect(Collectors.toList());
         storeMetadataList.forEach(storeMetadata -> {
                     StoreManagerAware storeManagerAware = storeNameToStoreManagerAware.get(storeMetadata.getStoreName());
                     String collectionName = storeMetadata.getCollectionName();
@@ -124,6 +124,7 @@ public class StoreManager {
                 }
         );
     }
+
 
 
     /**
@@ -156,7 +157,7 @@ public class StoreManager {
     public void cleanupCollections(String storeName, TimeRange timeRange, StoreMetadataProperties storeMetadataProperties) {
         List<StoreMetadata> storeMetadataList = storeMetadataRepository.findByStoreName(storeName);
         StoreManagerAware storeManagerAware = storeNameToStoreManagerAware.get(storeName);
-        storeMetadataList = storeMetadataList.stream().filter(storeMetadata -> storeMetadata.getProperties().equals(storeMetadataProperties.getProperties())).collect(Collectors.toList());
+        storeMetadataList = storeMetadataList.stream().filter(storeMetadata -> storeMetadata.getStoreMetadataProperties().equals(storeMetadataProperties)).collect(Collectors.toList());
 
         storeMetadataList.forEach(storeMetadata -> {
                     String collectionName = storeMetadata.getCollectionName();

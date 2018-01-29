@@ -38,16 +38,16 @@ public class StoreMetadata {
     @Field
     private Duration cleanupInterval;
     @Field
-    private Map<String,String> properties;
+    private StoreMetadataProperties storeMetadataProperties;
 
 
-    public StoreMetadata(String applicationName, String storeName, String collectionName, Duration ttlDuration, Duration cleanupInterval, Map<String,String> properties){
+    public StoreMetadata(String applicationName, String storeName, String collectionName, Duration ttlDuration, Duration cleanupInterval, StoreMetadataProperties storeMetadataProperties){
         this.applicationName = applicationName;
         this.storeName = storeName;
         this.collectionName = collectionName;
         this.ttlDuration = ttlDuration;
         this.cleanupInterval = cleanupInterval;
-        this.properties = properties;
+        this.storeMetadataProperties = storeMetadataProperties;
     }
 
     public String getApplicationName() {
@@ -90,11 +90,11 @@ public class StoreMetadata {
         this.cleanupInterval = cleanupInterval;
     }
 
-    public Map<String, String> getProperties() {
-        return properties;
+    public StoreMetadataProperties getStoreMetadataProperties() {
+        return storeMetadataProperties;
     }
 
-    public void setProperties(Map<String, String> properties) {
-        this.properties = properties;
+    public void setStoreMetadataProperties(StoreMetadataProperties storeMetadataProperties) {
+        this.storeMetadataProperties = storeMetadataProperties;
     }
 }

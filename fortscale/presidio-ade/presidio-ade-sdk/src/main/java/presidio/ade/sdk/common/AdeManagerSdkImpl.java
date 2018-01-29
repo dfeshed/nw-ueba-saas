@@ -41,7 +41,7 @@ import static java.util.stream.Collectors.toMap;
  * @author Barak Schuster
  */
 public class AdeManagerSdkImpl implements AdeManagerSdk {
-    private static String SCHEMA = "schema";
+    private static final String SCHEMA = "schema";
 
     private StoreManagerAwareEnrichedDataStore storeManagerAwareEnrichedDataStore;
     private SmartDataReader smartDataReader;
@@ -194,16 +194,14 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
 
     @Override
     public void storeEnrichedRecords(EnrichedRecordsMetadata metadata, List<? extends EnrichedRecord> records) {
-        StoreMetadataProperties storeMetadataProperties = new StoreMetadataProperties();
-        storeMetadataProperties.setProperties(SCHEMA, metadata.getAdeEventType());
+        StoreMetadataProperties storeMetadataProperties = createStoreMetadataProperties(metadata.getAdeEventType());
         storeManagerAwareEnrichedDataStore.store(metadata, records, storeMetadataProperties);
     }
 
     @Override
     public void cleanupEnrichedRecords(AdeDataStoreCleanupParams adeDataStoreCleanupParams) {
         String storeName = storeManagerAwareEnrichedDataStore.getStoreName();
-        StoreMetadataProperties storeMetadataProperties = new StoreMetadataProperties();
-        storeMetadataProperties.setProperties(SCHEMA, adeDataStoreCleanupParams.getAdeEventType());
+        StoreMetadataProperties storeMetadataProperties = createStoreMetadataProperties(adeDataStoreCleanupParams.getAdeEventType());
         storeManager.cleanupCollections(storeName, new TimeRange(adeDataStoreCleanupParams.getStartDate(), adeDataStoreCleanupParams.getEndDate()), storeMetadataProperties);
     }
 
@@ -287,5 +285,16 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
     public void cleanupEnrichedData(Instant until, Duration enrichedTtl, Duration enrichedCleanupInterval) {
         String storeName = storeManagerAwareEnrichedDataStore.getStoreName();
         storeManager.cleanupCollections(storeName, until, enrichedTtl, enrichedCleanupInterval);
+    }
+
+    /**
+     * Create StoreMetadataProperties
+     * @param schema
+     * @return StoreMetadataProperties
+     */
+    private StoreMetadataProperties createStoreMetadataProperties(String schema){
+        StoreMetadataProperties storeMetadataProperties = new StoreMetadataProperties();
+        storeMetadataProperties.setProperty(SCHEMA, schema);
+        return storeMetadataProperties;
     }
 }

@@ -14,8 +14,8 @@ import presidio.ade.domain.store.enriched.EnrichedDataStore;
 import java.time.Instant;
 
 public class ModelFeatureAggregationBucketsExecutionServiceImpl implements PresidioExecutionService {
-    private static String SCHEMA = "schema";
-    private static String FIXED_DURATION_STRATEGY = "fixed_duration_strategy";
+    private static final String SCHEMA = "schema";
+    private static final String FIXED_DURATION_STRATEGY = "fixed_duration_strategy";
 
     private final int maxGroupSize;
     private final int pageSize;
@@ -45,10 +45,10 @@ public class ModelFeatureAggregationBucketsExecutionServiceImpl implements Presi
         ModelFeatureAggregationBucketsService service = new ModelFeatureAggregationBucketsService(
                 bucketConfigurationService, enrichedDataStore, inMemoryFeatureBucketAggregator, featureBucketStore, pageSize, maxGroupSize);
         FixedDurationStrategy fixedDurationStrategy = FixedDurationStrategy.fromSeconds(fixedDurationStrategyInSeconds.longValue());
-        StoreMetadataProperties storeMetadataProperties = createStoreManagerAwareMetadata(schema, fixedDurationStrategy);
+        StoreMetadataProperties storeMetadataProperties = createStoreMetadataProperties(schema, fixedDurationStrategy);
 
         service.execute(new TimeRange(startInstant, endInstant), schema.getName(), storeMetadataProperties);
-        storeManager.cleanupCollections(storeMetadataProperties.getProperties(), startInstant);
+        storeManager.cleanupCollections(storeMetadataProperties, startInstant);
     }
 
     @Override
@@ -64,15 +64,15 @@ public class ModelFeatureAggregationBucketsExecutionServiceImpl implements Presi
     @Override
     public void cleanup(Schema schema, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
         FixedDurationStrategy fixedDurationStrategy = FixedDurationStrategy.fromSeconds(fixedDuration.longValue());
-        StoreMetadataProperties storeMetadataProperties = createStoreManagerAwareMetadata(schema, fixedDurationStrategy);
-        storeManager.cleanupCollections(storeMetadataProperties.getProperties(), startDate, endDate);
+        StoreMetadataProperties storeMetadataProperties = createStoreMetadataProperties(schema, fixedDurationStrategy);
+        storeManager.cleanupCollections(storeMetadataProperties, startDate, endDate);
     }
 
 
-    private StoreMetadataProperties createStoreManagerAwareMetadata(Schema schema, FixedDurationStrategy fixedDurationStrategy){
+    private StoreMetadataProperties createStoreMetadataProperties(Schema schema, FixedDurationStrategy fixedDurationStrategy){
         StoreMetadataProperties storeMetadataProperties = new StoreMetadataProperties();
-        storeMetadataProperties.setProperties(SCHEMA, schema.getName());
-        storeMetadataProperties.setProperties(FIXED_DURATION_STRATEGY, fixedDurationStrategy.toStrategyName());
+        storeMetadataProperties.setProperty(SCHEMA, schema.getName());
+        storeMetadataProperties.setProperty(FIXED_DURATION_STRATEGY, fixedDurationStrategy.toStrategyName());
         return storeMetadataProperties;
     }
 
