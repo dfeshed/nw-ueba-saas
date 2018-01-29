@@ -56,7 +56,7 @@ const ListComponent = Component.extend({
     },
     sort(column) {
       const { field: sortField, isDescending: isDescOrder } = column;
-      this.send('sortBy', sortField, isDescOrder);
+      this.send('sortBy', sortField, !isDescOrder);
       column.set('isDescending', !isDescOrder);
     }
   }

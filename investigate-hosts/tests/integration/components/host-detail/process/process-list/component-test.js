@@ -92,7 +92,7 @@ test('Check that sort action is performed & correct values are passed', function
   return wait().then(() => {
     assert.equal(DataCreators.sortBy.calledOnce, true, 'sort action is called');
     assert.equal(DataCreators.sortBy.args[0][0], 'name', 'Value passed in sorting action is rendered');
-    assert.equal(DataCreators.sortBy.args[0][1], false, 'Value passed in sorting action is rendered');
+    assert.equal(DataCreators.sortBy.args[0][1], true, 'Value passed in sorting action is rendered');
     assert.equal(this.$('.rsa-data-table-header-cell:eq(0)').find('i').hasClass('rsa-icon-arrow-down-12-filled'), true, 'Arrow down icon appears after sorting');
     DataCreators.sortBy.restore();
   });
