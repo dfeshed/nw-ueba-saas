@@ -47,7 +47,9 @@ const normalizeEventFiles = (evt) => {
  * @public
  */
 const normalizeEventUsers = (evt) => {
-  const { source: { user: sourceUser } = {}, destination: { user: destUser } = {} } = evt;
+  const { source, destination } = evt;
+  const sourceUser = (source && source.user) ? source.user : undefined;
+  const destUser = (destination && destination.user) ? destination.user : undefined;
 
   [ sourceUser, destUser ].forEach((user) => {
     if (user) {

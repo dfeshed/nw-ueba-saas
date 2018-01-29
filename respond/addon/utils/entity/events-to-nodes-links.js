@@ -126,22 +126,15 @@ function checkDeviceAndUserLinks(deviceNodes, userNode, linkHash, evt) {
 // If not found, creates the missing nodes & links and adds them to the given hashes.
 // Additionally, adds the given event to the `events` arrays of the found/created nodes & links.
 function parseEventNodesAndLinks(evt, nodeHash, linkHash) {
-  const {
-    source: {
-      device: sourceDevice,
-      user: {
-        username: sourceUsername
-      } = {}
-    } = {},
-    destination: {
-      device: destinationDevice,
-      user: {
-        username: destinationUsername
-      } = {}
-    } = {},
-    data = [],
-    detector
-  } = evt;
+  const { source, destination, detector } = evt;
+  const sourceDevice = (source) ? source.device : undefined;
+  const srcUser = (source) ? source.user : {};
+  const sourceUsername = (srcUser && srcUser.username) ? srcUser.username : undefined;
+
+  const destinationDevice = (destination) ? destination.device : undefined;
+  const dstUser = (destination) ? destination.user : {};
+  const destinationUsername = (dstUser && dstUser.username) ? dstUser.username : undefined;
+  const data = (evt.data) ? evt.data : [];
 
   // Generate nodes for the source & dest devices, if any.
   // For the source device, first try parsing nodes from 'source.device'.

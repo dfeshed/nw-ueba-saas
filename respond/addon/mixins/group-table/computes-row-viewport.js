@@ -146,11 +146,15 @@ export default Mixin.create(ComputesRowExtents, {
    */
   @computed('viewportDom', 'viewportBuffer', 'groupExtents', 'groupHeaderSize', 'groupItemSize')
   viewportIndices(viewportDom, viewportBuffer, groupExtents, groupHeaderSize, groupItemSize) {
-    const { outerHeight: groupHeaderHeight = 0 } = groupHeaderSize || {};
-    const { outerHeight: groupItemHeight = 0 } = groupItemSize || {};
+    const grpHeaderSize = groupHeaderSize || {};
+    const groupHeaderHeight = (grpHeaderSize.outerHeight) ? grpHeaderSize.outerHeight : 0;
+    const grpItemSize = groupItemSize || {};
+    const groupItemHeight = (grpItemSize.outerHeight) ? grpItemSize.outerHeight : 0;
     const { scrollerPos, scrollerSize } = this.getProperties('scrollerPos', 'scrollerSize');
-    const { top: scrollTop = 0 } = scrollerPos || {};
-    const { innerHeight: scrollHeight = 0 } = scrollerSize || {};
+    const { top } = scrollerPos || {};
+    const scrollTop = (top) ? top : 0;
+    const { innerHeight } = scrollerSize || {};
+    const scrollHeight = (innerHeight) ? innerHeight : 0;
     const actual = {
       top: scrollTop,
       bottom: scrollTop + scrollHeight

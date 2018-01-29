@@ -190,7 +190,6 @@ cd $CWD
 node scripts/node/check-translations.js sa/app/locales component-lib/addon/locales style-guide/app/locales
 checkError "Translations do not sync up between languages"
 
-# Code coverage does not work for respond due to destructuring syntax (WIP), so passing COVERAGE=false for respond.
 buildMockServer
 buildEmberApp streaming-data false true true
 buildEmberApp component-lib false false true
@@ -204,7 +203,7 @@ buildEmberApp style-guide true false false
 buildEmberApp investigate-events false true true
 buildEmberApp investigate-hosts false true true
 buildEmberApp investigate-files false true true
-buildEmberApp respond false true false
+buildEmberApp respond false true true
 buildEmberApp configure false true true
 buildEmberApp sa true true true
 buildLibrary broccoli-theme

@@ -33,7 +33,8 @@ export default GroupItem.extend(HighlightsEntities, {
 
   @computed('item')
   toDeviceValues(item) {
-    const { domain, destination: { device = {} } = {} } = item || {};
+    const { domain, destination } = item || {};
+    const device = (destination && destination.device) ? destination.device : {};
     const devicePairs = getDeviceFieldValuePairs(device);
 
     // If we didn't find a hostname in event.destination.device, check for it in event.domain field.
@@ -45,7 +46,10 @@ export default GroupItem.extend(HighlightsEntities, {
 
   @computed('item')
   fromUserValues(item) {
-    const { source: { user: { username } = {} } = {} } = item || {};
+    const { source } = item || {};
+    const user = (source) ? source.user : {};
+    const username = (user && user.username) ? user.username : undefined;
+
     if (!isEmpty(username)) {
       return [{ field: 'username', value: username }];
     } else {
@@ -55,7 +59,9 @@ export default GroupItem.extend(HighlightsEntities, {
 
   @computed('item')
   toUserValues(item) {
-    const { destination: { user: { username } = {} } = {} } = item || {};
+    const { destination } = item || {};
+    const user = (destination) ? destination.user : {};
+    const username = (user && user.username) ? user.username : undefined;
     if (!isEmpty(username)) {
       return [{ field: 'username', value: username }];
     } else {

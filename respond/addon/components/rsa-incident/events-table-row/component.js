@@ -44,7 +44,9 @@ export default DataTableBodyRow.extend(HighlightsEntities, {
   // Computes the device to display as the "from" for this event.
   @computed('item')
   fromDevice(item) {
-    const { source = {}, detector = {} } = item || {};
+    const source = (item && item.source) ? item.source : {};
+    const detector = (item && item.detector) ? item.detector : {};
+
     const device = source.device || detector.device;
     const { field, value } = firstProp(device, [ 'dns_hostname', 'ip_address', 'mac_address' ]);
     return field ? { field, value } : null;
@@ -53,7 +55,8 @@ export default DataTableBodyRow.extend(HighlightsEntities, {
   // Computes the device to display as the "from" for this event.
   @computed('item')
   toDevice(item) {
-    const { destination: { device } = {} } = item || {};
+    const { destination } = item || {};
+    const device = (destination) ? destination.device : undefined;
     const { field, value } = firstProp(device, [ 'dns_domain', 'dns_hostname', 'ip_address', 'mac_address' ]);
     return field ? { field, value } : null;
   },
