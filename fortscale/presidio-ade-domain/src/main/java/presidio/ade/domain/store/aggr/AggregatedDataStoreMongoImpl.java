@@ -91,7 +91,7 @@ public class AggregatedDataStoreMongoImpl implements AggregatedDataStore, StoreM
             AggrRecordsMetadata metadata = new AggrRecordsMetadata(featureName, aggregatedFeatureType);
             String collectionName = translator.toCollectionName(metadata);
             mongoDbBulkOpUtil.insertUnordered(aggregationRecords, collectionName);
-            storeManager.registerWithTtl(getStoreName(), collectionName, storeManagerMetadataProperties.getProperties());
+            storeManager.registerWithTtl(getStoreName(), collectionName, storeManagerMetadataProperties);
         });
     }
 

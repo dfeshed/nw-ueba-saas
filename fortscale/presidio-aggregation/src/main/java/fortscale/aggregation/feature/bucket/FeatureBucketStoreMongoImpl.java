@@ -86,7 +86,7 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore, StoreMan
 
 		try {
 			mongoDbBulkOpUtil.insertUnordered(featureBuckets,collectionName);
-			storeManager.registerWithTtl(getStoreName(), collectionName, storeManagerMetadataProperties.getProperties());
+			storeManager.registerWithTtl(getStoreName(), collectionName, storeManagerMetadataProperties);
 		} catch (Exception e) {
 			logger.error("Failed storing Feature Bucket {} in Mongo collection {}.", featureBuckets, collectionName, e);
 		}

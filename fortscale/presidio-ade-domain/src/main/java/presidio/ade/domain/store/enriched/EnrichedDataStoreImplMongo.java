@@ -58,7 +58,7 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
         logger.info("storing by recordsMetadata={}", recordsMetadata);
         String collectionName = translator.toCollectionName(recordsMetadata);
         mongoDbBulkOpUtil.insertUnordered(records, collectionName);
-        storeManager.registerWithTtl(getStoreName(), collectionName, storeManagerMetadataProperties.getProperties());
+        storeManager.registerWithTtl(getStoreName(), collectionName, storeManagerMetadataProperties);
     }
 
     @Override

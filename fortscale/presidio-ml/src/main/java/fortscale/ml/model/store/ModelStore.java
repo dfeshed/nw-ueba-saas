@@ -75,7 +75,7 @@ public class ModelStore implements StoreManagerAware {
     public void save(ModelConf modelConf, ModelDAO modelDao, StoreManagerMetadataProperties storeManagerMetadataProperties) {
         String collectionName = getCollectionName(modelConf);
         mongoTemplate.insert(modelDao, collectionName);
-        storeManager.registerWithTtl(getStoreName(), collectionName, storeManagerMetadataProperties.getProperties());
+        storeManager.registerWithTtl(getStoreName(), collectionName, storeManagerMetadataProperties);
     }
 
     public Collection<ModelDAO> getAllContextsModelDaosWithLatestEndTimeLte(ModelConf modelConf, Instant eventEpochtime) {

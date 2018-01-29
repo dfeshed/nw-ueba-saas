@@ -43,7 +43,7 @@ public class SmartDataStoreMongoImpl implements SmartDataStore, StoreManagerAwar
     public void storeSmartRecords(String smartRecordConfName, Collection<SmartRecord> smartRecords, StoreManagerMetadataProperties storeManagerMetadataProperties) {
         String collectionName = translator.toCollectionName(smartRecordConfName);
         mongoDbBulkOpUtil.insertUnordered(new ArrayList<>(smartRecords), collectionName);
-        storeManager.registerWithTtl(getStoreName(), collectionName, storeManagerMetadataProperties.getProperties());
+        storeManager.registerWithTtl(getStoreName(), collectionName, storeManagerMetadataProperties);
     }
 
     @Override

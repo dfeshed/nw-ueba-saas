@@ -49,7 +49,7 @@ public class AggregationEventsAccumulationDataStoreMongoImpl implements Aggregat
                     String collectionName = getCollectionName(metadata);
                     List<AccumulatedAggregationFeatureRecord> aggrRecords = featureToAggrList.get(feature);
                     mongoDbBulkOpUtil.insertUnordered(aggrRecords, collectionName);
-                    storeManager.registerWithTtl(getStoreName(), collectionName, storeManagerMetadataProperties.getProperties());
+                    storeManager.registerWithTtl(getStoreName(), collectionName, storeManagerMetadataProperties);
                 }
         );
     }

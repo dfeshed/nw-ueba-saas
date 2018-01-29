@@ -1,6 +1,7 @@
 package fortscale.utils.store;
 
 
+import fortscale.utils.store.record.StoreManagerMetadataProperties;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
@@ -44,17 +45,17 @@ public class StoreManagerAwareTest implements StoreManagerAware {
 
     public void save(StoreManagerRecordTest storeManagerRecordTest, String collectionName, Duration ttl, Duration cleanupInterval) {
         mongoTemplate.insert(storeManagerRecordTest, collectionName);
-        storeManager.registerWithTtl(getStoreName(), collectionName, ttl, cleanupInterval, Collections.emptyMap());
+        storeManager.registerWithTtl(getStoreName(), collectionName, ttl, cleanupInterval, new StoreManagerMetadataProperties());
     }
 
     public void saveWithDefaultTtl(StoreManagerRecordTest storeManagerRecordTest, String collectionName) {
         mongoTemplate.insert(storeManagerRecordTest,collectionName);
-        storeManager.registerWithTtl(getStoreName(), collectionName, Collections.emptyMap());
+        storeManager.registerWithTtl(getStoreName(), collectionName, new StoreManagerMetadataProperties());
     }
 
     public void register(StoreManagerRecordTest storeManagerRecordTest, String collectionName) {
         mongoTemplate.insert(storeManagerRecordTest, collectionName);
-        storeManager.register(getStoreName(), collectionName, Collections.emptyMap());
+        storeManager.register(getStoreName(), collectionName, new StoreManagerMetadataProperties());
     }
 
 
