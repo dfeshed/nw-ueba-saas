@@ -48,7 +48,7 @@ public class ConfigurationApiControllerTest {
 
     @Test
     public void putConfigurationInvalidConfiguration() throws IOException {
-        ConfigurationApiController controller = new ConfigurationApiController(configurationProcessingManager, configServerClient, null, null, new PresidioEncryptionUtils());
+        ConfigurationApiController controller = new ConfigurationApiController(configurationProcessingManager, configServerClient, null, null, null);
 
         ObjectMapper mapper = ObjectMapperProvider.getInstance().getDefaultObjectMapper();
         File from = ctx.getResource(CONFIG_JSON_FILE_NAME).getFile();
