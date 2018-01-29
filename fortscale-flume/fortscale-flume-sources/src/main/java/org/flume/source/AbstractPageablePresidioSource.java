@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractDocument;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.flume.*;
@@ -47,7 +48,6 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
     protected SourceFetcher sourceFetcher;
     protected Instant startDate;
     protected Instant endDate;
-    protected String schema;
 
     PresidioExternalMonitoringService presidioExternalMonitoringService;
 
@@ -82,9 +82,7 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
     }
 
     @Override
-    protected void doPresidioConfigure(Context context) {
-        schema = context.getString(CommonStrings.SCHEMA_NAME, null);
-    }
+    protected abstract void doPresidioConfigure(Context context);
 
 
     @Override
@@ -93,7 +91,7 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
                 getName(), START_DATE, END_DATE, startDate, endDate);
         try {
             int pageNum = 0;// first page
-            List<AbstractDocument> currentPage = doFetch(pageNum);
+            List<AbstractDocument> currentPage = doFetch(schema, pageNum);
             if (currentPage.size() == 0) {
                 logger.warn("Failed to process events for {}: {}, {}: {}. There were no events to process",
                         START_DATE, startDate, END_DATE, endDate);
@@ -101,7 +99,7 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
                 processPage(currentPage); //handle first event
                 pageNum++;
                 while (currentPage.size() == batchSize) { //kind of (maybe)hasNext()
-                    currentPage = doFetch(pageNum);
+                    currentPage = doFetch(schema, pageNum);
                     processPage(currentPage);
                     pageNum++;
                 }
@@ -156,7 +154,7 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
         sendDoneControlMessage();
     }
 
-    protected abstract List<AbstractDocument> doFetch(int pageNum);
+    protected abstract List<AbstractDocument> doFetch(Schema schema, int pageNum);
 
 
     private void processEvent(AbstractDocument event) throws JsonProcessingException {
@@ -219,7 +217,7 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
             try {
                 presidioExternalMonitoringService = presidioExternalMonitoringServiceFactory.createPresidioExternalMonitoringService(applicationName);
                 logger.info("New Monitoring Service has initiated");
-                monitorDetails = new MonitorDetails(this.startDate, presidioExternalMonitoringService, this.schema);
+                monitorDetails = new MonitorDetails(startDate, presidioExternalMonitoringService, schema.getName());
                 this.flumePresidioExternalMonitoringService = new FlumePresidioExternalMonitoringService(monitorDetails, FlumeComponentType.SOURCE, COLLECTOR_SOURCE_NAME);
             } catch (Exception e) {
                 logger.error("Cannot load external monitoring service");

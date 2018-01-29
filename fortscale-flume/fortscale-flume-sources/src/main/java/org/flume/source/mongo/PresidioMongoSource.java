@@ -1,13 +1,13 @@
 package org.flume.source.mongo;
 
 
+import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractDocument;
 import org.apache.flume.Context;
 import org.apache.flume.FlumeException;
 import org.apache.flume.conf.Configurable;
 import org.apache.flume.persistency.mongo.MongoUtils;
 import org.flume.source.AbstractPageablePresidioSource;
-import org.flume.source.AbstractPresidioSource;
 import org.flume.source.mongo.persistency.SourceMongoRepository;
 import org.flume.source.mongo.persistency.SourceMongoRepositoryImpl;
 import org.flume.utils.DateUtils;
@@ -104,8 +104,8 @@ public class PresidioMongoSource extends AbstractPageablePresidioSource implemen
     }
 
     @Override
-    protected List<AbstractDocument> doFetch(int pageNum) {
-        return ((SourceMongoRepository) sourceFetcher).findByDateTimeBetween(collectionName, startDate.minusMillis(1), endDate, pageNum, batchSize, dateTimeField);
+    protected List<AbstractDocument> doFetch(Schema schema, int pageNum) {
+        return ((SourceMongoRepository) sourceFetcher).findByDateTimeBetween(schema, collectionName, startDate.minusMillis(1), endDate, pageNum, batchSize, dateTimeField);
     }
 
     protected SourceMongoRepository createRepository(String dbName, String host, int port, String username, String password)
