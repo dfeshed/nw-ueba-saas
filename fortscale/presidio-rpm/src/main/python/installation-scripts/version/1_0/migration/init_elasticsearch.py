@@ -189,6 +189,7 @@ def create_elasticsearch_indexes(path):
 
 # when creating indexes important to start with the settings than mapping and finish with the aliases
 create_elasticsearch_indexes(INDEXES)
+
 update_kibana_index_from_file(INDEX_PATTERN, URL_KIBANA_PATTERNS)
 create_default_pattern(DEFAULT)
 update_kibana_index_from_file(SEARCHES, URL_KIBANA_SEARCHES)

@@ -1,0 +1,20 @@
+{
+  "max_result_window": "100000",
+  "analysis": {
+    "analyzer": {
+      "lowercase_analyzer": {
+        "type": "custom",
+        "tokenizer": "standard",
+        "filter": [
+          "lowercase"
+        ]
+      },
+      "case_insensitive_sort": {
+        "tokenizer": "keyword",
+        "filter": [
+          "lowercase"
+        ]
+      }
+    }
+  }
+}

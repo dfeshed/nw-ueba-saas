@@ -4,7 +4,6 @@ package presidio.monitoring.records;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Mapping;
-import org.springframework.data.elasticsearch.annotations.Setting;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 
 import java.util.Date;
@@ -16,7 +15,7 @@ import static presidio.monitoring.records.MetricDocument.TYPE;
 
 @Document(indexName = METRIC_INDEX_NAME, type = TYPE)
 @Mapping(mappingPath = "elasticsearch/indexes/presidio-monitoring/mappings.json")
-@Setting(settingPath = "elasticsearch/indexes/presidio-monitoring/settings.json")
+
 public final class MetricDocument {
 
 

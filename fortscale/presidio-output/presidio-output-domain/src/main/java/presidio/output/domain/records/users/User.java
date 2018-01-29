@@ -17,7 +17,7 @@ import java.util.Set;
 
 @Document(indexName = AbstractElasticDocument.INDEX_NAME + "-" + User.USER_DOC_TYPE, type = User.USER_DOC_TYPE)
 @Mapping(mappingPath = "elasticsearch/indexes/presidio-output-user/mappings.json")
-@Setting(settingPath = "elasticsearch/indexes/presidio-output-user/settings.json")
+@Setting(settingPath = "elasticsearch/indexes/settings.json")
 public class User extends AbstractElasticDocument {
 
     public static final String USER_DOC_TYPE = "user";
