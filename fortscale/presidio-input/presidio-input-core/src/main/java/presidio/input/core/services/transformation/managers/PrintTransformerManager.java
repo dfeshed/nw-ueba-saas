@@ -1,5 +1,6 @@
 package presidio.input.core.services.transformation.managers;
 
+import presidio.input.core.services.transformation.transformer.FileToFolderPathTransformer;
 import presidio.input.core.services.transformation.transformer.MachineNameTransformer;
 import presidio.input.core.services.transformation.transformer.Transformer;
 import presidio.sdk.api.domain.AbstractInputDocument;
@@ -24,6 +25,7 @@ public class PrintTransformerManager implements TransformationManager {
                     PrintTransformedEvent.SRC_MACHINE_CLUSTER_FIELD_NAME, CLUSTER_REPLACEMENT_PATTERN, "", null, CLUSTER_POST_REPLACEMENT_CONDITION));
             transformers.add(new MachineNameTransformer(PrintRawEvent.PRINTER_NAME_FIELD_NAME,
                     PrintTransformedEvent.PRINTER_CLUSTER_FIELD_NAME, CLUSTER_REPLACEMENT_PATTERN, "", null, CLUSTER_POST_REPLACEMENT_CONDITION));
+            transformers.add(new FileToFolderPathTransformer(PrintTransformedEvent.SRC_FILE_PATH_FIELD_NAME, PrintTransformedEvent.SRC_FOLDER_PATH_FIELD_NAME));
         }
         return transformers;
     }
