@@ -78,7 +78,7 @@ const defaultColumns = [
   },
   {
     'field': 'path',
-    'title': 'Title',
+    'title': 'Path',
     'label': 'investigateHosts.files.fields.path',
     'width': 400
   }
