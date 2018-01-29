@@ -19,7 +19,7 @@
       noResultsMessage=(t 'investigateHosts.process.message.noResultsMessage')
       as |item index column|}}
       {{#rsa-data-table/body-cell column=column}}
-        {{get item column.field}}
+        <span title="{{get item column.field}}">{{get item column.field}}</span>
       {{/rsa-data-table/body-cell}}
     {{/rsa-data-table/body}}
   {{/if}}
