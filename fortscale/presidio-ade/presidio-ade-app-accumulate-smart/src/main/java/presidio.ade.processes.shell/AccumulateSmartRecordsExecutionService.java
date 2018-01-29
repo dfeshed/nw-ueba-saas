@@ -12,7 +12,7 @@ import presidio.ade.processes.shell.accumulate.AccumulateSmartRecordsService;
 import java.time.Instant;
 
 public class AccumulateSmartRecordsExecutionService {
-    private static String CONFIGURATION_NAME = "configuration_name";
+    private static final String CONFIGURATION_NAME = "configuration_name";
     private final SmartDataReader smartDataReader;
     private final SmartAccumulationsCache smartAccumulationsCache;
     private final SmartAccumulationDataStore smartAccumulationDataStore;
@@ -36,10 +36,10 @@ public class AccumulateSmartRecordsExecutionService {
         FixedDurationStrategy accumulationDuration = FixedDurationStrategy.fromSeconds(accumulationStrategy.longValue());
         AccumulateSmartRecordsService accumulateSmartRecordsService = new AccumulateSmartRecordsService(accumulationDuration, smartDataReader, pageSize, maxGroupSize, smartAccumulationsCache, smartAccumulationDataStore);
         TimeRange timeRange = new TimeRange(startDate, endDate);
-        StoreMetadataProperties storeMetadataProperties = createStoreManagerAwareMetadata(configurationName);
+        StoreMetadataProperties storeMetadataProperties = createStoreMetadataProperties(configurationName);
         accumulateSmartRecordsService.execute(timeRange, configurationName, storeMetadataProperties);
 
-        storeManager.cleanupCollections(storeMetadataProperties.getProperties(), startDate);
+        storeManager.cleanupCollections(storeMetadataProperties, startDate);
     }
 
     public void clean(String configurationName, Instant startDate, Instant endDate) throws Exception {
@@ -47,13 +47,13 @@ public class AccumulateSmartRecordsExecutionService {
     }
 
     public void cleanup(String configurationName, Instant startDate, Instant endDate, Double accumulationStrategy) throws Exception {
-        StoreMetadataProperties storeMetadataProperties = createStoreManagerAwareMetadata(configurationName);
-        storeManager.cleanupCollections(storeMetadataProperties.getProperties(), startDate, endDate);
+        StoreMetadataProperties storeMetadataProperties = createStoreMetadataProperties(configurationName);
+        storeManager.cleanupCollections(storeMetadataProperties, startDate, endDate);
     }
 
-    private StoreMetadataProperties createStoreManagerAwareMetadata(String configurationName){
+    private StoreMetadataProperties createStoreMetadataProperties(String configurationName){
         StoreMetadataProperties storeMetadataProperties = new StoreMetadataProperties();
-        storeMetadataProperties.setProperties(CONFIGURATION_NAME, configurationName);
+        storeMetadataProperties.setProperty(CONFIGURATION_NAME, configurationName);
         return storeMetadataProperties;
     }
 }

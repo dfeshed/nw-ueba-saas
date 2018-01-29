@@ -28,7 +28,7 @@ import java.util.List;
  */
 public class ModelingService {
 	private static final Logger logger = Logger.getLogger(ModelingService.class);
-	private static String GROUP_NAME = "group_name";
+	private static final String GROUP_NAME = "group_name";
 
 	private ModelingEngineFactory modelingEngineFactory;
 	private StoreManager storeManager;
@@ -67,7 +67,7 @@ public class ModelingService {
 			List<ModelConf> modelConfs = getModelConfs(groupName);
 
 			logger.info("Running modeling engines with sessionId {} and endInstant {} as input.", sessionId, endInstant);
-			StoreMetadataProperties storeMetadataProperties = createStoreManagerAwareMetadata(groupName);
+			StoreMetadataProperties storeMetadataProperties = createStoreMetadataProperties(groupName);
 			for (ModelConf modelConf : modelConfs) {
 
 				modelingServiceMetricsContainer.addTags(groupName, modelConf.getName());
@@ -85,7 +85,7 @@ public class ModelingService {
 
 				logger.info("Finished modeling engine process of modelConf {}.", modelConfName);
 			}
-			storeManager.cleanupCollections(storeMetadataProperties.getProperties(), endInstant);
+			storeManager.cleanupCollections(storeMetadataProperties, endInstant);
 
 			metricContainerFlusher.flush();
 		}
@@ -113,9 +113,9 @@ public class ModelingService {
 		logger.info("Clean: groupName {}, sessionId {}.", groupName, sessionId);
 	}
 
-	private StoreMetadataProperties createStoreManagerAwareMetadata(String groupName){
+	private StoreMetadataProperties createStoreMetadataProperties(String groupName){
 		StoreMetadataProperties storeMetadataProperties = new StoreMetadataProperties();
-		storeMetadataProperties.setProperties(GROUP_NAME, groupName);
+		storeMetadataProperties.setProperty(GROUP_NAME, groupName);
 		return storeMetadataProperties;
 	}
 
