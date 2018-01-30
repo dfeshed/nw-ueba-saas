@@ -92,7 +92,7 @@ Now you have to build `sa` with the appropriate flags. In `sa-ui`...
 
 ```
 $ cd sa
-$ NOMOCK=1 DOCKER=1 ember build --watch
+$ NOMOCK=1 NGINX=1 ember build --watch
 ```
 
 Visit http://localhost:8080. Log in with `admin`/`changeMe`. You can make changes to your code and have those changes be reflected in the docker app.

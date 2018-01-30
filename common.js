@@ -96,7 +96,7 @@ const isDevelopingAddon = function(projectName) {
  *   the URL has `api` prepended to it as it is assumed to be hitting nginx
  *   in a prod or prod-like environment
  *
- * If the DOCKER flag is provided, then return the prod URL as we have a prod-like
+ * If the NGINX flag is provided, then return the prod URL as we have a prod-like
  * deployed environment.
  *
  * @public
@@ -108,7 +108,7 @@ const determineSocketUrl = function(environment, socketPath) {
   // the appropriate microservice
   let socketUrl = `/api${socketPath}`;
 
-  if (process.env.DOCKER) {
+  if (process.env.NGINX) {
     return socketUrl;
   }
 
