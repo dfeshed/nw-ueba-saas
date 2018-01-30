@@ -67,4 +67,9 @@ export default class DataHelper {
     _set(this.state, 'fileList.files', array);
     return this;
   }
+
+  isSystemFilterForFiles(value) {
+    _set(this.state, 'filter.isSystemFilter', value);
+    return this;
+  }
 }
