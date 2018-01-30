@@ -1,6 +1,7 @@
 package org.flume.source.rest;
 
 import com.google.common.base.Preconditions;
+import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractDocument;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.flume.Context;
@@ -62,8 +63,8 @@ public class PresidioRestSource extends AbstractPageablePresidioSource implement
     }
 
     @Override
-    protected List<AbstractDocument> doFetch(int pageNum) {
-        return ((RestApi) sourceFetcher).findByDateTimeBetween(startDate, endDate, pageNum, batchSize);
+    protected List<AbstractDocument> doFetch(Schema schema, int pageNum) {
+        return ((RestApi) sourceFetcher).findByDateTimeBetween(schema, startDate, endDate, pageNum, batchSize);
     }
 
     private RestApi createRestApiImpl(String restApiImplClassName) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException {

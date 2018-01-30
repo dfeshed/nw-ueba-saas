@@ -1,16 +1,15 @@
 package org.flume.source;
 
 
+import com.google.common.base.Preconditions;
+import fortscale.common.general.Schema;
+import org.apache.commons.lang.StringUtils;
 import org.apache.flume.CommonStrings;
 import org.apache.flume.Context;
-
 import org.apache.flume.FlumeException;
-
 import org.apache.flume.source.AbstractEventDrivenSource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 
 /**
@@ -25,11 +24,15 @@ public abstract class AbstractPresidioSource extends AbstractEventDrivenSource {
     protected boolean isBatch;
     protected String applicationName;
     protected int batchSize;
+    protected Schema schema;
 
     @Override
     protected void doConfigure(Context context) throws FlumeException {
         isBatch = context.getBoolean(CommonStrings.IS_BATCH, false);
         applicationName = context.getString(CommonStrings.APPLICATION_NAME, this.getName());
+        final String schemaName = context.getString(CommonStrings.SCHEMA_NAME, null);
+        Preconditions.checkArgument(StringUtils.isNotEmpty(schemaName), CommonStrings.SCHEMA_NAME + " can not be empty.");
+        schema = Schema.createSchema(schemaName);
         doPresidioConfigure(context);
     }
 
