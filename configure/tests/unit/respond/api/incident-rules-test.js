@@ -1,10 +1,15 @@
-import { module, skip } from 'qunit';
+import { test, moduleFor } from 'ember-qunit';
 import { patchSocket } from '../../../helpers/patch-socket';
 import incidentRules from 'configure/actions/api/respond/incident-rules';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
-module('Unit | Utility | Incidents Rules APIs');
+moduleFor('service:request', {
+  beforeEach() {
+    initialize(this);
+  }
+});
 
-skip('it creates the proper query for the getIncidentRules API function', function(assert) {
+test('it creates the proper query for the getIncidentRules API function', function(assert) {
   assert.expect(3);
   patchSocket((method, modelName, query) => {
     assert.equal(method, 'findAll');
@@ -14,7 +19,7 @@ skip('it creates the proper query for the getIncidentRules API function', functi
   incidentRules.getIncidentRules();
 });
 
-skip('it creates the proper query for the getIncidentFields API function', function(assert) {
+test('it creates the proper query for the getIncidentFields API function', function(assert) {
   assert.expect(3);
   patchSocket((method, modelName, query) => {
     assert.equal(method, 'findAll');
@@ -24,7 +29,7 @@ skip('it creates the proper query for the getIncidentFields API function', funct
   incidentRules.getIncidentFields();
 });
 
-skip('it creates the proper query for the getIncidentRule API function', function(assert) {
+test('it creates the proper query for the getIncidentRule API function', function(assert) {
   const ruleId = 'ABCiseasyas123';
   assert.expect(3);
   patchSocket((method, modelName, query) => {
@@ -39,7 +44,7 @@ skip('it creates the proper query for the getIncidentRule API function', functio
   incidentRules.getIncidentRule(ruleId);
 });
 
-skip('it creates the proper query for the deleteIncidentRule API function', function(assert) {
+test('it creates the proper query for the deleteIncidentRule API function', function(assert) {
   const ruleId = 'ABCiseasyas123';
   assert.expect(3);
   patchSocket((method, modelName, query) => {
@@ -54,7 +59,7 @@ skip('it creates the proper query for the deleteIncidentRule API function', func
   incidentRules.deleteIncidentRule(ruleId);
 });
 
-skip('it creates the proper query for the cloneIncidentRule API function', function(assert) {
+test('it creates the proper query for the cloneIncidentRule API function', function(assert) {
   const ruleId = 'originalityIsUndetectedPlagiarism';
   assert.expect(3);
   patchSocket((method, modelName, query) => {
@@ -69,7 +74,7 @@ skip('it creates the proper query for the cloneIncidentRule API function', funct
   incidentRules.cloneIncidentRule(ruleId);
 });
 
-skip('it creates the proper query for the createIncidentRule API function', function(assert) {
+test('it creates the proper query for the createIncidentRule API function', function(assert) {
   const newRule = {
     name: 'Look but don\'t touch'
   };
@@ -84,7 +89,7 @@ skip('it creates the proper query for the createIncidentRule API function', func
   incidentRules.createIncidentRule(newRule);
 });
 
-skip('it creates the proper query for the reorderIncidentRules API function', function(assert) {
+test('it creates the proper query for the reorderIncidentRules API function', function(assert) {
   const ruleIds = ['A', 'B', 'D', 'C'];
   assert.expect(3);
   patchSocket((method, modelName, query) => {
@@ -97,7 +102,7 @@ skip('it creates the proper query for the reorderIncidentRules API function', fu
   incidentRules.reorderIncidentRules(ruleIds);
 });
 
-skip('it creates the proper query for the saveIncidentRule API function', function(assert) {
+test('it creates the proper query for the saveIncidentRule API function', function(assert) {
   const rule = {
     name: 'XYZ 123'
   };
