@@ -11,11 +11,10 @@ import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.smart.record.conf.ClusterConf;
 import fortscale.smart.record.conf.SmartRecordConfService;
-import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
-import fortscale.utils.elasticsearch.config.EmbeddedElasticsearchInitialiser;
 import fortscale.utils.shell.BootShim;
 import fortscale.utils.shell.BootShimConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.test.category.ModuleTestCategory;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import javafx.util.Pair;
@@ -48,7 +47,6 @@ import presidio.data.generators.common.time.MinutesIncrementTimeGenerator;
 import presidio.data.generators.common.time.TimeGenerator;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.monitoring.services.export.MetricsExporter;
-import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 
 import java.time.Instant;
 import java.time.LocalTime;
@@ -324,7 +322,7 @@ public class ModelingServiceApplicationSmartModelsTest {
         TimeGenerator startInstantGenerator = new MinutesIncrementTimeGenerator(LocalTime.of(0, 0), LocalTime.of(0, 0), 1440, daysBackFrom, daysBackTo);
         AccumulatedSmartsDailyGenerator accumulatedSmartsGenerator = new AccumulatedSmartsDailyGenerator(contextIdGenerator, startInstantGenerator, featuresGroupToScoreAndProbabilityMap, numOfSmarts);
         List<AccumulatedSmartRecord> accumulatedSmartRecords = accumulatedSmartsGenerator.generate();
-        smartAccumulationDataStore.store(accumulatedSmartRecords, "userId_hourly");
+        smartAccumulationDataStore.store(accumulatedSmartRecords, "userId_hourly", new StoreMetadataProperties());
     }
 
     /**

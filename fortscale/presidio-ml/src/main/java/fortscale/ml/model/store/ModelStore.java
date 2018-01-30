@@ -4,6 +4,7 @@ import com.mongodb.*;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.store.StoreManager;
 import fortscale.utils.store.StoreManagerAware;
@@ -66,15 +67,15 @@ public class ModelStore implements StoreManagerAware {
                 .distinct(ModelDAO.CONTEXT_ID_FIELD, query.getQueryObject());
     }
 
-    public void save(ModelConf modelConf, String sessionId, String contextId, Model model, TimeRange timeRange) {
+    public void save(ModelConf modelConf, String sessionId, String contextId, Model model, TimeRange timeRange, StoreMetadataProperties storeMetadataProperties) {
         ModelDAO modelDao = new ModelDAO(sessionId, contextId, model, timeRange.getStart(), timeRange.getEnd());
-        save(modelConf, modelDao);
+        save(modelConf, modelDao, storeMetadataProperties);
     }
 
-    public void save(ModelConf modelConf, ModelDAO modelDao) {
+    public void save(ModelConf modelConf, ModelDAO modelDao, StoreMetadataProperties storeMetadataProperties) {
         String collectionName = getCollectionName(modelConf);
         mongoTemplate.insert(modelDao, collectionName);
-        storeManager.registerWithTtl(getStoreName(), collectionName);
+        storeManager.registerWithTtl(getStoreName(), collectionName, storeMetadataProperties);
     }
 
     public Collection<ModelDAO> getAllContextsModelDaosWithLatestEndTimeLte(ModelConf modelConf, Instant eventEpochtime) {

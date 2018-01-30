@@ -5,16 +5,13 @@ import fortscale.aggregation.configuration.AslResourceFactory;
 import fortscale.ml.model.metrics.ModelingServiceMetricsContainer;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.store.StoreManager;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import org.springframework.core.io.Resource;
 import presidio.monitoring.flush.MetricContainerFlusher;
 
 import java.time.Instant;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import static presidio.monitoring.sdk.api.services.enums.MetricEnums.MetricTagKeysEnum.GROUP_NAME;
 
 /**
  * Given a group name, this service creates the corresponding {@link ModelConfService}, that contains all the
@@ -31,6 +28,7 @@ import static presidio.monitoring.sdk.api.services.enums.MetricEnums.MetricTagKe
  */
 public class ModelingService {
 	private static final Logger logger = Logger.getLogger(ModelingService.class);
+	private static final String GROUP_NAME = "group_name";
 
 	private ModelingEngineFactory modelingEngineFactory;
 	private StoreManager storeManager;
@@ -69,6 +67,7 @@ public class ModelingService {
 			List<ModelConf> modelConfs = getModelConfs(groupName);
 
 			logger.info("Running modeling engines with sessionId {} and endInstant {} as input.", sessionId, endInstant);
+			StoreMetadataProperties storeMetadataProperties = createStoreMetadataProperties(groupName);
 			for (ModelConf modelConf : modelConfs) {
 
 				modelingServiceMetricsContainer.addTags(groupName, modelConf.getName());
@@ -76,7 +75,7 @@ public class ModelingService {
 				ModelingEngine modelingEngine = modelingEngineFactory.getModelingEngine(modelConf);
 				String modelConfName = modelConf.getName();
 				try {
-					modelingEngine.process(sessionId, endInstant);
+					modelingEngine.process(sessionId, endInstant, storeMetadataProperties);
 				}
 				catch (Exception e)
 				{
@@ -86,7 +85,7 @@ public class ModelingService {
 
 				logger.info("Finished modeling engine process of modelConf {}.", modelConfName);
 			}
-			storeManager.cleanupCollections(endInstant);
+			storeManager.cleanupCollections(storeMetadataProperties, endInstant);
 
 			metricContainerFlusher.flush();
 		}
@@ -113,4 +112,11 @@ public class ModelingService {
 		// TODO
 		logger.info("Clean: groupName {}, sessionId {}.", groupName, sessionId);
 	}
+
+	private StoreMetadataProperties createStoreMetadataProperties(String groupName){
+		StoreMetadataProperties storeMetadataProperties = new StoreMetadataProperties();
+		storeMetadataProperties.setProperty(GROUP_NAME, groupName);
+		return storeMetadataProperties;
+	}
+
 }

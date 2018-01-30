@@ -1,5 +1,6 @@
 package fortscale.ml.scorer.enriched_events;
 
+import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
@@ -11,7 +12,7 @@ import java.util.List;
  */
 public interface EnrichedEventsScoringService {
 
-    List<AdeScoredEnrichedRecord> scoreAndStoreEvents(List<EnrichedRecord> enrichedRecordList, boolean isStore, TimeRange timeRange);
+    List<AdeScoredEnrichedRecord> scoreAndStoreEvents(List<EnrichedRecord> enrichedRecordList, boolean isStore, TimeRange timeRange, StoreMetadataProperties storeMetadataProperties);
 
     /**
      * Reset model cache

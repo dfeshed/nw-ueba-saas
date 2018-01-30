@@ -1,6 +1,7 @@
 package fortscale.utils.store;
 
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.store.record.StoreMetadata;
 import org.junit.Assert;
@@ -20,6 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
@@ -109,7 +111,7 @@ public class StoreManagerTest {
         long numOfDefaultTtlRecords = mongoTemplate.count(new Query(), COLLECTION_NAME_DEFAULT_TTL_TEST);
         long numOfRecords = mongoTemplate.count(new Query(), COLLECTION_NAME_TEST);
 
-        storeManager.cleanupCollections(until);
+        storeManager.cleanupCollections(new StoreMetadataProperties(), until);
 
         List<StoreManagerRecordTest> defaultTtlRecords = mongoTemplate.findAll(StoreManagerRecordTest.class, COLLECTION_NAME_DEFAULT_TTL_TEST);
         if (until.getEpochSecond() % defaultCleanupInterval.getSeconds() == 0) {
@@ -135,7 +137,7 @@ public class StoreManagerTest {
      * Test cleanup collections between time range.
      */
     public void AssertCleanupInTimeRange(Instant start, Instant end) {
-        storeManager.cleanupCollections(start, end);
+        storeManager.cleanupCollections(new StoreMetadataProperties(), start, end);
 
         List<StoreManagerRecordTest> defaultTtlRecords = mongoTemplate.findAll(StoreManagerRecordTest.class, COLLECTION_NAME_DEFAULT_TTL_TEST);
         List<StoreManagerRecordTest> records = mongoTemplate.findAll(StoreManagerRecordTest.class, COLLECTION_NAME_TEST);

@@ -9,6 +9,7 @@ import fortscale.ml.scorer.feature_aggregation_events.FeatureAggregationScoringS
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.fixedduration.FixedDurationStrategyExecutor;
 import fortscale.utils.pagination.PageIterator;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.pagination.enriched.EnrichedRecordPaginationService;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
@@ -55,7 +56,7 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
     }
 
     @Override
-    protected void executeSingleTimeRange(TimeRange timeRange, String adeEventType, String contextType) {
+    protected void executeSingleTimeRange(TimeRange timeRange, String adeEventType, String contextType, StoreMetadataProperties storeMetadataProperties) {
 
         //Once modelCacheManager save model to cache it will never updating the cache again with newer model.
         //Reset cache required in order to get newer models each partition and not use older models.
@@ -72,7 +73,7 @@ public class FeatureAggregationService extends FixedDurationStrategyExecutor {
             List<FeatureBucket> featureBuckets = featureBucketAggregator.aggregate(pageIterator, contextTypes, featureBucketStrategyData);
             List<AdeAggregationRecord> featureAdeAggrRecords = featureAggregationsCreator.createAggregationRecords(featureBuckets);
             List<ScoredFeatureAggregationRecord> scoredFeatureAggregationRecords = featureAggregationScoringService.scoreEvents(featureAdeAggrRecords,timeRange);
-            scoredFeatureAggregatedStore.store(scoredFeatureAggregationRecords, AggregatedFeatureType.FEATURE_AGGREGATION);
+            scoredFeatureAggregatedStore.store(scoredFeatureAggregationRecords, AggregatedFeatureType.FEATURE_AGGREGATION, storeMetadataProperties);
         }
 
         //Flush stored metrics to elasticsearch

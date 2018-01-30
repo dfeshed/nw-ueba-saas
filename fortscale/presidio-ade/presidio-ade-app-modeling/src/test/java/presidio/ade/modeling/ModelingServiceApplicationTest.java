@@ -14,6 +14,7 @@ import fortscale.ml.model.selector.FeatureBucketContextSelectorConf;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.shell.BootShim;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.test.category.ModuleTestCategory;
 import org.junit.Assert;
 import org.junit.Test;
@@ -100,7 +101,7 @@ public class ModelingServiceApplicationTest {
 		featureBucket.setBucketId("fixed_duration_daily_1483228800###userId###test_user_1###continuousDataFeatureBucket");
 		featureBucket.setCreatedAt(new Date());
 		featureBucket.setAggregatedFeatures(singletonMap("continuousDataFeature", feature));
-		featureBucketStore.storeFeatureBucket(featureBucketConf, featureBucket);
+		featureBucketStore.storeFeatureBucket(featureBucketConf, featureBucket, new StoreMetadataProperties());
 
 		// Context ID #1, feature bucket #2
 		genericHistogram = new GenericHistogram();
@@ -119,7 +120,7 @@ public class ModelingServiceApplicationTest {
 		featureBucket.setBucketId("fixed_duration_daily_1483315200###userId###test_user_1###continuousDataFeatureBucket");
 		featureBucket.setCreatedAt(new Date());
 		featureBucket.setAggregatedFeatures(singletonMap("continuousDataFeature", feature));
-		featureBucketStore.storeFeatureBucket(featureBucketConf, featureBucket);
+		featureBucketStore.storeFeatureBucket(featureBucketConf, featureBucket, new StoreMetadataProperties());
 
 		// Context ID #2, feature bucket #1
 		genericHistogram = new GenericHistogram();
@@ -137,7 +138,7 @@ public class ModelingServiceApplicationTest {
 		featureBucket.setBucketId("fixed_duration_daily_1483228800###userId###test_user_2###continuousDataFeatureBucket");
 		featureBucket.setCreatedAt(new Date());
 		featureBucket.setAggregatedFeatures(singletonMap("continuousDataFeature", feature));
-		featureBucketStore.storeFeatureBucket(featureBucketConf, featureBucket);
+		featureBucketStore.storeFeatureBucket(featureBucketConf, featureBucket, new StoreMetadataProperties());
 
 		// Context ID #2, feature bucket #2
 		genericHistogram = new GenericHistogram();
@@ -155,7 +156,7 @@ public class ModelingServiceApplicationTest {
 		featureBucket.setBucketId("fixed_duration_daily_1483315200###userId###test_user_2###continuousDataFeatureBucket");
 		featureBucket.setCreatedAt(new Date());
 		featureBucket.setAggregatedFeatures(singletonMap("continuousDataFeature", feature));
-		featureBucketStore.storeFeatureBucket(featureBucketConf, featureBucket);
+		featureBucketStore.storeFeatureBucket(featureBucketConf, featureBucket, new StoreMetadataProperties());
 	}
 
 	private ModelConf getModelConf() {
