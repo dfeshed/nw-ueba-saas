@@ -1,20 +1,26 @@
 package fortscale.aggregation.feature.bucket;
 
+import com.mongodb.DBObject;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.store.StoreManager;
 import fortscale.utils.store.StoreManagerAware;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import presidio.ade.domain.record.AdeRecord;
+import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
 
 import java.time.Instant;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 /**
@@ -27,6 +33,7 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore, StoreMan
 
 	private MongoTemplate mongoTemplate;
 	private StoreManager storeManager;
+	private final long selectorPageSize;
 
 	/**
 	 * C'tor.
@@ -34,10 +41,11 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore, StoreMan
 	 * @param mongoDbBulkOpUtil
 	 */
 	public FeatureBucketStoreMongoImpl(
-			MongoTemplate mongoTemplate, MongoDbBulkOpUtil mongoDbBulkOpUtil) {
+			MongoTemplate mongoTemplate, MongoDbBulkOpUtil mongoDbBulkOpUtil, long selectorPageSize) {
 
 		this.mongoTemplate = mongoTemplate;
 		this.mongoDbBulkOpUtil = mongoDbBulkOpUtil;
+		this.selectorPageSize = selectorPageSize;
 	}
 
 	/**
@@ -45,16 +53,66 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore, StoreMan
 	 */
 	@Override
 	public Set<String> getDistinctContextIds(FeatureBucketConf featureBucketConf, TimeRange timeRange) {
-		Query query = new Query(Criteria.where(FeatureBucket.START_TIME_FIELD)
-				.gte(Date.from(timeRange.getStart()))
-				.lt(Date.from(timeRange.getEnd())));
-
-		List<?> distinctContextIds = mongoTemplate
-				.getCollection(getCollectionName(featureBucketConf))
-				.distinct(FeatureBucket.CONTEXT_ID_FIELD, query.getQueryObject());
-
-		return distinctContextIds.stream().map(Object::toString).collect(Collectors.toSet());
+		String collectionName = getCollectionName(featureBucketConf);
+		Instant startInstant = timeRange.getStart();
+		Instant endInstant = timeRange.getEnd();
+		try {
+			Set<String> distinctContexts = aggregateContextIds(startInstant, endInstant, -1, 0, collectionName, false);
+			logger.debug("found distinct contexts: {}", Arrays.toString(distinctContexts.toArray()));
+			return distinctContexts;
+		} catch (InvalidDataAccessApiUsageException e) {
+			long nextPageIndex = 0;
+			Set<String> subList;
+			Set<String> results = new HashSet<>();
+			do {
+				subList = aggregateContextIds(startInstant, endInstant,
+						nextPageIndex * selectorPageSize, selectorPageSize, collectionName, true);
+				results.addAll(subList);
+				nextPageIndex++;
+			} while (subList.size() == selectorPageSize);
+			logger.debug("found distinct contexts: {}", Arrays.toString(results.toArray()));
+			return results;
+		}
 	}
+
+	/**
+	 * Aggregate distinct contextIds
+	 * @param startInstant startInstant
+	 * @param endInstant endInstant
+	 * @param skip skip
+	 * @param limit limit
+	 * @param collectionName collectionName
+	 * @param allowDiskUse allowDiskUse
+	 * @return set of distinct contextIds
+	 */
+	private Set<String> aggregateContextIds(
+			Instant startInstant, Instant endInstant, long skip, long limit, String collectionName, boolean allowDiskUse) {
+
+		List<AggregationOperation> aggregationOperations = new LinkedList<>();
+		aggregationOperations.add(match(where(FeatureBucket.START_TIME_FIELD).gte(Date.from(startInstant)).lt(Date.from(endInstant))));
+
+		aggregationOperations.add(group(FeatureBucket.CONTEXT_ID_FIELD));
+		aggregationOperations.add(project(FeatureBucket.CONTEXT_ID_FIELD).and("_id").as(FeatureBucket.CONTEXT_ID_FIELD)
+				.andExclude("_id"));
+
+		if (skip >= 0 && limit > 0) {
+			aggregationOperations.add(sort(Sort.Direction.ASC, FeatureBucket.CONTEXT_ID_FIELD));
+			aggregationOperations.add(skip(skip));
+			aggregationOperations.add(limit(limit));
+		}
+
+		Aggregation aggregation = newAggregation(aggregationOperations).withOptions(Aggregation.newAggregationOptions().
+				allowDiskUse(allowDiskUse).build());
+
+		List<DBObject> aggrResult = mongoTemplate
+				.aggregate(aggregation, collectionName, DBObject.class)
+				.getMappedResults();
+
+		return aggrResult.stream()
+				.map(result -> (String) result.get(FeatureBucket.CONTEXT_ID_FIELD))
+				.collect(Collectors.toSet());
+	}
+
 
 	/**
 	 * @see FeatureBucketReader#getFeatureBuckets(String, Set, TimeRange)
