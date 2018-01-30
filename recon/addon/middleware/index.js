@@ -30,7 +30,8 @@ if (config.environment !== 'test') {
       'visuals.isHeaderOpen',
       'visuals.isMetaShown',
       'visuals.defaultLogFormat',
-      'visuals.defaultPacketFormat'
+      'visuals.defaultPacketFormat',
+      'files.isAutoDownloadFile'
     ]
   );
 

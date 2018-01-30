@@ -3,6 +3,7 @@ import observer from 'ember-metal/observer';
 import { isEmpty } from 'ember-utils';
 import computed, { match } from 'ember-computed-decorators';
 import service from 'ember-service/inject';
+import { next } from 'ember-runloop';
 
 export default Mixin.create({
   flashMessages: service(),
@@ -22,11 +23,14 @@ export default Mixin.create({
       // The extracted file is downloaded, only if the autoDownloadExtractedFiles preference
       // is set. Hence check the property before setting the download src to 'iframeSrc'
       if (this.get('isAutoDownloadFile')) {
-        this.set('lastExtractLink', extractLink);
         source = extractLink;
       } else {
         this.get('flashMessages').success(this.get('i18n').t('recon.extractedFileReady'));
+        next(() => {
+          this.send('didDownloadFiles');
+        });
       }
+      this.set('lastExtractLink', extractLink);
     }
     return source;
   },

@@ -2,8 +2,8 @@ import Immutable from 'seamless-immutable';
 import { handleActions } from 'redux-actions';
 import { handle } from 'redux-pack';
 import { handlePreference } from 'recon/reducers/util';
-
 import * as ACTION_TYPES from 'recon/actions/types';
+import _ from 'lodash';
 
 // State of server jobs for downloading file(s)
 const fileExtractInitialState = {
@@ -42,12 +42,26 @@ const _fileExtractState = (state) => ({
 
 const filesReducer = handleActions({
   [ACTION_TYPES.INITIALIZE]: (state, { payload: { linkToFileAction } }) => {
-    return filesInitialState.merge({ ..._fileExtractState(state), linkToFileAction });
+    return filesInitialState.merge({
+      ..._fileExtractState(state),
+      linkToFileAction,
+      // maintain the state of auto-download preference since it'd have been rehydrated before initialize
+      isAutoDownloadFile: state.isAutoDownloadFile
+    });
   },
 
   [ACTION_TYPES.SET_PREFERENCES]: (state, { payload: { eventAnalysisPreferences } }) => {
     const isAutoDownloadFile = handlePreference(eventAnalysisPreferences, 'autoDownloadExtractedFiles', state);
     return state.merge({ isAutoDownloadFile });
+  },
+
+  [ACTION_TYPES.RESET_PREFERENCES]: (state, { payload: { eventAnalysisPreferences } }) => {
+    const isAutoDownloadFile = handlePreference(eventAnalysisPreferences, 'autoDownloadExtractedFiles', state);
+    return state.merge({ isAutoDownloadFile });
+  },
+
+  [ACTION_TYPES.REHYDRATE]: (state, { payload }) => {
+    return state.set('isAutoDownloadFile', _.get(payload, 'recon.files.isAutoDownloadFile', state.isAutoDownloadFile));
   },
 
   [ACTION_TYPES.CHANGE_RECON_VIEW]: (state) => {
