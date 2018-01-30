@@ -3,13 +3,9 @@
   items=files
   columnsConfig=updatedColumns}}
   {{#file-list/header enableColumnFilter=true translateTitles=true enableColumnSelector=true as |column|}}
-    {{#if column.headerComponentClass}}
-      <label class="rsa-form-checkbox-label {{if allItemsChecked 'checked'}}">
-        {{rsa-form-checkbox checked=allItemsChecked change=(action 'toggleItemsSelection' items)}}
-      </label>
-    {{else}}
+    <span class='js-move-handle'>
       {{t column.title}}
-    {{/if}}
+    </span>
     {{! COLUMN SORT }}
     {{#unless column.disableSort}}
       {{file-list/sort-button sortField=sortField column=column isSortDescending=isSortDescending sortBy=(action 'sortBy')}}
