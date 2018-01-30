@@ -96,10 +96,22 @@ const isDevelopingAddon = function(projectName) {
  *   the URL has `api` prepended to it as it is assumed to be hitting nginx
  *   in a prod or prod-like environment
  *
+ * If the DOCKER flag is provided, then return the prod URL as we have a prod-like
+ * deployed environment.
+ *
  * @public
  */
 const determineSocketUrl = function(environment, socketPath) {
-  let socketUrl;
+  // production
+  //
+  // Prefix with /api as it is routed by nginx to
+  // the appropriate microservice
+  let socketUrl = `/api${socketPath}`;
+
+  if (process.env.DOCKER) {
+    return socketUrl;
+  }
+
   if ((environment === 'development' || environment === 'test')) {
     if (!process.env.NOMOCK) {
 
@@ -111,20 +123,12 @@ const determineSocketUrl = function(environment, socketPath) {
       const mockPort = process.env.MOCK_PORT || 9999;
       socketUrl = `http://localhost:${mockPort}/socket`;
     } else {
-
       // Using microservice
       //
       // Just use the path passed in as it matches the path
       // the microservice uses
       socketUrl = socketPath;
     }
-  } else {
-
-    // production
-    //
-    // Prefix with /api as it is routed by nginx to
-    // the appropriate microservice
-    socketUrl = `/api${socketPath}`;
   }
   return socketUrl;
 };

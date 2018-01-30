@@ -60,6 +60,44 @@ $ cd investigate
 $ NOMOCK=1 ember serve --proxy=http://localhost:7004
 ```
 
+## Docker
+
+You can run the `sa` project vs a local Docker-ized environment.
+
+First you must clone the docker repo.
+
+```
+git clone git@github.rsa.lab.emc.com:asoc/docker.git
+```
+
+Make a small change to `nw-ui` section of the `/src/investigate/investigate.yml` file to point nginx to your `dist` folder.
+
+```
+  ...
+  volumes
+    - ./conf/nginx-no-classic.conf:/etc/nginx/conf.d/nginx.conf
+    - /Users/bashfd/rsagithub/sa-ui/sa/dist:/opt/rsa/nw-ui/html
+  ...
+```
+
+In the above example, replace `/Users/bashfd/rsagithub/sa-ui/sa/dist` with the path to your `sa/dist` folder.
+
+Run the script that kicks off the Docker build. In `/src`...
+
+```
+./jenkins/run-investigate-ui.sh
+```
+
+Now you have to build `sa` with the appropriate flags. In `sa-ui`...
+
+```
+$ cd sa
+$ NOMOCK=1 DOCKER=1 ember build --watch
+```
+
+Visit http://localhost:8080. Log in with `admin`/`changeMe`. You can make changes to your code and have those changes be reflected in the docker app.
+
+
 # Further Reading / Useful Links
 
 * [Sonar Dashboard](http://asoc-sonar.rsa.lab.emc.com/projects/)
