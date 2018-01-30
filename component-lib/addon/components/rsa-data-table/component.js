@@ -291,19 +291,38 @@ export default Component.extend(DomWatcher, EKMixin, {
   _adjustWidthDiff(resizeColumn, resizeWidth) {
     const diff = get(resizeColumn, 'width') - resizeWidth;
     const columns = this.get('columns').filterBy('selected', true);
-    const resizedColumns = this.get('columns').filterBy('resizedOnce', true).length;
+    const resizedColumns = columns.filterBy('resizedOnce', true).length;
     const len = columns.length > resizedColumns ? (columns.length - resizedColumns) : 1;
     const adjust = diff / len;
-    columns.forEach((column) => {
+    columns.forEach((column, index) => {
       if (column.displayIndex === resizeColumn.displayIndex) {
         set(column, 'width', resizeWidth);
         set(column, 'resizedOnce', true);
-      } else if (!get(column, 'resizedOnce')) {
-        // Every other time cell width will be addition of current width + adjustWidth.
-        const width = adjust + get(column, 'width');
-        set(column, 'width', width);
+      } else if (!get(column, 'resizedOnce') || (len === 1 && index === (columns.length - 1))) {
+        // We need to divide the extra width of the resized column amongst all other columns
+        // Adjustment is done to the columns whose width is not resized by the user
+        // or if all columns are resized once and further we resize one of them ,
+        // then the extra adjustment should add up to the last column
+        this._needToAdjust(adjust, column);
       }
     });
+  },
+
+  /**
+   * @description This method returns true if we need to divide
+   * the extra width of the resized column amongst all other
+   * columns.That will happen only when:
+   *   When scrollwidth is less than total Viewable width
+   *   Also if all columns are resized once and further we resize one of them ,
+   *   then the extra adjustment should add up to the last column
+   * @public
+   */
+  _needToAdjust(adjust, column) {
+    const [ domElement ] = this.$('.rsa-data-table-body-row');
+    if (adjust >= 0 && domElement && domElement.scrollWidth <= domElement.clientWidth) {
+      const width = adjust + get(column, 'width');
+      set(column, 'width', width);
+    }
   },
 
   /**
@@ -324,18 +343,24 @@ export default Component.extend(DomWatcher, EKMixin, {
     const columnWidth = this._getColumnWidthSum(columns);
     const sum = columnWidth.reduce((a, b) => a + b, 0);
     const noOfColumns = columns.length;
-    const resizedColumns = this.get('columns').filterBy('resizedOnce', true).length;
+    const resizedColumns = columns.filterBy('resizedOnce', true).length;
     // Get view port width.
     const rowWidth = this.$().width();
     const diff = rowWidth - sum;
     // Need to adjust width only if view port is more than total cell width.
     if (diff > 0) {
       // Need to adjust only difference from view port.
-      const adjustWidth = (diff / (noOfColumns - resizedColumns) - this.whitespace);
+      const len = noOfColumns > resizedColumns ? (noOfColumns - resizedColumns) : 1;
+      const adjustWidth = (diff / len - this.whitespace);
       columns.forEach((column, index) => {
         // Every time cell width will be addition of original width + adjustWidth.
         if (!get(column, 'resizedOnce')) {
           const width = adjustWidth + columnWidth[index];
+          set(column, 'width', width);
+        } else if (noOfColumns === resizedColumns && index == (noOfColumns - 1)) {
+          // if all columns are resized once and further we resize one of them ,
+          // then the extra adjustment should add up to the last column
+          const width = adjustWidth + get(column, 'width');
           set(column, 'width', width);
         }
       });
@@ -350,7 +375,7 @@ export default Component.extend(DomWatcher, EKMixin, {
   _getColumnWidthSum(columns) {
     const columnWidths = this.get('columnWidths');
     const columnWidth = columns.map((column) => {
-      const currentColumnWidth = columnWidths[column.displayIndex];
+      const currentColumnWidth = get(column, 'resizedOnce') ? get(column, 'width') : columnWidths[column.displayIndex];
       const match = String(currentColumnWidth).match(/([\d\.]+)([^\d]*)/);
       return match && Number(match[1]);
     });
