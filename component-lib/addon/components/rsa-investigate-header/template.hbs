@@ -8,6 +8,10 @@
             {{#link-to (query-params sid=undefined st=undefined et=undefined eid=undefined mf=undefined mps=undefined rs=undefined)}}
               {{tab.label}}
             {{/link-to}}
+          {{else if (eq tab.name 'protected.investigate.investigate-hosts')}}
+            {{#link-to (query-params machineId=null tabName=null)}}
+              {{tab.label}}
+            {{/link-to}}
           {{else}}
             <a href='#'>{{tab.label}}</a>
           {{/if}}

@@ -11,11 +11,11 @@ import $ from 'jquery';
 const INVESTIGATE_META_MAPPING = {
   'machine.machineName': 'alias.host',
   'userName': ['username', 'user.dst', 'user.src'],
-  'machineIpv4': ['ip.src', 'ip.dst', 'device.ip'],
-  'machineIpv6': ['ipv6.src', 'ipv6.dst', 'device.ipv6']
+  'machineIpv4': ['ip.src', 'ip.dst', 'device.ip', 'alias.ip'],
+  'machineIpv6': ['ipv6.src', 'ipv6.dst', 'device.ipv6', 'alias.ipv6']
 };
 
-const SKIP_QUOTES = [ 'ip.src', 'ip.dst', 'ipv6.src', 'ipv6.dst', 'device.ip', 'device.ipv6' ];
+const SKIP_QUOTES = [ 'ip.src', 'ip.dst', 'ipv6.src', 'ipv6.dst', 'device.ip', 'device.ipv6', 'alias.ipv6', 'alias.ip' ];
 
 const dispatchToActions = {
   getAllServices
