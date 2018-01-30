@@ -6,8 +6,6 @@
       "bucketConfName": "normalized_username_dlpfile_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": "event_time",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "highest_date_time_score"
@@ -23,8 +21,6 @@
       "bucketConfName": "normalized_username_dlpfile_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": "normalized_src_machine",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "normalized_src_machine_to_highest_score_map"
@@ -45,7 +41,6 @@
       "bucketConfName": "normalized_username_dlpfile_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "src_network_folder_paths_histogram"
@@ -62,7 +57,6 @@
       "bucketConfName": "normalized_username_dlpfile_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "sum_of_moved_files_to_removable_device_size"
@@ -78,7 +72,6 @@
       "bucketConfName": "normalized_username_dlpfile_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "moved_files_to_removable_device_counter"
@@ -94,7 +87,6 @@
       "bucketConfName": "normalized_username_dlpfile_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "sum_of_copied_files_to_removable_device_size"
@@ -110,7 +102,6 @@
       "bucketConfName": "normalized_username_dlpfile_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "copied_files_to_removable_device_counter"
@@ -126,7 +117,6 @@
       "bucketConfName": "normalized_username_dlpfile_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "sum_of_moved_files_from_remote_device_size"
@@ -142,7 +132,6 @@
       "bucketConfName": "normalized_username_dlpfile_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "moved_files_from_remote_device_counter"
@@ -158,7 +147,6 @@
       "bucketConfName": "normalized_username_dlpfile_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "sum_of_copied_files_from_remote_device_size"
@@ -174,7 +162,6 @@
       "bucketConfName": "normalized_username_dlpfile_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "copied_files_from_remote_device_counter"
@@ -190,7 +177,6 @@
       "bucketConfName": "normalized_username_dlpfile_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "recycled_or_deleted_files_counter"
@@ -206,7 +192,6 @@
       "bucketConfName": "normalized_username_dlpfile_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "opened_files_counter"
@@ -222,8 +207,6 @@
       "bucketConfName": "normalized_username_dlpfile_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": "event_time",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "highest_date_time_score"
@@ -239,8 +222,6 @@
       "bucketConfName": "normalized_username_dlpfile_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": "normalized_src_machine",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "normalized_src_machine_to_highest_score_map"
@@ -261,7 +242,6 @@
       "bucketConfName": "normalized_username_dlpfile_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "src_network_folder_paths_histogram"
@@ -278,7 +258,6 @@
       "bucketConfName": "normalized_username_dlpfile_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "sum_of_moved_files_to_removable_device_size"
@@ -294,7 +273,6 @@
       "bucketConfName": "normalized_username_dlpfile_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "moved_files_to_removable_device_counter"
@@ -310,7 +288,6 @@
       "bucketConfName": "normalized_username_dlpfile_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "sum_of_copied_files_to_removable_device_size"
@@ -326,7 +303,6 @@
       "bucketConfName": "normalized_username_dlpfile_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "copied_files_to_removable_device_counter"
@@ -342,7 +318,6 @@
       "bucketConfName": "normalized_username_dlpfile_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "sum_of_moved_files_from_remote_device_size"
@@ -358,7 +333,6 @@
       "bucketConfName": "normalized_username_dlpfile_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "moved_files_from_remote_device_counter"
@@ -374,7 +348,6 @@
       "bucketConfName": "normalized_username_dlpfile_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "sum_of_copied_files_from_remote_device_size"
@@ -390,7 +363,6 @@
       "bucketConfName": "normalized_username_dlpfile_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "copied_files_from_remote_device_counter"
@@ -406,7 +378,6 @@
       "bucketConfName": "normalized_username_dlpfile_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "recycled_or_deleted_files_counter"
@@ -422,7 +393,6 @@
       "bucketConfName": "normalized_username_dlpfile_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "opened_files_counter"
@@ -438,8 +408,6 @@
       "bucketConfName": "normalized_username_dlpmail_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": "event_time",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "highest_date_time_score"
@@ -455,7 +423,6 @@
       "bucketConfName": "normalized_username_dlpmail_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "emails_to_external_recipient_counter"
@@ -471,7 +438,6 @@
       "bucketConfName": "normalized_username_dlpmail_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "attachments_to_external_recipient_counter"
@@ -487,7 +453,6 @@
       "bucketConfName": "normalized_username_dlpmail_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "sum_of_attachments_to_external_recipient_size"
@@ -503,7 +468,6 @@
       "bucketConfName": "normalized_username_dlpmail_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "email_attachments_counter"
@@ -519,7 +483,6 @@
       "bucketConfName": "normalized_username_dlpmail_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "sum_of_email_attachment_file_size"
@@ -535,8 +498,6 @@
       "bucketConfName": "normalized_username_dlpmail_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": "normalized_src_machine",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "normalized_src_machine_to_highest_score_map"
@@ -557,8 +518,6 @@
       "bucketConfName": "normalized_username_dlpmail_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": "email_sender",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "email_sender_to_highest_score_map"
@@ -576,8 +535,6 @@
       "bucketConfName": "normalized_username_dlpmail_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": "email_recipient_domain",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "email_recipient_domain_to_highest_score_map"
@@ -595,8 +552,6 @@
       "bucketConfName": "normalized_username_dlpmail_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": "executing_application",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "executing_application_to_highest_score_map"
@@ -614,8 +569,6 @@
       "bucketConfName": "normalized_username_dlpmail_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": "attachment_file_extension",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "attachment_file_extension_to_highest_score_map"
@@ -633,8 +586,6 @@
       "bucketConfName": "normalized_username_dlpmail_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": "attachment_file_size",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "highest_attachment_file_size_score"
@@ -650,8 +601,6 @@
       "bucketConfName": "normalized_username_dlpmail_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": "event_time",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "highest_date_time_score"
@@ -667,7 +616,6 @@
       "bucketConfName": "normalized_username_dlpmail_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "emails_to_external_recipient_counter"
@@ -683,7 +631,6 @@
       "bucketConfName": "normalized_username_dlpmail_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "attachments_to_external_recipient_counter"
@@ -699,7 +646,6 @@
       "bucketConfName": "normalized_username_dlpmail_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "sum_of_attachments_to_external_recipient_size"
@@ -715,7 +661,6 @@
       "bucketConfName": "normalized_username_dlpmail_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "email_attachments_counter"
@@ -731,7 +676,6 @@
       "bucketConfName": "normalized_username_dlpmail_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "sum_of_email_attachment_file_size"
@@ -747,8 +691,6 @@
       "bucketConfName": "normalized_username_dlpmail_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": "normalized_src_machine",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "normalized_src_machine_to_highest_score_map"
@@ -769,8 +711,6 @@
       "bucketConfName": "normalized_username_dlpmail_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": "email_sender",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "email_sender_to_highest_score_map"
@@ -788,8 +728,6 @@
       "bucketConfName": "normalized_username_dlpmail_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": "email_recipient_domain",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "email_recipient_domain_to_highest_score_map"
@@ -807,8 +745,6 @@
       "bucketConfName": "normalized_username_dlpmail_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": "executing_application",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "executing_application_to_highest_score_map"
@@ -826,8 +762,6 @@
       "bucketConfName": "normalized_username_dlpmail_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": "attachment_file_extension",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "attachment_file_extension_to_highest_score_map"
@@ -845,8 +779,6 @@
       "bucketConfName": "normalized_username_dlpmail_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": "attachment_file_size",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "highest_attachment_file_size_score"
@@ -862,8 +794,6 @@
       "bucketConfName": "normalized_username_prnlog_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": "event_time",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "highest_date_time_score"
@@ -879,8 +809,6 @@
       "bucketConfName": "normalized_username_prnlog_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": "event_time",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "highest_date_time_score"
@@ -896,7 +824,6 @@
       "bucketConfName": "normalized_username_prnlog_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "events_counter"
@@ -912,7 +839,6 @@
       "bucketConfName": "normalized_username_prnlog_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "events_counter"
@@ -928,7 +854,6 @@
       "bucketConfName": "normalized_username_prnlog_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "sum_of_total_pages"
@@ -944,7 +869,6 @@
       "bucketConfName": "normalized_username_prnlog_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "sum_of_total_pages"
@@ -960,7 +884,6 @@
       "bucketConfName": "normalized_username_prnlog_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "normalized_src_machine_histogram"
@@ -978,8 +901,6 @@
       "bucketConfName": "normalized_username_prnlog_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": "normalized_src_machine",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "normalized_src_machine_to_highest_score_map"
@@ -1000,7 +921,6 @@
       "bucketConfName": "normalized_username_prnlog_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "normalized_src_machine_histogram"
@@ -1018,8 +938,6 @@
       "bucketConfName": "normalized_username_prnlog_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": "normalized_src_machine",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "normalized_src_machine_to_highest_score_map"
@@ -1040,8 +958,6 @@
       "bucketConfName": "normalized_username_prnlog_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": "normalized_dst_machine",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "normalized_dst_machine_to_highest_score_map"
@@ -1062,8 +978,6 @@
       "bucketConfName": "normalized_username_prnlog_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": "normalized_dst_machine",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "normalized_dst_machine_to_highest_score_map"
@@ -1084,7 +998,6 @@
       "bucketConfName": "normalized_username_prnlog_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "sum_of_file_size"
@@ -1100,7 +1013,6 @@
       "bucketConfName": "normalized_username_prnlog_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "sum_of_file_size"

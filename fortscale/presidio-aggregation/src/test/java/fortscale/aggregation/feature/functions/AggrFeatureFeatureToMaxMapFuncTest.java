@@ -56,7 +56,7 @@ public class AggrFeatureFeatureToMaxMapFuncTest {
 
         final int max = 10;
         final String featureGroupedByValue = "host_123";
-        final String featureNameAndValue = groupByFeatureName + AggrFeatureFeatureToMaxMapFunc.FEATURE_SEPERATOR_KEY + featureGroupedByValue;
+        final String featureNameAndValue = groupByFeatureName + AggrFeatureFeatureToMaxMapFunc.FEATURE_SEPARATOR_KEY + featureGroupedByValue;
         Feature aggrFeature = AggrFeatureFeatureToMaxRelatedFuncTestUtils.createAggrFeature("MyAggrFeature", new ImmutablePair<>(new String[]{featureNameAndValue}, max));
         Map<String, Feature> featureMap = AggrFeatureTestUtils.createFeatureMap(
                 new ImmutablePair<String, Object>(groupByFeatureName, featureGroupedByValue),
@@ -80,7 +80,7 @@ public class AggrFeatureFeatureToMaxMapFuncTest {
 
         final int max = 10;
         final String featureGroupedByValue = "host_123";
-        final String featureNameAndValue = groupByFeatureName + AggrFeatureFeatureToMaxMapFunc.FEATURE_SEPERATOR_KEY + featureGroupedByValue;
+        final String featureNameAndValue = groupByFeatureName + AggrFeatureFeatureToMaxMapFunc.FEATURE_SEPARATOR_KEY + featureGroupedByValue;
         Feature aggrFeature = AggrFeatureFeatureToMaxRelatedFuncTestUtils.createAggrFeature("MyAggrFeature", new ImmutablePair<>(new String[]{featureNameAndValue}, max - 1));
         Map<String, Feature> featureMap = AggrFeatureTestUtils.createFeatureMap(
                 new ImmutablePair<String, Object>(groupByFeatureName, featureGroupedByValue),
@@ -104,9 +104,9 @@ public class AggrFeatureFeatureToMaxMapFuncTest {
 
         final int max = 10;
         final String featureGroupedByValue1 = "host_123";
-        final String featureNameAndValue1 = groupByFeatureName + AggrFeatureFeatureToMaxMapFunc.FEATURE_SEPERATOR_KEY + featureGroupedByValue1;
+        final String featureNameAndValue1 = groupByFeatureName + AggrFeatureFeatureToMaxMapFunc.FEATURE_SEPARATOR_KEY + featureGroupedByValue1;
         final String featureGroupedByValue2 = "host_456";
-        final String featureNameAndValue2 = groupByFeatureName + AggrFeatureFeatureToMaxMapFunc.FEATURE_SEPERATOR_KEY + featureGroupedByValue2;
+        final String featureNameAndValue2 = groupByFeatureName + AggrFeatureFeatureToMaxMapFunc.FEATURE_SEPARATOR_KEY + featureGroupedByValue2;
         Feature aggrFeature = AggrFeatureFeatureToMaxRelatedFuncTestUtils.createAggrFeature("MyAggrFeature", new ImmutablePair<>(new String[]{featureNameAndValue1}, max));
         Map<String, Feature> featureMap = AggrFeatureTestUtils.createFeatureMap(
                 new ImmutablePair<String, Object>(groupByFeatureName, featureGroupedByValue2),
@@ -153,15 +153,15 @@ public class AggrFeatureFeatureToMaxMapFuncTest {
         final int maxA = 10;
         final int maxB = 20;
         final String featureGroupedByValue1A = "dest_host_123_A";
-        final String featureNameAndValue1A = groupByFeatureName1 + AggrFeatureFeatureToMaxMapFunc.FEATURE_SEPERATOR_KEY + featureGroupedByValue1A;
+        final String featureNameAndValue1A = groupByFeatureName1 + AggrFeatureFeatureToMaxMapFunc.FEATURE_SEPARATOR_KEY + featureGroupedByValue1A;
         final String featureGroupedByValue2A = "src_host_456_A";
-        final String featureNameAndValue2A = groupByFeatureName2 + AggrFeatureFeatureToMaxMapFunc.FEATURE_SEPERATOR_KEY + featureGroupedByValue2A;
-        final String featureNameAndValueA = featureNameAndValue1A + AggrFeatureFeatureToMaxMapFunc.FEATURE_GROUP_SEPERATOR_KEY + featureNameAndValue2A;
+        final String featureNameAndValue2A = groupByFeatureName2 + AggrFeatureFeatureToMaxMapFunc.FEATURE_SEPARATOR_KEY + featureGroupedByValue2A;
+        final String featureNameAndValueA = featureNameAndValue1A + AggrFeatureFeatureToMaxMapFunc.FEATURE_GROUP_SEPARATOR_KEY + featureNameAndValue2A;
         final String featureGroupedByValue1B = "dest_host_123_B";
-        final String featureNameAndValue1B = groupByFeatureName1 + AggrFeatureFeatureToMaxMapFunc.FEATURE_SEPERATOR_KEY + featureGroupedByValue1B;
+        final String featureNameAndValue1B = groupByFeatureName1 + AggrFeatureFeatureToMaxMapFunc.FEATURE_SEPARATOR_KEY + featureGroupedByValue1B;
         final String featureGroupedByValue2B = "src_host_456_B";
-        final String featureNameAndValue2B = groupByFeatureName2 + AggrFeatureFeatureToMaxMapFunc.FEATURE_SEPERATOR_KEY + featureGroupedByValue2B;
-        final String featureNameAndValueB = featureNameAndValue1B + AggrFeatureFeatureToMaxMapFunc.FEATURE_GROUP_SEPERATOR_KEY + featureNameAndValue2B;
+        final String featureNameAndValue2B = groupByFeatureName2 + AggrFeatureFeatureToMaxMapFunc.FEATURE_SEPARATOR_KEY + featureGroupedByValue2B;
+        final String featureNameAndValueB = featureNameAndValue1B + AggrFeatureFeatureToMaxMapFunc.FEATURE_GROUP_SEPARATOR_KEY + featureNameAndValue2B;
         Feature aggrFeature = AggrFeatureFeatureToMaxRelatedFuncTestUtils.createAggrFeature(
                 "MyAggrFeature",
                 new ImmutablePair<>(new String[]{featureNameAndValue1A, featureNameAndValue2A}, maxA),
@@ -192,15 +192,14 @@ public class AggrFeatureFeatureToMaxMapFuncTest {
 
             final int max = 10;
             final String featureGroupedByValue1A = "dest_host_123_A";
-            final String featureNameAndValue1A = groupByFeatureName1 + AggrFeatureFeatureToMaxMapFunc.FEATURE_SEPERATOR_KEY + featureGroupedByValue1A;
+            final String featureNameAndValue1A = groupByFeatureName1 + AggrFeatureFeatureToMaxMapFunc.FEATURE_SEPARATOR_KEY + featureGroupedByValue1A;
             final String featureGroupedByValue2A = "src_host_456_A";
-            final String featureNameAndValue2A = groupByFeatureName2 + AggrFeatureFeatureToMaxMapFunc.FEATURE_SEPERATOR_KEY + featureGroupedByValue2A;
-            final String featureNameAndValueA = featureNameAndValue1A + AggrFeatureFeatureToMaxMapFunc.FEATURE_GROUP_SEPERATOR_KEY + featureNameAndValue2A;
+            final String featureNameAndValue2A = groupByFeatureName2 + AggrFeatureFeatureToMaxMapFunc.FEATURE_SEPARATOR_KEY + featureGroupedByValue2A;
             final String featureGroupedByValue1B = "dest_host_123_B";
-            final String featureNameAndValue1B = groupByFeatureName1 + AggrFeatureFeatureToMaxMapFunc.FEATURE_SEPERATOR_KEY + featureGroupedByValue1B;
+            final String featureNameAndValue1B = groupByFeatureName1 + AggrFeatureFeatureToMaxMapFunc.FEATURE_SEPARATOR_KEY + featureGroupedByValue1B;
             final String featureGroupedByValue2B = "src_host_456_B";
-            final String featureNameAndValue2B = groupByFeatureName2 + AggrFeatureFeatureToMaxMapFunc.FEATURE_SEPERATOR_KEY + featureGroupedByValue2B;
-            final String featureNameAndValueB = featureNameAndValue1B + AggrFeatureFeatureToMaxMapFunc.FEATURE_GROUP_SEPERATOR_KEY + featureNameAndValue2B;
+            final String featureNameAndValue2B = groupByFeatureName2 + AggrFeatureFeatureToMaxMapFunc.FEATURE_SEPARATOR_KEY + featureGroupedByValue2B;
+            final String featureNameAndValueB = featureNameAndValue1B + AggrFeatureFeatureToMaxMapFunc.FEATURE_GROUP_SEPARATOR_KEY + featureNameAndValue2B;
             Feature aggrFeature = AggrFeatureFeatureToMaxRelatedFuncTestUtils.createAggrFeature(
                     "MyAggrFeature",
                     new ImmutablePair<>(new String[]{featureNameAndValue1A, featureNameAndValue2A}, max),

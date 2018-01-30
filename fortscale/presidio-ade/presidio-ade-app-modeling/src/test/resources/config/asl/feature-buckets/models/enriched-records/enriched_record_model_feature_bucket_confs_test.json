@@ -2,7 +2,6 @@
   "BucketConfs": [
     {
       "name": "continuousDataFeatureBucket",
-      "expireAfterSeconds": 86400,
       "contextFieldNames": [
         "userId"
       ],

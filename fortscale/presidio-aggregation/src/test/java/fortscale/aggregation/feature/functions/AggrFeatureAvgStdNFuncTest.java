@@ -37,7 +37,7 @@ public class AggrFeatureAvgStdNFuncTest {
         }
         Map<String, List<String>> map = new HashMap<>();
         map.put(AggrFeatureAvgStdNFunc.COUNT_BY_FIELD_NAME, list);
-        return new AggregatedFeatureEventConf(name, "bucketConfName", "aggregated_feature_event_type_F", 3, 1, 300, map, new JSONObject());
+        return new AggregatedFeatureEventConf(name, "bucketConfName", "aggregated_feature_event_type_F", 3, 1, map, new JSONObject());
     }
 
     @Test

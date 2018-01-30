@@ -2,7 +2,6 @@
   "BucketConfs": [
     {
       "name": "highestStartInstantScoreUserIdAuthenticationHourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -26,7 +25,6 @@
     },
     {
       "name": "srcMachineNameRegexClusterToHighestScoreMapUserIdAuthenticationHourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -53,7 +51,6 @@
     },
     {
       "name": "dstMachineNameRegexClusterToHighestScoreMapUserIdInteractiveRemoteAuthenticationHourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -80,7 +77,6 @@
     },
     {
       "name": "siteToHighestScoreMapUserIdAuthenticationHourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],

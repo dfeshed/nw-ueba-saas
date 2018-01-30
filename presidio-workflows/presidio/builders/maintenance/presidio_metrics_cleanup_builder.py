@@ -9,7 +9,7 @@ from elasticsearch import Elasticsearch
 class PresidioMetircsCleanupDagBuilder(MaintenanceDagBuilder):
 
     DEFAULT_MAX_APP_METRICS_AGE_IN_DAYS = 30
-    DEFAULT_MAX_SYS_METRICS_AGE_IN_DAYS = 30
+    DEFAULT_MAX_SYS_METRICS_AGE_IN_DAYS = 15
 
     def build(self, dag):
 

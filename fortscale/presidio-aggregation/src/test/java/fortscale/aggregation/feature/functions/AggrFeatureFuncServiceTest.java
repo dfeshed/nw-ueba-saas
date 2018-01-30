@@ -983,7 +983,7 @@ public class AggrFeatureFuncServiceTest {
                 aggregatedFeatureEventName,
                 "aggregated_feature_event_type_F",
                 "testBucketConf",
-                3, 1, 300,
+                3, 1,
                 aggregatedFeatureNamesMap,
                 aggrFeatureAvgStdNFunc);
 
@@ -1014,7 +1014,7 @@ public class AggrFeatureFuncServiceTest {
                 aggregatedFeatureEventName,
                 "aggregated_feature_event_type_F",
                 "testBucketConf",
-                3, 1, 300,
+                3, 1,
                 aggregatedFeatureNamesMap,
                 aggrFeatureHistogramFunc);
 
@@ -1045,7 +1045,7 @@ public class AggrFeatureFuncServiceTest {
                 aggregatedFeatureEventName,
                 "aggregated_feature_event_type_F",
                 "testBucketConf",
-                3, 1, 300,
+                3, 1,
                 aggregatedFeatureNamesMap,
                 newAvgStdNFuncJson);
 
@@ -1081,7 +1081,7 @@ public class AggrFeatureFuncServiceTest {
                 "testAggregatedFeatureEvent",
                 "aggregated_feature_event_type_F",
                 "testBucketConf",
-                3, 1, 300,
+                3, 1,
                 aggregatedFeatureNamesMap,
                 dummyFunction);
 
@@ -1122,7 +1122,7 @@ public class AggrFeatureFuncServiceTest {
                 "testAggregatedFeatureEvent",
                 "aggregated_feature_event_type_F",
                 "testBucketConf",
-                3, 1, 300,
+                3, 1,
                 aggregatedFeatureNamesMap,
                 aggrFeatureHistogramFunc);
 

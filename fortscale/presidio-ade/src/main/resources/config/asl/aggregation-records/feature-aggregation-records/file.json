@@ -6,7 +6,6 @@
       "bucketConfName": "filePermissionChangeResultHistogramUserIdFileHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "filePermissionChangeHistogram"
@@ -23,7 +22,6 @@
       "bucketConfName": "fileActionResultHistogramUserIdFileHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "fileActionHistogram"
@@ -40,7 +38,6 @@
       "bucketConfName": "filePermissionChangeResultHistogramUserIdFileHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "filePermissionChangeHistogram"
@@ -57,7 +54,6 @@
       "bucketConfName": "fileActionResultHistogramUserIdFileHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "fileActionHistogram"
@@ -74,7 +70,6 @@
       "bucketConfName": "absoluteSrcFilePathHistogramUserIdFileOpenedFileHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "absoluteSrcFilePathHistogram"
@@ -91,7 +86,6 @@
       "bucketConfName": "absoluteSrcFolderPathHistogramUserIdFolderOpenedFileHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "absoluteSrcFolderPathHistogram"
@@ -108,7 +102,6 @@
       "bucketConfName": "fileDeletedCounterUserIdFileHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "fileDeletedCounter"
@@ -124,7 +117,6 @@
       "bucketConfName": "fileRenamedResultHistogramUserIdFileHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "fileRenamedResultHistogram"
@@ -141,7 +133,6 @@
       "bucketConfName": "fileMovedCounterUserIdFileHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "FileMovedCounter"
@@ -157,7 +148,6 @@
       "bucketConfName": "fileMovedFromSharedDriveCounterUserIdFileHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "fileMovedFromSharedDriveCounter"
@@ -173,7 +163,6 @@
       "bucketConfName": "fileMovedToSharedDriveCounterUserIdFileHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "sum": [
           "fileMovedToSharedDriveCounter"

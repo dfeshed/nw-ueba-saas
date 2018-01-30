@@ -6,7 +6,6 @@
       "bucketConfName": "resultHistogramUserIdAuthenticationHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "resultHistogram"
@@ -23,7 +22,6 @@
       "bucketConfName": "resultHistogramUserIdAuthenticationHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "resultHistogram"
@@ -40,7 +38,6 @@
       "bucketConfName": "dstMachineDomainHistogramUserIdAuthenticationHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "distinctDstMachineDomainHistogram"
@@ -57,7 +54,6 @@
       "bucketConfName": "srcMachineIdHistogramUserIdAuthenticationHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "distinctSrcMachineIdHistogram"
@@ -74,7 +70,6 @@
       "bucketConfName": "dstMachineIdHistogramUserIdAuthenticationHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "distinctDstMachineIdHistogram"
@@ -91,7 +86,6 @@
       "bucketConfName": "srcMachineNameRegexClusterHistogramUserIdAuthenticationHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "distinctSrcMachineNameRegexClusterHistogram"
@@ -108,7 +102,6 @@
       "bucketConfName": "dstMachineNameRegexClusterHistogramUserIdAuthenticationHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "distinctDstMachineNameRegexClusterHistogram"
@@ -125,7 +118,6 @@
       "bucketConfName": "siteHistogramUserIdAuthenticationHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "distinctSiteHistogram"

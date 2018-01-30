@@ -16,6 +16,7 @@ public abstract class AbstractAuditableDocument extends AbstractDocument {
     public static final String CREATED_AT_FIELD_NAME = "createdAt";
     public static final String DATE_TIME_FIELD_NAME = "dateTime";
     private static final long serialVersionUID = -4585812347688862037L;
+
     @Field(DATE_TIME_FIELD_NAME)
     @NotNull
     @Indexed
@@ -49,12 +50,10 @@ public abstract class AbstractAuditableDocument extends AbstractDocument {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(super.toString()).append(", ");
-        sb.append("CreatedAt: ").append(getCreationTime()).append(", ");
-        sb.append("Version: ").append(getVersion()).append(", ");
-        sb.append("LastModified: ").append(getLastModified());
-        return sb.toString();
+        return super.toString() + ", " +
+                "CreatedAt: " + getCreationTime() + ", " +
+                "Version: " + getVersion() + ", " +
+                "LastModified: " + getLastModified();
     }
 
 
@@ -72,5 +71,9 @@ public abstract class AbstractAuditableDocument extends AbstractDocument {
 
     public Instant getDateTime() {
         return dateTime;
+    }
+
+    public void setDateTime(Instant dateTime) {
+        this.dateTime = dateTime;
     }
 }

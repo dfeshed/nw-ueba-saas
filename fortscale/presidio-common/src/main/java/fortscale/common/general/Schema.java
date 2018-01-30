@@ -1,11 +1,15 @@
 package fortscale.common.general;
 
-
 import com.google.common.base.CaseFormat;
 
 public enum Schema {
-
-    DLPFILE("dlpfile"), DLPMAIL("dlpmail"), PRNLOG("prnlog"), FILE("file"), ACTIVE_DIRECTORY("active_directory"), AUTHENTICATION("authentication");
+    DLPFILE("dlpfile"),
+    DLPMAIL("dlpmail"),
+    PRNLOG("prnlog"),
+    ACTIVE_DIRECTORY("active_directory"),
+    AUTHENTICATION("authentication"),
+    FILE("file"),
+    PRINT("print");
 
     private String name;
 
