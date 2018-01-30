@@ -173,27 +173,27 @@
           <div class="label-text">
             {{t 'packager.channelFilter'}}
           </div>
-          <div class="icon-align-left add-row">
-            {{#rsa-content-tethered-panel-trigger panel=panelId model=(t 'packager.channel.add')}}
-              {{#rsa-form-button isIconOnly=true click=(action 'addRowFilter')}}
-                {{rsa-icon name='add-1' size='small'}}
-              {{/rsa-form-button}}
-            {{/rsa-content-tethered-panel-trigger}}
-            {{#rsa-content-tethered-panel position='top' panelId=panelId as |hide model|}}
-              <section>{{model}}</section>
-            {{/rsa-content-tethered-panel}}
-          </div>
-          <div class="channel-container">
-            {{#rsa-data-table lazy=true  items=configData.logCollectionConfig.channels columnsConfig=columns}}
-              {{#rsa-data-table/header as |column|}}
-                {{t column.title}}
-              {{/rsa-data-table/header}}
-              {{#rsa-data-table/body as |item index column|}}
-                {{packager-form/body-cell item=item index=index column=column delete=(action "deleteRow") error=invalidTableItem}}
-              {{/rsa-data-table/body}}
-            {{/rsa-data-table}}
-          </div>
         </label>
+        <div class="icon-align-left add-row">
+          {{#rsa-content-tethered-panel-trigger panel=panelId model=(t 'packager.channel.add')}}
+            {{#rsa-form-button isIconOnly=true click=(action 'addRowFilter')}}
+              {{rsa-icon name='add-1' size='small'}}
+            {{/rsa-form-button}}
+          {{/rsa-content-tethered-panel-trigger}}
+          {{#rsa-content-tethered-panel position='top' panelId=panelId as |hide model|}}
+            <section>{{model}}</section>
+          {{/rsa-content-tethered-panel}}
+        </div>
+        <div class="channel-container">
+          {{#rsa-data-table lazy=true  items=configData.logCollectionConfig.channels columnsConfig=columns}}
+            {{#rsa-data-table/header as |column|}}
+              {{t column.title}}
+            {{/rsa-data-table/header}}
+            {{#rsa-data-table/body as |item index column|}}
+              {{packager-form/body-cell item=item index=index column=column delete=(action "deleteRow") error=invalidTableItem}}
+            {{/rsa-data-table/body}}
+          {{/rsa-data-table}}
+        </div>
       </div>
 
       <div class="col-xs-5 field protocol-js">

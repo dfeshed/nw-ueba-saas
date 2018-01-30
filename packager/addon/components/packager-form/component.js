@@ -271,10 +271,8 @@ const formComponent = Component.extend({
     },
 
     // adding an empty row to the channel filters table
-    addRowFilter(item) {
-      if (item.target.classList.contains('rsa-icon') || item.target.classList.contains('rsa-form-button')) {
-        this.get('configData.logCollectionConfig.channels').pushObject({ channel: '', filter: 'Include', eventId: 'ALL' });
-      }
+    addRowFilter() {
+      this.get('configData.logCollectionConfig.channels').pushObject({ channel: '', filter: 'Include', eventId: 'ALL' });
     },
     // pass the index of the row to delete the row in the channel filters
     deleteRow(index) {
