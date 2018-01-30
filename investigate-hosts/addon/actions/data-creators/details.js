@@ -150,13 +150,14 @@ const loadDetailsWithExploreInput = (scanTime, tabName, secondaryTab) => {
     const { isTreeView } = getState().endpoint.visuals;
     dispatch(setScanTime(scanTime));
     dispatch(changeDetailTab(tabName));
-    if (secondaryTab) {
-      dispatch(setAutorunsTabView(secondaryTab));
-    }
     if (tabName === 'PROCESS' && !isTreeView) {
       dispatch(toggleProcessView());
     }
-    dispatch(_getHostDetails(true));
+    if (secondaryTab) {
+      dispatch(setAutorunsTabView(secondaryTab));
+    } else {
+      dispatch(_getHostDetails(true));
+    }
     dispatch(toggleExploreSearchResults(false));
   };
 };
