@@ -40,28 +40,28 @@ public class CsvSourceAgile extends AbstractPageablePresidioSource {
     protected static final String FILE_PREFIX = "filePrefix";
     protected static final String FILE_DATE_SEPARATOR = "fileDateSeparator";
     protected static final String FILE_SUFFIX = "fileSuffix";
-    private static final String DELIMITER_CONF_NAME = "delimiter";
-    private static final String RECORD_TYPE_CONF_NAME = "recordType";
-    private static final String DEFAULT_DELIMITER_VALUE = ",";
-    private static final String DEFAULT_TIMESTAMP_FORMAT_VALUE = "ISO";
-    private static final String DEFAULT_AD_INFO_MAPPING_VALUE = "";
-    private static final String DEFAULT_AD_INFO_MAPPING_DELIMITER_VALUE = ">";
-    private static final String DEFAULT_FILE_TIMESTAMP_FORMAT_VALUE = "ISO";
-    private static final boolean DEFAULT_WITH_IGNORE_LEADING_WHITE_SPACE_VALUE = true;
+    protected static final String DELIMITER_CONF_NAME = "delimiter";
+    protected static final String RECORD_TYPE_CONF_NAME = "recordType";
+    protected static final String DEFAULT_DELIMITER_VALUE = ",";
+    protected static final String DEFAULT_TIMESTAMP_FORMAT_VALUE = "ISO";
+    protected static final String DEFAULT_AD_INFO_MAPPING_VALUE = "";
+    protected static final String DEFAULT_AD_INFO_MAPPING_DELIMITER_VALUE = ">";
+    protected static final String DEFAULT_FILE_TIMESTAMP_FORMAT_VALUE = "ISO";
+    protected static final boolean DEFAULT_WITH_IGNORE_LEADING_WHITE_SPACE_VALUE = true;
 
-    private Path filePath;
-    private int skipLines;
-    private Boolean withIgnoreLeadingWhiteSpace;
-    private String[] fieldMapping;
-    private String timestampFormat;
-    private String fileTimestampFormat;
-    private char adInfoMappingDelimiter;
-    private Map<String, String> adInfoMapping = new HashMap<>();
-    private Class<GenericRawEvent> recordType;
-    private char delimiter;
-    private String filePrefix;
-    private String fileDateSeparator;
-    private String fileSuffix;
+    protected Path filePath;
+    protected int skipLines;
+    protected Boolean withIgnoreLeadingWhiteSpace;
+    protected String[] fieldMapping;
+    protected String timestampFormat;
+    protected String fileTimestampFormat;
+    protected char adInfoMappingDelimiter;
+    protected Map<String, String> adInfoMapping = new HashMap<>();
+    protected Class<GenericRawEvent> recordType;
+    protected char delimiter;
+    protected String filePrefix;
+    protected String fileDateSeparator;
+    protected String fileSuffix;
 
     @SuppressWarnings("unchecked")
     public void doPresidioConfigure(Context context) {
@@ -125,17 +125,7 @@ public class CsvSourceAgile extends AbstractPageablePresidioSource {
     protected List<AbstractDocument> doFetch(int i){
         List<GenericRawEvent> genericEvents;
         try (Reader reader = Files.newBufferedReader(filePath)) {
-            ColumnPositionMappingStrategy<GenericRawEvent> strategy = new ColumnPositionMappingStrategy<>();
-            strategy.setType(recordType);
-            strategy.setColumnMapping(fieldMapping);
-
-            CsvToBean<GenericRawEvent> csvToBean = new CsvToBeanBuilder<GenericRawEvent>(reader)
-                    .withMappingStrategy(strategy)
-                    .withSkipLines(skipLines)
-                    .withIgnoreLeadingWhiteSpace(withIgnoreLeadingWhiteSpace)
-                    .build();
-
-            genericEvents = csvToBean.parse();
+            genericEvents = getGenericRawEventsFromCsv(reader);
             return convertEvents(genericEvents);
 
         } catch (Exception e) {
@@ -147,7 +137,22 @@ public class CsvSourceAgile extends AbstractPageablePresidioSource {
 
     }
 
-    private List<AbstractDocument> convertEvents(List<GenericRawEvent> genericEvents) throws IllegalAccessException {
+    protected List<GenericRawEvent> getGenericRawEventsFromCsv(Reader reader) {
+        List<GenericRawEvent> genericEvents;ColumnPositionMappingStrategy<GenericRawEvent> strategy = new ColumnPositionMappingStrategy<>();
+        strategy.setType(recordType);
+        strategy.setColumnMapping(fieldMapping);
+
+        CsvToBean<GenericRawEvent> csvToBean = new CsvToBeanBuilder<GenericRawEvent>(reader)
+                .withMappingStrategy(strategy)
+                .withSkipLines(skipLines)
+                .withIgnoreLeadingWhiteSpace(withIgnoreLeadingWhiteSpace)
+                .build();
+
+        genericEvents = csvToBean.parse();
+        return genericEvents;
+    }
+
+    protected List<AbstractDocument> convertEvents(List<GenericRawEvent> genericEvents) throws IllegalAccessException {
         List<AbstractDocument> events = new ArrayList<>();
         for (GenericRawEvent genericEvent : genericEvents) {
             if (recordType.equals(GenericAuthenticationRawEvent.class)) {
