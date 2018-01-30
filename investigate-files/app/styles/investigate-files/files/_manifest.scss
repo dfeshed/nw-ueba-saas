@@ -85,6 +85,7 @@ page.investigate-files-engine {
   }
   .files-zone {
     width: calc(100vw - #{$filterPanelMinWidth});
+    max-width: calc(100vw - #{$filterPanelMinWidth});
   }
   .files-footer {
     max-height: 2rem;

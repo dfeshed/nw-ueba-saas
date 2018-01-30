@@ -172,11 +172,12 @@ const createCustomSearch = (filter, callbacks = callbacksDefault) => {
  */
 const exportAsFile = () => {
   return (dispatch, getState) => {
-    const { filterSelected, hostColumnSort } = getState().endpoint.machines;
+    const { hostColumnSort } = getState().endpoint.machines;
     const { schema } = getState().endpoint.schema;
+    const { expressionList } = getState().endpoint.filter;
     dispatch({
       type: ACTION_TYPES.FETCH_DOWNLOAD_JOB_ID,
-      promise: Machines.downloadMachine(filterSelected, schema, hostColumnSort, _getVisibleColumnNames(getState)),
+      promise: Machines.downloadMachine(expressionList, schema, hostColumnSort, _getVisibleColumnNames(getState)),
       meta: {
         onSuccess: (response) => {
           debug(`ACTION_TYPES.FETCH_DOWNLOAD_JOB_ID ${_stringifyObject(response)}`);

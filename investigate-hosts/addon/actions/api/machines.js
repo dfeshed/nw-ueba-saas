@@ -1,5 +1,4 @@
 import { promiseRequest, streamRequest } from 'streaming-data/services/data-access/requests';
-import { buildSearchCriteria } from './utils';
 import { addFilter } from 'investigate-hosts/actions/utils/query-util';
 
 // NOOP function to replace Ember.K
@@ -64,16 +63,16 @@ const getPageOfMachines = (pageNumber, sort, expressionList) => {
    *
    * @method downloadMachine
    * @public
-   * @param selectedFilter {Object} selected system filter
+   * @param expressionList {Object} for selected criteria
    * @param columns {Array} only visible filters in the UI
    * @param sort The sorting information ({ id, isDescending }) for the result set
    * @param fields {Array} list of visible columns in machine table
    * @returns {Promise}
    */
-const downloadMachine = (selectedFilter, columns, sort, fields) => {
+const downloadMachine = (expressionList, columns, sort, fields) => {
   const data = { sort, fields };
-  if (selectedFilter) {
-    data.criteria = buildSearchCriteria(selectedFilter, columns);
+  if (expressionList) {
+    data.criteria = { expressionList, 'predicateType': 'AND' };
   }
 
   return promiseRequest({

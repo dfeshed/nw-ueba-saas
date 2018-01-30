@@ -73,4 +73,5 @@ $filter-panel-width: 250px;
 
 .machine-zone {
   width: calc(100vw - 300px);
+  max-width: calc(100vw - 300px);
 }
