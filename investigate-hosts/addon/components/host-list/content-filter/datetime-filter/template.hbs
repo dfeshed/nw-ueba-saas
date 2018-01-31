@@ -36,6 +36,7 @@
           {{/if}}
           {{#power-select
               options=listOptions
+              searchField="label"
               selected= selectedDateRangeOption
               searchPlaceholder=(t 'investigateHosts.hosts.filters.searchPlaceHolder')
               onchange=(action 'onTimeSelection') as |option|}}

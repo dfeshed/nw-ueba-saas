@@ -27,7 +27,7 @@ const TitleBarComponent = Component.extend({
 
   @computed('isOverviewPanelVisible')
   expandContract(isOverviewPanelVisible) {
-    return isOverviewPanelVisible ? 'shrink-horizontal-2' : 'expand-vertical-2';
+    return isOverviewPanelVisible ? 'shrink-diagonal-2' : 'expand-diagonal-4';
   }
 });
 

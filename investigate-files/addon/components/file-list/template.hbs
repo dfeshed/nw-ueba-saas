@@ -16,60 +16,56 @@
       {{rsa-loader size='larger'}}
     </centered>
   {{else}}
-    {{#if totalItems}}
-      {{#rsa-data-table/body
-          noResultsMessage=" "
-        as |item index column|}}
-        {{#if column.componentClass}}
-          {{#rsa-data-table/body-cell item=item column=column}}
-            <label class="rsa-form-checkbox-label {{if item.checked 'checked'}}">
-              {{rsa-form-checkbox checked=item.checked change=(action 'toggleItemSelection' item)}}
-            </label>
-          {{/rsa-data-table/body-cell}}
-        {{else}}
-          {{#rsa-data-table/body-cell column=column}}
-            {{#if (eq column.field 'size')}}
-              {{rsa-content-memsize size=(get item column.field)}}
-            {{else if (eq column.field 'pe.imageSize')}}
-              {{rsa-content-memsize size=(get item column.field)}}
-            {{else if (eq column.field 'signature.features')}}
-              {{#if (get item column.field)}}
-                {{get item column.field}}
-              {{else}}
-                unsigned
-              {{/if}}
-            {{else if (eq column.dataType 'DATE')}}
-              {{#if (get item column.field)}}
-                {{rsa-content-datetime timestamp=(get item column.field)}}
-              {{else}}
-                N/A
-              {{/if}}
-            {{else if (eq column.field 'firstFileName')}}
-              <hbox>
-                {{get item column.field}}
-                <div class="pivot-to-investigate">
-                  {{file-list/pivot-to-investigate item=item metaName=column.field serviceList=serviceList}}
-                </div>
-              </hbox>
-            {{else if (eq column.field 'signature.timeStamp')}}
-              {{rsa-content-datetime timestamp=(get item column.field)}}
-            {{else if (or (eq column.field 'checksumSha256')(eq column.field 'checksumMd5'))}}
-              <hbox>
-                {{get item column.field}}
-                <div class="pivot-to-investigate">
-                  {{file-list/pivot-to-investigate item=item metaName=column.field serviceList=serviceList}}
-                </div>
-              </hbox>
-            {{else}}
+    {{#rsa-data-table/body
+      noResultsMessage=(t 'investigateFiles.message.noResultsMessage')
+      as |item index column|}}
+      {{#if column.componentClass}}
+        {{#rsa-data-table/body-cell item=item column=column}}
+          <label class="rsa-form-checkbox-label {{if item.checked 'checked'}}">
+            {{rsa-form-checkbox checked=item.checked change=(action 'toggleItemSelection' item)}}
+          </label>
+        {{/rsa-data-table/body-cell}}
+      {{else}}
+        {{#rsa-data-table/body-cell column=column}}
+          {{#if (eq column.field 'size')}}
+            {{rsa-content-memsize size=(get item column.field)}}
+          {{else if (eq column.field 'pe.imageSize')}}
+            {{rsa-content-memsize size=(get item column.field)}}
+          {{else if (eq column.field 'signature.features')}}
+            {{#if (get item column.field)}}
               {{get item column.field}}
+            {{else}}
+              unsigned
             {{/if}}
-          {{/rsa-data-table/body-cell}}
-        {{/if}}
-      {{/rsa-data-table/body}}
+          {{else if (eq column.dataType 'DATE')}}
+            {{#if (get item column.field)}}
+              {{rsa-content-datetime timestamp=(get item column.field)}}
+            {{else}}
+              N/A
+            {{/if}}
+          {{else if (eq column.field 'firstFileName')}}
+            <hbox>
+              {{get item column.field}}
+              <div class="pivot-to-investigate">
+                {{file-list/pivot-to-investigate item=item metaName=column.field serviceList=serviceList}}
+              </div>
+            </hbox>
+          {{else if (eq column.field 'signature.timeStamp')}}
+            {{rsa-content-datetime timestamp=(get item column.field)}}
+          {{else if (or (eq column.field 'checksumSha256')(eq column.field 'checksumMd5'))}}
+            <hbox>
+              {{get item column.field}}
+              <div class="pivot-to-investigate">
+                {{file-list/pivot-to-investigate item=item metaName=column.field serviceList=serviceList}}
+              </div>
+            </hbox>
+          {{else}}
+            {{get item column.field}}
+          {{/if}}
+        {{/rsa-data-table/body-cell}}
+      {{/if}}
+    {{/rsa-data-table/body}}
       {{rsa-data-table/load-more status=loadMoreStatus click=(action 'getPageOfFiles')}}
-    {{else}}
-      {{rsa-panel-message message=(t 'investigateFiles.message.noResultsMessage') messageType='no-results-message'}}
-    {{/if}}
   {{/if}}
 {{/rsa-data-table}}
 
