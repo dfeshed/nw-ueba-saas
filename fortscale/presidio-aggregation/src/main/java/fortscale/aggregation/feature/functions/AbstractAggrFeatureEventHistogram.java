@@ -11,33 +11,29 @@ import java.util.Map;
 
 public abstract class AbstractAggrFeatureEventHistogram extends AbstractAggrFeatureEvent {
     private boolean removeNA = true;
-
     private List<String> additionalNAValues = Collections.emptyList();
-	
+
     @Override
     protected AggrFeatureValue calculateAggrFeatureValue(AggregatedFeatureEventConf aggrFeatureEventConf, List<Map<String, Feature>> multipleBucketsAggrFeaturesMapList) {
-    	GenericHistogram histogram = AggrFeatureHistogramFunc.calculateHistogramFromBucketAggrFeature(aggrFeatureEventConf, multipleBucketsAggrFeaturesMapList);
-    	removeNaValues(histogram);
+        GenericHistogram histogram = AggrFeatureHistogramFunc.calculateHistogramFromBucketAggrFeature(aggrFeatureEventConf, multipleBucketsAggrFeaturesMapList);
+        removeNaValues(histogram);
         AggrFeatureValue aggrFeatureValue = null;
-        if(!histogram.getHistogramMap().isEmpty()) {
+        if (!histogram.getHistogramMap().isEmpty()) {
             aggrFeatureValue = calculateHistogramAggrFeatureValue(histogram);
-            fillAggrFeatureValueWithAdditionalInfo(aggrFeatureValue, histogram);
         }
         return aggrFeatureValue;
     }
 
-    private void removeNaValues(GenericHistogram histogram){
-        if(removeNA){
-            AggGenericNAFeatureValues.getNAValues().forEach(naValue -> histogram.remove(naValue));
-            if(additionalNAValues.size() > 0){
-                additionalNAValues.forEach(naValue -> histogram.remove(naValue));
+    private void removeNaValues(GenericHistogram histogram) {
+        if (removeNA) {
+            AggGenericNAFeatureValues.getNAValues().forEach(histogram::remove);
+            if (additionalNAValues.size() > 0) {
+                additionalNAValues.forEach(histogram::remove);
             }
         }
     }
-    
+
     protected abstract AggrFeatureValue calculateHistogramAggrFeatureValue(GenericHistogram histogram);
-    
-    protected void fillAggrFeatureValueWithAdditionalInfo(AggrFeatureValue aggrFeatureValue, GenericHistogram histogram){}
 
     public boolean getRemoveNA() {
         return this.removeNA;
