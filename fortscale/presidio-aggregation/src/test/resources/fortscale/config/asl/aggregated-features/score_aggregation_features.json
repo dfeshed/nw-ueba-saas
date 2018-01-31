@@ -28,8 +28,6 @@
       },
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_map_values_max_sum_func",
-        "includeValues": true,
-        "minScoreToInclude": 1,
         "pattern": "[0-9]",
         "replacement": "",
         "postCondition": "(.*[a-zA-Z]){5}.*"
@@ -63,8 +61,6 @@
       },
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_map_values_max_sum_func",
-        "includeValues": true,
-        "minScoreToInclude": 1,
         "pattern": "[0-9]",
         "replacement": "",
         "postCondition": "(.*[a-zA-Z]){5}.*"
