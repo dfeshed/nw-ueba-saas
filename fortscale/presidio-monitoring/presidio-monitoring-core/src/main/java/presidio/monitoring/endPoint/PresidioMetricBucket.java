@@ -50,9 +50,9 @@ public class PresidioMetricBucket {
                     metricValues.put(entry.getKey(), entry.getValue());
                 }
             }
-        } else {
-            applicationMetrics.put(metricUniqueKey, metric);
         }
+        applicationMetrics.put(metricUniqueKey, metric);
+        
     }
 
     private Number operatorAddForNumber(Number number1, Number number2) {
