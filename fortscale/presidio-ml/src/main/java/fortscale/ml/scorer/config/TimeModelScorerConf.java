@@ -12,9 +12,9 @@ import java.util.List;
 @JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY, isGetterVisibility = Visibility.ANY)
 public class TimeModelScorerConf extends ModelScorerConf {
 	public static final String SCORER_TYPE = "time-model-scorer";
-	public static final int DEFAULT_MAX_RARE_TIMESTAMP_COUNT = 8;
+	public static final int DEFAULT_MAX_RARE_TIMESTAMP_COUNT = 5;
 	public static final int DEFAULT_MAX_NUM_OF_RARE_TIMESTAMPS = 5;
-	public static final double X_WITH_VALUE_HALF_FACTOR = 0.25;
+	public static final double X_WITH_VALUE_HALF_FACTOR = 0.3333333333333333;
 
 	/*
 	 * Inherited non mandatory fields:
