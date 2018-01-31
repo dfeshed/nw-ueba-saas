@@ -22,6 +22,7 @@ public class PresidioMetricBucket {
 
     /**
      * This method is NOT thread safe
+     *
      * @param metric
      */
     public void addMetric(Metric metric) {
@@ -29,7 +30,7 @@ public class PresidioMetricBucket {
         MetricUniqueKey metricUniqueKey = new MetricUniqueKey(metric.getName(), metric.getLogicTime(), metric.getTags());
         if (applicationMetrics.containsKey(metricUniqueKey)) {
             accumulateAndSaveMetricValues(metric, metricUniqueKey);
-        }else {
+        } else {
             applicationMetrics.put(metricUniqueKey, metric);
         }
     }

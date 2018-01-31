@@ -24,6 +24,7 @@ import java.util.Map;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {TestConfig.class, MetricPersistencyServiceTestConfig.class})
 @Ignore
+// This test is for manually both adding and exporting metrics. Cannot run as part of the unit tests
 public class MetricBucketSyncTest {
 
     private final String APPLICATION_NAME = "metricGeneratorSyncTest";
