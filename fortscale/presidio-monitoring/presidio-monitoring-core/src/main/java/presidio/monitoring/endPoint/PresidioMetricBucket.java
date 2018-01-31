@@ -20,16 +20,21 @@ public class PresidioMetricBucket {
         this.applicationMetrics = new HashMap<>();
     }
 
+    /**
+     * This method is NOT thread safe
+     * @param metric
+     */
     public void addMetric(Metric metric) {
         metricConventionApplyer.apply(metric);
         MetricUniqueKey metricUniqueKey = new MetricUniqueKey(metric.getName(), metric.getLogicTime(), metric.getTags());
         if (applicationMetrics.containsKey(metricUniqueKey)) {
-            accumulateMetricValues(metric, metricUniqueKey);
+            accumulateAndSaveMetricValues(metric, metricUniqueKey);
+        }else {
+            applicationMetrics.put(metricUniqueKey, metric);
         }
-        applicationMetrics.put(metricUniqueKey, metric);
     }
 
-    private synchronized void accumulateMetricValues(Metric metric, MetricUniqueKey metricUniqueKey) {
+    private synchronized void accumulateAndSaveMetricValues(Metric metric, MetricUniqueKey metricUniqueKey) {
         Metric existingMetric = applicationMetrics.get(metricUniqueKey);
         if (existingMetric != null) {
             Map<MetricEnums.MetricValues, Number> value = existingMetric.getValue();
