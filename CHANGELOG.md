@@ -1,3 +1,36 @@
+# [7.8.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v7.8.0)
+## Features
+* [ASOC-21094](https://bedfordjira.na.rsa.net/browse/ASOC-21094):&emsp;Edit Breadcrumb
+* [ASOC-34646](https://bedfordjira.na.rsa.net/browse/ASOC-34646):&emsp;View all files in the deployment
+* [ASOC-36088](https://bedfordjira.na.rsa.net/browse/ASOC-36088):&emsp;Pivot to Investigate Events
+* [ASOC-43731](https://bedfordjira.na.rsa.net/browse/ASOC-43731):&emsp;Validate Public Facing Launch APIs
+* [ASOC-44911](https://bedfordjira.na.rsa.net/browse/ASOC-44911):&emsp;Validate Individual Query Pill
+* [ASOC-45231](https://bedfordjira.na.rsa.net/browse/ASOC-45231):&emsp;Display permission warning when access restricted
+* [ASOC-45841](https://bedfordjira.na.rsa.net/browse/ASOC-45841):&emsp;Contexthub fixes and regression for 11.1
+* [ASOC-46288](https://bedfordjira.na.rsa.net/browse/ASOC-46288):&emsp;Regression test Audit_Logs/Logstash
+* [ASOC-46308](https://bedfordjira.na.rsa.net/browse/ASOC-46308):&emsp;Regression test Audit_Logs/Logstash
+* [ASOC-46706](https://bedfordjira.na.rsa.net/browse/ASOC-46706):&emsp;Handling failed writes to Mongo or meta forward
+* [ASOC-46851](https://bedfordjira.na.rsa.net/browse/ASOC-46851):&emsp;Rename Certificate validation to Server Validation
+* [ASOC-47405](https://bedfordjira.na.rsa.net/browse/ASOC-47405):&emsp;SPIKE: Options to handle UI performance issues
+* [ASOC-47526](https://bedfordjira.na.rsa.net/browse/ASOC-47526):&emsp;Data Retention Based on Mongo disk usage
+* [ASOC-47583](https://bedfordjira.na.rsa.net/browse/ASOC-47583):&emsp;Remove Host Count / Hash Lookup in Process Props
+* [ASOC-47597](https://bedfordjira.na.rsa.net/browse/ASOC-47597):&emsp;Support for relative time based filters on Host and Files page
+* [ASOC-47609](https://bedfordjira.na.rsa.net/browse/ASOC-47609):&emsp;Fresh Install - Virtual/OVA
+* [ASOC-47721](https://bedfordjira.na.rsa.net/browse/ASOC-47721):&emsp;Integration Tests for Host Detail
+* [ASOC-47723](https://bedfordjira.na.rsa.net/browse/ASOC-47723):&emsp;Configuration and health metrics for accepted mongo disk usage percentage
+* [ASOC-47726](https://bedfordjira.na.rsa.net/browse/ASOC-47726):&emsp;Release Notes update
+* [ASOC-47736](https://bedfordjira.na.rsa.net/browse/ASOC-47736):&emsp;Schedule Scan Start Time
+* [ASOC-47765](https://bedfordjira.na.rsa.net/browse/ASOC-47765):&emsp;Upgrade 10.6.5 to 11.1 - Physical
+* [ASOC-47767](https://bedfordjira.na.rsa.net/browse/ASOC-47767):&emsp;Upgrade 11.0 11.1 - Physical
+* [ASOC-47771](https://bedfordjira.na.rsa.net/browse/ASOC-47771):&emsp;Fresh Install - Virtual/OVA
+* [ASOC-47854](https://bedfordjira.na.rsa.net/browse/ASOC-47854):&emsp;Endpoint Theme Refinement
+* [ASOC-47969](https://bedfordjira.na.rsa.net/browse/ASOC-47969):&emsp;Provide more relative time options for LAST SCAN TIME
+* [ASOC-48010](https://bedfordjira.na.rsa.net/browse/ASOC-48010):&emsp;Grouping of Column Groups
+* [ASOC-48063](https://bedfordjira.na.rsa.net/browse/ASOC-48063):&emsp;Pivot to Investigate Events from Files
+* [ASOC-48076](https://bedfordjira.na.rsa.net/browse/ASOC-48076):&emsp;Right Click Action Order
+* [ASOC-48080](https://bedfordjira.na.rsa.net/browse/ASOC-48080):&emsp;Refactoring and Integrations tests
+
+
 # [7.7.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v7.7.0)
 ## Features
 * [ASOC-21094](https://bedfordjira.na.rsa.net/browse/ASOC-21094):&emsp;Edit Breadcrumb
