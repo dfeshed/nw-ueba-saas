@@ -156,7 +156,7 @@ Note that you can always force push (`git push -f`) reworked / rebased commits
 against the branch used to submit your pull request. In other words, you do not
 need to issue a new pull request when asked to make changes.
 
-# End of Sprint
+## End of Sprint
 The following is a list of steps to perform to close out a sprint.
 
 1. Compile list of JIRA tasks completed during the sprint. All new features (User Stories) and any technical debt/defects/workarounds that are noteworthy should be added to the `CHANGELOG.md` file.
@@ -167,3 +167,14 @@ The following is a list of steps to perform to close out a sprint.
   $ git push asoc v7.4.0
 ```
 4. Update the sa-ui entry in the _Sprint Component List_ on the [WIKI](https://wiki.na.rsa.net/display/ENVNG/11.1+Sprint+RPMs).
+
+## Points of Contact
+### Investigate
+- Avengers: Vishwas Gahoi
+- Drogon: Todd Little
+- House Stark: Geoff Bell
+### Respond
+- Swayze: Matt Meiske
+### Endpoint
+- Harp: Raghavendra Bhat
+- Symphony: Raghavendra Bhat
