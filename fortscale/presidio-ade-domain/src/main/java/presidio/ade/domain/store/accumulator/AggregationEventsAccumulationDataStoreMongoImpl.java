@@ -69,32 +69,34 @@ public class AggregationEventsAccumulationDataStoreMongoImpl implements Aggregat
         AccumulatedRecordsMetaData metadata = new AccumulatedRecordsMetaData(aggregatedFeatureName);
         String collectionName = getCollectionName(metadata);
 
-        Instant startInstant = timeRange.getStart();
-        Instant endInstant = timeRange.getEnd();
+        Date startDate = Date.from(timeRange.getStart());
+        Date endDate = Date.from(timeRange.getEnd());
+        Set<String> distinctContexts;
         try {
-            Set<String> distinctContexts = aggregateContextIds(startInstant, endInstant, -1, 0, collectionName, false);
-            logger.debug("found distinct contexts: {}", Arrays.toString(distinctContexts.toArray()));
-            return distinctContexts;
+            Criteria startTimeCriteria = Criteria.where(AdeRecord.START_INSTANT_FIELD).gte(startDate).lt(endDate);
+            Query query = new Query(startTimeCriteria);
+            distinctContexts = (Set<String>) mongoTemplate.getCollection(collectionName).distinct(AdeContextualAggregatedRecord.CONTEXT_ID_FIELD, query.getQueryObject()).stream().collect(Collectors.toSet());
         } catch (InvalidDataAccessApiUsageException e) {
             long nextPageIndex = 0;
             Set<String> subList;
-            Set<String> results = new HashSet<>();
+            distinctContexts = new HashSet<>();
             do {
-                subList = aggregateContextIds(startInstant, endInstant,
+                subList = aggregateContextIds(startDate, endDate,
                         nextPageIndex * selectorPageSize, selectorPageSize, collectionName, true);
-                results.addAll(subList);
+                distinctContexts.addAll(subList);
                 nextPageIndex++;
             } while (subList.size() == selectorPageSize);
-            logger.debug("found distinct contexts: {}", Arrays.toString(results.toArray()));
-            return results;
         }
+
+        logger.debug("found ({} distinct contexts", distinctContexts.size());
+        return distinctContexts;
     }
 
 
     /**
      * Aggregate distinct contextIds
-     * @param startInstant startInstant
-     * @param endInstant endInstant
+     * @param startDate startDate
+     * @param endDate endDate
      * @param skip skip
      * @param limit limit
      * @param collectionName collectionName
@@ -102,10 +104,10 @@ public class AggregationEventsAccumulationDataStoreMongoImpl implements Aggregat
      * @return set of distinct contextIds
      */
     private Set<String> aggregateContextIds(
-            Instant startInstant, Instant endInstant, long skip, long limit, String collectionName, boolean allowDiskUse) {
+            Date startDate, Date endDate, long skip, long limit, String collectionName, boolean allowDiskUse) {
 
         List<AggregationOperation> aggregationOperations = new LinkedList<>();
-        aggregationOperations.add(match(where(AdeRecord.START_INSTANT_FIELD).gte(Date.from(startInstant)).lt(Date.from(endInstant))));
+        aggregationOperations.add(match(where(AdeRecord.START_INSTANT_FIELD).gte(startDate).lt(endDate)));
 
         aggregationOperations.add(group(AdeContextualAggregatedRecord.CONTEXT_ID_FIELD));
         aggregationOperations.add(project(AdeContextualAggregatedRecord.CONTEXT_ID_FIELD).and("_id").as(AdeContextualAggregatedRecord.CONTEXT_ID_FIELD)

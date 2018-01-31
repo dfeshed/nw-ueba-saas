@@ -54,31 +54,39 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore, StoreMan
 	@Override
 	public Set<String> getDistinctContextIds(FeatureBucketConf featureBucketConf, TimeRange timeRange) {
 		String collectionName = getCollectionName(featureBucketConf);
-		Instant startInstant = timeRange.getStart();
-		Instant endInstant = timeRange.getEnd();
+
+		Date startDate = Date.from(timeRange.getStart());
+		Date endDate = Date.from(timeRange.getEnd());
+		Set<String> distinctContexts;
 		try {
-			Set<String> distinctContexts = aggregateContextIds(startInstant, endInstant, -1, 0, collectionName, false);
-			logger.debug("found distinct contexts: {}", Arrays.toString(distinctContexts.toArray()));
-			return distinctContexts;
+			Query query = new Query(Criteria.where(FeatureBucket.START_TIME_FIELD)
+					.gte(startDate)
+					.lt(endDate));
+			List<?> distinctContextIds = mongoTemplate
+					.getCollection(getCollectionName(featureBucketConf))
+					.distinct(FeatureBucket.CONTEXT_ID_FIELD, query.getQueryObject());
+			distinctContexts = distinctContextIds.stream().map(Object::toString).collect(Collectors.toSet());
 		} catch (InvalidDataAccessApiUsageException e) {
 			long nextPageIndex = 0;
 			Set<String> subList;
-			Set<String> results = new HashSet<>();
+			distinctContexts = new HashSet<>();
 			do {
-				subList = aggregateContextIds(startInstant, endInstant,
+				subList = aggregateContextIds(startDate, endDate,
 						nextPageIndex * selectorPageSize, selectorPageSize, collectionName, true);
-				results.addAll(subList);
+				distinctContexts.addAll(subList);
 				nextPageIndex++;
 			} while (subList.size() == selectorPageSize);
-			logger.debug("found distinct contexts: {}", Arrays.toString(results.toArray()));
-			return results;
+			return distinctContexts;
 		}
+
+		logger.debug("found ({} distinct contexts", distinctContexts.size());
+		return distinctContexts;
 	}
 
 	/**
 	 * Aggregate distinct contextIds
-	 * @param startInstant startInstant
-	 * @param endInstant endInstant
+	 * @param startDate startDate
+	 * @param endDate endDate
 	 * @param skip skip
 	 * @param limit limit
 	 * @param collectionName collectionName
@@ -86,10 +94,10 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore, StoreMan
 	 * @return set of distinct contextIds
 	 */
 	private Set<String> aggregateContextIds(
-			Instant startInstant, Instant endInstant, long skip, long limit, String collectionName, boolean allowDiskUse) {
+			Date startDate, Date endDate, long skip, long limit, String collectionName, boolean allowDiskUse) {
 
 		List<AggregationOperation> aggregationOperations = new LinkedList<>();
-		aggregationOperations.add(match(where(FeatureBucket.START_TIME_FIELD).gte(Date.from(startInstant)).lt(Date.from(endInstant))));
+		aggregationOperations.add(match(where(FeatureBucket.START_TIME_FIELD).gte(startDate).lt(endDate)));
 
 		aggregationOperations.add(group(FeatureBucket.CONTEXT_ID_FIELD));
 		aggregationOperations.add(project(FeatureBucket.CONTEXT_ID_FIELD).and("_id").as(FeatureBucket.CONTEXT_ID_FIELD)
