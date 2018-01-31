@@ -7,7 +7,7 @@ import { pressEnter, testSetupConfig } from './util';
 
 moduleForComponent(
   'query-filter-fragment',
-  'Integration | Component | query-filter-fragment server-side-validation',
+  'Integration | Component | query-filter-fragment validation-server-side',
   testSetupConfig
 );
 
@@ -20,6 +20,8 @@ test('it renders with proper class when a single query is invalid', function(ass
 sinon.stub(RequestApi, 'validateIndividualQuery');
 
 test('submitting a query fragment and checking if the api wrapper function is called', function(assert) {
+
+  RequestApi.validateIndividualQuery.reset();
 
   this.set('list', []);
   this.set('metaOptions', [{ displayName: 'Medium', flags: -2147483309, format: 'UInt8', metaName: 'medium' }]);

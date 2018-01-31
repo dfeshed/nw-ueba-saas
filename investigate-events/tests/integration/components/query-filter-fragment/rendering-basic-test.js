@@ -1,3 +1,10 @@
+/*
+ * These tests cover basic test cases for pills
+ * that have been rendered given a specific set of inputs.
+ *
+ * Tests should not include any interaction.
+ */
+
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
@@ -5,7 +12,7 @@ import { testSetupConfig } from './util';
 
 moduleForComponent(
   'query-filter-fragment',
-  'Integration | Component | query-filter-fragment basic-render',
+  'Integration | Component | query-filter-fragment rendering-basic',
   testSetupConfig
 );
 
