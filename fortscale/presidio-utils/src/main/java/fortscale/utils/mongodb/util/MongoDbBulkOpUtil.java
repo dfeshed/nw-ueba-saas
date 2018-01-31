@@ -5,6 +5,7 @@ import com.mongodb.DBObject;
 import com.mongodb.async.SingleResultCallback;
 import com.mongodb.async.client.MongoDatabase;
 import com.mongodb.bulk.BulkWriteResult;
+import com.mongodb.client.model.BulkWriteOptions;
 import com.mongodb.client.model.InsertOneModel;
 import fortscale.utils.mongodb.index.DynamicIndexingApplicationListener;
 import org.bson.Document;
@@ -80,7 +81,8 @@ public class MongoDbBulkOpUtil {
         // async call to mongo
         CountDownLatch waitForMongoResponseLock = new CountDownLatch(1);
         final AtomicReference<BulkWriteResult> bulkWriteResult = new AtomicReference<BulkWriteResult>();
-        mongoDatabase.getCollection(collectionName).bulkWrite(documents, new SingleResultCallback<com.mongodb.bulk.BulkWriteResult>() {
+        BulkWriteOptions bulkWriteOptions = new BulkWriteOptions().ordered(false);
+        mongoDatabase.getCollection(collectionName).bulkWrite(documents, bulkWriteOptions,new SingleResultCallback<com.mongodb.bulk.BulkWriteResult>() {
 
             @Override
             public void onResult(com.mongodb.bulk.BulkWriteResult result, Throwable t) {
