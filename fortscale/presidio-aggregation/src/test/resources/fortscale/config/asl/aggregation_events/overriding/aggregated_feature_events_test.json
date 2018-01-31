@@ -6,8 +6,6 @@
       "bucketConfName": "bc1",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 1,
-      "anomalyType": "number_of_successful_ssh_events_hourly",
       "aggregatedFeatureNamesMap": {
         "functionArgument": [
           "aggregatedFeatureName1",
@@ -30,8 +28,6 @@
       "bucketConfName": "bc2",
       "numberOfBuckets": 2,
       "bucketsLeap": 2,
-      "waitAfterBucketCloseSeconds": 2,
-      "anomalyType": "number_of_successful_ssh_events_daily",
       "aggregatedFeatureNamesMap": {
         "functionArgument": [
           "aggregatedFeatureName1",

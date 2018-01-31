@@ -9,7 +9,6 @@ import org.apache.commons.collections.CollectionUtils;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.monitoring.aspect.annotations.RunTime;
-import presidio.output.commons.services.user.UserSeverityService;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.services.event.EventPersistencyService;
@@ -33,7 +32,6 @@ import java.util.Set;
 public class OutputExecutionServiceImpl implements OutputExecutionService {
     private static final Logger logger = Logger.getLogger(OutputExecutionServiceImpl.class);
 
-    private final UserSeverityService userSeverityService;
     private final AdeManagerSdk adeManagerSdk;
     private final AlertService alertService;
     private final UserService userService;
@@ -51,14 +49,12 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     public OutputExecutionServiceImpl(AdeManagerSdk adeManagerSdk,
                                       AlertService alertService,
                                       UserService userService,
-                                      UserSeverityService userSeverityService,
                                       EventPersistencyService eventPersistencyService,
                                       OutputMonitoringService outputMonitoringService,
                                       int smartThresholdScoreForCreatingAlert, int smartPageSize, long retentionEnrichedEventsDays, long retentionOutputDataDays) {
         this.adeManagerSdk = adeManagerSdk;
         this.alertService = alertService;
         this.userService = userService;
-        this.userSeverityService = userSeverityService;
         this.eventPersistencyService = eventPersistencyService;
         this.smartPageSize = smartPageSize;
         this.smartThresholdScoreForCreatingAlert = smartThresholdScoreForCreatingAlert;
@@ -158,13 +154,8 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         return null;
     }
 
-    public void recalculateUserScore() throws Exception {
-        logger.info("Start Recalculating User Alert Data");
-        this.userService.updateAllUsersAlertData();
-        logger.info("Finish Recalculating User Score");
-        logger.info("Start Updating UserSeverity");
-        this.userSeverityService.updateSeverities();
-        logger.info("Finish Updating Users Severity");
+    public void updateAllUsersData() throws Exception {
+        this.userService.updateUserData();
     }
 
     private void storeAlerts(List<Alert> alerts) {

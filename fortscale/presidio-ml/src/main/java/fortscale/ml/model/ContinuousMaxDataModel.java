@@ -11,6 +11,12 @@ public class ContinuousMaxDataModel implements IContinuousDataModel,PartitionedD
     private ContinuousDataModel continuousDataModel;
     private ContinuousDataModel continuousMaxDataModel;
 
+    public ContinuousMaxDataModel() {
+        this.numOfPartitions = 0L;
+        this.continuousDataModel = null;
+        this.continuousMaxDataModel = null;
+    }
+
     /**
      *  @param continuousDataModel  model with all the data
      * @param continuousMaxDataModel model with max values
@@ -60,5 +66,23 @@ public class ContinuousMaxDataModel implements IContinuousDataModel,PartitionedD
     @Override
     public long getNumOfPartitions() {
         return numOfPartitions;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ContinuousMaxDataModel)) return false;
+        ContinuousMaxDataModel that = (ContinuousMaxDataModel)o;
+        return numOfPartitions.equals(that.numOfPartitions) &&
+                (continuousDataModel == null ? that.continuousDataModel == null : continuousDataModel.equals(that.continuousDataModel)) &&
+                (continuousMaxDataModel == null ? that.continuousMaxDataModel == null : continuousMaxDataModel.equals(that.continuousMaxDataModel));
+    }
+
+    @Override
+    public int hashCode() {
+        int result = numOfPartitions.hashCode();
+        result = 31 * result + (continuousDataModel != null ? continuousDataModel.hashCode() : 0);
+        result = 31 * result + (continuousMaxDataModel != null ? continuousMaxDataModel.hashCode() : 0);
+        return result;
     }
 }

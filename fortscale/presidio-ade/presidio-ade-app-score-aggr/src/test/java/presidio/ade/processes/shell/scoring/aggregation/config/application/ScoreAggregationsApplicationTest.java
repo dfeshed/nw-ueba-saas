@@ -122,9 +122,9 @@ public class ScoreAggregationsApplicationTest extends EnrichedFileSourceBaseAppT
 
             String strategyName = conf.getBucketConf().getStrategyName();
             boolean isHourly = FixedDurationStrategy.fromStrategyName(strategyName).equals(FixedDurationStrategy.HOURLY);
-            return (isScoreAggregationConf && isHourly && conf.getName().contains("File"));
+            return (isScoreAggregationConf && isHourly && conf.getName().endsWith("FileHourly"));
         }).collect(Collectors.toList());
-
+        Assert.assertTrue("Did not find any hourly score aggregation record confs of the File schema.", hourlyScoreAggrConfs.size() > 0);
         hourlyScoreAggrConfs.forEach(conf -> {
             AggrRecordsMetadata metadata = new AggrRecordsMetadata(conf.getName(), AggregatedFeatureType.SCORE_AGGREGATION);
 

@@ -1,26 +1,32 @@
 package presidio.output.commons.services.user;
 
+import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.services.event.EventPersistencyService;
+import presidio.output.domain.translator.OutputToCollectionNameTranslator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 
 public class UserPropertiesUpdateServiceImpl implements UserPropertiesUpdateService {
     private static final Logger log = Logger.getLogger(UserPropertiesUpdateServiceImpl.class);
 
     private final EventPersistencyService eventPersistencyService;
+    private final OutputToCollectionNameTranslator outputToCollectionNameTranslator;
     private final String TAG_ADMIN = "admin";
 
 
-    public UserPropertiesUpdateServiceImpl(EventPersistencyService eventPersistencyService) {
+    public UserPropertiesUpdateServiceImpl(EventPersistencyService eventPersistencyService, OutputToCollectionNameTranslator outputToCollectionNameTranslator) {
         this.eventPersistencyService = eventPersistencyService;
+        this.outputToCollectionNameTranslator = outputToCollectionNameTranslator;
     }
 
     /**
@@ -34,20 +40,20 @@ public class UserPropertiesUpdateServiceImpl implements UserPropertiesUpdateServ
     @Override
     public User userPropertiesUpdate(User user) {
         boolean isUpdated = false;
-        List<String> collectionNames = new ArrayList<>(Arrays.asList("output_authentication_enriched_events",
-                "output_file_enriched_events", "output_active_directory_enriched_events"));
+        List<String> collectionNames = collectionNamesByOrderForEvents();
         EnrichedEvent enrichedEvent = eventPersistencyService.findLatestEventForUser(user.getUserId(), collectionNames);
         if (!ObjectUtils.isEmpty(enrichedEvent)) {
-            if (!user.getUserDisplayName().equals(enrichedEvent.getUserDisplayName())) {
+            if (!Objects.equals(user.getUserDisplayName(), enrichedEvent.getUserDisplayName())) {
                 user.setUserDisplayName(enrichedEvent.getUserDisplayName());
                 isUpdated = true;
             }
-            if (!user.getUserId().equals(enrichedEvent.getUserId())) {
+            if (!Objects.equals(user.getUserId(), enrichedEvent.getUserId()) && ! StringUtils.isEmpty(enrichedEvent.getUserId())) {
                 user.setUserId(enrichedEvent.getUserId());
                 isUpdated = true;
             }
-            if (!user.getUserName().equals(enrichedEvent.getUserName())) {
+            if (!Objects.equals(user.getUserName(), enrichedEvent.getUserName())) {
                 user.setUserName(enrichedEvent.getUserName());
+                user.setUserDisplayNameSortLowercase(enrichedEvent.getUserName());
                 user.setIndexedUserName(enrichedEvent.getUserName());
                 isUpdated = true;
             }
@@ -68,12 +74,22 @@ public class UserPropertiesUpdateServiceImpl implements UserPropertiesUpdateServ
                 isUpdated = true;
             }
         } else {
-            log.debug("No events where found for this user");
+            log.debug("No events where found for this user , therefore cannot update user properties accordingly to latest event");
         }
         if (isUpdated) {
             return user;
         } else {
             return null;
         }
+    }
+
+    @Override
+    public List<String> collectionNamesByOrderForEvents() {
+        List<Schema> schemas = new ArrayList<>(Arrays.asList(Schema.AUTHENTICATION, Schema.FILE, Schema.ACTIVE_DIRECTORY));
+        List<String> collections = new ArrayList<>();
+        schemas.forEach(schema -> {
+            collections.add(outputToCollectionNameTranslator.toCollectionName(schema));
+        });
+        return collections;
     }
 }

@@ -2,7 +2,6 @@
   "BucketConfs": [
     {
       "name": "startInstantHistogramUserIdActiveDirectoryDaily",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -26,7 +25,6 @@
     },
     {
       "name": "operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -53,7 +51,6 @@
     },
     {
       "name": "operationTypeHistogramUserIdObjectManagementActiveDirectoryDaily",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -80,7 +77,6 @@
     },
     {
       "name": "operationTypeHistogramUserIdActiveDirectoryDaily",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],

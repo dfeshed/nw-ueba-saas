@@ -18,7 +18,7 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
     private static final int DAILY_TIME_RESOLUTION = 60 * 60 * 24;
     private static final int DAILY_BUCKET_SIZE = 60 * 10;
     private static final int MAX_RARE_TIMESTAMP_COUNT = 10;
-    private static final int MAX_NUM_OF_RARE_TIMESTAMPS = 5;
+    private static final int MAX_NUM_OF_RARE_TIMESTAMPS = 15;
     private static final double X_WITH_VALUE_HALF_FACTOR = 0.3333333333333333;
     TimeModelBuilderMetricsContainer timeModelBuilderMetricsContainer = mock(TimeModelBuilderMetricsContainer.class);
     TimeModelBuilderPartitionsMetricsContainer timeModelBuilderPartitionsMetricsContainer = mock(TimeModelBuilderPartitionsMetricsContainer.class);
@@ -70,7 +70,7 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
             times.add(1000L);
         }
         long epochSeconds = 5000;
-        assertScore(times, epochSeconds, 60);
+        assertScore(times, epochSeconds, 48);
     }
 
     @Test
@@ -94,7 +94,7 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
             times.add((long)(rnd.nextDouble( ) * 6000));
         }
         long isolatedTimes[] = new long[]{30000, 40000, 50000, 60000};
-        double scores[] = new double[]{100, 94, 80, 59};
+        double scores[] = new double[]{100, 88, 76, 66};
         for (int i = 0; i < scores.length; i++) {
             assertScore(times, isolatedTimes[i], scores[i]);
             times.add(isolatedTimes[i]);
@@ -117,7 +117,7 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
         }
 
         long[] timesToScore = new long[]{14000, 10500, 10000, 9000, 8500};
-        double[] scores = new double[]{100, 100, 99, 89, 60};
+        double[] scores = new double[]{100, 99, 96, 84, 45};
         for (int i = 0; i < timesToScore.length; i++) {
             assertScore(timesClustered, timesToScore[i], scores[i]);
         }
@@ -132,8 +132,8 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
             times.add(epochSeconds);
         }
 
-        double scores[] = new double[]{100, 94, 80, 59};
-        double finalScore = 32;
+        double scores[] = new double[]{100, 87, 76, 66};
+        double finalScore = 55;
         long dispersedTimes[] = new long[scores.length];
         for (int i = 0; i < scores.length; i++) {
             dispersedTimes[i] = 3000 + (i + 1) * 9000;
@@ -151,7 +151,7 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
     public void testNewWorkingTimeScore() {
         int scenarioSteps[] = new int[]{450, 900, 900};
         int scenarioNumberOfSteps[] = new int[]{16, 8, 4};
-        int scenarioScoreThresholds[] = new int[]{0, 7, 16};
+        int scenarioScoreThresholds[] = new int[]{0, 9, 16};
         for (int scenario = 0; scenario < scenarioSteps.length; scenario++) {
             List<Long> times = new ArrayList<>();
             int step = 200;

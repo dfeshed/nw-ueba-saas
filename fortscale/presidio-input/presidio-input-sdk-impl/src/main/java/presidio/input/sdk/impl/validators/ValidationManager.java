@@ -7,7 +7,6 @@ import presidio.sdk.api.validation.InvalidInputDocument;
 import presidio.sdk.api.validation.ValidationResults;
 
 import javax.validation.ConstraintViolation;
-import javax.validation.Path;
 import javax.validation.Validator;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,12 +46,7 @@ public class ValidationManager {
                 } catch (Exception e) {
                     logger.warn("Validation for event with id {} failed. There were {} violations.", document.getId(), violations.size());
                 }
-                for (ConstraintViolation<AbstractAuditableDocument> violation : violations) {
-                    final Path propertyPath = violation.getPropertyPath();
-                    final String message = violation.getMessage();
-                    logger.debug("Violation occurred. Property: {}, Message: {}.", propertyPath, message);
-                    invalidResults.add(new InvalidInputDocument(document, violations));
-                }
+                invalidResults.add(new InvalidInputDocument(document, violations));
             }
         }
 

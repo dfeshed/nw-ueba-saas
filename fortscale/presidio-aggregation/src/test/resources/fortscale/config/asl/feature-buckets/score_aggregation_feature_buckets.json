@@ -2,7 +2,6 @@
   "BucketConfs": [
     {
       "name": "highest_date_time_score_normalized_username_dlpfile_daily",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "context.userId"
       ],
@@ -26,7 +25,6 @@
     },
     {
       "name": "normalized_src_machine_to_highest_score_map_normalized_username_dlpfile_daily",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "context.userId"
       ],
@@ -53,7 +51,6 @@
     },
     {
       "name": "highest_date_time_score_normalized_username_dlpfile_hourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "context.userId"
       ],
@@ -77,7 +74,6 @@
     },
     {
       "name": "normalized_src_machine_to_highest_score_map_normalized_username_dlpfile_hourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "context.userId"
       ],

@@ -1,5 +1,6 @@
 package presidio.ade.domain.record.enriched.activedirectory;
 
+import fortscale.common.general.Schema;
 import fortscale.domain.feature.score.FeatureScore;
 import org.springframework.data.mongodb.core.mapping.Document;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
@@ -11,7 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Document
-@AdeScoredEnrichedMetadata(erichedRecord = EnrichedActiveDirectoryRecord.class)
+@AdeScoredEnrichedMetadata(enrichedRecord = EnrichedActiveDirectoryRecord.class)
 public class AdeScoredActiveDirectoryRecord extends AdeScoredEnrichedRecord<AdeEnrichedActiveDirectoryContext> {
     public AdeScoredActiveDirectoryRecord() {
         super();
@@ -23,7 +24,7 @@ public class AdeScoredActiveDirectoryRecord extends AdeScoredEnrichedRecord<AdeE
 
     @Override
     public List<String> getDataSources() {
-        return Collections.singletonList(AdeActiveDirectoryRecord.ACTIVE_DIRECTORY_STR);
+        return Collections.singletonList(Schema.ACTIVE_DIRECTORY.getName());
     }
 
     @Override

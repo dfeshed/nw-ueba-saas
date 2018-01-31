@@ -2,7 +2,6 @@
   "BucketConfs": [
     {
       "name": "filePermissionChangeResultHistogramUserIdFileHourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -29,7 +28,6 @@
     },
     {
       "name": "fileActionResultHistogramUserIdFileHourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -56,7 +54,6 @@
     },
     {
       "name": "absoluteSrcFilePathHistogramUserIdFileOpenedFileHourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -83,7 +80,6 @@
     },
     {
       "name": "absoluteSrcFolderPathHistogramUserIdFolderOpenedFileHourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -110,7 +106,6 @@
     },
     {
       "name": "fileDeletedCounterUserIdFileHourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -133,7 +128,6 @@
     },
     {
       "name": "fileRenamedResultHistogramUserIdFileHourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -160,7 +154,6 @@
     },
     {
       "name": "fileMovedCounterUserIdFileHourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -183,7 +176,6 @@
     },
     {
       "name": "fileMovedFromSharedDriveCounterUserIdFileHourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -206,7 +198,6 @@
     },
     {
       "name": "fileMovedToSharedDriveCounterUserIdFileHourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],

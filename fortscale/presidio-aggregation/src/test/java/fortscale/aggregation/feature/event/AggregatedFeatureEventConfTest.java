@@ -14,8 +14,6 @@ public class AggregatedFeatureEventConfTest {
 	private static final String BUCKET_CONF_NAME = "bucketConf1";
 	private static final int NUMBER_OF_BUCKETS = 3;
 	private static final int BUCKETS_LEAP = 1;
-	private static final long WAIT_AFTER_BUCKET_CLOSE_SECONDS = 500;
-	private static final String ANOMALY_TYPE = "anomalyType";
 	private static final String FUNCTION_TYPE = "functionType1";
 
 	@Test
@@ -61,8 +59,6 @@ public class AggregatedFeatureEventConfTest {
 				BUCKET_CONF_NAME,
 				NUMBER_OF_BUCKETS,
 				BUCKETS_LEAP,
-				WAIT_AFTER_BUCKET_CLOSE_SECONDS,
-				ANOMALY_TYPE,
 				aggregatedFeatureNamesMap,
 				aggregatedFeatureEventFunction);
 		AggregatedFeatureEventConf actual = (new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
@@ -73,8 +69,6 @@ public class AggregatedFeatureEventConfTest {
 		Assert.assertNull(actual.getBucketConf());
 		Assert.assertEquals(NUMBER_OF_BUCKETS, actual.getNumberOfBuckets());
 		Assert.assertEquals(BUCKETS_LEAP, actual.getBucketsLeap());
-		Assert.assertEquals(WAIT_AFTER_BUCKET_CLOSE_SECONDS, actual.getWaitAfterBucketCloseSeconds());
-		Assert.assertEquals(ANOMALY_TYPE, actual.getAnomalyType());
 		Assert.assertEquals(aggregatedFeatureNamesMap, actual.getAggregatedFeatureNamesMap());
 		Assert.assertEquals(allAggregatedFeatureNames, actual.getAllAggregatedFeatureNames());
 		Assert.assertEquals(aggregatedFeatureEventFunction, actual.getAggregatedFeatureEventFunction());
@@ -123,8 +117,6 @@ public class AggregatedFeatureEventConfTest {
 				BUCKET_CONF_NAME,
 				NUMBER_OF_BUCKETS,
 				BUCKETS_LEAP,
-				WAIT_AFTER_BUCKET_CLOSE_SECONDS,
-				ANOMALY_TYPE,
 				aggregatedFeatureNamesMap,
 				aggregatedFeatureEventFunction);
 		AggregatedFeatureEventConf actual = (new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
@@ -135,7 +127,6 @@ public class AggregatedFeatureEventConfTest {
 		Assert.assertNull(actual.getBucketConf());
 		Assert.assertEquals(NUMBER_OF_BUCKETS, actual.getNumberOfBuckets());
 		Assert.assertEquals(BUCKETS_LEAP, actual.getBucketsLeap());
-		Assert.assertEquals(WAIT_AFTER_BUCKET_CLOSE_SECONDS, actual.getWaitAfterBucketCloseSeconds());
 		Assert.assertEquals(aggregatedFeatureNamesMap, actual.getAggregatedFeatureNamesMap());
 		Assert.assertEquals(allAggregatedFeatureNames, actual.getAllAggregatedFeatureNames());
 		Assert.assertEquals(aggregatedFeatureEventFunction, actual.getAggregatedFeatureEventFunction());
@@ -184,8 +175,6 @@ public class AggregatedFeatureEventConfTest {
 				BUCKET_CONF_NAME,
 				NUMBER_OF_BUCKETS,
 				BUCKETS_LEAP,
-				WAIT_AFTER_BUCKET_CLOSE_SECONDS,
-				ANOMALY_TYPE,
 				aggregatedFeatureNamesMap,
 				aggregatedFeatureEventFunction);
 		AggregatedFeatureEventConf actual = (new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
@@ -196,7 +185,6 @@ public class AggregatedFeatureEventConfTest {
 		Assert.assertNull(actual.getBucketConf());
 		Assert.assertEquals(NUMBER_OF_BUCKETS, actual.getNumberOfBuckets());
 		Assert.assertEquals(BUCKETS_LEAP, actual.getBucketsLeap());
-		Assert.assertEquals(WAIT_AFTER_BUCKET_CLOSE_SECONDS, actual.getWaitAfterBucketCloseSeconds());
 		Assert.assertEquals(aggregatedFeatureNamesMap, actual.getAggregatedFeatureNamesMap());
 		Assert.assertEquals(allAggregatedFeatureNames, actual.getAllAggregatedFeatureNames());
 		Assert.assertEquals(aggregatedFeatureEventFunction, actual.getAggregatedFeatureEventFunction());
@@ -210,8 +198,6 @@ public class AggregatedFeatureEventConfTest {
 				BUCKET_CONF_NAME,
 				NUMBER_OF_BUCKETS,
 				BUCKETS_LEAP,
-				WAIT_AFTER_BUCKET_CLOSE_SECONDS,
-				ANOMALY_TYPE,
 				getSimpleAggregatedFeatureNamesMap(),
 				new JSONObject());
 		AggregatedFeatureEventConf actual = (new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
@@ -222,7 +208,6 @@ public class AggregatedFeatureEventConfTest {
 		Assert.assertNull(actual.getBucketConf());
 		Assert.assertEquals(NUMBER_OF_BUCKETS, actual.getNumberOfBuckets());
 		Assert.assertEquals(BUCKETS_LEAP, actual.getBucketsLeap());
-		Assert.assertEquals(WAIT_AFTER_BUCKET_CLOSE_SECONDS, actual.getWaitAfterBucketCloseSeconds());
 		Assert.assertEquals(getSimpleAggregatedFeatureNamesMap(), actual.getAggregatedFeatureNamesMap());
 		Assert.assertEquals(new JSONObject(), actual.getAggregatedFeatureEventFunction());
 
@@ -239,8 +224,6 @@ public class AggregatedFeatureEventConfTest {
 				BUCKET_CONF_NAME,
 				NUMBER_OF_BUCKETS,
 				BUCKETS_LEAP,
-				WAIT_AFTER_BUCKET_CLOSE_SECONDS,
-				ANOMALY_TYPE,
 				getSimpleAggregatedFeatureNamesMap(),
 				getSimpleAggregatedFeatureEventFunction());
 		(new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
@@ -254,8 +237,6 @@ public class AggregatedFeatureEventConfTest {
 				"",
 				NUMBER_OF_BUCKETS,
 				BUCKETS_LEAP,
-				WAIT_AFTER_BUCKET_CLOSE_SECONDS,
-				ANOMALY_TYPE,
 				getSimpleAggregatedFeatureNamesMap(),
 				getSimpleAggregatedFeatureEventFunction());
 		(new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
@@ -269,8 +250,6 @@ public class AggregatedFeatureEventConfTest {
 				BUCKET_CONF_NAME,
 				0,
 				BUCKETS_LEAP,
-				WAIT_AFTER_BUCKET_CLOSE_SECONDS,
-				ANOMALY_TYPE,
 				getSimpleAggregatedFeatureNamesMap(),
 				getSimpleAggregatedFeatureEventFunction());
 		(new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
@@ -284,23 +263,6 @@ public class AggregatedFeatureEventConfTest {
 				BUCKET_CONF_NAME,
 				NUMBER_OF_BUCKETS,
 				0,
-				WAIT_AFTER_BUCKET_CLOSE_SECONDS,
-				ANOMALY_TYPE,
-				getSimpleAggregatedFeatureNamesMap(),
-				getSimpleAggregatedFeatureEventFunction());
-		(new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
-	}
-
-	@Test(expected = Exception.class)
-	public void should_fail_when_trying_to_deserialize_from_json_containing_event_with_illegal_wait_after_bucket_close_seconds() throws Exception {
-		String jsonAsString = createAggregatedFeatureEvent(
-				NAME,
-				TYPE,
-				BUCKET_CONF_NAME,
-				NUMBER_OF_BUCKETS,
-				BUCKETS_LEAP,
-				-1,
-				ANOMALY_TYPE,
 				getSimpleAggregatedFeatureNamesMap(),
 				getSimpleAggregatedFeatureEventFunction());
 		(new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
@@ -314,8 +276,6 @@ public class AggregatedFeatureEventConfTest {
 				BUCKET_CONF_NAME,
 				NUMBER_OF_BUCKETS,
 				BUCKETS_LEAP,
-				WAIT_AFTER_BUCKET_CLOSE_SECONDS,
-				ANOMALY_TYPE,
 				null,
 				getSimpleAggregatedFeatureEventFunction());
 		(new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
@@ -329,8 +289,6 @@ public class AggregatedFeatureEventConfTest {
 				BUCKET_CONF_NAME,
 				NUMBER_OF_BUCKETS,
 				BUCKETS_LEAP,
-				WAIT_AFTER_BUCKET_CLOSE_SECONDS,
-				ANOMALY_TYPE,
 				new HashMap<>(),
 				getSimpleAggregatedFeatureEventFunction());
 		(new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
@@ -346,8 +304,6 @@ public class AggregatedFeatureEventConfTest {
 				BUCKET_CONF_NAME,
 				NUMBER_OF_BUCKETS,
 				BUCKETS_LEAP,
-				WAIT_AFTER_BUCKET_CLOSE_SECONDS,
-				ANOMALY_TYPE,
 				aggregatedFeatureNamesMap,
 				getSimpleAggregatedFeatureEventFunction());
 		(new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
@@ -361,8 +317,6 @@ public class AggregatedFeatureEventConfTest {
 				BUCKET_CONF_NAME,
 				NUMBER_OF_BUCKETS,
 				BUCKETS_LEAP,
-				WAIT_AFTER_BUCKET_CLOSE_SECONDS,
-				ANOMALY_TYPE,
 				getSimpleAggregatedFeatureNamesMap(),
 				null);
 		(new ObjectMapper()).readValue(jsonAsString, AggregatedFeatureEventConf.class);
@@ -381,8 +335,6 @@ public class AggregatedFeatureEventConfTest {
 			String bucketConfName,
 			int numberOfBuckets,
 			int bucketsLeap,
-			long waitAfterBucketCloseSeconds,
-			String anomalyType,
 			Map<String, List<String>> aggregatedFeatureNamesMap,
 			JSONObject aggregatedFeatureEventFunction) {
 
@@ -392,8 +344,6 @@ public class AggregatedFeatureEventConfTest {
 		result.put("bucketConfName", bucketConfName);
 		result.put("numberOfBuckets", numberOfBuckets);
 		result.put("bucketsLeap", bucketsLeap);
-		result.put("waitAfterBucketCloseSeconds", waitAfterBucketCloseSeconds);
-		result.put("anomalyType", anomalyType);
 		result.put("aggregatedFeatureNamesMap", aggregatedFeatureNamesMap);
 		result.put("aggregatedFeatureEventFunction", aggregatedFeatureEventFunction);
 		return result.toJSONString();
@@ -405,13 +355,11 @@ public class AggregatedFeatureEventConfTest {
 			String bucketConfName,
 			int numberOfBuckets,
 			int bucketsLeap,
-			long waitAfterBucketCloseSeconds,
-			String anomalyType,
 			Map<String, List<String>> aggregatedFeatureNamesMap,
 			JSONObject aggregatedFeatureEventFunction) {
 
 		return createAggregatedFeatureEvent2(name, type, bucketConfName, numberOfBuckets, bucketsLeap,
-				waitAfterBucketCloseSeconds, anomalyType, aggregatedFeatureNamesMap, aggregatedFeatureEventFunction);
+				aggregatedFeatureNamesMap, aggregatedFeatureEventFunction);
 	}
 
 	private Map<String, List<String>> getSimpleAggregatedFeatureNamesMap() {
