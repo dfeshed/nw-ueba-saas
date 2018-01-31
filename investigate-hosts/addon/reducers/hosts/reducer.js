@@ -113,7 +113,7 @@ const hosts = reduxActions.handleActions({
         hostFetchStatus: 'completed',
         pageNumber: action.payload.data.pageNumber,
         totalItems: action.payload.data.totalItems,
-        loadMoreHostStatus: (action.payload.data.hasNext) ? 'stopped' : 'completed'
+        loadMoreHostStatus: (action.payload.data.hasNext || action.payload.data.totalItems >= 1000) ? 'stopped' : 'completed'
       })
     });
   },
