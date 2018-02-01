@@ -15,15 +15,11 @@ const fetchMeta = ({ endpointId, eventId }) => {
   query = addStreaming(query);
   query = addSessionQueryFilter(query, eventId);
   query = addCatchAllTimeRange(query);
-
   return new RSVP.Promise((resolve, reject) => {
     streamRequest({
       method: 'stream',
       modelName: 'core-event',
       query,
-      streamOptions: {
-        cancelPreviouslyExecuting: true // can only have one set of meta in recon
-      },
       onError: reject,
       onResponse({ data, meta }) {
         if (meta.complete) {

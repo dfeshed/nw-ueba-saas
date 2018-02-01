@@ -4,10 +4,7 @@ import { connect } from 'ember-redux';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 import { setColumnGroup } from 'investigate-events/actions/interaction-creators';
 import { getSelectedColumnGroup, getColumnGroups, getColumns } from 'investigate-events/reducers/investigate/data-selectors';
-import {
-  percentageOfEventsDataReturned,
-  selectedIndex
-} from 'investigate-events/reducers/investigate/event-results/selectors';
+import { percentageOfEventsDataReturned, selectedIndex, showScrollMessage } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { isInvalidQuery } from 'investigate-events/reducers/investigate/event-count/selectors';
 import { eventsGetMore, eventsLogsGet } from 'investigate-events/actions/events-creators';
 
@@ -15,6 +12,7 @@ const stateToComputed = (state) => ({
   status: state.investigate.eventResults.status,
   percent: percentageOfEventsDataReturned(state),
   selectedIndex: selectedIndex(state),
+  showScrollMessage: showScrollMessage(state),
   items: state.investigate.eventResults.data,
   aliases: state.investigate.dictionaries.aliases,
   language: state.investigate.dictionaries.language,
@@ -34,7 +32,8 @@ const dispatchToActions = {
 };
 
 const EventsTable = Component.extend({
-  classNames: 'rsa-investigate-events-table',
+  classNames: ['rsa-investigate-events-table'],
+  classNameBindings: ['showScrollMessage'],
 
   @computed('reconSize')
   toggleEvents(size) {

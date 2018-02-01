@@ -477,7 +477,8 @@ export default {
       error: 'ja_An unexpected error occurred when executing this query.',
       shrink: 'ja_Shrink Events Panel',
       expand: 'ja_Expand Events Panel',
-      close: 'ja_Close Events Panel'
+      close: 'ja_Close Events Panel',
+      scrollMessage: 'ja_Scroll down to view the selected event highlighted in blue'
     },
     generic: {
       loading: 'ja_Loading data...'
@@ -1839,7 +1840,6 @@ export default {
       sectionNames: 'ja_Section Names',
       importedLibraries: 'ja_Imported Libraries',
       size: 'ja_Size'
-
     },
     sort: {
       fileNameDescending: 'ja_Filename (descending)',

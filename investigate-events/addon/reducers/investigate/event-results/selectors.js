@@ -40,6 +40,16 @@ export const selectedIndex = createSelector(
   }
 );
 
+/**
+ * Determines if we should show a message directing the user to scroll down to
+ * see their selected event.
+ * @private
+ */
+export const showScrollMessage = createSelector(
+  [selectedIndex, _sessionId],
+  (selectedIndex, sessionId) => sessionId && selectedIndex < 0
+);
+
 
 /**
  * Finds and returns the index of the first array member whose key matches a

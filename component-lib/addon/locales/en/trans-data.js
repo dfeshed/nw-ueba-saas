@@ -149,7 +149,6 @@ export default {
       float32: 'You must enter a 32 bit Float.'
     }
   },
-
   ipConnections: {
     ipCount: '({{count}} IPs)',
     clickToCopy: 'Click to copy IP address',
@@ -478,7 +477,8 @@ export default {
       error: 'An unexpected error occurred when executing this query.',
       shrink: 'Shrink Events Panel',
       expand: 'Expand Events Panel',
-      close: 'Close Events Panel'
+      close: 'Close Events Panel',
+      scrollMessage: 'Scroll down to view the selected event highlighted in blue'
     },
     generic: {
       loading: 'Loading data...'

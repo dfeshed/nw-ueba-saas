@@ -67,6 +67,12 @@
       {{/events-table-context-menu}}
     {{/if}}
   </section>
+
+  <footer class="scroll-message">
+    {{rsa-icon style='filled' name='arrow-circle-down-1'}}
+    <span>{{t 'investigate.events.scrollMessage'}}</span>
+  </footer>
+
 {{else}}
   <centered>
     {{rsa-loader size='largest' label=(concat (t 'investigate.loading') ' ...')}}

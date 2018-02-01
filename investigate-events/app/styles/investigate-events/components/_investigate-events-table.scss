@@ -74,6 +74,24 @@
     position: relative;
   }
 
+  &.show-scroll-message {
+    .scroll-message {
+      display: block;
+    }
+  }
+
+  .scroll-message {
+    display: none;
+    @include rsa-font(body, small);
+    font-weight: 300;
+    background-color: text-color(accentThree, dark);
+    padding: rsa-whitespace(less) rsa-whitespace();
+    text-align: center;
+    .rsa-icon {
+      vertical-align: middle;
+    }
+  }
+
   .rsa-progress-bar {
     position: absolute;
     top: 0;
