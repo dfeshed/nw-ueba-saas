@@ -1,5 +1,6 @@
 package presidio.ade.domain.store.accumulator;
 
+import fortscale.utils.store.record.StoreMetadataProperties;
 import presidio.ade.domain.record.accumulator.AccumulatedAggregationFeatureRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 
@@ -12,7 +13,7 @@ public interface AggregationEventsAccumulationDataStore extends AggregationEvent
      *
      * @param records         to be stored
      */
-    void store(List<AccumulatedAggregationFeatureRecord> records);
+    void store(List<AccumulatedAggregationFeatureRecord> records, StoreMetadataProperties storeMetadataProperties);
 
     /**
      * cleanup store by filtering params

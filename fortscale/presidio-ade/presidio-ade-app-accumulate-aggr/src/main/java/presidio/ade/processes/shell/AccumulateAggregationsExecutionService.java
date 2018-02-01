@@ -4,6 +4,7 @@ import fortscale.accumulator.aggregation.AccumulationsCache;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.common.general.Schema;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.store.StoreManager;
 import presidio.ade.domain.store.accumulator.AggregationEventsAccumulationDataStore;
@@ -17,6 +18,9 @@ import java.time.Instant;
  * Created by maria_dorohin on 7/26/17.
  */
 public class AccumulateAggregationsExecutionService {
+    private static final String SCHEMA = "schema";
+    private static final String FIXED_DURATION_STRATEGY = "fixed_duration_strategy";
+
     private final BucketConfigurationService bucketConfigurationService;
     private final EnrichedDataStore enrichedDataStore;
     private final AggregationEventsAccumulationDataStore aggregationEventsAccumulationDataStore;
@@ -48,9 +52,11 @@ public class AccumulateAggregationsExecutionService {
         FixedDurationStrategy strategy = FixedDurationStrategy.fromSeconds(featureBucketStrategy.longValue());
         AccumulateAggregationsService featureAggregationBucketsService = new AccumulateAggregationsService(fixedDurationStrategy, bucketConfigurationService, enrichedDataStore, aggregationEventsAccumulationDataStore, pageSize, maxGroupSize, strategy, accumulateAggregationsBucketService, accumulationsCache);
         TimeRange timeRange = new TimeRange(startDate, endDate);
-        featureAggregationBucketsService.execute(timeRange, schema.getName());
 
-        storeManager.cleanupCollections(startDate);
+        StoreMetadataProperties storeMetadataProperties = createStoreMetadataProperties(schema, fixedDurationStrategy);
+
+        featureAggregationBucketsService.execute(timeRange, schema.getName(), storeMetadataProperties);
+        storeManager.cleanupCollections(storeMetadataProperties, startDate);
     }
 
     public void clean(Schema schema, Instant startDate, Instant endDate) throws Exception {
@@ -58,7 +64,17 @@ public class AccumulateAggregationsExecutionService {
     }
 
     public void cleanup(Schema schema, Instant startDate, Instant endDate, Double fixedDuration, Double featureBucketStrategy) throws Exception {
-        storeManager.cleanupCollections(startDate, endDate);
+        FixedDurationStrategy fixedDurationStrategy = FixedDurationStrategy.fromSeconds(fixedDuration.longValue());
+        StoreMetadataProperties storeMetadataProperties = createStoreMetadataProperties(schema, fixedDurationStrategy);
+        storeManager.cleanupCollections(storeMetadataProperties, startDate, endDate);
     }
+
+    private StoreMetadataProperties createStoreMetadataProperties(Schema schema, FixedDurationStrategy fixedDurationStrategy){
+        StoreMetadataProperties storeMetadataProperties = new StoreMetadataProperties();
+        storeMetadataProperties.setProperty(SCHEMA, schema.getName());
+        storeMetadataProperties.setProperty(FIXED_DURATION_STRATEGY, fixedDurationStrategy.toStrategyName());
+        return storeMetadataProperties;
+    }
+
 }
 

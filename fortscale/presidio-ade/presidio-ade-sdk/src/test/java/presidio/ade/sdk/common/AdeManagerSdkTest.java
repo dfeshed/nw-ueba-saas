@@ -23,6 +23,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import presidio.ade.domain.record.AdeRecord;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.domain.record.enriched.file.AdeScoredFileRecord;
+import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 import presidio.ade.domain.store.enriched.EnrichedDataAdeToCollectionNameTranslator;
 import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import presidio.ade.sdk.data_generator.MockedEnrichedRecord;
@@ -110,14 +111,15 @@ public class AdeManagerSdkTest {
     public void cleanupEnrichedData() {
         Instant startInstant = systemDateService.getInstant();
         Instant endInstant = systemDateService.getInstant().plus(4, ChronoUnit.HOURS);
-        EnrichedRecordsMetadata metaData = new EnrichedRecordsMetadata("testDataSource", startInstant, endInstant);
+        String adeEventType = "testDataSource";
+        EnrichedRecordsMetadata metaData = new EnrichedRecordsMetadata(adeEventType, startInstant, endInstant);
         List<MockedEnrichedRecord> records = dataGenerator.generate(metaData);
         adeManagerSdk.storeEnrichedRecords(metaData, records);
 
         Instant removeFrom = startInstant.plus(Duration.ofHours(1));
         Instant removeTo = removeFrom.plus(Duration.ofHours(1));
-        adeManagerSdk.cleanupEnrichedData(new TimeRange(removeFrom, removeTo));
-
+        AdeDataStoreCleanupParams adeDataStoreCleanupParams = new AdeDataStoreCleanupParams(removeFrom, removeTo, adeEventType);
+        adeManagerSdk.cleanupEnrichedRecords(adeDataStoreCleanupParams);
 
         String collectionName = translator.toCollectionName(metaData);
         List<MockedEnrichedRecord> insertedRecords = mongoTemplate.findAll(MockedEnrichedRecord.class, collectionName);
@@ -128,6 +130,28 @@ public class AdeManagerSdkTest {
                     start.equals(removeTo) ||
                     start.isBefore(removeFrom));
         });
+    }
+
+    @Test
+    public void doNotCleanupEnrichedData() {
+        Instant startInstant = systemDateService.getInstant();
+        Instant endInstant = systemDateService.getInstant().plus(4, ChronoUnit.HOURS);
+
+        EnrichedRecordsMetadata metaData = new EnrichedRecordsMetadata("testDataSource-2", startInstant, endInstant);
+        List<MockedEnrichedRecord> records = dataGenerator.generate(metaData);
+        adeManagerSdk.storeEnrichedRecords(metaData, records);
+
+        Instant removeFrom = startInstant.plus(Duration.ofHours(1));
+        Instant removeTo = removeFrom.plus(Duration.ofHours(1));
+        AdeDataStoreCleanupParams adeDataStoreCleanupParams = new AdeDataStoreCleanupParams(removeFrom, removeTo, "testDataSource");
+        adeManagerSdk.cleanupEnrichedRecords(adeDataStoreCleanupParams);
+
+        String collectionName = translator.toCollectionName(metaData);
+        List<MockedEnrichedRecord> insertedRecords = mongoTemplate.findAll(MockedEnrichedRecord.class, collectionName);
+
+        Assert.assertTrue(records.size() == insertedRecords.size());
+        insertedRecords = insertedRecords.stream().filter(data -> data.getStartInstant().isBefore(removeTo) && data.getStartInstant().isAfter(removeFrom)).collect(Collectors.toList());
+        Assert.assertTrue(!insertedRecords.isEmpty());
     }
 
     @Configuration

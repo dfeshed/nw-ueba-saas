@@ -8,6 +8,7 @@ import fortscale.ml.scorer.enriched_events.EnrichedEventsScoringService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.fixedduration.FixedDurationStrategyExecutor;
 import fortscale.utils.pagination.PageIterator;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.pagination.enriched.EnrichedRecordPaginationService;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
@@ -66,7 +67,7 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
 
 
     @Override
-    public void executeSingleTimeRange(TimeRange timeRange, String dataSource, String contextType) {
+    public void executeSingleTimeRange(TimeRange timeRange, String dataSource, String contextType, StoreMetadataProperties storeMetadataProperties) {
 
         //Once modelCacheManager save model to cache it will never updating the cache again with newer model.
         //Reset cache required in order to get newer models each partition and not use older models.
@@ -84,13 +85,13 @@ public class ScoreAggregationsService extends FixedDurationStrategyExecutor {
         for (PageIterator<EnrichedRecord> pageIterator : pageIterators) {
             while (pageIterator.hasNext()) {
                 List<EnrichedRecord> pageRecords = pageIterator.next();
-                List<AdeScoredEnrichedRecord> adeScoredRecords = enrichedEventsScoringService.scoreAndStoreEvents(pageRecords, isStoreScoredEnrichedRecords,timeRange);
+                List<AdeScoredEnrichedRecord> adeScoredRecords = enrichedEventsScoringService.scoreAndStoreEvents(pageRecords, isStoreScoredEnrichedRecords,timeRange, storeMetadataProperties);
                 scoreAggregationsBucketService.updateBuckets(adeScoredRecords, contextTypes, featureBucketStrategyData);
             }
 
             List<FeatureBucket> closedBuckets = scoreAggregationsBucketService.closeBuckets();
             List<AdeAggregationRecord> aggrRecords = aggregationRecordsCreator.createAggregationRecords(closedBuckets);
-            aggregatedDataStore.store(aggrRecords, AggregatedFeatureType.SCORE_AGGREGATION);
+            aggregatedDataStore.store(aggrRecords, AggregatedFeatureType.SCORE_AGGREGATION, storeMetadataProperties);
         }
 
         //Flush stored metrics to elasticsearch

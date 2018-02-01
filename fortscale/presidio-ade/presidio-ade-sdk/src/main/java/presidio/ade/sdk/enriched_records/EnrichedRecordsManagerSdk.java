@@ -26,10 +26,4 @@ public interface EnrichedRecordsManagerSdk {
 	 */
 	void storeEnrichedRecords(EnrichedRecordsMetadata metadata, List<? extends EnrichedRecord> records);
 
-	/**
-	 * Cleanup {@link EnrichedRecord}s that match the given parameters from the database.
-	 *
-	 * @param adeDataStoreCleanupParams the cleanup parameters
-	 */
-	void cleanupEnrichedRecords(AdeDataStoreCleanupParams adeDataStoreCleanupParams);
 }
