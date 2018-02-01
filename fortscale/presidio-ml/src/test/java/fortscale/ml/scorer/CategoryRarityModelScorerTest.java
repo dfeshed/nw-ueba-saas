@@ -74,7 +74,8 @@ public class CategoryRarityModelScorerTest {
                 params.getMaxRareCount(),
                 params.getMaxNumOfRareFeatures(),
                 X_WITH_VALUE_HALF_FACTOR,
-                eventModelsCacheService);
+                eventModelsCacheService,
+                0.0);
     }
 
     //==================================================================================================================

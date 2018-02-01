@@ -60,7 +60,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
         CategoryRarityModelBuilderConf config = new CategoryRarityModelBuilderConf(maxRareCount * 2);
         config.setPartitionsResolutionInSeconds(86400);
         CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(config, categoryRarityMetricsContainer).build(categoricalFeatureValue);
-        CategoryRarityModelScorerAlgorithm scorerAlgorithm = new CategoryRarityModelScorerAlgorithm(maxRareCount, maxNumOfRareFeatures, X_WITH_VALUE_HALF_FACTOR);
+        CategoryRarityModelScorerAlgorithm scorerAlgorithm = new CategoryRarityModelScorerAlgorithm(maxRareCount, maxNumOfRareFeatures, X_WITH_VALUE_HALF_FACTOR, 0.0);
         return scorerAlgorithm.calculateScore(featureCountToScore, model);
     }
 
@@ -107,12 +107,12 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailGivenNegativeAsMaxRareCount() {
-        new CategoryRarityModelScorerAlgorithm(-1, 1, X_WITH_VALUE_HALF_FACTOR);
+        new CategoryRarityModelScorerAlgorithm(-1, 1, X_WITH_VALUE_HALF_FACTOR, 0.0);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailGivenNegativeAsMaxNumOfRareFeatures() {
-        new CategoryRarityModelScorerAlgorithm(1, -1, X_WITH_VALUE_HALF_FACTOR);
+        new CategoryRarityModelScorerAlgorithm(1, -1, X_WITH_VALUE_HALF_FACTOR, 0.0);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -122,7 +122,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
         occurrencesToNumOfPartitions.put(1L, 1);
         int numOfBuckets = 10;
         model.init(occurrencesToNumOfPartitions, numOfBuckets, 0, 1);
-        new CategoryRarityModelScorerAlgorithm(numOfBuckets / 2 + 1, 1, X_WITH_VALUE_HALF_FACTOR).calculateScore(1, model);
+        new CategoryRarityModelScorerAlgorithm(numOfBuckets / 2 + 1, 1, X_WITH_VALUE_HALF_FACTOR, 0.0).calculateScore(1, model);
     }
 
     @Test
