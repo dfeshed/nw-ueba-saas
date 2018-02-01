@@ -21,10 +21,12 @@ const _createBasicPill = (type, test, meta, operator, value, options = {}) => {
   test.set('list', []);
   test.set('metaOptions', [{
     format: type,
-    metaName: meta
+    metaName: meta,
+    displayName: meta
   }, {
     format: 'text',
-    metaName: 'stuff'
+    metaName: 'stuff',
+    displayName: meta
   }]);
   test.set('setKeyboardPriority', () => {});
   test.set('deleteFilter', function(record) {
@@ -40,7 +42,7 @@ const _createBasicPill = (type, test, meta, operator, value, options = {}) => {
       input {
         color: black
       }
-      </style>
+    </style>
     {{query-filter-fragment
       validateWithServer=false
       filterList=list
@@ -92,7 +94,6 @@ const createUInt32Pill = (test, meta = 'int', operator = '=', value = '8') => {
 const createFloat32Pill = (test, meta = 'float', operator = '=', value = '8.5') => {
   return _createBasicPill('Float32', test, meta, operator, value);
 };
-
 
 export {
   createFloat32Pill,
