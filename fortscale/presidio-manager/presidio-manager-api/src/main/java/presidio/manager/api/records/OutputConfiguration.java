@@ -2,6 +2,7 @@ package presidio.manager.api.records;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
+import presidio.forwarder.manager.records.ForwarderConfiguration;
 
 import java.util.ArrayList;
 

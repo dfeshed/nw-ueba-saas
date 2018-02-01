@@ -2,14 +2,16 @@ package presidio.manager.api.records;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
+import presidio.forwarder.manager.records.ForwarderConfiguration;
+import presidio.forwarder.manager.records.SyslogSenderConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SyslogConfiguration extends JsonToObjectConfiguration implements ForwarderConfiguration {
 
-    private SyslogSenderConfiguration alert;
-    private SyslogSenderConfiguration user;
+    private SyslogSenderConfiguration alertSyslogConfiguration;
+    private SyslogSenderConfiguration userSyslogConfiguration;
 
     private final String ALERT = "alert";
     private final String USER = "user";
@@ -18,36 +20,36 @@ public class SyslogConfiguration extends JsonToObjectConfiguration implements Fo
     public SyslogConfiguration(JsonNode node) {
         setBadParams(new ArrayList<>());
         createConfiguration(node);
-        badParamsAddKeys(addPrefixToBadParams(ALERT, alert.badParams()));
-        badParamsAddKeys(addPrefixToBadParams(USER, user.badParams()));
+        badParamsAddKeys(addPrefixToBadParams(ALERT, alertSyslogConfiguration.badParams()));
+        badParamsAddKeys(addPrefixToBadParams(USER, userSyslogConfiguration.badParams()));
         checkStructure();
     }
 
-    public SyslogSenderConfiguration getAlert() {
-        return alert;
+    public SyslogSenderConfiguration getAlertSyslogConfiguration() {
+        return alertSyslogConfiguration;
     }
 
-    public SyslogSenderConfiguration getUser() {
-        return user;
+    public SyslogSenderConfiguration getUserSyslogConfiguration() {
+        return userSyslogConfiguration;
     }
 
 
-    public void setAlert(SyslogSenderConfiguration alert) {
-        this.alert = alert;
+    public void setAlertSyslogConfiguration(SyslogSenderConfiguration alertSyslogConfiguration) {
+        this.alertSyslogConfiguration = alertSyslogConfiguration;
     }
 
-    public void setUser(SyslogSenderConfiguration user) {
-        this.user = user;
+    public void setUserSyslogConfiguration(SyslogSenderConfiguration userSyslogConfiguration) {
+        this.userSyslogConfiguration = userSyslogConfiguration;
     }
 
     @Override
     public void setKeyValue(String key, JsonNode value) {
         switch (key) {
             case ALERT:
-                setAlert(new SyslogMessageSenderConfiguration(value));
+                setAlertSyslogConfiguration(new SyslogMessageSenderConfiguration(value));
                 break;
             case USER:
-                setUser(new SyslogMessageSenderConfiguration(value));
+                setUserSyslogConfiguration(new SyslogMessageSenderConfiguration(value));
                 break;
             default:
                 badParamsAddKey(key);
@@ -57,8 +59,8 @@ public class SyslogConfiguration extends JsonToObjectConfiguration implements Fo
     @Override
     void checkStructure() {
         setStructureValid(isStructureValid() &&
-                alert != null && alert.isValid() &&
-                user != null && user.isValid());
+                alertSyslogConfiguration != null && alertSyslogConfiguration.isValid() &&
+                userSyslogConfiguration != null && userSyslogConfiguration.isValid());
     }
 
     @Override
