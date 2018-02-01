@@ -68,18 +68,21 @@ dags:
         main_class: presidio.ade.processes.shell.feature.aggregation.buckets.ModelFeatureAggregationBucketsApplication
         xmx: 1024
         xms: 1024
+        extra_jvm: -XX:+UseG1GC -XX:G1RSetUpdatingPauseTimePercent=5
     RawModelOperator:
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-modeling-*.jar
         main_class: presidio.ade.modeling.ModelingServiceApplication
         xmx: 1024
         xms: 1024
+        extra_jvm: -XX:+UseG1GC -XX:G1RSetUpdatingPauseTimePercent=5
     AggrModelAccumulateAggregationsOperator:
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-accumulate-aggr-*.jar
         main_class: presidio.ade.processes.shell.AccumulateAggregationsApplication
         xmx: 1024
         xms: 1024
+        extra_jvm: -XX:+UseG1GC -XX:G1RSetUpdatingPauseTimePercent=5
     AggrModelOperator:
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-modeling-*.jar

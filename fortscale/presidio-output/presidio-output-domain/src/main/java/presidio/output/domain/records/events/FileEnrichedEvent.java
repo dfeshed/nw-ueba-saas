@@ -43,7 +43,8 @@ public class FileEnrichedEvent extends EnrichedEvent {
     @Field(IS_DST_DRIVE_SHARED_FIELD)
     private Boolean isDstDriveShared;
 
-    public FileEnrichedEvent() {}
+    public FileEnrichedEvent() {
+    }
 
     public FileEnrichedEvent(String absoluteSrcFilePath,
                              String absoluteDstFilePath,
@@ -73,7 +74,7 @@ public class FileEnrichedEvent extends EnrichedEvent {
                              List<String> operationTypeCategories,
                              EventResult result,
                              String resultCode,
-                             Map<String, String> additionalnfo,
+                             Map<String, String> additionalInfo,
                              String absoluteSrcFilePath,
                              String absoluteDstFilePath,
                              String absoluteSrcFolderFilePath,
@@ -81,7 +82,7 @@ public class FileEnrichedEvent extends EnrichedEvent {
                              Long fileSize,
                              Boolean isSrcDriveShared,
                              Boolean isDstDriveShared) {
-        super(createdDate, eventDate, eventId, schema, userId, userName, userDisplayName, dataSource, operationType, operationTypeCategories, result, resultCode, additionalnfo);
+        super(createdDate, eventDate, eventId, schema, userId, userName, userDisplayName, dataSource, operationType, operationTypeCategories, result, resultCode, additionalInfo);
         this.absoluteSrcFilePath = absoluteSrcFilePath;
         this.absoluteDstFilePath = absoluteDstFilePath;
         this.absoluteSrcFolderFilePath = absoluteSrcFolderFilePath;

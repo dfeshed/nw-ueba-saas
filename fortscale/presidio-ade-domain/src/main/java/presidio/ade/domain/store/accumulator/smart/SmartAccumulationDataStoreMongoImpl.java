@@ -7,8 +7,12 @@ import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.store.StoreManager;
 import fortscale.utils.store.StoreManagerAware;
+<<<<<<< HEAD
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Sort;
+=======
+import fortscale.utils.store.record.StoreMetadataProperties;
+>>>>>>> c0bb7b335676c5c1006eb458c790687fd5ba32e6
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
@@ -45,12 +49,12 @@ public class SmartAccumulationDataStoreMongoImpl implements SmartAccumulationDat
     }
 
     @Override
-    public void store(List<? extends AdeContextualAggregatedRecord> records, String configurationName) {
+    public void store(List<? extends AdeContextualAggregatedRecord> records, String configurationName, StoreMetadataProperties storeMetadataProperties) {
         logger.info("Store accumulated smart records");
         SmartAccumulatedRecordsMetaData metadata = new SmartAccumulatedRecordsMetaData(configurationName);
         String collectionName = getCollectionName(metadata);
         mongoDbBulkOpUtil.insertUnordered(records, collectionName);
-        storeManager.registerWithTtl(getStoreName(), collectionName);
+        storeManager.registerWithTtl(getStoreName(), collectionName, storeMetadataProperties);
     }
 
     /**

@@ -8,6 +8,7 @@ import fortscale.common.shell.PresidioExecutionService;
 import fortscale.ml.scorer.feature_aggregation_events.FeatureAggregationScoringService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.store.StoreManager;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.store.aggr.AggregatedDataStore;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
@@ -17,6 +18,9 @@ import presidio.monitoring.flush.MetricContainerFlusher;
 import java.time.Instant;
 
 public class FeatureAggregationsExecutionServiceImpl implements PresidioExecutionService {
+    private static final String SCHEMA = "schema";
+    private static final String FIXED_DURATION_STRATEGY = "fixed_duration_strategy";
+
     private final MetricContainerFlusher metricContainerFlusher;
     private BucketConfigurationService bucketConfigurationService;
     private EnrichedDataStore enrichedDataStore;
@@ -54,13 +58,18 @@ public class FeatureAggregationsExecutionServiceImpl implements PresidioExecutio
         FixedDurationStrategy fixedDurationStrategy = FixedDurationStrategy.fromSeconds(fixedDuration.longValue());
         FeatureAggregationService featureAggregationBucketsService = new FeatureAggregationService(fixedDurationStrategy, bucketConfigurationService, enrichedDataStore, inMemoryFeatureBucketAggregator, featureAggregationScoringService, featureAggregationsCreator, scoredFeatureAggregatedStore, pageSize, maxGroupSize, metricContainerFlusher);
         TimeRange timeRange = new TimeRange(startDate, endDate);
-        featureAggregationBucketsService.execute(timeRange, schema.getName());
-        storeManager.cleanupCollections(startDate);
+
+        StoreMetadataProperties storeMetadataProperties = createStoreMetadataProperties(schema, fixedDurationStrategy);
+
+        featureAggregationBucketsService.execute(timeRange, schema.getName(), storeMetadataProperties);
+        storeManager.cleanupCollections(storeMetadataProperties, startDate);
     }
 
     @Override
     public void cleanup(Schema schema, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
-        storeManager.cleanupCollections(startDate, endDate);
+        FixedDurationStrategy fixedDurationStrategy = FixedDurationStrategy.fromSeconds(fixedDuration.longValue());
+        StoreMetadataProperties storeMetadataProperties = createStoreMetadataProperties(schema, fixedDurationStrategy);
+        storeManager.cleanupCollections(storeMetadataProperties, startDate, endDate);
     }
 
     @Override
@@ -72,5 +81,13 @@ public class FeatureAggregationsExecutionServiceImpl implements PresidioExecutio
     public void cleanAll(Schema schema) throws Exception {
         // TODO: Implement
     }
+
+    private StoreMetadataProperties createStoreMetadataProperties(Schema schema, FixedDurationStrategy fixedDurationStrategy){
+        StoreMetadataProperties storeMetadataProperties = new StoreMetadataProperties();
+        storeMetadataProperties.setProperty(SCHEMA, schema.getName());
+        storeMetadataProperties.setProperty(FIXED_DURATION_STRATEGY, fixedDurationStrategy.toStrategyName());
+        return storeMetadataProperties;
+    }
+
 }
 

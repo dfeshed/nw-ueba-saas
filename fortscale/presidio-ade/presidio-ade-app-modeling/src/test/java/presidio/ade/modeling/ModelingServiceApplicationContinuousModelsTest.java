@@ -9,12 +9,11 @@ import fortscale.ml.model.builder.gaussian.ContinuousMaxHistogramModelBuilderCon
 import fortscale.ml.model.selector.AggregatedEventContextSelectorConf;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStore;
-import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
-import fortscale.utils.elasticsearch.config.EmbeddedElasticsearchInitialiser;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.shell.BootShim;
 import fortscale.utils.shell.BootShimConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.test.category.ModuleTestCategory;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.junit.Assert;
@@ -39,7 +38,6 @@ import presidio.ade.test.utils.generators.AccumulatedAggregationFeatureRecordHou
 import presidio.data.generators.common.GeneratorException;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.monitoring.services.export.MetricsExporter;
-import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -178,7 +176,7 @@ public class ModelingServiceApplicationContinuousModelsTest {
                     new AccumulatedAggregationFeatureRecordHourlyGenerator(featureName, GENERATOR_CONTEXT_ID_PATTERN,
                             aggregatedFeatureValuesMap, GENERATOR_START_HOUR_OF_DAY, GENERATOR_END_HOUR_OF_DAY);
             List<AccumulatedAggregationFeatureRecord> accumulatedAggregationFeatureRecords = generator.generate();
-            accumulationDataStore.store(accumulatedAggregationFeatureRecords);
+            accumulationDataStore.store(accumulatedAggregationFeatureRecords, new StoreMetadataProperties());
         }
     }
 

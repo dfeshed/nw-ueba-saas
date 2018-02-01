@@ -4,6 +4,7 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoCommandException;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.store.StoreManager;
 import fortscale.utils.store.StoreManagerAware;
@@ -140,15 +141,15 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore, StoreMan
 	}
 
 	/**
-	 * @see FeatureBucketStore#storeFeatureBucket(FeatureBucketConf, List)
+	 * @see FeatureBucketStore#storeFeatureBucket(FeatureBucketConf, List, StoreMetadataProperties)
 	 */
 	@Override
-	public void storeFeatureBucket(FeatureBucketConf featureBucketConf, List<FeatureBucket> featureBuckets) {
+	public void storeFeatureBucket(FeatureBucketConf featureBucketConf, List<FeatureBucket> featureBuckets, StoreMetadataProperties storeMetadataProperties) {
 		String collectionName = getCollectionName(featureBucketConf);
 
 		try {
 			mongoDbBulkOpUtil.insertUnordered(featureBuckets,collectionName);
-			storeManager.registerWithTtl(getStoreName(), collectionName);
+			storeManager.registerWithTtl(getStoreName(), collectionName, storeMetadataProperties);
 		} catch (Exception e) {
 			logger.error("Failed storing Feature Bucket {} in Mongo collection {}.", featureBuckets, collectionName, e);
 		}
