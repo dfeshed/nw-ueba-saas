@@ -15,7 +15,7 @@ public class ForwarderConfigurationTest {
 
 
     private final String FORWARDER_JSON_FILE_NAME = "forwarder_test.json";
-    private final String BAD_FORWARDER_JSON_FILE_NAME = "to_many_params_forwarder.json";
+    private final String BAD_FORWARDER_JSON_FILE_NAME = "too_many_params_forwarder.json";
 
     @Test
     public void createSyslogMessageSenderConfigurationTest() throws IOException {
