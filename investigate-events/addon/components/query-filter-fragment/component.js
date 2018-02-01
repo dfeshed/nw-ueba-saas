@@ -233,6 +233,10 @@ const QueryFragmentComponent = Component.extend({
   },
 
   doubleClick() {
+    // Do not want to trigger edit if...
+    // 1) is saved because ???
+    // 2) already editing (can't send editFilter again, or else editing turns off)
+    // 3) is complex filter which is not editable
     if (this.get('saved') && !this.get('editActive') && isEmpty(this.get('complexFilter'))) {
       this.send('editFilter');
     }
@@ -241,6 +245,10 @@ const QueryFragmentComponent = Component.extend({
   click() {
     this._super(...arguments);
 
+    // If clicking on a pill that is being edited
+    // then need to reset type based on position.
+    // This allows for things like opening the meta
+    // dropdown when someone clicks around the pill
     if (this.get('editActive')) {
       this.setTypeFromCursorPostion();
     }
@@ -896,6 +904,10 @@ const QueryFragmentComponent = Component.extend({
 
     deleteFilter() {
       this.deleteFilter(this.get('filterRecord'));
+
+      // trigger focus on empty query fragment
+      // so one fragment disappears, and user is placed in
+      // edit mode for brand new fragment
       this.$().closest('.rsa-query-meta').find('.rsa-query-fragment:last-of-type input').focus();
     }
   }

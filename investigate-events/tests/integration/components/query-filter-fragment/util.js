@@ -17,35 +17,52 @@ const testSetupConfig = {
   }
 };
 
-const _createBasicPill = (type, test, meta, operator, value) => {
+const _createBasicPill = (type, test, meta, operator, value, options = {}) => {
   test.set('list', []);
   test.set('metaOptions', [{
     format: type,
     metaName: meta
+  }, {
+    format: 'text',
+    metaName: 'stuff'
   }]);
   test.set('setKeyboardPriority', () => {});
+  test.set('deleteFilter', function(record) {
+    if (options.deleteFilter) {
+      options.deleteFilter(record);
+    }
+  });
+  test.set('filterRecord', { id: 1001 });
+  test.set('complexFilter', options.complexFilter || undefined);
 
   test.render(hbs`
+    <style>
+      input {
+        color: black
+      }
+      </style>
     {{query-filter-fragment
       validateWithServer=false
       filterList=list
       metaOptions=metaOptions
       editActive=true
+      filterRecord=filterRecord
+      complexFilter=complexFilter
       setKeyboardPriority=(action setKeyboardPriority)
+      deleteFilter=(action deleteFilter)
     }}`
   );
 
   const $fragment = test.$('.rsa-query-fragment');
   const pillText = `${meta} ${operator} ${value}`;
-
   test.$('input').val(pillText.trim());
   pressEnter(test.$('input'));
 
   return $fragment;
 };
 
-const createTextPill = (test, meta = 'action', operator = '=', value = '"foo"') => {
-  return _createBasicPill('Text', test, meta, operator, value);
+const createTextPill = (test, meta = 'action', operator = '=', value = '"foo"', options) => {
+  return _createBasicPill('Text', test, meta, operator, value, options);
 };
 
 const createTimePill = (test, meta = 'time', operator = '=', value = new Date()) => {
