@@ -36,7 +36,7 @@
                     "model": {
                       "name": "operationType.userIdSecuritySensitive.activeDirectory"
                     },
-                    "max-rare-count": 5,
+                    "max-rare-count": 8,
                     "max-num-of-rare-features": 15,
                     "number-of-partitions-to-influence-enough": 10,
                     "use-certainty-to-calculate-score": true
@@ -47,7 +47,7 @@
                     "model": {
                       "name": "operationType.userId.activeDirectory"
                     },
-                    "max-rare-count": 5,
+                    "max-rare-count": 8,
                     "max-num-of-rare-features": 15,
                     "number-of-partitions-to-influence-enough": 10,
                     "use-certainty-to-calculate-score": true
@@ -70,7 +70,7 @@
                     "model": {
                       "name": "operationType.userIdObjectManagement.activeDirectory"
                     },
-                    "max-rare-count": 5,
+                    "max-rare-count": 8,
                     "max-num-of-rare-features": 15,
                     "number-of-partitions-to-influence-enough": 10,
                     "use-certainty-to-calculate-score": true
@@ -81,7 +81,7 @@
                     "model": {
                       "name": "operationType.userId.activeDirectory"
                     },
-                    "max-rare-count": 5,
+                    "max-rare-count": 8,
                     "max-num-of-rare-features": 15,
                     "number-of-partitions-to-influence-enough": 10,
                     "use-certainty-to-calculate-score": true
