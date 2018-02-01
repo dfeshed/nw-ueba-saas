@@ -100,7 +100,8 @@ Visit http://localhost:8080. Log in with `admin`/`changeMe`. You can make change
 
 # Further Reading / Useful Links
 
-* [Sonar Dashboard](http://asoc-sonar.rsa.lab.emc.com/projects/)
+* [Sonar Dashboard](http://asoc-sonar.rsa.lab.emc.com/dashboard?id=com.rsa.asoc.nw.ui%3Anw-ui)
+* [Code Coverage](https://wiki.na.rsa.net/display/NextGenWeb/Sonar+and+Coverage+for+SA-UI)
 * [Style Guide](http://libhq-ro.rsa.lab.emc.com/SA/SAStyle/production/#/)
 * [ember.js](http://emberjs.com/)
 * [ember-cli](http://www.ember-cli.com/)
