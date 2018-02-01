@@ -1,12 +1,12 @@
 package presidio.ade.domain.store.accumulator;
 
 import com.mongodb.DBObject;
+import com.mongodb.MongoCommandException;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.store.StoreManager;
 import fortscale.utils.store.StoreManagerAware;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -76,7 +76,7 @@ public class AggregationEventsAccumulationDataStoreMongoImpl implements Aggregat
             Criteria startTimeCriteria = Criteria.where(AdeRecord.START_INSTANT_FIELD).gte(startDate).lt(endDate);
             Query query = new Query(startTimeCriteria);
             distinctContexts = (Set<String>) mongoTemplate.getCollection(collectionName).distinct(AdeContextualAggregatedRecord.CONTEXT_ID_FIELD, query.getQueryObject()).stream().collect(Collectors.toSet());
-        } catch (InvalidDataAccessApiUsageException e) {
+        } catch (MongoCommandException e) {
             long nextPageIndex = 0;
             Set<String> subList;
             distinctContexts = new HashSet<>();
@@ -88,7 +88,7 @@ public class AggregationEventsAccumulationDataStoreMongoImpl implements Aggregat
             } while (subList.size() == selectorPageSize);
         }
 
-        logger.debug("found ({} distinct contexts", distinctContexts.size());
+        logger.debug("found {} distinct contexts", distinctContexts.size());
         return distinctContexts;
     }
 

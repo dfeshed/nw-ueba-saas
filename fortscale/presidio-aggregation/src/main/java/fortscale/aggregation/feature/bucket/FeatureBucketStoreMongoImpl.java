@@ -1,20 +1,18 @@
 package fortscale.aggregation.feature.bucket;
 
 import com.mongodb.DBObject;
+import com.mongodb.MongoCommandException;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.store.StoreManager;
 import fortscale.utils.store.StoreManagerAware;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import presidio.ade.domain.record.AdeRecord;
-import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
 
 import java.time.Instant;
 import java.util.*;
@@ -63,10 +61,10 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore, StoreMan
 					.gte(startDate)
 					.lt(endDate));
 			List<?> distinctContextIds = mongoTemplate
-					.getCollection(getCollectionName(featureBucketConf))
+					.getCollection(collectionName)
 					.distinct(FeatureBucket.CONTEXT_ID_FIELD, query.getQueryObject());
 			distinctContexts = distinctContextIds.stream().map(Object::toString).collect(Collectors.toSet());
-		} catch (InvalidDataAccessApiUsageException e) {
+		} catch (MongoCommandException e) {
 			long nextPageIndex = 0;
 			Set<String> subList;
 			distinctContexts = new HashSet<>();
@@ -76,10 +74,9 @@ public class FeatureBucketStoreMongoImpl implements FeatureBucketStore, StoreMan
 				distinctContexts.addAll(subList);
 				nextPageIndex++;
 			} while (subList.size() == selectorPageSize);
-			return distinctContexts;
 		}
 
-		logger.debug("found ({} distinct contexts", distinctContexts.size());
+		logger.debug("found {} distinct contexts", distinctContexts.size());
 		return distinctContexts;
 	}
 
