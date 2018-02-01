@@ -4,6 +4,7 @@ import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.store.StoreManager;
 import fortscale.utils.store.StoreManagerAware;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
@@ -39,10 +40,10 @@ public class SmartDataStoreMongoImpl implements SmartDataStore, StoreManagerAwar
     }
 
     @Override
-    public void storeSmartRecords(String smartRecordConfName, Collection<SmartRecord> smartRecords) {
+    public void storeSmartRecords(String smartRecordConfName, Collection<SmartRecord> smartRecords, StoreMetadataProperties storeMetadataProperties) {
         String collectionName = translator.toCollectionName(smartRecordConfName);
         mongoDbBulkOpUtil.insertUnordered(new ArrayList<>(smartRecords), collectionName);
-        storeManager.registerWithTtl(getStoreName(), collectionName);
+        storeManager.registerWithTtl(getStoreName(), collectionName, storeMetadataProperties);
     }
 
     @Override

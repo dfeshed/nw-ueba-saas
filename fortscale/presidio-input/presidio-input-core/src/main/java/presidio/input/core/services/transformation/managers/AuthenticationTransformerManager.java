@@ -1,10 +1,10 @@
 package presidio.input.core.services.transformation.managers;
 
 import fortscale.common.general.Schema;
-import presidio.input.core.services.transformation.MachineNameTransformer;
-import presidio.input.core.services.transformation.OperationTypeCategoryTransformer;
-import presidio.input.core.services.transformation.PatternReplacementTransformer;
-import presidio.input.core.services.transformation.Transformer;
+import presidio.input.core.services.transformation.transformer.MachineNameTransformer;
+import presidio.input.core.services.transformation.transformer.OperationTypeCategoryTransformer;
+import presidio.input.core.services.transformation.transformer.PatternReplacementTransformer;
+import presidio.input.core.services.transformation.transformer.Transformer;
 import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.domain.rawevents.AuthenticationRawEvent;
 import presidio.sdk.api.domain.transformedevents.AuthenticationTransformedEvent;

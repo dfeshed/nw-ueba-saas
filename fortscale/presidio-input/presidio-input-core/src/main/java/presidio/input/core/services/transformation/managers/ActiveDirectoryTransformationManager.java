@@ -1,8 +1,8 @@
 package presidio.input.core.services.transformation.managers;
 
 import fortscale.common.general.Schema;
-import presidio.input.core.services.transformation.OperationTypeCategoryTransformer;
-import presidio.input.core.services.transformation.Transformer;
+import presidio.input.core.services.transformation.transformer.OperationTypeCategoryTransformer;
+import presidio.input.core.services.transformation.transformer.Transformer;
 import presidio.sdk.api.domain.AbstractInputDocument;
 
 import java.util.ArrayList;

@@ -4,6 +4,7 @@ import fortscale.accumulator.smart.SmartAccumulationsCache;
 import fortscale.accumulator.smart.SmartAccumulatorService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.pagination.PageIterator;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
 import presidio.ade.domain.pagination.smart.SmartPaginationService;
 import presidio.ade.domain.record.accumulator.AccumulatedSmartRecord;
@@ -38,7 +39,7 @@ public class AccumulateSmartRecordsService extends AccumulationStrategyExecutor 
     }
 
 
-    protected void executeSingleTimeRange(TimeRange timeRange, String configurationName) {
+    protected void executeSingleTimeRange(TimeRange timeRange, String configurationName, StoreMetadataProperties storeMetadataProperties) {
 
         SmartPaginationService smartPaginationService = new SmartPaginationService(reader, pageSize, maxGroupSize);
         List<PageIterator<SmartRecord>> pageIterators = smartPaginationService.getPageIterators(configurationName, timeRange);
@@ -51,7 +52,7 @@ public class AccumulateSmartRecordsService extends AccumulationStrategyExecutor 
                 smartAccumulatorService.accumulate(smartRecords);
             }
             List<AccumulatedSmartRecord> accumulationsRecords = getAccumulatedSmartRecords();
-            smartAccumulationDataStore.store(accumulationsRecords, configurationName);
+            smartAccumulationDataStore.store(accumulationsRecords, configurationName, storeMetadataProperties);
         }
     }
 

@@ -1,4 +1,4 @@
-package presidio.input.core.services.transformation.managers;
+package presidio.input.core.services.transformation;
 
 import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
@@ -6,6 +6,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import presidio.input.core.services.impl.SchemaFactory;
+import presidio.input.core.services.transformation.managers.TransformationManager;
 import presidio.monitoring.aspect.annotations.NumberOfFilteredEvents;
 import presidio.sdk.api.domain.AbstractInputDocument;
 

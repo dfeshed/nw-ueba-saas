@@ -1,6 +1,7 @@
 package presidio.ade.test.utils.generators;
 
 import fortscale.common.general.Schema;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import presidio.ade.domain.record.enriched.file.AdeScoredFileRecord;
 import presidio.ade.domain.store.scored.ScoredEnrichedDataStore;
 import presidio.ade.test.utils.EventsGenerator;
@@ -60,7 +61,7 @@ public class ScoredEnrichedFileGenerator implements EventsGenerator<AdeScoredFil
         converter.setScore(GENERATED_SCORE);
         converter.setFeatureName(FEATURE_NAME);
         List<AdeScoredFileRecord> scoredFileRecords = converter.convert(events);
-        scoredEnrichedDataStore.store(scoredFileRecords);
+        scoredEnrichedDataStore.store(scoredFileRecords,  new StoreMetadataProperties());
         return scoredFileRecords;
     }
 }

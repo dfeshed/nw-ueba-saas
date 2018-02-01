@@ -7,6 +7,7 @@ import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.model.store.ModelStore;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,7 +53,7 @@ public class ModelingEngineTest {
 		List<Boolean> successes = Arrays.asList(true, true, true);
 
 		ModelingEngine modelingEngine = prepareMocks(latestEndTime, contextIds, modelTimeRange, models, successes);
-		modelingEngine.process(DEFAULT_SESSION_ID, modelTimeRange.getEnd());
+		modelingEngine.process(DEFAULT_SESSION_ID, modelTimeRange.getEnd(), new StoreMetadataProperties());
 
 		verify(store).getLatestEndInstantLt(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(modelTimeRange.getEnd()));
 		verify(selector).getContexts(eq(new TimeRange(latestEndTime, modelTimeRange.getEnd())));
@@ -62,7 +63,7 @@ public class ModelingEngineTest {
 			String contextId = contextIds.get(i);
 			Model model = models.get(i);
 			verify(retriever).retrieve(eq(contextId), eq(endTime));
-			verify(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(contextId), eq(model), eq(modelTimeRange));
+			verify(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(contextId), eq(model), eq(modelTimeRange), any(StoreMetadataProperties.class));
 		}
 
 		verify(builder, times(contextIds.size())).build(any());
@@ -80,12 +81,12 @@ public class ModelingEngineTest {
 		List<Boolean> successes = Collections.singletonList(true);
 
 		ModelingEngine modelingEngine = prepareMocks(null, contextIds, modelTimeRange, models, successes);
-		modelingEngine.process(DEFAULT_SESSION_ID, modelTimeRange.getEnd());
+		modelingEngine.process(DEFAULT_SESSION_ID, modelTimeRange.getEnd(), new StoreMetadataProperties());
 
 		Date endTime = Date.from(modelTimeRange.getEnd());
 		verify(retriever).retrieve(eq(null), eq(endTime));
 		verify(builder).build(any());
-		verify(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(null), eq(models.get(0)), eq(modelTimeRange));
+		verify(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(null), eq(models.get(0)), eq(modelTimeRange), any(StoreMetadataProperties.class));
 		verify(store, times(1)).getContextIdsWithModels(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(modelTimeRange.getEnd()));
 		verifyNoMoreInteractions(retriever, builder, store);
 	}
@@ -100,14 +101,14 @@ public class ModelingEngineTest {
 		List<Boolean> successes = Collections.singletonList(true);
 
 		ModelingEngine modelingEngine = prepareMocks(null, contextIds, modelTimeRange, models, successes);
-		modelingEngine.process(DEFAULT_SESSION_ID, modelTimeRange.getEnd());
+		modelingEngine.process(DEFAULT_SESSION_ID, modelTimeRange.getEnd(), new StoreMetadataProperties());
 
 		verify(store).getLatestEndInstantLt(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(modelTimeRange.getEnd()));
 		verify(selector).getContexts(eq(modelTimeRange));
 		Date endTime = Date.from(modelTimeRange.getEnd());
 		verify(retriever).retrieve(eq("contextId1"), eq(endTime));
 		verify(builder).build(any());
-		verify(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq("contextId1"), eq(models.get(0)), eq(modelTimeRange));
+		verify(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq("contextId1"), eq(models.get(0)), eq(modelTimeRange), any(StoreMetadataProperties.class));
 		verify(store, times(1)).getContextIdsWithModels(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(modelTimeRange.getEnd()));
 		verifyNoMoreInteractions(selector, retriever, builder, store);
 	}
@@ -122,12 +123,12 @@ public class ModelingEngineTest {
 		List<Boolean> successes = Collections.singletonList(false);
 
 		ModelingEngine modelingEngine = prepareMocks(null, contextIds, modelTimeRange, models, successes);
-		modelingEngine.process(DEFAULT_SESSION_ID, modelTimeRange.getEnd());
+		modelingEngine.process(DEFAULT_SESSION_ID, modelTimeRange.getEnd(), new StoreMetadataProperties());
 
 		Date endTime = Date.from(modelTimeRange.getEnd());
 		verify(retriever).retrieve(eq(null), eq(endTime));
 		verify(builder).build(any());
-		verify(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(null), eq(models.get(0)), eq(modelTimeRange));
+		verify(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(null), eq(models.get(0)), eq(modelTimeRange), any(StoreMetadataProperties.class));
 		verify(store, times(1)).getContextIdsWithModels(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(modelTimeRange.getEnd()));
 		verifyNoMoreInteractions(retriever, builder, store);
 	}
@@ -160,7 +161,7 @@ public class ModelingEngineTest {
 			if (!success) {
 				doThrow(Exception.class)
 						.when(store)
-						.save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(contextId), eq(model), eq(modelTimeRange));
+						.save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(contextId), eq(model), eq(modelTimeRange), any(StoreMetadataProperties.class));
 			}
 		}
 
