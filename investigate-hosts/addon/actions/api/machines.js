@@ -69,9 +69,9 @@ const getPageOfMachines = (pageNumber, sort, expressionList) => {
    * @param fields {Array} list of visible columns in machine table
    * @returns {Promise}
    */
-const downloadMachine = (expressionList, columns, sort, fields) => {
+const downloadMachine = (expressionList = [], columns, sort, fields) => {
   const data = { sort, fields };
-  if (expressionList) {
+  if (expressionList.length) {
     data.criteria = { expressionList, 'predicateType': 'AND' };
   }
 
