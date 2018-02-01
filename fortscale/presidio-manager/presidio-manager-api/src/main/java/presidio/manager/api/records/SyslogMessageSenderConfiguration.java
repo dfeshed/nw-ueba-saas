@@ -8,7 +8,7 @@ import presidio.forwarder.manager.records.SyslogSenderConfiguration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SyslogMessageSenderConfiguration extends JsonToObjectConfiguration implements SyslogSenderConfiguration {
+public class SyslogMessageSenderConfiguration extends createConfigurationAndStructureValidiation implements SyslogSenderConfiguration {
 
     private String host;
     private int port = -1;

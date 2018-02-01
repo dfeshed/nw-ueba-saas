@@ -2,13 +2,13 @@ package presidio.manager.api.records;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
-import presidio.forwarder.manager.records.ForwarderConfiguration;
+import presidio.forwarder.manager.records.PresidioForwarderConfiguration;
 
 import java.util.ArrayList;
 
-public class OutputConfiguration extends JsonToObjectConfiguration {
+public class OutputConfiguration extends createConfigurationAndStructureValidiation {
 
-    private ForwarderConfiguration forwarderConfiguration;
+    private PresidioForwarderConfiguration forwarderConfiguration;
 
     private final String SYSLOG = "syslog";
 
@@ -19,12 +19,12 @@ public class OutputConfiguration extends JsonToObjectConfiguration {
         checkStructure();
     }
 
-    public ForwarderConfiguration getSyslogConfiguration() {
+    public PresidioForwarderConfiguration getSyslogConfiguration() {
         return forwarderConfiguration;
     }
 
 
-    public void setForwarderConfiguration(ForwarderConfiguration forwarderConfiguration) {
+    public void setForwarderConfiguration(PresidioForwarderConfiguration forwarderConfiguration) {
         this.forwarderConfiguration = forwarderConfiguration;
     }
 

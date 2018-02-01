@@ -2,13 +2,13 @@ package presidio.manager.api.records;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
-import presidio.forwarder.manager.records.ForwarderConfiguration;
+import presidio.forwarder.manager.records.PresidioForwarderConfiguration;
 import presidio.forwarder.manager.records.SyslogSenderConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SyslogConfiguration extends JsonToObjectConfiguration implements ForwarderConfiguration {
+public class SyslogConfiguration extends createConfigurationAndStructureValidiation implements PresidioForwarderConfiguration {
 
     private SyslogSenderConfiguration alertSyslogConfiguration;
     private SyslogSenderConfiguration userSyslogConfiguration;

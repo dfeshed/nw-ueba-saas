@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 
 
-public abstract class JsonToObjectConfiguration {
+public abstract class createConfigurationAndStructureValidiation {
 
     private List<String> badParams;
     private boolean isStructureValid;
