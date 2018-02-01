@@ -3,139 +3,92 @@ package org.flume.source.csv;
 import com.opencsv.bean.ColumnPositionMappingStrategy;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
+import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractDocument;
 import fortscale.utils.logging.Logger;
 import org.apache.flume.Context;
 import org.flume.source.AbstractPageablePresidioSource;
-import org.flume.source.AbstractPresidioSource;
+import org.flume.source.csv.domain.GenericADActivityRawEvent;
 import org.flume.source.csv.domain.GenericAuthenticationRawEvent;
+import org.flume.source.csv.domain.GenericFileRawEvent;
 import org.flume.source.csv.domain.GenericRawEvent;
 import presidio.sdk.api.domain.rawevents.AuthenticationRawEvent;
 
-import java.io.IOException;
 import java.io.Reader;
 import java.lang.reflect.Field;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class CsvSourceAgile extends AbstractPageablePresidioSource {
+/**
+ * Created by idanp on 30/01/2018.
+ */
+public abstract class CsvFormatSource extends AbstractPageablePresidioSource {
 
+    private static final Logger logger = Logger.getLogger(CsvFormatSource.class);
 
-    private static final Logger logger = Logger.getLogger(CsvSourceAgile.class);
-
-    protected static final String FILE_PATH_CONF_NAME = "filePath";
     protected static final String FIELD_MAPPING_CONF_NAME = "fieldMapping";
-    protected static final String SKIP_LINES_CONF_NAME = "skipLines";
+    protected static final String LINES_TO_SKIP = "linesToSkip";
+    protected static final String RECORD_TYPE_CONF_NAME = "recordType";
     protected static final String WITH_IGNORE_LEADING_WHITE_SPACE_CONF_NAME = "withIgnoreLeadingWhiteSpace";
-    protected static final String TIMESTAMP_FORMAT = "timestampFormat";
     protected static final String AD_INFO_MAPPING_DELIMITER = "adInfoMappingDelimiter";
     protected static final String AD_INFO_MAPPING = "adInfoMapping";
-    protected static final String FILE_TIMESTAMP_FORMAT = "fileTimestampFormat";
-    protected static final String FILE_PREFIX = "filePrefix";
-    protected static final String FILE_DATE_SEPARATOR = "fileDateSeparator";
-    protected static final String FILE_SUFFIX = "fileSuffix";
     protected static final String DELIMITER_CONF_NAME = "delimiter";
-    protected static final String RECORD_TYPE_CONF_NAME = "recordType";
     protected static final String DEFAULT_DELIMITER_VALUE = ",";
-    protected static final String DEFAULT_TIMESTAMP_FORMAT_VALUE = "ISO";
     protected static final String DEFAULT_AD_INFO_MAPPING_VALUE = "";
-    protected static final String DEFAULT_AD_INFO_MAPPING_DELIMITER_VALUE = ">";
-    protected static final String DEFAULT_FILE_TIMESTAMP_FORMAT_VALUE = "ISO";
+    protected static final String DEFAULT_AD_INFO_MAPPING_DELIMITER_VALUE = ":";
     protected static final boolean DEFAULT_WITH_IGNORE_LEADING_WHITE_SPACE_VALUE = true;
+    protected static final String DEFAULT_TIMESTAMP_FORMAT_VALUE = "ISO";
+    protected static final String TIMESTAMP_FORMAT = "timestampFormat";
 
-    protected Path filePath;
+
+
     protected int skipLines;
     protected Boolean withIgnoreLeadingWhiteSpace;
     protected String[] fieldMapping;
     protected String timestampFormat;
-    protected String fileTimestampFormat;
+
     protected char adInfoMappingDelimiter;
     protected Map<String, String> adInfoMapping = new HashMap<>();
     protected Class<GenericRawEvent> recordType;
     protected char delimiter;
-    protected String filePrefix;
-    protected String fileDateSeparator;
-    protected String fileSuffix;
 
     @SuppressWarnings("unchecked")
     public void doPresidioConfigure(Context context) {
+
         try {
             logger.debug("context is: {}", context);
-            setName("presidio-flume-csv-source");
-            delimiter = context.getString(DELIMITER_CONF_NAME, DEFAULT_DELIMITER_VALUE).charAt(0);
-            filePrefix = context.getString(FILE_PREFIX, "");
-            fileDateSeparator = context.getString(FILE_DATE_SEPARATOR, "");
-            fileSuffix = context.getString(FILE_SUFFIX, "");
             timestampFormat = context.getString(TIMESTAMP_FORMAT, DEFAULT_TIMESTAMP_FORMAT_VALUE);
-            fileTimestampFormat = context.getString(FILE_TIMESTAMP_FORMAT, DEFAULT_FILE_TIMESTAMP_FORMAT_VALUE);
-            fileTimestampFormat = context.getString(FILE_TIMESTAMP_FORMAT, DEFAULT_FILE_TIMESTAMP_FORMAT_VALUE);
+            delimiter = context.getString(DELIMITER_CONF_NAME, DEFAULT_DELIMITER_VALUE).charAt(0);
             adInfoMappingDelimiter = context.getString(AD_INFO_MAPPING_DELIMITER, DEFAULT_AD_INFO_MAPPING_DELIMITER_VALUE).charAt(0);
             final String[] adInfoMappingAsStringArray = context.getString(AD_INFO_MAPPING, DEFAULT_AD_INFO_MAPPING_VALUE).split(String.valueOf(delimiter));
             for (String mapping : adInfoMappingAsStringArray) {
                 final String[] split = mapping.split(String.valueOf(adInfoMappingDelimiter));
                 adInfoMapping.put(split[0], split[1]);
             }
-            getNextFile(context);
-
-            timestampFormat = context.getString(TIMESTAMP_FORMAT, "ISO");
-
             recordType = (Class<GenericRawEvent>) Class.forName(context.getString(RECORD_TYPE_CONF_NAME));
             fieldMapping = context.getString(FIELD_MAPPING_CONF_NAME).split(String.valueOf(delimiter));
-            skipLines = context.getInteger(SKIP_LINES_CONF_NAME, 0);
+            skipLines = context.getInteger(LINES_TO_SKIP, 0);
             withIgnoreLeadingWhiteSpace = context.getBoolean(WITH_IGNORE_LEADING_WHITE_SPACE_CONF_NAME, DEFAULT_WITH_IGNORE_LEADING_WHITE_SPACE_VALUE);
-        } catch (Exception e) {
-            logger.error("Error configuring CsvSource!", e);
         }
 
-    }
-
-
-    /**
-     * The method that populated the filePath - basically responsible to get the path of the next file
-     * In this implementation the method will generate the file name based on the current startDate and endDate
-     * @param context
-     */
-    protected void getNextFile(Context context) {
-        switch (fileTimestampFormat) {
-            case "ISO":
-                filePath = Paths.get(context.getString(FILE_PATH_CONF_NAME) + filePrefix + startDate + fileDateSeparator + endDate + fileSuffix);
-                break;
-            case "EPOCHSECONDS":
-                filePath = Paths.get(context.getString(FILE_PATH_CONF_NAME) + filePrefix + startDate.getEpochSecond() + fileDateSeparator + endDate.getEpochSecond() + fileSuffix);
-                break;
-            case "EPOCHMILLI":
-                filePath = Paths.get(context.getString(FILE_PATH_CONF_NAME) + filePrefix + (1000L * startDate.getEpochSecond()) + fileDateSeparator + (1000L * endDate.getEpochSecond()) + fileSuffix);
-                break;
-            default: //some format
-                DateTimeFormatter dtf = DateTimeFormatter.ofPattern((timestampFormat));
-                String startDateInFormat = dtf.format(startDate);
-                String dateTimeInFormat = dtf.format(endDate);
-                filePath = Paths.get(context.getString(FILE_PATH_CONF_NAME) + filePrefix + startDateInFormat + fileDateSeparator + dateTimeInFormat + fileSuffix);
-                break;
-        }
-    }
-
-    @Override
-    protected List<AbstractDocument> doFetch(int i){
-        List<GenericRawEvent> genericEvents;
-        try (Reader reader = Files.newBufferedReader(filePath)) {
-            genericEvents = getGenericRawEventsFromCsv(reader);
-            return convertEvents(genericEvents);
-
-        } catch (Exception e) {
-            logger.error("CSV source {} Failed to fetch from csv file", this, e);
-            return null;
+        catch (Exception e)
+        {
+            logger.error("Error configuring CsvFileSource!", e);
         }
 
 
-
     }
+
+    @SuppressWarnings("unchecked")
+    protected abstract List<AbstractDocument> doFetch(Schema schema,int pageNum);
+
+    protected abstract String getNextFilePath();
 
     protected List<GenericRawEvent> getGenericRawEventsFromCsv(Reader reader) {
         List<GenericRawEvent> genericEvents;ColumnPositionMappingStrategy<GenericRawEvent> strategy = new ColumnPositionMappingStrategy<>();
@@ -155,6 +108,8 @@ public class CsvSourceAgile extends AbstractPageablePresidioSource {
     protected List<AbstractDocument> convertEvents(List<GenericRawEvent> genericEvents) throws IllegalAccessException {
         List<AbstractDocument> events = new ArrayList<>();
         for (GenericRawEvent genericEvent : genericEvents) {
+
+            //In case its a Authentication event
             if (recordType.equals(GenericAuthenticationRawEvent.class)) {
                 final AuthenticationRawEvent event = new AuthenticationRawEvent();
                 final GenericAuthenticationRawEvent genericAuthenticationRawEvent = (GenericAuthenticationRawEvent) genericEvent;
@@ -187,8 +142,10 @@ public class CsvSourceAgile extends AbstractPageablePresidioSource {
                 }
 
                 event.setDateTime(dateTime);
+
+                //Replace teh additional info fileds the name based on the additional info mapping
                 if (!adInfoMapping.isEmpty()) {
-                    final Field[] fields = genericEvent.getClass().getDeclaredFields();
+                    final Field[] fields = genericAuthenticationRawEvent.getClass().getDeclaredFields();
                     for (Map.Entry<String, String> stringStringEntry : adInfoMapping.entrySet()) {
                         for (Field field : fields) {
                             final String fieldName = field.getName();
@@ -203,16 +160,27 @@ public class CsvSourceAgile extends AbstractPageablePresidioSource {
                 }
                 events.add(event);
             }
+
+            //TODO - File schema
+            else if (recordType.equals(GenericFileRawEvent.class))
+            {
+
+            }
+
+            //TODO - AD  schema
+            else if (recordType.equals(GenericADActivityRawEvent.class))
+            {
+
+            }
         }
 
         return events;
     }
 
 
+
+
+
+
+
 }
-
-
-
-
-
-

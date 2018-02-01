@@ -17,6 +17,8 @@ public class GenericAuthenticationRawEvent extends GenericRawEvent {
     private String userId;
     private String operationType;
 
+
+    //Additional information
     public String adInfo1;
     public String adInfo2;
     public String adInfo3;
