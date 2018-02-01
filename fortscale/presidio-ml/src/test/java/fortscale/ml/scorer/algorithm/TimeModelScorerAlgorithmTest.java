@@ -1,6 +1,7 @@
 package fortscale.ml.scorer.algorithm;
 
 import fortscale.ml.model.TimeModel;
+import fortscale.ml.model.metrics.CategoryRarityModelBuilderMetricsContainer;
 import fortscale.ml.model.metrics.TimeModelBuilderMetricsContainer;
 import fortscale.ml.model.metrics.TimeModelBuilderPartitionsMetricsContainer;
 import fortscale.ml.scorer.algorithms.TimeModelScorerAlgorithm;
@@ -9,6 +10,11 @@ import org.junit.Test;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -18,10 +24,11 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
     private static final int DAILY_TIME_RESOLUTION = 60 * 60 * 24;
     private static final int DAILY_BUCKET_SIZE = 60 * 10;
     private static final int MAX_RARE_TIMESTAMP_COUNT = 10;
+    private TimeModelBuilderMetricsContainer timeModelBuilderMetricsContainer = mock(TimeModelBuilderMetricsContainer.class);
+    private TimeModelBuilderPartitionsMetricsContainer timeModelBuilderPartitionsMetricsContainer = mock(TimeModelBuilderPartitionsMetricsContainer.class);
+    private CategoryRarityModelBuilderMetricsContainer categoryRarityModelBuilderMetricsContainer = mock(CategoryRarityModelBuilderMetricsContainer.class);
     private static final int MAX_NUM_OF_RARE_TIMESTAMPS = 15;
     private static final double X_WITH_VALUE_HALF_FACTOR = 0.3333333333333333;
-    TimeModelBuilderMetricsContainer timeModelBuilderMetricsContainer = mock(TimeModelBuilderMetricsContainer.class);
-    TimeModelBuilderPartitionsMetricsContainer timeModelBuilderPartitionsMetricsContainer = mock(TimeModelBuilderPartitionsMetricsContainer.class);
 
 
     private Double calcScore(List<Long> times, long timeToScore) {
@@ -38,8 +45,8 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
 
     private Double calcScore(Map<Long, Double> timeToCounter, long timeToScore) {
         TimeModel model = new TimeModel();
-        model.init(DAILY_TIME_RESOLUTION, DAILY_BUCKET_SIZE, MAX_RARE_TIMESTAMP_COUNT, timeToCounter, 1, timeModelBuilderMetricsContainer, timeModelBuilderPartitionsMetricsContainer);
-        TimeModelScorerAlgorithm scorerAlgorithm = new TimeModelScorerAlgorithm(MAX_RARE_TIMESTAMP_COUNT, MAX_NUM_OF_RARE_TIMESTAMPS, X_WITH_VALUE_HALF_FACTOR, 0.0);
+        model.init(DAILY_TIME_RESOLUTION, DAILY_BUCKET_SIZE, MAX_RARE_TIMESTAMP_COUNT, timeToCounter, 1, timeModelBuilderMetricsContainer, timeModelBuilderPartitionsMetricsContainer,categoryRarityModelBuilderMetricsContainer);
+        TimeModelScorerAlgorithm scorerAlgorithm = new TimeModelScorerAlgorithm(MAX_RARE_TIMESTAMP_COUNT, MAX_NUM_OF_RARE_TIMESTAMPS,X_WITH_VALUE_HALF_FACTOR, 0.0);
         return scorerAlgorithm.calculateScore(timeToScore, model);
     }
 
@@ -55,94 +62,202 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
 
     @Test
     public void elementaryCheck() {
-        List<Long> times = new ArrayList<>();
+
         long epochSeconds = 1000;
-        for (int i = 0; i < 100; i++) {
-            times.add(epochSeconds);
+        Random rnd = new Random(1);
+
+        Map<Long, Double> timeToCounter = new HashMap<>();
+        for (int i = 0; i < 50 ; i++) {
+            timeToCounter.put((long)(rnd.nextDouble( )* 1000)+i*DAILY_TIME_RESOLUTION,1D);
         }
-        assertScore(times, epochSeconds, 0);
+        Double score = calcScore(timeToCounter, epochSeconds);
+        Assert.assertEquals(score,0,0.001);
     }
 
     @Test
     public void elementaryCheckWithOneOutlier() {
         List<Long> times = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 5; i++) {
             times.add(1000L);
         }
+        Map<Long, Double> timeToCounter = new HashMap<>();
+        for (int i = 0; i < times.size() ; i++) {
+            timeToCounter.put(i*times.get(i)*DAILY_TIME_RESOLUTION,times.get(i).doubleValue());
+        }
         long epochSeconds = 5000;
-        assertScore(times, epochSeconds, 48);
+
+        Assert.assertEquals(38D,calcScore(timeToCounter,epochSeconds),0.001);
     }
 
     @Test
     public void testUniformlyRandomDistribution() {
         Random rnd = new Random(1);
-        List<Long> times = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
-            times.add((long)(rnd.nextDouble( ) * DAILY_TIME_RESOLUTION));
+        Map<Long, Double> timeToCounter = new HashMap<>();
+        for (int i = 0; i < 100 ; i++) {
+            timeToCounter.put((long)(rnd.nextDouble( )* DAILY_TIME_RESOLUTION),1D);
         }
-
-        for (int i = 0; i < times.size(); i++) {
-            assertScore(times, times.get(i), 0);
+        for (Map.Entry<Long, Double> entry : timeToCounter.entrySet()) {
+            Double score = calcScore(timeToCounter, entry.getKey());
+            Assert.assertEquals(score,0,0.001);
         }
     }
 
     @Test
     public void testScoreOfIsolatedTimes() {
         Random rnd = new Random(1);
-        List<Long> times = new ArrayList<>();
-        for (int i = 0; i < 50; i++) {
-            times.add((long)(rnd.nextDouble( ) * 6000));
+        Map<Long, Double> timeToCounter = new HashMap<>();
+        for (int i = 0; i < 50 ; i++) {
+            timeToCounter.put((long)(rnd.nextDouble( )* 6000)+i*DAILY_TIME_RESOLUTION,1D);
         }
         long isolatedTimes[] = new long[]{30000, 40000, 50000, 60000};
-        double scores[] = new double[]{100, 88, 76, 66};
+        double scores[] = new double[]{87, 87, 76, 65};
         for (int i = 0; i < scores.length; i++) {
-            assertScore(times, isolatedTimes[i], scores[i]);
-            times.add(isolatedTimes[i]);
+            timeToCounter.put(isolatedTimes[i],scores[i]);
+            Double score = calcScore(timeToCounter, isolatedTimes[i]);
+            Assert.assertEquals(scores[i],score,0.01);
+            timeToCounter.put(isolatedTimes[i]+i*DAILY_TIME_RESOLUTION,1D);
         }
-        assertScore(times, 500, 0);
+        Assert.assertEquals(0,calcScore(timeToCounter,500),0.001);
     }
 
     @Test
     public void testScoresInDifferentDistancesFromTheClusters() {
         Random rnd = new Random(1);
-        List<Long> timesClustered = new ArrayList<>();
+        Map<Long, Double> timeToCounter = new HashMap<>();
         int clusterSizes[] = new int[]{2, 2, 46};
         int clusterSpans[] = new int[]{600, 600, 2400};
         int clusterOffsets[] = new int[]{0, 6600, 2400};
-        for (int cluster = 0; cluster < clusterSizes.length; cluster++) {
-            for (int i = 0; i < clusterSizes[cluster]; i++) {
-                long epochSeconds = (long)(rnd.nextDouble( ) * clusterSpans[cluster] + clusterOffsets[cluster]);
-                timesClustered.add(epochSeconds);
+        int amountOfDays=8;
+        for(int day=0;day<amountOfDays;day ++) {
+            for (int cluster = 0; cluster < clusterSizes.length; cluster++) {
+                for (int i = 0; i < clusterSizes[cluster]; i++) {
+                    long epochSeconds = day*DAILY_TIME_RESOLUTION + (long) (rnd.nextDouble() * clusterSpans[cluster] + clusterOffsets[cluster]);
+                    timeToCounter.put(epochSeconds, 1D);
+                }
             }
         }
 
-        long[] timesToScore = new long[]{14000, 10500, 10000, 9000, 8500};
-        double[] scores = new double[]{100, 99, 96, 84, 45};
+        long[] timesToScore = new long[]{14000, 13000, 12000, 11000, 10000};
+        double[] scores = new double[]{92, 87, 84, 65, 0};
         for (int i = 0; i < timesToScore.length; i++) {
-            assertScore(timesClustered, timesToScore[i], scores[i]);
+            Double score = calcScore(timeToCounter, amountOfDays*DAILY_TIME_RESOLUTION+timesToScore[i]);
+            Assert.assertEquals(scores[i],score,0.01);
         }
+    }
+
+    @Test
+    public void testScoreInOneMajorClusterAndSecondaryCluster()
+    {
+        Instant startInstant = Instant.EPOCH;
+        Instant endInstant = startInstant.plus(Duration.ofDays(30));
+        int activityStartHour = 8;
+        int activityEndHour=10;
+        int activityIntervalInSeconds=10*60;
+
+        // 30 days of 10minutes activity 8AM-10AM
+        Map<Long, Double> trainTimeToCounterData = fillTimeToCounter(startInstant, endInstant, activityStartHour, activityEndHour, activityIntervalInSeconds);
+        // days 31 of 10minutes activity 2AM-4AM
+        startInstant = endInstant;
+        endInstant = endInstant.plus(Duration.ofDays(1));
+        activityStartHour=20;
+        activityEndHour=22;
+        trainTimeToCounterData.putAll(fillTimeToCounter(startInstant, endInstant, activityStartHour, activityEndHour, activityIntervalInSeconds));
+
+        // days 32 of 10minutes activity 8PM-10PM
+        startInstant = endInstant;
+        endInstant = endInstant.plus(Duration.ofDays(1));
+        activityStartHour=20;
+        activityEndHour=22;
+        Map<Long, Double> testTimeToCounterData = fillTimeToCounter(startInstant, endInstant, activityStartHour, activityEndHour, activityIntervalInSeconds);
+
+        // days 32 of 10minutes activity 2AM-4AM
+        activityStartHour=2;
+        activityEndHour=4;
+        testTimeToCounterData.putAll(fillTimeToCounter(startInstant, endInstant, activityStartHour, activityEndHour, activityIntervalInSeconds));
+
+        for (Long time: testTimeToCounterData.keySet()){
+            Assert.assertEquals(87,calcScore(trainTimeToCounterData,time),1);
+        }
+    }
+
+    @Test
+    public void testScoreInOneMajorClusterInHighDensityAndSecondaryCluster()
+    {
+        Instant startInstant = Instant.EPOCH;
+        Instant endInstant = startInstant.plus(Duration.ofDays(30));
+        int activityStartHour = 8;
+        int activityEndHour=10;
+        int activityIntervalInSeconds=10*60;
+        int highDensityActivityIntervalInSeconds=30;
+
+        // 30 days of 10minutes activity 8AM-10AM
+        Map<Long, Double> trainTimeToCounterData = fillTimeToCounter(startInstant, endInstant, activityStartHour, activityEndHour, activityIntervalInSeconds);
+        // days 31 of 1 sec activity 2AM-4AM
+        startInstant = endInstant;
+        endInstant = endInstant.plus(Duration.ofDays(1));
+        activityStartHour=20;
+        activityEndHour=22;
+        trainTimeToCounterData.putAll(fillTimeToCounter(startInstant, endInstant, activityStartHour, activityEndHour, highDensityActivityIntervalInSeconds));
+
+        // days 32 of 1 sec activity 8PM-10PM
+        startInstant = endInstant;
+        endInstant = endInstant.plus(Duration.ofDays(1));
+        activityStartHour=20;
+        activityEndHour=22;
+        Map<Long, Double> testTimeToCounterData = fillTimeToCounter(startInstant, endInstant, activityStartHour, activityEndHour, highDensityActivityIntervalInSeconds);
+
+        // days 32 of 1 sec activity 2AM-4AM
+        activityStartHour=2;
+        activityEndHour=4;
+        testTimeToCounterData.putAll(fillTimeToCounter(startInstant, endInstant, activityStartHour, activityEndHour, highDensityActivityIntervalInSeconds));
+
+        for (Long time: testTimeToCounterData.keySet()){
+            Assert.assertEquals(87,calcScore(trainTimeToCounterData,time),1);
+        }
+    }
+
+
+    public Map<Long, Double> fillTimeToCounter(Instant startInstant, Instant endInstant, int activityStartHour, int activityEndHour, int activityIntervalInSeconds) {
+        Map<Long, Double> timeToCounter = new HashMap<>();
+
+        Instant cursor = Instant.ofEpochSecond(startInstant.plus(Duration.ofHours(activityStartHour)).getEpochSecond());
+        while(cursor.isBefore(endInstant))
+        {
+            while (LocalDateTime.ofInstant(cursor, ZoneOffset.UTC).getHour()<activityEndHour)
+            {
+                timeToCounter.put(cursor.getEpochSecond(),1D);
+                cursor=cursor.plus(Duration.ofSeconds(activityIntervalInSeconds));
+            }
+            cursor=cursor.truncatedTo(ChronoUnit.DAYS).plus(Duration.ofDays(1)).plus(Duration.ofHours(activityStartHour));
+        }
+        return timeToCounter;
     }
 
     @Test
     public void testScoresOfOneBigClusterAndManyDispersedTimes() {
         Random rnd = new Random(1);
-        List<Long> times = new ArrayList<>();
-        for (int i = 0; i < 50; i++) {
-            long epochSeconds = (long)(rnd.nextDouble( ) * 3000);
-            times.add(epochSeconds);
+        Map<Long, Double> timeToCounter = new HashMap<>();
+
+        int amountOfDays = 30;
+        for (int day = 0; day < amountOfDays; day++) {
+            for (int i = 0; i < 50; i++) {
+                long epochSeconds = day * DAILY_TIME_RESOLUTION + (long) (rnd.nextDouble() * 3000);
+                timeToCounter.put(epochSeconds, 1D);
+            }
         }
 
-        double scores[] = new double[]{100, 87, 76, 66};
-        double finalScore = 55;
+        double scores[] = new double[]{100, 87, 74, 64};
+        double finalScore = 51;
         long dispersedTimes[] = new long[scores.length];
         for (int i = 0; i < scores.length; i++) {
-            dispersedTimes[i] = 3000 + (i + 1) * 9000;
-            assertScore(times, dispersedTimes[i], scores[i]);
-            times.add(dispersedTimes[i]);
+            dispersedTimes[i] = amountOfDays * DAILY_TIME_RESOLUTION + 3000 + (i + 1) * 6000;
+            Double score = calcScore(timeToCounter, dispersedTimes[i]);
+            Assert.assertEquals(scores[i], score,0.001);
+            timeToCounter.put(dispersedTimes[i]+i*DAILY_TIME_RESOLUTION,1D);
         }
 
         for (int i = 0; i < scores.length; i++) {
-            assertScore(times, dispersedTimes[i], finalScore);
+            Assert.assertEquals(finalScore,calcScore(timeToCounter,dispersedTimes[i]),1);
         }
     }
 
@@ -151,7 +266,7 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
     public void testNewWorkingTimeScore() {
         int scenarioSteps[] = new int[]{450, 900, 900};
         int scenarioNumberOfSteps[] = new int[]{16, 8, 4};
-        int scenarioScoreThresholds[] = new int[]{0, 9, 16};
+        int scenarioScoreThresholds[] = new int[]{0, 7, 26};
         for (int scenario = 0; scenario < scenarioSteps.length; scenario++) {
             List<Long> times = new ArrayList<>();
             int step = 200;
