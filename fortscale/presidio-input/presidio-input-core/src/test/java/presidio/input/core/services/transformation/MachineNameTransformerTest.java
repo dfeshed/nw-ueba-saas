@@ -5,6 +5,7 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import presidio.input.core.services.transformation.managers.AuthenticationTransformerManager;
+import presidio.input.core.services.transformation.transformer.MachineNameTransformer;
 import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.domain.rawevents.AuthenticationRawEvent;
 import presidio.sdk.api.domain.transformedevents.AuthenticationTransformedEvent;

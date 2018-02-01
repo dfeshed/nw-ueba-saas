@@ -1,36 +1,39 @@
-package presidio.input.core.services.transformation;
+package presidio.input.core.services.transformation.transformer;
 
 import fortscale.utils.logging.Logger;
 import org.springframework.util.CollectionUtils;
 import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.utils.ReflectionUtils;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
-public class FolderPathTransformer implements Transformer {
+public class FolderPathByOperationTypeTransformer implements Transformer {
 
-    private static final Logger logger = Logger.getLogger(FolderPathTransformer.class);
+    private static final Logger logger = Logger.getLogger(FolderPathByOperationTypeTransformer.class);
+    private final FileToFolderPathTransformer folderPathTransformer;
     private final String filePathFieldName;
     private final String inputPathFieldName;
     private final String operationTypeFieldName;
     private final String folderPathFieldName;
     private final List<String> folderOperations;
-    private final Pattern pattern;
 
-    public FolderPathTransformer(String inputPathFieldName, String filePathFieldName, String folderPathFieldName, String operationTypeFieldName, List<String> folderOperations) {
+    public FolderPathByOperationTypeTransformer(String inputPathFieldName, String filePathFieldName, String folderPathFieldName, String operationTypeFieldName, List<String> folderOperations) {
+        this.folderPathTransformer = new FileToFolderPathTransformer(inputPathFieldName, folderPathFieldName);
         this.inputPathFieldName = inputPathFieldName;
         this.filePathFieldName = filePathFieldName;
         this.folderPathFieldName = folderPathFieldName;
         this.operationTypeFieldName = operationTypeFieldName;
         this.folderOperations = folderOperations;
-        pattern = Pattern.compile(".*\\\\(?!.*\\\\)|.*\\/(?!.*\\/)");
     }
 
     @Override
+    /**
+     * If the events operation type is in the folderOperations list the received path is a folder path.
+     * If the events operation type is not in the list - extract the folder path from the received path.
+     */
     public List<AbstractInputDocument> transform(List<AbstractInputDocument> documents) {
 
         documents.forEach((AbstractInputDocument document) -> {
@@ -38,27 +41,19 @@ public class FolderPathTransformer implements Transformer {
                     String filePathValue = (String) ReflectionUtils.getFieldValue(document, inputPathFieldName);
 
                     if (isNotBlank(filePathValue)) {
-                        String outputFilePath = null;
-                        String outputFolderPath = null;
                         if (isFolderOperation(document)) {
-                            outputFolderPath = filePathValue;
-                        } else {
-                            Matcher matcher = pattern.matcher(filePathValue);
-                            if (matcher.find()) {
-                                outputFolderPath = matcher.group();
-                                outputFilePath = filePathValue;
+                            try {
+                                ReflectionUtils.setFieldValue(document, folderPathFieldName, filePathValue);
+                                ReflectionUtils.setFieldValue(document, filePathFieldName, null);
+                            } catch (IllegalAccessException e) {
+                                logger.error("error setting one of {} {} field values", filePathFieldName, folderPathFieldName, e);
                             }
-                        }
-                        try {
-                            ReflectionUtils.setFieldValue(document, filePathFieldName, outputFilePath);
-                            ReflectionUtils.setFieldValue(document, folderPathFieldName, outputFolderPath);
-                        } catch (IllegalAccessException e) {
-                            logger.error("error setting one of {} {} field values", filePathFieldName, folderPathFieldName, e);
+                        } else {
+                            this.folderPathTransformer.transform(Arrays.asList(document));
                         }
                     }
                 }
         );
-
 
         return documents;
     }

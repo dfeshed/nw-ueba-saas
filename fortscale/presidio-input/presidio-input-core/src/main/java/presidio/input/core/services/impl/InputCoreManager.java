@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import presidio.input.core.RawEventsPageIterator;
 import presidio.input.core.services.converters.ConverterService;
 import presidio.input.core.services.data.AdeDataService;
-import presidio.input.core.services.transformation.managers.TransformationService;
+import presidio.input.core.services.transformation.TransformationService;
 import presidio.monitoring.aspect.annotations.RunTime;
 import presidio.monitoring.records.Metric;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
