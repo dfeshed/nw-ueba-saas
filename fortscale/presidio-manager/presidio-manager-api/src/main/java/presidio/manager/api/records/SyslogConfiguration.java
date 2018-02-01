@@ -18,8 +18,8 @@ public class SyslogConfiguration extends JsonToObjectConfiguration implements Fo
     public SyslogConfiguration(JsonNode node) {
         setBadParams(new ArrayList<>());
         createConfiguration(node);
-        badParamsAddKeys(alert.badParams());
-        badParamsAddKeys(user.badParams());
+        badParamsAddKeys(addPrefixToBadParams(ALERT, alert.badParams()));
+        badParamsAddKeys(addPrefixToBadParams(USER, user.badParams()));
         checkStructure();
     }
 
@@ -39,7 +39,6 @@ public class SyslogConfiguration extends JsonToObjectConfiguration implements Fo
     public void setUser(SyslogSenderConfiguration user) {
         this.user = user;
     }
-
 
     @Override
     public void setKeyValue(String key, JsonNode value) {

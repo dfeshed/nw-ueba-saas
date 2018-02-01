@@ -14,7 +14,7 @@ public class OutputConfiguration extends JsonToObjectConfiguration {
     public OutputConfiguration(JsonNode node) {
         setBadParams(new ArrayList<>());
         createConfiguration(node);
-        badParamsAddKeys(forwarderConfiguration.badParams());
+        badParamsAddKeys(addPrefixToBadParams(SYSLOG, forwarderConfiguration.badParams()));
         checkStructure();
     }
 

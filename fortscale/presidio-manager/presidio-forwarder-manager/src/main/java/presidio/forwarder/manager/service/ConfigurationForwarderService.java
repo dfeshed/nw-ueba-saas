@@ -1,8 +1,6 @@
 package presidio.forwarder.manager.service;
 
 import fortscale.utils.logging.Logger;
-import org.elasticsearch.index.mapper.ObjectMapper;
-import presidio.config.server.client.ConfigurationServerClientService;
 import presidio.manager.api.records.ConfigurationBadParamDetails;
 import presidio.manager.api.records.OutputConfiguration;
 import presidio.manager.api.records.PresidioManagerConfiguration;
@@ -12,31 +10,30 @@ import presidio.manager.api.service.ConfigurationProcessingService;
 import java.util.List;
 
 
-public class ConfigurationFarwarderService implements ConfigurationProcessingService {
+public class ConfigurationForwarderService implements ConfigurationProcessingService {
 
-    private static final Logger logger = Logger.getLogger(ConfigurationFarwarderService.class);
+    private static final Logger logger = Logger.getLogger(ConfigurationForwarderService.class);
 
     private final String FORWARDER = "forwarder";
     private final String LOCATION_TYPE = "jsonPath";
     private final String UNSUPPORTED_ERROR = "unsupportedFieldError";
     private final String UNSUPPORTED_ERROR_MESSAGE = "Unsupported Error, %s field is not supported. Allowed values: [syslog]";
-    private final String MISSIG_DATA_ERROR_MESSAGE = "Missing forwarder configuration";
+    private final String MISSING_DATA_ERROR_MESSAGE = "Missing forwarder configuration";
     private final String MISSING_PROPERTY = "missingProperty";
 
-    private final ConfigurationServerClientService configServerClient;
 
-
-    public ConfigurationFarwarderService(ConfigurationServerClientService configServerClient) {
-        this.configServerClient = configServerClient;
+    public ConfigurationForwarderService() {
 
     }
 
     public ValidationResults validateConfiguration(PresidioManagerConfiguration presidioManagerConfiguration) {
+        logger.debug("Validating forwarder configuration");
         return validateForwarderConfiguration(presidioManagerConfiguration.getOutputConfiguration());
     }
 
     public boolean applyConfiguration() {
-        return false;
+        logger.debug("No applying is needed");
+        return true;
     }
 
 
@@ -44,17 +41,19 @@ public class ConfigurationFarwarderService implements ConfigurationProcessingSer
         ValidationResults validationResults = new ValidationResults();
         outputConfiguration.getBadParams();
         if (outputConfiguration == null) {
-            ConfigurationBadParamDetails error = new ConfigurationBadParamDetails(FORWARDER, FORWARDER, MISSING_PROPERTY, LOCATION_TYPE, MISSIG_DATA_ERROR_MESSAGE);
+            ConfigurationBadParamDetails error = new ConfigurationBadParamDetails(FORWARDER, FORWARDER, MISSING_PROPERTY, LOCATION_TYPE, MISSING_DATA_ERROR_MESSAGE);
             validationResults.addError(error);
+            logger.debug("Missing forwarder configuration");
             return validationResults;
         }
         if (!outputConfiguration.isStructureValid()) {
             return UnsupportedError(outputConfiguration);
         }
-        return null;
+        return validationResults;
     }
 
     private ValidationResults UnsupportedError(OutputConfiguration outputConfiguration) {
+        logger.debug("Forwarder configuration is invalid");
         List<String> badParams = outputConfiguration.getBadParams();
         ValidationResults validationResults = new ValidationResults();
         String location;

@@ -40,6 +40,14 @@ public abstract class JsonToObjectConfiguration {
 
     abstract void checkStructure();
 
+    public List<String> addPrefixToBadParams(String prefix, List<String> badParams) {
+        List<String> prefixBadParams = new ArrayList<>();
+        badParams.forEach(param -> {
+            prefixBadParams.add(prefix + "/" + param);
+        });
+        return prefixBadParams;
+    }
+
     public void createConfiguration(JsonNode node) {
         this.badParams = new ArrayList<>();
         Iterator<String> itr = node.fieldNames();

@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.config.server.client.ConfigurationServerClientService;
 import presidio.config.server.spring.ConfigServerClientServiceConfiguration;
+import presidio.forwarder.manager.spring.ForwarderConfiguration;
 import presidio.manager.airlfow.spring.AirflowConfiguration;
 import presidio.manager.api.service.ConfigurationProcessingService;
 import presidio.manager.api.service.ManagerService;
@@ -23,7 +24,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 @Configuration
-@Import(value = {SecurityManagerConfiguration.class, AirflowConfiguration.class, ManagerServiceConfig.class, ConfigServerClientServiceConfiguration.class})
+@Import(value = {SecurityManagerConfiguration.class, AirflowConfiguration.class, ManagerServiceConfig.class, ConfigServerClientServiceConfiguration.class, ForwarderConfiguration.class})
 public class ManagerWebappConfiguration {
 
     @Value("#{'${spring.profiles.active:default}'.split(',')}")
@@ -43,11 +44,15 @@ public class ManagerWebappConfiguration {
     ConfigurationProcessingService configurationSecurityService;
 
     @Autowired
+    @Resource(name = "configurationForwarderServcie")
+    ConfigurationProcessingService configurationForwarderService;
+
+    @Autowired
     private ConfigurationServerClientService configServerClient;
 
     @Bean
     ConfigurationManagerService configurationServiceImpl() {
-        return new ConfigurationManagerService(configurationAirflowServcie, configurationSecurityService);
+        return new ConfigurationManagerService(configurationAirflowServcie, configurationSecurityService, configurationForwarderService);
     }
 
     @Bean

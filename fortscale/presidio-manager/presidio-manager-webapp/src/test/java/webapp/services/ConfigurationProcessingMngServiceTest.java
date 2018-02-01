@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.forwarder.manager.service.ConfigurationForwarderService;
 import presidio.manager.airlfow.service.ConfigurationAirflowService;
 import presidio.manager.api.records.PresidioManagerConfiguration;
 import presidio.manager.api.records.ValidationResults;
@@ -39,7 +40,7 @@ public class ConfigurationProcessingMngServiceTest {
         dataPipeLineWithThreeFields = setJson("invalid_configuration_data_pipe_line_with_three_fields.json");
         dataPipeLineWithInvalidSchema = setJson("invalid_configuratoin_bad_schema.json");
         jsonWithGeneralError = setJson("invalid_configuration_general_error.json");
-        configurationManagerService = new ConfigurationManagerService(new ConfigurationAirflowService(null, "workflows", null, null), new ConfigurationSecurityService(null, null, "/tmp/httpdtest.conf", "/tmp/krb5test.conf", false));
+        configurationManagerService = new ConfigurationManagerService(new ConfigurationAirflowService(null, "workflows", null, null), new ConfigurationSecurityService(null, null, "/tmp/httpdtest.conf", "/tmp/krb5test.conf", false), new ConfigurationForwarderService());
     }
 
     @Test

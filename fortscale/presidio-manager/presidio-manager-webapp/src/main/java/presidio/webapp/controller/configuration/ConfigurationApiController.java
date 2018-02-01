@@ -24,7 +24,11 @@ import presidio.webapp.model.configuration.ConfigurationResponseError;
 import presidio.webapp.model.configuration.SecuredConfiguration;
 import presidio.webapp.service.ConfigurationManagerService;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -152,7 +156,7 @@ public class ConfigurationApiController implements ConfigurationApi {
             }
         }
 
-        // Round the start time value
+        // encrypt the password
         JsonNode systemJson = body.get(PresidioManagerConfiguration.SYSTEM);
         if (!systemJson.isNull()) {
             String plainPassword = systemJson.get(PASSWORD).asText();
@@ -197,7 +201,7 @@ public class ConfigurationApiController implements ConfigurationApi {
                     new BufferedReader(new InputStreamReader(p.getInputStream()));
 
             String line;
-            while ((line = reader.readLine())!= null) {
+            while ((line = reader.readLine()) != null) {
                 output.append(line).append("\n");
             }
 
