@@ -1,4 +1,4 @@
-package presidio.forwarder.manager.records;
+package presidio.manager.api.configuration;
 
 
 import java.util.List;

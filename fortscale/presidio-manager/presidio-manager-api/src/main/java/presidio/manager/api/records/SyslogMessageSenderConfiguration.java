@@ -3,7 +3,7 @@ package presidio.manager.api.records;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.commons.lang.StringUtils;
-import presidio.forwarder.manager.records.SyslogSenderConfiguration;
+import presidio.manager.api.configuration.SyslogSenderConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
