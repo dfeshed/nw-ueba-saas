@@ -18,7 +18,8 @@ if (config.environment !== 'test') {
     'investigate',
     [
       'queryNode.previouslySelectedTimeRanges',
-      'queryNode.serviceId'
+      'queryNode.serviceId',
+      'data.reconSize'
     ]
   );
 

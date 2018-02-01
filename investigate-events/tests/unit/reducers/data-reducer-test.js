@@ -5,6 +5,7 @@ import * as ACTION_TYPES from 'investigate-events/actions/types';
 import { LIFECYCLE } from 'redux-pack';
 import makePackAction from '../../helpers/make-pack-action';
 import EventColumnGroups from 'investigate-events/constants/OOTBColumnGroups';
+import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 
 module('Unit | Reducers | data-reducer');
 
@@ -32,4 +33,36 @@ test('Should show default column list in case of failure', function(assert) {
   });
   const newEndState = reducer(previous, successAction);
   assert.deepEqual(newEndState.columnGroups, EventColumnGroups);
+});
+
+test('test REHYDRATE', function(assert) {
+  const previous = Immutable.from({
+    reconSize: RECON_PANEL_SIZES.MAX
+  });
+
+  const action = {
+    type: ACTION_TYPES.REHYDRATE,
+    payload: {
+      investigate: {
+        data: {
+          reconSize: RECON_PANEL_SIZES.MIN
+        }
+      }
+    }
+  };
+  const newEndState = reducer(previous, action);
+  assert.deepEqual(newEndState.reconSize, RECON_PANEL_SIZES.MIN);
+});
+
+test('test REHYDRATE when state is not saved in local storage yet', function(assert) {
+  const previous = Immutable.from({
+    reconSize: RECON_PANEL_SIZES.MAX
+  });
+
+  const action = {
+    type: ACTION_TYPES.REHYDRATE,
+    payload: { }
+  };
+  const newEndState = reducer(previous, action);
+  assert.deepEqual(newEndState.reconSize, RECON_PANEL_SIZES.MAX);
 });

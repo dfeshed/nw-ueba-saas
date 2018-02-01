@@ -9,6 +9,7 @@ import {
   RECON_PANEL_SIZES
 } from 'investigate-events/constants/panelSizes';
 import CONFIG from './config';
+import _ from 'lodash';
 
 const valueNotInArray = (arr, val) => arr.indexOf(val) < 0;
 const unknownMetaSize = (val) => valueNotInArray(Object.values(META_PANEL_SIZES), val);
@@ -30,6 +31,10 @@ export default handleActions({
     return state.merge({
       columnGroup: columnGroup || 'SUMMARY'
     });
+  },
+
+  [ACTION_TYPES.REHYDRATE]: (state, { payload }) => {
+    return state.set('reconSize', _.get(payload, 'investigate.data.reconSize', state.reconSize));
   },
 
   [ACTION_TYPES.INITIALIZE_INVESTIGATE]: (state, { payload }) => {
