@@ -3,20 +3,27 @@ package fortscale.ml.model;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.google.common.base.Joiner;
+import fortscale.common.feature.CategoricalFeatureValue;
+import fortscale.ml.model.builder.CategoryRarityModelBuilder;
+import fortscale.ml.model.builder.CategoryRarityModelBuilderConf;
+import fortscale.ml.model.metrics.CategoryRarityModelBuilderMetricsContainer;
 import fortscale.ml.model.metrics.TimeModelBuilderMetricsContainer;
 import fortscale.ml.model.metrics.TimeModelBuilderPartitionsMetricsContainer;
 import fortscale.utils.ConversionUtils;
+import fortscale.utils.fixedduration.FixedDurationStrategy;
+import javafx.util.Pair;
 import org.springframework.util.Assert;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @JsonAutoDetect(
 		fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE,
 		setterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
 public class TimeModel implements PartitionedDataModel {
 	private static final int SMOOTHING_DISTANCE = 10;
+	private static final double SMOOTH_BUCKET_MAX_VALUE = 1;
 
 	private Integer timeResolution;
 	private Integer bucketSize;
@@ -25,32 +32,30 @@ public class TimeModel implements PartitionedDataModel {
 	private Long numOfSamples;
 
 	public void init(int timeResolution, int bucketSize, int maxRareTimestampCount, Map<?, Double> timeToCounter, long numberOfPartitions,
-					 TimeModelBuilderMetricsContainer timeModelBuilderMetricsContainer, TimeModelBuilderPartitionsMetricsContainer timeModelBuilderPartitionsMetricsContainer) {
-		Assert.isTrue(timeResolution % bucketSize == 0);
+					 TimeModelBuilderMetricsContainer timeModelBuilderMetricsContainer, TimeModelBuilderPartitionsMetricsContainer timeModelBuilderPartitionsMetricsContainer, CategoryRarityModelBuilderMetricsContainer categoryRarityModelBuilderMetricsContainer) {
+		Assert.isTrue(timeResolution % bucketSize == 0,"timeResolution must be multiplication of bucketSize");
 
 		this.timeResolution = timeResolution;
 		this.bucketSize = bucketSize;
+		Map<Long, Double> convertedTimeToCounter = castTimeCounterKeyToLong(timeToCounter);
+		Map<Long/*resolutionId*/, Map<Long/*time*/, Double /*counter*/>> resolutionTimeCounters = groupCountersByResolutionId(convertedTimeToCounter);
+		Map</*resolutionId*/Long,/*bucketHits*/ List<Double>> resolutionIdToBucketHits = createResolutionIdToBucketHitsMap(resolutionTimeCounters);
+		numOfSamples = getNumOfSamples(resolutionIdToBucketHits);
+		List<Double> bucketHits = mergeBuckets(resolutionIdToBucketHits);
 
-		numOfSamples = (long) timeToCounter.values().stream().mapToDouble(Double::doubleValue).sum();
+		// create smoothed buckets for each resolution id
+		Map<Long, List<Double>> resolutionIdToSmoothedBuckets = createResolutionIdToSmoothedBucketsMap(resolutionIdToBucketHits);
 
-		List<Double> bucketHits = calcBucketHits(timeToCounter);
-		smoothedBuckets = calcSmoothedBuckets(bucketHits);
+		// fill smooth buckets and smoothedBucketsThatWereHitToNubOfBuckets (category rarity model data)
+		smoothedBuckets = createInitializedBuckets();
+		Map<Pair<String, Instant>/*i.e. smoothedbucket that was hit ,date of activity*/, /*1*/Double> smoothedBucketsThatWereHitToNubOfBuckets = new HashMap<>();
+		mergeSmoothBuckets(resolutionIdToSmoothedBuckets, smoothedBucketsThatWereHitToNubOfBuckets,bucketHits);
 
-		Map<Long, Integer> roundedSmoothedCountersThatWereHitToNumOfBuckets = IntStream.range(0, bucketHits.size())
-				.filter(bucketInd -> bucketHits.get(bucketInd) > 0)
-				.boxed()
-				.collect(Collectors.groupingBy(
-						this::getRoundedCounter,
-						Collectors.reducing(
-								0,
-								smoothedCounter -> 1,
-								(smoothedCounter1, smoothedCounter2) -> smoothedCounter1 + smoothedCounter2
-						)));
+		// build categorical model
+		buildCategoryRarityModel(maxRareTimestampCount, categoryRarityModelBuilderMetricsContainer, smoothedBucketsThatWereHitToNubOfBuckets);
 
-		categoryRarityModel = new CategoryRarityModel();
+		// fill metrics data
 		long numDistinctFeatures = bucketHits.stream().filter(hits -> hits > 0).count();
-		categoryRarityModel.init(roundedSmoothedCountersThatWereHitToNumOfBuckets, maxRareTimestampCount * 2, numberOfPartitions, numDistinctFeatures);
-
 
 		int numOfDistinctSamples = 0;
 		for(Object time : timeToCounter.keySet()){
@@ -63,16 +68,116 @@ public class TimeModel implements PartitionedDataModel {
 
 	}
 
+	private void buildCategoryRarityModel(int maxRareTimestampCount, CategoryRarityModelBuilderMetricsContainer categoryRarityModelBuilderMetricsContainer, Map<Pair<String, Instant>, Double> smoothedBucketsThatWereHitToNumOfBuckets) {
+		CategoryRarityModelBuilderConf categoryRarityModelBuilderConf = new CategoryRarityModelBuilderConf(maxRareTimestampCount * 2);
+		categoryRarityModelBuilderConf.setPartitionsResolutionInSeconds(timeResolution);
+		categoryRarityModelBuilderConf.setEntriesToSaveInModel(getNumOfBuckets());
+
+		CategoryRarityModelBuilder categoryRarityModelBuilder = new CategoryRarityModelBuilder(categoryRarityModelBuilderConf, categoryRarityModelBuilderMetricsContainer);
+		CategoricalFeatureValue categoricalModelData = new CategoricalFeatureValue(FixedDurationStrategy.fromSeconds(timeResolution));
+		categoricalModelData.setHistogram(smoothedBucketsThatWereHitToNumOfBuckets);
+		categoryRarityModel = (CategoryRarityModel) categoryRarityModelBuilder.build(categoricalModelData);
+	}
+
+	private void mergeSmoothBuckets(Map<Long, List<Double>> resolutionIdToSmoothedBuckets, Map<Pair<String, Instant>, Double> smoothedBucketsThatWereHitToNumOfBuckets, List<Double> bucketHits) {
+		for (Map.Entry<Long, List<Double>> entry:resolutionIdToSmoothedBuckets.entrySet()){
+			List<Double> resolutionIdBucketHits = entry.getValue();
+			Long date = entry.getKey()*timeResolution;
+			for (int i = 0; i < resolutionIdBucketHits.size(); i++) {
+				Double resolutionIdBucketHit = resolutionIdBucketHits.get(i);
+				smoothedBuckets.set(i,smoothedBuckets.get(i) + resolutionIdBucketHit);
+				if( bucketHits.get(i)>0 && resolutionIdBucketHit >0)
+				{
+					smoothedBucketsThatWereHitToNumOfBuckets.put(new Pair<>(String.valueOf(i),Instant.ofEpochSecond(date)),SMOOTH_BUCKET_MAX_VALUE);
+				}
+			}
+		}
+	}
+
+	private List<Double> mergeBuckets(Map<Long, List<Double>> resolutionIdToBucketHits) {
+		List<Double> result = createInitializedBuckets();
+		for (Map.Entry<Long, List<Double>> entry:resolutionIdToBucketHits.entrySet()){
+			List<Double> bucketHits = entry.getValue();
+			for (int i = 0; i < bucketHits.size(); i++) {
+				result.set(i,result.get(i) + bucketHits.get(i));
+			}
+		}
+
+		return result;
+	}
+
+	private Map<Long, Double> castTimeCounterKeyToLong(Map<?, Double> timeToCounter) {
+		return timeToCounter.entrySet().stream().collect(Collectors.toMap(entry-> ConversionUtils.convertToLong(entry.getKey()), Map.Entry::getValue));
+	}
+
+	private Map<Long, List<Double>> createResolutionIdToSmoothedBucketsMap(Map<Long, List<Double>> resolutionIdToBucketHits) {
+		return resolutionIdToBucketHits.entrySet().stream()
+				.collect(Collectors.toMap(Map.Entry::getKey, e->calcSmoothedBuckets(e.getValue())));
+	}
+
+	/**
+	 *
+	 * @return the sum of bucket hits at {@param resolutionBucketHits}
+	 */
+	public long getNumOfSamples(Map<Long, List<Double>> resolutionBucketHits) {
+		return (long) resolutionBucketHits.values().stream().flatMap(List::stream).mapToDouble(Double::doubleValue).sum();
+	}
+
+	/**
+	 *
+	 * @param timeToCounter map containing sum of interaction in a specific time
+	 * @return Map with key: resolution id (i.e. first/second-day identifier) value: key:time, value: bucket hits in the resolution (in the same day)
+	 */
+	private Map<Long, List<Double>> createResolutionIdToBucketHitsMap(Map<Long, Map<Long, Double>> timeToCounter) {
+		Map<Long, List<Double>> result = new HashMap<>();
+
+		for (Map.Entry<Long, Map<Long, Double>> entry :
+				timeToCounter.entrySet()) {
+			List<Double> bucketHits = calcBucketHits(entry.getValue());
+			result.put(entry.getKey(), bucketHits);
+		}
+
+		return result;
+	}
+
+	/**
+	 * gather counters from the same resolution
+	 * @param timeToCounter map containing sum of interaction in a specific time
+	 * @return Map with key: resolution id (i.e. first/second-day identifier) value: all the active buckets in the resolution (in the same day)
+	 */
+	private Map<Long, Map<Long, Double>> groupCountersByResolutionId(Map<Long, Double> timeToCounter) {
+		Map<Long, Map<Long, Double>> resoutlionTimeCounters = new HashMap<>();
+
+		for (Map.Entry<Long, Double> entry : timeToCounter.entrySet()) {
+			Long timeResolutionId = entry.getKey() / timeResolution;
+			Map<Long, Double> timeCounters = resoutlionTimeCounters.get(timeResolutionId);
+			if (timeCounters == null) {
+				timeCounters = new HashMap<>();
+			}
+			timeCounters.put(entry.getKey(), entry.getValue());
+			resoutlionTimeCounters.put(timeResolutionId, timeCounters);
+		}
+		return resoutlionTimeCounters;
+	}
+
+
 	private List<Double> createInitializedBuckets() {
-		int numOfBuckets = timeResolution / bucketSize;
+		int numOfBuckets = getNumOfBuckets();
 		return new ArrayList<>(Collections.nCopies(numOfBuckets, 0D));
 	}
 
-	private List<Double> calcBucketHits(Map<?, Double> timeToCounter) {
+	private int getNumOfBuckets() {
+		return timeResolution / bucketSize;
+	}
+
+	private List<Double> calcBucketHits(Map<Long, Double> timeToCounter) {
 		List<Double> bucketHits = createInitializedBuckets();
-		for (Map.Entry<?, Double> timeAndCounter: timeToCounter.entrySet()) {
-			int bucketHit = getBucketIndex(ConversionUtils.convertToLong(timeAndCounter.getKey()));
-			bucketHits.set(bucketHit, bucketHits.get(bucketHit) + timeAndCounter.getValue());
+		for (Map.Entry<Long, Double> timeAndCounter: timeToCounter.entrySet()) {
+			int bucketHit = getBucketIndex(timeAndCounter.getKey());
+			if(timeAndCounter.getValue()>=1)
+			{
+				bucketHits.set(bucketHit, 1D);
+			}
 		}
 		return bucketHits;
 	}
@@ -101,7 +206,7 @@ public class TimeModel implements PartitionedDataModel {
 
 	private void cyclicallyAddToBucket(List<Double> buckets, int index, double add) {
 		index = (index + buckets.size()) % buckets.size();
-		buckets.set(index, buckets.get(index) + add);
+		buckets.set(index, Math.min(buckets.get(index) + add, SMOOTH_BUCKET_MAX_VALUE));
 	}
 
 	private int getBucketIndex(long epochSeconds) {
