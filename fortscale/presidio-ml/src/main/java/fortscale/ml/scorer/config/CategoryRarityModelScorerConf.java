@@ -12,7 +12,7 @@ import java.util.List;
 public class CategoryRarityModelScorerConf extends ModelScorerConf{
     public static final String SCORER_TYPE = "category-rarity-model-scorer";
 
-    public static final double X_WITH_VALUE_HALF_FACTOR = 0.3333333333333333;
+    public static final double X_WITH_VALUE_HALF_FACTOR = 0.25;
 
     @JsonProperty("minimum-number-of-distinct-values-to-influence")
     private int minNumOfDistinctValuesToInfluence;
