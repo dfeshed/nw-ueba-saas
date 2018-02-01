@@ -48,24 +48,29 @@ public class JsonEventFilterByFieldValueInterceptor extends AbstractPresidioJson
                     currFieldValue = "";
                 }
             } else {
-
                 final JsonElement jsonElement = eventBodyAsJson.get(currField);
                 if (jsonElement != null && !jsonElement.isJsonNull()) {
                     currFieldValue = jsonElement.getAsString();
                 } else {
                     currFieldValue = "";
-
                 }
             }
 
             currRegex = regexList.get(i);
+            if (currRegex.equals(EMPTY_STRING)) {
+                currRegex = "";
+            } else if (currRegex.equals(NULL_STRING)) {
+                if (currFieldValue == null) {
+                    return null;
+                }
+            }
             pattern = Pattern.compile(currRegex);
             matcher = pattern.matcher(currFieldValue);
             if (matcher.matches()) {
                 if (operation == Operation.OR) {
                     logger.trace("Filtering event {} because it matched the following filter: field: {}, fieldValue: {}, regex: {}.", eventBodyAsJson, currField, currFieldValue, currRegex);
-                    String failureReason = String.format("Filtering event because field %s matched regular expression. The values was %s",currField,currFieldValue);
-                    monitoringService.reportFailedEventMetric(failureReason,1);
+                    String failureReason = String.format("Filtering event because field %s matched regular expression. The values was %s", currField, currFieldValue);
+                    monitoringService.reportFailedEventMetric(failureReason, 1);
                     return null;
                 }
             } else {
@@ -80,7 +85,7 @@ public class JsonEventFilterByFieldValueInterceptor extends AbstractPresidioJson
             event.setBody(eventBodyAsJson.toString().getBytes());
             return event;
         } else {  /* we got here and couldn't NOT-filter? - we should filter */
-            monitoringService.reportFailedEventMetric("EVENT_FILTERED_ACCORDING_TO_CONFIGURATION2",1);
+            monitoringService.reportFailedEventMetric("EVENT_FILTERED_ACCORDING_TO_CONFIGURATION2", 1);
             return null;
         }
     }
