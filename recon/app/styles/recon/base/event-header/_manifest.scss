@@ -84,6 +84,12 @@
         }
       }
 
+      .label {
+        &:hover {
+          cursor: pointer;
+        }
+      }
+
       .event-title {
         @include rsa-font(header, large);
         color: text-color(primary, lightest);
