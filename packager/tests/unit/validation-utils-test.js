@@ -110,3 +110,17 @@ test('validateLogConfigFields - eventId out of range', function(assert) {
     'isConfigError': true
   });
 });
+
+test('validateLogConfigFields - empty configName', function(assert) {
+  const formData = {
+    configName: '',
+    protocol: 'Test',
+    primaryDestination: 'aa',
+    channels: [{ channel: 'Security', filter: 'Include', eventId: '1234' }]
+  };
+  const error = validateLogConfigFields(formData);
+  assert.deepEqual(error, {
+    isConfigError: true,
+    errorMessage: 'packager.emptyName'
+  });
+});

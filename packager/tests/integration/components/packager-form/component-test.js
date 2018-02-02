@@ -255,16 +255,19 @@ test('validates the packager config and sets the error field', function(assert) 
   assert.ok(this.$('.password-input-js').hasClass('is-error'), 'Expected to have error class on password field');
 });
 
-test('Protocol resets to default when reset button is clicked', function(assert) {
+test('Protocol and TestLog resets to default when reset button is clicked', function(assert) {
   new ReduxDataHelper(setState)
     .setData('defaultPackagerConfig', newConfig)
     .build();
   this.set('selectedProtocol', 'UDP');
-  this.render(hbs`{{packager-form isLogCollectionEnabled=true selectedProtocol=selectedProtocol}}`);
+  this.set('testLog', false);
+  this.render(hbs`{{packager-form isLogCollectionEnabled=true selectedProtocol=selectedProtocol testLog=testLog}}`);
   const $button = this.$('.reset-button .rsa-form-button');
   return waitFor(() => $button.trigger('click'))().then(() => {
     const protocol = this.get('selectedProtocol');
+    const testLog = this.get('testLog');
     assert.equal(protocol, 'TCP');
+    assert.equal(testLog, true);
   });
 });
 
