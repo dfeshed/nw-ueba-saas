@@ -1,9 +1,12 @@
 import * as ACTION_TYPES from './types';
 import moment from 'moment';
-import { getServiceSummary, getDictionaries } from './data-creators';
+import { getServiceSummary } from './data-creators';
+import { getDictionaries } from './initialization-creators';
 import { getDbStartTime, getDbEndTime } from '../reducers/investigate/services/selectors';
 import { useDatabaseTime } from '../reducers/investigate/query-node/selectors';
-import { savePreferences } from 'investigate-events/actions/data-creators';
+import { getCurrentPreferences, getDefaultPreferences } from 'investigate-events/reducers/investigate/data-selectors';
+import { lookup } from 'ember-dependency-lookup';
+
 
 export const setMetaPanelSize = (size) => {
   if (size) {
@@ -75,18 +78,6 @@ export const setQueryTimeRange = ({ id, value, unit }) => {
   };
 };
 
-export const setSelectedEvent = (event) => {
-  const metas = event ? event.metas : undefined;
-  const sessionId = event ? event.sessionId : undefined;
-  return {
-    type: ACTION_TYPES.SET_SELECTED_EVENT,
-    payload: {
-      eventMetas: metas,
-      sessionId
-    }
-  };
-};
-
 export const setService = (service) => {
   return (dispatch, getState) => {
     const { serviceId } = getState().investigate.queryNode;
@@ -102,22 +93,34 @@ export const setService = (service) => {
   };
 };
 
-export const setReconOpen = () => ({
-  type: ACTION_TYPES.SET_RECON_VIEWABLE,
-  payload: true
-});
+export const setReconOpen = (event = {}) => {
+  const { meta: eventMetas, sessionId } = event;
+  return {
+    type: ACTION_TYPES.SET_RECON_VIEWABLE,
+    payload: {
+      eventData: { eventMetas, sessionId },
+      isReconOpen: true
+    }
+  };
+};
 
 export const setReconClosed = () => ({
   type: ACTION_TYPES.SET_RECON_VIEWABLE,
-  payload: false
+  payload: {
+    eventData: { eventMetas: undefined, sessionId: undefined },
+    isReconOpen: false
+  }
 });
 
 export const setColumnGroup = (selectedGroup) => {
   return (dispatch, getState) => {
+    const state = getState();
     dispatch({
       type: ACTION_TYPES.SET_SELECTED_COLUMN_GROUP,
       payload: selectedGroup.id
     });
-    savePreferences(getState());
+    // Extracts (and merges) all the preferences from redux state and sends to the backend for persisting.
+    const prefService = lookup('service:preferences');
+    prefService.setPreferences('investigate-events-preferences', null, getCurrentPreferences(state), getDefaultPreferences(state));
   };
 };

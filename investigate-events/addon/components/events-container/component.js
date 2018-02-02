@@ -4,7 +4,7 @@ import config from 'ember-get-config';
 import computed from 'ember-computed-decorators';
 import { queryBodyClass } from 'investigate-events/reducers/investigate/data-selectors';
 import { selectedIndex } from 'investigate-events/reducers/investigate/event-results/selectors';
-import { getServices } from 'investigate-events/actions/data-creators';
+import { getServices } from 'investigate-events/actions/initialization-creators';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 
 const stateToComputed = (state) => ({

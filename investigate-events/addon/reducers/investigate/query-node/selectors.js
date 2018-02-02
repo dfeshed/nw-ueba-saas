@@ -58,3 +58,8 @@ export const hasRequiredValuesToQuery = createSelector(
     return selectedService && selectedService.id && hasSummaryData && selectedTimeRange;
   }
 );
+
+export const canFetchEvents = createSelector(
+  [_serviceId, _startTime, _endTime],
+  (serviceId, startTime, endTime) => serviceId && startTime && endTime
+);

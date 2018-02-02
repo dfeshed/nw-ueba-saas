@@ -90,8 +90,8 @@ export default handleActions({
     });
   },
 
-  [ACTION_TYPES.SET_SELECTED_EVENT]: (state, { payload }) => {
-    return state.merge(payload);
+  [ACTION_TYPES.SET_RECON_VIEWABLE]: (state, { payload: { eventData } }) => {
+    return state.merge({ ...eventData });
   },
 
   [ACTION_TYPES.SET_EVENTS_PAGE]: (state) => {

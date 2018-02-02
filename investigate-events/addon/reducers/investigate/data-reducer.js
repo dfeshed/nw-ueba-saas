@@ -86,8 +86,8 @@ export default handleActions({
     return state.merge({ reconSize });
   },
 
-  [ACTION_TYPES.SET_RECON_VIEWABLE]: (state, { payload }) => {
-    return state.set('isReconOpen', payload);
+  [ACTION_TYPES.SET_RECON_VIEWABLE]: (state, { payload: { isReconOpen } }) => {
+    return state.set('isReconOpen', isReconOpen);
   },
 
   [ACTION_TYPES.SET_SELECTED_COLUMN_GROUP]: (state, { payload }) => {

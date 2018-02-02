@@ -2,7 +2,7 @@
   activeTab='protected.investigate.investigate-events'
   as |section| }}
 
-  {{#if (and accessControl.hasInvestigateEventsAccess section.isIconBar)}}
+  {{#if section.isIconBar}}
     {{recon-size-toggle}}
     {{events-preferences}}
   {{/if}}
@@ -12,7 +12,7 @@
   {{/if}}
 {{/rsa-investigate-header}}
 
-{{#if accessControl.hasInvestigateEventsAccess}}
-  {{preferences-panel}}
-  {{context-menu}}
-{{/if}}
+
+{{preferences-panel}}
+{{context-menu}}
+

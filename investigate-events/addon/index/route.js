@@ -1,7 +1,7 @@
 import Route from 'ember-route';
 import service from 'ember-service/inject';
-import { initializeInvestigate } from 'investigate-events/actions/data-creators';
-import { setMetaPanelSize, setQueryFilterMeta, setReconClosed, setReconOpen, setReconPanelSize, setSelectedEvent } from 'investigate-events/actions/interaction-creators';
+import { initializeInvestigate } from 'investigate-events/actions/initialization-creators';
+import { setMetaPanelSize, setQueryFilterMeta, setReconClosed, setReconOpen, setReconPanelSize } from 'investigate-events/actions/interaction-creators';
 import { serializeQueryParams, uriEncodeMetaFilters } from 'investigate-events/actions/utils';
 import { META_PANEL_SIZES, RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 
@@ -42,6 +42,8 @@ export default Route.extend({
   },
 
   model(params) {
+    /* If all the key values of 'params' are 'undefined',
+       then hardReset is set to true and initial state is set. */
     const uniqParamValues = Object.values(params).uniq();
     const hardReset = uniqParamValues.length === 1 && uniqParamValues[0] === undefined;
 
@@ -49,6 +51,80 @@ export default Route.extend({
   },
 
   actions: {
+
+    executeQuery(metaFilters, externalLink = false) {
+
+      metaFilters = metaFilters.filterBy('saved', true);
+      const redux = this.get('redux');
+      // Save the metaFilters to state
+      const { data, queryNode } = redux.getState().investigate;
+      const qp = {
+        et: queryNode.endTime,
+        mf: uriEncodeMetaFilters(metaFilters),
+        mps: data.metaPanelSize,
+        rs: data.reconSize,
+        sid: queryNode.serviceId,
+        st: queryNode.startTime
+      };
+
+      if (externalLink) {
+        if (qp.mf) {
+          qp.mf = encodeURIComponent(qp.mf);
+        }
+        const query = serializeQueryParams(qp);
+        const { location } = window;
+        const path = `${location.origin}${location.pathname}?${query}`;
+        window.open(path, '_blank');
+      } else {
+        qp.eid = undefined;
+        this.send('reconClose');
+        redux.dispatch(setQueryFilterMeta(metaFilters));
+        this.transitionTo({ queryParams: qp });
+      }
+    },
+
+    reconLinkToFile(file) {
+      if (!file) {
+        return;
+      }
+      const { start, end } = file;
+      let { query = '' } = file;
+
+      // Remove surrounding quotes from query, if any
+      const hasSurroundingQuotes = query.match(/^"(.*)"$/);
+      if (hasSurroundingQuotes) {
+        query = hasSurroundingQuotes[1];
+      }
+
+      if (query && start && end) {
+        const { serviceId } = this.get('redux').getState().investigate.queryNode;
+        const routing = this.get('_routing');
+        // TODO - GTB
+        const url = routing.generateURL(
+          routing.get('currentRouteName'),
+          [`${serviceId}/${start}/${end}/${query}`],
+          { eventId: undefined }
+        );
+        window.open(url, '_blank');
+      }
+    },
+
+    selectEvent(event) {
+      const redux = this.get('redux');
+      const { reconSize } = redux.getState().investigate.data;
+      const { sessionId } = event;
+      redux.dispatch(setReconOpen(event));
+      this.send('contextPanelClose');
+      this.transitionTo({
+        queryParams: {
+          eid: sessionId,
+          rs: reconSize,
+          mps: META_PANEL_SIZES.MIN
+        }
+      });
+    },
+
+
     /**
      * Updates state in order to reveal the Context Panel UI and feed it the
      * type & ID of an entity to lookup.
@@ -79,100 +155,22 @@ export default Route.extend({
       });
     },
 
-    executeQuery(metaFilters, externalLink = false) {
-
-      metaFilters = metaFilters.filterBy('saved', true);
-
-      // Save the metaFilters to state
-      const { data, queryNode } = this.get('redux').getState().investigate;
-      const qp = {
-        et: queryNode.endTime,
-        mf: uriEncodeMetaFilters(metaFilters),
-        mps: data.metaPanelSize,
-        rs: data.reconSize,
-        sid: queryNode.serviceId,
-        st: queryNode.startTime
-      };
-
-      if (externalLink) {
-        if (qp.mf) {
-          qp.mf = encodeURIComponent(qp.mf);
-        }
-        const query = serializeQueryParams(qp);
-        const { location } = window;
-        const path = `${location.origin}${location.pathname}?${query}`;
-        window.open(path, '_blank');
-      } else {
-        qp.eid = undefined;
-        this.send('reconClose');
-        this.get('redux').dispatch(setQueryFilterMeta(metaFilters));
-        this.transitionTo({ queryParams: qp });
-      }
-    },
-
     metaPanelSize(size = META_PANEL_SIZES.DEFAULT) {
-      const { metaPanelSize } = this.get('redux').getState().investigate.data;
+      const redux = this.get('redux');
+      const { metaPanelSize } = redux.getState().investigate.data;
       if (metaPanelSize !== size) {
-        this.get('redux').dispatch(setMetaPanelSize(size));
+        redux.dispatch(setMetaPanelSize(size));
         this.transitionTo({ queryParams: { mps: size } });
       }
     },
 
-    reconClose() {
-      this.get('redux').dispatch(setReconClosed());
-      this.get('redux').dispatch(setSelectedEvent(null));
-      this.transitionTo({
-        queryParams: {
-          eid: undefined,
-          mps: META_PANEL_SIZES.DEFAULT
-        }
-      });
-    },
-
-    reconLinkToFile(file = {}) {
-      const { start, end } = file;
-      let { query = '' } = file;
-
-      // Remove surrounding quotes from query, if any
-      const hasSurroundingQuotes = query.match(/^"(.*)"$/);
-      if (hasSurroundingQuotes) {
-        query = hasSurroundingQuotes[1];
-      }
-
-      if (query && start && end) {
-        const { serviceId } = this.get('redux').getState().investigate.queryNode;
-        const routing = this.get('_routing');
-        // TODO - GTB
-        const url = routing.generateURL(
-          routing.get('currentRouteName'),
-          [`${serviceId}/${start}/${end}/${query}`],
-          { eventId: undefined }
-        );
-        window.open(url, '_blank');
-      }
-    },
-
     reconSize(size = RECON_PANEL_SIZES.MAX) {
-      const { reconSize } = this.get('redux').getState().investigate.data;
+      const redux = this.get('redux');
+      const { reconSize } = redux.getState().investigate.data;
       if (reconSize !== size) {
-        this.get('redux').dispatch(setReconPanelSize(size));
+        redux.dispatch(setReconPanelSize(size));
         this.transitionTo({ queryParams: { rs: size } });
       }
-    },
-
-    selectEvent(event) {
-      const { reconSize } = this.get('redux').getState().investigate.data;
-      const { sessionId } = event;
-      this.get('redux').dispatch(setSelectedEvent(event));
-      this.get('redux').dispatch(setReconOpen());
-      this.send('contextPanelClose');
-      this.transitionTo({
-        queryParams: {
-          eid: sessionId,
-          rs: reconSize,
-          mps: META_PANEL_SIZES.MIN
-        }
-      });
     },
 
     toggleReconSize() {
@@ -183,6 +181,16 @@ export default Route.extend({
       if (isReconOpen) {
         this.send('reconSize', (reconSize === RECON_PANEL_SIZES.MAX) ? RECON_PANEL_SIZES.MIN : RECON_PANEL_SIZES.MAX);
       }
+    },
+
+    reconClose() {
+      this.get('redux').dispatch(setReconClosed());
+      this.transitionTo({
+        queryParams: {
+          eid: undefined,
+          mps: META_PANEL_SIZES.DEFAULT
+        }
+      });
     },
 
     toggleSlaveFullScreen: (() => {
