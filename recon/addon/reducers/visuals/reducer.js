@@ -38,13 +38,12 @@ const visuals = handleActions({
   [ACTION_TYPES.SET_PREFERENCES]: (state, { payload: { eventAnalysisPreferences } }) => {
     const defaultLogFormat = handlePreference(eventAnalysisPreferences, 'defaultLogFormat', state);
     const defaultPacketFormat = handlePreference(eventAnalysisPreferences, 'defaultPacketFormat', state);
-    let currentReconView = handlePreference(eventAnalysisPreferences, 'currentReconView', state);
-    if (typeof currentReconView === 'string') {
-      currentReconView = RECON_VIEW_TYPES_BY_NAME[currentReconView];
+    let defaultReconView = handlePreference(eventAnalysisPreferences, 'currentReconView', state);
+    if (typeof defaultReconView === 'string') {
+      defaultReconView = RECON_VIEW_TYPES_BY_NAME[defaultReconView];
     }
     return state.merge({
-      currentReconView,
-      defaultReconView: currentReconView,
+      defaultReconView,
       defaultLogFormat,
       defaultPacketFormat
     });

@@ -32,7 +32,6 @@ test('test SET_PREFERENCES action handler', function(assert) {
   };
   const result = reducer(initialState, action);
   assert.equal(result.defaultReconView.name, 'PACKET');
-  assert.equal(result.currentReconView.name, 'PACKET');
   assert.equal(result.defaultLogFormat, 'XML');
   assert.equal(result.defaultPacketFormat, 'ALL');
 });
@@ -67,24 +66,6 @@ test('test RESET_PREFERENCES action handler when payload is empty', function(ass
   assert.deepEqual(result, initialState);
 });
 
-test('test SET_PREFERENCES action handler', function(assert) {
-  const action = {
-    type: ACTION_TYPES.SET_PREFERENCES,
-    payload: {
-      eventAnalysisPreferences: {
-        currentReconView: 'PACKET',
-        defaultLogFormat: 'XML',
-        defaultPacketFormat: 'ALL'
-      }
-    }
-  };
-  const result = reducer(initialState, action);
-  assert.equal(result.defaultReconView.name, 'PACKET');
-  assert.equal(result.currentReconView.name, 'PACKET');
-  assert.equal(result.defaultLogFormat, 'XML');
-  assert.equal(result.defaultPacketFormat, 'ALL');
-});
-
 test('test REHYDRATE action handler', function(assert) {
   const action = {
     type: ACTION_TYPES.REHYDRATE,
@@ -110,4 +91,21 @@ test('test REHYDRATE action handler', function(assert) {
   assert.equal(result.isRequestShown, true);
   assert.equal(result.defaultLogFormat, 'XML');
   assert.equal(result.defaultPacketFormat, 'ALL');
+});
+
+test('test CHANGE_RECON_VIEW action handler', function(assert) {
+  const action = {
+    type: ACTION_TYPES.CHANGE_RECON_VIEW,
+    payload: {
+      newView: {
+        code: 1,
+        id: 'packet',
+        name: 'PACKET',
+        component: 'recon-event-detail/packets',
+        dataKey: 'packets.packets'
+      }
+    }
+  };
+  const result = reducer(initialState, action);
+  assert.equal(result.currentReconView.name, 'PACKET');
 });

@@ -2,8 +2,9 @@ import * as ACTION_TYPES from './types';
 import { setQueryTimeRange } from 'investigate-events/actions/interaction-creators';
 import { selectedTimeRange } from 'investigate-events/reducers/investigate/query-node/selectors';
 
-import { SET_PREFERENCES } from 'recon/actions/types';
+import { SET_PREFERENCES, CHANGE_RECON_VIEW } from 'recon/actions/types';
 import { fetchInvestigateData } from './data-creators';
+import { isEndpointEvent, isLogEvent } from 'recon/reducers/meta/selectors';
 
 
 /**
@@ -43,5 +44,19 @@ export const preferencesUpdated = (preferences) => {
       dispatch(fetchInvestigateData());
     }
     dispatch(_reconPreferenceUpdated(preferences));
+
+    /* If its a packet event, we need to update the currentReconView
+     * to be same as the one selected in Preferences Panel..
+     * But for Log/Endpoint Event , it needs to remain
+     *  'Text Analysis' always.
+     */
+    if (!(isLogEvent(getState().recon) || isEndpointEvent(getState().recon))) {
+      dispatch({
+        type: CHANGE_RECON_VIEW,
+        payload: {
+          newView: getState().recon.visuals.defaultReconView
+        }
+      });
+    }
   };
 };
