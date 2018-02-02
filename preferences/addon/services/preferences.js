@@ -44,7 +44,7 @@ export default Service.extend({
    */
   setPreferences(preferenceFor, additionalFilters, preferences, defaultPreferences) {
     return fetchPreferences(preferenceFor, additionalFilters).then((data) => {
-      const preferenceForSave = _.merge(data || defaultPreferences, preferences);
+      const preferenceForSave = _.assign(data || defaultPreferences, preferences);
       return savePreferences(preferenceFor, preferenceForSave);
     }).catch(() => {
       // TODO:: Need to handle error gracefully.
