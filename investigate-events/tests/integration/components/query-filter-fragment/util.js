@@ -9,12 +9,36 @@ const pressEnter = (input) => {
   });
 };
 
+const pressSpace = (input) => {
+  input.trigger({
+    type: 'keydown',
+    which: 32,
+    code: 'Space'
+  });
+};
+
 const testSetupConfig = {
   integration: true,
   resolver: engineResolverFor('investigate-events'),
   beforeEach() {
     this.inject.service('redux');
   }
+};
+
+const ALL_META_OPTIONS = [
+  { format: 'IPv4', metaName: 'alias.ip', flags: -2147482621, displayName: 'IP Aliases' },
+  { format: 'Text', metaName: 'alert', flags: -2147483133, displayName: 'Alerts' },
+  { format: 'IPv6', metaName: 'alias.ipv6', flags: -2147482878, displayName: 'IPv6 Aliases' },
+  { format: 'MAC', metaName: 'alias.mac', flags: -2147482621, displayName: 'MAC Aliases' },
+  { format: 'UInt64', metaName: 'bytes.src', flags: -2147482878, displayName: 'Bytes Sent' },
+  { format: 'Float32', metaName: 'file.entropy', flags: -2147482877, displayName: 'File Entropy' },
+  { format: 'UInt16', metaName: 'eth.type', flags: -2147482541, displayName: 'Ethernet Protocol' },
+  { format: 'Int32', metaName: 'filename.size', flags: -2147482878, displayName: 'File Size' },
+  { format: 'UInt8', metaName: 'ip.proto', flags: -2147482541, displayName: 'IP Protocol' },
+  { format: 'TimeT', metaName: 'starttime', flags: -2147482621, displayName: 'Time Start' }];
+
+const metaNameForFormat = (format) => {
+  return ALL_META_OPTIONS.findBy('format', format).metaName;
 };
 
 const _createBasicPill = (type, test, meta, operator, value, options = {}) => {
@@ -63,6 +87,25 @@ const _createBasicPill = (type, test, meta, operator, value, options = {}) => {
   return $fragment;
 };
 
+const setupPill = (test) => {
+  test.set('list', []);
+  test.set('metaOptions', ALL_META_OPTIONS);
+  test.set('setKeyboardPriority', () => {});
+
+  test.render(hbs`
+    {{query-filter-fragment
+      validateWithServer=true
+      filterList=list
+      metaOptions=metaOptions
+      editActive=true
+      setKeyboardPriority=(action setKeyboardPriority)
+    }}`
+  );
+
+  const $fragment = test.$('.rsa-query-fragment');
+  return $fragment;
+};
+
 const createTextPill = (test, meta = 'action', operator = '=', value = '"foo"', options) => {
   return _createBasicPill('Text', test, meta, operator, value, options);
 };
@@ -105,5 +148,8 @@ export {
   createUInt16Pill,
   createUInt32Pill,
   pressEnter,
-  testSetupConfig
+  pressSpace,
+  testSetupConfig,
+  setupPill,
+  metaNameForFormat
 };
