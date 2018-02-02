@@ -4,6 +4,7 @@
 $filter-panel-width: 250px;
 
 .host-container {
+   max-height: calc(100vw - 50px);
   .host-container-list {
     width: 100%;
   }
