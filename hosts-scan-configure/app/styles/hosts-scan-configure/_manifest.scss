@@ -16,8 +16,9 @@
 }
 
 .schedule-form__content-title {
+  @include rsa-font(header, larger);
+  line-height: 2rem;
   color: text-color(primary, lightest);
-  font-size: 18px;
 }
 
 .schedule-form__content-fields {
@@ -42,4 +43,10 @@
 
 .text {
   color: text-color(primary, lighter);
+}
+
+.schedule-form__content {
+  .button-holder {
+    padding-top: rsa-whitespace(more);
+  }
 }

@@ -13,6 +13,11 @@ $content-card-color: #bdbdbd;
   }
   overflow-x: auto;
   overflow-y: auto;
+  .input-content__header {
+    @include rsa-font(header, larger);
+    color: text-color(primary, lightest);
+    padding: rsa-whitespace();
+  }
 }
 // Temp solution to integrate packager into SA
 .iframed-into-classic {

@@ -8,7 +8,8 @@
     }
   }
   &__user-details {
-    padding: rsa-whitespace();
+    padding: rsa-whitespace() 0 0 rsa-whitespace(more);
+    height: 54px;
     &__name {
       font-size: 1.25rem;
       text-transform: capitalize;
@@ -22,7 +23,7 @@
     &__administrator {
       font-size:0.8rem;
       color: $user-icon-color;
-      line-height: 0px;
+      line-height: 16px;
     }
     .label {
       @include rsa-font();
@@ -36,20 +37,11 @@
     }
   }
   &__ip-details {
-    padding: rsa-whitespace() rsa-whitespace(less);
+    padding: rsa-whitespace() 0 0 rsa-whitespace(more);
     &__icon {
       margin-top: -0.19rem;
       margin-right: rsa-whitespace()
     }
-  }
-  &__config {
-    padding: rsa-whitespace() rsa-whitespace(less);
-      li {
-        text-transform: uppercase;
-        list-style-type: none;
-        line-height: rsa-whitespace(more);
-      }
-
   }
 }
 .host-detail-box {

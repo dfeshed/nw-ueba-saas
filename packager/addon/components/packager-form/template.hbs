@@ -66,14 +66,12 @@
   }}
 </div>
 <div class="field force-overwrite">
-  {{#x-toggle
-    showLabels=true
-    onLabel=(t 'packager.forceOverwrite')
-    value=(readonly configData.packageConfig.forceOverwrite)
-    onToggle=(action (mut configData.packageConfig.forceOverwrite)) as |toggle|}}
-    {{toggle.switch}}
-    {{toggle.onLabel value=(not configData.packageConfig.forceOverwrite)}}
-  {{/x-toggle}}
+  <label class="rsa-form-checkbox-label {{if configData.packageConfig.forceOverwrite 'checked'}}">
+    {{rsa-form-checkbox
+      checked=configData.packageConfig.forceOverwrite
+      change=(action 'onForceOverwiteChange')}}
+    {{t 'packager.forceOverwrite'}}
+  </label>
 </div>
 <div class="server-input-group">
   <div class="field">
@@ -106,10 +104,10 @@
 </div>
 <div class="windows-log-collection">
   <div class="field">
-    <label class="rsa-form-checkbox-label {{if isLogCollectionEnabled 'checked'}}" >
+    <label class="rsa-form-checkbox-label {{if isLogCollectionEnabled 'checked'}}">
       {{rsa-form-checkbox
-      checked=isLogCollectionEnabled
-      change=(action 'enableLogCollection')}}
+        checked=isLogCollectionEnabled
+        change=(action 'enableLogCollection')}}
       {{t 'packager.enableWindowsLogCollection'}}
     </label>
   </div>
@@ -117,8 +115,11 @@
     <div class="log-configuration-container">
       <hbox xs="12">
         <div class="col-xs-8 field">
-          {{rsa-form-input label=(t 'packager.configurationName') value=configData.logCollectionConfig.configName
-          isError=isConfigError errorMessage=(t errorMessage)}}
+          {{rsa-form-input
+            label=(t 'packager.configurationName')
+            value=configData.logCollectionConfig.configName
+            isError=isConfigError
+            errorMessage=(t errorMessage)}}
         </div>
         <div class="col-xs-4 field fileContainer">
           <label for="file-upload" class="custom-file-upload">
@@ -190,7 +191,11 @@
               {{t column.title}}
             {{/rsa-data-table/header}}
             {{#rsa-data-table/body as |item index column|}}
-              {{packager-form/body-cell item=item index=index column=column delete=(action "deleteRow") error=invalidTableItem}}
+              {{packager-form/body-cell
+                item=item index=index
+                column=column
+                delete=(action "deleteRow")
+                error=invalidTableItem}}
             {{/rsa-data-table/body}}
           {{/rsa-data-table}}
         </div>
@@ -217,8 +222,8 @@
       <div class="field testLog">
         <label class="rsa-form-checkbox-label {{if testLog 'checked'}}">
           {{rsa-form-checkbox
-          checked=testLog
-          change=(action 'toggleProperty' "testLog")}}
+            checked=testLog
+            change=(action 'toggleProperty' "testLog")}}
           {{t 'packager.testLog'}}
         </label>
       </div>
@@ -231,10 +236,17 @@
     {{#rsa-form-button class="reset-button" isDisabled=isResetDisabled defaultAction=(action 'reset')}}
       {{t 'packager.reset'}}
     {{/rsa-form-button}}
-    {{#rsa-form-button style='primary' class="generate-button-js" isDisabled=isDisabled defaultAction=(action 'generateAgent')}}
+    {{#rsa-form-button
+      style='primary'
+      class="generate-button-js"
+      isDisabled=isDisabled
+      defaultAction=(action 'generateAgent')}}
       {{t 'packager.generateAgent'}}
     {{/rsa-form-button}}
-    {{#rsa-form-button class="generate-log-button-js"isDisabled=isGenerateLogDisabled defaultAction=(action 'generateLogConfig')}}
+    {{#rsa-form-button
+      class="generate-log-button-js"
+      isDisabled=isGenerateLogDisabled
+      defaultAction=(action 'generateLogConfig')}}
       {{t 'packager.generateLogConfig'}}
     {{/rsa-form-button}}
   </hbox>

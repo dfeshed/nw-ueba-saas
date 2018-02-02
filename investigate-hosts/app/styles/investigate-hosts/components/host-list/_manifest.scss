@@ -1,5 +1,6 @@
 @import "host-table";
 @import "service-modal";
+
 $filter-panel-width: 250px;
 
 .host-container {
@@ -32,10 +33,10 @@ $filter-panel-width: 250px;
     }
 
     h2 {
+      @include rsa-font(header, larger);
       line-height: 2rem;
-      font-size: 1.5rem;
+      color: text-color(primary, lightest);
     }
-
   }
 
   .favourite-filters {
@@ -63,8 +64,8 @@ $filter-panel-width: 250px;
     width: 160px;
   }
 
-  .host-table{
-    .rsa-data-table-body-row{
+  .host-table {
+    .rsa-data-table-body-row {
       width: fit-content;
       min-width: 98%
     }

@@ -1,5 +1,5 @@
 $zoneBorderColor: border-color(primary, darker, nearly-transparent);
-$filterPanelMinWidth: 300px;
+$filterPanelMinWidth: 250px;
 @import "service-modal";
 
 page.investigate-files-engine {
@@ -69,22 +69,23 @@ page.investigate-files-engine {
       width: 100%;
     }
     h2 {
+      @include rsa-font(header, larger);
       line-height: 2rem;
-      font-size: 1.5rem;
+      color: text-color(primary, lightest);
     }
+
     border-right: 1px solid $zoneBorderColor;
     padding: rsa-whitespace() 0 rsa-whitespace() rsa-whitespace();
     overflow: auto;
     overflow-x: hidden;
     opacity: opacity-value(opaque);
-    max-width: $filterPanelMinWidth - 50px;
+    max-width: $filterPanelMinWidth;
     color: text-color(primary, lightest);
     @include rsa-vendor-prefix(transition-property, max-width, min-width, padding, opacity);
     @include rsa-vendor-prefix(transition-duration, 0.3s, 0.3s, 0.3s, 0.1s);
     @include border-right(1px, solid, primary, dark);
   }
   .files-zone {
-    width: calc(100vw - #{$filterPanelMinWidth});
     max-width: calc(100vw - #{$filterPanelMinWidth});
   }
   .files-footer {

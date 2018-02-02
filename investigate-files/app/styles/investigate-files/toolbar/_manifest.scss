@@ -63,9 +63,10 @@
   }
 
   .title-header {
+    @include rsa-font(header, larger);
     display: inline-block;
     line-height: 2rem;
-    font-size: 1.5rem;
+    color: text-color(primary, lightest);
   }
 
 }

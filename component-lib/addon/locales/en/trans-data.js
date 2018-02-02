@@ -2054,7 +2054,7 @@ export default {
         overview: 'Show/Hide Overview Panel',
         settings: 'Settings',
         meta: 'Show/Hide Meta',
-        close: 'Close Reconstruction',
+        close: 'Close Host Details',
         shrink: 'Contract View',
         update: 'Update',
         reset: 'Reset'
@@ -2670,7 +2670,7 @@ export default {
       title: 'Select Service',
       buttonText: 'Navigate',
       buttonText2: 'Event Analysis',
-      iconTitle: 'Pivot to Investigate'
+      iconTitle: 'Pivot to Navigate or Event Analysis'
     }
   },
   hostsScanConfigure: {
@@ -2706,8 +2706,8 @@ export default {
     startTime: 'Start Time',
     cpuThrottling: {
       title: 'Agent CPU Throttling',
-      cpuMax: 'CPU Max',
-      vmMax: 'VM Max'
+      cpuMax: 'CPU Maximum ( % )',
+      vmMax: 'Virtual Machine Maximum ( % ) '
     }
   }
 };

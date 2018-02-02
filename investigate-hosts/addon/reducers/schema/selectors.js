@@ -15,7 +15,7 @@ const COLUMN_WIDTH = {
 const DEFAULT_COLUMN = Immutable.from([
   {
     dataType: 'checkbox',
-    width: '22',
+    width: 22,
     class: 'rsa-form-row-checkbox',
     componentClass: 'rsa-form-checkbox',
     visible: true,
@@ -24,7 +24,7 @@ const DEFAULT_COLUMN = Immutable.from([
   },
   {
     dataType: 'string',
-    width: '180',
+    width: 300,
     visible: true,
     field: 'machine.machineName',
     searchable: true,

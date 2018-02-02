@@ -1,6 +1,6 @@
 import Component from 'ember-component';
 import layout from './template';
-import computed, { alias } from 'ember-computed-decorators';
+import computed from 'ember-computed-decorators';
 import { isEmpty } from 'ember-utils';
 import moment from 'moment';
 import { connect } from 'ember-redux';
@@ -70,9 +70,6 @@ const formComponent = Component.extend({
   testLog: true,
 
   autoUninstall: null,
-
-  @alias('configData.packageConfig.forceOverwrite')
-  forceOverwrite: false,
 
   @computed('configData.packageConfig.server', 'configData.packageConfig.port', 'isUpdating')
   isDisabled(server, port, isUpdating) {
@@ -147,7 +144,6 @@ const formComponent = Component.extend({
       onSuccess: () => {
         this.resetErrorProperties();
         this.resetDefaultProperties();
-        this.send('resetForm');
       }
     };
   },
@@ -282,6 +278,9 @@ const formComponent = Component.extend({
       this.resetErrorProperties();
       this.resetDefaultProperties();
       this.send('resetForm');
+    },
+    onForceOverwiteChange() {
+      this.toggleProperty('configData.packageConfig.forceOverwrite');
     }
   }
 

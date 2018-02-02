@@ -2055,7 +2055,7 @@ export default {
         overview: 'ja_Show/Hide Overview Panel',
         settings: 'ja_Settings',
         meta: 'ja_Show/Hide Meta',
-        close: 'ja_Close Reconstruction',
+        close: 'ja_Close Host Details',
         shrink: 'ja_Contract View',
         update: 'ja_update',
         reset: 'ja_Reset'
@@ -2670,7 +2670,7 @@ export default {
       title: 'ja_Select Service',
       buttonText: 'ja_Navigate',
       buttonText2: 'ja_Event Analysis',
-      iconTitle: 'ja_Pivot to Investigate'
+      iconTitle: 'ja_Pivot to Navigate or Event Analysis '
     }
   },
   hostsScanConfigure: {
@@ -2706,8 +2706,8 @@ export default {
     startTime: 'ja_Start Time',
     cpuThrottling: {
       title: 'ja_Agent CPU Throttling',
-      cpuMax: 'ja_CPU Max',
-      vmMax: 'ja_VM Max'
+      cpuMax: 'ja_CPU Maximum ( % )',
+      vmMax: 'ja_Virtual Machine Maximum ( % )'
     }
   }
 };

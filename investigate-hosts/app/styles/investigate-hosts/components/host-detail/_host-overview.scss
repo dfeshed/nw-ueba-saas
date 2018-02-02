@@ -17,7 +17,13 @@
 }
 .host-overview {
   height: 100%;
+  .rsa-icon.is-small{
+    padding-right: rsa-whitespace(least);
+  }
 }
 .user-info-content {
   padding-left: rsa-whitespace();
+}
+.ip-divider {
+  padding: 0 rsa-whitespace(less) 0 rsa-whitespace(less);
 }
