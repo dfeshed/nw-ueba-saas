@@ -473,33 +473,31 @@ export default Component.extend(DomWatcher, EKMixin, {
   _scrollToInitial: function() {
     let _callCount = 0;
     return function() {
-      // don't want to try forever, if this recurses too much, just stop
+      // Don't want to try forever, if this recurses too much, just stop
       if (_callCount < 100) {
         // selectedIndex can change (essentially from not found to found)
         // as data flows in, so pull each time through scrollToInitial
         const selectedIndex = this.get('selectedIndex');
-        // First row needed to measure height of
-        // items so can calculate how far to scroll
-        const $firstRow = this.$('.rsa-data-table-body-row');
+        // First row needed to measure height of items so can calculate how far
+        // to scroll
+        const $firstRow = this.$('.rsa-data-table-body-row:first-child');
         // Check selected index is a valid number before attempting scrollTop.
-        // This ensures we don't calculate howFarToScrollTable on a negative index. run later
-        // keeps us looping until we find a positive index
-        if (selectedIndex >= 0 && $firstRow.length > 0) {
+        // This ensures we don't calculate howFarToScrollTable on a negative index.
+        if (selectedIndex >= 0 && !!$firstRow) {
           const heightForAllTableRows = this.$('.rsa-data-table-body-rows').height();
           const howFarToScrollTable = $firstRow.outerHeight() * selectedIndex;
-          // data could be flowing in over time, so the number of rows in the table may not
-          // immediately be enough to scroll to the selected row.
-          // if the height of the container surpasses where the item should be,
+          // Data could be flowing in over time, so the number of rows in the
+          // table may not immediately be enough to scroll to the selected row.
+          // If the height of the container surpasses where the item should be,
           // we can scroll to it and exit recursion. Otherwise let it try again later.
           if (heightForAllTableRows >= howFarToScrollTable) {
             this.$('.rsa-data-table-body').scrollTop(howFarToScrollTable);
             return;
           }
-        } else {
-          _callCount++;
-          // If we are unable to scroll to the item, then try again in 100 millis
-          run.later(this, this._scrollToInitial, _callCount, 100);
         }
+        _callCount++;
+        // If we are unable to scroll to the item, then try again in 100 millis
+        run.later(this, this._scrollToInitial, _callCount, 100);
       }
     };
   }(),
