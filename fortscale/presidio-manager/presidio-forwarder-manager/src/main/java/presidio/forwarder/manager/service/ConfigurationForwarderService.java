@@ -39,7 +39,6 @@ public class ConfigurationForwarderService implements ConfigurationProcessingSer
 
     public ValidationResults validateForwarderConfiguration(OutputConfiguration outputConfiguration) {
         ValidationResults validationResults = new ValidationResults();
-        outputConfiguration.getBadParams();
         if (outputConfiguration == null) {
             ConfigurationBadParamDetails error = new ConfigurationBadParamDetails(FORWARDER, FORWARDER, MISSING_PROPERTY, LOCATION_TYPE, MISSING_DATA_ERROR_MESSAGE);
             validationResults.addError(error);
