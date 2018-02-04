@@ -2,34 +2,50 @@ package presidio.manager.api.records;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
-import presidio.manager.api.configuration.PresidioForwarderConfiguration;
+import presidio.manager.api.configuration.ConfigurationValidatable;
 
-import java.util.ArrayList;
+import java.util.List;
 
-public class OutputConfiguration extends createConfigurationAndStructureValidiation {
+public class OutputConfiguration extends createConfigurationAndStructureValidation implements ConfigurationValidatable {
 
-    private PresidioForwarderConfiguration forwarderConfiguration;
+    private ConfigurationValidatable forwarderConfiguration;
 
     private final String SYSLOG = "syslog";
 
     public OutputConfiguration(JsonNode node) {
-        setBadParams(new ArrayList<>());
         createConfiguration(node);
         if (forwarderConfiguration != null) {
             badParamsAddKeys(addPrefixToBadParams(SYSLOG, forwarderConfiguration.badParams()));
+            missingParamsAddKeys(addPrefixToBadParams(SYSLOG, forwarderConfiguration.missingParams()));
+        } else {
+            missingParamsAddKeys(SYSLOG);
         }
         checkStructure();
     }
 
-    public PresidioForwarderConfiguration getSyslogConfiguration() {
+    public ConfigurationValidatable getSyslogConfiguration() {
         return forwarderConfiguration;
     }
 
 
-    public void setForwarderConfiguration(PresidioForwarderConfiguration forwarderConfiguration) {
+    public void setForwarderConfiguration(ConfigurationValidatable forwarderConfiguration) {
         this.forwarderConfiguration = forwarderConfiguration;
     }
 
+    @Override
+    public boolean isValid() {
+        return isStructureValid();
+    }
+
+    @Override
+    public List<String> badParams() {
+        return getBadParams();
+    }
+
+    @Override
+    public List<String> missingParams() {
+        return getMissingParams();
+    }
 
     @Override
     void checkStructure() {
@@ -42,7 +58,7 @@ public class OutputConfiguration extends createConfigurationAndStructureValidiat
     void setKeyValue(String key, JsonNode value) {
         switch (key) {
             case SYSLOG:
-                setForwarderConfiguration(new SyslogConfiguration(value));
+                setForwarderConfiguration(new SyslogConfigurationValidatable(value));
                 break;
             default:
                 badParamsAddKey(key);

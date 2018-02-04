@@ -17,7 +17,8 @@ public class ConfigurationForwarderService implements ConfigurationProcessingSer
     private final String FORWARDER = "forwarder";
     private final String LOCATION_TYPE = "jsonPath";
     private final String UNSUPPORTED_ERROR = "unsupportedFieldError";
-    private final String UNSUPPORTED_ERROR_MESSAGE = "Unsupported Error, %s field is not supported. Allowed values: [syslog]";
+    private final String UNSUPPORTED_ERROR_MESSAGE = "Unsupported Error, %s field is not supported.";
+    private final String UNSUPPORTED_ERROR_MESSAGE_MISSING_FIELD = "Unsupported Error, %s field is missing.";
     private final String MISSING_DATA_ERROR_MESSAGE = "Missing forwarder configuration";
     private final String MISSING_PROPERTY = "missingProperty";
 
@@ -48,18 +49,22 @@ public class ConfigurationForwarderService implements ConfigurationProcessingSer
         if (!outputConfiguration.isStructureValid()) {
             return UnsupportedError(outputConfiguration);
         }
-        //TODO: add case when missing params
         return validationResults;
     }
 
     private ValidationResults UnsupportedError(OutputConfiguration outputConfiguration) {
         logger.debug("Forwarder configuration is invalid");
         List<String> badParams = outputConfiguration.getBadParams();
+        List<String> bmissingParams = outputConfiguration.getMissingParams();
         ValidationResults validationResults = new ValidationResults();
         String location;
         for (String param : badParams) {
             location = new StringBuilder(FORWARDER).append("/").append(param).toString();
             validationResults.addError(new ConfigurationBadParamDetails(FORWARDER, location, UNSUPPORTED_ERROR, LOCATION_TYPE, String.format(UNSUPPORTED_ERROR_MESSAGE, param)));
+        }
+        for (String param : bmissingParams) {
+            location = new StringBuilder(FORWARDER).append("/").append(param).toString();
+            validationResults.addError(new ConfigurationBadParamDetails(FORWARDER, location, UNSUPPORTED_ERROR, LOCATION_TYPE, String.format(UNSUPPORTED_ERROR_MESSAGE_MISSING_FIELD, param)));
         }
         return validationResults;
     }

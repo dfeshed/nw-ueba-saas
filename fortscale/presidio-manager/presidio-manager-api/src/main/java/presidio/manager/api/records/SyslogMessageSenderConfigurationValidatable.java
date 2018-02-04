@@ -3,12 +3,11 @@ package presidio.manager.api.records;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.commons.lang.StringUtils;
-import presidio.manager.api.configuration.SyslogSenderConfiguration;
+import presidio.manager.api.configuration.ConfigurationValidatable;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class SyslogMessageSenderConfiguration extends createConfigurationAndStructureValidiation implements SyslogSenderConfiguration {
+public class SyslogMessageSenderConfigurationValidatable extends createConfigurationAndStructureValidation implements ConfigurationValidatable {
 
     private String host;
     private int port = -1;
@@ -16,9 +15,14 @@ public class SyslogMessageSenderConfiguration extends createConfigurationAndStru
     private final String HOST = "host";
     private final String PORT = "port";
 
-    public SyslogMessageSenderConfiguration(JsonNode node) {
-        setBadParams(new ArrayList<>());
+    public SyslogMessageSenderConfigurationValidatable(JsonNode node) {
         createConfiguration(node);
+        if (StringUtils.isEmpty(host)) {
+            missingParamsAddKeys(HOST);
+        }
+        if (port == -1) {
+            missingParamsAddKeys(PORT);
+        }
         checkStructure();
     }
 
@@ -67,5 +71,10 @@ public class SyslogMessageSenderConfiguration extends createConfigurationAndStru
     @Override
     public List<String> badParams() {
         return getBadParams();
+    }
+
+    @Override
+    public List<String> missingParams() {
+        return getMissingParams();
     }
 }

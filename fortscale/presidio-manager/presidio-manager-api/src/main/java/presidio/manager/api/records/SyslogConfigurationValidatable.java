@@ -2,47 +2,50 @@ package presidio.manager.api.records;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
-import presidio.manager.api.configuration.PresidioForwarderConfiguration;
-import presidio.manager.api.configuration.SyslogSenderConfiguration;
+import presidio.manager.api.configuration.ConfigurationValidatable;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class SyslogConfiguration extends createConfigurationAndStructureValidiation implements PresidioForwarderConfiguration {
+public class SyslogConfigurationValidatable extends createConfigurationAndStructureValidation implements ConfigurationValidatable {
 
-    private SyslogSenderConfiguration alertSyslogConfiguration;
-    private SyslogSenderConfiguration userSyslogConfiguration;
+    private ConfigurationValidatable alertSyslogConfiguration;
+    private ConfigurationValidatable userSyslogConfiguration;
 
     private final String ALERT = "alert";
     private final String USER = "user";
 
 
-    public SyslogConfiguration(JsonNode node) {
-        setBadParams(new ArrayList<>());
+    public SyslogConfigurationValidatable(JsonNode node) {
         createConfiguration(node);
         if (alertSyslogConfiguration != null) {
             badParamsAddKeys(addPrefixToBadParams(ALERT, alertSyslogConfiguration.badParams()));
+            missingParamsAddKeys(addPrefixToBadParams(ALERT, alertSyslogConfiguration.missingParams()));
+        } else {
+            missingParamsAddKeys(ALERT);
         }
         if (userSyslogConfiguration != null) {
             badParamsAddKeys(addPrefixToBadParams(USER, userSyslogConfiguration.badParams()));
+            missingParamsAddKeys(addPrefixToBadParams(USER, alertSyslogConfiguration.missingParams()));
+        } else {
+            missingParamsAddKeys(USER);
         }
         checkStructure();
     }
 
-    public SyslogSenderConfiguration getAlertSyslogConfiguration() {
+    public ConfigurationValidatable getAlertSyslogConfiguration() {
         return alertSyslogConfiguration;
     }
 
-    public SyslogSenderConfiguration getUserSyslogConfiguration() {
+    public ConfigurationValidatable getUserSyslogConfiguration() {
         return userSyslogConfiguration;
     }
 
 
-    public void setAlertSyslogConfiguration(SyslogSenderConfiguration alertSyslogConfiguration) {
+    public void setAlertSyslogConfiguration(ConfigurationValidatable alertSyslogConfiguration) {
         this.alertSyslogConfiguration = alertSyslogConfiguration;
     }
 
-    public void setUserSyslogConfiguration(SyslogSenderConfiguration userSyslogConfiguration) {
+    public void setUserSyslogConfiguration(ConfigurationValidatable userSyslogConfiguration) {
         this.userSyslogConfiguration = userSyslogConfiguration;
     }
 
@@ -50,10 +53,10 @@ public class SyslogConfiguration extends createConfigurationAndStructureValidiat
     public void setKeyValue(String key, JsonNode value) {
         switch (key) {
             case ALERT:
-                setAlertSyslogConfiguration(new SyslogMessageSenderConfiguration(value));
+                setAlertSyslogConfiguration(new SyslogMessageSenderConfigurationValidatable(value));
                 break;
             case USER:
-                setUserSyslogConfiguration(new SyslogMessageSenderConfiguration(value));
+                setUserSyslogConfiguration(new SyslogMessageSenderConfigurationValidatable(value));
                 break;
             default:
                 badParamsAddKey(key);
@@ -75,5 +78,10 @@ public class SyslogConfiguration extends createConfigurationAndStructureValidiat
     @Override
     public List<String> badParams() {
         return getBadParams();
+    }
+
+    @Override
+    public List<String> missingParams() {
+        return getMissingParams();
     }
 }
