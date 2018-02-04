@@ -67,7 +67,7 @@ public class ConfigurationManagerService implements ConfigurationProcessingServi
                     if (key.equals(PresidioManagerConfiguration.DATA_PIPE_LINE)) {
                         dataPipeLineConfiguration = value != null ? new DataPipeLineConfiguration(value) : null;
                     } else {
-                        if (key.equals(PresidioManagerConfiguration.FORWARDER)) {
+                        if (key.equals(PresidioManagerConfiguration.OUTPUT_FORWARDING)) {
                             outputConfiguration = value != null ? new OutputConfiguration(value) : null;
                         } else {
                             validationResults.addError(new ConfigurationBadParamDetails(GENERAL, key, UNSUPPORTED_FIELD_ERROR, JSON_PATH, String.format(GENERAL_ERROR_MESSAGE, key)));

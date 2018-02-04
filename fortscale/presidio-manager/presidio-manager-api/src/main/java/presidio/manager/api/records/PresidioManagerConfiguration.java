@@ -7,7 +7,7 @@ public class PresidioManagerConfiguration {
     public static final String SYSTEM = "system";
     public static final String DATA_PIPE_LINE = "dataPipeline";
     public static final String START_TIME = "startTime";
-    public static final String FORWARDER = "forwarder";
+    public static final String OUTPUT_FORWARDING = "outputForwarding";
 
     @JsonProperty(DATA_PIPE_LINE)
     private DataPipeLineConfiguration dataPipeLineConfiguration;
@@ -15,7 +15,7 @@ public class PresidioManagerConfiguration {
     @JsonProperty(SYSTEM)
     private PresidioSystemConfiguration systemConfiguration;
 
-    @JsonProperty(FORWARDER)
+    @JsonProperty(OUTPUT_FORWARDING)
     private OutputConfiguration outputConfiguration;
 
     public PresidioManagerConfiguration() {

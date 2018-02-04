@@ -6,7 +6,7 @@ import presidio.manager.api.configuration.ConfigurationValidatable;
 
 import java.util.List;
 
-public class SyslogConfigurationValidatable extends createConfigurationAndStructureValidation implements ConfigurationValidatable {
+public class SyslogForwrdingConfiguration extends ConfigurationCreation implements ConfigurationValidatable {
 
     private ConfigurationValidatable alertSyslogConfiguration;
     private ConfigurationValidatable userSyslogConfiguration;
@@ -15,7 +15,7 @@ public class SyslogConfigurationValidatable extends createConfigurationAndStruct
     private final String USER = "user";
 
 
-    public SyslogConfigurationValidatable(JsonNode node) {
+    public SyslogForwrdingConfiguration(JsonNode node) {
         createConfiguration(node);
         if (alertSyslogConfiguration != null) {
             badParamsAddKeys(addPrefixToBadParams(ALERT, alertSyslogConfiguration.badParams()));
@@ -53,10 +53,10 @@ public class SyslogConfigurationValidatable extends createConfigurationAndStruct
     public void setKeyValue(String key, JsonNode value) {
         switch (key) {
             case ALERT:
-                setAlertSyslogConfiguration(new SyslogMessageSenderConfigurationValidatable(value));
+                setAlertSyslogConfiguration(new SyslogConfiguration(value));
                 break;
             case USER:
-                setUserSyslogConfiguration(new SyslogMessageSenderConfigurationValidatable(value));
+                setUserSyslogConfiguration(new SyslogConfiguration(value));
                 break;
             default:
                 badParamsAddKey(key);

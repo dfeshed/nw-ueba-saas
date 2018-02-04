@@ -27,7 +27,7 @@ public class AirflowConfiguration {
     private ConfigurationServerClientService configServerClient;
 
 
-    @Bean(name = "configurationAirflowServcie")
+    @Bean(name = "configurationAirflowService")
     public ConfigurationProcessingService configurationAirflowServcie() {
         return new ConfigurationAirflowService(configServerClient, moduleName, activeProfiles, configurationFilePath);
     }

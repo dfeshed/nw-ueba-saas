@@ -6,10 +6,10 @@ import presidio.forwarder.manager.service.ConfigurationForwarderService;
 import presidio.manager.api.service.ConfigurationProcessingService;
 
 @Configuration
-public class ForwarderConfiguration {
+public class ForwardingConfiguration {
 
 
-    @Bean(name = "configurationForwarderServcie")
+    @Bean(name = "configurationForwarderService")
     public ConfigurationProcessingService configurationForwarderService() {
         return new ConfigurationForwarderService();
     }

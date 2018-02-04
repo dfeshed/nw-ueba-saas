@@ -65,7 +65,6 @@ public class ConfigurationApiControllerTest {
         Assert.isTrue(response.getBody().getError().size() == 1, "response error list size should be 1");
     }
 
-
     @Test
     public void putConfigurationConfiguration() throws IOException {
         ConfigurationApiController controller = new ConfigurationApiController(configurationProcessingManager, configServerClient, null, null);

@@ -14,7 +14,7 @@ public class ConfigurationForwarderService implements ConfigurationProcessingSer
 
     private static final Logger logger = Logger.getLogger(ConfigurationForwarderService.class);
 
-    private final String FORWARDER = "forwarder";
+    private final String OUTPUT_FORWARDING = "outputForwarding";
     private final String LOCATION_TYPE = "jsonPath";
     private final String UNSUPPORTED_ERROR = "unsupportedFieldError";
     private final String UNSUPPORTED_ERROR_MESSAGE = "Unsupported Error, %s field is not supported.";
@@ -41,7 +41,7 @@ public class ConfigurationForwarderService implements ConfigurationProcessingSer
     public ValidationResults validateForwarderConfiguration(OutputConfiguration outputConfiguration) {
         ValidationResults validationResults = new ValidationResults();
         if (outputConfiguration == null) {
-            ConfigurationBadParamDetails error = new ConfigurationBadParamDetails(FORWARDER, FORWARDER, MISSING_PROPERTY, LOCATION_TYPE, MISSING_DATA_ERROR_MESSAGE);
+            ConfigurationBadParamDetails error = new ConfigurationBadParamDetails(OUTPUT_FORWARDING, OUTPUT_FORWARDING, MISSING_PROPERTY, LOCATION_TYPE, MISSING_DATA_ERROR_MESSAGE);
             validationResults.addError(error);
             logger.debug("Missing forwarder configuration");
             return validationResults;
@@ -55,16 +55,16 @@ public class ConfigurationForwarderService implements ConfigurationProcessingSer
     private ValidationResults UnsupportedError(OutputConfiguration outputConfiguration) {
         logger.debug("Forwarder configuration is invalid");
         List<String> badParams = outputConfiguration.getBadParams();
-        List<String> bmissingParams = outputConfiguration.getMissingParams();
+        List<String> missingParams = outputConfiguration.getMissingParams();
         ValidationResults validationResults = new ValidationResults();
         String location;
         for (String param : badParams) {
-            location = new StringBuilder(FORWARDER).append("/").append(param).toString();
-            validationResults.addError(new ConfigurationBadParamDetails(FORWARDER, location, UNSUPPORTED_ERROR, LOCATION_TYPE, String.format(UNSUPPORTED_ERROR_MESSAGE, param)));
+            location = new StringBuilder(OUTPUT_FORWARDING).append("/").append(param).toString();
+            validationResults.addError(new ConfigurationBadParamDetails(OUTPUT_FORWARDING, location, UNSUPPORTED_ERROR, LOCATION_TYPE, String.format(UNSUPPORTED_ERROR_MESSAGE, param)));
         }
-        for (String param : bmissingParams) {
-            location = new StringBuilder(FORWARDER).append("/").append(param).toString();
-            validationResults.addError(new ConfigurationBadParamDetails(FORWARDER, location, UNSUPPORTED_ERROR, LOCATION_TYPE, String.format(UNSUPPORTED_ERROR_MESSAGE_MISSING_FIELD, param)));
+        for (String param : missingParams) {
+            location = new StringBuilder(OUTPUT_FORWARDING).append("/").append(param).toString();
+            validationResults.addError(new ConfigurationBadParamDetails(OUTPUT_FORWARDING, location, UNSUPPORTED_ERROR, LOCATION_TYPE, String.format(UNSUPPORTED_ERROR_MESSAGE_MISSING_FIELD, param)));
         }
         return validationResults;
     }

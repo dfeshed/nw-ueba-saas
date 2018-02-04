@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 
 
-public abstract class createConfigurationAndStructureValidation {
+public abstract class ConfigurationCreation {
 
     private List<String> badParams;
     private List<String> missingParams;

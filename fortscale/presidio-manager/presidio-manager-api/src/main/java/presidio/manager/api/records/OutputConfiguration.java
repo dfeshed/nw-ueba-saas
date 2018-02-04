@@ -6,30 +6,30 @@ import presidio.manager.api.configuration.ConfigurationValidatable;
 
 import java.util.List;
 
-public class OutputConfiguration extends createConfigurationAndStructureValidation implements ConfigurationValidatable {
+public class OutputConfiguration extends ConfigurationCreation implements ConfigurationValidatable {
 
-    private ConfigurationValidatable forwarderConfiguration;
+    private ConfigurationValidatable syslogForwardingConfiguration;
 
     private final String SYSLOG = "syslog";
 
     public OutputConfiguration(JsonNode node) {
         createConfiguration(node);
-        if (forwarderConfiguration != null) {
-            badParamsAddKeys(addPrefixToBadParams(SYSLOG, forwarderConfiguration.badParams()));
-            missingParamsAddKeys(addPrefixToBadParams(SYSLOG, forwarderConfiguration.missingParams()));
+        if (syslogForwardingConfiguration != null) {
+            badParamsAddKeys(addPrefixToBadParams(SYSLOG, syslogForwardingConfiguration.badParams()));
+            missingParamsAddKeys(addPrefixToBadParams(SYSLOG, syslogForwardingConfiguration.missingParams()));
         } else {
             missingParamsAddKeys(SYSLOG);
         }
         checkStructure();
     }
 
-    public ConfigurationValidatable getSyslogConfiguration() {
-        return forwarderConfiguration;
+    public ConfigurationValidatable getSyslogForwardingConfiguration() {
+        return syslogForwardingConfiguration;
     }
 
 
-    public void setForwarderConfiguration(ConfigurationValidatable forwarderConfiguration) {
-        this.forwarderConfiguration = forwarderConfiguration;
+    public void setSyslogForwardingConfiguration(ConfigurationValidatable syslogForwardingConfiguration) {
+        this.syslogForwardingConfiguration = syslogForwardingConfiguration;
     }
 
     @Override
@@ -50,15 +50,15 @@ public class OutputConfiguration extends createConfigurationAndStructureValidati
     @Override
     void checkStructure() {
         setStructureValid(isStructureValid() &&
-                forwarderConfiguration != null &&
-                forwarderConfiguration.isValid());
+                syslogForwardingConfiguration != null &&
+                syslogForwardingConfiguration.isValid());
     }
 
     @Override
     void setKeyValue(String key, JsonNode value) {
         switch (key) {
             case SYSLOG:
-                setForwarderConfiguration(new SyslogConfigurationValidatable(value));
+                setSyslogForwardingConfiguration(new SyslogForwrdingConfiguration(value));
                 break;
             default:
                 badParamsAddKey(key);
