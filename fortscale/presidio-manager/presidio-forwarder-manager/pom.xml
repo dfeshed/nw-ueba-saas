@@ -33,10 +33,6 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
-        <dependency>
             <groupId>fortscale</groupId>
             <artifactId>presidio-utils</artifactId>
             <version>${project.version}</version>
@@ -44,11 +40,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.migr.as</groupId>
-            <artifactId>WindRide</artifactId>
-            <version>1.1.0</version>
         </dependency>
     </dependencies>
 
