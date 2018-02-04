@@ -48,6 +48,7 @@ public class ConfigurationForwarderService implements ConfigurationProcessingSer
         if (!outputConfiguration.isStructureValid()) {
             return UnsupportedError(outputConfiguration);
         }
+        //TODO: add case when missing params
         return validationResults;
     }
 

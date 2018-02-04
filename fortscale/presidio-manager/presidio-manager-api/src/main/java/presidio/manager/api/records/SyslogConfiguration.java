@@ -20,8 +20,12 @@ public class SyslogConfiguration extends createConfigurationAndStructureValidiat
     public SyslogConfiguration(JsonNode node) {
         setBadParams(new ArrayList<>());
         createConfiguration(node);
-        badParamsAddKeys(addPrefixToBadParams(ALERT, alertSyslogConfiguration.badParams()));
-        badParamsAddKeys(addPrefixToBadParams(USER, userSyslogConfiguration.badParams()));
+        if (alertSyslogConfiguration != null) {
+            badParamsAddKeys(addPrefixToBadParams(ALERT, alertSyslogConfiguration.badParams()));
+        }
+        if (userSyslogConfiguration != null) {
+            badParamsAddKeys(addPrefixToBadParams(USER, userSyslogConfiguration.badParams()));
+        }
         checkStructure();
     }
 

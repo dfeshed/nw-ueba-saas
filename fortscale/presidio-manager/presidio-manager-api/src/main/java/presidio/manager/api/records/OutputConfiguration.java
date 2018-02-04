@@ -15,7 +15,9 @@ public class OutputConfiguration extends createConfigurationAndStructureValidiat
     public OutputConfiguration(JsonNode node) {
         setBadParams(new ArrayList<>());
         createConfiguration(node);
-        badParamsAddKeys(addPrefixToBadParams(SYSLOG, forwarderConfiguration.badParams()));
+        if (forwarderConfiguration != null) {
+            badParamsAddKeys(addPrefixToBadParams(SYSLOG, forwarderConfiguration.badParams()));
+        }
         checkStructure();
     }
 
