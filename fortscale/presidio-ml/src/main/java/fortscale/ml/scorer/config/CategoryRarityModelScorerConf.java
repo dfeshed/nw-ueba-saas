@@ -12,6 +12,7 @@ import java.util.List;
 public class CategoryRarityModelScorerConf extends ModelScorerConf{
     public static final String SCORER_TYPE = "category-rarity-model-scorer";
 
+    public static final int NUM_RARE_EVENTS_FACTOR = 1;
     public static final double X_WITH_VALUE_HALF_FACTOR = 0.25;
 
     @JsonProperty("minimum-number-of-distinct-values-to-influence")
@@ -24,6 +25,8 @@ public class CategoryRarityModelScorerConf extends ModelScorerConf{
     private Integer maxNumOfRareFeatures = null;
     @JsonProperty("x-with-value-half-factor")
     private double xWithValueHalfFactor = X_WITH_VALUE_HALF_FACTOR;
+    @JsonProperty("num-rare-events-factor")
+    private double numRareEventsFactor = NUM_RARE_EVENTS_FACTOR;
 
     @JsonCreator
     public CategoryRarityModelScorerConf(@JsonProperty("name") String name,
@@ -72,6 +75,14 @@ public class CategoryRarityModelScorerConf extends ModelScorerConf{
 
     public void setXWithValueHalfFactor(double xWithValueHalfFactor) {
         this.xWithValueHalfFactor = xWithValueHalfFactor;
+    }
+
+    public double getNumRareEventsFactor() {
+        return numRareEventsFactor;
+    }
+
+    public void setNumRareEventsFactor(double numRareEventsFactor) {
+        this.numRareEventsFactor = numRareEventsFactor;
     }
 
     @Override
