@@ -7,9 +7,10 @@ import java.util.Iterator;
 import java.util.List;
 
 
-public abstract class createConfigurationAndStructureValidiation {
+public abstract class createConfigurationAndStructureValidation {
 
     private List<String> badParams;
+    private List<String> missingParams;
     private boolean isStructureValid;
 
     public List<String> getBadParams() {
@@ -20,8 +21,24 @@ public abstract class createConfigurationAndStructureValidiation {
         badParams.addAll(keys);
     }
 
+    public void missingParamsAddKeys(List<String> keys) {
+        missingParams.addAll(keys);
+    }
+
+    public void missingParamsAddKeys(String key) {
+        missingParams.add(key);
+    }
+
     public void badParamsAddKey(String key) {
         badParams.add(key);
+    }
+
+    public List<String> getMissingParams() {
+        return missingParams;
+    }
+
+    public void setMissingParams(List<String> missingParams) {
+        this.missingParams = missingParams;
     }
 
     public boolean isStructureValid() {
@@ -50,6 +67,7 @@ public abstract class createConfigurationAndStructureValidiation {
 
     public void createConfiguration(JsonNode node) {
         this.badParams = new ArrayList<>();
+        this.missingParams = new ArrayList<>();
         Iterator<String> itr = node.fieldNames();
         String key;
         while (itr.hasNext()) {
