@@ -1,6 +1,7 @@
 package presidio.webapp.spring;
 
 
+import fortscale.utils.PresidioEncryptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -58,7 +59,7 @@ public class ManagerWebappConfiguration {
     @Bean
     ConfigurationApi configurationApi() {
         return new ConfigurationApiController(configurationServiceImpl(), configServerClient,
-                activeProfiles, keytabFileLocation);
+                activeProfiles, keytabFileLocation, new PresidioEncryptionUtils());
     }
 
     @Bean

@@ -2,9 +2,11 @@ package webapp.controller.configuration;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.utils.PresidioEncryptionUtils;
 import fortscale.utils.json.ObjectMapperProvider;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
@@ -24,6 +26,7 @@ import presidio.webapp.service.ConfigurationManagerService;
 import java.io.File;
 import java.io.IOException;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 /**
@@ -45,7 +48,7 @@ public class ConfigurationApiControllerTest {
 
     @Test
     public void putConfigurationInvalidConfiguration() throws IOException {
-        ConfigurationApiController controller = new ConfigurationApiController(configurationProcessingManager, configServerClient, null, null);
+        ConfigurationApiController controller = new ConfigurationApiController(configurationProcessingManager, configServerClient, null, null, null);
 
         ObjectMapper mapper = ObjectMapperProvider.getInstance().getDefaultObjectMapper();
         File from = ctx.getResource(CONFIG_JSON_FILE_NAME).getFile();
@@ -66,8 +69,11 @@ public class ConfigurationApiControllerTest {
     }
 
     @Test
-    public void putConfigurationConfiguration() throws IOException {
-        ConfigurationApiController controller = new ConfigurationApiController(configurationProcessingManager, configServerClient, null, null);
+    public void putConfigurationConfiguration() throws Exception {
+        final PresidioEncryptionUtils mockedPresidioEncryptionUtils = Mockito.mock(PresidioEncryptionUtils.class);
+        when(mockedPresidioEncryptionUtils.encrypt(any())).thenReturn("mockedEncryptedPassword");
+
+        ConfigurationApiController controller = new ConfigurationApiController(configurationProcessingManager, configServerClient, null, null, mockedPresidioEncryptionUtils);
 
         ObjectMapper mapper = ObjectMapperProvider.getInstance().getDefaultObjectMapper();
         File from = ctx.getResource(CONFIG_JSON_FILE_NAME).getFile();

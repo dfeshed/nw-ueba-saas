@@ -3,6 +3,7 @@ package presidio.webapp.controller.configuration;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.fge.jsonpatch.JsonPatchException;
+import fortscale.utils.PresidioEncryptionUtils;
 import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.rest.jsonpatch.JsonPatch;
@@ -24,11 +25,9 @@ import presidio.webapp.model.configuration.ConfigurationResponseError;
 import presidio.webapp.model.configuration.SecuredConfiguration;
 import presidio.webapp.service.ConfigurationManagerService;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -52,13 +51,15 @@ public class ConfigurationApiController implements ConfigurationApi {
 
     private ConfigurationServerClientService configServerClient;
 
+    private final PresidioEncryptionUtils presidioEncryptionUtils;
 
     public ConfigurationApiController(ConfigurationManagerService configurationManagerService,
-                                      ConfigurationServerClientService configServerClient, List<String> activeProfiles, String keytabFileLocation) {
+                                      ConfigurationServerClientService configServerClient, List<String> activeProfiles, String keytabFileLocation, PresidioEncryptionUtils presidioEncryptionUtils) {
         this.configurationManagerService = configurationManagerService;
         this.configServerClient = configServerClient;
         this.activeProfiles = activeProfiles;
         this.keytabFileLocation = keytabFileLocation;
+        this.presidioEncryptionUtils = presidioEncryptionUtils;
     }
 
     private String getProfile() {
@@ -162,7 +163,7 @@ public class ConfigurationApiController implements ConfigurationApi {
             String plainPassword = systemJson.get(PASSWORD).asText();
             if (StringUtils.isNotEmpty(plainPassword)) {
                 try {
-                    final String encryptPassword = encrypt(plainPassword);
+                    final String encryptPassword = presidioEncryptionUtils.encrypt(plainPassword);
                     ((ObjectNode) systemJson).put(PASSWORD, encryptPassword);
                 } catch (Exception e) {
                     logger.error("Failed to encrypt password.");
@@ -184,34 +185,6 @@ public class ConfigurationApiController implements ConfigurationApi {
         }
 
         return new ResponseEntity<ConfigurationResponse>(configurationResponse, HttpStatus.CREATED);
-    }
-
-
-    private String encrypt(String plainPassword) throws Exception {
-        StringBuilder output = new StringBuilder();
-        String[] cmd = {
-                "/bin/sh",
-                "-c",
-                "echo -n " + plainPassword + " | openssl enc  -aes-256-cbc  -salt -pass pass:mj23 |  openssl enc -base64 -A"
-        };
-        try {
-            Process p = Runtime.getRuntime().exec(cmd);
-            p.waitFor();
-            BufferedReader reader =
-                    new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-            String line;
-            while ((line = reader.readLine()) != null) {
-                output.append(line).append("\n");
-            }
-
-        } catch (Exception e) {
-            final String msg = "Can't encrypt httpd password using openssl enc -aes-256-cbc!";
-            logger.error(msg, e);
-            throw new Exception(msg, e);
-        }
-
-        return output.toString();
     }
 
 }
