@@ -7,6 +7,7 @@ import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.domain.rawevents.PrintRawEvent;
 import presidio.sdk.api.domain.transformedevents.PrintTransformedEvent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PrintTransformerManager implements TransformationManager {
@@ -18,6 +19,7 @@ public class PrintTransformerManager implements TransformationManager {
     @Override
     public List<Transformer> getTransformers() {
         if (transformers == null) {
+            transformers = new ArrayList<>();
             //src\dst machine name transformer:
             //machine name containing ip address will be transformed to empty string,
             //and value of resolved machine name will be transformed according to the cluster regex
