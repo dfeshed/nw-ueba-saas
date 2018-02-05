@@ -1748,6 +1748,7 @@ export default {
       invalidFilterInputLength: 'Filter input longer than 256 characters',
       invalidCharacters: 'Can contain alphanumeric or special characters.',
       invalidCharsAlphabetOnly: 'Numbers and special characters are not allowed',
+      invalidCharsAlphaNumericOnly: 'Special characters are not allowed',
       restrictionType: {
         moreThan: 'Greater than',
         lessThan: 'Less than',
@@ -2151,6 +2152,7 @@ export default {
         invalidMacAddress: 'Please enter a valid MAC address',
         invalidOsDescription: 'Alphabet, numbers and .,-,() are allowed',
         invalidCharacters: 'Can contain alphanumeric or special characters.',
+        invalidCharsAlphabetOnly: 'Numbers and special characters are not allowed',
         invalidCharsAlphaNumericOnly: 'Special characters are not allowed',
         inTimeRange: 'In',
         notInTimeRange: 'Not In',

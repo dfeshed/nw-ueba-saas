@@ -1748,6 +1748,7 @@ export default {
       invalidFilterInputLength: 'ja_Filter input longer than 256 characters',
       invalidCharacters: 'ja_Can contain alphanumeric or special characters.',
       invalidCharsAlphabetOnly: 'ja_Numbers and special characters are not allowed',
+      invalidCharsAlphaNumericOnly: 'ja_Special characters are not allowed',
       restrictionType: {
         moreThan: 'ja_Greater than',
         lessThan: 'ja_Less than',
@@ -2152,6 +2153,7 @@ export default {
         invalidMacAddress: 'ja_Please enter a valid MAC address',
         invalidOsDescription: 'ja_Alphabet, numbers and .,-,() are allowed',
         invalidCharacters: 'ja_Can contain alphanumeric or special characters.',
+        invalidCharsAlphabetOnly: 'ja_Numbers and special characters are not allowed',
         invalidCharsAlphaNumericOnly: 'ja_Special characters are not allowed',
         inTimeRange: 'ja_In',
         notInTimeRange: 'ja_Not In',

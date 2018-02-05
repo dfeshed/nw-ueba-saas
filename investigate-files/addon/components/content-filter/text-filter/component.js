@@ -109,7 +109,7 @@ const TextFilter = Component.extend(FilterMixin, {
         this.set('errorMessage', 'investigateFiles.filter.invalidFilterInputLength');
       } else if (evaluateTextAgainstRegEx(propertyValues, filterType)) {
         this.set('isError', true);
-        this.set('errorMessage', `investigateHosts.hosts.filter.${invalidError}`);
+        this.set('errorMessage', `investigateFiles.filter.${invalidError}`);
       } else {
         this.set('isError', false);
         this.send('updateFilter', { restrictionType, propertyName, propertyValues });
