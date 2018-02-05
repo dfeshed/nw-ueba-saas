@@ -40,7 +40,7 @@ test('it should render the anchor tag for machine name', function(assert) {
 
 test('it should render agent status component', function(assert) {
   this.set('column', { field: 'agentStatus.scanStatus' });
-  this.set('item', { agentStatus: { scanStatus: 'Idle' }, id: 1 });
+  this.set('item', { agentStatus: { scanStatus: 'Idle' }, id: 1, machine: { agentVersion: '11.1.0.0' } });
   this.render(hbs`{{host-list/host-table/body-cell column=column item=item}}`);
   assert.equal(this.$('.rsa-agent-scan-status').length, 1, 'Expected to render agent scan status component');
 });

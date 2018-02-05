@@ -15,11 +15,14 @@ export default Component.extend({
 
   classNames: ['rsa-agent-scan-status'],
 
-  @computed('agent.agentStatus.scanStatus')
-  status: (scanStatus) => statusMapping[scanStatus] || '',
-
+  @computed('agent.agentStatus.scanStatus', 'agent.machine.agentVersion')
+  status: (scanStatus, agentVersion) => {
+    if (agentVersion && agentVersion.startsWith('4.4')) {
+      return 'N/A';
+    }
+    return statusMapping[scanStatus] || 'N/A';
+  },
   actions: {
-
     startScan(id) {
       this.sendAction('onButtonClick', id);
       this.get('eventBus').trigger('rsa-application-modal-open-initiate-scan');
