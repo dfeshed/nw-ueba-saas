@@ -630,6 +630,121 @@ indicators:
     type: hourly_aggregations
   classification: abnormal_site_access
 
+#*********************************************************
+#*                PRINT INDICATORS              *
+#*********************************************************
+
+- id: highestStartInstantScoreUserIdPrintHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_print_time
+  adeEventType: scored_enriched.print.startInstant.userId.print.score
+  schema: PRINT
+  anomalyDescriptior:
+    anomalyField: eventDate
+  historicalData:
+    type: weekday_aggregations
+    featureBucketConfName: startInstantHistogramUserIdPrintDaily
+    featureName: startInstantHistogram
+  classification: non_standard_hours
+
+- id: sumOfHighestSrcMachineNameRegexClusterScoresUserIdPrintHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_source_machine_cluster
+  adeEventType: scored_enriched.print.srcMachineNameRegexCluster.userId.print.score
+  schema: PRINT
+  anomalyDescriptior:
+    anomalyField: srcMachineNameRegexCluster
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: srcMachineNameRegexClusterHistogramUserIdPrintDaily
+    featureName: srcMachineNameRegexClusterHistogram
+  classification: print_from_abnormal_host
+
+- id: sumOfHighestDstMachineNameRegexClusterScoresUserIdPrintHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_destination_machine_cluster
+  adeEventType: scored_enriched.print.dstMachineNameRegexCluster.userId.print.score
+  schema: PRINT
+  anomalyDescriptior:
+    anomalyField: dstMachineNameRegexCluster
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: dstMachineNameRegexClusterHistogramUserIdPrintDaily
+    featureName: dstMachineNameRegexClusterHistogram
+  classification: print_to_abnormal_printer
+
+- id: sumOfHighestAbsoluteFolderPathScoresUserIdPrintHourly
+  type: FEATURE_AGGREGATION
+  name: abnormal_shared_folder_path
+  schema: PRINT
+  adeEventType: print
+  anomalyDescriptior:
+    anomalyField: absoluteFolderPath
+    anomalyFilters:
+      fieldName: isSrcDriveShared
+      fieldValue: true
+  historicalData:
+    type: hourly_aggregations
+  classification: data_exfiltration
+
+- id: sumOfHighestFileExtensionScoresUserIdPrintHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_file_extension
+  adeEventType: scored_enriched.print.fileExtension.userId.print.score
+  schema: PRINT
+  anomalyDescriptior:
+    anomalyField: fileExtension
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: fileExtensionHistogramUserIdPrintDaily
+    featureName: fileExtensionHistogram
+  classification: data_exfiltration
+
+- id: numberOfSuccessfulPrintsUserIdPrintHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_successful_prints
+  schema: PRINT
+  adeEventType: print
+  anomalyDescriptior:
+    anomalyFilters:
+      fieldName: result
+      fieldValue: SUCCESS
+  historicalData:
+    type: hourly_aggregations
+  classification: data_exfiltration
+
+- id: numberOfDistinctDstMachineIdUserIdPrintHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_distinct_dst_computers
+  adeEventType: print
+  schema: PRINT
+  anomalyDescriptior:
+    anomalyField: dstMachineId
+  historicalData:
+    type: hourly_aggregations
+  classification: abnormal_print_activity
+
+- id: numberOfDistinctDstMachineNameRegexClusterUserIdPrintHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_distinct_dst_computer_clusters
+  adeEventType: print
+  schema: PRINT
+  anomalyDescriptior:
+    anomalyField: dstMachineNameRegexClusterHistogram
+  historicalData:
+    type: hourly_aggregations
+  classification: abnormal_print_activity
+
+- id: numberOfDistinctAbsoluteFolderPathUserIdPrintHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_distinct_folders
+  schema: PRINT
+  adeEventType: print
+  anomalyDescriptior:
+    anomalyField: absoluteFolderPathHistogram
+  historicalData:
+    type: hourly_aggregations
+
 classificationPriority:
 
 - classificationName: mass_changes_to_critical_enterprise_groups
