@@ -12,6 +12,10 @@ public class OutputConfiguration extends ConfigurationCreation implements Config
 
     private final String SYSLOG = "syslog";
 
+
+    public OutputConfiguration() {
+    }
+
     public OutputConfiguration(JsonNode node) {
         createConfiguration(node);
         if (syslogForwardingConfiguration != null) {
@@ -58,7 +62,7 @@ public class OutputConfiguration extends ConfigurationCreation implements Config
     void setKeyValue(String key, JsonNode value) {
         switch (key) {
             case SYSLOG:
-                setSyslogForwardingConfiguration(new SyslogForwrdingConfiguration(value));
+                setSyslogForwardingConfiguration(new SyslogForwardingConfiguration(value));
                 break;
             default:
                 badParamsAddKey(key);

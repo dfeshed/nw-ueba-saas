@@ -12,7 +12,7 @@
     ],
     "startTime": "2017-01-01 08:00:00"
   },
-  "forwarder": {
+  "outputForwarding": {
     "syslog": {
       "alert": {
         "host": "127.0.0.1",

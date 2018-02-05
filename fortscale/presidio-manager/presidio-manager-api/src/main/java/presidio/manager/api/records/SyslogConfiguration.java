@@ -15,6 +15,9 @@ public class SyslogConfiguration extends ConfigurationCreation implements Config
     private final String HOST = "host";
     private final String PORT = "port";
 
+    public SyslogConfiguration() {
+    }
+
     public SyslogConfiguration(JsonNode node) {
         createConfiguration(node);
         if (StringUtils.isEmpty(host)) {
