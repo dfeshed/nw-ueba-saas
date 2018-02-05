@@ -174,3 +174,8 @@ export const isMachineLinux = createSelector(
   machineOsType,
   (machineOsType) => machineOsType && (machineOsType.toLowerCase() === 'linux')
 );
+
+export const isMachineWindows = createSelector(
+  machineOsType,
+  (machineOsType) => machineOsType && (machineOsType.toLowerCase() === 'windows')
+);

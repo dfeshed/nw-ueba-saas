@@ -133,7 +133,7 @@ test('it renders logged-in users labels count', function(assert) {
 
   return wait().then(() => {
     const labelCounts = this.$('.host-content__user-details > .user-details vbox h4.label').length;
-    assert.deepEqual(labelCounts, 10, 'total number of labels');
+    assert.deepEqual(labelCounts, 4, 'total number of labels');
   });
 });
 
@@ -145,8 +145,7 @@ test('it renders logged-in users label names', function(assert) {
 
   return wait().then(() => {
     const labels = this.$('.host-content__user-details:first-child > .user-details vbox h4.label');
-    assert.deepEqual(labels[0].innerText.trim(), 'SESSION ID', 'session Id label');
-    assert.deepEqual(labels[1].innerText.trim(), 'SESSION TYPE', 'session type label');
-    assert.deepEqual(labels[2].innerText.trim(), 'GROUPS', 'groups label');
+    assert.deepEqual(labels[0].innerText.trim(), 'HOST', 'Host label');
+    assert.deepEqual(labels[1].innerText.trim(), 'DEVICE NAME', 'Device Name label');
   });
 });
