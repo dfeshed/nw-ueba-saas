@@ -673,7 +673,7 @@ indicators:
     featureName: dstMachineNameRegexClusterHistogram
   classification: print_to_abnormal_printer
 
-- id: absoluteSharedFolderPathHistogramUserIdPrintDaily
+- id: sumOfHighestAbsoluteFolderPathScoresUserIdPrintHourly
   type: FEATURE_AGGREGATION
   name: abnormal_shared_folder_path
   schema: PRINT
