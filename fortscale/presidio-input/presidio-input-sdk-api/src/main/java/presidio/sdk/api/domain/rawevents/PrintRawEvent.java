@@ -2,6 +2,7 @@ package presidio.sdk.api.domain.rawevents;
 
 import fortscale.domain.core.EventResult;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.sdk.api.domain.AbstractInputDocument;
 
@@ -9,6 +10,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
+@Document
 public class PrintRawEvent extends AbstractInputDocument {
 
     public static final String SRC_MACHINE_ID_FIELD_NAME = "srcMachineId";
