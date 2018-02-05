@@ -10,7 +10,9 @@ const FILTER_TYPES = [
     'filterControl': 'host-list/content-filter/text-filter',
     'panelId': 'agentVersion',
     'selected': true,
-    'isDefault': false
+    'isDefault': false,
+    'filterType': 'agentVersion',
+    'invalidError': 'invalidAgentVersion'
   },
   {
     'propertyName': 'id',
@@ -19,7 +21,9 @@ const FILTER_TYPES = [
     'panelId': 'id',
     'isDefault': false,
     'selected': true,
-    'showMemUnit': true
+    'showMemUnit': true,
+    'filterType': 'agentID',
+    'invalidError': 'invalidAgentID'
   },
   {
     'propertyName': 'machine.machineOsType',
@@ -36,7 +40,8 @@ const FILTER_TYPES = [
     'filterControl': 'host-list/content-filter/text-filter',
     'selected': false,
     'panelId': 'machineName',
-    'isDefault': false
+    'isDefault': false,
+    'isValidate': false
   },
   {
     'propertyName': 'machine.users.name',
@@ -44,7 +49,8 @@ const FILTER_TYPES = [
     'filterControl': 'host-list/content-filter/text-filter',
     'selected': false,
     'panelId': 'uname',
-    'isDefault': false
+    'isDefault': false,
+    'isValidate': false
   },
   {
     'propertyName': 'machine.scanStartTime',
@@ -83,7 +89,9 @@ const FILTER_TYPES = [
     'filterControl': 'host-list/content-filter/text-filter',
     'selected': false,
     'panelId': 'macAddress',
-    'isDefault': false
+    'isDefault': false,
+    'filterType': 'macAddress',
+    'invalidError': 'invalidMacAddress'
   },
   {
     'propertyName': 'machine.networkInterfaces.promiscuous',
@@ -139,7 +147,9 @@ const FILTER_TYPES = [
     'filterControl': 'host-list/content-filter/text-filter',
     'selected': false,
     'panelId': 'description',
-    'isDefault': false
+    'isDefault': false,
+    'filterType': 'osDescription',
+    'invalidError': 'invalidOsDescription'
   },
   {
     'propertyName': 'machineIdentity.operatingSystem.kernelVersion',
@@ -163,7 +173,9 @@ const FILTER_TYPES = [
     'filterControl': 'host-list/content-filter/text-filter',
     'selected': false,
     'panelId': 'isoCountryCode',
-    'isDefault': false
+    'isDefault': false,
+    'filterType': 'onlyAlphabetChars',
+    'invalidError': 'invalidCharsAlphabetOnly'
   },
   {
     'propertyName': 'machineIdentity.agentMode',
@@ -171,7 +183,9 @@ const FILTER_TYPES = [
     'filterControl': 'host-list/content-filter/text-filter',
     'selected': false,
     'panelId': 'agentMode',
-    'isDefault': false
+    'isDefault': false,
+    'filterType': 'onlyAlphabetChars',
+    'invalidError': 'invalidCharsAlphabetOnly'
   },
   {
     'propertyName': 'analysisData.machineRiskScore',
@@ -223,7 +237,9 @@ const FILTER_TYPES = [
     'filterControl': 'host-list/content-filter/text-filter',
     'selected': false,
     'panelId': 'ipv4Status',
-    'isDefault': false
+    'isDefault': false,
+    'filterType': 'ip',
+    'invalidError': 'invalidIP'
   }
 
 ];

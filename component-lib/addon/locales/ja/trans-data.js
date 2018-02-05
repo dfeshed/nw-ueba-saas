@@ -1746,6 +1746,8 @@ export default {
       addMore: 'ja_Add More...',
       invalidFilterInput: 'ja_Invalid filter input',
       invalidFilterInputLength: 'ja_Filter input longer than 256 characters',
+      invalidCharacters: 'ja_Can contain alphanumeric or special characters.',
+      invalidCharsAlphabetOnly: 'ja_Numbers and special characters are not allowed',
       restrictionType: {
         moreThan: 'ja_Greater than',
         lessThan: 'ja_Less than',
@@ -2144,6 +2146,13 @@ export default {
         mutlipleValuesNote: 'ja_Note: To search multiple values, use || as a separator',
         invalidFilterInput: 'ja_Invalid filter input',
         invalidFilterInputLength: 'ja_Filter input longer than 256 characters',
+        invalidIP: 'ja_Please enter a valid IP address',
+        invalidAgentID: 'ja_Please enter a valid Agent ID',
+        invalidAgentVersion: 'ja_Please enter a valid Agent Version',
+        invalidMacAddress: 'ja_Please enter a valid MAC address',
+        invalidOsDescription: 'ja_Alphabet, numbers and .,-,() are allowed',
+        invalidCharacters: 'ja_Can contain alphanumeric or special characters.',
+        invalidCharsAlphaNumericOnly: 'ja_Special characters are not allowed',
         inTimeRange: 'ja_In',
         notInTimeRange: 'ja_Not In',
         agentStatus: {

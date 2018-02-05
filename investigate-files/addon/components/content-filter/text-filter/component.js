@@ -7,6 +7,7 @@ import service from 'ember-service/inject';
 import FilterMixin from 'investigate-files/mixins/content-filter-mixin';
 import layout from './template';
 import { updateFilter } from 'investigate-files/actions/data-creators';
+import { evaluateTextAgainstRegEx } from './utils';
 
 // Restriction/Operator type for text filter
 const RESTRICTION_TYPES = [
@@ -94,7 +95,7 @@ const TextFilter = Component.extend(FilterMixin, {
      */
     onUpdate() {
       const {
-        config: { propertyName },
+        config: { propertyName, filterType, invalidError = 'invalidCharacters' },
         restrictionType,
         value
       } = this.getProperties('config', 'restrictionType', 'value');
@@ -106,6 +107,9 @@ const TextFilter = Component.extend(FilterMixin, {
       } else if (propertyValues[0].value.length > 256) {
         this.set('isError', true);
         this.set('errorMessage', 'investigateFiles.filter.invalidFilterInputLength');
+      } else if (evaluateTextAgainstRegEx(propertyValues, filterType)) {
+        this.set('isError', true);
+        this.set('errorMessage', `investigateHosts.hosts.filter.${invalidError}`);
       } else {
         this.set('isError', false);
         this.send('updateFilter', { restrictionType, propertyName, propertyValues });

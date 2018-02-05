@@ -1746,6 +1746,8 @@ export default {
       addMore: 'Add Filter',
       invalidFilterInput: 'Invalid filter input',
       invalidFilterInputLength: 'Filter input longer than 256 characters',
+      invalidCharacters: 'Can contain alphanumeric or special characters.',
+      invalidCharsAlphabetOnly: 'Numbers and special characters are not allowed',
       restrictionType: {
         moreThan: 'Greater than',
         lessThan: 'Less than',
@@ -2143,6 +2145,13 @@ export default {
         mutlipleValuesNote: 'Note: To search multiple values, use || as a separator',
         invalidFilterInput: 'Invalid filter input',
         invalidFilterInputLength: 'Filter input longer than 256 characters',
+        invalidIP: 'Please enter a valid IP address',
+        invalidAgentID: 'Please enter a valid Agent ID',
+        invalidAgentVersion: 'Please enter a valid Agent Version',
+        invalidMacAddress: 'Please enter a valid MAC address',
+        invalidOsDescription: 'Alphabet, numbers and .,-,() are allowed',
+        invalidCharacters: 'Can contain alphanumeric or special characters.',
+        invalidCharsAlphaNumericOnly: 'Special characters are not allowed',
         inTimeRange: 'In',
         notInTimeRange: 'Not In',
         agentStatus: {

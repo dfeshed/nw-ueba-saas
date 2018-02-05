@@ -5,6 +5,8 @@ import computed from 'ember-computed-decorators';
 import service from 'ember-service/inject';
 import FilterMixin from 'investigate-hosts/mixins/content-filter-mixins';
 
+import { evaluateTextAgainstRegEx } from './utils';
+
 import {
   updateFilter
 } from 'investigate-hosts/actions/data-creators/filter';
@@ -130,24 +132,26 @@ const TextFilter = Component.extend(FilterMixin, {
      */
     onUpdate() {
       const {
-        config: { propertyName },
+        config: { propertyName, filterType, invalidError = 'invalidCharacters', isValidate = true },
         restrictionType,
         value
       } = this.getProperties('config', 'restrictionType', 'value');
 
       const propertyValues = value && !isEmpty(value) ? preparePropertyValues(value) : [];
-
       const errors = propertyValues.filter((o) => o.value === 'error');
+
       if (propertyValues.length <= 0 || errors.length) {
         this.set('isError', true);
         this.set('errorMessage', 'investigateHosts.hosts.filters.invalidFilterInput');
       } else if (propertyValues[0].value.length > 256) {
         this.set('isError', true);
         this.set('errorMessage', 'investigateHosts.hosts.filters.invalidFilterInputLength');
+      } else if (isValidate && evaluateTextAgainstRegEx(propertyValues, filterType)) {
+        this.set('isError', true);
+        this.set('errorMessage', `investigateHosts.hosts.filters.${invalidError}`);
       } else {
         this.set('isError', false);
         const restrictionTypeUpdated = propertyValues.length > 1 ? 'IN' : restrictionType;
-
         this.send('updateFilter', { restrictionType: restrictionTypeUpdated, propertyName, propertyValues });
       }
     }

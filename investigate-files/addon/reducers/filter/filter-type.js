@@ -61,7 +61,9 @@ const FILTER_TYPES = [
     'filterControl': 'content-filter/text-filter',
     'selected': false,
     'panelId': 'checksumMd5',
-    'isDefault': false
+    'isDefault': false,
+    'filterType': 'alphaNumericChars',
+    'invalidError': 'invalidCharsAlphaNumericOnly'
   },
   {
     'propertyName': 'checksumSha256',
@@ -69,7 +71,9 @@ const FILTER_TYPES = [
     'filterControl': 'content-filter/text-filter',
     'selected': false,
     'panelId': 'checksumSha256',
-    'isDefault': false
+    'isDefault': false,
+    'filterType': 'alphaNumericChars',
+    'invalidError': 'invalidCharsAlphaNumericOnly'
   },
   {
     'propertyName': 'checksumSha1',
@@ -77,7 +81,9 @@ const FILTER_TYPES = [
     'filterControl': 'content-filter/text-filter',
     'selected': false,
     'panelId': 'checksumSha1',
-    'isDefault': false
+    'isDefault': false,
+    'filterType': 'alphaNumericChars',
+    'invalidError': 'invalidCharsAlphaNumericOnly'
   }
 ];
 
