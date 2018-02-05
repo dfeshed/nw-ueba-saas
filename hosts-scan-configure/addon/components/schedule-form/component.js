@@ -2,7 +2,7 @@ import Component from 'ember-component';
 import layout from './template';
 import { connect } from 'ember-redux';
 import service from 'ember-service/inject';
-import { isFetchingSchedule, isEnabled, startDate } from 'hosts-scan-configure/reducers/hosts-scan/selectors';
+import { isFetchingSchedule, isEnabled, startDate, isError } from 'hosts-scan-configure/reducers/hosts-scan/selectors';
 import { updateScheduleProperty, saveScheduleConfig } from 'hosts-scan-configure/actions/data-creators';
 import computed from 'ember-computed-decorators';
 import { isEmpty } from 'ember-utils';
@@ -22,6 +22,7 @@ const FLASH_MESSAGE_TYPES = {
 
 const stateToComputed = (state) => ({
   isFetchingSchedule: isFetchingSchedule(state),
+  isError: isError(state),
   enabled: isEnabled(state),
   startDate: startDate(state),
   config: state.hostsScan.config
@@ -42,6 +43,8 @@ const Form = Component.extend({
   isDirty: false,
 
   i18n: service(),
+
+  errorMessage: 'hostsScanConfigure.error.generic',
 
   @computed('enabled', 'isDirty')
   isDisabled(enabled, isDirty) {

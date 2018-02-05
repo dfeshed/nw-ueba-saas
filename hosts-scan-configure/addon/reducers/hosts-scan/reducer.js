@@ -17,6 +17,9 @@ const scheduleReducer = handleActions({
       success: (s) => {
         const { payload: { data } } = action;
         return s.merge({ config: data || { name: 'default' }, fetchScheduleStatus: 'completed' });
+      },
+      failure: (s) => {
+        return s.set('fetchScheduleStatus', 'error');
       }
     });
   },

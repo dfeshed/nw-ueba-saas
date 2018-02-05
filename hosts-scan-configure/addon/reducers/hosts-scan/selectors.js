@@ -19,6 +19,11 @@ export const isFetchingSchedule = createSelector(
   (fetchStatus) => fetchStatus === 'wait'
 );
 
+export const isError = createSelector(
+  fetchStatus,
+  (fetchStatus) => fetchStatus === 'error'
+);
+
 export const scheduleData = createSelector(
   scheduleConfig,
   (scheduleConfig) => _.cloneDeep(scheduleConfig.scheduleOptions) || {}

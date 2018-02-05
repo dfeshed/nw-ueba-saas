@@ -3,38 +3,42 @@
     {{rsa-loader size="larger"}}
   </centered>
 {{else}}
-  <vbox class='schedule-form__content'>
-    <div class='schedule-form__content-title'>
-      {{t 'hostsScanConfigure.title'}}
-    </div>
-    <div class="schedule-form__content-fields">
-      <div>
-        {{#x-toggle
-          showLabels=true
-          onLabel=(t 'hostsScanConfigure.enable')
-          value=(readonly enabled)
-          onToggle=(action 'toggleEnable')  as |toggle|}}
-          {{toggle.switch}}
-          {{toggle.onLabel value=(readonly (not enabled))}}
-        {{/x-toggle}}
+  {{#if isError}}
+    {{rsa-panel-message message=(t errorMessage)}}
+  {{else}}
+    <vbox class='schedule-form__content'>
+      <div class='schedule-form__content-title'>
+        {{t 'hostsScanConfigure.title'}}
       </div>
-      <box class='schedule-time'>
-        {{rsa-form-datetime
-          label=(t 'hostsScanConfigure.startDate')
-          enableTime=false
-          minDate='today'
-          static=true
-          yearRange="currentYear, 2050"
-          value=(readonly startDate)
-          onChange=(action 'onDateChange')
-        }}
-      </box>
-      {{recurrence-interval}}
-      {{schedule-time}}
-      {{cpu-throttling}}
-    </div>
-    <div class='button-holder'>
-      {{#rsa-form-button style='primary' isDisabled=isDisabled defaultAction='saveConfig'}}{{t 'hostsScanConfigure.save'}}{{/rsa-form-button}}
-    </div>
-  </vbox>
+      <div class="schedule-form__content-fields">
+        <div>
+          {{#x-toggle
+            showLabels=true
+            onLabel=(t 'hostsScanConfigure.enable')
+            value=(readonly enabled)
+            onToggle=(action 'toggleEnable')  as |toggle|}}
+            {{toggle.switch}}
+            {{toggle.onLabel value=(readonly (not enabled))}}
+          {{/x-toggle}}
+        </div>
+        <box class='schedule-time'>
+          {{rsa-form-datetime
+            label=(t 'hostsScanConfigure.startDate')
+            enableTime=false
+            minDate='today'
+            static=true
+            yearRange="currentYear, 2050"
+            value=(readonly startDate)
+            onChange=(action 'onDateChange')
+          }}
+        </box>
+        {{recurrence-interval}}
+        {{schedule-time}}
+        {{cpu-throttling}}
+      </div>
+      <div class='button-holder'>
+        {{#rsa-form-button style='primary' isDisabled=isDisabled defaultAction='saveConfig'}}{{t 'hostsScanConfigure.save'}}{{/rsa-form-button}}
+      </div>
+    </vbox>
+  {{/if}}
 {{/if}}

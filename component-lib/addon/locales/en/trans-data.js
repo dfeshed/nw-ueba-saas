@@ -2717,6 +2717,9 @@ export default {
       title: 'Agent CPU Throttling',
       cpuMax: 'CPU Maximum ( % )',
       vmMax: 'Virtual Machine Maximum ( % ) '
+    },
+    error: {
+      generic: 'An unexpected error has occurred attempting to retrieve this data.'
     }
   }
 };

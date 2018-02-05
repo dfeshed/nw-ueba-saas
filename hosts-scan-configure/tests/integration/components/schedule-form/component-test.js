@@ -64,6 +64,20 @@ test('should show loading indicator when fetching the schedule config', function
 
 });
 
+test('Display error message in case of error loading the page', function(assert) {
+  const state = Immutable.from({
+    hostsScan: {
+      config: { },
+      fetchScheduleStatus: 'error'
+    }
+  });
+  applyPatch(state);
+  this.inject.service('redux');
+  this.render(hbs`{{schedule-form}}`);
+  assert.equal(this.$('.schedule-form .rsa-panel-message').text().trim(),
+    'An unexpected error has occurred attempting to retrieve this data.', 'Error message displayed');
+});
+
 test('should display schedule config once fetchScheduleStatus is completed', function(assert) {
   applyPatch(initState);
   this.inject.service('redux');
