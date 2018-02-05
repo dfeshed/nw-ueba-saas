@@ -106,6 +106,35 @@ const setupPill = (test) => {
   return $fragment;
 };
 
+const setupPillWithCustomProperties = (test) => {
+  test.set('list', []);
+  test.set('metaOptions', ALL_META_OPTIONS);
+  test.set('setKeyboardPriority', () => {});
+  test.set('deleteFilter', () => { });
+  test.set('type', 'meta');
+  test.set('meta', null);
+  test.set('operator', null);
+  test.set('value', null);
+
+  test.render(hbs`
+    {{query-filter-fragment
+      validateWithServer=true
+      filterList=list
+      metaOptions=metaOptions
+      editActive=true
+      setKeyboardPriority=(action setKeyboardPriority)
+      deleteFilter=deleteFilter
+      type=type
+      meta=meta
+      operator=operator
+      value=value
+    }}`
+  );
+
+  const $fragment = test.$('.rsa-query-fragment');
+  return $fragment;
+};
+
 const createTextPill = (test, meta = 'action', operator = '=', value = '"foo"', options) => {
   return _createBasicPill('Text', test, meta, operator, value, options);
 };
@@ -151,5 +180,6 @@ export {
   pressSpace,
   testSetupConfig,
   setupPill,
-  metaNameForFormat
+  metaNameForFormat,
+  setupPillWithCustomProperties
 };
