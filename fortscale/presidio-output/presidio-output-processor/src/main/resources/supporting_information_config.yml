@@ -744,6 +744,7 @@ indicators:
     anomalyField: absoluteFolderPathHistogram
   historicalData:
     type: hourly_aggregations
+  classification: abnormal_print_activity
 
 classificationPriority:
 
@@ -795,14 +796,24 @@ classificationPriority:
 - classificationName: abnormal_ad_changes
   priority: 16
 
-- classificationName: sensitive_user_status_changes
+- classificationName: abnormal_print_activity
   priority: 17
 
-- classificationName: abnormal_file_access
+- classificationName: sensitive_user_status_changes
   priority: 18
 
-- classificationName: non_standard_hours
+- classificationName: print_from_abnormal_host
   priority: 19
 
-- classificationName: suspicious_user_activity
+- classificationName: abnormal_file_access
   priority: 20
+
+- classificationName: print_to_abnormal_printer
+  priority: 21
+
+- classificationName: non_standard_hours
+  priority: 22
+
+- classificationName: suspicious_user_activity
+  priority: 23
+
