@@ -114,13 +114,12 @@ export const setReconClosed = () => ({
 
 export const setColumnGroup = (selectedGroup) => {
   return (dispatch, getState) => {
-    const state = getState();
     dispatch({
       type: ACTION_TYPES.SET_SELECTED_COLUMN_GROUP,
       payload: selectedGroup.id
     });
     // Extracts (and merges) all the preferences from redux state and sends to the backend for persisting.
     const prefService = lookup('service:preferences');
-    prefService.setPreferences('investigate-events-preferences', null, getCurrentPreferences(state), getDefaultPreferences(state));
+    prefService.setPreferences('investigate-events-preferences', null, getCurrentPreferences(getState()), getDefaultPreferences(getState()));
   };
 };
