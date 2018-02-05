@@ -45,6 +45,7 @@ public class PresidioAwsS3Source extends CsvFormatSource {
     protected static final String TS_IN_FILE_NAME_IS_SECOND ="tsInFileNameIsSecond";
     private static final String SKIP_THAT_HOUR = "skip" ;
     private static final String FILES_EXTENSIONS = "filesExtenstions";
+    private static final String COMPRESSION_EXTENSION  = "compressionExtension";
 
 
     //From configuration
@@ -53,6 +54,7 @@ public class PresidioAwsS3Source extends CsvFormatSource {
     private String schemaPrefix;
     private boolean isCompressed;
     private boolean tsInFileNameIsSecond;
+    private String compressionExtension;
 
 
     //build during doPresidioConfigure
@@ -87,11 +89,12 @@ public class PresidioAwsS3Source extends CsvFormatSource {
             tsInFileNameIsSecond = context.getBoolean(TS_IN_FILE_NAME_IS_SECOND,true);
             String startDateRegexp = context.getString(STARTDATE_REGEXP, "");
             String filesExtenstions = context.getString(FILES_EXTENSIONS, "csv");
+            compressionExtension = context.getString(COMPRESSION_EXTENSION, "zip");
 
             startDatePattern = Pattern.compile(startDateRegexp);
 
             if(isCompressed)
-                objectNameExtension="zip";
+                objectNameExtension=compressionExtension;
             else
                 objectNameExtension= filesExtenstions;
 
