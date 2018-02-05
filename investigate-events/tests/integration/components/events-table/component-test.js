@@ -9,11 +9,9 @@ import { clickTrigger, selectChoose } from '../../../helpers/ember-power-select'
 import EventColumnGroups from '../../../data/subscriptions/investigate-columns/data';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import Helper from 'ember-helper';
-import { patchSocket } from '../../../helpers/patch-socket';
 import RSVP from 'rsvp';
 
 let setState;
-const prefToSave = { eventAnalysisPreferences: { isReconExpanded: false } };
 
 const assertForInvestigateColumnAndColumnSelector = (waitFor, assert, headerCount, count, selectedOption, isNotEmptyRow) => {
   clickTrigger();
@@ -101,21 +99,6 @@ test('it should show columns for Web Analysis', function(assert) {
 test('it should show columns for Endpoint Analysis', function(assert) {
   renderDefaultEventTable(assert, this);
   return assertForInvestigateColumnAndColumnSelector(waitFor, assert, 15, 32, 'Endpoint Analysis');
-});
-
-test('Click on isExpanded toggle button on event page, persist the recon size', function(assert) {
-  renderDefaultEventTable(assert, this);
-  assert.equal(this.$('.rsa-icon-expand-diagonal-4-filled').length, 1);
-  this.$('.rsa-icon-expand-diagonal-4-filled').click();
-  patchSocket((method, modelName, query) => {
-    assert.equal(query.data.eventAnalysisPreferences.isReconExpanded, true);
-    assert.equal(method, 'setPreferences');
-    assert.equal(modelName, 'investigate-events-preferences');
-    assert.deepEqual(query, {
-      data: prefToSave
-    });
-    assert.equal(query.data.eventAnalysisPreferences.isReconExpanded, false);
-  });
 });
 
 test('persisted column group is preselected in the drop down', function(assert) {

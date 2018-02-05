@@ -809,7 +809,7 @@ const QueryFragmentComponent = Component.extend({
         run.next(() => {
           const input = this.$('input');
 
-          if (!isEmpty(input.get(0))) {
+          if (input && !isEmpty(input.get(0))) {
             if (!this.get('isLastInList')) {
               input.width((input.length + 1) * 8);
             }
@@ -887,6 +887,13 @@ const QueryFragmentComponent = Component.extend({
 
       run.next(() => {
         const input = this.$('input');
+
+        // Protect against possible race condition, largely in tests
+        // where input isn't there just yet
+        if (!input) {
+          return;
+        }
+
         input
           .prop('type', 'text')
           .prop('spellcheck', false)
