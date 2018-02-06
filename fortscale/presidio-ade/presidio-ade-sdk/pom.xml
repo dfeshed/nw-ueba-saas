@@ -6,10 +6,10 @@
     <parent>
         <groupId>fortscale</groupId>
         <artifactId>presidio-ade</artifactId>
-        <version>1.0-10</version>
+        <version>1.0-11</version>
     </parent>
     <artifactId>presidio-ade-sdk</artifactId>
-    <version>1.0-10</version>
+    <version>1.0-11</version>
     <packaging>jar</packaging>
 
     <dependencies>

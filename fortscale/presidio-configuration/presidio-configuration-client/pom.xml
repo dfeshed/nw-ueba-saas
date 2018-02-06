@@ -7,12 +7,12 @@
     <description>REST client for presidio configuration server</description>
     <artifactId>presidio-configuration-client</artifactId>
     <packaging>jar</packaging>
-    <version>1.0-10</version>
+    <version>1.0-11</version>
 
     <parent>
         <artifactId>presidio-configuration</artifactId>
         <groupId>fortscale</groupId>
-        <version>1.0-10</version>
+        <version>1.0-11</version>
     </parent>
 
     <dependencies>

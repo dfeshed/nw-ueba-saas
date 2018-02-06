@@ -6,10 +6,10 @@
     <parent>
         <groupId>fortscale</groupId>
         <artifactId>presidio-monitoring</artifactId>
-        <version>1.0-10</version>
+        <version>1.0-11</version>
     </parent>
     <artifactId>presidio-monitoring-sdk-impl</artifactId>
-    <version>1.0-10</version>
+    <version>1.0-11</version>
 
     <dependencies>
         <dependency>
