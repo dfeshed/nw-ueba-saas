@@ -22,12 +22,12 @@ limitations under the License.
     <parent>
         <artifactId>flume-ng-sinks</artifactId>
         <groupId>presidio.flume.core</groupId>
-        <version>1.0-10</version>
+        <version>1.0-11</version>
     </parent>
 
     <groupId>presidio.flume.core.flume-ng-sinks</groupId>
     <artifactId>flume-ng-morphline-solr-sink</artifactId>
-    <version>1.0-10</version>
+    <version>1.0-11</version>
     <name>Flume NG Morphline Solr Sink</name>
 
     <repositories>

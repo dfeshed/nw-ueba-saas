@@ -7,7 +7,7 @@
     <parent>
         <groupId>presidio.flume.core</groupId>
         <artifactId>fortscale-flume</artifactId>
-        <version>1.0-10</version>
+        <version>1.0-11</version>
     </parent>
 
     <artifactId>fortscale-flume-sinks</artifactId>
@@ -73,7 +73,7 @@
         <dependency>
             <groupId>presidio.flume.core</groupId>
             <artifactId>fortscale-flume-common</artifactId>
-            <version>1.0-10</version>
+            <version>1.0-11</version>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
