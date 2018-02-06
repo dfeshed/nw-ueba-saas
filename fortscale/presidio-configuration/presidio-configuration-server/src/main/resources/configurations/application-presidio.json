@@ -7,11 +7,6 @@
     "smtpHost": "name.of-server.com:25",
     "kdcUrl": "string"
   },
-  "dataPipeline": {
-    "schemas": [
-    ],
-    "startTime": "2017-01-01 08:00:00"
-  },
   "outputForwarding": {
     "syslog": {
       "alert": {

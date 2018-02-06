@@ -72,7 +72,9 @@ public abstract class ConfigurationCreation {
         String key;
         while (itr.hasNext()) {
             key = itr.next().toString();
-            setKeyValue(key, node.get(key));
+            if (!node.get(key).isNull()) {
+                setKeyValue(key, node.get(key));
+            }
         }
         if (badParams.isEmpty())
             isStructureValid = true;
