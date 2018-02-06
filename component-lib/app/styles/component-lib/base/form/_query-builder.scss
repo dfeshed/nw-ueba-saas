@@ -1,26 +1,7 @@
-.rsa-icon.expensive-operator-indicator {
-  display: inline-flex;
-  align-self: center;
-  margin-right: rsa-whitespace(less);
-  color: transparent;
-}
-
 .ember-power-select-typeahead-dropdown {
   margin-top: 4px;
   border-color: border-color(primary, lighter)!important;
   @include rsa-font(body, small);
-
-  .rsa-icon.expensive-operator-indicator {
-    &.is-expensive {
-      color: text-color(primary, lightest);
-    }
-  }
-
-  &.is-expensive {
-    .rsa-icon.expensive-operator-indicator {
-      color: text-color(primary, lightest);
-    }
-  }
 }
 
 .rsa-query-fragment-dropdown {
@@ -99,10 +80,6 @@
     border-radius: rsa-whitespace(least);
     @include border(1px, solid, primary, lighter);
     color: text-color(primary, lightest);
-
-    .rsa-icon.expensive-operator-indicator {
-      color: text-color(primary, lightest);
-    }
 
     &.empty {
       max-width: 1.5rem;

@@ -106,18 +106,18 @@ const QueryFragmentComponent = Component.extend({
 
   @computed('metaFormat', 'metaIndex', 'metaOptions', 'meta')
   operatorOptions(metaFormat, metaIndex, metaOptions, meta) {
-    const efficientIndex = metaIndex === 'value';
-    const eq = { displayName: '=', isExpensive: !efficientIndex };
-    const notEq = { displayName: '!=', isExpensive: !efficientIndex };
-    const lt = { displayName: '<', isExpensive: !efficientIndex };
-    const lte = { displayName: '<=', isExpensive: !efficientIndex };
-    const gt = { displayName: '>', isExpensive: !efficientIndex };
-    const gte = { displayName: '>=', isExpensive: !efficientIndex };
+    // const efficientIndex = metaIndex === 'value';
+    const eq = { displayName: '=', isExpensive: false };
+    const notEq = { displayName: '!=', isExpensive: false };
+    const lt = { displayName: '<', isExpensive: false };
+    const lte = { displayName: '<=', isExpensive: false };
+    const gt = { displayName: '>', isExpensive: false };
+    const gte = { displayName: '>=', isExpensive: false };
     const exists = { displayName: 'exists', isExpensive: false };
     const notExists = { displayName: '!exists', isExpensive: false };
-    const contains = { displayName: 'contains', isExpensive: !efficientIndex };
-    const begins = { displayName: 'begins', isExpensive: !efficientIndex };
-    const ends = { displayName: 'ends', isExpensive: !efficientIndex };
+    const contains = { displayName: 'contains', isExpensive: false };
+    const begins = { displayName: 'begins', isExpensive: false };
+    const ends = { displayName: 'ends', isExpensive: false };
 
     if (isEmpty(metaFormat) && !isEmpty(metaOptions) && !isEmpty(meta)) {
       metaFormat = metaOptions.findBy('metaName', meta.trim()).format;
@@ -466,17 +466,9 @@ const QueryFragmentComponent = Component.extend({
           const px = 8;
           const valLength = input.val().length;
           const newInputWidth = valLength * px;
-
           input.width(newInputWidth);
         }
 
-        if (this.get('saved') && isEmpty(input.val())) {
-          this.set('editActive', false);
-        } else if (this.get('saved') && !isEmpty(this.get('meta')) && !isEmpty(this.get('operator'))) {
-          if (this.get('filter').includes('exists') || !isEmpty(this.get('value'))) {
-            this.set('editActive', false);
-          }
-        }
       });
     },
 
@@ -829,7 +821,7 @@ const QueryFragmentComponent = Component.extend({
         }
 
         this.setProperties({
-          isExpensive: selection.isExpensive,
+          isExpensive: false,
           operator: selection.displayName
         });
 

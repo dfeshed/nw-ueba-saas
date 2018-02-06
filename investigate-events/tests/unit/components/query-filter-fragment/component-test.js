@@ -1,4 +1,4 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { moduleForComponent, test, skip } from 'ember-qunit';
 import engineResolverFor from '../../../helpers/engine-resolver';
 
 moduleForComponent('query-filters/query-filter-fragment', 'Unit | Component | query filter fragment', {
@@ -64,7 +64,7 @@ test('it sets operatorOptions when metaFormat is IPv4 or IPv6', function(assert)
   assert.ok(options.findBy('displayName', '!exists'), 'Expected to find !exists');
 });
 
-test('it sets isExpensive when metaIndex is anything but value', function(assert) {
+skip('it sets isExpensive when metaIndex is anything but value', function(assert) {
   const component = this.subject({
     metaIndex: 'value',
     metaFormat: 'Text'
