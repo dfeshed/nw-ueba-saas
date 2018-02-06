@@ -12,7 +12,7 @@ import java.util.Objects;
 
 public class Configuration {
     @JsonProperty("system")
-    private SecuredSystemConfiguration system = null;
+    private SystemConfiguration system = null;
 
     @JsonProperty("dataPipeline")
     private DataConfiguration dataPipeline = null;
@@ -35,7 +35,7 @@ public class Configuration {
     }
 
 
-    public Configuration system(SecuredSystemConfiguration system) {
+    public Configuration system(SystemConfiguration system) {
         this.system = system;
         return this;
     }
@@ -46,11 +46,11 @@ public class Configuration {
      * @return system
      **/
     @ApiModelProperty(value = "")
-    public SecuredSystemConfiguration getSystem() {
+    public SystemConfiguration getSystem() {
         return system;
     }
 
-    public void setSystem(SecuredSystemConfiguration system) {
+    public void setSystem(SystemConfiguration system) {
         this.system = system;
     }
 
