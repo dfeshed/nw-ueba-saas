@@ -1,7 +1,9 @@
 import Ember from 'ember';
 import { test } from 'qunit';
 import moduleForAcceptance from '../helpers/module-for-acceptance';
+import RSVP from 'rsvp';
 
+const { Promise } = RSVP;
 const { run: { later } } = Ember;
 
 moduleForAcceptance('Acceptance | Request | promiseRequest', {});
@@ -10,24 +12,24 @@ moduleForAcceptance('Acceptance | Request | promiseRequest', {});
  * This is a simple "will it return data" test
  */
 test('socket make request and receive data', function(assert) {
-  const done = assert.async();
+  let request;
   assert.expect(2);
-  visit('/');
 
-  const request = this.application.__container__.lookup('service:request');
+  visit('/');
+  andThen(() => {
+    request = this.application.__container__.lookup('service:request');
+  });
 
   andThen(function() {
-    request.promiseRequest({
+    return request.promiseRequest({
       method: 'promise/_1',
       modelName: 'test',
       query: {}
     }).then(function(response) {
       assert.ok(true, 'Socket response received');
       assert.ok(response.data.length === 5, 'Socket response ');
-      done();
     }).catch(function(/* response */) {
       assert.ok(false, 'Socket response errored out');
-      done();
     });
   });
 });
@@ -39,26 +41,35 @@ test('socket make request and receive data', function(assert) {
  * Any calls to resolve/reject promise will break test.
  */
 test('function is returned that can stop stream', function(assert) {
+  let request;
   assert.expect(1);
-  visit('/');
 
-  const request = this.application.__container__.lookup('service:request');
+  visit('/');
+  andThen(() => {
+    request = this.application.__container__.lookup('service:request');
+  });
 
   andThen(function() {
-    request.promiseRequest({
-      method: 'promise/_2',
-      modelName: 'test',
-      query: {},
-      onInit(stopStreaming) {
-        later(this, function() {
-          stopStreaming();
-          assert.ok(true, 'Stopped streaming before message came in');
-        }, 500);
-      }
-    }).then(function(/* response */) {
-      assert.ok(false, 'Socket response should not be received');
-    }).catch(function(/* response */) {
-      assert.ok(false, 'Socket response should not error out');
+    return new Promise(function(resolve) {
+      request.promiseRequest({
+        method: 'promise/_2',
+        modelName: 'test',
+        query: {},
+        onInit(stopStreaming) {
+          later(this, function() {
+            stopStreaming();
+            assert.ok(true, 'Stopped streaming before message came in');
+          }, 500);
+        }
+      }).then(function(/* response */) {
+        assert.ok(false, 'Socket response should not be received');
+      }).catch(function(/* response */) {
+        assert.ok(false, 'Socket response should not error out');
+      });
+
+      later(() => {
+        resolve();
+      }, 600);
     });
   });
 });
@@ -69,13 +80,16 @@ test('function is returned that can stop stream', function(assert) {
  * makes it back to the resolution
  */
 test('can allow requestId to be set to false and still receive data', function(assert) {
+  let request;
   assert.expect(2);
-  visit('/');
 
-  const request = this.application.__container__.lookup('service:request');
+  visit('/');
+  andThen(() => {
+    request = this.application.__container__.lookup('service:request');
+  });
 
   andThen(function() {
-    request.promiseRequest({
+    return request.promiseRequest({
       method: 'promise/_3',
       modelName: 'test',
       query: {},
@@ -92,13 +106,16 @@ test('can allow requestId to be set to false and still receive data', function(a
 });
 
 test('when error code is returned, reject is called', function(assert) {
+  let request;
   assert.expect(2);
-  visit('/');
 
-  const request = this.application.__container__.lookup('service:request');
+  visit('/');
+  andThen(() => {
+    request = this.application.__container__.lookup('service:request');
+  });
 
   andThen(function() {
-    request.promiseRequest({
+    return request.promiseRequest({
       method: 'promise/_4',
       modelName: 'test',
       query: {}
@@ -112,14 +129,16 @@ test('when error code is returned, reject is called', function(assert) {
 });
 
 test('when applyStreamParams set to true, stream properties should be added', function(assert) {
-  const done = assert.async();
+  let request;
   assert.expect(1);
-  visit('/');
 
-  const request = this.application.__container__.lookup('service:request');
+  visit('/');
+  andThen(() => {
+    request = this.application.__container__.lookup('service:request');
+  });
 
   andThen(function() {
-    request.promiseRequest({
+    return request.promiseRequest({
       method: 'promise/_5',
       modelName: 'test',
       query: {},
@@ -128,22 +147,23 @@ test('when applyStreamParams set to true, stream properties should be added', fu
       }
     }).then(function(response) {
       assert.ok(response.request.stream && response.request.stream.limit, 'returned request should contain stream and stream.limit');
-      done();
     }).catch(function(/* response */) {
       assert.ok(false, 'Socket response should not error out');
-      done();
     });
   });
 });
 
 test('when applyStreamParams set to false, no stream properties added', function(assert) {
+  let request;
   assert.expect(1);
-  visit('/');
 
-  const request = this.application.__container__.lookup('service:request');
+  visit('/');
+  andThen(() => {
+    request = this.application.__container__.lookup('service:request');
+  });
 
   andThen(function() {
-    request.promiseRequest({
+    return request.promiseRequest({
       method: 'promise/_5',
       modelName: 'test',
       query: {},
@@ -159,13 +179,16 @@ test('when applyStreamParams set to false, no stream properties added', function
 });
 
 test('when requireRequestId set to false, no requestId sent', function(assert) {
+  let request;
   assert.expect(1);
-  visit('/');
 
-  const request = this.application.__container__.lookup('service:request');
+  visit('/');
+  andThen(() => {
+    request = this.application.__container__.lookup('service:request');
+  });
 
   andThen(function() {
-    request.promiseRequest({
+    return request.promiseRequest({
       method: 'promise/_5',
       modelName: 'test',
       query: {},
@@ -181,13 +204,16 @@ test('when requireRequestId set to false, no requestId sent', function(assert) {
 });
 
 test('when requireRequestId set to true, requestId is sent', function(assert) {
+  let request;
   assert.expect(1);
-  visit('/');
 
-  const request = this.application.__container__.lookup('service:request');
+  visit('/');
+  andThen(() => {
+    request = this.application.__container__.lookup('service:request');
+  });
 
   andThen(function() {
-    request.promiseRequest({
+    return request.promiseRequest({
       method: 'promise/_5',
       modelName: 'test',
       query: {},
@@ -203,13 +229,16 @@ test('when requireRequestId set to true, requestId is sent', function(assert) {
 });
 
 test('when no response is received from server, timeout callback is triggered', function(assert) {
-  const done = assert.async(2);
-  visit('/');
+  let request;
+  assert.expect(2);
 
-  const request = this.application.__container__.lookup('service:request');
+  visit('/');
+  andThen(() => {
+    request = this.application.__container__.lookup('service:request');
+  });
 
   andThen(function() {
-    request.promiseRequest({
+    return request.promiseRequest({
       method: 'promise/_6',
       modelName: 'test',
       query: {},
@@ -218,23 +247,24 @@ test('when no response is received from server, timeout callback is triggered', 
       },
       onTimeout: () => {
         assert.ok(true, 'onTimeout callback is expected');
-        done();
       }
     }).then(function() {
       assert.ok(true, 'Socket response received');
-      done();
     });
   });
 });
 
 test('when a response is received from server before timeout-wait-time milliseconds, timeout callback is Not triggered', function(assert) {
-  const done = assert.async();
-  visit('/');
+  let request;
+  assert.expect(1);
 
-  const request = this.application.__container__.lookup('service:request');
+  visit('/');
+  andThen(() => {
+    request = this.application.__container__.lookup('service:request');
+  });
 
   andThen(function() {
-    request.promiseRequest({
+    return request.promiseRequest({
       method: 'promise/_6',
       modelName: 'test',
       query: {},
@@ -243,7 +273,6 @@ test('when a response is received from server before timeout-wait-time milliseco
       }
     }).then(function() {
       assert.ok(true, 'Socket response received');
-      done();
     });
   });
 });

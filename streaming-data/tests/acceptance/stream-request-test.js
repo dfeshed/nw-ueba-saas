@@ -10,14 +10,17 @@ moduleForAcceptance('Acceptance | Request | streamRequest', {});
  * This is a simple "will it return data" test
  */
 test('socket make request and receive data', function(assert) {
-  const done = assert.async();
+  let request;
   assert.expect(2);
-  visit('/');
+  const done = assert.async();
 
-  const request = this.application.__container__.lookup('service:request');
+  visit('/');
+  andThen(() => {
+    request = this.application.__container__.lookup('service:request');
+  });
 
   andThen(function() {
-    request.streamRequest({
+    return request.streamRequest({
       method: 'stream/_1',
       modelName: 'test',
       query: {},
@@ -37,14 +40,18 @@ test('socket make request and receive data', function(assert) {
 test('socket make request and receive multiple pages of data', function(assert) {
   let callCount = 0;
   let allResponseData = [];
-  const done = assert.async();
-  assert.expect(2);
-  visit('/');
 
-  const request = this.application.__container__.lookup('service:request');
+  let request;
+  assert.expect(2);
+  const done = assert.async();
+
+  visit('/');
+  andThen(() => {
+    request = this.application.__container__.lookup('service:request');
+  });
 
   andThen(function() {
-    request.streamRequest({
+    return request.streamRequest({
       method: 'stream/_2',
       modelName: 'test',
       query: {},
@@ -66,14 +73,18 @@ test('socket make request and receive multiple pages of data', function(assert) 
  */
 test('socket can cancel', function(assert) {
   let callCount = 0;
-  const done = assert.async();
-  assert.expect(1);
-  visit('/');
 
-  const request = this.application.__container__.lookup('service:request');
+  let request;
+  assert.expect(1);
+  const done = assert.async();
+
+  visit('/');
+  andThen(() => {
+    request = this.application.__container__.lookup('service:request');
+  });
 
   andThen(function() {
-    request.streamRequest({
+    return request.streamRequest({
       method: 'stream/_3',
       modelName: 'test',
       query: {},
@@ -91,14 +102,17 @@ test('socket can cancel', function(assert) {
 });
 
 test('will call onInit before stream starts', function(assert) {
-  const done = assert.async();
+  let request;
   assert.expect(1);
-  visit('/');
+  const done = assert.async();
 
-  const request = this.application.__container__.lookup('service:request');
+  visit('/');
+  andThen(() => {
+    request = this.application.__container__.lookup('service:request');
+  });
 
   andThen(function() {
-    request.streamRequest({
+    return request.streamRequest({
       method: 'stream/_1',  // reusing stream/_1 just to verify onInit called
       modelName: 'test',
       query: {},
@@ -113,14 +127,17 @@ test('will call onInit before stream starts', function(assert) {
 });
 
 test('will call onStopped when stream is stopped by client', function(assert) {
-  const done = assert.async();
+  let request;
   assert.expect(1);
-  visit('/');
+  const done = assert.async();
 
-  const request = this.application.__container__.lookup('service:request');
+  visit('/');
+  andThen(() => {
+    request = this.application.__container__.lookup('service:request');
+  });
 
   andThen(function() {
-    request.streamRequest({
+    return request.streamRequest({
       method: 'stream/_2',  // reusing stream/_2 just to verify onStopped called
       modelName: 'test',
       query: {},
@@ -136,14 +153,17 @@ test('will call onStopped when stream is stopped by client', function(assert) {
 });
 
 test('will call onError when server returns error', function(assert) {
-  const done = assert.async();
+  let request;
   assert.expect(2);
-  visit('/');
+  const done = assert.async();
 
-  const request = this.application.__container__.lookup('service:request');
+  visit('/');
+  andThen(() => {
+    request = this.application.__container__.lookup('service:request');
+  });
 
   andThen(function() {
-    request.streamRequest({
+    return request.streamRequest({
       method: 'stream/_4',
       modelName: 'test',
       query: {},
@@ -159,14 +179,18 @@ test('will call onError when server returns error', function(assert) {
 
 test('will call onCompleted when server sends an indication that it is done', function(assert) {
   let callCount = 0;
-  const done = assert.async();
-  assert.expect(2);
-  visit('/');
 
-  const request = this.application.__container__.lookup('service:request');
+  let request;
+  assert.expect(2);
+  const done = assert.async();
+
+  visit('/');
+  andThen(() => {
+    request = this.application.__container__.lookup('service:request');
+  });
 
   andThen(function() {
-    request.streamRequest({
+    return request.streamRequest({
       method: 'stream/_5',
       modelName: 'test',
       query: {},
@@ -183,14 +207,17 @@ test('will call onCompleted when server sends an indication that it is done', fu
 });
 
 test('when no response is received from server, timeout callback is triggered', function(assert) {
-  const done = assert.async();
+  let request;
   assert.expect(1);
-  visit('/');
+  const done = assert.async();
 
-  const request = this.application.__container__.lookup('service:request');
+  visit('/');
+  andThen(() => {
+    request = this.application.__container__.lookup('service:request');
+  });
 
   andThen(function() {
-    request.streamRequest({
+    return request.streamRequest({
       method: 'stream/_6',
       modelName: 'test',
       query: {},
@@ -207,14 +234,17 @@ test('when no response is received from server, timeout callback is triggered', 
 });
 
 test('when a response is received from server, timeout callback is Not triggered', function(assert) {
-  const done = assert.async();
+  let request;
   assert.expect(1);
-  visit('/');
+  const done = assert.async();
 
-  const request = this.application.__container__.lookup('service:request');
+  visit('/');
+  andThen(() => {
+    request = this.application.__container__.lookup('service:request');
+  });
 
   andThen(function() {
-    request.streamRequest({
+    return request.streamRequest({
       method: 'stream/_6',
       modelName: 'test',
       query: {},
@@ -224,7 +254,6 @@ test('when a response is received from server, timeout callback is Not triggered
       },
       onTimeout() {
         assert.ok(false, 'onTimeout is not been called');
-        done();
       }
     });
   });
