@@ -209,7 +209,8 @@ export default Component.extend(DomWatcher, EKMixin, {
     // Complete table need to re-render in case column config is changing.
     // Ensuring table starts from left (Scrollbar needs to start from begining).
     this.$('.rsa-data-table-body').scrollLeft(0);
-
+    // Need to reset the flag for new column groups
+    this.set('needNotAdjustWidth', false);
     if (!columnsConfig || !columnsConfig.map) {
       return [];
     } else {
