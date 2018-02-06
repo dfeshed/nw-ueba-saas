@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import formatUtil from 'investigate-events/components/events-table-row/format-util';
+import formatUtil from 'investigate-events/components/events-table-container/row-container/format-util';
 
 const { Helper } = Ember;
 

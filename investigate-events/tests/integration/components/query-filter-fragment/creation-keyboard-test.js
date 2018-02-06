@@ -14,7 +14,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 import { testSetupConfig, createTextPill } from './util';
 
 moduleForComponent(
-  'query-filter-fragment',
+  'query-filters/query-filter-fragment',
   'Integration | Component | query-filter-fragment creation-keyboard',
   testSetupConfig
 );

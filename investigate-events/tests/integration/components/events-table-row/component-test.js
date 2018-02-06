@@ -12,7 +12,7 @@ const {
   Object: EmberObject
 } = Ember;
 
-moduleForComponent('events-table-row', 'Integration | Component | events table row', {
+moduleForComponent('events-table-container/row-container', 'Integration | Component | events table row', {
   integration: true,
   resolver: engineResolverFor('investigate-events')
 });
@@ -61,7 +61,7 @@ test('it renders a row of cells correctly', function(assert) {
     clickAction: makeClickAction(assert)
   });
 
-  this.render(hbs`{{events-table-row
+  this.render(hbs`{{events-table-container/row-container
     i18n=i18n
     item=item height=height
     relativeIndex=relativeIndex
@@ -156,7 +156,7 @@ test('render recon container and check recon size', function(assert) {
     clickAction: makeClickAction(assert)
   });
 
-  this.render(hbs`{{events-table-row
+  this.render(hbs`{{events-table-container/row-container
     i18n=i18n
     item=item height=height
     relativeIndex=relativeIndex

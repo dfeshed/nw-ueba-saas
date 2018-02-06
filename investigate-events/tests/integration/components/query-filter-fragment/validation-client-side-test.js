@@ -13,7 +13,7 @@ import {
 } from './util';
 
 moduleForComponent(
-  'query-filter-fragment',
+  'query-filters/query-filter-fragment',
   'Integration | Component | query-filter-fragment validation-client-side',
   testSetupConfig
 );

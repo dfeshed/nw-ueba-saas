@@ -478,7 +478,11 @@ export default {
       shrink: 'Shrink Events Panel',
       expand: 'Expand Events Panel',
       close: 'Close Events Panel',
-      scrollMessage: 'Scroll down to view the selected event highlighted in blue'
+      scrollMessage: 'Scroll down to view the selected event highlighted in blue',
+      eventTips: {
+        noResults: 'No Results yet. Please submit a query',
+        usefulTipsTitle: 'USEFUL TIPS (about query syntax, options, samples, etc)'
+      }
     },
     generic: {
       loading: 'Loading data...'

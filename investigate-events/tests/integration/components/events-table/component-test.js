@@ -27,7 +27,7 @@ const assertForInvestigateColumnAndColumnSelector = (waitFor, assert, headerCoun
 };
 const renderDefaultEventTable = (assert, _this) => {
   new ReduxDataHelper(setState).columnGroup('SUMMARY').reconSize('max').eventsPreferencesConfig().columnGroups(EventColumnGroups).build();
-  _this.render(hbs`{{events-table}}`);
+  _this.render(hbs`{{events-table-container}}`);
   assert.equal(_this.$('.rsa-investigate-events-table').length, 1);
   assert.equal(_this.$('.ember-power-select-trigger').length, 1, 'there is no option to select default column group.');
   assert.equal(_this.$('.rsa-icon-cog-filled').length, 1, 'There should be column selector icon.');
@@ -35,7 +35,7 @@ const renderDefaultEventTable = (assert, _this) => {
   assert.equal(_this.$('.rsa-panel-message.no-results-message.center.ember-view').text().trim(), 'Your filter criteria did not match any records.');
 };
 
-moduleForComponent('events-table', 'Integration | Component | events table', {
+moduleForComponent('events-table-container', 'Integration | Component | events table', {
   integration: true,
   resolver: engineResolverFor('investigate-events'),
   beforeEach() {
@@ -103,7 +103,7 @@ test('it should show columns for Endpoint Analysis', function(assert) {
 
 test('persisted column group is preselected in the drop down', function(assert) {
   new ReduxDataHelper(setState).columnGroup('MALWARE').columnGroups(EventColumnGroups).build();
-  this.render(hbs`{{events-table}}`);
+  this.render(hbs`{{events-table-container}}`);
   return waitFor('.ember-power-select-selected-item').then(() => {
     assert.equal(this.$('.ember-power-select-selected-item').text().trim(), 'Malware Analysis', 'Expected Malware Analysis to be selected');
   });
@@ -111,14 +111,14 @@ test('persisted column group is preselected in the drop down', function(assert) 
 
 test('it should show error message when query is invalid', function(assert) {
   new ReduxDataHelper(setState).columnGroup('SUMMARY').columnGroups(EventColumnGroups).isInvalidQuery(true).build();
-  this.render(hbs`{{events-table}}`);
+  this.render(hbs`{{events-table-container}}`);
   assert.equal(this.$('.rsa-panel-message .title').text().trim(), 'No events found.', 'Appropriate error title for invaild query response');
   assert.equal(this.$('.rsa-panel-message .message').text().trim(), 'Your filter criteria is invalid. Examine query for syntax errors.', 'Appropriate error description for invaild query response');
 });
 
 test('it should not show an error message when query is valid', function(assert) {
   new ReduxDataHelper(setState).columnGroup('SUMMARY').columnGroups(EventColumnGroups).isInvalidQuery(false).build();
-  this.render(hbs`{{events-table}}`);
+  this.render(hbs`{{events-table-container}}`);
   assert.notEqual(this.$('.rsa-panel-message .title').text().trim(), 'No events found.', 'Appropriate error title for invaild query response');
   assert.notEqual(this.$('.rsa-panel-message .message').text().trim(), 'Your filter criteria is invalid. Examine query for syntax errors.', 'Appropriate error description for invaild query response');
 });

@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import moment from 'moment';
-import formatUtil from 'investigate-events/components/events-table-row/format-util';
+import formatUtil from 'investigate-events/components/events-table-container/row-container/format-util';
 
 module('Unit | Events Table Row | format util', {
   beforeEach() {

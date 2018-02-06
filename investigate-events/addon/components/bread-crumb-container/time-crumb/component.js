@@ -4,12 +4,6 @@ import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import TIME_RANGES from 'investigate-events/constants/time-ranges';
 import { setQueryTimeRange } from 'investigate-events/actions/interaction-creators';
-// import { selectedTimeRangeName } from 'investigate-events/reducers/investigate/query-node/selectors';
-
-const stateToComputed = (state) => ({
-  // selectedTimeRangeName: selectedTimeRangeName(state),
-  queryNode: state.investigate.queryNode
-});
 
 const dispatchToActions = { setQueryTimeRange };
 
@@ -35,4 +29,4 @@ const TimeCrumb = Component.extend({
 
 });
 
-export default connect(stateToComputed, dispatchToActions)(TimeCrumb);
+export default connect(undefined, dispatchToActions)(TimeCrumb);

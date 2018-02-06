@@ -1,0 +1,23 @@
+{{#if columnGroups}}
+  {{events-table-container/header-container}}
+  <section class="rsa-investigate-events-table__body">
+    {{progress-bar
+      percent=percent
+      enabled=(is-equal status 'streaming')
+    }}
+    {{#if isInvalidQuery}}
+      {{rsa-panel-message title=(t 'investigate.invalidQueryError.title') message=(t 'investigate.invalidQueryError.description')}}
+    {{else}}
+      {{events-table-container/events-table contextItems=(build-context-menu)}}
+    {{/if}}
+  </section>
+
+  <footer class="scroll-message">
+    {{rsa-icon style='filled' name='arrow-circle-down-1'}}
+    <span>{{t 'investigate.events.scrollMessage'}}</span>
+  </footer>
+{{else}}
+  <centered>
+    {{rsa-loader size='largest' label=(concat (t 'investigate.loading') ' ...')}}
+  </centered>
+{{/if}}

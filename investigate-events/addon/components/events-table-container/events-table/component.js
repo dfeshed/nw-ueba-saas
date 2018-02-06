@@ -1,16 +1,26 @@
 import RsaContextMenu from 'component-lib/components/rsa-context-menu/component';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
+import { getColumns } from 'investigate-events/reducers/investigate/data-selectors';
+import { selectedIndex } from 'investigate-events/reducers/investigate/event-results/selectors';
+import { eventsGetMore, eventsLogsGet } from 'investigate-events/actions/events-creators';
 
-const stateToComputed = (state) => {
-  const { investigate: { queryNode: { serviceId, startTime, endTime, metaFilter }, dictionaries } } = state;
-  return {
-    endpointId: serviceId,
-    startTime,
-    endTime,
-    queryConditions: metaFilter.conditions,
-    language: dictionaries.language
-  };
+const stateToComputed = (state) => ({
+  status: state.investigate.eventResults.status,
+  selectedIndex: selectedIndex(state),
+  items: state.investigate.eventResults.data,
+  aliases: state.investigate.dictionaries.aliases,
+  language: state.investigate.dictionaries.language,
+  columns: getColumns(state),
+  endpointId: state.investigate.queryNode.serviceId,
+  startTime: state.investigate.queryNode.startTime,
+  endTime: state.investigate.queryNode.endTime,
+  queryConditions: state.investigate.queryNode.metaFilter.conditions
+});
+
+const dispatchToActions = {
+  eventsGetMore,
+  eventsLogsGet
 };
 
 /*
@@ -50,4 +60,4 @@ const EventsTableContextMenu = RsaContextMenu.extend({
   }
 });
 
-export default connect(stateToComputed)(EventsTableContextMenu);
+export default connect(stateToComputed, dispatchToActions)(EventsTableContextMenu);

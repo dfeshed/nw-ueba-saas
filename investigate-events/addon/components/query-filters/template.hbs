@@ -1,6 +1,6 @@
 {{processFilters}}
 {{#each filters as |filter index|}}
-  {{#query-filter-fragment
+  {{#query-filters/query-filter-fragment
     preloadedFilters=preloadedFilters
     metaOptions=metaOptions
     placeholder=placeholder
@@ -20,5 +20,5 @@
     {{#if (gt filters.length 1)}}
       <div title={{t 'queryBuilder.insertFilter'}} class="invisible-edit-trigger" {{action 'insertFilter' filter filters}}></div>
     {{/if}}
-  {{/query-filter-fragment}}
+  {{/query-filters/query-filter-fragment}}
 {{/each}}

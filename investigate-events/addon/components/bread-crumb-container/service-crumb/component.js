@@ -42,13 +42,11 @@ const ServiceCrumb = Component.extend({
   },
 
   @computed('isCoreServiceNotUpdated', 'isServicesRetrieveError', 'isSummaryDataInvalid')
-  iconClass: (isCoreServiceNotUpdated, isServicesRetrieveError, isSummaryDataInvalid) => {
-    return isCoreServiceNotUpdated || isServicesRetrieveError || isSummaryDataInvalid ? 'disclaimer' : '';
-  },
-
-  @computed('isCoreServiceNotUpdated', 'isServicesRetrieveError', 'isSummaryDataInvalid')
-  iconName: (isCoreServiceNotUpdated, isServicesRetrieveError, isSummaryDataInvalid) => {
-    return isCoreServiceNotUpdated || isServicesRetrieveError || isSummaryDataInvalid ? 'report-problem-triangle' : 'server-3';
+  iconDetails(isCoreServiceNotUpdated, isServicesRetrieveError, isSummaryDataInvalid) {
+    const isError = (isCoreServiceNotUpdated || isServicesRetrieveError || isSummaryDataInvalid);
+    return isError ?
+      { class: 'disclaimer', name: 'report-problem-triangle' } :
+      { class: '', name: 'server-3' };
   },
 
   @computed('isServicesLoading', 'isSummaryLoading', 'serviceDisplayName', 'i18n')

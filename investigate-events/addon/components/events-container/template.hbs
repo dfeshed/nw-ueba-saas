@@ -32,7 +32,7 @@
           </aside>
         {{/if}}
         <section class="rsa-investigate-query__body-master-main">
-          {{events-table}}
+          {{events-table-container}}
         </section>
       </section>
       <vbox class="rsa-investigate-query__body-slave">
@@ -47,7 +47,7 @@
             language=(readonly language)
             meta=(readonly queryNode.eventMetas)
             size=(readonly reconSize)
-            total=(readonly eventCount.data)
+            total=(readonly totalCount)
             closeAction=(route-action 'reconClose')
             expandAction=(route-action 'reconSize' reconPanelSizes.MAX)
             linkToFileAction=(route-action 'reconLinkToFile')
@@ -58,9 +58,9 @@
     </section>
   {{else}}
     <div class="rsa-investigate-query__body-tips">
-      <p>No Results yet. Please submit a query.</p>
+      <p>{{t 'investigate.events.eventTips.noResults'}}</p>
       <section class="tips">
-        <p>USEFUL TIPS (about query syntax, options, samples, etc)</p>
+        <p>{{t 'investigate.events.eventTips.usefulTipsTitle'}}</p>
         <ul>
           <li>Tip 1</li>
           <li>Tip 2</li>

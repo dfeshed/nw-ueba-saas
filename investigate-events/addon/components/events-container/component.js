@@ -12,7 +12,7 @@ const stateToComputed = (state) => ({
   selectedIndex: selectedIndex(state),
   aliases: state.investigate.dictionaries.aliases,
   atLeastOneQueryIssued: state.investigate.queryNode.atLeastOneQueryIssued,
-  eventCount: state.investigate.eventCount,
+  totalCount: state.investigate.eventCount.data,
   eventResults: state.investigate.eventResults,
   language: state.investigate.dictionaries.language,
   queryNode: state.investigate.queryNode,

@@ -3,7 +3,7 @@ import { testSetupConfig, pressSpace, metaNameForFormat, pressEnter, setupPillWi
 import { typeInSearch, clickTrigger } from 'ember-power-select/test-support/helpers';
 
 moduleForComponent(
-  'query-filter-fragment',
+  'query-filters/query-filter-fragment',
   'Integration | Component | query-filter-fragment monitor-component-variables',
   testSetupConfig
 );

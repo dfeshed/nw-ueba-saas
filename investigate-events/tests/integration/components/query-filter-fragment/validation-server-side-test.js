@@ -6,13 +6,13 @@ import * as RequestApi from 'investigate-events/actions/query-validation-creator
 import { pressEnter, testSetupConfig } from './util';
 
 moduleForComponent(
-  'query-filter-fragment',
+  'query-filters/query-filter-fragment',
   'Integration | Component | query-filter-fragment validation-server-side',
   testSetupConfig
 );
 
 test('it renders with proper class when a single query is invalid', function(assert) {
-  this.render(hbs`{{query-filter-fragment queryFragmentInvalid=true}}`);
+  this.render(hbs`{{query-filters/query-filter-fragment queryFragmentInvalid=true}}`);
   const $el = this.$('.rsa-query-fragment.query-fragment-invalid');
   assert.equal($el.length, 1, 'Expected invalid class name binding.');
 });
@@ -26,7 +26,7 @@ test('submitting a query fragment and checking if the api wrapper function is ca
   this.set('list', []);
   this.set('metaOptions', [{ displayName: 'Medium', flags: -2147483309, format: 'UInt8', metaName: 'medium' }]);
 
-  this.render(hbs`{{query-filter-fragment validateWithServer=true filterList=list metaOptions=metaOptions editActive=true}}`);
+  this.render(hbs`{{query-filters/query-filter-fragment validateWithServer=true filterList=list metaOptions=metaOptions editActive=true}}`);
 
   this.$('input').val('medium = 32');
   pressEnter(this.$('input'));

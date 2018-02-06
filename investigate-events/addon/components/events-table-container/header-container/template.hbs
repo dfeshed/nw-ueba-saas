@@ -1,0 +1,30 @@
+<div class="rsa-investigate-events-table__header__coloumGroup">
+  <h2>
+    {{t "investigate.events.title"}}
+    {{events-table/event-counter}}
+  </h2>
+  <label class="is-small power-select">
+    {{#power-select
+      options=columnGroups
+      selected=selectedColumnGroup
+      triggerClass='is-small'
+      searchEnabled=true
+      searchPlaceholder=(t 'investigate.events.columnGroups.searchPlaceholder')
+      searchField='name'
+      onchange=(action 'setColumnGroup') as |option|}}
+      <span title="{{option.name}}">{{option.name}}</span>
+    {{/power-select}}
+  </label>
+</div>
+<div class="events-table-control">
+  {{rsa-icon
+    disabled=(not isReconOpen)
+    click=(route-action 'toggleReconSize')
+    name=toggleEvents.class
+    title=(t toggleEvents.title)}}
+  {{rsa-icon
+    disabled=(not isReconOpen)
+    click=(route-action 'toggleSlaveFullScreen')
+    name='close'
+    title=(t 'investigate.events.close')}}
+</div>

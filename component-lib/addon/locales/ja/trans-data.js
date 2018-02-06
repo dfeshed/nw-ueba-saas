@@ -478,7 +478,11 @@ export default {
       shrink: 'ja_Shrink Events Panel',
       expand: 'ja_Expand Events Panel',
       close: 'ja_Close Events Panel',
-      scrollMessage: 'ja_Scroll down to view the selected event highlighted in blue'
+      scrollMessage: 'ja_Scroll down to view the selected event highlighted in blue',
+      eventTips: {
+        noResults: 'ja_No Results yet. Please submit a query.',
+        usefulTipsTitle: 'ja_USEFUL TIPS (about query syntax, options, samples, etc)'
+      }
     },
     generic: {
       loading: 'ja_Loading data...'

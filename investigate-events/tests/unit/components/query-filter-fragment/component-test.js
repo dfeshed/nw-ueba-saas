@@ -1,7 +1,7 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import engineResolverFor from '../../../helpers/engine-resolver';
 
-moduleForComponent('query-filter-fragment', 'Unit | Component | query filter fragment', {
+moduleForComponent('query-filters/query-filter-fragment', 'Unit | Component | query filter fragment', {
   unit: true,
   needs: [
     'service:i18n',

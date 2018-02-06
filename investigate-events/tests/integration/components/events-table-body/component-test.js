@@ -48,7 +48,7 @@ const columnsConfig = [{
 }];
 
 test('it renders', function(assert) {
-  this.render(hbs`{{#rsa-data-table}}{{events-table-body}}{{/rsa-data-table}}`);
+  this.render(hbs`{{#rsa-data-table}}{{events-table-container/body-container}}{{/rsa-data-table}}`);
 
   assert.equal(this.$('.rsa-data-table-body').length, 1, 'Expected root DOM node');
 });
@@ -65,7 +65,7 @@ test('it fires its loadEventsLogsAction when it finds log events without log dat
   });
 
   this.render(hbs`{{#rsa-data-table columnsConfig=columnsConfig items=logEventsWithoutLogData loadLogsAction=loadLogsAction}}
-    {{events-table-body}}
+    {{events-table-container/body-container}}
     {{/rsa-data-table}}`);
 
   return wait().then(() => {
@@ -85,7 +85,7 @@ test('it doesn\'t fire its loadEventsLogsAction when it finds log events with lo
   });
 
   this.render(hbs`{{#rsa-data-table columnsConfig=columnsConfig items=logEventsWithLogData loadLogsAction=loadLogsAction}}
-    {{events-table-body}}
+    {{events-table-container/body-container}}
     {{/rsa-data-table}}`);
 
   return wait().then(() => {
@@ -105,7 +105,7 @@ test('it doesn\'t fire its loadEventsLogsAction when it finds non-log events', f
   });
 
   this.render(hbs`{{#rsa-data-table columnsConfig=columnsConfig items=nonLogEvents loadLogsAction=loadLogsAction}}
-    {{events-table-body}}
+    {{events-table-container/body-container}}
     {{/rsa-data-table}}`);
 
   return wait().then(() => {
@@ -134,7 +134,7 @@ test('it only sends log events without data to its loadEventsLogsAction when it 
   });
 
   this.render(hbs`{{#rsa-data-table columnsConfig=columnsConfig items=mixedEvents loadLogsAction=loadLogsAction}}
-    {{events-table-body}}
+    {{events-table-container/body-container}}
     {{/rsa-data-table}}`);
 
   return wait().then(() => {

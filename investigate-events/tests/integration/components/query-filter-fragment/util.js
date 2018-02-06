@@ -67,7 +67,7 @@ const _createBasicPill = (type, test, meta, operator, value, options = {}) => {
         color: black
       }
     </style>
-    {{query-filter-fragment
+    {{query-filters/query-filter-fragment
       validateWithServer=false
       filterList=list
       metaOptions=metaOptions
@@ -93,7 +93,7 @@ const setupPill = (test) => {
   test.set('setKeyboardPriority', () => {});
 
   test.render(hbs`
-    {{query-filter-fragment
+    {{query-filters/query-filter-fragment
       validateWithServer=true
       filterList=list
       metaOptions=metaOptions
@@ -117,7 +117,7 @@ const setupPillWithCustomProperties = (test) => {
   test.set('value', null);
 
   test.render(hbs`
-    {{query-filter-fragment
+    {{query-filters/query-filter-fragment
       validateWithServer=true
       filterList=list
       metaOptions=metaOptions

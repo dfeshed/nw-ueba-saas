@@ -16,7 +16,7 @@ import { clickTrigger } from 'ember-power-select/test-support/helpers';
 import { testSetupConfig, createTextPill } from './util';
 
 moduleForComponent(
-  'query-filter-fragment',
+  'query-filters/query-filter-fragment',
   'Integration | Component | query-filter-fragment interactivity-single-mouse-event',
   testSetupConfig
 );
