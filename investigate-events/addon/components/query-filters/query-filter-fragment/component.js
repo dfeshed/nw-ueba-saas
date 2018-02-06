@@ -9,6 +9,18 @@ import service from 'ember-service/inject';
 import { validateIndividualQuery } from 'investigate-events/actions/query-validation-creators';
 import { connect } from 'ember-redux';
 
+const quoteValue = (value) => {
+  if (value.slice(0) != '\'') {
+    value = `'${value}`;
+  }
+
+  if (value.slice(-1) != '\'') {
+    value = `${value}'`;
+  }
+
+  return value;
+};
+
 const {
   set
 } = Ember;
@@ -321,7 +333,7 @@ const QueryFragmentComponent = Component.extend({
         }
         break;
       case 'Text':
-        isValid = value.slice(0) != '"' || value.slice(-1) != '"';
+        isValid = value.slice(0) != '\'' || value.slice(-1) != '\'';
         if (!isValid) {
           message = this.get('i18n').t('queryBuilder.validationMessages.text');
         }
@@ -444,7 +456,7 @@ const QueryFragmentComponent = Component.extend({
 
           const isExistsOperator = inputVal.includes('exists');
           if (this.get('metaFormat') === 'Text' && !isExistsOperator) {
-            updatedValue = `"${updatedValue.replace(/['"]/g, '')}"`;
+            updatedValue = quoteValue(updatedValue);
           }
 
           this.set('value', updatedValue);
@@ -676,7 +688,7 @@ const QueryFragmentComponent = Component.extend({
             const isExistsOperator = inputVal.includes('exists');
             if (!isEmpty(updatedMeta) && !isEmpty(updatedOperator) && (!isEmpty(updatedValue) || isExistsOperator)) {
               if (this.get('metaFormat') === 'Text' && !isExistsOperator) {
-                updatedValue = `"${updatedValue.replace(/['"]/g, '')}"`;
+                updatedValue = quoteValue(updatedValue);
               }
 
               // set query validation properties to default if editing

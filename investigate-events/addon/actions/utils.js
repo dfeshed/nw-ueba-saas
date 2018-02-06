@@ -188,7 +188,7 @@ function _parseMetaFilterUri(uri) {
 
   // look for a set of double quotes
   // replace found forward slashes with a temp placeholder because forward slashes are used to split the uri
-  const matches = uri.match(/"([^"]*)"/g);
+  const matches = uri.match(/'([^']*)'/g);
 
   if (matches) {
     matches.forEach((match) => {

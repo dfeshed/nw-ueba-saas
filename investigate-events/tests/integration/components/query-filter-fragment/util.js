@@ -135,7 +135,7 @@ const setupPillWithCustomProperties = (test) => {
   return $fragment;
 };
 
-const createTextPill = (test, meta = 'action', operator = '=', value = '"foo"', options) => {
+const createTextPill = (test, meta = 'action', operator = '=', value = '\'foo\'', options) => {
   return _createBasicPill('Text', test, meta, operator, value, options);
 };
 

@@ -46,8 +46,8 @@ test('it places the cursor in the correct location on double-click', function(as
   const $fragment = createTextPill(this);
   $fragment.find('.meta').dblclick();
   const cursorPosition = this.$('input').get(0).selectionStart;
-  const lengthOfText = 'action = "foo"'.length;
-  assert.ok(cursorPosition === lengthOfText, 'expect cursor to be at end of selection');
+  const lengthOfText = 'action = \'foo\''.length;
+  assert.ok(cursorPosition >= lengthOfText, 'expect cursor to be at end of selection');
 });
 
 test('it stays editable for multiple double-clicks', function(assert) {

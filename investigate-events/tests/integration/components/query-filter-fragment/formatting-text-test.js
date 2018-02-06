@@ -20,5 +20,5 @@ moduleForComponent(
 
 test('it manually quotes when metaFormat is Text and quotes are not included', function(assert) {
   createTextPill(this, 'action', '=', 'foo');
-  assert.equal(this.$('.meta').text().trim(), 'action = "foo"', 'Expected to be quoted.');
+  assert.equal(this.$('.meta').text().trim(), 'action = \'foo\'', 'Expected to be quoted.');
 });
