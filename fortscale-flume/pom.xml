@@ -18,6 +18,8 @@
     <properties>
         <mongo.java.driver.version>3.4.2</mongo.java.driver.version>
         <spring-data-mongodb-version>1.10.6.RELEASE</spring-data-mongodb-version>
+        <aws.s3.sdk.version>1.11.269</aws.s3.sdk.version>
+        <open.csv.version>4.1</open.csv.version>
     </properties>
 
     <build>
@@ -50,6 +52,19 @@
             <groupId>org.mongodb</groupId>
             <artifactId>mongo-java-driver</artifactId>
             <version>${mongo.java.driver.version}</version>
+        </dependency>
+        <!-- AWS S3 SDK-->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-s3</artifactId>
+            <version>${aws.s3.sdk.version}</version>
+        </dependency>
+
+        <!--OpenCsv library-->
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>${open.csv.version}</version>
         </dependency>
         <!-- Spring data mongodb -->
         <!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-mongodb -->
