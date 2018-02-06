@@ -139,6 +139,8 @@ const TextFilter = Component.extend(FilterMixin, {
 
       const propertyValues = value && !isEmpty(value) ? preparePropertyValues(value) : [];
       const errors = propertyValues.filter((o) => o.value === 'error');
+      const restrictionTypeUpdated = propertyValues.length > 1 ? 'IN' : restrictionType;
+      const containsRestrictionType = (restrictionTypeUpdated === 'LIKE') ? 'Contains' : '';
 
       if (propertyValues.length <= 0 || errors.length) {
         this.set('isError', true);
@@ -146,12 +148,12 @@ const TextFilter = Component.extend(FilterMixin, {
       } else if (propertyValues[0].value.length > 256) {
         this.set('isError', true);
         this.set('errorMessage', 'investigateHosts.hosts.filters.invalidFilterInputLength');
-      } else if (isValidate && evaluateTextAgainstRegEx(propertyValues, filterType)) {
+      } else if (isValidate &&
+          evaluateTextAgainstRegEx(propertyValues, filterType, containsRestrictionType)) {
         this.set('isError', true);
         this.set('errorMessage', `investigateHosts.hosts.filters.${invalidError}`);
       } else {
         this.set('isError', false);
-        const restrictionTypeUpdated = propertyValues.length > 1 ? 'IN' : restrictionType;
         this.send('updateFilter', { restrictionType: restrictionTypeUpdated, propertyName, propertyValues });
       }
     }

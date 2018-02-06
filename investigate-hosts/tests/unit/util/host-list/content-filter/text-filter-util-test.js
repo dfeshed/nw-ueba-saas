@@ -50,12 +50,12 @@ test('Ipv4 Text filter util test', function(assert) {
 
 // NIC Mac address
 test('MAC address Text filter util test', function(assert) {
-  const validValue = [{ value: '00:50:56:01:21:BB' }, { value: 'FF-FF-FF-FF-FF-FF' }];
+  const validValue = [{ value: '00:50:56:01:21:BB' }, { value: 'FF:FF:FF:FF:FF:FF' }];
   assert.equal(evaluateTextAgainstRegEx(validValue, 'macAddress'), 0, 'Valid MAC address');
 });
 
 test('MAC address Text filter util test', function(assert) {
-  const invalidValue = [{ value: 'FF-FF:FF:FF-FF-FF' }, { value: '@@:@@:$$:#$:WE:R#' }];
+  const invalidValue = [{ value: 'FF-FF-FF-FF-FF-FF' }, { value: '@@:@@:$$:#$:WE:R#' }];
   assert.equal(evaluateTextAgainstRegEx(invalidValue, 'macAddress'), 2, 'Invalid MAC address');
 });
 // OS Description
