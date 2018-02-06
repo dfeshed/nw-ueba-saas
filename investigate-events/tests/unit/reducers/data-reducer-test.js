@@ -6,6 +6,7 @@ import { LIFECYCLE } from 'redux-pack';
 import makePackAction from '../../helpers/make-pack-action';
 import EventColumnGroups from 'investigate-events/constants/OOTBColumnGroups';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
+import _ from 'lodash';
 
 module('Unit | Reducers | data-reducer');
 
@@ -14,6 +15,9 @@ test('Should get column list from server', function(assert) {
     columnGroups: null
   });
 
+  // Need to reset width to null to simulate server call.
+  const summaryColumnGroup = _.find(EventColumnGroups, { id: 'SUMMARY' });
+  _.merge(_.find(summaryColumnGroup.columns, { field: 'custom.meta-summary' }), { width: null });
   const successAction = makePackAction(LIFECYCLE.SUCCESS, {
     type: ACTION_TYPES.COLUMNS_RETRIEVE,
     payload: { data: EventColumnGroups }
