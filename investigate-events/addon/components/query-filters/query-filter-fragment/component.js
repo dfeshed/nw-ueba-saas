@@ -889,7 +889,7 @@ const QueryFragmentComponent = Component.extend({
         if (!this.get('isLastInList')) {
           const input = this.$('input');
 
-          if (isEmpty(input[0])) {
+          if (!input || isEmpty(input[0])) {
             return;
           }
 

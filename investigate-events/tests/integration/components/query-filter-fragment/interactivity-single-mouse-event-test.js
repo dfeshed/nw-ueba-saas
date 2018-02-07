@@ -11,7 +11,7 @@
  */
 import { moduleForComponent, test, skip } from 'ember-qunit';
 
-import { testSetupConfig, createTextPill } from './util';
+import { testSetupConfig, PillHelpers } from './util';
 
 moduleForComponent(
   'query-filters/query-filter-fragment',
@@ -20,21 +20,21 @@ moduleForComponent(
 );
 
 test('it is selectable on single click', function(assert) {
-  const $fragment = createTextPill(this);
+  const $fragment = PillHelpers.createTextPill(this);
   $fragment.find('.meta').click();
   assert.ok($fragment.hasClass('selected'), 'Expected fragment to be selected.');
   assert.ok($fragment.find('input').length === 0, 'Single click does not insert an input');
 });
 
 test('it is editable on double-click', function(assert) {
-  const $fragment = createTextPill(this);
+  const $fragment = PillHelpers.createTextPill(this);
   $fragment.find('.meta').dblclick();
   assert.ok($fragment.hasClass('edit-active'), 'Expected fragment to be editable.');
   assert.ok($fragment.find('input').length === 1, 'There is an input to edit');
 });
 
 test('it is not editable on double-click when it is a complex filter', function(assert) {
-  const $fragment = createTextPill(this, undefined, undefined, undefined, {
+  const $fragment = PillHelpers.createTextPill(this, undefined, undefined, undefined, {
     complexFilter: 'foo'
   });
   $fragment.find('.meta').dblclick();
@@ -43,7 +43,7 @@ test('it is not editable on double-click when it is a complex filter', function(
 });
 
 test('it places the cursor in the correct location on double-click', function(assert) {
-  const $fragment = createTextPill(this);
+  const $fragment = PillHelpers.createTextPill(this);
   $fragment.find('.meta').dblclick();
   const cursorPosition = this.$('input').get(0).selectionStart;
   const lengthOfText = 'action = \'foo\''.length;
@@ -51,7 +51,7 @@ test('it places the cursor in the correct location on double-click', function(as
 });
 
 test('it stays editable for multiple double-clicks', function(assert) {
-  const $fragment = createTextPill(this);
+  const $fragment = PillHelpers.createTextPill(this);
   $fragment.find('.meta').dblclick();
   $fragment.find('.meta').dblclick();
   assert.ok($fragment.hasClass('edit-active'), 'Expected fragment to be editable.');
@@ -60,7 +60,7 @@ test('it stays editable for multiple double-clicks', function(assert) {
 
 test('it is deletable on X click', function(assert) {
   const done = assert.async();
-  const $fragment = createTextPill(this, undefined, undefined, undefined, {
+  const $fragment = PillHelpers.createTextPill(this, undefined, undefined, undefined, {
     deleteFilter(record) {
       assert.ok(record.id === 1001, 'Expected delete callback to be called with filter record details.');
       done();
@@ -74,7 +74,7 @@ test('it is deletable on X click', function(assert) {
 // the below isn't working
 //
 skip('has context menu', function(assert) {
-  const $fragment = createTextPill(this);
+  const $fragment = PillHelpers.createTextPill(this);
   // Have to first click the pill before you right click it
   $fragment.find('.meta').click();
   $fragment.find('.content-context-menu').contextmenu();

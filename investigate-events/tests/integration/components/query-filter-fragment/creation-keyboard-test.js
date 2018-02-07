@@ -11,7 +11,7 @@
 
 import { moduleForComponent, test } from 'ember-qunit';
 
-import { testSetupConfig, createTextPill } from './util';
+import { testSetupConfig, PillHelpers } from './util';
 
 moduleForComponent(
   'query-filters/query-filter-fragment',
@@ -22,13 +22,13 @@ moduleForComponent(
 // Pills with specific operators
 
 test('it creates pill with exists', function(assert) {
-  createTextPill(this, 'foo', 'exists', '');
-  assert.equal(this.$('.rsa-query-fragment .meta').text().trim(), 'foo exists', 'Expected exists.');
+  PillHelpers.createTextPill(this, undefined, 'exists', '');
+  assert.equal(this.$('.rsa-query-fragment .meta').text().trim(), 'alert exists', 'Expected exists.');
   assert.equal(this.$('input').length === 0, true, 'Expect no input box');
 });
 
 test('it creates pill with !exists', function(assert) {
-  createTextPill(this, 'foo', '!exists', '');
-  assert.equal(this.$('.rsa-query-fragment .meta').text().trim(), 'foo !exists', 'Expected !exists.');
+  PillHelpers.createTextPill(this, undefined, '!exists', '');
+  assert.equal(this.$('.rsa-query-fragment .meta').text().trim(), 'alert !exists', 'Expected !exists.');
   assert.equal(this.$('input').length === 0, true, 'Expect no input box');
 });

@@ -1,5 +1,11 @@
 import { moduleForComponent, test } from 'ember-qunit';
-import { testSetupConfig, pressSpace, metaNameForFormat, pressEnter, setupPillWithCustomProperties } from './util';
+import {
+  testSetupConfig,
+  pressSpace,
+  metaNameForFormat,
+  pressEnter,
+  setupPillWithCustomProperties
+} from './util';
 import { typeInSearch, clickTrigger } from 'ember-power-select/test-support/helpers';
 
 moduleForComponent(

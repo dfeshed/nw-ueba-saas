@@ -10,7 +10,7 @@
 
 import { moduleForComponent, test } from 'ember-qunit';
 
-import { testSetupConfig, createTextPill } from './util';
+import { testSetupConfig, PillHelpers } from './util';
 
 moduleForComponent(
   'query-filters/query-filter-fragment',
@@ -19,6 +19,6 @@ moduleForComponent(
 );
 
 test('it manually quotes when metaFormat is Text and quotes are not included', function(assert) {
-  createTextPill(this, 'action', '=', 'foo');
-  assert.equal(this.$('.meta').text().trim(), 'action = \'foo\'', 'Expected to be quoted.');
+  PillHelpers.createTextPill(this, undefined, '=', 'foo');
+  assert.equal(this.$('.meta').text().trim(), "alert = 'foo'", 'Expected to be quoted.');
 });

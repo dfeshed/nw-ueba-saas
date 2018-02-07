@@ -17,6 +17,21 @@ const pressSpace = (input) => {
   });
 };
 
+const _setInputRange = ($input, rangeVal) => {
+  $input.get(0).setSelectionRange(rangeVal, rangeVal);
+};
+
+// meta is always first, so can just set early in string
+const setCursorAtMeta = ($input) => {
+  _setInputRange($input, 2);
+};
+
+// operator location depends on length of meta
+const setCursorAtOperator = ($input, metaType) => {
+  const metaNameLength = metaNameForFormat(metaType).length;
+  _setInputRange($input, metaNameLength + 2);
+};
+
 const testSetupConfig = {
   integration: true,
   resolver: engineResolverFor('investigate-events'),
@@ -26,32 +41,34 @@ const testSetupConfig = {
 };
 
 const ALL_META_OPTIONS = [
-  { format: 'IPv4', metaName: 'alias.ip', flags: -2147482621, displayName: 'IP Aliases' },
-  { format: 'Text', metaName: 'alert', flags: -2147483133, displayName: 'Alerts' },
-  { format: 'IPv6', metaName: 'alias.ipv6', flags: -2147482878, displayName: 'IPv6 Aliases' },
-  { format: 'MAC', metaName: 'alias.mac', flags: -2147482621, displayName: 'MAC Aliases' },
-  { format: 'UInt64', metaName: 'bytes.src', flags: -2147482878, displayName: 'Bytes Sent' },
-  { format: 'Float32', metaName: 'file.entropy', flags: -2147482877, displayName: 'File Entropy' },
-  { format: 'UInt16', metaName: 'eth.type', flags: -2147482541, displayName: 'Ethernet Protocol' },
-  { format: 'Int32', metaName: 'filename.size', flags: -2147482878, displayName: 'File Size' },
-  { format: 'UInt8', metaName: 'ip.proto', flags: -2147482541, displayName: 'IP Protocol' },
-  { format: 'TimeT', metaName: 'starttime', flags: -2147482621, displayName: 'Time Start' }];
+  { format: 'Float32', metaName: 'file.entropy', count: 8, flags: -2147482877, displayName: 'File Entropy' },
+  { format: 'IPv4', metaName: 'alias.ip', count: 4, flags: -2147482621, displayName: 'IP Aliases' },
+  { format: 'IPv6', metaName: 'alias.ipv6', count: 4, flags: -2147482878, displayName: 'IPv6 Aliases' },
+  { format: 'MAC', metaName: 'alias.mac', count: 8, flags: -2147482621, displayName: 'MAC Aliases' },
+  { format: 'Text', metaName: 'alert', count: 7, flags: -2147483133, displayName: 'Alerts' },
+  { format: 'TimeT', metaName: 'starttime', count: 8, flags: -2147482621, displayName: 'Time Start' },
+  { format: 'UInt8', metaName: 'ip.proto', count: 8, flags: -2147482541, displayName: 'IP Protocol' },
+  { format: 'UInt16', metaName: 'eth.type', count: 8, flags: -2147482541, displayName: 'Ethernet Protocol' },
+  { format: 'UInt32', metaName: 'bytes.src', count: 8, flags: -2147482878, displayName: 'Bytes Sent' },
+  { format: 'UInt64', metaName: 'filename.size', count: 8, flags: -2147482878, displayName: 'File Size' }
+];
 
 const metaNameForFormat = (format) => {
-  return ALL_META_OPTIONS.findBy('format', format).metaName;
+  const meta = ALL_META_OPTIONS.findBy('format', format);
+  if (!meta) {
+    throw new Error(`metaNameForFormat called with bad format: ${format}`);
+  }
+  return meta.metaName;
 };
 
 const _createBasicPill = (type, test, meta, operator, value, options = {}) => {
+
+  if (options.createPill === undefined) {
+    options.createPill = true;
+  }
+
   test.set('list', []);
-  test.set('metaOptions', [{
-    format: type,
-    metaName: meta,
-    displayName: meta
-  }, {
-    format: 'text',
-    metaName: 'stuff',
-    displayName: meta
-  }]);
+  test.set('metaOptions', ALL_META_OPTIONS);
   test.set('setKeyboardPriority', () => {});
   test.set('deleteFilter', function(record) {
     if (options.deleteFilter) {
@@ -80,29 +97,13 @@ const _createBasicPill = (type, test, meta, operator, value, options = {}) => {
   );
 
   const $fragment = test.$('.rsa-query-fragment');
-  const pillText = `${meta} ${operator} ${value}`;
-  test.$('input').val(pillText.trim());
-  pressEnter(test.$('input'));
 
-  return $fragment;
-};
+  if (options.createPill) {
+    const pillText = `${meta} ${operator} ${value}`;
+    test.$('input').val(pillText.trim());
+    pressEnter(test.$('input'));
+  }
 
-const setupPill = (test) => {
-  test.set('list', []);
-  test.set('metaOptions', ALL_META_OPTIONS);
-  test.set('setKeyboardPriority', () => {});
-
-  test.render(hbs`
-    {{query-filters/query-filter-fragment
-      validateWithServer=true
-      filterList=list
-      metaOptions=metaOptions
-      editActive=true
-      setKeyboardPriority=(action setKeyboardPriority)
-    }}`
-  );
-
-  const $fragment = test.$('.rsa-query-fragment');
   return $fragment;
 };
 
@@ -135,51 +136,51 @@ const setupPillWithCustomProperties = (test) => {
   return $fragment;
 };
 
-const createTextPill = (test, meta = 'action', operator = '=', value = '\'foo\'', options) => {
-  return _createBasicPill('Text', test, meta, operator, value, options);
-};
-
-const createTimePill = (test, meta = 'time', operator = '=', value = new Date()) => {
-  return _createBasicPill('TimeT', test, meta, operator, value);
-};
-
-const createIPv4Pill = (test, meta = 'ip', operator = '=', value = '127.0.0.1') => {
-  return _createBasicPill('IPv4', test, meta, operator, value);
-};
-
-const createIPv6Pill = (test, meta = 'ip', operator = '=', value = '2001:0db8:85a3:0000:0000:8a2e:0370:7334') => {
-  return _createBasicPill('IPv6', test, meta, operator, value);
-};
-
-const createUInt8Pill = (test, meta = 'int', operator = '=', value = '8') => {
-  return _createBasicPill('UInt8', test, meta, operator, value);
-};
-
-const createUInt16Pill = (test, meta = 'int', operator = '=', value = '8') => {
-  return _createBasicPill('UInt16', test, meta, operator, value);
-};
-
-const createUInt32Pill = (test, meta = 'int', operator = '=', value = '8') => {
-  return _createBasicPill('UInt32', test, meta, operator, value);
-};
-
-const createFloat32Pill = (test, meta = 'float', operator = '=', value = '8.5') => {
-  return _createBasicPill('Float32', test, meta, operator, value);
+const PillHelpers = {
+  createTextPill(test, meta = metaNameForFormat('Text'), operator = '=', value = '"foo"', options) {
+    return _createBasicPill('Text', test, meta, operator, value, options);
+  },
+  createTimeTPill(test, meta = metaNameForFormat('TimeT'), operator = '=', value = new Date(), options) {
+    return _createBasicPill('TimeT', test, meta, operator, value, options);
+  },
+  createIPv4Pill(test, meta = metaNameForFormat('IPv4'), operator = '=', value = '127.0.0.1', options) {
+    return _createBasicPill('IPv4', test, meta, operator, value, options);
+  },
+  createIPv6Pill(test, meta = metaNameForFormat('IPv6'), operator = '=', value = '2001:0db8:85a3:0000:0000:8a2e:0370:7334', options) {
+    return _createBasicPill('IPv6', test, meta, operator, value, options);
+  },
+  createUInt8Pill(test, meta = metaNameForFormat('UInt8'), operator = '=', value = '8', options) {
+    return _createBasicPill('UInt8', test, meta, operator, value, options);
+  },
+  createUInt16Pill(test, meta = metaNameForFormat('UInt16'), operator = '=', value = '8', options) {
+    return _createBasicPill('UInt16', test, meta, operator, value, options);
+  },
+  createUInt32Pill(test, meta = metaNameForFormat('UInt32'), operator = '=', value = '8', options) {
+    return _createBasicPill('UInt32', test, meta, operator, value, options);
+  },
+  createUInt64Pill(test, meta = metaNameForFormat('UInt64'), operator = '=', value = '8', options) {
+    return _createBasicPill('UInt64', test, meta, operator, value, options);
+  },
+  createFloat32Pill(test, meta = metaNameForFormat('Float32'), operator = '=', value = '8.5', options) {
+    return _createBasicPill('Float32', test, meta, operator, value, options);
+  },
+  createMACPill(test, meta = metaNameForFormat('MAC'), operator = '=', value = '8.5', options) {
+    return _createBasicPill('MAC', test, meta, operator, value, options);
+  },
+  createPillWithFormat(test, format, options) {
+    const helperName = `create${format}Pill`;
+    return PillHelpers[helperName](test, undefined, undefined, undefined, options);
+  }
 };
 
 export {
-  createFloat32Pill,
-  createIPv4Pill,
-  createIPv6Pill,
-  createTextPill,
-  createTimePill,
-  createUInt8Pill,
-  createUInt16Pill,
-  createUInt32Pill,
+  ALL_META_OPTIONS,
+  metaNameForFormat,
+  PillHelpers,
   pressEnter,
   pressSpace,
-  testSetupConfig,
-  setupPill,
-  metaNameForFormat,
-  setupPillWithCustomProperties
+  setCursorAtMeta,
+  setCursorAtOperator,
+  setupPillWithCustomProperties,
+  testSetupConfig
 };
