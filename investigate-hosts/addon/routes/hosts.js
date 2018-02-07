@@ -77,7 +77,9 @@ export default Route.extend({
 
   // On activating the route get the all the schema, schema response is used to build the column configuration and filter
   activate() {
-    this.get('redux').dispatch(getAllSchemas());
+    run.next(() => {
+      this.get('redux').dispatch(getAllSchemas());
+    });
   },
 
   // On deactivating the route send the user left page action to cleanup the state if any

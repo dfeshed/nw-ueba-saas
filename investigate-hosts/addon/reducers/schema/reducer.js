@@ -17,7 +17,8 @@ const schemas = reduxActions.handleActions({
       finish: (s) => s.set('schemaLoading', false),
       success: (s) => s.set('schema', action.payload.data.fields)
     });
-  }
+  },
+  [ACTION_TYPES.USER_LEFT_HOST_LIST_PAGE]: (state) => state.set('schema', null)
 
 }, schemaInitialState);
 
