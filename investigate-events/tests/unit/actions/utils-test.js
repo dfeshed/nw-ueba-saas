@@ -67,5 +67,5 @@ test('encodeMetaFilterConditions correctly encodes complex filters', function(as
   assert.expect(1);
   const result = encodeMetaFilterConditions(complexConditions);
 
-  assert.equal(result, 'foo=\'bar\'||foo=baz && bar=\'foo\'||baz=foo');
+  assert.equal(result, '(foo=\'bar\'||foo=baz) && (bar=\'foo\'||baz=foo)');
 });

@@ -152,7 +152,7 @@ export const encodeMetaFilterConditions = (conditions = []) => {
       const { meta, value, operator, complexFilter } = condition;
 
       if (complexFilter) {
-        return complexFilter;
+        return `(${complexFilter})`;
       } else {
         if (['contains', 'ends', 'begins'].includes(operator)) {
           return `${meta} ${operator} ${value}`;
