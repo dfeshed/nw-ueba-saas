@@ -649,7 +649,7 @@ indicators:
 
 - id: sumOfHighestSrcMachineNameRegexClusterScoresUserIdPrintHourly
   type: SCORE_AGGREGATION
-  name: abnormal_source_machine_cluster
+  name: abnormal_source_machine_cluster_print
   adeEventType: scored_enriched.print.srcMachineNameRegexCluster.userId.print.score
   schema: PRINT
   anomalyDescriptior:
@@ -662,7 +662,7 @@ indicators:
 
 - id: sumOfHighestDstMachineNameRegexClusterScoresUserIdPrintHourly
   type: SCORE_AGGREGATION
-  name: abnormal_destination_machine_cluster
+  name: abnormal_destination_machine_cluster_print
   adeEventType: scored_enriched.print.dstMachineNameRegexCluster.userId.print.score
   schema: PRINT
   anomalyDescriptior:
@@ -675,7 +675,7 @@ indicators:
 
 - id: sumOfHighestAbsoluteFolderPathScoresUserIdPrintHourly
   type: FEATURE_AGGREGATION
-  name: abnormal_shared_folder_path
+  name: abnormal_shared_folder_path_print
   schema: PRINT
   adeEventType: print
   anomalyDescriptior:
@@ -689,7 +689,7 @@ indicators:
 
 - id: sumOfHighestFileExtensionScoresUserIdPrintHourly
   type: SCORE_AGGREGATION
-  name: abnormal_file_extension
+  name: abnormal_file_extension_print
   adeEventType: scored_enriched.print.fileExtension.userId.print.score
   schema: PRINT
   anomalyDescriptior:
@@ -715,7 +715,7 @@ indicators:
 
 - id: numberOfDistinctDstMachineIdUserIdPrintHourly
   type: FEATURE_AGGREGATION
-  name: high_number_of_distinct_dst_computers
+  name: high_number_of_distinct_dst_computers_print
   adeEventType: print
   schema: PRINT
   anomalyDescriptior:
@@ -726,7 +726,7 @@ indicators:
 
 - id: numberOfDistinctDstMachineNameRegexClusterUserIdPrintHourly
   type: FEATURE_AGGREGATION
-  name: high_number_of_distinct_dst_computer_clusters
+  name: high_number_of_distinct_dst_computer_clusters_print
   adeEventType: print
   schema: PRINT
   anomalyDescriptior:
@@ -737,7 +737,7 @@ indicators:
 
 - id: numberOfDistinctAbsoluteFolderPathUserIdPrintHourly
   type: FEATURE_AGGREGATION
-  name: high_number_of_distinct_folders
+  name: high_number_of_distinct_folders_print
   schema: PRINT
   adeEventType: print
   anomalyDescriptior:
