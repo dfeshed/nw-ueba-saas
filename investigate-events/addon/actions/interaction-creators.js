@@ -94,7 +94,7 @@ export const setService = (service) => {
 };
 
 export const setReconOpen = (event = {}) => {
-  const { meta: eventMetas, sessionId } = event;
+  const { metas: eventMetas, sessionId } = event;
   return {
     type: ACTION_TYPES.SET_RECON_VIEWABLE,
     payload: {
