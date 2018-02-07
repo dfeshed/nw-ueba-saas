@@ -471,6 +471,7 @@ export default {
       title: 'All Events',
       columnGroups: {
         custom: 'Custom Column Group',
+        customTitle: 'Manage Custom Column Groups in Events View',
         default: 'Default Column Group',
         searchPlaceholder: 'Type to filter column group'
       },

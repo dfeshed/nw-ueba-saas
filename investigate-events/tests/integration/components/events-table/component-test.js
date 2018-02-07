@@ -9,6 +9,7 @@ import { clickTrigger, selectChoose } from '../../../helpers/ember-power-select'
 import EventColumnGroups from '../../../data/subscriptions/investigate-columns/data';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import Helper from 'ember-helper';
+import { later } from 'ember-runloop';
 import RSVP from 'rsvp';
 
 let setState;
@@ -40,6 +41,7 @@ moduleForComponent('events-table-container', 'Integration | Component | events t
   resolver: engineResolverFor('investigate-events'),
   beforeEach() {
     initialize({ '__container__': this.container });
+    this.registry.injection('component', 'i18n', 'service:i18n');
     // Mock the route action 'toggleReconSize' on the click of expand/shrink toggle button on events page
     this.container.registry.registrations['helper:route-action'] = Helper.helper((arg) => {
       return this.routeActions[arg];
@@ -68,6 +70,11 @@ test('it provides option to select column groups', function(assert) {
   assert.equal($('.ember-power-select-group').length, 2, 'render two column groups');
   assert.equal($('.ember-power-select-group-name')[0].textContent, 'Custom Column Group', 'render custom column group');
   assert.equal($('.ember-power-select-group-name')[1].textContent, 'Default Column Group', 'render default column group');
+  const done = assert.async();
+  later(() => {
+    assert.equal($('.ember-power-select-group-name').first().attr('title'), 'Manage Custom Column Groups in Events View');
+    done();
+  }, 300);
 });
 
 test('it provides option for search filter', function(assert) {

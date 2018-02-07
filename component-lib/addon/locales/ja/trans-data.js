@@ -471,6 +471,7 @@ export default {
       title: 'ja_All Events',
       columnGroups: {
         custom: 'ja_Custom Column Group',
+        customTitle: 'ja_Manage Custom Column Groups in Events View',
         default: 'ja_Default Column Group',
         searchPlaceholder: 'ja_Type to filter column group'
       },

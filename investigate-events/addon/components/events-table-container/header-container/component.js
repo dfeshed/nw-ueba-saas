@@ -1,6 +1,8 @@
+import $ from 'jquery';
 import Component from 'ember-component';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
+import { later } from 'ember-runloop';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 import { setColumnGroup } from 'investigate-events/actions/interaction-creators';
 import { getSelectedColumnGroup, getColumnGroups } from 'investigate-events/reducers/investigate/data-selectors';
@@ -28,6 +30,17 @@ const EventsTable = Component.extend({
       class: isSizeNotMax ? 'shrink-diagonal-2' : 'expand-diagonal-4',
       title: isSizeNotMax ? 'investigate.events.shrink' : 'investigate.events.expand'
     };
+  },
+
+  actions: {
+    attachTooltip() {
+      later(() => {
+        const customGroup = $('.ember-power-select-group-name').first();
+        if (customGroup) {
+          customGroup.attr('title', this.get('i18n').t('investigate.events.columnGroups.customTitle'));
+        }
+      }, 200);
+    }
   }
 });
 

@@ -11,6 +11,7 @@
       searchEnabled=true
       searchPlaceholder=(t 'investigate.events.columnGroups.searchPlaceholder')
       searchField='name'
+      onopen=(action 'attachTooltip')
       onchange=(action 'setColumnGroup') as |option|}}
       <span title="{{option.name}}">{{option.name}}</span>
     {{/power-select}}
