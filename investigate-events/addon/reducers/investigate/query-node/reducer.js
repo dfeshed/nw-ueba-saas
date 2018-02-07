@@ -49,7 +49,19 @@ export default handleActions({
 
   [ACTION_TYPES.INITIALIZE_INVESTIGATE]: (state, { payload, hardReset }) => {
     if (hardReset) {
-      return _initialState;
+      // Check if the previously selected serviceId and timeRange are persisted in localStorage
+      const localStorageObj = JSON.parse(localStorage.getItem('reduxPersist:investigate'));
+      if (!localStorageObj) {
+        return _initialState;
+      } else {
+        // pre-populate Event Analysis with previously chosen serviceId and timeRange
+        return state.merge({
+          ..._initialState,
+          serviceId: localStorageObj.queryNode.serviceId,
+          previouslySelectedTimeRanges: localStorageObj.queryNode.previouslySelectedTimeRanges
+        });
+      }
+
     } else {
       return state.merge({
         endTime: payload.endTime && parseInt(payload.endTime, 10) || 0,

@@ -38,5 +38,17 @@ export default handleActions({
         summaryData: action.payload.data
       })
     });
+  },
+
+  [ACTION_TYPES.INITIALIZE_INVESTIGATE]: (state, { hardReset }) => {
+    // hardReset is true when
+    // 1) Loading the Event Analysis page for the first time
+    // 2) Clicking on Event Analysis page from the results page /investigate/events/?et=foo..
+    // Clear out serviceData when hardReset is true, this forces to dispatch and sets the state properly
+    // on the service and timeRange selectors.
+    if (hardReset) {
+      return state.merge({ ...state, serviceData: undefined });
+    }
+    return state.merge(...state);
   }
 }, _initialState);
