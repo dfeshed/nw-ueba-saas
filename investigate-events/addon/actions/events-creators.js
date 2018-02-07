@@ -2,6 +2,32 @@ import fetchStreamingEvents from './fetch/events';
 import { fetchLog } from './fetch/logs';
 import * as ACTION_TYPES from './types';
 
+// Common functions.
+const commonHandlers = function(dispatch) {
+  return {
+    onError(response = {}) {
+      const { code, meta } = response;
+      const message = (meta) ? meta.message : undefined;
+      dispatch({
+        type: ACTION_TYPES.SET_EVENTS_PAGE_ERROR,
+        payload: { status: 'error', reason: code, message }
+      });
+    },
+    onCompleted() {
+      dispatch({
+        type: ACTION_TYPES.SET_EVENTS_PAGE_STATUS,
+        payload: 'complete'
+      });
+    },
+    onStopped() {
+      dispatch({
+        type: ACTION_TYPES.SET_EVENTS_PAGE_STATUS,
+        payload: 'stopped'
+      });
+    }
+  };
+};
+
 /**
  * Fetches a stream of events for the given query node.
  * @public
@@ -38,26 +64,7 @@ export const eventsGetFirst = () => {
           dispatch({ type: ACTION_TYPES.SET_EVENTS_PAGE, payload });
         }
       },
-      onError(response = {}) {
-        const { code, meta } = response;
-        const message = (meta) ? meta.message : undefined;
-        dispatch({
-          type: ACTION_TYPES.SET_EVENTS_PAGE_ERROR,
-          payload: { status: 'error', reason: code, message }
-        });
-      },
-      onCompleted() {
-        dispatch({
-          type: ACTION_TYPES.SET_EVENTS_PAGE_STATUS,
-          payload: 'complete'
-        });
-      },
-      onStopped() {
-        dispatch({
-          type: ACTION_TYPES.SET_EVENTS_PAGE_STATUS,
-          payload: 'stopped'
-        });
-      }
+      ...commonHandlers(dispatch)
     };
     fetchStreamingEvents(queryNode, language, streamLimit, streamBatch, handlers);
   };
@@ -96,26 +103,7 @@ export const eventsGetMore = () => {
           dispatch({ type: ACTION_TYPES.SET_EVENTS_PAGE, payload });
         }
       },
-      onError(response = {}) {
-        const { code, meta } = response;
-        const message = (meta) ? meta.message : undefined;
-        dispatch({
-          type: ACTION_TYPES.SET_EVENTS_PAGE_ERROR,
-          payload: { status: 'error', reason: code, message }
-        });
-      },
-      onCompleted() {
-        dispatch({
-          type: ACTION_TYPES.SET_EVENTS_PAGE_STATUS,
-          payload: 'complete'
-        });
-      },
-      onStopped() {
-        dispatch({
-          type: ACTION_TYPES.SET_EVENTS_PAGE_STATUS,
-          payload: 'stopped'
-        });
-      }
+      ...commonHandlers(dispatch)
     };
 
     fetchStreamingEvents(queryNode, language, streamLimit, streamBatch, handlers, lastSessionId);
