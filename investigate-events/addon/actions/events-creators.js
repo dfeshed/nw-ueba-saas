@@ -46,16 +46,24 @@ export const eventsGetFirst = () => {
       onResponse(response) {
         const { data, goal } = getState().investigate.eventResults;
         const { data: _payload, meta } = response || {};
+        const payload = Array.isArray(_payload) ? _payload : [];
         const description = meta ? meta.description : null;
+        const percent = meta ? meta.percent : 0;
         // A streaming websocket call goes through different phases. First is
-        // `Queued`, then `Executing`, then actual data comes back until the
-        // stream is cancelled or it completes. For the first two phases, the
-        // data property will be an empty array. When we dispatch that, it will
-        // show a message that the query filters returned no data, which isn't
-        // necessarily true. So let's just skip doing anything if we're in one
-        // of the first two phases of a streaming request.
-        if (description !== 'Queued' && description !== 'Executing') {
-          const payload = Array.isArray(_payload) ? _payload : [];
+        // `Queued`, then `Executing`, then an optional, unnamed "data" phase.
+        // Brokers appear to only use the first two pahses, while concentrators
+        // use all three. For the first two phases, the data property could be
+        // an empty array. When we dispatch that, it will show a message that
+        // the query filters returned no data, which isn't necessarily true.
+        // We will always skip the `Queued` phase. We will skip the `Executing`
+        // phase if `percent` is less than 100% and we have no data to show.
+        // This covers brokers as they fetch data from their connected devices
+        // and return it in the `Executing` phase. Concentrators will return
+        // their data in the unnamed "data" phase.
+        if (description === 'Queued' ||
+           (description === 'Executing' && percent < 100 && payload.length === 0)) {
+          return;
+        } else {
           payload.forEach(_hasherizeEventMeta);
           const count = data.length + payload.length;
           if (count >= goal) {
