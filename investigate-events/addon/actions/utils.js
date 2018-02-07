@@ -258,14 +258,14 @@ function uriEncodeMetaFilters(filters = []) {
       let ret;
 
       if (d.complexFilter) {
-        return d.complexFilter;
+        ret = d.complexFilter;
       } else {
         if (d.operator === 'exists' || d.operator === '!exists') {
           ret = `${d.meta} ${d.operator}`;
         } else if (d.meta && d.operator && d.value) {
           ret = `${d.meta}${d.operator}${d.value}`;
         }
-        return ret;
+        return encodeURIComponent(ret);
       }
     })
     .filter((d) => !!d)

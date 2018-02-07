@@ -10,12 +10,17 @@ import { validateIndividualQuery } from 'investigate-events/actions/query-valida
 import { connect } from 'ember-redux';
 
 const quoteValue = (value) => {
-  if (value.slice(0) != '\'') {
+
+  if (value.slice(0, 1) != '\'' && value.slice(0, 1) != '"') {
     value = `'${value}`;
+  } else if (value.slice(0, 1) === '"') {
+    value = `'${value.slice(1, -1)}`;
   }
 
-  if (value.slice(-1) != '\'') {
+  if (value.slice(-1) != '\'' && value.slice(-1) != '"') {
     value = `${value}'`;
+  } else if (value.slice(-1) === '"') {
+    value = `${value.slice(1, -1)}'`;
   }
 
   return value;
@@ -92,15 +97,11 @@ const QueryFragmentComponent = Component.extend({
   @notEmpty('operator') withOperator: false,
   @notEmpty('value') withValue: false,
 
-  @computed('isExpensive', 'filteredOptions.length', 'type')
-  dropdownClass(isExpensive, optionsLength, type) {
+  @computed('type')
+  dropdownClass(type) {
     let dropdownClass = 'rsa-query-fragment-dropdown';
 
-    if (isExpensive) {
-      dropdownClass = `${dropdownClass} is-expensive`;
-    }
-
-    if (optionsLength === 0 || type === 'value') {
+    if (type === 'value') {
       dropdownClass = `${dropdownClass} without-options`;
     }
 
@@ -299,7 +300,9 @@ const QueryFragmentComponent = Component.extend({
       }
 
       if (!isEmpty(filterText) && !this.get('queryFragmentInvalid')) {
-        this.send('validateIndividualQuery', filterText, this._validateComplete.bind(this));
+        // TODO: find a way to throttle requests when there are "a very large number" of pills
+        // this.send('validateIndividualQuery', filterText, this._validateComplete.bind(this));
+        // this.set('wasValidated', true);
       }
     }
   },
@@ -309,7 +312,7 @@ const QueryFragmentComponent = Component.extend({
       this.set('queryFragmentInvalid', true);
       this.set('wasValidated', true);
 
-      if (apiMetaMessage.message) {
+      if (!isEmpty(apiMetaMessage) && !isEmpty(apiMetaMessage.message)) {
         this.set('apiMetaMessage', apiMetaMessage.message);
       }
     }
@@ -628,6 +631,14 @@ const QueryFragmentComponent = Component.extend({
               select.actions.select(match);
             }
           }
+
+          run.next(() => {
+            if (!isEmpty(input)) {
+              const position = inputVal.length + 1;
+              input.val(`${inputVal} `);
+              input.get(0).setSelectionRange(position, position);
+            }
+          });
         }
       }
 
@@ -643,8 +654,8 @@ const QueryFragmentComponent = Component.extend({
             let updatedValue;
 
             const updatedMeta = this.get('metaOptions').find((option) => {
-              const matchesMetaName = inputVal.includes(option.metaName) && inputVal.charAt(option.metaName.length) != '.';
-              const inMetaPosition = inputVal.slice(0, option.metaName.length) === option.metaName;
+              const matchesMetaName = inputVal.trim().includes(option.metaName) && inputVal.charAt(option.metaName.length) != '.' && !inputVal.charAt(option.metaName.length).match(/\w/);
+              const inMetaPosition = inputVal.trim().slice(0, option.metaName.length) === option.metaName;
               return matchesMetaName && inMetaPosition;
             });
 
@@ -669,7 +680,7 @@ const QueryFragmentComponent = Component.extend({
               } else if (inputVal.includes('!=')) {
                 return option.displayName === '!=';
               } else {
-                return inputVal.includes(option.displayName);
+                return inputVal.trim().includes(option.displayName);
               }
             });
 
@@ -757,7 +768,8 @@ const QueryFragmentComponent = Component.extend({
           return matchesMetaName || matchesDisplayName;
         } else if (onOperator) {
           searchTerm = searchTerm.replace(meta, '').replace(value, '').trim();
-          return option.displayName.includes(searchTerm);
+
+          return isEmpty(searchTerm) || option.displayName === searchTerm;
         }
       });
 
