@@ -411,10 +411,10 @@ export default Component.extend(DomWatcher, EKMixin, {
       } else {
         selectedItemIndex = this.get('selectedIndex') + 1;
         selectedItem = this.get('items').objectAt(selectedItemIndex);
-        scrollTop = $('.rsa-data-table-body').scrollTop() + $('.rsa-data-table-body-row').outerHeight() + 1;
+        scrollTop = selectedItemIndex * $('.rsa-data-table-body-row').outerHeight();
       }
 
-      $('.rsa-data-table-body').animate({ scrollTop }, 250);
+      $('.rsa-data-table-body').animate({ scrollTop }, 0);
       fn(selectedItem, selectedItemIndex, e, this);
     }
   }),
@@ -440,10 +440,10 @@ export default Component.extend(DomWatcher, EKMixin, {
       } else {
         selectedItemIndex = this.get('selectedIndex') - 1;
         selectedItem = this.get('items').objectAt(selectedItemIndex);
-        scrollTop = $('.rsa-data-table-body').scrollTop() - ($('.rsa-data-table-body-row').outerHeight() + 1);
+        scrollTop = selectedItemIndex * $('.rsa-data-table-body-row').outerHeight();
       }
 
-      $('.rsa-data-table-body').animate({ scrollTop }, 250);
+      $('.rsa-data-table-body').animate({ scrollTop }, 0);
       fn(selectedItem, selectedItemIndex, e, this);
     }
   }),
