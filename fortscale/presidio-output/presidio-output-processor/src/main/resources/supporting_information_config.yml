@@ -660,6 +660,19 @@ indicators:
     featureName: srcMachineNameRegexClusterHistogram
   classification: print_from_abnormal_host
 
+- id: sumOfHighestDstMachineIdScoresUserIdPrintHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_destination_machine_print
+  adeEventType: scored_enriched.print.dstMachineId.userId.print.score
+  schema: PRINT
+  anomalyDescriptior:
+    anomalyField: dstMachineId
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: dstMachineIdHistogramUserIdPrintDaily
+    featureName: dstMachineIdHistogram
+  classification: print_to_abnormal_printer
+
 - id: sumOfHighestDstMachineNameRegexClusterScoresUserIdPrintHourly
   type: SCORE_AGGREGATION
   name: abnormal_destination_machine_cluster_print
@@ -713,6 +726,30 @@ indicators:
     type: hourly_aggregations
   classification: data_exfiltration
 
+- id: numberOfFailedPrintsUserIdPrintHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_failed_prints
+  schema: PRINT
+  adeEventType: print
+  anomalyDescriptior:
+    anomalyFilters:
+      fieldName: result
+      fieldValue: FAILURE
+  historicalData:
+    type: hourly_aggregations
+  classification: data_exfiltration
+
+- id: numberOfDistinctSrcMachineIdUserIdPrintHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_distinct_src_computers_print
+  adeEventType: print
+  schema: PRINT
+  anomalyDescriptior:
+    anomalyField: srcMachineId
+  historicalData:
+    type: hourly_aggregations
+  classification: abnormal_print_activity
+
 - id: numberOfDistinctDstMachineIdUserIdPrintHourly
   type: FEATURE_AGGREGATION
   name: high_number_of_distinct_dst_computers_print
@@ -720,6 +757,17 @@ indicators:
   schema: PRINT
   anomalyDescriptior:
     anomalyField: dstMachineId
+  historicalData:
+    type: hourly_aggregations
+  classification: abnormal_print_activity
+
+- id: numberOfDistinctSrcMachineNameRegexClusterUserIdPrintHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_distinct_src_computer_clusters_print
+  adeEventType: print
+  schema: PRINT
+  anomalyDescriptior:
+    anomalyField: srcMachineNameRegexClusterHistogram
   historicalData:
     type: hourly_aggregations
   classification: abnormal_print_activity
