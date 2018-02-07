@@ -171,6 +171,12 @@ $ember-power-select-line-height: 2rem;
   }
 }
 
+input[type=search] {
+  -webkit-appearance: none;
+  -moz-appearance:    none;
+  appearance:         none;
+}
+
 .ember-power-select-multiple-option {
   @include border(1px, solid, primary, lightest);
   background: transparent;
