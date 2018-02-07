@@ -21,7 +21,7 @@ const _initialState = Immutable.from({
 
 export default handleActions({
   [ACTION_TYPES.SET_PREFERENCES]: (state, { payload }) => {
-    return state.set('queryTimeFormat', payload.queryTimeFormat);
+    return state.set('queryTimeFormat', payload.queryTimeFormat || state.queryTimeFormat);
   },
 
   [ACTION_TYPES.SET_QUERY_FILTER_META]: (state, { payload }) => {

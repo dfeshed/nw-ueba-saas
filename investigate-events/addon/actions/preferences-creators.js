@@ -5,21 +5,33 @@ import { selectedTimeRange } from 'investigate-events/reducers/investigate/query
 import { SET_PREFERENCES, CHANGE_RECON_VIEW } from 'recon/actions/types';
 import { fetchInvestigateData } from './data-creators';
 import { isEndpointEvent, isLogEvent } from 'recon/reducers/meta/selectors';
-
+import _ from 'lodash';
 
 /**
  * This dispatches a Recon action to update preference state.
  * TODO: This action creator would move to recon eventually when the preferences
  * are split
  * @see preferencesUpdated
- * @param {object} preferences - The preferences data
- * @return {object} An action object
  * @private
  */
-const _reconPreferenceUpdated = (preferences) => ({
-  type: SET_PREFERENCES,
-  payload: preferences
-});
+const _reconPreferenceUpdated = (preferences, dispatch, getState) => {
+
+  const newReconView = _.get(preferences, 'eventAnalysisPreferences.currentReconView');
+  dispatch({ type: SET_PREFERENCES, payload: preferences });
+
+  /*
+   * If its a packet event, we need to update the currentReconView to be same as the one selected in Preferences Panel..
+   * But for Log/Endpoint Event , it needs to remain 'Text Analysis' always.
+   */
+  if (newReconView && !(isLogEvent(getState().recon) || isEndpointEvent(getState().recon))) {
+    dispatch({
+      type: CHANGE_RECON_VIEW,
+      payload: {
+        newView: getState().recon.visuals.defaultReconView
+      }
+    });
+  }
+};
 
 
 /**
@@ -38,25 +50,11 @@ export const preferencesUpdated = (preferences) => {
       type: ACTION_TYPES.SET_PREFERENCES,
       payload: preferences
     });
-    if (preferences.queryTimeFormat !== currentTimeFormat) {
+    if (preferences.queryTimeFormat && preferences.queryTimeFormat !== currentTimeFormat) {
       const range = selectedTimeRange(getState());
       dispatch(setQueryTimeRange(range));
       dispatch(fetchInvestigateData());
     }
-    dispatch(_reconPreferenceUpdated(preferences));
-
-    /* If its a packet event, we need to update the currentReconView
-     * to be same as the one selected in Preferences Panel..
-     * But for Log/Endpoint Event , it needs to remain
-     *  'Text Analysis' always.
-     */
-    if (!(isLogEvent(getState().recon) || isEndpointEvent(getState().recon))) {
-      dispatch({
-        type: CHANGE_RECON_VIEW,
-        payload: {
-          newView: getState().recon.visuals.defaultReconView
-        }
-      });
-    }
+    _reconPreferenceUpdated(preferences, dispatch, getState);
   };
 };

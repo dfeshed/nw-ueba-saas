@@ -3,11 +3,13 @@ import layout from './template';
 import { connect } from 'ember-redux';
 import { togglePreferencesPanel } from 'preferences/actions/interaction-creators';
 import observer from 'ember-metal/observer';
+import _ from 'lodash';
 
-const stateToComputed = ({ preferences: { isExpanded, preferences, shouldPublishPreferences } }) => ({
+const stateToComputed = ({ preferences: { isExpanded, preferences, shouldPublishPreferences, changedField } }) => ({
   isExpanded,
   preferences,
-  shouldPublishPreferences
+  shouldPublishPreferences,
+  changedField
 });
 
 const dispatchToActions = {
@@ -18,10 +20,11 @@ const PreferencesTrigger = Component.extend({
   layout,
   classNames: ['rsa-preferences-panel-trigger'],
 
-  listenToPreferences: observer('preferences', 'shouldPublishPreferences', function() {
+  listenToPreferences: observer('preferences', function() {
     const preferences = this.get('preferences');
-    if (preferences && this.get('shouldPublishPreferences')) {
-      this.sendAction('publishPreferences', preferences);
+    const changedField = this.get('changedField');
+    if (preferences && changedField && this.get('shouldPublishPreferences')) {
+      this.sendAction('publishPreferences', _.pick(preferences, [changedField]));
     }
   })
 });

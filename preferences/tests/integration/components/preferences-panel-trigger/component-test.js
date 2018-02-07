@@ -73,6 +73,25 @@ test('preferences trigger publishes updates to preferences', function(assert) {
   });
 });
 
+test('preferences trigger publishes only updated preferences', function(assert) {
+  const done = assert.async();
+  this.on('preferencesUpdated', function(prefs) {
+    assert.equal(prefs.queryTimeFormat, 'WALL', 'queryTimeFormat should be set to WALL');
+    assert.ok(!prefs.eventAnalysisPreferences, 'eventAnalysisPreferences field should not have been published');
+    assert.ok(!prefs.eventPreferences, 'eventPreferences field should not have been published');
+    done();
+  });
+
+  this.render(contentToRender);
+
+  return waitFor('.rsa-preferences-panel-trigger').then(() => {
+    this.$('.rsa-icon-settings-1-filled').trigger('click');
+    return waitFor('.rsa-form-radio-group-label').then(() => {
+      this.$('.rsa-form-radio-label.WALL').click();
+    });
+  });
+});
+
 test('preferences trigger does not publish preferences on close', function(assert) {
   this.on('preferencesUpdated', function() {
     assert.notOk(true, 'preference should not be published');

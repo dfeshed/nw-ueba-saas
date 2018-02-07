@@ -70,3 +70,52 @@ test('test REHYDRATE when state is not saved in local storage yet', function(ass
   const newEndState = reducer(previous, action);
   assert.deepEqual(newEndState.reconSize, RECON_PANEL_SIZES.MAX);
 });
+
+test('test SET_PREFERENCES when columnGroup is present in the payload', function(assert) {
+  const previous = Immutable.from({
+    columnGroup: null
+  });
+
+  const action = {
+    type: ACTION_TYPES.SET_PREFERENCES,
+    payload: {
+      eventPreferences: {
+        columnGroup: 'EMAIL'
+      }
+    }
+  };
+  const newEndState = reducer(previous, action);
+  assert.deepEqual(newEndState.columnGroup, 'EMAIL');
+});
+
+test('test SET_PREFERENCES when columnGroup is not present in the payload and no column group is set currently', function(assert) {
+  const previous = Immutable.from({
+    columnGroup: null
+  });
+
+  const action = {
+    type: ACTION_TYPES.SET_PREFERENCES,
+    payload: {
+      eventPreferences: { }
+    }
+  };
+  const newEndState = reducer(previous, action);
+  assert.deepEqual(newEndState.columnGroup, 'SUMMARY');
+});
+
+test('test SET_PREFERENCES when columnGroup is not present in the payload and current group should be preserved', function(assert) {
+  const previous = Immutable.from({
+    columnGroup: 'SOME_GROUP'
+  });
+
+  const action = {
+    type: ACTION_TYPES.SET_PREFERENCES,
+    payload: {
+      eventPreferences: {
+        // columnGroup: 'EMAIL'
+      }
+    }
+  };
+  const newEndState = reducer(previous, action);
+  assert.deepEqual(newEndState.columnGroup, 'SOME_GROUP');
+});

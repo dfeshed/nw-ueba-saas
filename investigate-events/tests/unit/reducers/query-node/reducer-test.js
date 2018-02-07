@@ -47,3 +47,47 @@ test('test ACTION_TYPES.REHYDRATE reducer when url does not have a serviceId whi
 
   assert.equal(result.serviceId, '5');
 });
+
+test('test SET_PREFERENCES when payload contains queryTimeFormat', function(assert) {
+
+  const prevState = Immutable.from({
+    queryTimeFormat: null
+  });
+  const action = {
+    type: ACTION_TYPES.SET_PREFERENCES,
+    payload: {
+      queryTimeFormat: 'DB'
+    }
+  };
+  const result = reducer(prevState, action);
+
+  assert.equal(result.queryTimeFormat, 'DB');
+});
+
+test('test SET_PREFERENCES when payload does not contain queryTimeFormat', function(assert) {
+
+  const prevState = Immutable.from({
+    queryTimeFormat: 'WALL'
+  });
+  const action = {
+    type: ACTION_TYPES.SET_PREFERENCES,
+    payload: { }
+  };
+  const result = reducer(prevState, action);
+
+  assert.equal(result.queryTimeFormat, 'WALL');
+});
+
+test('test SET_PREFERENCES when payload does not have queryTimeFormat and no current value set for queryTimeFormat', function(assert) {
+
+  const prevState = Immutable.from({
+    queryTimeFormat: undefined
+  });
+  const action = {
+    type: ACTION_TYPES.SET_PREFERENCES,
+    payload: { }
+  };
+  const result = reducer(prevState, action);
+
+  assert.equal(result.queryTimeFormat, undefined);
+});

@@ -26,8 +26,7 @@ const _initialState = Immutable.from({
 
 export default handleActions({
   [ACTION_TYPES.SET_PREFERENCES]: (state, { payload }) => {
-    const { eventPreferences } = payload;
-    const columnGroup = (eventPreferences) ? eventPreferences.columnGroup : undefined;
+    const columnGroup = _.get(payload, 'eventPreferences.columnGroup', state.columnGroup);
     return state.merge({
       columnGroup: columnGroup || 'SUMMARY'
     });
