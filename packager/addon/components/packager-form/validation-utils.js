@@ -87,7 +87,7 @@ function _validateChannels(channels, errorObj) {
       };
       return false;
     }
-    if (eventId && isEventIdString && eventId.trim().toUpperCase() === 'ALL') {
+    if (eventId && isEventIdString && (eventId.trim().toUpperCase() === 'ALL' && filter.toUpperCase() !== 'EXCLUDE')) {
       return true;
     }
     if (isEventIdString) {
