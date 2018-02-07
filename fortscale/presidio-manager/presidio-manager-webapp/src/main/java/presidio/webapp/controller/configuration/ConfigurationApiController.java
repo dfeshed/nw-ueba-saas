@@ -167,6 +167,7 @@ public class ConfigurationApiController implements ConfigurationApi {
                     ((ObjectNode) systemJson).put(PASSWORD, encryptPassword);
                 } catch (Exception e) {
                     logger.error("Failed to encrypt password.");
+                    configurationResponse.setMessage("error message");
                     return new ResponseEntity<ConfigurationResponse>(configurationResponse, HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             }

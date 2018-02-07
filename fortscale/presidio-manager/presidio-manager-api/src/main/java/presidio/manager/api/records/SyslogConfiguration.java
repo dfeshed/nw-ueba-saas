@@ -23,7 +23,7 @@ public class SyslogConfiguration extends ConfigurationCreation implements Config
         if (StringUtils.isEmpty(host)) {
             missingParamsAddKeys(HOST);
         }
-        if (port == -1) {
+        if (port == 0) {
             missingParamsAddKeys(PORT);
         }
         checkStructure();
