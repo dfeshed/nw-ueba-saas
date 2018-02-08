@@ -410,9 +410,9 @@ const QueryFragmentComponent = Component.extend({
     const input = this.$('input');
 
     const {
-      meta, operator
+      meta, operator, value
     } = this.getProperties(
-      'meta', 'operator'
+      'meta', 'operator', 'value'
     );
 
     let metaLength = 0;
@@ -432,11 +432,19 @@ const QueryFragmentComponent = Component.extend({
       return;
     }
 
-    if (updatedCursorPosition <= metaLength) {
+    if (updatedCursorPosition === 0) {
       this.set('type', 'meta');
-    } else if (updatedCursorPosition > metaLength && updatedCursorPosition <= metaAndOperatorLength + 1) {
+    } else if (isEmpty(operator) && updatedCursorPosition < metaLength) {
+      this.set('type', 'meta');
+    } else if (!isEmpty(operator) && updatedCursorPosition <= metaLength) {
+      this.set('type', 'meta');
+    } else if (isEmpty(value) && updatedCursorPosition > metaAndOperatorLength) {
+      this.set('type', 'value');
+    } else if (isEmpty(value) && updatedCursorPosition <= metaAndOperatorLength) {
       this.set('type', 'operator');
-    } else if (updatedCursorPosition > metaAndOperatorLength) {
+    } else if (!isEmpty(value) && updatedCursorPosition <= metaAndOperatorLength + 1) {
+      this.set('type', 'operator');
+    } else {
       this.set('type', 'value');
     }
   },
@@ -760,7 +768,7 @@ const QueryFragmentComponent = Component.extend({
 
       searchTerm = searchTerm.toLowerCase();
 
-      const filteredOptions = options.filter((option) => {
+      return options.filter((option) => {
         if (onMeta) {
           searchTerm = searchTerm.replace(operator, '').replace(value, '').trim();
           const matchesMetaName = option.metaName.includes(searchTerm);
@@ -769,13 +777,13 @@ const QueryFragmentComponent = Component.extend({
         } else if (onOperator) {
           searchTerm = searchTerm.replace(meta, '').replace(value, '').trim();
 
-          return isEmpty(searchTerm) || option.displayName === searchTerm;
+          if (isEmpty(searchTerm)) {
+            return true;
+          } else {
+            return option.displayName.slice(0, searchTerm.length) === searchTerm;
+          }
         }
       });
-
-      this.set('filteredOptions', filteredOptions);
-
-      return filteredOptions;
     },
 
     // User makes selection via typeahead

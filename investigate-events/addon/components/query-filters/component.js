@@ -141,7 +141,7 @@ const QueryFiltersComponent = Component.extend(EKMixin, {
       }
       return blurEdit(filters, focusInput, focusIndex, -1);
     } else if (!withEditActive && this.get('filters.length')) {
-      if (withSelected) {
+      if (withSelected && filters.get('length') > 1) {
         if (filters.objectAt(selectedIndex - 1)) {
           insertEmptyFilter(filters, selectedIndex);
         } else {
