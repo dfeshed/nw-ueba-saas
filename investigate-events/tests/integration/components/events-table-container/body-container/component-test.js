@@ -1,9 +1,9 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
-import engineResolverFor from '../../../helpers/engine-resolver';
+import engineResolverFor from '../../../../helpers/engine-resolver';
 
-moduleForComponent('events-table-body', 'Integration | Component | events table body', {
+moduleForComponent('events-table-container/body-container', 'Integration | Component | events table body', {
   integration: true,
   resolver: engineResolverFor('investigate-events'),
   beforeEach() {

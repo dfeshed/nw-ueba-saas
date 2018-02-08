@@ -1,6 +1,6 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import engineResolverFor from '../../../helpers/engine-resolver';
+import engineResolverFor from '../../../../helpers/engine-resolver';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 moduleForComponent('events-table-container/events-table', 'Integration | Component | events table context menu', {
