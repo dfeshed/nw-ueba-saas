@@ -76,3 +76,17 @@ test('it computes first & last indices for groups & items correctly', function(a
   assert.equal(subject.get('lastGroupIndex'), 0, 'Expected value to update after group items were added');
 
 });
+
+test('computes initial first & last indices for groups & items when groupItemSize not defined', function(assert) {
+  const subject = MockClass.create({
+    groups,
+    scrollerSize,
+    viewportBuffer,
+    scrollerPos: { top: 0 }
+  });
+
+  assert.equal(subject.get('firstGroupIndex'), 0, 'Expected first group to be in viewport');
+  assert.equal(subject.get('firstGroupItemIndex'), 0, 'Expected first item to be in viewport');
+  assert.equal(subject.get('lastGroupIndex'), 0, 'Expected only first group in viewport');
+  assert.equal(subject.get('lastGroupItemIndex'), -1, 'Expected only first group in viewport');
+});

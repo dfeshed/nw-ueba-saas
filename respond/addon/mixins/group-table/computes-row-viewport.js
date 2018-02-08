@@ -2,7 +2,7 @@ import Mixin from 'ember-metal/mixin';
 import ComputesRowExtents from './computes-row-extents';
 import computed, { alias } from 'ember-computed-decorators';
 import { debounce } from 'ember-runloop';
-import set from 'ember-metal/set';
+import { get, set } from '@ember/object';
 
 /**
  * @class ComputesRowViewport Mixin
@@ -189,6 +189,12 @@ export default Mixin.create(ComputesRowExtents, {
     if (lastGroup && groupItemHeight) {
       const yDiff = Math.max(0, buffered.bottom - (lastGroup.top + groupHeaderHeight));
       lastGroupItemIndex = Math.ceil(yDiff / groupItemHeight);
+    }
+
+    const initializedExtents = groupExtents.filter((extent) => extent.top === 0 && extent.bottom === -1);
+    const defaultExtents = get(initializedExtents, 'length') === get(groupExtents, 'length');
+    if (defaultExtents && groupItemSize === null && lastGroupItemIndex === -1) {
+      lastGroupIndex = 0;
     }
 
     return {
