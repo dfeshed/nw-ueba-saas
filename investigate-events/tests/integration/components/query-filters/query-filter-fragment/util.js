@@ -50,7 +50,8 @@ const ALL_META_OPTIONS = [
   { format: 'UInt8', metaName: 'ip.proto', count: 8, flags: -2147482541, displayName: 'IP Protocol' },
   { format: 'UInt16', metaName: 'eth.type', count: 8, flags: -2147482541, displayName: 'Ethernet Protocol' },
   { format: 'UInt32', metaName: 'bytes.src', count: 8, flags: -2147482878, displayName: 'Bytes Sent' },
-  { format: 'UInt64', metaName: 'filename.size', count: 8, flags: -2147482878, displayName: 'File Size' }
+  { format: 'UInt64', metaName: 'filename.size', count: 8, flags: -2147482878, displayName: 'File Size' },
+  { format: 'UInt64', metaName: 'sessionid', count: 8, flags: -2147483631, displayName: 'Session ID' }
 ];
 
 const metaNameForFormat = (format) => {

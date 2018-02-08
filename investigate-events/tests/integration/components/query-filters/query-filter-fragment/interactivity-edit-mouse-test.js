@@ -12,7 +12,6 @@
  */
 import { moduleForComponent, test } from 'ember-qunit';
 import { clickTrigger } from 'ember-power-select/test-support/helpers';
-
 import {
   testSetupConfig,
   PillHelpers,
@@ -39,7 +38,7 @@ test('clicking on editable pills meta will bring up meta dropdown', function(ass
   assert.ok($dropdownContent.length === 1, 'Drop down appears when I click meta key in editable pill');
 
   const $dropdownItems = $dropdownContent.find('li');
-  assert.ok($dropdownItems.length === 10, 'Drop down has appropriate count of items');
+  assert.ok($dropdownItems.length === 11, 'Drop down has appropriate count of items');
 });
 
 test('clicking on editable pills meta will bring up operator dropdown', function(assert) {

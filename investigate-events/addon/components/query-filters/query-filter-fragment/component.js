@@ -914,7 +914,7 @@ const QueryFragmentComponent = Component.extend({
 
         // Protect against possible race condition, largely in tests
         // where input isn't there just yet
-        if (!input) {
+        if (!input || isEmpty(input[0])) {
           return;
         }
 
