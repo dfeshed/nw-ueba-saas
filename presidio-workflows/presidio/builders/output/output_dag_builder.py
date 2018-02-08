@@ -1,8 +1,6 @@
 import logging
 from datetime import timedelta
 
-from airflow.operators.python_operator import ShortCircuitOperator
-
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
 from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
@@ -58,7 +56,7 @@ class OutputDagBuilder(PresidioDagBuilder):
 
         # This operator validates that output run in intervals that are no less than hourly intervals and that the dag
         # start only after the defined gap.
-        output_short_circuit_operator = ShortCircuitOperator(
+        output_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
             task_id='output_short_circuit',
             dag=output_dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
@@ -68,8 +66,7 @@ class OutputDagBuilder(PresidioDagBuilder):
                                                  output_dag,
                                                  self._min_gap_from_dag_start_date_to_start_running,
                                                  kwargs['execution_date'],
-                                                 output_dag.schedule_interval),
-            provide_context=True
+                                                 output_dag.schedule_interval)
         )
 
         # Create jar operators
@@ -90,7 +87,7 @@ class OutputDagBuilder(PresidioDagBuilder):
         task_sensor_service = TaskSensorService()
 
         # Create daily short circuit operator to wire the output processing and the user score recalculation
-        daily_short_circuit_operator = ShortCircuitOperator(
+        daily_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
             task_id='output_daily_short_circuit',
             dag=output_dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
@@ -100,8 +97,7 @@ class OutputDagBuilder(PresidioDagBuilder):
                                                  output_dag,
                                                  self._min_gap_from_dag_start_date_to_start_modeling,
                                                  kwargs['execution_date'],
-                                                 output_dag.schedule_interval),
-            provide_context=True
+                                                 output_dag.schedule_interval)
         )
 
         task_sensor_service.add_task_short_circuit(user_score_operator, daily_short_circuit_operator)
