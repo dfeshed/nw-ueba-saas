@@ -1,5 +1,3 @@
-from airflow.operators.python_operator import ShortCircuitOperator
-
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.operators.model.aggr_model_accumulate_aggregation_operator import AggrModelAccumulateAggregationsOperator
 from presidio.operators.model.aggr_model_operator import AggrModelOperator
@@ -71,13 +69,12 @@ class AggrModelDagBuilder(PresidioDagBuilder):
             command=PresidioDagBuilder.presidio_command,
             data_source=self._data_source,
             dag=aggr_model_dag)
-        aggr_accumulate_short_circuit_operator = ShortCircuitOperator(
+        aggr_accumulate_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
             task_id='aggr_accumulate_short_circuit{0}'.format(self._data_source),
             dag=aggr_model_dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
                                                                      self._accumulate_interval,
-                                                                     aggr_model_dag.schedule_interval),
-            provide_context=True
+                                                                     aggr_model_dag.schedule_interval)
         )
         task_sensor_service.add_task_short_circuit(aggr_model_accumulate_aggregations_operator, aggr_accumulate_short_circuit_operator)
 
@@ -86,7 +83,7 @@ class AggrModelDagBuilder(PresidioDagBuilder):
                                               command="process",
                                               session_id=aggr_model_dag.dag_id.split('.', 1)[0],
                                               dag=aggr_model_dag)
-        aggr_model_short_circuit_operator = ShortCircuitOperator(
+        aggr_model_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
             task_id='aggr_model_short_circuit{0}'.format(self._data_source),
             dag=aggr_model_dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
@@ -95,8 +92,7 @@ class AggrModelDagBuilder(PresidioDagBuilder):
                                              PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(aggr_model_dag,
                                                                                                                                    self._min_gap_from_dag_start_date_to_start_modeling,
                                                                                                                                    kwargs['execution_date'],
-                                                                                                                                   aggr_model_dag.schedule_interval),
-            provide_context=True
+                                                                                                                                   aggr_model_dag.schedule_interval)
         )
         task_sensor_service.add_task_sequential_sensor(aggr_model_operator)
         task_sensor_service.add_task_short_circuit(aggr_model_operator, aggr_model_short_circuit_operator)
