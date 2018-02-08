@@ -1,8 +1,6 @@
 import logging
 from datetime import timedelta
 
-from airflow.operators.python_operator import ShortCircuitOperator
-
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.builders.retention.adapter.adapter_retention_dag_builder import AdapterRetentionDagBuilder
 from presidio.builders.retention.input.input_retention_dag_builder import InputRetentionDagBuilder
@@ -71,7 +69,7 @@ class RetentionDagBuilder(PresidioDagBuilder):
 
         logging.debug("populating the retention dag, dag_id=%s ", retention_dag.dag_id)
 
-        adapter_retention_short_circuit_operator = ShortCircuitOperator(
+        adapter_retention_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
             task_id='adapter_retention_short_circuit',
             dag=retention_dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
@@ -81,11 +79,10 @@ class RetentionDagBuilder(PresidioDagBuilder):
                                                  retention_dag,
                                                  timedelta(days=self._adapter_min_time_to_start_retention_in_days),
                                                  kwargs['execution_date'],
-                                                 retention_dag.schedule_interval),
-            provide_context=True
+                                                 retention_dag.schedule_interval)
         )
 
-        input_retention_short_circuit_operator = ShortCircuitOperator(
+        input_retention_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
             task_id='input_retention_short_circuit',
             dag=retention_dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
@@ -95,11 +92,10 @@ class RetentionDagBuilder(PresidioDagBuilder):
                                                  retention_dag,
                                                  timedelta(days=self._input_min_time_to_start_retention_in_days),
                                                  kwargs['execution_date'],
-                                                 retention_dag.schedule_interval),
-            provide_context=True
+                                                 retention_dag.schedule_interval)
         )
 
-        output_retention_short_circuit_operator = ShortCircuitOperator(
+        output_retention_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
             task_id='output_retention_short_circuit',
             dag=retention_dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
@@ -109,8 +105,7 @@ class RetentionDagBuilder(PresidioDagBuilder):
                                                  retention_dag,
                                                  timedelta(days=self._output_min_time_to_start_retention_in_days),
                                                  kwargs['execution_date'],
-                                                 retention_dag.schedule_interval),
-            provide_context=True
+                                                 retention_dag.schedule_interval)
         )
 
         adapter_retention_sub_dag = self._get_presidio_adapter_retention_sub_dag_operator(self.data_sources,

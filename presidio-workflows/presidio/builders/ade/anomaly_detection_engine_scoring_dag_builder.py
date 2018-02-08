@@ -1,8 +1,6 @@
 from datetime import timedelta
 import logging
 
-from airflow.operators.python_operator import ShortCircuitOperator
-
 from presidio.builders.ade.aggregation.aggregations_dag_builder import AggregationsDagBuilder
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.operators.smart.smart_events_operator import SmartEventsOperator
@@ -60,7 +58,7 @@ class AnomalyDetectionEngineScoringDagBuilder(PresidioDagBuilder):
 
         # defining hourly and daily short circuit operators which should be wired to the sub dags and operators that
         # defined directly under the ADE SCORING dag
-        hourly_short_circuit_operator = ShortCircuitOperator(
+        hourly_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
             task_id='ade_scoring_hourly_short_circuit',
             dag=anomaly_detection_engine_scoring_dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
@@ -69,8 +67,7 @@ class AnomalyDetectionEngineScoringDagBuilder(PresidioDagBuilder):
                                              PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(anomaly_detection_engine_scoring_dag,
                                                                                                                                    self._min_gap_from_dag_start_date_to_start_scoring,
                                                                                                                                    kwargs['execution_date'],
-                                                                                                                                   anomaly_detection_engine_scoring_dag.schedule_interval),
-            provide_context=True
+                                                                                                                                   anomaly_detection_engine_scoring_dag.schedule_interval)
         )
 
         # Iterate all configured data sources and
