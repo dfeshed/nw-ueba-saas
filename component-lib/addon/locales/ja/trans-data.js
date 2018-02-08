@@ -2167,8 +2167,8 @@ export default {
         }
       },
       restrictionTypeOptions: {
-        EQUALS: 'ja_equals',
-        CONTAINS: 'ja_contains',
+        EQUALS: 'ja_Equals',
+        CONTAINS: 'ja_Contains',
         GT: '>',
         LT: '<',
         GTE: '>=',

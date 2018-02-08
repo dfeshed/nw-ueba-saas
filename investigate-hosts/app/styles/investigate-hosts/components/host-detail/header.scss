@@ -125,7 +125,8 @@
       .host-name {
         overflow: hidden;
         text-overflow: ellipsis;
-        max-width: 80%;
+        max-width: 250px;
+        white-space: nowrap;
       }
 
     }

@@ -2166,8 +2166,8 @@ export default {
         }
       },
       restrictionTypeOptions: {
-        EQUALS: 'equals',
-        CONTAINS: 'contains',
+        EQUALS: 'Equals',
+        CONTAINS: 'Contains',
         GT: '>',
         LT: '<',
         GTE: '>=',
