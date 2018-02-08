@@ -468,11 +468,11 @@ export default {
       clickToOpen: 'Click to open'
     },
     events: {
-      title: 'All Events',
+      title: 'Events',
       columnGroups: {
-        custom: 'Custom Column Group',
+        custom: 'Custom Column Groups',
         customTitle: 'Manage Custom Column Groups in Events View',
-        default: 'Default Column Group',
+        default: 'Default Column Groups',
         searchPlaceholder: 'Type to filter column group'
       },
       error: 'An unexpected error occurred when executing this query.',

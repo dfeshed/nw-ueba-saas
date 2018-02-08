@@ -63,14 +63,21 @@ moduleForComponent('events-table-container', 'Integration | Component | events t
   }
 });
 
+test('render the events header with required fields ', function(assert) {
+  renderDefaultEventTable(assert, this);
+  assert.equal(this.$('.rsa-investigate-events-table__header__container').length, 1, 'render event header container');
+  assert.equal(this.$('.rsa-investigate-events-table__header__container')[0].childElementCount, 2, 'rendered with two elements');
+  assert.equal(this.$('.rsa-investigate-events-table__header__eventLabel')[0].textContent.trim().replace(/\s+/g, ''), 'Events55', 'rendered event header title');
+});
+
 test('it provides option to select column groups', function(assert) {
   renderDefaultEventTable(assert, this);
   assert.equal(this.$('.ember-power-select-selected-item').text().trim(), 'Summary List', 'Default Column group is Summary List.');
   clickTrigger();
   assert.equal($('.ember-power-select-option').text().trim().replace(/\s+/g, ''), 'Custom1Custom2SummaryListEmailAnalysisMalwareAnalysisThreatAnalysisWebAnalysisEndpointAnalysis');
   assert.equal($('.ember-power-select-group').length, 2, 'render two column groups');
-  assert.equal($('.ember-power-select-group-name')[0].textContent, 'Custom Column Group', 'render custom column group');
-  assert.equal($('.ember-power-select-group-name')[1].textContent, 'Default Column Group', 'render default column group');
+  assert.equal($('.ember-power-select-group-name')[0].textContent, 'Custom Column Groups', 'render custom column group');
+  assert.equal($('.ember-power-select-group-name')[1].textContent, 'Default Column Groups', 'render default column group');
   const done = assert.async();
   later(() => {
     assert.equal($('.ember-power-select-group-name').first().attr('title'), 'Manage Custom Column Groups in Events View');

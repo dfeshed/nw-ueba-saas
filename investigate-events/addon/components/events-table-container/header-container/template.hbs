@@ -1,31 +1,37 @@
-<div class="rsa-investigate-events-table__header__coloumGroup">
-  <h2>
-    {{t "investigate.events.title"}}
-    {{events-table-container/event-counter}}
-  </h2>
-  <label class="is-small power-select">
-    {{#power-select
-      options=columnGroups
-      selected=selectedColumnGroup
-      triggerClass='is-small'
-      searchEnabled=true
-      searchPlaceholder=(t 'investigate.events.columnGroups.searchPlaceholder')
-      searchField='name'
-      onopen=(action 'attachTooltip')
-      onchange=(action 'setColumnGroup') as |option|}}
-      <span title="{{option.name}}">{{option.name}}</span>
-    {{/power-select}}
-  </label>
-</div>
-<div class="events-table-control">
-  {{rsa-icon
-    disabled=(not isReconOpen)
-    click=(route-action 'toggleReconSize')
-    name=toggleEvents.class
-    title=(t toggleEvents.title)}}
-  {{rsa-icon
-    disabled=(not isReconOpen)
-    click=(route-action 'toggleSlaveFullScreen')
-    name='close'
-    title=(t 'investigate.events.close')}}
+<div class="rsa-investigate-events-table__header__container">
+  <div class="rsa-investigate-events-table__header__content">
+    <div class="rsa-investigate-events-table__header__eventLabel">
+      <h2>
+        {{t "investigate.events.title"}}
+        {{events-table-container/event-counter}}
+      </h2>
+    </div>
+    <div class="rsa-investigate-events-table__header__coloumGroup">
+      <label class="is-small power-select">
+        {{#power-select
+          options=columnGroups
+          selected=selectedColumnGroup
+          triggerClass='is-small'
+          searchEnabled=true
+          searchPlaceholder=(t 'investigate.events.columnGroups.searchPlaceholder')
+          searchField='name'
+          onopen=(action 'attachTooltip')
+          onchange=(action 'setColumnGroup') as |option|}}
+          <span title="{{option.name}}">{{option.name}}</span>
+        {{/power-select}}
+      </label>
+    </div>
+  </div>
+  <div class="events-table-control">
+    {{rsa-icon
+      disabled=(not isReconOpen)
+      click=(route-action 'toggleReconSize')
+      name=toggleEvents.class
+      title=(t toggleEvents.title)}}
+    {{rsa-icon
+      disabled=(not isReconOpen)
+      click=(route-action 'toggleSlaveFullScreen')
+      name='close'
+      title=(t 'investigate.events.close')}}
+  </div>
 </div>

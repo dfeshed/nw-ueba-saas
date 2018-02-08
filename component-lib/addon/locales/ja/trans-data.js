@@ -468,11 +468,11 @@ export default {
       clickToOpen: 'ja_Click to open'
     },
     events: {
-      title: 'ja_All Events',
+      title: 'ja_Events',
       columnGroups: {
-        custom: 'ja_Custom Column Group',
+        custom: 'ja_Custom Column Groups',
         customTitle: 'ja_Manage Custom Column Groups in Events View',
-        default: 'ja_Default Column Group',
+        default: 'ja_Default Column Groups',
         searchPlaceholder: 'ja_Type to filter column group'
       },
       error: 'ja_An unexpected error occurred when executing this query.',
