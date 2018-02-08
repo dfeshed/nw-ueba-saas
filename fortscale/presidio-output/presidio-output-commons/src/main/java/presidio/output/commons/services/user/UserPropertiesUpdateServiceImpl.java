@@ -73,6 +73,7 @@ public class UserPropertiesUpdateServiceImpl implements UserPropertiesUpdateServ
             } else if (isAdmin) {
                 if (userTags == null) {
                     userTags = new ArrayList<>();
+                    user.setTags(userTags);
                 }
                 // If the user wasn't as admin but the last event arrived with the admin tag -> add the admin tag
                 if (!userTags.contains(TAG_ADMIN)) {
