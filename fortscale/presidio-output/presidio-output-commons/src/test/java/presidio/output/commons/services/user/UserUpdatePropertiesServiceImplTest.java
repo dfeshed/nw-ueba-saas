@@ -189,6 +189,26 @@ public class UserUpdatePropertiesServiceImplTest {
     }
 
     @Test
+    public void updateUserAdminTag_AddAdminTagsNull() {
+        Instant eventDate = Instant.now();
+        Map<String, String> additionalInfo = new HashMap<>();
+        additionalInfo.put("isUserAdmin", "true");
+        generateAuthenticationEnrichedEvent(eventDate, "userName1", "userId", "userDisplayName1", additionalInfo);
+        String someTagName = "someTag";
+        List<String> tags = new ArrayList<>();
+        tags.add(someTagName);
+        User user = generateUserAndSave("userId", "userName", "userDisplayName", null);
+        User userUpdated = userPropertiesUpdateService.userPropertiesUpdate(user);
+        Assert.assertEquals("userName1", userUpdated.getUserName());
+        Assert.assertEquals("userDisplayName1", userUpdated.getUserDisplayName());
+        Assert.assertEquals("userName1", userUpdated.getIndexedUserName());
+        Assert.assertEquals("userName1", userUpdated.getUserDisplayNameSortLowercase());
+        Assert.assertEquals(1, userUpdated.getTags().size());
+        Assert.assertTrue(userUpdated.getTags().contains(TAG_ADMIN));
+    }
+
+
+    @Test
     public void updateUserAdminTag_RemoveAdmin() {
         Instant eventDate = Instant.now();
         generateAuthenticationEnrichedEvent(eventDate, "userName1", "userId", "userDisplayName1", null);
