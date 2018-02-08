@@ -1,8 +1,8 @@
 package presidio.output.commons.services.user;
 
-
 import fortscale.common.general.Schema;
 import fortscale.domain.core.EventResult;
+import org.apache.commons.collections.CollectionUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +49,6 @@ public class UserUpdatePropertiesServiceImplTest {
         }
     }
 
-
     @Test
     public void updateUserPropertiesWithAuthenticationEvent() {
         Instant eventDate = Instant.now();
@@ -78,7 +77,7 @@ public class UserUpdatePropertiesServiceImplTest {
         Assert.assertEquals("userDisplayName1", userUpdated.getUserDisplayName());
         Assert.assertEquals("userName1", userUpdated.getIndexedUserName());
         Assert.assertEquals("userName1", userUpdated.getUserDisplayNameSortLowercase());
-        Assert.assertEquals(null, userUpdated.getTags());
+        Assert.assertTrue(CollectionUtils.isEmpty(userUpdated.getTags()));
     }
 
     @Test
@@ -108,7 +107,7 @@ public class UserUpdatePropertiesServiceImplTest {
         Assert.assertEquals("userDisplayName1", userUpdated.getUserDisplayName());
         Assert.assertEquals("userName1", userUpdated.getIndexedUserName());
         Assert.assertEquals("userName1", userUpdated.getUserDisplayNameSortLowercase());
-        Assert.assertEquals(null, userUpdated.getTags());
+        Assert.assertTrue(CollectionUtils.isEmpty(userUpdated.getTags()));
     }
 
     @Test
@@ -229,11 +228,14 @@ public class UserUpdatePropertiesServiceImplTest {
     }
 
     private User generateUserAndSave(String userId, String userName, String displayName, boolean tagAdmin) {
-        List<String> tags = null;
+        List<String> tags = new ArrayList<>();
         if (tagAdmin) {
-            tags = new ArrayList<>();
             tags.add(TAG_ADMIN);
         }
+        return generateUserAndSave(userId, userName, displayName, tags);
+    }
+
+    private User generateUserAndSave(String userId, String userName, String displayName, List<String> tags) {
         User user1 = new User(userId, userName, displayName, 0d, null, null, tags, UserSeverity.LOW, 0);
         userPersistencyService.save(user1);
         return user1;
