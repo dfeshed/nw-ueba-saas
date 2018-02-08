@@ -157,6 +157,77 @@ public class UserUpdatePropertiesServiceImplTest {
         Assert.assertNull(userUpdated.getUserDisplayName());
     }
 
+    @Test
+    public void updateUserPropertiesUserWithoutDisplayName_shouldSetUpdatedDisplayName() {
+        Instant eventDate = Instant.now();
+        Map<String, String> additionalInfo = new HashMap<>();
+        additionalInfo.put("isUserAdmin", "true");
+        generateAuthenticationEnrichedEvent(eventDate, "userName1", "userId", "displayName1", additionalInfo);
+        User user = generateUserAndSave("userId", "userName", null, true);
+        User userUpdated = userPropertiesUpdateService.userPropertiesUpdate(user);
+        Assert.assertEquals("userName1", userUpdated.getUserName());
+        Assert.assertEquals("displayName1", userUpdated.getUserDisplayName());
+    }
+
+    @Test
+    public void updateUserAdminTag_AddAdmin() {
+        Instant eventDate = Instant.now();
+        Map<String, String> additionalInfo = new HashMap<>();
+        additionalInfo.put("isUserAdmin", "true");
+        generateAuthenticationEnrichedEvent(eventDate, "userName1", "userId", "userDisplayName1", additionalInfo);
+        String someTagName = "someTag";
+        List<String> tags = new ArrayList<>();
+        tags.add(someTagName);
+        User user = generateUserAndSave("userId", "userName", "userDisplayName", tags);
+        User userUpdated = userPropertiesUpdateService.userPropertiesUpdate(user);
+        Assert.assertEquals("userName1", userUpdated.getUserName());
+        Assert.assertEquals("userDisplayName1", userUpdated.getUserDisplayName());
+        Assert.assertEquals("userName1", userUpdated.getIndexedUserName());
+        Assert.assertEquals("userName1", userUpdated.getUserDisplayNameSortLowercase());
+        Assert.assertEquals(2, userUpdated.getTags().size());
+        Assert.assertTrue(userUpdated.getTags().contains(someTagName));
+        Assert.assertTrue(userUpdated.getTags().contains(TAG_ADMIN));
+    }
+
+    @Test
+    public void updateUserAdminTag_AddAdminTagsNull() {
+        Instant eventDate = Instant.now();
+        Map<String, String> additionalInfo = new HashMap<>();
+        additionalInfo.put("isUserAdmin", "true");
+        generateAuthenticationEnrichedEvent(eventDate, "userName1", "userId", "userDisplayName1", additionalInfo);
+        String someTagName = "someTag";
+        List<String> tags = new ArrayList<>();
+        tags.add(someTagName);
+        User user = generateUserAndSave("userId", "userName", "userDisplayName", null);
+        User userUpdated = userPropertiesUpdateService.userPropertiesUpdate(user);
+        Assert.assertEquals("userName1", userUpdated.getUserName());
+        Assert.assertEquals("userDisplayName1", userUpdated.getUserDisplayName());
+        Assert.assertEquals("userName1", userUpdated.getIndexedUserName());
+        Assert.assertEquals("userName1", userUpdated.getUserDisplayNameSortLowercase());
+        Assert.assertEquals(1, userUpdated.getTags().size());
+        Assert.assertTrue(userUpdated.getTags().contains(TAG_ADMIN));
+    }
+
+
+    @Test
+    public void updateUserAdminTag_RemoveAdmin() {
+        Instant eventDate = Instant.now();
+        generateAuthenticationEnrichedEvent(eventDate, "userName1", "userId", "userDisplayName1", null);
+        String someTagName = "someTag";
+        List<String> tags = new ArrayList<>();
+        tags.add(someTagName);
+        tags.add(TAG_ADMIN);
+        User user = generateUserAndSave("userId", "userName", "userDisplayName", tags);
+        User userUpdated = userPropertiesUpdateService.userPropertiesUpdate(user);
+        Assert.assertEquals("userName1", userUpdated.getUserName());
+        Assert.assertEquals("userDisplayName1", userUpdated.getUserDisplayName());
+        Assert.assertEquals("userName1", userUpdated.getIndexedUserName());
+        Assert.assertEquals("userName1", userUpdated.getUserDisplayNameSortLowercase());
+        Assert.assertNotNull(userUpdated.getTags());
+        Assert.assertEquals(1, userUpdated.getTags().size());
+        Assert.assertTrue(userUpdated.getTags().contains(someTagName));
+    }
+
     private User generateUserAndSave(String userId, String userName, String displayName, boolean tagAdmin) {
         List<String> tags = null;
         if (tagAdmin) {

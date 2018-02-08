@@ -63,12 +63,15 @@ public class UserPropertiesUpdateServiceImpl implements UserPropertiesUpdateServ
                 enrichedEventTags = new ArrayList<>();
                 enrichedEventTags.add(TAG_ADMIN);
             }
-            if ((CollectionUtils.isEmpty(enrichedEventTags) && !CollectionUtils.isEmpty(userTags))
-                    || (!CollectionUtils.isEmpty(enrichedEventTags) && CollectionUtils.isEmpty(userTags))) {
-                if (!CollectionUtils.isEmpty(enrichedEventTags)) {
-                    user.setTags(enrichedEventTags);
-                } else {
-                    user.setTags(null);
+
+            // If the user marked as admin but the last event arrived without the admin tag -> remove the admin tag
+            if (CollectionUtils.isNotEmpty(userTags) && userTags.contains(TAG_ADMIN) && !isAdmin) {
+                userTags.remove(TAG_ADMIN);
+                isUpdated = true;
+            } else if (isAdmin) {
+                if (userTags == null) {
+                    userTags = new ArrayList<>();
+                    user.setTags(userTags);
                 }
                 isUpdated = true;
             }
