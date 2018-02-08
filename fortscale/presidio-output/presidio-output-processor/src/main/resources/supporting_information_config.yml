@@ -719,9 +719,8 @@ indicators:
   schema: PRINT
   adeEventType: print
   anomalyDescriptior:
-    anomalyFilters:
-      fieldName: result
-      fieldValue: SUCCESS
+    anomalyField: result
+    anomalyValue: SUCCESS
   historicalData:
     type: hourly_aggregations
   classification: data_exfiltration
@@ -732,9 +731,8 @@ indicators:
   schema: PRINT
   adeEventType: print
   anomalyDescriptior:
-    anomalyFilters:
-      fieldName: result
-      fieldValue: FAILURE
+    anomalyField: result
+    anomalyValue: FAILURE
   historicalData:
     type: hourly_aggregations
   classification: data_exfiltration
