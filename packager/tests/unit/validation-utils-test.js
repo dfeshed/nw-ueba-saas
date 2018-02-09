@@ -28,14 +28,14 @@ test('validatePackageConfig - invalid port', function(assert) {
   });
 });
 
-test('validatePackageConfig - invalid IP', function(assert) {
+test('validatePackageConfig - invalid IP/hostname', function(assert) {
   const formData = {
-    server: '1.1.1.X',
+    server: '-1.1.1.X',
     port: '123'
   };
   const error = validatePackageConfig(formData);
   assert.deepEqual(error, {
-    'invalidServerMessage': 'packager.errorMessages.invalidIP',
+    'invalidServerMessage': 'packager.errorMessages.invalidServer',
     'isServerError': true
   });
 });

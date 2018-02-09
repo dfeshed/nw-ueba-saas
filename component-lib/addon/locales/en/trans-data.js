@@ -1654,7 +1654,7 @@ export default {
   },
   packager: {
     errorMessages: {
-      invalidIP: 'Please enter valid IP address',
+      invalidServer: 'Please enter valid IP address or hostname',
       invalidPort: 'Please enter valid port number',
       invalidName: 'Please enter a valid name without special characters',
       passwordEmptyMessage: 'Please enter certificate password',

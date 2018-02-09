@@ -214,8 +214,8 @@ test('validates the packager config and sets the error field', function(assert) 
   const $INPUT = this.$('.server-input-group input');
   const $DISPLAY_NAME_FIELD = this.$('.display-name-input-js input');
 
-  // Invalid ip
-  $IP_FIELD.val('1.1.x.x');
+  // Invalid ip/hostname
+  $IP_FIELD.val('-1.1.x.x');
   $INPUT.change();
 
   this.$('.generate-button-js .rsa-form-button').trigger('click');
