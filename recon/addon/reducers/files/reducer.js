@@ -1,7 +1,6 @@
 import Immutable from 'seamless-immutable';
 import { handleActions } from 'redux-actions';
 import { handle } from 'redux-pack';
-import { handlePreference } from 'recon/reducers/util';
 import * as ACTION_TYPES from 'recon/actions/types';
 import _ from 'lodash';
 
@@ -51,12 +50,12 @@ const filesReducer = handleActions({
   },
 
   [ACTION_TYPES.SET_PREFERENCES]: (state, { payload: { eventAnalysisPreferences } }) => {
-    const isAutoDownloadFile = handlePreference(eventAnalysisPreferences, 'autoDownloadExtractedFiles', state);
+    const isAutoDownloadFile = _.get(eventAnalysisPreferences, 'autoDownloadExtractedFiles', state.isAutoDownloadFile);
     return state.merge({ isAutoDownloadFile });
   },
 
   [ACTION_TYPES.RESET_PREFERENCES]: (state, { payload: { eventAnalysisPreferences } }) => {
-    const isAutoDownloadFile = handlePreference(eventAnalysisPreferences, 'autoDownloadExtractedFiles', state);
+    const isAutoDownloadFile = _.get(eventAnalysisPreferences, 'autoDownloadExtractedFiles', state.isAutoDownloadFile);
     return state.merge({ isAutoDownloadFile });
   },
 

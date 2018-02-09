@@ -62,6 +62,24 @@ test('test RESET_PREFERENCES', function(assert) {
   assert.equal(result.isAutoDownloadFile, false);
 });
 
+test('test SET_PREFERENCES when auto download preference is not persisted yet', function(assert) {
+  const action = {
+    type: ACTION_TYPES.SET_PREFERENCES,
+    payload: {}
+  };
+  const result = reducer(initialState, action);
+  assert.equal(result.isAutoDownloadFile, true);
+});
+
+test('test RESET_PREFERENCES when auto download preference is not persisted yet', function(assert) {
+  const action = {
+    type: ACTION_TYPES.RESET_PREFERENCES,
+    payload: {}
+  };
+  const result = reducer(initialState, action);
+  assert.equal(result.isAutoDownloadFile, true);
+});
+
 test('test REHYDRATE', function(assert) {
   const action = {
     type: ACTION_TYPES.REHYDRATE,
