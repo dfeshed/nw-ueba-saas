@@ -2,10 +2,10 @@ import { moduleForComponent, test } from 'ember-qunit';
 import wait from 'ember-test-helpers/wait';
 import hbs from 'htmlbars-inline-precompile';
 import DataHelper from '../../../../helpers/data-helper';
-import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { patchFlash } from '../../../../helpers/patch-flash';
 import { getOwner } from '@ember/application';
 import EmberObject from 'ember-object';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 const data = {
   eventType: { name: 'LOG' }
@@ -19,8 +19,8 @@ moduleForComponent('recon-event-actionbar/export-logs', 'Integration | Component
     this.registry.injection('component:recon-event-actionbar/export-logs', 'i18n', 'service:i18n');
     this.inject.service('redux');
     this.inject.service('flash-messages');
-    initialize(this);
     this.inject.service('preferences');
+    initialize(this);
   }
 });
 

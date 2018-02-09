@@ -2,7 +2,6 @@ import { moduleForComponent, test } from 'ember-qunit';
 import wait from 'ember-test-helpers/wait';
 import hbs from 'htmlbars-inline-precompile';
 import DataHelper from '../../../../helpers/data-helper';
-import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { patchFlash } from '../../../../helpers/patch-flash';
 import { getOwner } from '@ember/application';
 import EmberObject from 'ember-object';
@@ -20,7 +19,6 @@ moduleForComponent('recon-event-actionbar/export-packet', 'Integration | Compone
     this.inject.service('redux');
     this.inject.service('flash-messages');
     this.inject.service('access-control');
-    initialize(this);
   }
 });
 

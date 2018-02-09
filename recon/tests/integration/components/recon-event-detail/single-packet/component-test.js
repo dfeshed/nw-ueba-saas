@@ -1,7 +1,6 @@
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 import { enhancePackets } from 'recon/reducers/packets/util';
 import { renderedPackets } from 'recon/reducers/packets/selectors';
@@ -40,7 +39,6 @@ moduleForComponent('recon-event-detail/single-packet', 'Integration | Component 
   integration: true,
   beforeEach() {
     this.inject.service('redux');
-    initialize(this);
   }
 });
 

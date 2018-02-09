@@ -1,7 +1,6 @@
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 import DataHelper from '../../../../helpers/data-helper';
 
@@ -10,7 +9,6 @@ moduleForComponent('recon-event-detail-files', 'Integration | Component | recon 
   beforeEach() {
     this.registry.injection('component:rsa-content-memsize', 'i18n', 'service:i18n');
     this.inject.service('redux');
-    initialize(this);
   }
 });
 

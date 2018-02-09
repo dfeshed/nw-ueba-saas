@@ -1,7 +1,7 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import preferencesConfig from '../../../data/config';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 import wait from 'ember-test-helpers/wait';
 
@@ -10,8 +10,8 @@ moduleForComponent('preferences-panel-trigger', 'Integration | Component | Prefe
   beforeEach() {
     this.registry.injection('component', 'i18n', 'service:i18n');
     this.inject.service('redux');
-    initialize(this);
     this.set('preferencesConfig', preferencesConfig);
+    initialize(this);
   }
 });
 

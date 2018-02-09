@@ -1,8 +1,8 @@
 import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import EmberObject from 'ember-object';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 import DataHelper from '../../../helpers/data-helper';
 

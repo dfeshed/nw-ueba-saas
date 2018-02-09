@@ -1,12 +1,8 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 moduleForComponent('recon-pager', 'Integration | Component | recon pager', {
-  integration: true,
-  beforeEach() {
-    initialize(this);
-  }
+  integration: true
 });
 
 test('it renders for Packet view with the appropriate css class names', function(assert) {

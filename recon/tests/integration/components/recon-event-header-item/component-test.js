@@ -1,12 +1,8 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 moduleForComponent('recon-event-header-item', 'Integration | Component | recon event header item', {
-  integration: true,
-  beforeEach() {
-    initialize(this);
-  }
+  integration: true
 });
 
 test('header item name and value render', function(assert) {

@@ -1,7 +1,7 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import wait from 'ember-test-helpers/wait';
-import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import hbs from 'htmlbars-inline-precompile';
 import preferencesConfig from '../../../data/config';
 
 moduleForComponent('preferences-panel', 'Integration | Component | Preferences Panel', {
@@ -9,8 +9,8 @@ moduleForComponent('preferences-panel', 'Integration | Component | Preferences P
   beforeEach() {
     this.inject.service('redux');
     this.registry.injection('component', 'i18n', 'service:i18n');
-    this.set('preferencesConfig', preferencesConfig);
     initialize(this);
+    this.set('preferencesConfig', preferencesConfig);
     this.render(hbs `
       {{#rsa-application-content}}
         <grid responsive>
