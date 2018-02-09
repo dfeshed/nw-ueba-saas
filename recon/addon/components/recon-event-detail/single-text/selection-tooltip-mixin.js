@@ -1,6 +1,6 @@
 import Mixin from 'ember-metal/mixin';
 import service from 'ember-service/inject';
-import { next, cancel, throttle } from 'ember-runloop';
+import { next, throttle } from 'ember-runloop';
 import $ from 'jquery';
 import { sendTetherEvent } from 'component-lib/utils/tooltip-trigger';
 
@@ -36,8 +36,6 @@ export default Mixin.create({
   startDragPosition: null,
   spanClass: null,
   spanEl: null,
-  displayEvent: null,
-  hideEvent: null,
   userInComponent: false,
 
   // Get the handle object of the selected text
@@ -92,11 +90,7 @@ export default Mixin.create({
 
         const spanEl = this.$(`.${spanClass}`).get(0); // get the raw DOM element used for tethering
 
-        if (this.get('hideEvent')) {
-          cancel(this.get('hideEvent'));
-          this.set('hideEvent', null);
-        }
-        const displayEvent = next(() => {
+        next(() => {
           sendTetherEvent(
             spanEl,
             spanClass,
@@ -104,7 +98,6 @@ export default Mixin.create({
             'display'
           );
         });
-        this.set('displayEvent', displayEvent);
 
         this.setProperties({ didDrag: false, startDragPosition: null, spanEl, spanClass, originalString });
       }
@@ -138,11 +131,7 @@ export default Mixin.create({
     if (this.get('spanEl')) {
       const { spanEl, spanClass, eventBus } = this.getProperties('spanEl', 'spanClass', 'eventBus');
 
-      if (this.get('displayEvent')) {
-        cancel(this.get('displayEvent'));
-        this.set('displayEvent', null);
-      }
-      const hideEvent = next(() => {
+      next(() => {
         sendTetherEvent(
           spanEl,
           spanClass,
@@ -150,7 +139,6 @@ export default Mixin.create({
           'hide'
         );
       });
-      this.set('hideEvent', hideEvent);
 
       // Delete the span tag that was introduced by mouseUp() without affecting the content
       $(`.text-container > .${spanClass}`).contents().unwrap();
