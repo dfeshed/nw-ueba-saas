@@ -10,7 +10,7 @@ module('Unit | Reducers | files');
 
 const initialState = Immutable.from({
   files: [],
-  selectedFileHash: null,
+  selectedFileId: null,
   pageNumber: -1,
   totalItems: 0,
   sortField: 'fileName',
@@ -64,18 +64,18 @@ test('The RESET_HOST_FILES will reset the state', function(assert) {
   const result = reducer(previous, { type: ACTION_TYPES.RESET_HOST_FILES });
   assert.deepEqual(result, { files: [], pageNumber: -1 });
 });
-test('The SET_SELECTED_FILE will sets the selected file hash the state', function(assert) {
+test('The SET_SELECTED_FILE will sets the selected file id the state', function(assert) {
   const previous = Immutable.from({
-    selectedFileHash: null
+    selectedFileId: null
   });
-  const result = reducer(previous, { type: ACTION_TYPES.SET_SELECTED_FILE, payload: { checksumSha256: 'aaazza234aa2123' } });
-  assert.equal(result.selectedFileHash, 'aaazza234aa2123');
+  const result = reducer(previous, { type: ACTION_TYPES.SET_SELECTED_FILE, payload: { id: 'aaazza234aa2123' } });
+  assert.equal(result.selectedFileId, 'aaazza234aa2123');
 });
 
 test('The GET_HOST_FILES sets normalized server response to state', function(assert) {
   const previous = Immutable.from({
     files: [],
-    selectedFileHash: null,
+    selectedFileId: null,
     pageNumber: -1,
     totalItems: 0
   });

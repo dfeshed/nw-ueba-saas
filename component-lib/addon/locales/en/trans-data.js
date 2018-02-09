@@ -1953,13 +1953,19 @@ export default {
         },
         entropy: 'Entropy',
         firstFileName: 'FileName',
+        fileName: 'FileName',
         format: 'Format',
         sectionNames: 'Section Names',
         importedLibraries: 'Imported Libraries',
         size: 'Size',
         imageBase: 'Image Base',
         imageSize: 'Image Size',
-        loaded: 'Loaded'
+        loaded: 'Loaded',
+        fileProperties: {
+          entropy: 'Entropy',
+          size: 'Size',
+          format: 'Format'
+        }
       }
     },
     process: {

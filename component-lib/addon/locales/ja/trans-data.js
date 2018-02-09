@@ -1953,13 +1953,19 @@ export default {
         },
         entropy: 'ja_Entropy',
         firstFileName: 'ja_FileName',
+        fileName: 'ja_FileName',
         format: 'ja_Format',
         sectionNames: 'ja_Section Names',
         importedLibraries: 'ja_Imported Libraries',
         size: 'ja_Size',
         imageBase: 'ja_Image Base',
         imageSize: 'ja_Image Size',
-        loaded: 'ja_Loaded'
+        loaded: 'ja_Loaded',
+        fileProperties: {
+          entropy: 'ja_Entropy',
+          size: 'ja_Size',
+          format: 'ja_Format'
+        }
       }
     },
     tabs: {

@@ -2,7 +2,7 @@ import reselect from 'reselect';
 
 const { createSelector } = reselect;
 const _filesData = (state) => state.endpoint.hostFiles.files || [];
-const _selectedFileHash = (state) => state.endpoint.hostFiles.selectedFileHash;
+const _selectedFileId = (state) => state.endpoint.hostFiles.selectedFileId;
 const _filesLoadingStatus = (state) => state.endpoint.hostFiles.filesLoadingStatus;
 
 export const isDataLoading = createSelector(
@@ -29,16 +29,19 @@ export const filesWithEnrichedData = createSelector(
     return [];
   }
 );
+/**
+ * selector to get the file's properties for the given id
+ * @public
+ */
 
 export const fileProperty = createSelector(
-  [_filesData, _selectedFileHash],
-  (filesData, selectedFileHash) => {
+  [_filesData, _selectedFileId],
+  (filesData, selectedFileId) => {
     if (filesData.length) {
-      let hash = selectedFileHash;
-      if (!selectedFileHash) {
-        hash = filesData[0].checksumSha256;
+      if (!selectedFileId) {
+        return filesData[0];
       }
-      return filesData.find((item) => item.checksumSha256 === hash);
+      return filesData.find((item) => item.id === selectedFileId);
     }
   }
 );

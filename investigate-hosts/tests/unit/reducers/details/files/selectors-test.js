@@ -13,8 +13,7 @@ test('filesWithEnrichedData', function(assert) {
   const result = filesWithEnrichedData(Immutable.from({
     endpoint: {
       hostFiles: {
-        files: filesData.items,
-        selectedFileHash: 'b504d6ec4f75533d863a5a60af635fb5fc50fa60e1c2b9ec452bced9c0cacb33'
+        files: filesData.items
       }
     }
 
@@ -26,7 +25,7 @@ test('fileProperty', function(assert) {
     endpoint: {
       hostFiles: {
         files: filesData.items,
-        selectedFileHash: 'b504d6ec4f75533d863a5a60af635fb5fc50fa60e1c2b9ec452bced9c0cacb33'
+        selectedFileId: 'b504d6ec4f75533d863a5a60af635fb5fc50fa60e1c2b9ec452bced9c0cacb33'
       }
     }
   }));

@@ -1,6 +1,7 @@
 export default {
   files: [
     {
+      id: 'b504d6ec4f75533d863a5a60af635fb5fc50fa60e1c2b9ec452bced9c0cacb33',
       machineOsType: 'linux',
       machineName: 'HarpServer',
       machineAgentId: 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
@@ -76,6 +77,7 @@ export default {
       }
     },
     {
+      id: 'a565da7cb9d42a77f300b3eaeeddf73fab4293e442737fe453373ddc2fedf2be',
       machineOsType: 'linux',
       machineName: 'HarpServer',
       machineAgentId: 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
@@ -417,7 +419,6 @@ export default {
       }
     }
   ],
-  selectedFileHash: 'b504d6ec4f75533d863a5a60af635fb5fc50fa60e1c2b9ec452bced9c0cacb33',
   pageNumber: 10,
   totalItems: 500,
   sortField: 'fileName',

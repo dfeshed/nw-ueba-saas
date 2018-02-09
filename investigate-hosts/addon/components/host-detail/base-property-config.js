@@ -1,20 +1,19 @@
 export default [
   {
     sectionName: 'File.General',
-    fieldPrefix: 'fileProperties',
     fields: [
       {
-        field: 'firstFileName'
+        field: 'fileName'
       },
       {
-        field: 'entropy'
+        field: 'fileProperties.entropy'
       },
       {
-        field: 'size',
+        field: 'fileProperties.size',
         format: 'SIZE'
       },
       {
-        field: 'format'
+        field: 'fileProperties.format'
       }
     ]
   },

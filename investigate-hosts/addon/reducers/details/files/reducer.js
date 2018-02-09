@@ -5,7 +5,7 @@ import Immutable from 'seamless-immutable';
 
 const hostFilesState = Immutable.from({
   files: [],
-  selectedFileHash: null,
+  selectedFileId: null,
   pageNumber: -1,
   totalItems: 0,
   sortField: 'fileName',
@@ -21,7 +21,6 @@ const _handleAppendFiles = (action) => {
     const allFiles = [...files, ...data.items];
     return state.merge({
       totalItems: data.totalItems,
-      selectedFileHash: !files.length && allFiles.length ? allFiles[0].checksumSha256 : null,
       files: allFiles,
       pageNumber: data.pageNumber,
       filesLoadMoreStatus: data.hasNext ? 'stopped' : 'completed'
@@ -37,7 +36,7 @@ const hostFilesReducer = handleActions({
 
   [ACTION_TYPES.RESET_HOST_FILES]: (state) => state.merge({ pageNumber: -1, files: [] }),
 
-  [ACTION_TYPES.SET_SELECTED_FILE]: (state, { payload: { checksumSha256 } }) => state.set('selectedFileHash', checksumSha256),
+  [ACTION_TYPES.SET_SELECTED_FILE]: (state, { payload: { id } }) => state.set('selectedFileId', id),
 
   [ACTION_TYPES.GET_HOST_FILES]: (state, action) => {
     return handle(state, action, {
