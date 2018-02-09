@@ -75,6 +75,7 @@
   },
   "ember-addon": {
     "paths": [
+      "../test-helpers",
       "../component-lib",
       "../streaming-data",
       "../investigate-events",

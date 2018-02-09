@@ -80,6 +80,7 @@
   "ember-addon": {
     "configPath": "tests/dummy/config",
     "paths": [
+      "../test-helpers",
       "../component-lib",
       "../streaming-data",
       "../recon",
