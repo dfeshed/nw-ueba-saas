@@ -5,7 +5,7 @@ import { isPacketView } from 'recon/reducers/visuals/selectors';
 const _contentError = (recon) => recon.data.contentError;
 const _contentLoading = (recon) => recon.data.contentLoading;
 const _headerLoading = (recon) => recon.header.headerLoading;
-const _eventId = (recon) => recon.header.eventId;
+const _eventId = (recon) => recon.data.eventId;
 
 /**
  * Use to determine if there was an error retrieving the content of a
