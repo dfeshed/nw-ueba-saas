@@ -8,6 +8,7 @@ import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.store.StoreManager;
 import fortscale.utils.store.StoreManagerAware;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -157,7 +158,7 @@ public class ModelStore implements StoreManagerAware {
             AggregationResults<DBObject> aggrResult = mongoTemplate.aggregate(agg, collectionName, DBObject.class);
             removeContextIdsModels(collectionName, until, aggrResult);
 
-        } catch (MongoException ex) {
+        } catch (InvalidDataAccessApiUsageException ex) {
             AggregationResults<DBObject> aggrResult;
 
             long limit = modelAggregationPaginationSize;
