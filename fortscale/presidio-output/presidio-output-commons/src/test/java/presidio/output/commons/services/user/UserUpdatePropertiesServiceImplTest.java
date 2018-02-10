@@ -1,8 +1,8 @@
 package presidio.output.commons.services.user;
 
-
 import fortscale.common.general.Schema;
 import fortscale.domain.core.EventResult;
+import org.apache.commons.collections.CollectionUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +49,6 @@ public class UserUpdatePropertiesServiceImplTest {
         }
     }
 
-
     @Test
     public void updateUserPropertiesWithAuthenticationEvent() {
         Instant eventDate = Instant.now();
@@ -78,7 +77,7 @@ public class UserUpdatePropertiesServiceImplTest {
         Assert.assertEquals("userDisplayName1", userUpdated.getUserDisplayName());
         Assert.assertEquals("userName1", userUpdated.getIndexedUserName());
         Assert.assertEquals("userName1", userUpdated.getUserDisplayNameSortLowercase());
-        Assert.assertEquals(null, userUpdated.getTags());
+        Assert.assertTrue(CollectionUtils.isEmpty(userUpdated.getTags()));
     }
 
     @Test
@@ -108,7 +107,7 @@ public class UserUpdatePropertiesServiceImplTest {
         Assert.assertEquals("userDisplayName1", userUpdated.getUserDisplayName());
         Assert.assertEquals("userName1", userUpdated.getIndexedUserName());
         Assert.assertEquals("userName1", userUpdated.getUserDisplayNameSortLowercase());
-        Assert.assertEquals(null, userUpdated.getTags());
+        Assert.assertTrue(CollectionUtils.isEmpty(userUpdated.getTags()));
     }
 
     @Test
@@ -158,7 +157,7 @@ public class UserUpdatePropertiesServiceImplTest {
     }
 
     @Test
-    public void updateUserPropertiesUserwithoutDisplayName_shouldSetUpdatedDisplayName() {
+    public void updateUserPropertiesUserWithoutDisplayName_shouldSetUpdatedDisplayName() {
         Instant eventDate = Instant.now();
         Map<String, String> additionalInfo = new HashMap<>();
         additionalInfo.put("isUserAdmin", "true");
@@ -169,12 +168,74 @@ public class UserUpdatePropertiesServiceImplTest {
         Assert.assertEquals("displayName1", userUpdated.getUserDisplayName());
     }
 
+    @Test
+    public void updateUserAdminTag_AddAdmin() {
+        Instant eventDate = Instant.now();
+        Map<String, String> additionalInfo = new HashMap<>();
+        additionalInfo.put("isUserAdmin", "true");
+        generateAuthenticationEnrichedEvent(eventDate, "userName1", "userId", "userDisplayName1", additionalInfo);
+        String someTagName = "someTag";
+        List<String> tags = new ArrayList<>();
+        tags.add(someTagName);
+        User user = generateUserAndSave("userId", "userName", "userDisplayName", tags);
+        User userUpdated = userPropertiesUpdateService.userPropertiesUpdate(user);
+        Assert.assertEquals("userName1", userUpdated.getUserName());
+        Assert.assertEquals("userDisplayName1", userUpdated.getUserDisplayName());
+        Assert.assertEquals("userName1", userUpdated.getIndexedUserName());
+        Assert.assertEquals("userName1", userUpdated.getUserDisplayNameSortLowercase());
+        Assert.assertEquals(2, userUpdated.getTags().size());
+        Assert.assertTrue(userUpdated.getTags().contains(someTagName));
+        Assert.assertTrue(userUpdated.getTags().contains(TAG_ADMIN));
+    }
+
+    @Test
+    public void updateUserAdminTag_AddAdminTagsNull() {
+        Instant eventDate = Instant.now();
+        Map<String, String> additionalInfo = new HashMap<>();
+        additionalInfo.put("isUserAdmin", "true");
+        generateAuthenticationEnrichedEvent(eventDate, "userName1", "userId", "userDisplayName1", additionalInfo);
+        String someTagName = "someTag";
+        List<String> tags = new ArrayList<>();
+        tags.add(someTagName);
+        User user = generateUserAndSave("userId", "userName", "userDisplayName", null);
+        User userUpdated = userPropertiesUpdateService.userPropertiesUpdate(user);
+        Assert.assertEquals("userName1", userUpdated.getUserName());
+        Assert.assertEquals("userDisplayName1", userUpdated.getUserDisplayName());
+        Assert.assertEquals("userName1", userUpdated.getIndexedUserName());
+        Assert.assertEquals("userName1", userUpdated.getUserDisplayNameSortLowercase());
+        Assert.assertEquals(1, userUpdated.getTags().size());
+        Assert.assertTrue(userUpdated.getTags().contains(TAG_ADMIN));
+    }
+
+
+    @Test
+    public void updateUserAdminTag_RemoveAdmin() {
+        Instant eventDate = Instant.now();
+        generateAuthenticationEnrichedEvent(eventDate, "userName1", "userId", "userDisplayName1", null);
+        String someTagName = "someTag";
+        List<String> tags = new ArrayList<>();
+        tags.add(someTagName);
+        tags.add(TAG_ADMIN);
+        User user = generateUserAndSave("userId", "userName", "userDisplayName", tags);
+        User userUpdated = userPropertiesUpdateService.userPropertiesUpdate(user);
+        Assert.assertEquals("userName1", userUpdated.getUserName());
+        Assert.assertEquals("userDisplayName1", userUpdated.getUserDisplayName());
+        Assert.assertEquals("userName1", userUpdated.getIndexedUserName());
+        Assert.assertEquals("userName1", userUpdated.getUserDisplayNameSortLowercase());
+        Assert.assertNotNull(userUpdated.getTags());
+        Assert.assertEquals(1, userUpdated.getTags().size());
+        Assert.assertTrue(userUpdated.getTags().contains(someTagName));
+    }
+
     private User generateUserAndSave(String userId, String userName, String displayName, boolean tagAdmin) {
-        List<String> tags = null;
+        List<String> tags = new ArrayList<>();
         if (tagAdmin) {
-            tags = new ArrayList<>();
             tags.add(TAG_ADMIN);
         }
+        return generateUserAndSave(userId, userName, displayName, tags);
+    }
+
+    private User generateUserAndSave(String userId, String userName, String displayName, List<String> tags) {
         User user1 = new User(userId, userName, displayName, 0d, null, null, tags, UserSeverity.LOW, 0);
         userPersistencyService.save(user1);
         return user1;

@@ -3,6 +3,10 @@ from airflow.operators.bash_operator import BashOperator
 
 from presidio.builders.maintenance.maintenance_dag_builder import MaintenanceDagBuilder
 
+ELASTIC_SEARCH_DELETE_LOGS_OLDER_THAN = "5"
+
+ELASTICSEARCH_BASE_LOG_DIR = "/var/log/presidio/3p/elasticsearch/"
+
 
 class AirflowLogCleanupDagBuilder(MaintenanceDagBuilder):
 
@@ -102,10 +106,17 @@ class AirflowLogCleanupDagBuilder(MaintenanceDagBuilder):
             bash_command=log_cleanup,
             dag=dag
         )
+        es_log_cleanup_cmd = "find %s -type f -mtime +%s -exec rm -f {} \;" % (ELASTICSEARCH_BASE_LOG_DIR, ELASTIC_SEARCH_DELETE_LOGS_OLDER_THAN)
+        elasticsearch_log_cleanup = BashOperator(
+            task_id='elasticsearch_log_cleanup',
+            bash_command=(es_log_cleanup_cmd),
+            dag=dag
+        )
         log_trimming = BashOperator(
             task_id='log_trimming',
             bash_command=log_trimming,
             dag=dag
         )
         log_cleanup >> log_trimming
+        log_cleanup >> elasticsearch_log_cleanup
         return dag

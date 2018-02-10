@@ -5,6 +5,7 @@ from datetime import timedelta
 
 from airflow import DAG
 from airflow.operators.subdag_operator import SubDagOperator
+from airflow.operators.python_operator import ShortCircuitOperator
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
 
@@ -38,6 +39,19 @@ class PresidioDagBuilder(object):
         """
 
         pass
+
+    def _create_infinite_retry_short_circuit_operator(self, task_id, dag, python_callable):
+        return ShortCircuitOperator(
+            task_id=task_id,
+            dag=dag,
+            python_callable=python_callable,
+            retries=99999,
+            retry_exponential_backoff=True,
+            max_retry_delay=timedelta(seconds=3600),
+            retry_delay=timedelta(seconds=600),
+            provide_context=True
+        )
+
 
     def _create_sub_dag_operator(self, sub_dag_builder, sub_dag_id, dag):
         """
