@@ -41,4 +41,15 @@ public class ConfigurationBadParamDetails {
     public String getErrorMessage() {
         return errorMessage;
     }
+
+    @Override
+    public String toString() {
+        return "ConfigurationBadParamDetails{" +
+                "domain='" + domain + '\'' +
+                ", location='" + location + '\'' +
+                ", reason='" + reason + '\'' +
+                ", locationType='" + locationType + '\'' +
+                ", errorMessage='" + errorMessage + '\'' +
+                '}';
+    }
 }

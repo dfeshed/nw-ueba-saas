@@ -20,19 +20,18 @@ public class SyslogForwardingConfiguration extends ConfigurationCreation impleme
 
     public SyslogForwardingConfiguration(JsonNode node) {
         createConfiguration(node);
-        if (alertSyslogConfiguration != null) {
-            badParamsAddKeys(addPrefixToBadParams(ALERT, alertSyslogConfiguration.badParams()));
-            missingParamsAddKeys(addPrefixToBadParams(ALERT, alertSyslogConfiguration.missingParams()));
-        } else {
-            missingParamsAddKeys(ALERT);
-        }
-        if (userSyslogConfiguration != null) {
-            badParamsAddKeys(addPrefixToBadParams(USER, userSyslogConfiguration.badParams()));
-            missingParamsAddKeys(addPrefixToBadParams(USER, alertSyslogConfiguration.missingParams()));
-        } else {
-            missingParamsAddKeys(USER);
-        }
+        checkConfigurationValidatableParams(ALERT, alertSyslogConfiguration);
+        checkConfigurationValidatableParams(USER, userSyslogConfiguration);
         checkStructure();
+    }
+
+    private void checkConfigurationValidatableParams(String object, ConfigurationValidatable configurationValidatable) {
+        if (configurationValidatable != null) {
+            badParamsAddKeys(addPrefixToBadParams(object, configurationValidatable.badParams()));
+            missingParamsAddKeys(addPrefixToBadParams(object, configurationValidatable.missingParams()));
+        } else {
+            missingParamsAddKeys(object);
+        }
     }
 
     public ConfigurationValidatable getAlertSyslogConfiguration() {
