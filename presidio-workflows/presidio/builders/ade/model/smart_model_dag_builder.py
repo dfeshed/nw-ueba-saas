@@ -1,12 +1,13 @@
 from airflow.operators.bash_operator import BashOperator
 
+from aggr_model_dag_builder import AggrModelDagBuilder
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.operators.model.smart_model_accumulate_operator import SmartModelAccumulateOperator
 from presidio.operators.model.smart_model_operator import SmartModelOperator
 from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
+from presidio.utils.configuration.config_server_configuration_reader_singleton import \
+    ConfigServerConfigurationReaderSingleton
 from presidio.utils.services.fixed_duration_strategy import is_execution_date_valid, FIX_DURATION_STRATEGY_DAILY
-from presidio.utils.configuration.config_server_configuration_reader_singleton import ConfigServerConfigurationReaderSingleton
-from aggr_model_dag_builder import AggrModelDagBuilder
 from raw_model_dag_builder import RawModelDagBuilder
 
 
@@ -125,6 +126,6 @@ class SmartModelDagBuilder(PresidioDagBuilder):
         t2 = BashOperator(
             task_id='sleep',
             bash_command='sleep 5',
-            dag=smart_model_dag)
+            dag=smart_model_dag, retries=99999)
 
         return smart_model_dag
