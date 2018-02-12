@@ -75,10 +75,10 @@ public class ContinuousMaxHistogramModelBuilder extends ContinuousHistogramModel
         Instant instantCursor = TimeService.floorTime(instantToFeatureValue.firstKey(), partitionsResolutionInSeconds);
         Instant lastInstant = TimeService.floorTime(instantToFeatureValue.lastKey(), partitionsResolutionInSeconds).plus(Duration.ofSeconds(partitionsResolutionInSeconds));
 
-        //add missed instants with Double.MIN_VALUE in order to be able get max values in various resolutions.
+        //add missed instants with Double.NEGATIVE_INFINITY in order to be able get max values in various resolutions.
         while (instantCursor.isBefore(lastInstant)) {
             if (!instantToFeatureValue.containsKey(instantCursor)) {
-                instantToFeatureValue.put(instantCursor, Double.MIN_VALUE);
+                instantToFeatureValue.put(instantCursor, Double.NEGATIVE_INFINITY);
             }
             instantCursor = instantCursor.plus(instantStep);
         }
@@ -129,7 +129,7 @@ public class ContinuousMaxHistogramModelBuilder extends ContinuousHistogramModel
         List<Double> maxValues = new ArrayList<>();
         subLists.forEach(sublist -> {
             Double maxValue = Collections.max(sublist);
-            if (!maxValue.equals(Double.MIN_VALUE)) {
+            if (!maxValue.equals(Double.NEGATIVE_INFINITY)) {
                 maxValues.add(Collections.max(sublist));
             }
         });
