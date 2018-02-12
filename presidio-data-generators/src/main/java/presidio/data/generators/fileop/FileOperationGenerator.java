@@ -12,7 +12,7 @@ import java.util.Collections;
 public class FileOperationGenerator implements IFileOperationGenerator {
     private IFileEntityGenerator sourceFileEntityGenerator;
     private IFileEntityGenerator destFileEntityGenerator;
-    private IOperationTypeGenerator operationTypeGenerator;
+    protected IOperationTypeGenerator operationTypeGenerator;
     private IStringGenerator operationResultGenerator;
     private IStringGenerator operationResultCodeGenerator;
 
