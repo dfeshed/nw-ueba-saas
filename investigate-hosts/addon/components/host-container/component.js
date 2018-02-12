@@ -5,8 +5,7 @@ import service from 'ember-service/inject';
 
 const stateToComputed = (state) => ({
   selectedHostList: hostListForScanning(state),
-  hasMachineId: hasMachineId(state),
-  showCancelScanModal: state.endpoint.visuals.showCancelScanModal
+  hasMachineId: hasMachineId(state)
 });
 
 const Container = Component.extend({

@@ -6,9 +6,7 @@ import {
   noHostsSelected,
   hostCountForDisplay,
   allAreEcatAgents } from 'investigate-hosts/reducers/hosts/selectors';
-import {
-  toggleCancelScanModal,
-  toggleDeleteHostsModal } from 'investigate-hosts/actions/ui-state-creators';
+import { toggleDeleteHostsModal } from 'investigate-hosts/actions/ui-state-creators';
 
 import { deleteHosts } from 'investigate-hosts/actions/data-creators/host';
 
@@ -21,7 +19,6 @@ const stateToComputed = (state) => ({
 });
 
 const dispatchToActions = {
-  toggleCancelScanModal,
   toggleDeleteHostsModal,
   deleteHosts
 };
@@ -46,14 +43,6 @@ const ActionBar = Component.extend({
       };
       this.send('deleteHosts', callBackOptions);
     },
-
-    openCancelScanModal() {
-      if (this.get('tooManyHostsSelected')) {
-        return;
-      }
-      this.send('toggleCancelScanModal');
-    },
-
     /**
      * Opens the selected machines in the thick client
      * @param keyword

@@ -3,9 +3,6 @@
     <h2>{{title}}</h2>
   </hbox>
   <hbox fit class="header-section__search-box">
-    <span class="rsa-form-label">
-      {{rsa-icon name="filter-22" isLined=false class='filter-icon' size='medium'}}
-    </span>
     {{rsa-form-input value=_searchText placeholder=(t 'investigateHosts.hosts.properties.filter')}}
   </hbox>
   {{!--Show check box to filter the empty values--}}
@@ -20,30 +17,16 @@
 </box>
 <box class="content-section">
   {{!--If block level contents are provided--}}
-  {{#if hasBlock}}
-    {{#each visibleProperty as |property|}}
-      <hbox class="content-section__section-name">{{property.sectionName}}</hbox>
-      {{#each property.fields as |field|}}
-        <hbox fit class="content-section__property col-xs-12" align="center">
-          {{yield (hash
-                    propertyName=(component 'host-detail/base-property-panel/property-name' property=field)
-                    propertyValue=(component 'host-detail/base-property-panel/property-value' property=field))}}
-        </hbox>
-      {{/each}}
-      <hr class="divider">
+  {{#each visibleProperty as |property|}}
+    <hbox fit class="content-section__section-name">{{property.sectionName}}</hbox>
+    {{#each property.fields as |field|}}
+      <hbox fit class="content-section__property col-xs-12" align="center">
+        {{host-detail/base-property-panel/property-name property=field}}
+        {{host-detail/base-property-panel/property-value property=field}}
+      </hbox>
     {{/each}}
+    <hr class="divider">
   {{else}}
-    {{#each visibleProperty as |property|}}
-      <hbox fit class="content-section__section-name">{{property.sectionName}}</hbox>
-      {{#each property.fields as |field|}}
-        <hbox fit class="content-section__property col-xs-12" align="center">
-          {{component 'host-detail/base-property-panel/property-name' property=field}}
-          {{component 'host-detail/base-property-panel/property-value' property=field}}
-        </hbox>
-      {{/each}}
-      <hr class="divider">
-    {{else}}
-      {{rsa-panel-message message=(t 'investigateHosts.common.emptyMessage')}}
-    {{/each}}
-  {{/if}}
+    {{rsa-panel-message message=(t 'investigateHosts.common.emptyMessage')}}
+  {{/each}}
 </box>

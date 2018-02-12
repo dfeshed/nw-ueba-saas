@@ -5,18 +5,19 @@
 {{else if (eq format 'SIZE')}}
   {{rsa-content-memsize size=value}}
 {{else if (eq format 'HEX')}}
-  <span class="nwe-hex">{{rsa-content-hex value=value}}</span>
+  {{rsa-content-hex value=value}}
 {{else if (eq format 'SIGNATURE')}}
-  <span class="content-signature">{{signature-text value}}</span>
+  {{signature-text value}}
 {{else}}
   {{value}}
 {{/if}}
 {{#if showToolTip}}
-  {{#rsa-content-tethered-panel anchorWidth=100 displayCloseButton=false style="highlighted" position=tipPosition panelId=panelId}}
-    {{#if hasBlock}}
-      {{yield (hash tipContent=(host-detail/base-property-panel/host-text/content format=format text=value))}}
-    {{else}}
-      {{host-detail/base-property-panel/host-text/content format=format text=value}}
-    {{/if}}
+  {{#rsa-content-tethered-panel
+    anchorWidth=100
+    displayCloseButton=false
+    style="highlighted"
+    position=tipPosition
+    panelId=panelId}}
+    {{host-detail/base-property-panel/host-text/content format=format text=value}}
   {{/rsa-content-tethered-panel}}
 {{/if}}

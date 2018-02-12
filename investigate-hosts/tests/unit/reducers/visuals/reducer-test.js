@@ -11,7 +11,6 @@ test('should return the initial state', function(assert) {
     activeAutorunTab: 'AUTORUNS',
     activeHostDetailTab: 'OVERVIEW',
     isTreeView: true,
-    showCancelScanModal: false,
     showDeleteHostsModal: false,
     hostDetailsLoading: false,
     activeSystemInformationTab: 'HOST_ENTRIES'
@@ -23,7 +22,6 @@ test('The RESET_INPUT_DATA action reset to initial state', function(assert) {
     activeAutorunTab: 'AUTORUNS',
     activeHostDetailTab: 'FILES',
     isTreeView: true,
-    showCancelScanModal: false,
     showDeleteHostsModal: false,
     hostDetailsLoading: true,
     activeSystemInformationTab: 'HOST_ENTRIES'
@@ -33,7 +31,6 @@ test('The RESET_INPUT_DATA action reset to initial state', function(assert) {
     activeAutorunTab: 'AUTORUNS',
     activeHostDetailTab: 'OVERVIEW',
     isTreeView: true,
-    showCancelScanModal: false,
     showDeleteHostsModal: false,
     hostDetailsLoading: false,
     activeSystemInformationTab: 'HOST_ENTRIES'
@@ -68,20 +65,6 @@ test('The CHANGE_AUTORUNS_TAB action sets the autorun tab', function(assert) {
   };
 
   const result = reducer(previous, { type: ACTION_TYPES.CHANGE_AUTORUNS_TAB, payload: { tabName: 'TASKS' } });
-
-  assert.deepEqual(result, expectedEndState);
-});
-
-test('The TOGGLE_CANCEL_SCAN_MODAL toggles the cancel scan modal state', function(assert) {
-  const previous = Immutable.from({
-    showCancelScanModal: false
-  });
-
-  const expectedEndState = {
-    showCancelScanModal: true
-  };
-
-  const result = reducer(previous, { type: ACTION_TYPES.TOGGLE_CANCEL_SCAN_MODAL });
 
   assert.deepEqual(result, expectedEndState);
 });

@@ -183,4 +183,9 @@ export default class DataHelper {
     _set(this.state, 'machines.selectedHostList', new Array(count));
     return this;
   }
+
+  showNonEmptyProperty(flag) {
+    _set(this.state, 'detailsInput.showNonEmptyProperty', flag);
+    return this;
+  }
 }
