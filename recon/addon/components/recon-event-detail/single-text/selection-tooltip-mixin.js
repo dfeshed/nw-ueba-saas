@@ -118,7 +118,7 @@ export default Mixin.create({
   // page before the closed body element. Find it and remove from the DOM
   // This ensures we don't have two tooltips at the same time
   ensureOnlyOneTether() {
-    const childEl = $('.ember-tether').get(0);
+    const childEl = $('.ember-tether > .recon-tooltip').get(0);
     if (childEl) {
       const parentEl = childEl.parentNode; // parentNode is the body element
       parentEl.removeChild(childEl);
