@@ -1,7 +1,6 @@
 import Component from 'ember-component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
-import COLUMNS from './columns';
 import TABS from './tabsConfig';
 import {
   hostFileEntries,
@@ -53,12 +52,16 @@ const SystemInformation = Component.extend({
   /**
    * Table data for display, data will be calculated based on tab selection
    * @param selectedTab
-   * @returns {{data, columns}}
    * @public
    */
-  @computed('systemInformationData')
-  tableData(systemInformationData) {
-    return { ...systemInformationData };
+  @computed('systemInformationData', 'isBashHistorySelected', 'selectedUser')
+  tableData(systemInformationData, isBashHistorySelected, selectedUser) {
+    const { columns, data } = { ...systemInformationData };
+    if (isBashHistorySelected) {
+      const filteredData = selectedUser === 'ALL' ? data : data.filterBy('userName', selectedUser);
+      return { columns, data: filteredData };
+    }
+    return { columns, data };
   },
 
   @computed('selectedTab')
@@ -67,12 +70,7 @@ const SystemInformation = Component.extend({
   },
   actions: {
     onSelection(value) {
-      const tab = this.get('selectedTab');
-      const { field, columns } = COLUMNS[tab];
-      const data = this.get(field);
-      const filteredData = value === 'ALL' ? data : data.filterBy('userName', value);
       this.set('selectedUser', value);
-      this.set('tableData', { data: filteredData, columns });
     }
   }
 });

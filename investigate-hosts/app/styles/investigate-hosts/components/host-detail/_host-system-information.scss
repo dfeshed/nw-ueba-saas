@@ -6,13 +6,9 @@ $note-color: #bdbdbd;
   .system-information__content {
     padding: rsa-whitespace() rsa-whitespace() rsa-whitespace(least);
   }
-  .rsa-data-table-header {
-    background-color: $table-header-color;
-  }
   .rsa-data-table {
     max-height: 100vh;
     min-height: 130px;
-    background-color: $host-details-table-row-color;
     .rsa-data-table-body-row {
       cursor: default !important;
     }
