@@ -40,7 +40,7 @@ public class CsvFileSource extends CsvFormatSource {
     public void doPresidioConfigure(Context context) {
         try {
 
-            super.doConfigure(context);
+            super.doPresidioConfigure(context);
             logger.debug("context is: {}", context);
             setName("presidio-flume-csv-source");
             filePrefix = context.getString(FILE_PREFIX, "");
