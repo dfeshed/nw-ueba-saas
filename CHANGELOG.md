@@ -1,3 +1,16 @@
+# [7.9.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v7.9.0)
+## Features
+* [ASOC-44522](https://bedfordjira.na.rsa.net/browse/ASOC-44522):&emsp;Remove SNAPSHOT dependencies
+* [ASOC-46954](https://bedfordjira.na.rsa.net/browse/ASOC-46954):&emsp;Combined pages usability issues
+* [ASOC-47211](https://bedfordjira.na.rsa.net/browse/ASOC-47211):&emsp;Update the Investigate workflow and the Investigate Guide structure
+* [ASOC-47395](https://bedfordjira.na.rsa.net/browse/ASOC-47395):&emsp;User Preference
+* [ASOC-47396](https://bedfordjira.na.rsa.net/browse/ASOC-47396):&emsp;RBAC
+* [ASOC-47397](https://bedfordjira.na.rsa.net/browse/ASOC-47397):&emsp;DB Retention
+* [ASOC-48375](https://bedfordjira.na.rsa.net/browse/ASOC-48375):&emsp;Mixed Mode Validation: SA 11.1 - Arc 11.1 - LD 10.6.5
+* [ASOC-48495](https://bedfordjira.na.rsa.net/browse/ASOC-48495):&emsp;US Code Remediation
+* [ASOC-48564](https://bedfordjira.na.rsa.net/browse/ASOC-48564):&emsp;Virtual Upgrade with VMDK- 10.6.5 --> 11.1 (Itr 2) - FIPS - verification
+
+
 # [7.8.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v7.8.0)
 ## Features
 * [ASOC-21094](https://bedfordjira.na.rsa.net/browse/ASOC-21094):&emsp;Edit Breadcrumb
