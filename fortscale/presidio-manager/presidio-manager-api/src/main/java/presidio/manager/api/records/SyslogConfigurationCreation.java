@@ -7,7 +7,7 @@ import presidio.manager.api.configuration.ConfigurationValidatable;
 
 import java.util.List;
 
-public class SyslogConfiguration extends ConfigurationCreation implements ConfigurationValidatable {
+public class SyslogConfigurationCreation extends ConfigurationCreation implements ConfigurationValidatable {
 
     private String host;
     private int port = -1;
@@ -15,10 +15,10 @@ public class SyslogConfiguration extends ConfigurationCreation implements Config
     private final String HOST = "host";
     private final String PORT = "port";
 
-    public SyslogConfiguration() {
+    public SyslogConfigurationCreation() {
     }
 
-    public SyslogConfiguration(JsonNode node) {
+    public SyslogConfigurationCreation(JsonNode node) {
         createConfiguration(node);
         if (StringUtils.isEmpty(host)) {
             missingParamsAddKeys(HOST);

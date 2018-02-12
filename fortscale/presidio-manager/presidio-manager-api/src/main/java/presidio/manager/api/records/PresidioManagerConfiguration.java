@@ -16,21 +16,21 @@ public class PresidioManagerConfiguration {
     private PresidioSystemConfiguration systemConfiguration;
 
     @JsonProperty(OUTPUT_FORWARDING)
-    private OutputConfiguration outputConfiguration;
+    private OutputConfigurationCreation outputConfigurationCreation;
 
     public PresidioManagerConfiguration() {
     }
 
     public PresidioManagerConfiguration(DataPipeLineConfiguration dataPipeLineConfiguration,
                                         PresidioSystemConfiguration systemConfiguration,
-                                        OutputConfiguration outputConfiguration) {
+                                        OutputConfigurationCreation outputConfigurationCreation) {
         this.dataPipeLineConfiguration = dataPipeLineConfiguration;
         this.systemConfiguration = systemConfiguration;
-        this.outputConfiguration = outputConfiguration;
+        this.outputConfigurationCreation = outputConfigurationCreation;
     }
 
-    public OutputConfiguration getOutputConfiguration() {
-        return outputConfiguration;
+    public OutputConfigurationCreation getOutputConfigurationCreation() {
+        return outputConfigurationCreation;
     }
 
     public DataPipeLineConfiguration getDataPipeLineConfiguration() {

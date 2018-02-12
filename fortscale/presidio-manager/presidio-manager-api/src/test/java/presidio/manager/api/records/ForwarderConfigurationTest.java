@@ -23,9 +23,9 @@ public class ForwarderConfigurationTest {
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(classLoader.getResource(FORWARDER_JSON_FILE_NAME).getFile());
         JsonNode jsonBody = mapper.readTree(file);
-        OutputConfiguration outputConfiguration = new OutputConfiguration(jsonBody);
-        boolean isValid = outputConfiguration.isStructureValid();
-        List badParams = outputConfiguration.getBadParams();
+        OutputConfigurationCreation outputConfigurationCreation = new OutputConfigurationCreation(jsonBody);
+        boolean isValid = outputConfigurationCreation.isStructureValid();
+        List badParams = outputConfigurationCreation.getBadParams();
         Assert.assertEquals(true, isValid);
         Assert.assertEquals(0, badParams.size());
     }
@@ -36,9 +36,9 @@ public class ForwarderConfigurationTest {
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(classLoader.getResource(BAD_FORWARDER_JSON_FILE_NAME).getFile());
         JsonNode jsonBody = mapper.readTree(file);
-        OutputConfiguration outputConfiguration = new OutputConfiguration(jsonBody);
-        boolean isValid = outputConfiguration.isStructureValid();
-        List badParams = outputConfiguration.getBadParams();
+        OutputConfigurationCreation outputConfigurationCreation = new OutputConfigurationCreation(jsonBody);
+        boolean isValid = outputConfigurationCreation.isStructureValid();
+        List badParams = outputConfigurationCreation.getBadParams();
         Assert.assertEquals(false, isValid);
         Assert.assertEquals(2, badParams.size());
     }

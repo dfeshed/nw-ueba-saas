@@ -6,17 +6,17 @@ import presidio.manager.api.configuration.ConfigurationValidatable;
 
 import java.util.List;
 
-public class OutputConfiguration extends ConfigurationCreation implements ConfigurationValidatable {
+public class OutputConfigurationCreation extends ConfigurationCreation implements ConfigurationValidatable {
 
     private ConfigurationValidatable syslogForwardingConfiguration;
 
     private final String SYSLOG = "syslog";
 
 
-    public OutputConfiguration() {
+    public OutputConfigurationCreation() {
     }
 
-    public OutputConfiguration(JsonNode node) {
+    public OutputConfigurationCreation(JsonNode node) {
         createConfiguration(node);
         if (syslogForwardingConfiguration != null) {
             badParamsAddKeys(addPrefixToBadParams(SYSLOG, syslogForwardingConfiguration.badParams()));
@@ -62,7 +62,7 @@ public class OutputConfiguration extends ConfigurationCreation implements Config
     void setKeyValue(String key, JsonNode value) {
         switch (key) {
             case SYSLOG:
-                setSyslogForwardingConfiguration(new SyslogForwardingConfiguration(value));
+                setSyslogForwardingConfiguration(new SyslogForwardingConfigurationCreation(value));
                 break;
             default:
                 badParamsAddKey(key);

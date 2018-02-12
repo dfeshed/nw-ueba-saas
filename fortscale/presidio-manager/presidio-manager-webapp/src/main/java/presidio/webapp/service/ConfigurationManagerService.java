@@ -3,7 +3,7 @@ package presidio.webapp.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import presidio.manager.api.records.ConfigurationBadParamDetails;
 import presidio.manager.api.records.DataPipeLineConfiguration;
-import presidio.manager.api.records.OutputConfiguration;
+import presidio.manager.api.records.OutputConfigurationCreation;
 import presidio.manager.api.records.PresidioManagerConfiguration;
 import presidio.manager.api.records.PresidioSystemConfiguration;
 import presidio.manager.api.records.ValidationResults;
@@ -51,7 +51,7 @@ public class ConfigurationManagerService implements ConfigurationProcessingServi
         validationResults = new ValidationResults();
         DataPipeLineConfiguration dataPipeLineConfiguration = null;
         PresidioSystemConfiguration presidioSystemConfiguration = null;
-        OutputConfiguration outputConfiguration = null;
+        OutputConfigurationCreation outputConfigurationCreation = null;
         if (node != null) {
             Iterator<Map.Entry<String, JsonNode>> fields = node.fields();
             Map.Entry<String, JsonNode> map;
@@ -68,7 +68,7 @@ public class ConfigurationManagerService implements ConfigurationProcessingServi
                         dataPipeLineConfiguration = value != null ? new DataPipeLineConfiguration(value) : null;
                     } else {
                         if (key.equals(PresidioManagerConfiguration.OUTPUT_FORWARDING)) {
-                            outputConfiguration = value != null ? new OutputConfiguration(value) : null;
+                            outputConfigurationCreation = value != null ? new OutputConfigurationCreation(value) : null;
                         } else {
                             validationResults.addError(new ConfigurationBadParamDetails(GENERAL, key, UNSUPPORTED_FIELD_ERROR, JSON_PATH, String.format(GENERAL_ERROR_MESSAGE, key)));
                         }
@@ -76,7 +76,7 @@ public class ConfigurationManagerService implements ConfigurationProcessingServi
                 }
             }
         }
-        return new PresidioManagerConfiguration(dataPipeLineConfiguration, presidioSystemConfiguration, outputConfiguration);
+        return new PresidioManagerConfiguration(dataPipeLineConfiguration, presidioSystemConfiguration, outputConfigurationCreation);
     }
 
 }

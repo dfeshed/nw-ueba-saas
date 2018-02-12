@@ -2,7 +2,7 @@ package presidio.forwarder.manager.service;
 
 import fortscale.utils.logging.Logger;
 import presidio.manager.api.records.ConfigurationBadParamDetails;
-import presidio.manager.api.records.OutputConfiguration;
+import presidio.manager.api.records.OutputConfigurationCreation;
 import presidio.manager.api.records.PresidioManagerConfiguration;
 import presidio.manager.api.records.ValidationResults;
 import presidio.manager.api.service.ConfigurationProcessingService;
@@ -29,7 +29,7 @@ public class ConfigurationForwarderService implements ConfigurationProcessingSer
 
     public ValidationResults validateConfiguration(PresidioManagerConfiguration presidioManagerConfiguration) {
         logger.debug("Validating forwarder configuration");
-        return validateForwarderConfiguration(presidioManagerConfiguration.getOutputConfiguration());
+        return validateForwarderConfiguration(presidioManagerConfiguration.getOutputConfigurationCreation());
     }
 
     public boolean applyConfiguration() {
@@ -38,22 +38,22 @@ public class ConfigurationForwarderService implements ConfigurationProcessingSer
     }
 
 
-    public ValidationResults validateForwarderConfiguration(OutputConfiguration outputConfiguration) {
+    public ValidationResults validateForwarderConfiguration(OutputConfigurationCreation outputConfigurationCreation) {
         ValidationResults validationResults = new ValidationResults();
-        if (outputConfiguration == null) {
+        if (outputConfigurationCreation == null) {
             logger.debug("No need for forwarding");
             return validationResults;
         }
-        if (!outputConfiguration.isStructureValid()) {
-            return createUnsupportedError(outputConfiguration);
+        if (!outputConfigurationCreation.isStructureValid()) {
+            return createUnsupportedError(outputConfigurationCreation);
         }
         return validationResults;
     }
 
-    private ValidationResults createUnsupportedError(OutputConfiguration outputConfiguration) {
+    private ValidationResults createUnsupportedError(OutputConfigurationCreation outputConfigurationCreation) {
         logger.error("Forwarder configuration structure is invalid");
-        List<String> badParams = outputConfiguration.getBadParams();
-        List<String> missingParams = outputConfiguration.getMissingParams();
+        List<String> badParams = outputConfigurationCreation.getBadParams();
+        List<String> missingParams = outputConfigurationCreation.getMissingParams();
         ValidationResults validationResults = new ValidationResults();
         String location;
         for (String param : badParams) {
