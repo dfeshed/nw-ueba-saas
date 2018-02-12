@@ -6,6 +6,7 @@ import fortscale.utils.RestTemplateConfig;
 import fortscale.utils.json.ObjectMapperProvider;
 import fortscale.utils.test.category.ModuleTestCategory;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import presidio.webapp.controller.configuration.ConfigurationApi;
 import presidio.webapp.spring.ManagerWebappConfiguration;
 
+@Ignore
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {ManagerWebappConfiguration.class, RestTemplateConfig.class})
 @Category(ModuleTestCategory.class)
@@ -35,6 +37,7 @@ public class ConfigurationApiModuleTest {
     private ObjectMapper objectMapper;
 
 
+    //TODO:add tests
     @Before
     public void setup() {
         //starting up the webapp server
