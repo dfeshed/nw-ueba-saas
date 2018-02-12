@@ -208,7 +208,7 @@ test('The FETCH_NEXT_MACHINES will set the paged response to state', function(as
   assert.equal(newEndState.hostList.length, 4);
 });
 
-test('The FETCH_NEXT_MACHINES sets load more state properly', function(assert) {
+test('The FETCH_NEXT_MACHINES sets load more state properly when totalItems = 5', function(assert) {
   const previous = Immutable.from({
     hostList: HOST_LIST,
     loadMoreHostStatus: null
@@ -223,14 +223,39 @@ test('The FETCH_NEXT_MACHINES sets load more state properly', function(assert) {
     payload: { data: { hasNext: true, totalItems: 5, items: [ { id: 11 }] } }
   });
   const newEndState = reducer(previous, successAction);
-  assert.equal(newEndState.loadMoreHostStatus, 'stopped');
+  assert.equal(newEndState.loadMoreHostStatus, 'stopped', 'load more status is stopped when hasNext is true');
 
   const loadMoreAction = makePackAction(LIFECYCLE.SUCCESS, {
     type: ACTION_TYPES.FETCH_NEXT_MACHINES,
     payload: { data: { hasNext: false, totalItems: 5, items: [ { id: 12 }, { id: 13 }] } }
   });
   const newEndState1 = reducer(previous, loadMoreAction);
-  assert.equal(newEndState1.loadMoreHostStatus, 'completed');
+  assert.equal(newEndState1.loadMoreHostStatus, 'completed', 'load more status is completed when hasNext is false');
+});
+
+test('The FETCH_NEXT_MACHINES sets load more state properly when totalItems > 1000', function(assert) {
+  const previous = Immutable.from({
+    hostList: HOST_LIST,
+    loadMoreHostStatus: null
+  });
+  const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_NEXT_MACHINES });
+  const endState = reducer(previous, startAction);
+
+  assert.equal(endState.loadMoreHostStatus, 'streaming');
+
+  const successAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.FETCH_NEXT_MACHINES,
+    payload: { data: { hasNext: true, totalItems: 1500, items: [ { id: 11 }] } }
+  });
+  const newEndState = reducer(previous, successAction);
+  assert.equal(newEndState.loadMoreHostStatus, 'stopped', 'load more status is stopped when hasNext is true');
+
+  const loadMoreAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.FETCH_NEXT_MACHINES,
+    payload: { data: { hasNext: false, totalItems: 1500, items: [ { id: 12 }, { id: 13 }] } }
+  });
+  const newEndState1 = reducer(previous, loadMoreAction);
+  assert.equal(newEndState1.loadMoreHostStatus, 'stopped', 'load more status is stopped when hasNext is false');
 });
 
 test('The RESET_HOST_DOWNLOAD_LINK action reset the HOST download link', function(assert) {

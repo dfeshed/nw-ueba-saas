@@ -133,7 +133,7 @@ test('The FETCH_NEXT_FILES sets load more state properly', function(assert) {
   });
   const newEndState = reducer(previous, successAction);
 
-  assert.equal(newEndState.loadMoreStatus, 'stopped');
+  assert.equal(newEndState.loadMoreStatus, 'stopped', 'load more status is stopped');
   assert.equal(newEndState.files.length, 4);
 
   const successAction1 = makePackAction(LIFECYCLE.SUCCESS, {
@@ -142,5 +142,34 @@ test('The FETCH_NEXT_FILES sets load more state properly', function(assert) {
   });
   const newEndState1 = reducer(previous, successAction1);
 
-  assert.equal(newEndState1.loadMoreStatus, 'completed');
+  assert.equal(newEndState1.loadMoreStatus, 'completed', 'load more status is completed');
 });
+
+test('The FETCH_NEXT_FILES sets load more state properly when totalItems > 1000', function(assert) {
+  const previous = Immutable.from({
+    files: FILE_LIST,
+    loadMoreStatus: null
+  });
+  const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_NEXT_FILES });
+  const endState = reducer(previous, startAction);
+
+  assert.equal(endState.loadMoreStatus, 'streaming');
+
+  const successAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.FETCH_NEXT_FILES,
+    payload: { data: { hasNext: true, items: [{ id: 11 }], totalItems: 1500 } }
+  });
+  const newEndState = reducer(previous, successAction);
+
+  assert.equal(newEndState.loadMoreStatus, 'stopped', 'load more status is stopped');
+  assert.equal(newEndState.files.length, 4);
+
+  const successAction1 = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.FETCH_NEXT_FILES,
+    payload: { data: { hasNext: false, items: [{ id: 11 }], totalItems: 1500 } }
+  });
+  const newEndState1 = reducer(previous, successAction1);
+
+  assert.equal(newEndState1.loadMoreStatus, 'stopped', 'load more status is stopped');
+});
+
