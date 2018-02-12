@@ -12,9 +12,20 @@ public class OutputConfiguration {
     @JsonProperty("syslog")
     private SyslogForwardingConfiguration syslogForwardingConfiguration;
 
+    @JsonProperty("enableForwarding")
+    private boolean enableForwarding;
+
     public OutputConfiguration syslogForwardingConfiguration(SyslogForwardingConfiguration syslogForwardingConfiguration) {
         this.syslogForwardingConfiguration = syslogForwardingConfiguration;
         return this;
+    }
+
+    public boolean isEnableForwarding() {
+        return enableForwarding;
+    }
+
+    public void setEnableForwarding(boolean enableForwarding) {
+        this.enableForwarding = enableForwarding;
     }
 
     public SyslogForwardingConfiguration getSyslogForwardingConfiguration() {
@@ -33,7 +44,8 @@ public class OutputConfiguration {
             return false;
         }
         OutputConfiguration _outputConfiguration = (OutputConfiguration) o;
-        return Objects.equals(_outputConfiguration.getSyslogForwardingConfiguration(), this.syslogForwardingConfiguration);
+        return Objects.equals(_outputConfiguration.getSyslogForwardingConfiguration(), this.syslogForwardingConfiguration)
+                && _outputConfiguration.isEnableForwarding() == this.enableForwarding;
     }
 
     public int hashCode() {
@@ -43,7 +55,6 @@ public class OutputConfiguration {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class OutputConfiguration {\n");
-
         sb.append("    syslogForwardingConfiguration: ").append(toIndentedString(syslogForwardingConfiguration)).append("\n");
         sb.append("}");
         return sb.toString();

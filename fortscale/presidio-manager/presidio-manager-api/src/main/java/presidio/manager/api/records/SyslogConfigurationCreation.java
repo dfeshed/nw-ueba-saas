@@ -49,7 +49,7 @@ public class SyslogConfigurationCreation extends ConfigurationCreation implement
 
     @Override
     void checkStructure() {
-        setStructureValid(isValid() && !StringUtils.isEmpty(host) && port != -1);
+        setStructureValid(isValid() && !StringUtils.isEmpty(host) && port != 0);
     }
 
     @Override
