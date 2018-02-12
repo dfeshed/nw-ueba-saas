@@ -11,7 +11,7 @@ dags:
       - userId_hourly
       data_sources: ${dataPipeline.schemas}
       command: run
-      enable_output_forwarder: False
+      enable_output_forwarder: ${outputForwarding.enableForwarding}
     schedule_interval: timedelta(hours=1)
     start_date: ${dataPipeline.startTime}
 

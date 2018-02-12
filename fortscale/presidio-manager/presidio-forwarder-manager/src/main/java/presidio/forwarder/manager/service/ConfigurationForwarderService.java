@@ -18,9 +18,11 @@ public class ConfigurationForwarderService implements ConfigurationProcessingSer
     private final String LOCATION_TYPE = "jsonPath";
     private final String UNSUPPORTED_ERROR = "unsupportedFieldError";
     private final String UNSUPPORTED_ERROR_MESSAGE = "Unsupported Error, %s field is not supported.";
+    private final String UNSUPPORTED_ERROR_MESSAGE_BAD_VALUE = "Unsupported Error, %s field has bad value.";
     private final String UNSUPPORTED_ERROR_MESSAGE_MISSING_FIELD = "Unsupported Error, %s field is missing.";
     private final String MISSING_DATA_ERROR_MESSAGE = "Missing forwarder configuration";
     private final String MISSING_PROPERTY = "missingProperty";
+    private final String ENABLE_FORWARDING = "enableForwarding";
 
 
     public ConfigurationForwarderService() {
@@ -41,7 +43,9 @@ public class ConfigurationForwarderService implements ConfigurationProcessingSer
     public ValidationResults validateForwarderConfiguration(OutputConfigurationCreation outputConfigurationCreation) {
         ValidationResults validationResults = new ValidationResults();
         if (outputConfigurationCreation == null) {
-            logger.debug("No need for forwarding");
+            ConfigurationBadParamDetails error = new ConfigurationBadParamDetails(OUTPUT_FORWARDING, OUTPUT_FORWARDING, MISSING_PROPERTY, LOCATION_TYPE, MISSING_DATA_ERROR_MESSAGE);
+            validationResults.addError(error);
+            logger.error("Missing forwarder configuration");
             return validationResults;
         }
         if (!outputConfigurationCreation.isStructureValid()) {
@@ -58,7 +62,12 @@ public class ConfigurationForwarderService implements ConfigurationProcessingSer
         String location;
         for (String param : badParams) {
             location = new StringBuilder(OUTPUT_FORWARDING).append("/").append(param).toString();
-            ConfigurationBadParamDetails badParam = new ConfigurationBadParamDetails(OUTPUT_FORWARDING, location, UNSUPPORTED_ERROR, LOCATION_TYPE, String.format(UNSUPPORTED_ERROR_MESSAGE, param));
+            ConfigurationBadParamDetails badParam;
+            if (param.equals(ENABLE_FORWARDING)) {
+                badParam = new ConfigurationBadParamDetails(OUTPUT_FORWARDING, location, UNSUPPORTED_ERROR, LOCATION_TYPE, String.format(UNSUPPORTED_ERROR_MESSAGE_BAD_VALUE, param));
+            } else {
+                badParam = new ConfigurationBadParamDetails(OUTPUT_FORWARDING, location, UNSUPPORTED_ERROR, LOCATION_TYPE, String.format(UNSUPPORTED_ERROR_MESSAGE, param));
+            }
             validationResults.addError(badParam);
             logger.debug("Forwarder configuration structure is invalid. bad param = {}", badParam.toString());
         }

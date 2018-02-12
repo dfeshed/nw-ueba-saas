@@ -10,20 +10,8 @@
   },
   "dataPipeline": {
     "schemas": [
-      "file"
+      "FILE"
     ],
     "startTime": "2007-12-03T10:15:30Z"
-  },
-  "outputForwarding": {
-    "syslog": {
-      "alert": {
-        "host": "test",
-        "port": "1"
-      },
-      "user": {
-        "host": "testTest",
-        "port": "2"
-      }
-    }
   }
 }

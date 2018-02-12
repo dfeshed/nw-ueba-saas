@@ -9,8 +9,10 @@ import java.util.List;
 public class OutputConfigurationCreation extends ConfigurationCreation implements ConfigurationValidatable {
 
     private ConfigurationValidatable syslogForwardingConfiguration;
+    private boolean isEnableForwarding;
 
     private final String SYSLOG = "syslog";
+    private final String ENABLE_FORWARDING = "enableForwarding";
 
 
     public OutputConfigurationCreation() {
@@ -18,13 +20,22 @@ public class OutputConfigurationCreation extends ConfigurationCreation implement
 
     public OutputConfigurationCreation(JsonNode node) {
         createConfiguration(node);
-        if (syslogForwardingConfiguration != null) {
-            badParamsAddKeys(addPrefixToBadParams(SYSLOG, syslogForwardingConfiguration.badParams()));
-            missingParamsAddKeys(addPrefixToBadParams(SYSLOG, syslogForwardingConfiguration.missingParams()));
+        if (syslogForwardingConfiguration == null && !isEnableForwarding) {
+            setStructureValid(true);
         } else {
-            missingParamsAddKeys(SYSLOG);
+            if (syslogForwardingConfiguration != null && isEnableForwarding) {
+                badParamsAddKeys(addPrefixToBadParams(SYSLOG, syslogForwardingConfiguration.badParams()));
+                missingParamsAddKeys(addPrefixToBadParams(SYSLOG, syslogForwardingConfiguration.missingParams()));
+            } else {
+                if (syslogForwardingConfiguration == null) {
+                    missingParamsAddKeys(SYSLOG);
+                } else {
+                    setStructureValid(false);
+                    badParamsAddKey(ENABLE_FORWARDING);
+                }
+            }
+            checkStructure();
         }
-        checkStructure();
     }
 
     public ConfigurationValidatable getSyslogForwardingConfiguration() {
@@ -63,6 +74,13 @@ public class OutputConfigurationCreation extends ConfigurationCreation implement
         switch (key) {
             case SYSLOG:
                 setSyslogForwardingConfiguration(new SyslogForwardingConfigurationCreation(value));
+                break;
+            case ENABLE_FORWARDING:
+                if (Boolean.parseBoolean(value.asText())) {
+                    isEnableForwarding = true;
+                } else {
+                    isEnableForwarding = false;
+                }
                 break;
             default:
                 badParamsAddKey(key);

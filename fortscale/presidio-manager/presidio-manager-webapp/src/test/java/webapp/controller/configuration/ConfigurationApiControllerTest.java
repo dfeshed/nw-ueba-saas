@@ -35,7 +35,7 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringRunner.class)
 public class ConfigurationApiControllerTest {
 
-    private static String CONFIG_JSON_FILE_NAME = "presidio_configuration_test.json";
+    private static String CONFIG_JSON_FILE_NAME = "valid_configuration.json";
 
     @Autowired
     private ApplicationContext ctx;

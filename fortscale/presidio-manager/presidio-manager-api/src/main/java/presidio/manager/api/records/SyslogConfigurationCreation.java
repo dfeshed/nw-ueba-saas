@@ -10,7 +10,7 @@ import java.util.List;
 public class SyslogConfigurationCreation extends ConfigurationCreation implements ConfigurationValidatable {
 
     private String host;
-    private int port = -1;
+    private int port = 0;
 
     private final String HOST = "host";
     private final String PORT = "port";
