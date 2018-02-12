@@ -255,10 +255,11 @@ test('has required inputs to query', function(assert) {
   const state = {
     investigate: {
       queryNode: {
-        // serviceId can be undefined because we select a default service
-        serviceId: undefined,
+        isDirty: true,
         metaFilter: { conditions: [] },
-        previouslySelectedTimeRanges: {}
+        previouslySelectedTimeRanges: {},
+        // serviceId can be undefined because we select a default service
+        serviceId: undefined
       },
       services: {
         serviceData: [{ id: '1', displayName: 'svs1', name: 'SVS1', version: '11.1.0.0' }],

@@ -1,3 +1,4 @@
+import * as ACTION_TYPES from './types';
 import validateQueryFragment from './fetch/query-validation';
 
 const validateIndividualQuery = (filter, callback) => {
@@ -14,6 +15,9 @@ const validateIndividualQuery = (filter, callback) => {
   };
 };
 
+const markQueryDirty = () => ({ type: ACTION_TYPES.MARK_QUERY_DIRTY });
+
 export {
+  markQueryDirty,
   validateIndividualQuery
 };

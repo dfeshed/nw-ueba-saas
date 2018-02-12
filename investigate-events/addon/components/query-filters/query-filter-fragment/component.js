@@ -6,7 +6,7 @@ import run from 'ember-runloop';
 import { isEmpty } from 'ember-utils';
 import computed, { equal, notEmpty } from 'ember-computed-decorators';
 import service from 'ember-service/inject';
-import { validateIndividualQuery } from 'investigate-events/actions/query-validation-creators';
+import { markQueryDirty, validateIndividualQuery } from 'investigate-events/actions/query-validation-creators';
 import { connect } from 'ember-redux';
 
 const quoteValue = (value) => {
@@ -47,6 +47,7 @@ const isInt = (value) => {
 };
 
 const dispatchToActions = {
+  markQueryDirty,
   validateIndividualQuery
 };
 
@@ -315,6 +316,8 @@ const QueryFragmentComponent = Component.extend({
       if (!isEmpty(apiMetaMessage) && !isEmpty(apiMetaMessage.message)) {
         this.set('apiMetaMessage', apiMetaMessage.message);
       }
+    } else {
+      this.send('markQueryDirty');
     }
   },
 

@@ -1,11 +1,12 @@
 import Immutable from 'seamless-immutable';
 import { handleActions } from 'redux-actions';
-
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 
 const _initialState = Immutable.from({
+  atLeastOneQueryIssued: false,
   endTime: 0,
   eventMetas: undefined,
+  isDirty: false,
   metaFilter: {
     uri: undefined,
     conditions: []
@@ -15,8 +16,7 @@ const _initialState = Immutable.from({
   queryTimeFormat: undefined,
   serviceId: undefined,
   sessionId: undefined,
-  startTime: 0,
-  atLeastOneQueryIssued: false
+  startTime: 0
 });
 
 export default handleActions({
@@ -84,7 +84,10 @@ export default handleActions({
   },
 
   [ACTION_TYPES.SERVICE_SELECTED]: (state, { payload }) => {
-    return state.set('serviceId', payload);
+    return state.merge({
+      isDirty: true,
+      serviceId: payload
+    });
   },
 
   [ACTION_TYPES.SET_QUERY_PARAMS_FOR_TESTS]: (state, { payload }) => {
@@ -97,6 +100,7 @@ export default handleActions({
     newRange[serviceId] = payload.selectedTimeRangeId;
     return state.merge({
       endTime: payload.endTime,
+      isDirty: true,
       startTime: payload.startTime,
       previouslySelectedTimeRanges: previouslySelectedTimeRanges.merge(newRange)
     });
@@ -107,6 +111,8 @@ export default handleActions({
   },
 
   [ACTION_TYPES.SET_EVENTS_PAGE]: (state) => {
-    return state.set('atLeastOneQueryIssued', true);
-  }
+    return state.merge({ atLeastOneQueryIssued: true, isDirty: false });
+  },
+
+  [ACTION_TYPES.MARK_QUERY_DIRTY]: (state) => state.set('isDirty', true)
 }, _initialState);

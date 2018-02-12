@@ -5,6 +5,7 @@ const { createSelector } = reselect;
 
 // ACCESSOR FUNCTIONS
 const _endTime = (state) => state.investigate.queryNode.endTime;
+const _isDirty = (state) => state.investigate.queryNode.isDirty;
 const _serviceId = (state) => state.investigate.queryNode.serviceId;
 const _startTime = (state) => state.investigate.queryNode.startTime;
 const _metaFilter = (state) => state.investigate.queryNode.metaFilter;
@@ -53,13 +54,13 @@ export const useDatabaseTime = createSelector(
 );
 
 export const hasRequiredValuesToQuery = createSelector(
-  [selectedService, hasSummaryData, selectedTimeRange],
-  (selectedService, hasSummaryData, selectedTimeRange) => {
-    return selectedService && selectedService.id && hasSummaryData && selectedTimeRange;
+  [selectedService, hasSummaryData, selectedTimeRange, _isDirty],
+  (selectedService, hasSummaryData, selectedTimeRange, isDirty) => {
+    return !!(selectedService && selectedService.id && hasSummaryData && selectedTimeRange && isDirty);
   }
 );
 
 export const canFetchEvents = createSelector(
   [_serviceId, _startTime, _endTime],
-  (serviceId, startTime, endTime) => serviceId && startTime && endTime
+  (serviceId, startTime, endTime) => !!(serviceId && startTime && endTime)
 );

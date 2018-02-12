@@ -92,15 +92,17 @@ export default class DataHelper {
   }
 
   hasRequiredValuesToQuery(flag) {
+    _set(this.state, 'queryNode.metaFilter', { conditions: [] });
+    _set(this.state, 'queryNode.previouslySelectedTimeRanges', {});
+    _set(this.state, 'queryNode.serviceId', '1');
     if (flag) {
-      _set(this.state, 'queryNode.serviceId', '1');
-      _set(this.state, 'queryNode.previouslySelectedTimeRanges', {});
-      _set(this.state, 'queryNode.metaFilter', { conditions: [] });
+      _set(this.state, 'queryNode.isDirty', true);
       _set(this.state, 'services.serviceData', [{ id: '1' }]);
       _set(this.state, 'services.summaryData', { startTime: 1506537600 });
     } else {
-      _set(this.state, 'squeryNode.serviceId', undefined);
+      _set(this.state, 'queryNode.isDirty', false);
       _set(this.state, 'services.serviceData', undefined);
+      _set(this.state, 'services.summaryData', undefined);
     }
     return this;
   }
