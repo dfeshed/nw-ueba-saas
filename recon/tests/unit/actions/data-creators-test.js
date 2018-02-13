@@ -3,6 +3,7 @@ import * as dataCreators from 'recon/actions/data-creators';
 import ACTION_TYPES from 'recon/actions/types';
 import { patchSocket } from '../../helpers/patch-socket';
 import sinon from 'sinon';
+import Immutable from 'seamless-immutable';
 
 const { _cookieStore } = dataCreators;
 
@@ -72,4 +73,80 @@ test('test that cookie store is read only once', function(assert) {
       }, 200);
     }, 200);
   });
+});
+
+const getStateWithNetworkEventType = () => {
+  return Immutable.from({
+    recon: {
+      meta: {
+        meta: []
+      },
+      visuals: {
+        currentReconView: {
+          name: 'PACKET'
+        }
+      }
+    }
+  });
+};
+
+test('test that on preferences update, new recon view is set only if changed', function(assert) {
+  assert.expect(2);
+  const preferences = {
+    eventAnalysisPreferences: {
+      currentReconView: 'PACKET'
+    }
+  };
+  const dispatchFn = (action) => {
+    if (action.type === ACTION_TYPES.SET_PREFERENCES) {
+      assert.deepEqual(action.payload, preferences);
+    }
+  };
+  if (!dataCreators.setNewReconView.isSinonProxy) {
+    sinon.stub(dataCreators, 'setNewReconView');
+  }
+  const callback = dataCreators.reconPreferencesUpdated(preferences);
+  callback(dispatchFn, getStateWithNetworkEventType);
+
+  assert.equal(dataCreators.setNewReconView.called, false, 'setNewReconView is not expected to be called');
+  dataCreators.setNewReconView.reset();
+});
+
+const getStateWithLogEventType = () => {
+  return Immutable.from({
+    recon: {
+      meta: {
+        meta: [
+          ['medium', 32]
+        ]
+      },
+      visuals: {
+        currentReconView: {
+          name: 'PACKET'
+        }
+      }
+    }
+  });
+};
+
+test('test that on preferences update, new recon view is not set if current event type is log', function(assert) {
+  assert.expect(2);
+  const preferences = {
+    eventAnalysisPreferences: {
+      currentReconView: 'PACKET'
+    }
+  };
+  const dispatchFn = (action) => {
+    if (action.type === ACTION_TYPES.SET_PREFERENCES) {
+      assert.deepEqual(action.payload, preferences);
+    }
+  };
+  if (!dataCreators.setNewReconView.isSinonProxy) {
+    sinon.stub(dataCreators, 'setNewReconView');
+  }
+  const callback = dataCreators.reconPreferencesUpdated(preferences);
+  callback(dispatchFn, getStateWithLogEventType);
+
+  assert.equal(dataCreators.setNewReconView.called, false, 'setNewReconView is not expected to be called');
+  dataCreators.setNewReconView.reset();
 });

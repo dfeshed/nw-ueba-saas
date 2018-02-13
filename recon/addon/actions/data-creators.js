@@ -14,7 +14,7 @@ import { warn } from 'ember-debug';
 
 import * as ACTION_TYPES from './types';
 import { createToggleActionCreator } from './visual-creators';
-import { eventTypeFromMetaArray } from 'recon/reducers/meta/selectors';
+import { eventTypeFromMetaArray, isEndpointEvent, isLogEvent } from 'recon/reducers/meta/selectors';
 import { RECON_VIEW_TYPES_BY_NAME, doesStateHaveViewData } from 'recon/utils/reconstruction-types';
 import { FATAL_ERROR_CODES, GENERIC_API_ERROR_CODE } from 'recon/utils/error-codes';
 import { killAllBatching } from './util/batch-data-handler';
@@ -449,6 +449,24 @@ const _initReconPreferences = (dispatch, forcedView) => {
   });
 };
 
+const reconPreferencesUpdated = (preferences) => {
+  return (dispatch, getState) => {
+    const newReconView = _.get(preferences, 'eventAnalysisPreferences.currentReconView');
+    const currentReconView = getState().recon.visuals.currentReconView.name;
+    const reconViewChanged = newReconView !== currentReconView;
+
+    dispatch({ type: ACTION_TYPES.SET_PREFERENCES, payload: preferences });
+
+    /*
+     * If its a packet event, we need to update the currentReconView to be same as the one selected in Preferences Panel..
+     * But for Log/Endpoint Event , it needs to remain 'Text Analysis' always.
+     */
+    if (reconViewChanged && !(isLogEvent(getState().recon) || isEndpointEvent(getState().recon))) {
+      dispatch(setNewReconView(RECON_VIEW_TYPES_BY_NAME[newReconView]));
+    }
+  };
+};
+
 /**
  * This Action Creator thunk can possibly dispatch two actions:
  * ```
@@ -586,6 +604,7 @@ export {
   togglePayloadOnly,
   jumpToPage,
   determineReconView,
+  reconPreferencesUpdated,
   cookieStore as _cookieStore, // exported for testing only
   authCookie as _authCookie // exported for testing only
 };
