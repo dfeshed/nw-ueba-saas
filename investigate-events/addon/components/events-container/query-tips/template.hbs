@@ -1,0 +1,55 @@
+<p>{{t 'investigate.events.eventTips.noResults'}}</p>
+<hbox class="rsa-investigate-query-tips-header">
+  <vbox xs="12">
+    <span class="header">{{t 'investigate.events.eventTips.head.header'}}</span>
+    <span class="text">
+      <ul>
+        <li>
+          {{t 'investigate.events.eventTips.head.text.one'}}
+          {{rsa-icon class="rsa-icon-arrow-right-7-lined"}}
+          <span class="fakepill"> service = 80 {{rsa-icon name="close" size="smaller" class="delete-filter-icon"}}</span>
+          <span class="fakepill"> referer contains 'php' {{rsa-icon name="close" size="smaller" class="delete-filter-icon"}}</span>
+        </li>
+        <li>
+          {{t 'investigate.events.eventTips.head.text.two'}}
+          {{rsa-icon class="rsa-icon-arrow-right-7-lined"}}
+          <span class="fakepill"> device.type begins 'winevent' {{rsa-icon name="close" size="smaller" class="delete-filter-icon"}}</span>
+          <span class="fakepill"> event.cat.name = 'user.activity.failed.login' {{rsa-icon name="close" size="smaller" class="delete-filter-icon"}}</span>
+        </li>
+        <li>
+          {{t 'investigate.events.eventTips.head.text.three'}}
+          {{rsa-icon class="rsa-icon-arrow-right-7-lined"}}
+          <span class="fakepill"> category = 'task' {{rsa-icon name="close" size="smaller" class="delete-filter-icon"}}</span>
+          <span class="fakepill"> extension = 'exe' {{rsa-icon name="close" size="smaller" class="delete-filter-icon"}}</span>
+          <span class="fakepill"> param exists {{rsa-icon name="close" size="smaller" class="delete-filter-icon"}}</span>
+        </li>
+      </ul>
+    </span>
+  </vbox>
+</hbox>
+<hbox class="rsa-inveatigate-query-tips-section">
+  <vbox class="rsa-investigate-query-tips-section-mouse">
+    <span class="header">{{t 'investigate.events.eventTips.section.mouse.header'}}</span>
+    <span class="text">
+      <ul>
+        <li>{{t 'investigate.events.eventTips.section.mouse.textOne'}}</li>
+        <li>{{t 'investigate.events.eventTips.section.mouse.textTwo'}}</li>
+        <li>{{t 'investigate.events.eventTips.section.mouse.textThree'}}</li>
+        <li>{{t 'investigate.events.eventTips.section.mouse.textFour'}}</li>
+        <li>{{t 'investigate.events.eventTips.section.mouse.textFive'}}</li>
+      </ul>
+    </span>
+  </vbox>
+  <vbox  class="rsa-investigate-query-tips-section-keyboard">
+    <span class="header">{{t 'investigate.events.eventTips.section.keyboard.header'}}</span>
+    <span class="text">
+      <ul>
+        <li>{{t 'investigate.events.eventTips.section.keyboard.textOne'}}</li>
+        <li>{{t 'investigate.events.eventTips.section.keyboard.textTwo'}}</li>
+        <li>{{t 'investigate.events.eventTips.section.keyboard.textThree'}}</li>
+        <li>{{t 'investigate.events.eventTips.section.keyboard.textFour'}}</li>
+        <li>{{t 'investigate.events.eventTips.section.keyboard.textFive'}}</li>
+      </ul>
+    </span>
+  </vbox>
+</hbox>

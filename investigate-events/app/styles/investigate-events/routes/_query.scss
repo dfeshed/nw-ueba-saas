@@ -44,20 +44,95 @@ $investigateReconFullWidth: 100%;
     @include rsa-layer();
 
     &-tips {
-      position: relative;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
       @include rsa-vendor-prefix(flex-grow,1);
-      @include rsa-col(center, middle);
       @include rsa-font(body);
-      color: text-color(primary);
-      section {
+      color: text-color(primary, lightest);
+      padding: rsa-whitespace(more) 0 0 0;
+      margin-top: rsa-whitespace(more);
+      // no results text
+      p {
+        padding: rsa-whitespace(less);
+        margin: rsa-whitespace(more);
+        text-align: center;
+        height: 3rem;
+        color: text-color(accentFour);
+      }
+      .rsa-investigate-query-tips-header {
+        @include rsa-row(center, middle);
         @include rsa-font(body, small);
-        @include border(1px, solid, primary, darker);
         border-radius: rsa-whitespace(less);
-        padding: rsa-whitespace();
-        margin: rsa-whitespace(more);;
-        background-color: background-color(neutral, dark);
+        padding: rsa-whitespace(more);
+        margin: rsa-whitespace(more) rsa-whitespace(more) 0 rsa-whitespace(more);
+        background-color: background-color(primary, darker);
         li {
           padding: rsa-whitespace() 0 0;
+          margin-left: rsa-whitespace();
+        }
+        span.header {
+          @include rsa-font(header, larger);
+          @include rsa-font();
+        }
+        span.text {
+          padding: rsa-whitespace(less);
+        }
+        .text .rsa-icon-arrow-right-7-lined {
+          margin: 0 rsa-whitespace(less) 0 rsa-whitespace(less);
+        }
+        .fakepill {
+          display: inline-flex;
+          position: relative;
+          flex: 0 0 auto;
+          align-self: center;
+          margin: calc(#{rsa-whitespace(least)} - 1px);
+          border-radius: rsa-whitespace(least);
+          @include border(1px, solid, primary, lighter);
+          color: text-color(primary, lightest);
+          padding: rsa-whitespace(less);
+
+          .delete-filter-icon {
+          margin-left: rsa-whitespace(less);
+          margin-top: 1px;
+          color: text-color(primary, light);
+          display: inline-flex;
+          align-self: center;
+
+          }
+        }
+      }
+
+      .rsa-inveatigate-query-tips-section {
+        @include rsa-font(body, small);
+        li {
+          padding: rsa-whitespace() 0 0;
+          margin-left: rsa-whitespace();
+          list-style-type: disc;
+        }
+        span.header {
+          @include rsa-font(header, larger);
+          @include rsa-font();
+        }
+        span.text {
+          padding: rsa-whitespace(less);
+        }
+        .text .highlight {
+          font-weight: bold;
+        }
+        .rsa-investigate-query-tips-section-mouse {
+          border-radius: rsa-whitespace(less);
+          padding: rsa-whitespace(more);
+          margin: rsa-whitespace(more) rsa-whitespace() rsa-whitespace(more) rsa-whitespace(more);
+          background-color: background-color(primary, darker);
+        }
+        .rsa-investigate-query-tips-section-keyboard {
+          border-radius: rsa-whitespace(less);
+          padding: rsa-whitespace(more);
+          margin: rsa-whitespace(more) rsa-whitespace(more) rsa-whitespace(more) rsa-whitespace();
+          background-color: background-color(primary, darker);
         }
       }
     }
