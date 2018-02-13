@@ -1674,7 +1674,7 @@ export default {
     },
     packagerTitle: 'Packager',
     serviceName: 'Service Name*',
-    server: 'Server*',
+    server: 'Endpoint Server*',
     port: 'HTTPS Port*',
     certificateValidation: 'Server Validation',
     certificatePassword: 'Certificate Password*',

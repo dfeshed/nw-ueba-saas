@@ -1674,7 +1674,7 @@ export default {
     },
     packagerTitle: 'ja_Packager',
     serviceName: 'ja_Service Name*',
-    server: 'ja_Server*',
+    server: 'ja_Endpoint Server*',
     port: 'ja_HTTPS Port*',
     certificateValidation: 'ja_Server Validation',
     certificatePassword: 'ja_Certificate Password*',
