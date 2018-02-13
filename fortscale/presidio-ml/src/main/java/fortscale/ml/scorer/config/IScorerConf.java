@@ -29,7 +29,8 @@ import fortscale.utils.factory.FactoryConfig;
         @JsonSubTypes.Type(value = ListConditionalScorerConf.class, name = ListConditionalScorerConf.SCORER_TYPE),
         @JsonSubTypes.Type(value = SmartWeightsModelScorerConf.class, name = SmartWeightsModelScorerConf.SCORER_TYPE),
         @JsonSubTypes.Type(value = BooleanConditionalScorerConf.class, name = BooleanConditionalScorerConf.SCORER_TYPE),
-        @JsonSubTypes.Type(value = SMARTMaxValuesModelScorerConf.class, name = SMARTMaxValuesModelScorerConf.SCORER_TYPE)
+        @JsonSubTypes.Type(value = SMARTMaxValuesModelScorerConf.class, name = SMARTMaxValuesModelScorerConf.SCORER_TYPE),
+        @JsonSubTypes.Type(value = ScoreExponentialStepsMapperConf.class, name = ScoreExponentialStepsMapperConf.SCORER_TYPE)
 })
 public interface IScorerConf extends FactoryConfig {
     String getName();

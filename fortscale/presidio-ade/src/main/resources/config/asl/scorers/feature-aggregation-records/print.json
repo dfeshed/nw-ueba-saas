@@ -7,12 +7,12 @@
           "type": "low-values-score-reducer",
           "name": "numberOfSuccessfulPrints.userId.print.hourly.scorer",
           "base-scorer": {
-            "type": "score-exponential-mapper",
+            "type": "score-exponential-steps-mapper",
             "name": "numberOfSuccessfulPrints.userId.print.hourly.scorer",
             "score-mapping-conf": {
-              "minScoreToMap": 95,
-              "maxScoreToMap": 100,
-              "base": 2.5
+              "base": 1.5,
+              "scoreStep": 5,
+              "probabilityStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -48,12 +48,12 @@
           "type": "low-values-score-reducer",
           "name": "numberOfFailedPrints.userId.print.hourly.scorer",
           "base-scorer": {
-            "type": "score-exponential-mapper",
+            "type": "score-exponential-steps-mapper",
             "name": "numberOfFailedPrints.userId.print.hourly.scorer",
             "score-mapping-conf": {
-              "minScoreToMap": 95,
-              "maxScoreToMap": 100,
-              "base": 2.5
+              "base": 1.5,
+              "scoreStep": 5,
+              "probabilityStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -89,12 +89,12 @@
           "type": "low-values-score-reducer",
           "name": "numberOfDistinctSrcMachineId.userId.print.hourly.scorer",
           "base-scorer": {
-            "type": "score-exponential-mapper",
+            "type": "score-exponential-steps-mapper",
             "name": "numberOfDistinctSrcMachineId.userId.print.hourly.scorer",
             "score-mapping-conf": {
-              "minScoreToMap": 95,
-              "maxScoreToMap": 100,
-              "base": 2.5
+              "base": 1.5,
+              "scoreStep": 5,
+              "probabilityStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -130,12 +130,12 @@
           "type": "low-values-score-reducer",
           "name": "numberOfDistinctDstMachineId.userId.print.hourly.scorer",
           "base-scorer": {
-            "type": "score-exponential-mapper",
+            "type": "score-exponential-steps-mapper",
             "name": "numberOfDistinctDstMachineId.userId.print.hourly.scorer",
             "score-mapping-conf": {
-              "minScoreToMap": 95,
-              "maxScoreToMap": 100,
-              "base": 2.5
+              "base": 1.5,
+              "scoreStep": 5,
+              "probabilityStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -171,12 +171,12 @@
           "type": "low-values-score-reducer",
           "name": "numberOfDistinctSrcMachineNameRegexCluster.userId.print.hourly.scorer",
           "base-scorer": {
-            "type": "score-exponential-mapper",
+            "type": "score-exponential-steps-mapper",
             "name": "numberOfDistinctSrcMachineNameRegexCluster.userId.print.hourly.scorer",
             "score-mapping-conf": {
-              "minScoreToMap": 95,
-              "maxScoreToMap": 100,
-              "base": 2.5
+              "base": 1.5,
+              "scoreStep": 5,
+              "probabilityStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -212,12 +212,12 @@
           "type": "low-values-score-reducer",
           "name": "numberOfDistinctDstMachineNameRegexCluster.userId.print.hourly.scorer",
           "base-scorer": {
-            "type": "score-exponential-mapper",
+            "type": "score-exponential-steps-mapper",
             "name": "numberOfDistinctDstMachineNameRegexCluster.userId.print.hourly.scorer",
             "score-mapping-conf": {
-              "minScoreToMap": 95,
-              "maxScoreToMap": 100,
-              "base": 2.5
+              "base": 1.5,
+              "scoreStep": 5,
+              "probabilityStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -253,12 +253,12 @@
           "type": "low-values-score-reducer",
           "name": "numberOfDistinctAbsoluteFolderPath.userId.print.hourly.scorer",
           "base-scorer": {
-            "type": "score-exponential-mapper",
+            "type": "score-exponential-steps-mapper",
             "name": "numberOfDistinctAbsoluteFolderPath.userId.print.hourly.scorer",
             "score-mapping-conf": {
-              "minScoreToMap": 95,
-              "maxScoreToMap": 100,
-              "base": 2.5
+              "base": 1.5,
+              "scoreStep": 5,
+              "probabilityStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
