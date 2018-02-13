@@ -1,6 +1,7 @@
 package presidio.monitoring.records;
 
 
+import fortscale.utils.elasticsearch.annotations.Template;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Mapping;
@@ -14,8 +15,7 @@ import static presidio.monitoring.records.MetricDocument.METRIC_INDEX_NAME;
 import static presidio.monitoring.records.MetricDocument.TYPE;
 
 @Document(indexName = METRIC_INDEX_NAME, type = TYPE)
-@Mapping(mappingPath = "elasticsearch/indexes/presidio-monitoring/mappings.json")
-
+@Template(mappingPath = "elasticsearch/indexes/presidio-monitoring/template.json")
 public final class MetricDocument {
 
 

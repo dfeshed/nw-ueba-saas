@@ -15,6 +15,7 @@ package fortscale.utils.elasticsearch;
  * limitations under the License.
  */
 
+import fortscale.utils.elasticsearch.annotations.Template;
 import org.elasticsearch.action.ListenableActionFuture;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest;
 import org.elasticsearch.action.admin.indices.alias.get.GetAliasesRequest;
@@ -49,6 +50,8 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -61,7 +64,13 @@ import org.springframework.data.elasticsearch.ElasticsearchException;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Mapping;
 import org.springframework.data.elasticsearch.annotations.Setting;
-import org.springframework.data.elasticsearch.core.*;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.EntityMapper;
+import org.springframework.data.elasticsearch.core.GetResultMapper;
+import org.springframework.data.elasticsearch.core.MultiGetResultMapper;
+import org.springframework.data.elasticsearch.core.ResultsExtractor;
+import org.springframework.data.elasticsearch.core.ResultsMapper;
+import org.springframework.data.elasticsearch.core.SearchResultMapper;
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchConverter;
 import org.springframework.data.elasticsearch.core.convert.MappingElasticsearchConverter;
 import org.springframework.data.elasticsearch.core.mapping.ElasticsearchPersistentEntity;
@@ -74,7 +83,13 @@ import org.springframework.util.Assert;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
 import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
@@ -168,6 +183,18 @@ public class PresidioElasticsearchTemplate implements ElasticsearchOperations, A
             } else {
                 logger.info("mappingPath in @Mapping has to be defined. Building mappings using @Field");
             }
+        } else {
+            if (clazz.isAnnotationPresent(Template.class)) {
+                String templatePath = clazz.getAnnotation(Template.class).mappingPath();
+                if (isNotBlank(templatePath)) {
+                    String mappings = getMappingFromTemplate(templatePath);
+                    if (isNotBlank(mappings)) {
+                        return putMapping(clazz, mappings);
+                    }
+                } else {
+                    logger.info("templatePath in @Template has to be defined. Building mappings using @Field");
+                }
+            }
         }
         ElasticsearchPersistentEntity<T> persistentEntity = getPersistentEntityFor(clazz);
         XContentBuilder xContentBuilder = null;
@@ -178,6 +205,25 @@ public class PresidioElasticsearchTemplate implements ElasticsearchOperations, A
             throw new ElasticsearchException("Failed to build mapping for " + clazz.getSimpleName(), e);
         }
         return putMapping(clazz, xContentBuilder);
+    }
+
+    private String getMappingFromTemplate(String templatePath) {
+        try {
+            String template = readFileFromClasspath(templatePath);
+            JSONObject jsonObj = new JSONObject(template);
+            Iterator itr = jsonObj.keys();
+            while (itr.hasNext()){
+                String key = itr.next().toString();
+                if (key.toString().contains("template")) {
+                    JSONObject templateJson = (JSONObject) jsonObj.get(key.toString());
+                    Object mappings = templateJson.get("mappings");
+                    return mappings.toString();
+                }
+            }
+        }catch (JSONException ex){
+            return "";
+        }
+        return "";
     }
 
     @Override
@@ -710,7 +756,7 @@ public class PresidioElasticsearchTemplate implements ElasticsearchOperations, A
         SearchRequestBuilder requestBuilder = client.prepareSearch(toArray(query.getIndices()))
                 .setTypes(toArray(query.getTypes())).setScroll(TimeValue.timeValueMillis(scrollTimeInMillis)).setFrom(0);
 
-        if (!(query.getPageable() instanceof Unpaged)){
+        if (!(query.getPageable() instanceof Unpaged)) {
             requestBuilder.setSize(query.getPageable().getPageSize());
         }
 
