@@ -1,5 +1,6 @@
 package presidio.data.domain.event.print;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import presidio.data.domain.FileEntity;
 import presidio.data.domain.event.OperationType;
 import presidio.data.domain.event.file.FileOperation;
@@ -22,9 +23,6 @@ public class PrintFileOperation extends FileOperation{
 
     @Override
     public String toString() {
-        return "PrintFileOperation{" +
-                super.toString() +
-                "numOfPages=" + numOfPages +
-                '}';
+        return ToStringBuilder.reflectionToString(this);
     }
 }

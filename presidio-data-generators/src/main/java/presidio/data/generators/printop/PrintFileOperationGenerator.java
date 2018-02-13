@@ -15,7 +15,7 @@ public class PrintFileOperationGenerator extends FileOperationGenerator implemen
 
     public PrintFileOperation getNext(){
         return new PrintFileOperation(getSourceFileEntityGenerator().getNext(), getDestFileEntityGenerator().getNext(),
-                operationTypeGenerator.getNext(), getOperationResultGenerator().getNext(), getOperationResultCodeGenerator().getNext(),getNumOfPagesGenerator().getNext());
+                getOperationTypeGenerator().getNext(), getOperationResultGenerator().getNext(), getOperationResultCodeGenerator().getNext(),getNumOfPagesGenerator().getNext());
     }
 
     public ILongGenerator getNumOfPagesGenerator() {
