@@ -1,4 +1,4 @@
-package org.flume.source.aws_s3;
+package org.flume.source.AWS_S3;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
