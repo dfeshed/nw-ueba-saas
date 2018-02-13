@@ -18,7 +18,7 @@ public class ConfigurationForwarderService implements ConfigurationProcessingSer
     private final String LOCATION_TYPE = "jsonPath";
     private final String UNSUPPORTED_ERROR = "unsupportedFieldError";
     private final String UNSUPPORTED_ERROR_MESSAGE = "Unsupported Error, %s field is not supported.";
-    private final String UNSUPPORTED_ERROR_MESSAGE_BAD_VALUE = "Unsupported Error, %s field has bad value.";
+    private final String UNSUPPORTED_ERROR_MESSAGE_BAD_VALUE = "Unsupported Error, %s field is missing or has bad value.";
     private final String UNSUPPORTED_ERROR_MESSAGE_MISSING_FIELD = "Unsupported Error, %s field is missing.";
     private final String MISSING_DATA_ERROR_MESSAGE = "Missing forwarder configuration";
     private final String MISSING_PROPERTY = "missingProperty";
