@@ -33,6 +33,7 @@ public abstract class AbstractPresidioSource extends AbstractEventDrivenSource {
         final String schemaName = context.getString(CommonStrings.SCHEMA_NAME, null);
         Preconditions.checkArgument(StringUtils.isNotEmpty(schemaName), CommonStrings.SCHEMA_NAME + " can not be empty.");
         schema = Schema.createSchema(schemaName);
+
         doPresidioConfigure(context);
     }
 
