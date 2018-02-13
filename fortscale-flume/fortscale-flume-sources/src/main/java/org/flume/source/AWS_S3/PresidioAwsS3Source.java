@@ -73,10 +73,11 @@ public class PresidioAwsS3Source extends CsvFormatSource {
     @SuppressWarnings("unchecked")
     public void doPresidioConfigure(Context context) {
 
-        super.doPresidioConfigure(context);
+
 
         //Configure the specific S3 source properties
         try {
+            super.doPresidioConfigure(context);
             logger.debug("context is: {}", context);
             setName("presidio-flume-aws-s3-source");
             bucketName = context.getString(AWS_BUKCET_NAME, "");

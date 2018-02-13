@@ -62,6 +62,7 @@ public abstract class CsvFormatSource extends AbstractPageablePresidioSource {
     public void doPresidioConfigure(Context context) {
 
         try {
+            super.doConfigure(context);
             logger.debug("context is: {}", context);
             timestampFormat = context.getString(TIMESTAMP_FORMAT, DEFAULT_TIMESTAMP_FORMAT_VALUE);
             delimiter = context.getString(DELIMITER_CONF_NAME, DEFAULT_DELIMITER_VALUE).charAt(0);
