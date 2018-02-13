@@ -26,7 +26,7 @@ public class FileOperationGenerator implements IFileOperationGenerator {
 
     public FileOperation getNext(){
         return new FileOperation(getSourceFileEntityGenerator().getNext(), getDestFileEntityGenerator().getNext(),
-                operationTypeGenerator.getNext(), (String) getOperationResultGenerator().getNext(), (String) getOperationResultCodeGenerator().getNext());
+                getOperationTypeGenerator().getNext(), getOperationResultGenerator().getNext(), getOperationResultCodeGenerator().getNext());
     }
 
     public IFileEntityGenerator getSourceFileEntityGenerator() {
