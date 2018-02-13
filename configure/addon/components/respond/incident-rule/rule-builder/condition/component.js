@@ -77,7 +77,11 @@ const Condition = Component.extend({
       this.send('updateCondition', { value: option.value });
     },
     handleInputChange(value) {
-      this.send('updateCondition', { value });
+      const selectedField = this.get('selectedField');
+      // if the condition's field is a number, make sure we cast to the proper numerical value, otherwise the value will
+      // remain a string (e.g., "50" instead of 50)
+      const val = selectedField.type === 'numberfield' ? parseFloat(value) : value;
+      this.send('updateCondition', { value: val });
     },
     handleDateChange(value) {
       this.send('updateCondition', { value });

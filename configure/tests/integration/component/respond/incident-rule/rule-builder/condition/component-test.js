@@ -128,3 +128,20 @@ test('Changing the text value dispatches an updateCondition action creator', fun
     actionSpy.restore();
   });
 });
+
+test('A numberfield type is converted to a number', function(assert) {
+  const actionSpy = sinon.spy(aggregationRuleCreators, 'updateCondition');
+  const conditions = { '0': { id: 0, property: 'alert.risk_score', operator: '=' } };
+  setState({
+    ...initialState,
+    conditions
+  });
+  this.set('conditionInfo', conditions['0']);
+  this.render(hbs`{{respond/incident-rule/rule-builder/condition info=conditionInfo}}`);
+  this.$('.condition-control.value input[type=number]').val('80').blur();
+  return wait().then(() => {
+    assert.deepEqual(actionSpy.args[0][1], { value: 80 },
+      'The second argument is an object with the value as an integer (not a string)');
+    actionSpy.restore();
+  });
+});
