@@ -11,7 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.manager.airlfow.spring.AirflowConfiguration;
 import presidio.manager.api.records.DataPipeLineConfiguration;
-import presidio.manager.api.records.OutputConfigurationCreation;
+import presidio.manager.api.records.OutputConfigurationCreator;
 import presidio.manager.api.records.PresidioManagerConfiguration;
 import presidio.manager.api.records.PresidioSystemConfiguration;
 import presidio.manager.api.records.ValidationResults;
@@ -44,8 +44,8 @@ public class ConfigurationAirflowServiceTest {
         JsonNode jsonNode2 = mapper.readTree("{\"syslog\": {\"alert\": {\"host\": \"test\",\"port\": \"1\"},\"user\": {\"host\": \"testTest\",\"port\": \"2\"}}}");
         DataPipeLineConfiguration dataPipeline = new DataPipeLineConfiguration(jsonNode);
         PresidioSystemConfiguration systemConf = new PresidioSystemConfiguration();
-        OutputConfigurationCreation outputConfigurationCreation = new OutputConfigurationCreation(jsonNode2);
-        PresidioManagerConfiguration presidioManagerConfiguration = new PresidioManagerConfiguration(dataPipeline, systemConf, outputConfigurationCreation);
+        OutputConfigurationCreator outputConfigurationCreator = new OutputConfigurationCreator(jsonNode2);
+        PresidioManagerConfiguration presidioManagerConfiguration = new PresidioManagerConfiguration(dataPipeline, systemConf, outputConfigurationCreator);
         ValidationResults validationResults = configurationAirflowService.validateConfiguration(presidioManagerConfiguration);
 
         assertTrue(CollectionUtils.isEmpty(validationResults.getErrorsList()));

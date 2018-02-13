@@ -6,7 +6,7 @@ import presidio.manager.api.configuration.ConfigurationValidatable;
 
 import java.util.List;
 
-public class OutputConfigurationCreation extends ConfigurationCreation implements ConfigurationValidatable {
+public class OutputConfigurationCreator extends ConfigurationCreator implements ConfigurationValidatable {
 
     private ConfigurationValidatable syslogForwardingConfiguration;
     private boolean isEnableForwarding;
@@ -15,10 +15,10 @@ public class OutputConfigurationCreation extends ConfigurationCreation implement
     private final String ENABLE_FORWARDING = "enableForwarding";
 
 
-    public OutputConfigurationCreation() {
+    public OutputConfigurationCreator() {
     }
 
-    public OutputConfigurationCreation(JsonNode node) {
+    public OutputConfigurationCreator(JsonNode node) {
         createConfiguration(node);
         if (syslogForwardingConfiguration == null && !isEnableForwarding) {
             setStructureValid(true);
@@ -73,7 +73,7 @@ public class OutputConfigurationCreation extends ConfigurationCreation implement
     void setKeyValue(String key, JsonNode value) {
         switch (key) {
             case SYSLOG:
-                setSyslogForwardingConfiguration(new SyslogForwardingConfigurationCreation(value));
+                setSyslogForwardingConfiguration(new SyslogForwardingConfigurationCreator(value));
                 break;
             case ENABLE_FORWARDING:
                 if (Boolean.parseBoolean(value.asText())) {
