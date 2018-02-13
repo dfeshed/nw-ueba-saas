@@ -97,7 +97,21 @@ test('all views enabled for network sessions', function(assert) {
   });
 });
 
-test('Click on Web/Email tab does not change the tab', function(assert) {
+test('Show all tabs for network event', function(assert) {
+  new ReduxDataHelper(setState).isPacketView().isNetworkEvent().build();
+  this.render(hbs`{{recon-event-titlebar}}`);
+  assert.equal(this.$('.rsa-nav-tab').length, 5, 'show 5 analysis tabs');
+  assert.equal(this.$('.rsa-nav-tab.is-active').text().trim(), 'Packet Analysis');
+});
+
+test('Show only text analysis label for log event', function(assert) {
+  new ReduxDataHelper(setState).isTextView().isLogEvent().build();
+  this.render(hbs`{{recon-event-titlebar}}`);
+  assert.equal(this.$('.rsa-nav-tab').length, 0);
+  assert.equal(this.$('.tview-label').text().trim(), 'Text Analysis');
+});
+
+test('Click on Email tab does not change the tab', function(assert) {
   new ReduxDataHelper(setState).isTextView().build();
   this.render(hbs`{{recon-event-titlebar}}`);
   assert.equal(this.$('.rsa-nav-tab.is-active').text().trim(), 'Text Analysis');
@@ -105,6 +119,17 @@ test('Click on Web/Email tab does not change the tab', function(assert) {
   this.$('.rsa-nav-tab')[3].click();
   return wait().then(() => {
     assert.equal(this.$('.rsa-nav-tab.is-active').text().trim(), 'Text Analysis');
+  });
+});
+
+test('Click on Web tab opens the web meta in a new tab and does not change the current tab', function(assert) {
+  new ReduxDataHelper(setState).isPacketView().build();
+  this.render(hbs`{{recon-event-titlebar}}`);
+  assert.equal(this.$('.rsa-nav-tab.is-active').text().trim(), 'Packet Analysis');
+  assert.equal(this.$('.rsa-nav-tab')[4].textContent.trim(), 'Web');
+  this.$('.rsa-nav-tab')[4].click();
+  return wait().then(() => {
+    assert.equal(this.$('.rsa-nav-tab.is-active').text().trim(), 'Packet Analysis');
   });
 });
 
