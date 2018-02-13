@@ -6,12 +6,14 @@ import com.opencsv.bean.CsvToBeanBuilder;
 import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractDocument;
 import fortscale.utils.logging.Logger;
+import org.apache.flume.CommonStrings;
 import org.apache.flume.Context;
 import org.flume.source.AbstractPageablePresidioSource;
 import org.flume.source.csv.domain.GenericADActivityRawEvent;
 import org.flume.source.csv.domain.GenericAuthenticationRawEvent;
 import org.flume.source.csv.domain.GenericFileRawEvent;
 import org.flume.source.csv.domain.GenericRawEvent;
+import org.flume.utils.DateUtils;
 import presidio.sdk.api.domain.rawevents.AuthenticationRawEvent;
 
 import java.io.Reader;
@@ -31,6 +33,7 @@ import java.util.Map;
 public abstract class CsvFormatSource extends AbstractPageablePresidioSource {
 
     private static final Logger logger = Logger.getLogger(CsvFormatSource.class);
+
 
     protected static final String FIELD_MAPPING_CONF_NAME = "fieldMapping";
     protected static final String LINES_TO_SKIP = "linesToSkip";
@@ -62,7 +65,7 @@ public abstract class CsvFormatSource extends AbstractPageablePresidioSource {
     public void doPresidioConfigure(Context context) {
 
         try {
-            super.doConfigure(context);
+
             logger.debug("context is: {}", context);
             timestampFormat = context.getString(TIMESTAMP_FORMAT, DEFAULT_TIMESTAMP_FORMAT_VALUE);
             delimiter = context.getString(DELIMITER_CONF_NAME, DEFAULT_DELIMITER_VALUE).charAt(0);
@@ -76,6 +79,10 @@ public abstract class CsvFormatSource extends AbstractPageablePresidioSource {
             fieldMapping = context.getString(FIELD_MAPPING_CONF_NAME).split(String.valueOf(delimiter));
             skipLines = context.getInteger(LINES_TO_SKIP, 0);
             withIgnoreLeadingWhiteSpace = context.getBoolean(WITH_IGNORE_LEADING_WHITE_SPACE_CONF_NAME, DEFAULT_WITH_IGNORE_LEADING_WHITE_SPACE_VALUE);
+            final String endDateAsString = context.getString(CommonStrings.END_DATE);
+            final String startDateAsString = context.getString(CommonStrings.START_DATE);
+            startDate = DateUtils.getDateFromText(startDateAsString, CommonStrings.DEFAULT_DATE_FORMAT);
+            endDate = DateUtils.getDateFromText(endDateAsString, CommonStrings.DEFAULT_DATE_FORMAT);
         }
 
         catch (Exception e)
