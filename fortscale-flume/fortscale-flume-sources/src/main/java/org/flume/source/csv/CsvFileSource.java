@@ -39,7 +39,6 @@ public class CsvFileSource extends CsvFormatSource {
     @SuppressWarnings("unchecked")
     public void doPresidioConfigure(Context context) {
         try {
-
             super.doPresidioConfigure(context);
             logger.debug("context is: {}", context);
             setName("presidio-flume-csv-source");
