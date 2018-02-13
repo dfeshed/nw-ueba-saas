@@ -72,4 +72,19 @@ export default class DataHelper {
     _set(this.state, 'filter.isSystemFilter', value);
     return this;
   }
+
+  areFilesLoading(value) {
+    _set(this.state, 'fileList.areFilesLoading', value);
+    return this;
+  }
+
+  files(files) {
+    _set(this.state, 'fileList.files', files);
+    return this;
+  }
+
+  loadMoreStatus(status) {
+    _set(this.state, 'fileList.loadMoreStatus', status);
+    return this;
+  }
 }
