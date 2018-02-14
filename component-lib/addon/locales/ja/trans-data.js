@@ -2583,8 +2583,8 @@ export default {
       deleteHosts: {
         modal: {
           title: 'ja_Delete {{count}} host(s)',
-          message: 'ja_Delete the host if the agent is uninstalled or scan data is not required. ' +
-          'Deletes all scan data related to the host. Are you sure you want to continue?'
+          message: 'ja_Delete the host if the host scan data is no longer required or the agent is uninstalled. ' +
+          'All scan data associated with the host will be deleted. Do you want to continue? '
         },
         success: 'ja_Host(s) are deleted successfully',
         error: 'ja_Host(s) deletion failed'
