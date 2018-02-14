@@ -14,7 +14,7 @@ from flask import Blueprint, request, jsonify, Response
 from flask_admin import BaseView, expose
 from zipfile import ZipFile, ZIP_DEFLATED
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import airflow
 import logging
 import subprocess
@@ -1061,9 +1061,9 @@ class REST_API(BaseView):
                 schedule_interval = dag.schedule_interval
 
                 execution_date = item.execution_date
-                if schedule_interval:
+                if schedule_interval and isinstance(schedule_interval, timedelta):
                     execution_time_range = {'start': format_date(execution_date),
-                                        'end': format_date(execution_date + schedule_interval)}
+                                                'end': format_date(execution_date + schedule_interval)}
                 else:
                     execution_time_range = {'start': format_date(execution_date),
                                             'end': format_date(execution_date)}
