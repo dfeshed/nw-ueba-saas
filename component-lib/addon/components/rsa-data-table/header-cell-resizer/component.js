@@ -111,7 +111,8 @@ export default Component.extend(HasTableParent, {
       if ($.isNumeric(w) || ((typeof w === 'string') && w.match(/px$/))) {
         w = parseInt(w, 10);
       } else {
-        w = parseInt(this.$().innerWidth(), 10);
+        // In case of % this.$() is returing resizer not the actual column. Due to that initial width is always 9px.
+        w = parseInt(this.$().parent().prev().innerWidth(), 10);
       }
       this._initialWidth = w;
     }

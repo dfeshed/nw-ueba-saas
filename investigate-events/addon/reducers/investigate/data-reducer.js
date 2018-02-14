@@ -59,7 +59,7 @@ export default handleActions({
           // Need to update summary column width for SUMMARY column group to auto as server is retuering null.
           // SUMMARY column cannot be null if columns are coming from investigate server.
           const summaryColumnGroup = _.find(columnGroups, { id: 'SUMMARY' });
-          _.merge(_.find(summaryColumnGroup.columns, { field: 'custom.meta-summary' }), { width: 'auto' });
+          _.merge(_.find(summaryColumnGroup.columns, { field: 'custom.meta-summary' }), { width: '80%' });
           return s.merge({ columnGroups });
         }
         return s.merge({ columnGroups: EventColumnGroups });
