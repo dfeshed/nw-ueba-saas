@@ -34,8 +34,8 @@ public class ActiveDirectoryRawEventTest {
         Validator validator = factory.getValidator();
 
         Set<ConstraintViolation<ActiveDirectoryRawEvent>> violations = validator.validate(activeDirectoryRawEvent);
-        Assert.assertEquals(1, violations.size());
-        Assert.assertTrue(violations.iterator().next().getConstraintDescriptor().getAnnotation() instanceof NotEmpty);
+        Assert.assertTrue(CollectionUtils.isEmpty(violations));
+
     }
 
     public ActiveDirectoryRawEvent createEvent() {
