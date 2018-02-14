@@ -405,7 +405,7 @@ SSLSessionCacheTimeout  900
 
       # HTTPD  caui-webapp
     <Location /caui-webapp>
-
+       SSLRequireSSL
        #Deny from all
        AuthName Configuration
        AuthType Basic
@@ -442,7 +442,7 @@ SSLSessionCacheTimeout  900
     #</Location>
 
     <Location /kibana>
-
+         SSLRequireSSL
          #Deny from all
          AuthName Configuration
          AuthType Basic
