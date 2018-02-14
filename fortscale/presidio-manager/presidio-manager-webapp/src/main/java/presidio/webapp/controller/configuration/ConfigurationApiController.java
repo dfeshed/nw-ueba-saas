@@ -25,7 +25,9 @@ import presidio.webapp.model.configuration.ConfigurationResponseError;
 import presidio.webapp.model.configuration.SecuredConfiguration;
 import presidio.webapp.service.ConfigurationManagerService;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -155,7 +157,7 @@ public class ConfigurationApiController implements ConfigurationApi {
             }
         }
 
-        // Round the start time value
+        // encrypt the password
         JsonNode systemJson = body.get(PresidioManagerConfiguration.SYSTEM);
         if (!systemJson.isNull()) {
             String plainPassword = systemJson.get(PASSWORD).asText();
@@ -165,6 +167,7 @@ public class ConfigurationApiController implements ConfigurationApi {
                     ((ObjectNode) systemJson).put(PASSWORD, encryptPassword);
                 } catch (Exception e) {
                     logger.error("Failed to encrypt password.");
+                    configurationResponse.setMessage("error message");
                     return new ResponseEntity<ConfigurationResponse>(configurationResponse, HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             }

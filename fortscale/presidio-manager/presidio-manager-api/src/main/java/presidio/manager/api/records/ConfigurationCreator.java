@@ -7,9 +7,10 @@ import java.util.Iterator;
 import java.util.List;
 
 
-public abstract class JsonToObjectConfiguration {
+public abstract class ConfigurationCreator {
 
     private List<String> badParams;
+    private List<String> missingParams;
     private boolean isStructureValid;
 
     public List<String> getBadParams() {
@@ -20,8 +21,24 @@ public abstract class JsonToObjectConfiguration {
         badParams.addAll(keys);
     }
 
+    public void missingParamsAddKeys(List<String> keys) {
+        missingParams.addAll(keys);
+    }
+
+    public void missingParamsAddKeys(String key) {
+        missingParams.add(key);
+    }
+
     public void badParamsAddKey(String key) {
         badParams.add(key);
+    }
+
+    public List<String> getMissingParams() {
+        return missingParams;
+    }
+
+    public void setMissingParams(List<String> missingParams) {
+        this.missingParams = missingParams;
     }
 
     public boolean isStructureValid() {
@@ -40,13 +57,24 @@ public abstract class JsonToObjectConfiguration {
 
     abstract void checkStructure();
 
+    public List<String> addPrefixToBadParams(String prefix, List<String> badParams) {
+        List<String> prefixBadParams = new ArrayList<>();
+        badParams.forEach(param -> {
+            prefixBadParams.add(prefix + "/" + param);
+        });
+        return prefixBadParams;
+    }
+
     public void createConfiguration(JsonNode node) {
         this.badParams = new ArrayList<>();
+        this.missingParams = new ArrayList<>();
         Iterator<String> itr = node.fieldNames();
         String key;
         while (itr.hasNext()) {
             key = itr.next().toString();
-            setKeyValue(key, node.get(key));
+            if (!node.get(key).isNull()) {
+                setKeyValue(key, node.get(key));
+            }
         }
         if (badParams.isEmpty())
             isStructureValid = true;

@@ -35,7 +35,7 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringRunner.class)
 public class ConfigurationApiControllerTest {
 
-    private static String CONFIG_JSON_FILE_NAME = "presidio_configuration_test.json";
+    private static String CONFIG_JSON_FILE_NAME = "valid_configuration.json";
 
     @Autowired
     private ApplicationContext ctx;
@@ -67,7 +67,6 @@ public class ConfigurationApiControllerTest {
         Assert.isTrue(response.getStatusCode().equals(HttpStatus.BAD_REQUEST), "response HttpStatus should be BAD_REQUEST");
         Assert.isTrue(response.getBody().getError().size() == 1, "response error list size should be 1");
     }
-
 
     @Test
     public void putConfigurationConfiguration() throws Exception {

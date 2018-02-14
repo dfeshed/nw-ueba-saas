@@ -19,6 +19,7 @@
         <module>presidio-manager-airflow</module>
         <module>presidio-security-manager</module>
         <module>presidio-manager-api</module>
+        <module>presidio-forwarder-manager</module>
     </modules>
 
 
