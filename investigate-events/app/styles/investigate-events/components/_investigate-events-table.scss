@@ -50,6 +50,7 @@
     &__coloumGroup {
       display: inline-flex;
       float: left;
+      max-height: 43px;
       .ember-power-select-trigger {
         // Need to use important to override from-select style.
         border: 1px solid border-color(primary, light) !important;
@@ -68,7 +69,6 @@
       div {
         margin: rsa-whitespace(less);
         min-width: 150px;
-
       }
     }
     .events-table-control {
