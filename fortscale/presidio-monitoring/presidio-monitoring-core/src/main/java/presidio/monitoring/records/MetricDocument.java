@@ -4,7 +4,6 @@ package presidio.monitoring.records;
 import fortscale.utils.elasticsearch.annotations.Template;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Mapping;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 
 import java.util.Date;

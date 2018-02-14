@@ -15,7 +15,7 @@ package fortscale.utils.elasticsearch;
  * limitations under the License.
  */
 
-import fortscale.utils.elasticsearch.annotations.Template;
+import fortscale.utils.elasticsearch.services.FileToStringCreating;
 import org.elasticsearch.action.ListenableActionFuture;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest;
 import org.elasticsearch.action.admin.indices.alias.get.GetAliasesRequest;
@@ -50,8 +50,6 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -62,7 +60,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.ElasticsearchException;
 import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Mapping;
 import org.springframework.data.elasticsearch.annotations.Setting;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.EntityMapper;
@@ -117,28 +114,29 @@ public class PresidioElasticsearchTemplate implements ElasticsearchOperations, A
     private ElasticsearchConverter elasticsearchConverter;
     private ResultsMapper resultsMapper;
     private String searchTimeout;
+    private FileToStringCreating fileToStringCreating;
 
-    public PresidioElasticsearchTemplate(Client client) {
-        this(client, new MappingElasticsearchConverter(new SimpleElasticsearchMappingContext()));
+    public PresidioElasticsearchTemplate(Client client, FileToStringCreating fileToStringCreating) {
+        this(client, new MappingElasticsearchConverter(new SimpleElasticsearchMappingContext()), fileToStringCreating);
     }
 
-    public PresidioElasticsearchTemplate(Client client, EntityMapper entityMapper) {
-        this(client, new MappingElasticsearchConverter(new SimpleElasticsearchMappingContext()), entityMapper);
+    public PresidioElasticsearchTemplate(Client client, EntityMapper entityMapper, FileToStringCreating fileToStringCreating) {
+        this(client, new MappingElasticsearchConverter(new SimpleElasticsearchMappingContext()), entityMapper, fileToStringCreating);
     }
 
-    public PresidioElasticsearchTemplate(Client client, ElasticsearchConverter elasticsearchConverter, EntityMapper entityMapper) {
-        this(client, elasticsearchConverter, new PresidioResultMapper(elasticsearchConverter.getMappingContext(), entityMapper));
+    public PresidioElasticsearchTemplate(Client client, ElasticsearchConverter elasticsearchConverter, EntityMapper entityMapper, FileToStringCreating fileToStringCreating) {
+        this(client, elasticsearchConverter, new PresidioResultMapper(elasticsearchConverter.getMappingContext(), entityMapper), fileToStringCreating);
     }
 
-    public PresidioElasticsearchTemplate(Client client, ResultsMapper resultsMapper) {
-        this(client, new MappingElasticsearchConverter(new SimpleElasticsearchMappingContext()), resultsMapper);
+    public PresidioElasticsearchTemplate(Client client, ResultsMapper resultsMapper, FileToStringCreating fileToStringCreating) {
+        this(client, new MappingElasticsearchConverter(new SimpleElasticsearchMappingContext()), resultsMapper, fileToStringCreating);
     }
 
-    public PresidioElasticsearchTemplate(Client client, ElasticsearchConverter elasticsearchConverter) {
-        this(client, elasticsearchConverter, new PresidioResultMapper(elasticsearchConverter.getMappingContext()));
+    public PresidioElasticsearchTemplate(Client client, ElasticsearchConverter elasticsearchConverter, FileToStringCreating fileToStringCreating) {
+        this(client, elasticsearchConverter, new PresidioResultMapper(elasticsearchConverter.getMappingContext()), fileToStringCreating);
     }
 
-    public PresidioElasticsearchTemplate(Client client, ElasticsearchConverter elasticsearchConverter, ResultsMapper resultsMapper) {
+    public PresidioElasticsearchTemplate(Client client, ElasticsearchConverter elasticsearchConverter, ResultsMapper resultsMapper, FileToStringCreating fileToStringCreating) {
 
         Assert.notNull(client, "Client must not be null!");
         Assert.notNull(elasticsearchConverter, "ElasticsearchConverter must not be null!");
@@ -147,6 +145,7 @@ public class PresidioElasticsearchTemplate implements ElasticsearchOperations, A
         this.client = client;
         this.elasticsearchConverter = elasticsearchConverter;
         this.resultsMapper = resultsMapper;
+        this.fileToStringCreating = fileToStringCreating;
     }
 
     @Override
@@ -173,28 +172,8 @@ public class PresidioElasticsearchTemplate implements ElasticsearchOperations, A
 
     @Override
     public <T> boolean putMapping(Class<T> clazz) {
-        if (clazz.isAnnotationPresent(Mapping.class)) {
-            String mappingPath = clazz.getAnnotation(Mapping.class).mappingPath();
-            if (isNotBlank(mappingPath)) {
-                String mappings = readFileFromClasspath(mappingPath);
-                if (isNotBlank(mappings)) {
-                    return putMapping(clazz, mappings);
-                }
-            } else {
-                logger.info("mappingPath in @Mapping has to be defined. Building mappings using @Field");
-            }
-        } else {
-            if (clazz.isAnnotationPresent(Template.class)) {
-                String templatePath = clazz.getAnnotation(Template.class).mappingPath();
-                if (isNotBlank(templatePath)) {
-                    String mappings = getMappingFromTemplate(templatePath);
-                    if (isNotBlank(mappings)) {
-                        return putMapping(clazz, mappings);
-                    }
-                } else {
-                    logger.info("templatePath in @Template has to be defined. Building mappings using @Field");
-                }
-            }
+        if (putMappingWithAnnotation(clazz)) {
+            return true;
         }
         ElasticsearchPersistentEntity<T> persistentEntity = getPersistentEntityFor(clazz);
         XContentBuilder xContentBuilder = null;
@@ -207,23 +186,12 @@ public class PresidioElasticsearchTemplate implements ElasticsearchOperations, A
         return putMapping(clazz, xContentBuilder);
     }
 
-    private String getMappingFromTemplate(String templatePath) {
-        try {
-            String template = readFileFromClasspath(templatePath);
-            JSONObject jsonObj = new JSONObject(template);
-            Iterator itr = jsonObj.keys();
-            while (itr.hasNext()){
-                String key = itr.next().toString();
-                if (key.toString().contains("template")) {
-                    JSONObject templateJson = (JSONObject) jsonObj.get(key.toString());
-                    Object mappings = templateJson.get("mappings");
-                    return mappings.toString();
-                }
-            }
-        }catch (JSONException ex){
-            return "";
+    private <T> boolean putMappingWithAnnotation(Class<T> clazz) {
+        String mappings = fileToStringCreating.mappingConverting(clazz);
+        if (isNotBlank(mappings)) {
+            return putMapping(clazz, mappings);
         }
-        return "";
+        return false;
     }
 
     @Override
