@@ -508,6 +508,10 @@ export default {
             textFive: 'ja_Press <span class="highlight">Shift + left arrow</span> or <span class="highlight">right arrow</span> to select multiple filters.'
           }
         }
+      },
+      logs: {
+        wait: 'ja_Loading log...',
+        rejected: 'ja_No log data.'
       }
     },
     generic: {

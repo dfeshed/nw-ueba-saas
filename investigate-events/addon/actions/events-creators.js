@@ -133,16 +133,8 @@ export const eventsLogsGet = (events = []) => {
       onResponse(response) {
         dispatch({ type: ACTION_TYPES.SET_LOG, payload: response });
       },
-      onError() {
-        // The request won't complete, so mark any events still pending as error.
-        const waiting = events.filter((el) => el.logStatus === 'wait');
-        waiting.forEach((item) => {
-          dispatch({
-            type: ACTION_TYPES.SET_LOG_STATUS,
-            sessionId: item.sessionId,
-            status: 'rejected'
-          });
-        });
+      onError(response) {
+        dispatch({ type: ACTION_TYPES.SET_LOG, payload: response });
       }
     };
 

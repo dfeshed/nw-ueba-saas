@@ -3,6 +3,7 @@ import isEmberArray from 'ember-array/utils';
 import formatUtil from './format-util';
 import { isLogEvent } from 'component-lib/utils/log-utils';
 import { select } from 'd3-selection';
+import { lookup } from 'ember-dependency-lookup';
 
 const RESERVED_KEYS = [ 'eth.src', 'eth.dst', 'ip.src', 'ipv6.src', 'ip.dst', 'ipv6.dst', 'tcp.srcport', 'tcp.dstport', 'udp.srcport', 'udp.dstport', 'session.split'];
 const RESERVED_KEY_HASH = {};
@@ -308,10 +309,10 @@ function buildLogContent(item) {
   switch (status) {
     case '':
     case 'wait':
-      text = 'Loading logs...';
+      text = lookup('service:i18n').t('investigate.events.logs.wait');
       break;
     case 'rejected':
-      text = 'Error loading logs.';
+      text = lookup('service:i18n').t('investigate.events.logs.rejected');
       break;
     default:
       tooltip = data;

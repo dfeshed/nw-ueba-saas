@@ -508,6 +508,10 @@ export default {
             textFive: 'Press <span class="highlight">Shift + left arrow</span> or <span class="highlight">right arrow</span> to select multiple filters.'
           }
         }
+      },
+      logs: {
+        wait: 'Loading log...',
+        rejected: 'No log data.'
       }
     },
     generic: {
