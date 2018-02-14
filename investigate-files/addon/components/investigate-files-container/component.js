@@ -1,6 +1,5 @@
 import Component from 'ember-component';
 import { connect } from 'ember-redux';
-import service from 'ember-service/inject';
 
 import { isSchemaLoaded } from 'investigate-files/reducers/schema/selectors';
 import { hasFiles } from 'investigate-files/reducers/file-list/selectors';
@@ -35,15 +34,6 @@ const Files = Component.extend({
   tagName: 'vbox',
 
   classNames: 'rsa-investigate-files main-zone',
-
-  eventBus: service(),
-
-  actions: {
-    applyCustomFilter(filter) {
-      const { criteria: { expressionList } } = filter;
-      this.send('addSystemFilter', expressionList);
-    }
-  },
 
   willDestroyElement() {
     this.send('resetDownloadId');

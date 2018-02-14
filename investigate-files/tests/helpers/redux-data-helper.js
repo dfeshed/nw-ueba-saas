@@ -87,4 +87,19 @@ export default class DataHelper {
     _set(this.state, 'fileList.loadMoreStatus', status);
     return this;
   }
+
+  fileList(fileList) {
+    _set(this.state, 'fileList', fileList);
+    return this;
+  }
+
+  downloadStatus(value) {
+    _set(this.state, 'fileList.downloadStatus', value);
+    return this;
+  }
+
+  downloadId(downloadId) {
+    _set(this.state, 'fileList.downloadId', downloadId);
+    return this;
+  }
 }
