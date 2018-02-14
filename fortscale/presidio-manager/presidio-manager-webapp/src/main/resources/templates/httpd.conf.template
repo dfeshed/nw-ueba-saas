@@ -376,55 +376,82 @@ SSLSessionCacheTimeout  900
     RedirectMatch 301 ^/$ /kibana/app/kibana#/management/kibana/index?_g=()
   </Location>
 
-  <Location /caui-webapp>
-    SSLRequireSSL
-    AuthType Kerberos
-    AuthName "Windows Login"
-    
-    KrbMethodK5Passwd off
-    KrbAuthRealms ${realmName}
-    KrbServiceName ${krbServiceName}
-    Krb5Keytab /etc/krb5.keytab
-    
-    krblocalUserMapping off
-    
-    AuthBasicProvider ldap
-    AuthLDAPURL ${ldapUrl}
-    AuthLDAPBindDN ${username}
-    AuthLDAPBindPassword "exec:/etc/httpd/conf/encryption_util.sh ${password}"
-    AuthLDAPMaxSubGroupDepth 2
-    Require ldap-filter memberof:1.2.840.113556.1.4.1941:=${analystGroup}
+   # Kerberos caui-webapp
+    #<Location /caui-webapp>
+    #  SSLRequireSSL
+    #  AuthType Kerberos
+    #  AuthName "Windows Login"
 
-    RewriteEngine on
+    #  KrbMethodK5Passwd off
+    #  KrbAuthRealms ${realmName}
+    #  KrbServiceName ${krbServiceName}
+    #  Krb5Keytab /etc/krb5.keytab
 
-    RewriteRule  "/caui-webapp/(.*)$" "http://localhost:8080/caui-webapp/$1" [NE,R,P]
+    #   krblocalUserMapping off
 
-    RequestHeader set Authenticated_User %{REMOTE_USER}s
-  </Location> 
-  
-  <Location /kibana>
-    SSLRequireSSL
-    AuthType Kerberos
-    AuthName "Windows Login"
-    
-    KrbMethodK5Passwd off
-    KrbAuthRealms ${realmName}
-    KrbServiceName ${krbServiceName}
-    Krb5Keytab /etc/krb5.keytab
-    
-    krblocalUserMapping off
-    
-    AuthBasicProvider ldap
-    AuthLDAPURL ${ldapUrl}
-    AuthLDAPBindDN ${username}
-    AuthLDAPBindPassword "exec:/etc/httpd/conf/encryption_util.sh ${password}"
-    AuthLDAPMaxSubGroupDepth 2
-    Require ldap-filter memberof:1.2.840.113556.1.4.1941:=${analystGroup}
+    #  AuthBasicProvider ldap
+    #  AuthLDAPURL ${ldapUrl}
+    #  AuthLDAPBindDN ${username}
+    #  AuthLDAPBindPassword "exec:/etc/httpd/conf/encryption_util.sh ${password}"
+    #  AuthLDAPMaxSubGroupDepth 2
+    #  Require ldap-filter memberof:1.2.840.113556.1.4.1941:=${analystGroup}
 
-    RewriteEngine on
+    #  RewriteEngine on
 
-    RewriteRule /kibana/(.*)$ http://localhost:5601/$1 [NE,R,P]
-  </Location>
+    #  RewriteRule  "/caui-webapp/(.*)$" "http://localhost:8080/caui-webapp/$1" [NE,R,P]
+
+    # RequestHeader set Authenticated_User %{REMOTE_USER}s
+    #</Location>
+
+      # HTTPD  caui-webapp
+    <Location /caui-webapp>
+
+       #Deny from all
+       AuthName Configuration
+       AuthType Basic
+       #Satisfy Any
+       AuthUserFile /etc/httpd/conf/.applicationpasswd
+       require valid-user
+       RewriteEngine on
+       RewriteRule  "/caui-webapp/(.*)$" "http://localhost:8080/caui-webapp/$1" [NE,R,P]
+    </Location>
+
+    # Kerberos Kibana
+    # <Location /kibana>
+    #  SSLRequireSSL
+    #  AuthType Kerberos
+    #  AuthName "Windows Login"
+
+    #  KrbMethodK5Passwd off
+    #  KrbAuthRealms ${realmName}
+    #  KrbServiceName ${krbServiceName}
+    #  Krb5Keytab /etc/krb5.keytab
+
+    #  krblocalUserMapping off
+
+    #  AuthBasicProvider ldap
+    #  AuthLDAPURL ${ldapUrl}
+    #  AuthLDAPBindDN ${username}
+    #  AuthLDAPBindPassword "exec:/etc/httpd/conf/encryption_util.sh ${password}"
+    #  AuthLDAPMaxSubGroupDepth 2
+    #  Require ldap-filter memberof:1.2.840.113556.1.4.1941:=${analystGroup}
+
+    #  RewriteEngine on
+
+    #  RewriteRule /kibana/(.*)$ http://localhost:5601/$1 [NE,R,P]
+    #</Location>
+
+    <Location /kibana>
+
+         #Deny from all
+         AuthName Configuration
+         AuthType Basic
+         #Satisfy Any
+         AuthUserFile /etc/httpd/conf/.applicationpasswd
+         require valid-user
+         RewriteEngine on
+         RewriteRule /kibana/(.*)$ http://localhost:5601/$1 [NE,R,P]
+    </Location>
 
   <Location /connector/webhook/register>
      #Deny from all
