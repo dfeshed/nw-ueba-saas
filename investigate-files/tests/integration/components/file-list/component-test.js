@@ -2,6 +2,8 @@ import { moduleForComponent, test, skip } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
+import { waitFor } from 'ember-wait-for-test-helper/wait-for';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 import engineResolverFor from '../../../helpers/engine-resolver';
 import { applyPatch, revertPatch } from '../../../helpers/patch-reducer';
@@ -65,9 +67,15 @@ moduleForComponent('file-list', 'Integration | Component | file list', {
   resolver: engineResolverFor('investigate-files'),
   beforeEach() {
     this.registry.injection('component', 'i18n', 'service:i18n');
+    initialize(this); // sortBy calls setPreferences
     initState = (state) => {
       applyPatch(state);
       this.inject.service('redux');
+      this.inject.service('dateFormat');
+      this.inject.service('timeFormat');
+      this.inject.service('timezone');
+      this.set('dateFormat.selected', 'MM/dd/yyyy', 'MM/dd/yyyy');
+      this.set('timeFormat.selected', 'HR24', 'HR24');
     };
   },
   afterEach() {
@@ -245,7 +253,53 @@ skip('Date field displayed correctly', function(assert) {
     {{file-list}}`);
 
   return wait().then(() => {
-    assert.equal(this.$(this.$('.rsa-data-table-body-cell .datetime')[0]).text().trim(), '02/07/2018 10:13:41.000 am', 'Datetime is correct');
+    assert.equal(this.$(this.$('.rsa-data-table-body-cell .datetime')[0]).text().trim(), '02/07/2018 10:13:41.000', 'Datetime is correct');
+  });
+});
+
+test('Click load more adds files', function(assert) {
+  new ReduxDataHelper(initState)
+    .files(dataItems)
+    .schema(config)
+    .visibleColumns(visibleColumns)
+    .loadMoreStatus('stopped')
+    .build();
+  this.render(hbs`
+    <style>
+      box, section {
+        min-height: 1000px
+      }
+    </style>
+    {{file-list}}`);
+  assert.equal(this.$('.rsa-data-table-body-row').length, 2, 'initial file count is 2');
+  this.$('.rsa-data-table-load-more button.rsa-form-button').click();
+  return waitFor(() => {
+    return this.$('.rsa-data-table-body-row').length === 13;
+  }).then(() => {
+    assert.equal(this.$('.rsa-data-table-body-row').length, 13, 'After load file count is 13');
+  });
+});
+
+test('Make sure sort by works', function(assert) {
+  new ReduxDataHelper(initState)
+    .files(dataItems)
+    .schema(config)
+    .visibleColumns(visibleColumns)
+    .loadMoreStatus('stopped')
+    .build();
+  this.render(hbs`
+    <style>
+      box, section {
+        min-height: 1000px
+      }
+    </style>
+    {{file-list}}`);
+  assert.equal(this.$(this.$('.rsa-data-table-body-cell hbox')[0]).text().trim(), 'systemd-journald.service', 'check filename');
+  this.$('.rsa-data-table-header-cell .column-sort')[0].click();
+  return waitFor(() => {
+    return this.$('.rsa-data-table-body-row').length === 11;
+  }).then(() => {
+    assert.equal(this.$(this.$('.rsa-data-table-body-cell hbox')[0]).text().trim(), 'xt_conntrack.ko', 'After sort filename is different');
   });
 });
 
