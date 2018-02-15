@@ -78,6 +78,13 @@ public class EventMongoRepositoryImpl implements EventRepository {
     }
 
     @Override
+    public long countEvents(String collectionName, String userId, TimeRange timeRange, List<Pair<String, Object>> features) {
+        Query query = buildQuery(userId, timeRange, features);
+
+        return mongoTemplate.count(query, EnrichedEvent.class, collectionName);
+    }
+
+    @Override
     public EnrichedEvent findLatestEventForUser(String userId, List<String> collectionNamesPrioritized) {
         Query query = new Query()
                 .addCriteria(Criteria.where(EnrichedEvent.USER_ID_FIELD).is(userId))
