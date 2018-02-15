@@ -34,6 +34,8 @@ public interface EventPersistencyService {
 
     List<? extends EnrichedEvent> readRecords(Schema schema, String userId, TimeRange timeRange, List<Pair<String, Object>> features, int numOfItemsToSkip, int pageSize);
 
+    public Long countEvents(Schema schema, String userId, TimeRange timeRange, List<Pair<String, Object>> features);
+
     EnrichedEvent findLatestEventForUser(String userId, List<String> collectionNames);
 
     /**
