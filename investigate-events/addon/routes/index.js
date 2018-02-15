@@ -2,6 +2,7 @@ import Route from 'ember-route';
 import service from 'ember-service/inject';
 import { initializeInvestigate } from 'investigate-events/actions/initialization-creators';
 import { setMetaPanelSize, setQueryFilterMeta, setReconClosed, setReconOpen, setReconPanelSize } from 'investigate-events/actions/interaction-creators';
+import { dirtyQueryToggle } from 'investigate-events/actions/query-validation-creators';
 import { serializeQueryParams, uriEncodeMetaFilters } from 'investigate-events/actions/utils';
 import { META_PANEL_SIZES, RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 
@@ -51,9 +52,7 @@ export default Route.extend({
   },
 
   actions: {
-
     executeQuery(metaFilters, externalLink = false) {
-
       metaFilters = metaFilters.filterBy('saved', true);
       const redux = this.get('redux');
       // Save the metaFilters to state
@@ -66,6 +65,9 @@ export default Route.extend({
         sid: queryNode.serviceId,
         st: queryNode.startTime
       };
+
+      // Mark query as clean since we're submitting the query
+      redux.dispatch(dirtyQueryToggle(false));
 
       if (externalLink) {
         if (qp.mf) {

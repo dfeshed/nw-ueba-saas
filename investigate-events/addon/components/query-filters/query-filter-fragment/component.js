@@ -1,13 +1,12 @@
-import Ember from 'ember';
-import EmberObject from 'ember-object';
 import Component from 'ember-component';
-import layout from './template';
+import EmberObject from 'ember-object';
 import run from 'ember-runloop';
+import service from 'ember-service/inject';
+import set from 'ember-metal/set';
 import { isEmpty } from 'ember-utils';
 import computed, { equal, notEmpty } from 'ember-computed-decorators';
-import service from 'ember-service/inject';
-import { markQueryDirty, validateIndividualQuery } from 'investigate-events/actions/query-validation-creators';
 import { connect } from 'ember-redux';
+import { dirtyQueryToggle, validateIndividualQuery } from 'investigate-events/actions/query-validation-creators';
 
 const quoteValue = (value) => {
 
@@ -26,10 +25,6 @@ const quoteValue = (value) => {
   return value;
 };
 
-const {
-  set
-} = Ember;
-
 const isFloat = (value) => {
   return value.includes('.') && (value - value === 0);
 };
@@ -47,14 +42,12 @@ const isInt = (value) => {
 };
 
 const dispatchToActions = {
-  markQueryDirty,
+  dirtyQueryToggle,
   validateIndividualQuery
 };
 
 const QueryFragmentComponent = Component.extend({
   i18n: service(),
-
-  layout,
 
   classNames: ['rsa-query-fragment'],
 
@@ -281,6 +274,9 @@ const QueryFragmentComponent = Component.extend({
 
   didReceiveAttrs() {
     this._super(...arguments);
+    if (arguments.length === 0) {
+      return;
+    }
 
     const { meta, operator, value, complexFilter } = this;
 
@@ -317,7 +313,7 @@ const QueryFragmentComponent = Component.extend({
         this.set('apiMetaMessage', apiMetaMessage.message);
       }
     } else {
-      this.send('markQueryDirty');
+      this.send('dirtyQueryToggle');
     }
   },
 

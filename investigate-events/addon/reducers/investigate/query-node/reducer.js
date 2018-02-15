@@ -111,8 +111,10 @@ export default handleActions({
   },
 
   [ACTION_TYPES.SET_EVENTS_PAGE]: (state) => {
-    return state.merge({ atLeastOneQueryIssued: true, isDirty: false });
+    return state.merge({ atLeastOneQueryIssued: true });
   },
 
-  [ACTION_TYPES.MARK_QUERY_DIRTY]: (state) => state.set('isDirty', true)
+  [ACTION_TYPES.MARK_QUERY_DIRTY]: (state, { payload }) => {
+    return state.set('isDirty', payload);
+  }
 }, _initialState);

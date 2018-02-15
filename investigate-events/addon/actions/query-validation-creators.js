@@ -15,9 +15,18 @@ const validateIndividualQuery = (filter, callback) => {
   };
 };
 
-const markQueryDirty = () => ({ type: ACTION_TYPES.MARK_QUERY_DIRTY });
+/**
+ * Mark a query clean or dirty.
+ * @param {boolean} [flag] Is the query dirty or clean?
+ * @return {Object} A redux action creator
+ * @public
+ */
+const dirtyQueryToggle = (flag = true) => ({
+  type: ACTION_TYPES.MARK_QUERY_DIRTY,
+  payload: flag
+});
 
 export {
-  markQueryDirty,
+  dirtyQueryToggle,
   validateIndividualQuery
 };

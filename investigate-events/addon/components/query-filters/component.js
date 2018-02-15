@@ -7,7 +7,8 @@ import Component from 'ember-component';
 import { connect } from 'ember-redux';
 import service from 'ember-service/inject';
 import on from 'ember-evented/on';
-import { markQueryDirty, setQueryFilterMeta } from 'investigate-events/actions/interaction-creators';
+import { setQueryFilterMeta } from 'investigate-events/actions/interaction-creators';
+import { dirtyQueryToggle } from 'investigate-events/actions/query-validation-creators';
 import { queryParams } from 'investigate-events/reducers/investigate/query-node/selectors';
 import $ from 'jquery';
 
@@ -57,7 +58,7 @@ const stateToComputed = (state) => ({
 });
 
 const dispatchToActions = {
-  markQueryDirty,
+  dirtyQueryToggle,
   setQueryFilterMeta
 };
 
@@ -303,7 +304,7 @@ const QueryFiltersComponent = Component.extend(EKMixin, {
       } else {
         removeFilters(filters, filter);
       }
-      this.send('markQueryDirty');
+      this.send('dirtyQueryToggle');
     },
 
     executeQuery(filters, externalLink) {
