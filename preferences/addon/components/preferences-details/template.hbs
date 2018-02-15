@@ -26,7 +26,7 @@
         <div class='rsa-form-radio-group'>
           <h4 class='rsa-form-radio-group-label'>{{t item.name}}</h4>
           {{#each item.options as |option|}}
-            <label class="rsa-form-radio-label {{option}} {{if (eq option (get preferences item.field)) 'checked'}}">
+            <label title="{{t (concat fieldPrefix '.' option '-tooltip') default='empty'}}" class="rsa-form-radio-label {{option}} {{if (eq option (get preferences item.field)) 'checked'}}">
               {{radio-button
                 value=option
                 groupValue=(readonly (get preferences item.field))

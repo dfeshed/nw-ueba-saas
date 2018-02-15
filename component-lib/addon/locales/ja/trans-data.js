@@ -339,7 +339,6 @@ export default {
       hostslookup: 'ja_Hosts Lookup',
       external: {
         google: 'ja_Google',
-        virustotal: 'ja_VirusTotal PDNS',
         sansiphistory: 'ja_SANS IP History',
         centralops: 'ja_CentralOps Whois for IPs and Hostnames',
         robtexipsearch: 'ja_Robtex IP Search',
@@ -1672,6 +1671,8 @@ export default {
       queryTimeFormat: 'ja_Time format for query',
       DB: 'ja_Database Time',
       WALL: 'ja_Wall Clock Time',
+      'DB-tooltip': 'ja_Database time where events are stored',
+      'WALL-tooltip': 'ja_Current time with timezone set in user preferences',
       autoDownloadExtractedFiles: 'ja_Download extracted files automatically'
     },
     'endpoint-preferences': {

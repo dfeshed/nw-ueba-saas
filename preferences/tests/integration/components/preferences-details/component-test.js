@@ -72,6 +72,8 @@ test('Preferences panel should show Time format Settings', function(assert) {
   this.$('.rsa-icon-settings-1-filled').trigger('click');
   return waitFor('.rsa-form-radio-group-label').then(() => {
     assert.equal(this.$('.rsa-form-radio-label.DB.checked').length, 1);
+    assert.equal(this.$('.rsa-form-radio-label.DB').attr('title'), 'Database time where events are stored', 'tooltip should be shown for Database time');
+    assert.equal(this.$('.rsa-form-radio-label.WALL').attr('title'), 'Current time with timezone set in user preferences', 'tooltip should be shown for Wall clock time');
   });
 });
 

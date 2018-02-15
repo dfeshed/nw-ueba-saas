@@ -108,12 +108,6 @@ export function buildContextMenu() {
           }
         },
         {
-          label: _getTranslated('recon.contextmenu.external.virustotal'),
-          action(selection) {
-            _openUrl(`https://www.virustotal.com/en/domain/${selection[0].metaValue}/information/`);
-          }
-        },
-        {
           label: _getTranslated('recon.contextmenu.external.sansiphistory'),
           action(selection) {
             _openUrl(`http://isc.sans.org/ipinfo.html?ip=${selection[0].metaValue}`);

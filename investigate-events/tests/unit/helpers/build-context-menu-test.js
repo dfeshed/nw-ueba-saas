@@ -74,5 +74,5 @@ test('it builds hosts URL with the correct query', function(assert) {
 test('it checks if all the menu items are present', function(assert) {
   const menuItems = buildContextMenu();
   assert.equal(menuItems.length, 8, 'No. of internal actions expected is 8');
-  assert.equal(menuItems[7].subActions.length, 8, 'No. of external actions expected is 8');
+  assert.equal(menuItems[7].subActions.length, 7, 'No. of external actions expected is 7');
 });
