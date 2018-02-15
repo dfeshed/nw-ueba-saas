@@ -73,7 +73,10 @@ test('it passes validation when metaFormat is UInt16 and value is correct', func
   assert.notOk(this.$('.rsa-query-fragment').hasClass('query-fragment-invalid'), 'Expected valid.');
 });
 
-test('it fails validation when metaFormat is UInt32 and value is not proper format', function(assert) {
+// bytes.src does not have = and != as this is indexed by key
+// so basically it will never run into a problem with validation
+// this test can be removed
+skip('it fails validation when metaFormat is UInt32 and value is not proper format', function(assert) {
   PillHelpers.createUInt32Pill(this, undefined, undefined, 'notAnInt');
   assert.equal(this.$('.rsa-query-fragment .meta').prop('title'), 'You must enter a 32 bit Integer.');
   assert.ok(this.$('.rsa-query-fragment').hasClass('query-fragment-invalid'), 'Expected invalid.');

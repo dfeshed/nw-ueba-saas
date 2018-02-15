@@ -19,12 +19,13 @@ test('mouse interaction only', function(assert) {
   assert.equal($('.ember-power-select-options li.ember-power-select-option').length, 11, 'Has the correct number of mocked meta keys');
 
   // choose a meta option from drop down
+  // sessionid is special case so will have 4 operators
   selectChoose('.ember-power-select-trigger', 'sessionid');
 
   return wait().then(() => {
     // operator drop down should appear with correct number of operators
     // choose an operator
-    assert.equal($('.ember-power-select-options li.ember-power-select-option').length, 8, 'Correct count for operators based on format');
+    assert.equal($('.ember-power-select-options li.ember-power-select-option').length, 4, 'Correct count for operators based on format');
     selectChoose('.ember-power-select-trigger', 'exists');
 
     return wait().then(() => {

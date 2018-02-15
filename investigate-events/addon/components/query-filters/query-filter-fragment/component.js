@@ -25,6 +25,19 @@ const quoteValue = (value) => {
   return value;
 };
 
+const eq = { displayName: '=', isExpensive: false };
+const notEq = { displayName: '!=', isExpensive: false };
+const exists = { displayName: 'exists', isExpensive: false };
+const notExists = { displayName: '!exists', isExpensive: false };
+const contains = { displayName: 'contains', isExpensive: false };
+const begins = { displayName: 'begins', isExpensive: false };
+const ends = { displayName: 'ends', isExpensive: false };
+const operatorArrayIndexedByKey = [exists, notExists];
+const operatorArrayIndexedByValue = [exists, notExists, eq, notEq];
+const operatorArrayIndexedByValueWithText = [exists, notExists, eq, notEq, begins, contains, ends];
+const operatorArrayForSessionId = [exists, notExists, eq, notEq];
+const defaultOperatorArray = [eq, notEq, exists, notExists, contains, begins, ends];
+
 const isFloat = (value) => {
   return value.includes('.') && (value - value === 0);
 };
@@ -114,29 +127,22 @@ const QueryFragmentComponent = Component.extend({
   @computed('metaFormat', 'metaIndex', 'metaOptions', 'meta')
   operatorOptions(metaFormat, metaIndex, metaOptions, meta) {
     // const efficientIndex = metaIndex === 'value';
-    const eq = { displayName: '=', isExpensive: false };
-    const notEq = { displayName: '!=', isExpensive: false };
-    const lt = { displayName: '<', isExpensive: false };
-    const lte = { displayName: '<=', isExpensive: false };
-    const gt = { displayName: '>', isExpensive: false };
-    const gte = { displayName: '>=', isExpensive: false };
-    const exists = { displayName: 'exists', isExpensive: false };
-    const notExists = { displayName: '!exists', isExpensive: false };
-    const contains = { displayName: 'contains', isExpensive: false };
-    const begins = { displayName: 'begins', isExpensive: false };
-    const ends = { displayName: 'ends', isExpensive: false };
-
     if (isEmpty(metaFormat) && !isEmpty(metaOptions) && !isEmpty(meta)) {
       metaFormat = metaOptions.findBy('metaName', meta.trim()).format;
     }
 
-    if (metaFormat === 'Text') {
-      return [ eq, notEq, exists, notExists, contains, begins, ends ];
-    } else if (metaFormat === 'IPv4' || metaFormat === 'IPv6') {
-      return [ eq, notEq, exists, notExists ];
-    } else {
-      return [ eq, notEq, lt, lte, gt, gte, exists, notExists ];
+    if (metaIndex === 'key') {                  // indexedByKey will only 2 operator - exits, !exists
+      return operatorArrayIndexedByKey;
+    } else if (metaIndex === 'value') {
+      if (metaFormat === 'Text') {              // indexedByValue can have Text format which has some unique operators
+        return operatorArrayIndexedByValueWithText;
+      } else {
+        return operatorArrayIndexedByValue;     // by default indexedVyValue will have 4 options
+      }
+    } else if (meta === 'sessionid') {          // sessionid is a special case in the sense that it is the only
+      return operatorArrayForSessionId;         // non indexed key that has these 4 options.
     }
+    return defaultOperatorArray;
   },
 
   @computed('selected', 'filterList', 'deleteFilter', 'i18n', 'executeQuery')

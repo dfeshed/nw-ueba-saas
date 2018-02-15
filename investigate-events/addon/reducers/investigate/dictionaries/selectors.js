@@ -26,3 +26,11 @@ export const defaultMetaGroup = createSelector(
     keys: language.reduce(_removeHiddenKeys, []).map(_createMetaGroup)
   })
 );
+
+// leaving out time as we already have panel to select time range for our queryBuilder
+export const metaKeySuggestionsForQueryBuilder = createSelector(
+  [_language],
+  (language = []) => {
+    return language.filter((item) => item.metaName !== 'time');
+  }
+);

@@ -13,23 +13,24 @@ moduleForComponent('query-filters/query-filter-fragment', 'Unit | Component | qu
 test('it sets operatorOptions', function(assert) {
   const component = this.subject();
 
+  // will load the default operators
   const options = component.get('operatorOptions');
 
-  assert.equal(options.get('length'), 8);
+  assert.equal(options.get('length'), 7);
 
   assert.ok(options.findBy('displayName', '='), 'Expected to find =');
   assert.ok(options.findBy('displayName', '!='), 'Expected to find !=');
-  assert.ok(options.findBy('displayName', '<'), 'Expected to find <');
-  assert.ok(options.findBy('displayName', '<='), 'Expected to find <=');
-  assert.ok(options.findBy('displayName', '>'), 'Expected to find >');
-  assert.ok(options.findBy('displayName', '>='), 'Expected to find >=');
+  assert.ok(options.findBy('displayName', 'begins'), 'Expected to find begins');
+  assert.ok(options.findBy('displayName', 'contains'), 'Expected to find contains');
+  assert.ok(options.findBy('displayName', 'ends'), 'Expected to find ends');
   assert.ok(options.findBy('displayName', 'exists'), 'Expected to find exists');
   assert.ok(options.findBy('displayName', '!exists'), 'Expected to find !exists');
 });
 
 test('it sets operatorOptions when metaFormat is Text', function(assert) {
   const component = this.subject({
-    metaFormat: 'Text'
+    metaFormat: 'Text',
+    metaIndex: 'value'
   });
   const options = component.get('operatorOptions');
 
@@ -43,9 +44,10 @@ test('it sets operatorOptions when metaFormat is Text', function(assert) {
   assert.ok(options.findBy('displayName', 'ends'), 'Expected to find ends');
 });
 
-test('it sets operatorOptions when metaFormat is IPv4 or IPv6', function(assert) {
+test('it sets operatorOptions when metaFormat is IPv4', function(assert) {
   const component = this.subject({
-    metaFormat: 'IPv4'
+    metaFormat: 'IPv4',
+    metaIndex: 'value'
   });
   const options = component.get('operatorOptions');
 
@@ -55,11 +57,16 @@ test('it sets operatorOptions when metaFormat is IPv4 or IPv6', function(assert)
   assert.ok(options.findBy('displayName', 'exists'), 'Expected to find exists');
   assert.ok(options.findBy('displayName', '!exists'), 'Expected to find !exists');
 
-  component.set('metaFormat', 'IPv6');
+});
 
-  assert.equal(options.get('length'), 4);
-  assert.ok(options.findBy('displayName', '='), 'Expected to find =');
-  assert.ok(options.findBy('displayName', '!='), 'Expected to find !=');
+test('it sets operatorOptions when metaFormat is IPv6', function(assert) {
+  const component = this.subject({
+    metaFormat: 'IPv',
+    metaIndex: 'key'
+  });
+  const options = component.get('operatorOptions');
+
+  assert.equal(options.get('length'), 2);
   assert.ok(options.findBy('displayName', 'exists'), 'Expected to find exists');
   assert.ok(options.findBy('displayName', '!exists'), 'Expected to find !exists');
 });

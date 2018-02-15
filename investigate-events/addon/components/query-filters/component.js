@@ -11,6 +11,7 @@ import { setQueryFilterMeta } from 'investigate-events/actions/interaction-creat
 import { dirtyQueryToggle } from 'investigate-events/actions/query-validation-creators';
 import { queryParams } from 'investigate-events/reducers/investigate/query-node/selectors';
 import $ from 'jquery';
+import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 
 const removeFilters = (list, toRemove) => {
   if (Array.isArray(toRemove)) {
@@ -54,7 +55,7 @@ const blurEdit = (filters, focusInput, focusIndex, modifier) => {
 
 const stateToComputed = (state) => ({
   preloadedFilters: queryParams(state).metaFilter.conditions,
-  metaOptions: state.investigate.dictionaries.language
+  metaOptions: metaKeySuggestionsForQueryBuilder(state)
 });
 
 const dispatchToActions = {

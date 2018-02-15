@@ -41,17 +41,17 @@ const testSetupConfig = {
 };
 
 const ALL_META_OPTIONS = [
-  { format: 'Float32', metaName: 'file.entropy', count: 8, flags: -2147482877, displayName: 'File Entropy' },
-  { format: 'IPv4', metaName: 'alias.ip', count: 4, flags: -2147482621, displayName: 'IP Aliases' },
-  { format: 'IPv6', metaName: 'alias.ipv6', count: 4, flags: -2147482878, displayName: 'IPv6 Aliases' },
-  { format: 'MAC', metaName: 'alias.mac', count: 8, flags: -2147482621, displayName: 'MAC Aliases' },
-  { format: 'Text', metaName: 'alert', count: 7, flags: -2147483133, displayName: 'Alerts' },
-  { format: 'TimeT', metaName: 'starttime', count: 8, flags: -2147482621, displayName: 'Time Start' },
-  { format: 'UInt8', metaName: 'ip.proto', count: 8, flags: -2147482541, displayName: 'IP Protocol' },
-  { format: 'UInt16', metaName: 'eth.type', count: 8, flags: -2147482541, displayName: 'Ethernet Protocol' },
-  { format: 'UInt32', metaName: 'bytes.src', count: 8, flags: -2147482878, displayName: 'Bytes Sent' },
-  { format: 'UInt64', metaName: 'filename.size', count: 8, flags: -2147482878, displayName: 'File Size' },
-  { format: 'UInt64', metaName: 'sessionid', count: 8, flags: -2147483631, displayName: 'Session ID' }
+  { format: 'Float32', metaName: 'file.entropy', count: 4, flags: -2147482877, displayName: 'File Entropy', indexedBy: 'value' }, // IndexedByValue
+  { format: 'IPv4', metaName: 'alias.ip', count: 4, flags: -2147482621, displayName: 'IP Aliases', indexedBy: 'value' },          // IndexedByValue
+  { format: 'IPv6', metaName: 'alias.ipv6', count: 2, flags: -2147482878, displayName: 'IPv6 Aliases', indexedBy: 'key' },      // IndexByKey
+  { format: 'MAC', metaName: 'alias.mac', count: 4, flags: -2147482621, displayName: 'MAC Aliases', indexedBy: 'value' },         // IndexedByValue
+  { format: 'Text', metaName: 'alert', count: 7, flags: -2147483133, displayName: 'Alerts', indexedBy: 'value' },                 // IndexedByValue and text
+  { format: 'TimeT', metaName: 'starttime', count: 4, flags: -2147482621, displayName: 'Time Start', indexedBy: 'value' },        // IndexedByValue
+  { format: 'UInt8', metaName: 'ip.proto', count: 4, flags: -2147482541, displayName: 'IP Protocol', indexedBy: 'value' },        // IndexedByValue
+  { format: 'UInt16', metaName: 'eth.type', count: 4, flags: -2147482541, displayName: 'Ethernet Protocol', indexedBy: 'value' }, // IndexedByValue
+  { format: 'UInt32', metaName: 'bytes.src', count: 2, flags: -2147482878, displayName: 'Bytes Sent', indexedBy: 'key' },       // IndexedByKey
+  { format: 'UInt64', metaName: 'filename.size', count: 2, flags: -2147482878, displayName: 'File Size', indexedBy: 'key' },    // IndexedByKey
+  { format: 'UInt64', metaName: 'sessionid', count: 4, flags: -2147483631, displayName: 'Session ID', indexedBy: 'none' }        // special case - exists, !exists, =, !=
 ];
 
 const metaNameForFormat = (format) => {
@@ -60,6 +60,13 @@ const metaNameForFormat = (format) => {
     throw new Error(`metaNameForFormat called with bad format: ${format}`);
   }
   return meta.metaName;
+};
+
+const metaForDropDowns = (indexedBy, metaName) => {
+  const meta = ALL_META_OPTIONS.find(function(item) {
+    return (item.indexedBy === indexedBy && item.metaName === metaName);
+  });
+  return meta;
 };
 
 const _createBasicPill = (type, test, meta, operator, value, options = {}) => {
@@ -183,5 +190,6 @@ export {
   setCursorAtMeta,
   setCursorAtOperator,
   setupPillWithCustomProperties,
-  testSetupConfig
+  testSetupConfig,
+  metaForDropDowns
 };
