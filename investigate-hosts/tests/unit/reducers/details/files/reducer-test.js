@@ -77,8 +77,14 @@ test('The GET_HOST_FILES sets normalized server response to state', function(ass
     files: [],
     selectedFileId: null,
     pageNumber: -1,
-    totalItems: 0
+    totalItems: 0,
+    filesLoadMoreStatus: null
   });
+
+  const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.GET_HOST_FILES });
+  const startEndState = reducer(previous, startAction);
+  assert.deepEqual(startEndState.filesLoadMoreStatus, 'streaming');
+
   const action = makePackAction(LIFECYCLE.SUCCESS, {
     type: ACTION_TYPES.GET_HOST_FILES,
     payload: { data: filesData }
@@ -87,4 +93,18 @@ test('The GET_HOST_FILES sets normalized server response to state', function(ass
 
   assert.equal(endState.files.length, 3);
   assert.equal(endState.pageNumber, 10);
+
+  const data = { ...filesData, hasNext: false };
+
+  const newAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.GET_HOST_FILES,
+    payload: { data }
+  });
+
+  const newEndState = reducer(previous, newAction);
+  assert.equal(newEndState.filesLoadMoreStatus, 'completed');
+
+  const failureAction = makePackAction(LIFECYCLE.FAILURE, { type: ACTION_TYPES.GET_HOST_FILES });
+  const failureState = reducer(previous, failureAction);
+  assert.deepEqual(failureState.filesLoadMoreStatus, 'error');
 });

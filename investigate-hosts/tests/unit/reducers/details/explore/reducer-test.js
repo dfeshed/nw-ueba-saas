@@ -83,4 +83,19 @@ test('The FILE_SEARCH_PAGE sets normalized server response to state', function(a
   const endState = reducer(previous, action);
   assert.equal(endState.fileSearchResults.length, 1);
   assert.equal(endState.searchStatus, 'complete');
+
+  const newAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.FILE_SEARCH_PAGE,
+    payload: { data: { scanStartTime: undefined }, meta: { complete: 'complete' }, request: { filter: [ { value: 'test' } ] } }
+  });
+  const newEndState = reducer(previous, newAction);
+  assert.equal(newEndState.componentName, 'host-detail/header/titlebar/explore/search-label');
+});
+
+test('The TOGGLE_EXPLORE_SEARCH_RESULTS will toggles the flag in state', function(assert) {
+  const previous = Immutable.from({
+    showSearchResults: true
+  });
+  const result = reducer(previous, { type: ACTION_TYPES.TOGGLE_EXPLORE_SEARCH_RESULTS, payload: { flag: false } });
+  assert.equal(result.showSearchResults, false);
 });

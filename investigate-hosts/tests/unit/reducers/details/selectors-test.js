@@ -9,9 +9,11 @@ import {
 
 module('Unit | selectors | details');
 
-test('areSomeScanning', function(assert) {
-  const result = hasScanTime(Immutable.from({ endpoint: { detailsInput: { snapShots: [11231231, 12312311] } } }));
+test('hasScanTime', function(assert) {
+  let result = hasScanTime(Immutable.from({ endpoint: { detailsInput: { snapShots: [11231231, 12312311] } } }));
   assert.equal(result, true, 'should return true as some snapshots are available');
+  result = hasScanTime(Immutable.from({ endpoint: { detailsInput: { snapShots: [] } } }));
+  assert.equal(result, false, 'should return true as some snapshots are available');
 });
 
 test('Get OS specific column config', function(assert) {

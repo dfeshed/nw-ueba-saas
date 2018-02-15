@@ -1251,7 +1251,6 @@ export const filesData = {
       'path': '/usr/lib/modules/3.10.0-229.20.1.el7.x86_64/kernel/drivers/ata',
       'pathH8': '8325233813913331491',
       'fileName': 'ata_generic.ko',
-      'owner': { 'username': 'root', 'groupname': 'root', 'uid': 0, 'gid': 0 },
       'timeModified': '2015-11-03T19:49:05.000Z',
       'timeAccessed': '2017-07-11T05:42:55.000Z',
       'mode': 33188,

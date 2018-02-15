@@ -61,8 +61,14 @@ test('The RESET_PROCESS_LIST will reset process list state', function(assert) {
 
 test('The GET_PROCESS_LIST sets server response to the list', function(assert) {
   const previous = Immutable.from({
-    processList: []
+    processList: [],
+    isProcessTreeLoading: null
   });
+
+  const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.GET_PROCESS_LIST });
+  const startEndState = reducer(previous, startAction);
+  assert.deepEqual(startEndState.isProcessTreeLoading, true);
+
   const action = makePackAction(LIFECYCLE.SUCCESS, {
     type: ACTION_TYPES.GET_PROCESS_LIST,
     payload: { data: processListData }
@@ -73,8 +79,14 @@ test('The GET_PROCESS_LIST sets server response to the list', function(assert) {
 
 test('The GET_PROCESS_TREE sets server response to the list', function(assert) {
   const previous = Immutable.from({
-    processTree: []
+    processTree: [],
+    isProcessTreeLoading: false
   });
+
+  const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.GET_PROCESS_TREE });
+  const startEndState = reducer(previous, startAction);
+  assert.deepEqual(startEndState.isProcessTreeLoading, true);
+
   const action = makePackAction(LIFECYCLE.SUCCESS, {
     type: ACTION_TYPES.GET_PROCESS_TREE,
     payload: { data: processTreeData }
@@ -82,14 +94,38 @@ test('The GET_PROCESS_TREE sets server response to the list', function(assert) {
   const endState = reducer(previous, action);
   assert.equal(endState.processTree.length, 1);
 });
+
 test('The GET_PROCESS sets server response to the list', function(assert) {
   const previous = Immutable.from({
-    processDetails: null
+    processDetails: null,
+    processDetailsLoading: false
   });
+
+  const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.GET_PROCESS });
+  const startEndState = reducer(previous, startAction);
+  assert.deepEqual(startEndState.processDetailsLoading, true);
+
   const action = makePackAction(LIFECYCLE.SUCCESS, {
     type: ACTION_TYPES.GET_PROCESS,
     payload: { data: processDetailsData }
   });
   const endState = reducer(previous, action);
   assert.equal(endState.processDetails.path, '/usr/lib/systemd');
+});
+
+test('The GET_PROCESS_FILE_CONTEXT sets server response to the list', function(assert) {
+  const previous = Immutable.from({
+    dllList: []
+  });
+
+  const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.GET_PROCESS_FILE_CONTEXT });
+  const startEndState = reducer(previous, startAction);
+  assert.deepEqual(startEndState.dllList, null);
+
+  const action = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.GET_PROCESS_FILE_CONTEXT,
+    payload: { data: new Array(10) }
+  });
+  const endState = reducer(previous, action);
+  assert.equal(endState.dllList.length, 10);
 });

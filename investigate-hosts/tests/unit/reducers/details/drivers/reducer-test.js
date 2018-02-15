@@ -41,8 +41,14 @@ test('The SET_DRIVERS_SELECTED_ROW will reset the state', function(assert) {
 
 test('The FETCH_FILE_CONTEXT_DRIVERS sets the host details information', function(assert) {
   const previous = Immutable.from({
-    driver: null
+    driver: null,
+    driverLoadingStatus: 'completed'
   });
+
+  const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_FILE_CONTEXT_DRIVERS });
+  const startEndState = reducer(previous, startAction);
+  assert.deepEqual(startEndState.driverLoadingStatus, 'wait');
+
   const action = makePackAction(LIFECYCLE.SUCCESS, {
     type: ACTION_TYPES.FETCH_FILE_CONTEXT_DRIVERS,
     payload: { data: driversData }
@@ -50,4 +56,11 @@ test('The FETCH_FILE_CONTEXT_DRIVERS sets the host details information', functio
 
   const endState = reducer(previous, action);
   assert.deepEqual(_.values(endState.driver).length, 4);
+});
+test('The HOST_DETAILS_DATATABLE_SORT_CONFIG resets the selected row id', function(assert) {
+  const previous = Immutable.from({
+    selectedRowId: '123'
+  });
+  const result = reducer(previous, { type: ACTION_TYPES.CHANGE_AUTORUNS_TAB });
+  assert.equal(result.selectedFileId, null);
 });

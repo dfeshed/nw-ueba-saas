@@ -139,32 +139,6 @@ const getNextMachines = () => {
 };
 
 /**
- * Action creator for creating custom search
- * @method createCustomSearch
- * @public
- * @returns {Object}
- */
-const createCustomSearch = (filter, callbacks = callbacksDefault) => {
-  return (dispatch, getState) => {
-    const { filterSelected, visibleSchemas } = getState().endpoint.filter;
-    dispatch({
-      type: ACTION_TYPES.CREATE_CUSTOM_SEARCH,
-      promise: Machines.createCustomSearch(filterSelected, visibleSchemas, filter),
-      meta: {
-        onSuccess: (response) => {
-          debug(`ACTION_TYPES.CREATE_CUSTOM_SEARCH ${_stringifyObject(response)}`);
-          callbacks.onSuccess(response);
-        },
-        onFailure: (response) => {
-          handleError(ACTION_TYPES.CREATE_CUSTOM_SEARCH, response);
-          callbacks.onFailure(response);
-        }
-      }
-    });
-  };
-};
-
-/**
  * Action creator for fetch job id and download the csv from server
  * @method exportAsFile
  * @public
@@ -323,7 +297,6 @@ export {
   getAllSchemas,
   getPageOfMachines,
   getNextMachines,
-  createCustomSearch,
   exportAsFile,
   updateColumnVisibility,
   setHostColumnSort,

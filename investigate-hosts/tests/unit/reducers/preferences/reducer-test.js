@@ -38,9 +38,19 @@ test('should return the initial state', function(assert) {
 
 test('The UPDATE_COLUMN_VISIBILITY action will set the selected column', function(assert) {
 
-  const result = reducer(preferencesInitialState, { type: ACTION_TYPES.UPDATE_COLUMN_VISIBILITY, payload: { field: 'machine.machineOsType', selected: true } });
+  let result = reducer(preferencesInitialState, { type: ACTION_TYPES.UPDATE_COLUMN_VISIBILITY, payload: { field: 'machine.machineOsType', selected: true } });
   assert.equal(result.preferences.machinePreference.visibleColumns.length, 1, 'expected to have one column');
   assert.equal(result.preferences.machinePreference.visibleColumns[0], 'machine.machineOsType', 'expected to match machine.machineOsType');
+
+  const previousState = Immutable.from({
+    preferences: {
+      machinePreference: {
+        visibleColumns: ['machine.machineOsType']
+      }
+    }
+  });
+  result = reducer(previousState, { type: ACTION_TYPES.UPDATE_COLUMN_VISIBILITY, payload: { field: 'machine.machineOsType', selected: false } });
+  assert.equal(result.preferences.machinePreference.visibleColumns.length, 0);
 });
 
 
@@ -61,4 +71,16 @@ test('The SET_PREFERENCES  action will set visibleColumns', function(assert) {
   assert.equal(result.preferences.machinePreference.visibleColumns.length, 1, 'expected to return 1 column');
 });
 
+test('The SET_HOST_COLUMN_SORT  action will set visibleColumns', function(assert) {
+
+  const previousState = Immutable.from({
+    preferences: {
+      machinePreference: {
+        sortField: null
+      }
+    }
+  });
+  const result = reducer(previousState, { type: ACTION_TYPES.SET_HOST_COLUMN_SORT, payload: { key: 'machine.machineName', descending: true } });
+  assert.equal(result.preferences.machinePreference.sortField, '{"key":"machine.machineName","descending":true}');
+});
 

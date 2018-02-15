@@ -14,6 +14,8 @@ import {
   arrangedSecurityConfigs,
   isEcatAgent,
   isMachineLinux,
+  downloadLink,
+  hostWithStatus,
   isMachineWindows } from 'investigate-hosts/reducers/details/overview/selectors';
 
 test('machineOsType', function(assert) {
@@ -203,4 +205,61 @@ test('isMachineWindows, if the OS of the selected agent is not Windows', functio
 test('isMachineWindows, if the OS of the selected agent is Windows', function(assert) {
   const result = isMachineWindows(Immutable.from({ endpoint: { overview: { hostDetails: { machine: { machineOsType: 'windows' } } } } }));
   assert.equal(result, true, 'OS of the Selected agent is Windows, value is true');
+});
+
+test('downloadLink', function(assert) {
+  const result = downloadLink(Immutable.from({
+    endpoint: {
+      overview: {
+        downloadId: '123'
+      }
+    }
+  }));
+
+  assert.ok(result.includes('/rsa/endpoint/machine/download?id=123'));
+});
+
+test('hostWithStatus', function(assert) {
+  let result = hostWithStatus(Immutable.from({
+    endpoint: {
+      overview: {
+        hostDetails: {
+          id: 1,
+          agentStatus: {
+            agentId: 1,
+            status: 'idle'
+          }
+        }
+      },
+      machines: {
+        agentStatus: {
+          agentId: 2
+        }
+      }
+    }
+  }));
+
+  assert.equal(result.agentStatus.status, 'idle');
+
+  result = hostWithStatus(Immutable.from({
+    endpoint: {
+      overview: {
+        hostDetails: {
+          id: 1,
+          agentStatus: {
+            agentId: 1,
+            status: 'idle'
+          }
+        }
+      },
+      machines: {
+        agentStatus: {
+          agentId: 1,
+          status: 'scanning'
+        }
+      }
+    }
+  }));
+
+  assert.equal(result.agentStatus.status, 'scanning');
 });

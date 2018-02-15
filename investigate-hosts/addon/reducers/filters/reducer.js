@@ -30,30 +30,6 @@ const _handleSystemFilter = (action) => {
   };
 };
 
-
-const _handleCreateSearch = (action) => {
-  return (state) => {
-    const { payload: { data } } = action;
-    const { filters } = state;
-    const newFilter = [...filters];
-    let position = -1;
-    for (let i = 0; i < newFilter.length; i++) {
-      if (newFilter[i].name === data.name) {
-        position = i;
-      }
-    }
-    if (position > -1) {
-      newFilter.replace(position, 1, data);
-    } else {
-      newFilter.insertAt(newFilter.length - 1, data);
-    }
-    return state.merge({
-      filters: newFilter,
-      filterSelected: data
-    });
-  };
-};
-
 const _addToExpressionList = (expressionList, expression) => {
   const tempExpressionList = expressionList.asMutable({ deep: false });
   const newArray = tempExpressionList.slice();
@@ -120,11 +96,6 @@ const filterReducer = handleActions({
     });
   },
 
-  [ACTION_TYPES.CREATE_CUSTOM_SEARCH]: (state, action) => {
-    return handle(state, action, {
-      success: _handleCreateSearch(action)
-    });
-  },
 
   [ACTION_TYPES.SET_APPLIED_HOST_FILTER]: (state, { payload: { filterId, isCustomFilter } }) => state.merge({
     customSearchVisible: isCustomFilter,

@@ -42,8 +42,14 @@ test('The FETCH_HOST_DETAILS sets the host details information', function(assert
 
 test('The FETCH_DOWNLOAD_FILECONTEXT_JOB_ID download id', function(assert) {
   const previous = Immutable.from({
-    downloadId: null
+    downloadId: null,
+    exportJSONStatus: null
   });
+
+  const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_DOWNLOAD_FILECONTEXT_JOB_ID });
+  const startEndState = reducer(previous, startAction);
+  assert.deepEqual(startEndState.exportJSONStatus, 'streaming');
+
   const newAction = makePackAction(LIFECYCLE.SUCCESS, {
     type: ACTION_TYPES.FETCH_DOWNLOAD_FILECONTEXT_JOB_ID,
     payload: { data: { id: 123123 } }

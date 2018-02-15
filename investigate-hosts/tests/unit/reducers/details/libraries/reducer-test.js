@@ -42,8 +42,14 @@ test('The SET_DLLS_SELECTED_ROW will sets the selected row to state', function(a
 
 test('The FETCH_FILE_CONTEXT_DLLS sets normalized server response to state', function(assert) {
   const previous = Immutable.from({
-    library: null
+    library: null,
+    libraryLoadingStatus: null
   });
+
+  const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_FILE_CONTEXT_DLLS });
+  const startEndState = reducer(previous, startAction);
+  assert.deepEqual(startEndState.libraryLoadingStatus, 'wait');
+
   const action = makePackAction(LIFECYCLE.SUCCESS, {
     type: ACTION_TYPES.FETCH_FILE_CONTEXT_DLLS,
     payload: { data: libraries }
@@ -51,4 +57,22 @@ test('The FETCH_FILE_CONTEXT_DLLS sets normalized server response to state', fun
 
   const endState = reducer(previous, action);
   assert.deepEqual(_.values(endState.library).length, 8);
+});
+
+test('The GET_LIBRARY_PROCESS_INFO process information to the state', function(assert) {
+  const previous = Immutable.from({
+    processList: null
+  });
+
+  const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.GET_LIBRARY_PROCESS_INFO });
+  const startEndState = reducer(previous, startAction);
+  assert.deepEqual(startEndState.processList, null);
+
+  const action = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.GET_LIBRARY_PROCESS_INFO,
+    payload: { data: new Array(10) }
+  });
+
+  const endState = reducer(previous, action);
+  assert.deepEqual(_.values(endState.processList).length, 10);
 });
