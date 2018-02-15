@@ -4,9 +4,6 @@ import { connect } from 'ember-redux';
 import { isSchemaLoaded } from 'investigate-files/reducers/schema/selectors';
 import { hasFiles } from 'investigate-files/reducers/file-list/selectors';
 import {
-  addSystemFilter,
-  resetFilters,
-  getPageOfFiles,
   fetchSchemaInfo,
   resetDownloadId
 } from 'investigate-files/actions/data-creators';
@@ -14,14 +11,10 @@ import {
 const stateToComputed = (state) => ({
   isSchemaLoaded: isSchemaLoaded(state),
   areFilesLoading: state.files.fileList.areFilesLoading,
-  hasFiles: hasFiles(state),
-  filesFilters: state.files.filter.fileFilters
+  hasFiles: hasFiles(state)
 });
 
 const dispatchToActions = {
-  addSystemFilter,
-  resetFilters,
-  getPageOfFiles,
   fetchSchemaInfo,
   resetDownloadId
 };
