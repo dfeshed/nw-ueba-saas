@@ -62,7 +62,7 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
 
         // save alerts
         Iterable<Alert> savedAlerts = alertRepository.save(alerts);
-        logger.debug("{} alerts were saved", alerts.size());
+        logger.info("{} alerts were saved", alerts.size());
 
         // save indicators
         List<Indicator> indicators = new ArrayList<Indicator>();
@@ -74,23 +74,19 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
             Iterable<List<Indicator>> indicatorsSubSets = Iterables.partition(indicators, indicatorsStorePageSize);
             indicatorsSubSets.forEach(indicatorsPartition -> indicatorRepository.save(indicatorsPartition));
         }
-        logger.debug("{} indicators were saved", indicators.size());
+        logger.info("{} indicators were saved", indicators.size());
 
         // save events
         List<IndicatorEvent> events = new ArrayList<IndicatorEvent>();
-        for (Indicator indicator: indicators) {
-            if(CollectionUtils.isNotEmpty(indicator.getEvents())) {
-                events.addAll(indicator.getEvents());
-            }
-            //saving events divided into chunks-
-            if(events.size() >= eventsStorePageSize) {
-                indicatorEventRepository.save(events);
-                events.clear();
-            }
+        indicators.stream()
+                .filter(indicator -> indicator.getEvents() != null)
+                .forEach(indicator -> events.addAll(indicator.getEvents()));
+        if (CollectionUtils.isNotEmpty(events)) {
+            //dividing events list to chunks-
+            Iterable<List<IndicatorEvent>> eventsSubSets = Iterables.partition(events, indicatorsStorePageSize);
+            eventsSubSets.forEach(eventsPartition -> indicatorEventRepository.save(eventsPartition));
         }
-        if(! events.isEmpty()) {
-            indicatorEventRepository.save(events);
-        }
+        logger.info("{} events were saved", events.size());
 
         return savedAlerts;
     }
