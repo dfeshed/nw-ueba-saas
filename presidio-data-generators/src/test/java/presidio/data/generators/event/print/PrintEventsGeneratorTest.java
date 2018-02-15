@@ -87,8 +87,8 @@ public class PrintEventsGeneratorTest {
         generator.setPrintFileOperationGenerator(printFileOperationGenerator);
         events = generator.generate();
 
-        Assert.assertEquals(events.get(0).getPrintLogOperation().getNumOfPages(), 10);
-        Assert.assertEquals(events.get(100).getPrintLogOperation().getNumOfPages(), 10);
+        Assert.assertEquals(events.get(0).getPrintLogOperation().getNumOfPages().longValue(), 10);
+        Assert.assertEquals(events.get(100).getPrintLogOperation().getNumOfPages().longValue(), 10);
 
     }
 }
