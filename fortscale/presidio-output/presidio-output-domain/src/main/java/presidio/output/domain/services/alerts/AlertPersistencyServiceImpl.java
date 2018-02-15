@@ -83,7 +83,7 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
                 .forEach(indicator -> events.addAll(indicator.getEvents()));
         if (CollectionUtils.isNotEmpty(events)) {
             //dividing events list to chunks-
-            Iterable<List<IndicatorEvent>> eventsSubSets = Iterables.partition(events, indicatorsStorePageSize);
+            Iterable<List<IndicatorEvent>> eventsSubSets = Iterables.partition(events, eventsStorePageSize);
             eventsSubSets.forEach(eventsPartition -> indicatorEventRepository.save(eventsPartition));
         }
         logger.info("{} events were saved", events.size());
