@@ -18,7 +18,9 @@
         {{#rsa-form-button
           type="submit"
           style="primary"
-          isFullWidth=true}}
+          isFullWidth=true
+          testId="btnAcceptEula"
+          isDisabled=eulaContentPending}}
           {{t 'login.eula.agree'}}
         {{/rsa-form-button}}
       </form>

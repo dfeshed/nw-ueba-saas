@@ -1,6 +1,11 @@
 import { moduleForComponent, test, skip } from 'ember-qunit';
+import { later } from '@ember/runloop';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
+import Service from '@ember/service';
+import RSVP from 'rsvp';
+
+const { Promise } = RSVP;
 
 moduleForComponent('/rsa-routable-login', 'Integration | Component | rsa-routable-login', {
   integration: true
@@ -24,6 +29,50 @@ test('the submit is enabled after entering values', function(assert) {
 test('eula can be displayed', function(assert) {
   this.render(hbs `{{rsa-routable-login displayEula=true}}`);
   assert.equal(this.$('.eula-content').length, 1);
+});
+
+test('eula button disabled when eulaContent not available (enabled after xhr done)', function(assert) {
+  const AjaxService = Service.extend({
+    request: () => {
+      return new Promise(function(resolve) {
+        later(() => {
+          resolve('<h1>eula</h1>');
+        }, 1);
+      });
+    }
+  });
+  this.registry.register('service:ajax', AjaxService);
+  this.inject.service('ajax');
+
+  this.render(hbs `{{rsa-routable-login displayEula=true}}`);
+  assert.equal(this.$('.eula-content').length, 1);
+  assert.ok(this.$('[test-id=btnAcceptEula] button').is(':disabled'));
+
+  return wait().then(() => {
+    assert.notOk(this.$('[test-id=btnAcceptEula] button').is(':disabled'));
+  });
+});
+
+test('eula button disabled when eulaContent not available (even after xhr fail)', function(assert) {
+  const AjaxService = Service.extend({
+    request: () => {
+      return new Promise(function(resolve, reject) {
+        later(() => {
+          reject('boom!');
+        }, 1);
+      });
+    }
+  });
+  this.registry.register('service:ajax', AjaxService);
+  this.inject.service('ajax');
+
+  this.render(hbs `{{rsa-routable-login displayEula=true}}`);
+  assert.equal(this.$('.eula-content').length, 1);
+  assert.ok(this.$('[test-id=btnAcceptEula] button').is(':disabled'));
+
+  return wait().then(() => {
+    assert.ok(this.$('[test-id=btnAcceptEula] button').is(':disabled'));
+  });
 });
 
 test('eula can be bypassed', function(assert) {
