@@ -23,6 +23,7 @@ import fortscale.ml.scorer.config.ScorerConfService;
 import fortscale.ml.scorer.config.ScorerContainerConf;
 import fortscale.utils.factory.FactoryService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.test.category.ModuleTestCategory;
 import fortscale.utils.time.TimeService;
 import org.junit.Assert;
@@ -122,9 +123,9 @@ public class ScoreAggregationsApplicationTest extends EnrichedFileSourceBaseAppT
 
             String strategyName = conf.getBucketConf().getStrategyName();
             boolean isHourly = FixedDurationStrategy.fromStrategyName(strategyName).equals(FixedDurationStrategy.HOURLY);
-            return (isScoreAggregationConf && isHourly && conf.getName().contains("File"));
+            return (isScoreAggregationConf && isHourly && conf.getName().endsWith("FileHourly"));
         }).collect(Collectors.toList());
-
+        Assert.assertTrue("Did not find any hourly score aggregation record confs of the File schema.", hourlyScoreAggrConfs.size() > 0);
         hourlyScoreAggrConfs.forEach(conf -> {
             AggrRecordsMetadata metadata = new AggrRecordsMetadata(conf.getName(), AggregatedFeatureType.SCORE_AGGREGATION);
 
@@ -211,7 +212,7 @@ public class ScoreAggregationsApplicationTest extends EnrichedFileSourceBaseAppT
 
             List<ModelDAO> modelDAOS = modelDaoGenerator.generate();
             Assert.assertFalse("generator is expected to generate at least one model", modelDAOS.isEmpty());
-            modelDAOS.forEach(modelDAO -> modelStore.save(conf, modelDAO));
+            modelDAOS.forEach(modelDAO -> modelStore.save(conf, modelDAO, new StoreMetadataProperties()));
         }
     }
 

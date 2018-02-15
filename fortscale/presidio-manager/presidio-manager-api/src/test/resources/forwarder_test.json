@@ -1,0 +1,13 @@
+{
+  "enableForwarding": "true",
+  "syslog": {
+    "alert": {
+      "host": "test",
+      "port": "1"
+    },
+    "user": {
+      "host": "testTest",
+      "port": "2"
+    }
+  }
+}

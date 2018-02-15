@@ -455,10 +455,10 @@
         "FILE_PERMISSION_CHANGE"
       ],
       "FAILED_FOLDER_ACCESS": [
-        "FILE_PERMISSION_CHANGE"
+        "FILE_ACTION"
       ],
       "FAILED_FILE_ACCESS": [
-        "FILE_PERMISSION_CHANGE"
+        "FILE_ACTION"
       ],
       "FILE_CONTENTS_WRITTEN": [
         "FILE_ACTION"

@@ -6,8 +6,6 @@
       "bucketConfName": "highestStartInstantScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "highestStartInstantScore"
@@ -23,8 +21,6 @@
       "bucketConfName": "operationTypeToHighestScoreMapUserIdGroupMembershipSecuritySensitiveActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "operationTypeToHighestScoreMap"
@@ -40,8 +36,6 @@
       "bucketConfName": "operationTypeToHighestScoreMapUserIdObjectManagementActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "operationTypeToHighestScoreMap"
@@ -57,17 +51,13 @@
       "bucketConfName": "adminPasswordChangedScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "adminPasswordChangedScore"
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_map_values_max_sum_func",
-        "includeValues": true,
-        "minScoreToInclude": 1
+        "type": "aggr_feature_map_values_max_sum_func"
       }
     },
     {
@@ -76,17 +66,13 @@
       "bucketConfName": "nonAdminPasswordChangedScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "nonAdminPasswordChangedScore"
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_map_values_max_sum_func",
-        "includeValues": true,
-        "minScoreToInclude": 1
+        "type": "aggr_feature_map_values_max_sum_func"
       }
     },
     {
@@ -95,57 +81,43 @@
       "bucketConfName": "userAccountEnabledScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "userAccountEnabledScore"
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_map_values_max_sum_func",
-        "includeValues": true,
-        "minScoreToInclude": 1
+        "type": "aggr_feature_map_values_max_sum_func"
       }
     },
-
     {
       "name": "userAccountDisabledScoreUserIdActiveDirectoryHourly",
       "type": "P",
       "bucketConfName": "userAccountDisabledScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "userAccountDisabledScore"
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_map_values_max_sum_func",
-        "includeValues": true,
-        "minScoreToInclude": 1
+        "type": "aggr_feature_map_values_max_sum_func"
       }
     },
-
     {
       "name": "userAccountUnlockedScoreUserIdActiveDirectoryHourly",
       "type": "P",
       "bucketConfName": "userAccountUnlockedScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "userAccountUnlockedScore"
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_map_values_max_sum_func",
-        "includeValues": true,
-        "minScoreToInclude": 1
+        "type": "aggr_feature_map_values_max_sum_func"
       }
     },
     {
@@ -154,17 +126,13 @@
       "bucketConfName": "userAccountTypeChangedScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "userAccountTypeChangedScore"
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_map_values_max_sum_func",
-        "includeValues": true,
-        "minScoreToInclude": 1
+        "type": "aggr_feature_map_values_max_sum_func"
       }
     },
     {
@@ -173,17 +141,13 @@
       "bucketConfName": "userAccountLockedScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "userAccountLockedScore"
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_map_values_max_sum_func",
-        "includeValues": true,
-        "minScoreToInclude": 1
+        "type": "aggr_feature_map_values_max_sum_func"
       }
     },
     {
@@ -192,17 +156,13 @@
       "bucketConfName": "userPasswordNeverExpiresOptionChangedScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "userPasswordNeverExpiresOptionChangedScore"
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_map_values_max_sum_func",
-        "includeValues": true,
-        "minScoreToInclude": 1
+        "type": "aggr_feature_map_values_max_sum_func"
       }
     },
     {
@@ -211,17 +171,13 @@
       "bucketConfName": "passwordChangedByNonOwnerScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "passwordChangedByNonOwnerScore"
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_map_values_max_sum_func",
-        "includeValues": true,
-        "minScoreToInclude": 1
+        "type": "aggr_feature_map_values_max_sum_func"
       }
     },
     {
@@ -230,17 +186,13 @@
       "bucketConfName": "memberAddedToCriticalEnterpriseGroupScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": " ",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "memberAddedToCriticalEnterpriseGroupScore"
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_map_values_max_sum_func",
-        "includeValues": true,
-        "minScoreToInclude": 1
+        "type": "aggr_feature_map_values_max_sum_func"
       }
     }
   ]

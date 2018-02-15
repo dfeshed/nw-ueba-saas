@@ -1,5 +1,6 @@
 package presidio.ade.domain.record.enriched.file;
 
+import fortscale.common.general.Schema;
 import fortscale.domain.feature.score.FeatureScore;
 import org.springframework.data.mongodb.core.mapping.Document;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
@@ -11,7 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Document
-@AdeScoredEnrichedMetadata(erichedRecord = EnrichedFileRecord.class)
+@AdeScoredEnrichedMetadata(enrichedRecord = EnrichedFileRecord.class)
 public class AdeScoredFileRecord extends AdeScoredEnrichedRecord<AdeEnrichedFileContext> {
     public AdeScoredFileRecord() {
         super();
@@ -23,7 +24,7 @@ public class AdeScoredFileRecord extends AdeScoredEnrichedRecord<AdeEnrichedFile
 
     @Override
     public List<String> getDataSources() {
-        return Collections.singletonList(AdeFileRecord.FILE_STR);
+        return Collections.singletonList(Schema.FILE.getName());
     }
 
     @Override

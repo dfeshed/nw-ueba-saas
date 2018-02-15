@@ -6,8 +6,6 @@
       "bucketConfName": "highest_date_time_score_normalized_username_dlpfile_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": "event_time",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "highest_date_time_score"
@@ -23,8 +21,6 @@
       "bucketConfName": "normalized_src_machine_to_highest_score_map_normalized_username_dlpfile_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": "normalized_src_machine",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "normalized_src_machine_to_highest_score_map"
@@ -32,8 +28,6 @@
       },
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_map_values_max_sum_func",
-        "includeValues": true,
-        "minScoreToInclude": 1,
         "pattern": "[0-9]",
         "replacement": "",
         "postCondition": "(.*[a-zA-Z]){5}.*"
@@ -45,8 +39,6 @@
       "bucketConfName": "highest_date_time_score_normalized_username_dlpfile_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": "event_time",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "highest_date_time_score"
@@ -62,8 +54,6 @@
       "bucketConfName": "normalized_src_machine_to_highest_score_map_normalized_username_dlpfile_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": "normalized_src_machine",
       "aggregatedFeatureNamesMap": {
         "pick": [
           "normalized_src_machine_to_highest_score_map"
@@ -71,8 +61,6 @@
       },
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_map_values_max_sum_func",
-        "includeValues": true,
-        "minScoreToInclude": 1,
         "pattern": "[0-9]",
         "replacement": "",
         "postCondition": "(.*[a-zA-Z]){5}.*"

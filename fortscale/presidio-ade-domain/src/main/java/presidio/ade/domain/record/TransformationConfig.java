@@ -5,14 +5,22 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Created by barak_schuster on 6/29/17.
+ * @author Barak Schuster
+ * @author Lior Govrin
  */
 @Configuration
 public class TransformationConfig {
-    // TODO: Configure here all relevant transformations
+    /***********************************************
+     * Configure here all relevant transformations *
+     ***********************************************/
 
     @Bean
-    public EpochtimeTransformation epochtimeTransformation() {
+    public EpochtimeTransformation twoMinuteResolutionEpochtimeTransformation() {
         return new EpochtimeTransformation("two_minute_resolution_epochtime", "startInstant", 120);
+    }
+
+    @Bean
+    public EpochtimeTransformation oneHourResolutionEpochtimeTransformation() {
+        return new EpochtimeTransformation("one_hour_resolution_epochtime", "startInstant", 3600);
     }
 }

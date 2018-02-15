@@ -2,7 +2,6 @@
   "BucketConfs": [
     {
       "name": "highestStartInstantScoreUserIdActiveDirectoryHourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -26,7 +25,6 @@
     },
     {
       "name": "operationTypeToHighestScoreMapUserIdGroupMembershipSecuritySensitiveActiveDirectoryHourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -53,7 +51,6 @@
     },
     {
       "name": "operationTypeToHighestScoreMapUserIdObjectManagementActiveDirectoryHourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -80,7 +77,6 @@
     },
     {
       "name": "adminPasswordChangedScoreUserIdActiveDirectoryHourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -104,7 +100,6 @@
     },
     {
       "name": "nonAdminPasswordChangedScoreUserIdActiveDirectoryHourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -128,7 +123,6 @@
     },
     {
       "name": "userAccountEnabledScoreUserIdActiveDirectoryHourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -152,7 +146,6 @@
     },
     {
       "name": "userAccountDisabledScoreUserIdActiveDirectoryHourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -176,7 +169,6 @@
     },
     {
       "name": "userAccountUnlockedScoreUserIdActiveDirectoryHourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -200,7 +192,6 @@
     },
     {
       "name": "userAccountTypeChangedScoreUserIdActiveDirectoryHourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -224,7 +215,6 @@
     },
     {
       "name": "userAccountLockedScoreUserIdActiveDirectoryHourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -248,7 +238,6 @@
     },
     {
       "name": "userPasswordNeverExpiresOptionChangedScoreUserIdActiveDirectoryHourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -272,7 +261,6 @@
     },
     {
       "name": "passwordChangedByNonOwnerScoreUserIdActiveDirectoryHourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],
@@ -296,7 +284,6 @@
     },
     {
       "name": "memberAddedToCriticalEnterpriseGroupScoreUserIdActiveDirectoryHourly",
-      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "userId"
       ],

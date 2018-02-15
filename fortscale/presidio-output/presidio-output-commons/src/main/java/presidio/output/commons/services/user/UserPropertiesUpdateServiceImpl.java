@@ -2,7 +2,9 @@ package presidio.output.commons.services.user;
 
 import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
-import org.springframework.util.CollectionUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.util.ObjectUtils;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.users.User;
@@ -12,6 +14,7 @@ import presidio.output.domain.translator.OutputToCollectionNameTranslator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 
 public class UserPropertiesUpdateServiceImpl implements UserPropertiesUpdateService {
@@ -41,36 +44,44 @@ public class UserPropertiesUpdateServiceImpl implements UserPropertiesUpdateServ
         List<String> collectionNames = collectionNamesByOrderForEvents();
         EnrichedEvent enrichedEvent = eventPersistencyService.findLatestEventForUser(user.getUserId(), collectionNames);
         if (!ObjectUtils.isEmpty(enrichedEvent)) {
-            if (!user.getUserDisplayName().equals(enrichedEvent.getUserDisplayName())) {
+            if (!Objects.equals(user.getUserDisplayName(), enrichedEvent.getUserDisplayName())) {
                 user.setUserDisplayName(enrichedEvent.getUserDisplayName());
                 isUpdated = true;
             }
-            if (!user.getUserId().equals(enrichedEvent.getUserId())) {
+            if (!Objects.equals(user.getUserId(), enrichedEvent.getUserId()) && !StringUtils.isEmpty(enrichedEvent.getUserId())) {
                 user.setUserId(enrichedEvent.getUserId());
                 isUpdated = true;
             }
-            if (!user.getUserName().equals(enrichedEvent.getUserName())) {
+            if (!Objects.equals(user.getUserName(), enrichedEvent.getUserName())) {
                 user.setUserName(enrichedEvent.getUserName());
                 user.setUserDisplayNameSortLowercase(enrichedEvent.getUserName());
                 user.setIndexedUserName(enrichedEvent.getUserName());
                 isUpdated = true;
             }
-            List<String> enrichedEventTags = null;
             List<String> userTags = user.getTags();
-            if (!CollectionUtils.isEmpty(enrichedEvent.getAdditionalInfo()) && enrichedEvent.getAdditionalInfo().get(EnrichedEvent.IS_USER_ADMIN) != null
+
+            boolean isAdmin = false;
+            if (MapUtils.isNotEmpty(enrichedEvent.getAdditionalInfo()) && StringUtils.isNotEmpty(enrichedEvent.getAdditionalInfo().get(EnrichedEvent.IS_USER_ADMIN))
                     && Boolean.parseBoolean(enrichedEvent.getAdditionalInfo().get(EnrichedEvent.IS_USER_ADMIN))) {
-                enrichedEventTags = new ArrayList<>();
-                enrichedEventTags.add(TAG_ADMIN);
+                isAdmin = true;
             }
-            if ((CollectionUtils.isEmpty(enrichedEventTags) && !CollectionUtils.isEmpty(userTags))
-                    || (!CollectionUtils.isEmpty(enrichedEventTags) && CollectionUtils.isEmpty(userTags))) {
-                if (!CollectionUtils.isEmpty(enrichedEventTags)) {
-                    user.setTags(enrichedEventTags);
-                } else {
-                    user.setTags(null);
-                }
+
+            // If the user marked as admin but the last event arrived without the admin tag -> remove the admin tag
+            if (CollectionUtils.isNotEmpty(userTags) && userTags.contains(TAG_ADMIN) && !isAdmin) {
+                userTags.remove(TAG_ADMIN);
                 isUpdated = true;
+            } else if (isAdmin) {
+                if (userTags == null) {
+                    userTags = new ArrayList<>();
+                    user.setTags(userTags);
+                }
+                // If the user wasn't as admin but the last event arrived with the admin tag -> add the admin tag
+                if (!userTags.contains(TAG_ADMIN)) {
+                    userTags.add(TAG_ADMIN);
+                    isUpdated = true;
+                }
             }
+
         } else {
             log.debug("No events where found for this user , therefore cannot update user properties accordingly to latest event");
         }

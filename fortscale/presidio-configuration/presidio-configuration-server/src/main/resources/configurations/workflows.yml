@@ -11,7 +11,7 @@ dags:
       - userId_hourly
       data_sources: ${dataPipeline.schemas}
       command: run
-      enable_output_forwarder: False
+      enable_output_forwarder: ${outputForwarding.enableForwarding}
     schedule_interval: timedelta(hours=1)
     start_date: ${dataPipeline.startTime}
 
@@ -68,18 +68,21 @@ dags:
         main_class: presidio.ade.processes.shell.feature.aggregation.buckets.ModelFeatureAggregationBucketsApplication
         xmx: 1024
         xms: 1024
+        extra_jvm: -XX:+UseG1GC -XX:G1RSetUpdatingPauseTimePercent=5
     RawModelOperator:
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-modeling-*.jar
         main_class: presidio.ade.modeling.ModelingServiceApplication
         xmx: 1024
         xms: 1024
+        extra_jvm: -XX:+UseG1GC -XX:G1RSetUpdatingPauseTimePercent=5
     AggrModelAccumulateAggregationsOperator:
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-accumulate-aggr-*.jar
         main_class: presidio.ade.processes.shell.AccumulateAggregationsApplication
         xmx: 1024
         xms: 1024
+        extra_jvm: -XX:+UseG1GC -XX:G1RSetUpdatingPauseTimePercent=5
     AggrModelOperator:
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-modeling-*.jar
@@ -96,14 +99,15 @@ dags:
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-modeling-*.jar
         main_class: presidio.ade.modeling.ModelingServiceApplication
-        xmx: 1024
-        xms: 1024
+        xmx: 2048
+        xms: 2048
+        extra_jvm: -XX:+UseG1GC -XX:G1RSetUpdatingPauseTimePercent=5
     AdeManagerOperator:
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-manager-*.jar
         main_class: presidio.ade.manager.AdeManagerApplication
-        xmx: 1024
-        xms: 1024
+        xmx: 512
+        xms: 512
 components:
   adapter:
     jvm_args:

@@ -101,17 +101,6 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 		return ret != null ? ret : Collections.emptyList();
 	}
 
-	public String getAnomalyType(String aggregatedFeatureName) {
-		for (AggregatedFeatureEventConf aggregatedFeatureEventConf : aggregatedFeatureEventConfList) {
-			if (aggregatedFeatureEventConf.getName().equals(aggregatedFeatureName)) {
-				return aggregatedFeatureEventConf.getAnomalyType();
-			}
-		}
-
-		// nothing found
-		return null;
-	}
-
 	public Collection<AggregatedFeatureEventConf> getAggregatedFeatureEventConfs(
 			List<String> contextFieldNames, FixedDurationStrategy fixedDurationStrategy) {
 

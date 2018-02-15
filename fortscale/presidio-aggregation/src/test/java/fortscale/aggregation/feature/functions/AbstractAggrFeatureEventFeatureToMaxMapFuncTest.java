@@ -45,7 +45,7 @@ public class AbstractAggrFeatureEventFeatureToMaxMapFuncTest {
         StringBuilder builder = new StringBuilder();
         for(String feature: features){
             if(builder.length() > 0){
-                builder.append(AggrFeatureFeatureToMaxMapFunc.FEATURE_GROUP_SEPERATOR_KEY);
+                builder.append(AggrFeatureFeatureToMaxMapFunc.FEATURE_GROUP_SEPARATOR_KEY);
             }
             builder.append(feature);
         }

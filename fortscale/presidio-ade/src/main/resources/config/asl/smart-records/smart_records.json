@@ -11,7 +11,11 @@
         "numberOfDistinctSrcMachineIdUserIdAuthenticationHourly",
         "numberOfDistinctDstMachineIdUserIdAuthenticationHourly",
         "numberOfDistinctDstMachineDomainUserIdAuthenticationHourly",
-        "numberOfDistinctDstMachineNameRegexClusterUserIdAuthenticationHourly"
+        "numberOfDistinctDstMachineNameRegexClusterUserIdAuthenticationHourly",
+        "sumOfHighestDstMachineIdScoresUserIdPrintHourly",
+        "numberOfFailedPrintsUserIdPrintHourly",
+        "numberOfDistinctSrcMachineIdUserIdPrintHourly",
+        "numberOfDistinctDstMachineNameRegexClusterUserIdPrintHourly"
       ],
       "defaultWeight": 0.5
     }

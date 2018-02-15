@@ -13,12 +13,13 @@ import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.builder.CategoryRarityModelBuilderConf;
 import fortscale.ml.model.builder.IModelBuilderConf;
 import fortscale.ml.model.builder.TimeModelBuilderConf;
-import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
-import fortscale.ml.model.retriever.CategoricalFeatureValueRetrieverConf;
-import fortscale.ml.model.retriever.ContextHistogramRetrieverConf;
+import fortscale.ml.model.builder.gaussian.ContinuousMaxHistogramModelBuilderConf;
+import fortscale.ml.model.builder.gaussian.prior.GaussianPriorModelBuilderConf;
+import fortscale.ml.model.retriever.*;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.test.category.ModuleTestCategory;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -32,6 +33,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.util.Assert;
 import presidio.ade.modeling.config.ModelingServiceApplicationModuleTestConfig;
 import presidio.ade.test.utils.generators.feature_buckets.FeatureBucketEpochtimeMapGenerator;
+import presidio.ade.test.utils.generators.feature_buckets.FeatureBucketEpochtimeToHighestIntegerMapGenerator;
 import presidio.ade.test.utils.generators.feature_buckets.FeatureBucketGenerator;
 import presidio.ade.test.utils.tests.BaseAppTest;
 import presidio.data.generators.common.*;
@@ -73,6 +75,8 @@ public class ModelingServiceApplicationEnrichedRecordsModuleTest extends BaseApp
 
     private Model expectedModel1;
     private Model expectedModel2;
+    private Model expectedModel3;
+    private Model expectedModel4;
     private List<ModelConf> modelConfs;
 
     @Override
@@ -98,6 +102,8 @@ public class ModelingServiceApplicationEnrichedRecordsModuleTest extends BaseApp
         ObjectMapper om = new ObjectMapper();
         expectedModel1 = om.readValue(filenameToResourceMap.get("expected_model_1.json").getURL(), Model.class);
         expectedModel2 = om.readValue(filenameToResourceMap.get("expected_model_2.json").getURL(), Model.class);
+        expectedModel3 = om.readValue(filenameToResourceMap.get("expected_model_3.json").getURL(), Model.class);
+        expectedModel4 = om.readValue(filenameToResourceMap.get("expected_model_4.json").getURL(), Model.class);
     }
 
     private void arrangeData() throws GeneratorException {
@@ -116,6 +122,10 @@ public class ModelingServiceApplicationEnrichedRecordsModuleTest extends BaseApp
                 generateDataForContextHistogramRetrieverAndTimeModelBuilder((ContextHistogramRetrieverConf)retrieverConf);
             } else if (retrieverConf instanceof CategoricalFeatureValueRetrieverConf && builderConf instanceof CategoryRarityModelBuilderConf) {
                 generateDataForCategoricalFeatureValueRetrieverAndCategoryRarityModelBuilder((CategoricalFeatureValueRetrieverConf)retrieverConf);
+            } else if (retrieverConf instanceof EpochtimeToHighestIntegerMapRetrieverConf && builderConf instanceof ContinuousMaxHistogramModelBuilderConf) {
+                generateDataForEpochtimeToHighestIntegerMapRetrieverAndContinuousMaxHistogramModelBuilder((EpochtimeToHighestIntegerMapRetrieverConf)retrieverConf);
+            } else if (retrieverConf instanceof ModelRetrieverConf && builderConf instanceof GaussianPriorModelBuilderConf) {
+                // No need to generate data, since the model retriever takes the contextual models built by the ContinuousMaxHistogramModelBuilder
             } else {
                 String s = String.format(UNSUPPORTED_MODEL_CONF_MESSAGE_FORMAT, modelConf.getName());
                 throw new IllegalArgumentException(s);
@@ -131,21 +141,21 @@ public class ModelingServiceApplicationEnrichedRecordsModuleTest extends BaseApp
             List<Model> models = modelStore.getAllContextsModelDaosWithLatestEndTimeLte(modelConf, endInstant).stream()
                     .map(ModelDAO::getModel)
                     .collect(Collectors.toList());
-            /*
-             * Note:
-             * =====
-             * Currently all the models are of a single context, so 50 models are expected for each conf
-             * (consistent with the generators of the context field values). When multiple context models
-             * are added, this "magic number" should be changed with a logical calculation.
-             */
-            Assert.isTrue(models.size() == 50, unexpectedNumMessage);
             AbstractDataRetrieverConf retrieverConf = modelConf.getDataRetrieverConf();
             IModelBuilderConf builderConf = modelConf.getModelBuilderConf();
 
             if (retrieverConf instanceof ContextHistogramRetrieverConf && builderConf instanceof TimeModelBuilderConf) {
+                Assert.isTrue(models.size() == 50, unexpectedNumMessage);
                 models.forEach(model -> Assert.isTrue(model.equals(expectedModel1), unexpectedModelMessage));
             } else if (retrieverConf instanceof CategoricalFeatureValueRetrieverConf && builderConf instanceof CategoryRarityModelBuilderConf) {
+                Assert.isTrue(models.size() == 50, unexpectedNumMessage);
                 models.forEach(model -> Assert.isTrue(model.equals(expectedModel2), unexpectedModelMessage));
+            } else if (retrieverConf instanceof EpochtimeToHighestIntegerMapRetrieverConf && builderConf instanceof ContinuousMaxHistogramModelBuilderConf) {
+                Assert.isTrue(models.size() == 50, unexpectedNumMessage);
+                models.forEach(model -> Assert.isTrue(model.equals(expectedModel3), unexpectedModelMessage));
+            } else if (retrieverConf instanceof ModelRetrieverConf && builderConf instanceof GaussianPriorModelBuilderConf) {
+                Assert.isTrue(models.size() == 1, unexpectedNumMessage);
+                models.forEach(model -> Assert.isTrue(model.equals(expectedModel4), unexpectedModelMessage));
             } else {
                 String s = String.format(UNSUPPORTED_MODEL_CONF_MESSAGE_FORMAT, modelConfName);
                 throw new IllegalArgumentException(s);
@@ -178,7 +188,7 @@ public class ModelingServiceApplicationEnrichedRecordsModuleTest extends BaseApp
 
         // Generate and store the feature buckets
         List<FeatureBucket> featureBuckets = featureBucketGenerator.generate();
-        featureBucketStore.storeFeatureBucket(featureBucketConf, featureBuckets);
+        featureBucketStore.storeFeatureBucket(featureBucketConf, featureBuckets, new StoreMetadataProperties());
     }
 
     private void generateDataForContextHistogramRetrieverAndTimeModelBuilder(ContextHistogramRetrieverConf retrieverConf) throws GeneratorException {
@@ -203,6 +213,18 @@ public class ModelingServiceApplicationEnrichedRecordsModuleTest extends BaseApp
         fixedMap.put(featureName, new Feature(featureName, genericHistogram));
         IMapGenerator<String, Feature> aggregatedFeaturesGenerator = new CyclicMapGenerator<>(Collections.singletonList(fixedMap));
         generateFeatureBuckets(retrieverConf.getTimeRangeInSeconds(), featureBucketConf, aggregatedFeaturesGenerator);
+    }
+
+    private void generateDataForEpochtimeToHighestIntegerMapRetrieverAndContinuousMaxHistogramModelBuilder(EpochtimeToHighestIntegerMapRetrieverConf retrieverConf) throws GeneratorException {
+        FeatureBucketConf featureBucketConf = bucketConfigurationService.getBucketConf(retrieverConf.getFeatureBucketConfName());
+        Duration interval = FixedDurationStrategy.fromStrategyName(featureBucketConf.getStrategyName()).toDuration();
+        Duration diffBetweenDeltas = interval.dividedBy(NUM_OF_FEATURES_IN_INTERVAL);
+        Map<Duration, Long> deltaToCountMap = new HashMap<>();
+        for (int i = 0; i < NUM_OF_FEATURES_IN_INTERVAL; i++)
+            deltaToCountMap.put(diffBetweenDeltas.multipliedBy(i), COUNTS_PER_FEATURE_IN_INTERVAL);
+        long timeRangeInSeconds = retrieverConf.getTimeRangeInSeconds();
+        FeatureBucketEpochtimeToHighestIntegerMapGenerator featureBucketEpochtimeToHighestIntegerMapGenerator = new FeatureBucketEpochtimeToHighestIntegerMapGenerator(endInstant.minusSeconds(timeRangeInSeconds), interval, deltaToCountMap, retrieverConf.getFeatureName());
+        generateFeatureBuckets(timeRangeInSeconds, featureBucketConf, featureBucketEpochtimeToHighestIntegerMapGenerator);
     }
 
     @Configuration

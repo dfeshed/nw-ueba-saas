@@ -1,5 +1,6 @@
 package presidio.ade.domain.record.enriched.dlpfile;
 
+import fortscale.common.general.Schema;
 import fortscale.domain.feature.score.FeatureScore;
 import org.springframework.data.mongodb.core.mapping.Document;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
@@ -14,7 +15,7 @@ import java.util.List;
  * @author Yaron DL
  */
 @Document
-@AdeScoredEnrichedMetadata(erichedRecord = EnrichedDlpFileRecord.class)
+@AdeScoredEnrichedMetadata(enrichedRecord = EnrichedDlpFileRecord.class)
 public class AdeScoredDlpFileRecord extends AdeScoredEnrichedRecord<AdeEnrichedDlpFileContext> {
     public AdeScoredDlpFileRecord(Instant date_time, String featureName, String featureEventType, Double score, List<FeatureScore> featureScoreList, EnrichedRecord enrichedRecord) {
         super(date_time, featureName, featureEventType, score, featureScoreList, enrichedRecord);
@@ -22,7 +23,7 @@ public class AdeScoredDlpFileRecord extends AdeScoredEnrichedRecord<AdeEnrichedD
 
     @Override
     public List<String> getDataSources() {
-        return Collections.singletonList(AdeDlpFileRecord.DLP_FILE_STR);
+        return Collections.singletonList(Schema.DLPFILE.getName());
     }
 
     @Override

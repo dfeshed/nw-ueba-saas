@@ -1,6 +1,7 @@
 package presidio.ade.test.utils.generators;
 
 import fortscale.common.general.Schema;
+import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeService;
 import presidio.ade.domain.record.enriched.file.EnrichedFileRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataStore;
@@ -80,7 +81,7 @@ public class EnrichedFileGenerator implements EventsGenerator<EnrichedFileRecord
         List<EnrichedFileRecord> enrichedRecords = converter.convert(event);
         EnrichedRecordsMetadata enrichedRecordsMetadata = new EnrichedRecordsMetadata(ADE_EVENT_TYPE.getName(), START_DATE, END_DATE);
 
-        enrichedDataStore.store(enrichedRecordsMetadata, enrichedRecords);
+        enrichedDataStore.store(enrichedRecordsMetadata, enrichedRecords, new StoreMetadataProperties());
         return enrichedRecords;
     }
 

@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.forwarder.manager.service.ConfigurationForwarderService;
 import presidio.manager.airlfow.service.ConfigurationAirflowService;
 import presidio.manager.api.records.PresidioManagerConfiguration;
 import presidio.manager.api.records.ValidationResults;
@@ -26,20 +27,29 @@ public class ConfigurationProcessingMngServiceTest {
     private JsonNode goodPresidioConfiguration;
     private JsonNode presidioConfigurationOnlySystem;
     private JsonNode dataPipeLineWithThreeFields;
+    private JsonNode forwarderBadParam;
+    private JsonNode forwarderEnableTrueMissingSyslog;
+    private JsonNode forwarderMissingOutputForwarder;
+    private JsonNode forwarderFalseAndSyslogInOutputConfiguration;
+    private JsonNode forwarderFalseAndWithoutSyslog;
     private JsonNode dataPipeLineWithInvalidSchema;
     private JsonNode jsonWithGeneralError;
     @Autowired
     private ApplicationContext ctx;
 
-
     @Before
     public void setNodes() {
         goodPresidioConfiguration = setJson("valid_configuration.json");
+        forwarderBadParam = setJson("invalid_forwarder_configuration_missing_params.json");
         presidioConfigurationOnlySystem = setJson("invalid_configuration_only_system.json");
         dataPipeLineWithThreeFields = setJson("invalid_configuration_data_pipe_line_with_three_fields.json");
-        dataPipeLineWithInvalidSchema = setJson("invalid_configuratoin_bad_schema.json");
+        dataPipeLineWithInvalidSchema = setJson("invalid_configuration_bad_schema.json");
         jsonWithGeneralError = setJson("invalid_configuration_general_error.json");
-        configurationManagerService = new ConfigurationManagerService(new ConfigurationAirflowService(null, "workflows", null, null), new ConfigurationSecurityService(null, null, "/tmp/httpdtest.conf", "/tmp/krb5test.conf", false));
+        forwarderEnableTrueMissingSyslog = setJson("invalid_configuration_enableForwarding_true.json");
+        forwarderMissingOutputForwarder = setJson("invalid_configuration_missing_outputForwarder.json");
+        forwarderFalseAndSyslogInOutputConfiguration = setJson("invalid_configuration_false_and_syslog.json");
+        forwarderFalseAndWithoutSyslog = setJson("valid_configuration_enableForwarder_false.json");
+        configurationManagerService = new ConfigurationManagerService(new ConfigurationAirflowService(null, "workflows", null, null), new ConfigurationSecurityService(null, null, "/tmp/httpdtest.conf", "/tmp/krb5test.conf", false), new ConfigurationForwarderService());
     }
 
     @Test
@@ -58,14 +68,14 @@ public class ConfigurationProcessingMngServiceTest {
     public void generalErrorConfiguration() {
         PresidioManagerConfiguration presidioManagerConfiguration = configurationManagerService.presidioManagerConfigurationFactory(jsonWithGeneralError);
         ValidationResults validationResults = configurationManagerService.validateConfiguration(presidioManagerConfiguration);
-        Assert.assertEquals(2, validationResults.getErrorsList().size());
+        Assert.assertEquals(3, validationResults.getErrorsList().size());
     }
 
     @Test
     public void invalidPresidioConfigurationOnlySystem() {
         PresidioManagerConfiguration presidioManagerConfiguration = configurationManagerService.presidioManagerConfigurationFactory(presidioConfigurationOnlySystem);
         ValidationResults validationResults = configurationManagerService.validateConfiguration(presidioManagerConfiguration);
-        Assert.assertEquals(1, validationResults.getErrorsList().size());
+        Assert.assertEquals(2, validationResults.getErrorsList().size());
     }
 
     @Test
@@ -80,6 +90,41 @@ public class ConfigurationProcessingMngServiceTest {
         PresidioManagerConfiguration presidioManagerConfiguration = configurationManagerService.presidioManagerConfigurationFactory(dataPipeLineWithThreeFields);
         ValidationResults validationResults = configurationManagerService.validateConfiguration(presidioManagerConfiguration);
         Assert.assertEquals(1, validationResults.getErrorsList().size());
+    }
+
+    @Test
+    public void invalidConfigurationForwarder() {
+        PresidioManagerConfiguration presidioManagerConfiguration = configurationManagerService.presidioManagerConfigurationFactory(forwarderBadParam);
+        ValidationResults validationResults = configurationManagerService.validateConfiguration(presidioManagerConfiguration);
+        Assert.assertEquals(2, validationResults.getErrorsList().size());
+    }
+
+    @Test
+    public void forwarderEnableTrueMissingSyslog() {
+        PresidioManagerConfiguration presidioManagerConfiguration = configurationManagerService.presidioManagerConfigurationFactory(forwarderEnableTrueMissingSyslog);
+        ValidationResults validationResults = configurationManagerService.validateConfiguration(presidioManagerConfiguration);
+        Assert.assertEquals(1, validationResults.getErrorsList().size());
+    }
+
+    @Test
+    public void forwarderMissingOutputForwarder() {
+        PresidioManagerConfiguration presidioManagerConfiguration = configurationManagerService.presidioManagerConfigurationFactory(forwarderMissingOutputForwarder);
+        ValidationResults validationResults = configurationManagerService.validateConfiguration(presidioManagerConfiguration);
+        Assert.assertEquals(1, validationResults.getErrorsList().size());
+    }
+
+    @Test
+    public void forwarderFalseAndSyslogInOutputConfiguration() {
+        PresidioManagerConfiguration presidioManagerConfiguration = configurationManagerService.presidioManagerConfigurationFactory(forwarderFalseAndSyslogInOutputConfiguration);
+        ValidationResults validationResults = configurationManagerService.validateConfiguration(presidioManagerConfiguration);
+        Assert.assertEquals(1, validationResults.getErrorsList().size());
+    }
+
+    @Test
+    public void forwarderFalseAndWithoutSyslog() {
+        PresidioManagerConfiguration presidioManagerConfiguration = configurationManagerService.presidioManagerConfigurationFactory(forwarderFalseAndWithoutSyslog);
+        ValidationResults validationResults = configurationManagerService.validateConfiguration(presidioManagerConfiguration);
+        Assert.assertEquals(0, validationResults.getErrorsList().size());
     }
 
     private JsonNode setJson(String name) {

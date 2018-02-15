@@ -6,7 +6,6 @@
       "bucketConfName": "resultHistogramUserIdAuthenticationHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "resultHistogram"
@@ -23,7 +22,6 @@
       "bucketConfName": "resultHistogramUserIdAuthenticationHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "resultHistogram"
@@ -40,15 +38,13 @@
       "bucketConfName": "dstMachineDomainHistogramUserIdAuthenticationHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "distinctDstMachineDomainHistogram"
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_distinct_values_counter_func",
-        "includeValues": false
+        "type": "aggr_feature_distinct_values_counter_func"
       }
     },
     {
@@ -57,15 +53,13 @@
       "bucketConfName": "srcMachineIdHistogramUserIdAuthenticationHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "distinctSrcMachineIdHistogram"
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_distinct_values_counter_func",
-        "includeValues": false
+        "type": "aggr_feature_distinct_values_counter_func"
       }
     },
     {
@@ -74,15 +68,13 @@
       "bucketConfName": "dstMachineIdHistogramUserIdAuthenticationHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "distinctDstMachineIdHistogram"
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_distinct_values_counter_func",
-        "includeValues": false
+        "type": "aggr_feature_distinct_values_counter_func"
       }
     },
     {
@@ -91,15 +83,13 @@
       "bucketConfName": "srcMachineNameRegexClusterHistogramUserIdAuthenticationHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "distinctSrcMachineNameRegexClusterHistogram"
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_distinct_values_counter_func",
-        "includeValues": false
+        "type": "aggr_feature_distinct_values_counter_func"
       }
     },
     {
@@ -108,15 +98,13 @@
       "bucketConfName": "dstMachineNameRegexClusterHistogramUserIdAuthenticationHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "distinctDstMachineNameRegexClusterHistogram"
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_distinct_values_counter_func",
-        "includeValues": false
+        "type": "aggr_feature_distinct_values_counter_func"
       }
     },
     {
@@ -125,15 +113,13 @@
       "bucketConfName": "siteHistogramUserIdAuthenticationHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
       "aggregatedFeatureNamesMap": {
         "groupBy": [
           "distinctSiteHistogram"
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_distinct_values_counter_func",
-        "includeValues": false
+        "type": "aggr_feature_distinct_values_counter_func"
       }
     }
   ]
