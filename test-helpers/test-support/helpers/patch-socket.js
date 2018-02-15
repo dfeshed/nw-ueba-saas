@@ -2,6 +2,8 @@ import { Promise, all } from 'rsvp';
 import { registerWaiter } from '@ember/test';
 import { Socket } from 'streaming-data/services/data-access';
 
+const originalCreateStreamFunc = Socket.createStream;
+
 function waitForStop(stream) {
   let counter = 0;
   registerWaiter(() => counter === 0);
@@ -52,21 +54,49 @@ export function patchSocket(callback) {
   };
 }
 
-export function throwSocket() {
+export function revertPatch() {
+  Socket.createStream = originalCreateStreamFunc;
+}
+
+/**
+ * Patches the websocket createStream to simulate an exception. If the method/modelName of the specific websocket configuration
+ * is passed in (optional arguments), then the exception is only thrown for that method/modelName (e.g., stream/alerts),
+ * otherwise, the first socket connection request gets the exception
+ * @method throwSocket
+ * @param methodToThrow (optional)
+ * @param modelNameToThrow (optional)
+ * @returns function revertPatch() function for removing the patch in case it was never called during the test
+ * @public
+ */
+export function throwSocket(methodToThrow, modelNameToThrow) {
+  if (Socket.createStream !== originalCreateStreamFunc) {
+    throw 'A previous call to throwSocket() never reverted the patch after the test was completed. This may be because' +
+    'the specified web socket call (method/modelName) was never invoked. To fix this, call revertPatch() after your test' +
+    'is completed';
+  }
   const origFunc = Socket.createStream;
-  Socket.createStream = function() {
+  // If no methodToThrow or modelNameToThrow was provided, the next socket stream should throw an exception
+  const targetNextCall = !methodToThrow && !modelNameToThrow;
+
+  Socket.createStream = function(method, modelName) {
+    const isTargetedCall = targetNextCall || (method === methodToThrow && modelName === modelNameToThrow);
     const stream = origFunc.apply(this, arguments);
-    stream.fetchSocketClient = function() {
-      const reset = new Promise((resolve) => {
-        resolve();
-      }).then(() => {
-        Socket.createStream = origFunc;
-      });
-      const boom = new Promise((resolve, reject) => {
-        reject();
-      });
-      return all([reset, boom]);
-    };
-    return waitForError(stream);
+
+    if (isTargetedCall) {
+      stream.fetchSocketClient = function() {
+        const reset = new Promise((resolve) => {
+          resolve();
+        }).then(() => {
+          revertPatch();
+        });
+        const boom = new Promise((resolve, reject) => {
+          reject();
+        });
+        return all([reset, boom]);
+      };
+      return waitForError(stream);
+    }
+    return stream;
   };
+  return revertPatch;
 }
