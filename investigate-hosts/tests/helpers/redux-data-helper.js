@@ -165,6 +165,30 @@ export default class DataHelper {
     _set(this.state, 'detailsInput.agentId', id);
     return this;
   }
+  fileSearchResults(data) {
+    _set(this.state, 'explore.fileSearchResults', data.fileSearchResults);
+    return this;
+  }
+  searchStatus(statusValue) {
+    _set(this.state, 'explore.searchStatus', statusValue);
+    return this;
+  }
+  searchValue(value) {
+    _set(this.state, 'explore.searchValue', value);
+    return this;
+  }
+  componentName(componentName) {
+    _set(this.state, 'explore.componentName', componentName);
+    return this;
+  }
+  showSearchResults(showSearchResults) {
+    _set(this.state, 'explore.showSearchResults', showSearchResults);
+    return this;
+  }
+  exploreData(explore) {
+    _set(this.state, 'explore', explore);
+    return this;
+  }
   agentVersion(version) {
     this.host({
       machine: {
