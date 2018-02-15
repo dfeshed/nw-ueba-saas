@@ -82,8 +82,8 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
         List<User> users = new ArrayList<>();
         List<SmartRecord> smarts = null;
+        List<Alert> alerts = new ArrayList<>();
         while (smartPageIterator.hasNext()) {
-            List<Alert> alerts = new ArrayList<>();
             smarts = smartPageIterator.next();
             for (SmartRecord smart : smarts) {
                 User userEntity;
@@ -118,9 +118,10 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                     users.add(userEntity);
                 }
 
-                storeAlerts(alerts);
-                outputMonitoringService.reportTotalAnomalyEvents(alerts, startDate);
             }
+            storeAlerts(alerts);
+            alerts.clear();
+            outputMonitoringService.reportTotalAnomalyEvents(alerts, startDate);
         }
 
         storeUsers(users); //Get the generated users with the new elasticsearch ID
