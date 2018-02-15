@@ -6,18 +6,18 @@ import presidio.data.domain.event.OperationType;
 import presidio.data.domain.event.file.FileOperation;
 
 public class PrintFileOperation extends FileOperation{
-    private long numOfPages;
+    private Long numOfPages;
 
-    public PrintFileOperation(FileEntity sourceFile, FileEntity destinationFile, OperationType operationType, String operationResult, String operationResultCode, long numOfPages) {
+    public PrintFileOperation(FileEntity sourceFile, FileEntity destinationFile, OperationType operationType, String operationResult, String operationResultCode, Long numOfPages) {
         super(sourceFile, destinationFile, operationType, operationResult, operationResultCode);
         this.numOfPages = numOfPages;
     }
 
-    public long getNumOfPages() {
+    public Long getNumOfPages() {
         return numOfPages;
     }
 
-    public void setNumOfPages(long numOfPages) {
+    public void setNumOfPages(Long numOfPages) {
         this.numOfPages = numOfPages;
     }
 

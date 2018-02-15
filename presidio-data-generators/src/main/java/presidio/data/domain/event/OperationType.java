@@ -24,6 +24,13 @@ public class OperationType {
         return categories;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setCategories(List<String> categories) {
+        this.categories = categories;
+    }
 
     @Override
     public String toString() {
