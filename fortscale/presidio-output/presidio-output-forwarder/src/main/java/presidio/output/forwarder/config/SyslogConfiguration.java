@@ -1,6 +1,7 @@
 package presidio.output.forwarder.config;
 
 
+import com.fasterxml.jackson.annotation.JsonSetter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -13,17 +14,25 @@ import presidio.output.forwarder.services.SyslogService;
 @Configuration
 public class SyslogConfiguration {
 
+    private int syslogAlertsPort;
+    private int syslogUsersPort;
+
+
     @Value("${syslog.users.host:}")
     private String syslogUsersHostName;
 
-    @Value("${syslog.users.port:0}")
-    private int syslogUsersPort;
+    @JsonSetter("${syslog.users.port:0}")
+    public void getSyslogUsersPort(String port) {
+        this.syslogUsersPort = Integer.valueOf(port);
+    }
 
     @Value("${syslog.alerts.host:}")
     private String syslogAlertsHostName;
 
-    @Value("${syslog.alerts.port:0}")
-    private int syslogAlertsPort;
+    @JsonSetter("${syslog.alerts.port:0}")
+    public void getSyslogAlertsPort(String port) {
+        this.syslogAlertsPort = Integer.valueOf(port);
+    }
 
 
     @Bean
@@ -32,7 +41,7 @@ public class SyslogConfiguration {
     }
 
     @Bean
-    public EventsHandler syslogForwarderEventsHandler(){
+    public EventsHandler syslogForwarderEventsHandler() {
         return new SyslogEventsHandler(syslogService(), syslogEndpoints());
     }
 
@@ -45,7 +54,7 @@ public class SyslogConfiguration {
         if (StringUtils.isNotEmpty(syslogAlertsHostName)) {
             syslogEndpoints.addEndPoint("alerts", syslogAlertsHostName, syslogAlertsPort);
         }
-        return  syslogEndpoints;
+        return syslogEndpoints;
     }
 
 
