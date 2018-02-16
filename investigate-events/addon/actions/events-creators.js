@@ -86,7 +86,7 @@ export const eventsGetFirst = () => {
 export const eventsGetMore = () => {
   return (dispatch, getState) => {
     const state = getState().investigate;
-    const queryNode = getActiveQueryNode(state);
+    const queryNode = getActiveQueryNode(getState());
     const { language } = state.dictionaries;
     const { data, streamLimit, streamGoal, streamBatch } = state.eventResults;
 

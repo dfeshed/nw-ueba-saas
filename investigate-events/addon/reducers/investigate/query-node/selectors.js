@@ -5,6 +5,7 @@ const { createSelector } = reselect;
 
 // ACCESSOR FUNCTIONS
 const _endTime = (state) => state.investigate.queryNode.endTime;
+const _eventMetas = (state) => state.investigate.queryNode.eventMetas;
 const _isDirty = (state) => state.investigate.queryNode.isDirty;
 const _metaFilter = (state) => state.investigate.queryNode.metaFilter;
 const _previouslySelectedTimeRanges = (state) => state.investigate.queryNode.previouslySelectedTimeRanges;
@@ -74,12 +75,12 @@ export const canFetchEvents = createSelector(
  * @public
  */
 export const getActiveQueryNode = createSelector(
-  [_endTime, _isDirty, _metaFilter, _previousQueryParams, _serviceId, _startTime],
-  (endTime, isDirty, metaFilter, previousQueryParams, serviceId, startTime) => {
+  [_endTime, _eventMetas, _isDirty, _metaFilter, _previousQueryParams, _serviceId, _startTime],
+  (endTime, eventMetas, isDirty, metaFilter, previousQueryParams, serviceId, startTime) => {
     if (isDirty && previousQueryParams) {
       return previousQueryParams;
     } else {
-      return { endTime, metaFilter, serviceId, startTime };
+      return { endTime, eventMetas, metaFilter, serviceId, startTime };
     }
   }
 );
