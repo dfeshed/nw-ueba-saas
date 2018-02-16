@@ -1,6 +1,7 @@
 import fetchStreamingEvents from './fetch/events';
 import { fetchLog } from './fetch/logs';
 import * as ACTION_TYPES from './types';
+import { getActiveQueryNode } from 'investigate-events/reducers/investigate/query-node/selectors';
 
 // Common functions.
 const commonHandlers = function(dispatch) {
@@ -85,7 +86,7 @@ export const eventsGetFirst = () => {
 export const eventsGetMore = () => {
   return (dispatch, getState) => {
     const state = getState().investigate;
-    const { queryNode } = state;
+    const queryNode = getActiveQueryNode(state);
     const { language } = state.dictionaries;
     const { data, streamLimit, streamGoal, streamBatch } = state.eventResults;
 
@@ -126,8 +127,7 @@ export const eventsGetMore = () => {
  */
 export const eventsLogsGet = (events = []) => {
   return (dispatch, getState) => {
-    const state = getState().investigate;
-    const { serviceId } = state.queryNode;
+    const { serviceId } = getActiveQueryNode(getState());
     const sessionIds = events.mapBy('sessionId');
     const handlers = {
       onResponse(response) {

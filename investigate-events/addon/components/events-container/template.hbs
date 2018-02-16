@@ -36,11 +36,11 @@
         </section>
       </section>
       <vbox class="rsa-investigate-query__body-slave">
-        {{#if (and queryNode.serviceId queryNode.sessionId)}}
+        {{#if (and queryNode.serviceId sessionId)}}
           {{recon-container
             aliases=(readonly aliases)
             endpointId=(readonly queryNode.serviceId)
-            eventId=(readonly queryNode.sessionId)
+            eventId=(readonly sessionId)
             contextMenuItems=(build-context-menu)
             queryInputs=(readonly queryInputs)
             index=(readonly selectedIndex)

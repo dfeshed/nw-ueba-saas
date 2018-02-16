@@ -17,7 +17,7 @@ import {
  * @return {object} RSVP Promise
  * @public
  */
-export default function fetchStreamingEvents(queryNode, language, limit, batch, handlers, startSessionId = null) {
+export default function(queryNode, language, limit, batch, handlers, startSessionId = null) {
   const query = {
     filter: [
       serviceIdFilter(queryNode.serviceId),

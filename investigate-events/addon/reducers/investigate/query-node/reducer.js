@@ -12,12 +12,23 @@ const _initialState = Immutable.from({
     conditions: []
   },
   previouslySelectedTimeRanges: {},
+  previousQueryParams: undefined,
   queryString: '',
   queryTimeFormat: undefined,
   serviceId: undefined,
   sessionId: undefined,
   startTime: 0
 });
+
+const _cloneQueryParams = (state) => {
+  const { endTime, metaFilter, serviceId, startTime } = state;
+  return {
+    endTime,
+    metaFilter: JSON.parse(JSON.stringify(metaFilter)),
+    serviceId,
+    startTime
+  };
+};
 
 export default handleActions({
   [ACTION_TYPES.SET_PREFERENCES]: (state, { payload }) => {
@@ -84,8 +95,17 @@ export default handleActions({
   },
 
   [ACTION_TYPES.SERVICE_SELECTED]: (state, { payload }) => {
+    // Even though we highlight the query button when a query is dirty, we don't
+    // prevent a user from interacting with the UI in a way that could make API
+    // calls with incorrect parameters. So, we save off relevent query params
+    // when the service is changed so we can use those for API calls. We clear
+    // those out when the query is marked as clean. See MARK_QUERY_DIRTY.
+    // We do `state.previousQueryParams || _cloneQueryParams(state)` to handle
+    // the situation where a user selects multiple services in a row. We want to
+    // save off the old params only for the first change.
     return state.merge({
       isDirty: true,
+      previousQueryParams: state.previousQueryParams || _cloneQueryParams(state),
       serviceId: payload
     });
   },
@@ -114,7 +134,16 @@ export default handleActions({
     return state.merge({ atLeastOneQueryIssued: true });
   },
 
+  /**
+   * Marks a query as clean or dirty depending on the Boolean payload. If a
+   * query is clean, we remove "dirty" properties.
+   * @public
+   */
   [ACTION_TYPES.MARK_QUERY_DIRTY]: (state, { payload }) => {
-    return state.set('isDirty', payload);
+    // If a query is not "dirty", remove saved query params
+    return state.merge({
+      isDirty: payload,
+      previousQueryParams: payload ? state.previousQueryParams : undefined
+    });
   }
 }, _initialState);
