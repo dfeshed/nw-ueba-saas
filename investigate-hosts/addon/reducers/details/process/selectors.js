@@ -106,7 +106,7 @@ export const enrichedDllData = createSelector(
       });
       return newDallData;
     }
-    return dllData;
+    return [];
   }
 );
 

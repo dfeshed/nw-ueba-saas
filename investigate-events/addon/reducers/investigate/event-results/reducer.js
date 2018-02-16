@@ -5,7 +5,7 @@ import * as ACTION_TYPES from 'investigate-events/actions/types';
 
 const _initialState = Immutable.from({
   status: undefined,
-  data: [], // *
+  data: null, // *
   reason: undefined,
   anchor: 0,
   goal: 0,

@@ -67,6 +67,9 @@ export default Component.extend(HasTableParent, DomIsReady, SizeBindings, Scroll
     return true;
   },
 
+  @computed('items')
+  hasZeroResults: (items) => !!(items && items.length === 0),
+
   /**
    * The message to display when there are no results in the table
    * @param message The optional message to display

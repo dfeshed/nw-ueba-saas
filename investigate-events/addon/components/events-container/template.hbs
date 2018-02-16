@@ -22,8 +22,7 @@
       {{/if}}
     {{/if}}
   </header>
-
-  {{#if atLeastOneQueryIssued}}
+  {{#if (or atLeastOneQueryIssued hasIncommingQueryParams)}}
     <section class="{{queryBodyClass}}">
       <section class="rsa-investigate-query__body-master">
         {{#if showFutureFeatures}}

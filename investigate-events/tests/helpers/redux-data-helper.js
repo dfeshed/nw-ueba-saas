@@ -64,6 +64,11 @@ export default class DataHelper {
     return this;
   }
 
+  eventResults(data) {
+    _set(this.state, 'eventResults.data', data);
+    return this;
+  }
+
   eventThreshold(threshold) {
     _set(this.state, 'eventCount.threshold', threshold);
     return this;

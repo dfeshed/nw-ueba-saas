@@ -35,7 +35,7 @@
 {{/rsa-data-table/body-rows}}
 {{#if shouldShowNoResultMessage}}
   {{!The error must be outside of the body rows - so that the message can show in the center/middle of the panel}}
-  {{#unless items.length}}
+  {{#if hasZeroResults}}
     {{rsa-panel-message message=_noResultsMessage messageType='no-results-message'}}
-  {{/unless}}
+  {{/if}}
 {{/if}}

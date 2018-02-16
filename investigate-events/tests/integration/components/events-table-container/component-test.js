@@ -33,8 +33,6 @@ const renderDefaultEventTable = (assert, _this) => {
   assert.equal(_this.$('.ember-power-select-trigger').length, 1, 'there is no option to select default column group.');
   assert.equal(_this.$('.rsa-investigate-event-counter').text().trim(), '55');
   assert.equal(_this.$('.rsa-icon-cog-filled').length, 1, 'There should be column selector icon.');
-  assert.equal(_this.$('.rsa-panel-message.no-results-message.center.ember-view').length, 1);
-  assert.equal(_this.$('.rsa-panel-message.no-results-message.center.ember-view').text().trim(), 'Your filter criteria did not match any records.');
 };
 
 moduleForComponent('events-table-container', 'Integration | Component | events table', {
@@ -136,4 +134,18 @@ test('it should not show an error message when query is valid', function(assert)
   this.render(hbs`{{events-table-container}}`);
   assert.notEqual(this.$('.rsa-panel-message .title').text().trim(), 'No events found.', 'Appropriate error title for invaild query response');
   assert.notEqual(this.$('.rsa-panel-message .message').text().trim(), 'Your filter criteria is invalid. Examine query for syntax errors.', 'Appropriate error description for invaild query response');
+});
+
+test('it should show "no results" message only if there are zero results', function(assert) {
+  new ReduxDataHelper(setState).columnGroup('SUMMARY').columnGroups(EventColumnGroups).eventResults([]).build();
+  this.render(hbs`{{events-table-container}}`);
+  assert.equal(this.$('.rsa-panel-message .message').length, 1);
+  assert.equal(this.$('.rsa-panel-message .message').text().trim(), 'Your filter criteria did not match any records.');
+});
+
+test('it should not show "no results" message if there are results', function(assert) {
+  new ReduxDataHelper(setState).columnGroup('SUMMARY').columnGroups(EventColumnGroups).eventResults(['something']).build();
+  this.render(hbs`{{events-table-container}}`);
+  assert.equal(this.$('.rsa-panel-message .message').length, 0);
+  assert.equal(this.$('.rsa-panel-message .message').text().trim(), '');
 });

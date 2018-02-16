@@ -6,6 +6,7 @@ const _initialState = Immutable.from({
   atLeastOneQueryIssued: false,
   endTime: 0,
   eventMetas: undefined,
+  hasIncommingQueryParams: false,
   isDirty: false,
   metaFilter: {
     uri: undefined,
@@ -75,9 +76,11 @@ export default handleActions({
       }
 
     } else {
+      const hasIncommingQueryParams = !!(payload.endTime && payload.serviceId && payload.startTime);
       return state.merge({
         endTime: payload.endTime && parseInt(payload.endTime, 10) || 0,
         eventMetas: undefined,
+        hasIncommingQueryParams,
         metaFilter: payload.metaFilter,
         queryString: '',
         serviceId: payload.serviceId,

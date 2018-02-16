@@ -14,6 +14,7 @@ const stateToComputed = (state) => ({
   queryNode: getActiveQueryNode(state),
   aliases: state.investigate.dictionaries.aliases,
   atLeastOneQueryIssued: state.investigate.queryNode.atLeastOneQueryIssued,
+  hasIncommingQueryParams: state.investigate.queryNode.hasIncommingQueryParams,
   sessionId: state.investigate.queryNode.sessionId,
   totalCount: state.investigate.eventCount.data,
   eventResults: state.investigate.eventResults,
