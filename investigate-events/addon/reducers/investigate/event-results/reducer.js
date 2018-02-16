@@ -54,19 +54,25 @@ export default handleActions({
   },
 
   [ACTION_TYPES.SET_LOG]: (state, { payload }) => {
-    const { code, data: { log, sessionId } } = payload;
+    const { code, data } = payload;
+    const { log, sessionId } = data || {};
     const item = _find(state.data, sessionId);
-    let updatedItem;
-    if (code) {
-      // codes other than 0 are errors
-      updatedItem = item.set('logStatus', 'rejected');
+    if (item) {
+      let updatedItem;
+      if (code !== 0) {
+        // codes other than 0 are errors
+        updatedItem = item.merge({ logStatus: 'rejected' });
+      } else {
+        // set new log and status
+        updatedItem = item.merge({ log: (item.log || '') + log, logStatus: 'resolved' });
+      }
+      // replace event in array
+      const newData = _update(state.data, sessionId, updatedItem);
+      return state.set('data', newData);
     } else {
-      // set new log and status
-      updatedItem = item.merge({ log: (item.log || '') + log, logStatus: 'resolved' });
+      // We can't update what we don't have
+      return state;
     }
-    // replace event in array
-    const newData = _update(state.data, sessionId, updatedItem);
-    return state.set('data', newData);
   },
 
   [ACTION_TYPES.SET_LOG_STATUS]: (state, { sessionId, status }) => {

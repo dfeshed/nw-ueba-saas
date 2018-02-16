@@ -133,8 +133,21 @@ export const eventsLogsGet = (events = []) => {
       onResponse(response) {
         dispatch({ type: ACTION_TYPES.SET_LOG, payload: response });
       },
-      onError(response) {
-        dispatch({ type: ACTION_TYPES.SET_LOG, payload: response });
+      onError({ code, request }) {
+        // When an error comes back, it could point to multiple sessionIds, like
+        // in the instance where you don't have permission to view logs. So we
+        // need to look if there are sessionIds defined, then dispatch a SET_LOG
+        // action for each one.
+        const filter = Array.isArray(request.filter) ? request.filter : [];
+        const sessionIds = filter.find((d) => d.field === 'sessionIds');
+        const values = sessionIds ? sessionIds.values : [];
+        values.forEach((d) => {
+          const payload = {
+            code,
+            data: { sessionId: d }
+          };
+          dispatch({ type: ACTION_TYPES.SET_LOG, payload });
+        });
       }
     };
 
