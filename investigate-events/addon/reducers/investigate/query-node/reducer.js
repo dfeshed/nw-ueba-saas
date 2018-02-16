@@ -23,9 +23,10 @@ const _initialState = Immutable.from({
 
 const _cloneQueryParams = (state) => {
   const { endTime, eventMetas, metaFilter, serviceId, startTime } = state;
+  const _eventMetas = eventMetas ? JSON.parse(JSON.stringify(eventMetas)) : undefined;
   return {
     endTime,
-    eventMetas: JSON.parse(JSON.stringify(eventMetas)),
+    eventMetas: _eventMetas,
     metaFilter: JSON.parse(JSON.stringify(metaFilter)),
     serviceId,
     startTime
