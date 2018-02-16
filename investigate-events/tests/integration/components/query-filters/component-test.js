@@ -60,7 +60,7 @@ test('it renders with no fragments by defauls', function(assert) {
   assert.equal(this.$('.rsa-query-meta').length, 1, 'Expected 1 .rsa-query-meta');
   assert.equal(this.$('.rsa-query-meta .rsa-query-fragment').length, 1, 'Expected 1 .rsa-query-fragment');
   assert.equal(this.$('.rsa-query-meta .rsa-query-fragment.edit-active').length, 1, 'Expected 1 .rsa-query-fragment.edit-active');
-  assert.equal(this.$('.rsa-query-meta .rsa-query-fragment.edit-active input').prop('placeholder'), 'Enter a Meta Key and Value (optional)', 'Expected a placeholder');
+  assert.equal(this.$('.rsa-query-meta .rsa-query-fragment.edit-active input').prop('placeholder'), 'Enter a Meta Key, Operator, and Value (optional)', 'Expected a placeholder');
   assert.equal(this.$('.rsa-query-meta input:focus').length, 0, 'Expected .rsa-query-meta to not have focus');
 });
 

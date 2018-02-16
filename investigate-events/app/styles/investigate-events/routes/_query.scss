@@ -49,6 +49,7 @@ $investigateReconFullWidth: 100%;
       color: text-color(primary, lightest);
       padding: rsa-whitespace(more) 0 0 0;
       margin-top: rsa-whitespace(more);
+      overflow: auto;
       // no results text
       p {
         padding: rsa-whitespace(less);

@@ -133,7 +133,7 @@ export default {
     delete: 'ja_Delete selected filters',
     deleteFilter: 'ja_Delete this filter',
     edit: 'ja_Edit this filter',
-    placeholder: 'ja_Enter a Meta Key and Value (optional)',
+    placeholder: 'ja_Enter a Meta Key, Operator, and Value (optional)',
     querySelected: 'ja_Query with selected filters',
     querySelectedNewTab: 'ja_Query with selected filters in a new tab',
     expensive: 'ja_Performing this operation might take more time.',
@@ -480,7 +480,7 @@ export default {
       close: 'ja_Close Events Panel',
       scrollMessage: 'ja_Scroll down to view the selected event highlighted in blue',
       eventTips: {
-        noResults: 'ja_No Results yet. Please select a service and submit a query.',
+        noResults: 'ja_No results yet. Please select a service, time range, and submit a query',
         head: {
           header: 'ja_QUERY EXAMPLES',
           text: {

@@ -133,7 +133,7 @@ export default {
     delete: 'Delete selected filters',
     deleteFilter: 'Delete this filter',
     edit: 'Edit this filter',
-    placeholder: 'Enter a Meta Key and Value (optional)',
+    placeholder: 'Enter a Meta Key, Operator, and Value (optional)',
     querySelected: 'Query with selected filters',
     querySelectedNewTab: 'Query with selected filters in a new tab',
     expensive: 'Performing this operation might take more time.',
@@ -480,7 +480,7 @@ export default {
       close: 'Close Events Panel',
       scrollMessage: 'Scroll down to view the selected event highlighted in blue',
       eventTips: {
-        noResults: 'No Results yet. Please select a service and submit a query',
+        noResults: 'No results yet. Please select a service, time range, and submit a query',
         head: {
           header: 'QUERY EXAMPLES',
           text: {
