@@ -1,12 +1,22 @@
-import { skip } from 'qunit';
+import { test } from 'qunit';
 import moduleForAcceptance from '../helpers/module-for-acceptance';
 import engineResolverFor from '../helpers/engine-resolver';
+import teardownSockets from '../helpers/teardown-sockets';
 
 moduleForAcceptance('Acceptance | basic', {
-  resolver: engineResolverFor('respond')
+  resolver: engineResolverFor('respond'),
+  afterEach: teardownSockets
 });
 
-skip('visiting /respond redirects to /respond/incidents', function(assert) {
+test('visiting an unknown route redirects to /respond/incidents', function(assert) {
+  visit('/respond/blahblah');
+
+  andThen(function() {
+    assert.equal(currentURL(), '/respond/incidents', 'The base /respond endpoint should redirect to respond/incidents');
+  });
+});
+
+test('visiting /respond redirects to /respond/incidents', function(assert) {
   visit('/respond');
 
   andThen(function() {
@@ -14,33 +24,34 @@ skip('visiting /respond redirects to /respond/incidents', function(assert) {
   });
 });
 
-// Note: Because of data table lazy rendering and phantomjs, the complete set of returned incidents do not
-// render to the DOM in the phantomjs test. Currently it's only 32 items rendered. For now, we will only
-// test that over 20 results are returned
-skip('visiting /respond/incidents shows 20 or more results', function(assert) {
-  visitAndWaitForReduxStateChange('/respond/incidents', 'respond.incidents.incidents');
+test('visiting /respond/incident/INC-123', function(assert) {
+  visit('/respond/incident/INC-123');
+
   andThen(function() {
-    assert.ok(find('.rsa-data-table-body-row').length >= 20, 'There are 20 or more rows in the incidents data table');
+    assert.equal(currentURL(), '/respond/incident/INC-123', 'The route loads and we are not redirected');
   });
 });
 
-skip('clicking on a row redirects to the incident details route', function(assert) {
-  visitAndWaitForReduxStateChange('/respond/incidents', 'respond.incidents.incidents');
+test('visiting /respond/alerts', function(assert) {
+  visit('/respond/alerts');
+
   andThen(function() {
-    click('.rsa-data-table-body-row:first');
-    andThen(function() {
-      assert.equal(currentURL(), '/respond/incident/INC-102', 'The first row click navigates the user to INC-102 details page');
-    });
+    assert.equal(currentURL(), '/respond/alerts', 'The route loads and we are not redirected');
   });
 });
 
-skip('Clicking on the filter button in the toolbar opens the filter panel', function(assert) {
-  visitAndWaitForReduxStateChange('/respond/incidents', 'respond.incidents.incidents');
+test('visiting /respond/alert/12345', function(assert) {
+  visit('/respond/alert/12345');
+
   andThen(function() {
-    assert.equal(find('.rsa-respond-incidents.show-more-filters').length, 0, 'The class show-more-filters does not appear on the incidents wrapper');
-    click('.more-filters-button .rsa-icon');
-    andThen(function() {
-      assert.equal(find('.rsa-respond-incidents.show-more-filters').length, 1, 'The class show-more-filters appears on the incidents wrapper');
-    });
+    assert.equal(currentURL(), '/respond/alert/12345', 'The route loads and we are not redirected');
+  });
+});
+
+test('visiting /respond/tasks', function(assert) {
+  visit('/respond/tasks');
+
+  andThen(function() {
+    assert.equal(currentURL(), '/respond/tasks', 'The route loads and we are not redirected');
   });
 });

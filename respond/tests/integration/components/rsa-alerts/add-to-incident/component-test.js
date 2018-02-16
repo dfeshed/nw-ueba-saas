@@ -6,6 +6,10 @@ import { applyPatch, revertPatch } from '../../../../helpers/patch-reducer';
 import * as addAlertsCreators from 'respond/actions/creators/add-alerts-to-incident-creators';
 import wait from 'ember-test-helpers/wait';
 import Immutable from 'seamless-immutable';
+import { patchFlash } from '../../../../helpers/patch-flash';
+import { throwSocket, patchSocket } from '../../../../helpers/patch-socket';
+import { getOwner } from '@ember/application';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 const initialState = {
   incidentSearchText: null,
@@ -34,6 +38,7 @@ moduleForComponent('rsa-alerts/add-to-incident', 'Integration | Component | Resp
       applyPatch(Immutable.from(fullState));
       this.inject.service('redux');
     };
+    initialize(this);
   },
   afterEach() {
     revertPatch();
@@ -102,8 +107,21 @@ test('Clicking on a row dispatches the selectIncident action creator', function(
   });
 });
 
-test('Clicking on a the Apply button dispatches the addAlertsToIncident action creator', function(assert) {
-  const actionSpy = sinon.spy(addAlertsCreators, 'addAlertsToIncident');
+test('Clicking on a the Apply button shows a success flash message when the request is successful', function(assert) {
+  assert.expect(4);
+  patchSocket((method, modelName) => {
+    assert.equal(method, 'updateRecord');
+    assert.equal(modelName, 'alerts-associated');
+  });
+
+  patchFlash((flash) => {
+    const translation = getOwner(this).lookup('service:i18n');
+    const expectedMessage = translation.t('respond.incidents.actions.actionMessages.addAlertToIncidentSucceeded', {
+      incidentId: 'INC-123'
+    });
+    assert.equal(flash.type, 'success');
+    assert.equal(flash.message.string, expectedMessage);
+  });
   setState({
     ...initialState,
     incidentSearchResults: exampleIncidentSearchResults,
@@ -111,9 +129,27 @@ test('Clicking on a the Apply button dispatches the addAlertsToIncident action c
   });
   this.render(hbs`{{rsa-alerts/add-to-incident}}`);
   this.$('.apply button').click();
-  return wait().then(() => {
-    assert.ok(actionSpy.calledOnce, 'The addAlertsToIncident action was called once');
+  return wait();
+});
+
+test('Clicking on a the Apply button shows a failure flash message when the request fails', function(assert) {
+  assert.expect(2);
+  const done = throwSocket();
+  patchFlash((flash) => {
+    const translation = getOwner(this).lookup('service:i18n');
+    const expectedError = translation.t('respond.incidents.actions.actionMessages.addAlertToIncidentFailed');
+    assert.equal(flash.type, 'error');
+    assert.equal(flash.message.string, expectedError);
+    done();
   });
+  setState({
+    ...initialState,
+    incidentSearchResults: exampleIncidentSearchResults,
+    selectedIncident: exampleIncidentSearchResults[0]
+  });
+  this.render(hbs`{{rsa-alerts/add-to-incident}}`);
+  this.$('.apply button').click();
+  return wait();
 });
 
 test('Typing in the searchbox dispatches the updateSearchIncidentsText action creator', function(assert) {

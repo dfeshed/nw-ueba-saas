@@ -23,7 +23,7 @@ const dispatchToActions = (dispatch) => {
     updateEntry(incidentId, entryId, journalMap) {
       dispatch(updateJournalEntry(incidentId, entryId, journalMap, {
         onSuccess: () => (this.send('success', 'respond.entities.actionMessages.updateSuccess')),
-        onFailure: () => (this.send('failure', 'respond.entities.actionMessages.deleteFailure'))
+        onFailure: () => (this.send('failure', 'respond.entities.actionMessages.updateFailure'))
       }));
     }
   };

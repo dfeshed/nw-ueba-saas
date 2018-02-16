@@ -2,7 +2,7 @@ import { module } from 'qunit';
 import Ember from 'ember';
 import startApp from '../helpers/start-app';
 import destroyApp from '../helpers/destroy-app';
-import teardownSockets from 'sa/tests/helpers/teardown-sockets';
+import teardownSockets from '../helpers/teardown-sockets';
 import { invalidateSession } from 'sa/tests/helpers/ember-simple-auth';
 import Authenticator from 'component-lib/authenticators/oauth-authenticator';
 

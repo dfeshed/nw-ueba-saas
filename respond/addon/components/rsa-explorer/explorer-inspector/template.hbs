@@ -16,8 +16,7 @@
   </h2>
 </box>
 <hbox fit justify="center" nowrap class="rsa-explorer-inspector__toolbar">
-  <span class="rsa-tab text-only {{if (eq viewMode 'overview') 'is-active' ''}}"
-    {{action 'changeViewMode' "overview"}}>
+  <span class="rsa-tab text-only is-active">
     {{t 'respond.explorer.inspector.overview'}}
   </span>
   {{yield 'inspector-toolbar' (get this 'viewMode')}}

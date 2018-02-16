@@ -1,6 +1,6 @@
 import { test } from 'qunit';
 import moduleForAcceptance from 'sa/tests/helpers/module-for-acceptance';
-import teardownSockets from 'sa/tests/helpers/teardown-sockets';
+import teardownSockets from '../helpers/teardown-sockets';
 
 const trimText = function() {
   return window.$(this).text().trim();

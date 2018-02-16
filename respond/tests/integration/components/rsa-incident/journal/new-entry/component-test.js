@@ -7,11 +7,15 @@ import * as JournalCreators from 'respond/actions/creators/journal-creators';
 import sinon from 'sinon';
 import RSVP from 'rsvp';
 import wait from 'ember-test-helpers/wait';
+import { throwSocket } from '../../../../../helpers/patch-socket';
+import { patchFlash } from '../../../../../helpers/patch-flash';
+import { getOwner } from '@ember/application';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
-let dispatchSpy, redux, initialize;
+let dispatchSpy, redux, init;
 
 
-moduleForComponent('rsa-incident/journal/new-entry', 'Integration | Component | Remediation Journal New Entry', {
+moduleForComponent('rsa-incident/journal/new-entry', 'Integration | Component | Journal New Entry', {
   integration: true,
   resolver: engineResolverFor('respond'),
   beforeEach() {
@@ -23,9 +27,11 @@ moduleForComponent('rsa-incident/journal/new-entry', 'Integration | Component | 
     dispatchSpy = sinon.spy(redux, 'dispatch');
 
     // initialize all of the required data into redux app state
-    initialize = RSVP.allSettled([
+    init = RSVP.allSettled([
       redux.dispatch(getAllMilestoneTypes())
     ]);
+
+    initialize(this);
   },
   afterEach() {
     dispatchSpy.restore();
@@ -42,7 +48,7 @@ test('The createJournalEntry action is dispatched on save button click', functio
   const actionSpy = sinon.spy(JournalCreators, 'createJournalEntry');
   new DataHelper(this.get('redux')).fetchIncidentDetails(); // to ensure no reducer state errors
 
-  return initialize.then(() => {
+  return init.then(() => {
     this.render(hbs`{{rsa-incident/journal/new-entry incidentId='INC-1234' notes='Example text'}}`);
     assert.equal(this.$('.save-journal.is-disabled').length, 0, 'The save journal button is not disabled (when there is text)');
     this.$('.save-journal button').click();
@@ -51,5 +57,22 @@ test('The createJournalEntry action is dispatched on save button click', functio
       actionSpy.reset();
       actionSpy.restore();
     });
+  });
+});
+
+test('An error flash message is displayed if there is an error saving the new journal entry', function(assert) {
+  assert.expect(2);
+  new DataHelper(this.get('redux')).fetchIncidentDetails(); // to ensure no reducer state errors
+  return init.then(() => {
+    const done = throwSocket();
+    patchFlash((flash) => {
+      const translation = getOwner(this).lookup('service:i18n');
+      const expectedMessage = translation.t('respond.entities.actionMessages.createFailure');
+      assert.equal(flash.type, 'error');
+      assert.equal(flash.message.string, expectedMessage);
+      done();
+    });
+    this.render(hbs`{{rsa-incident/journal/new-entry incidentId='INC-1234' notes='Example text'}}`);
+    this.$('.save-journal button').click();
   });
 });

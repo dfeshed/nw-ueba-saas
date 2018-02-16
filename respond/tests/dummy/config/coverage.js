@@ -1,5 +1,6 @@
 /* eslint-env node */
 module.exports = {
   reporters: ['lcov', 'html'],
-  useBabelInstrumenter: true
+  useBabelInstrumenter: true,
+  excludes: ['**/dummy/**']
 };

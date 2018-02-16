@@ -31,11 +31,5 @@ export default Component.extend({
    * @type {String}
    * @public
    */
-  backToRouteText: '',
-
-  actions: {
-    changeViewMode(viewMode) {
-      this.set('viewMode', viewMode);
-    }
-  }
+  backToRouteText: ''
 });

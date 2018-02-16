@@ -11,8 +11,12 @@ import triggerNativeEvent from '../../../../../helpers/trigger-native-event';
 import sinon from 'sinon';
 import RSVP from 'rsvp';
 import $ from 'jquery';
+import { throwSocket } from '../../../../../helpers/patch-socket';
+import { patchFlash } from '../../../../../helpers/patch-flash';
+import { getOwner } from '@ember/application';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
-let dispatchSpy, redux, initialize;
+let dispatchSpy, redux, init;
 
 const journalEntry = {
   id: '12',
@@ -30,7 +34,7 @@ function selectOption(index) {
   triggerNativeEvent(option, 'click');
 }
 
-moduleForComponent('rsa-incident/journal/entry', 'Integration | Component | Remediation Journal Entry', {
+moduleForComponent('rsa-incident/journal/entry', 'Integration | Component | Journal Entry', {
   integration: true,
   resolver: engineResolverFor('respond'),
   beforeEach() {
@@ -42,9 +46,11 @@ moduleForComponent('rsa-incident/journal/entry', 'Integration | Component | Reme
     dispatchSpy = sinon.spy(redux, 'dispatch');
 
     // initialize all of the required data into redux app state
-    initialize = RSVP.allSettled([
+    init = RSVP.allSettled([
       redux.dispatch(getAllMilestoneTypes())
     ]);
+
+    initialize(this);
   },
   afterEach() {
     dispatchSpy.restore();
@@ -57,7 +63,7 @@ test('The rsa-incident/journal/entry component renders to the DOM', function(ass
 });
 
 test('The journal entry data is rendered as expected', function(assert) {
-  return initialize.then(() => {
+  return init.then(() => {
     this.set('journalEntry', journalEntry);
     this.render(hbs`{{rsa-incident/journal/entry entry=journalEntry}}`);
     assert.equal(this.$('.rsa-incident-journal-entry__milestone button').text().trim(), 'Containment', 'The milestone is displayed as expected');
@@ -69,7 +75,7 @@ test('The delete button dispatches a deleteItem action', function(assert) {
   const actionSpy = sinon.spy(JournalCreators, 'deleteJournalEntry');
   new DataHelper(this.get('redux')).fetchIncidentDetails();
 
-  return initialize.then(() => {
+  return init.then(() => {
     this.set('journalEntry', journalEntry);
     this.render(hbs`{{rsa-incident/journal/entry incidentId='INC-1234' entry=journalEntry}}`);
     this.$('header .delete button').click();
@@ -88,7 +94,7 @@ test('The delete button dispatches a deleteItem action', function(assert) {
 test('Updates to the description dispatches an updateJournalEntry action', function(assert) {
   const actionSpy = sinon.spy(JournalCreators, 'updateJournalEntry');
   new DataHelper(this.get('redux')).fetchIncidentDetails();
-  return initialize.then(() => {
+  return init.then(() => {
     this.set('journalEntry', journalEntry);
     this.render(hbs`{{rsa-incident/journal/entry incidentId='INC-1234' entry=journalEntry}}`);
     return editableFieldHelper.updateEditableField('.rsa-incident-journal-entry__note', 'Assigned to me. Taking a look').then(() => {
@@ -102,7 +108,7 @@ test('Updates to the description dispatches an updateJournalEntry action', funct
 test('Changes to the milestone dispatches an updateJournalEntry action', function(assert) {
   const actionSpy = sinon.spy(JournalCreators, 'updateJournalEntry');
   new DataHelper(this.get('redux')).fetchIncidentDetails();
-  return initialize.then(() => {
+  return init.then(() => {
     this.set('journalEntry', journalEntry);
     this.render(hbs`{{rsa-incident/journal/entry incidentId='INC-1234' entry=journalEntry}}`);
     clickTrigger('.rsa-incident-journal-entry__milestone');
@@ -112,6 +118,46 @@ test('Changes to the milestone dispatches an updateJournalEntry action', functio
       assert.ok(actionSpy.calledOnce, 'The updateJournalEntry action creators was called once');
       actionSpy.reset();
       actionSpy.restore();
+    });
+  });
+});
+
+test('An error flash message is displayed if there is an error updating journal entry', function(assert) {
+  assert.expect(2);
+  new DataHelper(this.get('redux')).fetchIncidentDetails(); // to ensure no reducer state errors
+  return init.then(() => {
+    const done = throwSocket();
+    patchFlash((flash) => {
+      const translation = getOwner(this).lookup('service:i18n');
+      const expectedMessage = translation.t('respond.entities.actionMessages.updateFailure');
+      assert.equal(flash.type, 'error');
+      assert.equal(flash.message.string, expectedMessage);
+      done();
+    });
+    this.set('journalEntry', journalEntry);
+    this.render(hbs`{{rsa-incident/journal/entry incidentId='INC-1234' entry=journalEntry}}`);
+    return editableFieldHelper.updateEditableField('.rsa-incident-journal-entry__note', 'Assigned to me. Taking a look');
+  });
+});
+
+test('An error flash message is displayed if there is an error deleting the journal entry', function(assert) {
+  assert.expect(2);
+  new DataHelper(this.get('redux')).fetchIncidentDetails(); // to ensure no reducer state errors
+  return init.then(() => {
+    const done = throwSocket();
+    patchFlash((flash) => {
+      const translation = getOwner(this).lookup('service:i18n');
+      const expectedMessage = translation.t('respond.entities.actionMessages.deleteFailure');
+      assert.equal(flash.type, 'error');
+      assert.equal(flash.message.string, expectedMessage);
+      done();
+    });
+    this.set('journalEntry', journalEntry);
+    this.render(hbs`{{rsa-incident/journal/entry incidentId='INC-1234' entry=journalEntry}}`);
+    this.$('header .delete button').click();
+    return wait().then(() => {
+      $('.modal-footer-buttons .is-danger button').click();
+      return wait();
     });
   });
 });
