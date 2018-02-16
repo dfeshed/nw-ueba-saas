@@ -9,11 +9,15 @@ import Component from 'ember-component';
 import Ember from 'ember';
 import getOwner from 'ember-owner/get';
 import { isEmpty, typeOf } from 'ember-utils';
-import run from 'ember-runloop';
+import { run, later } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import layout from './template';
 import computed, { readOnly, alias, notEmpty, equal } from 'ember-computed-decorators';
 import config from 'ember-get-config';
+import { set } from '@ember/object';
+import RSVP from 'rsvp';
+
+const { Promise } = RSVP;
 
 const {
   Logger,
@@ -49,6 +53,7 @@ export default Component.extend({
   errorMessage: null,
 
   eulaContent: null,
+  eulaContentDelay: null,
 
   eulaKey: 'rsa::netWitness::eulaAccepted',
 
@@ -97,9 +102,12 @@ export default Component.extend({
     }
   },
 
-  @computed('eulaContent')
+  @computed('eulaContent', 'eulaContentDelay')
   eulaContentPending: {
-    get(eulaContent) {
+    get(eulaContent, eulaContentDelay) {
+      if (!eulaContentDelay) {
+        return true;
+      }
       return eulaContent === null;
     }
   },
@@ -250,6 +258,17 @@ export default Component.extend({
             dataType: 'html'
           }).then((response) => {
             this.set('eulaContent', response);
+
+            return new Promise((resolve) => {
+              later(() => {
+                resolve();
+              });
+            }).then(() => {
+              window.requestAnimationFrame(() => {
+                set(this, 'eulaContentDelay', true);
+              });
+            });
+
           }).catch((error) => {
             Logger.error(error);
           });
