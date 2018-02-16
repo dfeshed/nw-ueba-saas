@@ -52,7 +52,7 @@ $investigateReconFullWidth: 100%;
       // no results text
       p {
         padding: rsa-whitespace(less);
-        margin: rsa-whitespace(more);
+        margin: 0 rsa-whitespace(more);
         text-align: center;
         height: 3rem;
         color: text-color(accentFour);
