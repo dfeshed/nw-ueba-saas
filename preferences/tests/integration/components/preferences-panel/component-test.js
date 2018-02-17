@@ -3,6 +3,8 @@ import wait from 'ember-test-helpers/wait';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import hbs from 'htmlbars-inline-precompile';
 import preferencesConfig from '../../../data/config';
+import sinon from 'sinon';
+import { lookup } from 'ember-dependency-lookup';
 
 moduleForComponent('preferences-panel', 'Integration | Component | Preferences Panel', {
   integration: true,
@@ -40,7 +42,17 @@ test('Preferences panel opens correctly', function(assert) {
   this.$('.rsa-icon-settings-1-filled').trigger('click');
   return wait().then(() => {
     assert.equal(this.$('.is-expanded').length, 1, 'Preference Panel opened.');
+  });
+});
+
+test('Preferences panel shows help icon', function(assert) {
+  this.$('.rsa-icon-settings-1-filled').trigger('click');
+  return wait().then(() => {
+    const contextualHelp = lookup('service:contextualHelp');
+    const goToHelpSpy = sinon.stub(contextualHelp, 'goToHelp');
     assert.equal(this.$('.rsa-icon-help-circle-lined').length, 1, 'Need to display help icons.');
+    this.$('.rsa-icon-help-circle-lined').trigger('click');
+    sinon.assert.calledOnce(goToHelpSpy);
   });
 });
 
