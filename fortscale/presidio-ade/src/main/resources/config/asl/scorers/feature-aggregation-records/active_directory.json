@@ -11,7 +11,7 @@
             "name": "numberOfSensitiveGroupMembershipOperation.userId.activeDirectory.hourly.mapper",
             "score-mapping-conf": {
               "base": 1.5,
-              "scoreStep": 5,
+              "scoreStep": 3,
               "probabilityStep": 1.5
             },
             "base-scorer": {
@@ -52,7 +52,7 @@
             "name": "numberOfGroupMembershipOperation.userId.activeDirectory.hourly.mapper",
             "score-mapping-conf": {
               "base": 1.5,
-              "scoreStep": 5,
+              "scoreStep": 3,
               "probabilityStep": 1.5
             },
             "base-scorer": {
@@ -93,7 +93,7 @@
             "name": "numberOfSuccessfulObjectManagementOperation.userId.activeDirectory.hourly.mapper",
             "score-mapping-conf": {
               "base": 1.5,
-              "scoreStep": 5,
+              "scoreStep": 3,
               "probabilityStep": 1.5
             },
             "base-scorer": {
@@ -131,7 +131,7 @@
           "name": "numberOfFailedOperationType.userId.activeDirectory.hourly.scorer",
           "score-mapping-conf": {
             "base": 1.5,
-            "scoreStep": 5,
+            "scoreStep": 3,
             "probabilityStep": 1.5
           },
           "base-scorer": {
@@ -163,7 +163,7 @@
             "name": "numberOfSuccessfulUserManagementSecuritySensitiveOperation.userId.activeDirectory.hourly.mapper",
             "score-mapping-conf": {
               "base": 1.5,
-              "scoreStep": 5,
+              "scoreStep": 3,
               "probabilityStep": 1.5
             },
             "base-scorer": {

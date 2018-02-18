@@ -11,7 +11,7 @@
             "name": "numberOfSuccessfulFilePermissionChanges.userId.file.hourly.mapper",
             "score-mapping-conf": {
               "base": 1.5,
-              "scoreStep": 5,
+              "scoreStep": 3,
               "probabilityStep": 1.5
             },
             "base-scorer": {
@@ -53,7 +53,7 @@
             "name": "numberOfSuccessfulFileActions.userId.file.hourly.mapper",
             "score-mapping-conf": {
               "base": 1.5,
-              "scoreStep": 5,
+              "scoreStep": 3,
               "probabilityStep": 1.5
             },
             "base-scorer": {
@@ -94,7 +94,7 @@
             "name": "numberOfFailedFilePermissionChanges.userId.file.hourly.mapper",
             "score-mapping-conf": {
               "base": 1.5,
-              "scoreStep": 5,
+              "scoreStep": 3,
               "probabilityStep": 1.5
             },
             "base-scorer": {
@@ -135,7 +135,7 @@
             "name": "numberOfFailedFileActions.userId.file.hourly.mapper",
             "score-mapping-conf": {
               "base": 1.5,
-              "scoreStep": 5,
+              "scoreStep": 3,
               "probabilityStep": 1.5
             },
             "base-scorer": {
@@ -176,7 +176,7 @@
             "name": "numberOfDistinctFileOpened.userId.file.hourly.mapper",
             "score-mapping-conf": {
               "base": 1.5,
-              "scoreStep": 5,
+              "scoreStep": 3,
               "probabilityStep": 1.5
             },
             "base-scorer": {
@@ -217,7 +217,7 @@
             "name": "numberOfDistinctFolderOpened.userId.file.hourly.mapper",
             "score-mapping-conf": {
               "base": 1.5,
-              "scoreStep": 5,
+              "scoreStep": 3,
               "probabilityStep": 1.5
             },
             "base-scorer": {
@@ -258,7 +258,7 @@
             "name": "numberOfFileDeleted.userId.file.hourly.mapper",
             "score-mapping-conf": {
               "base": 1.5,
-              "scoreStep": 5,
+              "scoreStep": 3,
               "probabilityStep": 1.5
             },
             "base-scorer": {
@@ -299,7 +299,7 @@
             "name": "numberOfSuccessfulFileRenamed.userId.file.hourly.mapper",
             "score-mapping-conf": {
               "base": 1.5,
-              "scoreStep": 5,
+              "scoreStep": 3,
               "probabilityStep": 1.5
             },
             "base-scorer": {
@@ -340,7 +340,7 @@
             "name": "numberOfFileMoved.userId.file.hourly.mapper",
             "score-mapping-conf": {
               "base": 1.5,
-              "scoreStep": 5,
+              "scoreStep": 3,
               "probabilityStep": 1.5
             },
             "base-scorer": {
@@ -381,7 +381,7 @@
             "name": "numberOfFileMovedFromSharedDrive.userId.file.hourly.mapper",
             "score-mapping-conf": {
               "base": 1.5,
-              "scoreStep": 5,
+              "scoreStep": 3,
               "probabilityStep": 1.5
             },
             "base-scorer": {
@@ -422,7 +422,7 @@
             "name": "numberOfFileMovedToSharedDrive.userId.file.hourly.mapper",
             "score-mapping-conf": {
               "base": 1.5,
-              "scoreStep": 5,
+              "scoreStep": 3,
               "probabilityStep": 1.5
             },
             "base-scorer": {

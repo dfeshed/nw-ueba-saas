@@ -1,21 +1,16 @@
 package fortscale.ml.scorer;
 
-import fortscale.domain.feature.score.FeatureScore;
+import fortscale.ml.scorer.config.ScoreExponentialStepsMappingConf;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import presidio.ade.domain.record.AdeRecordReader;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
 
 public class ScoreExponentialStepsMapperTest {
 
     @Test
     public void test_score_with_exponential_mapping_default_configuration() throws Exception {
-        ScoreExponentialStepsMapping.ScoreExponentialStepsMappingConf scoreMappingConf = new ScoreExponentialStepsMapping.ScoreExponentialStepsMappingConf();
+        ScoreExponentialStepsMappingConf scoreMappingConf = new ScoreExponentialStepsMappingConf();
         double expectedScore = scoreMappingConf.getMinScore();
         double score = 0.9544;
         while (score < 0.9999999999999999) {
@@ -28,13 +23,14 @@ public class ScoreExponentialStepsMapperTest {
     }
 
 
-    private double calcScore(double scoreToMap, ScoreExponentialStepsMapping.ScoreExponentialStepsMappingConf scoreMappingConf) {
-        return ScoreExponentialStepsMapping.mapScore(scoreToMap, scoreMappingConf);
+    private double calcScore(double scoreToMap, ScoreExponentialStepsMappingConf scoreMappingConf) {
+        ScoreExponentialStepsMapper scoreExponentialStepsMapper = new ScoreExponentialStepsMapper("test", Mockito.mock(Scorer.class), scoreMappingConf);
+        return scoreExponentialStepsMapper.mapScore(scoreToMap);
     }
 
     @Test
     public void test_score_with_different_sd() throws Exception {
-        ScoreExponentialStepsMapping.ScoreExponentialStepsMappingConf scoreMappingConf = new ScoreExponentialStepsMapping.ScoreExponentialStepsMappingConf();
+        ScoreExponentialStepsMappingConf scoreMappingConf = new ScoreExponentialStepsMappingConf();
         //2sd-
         double mappedScore = calcScore(95.0, scoreMappingConf);
         Assert.assertEquals(0.0, mappedScore, 0.0);

@@ -11,7 +11,7 @@
             "name": "numberOfSuccessfulAuthentications.userId.authentication.hourly.mapper",
             "score-mapping-conf": {
               "base": 1.5,
-              "scoreStep": 5,
+              "scoreStep": 3,
               "probabilityStep": 1.5
             },
             "base-scorer": {
@@ -52,7 +52,7 @@
             "name": "numberOfFailedAuthentications.userId.authentication.hourly.mapper",
             "score-mapping-conf": {
               "base": 1.5,
-              "scoreStep": 5,
+              "scoreStep": 3,
               "probabilityStep": 1.5
             },
             "base-scorer": {
@@ -93,7 +93,7 @@
             "name": "numberOfDistinctDstMachineDomain.userId.authentication.hourly.mapper",
             "score-mapping-conf": {
               "base": 1.5,
-              "scoreStep": 5,
+              "scoreStep": 3,
               "probabilityStep": 1.5
             },
             "base-scorer": {
@@ -134,7 +134,7 @@
             "name": "numberOfDistinctSrcMachineId.userId.authentication.hourly.mapper",
             "score-mapping-conf": {
               "base": 1.5,
-              "scoreStep": 5,
+              "scoreStep": 3,
               "probabilityStep": 1.5
             },
             "base-scorer": {
@@ -175,7 +175,7 @@
             "name": "numberOfDistinctDstMachineId.userId.authentication.hourly.mapper",
             "score-mapping-conf": {
               "base": 1.5,
-              "scoreStep": 5,
+              "scoreStep": 3,
               "probabilityStep": 1.5
             },
             "base-scorer": {
@@ -216,7 +216,7 @@
             "name": "numberOfDistinctDstMachineNameRegexCluster.userId.authentication.hourly.mapper",
             "score-mapping-conf": {
               "base": 1.5,
-              "scoreStep": 5,
+              "scoreStep": 3,
               "probabilityStep": 1.5
             },
             "base-scorer": {
@@ -257,7 +257,7 @@
             "name": "numberOfDistinctSrcMachineNameRegexCluster.userId.authentication.hourly.mapper",
             "score-mapping-conf": {
               "base": 1.5,
-              "scoreStep": 5,
+              "scoreStep": 3,
               "probabilityStep": 1.5
             },
             "base-scorer": {
@@ -298,7 +298,7 @@
             "name": "numberOfDistinctSite.userId.authentication.hourly.mapper",
             "score-mapping-conf": {
               "base": 1.5,
-              "scoreStep": 5,
+              "scoreStep": 3,
               "probabilityStep": 1.5
             },
             "base-scorer": {
