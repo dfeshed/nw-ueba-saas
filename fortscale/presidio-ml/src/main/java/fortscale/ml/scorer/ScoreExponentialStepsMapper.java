@@ -6,6 +6,7 @@ import org.springframework.util.Assert;
 import java.util.Map;
 import java.util.TreeMap;
 
+//todo: add description
 public class ScoreExponentialStepsMapper extends AbstractScoreMapper {
     private ScoreExponentialStepsMappingConf scoreMappingConf;
 
@@ -17,35 +18,23 @@ public class ScoreExponentialStepsMapper extends AbstractScoreMapper {
 
     @Override
     protected double mapScore(double score){
-        TreeMap<Double, Double> scoreToMappedScoreMap = scoreMappingConf.getScoreToMappedScoreMap();
-        if (score <= scoreToMappedScoreMap.firstKey()) {
-            return scoreMappingConf.getMinScore();
+        double mappedScoreStep = scoreMappingConf.MAX_MAPPED_SCORE_DEFAULT / scoreMappingConf.getAmountOfSteps();
+        double numOfSteps = Math.log(scoreMappingConf.getProbabilityStartingPoint()/(1-(score/100))) / Math.log(scoreMappingConf.getProbabilityExponentialStep());
+        if(numOfSteps < 0){
+            return scoreMappingConf.MIN_MAPPED_SCORE_DEFAULT;
+        }
+        if(numOfSteps > scoreMappingConf.getAmountOfSteps()){
+            return scoreMappingConf.MAX_MAPPED_SCORE_DEFAULT;
         }
 
-        if (score > scoreToMappedScoreMap.lastKey()) {
-            return scoreMappingConf.getMaxScore();
-        }
-
-        double fromMappedScore = scoreMappingConf.getMinScore();
-        double fromScore = (1 - scoreMappingConf.getMaxProbability()) * 100;
-        double toScore = fromScore;
-
-        for (Map.Entry<Double, Double> entry : scoreToMappedScoreMap.entrySet()) {
-            if (score <= entry.getKey()) {
-                toScore = entry.getKey();
-                break;
-            }
-            fromScore = entry.getKey();
-            fromMappedScore = entry.getValue();
-        }
-
-        double ret = fromMappedScore + scoreMappingConf.getScoreStep() *
-                (Math.pow(scoreMappingConf.getBase(), score) - Math.pow(scoreMappingConf.getBase(), fromScore)) /
-                (Math.pow(scoreMappingConf.getBase(), toScore) - Math.pow(scoreMappingConf.getBase(), fromScore));
+        double fromMappedScore = scoreMappingConf.MIN_MAPPED_SCORE_DEFAULT + mappedScoreStep * Math.floor(numOfSteps);
+        double fromScore = (1 - scoreMappingConf.getProbabilityStartingPoint()/Math.pow(scoreMappingConf.getProbabilityExponentialStep(),Math.floor(numOfSteps))) * 100;
+        double toScore =(1 - scoreMappingConf.getProbabilityStartingPoint()/Math.pow(scoreMappingConf.getProbabilityExponentialStep(),Math.ceil(numOfSteps))) * 100;
 
 
-        ret = Math.floor(ret + scoreMappingConf.getScoreFactor());
-        ret = ret > scoreMappingConf.getMaxScore() ? scoreMappingConf.getMaxScore() : ret;
+        double ret = fromMappedScore + mappedScoreStep *
+                (Math.pow(scoreMappingConf.getProbabilityExponentialStep(), score) - Math.pow(scoreMappingConf.getProbabilityExponentialStep(), fromScore)) /
+                (Math.pow(scoreMappingConf.getProbabilityExponentialStep(), toScore) - Math.pow(scoreMappingConf.getProbabilityExponentialStep(), fromScore));
 
         return ret;
     }

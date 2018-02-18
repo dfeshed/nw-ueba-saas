@@ -11,7 +11,7 @@
             "name": "numberOfSuccessfulPrints.userId.print.hourly.scorer",
             "score-mapping-conf": {
               "base": 1.5,
-              "scoreStep": 3,
+              "amountOfSteps": 25,
               "probabilityStep": 1.5
             },
             "base-scorer": {
@@ -52,7 +52,7 @@
             "name": "numberOfFailedPrints.userId.print.hourly.scorer",
             "score-mapping-conf": {
               "base": 1.5,
-              "scoreStep": 3,
+              "amountOfSteps": 25,
               "probabilityStep": 1.5
             },
             "base-scorer": {
@@ -93,7 +93,7 @@
             "name": "numberOfDistinctSrcMachineId.userId.print.hourly.scorer",
             "score-mapping-conf": {
               "base": 1.5,
-              "scoreStep": 3,
+              "amountOfSteps": 25,
               "probabilityStep": 1.5
             },
             "base-scorer": {
@@ -134,7 +134,7 @@
             "name": "numberOfDistinctDstMachineId.userId.print.hourly.scorer",
             "score-mapping-conf": {
               "base": 1.5,
-              "scoreStep": 3,
+              "amountOfSteps": 25,
               "probabilityStep": 1.5
             },
             "base-scorer": {
@@ -175,7 +175,7 @@
             "name": "numberOfDistinctSrcMachineNameRegexCluster.userId.print.hourly.scorer",
             "score-mapping-conf": {
               "base": 1.5,
-              "scoreStep": 3,
+              "amountOfSteps": 25,
               "probabilityStep": 1.5
             },
             "base-scorer": {
@@ -216,7 +216,7 @@
             "name": "numberOfDistinctDstMachineNameRegexCluster.userId.print.hourly.scorer",
             "score-mapping-conf": {
               "base": 1.5,
-              "scoreStep": 3,
+              "amountOfSteps": 25,
               "probabilityStep": 1.5
             },
             "base-scorer": {
@@ -257,7 +257,7 @@
             "name": "numberOfDistinctAbsoluteFolderPath.userId.print.hourly.scorer",
             "score-mapping-conf": {
               "base": 1.5,
-              "scoreStep": 3,
+              "amountOfSteps": 25,
               "probabilityStep": 1.5
             },
             "base-scorer": {
