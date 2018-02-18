@@ -100,13 +100,13 @@ def convert_el_item(item):
     return data, name
 
 
-def create_elastic_mapping_from_file(jsonfilepath, url):
+def create_elastic_mapping_from_file(jsonfilepath):
     try:
         with open(jsonfilepath) as json_data:
             obj = json.load(json_data)
             name = dict.keys(obj)[0]
             data = json.dumps(dict.values(obj)[0])
-            requesturl = (url + name).replace(" ", "")
+            requesturl = (MACHINE_URL + name).replace(" ", "")
             put_request(requesturl, data)
             return True
     except Exception as e:
@@ -118,7 +118,7 @@ def create_elastic_mapping_from_file(jsonfilepath, url):
 def create_settings(path):
     file = os.path.join(path, SETTINGS_FILE_NAME)
     if os.path.isfile(file):
-        return create_elastic_mapping_from_file(file, MACHINE_URL)
+        return create_elastic_mapping_from_file(file)
     else:
         print ('missing settings for ' + path)
         return False
@@ -148,41 +148,43 @@ def json_from_file(file):
         return {}
 
 
-def create_template(path):
-    templatefile = os.path.join(path, TEMPLATE_FILE_NAME)
+def create_template(file):
     try:
-        with open(templatefile) as json_data:
-            templatejson = json.load(json_data)
-            mappings = json_from_file(os.path.join(path, MAPPINGS_FILE_NAME))
-            settings = json_from_file(os.path.join(path, SETTINGS_FILE_NAME))
-            aliases = json_from_file(os.path.join(path, ALIASES_FILE_NAME))
-            templatefields = dict.values(templatejson)[0]
-            templatefields[MAPPINGS] = mappings
-            templatefields[SETTING] = settings
-            templatefields[ALIASES] = aliases
-            name = dict.keys(templatejson)[0]
-            data = json.dumps(dict.values(templatejson)[0])
-            print("INFO: creating index:" + name)
+        with open(file) as json_data:
+            obj = json.load(json_data)
+            name = dict.keys(obj)[0]
+            data = json.dumps(dict.values(obj)[0])
             requesturl = (URL_TEMPLATES + name).replace(" ", "")
             put_request(requesturl, data)
     except Exception as e:
-        print ("ERROR: failed to send file={} to elastic search url={}".format(templatefile, URL_TEMPLATES))
+        print ("ERROR: failed to send file={} to elastic search url={}".format(file, URL_TEMPLATES))
+        print(e)
+
+
+def create_index_with_empty_settings(name):
+    try:
+        data = json.dumps({})
+        requesturl = (MACHINE_URL + name).replace(" ", "")
+        put_request(requesturl, data)
+    except Exception as e:
+        print ("ERROR: failed to send file={} settings to elastic search url={}".format(name, MACHINE_URL))
         print(e)
 
 
 def create_index_by_order(path, name):
     if create_settings(path):
         set_mappings_for_index(path, name)
-        set_aliases_for_index(path)
     else:
-        print ('Index not created')
+        create_index_with_empty_settings(name)
+        set_mappings_for_index(path, name)
+        set_aliases_for_index(path)
 
 
 def create_elasticsearch_indexes(path):
     for subfolder in os.listdir(path):
         newpath = os.path.join(path, subfolder)
         if os.path.isfile(os.path.join(newpath, TEMPLATE_FILE_NAME)):
-            create_template(newpath)
+            create_template(os.path.isfile(os.path.join(newpath, TEMPLATE_FILE_NAME)))
         else:
             create_index_by_order(newpath, subfolder)
 
