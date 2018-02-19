@@ -6,7 +6,15 @@ import org.springframework.util.Assert;
 import java.util.Map;
 import java.util.TreeMap;
 
-//todo: add description
+/**
+ * https://docs.google.com/spreadsheets/d/1kslMCoHfuG5RVXxXsqrEPYEPZpbYdlqara-kbe3W-rk/edit#gid=0
+ *
+ * Gaussian scores mapped to 0-100 scores by exponential function:
+ * 1. we decrease the area with constant steps in order to avoid sharp increase at the edge:
+ *  a. starting point of gaussian score is 2sd = 0.9544 (probability: 1 - 0.9544)
+ *  b. we decrease the probability by 1.5 steps and increase the mapped score by constant step.
+ * 2.Function between steps is: fromMappedScore + mappedScoreStep * (numOfSteps - Math.floor(numOfSteps))
+ */
 public class ScoreExponentialStepsMapper extends AbstractScoreMapper {
     private ScoreExponentialStepsMappingConf scoreMappingConf;
 
@@ -17,25 +25,23 @@ public class ScoreExponentialStepsMapper extends AbstractScoreMapper {
     }
 
     @Override
-    protected double mapScore(double score){
-        double mappedScoreStep = scoreMappingConf.MAX_MAPPED_SCORE_DEFAULT / scoreMappingConf.getAmountOfSteps();
-        double numOfSteps = Math.log(scoreMappingConf.getProbabilityStartingPoint()/(1-(score/100))) / Math.log(scoreMappingConf.getProbabilityExponentialStep());
-        if(numOfSteps < 0){
-            return scoreMappingConf.MIN_MAPPED_SCORE_DEFAULT;
+    protected double mapScore(double score) {
+        double probability = 1 - (score / 100);
+
+        if (probability > scoreMappingConf.getProbabilityStartingPoint()) {
+            return 0;
         }
-        if(numOfSteps > scoreMappingConf.getAmountOfSteps()){
+
+        double mappedScoreStep = scoreMappingConf.MAX_MAPPED_SCORE_DEFAULT / scoreMappingConf.getAmountOfSteps();
+        double numOfSteps = Math.log(scoreMappingConf.getProbabilityStartingPoint() / probability) /
+                Math.log(scoreMappingConf.getProbabilityExponentialStep());
+
+        if (numOfSteps > scoreMappingConf.getAmountOfSteps()) {
             return scoreMappingConf.MAX_MAPPED_SCORE_DEFAULT;
         }
 
-        double fromMappedScore = scoreMappingConf.MIN_MAPPED_SCORE_DEFAULT + mappedScoreStep * Math.floor(numOfSteps);
-        double fromScore = (1 - scoreMappingConf.getProbabilityStartingPoint()/Math.pow(scoreMappingConf.getProbabilityExponentialStep(),Math.floor(numOfSteps))) * 100;
-        double toScore =(1 - scoreMappingConf.getProbabilityStartingPoint()/Math.pow(scoreMappingConf.getProbabilityExponentialStep(),Math.ceil(numOfSteps))) * 100;
+        double fromMappedScore = mappedScoreStep * Math.floor(numOfSteps);
 
-
-        double ret = fromMappedScore + mappedScoreStep *
-                (Math.pow(scoreMappingConf.getProbabilityExponentialStep(), score) - Math.pow(scoreMappingConf.getProbabilityExponentialStep(), fromScore)) /
-                (Math.pow(scoreMappingConf.getProbabilityExponentialStep(), toScore) - Math.pow(scoreMappingConf.getProbabilityExponentialStep(), fromScore));
-
-        return ret;
+        return fromMappedScore + mappedScoreStep * (numOfSteps - Math.floor(numOfSteps));
     }
 }

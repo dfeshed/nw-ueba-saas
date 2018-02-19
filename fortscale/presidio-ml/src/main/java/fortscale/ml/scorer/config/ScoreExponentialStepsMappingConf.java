@@ -2,7 +2,6 @@ package fortscale.ml.scorer.config;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
-import java.util.TreeMap;
 
 @JsonAutoDetect(
         fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE,
@@ -11,7 +10,6 @@ public class ScoreExponentialStepsMappingConf {
     private static final double AMOUNT_OF_STEPS_DEFAULT = 25;
     private static final double PROBABILITY_STARTING_POINT_DEFAULT = 1 - 0.954499736103642;
     private static final double PROBABILITY_EXPONENTIAL_STEP_DEFAULT = 1.5;
-    public static final double MIN_MAPPED_SCORE_DEFAULT = 0;
     public static final double MAX_MAPPED_SCORE_DEFAULT = 100.0;
 
     private double amountOfSteps = AMOUNT_OF_STEPS_DEFAULT;
