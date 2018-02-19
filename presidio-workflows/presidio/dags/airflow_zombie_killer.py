@@ -75,54 +75,48 @@ def is_prefix_sub_list(sub_list, main_list):
     :param main_list: The containing list.
     :return: True if sub_list is a prefix sub-list of main_list, False otherwise.
     """
-    sub_list_length = len(sub_list)
-    main_list_length = len(main_list)
-
-    if sub_list_length > main_list_length:
+    if len(sub_list) > len(main_list):
         return False
 
-    for i in range(sub_list_length):
+    for i in range(0, len(sub_list)):
         if sub_list[i] != main_list[i]:
             return False
 
     return True
 
 
-def update_task_instances_to_kill(new_task_instance_to_kill, outdated_task_instances_to_kill):
+def update_task_instances_to_kill(execution_date_to_task_instances_to_kill_dictionary):
     """
-    Creates an updated list of task instances to kill, given a new instance and an outdated list. This function assumes
-    two things: All the task instances to kill have the same execution date, and none of the instances in the outdated
-    list have an ancestor-descendant relation (i.e. if one of the instances is a sub-DAG, none of its descendants are
-    present in the list). This is because killing a sub-DAG operator instance with a certain execution date kills all of
-    its descendants as well. These invariants apply also to the updated list returned - There are no ancestor-descendant
-    task instances in the list.
-    :param new_task_instance_to_kill: Should look like this:
-        {
-            'full_task_id': [..., <grandparent_dag_id>, <parent_dag_id>, <task_id>],
-            'pid': <task_instance_pid>
-        }
-    :param outdated_task_instances_to_kill: An outdated list of task instances, each one should look as described above.
-    :return: An updated list of task instances to kill.
+    For each list of task instances to kill in the given dictionary, this function eliminates instances with an
+    ancestor-descendant relation and keeps only the ancestors (i.e. if one of the task instances is a sub-DAG,
+    all of its descendants are removed from the list). This is because killing a sub-DAG operator instance
+    with a certain execution date kills all of its descendants as well.
+    :param execution_date_to_task_instances_to_kill_dictionary:
+           Maps an execution date to its list of task instances to kill.
+           Each task instance should look like this:
+               {
+                   'full_task_id': [..., <grandparent_dag_id>, <parent_dag_id>, <task_id>],
+                   'pid': <task_instance_pid>
+               }
+    :return: None.
     """
-    full_task_id = new_task_instance_to_kill['full_task_id']
-    new_task_instance_to_kill_appended = False
-    updated_task_instances_to_kill = []
+    for execution_date, task_instances_to_kill in execution_date_to_task_instances_to_kill_dictionary.iteritems():
+        for i in range(0, len(task_instances_to_kill)):
+            for j in range(i + 1, len(task_instances_to_kill)):
+                if (task_instances_to_kill[i] is not None) and (task_instances_to_kill[j] is not None):
+                    full_task_id_i = task_instances_to_kill[i]['full_task_id']
+                    full_task_id_j = task_instances_to_kill[j]['full_task_id']
 
-    for outdated_task_instance_to_kill in outdated_task_instances_to_kill:
-        if is_prefix_sub_list(full_task_id, outdated_task_instance_to_kill['full_task_id']):
-            if not new_task_instance_to_kill_appended:
-                updated_task_instances_to_kill.append(new_task_instance_to_kill)
-                new_task_instance_to_kill_appended = True
-        elif is_prefix_sub_list(outdated_task_instance_to_kill['full_task_id'], full_task_id):
-            updated_task_instances_to_kill.append(outdated_task_instance_to_kill)
-        else:
-            if not new_task_instance_to_kill_appended:
-                updated_task_instances_to_kill.append(new_task_instance_to_kill)
-                new_task_instance_to_kill_appended = True
+                    if is_prefix_sub_list(full_task_id_i, full_task_id_j):
+                        task_instances_to_kill[j] = None
+                    elif is_prefix_sub_list(full_task_id_j, full_task_id_i):
+                        task_instances_to_kill[i] = None
 
-            updated_task_instances_to_kill.append(outdated_task_instance_to_kill)
-
-    return updated_task_instances_to_kill if len(updated_task_instances_to_kill) > 0 else [new_task_instance_to_kill]
+    for execution_date in execution_date_to_task_instances_to_kill_dictionary:
+        execution_date_to_task_instances_to_kill_dictionary[execution_date] = filter(
+            lambda task_instance_to_kill: task_instance_to_kill is not None,
+            execution_date_to_task_instances_to_kill_dictionary[execution_date]
+        )
 
 
 def kill_task_instances(execution_date_to_task_instances_to_kill_dictionary):
@@ -198,20 +192,21 @@ def kill_task_instances_stuck_in_up_for_retry():
 
     for task_instance_in_up_for_retry in find_task_instances(first=False, state=State.UP_FOR_RETRY):
         if task_instance_in_up_for_retry.end_date <= max_datetime_to_mark_as_stuck:
+            execution_date = task_instance_in_up_for_retry.execution_date
+            task_instances_to_kill = execution_date_to_task_instances_to_kill_dictionary.get(execution_date)
+
+            if task_instances_to_kill is None:
+                task_instances_to_kill = []
+                execution_date_to_task_instances_to_kill_dictionary[execution_date] = task_instances_to_kill
+
             full_task_id = task_instance_in_up_for_retry.dag_id.split('.')
             full_task_id.append(task_instance_in_up_for_retry.task_id)
-            execution_date = task_instance_in_up_for_retry.execution_date
-
-            new_task_instance_to_kill = {
+            task_instances_to_kill.append({
                 'full_task_id': full_task_id,
                 'pid': task_instance_in_up_for_retry.pid
-            }
+            })
 
-            execution_date_to_task_instances_to_kill_dictionary[execution_date] = update_task_instances_to_kill(
-                new_task_instance_to_kill,
-                execution_date_to_task_instances_to_kill_dictionary.get(execution_date, [])
-            )
-
+    update_task_instances_to_kill(execution_date_to_task_instances_to_kill_dictionary)
     kill_task_instances(execution_date_to_task_instances_to_kill_dictionary)
 
 
