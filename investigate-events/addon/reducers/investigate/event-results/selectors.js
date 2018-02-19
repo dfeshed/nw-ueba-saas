@@ -33,7 +33,7 @@ export const selectedIndex = createSelector(
   [_sessionId, _resultsData], // sessionId not set on refresh
   (sessionId, data) => {
     let idx = -1;
-    if (sessionId && data.length) {
+    if (sessionId && data && data.length) {
       idx = _indexOfBy(data, 'sessionId', sessionId);
     }
     return idx;
