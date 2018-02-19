@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.output.commons.services.spring.UserUpdatePropertiesTestConfiguration;
-import presidio.output.domain.records.events.ActiveDirectoryEnrichedEvent;
-import presidio.output.domain.records.events.AuthenticationEnrichedEvent;
-import presidio.output.domain.records.events.EnrichedEvent;
-import presidio.output.domain.records.events.FileEnrichedEvent;
+import presidio.output.domain.records.events.*;
 import presidio.output.domain.records.users.User;
 import presidio.output.domain.records.users.UserSeverity;
 import presidio.output.domain.services.event.EventPersistencyService;
@@ -101,6 +98,21 @@ public class UserUpdatePropertiesServiceImplTest {
         Map<String, String> additionalInfo = new HashMap<>();
         additionalInfo.put("isUserAdmin", "true");
         generateActiveDirectoryEnrichedEvent(eventDate, "userName1", "userId", "userDisplayName1", null);
+        User user = generateUserAndSave("userId", "userName", "userDisplayName", false);
+        User userUpdated = userPropertiesUpdateService.userPropertiesUpdate(user);
+        Assert.assertEquals("userName1", userUpdated.getUserName());
+        Assert.assertEquals("userDisplayName1", userUpdated.getUserDisplayName());
+        Assert.assertEquals("userName1", userUpdated.getIndexedUserName());
+        Assert.assertEquals("userName1", userUpdated.getUserDisplayNameSortLowercase());
+        Assert.assertTrue(CollectionUtils.isEmpty(userUpdated.getTags()));
+    }
+
+    @Test
+    public void updateUserPropertiesWithPrintEvent() {
+        Instant eventDate = Instant.now();
+        Map<String, String> additionalInfo = new HashMap<>();
+        additionalInfo.put("isUserAdmin", "true");
+        generatePrintEnrichedEvent(eventDate, "userName1", "userId", "userDisplayName1", null);
         User user = generateUserAndSave("userId", "userName", "userDisplayName", false);
         User userUpdated = userPropertiesUpdateService.userPropertiesUpdate(user);
         Assert.assertEquals("userName1", userUpdated.getUserName());
@@ -265,6 +277,16 @@ public class UserUpdatePropertiesServiceImplTest {
                 userId, userName, userDisplayName, "dataSource", "USER_ACCOUNT_TYPE_CHANGED",
                 new ArrayList<String>(), EventResult.SUCCESS, "resultCode", additionalInfo, Boolean.FALSE, "objectId");
         saveEvent(event, Schema.ACTIVE_DIRECTORY);
+    }
+
+    private void generatePrintEnrichedEvent(Instant eventDate, String userName, String userId, String userDisplayName, Map<String, String> additionalInfo) {
+        PrintEnrichedEvent printEnrichedEvent = new PrintEnrichedEvent(Instant.now(), eventDate, "eventId",
+                "schema", userId, userName, userDisplayName,
+                "dataSource", "operationType", null, EventResult.SUCCESS,
+                "resultCode", additionalInfo, "srcMachineId", "srcMachineCluster",
+                "printerId", "printareName", "srcFilePath", "srcFolderPath",
+                "srcFileExtension", false, 10l, 10l);
+        saveEvent(printEnrichedEvent, Schema.PRINT);
     }
 
     private void generateAuthenticationEnrichedEvent(Instant eventDate, String userName, String userId, String userDisplayName, Map<String, String> additionalInfo) {

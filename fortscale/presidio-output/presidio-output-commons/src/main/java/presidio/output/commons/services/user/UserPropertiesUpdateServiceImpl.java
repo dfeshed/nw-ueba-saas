@@ -94,7 +94,7 @@ public class UserPropertiesUpdateServiceImpl implements UserPropertiesUpdateServ
 
     @Override
     public List<String> collectionNamesByOrderForEvents() {
-        List<Schema> schemas = new ArrayList<>(Arrays.asList(Schema.AUTHENTICATION, Schema.FILE, Schema.ACTIVE_DIRECTORY));
+        List<Schema> schemas = Arrays.asList(Schema.values());
         List<String> collections = new ArrayList<>();
         schemas.forEach(schema -> {
             collections.add(outputToCollectionNameTranslator.toCollectionName(schema));
