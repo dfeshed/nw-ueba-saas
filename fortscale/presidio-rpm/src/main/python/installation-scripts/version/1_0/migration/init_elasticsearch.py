@@ -100,28 +100,34 @@ def convert_el_item(item):
     return data, name
 
 
-def create_elastic_mapping_from_file(jsonfilepath):
+def create_el_settings(file):
+    if not bool(file):
+        return {}
+    with open(file) as json_data:
+        obj = json.load(json_data)
+    index = {"index": obj}
+    settings = {"settings": index}
+    return json.dumps(settings)
+
+
+def create_elastic_index(file, name):
     try:
-        with open(jsonfilepath) as json_data:
-            obj = json.load(json_data)
-            name = dict.keys(obj)[0]
-            data = json.dumps(dict.values(obj)[0])
-            requesturl = (MACHINE_URL + name).replace(" ", "")
-            put_request(requesturl, data)
-            return True
+        requesturl = (MACHINE_URL + name).replace(" ", "")
+        data = create_el_settings(file)
+        put_request(requesturl, data)
+        return True
     except Exception as e:
-        print ("ERROR: failed to send file={} to elastic search url={}".format(jsonfilepath, url))
+        print ("ERROR: failed to send file={} to elastic search url={}".format(file, requesturl))
         print(e)
         return False
 
 
-def create_settings(path):
+def create_settings(path, name):
     file = os.path.join(path, SETTINGS_FILE_NAME)
     if os.path.isfile(file):
-        return create_elastic_mapping_from_file(file)
+        return create_elastic_index(file, name)
     else:
-        print ('missing settings for ' + path)
-        return False
+        return create_elastic_index({}, name)
 
 
 def set_mappings_for_index(path, name):
@@ -161,30 +167,20 @@ def create_template(file):
         print(e)
 
 
-def create_index_with_empty_settings(name):
-    try:
-        data = json.dumps({})
-        requesturl = (MACHINE_URL + name).replace(" ", "")
-        put_request(requesturl, data)
-    except Exception as e:
-        print ("ERROR: failed to send file={} settings to elastic search url={}".format(name, MACHINE_URL))
-        print(e)
-
-
 def create_index_by_order(path, name):
-    if create_settings(path):
+    if create_settings(path, name):
         set_mappings_for_index(path, name)
-    else:
-        create_index_with_empty_settings(name)
         set_mappings_for_index(path, name)
         set_aliases_for_index(path)
+    else:
+        print ("ERROR: failed to create index = {}".format(name))
 
 
 def create_elasticsearch_indexes(path):
     for subfolder in os.listdir(path):
         newpath = os.path.join(path, subfolder)
         if os.path.isfile(os.path.join(newpath, TEMPLATE_FILE_NAME)):
-            create_template(os.path.isfile(os.path.join(newpath, TEMPLATE_FILE_NAME)))
+            create_template(os.path.join(newpath, TEMPLATE_FILE_NAME))
         else:
             create_index_by_order(newpath, subfolder)
 

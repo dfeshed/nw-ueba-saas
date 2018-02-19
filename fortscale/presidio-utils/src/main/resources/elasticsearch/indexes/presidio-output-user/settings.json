@@ -1,25 +1,19 @@
 {
-  "presidio-output-user": {
-    "settings": {
-      "index": {
-        "max_result_window": "100000",
-        "analysis": {
-          "analyzer": {
-            "lowercase_analyzer": {
-              "filter": [
-                "lowercase"
-              ],
-              "type": "custom",
-              "tokenizer": "standard"
-            },
-            "case_insensitive_sort": {
-              "tokenizer": "keyword",
-              "filter": [
-                "lowercase"
-              ]
-            }
-          }
-        }
+  "max_result_window": "100000",
+  "analysis": {
+    "analyzer": {
+      "lowercase_analyzer": {
+        "filter": [
+          "lowercase"
+        ],
+        "type": "custom",
+        "tokenizer": "standard"
+      },
+      "case_insensitive_sort": {
+        "tokenizer": "keyword",
+        "filter": [
+          "lowercase"
+        ]
       }
     }
   }

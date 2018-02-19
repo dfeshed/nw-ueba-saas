@@ -1,19 +1,13 @@
 {
-  "presidio-output-alert": {
-    "settings": {
-      "index": {
-        "max_result_window": "100000",
-        "analysis": {
-          "analyzer": {
-            "lowercase_analyzer": {
-              "filter": [
-                "lowercase"
-              ],
-              "type": "custom",
-              "tokenizer": "standard"
-            }
-          }
-        }
+  "max_result_window": "100000",
+  "analysis": {
+    "analyzer": {
+      "lowercase_analyzer": {
+        "filter": [
+          "lowercase"
+        ],
+        "type": "custom",
+        "tokenizer": "standard"
       }
     }
   }
