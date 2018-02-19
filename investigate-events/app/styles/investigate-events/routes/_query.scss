@@ -118,13 +118,15 @@ $investigateReconFullWidth: 100%;
         .text .highlight {
           font-weight: bold;
         }
-        .rsa-investigate-query-tips-section-mouse {
+        .rsa-investigate-query-tips-section-keyboard {
+          flex-basis: 0;
           border-radius: rsa-whitespace(less);
           padding: rsa-whitespace(more);
           margin: rsa-whitespace(more) rsa-whitespace() rsa-whitespace(more) rsa-whitespace(more);
           background-color: background-color(primary, darker);
         }
-        .rsa-investigate-query-tips-section-keyboard {
+        .rsa-investigate-query-tips-section-mouse {
+          flex-basis: 0;
           border-radius: rsa-whitespace(less);
           padding: rsa-whitespace(more);
           margin: rsa-whitespace(more) rsa-whitespace(more) rsa-whitespace(more) rsa-whitespace();

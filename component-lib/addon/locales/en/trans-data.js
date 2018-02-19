@@ -482,16 +482,16 @@ export default {
       eventTips: {
         noResults: 'No results yet. Please select a service, time range, and submit a query',
         head: {
-          header: 'QUERY EXAMPLES',
+          header: 'QUERY FILTER EXAMPLES',
           text: {
-            one: 'Find HTTP events with a referrer that contains php',
+            one: 'Find outbound HTTP events with a user agent of some version of Mozilla',
             two: 'Find failed login windows events',
-            three: 'Find endpoint events with tasks having filenames ending with exe and having a launch argument'
+            three: 'Find endpoint events with tasks having filenames ending with exe'
           }
         },
         section: {
           mouse: {
-            header: 'MOUSE NAVIGATION TIPS',
+            header: 'MOUSE INTERACTIONS',
             textOne: 'Click before, after, or between filters to insert another filter.',
             textTwo: 'Click a filter and right-click to show the action menu.',
             textThree: 'Double-click a filter to open it for editing.',
@@ -499,12 +499,12 @@ export default {
             textFive: 'Click the browser <span class="highlight">Back</span> button to go back to the previous state.'
           },
           keyboard: {
-            header: 'KEYBOARD NAVIGATION TIPS',
-            textOne: 'Press <span class="highlight">Tab</span> to move through the view, from top level, to sub-menus, into the query builder.',
+            header: 'KEYBOARD INTERACTIONS',
+            textOne: 'Begin typing a meta key name or description in the query builder.',
             textTwo: 'Use <span class="highlight">up</span> and <span class="highlight">down arrows</span> in the drop-down menus, and press <span class="highlight">Enter</span> to select.',
             textThree: 'Press <span class="highlight">Enter</span> or click <span class="highlight">Query Events</span> to execute query.',
-            textFour: 'Press <span class="highlight">left arrow</span> and <span class="highlight">right arrow</span> to move through filters in the query builder.',
-            textFive: 'Press <span class="highlight">Shift + left arrow</span> or <span class="highlight">right arrow</span> to select multiple filters.'
+            textFour: 'Press <span class="highlight">left</span> or <span class="highlight">right arrow</span> to move through the query to add more filters or press <span class="highlight">Enter</span> to edit existing ones.',
+            textFive: 'Press <span class="highlight">Shift + left</span> or <span class="highlight">right arrow</span> to select multiple filters to delete by pressing <span class="highlight">Backspace</span> or <span class="highlight">Delete</span.'
           }
         }
       },
