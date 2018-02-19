@@ -38,6 +38,8 @@ public class TestConfig {
         properties.put("user.severity.compute.data.medium.percentage.of.users", 10);
         properties.put("user.severity.compute.data.medium.minimum.delta.factor", 1.1);
         properties.put("user.severity.compute.data.low.percentage.of.users", 80);
+        properties.put("indicators.store.page.size", 80);
+        properties.put("events.store.page.size", 80);
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
 

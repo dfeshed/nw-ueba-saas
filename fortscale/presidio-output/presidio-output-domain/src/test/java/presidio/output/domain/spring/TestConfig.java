@@ -20,6 +20,8 @@ public class TestConfig {
         properties.put("enable.metrics.export",true);
         properties.put("spring.application.name","test-app");
         properties.put("monitoring.fixed.rate","60000");
+        properties.put("indicators.store.page.size","1000");
+        properties.put("events.store.page.size","1000");
 
         return new TestPropertiesPlaceholderConfigurer(properties);
     }

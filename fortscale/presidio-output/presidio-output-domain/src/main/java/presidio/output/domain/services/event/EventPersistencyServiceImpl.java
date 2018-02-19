@@ -77,6 +77,20 @@ public class EventPersistencyServiceImpl implements EventPersistencyService {
     }
 
     @Override
+    public Long countEvents(Schema schema, String userId, TimeRange timeRange, List<Pair<String, Object>> features) {
+        String collectionName = toCollectionNameTranslator.toCollectionName(schema);
+        long count = 0;
+        try {
+            count = eventRepository.countEvents(collectionName, userId, timeRange, features);
+        } catch (Exception e) {
+            String errorMsg = String.format("Failed to countEvents by schema %s, user %s, time range %s, features %s", schema, userId, timeRange, features);
+            logger.error(errorMsg, e);
+            throw new RuntimeException(e);
+        }
+        return count;
+    }
+
+    @Override
     public EnrichedEvent findLatestEventForUser(String userId, List<String> collectionNames) {
         return eventRepository.findLatestEventForUser(userId, collectionNames);
     }
