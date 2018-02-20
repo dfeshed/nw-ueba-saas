@@ -17,7 +17,7 @@ export default {
   fieldPrefix: 'preferences.investigate-events',
   additionalFilterKey: 'userServicePreferences.serviceId',
   helpIds: {
-    moduleId: 'investigate',
+    moduleId: 'investigation',
     topicId: 'investigateEventPreferences'
   },
   items: [{

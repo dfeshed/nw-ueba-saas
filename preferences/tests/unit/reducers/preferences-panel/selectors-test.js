@@ -28,7 +28,7 @@ test('get the preference schema as null', function(assert) {
 
 test('Get the helpId while clicking on help icon', function(assert) {
   const response = {
-    moduleId: 'investigate',
+    moduleId: 'investigation',
     topicId: 'investigateEventPreferences'
   };
   const state = Immutable.from({
