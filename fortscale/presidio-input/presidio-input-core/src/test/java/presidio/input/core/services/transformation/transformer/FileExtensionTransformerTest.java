@@ -1,11 +1,10 @@
-package presidio.input.core.services.transformation;
+package presidio.input.core.services.transformation.transformer;
 
 import fortscale.domain.core.EventResult;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.input.core.services.transformation.transformer.FileExtensionTransformer;
 import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.domain.rawevents.PrintRawEvent;
 import presidio.sdk.api.domain.transformedevents.PrintTransformedEvent;
