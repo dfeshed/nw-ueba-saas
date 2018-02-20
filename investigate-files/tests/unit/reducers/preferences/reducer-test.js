@@ -63,4 +63,18 @@ test('The SET_FILE_PREFERENCES  action will set visibleColumns', function(assert
   assert.equal(result.preferences.filePreference.visibleColumns.length, 1, 'expected to return 1 column');
 });
 
+test('The SET_SORT_BY  action will set sortField', function(assert) {
+  // Initial state
+  const initialResult = reducer(undefined, {});
+  assert.equal(initialResult.preferences.filePreference.sortField, '{ "sortField": "firstSeenTime", "isSortDescending": false }', 'original sortField value');
 
+  const response = { 'sortField': 'firstSeenTime', 'isSortDescending': true };
+
+  const newAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.SET_SORT_BY,
+    payload: response
+  });
+
+  const result = reducer(preferencesInitialState, newAction);
+  assert.equal(result.preferences.filePreference.sortField, '{"sortField":"firstSeenTime","isSortDescending":true}', 'sortField value is set');
+});

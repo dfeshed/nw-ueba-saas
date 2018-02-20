@@ -92,9 +92,9 @@ const filterReducer = handleActions({
 
   [ACTION_TYPES.SET_ACTIVE_FILTER]: (state, { payload }) => state.set('activeFilter', payload),
 
-  [ACTION_TYPES.SET_EXPRESSION_LIST ]: (state, { payload }) => state.set('expressionList', payload),
+  [ACTION_TYPES.SET_EXPRESSION_LIST]: (state, { payload }) => state.set('expressionList', payload),
 
-  [ACTION_TYPES.UPDATE_FILTER_LIST ]: (state, action) => {
+  [ACTION_TYPES.UPDATE_FILTER_LIST]: (state, action) => {
     return handle(state, action, {
       success: (s) => {
         const { payload: { data } } = action;

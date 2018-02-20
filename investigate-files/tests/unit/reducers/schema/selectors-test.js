@@ -2,7 +2,8 @@ import { module, test } from 'qunit';
 import Immutable from 'seamless-immutable';
 
 import {
-  columns
+  columns,
+  isSchemaLoaded
 } from 'investigate-files/reducers/schema/selectors';
 
 module('Unit | selectors | schema');
@@ -30,6 +31,7 @@ const SCHEMA = Immutable.from({
     }
   }
 });
+
 test('columns', function(assert) {
   const result = columns(SCHEMA);
   // length = total size + 1 checkbox column
@@ -38,4 +40,24 @@ test('columns', function(assert) {
   assert.equal(result[1].visible, true, 'firstFileName field is visible');
 });
 
+test('isSchemaLoaded', function(assert) {
+  const SchemaNotLoaded = Immutable.from({
+    files: {
+      schema: {
+        schema: []
+      }
+    },
+    preferences: {
+      preferences: {
+        filePreference: {
+          visibleColumns: ['firstFileName']
+        }
+      }
+    }
+  });
+
+  assert.equal(isSchemaLoaded(SCHEMA), true, 'Schema loaded');
+
+  assert.equal(isSchemaLoaded(SchemaNotLoaded), false, 'Schema has not loaded');
+});
 

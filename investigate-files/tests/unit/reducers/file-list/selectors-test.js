@@ -5,7 +5,8 @@ import {
   fileCount,
   hasFiles,
   fileExportLink,
-  fileCountForDisplay
+  fileCountForDisplay,
+  serviceList
 } from 'investigate-files/reducers/file-list/selectors';
 
 module('Unit | selectors | file-list');
@@ -30,7 +31,8 @@ const STATE = Immutable.from({
           'format': 'PE'
         }
       ],
-      downloadId: 123
+      downloadId: 123,
+      listOfServices: []
     }
   }
 });
@@ -75,4 +77,24 @@ test('fileCountForDisplay', function(assert) {
     }
   }));
   assert.equal(newDisplay, '1000+', 'expected 1000+ files');
+});
+
+test('serviceList', function(assert) {
+  const newState = serviceList(Immutable.from({
+    files: {
+      fileList: {
+        listOfServices: [{ name: 'broker' }, { name: 'concentrator' }, { name: 'decoder' }, { name: 'testService' }]
+      }
+    }
+  }));
+  assert.deepEqual(newState, [{ name: 'broker' }, { name: 'concentrator' }, { name: 'decoder' }], 'List of supported services');
+
+  const listOfServicesNull = serviceList(Immutable.from({
+    files: {
+      fileList: {
+        listOfServices: null
+      }
+    }
+  }));
+  assert.deepEqual(listOfServicesNull, null, 'Supported services available is null');
 });

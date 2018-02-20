@@ -218,3 +218,67 @@ test('The SET_SYSTEM_FILTER_FLAG sets system filter flag', function(assert) {
   const result = reducer(previous, { type: ACTION_TYPES.SET_SYSTEM_FILTER_FLAG, payload: true });
   assert.deepEqual(result.isSystemFilter, true, 'Expected to denote if a system filter or not');
 });
+
+test('The ADD_FILE_FILTER sets expressionList and lastFilterAdded', function(assert) {
+  const previous = Immutable.from({ expressionList: [] });
+  const filterAdded = [
+    {
+      propertyName: 'entropy',
+      propertyValues: [
+        {
+          value: 10
+        }
+      ],
+      restrictionType: 'GREATER_THAN'
+    }];
+
+  const filterAddedResult = reducer(previous, { type: ACTION_TYPES.ADD_FILE_FILTER, payload: filterAdded[0] });
+  assert.deepEqual(filterAddedResult.expressionList, filterAdded, 'expressionList updated with filter added');
+  assert.equal(filterAddedResult.lastFilterAdded, 'entropy', 'Last filter added populated');
+
+  const additionalFilterAdded = [
+    {
+      propertyName: 'firstFileName',
+      propertyValues: null
+    }
+  ];
+
+  const additionalFilterAddedResult = reducer(filterAddedResult, { type: ACTION_TYPES.ADD_FILE_FILTER, payload: additionalFilterAdded[0] });
+  assert.deepEqual(additionalFilterAddedResult.expressionList, [...additionalFilterAdded, ...filterAdded], 'expressionList updated with the  second filter added');
+  assert.equal(additionalFilterAddedResult.lastFilterAdded, 'firstFileName', 'Last filter added populated with second filter name');
+});
+
+test('The UPDATE_FILE_FILTER updates expressionList', function(assert) {
+  const previous = Immutable.from({ expressionList: [] });
+  const payloadData = [
+    {
+      propertyName: 'entropy',
+      propertyValues: [
+        {
+          value: 10
+        }
+      ],
+      restrictionType: 'GREATER_THAN'
+    }];
+
+  const result = reducer(previous, { type: ACTION_TYPES.UPDATE_FILE_FILTER, payload: payloadData[0] });
+  assert.deepEqual(result.expressionList, payloadData, 'expressionList updated with first filter added');
+  assert.equal(result.lastFilterAdded, null, 'lastFilterAdded reset to null');
+
+  const payloadDataUpdated = [
+    {
+      propertyName: 'firstFileName',
+      propertyValues: [
+        {
+          value: 'm'
+        }
+      ],
+      restrictionType: 'LIKE'
+    }
+  ];
+
+  const resultUpdated = reducer(result, { type: ACTION_TYPES.UPDATE_FILE_FILTER, payload: payloadDataUpdated[0] });
+  assert.deepEqual(resultUpdated.expressionList, [...payloadDataUpdated, ...payloadData], 'expressionList updated with second filter added');
+  assert.equal(resultUpdated.lastFilterAdded, null, 'lastFilterAdded reset to null');
+});
+

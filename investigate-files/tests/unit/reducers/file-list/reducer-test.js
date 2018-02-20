@@ -173,3 +173,19 @@ test('The FETCH_NEXT_FILES sets load more state properly when totalItems > 1000'
   assert.equal(newEndState1.loadMoreStatus, 'stopped', 'load more status is stopped');
 });
 
+test('The GET_LIST_OF_SERVICES will set listOfServices', function(assert) {
+  // Initial state
+  const initialResult = reducer(undefined, {});
+  assert.equal(initialResult.listOfServices, null, 'original listOfServices value');
+
+  const response = [{ name: 'broker' }, { name: 'concentrator' }, { name: 'decoder' }];
+
+  const newAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.GET_LIST_OF_SERVICES,
+    payload: { data: response }
+  });
+
+  const result = reducer(initialResult, newAction);
+
+  assert.deepEqual(result.listOfServices, [{ name: 'broker' }, { name: 'concentrator' }, { name: 'decoder' }], 'listOfServices value is set');
+});
