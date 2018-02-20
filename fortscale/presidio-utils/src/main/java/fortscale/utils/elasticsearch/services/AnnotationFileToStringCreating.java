@@ -39,7 +39,7 @@ public class AnnotationFileToStringCreating implements FileToStringCreating {
         }
         if (isNotBlank(path)) {
             if (clazz.isAnnotationPresent(Mapping.class)) {
-                readFileFromClasspath(path);
+                return readFileFromClasspath(path);
             } else {
                 return getMappingFromTemplate(path);
             }
