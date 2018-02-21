@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SyslogService {
 
     private static final String APP_NAME = "UEBA";
-    private static final String METADATA_TAG = "meta@presidio";
+    private static final String METADATA_TAG = "meta@ueba";
     private static final String EVENT_ID = "eventID";
 
     private static final int SOCKET_CONNECT_TIMEOUT_IN_MILLIS = 60000;
