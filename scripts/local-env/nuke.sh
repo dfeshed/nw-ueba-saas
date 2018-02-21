@@ -10,12 +10,15 @@ red "...it's the only way to be sure.\n"
 
 function nukeNode {
   info "Removing $1 node_modules"
+  # use if actual (not linked) node_modules directory
+  # gets into folder while doing script work
+  # rm -rf $scriptDir/../$1/node_modules
+
   unlink $scriptDir/../$1/node_modules
 
-  # keeping this around to handle cases where
-  # bouncing between 11.0 and 11.1 and node_modules
-  # is an actual directory
-  rm -rf $scriptDir/../$1/node_modules
+  # remove any pesky error logs hanging around
+  # while doing build script work
+  # rm $scriptDir/../$1/yarn-error.log
 }
 
 rm -rf $scriptDir/../node_modules
