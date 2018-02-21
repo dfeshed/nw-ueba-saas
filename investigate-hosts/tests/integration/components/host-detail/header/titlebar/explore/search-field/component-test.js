@@ -4,7 +4,7 @@ import ReduxDataHelper from '../../../../../../../helpers/redux-data-helper';
 import Immutable from 'seamless-immutable';
 import engineResolverFor from '../../../../../../../helpers/engine-resolver';
 import { applyPatch, revertPatch } from '../../../../../../../helpers/patch-reducer';
-import $ from 'jquery';
+import wait from 'ember-test-helpers/wait';
 
 let setState;
 
@@ -29,9 +29,9 @@ test('Search field should render', function(assert) {
   this.set('errMsg', 'error message');
 
   this.render(hbs`{{host-detail/header/titlebar/explore/search-field isError=isError errMsg=errMsg }}`);
-  const searchField = $('.rsa-form-input');
+  const searchField = this.$('.rsa-form-input');
   assert.equal(searchField.length, 1, 'Searchfield rendered');
-  assert.equal($(searchField).hasClass('is-error'), true, 'search-field Error validated');
+  assert.equal(this.$(searchField).hasClass('is-error'), true, 'search-field Error validated');
 
 });
 
@@ -40,7 +40,7 @@ test('Should render Search field with loader', function(assert) {
   new ReduxDataHelper(setState).searchStatus('wait').build();
 
   this.render(hbs`{{host-detail/header/titlebar/explore/search-field }}`);
-  const searchFieldLoader = $('.host-explore__loader');
+  const searchFieldLoader = this.$('.host-explore__loader');
   assert.equal(searchFieldLoader.length, 1, 'search-field loader validated');
 
 });
@@ -49,7 +49,17 @@ test('Should render Search field with loader', function(assert) {
 test('Should render Search field with search icon', function(assert) {
   new ReduxDataHelper(setState).searchStatus('complete').build();
 
-  this.render(hbs`{{host-detail/header/titlebar/explore/search-field}}`);
-  const searchFieldIcon = $('.rsa-icon-search-filled');
+  this.set('searchText', 'sys');
+
+  this.render(hbs`{{host-detail/header/titlebar/explore/search-field searchText=searchText}}`);
+
+  const searchFieldIcon = this.$('.rsa-icon-search-filled');
   assert.equal(searchFieldIcon.length, 1, 'search-field search icon validated');
+
+  this.$('.rsa-form-button').click();
+  return wait().then(() => {
+    const state = this.get('redux').getState();
+    assert.equal(state.endpoint.explore.showSearchResults, true, 'Defalut action validated');
+  });
+
 });
