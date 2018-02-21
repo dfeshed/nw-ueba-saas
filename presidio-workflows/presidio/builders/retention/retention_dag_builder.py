@@ -8,6 +8,10 @@ from presidio.utils.configuration.config_server_configuration_reader_singleton i
     ConfigServerConfigurationReaderSingleton
 from presidio.utils.services.fixed_duration_strategy import is_execution_date_valid
 
+presidio_extension = __import__('presidio_extension.builders.retention.adapter_retention_dag_builder',
+                                fromlist=['AdapterRetentionDagBuilder'])
+RetentionDagExtensionBuilder = getattr(presidio_extension, 'AdapterRetentionDagBuilder')
+
 ADAPTER_JVM_ARGS_CONFIG_PATH = 'components.adapter.jvm_args'
 
 
@@ -91,6 +95,9 @@ class RetentionDagBuilder(PresidioDagBuilder):
 
         input_retention_short_circuit_operator >> input_retention_sub_dag
         output_retention_short_circuit_operator >> output_retention_sub_dag
+
+        retention_dag_extended = RetentionDagExtensionBuilder()
+        retention_dag_extended.build(retention_dag)
 
         return retention_dag
 
