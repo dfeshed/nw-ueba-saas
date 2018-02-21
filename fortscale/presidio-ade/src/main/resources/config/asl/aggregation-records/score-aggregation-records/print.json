@@ -76,14 +76,14 @@
       }
     },
     {
-      "name": "sumOfHighestAbsoluteFolderPathScoresUserIdPrintHourly",
+      "name": "sumOfHighestAbsoluteSharedFolderPathScoresUserIdPrintHourly",
       "type": "P",
-      "bucketConfName": "absoluteFolderPathToHighestScoreMapUserIdPrintHourly",
+      "bucketConfName": "absoluteSharedFolderPathToHighestScoreMapUserIdPrintHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "aggregatedFeatureNamesMap": {
         "pick": [
-          "absoluteFolderPathToHighestScoreMap"
+          "absoluteSharedFolderPathToHighestScoreMap"
         ]
       },
       "aggregatedFeatureEventFunction": {
