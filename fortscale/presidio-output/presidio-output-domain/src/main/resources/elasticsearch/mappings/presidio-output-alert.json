@@ -25,6 +25,10 @@
         "type": "string",
         "index": "not_analyzed"
       },
+      "vendorUserId": {
+        "type": "string",
+        "index": "not_analyzed"
+      },
       "userName": {
         "store": true,
         "type": "string",
