@@ -1,22 +1,15 @@
-package presidio.input.core.services.transformation;
+package presidio.input.core.services.transformation.managers;
 
 import fortscale.common.general.Schema;
 import fortscale.domain.core.EventResult;
-import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
-import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.input.core.spring.InputCoreConfigurationTest;
-import presidio.monitoring.elastic.repositories.MetricRepository;
-import presidio.monitoring.spring.PresidioMonitoringConfiguration;
+import presidio.input.core.services.transformation.TransformationService;
+import presidio.input.core.spring.InputConfigTest;
 import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.domain.rawevents.AuthenticationRawEvent;
 import presidio.sdk.api.domain.transformedevents.AuthenticationTransformedEvent;
@@ -24,13 +17,13 @@ import presidio.sdk.api.domain.transformedevents.AuthenticationTransformedEvent;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Properties;
 
 /**
  * Created by Efrat Noam on 11/8/17.
  */
 @RunWith(SpringRunner.class)
-public class TransformationServiceTest {
+@ContextConfiguration(classes = {InputConfigTest.class})
+public class AuthenticationTransformationServiceTest {
 
     @Autowired
     TransformationService transformationService;
@@ -85,26 +78,4 @@ public class TransformationServiceTest {
                 "resultCode", "site");
     }
 
-    @Configuration
-    @Import({
-            InputCoreConfigurationTest.class,
-            MongodbTestConfig.class,
-            PresidioMonitoringConfiguration.class})
-    @EnableSpringConfigured
-    public static class springConfig {
-        @MockBean
-        private MetricRepository metricRepository;
-
-        @Bean
-        public static TestPropertiesPlaceholderConfigurer inputCoreTestConfigurer() {
-            Properties properties = new Properties();
-            properties.put("page.iterator.page.size", "1000");
-            properties.put("enable.metrics.export", "false");
-            properties.put("output.events.limit", "1000");
-            properties.put("input.events.retention.in.days", "2");
-            properties.put("operation.type.category.mapping.file.path", "file:/home/presidio/presidio-core/configurations/operation-type-category-mapping.json");
-            return new TestPropertiesPlaceholderConfigurer(properties);
-        }
-
-    }
 }
