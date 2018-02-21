@@ -97,7 +97,6 @@ public class SecuredConfiguration {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("class SecuredConfiguration {\n");
-
         sb.append("    system: ").append(toIndentedString(system)).append("\n");
         sb.append("    outputForwarding: ").append(toIndentedString(outputForwarding)).append("\n");
         sb.append("    dataPipeline: ").append(toIndentedString(dataPipeline)).append("\n");
