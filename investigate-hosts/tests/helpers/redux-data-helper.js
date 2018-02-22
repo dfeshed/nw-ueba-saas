@@ -232,4 +232,9 @@ export default class DataHelper {
     _set(this.state, 'visuals.isTreeView', flag);
     return this;
   }
+
+  hostExportStatus(exportStatus) {
+    _set(this.state, 'machines.hostExportStatus', exportStatus);
+    return this;
+  }
 }
