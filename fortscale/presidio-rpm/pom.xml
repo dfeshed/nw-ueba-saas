@@ -111,7 +111,7 @@
                             <sources>
                                 <source>
                                     <location>
-                                        ${project.parent.build.directory}/../presidio-utils/src/main/resources/elasticsearch
+                                        ${project.parent.build.directory}/../presidio-output/presidio-output-domain/src/main/resources/elasticsearch
                                     </location>
                                 </source>
                             </sources>
@@ -227,9 +227,7 @@
                             <filemode>770</filemode>
                             <sources>
                                 <source>
-                                    <location>
-                                        ${project.basedir}/src/main/python/installation-scripts/service/run_configserver.sh
-                                    </location>
+                                    <location>${project.basedir}/src/main/python/installation-scripts/service/run_configserver.sh</location>
                                 </source>
                             </sources>
                         </mapping>
@@ -238,12 +236,9 @@
                         <script>
                             echo "Creating temp version file"
                             <!-- pre installation commands: -->
-                            rpm -qa | grep ${rpm_name} | cut -d"-" -f3 | cut -d"." -f1 >
-                            ${rpm-maven-plugin.script.version_temp_file}
-                            rpm -qa | grep ${rpm_name} | cut -d"-" -f3 | cut -d"." -f2 >>
-                            ${rpm-maven-plugin.script.version_temp_file}
-                            rpm -qa | grep ${rpm_name} | cut -d"-" -f4 | cut -d"." -f1 >>
-                            ${rpm-maven-plugin.script.version_temp_file}
+                            rpm -qa | grep ${rpm_name} | cut -d"-" -f3 | cut -d"." -f1 > ${rpm-maven-plugin.script.version_temp_file}
+                            rpm -qa | grep ${rpm_name} | cut -d"-" -f3 | cut -d"." -f2 >> ${rpm-maven-plugin.script.version_temp_file}
+                            rpm -qa | grep ${rpm_name} | cut -d"-" -f4 | cut -d"." -f1 >> ${rpm-maven-plugin.script.version_temp_file}
                             <!-- end of post installation -->
                         </script>
                     </preinstallScriptlet>
@@ -266,16 +261,14 @@
 
                             echo "Running Python migration project"
                             <!-- post installation commands: -->
-                            ${python_path} ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major
-                            ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build}
+                            ${python_path} ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build}
 
                             <!-- It takes 15 seconds for the config server to initialize -->
                             sleep 20
 
                             <!--changing ownership of project main folder -->
                             #echo "Changing ownership of /project main repository"
-                            chown -R -v ${rpm-maven-plugin.script.system_user}:${rpm-maven-plugin.script.system_user}
-                            ${rpm-maven-plugin.deployment_target_directory}
+                            chown -R -v ${rpm-maven-plugin.script.system_user}:${rpm-maven-plugin.script.system_user} ${rpm-maven-plugin.deployment_target_directory}
 
                             #echo "Removing temporary files"
                             rm -rf -v ${rpm-maven-plugin.script.version_temp_file}
@@ -300,8 +293,7 @@
                             <!-- pre remove commands -->
                             if [ "$1" = 0 ] ; then
                             echo "pre remove condition passed"
-                            ${python_path} ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major
-                            ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build} --uninstall
+                            ${python_path} ${rpm-maven-plugin.script} --rpm_name ${rpm_name} --major ${rpm.version.major} --minor ${rpm.version.minor} --build ${rpm.version.build} --uninstall
                             fi
 
                         </script>
