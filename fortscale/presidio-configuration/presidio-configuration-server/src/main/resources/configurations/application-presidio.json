@@ -10,7 +10,7 @@
   "dataPipeline": {
     "schemas": [
     ],
-    "startTime": "2017-01-01 08:00:00"
+    "startTime": "2017-01-01T08:00:00Z"
   },
   "outputForwarding": {
     "enableForwarding": "false"
