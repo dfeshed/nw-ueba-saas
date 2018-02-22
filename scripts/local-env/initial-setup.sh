@@ -80,7 +80,7 @@ installGlobalDependency "ember-cli" "ember-cli" "ember" $EMBER_CLI_VERSION
 # Have to do this so that yarn doesn't go to registry.yarnpkg which causes
 # tier2 permission issues. registry.yarnpkg is a reverse proxy placeholder
 # in case the Yarn folks feel that improvements can be made on the other end
-yarn config set registry https://registry.npmjs.org/ --no-node-version-check
+yarn config set registry https://registry.npmjs.org/
 
 # Yay!
 success "Initial setup complete!"

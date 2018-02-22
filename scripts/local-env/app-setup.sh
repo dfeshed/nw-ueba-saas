@@ -16,7 +16,7 @@ function prepareApp {
     ln -s ../node_modules node_modules
   fi
 
-  yarn link mock-server --silent --no-node-version-check
+  yarn link mock-server --silent
 
   success "$1 is ready to go!"
 }
@@ -31,21 +31,19 @@ scriptDir="$(dirname $0)"
 # run install on node build node utilities
 info "Running install for node build utilities"
 cd $scriptDir/node
-# TODO, remove ALL --no-node-version-check flags after node is upgraded to
-# new supported version
-yarn --no-node-version-check
+yarn
 
 # run install on node build node utilities
 info "Running install for all application node packages"
 cd ../..
-yarn --no-node-version-check
+yarn
 cd $CWD
 
 # mock-server is just Yarn install
 info "Running install for mock server"
 cd $scriptDir/../mock-server
-yarn --no-node-version-check
-yarn link --no-node-version-check
+yarn
+yarn link
 
 prepareApp component-lib
 prepareApp streaming-data
