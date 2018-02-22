@@ -1,5 +1,6 @@
 package presidio.input.core.services.converters.output;
 
+import org.apache.commons.lang.StringUtils;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.records.events.PrintEnrichedEvent;
 import presidio.sdk.api.domain.AbstractInputDocument;
@@ -22,14 +23,15 @@ public class PrintInputToOutputConverter implements InputOutputConverter {
         outputEvent.setAdditionalInfo(transformedEvent.getAdditionalInfo());
         outputEvent.setFileSize(transformedEvent.getFileSize());
         outputEvent.setNumOfPages(transformedEvent.getNumOfPages());
-        outputEvent.setPrinterCluster(transformedEvent.getPrinterCluster());
-        outputEvent.setPrinterId(transformedEvent.getPrinterId());
         outputEvent.setSrcDriveShared(transformedEvent.getSrcDriveShared());
         outputEvent.setSrcFileExtension(transformedEvent.getSrcFileExtension());
         outputEvent.setSrcFilePath(transformedEvent.getSrcFilePath());
         outputEvent.setSrcFolderPath(transformedEvent.getSrcFolderPath());
-        outputEvent.setSrcMachineCluster(transformedEvent.getSrcMachineCluster());
-        outputEvent.setSrcMachineId(transformedEvent.getSrcMachineId());
+        outputEvent.setSrcMachineId(StringUtils.isEmpty(transformedEvent.getSrcMachineId()) ? transformedEvent.getSrcMachineName() : transformedEvent.getSrcMachineId());
+        outputEvent.setSrcMachineCluster(StringUtils.isEmpty(transformedEvent.getSrcMachineCluster()) ? transformedEvent.getSrcMachineName() : transformedEvent.getSrcMachineCluster());
+        outputEvent.setPrinterId(StringUtils.isEmpty(transformedEvent.getPrinterId()) ? transformedEvent.getPrinterName() : transformedEvent.getPrinterId());
+        outputEvent.setPrinterCluster(StringUtils.isEmpty(transformedEvent.getPrinterCluster()) ? transformedEvent.getPrinterName() : transformedEvent.getPrinterCluster());
+
         return outputEvent;
     }
 }
