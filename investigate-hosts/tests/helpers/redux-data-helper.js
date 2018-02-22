@@ -217,4 +217,19 @@ export default class DataHelper {
     _set(this.state, 'machines.totalItems', fileCount);
     return this;
   }
+
+  processDetails(data) {
+    _set(this.state, 'process.processDetails', data);
+    return this;
+  }
+
+  processDetailsLoading(flag) {
+    _set(this.state, 'process.processDetailsLoading', flag);
+    return this;
+  }
+
+  isTreeView(flag) {
+    _set(this.state, 'visuals.isTreeView', flag);
+    return this;
+  }
 }

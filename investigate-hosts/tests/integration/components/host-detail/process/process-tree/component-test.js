@@ -2,11 +2,10 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
 import engineResolver from '../../../../../helpers/engine-resolver';
-import sinon from 'sinon';
 import processData from '../../../../../integration/components/state/process-data';
 import { applyPatch, revertPatch } from '../../../../../helpers/patch-reducer';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
-import * as DataCreators from 'investigate-hosts/actions/data-creators/process';
+import { patchSocket } from '../../../../../helpers/patch-socket';
 
 let setState;
 
@@ -51,10 +50,11 @@ test('Get the length of visible items in datatable', function(assert) {
     assert.equal(this.$('.rsa-process-tree .rsa-data-table-body-row').length, 77, '77 visible items in datatable');
   });
 });
-sinon.stub(DataCreators, 'getProcessDetails');
 test('Check that row click action is handled', function(assert) {
-  assert.expect(4);
+  assert.expect(5);
   new ReduxDataHelper(setState)
+    .agentId(1)
+    .scanTime(123456789)
     .processList(processData.processList)
     .processTree(processData.processTree)
     .selectedTab(null)
@@ -67,13 +67,22 @@ test('Check that row click action is handled', function(assert) {
     </style>
     {{host-detail/process/process-tree}}`);
 
+  patchSocket((method, modelName, query) => {
+    assert.equal(method, 'getProcess');
+    assert.equal(modelName, 'endpoint');
+    assert.deepEqual(query, {
+      'data': {
+        'agentId': 1,
+        'pid': 29680,
+        'scanTime': 123456789
+      }
+    });
+  });
+
   assert.equal(this.$('.rsa-process-tree .rsa-data-table-body-row:eq(3)').hasClass('is-selected'), false, 'Forth row is not selected before click');
   this.$('.rsa-process-tree .rsa-data-table-body-row:eq(3)').click();
   return wait().then(() => {
-    assert.equal(DataCreators.getProcessDetails.calledOnce, true, 'row click action is called');
-    assert.equal(DataCreators.getProcessDetails.args[0][0], 29680, 'PID value passed on row-click is rendered');
     assert.equal(this.$('.rsa-process-tree .rsa-data-table-body-row:eq(3)').hasClass('is-selected'), true, 'Forth row is selected after click');
-    DataCreators.getProcessDetails.restore();
   });
 });
 

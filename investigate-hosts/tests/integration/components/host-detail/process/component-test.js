@@ -1,10 +1,11 @@
-import { moduleForComponent, skip, test } from 'ember-qunit';
+import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
 import engineResolver from '../../../../helpers/engine-resolver';
 import { applyPatch, revertPatch } from '../../../../helpers/patch-reducer';
-import Immutable from 'seamless-immutable';
-import processData from '../../../../integration/components/state/process-data';
+import { processDetails, processList, processTree } from '../../../../integration/components/state/process-data';
+import { patchSocket } from '../../../../helpers/patch-socket';
+import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 
 let setState;
 
@@ -24,14 +25,11 @@ moduleForComponent('host-detail/process', 'Integration | Component | endpoint ho
 });
 
 test('it renders data when isProcessDataEmpty is true', function(assert) {
-  setState(Immutable.from({
-    endpoint: {
-      process: {
-        processTree: [],
-        processList: []
-      }
-    }
-  }));
+
+  new ReduxDataHelper(setState)
+    .processList([])
+    .processTree([])
+    .build();
   // set height to get all lazy rendered items on the page
   this.render(hbs`
     {{host-detail/process}}    
@@ -44,11 +42,13 @@ test('it renders data when isProcessDataEmpty is true', function(assert) {
 });
 
 test('it renders data when isProcessDataEmpty is false', function(assert) {
-  setState(Immutable.from({
-    endpoint: {
-      process: processData
-    }
-  }));
+
+  new ReduxDataHelper(setState)
+    .processList(processList)
+    .processTree(processTree)
+    .processDetails(processDetails)
+    .build();
+
   // set height to get all lazy rendered items on the page
   this.render(hbs`
     {{host-detail/process}}
@@ -60,21 +60,72 @@ test('it renders data when isProcessDataEmpty is false', function(assert) {
   });
 });
 
-skip('it renders', function(assert) {
-
-  // Set any properties with this.set('myProperty', 'value');
-  // Handle any actions with this.on('myAction', function(val) { ... });
-
-  this.render(hbs`{{host-detail/process}}`);
-
-  assert.equal(this.$().text().trim(), '');
-
-  // Template block usage:
+test('it should not show toggle tree button when navigating from search result', function(assert) {
+  new ReduxDataHelper(setState)
+    .selectedTab({ tabName: 'PROCESS' })
+    .build();
+  // set height to get all lazy rendered items on the page
   this.render(hbs`
-    {{#host-detail/process}}
-      template block text
-    {{/host-detail/process}}
+    {{host-detail/process}}
   `);
 
-  assert.equal(this.$().text().trim(), 'template block text');
+  return wait().then(() => {
+    assert.deepEqual(this.$('.toggle-icon').length, 0, 'no toggle icon');
+  });
+});
+
+
+test('it should toggle the tree view to list view', function(assert) {
+  new ReduxDataHelper(setState)
+    .processList(processList)
+    .processTree(processTree)
+    .processDetails(processDetails)
+    .isTreeView(true)
+    .build();
+  // set height to get all lazy rendered items on the page
+  this.render(hbs`
+    {{host-detail/process}}
+  `);
+
+  return wait().then(() => {
+    assert.equal(this.$('.toggle-icon').length, 1, 'toggle icon');
+    this.$('.toggle-icon .rsa-icon').click();
+    const { endpoint: { visuals: { isTreeView } } } = this.get('redux').getState();
+    assert.equal(isTreeView, false, 'It should toggle to list view');
+  });
+});
+
+test('it should toggle the list view to tree view', function(assert) {
+  assert.expect(5);
+  new ReduxDataHelper(setState)
+    .agentId(1)
+    .scanTime(123456789)
+    .processList(processList)
+    .processTree(processTree)
+    .processDetails(processDetails)
+    .isTreeView(false)
+    .build();
+  // set height to get all lazy rendered items on the page
+  this.render(hbs`
+    {{host-detail/process}}
+  `);
+
+  patchSocket((method, modelName, query) => {
+    assert.equal(method, 'getProcess');
+    assert.equal(modelName, 'endpoint');
+    assert.deepEqual(query,
+      {
+        'data': {
+          'agentId': 1,
+          'pid': 1,
+          'scanTime': 123456789
+        }
+      });
+  });
+  return wait().then(() => {
+    assert.equal(this.$('.toggle-icon').length, 1, 'toggle icon');
+    this.$('.toggle-icon .rsa-icon').click();
+    const { endpoint: { visuals: { isTreeView } } } = this.get('redux').getState();
+    assert.equal(isTreeView, true, 'It should toggle to tree view');
+  });
 });
