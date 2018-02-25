@@ -30,7 +30,13 @@
                 "model": {
                   "name": "srcMachineNameRegexCluster.userId.authentication"
                 },
+<<<<<<< HEAD
                 "max-rare-count": 8,
+=======
+                "number-of-partitions-to-influence-enough": 10,
+                "use-certainty-to-calculate-score": true,
+                "max-rare-count": 5,
+>>>>>>> 145b361... add number-of-partitions-to-influence-enough to asl
                 "max-num-of-rare-features": 15
               },
               "reduction-scorer": {
@@ -42,7 +48,14 @@
                   "model": {
                     "name": "userId.srcMachineId.authentication"
                   },
+<<<<<<< HEAD
                   "max-rare-count": 8,
+=======
+                  "number-of-partitions-to-influence-enough": 10,
+                  "min-number-of-partitions-to-influence": 10,
+                  "use-certainty-to-calculate-score": true,
+                  "max-rare-count": 5,
+>>>>>>> 145b361... add number-of-partitions-to-influence-enough to asl
                   "max-num-of-rare-features": 15
                 }
               },
@@ -62,7 +75,13 @@
                   "model": {
                     "name": "dstMachineNameRegexCluster.userIdInteractiveRemote.authentication"
                   },
+<<<<<<< HEAD
                   "max-rare-count": 8,
+=======
+                  "number-of-partitions-to-influence-enough": 10,
+                  "use-certainty-to-calculate-score": true,
+                  "max-rare-count": 5,
+>>>>>>> 145b361... add number-of-partitions-to-influence-enough to asl
                   "max-num-of-rare-features": 15
                 },
                 "reduction-scorer": {
@@ -74,7 +93,14 @@
                     "model": {
                       "name": "userId.dstMachineIdInteractiveRemote.authentication"
                     },
+<<<<<<< HEAD
                     "max-rare-count": 8,
+=======
+                    "number-of-partitions-to-influence-enough": 10,
+                    "min-number-of-partitions-to-influence": 10,
+                    "use-certainty-to-calculate-score": true,
+                    "max-rare-count": 5,
+>>>>>>> 145b361... add number-of-partitions-to-influence-enough to asl
                     "max-num-of-rare-features": 15
                   }
                 },
@@ -90,7 +116,13 @@
                 "model": {
                   "name": "site.userId.authentication"
                 },
+<<<<<<< HEAD
                 "max-rare-count": 8,
+=======
+                "number-of-partitions-to-influence-enough": 10,
+                "use-certainty-to-calculate-score": true,
+                "max-rare-count": 5,
+>>>>>>> 145b361... add number-of-partitions-to-influence-enough to asl
                 "max-num-of-rare-features": 15
               },
               "reduction-scorer": {
@@ -102,7 +134,14 @@
                   "model": {
                     "name": "userId.site.authentication"
                   },
+<<<<<<< HEAD
                   "max-rare-count": 8,
+=======
+                  "number-of-partitions-to-influence-enough": 10,
+                  "min-number-of-partitions-to-influence": 10,
+                  "use-certainty-to-calculate-score": true,
+                  "max-rare-count": 5,
+>>>>>>> 145b361... add number-of-partitions-to-influence-enough to asl
                   "max-num-of-rare-features": 15
                 }
               },
