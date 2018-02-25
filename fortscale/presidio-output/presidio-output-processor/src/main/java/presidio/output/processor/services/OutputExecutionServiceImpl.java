@@ -80,9 +80,9 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         logger.debug("Started output process with params: start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
         PageIterator<SmartRecord> smartPageIterator = adeManagerSdk.getSmartRecords(smartPageSize, smartPageSize, new TimeRange(startDate, endDate), SMART_THRESHOLD_FOR_GETTING_SMART_ENTITIES);
 
-        List<Alert> alerts = new ArrayList<>();
         List<User> users = new ArrayList<>();
         List<SmartRecord> smarts = null;
+        List<Alert> alerts = new ArrayList<>();
         while (smartPageIterator.hasNext()) {
             smarts = smartPageIterator.next();
             for (SmartRecord smart : smarts) {
@@ -117,20 +117,20 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                 if (getCreatedUser(users, userEntity.getUserId()) == null) {
                     users.add(userEntity);
                 }
+
             }
+            storeAlerts(alerts);
+            alerts.clear();
+            outputMonitoringService.reportTotalAnomalyEvents(alerts, startDate);
         }
 
         storeUsers(users); //Get the generated users with the new elasticsearch ID
-        storeAlerts(alerts);
-
-        outputMonitoringService.reportTotalAnomalyEvents(alerts, startDate);
-
-        logger.info("output process application completed for start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
         outputMonitoringService.reportTotalUsersCount(users.size(), startDate);
 
         if (CollectionUtils.isNotEmpty(smarts)) {
             outputMonitoringService.reportLastSmartTimeProcessed(smarts.get(smarts.size() - 1).getStartInstant().toEpochMilli(), startDate);
         }
+        logger.info("output process application completed for start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
     }
 
     private User getSingleUserEntityById(String userId) {

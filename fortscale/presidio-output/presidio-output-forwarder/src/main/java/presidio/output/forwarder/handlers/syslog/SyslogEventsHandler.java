@@ -135,11 +135,9 @@ public class SyslogEventsHandler implements EventsHandler {
         }
     }
 
-    @JsonIgnoreProperties({"smartId","indexedUserName","lastUpdatedBy","updatedBy","feedback","preferredClassification","userTags","createdDate","updatedDate"})
+    @JsonIgnoreProperties({"smartId","userName","indexedUserName","lastUpdatedBy","updatedBy","feedback","preferredClassification","userTags","createdDate","updatedDate"})
     class AlertJsonMixin extends Alert {
 
-        @JsonProperty("vendorUserId")
-        String userName;
     }
 
     @JsonIgnoreProperties({"userName", "indexedUserName","userDisplayName","tags","startDate","endDate","indicators","alertClassifications","updatedBy","createdDate","updatedDate"})

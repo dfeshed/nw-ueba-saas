@@ -31,6 +31,7 @@ public class Alert extends AbstractElasticDocument {
     public static final String INDICATOR_NAMES = "indicatorsNames";
     public static final String TIMEFRAME = "timeframe";
     public static final String SEVERITY = "severity";
+    public static final String VENDOR_USER_ID = "vendorUserId";
     public static final String USER_ID = "userId";
     public static final String SMART_ID = "smartId";
     public static final String USER_TAGS_FIELD_NAME = "userTags";
@@ -54,6 +55,9 @@ public class Alert extends AbstractElasticDocument {
 
     @JsonProperty(USER_ID)
     private String userId;
+
+    @JsonProperty(VENDOR_USER_ID)
+    private String vendorUserId;
 
     @JsonProperty(START_DATE)
     private Date startDate;
@@ -95,11 +99,12 @@ public class Alert extends AbstractElasticDocument {
         // empty const for JSON deserialization
     }
 
-    public Alert(String userId, String smartId, List<String> classifications, String userName, Date startDate, Date endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity, List<String> userTags, Double contributionToUserScore) {
+    public Alert(String userId, String smartId, List<String> classifications, String vendorUserId, String userName, Date startDate, Date endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity, List<String> userTags, Double contributionToUserScore) {
         super();
         this.classifications = classifications;
         this.userId = userId;
         this.smartId = smartId;
+        this.vendorUserId = vendorUserId;
         this.userName = userName;
         this.indexedUserName = userName;
         this.startDate = startDate;
@@ -252,5 +257,13 @@ public class Alert extends AbstractElasticDocument {
                 .filter(indicator -> indicator.getEvents() != null)
                 .forEach(indicator -> events.addAll(indicator.getEvents()));
         return events.size();
+    }
+
+    public String getVendorUserId() {
+        return vendorUserId;
+    }
+
+    public void setVendorUserId(String vendorUserId) {
+        this.vendorUserId = vendorUserId;
     }
 }

@@ -1,6 +1,6 @@
 {
   "system": {
-    "krbServiceName":  "HTTP/hostname@fortscale.dom",
+    "krbServiceName": "HTTP/hostname@fortscale.dom",
     "username": "presidio@somecompany.dom",
     "password": "password",
     "ldapUrl": "ldap://XXX.XXX.XXX.XXX/dc=EXAMPLE,DC=COM?sAMAccountName",
@@ -16,5 +16,18 @@
       "file"
     ],
     "startTime": "2007-12-03T10:15:30Z"
+  },
+  "outputForwarding": {
+    "enableForwarding": "true",
+    "syslog": {
+      "alert": {
+        "host": "test",
+        "port": "1"
+      },
+      "user": {
+        "host": "testTest",
+        "port": "2"
+      }
+    }
   }
 }

@@ -1,0 +1,25 @@
+{
+  "system": {
+    "username": "presidio@somecompany.dom",
+    "krbServiceName": "HTTP/hostname@fortscale.dom",
+    "password": "password",
+    "ldapUrl": "ldap://XXX.XXX.XXX.XXX/dc=EXAMPLE,DC=COM?sAMAccountName",
+    "realmName": "EXAMPLE.COM",
+    "analystGroup": "CN=Analysts,CN=Users,DC=EXAMPLE,DC=COM",
+    "smtpHost": "name.of-server.com:25"
+  },
+  "dataPipeline": {
+    "schemas": [
+      "FILE"
+    ],
+    "startTime": "2007-12-03T10:15:30Z"
+  },
+  "outputForwarding": {
+    "enableForwarding": "true",
+    "syslog": {
+      "alert": {
+        "host": "test"
+      }
+    }
+  }
+}
