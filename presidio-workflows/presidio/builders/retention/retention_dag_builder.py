@@ -8,7 +8,7 @@ from presidio.utils.configuration.config_server_configuration_reader_singleton i
     ConfigServerConfigurationReaderSingleton
 from presidio.utils.services.fixed_duration_strategy import is_execution_date_valid
 
-presidio_extension = __import__('presidio_extension.builders.retention.adapter_retention_dag_builder',
+presidio_extension = __import__('presidio_extension.builders.retention..adapter.adapter_retention_dag_builder',
                                 fromlist=['AdapterRetentionDagBuilder'])
 RetentionDagExtensionBuilder = getattr(presidio_extension, 'AdapterRetentionDagBuilder')
 
