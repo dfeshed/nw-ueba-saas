@@ -13,7 +13,7 @@ import java.util.TreeMap;
  * 1. we decrease the area with constant steps in order to avoid sharp increase at the edge:
  *  a. starting point of gaussian score is 2sd = 0.9544 (probability: 1 - 0.9544)
  *  b. we decrease the probability by 1.5 steps and increase the mapped score by constant step.
- * 2.Function between steps is: fromMappedScore + mappedScoreStep * (numOfSteps - Math.floor(numOfSteps))
+ * 2.Function between steps is: mappedScoreStep * numOfSteps
  */
 public class ScoreExponentialStepsMapper extends AbstractScoreMapper {
     private ScoreExponentialStepsMappingConf scoreMappingConf;
@@ -40,8 +40,6 @@ public class ScoreExponentialStepsMapper extends AbstractScoreMapper {
             return scoreMappingConf.MAX_MAPPED_SCORE_DEFAULT;
         }
 
-        double fromMappedScore = mappedScoreStep * Math.floor(numOfSteps);
-
-        return fromMappedScore + mappedScoreStep * (numOfSteps - Math.floor(numOfSteps));
+        return mappedScoreStep * numOfSteps;
     }
 }

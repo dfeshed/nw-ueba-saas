@@ -10,9 +10,8 @@
             "type": "score-exponential-steps-mapper",
             "name": "numberOfSuccessfulFilePermissionChanges.userId.file.hourly.mapper",
             "score-mapping-conf": {
-              "base": 1.5,
               "amountOfSteps": 25,
-              "probabilityStep": 1.5
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -52,9 +51,8 @@
             "type": "score-exponential-steps-mapper",
             "name": "numberOfSuccessfulFileActions.userId.file.hourly.mapper",
             "score-mapping-conf": {
-              "base": 1.5,
               "amountOfSteps": 25,
-              "probabilityStep": 1.5
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -93,9 +91,8 @@
             "type": "score-exponential-steps-mapper",
             "name": "numberOfFailedFilePermissionChanges.userId.file.hourly.mapper",
             "score-mapping-conf": {
-              "base": 1.5,
               "amountOfSteps": 25,
-              "probabilityStep": 1.5
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -134,9 +131,8 @@
             "type": "score-exponential-steps-mapper",
             "name": "numberOfFailedFileActions.userId.file.hourly.mapper",
             "score-mapping-conf": {
-              "base": 1.5,
               "amountOfSteps": 25,
-              "probabilityStep": 1.5
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -175,9 +171,8 @@
             "type": "score-exponential-steps-mapper",
             "name": "numberOfDistinctFileOpened.userId.file.hourly.mapper",
             "score-mapping-conf": {
-              "base": 1.5,
               "amountOfSteps": 25,
-              "probabilityStep": 1.5
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -216,9 +211,8 @@
             "type": "score-exponential-steps-mapper",
             "name": "numberOfDistinctFolderOpened.userId.file.hourly.mapper",
             "score-mapping-conf": {
-              "base": 1.5,
               "amountOfSteps": 25,
-              "probabilityStep": 1.5
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -257,9 +251,8 @@
             "type": "score-exponential-steps-mapper",
             "name": "numberOfFileDeleted.userId.file.hourly.mapper",
             "score-mapping-conf": {
-              "base": 1.5,
               "amountOfSteps": 25,
-              "probabilityStep": 1.5
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -298,9 +291,8 @@
             "type": "score-exponential-steps-mapper",
             "name": "numberOfSuccessfulFileRenamed.userId.file.hourly.mapper",
             "score-mapping-conf": {
-              "base": 1.5,
               "amountOfSteps": 25,
-              "probabilityStep": 1.5
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -339,9 +331,8 @@
             "type": "score-exponential-steps-mapper",
             "name": "numberOfFileMoved.userId.file.hourly.mapper",
             "score-mapping-conf": {
-              "base": 1.5,
               "amountOfSteps": 25,
-              "probabilityStep": 1.5
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -380,9 +371,8 @@
             "type": "score-exponential-steps-mapper",
             "name": "numberOfFileMovedFromSharedDrive.userId.file.hourly.mapper",
             "score-mapping-conf": {
-              "base": 1.5,
               "amountOfSteps": 25,
-              "probabilityStep": 1.5
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -421,9 +411,8 @@
             "type": "score-exponential-steps-mapper",
             "name": "numberOfFileMovedToSharedDrive.userId.file.hourly.mapper",
             "score-mapping-conf": {
-              "base": 1.5,
               "amountOfSteps": 25,
-              "probabilityStep": 1.5
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",

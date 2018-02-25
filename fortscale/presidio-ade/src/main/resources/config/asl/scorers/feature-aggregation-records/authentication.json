@@ -10,9 +10,8 @@
             "type": "score-exponential-steps-mapper",
             "name": "numberOfSuccessfulAuthentications.userId.authentication.hourly.mapper",
             "score-mapping-conf": {
-              "base": 1.5,
-              "amountOfSteps": 25,
-              "probabilityStep": 1.5
+              "amountOfSteps": 100000,
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -51,9 +50,8 @@
             "type": "score-exponential-steps-mapper",
             "name": "numberOfFailedAuthentications.userId.authentication.hourly.mapper",
             "score-mapping-conf": {
-              "base": 1.5,
               "amountOfSteps": 25,
-              "probabilityStep": 1.5
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -92,9 +90,8 @@
             "type": "score-exponential-steps-mapper",
             "name": "numberOfDistinctDstMachineDomain.userId.authentication.hourly.mapper",
             "score-mapping-conf": {
-              "base": 1.5,
               "amountOfSteps": 25,
-              "probabilityStep": 1.5
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -133,9 +130,8 @@
             "type": "score-exponential-steps-mapper",
             "name": "numberOfDistinctSrcMachineId.userId.authentication.hourly.mapper",
             "score-mapping-conf": {
-              "base": 1.5,
               "amountOfSteps": 25,
-              "probabilityStep": 1.5
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -174,9 +170,8 @@
             "type": "score-exponential-steps-mapper",
             "name": "numberOfDistinctDstMachineId.userId.authentication.hourly.mapper",
             "score-mapping-conf": {
-              "base": 1.5,
               "amountOfSteps": 25,
-              "probabilityStep": 1.5
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -215,9 +210,8 @@
             "type": "score-exponential-steps-mapper",
             "name": "numberOfDistinctDstMachineNameRegexCluster.userId.authentication.hourly.mapper",
             "score-mapping-conf": {
-              "base": 1.5,
               "amountOfSteps": 25,
-              "probabilityStep": 1.5
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -256,9 +250,8 @@
             "type": "score-exponential-steps-mapper",
             "name": "numberOfDistinctSrcMachineNameRegexCluster.userId.authentication.hourly.mapper",
             "score-mapping-conf": {
-              "base": 1.5,
               "amountOfSteps": 25,
-              "probabilityStep": 1.5
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -297,9 +290,8 @@
             "type": "score-exponential-steps-mapper",
             "name": "numberOfDistinctSite.userId.authentication.hourly.mapper",
             "score-mapping-conf": {
-              "base": 1.5,
               "amountOfSteps": 25,
-              "probabilityStep": 1.5
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",

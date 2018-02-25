@@ -10,9 +10,8 @@
             "type": "score-exponential-steps-mapper",
             "name": "numberOfSensitiveGroupMembershipOperation.userId.activeDirectory.hourly.mapper",
             "score-mapping-conf": {
-              "base": 1.5,
               "amountOfSteps": 25,
-              "probabilityStep": 1.5
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -51,9 +50,8 @@
             "type": "score-exponential-steps-mapper",
             "name": "numberOfGroupMembershipOperation.userId.activeDirectory.hourly.mapper",
             "score-mapping-conf": {
-              "base": 1.5,
               "amountOfSteps": 25,
-              "probabilityStep": 1.5
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -92,9 +90,8 @@
             "type": "score-exponential-steps-mapper",
             "name": "numberOfSuccessfulObjectManagementOperation.userId.activeDirectory.hourly.mapper",
             "score-mapping-conf": {
-              "base": 1.5,
               "amountOfSteps": 25,
-              "probabilityStep": 1.5
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -130,9 +127,8 @@
           "type": "score-exponential-steps-mapper",
           "name": "numberOfFailedOperationType.userId.activeDirectory.hourly.scorer",
           "score-mapping-conf": {
-            "base": 1.5,
             "amountOfSteps": 25,
-            "probabilityStep": 1.5
+            "probabilityExponentialStep": 1.5
           },
           "base-scorer": {
             "type": "gaussian-model-scorer",
@@ -162,9 +158,8 @@
             "type": "score-exponential-steps-mapper",
             "name": "numberOfSuccessfulUserManagementSecuritySensitiveOperation.userId.activeDirectory.hourly.mapper",
             "score-mapping-conf": {
-              "base": 1.5,
               "amountOfSteps": 25,
-              "probabilityStep": 1.5
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",

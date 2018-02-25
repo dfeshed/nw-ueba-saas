@@ -1,6 +1,7 @@
 package fortscale.ml.scorer.config;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import org.junit.Assert;
 
 
 @JsonAutoDetect(
