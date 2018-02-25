@@ -40,9 +40,10 @@ public class HistoricalDataCountByTimeForScoreFeaturePopulator implements Histor
 
             // iterate over hours
             for (String hour : dailyHistogram.getHistogram().keySet()) {
+
                 Double valueForHour = dailyHistogram.getHistogram().get(hour);
                 boolean isAnomaly = anomalyValue.equals(valueForHour.toString());
-                Bucket<String, Double> bucket = new Bucket<>(hour, valueForHour, isAnomaly);
+                Bucket<String, Double> bucket = new Bucket<>(hour.split("#")[1], valueForHour, isAnomaly);
                 buckets.add(bucket);
             }
         }
