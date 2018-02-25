@@ -1,9 +1,7 @@
 package org.flume.source;
 
 
-import com.google.common.base.Preconditions;
 import fortscale.common.general.Schema;
-import org.apache.commons.lang.StringUtils;
 import org.apache.flume.CommonStrings;
 import org.apache.flume.Context;
 import org.apache.flume.FlumeException;
@@ -31,8 +29,9 @@ public abstract class AbstractPresidioSource extends AbstractEventDrivenSource {
         isBatch = context.getBoolean(CommonStrings.IS_BATCH, false);
         applicationName = context.getString(CommonStrings.APPLICATION_NAME, this.getName());
         final String schemaName = context.getString(CommonStrings.SCHEMA_NAME, null);
-        Preconditions.checkArgument(StringUtils.isNotEmpty(schemaName), CommonStrings.SCHEMA_NAME + " can not be empty.");
-        schema = Schema.createSchema(schemaName);
+        if (schemaName != null) {
+            schema = Schema.createSchema(schemaName);
+        }
 
         doPresidioConfigure(context);
     }
