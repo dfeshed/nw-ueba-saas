@@ -66,7 +66,7 @@ test('The returned incidents appear as rows in the table', function(assert) {
 
 test('The component shows an error message if there is an error fetching alerts', function(assert) {
   const errorMessage = i18n.t('respond.errorPage.fetchError');
-  const done = throwSocket('stream', 'incidents');
+  const done = throwSocket({ methodToThrow: 'stream', modelNameToThrow: 'incidents' });
   this.render(hbs`{{rsa-incidents}}`);
   assert.equal(this.$(selectors.explorerTableErrorMessage).text().trim(), errorMessage, 'An error message is displayed if the fetch of alerts fails');
   done();

@@ -5,10 +5,10 @@ import engineResolverFor from '../../../../helpers/engine-resolver';
 import wait from 'ember-test-helpers/wait';
 import $ from 'jquery';
 import { patchFlash } from '../../../../helpers/patch-flash';
-import sinon from 'sinon';
-const { RSVP, Logger, Test } = Ember;
-import { Machines } from 'investigate-hosts/actions/api';
+import { throwSocket } from '../../../../helpers/patch-socket';
+import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+const { Logger, Test } = Ember;
 let originalLoggerError, originalTestAdapterException;
 
 moduleForComponent('host-scan/start-scan-button', 'Integration | Component | Host Scan Start Button', {
@@ -68,13 +68,11 @@ test('it should show warning messages', function(assert) {
 });
 
 test('it should show success message start scan is success', function(assert) {
-  sinon.stub(Machines, 'startScanRequest');
-  Machines.startScanRequest.returns(RSVP.resolve({ success: true }));
   assert.expect(2);
+  let counter = 0;
   patchFlash((flash) => {
+    counter += 1;
     assert.equal(flash.type, 'success');
-    Machines.startScanRequest.reset();
-    Machines.startScanRequest.restore();
   });
   this.set('agentIds', [1]);
   this.render(hbs`{{host-scan/start-scan-button agentIds=agentIds}}`);
@@ -83,22 +81,20 @@ test('it should show success message start scan is success', function(assert) {
   return wait().then(() => {
     this.$('.scan-command').trigger('click');
     assert.equal($('#modalDestination .info-message').length, 0, 'Scan modal is closed');
+    return waitFor(() => counter === 1); // Wait for success message
   });
 });
 
 test('it should show error message when failed to start scan', function(assert) {
-  sinon.stub(Machines, 'startScanRequest');
-  Machines.startScanRequest.returns(RSVP.reject({ meta: { message: 'test' } }));
   assert.expect(3);
+  this.set('agentIds', [1]);
+  this.render(hbs`{{host-scan/start-scan-button agentIds=agentIds}}`);
+  throwSocket({ message: { meta: { message: 'test' } } });
+
   patchFlash((flash) => {
     assert.equal(flash.type, 'error');
     assert.equal(flash.message, 'test');
-    Machines.startScanRequest.reset();
-    Machines.startScanRequest.restore();
   });
-  this.set('agentIds', [1]);
-  this.render(hbs`{{host-scan/start-scan-button agentIds=agentIds}}`);
-
   this.$('.rsa-form-button').trigger('click');
   return wait().then(() => {
     this.$('.scan-command').trigger('click');

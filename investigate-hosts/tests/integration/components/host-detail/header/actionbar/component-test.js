@@ -4,14 +4,15 @@ import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import engineResolverFor from '../../../../../helpers/engine-resolver';
 import { applyPatch, revertPatch } from '../../../../../helpers/patch-reducer';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-import sinon from 'sinon';
 import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 import $ from 'jquery';
-import hostDetails from 'investigate-hosts/actions/data-creators/details';
+import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 import { patchFlash } from '../../../../../helpers/patch-flash';
 import { getOwner } from '@ember/application';
+import { patchSocket } from '../../../../../helpers/patch-socket';
+
 import {
   snapShot
 } from '../../../../../data/data';
@@ -47,40 +48,45 @@ test('snapshot power select renders appropriate items', function(assert) {
   });
 });
 
-sinon.stub(hostDetails, 'initializeAgentDetails');
-sinon.stub(hostDetails, 'setTransition');
 test('on selecting snapshot initializes the agent details input', function(assert) {
+  assert.expect(2);
   new ReduxDataHelper(setState)
     .snapShot(snapShot)
     .scanTime('2017-08-29T10:23:49.452Z')
-    .agentId(1)
+    .agentId(1345)
     .build();
   this.render(hbs`{{host-detail/header/actionbar}}`);
   return wait().then(() => {
     clickTrigger();
     selectChoose('.actionbar', '.ember-power-select-option', 3);
-    assert.ok(hostDetails.initializeAgentDetails.calledOnce);
-    assert.equal(hostDetails.initializeAgentDetails.args[0][0].agentId, 1);
-    hostDetails.initializeAgentDetails.restore();
-    assert.ok(hostDetails.setTransition.calledOnce);
-    assert.equal(hostDetails.setTransition.args[0][0], 'toUp');
-    hostDetails.setTransition.reset();
+    return waitFor(() => {
+      return this.get('redux').getState().endpoint.detailsInput.animation !== 'default';
+    }).then(() => {
+      const { endpoint: { detailsInput: { animation, agentId } } } = this.get('redux').getState();
+      assert.equal(animation, 'toUp');
+      assert.equal(agentId, 1345);
+    });
   });
 });
 
 test('with scan time earlier than snapshot time, snapshot transitions down', function(assert) {
+  assert.expect(2);
   new ReduxDataHelper(setState)
     .snapShot(snapShot)
     .scanTime('2017-01-01T10:23:49.452Z')
-    .agentId(1)
+    .agentId(1345)
     .build();
   this.render(hbs`{{host-detail/header/actionbar}}`);
   return wait().then(() => {
     clickTrigger();
     selectChoose('.actionbar', '.ember-power-select-option', 3);
-    assert.ok(hostDetails.setTransition.calledOnce);
-    assert.equal(hostDetails.setTransition.args[0][0], 'toDown');
-    hostDetails.setTransition.restore();
+    return waitFor(() => {
+      return this.get('redux').getState().endpoint.detailsInput.animation !== 'default';
+    }).then(() => {
+      const { endpoint: { detailsInput: { animation, agentId } } } = this.get('redux').getState();
+      assert.equal(animation, 'toDown');
+      assert.equal(agentId, 1345);
+    });
   });
 });
 
@@ -130,18 +136,29 @@ test('test for start scan button', function(assert) {
   assert.equal($('.host-start-scan-button').length, 1, 'scan-command renders giving the start scan button');
 });
 
-sinon.stub(hostDetails, 'exportFileContext');
 test('test for Export to JSON', function(assert) {
+  assert.expect(2);
   new ReduxDataHelper(setState)
     .scanTime('2017-01-01T10:23:49.452Z')
     .agentId(1)
     .build();
   this.render(hbs `{{host-detail/header/actionbar}}`);
-  this.$('.host-action-buttons .action-button:nth-child(3) .rsa-form-button-wrapper').trigger('click');
+
+  patchSocket((method, model, query) => {
+    assert.equal(method, 'exportFileContext');
+    assert.deepEqual(query,
+      {
+        'data': {
+          'agentId': 1,
+          'categories': [
+            'AUTORUNS'
+          ],
+          'scanTime': '2017-01-01T10:23:49.452Z'
+        }
+      });
+  });
   return wait().then(() => {
-    assert.ok(hostDetails.exportFileContext.calledOnce);
-    assert.deepEqual(hostDetails.exportFileContext.args[0][0], { 'agentId': 1, 'categories': ['AUTORUNS'], 'scanTime': '2017-01-01T10:23:49.452Z' });
-    hostDetails.exportFileContext.restore();
+    this.$('.host-action-buttons .action-button:nth-child(3) .rsa-form-button-wrapper').trigger('click');
   });
 });
 

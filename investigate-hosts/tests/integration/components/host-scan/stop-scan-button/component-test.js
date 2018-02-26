@@ -6,10 +6,10 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import wait from 'ember-test-helpers/wait';
 import $ from 'jquery';
 import { patchFlash } from '../../../../helpers/patch-flash';
-import sinon from 'sinon';
-const { RSVP, Logger, Test } = Ember;
-import { Machines } from 'investigate-hosts/actions/api';
+import { throwSocket } from '../../../../helpers/patch-socket';
+import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 
+const { Logger, Test } = Ember;
 
 let originalLoggerError, originalTestAdapterException;
 
@@ -68,14 +68,12 @@ test('it should show scan stop modal on clicking the button', function(assert) {
   });
 });
 
-
 test('it should show success message', function(assert) {
-  sinon.stub(Machines, 'stopScanRequest');
-  Machines.stopScanRequest.returns(RSVP.resolve({ success: true }));
   assert.expect(1);
+  let counter = 0;
   patchFlash((flash) => {
+    counter += 1;
     assert.equal(flash.type, 'success');
-    Machines.stopScanRequest.restore();
   });
   this.set('agentIds', [1]);
   this.render(hbs`{{host-scan/stop-scan-button agentIds=agentIds}}`);
@@ -83,20 +81,22 @@ test('it should show success message', function(assert) {
   this.$('.stop-scan-button .rsa-form-button').trigger('click');
   return wait().then(() => {
     this.$('.scan-command').trigger('click');
+    return waitFor(() => counter === 1); // Wait for success message
   });
 });
 
 test('it should show error message when failed to stop scan', function(assert) {
-  sinon.stub(Machines, 'stopScanRequest');
-  Machines.stopScanRequest.returns(RSVP.reject({ meta: { message: 'test' } }));
   assert.expect(2);
+
+  throwSocket({ message: { meta: { message: 'test' } } });
+
+  this.set('agentIds', [1]);
+  this.render(hbs`{{host-scan/stop-scan-button agentIds=agentIds}}`);
+
   patchFlash((flash) => {
     assert.equal(flash.type, 'error');
     assert.equal(flash.message, 'test');
-    Machines.stopScanRequest.restore();
   });
-  this.set('agentIds', [1]);
-  this.render(hbs`{{host-scan/stop-scan-button agentIds=agentIds}}`);
 
   this.$('.stop-scan-button .rsa-form-button').trigger('click');
   return wait().then(() => {

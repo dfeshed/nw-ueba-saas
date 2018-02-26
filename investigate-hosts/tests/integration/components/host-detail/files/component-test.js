@@ -2,9 +2,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
-import sinon from 'sinon';
-import * as DataCreators from 'investigate-hosts/actions/data-creators/files';
-
+import { patchSocket } from '../../../../helpers/patch-socket';
 import engineResolverFor from '../../../../helpers/engine-resolver';
 import { applyPatch, revertPatch } from '../../../../helpers/patch-reducer';
 
@@ -76,33 +74,64 @@ test('linux specific columns are rendered', function(assert) {
   });
 });
 
-sinon.stub(DataCreators, 'sortBy');
 test('check sortyBy action is called', function(assert) {
   new ReduxDataHelper(setState)
     .filesLoadMoreStatus('stopped')
     .files(hostFiles.files).build();
   this.render(hbs`{{host-detail/files}}`);
 
+  patchSocket((method, modelName, query) => {
+    assert.equal(method, 'getHostFilesPages');
+    assert.equal(modelName, 'endpoint');
+    assert.deepEqual(query, {
+      'data': {
+        'criteria': {
+          'agentId': null,
+          'checksumSha256': null,
+          'scanTime': null
+        },
+        'pageNumber': 0,
+        'sort': [
+          {
+            'descending': true,
+            'key': 'fileName'
+          }
+        ]
+      }
+    });
+  });
   return wait().then(() => {
     this.$('.rsa-data-table-header-row').find('.rsa-icon')[0].click();
-    assert.equal(DataCreators.sortBy.calledOnce, true, 'sortBy action is called');
-    assert.equal(DataCreators.sortBy.args[0][0].sortField, 'fileName', 'sortField is fileName');
-    assert.equal(DataCreators.sortBy.args[0][0].isDescOrder, true, 'isDescOrder is true');
-    DataCreators.sortBy.restore();
   });
 });
 
-sinon.stub(DataCreators, 'getHostFiles');
 test('load more calls getHostFiles', function(assert) {
   new ReduxDataHelper(setState)
     .filesLoadMoreStatus('stopped')
     .files(hostFiles.files).build();
   this.render(hbs`{{host-detail/files}}`);
-
+  patchSocket((method, modelName, query) => {
+    assert.equal(method, 'getHostFilesPages');
+    assert.equal(modelName, 'endpoint');
+    assert.deepEqual(query, {
+      'data': {
+        'criteria': {
+          'agentId': null,
+          'checksumSha256': null,
+          'scanTime': null
+        },
+        'pageNumber': NaN,
+        'sort': [
+          {
+            'descending': undefined,
+            'key': undefined
+          }
+        ]
+      }
+    });
+  });
   return wait().then(() => {
     this.$('.rsa-data-table-load-more button.rsa-form-button').click();
-    assert.equal(DataCreators.getHostFiles.calledOnce, true, 'Load More click calls an action');
-    DataCreators.getHostFiles.restore();
   });
 });
 

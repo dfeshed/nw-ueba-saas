@@ -5,9 +5,7 @@ import { applyPatch, revertPatch } from '../../../../../helpers/patch-reducer';
 import startApp from '../../../../../helpers/start-app';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
-import sinon from 'sinon';
-import * as DataCreators from 'investigate-hosts/actions/data-creators/details';
-import wait from 'ember-test-helpers/wait';
+import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 
 const application = startApp();
 initialize(application);
@@ -35,14 +33,15 @@ test('Should render the hostname properly', function(assert) {
   assert.equal(this.$('.host-name').text(), 'XYZ', 'Rendered the hostname properly');
 });
 
-sinon.stub(DataCreators, 'setNewTabView');
 
 test('Should call action when the tab is clicked', function(assert) {
+  assert.expect(1);
+  new ReduxDataHelper(setState).hostName('XYZ').build();
   this.render(hbs`{{host-detail/header/titlebar}}`);
-  return wait().then(() => {
-    this.$('.rsa-nav-tab')[4].click();
-    assert.equal(DataCreators.setNewTabView.calledOnce, true, 'action is called');
-    assert.equal(DataCreators.setNewTabView.args[0][0], this.$(this.$('.rsa-nav-tab')[4]).text().trim().toUpperCase(), 'Rendered the tab name that is passed');
-    DataCreators.setNewTabView.restore();
+  this.$('.rsa-nav-tab')[3].click();
+  return waitFor(() => {
+    return this.get('redux').getState().endpoint.visuals.activeHostDetailTab === 'FILES';
+  }).then(() => {
+    assert.equal(this.$('.rsa-nav-tab.is-active').text().trim().toUpperCase(), 'FILES', 'Rendered the tab name that is passed');
   });
 });

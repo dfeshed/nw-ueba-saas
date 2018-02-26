@@ -65,10 +65,11 @@ export function revertPatch() {
  * @method throwSocket
  * @param methodToThrow (optional)
  * @param modelNameToThrow (optional)
+ * @param message (optional)
  * @returns function revertPatch() function for removing the patch in case it was never called during the test
  * @public
  */
-export function throwSocket(methodToThrow, modelNameToThrow) {
+export function throwSocket({ methodToThrow, modelNameToThrow, message } = {}) {
   if (Socket.createStream !== originalCreateStreamFunc) {
     throw 'A previous call to throwSocket() never reverted the patch after the test was completed. This may be because' +
     'the specified web socket call (method/modelName) was never invoked. To fix this, call revertPatch() after your test' +
@@ -90,7 +91,7 @@ export function throwSocket(methodToThrow, modelNameToThrow) {
           revertPatch();
         });
         const boom = new Promise((resolve, reject) => {
-          reject();
+          reject(message);
         });
         return all([reset, boom]);
       };

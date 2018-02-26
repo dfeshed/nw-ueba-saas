@@ -67,7 +67,7 @@ test('The returned remediation-tasks appear as rows in the table', function(asse
 
 test('The component shows an error message if there is an error fetching alerts', function(assert) {
   const errorMessage = i18n.t('respond.errorPage.fetchError');
-  const done = throwSocket('query', 'remediation-tasks');
+  const done = throwSocket({ methodToThrow: 'query', modelNameToThrow: 'remediation-tasks' });
   this.render(hbs`{{rsa-remediation-tasks}}`);
   assert.equal(this.$(selectors.explorerTableErrorMessage).text().trim(), errorMessage, 'An error message is displayed if the fetch of tasks fails');
   done();
