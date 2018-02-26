@@ -505,32 +505,6 @@ public class AlertServiceTest {
         }
     }
 
-    private void generatePrintEvents(int eventsNum, Instant startEventTime, String adeEventType) {
-        for (int i = 1; i <= eventsNum; i++) {
-
-            // generate output events
-            PrintEnrichedEvent printEnrichedEvent = new PrintEnrichedEvent(Instant.now(), Instant.now(), "eventId",
-                    Schema.PRINT.getName(), "userId", "userName", "userDisplayName",
-                    "dataSource", null, null, EventResult.SUCCESS,
-                    "resultCode", null, "srcMachineId", "srcMachineCluster",
-                    "printerId", "printerCluster", "srcFilePath", "srcFolderPath",
-                    "srcFileExtension", false, 10l, 10l);
-            mongoTemplate.save(printEnrichedEvent, new OutputToCollectionNameTranslator().toCollectionName(Schema.PRINT));
-
-            // generate ade events
-            EnrichedPrintRecord enrichedPrintRecord = new EnrichedPrintRecord(printEnrichedEvent.getEventDate());
-            enrichedPrintRecord.setUserId("userId");
-            enrichedPrintRecord.setEventId(printEnrichedEvent.getEventId());
-            enrichedPrintRecord.setOperationType(printEnrichedEvent.getOperationType());
-            enrichedPrintRecord.setOperationTypeCategories(printEnrichedEvent.getOperationTypeCategories());
-            enrichedPrintRecord.setResult(printEnrichedEvent.getResult());
-            mongoTemplate.save(enrichedPrintRecord, new EnrichedDataAdeToCollectionNameTranslator().toCollectionName(Schema.PRINT.getName().toLowerCase()));
-
-            // generate scored ade events
-            AdeScoredEnrichedRecord scoredEnrichedEvent = new AdeScoredActiveDirectoryRecord(enrichedPrintRecord.getStartInstant(), adeEventType, "print", 10.0d, new ArrayList<>(), enrichedPrintRecord);
-            mongoTemplate.save(scoredEnrichedEvent, new AdeScoredEnrichedRecordToCollectionNameTranslator().toCollectionName(adeEventType));
-        }
-    }
 
     private SmartRecord generateSingleSmart(int score) {
         List<FeatureScore> featureScores = new ArrayList<>();

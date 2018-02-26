@@ -1,6 +1,7 @@
 package presidio.output.processor.services.alert.supportinginformation.historicaldata;
 
 import fortscale.common.general.Schema;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeRange;
 import presidio.output.domain.records.alerts.Bucket;
 import presidio.output.domain.records.alerts.HistoricalData;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HistoricalDataCountByTimeForScoreFeaturePopulator implements HistoricalDataPopulator {
+    Logger logger = Logger.getLogger(HistoricalDataCountByTimeForScoreFeaturePopulator.class);
 
     public static final String HOURLY_SCORED_AGGREGATIONS = "hourly_scored_aggregations";
 
@@ -34,7 +36,7 @@ public class HistoricalDataCountByTimeForScoreFeaturePopulator implements Histor
         for (DailyHistogram<String> dailyHistogram : dailyHistograms) {
 
             if (dailyHistogram.getHistogram() == null) {
-                // TODO: logger
+                logger.debug("The histogram for day {} was null", dailyHistogram.date);
                 continue;
             }
 
@@ -43,6 +45,7 @@ public class HistoricalDataCountByTimeForScoreFeaturePopulator implements Histor
 
                 Double valueForHour = dailyHistogram.getHistogram().get(hour);
                 boolean isAnomaly = anomalyValue.equals(valueForHour.toString());
+                // The key format is : {featureName#epochtime} and we need to extract the epochtime
                 Bucket<String, Double> bucket = new Bucket<>(hour.split("#")[1], valueForHour, isAnomaly);
                 buckets.add(bucket);
             }
