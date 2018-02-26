@@ -653,7 +653,7 @@ indicators:
   adeEventType: scored_enriched.print.srcMachineNameRegexCluster.userId.print.score
   schema: PRINT
   anomalyDescriptior:
-    anomalyField: srcMachineNameRegexCluster
+    anomalyField: srcMachineCluster
   historicalData:
     type: count_aggregations
     featureBucketConfName: srcMachineNameRegexClusterHistogramUserIdPrintDaily
@@ -666,7 +666,7 @@ indicators:
   adeEventType: scored_enriched.print.dstMachineId.userId.print.score
   schema: PRINT
   anomalyDescriptior:
-    anomalyField: dstMachineId
+    anomalyField: printerId
   historicalData:
     type: count_aggregations
     featureBucketConfName: dstMachineIdHistogramUserIdPrintDaily
@@ -679,7 +679,7 @@ indicators:
   adeEventType: scored_enriched.print.dstMachineNameRegexCluster.userId.print.score
   schema: PRINT
   anomalyDescriptior:
-    anomalyField: dstMachineNameRegexCluster
+    anomalyField: printerCluster
   historicalData:
     type: count_aggregations
     featureBucketConfName: dstMachineNameRegexClusterHistogramUserIdPrintDaily
@@ -706,7 +706,7 @@ indicators:
   adeEventType: scored_enriched.print.fileExtension.userId.print.score
   schema: PRINT
   anomalyDescriptior:
-    anomalyField: fileExtension
+    anomalyField: srcFileExtension
   historicalData:
     type: count_aggregations
     featureBucketConfName: fileExtensionHistogramUserIdPrintDaily
@@ -754,7 +754,7 @@ indicators:
   adeEventType: print
   schema: PRINT
   anomalyDescriptior:
-    anomalyField: dstMachineId
+    anomalyField: printerId
   historicalData:
     type: hourly_aggregations
   classification: abnormal_print_activity
