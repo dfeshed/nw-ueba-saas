@@ -64,7 +64,7 @@ public class HistoricalDataCountByTimeForScoreFeaturePopulatorTest {
     }
 
     @Test
-    public void test_map() {
+    public void test_createHistoricalData() {
         String featureName = "highestNumOfPagesScoreUserIdPrintHourly";
         HistoricalDataConfig historicalDataConfig = config.getIndicatorConfig(featureName).getHistoricalData();
         String contextValue = "contextValue";
