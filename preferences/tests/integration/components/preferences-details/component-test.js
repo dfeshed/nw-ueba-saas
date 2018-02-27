@@ -6,6 +6,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import { clickTrigger, selectChoose } from '../../../helpers/ember-power-select';
 import preferencesConfig from '../../../data/config';
 import wait from 'ember-test-helpers/wait';
+import { throwSocket } from '../../../helpers/patch-socket';
 
 const assertForPreferencesPanelSelectedOptions = (waitFor, assert, child, index, selectedOption) => {
   $('.rsa-icon-settings-1-filled').trigger('click');
@@ -164,5 +165,15 @@ test('Preferences panel should uncheck the Download automatically checkbox on cl
     }).then(function() {
       assert.equal($('.rsa-form-checkbox-label.checked').length, 0);
     });
+  });
+});
+
+test('Preferences should pick the defaultData in case of no response', function(assert) {
+  assert.expect(1);
+  throwSocket();
+  this.$('.rsa-icon-settings-1-filled').trigger('click');
+  return waitFor('.ember-power-select-selected-item', { count: 3 }).then(() => {
+    const str = this.$('.ember-power-select-selected-item')[0].innerText.trim();
+    assert.equal(str, 'Text Analysis');
   });
 });

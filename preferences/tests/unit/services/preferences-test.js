@@ -1,12 +1,15 @@
 import { moduleFor, test } from 'ember-qunit';
-import startApp from '../../helpers/start-app';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import rsvp from 'rsvp';
+import sinon from 'sinon';
+import { lookup } from 'ember-dependency-lookup';
 
-const application = startApp();
-initialize(application);
 moduleFor('service:preferences', 'Unit | Service | preferences', {
   // Specify the other units that are required for this test.
-  needs: ['service:request']
+  needs: ['service:request'],
+  beforeEach() {
+    initialize(this);
+  }
 });
 
 /**
@@ -34,5 +37,19 @@ test('it should be able to set preferences for given type', function(assert) {
   service.setPreferences('investigate-events-preferences', 'serviceId', { eventAnalysisPreferences: { currentReconView: 'FILE' } }).then((response) => {
     assert.equal(response.eventAnalysisPreferences.currentReconView, 'FILE', 'Expected to return defaultAnalysisView as text.');
     done();
+  });
+});
+
+test('it should go to catch block of set preferences for given type', function(assert) {
+  const request = lookup('service:request');
+  const setPreferencesStub = sinon.stub(request, 'promiseRequest', () => {
+    return new rsvp.Promise((resolve, reject) => reject());
+  });
+  const service = this.subject();
+  const done = assert.async();
+  service.setPreferences('investigate-events-preferences', 'serviceId', { eventAnalysisPreferences: { currentReconView: 'FILE' } }).then((response) => {
+    assert.notOk(response, 'Response will not be defined now since the request is mocked to handle catch block');
+    done();
+    setPreferencesStub.restore();
   });
 });

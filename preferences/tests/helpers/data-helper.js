@@ -1,11 +1,10 @@
-import * as ACTION_TYPES from 'preferences/actions/types';
-import { LIFECYCLE, KEY } from 'redux-pack';
+import { KEY } from 'redux-pack';
 
-const DEFAULT_INITIALIZE = {
+export const DEFAULT_INITIALIZE = {
   eventsPreferences: {
     defaultPacketFormat: 'downloadPCAP',
     defaultLogFormat: 'downloadLog',
-    currentReconView: 'text',
+    currentReconView: 'PACKET',
     isHeaderOpen: true,
     isMetaShown: true,
     isReconExpanded: true,
@@ -14,7 +13,7 @@ const DEFAULT_INITIALIZE = {
     isResponseShown: true
   }
 };
-const makePackAction = (lifecycle, { type, payload, meta = {} }) => {
+export const makePackAction = (lifecycle, { type, payload, meta = {} }) => {
   return {
     type,
     payload,
@@ -24,35 +23,3 @@ const makePackAction = (lifecycle, { type, payload, meta = {} }) => {
     }
   };
 };
-
-class DataHelper {
-  constructor(redux) {
-    this.redux = redux;
-  }
-
-  initializeData() {
-    return this;
-  }
-
-  loadPreferenceData() {
-    const action = makePackAction(
-      LIFECYCLE.SUCCESS,
-      {
-        type: ACTION_TYPES.LOAD_PREFERENCES,
-        payload: DEFAULT_INITIALIZE
-      });
-    this.redux.dispatch(action);
-  }
-
-  savePreference(preferences) {
-    const action = makePackAction(
-      LIFECYCLE.SUCCESS,
-      {
-        type: ACTION_TYPES.SAVE_PREFERENCES,
-        payload: preferences
-      });
-    this.redux.dispatch(action);
-  }
-}
-
-export default DataHelper;
