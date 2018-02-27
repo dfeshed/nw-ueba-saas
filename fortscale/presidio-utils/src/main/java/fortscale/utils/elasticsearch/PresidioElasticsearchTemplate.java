@@ -15,7 +15,7 @@ package fortscale.utils.elasticsearch;
  * limitations under the License.
  */
 
-import fortscale.utils.elasticsearch.services.FileToStringCreating;
+import fortscale.utils.elasticsearch.services.TemplateExtractor;
 import org.elasticsearch.action.ListenableActionFuture;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest;
 import org.elasticsearch.action.admin.indices.alias.get.GetAliasesRequest;
@@ -114,29 +114,29 @@ public class PresidioElasticsearchTemplate implements ElasticsearchOperations, A
     private ElasticsearchConverter elasticsearchConverter;
     private ResultsMapper resultsMapper;
     private String searchTimeout;
-    private FileToStringCreating fileToStringCreating;
+    private TemplateExtractor templateExtractor;
 
-    public PresidioElasticsearchTemplate(Client client, FileToStringCreating fileToStringCreating) {
-        this(client, new MappingElasticsearchConverter(new SimpleElasticsearchMappingContext()), fileToStringCreating);
+    public PresidioElasticsearchTemplate(Client client, TemplateExtractor templateExtractor) {
+        this(client, new MappingElasticsearchConverter(new SimpleElasticsearchMappingContext()), templateExtractor);
     }
 
-    public PresidioElasticsearchTemplate(Client client, EntityMapper entityMapper, FileToStringCreating fileToStringCreating) {
-        this(client, new MappingElasticsearchConverter(new SimpleElasticsearchMappingContext()), entityMapper, fileToStringCreating);
+    public PresidioElasticsearchTemplate(Client client, EntityMapper entityMapper, TemplateExtractor templateExtractor) {
+        this(client, new MappingElasticsearchConverter(new SimpleElasticsearchMappingContext()), entityMapper, templateExtractor);
     }
 
-    public PresidioElasticsearchTemplate(Client client, ElasticsearchConverter elasticsearchConverter, EntityMapper entityMapper, FileToStringCreating fileToStringCreating) {
-        this(client, elasticsearchConverter, new PresidioResultMapper(elasticsearchConverter.getMappingContext(), entityMapper), fileToStringCreating);
+    public PresidioElasticsearchTemplate(Client client, ElasticsearchConverter elasticsearchConverter, EntityMapper entityMapper, TemplateExtractor templateExtractor) {
+        this(client, elasticsearchConverter, new PresidioResultMapper(elasticsearchConverter.getMappingContext(), entityMapper), templateExtractor);
     }
 
-    public PresidioElasticsearchTemplate(Client client, ResultsMapper resultsMapper, FileToStringCreating fileToStringCreating) {
-        this(client, new MappingElasticsearchConverter(new SimpleElasticsearchMappingContext()), resultsMapper, fileToStringCreating);
+    public PresidioElasticsearchTemplate(Client client, ResultsMapper resultsMapper, TemplateExtractor templateExtractor) {
+        this(client, new MappingElasticsearchConverter(new SimpleElasticsearchMappingContext()), resultsMapper, templateExtractor);
     }
 
-    public PresidioElasticsearchTemplate(Client client, ElasticsearchConverter elasticsearchConverter, FileToStringCreating fileToStringCreating) {
-        this(client, elasticsearchConverter, new PresidioResultMapper(elasticsearchConverter.getMappingContext()), fileToStringCreating);
+    public PresidioElasticsearchTemplate(Client client, ElasticsearchConverter elasticsearchConverter, TemplateExtractor templateExtractor) {
+        this(client, elasticsearchConverter, new PresidioResultMapper(elasticsearchConverter.getMappingContext()), templateExtractor);
     }
 
-    public PresidioElasticsearchTemplate(Client client, ElasticsearchConverter elasticsearchConverter, ResultsMapper resultsMapper, FileToStringCreating fileToStringCreating) {
+    public PresidioElasticsearchTemplate(Client client, ElasticsearchConverter elasticsearchConverter, ResultsMapper resultsMapper, TemplateExtractor templateExtractor) {
 
         Assert.notNull(client, "Client must not be null!");
         Assert.notNull(elasticsearchConverter, "ElasticsearchConverter must not be null!");
@@ -145,7 +145,7 @@ public class PresidioElasticsearchTemplate implements ElasticsearchOperations, A
         this.client = client;
         this.elasticsearchConverter = elasticsearchConverter;
         this.resultsMapper = resultsMapper;
-        this.fileToStringCreating = fileToStringCreating;
+        this.templateExtractor = templateExtractor;
     }
 
     @Override
@@ -187,7 +187,7 @@ public class PresidioElasticsearchTemplate implements ElasticsearchOperations, A
     }
 
     private <T> boolean putMappingWithAnnotation(Class<T> clazz) {
-        String mappings = fileToStringCreating.mappingConverting(clazz);
+        String mappings = templateExtractor.mappingConverting(clazz);
         if (isNotBlank(mappings)) {
             return putMapping(clazz, mappings);
         }

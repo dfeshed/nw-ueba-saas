@@ -17,11 +17,11 @@ import java.util.Iterator;
 
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
-public class AnnotationFileToStringCreating implements FileToStringCreating {
-    private static final Logger logger = LoggerFactory.getLogger(AnnotationFileToStringCreating.class);
+public class TemplateAnnotationExtractor implements TemplateExtractor {
+    private static final Logger logger = LoggerFactory.getLogger(TemplateAnnotationExtractor.class);
 
 
-    public AnnotationFileToStringCreating() {
+    public TemplateAnnotationExtractor() {
     }
 
     @Override

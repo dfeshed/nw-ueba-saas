@@ -2,6 +2,8 @@ package jsonValidation;
 
 
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
@@ -17,6 +19,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 
 @RunWith(SpringRunner.class)
@@ -38,11 +42,11 @@ public class ElasticMappingsTests {
             path = windosMapping;
         }
         File folder = new File(path);
-        File[] listOfFolders = folder.listFiles();
-        for (File file : listOfFolders) {
-            File[] listOfFiles = file.listFiles();
-            for (int i = 0; i < listOfFiles.length; i++) {
-                BufferedReader br = new BufferedReader(new FileReader(listOfFiles[i].getAbsoluteFile()));
+        List<File> list = getFilesFromFolder(folder);
+        list.forEach(file -> {
+            try {
+                System.out.println(file.toString());
+                BufferedReader br = new BufferedReader(new FileReader(((File) file).getAbsoluteFile()));
                 try {
                     StringBuilder sb = new StringBuilder();
                     String line = br.readLine();
@@ -52,15 +56,21 @@ public class ElasticMappingsTests {
                         line = br.readLine();
                     }
                     String everything = sb.toString();
-                    JSONObject jsonObject = new JSONObject(everything);
-                    Assert.assertNotNull(jsonObject);
+                    try {
+                        JSONObject jsonObject = new JSONObject(everything);
+                        Assert.assertNotNull(jsonObject);
+                    } catch (JSONException ex) {
+                        JSONArray jsonArray = new JSONArray(everything);
+                        Assert.assertNotNull(jsonArray);
+                    }
                 } catch (Exception ex) {
                     Assert.fail();
                 } finally {
                     br.close();
                 }
+            } catch (Exception ex) {
             }
-        }
+        });
     }
 
     @Configuration
@@ -69,10 +79,23 @@ public class ElasticMappingsTests {
         @Bean
         public static TestPropertiesPlaceholderConfigurer mappingsTestPropertiesConfigurer() {
             Properties properties = new Properties();
-            properties.put("linux.mapping.path", "presidio/presidio-core/el-extensions/indexes/");
-            properties.put("windos.mapping.path", "src\\main\\resources\\elasticsearch\\indexes");
+            properties.put("linux.mapping.path", "presidio/presidio-core/el-extensions/");
+            properties.put("windos.mapping.path", "src\\main\\resources\\elasticsearch");
             return new TestPropertiesPlaceholderConfigurer(properties);
         }
+    }
+
+    private List<File> getFilesFromFolder(File file) {
+        List<File> fileList = new LinkedList<>();
+        if (file.isDirectory()) {
+            File[] listOfFolders = file.listFiles();
+            for (int i = 0; i < listOfFolders.length; i++) {
+                fileList.addAll(getFilesFromFolder(listOfFolders[i]));
+            }
+        } else {
+            fileList.add(file);
+        }
+        return fileList;
     }
 
 }

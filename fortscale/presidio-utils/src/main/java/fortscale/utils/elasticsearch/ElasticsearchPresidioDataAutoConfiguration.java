@@ -1,7 +1,7 @@
 package fortscale.utils.elasticsearch;
 
-import fortscale.utils.elasticsearch.services.AnnotationFileToStringCreating;
-import fortscale.utils.elasticsearch.services.FileToStringCreating;
+import fortscale.utils.elasticsearch.services.TemplateAnnotationExtractor;
+import fortscale.utils.elasticsearch.services.TemplateExtractor;
 import org.elasticsearch.client.Client;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -19,14 +19,14 @@ public class ElasticsearchPresidioDataAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public FileToStringCreating fileToStringCreating() {
-        return new AnnotationFileToStringCreating();
+    public TemplateExtractor templateExtractor() {
+        return new TemplateAnnotationExtractor();
     }
 
     @Bean
     @ConditionalOnMissingBean
     public ElasticsearchOperations elasticsearchTemplate(Client client) {
-        return new PresidioElasticsearchTemplate(client, fileToStringCreating());
+        return new PresidioElasticsearchTemplate(client, templateExtractor());
     }
 
     @Bean

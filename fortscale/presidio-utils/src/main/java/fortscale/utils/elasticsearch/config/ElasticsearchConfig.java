@@ -2,8 +2,8 @@ package fortscale.utils.elasticsearch.config;
 
 
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
-import fortscale.utils.elasticsearch.services.AnnotationFileToStringCreating;
-import fortscale.utils.elasticsearch.services.FileToStringCreating;
+import fortscale.utils.elasticsearch.services.TemplateAnnotationExtractor;
+import fortscale.utils.elasticsearch.services.TemplateExtractor;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
@@ -34,13 +34,13 @@ public class ElasticsearchConfig {
     }
 
     @Bean
-    public FileToStringCreating fileToStringCreating() {
-        return new AnnotationFileToStringCreating();
+    public TemplateExtractor templateExtractor() {
+        return new TemplateAnnotationExtractor();
     }
 
     @Bean
     public ElasticsearchOperations elasticsearchTemplate() throws Exception {
-        return new PresidioElasticsearchTemplate(client(), fileToStringCreating());
+        return new PresidioElasticsearchTemplate(client(), templateExtractor());
     }
 
 

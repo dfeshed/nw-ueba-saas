@@ -1,7 +1,7 @@
 package fortscale.utils.elasticsearch.services;
 
 
-public interface FileToStringCreating {
+public interface TemplateExtractor {
 
     String mappingConverting(Class<?> clazz);
 

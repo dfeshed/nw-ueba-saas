@@ -4,8 +4,11 @@
 import json
 import os
 import requests
+import sys
 
-ELASTICSEARCH_PATH = '/home/presidio/presidio-core/el-extensions'
+BASE_PATH = '/home/presidio/presidio-core/'
+ELASTICSEARCH_PATH = BASE_PATH + 'el-extensions'
+VENDOR_ELASTICSEARCH_PATH = BASE_PATH + 'el-extensions-vendor'
 MACHINE_URL = 'http://localhost:9200/'
 URL_KIBANA = MACHINE_URL + '.kibana/'
 URL_KIBANA_PATTERNS = URL_KIBANA + 'index-pattern/'
@@ -13,12 +16,12 @@ URL_KIBANA_DASHBOARDS = URL_KIBANA + 'dashboard/'
 URL_KIBANA_SEARCHES = URL_KIBANA + 'search/'
 URL_KIBANA_VISUALIZATIONS = URL_KIBANA + 'visualization/'
 URL_KIBANA_DEFAULT = URL_KIBANA + 'config/5.4.0'
-INDEX_PATTERN = ELASTICSEARCH_PATH + '/patterns'
-DASHBOARDS = ELASTICSEARCH_PATH + '/dashboards'
-SEARCHES = ELASTICSEARCH_PATH + '/searches'
-VISUALIZATION = ELASTICSEARCH_PATH + '/visualizations'
-INDEXES = ELASTICSEARCH_PATH + '/indexes'
-DEFAULT = ELASTICSEARCH_PATH + '/default/kibana-default-pattern.json'
+INDEX_PATTERN = '/patterns'
+DASHBOARDS = '/dashboards'
+SEARCHES = '/searches'
+VISUALIZATION = '/visualizations'
+INDEXES = '/indexes'
+DEFAULT = '/default/kibana-default-pattern.json'
 HEADERS = {"Content-Type": "application/json"}
 URL_ALIASES = MACHINE_URL + "_aliases"
 URL_TEMPLATES = MACHINE_URL + "_template/"
@@ -30,6 +33,8 @@ MAPPINGS_FILE_NAME = 'mappings.json'
 SETTINGS_FILE_NAME = 'settings.json'
 ALIASES_FILE_NAME = 'aliases.json'
 TEMPLATE_FILE_NAME = 'template.json'
+CORE_ELASTIC_INIT = 'core'
+VENDOR_ELASTIC_INIT = 'vendor'
 
 
 def put_request(url, data):
@@ -40,7 +45,7 @@ def put_request(url, data):
         raise Exception(msg)
 
 
-def create_aliases(indexJson):
+def set_alias(indexJson):
     with open(indexJson) as json_data:
         obj = json.load(json_data)
         data = json.dumps(obj)
@@ -61,11 +66,10 @@ def create_default_pattern(file):
         print(e)
 
 
-def create_indexes(indexJson, name):
+def set_mapping(indexJson, name):
     try:
         with open(indexJson) as json_data:
             obj = json.load(json_data)
-            print("INFO: creating index:" + name)
             data = json.dumps(dict.values(obj)[0])
             url = MACHINE_URL + name + '/_mappings/' + dict.keys(obj)[0]
             put_request(url, data)
@@ -116,6 +120,7 @@ def create_elasticsearch_index(file, name):
         requesturl = (MACHINE_URL + name).replace(" ", "")
         data = create_elasticsearch_settings_for_index(file)
         put_request(requesturl, data)
+        print("INFO: creating index:" + name)
         return True
     except Exception as e:
         print ("ERROR: failed to send file={} to elastic search url={}".format(file, requesturl))
@@ -134,7 +139,7 @@ def create_index_with_settings(path, name):
 def set_mappings_for_index(path, name):
     file = os.path.join(path, MAPPINGS_FILE_NAME)
     if os.path.isfile(file):
-        create_indexes(file, name)
+        set_mapping(file, name)
     else:
         print ('missing mappings for ' + path)
 
@@ -142,7 +147,7 @@ def set_mappings_for_index(path, name):
 def set_aliases_for_index(path):
     file = os.path.join(path, ALIASES_FILE_NAME)
     if os.path.isfile(file):
-        create_aliases(file)
+        set_alias(file)
     else:
         print ('No aliases for' + path)
 
@@ -177,9 +182,18 @@ def init_elasticsearch(path):
             create_index_by_order(newpath, subfolder)
 
 
-init_elasticsearch(INDEXES)
-update_kibana_index_from_file(INDEX_PATTERN, URL_KIBANA_PATTERNS)
-create_default_pattern(DEFAULT)
-update_kibana_index_from_file(SEARCHES, URL_KIBANA_SEARCHES)
-update_kibana_index_from_file(VISUALIZATION, URL_KIBANA_VISUALIZATIONS)
-update_kibana_index_from_file(DASHBOARDS, URL_KIBANA_DASHBOARDS)
+def main(path, rpm):
+    if rpm is CORE_ELASTIC_INIT:
+        init_elasticsearch(path + INDEXES)
+        update_kibana_index_from_file(path + INDEX_PATTERN, URL_KIBANA_PATTERNS)
+        create_default_pattern(path + DEFAULT)
+    update_kibana_index_from_file(path + SEARCHES, URL_KIBANA_SEARCHES)
+    update_kibana_index_from_file(path + VISUALIZATION, URL_KIBANA_VISUALIZATIONS)
+    update_kibana_index_from_file(path + DASHBOARDS, URL_KIBANA_DASHBOARDS)
+
+
+if __name__ == "__main__":
+    if sys.args[1] is CORE_ELASTIC_INIT:
+        main(ELASTICSEARCH_PATH)
+    if sys.args[1] is VENDOR_ELASTIC_INIT:
+        main(VENDOR_ELASTICSEARCH_PATH)
