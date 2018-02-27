@@ -687,17 +687,19 @@ indicators:
   classification: print_to_abnormal_printer
 
 - id: sumOfHighestAbsoluteSharedFolderPathScoresUserIdPrintHourly
-  type: FEATURE_AGGREGATION
+  type: SCORE_AGGREGATION
   name: abnormal_shared_folder_path_print
   schema: PRINT
-  adeEventType: print
+  adeEventType: scored_enriched.print.absoluteSharedFolderPath.userId.print.score
   anomalyDescriptior:
     anomalyField: absoluteFolderPath
     anomalyFilters:
       fieldName: isSrcDriveShared
       fieldValue: true
   historicalData:
-    type: hourly_aggregations
+    type: count_aggregations
+    featureBucketConfName: absoluteSharedFolderPathHistogramUserIdPrintDaily
+    featureName: absoluteSharedFolderPathHistogram
   classification: data_exfiltration
 
 - id: sumOfHighestFileExtensionScoresUserIdPrintHourly
