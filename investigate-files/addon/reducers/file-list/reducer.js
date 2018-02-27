@@ -37,12 +37,9 @@ const fileListReducer = handleActions({
   [ACTION_TYPES.FETCH_NEXT_FILES]: (state, action) => {
     return handle(state, action, {
       start: (s) => s.set('loadMoreStatus', 'streaming'),
-      finish: (s) => s.set('areFilesLoading', 'completed'),
-      failure: (s) => s.merge({
-        areFilesLoading: 'error',
-        loadMoreStatus: 'error'
-      }),
-      success: _handleAppendFiles(action)
+      failure: (s) => s.set('loadMoreStatus', 'error'),
+      success: _handleAppendFiles(action),
+      finish: (s) => s.set('areFilesLoading', 'completed')
     });
   },
 

@@ -7,10 +7,18 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 
 import engineResolverFor from '../../../helpers/engine-resolver';
 import { applyPatch, revertPatch } from '../../../helpers/patch-reducer';
+import $ from 'jquery';
 
 let initState;
 
-const visibleColumns = ['firstFileName', 'firstSeenTime'];
+const filePreference = {
+  visibleColumns: [
+    'firstFileName',
+    'firstSeenTime',
+    'signature.features'
+  ],
+  sortField: '{ "sortField": "firstSeenTime", "isSortDescending": false }'
+};
 
 const dataItems = [
   {
@@ -95,7 +103,6 @@ test('Return the length of items in the datatable', function(assert) {
   new ReduxDataHelper(initState)
     .files(dataItems)
     .schema(config)
-    .visibleColumns(['firstFileName', 'firstSeenTime'])
     .build();
   this.render(hbs`
     <style>
@@ -113,7 +120,7 @@ test('Columns in the datatable are rendered properly', function(assert) {
   new ReduxDataHelper(initState)
     .files(dataItems)
     .schema(config)
-    .visibleColumns(['firstFileName', 'firstSeenTime'])
+    .preferences({ filePreference })
     .build();
   this.render(hbs`{{file-list}}`);
   return wait().then(() => {
@@ -127,7 +134,7 @@ test('Should return the number of cells in datatable body', function(assert) {
   new ReduxDataHelper(initState)
     .files(dataItems)
     .schema(config)
-    .visibleColumns(['firstFileName', 'firstSeenTime'])
+    .preferences({ filePreference })
     .build();
   this.render(hbs`
     <style>
@@ -137,7 +144,7 @@ test('Should return the number of cells in datatable body', function(assert) {
     </style>
   {{file-list}}`);
   assert.equal(this.$('.rsa-data-table-body-cell').length,
-    dataItems.length * config.length,
+    dataItems.length * 3,
     'Returned the number of cells in data-table body');
 });
 
@@ -145,7 +152,6 @@ test('Check that no results message rendered if no data items', function(assert)
   new ReduxDataHelper(initState)
     .files([])
     .schema(config)
-    .visibleColumns(visibleColumns)
     .build();
   this.render(hbs`{{file-list}}`);
   assert.equal(this.$('.rsa-data-table-body').text().trim(),
@@ -156,7 +162,6 @@ test('Load More is shown for paged items', function(assert) {
   assert.expect(1);
   new ReduxDataHelper(initState)
     .schema(config)
-    .visibleColumns(visibleColumns)
     .loadMoreStatus('stopped')
     .build();
   this.render(hbs`<style>
@@ -170,9 +175,30 @@ test('Load More is shown for paged items', function(assert) {
 
 test('Signature field displayed correctly', function(assert) {
   new ReduxDataHelper(initState)
-    .files(dataItems)
-    .schema(config)
-    .visibleColumns(visibleColumns)
+    .files([
+      {
+        'signature': {
+          'timeStamp': '2016-09-14T09:43:27.000Z',
+          'thumbprint': '4a14668158d79df2ac08a5ee77588e5c6a6d2c8f',
+          'signer': 'ABC'
+        }
+      },
+      {
+        'signature': {
+          'timeStamp': '2016-10-14T07:43:39.000Z',
+          'thumbprint': '4a14668158d79df2ac08a5ee77588e5c6a6d2c8f',
+          'features': ['signed', 'valid'],
+          'signer': 'XYZ'
+        }
+      }])
+    .schema([{
+      name: 'signature.features',
+      dataType: 'STRING',
+      searchable: true,
+      defaultProjection: false,
+      wrapperType: 'STRING',
+      disableSort: true
+    }])
     .build();
   this.render(hbs`
     <style>
@@ -182,8 +208,8 @@ test('Signature field displayed correctly', function(assert) {
     </style>
     {{file-list}}`);
   return wait().then(() => {
-    assert.equal(this.$(this.$('.rsa-data-table-body-cell')[2]).text().trim(), 'unsigned', 'Testing of signature when it is not signed');
-    assert.equal(this.$(this.$('.rsa-data-table-body-cell')[5]).text().trim(), 'signed,valid', 'Testing of signature when it is signed');
+    assert.equal(this.$(this.$('.rsa-data-table-body-cell')[0]).text().trim(), 'unsigned', 'Testing of signature when it is not signed');
+    assert.equal(this.$(this.$('.rsa-data-table-body-cell')[1]).text().trim(), 'signed,valid', 'Testing of signature when it is signed');
   });
 });
 
@@ -194,7 +220,10 @@ test('Size field displayed correctly', function(assert) {
       'name': 'size',
       'dataType': 'LONG'
     }])
-    .visibleColumns(visibleColumns)
+    .preferences({ filePreference: {
+      visibleColumns: ['size'],
+      sortField: '{ "sortField": "size", "isSortDescending": false }'
+    } })
     .build();
   this.render(hbs`
     <style>
@@ -204,8 +233,8 @@ test('Size field displayed correctly', function(assert) {
     </style>
     {{file-list}}`);
   return wait().then(() => {
-    assert.equal(this.$(this.$('.rsa-data-table-body-cell .size')[0]).text().trim(), '7.9', 'Size is correct');
-    assert.equal(this.$(this.$('.rsa-data-table-body-cell .units')[0]).text().trim(), 'KB', 'Units is correct');
+    assert.equal(this.$('.rsa-data-table-body-cell .size').text().trim(), '7.9', 'Size is correct');
+    assert.equal(this.$('.rsa-data-table-body-cell .units').text().trim(), 'KB', 'Units is correct');
   });
 });
 
@@ -217,7 +246,6 @@ test('Filename field has pivot to navigate icon', function(assert) {
       description: 'Filename',
       dataType: 'STRING'
     }])
-    .visibleColumns(visibleColumns)
     .build();
   this.render(hbs`
     <style>
@@ -232,6 +260,7 @@ test('Filename field has pivot to navigate icon', function(assert) {
   });
 });
 
+// Yet to handle timezone
 skip('Date field displayed correctly', function(assert) {
   new ReduxDataHelper(initState)
     .files([{ firstSeenTime: 1517978621000 }])
@@ -242,7 +271,6 @@ skip('Date field displayed correctly', function(assert) {
       searchable: false,
       wrapperType: 'STRING'
     }])
-    .visibleColumns(visibleColumns)
     .build();
   this.render(hbs`
     <style>
@@ -261,7 +289,6 @@ test('Click load more adds files', function(assert) {
   new ReduxDataHelper(initState)
     .files(dataItems)
     .schema(config)
-    .visibleColumns(visibleColumns)
     .loadMoreStatus('stopped')
     .build();
   this.render(hbs`
@@ -284,7 +311,6 @@ test('Make sure sort by works', function(assert) {
   new ReduxDataHelper(initState)
     .files(dataItems)
     .schema(config)
-    .visibleColumns(visibleColumns)
     .loadMoreStatus('stopped')
     .build();
   this.render(hbs`
@@ -303,3 +329,29 @@ test('Make sure sort by works', function(assert) {
   });
 });
 
+test('Column visibility works fine', function(assert) {
+  new ReduxDataHelper(initState)
+    .files(dataItems)
+    .schema(config)
+    .preferences({ filePreference })
+    .build();
+
+  this.render(hbs`
+    <style>
+      box, section {
+        min-height: 1000px
+      }
+    </style>
+    {{file-list}}`);
+  this.$('.rsa-icon-cog-filled').click();
+
+  return wait().then(() => {
+    assert.equal($('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 3, 'initial visible column count is 3');
+    $('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label:eq(0)').click();
+    return waitFor(() => {
+      return $('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label.checked').length === 2;
+    }).then(() => {
+      assert.equal($('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 2, 'visible column is 2');
+    });
+  });
+});

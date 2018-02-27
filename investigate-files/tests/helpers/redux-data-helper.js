@@ -106,8 +106,8 @@ export default class DataHelper {
     return this;
   }
 
-  visibleColumns(columns) {
-    _set(this.state, 'schema.visibleColumns', columns);
+  preferences(preferences) {
+    _set(this.state, 'preferences.preferences', preferences);
     return this;
   }
 }

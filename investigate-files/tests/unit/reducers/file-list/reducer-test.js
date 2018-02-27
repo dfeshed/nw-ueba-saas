@@ -97,6 +97,18 @@ test('The DOWNLOAD_FILE_AS_CSV action will set the download id to state', functi
   assert.equal(newEndState.downloadId, 111);
 });
 
+test('FETCH_NEXT_FILES failure will set ', function(assert) {
+  const previous = Immutable.from({
+    files: FILE_LIST,
+    loadMoreStatus: null
+  });
+  const errorAction = makePackAction(LIFECYCLE.FAILURE, {
+    type: ACTION_TYPES.FETCH_NEXT_FILES
+  });
+  const newEndState = reducer(previous, errorAction);
+  assert.equal(newEndState.loadMoreStatus, 'error');
+});
+
 test('The FETCH_NEXT_FILES will append the paged response to state', function(assert) {
   const previous = Immutable.from({
     files: FILE_LIST,

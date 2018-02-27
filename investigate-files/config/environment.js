@@ -5,7 +5,7 @@ const mockPort = process.env.MOCK_PORT || 9999;
 const mockServerUrl = `http://localhost:${mockPort}`;
 
 module.exports = function(environment/* , appConfig */) {
-  return {
+  const ENV = {
     modulePrefix: 'investigate-files',
     mockServerUrl,
     mockPort,
@@ -20,4 +20,10 @@ module.exports = function(environment/* , appConfig */) {
       includeTimezone: '2010-2020'
     }
   };
+  if (environment === 'test') {
+    ENV['ember-tether'] = {
+      bodyElementId: 'ember-testing'
+    };
+  }
+  return ENV;
 };
