@@ -31,6 +31,7 @@ nukeNode packager
 nukeNode hosts-scan-configure
 nukeNode recon
 nukeNode style-guide
+nukeNode investigate-shared
 nukeNode investigate-events
 nukeNode investigate-hosts
 nukeNode investigate-files

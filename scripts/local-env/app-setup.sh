@@ -51,6 +51,7 @@ prepareApp hosts-scan-configure
 prepareApp packager
 prepareApp recon
 prepareApp style-guide
+prepareApp investigate-shared
 prepareApp investigate-events
 prepareApp investigate-hosts
 prepareApp investigate-files

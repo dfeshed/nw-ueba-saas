@@ -3,6 +3,7 @@ const ALL_SUBMODULES = [
   'mock-server',
   'packager',
   'recon',
+  'investigate-shared',
   'investigate-events',
   'investigate-hosts',
   'investigate-files',
@@ -25,6 +26,7 @@ const saModuleDependants = {
     'recon',
     'sa',
     'style-guide',
+    'investigate-shared',
     'investigate-events',
     'investigate-hosts',
     'investigate-files',
@@ -39,6 +41,7 @@ const saModuleDependants = {
   'mock-server': [
     'streaming-data',
     'recon',
+    'investigate-shared',
     'investigate-events',
     'investigate-hosts',
     'investigate-files',
@@ -47,6 +50,11 @@ const saModuleDependants = {
     'configure',
     'context',
     'hosts-scan-configure'
+  ],
+  'investigate-shared': [
+    'investigate-events',
+    'investigate-hosts',
+    'investigate-files'
   ],
   'investigate-events': ['sa'],
   'investigate-hosts': ['sa'],
@@ -62,6 +70,7 @@ const saModuleDependants = {
   scripts: ALL_SUBMODULES, // Everything depends on scripts
   'streaming-data': [
     'recon',
+    'investigate-shared',
     'investigate-events',
     'investigate-hosts',
     'investigate-files',
