@@ -194,6 +194,6 @@ def main(path, rpm):
 
 if __name__ == "__main__":
     if sys.argv[1] is CORE_ELASTIC_INIT:
-        main(ELASTICSEARCH_PATH)
+        main(ELASTICSEARCH_PATH, CORE_ELASTIC_INIT)
     if sys.argv[1] is VENDOR_ELASTIC_INIT:
-        main(VENDOR_ELASTICSEARCH_PATH)
+        main(VENDOR_ELASTICSEARCH_PATH, VENDOR_ELASTIC_INIT)
