@@ -43,6 +43,8 @@ test('Application click should toggle the visibility of Explore content', functi
   return wait().then(() => {
     assert.equal($('.host-explore__content__header').is(':visible'), false, 'host-explore content hidden on application click');
     $('.label-content').click();
-    assert.equal($('.host-explore__content__header').is(':visible'), true, 'host-explore content shown on Searchbox label click');
+    return wait().then(() => {
+      assert.equal($('.host-explore__content__header').is(':visible'), true, 'host-explore content shown on Searchbox label click');
+    });
   });
 });

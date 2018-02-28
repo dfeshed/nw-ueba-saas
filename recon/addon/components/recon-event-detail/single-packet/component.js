@@ -2,8 +2,8 @@ import Component from 'ember-component';
 import { join } from 'ember-runloop';
 import { htmlSafe } from 'ember-string';
 import { connect } from 'ember-redux';
+import { inject as service } from '@ember/service';
 import computed, { not, readOnly } from 'ember-computed-decorators';
-import { SpanielObserver } from 'spaniel';
 
 import layout from './template';
 
@@ -22,6 +22,8 @@ const SinglePacketComponent = Component.extend({
   ],
   layout,
   tagName: 'section',
+
+  viewport: service(),
 
   index: null,
   isPacketExpanded: true,
@@ -75,28 +77,26 @@ const SinglePacketComponent = Component.extend({
    */
   didInsertElement() {
     this._super(...arguments);
-    const options = {
-      rootMargin: '1000px 0px 1000px 0px',
-      threshold: [{
-        ratio: 0.01,
-        time: 0
-      }]
-    };
 
-    const observer = new SpanielObserver(([entry]) => {
-      join(() => {
-        this.set('viewportEntered', entry.entering);
-      });
-    }, options);
-
-    observer.observe(this.get('element'));
-
-    this.set('observer', observer);
+    const el = this.get('element');
+    const viewport = this.get('viewport');
+    const watcher = viewport.getWatcher();
+    watcher.watch(el, (e) => {
+      if (e === 'exposed' && !this.get('viewportEntered')) {
+        if (!this.get('isDestroying') && !this.get('isDestroyed')) {
+          join(() => {
+            this.set('viewportEntered', true);
+          });
+        }
+      }
+    });
   },
 
   willDestroyElement() {
     this._super(...arguments);
-    this.get('observer').disconnect();
+    const el = this.get('element');
+    const watcher = this.get('watcher');
+    watcher && watcher.unwatch(el);
   },
 
   actions: {

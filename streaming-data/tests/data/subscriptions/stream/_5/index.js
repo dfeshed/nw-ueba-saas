@@ -8,18 +8,19 @@ const outData = [
 export default {
   subscriptionDestination: '/test/subscription/stream/_5',
   requestDestination: '/test/request/stream/_5',
+  delay: 100,
   page(frame, sendMessage) {
     // send one at time = 0/1000/2000
-    for (let i = 0; i < 4; i++) {
+    outData.forEach((data, i) => {
       setTimeout(function() {
         sendMessage({
-          data: outData[i],
+          data,
           meta: {
             complete: i === 3
           }
         });
       }, i * 500);
-    }
+    });
   }
 };
 

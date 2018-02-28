@@ -25,6 +25,6 @@ test('set default investigate page preference', function(assert) {
     assert.ok(service.selected === null || service.selected.key !== option);
     service.setDefaultInvestigatePage(option);
     assert.equal(service.selected.key, option);
-    assert.ok(service.options.contains(service.selected));
+    assert.ok(service.options.includes(service.selected));
   });
 });

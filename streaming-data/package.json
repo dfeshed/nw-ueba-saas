@@ -32,7 +32,7 @@
     "babel-eslint": "^7.1.1",
     "broccoli-asset-rev": "^2.4.5",
     "ember-ajax": "^3.0.0",
-    "ember-cli": "2.15.1",
+    "ember-cli": "3.0.0",
     "ember-cli-dependency-checker": "^2.0.0",
     "ember-cli-eslint": "^3.0.0",
     "ember-cli-code-coverage": "1.0.0-beta.3",
@@ -48,7 +48,7 @@
     "ember-load-initializers": "^1.0.0",
     "ember-resolver": "^4.0.0",
     "ember-sinon": "0.6.0",
-    "ember-source": "2.15.0",
+    "ember-source": "3.0.0",
     "eslint-plugin-ember-suave": "^1.0.0",
     "loader.js": "^4.2.3"
   },

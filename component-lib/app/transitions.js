@@ -14,7 +14,7 @@ const { get, isArray } = Ember;
 // argument or zero.
 function _getIndex(value) {
   if (value && typeof value === 'object') {
-    let index = get(value, 'index');
+    const index = get(value, 'index');
     if (!isNaN(index)) {
       return index;
     }
