@@ -32,6 +32,13 @@ const setCursorAtOperator = ($input, metaType) => {
   _setInputRange($input, metaNameLength + 2);
 };
 
+// value location depends on length of operator and meta
+const setCursorAtValue = ($input, metaType, operator) => {
+  const metaNameLength = metaNameForFormat(metaType).length;
+  const opLength = operator.length;
+  _setInputRange($input, metaNameLength + opLength + 3);
+};
+
 const testSetupConfig = {
   integration: true,
   resolver: engineResolverFor('investigate-events'),
@@ -43,7 +50,7 @@ const testSetupConfig = {
 const ALL_META_OPTIONS = [
   { format: 'Float32', metaName: 'file.entropy', count: 4, flags: -2147482877, displayName: 'File Entropy', indexedBy: 'value' }, // IndexedByValue
   { format: 'IPv4', metaName: 'alias.ip', count: 4, flags: -2147482621, displayName: 'IP Aliases', indexedBy: 'value' },          // IndexedByValue
-  { format: 'IPv6', metaName: 'alias.ipv6', count: 2, flags: -2147482878, displayName: 'IPv6 Aliases', indexedBy: 'key' },      // IndexByKey
+  { format: 'IPv6', metaName: 'alias.ipv6', count: 4, flags: -2147482621, displayName: 'IPv6 Aliases', indexedBy: 'value' },      // IndexByValue
   { format: 'MAC', metaName: 'alias.mac', count: 4, flags: -2147482621, displayName: 'MAC Aliases', indexedBy: 'value' },         // IndexedByValue
   { format: 'Text', metaName: 'alert', count: 7, flags: -2147483133, displayName: 'Alerts', indexedBy: 'value' },                 // IndexedByValue and text
   { format: 'TimeT', metaName: 'starttime', count: 4, flags: -2147482621, displayName: 'Time Start', indexedBy: 'value' },        // IndexedByValue
@@ -189,6 +196,7 @@ export {
   pressSpace,
   setCursorAtMeta,
   setCursorAtOperator,
+  setCursorAtValue,
   setupPillWithCustomProperties,
   testSetupConfig,
   metaForDropDowns

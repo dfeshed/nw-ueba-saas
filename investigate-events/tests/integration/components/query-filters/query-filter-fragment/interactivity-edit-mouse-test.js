@@ -16,7 +16,8 @@ import {
   testSetupConfig,
   PillHelpers,
   setCursorAtMeta,
-  setCursorAtOperator
+  setCursorAtOperator,
+  setCursorAtValue
 } from './util';
 
 moduleForComponent(
@@ -55,4 +56,16 @@ test('clicking on editable pills meta will bring up operator dropdown', function
 
   const $dropdownItems = $dropdownContent.find('li');
   assert.ok($dropdownItems.length === 7, 'The correct number of operators for that meta are visible');
+});
+
+test('clicking on editable pills value will not bring up any dropdown', function(assert) {
+  const $fragment = PillHelpers.createTextPill(this);
+  $fragment.find('.meta').dblclick();
+  const $input = $fragment.find('input');
+
+  setCursorAtValue($input, 'Text', '=');
+  clickTrigger('.rsa-query-fragment');
+
+  const $dropdownContent = $('.ember-basic-dropdown-content');
+  assert.ok($dropdownContent.find('li').length === 0, 'Drop down does not appear when I click selector in editable pill');
 });

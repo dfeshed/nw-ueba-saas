@@ -1,4 +1,4 @@
-import { moduleForComponent, test, skip } from 'ember-qunit';
+import { moduleForComponent, test } from 'ember-qunit';
 
 import {
   PillHelpers,
@@ -38,15 +38,13 @@ test('it passes validation when metaFormat is IPv4 and value is correct', functi
   assert.notOk(this.$('.rsa-query-fragment').hasClass('query-fragment-invalid'), 'Expected valid.');
 });
 
-// ENABLE THESE TESTS WHEN
-// https://bedfordjira.na.rsa.net/browse/ASOC-49213 #8 works
-skip('it fails validation when metaFormat is IPv6 and value is not proper format', function(assert) {
+test('it fails validation when metaFormat is IPv6 and value is not proper format', function(assert) {
   PillHelpers.createIPv6Pill(this, undefined, undefined, 'notAnIp');
   assert.equal(this.$('.rsa-query-fragment .meta').prop('title'), 'You must enter an IPv6 address.');
   assert.ok(this.$('.rsa-query-fragment').hasClass('query-fragment-invalid'), 'Expected invalid.');
 });
 
-skip('it passes validation when metaFormat is IPv6 and value is correct', function(assert) {
+test('it passes validation when metaFormat is IPv6 and value is correct', function(assert) {
   PillHelpers.createIPv6Pill(this);
   assert.notOk(this.$('.rsa-query-fragment').hasClass('query-fragment-invalid'), 'Expected valid.');
 });
@@ -71,15 +69,6 @@ test('it fails validation when metaFormat is UInt16 and value is not proper form
 test('it passes validation when metaFormat is UInt16 and value is correct', function(assert) {
   PillHelpers.createUInt16Pill(this);
   assert.notOk(this.$('.rsa-query-fragment').hasClass('query-fragment-invalid'), 'Expected valid.');
-});
-
-// bytes.src does not have = and != as this is indexed by key
-// so basically it will never run into a problem with validation
-// this test can be removed
-skip('it fails validation when metaFormat is UInt32 and value is not proper format', function(assert) {
-  PillHelpers.createUInt32Pill(this, undefined, undefined, 'notAnInt');
-  assert.equal(this.$('.rsa-query-fragment .meta').prop('title'), 'You must enter a 32 bit Integer.');
-  assert.ok(this.$('.rsa-query-fragment').hasClass('query-fragment-invalid'), 'Expected invalid.');
 });
 
 test('it passes validation when metaFormat is UInt32 and value is correct', function(assert) {

@@ -62,11 +62,13 @@ test('it sets operatorOptions when metaFormat is IPv4', function(assert) {
 test('it sets operatorOptions when metaFormat is IPv6', function(assert) {
   const component = this.subject({
     metaFormat: 'IPv',
-    metaIndex: 'key'
+    metaIndex: 'value'
   });
   const options = component.get('operatorOptions');
 
-  assert.equal(options.get('length'), 2);
+  assert.equal(options.get('length'), 4);
+  assert.ok(options.findBy('displayName', '='), 'Expected to find =');
+  assert.ok(options.findBy('displayName', '!='), 'Expected to find !=');
   assert.ok(options.findBy('displayName', 'exists'), 'Expected to find exists');
   assert.ok(options.findBy('displayName', '!exists'), 'Expected to find !exists');
 });
