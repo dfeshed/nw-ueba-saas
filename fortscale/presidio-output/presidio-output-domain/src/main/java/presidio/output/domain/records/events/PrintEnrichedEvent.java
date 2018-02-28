@@ -133,8 +133,8 @@ public class PrintEnrichedEvent extends EnrichedEvent {
         return isSrcDriveShared;
     }
 
-    public void setIsSrcDriveShared(Boolean srcDriveShared) {
-        isSrcDriveShared = srcDriveShared;
+    public void setIsSrcDriveShared(Boolean isSrcDriveShared) {
+        this.isSrcDriveShared = isSrcDriveShared;
     }
 
     public Long getFileSize() {
