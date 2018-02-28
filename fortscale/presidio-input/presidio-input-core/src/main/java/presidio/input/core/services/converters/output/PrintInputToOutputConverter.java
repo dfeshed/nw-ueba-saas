@@ -23,7 +23,7 @@ public class PrintInputToOutputConverter implements InputOutputConverter {
         outputEvent.setAdditionalInfo(transformedEvent.getAdditionalInfo());
         outputEvent.setFileSize(transformedEvent.getFileSize());
         outputEvent.setNumOfPages(transformedEvent.getNumOfPages());
-        outputEvent.setSrcDriveShared(transformedEvent.getSrcDriveShared());
+        outputEvent.setIsSrcDriveShared(transformedEvent.getSrcDriveShared());
         outputEvent.setSrcFileExtension(transformedEvent.getSrcFileExtension());
         outputEvent.setSrcFilePath(transformedEvent.getSrcFilePath());
         outputEvent.setSrcFolderPath(transformedEvent.getSrcFolderPath());

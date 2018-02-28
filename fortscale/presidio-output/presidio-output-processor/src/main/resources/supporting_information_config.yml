@@ -692,7 +692,7 @@ indicators:
   schema: PRINT
   adeEventType: scored_enriched.print.absoluteSharedFolderPath.userId.print.score
   anomalyDescriptior:
-    anomalyField: absoluteFolderPath
+    anomalyField: srcFolderPath
     anomalyFilters:
       fieldName: isSrcDriveShared
       fieldValue: true
