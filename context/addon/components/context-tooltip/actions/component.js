@@ -1,10 +1,10 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import layout from './template';
 import safeCallback from 'component-lib/utils/safe-callback';
 import computed from 'ember-computed-decorators';
-import { isEmpty } from 'ember-utils';
+import { isEmpty } from '@ember/utils';
 import { pivotToInvestigateUrl } from 'context/util/context-data-modifier';
-import service from 'ember-service/inject';
+import { inject as service } from '@ember/service';
 
 export default Component.extend({
   tagName: 'ul',

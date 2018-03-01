@@ -2,7 +2,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from '../../../../helpers/engine-resolver';
 import wait from 'ember-test-helpers/wait';
-import { typeOf } from 'ember-utils';
+import { typeOf } from '@ember/utils';
 
 moduleForComponent('respond-common/editable-field', 'Integration | Component | Editable Field', {
   integration: true,

@@ -2,7 +2,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import alertData from '../../../data/alert-data';
 import * as ACTION_TYPES from 'context/actions/types';
-import EmberObject from 'ember-object';
+import EmberObject from '@ember/object';
 import dSDetails from 'context/config/im-alerts';
 
 moduleForComponent('context-panel/body', 'Integration | Component | context-panel/body', {

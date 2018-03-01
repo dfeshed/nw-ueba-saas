@@ -1,6 +1,6 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { debounce } from 'ember-runloop';
+import { debounce } from '@ember/runloop';
 import Notifications from 'respond/mixins/notifications';
 import columns from './columns';
 import {

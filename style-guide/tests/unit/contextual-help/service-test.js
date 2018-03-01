@@ -1,4 +1,4 @@
-import EmObj from 'ember-object';
+import EmObj from '@ember/object';
 import { moduleFor, test } from 'ember-qunit';
 
 const mockAppVersionService = EmObj.create({

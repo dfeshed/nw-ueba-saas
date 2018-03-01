@@ -1,6 +1,6 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import layout from './template';
-import set from 'ember-metal/set';
+import { set } from '@ember/object';
 import computed, { alias } from 'ember-computed-decorators';
 import {
   forceSimulation,
@@ -17,11 +17,11 @@ import ticked from './util/ticked';
 import zoomed from './util/zoomed';
 import center from './util/center';
 import arrayToHashKeys from 'component-lib/utils/array/to-hash-keys';
-import run from 'ember-runloop';
+import { run } from '@ember/runloop';
 import $ from 'jquery';
 import { max } from 'd3-array';
 import { scaleLinear } from 'd3-scale';
-import { isEmpty } from 'ember-utils';
+import { isEmpty } from '@ember/utils';
 
 /**
  * @class d3 Fast Force Layout component

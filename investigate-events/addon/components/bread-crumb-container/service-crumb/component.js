@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import computed, { or } from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import {
@@ -9,7 +9,7 @@ import {
 } from 'investigate-events/reducers/investigate/services/selectors';
 import { setService } from 'investigate-events/actions/interaction-creators';
 import { lookup } from 'ember-dependency-lookup';
-import service from 'ember-service/inject';
+import { inject as service } from '@ember/service';
 
 const dispatchToActions = { setService };
 

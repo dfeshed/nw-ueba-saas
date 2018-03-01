@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { setNewTabView } from 'investigate-hosts/actions/data-creators/details';
 import { toggleOverviewPanel } from 'investigate-hosts/actions/ui-state-creators';

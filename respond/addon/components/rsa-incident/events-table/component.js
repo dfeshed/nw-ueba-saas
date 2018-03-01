@@ -1,7 +1,7 @@
 import { get } from '@ember/object';
 import { isEmpty } from '@ember/utils';
-import Component from 'ember-component';
-import service from 'ember-service/inject';
+import Component from '@ember/component';
+import { inject as service } from '@ember/service';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { storyEvents, storyEventSelections } from 'respond/selectors/storyline';

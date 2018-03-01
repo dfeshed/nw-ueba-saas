@@ -76,18 +76,20 @@ test('Clicking on No on popped confirmation box', function(assert) {
 });
 
 test('Success message should appear when custom filter is succesfully deleted', function(assert) {
+  const done = assert.async();
   assert.expect(3);
   patchFlash((flash) => {
     const translation = getOwner(this).lookup('service:i18n');
     const expectedMsg = translation.t('investigateFiles.filter.customFilters.delete.successMessage');
     assert.equal(flash.type, 'success', 'Success message displayed');
     assert.equal(flash.message.string, expectedMsg, 'Query deleted successfully message rendered');
+    done();
   });
   new ReduxDataHelper(setState).filesFilters(customFilterData.fileFilters.data).build();
   this.render(hbs`{{custom-filters}}`);
   this.$('.filter-list .delete-filter .rsa-form-button-wrapper button.rsa-form-button').click();
   assert.equal(this.$('.filter-list .delete-filter .confirmation-modal').length, 1, 'Confirmation box on clicking delete filter button');
-  return wait().then(() => {
+  wait().then(() => {
     // Selecting Yes on popped confirmation box
     this.$('.filter-list .is-primary .rsa-form-button').click();
   });

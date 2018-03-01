@@ -1,6 +1,6 @@
 import { alerts } from '../api';
 import * as ACTION_TYPES from '../types';
-import { next } from 'ember-runloop';
+import { next } from '@ember/runloop';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 

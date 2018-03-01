@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import Notifications from 'respond/mixins/notifications';
 import Confirmable from 'respond/mixins/confirmable';
@@ -7,7 +7,7 @@ import {
   updateJournalEntry
 } from 'respond/actions/creators/journal-creators';
 import layout from './template';
-import service from 'ember-service/inject';
+import { inject as service } from '@ember/service';
 
 const stateToComputed = ({ respond: { dictionaries: { milestoneTypes } } }) => ({
   milestoneTypes

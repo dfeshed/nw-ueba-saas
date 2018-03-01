@@ -1,5 +1,5 @@
-import Component from 'ember-component';
-// import get from 'ember-metal/get';
+import Component from '@ember/component';
+// import { get } from '@ember/object';
 
 // import computed, { mapBy } from 'ember-computed-decorators';
 import computed from 'ember-computed-decorators';

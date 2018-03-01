@@ -1,6 +1,6 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
-import observer from 'ember-metal/observer';
+import { observer } from '@ember/object';
 import { connect } from 'ember-redux';
 import { updateRowVisibility } from './utils';
 import { processTree } from 'investigate-hosts/reducers/details/process/selectors';

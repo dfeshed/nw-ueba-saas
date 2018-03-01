@@ -1,11 +1,11 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import { updateItem, deleteItem } from 'respond/actions/creators/remediation-task-creators';
 import Confirmable from 'respond/mixins/confirmable';
 import Notifications from 'respond/mixins/notifications';
 import FLASH_MESSAGE_TYPES from 'respond/utils/flash-message-types';
-import service from 'ember-service/inject';
+import { inject as service } from '@ember/service';
 
 const closedStatuses = ['REMEDIATED', 'RISK_ACCEPTED', 'NOT_APPLICABLE'];
 

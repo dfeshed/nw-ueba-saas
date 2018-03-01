@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import layout from './template';
 import ComputesRowViewport from 'respond/mixins/group-table/computes-row-viewport';
 import ComputesColumnExtents from 'respond/mixins/group-table/computes-column-extents';

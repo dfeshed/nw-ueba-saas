@@ -1,7 +1,7 @@
-import Component from 'ember-component';
-import service from 'ember-service/inject';
+import Component from '@ember/component';
+import { inject as service } from '@ember/service';
 import { isEmberArray } from 'ember-array/utils';
-import get from 'ember-metal/get';
+import { get } from '@ember/object';
 import { connect } from 'ember-redux';
 import computed, { alias } from 'ember-computed-decorators';
 import { computeExtent, dateFormatter } from 'component-lib/utils/chart-utils';

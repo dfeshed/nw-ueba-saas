@@ -1,6 +1,6 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import injectService from 'ember-service/inject';
+import { inject as service } from '@ember/service';
 
 import {
   addSystemFilter,
@@ -26,7 +26,7 @@ const CustomFilterList = Component.extend({
 
   activeFilter: null,
 
-  flashMessage: injectService(),
+  flashMessage: service(),
 
   actions: {
     applyCustomFilter(filter) {

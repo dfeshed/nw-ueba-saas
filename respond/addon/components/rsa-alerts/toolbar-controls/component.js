@@ -1,12 +1,12 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { gt } from 'ember-computed-decorators';
-import service from 'ember-service/inject';
+import { inject as service } from '@ember/service';
 import { connect } from 'ember-redux';
 import {
   hasSelectedAlertsBelongingToIncidents
 } from 'respond/selectors/alerts';
 import { clearSearchIncidentsResults } from 'respond/actions/creators/add-alerts-to-incident-creators';
-import { next } from 'ember-runloop';
+import { next } from '@ember/runloop';
 
 const stateToComputed = (state) => {
   return {

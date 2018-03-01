@@ -1,5 +1,5 @@
 import { connect } from 'ember-redux';
-import Component from 'ember-component';
+import Component from '@ember/component';
 import {
   resetFilters
 } from 'investigate-hosts/actions/data-creators/filter';

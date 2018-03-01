@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { empty } from 'ember-computed-decorators';
 
 export default Component.extend({

@@ -1,5 +1,5 @@
-import Component from 'ember-component';
-import EmberObject from 'ember-object';
+import Component from '@ember/component';
+import EmberObject from '@ember/object';
 import { connect } from 'ember-redux';
 import computed, { alias } from 'ember-computed-decorators';
 import ReconPanelHelp from 'recon/mixins/recon-panel-help';
@@ -8,7 +8,7 @@ import ReconPagerMixin from 'recon/mixins/recon-pager';
 import StickyHeaderMixin from 'recon/mixins/sticky-header-mixin';
 import DelayBatchingMixin from 'recon/mixins/delay-batching-mixin';
 import layout from './template';
-import service from 'ember-service/inject';
+import { inject as service } from '@ember/service';
 import { isEndpointEvent, isLogEvent } from 'recon/reducers/meta/selectors';
 import { packetTotal } from 'recon/reducers/header/selectors';
 import {

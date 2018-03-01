@@ -1,11 +1,11 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import layout from './template';
 import HighlightsEntities from 'context/mixins/highlights-entities';
-import service from 'ember-service/inject';
-import { next } from 'ember-runloop';
+import { inject as service } from '@ember/service';
+import { next } from '@ember/runloop';
 import computed from 'ember-computed-decorators';
 import { underscore, capitalize } from 'ember-string';
-import get from 'ember-metal/get';
+import { get } from '@ember/object';
 
 // Checks if a given i18n lookup result is "empty". This is done by looking for the special text "Missing translation".
 function is18nValueMissing(safeStr) {

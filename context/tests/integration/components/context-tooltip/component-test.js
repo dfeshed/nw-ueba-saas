@@ -1,8 +1,8 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
-import Service from 'ember-service';
-import Evented from 'ember-evented';
+import Service from '@ember/service';
+import Evented from '@ember/object/evented';
 
 const eventBusStub = Service.extend(Evented, {});
 

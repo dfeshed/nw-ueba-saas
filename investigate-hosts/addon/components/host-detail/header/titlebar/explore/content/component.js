@@ -1,10 +1,10 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { searchResultNotFound } from 'investigate-hosts/reducers/details/explore/selectors';
 import { setSelectedTabData } from 'investigate-hosts/actions/data-creators/explore';
 import { loadDetailsWithExploreInput } from 'investigate-hosts/actions/data-creators/details';
 import computed from 'ember-computed-decorators';
-import service from 'ember-service/inject';
+import { inject as service } from '@ember/service';
 import moment from 'moment';
 
 const stateToComputed = (state) => ({

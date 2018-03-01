@@ -1,7 +1,6 @@
 import * as ACTION_TYPES from './types';
 import { Schedule } from './api';
-import Ember from 'ember';
-const { Logger } = Ember;
+import { debug } from '@ember/debug';
 /**
  * Action creator for getting all the schedule
  * @method getAllSchedules
@@ -12,9 +11,13 @@ const getScheduleConfig = () => ({
   promise: Schedule.getAllSchedules(),
   meta: {
     onSuccess: (response) => {
-      Logger.debug(ACTION_TYPES.FETCH_SCHEDULE_CONFIG, response);
+      const debugResponse = JSON.stringify(response);
+      debug(`onSuccess: ${ACTION_TYPES.FETCH_SCHEDULE_CONFIG} ${debugResponse}`);
     },
-    onFailure: (response) => Logger.error(ACTION_TYPES.FETCH_SCHEDULE_CONFIG, response)
+    onFailure: (response) => {
+      const debugResponse = JSON.stringify(response);
+      debug(`onFailure: ${ACTION_TYPES.FETCH_SCHEDULE_CONFIG} ${debugResponse}`);
+    }
   }
 });
 
@@ -27,7 +30,8 @@ const saveScheduleConfig = (config, callBackOptions) => ({
       callBackOptions.onSuccess(response);
     },
     onFailure: (response) => {
-      Logger.error(ACTION_TYPES.FETCH_SCHEDULE_CONFIG, response);
+      const debugResponse = JSON.stringify(response);
+      debug(`onFailure: ${ACTION_TYPES.FETCH_SCHEDULE_CONFIG} ${debugResponse}`);
       callBackOptions.onFailure(response);
     }
   }

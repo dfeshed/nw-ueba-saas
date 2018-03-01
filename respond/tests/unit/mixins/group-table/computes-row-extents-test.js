@@ -1,4 +1,4 @@
-import EmberObject from 'ember-object';
+import EmberObject from '@ember/object';
 import ComputesRowExtentsMixin from 'respond/mixins/group-table/computes-row-extents';
 import { module, test } from 'qunit';
 import $ from 'jquery';

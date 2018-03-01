@@ -1,4 +1,4 @@
-import EmberObject from 'ember-object';
+import EmberObject from '@ember/object';
 import ComputesRowViewportMixin from 'respond/mixins/group-table/computes-row-viewport';
 import { module, test } from 'qunit';
 

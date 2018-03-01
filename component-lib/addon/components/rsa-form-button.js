@@ -1,6 +1,6 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { equal } from 'ember-computed';
-import service from 'ember-service/inject';
+import { inject as service } from '@ember/service';
 import layout from '../templates/components/rsa-form-button';
 
 export default Component.extend({

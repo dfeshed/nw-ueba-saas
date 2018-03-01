@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import Component from 'ember-component';
-import observer from 'ember-metal/observer';
+import Component from '@ember/component';
+import { observer } from '@ember/object';
 import HasTableParent from 'component-lib/components/rsa-data-table/mixins/has-table-parent';
 import layout from './template';
 import computed from 'ember-computed-decorators';

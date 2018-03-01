@@ -1,4 +1,4 @@
-import EmberObject from 'ember-object';
+import EmberObject from '@ember/object';
 import Size from 'respond/utils/css/size';
 import computed from 'ember-computed-decorators';
 import { htmlSafe } from 'ember-string';
@@ -80,8 +80,8 @@ export default EmberObject.extend({
   // Note: In some browsers, setting `width` alone on a <td> isn't enough; you need `min-width` & `max-width` too.
   @computed('parsedWidth.string', 'parsedMinWidth.string', 'parsedMaxWidth.string')
   styleText(parsedWidth, parsedMinWidth, parsedMaxWidth) {
-    const styleText = `width:${parsedWidth}; 
-      min-width:${parsedMinWidth || parsedWidth}; 
+    const styleText = `width:${parsedWidth};
+      min-width:${parsedMinWidth || parsedWidth};
       max-width:${parsedMaxWidth || parsedWidth}`;
     return htmlSafe(styleText);
   }

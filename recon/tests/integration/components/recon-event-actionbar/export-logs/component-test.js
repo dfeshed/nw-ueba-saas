@@ -4,7 +4,7 @@ import hbs from 'htmlbars-inline-precompile';
 import DataHelper from '../../../../helpers/data-helper';
 import { patchFlash } from '../../../../helpers/patch-flash';
 import { getOwner } from '@ember/application';
-import EmberObject from 'ember-object';
+import EmberObject from '@ember/object';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 const data = {

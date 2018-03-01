@@ -1,4 +1,4 @@
-import EmberObject from 'ember-object';
+import EmberObject from '@ember/object';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from '../../../../helpers/engine-resolver';
@@ -104,7 +104,7 @@ test('it yields the item, index, column & columnIndex when a block is given', fu
       <span class="item-id">{{rowCell.item.id}}</span>
       <span class="index">{{rowCell.index}}</span>
       <span class="column-field">{{rowCell.column.field}}</span>
-      <span class="column-index">{{rowCell.columnIndex}}</span>  
+      <span class="column-index">{{rowCell.columnIndex}}</span>
   </div>
   {{/rsa-group-table/group-item}}`);
 

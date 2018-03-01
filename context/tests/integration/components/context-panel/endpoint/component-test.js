@@ -2,7 +2,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import endpointData from '../../../../data/endpoint';
 import * as ACTION_TYPES from 'context/actions/types';
-import EmberObject from 'ember-object';
+import EmberObject from '@ember/object';
 import machineDetails from 'context/config/machines';
 import modulesDetails from 'context/config/endpoint-modules';
 import IOCdetails from 'context/config/endpoint-ioc';

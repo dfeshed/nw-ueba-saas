@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { processList } from 'investigate-hosts/reducers/details/process/selectors';
 import { getProcessDetails, sortBy } from 'investigate-hosts/actions/data-creators/process';

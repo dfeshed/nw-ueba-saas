@@ -1,5 +1,5 @@
-import Route from 'ember-route';
-import service from 'ember-service/inject';
+import Route from '@ember/routing/route';
+import { inject as service } from '@ember/service';
 import { initializeInvestigate } from 'investigate-events/actions/initialization-creators';
 import {
   setMetaPanelSize,

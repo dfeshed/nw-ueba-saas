@@ -1,4 +1,4 @@
-import { helper } from 'ember-helper';
+import { helper } from '@ember/component/helper';
 import copyToClipboard from 'component-lib/utils/copy-to-clipboard';
 import { lookup } from 'ember-dependency-lookup';
 import moment from 'moment';

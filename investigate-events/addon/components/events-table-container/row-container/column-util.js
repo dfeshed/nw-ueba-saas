@@ -1,4 +1,4 @@
-import get from 'ember-metal/get';
+import { get } from '@ember/object';
 import isEmberArray from 'ember-array/utils';
 import formatUtil from './format-util';
 import { isLogEvent } from 'component-lib/utils/log-utils';

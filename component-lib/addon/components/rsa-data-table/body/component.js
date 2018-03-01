@@ -1,5 +1,5 @@
-import Component from 'ember-component';
-import set from 'ember-metal/set';
+import Component from '@ember/component';
+import { set } from '@ember/object';
 import HasTableParent from 'component-lib/components/rsa-data-table/mixins/has-table-parent';
 import DomIsReady from 'component-lib/components/rsa-data-table/mixins/dom-is-ready';
 import SizeBindings from 'component-lib/components/rsa-data-table/mixins/size-bindings';

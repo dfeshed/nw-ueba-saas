@@ -1,7 +1,7 @@
-import Mixin from 'ember-metal/mixin';
+import Mixin from '@ember/object/mixin';
 import ComputesRowExtents from './computes-row-extents';
 import computed, { alias } from 'ember-computed-decorators';
-import { debounce } from 'ember-runloop';
+import { debounce } from '@ember/runloop';
 import { get, set } from '@ember/object';
 
 /**

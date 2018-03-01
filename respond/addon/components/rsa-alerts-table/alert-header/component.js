@@ -1,7 +1,7 @@
 import GroupHeader from 'respond/components/rsa-group-table/group-header/component';
 import layout from './template';
 import computed, { and, equal } from 'ember-computed-decorators';
-import set, { setProperties } from 'ember-metal/set';
+import { set, setProperties } from '@ember/object';
 
 /**
  * @class Alerts Table Alert header component

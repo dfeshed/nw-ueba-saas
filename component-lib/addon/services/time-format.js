@@ -1,7 +1,7 @@
 import { computed } from '@ember/object';
 import Service, { inject as service } from '@ember/service';
 import config from 'ember-get-config';
-import { isNone, isEmpty } from 'ember-utils';
+import { isNone, isEmpty } from '@ember/utils';
 
 export default Service.extend({
 

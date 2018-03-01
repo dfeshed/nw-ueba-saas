@@ -1,6 +1,6 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import computed, { alias } from 'ember-computed-decorators';
-import { later, scheduleOnce, next } from 'ember-runloop';
+import { later, scheduleOnce, next } from '@ember/runloop';
 
 import SelectionTooltip from './selection-tooltip-mixin';
 import { retrieveTranslatedData } from './util';

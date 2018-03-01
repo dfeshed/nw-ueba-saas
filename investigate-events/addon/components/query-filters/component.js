@@ -1,12 +1,12 @@
-import EmberObject from 'ember-object';
-import run from 'ember-runloop';
-import { isEmpty } from 'ember-utils';
+import EmberObject from '@ember/object';
+import { run } from '@ember/runloop';
+import { isEmpty } from '@ember/utils';
 import computed, { filterBy, notEmpty, gt } from 'ember-computed-decorators';
 import { EKMixin, keyUp, keyDown } from 'ember-keyboard';
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import service from 'ember-service/inject';
-import on from 'ember-evented/on';
+import { inject as service } from '@ember/service';
+import { on } from '@ember/object/evented';
 import { setQueryFilterMeta } from 'investigate-events/actions/interaction-creators';
 import { dirtyQueryToggle } from 'investigate-events/actions/query-validation-creators';
 import { queryParams } from 'investigate-events/reducers/investigate/query-node/selectors';

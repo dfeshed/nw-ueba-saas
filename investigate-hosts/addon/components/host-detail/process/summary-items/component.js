@@ -1,6 +1,6 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
-import { assert } from 'ember-metal/utils';
+import { assert } from '@ember/debug';
 import _ from 'lodash';
 
 /**

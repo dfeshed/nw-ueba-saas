@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import columns from './columns';
 import * as DictionaryActions from 'respond/actions/creators/dictionary-creators';

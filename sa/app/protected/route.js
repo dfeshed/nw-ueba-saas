@@ -3,9 +3,9 @@
  * Container for all sub-routes that require authentication.
  * @public
  */
-import Route from 'ember-route';
+import Route from '@ember/routing/route';
 import RSVP from 'rsvp';
-import service from 'ember-service/inject';
+import { inject as service } from '@ember/service';
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
 import * as ACTION_TYPES from 'sa/actions/types';
 import config from '../config/environment';

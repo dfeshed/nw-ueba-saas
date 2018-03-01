@@ -1,6 +1,6 @@
-import Mixin from 'ember-metal/mixin';
-import service from 'ember-service/inject';
-import { next } from 'ember-runloop';
+import Mixin from '@ember/object/mixin';
+import { inject as service } from '@ember/service';
+import { next } from '@ember/runloop';
 const NOOP = () => ({});
 
 /**

@@ -9,7 +9,7 @@
  * @public
  */
 import { lookup } from 'ember-dependency-lookup';
-import { later } from 'ember-runloop';
+import { later } from '@ember/runloop';
 import { warn } from 'ember-debug';
 
 import * as ACTION_TYPES from './types';

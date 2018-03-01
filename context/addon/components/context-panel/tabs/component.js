@@ -1,10 +1,10 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import * as ContextActions from 'context/actions/context-creators';
 import layout from './template';
 import { isDataSourceEnabled } from 'context/util/context-data-modifier';
-import { setProperties } from 'ember-metal/set';
+import { setProperties } from '@ember/object';
 
 const stateToComputed = ({ context }) => ({
   activeTabName: context.activeTabName,

@@ -1,4 +1,4 @@
-import Mixin from 'ember-metal/mixin';
+import Mixin from '@ember/object/mixin';
 import computed from 'ember-computed-decorators';
 import arrayToHashKeys from 'component-lib/utils/array/to-hash-keys';
 

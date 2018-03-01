@@ -1,12 +1,12 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
-import service from 'ember-service/inject';
+import { inject as service } from '@ember/service';
 import {
   isNetworkAddress,
   getIpAddressMetaValue,
   getPortMetaValue
 } from 'recon/utils/network-addr-utils';
-import { isEmpty } from 'ember-utils';
+import { isEmpty } from '@ember/utils';
 import layout from './template';
 
 const DATE_DATATYPE = 'TimeT';

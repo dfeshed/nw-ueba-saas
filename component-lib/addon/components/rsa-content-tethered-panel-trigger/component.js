@@ -1,7 +1,7 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { equal } from 'ember-computed';
-import run from 'ember-runloop';
-import service from 'ember-service/inject';
+import { run } from '@ember/runloop';
+import { inject as service } from '@ember/service';
 import layout from './template';
 import { sendTetherEvent } from 'component-lib/utils/tooltip-trigger';
 

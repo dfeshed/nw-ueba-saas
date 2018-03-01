@@ -7,8 +7,8 @@
 import HasTableParent from './has-table-parent';
 import computed, { equal } from 'ember-computed-decorators';
 import { htmlSafe } from 'ember-string';
-import { isEmpty } from 'ember-utils';
-import Mixin from 'ember-metal/mixin';
+import { isEmpty } from '@ember/utils';
+import Mixin from '@ember/object/mixin';
 
 // Default column width if none given.
 const DEFAULT_WIDTH = 100;

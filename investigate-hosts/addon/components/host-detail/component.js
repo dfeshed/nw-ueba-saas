@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { selectedTabComponent } from 'investigate-hosts/reducers/visuals/selectors';
 import computed from 'ember-computed-decorators';

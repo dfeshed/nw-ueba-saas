@@ -1,5 +1,5 @@
-import service from 'ember-service/inject';
-import Route from 'ember-route';
+import { inject as service } from '@ember/service';
+import Route from '@ember/routing/route';
 
 const contextAddToListModalId = 'addToList';
 

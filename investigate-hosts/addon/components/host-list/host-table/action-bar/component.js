@@ -1,6 +1,6 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import injectService from 'ember-service/inject';
+import { inject as service } from '@ember/service';
 import _ from 'lodash';
 import {
   noHostsSelected,
@@ -29,9 +29,9 @@ const ActionBar = Component.extend({
 
   classNames: 'host-table__toolbar',
 
-  flashMessage: injectService(),
+  flashMessage: service(),
 
-  i18n: injectService(),
+  i18n: service(),
 
   actions: {
     handleDeleteHosts() {

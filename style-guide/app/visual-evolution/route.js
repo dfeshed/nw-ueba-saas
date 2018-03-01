@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import Route from 'ember-route';
+import Route from '@ember/routing/route';
 import config from 'ember-get-config';
 
 export default Route.extend({

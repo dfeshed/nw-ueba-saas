@@ -1,5 +1,5 @@
-import Component from 'ember-component';
-import { join } from 'ember-runloop';
+import Component from '@ember/component';
+import { join } from '@ember/runloop';
 import { htmlSafe } from 'ember-string';
 import { connect } from 'ember-redux';
 import { inject as service } from '@ember/service';

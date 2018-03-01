@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import layout from './template';
 import safeCallback from 'component-lib/utils/safe-callback';
 

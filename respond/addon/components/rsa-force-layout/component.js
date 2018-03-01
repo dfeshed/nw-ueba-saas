@@ -1,8 +1,8 @@
 /* global addResizeListener, removeResizeListener */
 
 import { setProperties, set, get } from '@ember/object';
-import Component from 'ember-component';
-import run from 'ember-runloop';
+import Component from '@ember/component';
+import { run } from '@ember/runloop';
 import computed from 'ember-computed-decorators';
 import boundingBox from 'respond/utils/force-layout/bounding-box';
 import {

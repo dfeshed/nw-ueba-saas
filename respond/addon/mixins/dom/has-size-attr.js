@@ -1,6 +1,6 @@
-import Mixin from 'ember-metal/mixin';
-import run, { next, debounce } from 'ember-runloop';
-import { isEmpty } from 'ember-utils';
+import Mixin from '@ember/object/mixin';
+import { run, next, debounce } from '@ember/runloop';
+import { isEmpty } from '@ember/utils';
 
 /* global addResizeListener */
 /* global removeResizeListener */

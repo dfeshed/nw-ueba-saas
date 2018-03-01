@@ -1,6 +1,6 @@
-import Helper from 'ember-helper';
+import Helper from '@ember/component/helper';
 import { inject } from '@ember/service';
-import observer from 'ember-metal/observer';
+import { observer } from '@ember/object';
 
 export default Helper.extend({
   router: inject(),

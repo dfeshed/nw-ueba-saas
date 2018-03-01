@@ -1,5 +1,4 @@
-import Ember from 'ember';
-const { Logger } = Ember;
+import { debug } from '@ember/debug';
 
 /**
  * Error helper for logging errors to the console.
@@ -8,5 +7,6 @@ const { Logger } = Ember;
  * @private
  */
 export const handleError = (type, response) => {
-  Logger.error(type, response);
+  const debugResponse = JSON.stringify(response);
+  debug(`handleError: ${type} ${debugResponse}`);
 };

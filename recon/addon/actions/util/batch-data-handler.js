@@ -1,4 +1,4 @@
-import { join, later } from 'ember-runloop';
+import { join, later } from '@ember/runloop';
 
 const BATCH_CHARACTER_SIZE = 10;
 const WAIT = [0, 100];

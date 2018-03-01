@@ -1,5 +1,5 @@
-import Component from 'ember-component';
-import { scheduleOnce, debounce } from 'ember-runloop';
+import Component from '@ember/component';
+import { scheduleOnce, debounce } from '@ember/runloop';
 import computed, { gt } from 'ember-computed-decorators';
 import layout from './template';
 

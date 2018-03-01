@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { fileCount, fileCountForDisplay } from 'investigate-files/reducers/file-list/selectors';
 import { isValidExpression } from 'investigate-files/reducers/filter/selectors';

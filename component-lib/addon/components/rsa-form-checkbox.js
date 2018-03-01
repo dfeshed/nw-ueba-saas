@@ -1,4 +1,4 @@
-import Checkbox from 'ember-components/checkbox';
+import Checkbox from '@ember/component/checkbox';
 
 export default Checkbox.extend({
   classNames: ['rsa-form-checkbox'],

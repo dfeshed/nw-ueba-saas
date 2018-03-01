@@ -1,5 +1,4 @@
-import Ember from 'ember';
-const { Logger } = Ember;
+import { warn } from '@ember/debug';
 
 /**
  * Load local storage values and incorporate into initial state.
@@ -16,7 +15,8 @@ const load = (initialState, localStorageKey) => {
     const json = localStorage.getItem(localStorageKey);
     storedState = json ? JSON.parse(json) : null;
   } catch (e) {
-    Logger.warn('Unable to load state from localStorage. Applying defaults.', localStorageKey, e);
+    const warnError = JSON.stringify(e);
+    warn(`Unable to load state from localStorage. Applying defaults. ${localStorageKey} ${warnError}`, { id: 'respond.reducers.util.local-storage' });
   }
   return {
     ...initialState,

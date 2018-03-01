@@ -1,8 +1,8 @@
 import layout from './template';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
-import { isEmpty } from 'ember-utils';
-import Component from 'ember-component';
+import { isEmpty } from '@ember/utils';
+import Component from '@ember/component';
 
 import {
   getConfig,

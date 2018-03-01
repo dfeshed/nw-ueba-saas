@@ -5,7 +5,7 @@
  * The root DOM node can be resized via CSS; the SVG will automatically scale.
  * @public
  */
-import Component from 'ember-component';
+import Component from '@ember/component';
 import layout from './template';
 
 /**

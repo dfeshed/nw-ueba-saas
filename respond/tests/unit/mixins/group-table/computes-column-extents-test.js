@@ -1,4 +1,4 @@
-import EmberObject from 'ember-object';
+import EmberObject from '@ember/object';
 import ComputesColumnExtents from 'respond/mixins/group-table/computes-column-extents';
 import { module, test } from 'qunit';
 

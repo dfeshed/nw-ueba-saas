@@ -1,9 +1,8 @@
-import EmberObject from 'ember-object';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from '../../../../helpers/engine-resolver';
 import wait from 'ember-test-helpers/wait';
-import set from 'ember-metal/set';
+import EmberObject, { set } from '@ember/object';
 import $ from 'jquery';
 
 moduleForComponent('rsa-group-table-group-header', 'Integration | Component | rsa group table group header', {

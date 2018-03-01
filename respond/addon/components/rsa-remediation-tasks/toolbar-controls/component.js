@@ -1,6 +1,6 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { empty, gt } from 'ember-computed-decorators';
-import service from 'ember-service/inject';
+import { inject as service } from '@ember/service';
 
 /**
  * @class IncidentsControls

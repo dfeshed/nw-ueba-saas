@@ -1,11 +1,11 @@
 import layout from './template';
 import computed from 'ember-computed-decorators';
-import Component from 'ember-component';
-import service from 'ember-service/inject';
-import EmberObject from 'ember-object';
+import Component from '@ember/component';
+import { inject as service } from '@ember/service';
+import EmberObject from '@ember/object';
 import { warn } from 'ember-debug';
 import { contextHelpIds } from 'context/config/help-ids';
-import { isEmpty } from 'ember-utils';
+import { isEmpty } from '@ember/utils';
 
 export default Component.extend({
   layout,

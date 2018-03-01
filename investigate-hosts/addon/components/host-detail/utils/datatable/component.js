@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed, { alias } from 'ember-computed-decorators';
 import { setHostDetailsDataTableSortConfig } from 'investigate-hosts/actions/data-creators/details';

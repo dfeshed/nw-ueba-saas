@@ -1,7 +1,7 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed, { not } from 'ember-computed-decorators';
-import service from 'ember-service/inject';
+import { inject as service } from '@ember/service';
 
 import { extractFiles, didDownloadFiles } from 'recon/actions/interaction-creators';
 import { selectedFiles } from 'recon/reducers/files/selectors';

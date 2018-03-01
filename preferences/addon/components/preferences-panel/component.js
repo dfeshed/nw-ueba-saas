@@ -1,6 +1,6 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import layout from './template';
-import { later, schedule } from 'ember-runloop';
+import { later, schedule } from '@ember/runloop';
 import { connect } from 'ember-redux';
 import {
   closePreferencesPanel,
@@ -9,7 +9,7 @@ import {
   updatePanelClicked
 } from 'preferences/actions/interaction-creators';
 import { getContextualHelp } from 'preferences/reducers/preferences-panel/selectors';
-import service from 'ember-service/inject';
+import { inject as service } from '@ember/service';
 
 const stateToComputed = ({ preferences }) => ({
   isExpanded: preferences.isExpanded,

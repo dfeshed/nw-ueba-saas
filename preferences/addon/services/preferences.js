@@ -1,4 +1,4 @@
-import Service from 'ember-service';
+import Service from '@ember/service';
 import { fetchPreferences, savePreferences } from 'preferences/actions/fetchPreferences';
 import _ from 'lodash';
 import { debug } from '@ember/debug';

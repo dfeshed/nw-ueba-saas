@@ -1,6 +1,6 @@
 import { test } from 'qunit';
 import moduleForAcceptance from '../helpers/module-for-acceptance';
-import { later } from 'ember-runloop';
+import { later } from '@ember/runloop';
 import RSVP from 'rsvp';
 
 const { Promise } = RSVP;

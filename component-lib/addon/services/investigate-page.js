@@ -1,6 +1,5 @@
-import { isNone } from 'ember-utils';
-import Service from 'ember-service';
-import service from 'ember-service/inject';
+import { isNone } from '@ember/utils';
+import Service, { inject as service } from '@ember/service';
 import { alias } from 'ember-computed';
 
 // Service which persists the user selected investigate page in the userPreferences

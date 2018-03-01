@@ -1,7 +1,7 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { hostListForScanning, hasMachineId } from 'investigate-hosts/reducers/hosts/selectors';
-import service from 'ember-service/inject';
+import { inject as service } from '@ember/service';
 
 const stateToComputed = (state) => ({
   selectedHostList: hostListForScanning(state),

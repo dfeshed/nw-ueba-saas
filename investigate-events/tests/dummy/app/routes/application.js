@@ -1,6 +1,6 @@
-import Route from 'ember-route';
+import Route from '@ember/routing/route';
 import getOwner from 'ember-owner/get';
-import service from 'ember-service/inject';
+import { inject as service } from '@ember/service';
 import config from 'dummy/config/environment';
 
 export default Route.extend({

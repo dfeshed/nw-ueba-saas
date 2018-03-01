@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { equal } from 'ember-computed';
 import layout from './template';
 

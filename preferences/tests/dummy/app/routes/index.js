@@ -1,4 +1,4 @@
-import Route from 'ember-route';
+import Route from '@ember/routing/route';
 import CONFIG from '../config';
 
 export default Route.extend({

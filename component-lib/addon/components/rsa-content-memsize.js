@@ -8,7 +8,7 @@
  * @public
  */
 import $ from 'jquery';
-import Component from 'ember-component';
+import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
 
 import layout from '../templates/components/rsa-content-memsize';

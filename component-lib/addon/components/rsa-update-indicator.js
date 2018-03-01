@@ -1,6 +1,6 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import computed from 'ember-computed';
-import { isEmpty } from 'ember-utils';
+import { isEmpty } from '@ember/utils';
 import layout from '../templates/components/rsa-update-indicator';
 
 export default Component.extend({

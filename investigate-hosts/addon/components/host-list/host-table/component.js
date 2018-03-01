@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { getHostTableColumns } from 'investigate-hosts/reducers/schema/selectors';
 import { getNextMachines, setHostColumnSort } from 'investigate-hosts/actions/data-creators/host';

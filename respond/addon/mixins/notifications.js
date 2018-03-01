@@ -1,5 +1,5 @@
-import Mixin from 'ember-metal/mixin';
-import service from 'ember-service/inject';
+import Mixin from '@ember/object/mixin';
+import { inject as service } from '@ember/service';
 import FLASH_MESSAGE_TYPES from 'respond/utils/flash-message-types';
 
 /**

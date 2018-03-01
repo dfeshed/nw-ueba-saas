@@ -1,6 +1,6 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import computed, { oneWay } from 'ember-computed-decorators';
-import { isEmpty } from 'ember-utils';
+import { isEmpty } from '@ember/utils';
 
 export default Component.extend({
   classNames: ['editable-field'],

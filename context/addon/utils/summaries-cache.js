@@ -1,4 +1,4 @@
-import EmberObject from 'ember-object';
+import EmberObject from '@ember/object';
 import computed from 'ember-computed-decorators';
 
 // Computes a hash key for the given entity type + id pair.

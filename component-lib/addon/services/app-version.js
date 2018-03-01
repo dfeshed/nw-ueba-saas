@@ -1,4 +1,4 @@
-import Service from 'ember-service';
+import Service from '@ember/service';
 import config from 'ember-get-config';
 import computed, { readOnly } from 'ember-computed-decorators';
 

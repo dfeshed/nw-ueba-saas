@@ -1,6 +1,6 @@
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
-import run from 'ember-runloop';
+import { run } from '@ember/runloop';
 import $ from 'jquery';
 
 import Button from 'component-lib/components/rsa-form-button';

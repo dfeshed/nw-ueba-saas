@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { resetExploreSearch } from 'investigate-hosts/actions/data-creators/explore';
 import { toggleExploreSearchResults } from 'investigate-hosts/actions/ui-state-creators';

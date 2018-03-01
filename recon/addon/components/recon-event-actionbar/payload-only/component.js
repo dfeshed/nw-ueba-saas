@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { togglePayloadOnly } from 'recon/actions/data-creators';
 import layout from './template';

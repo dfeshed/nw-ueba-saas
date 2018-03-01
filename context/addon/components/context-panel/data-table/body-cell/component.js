@@ -1,8 +1,8 @@
 import layout from './template';
 import computed from 'ember-computed-decorators';
-import get from 'ember-metal/get';
-import Component from 'ember-component';
-import service from 'ember-service/inject';
+import { get } from '@ember/object';
+import Component from '@ember/component';
+import { inject as service } from '@ember/service';
 import moment from 'moment';
 
 export default Component.extend({

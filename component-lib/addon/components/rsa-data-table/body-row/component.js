@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import RowMixin from '../mixins/is-row';
 import layout from './template';
 

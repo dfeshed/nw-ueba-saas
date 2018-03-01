@@ -1,5 +1,5 @@
 
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import TIME_RANGES from 'investigate-events/constants/time-ranges';

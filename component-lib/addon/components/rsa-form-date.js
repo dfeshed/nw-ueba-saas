@@ -1,5 +1,5 @@
-import Component from 'ember-component';
-import { isEmpty } from 'ember-utils';
+import Component from '@ember/component';
+import { isEmpty } from '@ember/utils';
 import PikadayMixin from '../mixins/pikaday';
 
 export default Component.extend(PikadayMixin, {

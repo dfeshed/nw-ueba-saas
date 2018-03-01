@@ -1,8 +1,8 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import layout from './template';
 import { connect } from 'ember-redux';
 import { togglePreferencesPanel } from 'preferences/actions/interaction-creators';
-import observer from 'ember-metal/observer';
+import { observer } from '@ember/object';
 import _ from 'lodash';
 
 const stateToComputed = ({ preferences: { isExpanded, preferences, shouldPublishPreferences, changedField } }) => ({

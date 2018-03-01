@@ -4,17 +4,12 @@
  * It is useful for rendering a "Load More" button beneath the last body row.
  * @public
  */
-import Component from 'ember-component';
-import Ember from 'ember';
-import run from 'ember-runloop';
+import Component from '@ember/component';
+import { warn } from '@ember/debug';
+import { run } from '@ember/runloop';
 import HasTableParent from '../mixins/has-table-parent';
 import safeCallback from 'component-lib/utils/safe-callback';
-
 import layout from './template';
-
-const {
-  Logger
-} = Ember;
 
 export default Component.extend(HasTableParent, {
   layout,
@@ -46,7 +41,7 @@ export default Component.extend(HasTableParent, {
     run.schedule('afterRender', () => {
       const rowsElement = this.get('table.body.rows.element');
       if (!rowsElement) {
-        Logger.warn('Unable to insert load-more into data-table.body.rows; DOM was not found.');
+        warn('Unable to insert load-more into data-table.body.rows; DOM was not found.', { id: 'component-lib.components.rsa-data-table.load-more.component' });
       } else {
         this.$().appendTo(rowsElement);
       }

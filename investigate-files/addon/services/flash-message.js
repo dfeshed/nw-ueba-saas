@@ -1,5 +1,4 @@
-import Service from 'ember-service';
-import service from 'ember-service/inject';
+import Service, { inject as service } from '@ember/service';
 
 export default Service.extend({
 

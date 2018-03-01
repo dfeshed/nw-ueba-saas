@@ -1,8 +1,8 @@
-import Mixin from 'ember-metal/mixin';
+import Mixin from '@ember/object/mixin';
 import { sendTetherEvent } from 'component-lib/utils/tooltip-trigger';
-import run from 'ember-runloop';
+import { run } from '@ember/runloop';
 import $ from 'jquery';
-import service from 'ember-service/inject';
+import { inject as service } from '@ember/service';
 
 export default Mixin.create({
   displayDelay: 500,

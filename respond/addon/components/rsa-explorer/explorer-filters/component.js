@@ -1,6 +1,6 @@
-import Component from 'ember-component';
-import service from 'ember-service/inject';
-import { isPresent, typeOf } from 'ember-utils';
+import Component from '@ember/component';
+import { inject as service } from '@ember/service';
+import { isPresent, typeOf } from '@ember/utils';
 import computed from 'ember-computed-decorators';
 import { SINCE_WHEN_TYPES } from 'respond/utils/since-when-types';
 import moment from 'moment';

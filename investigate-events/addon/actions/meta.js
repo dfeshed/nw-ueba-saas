@@ -7,7 +7,7 @@
 import { set, get } from '@ember/object';
 
 import Mixin from '@ember/object/mixin';
-import service from 'ember-service/inject';
+import { inject as service } from '@ember/service';
 
 import { defaultMetaGroup } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import MetaKeyState from 'investigate-events/state/meta-key';

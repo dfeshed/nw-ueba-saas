@@ -1,4 +1,4 @@
-import EmObj from 'ember-object';
+import EmObj from '@ember/object';
 import { moduleFor, test } from 'ember-qunit';
 
 moduleFor('service:landing-page', 'Unit | Service | landing page', {

@@ -1,4 +1,4 @@
-import EmberObject from 'ember-object';
+import EmberObject from '@ember/object';
 import HasScrollAttr from 'respond/mixins/dom/has-scroll-attr';
 import { module, skip } from 'qunit';
 import wait from 'ember-test-helpers/wait';

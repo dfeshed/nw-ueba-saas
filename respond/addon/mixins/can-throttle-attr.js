@@ -1,6 +1,6 @@
-import Mixin from 'ember-metal/mixin';
-import { isEmpty } from 'ember-utils';
-import { throttle } from 'ember-runloop';
+import Mixin from '@ember/object/mixin';
+import { isEmpty } from '@ember/utils';
+import { throttle } from '@ember/runloop';
 
 /**
  * @class Can Throttle Attr mixin

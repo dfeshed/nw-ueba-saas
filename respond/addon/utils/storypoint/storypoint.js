@@ -1,9 +1,8 @@
-import EmberObject from 'ember-object';
 import EnrichmentsToDisplay from './enrichments-to-display';
 import KeysToi18n from './keys-to-i18n';
 import computed, { alias } from 'ember-computed-decorators';
-import { isEmpty } from 'ember-utils';
-import get from 'ember-metal/get';
+import { isEmpty } from '@ember/utils';
+import EmberObject, { get } from '@ember/object';
 
 /**
  * @class StoryPoint

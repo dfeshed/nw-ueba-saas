@@ -1,6 +1,6 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
-import injectService from 'ember-service/inject';
+import { inject as service } from '@ember/service';
 
 const statusMapping = {
   scanning: 'Scanning',
@@ -11,7 +11,7 @@ const statusMapping = {
 
 export default Component.extend({
 
-  eventBus: injectService(),
+  eventBus: service(),
 
   classNames: ['rsa-agent-scan-status'],
 

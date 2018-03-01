@@ -1,4 +1,4 @@
-import get from 'ember-metal/get';
+import { get } from '@ember/object';
 
 
 export const doesStateHaveViewData =

@@ -1,7 +1,7 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import layout from './template';
 import { connect } from 'ember-redux';
-import injectService from 'ember-service/inject';
+import { inject as service } from '@ember/service';
 
 import {
   addSystemFilter,
@@ -34,9 +34,9 @@ const FilterList = Component.extend({
 
   classNames: ['filter-list'],
 
-  flashMessage: injectService(),
+  flashMessage: service(),
 
-  eventBus: injectService(),
+  eventBus: service(),
 
   showConfirmationDialog: false,
 

@@ -1,8 +1,8 @@
 import { connect } from 'ember-redux';
-import Component from 'ember-component';
+import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
-import run from 'ember-runloop';
-import service from 'ember-service/inject';
+import { run } from '@ember/runloop';
+import { inject as service } from '@ember/service';
 import { listWithoutDefault, appliedFilters } from 'investigate-files/reducers/filter/selectors';
 import _ from 'lodash';
 import {

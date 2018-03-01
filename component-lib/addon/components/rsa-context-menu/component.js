@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import contextMenuMixin from 'ember-context-menu';
 
 export default Component.extend(contextMenuMixin, {

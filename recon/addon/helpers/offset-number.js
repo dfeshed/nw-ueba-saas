@@ -1,4 +1,4 @@
-import Helper from 'ember-helper';
+import Helper from '@ember/component/helper';
 import { BYTES_PER_ROW } from 'recon/reducers/packets/util';
 const DIGITS = 6;
 const numberHash = [];

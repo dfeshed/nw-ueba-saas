@@ -1,6 +1,6 @@
-import Mixin from 'ember-metal/mixin';
-import { join, next, debounce } from 'ember-runloop';
-import { isEmpty } from 'ember-utils';
+import Mixin from '@ember/object/mixin';
+import { join, next, debounce } from '@ember/runloop';
+import { isEmpty } from '@ember/utils';
 import computed from 'ember-computed-decorators';
 import $ from 'jquery';
 

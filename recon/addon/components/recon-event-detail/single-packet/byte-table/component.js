@@ -1,6 +1,6 @@
-import Component from 'ember-component';
-import observer from 'ember-metal/observer';
-import { schedule } from 'ember-runloop';
+import Component from '@ember/component';
+import { observer } from '@ember/object';
+import { schedule } from '@ember/runloop';
 import $ from 'jquery';
 import { connect } from 'ember-redux';
 import { scaleQuantize } from 'd3-scale';

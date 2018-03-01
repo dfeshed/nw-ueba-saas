@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import Component from 'ember-component';
+import Component from '@ember/component';
 import computed, { alias } from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import ReconPager from 'recon/mixins/recon-pager';

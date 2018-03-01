@@ -5,7 +5,7 @@
  * @public
  */
 import computed from 'ember-computed';
-import Mixin from 'ember-metal/mixin';
+import Mixin from '@ember/object/mixin';
 
 export default Mixin.create({
 

@@ -1,4 +1,4 @@
-import { isBlank } from 'ember-utils';
+import { isBlank } from '@ember/utils';
 
 const ENDPOINT_IP_MAPPING = 'machine.networkInterfaces.ipv4';
 const ENDPOINT_MAC_NAME_MAPPING = 'machine.networkInterfaces.macAddress';

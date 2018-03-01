@@ -1,6 +1,6 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import injectService from 'ember-service/inject';
+import { inject as service } from '@ember/service';
 import moment from 'moment';
 import {
   isJsonExportCompleted,
@@ -39,11 +39,11 @@ const ActionBar = Component.extend({
 
   classNames: 'actionbar controls center flexi-fit',
 
-  eventBus: injectService(),
+  eventBus: service(),
 
-  i18n: injectService(),
+  i18n: service(),
 
-  flashMessage: injectService(),
+  flashMessage: service(),
 
   actions: {
     setSelect(option) {

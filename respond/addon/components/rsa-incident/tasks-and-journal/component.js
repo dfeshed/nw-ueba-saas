@@ -3,9 +3,9 @@ import {
   toggleTasksAndJournalPanel,
   setTasksJournalMode
 } from 'respond/actions/creators/incidents-creators';
-import Component from 'ember-component';
+import Component from '@ember/component';
 import computed, { alias } from 'ember-computed-decorators';
-import service from 'ember-service/inject';
+import { inject as service } from '@ember/service';
 
 const closedStatuses = ['CLOSED', 'CLOSED_FALSE_POSITIVE'];
 

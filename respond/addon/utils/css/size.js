@@ -1,5 +1,5 @@
-import EmberObject from 'ember-object';
-import { isEmpty } from 'ember-utils';
+import EmberObject from '@ember/object';
+import { isEmpty } from '@ember/utils';
 import computed from 'ember-computed-decorators';
 import $ from 'jquery';
 

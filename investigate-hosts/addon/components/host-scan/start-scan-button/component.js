@@ -1,12 +1,12 @@
-import Component from 'ember-component';
-import injectService from 'ember-service/inject';
+import Component from '@ember/component';
+import { inject as service } from '@ember/service';
 import { startScan } from 'investigate-hosts/actions/data-creators/host';
 
 export default Component.extend({
 
   classNames: ['host-start-scan-button'],
 
-  flashMessage: injectService(),
+  flashMessage: service(),
 
   isDisabled: false,
 

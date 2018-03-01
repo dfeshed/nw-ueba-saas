@@ -11,13 +11,9 @@ import { run } from '@ember/runloop';
 import EmberObject, { computed } from '@ember/object';
 import RSVP from 'rsvp';
 import { isEmpty } from '@ember/utils';
-import Ember from 'ember';
 import config from 'ember-get-config';
 import SubscriptionsCache from './subscriptions-cache';
-
-const {
-  Logger
-} = Ember;
+import { debug } from '@ember/debug';
 
 const MAX_WEBSOCKET_FRAME_SIZE = 64 * 1024;
 
@@ -280,7 +276,7 @@ export default EmberObject.extend({
       new SockJS(url, {}, { transports: ['websocket'] })
     );
     stompClient.maxWebSocketFrameSize = MAX_WEBSOCKET_FRAME_SIZE; // change/increase the default max websocket frame size
-    stompClient.debug = config.socketDebug ? Logger.debug.bind(Logger) : null;
+    stompClient.debug = config.socketDebug ? debug.bind(debug) : null;
     this.set('stompClient', stompClient);
 
     this.connect();

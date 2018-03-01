@@ -1,8 +1,8 @@
-import Route from 'ember-route';
+import Route from '@ember/routing/route';
 import { initializeAlert } from 'respond/actions/creators/alert-creators';
-import service from 'ember-service/inject';
-import { next } from 'ember-runloop';
-import { isEmpty } from 'ember-utils';
+import { inject as service } from '@ember/service';
+import { next } from '@ember/runloop';
+import { isEmpty } from '@ember/utils';
 
 // Converts a long alert ID string into the format 'abcd...wxyz'.
 function abbrevAlertId(alertId) {

@@ -1,9 +1,9 @@
 import { connect } from 'ember-redux';
-import Component from 'ember-component';
+import Component from '@ember/component';
 import layout from './template';
 import computed from 'ember-computed-decorators';
 import { pivotToInvestigateUrl } from 'context/util/context-data-modifier';
-import { isEmpty } from 'ember-utils';
+import { isEmpty } from '@ember/utils';
 
 /**
  * @private

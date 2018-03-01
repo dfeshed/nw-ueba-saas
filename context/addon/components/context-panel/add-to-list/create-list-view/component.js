@@ -1,6 +1,6 @@
 import layout from './template';
-import service from 'ember-service/inject';
-import Component from 'ember-component';
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
 import { debug, warn } from '@ember/debug';
 import { isEmpty } from '@ember/utils';
 

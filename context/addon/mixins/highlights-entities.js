@@ -1,9 +1,9 @@
-import Mixin from 'ember-metal/mixin';
-import service from 'ember-service/inject';
+import Mixin from '@ember/object/mixin';
+import { inject as service } from '@ember/service';
 import computed from 'ember-computed-decorators';
 import arrayToHashKeys from 'component-lib/utils/array/to-hash-keys';
-import { next } from 'ember-runloop';
-import { isEmpty } from 'ember-utils';
+import { next } from '@ember/runloop';
+import { isEmpty } from '@ember/utils';
 import $ from 'jquery';
 import rsvp from 'rsvp';
 import {

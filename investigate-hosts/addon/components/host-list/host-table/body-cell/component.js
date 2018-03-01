@@ -1,5 +1,5 @@
 import BodyCell from 'component-lib/components/rsa-data-table/body-cell/component';
-import service from 'ember-service/inject';
+import { inject as service } from '@ember/service';
 
 export default BodyCell.extend({
 

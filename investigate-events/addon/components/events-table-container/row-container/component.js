@@ -1,8 +1,7 @@
-import Component from 'ember-component';
-import get from 'ember-metal/get';
-import run from 'ember-runloop';
-import service from 'ember-service/inject';
-import observer from 'ember-metal/observer';
+import Component from '@ember/component';
+import { run } from '@ember/runloop';
+import { inject as service } from '@ember/service';
+import { get, observer } from '@ember/object';
 import RowMixin from 'component-lib/components/rsa-data-table/mixins/is-row';
 import computed from 'ember-computed-decorators';
 import columnUtil from './column-util';

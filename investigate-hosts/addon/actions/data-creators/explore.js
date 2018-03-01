@@ -1,8 +1,7 @@
 import { HostDetails } from '../api';
 import * as ACTION_TYPES from '../types';
 import { getHostFiles } from './files';
-import Ember from 'ember';
-const { Logger } = Ember;
+import { debug } from '@ember/debug';
 
 /**
  * Subscribe to fetching the search results.
@@ -21,7 +20,10 @@ const getFileSearchResults = (filterStr) => {
         onInit: () => dispatch({ type: ACTION_TYPES.START_FILE_SEARCH }),
         onCompleted: () => dispatch({ type: ACTION_TYPES.FILE_SEARCH_END }),
         onResponse: (payload) => dispatch({ type: ACTION_TYPES.FILE_SEARCH_PAGE, payload }),
-        onError: (err) => Logger.error('Error in file search', err)
+        onError: (err) => {
+          const debugError = JSON.stringify(err);
+          debug(`onError: getFileSearchResults ${debugError}`);
+        }
       }
     );
   };

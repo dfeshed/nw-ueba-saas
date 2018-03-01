@@ -1,5 +1,5 @@
-import { isPresent } from 'ember-utils';
-import { assert } from 'ember-metal/utils';
+import { isPresent } from '@ember/utils';
+import { assert } from '@ember/debug';
 import { promiseRequest } from 'streaming-data/services/data-access/requests';
 
 export default {

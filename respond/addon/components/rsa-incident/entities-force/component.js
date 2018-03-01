@@ -1,6 +1,6 @@
 import FastForce from 'respond/components/rsa-fast-force/component';
 import HighlightsEntities from 'context/mixins/highlights-entities';
-import { next } from 'ember-runloop';
+import { next } from '@ember/runloop';
 
 /**
  * @class Entities Force Component

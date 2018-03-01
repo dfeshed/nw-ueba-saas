@@ -1,7 +1,7 @@
 import GroupItem from 'respond/components/rsa-group-table/group-item/component';
 import HighlightsEntities from 'context/mixins/highlights-entities';
 import computed from 'ember-computed-decorators';
-import { isEmpty } from 'ember-utils';
+import { isEmpty } from '@ember/utils';
 
 function getDeviceFieldValuePairs(device) {
   if (device) {

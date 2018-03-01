@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
 import eventsToNodesAndLinks from 'respond/utils/entity/events-to-nodes-links';
 import selectionToFilter from 'respond/utils/entity/selection-to-filter';

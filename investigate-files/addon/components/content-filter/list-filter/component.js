@@ -1,8 +1,8 @@
 import { connect } from 'ember-redux';
-import Component from 'ember-component';
+import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
-import service from 'ember-service/inject';
-import set from 'ember-metal/set';
+import { inject as service } from '@ember/service';
+import { set } from '@ember/object';
 
 import layout from './template';
 import FilterMixin from 'investigate-files/mixins/content-filter-mixin';

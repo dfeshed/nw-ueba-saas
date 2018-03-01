@@ -9,19 +9,17 @@
  * @public
  */
 
-import Ember from 'ember';
-
+import { warn, debug } from '@ember/debug';
 import * as ACTION_TYPES from './types';
-import { next } from 'ember-runloop';
+import { next } from '@ember/runloop';
 import { Schema, File } from './fetch';
 import { lookup } from 'ember-dependency-lookup';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
-const { Logger } = Ember;
-
 const _handleError = (response, type) => {
-  Logger.error(type, response);
+  const warnResponse = JSON.stringify(response);
+  warn(`_handleError ${type} ${warnResponse}`, { id: 'investigate-files.actions.data-creators' });
 };
 
 /**
@@ -38,7 +36,10 @@ const _fetchFiles = () => {
       type: ACTION_TYPES.FETCH_NEXT_FILES,
       promise: File.fetchFiles(pageNumber, { sortField, isSortDescending }, systemFilter || expressionList),
       meta: {
-        onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_NEXT_FILES, response)
+        onSuccess: (response) => {
+          const debugResponse = JSON.stringify(response);
+          debug(`onSuccess: ${ACTION_TYPES.FETCH_NEXT_FILES} ${debugResponse}`);
+        }
       }
     });
   };
@@ -83,7 +84,8 @@ const fetchSchemaInfo = () => {
       meta: {
         onSuccess: (response) => {
           dispatch(initializeFilesPreferences());
-          Logger.debug(ACTION_TYPES.SCHEMA_RETRIEVE, response);
+          const debugResponse = JSON.stringify(response);
+          debug(`onSuccess: ${ACTION_TYPES.SCHEMA_RETRIEVE} ${debugResponse}`);
         }
       }
     });
@@ -143,7 +145,8 @@ const getFilter = () => {
       meta: {
         onSuccess: (response) => {
           dispatch(getPageOfFiles());
-          Logger.debug(ACTION_TYPES.GET_FILTER, response);
+          const debugResponse = JSON.stringify(response);
+          debug(`onSuccess: ${ACTION_TYPES.GET_FILTER} ${debugResponse}`);
         }
       }
     });
@@ -157,7 +160,8 @@ const deleteFilter = (id, callbacks = callbacksDefault) => {
       promise: File.deleteFilter(id),
       meta: {
         onSuccess: (response) => {
-          Logger.debug(ACTION_TYPES.DELETE_FILTER, response);
+          const debugResponse = JSON.stringify(response);
+          debug(`onSuccess: ${ACTION_TYPES.DELETE_FILTER} ${debugResponse}`);
           callbacks.onSuccess(response);
           dispatch(resetFilters());
         },
@@ -230,7 +234,10 @@ const exportFileAsCSV = () => {
       type: ACTION_TYPES.DOWNLOAD_FILE_AS_CSV,
       promise: File.fileExport({ sortField, isSortDescending }, expressionList, _getVisibleColumnNames(getState)),
       meta: {
-        onSuccess: (response) => Logger.debug(ACTION_TYPES.DOWNLOAD_FILE_AS_CSV, response)
+        onSuccess: (response) => {
+          const debugResponse = JSON.stringify(response);
+          debug(`onSuccess: ${ACTION_TYPES.DOWNLOAD_FILE_AS_CSV} ${debugResponse}`);
+        }
       }
     });
   };

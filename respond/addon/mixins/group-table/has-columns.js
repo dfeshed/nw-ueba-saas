@@ -1,5 +1,5 @@
 import Column from 'respond/utils/group-table/column';
-import Mixin from 'ember-metal/mixin';
+import Mixin from '@ember/object/mixin';
 import computed, { filterBy } from 'ember-computed-decorators';
 
 /**

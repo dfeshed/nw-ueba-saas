@@ -1,5 +1,5 @@
 import { moduleFor, test } from 'ember-qunit';
-import Service from 'ember-service';
+import Service from '@ember/service';
 import rsvp from 'rsvp';
 
 const requestStub = Service.extend({

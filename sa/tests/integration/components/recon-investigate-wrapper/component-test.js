@@ -3,7 +3,7 @@ import hbs from 'htmlbars-inline-precompile';
 import waitFor from 'sa/tests/helpers/wait-for';
 import { moduleForComponent, test } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-import Service from 'ember-service';
+import Service from '@ember/service';
 
 const accessControl = Service.extend({
   hasReconAccess: true

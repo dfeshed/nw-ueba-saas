@@ -1,4 +1,3 @@
-import Ember from 'ember';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from '../../../../helpers/engine-resolver';
@@ -8,8 +7,6 @@ import { patchFlash } from '../../../../helpers/patch-flash';
 import { throwSocket } from '../../../../helpers/patch-socket';
 import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-const { Logger, Test } = Ember;
-let originalLoggerError, originalTestAdapterException;
 
 moduleForComponent('host-scan/start-scan-button', 'Integration | Component | Host Scan Start Button', {
   integration: true,
@@ -19,13 +16,6 @@ moduleForComponent('host-scan/start-scan-button', 'Integration | Component | Hos
     this.inject.service('flash-messages');
     this.inject.service('flash-message');
     initialize(this);
-    originalLoggerError = Logger.error;
-    originalTestAdapterException = Test.adapter.exception;
-    Test.adapter.exception = function() {};
-  },
-  afterEach() {
-    Logger.error = originalLoggerError;
-    Test.adapter.exception = originalTestAdapterException;
   }
 });
 

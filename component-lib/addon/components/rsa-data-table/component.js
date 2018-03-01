@@ -1,14 +1,12 @@
 /* global addResizeListener */
 /* global removeResizeListener */
 import $ from 'jquery';
-import EmberObject from 'ember-object';
 import computed from 'ember-computed';
-import Component from 'ember-component';
-import get from 'ember-metal/get';
-import { isEmpty } from 'ember-utils';
-import on from 'ember-evented/on';
-import run from 'ember-runloop';
-import set from 'ember-metal/set';
+import Component from '@ember/component';
+import EmberObject, { get, set } from '@ember/object';
+import { isEmpty } from '@ember/utils';
+import { on } from '@ember/object/evented';
+import { run } from '@ember/runloop';
 import DomWatcher from 'component-lib/mixins/dom/watcher';
 import { EKMixin, keyUp } from 'ember-keyboard';
 

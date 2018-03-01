@@ -1,5 +1,5 @@
-import run from 'ember-runloop';
-import observer from 'ember-metal/observer';
+import { run } from '@ember/runloop';
+import { observer } from '@ember/object';
 import $ from 'jquery';
 import DataTableBody from 'component-lib/components/rsa-data-table/body/component';
 import {

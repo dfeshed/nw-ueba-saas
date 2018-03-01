@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import {
@@ -6,7 +6,7 @@ import {
   isContentError,
   isLoading
 } from 'recon/reducers/data-selectors';
-import service from 'ember-service/inject';
+import { inject as service } from '@ember/service';
 import layout from './template';
 
 const stateToComputed = ({ recon }) => ({

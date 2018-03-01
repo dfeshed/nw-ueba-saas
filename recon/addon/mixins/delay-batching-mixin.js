@@ -1,5 +1,5 @@
-import Mixin from 'ember-metal/mixin';
-import { debounce, throttle } from 'ember-runloop';
+import Mixin from '@ember/object/mixin';
+import { debounce, throttle } from '@ember/runloop';
 
 import { pauseBatching, resumeBatching } from 'recon/actions/util/batch-data-handler';
 

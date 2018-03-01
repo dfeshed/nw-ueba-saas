@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import PROPERTY_CONFIG from 'investigate-hosts/components/host-detail/base-property-config';
 import {

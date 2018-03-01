@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import layout from './template';
 import { connect } from 'ember-redux';
 import { updateScheduleProperty } from 'hosts-scan-configure/actions/data-creators';

@@ -1,5 +1,5 @@
-import Component from 'ember-component';
-import service from 'ember-service/inject';
+import Component from '@ember/component';
+import { inject as service } from '@ember/service';
 import { connect } from 'ember-redux';
 import computed, { not } from 'ember-computed-decorators';
 

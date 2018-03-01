@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import layout from '../templates/components/rsa-nav-link-list';
 
 export default Component.extend({

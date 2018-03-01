@@ -3,9 +3,9 @@
  * Formats the provided number into hex
  * @public
  */
-import Component from 'ember-component';
+import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
-import { isPresent } from 'ember-utils';
+import { isPresent } from '@ember/utils';
 import layout from './template';
 
 export default Component.extend({

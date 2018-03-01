@@ -2,9 +2,9 @@ import $ from 'jquery';
 import Ember from 'ember';
 import ApplicationRouteMixin from 'ember-simple-auth/mixins/application-route-mixin';
 import csrfToken from 'component-lib/mixins/csrf-token';
-import Route from 'ember-route';
+import Route from '@ember/routing/route';
 import RSVP from 'rsvp';
-import service from 'ember-service/inject';
+import { inject as service } from '@ember/service';
 import config from 'ember-get-config';
 
 const {

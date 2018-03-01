@@ -2,7 +2,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 import wait from 'ember-test-helpers/wait';
 import hbs from 'htmlbars-inline-precompile';
 import DataHelper from '../../../../helpers/data-helper';
-import EmberObject from 'ember-object';
+import EmberObject from '@ember/object';
 
 const data = {
   eventType: { name: 'FILES' }

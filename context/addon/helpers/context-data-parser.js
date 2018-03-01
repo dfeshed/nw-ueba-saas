@@ -1,11 +1,7 @@
 import { set } from '@ember/object';
 import { isEmpty } from '@ember/utils';
-import { helper } from 'ember-helper';
-import Ember from 'ember';
-
-const {
-  Logger
-} = Ember;
+import { helper } from '@ember/component/helper';
+import { warn } from '@ember/debug';
 
 const windowsTimestampToMilliseconds = (windowsTimestamp) => windowsTimestamp ? windowsTimestamp / 10000 - 11644473600000 : null;
 
@@ -87,7 +83,7 @@ export function contextDataParser([data, [lookupData]]) {
       _populateContextData(dataSourceData, lookupData);
       _updateHostCountForMachine(dataSourceData, lookupData);
     } else {
-      Logger.error('DataSource group for', dataSourceData.dataSourceName, 'is not configured');
+      warn(`DataSource group for ${dataSourceData.dataSourceName} is not configured`, { id: 'context.helpers.context-data-parser' });
     }
   });
   return lookupData;

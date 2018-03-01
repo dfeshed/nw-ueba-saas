@@ -1,8 +1,7 @@
 import { A } from 'ember-array/utils';
 import computed, { alias } from 'ember-computed';
-import { isNone } from 'ember-utils';
-import Service from 'ember-service';
-import service from 'ember-service/inject';
+import { isNone } from '@ember/utils';
+import Service, { inject as service } from '@ember/service';
 
 export default Service.extend({
 

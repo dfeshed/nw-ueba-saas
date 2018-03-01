@@ -1,8 +1,8 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import layout from '../templates/components/rsa-form-datetime';
-import service from 'ember-service/inject';
+import { inject as service } from '@ember/service';
 import computed, { equal } from 'ember-computed-decorators';
-import { isEmpty } from 'ember-utils';
+import { isEmpty } from '@ember/utils';
 
 export default Component.extend({
   layout,

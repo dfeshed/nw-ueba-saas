@@ -1,5 +1,5 @@
-import Component from 'ember-component';
-import run from 'ember-runloop';
+import Component from '@ember/component';
+import { run } from '@ember/runloop';
 import computed from 'ember-computed-decorators';
 import layout from './template';
 import { bisector } from 'd3-array';

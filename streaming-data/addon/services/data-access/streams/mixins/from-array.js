@@ -5,7 +5,7 @@
  * streamed to the stream's observers.
  * @public
  */
-import Mixin from 'ember-metal/mixin';
+import Mixin from '@ember/object/mixin';
 
 export default Mixin.create({
 

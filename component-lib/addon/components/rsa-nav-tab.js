@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import layout from '../templates/components/rsa-nav-tab';
 import computed from 'ember-computed-decorators';
 

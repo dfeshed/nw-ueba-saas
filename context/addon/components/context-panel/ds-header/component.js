@@ -1,7 +1,7 @@
 import layout from './template';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { getErrorMessage } from 'context/util/context-data-modifier';
 
 

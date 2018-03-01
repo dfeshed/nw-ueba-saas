@@ -1,8 +1,8 @@
-import EmberObject from 'ember-object';
+import EmberObject from '@ember/object';
 import HasSizeAttr from 'respond/mixins/dom/has-size-attr';
 import { module, skip } from 'qunit';
 import wait from 'ember-test-helpers/wait';
-import { later } from 'ember-runloop';
+import { later } from '@ember/runloop';
 
 module('Unit | Mixin | dom/has size attr');
 

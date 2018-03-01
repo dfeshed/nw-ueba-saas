@@ -1,8 +1,8 @@
 import { connect } from 'ember-redux';
-import Component from 'ember-component';
+import Component from '@ember/component';
 import layout from './template';
 import computed from 'ember-computed-decorators';
-import service from 'ember-service/inject';
+import { inject as service } from '@ember/service';
 import { contextHelpIds } from 'context/config/help-ids';
 import { restoreDefault } from 'context/actions/context-creators';
 

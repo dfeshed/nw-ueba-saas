@@ -1,5 +1,5 @@
 import { connect } from 'ember-redux';
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { hostExportLink } from 'investigate-hosts/reducers/hosts/selectors';
 import { exportAsFile } from 'investigate-hosts/actions/data-creators/host';
 

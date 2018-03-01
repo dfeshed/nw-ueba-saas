@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import { warn, log } from 'ember-debug';
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import {
@@ -10,11 +10,11 @@ import {
 } from 'context/actions/context-creators';
 import liveConnectObj from 'context/config/liveconnect-response-schema';
 import layout from './template';
-import service from 'ember-service/inject';
-import { isEmpty } from 'ember-utils';
+import { inject as service } from '@ember/service';
+import { isEmpty } from '@ember/utils';
 import { isEmberArray } from 'ember-array/utils';
-import { once, next, schedule, later } from 'ember-runloop';
-import EmberObject from 'ember-object';
+import { once, next, schedule, later } from '@ember/runloop';
+import EmberObject from '@ember/object';
 
 const stateToComputed = ({ context }) => ({
   dataSources: context.dataSources,

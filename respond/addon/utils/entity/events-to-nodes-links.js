@@ -4,9 +4,9 @@ import HashWithLimit from './hash-with-limit';
 import { makeNodeId, makeNode } from './node';
 import { makeLinkId, makeLink } from './link';
 import arrayFromHashValues from 'respond/utils/array/from-hash-values';
-import { isEmpty } from 'ember-utils';
+import { isEmpty } from '@ember/utils';
 import { isEmberArray } from 'ember-array/utils';
-import set from 'ember-metal/set';
+import { set } from '@ember/object';
 
 // Maps properties of a device POJO (from a normalized alert's source, destination or detector) to node types.
 const DEVICE_PROPS_TO_NODE_TYPES = {

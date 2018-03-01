@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { lastScanTime, hostWithStatus } from 'investigate-hosts/reducers/details/overview/selectors';
 import { setSelectedHost } from 'investigate-hosts/actions/ui-state-creators';

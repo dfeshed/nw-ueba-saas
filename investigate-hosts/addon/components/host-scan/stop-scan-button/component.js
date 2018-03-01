@@ -1,12 +1,12 @@
-import Component from 'ember-component';
-import injectService from 'ember-service/inject';
+import Component from '@ember/component';
+import { inject as service } from '@ember/service';
 import { stopScan } from 'investigate-hosts/actions/data-creators/host';
 
 export default Component.extend({
 
   classNames: 'stop-scan-button',
 
-  flashMessage: injectService(),
+  flashMessage: service(),
 
   buttonText: '',
 

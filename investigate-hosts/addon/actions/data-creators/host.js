@@ -1,7 +1,7 @@
 import { Machines } from '../api';
 import * as ACTION_TYPES from '../types';
 import { handleError } from '../creator-utils';
-import { isEmpty } from 'ember-utils';
+import { isEmpty } from '@ember/utils';
 import {
   setAppliedHostFilter,
   resetDetailsInputAndContent,
@@ -15,7 +15,7 @@ import {
 import { parseQueryString } from 'investigate-hosts/actions/utils/query-util';
 import { lookup } from 'ember-dependency-lookup';
 import _ from 'lodash';
-import { next } from 'ember-runloop';
+import { next } from '@ember/runloop';
 
 import { debug } from '@ember/debug';
 

@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import layout from './template';
 import HasTableParent from 'component-lib/components/rsa-data-table/mixins/has-table-parent';
 import { alias } from 'ember-computed-decorators';

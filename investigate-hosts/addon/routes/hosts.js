@@ -3,7 +3,7 @@ import { inject as service } from '@ember/service';
 import { initializeHostPage, getAllSchemas } from 'investigate-hosts/actions/data-creators/host';
 import { userLeftListPage } from 'investigate-hosts/actions/ui-state-creators';
 import { ping } from 'streaming-data/services/data-access/requests';
-import run from 'ember-runloop';
+import { run } from '@ember/runloop';
 
 const HELP_ID_MAPPING = {
   'OVERVIEW': 'contextualHelp.invHostsOverview',

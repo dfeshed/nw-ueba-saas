@@ -1,8 +1,7 @@
-import Service from 'ember-service';
 import computed from 'ember-computed-decorators';
 import SummariesCache from 'context/utils/summaries-cache';
-import service from 'ember-service/inject';
-import { bind } from 'ember-runloop';
+import Service, { inject as service } from '@ember/service';
+import { bind } from '@ember/runloop';
 import { warn } from '@ember/debug';
 import rsvp from 'rsvp';
 

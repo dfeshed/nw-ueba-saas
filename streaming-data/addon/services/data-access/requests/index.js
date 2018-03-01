@@ -1,9 +1,9 @@
-import { assert } from 'ember-metal/utils';
+import { assert } from '@ember/debug';
 import { deprecate } from 'ember-deprecations';
 import { log } from 'ember-debug';
 import RSVP from 'rsvp';
-import run from 'ember-runloop';
-import { isNone } from 'ember-utils';
+import { run } from '@ember/runloop';
+import { isNone } from '@ember/utils';
 import { StreamCache } from '../streams';
 import Socket from '../sockets';
 import $ from 'jquery';

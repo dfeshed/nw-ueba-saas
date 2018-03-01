@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
 
 const stateToComputed = ({ respond: { alert: { info, infoStatus } } }) => ({

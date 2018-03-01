@@ -5,7 +5,7 @@ import { selectorToExist } from 'ember-wait-for-test-helper/wait-for';
 import $ from 'jquery';
 import requests from 'streaming-data/services/data-access/requests';
 import sinon from 'sinon';
-import Service from 'ember-service';
+import Service from '@ember/service';
 
 const AccessControlService = Service.extend({
   hasInvestigateEmberAccess: true,

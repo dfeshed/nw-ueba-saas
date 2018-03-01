@@ -1,12 +1,12 @@
-import Component from 'ember-component';
-import injectService from 'ember-service/inject';
+import Component from '@ember/component';
+import { inject as service } from '@ember/service';
 import computed from 'ember-computed-decorators';
 
 export default Component.extend({
 
   classNames: 'scan-modal',
 
-  eventBus: injectService(),
+  eventBus: service(),
 
   modalTitle: '',
 

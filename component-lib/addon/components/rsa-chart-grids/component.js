@@ -1,5 +1,5 @@
-import Component from 'ember-component';
-import run from 'ember-runloop';
+import Component from '@ember/component';
+import { run } from '@ember/runloop';
 import layout from './template';
 import { axisBottom, axisRight } from 'd3-axis';
 import { select } from 'd3-selection';

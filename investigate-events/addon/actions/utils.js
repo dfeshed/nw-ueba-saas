@@ -1,7 +1,7 @@
-import { assert } from 'ember-metal/utils';
-import get, { getProperties } from 'ember-metal/get';
-import { isBlank } from 'ember-utils';
-import run from 'ember-runloop';
+import { assert } from '@ember/debug';
+import { get, getProperties } from '@ember/object';
+import { isBlank } from '@ember/utils';
+import { run } from '@ember/runloop';
 import RSVP from 'rsvp';
 import { encodeMetaFilterConditions } from 'investigate-events/actions/fetch/utils';
 

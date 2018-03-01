@@ -1,11 +1,11 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import layout from './template';
-import service from 'ember-service/inject';
+import { inject as service } from '@ember/service';
 import computed, { equal } from 'ember-computed-decorators';
 import safeCallback from 'component-lib/utils/safe-callback';
 import { connect } from 'ember-redux';
 import { updateActiveTab } from 'context/actions/context-creators';
-import { next } from 'ember-runloop';
+import { next } from '@ember/runloop';
 
 const dispatchToActions = {
   // Sets the active tab of the context panel's state.

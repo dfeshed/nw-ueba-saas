@@ -1,6 +1,6 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
-import { isEmpty, typeOf } from 'ember-utils';
+import { isEmpty, typeOf } from '@ember/utils';
 
 /**
  * @file Property Tree Component

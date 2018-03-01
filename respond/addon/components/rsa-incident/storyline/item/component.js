@@ -1,4 +1,4 @@
-import get from 'ember-metal/get';
+import { get } from '@ember/object';
 import ListItem from 'respond/components/rsa-list/item/component';
 import HighlightsEntities from 'context/mixins/highlights-entities';
 import layout from './template';

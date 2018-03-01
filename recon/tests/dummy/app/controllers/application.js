@@ -1,9 +1,5 @@
 import Controller from '@ember/controller';
-import Ember from 'ember';
-
-const {
-  Logger
-} = Ember;
+import { debug } from '@ember/debug';
 
 export default Controller.extend({
   eventId: '12345678',
@@ -11,6 +7,6 @@ export default Controller.extend({
   total: 107,
   linkToFileAction(file) {
     // Dummy handler, for troubleshooting
-    Logger.info('linkToFileAction invoked with file:', file);
+    debug(`linkToFileAction invoked with file: ${file}`);
   }
 });

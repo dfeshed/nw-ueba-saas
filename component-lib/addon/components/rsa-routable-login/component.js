@@ -5,10 +5,10 @@
  */
 
 import $ from 'jquery';
-import Component from 'ember-component';
+import Component from '@ember/component';
 import Ember from 'ember';
 import getOwner from 'ember-owner/get';
-import { isEmpty, typeOf } from 'ember-utils';
+import { isEmpty, typeOf } from '@ember/utils';
 import { run, later } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import layout from './template';
@@ -21,11 +21,11 @@ import computed, {
 import config from 'ember-get-config';
 import { set } from '@ember/object';
 import RSVP from 'rsvp';
+import { warn } from '@ember/debug';
 
 const { Promise } = RSVP;
 
 const {
-  Logger,
   testing
 } = Ember;
 
@@ -275,7 +275,7 @@ export default Component.extend({
             });
 
           }).catch((error) => {
-            Logger.error(error);
+            warn(error, { id: 'component-lib.components.rsa-routable-login.component' });
           });
         }
       } else {

@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import CopyToClipboard from './copy-to-clipboard';
 
 export default Component.extend(CopyToClipboard, {

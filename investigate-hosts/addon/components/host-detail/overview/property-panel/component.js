@@ -1,8 +1,8 @@
 import computed from 'ember-computed-decorators';
-import { assert } from 'ember-metal/utils';
+import { assert } from '@ember/debug';
 import config from './overview-property-config';
 import PropertyPanel from 'investigate-hosts/components/host-detail/base-property-panel/component';
-import get from 'ember-metal/get';
+import { get } from '@ember/object';
 import _ from 'lodash';
 
 /**

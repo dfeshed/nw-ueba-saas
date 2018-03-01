@@ -1,8 +1,8 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { getFileSearchResults } from 'investigate-hosts/actions/data-creators/explore';
-import { isEmpty } from 'ember-utils';
-import service from 'ember-service/inject';
+import { isEmpty } from '@ember/utils';
+import { inject as service } from '@ember/service';
 import { searchResultLoading, hasValidID } from 'investigate-hosts/reducers/details/explore/selectors';
 
 const stateToComputed = (state) => ({

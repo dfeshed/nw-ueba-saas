@@ -1,6 +1,6 @@
-import Component from 'ember-component';
-import { next } from 'ember-runloop';
-import injectService from 'ember-service/inject';
+import Component from '@ember/component';
+import { next } from '@ember/runloop';
+import { inject as service } from '@ember/service';
 
 import layout from './template';
 
@@ -12,7 +12,7 @@ export default Component.extend({
 
   layout,
 
-  eventBus: injectService(),
+  eventBus: service(),
 
   style: 'standard',
 

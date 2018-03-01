@@ -1,10 +1,6 @@
 import { inject as service } from '@ember/service';
 import Helper from '@ember/component/helper';
-import Ember from 'ember';
-
-const {
-  Logger
-} = Ember;
+import { debug } from '@ember/debug';
 
 export default Helper.extend({
   i18n: service('i18n'),
@@ -15,7 +11,7 @@ export default Helper.extend({
     const newTranslation = {};
     i18n.on('missing', function(locale, key) {
       const templateLog = `Missing translation handled: ${key}`;
-      Logger.warn(templateLog);
+      debug(templateLog);
     });
 
     if (typeof(translatedString) === 'string' && translatedString.indexOf('Missing') > -1) {

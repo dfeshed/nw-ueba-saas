@@ -1,6 +1,6 @@
-import Component from 'ember-component';
-import run from 'ember-runloop';
-import service from 'ember-service/inject';
+import Component from '@ember/component';
+import { run } from '@ember/runloop';
+import { inject as service } from '@ember/service';
 import layout from './template';
 
 export default Component.extend({

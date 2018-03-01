@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
-import { debounce } from 'ember-runloop';
+import { debounce } from '@ember/runloop';
 import {
   getTopLevelCategoryNames,
   getPriorityTypes,

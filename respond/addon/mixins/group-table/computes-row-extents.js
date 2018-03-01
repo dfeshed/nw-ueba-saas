@@ -1,7 +1,7 @@
-import Mixin from 'ember-metal/mixin';
+import Mixin from '@ember/object/mixin';
 import HasGroupedRows from './has-grouped-rows';
 import computed from 'ember-computed-decorators';
-import get from 'ember-metal/get';
+import { get } from '@ember/object';
 import $ from 'jquery';
 
 /**

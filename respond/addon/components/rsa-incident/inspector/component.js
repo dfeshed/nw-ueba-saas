@@ -22,7 +22,7 @@ import { htmlSafe } from 'ember-string';
 import FLASH_MESSAGE_TYPES from 'respond/utils/flash-message-types';
 import Notifications from 'respond/mixins/notifications';
 import $ from 'jquery';
-import service from 'ember-service/inject';
+import { inject as service } from '@ember/service';
 
 const stateToComputed = (state) => {
   return {

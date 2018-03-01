@@ -1,6 +1,6 @@
-import Mixin from 'ember-metal/mixin';
-import service from 'ember-service/inject';
-import { next, throttle } from 'ember-runloop';
+import Mixin from '@ember/object/mixin';
+import { inject as service } from '@ember/service';
+import { next, throttle } from '@ember/runloop';
 import $ from 'jquery';
 import { sendTetherEvent } from 'component-lib/utils/tooltip-trigger';
 

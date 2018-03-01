@@ -1,4 +1,4 @@
-import EmberObject from 'ember-object';
+import EmberObject from '@ember/object';
 import CanThrottleAttr from 'respond/mixins/can-throttle-attr';
 import { module, test } from 'qunit';
 import wait from 'ember-test-helpers/wait';

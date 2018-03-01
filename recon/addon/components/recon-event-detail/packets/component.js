@@ -1,5 +1,5 @@
-import Component from 'ember-component';
-import { debounce } from 'ember-runloop';
+import Component from '@ember/component';
+import { debounce } from '@ember/runloop';
 import { connect } from 'ember-redux';
 import { alias } from 'ember-computed-decorators';
 import ReconPanelHelp from 'recon/mixins/recon-panel-help';

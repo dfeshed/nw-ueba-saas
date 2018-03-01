@@ -9,14 +9,11 @@
  * @public
  */
 
-import Ember from 'ember';
-
 import * as ACTION_TYPES from '../types';
 import { getPageOfMachines } from './host';
 import { Machines } from '../api';
 import { handleError } from '../creator-utils';
-
-const { Logger } = Ember;
+import { debug } from '@ember/debug';
 
 /**
  * Action creator for adding the expression to the expression list.
@@ -73,7 +70,8 @@ const createCustomSearch = (filter, schemas, filterType, callbacks = callbacksDe
       promise: Machines.createCustomSearch(filter, schemas, filterType),
       meta: {
         onSuccess: (response) => {
-          Logger.debug(ACTION_TYPES.UPDATE_FILTER_LIST, response);
+          const debugResponse = JSON.stringify(response);
+          debug(`onSuccess: ${ACTION_TYPES.UPDATE_FILTER_LIST} ${debugResponse}`);
           callbacks.onSuccess(response);
         },
         onFailure: (response) => {
@@ -134,7 +132,8 @@ const deleteSavedSearch = (id, callbacks = callbacksDefault) => {
       promise: Machines.deleteSearch(id),
       meta: {
         onSuccess: (response) => {
-          Logger.debug(ACTION_TYPES.DELETE_SAVED_SEARCH, response);
+          const debugResponse = JSON.stringify(response);
+          debug(`onSuccess: ${ACTION_TYPES.DELETE_SAVED_SEARCH} ${debugResponse}`);
           dispatch(resetFilters());
           callbacks.onSuccess(response);
         },

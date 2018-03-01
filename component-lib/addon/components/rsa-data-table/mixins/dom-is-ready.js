@@ -4,8 +4,8 @@
  * @public
  */
 import $ from 'jquery';
-import Mixin from 'ember-metal/mixin';
-import run from 'ember-runloop';
+import Mixin from '@ember/object/mixin';
+import { run } from '@ember/runloop';
 
 export default Mixin.create({
 

@@ -1,6 +1,6 @@
 import { moduleFor, test } from 'ember-qunit';
-import { typeOf } from 'ember-utils';
-import { next } from 'ember-runloop';
+import { typeOf } from '@ember/utils';
+import { next } from '@ember/runloop';
 
 moduleFor('service:context', 'Unit | Service | context', {
   // Specify the other units that are required for this test.

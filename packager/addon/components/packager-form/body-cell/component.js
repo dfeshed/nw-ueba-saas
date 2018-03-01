@@ -1,6 +1,6 @@
 import layout from './template';
 import { A } from 'ember-array/utils';
-import { isEmpty } from 'ember-utils';
+import { isEmpty } from '@ember/utils';
 import DataTableBody from '../component';
 import channels from './channels';
 

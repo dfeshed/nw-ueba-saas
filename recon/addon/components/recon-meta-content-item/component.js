@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import layout from './template';
 import computed, { alias, bool } from 'ember-computed-decorators';
 import { connect } from 'ember-redux';

@@ -2,7 +2,7 @@ import EmberObject from '@ember/object';
 import { isPresent, isEmpty } from '@ember/utils';
 import { isArray, A } from '@ember/array';
 import { resolveSinceWhenStartTime } from 'respond/utils/since-when-types';
-import { assert } from 'ember-metal/utils';
+import { assert } from '@ember/debug';
 import computed, { readOnly } from 'ember-computed-decorators';
 
 /**

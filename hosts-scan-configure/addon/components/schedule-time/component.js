@@ -1,8 +1,8 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import layout from './template';
-import service from 'ember-service/inject';
+import { inject as service } from '@ember/service';
 import computed from 'ember-computed-decorators';
-import { isEmpty } from 'ember-utils';
+import { isEmpty } from '@ember/utils';
 import { connect } from 'ember-redux';
 import { updateScheduleProperty } from 'hosts-scan-configure/actions/data-creators';
 import { startTime } from 'hosts-scan-configure/reducers/hosts-scan/selectors';

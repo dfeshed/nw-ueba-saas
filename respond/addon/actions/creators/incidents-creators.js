@@ -1,7 +1,7 @@
 import { Incidents, alerts } from '../api';
 import * as ACTION_TYPES from '../types';
 import * as DictionaryCreators from './dictionary-creators';
-import { next } from 'ember-runloop';
+import { next } from '@ember/runloop';
 import { getRemediationTasksForIncident } from 'respond/actions/creators/remediation-task-creators';
 import RSVP from 'rsvp';
 

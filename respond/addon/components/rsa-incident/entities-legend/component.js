@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import computed, { notEmpty } from 'ember-computed-decorators';
 import { dasherize } from 'ember-string';
 import safeCallback from 'component-lib/utils/safe-callback';

@@ -1,10 +1,10 @@
-import EmberObject from 'ember-object';
+import EmberObject from '@ember/object';
 import HighlightsEntitiesMixin from 'context/mixins/highlights-entities';
 import { module, test } from 'qunit';
 import jQuery from 'jquery';
-import Evented from 'ember-evented';
+import Evented from '@ember/object/evented';
 import rsvp from 'rsvp';
-import { next } from 'ember-runloop';
+import { next } from '@ember/runloop';
 import { isEmberArray } from 'ember-array/utils';
 
 module('Unit | Mixin | highlights entities');

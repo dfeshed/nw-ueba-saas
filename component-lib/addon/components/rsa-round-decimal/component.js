@@ -4,10 +4,10 @@
  * Ex: 100.53345 => 100.53
  * @public
  */
-import Component from 'ember-component';
+import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
-import { assert } from 'ember-metal/utils';
-import { isPresent } from 'ember-utils';
+import { assert } from '@ember/debug';
+import { isPresent } from '@ember/utils';
 import layout from './template';
 
 export default Component.extend({

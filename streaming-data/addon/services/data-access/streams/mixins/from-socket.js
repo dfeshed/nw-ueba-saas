@@ -12,10 +12,10 @@ import { merge } from '@ember/polyfills';
 import { run } from '@ember/runloop';
 import { typeOf } from '@ember/utils';
 import Ember from 'ember';
+import { warn } from '@ember/debug';
 import config from 'ember-get-config';
 
 const {
-  Logger,
   String: EmberString
 } = Ember;
 
@@ -312,7 +312,8 @@ export default Mixin.create({
     if (this.get('requireRequestId')) {
       if (this.get('_resolvedSocketRequestParams.id') !== (request && request.id)) {
         if (config.socketDebug) {
-          Logger.warn('Received stream response with unexpected request id. Discarding it.\n', response);
+          const warnResponse = JSON.stringify(response);
+          warn(`Received stream response with unexpected request id. Discarding it.\n ${warnResponse}`, { id: 'streaming-data.services.data-access.streams.mixins.from-socket' });
         }
         return;
       }

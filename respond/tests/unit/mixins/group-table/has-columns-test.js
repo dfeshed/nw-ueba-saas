@@ -1,4 +1,4 @@
-import EmberObject from 'ember-object';
+import EmberObject from '@ember/object';
 import HasColumnsMixin from 'respond/mixins/group-table/has-columns';
 import { module, test } from 'qunit';
 

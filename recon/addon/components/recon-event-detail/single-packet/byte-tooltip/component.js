@@ -1,7 +1,7 @@
-import Component from 'ember-component';
-import observer from 'ember-metal/observer';
-import { schedule } from 'ember-runloop';
-import service from 'ember-service/inject';
+import Component from '@ember/component';
+import { observer } from '@ember/object';
+import { schedule } from '@ember/runloop';
+import { inject as service } from '@ember/service';
 import $ from 'jquery';
 import { connect } from 'ember-redux';
 import computed, { alias, notEmpty, equal } from 'ember-computed-decorators';

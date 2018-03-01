@@ -1,7 +1,7 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import layout from './template';
 import { connect } from 'ember-redux';
-import service from 'ember-service/inject';
+import { inject as service } from '@ember/service';
 import {
   isFetchingSchedule,
   isEnabled,
@@ -13,7 +13,7 @@ import {
   saveScheduleConfig
 } from 'hosts-scan-configure/actions/data-creators';
 import computed from 'ember-computed-decorators';
-import { isEmpty } from 'ember-utils';
+import { isEmpty } from '@ember/utils';
 import moment from 'moment';
 
 const FLASH_MESSAGE_TYPES = {

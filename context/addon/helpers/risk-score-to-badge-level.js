@@ -1,5 +1,5 @@
 import { contextRiskScoreThreshold } from 'context/config/constants';
-import { helper } from 'ember-helper';
+import { helper } from '@ember/component/helper';
 
 export function riskScoreToBadgeLevel([score, dataSourceType]) {
   const riskScoreThreshold = getDataSourceRiskScoreThreshold(dataSourceType);

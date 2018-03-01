@@ -1,4 +1,4 @@
-import EmberObject from 'ember-object';
+import EmberObject from '@ember/object';
 import HasSelectionsMixin from 'respond/mixins/group-table/has-selections';
 import { module, test } from 'qunit';
 

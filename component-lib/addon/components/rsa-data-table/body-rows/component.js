@@ -2,8 +2,8 @@ import HasTableParent from '../mixins/has-table-parent';
 import layout from './template';
 import computed from 'ember-computed-decorators';
 import { htmlSafe } from 'ember-string';
-import Component from 'ember-component';
-import set from 'ember-metal/set';
+import Component from '@ember/component';
+import { set } from '@ember/object';
 
 export default Component.extend(HasTableParent, {
   layout,

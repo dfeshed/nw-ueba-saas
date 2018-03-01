@@ -1,4 +1,4 @@
-import Mixin from 'ember-metal/mixin';
+import Mixin from '@ember/object/mixin';
 import HasColumns from './has-columns';
 import computed from 'ember-computed-decorators';
 

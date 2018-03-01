@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 
 /**
  * Toolbar that provides a space for controls in the Explorer.

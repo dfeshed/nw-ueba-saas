@@ -1,6 +1,6 @@
-import Ember from 'ember';
-import get from 'ember-metal/get';
+import { get } from '@ember/object';
 import { isEmberArray } from 'ember-array/utils';
+import { warn } from '@ember/debug';
 
 import * as ACTION_TYPES from './types';
 import { fetchExtractJobId } from './fetch';
@@ -10,8 +10,6 @@ import {
   isEndpointEvent,
   isLogEvent
 } from 'recon/reducers/meta/selectors';
-
-const { Logger } = Ember;
 
 const fileSelected = (fileId) => {
   return {
@@ -79,7 +77,8 @@ const extractFiles = (type = 'FILES') => {
       promise: fetchExtractJobId(endpointId, eventId, type, filename, selectedFileNames, eventType),
       meta: {
         onFailure(response) {
-          Logger.error('Error fetching job id for extraction', { endpointId, eventId }, response);
+          const warnResponse = JSON.stringify(response);
+          warn(`Error fetching job id for extraction ${endpointId} ${eventId} ${warnResponse}`, { id: 'recon.actions.interaction-creators' });
         }
       }
     });

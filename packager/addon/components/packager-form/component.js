@@ -1,10 +1,10 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import layout from './template';
 import computed from 'ember-computed-decorators';
-import { isEmpty } from 'ember-utils';
+import { isEmpty } from '@ember/utils';
 import moment from 'moment';
 import { connect } from 'ember-redux';
-import service from 'ember-service/inject';
+import { inject as service } from '@ember/service';
 import _ from 'lodash';
 import { listOfServices } from '../../reducers/selectors';
 import { getConfiguration } from 'packager/actions/fetch/packager';

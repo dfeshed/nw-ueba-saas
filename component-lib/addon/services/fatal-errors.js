@@ -1,12 +1,6 @@
 import Service, { inject as service } from '@ember/service';
 import { schedule } from '@ember/runloop';
-import Ember from 'ember';
-
-const {
-  Logger: {
-    error
-  }
-} = Ember;
+import { warn } from '@ember/debug';
 
 export default Service.extend({
 
@@ -15,7 +9,7 @@ export default Service.extend({
   queue: [],
 
   logError(message) {
-    error(message);
+    warn(message, { id: 'component-lib.services.fatal-errors' });
     this.get('queue').addObject(message);
 
     schedule('afterRender', () => {

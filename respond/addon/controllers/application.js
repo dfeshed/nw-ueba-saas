@@ -1,5 +1,5 @@
-import Controller from 'ember-controller';
-import service from 'ember-service/inject';
+import Controller from '@ember/controller';
+import { inject as service } from '@ember/service';
 import computed from 'ember-computed-decorators';
 
 export default Controller.extend({

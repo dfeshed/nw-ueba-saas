@@ -1,9 +1,8 @@
-import Component from 'ember-component';
-import EmberObject from 'ember-object';
-import run from 'ember-runloop';
-import service from 'ember-service/inject';
-import set from 'ember-metal/set';
-import { isEmpty } from 'ember-utils';
+import Component from '@ember/component';
+import EmberObject, { set } from '@ember/object';
+import { run } from '@ember/runloop';
+import { inject as service } from '@ember/service';
+import { isEmpty } from '@ember/utils';
 import computed, { equal, notEmpty } from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import {

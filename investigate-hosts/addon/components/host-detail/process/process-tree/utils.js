@@ -1,6 +1,4 @@
-import set from 'ember-metal/set';
-import get, { getProperties } from 'ember-metal/get';
-
+import { get, set, getProperties } from '@ember/object';
 
 const _visitNode = function(node, hashMap, array) {
   if (!hashMap[get(node, 'pid')]) {

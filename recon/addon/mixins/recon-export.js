@@ -1,9 +1,9 @@
-import Mixin from 'ember-metal/mixin';
-import observer from 'ember-metal/observer';
-import { isEmpty } from 'ember-utils';
+import Mixin from '@ember/object/mixin';
+import { observer } from '@ember/object';
+import { isEmpty } from '@ember/utils';
 import computed, { match } from 'ember-computed-decorators';
-import service from 'ember-service/inject';
-import { next } from 'ember-runloop';
+import { inject as service } from '@ember/service';
+import { next } from '@ember/runloop';
 
 export default Mixin.create({
   flashMessages: service(),

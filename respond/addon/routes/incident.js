@@ -1,6 +1,6 @@
-import Route from 'ember-route';
-import run from 'ember-runloop';
-import service from 'ember-service/inject';
+import Route from '@ember/routing/route';
+import { run } from '@ember/runloop';
+import { inject as service } from '@ember/service';
 import { initializeIncident } from 'respond/actions/creators/incidents-creators';
 
 export default Route.extend({

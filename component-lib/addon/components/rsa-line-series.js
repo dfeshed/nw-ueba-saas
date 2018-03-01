@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import IsChartSeries from '../mixins/is-chart-series';
 import computed from 'ember-computed-decorators';
 import { line } from 'd3-shape';

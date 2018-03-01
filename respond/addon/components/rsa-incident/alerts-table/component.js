@@ -1,5 +1,5 @@
 import AlertsTable from 'respond/components/rsa-alerts-table/component';
-import get from 'ember-metal/get';
+import { get } from '@ember/object';
 import { connect } from 'ember-redux';
 import { storyPointsWithEventsSorted } from 'respond/selectors/storyline';
 import {

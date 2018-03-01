@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
 import layout from './template';
 import { htmlSafe } from 'ember-string';

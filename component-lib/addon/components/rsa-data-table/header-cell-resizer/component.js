@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import Component from 'ember-component';
-import run from 'ember-runloop';
+import Component from '@ember/component';
+import { run } from '@ember/runloop';
 import HasTableParent from '../mixins/has-table-parent';
 import layout from './template';
 

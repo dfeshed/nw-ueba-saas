@@ -1,6 +1,6 @@
-import Component from 'ember-component';
-import run from 'ember-runloop';
-import observer from 'ember-metal/observer';
+import Component from '@ember/component';
+import { run } from '@ember/runloop';
+import { observer } from '@ember/object';
 
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';

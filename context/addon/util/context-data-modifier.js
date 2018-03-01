@@ -1,6 +1,6 @@
 import TabList from 'context/config/dynamic-tab';
-import get from 'ember-metal/get';
-import { isEmpty } from 'ember-utils';
+import { get } from '@ember/object';
+import { isEmpty } from '@ember/utils';
 
 
 const isNotEmpty = (contextData, dataSourceGroup, defaultEnable) => {

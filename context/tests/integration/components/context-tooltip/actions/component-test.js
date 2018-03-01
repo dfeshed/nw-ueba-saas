@@ -1,7 +1,7 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
-import Service from 'ember-service';
+import Service from '@ember/service';
 import rsvp from 'rsvp';
 
 const entityType = 'IP';

@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import HasSizeAttr from 'respond/mixins/dom/has-size-attr';
 import Clickable from 'respond/mixins/dom/clickable';
 import computed, { alias } from 'ember-computed-decorators';

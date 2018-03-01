@@ -1,10 +1,9 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import layout from './template';
 import computed from 'ember-computed-decorators';
-import { assert } from 'ember-metal/utils';
-import { isEmpty } from 'ember-utils';
-import set from 'ember-metal/set';
-import get from 'ember-metal/get';
+import { assert } from '@ember/debug';
+import { isEmpty } from '@ember/utils';
+import { set, get } from '@ember/object';
 import { connect } from 'ember-redux';
 import { toggleShowOnlyWithValues } from 'investigate-hosts/actions/ui-state-creators';
 /**

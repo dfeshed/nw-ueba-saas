@@ -8,8 +8,8 @@ import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 import { clickTrigger, selectChoose } from '../../../helpers/ember-power-select';
 import EventColumnGroups from '../../../data/subscriptions/investigate-columns/data';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
-import Helper from 'ember-helper';
-import { later } from 'ember-runloop';
+import Helper from '@ember/component/helper';
+import { later } from '@ember/runloop';
 import RSVP from 'rsvp';
 
 let setState;

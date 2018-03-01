@@ -1,5 +1,5 @@
-import Component from 'ember-component';
-import { isEmpty } from 'ember-utils';
+import Component from '@ember/component';
+import { isEmpty } from '@ember/utils';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import {

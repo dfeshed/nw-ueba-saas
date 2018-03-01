@@ -1,6 +1,6 @@
 import computed, { intersect, gt, or } from 'ember-computed-decorators';
 import config from 'ember-get-config';
-import Service from 'ember-service';
+import Service from '@ember/service';
 
 export default Service.extend({
   roles: config.roles || [],

@@ -1,10 +1,10 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import layout from './template';
 import computed, { equal } from 'ember-computed-decorators';
 import { SINCE_WHEN_TYPES } from 'respond/utils/since-when-types';
 import SEARCHABLE_ENTITY_TYPES from './searchable-entity-types';
 import safeCallback from 'component-lib/utils/safe-callback';
-import { isEmpty } from 'ember-utils';
+import { isEmpty } from '@ember/utils';
 
 export default Component.extend({
   layout,

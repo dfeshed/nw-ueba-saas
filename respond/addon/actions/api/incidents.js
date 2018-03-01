@@ -1,4 +1,4 @@
-import EmberObject from 'ember-object';
+import EmberObject from '@ember/object';
 import { promiseRequest, streamRequest } from 'streaming-data/services/data-access/requests';
 import { resolveSinceWhenStartTime } from 'respond/utils/since-when-types';
 import FilterQuery from 'respond/utils/filter-query';

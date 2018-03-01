@@ -1,16 +1,12 @@
-import Ember from 'ember';
-import Component from 'ember-component';
-import { isEmpty } from 'ember-utils';
+import Component from '@ember/component';
+import { isEmpty } from '@ember/utils';
 import layout from './template';
-import run from 'ember-runloop';
-import service from 'ember-service/inject';
+import { run } from '@ember/runloop';
+import { inject as service } from '@ember/service';
 import { alias, readOnly, gt } from 'ember-computed-decorators';
 import csrfToken from '../../mixins/csrf-token';
 import config from 'ember-get-config';
-
-const {
-  Logger
-} = Ember;
+import { warn } from '@ember/debug';
 
 export default Component.extend(csrfToken, {
 
@@ -85,7 +81,7 @@ export default Component.extend(csrfToken, {
         }).then(() => {
           localStorage.setItem('rsa-i18n-default-locale', selection);
         }).catch(() => {
-          Logger.error('Error updating locale');
+          warn('Error updating locale', { id: 'component-lib.components.rsa-application-user-preferences-panel.component' });
         });
       }
     },

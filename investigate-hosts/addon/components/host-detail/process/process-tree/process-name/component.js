@@ -1,6 +1,5 @@
-import Component from 'ember-component';
-import set from 'ember-metal/set';
-import get from 'ember-metal/get';
+import Component from '@ember/component';
+import { get, set } from '@ember/object';
 import computed, { alias } from 'ember-computed-decorators';
 import { htmlSafe } from 'ember-string';
 

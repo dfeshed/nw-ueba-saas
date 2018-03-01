@@ -2,7 +2,7 @@ import DataTableBodyRow from 'component-lib/components/rsa-data-table/body-row/c
 import HighlightsEntities from 'context/mixins/highlights-entities';
 import layout from './template';
 import computed, { alias } from 'ember-computed-decorators';
-import { isEmpty } from 'ember-utils';
+import { isEmpty } from '@ember/utils';
 
 // Given an object and a list of property names, returns the name & value of the first property that has a non-empty value.
 function firstProp(obj, props) {

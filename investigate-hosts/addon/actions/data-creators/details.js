@@ -11,9 +11,7 @@ import { getFileContextDrivers } from './drivers';
 import { getProcessAndLib } from './libraries';
 import { getHostFiles } from './files';
 import { toggleExploreSearchResults } from 'investigate-hosts/actions/ui-state-creators';
-
-import Ember from 'ember';
-const { Logger } = Ember;
+import { debug } from '@ember/debug';
 
 const _getAllSnapShots = (agentId) => {
   return (dispatch) => {
@@ -25,7 +23,10 @@ const _getAllSnapShots = (agentId) => {
           dispatch({ type: ACTION_TYPES.SET_SCAN_TIME, payload: response.data[0] });
           dispatch(_getHostDetails(true));
         },
-        onFailure: (response) => Logger.error(ACTION_TYPES.FETCH_ALL_SNAP_SHOTS, response)
+        onFailure: (response) => {
+          const debugResponse = JSON.stringify(response);
+          debug(`onFailure: ${ACTION_TYPES.FETCH_ALL_SNAP_SHOTS} ${debugResponse}`);
+        }
       }
     });
   };
@@ -42,7 +43,10 @@ const exportFileContext = (data) => (
     type: ACTION_TYPES.FETCH_DOWNLOAD_FILECONTEXT_JOB_ID,
     promise: HostDetails.exportFileContext(data),
     meta: {
-      onSuccess: (response) => Logger.debug(ACTION_TYPES.FETCH_DOWNLOAD_FILECONTEXT_JOB_ID, response),
+      onSuccess: (response) => {
+        const debugResponse = JSON.stringify(response);
+        debug(`onSuccess: ${ACTION_TYPES.FETCH_DOWNLOAD_FILECONTEXT_JOB_ID} ${debugResponse}`);
+      },
       onFailure: (response) => handleError(ACTION_TYPES.FETCH_DOWNLOAD_FILECONTEXT_JOB_ID, response)
     }
   }
@@ -62,7 +66,8 @@ const _getHostDetails = (forceRefresh) => {
           onSuccess: (response) => {
             dispatch({ type: ACTION_TYPES.RESET_HOST_DETAILS });
             dispatch(_fetchDataForSelectedTab());
-            Logger.debug(ACTION_TYPES.FETCH_HOST_DETAILS, response);
+            const debugResponse = JSON.stringify(response);
+            debug(`onSuccess: ${ACTION_TYPES.FETCH_HOST_DETAILS} ${debugResponse}`);
           },
           onFailure: (response) => handleError(ACTION_TYPES.FETCH_HOST_DETAILS, response)
         }

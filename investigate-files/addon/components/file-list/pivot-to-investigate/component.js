@@ -1,9 +1,9 @@
 import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
 import moment from 'moment';
-import { next } from 'ember-runloop';
-import injectService from 'ember-service/inject';
-import get from 'ember-metal/get';
+import { next } from '@ember/runloop';
+import { inject as service } from '@ember/service';
+import { get } from '@ember/object';
 import { connect } from 'ember-redux';
 import { getAllServices } from 'investigate-files/actions/data-creators';
 import $ from 'jquery';
@@ -23,7 +23,7 @@ const PivotToInvestigate = Component.extend({
 
   classNames: 'pivot-to-investigate',
 
-  eventBus: injectService(),
+  eventBus: service(),
 
   showServiceModal: false,
 

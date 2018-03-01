@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { createItem } from 'respond/actions/creators/remediation-task-creators';
 import computed from 'ember-computed-decorators';

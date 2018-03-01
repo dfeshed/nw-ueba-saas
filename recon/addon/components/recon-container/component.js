@@ -1,10 +1,10 @@
-import { assert } from 'ember-metal/utils';
-import Component from 'ember-component';
+import { assert } from '@ember/debug';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed, { and } from 'ember-computed-decorators';
-import observer from 'ember-metal/observer';
-import { later, next } from 'ember-runloop';
-import service from 'ember-service/inject';
+import { observer } from '@ember/object';
+import { later, next } from '@ember/runloop';
+import { inject as service } from '@ember/service';
 import { toggleReconExpanded } from 'recon/actions/visual-creators';
 import { hasReconView } from 'recon/reducers/visuals/selectors';
 import layout from './template';

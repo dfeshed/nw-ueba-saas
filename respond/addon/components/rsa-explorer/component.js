@@ -1,11 +1,11 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { isEmberArray } from 'ember-array/utils';
-import { assert } from 'ember-metal/utils';
+import { assert } from '@ember/debug';
 import { connect } from 'ember-redux';
 import actionBroker from 'respond/actions/action-creator-broker';
-import service from 'ember-service/inject';
+import { inject as service } from '@ember/service';
 import { camelize } from 'ember-string';
-import { isPresent } from 'ember-utils';
+import { isPresent } from '@ember/utils';
 import { gt, alias, empty } from 'ember-computed-decorators';
 import FLASH_MESSAGE_TYPES from 'respond/utils/flash-message-types';
 import Confirmable from 'respond/mixins/confirmable';

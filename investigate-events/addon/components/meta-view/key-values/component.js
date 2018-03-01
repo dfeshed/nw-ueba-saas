@@ -1,5 +1,5 @@
-import Component from 'ember-component';
-import observer from 'ember-metal/observer';
+import Component from '@ember/component';
+import { observer } from '@ember/object';
 import { assign } from 'ember-platform';
 
 import { connect } from 'ember-redux';

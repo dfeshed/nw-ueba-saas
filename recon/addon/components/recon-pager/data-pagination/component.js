@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import layout from './template';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
@@ -16,7 +16,7 @@ import {
   cannotGoToNextPage,
   cannotGoToPreviousPage
 } from 'recon/reducers/packets/selectors';
-import service from 'ember-service/inject';
+import { inject as service } from '@ember/service';
 
 const stateToComputed = ({ recon, recon: { packets } }) => ({
   pageNumber: packets.pageNumber,

@@ -1,9 +1,9 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import HasSizeAttr from 'respond/mixins/dom/has-size-attr';
 import Clickable from 'respond/mixins/dom/clickable';
 import layout from './template';
 import computed, { alias } from 'ember-computed-decorators';
-import set from 'ember-metal/set';
+import { set } from '@ember/object';
 
 /**
  * @class GroupTable GroupHeader Component

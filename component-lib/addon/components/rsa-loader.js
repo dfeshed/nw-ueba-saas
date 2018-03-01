@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import computed, { equal } from 'ember-computed';
 import layout from '../templates/components/rsa-loader';
 

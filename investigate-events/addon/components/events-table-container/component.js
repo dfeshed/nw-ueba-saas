@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { getColumnGroups } from 'investigate-events/reducers/investigate/data-selectors';
 import { isInvalidQuery } from 'investigate-events/reducers/investigate/event-count/selectors';

@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { setSelectedRow } from 'investigate-hosts/actions/data-creators/autoruns';
 import propertyConfig from './autoruns-property-config';

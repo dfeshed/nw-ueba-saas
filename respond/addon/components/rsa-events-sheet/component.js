@@ -1,4 +1,4 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import CanThrottleAttr from 'respond/mixins/can-throttle-attr';
 
 export default Component.extend(CanThrottleAttr, {

@@ -1,8 +1,8 @@
-import Component from 'ember-component';
+import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import Notifications from 'respond/mixins/notifications';
-import { isEmpty, typeOf } from 'ember-utils';
+import { isEmpty, typeOf } from '@ember/utils';
 import * as ACTION_TYPES from '../../../actions/types';
 
 const stateToComputed = (state) => {

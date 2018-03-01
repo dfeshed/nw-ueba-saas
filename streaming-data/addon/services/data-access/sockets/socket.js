@@ -5,14 +5,10 @@
  */
 import RSVP from 'rsvp';
 
-import Ember from 'ember';
 import Client from './client';
 import { Stream } from '../streams';
 import config from 'ember-get-config';
-
-const {
-  Logger
-} = Ember;
+import { warn } from '@ember/debug';
 
 /**
  * Hash of requested socket server clients. The hash keys are socket URLs. The hash values
@@ -115,7 +111,7 @@ function _findSocketConfig(modelName, method) {
   // no config? eject!
   if (!cfg || !cfg.socketUrl || !cfg.subscriptionDestination || !cfg.requestDestination) {
     const msg = `Invalid socket stream configuration:. model: ${modelName}, method: ${method}`;
-    Logger.warn(msg);
+    warn(msg, { id: 'streaming-data.services.data-access.sockets.socket' });
     throw new WebsocketConfigurationNotFoundException(msg);
   }
 
