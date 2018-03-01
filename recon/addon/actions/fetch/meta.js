@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import RSVP from 'rsvp';
 
 import { streamRequest } from 'streaming-data/services/data-access/requests';
 import {
@@ -7,8 +7,6 @@ import {
   endpointFilter,
   addCatchAllTimeRange
 } from '../util/query-util';
-
-const { RSVP } = Ember;
 
 const fetchMeta = ({ endpointId, eventId }) => {
   let query = endpointFilter(endpointId);

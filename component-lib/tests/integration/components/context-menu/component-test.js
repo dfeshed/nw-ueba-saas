@@ -1,11 +1,7 @@
-import Ember from 'ember';
+import Service from '@ember/service';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import $ from 'jquery';
-
-const {
-  Service
-} = Ember;
 
 const contextMenuStub = Service.extend({
   isActive: true,

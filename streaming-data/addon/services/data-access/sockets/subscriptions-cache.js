@@ -4,12 +4,7 @@
  * Used by websocket/client to re-use subscriptions.
  * @private
  */
-import Ember from 'ember';
-
-const {
-  Object: EmberObject,
-  computed
-} = Ember;
+import EmberObject, { computed } from '@ember/object';
 
 export default EmberObject.extend({
 

@@ -6,7 +6,10 @@ import set from 'ember-metal/set';
 import { isEmpty } from 'ember-utils';
 import computed, { equal, notEmpty } from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
-import { dirtyQueryToggle, validateIndividualQuery } from 'investigate-events/actions/query-validation-creators';
+import {
+  dirtyQueryToggle,
+  validateIndividualQuery
+} from 'investigate-events/actions/query-validation-creators';
 
 const quoteValue = (value) => {
 

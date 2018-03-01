@@ -3,7 +3,10 @@ import * as ACTION_TYPES from './types';
 import { fetchAliases, fetchLanguage } from './fetch/dictionaries';
 import { parseQueryParams } from 'investigate-events/actions/utils';
 import { fetchColumnGroups } from './fetch/column-groups';
-import { fetchInvestigateData, getServiceSummary } from './data-creators';
+import {
+  fetchInvestigateData,
+  getServiceSummary
+} from './data-creators';
 import TIME_RANGES from 'investigate-events/constants/time-ranges';
 import { fetchServices } from './fetch/services';
 import { lookup } from 'ember-dependency-lookup';

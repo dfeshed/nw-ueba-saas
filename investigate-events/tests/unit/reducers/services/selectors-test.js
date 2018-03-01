@@ -1,6 +1,10 @@
 import { module, test } from 'qunit';
 import Immutable from 'seamless-immutable';
-import { getDbEndTime, getDbStartTime, hasSummaryData } from 'investigate-events/reducers/investigate/services/selectors';
+import {
+  getDbEndTime,
+  getDbStartTime,
+  hasSummaryData
+} from 'investigate-events/reducers/investigate/services/selectors';
 
 module('Unit | Selectors | services');
 

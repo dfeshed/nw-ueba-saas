@@ -2,20 +2,17 @@
  * @file Is Chart Series mixin
  * @public
  */
-import Ember from 'ember';
+import Mixin from '@ember/object/mixin';
+
+import { observer } from '@ember/object';
+import { run } from '@ember/runloop';
+import { warn } from '@ember/debug';
 import HasChartParent from '../mixins/has-chart-parent';
 import computed, { alias } from 'ember-computed-decorators';
 import { select } from 'd3-selection';
 import { curveLinear, symbol, symbolDiamond } from 'd3-shape';
 import { scaleLinear, scaleTime } from 'd3-scale';
 import 'd3-transition';
-
-const {
-  Mixin,
-  observer,
-  run,
-  warn
-} = Ember;
 
 const createSymbol = symbol().type(symbolDiamond).size(32);
 

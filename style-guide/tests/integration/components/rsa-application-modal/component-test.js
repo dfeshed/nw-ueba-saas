@@ -1,14 +1,10 @@
-import Ember from 'ember';
+import Service from '@ember/service';
+import Evented from '@ember/object/evented';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
 import sinon from 'sinon';
 import $ from 'jquery';
-
-const {
-  Service,
-  Evented
-} = Ember;
 
 const eventBusStub = Service.extend(Evented, {});
 

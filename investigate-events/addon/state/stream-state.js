@@ -3,9 +3,9 @@
  * Wraps a stream into an Ember Object so that the stream's status, progress and collated responses can be observed.
  * @public
  */
-import Ember from 'ember';
+import $ from 'jquery';
 
-const { $, computed, Object: EmberObject } = Ember;
+import EmberObject, { computed } from '@ember/object';
 
 export default EmberObject.extend({
   /**

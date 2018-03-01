@@ -1,16 +1,10 @@
-import Ember from 'ember';
+import { set } from '@ember/object';
+import { isEmpty } from '@ember/utils';
+import Component from '@ember/component';
+import { inject as service } from '@ember/service';
 import layout from './template';
 import computed from 'ember-computed-decorators';
 import { debug, warn } from '@ember/debug';
-
-const {
-  set,
-  isEmpty,
-  Component,
-  inject: {
-    service
-  }
-} = Ember;
 
 export default Component.extend({
   layout,

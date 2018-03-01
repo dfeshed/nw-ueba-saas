@@ -1,7 +1,9 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from '../../../helpers/engine-resolver';
-import DataHelper, { getConcentratorServiceId } from '../../../helpers/data-helper';
+import DataHelper, {
+  getConcentratorServiceId
+} from '../../../helpers/data-helper';
 import wait from 'ember-test-helpers/wait';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { triggerKeyUp } from 'ember-keyboard';

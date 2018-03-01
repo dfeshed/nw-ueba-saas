@@ -1,12 +1,10 @@
+import { resolve } from 'rsvp';
 import { module } from 'qunit';
-import Ember from 'ember';
 import startApp from '../helpers/start-app';
 import destroyApp from '../helpers/destroy-app';
 import teardownSockets from '../helpers/teardown-sockets';
 import { invalidateSession } from 'sa/tests/helpers/ember-simple-auth';
 import Authenticator from 'component-lib/authenticators/oauth-authenticator';
-
-const { RSVP: { resolve } } = Ember;
 
 const patchTokenRefresh = () => {
   Authenticator.reopen({

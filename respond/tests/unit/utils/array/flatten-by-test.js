@@ -1,10 +1,8 @@
-import Ember from 'ember';
+import { isArray } from '@ember/array';
 import arrayFlattenBy from 'respond/utils/array/flatten-by';
 import { module, test } from 'qunit';
 
 module('Unit | Utility | array/to hash keys');
-
-const { isArray } = Ember;
 
 const arr1 = ['a', 'b'];
 const arr2 = ['c', 'd', 'e'];

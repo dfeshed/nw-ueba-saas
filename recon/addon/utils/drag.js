@@ -3,8 +3,9 @@
  * A configurable helper for detecting & handling user-initiated drag events in DOM.
  * @public
  */
-import Ember from 'ember';
-const { $, Object: EmberObject } = Ember;
+import $ from 'jquery';
+
+import EmberObject from '@ember/object';
 
 export default EmberObject.extend({
 

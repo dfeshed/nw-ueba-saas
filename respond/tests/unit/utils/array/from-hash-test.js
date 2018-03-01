@@ -1,10 +1,8 @@
-import Ember from 'ember';
+import { isArray } from '@ember/array';
 import arrayFromHash from 'respond/utils/array/from-hash';
 import { module, test } from 'qunit';
 
 module('Unit | Utility | array/to hash keys');
-
-const { isArray } = Ember;
 
 test('it works', function(assert) {
   const hash = { foo: 1, bar: 2, baz: 3 };

@@ -1,6 +1,12 @@
 import { module, test } from 'qunit';
 import Immutable from 'seamless-immutable';
-import { getCurrentPreferences, isDataEmpty, shouldShowStatus, getSelectedColumnGroup, getColumns } from 'investigate-events/reducers/investigate/data-selectors';
+import {
+  getCurrentPreferences,
+  isDataEmpty,
+  shouldShowStatus,
+  getSelectedColumnGroup,
+  getColumns
+} from 'investigate-events/reducers/investigate/data-selectors';
 import EventColumnGroups from '../../data/subscriptions/investigate-columns/data';
 
 module('Unit | Selectors | data-selectors');

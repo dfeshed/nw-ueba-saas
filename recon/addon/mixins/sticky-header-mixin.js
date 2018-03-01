@@ -1,13 +1,6 @@
-import Ember from 'ember';
+import Mixin from '@ember/object/mixin';
+import { debounce, join } from '@ember/runloop';
 import computed from 'ember-computed-decorators';
-
-const {
-  Mixin,
-  run: {
-    join,
-    debounce
-  }
-} = Ember;
 
 export default Mixin.create({
   // Internal mixin state, height of sticky, used for sliding

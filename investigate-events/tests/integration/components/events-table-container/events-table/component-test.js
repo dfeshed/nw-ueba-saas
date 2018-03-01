@@ -35,10 +35,11 @@ test('it shows context menu on right click', function(assert) {
 
 test('context menu is deactivated on right clicking outside the target', function(assert) {
   assert.expect(1);
+
   const contextMenuService = {
     isActive: true,
     deactivate: () => {
-      assert.step('deactivate called');
+      assert.ok(true, 'deactivate called');
     }
   };
   this.set('contextMenuService', contextMenuService);

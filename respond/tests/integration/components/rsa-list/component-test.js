@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from '../../../helpers/engine-resolver';
@@ -7,8 +7,6 @@ moduleForComponent('rsa-list', 'Integration | Component | List', {
   integration: true,
   resolver: engineResolverFor('respond')
 });
-
-const { run } = Ember;
 
 const items = [
   { id: 'a', foo: 'foo-a' },

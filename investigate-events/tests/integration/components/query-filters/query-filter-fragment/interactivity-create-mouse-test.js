@@ -1,6 +1,10 @@
 /* global $ */
 import { moduleForComponent, test, skip } from 'ember-qunit';
-import { testSetupConfig, PillHelpers, pressEnter } from './util';
+import {
+  testSetupConfig,
+  PillHelpers,
+  pressEnter
+} from './util';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 import wait from 'ember-test-helpers/wait';
 

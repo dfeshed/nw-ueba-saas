@@ -1,9 +1,8 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import { set, get } from '@ember/object';
 import computed, { notEmpty } from 'ember-computed-decorators';
 import layout from './template';
 import arrayToHashKeys from 'component-lib/utils/array/to-hash-keys';
-
-const { Component, get, set } = Ember;
 
 export default Component.extend({
   layout,

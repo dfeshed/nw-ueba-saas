@@ -1,10 +1,9 @@
-import Ember from 'ember';
+import { later } from '@ember/runloop';
 import { test } from 'qunit';
 import moduleForAcceptance from '../helpers/module-for-acceptance';
 import RSVP from 'rsvp';
 
 const { Promise } = RSVP;
-const { run: { later } } = Ember;
 
 moduleForAcceptance('Acceptance | Request | promiseRequest', {});
 

@@ -1,9 +1,7 @@
-import Ember from 'ember';
+import { set, get } from '@ember/object';
 import { moduleForComponent, skip } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from '../../../../helpers/engine-resolver';
-
-const { get, set } = Ember;
 
 moduleForComponent('meta-view/key-values', 'Integration | Component | meta-view/key values', {
   integration: true,

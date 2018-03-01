@@ -2,8 +2,16 @@ import Component from 'ember-component';
 import layout from './template';
 import { connect } from 'ember-redux';
 import service from 'ember-service/inject';
-import { isFetchingSchedule, isEnabled, startDate, isError } from 'hosts-scan-configure/reducers/hosts-scan/selectors';
-import { updateScheduleProperty, saveScheduleConfig } from 'hosts-scan-configure/actions/data-creators';
+import {
+  isFetchingSchedule,
+  isEnabled,
+  startDate,
+  isError
+} from 'hosts-scan-configure/reducers/hosts-scan/selectors';
+import {
+  updateScheduleProperty,
+  saveScheduleConfig
+} from 'hosts-scan-configure/actions/data-creators';
 import computed from 'ember-computed-decorators';
 import { isEmpty } from 'ember-utils';
 import moment from 'moment';

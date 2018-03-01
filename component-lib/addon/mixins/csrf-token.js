@@ -1,10 +1,6 @@
-import Ember from 'ember';
-
-const {
-  getOwner,
-  Mixin,
-  computed
-} = Ember;
+import { getOwner } from '@ember/application';
+import Mixin from '@ember/object/mixin';
+import { computed } from '@ember/object';
 
 /**
   Responsible for retrieving the parent application's csrfLocalstorageKey from it's local simple-auth config.

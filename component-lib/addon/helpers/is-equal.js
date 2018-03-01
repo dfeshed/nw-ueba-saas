@@ -3,9 +3,7 @@
  * Compares two values and returns a boolean.
  * @public
  */
-import Ember from 'ember';
-
-const { Helper: { helper } } = Ember;
+import { helper } from '@ember/component/helper';
 
 export function isEqual(params /* , hash */) {
   const [leftSide, rightSide, notStrict] = params;

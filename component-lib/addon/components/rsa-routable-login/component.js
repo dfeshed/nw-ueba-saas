@@ -12,7 +12,12 @@ import { isEmpty, typeOf } from 'ember-utils';
 import { run, later } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import layout from './template';
-import computed, { readOnly, alias, notEmpty, equal } from 'ember-computed-decorators';
+import computed, {
+  readOnly,
+  alias,
+  notEmpty,
+  equal
+} from 'ember-computed-decorators';
 import config from 'ember-get-config';
 import { set } from '@ember/object';
 import RSVP from 'rsvp';

@@ -1,6 +1,4 @@
-import Ember from 'ember';
-
-const { get } = Ember;
+import { get } from '@ember/object';
 
 /**
  * Finds and returns the index of the first array member whose key matches a given value.

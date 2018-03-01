@@ -4,7 +4,10 @@ import computed from 'ember-computed-decorators';
 import service from 'ember-service/inject';
 import FilterMixin from 'investigate-hosts/mixins/content-filter-mixins';
 import set from 'ember-metal/set';
-import { getTimezoneTime, getSelectedTimeOption } from './utils';
+import {
+  getTimezoneTime,
+  getSelectedTimeOption
+} from './utils';
 import _ from 'lodash';
 import moment from 'moment';
 

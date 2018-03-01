@@ -4,7 +4,10 @@ import { getServiceSummary } from './data-creators';
 import { getDictionaries } from './initialization-creators';
 import { getDbStartTime, getDbEndTime } from '../reducers/investigate/services/selectors';
 import { useDatabaseTime } from '../reducers/investigate/query-node/selectors';
-import { getCurrentPreferences, getDefaultPreferences } from 'investigate-events/reducers/investigate/data-selectors';
+import {
+  getCurrentPreferences,
+  getDefaultPreferences
+} from 'investigate-events/reducers/investigate/data-selectors';
 import { lookup } from 'ember-dependency-lookup';
 
 

@@ -1,14 +1,7 @@
-import Ember from 'ember';
+import Service, { inject as service } from '@ember/service';
+import { computed } from '@ember/object';
 import config from 'ember-get-config';
 import { isNone, isEmpty } from 'ember-utils';
-
-const {
-  Service,
-  inject: {
-    service
-  },
-  computed
-} = Ember;
 
 export default Service.extend({
 

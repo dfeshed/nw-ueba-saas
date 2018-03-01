@@ -2,7 +2,11 @@ import Component from 'ember-component';
 import { connect } from 'ember-redux';
 import propertyConfig from './library-property-config';
 import { setSelectedRow } from 'investigate-hosts/actions/data-creators/libraries';
-import { isDataLoading, getLibraries, selectedLibraryFileProperty } from 'investigate-hosts/reducers/details/libraries/selectors';
+import {
+  isDataLoading,
+  getLibraries,
+  selectedLibraryFileProperty
+} from 'investigate-hosts/reducers/details/libraries/selectors';
 import { getColumnsConfig } from 'investigate-hosts/reducers/details/selectors';
 import columnsConfig from './libraries-columns';
 

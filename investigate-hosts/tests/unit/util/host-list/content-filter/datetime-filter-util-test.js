@@ -1,5 +1,8 @@
 import { module, test } from 'qunit';
-import { getTimezoneTime, getSelectedTimeOption } from 'investigate-hosts/components/host-list/content-filter/datetime-filter/utils';
+import {
+  getTimezoneTime,
+  getSelectedTimeOption
+} from 'investigate-hosts/components/host-list/content-filter/datetime-filter/utils';
 
 module('Unit | Util | Date time filter');
 

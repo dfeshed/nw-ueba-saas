@@ -1,6 +1,9 @@
 import { module, test } from 'qunit';
 
-import { validatePackageConfig, validateLogConfigFields } from 'packager/components/packager-form/validation-utils';
+import {
+  validatePackageConfig,
+  validateLogConfigFields
+} from 'packager/components/packager-form/validation-utils';
 
 module('Unit | Util');
 

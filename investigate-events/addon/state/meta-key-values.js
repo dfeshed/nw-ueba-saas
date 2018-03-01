@@ -1,8 +1,6 @@
-import Ember from 'ember';
+import { isEmpty } from '@ember/utils';
 import computed from 'ember-computed-decorators';
 import StreamState from './stream-state';
-
-const { isEmpty } = Ember;
 
 export default StreamState.extend({
   @computed('status', 'data')

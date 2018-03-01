@@ -4,9 +4,9 @@
  * @see http://ember-animation.github.io/liquid-fire/#/transition-map
  * @public
  */
-import Ember from 'ember';
+import { get } from '@ember/object';
 
-const { get, isArray } = Ember;
+import { isArray } from '@ember/array';
 
 // Helper to retrive an appropriate "index" for a given value.  If given
 // an object that has a number `index` attr, use that if defined. Otherwise,

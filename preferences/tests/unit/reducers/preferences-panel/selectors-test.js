@@ -1,6 +1,11 @@
 import { module, test } from 'qunit';
 import Immutable from 'seamless-immutable';
-import { getPreferencesSchema, getContextualHelp, getDbEndTime, getDbStartTime } from 'preferences/reducers/preferences-panel/selectors';
+import {
+  getPreferencesSchema,
+  getContextualHelp,
+  getDbEndTime,
+  getDbStartTime
+} from 'preferences/reducers/preferences-panel/selectors';
 import prefConfig from '../../../data/config';
 
 module('Unit | Selectors | Preferences-Panel');

@@ -1,6 +1,17 @@
-import { formatPrefix, formatSpecifier, precisionPrefix } from 'd3-format';
+import {
+  formatPrefix,
+  formatSpecifier,
+  precisionPrefix
+} from 'd3-format';
 import { max, min, tickStep } from 'd3-array';
-import { timeDay, timeHour, timeMinute, timeMonth, timeWeek, timeYear } from 'd3-time';
+import {
+  timeDay,
+  timeHour,
+  timeMinute,
+  timeMonth,
+  timeWeek,
+  timeYear
+} from 'd3-time';
 import moment from 'moment';
 
 /**

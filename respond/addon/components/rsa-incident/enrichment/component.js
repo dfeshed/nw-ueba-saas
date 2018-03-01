@@ -1,12 +1,8 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import { get } from '@ember/object';
+import { isEmpty } from '@ember/utils';
 import computed from 'ember-computed-decorators';
 import KeysToi18n from './keys-to-i18n';
-
-const {
-  Component,
-  get,
-  isEmpty
-} = Ember;
 
 /**
  * @class Incident Enrichments component

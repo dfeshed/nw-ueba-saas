@@ -2,7 +2,11 @@ import Component from 'ember-component';
 import { connect } from 'ember-redux';
 import { getHostTableColumns } from 'investigate-hosts/reducers/schema/selectors';
 import { getNextMachines, setHostColumnSort } from 'investigate-hosts/actions/data-creators/host';
-import { processedHostList, serviceList, hostCountForDisplay } from 'investigate-hosts/reducers/hosts/selectors';
+import {
+  processedHostList,
+  serviceList,
+  hostCountForDisplay
+} from 'investigate-hosts/reducers/hosts/selectors';
 import computed from 'ember-computed-decorators';
 import _ from 'lodash';
 

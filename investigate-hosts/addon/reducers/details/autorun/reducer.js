@@ -1,7 +1,11 @@
 import * as ACTION_TYPES from 'investigate-hosts/actions/types';
 import reduxActions from 'redux-actions';
 import { handle } from 'redux-pack';
-import { fileContextAutorunsSchema, fileContextServicesSchema, fileContextTasksSchema } from './schemas';
+import {
+  fileContextAutorunsSchema,
+  fileContextServicesSchema,
+  fileContextTasksSchema
+} from './schemas';
 import { normalize } from 'normalizr';
 import Immutable from 'seamless-immutable';
 

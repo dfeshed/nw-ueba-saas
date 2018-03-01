@@ -1,6 +1,4 @@
-import Ember from 'ember';
-
-const { Helper } = Ember;
+import Helper from '@ember/component/helper';
 
 // Generates an SVG 'rotate' transform string for a given degree.
 export function svgRotation(deg) {

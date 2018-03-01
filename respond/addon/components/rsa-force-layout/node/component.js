@@ -1,9 +1,7 @@
-import Ember from 'ember';
+import Component from '@ember/component';
 import computed, { alias } from 'ember-computed-decorators';
 import { svgTranslation } from 'respond/helpers/svg/translation';
 import Clickable from 'respond/mixins/dom/clickable';
-
-const { Component } = Ember;
 
 export default Component.extend(Clickable, {
   tagName: 'g',

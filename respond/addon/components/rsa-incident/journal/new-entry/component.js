@@ -1,11 +1,9 @@
-import Ember from 'ember';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { createJournalEntry } from 'respond/actions/creators/journal-creators';
 import { empty } from 'ember-computed-decorators';
 import Notifications from 'respond/mixins/notifications';
 import FLASH_MESSAGE_TYPES from 'respond/utils/flash-message-types';
-
-const { Component } = Ember;
 
 const stateToComputed = ({ respond: { dictionaries: { milestoneTypes } } }) => ({
   milestoneTypes

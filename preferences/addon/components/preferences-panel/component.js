@@ -2,7 +2,12 @@ import Component from 'ember-component';
 import layout from './template';
 import { later, schedule } from 'ember-runloop';
 import { connect } from 'ember-redux';
-import { closePreferencesPanel, resetPreferencesPanel, loadPreferences, updatePanelClicked } from 'preferences/actions/interaction-creators';
+import {
+  closePreferencesPanel,
+  resetPreferencesPanel,
+  loadPreferences,
+  updatePanelClicked
+} from 'preferences/actions/interaction-creators';
 import { getContextualHelp } from 'preferences/reducers/preferences-panel/selectors';
 import service from 'ember-service/inject';
 

@@ -1,8 +1,6 @@
-import Ember from 'ember';
+import Controller from '@ember/controller';
 import service from 'ember-service/inject';
 import computed from 'ember-computed-decorators';
-
-const { Controller } = Ember;
 
 export default Controller.extend({
 

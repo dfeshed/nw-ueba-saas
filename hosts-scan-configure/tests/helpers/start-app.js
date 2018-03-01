@@ -1,9 +1,8 @@
-import Ember from 'ember';
+import { merge } from '@ember/polyfills';
+import { run } from '@ember/runloop';
 import Application from '../../app';
 import config from '../../config/environment';
 import registerPowerSelectHelpers from '../../tests/helpers/ember-power-select';
-
-const { merge, run } = Ember;
 
 registerPowerSelectHelpers();
 

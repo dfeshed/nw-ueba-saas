@@ -1,4 +1,8 @@
-import { conditionsFilter, queryPromiseRequest, serviceIdFilter } from './utils';
+import {
+  conditionsFilter,
+  queryPromiseRequest,
+  serviceIdFilter
+} from './utils';
 
 /**
 * Validate each query

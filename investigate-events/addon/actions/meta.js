@@ -4,7 +4,9 @@
  * These actions assume that the state is accessible via `this.get('state')`.
  * @public
  */
-import Ember from 'ember';
+import { set, get } from '@ember/object';
+
+import Mixin from '@ember/object/mixin';
 import service from 'ember-service/inject';
 
 import { defaultMetaGroup } from 'investigate-events/reducers/investigate/dictionaries/selectors';
@@ -13,12 +15,6 @@ import {
   buildMetaValueStreamInputs,
   executeMetaValuesRequest
 } from './utils';
-
-const {
-  get,
-  set,
-  Mixin
-} = Ember;
 
 const STREAM_LIMIT = 1000;
 const STREAM_BATCH = 19;

@@ -39,13 +39,10 @@
  *
  * @public
  */
-import Ember from 'ember';
+import $ from 'jquery';
 
-const {
-  $,
-  Object: EmberObject,
-  run
-} = Ember;
+import EmberObject from '@ember/object';
+import { run } from '@ember/runloop';
 
 export default EmberObject.extend({
 

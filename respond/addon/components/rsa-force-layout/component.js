@@ -1,21 +1,19 @@
-import Ember from 'ember';
+/* global addResizeListener, removeResizeListener */
+
+import { setProperties, set, get } from '@ember/object';
 import Component from 'ember-component';
 import run from 'ember-runloop';
 import computed from 'ember-computed-decorators';
 import boundingBox from 'respond/utils/force-layout/bounding-box';
-import { forceSimulation, forceLink, forceManyBody, forceCollide } from 'd3-force';
+import {
+  forceSimulation,
+  forceLink,
+  forceManyBody,
+  forceCollide
+} from 'd3-force';
 import { transition } from 'd3-transition';
 import { easeCubicInOut } from 'd3-ease';
 import { select } from 'd3-selection';
-
-/* global addResizeListener */
-/* global removeResizeListener */
-
-const {
-  get,
-  set,
-  setProperties
-} = Ember;
 
 /**
  * @class d3 Force Layout component

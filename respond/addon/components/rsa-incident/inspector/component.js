@@ -1,8 +1,16 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed, { alias } from 'ember-computed-decorators';
-import { updateItem, setViewMode, resizeIncidentInspector } from 'respond/actions/creators/incidents-creators';
-import { storyPointCount, storyEventCount, getStorylineStatus } from 'respond/selectors/storyline';
+import {
+  updateItem,
+  setViewMode,
+  resizeIncidentInspector
+} from 'respond/actions/creators/incidents-creators';
+import {
+  storyPointCount,
+  storyEventCount,
+  getStorylineStatus
+} from 'respond/selectors/storyline';
 import {
   getIncidentId,
   getIncidentInfo,

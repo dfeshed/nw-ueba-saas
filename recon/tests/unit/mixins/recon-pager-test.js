@@ -1,10 +1,7 @@
-import Ember from 'ember';
+import EmberObject from '@ember/object';
 import ReconPagerMixin from 'recon/mixins/recon-pager';
 import { module, test } from 'qunit';
 
-const {
-  Object: EmberObject
-} = Ember;
 const ReconPagerObject = EmberObject.extend(ReconPagerMixin);
 const subject = ReconPagerObject.create();
 

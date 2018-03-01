@@ -1,6 +1,7 @@
-import Ember from 'ember';
-
-const { computed, run, Component, $ } = Ember;
+import { computed } from '@ember/object';
+import { run } from '@ember/runloop';
+import Component from '@ember/component';
+import $ from 'jquery';
 
 export default Component.extend({
   classNames: 'rsa-progress-bar',

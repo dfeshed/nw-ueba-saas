@@ -7,7 +7,10 @@ import {
   machineOsType,
   selectedSystemInformationData,
   bashHistories } from 'investigate-hosts/reducers/details/system-information/selectors';
-import { setSystemInformationTab, setBashHistoryFilteredData } from 'investigate-hosts/actions/ui-state-creators';
+import {
+  setSystemInformationTab,
+  setBashHistoryFilteredData
+} from 'investigate-hosts/actions/ui-state-creators';
 
 const stateToComputed = (state) => ({
   animation: state.endpoint.detailsInput.animation,

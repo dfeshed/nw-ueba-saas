@@ -6,17 +6,17 @@
  */
 /* global SockJS */
 /* global Stomp */
+import { run } from '@ember/runloop';
+
+import EmberObject, { computed } from '@ember/object';
+import RSVP from 'rsvp';
+import { isEmpty } from '@ember/utils';
 import Ember from 'ember';
 import config from 'ember-get-config';
 import SubscriptionsCache from './subscriptions-cache';
 
 const {
-  run,
-  Object: EmberObject,
-  computed,
-  RSVP,
-  Logger,
-  isEmpty
+  Logger
 } = Ember;
 
 const MAX_WEBSOCKET_FRAME_SIZE = 64 * 1024;

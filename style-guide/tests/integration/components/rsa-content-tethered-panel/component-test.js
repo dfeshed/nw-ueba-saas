@@ -1,13 +1,9 @@
+import Service from '@ember/service';
+import Evented from '@ember/object/evented';
+import $ from 'jquery';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
-import Ember from 'ember';
-
-const {
-  Service,
-  Evented,
-  $
-} = Ember;
 
 const eventBusStub = Service.extend(Evented, {});
 const FIX_ELEMENT_ID = 'tether_fix_style_element';

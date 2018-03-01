@@ -199,6 +199,7 @@ buildEmberApp context false true true
 buildEmberApp investigate-shared false true true
 buildEmberApp preferences false true true
 buildEmberApp test-helpers false false false
+buildEmberApp ember-route-action-helper false false false
 buildEmberApp hosts-scan-configure false true true
 buildEmberApp style-guide true false false
 buildEmberApp investigate-events false true true

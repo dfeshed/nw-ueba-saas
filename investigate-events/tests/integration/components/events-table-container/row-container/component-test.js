@@ -1,16 +1,10 @@
+import $ from 'jquery';
+import { run } from '@ember/runloop';
+import EmberObject, { set, get } from '@ember/object';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import Ember from 'ember';
 import engineResolverFor from '../../../../helpers/engine-resolver';
 import { waitFor } from 'ember-wait-for-test-helper/wait-for';
-
-const {
-  $,
-  get,
-  set,
-  run,
-  Object: EmberObject
-} = Ember;
 
 moduleForComponent('events-table-container/row-container', 'Integration | Component | events table row', {
   integration: true,

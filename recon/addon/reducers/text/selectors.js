@@ -1,7 +1,11 @@
 import { createSelector } from 'reselect';
 
 import getMetaKeysByEventType from './limited-meta';
-import { isRequestShown, isResponseShown, isTextView } from 'recon/reducers/visuals/selectors';
+import {
+  isRequestShown,
+  isResponseShown,
+  isTextView
+} from 'recon/reducers/visuals/selectors';
 import { eventType, isEndpointEvent } from 'recon/reducers/meta/selectors';
 
 const _textContent = (recon) => recon.text.textContent;

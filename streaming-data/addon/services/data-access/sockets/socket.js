@@ -3,13 +3,14 @@
  * Implements a websocket API layer that wraps leverages Stomp over SockJS and returns Promises.
  * @public
  */
+import RSVP from 'rsvp';
+
 import Ember from 'ember';
 import Client from './client';
 import { Stream } from '../streams';
 import config from 'ember-get-config';
 
 const {
-  RSVP,
   Logger
 } = Ember;
 
@@ -93,16 +94,16 @@ function createStream(method, modelName, query, streamOptions = {}) {
   return stream;
 }
 
-  /**
-   * Utility that looks up the socket config for a modelName-method pair.
-   *
-   * Validates the config exists and that it has all the correct elements,
-   * if it does not, throws an error.
-   *
-   * @param modelName {string}
-   * @param method {string}
-   * @private
-   */
+/**
+ * Utility that looks up the socket config for a modelName-method pair.
+ *
+ * Validates the config exists and that it has all the correct elements,
+ * if it does not, throws an error.
+ *
+ * @param modelName {string}
+ * @param method {string}
+ * @private
+ */
 function _findSocketConfig(modelName, method) {
   const modelConfig = ((config.socketRoutes || {})[modelName] || {});
   const cfg = modelConfig[method];

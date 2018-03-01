@@ -1,8 +1,6 @@
-import Ember from 'ember';
+import EmberObject from '@ember/object';
 import FilterQuery from 'respond/utils/filter-query';
 import { promiseRequest } from 'streaming-data/services/data-access/requests';
-
-const { Object: EmberObject } = Ember;
 
 const UsersAPI = EmberObject.extend({});
 

@@ -1,7 +1,5 @@
-import Ember from 'ember';
+import { get } from '@ember/object';
 import arrayToHashKeys from 'component-lib/utils/array/to-hash-keys';
-
-const { get } = Ember;
 
 /**
  * Searches for the first object in an array whose property value matches one of a given list of values.

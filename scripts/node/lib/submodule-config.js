@@ -15,6 +15,7 @@ const ALL_SUBMODULES = [
   'context',
   'preferences',
   'test-helpers',
+  'ember-route-action-helper',
   'hosts-scan-configure'
 ];
 
@@ -92,6 +93,7 @@ const saModuleDependants = {
     'investigate-events'
   ],
   'test-helpers': [],
+  'ember-route-action-helper': [],
   'hosts-scan-configure': ['sa', 'configure']
 };
 

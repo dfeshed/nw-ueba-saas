@@ -1,11 +1,7 @@
-import Ember from 'ember';
+import { computed } from '@ember/object';
 import Component from 'ember-component';
 import run from 'ember-runloop';
 import config from 'ember-get-config';
-
-const {
-  computed
-} = Ember;
 
 export default Component.extend({
 

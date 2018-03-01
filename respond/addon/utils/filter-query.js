@@ -1,9 +1,9 @@
-import Ember from 'ember';
+import EmberObject from '@ember/object';
+import { isPresent, isEmpty } from '@ember/utils';
+import { isArray, A } from '@ember/array';
 import { resolveSinceWhenStartTime } from 'respond/utils/since-when-types';
 import { assert } from 'ember-metal/utils';
 import computed, { readOnly } from 'ember-computed-decorators';
-
-const { A, Object: EmberObject, isEmpty, isPresent, isArray } = Ember;
 
 /**
  * A class that represents a filter query

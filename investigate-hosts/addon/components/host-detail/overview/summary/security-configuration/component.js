@@ -1,6 +1,10 @@
 import Component from 'ember-component';
 import { connect } from 'ember-redux';
-import { machineOsType, getSecurityConfigurations, arrangedSecurityConfigs } from 'investigate-hosts/reducers/details/overview/selectors';
+import {
+  machineOsType,
+  getSecurityConfigurations,
+  arrangedSecurityConfigs
+} from 'investigate-hosts/reducers/details/overview/selectors';
 import { arrangeSecurityConfigs } from 'investigate-hosts/actions/ui-state-creators';
 
 const stateToComputed = (state) => ({

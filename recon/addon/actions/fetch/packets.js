@@ -1,6 +1,10 @@
 import { streamRequest } from 'streaming-data/services/data-access/requests';
 import { buildBaseQuery, addStreaming } from 'recon/actions/util/query-util';
-import { batchDataHandler, HANDLERS, BATCH_TYPES } from 'recon/actions/util/batch-data-handler';
+import {
+  batchDataHandler,
+  HANDLERS,
+  BATCH_TYPES
+} from 'recon/actions/util/batch-data-handler';
 
 const BATCH_CHARACTER_SIZE = 5000;
 let TIME_BETWEEN_BATCHES = [3000, 500];

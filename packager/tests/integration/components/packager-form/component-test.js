@@ -1,3 +1,4 @@
+import { Promise } from 'rsvp';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import waitFor from '../../../helpers/wait-for';
@@ -6,13 +7,11 @@ import $ from 'jquery';
 import { applyPatch, revertPatch } from '../../../helpers/patch-reducer';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import Packager from 'packager/actions/fetch';
-import Ember from 'ember';
 import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
 
 let setState;
 
-const { RSVP: { Promise } } = Ember;
 const setPackagerConfigMethodStub = sinon.stub(Packager, 'setPackagerConfig');
 
 moduleForComponent('packager-form', 'Integration | Component | packager form', {

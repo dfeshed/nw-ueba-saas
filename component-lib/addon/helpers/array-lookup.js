@@ -4,9 +4,7 @@
  * Isn't this supported natively by Ember??
  * @public
  */
-import Ember from 'ember';
-
-const { Helper } = Ember;
+import Helper from '@ember/component/helper';
 
 export function arrayLookup([ arr, index ]/* , hash */) {
   return arr && arr[index];

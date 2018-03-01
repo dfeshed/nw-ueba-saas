@@ -2,7 +2,13 @@ import Component from 'ember-component';
 import layout from './template';
 import set from 'ember-metal/set';
 import computed, { alias } from 'ember-computed-decorators';
-import { forceSimulation, forceLink, forceManyBody, forceCollide, forceCenter } from 'd3-force';
+import {
+  forceSimulation,
+  forceLink,
+  forceManyBody,
+  forceCollide,
+  forceCenter
+} from 'd3-force';
 import { select } from 'd3-selection';
 import { zoom } from 'd3-zoom';
 import dataJoin from './util/data-join';

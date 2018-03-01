@@ -5,14 +5,11 @@
 * @public
 */
 
-import Ember from 'ember';
+import { getOwner } from '@ember/application';
+
+import { computed } from '@ember/object';
 import RESTAdapter from 'ember-data/adapters/rest';
 import DataAdapterMixin from 'ember-simple-auth/mixins/data-adapter-mixin';
-
-const {
-  getOwner,
-  computed
-} = Ember;
 
 export default RESTAdapter.extend(DataAdapterMixin, {
 

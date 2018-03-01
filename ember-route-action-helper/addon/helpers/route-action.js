@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import getOwner from 'ember-getowner-polyfill';
 import { ACTION } from '../-private/internals';
 
 const {
@@ -9,7 +8,8 @@ const {
   computed,
   typeOf,
   get,
-  run
+  run,
+  getOwner
 } = Ember;
 
 function getRoutes(router) {

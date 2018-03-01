@@ -5,17 +5,18 @@
  * The socket stream is expected to follow the RSA stream protocol for SA UI; @see https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/docs/websocket-protocol.md
  * @public
  */
+import Mixin from '@ember/object/mixin';
+
+import { computed } from '@ember/object';
+import { merge } from '@ember/polyfills';
+import { run } from '@ember/runloop';
+import { typeOf } from '@ember/utils';
 import Ember from 'ember';
 import config from 'ember-get-config';
 
 const {
-  Mixin,
-  computed,
-  merge,
   Logger,
-  String: EmberString,
-  run,
-  typeOf
+  String: EmberString
 } = Ember;
 
 /**

@@ -5,12 +5,10 @@
  * @see https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md
  * @public
  */
-import Ember from 'ember';
+import EmberObject from '@ember/object';
+
+import { run } from '@ember/runloop';
 import { FromSocket, FromArray, ToArray } from './mixins';
-const {
-  Object: EmberObject,
-  run
-} = Ember;
 
 export default EmberObject.extend(FromSocket, FromArray, ToArray, {
 

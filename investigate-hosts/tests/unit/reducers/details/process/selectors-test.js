@@ -1,5 +1,9 @@
 import { module, test } from 'qunit';
-import { processDetailsData, processTreeData, processListData } from '../../../state/state';
+import {
+  processDetailsData,
+  processTreeData,
+  processListData
+} from '../../../state/state';
 import Immutable from 'seamless-immutable';
 
 module('Unit | Selectors | process');

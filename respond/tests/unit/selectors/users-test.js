@@ -1,6 +1,12 @@
 import { module, test } from 'qunit';
 import Immutable from 'seamless-immutable';
-import { getAssigneeOptions, getEnabledUsers, getAllUsers, getAllUsersStatus, getEnabledUsersStatus } from 'respond/selectors/users';
+import {
+  getAssigneeOptions,
+  getEnabledUsers,
+  getAllUsers,
+  getAllUsersStatus,
+  getEnabledUsersStatus
+} from 'respond/selectors/users';
 
 module('Unit | Utility | User Selectors');
 

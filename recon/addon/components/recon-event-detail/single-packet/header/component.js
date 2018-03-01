@@ -1,10 +1,8 @@
-import Ember from 'ember';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 
 import layout from './template';
-
-const { Component } = Ember;
 
 const stateToComputed = ({ recon: { packets } }) => ({
   isPayloadOnly: packets.isPayloadOnly

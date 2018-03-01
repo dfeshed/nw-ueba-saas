@@ -1,12 +1,5 @@
-import Ember from 'ember';
-
-const {
-  $,
-  run: {
-    later,
-    cancel
-  }
-} = Ember;
+import $ from 'jquery';
+import { cancel, later } from '@ember/runloop';
 
 const timerProp = '__rsa-tethered-panel-trigger-timer';
 

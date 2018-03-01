@@ -1,7 +1,5 @@
-import Ember from 'ember';
+import $ from 'jquery';
 import BaseTranslations from 'component-lib/locales/ja/trans-data';
 import SATranslations from './trans-data';
-
-const { $ } = Ember;
 
 export default $.extend({}, BaseTranslations, SATranslations);

@@ -1,8 +1,6 @@
-import Ember from 'ember';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import service from 'ember-service/inject';
-
-const { Component } = Ember;
 
 const stateToComputed = ({ respond: { incident: { info, infoStatus } } }) => ({
   infoStatus,

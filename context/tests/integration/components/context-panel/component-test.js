@@ -1,11 +1,7 @@
-import Ember from 'ember';
+import Service from '@ember/service';
 import { moduleForComponent, skip } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { waitFor } from 'ember-wait-for-test-helper/wait-for';
-
-const {
-  Service
-} = Ember;
 
 moduleForComponent('context-panel', 'Integration | Component | context-panel', {
   integration: true

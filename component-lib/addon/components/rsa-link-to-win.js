@@ -1,11 +1,6 @@
-import Ember from 'ember';
-
-const {
-  LinkComponent,
-  getOwner,
-  get,
-  set
-} = Ember;
+import LinkComponent from '@ember/routing/link-component';
+import { getOwner } from '@ember/application';
+import { set, get } from '@ember/object';
 
 /**
  * This component is similar to Ember.LinkComponent, except that:

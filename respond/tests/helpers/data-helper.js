@@ -1,8 +1,7 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
+import RSVP from 'rsvp';
 import * as ACTION_TYPES from 'respond/actions/types';
 import { incidentDetails, storyline, events } from '../data/data';
-
-const { run, RSVP } = Ember;
 
 // Dispatches a given redux action, wrapping it in Ember.run.
 function _dispatchAction(redux, action) {

@@ -1,12 +1,11 @@
 /* eslint-disable */
 
-import Ember from 'ember';
+import EmberObject from '@ember/object';
+
 import sinon from 'sinon';
 import { module, test } from 'qunit';
 
 import Request from 'streaming-data/services/request';
-
-const { Object: EmberObject } = Ember;
 
 const noop = function() {};
 

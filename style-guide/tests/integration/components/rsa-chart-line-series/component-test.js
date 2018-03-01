@@ -1,11 +1,7 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { scaleLinear } from 'd3-scale';
-
-const {
-  run
-} = Ember;
 
 moduleForComponent('/rsa-line-series', 'Integration | Component | rsa-line-series', {
   integration: true,

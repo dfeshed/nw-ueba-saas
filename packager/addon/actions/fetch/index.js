@@ -1,4 +1,9 @@
-import { getPackagerConfig, setPackagerConfig, getListOfDevices, getConfiguration } from './packager';
+import {
+  getPackagerConfig,
+  setPackagerConfig,
+  getListOfDevices,
+  getConfiguration
+} from './packager';
 
 export {
   getPackagerConfig,

@@ -5,7 +5,10 @@ import { connect } from 'ember-redux';
 import { later } from 'ember-runloop';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 import { setColumnGroup } from 'investigate-events/actions/interaction-creators';
-import { getSelectedColumnGroup, getColumnGroups } from 'investigate-events/reducers/investigate/data-selectors';
+import {
+  getSelectedColumnGroup,
+  getColumnGroups
+} from 'investigate-events/reducers/investigate/data-selectors';
 
 
 const stateToComputed = (state) => ({

@@ -1,7 +1,10 @@
 import Component from '@ember/component';
 import Confirmable from 'configure/mixins/confirmable';
 import { deleteRule, cloneRule } from 'configure/actions/creators/respond/incident-rule-creators';
-import { hasSelectedRule, getSelectedIncidentRuleId } from 'configure/reducers/respond/incident-rules/selectors';
+import {
+  hasSelectedRule,
+  getSelectedIncidentRuleId
+} from 'configure/reducers/respond/incident-rules/selectors';
 import { connect } from 'ember-redux';
 import { inject } from '@ember/service';
 

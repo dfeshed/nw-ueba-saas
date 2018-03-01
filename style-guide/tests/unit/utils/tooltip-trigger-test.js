@@ -1,3 +1,6 @@
+import Service from '@ember/service';
+import Evented from '@ember/object/evented';
+import $ from 'jquery';
 import {
   sendTetherEvent,
   wireTriggerToHover,
@@ -6,14 +9,7 @@ import {
   unwireTriggerToClick
 } from 'component-lib/utils/tooltip-trigger';
 import { module, test } from 'qunit';
-import Ember from 'ember';
 import wait from 'ember-test-helpers/wait';
-
-const {
-  Service,
-  Evented,
-  $
-} = Ember;
 
 module('Unit | Utility | tooltip trigger');
 

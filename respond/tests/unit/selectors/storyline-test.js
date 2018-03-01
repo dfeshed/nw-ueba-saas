@@ -1,5 +1,9 @@
 import { module, test } from 'qunit';
-import { storyPointsWithEvents, storyEventCountExpected, selectedStoryEventCountExpected } from 'respond/selectors/storyline';
+import {
+  storyPointsWithEvents,
+  storyEventCountExpected,
+  selectedStoryEventCountExpected
+} from 'respond/selectors/storyline';
 
 module('Unit | Mixin | Storyline Selector');
 

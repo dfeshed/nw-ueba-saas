@@ -1,10 +1,8 @@
+import EmberObject from '@ember/object';
 import wait from 'ember-test-helpers/wait';
-import Ember from 'ember';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-
-const { Object: EmberObject } = Ember;
 
 moduleForComponent('recon-event-detail/single-text', 'Integration | Component | recon event detail single text', {
   integration: true,

@@ -1,8 +1,15 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { alias } from 'ember-computed-decorators';
-import { addCondition, removeGroup, updateGroup } from 'configure/actions/creators/respond/incident-rule-creators';
-import { getRuleConditionGroups, getRuleConditions } from 'configure/reducers/respond/incident-rules/rule/selectors';
+import {
+  addCondition,
+  removeGroup,
+  updateGroup
+} from 'configure/actions/creators/respond/incident-rule-creators';
+import {
+  getRuleConditionGroups,
+  getRuleConditions
+} from 'configure/reducers/respond/incident-rules/rule/selectors';
 
 const stateToComputed = (state) => {
   return {

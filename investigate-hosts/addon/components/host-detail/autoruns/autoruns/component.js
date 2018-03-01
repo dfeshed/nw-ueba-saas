@@ -2,7 +2,11 @@ import Component from 'ember-component';
 import { connect } from 'ember-redux';
 import { setSelectedRow } from 'investigate-hosts/actions/data-creators/autoruns';
 import propertyConfig from './autoruns-property-config';
-import { isAutorunDataLoading, autoruns, selectedAutorunFileProperties } from 'investigate-hosts/reducers/details/autorun/selectors';
+import {
+  isAutorunDataLoading,
+  autoruns,
+  selectedAutorunFileProperties
+} from 'investigate-hosts/reducers/details/autorun/selectors';
 import { machineOsType } from 'investigate-hosts/reducers/details/overview/selectors';
 import { getColumnsConfig } from 'investigate-hosts/reducers/details/selectors';
 import columnsConfig from './autoruns-columns';

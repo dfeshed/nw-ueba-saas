@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import RSVP from 'rsvp';
 import { test } from 'qunit';
 import moduleForAcceptance from '../helpers/module-for-acceptance';
 import { selectorToExist } from 'ember-wait-for-test-helper/wait-for';
@@ -13,10 +13,6 @@ const AccessControlService = Service.extend({
   hasInvestigateEventsAccess: true,
   hasInvestigateHostsAccess: true
 });
-
-const {
-  RSVP
-} = Ember;
 
 moduleForAcceptance('Acceptance | basic', {
   beforeEach() {

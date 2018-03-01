@@ -1,10 +1,10 @@
+import { set } from '@ember/object';
+import { isEmpty } from '@ember/utils';
 import { helper } from 'ember-helper';
 import Ember from 'ember';
 
 const {
-  set,
-  Logger,
-  isEmpty
+  Logger
 } = Ember;
 
 const windowsTimestampToMilliseconds = (windowsTimestamp) => windowsTimestamp ? windowsTimestamp / 10000 - 11644473600000 : null;

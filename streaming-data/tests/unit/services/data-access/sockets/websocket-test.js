@@ -1,9 +1,7 @@
-import Ember from 'ember';
+import { typeOf } from '@ember/utils';
 import { Socket } from 'streaming-data/services/data-access';
 import { test } from 'ember-qunit';
 import { module } from 'qunit';
-
-const { typeOf } = Ember;
 
 module('Unit | Util | socket');
 

@@ -1,6 +1,11 @@
 import { module, test } from 'qunit';
 import Immutable from 'seamless-immutable';
-import { getAlerts, getSelectedAlerts, hasSelectedAlertsBelongingToIncidents, getAlertNames } from 'respond/selectors/alerts';
+import {
+  getAlerts,
+  getSelectedAlerts,
+  hasSelectedAlertsBelongingToIncidents,
+  getAlertNames
+} from 'respond/selectors/alerts';
 import data from '../../data/data';
 
 const { storyline: items } = data;

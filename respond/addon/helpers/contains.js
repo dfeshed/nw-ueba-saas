@@ -1,6 +1,6 @@
-import Ember from 'ember';
-
-const { assert, Helper, isEqual, isNone, isPresent, typeOf } = Ember;
+import { assert } from '@ember/debug';
+import Helper from '@ember/component/helper';
+import { typeOf, isPresent, isNone, isEqual } from '@ember/utils';
 
 /**
  * HTMLBars helper that takes a value and collection. The "collection" can be an array or an object with keys/values.

@@ -4,12 +4,9 @@
  * Assumes that either responses contain payloads in `response.data` or they are the payload themselves.
  * @public
  */
-import Ember from 'ember';
+import Mixin from '@ember/object/mixin';
 
-const {
-  Mixin,
-  isArray
-} = Ember;
+import { isArray } from '@ember/array';
 
 export default Mixin.create({
 

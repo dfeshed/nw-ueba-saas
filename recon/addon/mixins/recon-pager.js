@@ -1,7 +1,5 @@
-import Ember from 'ember';
+import Mixin from '@ember/object/mixin';
 import computed, { alias } from 'ember-computed-decorators';
-
-const { Mixin } = Ember;
 
 export default Mixin.create({
   @computed('dataIndex')

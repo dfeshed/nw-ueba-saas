@@ -1,14 +1,12 @@
+import { schedule, run } from '@ember/runloop';
+import { registerAsyncHelper } from '@ember/test';
 import Ember from 'ember';
 
 const {
-  run,
-  run: {
-    schedule
-  },
   Test: {
-    promise: TestPromise,
-    registerAsyncHelper
+    promise: TestPromise
   },
+
   Test
 } = Ember;
 

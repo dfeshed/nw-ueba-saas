@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import { get } from '@ember/object';
+import { isEmpty } from '@ember/utils';
 import Component from 'ember-component';
 import service from 'ember-service/inject';
 import computed from 'ember-computed-decorators';
@@ -6,11 +7,6 @@ import { connect } from 'ember-redux';
 import { storyEvents, storyEventSelections } from 'respond/selectors/storyline';
 import { singleSelectEvent } from 'respond/actions/creators/incidents-creators';
 import indexOfBy from 'respond/utils/array/index-of-by';
-
-const {
-  get,
-  isEmpty
-} = Ember;
 
 const stateToComputed = (state) => ({
   items: storyEvents(state),

@@ -1,15 +1,10 @@
+import Service, { inject as service } from '@ember/service';
+import { schedule } from '@ember/runloop';
 import Ember from 'ember';
 
 const {
   Logger: {
     error
-  },
-  Service,
-  inject: {
-    service
-  },
-  run: {
-    schedule
   }
 } = Ember;
 

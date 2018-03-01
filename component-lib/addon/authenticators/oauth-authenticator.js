@@ -5,24 +5,19 @@
 * @public
 */
 
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+
+import $ from 'jquery';
+import { run } from '@ember/runloop';
+import { isEmpty } from '@ember/utils';
+import RSVP from 'rsvp';
+import { assign } from '@ember/polyfills';
+import { makeArray } from '@ember/array';
 import OAuth2PasswordGrant from 'ember-simple-auth/authenticators/oauth2-password-grant';
 import csrfToken from '../mixins/csrf-token';
 import oauthToken from '../mixins/oauth-token';
 import moment from 'moment';
 import config from 'ember-get-config';
-
-const {
-  inject: {
-    service
-  },
-  $,
-  run,
-  isEmpty,
-  RSVP,
-  assign,
-  makeArray
-} = Ember;
 
 const { useMockServer, mockServerUrl } = config;
 

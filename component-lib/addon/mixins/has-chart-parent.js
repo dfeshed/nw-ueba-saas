@@ -4,12 +4,9 @@
  * and cache reference to it in the `chart` attribute.
  * @public
  */
-import Ember from 'ember';
+import Mixin from '@ember/object/mixin';
 
-const {
-  Mixin,
-  computed
-} = Ember;
+import { computed } from '@ember/object';
 
 export default Mixin.create({
 

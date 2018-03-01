@@ -40,6 +40,7 @@ nukeNode configure
 nukeNode context
 nukeNode preferences
 nukeNode test-helpers
+nukeNode ember-route-action-helper
 nukeNode broccoli-theme
 nukeNode sa
 

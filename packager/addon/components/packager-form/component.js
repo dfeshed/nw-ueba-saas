@@ -8,7 +8,10 @@ import service from 'ember-service/inject';
 import _ from 'lodash';
 import { listOfServices } from '../../reducers/selectors';
 import { getConfiguration } from 'packager/actions/fetch/packager';
-import { validatePackageConfig, validateLogConfigFields } from './validation-utils';
+import {
+  validatePackageConfig,
+  validateLogConfigFields
+} from './validation-utils';
 import columns from './columns';
 import $ from 'jquery';
 

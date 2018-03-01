@@ -2,9 +2,7 @@
  * @file Context helper utilities
  * @public
  */
-import Ember from 'ember';
-
-const { isEmpty } = Ember;
+import { isEmpty } from '@ember/utils';
 
 const THIRTY_DAYS = 1000 * 60 * 60 * 24 * 30;
 

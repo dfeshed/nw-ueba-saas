@@ -1,10 +1,6 @@
-import Ember from 'ember';
+import Helper from '@ember/component/helper';
 import moment from 'moment';
 
-
-const {
-  Helper
-} = Ember;
 
 export function getField(params) {
 

@@ -1,7 +1,5 @@
-import Ember from 'ember';
+import Component from '@ember/component';
 import safeCallback from 'component-lib/utils/safe-callback';
-
-const { Component } = Ember;
 
 export default Component.extend({
   tagName: 'section',

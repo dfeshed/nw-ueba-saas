@@ -1,7 +1,14 @@
 import RSADataTableHeader from 'component-lib/components/rsa-data-table/header/component';
 import { connect } from 'ember-redux';
-import { updateColumnVisibility, setHostColumnSort } from 'investigate-hosts/actions/data-creators/host';
-import { isAllHostSelected, isSortDescending, sortField } from 'investigate-hosts/reducers/hosts/selectors';
+import {
+  updateColumnVisibility,
+  setHostColumnSort
+} from 'investigate-hosts/actions/data-creators/host';
+import {
+  isAllHostSelected,
+  isSortDescending,
+  sortField
+} from 'investigate-hosts/reducers/hosts/selectors';
 import { selectAllHosts, deSelectAllHosts } from 'investigate-hosts/actions/ui-state-creators';
 import computed from 'ember-computed-decorators';
 

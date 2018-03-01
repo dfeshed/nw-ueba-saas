@@ -2,7 +2,11 @@ import * as ACTION_TYPES from '../types';
 import { HostDetails } from '../api';
 import { handleError } from '../creator-utils';
 import { getAllProcess, toggleProcessView } from './process';
-import { getFileContextAutoruns, getFileContextServices, getFileContextTasks } from './autoruns';
+import {
+  getFileContextAutoruns,
+  getFileContextServices,
+  getFileContextTasks
+} from './autoruns';
 import { getFileContextDrivers } from './drivers';
 import { getProcessAndLib } from './libraries';
 import { getHostFiles } from './files';

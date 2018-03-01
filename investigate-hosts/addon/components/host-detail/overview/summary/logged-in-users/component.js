@@ -1,6 +1,10 @@
 import Component from 'ember-component';
 import { connect } from 'ember-redux';
-import { getLoggedInUsers, isMachineLinux, isMachineWindows } from 'investigate-hosts/reducers/details/overview/selectors';
+import {
+  getLoggedInUsers,
+  isMachineLinux,
+  isMachineWindows
+} from 'investigate-hosts/reducers/details/overview/selectors';
 import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
 
 const stateToComputed = (state) => ({

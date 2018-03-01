@@ -2,7 +2,9 @@ import Component from 'ember-component';
 import { gt } from 'ember-computed-decorators';
 import service from 'ember-service/inject';
 import { connect } from 'ember-redux';
-import { hasSelectedAlertsBelongingToIncidents } from 'respond/selectors/alerts';
+import {
+  hasSelectedAlertsBelongingToIncidents
+} from 'respond/selectors/alerts';
 import { clearSearchIncidentsResults } from 'respond/actions/creators/add-alerts-to-incident-creators';
 import { next } from 'ember-runloop';
 

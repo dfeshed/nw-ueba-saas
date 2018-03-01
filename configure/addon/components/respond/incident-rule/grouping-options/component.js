@@ -1,5 +1,8 @@
 import Component from '@ember/component';
-import { TIME_UNITS as timeWindowOptions, createDuration } from 'configure/utils/date/duration';
+import {
+  TIME_UNITS as timeWindowOptions,
+  createDuration
+} from 'configure/utils/date/duration';
 import computed from 'ember-computed-decorators';
 import {
   updateRule

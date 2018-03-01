@@ -1,6 +1,9 @@
+import $ from 'jquery';
 import Ember from 'ember';
 
-const { $, Logger } = Ember;
+const {
+  Logger
+} = Ember;
 
 export default function safeCallback(fn) {
   if (!$.isFunction(fn)) {

@@ -1,7 +1,5 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
 import linkCoords from 'respond/utils/force-layout/link-coords';
-
-const { run } = Ember;
 
 /**
  * Default tick handler used by the `rsa-fast-force` component.

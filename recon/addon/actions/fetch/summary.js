@@ -1,8 +1,7 @@
-import Ember from 'ember';
+import RSVP from 'rsvp';
+import { A } from '@ember/array';
 import { basicPromiseRequest } from '../util/query-util';
 import EmberObject from 'ember-object';
-
-const { RSVP, A } = Ember;
 
 const _generateHeaderItems = (items) => (
   items.reduce(function(headerItems, item) {

@@ -76,10 +76,11 @@ moduleForComponent('respond/incident-rule', 'Integration | Component | Respond I
   }
 });
 
-const spyRuleUpdate = ({ state, test, assert, selector }) => {
+const spyRuleUpdate = function({ state, assert, selector }) {
+  assert.expect(1);
   const actionSpy = sinon.spy(incidentRuleCreators, 'updateRule');
   setState(state || { ...initialState });
-  test.render(hbs`{{respond/incident-rule ruleId='12345'}}`);
+  this.render(hbs`{{respond/incident-rule ruleId='12345'}}`);
   fillIn(selector, 'To rule is divine');
   triggerEvent(selector, 'blur');
   return wait().then(() => {
@@ -172,16 +173,16 @@ test('Clicking the action radio button dispatches the updateRule creator', funct
 });
 
 test('Changing the name dispatches the updateRule creator', function(assert) {
-  spyRuleUpdate({ assert, test: this, selector: selectors.nameInput });
+  return spyRuleUpdate.bind(this)({ assert, selector: selectors.nameInput });
 });
 
 test('Changing the description dispatches the updateRule creator', function(assert) {
-  spyRuleUpdate({ assert, test: this, selector: selectors.descriptionInput });
+  return spyRuleUpdate.bind(this)({ assert, selector: selectors.descriptionInput });
 });
 
 test('Changing the advanced query dispatches the updateRule creator', function(assert) {
   const state = { ...initialState, ruleInfo: { ...initialState.ruleInfo, advancedUiFilterConditions: true } };
-  spyRuleUpdate({ assert, test: this, selector: selectors.advancedQuery, state });
+  return spyRuleUpdate.bind(this)({ assert, selector: selectors.advancedQuery, state });
 });
 
 test('Error message for name does not appear if the field has not been visited', function(assert) {

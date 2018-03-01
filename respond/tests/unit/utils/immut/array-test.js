@@ -1,10 +1,8 @@
-import Ember from 'ember';
+import { isArray } from '@ember/array';
 import * as ArrayUtils from 'respond/utils/immut/array';
 import { module, test } from 'qunit';
 
 module('Unit | Utility | immut/array');
-
-const { isArray } = Ember;
 
 const arr1 = ['c', 'd', 'e'];
 const remove1 = 'd';

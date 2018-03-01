@@ -1,8 +1,7 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import { run } from '@ember/runloop';
 import computed from 'ember-computed-decorators';
 import layout from './template';
-
-const { Component, run } = Ember;
 
 /* global addResizeListener */
 /* global removeResizeListener */

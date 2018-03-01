@@ -4,7 +4,10 @@ import engineResolverFor from '../../../../helpers/engine-resolver';
 import triggerNativeEvent from '../../../../helpers/trigger-native-event';
 import { clickTrigger } from '../../../../helpers/ember-power-select';
 import * as RemediationTaskCreators from 'respond/actions/creators/remediation-task-creators';
-import { getAllPriorityTypes, getAllRemediationStatusTypes } from 'respond/actions/creators/dictionary-creators';
+import {
+  getAllPriorityTypes,
+  getAllRemediationStatusTypes
+} from 'respond/actions/creators/dictionary-creators';
 import wait from 'ember-test-helpers/wait';
 import sinon from 'sinon';
 import RSVP from 'rsvp';

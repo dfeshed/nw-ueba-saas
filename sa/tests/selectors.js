@@ -1,7 +1,5 @@
-import Ember from 'ember';
+import Ember$ from 'jquery';
 import BaseSelectors from 'component-lib/selectors/defaults';
-
-const { $: Ember$ } = Ember;
 
 export default Ember$.extend({}, BaseSelectors, {
   'nav': {

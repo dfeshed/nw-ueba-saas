@@ -1,13 +1,7 @@
-import Ember from 'ember';
+import Route from '@ember/routing/route';
+import { getOwner } from '@ember/application';
+import { inject as service } from '@ember/service';
 import config from 'dummy/config/environment';
-
-const {
-  Route,
-  getOwner,
-  inject: {
-    service
-  }
-} = Ember;
 
 export default Route.extend({
   classNames: ['test123'],

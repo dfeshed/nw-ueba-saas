@@ -7,7 +7,10 @@ import { scaleQuantize } from 'd3-scale';
 import { event, select } from 'd3-selection';
 
 import Drag from 'recon/utils/drag';
-import { showPacketTooltip, hidePacketTooltip } from 'recon/actions/interaction-creators';
+import {
+  showPacketTooltip,
+  hidePacketTooltip
+} from 'recon/actions/interaction-creators';
 
 // A quantize scale will map a continuous domain to a discrete range
 const scale = scaleQuantize()

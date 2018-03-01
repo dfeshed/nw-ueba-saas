@@ -1,10 +1,5 @@
+import Route from '@ember/routing/route';
 import { debug } from '@ember/debug';
-
-import Ember from 'ember';
-
-const {
-  Route
-} = Ember;
 
 export default Route.extend({
   actions: {

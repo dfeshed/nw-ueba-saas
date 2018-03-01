@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { registerWaiter } from '@ember/test';
 
 let RAFcompleted = false;
 let scheduledRAF = null;
@@ -20,7 +20,7 @@ export function waiter() {
   }
 }
 
-export function registerWaiter() {
+export function registerRafWaiter() {
   // eslint-disable-next-line
-  Ember.Test.registerWaiter(waiter);
+  registerWaiter(waiter);
 }

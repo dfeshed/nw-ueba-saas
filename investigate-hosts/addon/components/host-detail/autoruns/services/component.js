@@ -2,7 +2,11 @@ import Component from 'ember-component';
 import { connect } from 'ember-redux';
 import { setSelectedRow } from 'investigate-hosts/actions/data-creators/autoruns';
 import { machineOsType } from 'investigate-hosts/reducers/details/overview/selectors';
-import { isServiceDataLoading, services, selectedServiceFileProperties } from 'investigate-hosts/reducers/details/autorun/selectors';
+import {
+  isServiceDataLoading,
+  services,
+  selectedServiceFileProperties
+} from 'investigate-hosts/reducers/details/autorun/selectors';
 import columnsConfig from './services-columns';
 import propertyConfig from './services-property-config';
 import computed from 'ember-computed-decorators';

@@ -10,7 +10,13 @@ import fields from '../../../../../data/subscriptions/incident-fields/findAll/da
 import categoryTags from '../../../../../data/subscriptions/category-tags/findAll/data';
 import enabledUsers from '../../../../../data/subscriptions/users/findAll/data';
 import { clickTrigger, selectChoose } from '../../../../../helpers/ember-power-select';
-import { click, fillIn, find, findAll, triggerEvent } from 'ember-native-dom-helpers';
+import {
+  click,
+  fillIn,
+  find,
+  findAll,
+  triggerEvent
+} from 'ember-native-dom-helpers';
 import $ from 'jquery';
 import * as incidentRuleCreators from 'configure/actions/creators/respond/incident-rule-creators';
 
@@ -66,10 +72,11 @@ moduleForComponent('respond/incident-rule/grouping-options', 'Integration | Comp
   }
 });
 
-const spyRuleUpdate = ({ state, test, assert, selector, value = 'To Rule is Divine' }) => {
+const spyRuleUpdate = function({ assert, selector, value = 'To Rule is Divine' }) {
+  assert.expect(1);
   const actionSpy = sinon.spy(incidentRuleCreators, 'updateRule');
-  setState(state || { ...initialState });
-  test.render(hbs`{{respond/incident-rule/grouping-options }}`);
+  setState({ ...initialState });
+  this.render(hbs`{{respond/incident-rule/grouping-options }}`);
   fillIn(selector, value);
   triggerEvent(selector, 'blur');
   return wait().then(() => {
@@ -114,7 +121,7 @@ test('Changing the group-by fields selection dispatches the updateRule creator',
 });
 
 test('Changing the time window value dispatches the updateRule creator', function(assert) {
-  spyRuleUpdate({ assert, test: this, selector: selectors.timeWindowValueInput, value: '10' });
+  return spyRuleUpdate.bind(this)({ assert, selector: selectors.timeWindowValueInput, value: '10' });
 });
 
 test('Changing the time window unit dispatches the updateRule creator', function(assert) {
@@ -128,27 +135,27 @@ test('Changing the time window unit dispatches the updateRule creator', function
 });
 
 test('Changing the incident title dispatches the updateRule creator', function(assert) {
-  spyRuleUpdate({ assert, test: this, selector: selectors.incidentTitleInput });
+  return spyRuleUpdate.bind(this)({ assert, selector: selectors.incidentTitleInput });
 });
 
 test('Changing the incident summary dispatches the updateRule creator', function(assert) {
-  spyRuleUpdate({ assert, test: this, selector: selectors.incidentSummaryTextarea });
+  return spyRuleUpdate.bind(this)({ assert, selector: selectors.incidentSummaryTextarea });
 });
 
 test('Changing the scoring range critical dispatches the updateRule creator', function(assert) {
-  spyRuleUpdate({ assert, test: this, selector: selectors.criticalScoreBeginRange, value: '90' });
+  return spyRuleUpdate.bind(this)({ assert, selector: selectors.criticalScoreBeginRange, value: '90' });
 });
 
 test('Changing the scoring range high dispatches the updateRule creator', function(assert) {
-  spyRuleUpdate({ assert, test: this, selector: selectors.highScoreBeginRange, value: '50' });
+  return spyRuleUpdate.bind(this)({ assert, selector: selectors.highScoreBeginRange, value: '50' });
 });
 
 test('Changing the scoring range medium dispatches the updateRule creator', function(assert) {
-  spyRuleUpdate({ assert, test: this, selector: selectors.mediumScoreBeginRange, value: '20' });
+  return spyRuleUpdate.bind(this)({ assert, selector: selectors.mediumScoreBeginRange, value: '20' });
 });
 
 test('Changing the scoring range low dispatches the updateRule creator', function(assert) {
-  spyRuleUpdate({ assert, test: this, selector: selectors.lowScoreBeginRange, value: '2' });
+  return spyRuleUpdate.bind(this)({ assert, selector: selectors.lowScoreBeginRange, value: '2' });
 });
 
 test('Changing the categories selection dispatches the updateRule creator', function(assert) {

@@ -1,18 +1,12 @@
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+import Component from '@ember/component';
+import { isEmpty } from '@ember/utils';
 import layout from './template';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import riskLevels from './risk-levels';
 import confidenceLevels from './confidence-levels';
 import { debug, warn } from '@ember/debug';
-
-const {
-  inject: {
-    service
-  },
-  Component,
-  isEmpty
-} = Ember;
 
 const stateToComputed = ({ context }) => ({
   activeTabName: context.activeTabName

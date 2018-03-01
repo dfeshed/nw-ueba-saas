@@ -3,14 +3,10 @@
  * Represents the state of a request for values of a given meta key from a NetWitness Core Service.
  * @public
  */
-import Ember from 'ember';
+import EmberObject, { computed } from '@ember/object';
+
 import MetaKeyOptions from './meta-key-options';
 import MetaKeyValues from './meta-key-values';
-
-const {
-  computed,
-  Object: EmberObject
-} = Ember;
 
 export default EmberObject.extend({
 

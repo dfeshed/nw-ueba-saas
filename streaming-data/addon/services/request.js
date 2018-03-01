@@ -1,12 +1,11 @@
-import Ember from 'ember';
-import { StreamCache, promiseRequest, streamRequest, Socket, ping } from './data-access';
-
-const {
-  Service,
-  inject: {
-    service
-  }
-} = Ember;
+import Service, { inject as service } from '@ember/service';
+import {
+  StreamCache,
+  promiseRequest,
+  streamRequest,
+  Socket,
+  ping
+} from './data-access';
 
 export default Service.extend({
 

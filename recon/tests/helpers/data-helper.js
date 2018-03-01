@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
+import RSVP from 'rsvp';
 import { LIFECYCLE, KEY } from 'redux-pack';
 
 import { RECON_VIEW_TYPES_BY_NAME } from 'recon/utils/reconstruction-types';
@@ -14,8 +15,6 @@ import {
 } from './data';
 
 const DEFAULT_INITIALIZE = { eventId: 1, endpointId: 2, meta: [['medium', 1]] };
-
-const { run, RSVP } = Ember;
 
 const makePackAction = (lifecycle, { type, payload, meta = {} }) => {
   return {

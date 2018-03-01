@@ -1,13 +1,13 @@
+import { inject as service } from '@ember/service';
+import Helper from '@ember/component/helper';
 import Ember from 'ember';
 
 const {
-  Helper,
-  Logger,
-  inject
+  Logger
 } = Ember;
 
 export default Helper.extend({
-  i18n: inject.service('i18n'),
+  i18n: service('i18n'),
   compute(params) {
     const [column] = params;
     const i18n = this.get('i18n');

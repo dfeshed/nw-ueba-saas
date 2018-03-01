@@ -1,8 +1,9 @@
-import Ember from 'ember';
+import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { storyPointsWithEvents, storyPointSelections } from 'respond/selectors/storyline';
-
-const { Component } = Ember;
+import {
+  storyPointsWithEvents,
+  storyPointSelections
+} from 'respond/selectors/storyline';
 
 const stateToComputed = (state) => ({
   items: storyPointsWithEvents(state),

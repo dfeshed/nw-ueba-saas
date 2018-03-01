@@ -5,10 +5,10 @@
 * @public
 */
 
-import Ember from 'ember';
+import { isEmpty } from '@ember/utils';
+
 import OAuth2BearerAuthorizer from 'ember-simple-auth/authorizers/oauth2-bearer';
 import oauthToken from '../mixins/oauth-token';
-const { isEmpty } = Ember;
 export default OAuth2BearerAuthorizer.extend(oauthToken, {
 
   authorize(data, block) {

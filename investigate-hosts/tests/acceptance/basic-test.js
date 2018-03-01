@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import RSVP from 'rsvp';
 import { test } from 'qunit';
 import moduleForAcceptance from '../helpers/module-for-acceptance';
 import engineResolverFor from '../helpers/engine-resolver';
@@ -6,10 +6,6 @@ import { selectorToExist } from 'ember-wait-for-test-helper/wait-for';
 import $ from 'jquery';
 import requests from 'streaming-data/services/data-access/requests';
 import sinon from 'sinon';
-
-const {
-  RSVP
-} = Ember;
 
 const deleteButton = '.host-table__toolbar-buttons .delete-host-button button';
 const popUpCont = '.rsa-application-modal-content';

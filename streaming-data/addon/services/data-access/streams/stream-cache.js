@@ -5,9 +5,7 @@
  * @public
  */
 
-import Ember from 'ember';
-
-const { run } = Ember;
+import { run } from '@ember/runloop';
 
 /*
  * Keeps track of stream by route for future cleaning up on route change

@@ -60,6 +60,7 @@ prepareApp configure
 prepareApp context
 prepareApp preferences
 prepareApp test-helpers
+prepareApp ember-route-action-helper
 prepareApp broccoli-theme
 prepareApp sa
 

@@ -1,6 +1,4 @@
-import Ember from 'ember';
-
-const { Helper: { helper } } = Ember;
+import { helper } from '@ember/component/helper';
 
 export function priorityToContentStyle([priority]) {
   priority = priority || '';

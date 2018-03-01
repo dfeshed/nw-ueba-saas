@@ -1,7 +1,7 @@
-import Ember from 'ember';
+import { isArray } from '@ember/array';
+import { isEmpty } from '@ember/utils';
+import { merge } from '@ember/polyfills';
 import moment from 'moment';
-
-const { isArray, isEmpty, merge } = Ember;
 
 const aKB = 1024;
 const aMB = aKB * 1024;

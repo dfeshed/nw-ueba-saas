@@ -8,13 +8,10 @@
  * @see https://github.com/emberjs/ember-collection
  * @public
  */
-import Ember from 'ember';
+import Mixin from '@ember/object/mixin';
 
-const {
-  Mixin,
-  computed,
-  run
-} = Ember;
+import { computed } from '@ember/object';
+import { run } from '@ember/runloop';
 
 export default Mixin.create({
 

@@ -1,9 +1,10 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import { set } from '@ember/object';
+import { isEmpty } from '@ember/utils';
 import computed from 'ember-computed-decorators';
 import ContextHelper from 'context/util/util';
 import layout from './template';
 
-const { Component, set, isEmpty } = Ember;
 const riskTemplate = {
   'HIGH RISK': {
     desc: 'context.lc.highRiskDesc',

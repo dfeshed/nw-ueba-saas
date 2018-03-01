@@ -3,9 +3,7 @@
  * Used for calling named methods in a given context object.
  * @public
  */
-import Ember from 'ember';
-
-const { Helper: { helper } } = Ember;
+import { helper } from '@ember/component/helper';
 
 export function callMethod(params /* , hash */) {
   const [ctxt, methodName] = params;

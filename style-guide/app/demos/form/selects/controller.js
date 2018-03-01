@@ -1,8 +1,4 @@
-import Ember from 'ember';
-
-const {
-  Controller
-} = Ember;
+import Controller from '@ember/controller';
 
 const options = [ 'Foo', 'Bar', 'Baz' ];
 

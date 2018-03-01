@@ -1,11 +1,7 @@
-import Ember from 'ember';
+import Service from '@ember/service';
+import Evented from '@ember/object/evented';
 import { moduleFor, test } from 'ember-qunit';
 import sinon from 'sinon';
-
-const {
-  Service,
-  Evented
-} = Ember;
 
 const eventBusStub = Service.extend(Evented, {});
 

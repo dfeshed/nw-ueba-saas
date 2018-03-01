@@ -2,7 +2,11 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import $ from 'jquery';
 
-import { clickTrigger, selectChoose, typeInSearch } from '../../../../helpers/ember-power-select';
+import {
+  clickTrigger,
+  selectChoose,
+  typeInSearch
+} from '../../../../helpers/ember-power-select';
 import { A } from 'ember-array/utils';
 
 const column = {

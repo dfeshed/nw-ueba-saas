@@ -4,7 +4,10 @@ import HighlightsEntities from 'context/mixins/highlights-entities';
 import layout from './template';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
-import { singleSelectStoryPoint, toggleSelectStoryPoint } from 'respond/actions/creators/incidents-creators';
+import {
+  singleSelectStoryPoint,
+  toggleSelectStoryPoint
+} from 'respond/actions/creators/incidents-creators';
 
 const stateToComputed = () => ({ });
 

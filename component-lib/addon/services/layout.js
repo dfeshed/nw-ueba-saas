@@ -1,12 +1,5 @@
-import Ember from 'ember';
-
-const {
-  Service,
-  computed,
-  inject: {
-    service
-  }
-} = Ember;
+import { computed } from '@ember/object';
+import Service, { inject as service } from '@ember/service';
 
 export default Service.extend({
 

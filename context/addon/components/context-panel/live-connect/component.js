@@ -1,11 +1,8 @@
-import Ember from 'ember';
+import Component from '@ember/component';
 import layout from './template';
 import lcColumnList from 'context/config/liveconnect-columns';
 import computed, { or } from 'ember-computed-decorators';
 
-const {
-  Component
-} = Ember;
 const liveConnectTabs = ['LiveConnect-Ip', 'LiveConnect-Domain', 'LiveConnect-File'];
 export default Component.extend({
   layout,

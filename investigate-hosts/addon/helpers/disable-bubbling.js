@@ -1,7 +1,4 @@
-import Ember from 'ember';
-const {
-  Helper
-} = Ember;
+import Helper from '@ember/component/helper';
 
 /**
  * Action wrapper helper for disabling the bubbling of event

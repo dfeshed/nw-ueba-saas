@@ -3,7 +3,12 @@ import run from 'ember-runloop';
 import computed from 'ember-computed-decorators';
 import layout from './template';
 import { bisector } from 'd3-array';
-import { calcGraphWidth, calcGraphHeight, computeExtent, createScale } from '../../utils/chart-utils';
+import {
+  calcGraphWidth,
+  calcGraphHeight,
+  computeExtent,
+  createScale
+} from '../../utils/chart-utils';
 import { scaleTime, scaleLinear } from 'd3-scale';
 import { select, mouse } from 'd3-selection';
 /* global addResizeListener */

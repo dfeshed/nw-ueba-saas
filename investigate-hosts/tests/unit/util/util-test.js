@@ -1,6 +1,9 @@
 import { module, test } from 'qunit';
 
-import { generateColumns, getSelectedAgentIds } from 'investigate-hosts/util/util';
+import {
+  generateColumns,
+  getSelectedAgentIds
+} from 'investigate-hosts/util/util';
 
 module('Unit | Util');
 

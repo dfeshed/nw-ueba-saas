@@ -1,15 +1,13 @@
+import RSVP from 'rsvp';
+import { schedule, run } from '@ember/runloop';
+import { registerAsyncHelper } from '@ember/test';
 import Ember from 'ember';
 
 const {
-  RSVP,
-  run,
-  run: {
-    schedule
-  },
   Test: {
-    promise: TestPromise,
-    registerAsyncHelper
+    promise: TestPromise
   },
+
   Test
 } = Ember;
 

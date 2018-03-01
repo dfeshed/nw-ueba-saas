@@ -1,8 +1,6 @@
-import Ember from 'ember';
+import Component from '@ember/component';
 import { alias } from 'ember-computed-decorators';
 import Clickable from 'respond/mixins/dom/clickable';
-
-const { Component } = Ember;
 
 export default Component.extend(Clickable, {
   classNames: ['rsa-list-item'],

@@ -1,5 +1,5 @@
+import $ from 'jquery';
 import wait from 'ember-test-helpers/wait';
-import Ember from 'ember';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -11,8 +11,6 @@ import startApp from '../../../helpers/start-app';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import * as VisualCreators from 'recon/actions/visual-creators';
 import * as DataCreators from 'recon/actions/data-creators';
-
-const { $ } = Ember;
 
 const application = startApp();
 initialize(application);

@@ -4,7 +4,11 @@ import reducer from 'investigate-hosts/reducers/details/process/reducer';
 import * as ACTION_TYPES from 'investigate-hosts/actions/types';
 import { LIFECYCLE } from 'redux-pack';
 import makePackAction from '../../../../helpers/make-pack-action';
-import { processListData, processTreeData, processDetailsData } from '../../../state/state';
+import {
+  processListData,
+  processTreeData,
+  processDetailsData
+} from '../../../state/state';
 
 module('Unit | Reducers | process');
 

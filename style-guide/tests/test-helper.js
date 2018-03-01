@@ -5,9 +5,9 @@ import { setResolver } from 'ember-qunit';
 import { start } from 'ember-cli-qunit';
 import loadEmberExam from 'ember-exam/test-support/load';
 
-import { registerWaiter } from './helpers/raf-test-waiter';
+import { registerRafWaiter } from './helpers/raf-test-waiter';
 
-registerWaiter();
+registerRafWaiter();
 
 setResolver(resolver);
 loadEmberExam();

@@ -1,13 +1,8 @@
-import Ember from 'ember';
+/* global addResizeListener, removeResizeListener */
+
+import Component from '@ember/component';
+import { run } from '@ember/runloop';
 import { connect } from 'ember-redux';
-
-/* global addResizeListener */
-/* global removeResizeListener */
-
-const {
-  Component,
-  run
-} = Ember;
 
 const stateToComputed = ({
   respond: {
