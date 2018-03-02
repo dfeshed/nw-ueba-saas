@@ -1,4 +1,4 @@
-import { A } from 'ember-array/utils';
+import { A } from '@ember/array';
 import computed, { alias } from 'ember-computed';
 import { isNone } from '@ember/utils';
 import Service, { inject as service } from '@ember/service';

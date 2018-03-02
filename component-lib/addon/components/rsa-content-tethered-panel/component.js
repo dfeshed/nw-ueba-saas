@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import Component from '@ember/component';
 import computed from 'ember-computed';
-import { htmlSafe } from 'ember-string';
+import { htmlSafe } from '@ember/string';
 import { run } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import layout from './template';

@@ -1,5 +1,5 @@
 import { get } from '@ember/object';
-import { isEmberArray } from 'ember-array/utils';
+import { isArray } from '@ember/array';
 import { warn } from '@ember/debug';
 
 import * as ACTION_TYPES from './types';
@@ -37,7 +37,7 @@ const createFilename = (headerItems, files = []) => {
 
   if (nwService && sessionId) {
     fileName = `${nwService}_SID${sessionId}`;
-    if (isEmberArray(files) && files.length) {
+    if (isArray(files) && files.length) {
       fileName += `_FC${files.length}`;
     }
   }

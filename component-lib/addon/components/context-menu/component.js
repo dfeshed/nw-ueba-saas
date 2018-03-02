@@ -1,7 +1,7 @@
 import EmberContextMenu from 'ember-context-menu/components/context-menu';
 import computed from 'ember-computed-decorators';
 import { calculateContextMenuOffset } from 'component-lib/utils/context-menu-utils';
-import { htmlSafe } from 'ember-string';
+import { htmlSafe } from '@ember/string';
 
 /**
  * This component extends the context-menu component from ember-context-menu and fixes the problem of the menu panel

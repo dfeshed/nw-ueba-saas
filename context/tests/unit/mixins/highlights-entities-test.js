@@ -5,7 +5,7 @@ import jQuery from 'jquery';
 import Evented from '@ember/object/evented';
 import rsvp from 'rsvp';
 import { next } from '@ember/runloop';
-import { isEmberArray } from 'ember-array/utils';
+import { isArray } from '@ember/array';
 
 module('Unit | Mixin | highlights entities');
 
@@ -110,7 +110,7 @@ test('it applies CSS classes, wires up clicks, and fires callbacks correctly', f
     element,
     autoHighlightEntities: true,
     onEntityContextFound: (type, id, $element, status, records) => {
-      assert.ok(isEmberArray(records), 'Expected callback to receive context data');
+      assert.ok(isArray(records), 'Expected callback to receive context data');
       assert.ok($element && $element.hasClass('is-context-enabled'), 'Expected callback only for enabled DOM nodes');
       assert.equal(
         !!(records && records.length),

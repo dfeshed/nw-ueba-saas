@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
 import layout from './template';
-import { htmlSafe } from 'ember-string';
+import { htmlSafe } from '@ember/string';
 import $ from 'jquery';
 
 /**

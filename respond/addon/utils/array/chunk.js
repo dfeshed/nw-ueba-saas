@@ -1,4 +1,4 @@
-import { isEmberArray } from 'ember-array/utils';
+import { isArray } from '@ember/array';
 
 /**
  * Takes an array of values and splits them up into multiple arrays based on the chunk size
@@ -9,7 +9,7 @@ import { isEmberArray } from 'ember-array/utils';
  * @public
  */
 const chunk = (array, chunkSize) => {
-  if (!isEmberArray(array)) {
+  if (!isArray(array)) {
     array = [array];
   }
   const chunked = [];

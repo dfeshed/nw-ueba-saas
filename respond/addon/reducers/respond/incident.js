@@ -4,7 +4,7 @@ import reduxActions from 'redux-actions';
 import { handle } from 'redux-pack';
 import { load, persist } from './util/local-storage';
 import { toggle } from 'respond/utils/immut/array';
-import { isEmberArray } from 'ember-array/utils';
+import { isArray } from '@ember/array';
 
 const localStorageKey = 'rsa::nw::respond::incident';
 
@@ -93,7 +93,7 @@ const _handleUpdates = (action) => {
     const { payload } = action;
     // The payload can come in as an array (when multiple requests are being settled) or as an object (normal promise response)
     // To make things easier, we normalize an object payload into the format of the array payload
-    const [{ value: { data } }] = !isEmberArray(payload) ? [{ value: { ...payload } }] : payload;
+    const [{ value: { data } }] = !isArray(payload) ? [{ value: { ...payload } }] : payload;
 
     return state.set('info', data[0]);
   };
@@ -203,7 +203,7 @@ const incident = reduxActions.handleActions({
         const { payload } = action;
         let removedItemIds = [];
         // If the payload is an array, we had multiple promises (deletion requests) being settled, each of which has its own payload/resolved value
-        if (isEmberArray(payload)) {
+        if (isArray(payload)) {
           removedItemIds = payload.reduce((removed, { value: { data } }) => removed.concat(data), []);
         } else { // a single promise (deletion request) resolved
           removedItemIds = payload.data;
@@ -221,7 +221,7 @@ const incident = reduxActions.handleActions({
       failure: (s) => s,
       success: (s) => {
         const { payload } = action;
-        const normalizedPayload = !isEmberArray(payload) ? [{ value: { ...payload } }] : payload;
+        const normalizedPayload = !isArray(payload) ? [{ value: { ...payload } }] : payload;
 
         // The array of entities that have been updated reduced to a single array
         const updateData = normalizedPayload.reduce((updatedEntities, { value: { data } }) => {

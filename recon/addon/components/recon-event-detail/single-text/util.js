@@ -1,4 +1,4 @@
-import { htmlSafe } from 'ember-string';
+import { htmlSafe } from '@ember/string';
 
 /**
  * @description Function used to do Base64 encode/decode the original string

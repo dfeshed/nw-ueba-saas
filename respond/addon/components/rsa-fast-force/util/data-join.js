@@ -1,7 +1,7 @@
 import { drag } from 'd3-drag';
 import { event } from 'd3-selection';
 import { run } from '@ember/runloop';
-import { dasherize } from 'ember-string';
+import { dasherize } from '@ember/string';
 import NodeTypes from 'respond/utils/entity/node-types';
 
 const MAX_TEXT_LENGTH = 30;

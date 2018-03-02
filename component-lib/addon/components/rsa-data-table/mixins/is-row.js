@@ -7,7 +7,7 @@ import computed from 'ember-computed-decorators';
 import SizeBindings from './size-bindings';
 import DomIsReady from './dom-is-ready';
 import HasTableParent from './has-table-parent';
-import { htmlSafe } from 'ember-string';
+import { htmlSafe } from '@ember/string';
 import { set } from '@ember/object';
 import $ from 'jquery';
 import Mixin from '@ember/object/mixin';

@@ -1,10 +1,10 @@
 import Component from '@ember/component';
-import { isEmberArray } from 'ember-array/utils';
+import { isArray } from '@ember/array';
 import { assert } from '@ember/debug';
 import { connect } from 'ember-redux';
 import actionBroker from 'respond/actions/action-creator-broker';
 import { inject as service } from '@ember/service';
-import { camelize } from 'ember-string';
+import { camelize } from '@ember/string';
 import { isPresent } from '@ember/utils';
 import { gt, alias, empty } from 'ember-computed-decorators';
 import FLASH_MESSAGE_TYPES from 'respond/utils/flash-message-types';
@@ -127,7 +127,7 @@ const Explorer = Component.extend(Notifications, Confirmable, {
   onInit: function() {
     const columns = this.get('columns');
     assert('A "columns" attribute referencing an array must be passed to the Explorer to define the columns in the ' +
-      'Explorer list', columns && isEmberArray(columns));
+      'Explorer list', columns && isArray(columns));
     assert('A namespace attribute must be provied', isPresent(this.get('namespace')));
     this.sendAction('bootstrap');
     this.send('getItems');

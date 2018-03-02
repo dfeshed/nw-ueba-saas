@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import computed, { notEmpty } from 'ember-computed-decorators';
-import { dasherize } from 'ember-string';
+import { dasherize } from '@ember/string';
 import safeCallback from 'component-lib/utils/safe-callback';
 
 const EntitiesLegend = Component.extend({

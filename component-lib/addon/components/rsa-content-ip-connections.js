@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { equal, gt } from 'ember-computed';
-import { htmlSafe } from 'ember-string';
+import { htmlSafe } from '@ember/string';
 import { isPresent } from '@ember/utils';
 import { run } from '@ember/runloop';
 import layout from '../templates/components/rsa-content-ip-connections';

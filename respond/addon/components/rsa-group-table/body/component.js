@@ -3,7 +3,7 @@ import layout from './template';
 import computed from 'ember-computed-decorators';
 import HasSizeAttr from 'respond/mixins/dom/has-size-attr';
 import HasScrollAttr from 'respond/mixins/dom/has-scroll-attr';
-import { htmlSafe } from 'ember-string';
+import { htmlSafe } from '@ember/string';
 import $ from 'jquery';
 
 /**

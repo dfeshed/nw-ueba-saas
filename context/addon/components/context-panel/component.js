@@ -12,7 +12,7 @@ import liveConnectObj from 'context/config/liveconnect-response-schema';
 import layout from './template';
 import { inject as service } from '@ember/service';
 import { isEmpty } from '@ember/utils';
-import { isEmberArray } from 'ember-array/utils';
+import { isArray } from '@ember/array';
 import { once, next, schedule, later } from '@ember/runloop';
 import EmberObject from '@ember/object';
 
@@ -171,7 +171,7 @@ const ContextComponent = Component.extend({
       },
       onResponse: ({ data }) => {
         log('pushing data to relatedEntity model');
-        if (isEmberArray(data)) {
+        if (isArray(data)) {
           data.forEach((entry) => {
             this._populateRelatedEntities(entry);
           });

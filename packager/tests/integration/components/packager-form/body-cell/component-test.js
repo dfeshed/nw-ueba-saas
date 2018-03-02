@@ -7,7 +7,7 @@ import {
   selectChoose,
   typeInSearch
 } from '../../../../helpers/ember-power-select';
-import { A } from 'ember-array/utils';
+import { A } from '@ember/array';
 
 const column = {
   field: 'channel',

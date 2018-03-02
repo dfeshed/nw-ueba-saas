@@ -1,20 +1,20 @@
 import chunk from 'respond/utils/array/chunk';
 import { module, test } from 'qunit';
-import { isEmberArray } from 'ember-array/utils';
+import { isArray } from '@ember/array';
 
 module('Unit | Utility | array/chunk');
 
 test('it works', function(assert) {
   const longArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
   const chunkedArray = chunk(longArray, 3);
-  assert.ok(isEmberArray(chunkedArray), 'The output of the chunk function is an array');
+  assert.ok(isArray(chunkedArray), 'The output of the chunk function is an array');
   assert.equal(chunkedArray.length, 6, 'The array was turned into 6 chunks of 3');
 });
 
 test('chunk on an empty array returns an empty array', function(assert) {
   const array = [];
   const chunkedArray = chunk(array, 3);
-  assert.ok(isEmberArray(chunkedArray), 'The output of the chunk function is an array');
+  assert.ok(isArray(chunkedArray), 'The output of the chunk function is an array');
   assert.equal(chunkedArray.length, 0, 'Chunking an empty array returns an empty array');
 });
 

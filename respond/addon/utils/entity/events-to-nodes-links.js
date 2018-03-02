@@ -5,7 +5,7 @@ import { makeNodeId, makeNode } from './node';
 import { makeLinkId, makeLink } from './link';
 import arrayFromHashValues from 'respond/utils/array/from-hash-values';
 import { isEmpty } from '@ember/utils';
-import { isEmberArray } from 'ember-array/utils';
+import { isArray } from '@ember/array';
 import { set } from '@ember/object';
 
 // Maps properties of a device POJO (from a normalized alert's source, destination or detector) to node types.
@@ -29,7 +29,7 @@ let cache = {
 
 // Returns true if a given array matches the starting contents of another given array.
 function isStartOfArray(arr1, arr2) {
-  if (isEmberArray(arr1) && isEmberArray(arr2)) {
+  if (isArray(arr1) && isArray(arr2)) {
     if (arr1.length <= arr2.length) {
       const didNotMatch = arr1.find(function(item, index) {
         return item !== arr2[index];

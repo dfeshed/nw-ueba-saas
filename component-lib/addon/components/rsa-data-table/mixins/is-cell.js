@@ -6,7 +6,7 @@
  */
 import HasTableParent from './has-table-parent';
 import computed, { equal } from 'ember-computed-decorators';
-import { htmlSafe } from 'ember-string';
+import { htmlSafe } from '@ember/string';
 import { isEmpty } from '@ember/utils';
 import Mixin from '@ember/object/mixin';
 

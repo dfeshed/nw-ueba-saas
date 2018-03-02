@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
-import { isEmberArray } from 'ember-array/utils';
+import { isArray } from '@ember/array';
 import { get } from '@ember/object';
 import { connect } from 'ember-redux';
 import computed, { alias } from 'ember-computed-decorators';
@@ -61,8 +61,8 @@ const TimelineComponent = Component.extend({
    */
   @computed('data')
   chartData(data = []) {
-    if (isEmberArray(data)) {
-      return isEmberArray(data[0]) ? data : [ data ];
+    if (isArray(data)) {
+      return isArray(data[0]) ? data : [ data ];
     }
     return [[]];
   },

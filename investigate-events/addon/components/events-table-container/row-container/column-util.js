@@ -1,5 +1,5 @@
 import { get } from '@ember/object';
-import isEmberArray from 'ember-array/utils';
+import { isArray } from '@ember/array';
 import formatUtil from './format-util';
 import { isLogEvent } from 'component-lib/utils/log-utils';
 import { select } from 'd3-selection';
@@ -173,7 +173,7 @@ function buildMetaSrcDstPair(srcMetaKey, dstMetaKey, item, opts) {
   const pair = document.createElement('div');
   const $pair = select(pair)
     .classed('meta-src-dst-pair', true)
-    .attr('data-field', (isEmberArray(srcMetaKey) ? srcMetaKey[0] : srcMetaKey) || '');
+    .attr('data-field', (isArray(srcMetaKey) ? srcMetaKey[0] : srcMetaKey) || '');
   if (srcValue.raw !== undefined) {
     $pair.append('span')
       .classed('src', true)
@@ -224,7 +224,7 @@ function buildMetaKeyAndValue(metaKey, item, opts) {
   const pair = document.createElement('div');
   const $pair = select(pair)
     .classed('meta-key-and-value', true)
-    .attr('data-field', (isEmberArray(metaKey) ? metaKey[0] : metaKey) || '');
+    .attr('data-field', (isArray(metaKey) ? metaKey[0] : metaKey) || '');
   $pair.append('span')
     .classed('key', true)
     .text(metaKey);

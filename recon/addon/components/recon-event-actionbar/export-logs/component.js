@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import { htmlSafe } from 'ember-string';
+import { htmlSafe } from '@ember/string';
 import { connect } from 'ember-redux';
 import computed, { not } from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';

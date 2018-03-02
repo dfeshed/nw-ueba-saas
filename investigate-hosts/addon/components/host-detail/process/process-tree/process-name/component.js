@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import { get, set } from '@ember/object';
 import computed, { alias } from 'ember-computed-decorators';
-import { htmlSafe } from 'ember-string';
+import { htmlSafe } from '@ember/string';
 
 const BASE_PADDING = 30;
 

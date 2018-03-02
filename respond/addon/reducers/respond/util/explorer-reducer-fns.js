@@ -1,5 +1,5 @@
 import { handle } from 'redux-pack';
-import { isEmberArray } from 'ember-array/utils';
+import { isArray } from '@ember/array';
 import { SINCE_WHEN_TYPES_BY_NAME } from 'respond/utils/since-when-types';
 
 function defaultCustomDateRange() {
@@ -23,7 +23,7 @@ const _handleUpdates = (action) => {
     const { payload } = action;
     // The payload can come in as an array (when multiple requests are being settled) or as an object (normal promise response)
     // To make things easier, we normalize an object payload into the format of the array payload
-    const normalizedPayload = !isEmberArray(payload) ? [{ value: { ...payload } }] : payload;
+    const normalizedPayload = !isArray(payload) ? [{ value: { ...payload } }] : payload;
 
     // The array of entities that have been updated reduced to a single array
     const updateData = normalizedPayload.reduce((updatedEntities, { value: { data } }) => {
@@ -49,7 +49,7 @@ const _handleDeletes = (action) => {
     let removedItemIds = [];
 
     // If the payload is an array, we had multiple promises (deletion requests) being settled, each of which has its own payload/resolved value
-    if (isEmberArray(payload)) {
+    if (isArray(payload)) {
       removedItemIds = payload.reduce((removed, { value: { data } }) => removed.concat(data), []);
     } else { // a single promise (deletion request) resolved
       removedItemIds = payload.data;

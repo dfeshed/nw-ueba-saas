@@ -1,7 +1,7 @@
 import EmberObject from '@ember/object';
 import Size from 'respond/utils/css/size';
 import computed from 'ember-computed-decorators';
-import { htmlSafe } from 'ember-string';
+import { htmlSafe } from '@ember/string';
 
 /**
  * Column model for the GroupTable component.

@@ -18,7 +18,7 @@ import {
   getViewMode,
   getInspectorWidth } from 'respond/selectors/incidents';
 import DragBehavior from 'respond/utils/behaviors/drag';
-import { htmlSafe } from 'ember-string';
+import { htmlSafe } from '@ember/string';
 import FLASH_MESSAGE_TYPES from 'respond/utils/flash-message-types';
 import Notifications from 'respond/mixins/notifications';
 import $ from 'jquery';
