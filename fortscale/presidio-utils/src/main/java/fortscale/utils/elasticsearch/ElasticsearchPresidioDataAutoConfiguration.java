@@ -18,7 +18,6 @@ import org.springframework.data.elasticsearch.core.mapping.SimpleElasticsearchMa
 public class ElasticsearchPresidioDataAutoConfiguration {
 
     @Bean
-    @ConditionalOnMissingBean
     public TemplateExtractor templateExtractor() {
         return new TemplateAnnotationExtractor();
     }
