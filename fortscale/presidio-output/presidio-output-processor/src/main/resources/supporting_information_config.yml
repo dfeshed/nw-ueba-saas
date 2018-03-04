@@ -653,7 +653,7 @@ indicators:
   adeEventType: scored_enriched.print.srcMachineNameRegexCluster.userId.print.score
   schema: PRINT
   anomalyDescriptior:
-    anomalyField: srcMachineNameRegexCluster
+    anomalyField: srcMachineCluster
   historicalData:
     type: count_aggregations
     featureBucketConfName: srcMachineNameRegexClusterHistogramUserIdPrintDaily
@@ -666,7 +666,7 @@ indicators:
   adeEventType: scored_enriched.print.dstMachineId.userId.print.score
   schema: PRINT
   anomalyDescriptior:
-    anomalyField: dstMachineId
+    anomalyField: printerId
   historicalData:
     type: count_aggregations
     featureBucketConfName: dstMachineIdHistogramUserIdPrintDaily
@@ -679,7 +679,7 @@ indicators:
   adeEventType: scored_enriched.print.dstMachineNameRegexCluster.userId.print.score
   schema: PRINT
   anomalyDescriptior:
-    anomalyField: dstMachineNameRegexCluster
+    anomalyField: printerCluster
   historicalData:
     type: count_aggregations
     featureBucketConfName: dstMachineNameRegexClusterHistogramUserIdPrintDaily
@@ -687,17 +687,19 @@ indicators:
   classification: print_to_abnormal_printer
 
 - id: sumOfHighestAbsoluteSharedFolderPathScoresUserIdPrintHourly
-  type: FEATURE_AGGREGATION
+  type: SCORE_AGGREGATION
   name: abnormal_shared_folder_path_print
   schema: PRINT
-  adeEventType: print
+  adeEventType: scored_enriched.print.absoluteSharedFolderPath.userId.print.score
   anomalyDescriptior:
-    anomalyField: absoluteFolderPath
+    anomalyField: srcFolderPath
     anomalyFilters:
       fieldName: isSrcDriveShared
       fieldValue: true
   historicalData:
-    type: hourly_aggregations
+    type: count_aggregations
+    featureBucketConfName: absoluteSharedFolderPathHistogramUserIdPrintDaily
+    featureName: absoluteSharedFolderPathHistogram
   classification: data_exfiltration
 
 - id: sumOfHighestFileExtensionScoresUserIdPrintHourly
@@ -706,7 +708,7 @@ indicators:
   adeEventType: scored_enriched.print.fileExtension.userId.print.score
   schema: PRINT
   anomalyDescriptior:
-    anomalyField: fileExtension
+    anomalyField: srcFileExtension
   historicalData:
     type: count_aggregations
     featureBucketConfName: fileExtensionHistogramUserIdPrintDaily
@@ -767,7 +769,7 @@ indicators:
   adeEventType: print
   schema: PRINT
   anomalyDescriptior:
-    anomalyField: dstMachineId
+    anomalyField: printerId
   historicalData:
     type: hourly_aggregations
   classification: abnormal_print_activity
