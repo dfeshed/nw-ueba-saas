@@ -4,14 +4,9 @@ import fortscale.smart.record.conf.SmartRecordConf;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeRange;
-import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
-import presidio.ade.domain.record.aggregated.ScoredFeatureAggregationRecord;
-import presidio.ade.domain.record.aggregated.SmartAggregationRecord;
-import presidio.ade.domain.record.aggregated.SmartRecord;
+import presidio.ade.domain.record.aggregated.*;
 
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Aggregates {@link AdeAggregationRecord}s with a specific {@link FixedDurationStrategy} and
@@ -110,13 +105,23 @@ public class SmartRecordAggregator {
 	}
 
 	private SmartRecord getSmartRecord(AdeAggregationRecord aggregationRecord) {
-		String contextId = aggregationRecord.getContextId();
-		return contextIdToSmartRecordMap.computeIfAbsent(contextId, key -> {
-			Map<String, String> aggregationRecordContext = aggregationRecord.getContext();
-			Map<String, String> context = smartRecordConf.getContexts().stream()
-					.collect(Collectors.toMap(Function.identity(), aggregationRecordContext::get));
-			return new SmartRecord(timeRange, contextId, smartRecordConf.getName(), fixedDurationStrategy, context);
-		});
+		Map<String, String> aggregationRecordContext = aggregationRecord.getContext();
+		Map<String, String> smartRecordContext = new HashMap<>();
+
+		for (Map.Entry<String, List<String>> entry : smartRecordConf.getContextToFieldsMap().entrySet()) {
+			for (String field : entry.getValue()) {
+				String value = aggregationRecordContext.get(field);
+
+				if (value != null) {
+					smartRecordContext.put(entry.getKey(), value);
+					break;
+				}
+			}
+		}
+
+		String contextId = AdeContextualAggregatedRecord.getAggregatedFeatureContextId(smartRecordContext);
+		return contextIdToSmartRecordMap.computeIfAbsent(contextId, key ->
+				new SmartRecord(timeRange, key, smartRecordConf.getName(), fixedDurationStrategy, smartRecordContext));
 	}
 
 	private boolean doesAggregationRecordAlreadyExist(
