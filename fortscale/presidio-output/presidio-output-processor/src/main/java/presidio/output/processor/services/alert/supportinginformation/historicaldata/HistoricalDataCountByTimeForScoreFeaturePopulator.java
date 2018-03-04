@@ -30,10 +30,10 @@ public class HistoricalDataCountByTimeForScoreFeaturePopulator implements Histor
         List<Bucket<String, Double>> buckets = new ArrayList<>();
 
         // fetch daily histograms
-        List<DailyHistogram<String>> dailyHistograms = historicalDataFetcher.getDailyHistogramsForFeature(timeRange, contextField, contextValue, schema, featureName, historicalDataConfig);
+        List<DailyHistogram<String, Number>> dailyHistograms = historicalDataFetcher.getDailyHistogramsForFeature(timeRange, contextField, contextValue, schema, featureName, historicalDataConfig);
 
         // iterate over days
-        for (DailyHistogram<String> dailyHistogram : dailyHistograms) {
+        for (DailyHistogram<String, Number> dailyHistogram : dailyHistograms) {
 
             if (dailyHistogram.getHistogram() == null) {
                 logger.debug("The histogram for day {} was null", dailyHistogram.date);
@@ -43,7 +43,7 @@ public class HistoricalDataCountByTimeForScoreFeaturePopulator implements Histor
             // iterate over hours
             for (String hour : dailyHistogram.getHistogram().keySet()) {
 
-                Double valueForHour = dailyHistogram.getHistogram().get(hour);
+                Double valueForHour = new Double(dailyHistogram.getHistogram().get(hour).doubleValue());
                 boolean isAnomaly = anomalyValue.equals(valueForHour.toString());
                 // The key format is : {featureName#epochtime} and we need to extract the epochtime
                 Bucket<String, Double> bucket = new Bucket<>(hour.split("#")[1], valueForHour, isAnomaly);
