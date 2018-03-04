@@ -95,7 +95,7 @@ class RetentionDagBuilder(PresidioDagBuilder):
         input_retention_short_circuit_operator >> input_retention_sub_dag
         output_retention_short_circuit_operator >> output_retention_sub_dag
 
-        retention_dag_extended = RetentionDagExtensionBuilder()
+        retention_dag_extended = RetentionDagExtensionBuilder(self.data_sources)
         retention_dag_extended.build(retention_dag)
 
         return retention_dag
