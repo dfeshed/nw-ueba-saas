@@ -425,7 +425,7 @@
                 "type": "long"
               },
               "WEIGHT": {
-                "type": "long"
+                "type": "float"
               }
             }
           }
