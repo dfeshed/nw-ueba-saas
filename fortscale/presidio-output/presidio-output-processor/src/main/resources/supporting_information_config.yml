@@ -479,6 +479,76 @@ indicators:
     featureName: operationTypeHistogram
   classification: elevated_privileges_granted
 
+- id: strongAuthenticationMethodChangedUserIdActiveDirectoryHourly
+  type: STATIC_INDICATOR
+  name: strong_authentication_method_changed
+  adeEventType: scored_enriched.active_directory.strongAuthenticationMethodChanged.userId.activeDirectory.score
+  schema: ACTIVE_DIRECTORY
+  anomalyDescriptior:
+      anomalyField: operationType
+      anomalyValue: STRONG_AUTHENTICATION_METHOD_CHANGED
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
+    featureName: operationTypeHistogram
+  classification: sensitive_user_status_changes
+
+- id: strongAuthenticationPhoneAppDetailChangedUserIdActiveDirectoryHourly
+  type: STATIC_INDICATOR
+  name: strong_authentication_phone_app_detail_changed
+  adeEventType: scored_enriched.active_directory.strongAuthenticationPhoneAppDetailChanged.userId.activeDirectory.score
+  schema: ACTIVE_DIRECTORY
+  anomalyDescriptior:
+      anomalyField: operationType
+      anomalyValue: STRONG_AUTHENTICATION_PHONE_APP_DETAIL_CHANGED
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
+    featureName: operationTypeHistogram
+  classification: sensitive_user_status_changes
+
+- id: strongAuthenticationPhoneAppDetailChangedUserIdActiveDirectoryHourly
+  type: STATIC_INDICATOR
+  name: strong_authentication_phone_user_detail_changed
+  adeEventType: scored_enriched.active_directory.strongAuthenticationPhoneUserDetailChanged.userId.activeDirectory.score
+  schema: ACTIVE_DIRECTORY
+  anomalyDescriptior:
+      anomalyField: operationType
+      anomalyValue: STRONG_AUTHENTICATION_PHONE_USER_DETAIL_CHANGED
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
+    featureName: operationTypeHistogram
+  classification: sensitive_user_status_changes
+
+- id: strongAuthenticationRequirementChangedUserIdActiveDirectoryHourly
+  type: STATIC_INDICATOR
+  name: strong_authentication_requirement_changed
+  adeEventType: scored_enriched.active_directory.strongAuthenticationRequirementChanged.userId.activeDirectory.score
+  schema: ACTIVE_DIRECTORY
+  anomalyDescriptior:
+      anomalyField: operationType
+      anomalyValue: STRONG_AUTHENTICATION_REQUIREMENT_CHANGED
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
+    featureName: operationTypeHistogram
+  classification: sensitive_user_status_changes
+
+- id: userPasswordUSER_PASSWORD_RESETUserIdActiveDirectoryHourly
+  type: STATIC_INDICATOR
+  name: user_password_reset
+  adeEventType: scored_enriched.active_directory.userPasswordReset.userId.activeDirectory.score
+  schema: ACTIVE_DIRECTORY
+  anomalyDescriptior:
+      anomalyField: operationType
+      anomalyValue: USER_PASSWORD_RESET
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
+    featureName: operationTypeHistogram
+  classification: sensitive_user_status_changes
+
 
 #*********************************************************
 #*                AUTHENTICATION INDICATORS              *
