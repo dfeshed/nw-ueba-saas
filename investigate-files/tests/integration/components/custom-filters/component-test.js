@@ -6,9 +6,11 @@ import engineResolver from '../../../helpers/engine-resolver';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import customFilterData from '../../state/custom-filter-data';
 import { patchFlash } from '../../../helpers/patch-flash';
+import { throwSocket } from '../../../helpers/patch-socket';
 import { flashMessages } from '../../../helpers/flash-message'; // eslint-disable-line no-unused-vars
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { getOwner } from '@ember/application';
+
 
 let setState;
 
@@ -90,6 +92,25 @@ test('Success message should appear when custom filter is succesfully deleted', 
   this.$('.filter-list .delete-filter .rsa-form-button-wrapper button.rsa-form-button').click();
   assert.equal(this.$('.filter-list .delete-filter .confirmation-modal').length, 1, 'Confirmation box on clicking delete filter button');
   wait().then(() => {
+    // Selecting Yes on popped confirmation box
+    this.$('.filter-list .is-primary .rsa-form-button').click();
+  });
+});
+
+test('Failure message should appear when custom filter deletion is failed', function(assert) {
+  const done = assert.async();
+  assert.expect(3);
+  throwSocket({ message: { meta: { message: 'test' } } });
+  patchFlash((flash) => {
+    assert.equal(flash.type, 'error', 'Flash type is error displayed');
+    assert.equal(flash.message, 'test', 'test message is displayed');
+    done();
+  });
+  new ReduxDataHelper(setState).filesFilters(customFilterData.fileFilters.data).build();
+  this.render(hbs`{{custom-filters}}`);
+  this.$('.filter-list .delete-filter .rsa-form-button-wrapper button.rsa-form-button').click();
+  assert.equal(this.$('.filter-list .delete-filter .confirmation-modal').length, 1, 'Confirmation box on clicking delete filter button');
+  return wait().then(() => {
     // Selecting Yes on popped confirmation box
     this.$('.filter-list .is-primary .rsa-form-button').click();
   });

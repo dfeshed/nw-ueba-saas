@@ -157,6 +157,20 @@ test('The GET_FILTER get the filters', function(assert) {
   assert.equal(newEndState.expressionList[0].propertyName, 'FILE.machineOsType', 'expected expressionList to be updated');
 });
 
+test('The GET_FILTER fails to get the filters', function(assert) {
+  const previous = Immutable.from({
+    areFilesLoading: null,
+    fileFilters: [],
+    selectedFilterId: '5923c7e5d8d4ae128db98c99'
+  });
+
+  const failAction = makePackAction(LIFECYCLE.FAILURE, {
+    type: ACTION_TYPES.GET_FILTER
+  });
+  const newEndState = reducer(previous, failAction);
+  assert.equal(newEndState.areFilesLoading, 'error');
+});
+
 test('The REMOVE_FILE_FILTER removes the filters', function(assert) {
   const previous = Immutable.from({
     areFilesLoading: 'sorting',
@@ -280,5 +294,40 @@ test('The UPDATE_FILE_FILTER updates expressionList', function(assert) {
   const resultUpdated = reducer(result, { type: ACTION_TYPES.UPDATE_FILE_FILTER, payload: payloadDataUpdated[0] });
   assert.deepEqual(resultUpdated.expressionList, [...payloadDataUpdated, ...payloadData], 'expressionList updated with second filter added');
   assert.equal(resultUpdated.lastFilterAdded, null, 'lastFilterAdded reset to null');
+});
+
+test('The UPDATE_FILE_FILTER updates existing filter', function(assert) {
+  const previous = Immutable.from({ expressionList: EXPRESSION_LIST });
+  const payloadData =
+    [
+      {
+        'propertyName': 'FILE.machineOsType',
+        'propertyValues': [{ 'value': 'linux' }],
+        'restrictionType': 'IN'
+      }
+    ];
+  const payloadDataUpdated =
+    [
+      {
+        'propertyName': 'FILE.machineOsType',
+        'propertyValues': [{ 'value': 'linux' }],
+        'restrictionType': 'IN'
+      },
+      {
+        'propertyName': 'FILE.firstFileName',
+        'propertyValues': null,
+        'restrictionType': 'IN'
+      },
+      {
+        'propertyName': 'FILE.agentVersion',
+        'propertyValues': [{ 'value': '5.0.0.0' }],
+        'restrictionType': 'IN'
+      }
+    ];
+  assert.equal(EXPRESSION_LIST[0].propertyValues[0].value, 'windows', 'Initial os type is windows');
+  const resultUpdated = reducer(previous, { type: ACTION_TYPES.UPDATE_FILE_FILTER, payload: payloadData[0] });
+
+  assert.equal(resultUpdated.expressionList[0].propertyValues[0].value, 'linux', 'changed os type is linux');
+  assert.deepEqual(resultUpdated.expressionList, payloadDataUpdated, 'expressionList updated with second filter');
 });
 

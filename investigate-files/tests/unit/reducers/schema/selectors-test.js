@@ -40,6 +40,21 @@ test('columns', function(assert) {
   assert.equal(result[1].visible, true, 'firstFileName field is visible');
 });
 
+test('empty file preferences', function(assert) {
+  const schema = Immutable.from({
+    files: { schema: { schema: [
+      {
+        'name': 'entropy',
+        'visible': false
+      }] } },
+    preferences: { preferences: { } }
+  });
+  const result = columns(schema);
+  // length = total size + 1 checkbox column
+  assert.equal(result.length, 1, 'should return 1 columns + checkbox column');
+  assert.equal(result[0].visible, false, 'entropy field is not visible');
+});
+
 test('isSchemaLoaded', function(assert) {
   const SchemaNotLoaded = Immutable.from({
     files: {
