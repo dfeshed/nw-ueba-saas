@@ -85,8 +85,8 @@
                 </executions>
                 <configuration>
                     <defineStatements>
-                            <defineStatement>_source_payload w0.gzdio</defineStatement>
-                             <defineStatement>_binary_payload w0.gzdio</defineStatement>
+                        <defineStatement>_source_payload w0.gzdio</defineStatement>
+                        <defineStatement>_binary_payload w0.gzdio</defineStatement>
                     </defineStatements>
                     <group>Application/Collectors</group>
                     <release>${rpm.version.build}</release>
