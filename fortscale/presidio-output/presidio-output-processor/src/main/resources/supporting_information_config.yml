@@ -201,6 +201,17 @@ indicators:
     type: hourly_aggregations
   classification: data_exfiltration
 
+- id: numberOfFileDownloadedUserIdFileHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_file_downloaded_operations
+  schema: FILE
+  adeEventType: file
+  anomalyDescriptior:
+    anomalyField: operationType
+    anomalyValue: FILE_DOWNLOADED
+  historicalData:
+    type: hourly_aggregations
+  classification: data_exfiltration
 
 #*********************************************************
 #*              ACTIVE DIRECTORY INDICATORS              *
