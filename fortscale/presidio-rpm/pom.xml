@@ -4,10 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <defineStatements>
-        <defineStatement>_source_payload w0.gzdio</defineStatement>
-        <defineStatement>_binary_payload w0.gzdio</defineStatement>
-    </defineStatements>
+
     <properties>
         <rpm-maven-plugin.directory>${rpm-maven-plugin.deployment_target_directory}/installation
         </rpm-maven-plugin.directory>
@@ -87,6 +84,10 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <defineStatements>
+                            <defineStatement>_source_payload w0.gzdio</defineStatement>
+                             <defineStatement>_binary_payload w0.gzdio</defineStatement>
+                    </defineStatements>
                     <group>Application/Collectors</group>
                     <release>${rpm.version.build}</release>
                     <needarch>true</needarch>
