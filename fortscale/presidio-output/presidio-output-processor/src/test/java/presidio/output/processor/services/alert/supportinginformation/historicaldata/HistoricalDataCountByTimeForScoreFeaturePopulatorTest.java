@@ -15,6 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.output.domain.records.alerts.Bucket;
 import presidio.output.domain.records.alerts.HistoricalData;
 import presidio.output.proccesor.spring.TestConfig;
 import presidio.output.processor.config.HistoricalDataConfig;
@@ -84,11 +85,17 @@ public class HistoricalDataCountByTimeForScoreFeaturePopulatorTest {
         DailyHistogram<String, Number> dailyHistogram = new DailyHistogram<>(date, histogram);
         result.add(dailyHistogram);
         Mockito.when(historicalDataFetcher.getDailyHistogramsForFeature(Mockito.any(TimeRange.class), Mockito.anyString(), Mockito.anyString(), Mockito.any(Schema.class), Mockito.anyString(), Mockito.any(HistoricalDataConfig.class))).thenReturn(result);
-        String anomalyValue = String.valueOf(2370.0);
+        String anomalyValue = String.valueOf(2370);
         TimeRange timeRange = new TimeRange(Instant.now(), Instant.now().minus(2, ChronoUnit.DAYS));
         HistoricalData historicalData = historicalDataCountByTimeForScoreFeaturePopulator.createHistoricalData(timeRange, CommonStrings.CONTEXT_USERID, contextValue, Schema.PRINT, featureName, anomalyValue, historicalDataConfig);
         Assert.assertTrue(CollectionUtils.isNotEmpty(historicalData.getAggregation().getBuckets()));
         Assert.assertEquals(9, historicalData.getAggregation().getBuckets().size());
+
+        historicalData.getAggregation().getBuckets().forEach(o -> {
+            if (anomalyValue.equals(((Bucket)o).getValue().toString())){
+                Assert.assertTrue(((Bucket)o).isAnomaly());
+            }
+        });
 
     }
 
