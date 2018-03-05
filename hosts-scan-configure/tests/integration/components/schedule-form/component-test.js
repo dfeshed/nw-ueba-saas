@@ -187,6 +187,10 @@ test('save schedule scan function being called', function(assert) {
       }
     }
   };
+  new ReduxDataHelper(setState)
+    .hostsScanConfig(hostsScan.config)
+    .fetchScheduleStatus(hostsScan.fetchScheduleStatus)
+    .build();
   this.render(hbs`{{schedule-form}}`);
   patchFlash((flash) => {
     assert.equal(flash.type, 'success');
@@ -198,4 +202,21 @@ test('save schedule scan function being called', function(assert) {
   });
   assert.equal(this.$('.schedule-form__content').length, 1, 'expecting to display form content');
   this.$('.rsa-form-button').trigger('click');
+  return wait().then(() => {
+    const state = this.get('redux').getState();
+    assert.equal(state.hostsScan.config.success, true, 'scan schedule saved successfully');
+  });
+});
+
+test('toggling the enable schedule button', function(assert) {
+  new ReduxDataHelper(setState)
+    .hostsScanConfig(hostsScan.config)
+    .fetchScheduleStatus(hostsScan.fetchScheduleStatus)
+    .build();
+  this.render(hbs`{{schedule-form}}`);
+  this.$('.x-toggle-container .x-toggle-btn').click();
+  return wait().then(() => {
+    const state = this.get('redux').getState();
+    assert.equal(state.hostsScan.config.scheduleConfig.enabled, false, 'scan enable state changed to disable by toggling the button');
+  });
 });
