@@ -30,6 +30,8 @@
                 "model": {
                   "name": "srcMachineNameRegexCluster.userId.print"
                 },
+                "number-of-partitions-to-influence-enough": 10,
+                "use-certainty-to-calculate-score": true,
                 "max-rare-count": 8,
                 "max-num-of-rare-features": 15
               },
@@ -42,6 +44,9 @@
                   "model": {
                     "name": "userId.srcMachineId.print"
                   },
+                  "number-of-partitions-to-influence-enough": 10,
+                  "min-number-of-partitions-to-influence": 10,
+                  "use-certainty-to-calculate-score": true,
                   "max-rare-count": 8,
                   "max-num-of-rare-features": 15
                 }
@@ -57,6 +62,8 @@
                 "model": {
                   "name": "dstMachineId.userId.print"
                 },
+                "number-of-partitions-to-influence-enough": 10,
+                "use-certainty-to-calculate-score": true,
                 "max-rare-count": 8,
                 "max-num-of-rare-features": 15
               },
@@ -69,6 +76,9 @@
                   "model": {
                     "name": "userId.dstMachineId.print"
                   },
+                  "number-of-partitions-to-influence-enough": 10,
+                  "min-number-of-partitions-to-influence": 10,
+                  "use-certainty-to-calculate-score": true,
                   "max-rare-count": 8,
                   "max-num-of-rare-features": 15
                 }
@@ -84,6 +94,8 @@
                 "model": {
                   "name": "dstMachineNameRegexCluster.userId.print"
                 },
+                "number-of-partitions-to-influence-enough": 10,
+                "use-certainty-to-calculate-score": true,
                 "max-rare-count": 8,
                 "max-num-of-rare-features": 15
               },
@@ -96,6 +108,9 @@
                   "model": {
                     "name": "userId.dstMachineId.print"
                   },
+                  "number-of-partitions-to-influence-enough": 10,
+                  "min-number-of-partitions-to-influence": 10,
+                  "use-certainty-to-calculate-score": true,
                   "max-rare-count": 8,
                   "max-num-of-rare-features": 15
                 }
@@ -144,6 +159,8 @@
               "model": {
                 "name": "absoluteFolderPath.userId.print"
               },
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": true,
               "max-rare-count": 8,
               "max-num-of-rare-features": 15
             },
@@ -153,6 +170,8 @@
               "model": {
                 "name": "fileExtension.userId.print"
               },
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": true,
               "max-rare-count": 8,
               "max-num-of-rare-features": 15
             }

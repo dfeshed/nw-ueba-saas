@@ -31,6 +31,8 @@
                   "name": "srcMachineNameRegexCluster.userId.authentication"
                 },
                 "max-rare-count": 8,
+                "number-of-partitions-to-influence-enough": 10,
+                "use-certainty-to-calculate-score": true,
                 "max-num-of-rare-features": 15
               },
               "reduction-scorer": {
@@ -43,6 +45,9 @@
                     "name": "userId.srcMachineId.authentication"
                   },
                   "max-rare-count": 8,
+                  "number-of-partitions-to-influence-enough": 10,
+                  "min-number-of-partitions-to-influence": 10,
+                  "use-certainty-to-calculate-score": true,
                   "max-num-of-rare-features": 15
                 }
               },
@@ -63,6 +68,8 @@
                     "name": "dstMachineNameRegexCluster.userIdInteractiveRemote.authentication"
                   },
                   "max-rare-count": 8,
+                  "number-of-partitions-to-influence-enough": 10,
+                  "use-certainty-to-calculate-score": true,
                   "max-num-of-rare-features": 15
                 },
                 "reduction-scorer": {
@@ -75,6 +82,9 @@
                       "name": "userId.dstMachineIdInteractiveRemote.authentication"
                     },
                     "max-rare-count": 8,
+                    "number-of-partitions-to-influence-enough": 10,
+                    "min-number-of-partitions-to-influence": 10,
+                    "use-certainty-to-calculate-score": true,
                     "max-num-of-rare-features": 15
                   }
                 },
@@ -91,6 +101,8 @@
                   "name": "site.userId.authentication"
                 },
                 "max-rare-count": 8,
+                "number-of-partitions-to-influence-enough": 10,
+                "use-certainty-to-calculate-score": true,
                 "max-num-of-rare-features": 15
               },
               "reduction-scorer": {
@@ -103,6 +115,9 @@
                     "name": "userId.site.authentication"
                   },
                   "max-rare-count": 8,
+                  "number-of-partitions-to-influence-enough": 10,
+                  "min-number-of-partitions-to-influence": 10,
+                  "use-certainty-to-calculate-score": true,
                   "max-num-of-rare-features": 15
                 }
               },
