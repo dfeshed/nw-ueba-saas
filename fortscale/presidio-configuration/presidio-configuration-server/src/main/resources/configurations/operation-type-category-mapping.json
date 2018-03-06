@@ -488,6 +488,27 @@
       "FILE_CONTENTS_WRITTEN": [
         "FILE_ACTION"
       ],
+      "FILE_COPIED": [
+        "FILE_ACTION"
+      ],
+      "FILE_CHECKED": [
+        "FILE_ACTION"
+      ],
+      "FILE_PREVIEWED": [
+        "FILE_ACTION"
+      ],
+      "FILE_MODIFIED": [
+        "FILE_ACTION"
+      ],
+      "FILE_RESTORED": [
+        "FILE_ACTION"
+      ],
+      "FILE_UPLOADED": [
+        "FILE_ACTION"
+      ],
+      "FILE_DOWNLOADED": [
+        "FILE_ACTION"
+      ],
       "FOLDER_AUDITING_CHANGED": [
         "FILE_PERMISSION_CHANGE"
       ],
