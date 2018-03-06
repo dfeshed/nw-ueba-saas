@@ -14,7 +14,11 @@ public class FileInputToOutputConverter implements InputOutputConverter {
         outputEvent.setEventDate(transformedEvent.getDateTime());
         outputEvent.setDataSource(transformedEvent.getDataSource());
         outputEvent.setUserId(transformedEvent.getUserId());
-        outputEvent.setOperationType(transformedEvent.getOperationType());
+        if ("FILE_MOVED".equals(transformedEvent.getOperationType())) {
+            outputEvent.setOperationType("FILE_DOWNLOADED");
+        } else {
+            outputEvent.setOperationType(transformedEvent.getOperationType());
+        }
         outputEvent.setOperationTypeCategories(transformedEvent.getOperationTypeCategory());
         outputEvent.setResult(transformedEvent.getResult());
         outputEvent.setUserName(transformedEvent.getUserName());
