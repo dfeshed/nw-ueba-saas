@@ -154,31 +154,15 @@
               ]
             },
             {
-<<<<<<< HEAD
               "type": "category-rarity-model-scorer",
               "name": "absoluteFolderPath.userId.print.score",
               "model": {
                 "name": "absoluteFolderPath.userId.print"
               },
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": true,
               "max-rare-count": 8,
               "max-num-of-rare-features": 15
-=======
-              "type": "boolean-conditional-scorer",
-              "name": "absoluteSharedFolderPath.userId.print.score",
-              "conditional-field": "driveShared",
-              "conditional-value": true,
-              "scorer": {
-                "type": "category-rarity-model-scorer",
-                "name": "absoluteSharedFolderPath.userId.print.score",
-                "model": {
-                  "name": "absoluteSharedFolderPath.userId.print"
-                },
-                "number-of-partitions-to-influence-enough": 10,
-                "use-certainty-to-calculate-score": true,
-                "max-rare-count": 8,
-                "max-num-of-rare-features": 15
-              }
->>>>>>> 145b361... add number-of-partitions-to-influence-enough to asl
             },
             {
               "type": "category-rarity-model-scorer",
