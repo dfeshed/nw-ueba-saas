@@ -351,7 +351,8 @@
         "distanceBetweenSegmentCenters": 1,
         "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
       }
-    },    {
+    },
+    {
       "name": "numberOfFileDownloaded.userId.file.hourly",
       "selector": {
         "type": "aggregated_event_context_selector",

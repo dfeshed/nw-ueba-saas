@@ -235,7 +235,8 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.operationType == 'FILE_DOWNLOADED')]"          }
+            "jsonPath": "[?(@.operationType == 'FILE_DOWNLOADED')]"
+          }
         }
       ]
     }
