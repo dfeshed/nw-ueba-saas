@@ -3,7 +3,6 @@ package fortscale.utils.elasticsearch.config;
 
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
 import fortscale.utils.elasticsearch.services.TemplateAnnotationExtractor;
-import fortscale.utils.elasticsearch.services.TemplateExtractor;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
@@ -33,14 +32,10 @@ public class ElasticsearchConfig {
         return new PreBuiltTransportClient(esSettings).addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(EsHost), EsPort));
     }
 
-    @Bean
-    public TemplateExtractor templateExtractor() {
-        return new TemplateAnnotationExtractor();
-    }
 
     @Bean
     public ElasticsearchOperations elasticsearchTemplate() throws Exception {
-        return new PresidioElasticsearchTemplate(client(), templateExtractor());
+        return new PresidioElasticsearchTemplate(client(), new TemplateAnnotationExtractor());
     }
 
 
