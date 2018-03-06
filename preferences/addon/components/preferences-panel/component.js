@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import layout from './template';
-import { later, schedule } from '@ember/runloop';
+import { later } from '@ember/runloop';
 import { connect } from 'ember-redux';
 import {
   closePreferencesPanel,
@@ -39,6 +39,7 @@ const PreferencesPanel = Component.extend({
     this._super(arguments);
     this.addObserver('isExpanded', this, this.loadOrResetPreferences);
   },
+
   click() {
     this.send('updatePanelClicked', true);
   },
@@ -49,27 +50,17 @@ const PreferencesPanel = Component.extend({
     }
     this.send('updatePanelClicked', false);
   },
-  didInsertElement() {
-    schedule('afterRender', () => {
-      this.get('eventBus').on('rsa-application-click', this, this._closePreferencesPanel);
-      this.get('eventBus').on('rsa-application-header-click', this, this._closePreferencesPanel);
-    });
-  },
-  /**
-   * Unbind the events
-   * @public
-   */
-  willDestroyElement() {
-    this.get('eventBus').off('rsa-application-click', this, this._didApplicationClick);
-    this.get('eventBus').off('rsa-application-header-click', this, this._didApplicationClick);
-  },
 
   loadOrResetPreferences() {
     // wait for the panel to slide open/close completely before sending action
     later(() => {
       if (this.get('isExpanded')) {
+        this.get('eventBus').on('rsa-application-click', this, this._closePreferencesPanel);
+        this.get('eventBus').on('rsa-application-header-click', this, this._closePreferencesPanel);
         this.send('loadPreferences');
       } else {
+        this.get('eventBus').off('rsa-application-click', this, this._closePreferencesPanel);
+        this.get('eventBus').off('rsa-application-header-click', this, this._closePreferencesPanel);
         this.send('resetPreferencesPanel');
       }
     }, 650);

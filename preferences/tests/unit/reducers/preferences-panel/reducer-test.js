@@ -41,15 +41,12 @@ const reducerFunction = (type, payload) => {
 
 test('test TOGGLE_PREFERENCES_PANEL action handler', function(assert) {
   result = reducerFunction(ACTION_TYPES.TOGGLE_PREFERENCES_PANEL, {});
-  assert.equal(result.isClicked, true);
   assert.equal(result.isExpanded, false);
   // Since its a toggle action, so calling the reducer again to check if the state value toggles
   const updatedResult = reducer(result, {
     type: ACTION_TYPES.TOGGLE_PREFERENCES_PANEL,
     payload: {}
   });
-  // isClicked will always remain true whenever toggle happens
-  assert.equal(updatedResult.isClicked, true);
   assert.equal(updatedResult.isExpanded, true);
 });
 

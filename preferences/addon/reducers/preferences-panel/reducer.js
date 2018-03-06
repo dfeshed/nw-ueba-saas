@@ -31,7 +31,6 @@ const preferenceReducer = handleActions({
   [ACTION_TYPES.TOGGLE_PREFERENCES_PANEL]: (state, { payload }) => state.merge({
     ...state,
     preferencesConfig: { ...payload },
-    isClicked: true,
     ...payload,
     isExpanded: !state.isExpanded
   }),
