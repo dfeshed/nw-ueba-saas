@@ -7,12 +7,11 @@
           "type": "low-values-score-reducer",
           "name": "numberOfSensitiveGroupMembershipOperation.userId.activeDirectory.hourly.scorer",
           "base-scorer": {
-            "type": "score-exponential-mapper",
+            "type": "score-exponential-steps-mapper",
             "name": "numberOfSensitiveGroupMembershipOperation.userId.activeDirectory.hourly.mapper",
             "score-mapping-conf": {
-              "minScoreToMap": 95,
-              "maxScoreToMap": 100,
-              "base": 2.5
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -48,12 +47,11 @@
           "type": "low-values-score-reducer",
           "name": "numberOfGroupMembershipOperation.userId.activeDirectory.hourly.scorer",
           "base-scorer": {
-            "type": "score-exponential-mapper",
+            "type": "score-exponential-steps-mapper",
             "name": "numberOfGroupMembershipOperation.userId.activeDirectory.hourly.mapper",
             "score-mapping-conf": {
-              "minScoreToMap": 95,
-              "maxScoreToMap": 100,
-              "base": 2.5
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -89,12 +87,11 @@
           "type": "low-values-score-reducer",
           "name": "numberOfSuccessfulObjectManagementOperation.userId.activeDirectory.hourly.scorer",
           "base-scorer": {
-            "type": "score-exponential-mapper",
+            "type": "score-exponential-steps-mapper",
             "name": "numberOfSuccessfulObjectManagementOperation.userId.activeDirectory.hourly.mapper",
             "score-mapping-conf": {
-              "minScoreToMap": 95,
-              "maxScoreToMap": 100,
-              "base": 2.5
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -127,12 +124,11 @@
       "ade-event-type": "aggr_event.numberOfFailedOperationTypeUserIdActiveDirectoryHourly",
       "scorers": [
         {
-          "type": "score-exponential-mapper",
+          "type": "score-exponential-steps-mapper",
           "name": "numberOfFailedOperationType.userId.activeDirectory.hourly.scorer",
           "score-mapping-conf": {
-            "minScoreToMap": 95,
-            "maxScoreToMap": 100,
-            "base": 2.5
+            "amountOfSteps": 25,
+            "probabilityExponentialStep": 1.5
           },
           "base-scorer": {
             "type": "gaussian-model-scorer",
@@ -159,12 +155,11 @@
           "type": "low-values-score-reducer",
           "name": "numberOfSuccessfulUserManagementSecuritySensitiveOperation.userId.activeDirectory.hourly.scorer",
           "base-scorer": {
-            "type": "score-exponential-mapper",
+            "type": "score-exponential-steps-mapper",
             "name": "numberOfSuccessfulUserManagementSecuritySensitiveOperation.userId.activeDirectory.hourly.mapper",
             "score-mapping-conf": {
-              "minScoreToMap": 95,
-              "maxScoreToMap": 100,
-              "base": 2.5
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
