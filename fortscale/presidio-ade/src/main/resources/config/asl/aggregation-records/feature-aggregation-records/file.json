@@ -178,7 +178,7 @@
       "bucketsLeap": 1,
       "aggregatedFeatureNamesMap": {
         "sum": [
-          "FileDownloadedCounter"
+          "fileDownloadedCounter"
         ]
       },
       "aggregatedFeatureEventFunction": {
