@@ -111,7 +111,7 @@
                             <sources>
                                 <source>
                                     <location>
-                                        ${project.parent.build.directory}/../presidio-utils/src/main/resources/elasticsearch
+                                        ${project.parent.build.directory}/../presidio-rpm/src/main/resources/installation-scripts/version/1_0/elasticsearch
                                     </location>
                                 </source>
                             </sources>
