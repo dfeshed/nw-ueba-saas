@@ -1,10 +1,9 @@
 package jsonValidation;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,11 +40,11 @@ public class ElasticMappingsTests {
         } else {
             path = windosMapping;
         }
+        ObjectMapper mapper = new ObjectMapper();
         File folder = new File(path);
         List<File> list = getFilesFromFolder(folder);
         list.forEach(file -> {
             try {
-                System.out.println(file.toString());
                 BufferedReader br = new BufferedReader(new FileReader(((File) file).getAbsoluteFile()));
                 try {
                     StringBuilder sb = new StringBuilder();
@@ -56,13 +55,8 @@ public class ElasticMappingsTests {
                         line = br.readLine();
                     }
                     String everything = sb.toString();
-                    try {
-                        JSONObject jsonObject = new JSONObject(everything);
-                        Assert.assertNotNull(jsonObject);
-                    } catch (JSONException ex) {
-                        JSONArray jsonArray = new JSONArray(everything);
-                        Assert.assertNotNull(jsonArray);
-                    }
+                    JsonNode actualObj = mapper.readTree(everything);
+                    Assert.assertNotNull(actualObj);
                 } catch (Exception ex) {
                     Assert.fail();
                 } finally {
