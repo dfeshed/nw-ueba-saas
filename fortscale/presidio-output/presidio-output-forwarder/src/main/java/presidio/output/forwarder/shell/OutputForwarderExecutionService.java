@@ -1,10 +1,13 @@
 package presidio.output.forwarder.shell;
 
+import fortscale.utils.logging.Logger;
 import presidio.output.forwarder.services.PresidioOutputForwardService;
 
 import java.time.Instant;
 
 public class OutputForwarderExecutionService {
+    private static final Logger logger = Logger.getLogger(OutputForwarderExecutionService.class);
+
 
     private PresidioOutputForwardService presidioOutputForwardService;
 
@@ -16,10 +19,8 @@ public class OutputForwarderExecutionService {
         presidioOutputForwardService.forward(startDate, endDate);
     }
 
-//    public void clean(Instant startDate, Instant endDate) throws Exception {
-//    }
-//
-//    public void cleanup(Instant startDate, Instant endDate, Double accumulationStrategy) throws Exception {
-//    }
+    public void clean(Instant startTime, Instant endTime) {
+        logger.info("Cleanup is not implemented for this service");
+    }
 }
 
