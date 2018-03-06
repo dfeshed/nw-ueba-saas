@@ -6,6 +6,7 @@ import fortscale.common.general.Schema;
 import fortscale.utils.time.TimeService;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +24,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @ContextConfiguration
+@Ignore
 public class AccumulateAggregationsApplicationTest extends EnrichedDataBaseAppTest {
     private static final int FIX_DURATION_STRATEGY = 86400;
     private static final int FEATURE_BUCKET_STRATEGY = 3600;
