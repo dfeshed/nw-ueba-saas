@@ -20,7 +20,7 @@ public class OutputForwarderExecutionService {
     }
 
     public void clean(Instant startTime, Instant endTime) {
-        logger.info("Cleanup is not implemented for this service");
+        logger.info("There is nothing to clean in this service");
     }
 }
 
