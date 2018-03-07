@@ -33,13 +33,13 @@ public class CyclicOperationTypeGenerator extends CyclicValuesGenerator<Operatio
         opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_OPENED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
         opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_RENAMED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
         opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_MOVED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
-        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_COPY.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
+        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_COPIED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
         opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_CHECKED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
-        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_PREVIEW.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
+        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_PREVIEWED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
         opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_MODIFIED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
-        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_RESTORE.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
-        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_UPLOAD.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
-        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_DOWNLOAD.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
+        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_RESTORED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
+        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_UPLOADED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
+        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_DOWNLOADED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
 
         opType2OpCategoryMap.put(FILE_OPERATION_TYPE.LOCAL_SHARE_PERMISSIONS_CHANGED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_PERMISSION_CHANGE.value));
         opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FOLDER_ACCESS_RIGHTS_CHANGED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_PERMISSION_CHANGE.value));
