@@ -45,7 +45,7 @@ public class FileOperationGeneratorTemplateFactory {
     }
     public IFileOperationGenerator createDownloadFileOperationsGenerator(List<String> categories) throws GeneratorException {
         FileOperationGenerator generator = new FileOperationGenerator();
-        generator.setOperationTypeGenerator(getFixedFileOperationTypeGenerator(FILE_OPERATION_TYPE.FILE_DOWNLOAD.value, categories));
+        generator.setOperationTypeGenerator(getFixedFileOperationTypeGenerator(FILE_OPERATION_TYPE.FILE_DOWNLOADED.value, categories));
 
         IFileEntityGenerator nullFileEntityGenerator = new NullFileEntityGenerator();
         generator.setDestFileEntityGenerator(nullFileEntityGenerator);

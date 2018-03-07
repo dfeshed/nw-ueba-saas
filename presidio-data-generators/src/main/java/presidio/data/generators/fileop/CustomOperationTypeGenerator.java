@@ -77,13 +77,13 @@ public class CustomOperationTypeGenerator extends CyclicValuesGenerator<Operatio
             "FLUIDFS_FOLDER_MOVED",
             "FLUIDFS_FOLDER_DELETED",
             "FLUIDFS_FOLDER_CREATED", "FLUIDFS_FOLDER_AUDITING_CHANGED", "FLUIDFS_FOLDER_ACCESS_RIGHTS_CHANGED", "FLUIDFS_FILE_RENAMED", "FLUIDFS_FILE_OWNERSHIP_CHANGED", "FLUIDFS_FILE_OPENED", "FLUIDFS_FILE_MOVED", "FLUIDFS_FILE_DELETED", "FLUIDFS_FILE_CREATED", "FLUIDFS_FILE_CONTENTS_WRITTEN", "FLUIDFS_FILE_AUDITING_CHANGED", "FLUIDFS_FILE_ACCESS_RIGHTS_CHANGED",
-            "FILE_COPY",
+            "FILE_COPIED",
             "FILE_CHECKED",
-            "FILE_PREVIEW",
+            "FILE_PREVIEWED",
             "FILE_MODIFIED",
-            "FILE_RESTORE",
-            "FILE_UPLOAD",
-            "FILE_DOWNLOAD"
+            "FILE_RESTORED",
+            "FILE_UPLOADED",
+            "FILE_DOWNLOADED"
     };
 
     public CustomOperationTypeGenerator()
@@ -125,13 +125,13 @@ public class CustomOperationTypeGenerator extends CyclicValuesGenerator<Operatio
         opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_OPENED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
         opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_RENAMED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
         opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_MOVED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
-        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_COPY.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
+        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_COPIED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
         opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_CHECKED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
-        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_PREVIEW.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
+        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_PREVIEWED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
         opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_MODIFIED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
-        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_RESTORE.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
-        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_UPLOAD.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
-        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_DOWNLOAD.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
+        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_RESTORED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
+        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_UPLOADED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
+        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_DOWNLOADED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
 
         opType2OpCategoryMap.put(FILE_OPERATION_TYPE.LOCAL_SHARE_PERMISSIONS_CHANGED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_PERMISSION_CHANGE.value));
         opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FOLDER_ACCESS_RIGHTS_CHANGED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_PERMISSION_CHANGE.value));
