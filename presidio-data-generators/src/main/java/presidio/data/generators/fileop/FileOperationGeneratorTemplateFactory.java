@@ -40,6 +40,19 @@ public class FileOperationGeneratorTemplateFactory {
         return generator;
     }
 
+    public IFileOperationGenerator createDownloadFileOperationsGenerator() throws GeneratorException {
+        return createDownloadFileOperationsGenerator(null);
+    }
+    public IFileOperationGenerator createDownloadFileOperationsGenerator(List<String> categories) throws GeneratorException {
+        FileOperationGenerator generator = new FileOperationGenerator();
+        generator.setOperationTypeGenerator(getFixedFileOperationTypeGenerator(FILE_OPERATION_TYPE.FILE_DOWNLOAD.value, categories));
+
+        IFileEntityGenerator nullFileEntityGenerator = new NullFileEntityGenerator();
+        generator.setDestFileEntityGenerator(nullFileEntityGenerator);
+
+        return generator;
+    }
+
     public IFileOperationGenerator createMoveFileOperationsGenerator() throws GeneratorException {
         return createMoveFileOperationsGenerator(null);
     }
