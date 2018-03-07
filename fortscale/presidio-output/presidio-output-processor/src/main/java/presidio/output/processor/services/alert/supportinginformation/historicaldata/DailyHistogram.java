@@ -3,12 +3,12 @@ package presidio.output.processor.services.alert.supportinginformation.historica
 import java.time.LocalDate;
 import java.util.Map;
 
-public class DailyHistogram<T> {
+public class DailyHistogram<T, E> {
 
     LocalDate date;
-    Map<T, Double> histogram;
+    Map<T, E> histogram;
 
-    public DailyHistogram(LocalDate date, Map<T, Double> histogram) {
+    public DailyHistogram(LocalDate date, Map<T, E> histogram) {
         this.date = date;
         this.histogram = histogram;
     }
@@ -21,11 +21,11 @@ public class DailyHistogram<T> {
         this.date = date;
     }
 
-    public Map<T, Double> getHistogram() {
+    public Map<T, E> getHistogram() {
         return histogram;
     }
 
-    public void setHistogram(Map<T, Double> histogram) {
+    public void setHistogram(Map<T, E> histogram) {
         this.histogram = histogram;
     }
 }

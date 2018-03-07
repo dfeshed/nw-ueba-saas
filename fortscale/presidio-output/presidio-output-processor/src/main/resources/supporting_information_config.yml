@@ -715,6 +715,19 @@ indicators:
     featureName: fileExtensionHistogram
   classification: data_exfiltration
 
+- id: highestNumOfPagesScoreUserIdPrintHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_number_of_pages
+  adeEventType: scored_enriched.print.numOfPages.userId.print.score
+  schema: PRINT
+  anomalyDescriptior:
+    anomalyField: numOfPages
+  historicalData:
+    type: hourly_scored_aggregations
+    featureBucketConfName: startInstantToHighestNumOfPagesMapUserIdPrintDaily
+    featureName: startInstantToHighestNumOfPagesMap
+  classification: data_exfiltration
+
 - id: numberOfSuccessfulPrintsUserIdPrintHourly
   type: FEATURE_AGGREGATION
   name: high_number_of_successful_prints

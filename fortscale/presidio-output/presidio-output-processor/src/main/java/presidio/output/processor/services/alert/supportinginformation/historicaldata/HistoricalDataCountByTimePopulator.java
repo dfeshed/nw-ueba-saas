@@ -32,10 +32,10 @@ public class HistoricalDataCountByTimePopulator implements HistoricalDataPopulat
         List<Bucket<String,Double >> buckets = new ArrayList<Bucket<String, Double>>();
 
         // fetch daily histograms
-        List<DailyHistogram<Integer>> dailyHistograms = historicalDataFetcher.getDailyHistogramsForAggregatedFeature(timeRange, contextField, contextValue, schema, featureName, historicalDataConfig);
+        List<DailyHistogram<Integer, Double>> dailyHistograms = historicalDataFetcher.getDailyHistogramsForAggregatedFeature(timeRange, contextField, contextValue, schema, featureName, historicalDataConfig);
 
         // iterate over days
-        for (DailyHistogram<Integer> dailyHistogram: dailyHistograms) {
+        for (DailyHistogram<Integer, Double> dailyHistogram: dailyHistograms) {
 
             LocalDate day = dailyHistogram.getDate();
 
