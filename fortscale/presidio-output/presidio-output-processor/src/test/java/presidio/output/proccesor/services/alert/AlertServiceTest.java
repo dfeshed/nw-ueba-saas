@@ -18,7 +18,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import presidio.ade.domain.record.AdeScoredRecord;
 import presidio.ade.domain.record.aggregated.*;
 import presidio.ade.domain.record.enriched.AdeScoredEnrichedRecord;
 import presidio.ade.domain.record.enriched.EnrichedRecord;
@@ -128,7 +127,7 @@ public class AlertServiceTest {
         AdeAggregationRecord aggregationRecord = new AdeAggregationRecord(startDate, endDate, "userAccountTypeChangedScoreUserIdActiveDirectoryHourly",
                 +10d, "userAccountTypeChangedScoreUserIdActiveDirectoryHourly", Collections.singletonMap("userId", "userId"), AggregatedFeatureType.SCORE_AGGREGATION);
 
-        EnrichedEvent activeDirectoryEvent = new ActiveDirectoryEnrichedEvent(Instant.now(), eventTime, "eventId"+"_only_static", Schema.ACTIVE_DIRECTORY.toString(), "userId", "username", "userDisplayName", "dataSource", "USER_ACCOUNT_TYPE_CHANGED", new ArrayList<String>(), EventResult.SUCCESS, "resultCode", new HashMap<String, String>(), Boolean.FALSE, "objectId");
+        EnrichedEvent activeDirectoryEvent = new ActiveDirectoryEnrichedEvent(Instant.now(), eventTime, "eventId" + "_only_static", Schema.ACTIVE_DIRECTORY.toString(), "userId", "username", "userDisplayName", "dataSource", "USER_ACCOUNT_TYPE_CHANGED", new ArrayList<String>(), EventResult.SUCCESS, "resultCode", new HashMap<String, String>(), Boolean.FALSE, "objectId");
         mongoTemplate.save(activeDirectoryEvent, new OutputToCollectionNameTranslator().toCollectionName(Schema.ACTIVE_DIRECTORY));
 
         EnrichedRecord activeDirectoryEnrichedRecord = new EnrichedActiveDirectoryRecord(activeDirectoryEvent.getEventDate());
@@ -184,8 +183,8 @@ public class AlertServiceTest {
                 +10d, "userAccountTypeChangedScoreUserIdActiveDirectoryHourly", Collections.singletonMap("userId", "userId"), AggregatedFeatureType.SCORE_AGGREGATION);
 
         // event
-        generateActiveDirectoryEvents(2, eventTime, "scored_enriched.active_directory.userAccountTypeChanged.userId.activeDirectory.score","USER_ACCOUNT_TYPE_CHANGED", Arrays.asList("USER_MANAGEMENT","SECURITY_SENSITIVE_OPERATION"));
-        generateActiveDirectoryEvents(1, eventTime, "scored_enriched.active_directory.userAccountTypeChanged.userId.activeDirectory.score","USER_ACCOUNT_LOCKED", Arrays.asList("USER_MANAGEMENT","SECURITY_SENSITIVE_OPERATION"));
+        generateActiveDirectoryEvents(2, eventTime, "scored_enriched.active_directory.userAccountTypeChanged.userId.activeDirectory.score", "USER_ACCOUNT_TYPE_CHANGED", Arrays.asList("USER_MANAGEMENT", "SECURITY_SENSITIVE_OPERATION"));
+        generateActiveDirectoryEvents(1, eventTime, "scored_enriched.active_directory.userAccountTypeChanged.userId.activeDirectory.score", "USER_ACCOUNT_LOCKED", Arrays.asList("USER_MANAGEMENT", "SECURITY_SENSITIVE_OPERATION"));
 
         SmartAggregationRecord smartAggregationRecord = new SmartAggregationRecord(staticAggregationRecord);
         SmartAggregationRecord smartAggregationRecord2 = new SmartAggregationRecord(notStaticAggregationRecord);
@@ -219,7 +218,7 @@ public class AlertServiceTest {
         smartAggregationRecord.setContribution(0.3);
         smart.setSmartAggregationRecords(Collections.singletonList(smartAggregationRecord));
 
-        generateAuthenticationEvents(2, eventTime,"scored_enriched.authentication.srcMachine.userId.authentication.score");
+        generateAuthenticationEvents(2, eventTime, "scored_enriched.authentication.srcMachine.userId.authentication.score");
 
         Alert alert = alertService.generateAlert(smart, userEntity, 50);
 
@@ -246,8 +245,8 @@ public class AlertServiceTest {
         smartAggregationRecord.setContribution(0.3);
         smart.setSmartAggregationRecords(Collections.singletonList(smartAggregationRecord));
 
-        List<String> categories = Arrays.asList("GROUP_MEMBERSHIP_OPERATION","SECURITY_SENSITIVE_OPERATION");
-        generateActiveDirectoryEvents(2, eventTime,"scored_enriched.active_directory.operationType.userIdGroupMembershipSecuritySensitive.activeDirectory.score","PASSWORD_CHANGED",categories);
+        List<String> categories = Arrays.asList("GROUP_MEMBERSHIP_OPERATION", "SECURITY_SENSITIVE_OPERATION");
+        generateActiveDirectoryEvents(2, eventTime, "scored_enriched.active_directory.operationType.userIdGroupMembershipSecuritySensitive.activeDirectory.score", "PASSWORD_CHANGED", categories);
 
         Alert alert = alertService.generateAlert(smart, userEntity, 50);
 
@@ -332,7 +331,7 @@ public class AlertServiceTest {
                 +2000d, "numberOfFailedFilePermissionChangesUserIdFileHourly", Collections.singletonMap("userId", "userId"), AggregatedFeatureType.FEATURE_AGGREGATION);
 
         // raw event
-        generateFileEvents(2000, aggregationRecord.getStartInstant(),"scored_enriched.file.operationType.userIdFileAction.file.score","FOLDER_OWNERSHIP_CHANGED",Arrays.asList("FILE_PERMISSION_CHANGE"));
+        generateFileEvents(2000, aggregationRecord.getStartInstant(), "scored_enriched.file.operationType.userIdFileAction.file.score", "FOLDER_OWNERSHIP_CHANGED", Arrays.asList("FILE_PERMISSION_CHANGE"));
         SmartAggregationRecord smartAggregationRecord = new SmartAggregationRecord(aggregationRecord);
         smartAggregationRecord.setContribution(0.3);
         smart.setSmartAggregationRecords(Collections.singletonList(smartAggregationRecord));
@@ -357,7 +356,7 @@ public class AlertServiceTest {
                 100.0, "srcMachineNameRegexClusterHistogramUserIdAuthenticationHourly", Collections.singletonMap("userId", "userId"), AggregatedFeatureType.SCORE_AGGREGATION);
 
         // raw event
-        generateAuthenticationEvents(1, aggregationRecord.getStartInstant(),"scored_enriched.authentication.srcMachine.userId.authentication.score");
+        generateAuthenticationEvents(1, aggregationRecord.getStartInstant(), "scored_enriched.authentication.srcMachine.userId.authentication.score");
         SmartAggregationRecord smartAggregationRecord = new SmartAggregationRecord(aggregationRecord);
         smartAggregationRecord.setContribution(0.3);
         smart.setSmartAggregationRecords(Collections.singletonList(smartAggregationRecord));
@@ -378,13 +377,13 @@ public class AlertServiceTest {
         // indicator1 - score aggr
         AdeAggregationRecord scoreAggregationRecord = new ScoredFeatureAggregationRecord(90.0, new ArrayList<>(), startDate, endDate, "sumOfHighestOperationTypeScoresUserIdFileActionFileHourly",
                 100.0, "operationTypeHistogramUserIdFileDaily", Collections.singletonMap("userId", "userId"), AggregatedFeatureType.SCORE_AGGREGATION);
-        generateFileEvents(1, scoreAggregationRecord.getStartInstant(),"scored_enriched.file.operationType.userIdFileAction.file.score", "FOLDER_OWNERSHIP_CHANGED",Arrays.asList("FILE_PERMISSION_CHANGE"));
-        generateFileEvents(1, scoreAggregationRecord.getStartInstant(),"scored_enriched.file.operationType.userIdFileAction.file.score","FOLDER_AUDITING_CHANGED",Arrays.asList("FILE_PERMISSION_CHANGE"));
+        generateFileEvents(1, scoreAggregationRecord.getStartInstant(), "scored_enriched.file.operationType.userIdFileAction.file.score", "FOLDER_OWNERSHIP_CHANGED", Arrays.asList("FILE_PERMISSION_CHANGE"));
+        generateFileEvents(1, scoreAggregationRecord.getStartInstant(), "scored_enriched.file.operationType.userIdFileAction.file.score", "FOLDER_AUDITING_CHANGED", Arrays.asList("FILE_PERMISSION_CHANGE"));
 
         // indicator2 - feature aggr
         AdeAggregationRecord featureAggregationRecord = new ScoredFeatureAggregationRecord(90.0, new ArrayList<>(), startDate, endDate, "numberOfFailedFilePermissionChangesUserIdFileHourly",
                 +2000d, "numberOfFailedFilePermissionChangesUserIdFileHourly", Collections.singletonMap("userId", "userId"), AggregatedFeatureType.FEATURE_AGGREGATION);
-        generateFileEvents(1, featureAggregationRecord.getStartInstant(),"scored_enriched.file.operationType.userIdFileAction.file.score","FOLDER_OWNERSHIP_CHANGED",Arrays.asList("FILE_PERMISSION_CHANGE"));
+        generateFileEvents(1, featureAggregationRecord.getStartInstant(), "scored_enriched.file.operationType.userIdFileAction.file.score", "FOLDER_OWNERSHIP_CHANGED", Arrays.asList("FILE_PERMISSION_CHANGE"));
 
 
         SmartAggregationRecord smartScoreAggregationRecord = new SmartAggregationRecord(scoreAggregationRecord);
@@ -396,9 +395,9 @@ public class AlertServiceTest {
         //generate alerts:
         Alert alert = alertService.generateAlert(smart, userEntity, 50);
 
-        assertEquals(0.5d,alert.getIndicators().get(0).getScoreContribution(),0);
-        assertEquals(0.25d,alert.getIndicators().get(1).getScoreContribution(),0);
-        assertEquals(0.25d,alert.getIndicators().get(2).getScoreContribution(),0);
+        assertEquals(0.5d, alert.getIndicators().get(0).getScoreContribution(), 0);
+        assertEquals(0.25d, alert.getIndicators().get(1).getScoreContribution(), 0);
+        assertEquals(0.25d, alert.getIndicators().get(2).getScoreContribution(), 0);
 
     }
 
@@ -414,7 +413,7 @@ public class AlertServiceTest {
                 +10d, "numberOfFailedFilePermissionChangesUserIdFileHourly", Collections.singletonMap("userId", "userId"), AggregatedFeatureType.FEATURE_AGGREGATION);
 
         // raw event
-        generateFileEvents(102, aggregationRecord.getStartInstant(),"scored_enriched.file.operationType.userIdFileAction.file.score","FOLDER_OWNERSHIP_CHANGED",Arrays.asList("FILE_PERMISSION_CHANGE")); //generating 2 events more than the limit (=100)
+        generateFileEvents(102, aggregationRecord.getStartInstant(), "scored_enriched.file.operationType.userIdFileAction.file.score", "FOLDER_OWNERSHIP_CHANGED", Arrays.asList("FILE_PERMISSION_CHANGE")); //generating 2 events more than the limit (=100)
         SmartAggregationRecord smartAggregationRecord = new SmartAggregationRecord(aggregationRecord);
         smartAggregationRecord.setContribution(0.3);
         smart.setSmartAggregationRecords(Collections.singletonList(smartAggregationRecord));
@@ -490,7 +489,7 @@ public class AlertServiceTest {
         for (int i = 1; i <= eventsNum; i++) {
 
             // generate output events
-            ActiveDirectoryEnrichedEvent activeDirectoryEvent = new ActiveDirectoryEnrichedEvent(now, startEventTime.plus(new Random().nextInt(5), ChronoUnit.MINUTES), "eventId" + UUID.randomUUID(), schema, "userId", "username", "userDisplayName", "dataSource", opertaionType, operationTypeCategories, EventResult.SUCCESS, "SUCCESS", new HashMap<>(), false,"");
+            ActiveDirectoryEnrichedEvent activeDirectoryEvent = new ActiveDirectoryEnrichedEvent(now, startEventTime.plus(new Random().nextInt(5), ChronoUnit.MINUTES), "eventId" + UUID.randomUUID(), schema, "userId", "username", "userDisplayName", "dataSource", opertaionType, operationTypeCategories, EventResult.SUCCESS, "SUCCESS", new HashMap<>(), false, "");
             mongoTemplate.save(activeDirectoryEvent, new OutputToCollectionNameTranslator().toCollectionName(Schema.ACTIVE_DIRECTORY));
 
             // generate ade events
@@ -507,6 +506,7 @@ public class AlertServiceTest {
             mongoTemplate.save(activeDirectoryScoredEnrichedEvent, new AdeScoredEnrichedRecordToCollectionNameTranslator().toCollectionName(adeEventType));
         }
     }
+
 
     private SmartRecord generateSingleSmart(int score) {
         List<FeatureScore> featureScores = new ArrayList<>();
