@@ -10,11 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import presidio.output.domain.records.alerts.Alert;
-import presidio.output.domain.records.alerts.AlertQuery;
-import presidio.output.domain.records.alerts.Indicator;
-import presidio.output.domain.records.alerts.IndicatorEvent;
-import presidio.output.domain.records.alerts.IndicatorSummary;
+import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.repositories.AlertRepository;
 import presidio.output.domain.repositories.IndicatorEventRepository;
 import presidio.output.domain.repositories.IndicatorRepository;
@@ -174,7 +170,7 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     @Override
     public List<Alert> removeByTimeRange(Instant startDate, Instant endDate) {
         logger.info("Going to delete alerts that were created from date {} until date {}", startDate, endDate);
-        List<Alert> removedAlerts = new ArrayList<Alert>();
+        List<Alert> removedAlerts = new ArrayList<>();
         try (Stream<Alert> alerts = findAlertsByDate(startDate, endDate)) {
             alerts.forEach(alert -> {
                 deleteAlertAndIndicators(alert);
@@ -195,15 +191,15 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     }
 
     @Override
-    public Stream<Indicator> findIndicatorByDate(Instant startDate, Instant endDate){
+    public Stream<Indicator> findIndicatorByDate(Instant startDate, Instant endDate) {
         return indicatorRepository.findByStartDateGreaterThanEqualAndEndDateLessThanEqual(startDate.toEpochMilli(), endDate.toEpochMilli());
     }
 
     @Override
-    public List<IndicatorEvent> findIndicatorEventByIndicatorId(String indicatorId){
-        List<IndicatorEvent> events = new ArrayList<IndicatorEvent>();
-        try (Stream<IndicatorEvent> stream = indicatorEventRepository.findByIndicatorId(indicatorId)){
-             events = stream.collect(Collectors.toList());
+    public List<IndicatorEvent> findIndicatorEventByIndicatorId(String indicatorId) {
+        List<IndicatorEvent> events = new ArrayList<>();
+        try (Stream<IndicatorEvent> stream = indicatorEventRepository.findByIndicatorId(indicatorId)) {
+            events = stream.collect(Collectors.toList());
         }
         return events;
     }
