@@ -1,4 +1,4 @@
-ADAPTER_JVM_ARGS_CONFIG_PATH = 'components.adapter.jvm_args'
+import logging
 
 
 class AdapterDagBuilderExtension:
@@ -9,6 +9,7 @@ class AdapterDagBuilderExtension:
     """
 
     def __init__(self):
+        logging.debug("Running the stub implementation of adapter DAG init()")
         pass
 
     def build(self, adapter_dag, data_source, jar_operator):
@@ -21,4 +22,5 @@ class AdapterDagBuilderExtension:
         :return: The input DAG, after the "input" operators were added
         :rtype: airflow.models.DAG
         """
+        logging.debug("Running the stub implementation of adapter DAG init()")
         pass
