@@ -119,7 +119,7 @@ test('should return the initial state', function(assert) {
     filter: {},
     areFilesLoading: null,
     activeFilter: null,
-    expressionList: null,
+    expressionList: [],
     lastFilterAdded: null,
     fileFilters: [],
     selectedFilterId: null,

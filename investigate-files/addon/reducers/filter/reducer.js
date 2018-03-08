@@ -8,7 +8,7 @@ const fileListState = Immutable.from({
   filter: {},
   areFilesLoading: null,
   activeFilter: null,
-  expressionList: null,
+  expressionList: [],
   lastFilterAdded: null,
   fileFilters: [],
   selectedFilterId: null,

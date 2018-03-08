@@ -488,7 +488,17 @@ export default {
       filter: {},
       areFilesLoading: 'completed',
       activeFilter: null,
-      expressionList: [],
+      expressionList: [
+        {
+          propertyName: 'firstFileName',
+          propertyValues: [
+            {
+              value: 'm'
+            }
+          ],
+          restrictionType: 'LIKE'
+        }
+      ],
       lastFilterAdded: null,
       fileFilters: [
         {

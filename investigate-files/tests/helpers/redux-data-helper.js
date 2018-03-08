@@ -71,6 +71,11 @@ export default class DataHelper {
     return this;
   }
 
+  filesFilterFilter(filter) {
+    _set(this.state, 'files.filter.filter', filter);
+    return this;
+  }
+
   areFilesLoading(value) {
     _set(this.state, 'files.fileList.areFilesLoading', value);
     return this;
@@ -108,6 +113,11 @@ export default class DataHelper {
 
   preferences(preferences) {
     _set(this.state, 'preferences.preferences', preferences);
+    return this;
+  }
+
+  expressionList(expressionListArray) {
+    _set(this.state, 'files.filter.expressionList', expressionListArray);
     return this;
   }
 }
