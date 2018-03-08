@@ -5,6 +5,7 @@ import presidio.data.generators.common.CyclicValuesGenerator;
 import presidio.data.domain.event.activedirectory.AD_OPERATION_TYPE;
 import presidio.data.generators.common.IOperationTypeGenerator;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -133,6 +134,11 @@ public class ActiveDirOperationTypeCyclicGenerator extends CyclicValuesGenerator
             AD_OPERATION_TYPE.SYSVOL_FOLDER_OWNERSHIP_CHANGED.value,
             AD_OPERATION_TYPE.SYSVOL_FOLDER_AUDITING_CHANGED.value,
             AD_OPERATION_TYPE.SYSVOL_FOLDER_ACCESS_RIGHTS_CHANGED.value,
+            AD_OPERATION_TYPE.STRONG_AUTHENTICATION_METHOD_CHANGED.value,
+            AD_OPERATION_TYPE.STRONG_AUTHENTICATION_PHONE_APP_DETAIL_CHANGED.value,
+            AD_OPERATION_TYPE.STRONG_AUTHENTICATION_PHONE_USER_DETAIL_CHANGED.value,
+            AD_OPERATION_TYPE.STRONG_AUTHENTICATION_REQUIREMENT_CHANGED.value,
+            AD_OPERATION_TYPE.USER_PASSWORD_RESET.value
     };
     private static final OperationType[] DEFAULT_AD_OPERATION_TYPES = getDefaultAdOperationTypes(Collections.emptyList());
 
