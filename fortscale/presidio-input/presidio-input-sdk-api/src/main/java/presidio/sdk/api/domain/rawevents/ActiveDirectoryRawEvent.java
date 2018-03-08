@@ -47,6 +47,7 @@ public class ActiveDirectoryRawEvent extends AbstractInputDocument {
 
     public void setIsUserAdministrator(boolean userAdministrator) {
         isUserAdmin = userAdministrator;
+        additionalInfo.put("isUserAdmin", Boolean.toString(isUserAdmin));
     }
 
     public String getObjectId() {
