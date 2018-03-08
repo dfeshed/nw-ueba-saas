@@ -14,26 +14,7 @@ public class ActiveDirectoryInputToOutputConverter implements InputOutputConvert
         outputEvent.setEventDate(transformedEvent.getDateTime());
         outputEvent.setDataSource(transformedEvent.getDataSource());
         outputEvent.setUserId(transformedEvent.getUserId());
-        switch (transformedEvent.getOperationType()) {
-            case "USER_PASSWORD_CHANGED":
-                outputEvent.setOperationType("USER_PASSWORD_RESET");
-                break;
-            case "USER_ACCOUNT_ENABLED":
-                outputEvent.setOperationType("STRONG_AUTHENTICATION_METHOD_CHANGED");
-                break;
-            case "USER_ACCOUNT_DISABLED":
-                outputEvent.setOperationType("STRONG_AUTHENTICATION_PHONE_APP_DETAIL_CHANGED");
-                break;
-            case "USER_ACCOUNT_UNLOCKED":
-                outputEvent.setOperationType("STRONG_AUTHENTICATION_PHONE_USER_DETAIL_CHANGED");
-                break;
-            case "USER_ACCOUNT_TYPE_CHANGED":
-                outputEvent.setOperationType("STRONG_AUTHENTICATION_REQUIREMENT_CHANGED");
-                break;
-            default:
-                outputEvent.setOperationType(transformedEvent.getOperationType());
-                break;
-        }
+        outputEvent.setOperationType(transformedEvent.getOperationType());
         outputEvent.setOperationTypeCategories(transformedEvent.getOperationTypeCategory());
         outputEvent.setResult(transformedEvent.getResult());
         outputEvent.setUserName(transformedEvent.getUserName());
