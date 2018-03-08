@@ -44,12 +44,7 @@ import presidio.output.processor.services.OutputExecutionServiceImpl;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, MongodbTestConfig.class, TestConfig.class, ElasticsearchTestConfig.class})
@@ -237,6 +232,22 @@ public class OutputExecutionServiceModuleTest {
             outputExecutionService.applyRetentionPolicy(Instant.now().plus(Duration.ofDays(1)));
             // 2 alerts and 1 enriched event should have been deleted by retention
             Assert.assertEquals(1, mongoTemplate.findAll(EnrichedEvent.class, outputFileEnrichedEventCollectionName).size());
+            Assert.assertEquals(8, Lists.newArrayList(alertPersistencyService.findAll()).size());
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void testApplyRetentionPolicyForNonExistingSchema() {
+        try {
+            String outputFileEnrichedEventCollectionName = new OutputToCollectionNameTranslator().toCollectionName(Schema.PRINT);
+            outputExecutionService.run(Instant.now().minus(Duration.ofDays(101)), Instant.now().plus(Duration.ofDays(2)));
+            Assert.assertEquals(10, Lists.newArrayList(alertPersistencyService.findAll()).size());
+            Assert.assertEquals(0, mongoTemplate.findAll(EnrichedEvent.class, outputFileEnrichedEventCollectionName).size());
+            outputExecutionService.applyRetentionPolicy(Instant.now().plus(Duration.ofDays(1)));
+            Assert.assertEquals(0, mongoTemplate.findAll(EnrichedEvent.class, outputFileEnrichedEventCollectionName).size());
             Assert.assertEquals(8, Lists.newArrayList(alertPersistencyService.findAll()).size());
         } catch (Exception e) {
             e.printStackTrace();
