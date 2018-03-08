@@ -362,7 +362,7 @@
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
         {
-          "name": "strongAuthenticationPhoneUserDetailChanged",
+          "name": "strongAuthenticationPhoneUserDetailChangedScore",
           "featureNamesMap": {
             "maximize": [
               "score"
@@ -385,7 +385,7 @@
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
         {
-          "name": "strongAuthenticationRequirementChanged",
+          "name": "strongAuthenticationRequirementChangedScore",
           "featureNamesMap": {
             "maximize": [
               "score"
@@ -408,7 +408,7 @@
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
         {
-          "name": "userPasswordReset",
+          "name": "userPasswordResetScore",
           "featureNamesMap": {
             "maximize": [
               "score"

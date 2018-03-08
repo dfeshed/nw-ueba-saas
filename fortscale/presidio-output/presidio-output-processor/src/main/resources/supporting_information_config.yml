@@ -546,7 +546,7 @@ indicators:
     featureName: operationTypeHistogram
   classification: sensitive_user_status_changes
 
-- id: userPasswordResetUserIdActiveDirectoryHourly
+- id: userPasswordReseUserIdActiveDirectoryHourly
   type: STATIC_INDICATOR
   name: user_password_reset
   adeEventType: scored_enriched.active_directory.userPasswordReset.userId.activeDirectory.score
