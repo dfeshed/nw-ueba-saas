@@ -7,12 +7,14 @@ import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.FeatureBucketUtils;
 import fortscale.aggregation.feature.bucket.InMemoryFeatureBucketAggregator;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
+import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.feature.Feature;
 import fortscale.common.general.CommonStrings;
 import fortscale.common.general.Schema;
 import fortscale.common.util.GenericHistogram;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.fixedduration.FixedDurationStrategyUtils;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.time.TimeService;
@@ -41,12 +43,13 @@ import java.util.stream.Collectors;
  * The data is retrieved from the models data layer through SDK
  * Historical data for date range that is missing in the models is built in memory and
  * merged into the final results.
- *
+ * <p>
  * This fetcher is based on data that are already written for models creation and therefore
  * saves I/O operations
  */
-public class HistoricalDataFetcherADEModelsBaesd implements HistoricalDataFetcher {
+public class HistoricalDataFetcherADEModelsBased implements HistoricalDataFetcher {
 
+    Logger logger = Logger.getLogger(HistoricalDataFetcherADEModelsBased.class);
 
     AdeManagerSdk adeManagerSdk;
 
@@ -61,7 +64,7 @@ public class HistoricalDataFetcherADEModelsBaesd implements HistoricalDataFetche
     AccumulationsCache accumulationsCache;
 
 
-    public HistoricalDataFetcherADEModelsBaesd(AdeManagerSdk adeManagerSdk, EnrichedDataStore enrichedDataStore, InMemoryFeatureBucketAggregator inMemoryFeatureBucketAggregator, AggregationRecordsCreator aggregationRecordsCreator, AccumulatorService accumulatorService, AccumulationsCache accumulationsCache) {
+    public HistoricalDataFetcherADEModelsBased(AdeManagerSdk adeManagerSdk, EnrichedDataStore enrichedDataStore, InMemoryFeatureBucketAggregator inMemoryFeatureBucketAggregator, AggregationRecordsCreator aggregationRecordsCreator, AccumulatorService accumulatorService, AccumulationsCache accumulationsCache) {
         this.adeManagerSdk = adeManagerSdk;
         this.enrichedDataStore = enrichedDataStore;
         this.inMemoryFeatureBucketAggregator = inMemoryFeatureBucketAggregator;
@@ -77,15 +80,14 @@ public class HistoricalDataFetcherADEModelsBaesd implements HistoricalDataFetche
      * @param timeRange
      * @param contextField the context id (i.e userId)
      * @param contextValue the context value (i.e the user name)
-     * @param schema the schema for which to populate historical behavior
-     * @param featureName the feature for which to populate historical behavior (e.g: login time)
-     *
+     * @param schema       the schema for which to populate historical behavior
+     * @param featureName  the feature for which to populate historical behavior (e.g: login time)
      * @return List of feature histogram for each day in the range
-     *         e.g:   Feature: operationType, Date: 01/01/2017, Histogram {FILE_MOVED:5, FILE_COPY:9, ACCESS_RIGHTS_CHANGED:1}
-     *                Feature: operationType, Date: 01/02/2017, Histogram {FILE_OPENED:10, ACCESS_RIGHTS_CHANGED:1}
+     * e.g:   Feature: operationType, Date: 01/01/2017, Histogram {FILE_MOVED:5, FILE_COPY:9, ACCESS_RIGHTS_CHANGED:1}
+     * Feature: operationType, Date: 01/02/2017, Histogram {FILE_OPENED:10, ACCESS_RIGHTS_CHANGED:1}
      */
     @Override
-    public List<DailyHistogram<String>> getDailyHistogramsForFeature(TimeRange timeRange, String contextField, String contextValue, Schema schema, String featureName, HistoricalDataConfig historicalDataConfig) {
+    public List<DailyHistogram<String, Number>> getDailyHistogramsForFeature(TimeRange timeRange, String contextField, String contextValue, Schema schema, String featureName, HistoricalDataConfig historicalDataConfig) {
 
         // get historical data from models
         String contextId = FeatureBucketUtils.buildContextId(getContextIdMap(contextField, contextValue));
@@ -96,11 +98,11 @@ public class HistoricalDataFetcherADEModelsBaesd implements HistoricalDataFetche
         List<FeatureBucket> featureBucketsInMemory = calculateFeatureBuckets(timeRange, contextValue, schema, featureName, featureBucketsFromModels, historicalDataConfig);
 
         // translate FeatureBuckets to dailyHistogram
-        List<DailyHistogram<String>> dailyHistogramList = new ArrayList<DailyHistogram<String>>();
+        List<DailyHistogram<String, Number>> dailyHistogramList = new ArrayList<DailyHistogram<String, Number>>();
         dailyHistogramList.addAll(convertFeatureBucketsToHistograms(featureName, featureBucketsFromModels));
         dailyHistogramList.addAll(convertFeatureBucketsToHistograms(featureName, featureBucketsInMemory));
 
-        return  dailyHistogramList;
+        return dailyHistogramList;
     }
 
     /**
@@ -110,29 +112,28 @@ public class HistoricalDataFetcherADEModelsBaesd implements HistoricalDataFetche
      * @param timeRange
      * @param contextField the context id (i.e userId)
      * @param contextValue the context value (i.e the user name)
-     * @param schema the schema for which to populate historical behavior
-     * @param featureName the feature for which to populate historical behavior (e.g: login time)
-     *
+     * @param schema       the schema for which to populate historical behavior
+     * @param featureName  the feature for which to populate historical behavior (e.g: login time)
      * @return List of aggregated feature histogram for each day in the range. The histogram key is hour of the day (0 .. 23)
-     *         e.g:   Aggregated Feature: numberOfFailedAuthentications, Day: 01/01/2017, histogram {0:1, 2:0, 3:0 ...}
-     *                Aggregated Feature: numberOfFailedAuthentications, Day: 01/02/2017, histogram {0:0, 2:1, 3:0 ...}
+     * e.g:   Aggregated Feature: numberOfFailedAuthentications, Day: 01/01/2017, histogram {0:1, 2:0, 3:0 ...}
+     * Aggregated Feature: numberOfFailedAuthentications, Day: 01/02/2017, histogram {0:0, 2:1, 3:0 ...}
      */
     @Override
-    public List<DailyHistogram<Integer>> getDailyHistogramsForAggregatedFeature(TimeRange timeRange, String contextField, String contextValue, Schema schema, String featureName, HistoricalDataConfig historicalDataConfig) {
+    public List<DailyHistogram<Integer, Double>> getDailyHistogramsForAggregatedFeature(TimeRange timeRange, String contextField, String contextValue, Schema schema, String featureName, HistoricalDataConfig historicalDataConfig) {
         // get historical data from models
         String contextId = //FeatureBucketUtils.buildContextId(getContextIdMap(contextField, contextValue));
                 AdeContextualAggregatedRecord.getAggregatedFeatureContextId(getContextIdMap(contextField, contextValue));
-        List<AccumulatedAggregationFeatureRecord> accumulatedAggregationFeatureRecordsFromModels = adeManagerSdk.getAccumulatedAggregatedFeatureEvents(featureName,contextId,  timeRange);
+        List<AccumulatedAggregationFeatureRecord> accumulatedAggregationFeatureRecordsFromModels = adeManagerSdk.getAccumulatedAggregatedFeatureEvents(featureName, contextId, timeRange);
 
         // complete historical data in memory
         List<AccumulatedAggregationFeatureRecord> accumulatedAggregationFeaturesInMemory = calculateAccumulatedAggregationFeatures(timeRange, contextValue, schema, featureName, accumulatedAggregationFeatureRecordsFromModels);
 
         // translate AccumulatedAggregationFeatureRecord to dailyHistogram
-        List<DailyHistogram<Integer>> dailyHistogramList = new ArrayList<DailyHistogram<Integer>>();
+        List<DailyHistogram<Integer, Double>> dailyHistogramList = new ArrayList<DailyHistogram<Integer, Double>>();
         dailyHistogramList.addAll(convertAggregationFeaturesToHistograms(accumulatedAggregationFeatureRecordsFromModels));
         dailyHistogramList.addAll(convertAggregationFeaturesToHistograms(accumulatedAggregationFeaturesInMemory));
 
-        return  dailyHistogramList;
+        return dailyHistogramList;
     }
 
 
@@ -141,7 +142,7 @@ public class HistoricalDataFetcherADEModelsBaesd implements HistoricalDataFetche
         TimeRange inMemoryTimeRange = getMissingTimeRange(timeRange, featureBucketsFromModels, new Function<Object, Instant>() {
             @Override
             public Instant apply(Object f) {
-                return ((FeatureBucket)f).getEndTime();
+                return ((FeatureBucket) f).getEndTime();
             }
         });
 
@@ -149,7 +150,7 @@ public class HistoricalDataFetcherADEModelsBaesd implements HistoricalDataFetche
 
         Instant start = TimeService.floorTime(inMemoryTimeRange.getStart(), FixedDurationStrategy.DAILY.toDuration());
         Instant end = TimeService.floorTime(inMemoryTimeRange.getEnd(), FixedDurationStrategy.DAILY.toDuration());
-        TimeRange flooredTimeRange = new TimeRange(start,end);
+        TimeRange flooredTimeRange = new TimeRange(start, end);
         List<TimeRange> dayPartitions = FixedDurationStrategyUtils.splitTimeRangeByStrategy(flooredTimeRange, FixedDurationStrategy.DAILY);
         dayPartitions.add(new TimeRange(end, inMemoryTimeRange.getEnd())); //add last partial day
 
@@ -180,7 +181,7 @@ public class HistoricalDataFetcherADEModelsBaesd implements HistoricalDataFetche
         TimeRange inMemoryTimeRange = getMissingTimeRange(timeRange, accumulatedAggregationFeatureRecordsFromModels, new Function<Object, Instant>() {
             @Override
             public Instant apply(Object f) {
-                return ((AccumulatedAggregationFeatureRecord)f).getEndInstant();
+                return ((AccumulatedAggregationFeatureRecord) f).getEndInstant();
             }
         });
 
@@ -188,7 +189,7 @@ public class HistoricalDataFetcherADEModelsBaesd implements HistoricalDataFetche
 
         Instant start = TimeService.floorTime(inMemoryTimeRange.getStart(), FixedDurationStrategy.DAILY.toDuration());
         Instant end = TimeService.floorTime(inMemoryTimeRange.getEnd().minus(1, ChronoUnit.DAYS), FixedDurationStrategy.DAILY.toDuration());
-        TimeRange flooredTimeRange = new TimeRange(start,end);
+        TimeRange flooredTimeRange = new TimeRange(start, end);
         List<TimeRange> dayPartitions = FixedDurationStrategyUtils.splitTimeRangeByStrategy(flooredTimeRange, FixedDurationStrategy.DAILY);
         dayPartitions.add(new TimeRange(end, inMemoryTimeRange.getEnd())); //add last partial day
 
@@ -201,7 +202,7 @@ public class HistoricalDataFetcherADEModelsBaesd implements HistoricalDataFetche
                 PageIterator<EnrichedRecord> pageIterator = getEnrichedRecordPageIterator(contextValue, schema, hourPartition);
                 List<String> contextTypes = Collections.singletonList(CommonStrings.CONTEXT_USERID);
                 FeatureBucketStrategyData featureBucketStrategyData =
-                            new FeatureBucketStrategyData(FixedDurationStrategy.HOURLY.toStrategyName(),
+                        new FeatureBucketStrategyData(FixedDurationStrategy.HOURLY.toStrategyName(),
                                 FixedDurationStrategy.HOURLY.toStrategyName(),
                                 hourPartition);
                 featureBucketsInMemory.addAll(inMemoryFeatureBucketAggregator.aggregate(pageIterator, contextTypes, featureBucketStrategyData));
@@ -224,8 +225,8 @@ public class HistoricalDataFetcherADEModelsBaesd implements HistoricalDataFetche
     }
 
 
-    private List<DailyHistogram<String>> convertFeatureBucketsToHistograms(String featureName, List<FeatureBucket> featureBuckets) {
-        List<DailyHistogram<String>> dailyHistogramList = new <DailyHistogram<String>> ArrayList();
+    private List<DailyHistogram<String, Number>> convertFeatureBucketsToHistograms(String featureName, List<FeatureBucket> featureBuckets) {
+        List<DailyHistogram<String, Number>> dailyHistogramList = new <DailyHistogram<String, Number>>ArrayList();
         if (CollectionUtils.isNotEmpty(featureBuckets)) {
             for (FeatureBucket featureBucket : featureBuckets) {
                 LocalDate day = featureBucket.getStartTime().atZone(ZoneOffset.UTC).toLocalDate();
@@ -236,22 +237,27 @@ public class HistoricalDataFetcherADEModelsBaesd implements HistoricalDataFetche
                 }
 
                 Object featureValue = feature.getValue();
-                if (!(feature.getValue() instanceof GenericHistogram)) {
-                    // logger.error("Cannot find histogram data for feature {} in bucket id {}", normalizedFeatureName, featureBucket.getBucketId());
+
+                Map histogramMap = null;
+                if (feature.getValue() instanceof GenericHistogram) {
+                    histogramMap = ((GenericHistogram) featureValue).getHistogramMap();
+                } else if (feature.getValue() instanceof AggrFeatureValue) {
+                    histogramMap = (Map) ((AggrFeatureValue) featureValue).getValue();
+                } else {
+                    logger.debug("Cannot find histogram data for feature {} in bucket id {}", featureName, featureBucket.getBucketId());
                     continue;
                 }
 
-                Map<String, Double> histogramMap = ((GenericHistogram) featureValue).getHistogramMap();
-                DailyHistogram<String> dailyHistogram = new DailyHistogram<String>(day, histogramMap);
+                DailyHistogram<String, Number> dailyHistogram = new DailyHistogram<String, Number>(day, histogramMap);
                 dailyHistogramList.add(dailyHistogram);
             }
         }
         return dailyHistogramList;
     }
 
-    private List<DailyHistogram<Integer>> convertAggregationFeaturesToHistograms(List<AccumulatedAggregationFeatureRecord> accumulatedAggregationFeatureRecords) {
+    private List<DailyHistogram<Integer, Double>> convertAggregationFeaturesToHistograms(List<AccumulatedAggregationFeatureRecord> accumulatedAggregationFeatureRecords) {
 
-        List<DailyHistogram<Integer>> dailyHistogramList = new <DailyHistogram<String>> ArrayList();
+        List<DailyHistogram<Integer, Double>> dailyHistogramList = new <DailyHistogram<String, Number>>ArrayList();
         if (CollectionUtils.isNotEmpty(accumulatedAggregationFeatureRecords)) {
 
             for (AccumulatedAggregationFeatureRecord accumulatedAggregationFeatureRecord : accumulatedAggregationFeatureRecords) {
@@ -262,7 +268,7 @@ public class HistoricalDataFetcherADEModelsBaesd implements HistoricalDataFetche
                     continue;
                 }
 
-                DailyHistogram<Integer> dailyHistogram = new DailyHistogram<Integer>(day, aggregatedFeatureValues);
+                DailyHistogram<Integer, Double> dailyHistogram = new DailyHistogram<Integer, Double>(day, aggregatedFeatureValues);
                 dailyHistogramList.add(dailyHistogram);
             }
         }
@@ -289,16 +295,16 @@ public class HistoricalDataFetcherADEModelsBaesd implements HistoricalDataFetche
     }
 
     private TimeRange getMissingTimeRange(TimeRange timeRange, List<?> list, Function<Object, Instant> mapToInstant) {
-        if (CollectionUtils.isEmpty(list)){
+        if (CollectionUtils.isEmpty(list)) {
             return timeRange;
         }
 
         // find the largest instant in the the models data and add 1 ms.
         Instant startInstantForMemory = list.stream()
-                                        .map(mapToInstant)
-                                        .max(Instant::compareTo)
-                                        .get()
-                                        .plus(1, ChronoUnit.MILLIS);
-        return new TimeRange(startInstantForMemory,  timeRange.getEnd());
+                .map(mapToInstant)
+                .max(Instant::compareTo)
+                .get()
+                .plus(1, ChronoUnit.MILLIS);
+        return new TimeRange(startInstantForMemory, timeRange.getEnd());
     }
 }

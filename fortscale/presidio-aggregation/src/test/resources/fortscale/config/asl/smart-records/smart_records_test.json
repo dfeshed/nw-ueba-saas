@@ -2,19 +2,25 @@
   "SmartRecordConfs": [
     {
       "name": "test_smart_record_conf_1",
-      "contexts": [
-        "userId"
-      ],
+      "contextToFieldsMap": {
+        "userId": [
+          "userId"
+        ]
+      },
       "fixedDurationStrategy": "fixed_duration_hourly",
       "includeAllAggregationRecords": true,
       "defaultWeight": 0.5
     },
     {
       "name": "test_smart_record_conf_2",
-      "contexts": [
-        "userId",
-        "srcMachineId"
-      ],
+      "contextToFieldsMap": {
+        "userId": [
+          "userId"
+        ],
+        "machineId": [
+          "srcMachineId"
+        ]
+      },
       "fixedDurationStrategy": "fixed_duration_daily",
       "includeAllAggregationRecords": false,
       "defaultWeight": 0.25,
