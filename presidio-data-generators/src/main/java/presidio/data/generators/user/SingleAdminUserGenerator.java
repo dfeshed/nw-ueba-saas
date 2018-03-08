@@ -13,8 +13,8 @@ public class SingleAdminUserGenerator implements IUserGenerator {
         }
 
         user.setUserId(username);
-        user.setLastName ("");
-        user.setFirstName ("");
+        user.setLastName(username.substring(username.length() - 2));
+        user.setFirstName(username.substring(0, username.length() - 2));
         user.setAdministrator(true);
         user.setAnonymous(false);
     }
