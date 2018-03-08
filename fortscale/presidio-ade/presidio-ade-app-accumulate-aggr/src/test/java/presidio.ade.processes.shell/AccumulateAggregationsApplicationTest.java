@@ -24,7 +24,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @ContextConfiguration
-@Ignore
 public class AccumulateAggregationsApplicationTest extends EnrichedDataBaseAppTest {
     private static final int FIX_DURATION_STRATEGY = 86400;
     private static final int FEATURE_BUCKET_STRATEGY = 3600;
@@ -213,6 +212,7 @@ public class AccumulateAggregationsApplicationTest extends EnrichedDataBaseAppTe
         fileOperationGenerators.add(new AdeFileOperationGeneratorTemplateFactory().createFailedRenameFileOperationsGenerator());
         fileOperationGenerators.add(new AdeFileOperationGeneratorTemplateFactory().createMoveFromSharedFileOperationsGenerator());
         fileOperationGenerators.add(new AdeFileOperationGeneratorTemplateFactory().createMoveToSharedFileOperationsGenerator());
+        fileOperationGenerators.add(new AdeFileOperationGeneratorTemplateFactory().createDownloadFileOperationsGenerator());
 
         return fileOperationGenerators;
     }

@@ -263,7 +263,7 @@
       "bucketsLeap": 1,
       "aggregatedFeatureNamesMap": {
         "pick": [
-          "userPasswordReset"
+          "userPasswordResetScore"
         ]
       },
       "aggregatedFeatureEventFunction": {

@@ -518,7 +518,7 @@ indicators:
     featureName: operationTypeHistogram
   classification: sensitive_user_status_changes
 
-- id: strongAuthenticationPhoneAppDetailChangedUserIdActiveDirectoryHourly
+- id: strongAuthenticationPhoneUserDetailChangedUserIdActiveDirectoryHourly
   type: STATIC_INDICATOR
   name: strong_authentication_phone_user_detail_changed
   adeEventType: scored_enriched.active_directory.strongAuthenticationPhoneUserDetailChanged.userId.activeDirectory.score
