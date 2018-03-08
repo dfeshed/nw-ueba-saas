@@ -1,13 +1,12 @@
 #!/usr/local/bin/python
 
 
-import json
-import os
-import requests
-import sys
-import logging
 import argparse
 import ast
+import json
+import logging
+import os
+import requests
 
 BASE_PATH = '/home/presidio/presidio-core/'
 ELASTICSEARCH_PATH = BASE_PATH + 'el-extensions'
@@ -46,7 +45,7 @@ def put_request(url, data):
     logging.info("executing put request %s ", url)
     response = requests.put(url, data=data, headers=HEADERS)
     if response.status_code not in [200, 201]:
-        content =ast.literal_eval(response.content)
+        content = ast.literal_eval(response.content)
         if content['error']['type'] != INDEX_ALREADY_EXISTS_EXCEPTION:
             msg = "got response={} reason={} content={} data={}".format(response.status_code, response.reason,
                                                                         response.content, data)
@@ -82,7 +81,8 @@ def set_mapping(indexJson, name):
         with open(indexJson) as json_data:
             obj = json.load(json_data)
             data = json.dumps(obj[obj.keys()[0]])
-            url = MACHINE_URL + name + '/_mappings/' +  obj.keys()[0]
+            create_kibana_pattern_from_mapping(name, obj[obj.keys()[0]]["properties"])
+            url = MACHINE_URL + name + '/_mappings/' + obj.keys()[0]
             put_request(url, data)
             logging.info("Set index %s mappings", name)
     except Exception as e:
@@ -109,6 +109,54 @@ def update_kibana_index_from_file(folder, url):
         except Exception as e:
             logging.error("failed to send file=%s to elastic search url=%s", jsonfilepath, url)
             raise e
+
+
+def fields_from_property(name, dic):
+    field = {}
+    if dic.has_key("type"):
+        type = str(dic["type"])
+        field = {"name": name, "type": type, "count": 0, "scripted": False, "indexed": True, "analyzed": False,
+                 "doc_values": True, "searchable": True, "aggregatable": True}
+        if type == "string" and (dic.has_key("analyzer") or not dic.has_key("index")):
+            field = {"name": name, "type": type, "count": 0, "scripted": False, "indexed": True, "analyzed": True,
+                     "doc_values": False, "searchable": True, "aggregatable": False}
+    return field
+
+
+def enter_field_to_list(dic, field):
+    if len(field) > 0:
+        dic.append(field)
+
+
+def get_event_time_for_pattern(name):
+    eventtime = {"presidio-monitoring": "timestamp", "presidio-monitoring-logical": "logicTime",
+                 "presidio-output-alert": "startDate",
+                 "presidio-output-event": "eventTime", "presidio-output-indicator": "startDate",
+                 "presidio-output-user": "createdDate"}
+    return eventtime[name]
+
+
+def create_kibana_pattern_from_mapping(name, mapping):
+    SOURCE = {"name": "_source", "type": "_source", "count": 0, "scripted": False, "indexed": False,
+              "analyzed": False, "doc_values": False, "searchable": False, "aggregatable": False}
+    ID = {"name": "_id", "type": "string", "count": 0, "scripted": False, "indexed": False, "analyzed": False,
+          "doc_values": False, "searchable": False, "aggregatable": False}
+    TYPE = {"name": "_type", "type": "string", "count": 0, "scripted": False, "indexed": False, "analyzed": False,
+            "doc_values": False, "searchable": False, "aggregatable": False}
+    INDEX = {"name": "_index", "type": "string", "count": 0, "scripted": False, "indexed": False,
+             "analyzed": False, "doc_values": False, "searchable": False, "aggregatable": False}
+    SCORE = {"name": "_score", "type": "number", "count": 0, "scripted": False, "indexed": False,
+             "analyzed": False, "doc_values": False, "searchable": False, "aggregatable": False}
+    fields2 = [SOURCE, ID, INDEX, SCORE, TYPE]
+    for property in mapping:
+        if (type(property) is dict):
+            for property in mapping:
+                enter_field_to_list(fields2, fields_from_property(property, mapping[property]))
+        else:
+            enter_field_to_list(fields2, fields_from_property(property, mapping[property]))
+    kibaburl = URL_KIBANA_PATTERNS + name
+    put_request(kibaburl,
+                json.dumps({"title": name, "timeFieldName": get_event_time_for_pattern(name), "fields": fields2}))
 
 
 def convert_el_item(item):
@@ -196,9 +244,9 @@ def init_elasticsearch(path):
 
 
 def main(path, rpm):
-    if rpm is CORE_ELASTIC_INIT:
+    if rpm == CORE_ELASTIC_INIT:
         init_elasticsearch(path + INDEXES)
-        update_kibana_index_from_file(path + INDEX_PATTERN, URL_KIBANA_PATTERNS)
+        # update_kibana_index_from_file(path + INDEX_PATTERN, URL_KIBANA_PATTERNS)
         create_default_pattern(path + DEFAULT)
     update_kibana_index_from_file(path + SEARCHES, URL_KIBANA_SEARCHES)
     update_kibana_index_from_file(path + VISUALIZATION, URL_KIBANA_VISUALIZATIONS)
@@ -206,14 +254,14 @@ def main(path, rpm):
 
 
 parser = argparse.ArgumentParser(description='init elasticseatch and kibana')
-parser.add_argument('--resources_path', type=str, required=True,help='path of resources files for elasticsearch and kibana (core/vendor)')
+parser.add_argument('--resources_path', type=str, required=True,
+                    help='path of resources files for elasticsearch and kibana')
+parser.add_argument('--run_type', type=str, required=True, help='core/vendor')
 args = parser.parse_args()
 
-
 if __name__ == "__main__":
-    if args.resources_path == CORE_ELASTIC_INIT:
-        logging.info("Running core logic.")
-        main(ELASTICSEARCH_PATH, CORE_ELASTIC_INIT)
-    if args.resources_path == VENDOR_ELASTIC_INIT:
-        logging.info("Running specific vendor %s logic.", VENDOR_ELASTIC_INIT)
-        main(VENDOR_ELASTICSEARCH_PATH, VENDOR_ELASTIC_INIT)
+    if args.run_type in [CORE_ELASTIC_INIT, VENDOR_ELASTIC_INIT]:
+        main(args.resources_path, args.run_type)
+    else:
+        msg = "Bad param={} ".format(args.run_type)
+        raise Exception(msg)
