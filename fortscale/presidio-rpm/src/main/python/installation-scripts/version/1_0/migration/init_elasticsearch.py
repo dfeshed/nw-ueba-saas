@@ -7,6 +7,7 @@ import json
 import logging
 import os
 import requests
+import string
 
 BASE_PATH = '/home/presidio/presidio-core/'
 ELASTICSEARCH_PATH = BASE_PATH + 'el-extensions'
@@ -52,7 +53,7 @@ def put_request(url, data):
             raise Exception(msg)
         else:
             logging.info("Index = %s already exists.", url)
-
+    return response
 
 def set_alias(indexJson):
     with open(indexJson) as json_data:
@@ -81,7 +82,8 @@ def set_mapping(indexJson, name):
         with open(indexJson) as json_data:
             obj = json.load(json_data)
             data = json.dumps(obj[obj.keys()[0]])
-            create_kibana_pattern_from_mapping(name, obj[obj.keys()[0]]["properties"])
+            if name != "presidio-output-user-severities-range":
+                create_kibana_pattern_from_mapping(name, obj[obj.keys()[0]]["properties"])
             url = MACHINE_URL + name + '/_mappings/' + obj.keys()[0]
             put_request(url, data)
             logging.info("Set index %s mappings", name)
@@ -132,6 +134,7 @@ def get_event_time_for_pattern(name):
     eventtime = {"presidio-monitoring": "timestamp", "presidio-monitoring-logical": "logicTime",
                  "presidio-output-alert": "startDate",
                  "presidio-output-event": "eventTime", "presidio-output-indicator": "startDate",
+                 "presidio-monitoring": "timestemp", "presidio-output-logical": "logicTime",
                  "presidio-output-user": "createdDate"}
     return eventtime[name]
 
@@ -155,8 +158,10 @@ def create_kibana_pattern_from_mapping(name, mapping):
         else:
             enter_field_to_list(fields2, fields_from_property(property, mapping[property]))
     kibaburl = URL_KIBANA_PATTERNS + name
+    temp2 =str(fields2)
+    temp= string.replace(temp2,"'","\"")
     put_request(kibaburl,
-                json.dumps({"title": name, "timeFieldName": get_event_time_for_pattern(name), "fields": fields2}))
+                json.dumps({"title": name, "timeFieldName": get_event_time_for_pattern(name), "fields": temp}))
 
 
 def convert_el_item(item):
@@ -210,6 +215,9 @@ def set_aliases_for_index(path):
     else:
         logging.info("No aliases for %s", path)
 
+def create_pattern_from_template(aliases, mappings):
+    for alias in aliases:
+        create_kibana_pattern_from_mapping(alias, mappings)
 
 def create_index_from_template(file):
     try:
@@ -217,6 +225,7 @@ def create_index_from_template(file):
             obj = json.load(json_data)
             name = obj.keys()[ELASTICSEARCH_TEMPLATE_NAME_POSITION_IN_TEMPLATE]
             data = json.dumps(obj[obj.keys()[ELASTICSEARCH_TEMPLATE_NAME_POSITION_IN_TEMPLATE]])
+            create_pattern_from_template(obj[obj.keys()[0]]["aliases"], obj[obj.keys()[0]]["mappings"]["metric"]["properties"])
             requesturl = (URL_TEMPLATES + name).replace(" ", "")
             put_request(requesturl, data)
     except Exception as e:
@@ -246,7 +255,7 @@ def init_elasticsearch(path):
 def main(path, rpm):
     if rpm == CORE_ELASTIC_INIT:
         init_elasticsearch(path + INDEXES)
-        # update_kibana_index_from_file(path + INDEX_PATTERN, URL_KIBANA_PATTERNS)
+        update_kibana_index_from_file(path + INDEX_PATTERN, URL_KIBANA_PATTERNS)
         create_default_pattern(path + DEFAULT)
     update_kibana_index_from_file(path + SEARCHES, URL_KIBANA_SEARCHES)
     update_kibana_index_from_file(path + VISUALIZATION, URL_KIBANA_VISUALIZATIONS)
