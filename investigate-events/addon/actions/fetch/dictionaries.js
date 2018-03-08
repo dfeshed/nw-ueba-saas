@@ -17,8 +17,7 @@ const fetchLanguage = (serviceId) => {
   };
   return queryPromiseRequest(
     'core-meta-key',
-    query,
-    { cancelPreviouslyExecuting: true }
+    query
   );
 };
 

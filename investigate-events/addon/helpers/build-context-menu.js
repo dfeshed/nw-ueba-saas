@@ -7,7 +7,10 @@ const _openUrl = function(url) {
   window.open(url);
 };
 
-const _prepareMetaFormatMap = function(language = []) {
+const _prepareMetaFormatMap = function(language) {
+  if (!language) {
+    return {};
+  }
   return language.reduce(function(hash, { metaName, format }) {
     hash[metaName] = format;
     return hash;
@@ -18,7 +21,7 @@ const _buildQuery = function(conditions = [], metaFormatMap = {}) {
   return conditions.map((condition) => {
     const metaFormat = metaFormatMap[condition.meta];
     const { meta, value, operator } = condition;
-    const surroundInQuotes = String(metaFormat).toLowerCase() === 'text';
+    const surroundInQuotes = !metaFormat || String(metaFormat).toLowerCase() === 'text';
     const valueEncoded = surroundInQuotes ? `'${String(value).replace(/[\'\"]/g, '')}'` : value;
     return `${meta} ${operator} ${valueEncoded}`;
   }).join(' && ');
