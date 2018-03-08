@@ -5,7 +5,7 @@ import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
-public class    AlertQuery {
+public class AlertQuery {
 
     // filters
     private final List<String> filterByUserName;
