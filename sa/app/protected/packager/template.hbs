@@ -1,1 +1,7 @@
-{{packager-container}}
+{{#if model.endpointServerOffline}}
+  {{error-page
+    errorDescription=(t 'packager.errorPage.errorDescription')
+    title=(t 'packager.errorPage.errorTitle')}}
+{{else}}
+  {{packager-container}}
+{{/if}}

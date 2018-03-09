@@ -1702,6 +1702,10 @@ export default {
       EMPTY_CHANNELS: 'ja_Warning: The channel name is empty.',
       CHANNEL_FILTER_INVALID: 'ja_Warning: The channel filter is invalid.'
     },
+    errorPage: {
+      errorTitle: 'ja_Endpoint Server is offline',
+      errorDescription: 'ja_Endpoint Server may not be configured properly , please check deployment guide for endpoint server provisioning steps and ensure all the steps are followed.'
+    },
     packagerTitle: 'ja_Packager',
     serviceName: 'ja_Service Name*',
     server: 'ja_Endpoint Server*',

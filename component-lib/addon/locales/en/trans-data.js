@@ -1702,6 +1702,10 @@ export default {
       EMPTY_CHANNELS: 'Warning: The channel name is empty.',
       CHANNEL_FILTER_INVALID: 'Warning: The channel filter is invalid.'
     },
+    errorPage: {
+      errorTitle: 'Endpoint Server is offline',
+      errorDescription: 'Endpoint Server may not be configured properly , please check deployment guide for endpoint server provisioning steps and ensure all the steps are followed.'
+    },
     packagerTitle: 'Packager',
     serviceName: 'Service Name*',
     server: 'Endpoint Server*',
