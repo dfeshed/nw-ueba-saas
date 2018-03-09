@@ -1,4 +1,4 @@
-import { moduleForComponent, test, skip } from 'ember-qunit';
+import { moduleForComponent, test } from 'ember-qunit';
 import engineResolverFor from '../../../helpers/engine-resolver';
 
 moduleForComponent('query-filters/query-filter-fragment', 'Unit | Component | query filter fragment', {
@@ -73,7 +73,7 @@ test('it sets operatorOptions when metaFormat is IPv6', function(assert) {
   assert.ok(options.findBy('displayName', '!exists'), 'Expected to find !exists');
 });
 
-skip('it sets isExpensive when metaIndex is anything but value', function(assert) {
+test('it sets isExpensive when metaIndex is anything but value', function(assert) {
   const component = this.subject({
     metaIndex: 'value',
     metaFormat: 'Text'
@@ -81,19 +81,26 @@ skip('it sets isExpensive when metaIndex is anything but value', function(assert
 
   assert.notOk(component.get('operatorOptions').findBy('displayName', '=').isExpensive, 'Expected = to not be expensive');
   assert.notOk(component.get('operatorOptions').findBy('displayName', '!=').isExpensive, 'Expected != to not be expensive');
-  assert.notOk(component.get('operatorOptions').findBy('displayName', 'contains').isExpensive, 'Expected contains to not be expensive');
-  assert.notOk(component.get('operatorOptions').findBy('displayName', 'begins').isExpensive, 'Expected begins to not be expensive');
-  assert.notOk(component.get('operatorOptions').findBy('displayName', 'ends').isExpensive, 'Expected ends to not be expensive');
+  assert.ok(component.get('operatorOptions').findBy('displayName', 'contains').isExpensive, 'Expected contains to not be expensive');
+  assert.ok(component.get('operatorOptions').findBy('displayName', 'begins').isExpensive, 'Expected begins to not be expensive');
+  assert.ok(component.get('operatorOptions').findBy('displayName', 'ends').isExpensive, 'Expected ends to not be expensive');
   assert.notOk(component.get('operatorOptions').findBy('displayName', 'exists').isExpensive, 'Expected exists to not be expensive');
   assert.notOk(component.get('operatorOptions').findBy('displayName', '!exists').isExpensive, 'Expected !exists to not be expensive');
   component.set('metaFormat', null);
-  assert.notOk(component.get('operatorOptions').findBy('displayName', '<').isExpensive, 'Expected < to not be expensive');
-  assert.notOk(component.get('operatorOptions').findBy('displayName', '<=').isExpensive, 'Expected <= to not be expensive');
-  assert.notOk(component.get('operatorOptions').findBy('displayName', '>').isExpensive, 'Expected > to not be expensive');
-  assert.notOk(component.get('operatorOptions').findBy('displayName', '>=').isExpensive, 'Expected >= to not be expensive');
 
-  component.set('metaFormat', 'Text');
+  // when metaIndex is value and format is not text
+  component.set('metaIndex', 'value');
+  component.set('metaFormat', 'IPv4');
+
+  assert.notOk(component.get('operatorOptions').findBy('displayName', '=').isExpensive, 'Expected = to not be expensive');
+  assert.notOk(component.get('operatorOptions').findBy('displayName', '!=').isExpensive, 'Expected != to not be expensive');
+  assert.notOk(component.get('operatorOptions').findBy('displayName', 'exists').isExpensive, 'Expected exists to not be expensive');
+  assert.notOk(component.get('operatorOptions').findBy('displayName', '!exists').isExpensive, 'Expected !exists to not be expensive');
+  component.set('metaFormat', null);
+
+  // when metaIndex is key and format is text
   component.set('metaIndex', 'key');
+  component.set('metaFormat', 'Text');
 
   assert.ok(component.get('operatorOptions').findBy('displayName', '=').isExpensive, 'Expected = to be expensive');
   assert.ok(component.get('operatorOptions').findBy('displayName', '!=').isExpensive, 'Expected != to be expensive');
@@ -103,26 +110,26 @@ skip('it sets isExpensive when metaIndex is anything but value', function(assert
   assert.notOk(component.get('operatorOptions').findBy('displayName', 'exists').isExpensive, 'Expected exists to not be expensive');
   assert.notOk(component.get('operatorOptions').findBy('displayName', '!exists').isExpensive, 'Expected !exists to not be expensive');
   component.set('metaFormat', null);
-  assert.ok(component.get('operatorOptions').findBy('displayName', '<').isExpensive, 'Expected < to be expensive');
-  assert.ok(component.get('operatorOptions').findBy('displayName', '<=').isExpensive, 'Expected <= to be expensive');
-  assert.ok(component.get('operatorOptions').findBy('displayName', '>').isExpensive, 'Expected > to be expensive');
-  assert.ok(component.get('operatorOptions').findBy('displayName', '>=').isExpensive, 'Expected >= to be expensive');
 
+  // when metaIndex is value and format is not text
+  component.set('metaIndex', 'key');
+  component.set('metaFormat', 'UInt64');
+
+  assert.ok(component.get('operatorOptions').findBy('displayName', '=').isExpensive, 'Expected = to be expensive');
+  assert.ok(component.get('operatorOptions').findBy('displayName', '!=').isExpensive, 'Expected != to be expensive');
+  assert.notOk(component.get('operatorOptions').findBy('displayName', 'exists').isExpensive, 'Expected exists to not be expensive');
+  assert.notOk(component.get('operatorOptions').findBy('displayName', '!exists').isExpensive, 'Expected !exists to not be expensive');
+  component.set('metaFormat', null);
+
+  // when metaIndex is none -> only sessionid
   component.set('metaFormat', 'Text');
   component.set('metaIndex', 'none');
 
-  assert.ok(component.get('operatorOptions').findBy('displayName', '=').isExpensive, 'Expected = to be expensive');
-  assert.ok(component.get('operatorOptions').findBy('displayName', '!=').isExpensive, 'Expected != to be expensive');
-  assert.ok(component.get('operatorOptions').findBy('displayName', 'contains').isExpensive, 'Expected contains to be expensive');
-  assert.ok(component.get('operatorOptions').findBy('displayName', 'begins').isExpensive, 'Expected begins to be expensive');
-  assert.ok(component.get('operatorOptions').findBy('displayName', 'ends').isExpensive, 'Expected ends to be expensive');
+  assert.notOk(component.get('operatorOptions').findBy('displayName', '=').isExpensive, 'Expected = to be expensive');
+  assert.notOk(component.get('operatorOptions').findBy('displayName', '!=').isExpensive, 'Expected != to be expensive');
   assert.notOk(component.get('operatorOptions').findBy('displayName', 'exists').isExpensive, 'Expected exists to not be expensive');
   assert.notOk(component.get('operatorOptions').findBy('displayName', '!exists').isExpensive, 'Expected !exists to not be expensive');
-  component.set('metaFormat', null);
-  assert.ok(component.get('operatorOptions').findBy('displayName', '<').isExpensive, 'Expected < to be expensive');
-  assert.ok(component.get('operatorOptions').findBy('displayName', '<=').isExpensive, 'Expected <= to be expensive');
-  assert.ok(component.get('operatorOptions').findBy('displayName', '>').isExpensive, 'Expected > to be expensive');
-  assert.ok(component.get('operatorOptions').findBy('displayName', '>=').isExpensive, 'Expected >= to be expensive');
+
 });
 
 test('it filters metaOptions without an index but allows time and sessionId regardless of index', function(assert) {

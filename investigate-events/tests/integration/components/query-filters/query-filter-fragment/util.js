@@ -48,17 +48,18 @@ const testSetupConfig = {
 };
 
 const ALL_META_OPTIONS = [
-  { format: 'Float32', metaName: 'file.entropy', count: 4, flags: -2147482877, displayName: 'File Entropy', indexedBy: 'value' }, // IndexedByValue
-  { format: 'IPv4', metaName: 'alias.ip', count: 4, flags: -2147482621, displayName: 'IP Aliases', indexedBy: 'value' },          // IndexedByValue
-  { format: 'IPv6', metaName: 'alias.ipv6', count: 4, flags: -2147482621, displayName: 'IPv6 Aliases', indexedBy: 'value' },      // IndexByValue
-  { format: 'MAC', metaName: 'alias.mac', count: 4, flags: -2147482621, displayName: 'MAC Aliases', indexedBy: 'value' },         // IndexedByValue
-  { format: 'Text', metaName: 'alert', count: 7, flags: -2147483133, displayName: 'Alerts', indexedBy: 'value' },                 // IndexedByValue and text
-  { format: 'TimeT', metaName: 'starttime', count: 4, flags: -2147482621, displayName: 'Time Start', indexedBy: 'value' },        // IndexedByValue
-  { format: 'UInt8', metaName: 'ip.proto', count: 4, flags: -2147482541, displayName: 'IP Protocol', indexedBy: 'value' },        // IndexedByValue
-  { format: 'UInt16', metaName: 'eth.type', count: 4, flags: -2147482541, displayName: 'Ethernet Protocol', indexedBy: 'value' }, // IndexedByValue
-  { format: 'UInt32', metaName: 'bytes.src', count: 2, flags: -2147482878, displayName: 'Bytes Sent', indexedBy: 'key' },       // IndexedByKey
-  { format: 'UInt64', metaName: 'filename.size', count: 2, flags: -2147482878, displayName: 'File Size', indexedBy: 'key' },    // IndexedByKey
-  { format: 'UInt64', metaName: 'sessionid', count: 4, flags: -2147483631, displayName: 'Session ID', indexedBy: 'none' }        // special case - exists, !exists, =, !=
+  { format: 'Float32', metaName: 'file.entropy', count: 4, flags: -2147482877, displayName: 'File Entropy', indexedBy: 'value', expensiveCount: 0 }, // IndexedByValue
+  { format: 'IPv4', metaName: 'alias.ip', count: 4, flags: -2147482621, displayName: 'IP Aliases', indexedBy: 'value', expensiveCount: 0 },          // IndexedByValue
+  { format: 'IPv6', metaName: 'alias.ipv6', count: 4, flags: -2147482621, displayName: 'IPv6 Aliases', indexedBy: 'value', expensiveCount: 0 },      // IndexByValue
+  { format: 'MAC', metaName: 'alias.mac', count: 4, flags: -2147482621, displayName: 'MAC Aliases', indexedBy: 'value', expensiveCount: 0 },         // IndexedByValue
+  { format: 'Text', metaName: 'alert', count: 7, flags: -2147483133, displayName: 'Alerts', indexedBy: 'value', expensiveCount: 3 },                 // IndexedByValue and text
+  { format: 'TimeT', metaName: 'starttime', count: 4, flags: -2147482621, displayName: 'Time Start', indexedBy: 'value', expensiveCount: 0 },        // IndexedByValue
+  { format: 'UInt8', metaName: 'ip.proto', count: 4, flags: -2147482541, displayName: 'IP Protocol', indexedBy: 'value', expensiveCount: 0 },        // IndexedByValue
+  { format: 'UInt16', metaName: 'eth.type', count: 4, flags: -2147482541, displayName: 'Ethernet Protocol', indexedBy: 'value', expensiveCount: 0 }, // IndexedByValue
+  { format: 'UInt32', metaName: 'bytes.src', count: 4, flags: -2147482878, displayName: 'Bytes Sent', indexedBy: 'key', expensiveCount: 2 },       // IndexedByKey
+  { format: 'UInt64', metaName: 'filename.size', count: 4, flags: -2147482878, displayName: 'File Size', indexedBy: 'key', expensiveCount: 2 },    // IndexedByKey
+  { format: 'Text', metaName: 'referer', count: 7, flags: -2147482878, displayName: 'Referer', indexedBy: 'key', expensiveCount: 5 },              // IndexedByKey and Text
+  { format: 'UInt64', metaName: 'sessionid', count: 4, flags: -2147483631, displayName: 'Session ID', indexedBy: 'none', expensiveCount: 0 }        // special case - exists, !exists, =, !=
 ];
 
 const metaNameForFormat = (format) => {

@@ -20,7 +20,7 @@ test('mouse interaction only', function(assert) {
   // drop down should appear
   this.$('input').focus();
   assert.ok(this.$('.ember-power-select-trigger').length === 1, 'Drop down for meta appears on focus');
-  assert.equal($('.ember-power-select-options li.ember-power-select-option').length, 11, 'Has the correct number of mocked meta keys');
+  assert.equal($('.ember-power-select-options li.ember-power-select-option').length, 12, 'Has the correct number of mocked meta keys');
 
   // choose a meta option from drop down
   // sessionid is special case so will have 4 operators

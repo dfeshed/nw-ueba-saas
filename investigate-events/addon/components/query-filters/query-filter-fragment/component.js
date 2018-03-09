@@ -27,16 +27,24 @@ const quoteValue = (value) => {
   return value;
 };
 
+// flip the isExpensive operator to true
+const makeOperatorExpensive = (obj) => ({
+  ...obj,
+  isExpensive: true
+});
+
 const eq = { displayName: '=', isExpensive: false };
 const notEq = { displayName: '!=', isExpensive: false };
 const exists = { displayName: 'exists', isExpensive: false };
 const notExists = { displayName: '!exists', isExpensive: false };
-const contains = { displayName: 'contains', isExpensive: false };
-const begins = { displayName: 'begins', isExpensive: false };
-const ends = { displayName: 'ends', isExpensive: false };
-const operatorArrayIndexedByKey = [exists, notExists];
-const operatorArrayIndexedByValue = [exists, notExists, eq, notEq];
-const operatorArrayIndexedByValueWithText = [exists, notExists, eq, notEq, begins, contains, ends];
+const contains = { displayName: 'contains', isExpensive: true }; // begins, ends & contains by default should be expensive
+const begins = { displayName: 'begins', isExpensive: true };
+const ends = { displayName: 'ends', isExpensive: true };
+
+const operatorArrayIndexedByKey = [exists, notExists, makeOperatorExpensive(eq), makeOperatorExpensive(notEq)];
+const operatorArrayIndexedByKeyWithTextFormat = [exists, notExists, makeOperatorExpensive(eq), makeOperatorExpensive(notEq), begins, ends, contains];
+const operatorArrayIndexedByValue = [exists, notExists, eq, notEq ];
+const operatorArrayIndexedByValueWithTextFormat = [exists, notExists, eq, notEq, begins, ends, contains];
 const operatorArrayForSessionId = [exists, notExists, eq, notEq];
 const defaultOperatorArray = [eq, notEq, exists, notExists, contains, begins, ends];
 
@@ -129,20 +137,29 @@ const QueryFragmentComponent = Component.extend({
   @computed('metaFormat', 'metaIndex', 'metaOptions', 'meta')
   operatorOptions(metaFormat, metaIndex, metaOptions, meta) {
     // const efficientIndex = metaIndex === 'value';
-    if (isEmpty(metaFormat) && !isEmpty(metaOptions) && !isEmpty(meta)) {
+
+    // necessary in the situation when ->
+    // you create a pill, hit QueryEvents and try to edit the filter again -> metaIndex is undefined
+    if ((isEmpty(metaFormat) || isEmpty(metaIndex)) && !isEmpty(metaOptions) && !isEmpty(meta)) {
       metaFormat = metaOptions.findBy('metaName', meta.trim()).format;
+      const metaFlag = metaOptions.findBy('metaName', meta.trim()).flags;
+      const keyIndexes = ['none', 'key', 'value'];
+      const keyIndexType = metaFlag & '0xF';
+      metaIndex = keyIndexes[keyIndexType - 1];
     }
 
-    if (metaIndex === 'key') {                  // indexedByKey will only 2 operator - exits, !exists
-      return operatorArrayIndexedByKey;
-    } else if (metaIndex === 'value') {
-      if (metaFormat === 'Text') {              // indexedByValue can have Text format which has some unique operators
-        return operatorArrayIndexedByValueWithText;
-      } else {
-        return operatorArrayIndexedByValue;     // by default indexedVyValue will have 4 options
+    if (metaIndex === 'key') {
+      if (metaFormat === 'Text') {
+        return operatorArrayIndexedByKeyWithTextFormat;           // apart from the default for key -> expensive(begins, contains, ends)
       }
-    } else if (meta === 'sessionid') {          // sessionid is a special case in the sense that it is the only
-      return operatorArrayForSessionId;         // non indexed key that has these 4 options.
+      return operatorArrayIndexedByKey;                           // default values for indexedByKey -> exists, !exits, expensive(eq, notEq)
+    } else if (metaIndex === 'value') {
+      if (metaFormat === 'Text') {
+        return operatorArrayIndexedByValueWithTextFormat;         // apart from default for value -> expensive(begins, contains, ends)
+      }
+      return operatorArrayIndexedByValue;                         // default indexedByValue -> exists, !exists, eq, notEq
+    } else if (!isEmpty(meta) && meta.trim() === 'sessionid') {   // sessionid is a special case in the sense that it is the only
+      return operatorArrayForSessionId;                           // non indexed key that has these 4 options.
     }
     return defaultOperatorArray;
   },
