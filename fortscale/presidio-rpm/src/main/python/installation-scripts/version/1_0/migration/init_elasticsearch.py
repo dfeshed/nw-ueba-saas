@@ -40,6 +40,11 @@ CORE_ELASTIC_INIT = 'core'
 VENDOR_ELASTIC_INIT = 'vendor'
 ELASTICSEARCH_TEMPLATE_NAME_POSITION_IN_TEMPLATE = 0
 INDEX_ALREADY_EXISTS_EXCEPTION = 'index_already_exists_exception'
+EVENT_TIME = {"presidio-monitoring": "timestamp", "presidio-monitoring-logical": "logicTime",
+             "presidio-output-alert": "startDate",
+             "presidio-output-event": "eventTime", "presidio-output-indicator": "startDate",
+             "presidio-monitoring": "timestemp", "presidio-output-logical": "logicTime",
+             "presidio-output-user": "createdDate"}
 
 
 def put_request(url, data):
@@ -54,6 +59,7 @@ def put_request(url, data):
         else:
             logging.info("Index = %s already exists.", url)
     return response
+
 
 def set_alias(indexJson):
     with open(indexJson) as json_data:
@@ -130,14 +136,6 @@ def enter_field_to_list(dic, field):
         dic.append(field)
 
 
-def get_event_time_for_pattern(name):
-    eventtime = {"presidio-monitoring": "timestamp", "presidio-monitoring-logical": "logicTime",
-                 "presidio-output-alert": "startDate",
-                 "presidio-output-event": "eventTime", "presidio-output-indicator": "startDate",
-                 "presidio-monitoring": "timestemp", "presidio-output-logical": "logicTime",
-                 "presidio-output-user": "createdDate"}
-    return eventtime[name]
-
 
 def create_kibana_pattern_from_mapping(name, mapping):
     SOURCE = {"name": "_source", "type": "_source", "count": 0, "scripted": False, "indexed": False,
@@ -150,18 +148,18 @@ def create_kibana_pattern_from_mapping(name, mapping):
              "analyzed": False, "doc_values": False, "searchable": False, "aggregatable": False}
     SCORE = {"name": "_score", "type": "number", "count": 0, "scripted": False, "indexed": False,
              "analyzed": False, "doc_values": False, "searchable": False, "aggregatable": False}
-    fields2 = [SOURCE, ID, INDEX, SCORE, TYPE]
+    fields = [SOURCE, ID, INDEX, SCORE, TYPE]
     for property in mapping:
         if (type(property) is dict):
             for property in mapping:
-                enter_field_to_list(fields2, fields_from_property(property, mapping[property]))
+                enter_field_to_list(fields, fields_from_property(property, mapping[property]))
         else:
-            enter_field_to_list(fields2, fields_from_property(property, mapping[property]))
-    kibaburl = URL_KIBANA_PATTERNS + name
-    temp2 =str(fields2)
-    temp= string.replace(temp2,"'","\"")
-    put_request(kibaburl,
-                json.dumps({"title": name, "timeFieldName": get_event_time_for_pattern(name), "fields": temp}))
+            enter_field_to_list(fields, fields_from_property(property, mapping[property]))
+    fields_as_string = str(fields)
+    fields_as_string_double_quote = string.replace(fields_as_string, "'", "\"")
+    put_request(URL_KIBANA_PATTERNS + name,
+                json.dumps({"title": name, "timeFieldName": EVENT_TIME[name],
+                            "fields": fields_as_string_double_quote}))
 
 
 def convert_el_item(item):
@@ -215,9 +213,11 @@ def set_aliases_for_index(path):
     else:
         logging.info("No aliases for %s", path)
 
+
 def create_pattern_from_template(aliases, mappings):
     for alias in aliases:
         create_kibana_pattern_from_mapping(alias, mappings)
+
 
 def create_index_from_template(file):
     try:
@@ -225,7 +225,8 @@ def create_index_from_template(file):
             obj = json.load(json_data)
             name = obj.keys()[ELASTICSEARCH_TEMPLATE_NAME_POSITION_IN_TEMPLATE]
             data = json.dumps(obj[obj.keys()[ELASTICSEARCH_TEMPLATE_NAME_POSITION_IN_TEMPLATE]])
-            create_pattern_from_template(obj[obj.keys()[0]]["aliases"], obj[obj.keys()[0]]["mappings"]["metric"]["properties"])
+            create_pattern_from_template(obj[obj.keys()[0]]["aliases"],
+                                         obj[obj.keys()[0]]["mappings"]["metric"]["properties"])
             requesturl = (URL_TEMPLATES + name).replace(" ", "")
             put_request(requesturl, data)
     except Exception as e:
