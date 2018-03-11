@@ -196,7 +196,7 @@
       }
     },
     {
-      "name": "strongAuthenticationMethodChangedUserIdActiveDirectoryHourly",
+      "name": "strongAuthenticationMethodChangedScoreUserIdActiveDirectoryHourly",
       "type": "P",
       "bucketConfName": "strongAuthenticationMethodChangedScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
@@ -211,7 +211,7 @@
       }
     },
     {
-      "name": "strongAuthenticationPhoneAppDetailChangedUserIdActiveDirectoryHourly",
+      "name": "strongAuthenticationPhoneAppDetailChangedScoreUserIdActiveDirectoryHourly",
       "type": "P",
       "bucketConfName": "strongAuthenticationPhoneAppDetailChangedScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
@@ -226,7 +226,7 @@
       }
     },
     {
-      "name": "strongAuthenticationPhoneUserDetailChangedUserIdActiveDirectoryHourly",
+      "name": "strongAuthenticationPhoneUserDetailChangedScoreUserIdActiveDirectoryHourly",
       "type": "P",
       "bucketConfName": "strongAuthenticationPhoneUserDetailChangedScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
@@ -241,7 +241,7 @@
       }
     },
     {
-      "name": "strongAuthenticationRequirementChangedUserIdActiveDirectoryHourly",
+      "name": "strongAuthenticationRequirementChangedScoreUserIdActiveDirectoryHourly",
       "type": "P",
       "bucketConfName": "strongAuthenticationRequirementChangedScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
@@ -256,7 +256,7 @@
       }
     },
     {
-      "name": "userPasswordResetUserIdActiveDirectoryHourly",
+      "name": "userPasswordResetScoreUserIdActiveDirectoryHourly",
       "type": "P",
       "bucketConfName": "userPasswordResetScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
