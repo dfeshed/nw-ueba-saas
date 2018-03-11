@@ -217,6 +217,28 @@
           }
         }
       ]
+    },
+    {
+      "name": "fileDownloadedCounterUserIdFileHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "file"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "fileDownloadedCounter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.operationType == 'FILE_DOWNLOADED')]"
+          }
+        }
+      ]
     }
   ]
 }
