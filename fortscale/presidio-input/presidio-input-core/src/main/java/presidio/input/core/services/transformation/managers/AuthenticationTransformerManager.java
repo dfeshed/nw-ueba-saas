@@ -2,7 +2,7 @@ package presidio.input.core.services.transformation.managers;
 
 import fortscale.common.general.Schema;
 import presidio.input.core.services.transformation.transformer.MachineNameTransformer;
-import presidio.input.core.services.transformation.transformer.OperationTypeCategoryTransformer;
+import presidio.input.core.services.transformation.transformer.OperationTypeToCategoryTransformer;
 import presidio.input.core.services.transformation.transformer.PatternReplacementTransformer;
 import presidio.input.core.services.transformation.transformer.Transformer;
 import presidio.sdk.api.domain.AbstractInputDocument;
@@ -45,7 +45,7 @@ public class AuthenticationTransformerManager implements TransformationManager {
             transformers.add(new PatternReplacementTransformer(AuthenticationRawEvent.DST_MACHINE_ID_FIELD_NAME,
                     AuthenticationTransformedEvent.DST_MACHINE_ID_FIELD_NAME, MachineNameTransformer.ipPattern.pattern(), "", null, null));
 
-            transformers.add(new OperationTypeCategoryTransformer(operationTypeToCategoryMapping.get(Schema.AUTHENTICATION.toString())));
+            transformers.add(new OperationTypeToCategoryTransformer(operationTypeToCategoryMapping.get(Schema.AUTHENTICATION.toString())));
         }
         return transformers;
     }

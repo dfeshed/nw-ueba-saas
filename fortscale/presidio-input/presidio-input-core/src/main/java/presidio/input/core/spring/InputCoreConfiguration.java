@@ -29,7 +29,10 @@ import presidio.input.core.services.impl.InputExecutionServiceImpl;
 import presidio.input.core.services.impl.SchemaFactory;
 import presidio.input.core.services.transformation.TransformationService;
 import presidio.input.core.services.transformation.TransformationServiceImpl;
-import presidio.input.core.services.transformation.managers.*;
+import presidio.input.core.services.transformation.managers.ActiveDirectoryTransformationManager;
+import presidio.input.core.services.transformation.managers.AuthenticationTransformerManager;
+import presidio.input.core.services.transformation.managers.FileTransformerManager;
+import presidio.input.core.services.transformation.managers.PrintTransformerManager;
 import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
 import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 import presidio.output.sdk.api.OutputDataServiceSDK;
@@ -52,17 +55,20 @@ public class InputCoreConfiguration {
     @Value("${operation.type.category.mapping.file.path}")
     private String operationTypeCategoryMappingFilePath;
 
+    @Value("${operation.type.category.hierarchy.mapping.file.path}")
+    private String operationTypeCategoryHierarchyMappingFilePath;
+
     @Bean
-    public Map<Schema, Map<String, List<String>>> getOperationTypeToCategoryMapping() {
+    public Map<Schema, Map<String, List<String>>> getMapping(String filePath) {
         ObjectMapper mapper = new ObjectMapper();
-        Map operationTypeToCategoryMapping = new HashMap();
+        Map mapping = new HashMap();
         try {
-            Resource resource = applicationContext.getResources(operationTypeCategoryMappingFilePath)[0];
-            operationTypeToCategoryMapping = mapper.readValue(resource.getFile(), Map.class);
-            return (Map<Schema, Map<String, List<String>>>) operationTypeToCategoryMapping.get("mapping");
+            Resource resource = applicationContext.getResources(filePath)[0];
+            mapping = mapper.readValue(resource.getFile(), Map.class);
+            return (Map<Schema, Map<String, List<String>>>) mapping.get("mapping");
         } catch (IOException e) {
             e.printStackTrace();
-            return operationTypeToCategoryMapping;
+            return mapping;
         }
     }
 
@@ -105,19 +111,19 @@ public class InputCoreConfiguration {
     @Bean(name = "ACTIVE_DIRECTORY.transformer")
     @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public ActiveDirectoryTransformationManager activeDirectoryTransformationManager() {
-        return new ActiveDirectoryTransformationManager(getOperationTypeToCategoryMapping());
+        return new ActiveDirectoryTransformationManager(getMapping(operationTypeCategoryMappingFilePath), getMapping(operationTypeCategoryHierarchyMappingFilePath));
     }
 
     @Bean(name = "AUTHENTICATION.transformer")
     @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public AuthenticationTransformerManager authenticationTransformerManager() {
-        return new AuthenticationTransformerManager(getOperationTypeToCategoryMapping());
+        return new AuthenticationTransformerManager(getMapping(operationTypeCategoryMappingFilePath));
     }
 
     @Bean(name = "FILE.transformer")
     @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public FileTransformerManager fileTransformerManager() {
-        return new FileTransformerManager(getOperationTypeToCategoryMapping());
+        return new FileTransformerManager(getMapping(operationTypeCategoryMappingFilePath));
     }
 
     @Bean(name = "PRINT.transformer")

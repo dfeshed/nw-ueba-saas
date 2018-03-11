@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class OperationTypeCategoryTransformer implements Transformer {
+public class OperationTypeToCategoryTransformer implements Transformer {
 
     final Map<String, List<String>> operationTypeCategoryMapping;
 
-    public OperationTypeCategoryTransformer(Map<String, List<String>> operationTypeCategoryMapping) {
+    public OperationTypeToCategoryTransformer(Map<String, List<String>> operationTypeCategoryMapping) {
         this.operationTypeCategoryMapping = operationTypeCategoryMapping;
     }
 
