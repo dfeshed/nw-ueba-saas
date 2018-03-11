@@ -58,7 +58,6 @@ public class InputCoreConfiguration {
     @Value("${operation.type.category.hierarchy.mapping.file.path}")
     private String operationTypeCategoryHierarchyMappingFilePath;
 
-    @Bean
     public Map<Schema, Map<String, List<String>>> getMapping(String filePath) {
         ObjectMapper mapper = new ObjectMapper();
         Map mapping = new HashMap();
