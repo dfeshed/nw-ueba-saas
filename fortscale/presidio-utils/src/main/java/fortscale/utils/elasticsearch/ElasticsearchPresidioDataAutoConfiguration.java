@@ -1,5 +1,6 @@
 package fortscale.utils.elasticsearch;
 
+import fortscale.utils.elasticsearch.services.TemplateAnnotationExtractor;
 import org.elasticsearch.client.Client;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +19,7 @@ public class ElasticsearchPresidioDataAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public ElasticsearchOperations elasticsearchTemplate(Client client) {
-        return new PresidioElasticsearchTemplate(client);
+        return new PresidioElasticsearchTemplate(client, new TemplateAnnotationExtractor());
     }
 
     @Bean

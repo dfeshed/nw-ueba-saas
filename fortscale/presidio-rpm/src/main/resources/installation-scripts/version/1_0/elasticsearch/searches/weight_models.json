@@ -1,0 +1,22 @@
+[
+  {
+    "_id": "c0a833a0-f6e2-11e7-943e-438ab8972eee",
+    "_type": "search",
+    "_source": {
+      "title": "Smart models: weight models",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "_source"
+      ],
+      "sort": [
+        "timestamp",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"presidio-monitoring-logical\",\"highlightAll\":true,\"version\":true,\"filter\":[],\"query\":{\"query_string\":{\"query\":\"tags.GROUP_NAME:smart* AND  name:\\\"modeling-service.weight_model_builder\\\"\",\"analyze_wildcard\":true}}}"
+      }
+    }
+  }
+]

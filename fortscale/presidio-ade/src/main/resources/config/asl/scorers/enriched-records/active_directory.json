@@ -165,6 +165,41 @@
               "constant-score": 10
             },
             {
+              "type": "constant-regex-scorer",
+              "name": "strongAuthenticationMethodChanged.userId.activeDirectory.score",
+              "regex": "STRONG_AUTHENTICATION_METHOD_CHANGED",
+              "regex-field-name": "operationType",
+              "constant-score": 10
+            },
+            {
+              "type": "constant-regex-scorer",
+              "name": "strongAuthenticationPhoneAppDetailChanged.userId.activeDirectory.score",
+              "regex": "STRONG_AUTHENTICATION_PHONE_APP_DETAIL_CHANGED",
+              "regex-field-name": "operationType",
+              "constant-score": 10
+            },
+            {
+              "type": "constant-regex-scorer",
+              "name": "strongAuthenticationPhoneUserDetailChanged.userId.activeDirectory.score",
+              "regex": "STRONG_AUTHENTICATION_PHONE_USER_DETAIL_CHANGED",
+              "regex-field-name": "operationType",
+              "constant-score": 10
+            },
+            {
+              "type": "constant-regex-scorer",
+              "name": "strongAuthenticationRequirementChanged.userId.activeDirectory.score",
+              "regex": "STRONG_AUTHENTICATION_REQUIREMENT_CHANGED",
+              "regex-field-name": "operationType",
+              "constant-score": 10
+            },
+            {
+              "type": "constant-regex-scorer",
+              "name": "userPasswordReset.userId.activeDirectory.score",
+              "regex": "USER_PASSWORD_RESET",
+              "regex-field-name": "operationType",
+              "constant-score": 10
+            },
+            {
               "type": "list-conditional-scorer",
               "name": "memberAddedToCriticalGroup.userId.activeDirectory.score",
               "conditional-field": "operationTypeCategories",

@@ -22,6 +22,7 @@ public class AbstractInputDocument extends AbstractAuditableDocument {
     public static final String USER_DISPLAY_NAME_FIELD_NAME = "userDisplayName";
     public static final String ADDITIONAL_INFO_FIELD_NAME = "additionalInfo";
     public static final String RESULT_CODE_FIELD_NAME = "resultCode";
+    public static final String IS_USER_ADMIN_FIELD_NAME = "isUserAdmin";
 
     @NotEmpty
     @Field(EVENT_ID_FIELD_NAME)
@@ -59,7 +60,7 @@ public class AbstractInputDocument extends AbstractAuditableDocument {
 
     {
         additionalInfo = new HashMap<>();
-        additionalInfo.put("isUserAdmin", Boolean.toString(false));
+        additionalInfo.put(IS_USER_ADMIN_FIELD_NAME, Boolean.toString(false));
     }
 
 

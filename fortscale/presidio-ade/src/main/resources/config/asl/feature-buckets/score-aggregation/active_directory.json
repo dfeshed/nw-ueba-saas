@@ -304,6 +304,121 @@
           }
         }
       ]
+    },
+    {
+      "name": "strongAuthenticationMethodChangedScoreUserIdActiveDirectoryHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.active_directory.strongAuthenticationMethodChanged.userId.activeDirectory.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "strongAuthenticationMethodChangedScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "strongAuthenticationPhoneAppDetailChangedScoreUserIdActiveDirectoryHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.active_directory.strongAuthenticationPhoneAppDetailChanged.userId.activeDirectory.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "strongAuthenticationPhoneAppDetailChangedScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "strongAuthenticationPhoneUserDetailChangedScoreUserIdActiveDirectoryHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.active_directory.strongAuthenticationPhoneUserDetailChanged.userId.activeDirectory.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "strongAuthenticationPhoneUserDetailChangedScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "strongAuthenticationRequirementChangedScoreUserIdActiveDirectoryHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.active_directory.strongAuthenticationRequirementChanged.userId.activeDirectory.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "strongAuthenticationRequirementChangedScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "userPasswordResetScoreUserIdActiveDirectoryHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.active_directory.userPasswordReset.userId.activeDirectory.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "userPasswordResetScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        }
+      ]
     }
   ]
 }
