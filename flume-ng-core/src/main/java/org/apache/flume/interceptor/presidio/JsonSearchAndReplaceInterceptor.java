@@ -139,8 +139,9 @@ public class JsonSearchAndReplaceInterceptor extends AbstractPresidioJsonInterce
 
         @Override
         public AbstractPresidioJsonInterceptor doBuild() {
+            setInterceptorName("JsonSearchAndReplaceInterceptor");
             final JsonSearchAndReplaceInterceptor jsonSearchAndReplaceInterceptor = new JsonSearchAndReplaceInterceptor(fields, searchPatterns, replaceStrings);
-            logger.info("Creating JsonSearchAndReplaceInterceptor: {}", jsonSearchAndReplaceInterceptor);
+            logger.info("Creating {}: {}", interceptorName, jsonSearchAndReplaceInterceptor);
             return jsonSearchAndReplaceInterceptor;
         }
 

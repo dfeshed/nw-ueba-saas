@@ -142,8 +142,9 @@ public class JsonRegexPredicatorInterceptor extends AbstractPresidioJsonIntercep
 
         @Override
         public AbstractPresidioJsonInterceptor doBuild() {
-            logger.info("Creating JsonRegexPredicatorInterceptor: {}={}, {}={}, {}={}",
-                    VALUE_FIELDS_CONF_NAME, valueFields, PREDICATOR_FIELDS_CONF_NAME, predicatorFields,
+            setInterceptorName("JsonRegexPredicatorInterceptor");
+            logger.info("Creating {}: {}={}, {}={}, {}={}",
+                    interceptorName, VALUE_FIELDS_CONF_NAME, valueFields, PREDICATOR_FIELDS_CONF_NAME, predicatorFields,
                     REGEX_CONF_NAME, regexList);
             return new JsonRegexPredicatorInterceptor(valueFields, predicatorFields, regexList, deleteFields);
         }

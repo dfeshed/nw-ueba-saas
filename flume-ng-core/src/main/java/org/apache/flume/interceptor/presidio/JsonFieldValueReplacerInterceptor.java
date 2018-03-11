@@ -190,8 +190,9 @@ public class JsonFieldValueReplacerInterceptor extends AbstractPresidioJsonInter
 
         @Override
         public AbstractPresidioJsonInterceptor doBuild() {
+            setInterceptorName("JsonFieldValueReplacerInterceptor");
             final JsonFieldValueReplacerInterceptor jsonFieldValueReplacerInterceptor = new JsonFieldValueReplacerInterceptor(replacements, removeEscapeChars);
-            logger.info("Creating JsonFieldValueReplacerInterceptor: {}", jsonFieldValueReplacerInterceptor);
+            logger.info("Creating {}: {}", interceptorName, jsonFieldValueReplacerInterceptor);
             return jsonFieldValueReplacerInterceptor;
         }
     }

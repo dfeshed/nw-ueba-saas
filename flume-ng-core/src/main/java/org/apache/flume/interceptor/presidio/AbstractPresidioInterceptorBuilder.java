@@ -14,12 +14,13 @@ import org.apache.flume.interceptor.Interceptor;
 public abstract class AbstractPresidioInterceptorBuilder implements Interceptor.Builder {
 
     protected String applicationName;
+
     protected String interceptorName;
 
     @Override
     public void configure(Context context) {
         applicationName = context.getString(CommonStrings.APPLICATION_NAME, this.getClass().getSimpleName());
-        interceptorName = this.getClass().getSimpleName();
+        interceptorName = this.getClass().getCanonicalName(); //reasonable default (the builder name...)
         doConfigure(context);
     }
 
@@ -30,10 +31,13 @@ public abstract class AbstractPresidioInterceptorBuilder implements Interceptor.
     @Override
     public Interceptor build() {
         final AbstractPresidioJsonInterceptor interceptor = doBuild();
-        interceptor.applicationName = applicationName;
-        interceptor.interceptorName = interceptorName;
         return interceptor;
     }
+
+    public void setInterceptorName(String interceptorName) {
+        this.interceptorName = interceptorName;
+    }
+
 
     protected abstract AbstractPresidioJsonInterceptor doBuild();
 
