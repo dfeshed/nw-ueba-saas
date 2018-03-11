@@ -41,10 +41,10 @@ VENDOR_ELASTIC_INIT = 'vendor'
 ELASTICSEARCH_TEMPLATE_NAME_POSITION_IN_TEMPLATE = 0
 INDEX_ALREADY_EXISTS_EXCEPTION = 'index_already_exists_exception'
 EVENT_TIME = {"presidio-monitoring": "timestamp", "presidio-monitoring-logical": "logicTime",
-             "presidio-output-alert": "startDate",
-             "presidio-output-event": "eventTime", "presidio-output-indicator": "startDate",
-             "presidio-monitoring": "timestemp", "presidio-output-logical": "logicTime",
-             "presidio-output-user": "createdDate"}
+              "presidio-output-alert": "startDate",
+              "presidio-output-event": "eventTime", "presidio-output-indicator": "startDate",
+              "presidio-monitoring": "timestemp", "presidio-output-logical": "logicTime",
+              "presidio-output-user": "createdDate"}
 
 
 def put_request(url, data):
@@ -134,7 +134,6 @@ def fields_from_property(name, dic):
 def enter_field_to_list(dic, field):
     if len(field) > 0:
         dic.append(field)
-
 
 
 def create_kibana_pattern_from_mapping(name, mapping):
