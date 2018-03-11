@@ -89,7 +89,7 @@ public class ElasticMappingsTests {
                 p.destroy();
 
                 elasticsearchOperations.indexExists(PRESIDIO_OUTPUT_ALERT);
-                System.out.println(elasticsearchOperations.getMapping(PRESIDIO_OUTPUT_ALERT,"alert").toString());
+                System.out.println(elasticsearchOperations.getMapping(PRESIDIO_OUTPUT_ALERT, "alert").toString());
             } catch (Exception e) {
                 Assert.fail();
             }
