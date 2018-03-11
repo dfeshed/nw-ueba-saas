@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 @Document(indexName = AbstractElasticDocument.INDEX_NAME + "-" + Indicator.INDICATOR_TYPE, type = Indicator.INDICATOR_TYPE)
-@Mapping(mappingPath = "elasticsearch/mappings/presidio-output-indicator.json")
+@Mapping(mappingPath = "elasticsearch/indexes/presidio-output-indicator/mappings.json")
 public class Indicator extends AbstractElasticDocument {
 
     public static final String INDICATOR_TYPE = "indicator";

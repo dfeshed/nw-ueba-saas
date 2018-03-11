@@ -1,0 +1,17 @@
+[
+  {
+    "_id": "f8a75030-a136-11e7-88a9-eda4b6248b9f",
+    "_type": "visualization",
+    "_source": {
+      "title": "Sum of indicators in alert",
+      "visState": "{\"title\":\"Sum of indicators in alert\",\"type\":\"pie\",\"params\":{\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"top\",\"isDonut\":false},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"indicatorsNum\",\"size\":100,\"order\":\"desc\",\"orderBy\":\"1\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "savedSearchId": "32b57900-a132-11e7-b962-5703fbc8bd55",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[]}"
+      }
+    }
+  }
+]

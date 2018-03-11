@@ -1,0 +1,17 @@
+[
+  {
+    "_id": "f71887b0-a448-11e7-9bdc-55b996a5ebef",
+    "_type": "visualization",
+    "_source": {
+      "title": "Top risk datasource",
+      "visState": "{\"title\":\"Top risk datasource\",\"type\":\"tagcloud\",\"params\":{\"scale\":\"linear\",\"orientation\":\"single\",\"minFontSize\":18,\"maxFontSize\":72},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"features.dataSource\",\"size\":500,\"order\":\"desc\",\"orderBy\":\"1\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "savedSearchId": "d5edc720-a138-11e7-88a9-eda4b6248b9f",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[]}"
+      }
+    }
+  }
+]

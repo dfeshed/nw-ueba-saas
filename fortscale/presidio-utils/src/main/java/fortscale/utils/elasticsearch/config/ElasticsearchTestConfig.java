@@ -2,6 +2,7 @@ package fortscale.utils.elasticsearch.config;
 
 
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
+import fortscale.utils.elasticsearch.services.TemplateAnnotationExtractor;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
@@ -36,10 +37,10 @@ public class ElasticsearchTestConfig {
         Settings esSettings = Settings.builder().put("cluster.name", EsClusterName).build();
         return new PreBuiltTransportClient(esSettings).addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(EsHost), EsPort));
     }
-    
+
     @Bean
     public ElasticsearchOperations elasticsearchTemplate() throws Exception {
-        return new PresidioElasticsearchTemplate(client());
+        return new PresidioElasticsearchTemplate(client(), new TemplateAnnotationExtractor());
     }
 
 

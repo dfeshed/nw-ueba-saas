@@ -1,0 +1,22 @@
+[
+  {
+    "_id": "3f72d420-e594-11e7-8f51-51afc520ede5",
+    "_type": "search",
+    "_source": {
+      "title": "Feature aggregation models: max continuous models",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "_source"
+      ],
+      "sort": [
+        "logicTime",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"presidio-monitoring-logical\",\"highlightAll\":true,\"version\":true,\"filter\":[],\"query\":{\"query_string\":{\"query\":\"tags.GROUP_NAME:feature-aggregation* AND (name:\\\"modeling-service.max_continuous_model_builder\\\" OR name:\\\"modeling-service.max_continuous_model_retriever\\\")\",\"analyze_wildcard\":true}}}"
+      }
+    }
+  }
+]

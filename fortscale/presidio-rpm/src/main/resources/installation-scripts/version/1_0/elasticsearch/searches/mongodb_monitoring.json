@@ -1,0 +1,72 @@
+[
+  {
+    "_id": "MongoDB-transactions",
+    "_type": "search",
+    "_source": {
+      "title": "MongoDB transactions",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"packetbeat-*\",\"highlight\":{\"pre_tags\":[\"@kibana-highlighted-field@\"],\"post_tags\":[\"@/kibana-highlighted-field@\"],\"fields\":{\"*\":{}},\"fragment_size\":2147483647},\"filter\":[{\"meta\":{\"disabled\":false,\"index\":\"packetbeat-*\",\"key\":\"type\",\"negate\":false,\"value\":\"mongodb\"},\"query\":{\"match\":{\"type\":{\"query\":\"mongodb\",\"type\":\"phrase\"}}}}],\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}}}"
+      },
+      "columns": [
+        "method",
+        "type",
+        "path",
+        "responsetime",
+        "status",
+        "query"
+      ],
+      "sort": [
+        "@timestamp",
+        "desc"
+      ],
+      "hits": 0,
+      "description": ""
+    }
+  },
+  {
+    "_id": "MongoDB-search",
+    "_type": "search",
+    "_source": {
+      "columns": [
+        "_source"
+      ],
+      "sort": [
+        "@timestamp",
+        "desc"
+      ],
+      "hits": 0,
+      "description": "",
+      "title": "MongoDB search",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"metricbeat-*\",\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"metricset.module:mongodb\"}},\"filter\":[],\"highlight\":{\"pre_tags\":[\"@kibana-highlighted-field@\"],\"post_tags\":[\"@/kibana-highlighted-field@\"],\"fields\":{\"*\":{}},\"require_field_match\":false,\"fragment_size\":2147483647}}"
+      }
+    }
+  },
+  {
+    "_id": "MongoDB-errors",
+    "_type": "search",
+    "_source": {
+      "title": "MongoDB errors",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"packetbeat-*\",\"highlight\":{\"pre_tags\":[\"@kibana-highlighted-field@\"],\"post_tags\":[\"@/kibana-highlighted-field@\"],\"fields\":{\"*\":{}},\"fragment_size\":2147483647},\"filter\":[{\"meta\":{\"disabled\":false,\"index\":\"packetbeat-*\",\"key\":\"type\",\"negate\":false,\"value\":\"mongodb\"},\"query\":{\"match\":{\"type\":{\"query\":\"mongodb\",\"type\":\"phrase\"}}}},{\"meta\":{\"negate\":true,\"index\":\"packetbeat-*\",\"key\":\"status\",\"value\":\"OK\",\"disabled\":false},\"query\":{\"match\":{\"status\":{\"query\":\"OK\",\"type\":\"phrase\"}}}}],\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}}}"
+      },
+      "columns": [
+        "method",
+        "type",
+        "path",
+        "responsetime",
+        "status",
+        "query"
+      ],
+      "sort": [
+        "@timestamp",
+        "desc"
+      ],
+      "hits": 0,
+      "description": ""
+    }
+  }
+]
