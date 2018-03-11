@@ -33,7 +33,7 @@ public class OperationTypeToCategoryTransformerTest {
         List<AbstractInputDocument> transformed = operationTypeToCategoryTransformer.transform(Arrays.asList(new FileTransformedEvent(fileRawEvent)));
 
         Assert.assertEquals(1, transformed.size());
-        Assert.assertEquals(operationCategories.size(), transformed.get(0).getOperationTypeCategory().size());
+        Assert.assertEquals(operationCategories.size(), transformed.get(0).getOperationTypeCategories().size());
     }
 
     @Test
@@ -52,7 +52,7 @@ public class OperationTypeToCategoryTransformerTest {
         List<AbstractInputDocument> transformed = operationTypeToCategoryTransformer.transform(Arrays.asList(new FileTransformedEvent(fileRawEvent)));
 
         Assert.assertEquals(1, transformed.size());
-        Assert.assertNull(transformed.get(0).getOperationTypeCategory());
+        Assert.assertNull(transformed.get(0).getOperationTypeCategories());
     }
 
     @Test
@@ -71,7 +71,7 @@ public class OperationTypeToCategoryTransformerTest {
         List<AbstractInputDocument> transformed = operationTypeToCategoryTransformer.transform(Arrays.asList(new FileTransformedEvent(fileRawEvent)));
 
         Assert.assertEquals(1, transformed.size());
-        Assert.assertEquals(2, transformed.get(0).getOperationTypeCategory().size());
+        Assert.assertEquals(2, transformed.get(0).getOperationTypeCategories().size());
     }
 
     @Test
@@ -86,7 +86,7 @@ public class OperationTypeToCategoryTransformerTest {
         List<AbstractInputDocument> transformed = operationTypeToCategoryTransformer.transform(Arrays.asList(new AuthenticationTransformedEvent(authenticationRawEvent)));
 
         Assert.assertEquals(1, transformed.size());
-        Assert.assertNull(transformed.get(0).getOperationTypeCategory());
+        Assert.assertNull(transformed.get(0).getOperationTypeCategories());
     }
 
     @Test
@@ -101,6 +101,6 @@ public class OperationTypeToCategoryTransformerTest {
         List<AbstractInputDocument> transformed = operationTypeToCategoryTransformer.transform(Arrays.asList(new AuthenticationTransformedEvent(authenticationRawEvent)));
 
         Assert.assertEquals(1, transformed.size());
-        Assert.assertNull(transformed.get(0).getOperationTypeCategory());
+        Assert.assertNull(transformed.get(0).getOperationTypeCategories());
     }
 }

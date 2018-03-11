@@ -17,7 +17,7 @@ public class AbstractInputDocument extends AbstractAuditableDocument {
     public static final String EVENT_ID_FIELD_NAME = "eventId";
     public static final String RESULT_FIELD_NAME = "result";
     public static final String OPERATION_TYPE_FIELD_NAME = "operationType";
-    public static final String OPERATION_TYPE_CATEGORY_FIELD_NAME = "operationTypeCategory";
+    public static final String OPERATION_TYPE_CATEGORIES_FIELD_NAME = "operationTypeCategories";
     public static final String USER_NAME_FIELD_NAME = "userName";
     public static final String USER_DISPLAY_NAME_FIELD_NAME = "userDisplayName";
     public static final String ADDITIONAL_INFO_FIELD_NAME = "additionalInfo";
@@ -39,8 +39,8 @@ public class AbstractInputDocument extends AbstractAuditableDocument {
     @NotEmpty
     protected String operationType;
 
-    @Field(OPERATION_TYPE_CATEGORY_FIELD_NAME)
-    protected List<String> operationTypeCategory;
+    @Field(OPERATION_TYPE_CATEGORIES_FIELD_NAME)
+    protected List<String> operationTypeCategories;
 
     @Field(RESULT_FIELD_NAME)
     protected EventResult result;
@@ -69,7 +69,7 @@ public class AbstractInputDocument extends AbstractAuditableDocument {
         this.dataSource = other.dataSource;
         this.userId = other.userId;
         this.operationType = other.operationType;
-        this.operationTypeCategory = other.operationTypeCategory;
+        this.operationTypeCategories = other.operationTypeCategories;
         this.result = other.result;
         this.userName = other.userName;
         this.userDisplayName = other.userDisplayName;
@@ -82,14 +82,14 @@ public class AbstractInputDocument extends AbstractAuditableDocument {
     }
 
     public AbstractInputDocument(Instant dateTime, String eventId, String dataSource, String userId,
-                                 String operationType, List<String> operationTypeCategory, EventResult result,
+                                 String operationType, List<String> operationTypeCategories, EventResult result,
                                  String userName, String userDisplayName, Map<String, String> additionalInfo, String resultCode) {
         super(dateTime);
         this.eventId = eventId;
         this.dataSource = dataSource;
         this.userId = userId;
         this.operationType = operationType;
-        this.operationTypeCategory = operationTypeCategory;
+        this.operationTypeCategories = operationTypeCategories;
         this.result = result;
         this.userName = userName;
         this.userDisplayName = userDisplayName;
@@ -137,12 +137,12 @@ public class AbstractInputDocument extends AbstractAuditableDocument {
         this.operationType = operationType;
     }
 
-    public List<String> getOperationTypeCategory() {
-        return operationTypeCategory;
+    public List<String> getOperationTypeCategories() {
+        return operationTypeCategories;
     }
 
-    public void setOperationTypeCategory(List<String> operationTypeCategory) {
-        this.operationTypeCategory = operationTypeCategory;
+    public void setOperationTypeCategories(List<String> operationTypeCategories) {
+        this.operationTypeCategories = operationTypeCategories;
     }
 
     public String getUserName() {
@@ -184,7 +184,7 @@ public class AbstractInputDocument extends AbstractAuditableDocument {
                 ", dataSource='" + dataSource + '\'' +
                 ", userId='" + userId + '\'' +
                 ", operationType='" + operationType + '\'' +
-                ", operationTypeCategory=" + operationTypeCategory +
+                ", operationTypeCategories=" + operationTypeCategories +
                 ", result=" + result +
                 ", userName='" + userName + '\'' +
                 ", userDisplayName='" + userDisplayName + '\'' +

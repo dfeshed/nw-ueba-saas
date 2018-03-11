@@ -123,7 +123,7 @@ public class AuthenticationRawEvent extends AbstractInputDocument {
                 ", dataSource='" + dataSource + '\'' +
                 ", userId='" + userId + '\'' +
                 ", operationType='" + operationType + '\'' +
-                ", operationTypeCategory=" + operationTypeCategory +
+                ", operationTypeCategories=" + operationTypeCategories +
                 ", result=" + result +
                 ", userName='" + userName + '\'' +
                 ", userDisplayName='" + userDisplayName + '\'' +

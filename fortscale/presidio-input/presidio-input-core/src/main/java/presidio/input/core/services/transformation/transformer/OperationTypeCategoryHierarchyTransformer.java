@@ -20,14 +20,14 @@ public class OperationTypeCategoryHierarchyTransformer implements Transformer {
         if (MapUtils.isNotEmpty(operationTypeCategoryHierarchyMapping)) {
             documents.forEach((AbstractInputDocument abstractInputDocument) -> {
 
-                List<String> operationTypeCategories = abstractInputDocument.getOperationTypeCategory();
+                List<String> operationTypeCategories = abstractInputDocument.getOperationTypeCategories();
                 if (CollectionUtils.isNotEmpty(operationTypeCategories)) {
                     Set<String> additionalCategories = new HashSet<>();
                     operationTypeCategories.forEach(s -> additionalCategories.addAll(getAdditionalCategories(s)));
 
                     if (CollectionUtils.isNotEmpty(additionalCategories)) {
                         additionalCategories.addAll(operationTypeCategories);
-                        abstractInputDocument.setOperationTypeCategory(new ArrayList<>(additionalCategories));
+                        abstractInputDocument.setOperationTypeCategories(new ArrayList<>(additionalCategories));
                     }
                 }
             });

@@ -25,10 +25,10 @@ public class OperationTypeToCategoryTransformer implements Transformer {
                 List<String> operationTypeCategories = operationTypeCategoryMapping.get(operationType);
 
                 if (CollectionUtils.isNotEmpty(operationTypeCategories)) {
-                    if (abstractInputDocument.getOperationTypeCategory() == null) {
-                        abstractInputDocument.setOperationTypeCategory(new ArrayList<>());
+                    if (abstractInputDocument.getOperationTypeCategories() == null) {
+                        abstractInputDocument.setOperationTypeCategories(new ArrayList<>());
                     }
-                    abstractInputDocument.getOperationTypeCategory().addAll(operationTypeCategories);
+                    abstractInputDocument.getOperationTypeCategories().addAll(operationTypeCategories);
                 }
             });
         }

@@ -14,7 +14,7 @@ public class AuthenticationInputToAdeConverter implements InputAdeConverter {
         adeRecord.setDataSource(authenticationRawEvent.getDataSource());
         adeRecord.setUserId(authenticationRawEvent.getUserId());
         adeRecord.setOperationType(authenticationRawEvent.getOperationType());
-        adeRecord.setOperationTypeCategories(authenticationRawEvent.getOperationTypeCategory());
+        adeRecord.setOperationTypeCategories(authenticationRawEvent.getOperationTypeCategories());
         adeRecord.setResult(authenticationRawEvent.getResult());
         adeRecord.setSrcMachineId(authenticationRawEvent.getSrcMachineId());
         adeRecord.setSrcMachineNameRegexCluster(authenticationRawEvent.getSrcMachineCluster());
