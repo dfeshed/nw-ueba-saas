@@ -14,7 +14,6 @@ import org.apache.flume.interceptor.Interceptor;
 public abstract class AbstractPresidioInterceptorBuilder implements Interceptor.Builder {
 
     protected String applicationName;
-
     protected String interceptorName;
 
     @Override
@@ -24,20 +23,15 @@ public abstract class AbstractPresidioInterceptorBuilder implements Interceptor.
         doConfigure(context);
     }
 
-    public String getApplicationName() {
-        return applicationName;
-    }
-
     @Override
     public Interceptor build() {
         final AbstractPresidioJsonInterceptor interceptor = doBuild();
         return interceptor;
     }
 
-    public void setInterceptorName(String interceptorName) {
-        this.interceptorName = interceptorName;
+    public String getApplicationName() {
+        return applicationName;
     }
-
 
     protected abstract AbstractPresidioJsonInterceptor doBuild();
 

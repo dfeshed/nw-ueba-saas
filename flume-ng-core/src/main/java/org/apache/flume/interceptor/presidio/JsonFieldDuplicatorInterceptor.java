@@ -111,7 +111,7 @@ public class JsonFieldDuplicatorInterceptor extends AbstractPresidioJsonIntercep
 
         @Override
         public AbstractPresidioJsonInterceptor doBuild() {
-            setInterceptorName("JsonFieldDuplicatorInterceptor");
+            interceptorName = "JsonFieldDuplicatorInterceptor";
             logger.info("Creating {}: {}={}, {}={}",
                     interceptorName, ORIGIN_FIELDS_CONF_NAME, originFields, DESTINATION_FIELDS_CONF_NAME, destinationFields);
             return new JsonFieldDuplicatorInterceptor(originFields, destinationFields, deleteNullFields);
