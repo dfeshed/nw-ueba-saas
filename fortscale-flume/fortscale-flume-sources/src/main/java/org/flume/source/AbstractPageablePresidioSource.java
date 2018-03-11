@@ -118,9 +118,9 @@ public abstract class AbstractPageablePresidioSource extends AbstractPresidioSou
             }
 
         } catch (Exception e) {
-            logger.error("{} Failed to process events for {}: {}, {}: {}. There were no events to process",
-                    getName(), START_DATE, startDate, END_DATE, endDate);
-            logger.error(e.getMessage());
+            logger.error("{} Failed to process events for {}: {}, {}: {}.",
+                    getName(), START_DATE, startDate, END_DATE, endDate, e);
+            throw new RuntimeException(e);
 
         } finally {
             this.stop();
