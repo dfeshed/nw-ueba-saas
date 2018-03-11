@@ -80,6 +80,7 @@ public class ElasticMappingsTests {
     public void runInitElastisearchScript() {
         if (System.getProperty("os.name").startsWith("Linux")) {
             try {
+                System.out.println("running script");
                 Process p;
                 p = Runtime.getRuntime().exec(initPath);
                 if (p.exitValue() != 0) {
@@ -88,6 +89,7 @@ public class ElasticMappingsTests {
                 p.destroy();
 
                 elasticsearchOperations.indexExists(PRESIDIO_OUTPUT_ALERT);
+                System.out.println(elasticsearchOperations.getMapping(PRESIDIO_OUTPUT_ALERT,"alert").toString());
             } catch (Exception e) {
                 Assert.fail();
             }
