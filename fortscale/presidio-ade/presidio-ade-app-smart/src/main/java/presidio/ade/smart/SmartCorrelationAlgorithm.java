@@ -18,18 +18,18 @@ public class SmartCorrelationAlgorithm {
     private SmartRecordConf smartRecordConf;
     private Map<String, TreeNode<CorrelationNodeData>> featureToTreeNode;
     private Map<String, FullCorrelation> featureToFullCorrelation;
-    private Map<String, Double> featureToCorrelationFactor;
+    private List<String> correlationFeatures;
     private static final Double CORRELATION_FACTOR = 1.0;
     private static final Double ZERO_CORRELATION_FACTOR = 0.0;
 
     public SmartCorrelationAlgorithm(SmartRecordConf smartRecordConf,
                                      Map<String, TreeNode<CorrelationNodeData>> featureToTreeNode,
                                      Map<String, FullCorrelation> featureToFullCorrelation,
-                                     Map<String, Double> featureToCorrelationFactor) {
+                                     List<String> correlationFeatures) {
         this.smartRecordConf = smartRecordConf;
         this.featureToTreeNode = featureToTreeNode;
         this.featureToFullCorrelation = featureToFullCorrelation;
-        this.featureToCorrelationFactor = featureToCorrelationFactor;
+        this.correlationFeatures = correlationFeatures;
     }
 
     /**
@@ -40,7 +40,8 @@ public class SmartCorrelationAlgorithm {
     public void updateCorrelatedFeatures(Collection<SmartRecord> smartRecords) {
 
         for (SmartRecord smartRecord : smartRecords) {
-            Map<String, Double> currentFeatureToCorrelationFactor = new HashMap<>(featureToCorrelationFactor);
+            Map<String, Double> featureToCorrelationFactor = correlationFeatures.stream().collect(Collectors.toMap(e -> e, null));
+
             List<SmartAggregationRecord> smartAggregationRecords = smartRecord.getSmartAggregationRecords();
             List<Map<String, SmartAggregationRecord>> groups = getGroups(smartAggregationRecords);
 
@@ -50,13 +51,13 @@ public class SmartCorrelationAlgorithm {
 
                 for (Map.Entry<String, SmartAggregationRecord> feature : sortedFeatures.entrySet()) {
                     String featureName = feature.getKey();
-                    currentFeatureToCorrelationFactor.putIfAbsent(featureName, CORRELATION_FACTOR);
-                    dfs(featureToTreeNode.get(featureName), currentFeatureToCorrelationFactor.get(featureName), sortedFeatures, currentFeatureToCorrelationFactor);
+                    featureToCorrelationFactor.putIfAbsent(featureName, CORRELATION_FACTOR);
+                    dfs(featureToTreeNode.get(featureName), featureToCorrelationFactor.get(featureName), sortedFeatures, featureToCorrelationFactor);
                 }
             }
 
-            updateFullCorrelationRecords(smartAggregationRecords, currentFeatureToCorrelationFactor);
-            updateSmartRecordScore(smartRecord, currentFeatureToCorrelationFactor);
+            updateFullCorrelationRecords(smartAggregationRecords, featureToCorrelationFactor);
+            updateSmartRecordScore(smartRecord, featureToCorrelationFactor);
         }
     }
 
@@ -172,17 +173,17 @@ public class SmartCorrelationAlgorithm {
      * @param treeNode treeNode
      * @param correlationFactor correlationFactor
      * @param group smart aggregation records
-     * @param currentFeatureToCorrelationFactor featureToCorrelationFactor map
+     * @param featureToCorrelationFactor featureToCorrelationFactor map
      */
-    private void dfs(TreeNode<CorrelationNodeData> treeNode, Double correlationFactor, Map<String, SmartAggregationRecord> group, Map<String, Double> currentFeatureToCorrelationFactor) {
+    private void dfs(TreeNode<CorrelationNodeData> treeNode, Double correlationFactor, Map<String, SmartAggregationRecord> group, Map<String, Double> featureToCorrelationFactor) {
         List<TreeNode<CorrelationNodeData>> children = treeNode.getChildren();
         for (TreeNode<CorrelationNodeData> child : children) {
             String childFeature = child.getData().getFeature();
             if (!group.containsKey(childFeature)) {
-                dfs(child, correlationFactor, group, currentFeatureToCorrelationFactor);
+                dfs(child, correlationFactor, group, featureToCorrelationFactor);
             } else {
                 Double childCorrelationFactor = child.getData().getCorrelationFactor();
-                currentFeatureToCorrelationFactor.put(childFeature, childCorrelationFactor * correlationFactor);
+                featureToCorrelationFactor.put(childFeature, childCorrelationFactor * correlationFactor);
             }
         }
     }
@@ -209,9 +210,9 @@ public class SmartCorrelationAlgorithm {
     /**
      * update correlation factor of full correlated records
      * @param smartAggregationRecords smartAggregationRecords
-     * @param currentFeatureToCorrelationFactor featureToCorrelationFactor map
+     * @param featureToCorrelationFactor featureToCorrelationFactor map
      */
-    private void updateFullCorrelationRecords(List<SmartAggregationRecord> smartAggregationRecords, Map<String, Double> currentFeatureToCorrelationFactor) {
+    private void updateFullCorrelationRecords(List<SmartAggregationRecord> smartAggregationRecords, Map<String, Double> featureToCorrelationFactor) {
         List<FullCorrelation> fullCorrelations = smartRecordConf.getFullCorrelations();
 
         fullCorrelations.forEach(fullCorrelation -> {
@@ -226,10 +227,10 @@ public class SmartCorrelationAlgorithm {
             Optional<Map.Entry<String, Double>> optional = filteredAggregationRecords.entrySet().stream().max(Map.Entry.comparingByValue());
             if (optional.isPresent()) {
                 String featureWithMaxScore = optional.get().getKey();
-                currentFeatureToCorrelationFactor.putIfAbsent(featureWithMaxScore, CORRELATION_FACTOR);
+                featureToCorrelationFactor.putIfAbsent(featureWithMaxScore, CORRELATION_FACTOR);
 
                 filteredAggregationRecords.entrySet().stream().filter(map -> !map.getKey().equals(featureWithMaxScore)).forEach(map ->
-                        currentFeatureToCorrelationFactor.put(map.getKey(), ZERO_CORRELATION_FACTOR));
+                        featureToCorrelationFactor.put(map.getKey(), ZERO_CORRELATION_FACTOR));
             }
         });
     }
@@ -239,14 +240,14 @@ public class SmartCorrelationAlgorithm {
      * Update smart aggregation records that belong to tree or full correlation,
      * with new scores, tree name, full correlation name and old score.
      * @param smartRecord smartRecord
-     * @param currentFeatureToCorrelationFactor featureToCorrelationFactor map
+     * @param featureToCorrelationFactor featureToCorrelationFactor map
      */
-    private void updateSmartRecordScore(SmartRecord smartRecord, Map<String, Double> currentFeatureToCorrelationFactor) {
+    private void updateSmartRecordScore(SmartRecord smartRecord, Map<String, Double> featureToCorrelationFactor) {
         List<SmartAggregationRecord> smartAggregationRecords = smartRecord.getSmartAggregationRecords();
 
         smartAggregationRecords.forEach(smartAggregationRecord -> {
             String feature = smartAggregationRecord.getAggregationRecord().getFeatureName();
-            Double correlationFactor = currentFeatureToCorrelationFactor.get(feature);
+            Double correlationFactor = featureToCorrelationFactor.get(feature);
             // if record belong to tree or full correlation
             if(correlationFactor!=null) {
                 Double oldScore = setAggregationFeatureScore(smartAggregationRecord, correlationFactor);

@@ -17,7 +17,7 @@ public class SmartCorrelationService {
     private SmartRecordConf smartRecordConf;
     private Map<String, TreeNode<CorrelationNodeData>> featureToTreeNode;
     private Map<String, FullCorrelation> featureToFullCorrelation;
-    private Map<String, Double> featureToCorrelationFactor;
+    private List<String> featureToCorrelationFactor;
     private SmartCorrelationAlgorithm smartCorrelationAlgorithm;
 
 
@@ -25,7 +25,7 @@ public class SmartCorrelationService {
         this.smartRecordConf = smartRecordConf;
         this.featureToTreeNode = new LinkedHashMap<>();
         this.featureToFullCorrelation = new LinkedHashMap<>();
-        this.featureToCorrelationFactor = new LinkedHashMap<>();
+        this.featureToCorrelationFactor = new ArrayList<>();
 
         List<Tree<CorrelationNodeData>> trees = smartRecordConf.getTrees();
         for (Tree<CorrelationNodeData> tree : trees) {
@@ -82,7 +82,7 @@ public class SmartCorrelationService {
                 "There should not be any intersection between correlation trees. The feature %s already exist.", feature));
 
         featureToTreeNode.put(feature, treeNode);
-        featureToCorrelationFactor.put(feature, null);
+        featureToCorrelationFactor.add(feature);
 
         features.add(treeNode);
         List<TreeNode<CorrelationNodeData>> children = treeNode.getChildren();
@@ -145,7 +145,7 @@ public class SmartCorrelationService {
                 Assert.isTrue(!featureToFullCorrelation.containsKey(feature), String.format(
                         "There should not be any intersection between full correlation features. The feature %s already exist.", feature));
                 featureToFullCorrelation.put(feature, fullCorrelation);
-                featureToCorrelationFactor.put(feature, null);
+                featureToCorrelationFactor.add(feature);
             });
         }
     }
@@ -155,26 +155,12 @@ public class SmartCorrelationService {
         return featureToTreeNode;
     }
 
-    public Map<String, Double> getFeatureToCorrelationFactor() {
+    public List<String> getFeatureToCorrelationFactor() {
         return featureToCorrelationFactor;
     }
 
     public Map<String, FullCorrelation> getFeatureToFullCorrelation() {
         return featureToFullCorrelation;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }
