@@ -1,0 +1,117 @@
+{
+  "SmartRecordConfs": [
+    {
+      "name": "userId_hourly",
+      "contextToFieldsMap": {
+        "userId": [
+          "userId"
+        ]
+      },
+      "fixedDurationStrategy": "fixed_duration_hourly",
+      "includeAllAggregationRecords": true,
+      "excludedAggregationRecords": [  ],
+      "defaultWeight": 0.5,
+      "trees": [
+        {
+          "name": "treeA",
+          "root": {
+            "data": {
+              "feature": "numberOfSuccessfulFileActionsUserIdFileHourly",
+              "correlationFactor": 1
+            },
+            "children": [
+              {
+                "data": {
+                  "feature": "numberOfSuccessfulFilePermissionChangesUserIdFileHourly",
+                  "correlationFactor": 0.5
+                },
+                "children": [
+                  {
+                    "data": {
+                      "feature": "sumOfHighestOperationTypeScoresUserIdFilePermissionChangeFileHourly",
+                      "correlationFactor": 0.5
+                    },
+                    "children": [
+                      {
+                        "data": {
+                          "feature": "numberOfFailedFileActionsUserIdFileHourly",
+                          "correlationFactor": 0.5
+                        }
+                      },
+                      {
+                        "data": {
+                          "feature": "sumOfHighestOperationTypeScoresUserIdFileActionFileHourly",
+                          "correlationFactor": 0.5
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "data": {
+                  "feature": "highestStartInstantScoreUserIdFileHourly",
+                  "correlationFactor": 0.5
+                },
+                "children": [
+                  {
+                    "data": {
+                      "feature": "numberOfFailedFilePermissionChangesUserIdFileHourly",
+                      "correlationFactor": 0.5
+                    }
+                  },
+                  {
+                    "data": {
+                      "feature": "numberOfDistinctFolderOpenedUserIdFileHourly",
+                      "correlationFactor": 0.5
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "treeB",
+          "root": {
+            "data": {
+              "feature": "numberOfFileMovedFromSharedDriveUserIdFileHourly",
+              "correlationFactor": 1
+            },
+            "children": [
+              {
+                "data": {
+                  "feature": "numberOfFileDownloadedUserIdFileHourly",
+                  "correlationFactor": 0.3
+                }
+              },
+              {
+                "data": {
+                  "feature": "numberOfFileMovedToSharedDriveUserIdFileHourly",
+                  "correlationFactor": 0.5
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "fullCorrelations": [
+        {
+          "name": "fullCorrelation1",
+          "features": [
+            "numberOfDistinctFolderOpenedUserIdFileHourly",
+            "numberOfFailedFilePermissionChangesUserIdFileHourly",
+            "featureK"
+          ]
+        },
+        {
+          "name": "fullCorrelation2",
+          "features": [
+            "numberOfFileDownloadedUserIdFileHourly",
+            "numberOfFileMovedToSharedDriveUserIdFileHourly"
+          ]
+        }
+      ]
+    }
+  ]
+}

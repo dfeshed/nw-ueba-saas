@@ -24,7 +24,9 @@ public class ScoredFeatureAggregationRecord extends AdeAggregationRecord impleme
         super();
     }
 
-    public ScoredFeatureAggregationRecord(Double score, List<FeatureScore> featureScoreList, Instant startInstant, Instant endInstant, String aggregatedFeatureName, Double aggregatedFeatureValue, String bucketConfName, Map<String, String> context, AggregatedFeatureType aggregatedFeatureType) {
+    public ScoredFeatureAggregationRecord(Double score, List<FeatureScore> featureScoreList, Instant startInstant, Instant endInstant,
+                                          String aggregatedFeatureName, Double aggregatedFeatureValue, String bucketConfName, Map<String,
+            String> context, AggregatedFeatureType aggregatedFeatureType) {
         super(startInstant, endInstant, aggregatedFeatureName, aggregatedFeatureValue, bucketConfName, context, aggregatedFeatureType);
         this.score = score;
         this.featureScoreList = featureScoreList;

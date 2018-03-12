@@ -17,7 +17,7 @@ public class SmartCorrelationService {
     private SmartRecordConf smartRecordConf;
     private Map<String, TreeNode<CorrelationNodeData>> featureToTreeNode;
     private Map<String, FullCorrelation> featureToFullCorrelation;
-    private List<String> features;
+    private Set<String> features;
     private SmartCorrelationAlgorithm smartCorrelationAlgorithm;
 
 
@@ -25,7 +25,7 @@ public class SmartCorrelationService {
         this.smartRecordConf = smartRecordConf;
         this.featureToTreeNode = new LinkedHashMap<>();
         this.featureToFullCorrelation = new LinkedHashMap<>();
-        this.features = new ArrayList<>();
+        this.features = new HashSet<>();
 
         List<Tree<CorrelationNodeData>> trees = smartRecordConf.getTrees();
         for (Tree<CorrelationNodeData> tree : trees) {
@@ -155,7 +155,7 @@ public class SmartCorrelationService {
         return featureToTreeNode;
     }
 
-    public List<String> getFeatures() {
+    public Set<String> getFeatures() {
         return features;
     }
 
