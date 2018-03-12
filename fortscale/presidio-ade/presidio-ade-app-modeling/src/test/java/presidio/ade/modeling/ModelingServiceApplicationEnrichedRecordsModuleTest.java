@@ -33,7 +33,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.util.Assert;
 import presidio.ade.modeling.config.ModelingServiceApplicationModuleTestConfig;
 import presidio.ade.test.utils.generators.feature_buckets.FeatureBucketEpochtimeMapGenerator;
-import presidio.ade.test.utils.generators.feature_buckets.FeatureBucketEpochtimeToHighestIntegerMapGenerator;
+import presidio.ade.test.utils.generators.feature_buckets.FeatureBucketEpochtimeToHighestDoubleMapGenerator;
 import presidio.ade.test.utils.generators.feature_buckets.FeatureBucketGenerator;
 import presidio.ade.test.utils.tests.BaseAppTest;
 import presidio.data.generators.common.*;
@@ -122,8 +122,8 @@ public class ModelingServiceApplicationEnrichedRecordsModuleTest extends BaseApp
                 generateDataForContextHistogramRetrieverAndTimeModelBuilder((ContextHistogramRetrieverConf)retrieverConf);
             } else if (retrieverConf instanceof CategoricalFeatureValueRetrieverConf && builderConf instanceof CategoryRarityModelBuilderConf) {
                 generateDataForCategoricalFeatureValueRetrieverAndCategoryRarityModelBuilder((CategoricalFeatureValueRetrieverConf)retrieverConf);
-            } else if (retrieverConf instanceof EpochtimeToHighestIntegerMapRetrieverConf && builderConf instanceof ContinuousMaxHistogramModelBuilderConf) {
-                generateDataForEpochtimeToHighestIntegerMapRetrieverAndContinuousMaxHistogramModelBuilder((EpochtimeToHighestIntegerMapRetrieverConf)retrieverConf);
+            } else if (retrieverConf instanceof EpochtimeToHighestDoubleMapRetrieverConf && builderConf instanceof ContinuousMaxHistogramModelBuilderConf) {
+                generateDataForEpochtimeToHighestDoubleMapRetrieverAndContinuousMaxHistogramModelBuilder((EpochtimeToHighestDoubleMapRetrieverConf)retrieverConf);
             } else if (retrieverConf instanceof ModelRetrieverConf && builderConf instanceof GaussianPriorModelBuilderConf) {
                 // No need to generate data, since the model retriever takes the contextual models built by the ContinuousMaxHistogramModelBuilder
             } else {
@@ -150,7 +150,7 @@ public class ModelingServiceApplicationEnrichedRecordsModuleTest extends BaseApp
             } else if (retrieverConf instanceof CategoricalFeatureValueRetrieverConf && builderConf instanceof CategoryRarityModelBuilderConf) {
                 Assert.isTrue(models.size() == 50, unexpectedNumMessage);
                 models.forEach(model -> Assert.isTrue(model.equals(expectedModel2), unexpectedModelMessage));
-            } else if (retrieverConf instanceof EpochtimeToHighestIntegerMapRetrieverConf && builderConf instanceof ContinuousMaxHistogramModelBuilderConf) {
+            } else if (retrieverConf instanceof EpochtimeToHighestDoubleMapRetrieverConf && builderConf instanceof ContinuousMaxHistogramModelBuilderConf) {
                 Assert.isTrue(models.size() == 50, unexpectedNumMessage);
                 models.forEach(model -> Assert.isTrue(model.equals(expectedModel3), unexpectedModelMessage));
             } else if (retrieverConf instanceof ModelRetrieverConf && builderConf instanceof GaussianPriorModelBuilderConf) {
@@ -215,7 +215,7 @@ public class ModelingServiceApplicationEnrichedRecordsModuleTest extends BaseApp
         generateFeatureBuckets(retrieverConf.getTimeRangeInSeconds(), featureBucketConf, aggregatedFeaturesGenerator);
     }
 
-    private void generateDataForEpochtimeToHighestIntegerMapRetrieverAndContinuousMaxHistogramModelBuilder(EpochtimeToHighestIntegerMapRetrieverConf retrieverConf) throws GeneratorException {
+    private void generateDataForEpochtimeToHighestDoubleMapRetrieverAndContinuousMaxHistogramModelBuilder(EpochtimeToHighestDoubleMapRetrieverConf retrieverConf) throws GeneratorException {
         FeatureBucketConf featureBucketConf = bucketConfigurationService.getBucketConf(retrieverConf.getFeatureBucketConfName());
         Duration interval = FixedDurationStrategy.fromStrategyName(featureBucketConf.getStrategyName()).toDuration();
         Duration diffBetweenDeltas = interval.dividedBy(NUM_OF_FEATURES_IN_INTERVAL);
@@ -223,8 +223,8 @@ public class ModelingServiceApplicationEnrichedRecordsModuleTest extends BaseApp
         for (int i = 0; i < NUM_OF_FEATURES_IN_INTERVAL; i++)
             deltaToCountMap.put(diffBetweenDeltas.multipliedBy(i), COUNTS_PER_FEATURE_IN_INTERVAL);
         long timeRangeInSeconds = retrieverConf.getTimeRangeInSeconds();
-        FeatureBucketEpochtimeToHighestIntegerMapGenerator featureBucketEpochtimeToHighestIntegerMapGenerator = new FeatureBucketEpochtimeToHighestIntegerMapGenerator(endInstant.minusSeconds(timeRangeInSeconds), interval, deltaToCountMap, retrieverConf.getFeatureName());
-        generateFeatureBuckets(timeRangeInSeconds, featureBucketConf, featureBucketEpochtimeToHighestIntegerMapGenerator);
+        FeatureBucketEpochtimeToHighestDoubleMapGenerator featureBucketEpochtimeToHighestDoubleMapGenerator = new FeatureBucketEpochtimeToHighestDoubleMapGenerator(endInstant.minusSeconds(timeRangeInSeconds), interval, deltaToCountMap, retrieverConf.getFeatureName());
+        generateFeatureBuckets(timeRangeInSeconds, featureBucketConf, featureBucketEpochtimeToHighestDoubleMapGenerator);
     }
 
     @Configuration

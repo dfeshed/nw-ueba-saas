@@ -73,6 +73,10 @@
         "SECURITY_SENSITIVE_OPERATION",
         "USER_MANAGEMENT"
       ],
+      "USER_PASSWORD_RESET": [
+        "USER_MANAGEMENT",
+        "SECURITY_SENSITIVE_OPERATION"
+      ],
       "USER_MEMBER_OF_REMOVED": [
         "GROUP_MEMBERSHIP_OPERATION",
         "GROUP_MEMBERSHIP_REMOVE_OPERATION"
@@ -384,6 +388,22 @@
       ],
       "SYSVOL_FOLDER_ACCESS_RIGHTS_CHANGED": [
         "OBJECT_MANAGEMENT"
+      ],
+      "STRONG_AUTHENTICATION_METHOD_CHANGED": [
+        "USER_MANAGEMENT",
+        "SECURITY_SENSITIVE_OPERATION"
+      ],
+      "STRONG_AUTHENTICATION_PHONE_APP_DETAIL_CHANGED": [
+        "USER_MANAGEMENT",
+        "SECURITY_SENSITIVE_OPERATION"
+      ],
+      "STRONG_AUTHENTICATION_PHONE_USER_DETAIL_CHANGED": [
+        "USER_MANAGEMENT",
+        "SECURITY_SENSITIVE_OPERATION"
+      ],
+      "STRONG_AUTHENTICATION_REQUIREMENT_CHANGED": [
+        "USER_MANAGEMENT",
+        "SECURITY_SENSITIVE_OPERATION"
       ]
     },
     "FILE": {
@@ -461,6 +481,27 @@
         "FILE_ACTION"
       ],
       "FILE_CONTENTS_WRITTEN": [
+        "FILE_ACTION"
+      ],
+      "FILE_COPIED": [
+        "FILE_ACTION"
+      ],
+      "FILE_CHECKED": [
+        "FILE_ACTION"
+      ],
+      "FILE_PREVIEWED": [
+        "FILE_ACTION"
+      ],
+      "FILE_MODIFIED": [
+        "FILE_ACTION"
+      ],
+      "FILE_RESTORED": [
+        "FILE_ACTION"
+      ],
+      "FILE_UPLOADED": [
+        "FILE_ACTION"
+      ],
+      "FILE_DOWNLOADED": [
         "FILE_ACTION"
       ],
       "FOLDER_AUDITING_CHANGED": [

@@ -201,6 +201,17 @@ indicators:
     type: hourly_aggregations
   classification: data_exfiltration
 
+- id: numberOfFileDownloadedUserIdFileHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_file_downloaded_operations
+  schema: FILE
+  adeEventType: file
+  anomalyDescriptior:
+    anomalyField: operationType
+    anomalyValue: FILE_DOWNLOADED
+  historicalData:
+    type: hourly_aggregations
+  classification: data_exfiltration
 
 #*********************************************************
 #*              ACTIVE DIRECTORY INDICATORS              *
@@ -479,6 +490,76 @@ indicators:
     featureName: operationTypeHistogram
   classification: elevated_privileges_granted
 
+- id: strongAuthenticationMethodChangedScoreUserIdActiveDirectoryHourly
+  type: STATIC_INDICATOR
+  name: strong_authentication_method_changed
+  adeEventType: scored_enriched.active_directory.strongAuthenticationMethodChanged.userId.activeDirectory.score
+  schema: ACTIVE_DIRECTORY
+  anomalyDescriptior:
+      anomalyField: operationType
+      anomalyValue: STRONG_AUTHENTICATION_METHOD_CHANGED
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
+    featureName: operationTypeHistogram
+  classification: sensitive_user_status_changes
+
+- id: strongAuthenticationPhoneAppDetailChangedScoreUserIdActiveDirectoryHourly
+  type: STATIC_INDICATOR
+  name: strong_authentication_phone_app_detail_changed
+  adeEventType: scored_enriched.active_directory.strongAuthenticationPhoneAppDetailChanged.userId.activeDirectory.score
+  schema: ACTIVE_DIRECTORY
+  anomalyDescriptior:
+      anomalyField: operationType
+      anomalyValue: STRONG_AUTHENTICATION_PHONE_APP_DETAIL_CHANGED
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
+    featureName: operationTypeHistogram
+  classification: sensitive_user_status_changes
+
+- id: strongAuthenticationPhoneUserDetailChangedScoreUserIdActiveDirectoryHourly
+  type: STATIC_INDICATOR
+  name: strong_authentication_phone_user_detail_changed
+  adeEventType: scored_enriched.active_directory.strongAuthenticationPhoneUserDetailChanged.userId.activeDirectory.score
+  schema: ACTIVE_DIRECTORY
+  anomalyDescriptior:
+      anomalyField: operationType
+      anomalyValue: STRONG_AUTHENTICATION_PHONE_USER_DETAIL_CHANGED
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
+    featureName: operationTypeHistogram
+  classification: sensitive_user_status_changes
+
+- id: strongAuthenticationRequirementChangedScoreUserIdActiveDirectoryHourly
+  type: STATIC_INDICATOR
+  name: strong_authentication_requirement_changed
+  adeEventType: scored_enriched.active_directory.strongAuthenticationRequirementChanged.userId.activeDirectory.score
+  schema: ACTIVE_DIRECTORY
+  anomalyDescriptior:
+      anomalyField: operationType
+      anomalyValue: STRONG_AUTHENTICATION_REQUIREMENT_CHANGED
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
+    featureName: operationTypeHistogram
+  classification: sensitive_user_status_changes
+
+- id: userPasswordResetScoreUserIdActiveDirectoryHourly
+  type: STATIC_INDICATOR
+  name: user_password_reset
+  adeEventType: scored_enriched.active_directory.userPasswordReset.userId.activeDirectory.score
+  schema: ACTIVE_DIRECTORY
+  anomalyDescriptior:
+      anomalyField: operationType
+      anomalyValue: USER_PASSWORD_RESET
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
+    featureName: operationTypeHistogram
+  classification: sensitive_user_status_changes
+
 
 #*********************************************************
 #*                AUTHENTICATION INDICATORS              *
@@ -713,6 +794,19 @@ indicators:
     type: count_aggregations
     featureBucketConfName: fileExtensionHistogramUserIdPrintDaily
     featureName: fileExtensionHistogram
+  classification: data_exfiltration
+
+- id: highestNumOfPagesScoreUserIdPrintHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_number_of_pages_print
+  adeEventType: scored_enriched.print.numOfPages.userId.print.score
+  schema: PRINT
+  anomalyDescriptior:
+    anomalyField: numOfPages
+  historicalData:
+    type: hourly_scored_aggregations
+    featureBucketConfName: startInstantToHighestNumOfPagesMapUserIdPrintDaily
+    featureName: startInstantToHighestNumOfPagesMap
   classification: data_exfiltration
 
 - id: numberOfSuccessfulPrintsUserIdPrintHourly

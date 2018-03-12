@@ -31,10 +31,10 @@ public class HistoricalDataCountByValuePopulator implements HistoricalDataPopula
         Map<String, Double> histogramMap = new HashMap<String, Double>();
 
         // fetch daily histograms
-        List<DailyHistogram<String>> dailyHistograms = historicalDataFetcher.getDailyHistogramsForFeature(timeRange, contextField, contextValue, schema, featureName, historicalDataConfig);
+        List<DailyHistogram<String, Number>> dailyHistograms = historicalDataFetcher.getDailyHistogramsForFeature(timeRange, contextField, contextValue, schema, featureName, historicalDataConfig);
 
         // iterate over days
-        for (DailyHistogram<String> dailyHistogram: dailyHistograms) {
+        for (DailyHistogram<String, Number> dailyHistogram: dailyHistograms) {
 
             LocalDate day = dailyHistogram.getDate();
 
@@ -44,7 +44,7 @@ public class HistoricalDataCountByValuePopulator implements HistoricalDataPopula
             }
 
             // merge the values
-            dailyHistogram.getHistogram().forEach((k, v) -> histogramMap.merge(k, v, Double::sum));
+            dailyHistogram.getHistogram().forEach((k, v) -> histogramMap.merge(k, (Double) v, Double::sum));
 
         }
 

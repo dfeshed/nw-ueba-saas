@@ -9,6 +9,7 @@ from airflow.utils.db import provide_session
 from airflow.utils.state import State
 from copy import copy
 from elasticsearch import Elasticsearch
+from presidio.utils.airflow.operators import spring_boot_jar_operator
 
 
 class RerunFullFlowDagBuilder(object):
@@ -146,6 +147,10 @@ def cleanup_dags_from_postgres(dag_ids, session=None):
             sql = "DELETE FROM {} WHERE dag_id LIKE \'%{}%\'".format(t, dag_id)
             logging.info("executing: %s", sql)
             session.execute(sql)
+
+    sql = "DELETE FROM variable WHERE key LIKE \'{}%\'".format(spring_boot_jar_operator.RETRY_STATE_KEY_PREFIX)
+    logging.info("executing: %s", sql)
+    session.execute(sql)
 
 
 def build_pause_dags_operator(cleanup_dag, dag_models):

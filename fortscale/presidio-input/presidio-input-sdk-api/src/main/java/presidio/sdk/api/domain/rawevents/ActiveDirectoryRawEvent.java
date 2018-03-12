@@ -13,7 +13,6 @@ import java.util.Map;
 @Document
 public class ActiveDirectoryRawEvent extends AbstractInputDocument {
 
-    public static final String IS_USER_ADMIN_FIELD_NAME = "isUserAdmin";
     public static final String OBJECT_ID_FIELD_NAME = "objectId";
 
     @Field(IS_USER_ADMIN_FIELD_NAME)
@@ -40,13 +39,14 @@ public class ActiveDirectoryRawEvent extends AbstractInputDocument {
         this.objectId = other.objectId;
     }
 
-    @JsonProperty(value = "isUserAdmin")
+    @JsonProperty(value = IS_USER_ADMIN_FIELD_NAME)
     public boolean getIsUserAdministrator() {
         return isUserAdmin;
     }
 
     public void setIsUserAdministrator(boolean userAdministrator) {
         isUserAdmin = userAdministrator;
+        additionalInfo.put(IS_USER_ADMIN_FIELD_NAME, Boolean.toString(isUserAdmin));
     }
 
     public String getObjectId() {

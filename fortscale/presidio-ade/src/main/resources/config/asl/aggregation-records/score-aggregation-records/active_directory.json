@@ -194,6 +194,81 @@
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_map_values_max_sum_func"
       }
+    },
+    {
+      "name": "strongAuthenticationMethodChangedScoreUserIdActiveDirectoryHourly",
+      "type": "P",
+      "bucketConfName": "strongAuthenticationMethodChangedScoreUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "strongAuthenticationMethodChangedScore"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_map_values_max_sum_func"
+      }
+    },
+    {
+      "name": "strongAuthenticationPhoneAppDetailChangedScoreUserIdActiveDirectoryHourly",
+      "type": "P",
+      "bucketConfName": "strongAuthenticationPhoneAppDetailChangedScoreUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "strongAuthenticationPhoneAppDetailChangedScore"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_map_values_max_sum_func"
+      }
+    },
+    {
+      "name": "strongAuthenticationPhoneUserDetailChangedScoreUserIdActiveDirectoryHourly",
+      "type": "P",
+      "bucketConfName": "strongAuthenticationPhoneUserDetailChangedScoreUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "strongAuthenticationPhoneUserDetailChangedScore"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_map_values_max_sum_func"
+      }
+    },
+    {
+      "name": "strongAuthenticationRequirementChangedScoreUserIdActiveDirectoryHourly",
+      "type": "P",
+      "bucketConfName": "strongAuthenticationRequirementChangedScoreUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "strongAuthenticationRequirementChangedScore"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_map_values_max_sum_func"
+      }
+    },
+    {
+      "name": "userPasswordResetScoreUserIdActiveDirectoryHourly",
+      "type": "P",
+      "bucketConfName": "userPasswordResetScoreUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "userPasswordResetScore"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_map_values_max_sum_func"
+      }
     }
   ]
 }

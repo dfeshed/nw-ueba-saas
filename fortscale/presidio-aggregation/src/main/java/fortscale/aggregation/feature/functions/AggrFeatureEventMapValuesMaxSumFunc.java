@@ -2,17 +2,14 @@ package fortscale.aggregation.feature.functions;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fortscale.common.feature.AggrFeatureValue;
-import org.apache.commons.lang3.StringUtils;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Aggregate one or more buckets containing a feature containing a mapping from features group to max value.
- * Such a mapping (of type Map<List<String>, Integer>) is created by AggrFeatureFeatureToMaxMapFunc.
+ * Such a mapping (of type Map<String, Double>) is created by AggrFeatureFeatureToMaxMapFunc.
  * First {@link AbstractAggrFeatureEventFeatureToMaxMapFunc} is used in order to aggregate multiple buckets
  * (refer to its documentation to learn more).
  * Then, all of the values are summed up in order to create a new aggregated feature.
@@ -25,50 +22,25 @@ import java.util.Map;
  * 1. pick: refer to {@link AbstractAggrFeatureEventFeatureToMaxMapFunc}'s documentation to learn more.
  */
 @JsonTypeName(AggrFeatureEventMapValuesMaxSumFunc.AGGR_FEATURE_FUNCTION_TYPE)
-@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
+@JsonAutoDetect(
+        fieldVisibility = Visibility.ANY,
+        getterVisibility = Visibility.NONE,
+        isGetterVisibility = Visibility.NONE,
+        setterVisibility = Visibility.NONE
+)
 public class AggrFeatureEventMapValuesMaxSumFunc extends AbstractAggrFeatureEventFeatureToMaxMapFunc {
     public final static String AGGR_FEATURE_FUNCTION_TYPE = "aggr_feature_map_values_max_sum_func";
-
-    @JsonProperty("pattern")
-    private String pattern;
-    @JsonProperty("replacement")
-    private String replacement;
-    @JsonProperty("postCondition")
-    private String postCondition;
 
     @Override
     protected AggrFeatureValue calculateFeaturesGroupToMaxValue(AggrFeatureValue aggrFeatureValue) {
         @SuppressWarnings("unchecked")
-        Map<String, Integer> featuresGroupToMax = (Map<String, Integer>)aggrFeatureValue.getValue();
-        Map<String, Integer> clusterToMaxValueMap = getClusterToMaxValueMap(featuresGroupToMax);
+        Map<String, Double> featuresGroupToMax = (Map<String, Double>)aggrFeatureValue.getValue();
+        double sum = 0;
 
-        int sum = 0;
-        for (int max : clusterToMaxValueMap.values()) {
+        for (double max : featuresGroupToMax.values()) {
             sum += max;
         }
 
         return new AggrFeatureValue(sum, aggrFeatureValue.getTotal());
-    }
-
-    private Map<String, Integer> getClusterToMaxValueMap(Map<String, Integer> featureToMaxValueMap) {
-        if (StringUtils.isEmpty(pattern) || replacement == null) return featureToMaxValueMap;
-        Map<String, Integer> clusterToMaxValueMap = new HashMap<>();
-
-        for (Map.Entry<String, Integer> entry : featureToMaxValueMap.entrySet()) {
-            String before = entry.getKey();
-            Integer maxValue = entry.getValue();
-            if (before == null || maxValue == null) continue;
-
-            String after = before.replaceAll(pattern, replacement);
-            String cluster = postCondition != null && !after.matches(postCondition) ? before : after;
-
-            if (clusterToMaxValueMap.containsKey(cluster)) {
-                clusterToMaxValueMap.put(cluster, Math.max(clusterToMaxValueMap.get(cluster), maxValue));
-            } else {
-                clusterToMaxValueMap.put(cluster, maxValue);
-            }
-        }
-
-        return clusterToMaxValueMap;
     }
 }
