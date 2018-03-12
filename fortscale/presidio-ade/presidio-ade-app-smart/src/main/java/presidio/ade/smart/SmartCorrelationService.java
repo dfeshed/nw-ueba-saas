@@ -17,7 +17,7 @@ public class SmartCorrelationService {
     private SmartRecordConf smartRecordConf;
     private Map<String, TreeNode<CorrelationNodeData>> featureToTreeNode;
     private Map<String, FullCorrelation> featureToFullCorrelation;
-    private List<String> featureToCorrelationFactor;
+    private List<String> features;
     private SmartCorrelationAlgorithm smartCorrelationAlgorithm;
 
 
@@ -25,7 +25,7 @@ public class SmartCorrelationService {
         this.smartRecordConf = smartRecordConf;
         this.featureToTreeNode = new LinkedHashMap<>();
         this.featureToFullCorrelation = new LinkedHashMap<>();
-        this.featureToCorrelationFactor = new ArrayList<>();
+        this.features = new ArrayList<>();
 
         List<Tree<CorrelationNodeData>> trees = smartRecordConf.getTrees();
         for (Tree<CorrelationNodeData> tree : trees) {
@@ -40,7 +40,9 @@ public class SmartCorrelationService {
         buildFeatureToFullCorrelationMap(fullCorrelations);
         validateTreeCorrelationWithFullCorrelation();
 
-        smartCorrelationAlgorithm = new SmartCorrelationAlgorithm(smartRecordConf, featureToTreeNode, featureToFullCorrelation, featureToCorrelationFactor);
+        features.addAll(featureToTreeNode.keySet());
+        features.addAll(featureToFullCorrelation.keySet());
+        smartCorrelationAlgorithm = new SmartCorrelationAlgorithm(smartRecordConf, featureToTreeNode, featureToFullCorrelation, features);
     }
 
     /**
@@ -82,7 +84,6 @@ public class SmartCorrelationService {
                 "There should not be any intersection between correlation trees. The feature %s already exist.", feature));
 
         featureToTreeNode.put(feature, treeNode);
-        featureToCorrelationFactor.add(feature);
 
         features.add(treeNode);
         List<TreeNode<CorrelationNodeData>> children = treeNode.getChildren();
@@ -145,7 +146,6 @@ public class SmartCorrelationService {
                 Assert.isTrue(!featureToFullCorrelation.containsKey(feature), String.format(
                         "There should not be any intersection between full correlation features. The feature %s already exist.", feature));
                 featureToFullCorrelation.put(feature, fullCorrelation);
-                featureToCorrelationFactor.add(feature);
             });
         }
     }
@@ -155,8 +155,8 @@ public class SmartCorrelationService {
         return featureToTreeNode;
     }
 
-    public List<String> getFeatureToCorrelationFactor() {
-        return featureToCorrelationFactor;
+    public List<String> getFeatures() {
+        return features;
     }
 
     public Map<String, FullCorrelation> getFeatureToFullCorrelation() {

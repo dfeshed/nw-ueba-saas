@@ -44,7 +44,7 @@ public class SmartRecordConfServiceTest {
 				.sorted(comparing(SmartRecordConf::getName))
 				.collect(Collectors.toList());
 
-		assertEquals(2, smartRecordConfs.size());
+		assertEquals(3, smartRecordConfs.size());
 		assertFirstSmartRecordConf(smartRecordConfs.get(0));
 		assertSecondSmartRecordConf(smartRecordConfs.get(1));
 	}

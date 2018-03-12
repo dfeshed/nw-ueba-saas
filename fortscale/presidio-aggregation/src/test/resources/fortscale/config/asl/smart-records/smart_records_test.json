@@ -39,6 +39,128 @@
           "weight": 0.75
         }
       ]
+    },
+    {
+      "name": "test_smart_record_conf_3",
+      "contextToFieldsMap": {
+        "userId": [
+          "userId"
+        ]
+      },
+      "fixedDurationStrategy": "fixed_duration_hourly",
+      "includeAllAggregationRecords": true,
+      "excludedAggregationRecords": [
+        "numberOfDistinctSrcMachineIdUserIdAuthenticationHourly",
+        "numberOfDistinctDstMachineIdUserIdAuthenticationHourly",
+        "numberOfDistinctDstMachineDomainUserIdAuthenticationHourly",
+        "numberOfDistinctDstMachineNameRegexClusterUserIdAuthenticationHourly",
+        "sumOfHighestDstMachineIdScoresUserIdPrintHourly",
+        "numberOfFailedPrintsUserIdPrintHourly",
+        "numberOfDistinctSrcMachineIdUserIdPrintHourly",
+        "numberOfDistinctDstMachineNameRegexClusterUserIdPrintHourly"
+      ],
+      "defaultWeight": 0.5,
+      "trees": [
+        {
+          "name": "accessTree",
+          "root": {
+            "data": {
+              "feature": "highestStartInstantScoreUserIdAuthenticationHourly",
+              "correlationFactor": 1
+            },
+            "children": [
+              {
+                "data": {
+                  "feature": "sumOfHighestSrcMachineNameRegexClusterScoresUserIdAuthenticationHourly",
+                  "correlationFactor": 0.5
+                },
+                "children": [
+                  {
+                    "data": {
+                      "feature": "delete",
+                      "correlationFactor": 0.5
+                    }
+                  }
+                ]
+              },
+              {
+                "data": {
+                  "feature": "feature5",
+                  "correlationFactor": 0.5
+                },
+                "children": [
+                  {
+                    "data": {
+                      "feature": "feature2",
+                      "correlationFactor": 0.5
+                    }
+                  },
+                  {
+                    "data": {
+                      "feature": "feature3",
+                      "correlationFactor": 0.5
+                    }
+                  }
+                ]
+              },
+              {
+                "data": {
+                  "feature": "copy",
+                  "correlationFactor": 0.5
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "featureATree",
+          "root": {
+            "data": {
+              "feature": "nonAdminPasswordChangedScoreUserIdActiveDirectoryHourly",
+              "correlationFactor": 1
+            },
+            "children": [
+              {
+                "data": {
+                  "feature": "passwordChangedByNonOwnerScoreUserIdActiveDirectoryHourly",
+                  "correlationFactor": 0.5
+                },
+                "children": [
+                  {
+                    "data": {
+                      "feature": "featureC",
+                      "correlationFactor": 0.5
+                    }
+                  },
+                  {
+                    "data": {
+                      "feature": "featureB",
+                      "correlationFactor": 0.5
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "fullCorrelations": [
+        {
+          "name": "fullCorrelation1",
+          "features": [
+            "highestStartInstantScoreUserIdAuthenticationHourly",
+            "e",
+            "featureC"
+          ]
+        },
+        {
+          "name": "fullCorrelation2",
+          "features": [
+            "userAccountLockedScoreUserIdActiveDirectoryHourly",
+            "featureK"
+          ]
+        }
+      ]
     }
   ]
 }
