@@ -25,7 +25,7 @@ public class AuthenticationConverterTest {
                 "", "srcMachineName", "",
                 "dstMachineName", "dstMachineDomain", "resultCode", "site");
         AuthenticationTransformedEvent inputRecord = new AuthenticationTransformedEvent(rawEvent);
-        inputRecord.setResourceCluster("");
+        inputRecord.setDstMachineCluster("");
         inputRecord.setSrcMachineCluster("");
 
         EnrichedEvent outputRecord = converter.convert(inputRecord);
@@ -57,7 +57,7 @@ public class AuthenticationConverterTest {
                 "srcMachineId", "srcMachineName", "dstMachineId",
                 "dstMachineName", "dstMachineDomain", "resultCode", "site");
         AuthenticationTransformedEvent inputRecord = new AuthenticationTransformedEvent(rawEvent);
-        inputRecord.setResourceCluster("dstMachineCluster");
+        inputRecord.setDstMachineCluster("dstMachineCluster");
         inputRecord.setSrcMachineCluster("srcMachineCluster");
 
         EnrichedEvent outputRecord = converter.convert(inputRecord);
