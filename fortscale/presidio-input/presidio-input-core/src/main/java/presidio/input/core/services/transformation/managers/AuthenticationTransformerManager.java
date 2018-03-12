@@ -45,7 +45,7 @@ public class AuthenticationTransformerManager implements TransformationManager {
             transformers.add(new PatternReplacementTransformer(AuthenticationRawEvent.DST_MACHINE_ID_FIELD_NAME,
                     AuthenticationTransformedEvent.DST_MACHINE_ID_FIELD_NAME, MachineNameTransformer.ipPattern.pattern(), "", null, null));
 
-            transformers.add(new OperationTypeToCategoryTransformer(operationTypeToCategoryMapping.get(Schema.AUTHENTICATION.toString())));
+            transformers.add(new OperationTypeToCategoryTransformer(operationTypeToCategoryMapping.get(Schema.AUTHENTICATION)));
         }
         return transformers;
     }

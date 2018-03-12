@@ -35,7 +35,7 @@ public class FileTransformerManager implements TransformationManager {
                     FileTransformedEvent.SRC_FOLDER_PATH_FIELD_NAME, FileRawEvent.OPERATION_TYPE_FIELD_NAME, folderOperations));
             transformers.add(new FolderPathByOperationTypeTransformer(FileRawEvent.DST_FILE_PATH_FIELD_NAME, FileRawEvent.DST_FILE_PATH_FIELD_NAME,
                     FileTransformedEvent.DST_FOLDER_PATH_FIELD_NAME, FileRawEvent.OPERATION_TYPE_FIELD_NAME, folderOperations));
-            transformers.add(new OperationTypeToCategoryTransformer(operationTypeToCategoryMapping.get(Schema.FILE.toString())));
+            transformers.add(new OperationTypeToCategoryTransformer(operationTypeToCategoryMapping.get(Schema.FILE)));
         }
         return transformers;
     }

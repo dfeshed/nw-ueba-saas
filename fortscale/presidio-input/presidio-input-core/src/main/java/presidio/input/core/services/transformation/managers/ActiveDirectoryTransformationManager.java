@@ -25,8 +25,8 @@ public class ActiveDirectoryTransformationManager implements TransformationManag
     public List<Transformer> getTransformers() {
         if (transformers == null) {
             transformers = new ArrayList<>();
-            transformers.add(new OperationTypeToCategoryTransformer(operationTypeToCategoryMapping.get(Schema.ACTIVE_DIRECTORY.toString())));
-            transformers.add(new OperationTypeCategoryHierarchyTransformer(operationTypeCategoryHierarchyMapping.get(Schema.ACTIVE_DIRECTORY.toString())));
+            transformers.add(new OperationTypeToCategoryTransformer(operationTypeToCategoryMapping.get(Schema.ACTIVE_DIRECTORY)));
+            transformers.add(new OperationTypeCategoryHierarchyTransformer(operationTypeCategoryHierarchyMapping.get(Schema.ACTIVE_DIRECTORY)));
         }
         return transformers;
     }
