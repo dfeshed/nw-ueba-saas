@@ -15,15 +15,15 @@ import java.util.List;
         isGetterVisibility = Visibility.NONE,
         setterVisibility = Visibility.NONE
 )
-public class EpochtimeToHighestIntegerMapRetrieverConf extends AbstractDataRetrieverConf {
-    public static final String EPOCHTIME_TO_HIGHEST_INTEGER_MAP_RETRIEVER = "epochtime_to_highest_integer_map_retriever";
+public class EpochtimeToHighestDoubleMapRetrieverConf extends AbstractDataRetrieverConf {
+    public static final String EPOCHTIME_TO_HIGHEST_DOUBLE_MAP_RETRIEVER = "epochtime_to_highest_double_map_retriever";
 
     private final String featureBucketConfName;
     private final String featureName;
     private final long epochtimeResolutionInSeconds;
 
     @JsonCreator
-    public EpochtimeToHighestIntegerMapRetrieverConf(
+    public EpochtimeToHighestDoubleMapRetrieverConf(
             @JsonProperty("timeRangeInSeconds") long timeRangeInSeconds,
             @JsonProperty("functions") List<JSONObject> functions,
             @JsonProperty("featureBucketConfName") String featureBucketConfName,
@@ -41,7 +41,7 @@ public class EpochtimeToHighestIntegerMapRetrieverConf extends AbstractDataRetri
 
     @Override
     public String getFactoryName() {
-        return EPOCHTIME_TO_HIGHEST_INTEGER_MAP_RETRIEVER;
+        return EPOCHTIME_TO_HIGHEST_DOUBLE_MAP_RETRIEVER;
     }
 
     public String getFeatureBucketConfName() {

@@ -19,7 +19,7 @@ import java.util.List;
 		@JsonSubTypes.Type(value = AccumulatedSmartDataRetrieverConf.class, name = AccumulatedSmartDataRetrieverConf.ACCUMULATED_SMART_DATA_RETRIEVER_FACTORY_NAME),
 		@JsonSubTypes.Type(value = AccumulatedSmartValueRetrieverConf.class, name = AccumulatedSmartValueRetrieverConf.ACCUMULATED_SMART_VALUE_RETRIEVER_FACTORY_NAME),
 		@JsonSubTypes.Type(value = AccumulatedContextSmartValueRetrieverConf.class, name = AccumulatedContextSmartValueRetrieverConf.ACCUMULATED_CONTEXT_SMART_VALUE_RETRIEVER_FACTORY_NAME),
-		@JsonSubTypes.Type(value = EpochtimeToHighestIntegerMapRetrieverConf.class, name = EpochtimeToHighestIntegerMapRetrieverConf.EPOCHTIME_TO_HIGHEST_INTEGER_MAP_RETRIEVER)
+		@JsonSubTypes.Type(value = EpochtimeToHighestDoubleMapRetrieverConf.class, name = EpochtimeToHighestDoubleMapRetrieverConf.EPOCHTIME_TO_HIGHEST_DOUBLE_MAP_RETRIEVER)
 })
 @JsonAutoDetect(
 		fieldVisibility = JsonAutoDetect.Visibility.ANY,

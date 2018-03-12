@@ -128,7 +128,7 @@
         "featureBucketConfName": "startInstantToHighestNumOfPagesMapUserIdPrintDaily"
       },
       "retriever": {
-        "type": "epochtime_to_highest_integer_map_retriever",
+        "type": "epochtime_to_highest_double_map_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
         "featureBucketConfName": "startInstantToHighestNumOfPagesMapUserIdPrintDaily",
