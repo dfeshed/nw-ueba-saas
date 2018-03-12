@@ -1,0 +1,22 @@
+[
+  {
+    "_id": "666ad5b0-eb2e-11e7-88fc-39030d02ad95",
+    "_type": "search",
+    "_source": {
+      "title": "Adapter: Sink Component",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "_source"
+      ],
+      "sort": [
+        "timestamp",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"presidio-monitoring\",\"highlightAll\":true,\"version\":true,\"filter\":[{\"meta\":{\"negate\":false,\"index\":\"presidio-monitoring\",\"key\":\"tags.FLUME_COMPONENT_TYPE\",\"value\":\"SINK\",\"disabled\":false,\"alias\":null},\"query\":{\"match\":{\"tags.FLUME_COMPONENT_TYPE\":{\"query\":\"SINK\",\"type\":\"phrase\"}}},\"$state\":{\"store\":\"appState\"}},{\"meta\":{\"negate\":false,\"index\":\"presidio-monitoring\",\"key\":\"tags.APPLICATION_NAME\",\"value\":\"adapter\",\"disabled\":false,\"alias\":null},\"query\":{\"match\":{\"tags.APPLICATION_NAME\":{\"query\":\"adapter\",\"type\":\"phrase\"}}},\"$state\":{\"store\":\"appState\"}}],\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}}}"
+      }
+    }
+  }
+]

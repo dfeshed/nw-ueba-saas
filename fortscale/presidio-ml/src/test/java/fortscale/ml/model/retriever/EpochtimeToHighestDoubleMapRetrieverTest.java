@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author Lior Govrin
  */
-public class EpochtimeToHighestIntegerMapRetrieverTest {
+public class EpochtimeToHighestDoubleMapRetrieverTest {
     // 2017-01-01T00:00:00Z - 2017-04-01T00:00:00Z (90 days)
     private static final TimeRange timeRange = new TimeRange(1483228800, 1491004800);
     private static final String FEATURE_BUCKET_CONF_NAME = "myFeatureBucketConf";
@@ -35,13 +35,13 @@ public class EpochtimeToHighestIntegerMapRetrieverTest {
 
     private FeatureBucketReader featureBucketReader;
     private BucketConfigurationService bucketConfigurationService;
-    private EpochtimeToHighestIntegerMapRetrieverConf conf;
+    private EpochtimeToHighestDoubleMapRetrieverConf conf;
 
     @Before
     public void before() {
         featureBucketReader = mock(FeatureBucketReader.class);
         bucketConfigurationService = mock(BucketConfigurationService.class);
-        conf = mock(EpochtimeToHighestIntegerMapRetrieverConf.class);
+        conf = mock(EpochtimeToHighestDoubleMapRetrieverConf.class);
         FeatureBucketConf featureBucketConf = mock(FeatureBucketConf.class);
         when(bucketConfigurationService.getBucketConf(eq(FEATURE_BUCKET_CONF_NAME))).thenReturn(featureBucketConf);
         when(conf.getTimeRangeInSeconds()).thenReturn(7776000L); // 90 days
@@ -89,12 +89,12 @@ public class EpochtimeToHighestIntegerMapRetrieverTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void test_retrieval_of_a_single_feature() {
-        new EpochtimeToHighestIntegerMapRetriever(featureBucketReader, bucketConfigurationService, conf)
+        new EpochtimeToHighestDoubleMapRetriever(featureBucketReader, bucketConfigurationService, conf)
                 .retrieve(CONTEXT_ID, new Date(), new Feature(FEATURE_NAME, "1483228800"));
     }
 
     private AggregatedFeatureValuesData retrieve() {
-        Object data = new EpochtimeToHighestIntegerMapRetriever(featureBucketReader, bucketConfigurationService, conf)
+        Object data = new EpochtimeToHighestDoubleMapRetriever(featureBucketReader, bucketConfigurationService, conf)
                 .retrieve(CONTEXT_ID, Date.from(timeRange.getEnd()))
                 .getData();
         Assert.assertNotNull(data);
@@ -114,16 +114,16 @@ public class EpochtimeToHighestIntegerMapRetrieverTest {
         while (currentStartInstant.isBefore(lastEndInstant)) {
             Instant currentBucketStartInstant = currentStartInstant;
             Instant currentEndInstant = currentStartInstant.plus(fixedDurationStrategy.toDuration());
-            Map<String, Integer> epochtimeToHighestIntegerMap = new HashMap<>();
+            Map<String, Double> epochtimeToHighestDoubleMap = new HashMap<>();
 
             while (currentBucketStartInstant.isBefore(currentEndInstant)) {
                 String epochtime = String.valueOf(currentBucketStartInstant.getEpochSecond());
                 String key = String.format("%s#%s", FEATURE_NAME, epochtime);
-                epochtimeToHighestIntegerMap.put(key, cyclicIntegerIterator.next());
+                epochtimeToHighestDoubleMap.put(key, cyclicIntegerIterator.next().doubleValue());
                 currentBucketStartInstant = currentBucketStartInstant.plus(epochtimeResolution);
             }
 
-            Feature feature = new Feature(FEATURE_NAME, new AggrFeatureValue(epochtimeToHighestIntegerMap, 0L));
+            Feature feature = new Feature(FEATURE_NAME, new AggrFeatureValue(epochtimeToHighestDoubleMap, 0L));
             FeatureBucket featureBucket = new FeatureBucket();
             featureBucket.setStartTime(currentStartInstant);
             featureBucket.setEndTime(currentEndInstant);

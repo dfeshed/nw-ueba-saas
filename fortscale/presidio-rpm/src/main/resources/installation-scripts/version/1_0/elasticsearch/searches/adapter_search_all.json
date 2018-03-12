@@ -1,0 +1,22 @@
+[
+  {
+    "_id": "07d29640-eaf8-11e7-b967-4f5023bf8943",
+    "_type": "search",
+    "_source": {
+      "title": "Adapter: All",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "_source"
+      ],
+      "sort": [
+        "timestamp",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"presidio-monitoring\",\"highlightAll\":true,\"version\":true,\"filter\":[{\"meta\":{\"negate\":false,\"index\":\"presidio-monitoring\",\"key\":\"tags.APPLICATION_NAME\",\"value\":\"adapter\",\"disabled\":false,\"alias\":null},\"query\":{\"match\":{\"tags.APPLICATION_NAME\":{\"query\":\"adapter\",\"type\":\"phrase\"}}},\"$state\":{\"store\":\"appState\"}}],\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}}}"
+      }
+    }
+  }
+]
