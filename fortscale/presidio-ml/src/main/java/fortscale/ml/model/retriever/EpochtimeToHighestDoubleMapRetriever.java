@@ -21,17 +21,17 @@ import static fortscale.aggregation.feature.functions.AggrFeatureFeatureToMaxMap
 /**
  * @author Lior Govrin
  */
-public class EpochtimeToHighestIntegerMapRetriever extends AbstractDataRetriever {
+public class EpochtimeToHighestDoubleMapRetriever extends AbstractDataRetriever {
     private final FeatureBucketReader featureBucketReader;
     private final FeatureBucketConf featureBucketConf;
     private final String featureName;
     private final long epochtimeResolutionInSeconds;
     private final Duration epochtimeResolution;
 
-    public EpochtimeToHighestIntegerMapRetriever(
+    public EpochtimeToHighestDoubleMapRetriever(
             FeatureBucketReader featureBucketReader,
             BucketConfigurationService bucketConfigurationService,
-            EpochtimeToHighestIntegerMapRetrieverConf conf) {
+            EpochtimeToHighestDoubleMapRetrieverConf conf) {
 
         super(conf);
         this.featureBucketReader = featureBucketReader;
@@ -54,15 +54,15 @@ public class EpochtimeToHighestIntegerMapRetriever extends AbstractDataRetriever
 
             if (aggregatedFeature != null) {
                 AggrFeatureValue aggrFeatureValue = (AggrFeatureValue)aggregatedFeature.getValue();
-                Map<String, Integer> epochtimeToHighestIntegerMap = (Map<String, Integer>)aggrFeatureValue.getValue();
+                Map<String, Double> epochtimeToHighestDoubleMap = (Map<String, Double>)aggrFeatureValue.getValue();
                 Date dataTime = Date.from(featureBucket.getStartTime());
 
                 for (IDataRetrieverFunction function : functions) {
-                    epochtimeToHighestIntegerMap = (Map<String, Integer>)function.execute(
-                            epochtimeToHighestIntegerMap, dataTime, endTime);
+                    epochtimeToHighestDoubleMap = (Map<String, Double>)function.execute(
+                            epochtimeToHighestDoubleMap, dataTime, endTime);
                 }
 
-                updateInstantToHighestDoubleMap(epochtimeToHighestIntegerMap, instantToHighestDoubleMap);
+                updateInstantToHighestDoubleMap(epochtimeToHighestDoubleMap, instantToHighestDoubleMap);
             }
         }
 
@@ -93,15 +93,15 @@ public class EpochtimeToHighestIntegerMapRetriever extends AbstractDataRetriever
     }
 
     private void updateInstantToHighestDoubleMap(
-            Map<String, Integer> epochtimeToHighestIntegerMap,
+            Map<String, Double> epochtimeToHighestDoubleMap,
             TreeMap<Instant, Double> instantToHighestDoubleMap) {
 
-        for (Entry<String, Integer> entry : epochtimeToHighestIntegerMap.entrySet()) {
+        for (Entry<String, Double> entry : epochtimeToHighestDoubleMap.entrySet()) {
             long epochtime = convertKeyToEpochtime(entry.getKey());
             epochtime = (epochtime / epochtimeResolutionInSeconds) * epochtimeResolutionInSeconds;
             Instant instant = Instant.ofEpochSecond(epochtime);
             Double currentHighestDouble = instantToHighestDoubleMap.get(instant);
-            Double potentiallyHighestDouble = entry.getValue().doubleValue();
+            Double potentiallyHighestDouble = entry.getValue();
 
             if (currentHighestDouble == null) {
                 instantToHighestDoubleMap.put(instant, potentiallyHighestDouble);
