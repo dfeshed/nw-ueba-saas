@@ -1,0 +1,16 @@
+[
+  {
+    "_id": "0d8fcdb0-eb3d-11e7-8347-719599248f4a",
+    "_type": "visualization",
+    "_source": {
+      "title": "Adapter: Total Events VS Success Events",
+      "visState": "{\"title\":\"Adapter: Total Events VS Success Events\",\"type\":\"metrics\",\"params\":{\"id\":\"af6b0100-eb3c-11e7-8347-719599248f4a\",\"type\":\"timeseries\",\"series\":[{\"id\":\"af6b0101-eb3c-11e7-8347-719599248f4a\",\"color\":\"#68BC00\",\"split_mode\":\"filter\",\"metrics\":[{\"id\":\"af6b0102-eb3c-11e7-8347-719599248f4a\",\"type\":\"sum\",\"field\":\"value.TOTAL_EVENTS\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"line\",\"line_width\":1,\"point_size\":1,\"fill\":\"0\",\"stacked\":\"none\",\"label\":\"Total Events\",\"filter\":\"tags.FLUME_COMPONENT_TYPE:SOURCE\"},{\"id\":\"e2ba8850-eb3c-11e7-8347-719599248f4a\",\"color\":\"rgba(252,220,0,1)\",\"split_mode\":\"filter\",\"metrics\":[{\"id\":\"e2ba8851-eb3c-11e7-8347-719599248f4a\",\"type\":\"sum\",\"field\":\"value.SUCCESS_EVENTS\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"line\",\"line_width\":1,\"point_size\":1,\"fill\":0.5,\"stacked\":\"none\",\"label\":\"Success Events\",\"filter\":\"tags.FLUME_COMPONENT_TYPE:SINK\"}],\"time_field\":\"logicTime\",\"index_pattern\":\"presidio-monitoring-*\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"filter\":\"name:adapter.events_processed\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query_string\":{\"query\":\"*\"}},\"filter\":[]}"
+      }
+    }
+  }
+]
