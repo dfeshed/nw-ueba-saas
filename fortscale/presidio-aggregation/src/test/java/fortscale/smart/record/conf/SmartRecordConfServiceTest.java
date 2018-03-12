@@ -3,8 +3,13 @@ package fortscale.smart.record.conf;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
+import fortscale.smart.correlation.conf.CorrelationNodeData;
+import fortscale.smart.correlation.conf.FullCorrelation;
+import fortscale.utils.Tree;
+import fortscale.utils.TreeNode;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +52,7 @@ public class SmartRecordConfServiceTest {
 		assertEquals(3, smartRecordConfs.size());
 		assertFirstSmartRecordConf(smartRecordConfs.get(0));
 		assertSecondSmartRecordConf(smartRecordConfs.get(1));
+		assertThirdSmartRecordConf(smartRecordConfs.get(2));
 	}
 
 	@Test
@@ -142,6 +148,38 @@ public class SmartRecordConfServiceTest {
 		assertEquals("scoreAggregationRecord2", aggregationRecordNames.get(1));
 		assertEquals(0.75, clusterConf.getWeight(), 0);
 	}
+
+	private void assertThirdSmartRecordConf(SmartRecordConf smartRecordConf) {
+		assertEquals("test_smart_record_conf_3", smartRecordConf.getName());
+		assertEquals(singletonMap("userId", singletonList("userId")), smartRecordConf.getContextToFieldsMap());
+		assertEquals(FixedDurationStrategy.HOURLY, smartRecordConf.getFixedDurationStrategy());
+		assertEquals(true, smartRecordConf.isIncludeAllAggregationRecords());
+		assertEquals(0.5, smartRecordConf.getDefaultWeight(), 0);
+		List<ClusterConf> clusterConfs = smartRecordConf.getClusterConfs().stream()
+				.sorted(comparing(clusterConf -> clusterConf.getAggregationRecordNames().get(0)))
+				.collect(Collectors.toList());
+		assertEquals(4, clusterConfs.size());
+
+		List<FullCorrelation> fullCorrelations =smartRecordConf.getFullCorrelations();
+		assertEquals(fullCorrelations.size(), 2);
+
+		List<Tree<CorrelationNodeData>> trees = smartRecordConf.getTrees();
+		assertEquals(trees.size(), 2);
+		trees.forEach(tree -> {
+			isTreeValid(tree.getRoot());
+		});
+	}
+
+	private void isTreeValid(TreeNode<CorrelationNodeData> node){
+		Assert.assertNotNull(node.getData().getFeature());
+		Assert.assertNotNull(node.getData().getCorrelationFactor());
+
+		List<TreeNode<CorrelationNodeData>>  children = node.getChildren();
+		children.forEach(child -> {
+			isTreeValid(child);
+		});
+	}
+
 
 	@Configuration
 	public static class SmartRecordConfServiceTestConfig {

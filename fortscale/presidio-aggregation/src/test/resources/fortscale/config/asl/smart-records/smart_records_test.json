@@ -113,7 +113,7 @@
           }
         },
         {
-          "name": "featureATree",
+          "name": "testFeatureTree",
           "root": {
             "data": {
               "feature": "nonAdminPasswordChangedScoreUserIdActiveDirectoryHourly",
@@ -149,7 +149,7 @@
           "name": "fullCorrelation1",
           "features": [
             "highestStartInstantScoreUserIdAuthenticationHourly",
-            "e",
+            "featureG",
             "featureC"
           ]
         },
