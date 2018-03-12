@@ -37,12 +37,12 @@ const eq = { displayName: '=', isExpensive: false };
 const notEq = { displayName: '!=', isExpensive: false };
 const exists = { displayName: 'exists', isExpensive: false };
 const notExists = { displayName: '!exists', isExpensive: false };
-const contains = { displayName: 'contains', isExpensive: true }; // begins, ends & contains by default should be expensive
-const begins = { displayName: 'begins', isExpensive: true };
+const begins = { displayName: 'begins', isExpensive: false };
+const contains = { displayName: 'contains', isExpensive: true }; // ends & contains by default should be expensive
 const ends = { displayName: 'ends', isExpensive: true };
 
 const operatorArrayIndexedByKey = [exists, notExists, makeOperatorExpensive(eq), makeOperatorExpensive(notEq)];
-const operatorArrayIndexedByKeyWithTextFormat = [exists, notExists, makeOperatorExpensive(eq), makeOperatorExpensive(notEq), begins, ends, contains];
+const operatorArrayIndexedByKeyWithTextFormat = [exists, notExists, makeOperatorExpensive(eq), makeOperatorExpensive(notEq), makeOperatorExpensive(begins), ends, contains];
 const operatorArrayIndexedByValue = [exists, notExists, eq, notEq ];
 const operatorArrayIndexedByValueWithTextFormat = [exists, notExists, eq, notEq, begins, ends, contains];
 const operatorArrayForSessionId = [exists, notExists, eq, notEq];

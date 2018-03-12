@@ -52,7 +52,7 @@ const ALL_META_OPTIONS = [
   { format: 'IPv4', metaName: 'alias.ip', count: 4, flags: -2147482621, displayName: 'IP Aliases', indexedBy: 'value', expensiveCount: 0 },          // IndexedByValue
   { format: 'IPv6', metaName: 'alias.ipv6', count: 4, flags: -2147482621, displayName: 'IPv6 Aliases', indexedBy: 'value', expensiveCount: 0 },      // IndexByValue
   { format: 'MAC', metaName: 'alias.mac', count: 4, flags: -2147482621, displayName: 'MAC Aliases', indexedBy: 'value', expensiveCount: 0 },         // IndexedByValue
-  { format: 'Text', metaName: 'alert', count: 7, flags: -2147483133, displayName: 'Alerts', indexedBy: 'value', expensiveCount: 3 },                 // IndexedByValue and text
+  { format: 'Text', metaName: 'alert', count: 7, flags: -2147483133, displayName: 'Alerts', indexedBy: 'value', expensiveCount: 2 },                 // IndexedByValue and text
   { format: 'TimeT', metaName: 'starttime', count: 4, flags: -2147482621, displayName: 'Time Start', indexedBy: 'value', expensiveCount: 0 },        // IndexedByValue
   { format: 'UInt8', metaName: 'ip.proto', count: 4, flags: -2147482541, displayName: 'IP Protocol', indexedBy: 'value', expensiveCount: 0 },        // IndexedByValue
   { format: 'UInt16', metaName: 'eth.type', count: 4, flags: -2147482541, displayName: 'Ethernet Protocol', indexedBy: 'value', expensiveCount: 0 }, // IndexedByValue

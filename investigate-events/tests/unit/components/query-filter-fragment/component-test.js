@@ -82,7 +82,7 @@ test('it sets isExpensive when metaIndex is anything but value', function(assert
   assert.notOk(component.get('operatorOptions').findBy('displayName', '=').isExpensive, 'Expected = to not be expensive');
   assert.notOk(component.get('operatorOptions').findBy('displayName', '!=').isExpensive, 'Expected != to not be expensive');
   assert.ok(component.get('operatorOptions').findBy('displayName', 'contains').isExpensive, 'Expected contains to not be expensive');
-  assert.ok(component.get('operatorOptions').findBy('displayName', 'begins').isExpensive, 'Expected begins to not be expensive');
+  assert.notOk(component.get('operatorOptions').findBy('displayName', 'begins').isExpensive, 'Expected begins to not be expensive');
   assert.ok(component.get('operatorOptions').findBy('displayName', 'ends').isExpensive, 'Expected ends to not be expensive');
   assert.notOk(component.get('operatorOptions').findBy('displayName', 'exists').isExpensive, 'Expected exists to not be expensive');
   assert.notOk(component.get('operatorOptions').findBy('displayName', '!exists').isExpensive, 'Expected !exists to not be expensive');
