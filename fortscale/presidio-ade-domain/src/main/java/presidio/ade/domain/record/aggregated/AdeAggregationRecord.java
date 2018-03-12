@@ -94,4 +94,8 @@ public class AdeAggregationRecord extends AdeContextualAggregatedRecord {
     public String getFeatureName() {
         return featureName;
     }
+
+    public void setFeatureValue(Double featureValue) {
+        this.featureValue = featureValue;
+    }
 }

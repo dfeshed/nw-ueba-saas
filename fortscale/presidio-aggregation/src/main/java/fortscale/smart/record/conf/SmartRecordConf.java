@@ -3,10 +3,15 @@ package fortscale.smart.record.conf;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fortscale.smart.correlation.conf.CorrelationNodeData;
+import fortscale.smart.correlation.conf.FullCorrelation;
+import fortscale.utils.Tree;
+import fortscale.utils.TreeNode;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import org.springframework.util.Assert;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 
+import javax.validation.constraints.AssertTrue;
 import java.util.*;
 
 /**
@@ -30,6 +35,8 @@ public class SmartRecordConf {
 	private Double defaultWeight;
 	private List<ClusterConf> clusterConfs;
 	private Set<String> aggregationRecordNames;
+	private List<Tree<CorrelationNodeData>> trees;
+	private List<FullCorrelation> fullCorrelations;
 
 	@JsonCreator
 	public SmartRecordConf(
@@ -39,7 +46,9 @@ public class SmartRecordConf {
 			@JsonProperty("includeAllAggregationRecords") boolean includeAllAggregationRecords,
 			@JsonProperty("excludedAggregationRecords") List<String> excludedAggregationRecords,
 			@JsonProperty("defaultWeight") Double defaultWeight,
-			@JsonProperty("clusterConfs") List<ClusterConf> clusterConfs) {
+			@JsonProperty("clusterConfs") List<ClusterConf> clusterConfs,
+			@JsonProperty("trees") List<Tree<CorrelationNodeData>> trees,
+			@JsonProperty("fullCorrelations") List<FullCorrelation> fullCorrelations) {
 
 		this.name = name;
 		this.contextToFieldsMap = contextToFieldsMap;
@@ -49,6 +58,8 @@ public class SmartRecordConf {
 				Collections.emptyList() : excludedAggregationRecords;
 		this.defaultWeight = defaultWeight;
 		this.clusterConfs = clusterConfs;
+		this.trees = trees;
+		this.fullCorrelations = fullCorrelations;
 		validateArguments();
 		initClusterConfs();
 		initAggregationRecordNames();
@@ -84,6 +95,22 @@ public class SmartRecordConf {
 
 	public Set<String> getAggregationRecordNames() {
 		return aggregationRecordNames;
+	}
+
+	public List<Tree<CorrelationNodeData>> getTrees() {
+		return trees;
+	}
+
+	public void setTrees(List<Tree<CorrelationNodeData>> trees) {
+		this.trees = trees;
+	}
+
+	public List<FullCorrelation> getFullCorrelations() {
+		return fullCorrelations;
+	}
+
+	public void setFullCorrelations(List<FullCorrelation> fullCorrelations) {
+		this.fullCorrelations = fullCorrelations;
 	}
 
 	private void validateArguments() {

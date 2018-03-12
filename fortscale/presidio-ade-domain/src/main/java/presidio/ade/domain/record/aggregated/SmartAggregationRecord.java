@@ -8,6 +8,11 @@ public class SmartAggregationRecord {
     private AdeAggregationRecord aggregationRecord;
     private Double contribution;
     private Double scoreAndWeightProduct;
+    private String fullCorrelationName;
+    private String CorrelationTreeName;
+    private Double oldScore;
+    private Double CorrelationFactor;
+
 
     public SmartAggregationRecord(
             AdeAggregationRecord aggregationRecord,
@@ -49,5 +54,37 @@ public class SmartAggregationRecord {
 
     public void setScoreAndWeightProduct(Double scoreAndWeightProduct) {
         this.scoreAndWeightProduct = scoreAndWeightProduct;
+    }
+
+    public String getFullCorrelationName() {
+        return fullCorrelationName;
+    }
+
+    public void setFullCorrelationName(String fullCorrelationName) {
+        this.fullCorrelationName = fullCorrelationName;
+    }
+
+    public String getCorrelationTreeName() {
+        return CorrelationTreeName;
+    }
+
+    public void setCorrelationTreeName(String correlationTreeName) {
+        CorrelationTreeName = correlationTreeName;
+    }
+
+    public Double getOldScore() {
+        return oldScore;
+    }
+
+    public void setOldScore(Double oldScore) {
+        this.oldScore = oldScore;
+    }
+
+    public Double getCorrelationFactor() {
+        return CorrelationFactor;
+    }
+
+    public void setCorrelationFactor(Double correlationFactor) {
+        CorrelationFactor = correlationFactor;
     }
 }
