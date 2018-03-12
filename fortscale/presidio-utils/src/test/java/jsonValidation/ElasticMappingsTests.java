@@ -32,8 +32,8 @@ public class ElasticMappingsTests {
 
     private final String PRESIDIO_OUTPUT_ALERT = "presidio-output-alert";
     private final String INIT_PATH = "fortscale/presidio-rpm/src/main/python/installation-scripts/version/1_0/migration/init_elasticsearch.py";
-    private final String INIT_RUN_COMMAND= "fortscale/presidio-rpm/src/main/python/installation-scripts/version/1_0/migration/init_elasticsearch.py --resources_path /home/presidio/presidio-core/el-extensions --run_type test";
-    
+    private final String INIT_RUN_COMMAND = "fortscale/presidio-rpm/src/main/python/installation-scripts/version/1_0/migration/init_elasticsearch.py --resources_path /home/presidio/presidio-core/el-extensions --run_type test";
+
 
     @Autowired
     private ElasticsearchOperations elasticsearchOperations;
@@ -90,12 +90,12 @@ public class ElasticMappingsTests {
                 p = Runtime.getRuntime().exec(INIT_RUN_COMMAND);
                 p.waitFor();
                 if (p.exitValue() != 0) {
-                    Assert.fail();
+                    Assert.fail("script fail");
                 }
                 elasticsearchOperations.indexExists(PRESIDIO_OUTPUT_ALERT);
-                Assert.assertTrue(true);
+                Assert.assertTrue("presidio-output-alert index created.", true);
             } catch (Exception e) {
-                Assert.fail();
+                Assert.fail("test fail " + e.toString());
             } finally {
                 if (file != null) {
                     file.setExecutable(false, false);
@@ -104,14 +104,15 @@ public class ElasticMappingsTests {
         }
     }
 
+
     @Configuration
     @EnableSpringConfigured
     public static class SpringConfig {
         @Bean
         public static TestPropertiesPlaceholderConfigurer mappingsTestPropertiesConfigurer() {
             Properties properties = new Properties();
-            properties.put("linux.mapping.path", "/home/presidio/presidio-core/el-extensions/");
-            properties.put("windows.mapping.path", "src\\main\\resources\\elasticsearch");
+            properties.put("linux.mapping.path", "fortscale/presidio-rpm/src/main/resources/installation-scripts/version/1_0/elasticsearch");
+            properties.put("windows.mapping.path", "presidio-core\\fortscale\\presidio-rpm\\src\\main\\resources\\installation-scripts\\version\\1_0\\elasticsearch");
             properties.put("elasticsearch.port", EmbeddedElasticsearchInitialiser.EL_TEST_PORT);
             properties.put("elasticsearch.clustername", EmbeddedElasticsearchInitialiser.EL_TEST_CLUSTER);
             properties.put("elasticsearch.host", "localhost");
