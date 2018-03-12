@@ -5,10 +5,10 @@ import presidio.sdk.api.domain.rawevents.AuthenticationRawEvent;
 public class AuthenticationTransformedEvent extends AuthenticationRawEvent {
 
     public static final String SRC_MACHINE_CLUSTER_FIELD_NAME = "srcMachineCluster";
-    public static final String DST_MACHINE_CLUSTER_FIELD_NAME = "dstMachineCluster";
+    public static final String RESOURCE_CLUSTER_FIELD_NAME = "resourceCluster";
 
     private String srcMachineCluster;
-    private String dstMachineCluster;
+    private String resourceCluster;
 
     public AuthenticationTransformedEvent(AuthenticationRawEvent rawEvent) {
         super(rawEvent);
@@ -22,11 +22,11 @@ public class AuthenticationTransformedEvent extends AuthenticationRawEvent {
         this.srcMachineCluster = srcMachineCluster;
     }
 
-    public String getDstMachineCluster() {
-        return dstMachineCluster;
+    public String getResourceCluster() {
+        return resourceCluster;
     }
 
-    public void setDstMachineCluster(String dstMachineCluster) {
-        this.dstMachineCluster = dstMachineCluster;
+    public void setResourceCluster(String resourceCluster) {
+        this.resourceCluster = resourceCluster;
     }
 }

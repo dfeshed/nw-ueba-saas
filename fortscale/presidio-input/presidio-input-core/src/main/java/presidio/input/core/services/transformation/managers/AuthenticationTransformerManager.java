@@ -34,16 +34,16 @@ public class AuthenticationTransformerManager implements TransformationManager {
             //and value of resolved machine name will be transformed according to the cluster regex
             transformers.add(new MachineNameTransformer(AuthenticationRawEvent.SRC_MACHINE_NAME_FIELD_NAME,
                     AuthenticationTransformedEvent.SRC_MACHINE_CLUSTER_FIELD_NAME, CLUSTER_REPLACEMENT_PATTERN, "", null, CLUSTER_POST_REPLACEMENT_CONDITION));
-            transformers.add(new MachineNameTransformer(AuthenticationRawEvent.DST_MACHINE_NAME_FIELD_NAME,
-                    AuthenticationTransformedEvent.DST_MACHINE_CLUSTER_FIELD_NAME, CLUSTER_REPLACEMENT_PATTERN, "", null, CLUSTER_POST_REPLACEMENT_CONDITION));
+            transformers.add(new MachineNameTransformer(AuthenticationRawEvent.RESOURCE_NAME_FIELD_NAME,
+                    AuthenticationTransformedEvent.RESOURCE_CLUSTER_FIELD_NAME, CLUSTER_REPLACEMENT_PATTERN, "", null, CLUSTER_POST_REPLACEMENT_CONDITION));
 
             //src\dst machine id transformers:
             //machine id containing ip address will be transformed to empty string
             //and value of resolved machine id will kept as is
             transformers.add(new PatternReplacementTransformer(AuthenticationRawEvent.SRC_MACHINE_ID_FIELD_NAME,
                     AuthenticationTransformedEvent.SRC_MACHINE_ID_FIELD_NAME, MachineNameTransformer.ipPattern.pattern(), "", null, null));
-            transformers.add(new PatternReplacementTransformer(AuthenticationRawEvent.DST_MACHINE_ID_FIELD_NAME,
-                    AuthenticationTransformedEvent.DST_MACHINE_ID_FIELD_NAME, MachineNameTransformer.ipPattern.pattern(), "", null, null));
+            transformers.add(new PatternReplacementTransformer(AuthenticationRawEvent.RESOURCE_ID_FIELD_NAME,
+                    AuthenticationTransformedEvent.RESOURCE_ID_FIELD_NAME, MachineNameTransformer.ipPattern.pattern(), "", null, null));
 
             transformers.add(new OperationTypeCategoryTransformer(operationTypeToCategoryMapping.get(Schema.AUTHENTICATION.toString())));
         }

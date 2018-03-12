@@ -13,10 +13,10 @@ import java.util.Map;
 public class AuthenticationRawEvent extends AbstractInputDocument {
 
     public static final String SRC_MACHINE_ID_FIELD_NAME = "srcMachineId";
-    public static final String DST_MACHINE_ID_FIELD_NAME = "dstMachineId";
+    public static final String RESOURCE_ID_FIELD_NAME = "resourceId";
     public static final String SRC_MACHINE_NAME_FIELD_NAME = "srcMachineName";
-    public static final String DST_MACHINE_NAME_FIELD_NAME = "dstMachineName";
-    public static final String DST_MACHINE_DOMAIN_FIELD_NAME = "dstMachineDomain";
+    public static final String RESOURCE_NAME_FIELD_NAME = "resourceName";
+    public static final String RESOURCE_DOMAIN_FIELD_NAME = "resourceDomain";
     public static final String SITE_FIELD_NAME = "site";
 
     @Field(SRC_MACHINE_ID_FIELD_NAME)
@@ -25,14 +25,14 @@ public class AuthenticationRawEvent extends AbstractInputDocument {
     @Field(SRC_MACHINE_NAME_FIELD_NAME)
     private String srcMachineName;
 
-    @Field(DST_MACHINE_ID_FIELD_NAME)
-    private String dstMachineId;
+    @Field(RESOURCE_ID_FIELD_NAME)
+    private String resourceId;
 
-    @Field(DST_MACHINE_NAME_FIELD_NAME)
-    private String dstMachineName;
+    @Field(RESOURCE_NAME_FIELD_NAME)
+    private String resourceName;
 
-    @Field(DST_MACHINE_DOMAIN_FIELD_NAME)
-    private String dstMachineDomain;
+    @Field(RESOURCE_DOMAIN_FIELD_NAME)
+    private String resourceDomain;
 
     @Field(SITE_FIELD_NAME)
     private String site;
@@ -41,9 +41,9 @@ public class AuthenticationRawEvent extends AbstractInputDocument {
         super(other);
         this.srcMachineId = other.srcMachineId;
         this.srcMachineName = other.srcMachineName;
-        this.dstMachineId = other.dstMachineId;
-        this.dstMachineName = other.dstMachineName;
-        this.dstMachineDomain = other.dstMachineDomain;
+        this.resourceId = other.resourceId;
+        this.resourceName = other.resourceName;
+        this.resourceDomain = other.resourceDomain;
         this.site = other.site;
     }
 
@@ -53,22 +53,22 @@ public class AuthenticationRawEvent extends AbstractInputDocument {
     public AuthenticationRawEvent(Instant dateTime, String eventId, String dataSource, String userId, String operationType,
                                   List<String> operationTypeCategory, EventResult result, String userName,
                                   String userDisplayName, Map<String, String> additionalInfo, String srcMachineId,
-                                  String srcMachineName, String dstMachineId, String dstMachineName, String dstMachineDomain, String resultCode, String site) {
+                                  String srcMachineName, String resourceId, String resourceName, String resourceDomain, String resultCode, String site) {
         super(dateTime, eventId, dataSource, userId, operationType, operationTypeCategory, result, userName, userDisplayName, additionalInfo, resultCode);
         this.srcMachineId = srcMachineId;
         this.srcMachineName = srcMachineName;
-        this.dstMachineId = dstMachineId;
-        this.dstMachineName = dstMachineName;
-        this.dstMachineDomain = dstMachineDomain;
+        this.resourceId = resourceId;
+        this.resourceName = resourceName;
+        this.resourceDomain = resourceDomain;
         this.site = site;
     }
 
-    public String getDstMachineId() {
-        return dstMachineId;
+    public String getResourceId() {
+        return resourceId;
     }
 
-    public void setDstMachineId(String dstMachineId) {
-        this.dstMachineId = dstMachineId;
+    public void setResourceId(String resourceId) {
+        this.resourceId = resourceId;
     }
 
     public String getSrcMachineId() {
@@ -87,20 +87,20 @@ public class AuthenticationRawEvent extends AbstractInputDocument {
         this.srcMachineName = srcMachineName;
     }
 
-    public String getDstMachineName() {
-        return dstMachineName;
+    public String getResourceName() {
+        return resourceName;
     }
 
-    public void setDstMachineName(String dstMachineName) {
-        this.dstMachineName = dstMachineName;
+    public void setResourceName(String resourceName) {
+        this.resourceName = resourceName;
     }
 
-    public String getDstMachineDomain() {
-        return dstMachineDomain;
+    public String getResourceDomain() {
+        return resourceDomain;
     }
 
-    public void setDstMachineDomain(String dstMachineDomain) {
-        this.dstMachineDomain = dstMachineDomain;
+    public void setResourceDomain(String resourceDomain) {
+        this.resourceDomain = resourceDomain;
     }
 
     public String getSite() {
@@ -116,9 +116,9 @@ public class AuthenticationRawEvent extends AbstractInputDocument {
         return "AuthenticationRawEvent{" +
                 "srcMachineId='" + srcMachineId + '\'' +
                 ", srcMachineName='" + srcMachineName + '\'' +
-                ", dstMachineId='" + dstMachineId + '\'' +
-                ", dstMachineName='" + dstMachineName + '\'' +
-                ", dstMachineDomain='" + dstMachineDomain + '\'' +
+                ", resourceId='" + resourceId + '\'' +
+                ", resourceName='" + resourceName + '\'' +
+                ", resourceDomain='" + resourceDomain + '\'' +
                 ", eventId='" + eventId + '\'' +
                 ", dataSource='" + dataSource + '\'' +
                 ", userId='" + userId + '\'' +

@@ -50,7 +50,7 @@ public class AuthenticationRawEventTest {
     @Test
     public void testNoDstMachineId() {
         AuthenticationRawEvent authenticationRawEvent = createEvent();
-        authenticationRawEvent.setDstMachineId(null);
+        authenticationRawEvent.setResourceId(null);
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
 
@@ -61,7 +61,7 @@ public class AuthenticationRawEventTest {
     @Test
     public void testNoDstMachineName() {
         AuthenticationRawEvent authenticationRawEvent = createEvent();
-        authenticationRawEvent.setDstMachineName(null);
+        authenticationRawEvent.setResourceName(null);
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
 
@@ -72,7 +72,7 @@ public class AuthenticationRawEventTest {
     @Test
     public void testNoDstMachineDomain() {
         AuthenticationRawEvent authenticationRawEvent = createEvent();
-        authenticationRawEvent.setDstMachineDomain(null);
+        authenticationRawEvent.setResourceDomain(null);
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
 
@@ -84,7 +84,7 @@ public class AuthenticationRawEventTest {
     public void testSameSrcAndDstMachineId() {
         AuthenticationRawEvent authenticationRawEvent = createEvent();
         authenticationRawEvent.setSrcMachineId("id");
-        authenticationRawEvent.setDstMachineId("id");
+        authenticationRawEvent.setResourceId("id");
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
 
@@ -96,7 +96,7 @@ public class AuthenticationRawEventTest {
     public void testSrcAndDstMachineIdAreNull() {
         AuthenticationRawEvent authenticationRawEvent = createEvent();
         authenticationRawEvent.setSrcMachineId(null);
-        authenticationRawEvent.setDstMachineId(null);
+        authenticationRawEvent.setResourceId(null);
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
 
@@ -108,7 +108,7 @@ public class AuthenticationRawEventTest {
     public void testSrcAndDstMachineIdAreEmpty() {
         AuthenticationRawEvent authenticationRawEvent = createEvent();
         authenticationRawEvent.setSrcMachineId("");
-        authenticationRawEvent.setDstMachineId("");
+        authenticationRawEvent.setResourceId("");
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
 

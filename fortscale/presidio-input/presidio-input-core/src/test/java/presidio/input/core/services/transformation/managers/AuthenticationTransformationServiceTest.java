@@ -37,8 +37,8 @@ public class AuthenticationTransformationServiceTest {
 
         Assert.assertEquals("", ((AuthenticationTransformedEvent) transformedEvents.get(0)).getSrcMachineCluster());
         Assert.assertEquals("", ((AuthenticationTransformedEvent) transformedEvents.get(0)).getSrcMachineId());
-        Assert.assertEquals("", ((AuthenticationTransformedEvent) transformedEvents.get(0)).getDstMachineCluster());
-        Assert.assertEquals("", ((AuthenticationTransformedEvent) transformedEvents.get(0)).getDstMachineId());
+        Assert.assertEquals("", ((AuthenticationTransformedEvent) transformedEvents.get(0)).getResourceCluster());
+        Assert.assertEquals("", ((AuthenticationTransformedEvent) transformedEvents.get(0)).getResourceId());
     }
 
     @Test
@@ -50,8 +50,8 @@ public class AuthenticationTransformationServiceTest {
 
         Assert.assertEquals("nameSPBGDCW.prod.quest.corp", ((AuthenticationTransformedEvent) transformedEvents.get(0)).getSrcMachineCluster());
         Assert.assertEquals("idSPBGDCW01.prod.quest.corp", ((AuthenticationTransformedEvent) transformedEvents.get(0)).getSrcMachineId());
-        Assert.assertEquals("nameSPBGDCW.prod.quest.corp", ((AuthenticationTransformedEvent) transformedEvents.get(0)).getDstMachineCluster());
-        Assert.assertEquals("idSPBGDCW02.prod.quest.corp", ((AuthenticationTransformedEvent) transformedEvents.get(0)).getDstMachineId());
+        Assert.assertEquals("nameSPBGDCW.prod.quest.corp", ((AuthenticationTransformedEvent) transformedEvents.get(0)).getResourceCluster());
+        Assert.assertEquals("idSPBGDCW02.prod.quest.corp", ((AuthenticationTransformedEvent) transformedEvents.get(0)).getResourceId());
     }
 
     private AuthenticationRawEvent createAuthenticationEvent(Instant eventDate,
