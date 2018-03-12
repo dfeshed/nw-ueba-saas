@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
 import fortscale.utils.elasticsearch.config.EmbeddedElasticsearchInitialiser;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
+import fortscale.utils.test.runner.RunOnlyOnLinux;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +17,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -25,14 +25,16 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
-@RunWith(SpringRunner.class)
+@RunWith(value = RunOnlyOnLinux.class)
 @ContextConfiguration(classes = {ElasticMappingsTests.SpringConfig.class, ElasticsearchTestConfig.class})
 public class ElasticMappingsTests {
 
     private final String PRESIDIO_OUTPUT_ALERT = "presidio-output-alert";
     private final String INIT_PATH = "fortscale/presidio-rpm/src/main/python/installation-scripts/version/1_0/migration/init_elasticsearch.py";
     private final String INIT_RUN_COMMAND = "fortscale/presidio-rpm/src/main/python/installation-scripts/version/1_0/migration/init_elasticsearch.py --resources_path /home/presidio/presidio-core/el-extensions --run_type test";
+    private final long TIME_OUT_IN_SECONDS = 300;
 
 
     @Autowired
@@ -41,19 +43,11 @@ public class ElasticMappingsTests {
     @Value("${linux.mapping.path}")
     private String linuxMapping;
 
-    @Value("${windows.mapping.path}")
-    private String windosMapping;
 
     @Test
     public void IsMappingValidJsonFile() throws IOException {
-        String path;
-        if (System.getProperty("os.name").startsWith("Linux")) {
-            path = linuxMapping;
-        } else {
-            path = windosMapping;
-        }
         ObjectMapper mapper = new ObjectMapper();
-        File folder = new File(path);
+        File folder = new File(linuxMapping);
         List<File> list = getFilesFromFolder(folder);
         list.forEach(file -> {
             try {
@@ -81,25 +75,26 @@ public class ElasticMappingsTests {
 
     @Test
     public void runInitElastisearchScript() {
-        if (System.getProperty("os.name").startsWith("Linux")) {
-            File file = null;
-            try {
-                file = new File(INIT_PATH);
-                file.setExecutable(true, false);
-                Process p;
-                p = Runtime.getRuntime().exec(INIT_RUN_COMMAND);
-                p.waitFor();
-                if (p.exitValue() != 0) {
-                    Assert.fail("script fail");
-                }
-                elasticsearchOperations.indexExists(PRESIDIO_OUTPUT_ALERT);
-                Assert.assertTrue("presidio-output-alert index created.", true);
-            } catch (Exception e) {
-                Assert.fail("test fail " + e.toString());
-            } finally {
-                if (file != null) {
-                    file.setExecutable(false, false);
-                }
+        File file = null;
+        Process p = null;
+        try {
+            file = new File(INIT_PATH);
+            file.setExecutable(true, false);
+            p = Runtime.getRuntime().exec(INIT_RUN_COMMAND);
+            p.waitFor(TIME_OUT_IN_SECONDS, TimeUnit.SECONDS);
+            if (p.isAlive() || p.exitValue() != 0) {
+                Assert.fail("script fail");
+            }
+            elasticsearchOperations.indexExists(PRESIDIO_OUTPUT_ALERT);
+            Assert.assertTrue("presidio-output-alert index created.", true);
+        } catch (Exception e) {
+            Assert.fail("test fail " + e.toString());
+        } finally {
+            if (p != null && p.isAlive()) {
+                p.destroy();
+            }
+            if (file != null) {
+                file.setExecutable(false, false);
             }
         }
     }
@@ -112,7 +107,6 @@ public class ElasticMappingsTests {
         public static TestPropertiesPlaceholderConfigurer mappingsTestPropertiesConfigurer() {
             Properties properties = new Properties();
             properties.put("linux.mapping.path", "fortscale/presidio-rpm/src/main/resources/installation-scripts/version/1_0/elasticsearch");
-            properties.put("windows.mapping.path", "presidio-core\\fortscale\\presidio-rpm\\src\\main\\resources\\installation-scripts\\version\\1_0\\elasticsearch");
             properties.put("elasticsearch.port", EmbeddedElasticsearchInitialiser.EL_TEST_PORT);
             properties.put("elasticsearch.clustername", EmbeddedElasticsearchInitialiser.EL_TEST_CLUSTER);
             properties.put("elasticsearch.host", "localhost");
