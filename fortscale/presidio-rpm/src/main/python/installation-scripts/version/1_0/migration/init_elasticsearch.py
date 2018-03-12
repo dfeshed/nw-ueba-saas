@@ -38,6 +38,7 @@ ALIASES_FILE_NAME = 'aliases.json'
 TEMPLATE_FILE_NAME = 'template.json'
 CORE_ELASTIC_INIT = 'core'
 VENDOR_ELASTIC_INIT = 'vendor'
+TEST_ELASTIC_INIT = 'test'
 ELASTICSEARCH_TEMPLATE_NAME_POSITION_IN_TEMPLATE = 0
 INDEX_ALREADY_EXISTS_EXCEPTION = 'index_already_exists_exception'
 EVENT_TIME = {"presidio-monitoring": "timestamp", "presidio-monitoring-logical": "logicTime",
@@ -99,24 +100,27 @@ def set_mapping(indexJson, name):
 
 
 def update_kibana_index_from_file(folder, url):
-    for indexJson in os.listdir(folder):
-        jsonfilepath = os.path.join(folder, indexJson)
-        name = ''
-        try:
-            with open(jsonfilepath) as json_data:
-                obj = json.load(json_data)
-                if (type(obj) is list):
-                    for item in obj:
-                        data, name = convert_el_item(item)
+    if os.path.exists(folder):
+        for indexJson in os.listdir(folder):
+            jsonfilepath = os.path.join(folder, indexJson)
+            name = ''
+            try:
+                with open(jsonfilepath) as json_data:
+                    obj = json.load(json_data)
+                    if (type(obj) is list):
+                        for item in obj:
+                            data, name = convert_el_item(item)
+                            requesturl = (url + name)
+                            put_request(requesturl, data)
+                    else:
+                        data, name = convert_el_item(obj)
                         requesturl = (url + name)
                         put_request(requesturl, data)
-                else:
-                    data, name = convert_el_item(obj)
-                    requesturl = (url + name)
-                    put_request(requesturl, data)
-        except Exception as e:
-            logging.error("failed to send file=%s to elastic search url=%s", jsonfilepath, url)
-            raise e
+            except Exception as e:
+                logging.error("failed to send file=%s to elastic search url=%s", jsonfilepath, url)
+                raise e
+    else:
+        logging.info("Folder does not exists path=%s", folder)
 
 
 def fields_from_property(name, dic):
@@ -253,6 +257,8 @@ def init_elasticsearch(path):
 
 
 def main(path, rpm):
+    if rpm == TEST_ELASTIC_INIT:
+        MACHINE_URL = 'http://localhost:9350/'
     if rpm == CORE_ELASTIC_INIT:
         init_elasticsearch(path + INDEXES)
         update_kibana_index_from_file(path + INDEX_PATTERN, URL_KIBANA_PATTERNS)
@@ -269,7 +275,7 @@ parser.add_argument('--run_type', type=str, required=True, help='core/vendor')
 args = parser.parse_args()
 
 if __name__ == "__main__":
-    if args.run_type in [CORE_ELASTIC_INIT, VENDOR_ELASTIC_INIT]:
+    if args.run_type in [CORE_ELASTIC_INIT, VENDOR_ELASTIC_INIT, TEST_ELASTIC_INIT]:
         main(args.resources_path, args.run_type)
     else:
         msg = "Bad param={} ".format(args.run_type)
