@@ -58,8 +58,8 @@ public class SmartRecordConf {
 				Collections.emptyList() : excludedAggregationRecords;
 		this.defaultWeight = defaultWeight;
 		this.clusterConfs = clusterConfs;
-		this.trees = trees;
-		this.fullCorrelations = fullCorrelations;
+		this.trees = trees == null ? Collections.emptyList() : trees;
+		this.fullCorrelations = fullCorrelations == null ? Collections.emptyList() : fullCorrelations;
 		validateArguments();
 		initClusterConfs();
 		initAggregationRecordNames();
