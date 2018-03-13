@@ -1,10 +1,12 @@
 package presidio.input.core.spring;
 
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.utils.elasticsearch.config.ElasticsearchConfig;
+import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,7 +31,10 @@ import presidio.input.core.services.impl.InputExecutionServiceImpl;
 import presidio.input.core.services.impl.SchemaFactory;
 import presidio.input.core.services.transformation.TransformationService;
 import presidio.input.core.services.transformation.TransformationServiceImpl;
-import presidio.input.core.services.transformation.managers.*;
+import presidio.input.core.services.transformation.managers.ActiveDirectoryTransformationManager;
+import presidio.input.core.services.transformation.managers.AuthenticationTransformerManager;
+import presidio.input.core.services.transformation.managers.FileTransformerManager;
+import presidio.input.core.services.transformation.managers.PrintTransformerManager;
 import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
 import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 import presidio.output.sdk.api.OutputDataServiceSDK;
@@ -37,7 +42,7 @@ import presidio.output.sdk.impl.spring.OutputDataServiceConfig;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -46,23 +51,28 @@ import java.util.Map;
 @Import({PresidioInputPersistencyServiceConfig.class, AdeDataServiceConfig.class, OutputDataServiceConfig.class, PresidioMonitoringConfiguration.class, ElasticsearchConfig.class})
 public class InputCoreConfiguration {
 
+    private static final Logger logger = Logger.getLogger(InputCoreConfiguration.class);
+
     @Autowired
     private ApplicationContext applicationContext;
 
     @Value("${operation.type.category.mapping.file.path}")
     private String operationTypeCategoryMappingFilePath;
 
-    @Bean
-    public Map<Schema, Map<String, List<String>>> getOperationTypeToCategoryMapping() {
+    @Value("${operation.type.category.hierarchy.mapping.file.path}")
+    private String operationTypeCategoryHierarchyMappingFilePath;
+
+    public Map<Schema, Map<String, List<String>>> getMapping(String filePath) {
         ObjectMapper mapper = new ObjectMapper();
-        Map operationTypeToCategoryMapping = new HashMap();
+        Map<String, Map<Schema, Map<String, List<String>>>> mapping;
         try {
-            Resource resource = applicationContext.getResources(operationTypeCategoryMappingFilePath)[0];
-            operationTypeToCategoryMapping = mapper.readValue(resource.getFile(), Map.class);
-            return (Map<Schema, Map<String, List<String>>>) operationTypeToCategoryMapping.get("mapping");
+            Resource resource = applicationContext.getResources(filePath)[0];
+            mapping = mapper.readValue(resource.getFile(), new TypeReference<Map<String, Map<Schema, Map<String, List<String>>>>>() {
+            });
+            return mapping.get("mapping");
         } catch (IOException e) {
-            e.printStackTrace();
-            return operationTypeToCategoryMapping;
+            logger.error("error loading the {} mapping file", filePath, e);
+            return Collections.emptyMap();
         }
     }
 
@@ -105,19 +115,19 @@ public class InputCoreConfiguration {
     @Bean(name = "ACTIVE_DIRECTORY.transformer")
     @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public ActiveDirectoryTransformationManager activeDirectoryTransformationManager() {
-        return new ActiveDirectoryTransformationManager(getOperationTypeToCategoryMapping());
+        return new ActiveDirectoryTransformationManager(getMapping(operationTypeCategoryMappingFilePath), getMapping(operationTypeCategoryHierarchyMappingFilePath));
     }
 
     @Bean(name = "AUTHENTICATION.transformer")
     @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public AuthenticationTransformerManager authenticationTransformerManager() {
-        return new AuthenticationTransformerManager(getOperationTypeToCategoryMapping());
+        return new AuthenticationTransformerManager(getMapping(operationTypeCategoryMappingFilePath));
     }
 
     @Bean(name = "FILE.transformer")
     @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public FileTransformerManager fileTransformerManager() {
-        return new FileTransformerManager(getOperationTypeToCategoryMapping());
+        return new FileTransformerManager(getMapping(operationTypeCategoryMappingFilePath));
     }
 
     @Bean(name = "PRINT.transformer")
