@@ -23,7 +23,13 @@ export default handleActions({
     return handle(state, action, {
       start: (s) => s.set('isServicesLoading', true),
       failure: (s) => s.merge({ isServicesRetrieveError: true, isServicesLoading: false }),
-      success: (s) => s.merge({ serviceData: action.payload.data, isServicesLoading: false, isServicesRetrieveError: false })
+      success: (s) => {
+        const sortedServices = action.payload.data.sort((a, b) => {
+          return a.displayName.toLowerCase() > b.displayName.toLowerCase() ? 1 : -1;
+        });
+
+        return s.merge({ serviceData: sortedServices, isServicesLoading: false, isServicesRetrieveError: false });
+      }
     });
   },
 
