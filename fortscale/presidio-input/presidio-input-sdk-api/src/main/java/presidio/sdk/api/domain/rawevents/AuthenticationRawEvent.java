@@ -18,6 +18,8 @@ public class AuthenticationRawEvent extends AbstractInputDocument {
     public static final String DST_MACHINE_NAME_FIELD_NAME = "dstMachineName";
     public static final String DST_MACHINE_DOMAIN_FIELD_NAME = "dstMachineDomain";
     public static final String SITE_FIELD_NAME = "site";
+    public static final String COUNTRY_FIELD_NAME = "country";
+    public static final String CITY_FIELD_NAME = "city";
 
     @Field(SRC_MACHINE_ID_FIELD_NAME)
     private String srcMachineId;
@@ -37,6 +39,12 @@ public class AuthenticationRawEvent extends AbstractInputDocument {
     @Field(SITE_FIELD_NAME)
     private String site;
 
+    @Field(COUNTRY_FIELD_NAME)
+    private String country;
+
+    @Field(CITY_FIELD_NAME)
+    private String city;
+
     public AuthenticationRawEvent(AuthenticationRawEvent other) {
         super(other);
         this.srcMachineId = other.srcMachineId;
@@ -45,6 +53,8 @@ public class AuthenticationRawEvent extends AbstractInputDocument {
         this.dstMachineName = other.dstMachineName;
         this.dstMachineDomain = other.dstMachineDomain;
         this.site = other.site;
+        this.city = other.city;
+        this.country = other.country;
     }
 
     public AuthenticationRawEvent() {
@@ -53,7 +63,8 @@ public class AuthenticationRawEvent extends AbstractInputDocument {
     public AuthenticationRawEvent(Instant dateTime, String eventId, String dataSource, String userId, String operationType,
                                   List<String> operationTypeCategory, EventResult result, String userName,
                                   String userDisplayName, Map<String, String> additionalInfo, String srcMachineId,
-                                  String srcMachineName, String dstMachineId, String dstMachineName, String dstMachineDomain, String resultCode, String site) {
+                                  String srcMachineName, String dstMachineId, String dstMachineName, String dstMachineDomain,
+                                  String resultCode, String site, String country, String city) {
         super(dateTime, eventId, dataSource, userId, operationType, operationTypeCategory, result, userName, userDisplayName, additionalInfo, resultCode);
         this.srcMachineId = srcMachineId;
         this.srcMachineName = srcMachineName;
@@ -61,6 +72,8 @@ public class AuthenticationRawEvent extends AbstractInputDocument {
         this.dstMachineName = dstMachineName;
         this.dstMachineDomain = dstMachineDomain;
         this.site = site;
+        this.country = country;
+        this.city = city;
     }
 
     public String getDstMachineId() {
@@ -111,6 +124,22 @@ public class AuthenticationRawEvent extends AbstractInputDocument {
         this.site = site;
     }
 
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
     @Override
     public String toString() {
         return "AuthenticationRawEvent{" +
@@ -130,6 +159,8 @@ public class AuthenticationRawEvent extends AbstractInputDocument {
                 ", additionalInfo=" + additionalInfo +
                 ", dateTime=" + dateTime +
                 ", site=" + site +
+                ", city=" + city +
+                ", country=" + country +
                 '}';
     }
 }
