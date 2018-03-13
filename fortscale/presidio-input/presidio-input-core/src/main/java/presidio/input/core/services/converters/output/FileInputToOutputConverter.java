@@ -15,7 +15,7 @@ public class FileInputToOutputConverter implements InputOutputConverter {
         outputEvent.setDataSource(transformedEvent.getDataSource());
         outputEvent.setUserId(transformedEvent.getUserId());
         outputEvent.setOperationType(transformedEvent.getOperationType());
-        outputEvent.setOperationTypeCategories(transformedEvent.getOperationTypeCategory());
+        outputEvent.setOperationTypeCategories(transformedEvent.getOperationTypeCategories());
         outputEvent.setResult(transformedEvent.getResult());
         outputEvent.setUserName(transformedEvent.getUserName());
         outputEvent.setUserDisplayName(transformedEvent.getUserDisplayName());

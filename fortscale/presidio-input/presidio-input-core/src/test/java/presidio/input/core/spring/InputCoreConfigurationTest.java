@@ -29,7 +29,10 @@ import presidio.input.core.services.impl.InputExecutionServiceImpl;
 import presidio.input.core.services.impl.SchemaFactory;
 import presidio.input.core.services.transformation.TransformationService;
 import presidio.input.core.services.transformation.TransformationServiceImpl;
-import presidio.input.core.services.transformation.managers.*;
+import presidio.input.core.services.transformation.managers.ActiveDirectoryTransformationManager;
+import presidio.input.core.services.transformation.managers.AuthenticationTransformerManager;
+import presidio.input.core.services.transformation.managers.FileTransformerManager;
+import presidio.input.core.services.transformation.managers.PrintTransformerManager;
 import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
 import presidio.output.sdk.api.OutputDataServiceSDK;
 import presidio.output.sdk.impl.spring.OutputDataServiceConfig;
@@ -51,7 +54,7 @@ public class InputCoreConfigurationTest {
     private String operationTypeCategoryMappingFilePath;
 
     @Bean
-    public Map<Schema, Map<String, List<String>>> getOperationTypeToCategoryMapping() {
+    public Map<Schema, Map<String, List<String>>> getMapping() {
         return new HashMap<>();
     }
 
@@ -94,19 +97,19 @@ public class InputCoreConfigurationTest {
     @Bean(name = "ACTIVE_DIRECTORY.transformer")
     @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public ActiveDirectoryTransformationManager activeDirectoryTransformationManager() {
-        return new ActiveDirectoryTransformationManager(getOperationTypeToCategoryMapping());
+        return new ActiveDirectoryTransformationManager(getMapping(), getMapping());
     }
 
     @Bean(name = "AUTHENTICATION.transformer")
     @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public AuthenticationTransformerManager authenticationTransformerManager() {
-        return new AuthenticationTransformerManager(getOperationTypeToCategoryMapping());
+        return new AuthenticationTransformerManager(getMapping());
     }
 
     @Bean(name = "FILE.transformer")
     @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public FileTransformerManager fileTransformerManager() {
-        return new FileTransformerManager(getOperationTypeToCategoryMapping());
+        return new FileTransformerManager(getMapping());
     }
 
     @Bean(name = "PRINT.transformer")

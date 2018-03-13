@@ -156,7 +156,7 @@ public class PrintRawEvent extends AbstractInputDocument {
                 .append("dataSource", dataSource)
                 .append("userId", userId)
                 .append("operationType", operationType)
-                .append("operationTypeCategory", operationTypeCategory)
+                .append("operationTypeCategories", operationTypeCategories)
                 .append("result", result)
                 .append("userName", userName)
                 .append("userDisplayName", userDisplayName)
