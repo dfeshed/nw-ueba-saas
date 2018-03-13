@@ -121,7 +121,7 @@ public class SmartCorrelationServiceTest extends BaseAppTest {
      *
      */
     @Test
-    public void setOfFeaturesWithDiffWeightTest() {
+    public void smartRecordsCorrelationTest() {
 
         Instant start = Instant.EPOCH;
         Instant end = Instant.EPOCH.plus(Duration.ofHours(1));
