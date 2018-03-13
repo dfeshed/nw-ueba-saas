@@ -23,7 +23,7 @@ import java.util.*;
 )
 public class SmartRecordConf {
 	private String name;
-	private List<String> contexts;
+	private Map<String, List<String>> contextToFieldsMap;
 	private FixedDurationStrategy fixedDurationStrategy;
 	private boolean includeAllAggregationRecords;
 	private List<String> excludedAggregationRecords;
@@ -34,7 +34,7 @@ public class SmartRecordConf {
 	@JsonCreator
 	public SmartRecordConf(
 			@JsonProperty("name") String name,
-			@JsonProperty("contexts") List<String> contexts,
+			@JsonProperty("contextToFieldsMap") Map<String, List<String>> contextToFieldsMap,
 			@JsonProperty("fixedDurationStrategy") String fixedDurationStrategy,
 			@JsonProperty("includeAllAggregationRecords") boolean includeAllAggregationRecords,
 			@JsonProperty("excludedAggregationRecords") List<String> excludedAggregationRecords,
@@ -42,7 +42,7 @@ public class SmartRecordConf {
 			@JsonProperty("clusterConfs") List<ClusterConf> clusterConfs) {
 
 		this.name = name;
-		this.contexts = contexts;
+		this.contextToFieldsMap = contextToFieldsMap;
 		this.fixedDurationStrategy = FixedDurationStrategy.fromStrategyName(fixedDurationStrategy);
 		this.includeAllAggregationRecords = includeAllAggregationRecords;
 		this.excludedAggregationRecords = excludedAggregationRecords == null ?
@@ -58,8 +58,8 @@ public class SmartRecordConf {
 		return name;
 	}
 
-	public List<String> getContexts() {
-		return contexts;
+	public Map<String, List<String>> getContextToFieldsMap() {
+		return contextToFieldsMap;
 	}
 
 	public FixedDurationStrategy getFixedDurationStrategy() {
@@ -88,8 +88,12 @@ public class SmartRecordConf {
 
 	private void validateArguments() {
 		Assert.hasText(name, "The smart record conf name cannot be blank.");
-		Assert.notEmpty(contexts, "The list of contexts cannot be empty.");
-		contexts.forEach(context -> Assert.hasText(context, "The list of contexts cannot contain blanks."));
+		Assert.notEmpty(contextToFieldsMap, "The map from context to fields cannot be empty.");
+		contextToFieldsMap.forEach((context, fields) -> {
+			Assert.hasText(context, "A context cannot be blank.");
+			Assert.notEmpty(fields, "A context cannot be mapped to an empty list of fields.");
+			fields.forEach(field -> Assert.hasText(field, "A list of fields cannot contain blanks."));
+		});
 
 		if (includeAllAggregationRecords) {
 			Assert.isTrue(isDefaultWeightValid(),

@@ -11,7 +11,7 @@ import java.util.Map;
 
 /**
  * Aggregate one or more buckets containing a feature containing a mapping from features group to max value.
- * Such a mapping (of type Map<List<String>, Integer>) is created by AggrFeatureFeatureToMaxMapFunc.
+ * Such a mapping (of type Map<String, Double>) is created by AggrFeatureFeatureToMaxMapFunc.
  * If configured to aggregate more than one bucket, first the buckets' mappings will be aggregated into one mapping
  * such that every features group will be mapped to the maximal value among all the values of the instances of this
  * features group among the buckets' mappings.
@@ -36,9 +36,10 @@ public abstract class AbstractAggrFeatureEventFeatureToMaxMapFunc extends Abstra
 
     protected abstract AggrFeatureValue calculateFeaturesGroupToMaxValue(AggrFeatureValue aggrFeatureValue);
 
+    @SuppressWarnings("unchecked")
     private AggrFeatureValue calculateFeaturesGroupToMaxFromBucketAggrFeature(AggregatedFeatureEventConf aggrFeatureEventConf, List<Map<String, Feature>> multipleBucketsAggrFeaturesMapList) {
         String featureToPick = getFeatureToPick(aggrFeatureEventConf);
-        Map<String, Integer> featuresGroupToMax = new HashMap<>();
+        Map<String, Double> featuresGroupToMax = new HashMap<>();
         long total = 0;
         for (Map<String, Feature> aggrFeatures : multipleBucketsAggrFeaturesMapList) {
             Feature aggrFeature = aggrFeatures.get(featureToPick);
@@ -49,12 +50,11 @@ public abstract class AbstractAggrFeatureEventFeatureToMaxMapFunc extends Abstra
                 throw new IllegalArgumentException(String.format("Missing aggregated feature named %s of type %s containing %s",
                         featureToPick, AggrFeatureValue.class.getSimpleName(), Map.class.getSimpleName()));
             }
-            for (Map.Entry<String, Integer> featuresGroupAndMax : ((Map<String, Integer>) ((AggrFeatureValue) aggrFeature.getValue()).getValue()).entrySet()) {
-                Integer max = featuresGroupToMax.get(featuresGroupAndMax.getKey());
-                if (max == null) {
-                    max = Integer.MIN_VALUE;
-                }
-                featuresGroupToMax.put(featuresGroupAndMax.getKey(), Math.max(max, featuresGroupAndMax.getValue()));
+            for (Map.Entry<String, Double> featuresGroupAndMax : ((Map<String, Double>)((AggrFeatureValue)aggrFeature.getValue()).getValue()).entrySet()) {
+                String key = featuresGroupAndMax.getKey();
+                Double value = featuresGroupAndMax.getValue();
+                Double max = featuresGroupToMax.get(key);
+                featuresGroupToMax.put(key, max == null ? value : Math.max(max, value));
             }
             total += ((AggrFeatureValue) aggrFeature.getValue()).getTotal();
         }
@@ -64,8 +64,8 @@ public abstract class AbstractAggrFeatureEventFeatureToMaxMapFunc extends Abstra
 
     private String getFeatureToPick(AggregatedFeatureEventConf aggrFeatureEventConf) {
         List<String> featuresToPick = aggrFeatureEventConf.getAggregatedFeatureNamesMap().get(PICK_FIELD_NAME);
-        Assert.notNull(featuresToPick);
-        Assert.isTrue(featuresToPick.size() == 1);
+        Assert.notNull(featuresToPick, "featuresToPick cannot be null.");
+        Assert.isTrue(featuresToPick.size() == 1, "featuresToPick size must be 1.");
         return featuresToPick.get(0);
     }
 }

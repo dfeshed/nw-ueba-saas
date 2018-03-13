@@ -6,10 +6,7 @@ import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Lior Govrin
@@ -17,9 +14,13 @@ import java.util.List;
 public class SmartRecordConfTest {
 	private static ObjectMapper objectMapper = new ObjectMapper();
 	private static String DEFAULT_SMART_RECORD_CONF_STRING = getSmartRecordConfJson(
-			"testSmartRecord", getJsonArray("userId"), "fixed_duration_hourly", false, 0.25,
-			getJsonArray(getClusterConfJson(getJsonArray("testAggregationRecord"), 0.75)))
-			.toString();
+			"testSmartRecord",
+			Collections.singletonMap("userId", Collections.singletonList("userId")),
+			"fixed_duration_hourly",
+			false,
+			0.25,
+			getJsonArray(getClusterConfJson(getJsonArray("testAggregationRecord"), 0.75))
+	).toString();
 
 	@Test
 	public void should_fail_if_name_field_is_invalid() {
@@ -35,20 +36,30 @@ public class SmartRecordConfTest {
 	}
 
 	@Test
-	public void should_fail_if_contexts_field_is_invalid() {
+	public void should_fail_if_context_to_fields_map_field_is_invalid() {
 		JSONObject jsonObject = new JSONObject(DEFAULT_SMART_RECORD_CONF_STRING);
-		int numberOfExpectedExceptions = 0;
-		jsonObject.put("contexts", JSONObject.NULL);
-		if (doesDeserializationThrowException(jsonObject)) numberOfExpectedExceptions++;
-		jsonObject.put("contexts", getJsonArray());
-		if (doesDeserializationThrowException(jsonObject)) numberOfExpectedExceptions++;
-		jsonObject.put("contexts", getJsonArray(JSONObject.NULL));
-		if (doesDeserializationThrowException(jsonObject)) numberOfExpectedExceptions++;
-		jsonObject.put("contexts", getJsonArray(""));
-		if (doesDeserializationThrowException(jsonObject)) numberOfExpectedExceptions++;
-		jsonObject.put("contexts", getJsonArray("   "));
-		if (doesDeserializationThrowException(jsonObject)) numberOfExpectedExceptions++;
-		Assert.assertEquals(5, numberOfExpectedExceptions);
+		int numberOfActualExceptions = 0;
+		jsonObject.put("contextToFieldsMap", JSONObject.NULL);
+		if (doesDeserializationThrowException(jsonObject)) numberOfActualExceptions++;
+		jsonObject.put("contextToFieldsMap", Collections.emptyMap());
+		if (doesDeserializationThrowException(jsonObject)) numberOfActualExceptions++;
+		jsonObject.put("contextToFieldsMap", Collections.singletonMap(null, getJsonArray("userId")));
+		if (doesDeserializationThrowException(jsonObject)) numberOfActualExceptions++;
+		jsonObject.put("contextToFieldsMap", Collections.singletonMap("", getJsonArray("userId")));
+		if (doesDeserializationThrowException(jsonObject)) numberOfActualExceptions++;
+		jsonObject.put("contextToFieldsMap", Collections.singletonMap("   ", getJsonArray("userId")));
+		if (doesDeserializationThrowException(jsonObject)) numberOfActualExceptions++;
+		jsonObject.put("contextToFieldsMap", Collections.singletonMap("userId", null));
+		if (doesDeserializationThrowException(jsonObject)) numberOfActualExceptions++;
+		jsonObject.put("contextToFieldsMap", Collections.singletonMap("userId", Collections.emptyList()));
+		if (doesDeserializationThrowException(jsonObject)) numberOfActualExceptions++;
+		jsonObject.put("contextToFieldsMap", Collections.singletonMap("userId", Collections.singletonList(null)));
+		if (doesDeserializationThrowException(jsonObject)) numberOfActualExceptions++;
+		jsonObject.put("contextToFieldsMap", Collections.singletonMap("userId", Collections.singletonList("")));
+		if (doesDeserializationThrowException(jsonObject)) numberOfActualExceptions++;
+		jsonObject.put("contextToFieldsMap", Collections.singletonMap("userId", Collections.singletonList("   ")));
+		if (doesDeserializationThrowException(jsonObject)) numberOfActualExceptions++;
+		Assert.assertEquals(10, numberOfActualExceptions);
 	}
 
 	@Test
@@ -196,7 +207,7 @@ public class SmartRecordConfTest {
 
 	private static JSONObject getSmartRecordConfJson(
 			String name,
-			JSONArray contexts,
+			Map<String, List<String>> contextToFieldsMap,
 			String fixedDurationStrategy,
 			boolean includeAllAggregationRecords,
 			Double defaultWeight,
@@ -204,7 +215,7 @@ public class SmartRecordConfTest {
 
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("name", name);
-		jsonObject.put("contexts", contexts);
+		jsonObject.put("contextToFieldsMap", contextToFieldsMap);
 		jsonObject.put("fixedDurationStrategy", fixedDurationStrategy);
 		jsonObject.put("includeAllAggregationRecords", includeAllAggregationRecords);
 		jsonObject.put("defaultWeight", defaultWeight);

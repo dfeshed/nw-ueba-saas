@@ -124,9 +124,6 @@ public class FeatureBucketsServiceTest {
 
     /**
      * Compare test results to expected result
-     *
-     * @param featureBucketsExpectedResults
-     * @param featureBuckets
      */
     public void checkExpectedResults(Map<String, FeatureBucket> featureBucketsExpectedResults, List<FeatureBucket> featureBuckets) {
         for (FeatureBucket featureBucket : featureBuckets) {
@@ -167,8 +164,6 @@ public class FeatureBucketsServiceTest {
 
     /**
      * Build expected results
-     *
-     * @return
      */
     public Map<String, FeatureBucket> buildExpectedResult() {
         Map<String, FeatureBucket> featureBuckets = new HashMap<>();
@@ -177,8 +172,8 @@ public class FeatureBucketsServiceTest {
         featureBucket1.setBucketId(BUCKET_ID1);
         Map<String, Feature> aggregatedFeatures = new HashMap<>();
         long total = 1;
-        Map<String, Integer> aggrResult = new HashMap<>();
-        aggrResult.put("", 80);
+        Map<String, Double> aggrResult = new HashMap<>();
+        aggrResult.put("", 80.0);
         AggrFeatureValue aggrFeatureValue = new AggrFeatureValue(aggrResult, total);
         Feature feature = new Feature("highest_date_time_score", aggrFeatureValue);
         aggregatedFeatures.put("highest_date_time_score", feature);
@@ -190,7 +185,7 @@ public class FeatureBucketsServiceTest {
         aggregatedFeatures = new HashMap<>();
         total = 2;
         aggrResult = new HashMap<>();
-        aggrResult.put("", 70);
+        aggrResult.put("", 70.0);
         aggrFeatureValue = new AggrFeatureValue(aggrResult, total);
         feature = new Feature("highest_date_time_score", aggrFeatureValue);
         aggregatedFeatures.put("highest_date_time_score", feature);

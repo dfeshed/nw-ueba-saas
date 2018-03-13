@@ -26,10 +26,10 @@ public class AggrFeatureFeatureToMaxRelatedFuncTestUtils {
 
 
     public static Feature createAggrFeature(String featureName, Pair<String[], Integer>... featureValuesAndNumbers) {
-        Map<String, Integer> featuresGroupToMax = new HashMap<>();
+        Map<String, Double> featuresGroupToMax = new HashMap<>();
         for (Pair<String[], Integer> featureValuesAndNumber : featureValuesAndNumbers) {
             List<String> featureGroupedByValues = Arrays.asList(featureValuesAndNumber.getLeft());
-            featuresGroupToMax.put(StringUtils.join(featureGroupedByValues,"# # #"), featureValuesAndNumber.getRight());
+            featuresGroupToMax.put(StringUtils.join(featureGroupedByValues, "# # #"), featureValuesAndNumber.getRight().doubleValue());
         }
         return new Feature(featureName, new AggrFeatureValue(featuresGroupToMax, (long) featuresGroupToMax.size()));
     }
@@ -49,4 +49,3 @@ public class AggrFeatureFeatureToMaxRelatedFuncTestUtils {
         return multipleBucketsAggrFeaturesMapList;
     }
 }
-

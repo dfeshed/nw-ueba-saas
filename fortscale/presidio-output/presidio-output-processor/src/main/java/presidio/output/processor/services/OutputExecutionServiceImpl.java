@@ -18,12 +18,7 @@ import presidio.output.processor.services.user.UsersAlertData;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by shays on 17/05/2017.
@@ -186,10 +181,9 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
     }
 
-
     @Override
     public void applyRetentionPolicy(Instant endDate) throws Exception {
-        List<Schema> schemas = createListOfSchema();
+        List<Schema> schemas = Arrays.asList(Schema.values());
 
         schemas.forEach(schema -> {
             logger.debug("Start retention clean to mongo for schema {}", schema);
@@ -199,7 +193,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     }
 
     private void updateUsersScoreFromDeletedAlerts(List<Alert> cleanedAlerts) {
-        Set<User> usersToUpdate = new HashSet<User>();
+        Set<User> usersToUpdate = new HashSet<>();
         cleanedAlerts.forEach(alert -> {
             if (!usersToUpdate.contains(alert.getUserId())) {
                 usersToUpdate.add(userService.findUserById(alert.getUserId()));
@@ -209,16 +203,9 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         usersToUpdate.forEach(user -> {
             userService.recalculateUserAlertData(user);
         });
-        userService.save(new ArrayList<User>(usersToUpdate));
+        userService.save(new ArrayList<>(usersToUpdate));
     }
 
-    private List<Schema> createListOfSchema() {
-        List<Schema> schemas = new ArrayList<>();
-        schemas.add(Schema.AUTHENTICATION);
-        schemas.add(Schema.FILE);
-        schemas.add(Schema.ACTIVE_DIRECTORY);
-        return schemas;
-    }
 
     @Override
     public void cleanAll() throws Exception {

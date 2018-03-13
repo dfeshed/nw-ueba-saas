@@ -53,7 +53,7 @@ public class GaussianModelScorer extends AbstractModelTerminalScorer {
                     ".calculateScore expects to get a feature of type " + FeatureNumericValue.class.getSimpleName());
         }
 
-        double value = (double)((FeatureNumericValue)feature.getValue()).getValue();
+        double value = ((FeatureNumericValue)feature.getValue()).getValue().doubleValue();
         return algorithm.calculateScore(value, (IContinuousDataModel)model, (GaussianPriorModel)additionalModels.get(0));
     }
 }

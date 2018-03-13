@@ -129,12 +129,12 @@ public class PrintEnrichedEvent extends EnrichedEvent {
         this.srcFileExtension = srcFileExtension;
     }
 
-    public Boolean getSrcDriveShared() {
+    public Boolean getIsSrcDriveShared() {
         return isSrcDriveShared;
     }
 
-    public void setSrcDriveShared(Boolean srcDriveShared) {
-        isSrcDriveShared = srcDriveShared;
+    public void setIsSrcDriveShared(Boolean isSrcDriveShared) {
+        this.isSrcDriveShared = isSrcDriveShared;
     }
 
     public Long getFileSize() {

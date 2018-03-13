@@ -11,6 +11,7 @@ import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 public class AggregatedFeatureEventsConfService extends AslConfigurationService {
 	private static final Logger logger = Logger.getLogger(AggregatedFeatureEventsConfService.class);
@@ -31,7 +32,7 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 			String aggregatedFeatureEventsAdditionalConfigurationPath,
 			BucketConfigurationService bucketConfigurationService) {
 
-		this.objectMapper= ObjectMapperProvider.getInstance().getDefaultObjectMapper();
+		this.objectMapper = ObjectMapperProvider.getInstance().getDefaultObjectMapper();
 		this.aggregatedFeatureEventsBaseConfigurationPath = aggregatedFeatureEventsBaseConfigurationPath;
 		this.aggregatedFeatureEventsOverridingConfigurationPath = aggregatedFeatureEventsOverridingConfigurationPath;
 		this.aggregatedFeatureEventsAdditionalConfigurationPath = aggregatedFeatureEventsAdditionalConfigurationPath;
@@ -102,23 +103,49 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 	}
 
 	public Collection<AggregatedFeatureEventConf> getAggregatedFeatureEventConfs(
-			List<String> contextFieldNames, FixedDurationStrategy fixedDurationStrategy) {
+			FixedDurationStrategy fixedDurationStrategy, Map<String, List<String>> contextToFieldsMap) {
 
-		Set<String> requiredContextFieldNames = new HashSet<>(contextFieldNames);
-		String requiredStrategyName = fixedDurationStrategy.toStrategyName();
+		String strategyName = fixedDurationStrategy.toStrategyName();
+		Collection<List<String>> fieldsCollection = contextToFieldsMap.values();
 		Collection<AggregatedFeatureEventConf> aggregatedFeatureEventConfs = new LinkedList<>();
 
 		for (AggregatedFeatureEventConf aggregatedFeatureEventConf : aggregatedFeatureEventConfList) {
 			FeatureBucketConf featureBucketConf = aggregatedFeatureEventConf.getBucketConf();
-			Set<String> actualContextFieldNames = new HashSet<>(featureBucketConf.getContextFieldNames());
-			String actualStrategyName = featureBucketConf.getStrategyName();
 
-			if (actualContextFieldNames.equals(requiredContextFieldNames) && actualStrategyName.equals(requiredStrategyName)) {
-				aggregatedFeatureEventConfs.add(aggregatedFeatureEventConf);
+			if (featureBucketConf.getStrategyName().equals(strategyName)) {
+				Predicate<List<String>> predicate = fields ->
+						checkConsistencyWithContextFieldNames(fields, featureBucketConf.getContextFieldNames());
+
+				if (fieldsCollection.stream().allMatch(predicate)) {
+					aggregatedFeatureEventConfs.add(aggregatedFeatureEventConf);
+				}
 			}
 		}
 
 		return aggregatedFeatureEventConfs;
+	}
+
+	/**
+	 * Checks if the given list of fields is consistent with the given list of context field names, meaning that
+	 * "fields" contains exactly one representative from "contextFieldNames". If "fields" contains more than one
+	 * representative from "contextFieldNames", then "fields" is ambiguous, and it is not possible to determine
+	 * which field should be chosen. In this case an {@link IllegalArgumentException} is thrown.
+	 *
+	 * @param fields            A list of fields.
+	 * @param contextFieldNames A list of context field names.
+	 * @return False if "fields" contains no representatives from "contextFieldNames", and true if it contains one.
+	 */
+	public static boolean checkConsistencyWithContextFieldNames(List<String> fields, List<String> contextFieldNames) {
+		switch (fields.stream().mapToInt(field -> contextFieldNames.contains(field) ? 1 : 0).sum()) {
+			case 0:
+				return false;
+			case 1:
+				return true;
+			default:
+				throw new IllegalArgumentException(String.format("Ambiguous list of fields contains more than " +
+						"one representative from list of context field names: fields = %s, contextFieldNames = %s.",
+						fields.toString(), contextFieldNames.toString()));
+		}
 	}
 
 	private void fillBucketConfs() {

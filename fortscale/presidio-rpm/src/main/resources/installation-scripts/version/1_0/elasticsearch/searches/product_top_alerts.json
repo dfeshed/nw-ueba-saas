@@ -1,0 +1,32 @@
+[
+  {
+    "_id": "886c77d0-a29b-11e7-bf94-db45269a46a7",
+    "_type": "search",
+    "_source": {
+      "title": "Top Alerts",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "score",
+        "classifications",
+        "severity",
+        "userName",
+        "userTags",
+        "indicatorsNum",
+        "startDate",
+        "id",
+        "endDate",
+        "indicatorsNames",
+        "userId"
+      ],
+      "sort": [
+        "score",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"presidio-output-alert\",\"highlightAll\":true,\"version\":true,\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"filter\":[]}"
+      }
+    }
+  }
+]

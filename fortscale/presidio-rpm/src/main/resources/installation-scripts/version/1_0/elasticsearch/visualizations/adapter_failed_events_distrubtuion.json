@@ -1,0 +1,17 @@
+[
+  {
+    "_id": "7830d200-eb3c-11e7-8347-719599248f4a",
+    "_type": "visualization",
+    "_source": {
+      "title": "Adapter: Failed Events Distrubtuion",
+      "visState": "{\"title\":\"Adapter: Failed Events Distrubtuion\",\"type\":\"pie\",\"params\":{\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"right\",\"isDonut\":false},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"value.FAILED_EVENTS\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"tags.SCHEMA\",\"size\":5,\"order\":\"desc\",\"orderBy\":\"1\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "savedSearchId": "07d29640-eaf8-11e7-b967-4f5023bf8943",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[]}"
+      }
+    }
+  }
+]
