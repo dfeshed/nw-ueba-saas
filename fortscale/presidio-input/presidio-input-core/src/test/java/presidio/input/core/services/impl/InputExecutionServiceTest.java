@@ -119,7 +119,7 @@ public class InputExecutionServiceTest {
     }
 
     @Test
-    public void testRun_isSrcDriveSharedFiledIsNull_shouldKeepNullValue(){
+    public void testRun_isSrcDriveSharedFiledIsNull_shouldKeepNullValue() {
         FileRawEvent fileRawEvent = createFileRawEvent(Instant.parse("2017-12-10T14:00:00.000Z"));
         fileRawEvent.setIsSrcDriveShared(null);
         fileRawEvent.setIsDstDriveShared(null);
@@ -144,7 +144,7 @@ public class InputExecutionServiceTest {
     }
 
     @Test
-    public void testRun_isSrcDriveSharedFiledIsTrue_shouldKeepOriginalValue(){
+    public void testRun_isSrcDriveSharedFiledIsTrue_shouldKeepOriginalValue() {
         FileRawEvent fileRawEvent = createFileRawEvent(Instant.parse("2017-12-10T14:00:00.000Z"));
         fileRawEvent.setIsSrcDriveShared(true);
         fileRawEvent.setIsDstDriveShared(true);
@@ -177,7 +177,7 @@ public class InputExecutionServiceTest {
                 "dataSource", "userId", "operationType", null,
                 EventResult.SUCCESS, "userName", "userDisplayName", null,
                 "srcMachineId", "srcMachineName", "dstMachineId",
-                "dstMachineName", "dstMachineDomain", "resultCode", "site");
+                "dstMachineName", "dstMachineDomain", "resultCode", "site", "country", "city");
 
         return authenticationRawEvent;
     }
