@@ -27,7 +27,9 @@
         <rpm-maven-plugin.workflows-upgrade-script-path>
             ${rpm-maven-plugin.directory}/installation-scripts/utils/deploy_presidio_workflows_package.sh
         </rpm-maven-plugin.workflows-upgrade-script-path>
-        <tomcat_webapps_directory>/opt/tomcat/webapps</tomcat_webapps_directory>
+        <tomcat_root_directory>/opt/tomcat</tomcat_root_directory>
+        <tomcat_webapps_directory>${tomcat_root_directory}/webapps</tomcat_webapps_directory>
+        <tomcat_bin_directory>${tomcat_root_directory}/bin</tomcat_bin_directory>
         <airflow.deployment_target_directory>${rpm-maven-plugin.deployment_target_directory}/airflow
         </airflow.deployment_target_directory>
         <presidio-workflows-src.location>${project.parent.build.directory}/../../presidio-workflows/presidio
@@ -117,6 +119,20 @@
                                 <source>
                                     <location>
                                         ${project.parent.build.directory}/../presidio-rpm/src/main/resources/installation-scripts/version/1_0/elasticsearch
+                                    </location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <!-- Tomcat environment settings-->
+                            <directoryIncluded>false</directoryIncluded>
+                            <directory>${tomcat_bin_directory}</directory>
+                            <username>presidio</username>
+                            <groupname>presidio</groupname>
+                            <sources>
+                                <source>
+                                    <location>
+                                        ${project.parent.build.directory}/../presidio-rpm/src/main/resources/installation-scripts/version/1_0/configurations/setenv.sh
                                     </location>
                                 </source>
                             </sources>
