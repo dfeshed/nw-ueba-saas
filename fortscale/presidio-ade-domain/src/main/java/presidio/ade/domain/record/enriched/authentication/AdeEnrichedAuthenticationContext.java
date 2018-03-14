@@ -13,6 +13,8 @@ public class AdeEnrichedAuthenticationContext extends BaseEnrichedContext {
     private String dstMachineId;
     private String srcMachineId;
     private String site;
+    private String city;
+    private String country;
 
     public AdeEnrichedAuthenticationContext() {
         super();
@@ -28,6 +30,8 @@ public class AdeEnrichedAuthenticationContext extends BaseEnrichedContext {
         this.srcMachineNameRegexCluster = enrichedAuthenticationRecord.getSrcMachineNameRegexCluster();
         this.srcMachineId = enrichedAuthenticationRecord.getSrcMachineId();
         this.site = enrichedAuthenticationRecord.getSite();
+        this.city = enrichedAuthenticationRecord.getCity();
+        this.country = enrichedAuthenticationRecord.getCountry();
     }
 
     public String getUserId() {
@@ -92,5 +96,21 @@ public class AdeEnrichedAuthenticationContext extends BaseEnrichedContext {
 
     public void setSite(String site) {
         this.site = site;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 }

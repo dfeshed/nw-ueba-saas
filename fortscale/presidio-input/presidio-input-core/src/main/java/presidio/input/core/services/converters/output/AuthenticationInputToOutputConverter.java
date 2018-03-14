@@ -28,6 +28,8 @@ public class AuthenticationInputToOutputConverter implements InputOutputConverte
         outputEvent.setDstMachineDomain(transformedEvent.getDstMachineDomain());
         outputEvent.setResultCode(transformedEvent.getResultCode());
         outputEvent.setSite(transformedEvent.getSite());
+        outputEvent.setCity(transformedEvent.getCity());
+        outputEvent.setCountry(transformedEvent.getCountry());
         return outputEvent;
     }
 }
