@@ -15,13 +15,8 @@
       {{/each}}
       {{#each ip.ipv6 as |ipv6|}}
         {{#if (eq ipv6 ip.ipv6.firstObject)}} <span class="ip-divider">/</span> {{/if}}
-        {{#pivot-to-investigate
-          serviceList=serviceList
-          metaName='machineIpv6'
-          metaValue=ipv6
-          showAsRightClick=true}}
-          {{ipv6}}{{#unless (eq ipv6 ip.ipv6.lastObject)}}, {{/unless}}
-        {{/pivot-to-investigate}}
+        {{ipv6}}
+        {{#unless (eq ipv6 ip.ipv6.lastObject)}}, {{/unless}}
       {{/each}}
       <span class="ip-divider">|</span> MAC Address: {{ip.macAddress}}
     </hbox>
