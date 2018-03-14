@@ -6,15 +6,17 @@ import {
   RECON_DISPLAYED_HEADER,
   HAS_TOOLTIP
 } from 'recon/utils/recon-event-header';
+import { headerErrorMessage } from 'recon/reducers/header/selectors';
 import layout from './template';
 
-const stateToComputed = ({ recon: { visuals, header, data, dictionaries } }) => ({
-  isHeaderOpen: visuals.isHeaderOpen,
-  headerItems: header.headerItems,
-  headerError: header.headerError,
-  contextMenuItems: data.contextMenuItems,
-  queryInputs: data.queryInputs,
-  language: dictionaries.language
+const stateToComputed = ({ recon }) => ({
+  headerErrorMessage: headerErrorMessage(recon),
+  isHeaderOpen: recon.visuals.isHeaderOpen,
+  headerItems: recon.header.headerItems,
+  headerError: recon.header.headerError,
+  contextMenuItems: recon.data.contextMenuItems,
+  queryInputs: recon.data.queryInputs,
+  language: recon.dictionaries.language
 });
 
 const EventHeaderComponent = Component.extend({

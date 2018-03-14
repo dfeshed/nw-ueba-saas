@@ -3,7 +3,7 @@
   {{recon-event-actionbar}}
 
   {{#if headerError}}
-    {{rsa-panel-message message=(t 'recon.error.generic')}}
+    {{rsa-panel-message message=headerErrorMessage}}
   {{else}}
     {{#if isHeaderOpen}}
       <div class="header-data" test-id="headerData">

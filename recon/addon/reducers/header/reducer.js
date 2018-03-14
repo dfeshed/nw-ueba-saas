@@ -6,6 +6,7 @@ import * as ACTION_TYPES from 'recon/actions/types';
 
 const headerInitialState = {
   headerError: null,
+  headerErrorCode: null,
   headerItems: null,
   headerLoading: null
 };
@@ -17,7 +18,10 @@ const headerReducer = handleActions({
     return handle(state, action, {
       start: (/* s */) => Immutable.from(headerInitialState).set('headerLoading', true),
       finish: (s) => s.set('headerLoading', false),
-      failure: (s) => s.set('headerError', true),
+      failure: (s) => s.merge({
+        headerError: true,
+        headerErrorCode: action.payload.code
+      }),
       success: (s) => s.set('headerItems', Immutable.from(action.payload.headerItems))
     });
   }
