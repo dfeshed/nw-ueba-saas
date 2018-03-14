@@ -37,20 +37,17 @@
   &--left {
     right: 0;
 
-    .context-menu--sub {
-      left: auto;
-      right: 100%;
-    }
-
     .context-menu__item {
       padding: rsa-whitespace(less);
       &--parent {
-        padding-right: rsa-whitespace(more);
+        .context-menu__item__label {
+          padding-left: rsa-whitespace();
+        }
         &:after {
           font-family: 'nw-icon-library-all-1';
-          content: $rsa-icon-arrow-right-12-filled;
-          left: initial;
-          right: rsa-whitespace(least);
+          content: $rsa-icon-arrow-left-12-filled;
+          left: rsa-whitespace(less);
+          right: initial;
         }
       }
     }

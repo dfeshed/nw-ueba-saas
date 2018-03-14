@@ -337,4 +337,13 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
   max-height: 25rem;
   overflow: auto;
   max-width: 15rem;
+  padding-top: rsa-whitespace(less);
+
+  .rsa-form-label {
+    margin: 0;
+  }
+
+  input {
+    margin-bottom: rsa-whitespace();
+  }
 }

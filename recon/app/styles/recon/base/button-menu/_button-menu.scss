@@ -9,7 +9,7 @@
   list-style: none;
   background-color: background-color(primary, darkest);
   background-clip: padding-box;
-  @include border(1px, solid, secondary);
+  @include border(1px, solid, primary, lightest);
   box-shadow: 1px 1px 2px background-color(primary, darkest);
 
   &.expanded {
@@ -45,6 +45,8 @@
   }
 }
 
-.expanded .rsa-split-dropdown {
-  background: background-color(secondary, darker);
+.expanded {
+  .rsa-split-dropdown {
+    background: background-color(secondary, darker);
+  }
 }
