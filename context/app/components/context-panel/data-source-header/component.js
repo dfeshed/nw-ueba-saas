@@ -1,0 +1,1 @@
+export { default } from 'context/components/context-panel/data-source-header/component';

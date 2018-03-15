@@ -1,17 +1,15 @@
 <section class={{bodyStyleClass}}>
-  {{#each dataSourceList as |dataSource|}}
-    {{#if (eq dataSource.displayType 'grid')}}
-      {{context-panel/dynamic-grid dSDetails=dataSource.details}}
-    {{else if (eq dataSource.displayType 'table')}}
-      {{context-panel/data-table dSDetails=dataSource.details}}
-    {{else if (eq dataSource.displayType 'endpoint')}}
-      {{context-panel/endpoint dataSource=dataSource.details}}
-    {{else if (eq dataSource.displayType 'liveConnect')}}
-      {{context-panel/live-connect
-        model=model
-        contextData=contextData
-        activeTabName=activeTabName
-      }}
-    {{/if}}
-  {{/each}}
+  {{#if (eq activedataSource.displayType 'grid')}}
+    {{context-panel/dynamic-grid dataSourceDetails=activedataSource.details}}
+  {{else if (eq activedataSource.displayType 'table')}}
+    {{context-panel/data-table dataSourceDetails=activedataSource.details}}
+  {{else if (eq activedataSource.displayType 'endpoint')}}
+    {{context-panel/endpoint dataSource=activedataSource.details}}
+  {{else if (eq activedataSource.displayType 'liveConnect')}}
+    {{context-panel/live-connect
+      model=model
+      contextData=contextData
+      activeTabName=activeTabName
+    }}
+  {{/if}}
 </section>

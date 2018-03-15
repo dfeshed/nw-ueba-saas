@@ -1,4 +1,4 @@
-{{context-panel/ds-header contextData=contextData dSDetails=liveConnectDsDetails}}
+{{context-panel/data-source-header contextData=contextData dataSourceDetails=liveConnectDsDetails}}
 
 {{#if liveConnectError}}
   <div class="rsa-context-panel__liveconnect__field">{{t 'context.lc.errorMsg' error=liveConnectError}}</div>
@@ -38,7 +38,7 @@
           <div class="rsa-context-panel__liveconnect__related-entity-error">
             {{empty-related-entity-msg columns.dataStore (get contextData columns.header) i18n}}
           </div>
-          {{context-panel/data-table contextData=(get contextData columns.dataStore) dSDetails=columns}}
+          {{context-panel/data-table contextData=(get contextData columns.dataStore) dataSourceDetails=columns}}
         {{/if}}
       {{/each}}
     </div>

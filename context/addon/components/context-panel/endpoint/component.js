@@ -3,7 +3,7 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 
-const stateToComputed = ({ context }) => ({
+const stateToComputed = ({ context: { context } }) => ({
   lookupData: context.lookupData
 });
 

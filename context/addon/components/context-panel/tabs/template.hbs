@@ -1,5 +1,5 @@
 <div class="rsa-nav-tab-group">
-  {{#each statefulTabsActive as |tab|}}
+  {{#each tabsCurrentState as |tab|}}
     {{#rsa-content-tethered-panel-trigger  panel=(concat 'tabs' tab.field) class=tab.tabClass}}
       {{#rsa-nav-tab isCompact=true isActive=tab.isActive click=(action 'activate' tab.field)}}
         {{#if tab.loadingIcon}}

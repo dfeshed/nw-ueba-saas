@@ -8,8 +8,8 @@ import riskLevels from './risk-levels';
 import confidenceLevels from './confidence-levels';
 import { debug, warn } from '@ember/debug';
 
-const stateToComputed = ({ context }) => ({
-  activeTabName: context.activeTabName
+const stateToComputed = ({ context: { tabs: { activeTabName } } }) => ({
+  activeTabName
 });
 
 const liveConnectTabs = ['LiveConnect-Ip', 'LiveConnect-Domain', 'LiveConnect-File'];

@@ -11,11 +11,11 @@ import { isEmpty } from '@ember/utils';
  * Toolbar items are dynamic and same varies based on meta. So if user select IP then Add/Remove from List, Pivote to Endpoint and Pivot to Investigate will bedisplayed.
  * For User only Add/Remove from List and Pivot to investigate will be visible.
  */
-const stateToComputed = ({ context }) => ({
-  lookupKey: context.lookupKey,
-  headerButtons: context.headerButtons,
-  meta: context.meta,
-  entitiesMetas: context.entitiesMetas
+const stateToComputed = ({ context: { context: { lookupKey, meta, entitiesMetas }, tabs: { headerButtons } } }) => ({
+  lookupKey,
+  headerButtons,
+  meta,
+  entitiesMetas
 });
 
 const ActionbarComponent = Component.extend({

@@ -2,25 +2,19 @@ import { connect } from 'ember-redux';
 import Component from '@ember/component';
 import layout from './template';
 import computed from 'ember-computed-decorators';
+import { getActiveDataSource } from 'context/reducers/tabs/selectors';
 
 
-const stateToComputed = ({ context }) => ({
-  dataSources: context.dataSources,
-  activeTabName: context.activeTabName,
-  meta: context.meta,
-  lookupData: context.lookupData
+const stateToComputed = ({ context: { context: { lookupData, meta }, tabs } }) => ({
+  activedataSource: getActiveDataSource(tabs),
+  activeTabName: tabs.activeTabName,
+  meta,
+  lookupData
 });
 
 const BodyComponent = Component.extend({
   layout,
   classNames: 'rsa-context-panel__body',
-
-  @computed('dataSources', 'activeTabName')
-  dataSourceList(dataSources, activeTabName) {
-    return dataSources.filter((dataSource) => {
-      return activeTabName === dataSource.dataSourceType;
-    });
-  },
 
   @computed('activeTabName', 'model.contextData.liveConnectData')
   bodyStyleClass: (activeTabName, liveConnectData) => {

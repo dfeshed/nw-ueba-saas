@@ -28,8 +28,9 @@ const getData = (lookupData, { dataSourceGroup, sortColumn, sortOrder }) => {
   if (!lookupData || !lookupData[dataSourceGroup] || isEmpty(lookupData[dataSourceGroup].resultList)) {
     return;
   }
+  const data = lookupData[dataSourceGroup].resultList.asMutable();
   if (sortColumn) {
-    lookupData[dataSourceGroup].resultList.sort((a, b) => {
+    data.sort((a, b) => {
       const aProp = get(a, sortColumn);
       const bProp = get(b, sortColumn);
       if (aProp < bProp) {
@@ -41,7 +42,7 @@ const getData = (lookupData, { dataSourceGroup, sortColumn, sortOrder }) => {
       }
     });
   }
-  return lookupData[dataSourceGroup].resultList;
+  return data;
 };
 
 const getTimeWindow = (dsData, i18n) => {
@@ -84,8 +85,7 @@ const getTabs = (meta, dataSources) => {
     const dataSourceDetails = dataSources.find((dataSource) => dataSource.dataSourceType === tab.dataSourceType);
     return {
       ...tab,
-      isConfigured: dataSourceDetails ? dataSourceDetails.isConfigured : false,
-      panelId: `tabs${tab.field.camelize()}`
+      isConfigured: dataSourceDetails ? dataSourceDetails.isConfigured : false
     };
   });
 };

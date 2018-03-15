@@ -1,17 +1,17 @@
 <div class='rsa-context-panel__endpoint__machines'>
-  {{context-panel/dynamic-grid dSDetails=dataSource.Machines.details}}
+  {{context-panel/dynamic-grid dataSourceDetails=dataSource.Machines.details}}
 </div>
 <div class='rsa-context-panel__endpoint__data-table'>
   <div class='col-xs-7'>
     <div class="rsa-context-panel__grid__heading-text">
       {{t dataSource.Modules.details.title}} {{moduleHeader}}
     </div>
-    {{context-panel/data-table dSDetails=dataSource.Modules.details}}
+    {{context-panel/data-table dataSourceDetails=dataSource.Modules.details}}
   </div>
   <div class='col-xs-5'>
     <div class="rsa-context-panel__grid__heading-text">
       {{t dataSource.IOC.details.title}}
     </div>
-    {{context-panel/data-table dSDetails=dataSource.IOC.details}}
+    {{context-panel/data-table dataSourceDetails=dataSource.IOC.details}}
   </div>
 </div>

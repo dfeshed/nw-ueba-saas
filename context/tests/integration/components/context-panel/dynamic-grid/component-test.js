@@ -1,6 +1,6 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import dSDetails from 'context/config/machines';
+import dataSourceDetails from 'context/config/machines';
 import * as ACTION_TYPES from 'context/actions/types';
 
 
@@ -90,8 +90,8 @@ test('Testing grid rendered', function(assert) {
   });
 
   this.set('contextData', contextData);
-  this.set('dSDetails', dSDetails);
-  this.render(hbs `{{context-panel/dynamic-grid contextData=contextData dSDetails=dSDetails }}`);
+  this.set('dataSourceDetails', dataSourceDetails);
+  this.render(hbs `{{context-panel/dynamic-grid contextData=contextData dataSourceDetails=dataSourceDetails }}`);
 
   assert.equal(this.$('.value').length, 10, 'Testing count of fields rendered');
   assert.equal(this.$('.rsa-context-panel__grid a').length, 1, 'Testing count of link fields rendered');

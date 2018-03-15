@@ -53,17 +53,15 @@ const findDataSource = (dataSources, meta) => {
   }));
 };
 /**
- * Subscribe to notifications. Notifications tell us when any file downloads are finished/failed.
- * Eventually we will have a standalone notifications UI outside of recon, but for now it's all handled internally in recon.
- * @public
+ * This method will be called from initializeContextPanel for pulling data sources details.
+ * @private
  */
-const getDataSources = (meta) => {
+const _getDataSources = (meta) => {
   return (dispatch) => {
     fetchData(
       {},
       'data-sources',
       false,
-      // some job has finished and is ready for download
       ({ data }) => {
         const dataSources = data.map((v) => {
           if (v.enabled) {
@@ -82,7 +80,6 @@ const getDataSources = (meta) => {
           });
         }
       },
-      // some job failed
       ({ meta }) => {
         const error = (meta && meta.message) ? meta.message : 'admin.error';
         dispatch({
@@ -100,7 +97,7 @@ const initializeContextPanel = ({ entityId, entityType }) => {
       type: ACTION_TYPES.INITIALIZE_CONTEXT_PANEL,
       payload: { lookupKey: entityId, meta: entityType }
     });
-    dispatch(getDataSources(entityType));
+    dispatch(_getDataSources(entityType));
     fetchData(
       {
         filter: [
@@ -110,14 +107,12 @@ const initializeContextPanel = ({ entityId, entityType }) => {
       },
       'context',
       true,
-      // some job has finished and is ready for download
       ({ data }) => {
         dispatch({
           type: ACTION_TYPES.GET_LOOKUP_DATA,
           payload: data
         });
       },
-      // some job failed
       ({ meta }) => {
         const error = (meta && meta.message) ? meta.message : 'admin.error';
         dispatch({
@@ -140,7 +135,6 @@ const getContextEntitiesMetas = ({ data }) => {
 
 export {
   updateActiveTab,
-  getDataSources,
   initializeContextPanel,
   restoreDefault,
   getContextEntitiesMetas

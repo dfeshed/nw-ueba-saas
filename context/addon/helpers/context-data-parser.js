@@ -24,9 +24,9 @@ const _enrichADFields = (resultList) => {
 const _enrichListData = (contextDataForDS, dataSourceData, firstDSEntry) => {
   const results = dataSourceData.resultList;
   if (firstDSEntry) {
-    contextDataForDS.resultList = [];
+    contextDataForDS = { ...contextDataForDS, resultList: [] };
   }
-  if (dataSourceData.errorMessage && isEmpty(contextDataForDS.resultList)) {
+  if (dataSourceData.errorMessage && isEmpty(results)) {
     contextDataForDS.resultList = [];
     contextDataForDS.errorMessage = dataSourceData.errorMessage;
   }
@@ -42,7 +42,7 @@ const _enrichListData = (contextDataForDS, dataSourceData, firstDSEntry) => {
 
 const _enrichDataSourceData = (contextDataForDS, dataSourceData) => {
   const firstDSEntry = !contextDataForDS;
-  contextDataForDS = contextDataForDS || dataSourceData;
+  contextDataForDS = (firstDSEntry) ? dataSourceData : contextDataForDS.asMutable();
   switch (dataSourceData.dataSourceGroup) {
     case 'Modules': {
       if (dataSourceData.resultMeta && dataSourceData.resultMeta.iocScore_gte) {
@@ -64,12 +64,13 @@ const _enrichDataSourceData = (contextDataForDS, dataSourceData) => {
 
 const _populateContextData = (dataSourceData, lookupData) => {
   const contextDataForDS = lookupData[dataSourceData.dataSourceGroup];
-  lookupData[dataSourceData.dataSourceGroup] = _enrichDataSourceData(contextDataForDS ? contextDataForDS : null, dataSourceData);
+  lookupData = lookupData.set(dataSourceData.dataSourceGroup, _enrichDataSourceData(contextDataForDS ? contextDataForDS : null, dataSourceData));
+  return lookupData;
 };
 
 const _updateHostCountForMachine = (contextDataForDS, dataSourceData) => {
   if (dataSourceData.Modules && dataSourceData.Modules.resultMeta && dataSourceData.Machines && !isEmpty(dataSourceData.Machines.resultList)) {
-    set(dataSourceData.Machines.resultList[0], 'total_modules_count', dataSourceData.Modules.resultMeta.total_modules_count);
+    dataSourceData.Machines.resultList[0].set('total_modules_count', dataSourceData.Modules.resultMeta.total_modules_count);
   }
 };
 
@@ -77,10 +78,9 @@ export function contextDataParser([data, [lookupData]]) {
   if (!data) {
     return;
   }
-  lookupData = lookupData || {};
   data.forEach((dataSourceData) => {
     if (dataSourceData.dataSourceGroup) {
-      _populateContextData(dataSourceData, lookupData);
+      lookupData = _populateContextData(dataSourceData, lookupData);
       _updateHostCountForMachine(dataSourceData, lookupData);
     } else {
       warn(`DataSource group for ${dataSourceData.dataSourceName} is not configured`, { id: 'context.helpers.context-data-parser' });

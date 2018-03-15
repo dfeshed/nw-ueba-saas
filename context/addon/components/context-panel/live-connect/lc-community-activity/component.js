@@ -1,5 +1,4 @@
 import Component from '@ember/component';
-import { set } from '@ember/object';
 import { isEmpty } from '@ember/utils';
 import computed from 'ember-computed-decorators';
 import ContextHelper from 'context/util/util';
@@ -70,7 +69,7 @@ export default Component.extend({
           };
         }
         if (tagsToHighlight[tag.value]) {
-          set(tag, 'highlight', true); // set highlight flag for indicated tags
+          tag.set('highlight', true); // set highlight flag for indicated tags
           categories[tag.category].tags.unshift(tag); // If highlighted, add to the start
         } else {
           categories[tag.category].tags.push(tag);

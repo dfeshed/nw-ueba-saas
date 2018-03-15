@@ -8,10 +8,10 @@
       {{get item column.field}}
     </span>
   {{else if (eq column.dataType 'datetime')}}
-    <span title={{getDateTime}}>{{getDateTime}}</span>
+    <span title={{dateTime}}>{{dateTime}}</span>
   {{else if (eq column.dataType 'link')}}
     <div class="rsa-context-panel__context-data-table link">
-      <a href={{getLink}} target="_blank">
+      <a href={{link}} target="_blank">
         <span title={{get item column.field}}>{{get item column.field}}</span>
       </a>
     </div>

@@ -12,16 +12,20 @@ export default Component.extend({
   timezone: service(),
 
   @computed('item', 'column')
-  getDateTime(item, column) {
-    const dateTimeFormat = this.get('dateFormat.selected.format') ? `${this.get('dateFormat.selected.format')} ${this.get('timeFormat.selected.format')}` : 'YYYY/MM/DD HH:mm:ss';
-    const dateTimeString = moment(get(item, column.field)).locale(this.get('i18n.locale') || 'en').tz(this.get('timezone.selected.zoneId') || 'UTC').format(dateTimeFormat.replace(/.SSS/, ''));
+  dateTime(item, column) {
+    const selectedDateFormat = this.get('dateFormat.selected.format');
+    const selectedTimeFormat = this.get('timeFormat.selected.format');
+    const timeZoneId = this.get('timezone.selected.zoneId') || 'UTC';
+    const dateTimeFormat = selectedDateFormat ? `${selectedDateFormat} ${selectedTimeFormat}` : 'YYYY/MM/DD HH:mm:ss';
+    const dateTimeString = moment(get(item, column.field))
+                          .locale(this.get('i18n.locale') || 'en')
+                          .tz(timeZoneId).format(dateTimeFormat.replace(/.SSS/, ''));
     const timeAgo = moment(get(item, column.field)).locale(this.get('i18n.locale') || 'en').fromNow();
-
     return `${dateTimeString} (${timeAgo})`;
   },
 
   @computed('item', 'column')
-  getLink(item, column) {
+  link(item, column) {
     return window.location.origin.concat(column.path.replace('{0}', get(item, column.linkField || column.field)));
   }
 });

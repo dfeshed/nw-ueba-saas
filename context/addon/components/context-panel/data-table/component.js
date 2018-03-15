@@ -5,20 +5,24 @@ import Component from '@ember/component';
 import { getData, getSortedData } from 'context/util/context-data-modifier';
 import { set } from '@ember/object';
 
-const stateToComputed = ({ context }) => ({
-  lookupData: context.lookupData,
-  dataSources: context.dataSources
+const stateToComputed = ({ context: { context } }) => ({
+  lookupData: context.lookupData
 });
 
 const DataTableComponent = Component.extend({
   layout,
-  classNames: 'rsa-context-panel__context-data-table',
+  tagName: 'div',
+  currentSort: null,
+  classNames: ['rsa-context-panel__context-data-table', 'rsa-context-panel__context-data-table__panel'],
 
-  @computed('contextData', 'lookupData.[]', 'dSDetails')
-  getDataSourceData: (contextData, [lookupData], dSDetails) => contextData ? contextData.resultList : getData(lookupData, dSDetails),
+  @computed('contextData', 'lookupData.[]', 'dataSourceDetails')
+  dataSourceData: (contextData, [lookupData], dataSourceDetails) => contextData ? contextData.resultList : getData(lookupData, dataSourceDetails),
 
-  @computed('getDataSourceData', 'currentSort.icon', 'currentSort.field')
-  getDataSourceSortedData: (getDataSourceData, icon, field) => getSortedData(getDataSourceData, icon, field),
+  @computed('dataSourceDetails')
+  columnsData: ({ columns }) => columns && columns.asMutable ? columns.asMutable() : columns,
+
+  @computed('dataSourceData', 'currentSort.icon', 'currentSort.field')
+  dataSourceSortedData: (dataSourceData, icon, field) => getSortedData(dataSourceData, icon, field),
 
   actions: {
     sort(column) {

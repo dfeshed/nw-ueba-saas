@@ -1,22 +1,22 @@
-{{context-panel/ds-header contextData=contextData dSDetails=dSDetails}}
-{{#if (gt getDataSourceData.length 0)}}
+{{context-panel/data-source-header contextData=contextData dataSourceDetails=dataSourceDetails}}
+{{#if hasDataSourceData}}
   <div class="rsa-context-panel__grid__box">
-    {{#each getDataSourceData as |data index|}}
-      <hbox class={{dSDetails.class}}>
-        {{#if dSDetails.riskScore}}
+    {{#each dataSourceData as |data index|}}
+      <hbox class={{dataSourceDetails.class}}>
+        {{#if dataSourceDetails.riskScore}}
           <vbox xs='2'>
             <div class="rsa-context-panel__grid__risk-badge__default">
               {{rsa-content-badge-score
                 label=(t 'context.iiocScore')
-                score=(get data dSDetails.riskScore.field)
-                style=(get (risk-score-to-badge-level (get data dSDetails.riskScore.field) dSDetails.dataSourceGroup) 'badgeLevel')
+                score=(get data dataSourceDetails.riskScore.field)
+                style=(get (risk-score-to-badge-level (get data dataSourceDetails.riskScore.field) ddataSourceDetails.dataSourceGroup) 'badgeLevel')
                 invertColor=true
               }}
             </div>
           </vbox>
         {{/if}}
         <vbox>
-          {{#each dSDetails.rows as |rowsData|}}
+          {{#each dataSourceDetails.rows as |rowsData|}}
             <hbox>
               {{#each rowsData.cell as |cellData|}}
                 {{#if (eq cellData.dataType 'link')}}
@@ -41,10 +41,10 @@
                   </vbox>
                 {{else if (eq cellData.dataType 'group')}}
                   <vbox xs='3' class="rsa-context-panel__grid__host-details__group-data-header">
-                    {{context-panel/dynamic-grid/group 
-                      groupData=(get data cellData.field) 
-                      title=cellData.title 
-                      index=index 
+                    {{context-panel/dynamic-grid/group
+                      groupData=(get data cellData.field)
+                      title=cellData.title
+                      index=index
                       displayType=cellData.displayType
                     }}
                   </vbox>
@@ -56,9 +56,9 @@
               {{/each}}
             </hbox>
           {{/each}}
-        </vbox>    
+        </vbox>
       </hbox>
-      {{#if (gt getDataSourceData.length 1)}}
+      {{#if (gt dataSourceData.length 1)}}
         <div class="rsa-context-panel__grid__border"></div>
       {{/if}}
     {{/each}}

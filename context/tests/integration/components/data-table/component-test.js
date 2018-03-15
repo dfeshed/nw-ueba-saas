@@ -1,6 +1,6 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import dSDetails from 'context/config/im-incidents';
+import dataSourceDetails from 'context/config/im-incidents';
 
 const contextData = { resultList: [
   {
@@ -44,8 +44,8 @@ moduleForComponent('data-table', 'Integration | Component | data-table', {
 
 test('it renders', function(assert) {
   this.set('contextData', contextData);
-  this.set('dSDetails', dSDetails);
-  this.render(hbs`  {{context-panel/data-table contextData=contextData dSDetails=dSDetails}}`);
+  this.set('dataSourceDetails', dataSourceDetails);
+  this.render(hbs`  {{context-panel/data-table contextData=contextData dataSourceDetails=dataSourceDetails}}`);
 
   assert.equal(this.$('.rsa-data-table-header-cell').length, 8, 'Testing count of incidents header cells');
 

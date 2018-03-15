@@ -16,11 +16,11 @@ import { isArray } from '@ember/array';
 import { once, next, schedule, later } from '@ember/runloop';
 import EmberObject from '@ember/object';
 
-const stateToComputed = ({ context }) => ({
-  dataSources: context.dataSources,
-  lookupData: context.lookupData,
-  errorMessage: context.errorMessage,
-  activeTabName: context.activeTabName
+const stateToComputed = ({ context: { context: { errorMessage, lookupData }, tabs: { dataSources, activeTabName } } }) => ({
+  dataSources,
+  lookupData,
+  errorMessage,
+  activeTabName
 });
 
 const dispatchToActions = {
@@ -143,7 +143,7 @@ const ContextComponent = Component.extend({
   _checkNullForInfo(entityType, obj) {
     entityType.checkNullFields.forEach((field) => {
       if (isEmpty(obj[entityType.info][field])) {
-        obj[entityType.info][field] = this.get('i18n').t('context.lc.blankField');
+        obj[entityType.info].set(field, this.get('i18n').t('context.lc.blankField'));
       }
     });
   },
@@ -151,7 +151,7 @@ const ContextComponent = Component.extend({
   _checkNullForReputation(entityType, obj) {
     liveConnectObj.reputationCheckNullFields.forEach((field) => {
       if (isEmpty(obj[entityType.Reputation][field])) {
-        obj[entityType.Reputation][field] = '0';
+        obj[entityType.Reputation].set(field, '0');
       }
     });
   },
