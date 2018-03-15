@@ -36,6 +36,7 @@ public class EmbeddedElasticsearchInitialiser {
                     .withStartTimeout(2, TimeUnit.MINUTES)
                     .withSetting(PopularProperties.TRANSPORT_TCP_PORT, EL_TEST_PORT)
                     .withSetting(PopularProperties.CLUSTER_NAME, EL_TEST_CLUSTER)
+                    .withSetting("node.max_local_storage_nodes", 3)
                     .withCleanInstallationDirectoryOnStop(true)
                     .build()
                     .start();
