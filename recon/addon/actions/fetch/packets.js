@@ -1,4 +1,4 @@
-import { streamRequest } from 'streaming-data/services/data-access/requests';
+import { lookup } from 'ember-dependency-lookup';
 import { buildBaseQuery, addStreaming } from 'recon/actions/util/query-util';
 import {
   batchDataHandler,
@@ -28,9 +28,10 @@ export const fetchPacketData = (
   dispatchBatch,
   dispatchError
 ) => {
+  const request = lookup('service:request');
   const basicQuery = buildBaseQuery(endpointId, eventId);
   const streamingQuery = addStreaming(basicQuery, packetsPageSize, undefined, undefined, packetsRowIndex);
-  streamRequest({
+  request.streamRequest({
     method: 'stream',
     modelName: 'reconstruction-packet-data',
     query: streamingQuery,

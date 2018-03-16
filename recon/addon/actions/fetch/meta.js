@@ -1,6 +1,5 @@
 import RSVP from 'rsvp';
-
-import { streamRequest } from 'streaming-data/services/data-access/requests';
+import { lookup } from 'ember-dependency-lookup';
 import {
   addStreaming,
   addSessionQueryFilter,
@@ -9,12 +8,13 @@ import {
 } from '../util/query-util';
 
 const fetchMeta = ({ endpointId, eventId }) => {
+  const request = lookup('service:request');
   let query = endpointFilter(endpointId);
   query = addStreaming(query);
   query = addSessionQueryFilter(query, eventId);
   query = addCatchAllTimeRange(query);
   return new RSVP.Promise((resolve, reject) => {
-    streamRequest({
+    request.streamRequest({
       method: 'stream',
       modelName: 'core-event',
       query,

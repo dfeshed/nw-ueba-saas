@@ -1,4 +1,4 @@
-import { promiseRequest } from 'streaming-data/services/data-access/requests';
+import { lookup } from 'ember-dependency-lookup';
 
 const _addFilter = (query, field, value, valueKey = 'value') => {
   if (!query.filter) {
@@ -86,7 +86,8 @@ const addMaxPackets = (_query, maxPackets = 2500) => {
 
 const basicPromiseRequest = (endpointId, eventId, modelName, streamOptions = {}) => {
   const query = buildBaseQuery(endpointId, eventId);
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'query',
     modelName,
     query,

@@ -1,7 +1,8 @@
-import { streamRequest } from 'streaming-data/services/data-access/requests';
+import { lookup } from 'ember-dependency-lookup';
 
 function fetchNotifications(dispatchInit, dispatchPage, dispatchError) {
-  streamRequest({
+  const request = lookup('service:request');
+  request.streamRequest({
     method: 'stream',
     modelName: 'investigate-notification',
     query: {},

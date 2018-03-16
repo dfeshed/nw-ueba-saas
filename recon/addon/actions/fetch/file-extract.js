@@ -1,4 +1,4 @@
-import { promiseRequest } from 'streaming-data/services/data-access/requests';
+import { lookup } from 'ember-dependency-lookup';
 import {
   endpointFilter,
   addFileTypeFilter,
@@ -24,6 +24,7 @@ import {
  * @public
  */
 export default function fetchExtractJobId(endpointId, eventId, fileType, filename, filenames, eventType) {
+  const request = lookup('service:request');
   let query = endpointFilter(endpointId);
   query = addSessionIdsFilter(query, [ eventId ]);
   query = addFilenameFilter(query, filename);
@@ -34,7 +35,7 @@ export default function fetchExtractJobId(endpointId, eventId, fileType, filenam
     query = addFileSelectionsFilter(query, filenames);
   }
 
-  return promiseRequest({
+  return request.promiseRequest({
     method: 'query',
     modelName: 'reconstruction-extract-job-id',
     query

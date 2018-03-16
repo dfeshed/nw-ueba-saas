@@ -1,4 +1,4 @@
-import { streamRequest } from 'streaming-data/services/data-access/requests';
+import { lookup } from 'ember-dependency-lookup';
 import {
   buildBaseQuery,
   addStreaming,
@@ -29,11 +29,12 @@ export const fetchTextData = (
   dispatchBatch,
   dispatchError
 ) => {
+  const request = lookup('service:request');
   const basicQuery = buildBaseQuery(endpointId, eventId);
   const streamingQuery = addStreaming(basicQuery, undefined, TEXT_BATCH_SIZE);
   const maxPacketsQuery = addMaxPackets(streamingQuery, maxPacketsForText);
   const decodeQuery = addDecode(maxPacketsQuery, decode);
-  streamRequest({
+  request.streamRequest({
     method: 'stream',
     modelName: 'reconstruction-text-data',
     query: decodeQuery,
