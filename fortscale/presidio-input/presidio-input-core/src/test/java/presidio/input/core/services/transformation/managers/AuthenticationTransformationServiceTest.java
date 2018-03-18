@@ -75,7 +75,7 @@ public class AuthenticationTransformationServiceTest {
                 dstMachineId,
                 dstMachineName,
                 "dstMachineDomain",
-                "resultCode", "site");
+                "resultCode", "site", "country", "city");
     }
 
 }

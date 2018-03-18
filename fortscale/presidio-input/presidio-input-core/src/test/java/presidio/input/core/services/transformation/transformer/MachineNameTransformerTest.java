@@ -5,7 +5,6 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import presidio.input.core.services.transformation.managers.AuthenticationTransformerManager;
-import presidio.input.core.services.transformation.transformer.MachineNameTransformer;
 import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.domain.rawevents.AuthenticationRawEvent;
 import presidio.sdk.api.domain.transformedevents.AuthenticationTransformedEvent;
@@ -34,7 +33,8 @@ public class MachineNameTransformerTest {
                 "dataSource", "userId", "operationType", null,
                 EventResult.SUCCESS, "userName", "userDisplayName", null,
                 "srcMachineId", "dwef043.fortscale.com", "dstMachineId",
-                "dstMachineName", "dstMachineDomain", "resultCode", "site");
+                "dstMachineName", "dstMachineDomain", "resultCode", "site",
+                "country", "city");
         List<AbstractInputDocument> transformedEvents = MachineNameTransformer.transform(Arrays.asList(new AuthenticationTransformedEvent(authRawEvent)));
 
         Assert.assertEquals("dwef.fortscale.com", ((AuthenticationTransformedEvent) transformedEvents.get(0)).getSrcMachineCluster());
@@ -55,7 +55,8 @@ public class MachineNameTransformerTest {
                 "dataSource", "userId", "operationType", null,
                 EventResult.SUCCESS, "userName", "userDisplayName", null,
                 "srcMachineId", "10.20.3.40", "dstMachineId",
-                "dstMachineName", "dstMachineDomain", "resultCode", "site");
+                "dstMachineName", "dstMachineDomain", "resultCode", "site",
+                "country", "city");
         List<AbstractInputDocument> transformedEvents = machineNameTransformer.transform(Arrays.asList(new AuthenticationTransformedEvent(authRawEvent)));
 
         Assert.assertEquals(StringUtils.EMPTY, ((AuthenticationTransformedEvent) transformedEvents.get(0)).getSrcMachineCluster());
@@ -76,7 +77,8 @@ public class MachineNameTransformerTest {
                 "dataSource", "userId", "operationType", null,
                 EventResult.SUCCESS, "userName", "userDisplayName", null,
                 "srcMachineId", null, "dstMachineId",
-                "dstMachineName", "dstMachineDomain", "resultCode", "site");
+                "dstMachineName", "dstMachineDomain", "resultCode", "site",
+                "country", "city");
         List<AbstractInputDocument> transformedEvents = machineNameTransformer.transform(Arrays.asList(new AuthenticationTransformedEvent(authRawEvent)));
 
         Assert.assertNull(((AuthenticationTransformedEvent) transformedEvents.get(0)).getSrcMachineCluster());
