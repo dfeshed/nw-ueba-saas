@@ -168,6 +168,12 @@ def kill_zombie_sub_dag_task_instances():
 
 
 def kill_task_instances_stuck_in_up_for_retry():
+    """
+    In order to kill a task instance that is stuck in up for retry, this function actually kills the parent task
+    instance, that should be in the "running" state. Killing a running sub-DAG task instance reschedules that instance
+    and all of its unfinished children.
+    :return: None.
+    """
     max_datetime_to_mark_as_stuck = datetime.now() - delta_to_mark_as_stuck
     execution_date_to_full_task_ids_to_kill_dictionary = {}
 
@@ -211,6 +217,7 @@ def kill_zombie_processes():
             msg = 'Killing zombie process. pid = {}, dag_id = {}, task_id = {}, execution_date = {}, reason = {}.' \
                 .format(pid, dag_id, task_id, execution_date, reason)
             logging.info(msg)
+            logging.info('Raw systemctl line = {}.'.format(' '.join(phrases)))
             subprocess.Popen(['kill', pid])
 
 
