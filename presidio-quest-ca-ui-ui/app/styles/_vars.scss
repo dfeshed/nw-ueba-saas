@@ -1,0 +1,57 @@
+$textColor: #333;
+
+$headerHeight: 40px;
+$headerBackground: #f0f7f8;
+$headerColor: #004f8f;
+
+$mainPadding: 23px;
+$mainMenuHeight: 35px;
+$mainMenuBackground: #0694a5;
+$mainMenuColor: $headerColor;
+
+$dashboardNavWidth: 280px;
+$dashboardNavWidth_1280: 200px;
+
+$sidebarWidth: 0;
+$separator: solid 1px #e3e3e3;
+
+$linkColor: #04b3f5;
+$linkColorHover: rgb(218, 218, 213);
+
+$activeColor: #00deff;
+$activeColorHover: rgba(0, 222, 255, 0.51);
+
+$warningColor: #F19100;
+
+$widgetTitleColor: Black;
+$widgetControlButtonColor: #45777A;;
+$widgetControlButtonHoverColor: #65a0a3;
+$widgetBorderColor: #cecece;
+$widgetBorder: solid 1px $widgetBorderColor;
+
+$listHoverBackgroundColor: rgba(0, 176, 244, 0.16);
+$listActiveBackgroundColor: rgba(0, 176, 244, 0.5);
+
+$widgetHeaderBackgroundColor: #D9E6E7;
+$widgetHorizontalPadding: 15px;
+$widgetBottomPadding: 8px;
+$widgetTopPadding: 8px;
+$widgetHeaderPadding: 0 $widgetHorizontalPadding;
+$widgetHeaderHeight: 32px;
+$widgetMarginBottom: 20px;
+
+$headerBtnColor: #0F8B1A;
+$headerBtnHoverColor: #0f9f1a;
+
+$dashboardHeaderHeight: 36px;
+$innerDashboardBorderColor: #ddd;
+
+$severityLowColor : #61aa02;
+$severityMediumColor : #69BDBD;
+$severityHighColor : #FD7F1B;
+$severityCriticalColor : #D32F2F;
+
+
+$basicFontSize: 15px;
+
+$headerFontSize: #{$basicFontSize + 1}

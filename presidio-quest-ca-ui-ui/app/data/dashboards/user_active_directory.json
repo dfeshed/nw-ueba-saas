@@ -1,0 +1,32 @@
+{
+    "dashboardId": "user_active_directory",
+    "columns": [
+        {
+            "widgets": [
+                {
+                    "widgetId": "user_score_history",
+                    "title": "User Profile Score History - Last 7 Days",
+                    "report": {
+                        "params": [
+                            {
+                                "dashboardParam": "entityId",
+                                "field": "username"
+                            },
+                            {
+                                "dashboardParam": "currentFeature",
+                                "field": "attribute"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "widgetId": "user_profile_features",
+                    "refreshOn": "date",
+                    "params": {
+                        "date": null
+                    }
+                }
+            ]
+        }
+    ]
+}

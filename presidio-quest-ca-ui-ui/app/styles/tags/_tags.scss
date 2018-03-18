@@ -1,0 +1,39 @@
+@mixin label-info-generic($bgColor: $clrBlueMain, $frColor: $clrWhite) {
+    .label-info {
+        color: $clrWhite;
+        font-family: 'Roboto', sans-serif;
+        font-style: normal;
+        font-weight: 400;
+        font-size: #{$basicFontSize - 2px};
+        border-radius: 4px;
+        background-color: $clrBlueMain;
+        text-transform: capitalize;
+        margin: 0 0.2em 0.2em 0;
+        text-shadow: 1px 1px #444;
+        padding: 0.1em 0.5em 0.2em 0.5em;
+
+        i {
+            cursor: pointer;
+        }
+    }
+}
+
+@mixin tags-container-generic($bgColor: $clrBlueMain, $frColor: $clrWhite) {
+    .tags-container, .tags-list {
+        @include label-info-generic($bgColor, $frColor );
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: flex-start;
+        margin-top: 0.2em;
+    }
+}
+
+@include tags-container-generic();
+
+
+.alert-timeframe-tag {
+    font-size: 13px;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 400;
+    color: #4c4c4c;
+}

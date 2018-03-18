@@ -1,0 +1,113 @@
+@mixin  fs-alert-success-wrapper-parent(){
+    border-radius: 10px;
+    border-width: 2px;
+    width: 15em;
+    border-color: white;
+    vertical-align: middle;
+    text-align: center;
+
+    display: block;
+    position: fixed;
+
+    left: 18.5%;
+    z-index: 1050;
+    width: 15%;
+    height: 7%;
+    margin-left: 25%;
+
+    &.modal.fade.in{
+        top: 35%;
+    }
+}
+.fs-alert-success-wrapper{
+    @include  fs-alert-success-wrapper-parent();
+}
+
+.fs-alert-success-wrapper-with-body{
+    @include  fs-alert-success-wrapper-parent();
+    width: 22%;
+    height: 12%;
+    margin-left: 22%;
+}
+
+
+.fs-alert-modal{
+
+    .modal-header{
+        height: 1.5em;
+        background-color: $clrGrey40;
+        border-top:3px solid $clrGrey100;
+        border-bottom: 0px;
+
+
+        .close-with-x{
+            float: right;
+            background-image: url('../images/icons/close_alert_regular.png');
+            height: 0.6em;
+            width: 0.6em;
+            background-size: 100% 100%;
+
+            &:hover{
+                background-image: url('../images/icons/close_alert_hover.png');
+            }
+
+            &:active{
+                background-image: url('../images/icons/close_alert_pressed.png');
+            }
+
+
+        }
+
+        .header-text{
+            float: left;
+            color: $clrGrey100;
+            font-size: $basicFontSize;
+        }
+
+    }
+    .modal-body{
+        height: 4em;
+        .option {
+            padding: 0.5em
+        }
+
+        .bodaySpace{
+            margin-top: 1em;
+        }
+
+        h2.success{
+            color: $clrBlueMain;
+            margin-top: 0.2em;
+        }
+
+        .splash-fsicon {
+            background-repeat: no-repeat;
+            width: 2em;
+            height: 2em;
+            float: left;
+            margin-top: 0.3em;
+            margin-left: 1em;
+        }
+        .reopen-splash-fsicon{
+            background-image: url('../images/icons/reopen_spalsh.png');
+        }
+
+        .close-splash-fsicon{
+            background-image: url('../images/icons/close_alert_splash.png');
+        }
+    }
+
+    .modal-buttons {
+        width: 100%;
+        background-color: $clrGrey40;
+        display: flex;
+        flex-direction: column-reverse;
+        @include fs-button-group();
+        .fs-button-group {
+            padding: 0px 20px 5px 20px;
+        }
+
+
+    }
+
+}

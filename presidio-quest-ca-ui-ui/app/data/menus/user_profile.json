@@ -1,0 +1,116 @@
+{
+    "id": "user",
+    "items": [
+		{
+			"text": "Follow user",
+			"conditions": [
+				{
+					"field": "followed",
+					"operator": "isFalsy"
+				}
+			],
+			"onSelect": [
+				{
+					"action": "runReport",
+					"actionOptions": {
+						"reportId": "follow_user",
+						"reportParams": {
+							"endpoint": {
+								"follow": "true"
+							},
+							"params": [
+								{
+									"field": "userId",
+									"dashboardParam": "entityId"
+								},
+								{
+									"field": "follow",
+									"value": "true"
+								}
+							]
+						},
+						"onResults": {
+							"events": [
+								{
+									"action": "clearCache"
+								},
+								{
+									"action": "refreshAll",
+									"actionOptions": {
+										"showLoading": false
+									}
+								},
+								{
+									"action": "refreshTags",
+									"actionOptions": {
+										"dashboardParam": "entityId"
+									}
+								}
+							]
+						},
+						"onError": {
+							"alert": "Couldn't follow user due to a server error."
+						}
+					}
+				}
+			]
+		},
+		{
+			"text": "Unfollow user",
+			"conditions": [{
+				"field": "followed",
+				"operator": "isTruthy"
+			}],
+			"onSelect": [
+				{
+					"action": "runReport",
+					"actionOptions": {
+						"reportId": "follow_user",
+						"reportParams": {
+							"endpoint": {
+								"follow": "false"
+							},
+							"params": [
+								{
+									"field": "userId",
+									"dashboardParam": "entityId"
+								},
+								{
+									"field": "follow",
+									"value": "false"
+								}
+							]
+						},
+						"onResults": {
+							"events": [
+								{ "action": "clearCache" },
+								{
+									"action": "refreshAll",
+									"actionOptions": {
+										"showLoading": false
+									}
+								},
+								{
+									"action": "refreshTags",
+									"actionOptions": {
+										"dashboardParam": "entityId"
+									}
+								}
+							]
+						},
+						"onError": {
+							"alert": "Couldn't unfollow user due to a server error."
+						}
+					}
+				}
+			]
+		},
+		{
+			"dynamicMenu": {
+				"baseEntity": ["scored_access_event", "session"],
+				"url": "#/d/explore/{{entity.id}}?filters={{entity.id}}.normalized_username%3D\\{\\{@normalizedUsername || normalized_username || username\\}\\}",
+				"name":"Investigate \\{\\{@userName || display_name || username\\}\\}'s {{entity.name}} events"
+			}
+		}
+    ]
+}

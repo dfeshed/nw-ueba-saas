@@ -1,0 +1,26 @@
+.af-text-tooltip {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    padding: 20px 18px;
+
+    .title {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: flex-start;
+        align-items: center;
+        background-color: transparent;
+        transition: background-color 0.3s;
+        width: 100%;
+        line-height: 20px;
+
+    }
+}
+
+.style-user-tooltip {
+    &.opentip-container {
+        max-width: 1000px;
+    }
+}

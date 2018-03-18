@@ -1,0 +1,36 @@
+{
+    "dataPath": "popup.data.link.target.data",
+    "renderHeader": false,
+    "className": "no-border no-margins",
+    "style": { "margin-top": "10px" },
+    "views": [
+        {
+            "type": "table",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "Username",
+                        "value": "{{userAccount}}",
+                        "valueTooltip": "Click to open {{username}}'s profile"
+                    },
+                    {
+                        "name": "Source Machine",
+                        "value": "{{source}}"
+                    },
+                    {
+                        "name": "Target Machine",
+                        "value": "{{destination}}"
+                    },
+                    {
+                        "name": "Connection Type",
+                        "value": "{{sourceType}}"
+                    },
+                    {
+                        "name": "Connection Start",
+                        "value": "{{start:date}}"
+                    }
+                ]
+            }
+        }
+    ]
+}

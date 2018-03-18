@@ -1,0 +1,24 @@
+.slides-widget-wrapper{
+  -webkit-transition: all 400ms ease-out;
+}
+.slides-widget{
+
+  overflow: hidden;
+  position: relative;
+
+  .slide{
+    opacity: 0;
+    -webkit-transition: all 400ms ease-out;
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 0 !important;
+    z-index: 1;
+
+
+    &.open{
+      opacity: 1;
+      z-index: 2;
+    }
+  }
+}

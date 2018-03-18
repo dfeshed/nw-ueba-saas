@@ -1,0 +1,53 @@
+<!-- Title -->
+<div class="title">
+    {{$ctrl.settings.title}}
+</div>
+
+<!-- Main Content -->
+<div class="main-content-container flex-row">
+
+    <!-- Map -->
+    <div class="map-column flex-column">
+        <div class="map-outer-container">
+            <div class="map-inner-container" id="top-countries-map"></div>
+        </div>
+    </div>
+
+    <div class="stats-column flex-column">
+
+        <!-- Countries BreakDown -->
+        <div class="stats-row-container flex-column" ng-if="!$ctrl.settings.usePlanes">
+            <div class="stat-row flex-row"
+                ng-class="{'anomaly': userCountry.anomaly}"
+                ng-repeat="userCountry in $ctrl.userCountries|filter:$ctrl.hideZeroCountFilter">
+                <div class="flag-column">
+                    <fs-flag country-name="{{::userCountry.country}}"></fs-flag>
+                </div>
+                <div class="percent-column flex-row">
+                    <span class="percent-column--country-name">{{::userCountry.country}}</span>
+                    <span class="percent-column--country-percent">{{::userCountry.percent}}%</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="stats-row-container flex-column" ng-if="!!$ctrl.settings.usePlanes"></div>
+
+        <!-- Legend -->
+        <div class="legend flex-row" ng-class="{active: $ctrl.user || true}">
+                <span class="legend--item flex-row"
+                    ng-click="$ctrl.toggleAreas()"
+                    ng-class="{inactive: !$ctrl.areasOn}">
+                    <span class="legend--bullet bullet-company"></span>
+                    <span class="legend--label">{{$ctrl.user.company ? $ctrl.user.company : 'Company'}}</span>
+                </span>
+                <span class="legend--item flex-row"
+                    ng-click="$ctrl.toggleImages()"
+                    ng-class="{inactive: !$ctrl.imagesOn}"
+                    ng-if="!$ctrl.settings.usePlanes">
+                    <span class="legend--bullet bullet-user"></span>
+                    <span class="legend--label">{{$ctrl.user.fallBackDisplayName}}</span>
+                </span>
+        </div>
+    </div>
+</div>

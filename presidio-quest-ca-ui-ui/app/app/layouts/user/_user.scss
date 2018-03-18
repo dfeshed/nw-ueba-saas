@@ -1,0 +1,153 @@
+section.user-page {
+
+    // Vars
+    $userHeaderHeight: 110px;
+
+    display: flex;
+    flex-flow: column nowrap;
+
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    min-width: 1330px;
+    top: 0;
+    left: 0;
+
+    overflow: auto;
+
+    box-sizing: border-box;
+    padding: 30px 20px;
+
+    .main-container {
+        flex: 1;
+
+        display: flex;
+        flex-flow: row nowrap;
+
+        margin-top: 20px;
+
+        .attributes-column {
+            display: flex;
+            flex-flow: column nowrap;
+        }
+
+        //&--left-column{
+        //    flex: 3;
+        //
+        //    display: flex;
+        //    flex-flow: row nowrap;
+        //}
+        //
+        //&--right-column {
+        //    flex: 1;
+        //}
+
+        .risk-score-container {
+            flex: 1 0;
+            margin: 0 20px 0 0;
+        }
+
+        .main-ui-container {
+            flex: 3 0;
+
+            //display: flex;
+            //flex-flow: row nowrap;
+            position: relative;
+        }
+
+        //.attributes-container {
+        //    flex: 3 0;
+        //
+        //    display: flex;
+        //    flex-flow: row nowrap;
+        //}
+
+        .attributes-column {
+            flex: 1 0;
+
+            display: flex;
+            flex-flow: column nowrap;
+
+            &.location-column {
+                flex: 2 0;
+            }
+
+            &.authentication-column {
+                flex: 1 0;
+            }
+
+        }
+
+        .attributes-row {
+            flex: 1 0;
+
+            display: flex;
+            flex-flow: row nowrap;
+
+        }
+
+        .user-box-outer-wrapper {
+            position: relative;
+        }
+
+        .user-box-inner-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+
+            display: flex;
+            flex-flow: column nowrap;
+        }
+
+        .padding-right {
+            padding-right: 10px;
+        }
+        .padding-left {
+            padding-left: 10px;
+        }
+
+        .padding-bottom {
+            padding-bottom: 10px;
+        }
+        .padding-top {
+            padding-top: 10px;
+        }
+
+        .user-box {
+            flex: 1;
+            background-color: #f0f7f8;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+            opacity: 0.5;
+            transition: opacity 0.6s ease-in-out;
+
+            position: relative;
+
+            &.user-box-active {
+                opacity: 1;
+            }
+        }
+
+
+    }
+
+
+    @import "components/user-upper-bar/user-upper-bar.component";
+    @import "components/user-profile/user-profile.component";
+    @import "components/user-tags/user-tags.component";
+    @import "components/user-activity-countries/user-activity-countries.component";
+    @import "components/user-activity-authentication/user-activity-authentication.component";
+    @import "components/user-activity-working-hours/user-activity-working-hours.component";
+    @import "components/user-activity-devices/user-activity-devices.component";
+    @import "components/user-activity-data-usage/user-activity-source-data-usage.component";
+    @import "components/user-risk-score/user-risk-score.component";
+    @import "components/user-attributes/user-attributes.view";
+    @import "components/user-indicator/user-indicator.view";
+    @import "components/user-alert-overview/user-alert-overview.view";
+    @import "components/user-activity-top-applications/_user-activity-top-applications.component";
+    @import "components/user-activity-top-directories/user-activity-top-directories.component";
+    @import "components/user-activity-top-recipients-domains/_user-activity-top-recipients-domains.component";
+    @import "components/user-activity-classification-exposure/_user-activity-classification-exposure.component.scss";
+}
+

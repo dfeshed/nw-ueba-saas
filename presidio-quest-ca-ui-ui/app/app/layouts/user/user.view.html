@@ -1,0 +1,34 @@
+<section id="user-page" class="user-page">
+
+    <!-- Loading Bar -->
+    <fs-nanobar nanobar-progress="userCtrl.loadingProgress"
+        nanobar-options="{targetGlobal: true, color: '#30a2f0'}"
+        nanobar-id="{{::userCtrl.NANOBAR_ID}}"></fs-nanobar>
+    <!-- END OF Loading Bar -->
+
+    <!-- ID Bar -->
+    <user-upper-bar user-model="userCtrl.user"
+        tags="userCtrl.tags"
+        remove-tag-delegate="userCtrl.removeTag(tag)"
+        add-tag-delegate="userCtrl.addTag(tag)"
+        toggle-user-watch-delegate="userCtrl.toggleUserWatch()">
+
+    </user-upper-bar>
+    <!-- END OF ID Bar -->
+
+    <div class="main-container">
+
+        <!-- User Risk Score -->
+        <div class="risk-score-container user-box user-box-active">
+            <user-risk-score user="userCtrl.user" alerts="userCtrl.alerts"></user-risk-score>
+        </div>
+        <!-- END OF User Risk Score -->
+
+        <div class="main-ui-container" ui-view></div>
+
+
+    </div>
+    <!-- END OF Main Content -->
+
+</section>
+

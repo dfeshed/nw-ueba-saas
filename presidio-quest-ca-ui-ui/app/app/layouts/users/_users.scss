@@ -1,0 +1,60 @@
+@import "components/user-grid-row/user-grid-row";
+@import "components/users-grid/users-grid";
+@import "components/users-filters/users-filters";
+@import "components/users-predefined-filter/users-predefined-filter";
+@import "components/users-filter-in-use/users-filter-in-use";
+@import "components/users-save-favorites-filter/_users-save-favorites-filter.scss";
+@import "components/users-severities-stacked-bar/users-severities-stacked-bar.scss";
+@import "components/users-action-bar/_users-action-bar.scss";
+@import "components/users-tag-all-popup/_users-tag-all-popup.scss";
+@import "components/users-search-popup/_users-search-popup.scss";
+
+.users-page-wrapper{
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    flex:1;
+    .filter-pane{
+        background-color: #f0f7f8;
+        width: 350px;
+        margin: 20px 10px 20px 20px;
+    }
+
+    .right-pane{
+
+        flex: 1;
+        margin: 20px 20px 20px 10px;
+        display: flex;
+        flex-direction: column;
+
+        .top-pane {
+            height: 80px;
+            background-color: #f0f7f8;
+            margin-bottom: 20px;
+            flex-shrink: 0;
+
+        }
+        .grid-pane {
+            background-color: #f0f7f8;
+            flex: 1;
+            overflow-y: hidden;
+        }
+    }
+}
+
+
+.style-users-tag-all-tooltip {
+    &.opentip-container {
+        .opentip{
+            padding: 9px 0;
+        }
+    }
+}
+
+.style-users-search-tooltip {
+    &.opentip-container {
+        .opentip{
+            padding: 9px 0;
+        }
+    }
+}

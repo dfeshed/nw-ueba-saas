@@ -1,0 +1,8 @@
+<a  ng-controller="ButtonController"
+    class="btn {{button.className}}"
+    ng-disabled="!control.onClick"
+    ng-class="{ 'btn-primary': button.state == 'on' }"
+    ng-click="buttonClick()"
+    title="{{button.tooltip}}">
+    <i ng-if="button.icon" class="icon-{{button.icon}}"></i>
+    {{button.text}}</a>

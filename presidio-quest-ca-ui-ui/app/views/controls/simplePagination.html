@@ -1,0 +1,27 @@
+<span class="simplePagination">
+    <a class="simplePagination-button"
+        ng-click="page > 1 && prevPage()"
+        ng-show="pageCount > 1"
+        ng-class="{ disabled: page === 1 }"
+        title="Previous page">
+        <i class="fa fa-chevron-left" aria-hidden="true"></i>
+    </a>
+    <a class="simplePagination-currentPage" ng-show="!pageInputEnabled" ng-click="enablePageInput()">{{page}}</a>
+    <form ng-submit="gotoPage(pageInput)" ng-show="pageInputEnabled">
+        <input type="number"
+            ng-model="pageInput"
+            ng-keydown="onInputKeydown($event)"
+            ng-style="{ width: pageInputWidth }"
+            min="1"
+            max="{{pageCount}}"
+            focus-when="pageInputEnabled"/>
+    </form>
+    <span class="simplePagination-total" ng-show="pageCount">/{{pageCount}}</span>
+    <a class="simplePagination-button"
+        ng-click="page < pageCount && nextPage()"
+        ng-show="pageCount > 1"
+        ng-class="{ disabled: page === pageCount }"
+        title="Next page">
+        <i class="fa fa-chevron-right" aria-hidden="true"></i>
+    </a>
+</span>

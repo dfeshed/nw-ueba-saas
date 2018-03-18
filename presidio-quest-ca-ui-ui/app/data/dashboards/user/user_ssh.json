@@ -1,0 +1,42 @@
+{
+    "dashboardId": "user_ssh",
+    "title": "{{@userName}}: SSH Events",
+    "description": "A summary of the user's SSH activity",
+	"show" : {
+		"conditions": [
+			{
+				"operator": "entityExists",
+				"value": "ssh"
+			}
+		]
+	},
+    "columns": [
+        {
+            "widgets": [
+                {
+                    "widgetId": "user_score_history",
+                    "params": {
+                        "classifier": "ssh"
+                    },
+					"noCache" : true,
+                    "title": "SSH Events Score History - Last 7 Days"
+                },
+                {
+                    "widgetId": "user_ssh_logins",
+                    "params": {
+                        "date": "now"
+                    },
+                    "refreshOn": "date"
+                },
+				{
+					"widgetId": "user.user_logins_count",
+					"title": "SSH Events Count",
+					"noCache" : true,
+					"description": "Count of successful and failed SSH Events in the last 7 days",
+					"reportId": "user.user_ssh_logins_count",
+					"noDataMessage": "No SSH logins found"
+				}
+            ]
+        }
+    ]
+}

@@ -1,0 +1,38 @@
+.widget-numeric{
+  h5{
+    margin-bottom: 10px;
+    font-size: 11pt;
+    color: Black;
+  }
+
+  .widget-numeric-value{
+    float: left;
+    font-size: 28pt;
+    position: relative;
+    top: 6px;
+    font-weight: bold;
+  }
+
+  .widget-numeric-secondary{
+    float: left;
+    margin-left: 8px;
+  }
+
+  .widget-numeric-secondary-value-icon{
+      font-size: 12pt;
+  }
+
+  .widget-numeric-secondary-value-display{
+    position: relative;
+    left: -2px;
+    font-size: 13pt;
+    font-weight: bold;
+  }
+
+  small{
+    display: block;
+    color: #aaa;
+    position: relative;
+    top: -5px;
+  }
+}

@@ -1,0 +1,160 @@
+user-tags {
+    display: flex;
+    flex-flow: column nowrap;
+
+    flex: 1;
+
+    padding-left: 40px;
+
+    .tags-container {
+        display: flex;
+        flex-flow: row wrap;
+        align-items: flex-start;
+
+        margin-bottom: 10px;
+
+        overflow: auto;
+
+    }
+
+    .add-tag-section {
+        flex: 0 0 20px;
+        position: relative;
+
+        &--button {
+
+            display: inline-block;
+
+            font-family: 'Open Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 400;
+            color: white;
+
+            padding: 3px 11px 4px 6px;
+
+            border: 1px solid white;
+            border-radius: 0 15px 15px 0;
+
+            cursor: pointer;
+
+            background-color: $clrIKBlueMain;
+            transition: background-color 0.3s, transform 0.3s;
+
+
+            &:hover {
+                background-color: lighten($clrIKBlueMain, 10%);
+            }
+
+            &.ng-hide {
+                display: none;
+            }
+
+            &.ng-hide-add-active {
+                display: none;
+            }
+
+            &.ng-hide-remove-active {
+                display: inline-block;
+            }
+
+        }
+
+        &--new-tag-input {
+            background-color: transparent;
+            outline: none;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 400;
+            color: white;
+            padding: 3px 11px 4px 6px;
+            border: 1px solid white;
+            border-radius: 0 15px 15px 0;
+            cursor: pointer;
+            width: auto;
+            transform: scaleX(1);
+            transform-origin: left;
+
+            &.ng-hide {
+                display: none;
+            }
+
+            &.ng-hide-add-active {
+                display: none;
+            }
+
+            &.ng-hide-remove-active {
+                display: inline-block;
+            }
+
+
+        }
+
+
+        .list-outer-wrapper {
+
+            position: absolute;
+            width: 250px;
+            overflow: hidden;
+            top: 30px;
+            height: 200px;
+            z-index: 100;
+
+            &.ng-hide {
+                .list-inner-wrapper {
+                    transform: translate3d(0, -105%, 0);
+                }
+            }
+
+            &.ng-hide-remove-active {
+                .list-inner-wrapper {
+                    transform: translate3d(0, 0, 0);
+                }
+            }
+
+            &.ng-hide-add, &.ng-hide-remove {
+                /* this is required as of 1.3x to properly
+                   apply all styling in a show/hide animation */
+                transition: 1s linear all;
+            }
+
+
+        }
+
+        .list-inner-wrapper {
+            position: absolute;
+            width: 99%;
+            max-height: 100%;
+            overflow: auto;
+            box-sizing: border-box;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.9);
+            transition: transform 0.4s ease-in-out;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+        }
+
+        hr {
+            margin: 5px 0;
+            border-top: 1px dashed black;
+        }
+
+        .tag-list-item {
+            font-family: 'Open Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            color: #444;
+
+
+            cursor: pointer;
+
+            &:hover {
+                font-weight: 700;
+            }
+        }
+
+    }
+
+    .ng-enter,.ng-leave {
+        display: none;
+        transition: all 0s;
+    }
+}

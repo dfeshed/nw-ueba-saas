@@ -1,0 +1,105 @@
+{
+	"mock_data": "dashboards.sensitive_resources.users_count",
+    "endpoint": {
+        "api": "dataQuery",
+        "dataQuery": {
+            "subQuery": {
+				"combineMethod": "UnionDistinct",
+				"dataQueries": [
+					{
+						"entity": "auth_event",
+						"fields": ["normalized_username"],
+						"conditions": {
+							"operator": "AND",
+							"terms": [
+								{
+									"type": "field",
+									"id": "event_time_utc",
+									"operator": "dateRange",
+									"valueParam": "dateRange"
+								},
+								{
+									"type": "field",
+									"id": "event_score",
+									"operator": "greaterThanOrEquals",
+									"valueParam": "minscore"
+								},
+								{
+									"type": "field",
+									"id": "is_sensitive_machine",
+									"value": true,
+									"operator": "equals"
+								},
+								{
+									"type": "field",
+									"id": "is_user_administrator",
+									"operator": "equals",
+									"value": true,
+									"enabled": {
+										"field": "users",
+										"operator": "contains",
+										"value": "isuseradministrator"
+									}
+								},
+								{
+									"type": "field",
+									"id": "is_user_executive",
+									"operator": "equals",
+									"value": true,
+									"enabled": {
+										"field": "users",
+										"operator": "contains",
+										"value": "isuserexecutive"
+									}
+								},
+								{
+									"type": "field",
+									"id": "is_user_service",
+									"operator": "equals",
+									"value": true,
+									"enabled": {
+										"field": "users",
+										"operator": "contains",
+										"value": "isuseraccountservice"
+									}
+								}
+							]
+						},
+						"limit": -1
+					}
+				]
+			},
+            "fields": [
+                {
+                    "id": "normalized_username",
+                    "alias": "value",
+                    "func": {
+                        "name": "count"
+                    }
+                }
+            ]
+        }
+    },
+    "process": {
+        "processId": "extend",
+        "params": {
+            "label": "Users accessed sensitive resources"
+        }
+    },
+    "params": [
+		{
+			"field": "dateRange",
+			"dashboardParam": "sensitive_resources_events_dates",
+			"isRequired": true
+		},
+        {
+            "field": "minscore",
+            "dashboardParam": "minscore",
+            "default": 70
+        },
+		{
+			"field": "users",
+			"dashboardParam": "sensitive_resources_users"
+		}
+    ]
+}

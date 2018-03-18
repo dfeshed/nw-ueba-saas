@@ -1,0 +1,304 @@
+.reports-page {
+    display: flex;
+    flex-flow: row nowrap;
+
+    width: 100%;
+    height: 100%;
+    position: absolute;
+
+    box-sizing: border-box;
+
+    padding: 20px;
+
+    background-color: $clrIKBlueMain;
+
+    &--nav-bar {
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: stretch;
+
+        flex: 0 0 380px;
+
+        background-color: #f0f7f8;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+
+        margin-right: 20px;
+
+        & > ng-include {
+            display: flex;
+            flex-flow: column nowrap;
+            align-items: stretch;
+
+            flex: 1 0;
+        }
+
+        @media only screen and (max-width: 1500px) {
+            flex: 0 0 280px;
+        }
+    }
+
+    &--content {
+        display: flex;
+        flex-flow: column nowrap;
+
+        flex: 1 1;
+
+        background-color: $clrWhite;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+
+        ui-view {
+            display: flex;
+            flex-flow: column nowrap;
+
+            flex: 1 1;
+
+            margin: 0;
+            padding: 0;
+            position: relative;
+        }
+
+        &.no-report {
+            display: none;
+        }
+    }
+
+    .fs-report {
+        display: block;
+        margin: 0;
+        padding: 0;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+
+        .title-capitalize{
+            text-transform: capitalize;
+        }
+
+        .suspicious-users-table-content{
+            .severity-Critical{
+                flex-direction: row-reverse;
+                display: flex;
+                color: red;
+                width:40px;
+            }
+
+            .severity-High{
+                flex-direction: row-reverse;
+                display: flex;
+                color: orange;
+                width:40px;
+            }
+
+            .severity-Medium{
+                flex-direction: row-reverse;
+                display: flex;
+                color: green;
+                width:40px;
+            }
+            .severity-Low{
+                flex-direction: row-reverse;
+                display: flex;
+                color: blue;
+                width:40px;
+            }
+
+        }
+
+    }
+
+    /* Controls Override */
+    fs-controls {
+        margin: 0;
+        padding: 0;
+
+        background-color: #d3d8d9;
+
+        .controls {
+            margin: 0;
+            padding: 0;
+
+            box-sizing: border-box;
+
+            height: 60px;
+            top: 0;
+
+        }
+
+        label {
+            color: #024d89;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 20px;
+            margin: 0 18px;
+
+            cursor: default;
+        }
+
+        .form-container {
+            height: 100%;
+            width: 100%;
+
+            form {
+                height: 100%;
+                width: 100%;
+
+                .control-params-fields {
+                    width: 100%;
+                    height: 100%;
+
+                    .controls-transclude {
+                        height: 100%;
+                    }
+                }
+
+                .fs-daterange {
+                    > div > ul {
+                        background-color: white;
+                        background-image: none;
+                        color: #004f8f;
+                        font-family: 'Open Sans', sans-serif;
+                        font-size: 14px;
+                        font-weight: 400;
+                    }
+                    margin-right: 20px;
+                }
+
+                input {
+                    color: #004f8f;
+                    font-family: 'Open Sans', sans-serif;
+                    font-size: 14px;
+                    font-weight: 400;
+
+                    margin-right: 20px;
+
+                }
+
+                button {
+                    background-color: #016a9c;
+                    border: none;
+                    color: white;
+                    font-family: 'Open Sans', sans-serif;
+                    font-size: 14px;
+                    font-weight: 400;
+                    transition: background-color 0.2s;
+
+                    &[disabled] {
+                        background-color: #cbcbcb;
+                    }
+                }
+            }
+        }
+    }
+
+    .report-content {
+        display: block;
+        box-sizing: border-box;
+        position: absolute;
+        width: 100%;
+        height: calc(100% - 80px - 60px);
+        overflow: auto;
+
+        .fs-report-header {
+            background-color: $clrWhite;
+
+            .report-header-title {
+                font-weight: 400;
+            }
+        }
+
+        h3 {
+            font-family: 'Open Sans', sans-serif;
+            color: #002949;
+            font-size: 14px;
+            font-weight: 400;
+            margin-bottom: 20px;
+        }
+    }
+
+    .table-widget {
+        position: relative;
+        min-height: 150px;
+
+        @include fs-table-style2();
+
+        a {
+            color: inherit;
+
+            &.with-line{
+              text-decoration: underline;
+            }
+        }
+
+        tr {
+            background-color: $clrWhite;
+
+            &.k-alt {
+                background-color: #f1f6fc;
+            }
+        }
+
+        h3 {
+            font-family: 'Open Sans', sans-serif;
+            color: #002949;
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+    }
+
+    .chart-widget {
+        margin-top: 30px;
+        position: relative;
+        //min-height: 450px;
+
+        h3 {
+            font-family: 'Open Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+
+            color: #01294a;
+            line-height: 20px;
+
+            margin-top: 40px;
+            margin-bottom: 20px;
+            padding: 0 15px;
+
+        }
+
+        fs-select {
+            margin-left: 15px;
+        }
+
+        .fs-report-header {
+            background-color: inherit;
+        }
+
+        &.no-data {
+            min-height: 0;
+            height: auto;
+
+        }
+
+    }
+
+    .fs-loader-overlay .fs-loader-spinner {
+        width: 40px;
+        height: 40px;
+        top: calc(50% - 20px);
+        left: calc(50% - 20px);
+        position: absolute;
+    }
+
+    //Imports
+    @import "layouts/nav_bar-menu";
+    @import "validators/fs-validator-ip";
+    @import "components/fs-report-header";
+    @import "layouts/device-monitoring/device_monitoring";
+    @import "layouts/external-access-to-network/suspicious-vpn-data-amount";
+    @import "layouts/external-access-to-network/vpn-geo-hopping";
+    @import "layouts/stale-accounts-monitoring/stale-accounts-monitoring";
+
+}
+
+

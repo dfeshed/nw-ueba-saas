@@ -1,0 +1,52 @@
+.fs-user-tag-details{
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    position: relative;
+    width: 65px;
+    margin: 0 35px 25px 0;
+
+    .top-label {
+        position: absolute;
+        left: 61px;
+    }
+    .buttom-label {
+        padding-top: 7px;
+        text-align: center;
+        @include font-roboto-bold();
+        color:  $clrGrey100;
+        font-size: 12px;
+    }
+
+    .user-tag-image {
+        width: 60px;
+        height: 60px;
+    }
+
+    .tag-link {
+        cursor: default;
+
+        &.has-href {
+            cursor: pointer;
+
+            &:hover {
+
+                .buttom-label {
+                    color: $clrBlueMain;
+                }
+            }
+        }
+
+        &:hover {
+            text-decoration: none;
+        }
+    }
+}
+
+/*
+fs-user-tag-details{
+    width: 4em;
+    height: 4em;
+    padding-right: 3em;
+}
+*/

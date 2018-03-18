@@ -1,0 +1,28 @@
+.fs-indicators-tooltip {
+
+    padding: 5px;
+
+    .indicator-name {
+        color: #024d89;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 25px;
+
+        cursor: pointer;
+
+        &:hover {
+            text-decoration: underline;
+            font-weight: 700;
+            white-space: nowrap;
+            letter-spacing: -0.45px;
+        }
+
+    }
+}
+
+.style-indicators-tooltip {
+    &.opentip-container {
+        max-width: 1000px;
+    }
+}

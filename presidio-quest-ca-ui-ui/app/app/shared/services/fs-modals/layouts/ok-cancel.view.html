@@ -1,0 +1,12 @@
+<div class="ok-cancel-modal">
+    <div class="modal-header">
+        <h3  class="header-text modal-title">{{::modalScope.title}}</h3>
+        <div class="close-with-x" ng-click="modalScope.clickCancel()"></div>
+    </div>
+    <div class="modal-buttons">
+        <div class="fs-button-group">
+            <button class="fs-button fs-button-regular ok" ng-click="modalScope.clickOk()">OK</button>
+            <button class="cancel" ng-click="modalScope.clickCancel()">Cancel</button>
+        </div>
+    </div>
+</div>

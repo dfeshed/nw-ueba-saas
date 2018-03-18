@@ -1,0 +1,35 @@
+<fs-card-header card-title="{{::$ctrl.description}} <span class='fs-card-title-small'>(Top 4, Last 90 Days)"></fs-card-header>
+<div class="top-directories-outer-container" ng-class="{'no-data': !$ctrl.directories.length}">
+    <div class="top-directory-row" ng-repeat="directory in $ctrl.directories" ng-if="$ctrl.directories.length">
+        <!-- icon -->
+        <div class="system-icon">
+            <div class="image"></div>
+
+        </div>
+
+        <!-- Info -->
+        <div class="info-column">
+            <div class="stats-row">
+                <span class="percent">{{::directory.percent}}%</span>
+                <span class="machine-name">{{directory.name}}</span>
+            </div>
+            <div class="horizontal-bar-wrapper">
+                <div class="horizontal-bar-inner" ng-class="{'bar-closed': !directory.active}" ng-style="{width: directory.percent + '%'}"></div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="no-data-box" ng-if="!$ctrl.directories.length && $ctrl.directories">
+        <div class="icon">
+            <fs-svg-icon symbol-name="computer-icon"
+                attributes="{width: 52, height: 52}"></fs-svg-icon>
+        </div>
+        <div class="title">
+            No {{::$ctrl.description}} Devices
+        </div>
+    </div>
+
+
+</div>

@@ -1,0 +1,53 @@
+<div id="alerts-page" class="alerts-page">
+
+    <!-- Loading Bar -->
+    <fs-nanobar nanobar-id="alerts" nanobar-options="{targetGlobal: true, color: '#30a2f0'}"></fs-nanobar>
+    <!-- END OF Loading Bar -->
+
+    <!-- ad: alerts dashboard -->
+    <fs-state-container container-id="ad"
+        resource-settings="::alerts.alertsResourceSettings"
+        resource-adapter="::alerts.alertsResourceAdapter"
+        state-model="::alerts.alertsMainState"
+        on-data-fetch="alerts.dataFetchDelegate(promise)">
+
+        <fs-resource-store resource-name="alerts" resource="stateContainer.dataModel"></fs-resource-store>
+
+        <div class="alerts-page--grid">
+            <div class="alerts-page--grid--row">
+                <!-- Filters Pane -->
+                <div class="box filters-box">
+                    <ng-include src="'app/layouts/alerts/filters-pane.html'"></ng-include>
+                </div>
+                <!-- END OF Filters Pane -->
+                <div class="box alerts-box">
+                    <!-- Alerts status counter -->
+                    <div class="alert-status-counter">
+                        <ng-include src="'app/layouts/alerts/alerts-status-counter.html'"></ng-include>
+                    </div>
+                    <!-- END OF Alerts status counter -->
+
+                    <div class="alerts-box--alerts-table">
+                        <div class="alerts-box-alerts-table--content">
+                            <fs-table table-id="alert_table"
+                                table-settings="alerts.alertsTableSettings"
+                                table-model="stateContainer.dataModel"
+                                detail-table-settings="alerts.alertsIndicatorsTableSettings"
+                                detail-table-model-name="evidences"
+                                fetch-state-delegate="::stateContainer.fetchStateById"
+                                update-state-delegate="::stateContainer.updateCtrlState"
+                                class="general-fs-table"></fs-table>
+                        </div>
+                        <div class="no-alerts-table" ng-if="!stateContainer.dataModel.length && !stateContainer.isLoading">
+                            <div class="text">No Alerts Found</div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!--</div>-->
+    </fs-state-container>
+
+</div>

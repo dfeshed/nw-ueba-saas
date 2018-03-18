@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="33" height="30" viewBox="0 0 33 30">
+  <defs>
+    <style>
+      .data-usage-print-icon {
+        fill-rule: evenodd;
+      }
+    </style>
+  </defs>
+  <path id="pront" class="data-usage-print-icon" d="M1085,693h-25c-2.89,0-4,2.189-4,5v10h6v7h21v-7h6V698C1089,695.189,1087.89,693,1085,693Zm-5,20h-15V702h15v11Zm4.6-13.118a1.694,1.694,0,1,1,1.74-1.693A1.72,1.72,0,0,1,1084.6,699.882ZM1083,685h-21v6h21v-6Z" transform="translate(-1056 -685)"/>
+</svg>

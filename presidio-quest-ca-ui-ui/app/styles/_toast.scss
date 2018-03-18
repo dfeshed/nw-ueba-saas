@@ -1,0 +1,33 @@
+
+#toast-container {
+    &.toast-top-center, &.toast-bottom-center {
+        > div {
+            width: 575px;
+            //min-height: 45px;
+            padding: 12px 12px 12px 50px;
+        }
+    }
+
+    .fs-toast {
+        top: 60px;
+
+        &.fs-toast-info {
+            background-color: #dcf1ff;
+            opacity: 1;
+
+            color: #024d89;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 19px;
+
+            background-image: url('../../images/toast-info-icon.png');
+        }
+    }
+
+
+    .toast-close-button {
+        color: #024d89;
+    }
+
+}

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xsi:schemaLocation="http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd
+						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
+						http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<import resource="classpath*:META-INF/spring/fortscale-common-entities-context.xml" />
+
+	<import resource="classpath*:META-INF/spring/fortscale-common-entities-context.xml" />
+	<context:spring-configured />
+	<context:annotation-config />
+	<context:component-scan base-package="fortscale.global,fortscale.common.feature.extraction"/>
+
+	<bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+		<property name="location" value="classpath:FeatureExtractorsTest.properties"/>
+		<property name="order" value="#{T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE}"/>
+		<property name="ignoreUnresolvablePlaceholders" value="true"/>
+		<property name="localOverride" value="true"/>
+	</bean>
+</beans>

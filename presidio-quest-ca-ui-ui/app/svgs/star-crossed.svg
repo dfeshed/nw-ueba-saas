@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="17" height="15" viewBox="0 0 17 15">
+  <defs>
+    <style>
+      .star-crossed-icon1 {
+        fill: none;
+      }
+
+      .star-crossed-icon1, .star-crossed-icon2 {
+        stroke: white;
+        stroke-width: 1px;
+      }
+
+      .star-crossed-icon1, .star-crossed-icon2, .star-crossed-icon3 {
+        fill-rule: evenodd;
+      }
+
+      .star-crossed-icon2 {
+        fill: white;
+      }
+
+      .star-crossed-icon3 {
+        fill: #fea700;
+      }
+    </style>
+  </defs>
+  <path class="star-crossed-icon1" d="M8,60l2.966,5.342L17,66.494l-4.2,4.453L13.562,77,8,74.409,2.438,77,3.2,70.946-1,66.494l6.033-1.151L8,60"/>
+  <path id="Shape_1_copy_2" data-name="Shape 1 copy 2" class="star-crossed-icon1" d="M8-2l2.966,5.342L17,4.494,12.8,8.946,13.562,15,8,12.409,2.438,15,3.2,8.946-1,4.494,5.034,3.343,8-2"/>
+  <path class="star-crossed-icon2" d="M0.327,1.74L1.673,0.26l15,13-1.345,1.48Z"/>
+  <path id="Shape_1_copy" data-name="Shape 1 copy" class="star-crossed-icon3" d="M8,39l2.966,5.342L17,45.494l-4.2,4.453L13.562,56,8,53.409,2.438,56,3.2,49.946-1,45.494l6.033-1.151L8,39"/>
+</svg>

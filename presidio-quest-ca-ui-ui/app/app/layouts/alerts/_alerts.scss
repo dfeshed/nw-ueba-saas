@@ -1,0 +1,97 @@
+.k-popup .k-list li.k-item{
+    white-space: nowrap;
+}
+
+.alerts-page {
+
+    // Vars
+    // Dimensions
+    $alertsSeverityCounterHeight: 2.58em;
+
+    $alertsFilterWidth: 380px;
+
+    // Font Sizes
+    $basicFontSize: 14px;
+
+    background-color: $clrGrey20;
+    width: 100vw;
+
+    hr {
+        margin: 0;
+        padding: 0;
+        color: $clrGrey40;
+        width: 100%;
+    }
+
+
+    a {
+        text-decoration: none;
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    .pane {
+        box-sizing: border-box;
+    }
+
+    .filters-pane-content {
+        padding: 20px 10px 0 10px;
+
+        .fs-button-group {
+            text-align: right;
+        }
+    }
+
+
+    /***************
+    *    GRID      *
+    ***************/
+    &--grid {
+
+        position: relative;
+
+        &--row {
+            display: flex;
+            flex-flow: row nowrap;
+
+            padding: 21px;
+
+            background-color: $clrIKBlueMain;
+            height: calc(100vh - #{$headerHeight} - 42px);
+        }
+    }
+    /**********************
+    *    END OF GRID      *
+    ***********************/
+
+    /************************
+    *    FILTERS PANE       *
+    ************************/
+    .filters-box {
+
+        background-color:  $clrWhite;
+        box-shadow: 3px 3px 10px 0px rgba(0, 0, 0, 0.5);
+        width: $alertsFilterWidth;
+        height: 100%;
+
+        margin-right: 21px;
+
+
+        @media only screen and (max-width: 1500px) {
+            width: #{$alertsFilterWidth - 150px};
+        }
+    }
+
+
+
+
+
+
+    @import 'styles/filters-pane';
+    @import 'components/fs-alerts-record-menu/fs-alerts-record-menu';
+    @import 'styles/alerts-box';
+}
+
+
+

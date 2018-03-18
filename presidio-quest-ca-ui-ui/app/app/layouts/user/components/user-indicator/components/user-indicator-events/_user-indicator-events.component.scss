@@ -1,0 +1,31 @@
+user-indicator-events {
+    @mixin alertPageTableOverrides() {
+        tr {
+            background-color: #ececee;
+            color: #024d89;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 400;
+
+            @media only screen and (max-width: 1500px) {
+                font-size: 10px;
+            }
+
+            a {
+                color: #024d89;
+
+                &:hover {
+                    color: #02254a;
+                }
+
+            }
+
+            &.k-alt {
+                background-color: white;
+            }
+        }
+    }
+
+    @include fs-table-style2();
+    @include alertPageTableOverrides();
+}

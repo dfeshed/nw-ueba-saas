@@ -1,0 +1,55 @@
+{
+    "scrollable": false,
+    "groupable": false,
+    "sortable": {
+        "mode": "single"
+    },
+    "pageable": false,
+    "dataSource": {
+        "sort": [
+            {
+                "field": "event_score",
+                "dir": "desc"
+            },
+            {
+                "field": "event_time",
+                "dir": "desc"
+            }
+        ]
+    },
+    "columns": [
+        {
+            "title": "Username",
+            "field": "username",
+            "template": "<a  ng-href=\"{{'\\#username/' + dataItem.normalized_username}}\">{{ dataItem.username }}</a>"
+        },
+        {
+            "title": "Data Sources",
+            "field": "type"
+        },
+        {
+            "title": "User Devices",
+            "field": "source_machine",
+            "template": "<fs-score-icon score='::dataItem.normalized_src_machine_score'></fs-score-icon>{{ dataItem.source_machine | orNA}}"
+        },
+        {
+            "title": "Target Devices",
+            "field": "destination_machine",
+            "template": "<fs-score-icon score='::dataItem.normalized_dst_machine_score'></fs-score-icon>{{ dataItem.destination_machine | orNA}}"
+        },
+        {
+            "title": "Status",
+            "field": "status"
+        },
+        {
+            "title": "Event Time",
+            "field": "event_time",
+            "template": "<fs-score-icon score='::dataItem.event_time_score'></fs-score-icon>{{ dataItem.event_time | date:\"MM/dd/yyyy HH\\:mm\":\"UTC\"}}"
+        },
+        {
+            "title": "Event Score",
+            "field": "event_score",
+            "template": "<fs-score-icon score='::dataItem.event_score'></fs-score-icon>{{ dataItem.event_score | orNA}}"
+        }
+    ]
+}

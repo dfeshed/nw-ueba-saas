@@ -1,0 +1,36 @@
+<fs-card-header card-title="{{::$ctrl.description}} <span class='fs-card-title-small'>(Top 4, Last 90 Days)</span>"></fs-card-header>
+<div class="top-applications-outer-container" ng-class="{'no-data': !$ctrl.applications.length}">
+    <div class="top-application-row" ng-repeat="application in $ctrl.applications" ng-if="$ctrl.applications.length">
+        <!-- icon -->
+        <div class="system-icon">
+            <div class="image"
+                 ng-style="$ctrl.getImageStyle(application.name)"></div>
+
+        </div>
+
+        <!-- Info -->
+        <div class="info-column">
+            <div class="stats-row">
+                <span class="percent">{{::application.percent}}%</span>
+                <span class="machine-name">{{::$ctrl.getSettingsForApp(application.name).displayName}}</span>
+            </div>
+            <div class="horizontal-bar-wrapper">
+                <div class="horizontal-bar-inner" ng-class="{'bar-closed': !application.active}" ng-style="{width: application.percent + '%'}"></div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="no-data-box" ng-if="!$ctrl.applications.length && $ctrl.applications">
+        <div class="icon">
+            <fs-svg-icon symbol-name="computer-icon"
+                attributes="{width: 52, height: 52}"></fs-svg-icon>
+        </div>
+        <div class="title">
+            No {{::$ctrl.description}} Devices
+        </div>
+    </div>
+
+
+</div>

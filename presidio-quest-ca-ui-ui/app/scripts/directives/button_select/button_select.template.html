@@ -1,0 +1,7 @@
+<div class="btn-group button-select">
+    <button type="button"
+            class="btn"
+            ng-class="{active: button.selected}"
+            ng-click="selectButton(button)"
+            ng-repeat="button in buttons">{{button.text}}</button>
+</div>

@@ -1,0 +1,67 @@
+(function () {
+    'use strict';
+
+    function {{directiveName}}Directive () {
+
+        /**
+         *
+         * @param {object} scope
+         * @param {object} element
+         * @param {object} attrs
+         * @param {array<object>|object} ctrl
+         */
+        function linkFn (scope, element, attrs, ctrl) {
+            // Link function logic
+        }
+
+        /**
+         * The directive's controller function
+         *
+         * @constructor
+         */
+        function {{directiveNameUpper}}Controller ($element, $scope) {
+            // Put dependencies on the instance
+            var ctrl = this;
+            ctrl.$element = $element;
+            ctrl.$scope = $scope;
+
+
+            // Invoke init
+            ctrl.init();
+        }
+
+        angular.extend({{directiveNameUpper}}Controller.prototype, {
+
+            /**
+             * Init
+             */
+            init: function init () {
+
+                var ctrl = this;
+
+                // Init logic
+
+            }
+        });
+
+        {{directiveNameUpper}}Controller.$inject = ['$element', '$scope'];
+
+        return {
+            restrict: 'E', // Change To EA if not only element. Change to A if only attribute
+            // Use this if you want a local template (delete html file):
+            // template: '<div></div>',
+            templateUrl: '{{templateUrl}}',
+            scope: {}, // Change to 'true' for child scope, and remove for no new scope
+            link: linkFn,
+            controller: {{directiveNameUpper}}Controller,
+            controllerAs: 'ctrl', //Change to the desired controller name
+            bindToController: {
+            }
+        };
+    }
+
+    {{directiveName}}Directive.$inject = [];
+
+    angular.module('{{moduleName}}')
+        .directive('{{directiveName}}', {{directiveName}}Directive);
+}());

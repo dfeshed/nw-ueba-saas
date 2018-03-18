@@ -1,0 +1,22 @@
+.renderer-ip {
+
+    width: 50vw;
+
+    .ip-octets {
+        width: 22em;
+
+        &--octet-wrapper {
+            float: left;
+        }
+
+        input.octet {
+            width: 3.5em;
+            float: left;
+            box-sizing: border-box;
+        }
+        span.dot {
+            margin:0 0.5em;
+            float: left;
+        }
+    }
+}

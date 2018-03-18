@@ -1,0 +1,36 @@
+<fs-card-header card-title="{{::$ctrl.description}}  <span class='fs-card-title-small'>(Top 4, Last 90 Days)"></fs-card-header>
+<div class="top-recipients-domains-outer-container" ng-class="{'no-data': !$ctrl.recipientsDomains.length}">
+    <div class="top-recipient-domain-row" ng-repeat="recipientDomain in $ctrl.recipientsDomains" ng-if="$ctrl.recipientsDomains.length">
+        <!-- icon -->
+        <div class="system-icon">
+            <div class="image"
+                 ng-style="$ctrl.getImageStyle(recipientDomain.name)"></div>
+
+        </div>
+
+        <!-- Info -->
+        <div class="info-column">
+            <div class="stats-row">
+                <span class="percent">{{::recipientDomain.percent}}%</span>
+                <span class="machine-name">{{::recipientDomain.name}}</span>
+            </div>
+            <div class="horizontal-bar-wrapper">
+                <div class="horizontal-bar-inner" ng-class="{'bar-closed': !recipientDomain.active}" ng-style="{width: recipientDomain.percent + '%'}"></div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="no-data-box" ng-if="!$ctrl.recipientsDomains.length && $ctrl.recipientsDomains">
+        <div class="icon">
+            <fs-svg-icon symbol-name="computer-icon"
+                attributes="{width: 52, height: 52}"></fs-svg-icon>
+        </div>
+        <div class="title">
+            No {{::$ctrl.description}}
+        </div>
+    </div>
+
+
+</div>

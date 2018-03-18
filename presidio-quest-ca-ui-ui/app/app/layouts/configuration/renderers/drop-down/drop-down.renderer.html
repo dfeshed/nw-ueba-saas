@@ -1,0 +1,5 @@
+<select
+    ng-model="$ctrl.configFormCtrl.configModels[$ctrl.configItem.id]"
+    class="dropdown-renderer">
+    <option ng-repeat="item in ::$ctrl.configItem.data.items" value="{{::item.value}}">{{::item.label || item.value}}</option>
+</select>

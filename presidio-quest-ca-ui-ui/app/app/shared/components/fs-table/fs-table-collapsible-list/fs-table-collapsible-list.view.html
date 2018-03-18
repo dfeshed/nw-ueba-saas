@@ -1,0 +1,9 @@
+<div><span ng-if="entity.titleId">{{entity.titleId}} : </span>{{entity.titleName}}</div>
+<ul class="crowded-list">
+<li ng-repeat="item in entity.listCollection | orderBy: 'entity.listCollectionDisplayField' | limitTo: entity.maxDisplayLength">
+    {{item[entity.listCollectionDisplayField]}}
+</li>
+</ul>
+
+<span ng-if="entity.listCollection.length > 3" ng-class="entity.showFullList ? 'k-s-arrow-n' : 'k-i-arrow-s'" ng-click="entity.showFullListFn()"
+    class="k-icon arrow"></span>

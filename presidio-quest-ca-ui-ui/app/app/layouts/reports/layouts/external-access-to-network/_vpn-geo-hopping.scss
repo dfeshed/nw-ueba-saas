@@ -1,0 +1,44 @@
+.vpn-geo-hopping {
+
+    // Override table borders
+    .table-content .fs-table {
+
+        a.user-overview-icon {
+            opacity: 0;
+            color: $clrGrey80;
+            margin-left: 0.5em;
+        }
+
+        td {
+            border-left: 1px solid #e7e7e8;
+            border-right: 1px solid #e7e7e8;
+
+            &:hover {
+
+                background-color: $clrGrey10;
+
+
+                a.user-overview-icon {
+                    opacity: 1;
+                    &:hover {
+                        color: $clrGrey100;
+                    }
+                }
+            }
+        }
+
+    }
+
+    .highcharts-tooltip {
+
+        span {
+            padding: 10px;
+            background-color: rgba(240, 240, 240, 0.95);
+            z-index: 20 !important;
+        }
+    }
+
+    button[type="submit"] {
+        margin-left: 30px;
+    }
+}

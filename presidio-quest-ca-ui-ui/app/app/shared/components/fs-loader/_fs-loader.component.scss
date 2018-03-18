@@ -1,0 +1,47 @@
+.fs-loader-overlay {
+
+    // Vars
+    $box-dim: 60px;
+    $clrLoaderForeGround: #016a9c;
+    $clrLoaderOverlay: rgba(0,0,0,0.2);
+
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+
+    background-color: $clrLoaderOverlay;
+
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
+
+    z-index: 100;
+
+    &.ng-enter {
+        opacity: 0;
+    }
+
+    &.ng-enter-active {
+        opacity: 1;
+    }
+
+    &.ng-leave-active {
+        opacity: 0;
+    }
+
+    .fs-loader-spinner {
+        width: $box-dim;
+        height: $box-dim;
+        background-color: $clrLoaderForeGround;
+        top: calc(50% - #{$box-dim/2});
+        left: calc(50% - #{$box-dim/2});
+        position: absolute;
+        background-image: url('../../images/spin_orange_64_animation.gif');
+        background-size: cover;
+
+    }
+
+}

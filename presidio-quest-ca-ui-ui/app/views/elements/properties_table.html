@@ -1,0 +1,34 @@
+<ul class="unstyled widget-items-list widget-properties-table" ng-controller="ItemsListController">
+    <li ng-repeat="item in items | limitTo:limit" class="widget-properties-table-contents">
+        <h4><i class="icon-{{item.icon.type}}" ng-if="item.icon"></i>{{item.tooltip}}</h4>
+        <div class="widget-items-list-contents">
+            <a ng-if="item.link && item.value" ng-bind-html="item.value" href="{{item.link}}"></a>
+            <span ng-if="!item.link && item.value" class="items-list-text" ng-bind-html="item.value"></span>
+            <dropdown-menu ng-if="item.menu" items="item.menu.items" on-select="menuSelect($event, $item, widget.rawData[0], item.menu, getWidgetParams())"></dropdown-menu>
+            <ul ng-if="item.list" class="items-list-inner-list">
+                <li ng-repeat="innerItem in item.list" class="{{innerItem.className}}" ng-show="innerItem.enabled || !item.enableShowAll">
+                    <span ng-if="!innerItem.link" ng-bind-html="innerItem.value" title="{{innerItem.tooltip}}"></span>
+                    <a ng-if="innerItem.link" href="{{innerItem.link}}" title="{{innerItem.tooltip}}" ng-bind-html="innerItem.value"></a>
+                </li>
+                <li ng-show="item.enableShowAll && !item.enableShowLess" >
+                    <i class="icon-double-angle-down"></i>
+                    <a ng-click="showAll(item)">More</a>
+                </li>
+                <li ng-show="item.enableShowLess">
+                    <i class="icon-double-angle-up"></i>
+                    <a ng-click="showLess(item)">Less</a>
+                </li>
+            </ul>
+        </div>
+    </li>
+    <li ng-if="!disableLimit">
+        <div ng-if="!disableLimit && !showAllItems">
+            <i class="icon-double-angle-down"></i>
+            <a ng-click="setLimit(items.length, true)">More</a>
+        </div>
+        <div ng-if="showAllItems">
+            <i class="icon-double-angle-up"></i>
+            <a ng-click="setLimit(view.settings.limit)">Less</a>
+        </div>
+    </li>
+</ul>

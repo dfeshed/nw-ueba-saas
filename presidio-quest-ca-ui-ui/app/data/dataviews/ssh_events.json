@@ -1,0 +1,331 @@
+{
+    "id": "ssh_events",
+    "name": "SSH Events",
+    "description": "SSH logs, with scores",
+    "entities": [ "ssh", "persons" ],
+    "entitiesJoin": [
+        {
+            "persons": "username",
+            "ssh": "normalized_username"
+        }
+    ],
+    "paramControls": [
+        {
+            "controlId": "minscore",
+            "param": "ssh.eventscore",
+            "formatParam": ">={{value}}",
+            "hide": true
+        },
+        {
+            "label": "Get data since",
+            "type": "date",
+            "param": "ssh.date_time",
+            "value": "-7d",
+            "isRequired": true,
+            "hide": true,
+            "defaultValueOnly": true,
+            "formatParam": ">={{value:date:unixtimestamp}}",
+            "settings": {
+                "maxDate": "0",
+                "startOfDay": true
+            }
+        }
+    ],
+    "visualizations": [
+        {
+            "id": "ssh_events_Time",
+            "title": "SSH Events Over Time",
+            "widgetId": "visualizations.time_scatterplot",
+            "settings": {
+                "timeField": "date_time",
+                "colorField": "eventscore",
+                "colorScale": "score",
+                "onSelect": {
+                    "action": "showTooltip",
+                    "actionOptions": {
+                        "table": {
+                            "rows": [
+                                {
+                                    "label": "User",
+                                    "value": "{{displayname || username}}"
+                                },
+                                {
+                                    "label": "Source",
+                                    "value": "{{hostname}}"
+                                },
+                                {
+                                    "label": "Destination",
+                                    "value": "{{target_machine}}"
+                                },
+                                {
+                                    "label": "Status",
+                                    "value": "{{status}}"
+                                },
+                                {
+                                    "label": "Auth Method",
+                                    "value": "{{auth_method}}"
+                                },
+                                {
+                                    "label": "Time",
+                                    "value": "{{date_time:date}}"
+                                },
+                                {
+                                    "label": "Score",
+                                    "value": "{{eventscore}}"
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "height": "250",
+            "data": {
+                "mainEntity": "ssh",
+                "fields": [
+                    {
+                        "field": "displayname",
+                        "entity": "persons"
+                    },
+                    {
+                        "field": "username",
+                        "entity": "ssh"
+                    },
+                    {
+                        "field": "hostname",
+                        "entity": "ssh"
+                    },
+                    {
+                        "field": "target_machine",
+                        "entity": "ssh"
+                    },
+                    {
+                        "field": "status",
+                        "entity": "ssh"
+                    },
+                    {
+                        "field": "auth_method",
+                        "entity": "ssh"
+                    },
+                    {
+                        "field": "date_time",
+                        "entity": "ssh"
+                    },
+                    {
+                        "field": "eventscore",
+                        "entity": "ssh"
+                    }
+                ],
+                "sort": {
+                    "field": "date_time",
+                    "direction": -1
+                },
+                "limit": 200
+            }
+        },
+		{
+			"id": "user_machines",
+			"title": "Events Per Source Machine Count",
+			"widgetId": "visualizations.user_machines_bars",
+			"height": 300,
+			"settings": {
+				"onSelect": {
+					"action": "innerUrl",
+					"actionOptions": {
+						"url": "/d/investigate/ssh_events?ssh.hostname={{label}}"
+					}
+				}
+			},
+			"data": {
+				"mainEntity": "ssh",
+				"fields": [
+					{
+						"field": "hostname",
+						"alias": "label",
+						"entity": "ssh",
+						"func": "hostname"
+					},
+					{
+						"field": "date_time",
+						"alias": "login_count",
+						"func": "count(*)",
+						"entity": "ssh"
+					}
+				],
+				"groupBy": "hostname",
+				"limit": 50
+			}
+		},
+		{
+            "id": "ssh_target_machines",
+            "title": "Events Per Target Machine Count",
+            "widgetId": "visualizations.user_machines_bars",
+            "height": 300,
+            "data": {
+                "mainEntity": "ssh",
+                "fields": [
+                    {
+                        "field": "target_machine",
+                        "alias": "label",
+                        "entity": "ssh",
+                        "func": "lcase(target_machine)"
+                    },
+                    {
+                        "field": "date_time",
+                        "alias": "login_count",
+                        "func": "count(*)",
+                        "entity": "ssh"
+                    }
+                ],
+                "groupBy": "lcase(target_machine)",
+                "limit": 50
+            }
+        },
+		{
+			"id": "machine_users",
+			"title": "Events Per User Count",
+			"widgetId": "visualizations.user_machines_bars",
+			"height": 300,
+			"settings": {
+				"onSelect": {
+					"action": "innerUrl",
+					"actionOptions": {
+						"url": "/d/investigate/ssh_events?ssh.username={{username}}"
+					}
+				}
+			},
+			"data": {
+				"mainEntity": "ssh",
+				"fields": [
+					{
+						"field": "username",
+						"entity": "ssh"
+					},
+					{
+						"field": "displayname",
+						"alias": "label",
+						"entity": "persons"
+					},
+					{
+						"field": "date_time",
+						"alias": "login_count",
+						"func": "count(*)"
+					}
+				],
+				"groupBy": "username, displayname",
+				"limit": 50
+			}
+		},
+        {
+            "id": "ssh_machine_users_bubbles",
+            "title": "SSH Target Machines To Users Comparison (Bubbles)",
+            "widgetId": "visualizations.ssh_machine_users_bubbles",
+            "height": 680,
+            "data": {
+                "mainEntity": "ssh",
+                "fields": [
+                    {
+                        "field": "id",
+                        "entity": "persons"
+                    },
+                    {
+                        "field": "displayname",
+                        "entity": "persons"
+                    },
+                    {
+                        "field": "username",
+                        "entity": "ssh"
+                    },
+                    {
+                        "field": "sshscore",
+                        "entity": "persons"
+                    },
+                    {
+                        "field": "target_machine",
+                        "entity": "ssh"
+                    }
+                ],
+                "groupBy": "id, displayname, sshscores.username, target_machine, sshscore",
+                "limit": 80,
+                "sort": {
+                    "field": "sshscore",
+                    "direction": -1
+                }
+            }
+        },
+        {
+            "id": "user_ssh_machines_bubbles",
+            "title": "Users To SSH Target Machines Comparison (Bubbles)",
+            "widgetId": "visualizations.user_ssh_machines_bubbles",
+            "height": 680,
+            "data": {
+                "mainEntity": "ssh",
+                "fields": [
+                    {
+                        "field": "id",
+                        "entity": "persons"
+                    },
+                    {
+                        "field": "displayname",
+                        "entity": "persons"
+                    },
+                    {
+                        "field": "username",
+                        "entity": "ssh"
+                    },
+                    {
+                        "field": "sshscore",
+                        "entity": "persons"
+                    },
+                    {
+                        "field": "target_machine",
+                        "entity": "ssh"
+                    }
+                ],
+                "groupBy": "id, displayname, sshscores.username, target_machine, sshscore",
+                "limit": 80,
+                "sort": {
+                    "field": "sshscore",
+                    "direction": -1
+                }
+            }
+        },
+        {
+            "id": "user_ssh_machines_heat_map",
+            "title": "Users To SSH Target Machines Comparison",
+            "widgetId": "visualizations.user_ssh_machines_heat_map",
+            "mock_data":"visualizations.user_ssh_machines_bubbles",
+            "height": 680,
+            "data": {
+                "mainEntity": "ssh",
+                "fields": [
+                    {
+                        "field": "id",
+                        "entity": "persons"
+                    },
+                    {
+                        "field": "displayname",
+                        "entity": "persons"
+                    },
+                    {
+                        "field": "username",
+                        "entity": "ssh"
+                    },
+                    {
+                        "field": "sshscore",
+                        "entity": "persons"
+                    },
+                    {
+                        "field": "target_machine",
+                        "entity": "ssh"
+                    }
+                ],
+                "groupBy": "id, displayname, sshscores.username, target_machine, sshscore",
+                "limit": 80,
+                "sort": {
+                    "field": "sshscore",
+                    "direction": -1
+                }
+            }
+        }
+    ]
+}

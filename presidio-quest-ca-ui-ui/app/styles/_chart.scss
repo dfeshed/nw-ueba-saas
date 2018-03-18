@@ -1,0 +1,106 @@
+svg.graph{
+  margin: 0 auto;
+
+  .legend{
+    text{
+      fill: #666666;
+    }
+  }
+}
+
+.chart{
+  font-family: Roboto Condensed, sans-serif;
+
+  .axis path,
+  .axis line {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;
+  }
+
+
+  .axis text {
+    font-family: sans-serif;
+    font-size: 11px;
+  }
+
+  .labels{
+    pointer-events: none;
+
+    &.selected{
+      color: White;
+    }
+  }
+
+  .crisp{
+    shape-rendering: crispEdges;
+  }
+
+  .handle-events{
+    cursor: pointer;
+
+    &.label-box{
+      opacity: 0;
+      -webkit-transition: opacity 300ms ease-out;
+
+      &.selected{
+        opacity: 1 !important;
+      }
+      &:hover{
+        opacity: .2;
+      }
+    }
+  }
+
+  .vertical-bar{
+
+    &:hover{
+    }
+  }
+
+  .line {
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 1.5px;
+  }
+
+  .point{
+    stroke-width: 10px;
+    stroke: transparent;
+    -webkit-transition: stroke 200ms ease-out;
+
+    &:hover{
+      stroke: rgba(159, 193, 206, 0.53);
+    }
+  }
+}
+
+.chart-description{
+  float: left;
+  font-weight: bold;
+}
+
+.chart-legend {
+  text-align: right;
+
+  li {
+    display: inline-block;
+    margin: 0 10px 0 0;
+  }
+}
+
+.highchart-chart-container{
+	width: 100%;
+	height: 100%;
+}
+
+.highchart-bar-chart-container{
+	width: 97%;
+	height: 100%;
+}
+
+.highchart-bar-chart-container-parent{
+	height: 95%;
+	overflow-y: auto;
+	overflow-x: hidden;
+}

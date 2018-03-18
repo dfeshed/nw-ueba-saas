@@ -1,0 +1,52 @@
+<a class="high-risk-user-row" ui-sref="user.baseline({userId: $ctrl.user.id})">
+    <!--<a class="high-risk-user-row" ui-sref="user.alert-overview({userId: $ctrl.user.id, alertId:'null2'})">-->
+    <!-- AVATAR -->
+    <div class="high-risk-user-row--avatar">
+        <div class="spacer"></div>
+        <div class="avatar-container">
+            <div class="image"
+                ng-if="$ctrl.user.image"
+                ng-style="{ 'background-image': 'url(data:image/png;base64,' + $ctrl.user.image + ')' }"></div>
+            <div class="image"
+                ng-if="!$ctrl.user.image"
+                ng-style="{ 'background-image': 'url(\'images/icons/users_general_user_color.png\')', border: 'none'}"></div>
+        </div>
+        <div class="spacer"></div>
+    </div>
+    <!-- END OF AVATAR -->
+
+    <!-- User Info -->
+    <div class="high-risk-user-row--info ">
+        <div class="high-risk-user-row--info--content">
+            <div class="high-risk-user-row--info--name high-risk-user-row--info--item">
+                {{$ctrl.user.fallBackDisplayName}}
+
+                <!-- Watched Icon -->
+                <div class="high-risk-user-row--watched">
+                    <!--<fs-svg-icon symbol-name="tracked-icon" ng-if="$ctrl.user.followed"></fs-svg-icon>-->
+                    <i class="fa fa-eye" aria-hidden="true" ng-if="$ctrl.user.followed"></i>
+
+                </div>
+                <!-- END OF Watched Icon -->
+            </div>
+            <div class="high-risk-user-row--info--position high-risk-user-row--info--item">
+                {{$ctrl.user.adInfo.position}}
+            </div>
+            <div class="high-risk-user-row--info--department high-risk-user-row--info--item">
+                {{$ctrl.user.adInfo.department}}
+            </div>
+            <div class="high-risk-user-row--info--tags high-risk-user-row--info--item">
+                <fs-tag tag="tag" ng-repeat="tag in $ctrl.userTags" class="no-remove"></fs-tag>
+                <!--<span class="user-tag" ng-repeat="tag in $ctrl.user.tags">{{tag}}</span>-->
+            </div>
+        </div>
+    </div>
+    <!-- END OF USER INFO -->
+
+    <!-- User Score -->
+    <div class="high-risk-user-row--score {{'high-risk-user-row--score--' + ($ctrl.user.scoreSeverity ? $ctrl.user.scoreSeverity.toLowerCase(): 'critical')}}">
+        {{$ctrl.user.score}}
+    </div>
+    <!-- END OF User Score -->
+
+</a>

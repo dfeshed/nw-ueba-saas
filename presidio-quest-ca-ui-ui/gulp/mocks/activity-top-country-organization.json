@@ -1,0 +1,14 @@
+{
+    "data": [
+        {
+            "country": "USA"
+        },
+        {
+            "country": "Germany"
+        }
+    ],
+    "total": 1,
+    "offset": 0,
+    "warning": null,
+    "info": null
+}

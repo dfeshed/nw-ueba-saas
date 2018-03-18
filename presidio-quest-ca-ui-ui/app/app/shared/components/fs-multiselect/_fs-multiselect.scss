@@ -1,0 +1,253 @@
+/************************
+*       VARIABLES       *
+*************************/
+
+@mixin fs-multiselect($labelWidth: 90px, $valueWidth: 212px, $basicFontSize: 14px) {
+
+    .fs-multiselect-container {
+        width: 100%;
+        display: block;
+        position: relative;
+        margin-bottom: 1em;
+        font-size: $basicFontSize;
+    }
+
+    .fs-multiselect-value-container {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        //.fs-multiselect-label {
+        //    width: $labelWidth;
+        //    text-align: left;
+        //    @include font-roboto-regular();
+        //    color: $clrGrey100;
+        //    font-size: $basicFontSize;
+        //}
+
+        .fs-multiselect-value {
+            width: $valueWidth;
+            font-size: $basicFontSize;
+            text-align: left;
+            box-sizing: border-box;
+            background-color: $clrWhite;
+            border: 1px solid $clrGrey40;
+            border-radius: 0;
+            position: relative;
+
+            .multi-select-label{
+                color: $clrGrey100;
+                font-size: $basicFontSize;
+            }
+
+            .caret {
+                position: absolute;
+                right: 25px;
+                top: calc(50% - 8px);
+                border-top: 4px solid $clrGrey80;
+            }
+            .multiselect-value-content {
+                width: #{$valueWidth - 32px};
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                @include font-roboto-regular();
+                color: $clrGrey80;
+
+                &.bold {
+                    font-weight: 700;
+                }
+            }
+            .dropdown-icon {
+                position: absolute;
+                right: 5px;
+                top: calc(50% - 7px);
+                width: 14px;
+                height: 14px;
+                stroke: #013f71;
+            }
+        }
+    }
+
+    .fs-multiselect-dropdown-list {
+        box-sizing: border-box !important;
+        background-color: $clrWhite;
+        width: 100%;
+        margin-top: 4px;
+        box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        //padding: 9px 13px;
+        overflow-y: hidden;
+        //margin-left: $labelWidth;
+        @include font-roboto-regular();
+        color: $clrGrey80;
+        position: absolute;
+        display: none;
+
+        .list-container {
+            border: 1px solid $clrGrey40;
+            box-sizing: border-box;
+            background-color:  #ffffff;
+            width: 100%;
+            @include scrollbar-type-1();
+            overflow-y: auto;
+
+        }
+
+        &.short {
+            height: auto;
+            .list-container {
+                height: auto;
+                overflow-y: auto;
+            }
+        }
+
+        &.long {
+            height: auto;
+            max-height: 32.5em;
+
+            .list-container {
+                height: auto;
+                max-height: 350px;
+                overflow-y: auto;
+            }
+        }
+
+        &.show {
+            display: block;
+            z-index: 1;
+        }
+
+        .search-container {
+            position: relative;
+
+            .search-icon {
+                width: 17px;
+                height: 17px;
+                position: absolute;
+                top: 2px;
+                left: 5px;
+                stroke: #ddd;
+            }
+
+            .fsicon-looking-glass {
+                left: 5px;
+                top: 12px;
+            }
+
+
+        }
+
+        label.k-checkbox-label {
+            font-size: $basicFontSize;
+            height: 100%;
+            display: block;
+            line-height: 33px;
+            margin-bottom: 0;
+            padding-left:31px;
+
+            &::after {
+                color: $clrGrey100 !important;
+            }
+        }
+        .k-checkbox:checked+.k-checkbox-label:before {
+            background-color: #ffffff;
+            border-color: #888888;
+            color: #013f71;
+            top: 25%;
+            margin-left:10px;
+        }
+
+        .k-checkbox+.k-checkbox-label:before {
+            background-color: #ffffff;
+            border-color: #888888;
+            color: #013f71;
+            top: 25%;
+            margin-left:10px;
+        }
+        .k-checkbox:checked+label {
+            background-color: #f0f7f8;
+            color: #004f8f;
+        }
+
+        .search {
+            width: 100%;
+            border: 1px solid #d3d8d9;
+            box-sizing: border-box;
+            background-color: #d3d8d9;
+            height: 30px;
+            @include font-roboto-light();
+            padding: 0 20px 0 25px;
+            font-size: $basicFontSize;
+            color:  #01294a;
+
+            &::-webkit-input-placeholder {
+                color: #01294a;
+                font-size: 12px;
+
+            }
+
+            &:focus {
+                border: 1px solid #d3d8d9;
+                outline: 0 none;
+                box-shadow: none;
+            }
+
+
+        }
+
+        .fs-li {
+            min-height: 33px;
+            line-height: 33px;
+
+            font-family: 'Open Sans', sans-serif;
+            color:  #0a0d24;
+            font-size: 14px;/* Approximation due to font substitution */
+
+            &:not(:last-child) {
+                border-bottom: 1px solid  #d3d8d9;
+            }
+        }
+    }
+
+    .fs-multiselect-buttons-group {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: flex-end;
+        align-items: center;
+        margin: 10px;
+
+        svg {
+            display: inline-block;
+        }
+
+        .check-mark-icon {
+            vertical-align: sub;
+            stroke: white;
+            fill: white;
+        }
+
+        .cancel {
+            background-color: transparent;
+            border: none;
+            box-shadow: none;
+            //@include font-roboto-regular();
+            font-family: 'Open Sans', sans-serif;
+            color:  #004f8f;
+            font-size: 14px;
+            font-weight: 400;
+            text-decoration: underline;
+
+            margin: 0 16px 0 0;
+            padding: 0;
+            outline: none;
+
+            &:hover {
+                font-weight: 800;
+            }
+
+        }
+    }
+}
+
+

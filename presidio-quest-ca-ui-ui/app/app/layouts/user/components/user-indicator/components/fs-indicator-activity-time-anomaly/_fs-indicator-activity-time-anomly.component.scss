@@ -1,0 +1,147 @@
+fs-indicator-activity-time-anomaly {
+
+
+    $clrGridBold: #008d92;
+    $clrGridLight: rgba(0, 141, 146, 0.1);
+
+    display: flex;
+    flex-flow: column nowrap;
+    flex: 1;
+
+    padding: 1vh 18%;
+
+    .title {
+        text-align: center;
+        font-size: 15px;
+        font-family: 'Open Sans', sans-serif;
+        font-weight: 700;
+        color: #666666;
+
+        margin-bottom: 1vh;
+
+        @media (max-height: 800px) {
+            font-size: 12px;
+        }
+    }
+
+    .grid-container {
+        display: flex;
+        flex-flow: row nowrap;
+
+        flex: 1;
+    }
+
+    .hours-column {
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: flex-end;
+
+        padding-right: 10px;
+    }
+
+    .day-spacer {
+        border-bottom: 1px solid $clrGridBold;
+        height: 1.5em;
+        box-sizing: border-box;
+    }
+
+    .hour-label {
+        height: calc((100% - 1.5em)/24);
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: center;
+
+        font-size: 12px;
+        font-family: 'RobotoSlab', sans-serif;
+        font-weight: 400;
+        color: #666666;
+
+    }
+
+    .day-label {
+        border-bottom: 1px solid $clrGridBold;
+        height: 1.5em;
+        box-sizing: border-box;
+        text-transform: capitalize;
+
+        font-size: 12px;
+        font-family: 'Open Sans', sans-serif;
+        font-weight: 400;
+        color: #666666;
+    }
+
+    .day-column {
+        display: flex;
+        flex-flow: column nowrap;
+
+        flex: 1;
+
+        box-sizing: border-box;
+
+        text-align: center;
+
+        &.last-column {
+            .hour-box {
+                border-right: 1px solid $clrGridBold;
+            }
+        }
+
+    }
+
+    .hour-box {
+        height: calc((100% - 1.5em)/24);
+        box-sizing: border-box;
+
+        border-left: 1px solid $clrGridBold;
+        border-bottom: 1px solid $clrGridLight;
+
+        background-color: transparent;
+        transition: background-color 0.4s;
+
+        &.active-hour {
+            background-color: #9EC8E4;
+            border-bottom: 1px solid #9EC8E4;
+
+            position: relative;
+
+            &.anomaly-hour {
+                background-color: #FF0000;
+                &:hover:after {
+                    color: #FF0000;
+                }
+            }
+
+            &.last-hour {
+                border-bottom: 1px solid $clrGridBold;
+            }
+
+            &:hover:after {
+                content: attr(tt);
+                position: absolute;
+                border: 1px solid grey;
+                background-color: #eeeeee;
+                padding: 5px;
+
+                font-size: 12px;
+                font-family: 'Open Sans', sans-serif;
+                font-weight: 400;
+                color: #666666;
+
+                border-radius: 5px;
+
+                width: 11em;
+
+                z-index: 100;
+
+                transform: translateX(-50%) translateY(-80%);
+            }
+        }
+
+        &.last-hour {
+            border-bottom: 1px solid $clrGridBold;
+        }
+
+
+
+    }
+}

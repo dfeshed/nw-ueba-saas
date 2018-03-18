@@ -1,0 +1,120 @@
+user-activity-top-applications {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    display: flex;
+    flex-flow: column nowrap;
+
+    .top-applications-outer-container {
+        flex: 1;
+        padding: 10px;
+
+        &.no-data {
+            display: flex;
+            flex-flow: column nowrap;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+
+    .top-application-row {
+        height: 25%;
+
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+    }
+
+    .system-icon {
+        width: 28px;
+        margin: 0 10px;
+        flex-shrink: 0;
+
+        .image {
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            background-position: center center;
+
+            border-radius: 50%;
+            height: 35px;
+            width: 35px;
+        }
+    }
+
+    .info-column {
+        flex: 1;
+
+        display: flex;
+        flex-flow: column nowrap;
+    }
+
+    .stats-row {
+        flex: 1;
+
+        display: flex;
+        flex-flow: row nowrap;
+    }
+
+    .percent {
+        color: #024d89;
+        font-family: 'RobotoSlab', sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 15px;
+        margin-right: 10px;
+    }
+
+    .machine-name {
+        color: #024d89;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 18px;
+    }
+
+    .horizontal-bar-wrapper {
+        margin-top: 5px;
+        width: 100%;
+        height: 5px;
+        flex-shrink: 0;
+        position: relative;
+    }
+
+    .horizontal-bar-inner {
+        position: absolute;
+        height: 100%;
+        top: 0;
+        left: 0;
+        width: 0;
+        background-color: #30a2f0;
+
+        transition: width 2s ease-in;
+
+        &.bar-closed {
+            width: 0 !important;
+        }
+    }
+
+    .no-data-box {
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: center;
+        align-items: center;
+
+        svg {
+            fill: #BDBFC0;
+        }
+
+        color: #024d89;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 18px;
+
+        text-align: center;
+
+    }
+}

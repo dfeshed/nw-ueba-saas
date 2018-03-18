@@ -1,0 +1,109 @@
+{
+    "data": [
+        {
+            "id": "57a68013e4b0d38c126b4d9c",
+            "name": "executive",
+            "displayName": "Executive",
+            "createsIndicator": true,
+            "active": true
+        },
+        {
+            "id": "57a68013e4b0d38c126b4d9e",
+            "name": "LR",
+            "displayName": "LR",
+            "createsIndicator": true,
+            "active": true
+        },
+        {
+            "id": "57a68013e4b0d38c126b4d9f",
+            "name": "service",
+            "displayName": "Service",
+            "createsIndicator": true,
+            "active": true
+        },
+        {
+            "id": "57a68013e4b0d38c126b4da0",
+            "name": "admin",
+            "displayName": "Admin",
+            "createsIndicator": true,
+            "active": true,
+            "rules": [
+                "cn=testgroup,ou=people,dc=example,dc=com", "ou=people,cd=example,dc=com", "some-regular-expression"
+            ]
+        },
+        {
+            "id": "57a680f9e4b0622cac24f406",
+            "name": "Sweeper",
+            "displayName": "Sweeper",
+            "createsIndicator": false,
+            "active": true
+        },
+        {
+            "id": "57a680f9e4b0622cac24f407",
+            "name": "Server",
+            "displayName": "Server",
+            "createsIndicator": false,
+            "active": true
+        },
+        {
+            "id": "57a680f9e4b0622cac24f408",
+            "name": "Endpoint",
+            "displayName": "Endpoint",
+            "createsIndicator": false,
+            "active": true
+        },
+        {
+            "id": "57a680fae4b0622cac24f409",
+            "name": "Fixed Source",
+            "displayName": "Fixed Source",
+            "createsIndicator": false,
+            "active": true
+        },
+        {
+            "id": "57a681d9e4b02d1d86210a65",
+            "name": "Queen",
+            "displayName": "Queen of the World",
+            "createsIndicator": true,
+            "active": true
+        },
+        {
+            "id": "57a681d9e4b02d1d86210a66",
+            "name": "Human Resources",
+            "displayName": "Human Resources",
+            "createsIndicator": true,
+            "active": true
+        },
+        {
+            "id": "57a681d9e4b02d1d86210a67",
+            "name": "Marketing",
+            "displayName": "Marketing",
+            "createsIndicator": true,
+            "active": true
+        },
+        {
+            "id": "57a681d9e4b02d1d86210a68",
+            "name": "Profesional Service Accounts",
+            "displayName": "Profesional Service Accounts",
+            "createsIndicator": true,
+            "active": true
+        },
+        {
+            "id": "57a681d9e4b02d1d86210a69",
+            "name": "Research & Development",
+            "displayName": "Research & Development",
+            "createsIndicator": false,
+            "active": false
+        },
+        {
+            "id": "57a681d9e4b02d1d86210a6a",
+            "name": "Sales",
+            "displayName": "Sales",
+            "createsIndicator": false,
+            "active": false
+        }
+    ],
+    "total": 19,
+    "offset": 0,
+    "warning": null,
+    "info": null
+}

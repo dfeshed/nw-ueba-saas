@@ -1,0 +1,120 @@
+overview-alert-status {
+    flex: 1 0;
+
+    display: flex;
+    flex-flow: column nowrap;
+
+    .alert-status-container {
+        flex: 1 0;
+        padding: 1vh 6.5% 1%;
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: stretch;
+
+        &--stats-pane {
+            flex: 1;
+
+            display: flex;
+            flex-flow: column nowrap;
+
+            &.left-pane {
+                padding-right: 6%;
+            }
+
+            &.right-pane {
+                padding-left: 6%;
+            }
+
+            .time-stat {
+                color: #024d89;
+                font-family: 'Open Sans', sans-serif;
+                font-size: 14px;
+                font-weight: 700;
+                line-height: 21px;
+
+                margin-bottom: 1%;
+            }
+
+            .distribution-stat {
+
+                display: flex;
+                flex-flow: row nowrap;
+
+                font-family: 'RobotoSlab', sans-serif;
+                font-size: 16px;
+                font-weight: 700;
+                line-height: 15px;
+
+                &--single {
+                    display: flex;
+                    flex-flow: row nowrap;
+
+                    margin-right: 15px;
+
+                    cursor: pointer;
+                    transform: scale(1);
+
+                    transition: transform 0.2s;
+                    &:hover {
+                        transform: scale(1.1);
+                    }
+                }
+
+                &--amount {
+                    margin-right: 5px;
+                }
+
+                &--closed {
+                    &--amount {
+                        color: #35a6da;
+                    }
+                }
+
+                &--open {
+                    &--amount {
+                        color: #024d89;
+                    }
+                }
+
+                &--label {
+                    color: #01294a;
+                    font-family: 'Open Sans', sans-serif;
+                    font-size: 12px;
+                    font-weight: 400;
+                    line-height: 18px;
+                }
+            }
+
+            .chart-container {
+                flex: 1;
+
+                display: flex;
+                flex-flow: column nowrap;
+
+                padding-top: 0.5vh;
+
+                &--outer-wrapper {
+                    flex: 1;
+                    position: relative;
+                }
+
+                &--inner-wrapper {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                }
+            }
+        }
+
+        &--divider {
+            width: 2px;
+            background-image: url('../../images/divider-vertical-blue-gradient-01.png');
+            background-size: 100% 100%;;
+        }
+
+    }
+
+
+}

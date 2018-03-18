@@ -1,0 +1,28 @@
+.fs-score-icon {
+    display: inline-block;
+    margin-right: 5px;
+
+    &.fs-score-icon-red {
+        i {
+            color: $severityCriticalColor;
+        }
+    }
+    &.fs-score-icon-orange {
+        i {
+            color: $severityHighColor;
+        }
+    }
+    &.fs-score-icon-yellow {
+        i {
+            color: $severityMediumColor;
+        }
+    },
+&.fs-score-icon-low {
+    i {
+        color: $severityLowColor;
+    }
+}
+    &.fs-score-icon-hide {
+        display: none;
+    }
+}

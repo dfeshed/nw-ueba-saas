@@ -1,0 +1,143 @@
+$cardPadding: 1rem;
+$cardHeaderHeight: 26px;
+
+.card{
+  border-radius: 2px;
+  background: White;
+  border: solid 1px #d9d9d9;
+  margin-bottom: 1rem;
+  position: relative;
+
+  &.loading{
+    .card-message.card-loading{
+      display: block;
+    }
+  }
+
+  &.flex-1{
+    margin-bottom: 0
+  }
+
+  &.no-border{
+    border: none;
+    padding: 0;
+    background: none;
+    margin: 0;
+
+    & > .card-contents{ padding: 0 }
+  }
+
+  &.contents-only{
+    & > .card-contents{ padding: 0 }
+  }
+  .card-header{
+    @extend .flex-horizontal;
+    background: #d5d9d9;
+    padding: .5rem .5rem .5rem $cardPadding;
+    min-height: $cardHeaderHeight;
+
+    h3{
+      font-weight: bold;
+      font-size: 1.1rem;
+
+    }
+
+    .card-header-controls{
+      @extend .flex-1;
+      text-align: right;
+    }
+
+    .card-header-button{
+      width: $cardHeaderHeight;
+      background-repeat: no-repeat;
+      background-size: 60%;
+      background-position: center center;
+      text-align: center;
+      color: #333;
+      font-size: 1.2rem;
+      line-height: $cardHeaderHeight;
+      opacity: .5;
+      text-decoration: none;
+      margin-left: 6px;
+
+      &:hover{
+        opacity: 1;
+      }
+    }
+
+    .card-header-text{
+      margin: 5px 0 0;
+      color: rgba(0,0,0,.7);
+    }
+  }
+
+  & > .control-params{
+    border-top: solid 1px #C9C9C9;
+    min-height: 30px;
+    padding: 8px;
+  }
+  .card-contents{
+    padding: $cardPadding;
+  }
+
+  .card-message{
+    text-align: center;
+    font-size: 1.3em;
+    color: #767676;
+    line-height: 25px;
+    clear: both;
+    padding: 1.5em 1em;
+
+    &.card-loading{
+      display: none;
+      cursor: wait;
+      text-align: center;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255,255,255,.85);
+      box-sizing: border-box;
+      border-radius: 0 0 3px 3px;
+
+      .card-loading-message{
+        display: block;
+        margin: 0 auto;
+        top: 50%;
+        position: relative;
+      }
+
+      .card-message-contents{
+        display: block;
+        font-weight: bold;
+        top: 50%;
+        height: 30px;
+        width: 30px;
+        left: 50%;
+        margin-left: -15px;
+        margin-top: -15px;
+        font-size: 2em;
+        box-shadow: none;
+        padding: 0;
+        position: absolute;
+      }
+    }
+    a{ pointer-events: all; }
+
+    .card-message-contents{
+      display: inline-block;
+      padding: 5px 10px;
+      font-weight: bold;
+      border-radius: 0 0 4px 5px;
+      position: relative;
+      top: -9px;
+      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
+
+      a{
+        cursor: pointer;
+        text-decoration: underline;
+      }
+    }
+  }
+}

@@ -1,0 +1,37 @@
+<fs-card-header card-title="{{::$ctrl.description}} Devices <span class='fs-card-title-small'>(Top 4, Last 90 Days)</span>"></fs-card-header>
+<div class="source-devices-outer-container" ng-class="{'no-data': !$ctrl.devices.length}">
+    <div class="source-device-row" ng-repeat="device in $ctrl.devices" ng-if="$ctrl.devices.length">
+        <!-- icon -->
+        <div class="system-icon">
+            <fs-svg-icon symbol-name="{{::'system-' + device.deviceType.toLowerCase() + '-icon'}}"
+                attributes="{width: 28, height: 28}" ng-if="device.deviceName !== 'Others' && device.deviceType"></fs-svg-icon>
+            <fs-svg-icon symbol-name="computer-icon"
+                attributes="{width: 28, height: 28}" ng-if="device.deviceName === 'Others' || !device.deviceType"></fs-svg-icon>
+        </div>
+
+        <!-- Info -->
+        <div class="info-column">
+            <div class="stats-row">
+                <span class="percent">{{::device.percent}}%</span>
+                <span class="machine-name">{{::device.deviceName}}</span>
+            </div>
+            <div class="horizontal-bar-wrapper">
+                <div class="horizontal-bar-inner" ng-class="{'bar-closed': !device.active}" ng-style="{width: device.percent + '%'}"></div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="no-data-box" ng-if="!$ctrl.devices.length && $ctrl.devices">
+        <div class="icon">
+            <fs-svg-icon symbol-name="computer-icon"
+                attributes="{width: 52, height: 52}"></fs-svg-icon>
+        </div>
+        <div class="title">
+            No {{::$ctrl.description}} Devices
+        </div>
+    </div>
+
+
+</div>

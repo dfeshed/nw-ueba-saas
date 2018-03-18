@@ -1,0 +1,83 @@
+<div class="alerts-record-menu-container">
+    <div class="fsicon-record-menu" style=""></div>
+    <div class="drop-down-menu-container" >
+        <div class="menu-container-top-border"></div>
+        <ul class="fs-menu-item-group">
+            <li class="fs-menu-item">
+                <a ng-href="{{recordMenuCtrl.getInvestigateHref(recordMenuCtrl.dataItem)}}" ng-if="recordMenuCtrl.isOpened">
+                    <span class="fs-menu-right-arrow fs-menu-arrow">
+                        <!--<i class="fa fa-caret-left"></i>-->
+                    </span>
+                    <span class="fs-menu-item-icon">
+                        <img src="images/icons/investigate.png">
+                    </span>
+                    <span class="fs-menu-item-text">Investigate</span>
+                </a>
+
+            </li>
+        </ul>
+
+        <hr>
+        <ul class="fs-menu-item-group" ng-if="recordMenuCtrl.isOpened">
+            <li class="fs-menu-item" >
+                <a>
+                    <span class="fs-menu-right-arrow fs-menu-arrow">
+                        <!--<i class="fa fa-caret-left"></i>-->
+                    </span>
+                    <span class="fs-menu-item-icon">
+                        <img src="images/icons/reopen_menu.png" ng-show="recordMenuCtrl.dataItem.status != 'Open'">
+                        <img src="images/icons/close_alert_menu.png" ng-hide="recordMenuCtrl.dataItem.status != 'Open'">
+                    </span>
+                    <span class="fs-menu-item-text" ng-click="recordMenuCtrl.changeAlertStatus(recordMenuCtrl.dataItem)">
+                        <span ng-show="recordMenuCtrl.dataItem.status != 'Open'">Open</span>
+                        <span ng-hide="recordMenuCtrl.dataItem.status != 'Open'">Close</span>
+                    </span>
+
+                </a>
+            </li>
+        </ul>
+
+        <!-- Example how to proceed -->
+
+        <!--<hr>-->
+        <!--<ul class="fs-menu-item-group">-->
+
+            <!--<li class="fs-menu-item">-->
+                <!--<a>-->
+                    <!--<span class="fs-menu-right-arrow fs-menu-arrow">-->
+                        <!--<i class="fa fa-caret-left"></i>-->
+                    <!--</span>-->
+                    <!--<span class="fs-menu-item-icon">-->
+                        <!--<img src="images/icons/investigate.png">-->
+                    <!--</span>-->
+                    <!--<span class="fs-menu-item-text">Accept & Close</span>-->
+                <!--</a>-->
+
+            <!--</li>-->
+            <!--<li class="fs-menu-item">-->
+                <!--<a>-->
+                    <!--<span class="fs-menu-right-arrow fs-menu-arrow">-->
+                        <!--<i class="fa fa-caret-left"></i>-->
+                    <!--</span>-->
+                    <!--<span class="fs-menu-item-icon">-->
+                        <!--<img src="images/icons/investigate.png">-->
+                    <!--</span>-->
+                    <!--<span class="fs-menu-item-text">Investigate</span>-->
+                <!--</a>-->
+
+            <!--</li>-->
+            <!--<li class="fs-menu-item">-->
+                <!--<a>-->
+                    <!--<span class="fs-menu-right-arrow fs-menu-arrow">-->
+                        <!--<i class="fa fa-caret-left"></i>-->
+                    <!--</span>-->
+                    <!--<span class="fs-menu-item-icon">-->
+                        <!--<img src="images/icons/investigate.png">-->
+                    <!--</span>-->
+                    <!--<span class="fs-menu-item-text">Investigate</span>-->
+                <!--</a>-->
+
+            <!--</li>-->
+        <!--</ul>-->
+    </div>
+</div>

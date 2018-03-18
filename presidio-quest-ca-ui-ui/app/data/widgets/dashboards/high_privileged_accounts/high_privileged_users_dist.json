@@ -1,0 +1,25 @@
+{
+    "id": "high_privileged_users_dist",
+    "title": "{{@accountType:capitalize}} Accounts Distribution",
+    "descriptions": "Number of {{@accountType}} accounts per {{@dist_field}}",
+    "reportId": "dashboards.high_privileged_accounts.high_privileged_accounts_dist",
+    "height": 220,
+    "controls": [
+        {
+            "controlId": "account_properties"
+        }
+    ],
+    "views": [
+        {
+            "type": "pie",
+            "settings": {
+                "label": "users_group",
+                "value": "members_count",
+                "emptyLabelDisplay":"Unknown",
+                "options": {
+                    "radius": 80
+                }
+            }
+        }
+    ]
+}

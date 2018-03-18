@@ -1,0 +1,196 @@
+<!-- Authentication Attributes Container -->
+<div class="user-attributes-container" ng-if="!attrCtrl.getDlpMode()">
+    <!-- Column: Locations, User Devices, Target Devices -->
+    <div class="attributes-column location-column">
+
+        <!-- Locations Attribute -->
+        <div class="attributes-row user-box-outer-wrapper">
+            <div class="user-box-inner-wrapper padding-bottom padding-right">
+                <div class="user-box"
+                    ng-class="{'user-box-active': attrCtrl.activities.organization.topCountries && attrCtrl.activities.user.topCountries}">
+                    <user-activity-countries user-countries="attrCtrl.activities.user.topCountries"
+                        organization-countries="attrCtrl.activities.organization.topCountries"
+                        user-model="attrCtrl.user"></user-activity-countries>
+                </div>
+            </div>
+        </div>
+        <!-- END OF Locations Attribute -->
+
+        <!-- Row: User Device, Target Device -->
+        <div class="attributes-row">
+
+            <!-- User Devices -->
+            <div class="attributes-column user-box-outer-wrapper">
+                <div class="user-box-inner-wrapper padding-top padding-right">
+                    <div class="user-box" ng-class="{'user-box-active': attrCtrl.activities.user.sourceDevices}">
+                        <user-activity-devices devices="attrCtrl.activities.user.sourceDevices"
+                            description="User"></user-activity-devices>
+                    </div>
+                </div>
+            </div>
+            <!-- END OF User Devices -->
+
+
+
+            <!-- Target Devices -->
+            <div class="attributes-column user-box-outer-wrapper">
+                <div class="user-box-inner-wrapper padding-top padding-left padding-right">
+                    <div class="user-box" ng-class="{'user-box-active': attrCtrl.activities.user.targetDevices}">
+                        <user-activity-devices devices="attrCtrl.activities.user.targetDevices"
+                            description="Target"></user-activity-devices>
+                    </div>
+                </div>
+            </div>
+            <!-- END OF Target Devices -->
+
+        </div>
+        <!-- END OF Row: User Device, Target Device -->
+
+    </div>
+    <!-- END OF Column: Locations, User Devices, Target Devices -->
+
+    <!-- Right Column: Authentications, Working Hours, Data Usage -->
+    <div class="attributes-column authentication-column">
+
+        <!-- Row Authentications, Working Hours -->
+        <div class="attributes-row">
+            <div class="attributes-column">
+
+                <!-- Authentication -->
+                <div class="attributes-row user-box-outer-wrapper">
+                    <div class="user-box-inner-wrapper padding-left padding-bottom">
+                        <div class="user-box " ng-class="{'user-box-active': attrCtrl.activities.user.authentications}">
+                            <user-activity-authentication authentications="attrCtrl.activities.user.authentications"></user-activity-authentication>
+                        </div>
+                    </div>
+                </div>
+                <!-- END OF Authentication -->
+
+                <!-- Working Hours -->
+                <div class="attributes-row user-box-outer-wrapper">
+                    <div class="user-box-inner-wrapper padding-top padding-left padding-bottom">
+                        <div class="user-box" ng-class="{'user-box-active': attrCtrl.activities.user.workingHours}">
+                            <user-activity-working-hours working-hours="attrCtrl.activities.user.workingHours"></user-activity-working-hours>
+                        </div>
+                    </div>
+                </div>
+                <!-- END OF Working Hours -->
+            </div>
+        </div>
+        <!-- END OF Row Authentications, Working Hours -->
+
+        <!-- Data Usage -->
+        <div class="attributes-row user-box-outer-wrapper">
+            <div class="user-box-inner-wrapper padding-left padding-top">
+                <div class="user-box" ng-class="{'user-box-active': attrCtrl.activities.user.dataUsages}">
+                    <user-activity-data-usages ddata-usages="attrCtrl.activities.user.dataUsages" title="Data Usage"
+                                          keys="['vpn_session.databucket_histogram', 'oracle.db_object_histogram', 'prnlog.sum_of_file_size']"></user-activity-data-usages>
+                </div>
+            </div>
+        </div>
+        <!-- END OF Data Usage -->
+
+    </div>
+    <!-- END OF Right Column: Authentications, Working Hours, Data Usage -->
+</div><!-- END OF Attributes Container -->
+
+<!-- DLP Attributes container Attributes Container -->
+<div class="user-attributes-container" ng-if="attrCtrl.getDlpMode()">
+    <!-- Column: Locations, User Devices, Target Devices -->
+    <div class="attributes-column authentication-column">
+
+        <!-- Top Applications -->
+            <div class="attributes-row user-box-outer-wrapper">
+                <div class="user-box-inner-wrapper padding-bottom padding-right">
+                    <div class="user-box" ng-class="{'user-box-active': attrCtrl.activities.user.sourceDevices}">
+                        <user-activity-top-applications applications="attrCtrl.activities.user.topApplications"
+                                                        description="Top Applications"></user-activity-top-applications>
+                    </div>
+                </div>
+            </div>
+
+
+        <!-- Source Device-->
+        <div class="attributes-row user-box-outer-wrapper">
+            <div class="user-box-inner-wrapper padding-top padding-right">
+                <div class="user-box" ng-class="{'user-box-active': attrCtrl.activities.user.sourceDevices}">
+                    <user-activity-devices devices="attrCtrl.activities.user.sourceDevices"
+                                           description="User"></user-activity-devices>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+    <!-- END OF Column: Locations, User Devices, Target Devices -->
+
+    <!-- Column: Top Directories, Email Recipient Domains -->
+    <div class="attributes-column authentication-column">
+        <div class="attributes-row user-box-outer-wrapper">
+            <div class="user-box-inner-wrapper padding-bottom padding-right padding-left">
+                <div class="user-box" ng-class="{'user-box-active': attrCtrl.activities.user.sourceDevices}">
+                    <user-activity-top-directories directories="attrCtrl.activities.user.topDirectories"
+                                                   description="Top Network Directories"></user-activity-top-directories>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="attributes-row user-box-outer-wrapper">
+            <div class="user-box-inner-wrapper padding-top padding-right padding-left">
+                <div class="user-box" ng-class="{'user-box-active': attrCtrl.activities.user.sourceDevices}">
+                    <user-activity-top-recipients-domains recipients-domains="attrCtrl.activities.user.topRecipientsDomains"
+                                                   description="Top Recipient Domains"></user-activity-top-recipients-domains>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <!-- END OF Column: Locations, User Devices, Target Devices -->
+
+    <!-- Column: Locations, User Devices, Target Devices -->
+    <div class="attributes-column authentication-column">
+        <!-- Row Authentications, Working Hours -->
+        <div class="attributes-row">
+            <div class="attributes-column">
+
+                <!-- Authentication -->
+                <div class="attributes-row user-box-outer-wrapper">
+                    <div class="user-box-inner-wrapper padding-left padding-bottom">
+                        <div class="user-box" ng-class="{'user-box-active': attrCtrl.activities.user.classificationExposure}">
+                            <user-activity-classification-exposure classifications="attrCtrl.activities.user.classificationExposure"></user-activity-classification-exposure>
+                        </div>
+                    </div>
+                </div>
+                <!-- END OF Authentication -->
+
+                <!-- Working Hours -->
+                <div class="attributes-row user-box-outer-wrapper">
+                    <div class="user-box-inner-wrapper padding-top padding-left padding-bottom">
+                        <div class="user-box" ng-class="{'user-box-active': attrCtrl.activities.user.workingHours}">
+                            <user-activity-working-hours working-hours="attrCtrl.activities.user.workingHours"></user-activity-working-hours>
+                        </div>
+                    </div>
+                </div>
+                <!-- END OF Working Hours -->
+            </div>
+        </div>
+        <!-- END OF Row Authentications, Working Hours -->
+
+        <!-- Data usage- Media Transfer-->
+        <div class="attributes-row user-box-outer-wrapper">
+            <div class="user-box-inner-wrapper padding-top padding-left">
+                <div class="user-box" ng-class="{'user-box-active': attrCtrl.activities.user.sourceDevices}">
+                    <user-activity-data-usages ddata-usages="attrCtrl.activities.user.dataUsages" title="Data Transfer by Media Type"
+                                               keys="['dlpmail.attachment_file_size_histogram', 'prnlog.sum_of_file_size','dlpfile.sum_of_copied_files_to_removable_device_size']"></user-activity-data-usages>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+    <!-- END OF Column: Locations, User Devices, Target Devices -->
+</div><!-- END OF Attributes Container -->

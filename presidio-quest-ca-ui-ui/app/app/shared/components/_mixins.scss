@@ -1,0 +1,24 @@
+@mixin severity-tag($bgColor) {
+	background-color: $bgColor;
+	color: #222;
+    display: inline-block;
+    float: right;
+    font-weight: bold;
+    margin-right: 5px;
+    padding: 5px;
+    text-align: center;
+    width: 50px;
+}
+
+.severity-critical {
+    @include severity-tag($severityCriticalColor);
+}
+.severity-high {
+    @include severity-tag($severityHighColor);
+}
+.severity-medium {
+    @include severity-tag($severityMediumColor);
+}
+.severity-low {
+    @include severity-tag($severityLowColor);
+}

@@ -1,0 +1,64 @@
+user-indicator-description {
+    display: flex;
+    flex-flow: row nowrap;
+
+    padding: 2vh 20px 0;
+
+
+    .indicator-info {
+        flex: 1.2 0;
+
+        width: 50%;
+
+        display: flex;
+        flex-flow: column nowrap;
+
+        padding-right: 20px;
+
+        padding-bottom: 2vh;
+        border-bottom: 1px solid #adcdfa;
+
+        position: relative;
+    }
+
+
+    .indicator-info-item {
+        display: flex;
+        flex-flow: row nowrap;
+
+        line-height: calc(1vh + 12px);
+    }
+
+    .indicator-info-label {
+        width: 12em;
+        color: #024d89;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .indicator-info-value {
+        flex: 1 0;
+
+        color: #024d89;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 14px;
+        font-weight: 400;
+
+    }
+
+    .indicator-description {
+        flex: 1 0;
+        width: 50%;
+
+        color: #024d89;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 14px;
+        font-weight: 400;
+
+        padding-bottom: 2vh;
+        padding-left: 20px;
+        border-bottom: 1px solid #adcdfa;
+    }
+
+}

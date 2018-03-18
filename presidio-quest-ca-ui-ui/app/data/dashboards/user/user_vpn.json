@@ -1,0 +1,42 @@
+{
+    "dashboardId": "user_vpn",
+    "title": "{{@userName}}: VPN Events",
+    "description": "A summary of the user's VPN activity",
+	"show" : {
+		"conditions": [
+			{
+				"operator": "entityExists",
+				"value": "vpn"
+			}
+		]
+	},
+	"columns": [
+        {
+            "widgets": [
+                {
+                    "widgetId": "user_score_history",
+                    "params": {
+                        "classifier": "vpn"
+                    },
+					"noCache" : true,
+                    "title": "VPN Events Score History - Last 7 Days"
+                },
+                {
+                    "widgetId": "user_vpn_logins",
+                    "params": {
+                        "date": "now"
+                    },
+                    "refreshOn": "date"
+                },
+                {
+                    "widgetId": "user.user_logins_count",
+					"noDataMessage": "No VPN logins found",
+                    "title": "VPN Events Count",
+					"noCache" : true,
+                    "description": "Count of successful and failed VPN Events in the last 7 days",
+                    "reportId": "user.user_vpn_logins_count"
+                }
+            ]
+        }
+    ]
+}

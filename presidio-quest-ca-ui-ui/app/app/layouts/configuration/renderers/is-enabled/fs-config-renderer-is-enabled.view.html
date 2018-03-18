@@ -1,0 +1,25 @@
+<div class="config-item-card config-item-card-syslog-sending-method">
+    <!-- Header -->
+    <div class="config-item-card--header">
+        <div class="config-item-card--title">{{configItem.displayName}}</div>
+        <div class="config-item-card--description">{{configItem.description}}</div>
+    </div>
+    <!-- END OF Header -->
+
+    <!-- Values -->
+    <div class="config-item-card--values">
+
+        <input ng-model="configFormCtrl.configModels[configItem.id]" style="display:none" name="is-enabled-{{configItem.id}}">
+        <div class="switch-container" ng-click="ctrl.toggleState(configFormCtrl.configModels, configItem.id)">
+            <div class="switch-body">
+                 <span class="switch-button" ng-class="{'switch-on': configFormCtrl.configModels[configItem.id]}">
+                    {{configFormCtrl.configModels[configItem.id] ? 'Yes' : 'No'}}
+                </span>
+            </div>
+        </div>
+        <!-- END OF Local Value -->
+
+    </div>
+
+
+</div>

@@ -1,0 +1,42 @@
+{
+    "id": "ip_investigation",
+	"title": "IP Investigation",
+    "description": "Used to summarize important information that was gathered for a chosen IP address",
+    "controls": [
+		{
+			"label": "IP address",
+			"type": "text",
+			"param": "ip_investigation_events_ip_address",
+			"value": " ",
+			"isRequired": true
+		},
+        {
+            "label": "Events Time",
+            "type": "dateRange",
+            "param": "ip_investigation_events_dates",
+            "value": {
+                "timeStart": "-7d",
+                "timeEnd": "0d"
+            },
+			"isRequired": true
+        }
+    ],
+	"columns": [
+		{
+			"weight": 7,
+			"widgets": [
+				{
+					"widgetId": "machines_for_ip", "priority": 1
+				}
+			]
+		},
+		{
+			"weight": 7,
+			"widgets": [
+				{
+					"widgetId": "users_for_ip", "priority": 1
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,230 @@
+{
+    "score": [
+        {
+            "properties": {
+                "color": "#80BFF0"
+            },
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "lesserThan",
+                    "value": 50
+                }
+            ]
+        },
+        {
+            "properties": {
+                "color": "#F1CC37",
+                "font-weight": "bold"
+            },
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "greaterThanOrEquals",
+                    "value": 50
+                }
+            ]
+        },
+        {
+            "properties": {
+                "color": "#F59925",
+                "font-weight": "bold"
+            },
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "greaterThanOrEquals",
+                    "value": 80
+                }
+            ]
+        },
+        {
+            "properties": {
+                "color": "#D77576",
+                "font-weight": "bold"
+            },
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "greaterThanOrEquals",
+                    "value": 95
+                }
+            ]
+        }
+    ],
+    "textScore": [
+        {
+            "properties": {
+                "color": "#049cdb"
+            },
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "lesserThanOrEqual",
+                    "value": 50
+                }
+            ]
+        },
+        {
+            "properties": {
+                "color": "#F59925",
+                "font-weight": "bold"
+            },
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "greaterThan",
+                    "value": 50
+                }
+            ]
+        },
+        {
+            "properties": {
+                "color": "#D77576",
+                "font-weight": "bold"
+            },
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "greaterThanOrEquals",
+                    "value": 95
+                }
+            ]
+        }
+    ],
+    "highScore": [
+        {
+            "properties": {
+                "color": "#D77576",
+                "font-weight": "bold"
+            },
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "greaterThanOrEquals",
+                    "value": 60
+                }
+            ]
+        }
+    ],
+    "percentSeverity": [
+        {
+            "properties": {
+                "color": "#D77576",
+                "font-weight": "bold"
+            },
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "greaterThanOrEquals",
+                    "value": 30
+                }
+            ]
+        }
+    ],
+    "plusMinus": [
+        {
+            "properties": {
+                "color": "#D77576",
+                "font-weight": "bold"
+            },
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "greaterThan",
+                    "value": 0
+                }
+            ]
+        },
+        {
+            "properties": {
+                "color": "#80BFF0"
+            },
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "lesserThan",
+                    "value": 0
+                }
+            ]
+        }
+    ],
+    "failOrSuccess": [
+        {
+            "properties": {
+                "color": "#D77576",
+                "font-weight": "bold"
+            },
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "equals",
+                    "value": "FAIL"
+                }
+            ]
+        },
+        {
+            "properties": {
+                "color": "rgb(105, 184, 94)",
+                "font-weight": "bold"
+            },
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "equals",
+                    "value": "SUCCESS"
+                }
+            ]
+        }
+    ],
+    "severity": [
+        {
+            "properties": {
+                "color": "#80BFF0"
+            },
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "equals",
+                    "value": "Low"
+                }
+            ]
+        },
+        {
+            "properties": {
+                "color": "#F1CC37"
+            },
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "equals",
+                    "value": "Medium"
+                }
+            ]
+        },
+        {
+            "properties": {
+                "color": "#F59925"
+            },
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "equals",
+                    "value": "High"
+                }
+            ]
+        },
+        {
+            "properties": {
+                "color": "#D77576"
+            },
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "equals",
+                    "value": "Critical"
+                }
+            ]
+        }
+    ]
+}

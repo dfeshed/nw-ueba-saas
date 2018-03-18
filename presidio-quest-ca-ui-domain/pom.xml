@@ -1,0 +1,245 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>presidio.quest.ca</groupId>
+		<artifactId>presidio-quest-ca-ui</artifactId>
+		<version>1.1.0-SNAPSHOT</version>
+	</parent>
+
+	<name>presidio-quest-ca-ui-domain</name>
+	<artifactId>presidio-quest-ca-ui-domain</artifactId>
+	<version>1.1.0-SNAPSHOT</version>
+
+	<!--<repositories>-->
+		<!--<repository>-->
+			<!--<snapshots>-->
+				<!--<enabled>false</enabled>-->
+			<!--</snapshots>-->
+			<!--<id>libs-releases</id>-->
+			<!--<name>libs-release</name>-->
+			<!--<url>http://mirror.fortscale.dom/artifactory/libs-release</url>-->
+		<!--</repository>-->
+		<!--<repository>-->
+			<!--<snapshots>-->
+				<!--<enabled>true</enabled>-->
+			<!--</snapshots>-->
+			<!--<id>libs-snapshots</id>-->
+			<!--<name>libs-snapshot</name>-->
+			<!--<url>http://mirror.fortscale.dom/artifactory/libs-snapshot</url>-->
+		<!--</repository>-->
+		<!--<repository>-->
+			<!--<id>all-remotes</id>-->
+			<!--<name>remote-repos</name>-->
+			<!--<url>http://mirror.fortscale.dom/artifactory/remote-repos</url>-->
+		<!--</repository>-->
+	<!--</repositories>-->
+
+	<pluginRepositories>
+		<pluginRepository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>releases</id>
+			<name>plugins-release</name>
+			<url>http://mirror.fortscale.dom/artifactory/plugins-release</url>
+		</pluginRepository>
+		<pluginRepository>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<id>snapshots</id>
+			<name>plugins-snapshot</name>
+			<url>http://mirror.fortscale.dom/artifactory/plugins-snapshot</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<properties>
+		<joda-time.version>2.2</joda-time.version>
+		<fs-utils.version>${project.version}</fs-utils.version>
+		<hamcrest.version>1.3</hamcrest.version>
+		<thrift.version>0.9.0</thrift.version>
+		<commons-pool.version>1.4</commons-pool.version>
+		<!--<kite-version>1.0.0</kite-version>-->
+		<!-- maven plugins versions -->
+		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
+	</properties>
+
+	<dependencies>
+		<!--<dependency>-->
+			<!--<groupId>org.kitesdk</groupId>-->
+			<!--<artifactId>kite-morphlines-core</artifactId>-->
+			<!--<version>${kite-version}</version>-->
+		<!--</dependency>-->
+		<dependency>
+			<groupId>${project.parent.groupId}</groupId>
+			<artifactId>presidio-quest-ca-ui-utils</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${commons-lang3.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>${joda-time.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Test -->
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-library</artifactId>
+			<version>${hamcrest.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-core</artifactId>
+			<version>${hamcrest.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Spring dependencies -->
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-mongodb</artifactId>
+		</dependency>
+
+		<!--<dependency>-->
+			<!--<groupId>org.springframework.data</groupId>-->
+			<!--<artifactId>spring-data-hadoop</artifactId>-->
+			<!--<exclusions>-->
+				<!--<exclusion>-->
+					<!--<groupId>org.springframework</groupId>-->
+					<!--<artifactId>spring-context-support</artifactId>-->
+				<!--</exclusion>-->
+				<!--<exclusion>-->
+					<!--<groupId>org.slf4j</groupId>-->
+					<!--<artifactId>slf4j-log4j12</artifactId>-->
+				<!--</exclusion>-->
+				<!--<exclusion>-->
+					<!--<artifactId>jsp-api</artifactId>-->
+					<!--<groupId>javax.servlet.jsp</groupId>-->
+				<!--</exclusion>-->
+				<!--<exclusion>-->
+					<!--<artifactId>servlet-api-2.5</artifactId>-->
+					<!--<groupId>org.mortbay.jetty</groupId>-->
+				<!--</exclusion>-->
+				<!--<exclusion>-->
+					<!--<groupId>javax.servlet</groupId>-->
+					<!--<artifactId>servlet-api</artifactId>-->
+				<!--</exclusion>-->
+			<!--</exclusions>-->
+		<!--</dependency>-->
+
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-commons</artifactId>
+		</dependency>
+ 
+
+
+
+
+
+		<dependency>
+			<groupId>commons-pool</groupId>
+			<artifactId>commons-pool</artifactId>
+			<version>${commons-pool.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>${commons-codec.version}</version>
+		</dependency>
+		<!-- json parsing library -->
+		<dependency>
+			<groupId>net.minidev</groupId>
+			<artifactId>json-smart</artifactId>
+			<version>${json-smart.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-joda</artifactId>
+			<version>${jackson.datatype.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>${hibernate-validator.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>1.1.0.Final</version>
+		</dependency>
+
+		<!--                     -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.github.koraktor</groupId>
+				<artifactId>mavanagaiata</artifactId>
+				<version>${mavanagaiata.version}</version>
+				<executions>
+					<execution>
+						<id>git-commit</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>commit</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+				<archive>
+				<manifestEntries>
+					<version>${project.parent.version}</version>
+					<git-commit-id>${mvngit.commit.id}</git-commit-id>
+				</manifestEntries>
+				</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

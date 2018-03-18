@@ -1,0 +1,63 @@
+{
+    "id": "user_score_history",
+    "reportId": "user_score_history",
+    "title": "Total Score History",
+    "description": "The user’s total score history for the selected time span",
+	"refreshOn": [
+		"start",
+		"end"
+	],
+    "views": [
+        {
+            "type": "multiLine",
+            "height": 300,
+            "settings": {
+                "y": "score",
+                "x": "date",
+                "xType": {
+                    "type": "date",
+                    "startOfDay": true
+                },
+                "minYValue": 0,
+                "maxYValue": 100,
+				"minXValue": "{{event_dates.split(',')[0]}}",
+				"maxXValue": "{{event_dates.split(',')[1]}}",
+				"minDefaultXValue": "{{:sinceNow:valueOf:-6d:start}}",
+				"maxDefaultXValue": "{{:sinceNow:valueOf:0d:end}}",
+                "tooltipText": "Total score on {{date:date:MM/DD/YYYY}}: {{score}}",
+                "axes": {
+                    "x": {
+                        "type": "time",
+                        "timeFormat": "days",
+						"label": "Event Time"
+                    },
+                    "y": {
+                        "label": "Total Score",
+                        "tickFormat": "d"
+                    }
+                },
+                "scales": {
+                    "x": {
+                        "type": "time"
+                    },
+                    "y": {}
+                },
+                "onSelect": {
+                    "action": "openPopup",
+                    "actionOptions": {
+                        "widget": {
+                            "widgetId": "user_total_breakdown",
+                            "renderHeader": false
+                        },
+                        "title": "Total Score Breakdown for {{date:date:MM/DD/YYYY}}",
+                        "width": 360,
+                        "height": 260,
+                        "params": {
+                            "date": "{{date:date:valueOf}}"
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

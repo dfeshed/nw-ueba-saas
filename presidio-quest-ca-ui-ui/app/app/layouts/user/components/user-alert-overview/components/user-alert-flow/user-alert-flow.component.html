@@ -1,0 +1,29 @@
+<!-- Title -->
+<div class="alert-flow-title">
+    Alert Flow
+</div>
+
+<!-- Swiper -->
+<div class="alert-swiper-outer-container">
+
+    <!-- Left Button -->
+    <div class="slide-left-button slide-button" ng-click="$ctrl.scrollToSlideIndex($ctrl.currentIndex - 3, $ctrl.currentIndex === 0)" ng-disabled="$ctrl.currentIndex === 0">
+        <i class="fa fa-chevron-left" aria-hidden="true"></i>
+    </div>
+
+    <!--Inner Swiper Element -->
+    <div class="swiper-container">
+
+        <div class="swiper-wrapper" style="transition: {{::$ctrl.WRAPPER_TRANSITION}}">
+        </div>
+
+    </div>
+
+
+    <!-- Right Button -->
+    <div class="slide-right-button slide-button" ng-click="$ctrl.scrollToSlideIndex($ctrl.currentIndex + 3, $ctrl.isLastIndicator)" ng-disabled="$ctrl.isLastIndicator">
+        <i class="fa fa-chevron-right" aria-hidden="true"></i>
+    </div>
+
+</div>
+

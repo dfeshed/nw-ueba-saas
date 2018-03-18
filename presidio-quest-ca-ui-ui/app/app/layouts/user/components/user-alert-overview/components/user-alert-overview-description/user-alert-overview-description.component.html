@@ -1,0 +1,41 @@
+<div class="alert-overview-description">
+    <div class="left-panel">
+        <div class="description-row">
+            <span class="alert-info-label">
+                Contribution to user score:
+            </span>
+            <span class="alert-info-value">
+                {{$ctrl.alert.userScoreContribution}} points
+            </span>
+        </div>
+        <div class="description-row">
+            <span class="alert-info-label">
+                Sources:
+            </span>
+            <span class="alert-info-value">
+                {{$ctrl.getDataSources()}}
+            </span>
+        </div>
+        <div class="description-row" ng-if="$ctrl.TAGS_FEATURE_ENABLED">
+            <span class="alert-info-label">
+                Tags:
+            </span>
+            <span class="alert-info-value">
+                {{$ctrl.tagsPrettyNames}}
+            </span>
+        </div>
+    </div>
+    <div class="right-panel">
+        <div class="alert-description">
+            <ng-bind-html
+                ng-bind-html="$ctrl.getAlertDescription()">
+
+            </ng-bind-html>
+            <span fs-text-tooltip="$ctrl.getAlertHelp()">
+                <i class="fa fa-info-circle" aria-hidden="true"></i>
+            </span>
+        </div>
+    </div>
+</div>
+
+

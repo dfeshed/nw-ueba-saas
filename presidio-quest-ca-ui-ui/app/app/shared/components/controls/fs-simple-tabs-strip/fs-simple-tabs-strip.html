@@ -1,0 +1,13 @@
+<section class="simple-tab-strip">
+    <a class="bullet"
+        ng-repeat="bullet in ctrl.bullets"
+        ng-class="{active: ctrl.isTabActive(bullet.id)}"
+        ng-click="ctrl.setActive(bullet)"
+        >
+        {{::bullet.name}}
+    </a>
+</section>
+<section>
+    <ng-include src="ctrl.activeBullet.templateUrl"/>
+
+</section>

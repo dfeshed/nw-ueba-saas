@@ -1,0 +1,41 @@
+{
+    "dashboardId": "user_machines",
+    "title": "{{@userName}}: Related Machines",
+    "description": "Machines accessed by the user and related information",
+    "controls": [
+		{
+			"label": "Events Time",
+			"type": "dateRange",
+			"param": "event_dates",
+			"value": {
+				"timeStart": "-7d",
+				"timeEnd": "0d"
+			}
+		}
+    ],
+    "columns": [
+        {
+			"show" : {
+				"conditions": [
+					{
+						"operator": "entityExists",
+						"value": "logins"
+					}
+				]
+			},
+            "weight": 1,
+            "widgets": [
+                {
+                    "widgetId": "user_machines"
+                }
+            ]
+        },
+        {
+            "weight": 2,
+            "widgets": [
+                { "widgetId": "user.user_machines_pairs", "priority": 1 },
+                { "widgetId": "user.user_datasource_machine_count", "priority": 2 }
+            ]
+        }
+    ]
+}

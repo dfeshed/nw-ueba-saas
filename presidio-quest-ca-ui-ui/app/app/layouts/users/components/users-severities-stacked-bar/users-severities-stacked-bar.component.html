@@ -1,0 +1,21 @@
+<div class="stacked-bar-main">
+    <div class="severities-container" ng-show="$ctrl.severities.total>0">
+        <div class="severity-level critical" ng-click="$ctrl.updateChange('Critical')" ng-class="{'not_active':$ctrl.filterByValue!==null && $ctrl.filterByValue!=='Critical'}">
+            <span>{{$ctrl.severities.Critical.userCount}}</span><span class="space">Critical</span>
+        </div>
+        <div class="severity-level high" ng-click="$ctrl.updateChange('High')" ng-class="{'not_active':$ctrl.filterByValue!==null && $ctrl.filterByValue!=='High'}">
+            <span>{{$ctrl.severities.High.userCount}}</span><span class="space">High</span>
+        </div>
+        <div class="severity-level medium" ng-click="$ctrl.updateChange('Medium')" ng-class="{'not_active':$ctrl.filterByValue!==null && $ctrl.filterByValue!=='Medium'}">
+            <span>{{$ctrl.severities.Medium.userCount}}</span><span class="space">Medium</span>
+        </div>
+        <div class="severity-level low" ng-click="$ctrl.updateChange('Low')" ng-class="{'not_active':$ctrl.filterByValue!==null && $ctrl.filterByValue!=='Low'}">
+            <span>{{$ctrl.severities.Low.userCount}}</span><span class="space">Low</span>
+        </div>
+    </div>
+    <div class="severities-container no-users" ng-if="!$ctrl.severities.total>0">
+        No Risky Users
+    </div>
+
+</div>
+

@@ -1,0 +1,25 @@
+{
+	"apiUrl": "http://fs-test-nv11:8080",
+	"port": 3000,
+	"lrPort": 35729,
+	"proxy": {
+		"baseUrl": "/caui-webapp/api/*",
+		"redirects": {
+			"/caui-webapp/api/analyst/logout": "/caui-webapp/signin.html"
+		}
+	},
+	"apiCache": {
+		"cacheFolder": "api_cache",
+		"useWhiteList": true,
+		"whiteListUrls": [
+			"/caui-webapp/api/getEntities",
+			"/caui-webapp/api/dataQuery",
+			"/caui-webapp/api/analyst/me/details",
+			"/caui-webapp/api/notifications",
+			"/caui-webapp/api/monitor"
+		],
+		"clearCacheOnUrls": [
+			"/caui-webapp/api/analyst/login"
+		]
+	}
+}

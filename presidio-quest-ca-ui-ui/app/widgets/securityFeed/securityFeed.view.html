@@ -1,0 +1,68 @@
+<div class="security-feed"  ng-controller="SecurityFeedController">
+    <div class="security-feed-count" ng-show="!widget.noData">Found {{widget.total}} notifications</div>
+    <ul class="unstyled">
+        <li class="security-feed-item" ng-repeat="item in view.data">
+            <header class="clearfix security-feed-item-header">
+                <div class="security-feed-item-icon">
+                    <i class="icon-{{item.icon}}"></i>
+                </div>
+                <div class="security-feed-item-contents">
+                    <span ng-if="::item.collapsedLinksText" ng-show="!item.isExpanded">
+                        <a ng-click="item.isExpanded = true" title="Click to expand">{{item.collapsedLinksText}}</a>
+                    </span>
+                    <span ng-if="item.isExpanded">[<a ng-click="item.isExpanded = hide">Hide</a>]</span>
+                    <span ng-if="item.collapsedLinksText && item.isExpanded" ng-bind-html="::item.linksHtml"></span>
+                    <span ng-bind-html="::item.text"></span>
+                    <a href="{{item.link.href}}" ng-if="::item.link">{{item.link.text}}</a>
+                    <div class="security-feed-item-date">
+                        {{item.note}}
+                        <!-- Option to flag notification -->
+                        <span class="security-feed-item-control" ng-if="::view.settings.allowFlag" ng-class="{ open: item.flag || item.showFlags }">|
+                            <a title="Flag this notification" ng-click="showFlags(item)">
+                                <i class="icon-flag"></i> Flag {{flagsName[item.flag]}}
+                            </a>
+                            <!-- Drop down for flag options (with remove option)-->
+                            <select ng-show="view.settings.allowFlag && item.showFlags && item.flag"
+                                    ng-model="item.flag"
+                                    ng-options="option.value as option.label for option in flagOptionsWithRemove"
+                                    ng-change="saveFlag(item)" ></select>
+                            <!-- Drop down for flag options (without remove option)-->
+                            <select ng-show="view.settings.allowFlag && item.showFlags && !item.flag"
+                                    ng-model="item.flag"
+                                    ng-options="option.value as option.label for option in flagOptions"
+                                    ng-change="saveFlag(item)" >
+                                <option value="">(Select Flag)</option>
+                                    </select>
+
+                        </span>
+                        <!-- Option to show/add comments -->
+                        <span class="security-feed-item-control" ng-if="::view.settings.allowComments" ng-class="{ open: item.commentsCount }">|
+                            <a title="View and add comments" ng-click="showComments(item)">
+                                <i class="icon-comment"></i>
+                                <ng-pluralize count="item.commentsCount" when="{'one': 'One comment', 'other': '{} comments' }"></ng-pluralize>
+                            </a>
+                        </span>
+                        <!-- Option to dismiss/undismiss notification -->
+                        <span class="security-feed-item-control" ng-if="::view.settings.allowDismiss" ng-class="{ open: item.dismissed }">|
+                            <a ng-if="!item.dismissed" title="Dismiss this notification" ng-click="dismiss(item)">
+                                <i class="icon-remove"></i> Dismiss
+                            </a>
+                            <a ng-if="item.dismissed" title="Undismiss this notification" ng-click="undismiss(item)">
+                                <i class="icon-undo"></i> Undismiss
+                            </a>
+                        </span>
+                    </div>
+                    <div ng-if="view.settings.allowComments && item.showComments" class="comments security-feed-comments">
+                        <div class="comment-write">
+                            <textarea ng-model="item.newComment" placeholder="Your comment here" focus-when="item.showComments"></textarea>
+                            <div>
+                                <a class="btn btn-default" ng-click="saveNewComment(item, null)" ng-class="{ disabled: !item.newComment }" ng-disabled="!item.newComment">Save Comment</a>
+                            </div>
+                        </div>
+                        <ng-include ng-repeat="comment in item.comments" src="'views/elements/comment.html'"></ng-include>
+                    </div>
+                </div>
+            </header>
+        </li>
+    </ul>
+</div>

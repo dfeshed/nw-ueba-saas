@@ -1,0 +1,51 @@
+<fs-modal show='showModal' width='850px' height='70%'>
+    <div>
+        <fs-simple-tabs-strip active-id="0" bullets="$ctrl.aboutBullets"/>
+    </div>
+</fs-modal>
+<div class="fs-header-bar-component">
+    <div class="fs-header-bar-component--bullets-container">
+        <a class="fs-header-bar-component--logo" ui-sref="overview" ui-sref-opts="{reload: true}" ng-class="::$ctrl.FORTSCALE_BRAND_UI ? 'fortscale-brand': 'vendor-brand'"  >
+
+        </a>
+        <a class="fs-header-bar-component--page-bullet overview"
+            ui-sref="overview"
+            ui-sref-opts="{reload: true}"
+            ui-sref-active="active">
+            OVERVIEW
+        </a>
+        <a class="fs-header-bar-component--page-bullet overview"
+           ui-sref="users"
+           ui-sref-opts="{reload: true}"
+           ui-sref-active="{active: 'users'}">
+            USERS
+        </a>
+        <a class="fs-header-bar-component--page-bullet overview"
+            ui-sref="alerts"
+            ui-sref-opts="{reload: true}"
+            ui-sref-active="{active: 'alerts', 'active-secondary': 'alertPage'}">
+            ALERTS
+        </a>
+    </div>
+    <div class="fs-header-bar-component--icons-container">
+        <!-- Search User Control -->
+        <fs-autocomplete class="main-user-search"
+            id="main_user_search"
+            autocomplete-id="user"
+            autocomplete-settings="::$ctrl.userControlSettings"
+            resource-settings="::$ctrl.userControlResource"
+            update-state-delegate="::$ctrl.goToUserProfile">
+        </fs-autocomplete>
+        <!-- END OF Search User Control -->
+        <div class="fs-header-bar-component--icons-container--icon search active" ng-click="::$ctrl.toggleSearch()">
+            <svg class="icon search-icon">
+                <use xlink:href="#search-icon"></use>
+            </svg>
+        </div>
+
+
+    </div>
+    <div ng-hide="::$ctrl.FORTSCALE_BRAND_UI" class="fs-header-bar-component--about-box-container" ng-click="showModal=!showModal">
+        <i class="fa fa-info-circle" aria-hidden="true"></i>
+    </div>
+</div>

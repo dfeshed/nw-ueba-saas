@@ -1,0 +1,57 @@
+<header class="user-id-bar">
+
+    <!-- User Profile and User Tags -->
+    <div class="user-id-bar--stats-and-tags">
+
+        <!-- User Profile -->
+
+        <div class="user-id-bar--stats">
+            <user-profile user-model="$ctrl.user" ng-if="$ctrl.user"></user-profile>
+        </div>
+        <!-- END OF User Profile -->
+
+        <!--<div class="user-id-bar&#45;&#45;divider"></div>-->
+
+        <!-- User Tags -->
+        <div class="user-id-bar--tags" ng-if="$ctrl.TAGS_FEATURE_ENABLED">
+            <user-tags tags="$ctrl.tags"
+                       user-model="$ctrl.user"
+                       remove-tag-delegate="$ctrl.removeTagDelegate({tag: tag})"
+                       add-tag-delegate="$ctrl.addTagDelegate({tag: tag})"></user-tags>
+        </div>
+        <!-- END OF User Tags -->
+
+    </div>
+    <!-- END OF User Profile and User Tags -->
+
+    <!-- Id Bar Action Buttons -->
+    <div class="user-id-right-pane">
+        <div class="user-id-bar--actions">
+            <div class="watch-user-button" ng-click="$ctrl.toggleUserWatchDelegate()">
+
+                <div class="watch-user-button-instance watch-user-button-watch">
+                    <span class="watch-user-button--icon">
+                        <fs-svg-icon symbol-name="watch-icon"
+                                     attributes="{width: 16, height: 16}"></fs-svg-icon>
+                    </span>
+                    <span class="watch-user-button--text">Watch Profile</span>
+                </div>
+
+                <div class="watch-user-button-instance watch-user-button-unwatch">
+                    <span class="watch-user-button--icon">
+                        <fs-svg-icon symbol-name="unwatch-icon"
+                                     attributes="{width: 16, height: 16}"></fs-svg-icon>
+                    </span>
+                    <span class="watch-user-button--text">Stop Watching</span>
+                </div>
+            </div>
+
+            <!--<div ng-click="$ctrl.updateDLPMode()" class="attributes-paging">-->
+            <!--<i ng-if="!$ctrl.dlpMode" class="fa fa-chevron-right" aria-hidden="true"></i>-->
+            <!--<i ng-if="$ctrl.dlpMode" class="fa fa-chevron-left" aria-hidden="true"></i>-->
+            <!--</div>-->
+        </div>
+    </div>
+    <!-- END OF Id Bar Action Buttons -->
+
+</header>

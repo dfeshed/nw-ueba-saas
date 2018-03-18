@@ -1,0 +1,19 @@
+<input style="display:none" ng-model="$ctrl.configFormCtrl.configModels[$ctrl.configItem.id]" class="hidden-input">
+<div class="select-all-checkbox" ng-if="$ctrl.configItem.config.selectAll">
+    <label for="select_all_checkbox_{{$ctrl.configItem.id}}">
+        <input type="checkbox"
+            name="select_all_checkbox"
+            id="select_all_checkbox_{{$ctrl.configItem.id}}"
+            ng-model="$ctrl.allItemsChecked"
+            ng-change="::$ctrl.selectAllHandler()">Select All</label>
+</div>
+<div class="items-checkboxes">
+    <label for="{{::'item_' + item.value}}" ng-repeat="item in ::$ctrl.items">
+        <input type="checkbox"
+            class="item-checkbox"
+            name="{{::'item_' + item.value}}"
+            id="{{::'item_' + item.value}}"
+            ng-model="item.checked"
+            ng-value="item.checked"
+            ng-change="::$ctrl.changeItem(item, 'checked')"/> {{::item.label}}</label>
+</div>

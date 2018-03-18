@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="48" viewBox="0 0 64 48">
+  <defs>
+    <style>
+      .computer-icon{
+        fill-rule: evenodd;
+      }
+    </style>
+  </defs>
+  <path class="computer-icon" d="M418.15,613l-13.421-23.008A2.005,2.005,0,0,0,403,589H371a2.005,2.005,0,0,0-1.729.992L355.85,613h62.3ZM355,635a2,2,0,0,0,2,2h60a2,2,0,0,0,2-2V617H355v18Zm14-10h36a2,2,0,0,1,0,4H369A2,2,0,0,1,369,625Z" transform="translate(-355 -589)"/>
+</svg>

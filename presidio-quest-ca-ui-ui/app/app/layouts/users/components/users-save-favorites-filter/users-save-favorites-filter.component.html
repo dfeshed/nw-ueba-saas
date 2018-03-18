@@ -1,0 +1,40 @@
+<div class="inner-area" ng-if="$ctrl.visible">
+    <div class="popup-form-container" ng-form="$ctrl.favoriteNameForm" name="saveFilterForm">
+
+        <!-- Title -->
+        <div class="popup-title">
+            Save Filter
+        </div>
+
+        <!--Form-->
+        <input name="filterName"
+            id="filterName"
+            ng-model="$ctrl.models.filterName"
+            autofocus
+            placeholder="Type a name for your filter"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+            spellcheck="false" ng-maxlength="30" required
+            ng-keypress="$ctrl.submitWithKeypress($event)"
+            ng-pattern="/^[a-zA-Z0-9_-\s]*$/"
+        />
+
+        <span ng-if="$ctrl.nameExists" class="error-message">A filter with this name already exists. Use a different name</span>
+        <div ng-messages="saveFilterForm.filterName.$error" class="error-message" role="alert">
+            <div ng-message="maxlength">The filter name should contain 30 characters or less</div>
+            <div ng-message="pattern">Filter Name can only contain numbers, letters, dash, underscore, or space</div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="buttons-container">
+            <div class="cancel-button" ng-click="$ctrl.cancelFilterSaving()">Cancel</div>
+            <input type="submit"
+                class="ok-button system-setup-button"
+                ng-disabled="saveFilterForm.$invalid || saveFilterForm.$pristine"
+                value="OK"
+                ng-click="$ctrl.saveFilter()">
+        </div>
+
+    </div>
+</div>

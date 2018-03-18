@@ -1,0 +1,15 @@
+.scatter-plot{
+  .selectedDot{
+    fill: #333;
+  }
+
+  .dot{
+    stroke: transparent;
+    stroke-width: 1.5px;
+    cursor: pointer;
+
+    &:hover{
+      stroke: Black;
+    }
+  }
+}

@@ -1,0 +1,138 @@
+{
+    "reportId": "user_timeline",
+    "title": "Timeline",
+    "refreshOn": ["vpnUser"],
+    "requiredParams": ["vpnUser"],
+    "loadingDataMessage": "Loading events",
+    "hideOnNoData": true,
+    "views": [
+        {
+            "type": "timelinePoints",
+            "settings": {
+                "series": {
+                    "isSingleSeries": true,
+                    "time": "time",
+                    "type": "eventType"
+                },
+                "colorMap": {
+                    "field": "status",
+                    "map": {
+                        "SUCCESS": "#69b85e",
+                        "FAILURE": "#D77576",
+                        "_default": "#555555"
+                    }
+                },
+                "symbolMap": {
+                    "vpn": "circle",
+                    "Notifications": "cross",
+                    "login": "diamond"
+                },
+                "tooltip": "Time: {{time:date:MMM D YYYY, HH\\:mm\\:ss}}, Type: {{eventType}}|Details: {{properties:properties}}",
+                "description": "Timeline of user-related events",
+                "legend": {
+                    "items": [
+                        {
+                            "value": "Low or no score",
+                            "color": "#80BFF0"
+                        },
+                        {
+                            "value": "Medium score",
+                            "color": "#F59925"
+                        },
+                        {
+                            "value": "High score",
+                            "color": "#D77576"
+                        }
+
+                    ]
+                },
+                "onSelect": {
+                    "action": "showTooltip",
+                    "actionOptions": {
+                        "switch": "eventType",
+                        "switchCases": {
+                            "vpn": {
+                                "table": {
+                                    "rows": [
+                                        {
+                                            "label": "Event Type",
+                                            "value": "VPN Login"
+                                        },
+                                        {
+                                            "label": "Time",
+                                            "value": "{{time:date}}"
+                                        },
+                                        {
+                                            "label": "User",
+                                            "value": "{{@vpnUser}}"
+                                        },
+                                        {
+                                            "label": "Source IP",
+                                            "value": "{{source}}"
+                                        },
+                                        {
+                                            "label": "Local IP",
+                                            "value": "{{target}}"
+                                        },
+                                        {
+                                            "label": "Score",
+                                            "value": "{{score:round}}"
+                                        }
+                                    ]
+                                }
+                            },
+                            "login": {
+                                "table": {
+                                    "rows": [
+                                        {
+                                            "label": "Event Type",
+                                            "value": "Login"
+                                        },
+                                        {
+                                            "label": "Time",
+                                            "value": "{{time:date}}"
+                                        },
+                                        {
+                                            "label": "User",
+                                            "value": "{{@loginsUser}}"
+                                        },
+                                        {
+                                            "label": "Source Machine",
+                                            "value": "{{source}}"
+                                        },
+                                        {
+                                            "label": "Target Machine",
+                                            "value": "{{target}}"
+                                        },
+                                        {
+                                            "label": "Score",
+                                            "value": "{{score:round}}"
+                                        }
+                                    ]
+                                }
+                            },
+                            "Notifications": {
+                                "table": {
+                                    "rows": [
+                                        {
+                                            "label": "Event Type",
+                                            "value": "Notification"
+                                        },
+                                        {
+                                            "label": "Time",
+                                            "value": "{{time:date}}"
+                                        },
+                                        {
+                                            "label": "Notification",
+                                            "value": "{{@userName}} {{cause}}"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

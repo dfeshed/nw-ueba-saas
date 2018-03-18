@@ -1,0 +1,19 @@
+<section id="reports-page" class="reports-page">
+
+    <!-- Loading Bar -->
+    <fs-nanobar nanobar-id="reports" nanobar-options="{targetGlobal: true, color: '#30a2f0'}"></fs-nanobar>
+    <!-- END OF Loading Bar -->
+
+    <!-- Navigation Bar -->
+    <section class="reports-page--nav-bar">
+        <ng-include src="'app/layouts/reports/layouts/nav-bar-menu.view.html'"></ng-include>
+    </section>
+    <!-- END OF Navigation Bar -->
+
+    <!-- Reports Page content -->
+    <section class="reports-page--content" ng-class="::{'no-report': reports.isReportSelected()}">
+        <ui-view></ui-view>
+    </section>
+    <!-- END OF Reports Page content -->
+
+</section>

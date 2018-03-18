@@ -1,0 +1,57 @@
+user-indicator-header {
+    .header-container {
+
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+
+        height: 50px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+
+        padding: 0 15px;
+    }
+
+    .alert-name {
+        color: #01294a;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 14px;
+        font-weight: 400;
+
+        margin-right: 10px;
+    }
+
+    .back-btn, .forward-btn {
+        color: #01294a;
+        margin: 0 10px;
+        cursor: pointer;
+
+        &[disabled="disabled"] {
+            color: #bababa;
+            cursor: not-allowed;
+        }
+    }
+
+    .spacer {
+        flex: 1;
+    }
+
+    .pagination-text {
+        color: #01294a;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 14px;
+        font-weight: 400;
+    }
+
+    .close-btn {
+        color: #024d89;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 14px;
+        font-weight: 400;
+
+        margin-right: 10px;
+
+        margin-left: 45px;
+
+        cursor: pointer;
+    }
+}

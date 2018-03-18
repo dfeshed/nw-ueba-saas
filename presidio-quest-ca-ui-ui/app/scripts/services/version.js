@@ -1,0 +1,1 @@
+angular.module("Version", []).value("version", new Date().valueOf());

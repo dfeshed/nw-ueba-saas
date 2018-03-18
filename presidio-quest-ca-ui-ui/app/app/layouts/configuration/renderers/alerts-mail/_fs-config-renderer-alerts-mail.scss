@@ -1,0 +1,279 @@
+.alerts-email-settings {
+    display: flex;
+    flex-flow: column nowrap;
+
+    &--groups-list {
+        display: flex;
+        flex-flow: column nowrap;
+    }
+
+
+    &--group-item {
+        display: flex;
+        flex-flow: column nowrap;
+
+        &--title {
+            @include font-roboto-bold;
+            font-size: #{$basicFontSize + 3}
+        }
+
+
+        &--configurations-section {
+            display: flex;
+            flex-flow: row nowrap !important;
+        }
+
+        /**
+        * Recipients List
+        **/
+        &--recipients-list {
+            display: flex;
+            flex-flow: column nowrap;
+
+            flex: 3 3;
+        }
+
+        &--new-recipient-row {
+            display: flex;
+            flex-flow: row nowrap;
+
+            @include formButtons;
+
+            .form-buttons {
+                display: flex;
+                flex-flow: column nowrap;
+
+                label {
+                    margin:0;
+                    height: 100%;
+                    flex: 1 1;
+
+                    >* {
+                        height: auto;
+                    }
+                }
+
+                .form-button {
+
+                    &.button-add-new-user {
+                        background-color: $clrConfigurationAddNewUserBG;
+                        input {
+                            background-color: lighten($clrConfigurationAddNewUserBG, 10%);
+                            color: $clrConfigurationActiveForeColor;
+                            border-radius: 0 5px 5px 0;
+                            transition: background-color 0.1s;
+
+                        }
+                        .form-button-icon {
+                            color: $clrConfigurationActiveForeColor;
+                        }
+
+                        &:hover:not([disabled]) {
+                            input {
+                                background-color: lighten($clrConfigurationAddNewUserBG, 20%);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        &--new-recipient-input {
+            flex: 5 5;
+
+            &[type=email],&[type=text] {
+                margin-right: 2em;
+                margin-bottom: 0;
+                padding: 0 1em;
+                border-radius: 4px;
+                background-color: #fff;
+                border: 2px solid rgba(149,165,166,0.6) !important;
+                color: #5b6164;
+                font-size: #{$basicFontSize};
+                box-sizing: border-box;
+
+                &.ng-invalid {
+                    border: 3px solid #c10000 !important;
+                }
+            }
+        }
+
+        &--add-new-recipient {
+            flex: 1 1;
+        }
+
+        /**
+        * END OF Recipients List
+        **/
+
+        /**
+        * New Alert, Alert Summary
+        **/
+        &--new-alert-configuration,&--alert-summary-configuration {
+            display: flex;
+            flex-flow: column nowrap;
+
+            flex: 2 2;
+
+            box-sizing: border-box;
+            margin: 1.5em 0 1.5em 2em;
+            border-left: 1px solid #CDCDCD;
+            padding-left: 1em;
+
+            &--configurations-row {
+                display: flex;
+                flex-flow: row nowrap;
+            }
+
+            &--title{
+                @include font-roboto-bold();
+                font-size: #{$basicFontSize + 3};
+            }
+
+            &--severities-checkboxes, &--frequencies-checkboxes {
+                display: flex;
+                flex-flow: column nowrap;
+
+                margin-top: 0.5em;
+                margin-right: 3em;
+
+                .severities-label,.frequencies-label {
+                    @include font-roboto-bold();
+                    font-size: $basicFontSize ;
+                }
+
+                label {
+                    display: flex;
+                    flex-flow: row nowrap;
+                    align-items: center;
+                    margin-bottom: 0;
+
+                    input {
+                        margin-right: 0.5em;
+                        margin-top: 0;
+                        width: 1.2em;
+                        height: 1.2em;
+                        background-color: #fff;
+                    }
+                }
+            }
+
+        }
+
+        &--new-alert-configuration {
+            flex: 1 1;
+        }
+
+        /**
+        * END OF New Alert, Alert Summary
+        **/
+
+        @include formButtons;
+        .group-item-buttons {
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: flex-end;
+            height: 2.5em;
+
+            margin-top: 1em;
+
+            label {
+                margin:0;
+                height: 100%;
+                margin-left: 1em;
+            }
+
+            .form-button {
+
+                &.button-remove-group,&.button-duplicate-group {
+                    background-color: $clrConfigurationAddNewUserBG;
+                    width: auto;
+                    input {
+                        background-color: lighten($clrConfigurationAddNewUserBG, 10%);
+                        color: $clrConfigurationActiveForeColor;
+                        border-radius: 0 5px 5px 0;
+                        transition: background-color 0.1s;
+                        width: calc(100% - 2.5em);
+                        padding-right: 1em;
+                    }
+                    .form-button-icon {
+                        color: $clrConfigurationActiveForeColor;
+                    }
+
+                    &:hover:not([disabled]) {
+                        input {
+                            background-color: lighten($clrConfigurationAddNewUserBG, 20%);
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+    &--user-item {
+
+        display: flex;
+        flex-flow: row nowrap;
+
+        margin: 0.5em 0;
+        font-size: $basicFontSize;
+
+        background-color: #4c9ad0;
+        color: white;
+
+        &--email {
+            padding: 0.8em 0 0.8em 1em;
+            flex: 10 10;
+        }
+
+        &--remove-user {
+            flex: 1 1;
+
+            display: flex;
+            flex-flow: row nowrap;
+
+            justify-content: center;
+            align-items: center;
+
+            cursor: pointer;
+
+            &:hover {
+                background-color: #eaeaea;
+            }
+        }
+
+    }
+
+    .alert-email-settings-buttons {
+        @include formButtons;
+        justify-content: flex-start;
+        margin-top: 0;
+
+        .form-button {
+
+            &.button-remove-group,&.button-duplicate-group {
+                background-color: $clrConfigurationAddNewGroupBG;
+                width: auto;
+                input {
+                    background-color: lighten($clrConfigurationAddNewGroupBG, 10%);
+                    color: $clrConfigurationActiveForeColor;
+                    border-radius: 0 5px 5px 0;
+                    transition: background-color 0.1s;
+                    width: calc(100% - 2.5em);
+                    padding-right: 1em;
+                }
+                .form-button-icon {
+                    color: $clrConfigurationActiveForeColor;
+                }
+
+                &:hover:not([disabled]) {
+                    input {
+                        background-color: lighten($clrConfigurationAddNewGroupBG, 20%);
+                    }
+                }
+            }
+        }
+
+    }
+
+}

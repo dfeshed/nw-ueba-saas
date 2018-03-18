@@ -1,0 +1,35 @@
+{
+    "type": "machine",
+    "features": [
+        {
+            "name": "Summary",
+            "description": "Score for this machine, as compared to similar machines",
+            "featureId": "MACHINE_SCORE",
+            "dashboardId": "machine-score"
+        },
+        {
+            "name": "Failed domains",
+            "description": "Number of domains which this machine attempted to access, but failed",
+            "featureId": "TOP_FAILED_DNS",
+            "dashboardId": "machine-failures"
+        },
+        {
+            "name": "Random domains",
+            "description": "Random domains which were successfully accessed by this machine",
+            "featureId": "TOP_RANDOM_DNS",
+            "dashboardId": "machine-random"
+        },
+        {
+            "name": "Domain sequences",
+            "description": "Large sequences of domain suffixes (.com, .org, .info, .ru, .co.uk, etc.)",
+            "featureId": "TOP_UNIQUE_DNS",
+            "dashboardId": "machine-sequences"
+        },
+        {
+            "name": "Unique domains",
+            "description": "Domains accessed only once by this machine",
+            "featureId": "TOP_SEQUENCE_DNS",
+            "dashboardId": "machine-unique"
+        }
+    ]
+}

@@ -1,0 +1,107 @@
+{
+    "data": [
+        {
+            "keys": [
+                "1468232700000",
+                "1468269579000"
+            ],
+            "additionalInformation": {
+                "normalized_username": "vpnusr15@somebigcompany.com",
+                "target_machine": "",
+                "display_name": "vpn usr15",
+                "entity_id": "5771c5b8e4b024b2474614ba",
+                "data_source": "vpn_session"
+            },
+            "value": "vpnusr15",
+            "anomaly": false
+        },
+        {
+            "keys": [
+                "1468248643000"
+            ],
+            "additionalInformation": {
+                "normalized_username": "vpnusr17@somebigcompany.com",
+                "target_machine": "VPNUSR17_SRV",
+                "display_name": "vpn usr17",
+                "entity_id": "5771c5b8e4b024b2474614ba",
+                "data_source": "ssh"
+            },
+            "value": "vpnusr17",
+            "anomaly": false
+        },
+        {
+            "keys": [
+                "1468252723000"
+            ],
+            "additionalInformation": {
+                "normalized_username": "vpnusr17@somebigcompany.com",
+                "target_machine": "VPNUSR17_SRV",
+                "display_name": "vpn usr17",
+                "entity_id": "5771c5b8e4b024b2474614ba",
+                "data_source": "ssh"
+            },
+            "value": "vpnusr17",
+            "anomaly": false
+        },
+        {
+            "keys": [
+                "1468245043000"
+            ],
+            "additionalInformation": {
+                "normalized_username": "vpnusr17@somebigcompany.com",
+                "target_machine": "VPNUSR17_SRV",
+                "display_name": "vpn usr17",
+                "entity_id": "5771c5b8e4b024b2474614ba",
+                "data_source": "ssh"
+            },
+            "value": "vpnusr17",
+            "anomaly": false
+        },
+        {
+            "keys": [
+                "1468245053000"
+            ],
+            "additionalInformation": {
+                "normalized_username": "vpnusr18@somebigcompany.com",
+                "target_machine": "VPNUSR18_SRV",
+                "display_name": "vpn usr18",
+                "entity_id": "5771c5b8e4b024b2474614ba",
+                "data_source": "ssh"
+            },
+            "value": "vpnusr18",
+            "anomaly": false
+        },
+        {
+            "keys": [
+                "1468245053200"
+            ],
+            "additionalInformation": {
+                "normalized_username": "vpnusr18@somebigcompany.com",
+                "target_machine": "VPNUSR18_SRV",
+                "display_name": "vpn usr21",
+                "entity_id": "5771c5b8e4b024b2474614ba",
+                "data_source": "ssh"
+            },
+            "value": "vpnusr21",
+            "anomaly": false
+        },
+        {
+            "keys": [
+                "1468245053300"
+            ],
+            "additionalInformation": {
+                "normalized_username": "vpnusr18@somebigcompany.com",
+                "target_machine": "VPNUSR18_SRV",
+                "display_name": "vpn usr20",
+                "entity_id": "5771c5b8e4b024b2474614ba",
+                "data_source": "ssh"
+            },
+            "value": "vpnusr20",
+            "anomaly": false
+        }
+    ],
+    "total": 1,
+    "offset": 0,
+    "warning": null,
+    "info": null
+}

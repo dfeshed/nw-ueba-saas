@@ -1,0 +1,43 @@
+{
+    "baseUrl": "/alerts",
+    "scrollable": false,
+    "groupable": false,
+    "sortable": {
+        "mode": "single"
+    },
+    "alwaysPageable": false,
+    "dataSource" : {
+        "sort": {
+            "field": "scoreContribution",
+            "dir": "desc"
+        }
+    },
+    "columns": [
+        {
+            "title": "Indicator Name",
+            "field": "name",
+            "template": "<span ng-if=\"dataItem.anomalyTypeFieldName !== 'tag'\"><a ui-sref='user.indicator({userId: dataItem.alert.entityId, alertId: dataItem.alert.id, indicatorId: dataItem.id})'>{{::dataItem.name}} <span ng-show='dataItem.timeframe && dataItem.evidenceType===\"AnomalyAggregatedEvent\"'  >({{::dataItem.timeframe}})<span></a></span>"
+        },
+        {
+            "title": "Anomaly Value",
+            "field": "anomalyValue",
+            "template": "{{::dataItem.anomalyValue | anomalyTypeFormatter:dataItem}}"
+
+        },
+        {
+            "title": "Data Source",
+            "field": "dataEntitiesIds[0]",
+            "template": "{{::dataItem.dataEntitiesIds[0] | entityIdToName}}"
+        },
+        {
+            "title": "Start Time",
+            "field": "startDate",
+            "template": "{{ dataItem.startDate | date:\"MM/dd/yyyy HH\\:mm\":\"UTC\"}}"
+        },
+        {
+            "title": "# Events",
+            "field": "numOfEvents",
+            "template": "<span ng-if=\"::dataItem.numOfEvents !== -1\">{{::dataItem.numOfEvents}}</span><span ng-if=\"::dataItem.numOfEvents === -1\">-</span>"
+        }
+    ]
+}

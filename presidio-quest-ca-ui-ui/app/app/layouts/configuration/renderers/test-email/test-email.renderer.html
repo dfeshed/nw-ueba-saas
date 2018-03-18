@@ -1,0 +1,20 @@
+<input style="display:none" ng-model="$ctrl.configFormCtrl.configModels[$ctrl.configItem.id]" class="hidden-input">
+<div class="config-item-card--header">
+    <div class="config-item-card--title">Test Email</div>
+    <div class="config-item-card--description">Please provide an email address</div>
+</div>
+<div class="item-wrapper">
+    <input type="email" ng-model="$ctrl.testEmail" class="email-input config-renderer-email-input">
+    <div class="form-pane--config-section--form-content--form-buttons">
+        <label for="form_buttons_submit" ng-click="::$ctrl.submitTestEmail($ctrl.testEmail)"
+            class="submit-button form-button"
+            ng-disabled="!$ctrl.testEmail || !$ctrl.formModelCtrl.$valid || !$ctrl.formModelCtrl.$pristine">
+            <div class="form-button-icon"><i class="fa fa-check"></i></div>
+            <div class="inner-button">TEST</div>
+        </label>
+    </div>
+</div>
+
+<div class="message" ng-if="$ctrl.message">
+    <pre>{{$ctrl.message}}</pre>
+</div>

@@ -1,0 +1,541 @@
+@mixin formButtons {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-end;
+
+    margin: 1.5em 0 0 0;
+
+    .form-button {
+        width: 10em;
+        height: 2.5em;
+        border-radius: 6px;
+
+        display: flex;
+        flex-flow: row nowrap;
+
+        opacity: 1;
+        transition: opacity 0.3s;
+
+        &[disabled] {
+            opacity: 0.2;
+        }
+    }
+
+    .form-button-icon {
+        height: 2.5em;
+        width: 2.5em;
+
+        display: flex;
+        flex-flow: column nowrap;
+
+        justify-content: center;
+        align-items: center;
+    }
+
+    input, a {
+        display: inline-block;
+        height: 2.5em;
+        width: calc(100% - 2.5em);
+        border: none;
+        padding: 0 0 0 1.5em;
+        text-align: left;
+
+        &:active, &:focus {
+            outline: none;
+        }
+    }
+}
+
+.configuration {
+
+    // Vars
+    $clrConfigurationMainBG: #F7F7F7;
+    $clrConfigurationMainDarkenedBG: darken($clrConfigurationMainBG, 10%);
+    $clrConfigurationSecondaryMainBG: $clrBlueMain;
+    $clrConfigurationErrorBG: #c10000;
+    $clrConfigurationCardBG: #F7F7F7;
+    $clrConfigurationForeColor: $clrGrey80;
+    $clrConfigurationActiveForeColor: $clrWhite;
+    $clrConfigurationAddNewUserBG: #337fd0;
+    $clrConfigurationAddNewGroupBG: #00674a;
+    $clrConfigurationAddNewDCBG: #337fd0;
+    $clrConfigurationAddNewDomainBG: #00674a;
+
+    //height: calc(100vh - 64px);
+    @include font-roboto-regular();
+
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    padding: 20px;
+
+    box-sizing: border-box;
+
+
+    .pane {
+        overflow-y: auto;
+        box-sizing: border-box;
+    }
+
+    .menu-pane {
+        background-color: #f0f7f8;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+        z-index: 1;
+        display: flex;
+        flex-flow: column nowrap;
+        width: 400px;
+        margin-right: 20px;
+
+        &--header {
+
+            display: flex;
+            flex-flow: column nowrap;
+            justify-content: center;
+            align-items: flex-start;
+
+            height: 50px;
+            background-color: #e5e5e5;
+            box-shadow: 0 1px 7px rgba(0, 0, 0, 0.4);
+            color: #013f71;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+
+            padding-left: 10px;
+            box-sizing: border-box;
+
+            z-index: 10;
+        }
+
+        &--menu-container {
+            flex: 1;
+            //margin: 1em 0 0 0;
+            overflow-y: auto;
+
+            /* First level menu items */
+            & > div > ul > li {
+                background-color: #d3d8d9;
+                border-top: 1px solid #e5eaea;
+                border-bottom: 1px solid #c4c7c7;
+                a {
+                    /* Text style */
+                    color: #004f8f;
+                    font-family: 'Open Sans', sans-serif;
+                    font-size: 14px;
+                    font-weight: 700;
+                }
+            }
+        }
+
+        &--version {
+            color: #818285;
+            font-size: 14px;
+            padding: 20px;
+        }
+
+        &--sub-menu {
+            box-sizing: border-box;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+
+        }
+
+        &--menu-item {
+
+            //padding: 0.75em;
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+            min-height: 35px;
+            box-sizing: border-box;
+
+            a {
+                color: #004f8f;
+                display: block;
+                flex-basis: calc(100% - 1.5em);
+                text-decoration: none;
+                word-break: normal;
+
+                font-family: 'Open Sans', sans-serif;
+                font-size: 14px;
+                font-weight: 400;
+
+            }
+
+            .open-close-display {
+                flex-basis: 1.5em;
+                font-size: 1.5em;
+                color: $clrConfigurationForeColor;
+                cursor: pointer;
+
+                display: none;
+
+                i {
+                    display: none;
+                    color: #024d89;
+                    font-size: 10px;
+                }
+            }
+
+            &.opened, &.closed {
+                .open-close-display {
+                    display: flex;
+                    flex-flow: row nowrap;
+                    align-items: center;
+                }
+            }
+
+            &.opened {
+                i.opened {
+                    display: inherit;
+                }
+            }
+
+            &.closed {
+                i.closed {
+                    display: inherit;
+                }
+
+                & + ul {
+                    display: none;
+                }
+            }
+
+            &:hover {
+                background-color: $clrConfigurationMainDarkenedBG;
+            }
+
+            &.active {
+                background-color: $clrConfigurationSecondaryMainBG;
+                border: none;
+
+                a, i {
+                    color: $clrConfigurationActiveForeColor;
+                }
+            }
+
+            .open-close-display {
+                font-size: 1.5em;
+            }
+
+        }
+
+    }
+
+    /**
+    * FORM PANE
+    **/
+    .form-pane {
+        font-size: 14px;
+
+        background-color: #f1f6fc;
+
+        flex: 1;
+        box-sizing: border-box;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+
+        position: relative;
+
+        &--config-section, &--error-section {
+
+            display: flex;
+            flex-flow: column nowrap;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            /**
+            * HEADER
+            **/
+            &--header-strip {
+
+                display: flex;
+                flex-flow: row nowrap;
+                min-height: 45px;
+                padding: 20px;
+                box-sizing: border-box;
+
+
+                .header-content {
+                    display: flex;
+                    flex-flow: column nowrap;
+                    flex: 1;
+                }
+
+                .header-buttons {
+                    display: flex;
+                    flex-flow: column nowrap;
+                }
+
+                .header-display-name {
+                    color: #01294a;
+                    font-family: 'Open Sans', sans-serif;
+                    font-size: 16px;
+                    font-weight: 400;
+                }
+
+                .header-display-description {
+                    color: #01294a;
+                    font-family: 'Open Sans', sans-serif;
+                    font-size: 14px;
+                    font-weight: 400;
+                }
+
+                #form_buttons_submit {
+                    width: 109px;
+                    height: 28px;
+                    background-color: #2b98e4;
+                    border-radius: 3px;
+                    outline: none;
+                    border: none;
+                    /* Text style */
+                    color: white;
+                    font-family: 'Open Sans', sans-serif;
+                    font-size: 12px;
+                    font-weight: 400;
+
+                    &[disabled] {
+                        opacity: 0.3;
+                    }
+                }
+            }
+            /**
+            * END OF HEADER
+            **/
+
+            /**
+            * FORM CONTENT
+            **/
+            &--form-content {
+
+                flex: 1;
+                overflow-y: auto;
+
+                /**
+                * CONFIG CARD
+                **/
+                .config-item-cards {
+                    display: flex;
+                    flex-flow: column nowrap;
+                    margin: 0 20px 20px 20px;
+                }
+
+                .config-item-card {
+                    display: flex;
+                    flex-flow: column nowrap;
+                    box-sizing: border-box;
+                    border: 1px solid #8cb0c9;
+                    border-left: 9px solid #4c9ad0;
+                    background-color: white;
+                    padding: 20px;
+                    position: relative;
+                    margin-bottom: 20px;
+
+                    input.ng-invalid {
+                        border: 3px solid $clrConfigurationErrorBG;
+                        border-radius: 3px;
+                        outline: none;
+                        box-sizing: border-box;
+                    }
+
+                    &--title {
+                        color: #024d89;
+                        font-family: 'Open Sans', sans-serif;
+                        font-size: 14px;
+                        font-weight: 700;
+                    }
+
+                    &--description {
+                        color: #024d89;
+                        font-family: 'Open Sans', sans-serif;
+                        font-size: 13px;
+                        font-weight: 400;
+                    }
+
+                    &--values {
+                        display: flex;
+                        flex-flow: row;
+
+                        .title {
+                            @include font-roboto-bold();
+                        }
+                    }
+
+                    &--local-value {
+                        display: flex;
+                        flex-flow: column;
+                        label {
+                            margin: 0;
+                        }
+
+                        input {
+                            width: 18em;
+                            padding-left: 0.25em;
+                            font-size: $basicFontSize;
+
+                            &.ng-invalid-required {
+                                border: 1px solid #ccc;
+                                background-color: #ffc8ca;
+                            }
+
+                        }
+
+                        font-size: $basicFontSize;
+                        width: 20em;
+
+                    }
+
+                    &--derived-value, &--no-derived-value {
+                        display: flex;
+                        flex-flow: row wrap;
+
+                        .value, .from {
+                            display: flex;
+                            flex-flow: column;
+                            margin: 0 1em;
+
+                        }
+
+                        .bottom-row {
+                            margin-top: 0.2em;
+                        }
+
+                    }
+
+                    &--no-derived-value {
+                        display: flex;
+                        flex-flow: column;
+                    }
+
+                    &--replace {
+                        position: relative;
+                    }
+
+                }
+
+                /**
+                * END OF CONFIG CARD
+                **/
+
+                /**
+                * FORM BUTTONS
+                **/
+
+                &--form-buttons {
+
+                    @include formButtons;
+
+                    .form-button {
+
+                        &.submit-button {
+                            background-color: $clrConfigurationSecondaryMainBG;
+                            input {
+                                background-color: lighten($clrConfigurationSecondaryMainBG, 10%);
+                                color: $clrConfigurationActiveForeColor;
+                                border-radius: 0 5px 5px 0;
+                                transition: background-color 0.1s;
+
+                            }
+                            .form-button-icon {
+                                color: $clrConfigurationActiveForeColor;
+                            }
+
+                            &:hover:not([disabled]) {
+                                input {
+                                    background-color: lighten($clrConfigurationSecondaryMainBG, 20%);
+                                }
+                            }
+                        }
+                    }
+
+                }
+                /**
+                * END OF FORM BUTTONS
+                **/
+
+            }
+            /**
+            * END OF FORM CONTENT
+            **/
+        }
+
+        &--error-section {
+            &--header-strip {
+                background-color: lighten($clrConfigurationErrorBG, 10%);
+                .header-icon {
+                    background-color: $clrConfigurationErrorBG;
+                }
+            }
+        }
+
+        &--loader-section {
+            .backdrop {
+                position: fixed;
+                z-index: 20;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background-color: rgba(0, 0, 0, 0.15);
+
+                display: flex;
+                flex-flow: column nowrap;
+                justify-content: center;
+                align-items: center;
+            }
+        }
+    }
+
+    /**
+    * END OF FORM PANE
+    **/
+
+    .k-splitbar {
+        display: none;
+    }
+
+    .loader-wrapper {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+
+        .loader {
+            width: 1.5em;
+            height: 1.5em;
+            background-size: contain;
+
+            &.ng-leave,&.ng-leave-active {
+                display: none;
+            }
+        }
+    }
+
+    .loader {
+        &.ng-leave,&.ng-leave-active {
+            display: none;
+        }
+    }
+
+    @import "components/fs-config-affected-items";
+    @import "renderers/alerts-mail/fs-config-renderer-alerts-mail";
+    @import "renderers/active-directory/fs-config-renderer-active-directory";
+    @import "renderers/is-enabled/fs-config-renderer-is-enabled";
+    @import "renderers/alert-severity-checkbox/fs-config-renderer-alert-severity-checkbox";
+    @import "renderers/user-tags-checkbox/fs-config-renderer-user-tags-checkbox";
+    @import "renderers/syslog-forwarding-type/fs-config-renderer-syslog-forwarding-type";
+    @import "renderers/syslog-sending-method/fs-config-renderer-syslog-sending-method";
+    @import "renderers/forward-historical-alerts/fs-config-renderer-forward-historical-alerts";
+    @import "renderers/drop-down/drop-down-renderer";
+    @import "renderers/checkbox/checkbox.renderer";
+    @import "renderers/boolean/boolean.renderer";
+    @import "renderers/ip/ip.renderer";
+    @import "renderers/severity/severity.renderer";
+    @import "renderers/users-list/users-list.renderer";
+    @import "renderers/test-email/test-email.renderer";
+}
+
+

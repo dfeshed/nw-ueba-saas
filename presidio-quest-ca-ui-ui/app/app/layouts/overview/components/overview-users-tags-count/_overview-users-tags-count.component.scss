@@ -1,0 +1,99 @@
+overview-users-tags-count {
+    display: flex;
+    flex-flow: column nowrap;
+
+    flex: 1 0;
+
+    .all-users-grid {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-between;
+
+        padding: 15% 7% 0% 7%;
+
+        @media (max-height: 730px) {
+            padding: 2vh;
+        }
+
+        flex: 1 0;
+
+        &--column {
+            display: flex;
+            flex-flow: column nowrap;
+            justify-content: space-between;
+
+            box-sizing: border-box;
+
+            flex: 0;
+        }
+
+    }
+}
+
+overview-users-tags-count-item {
+    .tags-count-item-container {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        cursor: pointer;
+        text-decoration: none;
+
+        &:hover:not(.not-allowed) {
+            .stats-container {
+                color: #0060d1;
+            }
+            .svgicon-container {
+                svg {
+                    filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.4));
+                    fill: #0060d1;
+                    transform: scale(1.1);
+                }
+            }
+        }
+
+        &:hover.not-allowed {
+            .stats-container {
+                color: #9da2a1;
+            }
+            .svgicon-container {
+                svg {
+                    fill: #9da2a1;
+                }
+            }
+        }
+
+        &.not-allowed {
+            cursor: not-allowed;
+        }
+    }
+
+    .svgicon-container {
+        margin-right: 8%;
+
+        svg {
+            fill: #016a9c;
+            filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0));
+            transform: scale(1);
+            transition: fill 0.3s , filter 0.25s cubic-bezier(0.88, 0.13, 0.25, 2.63), transform 0.5s cubic-bezier(0.88, 0.13, 0.25, 2.63);
+        }
+    }
+
+    .stats-container {
+        color: #024d89;
+        line-height: 19px;
+        transition: color 0.3s;
+
+        &--amount {
+            font-family: 'RobotoSlab', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        &--display-name {
+            font-family: 'Open Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+        }
+    }
+
+}

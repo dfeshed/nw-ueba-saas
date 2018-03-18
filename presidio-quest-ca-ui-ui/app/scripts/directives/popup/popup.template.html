@@ -1,0 +1,17 @@
+<div class="popup" ng-if="show" ng-style="popupStyle">
+    <h2 class="popup-title flex-horizontal">
+        <div class="flex-1 popup-title-text">{{popupTitle}}</div>
+        <a class="popup-close-btn" ng-click="close()" title="Close Popup"><i class="icon-remove icon-small"></i></a>
+    </h2>
+    <div class="popup-contents">
+        <div class="widget-controls" ng-if="popup.controls.length">
+            <div class="widget-view-control"
+                 ng-controller="WidgetControlController"
+                 ng-repeat="control in popup.controls"
+                 ng-hide="control.disabled"
+                 ng-include="'views/controls/' + control.type + '.html'">
+            </div>
+        </div>
+        <ng-include src="popupSrc"></ng-include>
+    </div>
+</div>

@@ -1,0 +1,80 @@
+<section class="overview">
+
+    <!-- Loading Bar -->
+    <fs-nanobar
+        nanobar-id="{{::overviewCtrl.NANOBAR_ID}}"
+        nanobar-options="{targetGlobal: true, color: '#30a2f0'}"></fs-nanobar>
+    <!-- END OF Loading Bar -->
+
+    <div class="overview--grid-container">
+
+        <!-- Upper Row -->
+        <div class="overview--row overview--upper-row">
+
+            <!-- Left Column -->
+            <div class="overview--left-column overview--column">
+
+                <!-- High Risk Users -->
+                <div class="overview--high-risk-users overview--card"
+                    ng-class="{'overview--card--active': overviewCtrl.highRiskUsers.length || overviewCtrl.highRiskUsers === null}">
+                    <overview-high-risk-users users="overviewCtrl.highRiskUsers" tags="overviewCtrl.tags"></overview-high-risk-users>
+                </div>
+                <!-- END OF High Risk Users -->
+
+            </div>
+            <!-- END OF Left Column -->
+
+            <!-- Right Column -->
+            <div class="overview--right-column overview--column">
+
+                <!-- Top Alerts -->
+                <div class="overview--smart-alerts overview--card"
+                    ng-class="{'overview--card--active': (overviewCtrl.highRiskUsers.length || overviewCtrl.highRiskUsers === null) && overviewCtrl.users}">
+                    <overview-top-alerts alerts="overviewCtrl.topAlerts"
+                        users="overviewCtrl.users"></overview-top-alerts>
+                </div>
+                <!-- END OF Top Alerts -->
+
+            </div>
+            <!-- END OF Right Column -->
+
+        </div>
+        <!-- END OF Upper Row -->
+
+
+        <!-- Lower Row -->
+        <div class="overview--row overview--lower-row">
+
+            <!-- Left Column -->
+            <div class="overview--left-column overview--column">
+                <div class="overview--users-tags-count overview--card"
+                    ng-class="{'overview--card--active': overviewCtrl.usersTagsCount}">
+                    <overview-users-tags-count users-tags-count="overviewCtrl.usersTagsCount"></overview-users-tags-count>
+                </div>
+            </div>
+            <!-- END OFLeft Column -->
+
+            <!-- Right Column -->
+            <div class="overview--right-column overview--column">
+                <div class="overview--alerts-status overview--card"
+                    ng-class="{'overview--card--active': (overviewCtrl.alertStatusShort && overviewCtrl.alertStatusLong)}">
+                    <overview-alert-status
+                        alert-status-short="overviewCtrl.alertStatusShort"
+                        alert-status-long="overviewCtrl.alertStatusLong"></overview-alert-status>
+                </div>
+                <div class="overview--alerts-severity overview--card"
+                    ng-class="{'overview--card--active': overviewCtrl.alertsSeverityByDay}">
+                    <overview-alert-severity-by-day
+                        alerts-severity="overviewCtrl.alertsSeverityByDay"
+                        time-frame="{{::overviewCtrl.alertStatsUtils.longDaysRange}}">
+                    </overview-alert-severity-by-day>
+                </div>
+            </div>
+            <!-- END OF Right Column -->
+
+        </div>
+        <!-- END OF Lower Row -->
+
+    </div>
+
+</section>

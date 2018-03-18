@@ -1,0 +1,19 @@
+<div class="alerts-tooltip-main">
+    <div ng-if="$ctrl.alerts.length>0" ng-repeat="alert in ::$ctrl.alerts" class="alert-row" ng-class="{'last':$last}">
+
+        <a ui-sref="user.alert-overview({userId: $ctrl.userId, alertId: alert.id})" class="alert-link">
+            <div class="alert-name" ng-bind-html="::alert | prettyAlertName"></div>
+        </a>
+        <div class="alert-feedback-icon" ng-switch="alert.feedback">
+            <fs-svg-icon symbol-name="star-white-filled" ng-switch-when="None"></fs-svg-icon>
+            <fs-svg-icon symbol-name="star-crossed-blue" ng-switch-when="Rejected"></fs-svg-icon>
+            <fs-svg-icon symbol-name="star-orange" ng-switch-when="Approved"></fs-svg-icon>
+        </div>
+        <div class="alert-severity">
+            <fs-severity-tag severity="{{::alert.severity}}" score="{{::alert.score}}"></fs-severity-tag>
+        </div>
+
+
+    </div>
+
+</div>

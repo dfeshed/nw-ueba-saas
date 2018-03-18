@@ -1,0 +1,8 @@
+<span ng-controller="ButtonsBarWidgetController">
+    <a ng-click="btnClick(view.settings, $event)"
+       class="btn {{view.className}}"
+       title="{{view.settings.tooltip}}">
+        <i ng-if="view.settings.icon" class="icon-{{view.settings.icon}}"></i>
+        {{view.data.text}}
+    </a>
+</span>

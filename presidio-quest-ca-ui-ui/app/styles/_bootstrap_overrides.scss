@@ -1,0 +1,93 @@
+.modal-backdrop{
+  background: White;
+}
+
+.pagination > li{
+  cursor: pointer;
+
+  &:hover{
+    span {
+      background: $activeColorHover;
+    }
+  }
+
+  &.active{
+    cursor: default;
+    pointer-events: none;
+  }
+}
+
+.btn{
+  &[disabled], &.disabled{
+    background-color: auto;
+  }
+}
+.modal-header{
+  background: #4e6568;
+  color: white;
+  border-color: #a2a2a2;
+  padding: 9px 6px 9px 15px;
+
+  h3{
+    font-weight: bold;
+    line-height: 20px;
+    color: white;
+    font-size: 14px;
+  }
+
+  a{
+    float: right;
+    color: white;
+    text-shadow: none;
+    opacity: .5;
+    display: block;
+    width: 24px;
+    height: 24px;
+    line-height: 21px;
+    text-align: center;
+    margin-left: 10px;
+    text-decoration: none;
+
+    &.update{
+      font-size: 22px;
+      line-height: 20px;
+    }
+
+    &.close{
+      margin-top: 0;
+    }
+
+    &:hover{
+      opacity: 1;
+      color: White;
+    }
+  }
+}
+
+.modal{
+  border-color: #c5c5c5;
+  border-radius: 0;
+  -webkit-border-radius: 0;
+  background: #fbfbfb;
+}
+h3{
+  font-size: 18px;
+}
+
+select{
+  width: auto;
+  padding: 0 5px;
+  height: 26px;
+}
+
+input[type=text], input[type=number]{
+  margin: 0;
+  height: 24px;
+  border-color: #d0dde9;
+  border-radius: 2px;
+  padding: 0 5px;
+}
+
+.navbar .nav>li{
+  padding: 0;
+}

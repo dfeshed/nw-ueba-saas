@@ -1,0 +1,49 @@
+.forward-historical-alerts {
+
+    position: relative;
+
+    .date-range-label {
+        font-size: 16px;
+        margin-top: 0.5em;
+        margin-bottom: 0.3em;
+    }
+
+    .config-item-card--values {
+        display: flex;
+        flex-flow: column nowrap;
+    }
+
+    .form-pane--config-section--form-content--form-buttons {
+        justify-content: flex-start;
+    }
+
+    label,input {
+        &[disabled="disabled"] {
+           cursor: not-allowed;
+        }
+    }
+
+    .submit-button {
+        width: 12em;
+
+        &[disabled="disabled"] {
+           cursor: not-allowed;
+        }
+    }
+
+    .message {
+        background-color: white;
+        display: inline;
+        padding: 1em;
+        border: 1px solid #ccc;
+        box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2);
+        margin-top: 1em;
+        width: 34em;
+    }
+
+    .loader {
+        position: absolute;
+        top: 40%;
+        left: 50%;
+    }
+}

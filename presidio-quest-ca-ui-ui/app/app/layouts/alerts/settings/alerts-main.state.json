@@ -1,0 +1,25 @@
+{
+    "alert_table": {
+        "value": {
+            "pageSize": 10,
+            "page": 1,
+            "sortBy": "startDate",
+            "sortDirection": "DESC"
+        }
+    },
+    "severity_filter": {
+        "value": null
+    },
+    "feedback_filter": {
+        "value": null
+    },
+    "tags_filter": {
+        "value": null
+    },
+    "entities_ids_filter": {
+        "value": null
+    },
+    "indicator_types_filter": {
+        "value": null
+    }
+}

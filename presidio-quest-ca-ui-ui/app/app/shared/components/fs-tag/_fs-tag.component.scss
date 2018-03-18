@@ -1,0 +1,61 @@
+fs-tag {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: white;
+
+    margin-right: 10px;
+    margin-bottom: 5px;
+    padding: 3px 11px 4px 6px;
+    border-radius: 0 15px 15px 0;
+    background-color: #013056;
+    transition: background-color 0.3s;
+
+
+    &.about-to-remove {
+        background-color: #561312;
+    }
+
+
+    .tag-container {
+        &.fixed {
+            cursor: not-allowed;
+        }
+
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+    }
+
+    .tag-text {
+        &:before {
+            margin-right: 4px;
+            color: #30a2f0;
+            font-size: 14px;
+            line-height: 14px;
+            content: "\00b7";
+        }
+
+        white-space: nowrap;
+    }
+
+    .remove-tag {
+        cursor: pointer;
+        opacity: 0;
+        margin-right: -18px;
+        margin-left: 10px;
+
+        transition: opacity 0.3s, margin-right 0.3s;
+    }
+
+
+
+    &:not(.no-remove) {
+        &:hover {
+            .remove-tag {
+                margin-right: 0;
+                opacity: 1;
+            }
+        }
+    }
+}

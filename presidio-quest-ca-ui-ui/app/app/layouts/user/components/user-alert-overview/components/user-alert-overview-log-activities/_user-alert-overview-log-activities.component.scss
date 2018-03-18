@@ -1,0 +1,41 @@
+.comment-component {
+
+    .new-comment{
+        display: flex;
+        flex-direction: row;
+    button{
+        font-size: 14px;
+        font-family: "Open Sans";
+        width: 6em;
+        height: 3em;
+
+    &:disabled{
+         background-color: grey;
+     }
+    }
+
+    }
+
+    .comment-box {
+
+        font-size: 14px;
+        font-family: "Open Sans";
+        color: rgb(131, 132, 133);
+        line-height: 1.786;
+        text-align: left;
+
+        width: 40em;
+        height: 2.3em;
+        background-color: #ffffff;
+        margin-bottom: 0.5em;
+        margin-right: 2em;
+        border-color: #000000;
+        border-width: 1px;
+        border-style: solid;
+
+
+    &.active-comment{
+         height: 5.4em;
+     }
+    }
+}

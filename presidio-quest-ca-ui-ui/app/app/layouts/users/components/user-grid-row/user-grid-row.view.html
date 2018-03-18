@@ -1,0 +1,62 @@
+<div class="user-row" ng-class="{'user-item': $ctrl.user.hidden !== false}" ng-if="$ctrl.user.hidden !== true">
+
+        <div class="avatar-container-wrapper">
+            <div class="avatar-container">
+                <div class="image"
+                     ng-if="$ctrl.user.image"
+                     ng-style="{ 'background-image': 'url(data:image/png;base64,' + $ctrl.user.image + ')' }">
+                </div>
+                <div class="image"
+                     ng-if="!$ctrl.user.image"
+                     ng-style="{ 'background-image': 'url(\'images/icons/users_general_user_color.png\')', border: 'none'}">
+                </div>
+            </div>
+        </div>
+        <div class="user-details">
+            <div class="inner-details">
+                <div class="user-details-first-row" title="{{::$ctrl.user.fallBackDisplayName}}">
+                    <a ui-sref="user.baseline({userId: $ctrl.user.id})" class="user-details-line" ng-bind-html="::$ctrl.user.fallBackDisplayName | fsPartialStrong:$ctrl.searchText:true">
+
+                    </a>
+                    <span class="watch-icon-container">
+                        <fs-svg-icon ng-if="$ctrl.user.followed" symbol-name="watch-icon"
+                                 attributes="{width: 16, height: 16}"></fs-svg-icon>
+                    </span>
+                </div>
+                <span class="user-details-line" ng-bind-html="::$ctrl.user.adInfo.position | fsPartialStrong:$ctrl.searchText:true:!$ctrl.rolesFiltered"></span>
+                <span ng-bind-html="::$ctrl.user.adInfo.department | fsPartialStrong:$ctrl.searchText:true:!$ctrl.departmentFiltered"></span>
+            </div>
+        </div>
+        <div class="user-score" ng-if="!$ctrl.miniView">
+            <div ng-class="'score-severity--'+ $ctrl.user.scoreSeverity.toLowerCase()" class="user-score-inner">
+                {{::$ctrl.user.score}}
+            </div>
+        </div>
+        <div class="user-alerts" ng-if="!$ctrl.miniView">
+            <div class="user-alerts-internal">
+                <span ng-if="$ctrl.user.alertsCount > 0"
+                      fs-alerts-tooltip
+                      alerts="::$ctrl.user.alerts"
+                      tooltip-settings="{delay: 0.5}"
+                       user-id="$ctrl.user.id">
+
+                {{$ctrl.user.alertsCount >=0? $ctrl.user.alertsCount : 0 }} Alerts
+                </span>
+                <span ng-if="$ctrl.user.alertsCount  === 0">
+                    No Alerts
+                </span>
+            </div>
+        </div>
+
+        <!-- list of user tags -->
+        <div class="user-tags" ng-if="!$ctrl.miniView">
+
+            <div class="tags-wrapper">
+
+                <fs-tag tag="tag" ng-repeat="tag in $ctrl.userTags track by tag.name" remove-tag-delegate = "$ctrl.removeTagDelegate(tag)"></fs-tag>
+
+            </div>
+
+        </div>
+        <!-- END OF list of user tags -->
+</div>

@@ -1,0 +1,20 @@
+<fs-card-header card-title="Classified Files Access <span class='fs-card-title-small'>(Last 90 Days)</span"></fs-card-header>
+
+
+<div class="classification-container" ng-if="$ctrl.classifications && $ctrl.nonclassified+$ctrl.classified>0" >
+
+        <div class="ratio">
+            <div class="non-classified-ratio" ng-style="{'flex-grow': $ctrl.nonclassified}"></div>
+            <div class="classified-ratio" ng-style="{'flex-grow': $ctrl.classified}"></div>
+        </div>
+        <div class="text">
+            <div class="non-classified">{{$ctrl.nonclassified}} Non Classified</div>
+            <div class="classified">{{$ctrl.classified}} Classified Files</div>
+        </div>
+
+</div>
+<div ng-if="!$ctrl.classifications || $ctrl.nonclassified+$ctrl.classified===0" class="no-data-box">
+    <div>
+    No Files (Last 90 Days)
+    </div>
+</div>

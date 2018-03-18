@@ -1,0 +1,76 @@
+<div ng-controller="ExploreController as vm" class="explore flex-vertical" ng-class="{ 'views-only': vm.explore.settings.viewOnly}">
+    <header class="explore-header flex-horizontal" ng-if="!vm.explore.settings.viewOnly" ng-show="vm.selectedEntity">
+        <div class="explore-header-datasource">
+            <label>
+                <select ng-model="vm.selectedEntity"
+                        ng-change="vm.onEntityChange(vm.selectedEntity)"
+                        ng-options="entity as entity.name for entity in vm.dataEntities">
+                    <option disabled value="">(Select an entity)</option>
+                </select>
+            </label>
+        </div>
+        <div class="flex-1 explore-header-controls-container">
+            <form class="explore-header-controls" ng-if="vm.explore.defaultFilters" ng-submit="vm.applyDefaultFilters()">
+                <label>
+                    <span class="label-text">Results Between</span>
+                    <daterange ng-model="vm.explore.defaultFilters.filters[0].value"></daterange>
+                </label>
+                <label>
+                    <span class="label-text">Minimum Score ≥</span>
+                    <input type="number"
+                           min="0" max="100"
+                           class="input-small"
+                           ng-model="vm.explore.defaultFilters.filters[1].value" />
+                </label>
+                <input type="submit" ng-show="vm.explore.defaultFilters.isDirty" class="btn btn-small btn-default" value="Apply" />
+            </form>
+        </div>
+        <div>
+            <div class="btn-group">
+                <div class="btn btn-info"
+                     ng-repeat="mode in ::vm.modes"
+                     ng-click="vm.explore.mode = mode"
+                     ng-class="{ active: vm.explore.mode === mode}">
+                    <svg viewBox="0 0 20 20" preserveAspectRatio="none" ng-class="mode.icon.slice(1)">
+                        <use xlink:href="{{mode.icon}}"></use>
+                    </svg>
+                    <span class="button-label">{{::mode.name}}</span>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="flex-1 explore-main flex-horizontal" ng-show="vm.selectedEntity">
+        <div class="explore-filters scroll-vertical"  ng-if="!vm.explore.settings.viewOnly">
+            <explore-filters ng-model="vm.explore.filters"
+                             excluded-fields="vm.explore.defaultFilterFieldIds"
+                             entity="vm.explore.dataEntity"
+                             on-filters-change="vm.onFiltersChange(filters)"></explore-filters>
+        </div>
+        <div class="flex-1 explore-dataviews flex-vertical" ng-class="{ 'table-mode': vm.explore.mode.id === 'table', 'graph-mode':  vm.explore.mode.id !== 'table'}">
+            <div class="explore-dataviews-select" ng-if="vm.explore.mode.id == 'graphs' && !vm.explore.settings.viewOnly">
+                <dropdown button-text="+ Add Graph" button-class="btn btn-default add-graph-button" disabled="vm.explore.addedAllGraphs" close-on-click="true">
+                    <ul class="dropdown-list explore-filters-add-fields">
+                        <li ng-repeat="graph in vm.explore.graphs | unAddedGraphs | hideGraphs" ng-click="vm.explore.addGraph(graph)">
+                            <img class="dropdown-list-icon" ng-src="{{::graph.type.icon}}" title="{{::graph.type.name}}" /> {{graph.name}}
+                        </li>
+                    </ul>
+                </dropdown>
+            </div>
+            <div class="flex-1" ng-class="{ 'flex-vertical': vm.explore.mode.id == 'table', 'scroll-vertical': vm.explore.mode.id != 'table' }">
+                <widget-explore ng-repeat="dataView in vm.explore.dataViews" widget-model="dataView.widget"></widget-explore>
+            </div>
+        </div>
+    </div>
+    <div class="flex-1 explore-select-entity" ng-show="!vm.selectedEntity && !vm.explore.viewOnly">
+        <div>
+            <label>
+                Data Source to Explore
+                <select ng-model="vm.selectedEntity"
+                        ng-change="vm.onEntityChange(vm.selectedEntity)"
+                        ng-options="entity as entity.name for entity in vm.dataEntities">
+                    <option disabled value="">(Select an entity)</option>
+                </select>
+            </label>
+        </div>
+    </div>
+</div>

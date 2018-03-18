@@ -1,0 +1,77 @@
+<div class="card"
+     ng-show="widget.show"
+     ng-class="{ loading: widget.isLoading, 'contents-only': widget.flags.contentsOnly, 'no-border': widget.flags.noBorder, 'full-height': widget.flags.fullHeight, 'flex-1': widget.flags.stretchVertically, 'flex-vertical': widget.flags.stretchVertically }">
+    <header ng-if="::widget.title && !widget.flags.contentsOnly" class="card-header flex-horizontal" ng-if="">
+        <div class="flex-1 header-content">
+            <h3 ng-bind="widget.title"></h3>
+            <!--<p class="card-header-text" ng-if="::widget.description" ng-bind="widget.description"></p>-->
+            <span class="divider">|</span>
+            <a class="card-header-button" title="Refresh" ng-click="widget.manualRefresh()">
+                <svg class="refresh-icon" viewBox="0 0 20 20">
+                    <use xlink:href="#refresh-icon"></use>
+                </svg>
+            </a>
+
+        </div>
+		<a ng-class="{btn: !button.icon, 'btn-default': !button.icon, 'card-header-button': button.icon  }"  ng-repeat="button in widget.buttons" ng-click="button.onClick()" title="{{::button.title}}">
+            <svg class="explore-button {{button.icon.slice(1)}}" viewBox="0 0 20 20">
+                <use xlink:href="{{button.icon}}"></use>
+            </svg>
+            <span class="button-text">{{::button.text}}</span>
+		</a>
+
+
+    </header>
+    <param-controls ng-if="::widget.controlsList"
+                    classname="control-params-widget {{::widget.flags.alignControlsRight && 'align-right'}}"
+                    controls="widget.controlsList.controls"
+                    buttons="::widget.buttons"
+                    get-params="widget.getState()"
+                    set-params="widget.setState(params, setToUrl)"
+                    widget="widget"
+                    widget-control-id="widget-control-{{widget.id}}"></param-controls>
+
+    <div class="card-contents" ng-style="{ height: widget.height }" ng-class="{'flex-1 scroll-auto': widget.flags.stretchVertically, 'full-height': widget.flags.fullHeight }">
+        <!-- If exists, adds a warning message at the top of the widget -->
+        <div ng-style="{ 'text-align': 'center' }" ng-if="widget.message" class="card-info">
+            <div class="label label-danger">
+                <i class="icon-warning-sign"></i>
+                {{widget.message}}
+            </div>
+        </div>
+        <div class="widget-views" ng-show="!widget.noData && !widget.error" ng-class="{ 'full-height': widget.flags.fullHeight }">
+            <div class="widget-view-wrap"
+				ng-repeat="view in widget.views"
+                 ng-class="{ 'full-height': widget.flags.fullHeight }"
+                 ng-style="{ height: widget.height }"
+                 ng-include="view.templateUrl"></div>
+        </div>
+
+		<div class="message-container">
+			<div class="widget-message widget-error" ng-if="widget.error">
+				<div>
+					<span class="widget-error-message ng-binding">
+						<img src="images/exclamation.png" class="widget-error-icon"><br>
+						{{widget.error}}
+					</span>
+				</div>
+				<a ng-click="widget.refresh(true)" class="clickable widget-message-link">Retry</a>
+			</div>
+
+			<div class="widget-no-data" ng-if="widget.noData && !widget.error">
+				<div>
+					<span class="widget-no-data-message">
+						{{widget.noDataMessage}}
+					</span>
+				</div>
+				<a ng-click="widget.refresh(true)" class="clickable widget-message-link">Retry</a>
+			</div>
+		</div>
+	</div>
+
+	<div class="card-message card-loading">
+        <div class="card-loading-message">
+            <fs-loader loader-show="'true'"></fs-loader>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,21 @@
+<div class="header-container" ng-if="$ctrl.alerts">
+    <span class="alert-name" ng-bind-html="::$ctrl.currentAlert | prettyAlertName"></span>
+    <fs-severity-tag severity="{{::$ctrl.currentAlert.severity}}" score="{{::$ctrl.currentAlert.score}}"></fs-severity-tag>
+    <span class="spacer"></span>
+    <div class="alert-overview-pagination">
+        <span class="back-btn"
+            ng-disabled="true">
+            <i class="fa fa-chevron-left" aria-hidden="true"></i>
+        </span>
+        <span class="pagination-text">
+            Alert Overview
+        </span>
+        <span class="forward-btn"
+            ng-click="$ctrl.transitionIndicator()">
+            <i class="fa fa-chevron-right" aria-hidden="true"></i>
+        </span>
+    </div>
+    <span class="close-btn">
+
+    </span>
+</div>

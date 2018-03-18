@@ -1,0 +1,31 @@
+<div class="string-in-widget">
+	<label>
+		<input ng-if="isSearchable"
+			   type="text"
+			   on-select="onStringInSearchSelect($value)"
+			   searchbox
+			   search-settings="searchSettings"/>
+
+		<input ng-if="!isSearchable"
+			   ng-keypress=onStringInEnter($event)
+			   class="string-in-input"
+			   type="text"
+			   placeholder="Enter value to add"/>
+	</label>
+
+	<ul class="explore-filters-in-val-container">
+		<li class="explore-filters-in-val-row" ng-repeat="stringIn in vals track by $index"
+			ng-class="{'explore-filters-in-val-disabled':!stringIn.enabled,'filters-in-val-even':$index % 2==0}">
+
+			<label>
+				<input class="explore-filters-in-val-checkbox"
+					   ng-click="onCheckboxClick(stringIn,$index)"
+					   ng-model="stringIn.enabled" type="checkbox"/>
+				<span class="explore-filters-in-val-selected">{{stringIn.val}}</span>
+			</label>
+
+
+			<a class="explore-filters-in-val-remove" ng-click="removeStringInVal(stringIn,$index)"> </a>
+		</li>
+	</ul>
+</div>

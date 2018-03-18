@@ -1,0 +1,1 @@
+angular.module("Widgets", ["Utils", "Conditions", "State", "EventBus", "Controls"]);

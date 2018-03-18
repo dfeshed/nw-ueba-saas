@@ -1,0 +1,147 @@
+user-activity-countries {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    display: flex;
+    flex-flow: column nowrap;
+
+    .flex-column {
+        background-color: #f0f7f8;
+        display: flex;
+        flex-flow: column nowrap;
+    }
+
+    .flex-row {
+        display: flex;
+        flex-flow: row nowrap;
+    }
+
+    .user-header {
+        font-size: 16px;
+        font-weight: bold;
+        padding-bottom: 10px;
+        color: #024d89;
+    }
+
+    .widget-container {
+        flex: 1;
+    }
+
+    .map-column {
+        flex: 1;
+        box-sizing: border-box;
+
+        padding: 20px;
+
+    }
+
+    .stats-column {
+        //flex: 1;
+        box-sizing: border-box;
+
+        padding: 20px 50px 20px 20px;
+    }
+
+    .flag-column {
+
+        margin-right: 15px;
+        .fs-flag {
+            margin-top: 5px;
+        }
+    }
+
+    .percent-column {
+        flex: 1;
+
+        color: #024d89;
+        font-size: 14px;
+        @media (max-height: 700px) {
+            font-size: 12px;
+            line-height: 12px;
+        }
+
+        font-weight: 700;
+
+        margin-bottom: 15px;
+
+        &--country-name {
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        &--ountry-percent {
+            font-family: 'RobotoSlab', sans-serif;
+        }
+
+    }
+
+    .map-outer-container {
+        flex: 1;
+        position: relative;
+    }
+
+    .map-inner-container {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
+
+    .legend {
+        align-items: center;
+        opacity: 0;
+
+        transition: opacity 1s;
+
+        &.active {
+            opacity: 1;
+        }
+
+        &--item {
+            align-items: center;
+            margin-right: 20px;
+            cursor: pointer;
+
+            &:hover {
+                .legend--label {
+                    font-weight: 700;
+                    letter-spacing: -0.45px;
+                }
+            }
+
+            &.inactive {
+                .legend--label {
+                    color: #666;
+                }
+
+                .legend--bullet {
+                    background-color: #666;
+                }
+            }
+        }
+
+        &--bullet {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+
+            margin-right: 10px;
+
+            &.bullet-company {
+                background-color: #016a9c;
+            }
+            &.bullet-user {
+                background-color: #30a2f0;
+            }
+        }
+
+        &--label {
+            color: #024d89;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 400;
+            line-height: 20px;
+        }
+    }
+}

@@ -1,0 +1,20 @@
+.checklist{
+  margin: 0;
+  padding: 0 .5em;
+
+  label{
+    font-weight: normal !important;
+  }
+
+  li{
+    border-bottom: solid 1px #ebebeb;
+
+    &:last-child{
+      border-bottom: none
+    };
+  }
+
+  input{
+    margin-right: .3em;
+  }
+}

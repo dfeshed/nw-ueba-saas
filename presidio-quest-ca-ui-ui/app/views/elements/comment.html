@@ -1,0 +1,19 @@
+<div class="comment">
+    <header class="comment-header">
+        <strong>{{comment.analystDisplayName}}</strong> &middot; {{comment.when|date:'short'}}
+    </header>
+    <div class="comment-body" ng-bind-html="comment.message"></div>
+    <div class="comment-controls">
+        <a ng-click="comment.showReply = !comment.showReply" ng-show="!comment.showReply">Reply</a>
+    </div>
+    <div class="comment-reply" ng-show="comment.showReply">
+        <textarea ng-model="comment.reply" placeholder="Your reply here" focus-when="comment.showReply"></textarea>
+        <div class="comment-reply-controls">
+            <a class="btn-default" ng-click="saveComment(item, comment.reply, comment)">Post reply</a>
+            <a class="btn-cancel" ng-click="comment.showReply = null">Cancel</a>
+        </div>
+    </div>
+    <div class="comment-children" ng-if="comment.children.length">
+        <ng-include ng-repeat="comment in comment.children" src="'views/elements/comment.html'"></ng-include>
+    </div>
+</div>

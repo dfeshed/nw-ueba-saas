@@ -1,0 +1,79 @@
+<section class="fs-report suspicious-endpoint-access">
+
+    <!-- Header -->
+    <fs-report-header header-title="{{::report.state.reportTitle}}"
+        header-description="{{::report.state.reportDescription}}"></fs-report-header>
+    <!-- END OF Header -->
+
+    <fs-state-container container-id="report_main_state" state-model="report.mainState">
+
+        <!-- Controls -->
+        <fs-controls submit-delegate="stateContainer.applyPreState">
+            <label>Events Time</label>
+            <fs-date-range date-range-id="events_time"
+                fetch-state-delegate="stateContainer.fetchStateById"
+                update-state-delegate="stateContainer.updateCtrlState"></fs-date-range>
+            <label>User</label>
+            <fs-autocomplete autocomplete-id="user"
+                autocomplete-settings="report.userControlSettings"
+                resource-settings="report.userControlResource"
+                fetch-state-delegate="stateContainer.fetchStateById"
+                update-state-delegate="stateContainer.updateCtrlState">>
+            </fs-autocomplete>
+            <label>Device</label>
+            <fs-autocomplete autocomplete-id="endpoint"
+                autocomplete-settings="report.endpointControlSettings"
+                resource-settings="report.endpointControlResource"
+                fetch-state-delegate="stateContainer.fetchStateById"
+                update-state-delegate="stateContainer.updateCtrlState">>
+            </fs-autocomplete>
+        </fs-controls>
+        <!-- END OF Controls -->
+
+
+        <!-- Report Content -->
+        <section class="report-content">
+
+
+            <!-- Suspicious Endpoint Access Table -->
+            <fs-state-container
+                container-id="suspicious_endpoint_access"
+                resource-settings="::report.resourceSettings"
+                on-data-fetch="report.dataFetchDelegate(promise)">
+
+                <div class="table-widget">
+
+                    <!-- No Suspicious Endpoint Message -->
+                    <div class="no-machines-container"
+                        style="text-align: center; margin-top: 20px;"
+                        ng-class="{hide: stateContainer.dataModel.length || stateContainer.isLoading, show: stateContainer.dataModel.length === 0 && !stateContainer.isLoading}">
+                        <h3>{{::report.state.suspiciousEndpointsNoItems}}</h3></div>
+                    <!-- END of No Suspicious Endpoint Message -->
+
+                    <!-- Table -->
+                    <div class="table-content suspicious-endpoint-access-table-content"
+                        ng-class="{hide: !stateContainer.dataModel.length || stateContainer.isLoading, show: stateContainer.dataModel.length !== 0 && !stateContainer.isLoading}">
+                        <div class="fs-table-wrapper">
+                            <fs-table table-id="suspicious_endpoint_access"
+                                table-settings="report.tableSettings"
+                                table-model="stateContainer.dataModel"
+                                fetch-state-delegate="stateContainer.fetchStateById"
+                                update-state-delegate="stateContainer.updateCtrlState"
+                                class="general-fs-table"></fs-table>
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </fs-state-container>
+            <!-- END OF Suspicious Endpoint Access Table -->
+
+
+        </section>
+        <!-- END OF Report Content -->
+
+
+    </fs-state-container>
+
+</section>

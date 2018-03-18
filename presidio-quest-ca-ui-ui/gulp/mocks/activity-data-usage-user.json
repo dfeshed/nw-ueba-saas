@@ -1,0 +1,19 @@
+{
+    "data": [{
+        "dataEntityId": "vpn_session.databucket_histogram",
+        "value": 1914.6,
+        "days": 89
+    }, {
+        "dataEntityId": "oracle.db_object_histogram",
+        "value": 10.0,
+        "days": 89
+    }, {
+        "dataEntityId": "prnlog.file_size_histogram",
+        "value": 914.6,
+        "days": 89
+    }],
+    "total": 1,
+    "offset": 0,
+    "warning": null,
+    "info": null
+}

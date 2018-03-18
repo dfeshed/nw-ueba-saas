@@ -1,0 +1,45 @@
+<div class="users-action-bar">
+    <!--Export Users-->
+    <div ng-click='$ctrl.exportCSV()'
+         class='export-user-button'>
+        <svg class="download-icon">
+            <use xlink:href="#download-icon"></use>
+        </svg>
+        <span class="download-text">Export</span>
+    </div>
+    <!--enf of Export Users-->
+    <!-- Tag all users -->
+    <users-tags-all-popup tags="$ctrl.tags" remove-tags-delegate="$ctrl.removeTagsDelegate(tagIds)" add-tags-delegate="$ctrl.addTagsDelegate(tagIds)" ng-if="$ctrl.TAGS_FEATURE_ENABLED">
+
+
+    </users-tags-all-popup>
+    <!-- end of tag all users-->
+    <!--Watch button-->
+    <div class="watch-user-button" ng-click="$ctrl.watchAction()">
+
+        <div class="watch-user-button-instance watch-user-button-watch">
+                <span class="watch-user-button--icon">
+                    <fs-svg-icon symbol-name="watch-icon"
+                                 attributes="{width: 16, height: 16}"></fs-svg-icon>
+                </span>
+            <span class="watch-user-button--text">Add All to Watchlist</span>
+        </div>
+
+        <div class="watch-user-button-instance watch-user-button-unwatch">
+                <span class="watch-user-button--icon">
+                    <fs-svg-icon symbol-name="unwatch-icon"
+                                 attributes="{width: 16, height: 16}"></fs-svg-icon>
+                </span>
+            <span class="watch-user-button--text">Remove All from  Watchlist</span>
+        </div>
+    </div>
+    <!--End of Watch button-->
+    <!-- User search popup -->
+    <users-search-popup search-triggered-delegate="$ctrl.searchTriggeredDelegate(searchText)"
+                        update-state-delegate="$ctrl.updateStateDelegate"
+                        fetch-state-delegate="$ctrl.fetchStateDelegate"
+                        state-id="$ctrl.stateId"></users-search-popup>
+    <!-- End of user search popup-->
+
+
+</div>

@@ -1,0 +1,100 @@
+.status-counter-container {
+    position: relative;
+
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: center;
+
+    padding: 15px 18px;
+
+    background-color: #f0f7f8;
+    height: 20px;
+
+    fs-severity-tag {
+        margin-right: 3px;
+    }
+
+    &--title {
+        font-family: 'Open Sans', sans-serif;
+        color: #002949;
+        font-size: 14px;
+        line-height: 20px;
+
+        margin-right: 20px;
+    }
+
+    &--severity-info {
+        display: flex;
+        flex-flow: row;
+        justify-content: flex-start;
+        align-items: center;
+
+        margin-right: 23px;
+
+        &--count {
+
+            font-family: 'Open Sans', sans-serif;
+            font-size: 14px;
+
+            margin-right: 3px;
+
+            &.Critical {
+                color: $clrCritical;
+            }
+
+            &.High {
+                color: $clrHigh;
+            }
+
+            &.Medium {
+                color: $clrMedium;
+            }
+
+            &.Low {
+                color: $clrLow;
+            }
+        }
+
+        &--severity-name {
+            font-family: 'Open Sans', sans-serif;
+            color: #013056;
+            font-size: 14px;
+        }
+
+    }
+
+    &--export-alert-button {
+        position: absolute;
+
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: center;
+
+        right: 10px;
+
+        cursor: pointer;
+
+        .download-icon {
+            width: 16px;
+            height: 16px;
+            fill: #024d89;
+            stroke: #016a9c;
+
+            display: inline-block;
+
+            margin-right: 3px;
+        }
+
+        .download-text {
+            font-family: 'Open Sans', sans-serif;
+            color:  #013056;
+            font-size: 14px;
+
+            &:hover {
+                text-decoration: none;
+                font-weight: 800;
+            }
+        }
+    }
+}

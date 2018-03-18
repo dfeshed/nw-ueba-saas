@@ -1,0 +1,44 @@
+<!-- Card Header -->
+<fs-card-header card-title="Alerts Severity"></fs-card-header>
+
+<!-- Chart Container -->
+<div class="alerts-severity-container">
+
+    <!-- Chart title and legend -->
+    <div class="alerts-severity-container--chart-header">
+        <div class="alerts-severity-container--chart-header--title">{{$ctrl.timeFrame|fsDTHumanize:'days'}}</div>
+        <div class="alerts-severity-container--chart-header--legend">
+
+            <div class="alerts-severity-container--chart-header--legend--item"
+                ng-click="::$ctrl.transitionToAlerts($ctrl.alertStatsUtils.longDateRange, 'critical')">
+                <div class="alerts-severity-container--chart-header--legend--marker severity-critical"></div>
+                <div class="alerts-severity-container--chart-header--legend--label">Critical</div>
+            </div>
+
+            <div class="alerts-severity-container--chart-header--legend--item"
+                ng-click="::$ctrl.transitionToAlerts($ctrl.alertStatsUtils.longDateRange, 'high')">
+                <div class="alerts-severity-container--chart-header--legend--marker severity-high"></div>
+                <div class="alerts-severity-container--chart-header--legend--label">High</div>
+            </div>
+
+            <div class="alerts-severity-container--chart-header--legend--item"
+                ng-click="::$ctrl.transitionToAlerts($ctrl.alertStatsUtils.longDateRange, 'medium')">
+                <div class="alerts-severity-container--chart-header--legend--marker severity-medium"></div>
+                <div class="alerts-severity-container--chart-header--legend--label">Medium</div>
+            </div>
+
+
+            <div class="alerts-severity-container--chart-header--legend--item"
+                ng-click="::$ctrl.transitionToAlerts($ctrl.alertStatsUtils.longDateRange, 'low')">
+                <div class="alerts-severity-container--chart-header--legend--marker severity-low"></div>
+                <div class="alerts-severity-container--chart-header--legend--label">Low</div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Chart Wrapper -->
+    <div class="alerts-severity-container--chart-wrapper alert-severity-by-day-chart-container"></div>
+</div>

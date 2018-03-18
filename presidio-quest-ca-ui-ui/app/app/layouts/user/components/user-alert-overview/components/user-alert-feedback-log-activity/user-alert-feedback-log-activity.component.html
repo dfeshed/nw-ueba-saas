@@ -1,0 +1,25 @@
+<!-- This component display the history of the feedback has changed by the user
+ if you want the component that actually change the feedback go to user-alert-overview-feedback -->
+<div class="alert-single-feedback">
+    <!-- Show the relevant star icon-->
+    <div class="icon-wrapper">
+        <fs-svg-icon symbol-name="star-orange" ng-if="$ctrl.feedback.alertFeedback==='Approved'"></fs-svg-icon>
+        <fs-svg-icon ng-if="$ctrl.feedback.alertFeedback==='Rejected'" symbol-name="star-crossed-gray"></fs-svg-icon>
+        <fs-svg-icon ng-if="$ctrl.feedback.alertFeedback==='None'" symbol-name="star"></fs-svg-icon>
+    </div>
+    <!-- Show the localized name of the feedback + the change in score +  the new score -->
+    <div class="main-feedback-text" ng-class="{'not-last':!$ctrl.last}">
+        <div class="feedback-row">
+            <span class="feedback-uneditable">{{$ctrl.description}}</span>
+            <div class="score-box-column" ng-if="$ctrl.feedback.scoreDelta!==0">
+                <span class="score-box">
+                    <span ng-if="::$ctrl.feedback.scoreDelta>0">+</span>
+                    <span ng-if="::$ctrl.feedback.scoreDelta<0">-</span>{{::$ctrl.getAbsoluteScoreChange()}}</span>
+            </div>
+        </div>
+        <div class="feedback-details">{{$ctrl.feedback.analystUserName}} | {{$ctrl.feedback.modifiedAt|date:
+            "medium"}}
+        </div>
+        <div class="score-after" ng-class="'score-severity-'+$ctrl.feedback.userScoreSeverityAfter.toLowerCase()">{{::$ctrl.feedback.userScoreAfter}} </div>
+    </div>
+</div>

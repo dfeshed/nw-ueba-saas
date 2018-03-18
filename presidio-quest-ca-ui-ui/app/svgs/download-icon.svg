@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+  <defs>
+    <style>
+      .cls-download-icon {
+        fill: #016a9c;
+        fill-rule: evenodd;
+      }
+    </style>
+  </defs>
+  <path id="export" class="cls-download-icon" d="M1188,196v4h2v-4h3l-4-4-4,4h3Zm8-4h-3v2h2v8h-12v-8h2v-2h-3a0.945,0.945,0,0,0-1,1v14a0.945,0.945,0,0,0,1,1h14a0.945,0.945,0,0,0,1-1V193A0.945,0.945,0,0,0,1196,192Z" transform="translate(-1181 -192)"/>
+</svg>

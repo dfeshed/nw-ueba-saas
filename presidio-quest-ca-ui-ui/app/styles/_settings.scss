@@ -1,0 +1,23 @@
+.settings-wrapper{
+  padding-top: 20px !important;
+
+  .personal-info h5.personal-title{
+    margin-bottom: 10px;
+  }
+
+  .description{
+    margin-bottom: 40px;
+  }
+  .alert{
+    margin: 20px 0 !important;
+
+    i{
+      float: none !important;
+    }
+  }
+
+  .personal-info .action{
+    margin-top: 10px;
+    margin-bottom: 30px;
+  }
+}

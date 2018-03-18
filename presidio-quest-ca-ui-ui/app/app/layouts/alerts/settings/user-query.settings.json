@@ -1,0 +1,39 @@
+{
+    "fields": [
+        {
+            "id": "id"
+        },
+        {
+            "id": "normalized_username"
+        },
+        {
+            "id": "display_name"
+        }
+    ],
+    "entities": [
+        "users"
+    ],
+    "sort": [
+        {
+            "field": {
+                "id": "normalized_username"
+            }
+        }
+    ],
+    "conditions": {
+        "type": "term",
+        "logicalOperator": "AND",
+        "terms": [
+            {
+                "field": {
+                    "id": "normalized_username"
+                },
+                "queryOperator": "startsWith",
+                "type": "field",
+                "value": ""
+            }
+        ]
+    },
+    "limit": 1,
+    "offset": 0
+}

@@ -1,0 +1,24 @@
+{
+    "dashboardId": "user_total",
+    "className": "dashboard-noPadding",
+    "columns": [
+        {
+            "widgets": [
+                {
+                    "widgetId": "user_score_history_total",
+                    "params": {
+                        "classifier": "total"
+                    },
+                    "title": "Total Score History"
+                },
+                {
+                    "widgetId": "user_total_breakdown",
+                    "refreshOn": "date",
+                    "params": {
+                        "date": null
+                    }
+                }
+            ]
+        }
+    ]
+}

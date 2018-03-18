@@ -1,0 +1,21 @@
+<a class="tags-count-item-container"  ng-href="{{::$ctrl.itemSettings.href}}" ng-class="::{'not-allowed': !$ctrl.itemSettings.href}">
+    <div class="svgicon-container" ng-style="::{width: ($ctrl.itemSettings.iconWidth || 36) + 'px', height: ($ctrl.itemSettings.iconHeight || 36) + 'px'}">
+        <fs-svg-icon symbol-name="{{::$ctrl.itemSettings.icon}}" attributes="::{width: 36, height: 36}"></fs-svg-icon>
+    </div>
+    <div class="stats-container">
+        <div class="stats-container--amount" ng-if="$ctrl.count">
+            {{$ctrl.count}}
+        </div>
+        <div class="stats-container--amount" ng-if="!$ctrl.count">
+            {{$ctrl.itemSettings.defaultValue}}
+        </div>
+        <div class="stats-container--display-name">
+            <div class="single" ng-if="$ctrl.tagGroup.value === 1">
+                {{::$ctrl.itemSettings.displayNameSingle}}
+            </div>
+            <div class="plural" ng-if="$ctrl.tagGroup.value !== 1">
+                {{::$ctrl.itemSettings.displayNameSingle}}
+            </div>
+        </div>
+    </div>
+</a>

@@ -1,0 +1,25 @@
+<fs-card-header card-title="{{$ctrl.title}} <span class='fs-card-title-small'>(Daily Average, Last 90 Days)</span>"></fs-card-header>
+<div class="data-usage-outer-container">
+    <!--<div class="data-usage-inner-container">-->
+        <div class="data-usage-row" ng-repeat="entity in $ctrl.dataUsages">
+            <!-- icon -->
+            <div class="data-entity-icon">
+                <fs-svg-icon symbol-name="{{::entity.icon}}" attributes="{width: 38, height: 38}"></fs-svg-icon>
+            </div>
+
+            <!-- Info -->
+            <div class="info-column">
+                <div class="stats-row">
+                <span class="data-entity-title">
+                    {{::entity.title}}
+                </span>
+                </div>
+                <div class="data-entity-value">
+                    {{::entity.value}}
+                </div>
+            </div>
+
+        </div>
+    <!--</div>-->
+
+</div>

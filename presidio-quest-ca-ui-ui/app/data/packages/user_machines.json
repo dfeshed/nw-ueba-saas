@@ -1,0 +1,43 @@
+{
+    "id": "user_machines",
+    "dataviews": [
+        {
+            "controls": [
+                {
+                    "label": "Person",
+                    "param": "person",
+                    "type": "string",
+                    "autocomplete": {
+                        "entity": "persons",
+                        "field": "displayname"
+                    }
+                }
+            ],
+            "investigate": {
+                "id": "user_machines",
+                "paramsMap": {
+                    "person": "persons.displayname"
+                }
+            }
+        },
+        {
+            "controls": [
+                {
+                    "label": "Machine",
+                    "param": "machine",
+                    "type": "string",
+                    "autocomplete": {
+                        "entity": "ad_logins",
+                        "field": "machine_name"
+                    }
+                }
+            ],
+            "investigate": {
+                "id": "user_machines",
+                "paramsMap": {
+                    "machine": "ad_logins.machine_name"
+                }
+            }
+        }
+    ]
+}

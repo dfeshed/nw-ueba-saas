@@ -1,0 +1,41 @@
+{
+    "scrollable": false,
+    "groupable": false,
+    "sortable": {
+        "mode": "single"
+    },
+    "alwaysPageable": true,
+    "dataSource" : {
+        "sort": {
+            "field": "lastActivity",
+            "dir": "DESC"
+        }
+    },
+    "columns": [
+        {
+            "title": "User Name",
+            "field": "username",
+            "template": "<a href=\"\\#/user/{{dataItem.id}}/baseline\">{{dataItem.username}}</a>"
+        },
+        {
+            "title": "Display Name",
+            "field": "displayName"
+        },
+        {
+            "title": "Department",
+            "field": "adInfo.department"
+        },
+        {
+            "title": "Disabled On",
+            "field": "adInfo.disableAccountTime",
+            "template": "{{ dataItem.adInfo.disableAccountTime | date:\"MM/dd/yyyy HH\\:mm\\:ss\":\"UTC\"}}"
+
+        },
+        {
+            "title": "Last Activity Time",
+            "field": "lastActivity",
+            "template": "{{ dataItem.lastActivity | date:\"MM/dd/yyyy HH\\:mm\\:ss\":\"UTC\"}}"
+        }
+
+    ]
+}

@@ -1,0 +1,48 @@
+fs-report-header, fs-table-header, .fs-report-header {
+
+    display: block;
+    height: 80px;
+    box-sizing: border-box;
+
+    background-color: #f0f7f8;
+
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+
+    padding: 10px 15px;
+
+    .report-header-title {
+        color: #01294a;
+        line-height: 20px;
+    }
+
+    .report-header-description {
+        color: #0660a8;
+        line-height: 39px;
+        font-weight: 400;
+        font-size: 14px;
+    }
+
+    flex: 0 0;
+
+}
+
+fs-table-header {
+    background-color: $clrWhite;
+    font-size: 14px;
+    font-weight: 400;
+
+    &:not(.first) {
+        margin-top: 30px;
+    }
+
+
+}
+
+.chart-widget {
+    .report-header-title {
+        font-size: 14px;
+        font-weight: 400;
+    }
+}

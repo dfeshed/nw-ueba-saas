@@ -1,0 +1,42 @@
+
+.ip-investigation, .sensitive-resource-monitoring {
+
+    hr {
+        border-top: 1px solid $clrGrey20;
+        margin: 3em 0;
+    }
+
+    /**
+    TABLE
+    **/
+
+    .table-widget {
+        position: relative;
+        min-height: 5em;
+    }
+
+    .table-loader {
+        position: absolute;
+        top: 43%;
+        left: 50%;
+        z-index: 15
+    }
+
+
+    /**
+    END OF Table
+    **/
+}
+
+.suspicious-endpoint-access {
+    fs-autocomplete[autocomplete-id="user"] {
+        .k-autocomplete {
+            width: 15em;
+        }
+    }
+
+    button[type="submit"] {
+        margin-left: 30px;
+    }
+
+}

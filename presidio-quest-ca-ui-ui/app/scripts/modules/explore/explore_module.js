@@ -1,0 +1,1 @@
+angular.module("Explore", ["Utils", "DataEntities", "DataQueries", "State", "Explore.Filters", "Explore.DataViews"]);

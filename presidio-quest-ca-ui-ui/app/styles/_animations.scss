@@ -1,0 +1,18 @@
+@mixin fs-hide-anim($length: 300ms, $transitionStyle: ease-in-out) {
+    .fs-hide-anim {
+        opacity: 0;
+        transition: opacity $length $transitionStyle;
+    }
+}
+
+@mixin fs-show-anim($length: 300ms, $transitionStyle: ease-in-out) {
+    .fs-show-anim {
+        opacity: 1;
+        transition: opacity $length $transitionStyle;
+    }
+}
+
+@mixin fs-hide-show-anim($length: 300ms, $transitionStyle: ease-in-out) {
+    @include fs-hide-anim($length, $transitionStyle);
+    @include fs-show-anim($length, $transitionStyle);
+}

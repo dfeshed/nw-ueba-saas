@@ -1,0 +1,14 @@
+{
+    "id": "disabled_user_ssh",
+    "items": [
+        {
+            "text": "View Kerberos logins by {{displayname}}",
+            "conditions": [{
+                "field": "accountisdisabled",
+                "operator": "equals",
+                "value": true
+            }],
+            "url": "#/d/explore/kerberos_logins?filters=kerberos_logins.normalized_username={{username}}"
+        }
+    ]
+}

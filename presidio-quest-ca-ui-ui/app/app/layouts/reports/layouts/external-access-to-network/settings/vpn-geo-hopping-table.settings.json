@@ -1,0 +1,49 @@
+{
+    "scrollable": false,
+    "groupable": false,
+    "sortable": true,
+    "pageable": false,
+    "dataSource": {
+        "sort": [
+
+            {
+                "field": "username",
+                "dir": "asc"
+            },
+            {
+                "field": "event_time_utc",
+                "dir": "desc"
+            }
+        ]
+    },
+    "columns": [
+        {
+            "title": "Username",
+            "field": "username",
+            "template": "<a ng-href=\"{{'\\#username/' + dataItem.normalized_username}}\">{{:: dataItem.username }}</a>",
+            "groupField": "username",
+            "groupHeaderTemplate": "<a ng-href=\"{{'\\#username/' + dataItem.items[0].normalized_username}}\">{{:: dataItem.value }}</a>"
+        },
+        {
+            "title": "Source IP",
+            "field": "source_ip",
+            "template": "<a ng-href=\"\\#/d/explore/vpn?filters=vpn.source_ip={{:: dataItem.source_ip}}\">{{:: dataItem.source_ip | orNA}}</a>"
+        },
+        {
+            "title": "Country",
+            "field": "country",
+            "template": "<a ng-href=\"\\#/d/explore/vpn?filters=vpn.country={{:: dataItem.country }}\">{{:: dataItem.country | orNA}}"
+        },
+        {
+            "title": "City",
+            "field": "city",
+            "template": "<a ng-href=\"\\#/d/explore/vpn?filters=vpn.city={{:: dataItem.city }}\">{{:: dataItem.city | orNA}}"
+        },
+        {
+            "title": "Time",
+            "field": "event_time_utc",
+            "template": "{{:: dataItem.event_time_utc | date:\"MM/dd/yyyy HH\\:mm\":\"UTC\"}}",
+            "customSort": "number"
+        }
+    ]
+}

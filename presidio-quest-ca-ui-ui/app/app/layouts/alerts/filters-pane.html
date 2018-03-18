@@ -1,0 +1,69 @@
+<div class="filters-box--container">
+    <div class="filters-box--container--title">
+        <svg class="icon filter-icon">
+            <use xlink:href="#filter-icon"></use>
+        </svg>
+        <span class="filters-box--container--title--text">
+            Alert Filter
+        </span>
+    </div>
+    <div class="filters-box--container--controls">
+        <fs-multiselect label="Severity"
+            multiselect-id="severity_filter"
+            fetch-state-delegate="::stateContainer.fetchStateById"
+            update-state-delegate="::stateContainer.updateCtrlState"
+            list-data="::alerts.filtersPaneSettings.severityFilter.data"
+            immediate="true"></fs-multiselect>
+        <fs-multiselect label="Feedback"
+            multiselect-id="feedback_filter"
+            fetch-state-delegate="::stateContainer.fetchStateById"
+            update-state-delegate="::stateContainer.updateCtrlState"
+            list-data="::alerts.filtersPaneSettings.feedbackFilter.data"
+            immediate="true"></fs-multiselect>
+        <fs-multiselect label="Tags"
+            multiselect-id="tags_filter"
+            fetch-state-delegate="::stateContainer.fetchStateById"
+            update-state-delegate="::stateContainer.updateCtrlState"
+            list-data="::alerts.filtersPaneSettings.tagsFilter.data"
+            immediate="true" ng-if="alerts.TAGS_FEATURE_ENABLED"></fs-multiselect>
+
+        <fs-multiselect-autocomplete class="entities-multi-select"
+            label="Entity"
+            multiselect-autocomplete-id="entities_ids_filter"
+            fetch-state-delegate="::stateContainer.fetchStateById"
+            update-state-delegate="::stateContainer.updateCtrlState"
+            entity="entities"
+            text-field="uniqueDisplayName"
+            value-field="id"
+            query-text-field="entity_id"
+            query-value-field="entity_name"
+            immediate="true"></fs-multiselect-autocomplete>
+
+        <fs-multiselect label="Indicators"
+            multiselect-id="indicator_types_filter"
+            fetch-state-delegate="::stateContainer.fetchStateById"
+            update-state-delegate="::stateContainer.updateCtrlState"
+            list-data="::alerts.indicatorTypeList"
+            immediate="true"
+            count-labels="['Alert','Alerts']"></fs-multiselect>
+
+        <div class="alert-start-date-range">
+
+            <fs-date-range date-range-id="date_range_filter"
+                id="date_range_filter"
+                fetch-state-delegate="::stateContainer.fetchStateById"
+                update-state-delegate="::stateContainer.updateCtrlState"
+                label="Date Range"
+                immediate="true"></fs-date-range>
+        </div>
+
+        <div class="fs-button-group">
+            <button class="cancel"
+                ng-click="alerts.clearFilters(stateContainer, 'alert_table', ['severity_filter', 'status_filter', 'feedback_filter', 'tags_filter', 'entities_ids_filter', 'date_range_filter', 'indicator_types_filter'])">
+                Clear
+            </button>
+
+        </div>
+    </div>
+
+</div>

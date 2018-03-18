@@ -1,0 +1,129 @@
+.nav-bar-container {
+
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: stretch;
+
+    flex: 1 0;
+
+    overflow: hidden;
+
+    &--header {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        background-color: #e5e5e5;
+        flex: 0 0 50px;
+
+        /* Text style for "Reports" */
+        color: #013f71;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 14px;
+        font-weight: 400;
+
+        svg {
+            display: inline;
+
+            width: 18px;
+            height: 18px;
+            fill: #004f8f;
+
+            margin: 0 5px 0 20px;
+
+        }
+    }
+
+    &--groups-list-container {
+        flex: 1 0;
+        overflow: auto;
+
+        display: flex;
+        flex-flow: row nowrap;
+
+        position: relative;
+    }
+
+    &--groups-list {
+        position: absolute;
+        width: 100%;
+        height: auto;
+
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+
+        /* Text style */
+        color: #004f8f;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 30px;
+
+        > li:first-child {
+            margin-top: 0;
+        }
+
+        ul {
+            list-style-type: none;
+            flex: 1 0;
+
+            overflow: auto;
+
+            margin: 0;
+            padding: 0;
+        }
+
+        li {
+            color: #004f8f;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 30px;
+
+            margin: 10px 0;
+            &.nav-list-item {
+                line-height: 16px;
+
+                /* Text style for "Admin Accounts" */
+                color: #004f8f;
+                font-family: 'Open Sans', sans-serif;
+                font-size: 14px;
+                font-weight: 400;
+
+                margin: 0;
+                padding: 7px 10px 7px 24px;
+                background-color: #f0f7f8;
+                transition: background 0.2s, color 0.5s;
+
+                cursor: pointer;
+
+                &:hover {
+                    background-color: #d6d6d8;
+                }
+
+                &.active {
+                    background-color: #024c87;
+                    color: white;
+                }
+
+            }
+        }
+
+    }
+
+    &--group-item {
+
+        &--content {
+            margin-bottom: 5px;
+            padding: 0 0 0 15px;
+            background-color: #d3d8d9;
+
+            /* Text style */
+            color: #004f8f;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+        }
+    }
+}
+

@@ -1,0 +1,67 @@
+.alerts-box {
+    display: flex;
+    flex-flow: column;
+
+    background-color: $clrWhite;
+    box-shadow: 3px 3px 10px 0 rgba(0, 0, 0, 0.5);
+    flex: 1;
+    height: 100%;
+
+    overflow: auto;
+
+    &--alerts-table {
+        position: relative;
+        flex: 1;
+        background-color: #e8eff0;
+
+        box-sizing: border-box;
+
+        overflow: auto;
+
+        &--content {
+
+        }
+
+    }
+
+    .no-alerts-table {
+
+        position: absolute;
+        top: 0;
+        left: calc(50% - 80px);
+
+        margin-top: 40px;
+        display: flex;
+        flex-flow: column nowrap;
+
+        align-items: center;
+        transition: opacity 0.3s ease-in-out;
+
+        &.ng-enter, &.ng-leave.ng-leave-active {
+            opacity: 0;
+        }
+
+        &.ng-enter.ng-enter-active, &.ng-leave {
+            opacity: 1;
+        }
+
+        .Fortscale_logo_icon {
+            width: 35px;
+            height: 49px;
+        }
+
+        .text {
+            font-family: 'Open Sans', sans-serif;
+            color: #002949;
+            font-size: 22px;
+            font-weight: 400;
+        }
+
+    }
+
+    @include fs-table-style2();
+
+    @import "alerts-status-counter";
+
+}
+

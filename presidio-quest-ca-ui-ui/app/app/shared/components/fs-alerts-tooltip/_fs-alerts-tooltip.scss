@@ -1,0 +1,47 @@
+.alerts-tooltip-main {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    overflow-y: auto;
+    max-height: 600px;
+    width: 320px;
+
+    padding: 20px 18px;
+    .alert-row{
+        display: flex;
+        flex-direction: row;
+        padding-bottom: 30px;
+        line-height: 16px;
+        align-items: center;
+        .alert-link {
+            flex: 0 0 240px;
+
+            .alert-name {
+                color: rgb(2, 77, 137);
+                .alert-timeframe-tag {
+                    color: rgb(2, 77, 137);
+                }
+
+            }
+        }
+        .alert-feedback-icon{
+            padding: 0 10px;
+        }
+        &.last{
+            padding-bottom: 0px;
+        }
+
+        .fs-severity-tag--icon-container {
+            width: 16px;
+            height: 16px;
+        }
+    }
+
+}
+
+.style-user-tooltip {
+    &.opentip-container {
+        max-width: 1000px;
+    }
+}

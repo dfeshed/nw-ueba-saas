@@ -1,0 +1,46 @@
+<a class="overview-alert overview-alert--{{::$ctrl.overviewAlert.severity.toLowerCase()}}"
+    alert-model="::$ctrl.overviewAlert"
+    ui-sref="user.alert-overview({userId: $ctrl.overviewAlert.entityId, alertId: $ctrl.overviewAlert.id})">
+
+    <!-- Severity Icon -->
+    <div class="overview-alert--severity-icon overview-alert--container">
+        <fs-severity-tag severity="{{::$ctrl.overviewAlert.severity}}" score="{{::$ctrl.overviewAlert.score}}"></fs-severity-tag>
+    </div>
+
+    <!-- Info -->
+    <div class="overview-alert--info overview-alert--container">
+        <div class="overview-alert--info--wrapper">
+            <!-- Alert Name -->
+            <div class="alert-name-container">
+                <div class="overview-alert--info--title overview-alert--info--title--{{::$ctrl.overviewAlert.severity.toLowerCase()}}"
+                    ng-bind-html="::$ctrl.overviewAlert | prettyAlertName"></div>
+            </div>
+
+
+            <!-- User Name -->
+            <div class="overview-alert--info--entity-name"
+                tooltip-alert="::$ctrl.overviewAlert"
+                tooltip-target-selector=".overview-alert--info--entity-name">
+                {{$ctrl.overviewUser.fallBackDisplayName}}<i class="fa fa-eye" aria-hidden="true" ng-if="$ctrl.overviewUser.followed"></i>
+            </div>
+
+            <!-- Alert Creation Date -->
+            <div class="overview-alert--info--date">
+                {{::$ctrl.overviewAlert.startDate | date:"MM/dd/yyyy HH:mm":"UTC"}}
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Number Of Indicators -->
+    <div class="overview-alert--indicator overview-alert--container"
+        fs-indicators-tooltip
+        indicators="::$ctrl.overviewAlert.evidences"
+        alert-model="::$ctrl.overviewAlert"
+        tooltip-target-selector=".overview-alert--indicator overview-alert--container">
+        <span class="overview-alert--indicator--amount">
+            {{::$ctrl.numberOfNotTagIndicators}}
+        </span>
+        <span class="overview-alert--indicator--label">Indicator<span ng-if="::$ctrl.numberOfNotTagIndicators && $ctrl.numberOfNotTagIndicators > 1">s</span></span>
+    </div>
+</a>

@@ -1,0 +1,41 @@
+<div class="config-item-card forward-historical-alerts">
+
+    <!-- Header -->
+    <div class="config-item-card--header">
+        <div class="config-item-card--title">{{$ctrl.configItem.displayName}}</div>
+    </div>
+    <!-- END OF Header -->
+
+    <!-- Values -->
+    <div class="config-item-card--values">
+
+        <div class="date-range-container">
+            <div class="date-range-label">Select Date Range</div>
+            <fs-date-range update-state-delegate="::$ctrl.dateChange"></fs-date-range>
+        </div>
+
+        <div class="form-pane--config-section--form-content--form-buttons">
+            <label for="perform_forward_job"
+                class="submit-button form-button"
+                ng-disabled="!$ctrl.formModelCtrl.$valid || $ctrl.isLoading">
+                <div class="form-button-icon">
+                    <i class="fa fa-check"></i>
+                </div>
+                <input id="perform_forward_job"
+                    name="perform_forward_job"
+                    type="button"
+                    value="Forward Alerts"
+                    ng-disabled="!$ctrl.formModelCtrl.$valid || $ctrl.isLoading"
+                    ng-click="ctrl.forward(configFormModel)"
+                ></label>
+        </div>
+
+    </div>
+    <!-- END OF Values -->
+
+    <div class="message" ng-if="$ctrl.message">{{$ctrl.message}}</div>
+
+
+    <div class="loader" ng-if="$ctrl.isLoading"></div>
+
+</div>

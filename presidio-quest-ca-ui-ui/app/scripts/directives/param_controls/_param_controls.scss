@@ -1,0 +1,91 @@
+.control-params{
+  border-bottom: solid 1px #C9C9C9;
+  padding: 5px 15px 5px 1rem;
+  white-space: nowrap;
+  background: #E2E2E2;
+
+  .control-params-title{
+    font-weight: bold;
+    line-height: 1.9rem;
+    font-size: 14px;
+  }
+  &.control-params-widget{
+    padding-left: $widgetHorizontalPadding;
+  }
+
+  .control-params-field{
+    display: inline-block;
+    padding-right: 20px;
+
+    label{
+      font-weight: 300;
+    }
+
+    &:last-child{
+      padding-right: 0;
+    }
+  }
+
+  @media screen and (max-width: 1280px) {
+    .searchbox input {
+      width: 120px;
+    }
+
+    .datepicker{
+      width: 85px;
+    }
+
+    .control-params-field{
+      padding-right: 10px;
+    }
+  }
+
+  .checkbox-param{
+    margin: 0;
+    position: relative;
+    top: -1px
+  }
+  .control-params-buttons{
+    padding-left: 20px;
+    text-align: right;
+
+
+    @media screen and (max-width: 1280px){
+      padding-left: 10px;
+    }
+
+    .btn-group{
+      text-align: left;
+
+      &.open .btn.dropdown-toggle{
+        background-color: #0D7216;
+      }
+      button{
+        outline: none;
+        color: White;
+      }
+
+      .dropdown-menu{
+        left: auto;
+        right: 0;
+      }
+    }
+  }
+
+  .control-params-field-warning{
+    input[type='text'], input[type='number']{
+      @extend .warning-block;
+      border: #C28A35;
+    }
+  }
+
+  .icon-warning-sign{
+    font-size: 1.2em;
+    vertical-align: middle;
+    color: #c00;
+
+    &:hover{
+      color: #f00;
+    }
+  }
+}

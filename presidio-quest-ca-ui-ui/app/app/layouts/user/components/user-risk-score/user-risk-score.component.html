@@ -1,0 +1,92 @@
+<!-- Score Box -->
+<div class="user-risk-score-box">
+    <fs-card-header card-title="User Risk Score"></fs-card-header>
+    <div class="user-risk-score-box--score" ng-class="'score-severity--'+ $ctrl.user.scoreSeverity.toLowerCase()">
+        {{$ctrl.user.score}}
+    </div>
+</div><!-- END OF Score Box -->
+
+<!-- Alerts List Control -->
+<div class="user-risk-score-control">
+    <fs-svg-icon symbol-name="bell-icon"></fs-svg-icon>
+    <span class="list-title">Alerts</span>
+    <span class="spacer"></span>
+    <span class="control-title">Sort By</span>
+    <span class="sort-drop-down"></span>
+</div>
+
+<!-- Alerts List -->
+<div class="user-risk-score-list" ng-class="{'no-alerts': $ctrl.alerts.length === 0}">
+
+    <!-- no alerts -->
+    <div class="no-alerts-message" ng-if="$ctrl.alerts.length === 0">
+        <fs-svg-icon symbol-name="bell-icon"></fs-svg-icon>
+        <div class="no-alerts-text">No Alerts</div>
+    </div>
+
+    <!-- Alert Item -->
+    <div class="alert-item-wrapper alert-id-{{::alert.id}}"
+        ng-repeat="alert in $ctrl.alerts"
+        ng-class="{'last-alert': $last, 'inactive-alert': !alert.userScoreContributionFlag, 'selected-alert': alert.id === $ctrl.activeAlertId}">
+        <div class="alert-item-inner-wrapper" ui-sref="user.alert-overview({alertId: alert.id})">
+            <div class="score-box-column"><span class="score-box">+{{::alert.userScoreContribution}}</span></div>
+            <div class="alert-stats">
+                <div class="alert-name-container">
+                    <div class="alert-feedback-icon" ng-switch="alert.feedback">
+                        <fs-svg-icon symbol-name="star" ng-switch-when="None"></fs-svg-icon>
+                        <fs-svg-icon symbol-name="star-white-filled" ng-switch-when="None"></fs-svg-icon>
+                        <fs-svg-icon symbol-name="star-crossed" ng-switch-when="Rejected"></fs-svg-icon>
+                        <fs-svg-icon symbol-name="star-crossed-blue" ng-switch-when="Rejected"></fs-svg-icon>
+                        <fs-svg-icon symbol-name="star-orange" ng-switch-when="Approved"></fs-svg-icon>
+                    </div>
+                    <div class="alert-name" ng-bind-html="::alert | prettyAlertName"></div>
+                </div>
+                <div class="alert-date">{{::alert.startDate| date:'MM-dd-yyyy | h:mm a':'UTC'}}</div>
+            </div>
+            <div class="alert-severity">
+                <fs-severity-tag severity="{{::alert.severity}}" score="{{::alert.score}}"></fs-severity-tag>
+            </div>
+        </div>
+
+        <!-- Indicators List -->
+        <div class="indicators-list-mask">
+            <div class="indicators-list-wrapper">
+
+                <!-- Ruler start (upper line) -->
+                <div class="indicator-list-ruler-start">
+                    <div class="ruler-container">
+                        <div class="ruler-spacer"></div>
+                        <div class="fill-ruler-container">
+                            <div class="back-line"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- indicator item -->
+                <div class="indicator-list-item indicator-id-{{::indicator.id}}"
+                    ng-repeat="indicator in ::alert.evidences|orderBy:'-scoreContribution'"
+                    ng-class="{'indicators-list-item-active': indicator.id === $ctrl.activeIndicatorId, 'indicators-list-item-last': $last}"
+                    ui-sref="user.indicator({alertId: alert.id, indicatorId: indicator.id})">
+                    <!-- Indicator ruler item -->
+                    <div class="ruler-container">
+                        <div class="ruler-spacer"></div>
+                        <div class="fill-ruler-container">
+                            <div class="back-line"></div>
+                            <!--<div class="contribution">{{indicator.scoreContribution}}%</div>-->
+                            <!--<div class="mid-line"></div>-->
+                            <!--<div class="selected-line"></div>-->
+                            <div style="padding-left: 5px;">
+                                <fs-percentage-circle radius = "11" percentage="{{indicator.scoreContribution}}"></fs-percentage-circle>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- indicator name and value -->
+                    <div class="indicator-item">{{::indicator.name}}
+                        <span ng-if="::indicator.evidenceType!=='StaticIndicator'">({{::indicator.anomalyValue | anomalyTypeFormatter:indicator}})</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,101 @@
+.alert-single-feedback{
+
+        font-size: 14px;
+        font-family: "Open Sans";
+        line-height: 1.786;
+        text-align: left;
+        width: 40em;
+        margin-bottom: 0.5em;
+        margin-right: 2em;
+        border-color: transparent;
+        border-width: 1px;
+        border-style: solid;
+        display: flex;
+        flex-direction: row;
+
+        .icon-wrapper{
+            padding-top: 2px;
+        }
+
+        .main-feedback-text{
+            position: relative;
+            flex-direction: column;
+            display: flex;
+            height: 5em;
+            color: rgb(94, 102, 153);
+            font-family: 'Open Sans Regular', 'Open Sans';
+            font-weight:400;
+            font-style: normal;
+            font-size: 12px;
+            text-decoration: none;
+            position: relative;
+            margin-left: 15px;
+            flex-grow: 2;
+
+            &.not-last {
+                border-bottom: 1px solid #cccccc;
+            }
+            .feedback-uneditable{
+                word-wrap: break-word;
+                min-height: 3.0em;
+                overflow-y: auto;
+                width: 100px;
+
+            }
+
+            .feedback-row{
+                flex-direction: row;
+                display: flex;
+                .score-box-column {
+                    flex: 50px 0 0;
+
+                    .score-box{
+                        display: inline-block;
+                        min-width: 30px;
+                        height: 25px;
+                        padding: 5px;
+                        box-sizing: border-box;
+                        margin-right: 15px;
+                        text-align: center;
+                        background-color: #3f7db5;
+                        border-radius: 3px;
+                        color: #fafdff;
+                        font-family: 'RobotoSlab', sans-serif;
+                        font-size: 12px;
+                        font-weight: 400;
+                        line-height: 15px;
+                    }
+                }
+            }
+        }
+        .feedback-details{
+            float: right;
+            font-size: 10px;
+            padding-right: 1em;
+
+        }
+
+        .score-after{
+            float: right;
+            right: 5px;
+            display: -ms-flexbox;
+            display: flex;
+            position: absolute;
+            right: 1em;
+            font-weight: 700;
+            font-size: 18px;
+
+            &.score-severity-low {
+                color: #61AA02;
+            }
+            &.score-severity-medium {
+                color: #69BDBD;
+            }
+            &.score-severity-high {
+                color: #FD7F1B;
+            }
+            &.score-severity-critical {
+                color: #D32F2F;
+            }
+        }
+}

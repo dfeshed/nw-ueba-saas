@@ -1,0 +1,94 @@
+.alert-single-comment{
+
+
+    .comment-box {
+
+        font-size: 14px;
+        font-family: "Open Sans";
+        color: rgb(131, 132, 133);
+        line-height: 1.786;
+        text-align: left;
+        width: 40em;
+        height: 2.3em;
+        margin-bottom: 0.5em;
+        margin-right: 2em;
+        border-color: transparent;
+        border-width: 1px;
+        border-style: solid;
+        display: flex;
+        flex-direction: row;
+
+        .icon-wrapper{
+            padding-top: 3px;
+        }
+
+        &.padding-text-area{
+            padding: 0 0 0 0.4em;
+            height: 4em;
+            width: 40.4em;
+            background-color: transparent;
+        }
+
+        .main-comment-text{
+            max-width: 100%;
+            position: relative;
+            flex-direction: column;
+            display: flex;
+            height: 5em;
+            color: rgb(94, 102, 153);
+            font-family: 'Open Sans Regular', 'Open Sans';
+            font-weight:400;
+            font-style: normal;
+            font-size: 12px;
+            text-decoration: none;
+            position: relative;
+            margin-left: 15px;
+            flex-grow: 2;
+            &.not-last {
+                border-bottom: 1px solid #cccccc;
+            }
+
+            .comment-uneditable{
+                word-wrap: break-word;
+                min-height: 3.0em;
+                overflow-y: auto;
+                padding-right: 4em;
+
+            }
+
+            .comment-actions{
+                float: right;
+                margin: 2px;
+                visibility: hidden;
+                right: 5px;
+                display: flex;
+                position: absolute;
+                right: 1em;
+                top: 2px;
+
+                a{
+                    padding-right: 0.3em;
+                }
+            }
+        }
+        .comment-details{
+            float: right;
+            font-size: 10px;
+            padding-right: 1em;
+
+        }
+        &:hover{
+            .main-comment-text {
+                .comment-actions {
+                    visibility: visible;
+                }
+            }
+
+        }
+
+        &.active-comment{
+            height: 5.4em;
+        }
+    }
+
+}

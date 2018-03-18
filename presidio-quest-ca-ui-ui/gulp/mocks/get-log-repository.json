@@ -1,0 +1,19 @@
+{
+    "logRepositoryList": [
+        {
+            "type": "splunk",
+            "host": "integ-splunk-07",
+            "user": "admin",
+            "password": "iYTLjyA0VryKhpkvBrMMLQ==",
+            "port": 8089
+        },
+        {
+            "type": "splunk",
+            "host": "integ-splunk-07",
+            "user": "admin2",
+            "password": "iYTLjyA0VryKhpkvBrMMLQ==",
+            "port": 8089
+        }
+    ]
+}
+

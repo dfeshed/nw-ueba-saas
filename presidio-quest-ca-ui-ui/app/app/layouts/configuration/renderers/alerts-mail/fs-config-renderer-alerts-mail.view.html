@@ -1,0 +1,194 @@
+<section class="alerts-email-settings">
+
+    <input ng-model="$ctrl.configFormCtrl.configModels[$ctrl.configItem.id]"
+        name="fields.{{::$ctrl.configItem.id}}"
+        ng-value="$ctrl.configItem.value"
+        id="email_config_main_input"
+        style="display:none">
+
+    <!-- Alerts Email Groups List -->
+    <div class="alerts-email-settings--groups-list">
+        <!-- Alerts Email group item -->
+        <div class="config-item-card alerts-email-settings--group-item"
+            ng-repeat="group in $ctrl.settings track by $index"
+            ng-init="_groupIndex = $index"
+            ng-form="{{'emailConfigurationGroupItem' + $index}}">
+
+            <div class="alerts-email-settings--group-item--title">
+                Email Users Group Configuration
+            </div>
+
+            <div class="alerts-email-settings--group-item--configurations-section">
+
+                <!-- Recipients List -->
+                <div class="alerts-email-settings--group-item--recipients-list">
+
+                    <!-- New User -->
+                    <div class="alerts-email-settings--group-item--new-recipient-row">
+                        <input class="alerts-email-settings--group-item--new-recipient-input"
+                            id="{{::'alerts-email-settings--group-item--new-recipient-input-' + $index}}"
+                            ng-model="$ctrl.newUsersInput[$index]"
+                            type="email"
+                            ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 500 } }"
+                            ng-keypress="$ctrl.mainInputKeyPress($event, group, $ctrl.newUsersInput[$index])"
+                            placeholder="Enter a new recipient, and click Add User (or Enter)"/>
+
+                        <!-- Buttons -->
+                        <div class="form-buttons">
+
+                            <!-- Add User Button -->
+                            <label for="{{'add_user_button_' + $index}}"
+                                class="form-button button-add-new-user"
+                                ng-disabled="!$ctrl.newUsersInput[$index].length"
+                                ng-click="$ctrl.addUser(group, $ctrl.newUsersInput[$index])">
+                                <div class="form-button-icon">
+                                    <i class="fa fa-plus"></i>
+                                </div>
+                                <input id="{{'add_user_button_' + $index}}"
+                                    name="{{'add_user_button_' + $index}}"
+                                    type="button"
+                                    value="Add User"> </label>
+                            <!-- END OF Add User Button -->
+                        </div>
+                        <!-- END OF Buttons -->
+
+                    </div>
+                    <!-- END OF new User -->
+
+                    <!-- Users List -->
+                    <div class="alerts-email-settings--users-list">
+
+                        <!-- User item -->
+                        <div class="alerts-email-settings--user-item" ng-repeat="user in group.users track by $index">
+                            <div class="alerts-email-settings--user-item--email">{{user}}</div>
+                            <div class="alerts-email-settings--user-item--remove-user"
+                                ng-click="$ctrl.removeUser(group, $index)">
+                                <i class="fa fa-times"></i>
+                            </div>
+                        </div>
+                        <!-- END OF User item -->
+
+                    </div>
+                    <!-- END OF Users List -->
+
+                </div>
+                <!-- END OF Recipients List -->
+
+                <!-- New Alert Config -->
+                <div class="alerts-email-settings--group-item--new-alert-configuration">
+                    <div class="alerts-email-settings--group-item--new-alert-configuration--title">
+                        New Alert Configuration
+                    </div>
+                    <!-- Severities -->
+                    <div class="alerts-email-settings--group-item--new-alert-configuration--severities-checkboxes">
+                        <div class="severities-label">Severities:</div>
+                        <label for="{{'group_' + _groupIndex + 'newAlertSeverity' + severity}}"
+                            ng-repeat="severity in $ctrl.severities"> <input type="checkbox"
+                            class="newAlertSeveritiesCheckbox"
+                            name="{{'group_' + _groupIndex + '_newAlertSeverity' + severity}}"
+                            id="{{'group_' + _groupIndex + 'newAlertSeverity' + severity}}"
+                            ng-model="$ctrl.settings[_groupIndex].newAlert.severitiesObj[severity]"
+                            ng-value="severity"
+                            ng-change="$ctrl.changeSeverity(_groupIndex, 'newAlert', severity, $ctrl.settings[_groupIndex].newAlert.severitiesObj[severity])"/>
+                            {{severity}}</label>
+                    </div>
+                    <!-- END OF Severities -->
+                </div>
+                <!-- END OF New Alert Config --><!-- Alert Summary Config -->
+                <div class="alerts-email-settings--group-item--alert-summary-configuration">
+                    <div class="alerts-email-settings--group-item--alert-summary-configuration--title">
+                        Alert Summary Configuration
+                    </div>
+                    <div class="alerts-email-settings--group-item--alert-summary-configuration--configurations-row">
+
+                        <!-- Severities -->
+                        <div class="alerts-email-settings--group-item--alert-summary-configuration--severities-checkboxes">
+                            <div class="severities-label">Severities:</div>
+                            <label for="{{'group_' + _groupIndex + '_alertSummarySeverity' + severity}}"
+                                ng-repeat="severity in $ctrl.severities"> <input type="checkbox"
+                                class="alertSummarySeveritiesCheckbox"
+                                name="{{'group_' + _groupIndex + '_alertSummarySeverity' + severity}}"
+                                id="{{'group_' + _groupIndex + '_alertSummarySeverity' + severity}}"
+                                ng-model="$ctrl.settings[_groupIndex].summary.severitiesObj[severity]"
+                                ng-value="severity"
+                                ng-change="$ctrl.changeSeverity(_groupIndex, 'summary', severity, $ctrl.settings[_groupIndex].summary.severitiesObj[severity])"/>
+                                {{severity}}</label>
+                        </div>
+                        <!-- END OF Severities -->
+
+                        <!-- Frequencies -->
+                        <div class="alerts-email-settings--group-item--alert-summary-configuration--frequencies-checkboxes">
+                            <div class="frequencies-label">Frequencies:</div>
+                            <label for="{{'group_' + _groupIndex + '_alertSummaryFrequency' + frequency}}"
+                                ng-repeat="frequency in $ctrl.frequencies">
+                                <input type="checkbox"
+                                    class="alertSummaryFrequencyCheckbox"
+                                    name="{{'group_' + _groupIndex + '_alertSummaryFrequency' + frequency}}"
+                                    id="{{'group_' + _groupIndex + '_alertSummaryFrequency' + frequency}}"
+                                    ng-model="$ctrl.settings[_groupIndex].summary.frequenciesObj[frequency]"
+                                    ng-value="frequency"
+                                    ng-change="$ctrl.changeFrequency(_groupIndex, frequency, $ctrl.settings[_groupIndex].summary.frequenciesObj[frequency])"/>
+                                {{frequency}}</label>
+                        </div>
+                        <!-- END OF Frequencies -->
+                    </div>
+                </div>
+                <!-- END OF Alert Summary Config -->
+            </div>
+
+
+            <!-- Group Item Buttons -->
+            <div class="form-buttons group-item-buttons">
+
+                <!-- Duplicate Group Button -->
+                <label for="{{'duplicate_group_' + $index}}" class="form-button button-duplicate-group">
+                    <div class="form-button-icon">
+                        <i class="fa fa-files-o"></i>
+                    </div>
+                    <input id="{{'duplicate_group_' + $index}}"
+                        name="{{'duplicate_group_' + $index}}"
+                        type="button"
+                        ng-click="$ctrl.duplicateGroup($index)"
+                        value="Duplicate Group"> </label>
+                <!-- Remove Group Button -->
+
+                <!-- Remove Group Button -->
+                <label for="{{'remove_group_' + $index}}" class="form-button button-remove-group">
+                    <div class="form-button-icon">
+                        <i class="fa fa-times"></i>
+                    </div>
+                    <input id="{{'remove_group_' + $index}}"
+                        name="{{'remove_group_' + $index}}"
+                        type="button"
+                        ng-click="$ctrl.removeGroup($index)"
+                        value="Remove Group"> </label>
+                <!-- Remove Group Button -->
+            </div>
+            <!-- END OF Group Item Buttons -->
+
+        </div>
+
+        <!-- END OF Alerts Email group item -->
+
+    </div>
+    <!-- END OF Alerts Email Groups List -->
+
+    <!-- alert -email Buttons -->
+    <div class="form-buttons alert-email-settings-buttons">
+
+        <!-- new Group Button -->
+        <label for="new_group_button" class="form-button button-duplicate-group">
+            <div class="form-button-icon">
+                <i class="fa fa-plus-circle"></i>
+            </div>
+            <input id="new_group_button"
+                name="new_group_button"
+                type="button"
+                ng-click="$ctrl.newGroup()"
+                value="Add Group"> </label>
+        <!-- Remove Group Button -->
+
+    </div>
+    <!-- END OF Group Item Buttons -->
+
+</section>

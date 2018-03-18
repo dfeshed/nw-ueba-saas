@@ -1,0 +1,63 @@
+{
+    "message":{
+        "type": "maxResults",
+        "params": {
+            "maxResults": 80
+        }
+    },
+	"show": {
+		"conditions": [
+			{
+				"operator": "entityExists",
+				"value": "vpn"
+			}
+		]
+	},
+    "views": [
+        {
+            "type": "heatMap",
+            "settings": {
+                "row": "{{displayname:capitalize}}",
+                "column": "{{hour:padLeft:2:0}}:00",
+                "value": "{{login_count}}",
+                "showHours": true,
+                "legend": {
+                    "items": [
+                        {
+                            "color": "#80BFF0",
+                            "value": "Minimal times of VPN connection"
+                        },
+                        {
+                            "color": "#065DA0",
+                            "value": "Maximal times of VPN connection"
+                        }
+                    ]
+                },
+                "behavior":{
+                    "rows":{
+                        "isSortingEnabled":false,
+                        "tooltip":"{{name}}"
+                    },
+                    "columns":{
+                        "isSortingEnabled":true,
+                        "tooltip":"{{name}} : all = {{valueSum}}",
+                        "percentCalculationMethod":"valueSum"
+                    },
+                    "cell":{
+                        "tooltip":"{{rowName}} logged {{value}} {{value:pluralOrSingular:time:times}} at {{name}}"
+                    },
+                    "colorGradientType":"scale"
+                },
+                "onSelect": {
+                    "action": "openPopup",
+                    "actionOptions": {
+                        "widgetId": "visualizations.user_ssh_machines_bubbles_popup",
+                        "title": "Machines Accessed By {{name}} Using SSH",
+                        "width": 500,
+                        "height": 360
+                    }
+                }
+            }
+        }
+    ]
+}

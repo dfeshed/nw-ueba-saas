@@ -1,0 +1,53 @@
+{
+    "id": "top_users_ssh",
+    "title": "Top Suspicious Users (SSH)",
+    "description": "The users with the highest SSH scores",
+	"show" : {
+		"conditions": [
+			{
+				"operator": "entityExists",
+				"value": "ssh"
+			}
+		]
+	},
+    "controls": [
+        {
+            "label": "Min Score",
+            "type": "number",
+            "param": "users.ssh_score",
+            "paramGroup": "filters",
+            "formatParam": ">={{value}}",
+            "value": 80,
+            "defaultValue": 80,
+            "settings": {
+                "min": 0,
+                "max": 100
+            }
+        }
+    ],
+    "noDataMessage": "No users found.",
+    "widgets": [
+        {
+            "id": "accounts_with_high_ssh_score",
+            "flags": {
+                "contentsOnly": true
+            },
+            "className": "widget-noPadding",
+            "title": "Accounts With High SSH Score",
+            "params": {
+                "entityId": "users",
+                "tableview_sort": "ssh_score",
+                "tableview_sort_dir": "-1",
+                "tableview_fields": "normalized_username,display_name,department,last_activity_date,ssh_score,total_score"
+            },
+            "views": [
+                {
+                    "type": "explore",
+                    "settings": {
+                        "viewOnly": true
+                    }
+                }
+            ]
+        }
+    ]
+}

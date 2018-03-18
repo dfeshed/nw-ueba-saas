@@ -1,0 +1,32 @@
+<div class="feedback-component">
+    <div class="feedback-subtitle">
+        Mark this alert as:
+    </div>
+
+    <div class="feedbacks-buttons-container">        <div class="actual-risk">
+            <a class="change-risk-button" ng-click="$ctrl.setFeedback($ctrl.AlertFeedback.Approved)">
+                    <span class="actual-risk-button-unchecked">
+                        <fs-svg-icon symbol-name="star" attributes="::{width: 20, height: 20}"> </fs-svg-icon>
+                        <div class="button-text">Actual Risk</div>
+                    </span>
+                    <span class="active actual-risk-button-checked" >
+                        <fs-svg-icon symbol-name="star-orange" attributes="::{width: 20, height: 20}"></fs-svg-icon>
+                        <div class="button-text">Actual Risk</div>
+                    </span>
+            </a>
+        </div>
+
+        <div class="not-risk">
+            <a class="change-risk-button" ng-click="$ctrl.setFeedback($ctrl.AlertFeedback.Rejected)">
+                <span class="not-a-risk-button-unchecked">
+                     <fs-svg-icon symbol-name="star" attributes="::{width: 20, height: 20}"></fs-svg-icon>
+                    <div class="button-text">Not a Risk</div>
+                </span>
+                <span class="active not-a-risk-button-checked">
+                     <fs-svg-icon symbol-name="star-crossed" attributes="::{width: 20, height: 20}"></fs-svg-icon>
+                    <div class="button-text">Not a Risk</div>
+                </span>
+            </a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,1 @@
+angular.module("FeedWidget", ["Utils", "Transforms", "Styles", "Icons"]);

@@ -1,0 +1,122 @@
+{
+    "id": "endpoints",
+    "title": "Suspicious Endpoint Access",
+    "description": "Used to identify and alert on abnormal access to endpoints in the organization",
+    "contentsDescription": "Click in the graph to view event details:",
+    "controls": [
+        {
+            "label": "Events Time",
+            "type": "dateRange",
+            "param": "kerberos_logins.event_time_utc",
+            "paramGroup": "default_filters",
+            "value": {
+                "timeStart": "-7d",
+                "timeEnd": "0d"
+            },
+            "formatParam": ":{{value.timeStart}}::{{value.timeEnd}}"
+        },
+        {
+            "label": "User",
+            "type": "search",
+            "settings": {
+                "search": {
+                    "dataEntity": "kerberos_logins",
+                    "dataEntityField": "normalized_username"
+                },
+                "resultField": "normalized_username",
+                "value": "{{normalized_username}}",
+                "showValueOnSelect": true,
+                "placeholder": "All users"
+            },
+            "param": "kerberos_logins.normalized_username",
+            "paramGroup": "filters"
+        },
+        {
+            "label": "Endpoint",
+            "type": "search",
+            "settings": {
+                "search": {
+                    "dataEntity": "kerberos_logins",
+                    "dataEntityField": "destination_machine",
+					"extraTerms": [{
+						"type": "field",
+						"id": "destination_machine_type",
+						"operator": "equals",
+						"value": "Desktop"
+					}]
+                },
+                "resultField": "destination_machine",
+                "value": "{{destination_machine}}",
+                "showValueOnSelect": true,
+                "placeholder": "Computer search"
+            },
+            "param": "kerberos_logins.destination_machine",
+            "paramGroup": "filters"
+        },
+		{
+			"type": "constant",
+			"hide" : true,
+			"param": "kerberos_logins.destination_machine_type",
+			"paramGroup": "filters",
+			"value": "Desktop"
+		}
+    ],
+	"show" : {
+		"conditions": [
+			{
+				"operator": "entityExists",
+				"value": "kerberos_logins"
+			}
+		]
+	},
+    "widgets": [
+
+        {
+            "id": "suspicious_ad_login_events_into_endpoints_graph",
+            "params": {
+                "entityId": "kerberos_logins",
+                "mode": "graphs",
+                "graphs":"access_event_scatterplot"
+            },
+            "className": "widget-noPadding",
+            "handleDataSort": false,
+            "flags": {
+                "contentsOnly": true,
+                "noBorder": true
+            },
+            "handlePaging": false,
+            "loadingDataMessage": "Loading events",
+            "views": [
+                {
+                    "type": "explore",
+                    "settings": {
+                        "viewOnly": true
+                    }
+                }
+            ]
+        },
+        {
+            "id": "suspicious_ad_login_events_into_endpoints",
+            "flags": {
+                "contentsOnly": true
+            },
+            "className": "widget-noPadding",
+            "title": "Suspicious AD Login Events Into Endpoints",
+            "handleDataSort": false,
+            "handlePaging": false,
+            "params": {
+                "entityId": "kerberos_logins",
+                "tableview_sort": "kerberos_logins.event_score",
+                "tableview_sort_dir": "-1"
+            },
+            "views": [
+                {
+                    "type": "explore",
+                    "settings": {
+                        "viewOnly": true
+                    }
+                }
+            ]
+        }
+    ]
+}

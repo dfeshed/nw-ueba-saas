@@ -1,0 +1,55 @@
+@mixin general-fs-icon() {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    position: absolute;
+
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.fsicon-looking-glass {
+    @include general-fs-icon();
+    background-image: url('../images/icons/search_regular.png');
+}
+
+.fsicon-record-menu {
+    @include general-fs-icon();
+    background-image: url('../images/icons/record_menu_regular.png');
+
+    &:hover {
+        background-image: url('../images/icons/record_menu_hover.png');
+    }
+
+    &:active {
+        background-image: url('../images/icons/record_menu_pressed.png');
+    }
+}
+
+.fsicon-l-shape {
+    @include general-fs-icon();
+    background-image: url('../images/icons/l_shape.png');
+}
+
+.fsicon-export {
+    @include general-fs-icon();
+    background-image: url('../images/icons/export.png');
+}
+
+.fsicon-burger {
+    @include general-fs-icon();
+    background-image: url('../images/icons/menu.png');
+
+    &:hover {
+        background-image: url('../images/icons/menu_hover.png');
+    }
+
+    &:active {
+        background-image: url('../images/icons/menu_pressed.png');
+    }
+}
+
+.fsicon-general-user {
+    @include general-fs-icon();
+    background-image: url('../images/icons/general_user.png');
+}

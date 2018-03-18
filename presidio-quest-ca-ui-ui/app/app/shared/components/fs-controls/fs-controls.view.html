@@ -1,0 +1,27 @@
+<div class="controls flex-horizontal control-params clearfix">
+    <h3 class="control-params-title" ng-if="controls.title">
+        {{controls.title}}
+    </h3>
+
+    <div class="form-container flex-1 flex-horizontal {{controls.className}}">
+
+        <form
+            ng-submit="controls.submit(controls_form)" name="controls_form">
+
+            <div class="control-params-fields ">
+
+                <!-- Controls will be transcluded to here -->
+                <div class="controls-transclude" ng-transclude></div>
+
+                <button
+                    type="submit"
+                    class="btn btn-default"
+                    ng-disabled="controls_form.$pristine || controls_form.$invalid"
+                    ng-if="!controls.hideUpdate">
+                    {{ controls.submitText || 'Update' }}
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>

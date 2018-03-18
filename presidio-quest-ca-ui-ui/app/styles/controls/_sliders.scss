@@ -1,0 +1,41 @@
+.setting-block{
+  h4{
+    margin-bottom: 1em;
+    font-size: 1.1em;
+    font-weight: bold;
+  }
+}
+
+.vertical-sliders{
+  margin-bottom: 20px;
+  background: #f7f7f7;
+  padding: 20px;
+  display: inline-block;
+  border-radius: 4px;
+
+  footer{
+    margin-top: 20px;
+  }
+  .vertical-container{
+    display: inline-block;
+    width: 60px;
+    margin-right: 20px;
+    vertical-align: top;
+    text-align: center;
+
+    .ui-slider{
+      left: 23px;
+      margin-bottom: 5px;
+    }
+  }
+
+  .slider-value{
+    font-weight: bold;
+  }
+
+  .slider-label{
+    line-height: 13px;
+    display: block;
+    margin-top: 5px;
+  }
+}

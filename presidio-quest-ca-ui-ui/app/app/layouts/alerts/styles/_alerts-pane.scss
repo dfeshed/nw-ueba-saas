@@ -1,0 +1,34 @@
+
+
+/********************************
+*         ALERTS PANE           *
+/********************************/
+
+.alerts-pane {
+    box-sizing: border-box;
+
+    height: calc(100% - #{$alertsSeverityCounterHeight});
+
+    overflow: hidden;
+
+    background-color: $clrWhite;
+
+}
+
+.alerts-pane-content {
+    padding: 1.4rem 1.4rem 0 1.4rem;
+    box-sizing: border-box;
+
+    height: 100%;
+
+    overflow: hidden;
+
+}
+
+@import 'alerts-table';
+@import 'alerts-status-counter';
+
+
+/********************************
+*     END OF ALERTS PANE        *
+/********************************/

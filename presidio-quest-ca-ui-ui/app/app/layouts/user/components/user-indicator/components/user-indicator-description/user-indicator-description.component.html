@@ -1,0 +1,23 @@
+<div class="indicator-info" ng-if="$ctrl.indicator">
+    <div class="indicator-info-inner-wrapper">
+        <div class="indicator-name indicator-info-item">
+            <div class="indicator-info-label">Indicator</div>
+            <div class="indicator-info-value">{{::$ctrl.indicator.name}} <span ng-show='::$ctrl.indicator.evidenceType ==="AnomalyAggregatedEvent"'>({{::$ctrl.indicator.timeframe}})<span></div>
+        </div>
+        <div class="indicator-datasource indicator-info-item">
+            <div class="indicator-info-label">Contribution to SMART</div>
+            <div class="indicator-info-value">{{::$ctrl.indicator.scoreContribution}}%</div>
+        </div>
+        <div class="indicator-value indicator-info-item" ng-if="::$ctrl.indicator.evidenceType!=='StaticIndicator'">
+            <div class="indicator-info-label">Anomaly Value</div>
+            <div class="indicator-info-value">{{::$ctrl.indicator.anomalyValue | anomalyTypeFormatter:$ctrl.indicator}}</div>
+        </div>
+        <div class="indicator-datasource indicator-info-item">
+            <div class="indicator-info-label">Datasource</div>
+            <div class="indicator-info-value">{{::$ctrl.indicator.dataEntitiesIds[0] | entityIdToName}}</div>
+        </div>
+    </div>
+</div>
+<div class="indicator-description" ng-if="$ctrl.indicator">
+    {{::$ctrl.timelineDescription}}
+</div>

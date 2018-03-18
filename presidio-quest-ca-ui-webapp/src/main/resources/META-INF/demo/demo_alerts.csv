@@ -1,0 +1,323 @@
+Alert Name,User Name,Start Time,# of Indicators,Severity,Daily/Hourly
+Brute Force Attempt,swestollrr,Nov 17 2017 02:00:00 GMT+0000,4,Medium,Hourly
+Mass File Access Changes,esteaning0,Nov 17 2017 01:00:00 GMT+0000,4,Medium,Hourly
+Mass File Deletion,sfoucar1,Nov 17 2017 00:00:00 GMT+0000,5,Low,Hourly
+User Login to Abnormal Host,bmcfarlane2,Nov 17 2017 00:00:00 GMT+0000,11,Medium,Hourly
+User Logged into Multiple Hosts,cplaide3,Nov 16 2017 23:00:00 GMT+0000,10,Medium,Hourly
+Mass File Deletion,igheorghescu4,Nov 16 2017 23:00:00 GMT+0000,7,Low,Hourly
+User Logins to Multiple AD Sites,spioch5,Nov 16 2017 22:00:00 GMT+0000,9,Medium,Hourly
+User Logins to Multiple AD Sites,ygallifont6,Nov 16 2017 21:00:00 GMT+0000,9,Low,Hourly
+Abnormal AD Change,bdael7,Nov 16 2017 20:00:00 GMT+0000,6,Medium,Hourly
+Mass File Rename,pjoerning8,Nov 16 2017 19:00:00 GMT+0000,6,Medium,Hourly
+Mass AD Changes,ericoald9,Nov 16 2017 18:00:00 GMT+0000,11,Medium,Hourly
+Mass File Rename,asuggeyc,Nov 16 2017 19:00:00 GMT+0000,6,High,Hourly
+Mass AD Changes,asuggeyc,Nov 16 2017 18:00:00 GMT+0000,11,High,Hourly
+Mass File Rename,asuggeyc,Nov 30 2017 19:00:00 GMT+0000,6,High,Hourly
+Mass AD Changes,asuggeyc,Nov 30 2017 18:00:00 GMT+0000,11,Medium,Hourly
+Brute Force Attempt,ldsouzaa,Nov 16 2017 17:00:00 GMT+0000,7,Medium,Hourly
+User Logon During Non-Standard Hours,cpetzoldb,Nov 16 2017 16:00:00 GMT+0000,6,Medium,Hourly
+User File Access During Non-Standard Hours,asuggeyc,Nov 16 2017 15:00:00 GMT+0000,6,Medium,Hourly
+Elevated Privileges Granted,fdickond,Nov 16 2017 14:00:00 GMT+0000,10,Medium,Hourly
+Failed Permission Changes,llawforde,Nov 16 2017 13:00:00 GMT+0000,11,Medium,Hourly
+Elevated Privileges Granted,srubinskyf,Nov 16 2017 13:00:00 GMT+0000,12,Low,Hourly
+Mass File Deletion,kheaffeyg,Nov 16 2017 13:00:00 GMT+0000,8,Low,Hourly
+Brute Force Attempt,mdensellh,Nov 16 2017 12:00:00 GMT+0000,3,Medium,Hourly
+User Logged into Multiple Hosts,bpiscoi,Nov 16 2017 11:00:00 GMT+0000,7,Medium,Hourly
+User Login to Abnormal Remote Host,mgersonj,Nov 16 2017 10:00:00 GMT+0000,6,Medium,Hourly
+AD Change During Non-Standard Hours,pcushellyk,Nov 16 2017 09:00:00 GMT+0000,8,Medium,Hourly
+Abnormal File Access,kgethousel,Nov 16 2017 08:00:00 GMT+0000,4,Medium,Hourly
+User Login to Abnormal Host,nbleasdillem,Nov 16 2017 00:00:00 GMT+0000,9,Medium,Hourly
+User Status Changes,eerdesn,Nov 16 2017 00:00:00 GMT+0000,8,Low,Hourly
+Mass Failed AD Changes,crapao,Nov 16 2017 00:00:00 GMT+0000,7,Low,Hourly
+Mass Permission Changes,troganp,Nov 16 2017 00:00:00 GMT+0000,8,Low,Hourly
+User Logon During Non-Standard Hours,fjedrysikq,Nov 16 2017 00:00:00 GMT+0000,9,Low,Hourly
+Mass Failed AD Changes,dgonnetr,Nov 16 2017 00:00:00 GMT+0000,12,Low,Hourly
+Mass Failed AD Changes,lwhittocks,Nov 15 2017 19:00:00 GMT+0000,12,Low,Hourly
+Mass File Deletion,amaginott,Nov 15 2017 01:00:00 GMT+0000,4,Low,Hourly
+Mass File Rename,xgingellu,Nov 15 2017 00:00:00 GMT+0000,9,Low,Hourly
+Brute Force Attempt,rscamadenv,Nov 15 2017 00:00:00 GMT+0000,6,High,Hourly
+Abnormal AD Change,bnaptonw,Nov 15 2017 00:00:00 GMT+0000,10,Low,Hourly
+Failed Permission Changes,llavertyx,Nov 15 2017 00:00:00 GMT+0000,10,Low,Hourly
+Snooping User,nmithamy,Nov 15 2017 00:00:00 GMT+0000,4,Low,Hourly
+User Login to Abnormal Host,dwadleyz,Nov 14 2017 23:00:00 GMT+0000,6,Low,Hourly
+User Logged into Multiple Hosts,pmatashkin10,Nov 14 2017 21:00:00 GMT+0000,6,Low,Hourly
+User Logins to Multiple AD Sites,rmcnair11,Nov 14 2017 15:00:00 GMT+0000,6,Medium,Hourly
+Snooping User,wchingedehals12,Nov 14 2017 14:00:00 GMT+0000,12,Low,Hourly
+Mass File Rename,ceriksson13,Nov 14 2017 08:00:00 GMT+0000,12,Low,Hourly
+Mass File Access Changes,lfortesquieu14,Nov 14 2017 07:00:00 GMT+0000,11,Low,Hourly
+User Logins to Multiple AD Sites,eledes15,Nov 14 2017 07:00:00 GMT+0000,3,Low,Hourly
+User Status Changes,jrigby16,Nov 14 2017 06:00:00 GMT+0000,6,Low,Hourly
+User Login to Abnormal Remote Host,acreber17,Nov 14 2017 03:00:00 GMT+0000,6,Low,Hourly
+User Logon During Non-Standard Hours,cmorford18,Nov 14 2017 03:00:00 GMT+0000,12,Low,Hourly
+User Logins to Multiple AD Sites,clammin19,Nov 14 2017 01:00:00 GMT+0000,12,Medium,Hourly
+User Logins to Multiple AD Sites,sbraga1a,Nov 14 2017 01:00:00 GMT+0000,6,Medium,Hourly
+Mass Failed AD Changes,hkelwaybamber1b,Nov 14 2017 00:00:00 GMT+0000,7,Low,Hourly
+User Logged into Multiple Hosts,hcymper1c,Nov 14 2017 00:00:00 GMT+0000,7,Medium,Hourly
+Data Exfiltration,calldritt1d,Nov 14 2017 00:00:00 GMT+0000,4,High,Hourly
+Mass AD Changes,lcaseborne1e,Nov 14 2017 00:00:00 GMT+0000,10,Low,Hourly
+Multiple Failed Logons,asydenham1f,Nov 14 2017 00:00:00 GMT+0000,5,Low,Hourly
+Mass File Deletion,cchadderton1g,Nov 14 2017 00:00:00 GMT+0000,9,Medium,Hourly
+User Logon During Non-Standard Hours,athrower1h,Nov 14 2017 00:00:00 GMT+0000,6,Low,Hourly
+User Logins to Multiple AD Sites,cvanderweedenburg1i,Nov 14 2017 00:00:00 GMT+0000,10,Low,Hourly
+User Login to Abnormal Host,hwinterton1j,Nov 14 2017 00:00:00 GMT+0000,11,Low,Hourly
+Mass Permission Changes,rswynley1k,Nov 14 2017 00:00:00 GMT+0000,10,Low,Hourly
+User Logon During Non-Standard Hours,dsiggers1l,Nov 13 2017 14:00:00 GMT+0000,11,Low,Hourly
+User Login to Abnormal Host,dbrognot1m,Nov 13 2017 02:00:00 GMT+0000,4,Low,Hourly
+Multiple Logons by User,cwharlton1n,Nov 13 2017 02:00:00 GMT+0000,10,Low,Hourly
+Mass File Rename,kallam1o,Nov 13 2017 00:00:00 GMT+0000,5,Low,Hourly
+Multiple Logons by User,cuzelli1p,Nov 13 2017 00:00:00 GMT+0000,8,High,Hourly
+Brute Force Attempt,wspurier1q,Nov 13 2017 00:00:00 GMT+0000,11,Low,Hourly
+AD Change During Non-Standard Hours,uromei1r,Nov 13 2017 00:00:00 GMT+0000,4,Low,Hourly
+Mass Failed AD Changes,cwoodlands1s,Nov 13 2017 00:00:00 GMT+0000,8,Low,Hourly
+User Logged into Multiple Hosts,tkaemena1t,Nov 13 2017 00:00:00 GMT+0000,9,Low,Hourly
+User Login to Abnormal Host,aguyver1u,Nov 13 2017 00:00:00 GMT+0000,10,Low,Hourly
+Data Exfiltration,vtallach1v,Nov 13 2017 00:00:00 GMT+0000,9,Low,Hourly
+Abnormal File Access,mnewbegin1w,Nov 12 2017 23:00:00 GMT+0000,11,High,Hourly
+Mass Failed AD Changes,lcorrao1x,Nov 12 2017 16:00:00 GMT+0000,8,Low,Hourly
+User Logon During Non-Standard Hours,mmclanaghan1y,Nov 12 2017 16:00:00 GMT+0000,12,Low,Hourly
+Mass File Deletion,gtommasuzzi1z,Nov 12 2017 16:00:00 GMT+0000,8,Low,Hourly
+Snooping User,mhince20,Nov 12 2017 14:00:00 GMT+0000,12,Low,Hourly
+User Status Changes,obretelle21,Nov 12 2017 12:00:00 GMT+0000,11,Low,Hourly
+Mass File Deletion,ewagg22,Nov 12 2017 11:00:00 GMT+0000,5,Low,Hourly
+Mass Failed AD Changes,kphillot23,Nov 12 2017 10:00:00 GMT+0000,7,Low,Hourly
+Mass File Rename,ddrews24,Nov 12 2017 06:00:00 GMT+0000,11,High,Hourly
+User Logins to Multiple AD Sites,evirgo25,Nov 12 2017 00:00:00 GMT+0000,6,Low,Hourly
+Mass File Rename,rricoald26,Nov 12 2017 00:00:00 GMT+0000,10,Low,Hourly
+User Login to Abnormal Host,opetroff27,Nov 12 2017 00:00:00 GMT+0000,12,Low,Hourly
+User Status Changes,swestollrr,Nov 12 2017 00:00:00 GMT+0000,12,Low,Hourly
+User Login to Abnormal Host,esteaning0,Nov 12 2017 00:00:00 GMT+0000,10,Low,Hourly
+User Login to Abnormal Remote Host,sfoucar1,Nov 12 2017 00:00:00 GMT+0000,12,Low,Hourly
+User Logins to Multiple AD Sites,bmcfarlane2,Nov 12 2017 00:00:00 GMT+0000,3,Low,Hourly
+Mass File Access Changes,cplaide3,Nov 12 2017 00:00:00 GMT+0000,9,Low,Hourly
+Data Exfiltration,igheorghescu4,Nov 12 2017 00:00:00 GMT+0000,5,Low,Hourly
+Brute Force Attempt,spioch5,Nov 11 2017 19:00:00 GMT+0000,12,Low,Hourly
+User Logon During Non-Standard Hours,ygallifont6,Nov 11 2017 18:00:00 GMT+0000,3,Low,Hourly
+Brute Force Attempt,bdael7,Nov 11 2017 15:00:00 GMT+0000,12,Low,Hourly
+User Logged into Multiple Hosts,pjoerning8,Nov 11 2017 15:00:00 GMT+0000,3,Low,Hourly
+User Login to Abnormal Remote Host,ericoald9,Nov 11 2017 13:00:00 GMT+0000,7,Low,Hourly
+Mass Permission Changes,ldsouzaa,Nov 11 2017 12:00:00 GMT+0000,8,Low,Hourly
+Failed Permission Changes,cpetzoldb,Nov 11 2017 10:00:00 GMT+0000,3,Low,Hourly
+Mass Failed AD Changes,asuggeyc,Nov 11 2017 05:00:00 GMT+0000,6,Low,Hourly
+Mass Permission Changes,fdickond,Nov 11 2017 05:00:00 GMT+0000,6,High,Hourly
+User Status Changes,llawforde,Nov 11 2017 00:00:00 GMT+0000,11,Low,Hourly
+Mass Changes to Groups,srubinskyf,Nov 11 2017 00:00:00 GMT+0000,12,Low,Hourly
+User Logged into Multiple Hosts,kheaffeyg,Nov 11 2017 00:00:00 GMT+0000,7,Low,Hourly
+Mass File Deletion,mdensellh,Nov 11 2017 00:00:00 GMT+0000,7,Low,Hourly
+User File Access During Non-Standard Hours,bpiscoi,Nov 11 2017 00:00:00 GMT+0000,9,Low,Hourly
+User Logged into Multiple Hosts,mgersonj,Nov 11 2017 00:00:00 GMT+0000,8,Low,Hourly
+Mass Changes to Groups,pcushellyk,Nov 11 2017 00:00:00 GMT+0000,7,Low,Hourly
+Data Exfiltration,kgethousel,Nov 11 2017 00:00:00 GMT+0000,9,Low,Hourly
+Abnormal AD Change,nbleasdillem,Nov 11 2017 00:00:00 GMT+0000,10,Low,Hourly
+AD Change During Non-Standard Hours,eerdesn,Nov 11 2017 00:00:00 GMT+0000,6,Low,Hourly
+Mass File Deletion,crapao,Nov 10 2017 22:00:00 GMT+0000,12,Medium,Hourly
+Mass Failed AD Changes,troganp,Nov 10 2017 21:00:00 GMT+0000,9,Low,Hourly
+Mass File Deletion,fjedrysikq,Nov 10 2017 17:00:00 GMT+0000,4,Medium,Hourly
+Mass Permission Changes,dgonnetr,Nov 10 2017 09:00:00 GMT+0000,12,Low,Hourly
+Abnormal File Access,lwhittocks,Nov 10 2017 00:00:00 GMT+0000,3,Low,Hourly
+Multiple Logons by User,amaginott,Nov 10 2017 00:00:00 GMT+0000,10,Low,Hourly
+Mass File Access Changes,xgingellu,Nov 10 2017 00:00:00 GMT+0000,9,Low,Hourly
+Snooping User,rscamadenv,Nov 10 2017 00:00:00 GMT+0000,7,Low,Hourly
+User Login to Abnormal Remote Host,bnaptonw,Nov 10 2017 00:00:00 GMT+0000,11,Low,Hourly
+Failed Permission Changes,llavertyx,Nov 09 2017 10:00:00 GMT+0000,11,Medium,Hourly
+User File Access During Non-Standard Hours,nmithamy,Nov 09 2017 09:00:00 GMT+0000,7,Critical,Hourly
+Mass File Rename,dwadleyz,Nov 09 2017 00:00:00 GMT+0000,8,Critical,Hourly
+Abnormal AD Change,pmatashkin10,Nov 09 2017 00:00:00 GMT+0000,3,Low,Hourly
+Data Exfiltration,rmcnair11,Nov 09 2017 00:00:00 GMT+0000,12,Low,Hourly
+Brute Force Attempt,wchingedehals12,Nov 09 2017 00:00:00 GMT+0000,3,Low,Hourly
+Brute Force Attempt,ceriksson13,Nov 09 2017 00:00:00 GMT+0000,3,Low,Hourly
+Elevated Privileges Granted,lfortesquieu14,Nov 09 2017 00:00:00 GMT+0000,10,Low,Hourly
+Mass Changes to Groups,eledes15,Nov 08 2017 21:00:00 GMT+0000,4,Low,Hourly
+Mass AD Changes,jrigby16,Nov 08 2017 00:00:00 GMT+0000,3,Low,Hourly
+Brute Force Attempt,acreber17,Nov 08 2017 00:00:00 GMT+0000,8,Low,Hourly
+User Status Changes,cmorford18,Nov 07 2017 11:00:00 GMT+0000,11,Low,Hourly
+Failed Permission Changes,clammin19,Nov 07 2017 10:00:00 GMT+0000,11,Low,Hourly
+Elevated Privileges Granted,sbraga1a,Nov 07 2017 09:00:00 GMT+0000,7,Low,Hourly
+User File Access During Non-Standard Hours,hkelwaybamber1b,Nov 07 2017 06:00:00 GMT+0000,9,Low,Hourly
+User File Access During Non-Standard Hours,hcymper1c,Nov 07 2017 01:00:00 GMT+0000,6,Low,Hourly
+Mass Permission Changes,calldritt1d,Nov 07 2017 00:00:00 GMT+0000,10,High,Hourly
+Mass AD Changes,lcaseborne1e,Nov 07 2017 00:00:00 GMT+0000,10,High,Hourly
+User File Access During Non-Standard Hours,asydenham1f,Nov 07 2017 00:00:00 GMT+0000,11,Low,Hourly
+Snooping User,cchadderton1g,Nov 07 2017 00:00:00 GMT+0000,4,Low,Hourly
+Mass Permission Changes,athrower1h,Nov 07 2017 00:00:00 GMT+0000,9,Low,Hourly
+Multiple Failed Logons,cvanderweedenburg1i,Nov 07 2017 00:00:00 GMT+0000,12,Low,Hourly
+User Login to Abnormal Host,hwinterton1j,Nov 07 2017 00:00:00 GMT+0000,3,Low,Hourly
+User Logon During Non-Standard Hours,rswynley1k,Nov 07 2017 00:00:00 GMT+0000,4,Low,Hourly
+Brute Force Attempt,dsiggers1l,Nov 07 2017 00:00:00 GMT+0000,10,Low,Hourly
+Abnormal File Access,dbrognot1m,Nov 07 2017 00:00:00 GMT+0000,6,Low,Hourly
+User Logged into Multiple Hosts,cwharlton1n,Nov 07 2017 00:00:00 GMT+0000,11,Low,Hourly
+Elevated Privileges Granted,kallam1o,Nov 07 2017 00:00:00 GMT+0000,12,Low,Hourly
+Snooping User,cuzelli1p,Nov 07 2017 00:00:00 GMT+0000,11,Low,Hourly
+Mass File Rename,wspurier1q,Nov 07 2017 00:00:00 GMT+0000,7,Low,Hourly
+Multiple Logons by User,uromei1r,Nov 06 2017 21:00:00 GMT+0000,10,Low,Hourly
+Multiple Logons by User,cwoodlands1s,Nov 06 2017 17:00:00 GMT+0000,6,Low,Hourly
+User Logon During Non-Standard Hours,tkaemena1t,Nov 06 2017 13:00:00 GMT+0000,12,Low,Hourly
+Elevated Privileges Granted,aguyver1u,Nov 06 2017 00:00:00 GMT+0000,10,Low,Hourly
+User Login to Abnormal Remote Host,vtallach1v,Nov 06 2017 00:00:00 GMT+0000,9,Medium,Hourly
+Brute Force Attempt,mnewbegin1w,Nov 06 2017 00:00:00 GMT+0000,9,Low,Hourly
+Mass Changes to Groups,lcorrao1x,Nov 06 2017 00:00:00 GMT+0000,4,Low,Hourly
+Multiple Failed Logons,mmclanaghan1y,Nov 06 2017 00:00:00 GMT+0000,10,Low,Hourly
+User Logged into Multiple Hosts,gtommasuzzi1z,Nov 06 2017 00:00:00 GMT+0000,6,Low,Hourly
+Multiple Logons by User,mhince20,Nov 06 2017 00:00:00 GMT+0000,10,Low,Hourly
+Mass AD Changes,obretelle21,Nov 06 2017 00:00:00 GMT+0000,8,Low,Hourly
+Mass File Access Changes,ewagg22,Nov 06 2017 00:00:00 GMT+0000,6,Low,Hourly
+Abnormal AD Change,kphillot23,Nov 06 2017 00:00:00 GMT+0000,3,Low,Hourly
+Mass Failed AD Changes,ddrews24,Nov 06 2017 00:00:00 GMT+0000,3,Low,Hourly
+User File Access During Non-Standard Hours,evirgo25,Nov 05 2017 21:00:00 GMT+0000,11,Low,Hourly
+Multiple Logons by User,rricoald26,Nov 05 2017 20:00:00 GMT+0000,8,Low,Hourly
+User Login to Abnormal Host,opetroff27,Nov 05 2017 20:00:00 GMT+0000,10,Low,Hourly
+Abnormal AD Change,jcavil3a,Nov 05 2017 17:00:00 GMT+0000,8,Low,Hourly
+Mass Failed AD Changes,agobbett3b,Nov 05 2017 16:00:00 GMT+0000,5,High,Hourly
+User Logins to Multiple AD Sites,ymacillrick3c,Nov 05 2017 16:00:00 GMT+0000,3,Medium,Hourly
+Multiple Logons by User,kpenchen3d,Nov 05 2017 16:00:00 GMT+0000,9,Medium,Hourly
+Mass Failed AD Changes,apalethorpe3e,Nov 05 2017 14:00:00 GMT+0000,8,Low,Hourly
+Mass Permission Changes,sraise3f,Nov 05 2017 13:00:00 GMT+0000,7,Low,Hourly
+User Logged into Multiple Hosts,lfurley3g,Nov 05 2017 00:00:00 GMT+0000,9,Low,Hourly
+User Logins to Multiple AD Sites,lkidston3h,Nov 05 2017 00:00:00 GMT+0000,12,Low,Hourly
+Mass File Rename,chackin3i,Nov 05 2017 00:00:00 GMT+0000,9,Medium,Hourly
+Mass Failed AD Changes,lplaide3j,Nov 05 2017 00:00:00 GMT+0000,12,Critical,Hourly
+Multiple Failed Logons,skeele3k,Nov 05 2017 00:00:00 GMT+0000,4,Medium,Hourly
+Mass File Rename,ihalladay3l,Nov 05 2017 00:00:00 GMT+0000,9,Low,Hourly
+User Login to Abnormal Remote Host,mcarillo3m,Nov 05 2017 00:00:00 GMT+0000,4,Low,Hourly
+Brute Force Attempt,dcabrer3n,Nov 05 2017 00:00:00 GMT+0000,4,Critical,Hourly
+Brute Force Attempt,gburchall3o,Nov 05 2017 00:00:00 GMT+0000,12,Low,Hourly
+User File Access During Non-Standard Hours,evearncomb3p,Nov 05 2017 00:00:00 GMT+0000,9,Low,Hourly
+Mass Permission Changes,cludmann3q,Nov 05 2017 00:00:00 GMT+0000,9,Low,Hourly
+User File Access During Non-Standard Hours,jbussy3r,Nov 05 2017 00:00:00 GMT+0000,11,Low,Hourly
+Brute Force Attempt,jstruan3s,Nov 05 2017 00:00:00 GMT+0000,5,Low,Hourly
+Brute Force Attempt,echellam3t,Nov 05 2017 00:00:00 GMT+0000,8,Low,Hourly
+User Login to Abnormal Remote Host,dsottell3u,Nov 05 2017 00:00:00 GMT+0000,6,Low,Hourly
+User Status Changes,mbassett3v,Nov 04 2017 18:00:00 GMT+0000,12,Low,Hourly
+User Logon During Non-Standard Hours,mcoleford3w,Nov 04 2017 00:00:00 GMT+0000,8,Low,Hourly
+User Login to Abnormal Host,lgoudard3x,Nov 04 2017 00:00:00 GMT+0000,8,Low,Hourly
+Mass File Access Changes,hgladdolph3y,Nov 04 2017 00:00:00 GMT+0000,5,Low,Hourly
+Brute Force Attempt,apotten3z,Nov 04 2017 00:00:00 GMT+0000,3,Low,Hourly
+Data Exfiltration,rboays40,Nov 04 2017 00:00:00 GMT+0000,9,Low,Hourly
+User Login to Abnormal Host,mgabbotts41,Nov 03 2017 15:00:00 GMT+0000,12,High,Hourly
+Failed Permission Changes,tklempke42,Nov 03 2017 14:00:00 GMT+0000,9,Low,Hourly
+Brute Force Attempt,ghabbert43,Nov 03 2017 14:00:00 GMT+0000,12,High,Hourly
+Mass File Rename,odibiagi44,Nov 03 2017 11:00:00 GMT+0000,11,Low,Hourly
+User Logged into Multiple Hosts,ssearl45,Nov 03 2017 11:00:00 GMT+0000,6,High,Hourly
+User Logins to Multiple AD Sites,bcastanone46,Nov 03 2017 10:00:00 GMT+0000,10,High,Hourly
+Brute Force Attempt,slinster47,Nov 03 2017 00:00:00 GMT+0000,11,Low,Hourly
+User Logins to Multiple AD Sites,jkerbler48,Nov 03 2017 00:00:00 GMT+0000,9,Medium,Hourly
+Mass File Rename,dpyper49,Nov 03 2017 00:00:00 GMT+0000,8,Low,Hourly
+User Logged into Multiple Hosts,egiercke4a,Nov 03 2017 00:00:00 GMT+0000,9,Low,Hourly
+User Login to Abnormal Remote Host,aespinazo4b,Nov 03 2017 00:00:00 GMT+0000,11,Low,Hourly
+User Login to Abnormal Remote Host,cmccuis4c,Nov 03 2017 00:00:00 GMT+0000,10,Low,Hourly
+User Status Changes,cmyers4d,Nov 03 2017 00:00:00 GMT+0000,12,Low,Hourly
+Mass Failed AD Changes,sguiso4e,Nov 03 2017 00:00:00 GMT+0000,11,Low,Hourly
+Mass AD Changes,pbrewins4f,Nov 03 2017 00:00:00 GMT+0000,3,Low,Hourly
+Failed Permission Changes,dmurthwaite4g,Nov 03 2017 00:00:00 GMT+0000,10,Low,Hourly
+User Login to Abnormal Host,aphelps4h,Nov 03 2017 00:00:00 GMT+0000,6,Low,Hourly
+User Login to Abnormal Host,nlathbury4i,Nov 03 2017 00:00:00 GMT+0000,5,High,Hourly
+Mass File Access Changes,tcanellas4j,Nov 03 2017 00:00:00 GMT+0000,5,Low,Hourly
+Brute Force Attempt,telliff4k,Nov 03 2017 00:00:00 GMT+0000,3,Low,Hourly
+User Login to Abnormal Remote Host,bwilber4l,Nov 03 2017 00:00:00 GMT+0000,11,Low,Hourly
+User Logon During Non-Standard Hours,msharvell4m,Nov 03 2017 00:00:00 GMT+0000,10,Low,Hourly
+User File Access During Non-Standard Hours,cleadley4n,Nov 02 2017 09:00:00 GMT+0000,6,Low,Hourly
+Mass File Rename,kodeoran4o,Nov 02 2017 05:00:00 GMT+0000,11,High,Hourly
+User Logged into Multiple Hosts,mposnett4p,Nov 02 2017 00:00:00 GMT+0000,10,Critical,Hourly
+Mass AD Changes,ygrane4q,Nov 02 2017 00:00:00 GMT+0000,6,Medium,Hourly
+User Logged into Multiple Hosts,sfarbrother4r,Nov 02 2017 00:00:00 GMT+0000,7,Critical,Hourly
+Mass Failed AD Changes,qsailer4s,Nov 02 2017 00:00:00 GMT+0000,9,Low,Hourly
+Mass Failed AD Changes,rvonderempten4t,Nov 02 2017 00:00:00 GMT+0000,4,Low,Hourly
+User Login to Abnormal Remote Host,msimonin4u,Nov 01 2017 00:00:00 GMT+0000,8,Low,Hourly
+User Logged into Multiple Hosts,bobee4v,Nov 01 2017 00:00:00 GMT+0000,11,Low,Hourly
+Data Exfiltration,jbattill4w,Nov 01 2017 00:00:00 GMT+0000,11,Low,Hourly
+User Login to Abnormal Host,ocorwood4x,Nov 01 2017 00:00:00 GMT+0000,10,Low,Hourly
+User Logins to Multiple AD Sites,jstreeter4y,Nov 01 2017 00:00:00 GMT+0000,10,Low,Hourly
+Multiple Logons by User,hpetworth4z,Nov 01 2017 00:00:00 GMT+0000,8,Low,Hourly
+Multiple Failed Logons,mduffree50,Nov 01 2017 00:00:00 GMT+0000,7,Low,Hourly
+Multiple Logons by User,drizzini51,Oct 30 2017 19:00:00 GMT+0000,3,Low,Hourly
+Failed Permission Changes,hmcfaul52,Oct 30 2017 17:00:00 GMT+0000,6,Low,Hourly
+Mass Failed AD Changes,lwash53,Oct 30 2017 16:00:00 GMT+0000,6,Critical,Hourly
+Abnormal File Access,nlovitt54,Oct 30 2017 11:00:00 GMT+0000,10,Critical,Hourly
+Mass File Access Changes,lbengal55,Oct 30 2017 10:00:00 GMT+0000,8,Low,Hourly
+Mass File Access Changes,odruhan56,Oct 30 2017 00:00:00 GMT+0000,4,Critical,Hourly
+Mass File Deletion,tchatan57,Oct 30 2017 00:00:00 GMT+0000,8,High,Hourly
+User Login to Abnormal Remote Host,efloch58,Oct 30 2017 00:00:00 GMT+0000,4,Low,Hourly
+User Login to Abnormal Remote Host,bcourcey59,Oct 30 2017 00:00:00 GMT+0000,6,Medium,Hourly
+Multiple Failed Logons,fdurnall5a,Oct 30 2017 00:00:00 GMT+0000,4,Low,Hourly
+User Logon During Non-Standard Hours,jriccard5b,Oct 30 2017 00:00:00 GMT+0000,3,Low,Hourly
+User Logins to Multiple AD Sites,cfontell5c,Oct 30 2017 00:00:00 GMT+0000,7,Low,Hourly
+Abnormal File Access,wbusst5d,Oct 30 2017 00:00:00 GMT+0000,12,Low,Hourly
+Abnormal File Access,pguihen5e,Oct 29 2017 19:00:00 GMT+0000,10,High,Hourly
+Brute Force Attempt,mminguet5f,Oct 29 2017 18:00:00 GMT+0000,8,Critical,Hourly
+Mass File Rename,chazelgreave5g,Oct 29 2017 17:00:00 GMT+0000,6,Critical,Hourly
+Brute Force Attempt,isporner5h,Oct 29 2017 12:00:00 GMT+0000,5,High,Hourly
+User Status Changes,lgavaran5i,Oct 29 2017 11:00:00 GMT+0000,4,High,Hourly
+Multiple Failed Logons,rbelhome5j,Oct 29 2017 10:00:00 GMT+0000,11,High,Hourly
+Multiple Failed Logons,hbemand5k,Oct 29 2017 09:00:00 GMT+0000,9,High,Hourly
+User Logon During Non-Standard Hours,rbasey5l,Oct 29 2017 08:00:00 GMT+0000,12,High,Hourly
+AD Change During Non-Standard Hours,sthomelin5m,Oct 29 2017 07:00:00 GMT+0000,12,High,Hourly
+AD Change During Non-Standard Hours,areven5n,Oct 29 2017 06:00:00 GMT+0000,11,High,Hourly
+User Logon During Non-Standard Hours,npundy5o,Oct 29 2017 05:00:00 GMT+0000,9,High,Hourly
+Abnormal File Access,jadan5p,Oct 29 2017 04:00:00 GMT+0000,5,High,Hourly
+Abnormal AD Change,kvigours5q,Oct 29 2017 04:00:00 GMT+0000,12,Critical,Hourly
+User Login to Abnormal Remote Host,jgarbert5r,Oct 29 2017 03:00:00 GMT+0000,11,High,Hourly
+User Logon During Non-Standard Hours,kwagg5s,Oct 29 2017 02:00:00 GMT+0000,9,High,Hourly
+Abnormal AD Change,wkelsow5t,Oct 29 2017 01:00:00 GMT+0000,10,High,Hourly
+User Status Changes,asartin5u,Oct 29 2017 00:00:00 GMT+0000,3,Low,Hourly
+User Status Changes,kchalder5v,Oct 29 2017 00:00:00 GMT+0000,5,Medium,Hourly
+User Login to Abnormal Host,khowsam5w,Oct 29 2017 00:00:00 GMT+0000,10,Medium,Hourly
+Abnormal AD Change,dbelfrage5x,Oct 29 2017 00:00:00 GMT+0000,11,Low,Hourly
+AD Change During Non-Standard Hours,fletch5y,Oct 29 2017 00:00:00 GMT+0000,4,Critical,Hourly
+Mass Changes to Groups,rvalintine5z,Oct 29 2017 00:00:00 GMT+0000,3,Low,Hourly
+User Status Changes,oblundon60,Oct 29 2017 00:00:00 GMT+0000,12,Low,Hourly
+Brute Force Attempt,drennick61,Oct 29 2017 00:00:00 GMT+0000,5,Low,Hourly
+Mass Failed AD Changes,fbassick62,Oct 29 2017 00:00:00 GMT+0000,4,Low,Hourly
+Mass File Deletion,csaveall63,Oct 29 2017 00:00:00 GMT+0000,4,High,Hourly
+User Login to Abnormal Remote Host,ahatzar64,Oct 28 2017 16:00:00 GMT+0000,5,High,Hourly
+Brute Force Attempt,kdreghorn65,Oct 28 2017 15:00:00 GMT+0000,7,High,Hourly
+Mass File Deletion,aollerton66,Oct 28 2017 14:00:00 GMT+0000,12,High,Hourly
+Brute Force Attempt,rthomlinson67,Oct 28 2017 14:00:00 GMT+0000,12,Low,Hourly
+Brute Force Attempt,hbolsover68,Oct 28 2017 13:00:00 GMT+0000,8,High,Hourly
+Mass File Access Changes,jstainer69,Oct 28 2017 12:00:00 GMT+0000,5,High,Hourly
+Mass File Deletion,eaberkirdo6a,Oct 28 2017 11:00:00 GMT+0000,6,High,Hourly
+User Logged into Multiple Hosts,lhixson6b,Oct 28 2017 10:00:00 GMT+0000,10,High,Hourly
+User Logins to Multiple AD Sites,eibbotson6c,Oct 28 2017 10:00:00 GMT+0000,11,Low,Hourly
+Mass File Deletion,sbrisland6d,Oct 28 2017 09:00:00 GMT+0000,11,High,Hourly
+Brute Force Attempt,escholes6e,Oct 28 2017 08:00:00 GMT+0000,5,High,Hourly
+Abnormal AD Change,rfant6f,Oct 28 2017 07:00:00 GMT+0000,11,High,Hourly
+Snooping User,bclist6g,Oct 28 2017 07:00:00 GMT+0000,7,Low,Hourly
+Brute Force Attempt,asuggeyc,Oct 28 2017 06:00:00 GMT+0000,8,Critical,Hourly
+Elevated Privileges Granted,asuggeyc,Oct 28 2017 08:00:00 GMT+0000,8,Critical,Hourly
+Mass File Access Changes,chearl6i,Oct 28 2017 06:00:00 GMT+0000,9,Low,Hourly
+User File Access During Non-Standard Hours,mgravatt6j,Oct 28 2017 05:00:00 GMT+0000,11,High,Hourly
+Mass AD Changes,mfairfull6k,Oct 28 2017 05:00:00 GMT+0000,9,High,Hourly
+Multiple Logons by User,rboraston6l,Oct 28 2017 04:00:00 GMT+0000,8,High,Hourly
+Snooping User,pmulbry6m,Oct 28 2017 03:00:00 GMT+0000,11,High,Hourly
+Data Exfiltration,chearl6i,Oct 28 2017 03:00:00 GMT+0000,10,High,Hourly
+Mass AD Changes,chearl6i,Oct 28 2017 02:00:00 GMT+0000,9,High,Hourly
+Snooping User,chearl6i,Oct 28 2017 01:00:00 GMT+0000,11,High,Hourly
+Elevated Privileges Granted,chearl6i,Oct 28 2017 00:00:00 GMT+0000,6,Low,Hourly
+Mass File Access Changes,chearl6i,Oct 28 2017 00:00:00 GMT+0000,5,Low,Hourly
+Abnormal AD Change,chearl6i,Oct 28 2017 00:00:00 GMT+0000,10,Low,Hourly
+Multiple Failed Logons,chearl6i,Oct 28 2017 00:00:00 GMT+0000,6,Low,Hourly
+Mass File Access Changes,chearl6i,Oct 28 2017 00:00:00 GMT+0000,4,Low,Hourly
+Mass File Access Changes,chearl6i,Oct 28 2017 00:00:00 GMT+0000,11,Low,Hourly
+Abnormal File Access,chearl6i,Oct 28 2017 00:00:00 GMT+0000,6,High,Hourly
+Mass Changes to Groups,chearl6i,Oct 27 2017 20:00:00 GMT+0000,3,Low,Hourly
+User Logged into Multiple Hosts,chearl6i,Oct 27 2017 19:00:00 GMT+0000,8,Medium,Hourly
+Mass Failed AD Changes,chearl6i,Oct 27 2017 17:00:00 GMT+0000,11,Low,Hourly
+Mass File Deletion,chearl6i,Oct 27 2017 17:00:00 GMT+0000,6,Low,Hourly
+User File Access During Non-Standard Hours,nheaseman6h,Oct 27 2017 16:00:00 GMT+0000,4,High,Hourly
+User File Access During Non-Standard Hours,nheaseman6h,Oct 27 2017 15:00:00 GMT+0000,8,High,Hourly
+Data Exfiltration,nheaseman6h,Oct 27 2017 15:00:00 GMT+0000,4,High,Hourly
+Mass File Rename,nheaseman6h,Oct 27 2017 14:00:00 GMT+0000,8,High,Hourly
+User Login to Abnormal Remote Host,nheaseman6h,Oct 27 2017 13:00:00 GMT+0000,8,Critical,Hourly
+Mass File Access Changes,nheaseman6h,Oct 27 2017 12:00:00 GMT+0000,4,High,Hourly
+Mass File Rename,nheaseman6h,Oct 27 2017 11:00:00 GMT+0000,8,High,Hourly
+User Logon During Non-Standard Hours,nheaseman6h,Oct 27 2017 10:00:00 GMT+0000,5,High,Hourly
+Mass File Deletion,nheaseman6h,Oct 27 2017 09:00:00 GMT+0000,10,High,Hourly
+Data Exfiltration,nheaseman6h,Oct 27 2017 08:00:00 GMT+0000,8,High,Hourly
+User Logon During Non-Standard Hours,nheaseman6h,Oct 27 2017 07:00:00 GMT+0000,6,High,Hourly
+Snooping User,ogreddeni,Oct 27 2017 07:00:00 GMT+0000,4,Critical,Hourly
+Data Exfiltration,ogreddeni,Oct 27 2017 09:00:00 GMT+0000,2,Critical,Hourly
+Snooping User,ogreddeni,Oct 26 2017 07:00:00 GMT+0000,4,High,Hourly
+Data Exfiltration,ogreddeni,Oct 28 2017 09:00:00 GMT+0000,2,Medium,Hourly
+Data Exfiltration,ogreddeni,Oct 30 2017 09:00:00 GMT+0000,2,Medium,Hourly
+Data Exfiltration,ogreddeni,Oct 30 2017 01:00:00 GMT+0000,2,Medium,Hourly
+Data Exfiltration,ogreddeni,Oct 30 2017 05:00:00 GMT+0000,2,Medium,Hourly
+Data Exfiltration,ogreddeni,Oct 27 2017 02:00:00 GMT+0000,2,Medium,Hourly
+Data Exfiltration,ogreddeni,Oct 25 2017 14:00:00 GMT+0000,2,Medium,Hourly

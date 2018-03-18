@@ -1,0 +1,34 @@
+{
+    "id": "users_dist",
+    "reportId": "dashboards.sensitive_resources.sensitive_logins_users_dist",
+    "title": "Accounts Distribution",
+    "description": "Distribution of the users accessing sensitive resources according to their Domain Controller attributes",
+    "height": 220,
+	"mergeResults":true,
+    "controls": [
+        {
+            "controlId": "account_properties"
+        }
+    ],
+	"show" : {
+		"conditions": [
+			{
+				"operator": "entityExists",
+				"value": "auth_event"
+			}
+		]
+	},
+    "views": [
+        {
+            "type": "pie",
+            "settings": {
+                "label": "label",
+                "emptyLabelDisplay": "  Unknown",
+                "value": "login_count",
+                "options": {
+                    "radius": 80
+                }
+            }
+        }
+    ]
+}

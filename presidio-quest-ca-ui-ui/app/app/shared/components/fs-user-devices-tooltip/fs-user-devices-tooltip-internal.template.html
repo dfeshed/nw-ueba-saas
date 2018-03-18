@@ -1,0 +1,23 @@
+<div class="user-devices-tooltip-main">
+
+    <div ng-repeat="device in $ctrl.devices" class="device-row">
+        <!-- icon -->
+        <div class="system-icon">
+            <fs-svg-icon symbol-name="{{::'system-' + device.deviceType.toLowerCase() + '-icon'}}"
+                         attributes="{width: 28, height: 28}" ng-if="device.deviceName !== 'Others' && device.deviceType"></fs-svg-icon>
+            <fs-svg-icon symbol-name="computer-icon"
+                         attributes="{width: 28, height: 28}" ng-if="device.deviceName === 'Others' || !device.deviceType"></fs-svg-icon>
+        </div>
+
+        <div class="info-column">
+            <div class="stats-row">
+
+                <span class="machine-name">{{::device.deviceName}}</span>
+                <span class="percent">({{::device.percent}}%)</span>
+            </div>
+            <div class="horizontal-bar-wrapper">
+                <div class="horizontal-bar-inner" ng-class="{'bar-closed': !device.active}" ng-style="{width: device.percent + '%'}"></div>
+            </div>
+        </div>
+    </div>
+</div>

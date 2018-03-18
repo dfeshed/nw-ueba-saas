@@ -1,0 +1,10 @@
+{
+    "views": [
+        {
+            "type": "package",
+            "settings": {
+                "packageId": "{{@entityId}}"
+            }
+        }
+    ]
+}

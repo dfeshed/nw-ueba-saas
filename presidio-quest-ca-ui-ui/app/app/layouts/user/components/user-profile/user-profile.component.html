@@ -1,0 +1,46 @@
+<!-- AVATAR -->
+<!--<div class="avatar-wrapper" fs-user-tooltip="$ctrl.user" tooltip-target-selector="user-profile" mini-tooltip="true">-->
+<div class="avatar-wrapper">
+
+    <div class="avatar-container">
+        <div class="image"
+             ng-if="$ctrl.user.image"
+             ng-style="{ 'background-image': 'url(data:image/png;base64,' + $ctrl.user.image + ')' }"></div>
+        <div class="image"
+             ng-if="!$ctrl.user.image"
+             ng-style="{ 'background-image': 'url(\'images/icons/users_general_user_color.png\')', border: 'none'}"></div>
+    </div>
+
+</div>
+<!-- END OF AVATAR -->
+
+<!-- Stats -->
+<div class="stats-wrapper">
+    <div class="stats-container">
+        <div class="stats-container--name stats-container--row" title="{{::$ctrl.user.fallBackDisplayName}}">
+            {{::$ctrl.user.fallBackDisplayName}}
+
+            <!-- Watched Icon -->
+            <div class="watched-user-icon">
+                <!--<fs-svg-icon symbol-name="tracked-icon" ng-if="$ctrl.user.followed"></fs-svg-icon>-->
+                <i class="fa fa-eye" aria-hidden="true" ng-if="$ctrl.user.followed"></i>
+
+            </div>
+        </div>
+        <div class="stats-container--row stats-container--position" title="{{::$ctrl.user.adInfo.position}}">
+            {{::$ctrl.user.adInfo.position}}
+        </div>
+        <div class="stats-container--row stats-container--department-and-email">
+        <span class="stats-container--department" title="{{::$ctrl.user.department}}">
+            {{::$ctrl.user.department}}
+        </span>
+            <span class="stats-container--divider">|</span>
+            <span class="stats-container--email" title="{{::$ctrl.user.email}}">
+            {{::$ctrl.user.email}}
+        </span>
+        </div>
+    </div>
+</div>
+<!-- END OF Stats -->
+
+<!-- END OF Watched Icon -->

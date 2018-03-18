@@ -1,0 +1,287 @@
+/********************************
+*          FILTERS PANE         *
+/********************************/
+
+// Vars:
+// Dimensions
+$alertsFiltersTitleHeight: 50px;
+$alertsFilterCommonPadding: 16px;
+$alertsFilterFilterIconSize: 16px;
+$alertsFilterPadding: 30px 13px;
+$alertsFilterLabelBottomMargin: 11px;
+//$fsMsLabelWidth: 100%;
+//$fsMsValueWidth: 100%;
+$alertsFilterTitleColor: #003f71;
+$alertsFilterFilterIconColor: #013f71;
+$clrAlertsFilterDarkGrey: #e5e5e5;
+$cltAlertsFilterBUColor: #fff;
+$clrAlertsFilterLabel: #004f8f;
+
+.filters-box {
+    z-index: 1;
+    overflow: visible !important;
+    background-color: $cltAlertsFilterBUColor;
+    position: relative;
+
+    &--container {
+        display: flex;
+        flex-flow: column nowrap;
+        position: absolute;
+        height: 100%;
+        width: 100%;
+
+        &--title {
+            height: #{$alertsFiltersTitleHeight - ($alertsFilterCommonPadding * 2)};
+            line-height: #{$alertsFiltersTitleHeight - ($alertsFilterCommonPadding * 2)};
+            background-color: $clrAlertsFilterDarkGrey;
+
+            font-family: 'Open Sans', sans-serif;
+            color: $alertsFilterTitleColor;
+            font-size: 14px;
+            font-weight: 400;
+
+            padding: 16px;
+
+            .filter-icon {
+                width: $alertsFilterFilterIconSize;
+                height: $alertsFilterFilterIconSize;
+                fill: $alertsFilterFilterIconColor;
+                display: inline;
+            }
+
+        }
+
+        @include fs-multiselect();
+        @include fs-multiselect-autocomplete();
+
+        &--controls {
+            flex: 1;
+            padding: $alertsFilterPadding;
+
+            .fs-multiselect-label, .fs-multiselect-autocomplete-label {
+                margin-bottom: $alertsFilterLabelBottomMargin;
+
+                span {
+                    font-family: 'Open Sans', sans-serif;
+                    color: $clrAlertsFilterLabel;
+                    font-size: 14px;
+                }
+            }
+
+            .fs-multiselect-container, .fs-multiselect-autocomplete-container {
+                margin-bottom: 1.5em;
+            }
+
+            .fs-multiselect-value-container, .fs-multiselect-autocomplete-value-container {
+                display: flex;
+                flex-flow: column;
+                align-items: flex-start;
+
+                .fs-multiselect-value, .fs-multiselect-autocomplete-select {
+                    width: 100%;
+                    border: 1px solid #8cb0c9;
+
+                    .multiselect-value-content {
+                        font-family: 'Open Sans', sans-serif;
+                        color: #0a0d24;
+                        font-size: 14px;
+                    }
+
+                    .k-multiselect-wrap {
+                        width: 100%;
+                        border: none;
+                        input {
+                            font-family: 'Open Sans', sans-serif;
+                            color: #0a0d24;
+                            font-size: 14px;
+                            line-height: 24px;
+                        }
+                    }
+
+                }
+                .fs-multiselect-autocomplete-select > .fs-multiselect-autocomplete-select {
+                    border: none;
+                }
+
+            }
+
+            .fs-multiselect-autocomplete-select {
+                border: none;
+
+            }
+
+        }
+    }
+
+    /**
+    *    Entities filter display value can be very long
+    *    the overriding bellow override the default settings of
+    *    fs-multiselect-autocomplete to break the text in the middle and
+    *    split the texts to how many lines which required in order to present the whole value.
+    */
+    .entities-multi-select ul li span {
+        word-break: break-all;
+        overflow: auto;
+        white-space: initial;
+        text-overflow: initial;
+    }
+
+    fs-multiselect[label="Indicators"] {
+        .fs-multiselect-dropdown-list {
+            width: 35em;
+        }
+    }
+
+    // Filters title
+    .filters-pane-title {
+        @include font-roboto-bold();
+        font-size: 14px;
+        color: $clrGrey100;
+        margin-bottom: 1.625rem;
+    }
+
+    // Date Range Filter
+    .alert-start-date-range {
+        width: 100%;
+        margin-bottom: 1em;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+
+        .alert-start-date-range-label-container {
+            margin-bottom: $alertsFilterLabelBottomMargin;
+
+            label {
+                font-family: 'Open Sans', sans-serif;
+                color: $clrAlertsFilterLabel;
+                font-size: 14px;
+            }
+        }
+        fs-date-range {
+            width: 100%;
+        }
+
+        .fs-daterange {
+            display: inline-block;
+            //width: #{$fsMsValueWidth - 2px};
+            position: relative;
+            width: 100%;
+
+            .k-icon.k-i-arrow-s {
+                position: absolute;
+                top: calc(50% - 5px);
+                right: 10px;
+                color: $clrGrey80;
+            }
+
+            > .box-col {
+                width: 100%;
+                > ul {
+                    width: 100%;
+                    &.main-ul.k-menu {
+                        border: 1px solid #8cb0c9;
+                    }
+
+                    > li {
+                        width: 100%;
+                        & > .k-link, & > .k-link + .k-animation-container > ul > li > .k-link {
+                            padding: 0.6em 12px;
+                            box-sizing: border-box;
+                            //width: #{$fsMsValueWidth - 2px};
+                            text-align: left;
+                            background-color: $clrWhite;
+                            //font-size: #{$basicFontSize * 0.85};
+                            font-size: 14px;
+                            font-family: 'Open Sans', sans-serif;
+                            color: #0a0d24;
+
+                            &:hover {
+                                background-color: $clrGrey20;
+                                color: $clrGrey100;
+                            }
+                        }
+                    }
+                }
+            }
+
+            ul.main-ul.k-menu {
+                border: 1px solid $clrGrey40;
+            }
+            li.k-item.k-state-default.k-first.k-last {
+                border: none;
+            }
+
+            .k-icon.k-i-calendar {
+                display: none;
+            }
+
+            .k-animation-container ul li {
+                width: 115px;
+            }
+        }
+    }
+    .fs-button-group {
+        //width: #{$fsMsLabelWidth + $fsMsValueWidth};
+        display: flex;
+        flex-flow: row;
+        justify-content: flex-end;
+
+        .fs-button-regular.ok {
+            height: 45px;
+            border-radius: 3px;
+            background-color:  #004f8f;
+            box-shadow: 0 3px 7px 0 rgba(0, 0, 0, 0.1);
+            width: 89px;
+
+            display: flex;
+            flex-flow: row;
+            justify-content: center;
+
+            .go-icon {
+                margin-right: 5px;
+                stroke: #ffffff;
+                fill: #ffffff;
+            }
+
+        }
+
+
+        .cancel {
+            border: none;
+            background-color: transparent;
+            margin-right: 10px;
+            color: #004f8f;
+            font-size: 14px;
+            text-decoration: underline;
+
+            &:hover {
+                font-weight: 800;
+            }
+
+            &:active {
+                border: none;
+            }
+        }
+    }
+
+    @media only screen and (max-height: 900px) {
+
+        .fs-multiselect-container, .fs-multiselect-autocomplete-container {
+            margin-bottom: 0.3em;
+        }
+
+        .fs-multiselect-label, .fs-multiselect-autocomplete-label, .alert-start-date-range-label-container {
+            margin-bottom: 2px !important;
+        }
+
+        .filters-box--container--controls {
+            padding: 5px;
+        }
+    }
+
+
+}
+
+/********************************
+*     END OF FILTERS PANE       *
+/********************************/

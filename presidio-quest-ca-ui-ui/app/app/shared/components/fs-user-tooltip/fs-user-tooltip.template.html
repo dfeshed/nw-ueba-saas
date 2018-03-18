@@ -1,0 +1,130 @@
+<div class="af-user-tooltip">
+    <!-- Tooltip Header -->
+    <div ng-if="::!$ctrl.miniTooltip" class="af-user-tooltip--header" ui-sref="user.baseline({userId: $ctrl.user.id})">
+        <div class="af-user-tooltip--header--icon">
+            <div class="avatar-container">
+                <div class="image"
+                    ng-if="::$ctrl.user.image"
+                    ng-style="{ 'background-image': 'url(data:image/png;base64,' + $ctrl.user.image + ')' }"></div>
+                <div class="image"
+                    ng-if="::!$ctrl.user.image"
+                    ng-style="{ 'background-image': 'url(\'images/icons/users_general_user_color.png\')', border: 'none'}"></div>
+            </div>
+        </div>
+        <div class="af-user-tooltip--header--score {{'af-user-tooltip--header--score--' + ($ctrl.user.scoreSeverity ? $ctrl.user.scoreSeverity.toLowerCase() : 'critical')}}">
+            {{::$ctrl.user.score}}
+        </div>
+        <div class="af-user-tooltip--header--info">
+            <div class="name">{{::$ctrl.user.fallBackDisplayName}}</div>
+            <div class="title">{{::$ctrl.user.jobTitle}}</div>
+        </div>
+    </div>
+
+
+    <!-- Tooltip Stats Upper -->
+    <div class="af-user-tooltip--upper-stats af-user-tooltip-stats" ng-class="::{'no-upper-margin': $ctrl.miniTooltip}">
+
+        <!-- Email -->
+        <div class="af-user-tooltip-stats--row stat-email">
+            <div class="stat-name">Email</div>
+            <a ng-if="::$ctrl.user.email"
+                class="stat-value"
+                href="mailto:{{::$ctrl.user.email}}">{{::$ctrl.user.email}}</a>
+            <span class="filler" ng-hide="::$ctrl.user.email">-</span>
+        </div>
+
+        <!-- Position -->
+        <div class="af-user-tooltip-stats--row stat-position">
+            <div title="{{'user_popup.role.tooltip' | translate}} " class="stat-name">Role</div>
+            <a ng-if="::$ctrl.user.adInfo.position"
+                class="stat-value"
+                ng-href
+                ng-click="$ctrl.navigateToUsersPage('positions',$ctrl.user.adInfo.position)"
+                title="{{'user_popup.role.tooltip' | translate: $ctrl.buildTranslateObject('role', $ctrl.user.adInfo.position)}}">
+
+                {{::$ctrl.user.adInfo.position}}
+            </a>
+            <span class=" filler" ng-hide="::$ctrl.user.adInfo.position">-</span>
+        </div>
+
+        <!-- Department -->
+        <div class="af-user-tooltip-stats--row stat-department">
+            <div class="stat-name">Department</div>
+            <a ng-if="::$ctrl.user.department"
+               class="stat-value"
+               ng-href
+               ng-click="$ctrl.navigateToUsersPage('departments',$ctrl.user.adInfo.department)"
+               title="{{'user_popup.department.tooltip' | translate: $ctrl.buildTranslateObject('department', $ctrl.user.adInfo.department)}}">
+                {{::$ctrl.user.department}}
+            </a>
+            <span class=" filler" ng-hide="::$ctrl.user.department">-</span>
+        </div>
+
+        <!-- Org Unit -->
+        <div class="af-user-tooltip-stats--row stat-org-unit">
+            <div class="stat-name">Org. Unit</div>
+            <span ng-if="::$ctrl.user.ou" class="stat-value" ng-bind-html="::$ctrl.user.ou|prettyOU">
+            </span>
+            <span class="filler" ng-hide="::$ctrl.user.ou">-</span>
+        </div>
+
+        <!-- Manager -->
+        <div class="af-user-tooltip-stats--row stat-manager">
+            <div class="stat-name">Manager</div>
+            <a ng-if="::$ctrl.user.manager.name"
+                class="stat-value"
+                ui-sref="user.baseline({userId: $ctrl.user.manager.id})">{{::$ctrl.user.manager.name}}</a>
+            <span class="filler" ng-hide="::$ctrl.user.manager.name">-</span>
+        </div>
+
+    </div>
+
+
+    <!-- Tooltip Stats Lower -->
+    <div class="af-user-tooltip--lower-stats af-user-tooltip-stats">
+
+        <!-- Address -->
+        <div class="af-user-tooltip-stats--row stat-address">
+            <div class="stat-name">Address</div>
+            <span ng-if="::$ctrl.user.fullAddress" class="stat-value">{{::$ctrl.user.fullAddress}}</span>
+            <span class="filler" ng-hide="::$ctrl.user.fullAddress">-</span>
+        </div>
+
+        <!-- Phone -->
+        <div class="af-user-tooltip-stats--row stat-phone">
+            <div class="stat-name">Phone</div>
+            <span ng-if="::$ctrl.user.homePhone || $ctrl.user.phone" class="stat-value">{{::$ctrl.user.homePhone || $ctrl.user.phone}}</span>
+            <span class="filler" ng-hide="::$ctrl.user.homePhone || $ctrl.user.phone">-</span>
+        </div>
+
+        <!-- Mobile Phone -->
+        <div class="af-user-tooltip-stats--row stat-mobile-phone">
+            <div class="stat-name">Mobile Phone</div>
+            <span ng-if="::$ctrl.user.mobilePhone" class="stat-value">{{::$ctrl.user.mobilePhone}}</span>
+            <span class="filler" ng-hide="::$ctrl.user.mobilePhone">-</span>
+        </div>
+
+        <!-- Company -->
+        <div class="af-user-tooltip-stats--row stat-company">
+            <div class="stat-name">Company</div>
+            <span ng-if="::$ctrl.user.company" class="stat-value">{{::$ctrl.user.company}}</span>
+            <span class="filler" ng-hide="::$ctrl.user.company">-</span>
+        </div>
+
+    </div>
+
+    <!-- Tooltip AD Flags -->
+    <div class="af-user-tooltip--lower-stats af-user-tooltip-stats">
+        <div class="af-user-tooltip-stats--row stat-ad-flags">
+            <div class="stat-name">AD Flags</div>
+            <span class="stat-value">
+                <span class="account-is-disabled" ng-if="::$ctrl.user.adInfo.isAccountDisabled">Disabled</span>
+                <span class="no-password-required" ng-if="::$ctrl.user.noPasswordRequiresValue">No Password Required</span>
+                <span class="passwrod-expired" ng-if="::$ctrl.user.passwordExpired">Password Expired</span>
+                <span class="password-never-expires" ng-if="::$ctrl.user.passwordNeverExpiresValue">Password Never Expires</span>
+                <span class="filler" ng-hide="::$ctrl.user.company">-</span>
+            </span>
+        </div>
+    </div>
+
+</div>

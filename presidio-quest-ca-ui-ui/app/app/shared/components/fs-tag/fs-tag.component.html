@@ -1,0 +1,9 @@
+<span class="tag-container">
+    <span class="tag-text">{{$ctrl.tag.displayName}}</span>
+    <span class="remove-tag" ng-if="$ctrl.enableRemoveTag"
+        ng-mouseover="$ctrl.setAboutToRemove(true)"
+        ng-mouseleave="$ctrl.setAboutToRemove(false)"
+        ng-click="$ctrl.removeTagDelegate({tag: $ctrl.tag})">
+        <i class="fa fa-times" aria-hidden="true"></i>
+    </span>
+</span>

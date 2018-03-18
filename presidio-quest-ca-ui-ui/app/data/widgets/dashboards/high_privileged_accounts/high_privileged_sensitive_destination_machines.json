@@ -1,0 +1,58 @@
+{
+    "id": "high_privileged_sensitive_destination_machines",
+    "title": "Sensitive Target Machines",
+    "description": "Summary details of machines which are tagged as sensitive and are being accessed by {{@columnNameToQuery:matches:is_user_administrator:Administrators:Executives}}",
+    "reportId": "dashboards.high_privileged_accounts.high_privileged_sensitive_destination_machines",
+	"show" : {
+		"conditions": [
+			{
+				"operator": "entityExists",
+				"value": "auth_event"
+			}
+		]
+	},
+    "views": [
+        {
+            "type": "table",
+            "settings": {
+                "fields": [
+                    {
+						"name": "Hostname",
+						"value": "{{destination_machine}}",
+						"tags": "machine"
+					},
+					{
+						"name": "Type",
+						"value": "{{type}}"
+					},
+                    {
+                        "name": "Users Count",
+                        "value": "{{user_count}}"
+                    },
+                    {
+                        "name": "Event Count",
+                        "value": "{{event_count}}"
+                    },
+                    {
+                        "name": "Highest Score",
+                        "value": "{{events_max_score:round}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "events_max_score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "events_max_score"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Average Score",
+                        "value": "{{events_average_score:round}}"
+                    }
+                ]
+            }
+        }
+    ]
+}

@@ -1,0 +1,96 @@
+describe('{{directiveName}}.directive', function () {
+    'use strict';
+
+    var $rootScope;
+    var $scope;
+    var $compile;
+    var $injector;
+
+    var preCompiledElement;
+    var element;
+    var controller;
+
+    /**
+     * Helper functions
+     */
+
+    /**
+     * Renders a pre-compiled element and gets it's Controller
+     */
+    function renderElement() {
+        element = $compile(preCompiledElement)($scope);
+        $scope.$digest();
+
+        controller = element.controller('{{directiveName}}');
+    }
+
+    /**
+     * Setup
+     */
+
+    beforeEach(function () {
+        // Load View templates from html2js preprocessor
+        module("fsTemplates");
+        // Load required Modules
+        module('{{moduleName}}');
+    });
+
+    beforeEach(inject(function (_$injector_, _$rootScope_, _$compile_) {
+        $rootScope = _$rootScope_;
+        $compile = _$compile_;
+        $injector = _$injector_;
+        $scope = $rootScope.$new();
+
+        // Cache a precompiled element of the tested directive
+        preCompiledElement = angular.element('<{{fileName}}></{{fileName}}>');
+
+        // Reset previously set values
+        element = undefined;
+        controller = undefined;
+    }));
+
+    beforeEach(function () {
+        renderElement();
+    });
+
+    /**
+     * Test directive attributes
+     */
+
+    describe('Arguments', function () {
+
+    });
+
+    /**
+     * Test Directive Controller
+     */
+
+    describe('Controller', function () {
+
+        it('should be defined', function () {
+            expect(controller).toBeDefined();
+        });
+
+        describe('private', function () {
+
+        });
+
+        describe('public methods', function () {
+
+        });
+
+    });
+
+    /**
+     * Test directive integration
+     */
+
+    describe('Integration', function () {
+        describe('element', function () {
+            it('should have inner html that equals "<div class="fs-directive">I am a directive</div>"', function () {
+                expect(element[0].innerHTML).toBe('<div class="fs-directive">I am a directive</div>');
+            });
+        });
+    });
+
+});

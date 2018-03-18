@@ -1,0 +1,48 @@
+{
+    "renderControls": false,
+    "renderHeader": false,
+    "className": "no-margins widget-advance-one",
+    "reportId": "user_scores",
+    "refreshOn": ["userName", "currentFeature"],
+    "requiredParams": ["userName"],
+    "views": [
+        {
+            "type": "tabs",
+            "show": {
+                "conditions": [{
+                    "field": "{{currentFeature}}",
+                    "operator": "hasValue"
+                }]
+            },
+            "settings": {
+                "tab": {
+                    "display": "{{name}}",
+                    "id": "{{id}}",
+                    "selected": "@currentFeature"
+                },
+                "label": {
+                    "value": "{{score}}",
+                    "style": "score",
+                    "styleParams": {
+                        "value": "score"
+                    }
+                },
+                "events": [
+                    {
+                        "eventName": "select",
+                        "action": "setParams",
+                        "actionOptions": {
+                            "updateUrl": true,
+                            "params": {
+                                "currentFeature": "{{id}}",
+                                "date": null
+                            }
+                        }
+                    }
+                ],
+                "selectedTabId": "@currentFeature",
+                "refreshOn": ["currentFeature"]
+            }
+        }
+    ]
+}

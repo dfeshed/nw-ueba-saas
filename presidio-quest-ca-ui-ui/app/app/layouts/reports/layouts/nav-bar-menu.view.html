@@ -1,0 +1,24 @@
+<div class="nav-bar-container">
+    <div class="nav-bar-container--header">
+        <svg class="icon report-icon">
+            <use xlink:href="#report-icon"></use>
+        </svg>
+        <span>Reports</span>
+    </div>
+    <div class="nav-bar-container--groups-list-container">
+        <ul class="nav-bar-container--groups-list">
+            <li ng-repeat="navGroup in ::reports.navBarSettings" class="nav-bar-container--group-item">
+                <div class="nav-bar-container--group-item--content" ng-bind-html="::navGroup.html"></div>
+                <ul class="nav-bar-container--group-item--list">
+                    <li ng-repeat="navItem in ::navGroup.items"
+                        class="nav-list-item"
+                        ui-sref="{{::navItem.sref || 'overview'}}"
+                        ui-sref-opts="{reload: true}"
+                        ui-sref-active="active">
+                        <span ng-bind-html="::navItem.html"></span>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,39 @@
+<!-- This component display one comment and allow edit and delete -->
+<div class="alert-single-comment">
+
+    <!-- Show the regular comment, when not in edit mode-->
+    <div class="comment-box padding-text-area"
+         ng-hide="$ctrl.comment.id === $ctrl.currentUpdatedComment.id">
+        <!-- Show the icon -->
+        <div class="icon-wrapper">
+            <fs-svg-icon symbol-name="comment-icon"></fs-svg-icon>
+        </div>
+        <!-- Show the text and analyst name and date-->
+        <div class="main-comment-text" ng-class="{'not-last':!$ctrl.last}">
+            <span class="comment-uneditable">{{$ctrl.comment.commentText}}</span>
+            <div class="comment-details">{{$ctrl.comment.analystUserName}} | {{$ctrl.comment.modifiedAt|date:
+                "medium"}}
+            </div>
+            <!-- The actions box - delete / update-->
+            <span class="comment-actions">
+                        <a ng-click="$ctrl.deleteComment($ctrl.comment)"><fs-svg-icon symbol-name="delete"
+                                                                                      attributes="::{width: 16, height: 16}"></fs-svg-icon></a>
+                        <a ng-click="$ctrl.setUpdateMode($ctrl.comment)"><fs-svg-icon symbol-name="edit"
+                                                                                      attributes="::{width: 16, height: 16}"></fs-svg-icon></a>
+                    </span>
+
+        </div>
+    </div>
+    <!-- Text area of the update mode. Display when component in update mode - comment is edited -->
+    <div ng-show="$ctrl.comment.id === $ctrl.currentUpdatedComment.id">
+            <textarea class="comment-box  active-comment"
+                      ng-model="$ctrl.currentUpdatedComment.commentText"
+                      ng-blur="$ctrl.updateComment()"
+                      ng-keypress="$ctrl.commentEditingKeyPressHandler($event)"
+                      ng-class="'comment-edit-area-' + $ctrl.comment.id"></textarea>
+
+    </div>
+
+
+
+</div>

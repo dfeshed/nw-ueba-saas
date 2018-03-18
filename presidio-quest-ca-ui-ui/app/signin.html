@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html class="login-bg" ng-app="FortscaleSignin">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Fortscale - Sign in</title>
+
+    <!--<link rel="icon" type="image/png" href="images/fortscale_icon.png"/>-->
+
+    <!-- inject:css -->
+    <!-- endinject -->
+</head>
+<body ng-controller="SigninController">
+<div id="signin-form" ng-cloak>
+    <img class="login-background-image">
+    <div class="signin-container">
+        <div class="logo-container">
+            <img src="assets/images/white-fortscale-logo.png" alt="" class="logo-image">
+        </div>
+        <div class="main-form-container">
+            <form ng-submit="signIn()">
+                <div class="login-form-header">
+                    Welcome to FORTSCALE
+                </div>
+                <div class="login-form-content">
+                    <label class="login-form-label" for="login-username">
+                        User Name
+                    </label>
+                    <input type="text"
+                        id="login-username"
+                        class="login-form-input"
+                        name="username"
+                        ng-model="email"
+                        tabindex="1"
+                        ng-focus="clearError()"
+                        focus-when="!email">
+                    <label class="login-form-label">
+                        Password
+                    </label>
+                    <input type="password"
+                        id="login-password"
+                        class="login-form-input"
+                        ng-class="{'input-error': !!error}"
+                        placeholder="Your password"
+                        ng-model="password"
+                        tabindex="2"
+                        focus-when="focusOnPassword">
+                </div>
+                <div class="login-error-and-apply">
+                    <div class="login-form-error-message">
+                        <span ng-if="!!error">Wrong user name or password, please try again</span>
+                    </div>
+                    <input type="submit" class="login-submit-button" value="Login" tabindex="4"/>
+                </div>
+            </form>
+
+        </div>
+        <div class="login-footer">
+            <span class="company-name">
+                <i class="fa fa-copyright" aria-hidden="true"></i> {{currentYear}} LTD All Rights Reserved
+            </span>
+        </div>
+    </div>
+
+</div>
+
+<!-- inject:js -->
+<!-- endinject -->
+</body>
+</html>

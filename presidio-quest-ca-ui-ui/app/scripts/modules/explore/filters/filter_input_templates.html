@@ -1,0 +1,57 @@
+<script type="text/ng-template" id="exploreFilter-string">
+	<input type="text"
+		   ng-class="{'error-input':filter.validObj.isValid==false}"
+		   ng-blur="filter.validObj.showErrors=false"
+		   ng-model="filter.value"/>
+</script>
+
+<script type="text/ng-template" id="exploreFilter-string-searchable">
+	<searchbox search-settings="filter.searchSettings" ng-model="filter.value"></searchbox>
+</script>
+
+<script type="text/ng-template" id="exploreFilter-number">
+	<input type="text"
+		   numbers-only
+		   ng-class="{'error-input':filter.validObj.isValid==false}"
+		   ng-blur="filter.validObj.showErrors=false"
+		   placeholder="Enter number"
+		   ng-model="filter.value"/>
+</script>
+
+<script type="text/ng-template" id="exploreFilter-duration">
+	<input type="text"
+		   duration-only
+		   ng-class="{'error-input':filter.validObj.isValid==false}"
+		   ng-blur="filter.validObj.showErrors=false"
+		   placeholder="Enter Duration (hh:mm:ss)"
+		   ng-model="filter.displayValue"/>
+</script>
+
+
+<script type="text/ng-template" id="exploreFilter-boolean">
+	<select ng-model="filter.value" ng-options="value for value in [true, false]"></select>
+</script>
+
+<script type="text/ng-template" id="exploreFilter-select">
+	<select ng-model="filter.value" ng-options="value for value in filter.valueList"></select>
+</script>
+
+<script type="text/ng-template" id="exploreFilter-date">
+	<ofs-datepicker ng-model="filter.value"></ofs-datepicker>
+</script>
+
+<script type="text/ng-template" id="exploreFilter-dateRange">
+	<daterange ng-model="filter.value"></daterange>
+</script>
+
+<script type="text/ng-template" id="exploreFilter-numberRange">
+	<number-range ng-model="filter.value"
+				  min-val="filter.value.minVal"
+				  max-val="filter.value.maxVal"></number-range>
+</script>
+
+<script type="text/ng-template" id="exploreFilter-stringIn">
+	<string-in ng-model="filter.value" is-searchable="filter.field.isSearchable"
+			   search-settings="filter.searchSettings"></string-in>
+</script>
+

@@ -1,0 +1,195 @@
+@mixin flex-column {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+@mixin flex-column-centered {
+    @include flex-column();
+    justify-content: center;
+}
+
+@mixin flex-column-centered-centered {
+    @include flex-column-centered();
+    align-items: center;
+}
+
+
+@mixin flex-column {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+/* FONTS MIXINS */
+@mixin font-open-sans($font-size: 14px, $font-weight: 400, $color: #333333) {
+    font-family: 'Open Sans', sans-serif;
+    font-size: $font-size;
+    font-weight: $font-weight;
+    color: $color;
+}
+
+@mixin flex-row {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+users-add-favorites-popup {
+
+    .inner-area {
+        input:focus:invalid:focus,
+        textarea:focus:invalid:focus,
+        select:focus:invalid:focus {
+            border-color: #3a87ad;
+            box-shadow: 0 0 0;
+        }
+
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.6);
+
+        //transform: translate3d(100%, 0, 0);
+        //transition: transform 0.5s ease-in-out;
+        z-index: 5;
+
+        @include flex-column-centered-centered();
+
+        .popup-form-container {
+            padding: 20px;
+            background-color: white;
+            box-shadow: 2px 2px 9px rgba(0, 0, 0, 0.5);
+            border: 1px solid #676767;
+
+            @include flex-column();
+        }
+
+        .popup-title {
+            @include font-open-sans($color: #01294A, $font-size: 14px, $font-weight: 700);
+            margin-bottom: 10px;
+            background-color: white;
+            border-bottom-style: none;
+            padding: 0;
+        }
+
+        label {
+            @include font-open-sans($color: #01294A, $font-size: 10px);
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 350px;
+            @include font-open-sans($color: #666666, $font-size: 12px);
+            margin-bottom: 25px;
+
+            &.ng-invalid {
+
+                &.ng-dirty {
+                    border: 1px solid red;
+                    outline: none;
+                }
+            }
+        }
+
+        .error-message {
+            margin-top: -25px;
+            color: red;
+            margin-bottom: 25px;
+            font-size: 11px;
+        }
+
+        .buttons-container {
+            @include flex-row();
+            justify-content: flex-end;
+            align-items: center;
+            width: 100%;
+        }
+
+        .cancel-button {
+            @include font-open-sans($font-size: 14px, $font-weight: 400, $color: #024D89);
+            margin-right: 25px;
+            cursor: pointer;
+
+            &:hover {
+                //color: #022f53;
+                font-weight: 700;
+                letter-spacing: -0.5px;
+            }
+        }
+
+        .ok-button {
+            outline: none;
+            border: none;
+            margin-bottom: 0;
+
+            display: inline-block;
+            height: 35px;
+            line-height: 35px;
+            width: auto;
+
+            background-color: #016a9c;
+
+            @include font-open-sans($color: white);
+            text-align: center;
+
+            padding: 0 30px;
+
+            cursor: pointer;
+
+            &:hover {
+                background-color: #0260a0;
+            }
+
+            &[disabled] {
+                opacity: 0.2;
+                cursor: not-allowed;
+            }
+
+        }
+
+        &.ng-enter, &.ng-leave-active {
+
+            transition: all linear 0.5s;
+            opacity: 0;
+        }
+
+        /* The finishing CSS styles for the enter animation */
+        &.ng-enter.ng-enter-active, &.ng-leave {
+            //transition: all linear 3s;
+            opacity: 1;
+        }
+    }
+
+    &.ng-enter, &.ng-leave-active {
+
+        transition: all linear 0.5s;
+        opacity: 0;
+    }
+
+    /* The finishing CSS styles for the enter animation */
+    &.ng-enter.ng-enter-active, &.ng-leave {
+
+        opacity: 1;
+    }
+        //.fade {
+        //    transition: opacity .5s;
+        //}
+        //
+        //
+        //&.enter-active {
+        //  //  transform: translate3d(0, 0, 0);
+        //    opacity: 0;
+        //}
+        //
+        //&.ng-leave-active {
+        //    //transform: translate3d(100%, 0, 0);
+        //    opacity: 1;
+        //}
+
+}

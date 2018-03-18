@@ -1,0 +1,16 @@
+<div class="dashboard-column-wrapper" ng-show="column.show">
+    <header class="widget-header" ng-if="::column.title">
+        <h4 class="widget-header-title">{{::column.title}}</h4>
+    </header>
+    <div class="dashboard-column-contents">
+        <div ng-repeat="row in ::column.rows" class="row-fluid dashboard-row">
+            <div ng-repeat="column in row.columns"
+                 class="dashboard-column {{column.className}}"
+                 ng-include="'views/pages/column.html'"
+                 ng-class="::{'dashboard-with-title': column.title}">
+            </div>
+            <widget ng-repeat="widget in row.widgets" widget-model="widget"></widget>
+        </div>
+        <widget ng-repeat="widget in column.widgets" widget-model="widget"></widget>
+    </div>
+</div>

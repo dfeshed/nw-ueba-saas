@@ -1,0 +1,31 @@
+{
+    "message":{
+        "type": "maxResults",
+        "params": {
+            "maxResults": 50
+        }
+    },
+    "views": [
+        {
+            "type": "bars",
+            "settings": {
+                "label": "label",
+                "value": "event_count",
+                "calculatePercentage": true,
+                "tooltipText": "{{label}} - {{event_count}} logins ({{_percent:toFixed:2}}%)",
+                "scales": {
+                    "x": true
+                },
+                "axes": {
+                    "x": {
+                        "label": "Event Count",
+                        "tickFormat": "d"
+                    }
+                },
+                "options": {
+                    "direction": "vertical"
+                }
+            }
+        }
+    ]
+}

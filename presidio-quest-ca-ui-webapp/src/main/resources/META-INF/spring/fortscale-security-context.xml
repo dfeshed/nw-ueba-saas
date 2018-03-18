@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+		http://www.springframework.org/schema/security 
+		http://www.springframework.org/schema/security/spring-security-4.1.xsd
+		http://www.springframework.org/schema/util 
+		http://www.springframework.org/schema/util/spring-util-4.1.xsd">
+
+	<http pattern="/resources/**" security="none" />
+	
+	<beans:bean id="noRedirectAuthenticationSuccessHandler" class="fortscale.web.NoRedirectAuthenticationSuccessHandler">
+		<beans:property name="maxInactiveInterval" value="${session.max.inactive.session.interval}"></beans:property>
+	</beans:bean>
+	<beans:bean id="authenticationFailureHandler" class="fortscale.web.AuthenticationFailureHandlerImpl">
+		<beans:property name="restExceptionHandler" ref="restExceptionResolver"></beans:property>
+	</beans:bean>
+	<beans:bean id="accessDeniedHandler" class="fortscale.web.AccessDeniedHandlerImpl">
+		<beans:property name="restExceptionHandler" ref="restExceptionResolver"></beans:property>
+	</beans:bean>
+	<beans:bean id="fortscaleFailedEntryPoint" class="fortscale.web.FortscaleFailedEntryPoint">
+		<beans:property name="restExceptionHandler" ref="restExceptionResolver"></beans:property>
+	</beans:bean>
+	<beans:bean id="localeResolver" class="org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver"/>
+	<beans:bean id="restExceptionResolver" class="fortscale.web.exceptions.handlers.RestExceptionHandler">
+        <beans:property name="order" value="100"/>
+<!--         <beans:property name="messageConverters"> -->
+<!--             <beans:list> -->
+<!--                 <ref bean="jacksonHttpMessageConverter"/> -->
+<!--             </beans:list> -->
+<!--         </beans:property> -->
+        <beans:property name="errorResolver">
+            <beans:bean class="fortscale.web.exceptions.handlers.FortscaleRestErrorResolver">
+                <beans:property name="localeResolver" ref="localeResolver"/>
+                <beans:property name="exceptionMappingDefinitions">
+                    <beans:map>
+                        <!-- 404 -->
+                        <beans:entry key="fortscale.web.exceptions.UnknownResourceException" value="#{T(javax.servlet.http.HttpServletResponse).SC_NOT_FOUND}, _exmsg"/>
+                    </beans:map>
+                </beans:property>
+            </beans:bean>
+        </beans:property>
+    </beans:bean>
+
+	<!--Todo: this is to enable CSRF protection-->
+	<!--<beans:bean id="csrfHeaderFilter" class="fortscale.web.spring.CSRFHeaderFilter"/>
+	<beans:bean id="springSecurityFilterChain" class="org.springframework.web.filter.DelegatingFilterProxy"/>
+	<beans:bean id="myfilterChainProxy" class="org.springframework.security.web.FilterChainProxy">
+		<filter-chain-map request-matcher="ant">
+			<filter-chain pattern="/*" filters="springSecurityFilterChain,csrfHeaderFilter"/>
+		</filter-chain-map>
+	</beans:bean>-->
+
+
+	<http auto-config="true" use-expressions="true" entry-point-ref="fortscaleFailedEntryPoint">
+<!-- 		<intercept-url pattern="/api/**" access="permitAll" /> -->
+<!-- 		<intercept-url pattern="/" access="permitAll" /> -->
+<!-- 		<intercept-url pattern="/index.html" access="permitAll" /> -->
+		<intercept-url pattern="/" access="permitAll" />
+		<intercept-url pattern="/api/selfCheck" access="permitAll" />
+		<intercept-url pattern="/api/getEntities" access="permitAll" />
+		<intercept-url pattern="/api/analyst/login" access="permitAll" />
+		<intercept-url pattern="/api/analyst/changePassword" access="permitAll" />
+		<intercept-url pattern="/404.html" access="permitAll" />
+		<intercept-url pattern="/change_password.html" access="permitAll" />
+		<intercept-url pattern="/signin.html" access="permitAll" />
+		<intercept-url pattern="/logout" access="permitAll" />
+		<intercept-url pattern="/users/add" access="permitAll" />
+		<intercept-url pattern="/components/**" access="permitAll" />
+		<intercept-url pattern="/data/**" access="permitAll" />
+		<intercept-url pattern="/images/**" access="permitAll" />
+		<intercept-url pattern="/scripts/**" access="permitAll" />
+		<intercept-url pattern="/scripts/services/**" access="permitAll" />
+		<intercept-url pattern="/styles/**" access="permitAll" />
+		<intercept-url pattern="/views/**" access="permitAll" />
+		<intercept-url pattern="/admin.html" access="hasRole('ROLE_ADMIN')" />
+		<intercept-url pattern="/api/admin/analyst/addAnalyst" access="hasRole('ROLE_ADMIN')" />
+		<intercept-url pattern="/api/admin/analyst/details" access="hasRole('ROLE_ADMIN')" />
+		<intercept-url pattern="/api/admin/analyst/" access="hasRole('ROLE_ADMIN')" />
+		<intercept-url pattern="/api/**" access="isAuthenticated()" />
+
+		<form-login login-page="/signin.html" authentication-failure-handler-ref="authenticationFailureHandler"
+		 always-use-default-target="false" authentication-success-handler-ref="noRedirectAuthenticationSuccessHandler" 
+		 login-processing-url="/api/analyst/login" username-parameter="j_username" password-parameter="j_password"/>
+
+		<access-denied-handler ref="accessDeniedHandler"/>
+		
+		<logout invalidate-session="true" logout-success-url="/signin.html"
+			logout-url="/api/analyst/logout" />
+		<!--<custom-filter ref="csrfHeaderFilter"  before="CSRF_FILTER"/>-->
+		<csrf disabled="true"/>
+
+		<headers>
+			<frame-options policy="SAMEORIGIN" />
+		</headers>
+	</http>
+
+	<beans:bean id="mongoAuthenticationProvider" class="fortscale.services.security.MongoAuthenticationProvider">
+		<beans:property name="passwordEncoder" ref="passwordEncoder"/>
+		<beans:property name="saltSource" ref="saltSource"/>
+		<beans:property name="userDetailsService" ref="mongoUserDetailsService"/>
+	</beans:bean>
+	<authentication-manager>
+		<authentication-provider ref="mongoAuthenticationProvider"/>
+	</authentication-manager>
+</beans:beans>

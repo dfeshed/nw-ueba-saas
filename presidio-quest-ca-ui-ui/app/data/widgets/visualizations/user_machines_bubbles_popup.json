@@ -1,0 +1,24 @@
+{
+    "renderHeader": false,
+    "className": "no-border no-margins",
+    "style": { "margin-top": "10px" },
+    "views": [
+        {
+            "type": "table",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "Destination Computer Name",
+                        "value": "{{destination_machine}}"
+                    },
+					{
+						"name": "Access Count",
+						"value": "{{destination_machines_count}}"
+					}
+                ]
+            }
+        }
+    ],
+	"exploreBased": true,
+	"reportId": "user_machines_bubbles_popup"
+}

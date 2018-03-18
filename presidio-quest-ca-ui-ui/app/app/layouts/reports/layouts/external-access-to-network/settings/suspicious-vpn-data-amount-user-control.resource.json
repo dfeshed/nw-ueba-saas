@@ -1,0 +1,43 @@
+{
+    "entity": "dataQuery",
+    "params": {
+        "dataQuery": {
+            "fields": [
+                {
+                    "id": "username"
+                }
+            ],
+            "entities": [
+                "vpn_session"
+            ],
+            "sort": [
+                {
+                    "field": {
+                        "id": "username"
+                    }
+                }
+            ],
+            "conditions": {
+                "type": "term",
+                "logicalOperator": "AND",
+                "terms": [
+                    {
+                        "field": {
+                            "id": "username"
+                        },
+                        "queryOperator": "startsWith",
+                        "type": "field",
+                        "value": "{{search}}"
+                    }
+                ]
+            },
+            "limit": 10,
+            "offset": 0,
+            "groupBy": [
+                {
+                    "id": "username"
+                }
+            ]
+        }
+    }
+}

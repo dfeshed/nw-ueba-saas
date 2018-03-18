@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:hdp="http://www.springframework.org/schema/hadoop" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/hadoop http://www.springframework.org/schema/hadoop/spring-hadoop.xsd
+						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+
+	<bean id="placeholderConfig" class="fortscale.utils.spring.SpringPropertiesUtil">
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+        <property name="locations">
+            <list>
+                <value>classpath:META-INF/application-config.properties</value>
+                <value>classpath:META-INF/entities-overriding.properties</value>
+                <value>classpath:META-INF/messages.en.properties</value>
+				<value>classpath:META-INF/evidence.events.filtering.properties</value>
+				<value>classpath:META-INF/config-server.properties</value>
+            </list>
+        </property>
+		<property name="order"
+			value="#{T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE}" />
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+		<property name="localOverride" value="true" />
+	</bean>
+
+
+
+
+	<!-- sensitiveMachine service cache that uses memory based implementation are injected here -->
+	<bean id="sensitiveMachineCache" class="fortscale.services.cache.MemoryBasedCache">
+		<constructor-arg name="maxSize" value="${sensitive.machine.service.cache.max.items:10000}" />
+		<constructor-arg name="timeToExpire" value="${sensitive.machine.service.cache.timeToExpireSec:0}" />
+		<constructor-arg name="clazz" value="java.lang.String" />
+	</bean>
+
+	<!-- username service cache that uses memory based implementation are injected here -->
+	<bean id="usernameToUserIdCache" class="fortscale.services.cache.MemoryBasedCache">
+		<constructor-arg name="maxSize" value="${username.service.cache.max.items:10000}" />
+		<constructor-arg name="timeToExpire" value="${username.service.cache.timeToExpireSec:86400}" />
+		<constructor-arg name="clazz" value="java.lang.String" />
+	</bean>
+
+	<!-- id to username cache that uses memory based implementation are injected here -->
+	<bean id="idToUsernameCache" class="fortscale.services.cache.MemoryBasedCache">
+		<constructor-arg name="maxSize" value="${username.service.cache.max.items:1000}" />
+		<constructor-arg name="timeToExpire" value="${username.service.cache.timeToExpireSec:86400}" />
+		<constructor-arg name="clazz" value="java.lang.String" />
+	</bean>
+
+	<bean id="usersToActivitiesCache" class="fortscale.services.cache.MemoryBasedCache">
+		<constructor-arg name="maxSize" value="${username.service.cache.max.items:100}" />
+		<constructor-arg name="timeToExpire" value="${username.service.cache.timeToExpireSec:43200}" />
+		<constructor-arg name="clazz" value="java.lang.String" />
+	</bean>
+
+	<bean id="filterToUsersCache" class="fortscale.services.cache.MemoryBasedCache">
+		<constructor-arg name="maxSize" value="${users.with.alerts.service.cache.max.items:10}" />
+		<constructor-arg name="timeToExpire" value="${users.with.alerts.service.cache.timeToExpireSec:600}" />
+		<constructor-arg name="clazz" value="java.util.ArrayList" />
+	</bean>
+
+
+    <!-- DN to username cache for avvoiding of going to mongo each time  -->
+    <bean id="dNToUserName" class="fortscale.services.cache.MemoryBasedCache">
+        <constructor-arg name="maxSize" value="${username.service.cache.max.items:10000}" />
+        <constructor-arg name="timeToExpire" value="${username.service.cache.timeToExpireSec:86400}" />
+        <constructor-arg name="clazz" value="java.lang.String" />
+    </bean>
+
+
+    <!-- username service cache that uses memory based implementation are injected here -->
+    <bean id="sAMAccountNameToUsernameCache" class="fortscale.services.cache.MemoryBasedCache">
+        <constructor-arg name="maxSize" value="${username.service.cache.max.items:10000}" />
+        <constructor-arg name="timeToExpire" value="${username.service.cache.timeToExpireSec:86400}" />
+        <constructor-arg name="clazz" value="java.util.ArrayList"/>
+    </bean>
+
+	<bean id="sAMAccountNamethatBlackList" class="fortscale.services.cache.MemoryBasedCache">
+		<constructor-arg name="maxSize" value="${samaccountname.service.blacklist.cache.max.items:30000}" />
+		<constructor-arg name="timeToExpire" value="${samaccountname.service.blacklist.timeToExpireSec:21600}" />
+		<constructor-arg name="clazz" value="java.lang.String" />
+	</bean>
+
+	<bean id="adGroupsCache" class="fortscale.services.cache.MemoryBasedCache">
+		<constructor-arg name="maxSize" value="${adgroups.resolver.cache.max.items:30000}" />
+		<constructor-arg name="timeToExpire" value="${adgroups.resolver.blacklist.timeToExpireSec:3600}" />
+		<constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
+	</bean>
+
+	<bean id="eventsFilter" class="fortscale.utils.FilteringPropertiesConfigurationHandler" scope="singleton"/>
+
+    <bean id="alertFilterHelperImpl" class="fortscale.web.beans.request.AlertFilterHelperImpl"/>
+
+	<!-- Cache for the users severities percentile mapo -->
+	<bean id="userScoreSeveritiesCache" class="fortscale.services.cache.MemoryBasedCache">
+		<constructor-arg name="maxSize" value="${user.score.service.cache.max.items:0}" />
+		<constructor-arg name="timeToExpire" value="${user.score.service.cache.timeToExpireSec:3600}" />
+		<constructor-arg name="clazz" value="fortscale.domain.core.Severity" />
+	</bean>
+</beans>

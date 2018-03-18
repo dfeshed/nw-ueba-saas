@@ -1,0 +1,102 @@
+.config-item-card--local-value.renderer-checkbox {
+    width: 100%;
+
+    .select-all-checkbox {
+
+        display: flex;
+        flex-flow: row nowrap;
+
+        padding-left: 0.1em;
+        margin-bottom: 5px;
+
+        label {
+            display: flex;
+            flex-flow: row;
+            justify-content: flex-start;
+            align-items: center;
+            width: auto;
+            padding-right: 1em;
+        }
+
+        input {
+            width: 1.2em;
+            height: 1.2em;
+            margin: 0.25em 0.3em 0.25em 0;
+
+        }
+    }
+
+    .items-checkboxes{
+
+        display: flex;
+        flex-flow: column wrap;
+
+        padding-left: 0.1em;
+        height: 8em;
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: auto;
+        align-content: flex-start;
+
+        label {
+            display: flex;
+            flex-flow: row;
+            justify-content: flex-start;
+            align-items: center;
+            width: auto;
+            padding-right: 1em;
+        }
+
+        input.item-checkbox {
+            width: 1.2em;
+            height: 1.2em;
+            margin: 0.25em 0.3em 0.25em 0;
+
+        }
+
+    }
+
+
+    input.ng-invalid-required+.items-checkboxes>label {
+        color: red;
+    }
+
+    &.invalid {
+        background-color: #FFE1E1;
+    }
+
+    .mask {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.78);
+        z-index: 10;
+    }
+
+    .loader {
+        position: absolute;
+        top: 36%;
+        left: 50%;
+        z-index: 10;
+    }
+
+
+
+    /** Horizontal checkbox **/
+    .horizontal-checkbox {
+
+        .items-checkboxes {
+            flex-flow: row wrap;
+            justify-content: flex-start;
+            align-items: flex-start;
+
+            min-height: 4em;
+            max-height: 8em;
+            height: auto;
+        }
+    }
+}
+
+

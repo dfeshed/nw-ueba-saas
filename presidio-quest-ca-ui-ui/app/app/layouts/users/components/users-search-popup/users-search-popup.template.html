@@ -1,0 +1,9 @@
+<div class="users-search-popup">
+    <svg class="icon search-icon" ng-click="$ctrl.applyFilter()">
+        <use xlink:href="#search-icon"></use>
+    </svg>
+    <input class="search" placeholder="Search Users List" ng-model="$ctrl.searchText" ng-change="$ctrl.onSearchActive()" ng-model-options="{ debounce: 300 }"
+           id="search-for" ng-keydown="$ctrl.submitWithKeypress($event)" ng-keypress="$ctrl.stopEvent($event)" title="Search for: User name, Email, Department, Role">
+    <span ng-show="$ctrl.searchText.length>0" class="close-search"ng-click="$ctrl.deleteSearchText()">X</span>
+
+</div>

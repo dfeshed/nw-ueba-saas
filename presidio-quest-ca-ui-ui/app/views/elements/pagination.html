@@ -1,0 +1,15 @@
+<div class="pagination" ng-show="pages">
+    <ul>
+        <li><a ng-disabled="!showPrev" ng-click="gotoPage(currentPage - 1)">&#8249;</a></li>
+        <li ng-show="showFirst">
+            <a ng-click="gotoPage(1)">1&hellip;</a>
+        </li>
+        <li ng-repeat="page in pages">
+            <a ng-click="gotoPage(page)" ng-class="{ active: page == currentPage }">{{page}}</a>
+        </li>
+        <li ng-show="showLast">
+            <a ng-show="showLast" ng-click="gotoPage(totalPages)">&hellip;{{totalPages}}</a>
+        </li>
+        <li><a ng-disabled="!showNext" ng-click="gotoPage(currentPage + 1)">&#8250;</a></li>
+    </ul>
+</div>

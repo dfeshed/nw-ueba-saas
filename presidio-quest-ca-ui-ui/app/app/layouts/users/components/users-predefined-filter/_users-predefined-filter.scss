@@ -1,0 +1,42 @@
+.user-predefined-filter-main{
+
+    flex-direction: row;
+    align-items: center;
+    display: flex;
+    line-height: 2vw;
+
+    cursor: pointer;
+
+
+    &.active {
+        background-color: #016a9c;
+        fill: #FFFFFF;
+
+        .filter-name{
+            color: #f0f7f8;
+            .items-count{
+                color: #f0f7f8;
+            }
+        }
+    }
+
+    .icon {
+        padding-left: 10px;
+    }
+
+    }
+    .filter-name{
+        padding-left: 10px;
+        font-family: 'Open Sans', sans-serif;;
+        font-size: 14px;
+        color: #004f8f;
+        font-weight: 400;
+
+
+    .items-count{
+        font-weight: 700;
+        color: #024d89;
+    }
+
+
+}

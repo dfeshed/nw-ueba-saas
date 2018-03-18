@@ -1,0 +1,25 @@
+<div class="number-range-widget">
+	<div>
+		<input maxlength="6"
+			   placeholder="{{minPlaceholderValue}}"
+			   ng-class="{'error-input':validObj.isValid==false}"
+			   type="text"
+			   ng-model="value.fromValue"
+			   ng-change="validateInput()"
+			   ng-blur="validObj.showErrors=false"
+			   numbers-only/>
+
+		<span class="delimiter"> — </span>
+
+		<input maxlength="6"
+			   placeholder="{{maxPlaceholderValue}}"
+			   ng-class="{'error-input':validObj.isValid==false}"
+			   type="text"
+			   ng-model="value.toValue"
+			   ng-change="validateInput()"
+			   ng-blur="validObj.showErrors=false"
+			   numbers-only/>
+	</div>
+
+
+</div>

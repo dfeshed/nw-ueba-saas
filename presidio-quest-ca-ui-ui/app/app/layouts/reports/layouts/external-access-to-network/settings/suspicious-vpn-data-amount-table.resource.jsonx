@@ -1,0 +1,89 @@
+{
+    "entity": "dataQuery",
+    "params": {
+        "requestTotal": true,
+        "dataQuery": {
+            "fields": [
+                {
+                    "entity": "vpn_session",
+                    "allFields": true
+                },
+                {
+                    "entity": "users",
+                    "allFields": true
+                }
+            ],
+            "entities": [
+                "vpn_session"
+            ],
+            "sort": [
+                {
+                    "field": {
+                        "id": "{{suspicious_vpn_data_amount_table.value.sortBy}}"
+                    },
+                    "direction": "{{suspicious_vpn_data_amount_table.value.sortDirection}}"
+                }
+            ],
+            "conditions": {
+                "type": "term",
+                "logicalOperator": "AND",
+                "terms": [
+                    {{ user.value ? '
+                    {
+                        "field": {
+                            "entity": "vpn_session",
+                            "id": "username"
+                        },
+                        "queryOperator": "equals",
+                        "type": "field",
+                        "value": "' + user.value + '"
+                    },' : ''
+                    }}
+                    {
+                        "field": {
+                            "entity": "vpn_session",
+                            "id": "data_bucket_score"
+                        },
+                        "queryOperator": "greaterThanOrEquals",
+                        "type": "field",
+                        "value": {{min_score.value || 0}}
+                    },
+                    {
+                        "field": {
+                            "entity": "vpn_session",
+                            "id": "session_time_utc"
+                        },
+                        "queryOperator": "between",
+                        "type": "field",
+                        "value": "{{events_time.value}}"
+                    },
+                    {
+                        "field": {
+                            "entity": "vpn_session",
+                            "id": "session_score"
+                        },
+                        "queryOperator": "greaterThanOrEquals",
+                        "type": "field",
+                        "value": 0
+                    }
+                ]
+            },
+            "limit": {{suspicious_vpn_data_amount_table.value.pageSize || 0}},
+            "offset": {{(suspicious_vpn_data_amount_table.value.page - 1) * suspicious_vpn_data_amount_table.value.pageSize || 0}},
+            "join": [
+                {
+                    "type": "LEFT",
+                    "entity": "users",
+                    "left": {
+                        "entity": "vpn_session",
+                        "field": "normalized_username"
+                    },
+                    "right": {
+                        "entity": "users",
+                        "field": "normalized_username"
+                    }
+                }
+            ]
+        }
+    }
+}

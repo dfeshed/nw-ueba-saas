@@ -1,0 +1,52 @@
+<div class="affected-items-container" ng-if="ctrl.affectedItems.length">
+    <div class="affected-items-container--header closed" ng-click="ctrl.toggleList($event, $element)">
+        <div class="affected-items-container--open-close-container">
+            <i class="fa fa-caret-down opened"></i> <i class="fa fa-caret-up closed"></i>
+        </div>
+        <div class="affected-items-container--title">
+            Affected Items
+        </div>
+    </div>
+    <div class="affected-items-container--content" ng-if="ctrl.listOpened">
+        <div class="affected-items-container--items-list">
+            <div class="affected-items-container" ng-repeat="configItem in ctrl.affectedItems">
+                <div class="column-item container-display-name">
+                    <div class="column-item--title">Config Container:</div>
+                    <div class="column-item--content">
+                        <a ui-sref="configuration.configForm({stateName: configItem.containerId})"
+                            ui-sref-opts="{reload: true, notify: true}"> {{configItem.containerId |
+                            containerIdToDisplayCrumb}} </a>
+                    </div>
+                </div>
+                <div class="column-item container-local-value">
+                    <div class="column-item--title">Local Value:</div>
+                    <div class="column-item--content">{{configItem.value === null ? 'NULL' : configItem.value}}</div>
+                </div>
+
+                <div class="column-item container-derived-value">
+                    <div class="column-item--title">Derived Value:</div>
+                    <div class="column-item--content">
+                        {{::ctrl.appConfig.getDerivedConfigItem(configItem.id).value}}
+                    </div>
+                </div>
+
+                <div class="column-item container-derived-from">
+                    <div class="column-item--title">Derives From:</div>
+                    <a ui-sref="configuration.configForm({stateName: configItem.derivedFrom.containerId})"
+                        ui-sref-opts="{reload: true, notify: true}"> {{configItem.derivedFrom.containerId |
+                        containerIdToDisplayCrumb}}</a>
+                </div>
+
+                <div class="column-item container-derive-status">
+                    <div class="column-item--title">Will Derive:</div>
+                    <div class="column-item--content no"
+                        ng-class="::{yes: ctrl.appConfig.canTargetDeriveFromContainer(configItem.id, ctrl.configItem.containerId)}">
+                        {{::ctrl.appConfig.canTargetDeriveFromContainer(configItem.id, ctrl.configItem.containerId) ? 'Yes' : 'No'}}
+                    </div>
+                </div>
+                <hr>
+
+            </div>
+        </div>
+    </div>
+</div>

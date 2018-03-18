@@ -1,0 +1,42 @@
+<div class="users-page-wrapper">
+    <div class="filter-pane">
+        <users-filters
+            state-id="usersCtrl.getStateId()"
+            update-state-delegate="usersCtrl.updateStateChanges"
+            fetch-state-delegate="usersCtrl.fetchStateDelegate"
+            active-filter-update-delegate="usersCtrl.activeFilterUpdateDelegate"
+            indicators-types="usersCtrl.indicatorTypes"
+            clear-state-delegate="usersCtrl.clearStateDelegate"
+            active-filter-id="usersCtrl.activeFilterId"
+            risky-users-count="usersCtrl.riskyUsersCount"
+            watched-users-count="usersCtrl.watchedUsersCount"
+            tagged-users-count="usersCtrl.taggedUsersCount"
+            tags="usersCtrl.tags">
+
+        </users-filters>
+    </div>
+    <div class="right-pane">
+        <div class="top-pane">
+            <users-severity-stacked-bar  state-id="usersCtrl.getStateId()"
+                         update-state-delegate="usersCtrl.updateStateChanges"
+                         fetch-state-delegate="usersCtrl.fetchStateDelegate">
+
+            </users-severity-stacked-bar>
+        </div>
+        <div class="grid-pane">
+            <users-grid  state-id="usersCtrl.getStateId()"
+                         update-state-delegate="usersCtrl.updateStateChanges"
+                         fetch-state-delegate="usersCtrl.fetchStateDelegate"
+                         clear-state-delegate="usersCtrl.clearStateDelegate"
+                         indicators-types="usersCtrl.indicatorTypes"
+                         reload-predefined-filters-users-count="usersCtrl.reloadPredefinedFiltersUsersCount"
+                         tags="usersCtrl.tags">
+
+            </users-grid>
+
+        </div>
+    </div>
+</div>
+
+
+

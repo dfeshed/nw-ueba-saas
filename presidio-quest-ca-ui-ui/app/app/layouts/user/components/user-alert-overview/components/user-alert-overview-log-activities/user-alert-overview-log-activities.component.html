@@ -1,0 +1,30 @@
+<div class="comment-component">
+    <div class="new-comment">
+        <textarea placeholder="Add a comment"
+                  class="comment-box  active-comment"
+                  ng-model="$ctrl.newCommentText"
+                  ng-blur="$ctrl.addComment()"
+                  ng-keypress=$ctrl.newCommentKeyPressHandler($event)> </textarea>
+        <button ng-disabled="!$ctrl.newCommentText" class="btn btn-info">OK</button>
+    </div>
+
+    <div ng-repeat="logActivity in $ctrl.alert.analystFeedback">
+
+        <alert-single-comment ng-if="logActivity.type==='AnalystCommentFeedback'"
+                              alert-id="$ctrl.alert.id"
+                              comment="logActivity"
+                              analyst-map="$ctrl.analystMap"
+                              update-alert-comment="$ctrl.updateAlert(alertId, comment)"
+                              delete-alert-comment="$ctrl.deleteAlert(alertId, commentId)"
+                              last="$last">
+        </alert-single-comment>
+        <alert-feedback-log-activity ng-if="logActivity.type!=='AnalystCommentFeedback'"
+                                     feedback="logActivity"
+                                     analyst-map="$ctrl.analystMap"
+                                     last="$last">
+        </alert-feedback-log-activity>
+
+    </div>
+
+
+</div>

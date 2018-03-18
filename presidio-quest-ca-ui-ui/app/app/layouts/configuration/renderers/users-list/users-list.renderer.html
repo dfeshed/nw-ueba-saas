@@ -1,0 +1,53 @@
+<input style="display:none" ng-model="$ctrl.configFormCtrl.configModels[$ctrl.configItem.id]" class="hidden-input">
+<!-- Recipients List -->
+<div class="alerts-email-settings--group-item--recipients-list">
+
+    <!-- New User -->
+    <div class="alerts-email-settings--group-item--new-recipient-row">
+        <input class="alerts-email-settings--group-item--new-recipient-input"
+            id="alerts-email-settings--group-item--new-recipient-input"
+            ng-model="$ctrl.newUsersInput"
+            type="email"
+            ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 500 } }"
+            ng-keypress="$ctrl.mainInputKeyPress($event, $ctrl.newUsersInput)"
+            placeholder="Enter a new recipient, and click Add User (or Enter)"/>
+
+        <!-- Buttons -->
+        <div class="form-buttons">
+
+            <!-- Add User Button -->
+            <label for="add_user_button_"
+                class="form-button button-add-new-user"
+                ng-disabled="!$ctrl.newUsersInput.length"
+                ng-click="$ctrl.addUser($ctrl.newUsersInput)">
+                <div class="form-button-icon">
+                    <i class="fa fa-plus"></i>
+                </div>
+                <input id="add_user_button_"
+                    name="add_user_button_'"
+                    type="button"
+                    value="Add User"> </label>
+            <!-- END OF Add User Button -->
+        </div>
+        <!-- END OF Buttons -->
+
+    </div>
+    <!-- END OF new User -->
+
+
+    <!-- Users List -->
+    <div class="alerts-email-settings--users-list">
+
+        <!-- User item -->
+        <div class="alerts-email-settings--user-item" ng-repeat="user in $ctrl.users">
+            <div class="alerts-email-settings--user-item--email">{{user}}</div>
+            <div class="alerts-email-settings--user-item--remove-user"
+                ng-click="$ctrl.removeUser($index)">
+                <i class="fa fa-times"></i>
+            </div>
+        </div>
+        <!-- END OF User item -->
+
+    </div>
+    <!-- END OF Users List -->
+</div>

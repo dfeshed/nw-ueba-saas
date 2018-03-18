@@ -1,0 +1,33 @@
+/**
+Date picker overrides
+**/
+.k-calendar .k-state-selected {
+    background-color: $clrBlueMain;
+
+    &.k-state-focused {
+        box-shadow: inset 0 0 3px 4px darken($clrBlueMain, 5);
+    }
+}
+
+/**
+END OF Date picker overrides
+**/
+
+/**
+Kendo Pagination Override
+**/
+.k-pager-numbers .k-state-selected {
+    background-color: $clrBlueFaded;
+    border: 1px solid $clrBlueGreyed;
+}
+
+/**
+END OF Kendo Pagination Override
+**/
+
+.k-tooltip{
+    background: white !important;
+    .k-callout.k-callout-n {
+        border-bottom-color: white;
+    }
+}

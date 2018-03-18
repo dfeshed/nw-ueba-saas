@@ -1,0 +1,97 @@
+#app-loader{
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #E3F2FD;
+    overflow: hidden;
+
+    z-index: -1;
+
+    &.loader-hidden{
+      display: none;
+    }
+
+    .login-background-image {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+
+        background-image: url('../../images/chess.jpg');
+        background-size: cover;
+
+        opacity: 0.1;
+    }
+
+    .app-loader-container {
+        position: absolute;
+        top: 100px;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        flex-flow: column nowrap;
+        overflow: hidden;
+
+        color: #01294a;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 14px;
+        font-weight: 400;
+
+        .logo-container {
+            margin: 10px 25px;
+
+            img {
+                width: 122px;
+                height: 20px;
+            }
+        }
+
+        .app-loader-footer {
+            margin: 10px 25px;
+
+        }
+
+
+        .company-name {
+            color: white;
+            font-size: 12px;
+            font-weight: 400;
+        }
+
+        .app-loader-loader-logo {
+            flex: 1;
+            display: flex;
+            flex-flow: column nowrap;
+            justify-content: center;
+            align-items: center;
+            img {
+                width:480px;
+            }
+            .app-loader-container-text {
+                font-family: 'Open Sans', sans-serif;
+                font-size: 40px;
+                font-weight: 600;
+                padding-top: 80px;
+            }
+
+        }
+         .app-loader-loader-spinner {
+                flex: 1;
+                display: flex;
+                flex-flow: column nowrap;
+                justify-content: flex-start;
+                align-items: center;
+
+              img {
+                  width:90px;
+              }
+        }
+
+
+
+    }
+
+}

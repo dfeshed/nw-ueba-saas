@@ -1,0 +1,285 @@
+{
+    "id": "vpn_events",
+    "name": "VPN Events",
+    "description": "VPN logs, with scores, including geolocation parsing",
+    "entities": [ "vpn", "persons" ],
+    "entitiesJoin": [
+        {
+            "persons": "username",
+            "vpn": "normalized_username"
+        }
+    ],
+    "paramControls": [
+        {
+            "controlId": "minscore",
+            "param": "vpn.eventscore",
+            "formatParam": ">={{value}}",
+            "hide": true,
+            "isRequired": true
+        },
+        {
+            "label": "Get data since",
+            "type": "date",
+            "param": "vpn.date_time",
+            "value": "-7d",
+            "isRequired": true,
+            "defaultValueOnly": true,
+            "hide": true,
+            "formatParam": ">={{value:date:unixtimestamp}}",
+            "settings": {
+                "maxDate": "0",
+                "startOfDay": true
+            }
+        }
+    ],
+    "visualizations": [
+        {
+            "id": "vpn_events_time",
+            "title": "Events Time Scatter",
+            "widgetId": "visualizations.time_scatterplot",
+            "settings": {
+                "timeField": "date_time",
+                "colorField": "eventscore",
+                "colorScale": "score",
+                "onSelect": {
+                    "action": "showTooltip",
+                    "actionOptions": {
+                        "table": {
+                            "rows": [
+                                {
+                                    "label": "User",
+                                    "value": "{{username}}"
+                                },
+                                {
+                                    "label": "Source IP",
+                                    "value": "{{source_ip}}"
+                                },
+                                {
+                                    "label": "Country",
+                                    "value": "{{country}}"
+                                },
+                                {
+                                    "label": "Time",
+                                    "value": "{{date_time:date}}"
+                                },
+                                {
+                                    "label": "Score",
+                                    "value": "{{eventscore}}"
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "height": "250",
+            "data": {
+                "mainEntity": "vpn",
+                "fields": [
+                    {
+                        "field": "username",
+                        "entity": "vpn"
+                    },
+                    {
+                        "field": "source_ip",
+                        "entity": "vpn"
+                    },
+                    {
+                        "field": "country",
+                        "entity": "vpn"
+                    },
+                    {
+                        "field": "date_time",
+                        "entity": "vpn"
+                    },
+                    {
+                        "field": "eventscore",
+                        "entity": "vpn"
+                    }
+                ],
+                "sort": {
+                    "field": "vpndatares.date_time",
+                    "direction": -1
+                },
+                "limit": 200
+            }
+        },
+        {
+            "id": "vpn_geo",
+            "widgetId": "visualizations.vpn_geo",
+            "title": "Events Per Country",
+            "height": 580,
+            "data": {
+                "mainEntity": "vpn",
+                "useEBS": false,
+                "fields": [
+                    {
+                        "field": "country",
+                        "entity": "vpn"
+                    },
+                    {
+                        "field": "countrycode",
+                        "entity": "vpn",
+                        "alias": "code"
+                    },
+                    {
+                        "field": "country",
+                        "alias": "event_count",
+                        "entity": "vpn",
+                        "func": "count(*)"
+                    }
+                ],
+                "groupBy": "country, countrycode",
+                "limit": 183
+            }
+        },
+        {
+            "id": "vpn_users_bubbles",
+            "title": "VPN Countries To Users Comparison (Bubbles)",
+            "widgetId": "visualizations.vpn_users_bubbles",
+            "height": 680,
+            "data": {
+                "mainEntity": "vpn",
+                "fields": [
+                    {
+                        "field": "id",
+                        "entity": "persons"
+                    },
+                    {
+                        "field": "displayname",
+                        "entity": "persons"
+                    },
+                    {
+                        "field": "username",
+                        "entity": "vpn"
+                    },
+                    {
+                        "field": "vpnscore",
+                        "entity": "persons"
+                    },
+                    {
+                        "field": "country",
+                        "entity": "vpn"
+                    }
+                ],
+                "groupBy": "country, id, displayname, vpndatares.username, vpnscore",
+                "limit": 80,
+                "sort": {
+                    "field": "vpnscore",
+                    "direction": -1
+                }
+            }
+        },
+        {
+            "id": "user_countries_bubbles",
+            "title": "Users Countries Comparison (Bubbles)",
+            "widgetId": "visualizations.user_countries_bubbles",
+            "height": 680,
+            "data": {
+                "mainEntity": "vpn",
+                "fields": [
+                    {
+                        "field": "id",
+                        "entity": "persons"
+                    },
+                    {
+                        "field": "displayname",
+                        "entity": "persons"
+                    },
+                    {
+                        "field": "username",
+                        "entity": "vpn"
+                    },
+                    {
+                        "field": "vpnscore",
+                        "entity": "persons"
+                    },
+                    {
+                        "field": "country",
+                        "entity": "vpn"
+                    },
+                    {
+                        "field": "countrycode",
+                        "entity": "vpn"
+                    }
+                ],
+                "groupBy": "country, countrycode, id, displayname, vpndatares.username, vpnscore",
+                "limit": 80,
+                "sort": {
+                    "field": "vpnscore",
+                    "direction": -1
+                }
+            }
+        },
+        {
+            "id": "vpn_users_heat_map",
+            "title": "VPN Users To Countries",
+            "widgetId": "visualizations.vpn_users_heatmap",
+            "mock_data":"visualizations.vpn_users_countries",
+            "data": {
+                "mainEntity": "vpn",
+                "fields": [
+                    {
+                        "field": "id",
+                        "entity": "persons"
+                    },
+                    {
+                        "field": "displayname",
+                        "entity": "persons"
+                    },
+                    {
+                        "field": "username",
+                        "entity": "vpn"
+                    },
+                    {
+                        "field": "date_time",
+                        "entity": "persons",
+                        "alias": "login_count",
+                        "func": "count(*)"
+                    },
+                    {
+                        "field": "country",
+                        "entity": "vpn"
+                    }
+                ],
+                "groupBy": "country, id, displayname, vpndatares.username",
+                "limit": 80,
+                "sort": {
+                    "field": "login_count",
+                    "direction": -1
+                }
+            }
+        },
+        {
+            "id": "vpn_users_hours_heat_map",
+            "title": "VPN Users To Hours",
+            "widgetId": "visualizations.vpn_users_hours_heatmap",
+            "mock_data":"visualizations.vpn_users_hours_heat_map",
+            "data": {
+                "mainEntity": "vpn",
+                "fields": [
+                    {
+                        "field": "date_time",
+                        "entity": "vpn",
+                        "func": "hour(:dateToUtc)",
+                        "alias":"hour"
+                    },
+                    {
+                        "field": "displayname",
+                        "entity": "persons"
+                    },
+                    {
+                        "entity": "vpn",
+                        "alias": "login_count",
+                        "func": "count(*)"
+                    }
+                ],
+                "groupBy": "hour",
+                "limit": 80,
+                "sort": {
+                    "field": "hour",
+                    "direction": 1
+                }
+            }
+        }
+    ]
+}

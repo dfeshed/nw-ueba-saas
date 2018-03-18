@@ -1,0 +1,16 @@
+{
+    "dashboardId": "user_active_directory_group_membership",
+    "columns": [
+        {
+            "widgets": [
+                {
+                    "widgetId": "user_groups",
+                    "params": {
+                        "date": null
+                    },
+                    "refreshOn": "date"
+                }
+            ]
+        }
+    ]
+}

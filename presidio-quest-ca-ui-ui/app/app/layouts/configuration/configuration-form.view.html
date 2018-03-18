@@ -1,0 +1,54 @@
+<form name="configFormModel" ng-submit="::configFormCtrl.submitNewConfig(configFormModel, $event)">
+    <section class="form-pane--config-section" ng-class="configFormCtrl.configContainer.formClassNames">
+        <div class="form-pane--config-section--header-strip" ng-if="!configFormCtrl.configContainer.doNotShowHeader">
+
+            <div class="header-content">
+                <div class="header-display-name">
+                    {{configFormCtrl.configContainer.displayName}} Configuration
+                </div>
+                <div class="header-display-description" ng-if="configFormCtrl.configContainer.description">
+                    {{configFormCtrl.configContainer.description}}
+                </div>
+                <div class="header-display-note" ng-if="configFormCtrl.configContainer.note">
+                    {{configFormCtrl.configContainer.note}}
+                </div>
+            </div>
+
+            <div class="header-buttons">
+                <input id="form_buttons_submit"
+                    name="form_buttons_submit"
+                    type="submit"
+                    value="Apply Changes"
+                    ng-disabled="!configFormModel.$dirty || !configFormModel.$valid">
+            </div>
+        </div>
+
+        <div class="form-pane--config-section--form-content" ng-if="configFormCtrl.configItems.length">
+
+
+            <!-- Config Item Cards -->
+            <div class="config-item-cards">
+                <div class="config-item-card-container" ng-repeat="configItem in configFormCtrl.configItems">
+                    <fs-config-renderer config-item="::configItem"
+                        form-controller="::configFormCtrl"
+                        form-model-controller="::configFormModel"></fs-config-renderer>
+                </div>
+            </div>
+            <!-- END OF Config Item Cards-->
+
+
+        </div>
+
+        <!-- when custom form -->
+        <section class="form-pane--custom-form"></section>
+
+
+    </section>
+
+
+    <section class="form-pane--loader-section" ng-if="configFormCtrl.loader">
+        <div class="backdrop">
+            <span class="loader"></span>
+        </div>
+    </section>
+</form>

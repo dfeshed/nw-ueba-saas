@@ -1,0 +1,75 @@
+{
+    "scrollable": false,
+    "groupable": false,
+    "sortable": {
+        "mode": "single",
+        "allowUnsort": false
+    },
+    "alwaysPageable": true,
+    "dataSource" : {
+        "sort": {
+            "field": "startDate",
+            "dir": "DESC"
+        }
+    },
+    "columns": [
+        {
+            "title": "<i class='fa fa-exclamation-triangle' aria-hidden='true'></i>",
+            "field": "severityCode",
+            "template": "<fs-severity-tag severity='{{::dataItem.severity}}' score='{{::dataItem.score}}'></fs-severity-tag>",
+            "attributes": {
+                "style": "width: 30px; text-align: center;"
+            }
+        },
+        {
+            "title": "Alert Name",
+            "field": "name",
+            "template": "<a ui-sref='user.alert-overview({userId: dataItem.entityId, alertId: dataItem.id})' style=\"color: inherit;\"  ng-bind-html=\"dataItem | prettyAlertName\"></a>",
+            "sortable": false
+        },
+        {
+            "title": "Entity Name",
+            "field": "entityName",
+            "template": "<a ui-sref='user.baseline({userId: dataItem.entityId})' style=\"color: inherit;\">{{dataItem.entityName}}</a>"
+        },
+        {
+            "title": "Start Time",
+            "field": "startDate",
+            "template": "{{ dataItem.startDate | date:\"MM/dd/yyyy HH\\:mm\":\"UTC\"}}",
+            "groupField": "startDateDay",
+            "customSort": "number"
+        },
+        {
+            "title": "# Indicators",
+            "field": "indicatorsNum",
+            "attributes": {
+                "class": "fs-table-indicators"
+            }
+
+        },
+        {
+            "title": "Status",
+            "field": "status",
+            "groupField": "status",
+            "groupHeaderTemplate": "Status: <span ng-if='dataItem.value===\"Open\"'>Unreviewed</span> <span ng-if='dataItem.value===\"Closed\"'>Reviewed</span>",
+            "template": "<span ng-if='dataItem.status===\"Open\"'>Unreviewed</span> <span ng-if='dataItem.status===\"Closed\"'>Reviewed</span>",
+            "sortable": false
+        },
+        {
+            "title": "Feedback",
+            "field": "feedback",
+            "groupField": "feedback",
+            "groupHeaderTemplate": "<span ng-if='dataItem.value !== \"None\"'><b>Feedback: </b>{{'enum.alert_feedback.' + dataItem.items[0].feedback | prettyMessage:dataItem.items[0].feedback}}</span><span ng-if='dataItem.value === \"None\"'><b>No Feedback</b></span>",
+            "template": "{{'enum.alert_feedback.' + dataItem.feedback | prettyMessage:dataItem.feedback}}",
+            "sortable": false
+
+        },
+        {
+            "title": "Creation time",
+            "template": "{{ dataItem.startDate | date:\"MM/dd/yyyy HH\\:mm\\:ss\":\"UTC\"}}",
+            "field": "startDateDay",
+            "hidden": true,
+            "groupHeaderTemplate": "Alert start {{ dataItem.value | date:\"MM/dd/yyyy\":\"UTC\"}}"
+        }
+    ]
+}

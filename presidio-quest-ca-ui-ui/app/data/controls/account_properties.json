@@ -1,0 +1,16 @@
+{
+    "controlId": "account_properties",
+    "type": "select",
+    "label": "Property",
+    "param": "dist_field",
+    "value": "department",
+    "autoUpdate": true,
+    "settings": {
+        "options": [
+            { "label": "Department", "value": "department" },
+            { "label": "Division", "value": "division" },
+            { "label": "Manager", "value": "manager_name" },
+            { "label": "Organizational Unit", "value": "ou" }
+        ]
+    }
+}

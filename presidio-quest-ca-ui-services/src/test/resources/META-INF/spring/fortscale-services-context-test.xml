@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+						http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+		
+	<description>services context for testing.</description>
+	<import resource="classpath*:META-INF/spring/fortscale-common-context.xml"/>
+	<import resource="classpath*:META-INF/spring/fortscale-services-context.xml"/>
+	
+	<context:property-placeholder location="classpath*:META-INF/fortscale-services-context-test-config.properties" order="1" ignore-unresolvable="true"/>
+	<context:property-placeholder location="classpath*:META-INF/*.properties" order="2"/>
+	
+
+	
+	<!--<bean id="authDAO" class="fortscale.services.domain.fe.dao.AuthDAOImpl"/>-->
+	<!---->
+	<!---->
+	<!--<bean id="vpnDAO" class="fortscale.services.domain.fe.dao.VpnDAOImpl"/>-->
+	<!---->
+	<!--<bean id="impalaJdbcTemplate" class="fortscale.services.domain.jdbc.JdbcOperationsTest"/>-->
+	<!---->
+	
+	<!--<bean id="mongoTemplate" class="fortscale.services.domain.jdbc.MongoTemplateDummy"></bean>-->
+
+	<!--<bean id="usernameService" class="fortscale.services.impl.UsernameService">-->
+		<!--<property name="lazyUsernameCachesUpdate" value="false"/>-->
+	<!--</bean>-->
+
+	<context:component-scan base-package="fortscale.services"/>
+	
+</beans>

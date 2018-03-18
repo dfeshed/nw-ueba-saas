@@ -1,0 +1,20 @@
+<div class="status-counter-container">
+    <span class="status-counter-container--title">Alert List</span>
+
+    <div class="status-counter-container--severity-info severity-info-{{severity.id}}"
+        ng-repeat="severity in alerts.getSeveritiesCount(stateContainer.dataModel._meta.info.total_severity_count)">
+        <fs-severity-tag severity="{{::severity.name}}" severity-count="{{::severity.count}}"></fs-severity-tag>
+        <span class="status-counter-container--severity-info--count"
+            ng-class="::severity.name">{{severity.count}}</span>
+        <span class="status-counter-container--severity-info--severity-name">{{::severity.name}}</span>
+    </div>
+
+    <div ng-click='alerts.getAlertsCSV(stateContainer, alerts.alertsResourceSettings)'
+        class='status-counter-container--export-alert-button'>
+        <svg class="download-icon">
+            <use xlink:href="#download-icon"></use>
+        </svg>
+        <span class="download-text">Export</span>
+    </div>
+
+</div>

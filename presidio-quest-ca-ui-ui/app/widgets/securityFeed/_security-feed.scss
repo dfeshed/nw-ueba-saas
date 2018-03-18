@@ -1,0 +1,85 @@
+.security-feed{
+  .security-feed-item{
+    margin-bottom: 6px;
+    padding-bottom: 6px;
+    border-bottom: solid 1px #ddd;
+
+    .security-feed-item-header{
+
+      .security-feed-item-icon{
+        height: 40px;
+        background: #75B3C7;
+        width: 40px;
+        line-height: 40px;
+        text-align: center;
+        font-size: 22px;
+        color: white;
+        float: left;
+        margin-right: 10px;
+      }
+    }
+
+    .security-feed-item-contents{
+      margin-left: 50px;
+    }
+
+    .security-feed-item-date{
+      color: #999;
+      font-size: .9em;
+      padding-top: 10px;
+    }
+    &:last-child{
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .security-feed-item-control{
+      visibility: hidden;
+      &.open{
+        visibility: visible;
+      }
+    }
+
+    &:hover, &:focus{
+      .security-feed-item-control{ visibility: visible }
+    }
+  }
+}
+
+.security-feed-count{
+  font-weight: bold;
+  margin-bottom: 15px;
+  background: #E2EEF3;
+  padding: 5px 10px;
+  text-align: center;
+}
+.controls{
+  white-space: nowrap;
+  position: relative;
+  top: -6px;
+
+  label{
+    font-weight: bold;
+    display: inline-block;
+    margin-right: 10px;
+  }
+
+  input[type=checkbox]{
+    position: relative;
+    top: -3px;
+  }
+
+  .btn-cancel{
+    color: #a00;
+
+    &:hover{
+      text-decoration: none;
+      color: #c00;
+    }
+
+    &.disabled{
+      visibility: hidden;
+    }
+  }
+}

@@ -1,0 +1,33 @@
+.timeline{
+  shape-rendering: crispEdges;
+  clear: both;
+  overflow: hidden;
+
+  .zoom-area{
+    cursor: move;
+  }
+
+  path{
+    shape-rendering: auto;
+  }
+
+  .timespan{
+    cursor: pointer;
+
+    &.selected{
+      fill: Purple;
+
+      &:hover{ fill: Purple !important }
+    }
+  }
+
+  path.timespan:hover{
+    fill: black;
+    stroke: Black;
+  }
+  .domain {
+    fill: none;
+    stroke: black;
+    stroke-width: 1;
+  }
+}

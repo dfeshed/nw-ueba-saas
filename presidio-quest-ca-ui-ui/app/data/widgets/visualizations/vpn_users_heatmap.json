@@ -1,0 +1,56 @@
+{
+	"show": {
+		"conditions": [
+			{
+				"operator": "entityExists",
+				"value": "vpn"
+			}
+		]
+	},
+    "views": [
+        {
+            "type": "heatMap",
+            "settings": {
+                "column": "{{country:capitalize}}",
+                "row": "{{label:capitalize}}",
+                "value":"{{event_count}}",
+                "legend": {
+                    "items": [
+                        {
+                            "color": "max",
+                            "value": "Minimal times of VPN connection"
+                        },
+                        {
+                            "color": "min",
+                            "value": "Maximal times of VPN connection"
+                        }
+                    ]
+                },
+                "behavior":{
+                    "rows":{
+                        "isSortingEnabled":true,
+                        "tooltip":"{{name}}"
+                    },
+                    "columns":{
+                        "isSortingEnabled":true,
+                        "percentCalculationMethod":"valueSum",
+                        "tooltip":"{{name}} : all = {{valueSum}}"
+                    },
+                    "cell":{
+                        "tooltip":"{{rowName}} : {{value}} {{value:pluralOrSingular:time:times}} from {{name}}"
+                    },
+                    "colorGradientType":"scale"
+                },
+                "onSelect": {
+                    "action": "openPopup",
+                    "actionOptions": {
+                        "widgetId": "visualizations.vpn_users_bubbles_popup",
+                        "title": "Users With VPN Access From {{name}}",
+                        "width": 500,
+                        "height": 360
+                    }
+                }
+            }
+        }
+    ]
+}

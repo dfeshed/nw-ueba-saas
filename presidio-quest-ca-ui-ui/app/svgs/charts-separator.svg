@@ -1,0 +1,6 @@
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" height="100%" width="6" viewBox="0 0 6 600">
+    <line x1="0" y1="40" x2="0" y2="295"/>
+    <line x1="0" y1="295" x2="6" y2="300"/>
+    <line x1="6" y1="300" x2="0" y2="305"/>
+    <line x1="0" y1="305" x2="0" y2="560"/>
+</svg>

@@ -1,0 +1,50 @@
+<div class="user-grid-component-main">
+    <div class="grid-header">
+        <div class="users-count">
+            {{$ctrl.usersCount}} Users
+        </div>
+        <div class="sort-users-by">
+            <span class="sort-text">Sort by:</span>
+            <span class="sort-select-container">
+                <fs-select selected-id="score"
+                           update-state-delegate="$ctrl.updateStateDelegate"
+                           fetch-state-delegate="$ctrl.fetchStateDelegate"
+                           select-map="$ctrl.sortByPropertyMap"
+                           select-id="sortByField"></fs-select>
+            </span>
+        </div>
+        <users-action-bar class="users-action-bar-container" state-id="$ctrl.stateId"
+                          users-count="$ctrl.usersCount"
+                          all-users-followed="$ctrl.allUsersFollwoed"
+                          reload-delegate="$ctrl.reloadDelegate"
+                          tags="$ctrl.tagListAsIdNValueList"
+                          update-state-delegate="$ctrl.updateStateDelegate"
+                          fetch-state-delegate="$ctrl.fetchStateDelegate"
+                          state-id="$ctrl.stateId"/>
+
+    </div>
+    <!-- START OF  - IN USE FILTER ALLOW YOU TO REMOVE FILED FROM CURRENT FILTER-->
+    <ng-include src="'app/layouts/users/components/users-grid/users-grid-top-filters.html'"></ng-include>
+    <!-- END OF  - IN USE FILTER ALLOW YOU TO REMOVE FILED FROM CURRENT FILTER-->
+
+    <!-- GRID -->
+    <div class="grid-wrapper" ng-scroll="$ctrl.listenScroll()">
+
+        <div ng-if="$ctrl.usersCount===0 && !$ctrl.loadingNow" class="no-users-wrapper">
+            <div class="image"></div>
+            <span class="no-users-internal">No Users to Display</span>
+        </div>
+
+        <!-- Show the users lines -->
+        <div ng-if="$ctrl.usersCount>0" ng-repeat="page in $ctrl.usersPages">
+            <div ng-repeat="user in page">
+                <user-grid-row  user='user' tags="$ctrl.tags" post-remove-tag-delegate="$ctrl.postRemoveTagDelegate(user)"></user-grid-row>
+            </div>
+        </div>
+        <div class="loader-image">
+            <img src="assets/images/inprogress.gif" ng-if="$ctrl.loadingNow">
+        </div>
+
+    </div>
+    <!-- GRID -->
+</div>

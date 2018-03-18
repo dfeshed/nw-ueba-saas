@@ -1,0 +1,31 @@
+<fs-card-header card-title="Locations <span class='fs-card-title-small'>(Last 90 Days)</span>"></fs-card-header>
+<div class="widget-container flex-row">
+    <div class="map-column flex-column">
+        <div class="map-outer-container">
+            <div class="map-inner-container" id="top-countries-map"></div>
+        </div>
+        <div class="legend flex-row" ng-class="{active: $ctrl.user}">
+            <span class="legend--item flex-row" ng-click="$ctrl.toggleAreas()" ng-class="{inactive: !$ctrl.areasOn}">
+                <span class="legend--bullet bullet-company"></span>
+                <span class="legend--label">{{$ctrl.user.company}}</span>
+            </span>
+            <span class="legend--item flex-row" ng-click="$ctrl.toggleImages()" ng-class="{inactive: !$ctrl.imagesOn}">
+                <span class="legend--bullet bullet-user"></span>
+                <span class="legend--label">{{$ctrl.user.fallBackDisplayName}}</span>
+            </span>
+        </div>
+    </div>
+    <div class="stats-column flex-column">
+        <!--<pre>{{$ctrl.userCountries|json}}</pre>-->
+        <div class="user-header">Top Countries - {{$ctrl.user.displayName}}</div>
+        <div class="stat-row flex-row" ng-repeat="userCountry in $ctrl.userCountries|filter:$ctrl.hideZeroCountFilter">
+            <div class="flag-column">
+                <fs-flag country-name="{{::userCountry.country}}"></fs-flag>
+            </div>
+            <div class="percent-column flex-column">
+                <span class="percent-column--country-name">{{::userCountry.country}}</span>
+                <span class="percent-column--country-percent">{{::userCountry.percent}}%</span>
+            </div>
+        </div>
+    </div>
+</div>

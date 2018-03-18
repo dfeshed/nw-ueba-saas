@@ -1,0 +1,122 @@
+.user-grid-component-main{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    .grid-header {
+        display: flex;
+        flex-direction: row;
+        flex: 0 0 70px;
+        align-items: center;
+
+        border-bottom-color: #000000;
+        border-bottom-style: solid;
+        border-bottom-width: 1px;
+        margin: 0 5px;
+        position: relative;
+
+        .users-count {
+            font-size: 18px;
+            font-weight: 400;
+            font-family: 'Open Sans', sans-serif;
+            color: #01294a;
+            letter-spacing: 0.56px;
+            padding-left: 50px;
+            line-height: 21px;
+        }
+
+        .sort-users-by {
+            padding-left: 23px;
+            padding-right: 23px;
+            display: flex;
+            flex-direction: row;
+            font-size: 14px;
+            font-weight: 500;
+            font-family: 'Open Sans', sans-serif;
+            color: #477489;
+
+            .sort-text{
+                padding-top: 5px;
+            }
+            .sort-select-container {
+                padding-left: 10px;
+            }
+        }
+
+        .users-action-bar-container{
+            display: flex;
+            flex-grow: 2;
+            padding-right: 10px;
+        }
+    }
+
+    .current-filters{
+        display: flex;
+        flex-direction: row;
+        padding: 0 20px 10px 55px;
+       align-items: center;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+        flex-wrap: wrap;
+
+        .current-filters-title{
+            font-size: 16px;
+            font-weight: 600;
+            font-family: 'Open Sans', sans-serif;
+            color: #013056;
+            letter-spacing: 0.56px;
+            padding-top: 5px;
+        }
+
+        .reset-filters {
+            font-size: 10px;
+            padding-left: 30px;
+            padding-top: 9px;
+            color: #01294a;
+        }
+    }
+    .grid-wrapper{
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        .k-widget{
+            border-top-color: #75c5ec;
+            background-color: #f0f7f8;
+        }
+
+        .loader-image{
+            display: flex;
+            justify-content: center;
+            img {
+                width: 60px;
+                height: 60px;
+            }
+        }
+
+        .no-users-wrapper{
+            display: flex;
+            width: 100%;
+            height: 100%;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            .no-users-internal{
+                color: #024d89;
+                font-family: 'Open Sans', sans-serif;
+                font-size: 14px;
+                font-weight: 400;
+                line-height: 18px;
+                font-weight: 700;
+            }
+
+            .image{
+                background-image: url("../../images/icons/users_general_user_color.png");
+                width: 75px;
+                height: 75px;
+                border: none;
+                background-position: center;
+                background-size: 100% 100%;
+            }
+        }
+    }
+}

@@ -1,0 +1,22 @@
+<div class="fs-alert-modal">
+    <div class="modal-header">
+        <h3  class="header-text modal-title">Are you sure you want to close this alert?</h3>
+        <div class="close-with-x" ng-click="closeModal.clickCancel()"></div>
+    </div>
+    <div class="modal-body">
+        <b>Reason:</b>
+        <span class="option" ng-repeat="model in closeModal.optionsList track by model.key">
+            <label>
+                <input type="radio" ng-model="closeModal.model.closeAlertStatus" ng-value="model.key">
+                <b>{{model.value}}</b>
+            </label>
+        </span>
+    </div>
+    <div class="modal-buttons">
+        <div class="fs-button-group">
+            <button class="fs-button fs-button-regular ok" ng-click="closeModal.clickOk()"
+                ng-disabled="!closeModal.model.closeAlertStatus">OK</button>
+            <button class="cancel" ng-click="closeModal.clickCancel()">Cancel</button>
+        </div>
+    </div>
+</div>

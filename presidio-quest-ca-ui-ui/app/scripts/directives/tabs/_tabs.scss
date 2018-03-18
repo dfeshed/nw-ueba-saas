@@ -1,0 +1,39 @@
+$tabHeight: 35px;
+$border: solid 1px #d1d1d1;
+
+.tabs{
+  border-bottom: $border;
+  padding: 5px 15px 0;
+  background: #e0e0e0;
+
+  .tab{
+    display: inline-block;
+    padding: 0 10px;
+    height: $tabHeight;
+    line-height: $tabHeight;
+    box-sizing: border-box;
+    color: #666;
+    text-decoration: none;
+    position: relative;
+    top: 1px;
+    border: solid 1px Transparent;
+    font-size: 1.2em;
+    font-weight: 300;
+    outline: none;
+
+    &:hover{
+      color: #333;
+    }
+
+    &.selected{
+      background: White;
+      border: $border;
+      border-bottom-color: White;
+      color: #333;
+    }
+  }
+}
+
+.tab{
+  padding: 10px 15px;
+}

@@ -1,0 +1,36 @@
+$linkColor: #1a7996;
+$hoverColor: rgb(197, 218, 224);
+$disabledColor: #ddd;
+$buttonHoverColor: #000;
+
+.yoxigen-pagination{
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+
+  a{
+    display: inline-block;
+    padding: 0 5px;
+    cursor: pointer;
+    color: $linkColor;
+
+    &.selected{
+      color: White;
+      background: $linkColor !important;
+      cursor: default;
+    }
+
+    &[disabled]{
+      color: $disabledColor !important;
+      cursor: default;
+    }
+
+    &.yoxigen-pagination-page:hover{
+      background: $hoverColor;
+    }
+    &.yoxigen-pagination-button:hover{
+      color: $buttonHoverColor;
+    }
+  }
+}

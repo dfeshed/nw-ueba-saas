@@ -1,0 +1,33 @@
+{
+    "id": "login_event_time",
+    "items": [
+        {
+            "text": "All connections from {{sourceMachineName}} to {{targetMachineName}}, {{:sinceNow:MM/DD/YYYY:-14days}} - {{:sinceNow:MM/DD/YYYY}}",
+            "onSelect": {
+                "action": "openPopup",
+                "actionOptions": {
+                    "widgetId": "popup_graph",
+                    "title": "Connections From {{sourceMachineName}} to {{targetMachineName}}, {{:sinceNow:MM/DD/YYYY:-14days}} - {{:sinceNow:MM/DD/YYYY}}",
+                    "width": 700,
+                    "height": 331,
+                    "controls": [{
+                        "type": "link",
+                        "text": "Investigate logins from {{sourceIp}} to {{destinationHostname}}",
+						"href": "#/d/explore/kerberos_logins?filters=kerberos_logins.service_name%3D{{destinationHostname}},kerberos_logins.destination_machine%3D{{sourceIp}}&visualization=login_events_time",
+                        "onClick": {
+                            "action": "closeAllPopups"
+                        }
+                    }],
+                    "params": {
+                        "entityId": "login_events",
+                        "ad_logins.service_name": "{{targetMachineName}}",
+                        "ad_logins.machine_name": "{{sourceMachineName}}",
+                        "sourceIp": "{{sourceMachineName}}",
+                        "destinationHostname": "{{targetMachineName}}",
+                        "visualization": "login_events_time"
+                    }
+                }
+            }
+        }
+    ]
+}

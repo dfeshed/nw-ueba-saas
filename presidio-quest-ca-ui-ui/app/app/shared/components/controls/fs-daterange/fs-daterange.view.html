@@ -1,0 +1,44 @@
+<div class="fs-daterange k-content inline-block" >
+	<div class="box-col">
+		<ul kendo-menu  k-open-on-click="true" k-animation-open-duration="100" class = "main-ul" >
+			<li>
+                <span ng-if="dateRange.label" class="date-range-label">
+					 {{dateRange.label}}:
+				</span>
+				<!-- Show the date in format "From value" - "To value". NG-IF used to hide the "to date" if "to-date" = "from-date" -->
+				{{dateRange.startTime | date}}
+				<span ng-if="dateRange.isStartTimeAndEndTimeOnDifferentDays()">
+					 - {{dateRange.endTime | date}}
+				</span>
+				<span class="k-icon k-i-calendar"></span>
+				<ul>
+					<li ng-click="dateRange.setLast7Days()"><span>Last week</span></li>
+					<li ng-click="dateRange.setLastMonth()"><span>Last month</span></li>
+					<li>Select Range
+						<ul>
+							<div class="select-range">
+								<div class="box-col">
+									<span class="date-box">
+										<!-- K-rebind used to watch on "dateRange.toValue" value, and update max value
+										     when "dateRange.toValue" changed. -->
+                                        <!-- K-ng-model bind object to input field instead ng-model which bind text -->
+                                         <label class="time">From: </label>
+                                         <kendo-calendar k-ng-model="dateRange.startTime"
+                                                         k-max = "dateRange.endTime"   k-rebind="dateRange.endTime"></kendo-calendar>
+									</span>
+								</div>
+								<div class="box-col">
+									<span class="date-box">
+                                        <label class="time">To:</label>
+                                        <kendo-calendar k-ng-model="dateRange.endTime"
+                                                        k-min = "dateRange.startTime" k-rebind="dateRange.startTime"></kendo-calendar>
+									</span>
+								</div>
+							</div>
+						</ul>
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+</div>

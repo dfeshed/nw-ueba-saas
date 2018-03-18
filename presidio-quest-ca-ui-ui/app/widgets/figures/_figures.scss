@@ -1,0 +1,31 @@
+.figures{
+  margin-bottom: .5em;
+  border-collapse: collapse;
+  width: 100%;
+
+  tr{
+    border-bottom: solid 1px #ebebeb;
+    &:last-child{
+      border-bottom: none;
+    }
+  }
+
+  td{
+    padding: .4em 0;
+
+    &.figure-value{
+      font-size: 1.7em;
+      font-weight: 300;
+      text-align: center;
+      padding: .4em .7em;
+      width: 10px;
+    }
+  }
+    .figure-value{
+      font-size: 1.7em;
+      font-weight: 300;
+      vertical-align: middle;
+      margin-right: .3em;
+    }
+
+}

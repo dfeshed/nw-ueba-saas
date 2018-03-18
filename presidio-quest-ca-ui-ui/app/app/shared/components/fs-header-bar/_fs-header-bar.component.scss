@@ -1,0 +1,169 @@
+.fs-header-bar-component {
+
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+
+    box-sizing: border-box;
+    height: $headerHeight;
+
+    padding: 11px;
+
+    background-color: $headerBackground;
+
+    svg {
+        &.icon {
+            width: 100%;
+            height: 100%;
+        }
+    }
+
+    &--bullets-container {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        justify-content: flex-start;
+        flex: 95%;
+
+        .fs-header-bar-component--logo {
+
+            &.fortscale-brand {
+                background: url(../images/icons/company_fortscale.svg) no-repeat center center;
+                background-size: 125px 32px;
+            }
+            &.vendor-brand {
+                background: url(../images/icons/company_logo.svg) no-repeat center center;
+                background-size: 125px 32px;
+            }
+
+        }
+
+    }
+
+    &--logo {
+        height: 32px;
+        width: 125px;
+
+        margin-right: 24px;
+        margin-left: 6px;
+
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    &--page-bullet {
+        padding: 0 24px;
+
+        height: $headerHeight;
+        line-height: #{$headerHeight + 3};
+
+        font-size: 14px;
+        font-weight: 400;
+        font-family: 'Open Sans', sans-serif;
+        color: $clrIKBlueMain;
+        letter-spacing: 0.56px;
+        text-decoration: none;
+        transition: background-color 0.2s ease-in-out;
+
+        &.active,&.active-secondary {
+            background-color: $clrIKBlueMain;
+            color: white;
+            font-weight: 800;
+        }
+
+        &:hover:not(.active):not(.active-secondary) {
+            background-color: lighten($clrIKBlueMain, 60);
+        }
+    }
+
+    &--icons-container {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        justify-content: flex-end;
+        flex: 5%;
+
+        height: $headerHeight;
+
+
+        .k-state-active{
+            background-color: transparent;
+        }
+
+        &--icon {
+            width: 17px;
+            height: 17px;
+            display: block;
+            cursor: pointer;
+
+            &.search {
+                margin-left: 10px;
+            }
+
+
+            &.settings{
+                width: 25px;
+                height: 25px;
+                fill: #024d89;
+            }
+        }
+
+        &--settings-menu {
+            border: none !important;
+            background-color: $headerBackground;
+            background-image: none;
+            box-shadow: none;
+
+            margin-left: 25px;
+
+            >li {
+                border: none !important;
+            }
+
+            .k-icon{
+                display: none;
+            }
+        }
+
+        .main-user-search {
+            // It was eventualy decided not to use the open-close effect.
+            // I've not deleted it so it will be easy to return it once they change their mind again.
+
+            //transform-origin: top right;
+            //transform: scale3d(0, 1, 1);
+            //transition: transform 0.5s ease-in-out;
+            //
+            //&.active {
+            //    transform: scale3d(1, 1, 1);
+            //}
+        }
+
+    }
+
+    &--about-box-container {
+        padding: 20px;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    .fs-header-drop-down {
+        &.k-group.k-menu-group {
+            background-color: #F0F7F8;
+        }
+
+        .k-link {
+            font-family: 'Open Sans', sans-serif;
+        }
+    }
+
+    #main_user_search {
+        width: 20em;
+
+        .k-widget {
+            width: 100%;
+        }
+    }
+
+}

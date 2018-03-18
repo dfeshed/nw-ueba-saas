@@ -1,0 +1,90 @@
+@import "vars";
+@import "color-palet";
+@import "fonts";
+@import "root";
+@import "bootstrap_overrides";
+@import "app_loader";
+@import "header";
+@import "dashboard";
+@import "entity";
+@import "cards";
+@import "explore";
+@import "explore/explore_filters";
+@import "widget";
+@import "forms";
+@import "tooltips";
+@import "dialogs";
+@import "modal";
+@import "nav";
+@import "popup";
+@import "comments";
+@import "searchbox";
+@import "settings";
+@import "custom";
+@import "chart";
+@import "chart_legend";
+@import "mixins";
+@import "icons";
+@import "buttons";
+@import "common-elements";
+@import "animations";
+@import "print";
+@import "toast";
+@import "account";
+
+@import "../libs/font-awesome/scss/font-awesome";
+@import "../libs/flag-icon-css-master/sass/flag-icon";
+@import "../scripts/directives/tabs/tabs";
+@import "../scripts/directives/checklist/checklist";
+@import "../scripts/directives/param_controls/param_controls";
+@import "../scripts/directives/dropdown/dropdown";
+
+@import "widgets/graph";
+@import "widgets/buttons_bar";
+@import "widgets/text";
+@import "widgets/progressBar";
+@import "widgets/details";
+@import "widgets/slides";
+@import "widgets/eventsList";
+@import "widgets/itemsList";
+@import "widgets/properties_table";
+@import "utils";
+
+@import "../widgets/heatMap/heatMap";
+@import "../widgets/multiLine/multiLine";
+@import "../widgets/table/table";
+@import "../widgets/scatterPlot/scatterPlot";
+@import "../widgets/timeline/timeline";
+@import "../widgets/tabs/tabs";
+@import "../widgets/securityFeed/security-feed";
+@import "../widgets/forceChart/forceChart";
+@import "../widgets/map/map";
+@import "../widgets/pie/pie";
+@import "../widgets/bars/bars";
+@import "../widgets/bubbles/bubbles";
+@import "../widgets/links/links";
+@import "../widgets/tree/tree";
+@import "../widgets/package/package";
+@import "../widgets/multiTimeline/multiTimeline";
+@import "../widgets/figures/figures";
+@import "../widgets/tags/tags";
+@import "tags/tags";
+
+@import "widgets/container";
+@import "controls/notification";
+@import "controls/link";
+@import "controls/daterange";
+@import "controls/sliders";
+@import "controls/simplePagination";
+@import "controls/dropdown";
+@import "controls/fs-explain";
+@import "../app/app";
+@import "kendo-overrides";
+
+@import "index";
+
+@include scrollbar-type-1();
+
+body {
+    background-color: $clrIKBlueMain;
+}

@@ -1,0 +1,88 @@
+<fs-card-header card-title="Alerts Status"></fs-card-header>
+<div class="alert-status-container">
+
+    <!-- Left Pane -->
+    <div class="left-pane alert-status-container--stats-pane">
+
+        <!-- Time Statistics -->
+        <div class="time-stat">{{$ctrl.alertStatsUtils.shortDaysRange|fsDTHumanize:'days'}}</div>
+
+        <!-- Distribution Statistics -->
+        <div class="distribution-stat">
+
+            <!-- Closed Statistics -->
+            <div class="distribution-stat--closed distribution-stat--single" ng-click="$ctrl.transitionToAlerts($ctrl.alertStatsUtils.shortDateRange, 'approved,rejected')">
+                <div class="distribution-stat--closed--amount distribution-stat--amount">
+                    {{$ctrl.alertStatusShort.alert_status.Closed | orZero}}
+                </div>
+                <div class="distribution-stat--label">
+                    Reviewed
+                </div>
+            </div>
+
+            <!-- Open Statistics -->
+            <div class="distribution-stat--open distribution-stat--single" ng-click="$ctrl.transitionToAlerts($ctrl.alertStatsUtils.shortDateRange, 'none')">
+                <div class="distribution-stat--open--amount distribution-stat--amount">
+                    {{$ctrl.alertStatusShort.alert_status.Open | orZero}}
+                </div>
+                <div class="distribution-stat--label">
+                    Unreviewed
+                </div>
+            </div>
+
+        </div>
+
+        <!--Chart container -->
+        <div class="chart-container">
+            <div class="chart-container--outer-wrapper">
+                <div class="chart-container--inner-wrapper alert-status-short-chart-container">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="alert-status-container--divider"></div>
+
+    <!-- Right Pane -->
+    <div class="right-pane alert-status-container--stats-pane">
+
+        <!-- Time Statistics -->
+        <div class="time-stat">{{$ctrl.alertStatsUtils.longDaysRange|fsDTHumanize:'days'}}</div>
+
+        <!-- Distribution Statistics -->
+        <div class="distribution-stat">
+
+            <!-- Closed Statistics -->
+            <div class="distribution-stat--closed distribution-stat--single" ng-click="$ctrl.transitionToAlerts($ctrl.alertStatsUtils.longDateRange, 'approved,rejected')">
+                <div class="distribution-stat--closed--amount distribution-stat--amount">
+                    {{$ctrl.alertStatusLong.alert_status.Closed | orZero}}
+                </div>
+                <div class="distribution-stat--label">
+                    Reviewed
+                </div>
+            </div>
+
+            <!-- Open Statistics -->
+            <div class="distribution-stat--open distribution-stat--single" ng-click="$ctrl.transitionToAlerts($ctrl.alertStatsUtils.longDateRange, 'none')">
+                <div class="distribution-stat--open--amount distribution-stat--amount">
+                    {{$ctrl.alertStatusLong.alert_status.Open | orZero}}
+                </div>
+                <div class="distribution-stat--label">
+                    Unreviewed
+                </div>
+            </div>
+
+        </div>
+
+        <!--Chart container -->
+        <div class="chart-container">
+            <div class="chart-container--outer-wrapper">
+                <div class="chart-container--inner-wrapper alert-status-long-chart-container">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

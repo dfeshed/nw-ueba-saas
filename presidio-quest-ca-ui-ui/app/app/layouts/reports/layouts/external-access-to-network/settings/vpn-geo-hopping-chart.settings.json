@@ -1,0 +1,47 @@
+{
+    "chart": {
+        "zoomType": "x"
+    },
+    "title": {
+        "text": null
+    },
+    "tooltip": {
+        "useHTML": true,
+        "backgroundColor": "rgba(240, 240, 240, 0.95)"
+    },
+    "xAxis": {
+        "type": "datetime",
+        "title": {
+            "text": "Date"
+        }
+    },
+    "yAxis": {
+        "categories": [],
+        "tickInterval": 1,
+        "title": {
+            "text": "User Names"
+        },
+        "labels": {
+            "useHTML": true
+        }
+    },
+    "legend": {
+        "layout": "vertical",
+        "align": "right",
+        "verticalAlign": "middle",
+        "borderWidth": 0
+    },
+    "plotOptions": {
+        "series": {
+            "marker": {
+                "enabled": true,
+                "radius": 4,
+                "symbol": "circle",
+                "lineColor": "#555",
+                "lineWidth": 1
+
+            }
+        }
+    },
+    "isMultiSeries": true
+}

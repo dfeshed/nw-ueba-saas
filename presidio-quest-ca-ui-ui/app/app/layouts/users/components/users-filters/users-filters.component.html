@@ -1,0 +1,111 @@
+<div class="user-filters-component-main">
+
+    <div class="filters-header">
+        <div class="inner">
+            <fs-svg-icon symbol-name="filter-icon" attributes="{width: 16, height: 16}" class="filter-icon"></fs-svg-icon> Filters
+        </div>
+    </div>
+    <!-- start of filters body - all the filters-->
+    <div class="filters-body">
+        <!-- 3 Predefined filters -->
+        <div class="predefine-filters-container">
+            <div class="space">
+                <users-predefined-filter
+                           update-state-delegate="$ctrl.updateStateDelegate"
+                           fetch-state-delegate="$ctrl.fetchStateDelegate"
+                           state-id="$ctrl.stateId"
+                           text="Risky Users"
+                           attribute-name="minScore"
+                           svg-icon="bell-icon"
+                           count="$ctrl.riskyUsersCount"
+                           active-value="0"
+                    >
+
+                </users-predefined-filter>
+            </div>
+            <div class="space">
+                <users-predefined-filter
+                    update-state-delegate="$ctrl.updateStateDelegate"
+                    fetch-state-delegate="$ctrl.fetchStateDelegate"
+                    state-id="$ctrl.stateId"
+                    text="Watchlist Users"
+                    attribute-name="isWatched"
+                    svg-icon="watch-icon"
+                    count="$ctrl.watchedUsersCount"
+                    >
+                </users-predefined-filter>
+             </div>
+            <div class="space">
+                <users-predefined-filter
+                    update-state-delegate="$ctrl.updateStateDelegate"
+                    fetch-state-delegate="$ctrl.fetchStateDelegate"
+                    state-id="$ctrl.stateId"
+                    text="Admin Users"
+                    attribute-name="userTags"
+                    svg-icon="tag_icon"
+                    count="$ctrl.taggedUsersCount"
+                    active-value="'admin'"
+                    >
+
+                </users-predefined-filter>
+            </div>
+        </div>
+        <!-- end of 3 Predefined filters -->
+
+        <!-- Favorites Container  - title and list of saved favorites -->
+        <div class="favorites-container">
+            <div class="favorites-titles">
+            Favorites
+            </div>
+            <div class="favorites-list">
+
+                    <div ng-repeat="favorite in $ctrl.favoriteFilters | orderBy:'-dateCreated'">
+                        <div class="favorite-row" ng-class="$ctrl.activeFilterId === favorite.id ? 'active':''">
+                            <div class="inner-favorites-row">
+                                <span class="favorite-text" ng-click="$ctrl.applyFilter(favorite)">{{favorite.filterName}}</span>
+                                <span class="favorite-close" ng-click="$ctrl.deleteFilter(favorite)">X</span>
+                            </div>
+                        </div>
+                    </div>
+
+            </div>
+        </div>
+        <!-- end of favorites Container  - title and list of saved favorites -->
+        <div class="preset-filters-container">
+        <!-- list of multi select filters -->
+        <fs-multiselect label="Alert Types"
+                            multiselect-id="alertTypes"
+                            update-state-delegate="$ctrl.updateStateDelegate"
+                            fetch-state-delegate="$ctrl.fetchStateDelegate"
+                            list-data="$ctrl.alertTypes"
+                            count-labels="['User','Users']"></fs-multiselect>
+
+            <fs-multiselect label="Indicators"
+                            multiselect-id="indicatorTypes"
+                            update-state-delegate="$ctrl.updateStateDelegate"
+                            fetch-state-delegate="$ctrl.fetchStateDelegate"
+                            list-data="$ctrl.indicatorsTypes"
+                            count-labels="['User','Users']"
+                            ></fs-multiselect>
+
+          <fs-multiselect label="Tags"
+                            multiselect-id="userTags"
+                            update-state-delegate="$ctrl.updateStateDelegate"
+                            fetch-state-delegate="$ctrl.fetchStateDelegate"
+                            list-data="$ctrl._tags"
+                            ng-if="$ctrl.TAGS_FEATURE_ENABLED"></fs-multiselect>
+
+
+        </div>
+        <!-- end of list of multi select filters -->
+    </div> <!-- end of filters body - all the filters-->
+    <!-- Buttons -->
+    <div class="buttons-row">
+        <button ng-click="$ctrl.saveFavoritesDialogOpened=true" class="btn btn-info">Save to Favorites</button>
+    </div>
+    <!-- end of Buttons -->
+</div>
+
+<!-- Favorite filter popup - usually hidden -->
+<users-add-favorites-popup on-save="$ctrl.saveFavorite(filterName)" on-cancel="$ctrl.cancelFavoriteSaving()"
+                           visible="$ctrl.saveFavoritesDialogOpened" ng-if="$ctrl.saveFavoritesDialogOpened"></users-add-favorites-popup>

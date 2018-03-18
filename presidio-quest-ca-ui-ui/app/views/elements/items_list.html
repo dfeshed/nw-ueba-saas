@@ -1,0 +1,32 @@
+<ul class="widget-items-list unstyled" ng-controller="ItemsListController">
+    <li ng-repeat="item in items | limitTo:limit">
+        <span class="items-list-sidenote" ng-if="item.sideNote" ng-bind-html="item.sideNote"></span>
+        <span class="items-list-icon" ng-style="item.icon.style" ng-if="item.icon" title="{{item.tooltip}}">
+            <i class="icon-{{item.icon.type}}"></i>
+        </span>
+        <a ng-if="item.link && item.value" ng-bind-html="item.value" href="{{item.link}}"></a>
+        <span ng-if="!item.link && item.value" class="items-list-text" ng-bind-html="item.value"></span>
+        <ul ng-if="item.list" class="items-list-inner-list">
+            <li ng-repeat="innerItem in item.list" class="{{innerItem.className}}" ng-show="innerItem.enabled || !item.enableShowAll">
+                <span ng-if="!innerItem.link" ng-bind-html="innerItem.value" title="{{innerItem.tooltip}}"></span>
+                <a ng-if="innerItem.link" href="{{innerItem.link}}" title="{{innerItem.tooltip}}" ng-bind-html="innerItem.value"></a>
+            </li>
+            <li ng-show="item.enableShowAll && !item.enableShowLess" >
+                <i class="icon-double-angle-down"></i>
+                <a ng-click="showAll(item)">More</a>
+            </li>
+            <li ng-show="item.enableShowLess">
+                <i class="icon-double-angle-up"></i>
+                <a ng-click="showLess(item)">Less</a>
+            </li>
+        </ul>
+    </li>
+    <li ng-if="!disableLimit && !showAllItems">
+        <i class="icon-double-angle-down"></i>
+        <a ng-click="setLimit(items.length, true)">More</a>
+    </li>
+    <li ng-if="showAllItems">
+        <i class="icon-double-angle-up"></i>
+        <a ng-click="setLimit(view.settings.limit)">Less</a>
+    </li>
+</ul>

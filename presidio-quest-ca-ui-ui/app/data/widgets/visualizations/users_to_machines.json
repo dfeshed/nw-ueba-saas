@@ -1,0 +1,51 @@
+{
+    "message":{
+        "type": "maxResults",
+        "params": {
+            "maxResults": 100
+        }
+    },
+    "views": [
+        {
+            "type": "links",
+            "settings": {
+                "graphOptions": {
+                    "height": 800,
+                    "onDblClick": {
+                        "action": "setParams",
+                        "actionOptions": {
+                            "updateUrl": true,
+                            "params": {
+                                "{{custom}}.{{field}}": "^{{name}}"
+                            }
+                        }
+                    }
+                },
+                "icons": {
+                    "users": "images/svg/user.svg",
+                    "machines": "images/svg/desktop.svg"
+                },
+                "connectSameGroup": false,
+                "nodes": [
+                    {
+                        "name": "username",
+                        "group": "Users",
+                        "custom": "ad_logins",
+                        "label": "{{username:removeAtDomain}}"
+                    },
+                    {
+                        "name": "machine_name",
+                        "group": "Machines",
+                        "custom": "ad_logins",
+                        "label": "{{machine_name:removeDotDomain}}"
+                    },
+                    {
+                        "name": "service_name",
+                        "group": "Machines",
+                        "custom": "ad_logins"
+                    }
+                ]
+            }
+        }
+    ]
+}

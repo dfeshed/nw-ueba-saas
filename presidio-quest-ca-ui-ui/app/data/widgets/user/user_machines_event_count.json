@@ -1,0 +1,55 @@
+{
+	"id": "user_machines_event_count",
+    "title": "Authentications Count Per Target Machine",
+    "description": "The number of authentications events per day for all machines accessed by this user",
+    "reportId": "user.user_machines_event_count",
+	"show" : {
+		"conditions": [
+			{
+				"operator": "entityExists",
+				"value": "auth_event"
+			}
+		]
+	},
+    "views": [
+        {
+            "type": "multiLine",
+            "height": 300,
+            "settings": {
+                "series": "machine",
+                "y": "total_count",
+                "x": "event_time",
+                "xType": {
+                    "type": "date",
+                    "format": "%Y-%m-%d"
+                },
+                "minYValue": 0,
+				"minXValue": "{{event_dates.split(',')[0]}}",
+				"maxXValue": "{{event_dates.split(',')[1]}}",
+                "tooltipText": "{{machine}} on {{event_time:date:MMM DD YYYY}}: {{total_count}} {{count:pluralOrSingular:event:events}} ({{Kerberos_count:defaultIfEmpty:0}} Kerberos, {{SSH_count:defaultIfEmpty:0}} SSH)",
+                "axes": {
+                    "x": {
+                        "type": "time",
+                        "timeFormat": "days",
+                        "label": "Event Time"
+                    },
+                    "y": {
+                        "label": "Events Count",
+                        "tickFormat": "d"
+                    }
+                },
+                "scales": {
+                    "x": {
+                        "type": "time"
+                    },
+                    "y": {}
+                },
+                "legend": {
+                    "type": "circles",
+                    "position": "right"
+                }
+
+            }
+        }
+    ]
+}
