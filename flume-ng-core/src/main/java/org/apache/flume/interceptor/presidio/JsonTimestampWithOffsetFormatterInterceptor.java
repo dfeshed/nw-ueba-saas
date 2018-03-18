@@ -156,9 +156,8 @@ public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractPresidi
 
         @Override
         public AbstractPresidioJsonInterceptor doBuild() {
-            interceptorName = "JsonTimestampWithOffsetFormatterInterceptor";
             final JsonTimestampWithOffsetFormatterInterceptor jsonTimestampWithOffsetFormatterInterceptor = new JsonTimestampWithOffsetFormatterInterceptor(originField, originFormat, timezoneOffsetField, destinationField, destinationFormat, removeOriginField, removeTimezoneOffsetField);
-            logger.info("Creating {}: {}", interceptorName, jsonTimestampWithOffsetFormatterInterceptor);
+            logger.info("Creating JsonTimestampWithOffsetFormatterInterceptor: {}", jsonTimestampWithOffsetFormatterInterceptor);
             return jsonTimestampWithOffsetFormatterInterceptor;
         }
     }

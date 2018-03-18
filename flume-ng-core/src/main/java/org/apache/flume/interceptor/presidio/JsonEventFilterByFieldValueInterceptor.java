@@ -150,9 +150,8 @@ public class JsonEventFilterByFieldValueInterceptor extends AbstractPresidioJson
 
         @Override
         public AbstractPresidioJsonInterceptor doBuild() {
-            interceptorName = "JsonEventFilterByFieldValueInterceptor";
             final JsonEventFilterByFieldValueInterceptor jsonFilterByFieldValueInterceptor = new JsonEventFilterByFieldValueInterceptor(fields, regexList, operation);
-            logger.info("Creating {}: {}", interceptorName, jsonFilterByFieldValueInterceptor);
+            logger.info("Creating JsonFilterByFieldValueInterceptor: {}", jsonFilterByFieldValueInterceptor);
             return jsonFilterByFieldValueInterceptor;
         }
     }

@@ -148,10 +148,9 @@ public class JsonFieldJoinerInterceptor extends AbstractPresidioJsonInterceptor 
 
         @Override
         public AbstractPresidioJsonInterceptor doBuild() {
-            interceptorName = "JsonFieldJoinerInterceptor";
             final JsonFieldJoinerInterceptor jsonFieldJoinerInterceptor = new JsonFieldJoinerInterceptor(baseField, toAppendField,
                     targetField, filterOnMissingBaseField, filterOnMissingToAppendField, removeBaseField, removeToAppendField);
-            logger.info("Creating {}: {}", interceptorName, jsonFieldJoinerInterceptor);
+            logger.info("Creating JsonFieldJoinerInterceptor: {}", jsonFieldJoinerInterceptor);
             return jsonFieldJoinerInterceptor;
         }
     }
