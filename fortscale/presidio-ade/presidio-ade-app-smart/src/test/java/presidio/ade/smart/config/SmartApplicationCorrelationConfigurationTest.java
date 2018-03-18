@@ -1,20 +1,24 @@
 package presidio.ade.smart.config;
 
-import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
-import fortscale.utils.elasticsearch.config.EmbeddedElasticsearchInitialiser;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 
 import java.util.Properties;
 
 
 @Configuration
-@Import({MongodbTestConfig.class, PresidioMonitoringConfiguration.class, ElasticsearchTestConfig.class})
+@Import({MongodbTestConfig.class, PresidioMonitoringConfiguration.class})
 public class SmartApplicationCorrelationConfigurationTest extends SmartApplicationConfiguration{
+
+    @MockBean
+    private MetricRepository metricRepository;
+
     @Bean
     public static TestPropertiesPlaceholderConfigurer smartApplicationConfigurationTestPropertiesPlaceholderConfigurer() {
         Properties properties = new Properties();
@@ -40,9 +44,6 @@ public class SmartApplicationCorrelationConfigurationTest extends SmartApplicati
         properties.put("presidio.ade.model.smart.weights.score.minimal.cluster.score", 0);
 
         properties.put("enable.metrics.export", false);
-        properties.put("elasticsearch.clustername", EmbeddedElasticsearchInitialiser.EL_TEST_CLUSTER);
-        properties.put("elasticsearch.host", "localhost");
-        properties.put("elasticsearch.port", EmbeddedElasticsearchInitialiser.EL_TEST_PORT);
         properties.put("monitoring.fixed.rate","60000");
         return new TestPropertiesPlaceholderConfigurer(properties);
     }

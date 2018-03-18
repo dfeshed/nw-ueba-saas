@@ -104,7 +104,8 @@ public class FeatureCorrelationAlgorithm {
 
 
     /**
-     * recursive method, which search for first descendant that exist in group and set them new correlation factor and tree name.
+     * set correlation factor and tree name to given featureCorrelation.
+     * iterate over descendants that exist in group and set them new correlation factor and tree name.
      * <p>
      * e.g: featureCorrelations: a, d, c
      * featureCorrelation: a
@@ -127,6 +128,7 @@ public class FeatureCorrelationAlgorithm {
         TreeNode<CorrelationNodeData> treeNode = forest.getTreeNode(featureCorrelation.getName());
         if (treeNode != null) {
 
+            //update correlation factor and tree name of given featureCorrelation
             if (featureCorrelation.getCorrelationFactor() == null) {
                 featureCorrelation.setCorrelationFactor(FULL_CORRELATION_FACTOR);
                 featureCorrelation.setTreeName(treeNode.getTree().getName());

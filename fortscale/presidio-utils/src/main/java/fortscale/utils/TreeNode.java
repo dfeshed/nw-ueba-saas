@@ -18,7 +18,7 @@ import java.util.function.Function;
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE
 )
-public class TreeNode<T> implements Iterable<TreeNode<T>> {
+public class TreeNode<T> {
 
     private T data;
     private TreeNode<T> parent;
@@ -74,20 +74,15 @@ public class TreeNode<T> implements Iterable<TreeNode<T>> {
     }
 
     public Set<TreeNode<T>> getAncestors() {
-        ParentIterator<T> parentIterator = new ParentIterator<T>(this);
+        AncestorsIterator<T> ancestorsIterator = new AncestorsIterator<T>(this);
 
         Set<TreeNode<T>> ancestors = new HashSet<>();
-        while(parentIterator.hasNext()){
-            TreeNode<T> parent = parentIterator.next();
+        while(ancestorsIterator.hasNext()){
+            TreeNode<T> parent = ancestorsIterator.next();
             ancestors.add(parent);
         }
 
         return ancestors;
-    }
-
-    public Iterator<TreeNode<T>> iterator() {
-        Iterator<TreeNode<T>> iter = this.children.iterator();
-        return iter;
     }
 
 

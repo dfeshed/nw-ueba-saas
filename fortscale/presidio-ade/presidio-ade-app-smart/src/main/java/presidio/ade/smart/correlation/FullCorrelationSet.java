@@ -32,9 +32,10 @@ public class FullCorrelationSet {
 
                 FullCorrelation featureFullCorrelation = featureToFullCorrelation.get(feature);
                 if (featureFullCorrelation != null) {
-                    logger.error(String.format(
+                    String message = String.format(
                             "There should not be any intersection between full correlation features. " +
-                                    "The feature %s should not belong to %s. it already exist in %s.", feature, fullCorrelation.getName(), featureFullCorrelation.getName()));
+                                    "The feature %s can not belong to %s. it already exist in %s.", feature, fullCorrelation.getName(), featureFullCorrelation.getName());
+                    throw new IllegalArgumentException(message);
                 }
 
                 featureToFullCorrelation.put(feature, fullCorrelation);

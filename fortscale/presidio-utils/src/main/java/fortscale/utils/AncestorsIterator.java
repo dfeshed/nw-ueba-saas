@@ -5,12 +5,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-public class ParentIterator<T> implements Iterator<TreeNode<T>> {
+/**
+ * AncestorsIterator get treeNode and return iterate over all ancestors
+ * @param <T>
+ */
+public class AncestorsIterator<T> implements Iterator<TreeNode<T>> {
 
 	private TreeNode<T> treeNode;
 	private Queue<TreeNode<T>> queue;
 
-	public ParentIterator(TreeNode<T> treeNode){
+	public AncestorsIterator(TreeNode<T> treeNode){
 		this.treeNode = treeNode;
 		this.queue = new LinkedList<>();
 		addParentToQueue(treeNode);

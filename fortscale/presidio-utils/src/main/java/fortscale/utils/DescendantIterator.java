@@ -4,11 +4,18 @@ package fortscale.utils;
 import java.util.*;
 import java.util.function.Function;
 
+/**
+ * DescendantIterator get treeNode and return iterate over all descendants by default (useStopCondition=false).
+ * DescendantIterator enable to define stop condition function
+ * and then it iterate over descendants until the following condition are met.
+ *
+ * @param <T>
+ */
 public class DescendantIterator<T> implements Iterator<TreeNode<T>> {
 
     private TreeNode<T> treeNode;
     private Queue<TreeNode<T>> queue;
-    private Function<T, Boolean> conditionStopFunc;
+    private Function<T, Boolean> stopConditionFunc;
     private Boolean useStopCondition;
     private TreeNode<T> next;
 
@@ -23,7 +30,7 @@ public class DescendantIterator<T> implements Iterator<TreeNode<T>> {
 
     public void setConditionStopFunc(Function<T, Boolean> conditionStopFunc) {
         this.useStopCondition = true;
-        this.conditionStopFunc = conditionStopFunc;
+        this.stopConditionFunc = conditionStopFunc;
     }
 
 
@@ -47,13 +54,14 @@ public class DescendantIterator<T> implements Iterator<TreeNode<T>> {
 
     /**
      * check if tree node has next descendant due to stop condition
+     * and set it to next field
      * @return Boolean
      */
     private Boolean hasNextWithCondition() {
         Boolean result;
         do {
             TreeNode<T> next = queue.remove();
-            result = conditionStopFunc.apply(next.getData());
+            result = stopConditionFunc.apply(next.getData());
             if (result) {
                 this.next = next;
                 break;
