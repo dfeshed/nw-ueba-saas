@@ -78,7 +78,7 @@ public class AbstractInputDocumentTest {
     @Test
     public void testNoOperationTypeCategory() {
         AbstractInputDocument authenticationRawEvent = createEvent();
-        authenticationRawEvent.setOperationTypeCategory(null);
+        authenticationRawEvent.setOperationTypeCategories(null);
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
 

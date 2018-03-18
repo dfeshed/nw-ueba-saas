@@ -2,8 +2,8 @@ package presidio.input.core.services.transformation.managers;
 
 import fortscale.common.general.Schema;
 import org.springframework.beans.factory.annotation.Value;
-import presidio.input.core.services.transformation.transformer.OperationTypeCategoryTransformer;
 import presidio.input.core.services.transformation.transformer.FolderPathByOperationTypeTransformer;
+import presidio.input.core.services.transformation.transformer.OperationTypeToCategoryTransformer;
 import presidio.input.core.services.transformation.transformer.Transformer;
 import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.domain.rawevents.FileRawEvent;
@@ -35,7 +35,7 @@ public class FileTransformerManager implements TransformationManager {
                     FileTransformedEvent.SRC_FOLDER_PATH_FIELD_NAME, FileRawEvent.OPERATION_TYPE_FIELD_NAME, folderOperations));
             transformers.add(new FolderPathByOperationTypeTransformer(FileRawEvent.DST_FILE_PATH_FIELD_NAME, FileRawEvent.DST_FILE_PATH_FIELD_NAME,
                     FileTransformedEvent.DST_FOLDER_PATH_FIELD_NAME, FileRawEvent.OPERATION_TYPE_FIELD_NAME, folderOperations));
-            transformers.add(new OperationTypeCategoryTransformer(operationTypeToCategoryMapping.get(Schema.FILE.toString())));
+            transformers.add(new OperationTypeToCategoryTransformer(operationTypeToCategoryMapping.get(Schema.FILE)));
         }
         return transformers;
     }

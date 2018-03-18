@@ -24,7 +24,7 @@ public class PrintInputToAdeConverter implements InputAdeConverter {
         adeRecord.setDataSource(printTransformedEvent.getDataSource());
         adeRecord.setEventId(printTransformedEvent.getEventId());
         adeRecord.setOperationType(printTransformedEvent.getOperationType());
-        adeRecord.setOperationTypeCategories(printTransformedEvent.getOperationTypeCategory());
+        adeRecord.setOperationTypeCategories(printTransformedEvent.getOperationTypeCategories());
         adeRecord.setResult(printTransformedEvent.getResult());
         adeRecord.setResultCode(printTransformedEvent.getResultCode());
         return adeRecord;

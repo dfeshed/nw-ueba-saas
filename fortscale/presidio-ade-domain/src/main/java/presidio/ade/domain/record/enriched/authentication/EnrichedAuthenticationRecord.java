@@ -22,8 +22,10 @@ public class EnrichedAuthenticationRecord extends EnrichedRecord {
     public static final String DST_MACHINE_ID_FIELD = "dstMachineId";
     public static final String SRC_MACHINE_NAME_REGEX_CLUSTER_FIELD = "srcMachineNameRegexCluster";
     public static final String DST_MACHINE_NAME_REGEX_CLUSTER_FIELD = "dstMachineNameRegexCluster";
-    public static final String DST_MACHINE_DOMAIN = "dstMachineDomain";
-    public static final String SITE = "site";
+    public static final String DST_MACHINE_DOMAIN_FIELD = "dstMachineDomain";
+    public static final String SITE_FIELD = "site";
+    public static final String CITY_FIELD = "city";
+    public static final String COUNTRY_FIELD = "country";
 
     @Field(USER_ID_FIELD)
     private String userId;
@@ -35,10 +37,14 @@ public class EnrichedAuthenticationRecord extends EnrichedRecord {
     private String srcMachineNameRegexCluster;
     @Field(DST_MACHINE_NAME_REGEX_CLUSTER_FIELD)
     private String dstMachineNameRegexCluster;
-    @Field(DST_MACHINE_DOMAIN)
+    @Field(DST_MACHINE_DOMAIN_FIELD)
     private String dstMachineDomain;
-    @Field(SITE)
+    @Field(SITE_FIELD)
     private String site;
+    @Field(CITY_FIELD)
+    private String city;
+    @Field(COUNTRY_FIELD)
+    private String country;
 
     /**
      * C'tor.
@@ -108,6 +114,22 @@ public class EnrichedAuthenticationRecord extends EnrichedRecord {
 
     public void setSite(String site) {
         this.site = site;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     @Transient
