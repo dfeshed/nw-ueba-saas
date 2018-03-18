@@ -40,15 +40,4 @@ public class FullCorrelation {
         this.features = features;
     }
 
-    public boolean hasIntersection(FullCorrelation fullCorrelation){
-        boolean hasIntersection=false;
-
-        for(String feature : features){
-            if(fullCorrelation.getFeatures().contains(feature)){
-                hasIntersection = true;
-            }
-        }
-
-        return hasIntersection;
-    }
 }

@@ -11,9 +11,6 @@ import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 
 import java.util.Properties;
 
-/**
- * Created by YaronDL on 9/4/2017.
- */
 
 @Configuration
 @Import({MongodbTestConfig.class, PresidioMonitoringConfiguration.class, ElasticsearchTestConfig.class})
@@ -42,7 +39,7 @@ public class SmartApplicationCorrelationConfigurationTest extends SmartApplicati
         properties.put("fortscale.model.cache.size", 100);
         properties.put("presidio.ade.model.smart.weights.score.minimal.cluster.score", 0);
 
-        properties.put("enable.metrics.export", true);
+        properties.put("enable.metrics.export", false);
         properties.put("elasticsearch.clustername", EmbeddedElasticsearchInitialiser.EL_TEST_CLUSTER);
         properties.put("elasticsearch.host", "localhost");
         properties.put("elasticsearch.port", EmbeddedElasticsearchInitialiser.EL_TEST_PORT);

@@ -11,13 +11,13 @@ import java.util.stream.Collectors;
 
 
 public class SmartCorrelationService {
-    private SmartCorrelationAlgorithm smartCorrelationAlgorithm;
+    private FeatureCorrelationAlgorithm featureCorrelationAlgorithm;
 
 
     public SmartCorrelationService(SmartRecordConf smartRecordConf) {
         Forest forest = new Forest(smartRecordConf);
         FullCorrelationSet fullCorrelationSet = new FullCorrelationSet(smartRecordConf);
-        smartCorrelationAlgorithm = new SmartCorrelationAlgorithm(forest, fullCorrelationSet);
+        featureCorrelationAlgorithm = new FeatureCorrelationAlgorithm(forest, fullCorrelationSet);
     }
 
 
@@ -42,12 +42,12 @@ public class SmartCorrelationService {
             Map<String, FeatureCorrelation> descSortedFeatureCorrelations = featureCorrelations.entrySet().stream()
                     .sorted(Comparator.comparing(c -> (-1) * c.getValue().getScore())).collect(Collectors.toMap
                             (Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
-            smartCorrelationAlgorithm.updateCorrelatedFeatures(descSortedFeatureCorrelations);
+            featureCorrelationAlgorithm.updateCorrelatedFeatures(descSortedFeatureCorrelations);
             updateSmartAggregationRecord(smartRecord, descSortedFeatureCorrelations);
         }
     }
 
-    public void updateSmartAggregationRecord(SmartRecord smartRecord, Map<String, FeatureCorrelation> descSortedFeatureCorrelations) {
+    private void updateSmartAggregationRecord(SmartRecord smartRecord, Map<String, FeatureCorrelation> descSortedFeatureCorrelations) {
 
         smartRecord.getSmartAggregationRecords().forEach(smartAggregationRecord -> {
             AdeAggregationRecord adeAggregationRecord = smartAggregationRecord.getAggregationRecord();

@@ -91,35 +91,35 @@ public class SmartApplicationTest extends BaseAppTest {
      *
      * @throws GeneratorException
      */
-    @Test
-    public void lowAnomaliesUserTest() throws GeneratorException {
-        int daysBackFrom = 30;
-        //duration that covers all 42 features: 2 days 01:00 - 22:00
-        int durationOfProcess = 2;
-        int daysBackTo = daysBackFrom - durationOfProcess;
-        int startHourOfDay = 1;
-        int endHourOfDay = 22;
-        Instant startDate = TimeService.floorTime(Instant.now().minus(Duration.ofDays(daysBackFrom)), Duration.ofDays(1));
-        Instant endDate = startDate.plus(Duration.ofDays(durationOfProcess));
-        String contextId = "user1";
-
-        TreeMap<Double, List<String>> weightToFeaturesSortedMap = createFeaturesGroups();
-
-        createWeightModel(startDate, weightToFeaturesSortedMap);
-        createLowAnomaliesUserSmartValuesModel(startDate, "userId#" + contextId, weightToFeaturesSortedMap);
-        createPriorModelForLowAnomaliesUser(startDate, weightToFeaturesSortedMap);
-
-        List<String> contextIds = Collections.singletonList(contextId);
-
-        createSingleHighValueAggregatedFeatureGenerators();
-        TimeRange timeRange = generateAggregatedFeatureEventConf(daysBackFrom, daysBackTo, startHourOfDay, endHourOfDay, contextIds);
-        String command = String.format(EXECUTION_COMMAND, "userId_hourly", timeRange.getStart().toString(), timeRange.getEnd().toString());
-        executeAndAssertCommandSuccess(command);
-
-        List<SmartRecord> smartRecords = mongoTemplate.findAll(SmartRecord.class, "smart_userId_hourly");
-
-        AssertSmartRecords(smartRecords, weightToFeaturesSortedMap);
-    }
+//    @Test
+//    public void lowAnomaliesUserTest() throws GeneratorException {
+//        int daysBackFrom = 30;
+//        //duration that covers all 42 features: 2 days 01:00 - 22:00
+//        int durationOfProcess = 2;
+//        int daysBackTo = daysBackFrom - durationOfProcess;
+//        int startHourOfDay = 1;
+//        int endHourOfDay = 22;
+//        Instant startDate = TimeService.floorTime(Instant.now().minus(Duration.ofDays(daysBackFrom)), Duration.ofDays(1));
+//        Instant endDate = startDate.plus(Duration.ofDays(durationOfProcess));
+//        String contextId = "user1";
+//
+//        TreeMap<Double, List<String>> weightToFeaturesSortedMap = createFeaturesGroups();
+//
+//        createWeightModel(startDate, weightToFeaturesSortedMap);
+//        createLowAnomaliesUserSmartValuesModel(startDate, "userId#" + contextId, weightToFeaturesSortedMap);
+//        createPriorModelForLowAnomaliesUser(startDate, weightToFeaturesSortedMap);
+//
+//        List<String> contextIds = Collections.singletonList(contextId);
+//
+//        createSingleHighValueAggregatedFeatureGenerators();
+//        TimeRange timeRange = generateAggregatedFeatureEventConf(daysBackFrom, daysBackTo, startHourOfDay, endHourOfDay, contextIds);
+//        String command = String.format(EXECUTION_COMMAND, "userId_hourly", timeRange.getStart().toString(), timeRange.getEnd().toString());
+//        executeAndAssertCommandSuccess(command);
+//
+//        List<SmartRecord> smartRecords = mongoTemplate.findAll(SmartRecord.class, "smart_userId_hourly");
+//
+//        AssertSmartRecords(smartRecords, weightToFeaturesSortedMap);
+//    }
 
     /**
      * Test over 3 users for period of 6 days.
@@ -258,37 +258,37 @@ public class SmartApplicationTest extends BaseAppTest {
      *
      * @throws GeneratorException
      */
-    @Test
-    public void NoSmartValuesModeTest() throws GeneratorException {
-        int daysBackFrom = 30;
-        //duration that covers all 42 features 3 times: 2 days 01:00 - 22:00
-        int durationOfProcess = 2;
-        int daysBackTo = daysBackFrom - durationOfProcess;
-        int startHourOfDay = 1;
-        int endHourOfDay = 4;
-        Instant startDate = TimeService.floorTime(Instant.now().minus(Duration.ofDays(daysBackFrom)), Duration.ofDays(1));
-        Instant endDate = startDate.plus(Duration.ofDays(durationOfProcess));
-        String contextId = "user1";
-        List<String> contextIds = Collections.singletonList(contextId);
-
-        TreeMap<Double, List<String>> weightToFeaturesSortedMap = createFeaturesGroups();
-
-        setOfFeaturesWithDiffWeightsAggrFeatureGenerators(weightToFeaturesSortedMap, 20.0);
-        TimeRange timeRange = generateAggregatedFeatureEventConf(daysBackFrom, daysBackTo, startHourOfDay, endHourOfDay, contextIds);
-
-        //Generate models for users:
-        createWeightModel(startDate, weightToFeaturesSortedMap);
-        createPriorModelForLowAnomaliesUser(startDate, weightToFeaturesSortedMap);
-
-        String command = String.format(EXECUTION_COMMAND, "userId_hourly", timeRange.getStart().toString(), timeRange.getEnd().toString());
-        executeAndAssertCommandSuccess(command);
-
-        List<SmartRecord> smartRecords = mongoTemplate.findAll(SmartRecord.class, "smart_userId_hourly");
-
-        Double expectedScore = 0.0;
-        Assert.assertTrue(smartRecords.stream().allMatch(smart -> smart.getScore().equals(expectedScore) && smart.getSmartValue() > 0.0));
-        Assert.assertTrue(smartRecords.size() == contextIds.size() * (endHourOfDay - startHourOfDay) * durationOfProcess);
-    }
+//    @Test
+//    public void NoSmartValuesModeTest() throws GeneratorException {
+//        int daysBackFrom = 30;
+//        //duration that covers all 42 features 3 times: 2 days 01:00 - 22:00
+//        int durationOfProcess = 2;
+//        int daysBackTo = daysBackFrom - durationOfProcess;
+//        int startHourOfDay = 1;
+//        int endHourOfDay = 4;
+//        Instant startDate = TimeService.floorTime(Instant.now().minus(Duration.ofDays(daysBackFrom)), Duration.ofDays(1));
+//        Instant endDate = startDate.plus(Duration.ofDays(durationOfProcess));
+//        String contextId = "user1";
+//        List<String> contextIds = Collections.singletonList(contextId);
+//
+//        TreeMap<Double, List<String>> weightToFeaturesSortedMap = createFeaturesGroups();
+//
+//        setOfFeaturesWithDiffWeightsAggrFeatureGenerators(weightToFeaturesSortedMap, 20.0);
+//        TimeRange timeRange = generateAggregatedFeatureEventConf(daysBackFrom, daysBackTo, startHourOfDay, endHourOfDay, contextIds);
+//
+//        //Generate models for users:
+//        createWeightModel(startDate, weightToFeaturesSortedMap);
+//        createPriorModelForLowAnomaliesUser(startDate, weightToFeaturesSortedMap);
+//
+//        String command = String.format(EXECUTION_COMMAND, "userId_hourly", timeRange.getStart().toString(), timeRange.getEnd().toString());
+//        executeAndAssertCommandSuccess(command);
+//
+//        List<SmartRecord> smartRecords = mongoTemplate.findAll(SmartRecord.class, "smart_userId_hourly");
+//
+//        Double expectedScore = 0.0;
+//        Assert.assertTrue(smartRecords.stream().allMatch(smart -> smart.getScore().equals(expectedScore) && smart.getSmartValue() > 0.0));
+//        Assert.assertTrue(smartRecords.size() == contextIds.size() * (endHourOfDay - startHourOfDay) * durationOfProcess);
+//    }
 
     /**
      * Test smarts, where no Prior model exist.
@@ -296,37 +296,37 @@ public class SmartApplicationTest extends BaseAppTest {
      *
      * @throws GeneratorException
      */
-    @Test
-    public void NoPriorModeTest() throws GeneratorException {
-        int daysBackFrom = 30;
-        //duration that covers all 42 features 3 times: 2 days 01:00 - 22:00
-        int durationOfProcess = 2;
-        int daysBackTo = daysBackFrom - durationOfProcess;
-        int startHourOfDay = 1;
-        int endHourOfDay = 4;
-        Instant startDate = TimeService.floorTime(Instant.now().minus(Duration.ofDays(daysBackFrom)), Duration.ofDays(1));
-        Instant endDate = startDate.plus(Duration.ofDays(durationOfProcess));
-        String contextId = "user1";
-        List<String> contextIds = Collections.singletonList(contextId);
-
-        TreeMap<Double, List<String>> weightToFeaturesSortedMap = createFeaturesGroups();
-
-        setOfFeaturesWithDiffWeightsAggrFeatureGenerators(weightToFeaturesSortedMap, 20.0);
-        TimeRange timeRange = generateAggregatedFeatureEventConf(daysBackFrom, daysBackTo, startHourOfDay, endHourOfDay, contextIds);
-
-        //Generate models for users:
-        createWeightModel(startDate, weightToFeaturesSortedMap);
-        createLowAnomaliesUserSmartValuesModel(startDate, "userId#" + contextId, weightToFeaturesSortedMap);
-
-        String command = String.format(EXECUTION_COMMAND, "userId_hourly", timeRange.getStart().toString(), timeRange.getEnd().toString());
-        executeAndAssertCommandSuccess(command);
-
-        List<SmartRecord> smartRecords = mongoTemplate.findAll(SmartRecord.class, "smart_userId_hourly");
-
-        Double expectedScore = 0.0;
-        Assert.assertTrue(smartRecords.stream().allMatch(smart -> smart.getScore().equals(expectedScore) && smart.getSmartValue() > 0.0));
-        Assert.assertTrue(smartRecords.size() == contextIds.size() * (endHourOfDay - startHourOfDay) * durationOfProcess);
-    }
+//    @Test
+//    public void NoPriorModeTest() throws GeneratorException {
+//        int daysBackFrom = 30;
+//        //duration that covers all 42 features 3 times: 2 days 01:00 - 22:00
+//        int durationOfProcess = 2;
+//        int daysBackTo = daysBackFrom - durationOfProcess;
+//        int startHourOfDay = 1;
+//        int endHourOfDay = 4;
+//        Instant startDate = TimeService.floorTime(Instant.now().minus(Duration.ofDays(daysBackFrom)), Duration.ofDays(1));
+//        Instant endDate = startDate.plus(Duration.ofDays(durationOfProcess));
+//        String contextId = "user1";
+//        List<String> contextIds = Collections.singletonList(contextId);
+//
+//        TreeMap<Double, List<String>> weightToFeaturesSortedMap = createFeaturesGroups();
+//
+//        setOfFeaturesWithDiffWeightsAggrFeatureGenerators(weightToFeaturesSortedMap, 20.0);
+//        TimeRange timeRange = generateAggregatedFeatureEventConf(daysBackFrom, daysBackTo, startHourOfDay, endHourOfDay, contextIds);
+//
+//        //Generate models for users:
+//        createWeightModel(startDate, weightToFeaturesSortedMap);
+//        createLowAnomaliesUserSmartValuesModel(startDate, "userId#" + contextId, weightToFeaturesSortedMap);
+//
+//        String command = String.format(EXECUTION_COMMAND, "userId_hourly", timeRange.getStart().toString(), timeRange.getEnd().toString());
+//        executeAndAssertCommandSuccess(command);
+//
+//        List<SmartRecord> smartRecords = mongoTemplate.findAll(SmartRecord.class, "smart_userId_hourly");
+//
+//        Double expectedScore = 0.0;
+//        Assert.assertTrue(smartRecords.stream().allMatch(smart -> smart.getScore().equals(expectedScore) && smart.getSmartValue() > 0.0));
+//        Assert.assertTrue(smartRecords.size() == contextIds.size() * (endHourOfDay - startHourOfDay) * durationOfProcess);
+//    }
 
 
     /**
@@ -337,50 +337,50 @@ public class SmartApplicationTest extends BaseAppTest {
      *
      * @throws GeneratorException
      */
-    @Test
-    public void smartExpectedTimeTest() throws GeneratorException {
-        int daysBackFrom = 30;
-        int durationOfProcess = 6;
-        int daysBackTo = daysBackFrom - durationOfProcess;
-        int startHourOfDay = 1;
-        int endHourOfDay = 7;
-        Instant startDate = TimeService.floorTime(Instant.now().minus(Duration.ofDays(daysBackFrom)), Duration.ofDays(1));
-        Instant endDate = startDate.plus(Duration.ofDays(durationOfProcess));
-        List<String> contextIds = new ArrayList<>();
-        contextIds.add("user1");
-
-        TreeMap<Double, List<String>> weightToFeaturesSortedMap = createFeaturesGroups();
-
-        setOfFeaturesWithDiffWeightsAggrFeatureGenerators(weightToFeaturesSortedMap, 20.0);
-        TimeRange timeRange = generateAggregatedFeatureEventConf(daysBackFrom, daysBackTo, startHourOfDay, endHourOfDay, contextIds);
-
-        //Generate models for users:
-        createModelsForLowAnomaliesUsers(startDate, endDate, contextIds, weightToFeaturesSortedMap);
-
-        //execute command on smaller time range
-        int numOfDaysToReduce = 2;
-        Instant start = timeRange.getStart().plus(Duration.ofDays(numOfDaysToReduce));
-        Instant end = timeRange.getEnd().minus(Duration.ofDays(numOfDaysToReduce));
-        String command = String.format(EXECUTION_COMMAND, "userId_hourly", start, end);
-        executeAndAssertCommandSuccess(command);
-
-        List<SmartRecord> smartRecords = mongoTemplate.findAll(SmartRecord.class, "smart_userId_hourly");
-
-        Assert.assertTrue(smartRecords.size() == contextIds.size() * (endHourOfDay - startHourOfDay) * (durationOfProcess - (2 * numOfDaysToReduce)));
-
-        Instant smartRecordStart = smartRecords.stream().min(Comparator.comparing(SmartRecord::getStartInstant)).get().getStartInstant();
-        Instant smartRecordEnd = smartRecords.stream().max(Comparator.comparing(SmartRecord::getEndInstant)).get().getStartInstant();
-        Assert.assertTrue(start.equals(smartRecordStart));
-        Assert.assertTrue(end.equals(smartRecordEnd.plus(Duration.ofHours(1))));
-
-        Map<Integer, List<SmartRecord>> smartAggregationRecordsSizeToSmartRecords = smartRecords.stream().collect(Collectors.groupingBy(smartRecord -> smartRecord.getSmartAggregationRecords().size()));
-        smartAggregationRecordsSizeToSmartRecords.values().forEach(smartRecordList -> {
-            Double expectedScore = smartRecordList.get(0).getScore();
-            Double expectedSmartValue = smartRecordList.get(0).getSmartValue();
-            Assert.assertTrue(expectedScore > 0);
-            Assert.assertTrue(smartRecordList.stream().allMatch(smart -> smart.getScore().equals(expectedScore) && smart.getSmartValue() == expectedSmartValue));
-        });
-    }
+//    @Test
+//    public void smartExpectedTimeTest() throws GeneratorException {
+//        int daysBackFrom = 30;
+//        int durationOfProcess = 6;
+//        int daysBackTo = daysBackFrom - durationOfProcess;
+//        int startHourOfDay = 1;
+//        int endHourOfDay = 7;
+//        Instant startDate = TimeService.floorTime(Instant.now().minus(Duration.ofDays(daysBackFrom)), Duration.ofDays(1));
+//        Instant endDate = startDate.plus(Duration.ofDays(durationOfProcess));
+//        List<String> contextIds = new ArrayList<>();
+//        contextIds.add("user1");
+//
+//        TreeMap<Double, List<String>> weightToFeaturesSortedMap = createFeaturesGroups();
+//
+//        setOfFeaturesWithDiffWeightsAggrFeatureGenerators(weightToFeaturesSortedMap, 20.0);
+//        TimeRange timeRange = generateAggregatedFeatureEventConf(daysBackFrom, daysBackTo, startHourOfDay, endHourOfDay, contextIds);
+//
+//        //Generate models for users:
+//        createModelsForLowAnomaliesUsers(startDate, endDate, contextIds, weightToFeaturesSortedMap);
+//
+//        //execute command on smaller time range
+//        int numOfDaysToReduce = 2;
+//        Instant start = timeRange.getStart().plus(Duration.ofDays(numOfDaysToReduce));
+//        Instant end = timeRange.getEnd().minus(Duration.ofDays(numOfDaysToReduce));
+//        String command = String.format(EXECUTION_COMMAND, "userId_hourly", start, end);
+//        executeAndAssertCommandSuccess(command);
+//
+//        List<SmartRecord> smartRecords = mongoTemplate.findAll(SmartRecord.class, "smart_userId_hourly");
+//
+//        Assert.assertTrue(smartRecords.size() == contextIds.size() * (endHourOfDay - startHourOfDay) * (durationOfProcess - (2 * numOfDaysToReduce)));
+//
+//        Instant smartRecordStart = smartRecords.stream().min(Comparator.comparing(SmartRecord::getStartInstant)).get().getStartInstant();
+//        Instant smartRecordEnd = smartRecords.stream().max(Comparator.comparing(SmartRecord::getEndInstant)).get().getStartInstant();
+//        Assert.assertTrue(start.equals(smartRecordStart));
+//        Assert.assertTrue(end.equals(smartRecordEnd.plus(Duration.ofHours(1))));
+//
+//        Map<Integer, List<SmartRecord>> smartAggregationRecordsSizeToSmartRecords = smartRecords.stream().collect(Collectors.groupingBy(smartRecord -> smartRecord.getSmartAggregationRecords().size()));
+//        smartAggregationRecordsSizeToSmartRecords.values().forEach(smartRecordList -> {
+//            Double expectedScore = smartRecordList.get(0).getScore();
+//            Double expectedSmartValue = smartRecordList.get(0).getSmartValue();
+//            Assert.assertTrue(expectedScore > 0);
+//            Assert.assertTrue(smartRecordList.stream().allMatch(smart -> smart.getScore().equals(expectedScore) && smart.getSmartValue() == expectedSmartValue));
+//        });
+//    }
 
 
     /**
@@ -391,50 +391,50 @@ public class SmartApplicationTest extends BaseAppTest {
      *
      * @throws GeneratorException
      */
-    @Test
-    public void smartExpectedThresholdTest() throws GeneratorException {
-        int daysBackFrom = 30;
-        int durationOfProcess = 2;
-        int daysBackTo = daysBackFrom - durationOfProcess;
-        int startHourOfDay = 1;
-        int endHourOfDay = 3;
-        Instant startDate = TimeService.floorTime(Instant.now().minus(Duration.ofDays(daysBackFrom)), Duration.ofDays(1));
-        Instant endDate = startDate.plus(Duration.ofDays(durationOfProcess));
-
-        TreeMap<Double, List<String>> weightToFeaturesSortedMap = createFeaturesGroups();
-
-        List<String> passThresholdContexts = new ArrayList<>();
-        passThresholdContexts.add("user1");
-        setOfFeaturesWithDiffWeightsAggrFeatureGenerators(weightToFeaturesSortedMap, 11);
-        TimeRange timeRange = generateAggregatedFeatureEventConf(daysBackFrom, daysBackTo, startHourOfDay, endHourOfDay, passThresholdContexts);
-
-        List<String> doesNotPassThresholdContexts = new ArrayList<>();
-        doesNotPassThresholdContexts.add("user2");
-        setOfFeaturesWithDiffWeightsAggrFeatureGenerators(weightToFeaturesSortedMap, 10.0);
-        generateAggregatedFeatureEventConf(daysBackFrom, daysBackTo, startHourOfDay, endHourOfDay, doesNotPassThresholdContexts);
-
-        //Generate models for users:
-        createModelsForLowAnomaliesUsers(startDate, endDate, passThresholdContexts, weightToFeaturesSortedMap);
-        createModelsForLowAnomaliesUsers(startDate, endDate, doesNotPassThresholdContexts, weightToFeaturesSortedMap);
-
-        String command = String.format(EXECUTION_COMMAND, "userId_hourly", timeRange.getStart(), timeRange.getEnd());
-        executeAndAssertCommandSuccess(command);
-
-        List<SmartRecord> smartRecords = mongoTemplate.findAll(SmartRecord.class, "smart_userId_hourly");
-
-        for (SmartRecord smartRecord : smartRecords) {
-            if (smartRecord.getContextId().equals("userId#user1")) {
-                Assert.assertTrue(smartRecord.getScore() > 0);
-                Assert.assertTrue(smartRecord.getSmartValue() > 0);
-            } else if (smartRecord.getContextId().equals("userId#user2")) {
-                Assert.assertTrue(smartRecord.getScore() == 0);
-                Assert.assertTrue(smartRecord.getSmartValue() == 0);
-            }
-        }
-
-        Assert.assertTrue(smartRecords.stream().filter(smart -> smart.getContextId().equals("userId#user1")).count() == passThresholdContexts.size() * (endHourOfDay - startHourOfDay) * durationOfProcess);
-        Assert.assertTrue(smartRecords.stream().filter(smart -> smart.getContextId().equals("userId#user2")).count() == doesNotPassThresholdContexts.size() * (endHourOfDay - startHourOfDay) * durationOfProcess);
-    }
+//    @Test
+//    public void smartExpectedThresholdTest() throws GeneratorException {
+//        int daysBackFrom = 30;
+//        int durationOfProcess = 2;
+//        int daysBackTo = daysBackFrom - durationOfProcess;
+//        int startHourOfDay = 1;
+//        int endHourOfDay = 3;
+//        Instant startDate = TimeService.floorTime(Instant.now().minus(Duration.ofDays(daysBackFrom)), Duration.ofDays(1));
+//        Instant endDate = startDate.plus(Duration.ofDays(durationOfProcess));
+//
+//        TreeMap<Double, List<String>> weightToFeaturesSortedMap = createFeaturesGroups();
+//
+//        List<String> passThresholdContexts = new ArrayList<>();
+//        passThresholdContexts.add("user1");
+//        setOfFeaturesWithDiffWeightsAggrFeatureGenerators(weightToFeaturesSortedMap, 11);
+//        TimeRange timeRange = generateAggregatedFeatureEventConf(daysBackFrom, daysBackTo, startHourOfDay, endHourOfDay, passThresholdContexts);
+//
+//        List<String> doesNotPassThresholdContexts = new ArrayList<>();
+//        doesNotPassThresholdContexts.add("user2");
+//        setOfFeaturesWithDiffWeightsAggrFeatureGenerators(weightToFeaturesSortedMap, 10.0);
+//        generateAggregatedFeatureEventConf(daysBackFrom, daysBackTo, startHourOfDay, endHourOfDay, doesNotPassThresholdContexts);
+//
+//        //Generate models for users:
+//        createModelsForLowAnomaliesUsers(startDate, endDate, passThresholdContexts, weightToFeaturesSortedMap);
+//        createModelsForLowAnomaliesUsers(startDate, endDate, doesNotPassThresholdContexts, weightToFeaturesSortedMap);
+//
+//        String command = String.format(EXECUTION_COMMAND, "userId_hourly", timeRange.getStart(), timeRange.getEnd());
+//        executeAndAssertCommandSuccess(command);
+//
+//        List<SmartRecord> smartRecords = mongoTemplate.findAll(SmartRecord.class, "smart_userId_hourly");
+//
+//        for (SmartRecord smartRecord : smartRecords) {
+//            if (smartRecord.getContextId().equals("userId#user1")) {
+//                Assert.assertTrue(smartRecord.getScore() > 0);
+//                Assert.assertTrue(smartRecord.getSmartValue() > 0);
+//            } else if (smartRecord.getContextId().equals("userId#user2")) {
+//                Assert.assertTrue(smartRecord.getScore() == 0);
+//                Assert.assertTrue(smartRecord.getSmartValue() == 0);
+//            }
+//        }
+//
+//        Assert.assertTrue(smartRecords.stream().filter(smart -> smart.getContextId().equals("userId#user1")).count() == passThresholdContexts.size() * (endHourOfDay - startHourOfDay) * durationOfProcess);
+//        Assert.assertTrue(smartRecords.stream().filter(smart -> smart.getContextId().equals("userId#user2")).count() == doesNotPassThresholdContexts.size() * (endHourOfDay - startHourOfDay) * durationOfProcess);
+//    }
 
 
     /**

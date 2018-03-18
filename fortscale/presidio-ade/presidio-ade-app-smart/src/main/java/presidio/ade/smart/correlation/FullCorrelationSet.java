@@ -35,7 +35,6 @@ public class FullCorrelationSet {
                     logger.error(String.format(
                             "There should not be any intersection between full correlation features. " +
                                     "The feature %s should not belong to %s. it already exist in %s.", feature, fullCorrelation.getName(), featureFullCorrelation.getName()));
-
                 }
 
                 featureToFullCorrelation.put(feature, fullCorrelation);

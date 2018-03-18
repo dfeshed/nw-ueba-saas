@@ -2,30 +2,23 @@ package presidio.ade.smart.correlation;
 
 import fortscale.smart.correlation.conf.CorrelationNodeData;
 import fortscale.smart.correlation.conf.FullCorrelation;
-import fortscale.smart.record.conf.SmartRecordConf;
 import fortscale.utils.DescendantIterator;
 import fortscale.utils.TreeNode;
 import fortscale.utils.logging.Logger;
 import org.springframework.util.Assert;
-import presidio.ade.domain.record.aggregated.*;
 
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 
-public class SmartCorrelationAlgorithm {
+public class FeatureCorrelationAlgorithm {
 
     private Forest forest;
     private FullCorrelationSet fullCorrelationSet;
-
-
     private static final Double FULL_CORRELATION_FACTOR = 1.0;
     private static final Double NO_CORRELATION_FACTOR = 0.0;
-    private static final Logger logger = Logger.getLogger(SmartCorrelationAlgorithm.class);
 
-    public SmartCorrelationAlgorithm(Forest forest, FullCorrelationSet fullCorrelationSet) {
-
+    public FeatureCorrelationAlgorithm(Forest forest, FullCorrelationSet fullCorrelationSet) {
         this.forest = forest;
         this.fullCorrelationSet = fullCorrelationSet;
         validateTreeCorrelationWithFullCorrelation();

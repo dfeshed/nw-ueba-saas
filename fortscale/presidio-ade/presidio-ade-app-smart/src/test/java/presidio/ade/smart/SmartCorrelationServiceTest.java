@@ -10,6 +10,7 @@ import fortscale.ml.model.SmartWeightsModel;
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStoreConfig;
+import fortscale.smart.SmartUtil;
 import fortscale.smart.record.conf.ClusterConf;
 import fortscale.smart.record.conf.SmartRecordConfService;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
@@ -195,7 +196,7 @@ public class SmartCorrelationServiceTest extends BaseAppTest {
         smartRecords.forEach(smartRecord -> {
             smartRecord.getSmartAggregationRecords().forEach(record -> {
                 if(!record.getAggregationRecord().getFeatureName().equals(notInfluencedFeatureToScore.getKey())){
-                    Double score = getAggregationFeatureScore(record);
+                    Double score = SmartUtil.getAdeAggregationRecordScore(record.getAggregationRecord());
                     Double correlationFactor = record.getCorrelationFactor();
                     Double oldScore = record.getOldScore();
 
@@ -204,7 +205,7 @@ public class SmartCorrelationServiceTest extends BaseAppTest {
                     Assert.assertTrue(score.equals(oldScore*correlationFactor));
                 }
                 else{
-                    Double score = getAggregationFeatureScore(record);
+                    Double score = SmartUtil.getAdeAggregationRecordScore(record.getAggregationRecord());
                     Assert.assertTrue(score.equals(notInfluencedFeatureToScore.getValue()));
                 }
 
@@ -213,26 +214,6 @@ public class SmartCorrelationServiceTest extends BaseAppTest {
 
 
     }
-
-    /**
-     *
-     * @param record SmartAggregationRecord
-     * @return score / feature value according to F and P
-     */
-    private Double getAggregationFeatureScore(SmartAggregationRecord record) {
-        AdeAggregationRecord adeAggregationRecord = record.getAggregationRecord();
-        AggregatedFeatureType aggregatedFeatureType = adeAggregationRecord.getAggregatedFeatureType();
-        Double score = null;
-
-        if (aggregatedFeatureType.equals(AggregatedFeatureType.SCORE_AGGREGATION)) {
-            score = adeAggregationRecord.getFeatureValue();
-        }
-        else if (aggregatedFeatureType.equals(AggregatedFeatureType.FEATURE_AGGREGATION)) {
-            score = ((ScoredFeatureAggregationRecord) adeAggregationRecord).getScore();
-        }
-        return score;
-    }
-
 
     @Configuration
     @Import({presidio.ade.smart.config.SmartApplicationCorrelationConfigurationTest.class, BaseAppTest.springConfig.class, ModelStoreConfig.class})
