@@ -9,9 +9,9 @@ public class SmartAggregationRecord {
     private Double contribution;
     private Double scoreAndWeightProduct;
     private String fullCorrelationName;
-    private String CorrelationTreeName;
+    private String correlationTreeName;
     private Double oldScore;
-    private Double CorrelationFactor;
+    private Double correlationFactor;
 
 
     public SmartAggregationRecord(
@@ -65,11 +65,11 @@ public class SmartAggregationRecord {
     }
 
     public String getCorrelationTreeName() {
-        return CorrelationTreeName;
+        return correlationTreeName;
     }
 
     public void setCorrelationTreeName(String correlationTreeName) {
-        CorrelationTreeName = correlationTreeName;
+        correlationTreeName = correlationTreeName;
     }
 
     public Double getOldScore() {
@@ -81,10 +81,10 @@ public class SmartAggregationRecord {
     }
 
     public Double getCorrelationFactor() {
-        return CorrelationFactor;
+        return correlationFactor;
     }
 
     public void setCorrelationFactor(Double correlationFactor) {
-        CorrelationFactor = correlationFactor;
+        correlationFactor = correlationFactor;
     }
 }

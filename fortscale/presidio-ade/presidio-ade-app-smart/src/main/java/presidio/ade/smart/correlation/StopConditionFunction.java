@@ -7,7 +7,7 @@ import java.util.function.Function;
 
 
 /**
- * Stop condition get correlationNodeData and return if it exists in features list.
+ * Stop condition get correlationNodeData and return true if it exists in features list.
  * Usage: DescendantIterator looking for next descendant that exist in the list.
  *
  * see: fortscale.utils.DescendantIterator

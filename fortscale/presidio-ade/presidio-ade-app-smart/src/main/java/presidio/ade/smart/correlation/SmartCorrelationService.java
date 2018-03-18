@@ -47,6 +47,11 @@ public class SmartCorrelationService {
         }
     }
 
+    /**
+     * update smartAggregationRecords by sorted FeatureCorrelations
+     * @param smartRecord smartRecord
+     * @param descSortedFeatureCorrelations desc sorted FeatureCorrelations
+     */
     private void updateSmartAggregationRecord(SmartRecord smartRecord, Map<String, FeatureCorrelation> descSortedFeatureCorrelations) {
 
         smartRecord.getSmartAggregationRecords().forEach(smartAggregationRecord -> {
