@@ -3,9 +3,11 @@ package fortscale.utils;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.commons.collections.map.HashedMap;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @JsonAutoDetect(
@@ -19,14 +21,12 @@ public class Tree<T> {
 
 	private String name;
 	private TreeNode<T> root;
-	private Set<TreeNode<T>> features;
 
 	@JsonCreator
 	public Tree(@JsonProperty("name") String name,
 				@JsonProperty("root") TreeNode<T> root) {
 		this.name = name;
 		this.root = root;
-		this.features = new HashSet<>();
 	}
 
 	public String getName() {
@@ -46,11 +46,17 @@ public class Tree<T> {
 		this.root = root;
 	}
 
-	public Set<TreeNode<T>> getFeatures() {
-		return features;
+	/**
+	 * fill tree of each treeNode
+	 */
+	public void fillTreeInTreeNodes() {
+		root.setTree(this);
+		DescendantIterator<T> descendantIterator = root.getDescendantIterator();
+
+		while (descendantIterator.hasNext()) {
+			TreeNode<T> child = descendantIterator.next();
+			child.setTree(this);
+		}
 	}
 
-	public void setFeatures(Set<TreeNode<T>> features) {
-		this.features = features;
-	}
 }

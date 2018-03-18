@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * This generic will represent Tree data structure
@@ -23,17 +24,16 @@ public class TreeNode<T> implements Iterable<TreeNode<T>> {
     private TreeNode<T> parent;
     private List<TreeNode<T>> children;
     private Tree tree;
-    private Set<TreeNode<T>> ancestors;
-    private boolean visited;
+
 
     @JsonCreator
     public TreeNode(@JsonProperty("data") T data,
                     @JsonProperty("children") List<TreeNode<T>> children) {
         this.data = data;
-        ancestors = new HashSet<>();
         this.children = new ArrayList<>();
         if (children != null) {
             this.children = children;
+            this.children.forEach(child -> {child.setParent(this);});
         }
     }
 
@@ -74,24 +74,33 @@ public class TreeNode<T> implements Iterable<TreeNode<T>> {
     }
 
     public Set<TreeNode<T>> getAncestors() {
+        ParentIterator<T> parentIterator = new ParentIterator<T>(this);
+
+        Set<TreeNode<T>> ancestors = new HashSet<>();
+        while(parentIterator.hasNext()){
+            TreeNode<T> parent = parentIterator.next();
+            ancestors.add(parent);
+        }
+
         return ancestors;
-    }
-
-    public void setAncestors(Set<TreeNode<T>> ancestors) {
-        this.ancestors = ancestors;
-    }
-
-    public boolean isVisited() {
-        return visited;
-    }
-
-    public void setVisited(boolean visited) {
-        this.visited = visited;
     }
 
     public Iterator<TreeNode<T>> iterator() {
         Iterator<TreeNode<T>> iter = this.children.iterator();
         return iter;
     }
+
+
+    public DescendantIterator<T> getDescendantIterator() {
+        return  new DescendantIterator<T>(this);
+    }
+
+
+    public DescendantIterator<T> getDescendantIterator(Function<T, Boolean> conditionStopFunc ) {
+        DescendantIterator<T> descendantIterator = new DescendantIterator<T>(this);
+        descendantIterator.setConditionStopFunc(conditionStopFunc);
+        return  descendantIterator;
+    }
+
 
 }

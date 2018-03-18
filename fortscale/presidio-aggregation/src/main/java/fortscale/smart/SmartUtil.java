@@ -17,4 +17,14 @@ public class SmartUtil {
 
         return score;
     }
+
+    public static void setAdeAggregationRecordScore(AdeAggregationRecord adeAggregationRecord, Double score){
+        AggregatedFeatureType aggregatedFeatureType = adeAggregationRecord.getAggregatedFeatureType();
+        if (aggregatedFeatureType.equals(AggregatedFeatureType.SCORE_AGGREGATION)) {
+            adeAggregationRecord.setFeatureValue(score);
+        } else if (aggregatedFeatureType.equals(AggregatedFeatureType.FEATURE_AGGREGATION)) {
+            ((ScoredFeatureAggregationRecord) adeAggregationRecord).setScore(score);
+        }
+
+    }
 }
