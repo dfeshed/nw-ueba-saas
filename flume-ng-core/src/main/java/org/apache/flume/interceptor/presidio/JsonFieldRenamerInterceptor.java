@@ -145,9 +145,8 @@ public class JsonFieldRenamerInterceptor extends AbstractPresidioJsonInterceptor
 
         @Override
         public AbstractPresidioJsonInterceptor doBuild() {
-            interceptorName = "JsonFieldRenamerInterceptor";
-            logger.info("Creating {}: {}={}, {}={}",
-                    interceptorName, ORIGIN_FIELDS_CONF_NAME, originFields, DESTINATION_FIELDS_CONF_NAME, destinationFields);
+            logger.info("Creating JsonFieldRenamerInterceptor: {}={}, {}={}",
+                    ORIGIN_FIELDS_CONF_NAME, originFields, DESTINATION_FIELDS_CONF_NAME, destinationFields);
             return new JsonFieldRenamerInterceptor(originFields, destinationFields, deleteNullFields, originFieldsDelim);
         }
 

@@ -146,10 +146,9 @@ public class JsonMapCreatorInterceptor extends AbstractPresidioJsonInterceptor {
 
         @Override
         public AbstractPresidioJsonInterceptor doBuild() {
-            interceptorName = "JsonMapCreatorInterceptor";
             final JsonMapCreatorInterceptor jsonMapCreatorInterceptor = new JsonMapCreatorInterceptor(fieldsToPut, mapKey,
                     deleteFields, defaultValueConfigurations, overrideExistingMap);
-            logger.info("Creating {}: {}", interceptorName, jsonMapCreatorInterceptor);
+            logger.info("Creating JsonMapCreatorInterceptor: {}", jsonMapCreatorInterceptor);
             return jsonMapCreatorInterceptor;
         }
     }

@@ -122,9 +122,8 @@ public class JsonCaseInterceptor extends AbstractPresidioJsonInterceptor {
 
         @Override
         public AbstractPresidioJsonInterceptor doBuild() {
-            interceptorName = "JsonCaseInterceptor";
-            logger.info("Creating {}: {}={}, {}={}",
-                    interceptorName, ORIGIN_FIELDS_CONF_NAME, originFields, OPERATIONS_CONF_NAME, operations);
+            logger.info("Creating JsonCaseInterceptor: {}={}, {}={}",
+                    ORIGIN_FIELDS_CONF_NAME, originFields, OPERATIONS_CONF_NAME, operations);
             return new JsonCaseInterceptor(originFields, operations);
         }
 
