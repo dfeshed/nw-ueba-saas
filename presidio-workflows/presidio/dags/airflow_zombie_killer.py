@@ -1,4 +1,5 @@
 import logging
+import os
 import subprocess
 
 from airflow.models import DAG, DagRun, TaskInstance
@@ -8,6 +9,7 @@ from airflow.utils.db import provide_session
 from airflow.utils.state import State
 from datetime import datetime, timedelta
 
+finished_states = [State.SUCCESS, State.SHUTDOWN, State.FAILED, State.UPSTREAM_FAILED, State.SKIPPED]
 unfinished_states = State.unfinished()
 delta_from_max_date = timedelta(minutes=10)
 delta_to_mark_as_stuck = timedelta(hours=12)
@@ -71,9 +73,9 @@ def is_prefix_sub_list(sub_list, main_list):
 def update_full_task_ids_to_kill(execution_date_to_full_task_ids_to_kill_dictionary):
     """
     For each list of full task IDs to kill in the given dictionary, this function eliminates IDs with an
-    ancestor-descendant relation and keeps only the ancestors (i.e. if one of the full task IDs is of a sub-DAG, all of
-    its descendants are removed from the list). This is because killing a sub-DAG task instance with a certain execution
-    date kills all of its descendants as well.
+    ancestor-descendant relation and keeps only the descendants. This is because the task instances should be killed
+    from the bottom up - In this DAG run of the Airflow zombie killer the lowest descendant is killed, in the next run
+    its parent is killed, in the one afterwards its grandparent is killed and so on.
     :param execution_date_to_full_task_ids_to_kill_dictionary:
            Maps an execution date to its list of full task IDs to kill.
            Each full task ID should look like this: [..., <grandparent_dag_id>, <parent_dag_id>, <task_id>].
@@ -87,9 +89,9 @@ def update_full_task_ids_to_kill(execution_date_to_full_task_ids_to_kill_diction
                     full_task_id_to_kill_j = full_task_ids_to_kill[j]
 
                     if is_prefix_sub_list(full_task_id_to_kill_i, full_task_id_to_kill_j):
-                        full_task_ids_to_kill[j] = None
-                    elif is_prefix_sub_list(full_task_id_to_kill_j, full_task_id_to_kill_i):
                         full_task_ids_to_kill[i] = None
+                    elif is_prefix_sub_list(full_task_id_to_kill_j, full_task_id_to_kill_i):
+                        full_task_ids_to_kill[j] = None
 
     for execution_date in execution_date_to_full_task_ids_to_kill_dictionary:
         execution_date_to_full_task_ids_to_kill_dictionary[execution_date] = filter(
@@ -185,6 +187,33 @@ def kill_task_instances_stuck_in_up_for_retry():
     kill_task_instances(execution_date_to_full_task_ids_to_kill_dictionary)
 
 
+def kill_zombie_processes():
+    output = subprocess.check_output(['systemctl', 'status', 'airflow-scheduler'])
+    output = output.split(os.linesep)
+    output = [line.lstrip()[6:].split() for line in output if 'full_flow' in line]
+
+    for phrases in output:
+        pid = phrases[0]
+        dag_id = phrases[4]
+        task_id = phrases[5]
+        execution_date = datetime.strptime(phrases[6], '%Y-%m-%dT%H:%M:%S')
+        task_instance = find_task_instances(first=True, task_id=task_id, dag_id=dag_id, execution_date=execution_date)
+        reason = None
+
+        if task_instance is None:
+            reason = 'The corresponding task instance is not present in the database'
+        elif task_instance.state in finished_states:
+            reason = 'The task instance in the database is in a finished state ({})'.format(task_instance.state)
+        elif str(task_instance.pid) != pid:
+            reason = 'The task instance in the database has a different PID ({})'.format(task_instance.pid)
+
+        if reason is not None:
+            msg = 'Killing zombie process. pid = {}, dag_id = {}, task_id = {}, execution_date = {}, reason = {}.' \
+                .format(pid, dag_id, task_id, execution_date, reason)
+            logging.info(msg)
+            subprocess.Popen(['kill', pid])
+
+
 airflow_zombie_killer = DAG(
     dag_id="airflow_zombie_killer",
     schedule_interval=timedelta(minutes=15),
@@ -205,4 +234,10 @@ stuck_in_up_for_retry_task_instance_killer = PythonOperator(
     dag=airflow_zombie_killer
 )
 
-zombie_sub_dag_task_instance_killer >> stuck_in_up_for_retry_task_instance_killer
+zombie_process_killer = PythonOperator(
+    task_id="zombie_process_killer",
+    python_callable=kill_zombie_processes,
+    dag=airflow_zombie_killer
+)
+
+zombie_sub_dag_task_instance_killer >> stuck_in_up_for_retry_task_instance_killer >> zombie_process_killer
