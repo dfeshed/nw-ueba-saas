@@ -2,13 +2,13 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>presidio.quest.ca</groupId>
-		<artifactId>presidio-quest-ca-ui</artifactId>
+		<groupId>presidio.ui</groupId>
+		<artifactId>presidio-ui</artifactId>
 		<version>1.1.0-SNAPSHOT</version>
 	</parent>
 
-	<name>presidio-quest-ca-ui-services</name>
-	<artifactId>presidio-quest-ca-ui-services</artifactId>
+	<name>presidio-ui-services</name>
+	<artifactId>presidio-ui-services</artifactId>
 	<version>1.1.0-SNAPSHOT</version>
 
 
@@ -41,17 +41,17 @@
 	<dependencies>
 		<dependency>
 			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>presidio-quest-ca-ui-domain</artifactId>
+			<artifactId>presidio-ui-domain</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>presidio-quest-ca-ui-common</artifactId>
+			<artifactId>presidio-ui-common</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>presidio-quest-ca-ui-utils</artifactId>
+			<artifactId>presidio-ui-utils</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
@@ -113,7 +113,7 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>presidio-quest-ca-ui-common</artifactId>
+			<artifactId>presidio-ui-common</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>

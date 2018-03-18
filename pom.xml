@@ -2,17 +2,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <!--<parent>
-        <groupId>presidio.quest.ca</groupId>
-        <artifactId>presidio-quest-change-auditor</artifactId>
-        <version>1.1-0-SNAPSHOT</version>
-    </parent>-->
-	<groupId>presidio.quest.ca</groupId>
-    <artifactId>presidio-quest-ca-ui</artifactId>
+
+	<groupId>presidio.ui</groupId>
+    <artifactId>presidio-ui</artifactId>
     <version>1.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>presidio-quest-ca-ui</name>
+    <name>presidio-ui</name>
 
 
     <pluginRepositories>
@@ -102,7 +98,7 @@
 		
 		
         <rpm.version.major>1</rpm.version.major>
-        <rpm.version.minor>0</rpm.version.minor>
+        <rpm.version.minor>1</rpm.version.minor>
         <rpm.version.build>0</rpm.version.build>
         <rpm.version>${rpm.version.major}.${rpm.version.minor}</rpm.version>
 
@@ -603,12 +599,12 @@
     </build>
 
     <modules>
-        <module>presidio-quest-ca-ui-utils</module>
-        <module>presidio-quest-ca-ui-common</module>
-        <module>presidio-quest-ca-ui-domain</module>
-        <module>presidio-quest-ca-ui-services</module>
-        <module>presidio-quest-ca-ui-ui</module>
-        <module>presidio-quest-ca-ui-webapp</module>
+        <module>presidio-ui-utils</module>
+        <module>presidio-ui-common</module>
+        <module>presidio-ui-domain</module>
+        <module>presidio-ui-services</module>
+        <module>presidio-ui-ui</module>
+        <module>presidio-ui-webapp</module>
     </modules>
 	
 	 <distributionManagement>
@@ -632,7 +628,7 @@
         <profile>
             <id>rpm</id>
             <modules>
-                <module>presidio-quest-ca-rpm</module>
+                <module>presidio-rpm</module>
             </modules>
         </profile>
     </profiles>

@@ -3,15 +3,15 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>presidio.quest.ca</groupId>
-        <artifactId>presidio-quest-ca-ui</artifactId>
+        <groupId>presidio.ui</groupId>
+        <artifactId>presidio-ui</artifactId>
         <version>1.1.0-SNAPSHOT</version>
     </parent>
 
 
 
-    <name>presidio-quest-ca-ui-ui</name>
-    <artifactId>presidio-quest-ca-ui-ui</artifactId>
+    <name>presidio-ui-ui</name>
+    <artifactId>presidio-ui-ui</artifactId>
     <version>1.1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 

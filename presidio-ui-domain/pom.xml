@@ -2,38 +2,16 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>presidio.quest.ca</groupId>
-		<artifactId>presidio-quest-ca-ui</artifactId>
+		<groupId>presidio.ui</groupId>
+		<artifactId>presidio-ui</artifactId>
 		<version>1.1.0-SNAPSHOT</version>
 	</parent>
 
-	<name>presidio-quest-ca-ui-domain</name>
-	<artifactId>presidio-quest-ca-ui-domain</artifactId>
+	<name>presidio-ui-domain</name>
+	<artifactId>presidio-ui-domain</artifactId>
 	<version>1.1.0-SNAPSHOT</version>
 
-	<!--<repositories>-->
-		<!--<repository>-->
-			<!--<snapshots>-->
-				<!--<enabled>false</enabled>-->
-			<!--</snapshots>-->
-			<!--<id>libs-releases</id>-->
-			<!--<name>libs-release</name>-->
-			<!--<url>http://mirror.fortscale.dom/artifactory/libs-release</url>-->
-		<!--</repository>-->
-		<!--<repository>-->
-			<!--<snapshots>-->
-				<!--<enabled>true</enabled>-->
-			<!--</snapshots>-->
-			<!--<id>libs-snapshots</id>-->
-			<!--<name>libs-snapshot</name>-->
-			<!--<url>http://mirror.fortscale.dom/artifactory/libs-snapshot</url>-->
-		<!--</repository>-->
-		<!--<repository>-->
-			<!--<id>all-remotes</id>-->
-			<!--<name>remote-repos</name>-->
-			<!--<url>http://mirror.fortscale.dom/artifactory/remote-repos</url>-->
-		<!--</repository>-->
-	<!--</repositories>-->
+	
 
 	<pluginRepositories>
 		<pluginRepository>
@@ -73,7 +51,7 @@
 		<!--</dependency>-->
 		<dependency>
 			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>presidio-quest-ca-ui-utils</artifactId>
+			<artifactId>presidio-ui-utils</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
