@@ -29,7 +29,7 @@ public abstract class AbstractPresidioJsonInterceptor implements Interceptor, Mo
     protected static final String NULL_STRING = "NULL";
     protected FlumePresidioExternalMonitoringService monitoringService;
     protected String applicationName;
-    protected String interceptorName;
+    protected String interceptorName = this.getClass().getCanonicalName();
 
     @Override
     public List<Event> intercept(List<Event> events) {
