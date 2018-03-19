@@ -4,7 +4,6 @@ import fortscale.smart.correlation.conf.CorrelationNodeData;
 import fortscale.smart.correlation.conf.FullCorrelation;
 import fortscale.utils.DescendantIterator;
 import fortscale.utils.TreeNode;
-import fortscale.utils.logging.Logger;
 import org.springframework.util.Assert;
 
 import java.util.*;
@@ -13,13 +12,13 @@ import java.util.stream.Collectors;
 
 public class FeatureCorrelationAlgorithm {
 
-    private Forest forest;
+    private CorrelationForest correlationForest;
     private FullCorrelationSet fullCorrelationSet;
-    private static final Double FULL_CORRELATION_FACTOR = 1.0;
-    private static final Double NO_CORRELATION_FACTOR = 0.0;
+    private static final Double FULL_CORRELATION_FACTOR = 0.0;
+    private static final Double NO_CORRELATION_FACTOR = 1.0;
 
-    public FeatureCorrelationAlgorithm(Forest forest, FullCorrelationSet fullCorrelationSet) {
-        this.forest = forest;
+    public FeatureCorrelationAlgorithm(CorrelationForest correlationForest, FullCorrelationSet fullCorrelationSet) {
+        this.correlationForest = correlationForest;
         this.fullCorrelationSet = fullCorrelationSet;
         validateTreeCorrelationWithFullCorrelation();
     }
@@ -29,7 +28,7 @@ public class FeatureCorrelationAlgorithm {
      * if a ancestor of b, then a and b can not be in full correlation.
      */
     private void validateTreeCorrelationWithFullCorrelation() {
-        forest.getFeatureToTreeNode().forEach((feature, treeNode) -> {
+        correlationForest.getFeatureToTreeNode().forEach((feature, treeNode) -> {
             Set<String> ancestors = treeNode.getAncestors().stream().map(ancestor -> ancestor.getData().getFeature()).collect(Collectors.toSet());
 
             FullCorrelation fullCorrelation = fullCorrelationSet.getFullCorrelation(feature);
@@ -43,26 +42,21 @@ public class FeatureCorrelationAlgorithm {
     }
 
     /**
-     * Update scores of correlated aggregation records by tree correlation and full correlation.
+     * Update FeatureCorrelations data (tree correlation name, full correlation name and old score)
+     * by tree correlation and full correlation.
+     *
      *
      * @param descSortedFeatureCorrelations desc sorted featureCorrelations
      */
     public void updateCorrelatedFeatures(Map<String, FeatureCorrelation> descSortedFeatureCorrelations) {
-
-        removeAncestors(descSortedFeatureCorrelations);
-        List<String> features = descSortedFeatureCorrelations.values().stream().map(feature -> feature.getName()).collect(Collectors.toList());
-        StopConditionFunction stopConditionFunction = new StopConditionFunction(features);
-
-        for (FeatureCorrelation featureCorrelation : descSortedFeatureCorrelations.values()) {
-            updateTreeCorrelation(featureCorrelation, descSortedFeatureCorrelations, stopConditionFunction);
-        }
-
-        updateFullCorrelation(descSortedFeatureCorrelations);
+        markAncestorWithFullCorrelation(descSortedFeatureCorrelations);
+        applyTreeCorrelation(descSortedFeatureCorrelations);
+        applyFullCorrelation(descSortedFeatureCorrelations);
     }
 
 
     /**
-     * Remove ancestors, which have lower score than each feature
+     * mark ancestors, who have lower score than each feature with FullCorrelation.
      * Update ancestors correlationFactor and treeName
      * <p>
      * e.g:
@@ -80,20 +74,19 @@ public class FeatureCorrelationAlgorithm {
      *
      * @param descSortedFeatureCorrelations <featureName, FeatureCorrelation> desc sorted map
      */
-    private void removeAncestors(Map<String, FeatureCorrelation> descSortedFeatureCorrelations) {
+    private void markAncestorWithFullCorrelation(Map<String, FeatureCorrelation> descSortedFeatureCorrelations) {
 
         Set<String> ancestors = new HashSet<>();
 
         for (FeatureCorrelation featureCorrelation : descSortedFeatureCorrelations.values()) {
-            TreeNode<CorrelationNodeData> treeNode = forest.getTreeNode(featureCorrelation.getName());
+            TreeNode<CorrelationNodeData> treeNode = correlationForest.getTreeNode(featureCorrelation.getName());
 
             if (treeNode != null) {
-                Set<TreeNode<CorrelationNodeData>> treeNodeAncestors = treeNode.getAncestors();
-
                 if (ancestors.contains(featureCorrelation.getName())) {
-                    featureCorrelation.setCorrelationFactor(NO_CORRELATION_FACTOR);
+                    featureCorrelation.setCorrelationFactor(FULL_CORRELATION_FACTOR);
                     featureCorrelation.setTreeName(treeNode.getTree().getName());
                 } else {
+                    Set<TreeNode<CorrelationNodeData>> treeNodeAncestors = treeNode.getAncestors();
                     ancestors.addAll(treeNodeAncestors.stream().map(m -> m.getData().getFeature()).collect(Collectors.toList()));
 
                 }
@@ -119,31 +112,33 @@ public class FeatureCorrelationAlgorithm {
      * k
      * result: d and c will get new correlation factor.
      *
-     * @param featureCorrelation            featureCorrelation
      * @param descSortedFeatureCorrelations desc sorted FeatureCorrelations
-     * @param stopConditionFunction         stopConditionFunction
      */
-    private void updateTreeCorrelation(FeatureCorrelation featureCorrelation, Map<String, FeatureCorrelation> descSortedFeatureCorrelations, StopConditionFunction stopConditionFunction) {
+    private void applyTreeCorrelation(Map<String, FeatureCorrelation> descSortedFeatureCorrelations) {
 
-        TreeNode<CorrelationNodeData> treeNode = forest.getTreeNode(featureCorrelation.getName());
-        if (treeNode != null) {
+        StopIfFeatureExistFunction stopIfFeatureExistFunction = new StopIfFeatureExistFunction(descSortedFeatureCorrelations.values());
 
-            //update correlation factor and tree name of given featureCorrelation
-            if (featureCorrelation.getCorrelationFactor() == null) {
-                featureCorrelation.setCorrelationFactor(FULL_CORRELATION_FACTOR);
-                featureCorrelation.setTreeName(treeNode.getTree().getName());
-            }
+        for (FeatureCorrelation featureCorrelation : descSortedFeatureCorrelations.values()) {
+            TreeNode<CorrelationNodeData> treeNode = correlationForest.getTreeNode(featureCorrelation.getName());
+            if (treeNode != null) {
 
-            //skip ancestors that was removed
-            if (!featureCorrelation.getCorrelationFactor().equals(NO_CORRELATION_FACTOR)) {
-                DescendantIterator<CorrelationNodeData> iterator = treeNode.getDescendantIterator(stopConditionFunction);
-                while (iterator.hasNext()) {
-                    TreeNode<CorrelationNodeData> descendant = iterator.next();
-                    String featureName = descendant.getData().getFeature();
-                    FeatureCorrelation childFeatureCorrelation = descSortedFeatureCorrelations.get(featureName);
-                    Double correlationFactor = featureCorrelation.getCorrelationFactor() * descendant.getData().getCorrelationFactor();
-                    childFeatureCorrelation.setCorrelationFactor(correlationFactor);
-                    childFeatureCorrelation.setTreeName(descendant.getTree().getName());
+                //update correlation factor and tree name of given featureCorrelation
+                if (featureCorrelation.getCorrelationFactor() == null) {
+                    featureCorrelation.setCorrelationFactor(NO_CORRELATION_FACTOR);
+                    featureCorrelation.setTreeName(treeNode.getTree().getName());
+                }
+
+                //skip ancestors that was removed
+                if (!featureCorrelation.getCorrelationFactor().equals(FULL_CORRELATION_FACTOR)) {
+                    DescendantIterator<CorrelationNodeData> iterator = treeNode.getDescendantIterator(stopIfFeatureExistFunction);
+                    while (iterator.hasNext()) {
+                        TreeNode<CorrelationNodeData> descendant = iterator.next();
+                        String featureName = descendant.getData().getFeature();
+                        FeatureCorrelation childFeatureCorrelation = descSortedFeatureCorrelations.get(featureName);
+                        Double correlationFactor = featureCorrelation.getCorrelationFactor() * descendant.getData().getCorrelationFactor();
+                        childFeatureCorrelation.setCorrelationFactor(correlationFactor);
+                        childFeatureCorrelation.setTreeName(descendant.getTree().getName());
+                    }
                 }
             }
         }
@@ -155,24 +150,23 @@ public class FeatureCorrelationAlgorithm {
      *
      * @param descSortedFeatureCorrelations desc sorted FeatureCorrelations
      */
-    private void updateFullCorrelation(Map<String, FeatureCorrelation> descSortedFeatureCorrelations) {
+    private void applyFullCorrelation(Map<String, FeatureCorrelation> descSortedFeatureCorrelations) {
 
-        List<String> featureCorrelationToRemove = new ArrayList<>();
+        List<String> alreadySeenFullCorrelation = new ArrayList<>();
 
         for (FeatureCorrelation featureCorrelation : descSortedFeatureCorrelations.values()) {
 
             String featureName = featureCorrelation.getName();
             FullCorrelation fullCorrelation = fullCorrelationSet.getFullCorrelation(featureName);
             if (fullCorrelation != null) {
-                if (featureCorrelationToRemove.contains(featureName)) {
-                    featureCorrelation.setCorrelationFactor(NO_CORRELATION_FACTOR);
-                    featureCorrelation.setFullCorrelationName(fullCorrelation.getName());
+                if (alreadySeenFullCorrelation.contains(featureName)) {
+                    featureCorrelation.setCorrelationFactor(FULL_CORRELATION_FACTOR);
                 } else {
-                    List<String> features = fullCorrelation.getFeatures();
-                    featureCorrelationToRemove.addAll(features.stream().filter(feature -> !feature.equals(featureName)).collect(Collectors.toList()));
-                    Double factor = featureCorrelation.getCorrelationFactor() != null ? featureCorrelation.getCorrelationFactor() : FULL_CORRELATION_FACTOR;
+                    alreadySeenFullCorrelation.addAll(fullCorrelation.getFeatures());
+                    Double factor = featureCorrelation.getCorrelationFactor() != null ? featureCorrelation.getCorrelationFactor() : NO_CORRELATION_FACTOR;
                     featureCorrelation.setCorrelationFactor(factor);
                 }
+                featureCorrelation.setFullCorrelationName(fullCorrelation.getName());
             }
         }
     }

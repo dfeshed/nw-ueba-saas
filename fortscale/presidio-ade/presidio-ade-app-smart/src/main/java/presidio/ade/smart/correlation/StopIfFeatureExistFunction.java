@@ -2,8 +2,10 @@ package presidio.ade.smart.correlation;
 
 import fortscale.smart.correlation.conf.CorrelationNodeData;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 
 /**
@@ -13,12 +15,12 @@ import java.util.function.Function;
  * see: fortscale.utils.DescendantIterator
  *
  */
-public class StopConditionFunction implements  Function<CorrelationNodeData, Boolean> {
+public class StopIfFeatureExistFunction implements Function<CorrelationNodeData, Boolean> {
 
     private List<String> features;
 
-    public StopConditionFunction(List<String> features) {
-        this.features = features;
+    public StopIfFeatureExistFunction(Collection<FeatureCorrelation> features) {
+        this.features = features.stream().map(feature -> feature.getName()).collect(Collectors.toList());
     }
 
     @Override

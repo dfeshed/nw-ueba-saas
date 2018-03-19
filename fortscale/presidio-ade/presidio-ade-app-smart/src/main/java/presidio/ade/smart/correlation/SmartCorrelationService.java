@@ -15,9 +15,9 @@ public class SmartCorrelationService {
 
 
     public SmartCorrelationService(SmartRecordConf smartRecordConf) {
-        Forest forest = new Forest(smartRecordConf);
-        FullCorrelationSet fullCorrelationSet = new FullCorrelationSet(smartRecordConf);
-        featureCorrelationAlgorithm = new FeatureCorrelationAlgorithm(forest, fullCorrelationSet);
+        CorrelationForest correlationForest = new CorrelationForest(smartRecordConf.getTrees());
+        FullCorrelationSet fullCorrelationSet = new FullCorrelationSet(smartRecordConf.getFullCorrelations());
+        featureCorrelationAlgorithm = new FeatureCorrelationAlgorithm(correlationForest, fullCorrelationSet);
     }
 
 

@@ -14,9 +14,8 @@ public class FullCorrelationSet {
     private Map<String, FullCorrelation> featureToFullCorrelation;
     private static final Logger logger = Logger.getLogger(FullCorrelationSet.class);
 
-    public FullCorrelationSet(SmartRecordConf smartRecordConf) {
+    public FullCorrelationSet(List<FullCorrelation> fullCorrelations ) {
         featureToFullCorrelation = new HashMap<>();
-        List<FullCorrelation> fullCorrelations = smartRecordConf.getFullCorrelations();
         buildFeatureToFullCorrelationMap(fullCorrelations);
     }
 

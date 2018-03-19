@@ -69,7 +69,7 @@ public class SmartAggregationRecord {
     }
 
     public void setCorrelationTreeName(String correlationTreeName) {
-        correlationTreeName = correlationTreeName;
+        this.correlationTreeName = correlationTreeName;
     }
 
     public Double getOldScore() {
@@ -85,6 +85,6 @@ public class SmartAggregationRecord {
     }
 
     public void setCorrelationFactor(Double correlationFactor) {
-        correlationFactor = correlationFactor;
+        this.correlationFactor = correlationFactor;
     }
 }

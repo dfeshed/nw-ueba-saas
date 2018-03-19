@@ -6,19 +6,17 @@ import fortscale.utils.DescendantIterator;
 import fortscale.utils.Tree;
 import fortscale.utils.TreeNode;
 import fortscale.utils.logging.Logger;
-import org.springframework.util.Assert;
 
 import java.util.*;
 
-public class Forest {
+public class CorrelationForest {
 
     private Map<String, TreeNode<CorrelationNodeData>> featureToTreeNode;
-    private static final Logger logger = Logger.getLogger(Forest.class);
+    private static final Logger logger = Logger.getLogger(CorrelationForest.class);
 
-    public Forest(SmartRecordConf smartRecordConf) {
+    public CorrelationForest(List<Tree<CorrelationNodeData>> trees ) {
         featureToTreeNode = new HashMap<>();
 
-        List<Tree<CorrelationNodeData>> trees = smartRecordConf.getTrees();
         for (Tree<CorrelationNodeData> tree : trees) {
             tree.fillTreeInTreeNodes();
             createFeatureToTreeNodeMap(tree.getRoot());
