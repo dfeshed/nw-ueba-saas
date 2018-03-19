@@ -277,7 +277,7 @@
 		</dependency>
 	</dependencies>
 	<build>
-		<finalName>caui-webapp</finalName>
+		<finalName>tdui-webapp</finalName>
 		<plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>

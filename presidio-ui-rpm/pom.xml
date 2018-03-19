@@ -8,7 +8,7 @@
         <tomcat_webapps_path>/opt/tomcat/webapps</tomcat_webapps_path>
         <rpm-maven-plugin.deployment_target_directory>/home/presidio/presidio-core</rpm-maven-plugin.deployment_target_directory>
         <rpm-maven-plugin.directory>${rpm-maven-plugin.deployment_target_directory}/ui/installation</rpm-maven-plugin.directory>
-        <ui-webapp-app-name>ui-webapp</ui-webapp-app-name>
+        <ui-webapp-app-name>tdui-webapp</ui-webapp-app-name>
 
     </properties>
     <parent>
@@ -42,37 +42,37 @@
                         <require>presidio-core &gt;= 1.0</require>
                     </requires>
                     <mappings>
-                      
-                        <!--<mapping>-->
-                            <!--<directoryIncluded>false</directoryIncluded>-->
-                            <!--<directory>${tomcat_webapps_path}</directory>-->
-                            <!--<username>tomcat</username>-->
-                            <!--<groupname>tomcat</groupname>-->
-                            <!--<sources>-->
-                                <!--<source>-->
-                                    <!--<location>-->
-                                        <!--${project.basedir}/../presidio-ui-webapp/target/${ui-webapp-app-name}.war-->
-                                    <!--</location>-->
-                                <!--</source>-->
-                            <!--</sources>-->
-                        <!--</mapping>-->
+                     
+                        <mapping>
+                            <directoryIncluded>false</directoryIncluded>
+                            <directory>${tomcat_webapps_path}</directory>
+                            <username>tomcat</username>
+                            -<groupname>tomcat</groupname>
+                            -<sources>
+                               -<source>
+                                   -<location>
+                                       ${project.basedir}/../presidio-ui-webapp/target/${ui-webapp-app-name}.war
+                                    </location>
+                                -</source>
+                            </sources>
+                        </mapping>
                        
                       
                     
                       
-                        <!--<mapping>-->
-                            <!--<directoryIncluded>false</directoryIncluded>-->
-                            <!--<directory>/temp</directory>-->
-                            <!--<username>presidio</username>-->
-                            <!--<groupname>presidio</groupname>-->
-                            <!--<sources>-->
-                                <!--<source>-->
-                                    <!--<location>-->
-                                        <!--${project.basedir}/utils/mongo_create_ca_user.js-->
-                                    <!--</location>-->
-                                <!--</source>-->
-                            <!--</sources>-->
-                        <!--</mapping>-->
+                        -<mapping>
+                            <directoryIncluded>false</directoryIncluded>
+                            <directory>/temp</directory>
+                            <username>presidio</username>
+                            <groupname>presidio</groupname>
+                            <sources>
+                                <source>
+                                   <location>
+                                       ${project.basedir}/utils/mongo_create_ca_user.js
+                                    </location>
+                                </source>
+                            </sources>
+                        </mapping>
                                                                      
                     </mappings>
                     <preinstallScriptlet>
