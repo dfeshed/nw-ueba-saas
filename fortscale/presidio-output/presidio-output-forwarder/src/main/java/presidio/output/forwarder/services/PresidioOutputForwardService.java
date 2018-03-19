@@ -51,7 +51,7 @@ public class PresidioOutputForwardService {
         eventsHandler.onUserStartStreaming(startDate, endDate, syslogEventId);
         try (Stream<User> users = userPersistencyService.findUsersByUpdatedDate(startDate, endDate)) {
             users.forEach(user -> {
-                    eventsHandler.onUserChanged(user);
+                eventsHandler.onUserChanged(user);
                 forwardedUsers.incrementAndGet();
             });
         }
