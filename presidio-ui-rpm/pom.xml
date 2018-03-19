@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <properties>
+        <presidio_home_path>/home/presidio/presidio-core/</presidio_home_path>
+        <tomcat_webapps_path>/opt/tomcat/webapps</tomcat_webapps_path>
+        <rpm-maven-plugin.deployment_target_directory>/home/presidio/presidio-core</rpm-maven-plugin.deployment_target_directory>
+        <rpm-maven-plugin.directory>${rpm-maven-plugin.deployment_target_directory}/ui/installation</rpm-maven-plugin.directory>
+        <ui-webapp-app-name>ui-webapp</ui-webapp-app-name>
+
+    </properties>
+    <parent>
+        <groupId>presidio.ui</groupId>
+        <artifactId>presidio-ui</artifactId>
+        <version>1.1-0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>presidio-ui-rpm</artifactId>
+
+    <build>
+        <plugins>
+           <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>rpm-maven-plugin</artifactId>
+                <version>${rpm-maven-plugin.version}</version>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>generate-rpm</id>
+                        <goals>
+                            <goal>rpm</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <group>Application/UI</group>
+                    <release>${rpm.version.build}</release>
+                    <needarch>true</needarch>
+                    <requires>
+                        <require>presidio-core &gt;= 1.0</require>
+                    </requires>
+                    <mappings>
+                      
+                        <!--<mapping>-->
+                            <!--<directoryIncluded>false</directoryIncluded>-->
+                            <!--<directory>${tomcat_webapps_path}</directory>-->
+                            <!--<username>tomcat</username>-->
+                            <!--<groupname>tomcat</groupname>-->
+                            <!--<sources>-->
+                                <!--<source>-->
+                                    <!--<location>-->
+                                        <!--${project.basedir}/../presidio-ui-webapp/target/${ui-webapp-app-name}.war-->
+                                    <!--</location>-->
+                                <!--</source>-->
+                            <!--</sources>-->
+                        <!--</mapping>-->
+                       
+                      
+                    
+                      
+                        <!--<mapping>-->
+                            <!--<directoryIncluded>false</directoryIncluded>-->
+                            <!--<directory>/temp</directory>-->
+                            <!--<username>presidio</username>-->
+                            <!--<groupname>presidio</groupname>-->
+                            <!--<sources>-->
+                                <!--<source>-->
+                                    <!--<location>-->
+                                        <!--${project.basedir}/utils/mongo_create_ca_user.js-->
+                                    <!--</location>-->
+                                <!--</source>-->
+                            <!--</sources>-->
+                        <!--</mapping>-->
+                                                                     
+                    </mappings>
+                    <preinstallScriptlet>
+                        <script>
+                            <!-- pre installation commands: -->
+                            echo "Stopping Tomcat"
+                            systemctl stop tomcat.service
+
+                            <!-- end of pre installation -->
+                        </script>
+                    </preinstallScriptlet>
+                    <postinstallScriptlet>
+                        <script>
+                            <!-- post installation commands: -->
+
+                            <!-- Temp mongo db creation block -->
+                            echo "Stopping mongo service"
+                            systemctl stop mongod.service
+                            wait ${!}
+                            echo "Disabling mongo auth"
+                            rm -rf -v /etc/mongod.conf
+                            cp -v /etc/mongod.conf.no_auth /etc/mongod.conf
+                            echo "Starting mongo service"
+                            systemctl start mongod.service
+                            wait ${!}
+                            echo "Mongo: creating presidio user"
+                            sleep 5
+                            mongo localhost:27017/quest-ca /temp/mongo_create_ca_user.js
+                            echo "Stopping mongo service"
+                            systemctl stop mongod.service
+                            wait ${!}
+                            echo "Enabling mongo auth"
+                            rm -rf -v /etc/mongod.conf
+                            cp -v /etc/mongod.conf.auth /etc/mongod.conf
+                            echo "Starting mongo service"
+                            systemctl start mongod.service
+                            <!-- End of mongo db creation -->
+
+                            echo "Starting Tomcat"
+                            systemctl start tomcat.service
+                          
+
+                            <!--end of post installation -->
+                        </script>
+                    </postinstallScriptlet>
+                    <preremoveScriptlet>
+                        <script>
+                            <!-- pre remove commands -->                            
+
+                            <!--Stop Tomcat -->
+                            echo "Stopping Tomcat"
+                            systemctl stop tomcat.service
+                        </script>
+                    </preremoveScriptlet>
+                    <postremoveScriptlet>
+                        <script>
+                            <!-- post remove commands -->
+                            echo "Removing webapp folders"
+                            rm -rf ${tomcat_webapps_path}/${ui-webapp-app-name}
+                            rm -rf ${tomcat_webapps_path}/${connector-webapp-app-name}
+                        </script>
+                    </postremoveScriptlet>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
