@@ -32,7 +32,7 @@ public class PresidioOutputForwardService {
         this.eventsHandler = eventsHandler;
     }
 
-    public void forward(Instant startDate, Instant endDate) {
+    public int forward(Instant startDate, Instant endDate) {
         logger.info(String.format("about to forward data from %s to %s", startDate, endDate));
 
         forwardUsers(startDate, endDate);
@@ -41,6 +41,7 @@ public class PresidioOutputForwardService {
 
         logger.info("finish to forward data");
 
+        return 0;
     }
 
     private void forwardUsers(Instant startDate, Instant endDate) {
