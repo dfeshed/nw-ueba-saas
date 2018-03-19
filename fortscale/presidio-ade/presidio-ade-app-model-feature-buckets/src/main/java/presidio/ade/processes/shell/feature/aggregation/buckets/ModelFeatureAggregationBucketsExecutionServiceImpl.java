@@ -56,6 +56,7 @@ public class ModelFeatureAggregationBucketsExecutionServiceImpl implements Presi
         // TODO: Implement
     }
 
+    @Override
     public void cleanAll(Schema schema) throws Exception {
         // TODO: Implement
     }
