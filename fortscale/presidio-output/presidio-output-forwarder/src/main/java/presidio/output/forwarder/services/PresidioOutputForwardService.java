@@ -1,6 +1,5 @@
 package presidio.output.forwarder.services;
 
-import com.google.common.base.Throwables;
 import fortscale.utils.logging.Logger;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.Indicator;
@@ -51,16 +50,9 @@ public class PresidioOutputForwardService {
         eventsHandler.onUserStartStreaming(startDate, endDate, syslogEventId);
         try (Stream<User> users = userPersistencyService.findUsersByUpdatedDate(startDate, endDate)) {
             users.forEach(user -> {
-                try {
                     eventsHandler.onUserChanged(user);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
                 forwardedUsers.incrementAndGet();
             });
-        }
-        catch (java.lang.Exception e) {
-
         }
         eventsHandler.onUserEndStreaming(startDate, endDate, syslogEventId);
 
