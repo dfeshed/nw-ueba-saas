@@ -10,12 +10,14 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
 /**
- * A {@link ModelingEngine} corresponds to a specific {@link ModelConf}. When the {@link #process(String, Instant, StoreMetadataProperties)}
- * method is called, the engine selects the context IDs, retrieves their data, builds and stores their models.
+ * A {@link ModelingEngine} corresponds to a specific {@link ModelConf}.
+ * When the {@link #process(String, Instant, StoreMetadataProperties)} method is called,
+ * the engine selects the context IDs, retrieves their data, builds and stores their models.
  *
  * @author Lior Govrin
  */
@@ -29,6 +31,7 @@ public class ModelingEngine {
 	private ModelStore modelStore;
 	private long timeRangeInSeconds;
 	private ModelingServiceMetricsContainer modelingServiceMetricsContainer;
+	private long allContextsForcedSelectionIntervalInSeconds;
 
 	public ModelingEngine(
 			ModelConf modelConf,
@@ -36,7 +39,8 @@ public class ModelingEngine {
 			AbstractDataRetriever dataRetriever,
 			IModelBuilder modelBuilder,
 			ModelStore modelStore,
-			ModelingServiceMetricsContainer modelingServiceMetricsContainer) {
+			ModelingServiceMetricsContainer modelingServiceMetricsContainer,
+			Duration allContextsForcedSelectionInterval) {
 
 		this.modelConf = modelConf;
 		this.contextSelector = contextSelector;
@@ -45,6 +49,7 @@ public class ModelingEngine {
 		this.modelStore = modelStore;
 		this.timeRangeInSeconds = modelConf.getDataRetrieverConf().getTimeRangeInSeconds();
 		this.modelingServiceMetricsContainer = modelingServiceMetricsContainer;
+		this.allContextsForcedSelectionIntervalInSeconds = allContextsForcedSelectionInterval.getSeconds();
 	}
 
 	/**
@@ -88,16 +93,19 @@ public class ModelingEngine {
 		Set<String> contextIds;
 
 		if (contextSelector != null) {
-			Instant previousEndInstant = modelStore.getLatestEndInstantLt(modelConf, sessionId, endInstant);
-			TimeRange timeRange;
+			Instant startInstant;
 
-			if (previousEndInstant == null) {
-				timeRange = new TimeRange(endInstant.minusSeconds(timeRangeInSeconds), endInstant);
+			if (allContextsForcedSelectionIntervalInSeconds > 0 &&
+				endInstant.getEpochSecond() % allContextsForcedSelectionIntervalInSeconds == 0) {
+				// Once every configured interval (e.g. once a week), select all the contexts that were active
+				// in the models' time span, and not just the contexts that were active since the previous run
+				startInstant = endInstant.minusSeconds(timeRangeInSeconds);
 			} else {
-				timeRange = new TimeRange(previousEndInstant, endInstant);
+				Instant prevEndInstant = modelStore.getLatestEndInstantLt(modelConf, sessionId, endInstant);
+				startInstant = prevEndInstant == null ? endInstant.minusSeconds(timeRangeInSeconds) : prevEndInstant;
 			}
 
-			contextIds = contextSelector.getContexts(timeRange);
+			contextIds = contextSelector.getContexts(new TimeRange(startInstant, endInstant));
 			logger.info("Contextual model: Selected {} context IDs.", contextIds.size());
 		} else {
 			contextIds = new HashSet<>();
