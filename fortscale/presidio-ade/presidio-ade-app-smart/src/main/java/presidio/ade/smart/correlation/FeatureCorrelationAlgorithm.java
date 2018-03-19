@@ -49,7 +49,6 @@ public class FeatureCorrelationAlgorithm {
      * @param descSortedFeatureCorrelations desc sorted featureCorrelations
      */
     public void updateCorrelatedFeatures(Map<String, FeatureCorrelation> descSortedFeatureCorrelations) {
-        markAncestorWithFullCorrelation(descSortedFeatureCorrelations);
         applyTreeCorrelation(descSortedFeatureCorrelations);
         applyFullCorrelation(descSortedFeatureCorrelations);
     }
@@ -116,6 +115,8 @@ public class FeatureCorrelationAlgorithm {
      */
     private void applyTreeCorrelation(Map<String, FeatureCorrelation> descSortedFeatureCorrelations) {
 
+        markAncestorWithFullCorrelation(descSortedFeatureCorrelations);
+
         StopIfFeatureExistFunction stopIfFeatureExistFunction = new StopIfFeatureExistFunction(descSortedFeatureCorrelations.values());
 
         for (FeatureCorrelation featureCorrelation : descSortedFeatureCorrelations.values()) {
@@ -158,15 +159,17 @@ public class FeatureCorrelationAlgorithm {
 
             String featureName = featureCorrelation.getName();
             FullCorrelation fullCorrelation = fullCorrelationSet.getFullCorrelation(featureName);
+
             if (fullCorrelation != null) {
-                if (alreadySeenFullCorrelation.contains(featureName)) {
+                String fullCorrelationName = fullCorrelation.getName();
+                if (alreadySeenFullCorrelation.contains(fullCorrelationName)) {
                     featureCorrelation.setCorrelationFactor(FULL_CORRELATION_FACTOR);
                 } else {
-                    alreadySeenFullCorrelation.addAll(fullCorrelation.getFeatures());
+                    alreadySeenFullCorrelation.add(fullCorrelationName);
                     Double factor = featureCorrelation.getCorrelationFactor() != null ? featureCorrelation.getCorrelationFactor() : NO_CORRELATION_FACTOR;
                     featureCorrelation.setCorrelationFactor(factor);
                 }
-                featureCorrelation.setFullCorrelationName(fullCorrelation.getName());
+                featureCorrelation.setFullCorrelationName(fullCorrelationName);
             }
         }
     }
