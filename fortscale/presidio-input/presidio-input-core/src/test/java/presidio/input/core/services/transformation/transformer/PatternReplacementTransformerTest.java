@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.input.core.services.transformation.managers.AuthenticationTransformerManager;
-import presidio.input.core.services.transformation.transformer.PatternReplacementTransformer;
 import presidio.sdk.api.domain.AbstractInputDocument;
 import presidio.sdk.api.domain.rawevents.AuthenticationRawEvent;
 import presidio.sdk.api.domain.transformedevents.AuthenticationTransformedEvent;
@@ -54,6 +53,6 @@ public class PatternReplacementTransformerTest {
                 "dstMachineId",
                 "dstMachineName",
                 "dstMachineDomain",
-                "resultCode", "site");
+                "resultCode", "site", "country", "city");
     }
 }
