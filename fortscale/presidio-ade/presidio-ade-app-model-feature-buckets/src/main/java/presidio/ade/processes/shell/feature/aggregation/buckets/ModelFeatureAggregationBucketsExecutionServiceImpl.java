@@ -13,7 +13,7 @@ import presidio.ade.domain.store.enriched.EnrichedDataStore;
 
 import java.time.Instant;
 
-public class ModelFeatureAggregationBucketsExecutionServiceImpl implements PresidioExecutionService {
+public class ModelFeatureAggregationBucketsExecutionServiceImpl extends PresidioExecutionService {
     private static final String SCHEMA = "schema";
     private static final String FIXED_DURATION_STRATEGY = "fixed_duration_strategy";
 
@@ -40,7 +40,6 @@ public class ModelFeatureAggregationBucketsExecutionServiceImpl implements Presi
         this.maxGroupSize = maxGroupSize;
     }
 
-    @Override
     public void run(Schema schema, Instant startInstant, Instant endInstant, Double fixedDurationStrategyInSeconds) throws Exception {
         ModelFeatureAggregationBucketsService service = new ModelFeatureAggregationBucketsService(
                 bucketConfigurationService, enrichedDataStore, inMemoryFeatureBucketAggregator, featureBucketStore, pageSize, maxGroupSize);
@@ -51,17 +50,14 @@ public class ModelFeatureAggregationBucketsExecutionServiceImpl implements Presi
         storeManager.cleanupCollections(storeMetadataProperties, startInstant);
     }
 
-    @Override
     public void applyRetentionPolicy(Schema schema, Instant startInstant, Instant endInstant) throws Exception {
         // TODO: Implement
     }
 
-    @Override
     public void cleanAll(Schema schema) throws Exception {
         // TODO: Implement
     }
 
-    @Override
     public void cleanup(Schema schema, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
         FixedDurationStrategy fixedDurationStrategy = FixedDurationStrategy.fromSeconds(fixedDuration.longValue());
         StoreMetadataProperties storeMetadataProperties = createStoreMetadataProperties(schema, fixedDurationStrategy);

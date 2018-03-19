@@ -9,7 +9,7 @@ import presidio.sdk.api.services.PresidioInputPersistencyService;
 
 import java.time.Instant;
 
-public class InputExecutionServiceImpl implements PresidioExecutionService {
+public class InputExecutionServiceImpl extends PresidioExecutionService {
 
     private static final Logger logger = Logger.getLogger(InputExecutionServiceImpl.class);
 
@@ -21,26 +21,22 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
         this.inputCoreManager = inputCoreManager;
     }
 
-    @Override
     public void run(Schema schema, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
         logger.info("Started input processing with params: data source:{}, from {}:{}, until {}:{}.", schema, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
         try {
             inputCoreManager.run(schema, startDate, endDate);
         } catch (Exception e) {
             logger.error("error while processing input", e);
-            throw e;
         }
 
         logger.debug("Finished input run with params : data source:{}, from {}:{}, until {}:{}.", schema, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
     }
 
-    @Override
     public void cleanAll(Schema schema) throws Exception {
         logger.info("Started clean processing for data source:{}.", schema);
         presidioInputPersistencyService.cleanAll(schema);
     }
 
-    @Override
     public void applyRetentionPolicy(Schema schema, Instant startDate, Instant endDate) throws Exception {
         logger.info("Started clean retention for data source:{}, from {}:{}, until {}:{}."
                 , schema,
@@ -50,7 +46,6 @@ public class InputExecutionServiceImpl implements PresidioExecutionService {
         logger.info("Finished clean retention processing .");
     }
 
-    @Override
     public void cleanup(Schema schema, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
         inputCoreManager.cleanup(schema, startDate, endDate);
     }

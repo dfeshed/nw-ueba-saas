@@ -17,7 +17,7 @@ import presidio.monitoring.flush.MetricContainerFlusher;
 
 import java.time.Instant;
 
-public class FeatureAggregationsExecutionServiceImpl implements PresidioExecutionService {
+public class FeatureAggregationsExecutionServiceImpl extends PresidioExecutionService {
     private static final String SCHEMA = "schema";
     private static final String FIXED_DURATION_STRATEGY = "fixed_duration_strategy";
 
@@ -53,7 +53,6 @@ public class FeatureAggregationsExecutionServiceImpl implements PresidioExecutio
     }
 
     //todo: data source should be event_type
-    @Override
     public void run(Schema schema, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
         FixedDurationStrategy fixedDurationStrategy = FixedDurationStrategy.fromSeconds(fixedDuration.longValue());
         FeatureAggregationService featureAggregationBucketsService = new FeatureAggregationService(fixedDurationStrategy, bucketConfigurationService, enrichedDataStore, inMemoryFeatureBucketAggregator, featureAggregationScoringService, featureAggregationsCreator, scoredFeatureAggregatedStore, pageSize, maxGroupSize, metricContainerFlusher);
@@ -65,19 +64,16 @@ public class FeatureAggregationsExecutionServiceImpl implements PresidioExecutio
         storeManager.cleanupCollections(storeMetadataProperties, startDate);
     }
 
-    @Override
     public void cleanup(Schema schema, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
         FixedDurationStrategy fixedDurationStrategy = FixedDurationStrategy.fromSeconds(fixedDuration.longValue());
         StoreMetadataProperties storeMetadataProperties = createStoreMetadataProperties(schema, fixedDurationStrategy);
         storeManager.cleanupCollections(storeMetadataProperties, startDate, endDate);
     }
 
-    @Override
     public void applyRetentionPolicy(Schema schema, Instant startDate, Instant endDate) throws Exception {
         // TODO: Implement
     }
 
-    @Override
     public void cleanAll(Schema schema) throws Exception {
         // TODO: Implement
     }

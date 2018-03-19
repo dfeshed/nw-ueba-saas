@@ -15,7 +15,7 @@ import presidio.sdk.api.services.PresidioInputPersistencyService;
 import java.io.IOException;
 import java.time.Instant;
 
-public class FlumeAdapterExecutionService implements PresidioExecutionService {
+public class FlumeAdapterExecutionService extends PresidioExecutionService {
     private static Logger logger = Logger.getLogger(FlumeAdapterExecutionService.class);
 
     private final ProcessExecutor processExecutor;
@@ -35,7 +35,6 @@ public class FlumeAdapterExecutionService implements PresidioExecutionService {
         this.mongoTemplate = mongoTemplate;
     }
 
-    @Override
     public void applyRetentionPolicy(Schema schema, Instant startDate, Instant endDate) throws Exception {
         logger.info("Starting Adapter retention process with params: schema: {}, {} : {}, {} : {}.", schema,
                 CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate,
@@ -49,7 +48,6 @@ public class FlumeAdapterExecutionService implements PresidioExecutionService {
         }
     }
 
-    @Override
     public void cleanAll(Schema schema) throws Exception {
         throw new UnsupportedOperationException("not supported");
     }
@@ -60,7 +58,6 @@ public class FlumeAdapterExecutionService implements PresidioExecutionService {
         presidioInputPersistencyService.clean(schema, startDate, endDate);
     }
 
-    @Override
     public void run(Schema schema, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
         logger.info("Starting Adapter with params: schema: {}, {} : {}, {} : {}.", schema, CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
         try {

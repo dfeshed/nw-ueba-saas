@@ -24,7 +24,7 @@ import java.util.*;
  * Created by shays on 17/05/2017.
  * Main output functionality is implemented here
  */
-public class OutputExecutionServiceImpl implements OutputExecutionService {
+public class OutputExecutionServiceImpl extends OutputExecutionService {
     private static final Logger logger = Logger.getLogger(OutputExecutionServiceImpl.class);
 
     private final AdeManagerSdk adeManagerSdk;
@@ -70,7 +70,6 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
      * @throws Exception
      */
     @RunTime
-    @Override
     public void run(Instant startDate, Instant endDate) throws Exception {
         logger.debug("Started output process with params: start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
         PageIterator<SmartRecord> smartPageIterator = adeManagerSdk.getSmartRecords(smartPageSize, smartPageSize, new TimeRange(startDate, endDate), SMART_THRESHOLD_FOR_GETTING_SMART_ENTITIES);
@@ -170,7 +169,6 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
     }
 
-    @Override
     public void clean(Instant startDate, Instant endDate) throws Exception {
         logger.debug("Start deleting alerts and updating users score.");
         // delete alerts
@@ -181,7 +179,6 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
     }
 
-    @Override
     public void applyRetentionPolicy(Instant endDate) throws Exception {
         List<Schema> schemas = Arrays.asList(Schema.values());
 
@@ -207,7 +204,6 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     }
 
 
-    @Override
     public void cleanAll() throws Exception {
         // TODO: Implement
     }
