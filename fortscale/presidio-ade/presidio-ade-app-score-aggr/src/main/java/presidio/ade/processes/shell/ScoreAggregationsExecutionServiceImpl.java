@@ -17,7 +17,7 @@ import presidio.monitoring.flush.MetricContainerFlusher;
 
 import java.time.Instant;
 
-public class ScoreAggregationsExecutionServiceImpl extends PresidioExecutionService {
+public class ScoreAggregationsExecutionServiceImpl implements PresidioExecutionService {
     private static final String SCHEMA = "schema";
     private static final String FIXED_DURATION_STRATEGY = "fixed_duration_strategy";
 
@@ -53,6 +53,7 @@ public class ScoreAggregationsExecutionServiceImpl extends PresidioExecutionServ
         this.metricContainerFlusher = metricContainerFlusher;
     }
 
+    @Override
     public void run(Schema schema, Instant startInstant, Instant endInstant, Double fixedDurationStrategyInSeconds) throws Exception {
         FixedDurationStrategy strategy = FixedDurationStrategy.fromSeconds(fixedDurationStrategyInSeconds.longValue());
         ScoreAggregationsService service = new ScoreAggregationsService(
@@ -64,16 +65,19 @@ public class ScoreAggregationsExecutionServiceImpl extends PresidioExecutionServ
         storeManager.cleanupCollections(storeMetadataProperties, startInstant);
     }
 
+    @Override
     public void cleanup(Schema schema, Instant startInstant, Instant endInstant, Double fixedDurationStrategyInSeconds) throws Exception {
         FixedDurationStrategy fixedDurationStrategy = FixedDurationStrategy.fromSeconds(fixedDurationStrategyInSeconds.longValue());
         StoreMetadataProperties storeMetadataProperties = createStoreMetadataProperties(schema, fixedDurationStrategy);
         storeManager.cleanupCollections(storeMetadataProperties, startInstant, endInstant);
     }
 
+    @Override
     public void applyRetentionPolicy(Schema schema, Instant startInstant, Instant endInstant) throws Exception {
         // TODO: Implement
     }
 
+    @Override
     public void cleanAll(Schema schema) throws Exception {
         // TODO: Implement
     }

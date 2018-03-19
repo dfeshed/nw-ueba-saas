@@ -5,18 +5,18 @@ import java.time.Instant;
 /**
  * Created by efratn on 31/07/2017.
  */
-public abstract class OutputExecutionService {
-    public abstract void run(Instant startDate, Instant endDate) throws Exception;
+public interface OutputExecutionService {
+    void run(Instant startDate, Instant endDate) throws Exception;
 
-    public abstract void updateAllUsersData() throws Exception;
+    void updateAllUsersData() throws Exception;
 
-    public abstract void clean(Instant startDate, Instant endDate) throws Exception;
+    void clean(Instant startDate, Instant endDate) throws Exception;
 
-    public abstract void applyRetentionPolicy(Instant endDate) throws Exception;
+    void applyRetentionPolicy(Instant endDate) throws Exception;
 
-    public abstract void cleanAll() throws Exception;
+    void cleanAll() throws Exception;
 
-    public int doRun(Instant startDate, Instant endDate) throws Exception {
+    default int doRun(Instant startDate, Instant endDate) throws Exception {
         try {
             run(startDate, endDate);
         }
