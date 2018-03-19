@@ -47,20 +47,20 @@
                             <directoryIncluded>false</directoryIncluded>
                             <directory>${tomcat_webapps_path}</directory>
                             <username>tomcat</username>
-                            -<groupname>tomcat</groupname>
-                            -<sources>
-                               -<source>
-                                   -<location>
+                            <groupname>tomcat</groupname>
+                            <sources>
+                               <source>
+                                   <location>
                                        ${project.basedir}/../presidio-ui-webapp/target/${ui-webapp-app-name}.war
                                     </location>
-                                -</source>
+                                </source>
                             </sources>
                         </mapping>
                        
                       
                     
                       
-                        -<mapping>
+                        <mapping>
                             <directoryIncluded>false</directoryIncluded>
                             <directory>/temp</directory>
                             <username>presidio</username>
