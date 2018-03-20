@@ -1,5 +1,4 @@
 import logging
-import os
 import subprocess
 
 from airflow.models import DAG, DagRun, TaskInstance
@@ -9,7 +8,6 @@ from airflow.utils.db import provide_session
 from airflow.utils.state import State
 from datetime import datetime, timedelta
 
-finished_states = [State.SUCCESS, State.SHUTDOWN, State.FAILED, State.UPSTREAM_FAILED, State.SKIPPED]
 unfinished_states = State.unfinished()
 delta_from_max_date = timedelta(minutes=10)
 delta_to_mark_as_stuck = timedelta(hours=12)
@@ -193,34 +191,6 @@ def kill_task_instances_stuck_in_up_for_retry():
     kill_task_instances(execution_date_to_full_task_ids_to_kill_dictionary)
 
 
-def kill_zombie_processes():
-    output = subprocess.check_output(['systemctl', 'status', 'airflow-scheduler'])
-    output = output.split(os.linesep)
-    output = [line.lstrip()[6:].split() for line in output if 'full_flow' in line]
-
-    for phrases in output:
-        pid = phrases[0]
-        dag_id = phrases[4]
-        task_id = phrases[5]
-        execution_date = datetime.strptime(phrases[6], '%Y-%m-%dT%H:%M:%S')
-        task_instance = find_task_instances(first=True, task_id=task_id, dag_id=dag_id, execution_date=execution_date)
-        reason = None
-
-        if task_instance is None:
-            reason = 'The corresponding task instance is not present in the database'
-        elif task_instance.state in finished_states:
-            reason = 'The task instance in the database is in a finished state ({})'.format(task_instance.state)
-        elif str(task_instance.pid) != pid:
-            reason = 'The task instance in the database has a different PID ({})'.format(task_instance.pid)
-
-        if reason is not None:
-            msg = 'Killing zombie process. pid = {}, dag_id = {}, task_id = {}, execution_date = {}, reason = {}.' \
-                .format(pid, dag_id, task_id, execution_date, reason)
-            logging.info(msg)
-            logging.info('Raw systemctl line = {}.'.format(' '.join(phrases)))
-            subprocess.Popen(['kill', pid])
-
-
 airflow_zombie_killer = DAG(
     dag_id="airflow_zombie_killer",
     schedule_interval=timedelta(minutes=15),
@@ -241,10 +211,4 @@ stuck_in_up_for_retry_task_instance_killer = PythonOperator(
     dag=airflow_zombie_killer
 )
 
-zombie_process_killer = PythonOperator(
-    task_id="zombie_process_killer",
-    python_callable=kill_zombie_processes,
-    dag=airflow_zombie_killer
-)
-
-zombie_sub_dag_task_instance_killer >> stuck_in_up_for_retry_task_instance_killer >> zombie_process_killer
+zombie_sub_dag_task_instance_killer >> stuck_in_up_for_retry_task_instance_killer
