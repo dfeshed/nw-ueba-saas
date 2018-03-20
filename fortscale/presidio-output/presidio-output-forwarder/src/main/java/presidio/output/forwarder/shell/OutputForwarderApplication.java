@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import presidio.output.forwarder.spring.OutputForwarderBeans;
+import presidio.output.forwarder.spring.OutputForwarderProductionConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,7 @@ public class OutputForwarderApplication {
         // The supported CLI commands for the application
         sources.add(presidio.output.forwarder.shell.OutputForwarderServiceCommands.class);
         // The Spring configuration of the application
-        sources.add(OutputForwarderBeans.class);
+        sources.add(OutputForwarderProductionConfig.class);
 
         new PresidioShellableApplication().run(sources, args);
     }
