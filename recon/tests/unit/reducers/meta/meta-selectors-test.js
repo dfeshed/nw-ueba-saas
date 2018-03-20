@@ -123,14 +123,14 @@ test('nweCallbackId', function(assert) {
         meta: [['medium', 1]]
       }
     })),
-    isEndpointNoClient: nweCallbackId(Immutable.from({
+    isEndpointNoAgent: nweCallbackId(Immutable.from({
       meta: {
         meta: [['nwe.callback_id', null]]
       }
     })),
-    isEndpointWithClient: nweCallbackId(Immutable.from({
+    isEndpointWithAgent: nweCallbackId(Immutable.from({
       meta: {
-        meta: [['nwe.callback_id', null], ['client', 500]]
+        meta: [['nwe.callback_id', null], ['agent.id', 500]]
       }
     })),
     emptyMeta: nweCallbackId(Immutable.from({
@@ -146,8 +146,8 @@ test('nweCallbackId', function(assert) {
   };
 
   assert.equal(tests.isNotEndpoint, undefined, 'nweCallbackId should return undefined if not endpoint event');
-  assert.equal(tests.isEndpointNoClient, undefined, 'nweCallbackId should return undefined if endpoint event without client id');
-  assert.equal(tests.isEndpointWithClient, 500, 'nweCallbackId should return value if endpoint event without client id');
+  assert.equal(tests.isEndpointNoAgent, undefined, 'nweCallbackId should return undefined if endpoint event without agent  id');
+  assert.equal(tests.isEndpointWithAgent, 500, 'nweCallbackId should return value if endpoint event without agent  id');
   assert.equal(tests.noMeta, undefined, 'nweCallbackId should return undefined if no meta');
   assert.equal(tests.emptyMeta, undefined, 'nweCallbackId should return undefined if empty meta');
 });
