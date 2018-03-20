@@ -20,7 +20,7 @@ public class OutputForwarderExecutionService {
 
     }
 
-    public int clean(Instant startTime, Instant endTime) {
+    public int doClean(Instant startTime, Instant endTime) {
 
         logger.info("There is nothing to clean in this service");
         return 0;

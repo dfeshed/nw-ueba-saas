@@ -27,4 +27,36 @@ public interface PresidioExecutionService {
         return 0;
     }
 
+    default int doCleanup(Schema schema, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
+        try {
+            cleanup(schema, startDate, endDate, fixedDuration);
+        }
+        catch (Exception e) {
+            return 1;
+        }
+        return 0;
+    }
+
+    default int doApplyRetentionPolicy(Schema schema, Instant startDate, Instant endDate) throws Exception {
+        try {
+            applyRetentionPolicy(schema, startDate, endDate);
+        }
+        catch (Exception e) {
+            return 1;
+        }
+        return 0;
+    }
+
+    default int doCleanAll(Schema schema) throws Exception {
+        try {
+            cleanAll(schema);
+        }
+        catch (Exception e) {
+            return 1;
+        }
+        return 0;
+    }
+
+
+
 }

@@ -25,4 +25,45 @@ public interface OutputExecutionService {
         }
         return 0;
     }
+
+    default int doUpdateAllUsersData() throws Exception {
+        try {
+            updateAllUsersData();
+        }
+        catch (Exception e) {
+            return 1;
+        }
+        return 0;
+    }
+
+    default int doClean(Instant startDate, Instant endDate) throws Exception {
+        try {
+            clean(startDate, endDate);
+        }
+        catch (Exception e) {
+            return 1;
+        }
+        return 0;
+    }
+
+    default int doApplyRetentionPolicy(Instant endDate) throws Exception {
+        try {
+            applyRetentionPolicy(endDate);
+        }
+        catch (Exception e) {
+            return 1;
+        }
+        return 0;
+    }
+
+    default int doCleanAll() throws Exception {
+        try {
+            cleanAll();
+        }
+        catch (Exception e) {
+            return 1;
+        }
+        return 0;
+    }
+
 }

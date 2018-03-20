@@ -30,7 +30,7 @@ public class OutputForwarderServiceCommands implements CommandMarker {
 
 
     @CliCommand(value = "cleanup", help = "clean application data for specified time range ")
-    public void cleanup(
+    public int cleanup(
             @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time greater than specified start time will be processed") final Instant startTime,
 
             @CliOption(key = {CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time smaller than specified end time will be processed") final Instant endTime,
@@ -39,6 +39,6 @@ public class OutputForwarderServiceCommands implements CommandMarker {
 
 
     ) throws Exception {
-        executionService.clean(startTime, endTime);
+        return executionService.doClean(startTime, endTime);
     }
 }
