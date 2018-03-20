@@ -1,4 +1,4 @@
-import { createConnectMessage, parseMessage, createMessage } from './message';
+import { createConnectMessage, parseMessage, createMessage, createSubscriptionReceiptMessage } from './message';
 import { discoverSubscriptions, subscriptionList } from './subscriptions';
 import mockAuthResponse from './mock-auth-response';
 
@@ -22,6 +22,7 @@ export {
   createConnectMessage,
   parseMessage,
   createMessage,
+  createSubscriptionReceiptMessage,
   discoverSubscriptions,
   subscriptionList,
   mockAuthResponse,

@@ -22,18 +22,22 @@ export default EmberObject.extend({
   }),
 
   /**
-   * Tries to retrieve the STOMP subscription object for a given destination + callback from the cache.
+   * Tries to retrieve the STOMP subscription object from the cache. Two+ keys are required for the lookup. First is the subscription
+   * destination, and the second is a specific property (value and name) that further uniquely identifies the subscription. This
+   * most commonly will be the callback function, but could also be a specific subcription ID.
    * @param {string} destination The subscription destination.
-   * @param {function} callback The callback function.
+   * @param value The property value used to find the subscription
+   * @param {string} property The property name that must have the provided value when finding the subscription
    * @returns {object} The STOMP subscription object, if found; null otherwise.
    * @public
    */
-  find(destination, callback) {
+  find(destination, value, property = 'callback') {
     const cache = this.get('_lookup');
-    const found = (cache[destination] || []).findBy('callback', callback);
+    const found = (cache[destination] || []).findBy(property, value);
 
     return found && found.sub;
   },
+
   /**
    * Caches a given STOMP subscription object for a given destination + callback. Overwrites any previously
    * cached subscription object for that same destination + callback combination.
@@ -51,7 +55,8 @@ export default EmberObject.extend({
     }
     arr.push({
       callback,
-      sub
+      sub,
+      id: sub.id
     });
   },
 

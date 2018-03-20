@@ -13,6 +13,7 @@ import {
   parseMessage,
   createConnectMessage,
   createMessage,
+  createSubscriptionReceiptMessage,
   discoverSubscriptions,
   subscriptionList,
   mockAuthResponse,
@@ -80,19 +81,20 @@ const start = function({ subscriptionLocations, routes }, cb) {
           ws.send(createConnectMessage());
           break;
         case 'SUBSCRIBE': {
+          ws.send(createSubscriptionReceiptMessage(frame.headers));
+          break;
+        }
+        case 'SEND': {
           // get list of subscriptions and see if subscription being used is present
           const subscriptions = subscriptionList();
           if (subscriptions[frame.headers.destination]) {
-            ws.subscriptionHandler = subscriptions[frame.headers.destination];
+            const subscriptionHandler = subscriptions[frame.headers.destination];
+            _handleMessage(ws, frame, subscriptionHandler);
           } else {
-            ws.subscriptionHandler = null;  // clear out the last good subscription handler, if any
             console.error(chalk.red(`No handler exists for [[ ${frame.headers.destination} ]]`));
           }
           break;
         }
-        case 'SEND':
-          _handleMessage(ws, frame);
-          break;
         case 'DISCONNECT':
           // DISCONNECT means the client has disconnected
           // so terminating should not be necessary
@@ -118,8 +120,8 @@ const start = function({ subscriptionLocations, routes }, cb) {
 // then be leveraged by subscription handlers at any point in the future.  Useful for sharing tools/data across subscriptions.
 const _subscriptionHelpers = {};
 
-const _handleMessage = function(ws, frame) {
-  if (ws.subscriptionHandler) {
+const _handleMessage = function(ws, frame, subscriptionHandler) {
+  if (subscriptionHandler) {
 
     // Create closure over ws state for possible
     // sending of sendMessage to `page` funtion
@@ -127,12 +129,12 @@ const _handleMessage = function(ws, frame) {
       if (!body && ws.page) {
         console.error(
           chalk.red(
-            `If calling \`send\` function from \`page\`, must pass body object to callback, not processing this request any further: ${ws.subscriptionHandler.subscriptionDestination}`));
+            `If calling \`send\` function from \`page\`, must pass body object to callback, not processing this request any further: ${subscriptionHandler.subscriptionDestination}`));
         return;
       }
 
-      const _handler = clone(ws.subscriptionHandler);
-      const delay = determineDelay(ws.subscriptionHandler.delay);
+      const _handler = clone(subscriptionHandler);
+      const delay = determineDelay(subscriptionHandler.delay);
       setTimeout(function() {
         if (_isClosed(ws)) {
           console.info('Client disconnected, not sending message');
@@ -145,14 +147,14 @@ const _handleMessage = function(ws, frame) {
     };
 
     // single message back
-    if (ws.subscriptionHandler.message) {
+    if (subscriptionHandler.message) {
       sendMessage();
       return;
     }
 
     // allow subscription to paginate on its own
-    if (ws.subscriptionHandler.page) {
-      ws.subscriptionHandler.page(frame, sendMessage, _subscriptionHelpers);
+    if (subscriptionHandler.page) {
+      subscriptionHandler.page(frame, sendMessage, _subscriptionHelpers);
     }
   }
 };

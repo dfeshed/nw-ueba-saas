@@ -22,3 +22,16 @@ test('it throws an error if socket config is not provided', function(assert) {
   }
 });
 
+test('the socket client\'s subscribe method returns a promise that is resolved once the subscription receipt message is handled', async function(assert) {
+  assert.expect(3);
+
+  const methodName = 'promise/_1';
+  const modelName = 'test';
+  const subscriptionDestination = `/test/subscription/${methodName}`;
+
+  const client = await Socket.createStream(methodName, modelName, {}).fetchSocketClient();
+  const subscription = await client.subscribe(subscriptionDestination, () => {});
+  assert.ok(subscription.id, 'The subscription has an ID (e.g, sub-0)');
+  assert.equal(subscription.destination, subscriptionDestination, 'The subscription destination matches the one used in the subscribe call');
+  assert.ok(typeof subscription.send === 'function', 'The subscription has a send function');
+});

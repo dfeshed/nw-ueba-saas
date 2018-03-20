@@ -75,6 +75,14 @@ const createConnectMessage = function() {
   return msg;
 };
 
+const createSubscriptionReceiptMessage = function(headers) {
+  headers = headers || {};
+  // Stomp it
+  const marshalledMsg = Stomp.Frame.marshall('RECEIPT', headers, null);
+  const msg = `a["${jsesc(marshalledMsg.slice(0, -1))}\\u0000"]`;
+  return msg;
+};
+
 /*
  * Builds body of message and then calls _createMessageWithBody.
  *
@@ -100,5 +108,6 @@ const createMessage = function(subscription, frame, body = null, helpers) {
 export {
   createConnectMessage,
   parseMessage,
-  createMessage
+  createMessage,
+  createSubscriptionReceiptMessage
 };

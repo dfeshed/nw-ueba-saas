@@ -262,10 +262,14 @@ export default Mixin.create({
         }
 
         // Subscribe to destination.
-        const sub = this._socketSubscription = websocketClient.subscribe(subscriptionDestination, callback, null);
-
-        // Send query message for the stream.
-        sub.send({}, params, cfg.requestDestination);
+        const subscribe = websocketClient.subscribe(subscriptionDestination, callback, null);
+        // Keep track of the new subscription promise
+        this._socketSubscription = subscribe;
+        // Once we've received confirmation that the subscription has been processed by the server
+        subscribe.then((subscription) => {
+          // Send query message for the stream.
+          subscription.send({}, params, cfg.requestDestination);
+        });
       })
       .catch(this.error.bind(this));
     return this;
@@ -290,7 +294,7 @@ export default Mixin.create({
 
       // Release this STOMP client subscription, but don't disconnect the STOMP client
       // because it may be re-used by other requests.
-      this._socketSubscription.unsubscribe();
+      this._socketSubscription.then((subscription) => subscription.unsubscribe());
     }
     return this;
   },

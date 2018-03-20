@@ -61,6 +61,37 @@ function _wrapCallback(callback) {
   };
 }
 
+/**
+ * Utility that returns the receipt callback function for subscriptions. We need to use subscription receipts because
+ * there is no guarantee when a SUBSCRIBE and a SEND are sent to a service that the SUBSCRIBE will be processed by the
+ * server prior to the SEND. If the SEND request can be processed by the server very quickly, then it's possible that
+ * the server will respond to the SEND before it has fully setup the SUBSCRIPTION, which means that the client may never
+ * hear the response.
+ *
+ * Here, when a receipt message is received for a subscription, we lookup the subscription and invoke the promise
+ * resolve function that has been placed on the subscription object. This allows the client to only SEND once the
+ * subscription receipt has been received.
+ * @param subscriptions
+ * @returns {function(*=)}
+ * @private
+ */
+function handleSubscriptionReceipt(subscriptions) {
+  return (frame = {}) => {
+    const headers = frame.headers || {};
+    const { destination, id } = headers;
+
+    if (destination && id) {
+      // use the destination and the subscription id to lookup the subscription from the subscription-cache
+      const sub = subscriptions.find(destination, id, 'id');
+      if (sub && sub.receipt) {
+        // resolve the promise that will trigger the callbacks for SENDing the request now that the subscription
+        // has been confirmed
+        sub.receipt.resolve(sub);
+      }
+    }
+  };
+}
+
 export default EmberObject.extend({
 
   /**
@@ -223,6 +254,9 @@ export default EmberObject.extend({
    * @public
    */
   subscribe(destination, callback, headers) {
+    headers = headers || {};
+    // ensure that a receipt is included in the subscription headers
+    headers.receipt = headers.receipt || `receipt_${destination}`;
 
     // Previously, we checked here for the requested subscription in the cache.
     // But we are going to stop re-using subscriptions now, so that server requests have
@@ -231,8 +265,12 @@ export default EmberObject.extend({
     const me = this;
     const subs = this.get('subscriptions');
     // STOMP gives us the subscription object.
-    const sub = this.get('stompClient').subscribe(destination, _wrapCallback(callback), headers || {});
+    const sub = this.get('stompClient').subscribe(destination, _wrapCallback(callback), headers);
 
+    // Create a deferred promise that will be resolved once receipt of the subscription is confirmed. A consumer can then
+    // check that the promise has been resolved before sending messages. Otherwise, it is possible that the server
+    // could receive messages before it has fully processed the subscription
+    sub.receipt = RSVP.defer();
     // We enhance the subscription object with a little extra logic & properties.
     sub.destination = destination;
     sub.send = function(h, b, d) {
@@ -247,7 +285,8 @@ export default EmberObject.extend({
     };
 
     subs.add(destination, callback, sub);
-    return sub;
+
+    return sub.receipt.promise;
   },
 
   /**
@@ -259,6 +298,7 @@ export default EmberObject.extend({
    */
   init() {
     this._super(...arguments);
+    const subscriptions = this.get('subscriptions');
 
     const url = this.get('url');
     if (!url) {
@@ -275,6 +315,7 @@ export default EmberObject.extend({
     const stompClient = Stomp.over(
       new SockJS(url, {}, { transports: ['websocket'] })
     );
+    stompClient.onreceipt = handleSubscriptionReceipt(subscriptions);
     stompClient.maxWebSocketFrameSize = MAX_WEBSOCKET_FRAME_SIZE; // change/increase the default max websocket frame size
     stompClient.debug = config.socketDebug ? debug.bind(debug) : null;
     this.set('stompClient', stompClient);

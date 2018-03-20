@@ -97,10 +97,10 @@ const discoverSubscriptions = function(subscriptionLocations) {
 
   const subscriptionObject = {};
   subscriptions.forEach((sub) => {
-    if (subscriptionObject[sub.subscriptionDestination]) {
-      console.error(chalk.red(`\nDuplicate subscriptions detected for [[ ${sub.subscriptionDestination} ]], first one detected will be used.\n`));
+    if (subscriptionObject[sub.requestDestination]) {
+      console.error(chalk.red(`\nDuplicate subscriptions detected for [[ ${sub.requestDestination} ]], first one detected will be used.\n`));
     } else {
-      subscriptionObject[sub.subscriptionDestination] = sub;
+      subscriptionObject[sub.requestDestination] = sub;
     }
   });
   report(subscriptionLocations, subscriptionObject);
