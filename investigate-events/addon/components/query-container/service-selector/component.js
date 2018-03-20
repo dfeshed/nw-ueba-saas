@@ -25,14 +25,14 @@ const stateToComputed = (state) => ({
   hasSummaryData: hasSummaryData(state)
 });
 
-const ServiceCrumb = Component.extend({
-  classNames: ['rsa-investigate-breadcrumb', 'service-breadcrumb', 'js-test-investigate-events-service-breadcrumb'],
+const ServiceSelector = Component.extend({
+  classNames: ['rsa-investigate-query-container__service-selector'],
 
   i18n: service(),
 
   @computed()
   panelId() {
-    return `breadCrumbServiceTooltip-${this.get('elementId')}`;
+    return `queryServiceTooltip-${this.get('elementId')}`;
   },
 
   @computed('isLoading', 'selectedServiceMessage', 'serviceDisplayName', 'i18n')
@@ -104,4 +104,4 @@ const ServiceCrumb = Component.extend({
   }
 });
 
-export default connect(stateToComputed, dispatchToActions)(ServiceCrumb);
+export default connect(stateToComputed, dispatchToActions)(ServiceSelector);

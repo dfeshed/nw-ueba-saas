@@ -29,7 +29,7 @@ $investigateReconFullWidth: 100%;
     @include border-bottom(1px, solid, neutral, dark);
     @include rsa-vendor-prefix(flex-shrink, 1);
     padding: rsa-whitespace(least) rsa-whitespace();
-    .rsa-investigate-breadcrumb {
+    .rsa-investigate-query {
       .rsa-investigate-query-input {
         @include rsa-vendor-prefix(flex-grow, 1);
         height: 2rem;

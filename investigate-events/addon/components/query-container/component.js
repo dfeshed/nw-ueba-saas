@@ -6,9 +6,9 @@ const stateToComputed = (state) => ({
   hasRequiredValuesToQuery: hasRequiredValuesToQuery(state)
 });
 
-const BreadCrumbContainer = Component.extend({
-  classNames: ['rsa-investigate-breadcrumb__crumbs', 'rsa-button-group'],
+const QueryContainer = Component.extend({
+  classNames: ['rsa-investigate-query-container', 'rsa-button-group'],
   tagName: 'nav'
 });
 
-export default connect(stateToComputed)(BreadCrumbContainer);
+export default connect(stateToComputed)(QueryContainer);

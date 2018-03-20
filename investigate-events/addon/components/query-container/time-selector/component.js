@@ -7,8 +7,8 @@ import { setQueryTimeRange } from 'investigate-events/actions/interaction-creato
 
 const dispatchToActions = { setQueryTimeRange };
 
-const TimeCrumb = Component.extend({
-  classNames: ['rsa-investigate-breadcrumb', 'js-test-investigate-events-time-breadcrumb'],
+const TimeSelector = Component.extend({
+  classNames: ['rsa-investigate-query-container__time-selector'],
 
   // This temporarily disables the tooltip until we can figure out how to
   // calculate a time range like "Last 2 Days" from the startTime/endTime
@@ -24,9 +24,9 @@ const TimeCrumb = Component.extend({
 
   @computed()
   panelId() {
-    return `breadCrumbTimerangeTooltip-${this.get('elementId')}`;
+    return `queryTimerangeTooltip-${this.get('elementId')}`;
   }
 
 });
 
-export default connect(undefined, dispatchToActions)(TimeCrumb);
+export default connect(undefined, dispatchToActions)(TimeSelector);

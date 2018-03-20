@@ -6,7 +6,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import Immutable from 'seamless-immutable';
 
 let setState;
-moduleForComponent('time-range', 'Integration | Component | time range', {
+moduleForComponent('time-selector', 'Integration | Component | time-selector', {
   integration: true,
   resolver: engineResolverFor('investigate-events'),
   beforeEach() {
@@ -26,7 +26,7 @@ const nowInSeconds = parseInt(+(new Date()) / 1000, 10);
 const oneWeekAgo = nowInSeconds - 7 * 24 * 60 * 60;
 
 test('it renders', function(assert) {
-  this.render(hbs`{{bread-crumb-container/time-range startTime=now}}`);
+  this.render(hbs`{{query-container/time-range startTime=now}}`);
   assert.equal(this.$('.rsa-investigate-time-range').length, 1, 'Expected root DOM element.');
 });
 
@@ -37,7 +37,7 @@ test('it renders as expected with only a startTime', function(assert) {
     }
   });
 
-  this.render(hbs`{{bread-crumb-container/time-range}}`);
+  this.render(hbs`{{query-container/time-range}}`);
 
   assert.equal(this.$('.start').length, 1, 'Expected start time DOM element.');
   assert.equal(this.$('.end').length, 0, 'Expected to omit end time DOM element.');
@@ -51,7 +51,7 @@ test('it renders as expected with only an endTime', function(assert) {
     }
   });
 
-  this.render(hbs`{{bread-crumb-container/time-range}}`);
+  this.render(hbs`{{query-container/time-range}}`);
 
   assert.equal(this.$('.end').length, 1, 'Expected end time DOM element.');
   assert.equal(this.$('.start').length, 0, 'Expected to omit start time DOM element.');
@@ -66,7 +66,7 @@ test('it renders as expected with startTime and endTime that are days apart matc
     }
   });
 
-  this.render(hbs`{{bread-crumb-container/time-range}}`);
+  this.render(hbs`{{query-container/time-range}}`);
 
   assert.equal(this.$('.start').length, 1, 'Expected start time DOM element.');
   assert.equal(this.$('.end').length, 1, 'Expected end time DOM element.');
@@ -81,7 +81,7 @@ test('it renders as expected with startTime and endTime that match', function(as
     }
   });
 
-  this.render(hbs`{{bread-crumb-container/time-range}}`);
+  this.render(hbs`{{query-container/time-range}}`);
 
   assert.equal(this.$('.start').length, 1, 'Expected start time DOM element.');
   assert.equal(this.$('.end').length, 1, 'Expected end time DOM element.');

@@ -7,7 +7,7 @@ import ReduxDataHelper from '../../../helpers/redux-data-helper';
 
 let setState;
 
-moduleForComponent('bread-crumb-container', 'Integration | Component | bread-crumb-container', {
+moduleForComponent('query-container', 'Integration | Component | query-container', {
   integration: true,
   resolver: engineResolverFor('investigate-events'),
   beforeEach() {
@@ -26,7 +26,7 @@ test('it disables the submit button when required values are missing', function(
   new ReduxDataHelper(setState)
     .hasRequiredValuesToQuery(false)
     .build();
-  this.render(hbs`{{bread-crumb-container}}`);
+  this.render(hbs`{{query-container}}`);
   assert.ok(this.$('.execute-query-button').hasClass('is-disabled'), 'Expected is-disabled CSS class on the submit button.');
 });
 
@@ -34,6 +34,6 @@ test('it enables the submit button when required values are present', function(a
   new ReduxDataHelper(setState)
     .hasRequiredValuesToQuery(true)
     .build();
-  this.render(hbs`{{bread-crumb-container}}`);
+  this.render(hbs`{{query-container}}`);
   assert.notOk(this.$('.execute-query-button').hasClass('is-disabled'), 'Expected is-disabled CSS class on the submit button.');
 });

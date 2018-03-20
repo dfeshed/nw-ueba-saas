@@ -14,7 +14,7 @@ const LOADING_SUMMARY = 'Loading Summary';
 
 let setState;
 
-moduleForComponent('bread-crumb-container', 'Integration | Component | service crumb', {
+moduleForComponent('service-selector', 'Integration | Component | service-selector', {
   integration: true,
   resolver: engineResolverFor('investigate-events'),
   beforeEach() {
@@ -33,20 +33,20 @@ test('it indicates when retrieving service data', function(assert) {
   new ReduxDataHelper(setState)
     .isServicesLoading(true)
     .build();
-  this.render(hbs`{{bread-crumb-container/service-crumb}}`);
+  this.render(hbs`{{query-container/service-selector}}`);
   assert.equal(this.$('.rsa-loader').length, 1, 'expected loader');
   assert.equal(this.$('.js-test-service').text().trim(), LOADING_SERVICES, 'incorrect label');
-  assert.equal(this.$('.rsa-investigate-breadcrumb__crumb').attr('title'), LOADING_DATA, 'incorrect tooltip');
+  assert.equal(this.$('.rsa-form-button-wrapper.service-selector').attr('title'), LOADING_DATA, 'incorrect tooltip');
 });
 
 test('it indicates when there is an error loading services', function(assert) {
   new ReduxDataHelper(setState)
     .isServicesRetrieveError(true)
     .build();
-  this.render(hbs`{{bread-crumb-container/service-crumb}}`);
+  this.render(hbs`{{query-container/service-selector}}`);
   assert.equal(this.$('.disclaimer').length, 1, 'expected disclaimer CSS class');
   assert.equal(this.$('.js-test-service').text().trim(), SERVICES_UNAVAILABLE, 'incorrect label');
-  assert.equal(this.$('.rsa-investigate-breadcrumb__crumb').attr('title'), SERVICE_ERROR_MESSAGE, 'incorrect tooltip');
+  assert.equal(this.$('.rsa-form-button-wrapper.service-selector').attr('title'), SERVICE_ERROR_MESSAGE, 'incorrect tooltip');
 });
 
 test('it indicates when there is no data for the service', function(assert) {
@@ -54,20 +54,20 @@ test('it indicates when there is no data for the service', function(assert) {
   new ReduxDataHelper(setState)
     .hasSummaryData(false, service)
     .build();
-  this.render(hbs`{{bread-crumb-container/service-crumb}}`);
+  this.render(hbs`{{query-container/service-selector}}`);
   assert.equal(this.$('.disclaimer').length, 1, 'expected disclaimer CSS class');
   assert.equal(this.$('.js-test-service').text().trim(), service, 'incorrect label');
-  assert.equal(this.$('.rsa-investigate-breadcrumb__crumb').attr('title'), NO_DATA, 'incorrect tooltip');
+  assert.equal(this.$('.rsa-form-button-wrapper.service-selector').attr('title'), NO_DATA, 'incorrect tooltip');
 });
 
 test('it indicates when retrieving summary data', function(assert) {
   new ReduxDataHelper(setState)
     .isSummaryLoading(true)
     .build();
-  this.render(hbs`{{bread-crumb-container/service-crumb}}`);
+  this.render(hbs`{{query-container/service-selector}}`);
   assert.equal(this.$('.rsa-loader').length, 1, 'expected loader');
   assert.equal(this.$('.js-test-service').text().trim(), LOADING_SUMMARY, 'incorrect label');
-  assert.equal(this.$('.rsa-investigate-breadcrumb__crumb').attr('title'), LOADING_DATA, 'incorrect tooltip');
+  assert.equal(this.$('.rsa-form-button-wrapper.service-selector').attr('title'), LOADING_DATA, 'incorrect tooltip');
 });
 
 test('it indicates when there is an error loading a service\'s summary', function(assert) {
@@ -77,8 +77,8 @@ test('it indicates when there is an error loading a service\'s summary', functio
   new ReduxDataHelper(setState)
     .isSummaryDataInvalid(true, service, errorMessage)
     .build();
-  this.render(hbs`{{bread-crumb-container/service-crumb}}`);
+  this.render(hbs`{{query-container/service-selector}}`);
   assert.equal(this.$('.disclaimer').length, 1, 'expected disclaimer CSS class');
   assert.equal(this.$('.js-test-service').text().trim(), service, 'incorrect label');
-  assert.equal(this.$('.rsa-investigate-breadcrumb__crumb').attr('title'), message, 'incorrect tooltip');
+  assert.equal(this.$('.rsa-form-button-wrapper.service-selector').attr('title'), message, 'incorrect tooltip');
 });

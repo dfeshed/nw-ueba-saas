@@ -4,12 +4,16 @@
 }}
   {{#rsa-form-button
     allowToggleActive=true
-    class='rsa-investigate-breadcrumb__crumb'
-    title=selectedTimeRangeName
+    title=title
+    class='service-selector'
     withDropdown=true
   }}
-    {{rsa-icon style='lined' name='clock-2'}}
-    {{bread-crumb-container/time-range}}
+    {{#if isLoading}}
+      {{rsa-loader size='small'}}
+    {{else}}
+      {{rsa-icon class=iconDetails.class style='lined' name=iconDetails.name}}
+    {{/if}}
+    <span class='js-test-service'>{{selectedServiceName}}</span>
   {{/rsa-form-button}}
 {{/rsa-content-tethered-panel-trigger}}
 {{#rsa-content-tethered-panel
@@ -20,8 +24,8 @@
   as |hideTooltip|
 }}
   <ul class="rsa-dropdown-action-list" {{action hideTooltip}}>
-    {{#each timeRanges as |range|}}
-      <li {{action 'setQueryTimeRange' range}}>{{range.name}}</li>
+    {{#each services as |service|}}
+      <li {{action 'setService' service}}>{{service.displayName}}</li>
     {{/each}}
   </ul>
 {{/rsa-content-tethered-panel}}
