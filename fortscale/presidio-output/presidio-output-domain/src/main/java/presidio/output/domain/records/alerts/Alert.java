@@ -266,4 +266,27 @@ public class Alert extends AbstractElasticDocument {
     public void setVendorUserId(String vendorUserId) {
         this.vendorUserId = vendorUserId;
     }
+
+    @Override
+    public String toString() {
+        return "Alert{" +
+                "classifications=" + classifications +
+                ", userName='" + userName + '\'' +
+                ", indexedUserName='" + indexedUserName + '\'' +
+                ", smartId='" + smartId + '\'' +
+                ", userId='" + userId + '\'' +
+                ", vendorUserId='" + vendorUserId + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", score=" + score +
+                ", indicatorsNum=" + indicatorsNum +
+                ", timeframe=" + timeframe +
+                ", severity=" + severity +
+                ", indicatorsNames=" + indicatorsNames +
+                ", indicators=" + indicators +
+                ", userTags=" + userTags +
+                ", contributionToUserScore=" + contributionToUserScore +
+                ", feedback=" + feedback +
+                '}';
+    }
 }

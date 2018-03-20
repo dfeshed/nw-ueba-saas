@@ -255,4 +255,23 @@ public class User extends AbstractElasticDocument {
     public int hashCode() {
         return id.hashCode();
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId='" + userId + '\'' +
+                ", userName='" + userName + '\'' +
+                ", indexedUserName='" + indexedUserName + '\'' +
+                ", userDisplayName='" + userDisplayName + '\'' +
+                ", userDisplayNameSortLowercase='" + userDisplayNameSortLowercase + '\'' +
+                ", score=" + score +
+                ", alertClassifications=" + alertClassifications +
+                ", indicators=" + indicators +
+                ", severity=" + severity +
+                ", tags=" + tags +
+                ", alertsCount=" + alertsCount +
+                ", updatedByLogicalStartDate=" + updatedByLogicalStartDate +
+                ", updatedByLogicalEndDate=" + updatedByLogicalEndDate +
+                '}';
+    }
 }

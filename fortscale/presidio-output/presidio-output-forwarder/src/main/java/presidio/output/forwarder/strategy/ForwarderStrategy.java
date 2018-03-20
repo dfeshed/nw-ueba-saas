@@ -1,14 +1,18 @@
 package presidio.output.forwarder.strategy;
 
 
+import java.util.Map;
+
 /**
  * Interface to implement the forwarding strategy
  */
 public interface ForwarderStrategy {
 
-    enum TYPE {
-        USER, ALERT, INDICATOR;
+    enum PAYLOAD_TYPE {
+        ENTITY, ALERT, INDICATOR;
     }
+
+    String getName();
 
     /**
      * This is to inform the forwarder to perform initialization
@@ -17,15 +21,14 @@ public interface ForwarderStrategy {
 
 
     /**
-     * Forward the message to the concrete target
+     * Forward the payload to the concrete target
      *
-     * @param id the id of the object
-     * @param message json representation of the object
+     * @param payloads map of messages: <id, message> the id of the object, json representation of the object
      * @param type object type
      *
-     * @throws Exception if forwarding the message fail
+     * @throws Exception if forwarding the payload fail
      */
-    void forward (String id, String message, TYPE type) throws Exception;
+    void forward (Map<String,String> payloads, PAYLOAD_TYPE type) throws Exception;
 
 
     /**

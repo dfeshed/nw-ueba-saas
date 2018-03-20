@@ -127,7 +127,7 @@ components:
       xms: 2048
   output_forwarder:
     jvm_args:
-      jar_path: ${general.deployment.bins.base_path}/presidio-output-forwarder-*.jar
+      jar_path: ${general.deployment.bins.base_path}/presidio-output-forwarder-*-exec.jar
       main_class: presidio.output.forwarder.shell.OutputForwarderApplication
       xmx: 2048
       xms: 2048

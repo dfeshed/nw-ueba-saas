@@ -172,6 +172,7 @@
         <swagger-maven-plugin.version>3.1.5</swagger-maven-plugin.version>
         <jackson-coreutils.version>1.8</jackson-coreutils.version>
         <commons-io.version>2.4</commons-io.version>
+        <auto-service.version>1.0-rc3</auto-service.version>
     </properties>
 
     <dependencyManagement>
@@ -513,6 +514,11 @@
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>${commons-io.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.auto.service</groupId>
+                <artifactId>auto-service</artifactId>
+                <version>${auto-service.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

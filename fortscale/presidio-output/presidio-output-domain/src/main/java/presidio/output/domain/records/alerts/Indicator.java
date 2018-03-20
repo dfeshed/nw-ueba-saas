@@ -176,4 +176,21 @@ public class Indicator extends AbstractElasticDocument {
     public void setType(AlertEnums.IndicatorTypes type) {
         this.type = type;
     }
+
+    @Override
+    public String toString() {
+        return "Indicator{" +
+                "name='" + name + '\'' +
+                ", anomalyValue='" + anomalyValue + '\'' +
+                ", alertId='" + alertId + '\'' +
+                ", historicalData=" + historicalData +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", schema=" + schema +
+                ", score=" + score +
+                ", scoreContribution=" + scoreContribution +
+                ", type=" + type +
+                ", eventsNum=" + eventsNum +
+                '}';
+    }
 }

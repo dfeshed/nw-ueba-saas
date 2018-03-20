@@ -75,6 +75,11 @@
             <artifactId>presidio-configuration-client</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.auto.service</groupId>
+            <artifactId>auto-service</artifactId>
+        </dependency>
+
 
     </dependencies>
     <build>
@@ -103,6 +108,7 @@
                 </executions>
                 <configuration>
                     <mainClass>${start-class}</mainClass>
+                    <classifier>exec</classifier>
                 </configuration>
             </plugin>
             <plugin>
