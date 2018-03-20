@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * This generic will represent Tree data structure
@@ -73,29 +75,61 @@ public class TreeNode<T> {
         this.tree = tree;
     }
 
-    public Set<TreeNode<T>> getAncestors() {
-        AncestorsIterator<T> ancestorsIterator = new AncestorsIterator<T>(this);
+    //todo:remove?
+//    public AncestorsIterator<T> getAncestors() {
+//       return new AncestorsIterator<T>(this);
+//    }
 
-        Set<TreeNode<T>> ancestors = new HashSet<>();
-        while(ancestorsIterator.hasNext()){
-            TreeNode<T> parent = ancestorsIterator.next();
-            ancestors.add(parent);
-        }
+    public Stream<TreeNode<T>> getAncestorsStream() {
+        return Stream.concat(
+                Stream.of(parent).filter(Objects::nonNull),
+                Stream.of(parent).filter(Objects::nonNull).flatMap(TreeNode::getAncestorsStream));
 
-        return ancestors;
+//        return Stream.of(parent).filter(Objects::nonNull).flatMap(TreeNode::getAncestorsStream);
+//        return  Stream.concat(Stream.of(this), Stream.of(parent).flatMap(TreeNode::getAncestorsStream));
+//        return Stream.of(parent).flatMap(TreeNode::getAncestorsStream);
+//        return Stream.of(parent).flatMap(TreeNode::getAncestorsStream).filter(p -> p != null );
+
+
+
+//        return Stream.concat(
+//                Stream.of(this),
+//                parent.stream().flatMap(TreeNode::getDescendantStream));
     }
 
+    //todo:remove?
+//    public DescendantIterator<T> getDescendantIterator() {
+//        return  new DescendantIterator<T>(this);
+//    }
 
-    public DescendantIterator<T> getDescendantIterator() {
-        return  new DescendantIterator<T>(this);
+    /**
+     *
+     * @return stream of current node and descendants
+     */
+    public Stream<TreeNode<T>> getDescendantStream() {
+        return Stream.concat(
+                Stream.of(this),
+                children.stream().flatMap(TreeNode::getDescendantStream));
     }
 
+    /**
+     *
+     * @param conditionStopFunc conditionStopFunc
+     * @return stream descendants
+     */
+    public Stream<TreeNode<T>> getDescendantStream(Function<T, Boolean> conditionStopFunc ) {
+        return Stream.concat(
+                children.stream().filter(e -> !conditionStopFunc.apply(e.getData())).flatMap(TreeNode::getDescendantStream),
+                children.stream().filter(e -> conditionStopFunc.apply(e.getData()))).filter(e -> conditionStopFunc.apply(e.getData()));
 
-    public DescendantIterator<T> getDescendantIterator(Function<T, Boolean> conditionStopFunc ) {
-        DescendantIterator<T> descendantIterator = new DescendantIterator<T>(this);
-        descendantIterator.setConditionStopFunc(conditionStopFunc);
-        return  descendantIterator;
     }
+
+    //todo:remove?
+//    public DescendantIterator<T> getDescendantIterator(Function<T, Boolean> conditionStopFunc ) {
+//        DescendantIterator<T> descendantIterator = new DescendantIterator<T>(this);
+//        descendantIterator.setConditionStopFunc(conditionStopFunc);
+//        return  descendantIterator;
+//    }
 
 
 }

@@ -33,7 +33,7 @@ public class DescendantIterator<T> implements Iterator<TreeNode<T>> {
         this.stopConditionFunc = conditionStopFunc;
     }
 
-
+    //todo: hasNext should not move the cursor. This code should be in the next() function.
     @Override
     public boolean hasNext() {
         Boolean result = false;

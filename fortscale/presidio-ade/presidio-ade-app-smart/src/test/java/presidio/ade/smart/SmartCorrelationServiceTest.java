@@ -1,23 +1,13 @@
 package presidio.ade.smart;
 
-import com.google.common.collect.Lists;
-import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
-import fortscale.domain.feature.score.FeatureScore;
-import fortscale.ml.model.SMARTMaxValuesModel;
-import fortscale.ml.model.SMARTValuesPriorModel;
-import fortscale.ml.model.SmartWeightsModel;
 import fortscale.ml.model.cache.ModelsCacheService;
-import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStoreConfig;
 import fortscale.smart.SmartUtil;
-import fortscale.smart.record.conf.ClusterConf;
 import fortscale.smart.record.conf.SmartRecordConfService;
-import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.test.category.ModuleTestCategory;
-import fortscale.utils.time.TimeRange;
 import fortscale.utils.time.TimeService;
 import javafx.util.Pair;
 import org.junit.Assert;
@@ -31,18 +21,12 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import presidio.ade.domain.record.aggregated.*;
 import presidio.ade.domain.store.aggr.AggregatedDataStore;
-import presidio.ade.test.utils.generators.AdeAggregationRecordHourlyGenerator;
-import presidio.ade.test.utils.generators.ScoredFeatureAggregationRecordHourlyGenerator;
 import presidio.ade.test.utils.tests.BaseAppTest;
 import presidio.data.generators.common.*;
-import presidio.data.generators.common.time.ITimeGenerator;
-import presidio.data.generators.common.time.MinutesIncrementTimeGenerator;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 /**
@@ -102,9 +86,11 @@ public class SmartCorrelationServiceTest extends BaseAppTest {
      *
      *  tree2:
      *
-     *       n
-     *      / \
-     *     x  z
+     *        n
+     *      /   \
+     *  testA  testB
+     *    /     \
+     *   x      z
      *
      *  result of correlation factor:
      *    a - 1

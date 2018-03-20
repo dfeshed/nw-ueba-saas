@@ -12,32 +12,23 @@ import java.util.Queue;
 public class AncestorsIterator<T> implements Iterator<TreeNode<T>> {
 
 	private TreeNode<T> treeNode;
-	private Queue<TreeNode<T>> queue;
+	private TreeNode<T> currentTreeNode;
 
 	public AncestorsIterator(TreeNode<T> treeNode){
 		this.treeNode = treeNode;
-		this.queue = new LinkedList<>();
-		addParentToQueue(treeNode);
+		this.currentTreeNode = treeNode;
 	}
 
 	@Override
 	public boolean hasNext() {
-		return !this.queue.isEmpty();
+		return this.currentTreeNode.getParent() != null;
 	}
 
 	@Override
 	public TreeNode<T> next() {
-
-		TreeNode<T> parent = queue.remove();
-		addParentToQueue(parent);
-		return parent;
+		TreeNode<T> next = currentTreeNode.getParent();
+		this.currentTreeNode = next;
+		return next;
 	}
 
-	public void addParentToQueue(TreeNode<T> treeNode){
-		TreeNode<T> parent = treeNode.getParent();
-		if(parent != null) {
-			this.queue.add(treeNode.getParent());
-		}
-
-	}
 }

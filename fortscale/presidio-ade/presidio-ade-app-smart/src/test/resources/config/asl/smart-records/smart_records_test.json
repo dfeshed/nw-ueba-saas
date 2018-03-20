@@ -9,7 +9,7 @@
       },
       "fixedDurationStrategy": "fixed_duration_hourly",
       "includeAllAggregationRecords": true,
-      "excludedAggregationRecords": [  ],
+      "excludedAggregationRecords": [],
       "defaultWeight": 0.5,
       "trees": [
         {
@@ -81,15 +81,31 @@
             "children": [
               {
                 "data": {
-                  "feature": "numberOfFileDownloadedUserIdFileHourly",
-                  "correlationFactor": 0.3
-                }
+                  "feature": "testA",
+                  "correlationFactor": 0.5
+                },
+                "children": [
+                  {
+                    "data": {
+                      "feature": "numberOfFileDownloadedUserIdFileHourly",
+                      "correlationFactor": 0.3
+                    }
+                  }
+                ]
               },
               {
                 "data": {
-                  "feature": "numberOfFileMovedToSharedDriveUserIdFileHourly",
+                  "feature": "testB",
                   "correlationFactor": 0.5
-                }
+                },
+                "children": [
+                  {
+                    "data": {
+                      "feature": "numberOfFileMovedToSharedDriveUserIdFileHourly",
+                      "correlationFactor": 0.5
+                    }
+                  }
+                ]
               }
             ]
           }

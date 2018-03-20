@@ -2,12 +2,15 @@ package presidio.ade.smart.correlation;
 
 import fortscale.smart.correlation.conf.CorrelationNodeData;
 import fortscale.smart.correlation.conf.FullCorrelation;
+import fortscale.utils.AncestorsIterator;
 import fortscale.utils.DescendantIterator;
 import fortscale.utils.TreeNode;
 import org.springframework.util.Assert;
 
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 public class FeatureCorrelationAlgorithm {
@@ -29,22 +32,35 @@ public class FeatureCorrelationAlgorithm {
      */
     private void validateTreeCorrelationWithFullCorrelation() {
         correlationForest.getFeatureToTreeNode().forEach((feature, treeNode) -> {
-            Set<String> ancestors = treeNode.getAncestors().stream().map(ancestor -> ancestor.getData().getFeature()).collect(Collectors.toSet());
 
             FullCorrelation fullCorrelation = fullCorrelationSet.getFullCorrelation(feature);
+
+
+            //todo: choose option
+            //--------------------------option 1 ------------------------
             if (fullCorrelation != null) {
-                ancestors.forEach(ancestor -> {
-                    Assert.isTrue(!fullCorrelation.getFeatures().contains(ancestor), String.format(
-                            "There should not be intersection between correlation trees and full correlation. The feature %s and %s can not be full correlated.", ancestor, feature));
+                Supplier<Stream<TreeNode<CorrelationNodeData>>> streamSupplier = () -> treeNode.getAncestorsStream();
+                streamSupplier.get().forEach(ancestor -> {
+                    Assert.isTrue(!fullCorrelation.getFeatures().contains(ancestor.getData().getFeature()), String.format(
+                            "There should not be intersection between correlation trees and full correlation. The feature %s and %s can not be full correlated.", ancestor.getData().getFeature(), feature));
                 });
             }
+            //--------------------------option 2 ------------------------
+
+//            AncestorsIterator<CorrelationNodeData> ancestors = treeNode.getAncestors();
+//            if (fullCorrelation != null) {
+//                while (ancestors.hasNext()) {
+//                    TreeNode<CorrelationNodeData> ancestor = ancestors.next();
+//                    Assert.isTrue(!fullCorrelation.getFeatures().contains(ancestor.getData().getFeature()), String.format(
+//                            "There should not be intersection between correlation trees and full correlation. The feature %s and %s can not be full correlated.", ancestor.getData().getFeature(), feature));
+//                }
+//            }
         });
     }
 
     /**
      * Update FeatureCorrelations data (tree correlation name, full correlation name and old score)
      * by tree correlation and full correlation.
-     *
      *
      * @param descSortedFeatureCorrelations desc sorted featureCorrelations
      */
@@ -85,9 +101,20 @@ public class FeatureCorrelationAlgorithm {
                     featureCorrelation.setCorrelationFactor(FULL_CORRELATION_FACTOR);
                     featureCorrelation.setTreeName(treeNode.getTree().getName());
                 } else {
-                    Set<TreeNode<CorrelationNodeData>> treeNodeAncestors = treeNode.getAncestors();
-                    ancestors.addAll(treeNodeAncestors.stream().map(m -> m.getData().getFeature()).collect(Collectors.toList()));
+                    //todo: choose option
+                    //-----------------------option 1 ------------------
+                    Supplier<Stream<TreeNode<CorrelationNodeData>>> streamSupplier = () -> treeNode.getAncestorsStream();
+                    streamSupplier.get().forEach(ancestor -> {
+                        ancestors.add(ancestor.getData().getFeature());
+                    });
 
+                    //-------------------option 2 -------------------
+//                    AncestorsIterator<CorrelationNodeData> treeNodeAncestors = treeNode.getAncestors();
+//
+//                    while(treeNodeAncestors.hasNext()){
+//                        TreeNode<CorrelationNodeData> ancestor= treeNodeAncestors.next();
+//                        ancestors.add(ancestor.getData().getFeature());
+//                    }
                 }
             }
 
@@ -131,15 +158,29 @@ public class FeatureCorrelationAlgorithm {
 
                 //skip ancestors that was removed
                 if (!featureCorrelation.getCorrelationFactor().equals(FULL_CORRELATION_FACTOR)) {
-                    DescendantIterator<CorrelationNodeData> iterator = treeNode.getDescendantIterator(stopIfFeatureExistFunction);
-                    while (iterator.hasNext()) {
-                        TreeNode<CorrelationNodeData> descendant = iterator.next();
+
+//                    todo:choose option
+                    //----------------------Option 1--------------------------------------------//
+                    Supplier<Stream<TreeNode<CorrelationNodeData>>> streamSupplier = () -> treeNode.getDescendantStream(stopIfFeatureExistFunction);
+
+                    streamSupplier.get().forEach(descendant -> {
                         String featureName = descendant.getData().getFeature();
                         FeatureCorrelation childFeatureCorrelation = descSortedFeatureCorrelations.get(featureName);
                         Double correlationFactor = featureCorrelation.getCorrelationFactor() * descendant.getData().getCorrelationFactor();
                         childFeatureCorrelation.setCorrelationFactor(correlationFactor);
                         childFeatureCorrelation.setTreeName(descendant.getTree().getName());
-                    }
+                    });
+
+                    //----------------------Option 1--------------------------------------------//
+//                    DescendantIterator<CorrelationNodeData> iterator = treeNode.getDescendantIterator(stopIfFeatureExistFunction);
+//                    while (iterator.hasNext()) {
+//                        TreeNode<CorrelationNodeData> descendant = iterator.next();
+//                        String featureName = descendant.getData().getFeature();
+//                        FeatureCorrelation childFeatureCorrelation = descSortedFeatureCorrelations.get(featureName);
+//                        Double correlationFactor = featureCorrelation.getCorrelationFactor() * descendant.getData().getCorrelationFactor();
+//                        childFeatureCorrelation.setCorrelationFactor(correlationFactor);
+//                        childFeatureCorrelation.setTreeName(descendant.getTree().getName());
+//                    }
                 }
             }
         }

@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 @JsonAutoDetect(
 		creatorVisibility = JsonAutoDetect.Visibility.ANY,
@@ -27,6 +29,7 @@ public class Tree<T> {
 				@JsonProperty("root") TreeNode<T> root) {
 		this.name = name;
 		this.root = root;
+		fillTreeInTreeNodes();
 	}
 
 	public String getName() {
@@ -50,13 +53,21 @@ public class Tree<T> {
 	 * fill tree of each treeNode
 	 */
 	public void fillTreeInTreeNodes() {
-		root.setTree(this);
-		DescendantIterator<T> descendantIterator = root.getDescendantIterator();
+		//todo: choose option
+		//---------------------option 1 ---------------------
+		Supplier<Stream<TreeNode<T>>> streamSupplier = () -> root.getDescendantStream();
+		streamSupplier.get().forEach(node -> {
+			node.setTree(this);
+		});
 
-		while (descendantIterator.hasNext()) {
-			TreeNode<T> child = descendantIterator.next();
-			child.setTree(this);
-		}
+		//---------------------option 2 ---------------------
+//		root.setTree(this);
+//		DescendantIterator<T> descendantIterator = root.getDescendantIterator();
+//
+//		while (descendantIterator.hasNext()) {
+//			TreeNode<T> child = descendantIterator.next();
+//			child.setTree(this);
+//		}
 	}
 
 }

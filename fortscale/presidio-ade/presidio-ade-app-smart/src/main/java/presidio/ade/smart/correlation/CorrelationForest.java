@@ -8,6 +8,8 @@ import fortscale.utils.TreeNode;
 import fortscale.utils.logging.Logger;
 
 import java.util.*;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public class CorrelationForest {
 
@@ -18,8 +20,7 @@ public class CorrelationForest {
         featureToTreeNode = new HashMap<>();
 
         for (Tree<CorrelationNodeData> tree : trees) {
-            tree.fillTreeInTreeNodes();
-            createFeatureToTreeNodeMap(tree.getRoot());
+            fillFeatureToTreeNodeMap(tree.getRoot());
         }
     }
 
@@ -28,21 +29,34 @@ public class CorrelationForest {
      *
      * @param root root
      */
-    private void createFeatureToTreeNodeMap(TreeNode<CorrelationNodeData> root) {
+    private void fillFeatureToTreeNodeMap(TreeNode<CorrelationNodeData> root) {
+        //todo: choose option
+        //========================option 1====================================
+        Supplier<Stream<TreeNode<CorrelationNodeData>>> streamSupplier = () -> root.getDescendantStream();
 
-        //add root to featureToTreeNode map
-        String rootFeatureName = root.getData().getFeature();
-        validateCorrelationTrees(rootFeatureName, root);
-        featureToTreeNode.put(rootFeatureName, root);
+        streamSupplier.get().forEach(node -> {
+            String featureName = node.getData().getFeature();
+            assertIfNodeAlreadyExist(featureName, node);
+            featureToTreeNode.put(featureName, node);
 
-        //add descendants to featureToTreeNode map
-        DescendantIterator<CorrelationNodeData> descendantIterator = root.getDescendantIterator();
-        while (descendantIterator.hasNext()) {
-            TreeNode<CorrelationNodeData> child = descendantIterator.next();
-            String featureName = child.getData().getFeature();
-            validateCorrelationTrees(featureName, child);
-            featureToTreeNode.put(featureName, child);
-        }
+
+        });
+
+        //========================option 2====================================
+//        //todo:maybe you can enable the iterator to include the root node.
+//        //add root to featureToTreeNode map
+//        String rootFeatureName = root.getData().getFeature();
+//        assertIfNodeAlreadyExist(rootFeatureName, root);
+//        featureToTreeNode.put(rootFeatureName, root);
+//
+//        //add descendants to featureToTreeNode map
+//        DescendantIterator<CorrelationNodeData> descendantIterator = root.getDescendantIterator();
+//        while (descendantIterator.hasNext()) {
+//            TreeNode<CorrelationNodeData> child = descendantIterator.next();
+//            String featureName = child.getData().getFeature();
+//            assertIfNodeAlreadyExist(featureName, child);
+//            featureToTreeNode.put(featureName, child);
+//        }
     }
 
     /**
@@ -50,7 +64,7 @@ public class CorrelationForest {
      *
      * @param featureName
      */
-    private void validateCorrelationTrees(String featureName, TreeNode<CorrelationNodeData> treeNode) {
+    private void assertIfNodeAlreadyExist(String featureName, TreeNode<CorrelationNodeData> treeNode) {
         TreeNode<CorrelationNodeData> featureTreeNode = featureToTreeNode.get(featureName);
 
         if (featureTreeNode != null) {
