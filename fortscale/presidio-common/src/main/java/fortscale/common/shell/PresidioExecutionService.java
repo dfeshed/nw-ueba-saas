@@ -16,4 +16,15 @@ public interface PresidioExecutionService {
     void applyRetentionPolicy(Schema schema, Instant startDate, Instant endDate) throws Exception;
 
     void cleanAll(Schema schema) throws Exception;
+
+    default int doRun(Schema schema, Instant startDate, Instant endDate, Double fixedDuration) throws Exception {
+        try {
+            run(schema, startDate, endDate, fixedDuration);
+        }
+        catch (Exception e) {
+            return 1;
+        }
+        return 0;
+    }
+
 }

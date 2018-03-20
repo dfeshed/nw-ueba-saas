@@ -17,7 +17,7 @@ public class OutputForwarderServiceCommands implements CommandMarker {
     private OutputForwarderExecutionService executionService;
 
     @CliCommand(value = "run", help = "run events with specified time range ")
-    public void run(
+    public int run(
             @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time greater than specified start time will be processed") final Instant startTime,
 
             @CliOption(key = {CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time smaller than specified end time will be processed") final Instant endTime,
@@ -25,7 +25,7 @@ public class OutputForwarderServiceCommands implements CommandMarker {
             @CliOption(key = {CommonStrings.COMMAND_LINE_FIXED_DURATION_FIELD_NAME}, help = "the internal time intervals that the processing will be done by") final Double fixedDuration
 
     ) throws Exception {
-        executionService.run(startTime, endTime);
+        return executionService.doRun(startTime, endTime);
     }
 
 

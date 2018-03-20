@@ -27,7 +27,7 @@ public class OutputShellCommands implements CommandMarker {
     private OutputExecutionService executionService;
 
     @CliCommand(value = "run", help = "run events with specified time range ")
-    public void run(
+    public int run(
             @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time greater than specified start time will be processed") final Instant startTime,
 
             @CliOption(key = {CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time smaller than specified end time will be processed") final Instant endTime,
@@ -36,7 +36,7 @@ public class OutputShellCommands implements CommandMarker {
 
     ) throws Exception {
         ThreadLocalWithBatchInformation.storeBatchInformation(HOURLY_OUTPUT_PROCESSOR_RUN + startTime.toString(), new TimeRange(startTime, endTime));
-        executionService.run(startTime, endTime);
+        return executionService.doRun(startTime, endTime);
     }
 
     @CliCommand(value = "recalculate-user-score", help = "run daily calculation for output")

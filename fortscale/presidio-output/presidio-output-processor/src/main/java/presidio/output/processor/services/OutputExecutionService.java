@@ -15,4 +15,14 @@ public interface OutputExecutionService {
     void applyRetentionPolicy(Instant endDate) throws Exception;
 
     void cleanAll() throws Exception;
+
+    default int doRun(Instant startDate, Instant endDate) throws Exception {
+        try {
+            run(startDate, endDate);
+        }
+        catch (Exception e) {
+            return 1;
+        }
+        return 0;
+    }
 }
