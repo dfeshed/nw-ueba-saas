@@ -23,7 +23,7 @@ public class PresidioCommands implements CommandMarker {
     private PresidioExecutionService executionService;
 
     @CliCommand(value = "run", help = "run events with specified time range and data source")
-    public void run(
+    public int run(
             @CliOption(key = {CommonStrings.COMMAND_LINE_SCHEMA_FIELD_NAME}, mandatory = true, help = "events schema") final Schema schema,
 
             @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time greater than specified start time will be processed") final Instant startTime,
@@ -33,11 +33,11 @@ public class PresidioCommands implements CommandMarker {
             @CliOption(key = {CommonStrings.COMMAND_LINE_FIXED_DURATION_FIELD_NAME}, help = "the internal time intervals that the processing will be done by") final Double fixedDuration
 
     ) throws Exception {
-        executionService.run(schema, startTime, endTime, fixedDuration);
+        return executionService.doRun(schema, startTime, endTime, fixedDuration);
     }
 
     @CliCommand(value = "cleanup", help = "cleanup events with specified time range, schema and fixed duration")
-    public void cleanup(
+    public int cleanup(
             @CliOption(key = {CommonStrings.COMMAND_LINE_SCHEMA_FIELD_NAME}, help = "events schema") final Schema schema,
 
             @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time greater than or equal specified start time will be deleted") final Instant startTime,
@@ -47,11 +47,11 @@ public class PresidioCommands implements CommandMarker {
             @CliOption(key = {CommonStrings.COMMAND_LINE_FIXED_DURATION_FIELD_NAME}, help = "the internal time intervals that the processing will be done by") final Double fixedDuration
 
     ) throws Exception {
-        executionService.cleanup(schema, startTime, endTime, fixedDuration);
+        return executionService.doCleanup(schema, startTime, endTime, fixedDuration);
     }
 
     @CliCommand(value = "applyRetentionPolicy", help = "Run the retention clean for application data in specified time range for data source")
-    public void applyRetentionPolicy(
+    public int applyRetentionPolicy(
             @CliOption(key = {CommonStrings.COMMAND_LINE_SCHEMA_FIELD_NAME}, mandatory = true, help = "events schema") final Schema schema,
 
             @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time greater than specified start time will be processed") final Instant startTime,
@@ -62,14 +62,14 @@ public class PresidioCommands implements CommandMarker {
             @CliOption(key = {CommonStrings.COMMAND_LINE_FIXED_DURATION_FIELD_NAME}, help = "the internal time intervals that the processing will be done by") final Double fixedDuration
 
     ) throws Exception {
-        executionService.applyRetentionPolicy(schema, startTime, endTime);
+        return executionService.doApplyRetentionPolicy(schema, startTime, endTime);
     }
 
     @CliCommand(value = "cleanAll", help = "clean application data for specified data source")
-    public void cleanAll(
+    public int cleanAll(
             @CliOption(key = {CommonStrings.COMMAND_LINE_SCHEMA_FIELD_NAME}, mandatory = true, help = "events schema") final Schema schema
 
     ) throws Exception {
-        executionService.cleanAll(schema);
+        return executionService.doCleanAll(schema);
     }
 }

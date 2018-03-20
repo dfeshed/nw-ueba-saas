@@ -27,6 +27,7 @@ import presidio.ade.modeling.ModelingServiceCommands;
 import presidio.monitoring.flush.MetricContainerFlusher;
 import presidio.monitoring.flush.MetricContainerFlusherConfig;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -56,6 +57,8 @@ public class ModelingServiceConfiguration {
 	private String smartRecordsGroupName;
 	@Value("${presidio.ade.modeling.smart.records.base.configuration.path}")
 	private String smartRecordsBaseConfigurationPath;
+	@Value("#{T(java.time.Duration).parse('${presidio.ade.modeling.all.contexts.forced.selection.interval:P7D}')}")
+	private Duration allContextsForcedSelectionInterval;
 
 	@Autowired
 	private FactoryService<IContextSelector> contextSelectorFactoryService;
@@ -66,7 +69,7 @@ public class ModelingServiceConfiguration {
 	@Autowired
 	private ModelStore modelStore;
 	@Autowired
-	ModelingServiceMetricsContainer modelingServiceMetricsContainer;
+	private ModelingServiceMetricsContainer modelingServiceMetricsContainer;
 	@Autowired
 	private ModelingEngineFactory modelingEngineFactory;
 	@Autowired
@@ -83,7 +86,8 @@ public class ModelingServiceConfiguration {
 				dataRetrieverFactoryService,
 				modelBuilderFactoryService,
 				modelStore,
-				modelingServiceMetricsContainer);
+				modelingServiceMetricsContainer,
+				allContextsForcedSelectionInterval);
 	}
 
 	@Bean
@@ -97,6 +101,12 @@ public class ModelingServiceConfiguration {
 				new AslConfigurationPaths(enrichedRecordsGroupName, enrichedRecordsBaseConfigurationPath),
 				new AslConfigurationPaths(featureAggrRecordsGroupName, featureAggrRecordsBaseConfigurationPath),
 				new AslConfigurationPaths(smartRecordsGroupName, smartRecordsBaseConfigurationPath));
-		return new ModelingService(modelConfigurationPathsCollection, modelingEngineFactory, aslResourceFactory, storeManager, modelingServiceMetricsContainer, metricContainerFlusher);
+		return new ModelingService(
+				modelConfigurationPathsCollection,
+				modelingEngineFactory,
+				aslResourceFactory,
+				storeManager,
+				modelingServiceMetricsContainer,
+				metricContainerFlusher);
 	}
 }
