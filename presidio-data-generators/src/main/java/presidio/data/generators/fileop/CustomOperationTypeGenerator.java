@@ -83,7 +83,13 @@ public class CustomOperationTypeGenerator extends CyclicValuesGenerator<Operatio
             "FILE_MODIFIED",
             "FILE_RESTORED",
             "FILE_UPLOADED",
-            "FILE_DOWNLOADED"
+            "FILE_DOWNLOADED",
+            "FILE_ACCESSED",
+            "FILE_CHECKED_IN",
+            "FILE_CHECKED_OUT_DISCARDED",
+            "FILE_CHECKED_OUT",
+            "FOLDER_ACCESSED",
+            "FOLDER_MODIFIED"
     };
 
     public CustomOperationTypeGenerator()
@@ -132,6 +138,12 @@ public class CustomOperationTypeGenerator extends CyclicValuesGenerator<Operatio
         opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_RESTORED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
         opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_UPLOADED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
         opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_DOWNLOADED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
+        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_ACCESSED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
+        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_CHECKED_IN.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
+        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_CHECKED_OUT_DISCARDED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
+        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FILE_CHECKED_OUT.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
+        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FOLDER_ACCESSED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
+        opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FOLDER_MODIFIED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_ACTION.value));
 
         opType2OpCategoryMap.put(FILE_OPERATION_TYPE.LOCAL_SHARE_PERMISSIONS_CHANGED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_PERMISSION_CHANGE.value));
         opType2OpCategoryMap.put(FILE_OPERATION_TYPE.FOLDER_ACCESS_RIGHTS_CHANGED.value, Collections.singletonList(FILE_OPERATION_TYPE_CATEGORIES.FILE_PERMISSION_CHANGE.value));
