@@ -53,6 +53,19 @@ public class FileOperationGeneratorTemplateFactory {
         return generator;
     }
 
+    public IFileOperationGenerator createCopyFileOperationsGenerator() throws GeneratorException {
+        return createCopyFileOperationsGenerator(null);
+    }
+    public IFileOperationGenerator createCopyFileOperationsGenerator(List<String> categories) throws GeneratorException {
+        FileOperationGenerator generator = new FileOperationGenerator();
+        generator.setOperationTypeGenerator(getFixedFileOperationTypeGenerator(FILE_OPERATION_TYPE.FILE_COPIED.value, categories));
+
+        IFileEntityGenerator nullFileEntityGenerator = new NullFileEntityGenerator();
+        generator.setDestFileEntityGenerator(nullFileEntityGenerator);
+
+        return generator;
+    }
+
     public IFileOperationGenerator createMoveFileOperationsGenerator() throws GeneratorException {
         return createMoveFileOperationsGenerator(null);
     }
