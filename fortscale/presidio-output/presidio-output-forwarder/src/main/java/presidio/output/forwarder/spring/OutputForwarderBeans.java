@@ -20,7 +20,7 @@ import presidio.output.forwarder.strategy.ForwarderStrategyFactory;
 
 @Configuration
 @Import({
-        PresidioOutputPersistencyServiceConfig.class, ElasticsearchConfig.class
+        PresidioOutputPersistencyServiceConfig.class
 })
 public class OutputForwarderBeans {
 
