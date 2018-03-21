@@ -450,7 +450,7 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
         featureToScore.put("numberOfFileDeletedUserIdFileHourly", 50.53052381387548);
         featureToScore.put("numberOfFileMovedFromSharedDriveUserIdFileHourly", 50.53052381387548);
         featureToScore.put("numberOfFileDownloadedUserIdFileHourly",99.99961049927788);
-        featureToScore.put("numberOfFileCopiedDriveUserIdFileHourly", 50.53052381387548);
+        featureToScore.put("numberOfFileCopiedUserIdFileHourly", 50.53052381387548);
         return featureToScore;
     }
 
