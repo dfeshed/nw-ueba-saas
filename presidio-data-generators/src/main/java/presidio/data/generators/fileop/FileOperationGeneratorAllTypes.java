@@ -1,13 +1,13 @@
 package presidio.data.generators.fileop;
 
+import presidio.data.domain.event.OperationType;
 import presidio.data.domain.event.file.FileOperation;
-import presidio.data.generators.common.GeneratorException;
-import presidio.data.generators.common.IOperationTypeGenerator;
-import presidio.data.generators.common.IStringGenerator;
-import presidio.data.generators.common.RandomStringGenerator;
+import presidio.data.generators.common.*;
 import presidio.data.generators.common.precentage.OperationResultPercentageGenerator;
 import presidio.data.generators.fileentity.FileEntityGenerator;
 import presidio.data.generators.fileentity.IFileEntityGenerator;
+
+import java.util.Collections;
 
 public class FileOperationGeneratorAllTypes implements IFileOperationGenerator {
     private IFileEntityGenerator sourceFileEntityGenerator;
@@ -19,7 +19,7 @@ public class FileOperationGeneratorAllTypes implements IFileOperationGenerator {
     public FileOperationGeneratorAllTypes() throws GeneratorException {
         sourceFileEntityGenerator = new FileEntityGenerator();
         destFileEntityGenerator = new FileEntityGenerator();
-        //operationTypeGenerator = new FixedOperationTypeGenerator(new OperationType("dummyOperationType", Collections.emptyList()));
+        operationTypeGenerator = new CustomOperationTypeGenerator();
 
         operationResultGenerator = new OperationResultPercentageGenerator();
         operationResultCodeGenerator = new RandomStringGenerator(6);
@@ -27,7 +27,7 @@ public class FileOperationGeneratorAllTypes implements IFileOperationGenerator {
 
     public FileOperation getNext(){
         return new FileOperation(getSourceFileEntityGenerator().getNext(), getDestFileEntityGenerator().getNext(),
-                operationTypeGenerator.getNext(), (String) getOperationResultGenerator().getNext(), (String) getOperationResultCodeGenerator().getNext());
+                getOperationTypeGenerator().getNext(), getOperationResultGenerator().getNext(), getOperationResultCodeGenerator().getNext());
     }
 
     public IFileEntityGenerator getSourceFileEntityGenerator() {
