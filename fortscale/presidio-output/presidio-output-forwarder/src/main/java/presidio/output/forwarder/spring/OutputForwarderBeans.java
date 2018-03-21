@@ -1,26 +1,26 @@
 package presidio.output.forwarder.spring;
 
 
-import fortscale.utils.elasticsearch.config.ElasticsearchConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import presidio.config.server.spring.ConfigServerClientServiceConfiguration;
+import presidio.monitoring.services.MetricCollectingService;
+import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig;
 import presidio.output.forwarder.AlertsForwarder;
 import presidio.output.forwarder.IndicatorsForwarder;
 import presidio.output.forwarder.UsersForwarder;
-import presidio.output.forwarder.services.PresidioOutputForwardService;
+import presidio.output.forwarder.services.OutputForwardService;
 import presidio.output.forwarder.shell.OutputForwarderExecutionService;
 import presidio.output.forwarder.strategy.ForwarderConfiguration;
 import presidio.output.forwarder.strategy.ForwarderStrategyFactory;
 
 @Configuration
 @Import({
-        PresidioOutputPersistencyServiceConfig.class
+        PresidioOutputPersistencyServiceConfig.class, PresidioMonitoringConfiguration.class
 })
 public class OutputForwarderBeans {
 
@@ -36,6 +36,9 @@ public class OutputForwarderBeans {
 
     @Autowired
     ForwarderStrategyFactory forwarderStrategyFactory;
+
+    @Autowired
+    MetricCollectingService metricCollectingService;
 
     @Bean
     public UsersForwarder usersForwarder() {
@@ -53,8 +56,8 @@ public class OutputForwarderBeans {
     }
 
     @Bean
-    public PresidioOutputForwardService presidioOutputForwardService() {
-        return new PresidioOutputForwardService(usersForwarder(), alertsForwarder(), indicatorsForwarder());
+    public OutputForwardService presidioOutputForwardService() {
+        return new OutputForwardService(usersForwarder(), alertsForwarder(), indicatorsForwarder(), metricCollectingService);
     }
 
     @Bean

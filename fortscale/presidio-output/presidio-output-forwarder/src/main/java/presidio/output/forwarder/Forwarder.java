@@ -26,12 +26,12 @@ public abstract class Forwarder<T>{
         this.forwarderStrategyFactory = forwarderStrategyFactory;
     }
 
-    public void forward(Instant startDate, Instant endDate) {
+    public int forward(Instant startDate, Instant endDate) {
 
         ForwarderStrategy.PAYLOAD_TYPE payloadType = getPayloadType();
 
         if (!forwarderConfiguration.isForwardEntity(payloadType)) {
-            return;
+            return 0;
         }
 
         // select forwarding strategy
@@ -59,6 +59,7 @@ public abstract class Forwarder<T>{
             });
         }
         logger.info("{} '{}' messages were forwarded successfully", forwardedCount.get(),  getPayloadType());
+        return forwardedCount.get();
     }
 
 
