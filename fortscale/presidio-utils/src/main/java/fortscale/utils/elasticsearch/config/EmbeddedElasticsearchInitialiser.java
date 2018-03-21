@@ -38,6 +38,7 @@ public class EmbeddedElasticsearchInitialiser {
                     .withSetting(PopularProperties.CLUSTER_NAME, EL_TEST_CLUSTER)
                     .withSetting("node.max_local_storage_nodes", 3)
                     .withCleanInstallationDirectoryOnStop(true)
+                    .withEsJavaOpts("-Xms128m -Xmx512m")
                     .build()
                     .start();
         } catch (Exception e) {

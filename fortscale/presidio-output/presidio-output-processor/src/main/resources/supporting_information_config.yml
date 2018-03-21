@@ -213,6 +213,18 @@ indicators:
     type: hourly_aggregations
   classification: data_exfiltration
 
+  - id: numberOfFileCopiedUserIdFileHourly
+    type: FEATURE_AGGREGATION
+    name: high_number_of_file_copied_operations
+    schema: FILE
+    adeEventType: file
+    anomalyDescriptior:
+      anomalyField: operationType
+      anomalyValue: FILE_COPIED
+    historicalData:
+      type: hourly_aggregations
+    classification: data_exfiltration
+
 #*********************************************************
 #*              ACTIVE DIRECTORY INDICATORS              *
 #*********************************************************

@@ -492,6 +492,47 @@
           ]
         }
       ]
+    },
+    {
+      "ade-event-type": "aggr_event.numberOfFileCopiedUserIdFileHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "numberOfFileCopied.userId.file.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-mapper",
+            "name": "numberOfFileCopied.userId.file.hourly.mapper",
+            "score-mapping-conf": {
+              "minScoreToMap": 95,
+              "maxScoreToMap": 100,
+              "base": 2.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfFileCopied.userId.file.hourly.base_scorer",
+              "model": {
+                "name": "numberOfFileCopied.userId.file.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "numberOfFileCopied.userId.prior.file.hourly"
+                }
+              ],
+              "global-influence": 15,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
     }
   ]
 }

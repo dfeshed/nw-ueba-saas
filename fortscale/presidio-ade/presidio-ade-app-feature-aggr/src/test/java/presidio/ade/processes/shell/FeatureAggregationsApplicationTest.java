@@ -450,6 +450,7 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
         featureToScore.put("numberOfFileDeletedUserIdFileHourly", 50.53052381387548);
         featureToScore.put("numberOfFileMovedFromSharedDriveUserIdFileHourly", 50.53052381387548);
         featureToScore.put("numberOfFileDownloadedUserIdFileHourly",99.99961049927788);
+        featureToScore.put("numberOfFileCopiedDriveUserIdFileHourly", 50.53052381387548);
         return featureToScore;
     }
 
@@ -472,6 +473,7 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
         featureToScore.put("numberOfFileDeletedUserIdFileHourly", 0.0);
         featureToScore.put("numberOfFileMovedFromSharedDriveUserIdFileHourly", 0.0);
         featureToScore.put("numberOfFileDownloadedUserIdFileHourly",93.26795434547577);
+        featureToScore.put("numberOfFileCopiedUserIdFileHourly", 0.0);
         return featureToScore;
     }
 
@@ -483,7 +485,7 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
      */
     private Map<String, Double> getExpectedFeatureToValue() {
         Map<String, Double> featureToValue = new HashedMap();
-        featureToValue.put("numberOfSuccessfulFileActionsUserIdFileHourly", 84.0);
+        featureToValue.put("numberOfSuccessfulFileActionsUserIdFileHourly", 96.0);
         featureToValue.put("numberOfDistinctFileOpenedUserIdFileHourly", 12.0);
         featureToValue.put("numberOfFileMovedUserIdFileHourly", 24.0);
         featureToValue.put("numberOfDistinctFolderOpenedUserIdFileHourly", 12.0);
@@ -495,6 +497,7 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
         featureToValue.put("numberOfFileDeletedUserIdFileHourly", 12.0);
         featureToValue.put("numberOfFileMovedFromSharedDriveUserIdFileHourly", 12.0);
         featureToValue.put("numberOfFileDownloadedUserIdFileHourly",12.0);
+        featureToValue.put("numberOfFileCopiedUserIdFileHourly",12.0);
         return featureToValue;
     }
 
@@ -559,6 +562,7 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
         fileOperationGenerators.add(new AdeFileOperationGeneratorTemplateFactory().createMoveFromSharedFileOperationsGenerator());
         fileOperationGenerators.add(new AdeFileOperationGeneratorTemplateFactory().createMoveToSharedFileOperationsGenerator());
         fileOperationGenerators.add(new AdeFileOperationGeneratorTemplateFactory().createDownloadFileOperationsGenerator());
+        fileOperationGenerators.add(new AdeFileOperationGeneratorTemplateFactory().createCopyFileOperationsGenerator());
         return fileOperationGenerators;
     }
 
