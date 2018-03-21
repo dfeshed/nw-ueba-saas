@@ -19,7 +19,7 @@ public class FileOperationGeneratorAllTypes implements IFileOperationGenerator {
     public FileOperationGeneratorAllTypes() throws GeneratorException {
         sourceFileEntityGenerator = new FileEntityGenerator();
         destFileEntityGenerator = new FileEntityGenerator();
-        operationTypeGenerator = new FixedOperationTypeGenerator(new OperationType("dummyOperationType", Collections.emptyList()));
+        operationTypeGenerator = new CustomOperationTypeGenerator();
 
         operationResultGenerator = new OperationResultPercentageGenerator();
         operationResultCodeGenerator = new RandomStringGenerator(6);
