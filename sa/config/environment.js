@@ -24,6 +24,7 @@ module.exports = function(environment) {
     investigatePageDefault: '/navigate',
     i18n: {
       defaultLocale: 'en',
+      defaultFallback: true,
       includedLocales: ['en']
     },
     timezones: [{

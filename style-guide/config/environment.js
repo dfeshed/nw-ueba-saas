@@ -27,6 +27,7 @@ module.exports = function(environment) {
     },
     i18n: {
       defaultLocale: 'en',
+      defaultFallback: true,
       includedLocales: ['en', 'ja']
     },
     EmberENV: {
