@@ -11,24 +11,6 @@
     <name>presidio-ui</name>
 
 
-    <pluginRepositories>
-        <pluginRepository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>releases</id>
-            <name>plugins-release</name>
-            <url>http://mirror.fortscale.dom/artifactory/plugins-release</url>
-        </pluginRepository>
-        <pluginRepository>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <id>snapshots</id>
-            <name>plugins-snapshot</name>
-            <url>http://mirror.fortscale.dom/artifactory/plugins-snapshot</url>
-        </pluginRepository>
-    </pluginRepositories>
 
     <properties>
 	
@@ -37,7 +19,7 @@
         <!--RPM VERSION-->
         <presidio.core.version>1.1-0-SNAPSHOT</presidio.core.version>
         <!--RPM VERSION-->
-        <rpm.version>3.1.0</rpm.version>
+        <!--<rpm.version>3.1.0</rpm.version>-->
         <!-- NOTE: ALL dependencies' versions should be here -->
         <argparse4j.version>0.7.0</argparse4j.version>
         <cglib.version>3.2.1</cglib.version>
@@ -97,10 +79,10 @@
         <commons-codec.version>1.9</commons-codec.version>
 		
 		
-        <rpm.version.major>1</rpm.version.major>
-        <rpm.version.minor>1</rpm.version.minor>
-        <rpm.version.build>0</rpm.version.build>
-        <rpm.version>${rpm.version.major}.${rpm.version.minor}</rpm.version>
+        <!--<rpm.version.major>1</rpm.version.major>-->
+        <!--<rpm.version.minor>1</rpm.version.minor>-->
+        <!--<rpm.version.build>0</rpm.version.build>-->
+        <!--<rpm.version>${rpm.version.major}.${rpm.version.minor}</rpm.version>-->
 
         <!-- NOTE: ALL dependencies' versions should be here -->
         <rpm-maven-plugin.version>2.1.5</rpm-maven-plugin.version>
@@ -460,20 +442,7 @@
             </plugin>
 
 
-            <plugin>
-                <groupId>com.github.koraktor</groupId>
-                <artifactId>mavanagaiata</artifactId>
-                <version>${mavanagaiata.version}</version>
-                <executions>
-                    <execution>
-                        <id>git-commit</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>commit</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -524,78 +493,10 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>${org.codehaus.mojo.version}</version>
-                <configuration>
-                    <mainClass>fortscale.web.StartFortscaleWebApplication</mainClass>
-                    <classpathScope>test</classpathScope>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>${maven-surefire-plugin.version}</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.maven.surefire</groupId>
-                        <artifactId>surefire-junit47</artifactId>
-                        <version>${maven-surefire-plugin.version}</version>
-                    </dependency>
-                </dependencies>
-                <configuration>
-                    <systemPropertyVariables>
-                        <org.quartz.properties>resources/jobs/quartz.properties</org.quartz.properties>
-                    </systemPropertyVariables>
-                    <excludes>
-                        <exclude>${test.int.exclude}</exclude>
-                    </excludes>
-                    <includes>
-                        <include>${test.int.include}</include>
-                    </includes>
-                    <groups>${test.int.groups}</groups>
-                    <excludedGroups>${test.int.exgroups}</excludedGroups>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+
+
         </plugins>
-        <pluginManagement>
-            <plugins>
-                <!-- ignore copy dependencies plugin in m2e as it is not supported -->
-                <plugin>
-                    <groupId>org.eclipse.m2e</groupId>
-                    <artifactId>lifecycle-mapping</artifactId>
-                    <version>1.0.0</version>
-                    <configuration>
-                        <lifecycleMappingMetadata>
-                            <pluginExecutions>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>com.github.koraktor</groupId>
-                                        <artifactId>mavanagaiata</artifactId>
-                                        <versionRange>[0.7.0,)</versionRange>
-                                        <goals>
-                                            <goal>commit</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore></ignore>
-                                    </action>
-                                </pluginExecution>
-                            </pluginExecutions>
-                        </lifecycleMappingMetadata>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
+
     </build>
 
     <modules>
@@ -634,25 +535,7 @@
                 <updatePolicy>always</updatePolicy>
             </snapshots>
         </repository>
-        <repository>
-            <snapshots>
-                <enabled>false</enabled>
-                <updatePolicy>always</updatePolicy>
-            </snapshots>
-            <id>libs-releases</id>
-            <name>libs-release</name>
-            <url>http://mirror.fortscale.dom/artifactory/libs-release</url>
-        </repository>
-        <repository>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-            </snapshots>
-            <id>libs-snapshots</id>
-            <name>libs-snapshot</name>
-            <url>http://mirror.fortscale.dom/artifactory/libs-snapshot</url>
 
-        </repository>
         <repository>
             <id>all-remotes</id>
             <name>remote-repos</name>
