@@ -178,8 +178,8 @@ public class ModelingServiceApplicationSmartModelsTest {
         int numOfSmarts = 50;
         double score = 60.0;
         int scoreInterval = 0;
-        int probability = 25;
-        int probabilityInterval = 2;
+        int probability = 35;
+        int probabilityInterval = 3;
         int daysBackFrom = 30;
         int daysBackTo = 1;
         String generatorContextIdPattern = "userId\\#[a-g]{1}[1-9]{1}";
