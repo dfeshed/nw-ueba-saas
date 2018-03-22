@@ -213,7 +213,7 @@ indicators:
     type: hourly_aggregations
   classification: data_exfiltration
 
-  - id: numberOfFileCopiedUserIdFileHourly
+ - id: numberOfFileCopiedUserIdFileHourly
     type: FEATURE_AGGREGATION
     name: high_number_of_file_copied_operations
     schema: FILE
