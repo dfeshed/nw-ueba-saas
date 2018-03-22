@@ -1,14 +1,11 @@
 import { test } from 'qunit';
 import moduleForAcceptance from 'sa/tests/helpers/module-for-acceptance';
-import teardownSockets from '../helpers/teardown-sockets';
 
 const trimText = function() {
   return window.$(this).text().trim();
 };
 
-moduleForAcceptance('Acceptance | preference panel', {
-  afterEach: teardownSockets
-});
+moduleForAcceptance('Acceptance | preference panel', {});
 
 test('Iteration: verify all options are available in components', function(assert) {
   assert.expect(5);

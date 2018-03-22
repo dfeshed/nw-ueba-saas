@@ -424,3 +424,41 @@ test('when cancelPreviouslyExecuting is false if the same streamRequest is execu
     });
   });
 });
+
+test('disconnecting all shouldnt throw when (stomp) client is still connecting', function(assert) {
+  assert.expect(1);
+
+  let request;
+  const done = assert.async();
+
+  visit('/');
+  andThen(() => {
+    request = this.application.__container__.lookup('service:request');
+  });
+
+  const requestConfig = {
+    method: 'promise/_6',
+    modelName: 'test',
+    query: {}
+  };
+
+  andThen(function() {
+
+    later(() => {
+      request.disconnectAll();
+    }, 1);
+
+    return new Promise(function(resolve) {
+      request.promiseRequest(requestConfig)
+        .then(function() {
+          assert.ok(true, 'promise should still resolve');
+          done();
+        });
+
+      later(() => {
+        resolve();
+      }, 1000);
+
+    });
+  });
+});

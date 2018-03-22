@@ -53,7 +53,7 @@ function connect(url, headers) {
  */
 function disconnect(url) {
   const client = _clients[url];
-  if (client) {
+  if (client && !client.isConnecting) {
     delete _clients[url];
     return client.disconnect();
   } else {

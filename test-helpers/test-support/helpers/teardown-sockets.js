@@ -6,6 +6,8 @@
  */
 export default function teardownSockets() {
   // disconnect all STOMP clients
-  const request = this.application.__container__.lookup('service:request');
+  const requestKey = 'service:request';
+  const requestService = this.owner && this.owner.lookup(requestKey);
+  const request = requestService || this.application.__container__.lookup(requestKey);
   request.disconnectAll();
 }

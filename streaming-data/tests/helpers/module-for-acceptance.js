@@ -14,6 +14,8 @@ export default function(name, options = {}) {
     },
 
     afterEach() {
+      const request = this.application.__container__.lookup('service:request');
+      request.disconnectAll();
       const afterEach = options.afterEach && options.afterEach.apply(this, arguments);
       return resolve(afterEach).then(() => destroyApp(this.application));
     }
