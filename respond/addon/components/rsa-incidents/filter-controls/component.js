@@ -8,25 +8,31 @@ import {
   getStatusTypes
 } from 'respond/selectors/dictionaries';
 
-const stateToComputed = (state) => {
-  const {
-    respond: {
-      users,
-      incidents: { itemsFilters }
-    }
-  } = state;
+import {
+  getPriorityFilters,
+  getStatusFilters,
+  getIdFilters,
+  getIsUnassignedFilters,
+  getAssigneeFilters,
+  getCategoryFilters,
+  hasAssigneeFilter
+} from 'respond/selectors/incidents';
 
+import { getEnabledUsers } from 'respond/selectors/users';
+
+const stateToComputed = (state) => {
   return {
-    priorityFilters: itemsFilters.priority || [],
-    statusFilters: itemsFilters.status || [],
-    idFilter: itemsFilters.id,
-    isUnassignedFilter: itemsFilters.assignee && itemsFilters.assignee.isNull,
-    assigneeFilters: itemsFilters['assignee.id'],
+    priorityFilters: getPriorityFilters(state),
+    statusFilters: getStatusFilters(state),
+    idFilter: getIdFilters(state),
+    isUnassignedFilter: getIsUnassignedFilters(state),
+    assigneeFilters: getAssigneeFilters(state),
+    hasAssigneeFilter: hasAssigneeFilter(state),
     priorityTypes: getPriorityTypes(state),
     statusTypes: getStatusTypes(state),
-    categoryFilters: itemsFilters['categories.parent'],
+    categoryFilters: getCategoryFilters(state),
     categoryTags: getTopLevelCategoryNames(state),
-    users: users.enabledUsers
+    users: getEnabledUsers(state)
   };
 };
 

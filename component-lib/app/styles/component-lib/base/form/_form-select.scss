@@ -169,6 +169,13 @@ $ember-power-select-line-height: 2rem;
       color: text-color(primary, lightest);
     }
   }
+
+  &[aria-disabled=true] {
+    background-color: background-color(primary, dark);
+    .ember-power-select-trigger-multiple-input:disabled {
+      background-color: background-color(primary, dark);
+    }
+  }
 }
 
 input[type=search] {

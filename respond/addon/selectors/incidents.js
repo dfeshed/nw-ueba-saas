@@ -52,3 +52,43 @@ export const getTasksStatus = createSelector(
   incidentState,
   (incidentState) => incidentState.tasksStatus
 );
+
+export const getItemsFilters = createSelector(
+  incidentsState,
+  (incidentsState) => incidentsState.itemsFilters || {}
+);
+
+export const getPriorityFilters = createSelector(
+  getItemsFilters,
+  (itemsFilters) => itemsFilters.priority || []
+);
+
+export const getStatusFilters = createSelector(
+  getItemsFilters,
+  (itemsFilters) => itemsFilters.status || []
+);
+
+export const getIdFilters = createSelector(
+  getItemsFilters,
+  (itemsFilters) => itemsFilters.id
+);
+
+export const getIsUnassignedFilters = createSelector(
+  getItemsFilters,
+  (itemsFilters) => itemsFilters.assignee && itemsFilters.assignee.isNull
+);
+
+export const getAssigneeFilters = createSelector(
+  getItemsFilters,
+  (itemsFilters) => itemsFilters['assignee.id']
+);
+
+export const hasAssigneeFilter = createSelector(
+  getAssigneeFilters,
+  (assigneeFilters) => (assigneeFilters || []).length > 0
+);
+
+export const getCategoryFilters = createSelector(
+  getItemsFilters,
+  (itemsFilters) => itemsFilters['categories.parent']
+);

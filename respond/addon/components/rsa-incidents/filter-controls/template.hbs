@@ -50,12 +50,16 @@
     matcher=assigneeMatcher
     selected=selectedAssignees
     searchField="name"
+    disabled=isUnassignedFilter
     onchange=(action "assigneeChanged") as |users|}}
     {{or users.name users.id}}
   {{/power-select-multiple}}
-  <label class="rsa-form-checkbox-label show-only-unassigned {{if (eq isUnassignedFilter true) 'checked'}}">
+  <label class="rsa-form-checkbox-label show-only-unassigned
+    {{if (eq isUnassignedFilter true) 'checked'}}
+    {{if hasAssigneeFilter 'disabled'}}">
     {{rsa-form-checkbox
       checked=(eq isUnassignedFilter true)
+      disabled=hasAssigneeFilter
       change=(action 'toggleIsUnassignedFilter')}}
     <span>{{t 'respond.incidents.filters.showOnlyUnassigned'}}</span>
   </label>
