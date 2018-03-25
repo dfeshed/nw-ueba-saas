@@ -328,7 +328,7 @@ public class ModelingServiceApplicationSmartModelsTest {
     /**
      * Create features group to score map
      *
-     * @param numOfGroups     number of groups
+     * @param numOfGroups   number of groups
      * @param score         initial score
      * @param scoreInterval interval for score descending
      * @return features group to score and probability map
