@@ -1,8 +1,6 @@
 package presidio.ade.smart.correlation;
 
 import fortscale.smart.correlation.conf.CorrelationNodeData;
-import fortscale.smart.record.conf.SmartRecordConf;
-import fortscale.utils.DescendantIterator;
 import fortscale.utils.Tree;
 import fortscale.utils.TreeNode;
 import fortscale.utils.logging.Logger;
@@ -30,33 +28,11 @@ public class CorrelationForest {
      * @param root root
      */
     private void fillFeatureToTreeNodeMap(TreeNode<CorrelationNodeData> root) {
-        //todo: choose option
-        //========================option 1====================================
-        Supplier<Stream<TreeNode<CorrelationNodeData>>> streamSupplier = () -> root.getDescendantStream();
-
-        streamSupplier.get().forEach(node -> {
+        root.getDescendantStreamIncludingCurrentNode().forEach(node -> {
             String featureName = node.getData().getFeature();
             assertIfNodeAlreadyExist(featureName, node);
             featureToTreeNode.put(featureName, node);
-
-
         });
-
-        //========================option 2====================================
-//        //todo:maybe you can enable the iterator to include the root node.
-//        //add root to featureToTreeNode map
-//        String rootFeatureName = root.getData().getFeature();
-//        assertIfNodeAlreadyExist(rootFeatureName, root);
-//        featureToTreeNode.put(rootFeatureName, root);
-//
-//        //add descendants to featureToTreeNode map
-//        DescendantIterator<CorrelationNodeData> descendantIterator = root.getDescendantIterator();
-//        while (descendantIterator.hasNext()) {
-//            TreeNode<CorrelationNodeData> child = descendantIterator.next();
-//            String featureName = child.getData().getFeature();
-//            assertIfNodeAlreadyExist(featureName, child);
-//            featureToTreeNode.put(featureName, child);
-//        }
     }
 
     /**

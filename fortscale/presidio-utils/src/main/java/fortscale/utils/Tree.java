@@ -53,21 +53,9 @@ public class Tree<T> {
 	 * fill tree of each treeNode
 	 */
 	public void fillTreeInTreeNodes() {
-		//todo: choose option
-		//---------------------option 1 ---------------------
-		Supplier<Stream<TreeNode<T>>> streamSupplier = () -> root.getDescendantStream();
-		streamSupplier.get().forEach(node -> {
+		root.getDescendantStreamIncludingCurrentNode().forEach(node -> {
 			node.setTree(this);
 		});
-
-		//---------------------option 2 ---------------------
-//		root.setTree(this);
-//		DescendantIterator<T> descendantIterator = root.getDescendantIterator();
-//
-//		while (descendantIterator.hasNext()) {
-//			TreeNode<T> child = descendantIterator.next();
-//			child.setTree(this);
-//		}
 	}
 
 }

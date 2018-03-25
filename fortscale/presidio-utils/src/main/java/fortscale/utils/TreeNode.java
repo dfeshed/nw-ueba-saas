@@ -35,7 +35,9 @@ public class TreeNode<T> {
         this.children = new ArrayList<>();
         if (children != null) {
             this.children = children;
-            this.children.forEach(child -> {child.setParent(this);});
+            this.children.forEach(child -> {
+                child.setParent(this);
+            });
         }
     }
 
@@ -75,61 +77,33 @@ public class TreeNode<T> {
         this.tree = tree;
     }
 
-    //todo:remove?
-//    public AncestorsIterator<T> getAncestors() {
-//       return new AncestorsIterator<T>(this);
-//    }
 
     public Stream<TreeNode<T>> getAncestorsStream() {
         return Stream.concat(
                 Stream.of(parent).filter(Objects::nonNull),
-                Stream.of(parent).filter(Objects::nonNull).flatMap(TreeNode::getAncestorsStream));
-
-//        return Stream.of(parent).filter(Objects::nonNull).flatMap(TreeNode::getAncestorsStream);
-//        return  Stream.concat(Stream.of(this), Stream.of(parent).flatMap(TreeNode::getAncestorsStream));
-//        return Stream.of(parent).flatMap(TreeNode::getAncestorsStream);
-//        return Stream.of(parent).flatMap(TreeNode::getAncestorsStream).filter(p -> p != null );
-
-
-
-//        return Stream.concat(
-//                Stream.of(this),
-//                parent.stream().flatMap(TreeNode::getDescendantStream));
+                Stream.of(parent).filter(Objects::nonNull).flatMap(TreeNode::getAncestorsStream)
+        );
     }
 
-    //todo:remove?
-//    public DescendantIterator<T> getDescendantIterator() {
-//        return  new DescendantIterator<T>(this);
-//    }
+
 
     /**
-     *
      * @return stream of current node and descendants
      */
-    public Stream<TreeNode<T>> getDescendantStream() {
+    public Stream<TreeNode<T>> getDescendantStreamIncludingCurrentNode() {
         return Stream.concat(
                 Stream.of(this),
-                children.stream().flatMap(TreeNode::getDescendantStream));
+                children.stream().flatMap(TreeNode::getDescendantStreamIncludingCurrentNode));
     }
 
     /**
-     *
      * @param conditionStopFunc conditionStopFunc
-     * @return stream descendants
+     * @return stream descendants without current node
      */
-    public Stream<TreeNode<T>> getDescendantStream(Function<T, Boolean> conditionStopFunc ) {
+    public Stream<TreeNode<T>> getDescendantStreamNotIncludingCurrentNode(Function<T, Boolean> conditionStopFunc) {
         return Stream.concat(
-                children.stream().filter(e -> !conditionStopFunc.apply(e.getData())).flatMap(TreeNode::getDescendantStream),
+                children.stream().filter(e -> !conditionStopFunc.apply(e.getData())).flatMap(e -> e.getDescendantStreamNotIncludingCurrentNode(conditionStopFunc)),
                 children.stream().filter(e -> conditionStopFunc.apply(e.getData()))).filter(e -> conditionStopFunc.apply(e.getData()));
-
     }
-
-    //todo:remove?
-//    public DescendantIterator<T> getDescendantIterator(Function<T, Boolean> conditionStopFunc ) {
-//        DescendantIterator<T> descendantIterator = new DescendantIterator<T>(this);
-//        descendantIterator.setConditionStopFunc(conditionStopFunc);
-//        return  descendantIterator;
-//    }
-
 
 }
