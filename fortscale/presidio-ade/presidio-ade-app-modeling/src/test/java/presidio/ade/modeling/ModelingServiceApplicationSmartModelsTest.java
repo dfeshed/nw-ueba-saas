@@ -104,7 +104,7 @@ public class ModelingServiceApplicationSmartModelsTest {
      */
     @Test
     public void simpleWeightModelWithDescendingScoreTest() throws GeneratorException {
-        int groupSize = 8;
+        int numOfGroups = 6;
         double score = 100.0;
         int scoreInterval = 10;
         int probability = 100;
@@ -112,7 +112,7 @@ public class ModelingServiceApplicationSmartModelsTest {
         int numOfSmarts = 1;
         int daysBackFrom = 2;
         int daysBackTo = 1;
-        LinkedHashMap<List<AggregatedFeatureEventConf>, Pair<Double, Integer>> featuresGroupToScoreAndProbabilityMap = createFeaturesGroup(groupSize, score, scoreInterval, probability, probabilityInterval);
+        LinkedHashMap<List<AggregatedFeatureEventConf>, Pair<Double, Integer>> featuresGroupToScoreAndProbabilityMap = createFeaturesGroup(numOfGroups, score, scoreInterval, probability, probabilityInterval);
 
         List<String> ContextIdPatternList = createContextIdPatternList(featuresGroupToScoreAndProbabilityMap.size());
 
@@ -143,7 +143,7 @@ public class ModelingServiceApplicationSmartModelsTest {
      */
     @Test
     public void weightModelWithDescendingScoreAndSameProbabilityTest() throws GeneratorException {
-        int groupSize = 6;
+        int numOfGroups = 6;
         int numOfSmarts = 50;
         double score = 100.0;
         int scoreInterval = 10;
@@ -153,7 +153,7 @@ public class ModelingServiceApplicationSmartModelsTest {
         int daysBackTo = 1;
         String generatorContextIdPattern = "userId\\#[a-g]{1}[1-9]{1}";
 
-        LinkedHashMap<List<AggregatedFeatureEventConf>, Pair<Double, Integer>> featuresGroupToScoreAndProbabilityMap = createFeaturesGroup(groupSize, score, scoreInterval, probability, probabilityInterval);
+        LinkedHashMap<List<AggregatedFeatureEventConf>, Pair<Double, Integer>> featuresGroupToScoreAndProbabilityMap = createFeaturesGroup(numOfGroups, score, scoreInterval, probability, probabilityInterval);
 
         GenerateAccumulatedSmarts(featuresGroupToScoreAndProbabilityMap, numOfSmarts, generatorContextIdPattern, daysBackFrom, daysBackTo);
 
@@ -174,7 +174,7 @@ public class ModelingServiceApplicationSmartModelsTest {
      */
     @Test
     public void weightModelWithSameScoreAndDescendingProbabilityTest() throws GeneratorException {
-        int groupSize = 6;
+        int numOfGroups = 6;
         int numOfSmarts = 50;
         double score = 60.0;
         int scoreInterval = 0;
@@ -184,7 +184,7 @@ public class ModelingServiceApplicationSmartModelsTest {
         int daysBackTo = 1;
         String generatorContextIdPattern = "userId\\#[a-g]{1}[1-9]{1}";
 
-        LinkedHashMap<List<AggregatedFeatureEventConf>, Pair<Double, Integer>> featuresGroupToScoreAndProbabilityMap = createFeaturesGroup(groupSize, score, scoreInterval, probability, probabilityInterval);
+        LinkedHashMap<List<AggregatedFeatureEventConf>, Pair<Double, Integer>> featuresGroupToScoreAndProbabilityMap = createFeaturesGroup(numOfGroups, score, scoreInterval, probability, probabilityInterval);
 
         GenerateAccumulatedSmarts(featuresGroupToScoreAndProbabilityMap, numOfSmarts, generatorContextIdPattern, daysBackFrom, daysBackTo);
 
@@ -328,13 +328,14 @@ public class ModelingServiceApplicationSmartModelsTest {
     /**
      * Create features group to score map
      *
-     * @param groupSize     group size
+     * @param numOfGroups   number of groups
      * @param score         initial score
      * @param scoreInterval interval for score descending
      * @return features group to score and probability map
      */
-    public LinkedHashMap<List<AggregatedFeatureEventConf>, Pair<Double, Integer>> createFeaturesGroup(int groupSize, Double score, int scoreInterval, int probability, int probabilityInterval) {
+    public LinkedHashMap<List<AggregatedFeatureEventConf>, Pair<Double, Integer>> createFeaturesGroup(int numOfGroups, Double score, int scoreInterval, int probability, int probabilityInterval) {
         List<AggregatedFeatureEventConf> features = getAggregatedFeatureWithoutZeroWeightFeatures();
+        int groupSize = features.size()/numOfGroups;
         List<List<AggregatedFeatureEventConf>> featureGroups = Lists.partition(features, groupSize);
         LinkedHashMap<List<AggregatedFeatureEventConf>, Pair<Double, Integer>> featuresGroupToScoreAndProbabilityMap = new LinkedHashMap<>();
 
