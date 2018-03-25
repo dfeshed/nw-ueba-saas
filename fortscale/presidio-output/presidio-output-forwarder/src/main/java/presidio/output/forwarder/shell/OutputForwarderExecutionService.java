@@ -15,12 +15,15 @@ public class OutputForwarderExecutionService {
         this.presidioOutputForwardService = presidioOutputForwardService;
     }
 
-    public void run(Instant startDate, Instant endDate) throws Exception {
-        presidioOutputForwardService.forward(startDate, endDate);
+    public int doRun(Instant startDate, Instant endDate) throws Exception {
+        return presidioOutputForwardService.forward(startDate, endDate);
+
     }
 
-    public void clean(Instant startTime, Instant endTime) {
+    public int doClean(Instant startTime, Instant endTime) {
+
         logger.info("There is nothing to clean in this service");
+        return 0;
     }
 }
 
