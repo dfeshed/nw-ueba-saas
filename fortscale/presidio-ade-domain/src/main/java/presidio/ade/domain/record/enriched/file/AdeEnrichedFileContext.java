@@ -8,6 +8,10 @@ import java.util.List;
 public class AdeEnrichedFileContext extends BaseEnrichedContext {
     private List<String> operationTypeCategories;
     private String userId;
+    private String srcMachineId;
+    private String srcMachineNameRegexCluster;
+    private String dstMachineId;
+    private String dstMachineNameRegexCluster;
     private EventResult result;
     private String operationType;
     private Boolean srcDriveShared;
@@ -24,6 +28,10 @@ public class AdeEnrichedFileContext extends BaseEnrichedContext {
     public AdeEnrichedFileContext(EnrichedFileRecord enrichedFileRecord) {
         super(enrichedFileRecord.getEventId());
         this.userId = enrichedFileRecord.getUserId();
+        this.srcMachineId = enrichedFileRecord.getSrcMachineId();
+        this.srcMachineNameRegexCluster = enrichedFileRecord.getSrcMachineNameRegexCluster();
+        this.dstMachineId = enrichedFileRecord.getDstMachineId();
+        this.dstMachineNameRegexCluster = enrichedFileRecord.getDstMachineNameRegexCluster();
         this.result = enrichedFileRecord.getResult();
         this.operationType = enrichedFileRecord.getOperationType();
         this.srcDriveShared = enrichedFileRecord.getSrcDriveShared();
@@ -37,6 +45,38 @@ public class AdeEnrichedFileContext extends BaseEnrichedContext {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getSrcMachineId() {
+        return srcMachineId;
+    }
+
+    public void setSrcMachineId(String srcMachineId) {
+        this.srcMachineId = srcMachineId;
+    }
+
+    public String getSrcMachineNameRegexCluster() {
+        return srcMachineNameRegexCluster;
+    }
+
+    public void setSrcMachineNameRegexCluster(String srcMachineNameRegexCluster) {
+        this.srcMachineNameRegexCluster = srcMachineNameRegexCluster;
+    }
+
+    public String getDstMachineId() {
+        return dstMachineId;
+    }
+
+    public void setDstMachineId(String dstMachineId) {
+        this.dstMachineId = dstMachineId;
+    }
+
+    public String getDstMachineNameRegexCluster() {
+        return dstMachineNameRegexCluster;
+    }
+
+    public void setDstMachineNameRegexCluster(String dstMachineNameRegexCluster) {
+        this.dstMachineNameRegexCluster = dstMachineNameRegexCluster;
     }
 
     public EventResult getResult() {
