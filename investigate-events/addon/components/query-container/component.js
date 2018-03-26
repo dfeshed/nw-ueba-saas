@@ -5,10 +5,17 @@ import { hasRequiredValuesToQuery } from 'investigate-events/reducers/investigat
 const stateToComputed = (state) => ({
   hasRequiredValuesToQuery: hasRequiredValuesToQuery(state)
 });
+const GUIDED = 'guided';
 
 const QueryContainer = Component.extend({
   classNames: ['rsa-investigate-query-container', 'rsa-button-group'],
-  tagName: 'nav'
+
+  tagName: 'nav',
+
+  classNameBindings: ['queryView'],
+
+  queryView: GUIDED
+
 });
 
 export default connect(stateToComputed)(QueryContainer);
