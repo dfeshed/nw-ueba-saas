@@ -5,6 +5,7 @@
  */
 import Route from '@ember/routing/route';
 import RSVP from 'rsvp';
+import { get } from '@ember/object';
 import { inject as service } from '@ember/service';
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
 import * as ACTION_TYPES from 'sa/actions/types';
@@ -51,6 +52,100 @@ export default Route.extend(AuthenticatedRouteMixin, {
 
   iframedIntoClassic: false,
 
+  getPermissions() {
+    const request = get(this, 'request');
+    return new RSVP.Promise((resolve, reject) => {
+      request.promiseRequest({
+        method: 'getPermissions',
+        modelName: 'permissions',
+        query: {}
+      }).then((response) => {
+        this.set('accessControl.roles', response.data);
+        resolve();
+      }).catch((error) => {
+        console.error('Error loading permissions', error);
+        reject(error);
+      });
+    });
+  },
+
+  getTimezones() {
+    const request = get(this, 'request');
+    return new RSVP.Promise((resolve, reject) => {
+      request.promiseRequest({
+        method: 'getTimezones',
+        modelName: 'timezones',
+        query: {}
+      }).then((response) => {
+        this.set('timezone.options', response.data);
+        resolve();
+      }).catch((error) => {
+        console.error('Error loading timezones', error);
+        reject(error);
+      });
+    });
+  },
+
+  getPreferences() {
+    const redux = get(this, 'redux');
+    const request = get(this, 'request');
+    return new RSVP.Promise((resolve, reject) => {
+      request.promiseRequest({
+        method: 'getPreference',
+        modelName: 'preferences',
+        query: {}
+      }).then((response) => {
+        const {
+          themeType,
+          dateFormat,
+          timeFormat,
+          timeZone,
+          defaultComponentUrl,
+          defaultInvestigatePage
+        } = response.data;
+
+        this.setProperties({
+          'dateFormat.selected': dateFormat,
+          'timeFormat.selected': timeFormat,
+          'timezone.selected': timeZone
+        });
+
+        redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_THEME, theme: themeType });
+
+        if (defaultComponentUrl) {
+          this.get('landingPage').setDefaultLandingPage(defaultComponentUrl);
+        }
+
+        if (defaultInvestigatePage) {
+          this.get('investigatePage').setDefaultInvestigatePage(defaultInvestigatePage);
+        }
+
+        resolve();
+      }).catch((error) => {
+        console.error('Error loading preferences', error);
+        reject(error);
+      });
+    });
+  },
+
+  getLocales() {
+    const redux = get(this, 'redux');
+    const request = get(this, 'request');
+    return new RSVP.Promise((resolve, reject) => {
+      request.promiseRequest({
+        method: 'getLocales',
+        modelName: 'locales',
+        query: {}
+      }).then((response) => {
+        redux.dispatch({ type: ACTION_TYPES.ADD_PREFERENCES_LOCALES, locales: response.data });
+        resolve();
+      }).catch((error) => {
+        console.error('Error loading locales', error);
+        reject(error);
+      });
+    });
+  },
+
   afterModel(models, transition) {
     this._super(...arguments);
 
@@ -73,80 +168,11 @@ export default Route.extend(AuthenticatedRouteMixin, {
     } else {
       $('body').removeClass('iframed-into-classic');
     }
-    const permissionsPromise = new RSVP.Promise((resolve, reject) => {
-      this.request.promiseRequest({
-        method: 'getPermissions',
-        modelName: 'permissions',
-        query: {}
-      }).then((response) => {
-        this.set('accessControl.roles', response.data);
-        resolve();
-      }).catch((error) => {
-        console.error('Error loading permissions', error);
-        reject(error);
-      });
-    });
 
-    const timezonesPromise = new RSVP.Promise((resolve, reject) => {
-      this.request.promiseRequest({
-        method: 'getTimezones',
-        modelName: 'timezones',
-        query: {}
-      }).then((response) => {
-        this.set('timezone.options', response.data);
-        resolve();
-      }).catch((error) => {
-        console.error('Error loading timezones', error);
-        reject(error);
-      });
-    });
-
-    const preferencesPromise = new RSVP.Promise((resolve, reject) => {
-      // Fetch user preferences
-      this.request.promiseRequest({
-        method: 'getPreference',
-        modelName: 'preferences',
-        query: {}
-      }).then((response) => {
-        const {
-          themeType,
-          userLocale,
-          dateFormat,
-          timeFormat,
-          timeZone,
-          defaultComponentUrl,
-          defaultInvestigatePage
-        } = response.data;
-
-        if (userLocale && config.i18n.includedLocales.length > 1) {
-          const locale = userLocale.replace(/_/, '-').toLowerCase();
-          localStorage.setItem('rsa-i18n-default-locale', locale);
-          this.set('i18n.locale', locale);
-        }
-
-        this.setProperties({
-          'dateFormat.selected': dateFormat,
-          'timeFormat.selected': timeFormat,
-          'timezone.selected': timeZone
-        });
-
-        const redux = this.get('redux');
-        redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_THEME, theme: themeType });
-
-        if (defaultComponentUrl) {
-          this.get('landingPage').setDefaultLandingPage(defaultComponentUrl);
-        }
-
-        if (defaultInvestigatePage) {
-          this.get('investigatePage').setDefaultInvestigatePage(defaultInvestigatePage);
-        }
-
-        resolve();
-      }).catch((error) => {
-        console.error('Error loading preferences', error);
-        reject(error);
-      });
-    });
+    const permissionsPromise = this.getPermissions();
+    const timezonesPromise = this.getTimezones();
+    const preferencesPromise = this.getPreferences();
+    // const localesPromise = this.getLocales();
 
     return RSVP.all([preferencesPromise, timezonesPromise, permissionsPromise]).catch(() => {
       console.error('There was an issue loading your profile. Please try again.');

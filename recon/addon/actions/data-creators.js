@@ -66,7 +66,7 @@ const _retrieveMeta = (dataState) => {
           dispatch(determineReconView(data));
         },
         onFailure() {
-          warn('Could not retrieve event meta');
+          warn('Could not retrieve event meta', { id: 'recon.actions.data-creators' });
         }
       }
     });
@@ -92,7 +92,7 @@ const _fetchTextData = function(dispatch, state) {
 const _handleContentError = (response, type) => {
   return (dispatch) => {
     if (response.code !== 2) {
-      warn(`Could not retrieve ${type} recon data`);
+      warn(`Could not retrieve ${type} recon data`, { id: 'recon.actions.data-creators' });
     }
     dispatch({
       type: ACTION_TYPES.CONTENT_RETRIEVE_FAILURE,
@@ -339,7 +339,7 @@ const initializeRecon = (reconInputs) => {
             onFailure() {
               // failure to get language is no good, but
               // is not critical error no need to dispatch
-              warn('Could not retrieve language');
+              warn('Could not retrieve language', { id: 'recon.actions.data-creators' });
             }
           }
         });
@@ -353,7 +353,7 @@ const initializeRecon = (reconInputs) => {
           promise: fetchAliases(reconInputs),
           meta: {
             onFailure() {
-              warn('Could not retrieve aliases');
+              warn('Could not retrieve aliases', { id: 'recon.actions.data-creators' });
             }
           }
         });
@@ -365,7 +365,7 @@ const initializeRecon = (reconInputs) => {
         meta: {
           onFailure(response) {
             dispatch(_checkForFatalApiError(response.code));
-            warn('Could not retrieve event summary');
+            warn('Could not retrieve event summary', { id: 'recon.actions.data-creators' });
           }
         }
       });
@@ -557,7 +557,7 @@ const initializeNotifications = () => {
       },
       // some job failed
       () => {
-        warn('Error in file extract job');
+        warn('Error in file extract job', { id: 'recon.actions.data-creators' });
       }
     );
   };

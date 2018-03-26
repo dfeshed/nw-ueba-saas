@@ -1,10 +1,13 @@
 import Immutable from 'seamless-immutable';
 import * as ACTION_TYPES from 'sa/actions/types';
+import { normalizeLocales } from 'sa/utilities/locale';
 
 export const DEFAULT_THEME = 'DARK';
+export const DEFAULT_LOCALES = [{ 'english': 'en' }];
 
 const initialState = {
-  theme: DEFAULT_THEME
+  theme: DEFAULT_THEME,
+  locales: DEFAULT_LOCALES
 };
 
 export default function preferences(state, action) {
@@ -22,6 +25,16 @@ export default function preferences(state, action) {
       if (action && action.theme && action.theme !== 'null' && action.theme !== 'undefined') {
         return state.merge({
           theme: action.theme
+        });
+      }
+      return state;
+    }
+    case ACTION_TYPES.ADD_PREFERENCES_LOCALES: {
+      const { locales } = action;
+      if (locales) {
+        const normalizedLocales = normalizeLocales(locales, state.locales);
+        return state.merge({
+          locales: normalizedLocales
         });
       }
       return state;

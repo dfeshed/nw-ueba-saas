@@ -35,6 +35,14 @@ module.exports = function(environment) {
       }
     },
 
+    locales: {
+      socketUrl,
+      getLocales: {
+        subscriptionDestination: '/user/queue/administration/locales/get',
+        requestDestination: '/ws/administration/locales/get'
+      }
+    },
+
     passwords: {
       socketUrl,
       updatePassword: {

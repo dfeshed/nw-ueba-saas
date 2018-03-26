@@ -1,6 +1,5 @@
 import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
-import Immutable from 'seamless-immutable';
 import { patchFlash } from 'sa/tests/helpers/patch-flash';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { setupRenderingTest } from 'ember-qunit';
@@ -15,7 +14,7 @@ module('Integration | Component | rsa-theme-preferences', function(hooks) {
 
   hooks.beforeEach(function() {
     const initState = { global: { preferences: { theme: 'LIGHT' } } };
-    patchReducer(this, Immutable.from(initState));
+    patchReducer(this, initState);
     initialize(this.owner);
   });
 
