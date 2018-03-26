@@ -20,6 +20,13 @@ export default Component.extend(DomWatcher, EKMixin, {
   whitespace: 14,
 
   /**
+   * Initial width as set by column config
+   * @type {integer}
+   * @private
+   */
+  defaultWidth: 0,
+
+  /**
    * Flag which is set to true in case width has any units
    * other than 'px' since we don't need to adjust the column
    * widths if the units are other than 'px'
@@ -199,7 +206,6 @@ export default Component.extend(DomWatcher, EKMixin, {
    * @public
    */
   columns: computed('columnsConfig', function() {
-    const columnWidths = [];
     let columnsConfig = this.get('columnsConfig');
     if (typeof columnsConfig === 'string') {
       columnsConfig = columnsConfig.split(',');
@@ -220,16 +226,12 @@ export default Component.extend(DomWatcher, EKMixin, {
         }
         if (typeof cfg === 'object') {
           const column = $.isFunction(cfg.get) ? cfg : EmberObject.create(cfg);
+
           if (isEmpty(get(column, 'width'))) {
             set(column, 'width', DEFAULT_COLUMN_WIDTH);
           }
-          const width = get(column, 'width');
-          // No need to adjust width in case of any other units except 'px'
-          // hence setting the flag for same
-          if (isNaN(width) && !width.includes('px')) {
-            this.set('needNotAdjustWidth', true);
-          }
-          columnWidths.push(width);
+          set(column, 'defaultWidth', get(column, 'width'));
+
           if (isEmpty(get(column, 'visible'))) {
             set(column, 'visible', DEFAULT_COLUMN_VISIBILITY);
           }
@@ -265,7 +267,6 @@ export default Component.extend(DomWatcher, EKMixin, {
           return null;
         }
       });
-      this.set('columnWidths', columnWidths);
       return columns.compact();
     }
   }).readOnly(),
@@ -276,9 +277,29 @@ export default Component.extend(DomWatcher, EKMixin, {
    * @public
    */
   visibleColumns: computed('columns.@each.selected', function() {
+    const columnWidths = [];
     const columns = this.get('columns').filterBy('selected', true).sortBy('displayIndex');
-    this._applyColumnWidth(columns);
-    return columns;
+    const newCols = columns.map((column) => {
+      if (get(column, 'width') != get(column, 'defaultWidth')) {
+        set(column, 'width', get(column, 'defaultWidth'));
+      }
+
+      const width = get(column, 'width');
+      columnWidths.push(width);
+
+      // No need to adjust width in case of any other units except 'px'
+      // hence setting the flag for same
+      if (isNaN(width) && !width.includes('px')) {
+        this.set('needNotAdjustWidth', true);
+      }
+
+      return column;
+    });
+
+    this.set('columnWidths', columnWidths);
+    this._applyColumnWidth(newCols);
+
+    return newCols;
   }),
 
   /**
@@ -339,7 +360,7 @@ export default Component.extend(DomWatcher, EKMixin, {
     }
     const w = this.get('element.clientWidth') || 0;
     this.set('currentClientWidth', w);
-    const columnWidth = this._getColumnWidthSum(columns);
+    const columnWidth = this.get('columnWidths');
     const sum = columnWidth.reduce((a, b) => a + b, 0);
     const noOfColumns = columns.length;
     const resizedColumns = columns.filterBy('resizedOnce', true).length;
@@ -348,37 +369,30 @@ export default Component.extend(DomWatcher, EKMixin, {
     const diff = rowWidth - sum;
     // Need to adjust width only if view port is more than total cell width.
     if (diff > 0) {
+
       // Need to adjust only difference from view port.
       const len = noOfColumns > resizedColumns ? (noOfColumns - resizedColumns) : 1;
-      const adjustWidth = (diff / len - this.whitespace);
       columns.forEach((column, index) => {
+        const adjustWidth = (diff / len - this.whitespace);
+
+
         // Every time cell width will be addition of original width + adjustWidth.
         if (!get(column, 'resizedOnce')) {
           const width = adjustWidth + columnWidth[index];
-          set(column, 'width', width);
+          if (get(column, 'defaultWidth') < width) {
+            set(column, 'width', width);
+          }
         } else if (noOfColumns === resizedColumns && index == (noOfColumns - 1)) {
           // if all columns are resized once and further we resize one of them ,
           // then the extra adjustment should add up to the last column
           const width = adjustWidth + get(column, 'width');
-          set(column, 'width', width);
+
+          if (get(column, 'defaultWidth') < width) {
+            set(column, 'width', width);
+          }
         }
       });
     }
-  },
-
-  /**
-   * @description This method returns the array
-   * containing original widths of visible columns
-   * @public
-   */
-  _getColumnWidthSum(columns) {
-    const columnWidths = this.get('columnWidths');
-    const columnWidth = columns.map((column) => {
-      const currentColumnWidth = get(column, 'resizedOnce') ? get(column, 'width') : columnWidths[column.displayIndex];
-      const match = String(currentColumnWidth).match(/([\d\.]+)([^\d]*)/);
-      return match && Number(match[1]);
-    });
-    return columnWidth;
   },
 
   /**
