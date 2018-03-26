@@ -4,12 +4,10 @@ import presidio.data.domain.MachineEntity;
 import presidio.data.domain.User;
 import presidio.data.domain.event.authentication.AuthenticationEvent;
 import presidio.data.generators.FixedDataSourceGenerator;
+import presidio.data.generators.authenticationlocation.AuthenticationLocationCyclicGenerator;
 import presidio.data.generators.authenticationop.AuthenticationOperationGenerator;
 import presidio.data.generators.authenticationop.IAuthenticationOperationGenerator;
-import presidio.data.generators.common.GeneratorException;
-import presidio.data.generators.common.IStringGenerator;
-import presidio.data.generators.common.RandomStringGenerator;
-import presidio.data.generators.common.StringCyclicValuesGenerator;
+import presidio.data.generators.common.*;
 import presidio.data.generators.common.precentage.OperationResultPercentageGenerator;
 import presidio.data.generators.common.time.ITimeGenerator;
 import presidio.data.generators.event.AbstractEventGenerator;
@@ -35,6 +33,8 @@ public class AuthenticationEventsGenerator extends AbstractEventGenerator {
     private IStringGenerator resultCodeGenerator;
     private IAuthenticationDescriptionGenerator authenticationDescriptionGenerator;
     private IStringGenerator siteGenerator;
+    private ILocationGenerator locationGenerator;
+    private IStringGenerator applicationGenerator;
 
     public AuthenticationEventsGenerator() throws GeneratorException {
         setFieldDefaultGenerators();
@@ -57,6 +57,8 @@ public class AuthenticationEventsGenerator extends AbstractEventGenerator {
         resultCodeGenerator = new RandomStringGenerator();                          // TBD
         authenticationDescriptionGenerator = new AuthenticationDescriptionGenerator();
         siteGenerator = new StringCyclicValuesGenerator(new String[] {"SiteA", "SiteB", "SiteC"});
+        locationGenerator = new AuthenticationLocationCyclicGenerator();
+        applicationGenerator = new StringCyclicValuesGenerator(new String[] {"Facebook", "Twitter", "LinkedIn"});
     }
 
     @Override
@@ -77,7 +79,9 @@ public class AuthenticationEventsGenerator extends AbstractEventGenerator {
                 getResultCodeGenerator().getNext(),
                 getObjectDN(user.getUsername(), srcMachine.getMachineDomainDN()),
                 getObjectCanonical(srcMachine.getDomainFQDN(), user.getUsername()),
-                getSiteGenerator().getNext()
+                getSiteGenerator().getNext(),
+                getLocationGenerator().getNext(),
+                getApplicationGenerator().getNext()
         );
         authenticationDescriptionGenerator.updateFileDescription(ev);
         return ev;
@@ -164,7 +168,23 @@ public class AuthenticationEventsGenerator extends AbstractEventGenerator {
         this.authenticationDescriptionGenerator = authenticationDescriptionGenerator;
     }
 
-    private String getObjectDN(String userName,String domainDN) {
+    public ILocationGenerator getLocationGenerator() {
+        return locationGenerator;
+    }
+
+    public void setLocationGenerator(ILocationGenerator locationGenerator) {
+        this.locationGenerator = locationGenerator;
+    }
+
+    public IStringGenerator getApplicationGenerator() {
+        return applicationGenerator;
+    }
+
+    public void setApplicationGenerator(IStringGenerator applicationGenerator) {
+        this.applicationGenerator = applicationGenerator;
+    }
+
+    private String getObjectDN(String userName, String domainDN) {
         return "CN=" + userName + ",CN=Users," + domainDN;
     }
 

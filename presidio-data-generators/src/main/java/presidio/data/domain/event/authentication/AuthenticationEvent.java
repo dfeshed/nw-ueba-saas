@@ -1,5 +1,6 @@
 package presidio.data.domain.event.authentication;
 
+import presidio.data.domain.Location;
 import presidio.data.domain.MachineEntity;
 import presidio.data.domain.User;
 import presidio.data.domain.event.Event;
@@ -23,6 +24,8 @@ public class AuthenticationEvent extends Event implements Serializable {
     private String objectDN;
     private String objectCanonical;
     private String site;
+    private Location location;
+    private String application;
 
     public AuthenticationEvent(String eventId, Instant eventTime, String dataSource, User user, AuthenticationOperation authenticationOperation, MachineEntity srcMachineEntity, MachineEntity dstMachineEntity, String result, String resultCode) {
         this.eventId = eventId;
@@ -50,7 +53,7 @@ public class AuthenticationEvent extends Event implements Serializable {
         this.objectCanonical = objectCanonical;
     }
 
-    public AuthenticationEvent(String eventId, Instant eventTime, String dataSource, User user, AuthenticationOperation authenticationOperation, MachineEntity srcMachineEntity, MachineEntity dstMachineEntity, String result, String resultCode, String objectDN, String objectCanonical, String site) {
+    public AuthenticationEvent(String eventId, Instant eventTime, String dataSource, User user, AuthenticationOperation authenticationOperation, MachineEntity srcMachineEntity, MachineEntity dstMachineEntity, String result, String resultCode, String objectDN, String objectCanonical, String site, Location location, String application) {
         this.eventId = eventId;
         this.eventTime = eventTime;
         this.dataSource = dataSource;
@@ -63,6 +66,8 @@ public class AuthenticationEvent extends Event implements Serializable {
         this.objectDN = objectDN;
         this.objectCanonical = objectCanonical;
         this.site = site;
+        this.location = location;
+        this.application = application;
     }
 
     public static long getSerialVersionUID() {
@@ -173,6 +178,22 @@ public class AuthenticationEvent extends Event implements Serializable {
         this.site = site;
     }
 
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public String getApplication() {
+        return application;
+    }
+
+    public void setApplication(String application) {
+        this.application = application;
+    }
+
     @Override
     public Instant getDateTime() {
         return this.eventTime;
@@ -194,6 +215,8 @@ public class AuthenticationEvent extends Event implements Serializable {
                 ", objectDN='" + objectDN + '\'' +
                 ", objectCanonical='" + objectCanonical + '\'' +
                 ", site='" + site + '\'' +
+                ", location=" + location +
+                ", application='" + application + '\'' +
                 '}';
     }
 }

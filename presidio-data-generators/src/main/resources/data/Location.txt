@@ -1,0 +1,286 @@
+AF,Afghanistan,Kabul
+DZ,Algeria,Algiers
+AO,Angola,Luanda
+AR,Argentina,Buenos Aires
+AR,Argentina,Cordoba
+AR,Argentina,Rosario
+AM,Armenia,Yerevan
+AU,Australia,Sydney
+AU,Australia,Melbourne
+AU,Australia,Brisbane
+AU,Australia,Perth
+AU,Australia,Adelaide
+AT,Austria,Vienna
+AZ,Azerbaijan,Baku
+BD,Bangladesh,Dhaka
+BD,Bangladesh,Chittagong
+BD,Bangladesh,Khulna
+BY,Belarus,Minsk
+BO,Bolivia,Santa Cruz
+BO,Bolivia,La Paz
+BR,Brazil,Sao Paulo
+BR,Brazil,Rio De Janeiro
+BR,Brazil,Brasilia
+BR,Brazil,Salvador
+BR,Brazil,Fortaleza
+BR,Brazil,Belo Horizonte
+BR,Brazil,Manaus
+BR,Brazil,Curitiba
+BR,Brazil,Recife
+BR,Brazil,Porto Alegre
+BR,Brazil,Goiania
+BR,Brazil,Belem
+BR,Brazil,Guarulhos
+BR,Brazil,Campinas
+BG,Bulgaria,Sofia
+KH,Cambodia,Phnom Penh
+CM,Cameroon,Yaounde
+CM,Cameroon,Douala
+CA,Canada,Toronto
+CA,Canada,Montreal
+CL,Chile,Santiago
+CN,China,Shanghai
+CN,China,Beijing
+CN,China,Tianjin
+CN,China,Shenzhen
+CN,China,Guangzhou
+CN,China,Wuhan
+CN,China,Chengdu
+CN,China,Xian
+CN,China,Nanjing
+CN,China,Chongquin
+CN,China,Hong Kong
+CN,China,Hangzhou
+CN,China,Zhengzhou
+CN,China,Shenyang
+CN,China,Qingdao
+CN,China,Dalian
+CN,China,Suzhou
+CN,China,Harbin
+CN,China,Jinan
+CN,China,Changsha
+CN,China,Fuzhou
+CN,China,Shiziahuang
+CN,China,Nanning
+CN,China,Kunming
+CN,China,Changchun
+CN,China,Urumqi
+CN,China,Wuxi
+CN,China,Hefei
+CN,China,Changzhou
+CN,China,Taiyuan
+CN,China,Tangshan
+CN,China,Zibo
+CN,China,Guiyang
+CN,China,Xuzhou
+CN,China,Nanchang
+CN,China,Kowloon
+CN,China,Lanzhou
+CN,China,Baotou
+CN,China,Jilin
+CN,China,Luoyang
+CN,China,Datong
+CN,China,Anshan
+CN,China,Qiqihar
+CN,China,Foshan
+CN,China,Handan
+CO,Colombia,Bogota
+CO,Colombia,Medellin
+CO,Colombia,Cali
+CO,Colombia,Barranquilla
+CD,Congo D R,Lubumbashi
+CD,Congo D R,Kinshasa
+CU,Cuba,Havana
+CZ,Czechia,Prague
+DK,Denmark,Copenhagen
+DO,Dominican Republic,Santo Domingo
+EC,Ecuador,Guayaquil
+EC,Ecuador,Quito
+EG,Egypt,Cairo
+EG,Egypt,Alexandria
+EG,Egypt,Giza
+EG,Egypt,Shubra El Kheima
+ET,Ethiopia,Addis Ababa
+FR,France,Paris
+GE,Georgia,Tbilisi
+DE,Germany,Berlin
+DE,Germany,Hamburg
+DE,Germany,Munich
+GH,Ghana,Accra
+GT,Guatemala,Guatamala City
+GN,Guinea,Conakry
+HT,Haiti,Port-Au-Prince
+HN,Honduras,Tegucigalpa
+HU,Hungary,Budapest
+IN,India,Mumbai
+IN,India,Delhi
+IN,India,Bangalore
+IN,India,Chennai
+IN,India,Hyderabad
+IN,India,Ahmadabad
+IN,India,Kolkata
+IN,India,Surat
+IN,India,Pune
+IN,India,Jaipur
+IN,India,Kanpur
+IN,India,Lucknow
+IN,India,Nagpur
+IN,India,Bhopal
+IN,India,Pimpri Chinchwad
+IN,India,Patna
+IN,India,Vadodara
+IN,India,Ludhiana
+IN,India,Agra
+IN,India,Nashik
+IN,India,Rajkot
+IN,India,Meerut
+IN,India,Varanasi
+IN,India,Indore
+IN,India,Jodphur
+IN,India,Amritsar
+IN,India,Allahabad
+IN,India,Ranchi
+IN,India,Haora
+ID,Indonesia,Jakarta
+ID,Indonesia,Surabaya
+ID,Indonesia,Bandung
+ID,Indonesia,Medan
+ID,Indonesia,Palembang
+ID,Indonesia,Makassar
+ID,Indonesia,Semarang
+IR,Iran,Tehran
+IR,Iran,Mashhad
+IR,Iran,Isfahen
+IR,Iran,Tabriz
+IR,Iran,Shiraz
+IQ,Iraq,Baghdad
+IQ,Iraq,Basrah
+IQ,Iraq,Irbil
+IQ,Iraq,Mosul
+IT,Italy,Rome
+IT,Italy,Milan
+IT,Italy,Napoli
+JP,Japan,Tokyo
+JP,Japan,Yokohama
+JP,Japan,Osaka
+JP,Japan,Nagoya
+JP,Japan,Sapporo
+JP,Japan,Fukuoka
+JP,Japan,Kobe
+JP,Japan,Kyoto
+JP,Japan,Kawasaki
+JP,Japan,Hiroshima
+JP,Japan,Sendai
+JP,Japan,Kitakyushu
+JO,Jordan,Amman
+KZ,Kazakhstan,Almaty
+KE,Kenya,Nairobi
+LB,Lebanon,Beirut
+LY,Libya,Tripoli
+LY,Libya,Benghazi
+MY,Malaysia,Kuala Lumpur
+MX,Mexico,Mexico City
+MX,Mexico,Puebla
+MX,Mexico,Tijuana
+MX,Mexico,Ecatepec
+MX,Mexico,Leon
+MX,Mexico,Guadalajara
+MX,Mexico,Ciudad Juarez
+MX,Mexico,Zapopan
+MX,Mexico,Monterrey
+MX,Mexico,Nezahualcoyotl
+MX,Mexico,Mexicali
+MA,Morocco,Casablanca
+MA,Morocco,Rabat
+MZ,Mozambique,Maputo
+MM,Myanmar,Yangon
+NI,Nicaragua,Managua
+NG,Nigeria,Lagos
+NG,Nigeria,Kano
+NG,Nigeria,Ibadan
+NG,Nigeria,Maiduguri
+NG,Nigeria,Port Harcourt
+NG,Nigeria,Benin
+NG,Nigeria,Kaduna
+PK,Pakistan,Karachi
+PK,Pakistan,Lahore
+PK,Pakistan,Faisalabad
+PK,Pakistan,Hyderabad
+PK,Pakistan,Rawalpindi
+PK,Pakistan,Gujranwala
+PK,Pakistan,Multan
+PK,Pakistan,Peshawar
+PE,Peru,Lima
+PH,Philippines,Manila
+PL,Poland,Warsaw
+RO,Romania,Bucharest
+RU,Russia,Moscow
+RU,Russia,St Petersburg
+RU,Russia,Novosibirsk
+RU,Russia,Ekaterinburg
+RU,Russia,Nizhny Novgorod
+RU,Russia,Kazan
+RU,Russia,Samara
+RU,Russia,Chelyabinsk
+RU,Russia,Omsk
+RU,Russia,Rostov On Don
+RU,Russia,Ufa
+RU,Russia,Perm
+RU,Russia,Volgograd
+SA,Saudi Arabia,Riyadh
+SA,Saudi Arabia,Jeddah
+SA,Saudi Arabia,Mecca
+SA,Saudi Arabia,Medina
+SN,Senegal,Dakar
+RS,Serbia,Belgrade
+SL,Sierra Leone,Freetown
+SG,Singapore,Singapore
+SO,Somalia,Mogadishu
+ZA,South Africa,Tshwane (Pretoria)
+ZA,South Africa,Soweto
+ZA,South Africa,Johannesburg
+ZA,South Africa,Durban
+ZA,South Africa,Capetown
+ES,Spain,Madrid
+ES,Spain,Barcelona
+SD,Sudan,Khartoum
+SD,Sudan,Omdurman
+SE,Sweden,Stockholm
+TW,Taiwan,Taipei
+TW,Taiwan,Kaohsiung
+TW,Taiwan,Taichung
+TH,Thailand,Bangkok
+TN,Tunisia,Tunis
+TR,Turkey,Istanbul
+TR,Turkey,Ankara
+TR,Turkey,Izmir
+TR,Turkey,Bursa
+TR,Turkey,Adana
+GB,UK,London
+GB,UK,Birmingham
+UA,Ukraine,Kiev
+UA,Ukraine,Kharkiv
+UA,Ukraine,Odessa
+UA,Ukraine,Dnipropetrovsk
+UA,Ukraine,Donetsk
+UY,Uruguay,Montevideo
+US,USA,New York City
+US,USA,Los Angeles
+US,USA,Chicago
+US,USA,Houston
+US,USA,Philadelphia
+US,USA,Phoenix
+US,USA,San Antonio
+US,USA,San Diego
+US,USA,Dallas
+UZ,Uzbekistan,Tashkent
+VE,Venezuela,Maracaibo
+VE,Venezuela,Barquisimeto
+VE,Venezuela,Caracas
+VE,Venezuela,Valencia
+VN,Vietnam,Ho Chi Minh City
+VN,Vietnam,Hanoi
+VN,Vietnam,Haiphong
+YE,Yemen,Sanaa
+ZM,Zambia,Lusaka
+ZW,Zimbabwe,Harare
