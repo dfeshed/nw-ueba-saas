@@ -54,6 +54,13 @@ function runEmberTestWithMockServer {
   fi
 
   success "'ember exam' for $1 was successful"
+  # Push the newly generated coverage directory to the mount '/mnt/libhq-SA/SAStyle/sa-ui-coverage/<submodule>/coverage/*';
+  # TODO: Coverage is only enabled for master builds. Expand the functionality to PR builds later.
+  if [ "${IS_MASTER_BUILD}" == "true" ]
+  then
+    info "Copying the coverage directory for '$1' from workspace to mount."
+    node -e "require('../scripts/node/sonar-coverage.js').ws_to_mount('$1')"
+  fi
 }
 
 function runEmberTestNoMockServer {
@@ -62,6 +69,12 @@ function runEmberTestNoMockServer {
   COVERAGE=$2 NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF ember exam --split=4 --parallel --test-port $testemPort
   checkError "Ember exam/test failed for $1"
   success "'ember exam' for $1 was successful"
+  # Push the newly generated coverage directory to the mount '/mnt/libhq-SA/SAStyle/sa-ui-coverage/<submodule>/coverage/*';
+  if [ "${IS_MASTER_BUILD}" == "true" ]
+  then
+    info "Copying the coverage directory for '$1' from workspace to mount."
+    node -e "require('../scripts/node/sonar-coverage.js').ws_to_mount('$1')"
+  fi
 }
 
 function runEmberBuild {
@@ -87,6 +100,13 @@ function buildEmberApp {
   if [[ "$shouldTestApp" == "false" ]]
   then
     info "No reason to test $1, skipping it"
+    # Sonar displays zero percent coverage for modules that are skipped since tests are not run to generage lcov coverage files
+    # Pull in saved lcov files from the mount '/mnt/libhq-SA/SAStyle/sa-ui-coverage/<submodule>/coverage/*';
+    if [ "${IS_MASTER_BUILD}" == "true" ]
+    then
+      info "Copying the coverage directory for '$1' from mount to workspace."
+      node -e "require('../scripts/node/sonar-coverage.js').mount_to_ws('$1')"
+    fi
   else
 
     info "Running tests for app: $1"
