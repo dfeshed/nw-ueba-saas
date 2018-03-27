@@ -17,6 +17,10 @@ target/
 .sonar/
 .scannerwork/
 
+# Code coverage
+coverage/
+coverage_*/
+
 # compiled output
 dist/
 tmp/
@@ -30,7 +34,6 @@ bower_repository/
 # misc
 .sass-cache/
 connect.lock
-coverage/
 libpeerconnection.log
 npm-debug.log
 testem.log

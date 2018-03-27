@@ -54,6 +54,10 @@ function runEmberTestWithMockServer {
   fi
 
   success "'ember exam' for $1 was successful"
+  # since we are using ember exam with parallel and split=4 flags, the code-coverage library would
+  # generate four directories coverage_<1>, coverage_<2>, coverage_<3> and coverage_<4>
+  # Merge these directories to create a single coverage direcory
+  ember coverage-merge
   # Push the newly generated coverage directory to the mount '/mnt/libhq-SA/SAStyle/sa-ui-coverage/<submodule>/coverage/*';
   # TODO: Coverage is only enabled for master builds. Expand the functionality to PR builds later.
   if [ "${IS_MASTER_BUILD}" == "true" ]
@@ -69,6 +73,8 @@ function runEmberTestNoMockServer {
   COVERAGE=$2 NODE_ENV=production FF_ON=$FF_ON FF_OFF=$FF_OFF ember exam --split=4 --parallel --test-port $testemPort
   checkError "Ember exam/test failed for $1"
   success "'ember exam' for $1 was successful"
+  # Merge tmp coverage directories to create a single coverage direcory
+  ember coverage-merge
   # Push the newly generated coverage directory to the mount '/mnt/libhq-SA/SAStyle/sa-ui-coverage/<submodule>/coverage/*';
   if [ "${IS_MASTER_BUILD}" == "true" ]
   then
