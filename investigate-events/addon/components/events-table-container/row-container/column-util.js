@@ -309,10 +309,10 @@ function buildLogContent(item) {
   switch (status) {
     case '':
     case 'wait':
-      text = lookup('service:i18n').t('investigate.events.logs.wait');
+      text = lookup('service:i18n').t('investigate.generic.loading');
       break;
     case 'rejected':
-      text = lookup('service:i18n').t('investigate.events.logs.rejected');
+      text = lookup('service:i18n').t('investigate.generic.rejected');
       break;
     default:
       tooltip = data;

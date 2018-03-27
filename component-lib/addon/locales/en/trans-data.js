@@ -514,7 +514,8 @@ export default {
       }
     },
     generic: {
-      loading: 'Loading data...'
+      loading: 'Loading data...',
+      rejected: 'No data was loaded.'
     },
     services: {
       loading: 'Loading Services',
