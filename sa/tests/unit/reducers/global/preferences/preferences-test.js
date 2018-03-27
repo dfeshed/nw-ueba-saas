@@ -2,7 +2,7 @@ import { test, module } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import Immutable from 'seamless-immutable';
 import * as ACTION_TYPES from 'sa/actions/types';
-import reducer from 'sa/reducers/global/preferences';
+import reducer from 'sa/reducers/global/preferences/index';
 
 module('Unit | Reducers | Global | Preferences', function(hooks) {
   setupTest(hooks);

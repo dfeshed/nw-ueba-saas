@@ -2,10 +2,11 @@ import layout from './template';
 import { connect } from 'ember-redux';
 import Component from '@ember/component';
 import { updateLocale } from 'sa/actions/creators/preferences';
+import { getLocale, getLocales } from 'sa/reducers/global/preferences/selectors';
 
 const stateToComputed = (state) => ({
-  locale: state.global.preferences.locale,
-  locales: state.global.preferences.locales
+  locale: getLocale(state),
+  locales: getLocales(state)
 });
 
 const dispatchToActions = {

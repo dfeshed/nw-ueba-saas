@@ -8,8 +8,8 @@ import { patchReducer } from 'sa/tests/helpers/vnext-patch';
 import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 import { patchSocket, throwSocket } from 'sa/tests/helpers/patch-socket';
 
-const germanLocale = 'german';
-const englishLocale = 'english';
+const germanLocale = 'German';
+const englishLocale = 'English';
 const powerSelect = '.power-select';
 const labelSelector = '.rsa-form-label';
 const textSelector = '.rsa-form-label .label-text';
@@ -21,7 +21,7 @@ module('Integration | Component | rsa-locale-preferences', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function() {
-    const initState = { global: { preferences: { locale: { id: 'en-us', label: englishLocale }, locales: [{ id: 'en-us', label: englishLocale }, { id: 'de-de', label: germanLocale }] } } };
+    const initState = { global: { preferences: { locale: { id: 'en-us', label: 'english' }, locales: [{ id: 'en-us', label: 'english' }, { id: 'de-de', label: 'german' }] } } };
     patchReducer(this, initState);
     initialize(this.owner);
   });
