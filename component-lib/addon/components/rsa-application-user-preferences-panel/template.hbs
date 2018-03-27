@@ -13,25 +13,11 @@
     {{t 'userPreferences.personalize'}}
   </p>
 
-  {{#if displayLocales}}
-    <hbox>
-      <vbox xs="12">
-        <label class="rsa-form-label power-select js-test-language-select">
-          <div class="label-text">
-            {{t 'userPreferences.language'}}
-          </div>
-
-          {{#power-select
-            options=locales
-            selected=i18n.locale
-            searchEnabled=false
-            onchange=(action 'setLocale') as |option|}}
-            {{t (concat 'languages.' option )}}
-          {{/power-select}}
-        </label>
-      </vbox>
-    </hbox>
-  {{/if}}
+  <hbox>
+    <vbox xs="12">
+      {{rsa-locale-preferences}}
+    </vbox>
+  </hbox>
 
   <hbox>
     <vbox xs="12">

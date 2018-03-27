@@ -13,7 +13,6 @@ export default {
     'panelHeader': '.user-preferences-panel h3',
     'userOptionsPanelTrigger': '.user-preferences-trigger',
     'modalTrigger': '.js-test-user-preferences-modal',
-    'languageSelect': '.js-test-language-select select',
     'timeZoneSelect': '.js-test-time-zone-select select',
     'dateFormatSelect': '.js-test-date-format-select select',
     'defaultLandingPageSelect': 'js-test-default-landing-page-select select',

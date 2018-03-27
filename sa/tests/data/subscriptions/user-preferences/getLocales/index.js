@@ -5,8 +5,8 @@ export default {
     return {
       code: 0,
       data: [
-        'spanish_es',
-        'german_de'
+        'spanish_es-es',
+        'german_de-de'
       ]
     };
   }

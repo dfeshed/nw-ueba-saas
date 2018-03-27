@@ -4,8 +4,8 @@ export function normalizeLocales(locales, stateLocales) {
   const normalizedLocales = locales.map((locale) => {
     const localeString = locale.split('_');
     if (localeString.length === 2) {
-      const [ key, value ] = localeString;
-      return { [key]: value };
+      const [ label, id ] = localeString;
+      return { id, label };
     }
   }).filter((locale) => {
     return locale !== undefined;

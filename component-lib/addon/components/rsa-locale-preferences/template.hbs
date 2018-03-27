@@ -1,0 +1,13 @@
+<label class="rsa-form-label power-select">
+  <div class="label-text">
+    {{t 'userPreferences.locale.label'}}
+  </div>
+
+  {{#power-select
+    options=locales
+    selected=locale
+    searchEnabled=false
+    onchange=(action 'updateLocale') as |option|}}
+    {{option.label}}
+  {{/power-select}}
+</label>

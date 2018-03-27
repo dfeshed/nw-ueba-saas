@@ -80,7 +80,10 @@ export default {
     version: 'ja_Version',
     username: 'ja_Username',
     email: 'ja_Email',
-    language: 'ja_Language',
+    locale: {
+      label: 'ja_Language',
+      error: 'ja_There was an error attempting to save your Language selection. Please try again. If this issue persists, please contact your system admin.'
+    },
     timeZone: 'ja_Time Zone',
     dateFormatError: 'ja_There was an error attempting to save your Date Format selection. Please try again. If this issue persists, please contact your system admin.',
     landingPageError: 'ja_There was an error attempting to save your Default Landing Page selection. Please try again. If this issue persists, please contact your system admin.',

@@ -25,12 +25,12 @@ module('Unit | Route | protected', function(hooks) {
     const promise = route.getLocales();
 
     let localeState = redux.getState().global.preferences.locales;
-    assert.deepEqual(localeState, [{ 'english': 'en' }]);
+    assert.deepEqual(localeState, [{ id: 'en-us', label: 'english' }]);
 
     await promise;
 
     localeState = redux.getState().global.preferences.locales;
-    assert.deepEqual(localeState, [{ 'english': 'en' }, { 'spanish': 'es' }, { 'german': 'de' }]);
+    assert.deepEqual(localeState, [{ id: 'en-us', label: 'english' }, { id: 'es-es', label: 'spanish' }, { id: 'de-de', label: 'german' }]);
   });
 
   test('when error thrown the default locales are still available', async function(assert) {
@@ -45,11 +45,11 @@ module('Unit | Route | protected', function(hooks) {
     const promise = route.getLocales();
 
     let localeState = redux.getState().global.preferences.locales;
-    assert.deepEqual(localeState, [{ 'english': 'en' }]);
+    assert.deepEqual(localeState, [{ id: 'en-us', label: 'english' }]);
 
     return promise.catch(() => {
       localeState = redux.getState().global.preferences.locales;
-      assert.deepEqual(localeState, [{ 'english': 'en' }]);
+      assert.deepEqual(localeState, [{ id: 'en-us', label: 'english' }]);
       done();
     });
   });
