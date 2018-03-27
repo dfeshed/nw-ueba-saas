@@ -18,6 +18,15 @@ module.exports = {
         srcDir: 'lib',
         import: ['stomp.js']
       }
+    },
+    'ember-cli-babel': {
+      includePolyfill: true
+    },
+    babel: {
+      plugins: [
+        'transform-object-rest-spread',
+        'transform-decorators-legacy'
+      ]
     }
   },
 

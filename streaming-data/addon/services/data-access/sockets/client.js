@@ -166,16 +166,14 @@ export default EmberObject.extend({
   connect() {
     const headers = this.headers || {};
 
-    const me = this;
     return this.set('promise',
-      new RSVP.Promise(function(resolve, reject) {
-
-        me.set('isConnecting', true);
-        me.get('stompClient').connect(headers, function() {
-          me.set('isConnecting', false);
-          resolve(me);
-        }, function(e) {
-          me.set('isConnecting', false);
+      new RSVP.Promise((resolve, reject) => {
+        this.set('isConnecting', true);
+        this.get('stompClient').connect(headers, () => {
+          this.set('isConnecting', false);
+          resolve(this);
+        }, (e) => {
+          this.set('isConnecting', false);
           reject(e);
         });
       })
@@ -191,14 +189,13 @@ export default EmberObject.extend({
    * @public
    */
   disconnect() {
-    const me = this;
-    if (me.get('disconnected')) {
-      return RSVP.Promise.resolve(me);
+    if (this.get('disconnected')) {
+      return RSVP.Promise.resolve(this);
     } else {
-      me.set('disconnected', true);
-      return new RSVP.Promise(function(resolve) {
-        me.get('stompClient').disconnect(function() {
-          resolve(me);
+      this.set('disconnected', true);
+      return new RSVP.Promise((resolve) => {
+        this.get('stompClient').disconnect(function() {
+          resolve(this);
         });
       });
     }

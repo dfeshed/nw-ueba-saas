@@ -13,11 +13,6 @@ const respondConfigGen = function(environment) {
         subscriptionDestination: '/user/queue/incidents',
         requestDestination: '/ws/respond/incidents'
       },
-      notify: {
-        subscriptionDestination: '/topic/incidents/owner/%@',
-        requestDestination: '/dummy/incidents/owner',
-        cancelDestination: '/ws/respond/cancel'
-      },
       queryRecord: {
         subscriptionDestination: '/user/queue/incident/details',
         requestDestination: '/ws/respond/incident/details'

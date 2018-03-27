@@ -80,10 +80,6 @@ module.exports = function(/* environment, appConfig */) {
           subscriptionDestination: '/test/subscription/stream/_5',
           requestDestination: '/test/request/stream/_5'
         },
-        'stream/_6': {
-          subscriptionDestination: '/test/subscription/stream/_6',
-          requestDestination: '/test/request/stream/_6'
-        },
         'stream/_7': {
           subscriptionDestination: '/test/subscription/stream/_7',
           requestDestination: '/test/request/stream/_7'

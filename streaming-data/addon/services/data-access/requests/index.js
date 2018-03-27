@@ -3,7 +3,6 @@ import { deprecate } from 'ember-deprecations';
 import { log } from 'ember-debug';
 import RSVP from 'rsvp';
 import { run } from '@ember/runloop';
-import { isNone } from '@ember/utils';
 import { StreamCache } from '../streams';
 import Socket from '../sockets';
 import $ from 'jquery';
@@ -74,8 +73,7 @@ const streamRequest = ({
     onInit,
     onStopped,
     onCompleted,
-    onError,
-    onTimeout
+    onError
   }, routeName) => {
 
   if (routeName === undefined || routeName === '') {
@@ -85,24 +83,20 @@ const streamRequest = ({
   _baseAsserts(method, modelName, query, 'streamRequest');
   assert('Cannot call streamRequest without onResponse', onResponse);
 
-  streamOptions.isTimeoutEnabled = !isNone(onTimeout);
-
   const stream = Socket.createStream(method, modelName, query, streamOptions);
   StreamCache.registerStream(stream, method, modelName, routeName, streamOptions);
 
-  stream.autoStart()
-    .subscribe({
-      onInit,
-      onNext: onResponse,
-      onStopped,
-      onCompleted,
-      onError: onError || function(response) {
-        log.error(
-          `Unhandled error in stream, method: ${method}, modelName: ${modelName}, code: ${response.code}`,
-          response);
-      },
-      onTimeout
-    });
+  stream.subscribe({
+    onInit,
+    onResponse,
+    onStopped,
+    onCompleted,
+    onError: onError || function(response) {
+      log.error(
+        `Unhandled error in stream, method: ${method}, modelName: ${modelName}, code: ${response.code}`,
+        response);
+    }
+  });
 };
 
 /**
@@ -140,8 +134,7 @@ const promiseRequest = ({
     modelName,
     query,
     onInit,
-    streamOptions = {},
-    onTimeout
+    streamOptions = {}
   }, routeName) => {
   let stream;
 
@@ -150,8 +143,6 @@ const promiseRequest = ({
   }
 
   _baseAsserts(method, modelName, query, 'promiseRequest');
-
-  streamOptions.isTimeoutEnabled = !isNone(onTimeout);
 
   try {
     stream = Socket.createStream(method, modelName, query, streamOptions);
@@ -163,21 +154,20 @@ const promiseRequest = ({
 
   return new RSVP.Promise((resolve, reject) => {
     let hangup;
-    stream.autoStart().subscribe({
+    stream.subscribe({
       onInit(stopStreaming) {
         hangup = stopStreaming;
         if (onInit) {
           onInit(stopStreaming);
         }
       },
-      onNext() {
+      onResponse() {
         resolve(...arguments);
         // promise requests are always done once the promise has resolved,
         // cannot resolve promise twice, so call hangup
         run(hangup);
       },
-      onError: reject,
-      onTimeout
+      onError: reject
     });
   });
 };

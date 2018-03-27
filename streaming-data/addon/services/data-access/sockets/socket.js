@@ -82,11 +82,13 @@ function disconnectAll() {
  */
 function createStream(method, modelName, query, streamOptions = {}) {
   const cfg = _findSocketConfig(modelName, method);
-  const stream = Stream.create(streamOptions).fromSocket({
+  const allStreamOptions = {
+    ...streamOptions,
     socketConfig: cfg,
     socketRequestParams: query,
     fetchSocketClient: () => connect(cfg.socketUrl)
-  });
+  };
+  const stream = Stream.create(allStreamOptions);
   return stream;
 }
 

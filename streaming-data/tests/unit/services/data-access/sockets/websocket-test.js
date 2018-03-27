@@ -15,7 +15,7 @@ test('it throws an error if socket config is not provided', function(assert) {
   assert.expect(2);
   try {
     Socket._findSocketConfig('dummy', 'stream');
-    assert.ok(false, 'fromSocket should have thrown error');
+    assert.ok(false, '_findSocketConfig should have thrown error');
   } catch (err) {
     assert.ok(err, 'Stream could not be instantiated.');
     assert.equal(err.message, 'Invalid socket stream configuration:. model: dummy, method: stream');
