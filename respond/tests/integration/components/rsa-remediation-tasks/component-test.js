@@ -46,7 +46,7 @@ const selectors = {
   createdColumnSortButton: '.rsa-explorer-table .column-sort:eq(0)',
   explorerTableErrorMessage: '.rsa-explorer-table .items-error',
   deleteButton: '.rsa-respond-explorer .rsa-explorer-toolbar .is-danger button',
-  confirmationOkButton: '.modal-footer-buttons .is-danger button',
+  confirmationOkButton: '.modal-footer-buttons .is-primary button',
   noResultsMessage: '.rsa-explorer-table .no-results-message .message'
 };
 
@@ -186,7 +186,7 @@ test('Clicking on the delete button deletes the item after confirming via dialog
     return wait().then(() => {
       this.$(selectors.deleteButton).click();
       return wait().then(() => {
-        $('.modal-footer-buttons .is-danger button').click();
+        $(selectors.confirmationOkButton).click();
         return wait();
       }).then(() => {
         onDelete.then(() => {

@@ -17,6 +17,9 @@ $dragPadHighlightedColor: background-color(primary, lighter);
     > div, centered {
       height: 100%;
     }
+    .rules-error {
+      color: text-color(primary, lighter);
+    }
   }
   table {
     table-layout: fixed;

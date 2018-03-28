@@ -1,7 +1,6 @@
 {{#if accessControl.respondCanManageAlerts}}
   <div class="action-control create-incident-button">
     {{#rsa-form-button
-      style='primary'
       isDisabled=(or hasNoSelections hasSelectedAlertsBelongingToIncidents)
       defaultAction='createIncident'}}
       {{t 'respond.alerts.createIncident'}}
@@ -9,7 +8,6 @@
   </div>
   <div class="action-control add-to-incident-button">
     {{#rsa-form-button
-      style='primary'
       isDisabled=(or hasNoSelections hasSelectedAlertsBelongingToIncidents)
       defaultAction='addToIncident'}}
       {{t 'respond.alerts.addToIncident'}}
