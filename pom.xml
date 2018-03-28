@@ -1025,11 +1025,7 @@
                 <version>1.0-11</version>
             </dependency>
 
-            <dependency>
-                <groupId>presidio.flume.core.flume-ng-sources</groupId>
-                <artifactId>flume-kafka-source</artifactId>
-                <version>${project.version}</version>
-            </dependency>
+
 
             <dependency>
                 <groupId>presidio.flume.core</groupId>
@@ -1037,11 +1033,7 @@
                 <version>1.0-11</version>
             </dependency>
 
-            <dependency>
-                <groupId>presidio.flume.core.flume-ng-sources</groupId>
-                <artifactId>flume-taildir-source</artifactId>
-                <version>${project.version}</version>
-            </dependency>
+
 
             <dependency>
                 <groupId>presidio.flume.core</groupId>
