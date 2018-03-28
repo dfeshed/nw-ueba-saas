@@ -176,7 +176,7 @@
             <dependency>
                 <groupId>presidio-test-utils</groupId>
                 <artifactId>presidio-data-generators</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
+                <version>1.0-11</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
