@@ -144,15 +144,6 @@
 
 
         <dependency>
-            <groupId>presidio.flume.core.flume-ng-clients</groupId>
-            <artifactId>flume-ng-log4jappender</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>presidio.flume.core.flume-ng-clients</groupId>
-            <artifactId>flume-ng-log4jappender</artifactId>
-            <classifier>jar-with-dependencies</classifier>
-        </dependency>
-        <dependency>
             <groupId>presidio.flume.core</groupId>
             <artifactId>flume-tools</artifactId>
         </dependency>
