@@ -129,10 +129,6 @@
         </dependency>
         <dependency>
             <groupId>presidio.flume.core.flume-ng-sinks</groupId>
-            <artifactId>flume-ng-kafka-sink</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>presidio.flume.core.flume-ng-sinks</groupId>
             <artifactId>flume-ng-morphline-solr-sink</artifactId>
             <exclusions>
                 <exclusion>

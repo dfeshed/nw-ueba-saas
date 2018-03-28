@@ -1020,12 +1020,6 @@
             </dependency>
 
             <dependency>
-                <groupId>presidio.flume.core.flume-ng-sinks</groupId>
-                <artifactId>flume-ng-kafka-sink</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
                 <groupId>presidio.flume.core.flume-ng-sources</groupId>
                 <artifactId>flume-jms-source</artifactId>
                 <version>1.0-11</version>
