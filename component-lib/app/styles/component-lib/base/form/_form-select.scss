@@ -34,7 +34,7 @@ $ember-power-select-line-height: 2rem;
 }
 
 .ember-power-select-dropdown.ember-basic-dropdown-content--below, .ember-power-select-dropdown.ember-basic-dropdown-content--in-place {
-  @include border(1px, solid, secondary);
+  @include border(1px, solid, primary, lightest);
 
   &.is-error {
     @include border(1px, solid, accentOne);

@@ -11,6 +11,7 @@
     {{#click-outside action=(action "clickOutside")}}
       {{#rsa-form-button
         class="rsa-split-dropdown"
+        isActive=isExpanded
         defaultAction=(action 'toggleExpand')
       }}
         {{rsa-icon name="arrow-down-12"}}
