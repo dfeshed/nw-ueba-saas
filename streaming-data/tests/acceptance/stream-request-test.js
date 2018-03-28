@@ -1,24 +1,19 @@
+import { module, test } from 'qunit';
 import { later } from '@ember/runloop';
-import { test } from 'qunit';
-import moduleForAcceptance from '../helpers/module-for-acceptance';
+import { setupApplicationTest } from 'ember-qunit';
+import { visit } from '@ember/test-helpers';
 
-moduleForAcceptance('Acceptance | Request | streamRequest', {});
+module('Acceptance | Request | streamRequest', function(hooks) {
+  setupApplicationTest(hooks);
 
-/*
- * This is a simple "will it return data" test
- */
-test('socket make request and receive data', function(assert) {
-  let request;
-  assert.expect(2);
-  const done = assert.async();
+  test('socket make request and receive data', async function(assert) {
+    assert.expect(2);
+    const done = assert.async();
 
-  visit('/');
-  andThen(() => {
-    request = this.application.__container__.lookup('service:request');
-  });
+    await visit('/');
+    const request = this.owner.lookup('service:request');
 
-  andThen(function() {
-    return request.streamRequest({
+    request.streamRequest({
       method: 'stream/_1',
       modelName: 'test',
       query: {},
@@ -30,26 +25,18 @@ test('socket make request and receive data', function(assert) {
       }
     });
   });
-});
 
-/*
- * Basic 'can get multiplte pages back' test
- */
-test('socket make request and receive multiple pages of data', function(assert) {
-  let callCount = 0;
-  let allResponseData = [];
+  test('socket make request and receive multiple pages of data', async function(assert) {
+    let callCount = 0;
+    let allResponseData = [];
 
-  let request;
-  assert.expect(2);
-  const done = assert.async();
+    assert.expect(2);
+    const done = assert.async();
 
-  visit('/');
-  andThen(() => {
-    request = this.application.__container__.lookup('service:request');
-  });
+    await visit('/');
+    const request = this.owner.lookup('service:request');
 
-  andThen(function() {
-    return request.streamRequest({
+    request.streamRequest({
       method: 'stream/_2',
       modelName: 'test',
       query: {},
@@ -64,25 +51,17 @@ test('socket make request and receive multiple pages of data', function(assert) 
       }
     });
   });
-});
 
-/*
- * Will not have response called after telling stream to stop, can successfully stop stream half way
- */
-test('socket can cancel', function(assert) {
-  let callCount = 0;
+  test('socket can cancel', async function(assert) {
+    let callCount = 0;
 
-  let request;
-  assert.expect(1);
-  const done = assert.async();
+    assert.expect(1);
+    const done = assert.async();
 
-  visit('/');
-  andThen(() => {
-    request = this.application.__container__.lookup('service:request');
-  });
+    await visit('/');
+    const request = this.owner.lookup('service:request');
 
-  andThen(function() {
-    return request.streamRequest({
+    request.streamRequest({
       method: 'stream/_3',
       modelName: 'test',
       query: {},
@@ -97,20 +76,15 @@ test('socket can cancel', function(assert) {
       }
     });
   });
-});
 
-test('will call onInit before stream starts', function(assert) {
-  let request;
-  assert.expect(1);
-  const done = assert.async();
+  test('will call onInit before stream starts', async function(assert) {
+    assert.expect(1);
+    const done = assert.async();
 
-  visit('/');
-  andThen(() => {
-    request = this.application.__container__.lookup('service:request');
-  });
+    await visit('/');
+    const request = this.owner.lookup('service:request');
 
-  andThen(function() {
-    return request.streamRequest({
+    request.streamRequest({
       method: 'stream/_1',  // reusing stream/_1 just to verify onInit called
       modelName: 'test',
       query: {},
@@ -122,20 +96,15 @@ test('will call onInit before stream starts', function(assert) {
       }
     });
   });
-});
 
-test('will call onStopped when stream is stopped by client', function(assert) {
-  let request;
-  assert.expect(1);
-  const done = assert.async();
+  test('will call onStopped when stream is stopped by client', async function(assert) {
+    assert.expect(1);
+    const done = assert.async();
 
-  visit('/');
-  andThen(() => {
-    request = this.application.__container__.lookup('service:request');
-  });
+    await visit('/');
+    const request = this.owner.lookup('service:request');
 
-  andThen(function() {
-    return request.streamRequest({
+    request.streamRequest({
       method: 'stream/_2',  // reusing stream/_2 just to verify onStopped called
       modelName: 'test',
       query: {},
@@ -148,19 +117,14 @@ test('will call onStopped when stream is stopped by client', function(assert) {
       }
     });
   });
-});
 
-test('will call onError when server returns error', function(assert) {
-  let request;
-  assert.expect(2);
-  const done = assert.async();
+  test('will call onError when server returns error', async function(assert) {
+    assert.expect(2);
+    const done = assert.async();
 
-  visit('/');
-  andThen(() => {
-    request = this.application.__container__.lookup('service:request');
-  });
+    await visit('/');
+    const request = this.owner.lookup('service:request');
 
-  andThen(function() {
     return request.streamRequest({
       method: 'stream/_4',
       modelName: 'test',
@@ -173,22 +137,17 @@ test('will call onError when server returns error', function(assert) {
       }
     });
   });
-});
 
-test('will call onCompleted when server sends an indication that it is done', function(assert) {
-  let callCount = 0;
+  test('will call onCompleted when server sends an indication that it is done', async function(assert) {
+    let callCount = 0;
 
-  let request;
-  assert.expect(2);
-  const done = assert.async();
+    assert.expect(2);
+    const done = assert.async();
 
-  visit('/');
-  andThen(() => {
-    request = this.application.__container__.lookup('service:request');
-  });
+    await visit('/');
+    const request = this.owner.lookup('service:request');
 
-  andThen(function() {
-    return request.streamRequest({
+    request.streamRequest({
       method: 'stream/_5',
       modelName: 'test',
       query: {},
