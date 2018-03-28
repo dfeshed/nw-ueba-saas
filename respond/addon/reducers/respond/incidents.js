@@ -40,6 +40,7 @@ const incidentsReducers = reduxActions.handleActions({
   [ACTION_TYPES.FETCH_INCIDENTS_COMPLETED]: explorerReducers.fetchItemsStreamCompleted,
   [ACTION_TYPES.FETCH_INCIDENTS_ERROR]: explorerReducers.fetchItemsStreamError,
   [ACTION_TYPES.UPDATE_INCIDENT]: explorerReducers.updateItem,
+  [ACTION_TYPES.ESCALATE_INCIDENT]: explorerReducers.updateItem,
   [ACTION_TYPES.DELETE_INCIDENT]: explorerReducers.deleteItem,
   [ACTION_TYPES.UPDATE_INCIDENT_FILTERS]: persistState(explorerReducers.updateFilter),
   [ACTION_TYPES.TOGGLE_FILTER_PANEL]: persistState(explorerReducers.toggleFilterPanel),

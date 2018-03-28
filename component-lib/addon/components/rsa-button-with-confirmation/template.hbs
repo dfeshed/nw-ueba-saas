@@ -23,10 +23,18 @@
     <footer>
       <hbox class="modal-footer-buttons">
         {{#rsa-form-button defaultAction='closeConfirmModal'}}
-          {{t 'forms.no'}}
+          {{#if cancelButtonLabel}}
+            {{cancelButtonLabel}}
+          {{else}}
+            {{t 'forms.no'}}
+          {{/if}}
         {{/rsa-form-button}}
         {{#rsa-form-button style='primary' click=(action 'confirmAction')}}
-          {{t 'forms.yes'}}
+          {{#if confirmButtonLabel}}
+            {{confirmButtonLabel}}
+          {{else}}
+            {{t 'forms.yes'}}
+          {{/if}}
         {{/rsa-form-button}}
       </hbox>
     </footer>

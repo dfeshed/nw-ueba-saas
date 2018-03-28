@@ -1,4 +1,5 @@
 import EmberObject from '@ember/object';
+import { lookup } from 'ember-dependency-lookup';
 import { promiseRequest, streamRequest } from 'streaming-data/services/data-access/requests';
 import { resolveSinceWhenStartTime } from 'respond/utils/since-when-types';
 import FilterQuery from 'respond/utils/filter-query';
@@ -170,7 +171,6 @@ IncidentsAPI.reopenClass({
     });
   },
 
-
   /**
    * Executes a websocket promise request to add a given list of alerts to a given incident ID.
    * @param {[]} alertIds The alertIds for the alerts to be added to the incident.
@@ -213,6 +213,23 @@ IncidentsAPI.reopenClass({
     });
 
     return RSVP.allSettled(requests);
+  },
+
+  /**
+   * Escalates an incident
+   * @method escalate
+   * @public
+   * @param incidentId
+   */
+  escalate(incidentId) {
+    const request = lookup('service:request');
+    return request.promiseRequest({
+      method: 'escalate',
+      modelName: 'incidents',
+      query: {
+        incidentId
+      }
+    });
   },
 
   createIncidentFromAlerts(name, alertIds) {

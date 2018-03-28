@@ -6,7 +6,6 @@
       {{/link-to}}
     </vbox>
     <h2>
-      <div class="id">{{incidentId}}</div>
       {{#if (eq infoStatus 'wait')}}
         {{rsa-loader size="large" label=(t 'respond.details.loading')}}
       {{else if (eq infoStatus 'error')}}
@@ -15,16 +14,7 @@
           <div>{{t 'respond.details.error'}}</div>
         </div>
       {{else}}
-        <div class="name">
-          {{respond-common/editable-field
-            value=info.name
-            inputMaxlength=150
-            allowEmptyValue=false
-            placeholder=(t 'respond.empty')
-            isDisabled=(not accessControl.respondCanManageIncidents)
-            onFieldChange=(action 'updateItem' info.id 'name')
-          }}
-        </div>
+        {{rsa-incidents/inspector-header info=info}}
       {{/if}}
     </h2>
   </box>

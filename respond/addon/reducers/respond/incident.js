@@ -178,6 +178,12 @@ const incident = reduxActions.handleActions({
     });
   },
 
+  [ACTION_TYPES.ESCALATE_INCIDENT]: (state, action) => {
+    return handle(state, action, {
+      success: (s) => s.set('info', action.payload.data)
+    });
+  },
+
   [ACTION_TYPES.FETCH_REMEDIATION_TASKS_FOR_INCIDENT]: (state, action) => {
     return handle(state, action, {
       start: (s) => s.merge({ tasks: [], tasksStatus: 'wait' }),

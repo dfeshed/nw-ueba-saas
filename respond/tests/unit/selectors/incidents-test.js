@@ -1,5 +1,4 @@
 import { module, test } from 'qunit';
-import { setupTest } from 'ember-qunit';
 import Immutable from 'seamless-immutable';
 import {
   hasSelectedClosedIncidents,
@@ -52,8 +51,7 @@ const state = {
   }
 };
 
-module('Unit | Utility | Incidents Selector', function(hooks) {
-  setupTest(hooks);
+module('Unit | Utility | Incidents Selector', function() {
 
   test('Basic incident selectors', function(assert) {
     assert.equal(getIncidentId(state), 'INC-123', 'The returned value from the getIncidentId selector is as expected');

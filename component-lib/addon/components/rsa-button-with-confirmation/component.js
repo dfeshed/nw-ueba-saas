@@ -28,6 +28,10 @@ export default Component.extend({
 
   noteMessage: null,
 
+  cancelButtonLabel: null,
+
+  confirmButtonLabel: null,
+
   title: null,
 
   /**

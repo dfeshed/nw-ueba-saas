@@ -426,6 +426,21 @@ const addRelatedIndicatorsToIncident = (indicatorIds, incidentId, callbacks) => 
 
 const clearAddRelatedIndicatorsStatus = () => ({ type: ACTION_TYPES.CLEAR_ADD_RELATED_INDICATORS_STATUS });
 
+const escalate = (incidentId, callbacks = callbacksDefault) => {
+  return {
+    type: ACTION_TYPES.ESCALATE_INCIDENT,
+    promise: Incidents.escalate(incidentId),
+    meta: {
+      onSuccess: (response) => {
+        callbacks.onSuccess(response);
+      },
+      onFailure: (response) => {
+        callbacks.onFailure(response);
+      }
+    }
+  };
+};
+
 // UI STATE CREATORS - INCIDENT
 
 const setHideViz = (hideViz) => ({ type: ACTION_TYPES.SET_HIDE_VIZ, payload: hideViz });
@@ -442,6 +457,7 @@ const toggleSelectLink = (id) => ({ type: ACTION_TYPES.TOGGLE_INCIDENT_SELECTION
 const clearSelection = () => ({ type: ACTION_TYPES.CLEAR_INCIDENT_SELECTION });
 
 export {
+  escalate,
   getItems,
   updateItem,
   deleteItem,

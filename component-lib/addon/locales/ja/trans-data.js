@@ -847,7 +847,11 @@ export default {
           incidentCreationFailed: 'ja_There was a problem creating an incident from the selected alerts',
           createIncidentInstruction: 'ja_An incident will be created from the selected {{alertCount}} alert(s). Please provide a name for the incident.',
           addAlertToIncidentSucceeded: 'ja_You successfully added the selected alerts to {{incidentId}}.',
-          addAlertToIncidentFailed: 'ja_There was a problem adding the selected alerts to this incident'
+          addAlertToIncidentFailed: 'ja_There was a problem adding the selected alerts to this incident',
+          confirmEscalationTitle: 'ja_Confirm Escalation',
+          confirmEscalation: 'ja_Are you sure you want to escalate this incident? This action is not reversible and may kick off additional business processes in external systems',
+          escalationSuccess: 'ja_Incident {{incidentId}} has been escalated',
+          escalationFailure: 'ja_There was a problem escalating incident {{incidentId}}'
         },
         deselectAll: 'ja_Deselect all'
       },
@@ -946,6 +950,8 @@ export default {
       backToAlerts: 'ja_Back To Alerts'
     },
     incident: {
+      escalate: 'ja_Escalate',
+      escalated: 'ja_Escalated',
       created: 'ja_Created',
       status: 'ja_Status',
       priority: 'ja_Priority',

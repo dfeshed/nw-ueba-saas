@@ -28,6 +28,10 @@ const respondConfigGen = function(environment) {
       deleteRecord: {
         subscriptionDestination: '/user/queue/incidents/delete',
         requestDestination: '/ws/respond/incidents/delete'
+      },
+      escalate: {
+        subscriptionDestination: '/user/queue/incident/escalate',
+        requestDestination: '/ws/respond/incident/escalate'
       }
     },
     'incidents-count': {
