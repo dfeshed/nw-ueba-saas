@@ -88,8 +88,7 @@ function createStream(method, modelName, query, streamOptions = {}) {
     socketRequestParams: query,
     fetchSocketClient: () => connect(cfg.socketUrl)
   };
-  const stream = Stream.create(allStreamOptions);
-  return stream;
+  return Stream.create(allStreamOptions);
 }
 
 /**

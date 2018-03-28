@@ -3,6 +3,8 @@ import { later } from '@ember/runloop';
 import { setupApplicationTest } from 'ember-qunit';
 import { visit } from '@ember/test-helpers';
 
+import StreamCache from 'streaming-data/services/data-access/streams/stream-cache';
+
 module('Acceptance | Request | streamRequest', function(hooks) {
   setupApplicationTest(hooks);
 
@@ -161,4 +163,58 @@ module('Acceptance | Request | streamRequest', function(hooks) {
       }
     });
   });
+
+  test('error message logged if no error handler provided', async function(assert) {
+    const done = assert.async();
+    assert.expect(1);
+
+    /* eslint-disable no-console */
+    const oldConsoleWarn = console.warn;
+
+    console.warn = function() {
+      assert.ok(true, 'warning was issued');
+      console.warn = oldConsoleWarn;
+      done();
+    };
+    /* eslint-enable no-console */
+
+    await visit('/');
+    const request = this.owner.lookup('service:request');
+
+    request.streamRequest({
+      method: 'stream/_11',
+      modelName: 'test',
+      query: {},
+      onResponse(response, stopStreaming) {
+        stopStreaming();
+      }
+    });
+  });
+
+  test('sends cancel message when client stops stream', async function(assert) {
+    const done = assert.async();
+    assert.expect(2);
+
+    await visit('/');
+    const request = this.owner.lookup('service:request');
+
+    request.streamRequest({
+      method: 'stream/_12',
+      modelName: 'test',
+      query: {},
+      onResponse(response, stopStreaming) {
+        const { websocketClient } = StreamCache._streams.index[0].stream;
+        const oldSend = websocketClient.send;
+        websocketClient.send = function(streamId, dontCare, opts) {
+          assert.ok(streamId.endsWith('stream/_12'),
+            'sends cancel request to the right endpoint');
+          assert.ok(opts.cancel === true, 'cancel is sent');
+          websocketClient.send = oldSend;
+          done();
+        };
+        stopStreaming();
+      }
+    });
+  });
+
 });

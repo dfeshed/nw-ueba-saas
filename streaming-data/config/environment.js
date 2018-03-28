@@ -95,6 +95,15 @@ module.exports = function(/* environment, appConfig */) {
         'stream/_10': {
           subscriptionDestination: '/test/subscription/stream/_10',
           requestDestination: '/test/request/stream/_10'
+        },
+        'stream/_11': {
+          subscriptionDestination: '/test/subscription/stream/_11',
+          requestDestination: '/test/request/stream/_11',
+        },
+        'stream/_12': {
+          subscriptionDestination: '/test/subscription/stream/_12',
+          requestDestination: '/test/request/stream/_12',
+          cancelDestination: '/test/request/stream/_12'
         }
       }
     }

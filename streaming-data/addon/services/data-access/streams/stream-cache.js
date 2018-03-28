@@ -36,7 +36,7 @@ function cleanUpRouteStreams(newRouteName) {
     // 1) if the new route isn't also the route we are looking at from the cache and
     // 2) the new route isn't a child of a child of a route with streams,
     // then the streams need to be cleaned up
-    if (newRouteName != routeName) {
+    if (newRouteName !== routeName) {
       const isParentRoute = newRouteName.indexOf(routeName) === 0;
       _streams[routeName].forEach(({ stream, streamOptions }) => {
         if (!isParentRoute || !streamOptions.keepAliveOnTransitionToChildRoute) {
@@ -111,6 +111,7 @@ function registerStream(stream, method, modelName, routeName, streamOptions) {
 }
 
 export default {
+  _streams, // exposed for testing purposes
   cleanUpRouteStreams,
   registerStream
 };

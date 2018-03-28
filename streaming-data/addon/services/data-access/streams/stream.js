@@ -99,7 +99,8 @@ export default EmberObject.extend({
 
     // Auto-generate a request id, if needed.
     if (this.get('requireRequestId')) {
-      params.id = params.id || `req-${_requestCounter++}`;
+      params.id = params.id || `req-${_requestCounter}`;
+      _requestCounter++;
     }
 
     // Apply the default stream limit, if needed.
@@ -335,7 +336,7 @@ export default EmberObject.extend({
     // If `goal` is not known, `progress` should be left undefined; we don't want to
     // set it to 100 because then the stream will think it is complete, and will stop
     // listening for more messages.
-    const progress = goal ? parseInt(100 * count / goal, 10) : undefined;
+    const progress = goal ? parseInt(100 * count / goal, 10) : 0;
 
     // Fire completed if there is no more data coming.
     if (progress >= 100) {

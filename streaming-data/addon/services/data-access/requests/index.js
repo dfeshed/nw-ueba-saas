@@ -1,6 +1,6 @@
 import { assert } from '@ember/debug';
 import { deprecate } from 'ember-deprecations';
-import { log } from 'ember-debug';
+import { warn } from 'ember-debug';
 import RSVP from 'rsvp';
 import { run } from '@ember/runloop';
 import { StreamCache } from '../streams';
@@ -92,9 +92,10 @@ const streamRequest = ({
     onStopped,
     onCompleted,
     onError: onError || function(response) {
-      log.error(
+      warn(
         `Unhandled error in stream, method: ${method}, modelName: ${modelName}, code: ${response.code}`,
-        response);
+        { id: 'stremaing-data.request.streamRequest' }
+      );
     }
   });
 };
@@ -173,6 +174,17 @@ const promiseRequest = ({
 };
 
 /**
+ * Returns the url for the socket info endpoint, which is used here as a health check against the service to ensure
+ * that it is running and available.
+ * @method _findPingUrl
+ * @private
+ */
+const _findPingUrl = (modelName) => {
+  const pingConfig = config.socketRoutes[modelName];
+  return `${pingConfig.socketUrl}/info`;
+};
+
+/**
  * API for ping to an endpoint. Ping is to test whether endpoint exists or it has access or testing the health of server
  *
  * Input to the ping api is socket configuration model name. Need to add ping socket configuration in environment.js.
@@ -199,17 +211,6 @@ const ping = (modelName) => {
         reject();
       });
   });
-};
-
-/**
- * Returns the url for the socket info endpoint, which is used here as a health check against the service to ensure
- * that it is running and available.
- * @method _findPingUrl
- * @private
- */
-const _findPingUrl = (modelName) => {
-  const pingConfig = (config.socketRoutes || {})[modelName];
-  return `${pingConfig.socketUrl}/info`;
 };
 
 export {
