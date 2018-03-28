@@ -55,10 +55,7 @@
             <id>mirror.fortscale.dom</id>
             <name>mirror.fortscale.dom-snapshots</name>
             <url>http://mirror.fortscale.dom/artifactory/presidio-test-utils-snapshot-local</url>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-            </snapshots>
+
         </repository>
     </repositories>
 
