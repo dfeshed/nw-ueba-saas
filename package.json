@@ -22,6 +22,7 @@
     "broccoli-theme": "file:broccoli-theme",
     "broccoli-webpack": "^1.0.0",
     "clipboard": "1.5.10",
+    "ember-fetch": "^3.4.4",
     "ember-ajax": "3.0.0",
     "ember-cli": "3.0.0",
     "ember-cli-app-version": "^3.0.0",

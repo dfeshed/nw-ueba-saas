@@ -5,7 +5,7 @@ export default {
     return {
       code: 0,
       data: [
-        'spanish_es-es',
+        'spanish_es',
         'german_de-de'
       ]
     };

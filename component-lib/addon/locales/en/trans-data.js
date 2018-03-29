@@ -82,7 +82,8 @@ export default {
     email: 'Email',
     locale: {
       label: 'Language',
-      error: 'There was an error attempting to save your Language selection. Please try again. If this issue persists, please contact your system admin.'
+      error: 'There was an error attempting to save your Language selection. Please try again. If this issue persists, please contact your system admin.',
+      fetchError: 'There was an error attempting to load your Language selection. Please try again. If this issue persists, please contact your system admin.'
     },
     timeZone: 'Time Zone',
     dateFormatError: 'There was an error attempting to save your Date Format selection. Please try again. If this issue persists, please contact your system admin.',

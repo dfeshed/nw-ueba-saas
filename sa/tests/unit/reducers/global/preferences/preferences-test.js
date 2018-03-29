@@ -140,7 +140,7 @@ module('Unit | Reducers | Global | Preferences', function(hooks) {
     });
   });
 
-  test('ADD_PREFERENCES_LOCALES will normalize locales into key/value pairs and inject English as the first option', async function(assert) {
+  test('ADD_PREFERENCES_LOCALES will normalize locales into key/value pairs and inject english as the first option', async function(assert) {
     let result = reducer(undefined, {});
 
     assert.deepEqual(result, {
@@ -151,7 +151,7 @@ module('Unit | Reducers | Global | Preferences', function(hooks) {
 
     result = reducer(result, {
       type: ACTION_TYPES.ADD_PREFERENCES_LOCALES,
-      locales: ['spanish_es-es', 'german_de-de']
+      locales: ['spanish_es', 'german_de-de']
     });
 
     assert.deepEqual(result, {
@@ -159,8 +159,8 @@ module('Unit | Reducers | Global | Preferences', function(hooks) {
       locale: { id: 'en-us', label: 'english' },
       locales: [
         { id: 'en-us', label: 'english' },
-        { id: 'es-es', label: 'spanish' },
-        { id: 'de-de', label: 'german' }
+        { id: 'es', label: 'spanish', fileName: 'spanish_es' },
+        { id: 'de-de', label: 'german', fileName: 'german_de-de' }
       ]
     });
   });
@@ -176,7 +176,7 @@ module('Unit | Reducers | Global | Preferences', function(hooks) {
 
     result = reducer(result, {
       type: ACTION_TYPES.ADD_PREFERENCES_LOCALES,
-      locales: ['spanish_es-es', 'english_en-us', 'german_de-de']
+      locales: ['spanish_es', 'english_en-us', 'german_de-de']
     });
 
     assert.deepEqual(result, {
@@ -184,8 +184,8 @@ module('Unit | Reducers | Global | Preferences', function(hooks) {
       locale: { id: 'en-us', label: 'english' },
       locales: [
         { id: 'en-us', label: 'english' },
-        { id: 'es-es', label: 'spanish' },
-        { id: 'de-de', label: 'german' }
+        { id: 'es', label: 'spanish', fileName: 'spanish_es' },
+        { id: 'de-de', label: 'german', fileName: 'german_de-de' }
       ]
     });
   });
@@ -250,7 +250,7 @@ module('Unit | Reducers | Global | Preferences', function(hooks) {
     assert.deepEqual(result, {
       theme: 'DARK',
       locale: { id: 'en-us', label: 'english' },
-      locales: [{ id: 'en-us', label: 'english' }, { id: 'de-de', label: 'german' }]
+      locales: [{ id: 'en-us', label: 'english' }, { id: 'de-de', label: 'german', fileName: 'german_de-de' }]
     });
   });
 

@@ -35,7 +35,8 @@ module('Unit | Selectors | Global | Preferences', function(hooks) {
             },
             {
               id: 'de-de',
-              label: 'german'
+              label: 'german',
+              fileName: 'german_de-de'
             }
           ]
         }
@@ -51,6 +52,7 @@ module('Unit | Selectors | Global | Preferences', function(hooks) {
       {
         id: 'de-de',
         label: 'german',
+        fileName: 'german_de-de',
         displayLabel: 'German'
       }
     ]);
@@ -104,6 +106,23 @@ module('Unit | Selectors | Global | Preferences', function(hooks) {
     assert.deepEqual(result, {
       id: 'en-us',
       displayLabel: undefined
+    });
+
+    result = getLocale({
+      global: {
+        preferences: {
+          locale: {
+            id: 'en-us',
+            label: 'x'
+          }
+        }
+      }
+    });
+
+    assert.deepEqual(result, {
+      id: 'en-us',
+      label: 'x',
+      displayLabel: 'X'
     });
   });
 });
