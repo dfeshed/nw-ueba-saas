@@ -1,10 +1,7 @@
-import EmberObject from '@ember/object';
 import FilterQuery from 'respond/utils/filter-query';
-import { promiseRequest } from 'streaming-data/services/data-access/requests';
+import { lookup } from 'ember-dependency-lookup';
 
-const UsersAPI = EmberObject.extend({});
-
-UsersAPI.reopenClass({
+export default {
   /**
    * Executes a websocket fetch call for all known Users (enabled or disabled) and returns a Promise.
    *
@@ -14,7 +11,8 @@ UsersAPI.reopenClass({
    */
   getAllUsers() {
     const query = FilterQuery.create().addSortBy('name', false);
-    return promiseRequest({
+    const request = lookup('service:request');
+    return request.promiseRequest({
       method: 'findAll',
       modelName: 'users',
       query: query.toJSON()
@@ -30,12 +28,11 @@ UsersAPI.reopenClass({
    */
   getAllEnabledUsers() {
     const query = FilterQuery.create().addSortBy('name', false).addFilter('status', 'enabled');
-    return promiseRequest({
+    const request = lookup('service:request');
+    return request.promiseRequest({
       method: 'findAll',
       modelName: 'users',
       query: query.toJSON()
     });
   }
-});
-
-export default UsersAPI;
+};

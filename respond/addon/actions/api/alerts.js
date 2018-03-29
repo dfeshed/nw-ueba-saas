@@ -1,4 +1,4 @@
-import { streamRequest, promiseRequest } from 'streaming-data/services/data-access/requests';
+import { lookup } from 'ember-dependency-lookup';
 import buildExplorerQuery from './util/explorer-build-query';
 import filterQuery from 'respond/utils/filter-query';
 import chunk from 'respond/utils/array/chunk';
@@ -20,10 +20,11 @@ export default {
    * @returns {Promise}
    */
   getAlerts(filters, sort, { onResponse = NOOP, onError = NOOP, onInit = NOOP, onCompleted = NOOP }) {
+    const request = lookup('service:request');
     const query = buildExplorerQuery(filters, sort, 'receivedTime');
     const streamOptions = { cancelPreviouslyExecuting: true };
 
-    return streamRequest({
+    return request.streamRequest({
       method: 'stream',
       modelName: 'alerts',
       query: query.toJSON(),
@@ -45,9 +46,10 @@ export default {
    * @returns {Promise}
    */
   getAlertsCount(filters, sort) {
+    const request = lookup('service:request');
     const query = buildExplorerQuery(filters, sort, 'receivedTime');
 
-    return promiseRequest({
+    return request.promiseRequest({
       method: 'queryRecord',
       modelName: 'alerts-count',
       query: query.toJSON()
@@ -62,11 +64,12 @@ export default {
    * @returns {Promise}
    */
   getAlertEvents(alertId) {
+    const request = lookup('service:request');
     const query = filterQuery.create()
       .addSortBy('timestamp', false)
       .addFilter('_id', alertId);
 
-    return promiseRequest({
+    return request.promiseRequest({
       method: 'query',
       modelName: 'alerts-events',
       query: query.toJSON()
@@ -82,10 +85,11 @@ export default {
    * @returns {Promise}
    */
   delete(alertId) {
+    const request = lookup('service:request');
     const alertIdChunks = chunk(alertId, 500);
     const requests = alertIdChunks.map((chunk) => {
       const query = filterQuery.create().addFilter('_id', chunk);
-      return promiseRequest({
+      return request.promiseRequest({
         method: 'deleteRecord',
         modelName: 'alerts',
         query: query.toJSON()
@@ -102,10 +106,11 @@ export default {
    * @returns {*}
    */
   getOriginalAlert(alertId) {
+    const request = lookup('service:request');
     const query = filterQuery.create();
     query.addFilter('_id', alertId);
 
-    return promiseRequest({
+    return request.promiseRequest({
       method: 'queryRecord',
       modelName: 'original-alert',
       query: query.toJSON()

@@ -1,6 +1,6 @@
 import { isPresent } from '@ember/utils';
 import { assert } from '@ember/debug';
-import { promiseRequest } from 'streaming-data/services/data-access/requests';
+import { lookup } from 'ember-dependency-lookup';
 
 export default {
   /**
@@ -12,12 +12,13 @@ export default {
    * @returns {Promise}
    */
   createEntry({ incidentId, ...journalMap }) {
+    const request = lookup('service:request');
     const { notes, milestone } = journalMap;
 
     assert('IncidentId, author and notes properties are required parameters for createEntry()',
       (isPresent(incidentId) && isPresent(notes)));
 
-    return promiseRequest({
+    return request.promiseRequest({
       method: 'createRecord',
       modelName: 'journal-entry',
       query: {
@@ -37,8 +38,8 @@ export default {
    */
   deleteEntry(incidentId, journalId) {
     assert('An incidentId and journalId must be provided', (isPresent(incidentId) && isPresent(journalId)));
-
-    return promiseRequest({
+    const request = lookup('service:request');
+    return request.promiseRequest({
       method: 'deleteRecord',
       modelName: 'journal-entry',
       query: {
@@ -57,8 +58,8 @@ export default {
    */
   updateEntry(incidentId, journalId, journalMap = {}) {
     assert('An incidentId and journalId must be provided', (isPresent(incidentId) && isPresent(journalId)));
-
-    return promiseRequest({
+    const request = lookup('service:request');
+    return request.promiseRequest({
       method: 'updateRecord',
       modelName: 'journal-entry',
       query: {

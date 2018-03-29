@@ -1,4 +1,4 @@
-import { promiseRequest } from 'streaming-data/services/data-access/requests';
+import { lookup } from 'ember-dependency-lookup';
 import RSVP from 'rsvp';
 
 export default {
@@ -10,7 +10,8 @@ export default {
    * @returns {Promise}
    */
   getAllPriorityTypes() {
-    return promiseRequest({
+    const request = lookup('service:request');
+    return request.promiseRequest({
       method: 'findAll',
       modelName: 'priority-types',
       query: {}
@@ -25,7 +26,8 @@ export default {
    * @returns {Promise}
    */
   getAllStatusTypes() {
-    return promiseRequest({
+    const request = lookup('service:request');
+    return request.promiseRequest({
       method: 'findAll',
       modelName: 'status-types',
       query: {}
@@ -40,7 +42,8 @@ export default {
    * @returns {*}
    */
   getAllCategories() {
-    return promiseRequest({
+    const request = lookup('service:request');
+    return request.promiseRequest({
       method: 'findAll',
       modelName: 'category-tags',
       query: {}
@@ -120,7 +123,8 @@ export default {
    * @returns {Promise}
    */
   getAllAlertNames() {
-    return promiseRequest({
+    const request = lookup('service:request');
+    return request.promiseRequest({
       method: 'findAll',
       modelName: 'alert-names',
       query: {}
@@ -134,7 +138,8 @@ export default {
    * @public
    */
   getAllMilestoneTypes() {
-    return promiseRequest({
+    const request = lookup('service:request');
+    return request.promiseRequest({
       method: 'findAll',
       modelName: 'milestone-types',
       query: {}

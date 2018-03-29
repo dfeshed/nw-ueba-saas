@@ -1,18 +1,14 @@
-import EmberObject from '@ember/object';
-import { lookup } from 'ember-dependency-lookup';
-import { promiseRequest, streamRequest } from 'streaming-data/services/data-access/requests';
 import { resolveSinceWhenStartTime } from 'respond/utils/since-when-types';
 import FilterQuery from 'respond/utils/filter-query';
 import chunk from 'respond/utils/array/chunk';
 import RSVP from 'rsvp';
 import buildExplorerQuery from './util/explorer-build-query';
-
-const IncidentsAPI = EmberObject.extend({});
+import { lookup } from 'ember-dependency-lookup';
 
 // NOOP function to replace Ember.K
 const NOOP = () => {};
 
-IncidentsAPI.reopenClass({
+export default {
   /**
    * Executes a websocket Incidents fetch call and returns a Promise. Arguments include the filters that should be
    * applied against the incidents collection and the sort information for the returned incidents result set.
@@ -26,10 +22,11 @@ IncidentsAPI.reopenClass({
    * @returns {Promise}
    */
   getIncidents(filters, sort, { onResponse = NOOP, onError = NOOP, onInit = NOOP, onCompleted = NOOP }) {
+    const request = lookup('service:request');
     const query = buildExplorerQuery(filters, sort, 'created');
     const streamOptions = { cancelPreviouslyExecuting: true };
 
-    return streamRequest({
+    return request.streamRequest({
       method: 'stream',
       modelName: 'incidents',
       query: query.toJSON(),
@@ -51,9 +48,10 @@ IncidentsAPI.reopenClass({
    * @returns {Promise}
    */
   getIncidentsCount(filters, sort) {
+    const request = lookup('service:request');
     const query = buildExplorerQuery(filters, sort, 'created');
 
-    return promiseRequest({
+    return request.promiseRequest({
       method: 'queryRecord',
       modelName: 'incidents-count',
       query: query.toJSON()
@@ -70,7 +68,8 @@ IncidentsAPI.reopenClass({
    * @returns {Promise}
    */
   getIncidentDetails(incidentId) {
-    return promiseRequest({
+    const request = lookup('service:request');
+    return request.promiseRequest({
       method: 'queryRecord',
       modelName: 'incidents',
       query: {
@@ -90,10 +89,11 @@ IncidentsAPI.reopenClass({
    * @returns {*}
    */
   updateIncident(entityId, field, updatedValue) {
+    const request = lookup('service:request');
     const entityIdChunks = chunk(entityId, 500);
 
     const requests = entityIdChunks.map((chunk) => {
-      return promiseRequest({
+      return request.promiseRequest({
         method: 'updateRecord',
         modelName: 'incidents',
         query: {
@@ -119,12 +119,13 @@ IncidentsAPI.reopenClass({
    * @returns {Promise}
    */
   getAlertsForIncident(incidentId, { onResponse = NOOP, onError = NOOP, onInit = NOOP, onCompleted = NOOP }) {
+    const request = lookup('service:request');
     const streamOptions = { cancelPreviouslyExecuting: true };
     const query = FilterQuery.create()
       .addSortBy('receivedTime', false)
       .addFilter('incidentId', incidentId);
 
-    return streamRequest({
+    return request.streamRequest({
       method: 'stream',
       modelName: 'alerts',
       query: query.toJSON(),
@@ -145,6 +146,7 @@ IncidentsAPI.reopenClass({
    * @public
    */
   getRelatedAlerts(entityType, entityId, sinceWhen, { onResponse = NOOP, onError = NOOP, onInit = NOOP, onCompleted = NOOP }) {
+    const request = lookup('service:request');
     const streamOptions = { cancelPreviouslyExecuting: true };
     const lower = resolveSinceWhenStartTime(sinceWhen);
     const query = {
@@ -159,7 +161,7 @@ IncidentsAPI.reopenClass({
       chunkSize: 100
     };
 
-    return streamRequest({
+    return request.streamRequest({
       method: 'stream',
       modelName: 'related-alerts-search',
       query,
@@ -179,7 +181,8 @@ IncidentsAPI.reopenClass({
    * @public
    */
   addAlertsToIncident(alertIds, incidentId) {
-    return promiseRequest({
+    const request = lookup('service:request');
+    return request.promiseRequest({
       method: 'updateRecord',
       modelName: 'alerts-associated',
       query: {
@@ -202,10 +205,11 @@ IncidentsAPI.reopenClass({
    * @returns {Promise}
    */
   delete(incidentId) {
+    const request = lookup('service:request');
     const incidentIdChunks = chunk(incidentId, 500);
     const requests = incidentIdChunks.map((chunk) => {
       const query = FilterQuery.create().addFilter('_id', chunk);
-      return promiseRequest({
+      return request.promiseRequest({
         method: 'deleteRecord',
         modelName: 'incidents',
         query: query.toJSON()
@@ -233,7 +237,8 @@ IncidentsAPI.reopenClass({
   },
 
   createIncidentFromAlerts(name, alertIds) {
-    return promiseRequest({
+    const request = lookup('service:request');
+    return request.promiseRequest({
       method: 'createRecord',
       modelName: 'incidents',
       query: {
@@ -255,9 +260,10 @@ IncidentsAPI.reopenClass({
    * @returns {*}
    */
   search(searchText, sortField = 'created', sortDescending = true, { onResponse = NOOP, onError = NOOP, onInit = NOOP, onCompleted = NOOP }) {
+    const request = lookup('service:request');
     const streamOptions = { cancelPreviouslyExecuting: true };
 
-    return streamRequest({
+    return request.streamRequest({
       method: 'stream',
       modelName: 'incidents',
       query: {
@@ -285,6 +291,4 @@ IncidentsAPI.reopenClass({
       onCompleted
     });
   }
-});
-
-export default IncidentsAPI;
+};

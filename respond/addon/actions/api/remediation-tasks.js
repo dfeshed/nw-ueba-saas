@@ -1,10 +1,10 @@
-import { promiseRequest } from 'streaming-data/services/data-access/requests';
+import { lookup } from 'ember-dependency-lookup';
 import FilterQuery from 'respond/utils/filter-query';
 import buildExplorerQuery from './util/explorer-build-query';
 import chunk from 'respond/utils/array/chunk';
 import RSVP from 'rsvp';
 
-const RemediationTasksAPI = {
+export default {
   /**
    * Executes a websocket remediation tasks fetch call and returns a Promise. Arguments include the filters that should be
    * applied against the tasks collection and the sort information for the returned tasks result set.
@@ -16,8 +16,9 @@ const RemediationTasksAPI = {
    * @returns {Promise}
    */
   getRemediationTasks(filters, sort) {
+    const request = lookup('service:request');
     const query = buildExplorerQuery(filters, sort, 'created');
-    return promiseRequest({
+    return request.promiseRequest({
       method: 'query',
       modelName: 'remediation-tasks',
       query: query.toJSON()
@@ -25,8 +26,9 @@ const RemediationTasksAPI = {
   },
 
   getRemediationTasksForIncident(incidentId) {
+    const request = lookup('service:request');
     const query = buildExplorerQuery({ incidentId }, { sortField: 'created', isSortDescending: true });
-    return promiseRequest({
+    return request.promiseRequest({
       method: 'query',
       modelName: 'remediation-tasks',
       query: query.toJSON()
@@ -43,9 +45,10 @@ const RemediationTasksAPI = {
    * @returns {Promise}
    */
   getRemediationTaskCount(filters, sort) {
+    const request = lookup('service:request');
     const query = buildExplorerQuery(filters, sort, 'created');
 
-    return promiseRequest({
+    return request.promiseRequest({
       method: 'queryRecord',
       modelName: 'remediation-tasks-count',
       query: query.toJSON()
@@ -61,10 +64,11 @@ const RemediationTasksAPI = {
    * @param updatedValue {*} - The value to be set/updated on the record's field
    */
   updateRemediationTask(entityId, field, updatedValue) {
+    const request = lookup('service:request');
     const entityIdChunks = chunk(entityId, 500);
 
     const requests = entityIdChunks.map((chunk) => {
-      return promiseRequest({
+      return request.promiseRequest({
         method: 'updateRecord',
         modelName: 'remediation-tasks',
         query: {
@@ -94,7 +98,8 @@ const RemediationTasksAPI = {
    * @returns {*}
    */
   createRemediationTask(task) {
-    return promiseRequest({
+    const request = lookup('service:request');
+    return request.promiseRequest({
       method: 'createRecord',
       modelName: 'remediation-tasks',
       query: {
@@ -111,10 +116,11 @@ const RemediationTasksAPI = {
    * @public
    */
   deleteRemediationTask(taskId) {
+    const request = lookup('service:request');
     const taskIdChunks = chunk(taskId, 500);
     const requests = taskIdChunks.map((chunk) => {
       const query = FilterQuery.create().addFilter('_id', chunk);
-      return promiseRequest({
+      return request.promiseRequest({
         method: 'deleteRecord',
         modelName: 'remediation-tasks',
         query: query.toJSON()
@@ -124,6 +130,3 @@ const RemediationTasksAPI = {
     return RSVP.allSettled(requests);
   }
 };
-
-
-export default RemediationTasksAPI;
