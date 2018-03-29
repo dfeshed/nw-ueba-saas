@@ -7,22 +7,22 @@
     {{#if (eq queryView 'guided')}}
       {{query-filters filters=filters executeQuery=(route-action 'executeQuery')}}
     {{else if (eq queryView 'freeForm')}}
-      {{query-container/free-form}}
+      {{query-container/free-form freeFormText=freeFormText executeQuery=(route-action 'executeQuery')}}
     {{else if (eq queryView 'nextGen')}}
       {{query-container/next-gen}}
     {{/if}}
   </div>
   <div class='query-bar-select-actions'>
-    <a class='guided-link' href='' {{action (mut queryView) 'guided'}}>Guided Mode</a>
+    <a class='guided-link' title={{t 'investigate.guided.linkTitle'}} href='' {{action (mut queryView) 'guided'}}>Guided Mode</a>
     <div class='divider'></div>
-    <a class='freeForm-link' href='' {{action (mut queryView) 'freeForm'}}>Free-Form Mode</a>
+    <a class='freeForm-link' title={{t 'investigate.freeForm.linkTitle'}} href='' {{action (mut queryView) 'freeForm'}}>Free-Form Mode</a>
     <div class='divider'></div>
-    <a class='nextGen-link' href='' {{action (mut queryView) 'nextGen'}}>Next Gen Mode</a>
+    <a class='nextGen-link' title={{t 'investigate.nextGen.linkTitle'}} href='' {{action (mut queryView) 'nextGen'}}>Next Gen Mode</a>
   </div>
 </div>
 {{#rsa-form-button
   class='execute-query-button'
-  defaultAction=(route-action 'executeQuery' filters)
+  defaultAction=(route-action 'executeQuery' criteria)
   isDisabled=(not hasRequiredValuesToQuery)
   style='primary'}}
   Query Events

@@ -439,6 +439,15 @@ export default {
     service: 'ja_Service',
     timeRange: 'ja_Time Range',
     filter: 'ja_Filter',
+    guided: {
+      linkTitle: 'ja_Guided Mode'
+    },
+    freeForm: {
+      linkTitle: 'ja_Free-Form Mode'
+    },
+    nextGen: {
+      linkTitle: 'ja_Next Gen Mode'
+    },
     size: {
       bytes: 'ja_bytes',
       KB: 'ja_KB',

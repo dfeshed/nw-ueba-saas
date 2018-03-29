@@ -439,6 +439,15 @@ export default {
     service: 'Service',
     timeRange: 'Time Range',
     filter: 'Filter',
+    guided: {
+      linkTitle: 'Guided Mode'
+    },
+    freeForm: {
+      linkTitle: 'Free-Form Mode'
+    },
+    nextGen: {
+      linkTitle: 'Next Gen Mode'
+    },
     size: {
       bytes: 'bytes',
       KB: 'KB',

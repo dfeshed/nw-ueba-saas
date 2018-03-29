@@ -35,6 +35,8 @@ const complexConditions = [{
   complexFilter: 'bar=\'foo\'||baz=foo'
 }];
 
+const rawText = 'medium = 1 && sessionid = 1';
+
 test('parseQueryParams correctly parses URI', function(assert) {
   assert.expect(8);
   const result = queryUtils.parseQueryParams(params);
@@ -68,4 +70,19 @@ test('encodeMetaFilterConditions correctly encodes complex filters', function(as
   const result = encodeMetaFilterConditions(complexConditions);
 
   assert.equal(result, '(foo=\'bar\'||foo=baz) && (bar=\'foo\'||baz=foo)');
+});
+
+
+test('uriEncodeFreeFormText encodes text correctly', function(assert) {
+  assert.expect(1);
+  const result = queryUtils.uriEncodeFreeFormText(rawText);
+
+  assert.equal(result, 'medium%20%3D%201%20%26%26%20sessionid%20%3D%201');
+});
+
+test('uriEncodeFreeFormText sends out undefined when empty', function(assert) {
+  assert.expect(1);
+  const result = queryUtils.uriEncodeFreeFormText('');
+
+  assert.equal(result, undefined);
 });

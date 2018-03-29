@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { hasRequiredValuesToQuery } from 'investigate-events/reducers/investigate/query-node/selectors';
+import computed from 'ember-computed-decorators';
 
 const stateToComputed = (state) => ({
   hasRequiredValuesToQuery: hasRequiredValuesToQuery(state)
@@ -14,7 +15,18 @@ const QueryContainer = Component.extend({
 
   classNameBindings: ['queryView'],
 
-  queryView: GUIDED
+  queryView: GUIDED,
+
+  @computed('queryView')
+  criteria(queryView) {
+    if (queryView === 'guided') {
+      this.set('freeFormText', '');
+      return this.get('filters');
+    } else if (queryView === 'freeForm') {
+      this.set('filters', []);
+      return this.get('freeFormText');
+    }
+  }
 
 });
 

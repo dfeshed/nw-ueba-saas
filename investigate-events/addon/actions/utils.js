@@ -1,6 +1,6 @@
 import { assert } from '@ember/debug';
 import { get, getProperties } from '@ember/object';
-import { isBlank } from '@ember/utils';
+import { isBlank, isEmpty } from '@ember/utils';
 import { run } from '@ember/runloop';
 import RSVP from 'rsvp';
 import { encodeMetaFilterConditions } from 'investigate-events/actions/fetch/utils';
@@ -274,10 +274,19 @@ function uriEncodeMetaFilters(filters = []) {
   return encodedFilters || undefined;
 }
 
+function uriEncodeFreeFormText(rawText) {
+  if (isEmpty(rawText)) {
+    return undefined;
+  } else {
+    return encodeURIComponent(rawText);
+  }
+}
+
 export {
   buildMetaValueStreamInputs,
   executeMetaValuesRequest,
   parseQueryParams,
   serializeQueryParams,
-  uriEncodeMetaFilters
+  uriEncodeMetaFilters,
+  uriEncodeFreeFormText
 };

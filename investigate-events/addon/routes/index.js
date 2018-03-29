@@ -3,7 +3,6 @@ import { inject as service } from '@ember/service';
 import { initializeInvestigate } from 'investigate-events/actions/initialization-creators';
 import {
   setMetaPanelSize,
-  setQueryFilterMeta,
   setReconClosed,
   setReconOpen,
   setReconPanelSize
@@ -11,7 +10,8 @@ import {
 import { dirtyQueryToggle } from 'investigate-events/actions/query-validation-creators';
 import {
   serializeQueryParams,
-  uriEncodeMetaFilters
+  uriEncodeMetaFilters,
+  uriEncodeFreeFormText
 } from 'investigate-events/actions/utils';
 import {
   META_PANEL_SIZES,
@@ -65,13 +65,21 @@ export default Route.extend({
 
   actions: {
     executeQuery(metaFilters, externalLink = false) {
-      metaFilters = metaFilters.filterBy('saved', true);
+      /* Both guided and free-form mode use the same route action
+         check if the metaFilters passed in are from
+          -guided mode -> array of filters
+          -freeForm mode -> string */
+      const freeForm = !Array.isArray(metaFilters);
+      if (!freeForm) {
+        metaFilters = metaFilters.filterBy('saved', true);
+      }
+
       const redux = this.get('redux');
       // Save the metaFilters to state
       const { data, queryNode } = redux.getState().investigate;
       const qp = {
         et: queryNode.endTime,
-        mf: uriEncodeMetaFilters(metaFilters),
+        mf: (freeForm) ? uriEncodeFreeFormText(metaFilters) : uriEncodeMetaFilters(metaFilters),
         mps: data.metaPanelSize,
         rs: data.reconSize,
         sid: queryNode.serviceId,
@@ -92,7 +100,6 @@ export default Route.extend({
       } else {
         qp.eid = undefined;
         this.send('reconClose');
-        redux.dispatch(setQueryFilterMeta(metaFilters));
         this.transitionTo({ queryParams: qp });
       }
     },
