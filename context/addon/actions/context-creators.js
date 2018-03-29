@@ -133,9 +133,15 @@ const getContextEntitiesMetas = ({ data }) => {
   };
 };
 
+const updatePanelClicked = (state) => ({
+  type: ACTION_TYPES.UPDATE_PANEL_CLICKED,
+  payload: state
+});
+
 export {
   updateActiveTab,
   initializeContextPanel,
   restoreDefault,
-  getContextEntitiesMetas
+  getContextEntitiesMetas,
+  updatePanelClicked
 };

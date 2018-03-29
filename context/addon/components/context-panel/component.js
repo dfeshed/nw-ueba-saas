@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import { warn, log } from 'ember-debug';
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
@@ -6,18 +5,20 @@ import computed from 'ember-computed-decorators';
 import {
   initializeContextPanel,
   restoreDefault,
-  getContextEntitiesMetas
+  getContextEntitiesMetas,
+  updatePanelClicked
 } from 'context/actions/context-creators';
 import liveConnectObj from 'context/config/liveconnect-response-schema';
 import layout from './template';
 import { inject as service } from '@ember/service';
 import { isEmpty } from '@ember/utils';
 import { isArray } from '@ember/array';
-import { once, next, schedule, later } from '@ember/runloop';
+import { once, later } from '@ember/runloop';
 import EmberObject from '@ember/object';
 
-const stateToComputed = ({ context: { context: { errorMessage, lookupData }, tabs: { dataSources, activeTabName } } }) => ({
+const stateToComputed = ({ context: { context: { errorMessage, lookupData, isClicked }, tabs: { dataSources, activeTabName } } }) => ({
   dataSources,
+  isClicked,
   lookupData,
   errorMessage,
   activeTabName
@@ -26,7 +27,8 @@ const stateToComputed = ({ context: { context: { errorMessage, lookupData }, tab
 const dispatchToActions = {
   initializeContextPanel,
   restoreDefault,
-  getContextEntitiesMetas
+  getContextEntitiesMetas,
+  updatePanelClicked
 };
 
 const ContextComponent = Component.extend({
@@ -86,6 +88,8 @@ const ContextComponent = Component.extend({
       })
     });
     this.set('model', contextModels);
+    this.get('eventBus').on('rsa-application-click', this, this._closeContextPanel);
+    this.get('eventBus').on('rsa-application-header-click', this, this._closeContextPanel);
   },
 
   _initLCData([lookupData]) {
@@ -197,33 +201,19 @@ const ContextComponent = Component.extend({
       });
     }
   },
-  _needToClosePanel(target) {
-    return !this.get('isDisplayed') && !$(target).closest('.rsa-context-panel').length > 0;
-  },
-  _closeContextPanel(target) {
-    next(() => {
-      if (this._needToClosePanel(target)) {
-        this.sendAction('closePanel');
-        this.send('restoreDefault');
-      }
-    });
-  },
-  mouseEnter() {
-    this.set('isDisplayed', true);
-  },
-  mouseLeave() {
-    this.set('isDisplayed', false);
+
+  _closeContextPanel() {
+    if (!this.get('isClicked')) {
+      this.sendAction('closePanel');
+      this.send('restoreDefault');
+      this.get('eventBus').off('rsa-application-click', this, this._closeContextPanel);
+      this.get('eventBus').off('rsa-application-header-click', this, this._closeContextPanel);
+    }
+    this.send('updatePanelClicked', false);
   },
 
-  didInsertElement() {
-    schedule('afterRender', () => {
-      this.get('eventBus').on('rsa-application-click', (target) => {
-        this._closeContextPanel(target);
-      });
-      this.get('eventBus').on('rsa-application-header-click', (target) => {
-        this._closeContextPanel(target);
-      });
-    });
+  click() {
+    this.send('updatePanelClicked', true);
   }
 
 });

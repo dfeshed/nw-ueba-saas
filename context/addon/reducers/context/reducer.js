@@ -8,7 +8,8 @@ const resetState = Immutable.from({
   lookupKey: null,
   errorMessage: null,
   lookupData: [{}],
-  entitiesMetas: null
+  entitiesMetas: null,
+  isClicked: false
 });
 
 const initialState = Immutable.from(resetState);
@@ -20,6 +21,7 @@ const context = handleActions({
   },
   [ACTION_TYPES.GET_CONTEXT_ENTITIES_METAS]: (state, { payload }) => state.set('entitiesMetas', payload),
   [ACTION_TYPES.CONTEXT_ERROR]: (state, { payload }) => state.set('errorMessage', payload),
+  [ACTION_TYPES.UPDATE_PANEL_CLICKED]: (state, { payload }) => state.set('isClicked', payload),
   [ACTION_TYPES.GET_LOOKUP_DATA]: (state, { payload }) => {
     const lookupData = [].concat(contextDataParser([payload, state.lookupData]));
     return state.merge({ lookupData });
