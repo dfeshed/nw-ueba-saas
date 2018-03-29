@@ -17,14 +17,14 @@ const QueryContainer = Component.extend({
 
   queryView: GUIDED,
 
-  @computed('queryView')
-  criteria(queryView) {
+  @computed('queryView', 'freeFormText', 'filters')
+  criteria(queryView, freeFormText, filters) {
     if (queryView === 'guided') {
       this.set('freeFormText', '');
-      return this.get('filters');
+      return filters;
     } else if (queryView === 'freeForm') {
       this.set('filters', []);
-      return this.get('freeFormText');
+      return freeFormText;
     }
   }
 
