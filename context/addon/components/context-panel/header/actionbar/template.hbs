@@ -12,6 +12,10 @@
       <a href="{{investigateUrl}}" target="_blank" class='rsa-context-panel__linkButton'>
         {{t 'context.tooltip.investigate'}}
       </a>
+    {{else if (eq componentName 'archer')}}
+      <a class='rsa-context-panel__linkButton' {{action 'pivotToArcher'}}>
+        {{t 'context.tooltip.archer'}}
+      </a>
     {{/if}}
   {{/each}}
 </hbox>

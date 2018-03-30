@@ -21,6 +21,7 @@ radial-gradient(circle at 85% 85%, background-color(primary, darker, almost-tran
     @include border(1px, solid, primary, lighter);
     margin-left: rsa-whitespace(least);
     color: text-color(primary, lightest);
+    cursor: pointer;
     &:hover {
      border-color: border-color(neutral);
     }

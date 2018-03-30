@@ -19,7 +19,8 @@ export default [
         'Criticality Rating': 'Medium-High',
         'Type': 'Web Server',
         'Device Owner': 'John',
-        'Facilities': ['Corporate Headquarters', 'Kansas City Data Center']
+        'Facilities': ['Corporate Headquarters', 'Kansas City Data Center'],
+        'Url': 'www.google.com'
       }
     ],
     'resultMeta': {

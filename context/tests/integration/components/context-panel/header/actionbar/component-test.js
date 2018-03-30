@@ -44,4 +44,5 @@ test('it renders', function(assert) {
   });
   this.render(hbs`{{context-panel/header/actionbar i18n=i18n}}`);
   assert.ok(this.$('.rsa-context-panel__header').text().indexOf('Add/Remove from List') > 0, 'Showing total count for alert data.');
+  assert.ok(this.$('.rsa-context-panel__header').text().indexOf('Pivot to Archer') > 0, 'Pivot to Archer link i available');
 });

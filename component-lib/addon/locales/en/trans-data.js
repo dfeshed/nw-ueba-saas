@@ -1655,6 +1655,7 @@ export default {
       googleLookup: 'Google Lookup',
       ecat: 'Pivot to Endpoint Thick Client',
       events: 'Pivot to Events',
+      archer: 'Pivot to Archer',
       contextUnavailable: 'No context data available at this time.',
       dataSourceNames: {
         Incidents: 'Incidents',

@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
 import { getLookupData } from 'context/reducers/context/selectors';
-import { isDataSourceEnabled } from 'context/util/context-data-modifier';
+import { isDataSourceEnabled, getData } from 'context/util/context-data-modifier';
+import { isEmpty } from '@ember/utils';
 
 const _getToolTipText = (lookupData, { dataSourceType, isConfigured }) => {
   if (!isConfigured) {
@@ -25,6 +26,14 @@ const _tabsCurrentState = (state, context) => {
     toolTipText: _getToolTipText(lookupData, tab),
     loadingIcon: !_getLoadingIcon(lookupData, tab) && tab.isConfigured
   }));
+};
+
+const _archerData = (state, context) => {
+  const lookupData = getLookupData(context);
+  const archerDS = _dataSources(state).find((dataSource) => dataSource.field === 'Archer');
+  if (!isEmpty(archerDS)) {
+    return getData(lookupData, archerDS.details);
+  }
 };
 
 const _activeTabName = (state) => state.activeTabName;
@@ -66,3 +75,11 @@ export const onLiveConnectTab = createSelector(
   (activeTabName) => {
     return ['LiveConnect-Ip', 'LiveConnect-Domain', 'LiveConnect-File'].includes(activeTabName);
   });
+
+
+export const getArcherUrl = createSelector(
+  [_archerData],
+  (archerData) => {
+    return !isEmpty(archerData) ? archerData[0].Url : '';
+  });
+

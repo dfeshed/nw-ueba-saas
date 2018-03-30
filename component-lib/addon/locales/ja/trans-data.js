@@ -1654,6 +1654,7 @@ export default {
       virusTotal: 'ja_Virus Total Lookup',
       googleLookup: 'ja_Google Lookup',
       ecat: 'ja_Pivot to Endpoint Thick Client',
+      archer: 'ja_Pivot to Archer',
       events: 'ja_Pivot to Events',
       contextUnavailable: 'ja_No context data available at this time.',
       dataSourceNames: {
