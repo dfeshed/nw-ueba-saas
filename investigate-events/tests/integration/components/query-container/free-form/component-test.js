@@ -8,7 +8,7 @@ import { render, fillIn, click } from '@ember/test-helpers';
 
 const pressEnter = (input) => {
   input.trigger({
-    type: 'keypress',
+    type: 'keydown',
     which: 13,
     code: 'Enter',
     keyCode: 13
