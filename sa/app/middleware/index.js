@@ -6,7 +6,8 @@ import createFilter from 'redux-persist-transform-filter';
 const globalFilter = createFilter(
   'global',
   [
-    'preferences.theme'
+    'preferences.theme',
+    'preferences.locale'
   ]
 );
 

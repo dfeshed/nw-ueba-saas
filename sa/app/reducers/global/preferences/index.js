@@ -16,9 +16,13 @@ export default function preferences(state, action) {
   switch (action.type) {
     case ACTION_TYPES.REHYDRATE: {
       const { payload } = action;
-      if (payload && payload.global && payload.global.preferences && payload.global.preferences.theme) {
+      if (payload && payload.global && payload.global.preferences) {
+        const { preferences } = payload.global;
+        const theme = preferences && preferences.theme;
+        const locale = preferences && preferences.locale;
         return state.merge({
-          theme: payload.global.preferences.theme
+          theme: theme || state.theme,
+          locale: locale || state.locale
         });
       }
       return state;
