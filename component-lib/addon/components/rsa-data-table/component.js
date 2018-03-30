@@ -314,6 +314,7 @@ export default Component.extend(DomWatcher, EKMixin, {
     const resizedColumns = columns.filterBy('resizedOnce', true).length;
     const len = columns.length > resizedColumns ? (columns.length - resizedColumns) : 1;
     const adjust = diff / len;
+
     columns.forEach((column, index) => {
       if (column.displayIndex === resizeColumn.displayIndex) {
         set(column, 'width', resizeWidth);
@@ -368,28 +369,21 @@ export default Component.extend(DomWatcher, EKMixin, {
     const rowWidth = this.$().width();
     const diff = rowWidth - sum;
     // Need to adjust width only if view port is more than total cell width.
-    if (diff > 0) {
 
+    if (diff > 0) {
       // Need to adjust only difference from view port.
       const len = noOfColumns > resizedColumns ? (noOfColumns - resizedColumns) : 1;
       columns.forEach((column, index) => {
-        const adjustWidth = (diff / len - this.whitespace);
-
-
+        const adjustWidth = (diff / len - this.whitespace) + 1;
         // Every time cell width will be addition of original width + adjustWidth.
         if (!get(column, 'resizedOnce')) {
           const width = adjustWidth + columnWidth[index];
-          if (get(column, 'defaultWidth') < width) {
-            set(column, 'width', width);
-          }
+          set(column, 'width', width);
         } else if (noOfColumns === resizedColumns && index == (noOfColumns - 1)) {
           // if all columns are resized once and further we resize one of them ,
           // then the extra adjustment should add up to the last column
           const width = adjustWidth + get(column, 'width');
-
-          if (get(column, 'defaultWidth') < width) {
-            set(column, 'width', width);
-          }
+          set(column, 'width', width);
         }
       });
     }

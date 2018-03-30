@@ -42,13 +42,6 @@ export default Component.extend(HasTableParent, {
    */
   minWidth: 3,
 
-  /**
-   * Configurable maximum limit that cell can be resized to.
-   * @type {number}
-   * @public
-   */
-  maxWidth: 1000,
-
   mouseDown(e) {
     if (!e) {
       return;
@@ -133,7 +126,7 @@ export default Component.extend(HasTableParent, {
 
     if (target && !isNaN(initial)) {
       let width = initial + this._dragDelta[0];
-      width = Math.max(this.get('minWidth'), Math.min(width, this.get('maxWidth')));
+      width = Math.max(this.get('minWidth'), width);
       const fn = this.get('resizeAction');
       if ($.isFunction(fn)) {
         fn(target, width);
