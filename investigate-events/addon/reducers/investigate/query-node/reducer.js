@@ -14,7 +14,6 @@ const _initialState = Immutable.from({
   },
   previouslySelectedTimeRanges: {},
   previousQueryParams: undefined,
-  queryString: '',
   queryTimeFormat: undefined,
   serviceId: undefined,
   sessionId: undefined,
@@ -36,10 +35,6 @@ const _cloneQueryParams = (state) => {
 export default handleActions({
   [ACTION_TYPES.SET_PREFERENCES]: (state, { payload }) => {
     return state.set('queryTimeFormat', payload.queryTimeFormat || state.queryTimeFormat);
-  },
-
-  [ACTION_TYPES.SET_QUERY_FILTER_META]: (state, { payload }) => {
-    return Immutable.setIn(state, ['metaFilter', 'conditions'], payload);
   },
 
   [ACTION_TYPES.REHYDRATE]: (state, { payload }) => {
@@ -83,7 +78,6 @@ export default handleActions({
         eventMetas: undefined,
         hasIncommingQueryParams,
         metaFilter: payload.metaFilter,
-        queryString: '',
         serviceId: payload.serviceId,
         sessionId: payload.sessionId && parseInt(payload.sessionId, 10) || undefined,
         startTime: payload.startTime && parseInt(payload.startTime, 10) || 0

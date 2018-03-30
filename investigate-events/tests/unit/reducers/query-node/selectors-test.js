@@ -28,7 +28,7 @@ test('determine presence of meta filters', function(assert) {
 });
 
 test('queryParams object has required properties with correct values', function(assert) {
-  assert.expect(6);
+  assert.expect(5);
 
   const mf = { uri: '', conditions: [] };
   const state = {
@@ -37,7 +37,6 @@ test('queryParams object has required properties with correct values', function(
         endTime: 1,
         eventMetas: ['a', 'b'],
         metaFilter: mf,
-        queryString: 'abc',
         serviceId: 'sd1',
         startTime: 2
       }
@@ -50,7 +49,6 @@ test('queryParams object has required properties with correct values', function(
   assert.deepEqual(qp.metaFilter, mf, 'metaFilter is present and has correct value');
   assert.equal(qp.serviceId, 'sd1', 'serviceId is present and has correct value');
   assert.equal(qp.startTime, 2, 'startTime is present and has correct value');
-  assert.notOk(qp.queryString, 'queryString is not present');
 });
 
 test('use default time range if not set', function(assert) {

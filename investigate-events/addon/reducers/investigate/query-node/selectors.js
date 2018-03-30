@@ -14,7 +14,6 @@ const _queryTimeFormat = (state) => state.investigate.queryNode.queryTimeFormat;
 const _serviceId = (state) => state.investigate.queryNode.serviceId;
 const _startTime = (state) => state.investigate.queryNode.startTime;
 
-export const queryString = (state) => state.investigate.queryNode.queryString;
 
 // SELECTOR FUNCTIONS
 export const hasMetaFilters = createSelector(

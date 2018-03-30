@@ -29,16 +29,6 @@ export const setReconPanelSize = (size) => {
   }
 };
 
-export const setQueryFilterMeta = (params) => ({
-  type: ACTION_TYPES.SET_QUERY_FILTER_META,
-  payload: params
-});
-
-export const setQueryParamsForTests = (params) => ({
-  type: ACTION_TYPES.SET_QUERY_PARAMS_FOR_TESTS,
-  payload: params
-});
-
 /**
  * Takes a time range object and calculates the start and end dates. The
  * timeRange object has the following properties:
@@ -89,7 +79,6 @@ export const setService = (service) => {
         type: ACTION_TYPES.SERVICE_SELECTED,
         payload: service.id
       });
-      dispatch(setQueryFilterMeta([]));
       dispatch(getDictionaries());
       dispatch(getServiceSummary());
     }
