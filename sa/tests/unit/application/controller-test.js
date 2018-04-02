@@ -20,6 +20,10 @@ module('Unit | Controller | application', function(hooks) {
     initialize(this.owner);
   });
 
+  hooks.afterEach(function() {
+    localStorage.removeItem('reduxPersist:global');
+  });
+
   test('generates prod theme url when link with fingerprint found', async function(assert) {
     const fingerprint = 'assets/sa-cfd46dd672a31535e0e47662f6dcb59f.css';
     $('head').append(`<link rel="stylesheet" type="text/css" href="${fingerprint}">`);
@@ -132,7 +136,7 @@ module('Unit | Controller | application', function(hooks) {
       updatesRun++;
     };
 
-    redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'es', label: 'spanish', fileName: 'spanish_es' } });
+    redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'es', label: 'spanish', fileName: 'spanish_es.js' } });
     assert.equal(updatesRun, 1);
 
     redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'en-us', label: 'english' } });
@@ -163,7 +167,7 @@ module('Unit | Controller | application', function(hooks) {
       assert.equal(flash.message.string, expectedError);
     });
 
-    redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'es', label: 'spanish', fileName: 'spanish_es' } });
+    redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'es', label: 'spanish', fileName: 'spanish_es.js' } });
 
     return settled().then(() => {
       controller._fetch = original;
@@ -200,7 +204,7 @@ module('Unit | Controller | application', function(hooks) {
       });
     };
 
-    redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'es', label: 'spanish', fileName: 'spanish_es' } });
+    redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'es', label: 'spanish', fileName: 'spanish_es.js' } });
 
     return settled().then(async () => {
       assert.equal(fetchCount, 1);
@@ -216,7 +220,7 @@ module('Unit | Controller | application', function(hooks) {
         assert.equal(dynamicScripts().length, 1);
         assert.equal(t('title').toString(), 'Missing translation: title');
 
-        redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'es', label: 'spanish', fileName: 'spanish_es' } });
+        redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'es', label: 'spanish', fileName: 'spanish_es.js' } });
 
         return settled().then(async () => {
           assert.equal(fetchCount, 2);
@@ -255,7 +259,7 @@ module('Unit | Controller | application', function(hooks) {
       assert.equal(flash.message.string, expectedError);
     });
 
-    redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'es', label: 'spanish', fileName: 'spanish_es' } });
+    redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'es', label: 'spanish', fileName: 'spanish_es.js' } });
 
     return settled().then(() => {
       controller._fetch = original;

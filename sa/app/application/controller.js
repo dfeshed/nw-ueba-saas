@@ -112,7 +112,7 @@ export default Controller.extend({
     if (!fileName) {
       this.set('i18n.locale', id);
     } else {
-      const scriptUrl = `/locales/${fileName}.js`;
+      const scriptUrl = `/locales/${fileName}`;
       this._fetchScript(scriptUrl).then((body) => {
         this._appendLocaleScript(body);
         this.set('i18n.locale', id);
@@ -128,7 +128,7 @@ export default Controller.extend({
   init() {
     this._super(...arguments);
 
-    const redux = this.get('redux');
+    const redux = get(this, 'redux');
 
     this.themeName = () => {
       const state = redux.getState();

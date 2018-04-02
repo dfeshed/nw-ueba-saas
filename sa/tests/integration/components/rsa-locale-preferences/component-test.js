@@ -21,9 +21,13 @@ module('Integration | Component | rsa-locale-preferences', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function() {
-    const initState = { global: { preferences: { locale: { id: 'en-us', label: 'english' }, locales: [{ id: 'en-us', label: 'english' }, { id: 'de-de', label: 'german' }] } } };
+    const initState = { global: { preferences: { locale: { id: 'en-us', label: 'english' }, locales: [{ id: 'en-us', label: 'english' }, { id: 'de-DE', label: 'german' }] } } };
     patchReducer(this, initState);
     initialize(this.owner);
+  });
+
+  hooks.afterEach(function() {
+    localStorage.removeItem('reduxPersist:global');
   });
 
   test('includes 1 label with correct classes', async function(assert) {
@@ -61,7 +65,7 @@ module('Integration | Component | rsa-locale-preferences', function(hooks) {
       assert.equal(modelName, 'preferences');
       assert.deepEqual(query, {
         data: {
-          userLocale: 'de-de'
+          userLocale: 'de-DE'
         }
       });
     });

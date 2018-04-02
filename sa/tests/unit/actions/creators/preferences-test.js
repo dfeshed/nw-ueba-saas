@@ -25,8 +25,8 @@ module('Unit | Actions | Creators | Preferences', function(hooks) {
       locale: { id: 'en-us', label: 'english' },
       locales: [
         { id: 'en-us', label: 'english' },
-        { id: 'es', label: 'spanish', fileName: 'spanish_es' },
-        { id: 'de-de', label: 'german', fileName: 'german_de-de' }
+        { id: 'es', label: 'spanish', fileName: 'spanish_es.js' },
+        { id: 'de-DE', label: 'german', fileName: 'german_de-DE.js' }
       ]
     });
 

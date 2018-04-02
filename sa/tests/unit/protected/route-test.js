@@ -30,7 +30,7 @@ module('Unit | Route | protected', function(hooks) {
     await promise;
 
     localeState = redux.getState().global.preferences.locales;
-    assert.deepEqual(localeState, [{ id: 'en-us', label: 'english' }, { id: 'es', label: 'spanish', fileName: 'spanish_es' }, { id: 'de-de', label: 'german', fileName: 'german_de-de' }]);
+    assert.deepEqual(localeState, [{ id: 'en-us', label: 'english' }, { id: 'es', label: 'spanish', fileName: 'spanish_es.js' }, { id: 'de-DE', label: 'german', fileName: 'german_de-DE.js' }]);
   });
 
   test('when error thrown the default locales are still available', async function(assert) {

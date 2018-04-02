@@ -1,9 +1,7 @@
 import { test, module } from 'qunit';
-import { setupTest } from 'ember-qunit';
 import { getLocale, getLocales } from 'sa/reducers/global/preferences/selectors';
 
-module('Unit | Selectors | Global | Preferences', function(hooks) {
-  setupTest(hooks);
+module('Unit | Selectors | Global | Preferences', function() {
 
   test('getLocale will return the correct locale data structure', async function(assert) {
     const result = getLocale({
@@ -34,9 +32,9 @@ module('Unit | Selectors | Global | Preferences', function(hooks) {
               label: 'english'
             },
             {
-              id: 'de-de',
+              id: 'de-DE',
               label: 'german',
-              fileName: 'german_de-de'
+              fileName: 'german_de-DE.js'
             }
           ]
         }
@@ -50,9 +48,9 @@ module('Unit | Selectors | Global | Preferences', function(hooks) {
         displayLabel: 'English'
       },
       {
-        id: 'de-de',
+        id: 'de-DE',
         label: 'german',
-        fileName: 'german_de-de',
+        fileName: 'german_de-DE.js',
         displayLabel: 'German'
       }
     ]);
