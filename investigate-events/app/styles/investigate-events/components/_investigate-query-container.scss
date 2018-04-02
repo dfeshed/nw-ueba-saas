@@ -125,6 +125,8 @@
       @include rsa-font(body, small);
       margin-top: 2.5px;
       margin-bottom: 2px;
+      @include rsa-input-placeholder(text-color(primary));
+      padding: rsa-whitespace(less) 8.5px rsa-whitespace(less) 8.5px;
     }
   }
 
@@ -138,6 +140,8 @@
       @include rsa-font(body, small);
       margin-top: 2.5px;
       margin-bottom: 2px;
+      @include rsa-input-placeholder(text-color(primary));
+      padding: rsa-whitespace(less) 8.5px rsa-whitespace(less) 8.5px;
     }
   }
 } 

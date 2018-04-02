@@ -124,6 +124,7 @@
 
       input {
         display: block;
+        @include rsa-input-placeholder(text-color(primary));
       }
 
       .invisible-edit-trigger {
