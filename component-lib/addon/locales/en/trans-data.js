@@ -1631,7 +1631,11 @@ export default {
       'live.connect.private.ip.unsupported': 'Only public IP addresses are supported by Live Connect.',
       'transport.http.error': 'Context lookup failed for this datasource since it returned an error.',
       'transport.validation.error': 'The data format is not supported for the data source.',
-      'transport.http.auth.failed': 'Could not fetch context from this data source - Authorization failed.'
+      'transport.http.auth.failed': 'Could not fetch context from this data source - Authorization failed.',
+      archer: {
+        noData: 'Data not available. Check the data in RSA Archer.',
+        notConfigured: 'Archer is not configured. Check Services in Admin.'
+      }
     },
     footer: {
       viewAll: 'VIEW All',

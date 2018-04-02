@@ -1,0 +1,1 @@
+export { default } from 'context/components/context-panel/header/actionbar/pivot-to-archer/component';

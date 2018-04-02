@@ -1,9 +1,9 @@
 <hbox class="rsa-context-panel-header__tab">
-  {{#each headerButtons as | componentName | }} 
-    {{#if (eq componentName 'add-to-list')}} 
-      {{#rsa-form-button defaultAction=(route-action "openContextAddToList" (hash type=meta id=lookupKey)) }} 
+  {{#each headerButtons as | componentName | }}
+    {{#if (eq componentName 'add-to-list')}}
+      {{#rsa-form-button defaultAction=(route-action "openContextAddToList" (hash type=meta id=lookupKey)) }}
         {{t 'context.addToList.title'}}
-      {{/rsa-form-button}} 
+      {{/rsa-form-button}}
     {{else if (eq componentName 'endpoint')}}
       <a href="ecatui://{{lookupKey}}" target="_blank" class='rsa-context-panel__linkButton' title= {{t 'context.hostSummary.endpoint'}}>
         {{t 'context.tooltip.ecat'}}
@@ -13,9 +13,7 @@
         {{t 'context.tooltip.investigate'}}
       </a>
     {{else if (eq componentName 'archer')}}
-      <a class='rsa-context-panel__linkButton' {{action 'pivotToArcher'}}>
-        {{t 'context.tooltip.archer'}}
-      </a>
+      {{context-panel/header/actionbar/pivot-to-archer}}
     {{/if}}
   {{/each}}
 </hbox>

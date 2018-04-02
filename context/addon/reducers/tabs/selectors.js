@@ -28,13 +28,32 @@ const _tabsCurrentState = (state, context) => {
   }));
 };
 
+const _getArcherDataSource = (state) => {
+  return state.dataSources.find((dataSource) => dataSource.field === 'Archer');
+};
+
 const _archerData = (state, context) => {
   const lookupData = getLookupData(context);
-  const archerDS = _dataSources(state).find((dataSource) => dataSource.field === 'Archer');
+  const archerDS = _getArcherDataSource(state);
   if (!isEmpty(archerDS)) {
-    return getData(lookupData, archerDS.details);
+    const archerData = getData(lookupData, archerDS.details);
+    return !isEmpty(archerData) ? archerData[0].Url : '';
   }
 };
+
+export const getArcherErrorMessage = createSelector(
+  [_getArcherDataSource, _archerData],
+  (archerDataSource, archerData) => {
+    let errorType, errorMessage;
+    if (isEmpty(archerDataSource) || !archerDataSource.isConfigured) {
+      errorType = 'Error';
+      errorMessage = 'context.error.archer.notConfigured';
+    } else if (!archerData) {
+      errorType = 'Warning';
+      errorMessage = 'context.error.archer.noData';
+    }
+    return { errorType, errorMessage };
+  });
 
 const _activeTabName = (state) => state.activeTabName;
 
@@ -80,6 +99,5 @@ export const onLiveConnectTab = createSelector(
 export const getArcherUrl = createSelector(
   [_archerData],
   (archerData) => {
-    return !isEmpty(archerData) ? archerData[0].Url : '';
+    return archerData;
   });
-
