@@ -56,6 +56,11 @@ export const setQueryTimeRange = ({ id, value, unit }) => {
 
     if (value) {
       startTime = moment(endTime).subtract(value, unit).add(1, 'minutes').startOf('minute');
+      // if the precision is in months - for last 30 days, momentjs takes last 30 days 23 hrs.
+      // So adding 23 hrs to startTime to negate the effect.
+      if (unit == 'months') {
+        startTime = startTime.add(23, 'hours');
+      }
     } else {
       startTime = moment(dbStartTime * 1000).startOf('minute');
     }

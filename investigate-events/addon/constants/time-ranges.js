@@ -1,4 +1,5 @@
 const DEFAULT_TIME_RANGE_ID = 'LAST_24_HOURS';
+const ALL_DATA = 'ALL_DATA';
 const DATABASE_TIME = 'DB';
 const RANGES = [
   { id: 'LAST_5_MINUTES', name: 'Last 5 Minutes', value: 5, unit: 'minutes' },
@@ -28,6 +29,7 @@ const getNameById = (id) => {
 export default {
   DATABASE_TIME,
   DEFAULT_TIME_RANGE_ID,
+  ALL_DATA,
   RANGES,
   getById,
   getNameById

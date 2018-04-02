@@ -41,12 +41,14 @@ export default handleActions({
     const reducerState = {};
     const qn = (payload && payload.investigate && payload.investigate.queryNode) ? payload.investigate.queryNode : null;
     if (qn) {
-      reducerState.previouslySelectedTimeRanges = qn.previouslySelectedTimeRanges;
-      // if state already has a serviceId, use that one instead, because
+      // if state already has a serviceId and previouslySelectedTimeRanges, use that one instead, because
       // that is coming from parsing the url and we do not want to use
       // the one stored in localStorage
       if (!state.serviceId) {
         reducerState.serviceId = qn.serviceId;
+      }
+      if (!state.previouslySelectedTimeRanges[state.serviceId]) {
+        reducerState.previouslySelectedTimeRanges = qn.previouslySelectedTimeRanges;
       }
     }
     return state.merge(reducerState);
@@ -73,12 +75,16 @@ export default handleActions({
 
     } else {
       const hasIncommingQueryParams = !!(payload.endTime && payload.serviceId && payload.startTime);
+      const { previouslySelectedTimeRanges } = state;
+      const newRange = {};
+      newRange[payload.serviceId] = payload.selectedTimeRangeId;
       return state.merge({
         endTime: payload.endTime && parseInt(payload.endTime, 10) || 0,
         eventMetas: undefined,
         hasIncommingQueryParams,
         metaFilter: payload.metaFilter,
         serviceId: payload.serviceId,
+        previouslySelectedTimeRanges: previouslySelectedTimeRanges.merge(newRange),
         sessionId: payload.sessionId && parseInt(payload.sessionId, 10) || undefined,
         startTime: payload.startTime && parseInt(payload.startTime, 10) || 0
       }, { deep: true });

@@ -4,6 +4,7 @@ import { isBlank, isEmpty } from '@ember/utils';
 import { run } from '@ember/runloop';
 import RSVP from 'rsvp';
 import { encodeMetaFilterConditions } from 'investigate-events/actions/fetch/utils';
+import TIME_RANGES from 'investigate-events/constants/time-ranges';
 
 /**
  * Adds a session id filter to a given Core query filter. Appends a condition
@@ -158,8 +159,56 @@ function parseQueryParams(params) {
     metaPanelSize: params.mps,
     reconSize: params.rs,
     serviceId: params.sid,
-    startTime: params.st
+    startTime: params.st,
+    selectedTimeRangeId: _getTimeRangeIdFromRange(params.st, params.et)
   };
+}
+
+/**
+ * Given startTime and endTime, this calculates number of days, hours and minutes and matches that with the RANGES array from time-ranges.js
+ * to find the matching id. (eg.'LAST_30_MINUTES')
+ * @param {number} startTime
+* @param {number} endTime
+ * @return {object}
+ * @private
+ */
+function _getTimeRangeIdFromRange(startTime, endTime) {
+  const seconds = (endTime - startTime) + 1;
+  const rangeObj = _getDaysHrsMinsFromSecs(seconds);
+  let unit, value;
+  for (const prop in rangeObj) {
+    if (rangeObj[prop] !== 0) {
+      unit = prop;
+      value = rangeObj[prop];
+    }
+  }
+  const getMatchingRange = (unit, value) => TIME_RANGES.RANGES.find((d) => (d.unit === unit && d.value === value));
+  const range = getMatchingRange(unit, value);
+  return range ? range.id : TIME_RANGES.ALL_DATA;
+}
+
+/**
+ * Given the seconds, it calculates the number of months, days, hours and minutes.
+ * @param {number} seconds
+ * @return {object}
+ * @private
+ */
+function _getDaysHrsMinsFromSecs(s) {
+  let h, mi, mo, d;
+  mi = Math.floor(s / 60);
+  s = s % 60;
+  h = Math.floor(mi / 60);
+  mi = mi % 60;
+  d = Math.floor(h / 24);
+  h = h % 24;
+  // if number of days is 30, we are considering it as a month for our timeRange calculations.
+  if (d === 30 && h === 0 && mi === 0) {
+    mo = 1;
+    d = 0;
+  } else {
+    mo = 0;
+  }
+  return { months: mo, days: d, hours: h, minutes: mi };
 }
 
 /**
@@ -288,5 +337,6 @@ export {
   parseQueryParams,
   serializeQueryParams,
   uriEncodeMetaFilters,
-  uriEncodeFreeFormText
+  uriEncodeFreeFormText,
+  _getTimeRangeIdFromRange
 };
