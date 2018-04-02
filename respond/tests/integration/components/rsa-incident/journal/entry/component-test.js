@@ -81,7 +81,7 @@ test('The delete button dispatches a deleteItem action', function(assert) {
     this.$('header .delete button').click();
     return wait().then(() => {
       assert.equal($('#modalDestination .respond-confirmation-dialog').length, 1, 'The confirmation dialog is showing');
-      $('.modal-footer-buttons .is-danger button').click();
+      $('.modal-footer-buttons .is-primary button').click();
       return wait();
     }).then(() => {
       assert.ok(actionSpy.calledOnce, 'The deleteJournalEntry action was called once');
@@ -156,7 +156,7 @@ test('An error flash message is displayed if there is an error deleting the jour
     this.render(hbs`{{rsa-incident/journal/entry incidentId='INC-1234' entry=journalEntry}}`);
     this.$('header .delete button').click();
     return wait().then(() => {
-      $('.modal-footer-buttons .is-danger button').click();
+      $('.modal-footer-buttons .is-primary button').click();
       return wait();
     });
   });
