@@ -313,7 +313,7 @@ export default Component.extend(DomWatcher, EKMixin, {
     const columns = this.get('columns').filterBy('selected', true);
     const resizedColumns = columns.filterBy('resizedOnce', true).length;
     const len = columns.length > resizedColumns ? (columns.length - resizedColumns) : 1;
-    const adjust = diff / len;
+    const adjust = Math.ceil(diff / len) + 1;
 
     columns.forEach((column, index) => {
       if (column.displayIndex === resizeColumn.displayIndex) {
@@ -374,7 +374,7 @@ export default Component.extend(DomWatcher, EKMixin, {
       // Need to adjust only difference from view port.
       const len = noOfColumns > resizedColumns ? (noOfColumns - resizedColumns) : 1;
       columns.forEach((column, index) => {
-        const adjustWidth = (diff / len - this.whitespace) + 1;
+        const adjustWidth = Math.ceil(diff / len - this.whitespace) + 1;
         // Every time cell width will be addition of original width + adjustWidth.
         if (!get(column, 'resizedOnce')) {
           const width = adjustWidth + columnWidth[index];
