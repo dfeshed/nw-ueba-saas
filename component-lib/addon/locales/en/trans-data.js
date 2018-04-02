@@ -572,7 +572,7 @@ export default {
       },
       action: 'Action',
       actionMessage: 'Choose the action taken if the rule matches an alert',
-      error: 'There was a problem loading incident rules',
+      error: 'There was a problem loading incident rules. The Respond Server may be offline or inaccessible.',
       noResults: 'No incident rules were found',
       createRule: 'Create Rule',
       deleteRule: 'Delete',
@@ -693,7 +693,7 @@ export default {
       emailServerSettings: 'Email Server Settings',
       noManagePermissions: 'You do not have permissions to make edits to Respond Notifications',
       actionMessages: {
-        fetchFailure: 'There was a problem loading the Respond notification settings',
+        fetchFailure: 'There was a problem loading the Respond notification settings. The Respond Server may be offline or inaccessible.',
         updateSuccess: 'You successfully updated the Respond notification settings',
         updateFailure: 'There was a problem updating the Respond notification settings'
       }
@@ -859,7 +859,7 @@ export default {
           addAlertToIncidentSucceeded: 'You successfully added the selected alerts to {{incidentId}}.',
           addAlertToIncidentFailed: 'There was a problem adding the selected alerts to this incident',
           confirmEscalationTitle: 'Confirm Escalation',
-          confirmEscalation: 'Are you sure you want to escalate this incident? This action is not reversible and may kick off additional business processes in external systems',
+          confirmEscalation: 'Are you sure you want to escalate this incident? This action is not reversible and may initiate additional business processes in external systems.',
           escalationSuccess: 'Incident {{incidentId}} has been escalated',
           escalationFailure: 'There was a problem escalating incident {{incidentId}}'
         },

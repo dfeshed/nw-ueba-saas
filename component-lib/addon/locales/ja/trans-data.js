@@ -572,7 +572,7 @@ export default {
       },
       action: 'ja_Action',
       actionMessage: 'ja_Choose the action taken if the rule matches an alert',
-      error: 'ja_There was a problem loading incident rules',
+      error: 'ja_There was a problem loading incident rules. The Respond Server may be offline or inaccessible.',
       noResults: 'ja_No incident rules were found',
       createRule: 'ja_Create Rule',
       cloneRule: 'ja_Clone',
@@ -693,7 +693,7 @@ export default {
       emailServerSettings: 'ja_Email Server Settings',
       noManagePermissions: 'ja_You do not have permissions to make edits to Respond Notifications',
       actionMessages: {
-        fetchFailure: 'ja_There was a problem loading the Respond notification settings',
+        fetchFailure: 'ja_There was a problem loading the Respond notification settings. The Respond Server may be offline or inaccessible.',
         updateSuccess: 'ja_You successfully updated the Respond notification settings',
         updateFailure: 'ja_There was a problem updating the Respond notification settings'
       }
@@ -859,7 +859,7 @@ export default {
           addAlertToIncidentSucceeded: 'ja_You successfully added the selected alerts to {{incidentId}}.',
           addAlertToIncidentFailed: 'ja_There was a problem adding the selected alerts to this incident',
           confirmEscalationTitle: 'ja_Confirm Escalation',
-          confirmEscalation: 'ja_Are you sure you want to escalate this incident? This action is not reversible and may kick off additional business processes in external systems',
+          confirmEscalation: 'ja_Are you sure you want to escalate this incident? This action is not reversible and may initiate additional business processes in external systems.',
           escalationSuccess: 'ja_Incident {{incidentId}} has been escalated',
           escalationFailure: 'ja_There was a problem escalating incident {{incidentId}}'
         },
