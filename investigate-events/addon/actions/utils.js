@@ -176,15 +176,21 @@ function _getTimeRangeIdFromRange(startTime, endTime) {
   const seconds = (endTime - startTime) + 1;
   const rangeObj = _getDaysHrsMinsFromSecs(seconds);
   let unit, value;
+  let count = 0;
   for (const prop in rangeObj) {
     if (rangeObj[prop] !== 0) {
       unit = prop;
       value = rangeObj[prop];
+      ++count;
     }
+  }
+  // if the rangeObj has more than one non-zero property, the query must be an ALL_DATA query from classic.
+  if (count > 1) {
+    return TIME_RANGES.ALL_DATA;
   }
   const getMatchingRange = (unit, value) => TIME_RANGES.RANGES.find((d) => (d.unit === unit && d.value === value));
   const range = getMatchingRange(unit, value);
-  return range ? range.id : TIME_RANGES.ALL_DATA;
+  return range ? range.id : TIME_RANGES.DEFAULT_TIME_RANGE_ID;
 }
 
 /**
