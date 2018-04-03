@@ -528,7 +528,8 @@ export default {
     },
     generic: {
       loading: 'Loading data...',
-      rejected: 'No data was loaded.'
+      rejected: 'No data was loaded.',
+      rolledOut: 'Raw data not loaded. It has rolled out of the database.'
     },
     services: {
       loading: 'Loading Services',

@@ -528,7 +528,8 @@ export default {
     },
     generic: {
       loading: 'ja_Loading data...',
-      rejected: 'ja_No data was loaded.'
+      rejected: 'ja_No data was loaded.',
+      rolledOut: 'ja_Raw data not loaded. It has rolled out of the database.'
     },
     services: {
       loading: 'ja_Loading Services',

@@ -54,14 +54,17 @@ export default handleActions({
   },
 
   [ACTION_TYPES.SET_LOG]: (state, { payload }) => {
-    const { code, data } = payload;
+    const { data } = payload;
     const { log, sessionId } = data || {};
     const item = _find(state.data, sessionId);
     if (item) {
       let updatedItem;
-      if (code !== 0) {
+      if (data.errorCode) {
         // codes other than 0 are errors
-        updatedItem = item.merge({ logStatus: 'rejected' });
+        updatedItem = item.merge({
+          logStatus: 'rejected',
+          errorCode: data.errorCode
+        });
       } else {
         // set new log and status
         updatedItem = item.merge({ log: (item.log || '') + log, logStatus: 'resolved' });

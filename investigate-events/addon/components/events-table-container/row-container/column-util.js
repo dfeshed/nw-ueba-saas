@@ -312,7 +312,11 @@ function buildLogContent(item) {
       text = lookup('service:i18n').t('investigate.generic.loading');
       break;
     case 'rejected':
-      text = lookup('service:i18n').t('investigate.generic.rejected');
+      if (item.errorCode === 129) {
+        text = lookup('service:i18n').t('investigate.generic.rolledOut');
+      } else {
+        text = lookup('service:i18n').t('investigate.generic.rejected');
+      }
       break;
     default:
       tooltip = data;
