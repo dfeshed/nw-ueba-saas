@@ -19,6 +19,7 @@ export default [{
     'city': 'Bangalore',
     'sAMAccountName': 'Administrator',
     'lastLogonTimestamp': '131360420649774633',
+    'lastLogon': '131360420649774633',
     'displayName': 'Gayatri Bora',
     'objectClass': ['top', 'person', 'organizationalPerson', 'user'],
     'distinguishedName': 'CN=Administrator,CN=Users,DC=context,DC=local',

@@ -1926,7 +1926,7 @@ export default [
     'connectionName': null,
     'dataSourceCreatedOn': 1491288661700,
     'dataSourceLastModifiedOn': 1491288661700,
-    'contentLastModifiedOn': 1491289221500,
+    'contentLastModifiedOn': 1522649579564,
     'resultList': [
       {
         'createdBy': 'admin',

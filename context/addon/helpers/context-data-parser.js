@@ -1,7 +1,7 @@
-import { set } from '@ember/object';
 import { isEmpty } from '@ember/utils';
 import { helper } from '@ember/component/helper';
 import { warn } from '@ember/debug';
+import _ from 'lodash';
 
 const windowsTimestampToMilliseconds = (windowsTimestamp) => windowsTimestamp ? windowsTimestamp / 10000 - 11644473600000 : null;
 
@@ -20,7 +20,14 @@ const _enrichADFields = (resultList) => {
     };
   });
 };
-
+/**
+ * List data is a special case where data for every List represents a data source similar to
+ * Incidents and Alerts. But for display CH want to combined all list info under one table.
+ * This _enrichListData will take all List data source data in loop and keep adding the same in result list of first data
+ * source data.
+ * @type {Function}
+ * @private
+ */
 const _enrichListData = (contextDataForDS, dataSourceData, firstDSEntry) => {
   const results = dataSourceData.resultList;
   if (firstDSEntry) {
@@ -31,9 +38,18 @@ const _enrichListData = (contextDataForDS, dataSourceData, firstDSEntry) => {
     contextDataForDS.errorMessage = dataSourceData.errorMessage;
   }
   if (!isEmpty(results) && isEmpty(contextDataForDS.errorMessage)) {
+    /**
+     * All Lists are different data sources so CH has to mention last updated for List which is recently updated.
+     * This logic will check for latest of Last updated or content last updated and modify footer value accordingly.
+     * @private
+     */
     const latestUpdatedDate = dataSourceData.dataSourceLastModifiedOn > dataSourceData.contentLastModifiedOn ? dataSourceData.dataSourceLastModifiedOn : dataSourceData.contentLastModifiedOn;
-    set(contextDataForDS, 'dataSourceLastModifiedOn', contextDataForDS.dataSourceLastModifiedOn > latestUpdatedDate ? contextDataForDS.dataSourceLastModifiedOn : latestUpdatedDate);
-    dataSourceData.dataSourceLastModifiedOn = latestUpdatedDate;
+    const timeQuerySubmitted = contextDataForDS.dataSourceLastModifiedOn > latestUpdatedDate ? contextDataForDS.dataSourceLastModifiedOn : latestUpdatedDate;
+    const resultMeta = contextDataForDS.resultMeta.asMutable ? contextDataForDS.resultMeta.asMutable() : contextDataForDS.resultMeta;
+    _.set(resultMeta, 'timeQuerySubmitted', timeQuerySubmitted);
+    _.set(dataSourceData.resultMeta, 'timeQuerySubmitted', timeQuerySubmitted);
+    contextDataForDS.resultMeta = resultMeta;
+
     contextDataForDS.resultList = contextDataForDS.resultList.concat([dataSourceData]);
   }
   return contextDataForDS;
@@ -64,14 +80,14 @@ const _enrichDataSourceData = (contextDataForDS, dataSourceData) => {
 
 const _populateContextData = (dataSourceData, lookupData) => {
   const contextDataForDS = lookupData[dataSourceData.dataSourceGroup];
-  lookupData = lookupData.set(dataSourceData.dataSourceGroup, _enrichDataSourceData(contextDataForDS ? contextDataForDS : null, dataSourceData));
-  return lookupData;
+  return lookupData.set(dataSourceData.dataSourceGroup, _enrichDataSourceData(contextDataForDS ? contextDataForDS : null, dataSourceData));
 };
 
-const _updateHostCountForMachine = (contextDataForDS, dataSourceData) => {
-  if (dataSourceData.Modules && dataSourceData.Modules.resultMeta && dataSourceData.Machines && !isEmpty(dataSourceData.Machines.resultList)) {
-    dataSourceData.Machines.resultList[0].set('total_modules_count', dataSourceData.Modules.resultMeta.total_modules_count);
+const _updateHostCountForMachine = (lookupData) => {
+  if (lookupData.Modules && lookupData.Modules.resultMeta && lookupData.Machines && !isEmpty(lookupData.Machines.resultList)) {
+    return lookupData.setIn(['Machines', 'resultList', '0', 'total_modules_count'], lookupData.Modules.resultMeta.total_modules_count);
   }
+  return lookupData;
 };
 
 export function contextDataParser([data, [lookupData]]) {
@@ -81,7 +97,7 @@ export function contextDataParser([data, [lookupData]]) {
   data.forEach((dataSourceData) => {
     if (dataSourceData.dataSourceGroup) {
       lookupData = _populateContextData(dataSourceData, lookupData);
-      _updateHostCountForMachine(dataSourceData, lookupData);
+      lookupData = _updateHostCountForMachine(lookupData);
     } else {
       warn(`DataSource group for ${dataSourceData.dataSourceName} is not configured`, { id: 'context.helpers.context-data-parser' });
     }
