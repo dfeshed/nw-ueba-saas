@@ -36,19 +36,26 @@ const _archerData = (state, context) => {
   const lookupData = getLookupData(context);
   const archerDS = _getArcherDataSource(state);
   if (!isEmpty(archerDS)) {
-    const archerData = getData(lookupData, archerDS.details);
-    return !isEmpty(archerData) ? archerData[0].Url : '';
+    return getData(lookupData, archerDS.details);
   }
 };
 
+const _archerLookupData = (state, context) => {
+  const lookupData = getLookupData(context);
+  return lookupData && lookupData.Archer ? lookupData.Archer : null;
+};
+
 export const getArcherErrorMessage = createSelector(
-  [_getArcherDataSource, _archerData],
-  (archerDataSource, archerData) => {
+  [_getArcherDataSource, _archerLookupData],
+  (archerDataSource, archerLookupData) => {
     let errorType, errorMessage;
     if (isEmpty(archerDataSource) || !archerDataSource.isConfigured) {
-      errorType = 'Error';
+      errorType = 'Warning';
       errorMessage = 'context.error.archer.notConfigured';
-    } else if (!archerData) {
+    } else if (archerLookupData && !isEmpty(archerLookupData.errorMessage)) {
+      errorType = 'Error';
+      errorMessage = 'context.error.archer.notReachable';
+    } else if (archerLookupData && isEmpty(archerLookupData.resultList)) {
       errorType = 'Warning';
       errorMessage = 'context.error.archer.noData';
     }
@@ -99,5 +106,5 @@ export const onLiveConnectTab = createSelector(
 export const getArcherUrl = createSelector(
   [_archerData],
   (archerData) => {
-    return archerData;
+    return !isEmpty(archerData) ? archerData[0].Url : '';
   });

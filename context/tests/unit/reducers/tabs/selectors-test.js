@@ -68,7 +68,7 @@ test('archer data source is not configured', function(assert) {
   const testArcherUrl = getArcherUrl(state, context);
   const testArcherErrorDetails = getArcherErrorMessage(state, context);
   assert.equal(testArcherUrl, '');
-  assert.equal(testArcherErrorDetails.errorType, 'Error');
+  assert.equal(testArcherErrorDetails.errorType, 'Warning');
   assert.equal(testArcherErrorDetails.errorMessage, 'context.error.archer.notConfigured');
 
 });
@@ -87,5 +87,25 @@ test('archer data is not available', function(assert) {
   assert.equal(testArcherUrl, '');
   assert.equal(testArcherErrorDetails.errorType, 'Warning');
   assert.equal(testArcherErrorDetails.errorMessage, 'context.error.archer.noData');
+
+});
+
+test('archer data source is not reachable', function(assert) {
+  const context = Immutable.from({
+    lookupData: [{
+      Archer: {
+        dataSourceType: 'Archer',
+        dataSourceGroup: 'Archer',
+        resultList: [
+        ],
+        errorMessage: 'TestError'
+      }
+    }]
+  });
+  const testArcherUrl = getArcherUrl(state, context);
+  const testArcherErrorDetails = getArcherErrorMessage(state, context);
+  assert.equal(testArcherUrl, '');
+  assert.equal(testArcherErrorDetails.errorType, 'Error');
+  assert.equal(testArcherErrorDetails.errorMessage, 'context.error.archer.notReachable');
 
 });

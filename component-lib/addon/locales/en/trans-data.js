@@ -1633,8 +1633,9 @@ export default {
       'transport.validation.error': 'The data format is not supported for the data source.',
       'transport.http.auth.failed': 'Could not fetch context from this data source - Authorization failed.',
       archer: {
-        noData: 'Data not available. Check the data in RSA Archer.',
-        notConfigured: 'Archer is not configured. Check Services in Admin.'
+        noData: 'Data in RSA Archer is not available.',
+        notConfigured: 'Archer data source is not configured and refer help documentation to configure.',
+        notReachable: 'Check the data source connectivity to Archer.'
       }
     },
     footer: {
