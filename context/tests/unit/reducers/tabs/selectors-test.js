@@ -21,6 +21,12 @@ const state = Immutable.from({
   }]
 });
 
+test('data sources are not available', function(assert) {
+  const testArcherErrorDetails = getArcherErrorMessage({}, []);
+  assert.equal(testArcherErrorDetails.errorType, 'Warning');
+  assert.equal(testArcherErrorDetails.errorMessage, 'context.error.archer.notConfigured');
+
+});
 
 test('determine archer url when available', function(assert) {
   const context = Immutable.from({

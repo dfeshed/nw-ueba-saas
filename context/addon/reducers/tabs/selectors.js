@@ -29,7 +29,8 @@ const _tabsCurrentState = (state, context) => {
 };
 
 const _getArcherDataSource = (state) => {
-  return state.dataSources.find((dataSource) => dataSource.field === 'Archer');
+  const dataSources = _dataSources(state);
+  return dataSources ? dataSources.find((dataSource) => dataSource.field === 'Archer') : null;
 };
 
 const _archerData = (state, context) => {
