@@ -1,3 +1,20 @@
+# [8.1.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v8.1.0)
+## Features
+* [ASOC-50210](https://bedfordjira.na.rsa.net/browse/ASOC-50210):&emsp;Intermittent websocket issue causing UI to not load
+* [ASOC-50937](https://bedfordjira.na.rsa.net/browse/ASOC-50937):&emsp;Add advanced query toggle
+* [ASOC-51097](https://bedfordjira.na.rsa.net/browse/ASOC-51097):&emsp;Enhance Alert Normalization for event analysis
+* [ASOC-51106](https://bedfordjira.na.rsa.net/browse/ASOC-51106):&emsp;Create the journal entries whenever the incident is escalated
+* [ASOC-51159](https://bedfordjira.na.rsa.net/browse/ASOC-51159):&emsp;Wire-up Escalate button to Respond Micro-Service Escalation call
+* [ASOC-51333](https://bedfordjira.na.rsa.net/browse/ASOC-51333):&emsp;Add a controller endpoint that the UI can invoke to escalate an incident
+* [ASOC-51425](https://bedfordjira.na.rsa.net/browse/ASOC-51425):&emsp;Ability to move investigate-server from NW Server
+* [ASOC-51481](https://bedfordjira.na.rsa.net/browse/ASOC-51481):&emsp;Create a button to pivot to Archer clicking on which user lands on archer login page/dashboard
+* [ASOC-51560](https://bedfordjira.na.rsa.net/browse/ASOC-51560):&emsp;Introduce toggle that preserves basic/advanced but provides home for new pill componentry
+* [ASOC-51648](https://bedfordjira.na.rsa.net/browse/ASOC-51648):&emsp;Code base clean-up
+* [ASOC-51667](https://bedfordjira.na.rsa.net/browse/ASOC-51667):&emsp;Investigate server to translate error codes from NextGen service
+* [ASOC-52038](https://bedfordjira.na.rsa.net/browse/ASOC-52038):&emsp;Public API's for CH
+* [ASOC-52255](https://bedfordjira.na.rsa.net/browse/ASOC-52255):&emsp;Ability to move "rsa-response" from NW Server
+
+
 # [7.9.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v7.9.0)
 ## Features
 * [ASOC-44522](https://bedfordjira.na.rsa.net/browse/ASOC-44522):&emsp;Remove SNAPSHOT dependencies

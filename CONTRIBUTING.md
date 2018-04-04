@@ -169,12 +169,15 @@ The following is a list of steps to perform to close out a sprint.
 4. Update the sa-ui entry in the _Sprint Component List_ on the [WIKI](https://wiki.na.rsa.net/display/ENVNG/11.1+Sprint+RPMs).
 
 ## Points of Contact
+### Context Hub
+- Supernova: Vishwas Gahoi
 ### Investigate
-- Avengers: Vishwas Gahoi
+- Avengers: Ramachandra Thejasvi
 - Drogon: Todd Little
 - House Stark: Geoff Bell
 ### Respond
 - Swayze: Matt Meiske
 ### Endpoint
-- Harp: Raghavendra Bhat
-- Symphony: Raghavendra Bhat
+- Beatles: Raghavendra Bhat
+- Nirvana: Meghna Murali
+- Orchestra: Pooja Shetty
