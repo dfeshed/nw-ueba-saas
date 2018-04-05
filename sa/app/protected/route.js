@@ -128,24 +128,6 @@ export default Route.extend(AuthenticatedRouteMixin, {
     });
   },
 
-  getLocales() {
-    const redux = get(this, 'redux');
-    const request = get(this, 'request');
-    return new RSVP.Promise((resolve, reject) => {
-      request.promiseRequest({
-        method: 'getLocales',
-        modelName: 'locales',
-        query: {}
-      }).then((response) => {
-        redux.dispatch({ type: ACTION_TYPES.ADD_PREFERENCES_LOCALES, locales: response.data });
-        resolve();
-      }).catch((error) => {
-        console.error('Error loading locales', error);
-        reject(error);
-      });
-    });
-  },
-
   afterModel(models, transition) {
     this._super(...arguments);
 
@@ -172,7 +154,6 @@ export default Route.extend(AuthenticatedRouteMixin, {
     const permissionsPromise = this.getPermissions();
     const timezonesPromise = this.getTimezones();
     const preferencesPromise = this.getPreferences();
-    // const localesPromise = this.getLocales();
 
     return RSVP.all([preferencesPromise, timezonesPromise, permissionsPromise]).catch(() => {
       console.error('There was an issue loading your profile. Please try again.');

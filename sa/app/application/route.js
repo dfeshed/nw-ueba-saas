@@ -3,14 +3,18 @@ import Ember from 'ember';
 import ApplicationRouteMixin from 'ember-simple-auth/mixins/application-route-mixin';
 import csrfToken from 'component-lib/mixins/csrf-token';
 import Route from '@ember/routing/route';
+import * as ACTION_TYPES from 'sa/actions/types';
+import { get } from '@ember/object';
 import RSVP from 'rsvp';
 import { inject as service } from '@ember/service';
+import fetch from 'component-lib/services/fetch';
 
 const {
   testing
 } = Ember;
 
 export default Route.extend(ApplicationRouteMixin, csrfToken, {
+  redux: service(),
   fatalErrors: service(),
   session: service(),
   userActivity: service(),
@@ -33,6 +37,13 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
     }
     this._setupUserTimeout();
     this._super(...arguments);
+  },
+
+  getLocales() {
+    const redux = get(this, 'redux');
+    return fetch('/locales').then((fetched) => fetched.json()).then((locales) => {
+      redux.dispatch({ type: ACTION_TYPES.ADD_PREFERENCES_LOCALES, locales });
+    });
   },
 
   actions: {

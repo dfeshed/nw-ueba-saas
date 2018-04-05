@@ -7,10 +7,9 @@ import { t } from 'ember-i18n/test-support';
 import { settled } from '@ember/test-helpers';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import * as ACTION_TYPES from 'sa/actions/types';
+import { patchFetch } from 'sa/tests/helpers/patch-fetch';
 import { patchFlash } from 'sa/tests/helpers/patch-flash';
-import RSVP from 'rsvp';
-
-const { Promise } = RSVP;
+import { Promise } from 'rsvp';
 
 module('Unit | Controller | application', function(hooks) {
   setupTest(hooks);
@@ -151,14 +150,14 @@ module('Unit | Controller | application', function(hooks) {
     assert.expect(2);
 
     const redux = this.owner.lookup('service:redux');
-    const controller = this.owner.lookup('controller:application');
 
-    const original = controller._fetch;
-    controller._fetch = function() {
+    this.owner.lookup('controller:application');
+
+    patchFetch(() => {
       return new Promise(function(resolve, reject) {
         reject('boom!');
       });
-    };
+    });
 
     patchFlash((flash) => {
       const translation = this.owner.lookup('service:i18n');
@@ -169,9 +168,7 @@ module('Unit | Controller | application', function(hooks) {
 
     redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'es', label: 'spanish', fileName: 'spanish_es.js' } });
 
-    return settled().then(() => {
-      controller._fetch = original;
-    });
+    return settled();
   });
 
   test('will fetch/append script and set i18n to correct character set when locale changes', async function(assert) {
@@ -181,29 +178,29 @@ module('Unit | Controller | application', function(hooks) {
     const dynamicScripts = () => document.body.querySelectorAll('script#dynamicLocale');
     const i18n = this.owner.lookup('service:i18n');
     const redux = this.owner.lookup('service:redux');
-    const controller = this.owner.lookup('controller:application');
+
+    this.owner.lookup('controller:application');
 
     assert.equal(get(i18n, 'locale'), 'en');
     assert.equal(dynamicScripts().length, 0);
     assert.equal(t('title').toString(), 'Missing translation: title');
 
-    const original = controller._fetch;
-    controller._fetch = function(url) {
+    const fileFetch = (url) => {
       fetchCount++;
       assert.equal(url, '/locales/spanish_es.js');
       return new Promise(function(resolve) {
-        const response = {
+        resolve({
           ok: true,
           text() {
             return new Promise(function(r) {
               r("define('sa/locales/es/translations', ['exports'], function (exports) { exports.default = { title: 'spanish_x' }; })");
             });
           }
-        };
-        resolve(response);
+        });
       });
     };
 
+    patchFetch((url) => fileFetch(url));
     redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'es', label: 'spanish', fileName: 'spanish_es.js' } });
 
     return settled().then(async () => {
@@ -212,6 +209,7 @@ module('Unit | Controller | application', function(hooks) {
       assert.equal(dynamicScripts().length, 1);
       assert.equal(t('title').toString(), 'spanish_x');
 
+      patchFetch((url) => fileFetch(url));
       redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'en-us', label: 'english' } });
 
       return settled().then(async () => {
@@ -230,7 +228,6 @@ module('Unit | Controller | application', function(hooks) {
         });
       });
     }).finally(async () => {
-      controller._fetch = original;
       document.body.removeChild(dynamicScripts()[0]);
     });
   });
@@ -239,10 +236,10 @@ module('Unit | Controller | application', function(hooks) {
     assert.expect(2);
 
     const redux = this.owner.lookup('service:redux');
-    const controller = this.owner.lookup('controller:application');
 
-    const original = controller._fetch;
-    controller._fetch = function() {
+    this.owner.lookup('controller:application');
+
+    patchFetch(() => {
       return new Promise(function(resolve) {
         resolve({
           ok: null,
@@ -250,7 +247,7 @@ module('Unit | Controller | application', function(hooks) {
           }
         });
       });
-    };
+    });
 
     patchFlash((flash) => {
       const translation = this.owner.lookup('service:i18n');
@@ -261,8 +258,6 @@ module('Unit | Controller | application', function(hooks) {
 
     redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'es', label: 'spanish', fileName: 'spanish_es.js' } });
 
-    return settled().then(() => {
-      controller._fetch = original;
-    });
+    return settled();
   });
 });

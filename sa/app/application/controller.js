@@ -1,13 +1,10 @@
 import $ from 'jquery';
-import fetch from 'fetch';
+import fetch from 'component-lib/services/fetch';
 import { get } from '@ember/object';
 import computed from 'ember-computed-decorators';
 import Controller from '@ember/controller';
 import { inject as service } from '@ember/service';
 import { getLocale, getTheme } from 'sa/reducers/global/preferences/selectors';
-import RSVP from 'rsvp';
-
-const { Promise } = RSVP;
 
 const cssVariablesSupported = window.CSS &&
     window.CSS.supports && window.CSS.supports('--a', 0);
@@ -77,24 +74,6 @@ export default Controller.extend({
     }
   },
 
-  _fetch(url) {
-    return fetch(url);
-  },
-
-  _fetchScript(url) {
-    return new Promise((resolve, reject) => {
-      return this._fetch(url).then((response) => {
-        if (response.ok) {
-          resolve(response.text());
-        } else {
-          throw new Error('invalid http response');
-        }
-      }).catch((error) => {
-        reject(error);
-      });
-    });
-  },
-
   _appendLocaleScript(body) {
     const sourceId = 'dynamicLocale';
     const dynamicScript = document.getElementById(sourceId);
@@ -113,7 +92,7 @@ export default Controller.extend({
       this.set('i18n.locale', id);
     } else {
       const scriptUrl = `/locales/${fileName}`;
-      this._fetchScript(scriptUrl).then((body) => {
+      fetch(scriptUrl).then((fetched) => fetched.text()).then((body) => {
         this._appendLocaleScript(body);
         this.set('i18n.locale', id);
       }).catch(() => {

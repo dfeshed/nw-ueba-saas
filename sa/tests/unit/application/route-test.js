@@ -1,8 +1,9 @@
+import { Promise } from 'rsvp';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { patchSocket, throwSocket } from 'sa/tests/helpers/patch-socket';
+import { patchFetch } from 'sa/tests/helpers/patch-fetch';
 
-module('Unit | Route | protected', function(hooks) {
+module('Unit | Route | application', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function() {
@@ -10,17 +11,11 @@ module('Unit | Route | protected', function(hooks) {
   });
 
   test('should fetch locales and dispatch with response data', async function(assert) {
-    assert.expect(5);
+    assert.expect(2);
 
     const redux = this.owner.lookup('service:redux');
-    const route = this.owner.lookup('route:protected');
-    route.set('router.currentRouteName', 'protected');
-
-    patchSocket((method, modelName, query) => {
-      assert.equal(method, 'getLocales');
-      assert.equal(modelName, 'locales');
-      assert.deepEqual(query, {});
-    });
+    const route = this.owner.lookup('route:application');
+    route.set('router.currentRouteName', 'application');
 
     const promise = route.getLocales();
 
@@ -30,17 +25,21 @@ module('Unit | Route | protected', function(hooks) {
     await promise;
 
     localeState = redux.getState().global.preferences.locales;
-    assert.deepEqual(localeState, [{ id: 'en-us', label: 'english' }, { id: 'es', label: 'spanish', fileName: 'spanish_es.js' }, { id: 'de-DE', label: 'german', fileName: 'german_de-DE.js' }]);
+    assert.deepEqual(localeState, [{ id: 'en-us', label: 'english' }, { id: 'de-DE', label: 'german', fileName: 'german_de-DE.js' }, { id: 'es', label: 'spanish', fileName: 'spanish_es.js' }]);
   });
 
   test('when error thrown the default locales are still available', async function(assert) {
     assert.expect(2);
 
     const redux = this.owner.lookup('service:redux');
-    const route = this.owner.lookup('route:protected');
-    route.set('router.currentRouteName', 'protected');
+    const route = this.owner.lookup('route:application');
+    route.set('router.currentRouteName', 'application');
 
-    const done = throwSocket({ methodToThrow: 'getLocales', modelNameToThrow: 'locales' });
+    patchFetch(() => {
+      return new Promise(function(resolve, reject) {
+        reject('boom!');
+      });
+    });
 
     const promise = route.getLocales();
 
@@ -50,7 +49,6 @@ module('Unit | Route | protected', function(hooks) {
     return promise.catch(() => {
       localeState = redux.getState().global.preferences.locales;
       assert.deepEqual(localeState, [{ id: 'en-us', label: 'english' }]);
-      done();
     });
   });
 });
