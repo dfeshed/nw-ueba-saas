@@ -98,11 +98,15 @@
     "eslint-plugin-ember-suave": "^1.0.0",
     "javascript-detect-element-resize": "file:../javascript-detect-element-resize",
     "loader.js": "^4.2.3",
+    "ember-fetch": "^3.4.4",
     "redux-persist": "4.8.3",
     "redux-persist-transform-filter": "0.0.15"
   },
   "ember-addon": {
-    "configPath": "tests/dummy/config"
+    "configPath": "tests/dummy/config",
+    "paths": [
+      "../test-helpers"
+    ]
   },
   "engines": {
     "node": "7.5.0"

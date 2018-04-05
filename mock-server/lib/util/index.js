@@ -1,5 +1,6 @@
 import { createConnectMessage, parseMessage, createMessage, createSubscriptionReceiptMessage } from './message';
 import { discoverSubscriptions, subscriptionList } from './subscriptions';
+import { dirListing } from './directory-listing';
 import mockAuthResponse from './mock-auth-response';
 
 const determineDelay = (configuredDelayForResponse) => {
@@ -26,5 +27,6 @@ export {
   discoverSubscriptions,
   subscriptionList,
   mockAuthResponse,
-  determineDelay
+  determineDelay,
+  dirListing
 };

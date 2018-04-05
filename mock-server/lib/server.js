@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 
+import path from 'path';
 import express from 'express';
 import cors from 'cors';
 import logger from 'morgan';
@@ -17,7 +18,8 @@ import {
   discoverSubscriptions,
   subscriptionList,
   mockAuthResponse,
-  determineDelay
+  determineDelay,
+  dirListing
 } from './util';
 
 const start = function({ subscriptionLocations, routes }, cb) {
@@ -40,6 +42,8 @@ const start = function({ subscriptionLocations, routes }, cb) {
   app.use(logger('dev'));
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
+
+  app.use('/locales', express.static(path.join(__dirname, 'locales')), dirListing('locales'));
 
   // generic info route used for all connections
   // eslint-disable-next-line new-cap
