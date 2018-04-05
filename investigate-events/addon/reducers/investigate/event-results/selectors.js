@@ -9,6 +9,13 @@ const _resultsData = (state) => state.investigate.eventResults.data;
 const _status = (state) => state.investigate.eventResults.status;
 const _sessionId = (state) => state.investigate.queryNode.sessionId;
 
+export const eventResultsErrorMessage = (state) => state.investigate.eventResults.message;
+
+export const isEventResultsError = createSelector(
+  [_status],
+  (status) => status === 'error'
+);
+
 // SELECTOR FUNCTIONS
 export const percentageOfEventsDataReturned = createSelector(
   [_anchor, _goal, _resultsData, _status],
@@ -49,7 +56,6 @@ export const showScrollMessage = createSelector(
   [selectedIndex, _sessionId],
   (selectedIndex, sessionId) => sessionId && selectedIndex < 0
 );
-
 
 /**
  * Finds and returns the index of the first array member whose key matches a

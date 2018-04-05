@@ -9,53 +9,55 @@
     {{query-container}}
 
     {{#if showFutureFeatures}}
-      {{#if (is-equal eventResults.status 'error')}}
-        {{#rsa-panel-message messageType='query-error'}}
-          <div class="capitalize">{{or eventResults.message (t 'investigate.events.error')}}</div>
-        {{/rsa-panel-message}}
-      {{else}}
-        {{!-- For now, hide the timeline until we've performed a search --}}
-        {{!-- Continue to evaluate if this is the UX we want --}}
-        {{#if atLeastOneQueryIssued}}
-          {{events-container/time-line}}
-        {{/if}}
+      {{!-- For now, hide the timeline until we've performed a search --}}
+      {{!-- Continue to evaluate if this is the UX we want --}}
+      {{#if atLeastOneQueryIssued}}
+        {{events-container/time-line}}
       {{/if}}
     {{/if}}
   </header>
-  {{#if (or atLeastOneQueryIssued hasIncommingQueryParams)}}
-    <section class="{{queryBodyClass}}">
-      <section class="rsa-investigate-query__body-master">
-        {{#if showFutureFeatures}}
-          <aside class="rsa-investigate-query__body-master-aside">
-            {{meta-view}}
-          </aside>
-        {{/if}}
-        <section class="rsa-investigate-query__body-master-main">
-          {{events-table-container}}
-        </section>
-      </section>
-      <vbox class="rsa-investigate-query__body-slave">
-        {{#if (and queryNode.serviceId sessionId)}}
-          {{recon-container
-            aliases=(readonly aliases)
-            endpointId=(readonly queryNode.serviceId)
-            eventId=(readonly sessionId)
-            contextMenuItems=(build-context-menu)
-            queryInputs=(readonly queryInputs)
-            index=(readonly selectedIndex)
-            language=(readonly language)
-            meta=(readonly queryNode.eventMetas)
-            size=(readonly reconSize)
-            total=(readonly totalCount)
-            closeAction=(route-action 'reconClose')
-            expandAction=(route-action 'reconSize' reconPanelSizes.MAX)
-            linkToFileAction=(route-action 'reconLinkToFile')
-            shrinkAction=(route-action 'reconSize' reconPanelSizes.MIN)
-          }}
-        {{/if}}
-      </vbox>
-    </section>
+  {{#if isEventResultsError}}
+    <vbox>
+      {{#rsa-panel-message}}
+        <div class="capitalize query-error">{{or eventResultsErrorMessage (t 'investigate.events.error')}}</div>
+      {{/rsa-panel-message}}
+    </vbox>
   {{else}}
-    {{events-container/query-tips}}
+    {{#if (or atLeastOneQueryIssued hasIncommingQueryParams)}}
+      <section class="{{queryBodyClass}}">
+        <section class="rsa-investigate-query__body-master">
+          {{#if showFutureFeatures}}
+            <aside class="rsa-investigate-query__body-master-aside">
+              {{meta-view}}
+            </aside>
+          {{/if}}
+          <section class="rsa-investigate-query__body-master-main">
+            {{events-table-container}}
+          </section>
+        </section>
+        <vbox class="rsa-investigate-query__body-slave">
+          {{#if (and queryNode.serviceId sessionId)}}
+            {{recon-container
+              aliases=(readonly aliases)
+              endpointId=(readonly queryNode.serviceId)
+              eventId=(readonly sessionId)
+              contextMenuItems=(build-context-menu)
+              queryInputs=(readonly queryInputs)
+              index=(readonly selectedIndex)
+              language=(readonly language)
+              meta=(readonly queryNode.eventMetas)
+              size=(readonly reconSize)
+              total=(readonly totalCount)
+              closeAction=(route-action 'reconClose')
+              expandAction=(route-action 'reconSize' reconPanelSizes.MAX)
+              linkToFileAction=(route-action 'reconLinkToFile')
+              shrinkAction=(route-action 'reconSize' reconPanelSizes.MIN)
+            }}
+          {{/if}}
+        </vbox>
+      </section>
+    {{else}}
+      {{events-container/query-tips}}
+    {{/if}}
   {{/if}}
 {{/if}}

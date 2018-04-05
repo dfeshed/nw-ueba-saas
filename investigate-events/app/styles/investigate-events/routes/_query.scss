@@ -24,6 +24,10 @@ $investigateReconFullWidth: 100%;
   color: text-color(neutral);
   @include rsa-col(justify,fill);
 
+  .query-error {
+    color: text-color(accentOne);
+  }
+
   &__header {
     background-color: background-color(primary,darkest);
     @include border-bottom(1px, solid, neutral, dark);

@@ -96,6 +96,16 @@ export default class DataHelper {
     }
   }
 
+  atLeastOneQueryIssued(flag) {
+    _set(this.state, 'queryNode.atLeastOneQueryIssued', flag);
+    return this;
+  }
+
+  hasIncommingQueryParams(flag) {
+    _set(this.state, 'queryNode.hasIncommingQueryParams', flag);
+    return this;
+  }
+
   hasRequiredValuesToQuery(flag) {
     _set(this.state, 'queryNode.metaFilter', { conditions: [] });
     _set(this.state, 'queryNode.previouslySelectedTimeRanges', {});
@@ -119,6 +129,14 @@ export default class DataHelper {
 
   isServicesRetrieveError(flag) {
     _set(this.state, 'services.isServicesRetrieveError', flag);
+    return this;
+  }
+
+  isEventResultsError(isError, message = 'This is an error message') {
+    _set(this.state, 'eventResults.status', isError ? 'error' : 'complete');
+    if (isError === true) {
+      _set(this.state, 'eventResults.message', message);
+    }
     return this;
   }
 
