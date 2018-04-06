@@ -7,7 +7,7 @@ export default {
       data: {
         'contextMenuEnabled': true,
         'defaultComponentUrl': '/respond',
-        'userLocale': 'JA',
+        'userLocale': 'en-us',
         'dateFormat': 'MM/dd/yyyy',
         'timeFormat': 'HR12',
         'timeZone': 'UTC',

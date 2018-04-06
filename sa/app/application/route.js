@@ -46,6 +46,10 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
     });
   },
 
+  model() {
+    return this.getLocales();
+  },
+
   actions: {
     back() {
       history.back();

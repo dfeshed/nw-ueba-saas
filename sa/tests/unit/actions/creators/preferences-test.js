@@ -20,6 +20,10 @@ module('Unit | Actions | Creators | Preferences', function(hooks) {
     initialize(this.owner);
   });
 
+  hooks.afterEach(function() {
+    localStorage.removeItem('reduxPersist:global');
+  });
+
   test('updateLocaleByKey should set locale when userLocale found in locales', async function(assert) {
     setState({
       locale: { id: 'en-us', label: 'english' },

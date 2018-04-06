@@ -6,8 +6,10 @@
 import Route from '@ember/routing/route';
 import RSVP from 'rsvp';
 import { get } from '@ember/object';
+import { bindActionCreators } from 'redux';
 import { inject as service } from '@ember/service';
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
+import { updateLocaleByKey } from 'sa/actions/creators/preferences';
 import * as ACTION_TYPES from 'sa/actions/types';
 import config from '../config/environment';
 import $ from 'jquery';
@@ -96,6 +98,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
         query: {}
       }).then((response) => {
         const {
+          userLocale,
           themeType,
           dateFormat,
           timeFormat,
@@ -109,6 +112,9 @@ export default Route.extend(AuthenticatedRouteMixin, {
           'timeFormat.selected': timeFormat,
           'timezone.selected': timeZone
         });
+
+        const updateLocale = bindActionCreators(updateLocaleByKey, redux.dispatch.bind(redux));
+        updateLocale(userLocale);
 
         redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_THEME, theme: themeType });
 
