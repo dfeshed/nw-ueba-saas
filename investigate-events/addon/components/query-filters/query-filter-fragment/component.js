@@ -295,6 +295,14 @@ const QueryFragmentComponent = Component.extend({
         .prop('type', 'text')
         .prop('spellcheck', false);
     }
+    const hasFocus = this.get('guidedHasFocus');
+    if (hasFocus) {
+      input.focus();
+
+      /* helps remove focus in cases when user hard resets(clicks on Event Analysis)
+      or executes a query */
+      this.sendAction('toggleFocusFlag', false);
+    }
   },
 
   didReceiveAttrs() {

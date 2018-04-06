@@ -9,6 +9,8 @@ import {
 } from 'component-lib/utils/log-utils';
 import { connect } from 'ember-redux';
 
+/* status is being used here - https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/component-lib/addon/components/rsa-data-table/body/component.js#L57
+To avoid going inside else loop , which shows noResultsMessage for a moment, which causes flickering of results */
 const stateToComputed = (state) => ({
   status: state.investigate.eventResults.status
 });

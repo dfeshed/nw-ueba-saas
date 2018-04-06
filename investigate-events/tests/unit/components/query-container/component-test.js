@@ -55,3 +55,14 @@ test('it sets correct criteria when query is changed', function(assert) {
   assert.equal(newCriteria, 'sessionid = 1', 'Criteria modified if filters are changed');
 
 });
+
+test('it sets focus on guided when the link is clicked', function(assert) {
+  const component = this.subject({
+    queryView: 'guided',
+    toggledOnceFlag: true
+  });
+  const hasFocus = component.get('guidedHasFocus');
+
+  assert.equal(hasFocus, true, 'Expected focus on guided');
+
+});

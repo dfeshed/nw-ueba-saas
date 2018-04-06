@@ -444,10 +444,12 @@ export default {
       linkTitle: 'Guided Mode'
     },
     freeForm: {
-      linkTitle: 'Free-Form Mode'
+      linkTitle: 'Free-Form Mode',
+      placeholder: 'Free Form Query Bar'
     },
     nextGen: {
-      linkTitle: 'Next Gen Mode'
+      linkTitle: 'Next Gen Mode',
+      placeholder: 'Next Gen Query Bar'
     },
     size: {
       bytes: 'bytes',

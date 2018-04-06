@@ -43,7 +43,7 @@ module('Integration | Component | query-container', function(hooks) {
       .build();
     await render(hbs`{{query-container}}`);
     assert.equal(findAll('.query-bar-select-actions a').length, 3, 'Expected 3 query bars');
-    assert.ok(find('.rsa-investigate-query-container.guided'), 'Expected focus on Guided Query Bar');
+    assert.ok(find('.rsa-investigate-query-container.guided'), 'Expected to see Guided Query Bar');
   });
 
   test('it displays free form query bar when clicked', async function(assert) {
@@ -52,12 +52,20 @@ module('Integration | Component | query-container', function(hooks) {
       .build();
     await render(hbs`{{query-container}}`);
     assert.equal(find('.rsa-query-meta .rsa-query-fragment.edit-active input').placeholder, 'Enter a Meta Key, Operator, and Value (optional)', 'Expected a placeholder');
-    assert.ok(find('.rsa-investigate-query-container.guided'), 'Expected focus on Guided Query Bar');
+    assert.ok(find('.rsa-investigate-query-container.guided'), 'Expected to see Guided Query Bar');
+    assert.notOk(find('.rsa-query-meta .rsa-query-fragment input:focus'), 'Should not have focus the first time it renders');
 
     await click('.query-bar-select-actions .freeForm-link');
     return settled().then(() => {
-      assert.ok(find('.rsa-investigate-query-container.freeForm'), 'Expected focus on Free Form Query Bar');
+      assert.ok(find('.rsa-investigate-query-container.freeForm'), 'Expected to see Free Form Query Bar');
+      assert.ok(find('.rsa-investigate-free-form-query-bar input:focus'), 'Expected focus on free-form');
       assert.equal(find('.rsa-investigate-free-form-query-bar input').placeholder, 'Free Form Query Bar', 'Expected a placeholder');
+
+      click('.query-bar-select-actions .guided-link');
+      return settled().then(() => {
+        assert.ok(find('.rsa-investigate-query-container.guided'), 'Expected to see Guided Query Bar');
+        assert.ok(find('.rsa-query-meta .rsa-query-fragment input:focus'), 'Expected focus on guided');
+      });
     });
 
   });
@@ -68,11 +76,11 @@ module('Integration | Component | query-container', function(hooks) {
       .build();
     await render(hbs`{{query-container}}`);
     assert.equal(find('.rsa-query-meta .rsa-query-fragment.edit-active input').placeholder, 'Enter a Meta Key, Operator, and Value (optional)', 'Expected a placeholder');
-    assert.ok(find('.rsa-investigate-query-container.guided'), 'Expected focus on Guided Query Bar');
+    assert.ok(find('.rsa-investigate-query-container.guided'), 'Expected to see Guided Query Bar');
 
     await click('.query-bar-select-actions .nextGen-link');
     return settled().then(() => {
-      assert.ok(find('.rsa-investigate-query-container.nextGen'), 'Expected focus on NextGen Query Bar');
+      assert.ok(find('.rsa-investigate-query-container.nextGen'), 'Expected to see NextGen Query Bar');
       assert.equal(find('.rsa-investigate-nextGen-query-bar input').placeholder, 'Next Gen Query Bar', 'Expected a placeholder');
     });
 

@@ -7,12 +7,18 @@ const dispatchToActions = {
 };
 
 const freeForm = Component.extend({
-  classNames: 'rsa-investigate-free-form-query-bar',
+  classNames: ['rsa-investigate-free-form-query-bar'],
+
+  didRender() {
+    this._super(...arguments);
+    this.$('input').focus();
+  },
 
   actions: {
     keyDown(e) {
       this.send('dirtyQueryToggle');
       if (e.keyCode === 13) {
+        this.$('input').blur();
         this.executeQuery(this.get('freeFormText').trim());
       }
     }

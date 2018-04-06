@@ -13,9 +13,16 @@ const QueryContainer = Component.extend({
 
   tagName: 'nav',
 
+  toggledOnceFlag: false,
+
   classNameBindings: ['queryView'],
 
   queryView: GUIDED,
+
+  @computed('queryView', 'toggledOnceFlag')
+  guidedHasFocus(queryView, toggledOnceFlag) {
+    return queryView === 'guided' && toggledOnceFlag;
+  },
 
   @computed('queryView', 'freeFormText', 'filters')
   criteria(queryView, freeFormText, filters) {
@@ -24,7 +31,14 @@ const QueryContainer = Component.extend({
       return filters;
     } else if (queryView === 'freeForm') {
       this.set('filters', []);
+      this.send('toggleFocusFlag', true);
       return freeFormText;
+    }
+  },
+
+  actions: {
+    toggleFocusFlag(state) {
+      this.set('toggledOnceFlag', state);
     }
   }
 

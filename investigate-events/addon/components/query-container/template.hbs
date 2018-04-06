@@ -5,7 +5,9 @@
 <div class='query-bar-selection'>
   <div class='query-bar-options'>
     {{#if (eq queryView 'guided')}}
-      {{query-filters filters=filters executeQuery=(route-action 'executeQuery')}}
+      {{!-- guidedHasFocus - to add focus on query-filter-fragment when true --}}
+      {{!-- toggleFocusFlag - to reset the flag to false, after setting focus on same component--}}
+      {{query-filters filters=filters guidedHasFocus=guidedHasFocus toggleFocusFlag=(action 'toggleFocusFlag') executeQuery=(route-action 'executeQuery')}}
     {{else if (eq queryView 'freeForm')}}
       {{query-container/free-form freeFormText=freeFormText executeQuery=(route-action 'executeQuery')}}
     {{else if (eq queryView 'nextGen')}}

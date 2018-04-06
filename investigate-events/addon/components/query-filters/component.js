@@ -315,6 +315,11 @@ const QueryFiltersComponent = Component.extend(EKMixin, {
       this.executeQuery(filters, externalLink);
     },
 
+    toggleFocusFlag(flag) {
+      this.toggleFocusFlag(flag);
+    },
+
+
     insertFilter(filter, filterList) {
       const index = filterList.indexOf(filter);
       insertEmptyFilter(this.get('filters'), index);
