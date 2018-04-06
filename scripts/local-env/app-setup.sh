@@ -21,8 +21,12 @@ function prepareApp {
   success "$1 is ready to go!"
 }
 
+# For MAC users source in nvm. For windows users it is a no-op as nvm-windows is already available in the path
+if [ "$(uname)" == "Darwin" ]
+then
 # source in nvm so it can be used
 . ~/.nvm/nvm.sh
+fi
 
 CWD=$(pwd)
 scriptDir="$(dirname $0)"
