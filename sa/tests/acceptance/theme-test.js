@@ -1,11 +1,10 @@
-import { Promise } from 'rsvp';
-import { next } from '@ember/runloop';
 import { test, module } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupLoginTest, login } from '../helpers/setup-login';
 import { localStorageClear } from '../helpers/wait-for';
 import { waitForSockets } from '../helpers/wait-for-sockets';
 import { waitFor } from 'ember-wait-for-test-helper/wait-for';
+import { waitForRedux } from '../helpers/wait-for-redux';
 import { visit, currentURL, settled } from '@ember/test-helpers';
 
 module('Acceptance | theme', function(hooks) {
@@ -13,14 +12,12 @@ module('Acceptance | theme', function(hooks) {
   setupLoginTest(hooks);
 
   hooks.beforeEach(function() {
-    return new Promise((resolve) => {
-      localStorage.setItem('reduxPersist:global', JSON.stringify({
-        preferences: {
-          theme: 'LIGHT'
-        }
-      }));
-      next(resolve);
-    });
+    localStorage.setItem('reduxPersist:global', JSON.stringify({
+      preferences: {
+        theme: 'LIGHT'
+      }
+    }));
+    return waitForRedux(this, 'global.preferences.theme', 'LIGHT');
   });
 
   hooks.afterEach(function() {
@@ -55,6 +52,6 @@ module('Acceptance | theme', function(hooks) {
     assert.ok(document.querySelector('body').classList.contains('dark-theme'));
     assert.notOk(document.querySelector('body').classList.contains('light-theme'));
 
-    done();
+    return settled().then(() => done());
   });
 });

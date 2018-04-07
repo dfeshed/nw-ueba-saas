@@ -1,10 +1,9 @@
-import { Promise } from 'rsvp';
-import { next } from '@ember/runloop';
 import { get } from '@ember/object';
 import { test, module } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { localStorageClear } from '../helpers/wait-for';
 import { setupLoginTest, login } from '../helpers/setup-login';
+import { waitForRedux } from '../helpers/wait-for-redux';
 import { waitForSockets } from '../helpers/wait-for-sockets';
 import { visit, currentURL, settled } from '@ember/test-helpers';
 
@@ -12,16 +11,13 @@ const english = { id: 'en_US', label: 'english' };
 const spanish = { id: 'es', label: 'spanish', fileName: 'spanish_es.js' };
 const german = { id: 'de-DE', label: 'german', fileName: 'german_de-DE.js' };
 
-const setupLocalStorage = async (locale, locales) => {
-  return new Promise((resolve) => {
-    localStorage.setItem('reduxPersist:global', JSON.stringify({
-      preferences: {
-        locale,
-        locales
-      }
-    }));
-    next(resolve);
-  });
+const setupLocalStorage = (locale, locales) => {
+  localStorage.setItem('reduxPersist:global', JSON.stringify({
+    preferences: {
+      locale,
+      locales
+    }
+  }));
 };
 
 module('Acceptance | locales', function(hooks) {
@@ -35,8 +31,8 @@ module('Acceptance | locales', function(hooks) {
   test('locales are fetched and persisted before login', async function(assert) {
     assert.expect(6);
 
-    const english = { id: 'en_US', label: 'english' };
-    await setupLocalStorage(english, [english]);
+    setupLocalStorage(english, [english]);
+    await waitForRedux(this, 'global.preferences.locale.id', english.id);
 
     const done = waitForSockets();
 
@@ -63,7 +59,8 @@ module('Acceptance | locales', function(hooks) {
   test('users locale preference will update i18n locale after successful login', async function(assert) {
     assert.expect(6);
 
-    await setupLocalStorage(spanish, [english, spanish]);
+    setupLocalStorage(spanish, [english, spanish]);
+    await waitForRedux(this, 'global.preferences.locale.id', spanish.id);
 
     const done = waitForSockets();
 
