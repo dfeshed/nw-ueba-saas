@@ -1,6 +1,9 @@
+import { Promise } from 'rsvp';
+import { next } from '@ember/runloop';
 import { test, module } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupLoginTest, login } from '../helpers/setup-login';
+import { localStorageClear } from '../helpers/wait-for';
 import { waitForSockets } from '../helpers/wait-for-sockets';
 import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 import { visit, currentURL, settled } from '@ember/test-helpers';
@@ -10,15 +13,18 @@ module('Acceptance | theme', function(hooks) {
   setupLoginTest(hooks);
 
   hooks.beforeEach(function() {
-    localStorage.setItem('reduxPersist:global', JSON.stringify({
-      preferences: {
-        theme: 'LIGHT'
-      }
-    }));
+    return new Promise((resolve) => {
+      localStorage.setItem('reduxPersist:global', JSON.stringify({
+        preferences: {
+          theme: 'LIGHT'
+        }
+      }));
+      next(resolve);
+    });
   });
 
   hooks.afterEach(function() {
-    localStorage.removeItem('reduxPersist:global');
+    return localStorageClear();
   });
 
   test('theme will rehydrate from local storage on boot', async function(assert) {

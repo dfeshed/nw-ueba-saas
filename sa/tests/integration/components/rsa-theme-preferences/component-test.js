@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
+import { localStorageClear } from 'sa/tests/helpers/wait-for';
 import hbs from 'htmlbars-inline-precompile';
 import { patchFlash } from 'sa/tests/helpers/patch-flash';
-import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, click, find, findAll } from '@ember/test-helpers';
 import { patchReducer } from 'sa/tests/helpers/vnext-patch';
@@ -15,7 +15,10 @@ module('Integration | Component | rsa-theme-preferences', function(hooks) {
   hooks.beforeEach(function() {
     const initState = { global: { preferences: { theme: 'LIGHT' } } };
     patchReducer(this, initState);
-    initialize(this.owner);
+  });
+
+  hooks.afterEach(function() {
+    return localStorageClear();
   });
 
   test('includes group label with correct text value', async function(assert) {

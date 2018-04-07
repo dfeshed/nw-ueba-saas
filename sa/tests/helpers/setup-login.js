@@ -34,7 +34,6 @@ export function setupLoginTest(hooks) {
 
   hooks.afterEach(function() {
     teardownSockets.apply(this);
-    localStorage.removeItem('rsa::netWitness::eulaAccepted');
   });
 }
 

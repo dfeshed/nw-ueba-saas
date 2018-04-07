@@ -1,6 +1,7 @@
 import { Promise } from 'rsvp';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
+import { localStorageClear } from 'sa/tests/helpers/wait-for';
 import { patchFetch } from 'sa/tests/helpers/patch-fetch';
 
 module('Unit | Route | application', function(hooks) {
@@ -8,6 +9,10 @@ module('Unit | Route | application', function(hooks) {
 
   hooks.beforeEach(function() {
     this.owner.inject('route', 'request', 'service:request');
+  });
+
+  hooks.afterEach(function() {
+    return localStorageClear();
   });
 
   test('should fetch locales and dispatch with response data', async function(assert) {
@@ -20,12 +25,12 @@ module('Unit | Route | application', function(hooks) {
     const promise = route.getLocales();
 
     let localeState = redux.getState().global.preferences.locales;
-    assert.deepEqual(localeState, [{ id: 'en-us', label: 'english' }]);
+    assert.deepEqual(localeState, [{ id: 'en_US', label: 'english' }]);
 
     await promise;
 
     localeState = redux.getState().global.preferences.locales;
-    assert.deepEqual(localeState, [{ id: 'en-us', label: 'english' }, { id: 'de-DE', label: 'german', fileName: 'german_de-DE.js' }, { id: 'es', label: 'spanish', fileName: 'spanish_es.js' }]);
+    assert.deepEqual(localeState, [{ id: 'en_US', label: 'english' }, { id: 'de-DE', label: 'german', fileName: 'german_de-DE.js' }, { id: 'es', label: 'spanish', fileName: 'spanish_es.js' }]);
   });
 
   test('when error thrown the default locales are still available', async function(assert) {
@@ -44,11 +49,11 @@ module('Unit | Route | application', function(hooks) {
     const promise = route.getLocales();
 
     let localeState = redux.getState().global.preferences.locales;
-    assert.deepEqual(localeState, [{ id: 'en-us', label: 'english' }]);
+    assert.deepEqual(localeState, [{ id: 'en_US', label: 'english' }]);
 
     return promise.catch(() => {
       localeState = redux.getState().global.preferences.locales;
-      assert.deepEqual(localeState, [{ id: 'en-us', label: 'english' }]);
+      assert.deepEqual(localeState, [{ id: 'en_US', label: 'english' }]);
     });
   });
 });

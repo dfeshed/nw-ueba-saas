@@ -5,6 +5,7 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { t } from 'ember-i18n/test-support';
 import { settled } from '@ember/test-helpers';
+import { localStorageClear } from 'sa/tests/helpers/wait-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import * as ACTION_TYPES from 'sa/actions/types';
 import { patchFetch } from 'sa/tests/helpers/patch-fetch';
@@ -20,7 +21,7 @@ module('Unit | Controller | application', function(hooks) {
   });
 
   hooks.afterEach(function() {
-    localStorage.removeItem('reduxPersist:global');
+    return localStorageClear();
   });
 
   test('generates prod theme url when link with fingerprint found', async function(assert) {
@@ -138,10 +139,10 @@ module('Unit | Controller | application', function(hooks) {
     redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'es', label: 'spanish', fileName: 'spanish_es.js' } });
     assert.equal(updatesRun, 1);
 
-    redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'en-us', label: 'english' } });
+    redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'en_US', label: 'english' } });
     assert.equal(updatesRun, 2);
 
-    redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'en-us', label: 'english' } });
+    redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'en_US', label: 'english' } });
     assert.equal(updatesRun, 2);
     controller._addDynamicLocale = original;
   });
@@ -210,11 +211,11 @@ module('Unit | Controller | application', function(hooks) {
       assert.equal(t('title').toString(), 'spanish_x');
 
       patchFetch((url) => fileFetch(url));
-      redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'en-us', label: 'english' } });
+      redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'en_US', label: 'english' } });
 
       return settled().then(async () => {
         assert.equal(fetchCount, 1);
-        assert.equal(get(i18n, 'locale'), 'en-us');
+        assert.equal(get(i18n, 'locale'), 'en_US');
         assert.equal(dynamicScripts().length, 1);
         assert.equal(t('title').toString(), 'Missing translation: title');
 

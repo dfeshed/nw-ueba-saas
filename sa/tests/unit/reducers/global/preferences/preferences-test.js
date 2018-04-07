@@ -10,8 +10,8 @@ module('Unit | Reducers | Global | Preferences', function() {
 
     assert.deepEqual(result, {
       theme: 'DARK',
-      locale: { id: 'en-us', label: 'english' },
-      locales: [{ id: 'en-us', label: 'english' }]
+      locale: { id: 'en_US', label: 'english' },
+      locales: [{ id: 'en_US', label: 'english' }]
     });
   });
 
@@ -20,8 +20,8 @@ module('Unit | Reducers | Global | Preferences', function() {
 
     assert.deepEqual(result, {
       theme: 'DARK',
-      locale: { id: 'en-us', label: 'english' },
-      locales: [{ id: 'en-us', label: 'english' }]
+      locale: { id: 'en_US', label: 'english' },
+      locales: [{ id: 'en_US', label: 'english' }]
     });
 
     result = reducer(result, {
@@ -31,8 +31,8 @@ module('Unit | Reducers | Global | Preferences', function() {
 
     assert.deepEqual(result, {
       theme: 'DARK',
-      locale: { id: 'en-us', label: 'english' },
-      locales: [{ id: 'en-us', label: 'english' }]
+      locale: { id: 'en_US', label: 'english' },
+      locales: [{ id: 'en_US', label: 'english' }]
     });
 
     result = reducer(result, {
@@ -42,8 +42,8 @@ module('Unit | Reducers | Global | Preferences', function() {
 
     assert.deepEqual(result, {
       theme: 'DARK',
-      locale: { id: 'en-us', label: 'english' },
-      locales: [{ id: 'en-us', label: 'english' }]
+      locale: { id: 'en_US', label: 'english' },
+      locales: [{ id: 'en_US', label: 'english' }]
     });
 
     result = reducer(result, {
@@ -53,8 +53,8 @@ module('Unit | Reducers | Global | Preferences', function() {
 
     assert.deepEqual(result, {
       theme: 'DARK',
-      locale: { id: 'en-us', label: 'english' },
-      locales: [{ id: 'en-us', label: 'english' }]
+      locale: { id: 'en_US', label: 'english' },
+      locales: [{ id: 'en_US', label: 'english' }]
     });
 
     result = reducer(result, {
@@ -64,8 +64,8 @@ module('Unit | Reducers | Global | Preferences', function() {
 
     assert.deepEqual(result, {
       theme: 'DARK',
-      locale: { id: 'en-us', label: 'english' },
-      locales: [{ id: 'en-us', label: 'english' }]
+      locale: { id: 'en_US', label: 'english' },
+      locales: [{ id: 'en_US', label: 'english' }]
     });
   });
 
@@ -74,8 +74,8 @@ module('Unit | Reducers | Global | Preferences', function() {
 
     assert.deepEqual(result, {
       theme: 'DARK',
-      locale: { id: 'en-us', label: 'english' },
-      locales: [{ id: 'en-us', label: 'english' }]
+      locale: { id: 'en_US', label: 'english' },
+      locales: [{ id: 'en_US', label: 'english' }]
     });
 
     result = reducer(result, {
@@ -88,9 +88,9 @@ module('Unit | Reducers | Global | Preferences', function() {
 
     assert.deepEqual(result, {
       theme: 'DARK',
-      locale: { id: 'en-us', label: 'english' },
+      locale: { id: 'en_US', label: 'english' },
       locales: [
-        { id: 'en-us', label: 'english' },
+        { id: 'en_US', label: 'english' },
         { id: 'es', label: 'spanish', fileName: 'spanish_es.js' },
         { id: 'de-DE', label: 'german', fileName: 'german_de-DE.js' }
       ]
@@ -102,24 +102,24 @@ module('Unit | Reducers | Global | Preferences', function() {
 
     assert.deepEqual(result, {
       theme: 'DARK',
-      locale: { id: 'en-us', label: 'english' },
-      locales: [{ id: 'en-us', label: 'english' }]
+      locale: { id: 'en_US', label: 'english' },
+      locales: [{ id: 'en_US', label: 'english' }]
     });
 
     result = reducer(result, {
       type: ACTION_TYPES.ADD_PREFERENCES_LOCALES,
       locales: [
         { name: 'spanish_es.js', type: 'file', size: 288 },
-        { name: 'english_en-us.js', type: 'file', size: 288 },
+        { name: 'english_en_US.js', type: 'file', size: 288 },
         { name: 'german_de-DE.js', type: 'file', size: 289 }
       ]
     });
 
     assert.deepEqual(result, {
       theme: 'DARK',
-      locale: { id: 'en-us', label: 'english' },
+      locale: { id: 'en_US', label: 'english' },
       locales: [
-        { id: 'en-us', label: 'english' },
+        { id: 'en_US', label: 'english' },
         { id: 'es', label: 'spanish', fileName: 'spanish_es.js' },
         { id: 'de-DE', label: 'german', fileName: 'german_de-DE.js' }
       ]
@@ -131,8 +131,8 @@ module('Unit | Reducers | Global | Preferences', function() {
 
     assert.deepEqual(result, {
       theme: 'DARK',
-      locale: { id: 'en-us', label: 'english' },
-      locales: [{ id: 'en-us', label: 'english' }]
+      locale: { id: 'en_US', label: 'english' },
+      locales: [{ id: 'en_US', label: 'english' }]
     });
 
     result = reducer(result, {
@@ -142,8 +142,8 @@ module('Unit | Reducers | Global | Preferences', function() {
 
     assert.deepEqual(result, {
       theme: 'DARK',
-      locale: { id: 'en-us', label: 'english' },
-      locales: [{ id: 'en-us', label: 'english' }]
+      locale: { id: 'en_US', label: 'english' },
+      locales: [{ id: 'en_US', label: 'english' }]
     });
 
     result = reducer(result, {
@@ -153,8 +153,8 @@ module('Unit | Reducers | Global | Preferences', function() {
 
     assert.deepEqual(result, {
       theme: 'DARK',
-      locale: { id: 'en-us', label: 'english' },
-      locales: [{ id: 'en-us', label: 'english' }]
+      locale: { id: 'en_US', label: 'english' },
+      locales: [{ id: 'en_US', label: 'english' }]
     });
 
     result = reducer(result, {
@@ -164,8 +164,8 @@ module('Unit | Reducers | Global | Preferences', function() {
 
     assert.deepEqual(result, {
       theme: 'DARK',
-      locale: { id: 'en-us', label: 'english' },
-      locales: [{ id: 'en-us', label: 'english' }]
+      locale: { id: 'en_US', label: 'english' },
+      locales: [{ id: 'en_US', label: 'english' }]
     });
 
     result = reducer(result, {
@@ -174,8 +174,8 @@ module('Unit | Reducers | Global | Preferences', function() {
 
     assert.deepEqual(result, {
       theme: 'DARK',
-      locale: { id: 'en-us', label: 'english' },
-      locales: [{ id: 'en-us', label: 'english' }]
+      locale: { id: 'en_US', label: 'english' },
+      locales: [{ id: 'en_US', label: 'english' }]
     });
 
     result = reducer(result, {
@@ -188,9 +188,9 @@ module('Unit | Reducers | Global | Preferences', function() {
 
     assert.deepEqual(result, {
       theme: 'DARK',
-      locale: { id: 'en-us', label: 'english' },
+      locale: { id: 'en_US', label: 'english' },
       locales: [
-        { id: 'en-us', label: 'english' },
+        { id: 'en_US', label: 'english' },
         { id: 'de-DE', label: 'german', fileName: 'german_de-DE.js' }
       ]
     });
@@ -198,8 +198,8 @@ module('Unit | Reducers | Global | Preferences', function() {
 
   test('UPDATE_PREFERENCES_LOCALE will only alter locale when the action.locale is legit', async function(assert) {
     let result = Immutable.from({
-      locale: { id: 'en-us', label: 'english' },
-      locales: [{ id: 'en-us', label: 'english' }, { id: 'de-DE', label: 'german' }]
+      locale: { id: 'en_US', label: 'english' },
+      locales: [{ id: 'en_US', label: 'english' }, { id: 'de-DE', label: 'german' }]
     });
 
     result = reducer(result, {
@@ -209,7 +209,7 @@ module('Unit | Reducers | Global | Preferences', function() {
 
     assert.deepEqual(result, {
       locale: { id: 'de-DE', label: 'german' },
-      locales: [{ id: 'en-us', label: 'english' }, { id: 'de-DE', label: 'german' }]
+      locales: [{ id: 'en_US', label: 'english' }, { id: 'de-DE', label: 'german' }]
     });
 
     result = reducer(result, {
@@ -219,7 +219,7 @@ module('Unit | Reducers | Global | Preferences', function() {
 
     assert.deepEqual(result, {
       locale: { id: 'de-DE', label: 'german' },
-      locales: [{ id: 'en-us', label: 'english' }, { id: 'de-DE', label: 'german' }]
+      locales: [{ id: 'en_US', label: 'english' }, { id: 'de-DE', label: 'german' }]
     });
 
     result = reducer(result, {
@@ -229,7 +229,7 @@ module('Unit | Reducers | Global | Preferences', function() {
 
     assert.deepEqual(result, {
       locale: { id: 'de-DE', label: 'german' },
-      locales: [{ id: 'en-us', label: 'english' }, { id: 'de-DE', label: 'german' }]
+      locales: [{ id: 'en_US', label: 'english' }, { id: 'de-DE', label: 'german' }]
     });
 
     result = reducer(result, {
@@ -239,14 +239,14 @@ module('Unit | Reducers | Global | Preferences', function() {
 
     assert.deepEqual(result, {
       locale: { id: 'de-DE', label: 'german' },
-      locales: [{ id: 'en-us', label: 'english' }, { id: 'de-DE', label: 'german' }]
+      locales: [{ id: 'en_US', label: 'english' }, { id: 'de-DE', label: 'german' }]
     });
   });
 
   test('REHYDRATE will only alter locale and theme when the JSON data structure is legit', async function(assert) {
     const previous = Immutable.from({
       theme: 'DARK',
-      locale: { id: 'en-us', label: 'english' }
+      locale: { id: 'en_US', label: 'english' }
     });
 
     let result = reducer(previous, {
@@ -256,7 +256,7 @@ module('Unit | Reducers | Global | Preferences', function() {
 
     assert.deepEqual(result, {
       theme: 'DARK',
-      locale: { id: 'en-us', label: 'english' }
+      locale: { id: 'en_US', label: 'english' }
     });
 
     result = reducer(previous, {
@@ -268,7 +268,7 @@ module('Unit | Reducers | Global | Preferences', function() {
 
     assert.deepEqual(result, {
       theme: 'DARK',
-      locale: { id: 'en-us', label: 'english' }
+      locale: { id: 'en_US', label: 'english' }
     });
 
     result = reducer(previous, {
@@ -282,7 +282,7 @@ module('Unit | Reducers | Global | Preferences', function() {
 
     assert.deepEqual(result, {
       theme: 'DARK',
-      locale: { id: 'en-us', label: 'english' }
+      locale: { id: 'en_US', label: 'english' }
     });
 
     result = reducer(previous, {
@@ -299,7 +299,7 @@ module('Unit | Reducers | Global | Preferences', function() {
 
     assert.deepEqual(result, {
       theme: 'DARK',
-      locale: { id: 'en-us', label: 'english' }
+      locale: { id: 'en_US', label: 'english' }
     });
 
     result = reducer(previous, {
@@ -397,7 +397,7 @@ module('Unit | Reducers | Global | Preferences', function() {
 
     assert.deepEqual(result, {
       theme: 'LIGHT',
-      locale: { id: 'en-us', label: 'english' }
+      locale: { id: 'en_US', label: 'english' }
     });
   });
 });

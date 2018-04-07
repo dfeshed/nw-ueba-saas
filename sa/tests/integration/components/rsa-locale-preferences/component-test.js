@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { patchFlash } from 'sa/tests/helpers/patch-flash';
-import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import { localStorageClear } from 'sa/tests/helpers/wait-for';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, find, findAll, settled } from '@ember/test-helpers';
 import { patchReducer } from 'sa/tests/helpers/vnext-patch';
@@ -21,13 +21,12 @@ module('Integration | Component | rsa-locale-preferences', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function() {
-    const initState = { global: { preferences: { locale: { id: 'en-us', label: 'english' }, locales: [{ id: 'en-us', label: 'english' }, { id: 'de-DE', label: 'german' }] } } };
+    const initState = { global: { preferences: { locale: { id: 'en_US', label: 'english' }, locales: [{ id: 'en_US', label: 'english' }, { id: 'de-DE', label: 'german' }] } } };
     patchReducer(this, initState);
-    initialize(this.owner);
   });
 
   hooks.afterEach(function() {
-    localStorage.removeItem('reduxPersist:global');
+    return localStorageClear();
   });
 
   test('includes 1 label with correct classes', async function(assert) {

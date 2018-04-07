@@ -8,7 +8,7 @@ module('Unit | Selectors | Global | Preferences', function() {
       global: {
         preferences: {
           locale: {
-            id: 'en-us',
+            id: 'en_US',
             label: 'english'
           }
         }
@@ -16,7 +16,7 @@ module('Unit | Selectors | Global | Preferences', function() {
     });
 
     assert.deepEqual(result, {
-      id: 'en-us',
+      id: 'en_US',
       label: 'english',
       displayLabel: 'English'
     });
@@ -28,7 +28,7 @@ module('Unit | Selectors | Global | Preferences', function() {
         preferences: {
           locales: [
             {
-              id: 'en-us',
+              id: 'en_US',
               label: 'english'
             },
             {
@@ -43,7 +43,7 @@ module('Unit | Selectors | Global | Preferences', function() {
 
     assert.deepEqual(result, [
       {
-        id: 'en-us',
+        id: 'en_US',
         label: 'english',
         displayLabel: 'English'
       },
@@ -61,7 +61,7 @@ module('Unit | Selectors | Global | Preferences', function() {
       global: {
         preferences: {
           locale: {
-            id: 'en-us',
+            id: 'en_US',
             label: ''
           }
         }
@@ -69,7 +69,7 @@ module('Unit | Selectors | Global | Preferences', function() {
     });
 
     assert.deepEqual(result, {
-      id: 'en-us',
+      id: 'en_US',
       label: '',
       displayLabel: ''
     });
@@ -78,7 +78,7 @@ module('Unit | Selectors | Global | Preferences', function() {
       global: {
         preferences: {
           locale: {
-            id: 'en-us',
+            id: 'en_US',
             label: null
           }
         }
@@ -86,7 +86,7 @@ module('Unit | Selectors | Global | Preferences', function() {
     });
 
     assert.deepEqual(result, {
-      id: 'en-us',
+      id: 'en_US',
       label: null,
       displayLabel: null
     });
@@ -95,14 +95,14 @@ module('Unit | Selectors | Global | Preferences', function() {
       global: {
         preferences: {
           locale: {
-            id: 'en-us'
+            id: 'en_US'
           }
         }
       }
     });
 
     assert.deepEqual(result, {
-      id: 'en-us',
+      id: 'en_US',
       displayLabel: undefined
     });
 
@@ -110,7 +110,7 @@ module('Unit | Selectors | Global | Preferences', function() {
       global: {
         preferences: {
           locale: {
-            id: 'en-us',
+            id: 'en_US',
             label: 'x'
           }
         }
@@ -118,7 +118,7 @@ module('Unit | Selectors | Global | Preferences', function() {
     });
 
     assert.deepEqual(result, {
-      id: 'en-us',
+      id: 'en_US',
       label: 'x',
       displayLabel: 'X'
     });

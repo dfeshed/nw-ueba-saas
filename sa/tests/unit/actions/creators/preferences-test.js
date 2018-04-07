@@ -1,6 +1,7 @@
 import { test, module } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { bindActionCreators } from 'redux';
+import { localStorageClear } from 'sa/tests/helpers/wait-for';
 import { patchFlash } from 'sa/tests/helpers/patch-flash';
 import { patchReducer } from 'sa/tests/helpers/vnext-patch';
 import { updateLocaleByKey } from 'sa/actions/creators/preferences';
@@ -21,14 +22,14 @@ module('Unit | Actions | Creators | Preferences', function(hooks) {
   });
 
   hooks.afterEach(function() {
-    localStorage.removeItem('reduxPersist:global');
+    return localStorageClear();
   });
 
   test('updateLocaleByKey should set locale when userLocale found in locales', async function(assert) {
     setState({
-      locale: { id: 'en-us', label: 'english' },
+      locale: { id: 'en_US', label: 'english' },
       locales: [
-        { id: 'en-us', label: 'english' },
+        { id: 'en_US', label: 'english' },
         { id: 'es', label: 'spanish', fileName: 'spanish_es.js' },
         { id: 'de-DE', label: 'german', fileName: 'german_de-DE.js' }
       ]
@@ -37,7 +38,7 @@ module('Unit | Actions | Creators | Preferences', function(hooks) {
     const redux = this.owner.lookup('service:redux');
 
     let locale = getLocale(redux.getState());
-    assert.equal(locale.id, 'en-us');
+    assert.equal(locale.id, 'en_US');
 
     bindActionCreators(updateLocaleByKey, redux.dispatch.bind(redux))('es');
 
@@ -49,16 +50,16 @@ module('Unit | Actions | Creators | Preferences', function(hooks) {
     assert.expect(4);
 
     setState({
-      locale: { id: 'en-us', label: 'english' },
+      locale: { id: 'en_US', label: 'english' },
       locales: [
-        { id: 'en-us', label: 'english' }
+        { id: 'en_US', label: 'english' }
       ]
     });
 
     const redux = this.owner.lookup('service:redux');
 
     let locale = getLocale(redux.getState());
-    assert.equal(locale.id, 'en-us');
+    assert.equal(locale.id, 'en_US');
 
     patchFlash((flash) => {
       const translation = this.owner.lookup('service:i18n');
@@ -70,16 +71,16 @@ module('Unit | Actions | Creators | Preferences', function(hooks) {
     bindActionCreators(updateLocaleByKey, redux.dispatch.bind(redux))('es');
 
     locale = getLocale(redux.getState());
-    assert.equal(locale.id, 'en-us');
+    assert.equal(locale.id, 'en_US');
   });
 
   test('updateLocaleByKey will display flash error when userLocale found > 1x in locales', async function(assert) {
     assert.expect(4);
 
     setState({
-      locale: { id: 'en-us', label: 'english' },
+      locale: { id: 'en_US', label: 'english' },
       locales: [
-        { id: 'en-us', label: 'english' },
+        { id: 'en_US', label: 'english' },
         { id: 'es', label: 'wat1' },
         { id: 'es', label: 'wat2' }
       ]
@@ -88,7 +89,7 @@ module('Unit | Actions | Creators | Preferences', function(hooks) {
     const redux = this.owner.lookup('service:redux');
 
     let locale = getLocale(redux.getState());
-    assert.equal(locale.id, 'en-us');
+    assert.equal(locale.id, 'en_US');
 
     patchFlash((flash) => {
       const translation = this.owner.lookup('service:i18n');
@@ -100,7 +101,7 @@ module('Unit | Actions | Creators | Preferences', function(hooks) {
     bindActionCreators(updateLocaleByKey, redux.dispatch.bind(redux))('es');
 
     locale = getLocale(redux.getState());
-    assert.equal(locale.id, 'en-us');
+    assert.equal(locale.id, 'en_US');
   });
 
 });

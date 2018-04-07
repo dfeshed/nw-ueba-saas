@@ -1,9 +1,9 @@
 import hbs from 'htmlbars-inline-precompile';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
+import { localStorageClear } from 'sa/tests/helpers/wait-for';
 import { render, click, findAll, settled } from '@ember/test-helpers';
 import Service from '@ember/service';
-import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 const accessControl = Service.extend({
   hasReconAccess: true
@@ -15,7 +15,10 @@ module('Integration | Component | recon investigate wrapper', function(hooks) {
   hooks.beforeEach(function() {
     this.owner.register('service:access-control', accessControl);
     this.owner.inject('component', 'i18n', 'service:i18n');
-    initialize(this.owner);
+  });
+
+  hooks.afterEach(function() {
+    return localStorageClear();
   });
 
   test('recon container will hide header data when toggle header clicked', async function(assert) {
