@@ -1,6 +1,7 @@
 import { Promise } from 'rsvp';
 import { next } from '@ember/runloop';
 import { registerWaiter } from '@ember/test';
+import { getContext } from '@ember/test-helpers';
 
 const getDescendantProp = function(obj, desc) {
   const arr = desc.split('.');
@@ -10,11 +11,12 @@ const getDescendantProp = function(obj, desc) {
   return obj;
 };
 
-export async function waitForRedux(context, key, value) {
+export async function waitForRedux(key, value) {
   return new Promise(async (resolve) => {
     let counter = 1;
     registerWaiter(() => counter === 0);
-    const redux = context.owner.lookup('service:redux');
+    const { owner } = getContext();
+    const redux = owner.lookup('service:redux');
     const unsubscribe = redux.store.subscribe(() => {
       const currentValue = getDescendantProp(redux.store.getState(), key);
       if (currentValue === value) {

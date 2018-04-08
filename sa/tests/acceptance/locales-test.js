@@ -32,7 +32,7 @@ module('Acceptance | locales', function(hooks) {
     assert.expect(6);
 
     setupLocalStorage(english, [english]);
-    await waitForRedux(this, 'global.preferences.locale.id', english.id);
+    await waitForRedux('global.preferences.locale.id', english.id);
 
     const done = waitForSockets();
 
@@ -60,7 +60,7 @@ module('Acceptance | locales', function(hooks) {
     assert.expect(6);
 
     setupLocalStorage(spanish, [english, spanish]);
-    await waitForRedux(this, 'global.preferences.locale.id', spanish.id);
+    await waitForRedux('global.preferences.locale.id', spanish.id);
 
     const done = waitForSockets();
 

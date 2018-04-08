@@ -26,7 +26,7 @@ const patchTokenRefresh = () => {
 export function setupLoginTest(hooks) {
   hooks.beforeEach(function() {
     patchTokenRefresh();
-    invalidateSession(this.owner);
+    invalidateSession();
     localStorage.removeItem('rsa-oauth2-jwt-access-token');
     localStorage.removeItem('rsa-post-auth-redirect');
     localStorage.setItem('rsa::netWitness::eulaAccepted', true);

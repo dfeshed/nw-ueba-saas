@@ -17,7 +17,7 @@ module('Acceptance | theme', function(hooks) {
         theme: 'LIGHT'
       }
     }));
-    return waitForRedux(this, 'global.preferences.theme', 'LIGHT');
+    return waitForRedux('global.preferences.theme', 'LIGHT');
   });
 
   hooks.afterEach(function() {
