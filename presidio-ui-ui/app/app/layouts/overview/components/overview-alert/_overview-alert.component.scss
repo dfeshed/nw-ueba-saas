@@ -9,7 +9,7 @@ overview-alert {
     box-sizing: border-box;
 
     position: relative;
-    background-color: #eeeeee;
+    background-color: var(--main-widgets-background-color);
     transition: background-color 0.2s ease-in-out;
     cursor: pointer;
 

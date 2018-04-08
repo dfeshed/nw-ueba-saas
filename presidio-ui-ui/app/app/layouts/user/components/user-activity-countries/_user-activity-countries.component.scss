@@ -9,7 +9,7 @@ user-activity-countries {
     flex-flow: column nowrap;
 
     .flex-column {
-        background-color: #eeeeee;
+        background-color: var(--main-widgets-background-color);
         display: flex;
         flex-flow: column nowrap;
     }

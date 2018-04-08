@@ -166,7 +166,7 @@
             margin-left:10px;
         }
         .k-checkbox:checked+label {
-            background-color: #eeeeee;
+            background-color: var(--main-widgets-background-color);
             color: #004f8f;
         }
 

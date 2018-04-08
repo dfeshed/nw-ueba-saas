@@ -80,7 +80,7 @@
         overflow-x: hidden;
         .k-widget{
             border-top-color: #75c5ec;
-            background-color: #eeeeee;
+            background-color: var(--main-widgets-background-color);
         }
 
         .loader-image{

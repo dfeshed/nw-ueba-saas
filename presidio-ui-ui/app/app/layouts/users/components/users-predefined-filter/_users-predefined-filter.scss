@@ -13,9 +13,9 @@
         fill: #FFFFFF;
 
         .filter-name{
-            color: #eeeeee;
+            color: var(--main-widgets-background-color);
             .items-count{
-                color: #eeeeee;
+                color: var(--main-widgets-background-color);
             }
         }
     }

@@ -1,10 +1,10 @@
 .fs-table-scrollable{
     .k-virtual-scrollable-wrap {
         .k-alt {
-            background-color: #eeeeee;
+            background-color: var(--main-widgets-background-color);
         }
         tr {
-            background-color: #eeeeee;
+            background-color: var(--main-widgets-background-color);
         }
     }
 }

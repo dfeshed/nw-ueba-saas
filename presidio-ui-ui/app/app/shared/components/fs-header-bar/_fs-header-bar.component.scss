@@ -149,7 +149,7 @@
 
     .fs-header-drop-down {
         &.k-group.k-menu-group {
-            background-color: #eeeeee;
+            background-color: var(--main-widgets-background-color);
         }
 
         .k-link {

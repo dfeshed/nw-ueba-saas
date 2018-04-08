@@ -4,7 +4,7 @@ fs-report-header, fs-table-header, .fs-report-header {
     height: 80px;
     box-sizing: border-box;
 
-    background-color: #eeeeee;
+    background-color: var(--main-widgets-background-color);
 
     font-family: 'Open Sans', sans-serif;
     font-size: 16px;

@@ -13,14 +13,13 @@ $alertsFilterLabelBottomMargin: 11px;
 //$fsMsValueWidth: 100%;
 $alertsFilterTitleColor: #003f71;
 $alertsFilterFilterIconColor: #013f71;
-$clrAlertsFilterDarkGrey: #e5e5e5;
-$cltAlertsFilterBUColor: #fff;
+
 $clrAlertsFilterLabel: #004f8f;
 
 .filters-box {
     z-index: 1;
     overflow: visible !important;
-    background-color: $cltAlertsFilterBUColor;
+    background-color: var(--main-widgets-background-color);
     position: relative;
 
     &--container {
@@ -33,10 +32,10 @@ $clrAlertsFilterLabel: #004f8f;
         &--title {
             height: #{$alertsFiltersTitleHeight - ($alertsFilterCommonPadding * 2)};
             line-height: #{$alertsFiltersTitleHeight - ($alertsFilterCommonPadding * 2)};
-            background-color: $clrAlertsFilterDarkGrey;
+            background-color: var(--main-widgets-background-color);
 
             font-family: 'Open Sans', sans-serif;
-            color: $alertsFilterTitleColor;
+            color: var(--main-widgets-titles-text-color);
             font-size: 14px;
             font-weight: 400;
 
@@ -45,7 +44,7 @@ $clrAlertsFilterLabel: #004f8f;
             .filter-icon {
                 width: $alertsFilterFilterIconSize;
                 height: $alertsFilterFilterIconSize;
-                fill: $alertsFilterFilterIconColor;
+                fill: var(--main-widgets-titles-icon-fill);
                 display: inline;
             }
 

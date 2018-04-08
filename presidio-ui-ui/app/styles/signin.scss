@@ -70,7 +70,7 @@ body, html {
 
         form {
             width: 490px;
-            background-color: #eeeeee;
+            background-color: var(--main-widgets-background-color);
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
 
             display: flex;

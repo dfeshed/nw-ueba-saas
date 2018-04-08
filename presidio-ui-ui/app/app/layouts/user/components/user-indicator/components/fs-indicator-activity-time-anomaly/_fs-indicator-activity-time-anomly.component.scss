@@ -119,7 +119,7 @@ fs-indicator-activity-time-anomaly {
                 content: attr(tt);
                 position: absolute;
                 border: 1px solid grey;
-                background-color: #eeeeee;
+                background-color: var(--main-widgets-background-color);
                 padding: 5px;
 
                 font-size: 12px;

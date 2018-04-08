@@ -1,7 +1,7 @@
 $textColor: #333;
 
 $headerHeight: 40px;
-$headerBackground: #eeeeee;
+$headerBackground: var(--main-widgets-background-color);
 $headerColor: #004f8f;
 
 $mainPadding: 23px;

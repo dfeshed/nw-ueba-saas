@@ -331,7 +331,7 @@ $actionRed: red;
 
 }
 
-@mixin fs-table-style2($clrForeColor: #016a9c, $clrBG: #eeeeee, $clrHeaderBG: #4c9ad0, $clrHeaderFore: #fff , $clrMasterRowBG: #fff, $clrDetailRowBG: #f1f6fc, $clrPagerColor: #E6E6E6, $fontSize: 14px, $headerHeight: 40px) {
+@mixin fs-table-style2($clrForeColor: #016a9c, $clrBG: var(--main-widgets-background-color), $clrHeaderBG: #4c9ad0, $clrHeaderFore: #fff , $clrMasterRowBG: #fff, $clrDetailRowBG: #f1f6fc, $clrPagerColor: #E6E6E6, $fontSize: 14px, $headerHeight: 40px) {
 
     .fs-table, fs-table.k-grid {
         font-family: 'Open Sans', sans-serif;

@@ -4,6 +4,6 @@
         // .constant('BASE_URL', '/api')
         // .constant('BASE_WEBSOCKET_URL', '/');
         .constant('TAGS_FEATURE_ENABLED', false)
-        .constant('FORTSCALE_BRAND_UI', false);
+        .constant('FORTSCALE_BRAND_UI', true);
 
 }());

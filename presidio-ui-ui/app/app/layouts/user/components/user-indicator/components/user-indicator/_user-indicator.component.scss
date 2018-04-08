@@ -5,7 +5,7 @@ user-indicator {
     bottom: 0;
     right: 0;
 
-    background-color: #eeeeee;
+    background-color: var(--main-widgets-background-color);
 
     display: flex;
     flex-flow: column nowrap;
