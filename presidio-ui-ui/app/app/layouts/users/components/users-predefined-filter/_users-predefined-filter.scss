@@ -9,13 +9,13 @@
 
 
     &.active {
-        background-color: #016a9c;
+        background-color: var(--filter-list-text-color);
         fill: #FFFFFF;
 
         .filter-name{
-            color: #f0f7f8;
+            color: #eeeeee;
             .items-count{
-                color: #f0f7f8;
+                color: #eeeeee;
             }
         }
     }
@@ -29,13 +29,13 @@
         padding-left: 10px;
         font-family: 'Open Sans', sans-serif;;
         font-size: 14px;
-        color: #004f8f;
+        color: var(--filter-list-text-color);
         font-weight: 400;
 
 
     .items-count{
         font-weight: 700;
-        color: #024d89;
+        color: var(--filter-list-text-color);
     }
 
 

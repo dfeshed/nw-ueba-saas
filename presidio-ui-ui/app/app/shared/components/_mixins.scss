@@ -11,14 +11,14 @@
 }
 
 .severity-critical {
-    @include severity-tag($severityCriticalColor);
+    @include severity-tag(var(--main-critical-severity-color));
 }
 .severity-high {
-    @include severity-tag($severityHighColor);
+    @include severity-tag(var(--main-high-severity-color));
 }
 .severity-medium {
-    @include severity-tag($severityMediumColor);
+    @include severity-tag(var(--main-medium-severity-color));
 }
 .severity-low {
-    @include severity-tag($severityLowColor);
+    @include severity-tag(var(--main-low-severity-color));
 }

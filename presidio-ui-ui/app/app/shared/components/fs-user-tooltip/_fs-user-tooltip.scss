@@ -54,7 +54,7 @@
             transition: color 0.5s;
 
             &--critical {
-                color: $clrCritical;
+                color: var(--main-critical-severity-color);
             }
 
             &--high {
@@ -62,11 +62,11 @@
             }
 
             &--medium {
-                color: $clrMedium;
+                color: var(--main-medium-severity-color);
             }
 
             &--low {
-                color: $clrLow;
+                color: var(--main-low-severity-color);
             }
         }
 
@@ -102,19 +102,20 @@
                 &--score {
 
                     &--critical {
-                        color: darken($clrCritical, 20%);
+                        color: var(--main-critical-severity-color);
                     }
 
                     &--high {
-                        color: darken($clrHigh, 20%);
+                        //color: darken(var(--main-high-severity-color), 20%);
+                        color: var(--main-high-severity-color);
                     }
 
                     &--medium {
-                        color: darken($clrMedium, 20%);
+                        color: var(--main-medium-severity-color);
                     }
 
                     &--low {
-                        color: darken($clrLow, 20%);
+                        color: var(--main-low-severity-color);
                     }                }
 
                 &--icon {

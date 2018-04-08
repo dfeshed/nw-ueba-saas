@@ -20,7 +20,7 @@ user-risk-score {
         &--score {
             flex: 1;
 
-            color: #D32F2F;
+            color: var(--main-critical-severity-color);
             font-family: 'RobotoSlab', sans-serif;
             font-size: 8vh;
             line-height: 8vh;
@@ -30,16 +30,16 @@ user-risk-score {
 
             &.score-severity {
                 &--low {
-                    color: $clrLow;
+                    color: var(--main-low-severity-color);
                 }
                 &--medium {
-                    color: $clrMedium;
+                    color: var(--main-medium-severity-color);
                 }
                 &--high {
                     color: $clrHigh;
                 }
                 &--critical {
-                    color: $clrCritical;
+                    color: var(--main-critical-severity-color);
                 }
             }
         }
@@ -74,7 +74,7 @@ user-risk-score {
 
         .k-dropdown {
             width: 90px;
-            background-color: #f0f7f8;
+            background-color: #eeeeee;
             border: 1px solid #d4d4d4;
             border-radius: 3px;
 

@@ -1,7 +1,7 @@
 module.exports = {
 
 
-     proxyApiUrl:"http://dev-tal"
+     proxyApiUrl:"http://presidio-d7"
 
 };
 

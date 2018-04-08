@@ -4,22 +4,22 @@
 
     &.fs-score-icon-red {
         i {
-            color: $severityCriticalColor;
+            color: var(--main-critical-severity-color);
         }
     }
     &.fs-score-icon-orange {
         i {
-            color: $severityHighColor;
+            color: var(--main-high-severity-color);
         }
     }
     &.fs-score-icon-yellow {
         i {
-            color: $severityMediumColor;
+            color: var(--main-medium-severity-color);
         }
     },
 &.fs-score-icon-low {
     i {
-        color: $severityLowColor;
+        color: var(--main-low-severity-color);
     }
 }
     &.fs-score-icon-hide {

@@ -27,11 +27,9 @@ $clrButtonHover: #8bc6f7;
 $clrButtonPressed: #4388d1;
 $clrButtonDisabled: #cbcbcb;
 
-$clrIKBlueMain: #016a9c;
+$clrIKBlueMain: #171717;
 
-$clrCritical: #D32F2F;
-$clrHigh: #FD7F1B;
-$clrMedium: #69BDBD;
-$clrLow: #61AA02;
+$clrHigh: var(--main-high-severity-color);
+
 
 

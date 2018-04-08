@@ -8,7 +8,7 @@ overview-high-risk-user {
 
     box-sizing: border-box;
 
-    background-color: #f0f7f8;
+    background-color: #eeeeee;
     transition: background-color 0.2s ease-in-out;
 
     min-height: 20%;
@@ -153,14 +153,14 @@ overview-high-risk-user {
         &--score {
             flex: 1.75;
 
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Open Sans', sans-serif;
             font-size: 48px;
             font-weight: 400;
             align-self: center;
             text-align: right;
 
             &--critical {
-                color: $clrCritical;
+                color: var(--main-critical-severity-color);
             }
 
             &--high {
@@ -168,11 +168,11 @@ overview-high-risk-user {
             }
 
             &--medium {
-                color: $clrMedium;
+                color: var(--main-medium-severity-color);
             }
 
             &--low {
-                color: $clrLow;
+                color: var(--main-low-severity-color);
             }
 
             @media screen and (max-width: 1500px) {

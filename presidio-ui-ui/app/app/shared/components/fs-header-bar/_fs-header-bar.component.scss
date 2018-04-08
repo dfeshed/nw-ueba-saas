@@ -58,12 +58,11 @@
 
         height: $headerHeight;
         line-height: #{$headerHeight + 3};
-
+        letter-spacing: 2px;
         font-size: 14px;
-        font-weight: 400;
+        font-weight: bold;
         font-family: 'Open Sans', sans-serif;
         color: $clrIKBlueMain;
-        letter-spacing: 0.56px;
         text-decoration: none;
         transition: background-color 0.2s ease-in-out;
 
@@ -150,7 +149,7 @@
 
     .fs-header-drop-down {
         &.k-group.k-menu-group {
-            background-color: #F0F7F8;
+            background-color: #eeeeee;
         }
 
         .k-link {

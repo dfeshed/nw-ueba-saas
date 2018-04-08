@@ -53,23 +53,23 @@ $actionRed: red;
         }
 
         .alert-Critical {
-            background-color: $severityCriticalColor;
+            background-color: var(--main-critical-severity-color);
             width: $alertWidth;
             height: $alertHeight;
         }
         .alert-High {
-            background-color: $severityHighColor;
+            background-color: var(--main-high-severity-color);;
             width: $alertWidth;
             height: $alertHeight;
         }
         .alert-Medium {
-            background-color: $severityMediumColor;
+            background-color: var(--main-medium-severity-color);
             width: $alertWidth;
             height: $alertHeight;
         }
 
         .alert-Low {
-            background-color: $severityLowColor;
+            background-color: var(--main-low-severity-color);
             width: $alertWidth;
             height: $alertHeight;
         }
@@ -331,7 +331,7 @@ $actionRed: red;
 
 }
 
-@mixin fs-table-style2($clrForeColor: #016a9c, $clrBG: #f0f7f8, $clrHeaderBG: #4c9ad0, $clrHeaderFore: #fff , $clrMasterRowBG: #fff, $clrDetailRowBG: #f1f6fc, $clrPagerColor: #E6E6E6, $fontSize: 14px, $headerHeight: 40px) {
+@mixin fs-table-style2($clrForeColor: #016a9c, $clrBG: #eeeeee, $clrHeaderBG: #4c9ad0, $clrHeaderFore: #fff , $clrMasterRowBG: #fff, $clrDetailRowBG: #f1f6fc, $clrPagerColor: #E6E6E6, $fontSize: 14px, $headerHeight: 40px) {
 
     .fs-table, fs-table.k-grid {
         font-family: 'Open Sans', sans-serif;

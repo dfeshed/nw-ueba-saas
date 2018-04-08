@@ -20,16 +20,16 @@
         height: 100%;
 
         &--critical {
-            fill: $clrCritical;
+            fill: var(--main-critical-severity-color);
         }
         &--high {
             fill: $clrHigh;
         }
         &--medium {
-            fill: $clrMedium;
+            fill: var(--main-medium-severity-color);
         }
         &--low {
-            fill: $clrLow;
+            fill: var(--main-low-severity-color);
         }
     }
 }
