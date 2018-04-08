@@ -23,7 +23,7 @@
             fill: var(--main-critical-severity-color);
         }
         &--high {
-            fill: $clrHigh;
+            fill: var(--main-high-severity-color);
         }
         &--medium {
             fill: var(--main-medium-severity-color);

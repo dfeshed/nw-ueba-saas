@@ -58,7 +58,7 @@
             }
 
             &--high {
-                color: $clrHigh;
+                color: var(--main-high-severity-color);
             }
 
             &--medium {

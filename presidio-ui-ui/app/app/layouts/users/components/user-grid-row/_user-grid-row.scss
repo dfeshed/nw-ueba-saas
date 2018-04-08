@@ -116,7 +116,7 @@
                 color: var(--main-medium-severity-color);
             }
             &--high {
-                color: $clrHigh;
+                color: var(--main-high-severity-color);
             }
             &--critical {
                 color: var(--main-critical-severity-color);

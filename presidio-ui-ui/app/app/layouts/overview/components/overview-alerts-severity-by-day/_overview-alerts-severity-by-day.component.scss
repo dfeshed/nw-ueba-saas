@@ -62,7 +62,7 @@ overview-alert-severity-by-day {
                             background-color: var(--main-critical-severity-color);
                         }
                         &-high {
-                            background-color: $clrHigh;
+                            background-color: var(--main-high-severity-color);
                         }
                         &-medium {
                             background-color: var(--main-medium-severity-color);
