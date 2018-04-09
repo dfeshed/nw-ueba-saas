@@ -28,12 +28,34 @@ export default Component.extend({
     const left = BASE_PADDING * item.level;
     return htmlSafe(`padding-left: ${left}px;`);
   },
-
+  /**
+   * context menu config for process analysis
+   * @public
+   */
+  @computed
+  contextItems() {
+    const cntx = this;
+    return [
+      {
+        label: 'Process Analysis',
+        action() {
+          cntx.send('navigateToProcessAnalysis');
+        }
+      }
+    ];
+  },
   actions: {
     toggleExpand() {
       const { item, index } = this.getProperties('item', 'index');
       set(item, 'expanded', !get(item, 'expanded'));
       this.onToggleExpand(index, item.level, item);
+    },
+
+    /**
+     * navigate to process analysis page
+     * @public
+     */
+    navigateToProcessAnalysis() {
     }
   }
 });

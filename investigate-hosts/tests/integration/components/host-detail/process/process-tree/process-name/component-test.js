@@ -1,25 +1,19 @@
-import { moduleForComponent, skip } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { find, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
+import engineResolver from '../../../../../../helpers/engine-resolver';
 
-moduleForComponent('host-detail/process/process-tree/process-name', 'Integration | Component | endpoint host detail/process/process tree/process name', {
-  integration: true
-});
+module('Integration | Component | host-detail/process/process-tree/process-name', function(hooks) {
+  setupRenderingTest(hooks, {
+    resolver: engineResolver('investigate-hosts')
+  });
 
-skip('it renders', function(assert) {
-
-  // Set any properties with this.set('myProperty', 'value');
-  // Handle any actions with this.on('myAction', function(val) { ... });
-
-  this.render(hbs`{{host-detail/process/process-tree/process-name}}`);
-
-  assert.equal(this.$().text().trim(), '');
-
-  // Template block usage:
-  this.render(hbs`
-    {{#host-detail/process/process-tree/process-name}}
-      template block text
-    {{/host-detail/process/process-tree/process-name}}
-  `);
-
-  assert.equal(this.$().text().trim(), 'template block text');
+  test('should render process name', async function(assert) {
+    assert.expect(1);
+    this.set('item', { name: 'cmd.exe' });
+    this.set('index', 0);
+    await render(hbs`{{host-detail/process/process-tree/process-name item=item index=index}}`);
+    assert.equal(find('.process-name-column').textContent.trim(), 'cmd.exe', 'process name is rendered');
+  });
 });

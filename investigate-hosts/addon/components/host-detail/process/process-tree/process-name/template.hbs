@@ -4,5 +4,9 @@
       {{rsa-icon name="arrow-down-12"}}
     </span>
   {{/if}}
-  <span title="{{item.name}}" class="process-name {{unless item.hasChild 'is-leaf'}}">{{item.name}}</span>
+  {{#rsa-context-menu contextItems=contextItems}}
+    <span title="{{item.name}}" class="process-name {{unless item.hasChild 'is-leaf'}}">
+      {{item.name}}
+    </span>
+  {{/rsa-context-menu}}
 </span>
