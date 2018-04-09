@@ -554,6 +554,12 @@ export default {
     }
   },
   configure: {
+    logsParser: {
+      wait: 'ja_Loading log Parsers...',
+      logParserRules: 'ja_Log Parser Rules',
+      logParsers: 'ja_Log Parsers',
+      rules: 'ja_Rules'
+    },
     title: 'ja_Configure',
     liveContent: 'ja_Live Content',
     esaRules: 'ja_ESA Rules',

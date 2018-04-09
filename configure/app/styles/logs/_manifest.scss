@@ -1,0 +1,69 @@
+.parserWrapper {
+  width: 100%;
+  position: relative; 
+  margin-top: rsa-whitespace();
+  color: text-color(neutral);
+  .loading {
+    width: 100%;
+    text-align: center;
+    margin-top: 20%;
+  }
+  h1 {
+    @include rsa-font(header, larger);
+  }
+  .parserContainer  {
+    overflow : hidden;
+    white-space: nowrap;
+    vertical-align: bottom;
+    border-bottom: 1px solid border-color(neutral);
+    margin-left: rsa-whitespace();
+    margin-right: rsa-whitespace();
+  }
+  .border {
+    border: 1px solid border-color(neutral);
+    border-bottom-width: 0px;
+  }
+  .leftArea, .centerArea, .rightArea {
+    margin:0px;
+    width: 19.5%;
+    padding: rsa-whitespace();
+    .parserTable {
+      width: 100%;
+      margin-top: rsa-whitespace();
+      td{
+        padding: rsa-whitespace(less);
+        color: text-color(neutral);
+        cursor: pointer;
+        @include rsa-font(default, small);
+      }
+      td:hover {
+        background-color: background-color(primary, darker);
+      }
+      td.active {
+        background-color: background-color(secondary, dark);
+      }
+    }
+  }
+  .centerArea {
+    width: 60%;
+    vertical-align: top;
+    position: relative;
+    .centerTop {
+      overflow: auto;
+      padding: rsa-whitespace();
+    }
+  }
+  .tdMessage {
+    vertical-align: bottom;
+  }
+  pre.centerBottom {
+    border-left-width: 0px;
+    border-right-width: 0px;
+    border-bottom-width: 0px;
+    font-family: Courier New, Courier, monospace;
+    white-space: pre-wrap;
+    overflow: auto;
+    padding: rsa-whitespace();
+    height: 200px;
+  }
+}

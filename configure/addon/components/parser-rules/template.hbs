@@ -1,0 +1,65 @@
+<div class="parserWrapper">
+  {{#if isLoading}}
+    <div class='loading'>
+      {{rsa-loader size='large' label=(t 'configure.logsParser.wait')}}
+    </div>
+  {{else}}
+    <table class='parserContainer'>
+      <tr>
+        <td rowspan="2" class='border leftArea'>
+          {{parser-rules/log-parsers}}
+        </td>
+        <td class='centerArea'>
+          <h1>
+            {{logName}}
+            {{#if ruleName}}
+              - {{ruleName}}
+            {{/if}}
+          </h1>
+          <div class='centerTop'>
+            <p>
+              Type = {{ruleType}}
+            </p>
+            <p>
+              Meta
+              <table class='parserTable'>
+                {{#each ruleMetas as |meta index|}}
+                  <tr>
+                    <td>
+                      {{meta.index}}
+                    </td>
+                    <td>
+                      {{meta.key}}
+                    </td>
+                    <td>
+                      {{meta.format}}
+                    </td>
+                  </tr>
+                {{/each}}
+              </table>
+            </p>
+            <p>
+            Tokens 
+              <table class='parserTable'>
+                {{#each ruleTokens as |token index|}}
+                  <tr><td class='{{if (eq clickedToken index) 'active'}}'>
+                    {{token.value}}
+                  </td></tr>
+                {{/each}}
+              </table>
+            </p>
+            <p>
+              Pattern = {{ruleRegex}}
+            </p>
+          </div>
+        </td>
+        <td rowspan="2" class='border rightArea'>
+          {{parser-rules/rules-list}}
+        </td>
+      </tr>
+      <tr>
+        <td class='tdMessage'>{{parser-rules/log-message}}</td>
+      </tr>
+    </table>
+  {{/if}}
+</div>

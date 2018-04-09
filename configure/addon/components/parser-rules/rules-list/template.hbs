@@ -1,0 +1,8 @@
+<h1> {{t 'configure.logsParser.rules'}} </h1>
+<table class='parserTable'>
+  {{#each parserRules as |rule index|}}
+    <tr><td class='{{if (eq clickedRule index) 'active'}}'{{action "selectParserRule" index rule.name}}>
+      {{rule.name}}
+    </td></tr>
+  {{/each}}
+</table>

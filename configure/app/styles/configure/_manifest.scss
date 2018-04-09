@@ -2,6 +2,7 @@ $respondBackgroundColor: background-color(custom, respond);
 $navbarHeight: 49px;
 @import "mixins";
 @import "respond/manifest";
+@import "../logs/manifest";
 
 .configure-engine {
   /* Common background for all sub-routes. */
