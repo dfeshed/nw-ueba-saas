@@ -211,11 +211,6 @@ cd ../..
 yarn
 cd $CWD
 
-# Run node script that will check translation files to ensure
-# translations are all matching and up to date
-node scripts/node/check-translations.js sa/app/locales component-lib/addon/locales style-guide/app/locales
-checkError "Translations do not sync up between languages"
-
 buildMockServer
 buildEmberApp streaming-data false true true
 buildEmberApp component-lib false false true
