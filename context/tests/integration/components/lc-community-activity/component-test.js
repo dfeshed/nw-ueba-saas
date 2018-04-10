@@ -1,5 +1,7 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+
 const liveConnectData = {
   'id': '1a708f247cc6a7364b873c029bbdf459',
   'firstSeen': 1488452350455,
@@ -122,7 +124,10 @@ const allReasons = [
 ];
 
 moduleForComponent('rsa-context-panel/live-connect/lc-community-activity', 'Integration | Component | rsa context panel/lc community activity', {
-  integration: true
+  integration: true,
+  beforeEach() {
+    initialize(this);
+  }
 });
 
 test('it renders correctly with the correct number of expected elements', function(assert) {

@@ -1,5 +1,2 @@
-import $ from 'jquery';
-import BaseTranslations from 'component-lib/locales/en-us/trans-data';
-import SATranslations from './trans-data';
-
-export default $.extend({}, BaseTranslations, SATranslations);
+import Translations from 'component-lib/locales/en-us/trans-data';
+export default Translations;

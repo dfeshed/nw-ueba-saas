@@ -11,8 +11,8 @@ export default function(trigger) {
 }
 
 export function localStorageClear() {
+  localStorage.clear();
   return new Promise((resolve) => {
-    localStorage.clear();
     waitFor(() => localStorage.getItem('reduxPersist:global') === null).then(() => {
       next(null, resolve);
     });

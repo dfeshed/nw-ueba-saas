@@ -1,11 +1,13 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { scaleLinear } from 'd3-scale';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 moduleForComponent('/rsa-x-axis', 'Integration | Component | rsa-x-axis', {
   integration: true,
 
   beforeEach() {
+    initialize(this);
     this.scale = scaleLinear().domain([1, 3]).range([0, 400]);
   }
 });

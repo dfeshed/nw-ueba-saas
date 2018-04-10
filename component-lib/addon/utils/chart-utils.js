@@ -13,6 +13,8 @@ import {
   timeYear
 } from 'd3-time';
 import moment from 'moment';
+import { get } from '@ember/object';
+import { lookup } from 'ember-dependency-lookup';
 
 /**
  * Will find the minimum value within an Array of Arrays.
@@ -102,7 +104,8 @@ export function dateFormatter(is24Hour, timezone) {
   // The following comment and code was taken from the pikaday mixin
   // Could not find a service that gets this value, need to add a service to
   // pull this from local storage.
-  const lc = localStorage['rsa-i18n-default-locale'] || 'en';
+  const translationService = lookup('service:i18n');
+  const lc = get(translationService, 'locale');
   const tzFormatFn = _tzFormat(timezone);
   const minuteFormat = is24Hour ? 'HH:mm:ss' : 'hh:mm:ss'; // 13:15:05 | 01:15:05
   const hourFormat = is24Hour ? 'HH:mm' : 'hh:mm A'; // 13:15 | 01:15 PM

@@ -19,6 +19,10 @@ const updateCounter = (excluded, method) => {
 };
 
 export function waitForSockets(excluding) {
+  if (Socket.createStream !== originalCreateStreamFunc) {
+    throw 'A previous call to waitForSockets() never reverted the patch after the test was completed. To fix this, call the function returned from this method after your test is completed';
+  }
+
   let counter = 0;
   registerWaiter(() => counter === 0);
 

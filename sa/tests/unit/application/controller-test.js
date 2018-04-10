@@ -6,7 +6,6 @@ import { setupTest } from 'ember-qunit';
 import { t } from 'ember-i18n/test-support';
 import { settled } from '@ember/test-helpers';
 import { localStorageClear } from 'sa/tests/helpers/wait-for';
-import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import * as ACTION_TYPES from 'sa/actions/types';
 import { patchFetch } from 'sa/tests/helpers/patch-fetch';
 import { patchFlash } from 'sa/tests/helpers/patch-flash';
@@ -17,7 +16,6 @@ module('Unit | Controller | application', function(hooks) {
 
   hooks.beforeEach(function() {
     this.owner.inject('controller', 'i18n', 'service:i18n');
-    initialize(this.owner);
   });
 
   hooks.afterEach(function() {

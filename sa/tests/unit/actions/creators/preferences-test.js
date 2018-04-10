@@ -5,7 +5,6 @@ import { localStorageClear } from 'sa/tests/helpers/wait-for';
 import { patchFlash } from 'sa/tests/helpers/patch-flash';
 import { patchReducer } from 'sa/tests/helpers/vnext-patch';
 import { updateLocaleByKey } from 'sa/actions/creators/preferences';
-import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { getLocale } from 'sa/reducers/global/preferences/selectors';
 
 let setState;
@@ -18,7 +17,6 @@ module('Unit | Actions | Creators | Preferences', function(hooks) {
       const state = { global: { preferences: localeState } };
       patchReducer(this, state);
     };
-    initialize(this.owner);
   });
 
   hooks.afterEach(function() {

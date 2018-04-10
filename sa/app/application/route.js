@@ -23,7 +23,7 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
   persistStateOnLogout: true,
 
   title() {
-    return this.get('i18n').t('application.title');
+    return this.get('i18n').t('appTitle');
   },
 
   beforeModel(transition) {

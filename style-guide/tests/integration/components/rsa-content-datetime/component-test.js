@@ -1,8 +1,12 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 moduleForComponent('/rsa-content-datetime', 'Integration | Component | rsa-content-datetime', {
-  integration: true
+  integration: true,
+  beforeEach() {
+    initialize(this);
+  }
 });
 
 const timeFormat = {
