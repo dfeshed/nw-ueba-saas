@@ -159,7 +159,8 @@ export const encodeMetaFilterConditions = (conditions = []) => {
         } else if (['!exists', 'exists'].includes(operator)) {
           return `${meta} ${operator}`;
         } else {
-          return `${meta}${operator}${value}`;
+          return `${(meta) ? meta : ''}${(operator) ? operator : ''}${(value) ? value : ''}`;
+
         }
       }
     })

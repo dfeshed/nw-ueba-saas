@@ -29,6 +29,12 @@ const conditions = [{
   value: '\'//\''
 }];
 
+const filters = [{
+  meta: 'foo',
+  operator: undefined,
+  value: undefined
+}];
+
 const complexConditions = [{
   complexFilter: 'foo=\'bar\'||foo=baz'
 }, {
@@ -72,6 +78,12 @@ test('encodeMetaFilterConditions correctly encodes complex filters', function(as
   assert.equal(result, '(foo=\'bar\'||foo=baz) && (bar=\'foo\'||baz=foo)');
 });
 
+test('encodeMetaFilterConditions returns empty string when properties are undefined', function(assert) {
+  assert.expect(1);
+  const result = encodeMetaFilterConditions(filters);
+
+  assert.equal(result, 'foo');
+});
 
 test('uriEncodeFreeFormText encodes text correctly', function(assert) {
   assert.expect(1);
