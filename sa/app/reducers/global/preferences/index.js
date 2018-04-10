@@ -3,7 +3,7 @@ import * as ACTION_TYPES from 'sa/actions/types';
 import { normalizeLocales } from 'sa/utilities/locale';
 
 export const DEFAULT_THEME = 'DARK';
-export const DEFAULT_LOCALE = { id: 'en_US', label: 'english' };
+export const DEFAULT_LOCALE = { id: 'en_US', key: 'en-us', label: 'english' };
 export const DEFAULT_LOCALES = [DEFAULT_LOCALE];
 
 const initialState = {

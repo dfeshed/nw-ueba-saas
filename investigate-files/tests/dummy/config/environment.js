@@ -24,7 +24,7 @@ module.exports = function(environment) {
       // when it is created
     },
     moment: {
-      includeLocales: ['en', 'ja'],
+      includeLocales: ['en'],
       includeTimezone: '2010-2020'
     }
   };

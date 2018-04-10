@@ -20,7 +20,7 @@ module.exports = function(environment/* , appConfig */) {
       readyDelay: 0 // 1500,
     },
     moment: {
-      includeLocales: ['en', 'ja'],
+      includeLocales: ['en'],
       includeTimezone: 'subset'
     }
   };

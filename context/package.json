@@ -72,7 +72,8 @@
     "configPath": "tests/dummy/config",
     "paths": [
       "../component-lib",
-      "../streaming-data"
+      "../streaming-data",
+      "../test-helpers"
     ]
   }
 }

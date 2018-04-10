@@ -126,7 +126,7 @@ const FeedbackComponent = Component.extend({
       this.get('flashMessages').success(message);
     }).catch((reason) => {
       const errorMsg = reason.meta ? reason.meta.message : '';
-      warn(`Could not submit feedback: ${errorMsg}`);
+      warn(`Could not submit feedback: ${errorMsg}`, { id: 'context.components.context-panel.live-connect.feedback' });
       const message = this.get('i18n').t('context.lc.feedbackSubmissionFailed');
       this.get('flashMessages').error(message);
     }).finally(() => {
@@ -141,9 +141,15 @@ const FeedbackComponent = Component.extend({
       query: {}
     }).then(({ data }) => {
       debug(`Fetched skill level ${data.skillLevel}`);
+      if (this.isDestroyed || this.isDestroying) {
+        return;
+      }
       this.set('selectedSkillLevel', data.skillLevel || 1);
     }).catch((reason) => {
-      warn(reason);
+      warn(reason, { id: 'context.components.context-panel.live-connect.feedback' });
+      if (this.isDestroyed || this.isDestroying) {
+        return;
+      }
       this.set('selectedSkillLevel', 1); // default level
     });
   }

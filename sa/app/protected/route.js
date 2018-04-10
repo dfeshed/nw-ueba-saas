@@ -14,10 +14,6 @@ import * as ACTION_TYPES from 'sa/actions/types';
 import config from '../config/environment';
 import $ from 'jquery';
 
-const {
-  console
-} = window;
-
 const contextAddToListModalId = 'addToList';
 
 /**
@@ -65,6 +61,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
         this.set('accessControl.roles', response.data);
         resolve();
       }).catch((error) => {
+        // eslint-disable-next-line no-console
         console.error('Error loading permissions', error);
         reject(error);
       });
@@ -82,6 +79,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
         this.set('timezone.options', response.data);
         resolve();
       }).catch((error) => {
+        // eslint-disable-next-line no-console
         console.error('Error loading timezones', error);
         reject(error);
       });
@@ -128,6 +126,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
 
         resolve();
       }).catch((error) => {
+        // eslint-disable-next-line no-console
         console.error('Error loading preferences', error);
         reject(error);
       });
@@ -162,6 +161,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
     const preferencesPromise = this.getPreferences();
 
     return RSVP.all([preferencesPromise, timezonesPromise, permissionsPromise]).catch(() => {
+      // eslint-disable-next-line no-console
       console.error('There was an issue loading your profile. Please try again.');
     });
   },

@@ -53,11 +53,11 @@ module.exports = function(environment) {
       // when it is created
     },
     moment: {
-      includeLocales: ['en', 'ja'],
+      includeLocales: ['en'],
       includeTimezone: 'subset'
     },
     i18n: {
-      defaultLocale: 'en'
+      defaultLocale: 'en-us'
     },
     featureFlags: common.addFeatureFlags(environment)
   };

@@ -3,6 +3,7 @@ import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
 import Service from '@ember/service';
 import Evented from '@ember/object/evented';
+import { waitForSockets } from '../../../helpers/wait-for-sockets';
 
 const eventBusStub = Service.extend(Evented, {});
 
@@ -39,6 +40,8 @@ moduleForComponent('context-tooltip', 'Integration | Component | context tooltip
 test('it renders', function(assert) {
   assert.expect(4);
 
+  const done = waitForSockets();
+
   const model = { type: 'IP', id: '10.20.30.40' };
 
   const clickDataAction = (arg) => {
@@ -60,6 +63,6 @@ test('it renders', function(assert) {
       assert.equal(this.$('.rsa-context-tooltip').length, 1, 'Expected to find root DOM node');
       assert.equal(this.$('.js-open-overview button').length, 1, 'Expected to find Open Overview DOM node');
       this.$('.js-open-overview button').click();
-      return wait();
+      return wait().then(() => done());
     });
 });

@@ -17,13 +17,18 @@ module.exports = function(environment) {
         Date: false
       }
     },
+    i18n: {
+      defaultLocale: 'en-us',
+      defaultFallback: true,
+      includedLocales: ['en-us']
+    },
     timezones: [{
       'displayLabel': 'UTC (GMT+00:00)',
       'offset': 'GMT+00:00',
       'zoneId': 'UTC'
     }],
     moment: {
-      includeLocales: ['en', 'ja'],
+      includeLocales: ['en'],
       includeTimezone: 'subset'
     },
 

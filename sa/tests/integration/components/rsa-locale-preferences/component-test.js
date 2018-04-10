@@ -21,7 +21,7 @@ module('Integration | Component | rsa-locale-preferences', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function() {
-    const initState = { global: { preferences: { locale: { id: 'en_US', label: 'english' }, locales: [{ id: 'en_US', label: 'english' }, { id: 'de-DE', label: 'german' }] } } };
+    const initState = { global: { preferences: { locale: { id: 'en_US', key: 'en-us', label: 'english' }, locales: [{ id: 'en_US', key: 'en-us', label: 'english' }, { id: 'de_DE', key: 'de-de', label: 'german' }] } } };
     patchReducer(this, initState);
   });
 
@@ -64,7 +64,7 @@ module('Integration | Component | rsa-locale-preferences', function(hooks) {
       assert.equal(modelName, 'preferences');
       assert.deepEqual(query, {
         data: {
-          userLocale: 'de-DE'
+          userLocale: 'de_DE'
         }
       });
     });

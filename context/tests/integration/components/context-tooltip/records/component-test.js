@@ -2,6 +2,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
 import { next, later } from '@ember/runloop';
+import { waitForSockets } from '../../../../helpers/wait-for-sockets';
 
 moduleForComponent('context-tooltip-records', 'Integration | Component | context tooltip records', {
   integration: true
@@ -12,6 +13,7 @@ const model = { type: 'IP', id: '10.20.30.40' };
 test('it renders', function(assert) {
   assert.expect(4);
   const done = assert.async();
+  const revert = waitForSockets();
   this.set('model', model);
   this.render(hbs`{{context-tooltip/records model=model}}`);
   return wait().then(() => {
@@ -23,7 +25,10 @@ test('it renders', function(assert) {
         assert.ok(this.$('.rsa-context-tooltip-records__record').length, 'Expected to find one or more records in the DOM');
         assert.ok(this.$('.rsa-context-tooltip-records__record .value').text().trim(), 'Expected to find record value');
         assert.ok(this.$('.rsa-context-tooltip-records__record .text').text().trim(), 'Expected to find record name');
-        done();
+        return wait().then(() => {
+          revert();
+          done();
+        });
       }, 1000);
     });
   });

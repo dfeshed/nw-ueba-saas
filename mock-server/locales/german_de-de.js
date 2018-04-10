@@ -1,4 +1,4 @@
-define('sa/locales/de-DE/translations', ['exports'], function (exports) {
+define('sa/locales/de-de/translations', ['exports'], function (exports) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {

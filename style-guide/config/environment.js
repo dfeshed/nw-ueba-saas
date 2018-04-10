@@ -22,13 +22,13 @@ module.exports = function(environment) {
       types: ['info', 'success', 'warning', 'error']
     },
     moment: {
-      includeLocales: ['en', 'ja'],
+      includeLocales: ['en'],
       includeTimezone: 'subset'
     },
     i18n: {
-      defaultLocale: 'en',
+      defaultLocale: 'en-us',
       defaultFallback: true,
-      includedLocales: ['en', 'ja']
+      includedLocales: ['en-us']
     },
     EmberENV: {
       FEATURES: {

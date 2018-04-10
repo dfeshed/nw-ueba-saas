@@ -4,6 +4,8 @@ import alertData from '../../../data/alert-data';
 import * as ACTION_TYPES from 'context/actions/types';
 import EmberObject from '@ember/object';
 import dSDetails from 'context/config/im-alerts';
+import wait from 'ember-test-helpers/wait';
+import { waitForSockets } from '../../../helpers/wait-for-sockets';
 
 moduleForComponent('context-panel/body', 'Integration | Component | context-panel/body', {
   integration: true,
@@ -13,6 +15,8 @@ moduleForComponent('context-panel/body', 'Integration | Component | context-pane
 });
 
 test('it renders', function(assert) {
+  const done = waitForSockets();
+
   const dataSourceData = EmberObject.create({
     class: 'alarm-sound',
     isConfigured: true,
@@ -43,4 +47,6 @@ test('it renders', function(assert) {
   });
   this.render(hbs`{{context-panel/body contextData=contextData i18n=i18n}}`);
   assert.equal(this.$('.rsa-data-table-header-cell').length, 6, 'Testing count of data header cells');
+
+  return wait().then(() => done());
 });

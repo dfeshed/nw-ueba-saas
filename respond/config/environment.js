@@ -16,11 +16,13 @@ module.exports = function(environment/* , appConfig */) {
       readyDelay: 0 // 1500,
     },
     moment: {
-      includeLocales: ['en', 'ja'],
+      includeLocales: ['en'],
       includeTimezone: 'subset'
     },
     i18n: {
-      defaultLocale: 'en'
+      defaultLocale: 'en-us',
+      defaultFallback: true,
+      includedLocales: ['en-us']
     }
   };
 };

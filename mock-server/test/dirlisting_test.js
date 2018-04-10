@@ -26,8 +26,8 @@ describe('directory listing', () => {
         }
 
         expect(res.body.length).to.eql(2);
-        expect(res.body[0]).to.eql({ 'name': 'german_de-DE.js', 'size': 15 });
-        expect(res.body[1]).to.eql({ 'name': 'spanish_es.js', 'size': 13 });
+        expect(res.body[0]).to.eql({ 'name': 'german_de-de.js', 'size': 15 });
+        expect(res.body[1]).to.eql({ 'name': 'spanish_es-mx.js', 'size': 16 });
         done();
       });
   });

@@ -7,9 +7,9 @@ import { waitForRedux } from '../helpers/wait-for-redux';
 import { waitForSockets } from '../helpers/wait-for-sockets';
 import { visit, currentURL, settled } from '@ember/test-helpers';
 
-const english = { id: 'en_US', label: 'english' };
-const spanish = { id: 'es', label: 'spanish', fileName: 'spanish_es.js' };
-const german = { id: 'de-DE', label: 'german', fileName: 'german_de-DE.js' };
+const english = { id: 'en_US', key: 'en-us', label: 'english' };
+const spanish = { id: 'es_MX', key: 'es-mx', label: 'spanish', fileName: 'spanish_es-mx.js' };
+const german = { id: 'de_DE', key: 'de-de', label: 'german', fileName: 'german_de-de.js' };
 
 const setupLocalStorage = (locale, locales) => {
   localStorage.setItem('reduxPersist:global', JSON.stringify({
@@ -41,7 +41,7 @@ module('Acceptance | locales', function(hooks) {
     assert.equal(currentURL(), '/login');
 
     const i18n = this.owner.lookup('service:i18n');
-    assert.equal(get(i18n, 'locale'), 'en_US');
+    assert.equal(get(i18n, 'locale'), 'en-us');
 
     const redux = this.owner.lookup('service:redux');
     const { locale, locales } = redux.getState().global.preferences;
@@ -51,7 +51,7 @@ module('Acceptance | locales', function(hooks) {
     await login();
 
     assert.equal(currentURL(), '/respond/incidents');
-    assert.equal(get(i18n, 'locale'), 'en_US');
+    assert.equal(get(i18n, 'locale'), 'en-us');
 
     return settled().then(() => done());
   });
@@ -69,7 +69,7 @@ module('Acceptance | locales', function(hooks) {
     assert.equal(currentURL(), '/login');
 
     const i18n = this.owner.lookup('service:i18n');
-    assert.equal(get(i18n, 'locale'), 'es');
+    assert.equal(get(i18n, 'locale'), 'es-mx');
 
     const redux = this.owner.lookup('service:redux');
     const { locale, locales } = redux.getState().global.preferences;
@@ -79,7 +79,7 @@ module('Acceptance | locales', function(hooks) {
     await login();
 
     assert.equal(currentURL(), '/respond/incidents');
-    assert.equal(get(i18n, 'locale'), 'en_US');
+    assert.equal(get(i18n, 'locale'), 'en-us');
 
     return settled().then(() => done());
   });

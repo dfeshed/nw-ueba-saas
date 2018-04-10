@@ -86,7 +86,7 @@ export default Component.extend({
         debug(`Successfully saved: ${ data }`);
       }).catch(({ meta }) => {
         const error = meta ? meta.message : 'admin.error';
-        warn(`Meta value is not saved ${ error }`);
+        warn(`Meta value is not saved ${ error }`, { id: 'context.components.context-panel.add-to-list.list-view.component' });
         this.setProperties({
           isDisabled: false,
           isError: true,

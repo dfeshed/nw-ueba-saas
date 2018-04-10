@@ -5,7 +5,7 @@ import csrfToken from 'component-lib/mixins/csrf-token';
 import Route from '@ember/routing/route';
 import * as ACTION_TYPES from 'sa/actions/types';
 import { get } from '@ember/object';
-import RSVP from 'rsvp';
+import { Promise } from 'rsvp';
 import { inject as service } from '@ember/service';
 import fetch from 'component-lib/services/fetch';
 
@@ -41,8 +41,11 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
 
   getLocales() {
     const redux = get(this, 'redux');
-    return fetch('/locales').then((fetched) => fetched.json()).then((locales) => {
+    return fetch('/locales/').then((fetched) => fetched.json()).then((locales) => {
       redux.dispatch({ type: ACTION_TYPES.ADD_PREFERENCES_LOCALES, locales });
+    }).catch((error) => {
+      // eslint-disable-next-line no-console
+      console.log('Error fetching locales', error);
     });
   },
 
@@ -72,7 +75,7 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
    * @private
    */
   _logout() {
-    return new RSVP.Promise((resolve) => {
+    return new Promise((resolve) => {
       const csrfKey = this.get('csrfLocalstorageKey');
       $.ajax({
         type: 'POST',

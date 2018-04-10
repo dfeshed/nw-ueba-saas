@@ -23,9 +23,9 @@ module.exports = function(environment) {
     landingPageDefault: '/unified',
     investigatePageDefault: '/navigate',
     i18n: {
-      defaultLocale: 'en',
+      defaultLocale: 'en-us',
       defaultFallback: true,
-      includedLocales: ['en']
+      includedLocales: ['en-us']
     },
     timezones: [{
       'displayLabel': 'UTC (GMT+00:00)',
@@ -41,7 +41,7 @@ module.exports = function(environment) {
       types: ['info', 'success', 'warning', 'error']
     },
     moment: {
-      includeLocales: ['en', 'ja'],
+      includeLocales: ['en'],
       includeTimezone: 'subset'
     },
     EmberENV: {

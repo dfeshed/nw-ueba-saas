@@ -1,6 +1,8 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
+import wait from 'ember-test-helpers/wait';
 import dataSourceDetails from 'context/config/im-incidents';
+import { waitForSockets } from '../../../helpers/wait-for-sockets';
 
 const contextData = { resultList: [
   {
@@ -43,10 +45,13 @@ moduleForComponent('data-table', 'Integration | Component | data-table', {
 });
 
 test('it renders', function(assert) {
+  const done = waitForSockets();
+
   this.set('contextData', contextData);
   this.set('dataSourceDetails', dataSourceDetails);
   this.render(hbs`  {{context-panel/data-table contextData=contextData dataSourceDetails=dataSourceDetails}}`);
 
   assert.equal(this.$('.rsa-data-table-header-cell').length, 8, 'Testing count of incidents header cells');
 
+  return wait().then(() => done());
 });

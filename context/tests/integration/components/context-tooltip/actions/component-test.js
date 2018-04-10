@@ -3,6 +3,7 @@ import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
 import Service from '@ember/service';
 import rsvp from 'rsvp';
+import { waitForSockets } from '../../../../helpers/wait-for-sockets';
 
 const entityType = 'IP';
 const entityId = '10.20.30.40';
@@ -201,13 +202,17 @@ test('the query in the Pivot to Investigate link includes the meta keys from the
   }}`);
 
   const done = assert.async();
-  return wait()
-    .then(() => {
-      const url = this.$('a[href]').attr('href');
-      assert.ok(!!url.match(/query/), 'Expected to find a link to an investigation query');
-      Object.keys(metaMap).forEach((key) => {
-        assert.ok(!!url.indexOf(key) > -1, `Expected to find meta key ${key} in query URL`);
-      });
+  const revert = waitForSockets();
+
+  return wait().then(() => {
+    const url = this.$('a[href]').attr('href');
+    assert.ok(!!url.match(/query/), 'Expected to find a link to an investigation query');
+    Object.keys(metaMap).forEach((key) => {
+      assert.ok(!!url.indexOf(key) > -1, `Expected to find meta key ${key} in query URL`);
+    });
+    return wait().then(() => {
+      revert();
       done();
     });
+  });
 });

@@ -27,11 +27,11 @@ module('Unit | Actions | Creators | Preferences', function(hooks) {
 
   test('updateLocaleByKey should set locale when userLocale found in locales', async function(assert) {
     setState({
-      locale: { id: 'en_US', label: 'english' },
+      locale: { id: 'en_US', key: 'en-us', label: 'english' },
       locales: [
-        { id: 'en_US', label: 'english' },
-        { id: 'es', label: 'spanish', fileName: 'spanish_es.js' },
-        { id: 'de-DE', label: 'german', fileName: 'german_de-DE.js' }
+        { id: 'en_US', key: 'en-us', label: 'english' },
+        { id: 'es_MX', key: 'es-mx', label: 'spanish', fileName: 'spanish_es-mx.js' },
+        { id: 'de_DE', key: 'de-de', label: 'german', fileName: 'german_de-de.js' }
       ]
     });
 
@@ -40,19 +40,19 @@ module('Unit | Actions | Creators | Preferences', function(hooks) {
     let locale = getLocale(redux.getState());
     assert.equal(locale.id, 'en_US');
 
-    bindActionCreators(updateLocaleByKey, redux.dispatch.bind(redux))('es');
+    bindActionCreators(updateLocaleByKey, redux.dispatch.bind(redux))('es_MX');
 
     locale = getLocale(redux.getState());
-    assert.equal(locale.id, 'es');
+    assert.equal(locale.id, 'es_MX');
   });
 
   test('updateLocaleByKey will display flash error when userLocale not found in locales', async function(assert) {
     assert.expect(4);
 
     setState({
-      locale: { id: 'en_US', label: 'english' },
+      locale: { id: 'en_US', key: 'en-us', label: 'english' },
       locales: [
-        { id: 'en_US', label: 'english' }
+        { id: 'en_US', key: 'en-us', label: 'english' }
       ]
     });
 
@@ -68,7 +68,7 @@ module('Unit | Actions | Creators | Preferences', function(hooks) {
       assert.equal(flash.message.string, expectedError);
     });
 
-    bindActionCreators(updateLocaleByKey, redux.dispatch.bind(redux))('es');
+    bindActionCreators(updateLocaleByKey, redux.dispatch.bind(redux))('es_MX');
 
     locale = getLocale(redux.getState());
     assert.equal(locale.id, 'en_US');
@@ -78,11 +78,11 @@ module('Unit | Actions | Creators | Preferences', function(hooks) {
     assert.expect(4);
 
     setState({
-      locale: { id: 'en_US', label: 'english' },
+      locale: { id: 'en_US', key: 'en-us', label: 'english' },
       locales: [
-        { id: 'en_US', label: 'english' },
-        { id: 'es', label: 'wat1' },
-        { id: 'es', label: 'wat2' }
+        { id: 'en_US', key: 'en-us', label: 'english' },
+        { id: 'es_MX', key: 'es-mx', label: 'spanish' },
+        { id: 'es_MX', key: 'es-mx', label: 'spanish2' }
       ]
     });
 
@@ -98,7 +98,7 @@ module('Unit | Actions | Creators | Preferences', function(hooks) {
       assert.equal(flash.message.string, expectedError);
     });
 
-    bindActionCreators(updateLocaleByKey, redux.dispatch.bind(redux))('es');
+    bindActionCreators(updateLocaleByKey, redux.dispatch.bind(redux))('es_MX');
 
     locale = getLocale(redux.getState());
     assert.equal(locale.id, 'en_US');

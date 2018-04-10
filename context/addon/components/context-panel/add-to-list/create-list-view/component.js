@@ -37,7 +37,7 @@ export default Component.extend({
       this.resetProperties();
     }).catch(({ meta }) => {
       const error = meta ? meta.message : 'admin.error';
-      warn(`List is not created: ${ error }`);
+      warn(`List is not created: ${ error }`, { id: 'context.components.context-panel.add-to-list.create-list-view.component' });
       this.setProperties({
         isDisabled: false,
         isError: true,

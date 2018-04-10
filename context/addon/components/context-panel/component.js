@@ -182,7 +182,7 @@ const ContextComponent = Component.extend({
         }
       },
       onError(response) {
-        warn('Error processing stream call for context lookup.', response);
+        warn(`Error processing stream call for context lookup. ${response}`, { id: 'context.components.context-panel.component' });
       }
     });
   },

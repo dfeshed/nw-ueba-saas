@@ -105,7 +105,7 @@ export default Component.extend({
         if (this.get('hasResponse') === true) {
           return;
         }
-        warn('Error processing stream call for context lookup.', response);
+        warn(`Error processing stream call for context lookup. ${ response }`, { id: 'context.components.context-panel.add-to-list.component' });
       }
     });
   }

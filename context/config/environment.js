@@ -15,6 +15,11 @@ module.exports = function(/* environment, appConfig */) {
     moment: {
       includeTimezone: 'subset'
     },
+    i18n: {
+      defaultLocale: 'en-us',
+      defaultFallback: true,
+      includedLocales: ['en-us']
+    },
     contextMetas
   };
 };

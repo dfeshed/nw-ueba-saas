@@ -54,7 +54,7 @@ export default Service.extend({
       })
         // If promise fails, clear cached promise, don't re-use
         .catch((err) => {
-          warn('Error fetching context entity types', err);
+          warn(`Error fetching context entity types ${err}`, { id: 'context.services.context' });
           this.set('_typesPromise', null);
         });
 
@@ -125,7 +125,7 @@ export default Service.extend({
         })
         // If promise fails, clear cached promise, don't re-use
           .catch((err) => {
-            warn('Error fetching context entity meta', endpointId, err);
+            warn(`Error fetching context entity meta ${endpointId} ${err}`, { id: 'context.services.context' });
             promises[endpointId] = null;
           });
       }

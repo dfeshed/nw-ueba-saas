@@ -18,6 +18,11 @@ module.exports = function(environment/* , appConfig */) {
     moment: {
       includeLocales: ['en'],
       includeTimezone: '2010-2020'
+    },
+    i18n: {
+      defaultLocale: 'en-us',
+      defaultFallback: true,
+      includedLocales: ['en-us']
     }
   };
   if (environment === 'test') {
