@@ -21,7 +21,7 @@
     </hbox>
   </div>
 </div>
-<div class="field rsa-form-radio-group">
+<div class="field rsa-form-radio-group agent-certificate-container">
   <h4 class='rsa-form-radio-group-label'>{{t 'packager.certificateValidation'}}</h4>
   <label class="rsa-form-radio-label {{if (eq 'none' configData.packageConfig.certificateValidation) 'checked'}}">
     {{radio-button
@@ -51,7 +51,7 @@
     </hbox>
   </div>
 </div>
-<div class="field col-xs-5">
+<div class="field col-xs-5 auto-uninstall-container">
   {{rsa-form-datetime
     label=(t 'packager.autoUninstall')
     showTime=true
@@ -63,7 +63,7 @@
     value=autoUninstall
     yearRange="currentYear, 2050"
     onChange=(action (mut autoUninstall))
-  }}
+    }}
 </div>
 <div class="field force-overwrite">
   <label class="rsa-form-checkbox-label {{if configData.packageConfig.forceOverwrite 'checked'}}">
@@ -129,7 +129,7 @@
         </div>
       </hbox>
 
-      <div class="col-xs-12 field">
+      <div class="col-xs-12 field primary-log-decoder-container">
         <label class={{className}}>
           <div class="label-text">
             {{t 'packager.primaryLogDecoder'}}
@@ -150,7 +150,7 @@
         </label>
       </div>
 
-      <div class="col-xs-12 field">
+      <div class="col-xs-12 field secondary-log-decoder-container">
         <label class="power-select">
           <div class="label-text">
             {{t 'packager.secondaryLogDecoder'}}
@@ -169,7 +169,7 @@
         </label>
       </div>
 
-      <div class="col-xs-12 field">
+      <div class="col-xs-12 field channel-filter-container">
         <label class="power-select">
           <div class="label-text">
             {{t 'packager.channelFilter'}}
