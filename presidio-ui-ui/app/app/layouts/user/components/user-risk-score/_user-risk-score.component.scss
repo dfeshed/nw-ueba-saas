@@ -8,14 +8,17 @@ user-risk-score {
     display: flex;
     flex-flow: column nowrap;
 
+    border: 1px solid #fff;
+
+
     .user-risk-score-box {
         height: calc(10vh + 40px);
         flex-shrink: 0;
 
         display: flex;
         flex-flow: column nowrap;
-
-        background-image: radial-gradient(ellipse farthest-corner at 50% 140%, #165d88 0%, #013056 70%);
+        background-color: var(--second-widgets-background-color);
+        //background-image: radial-gradient(ellipse farthest-corner at 50% 140%, #165d88 0%, #013056 70%);
 
         &--score {
             flex: 1;
@@ -53,7 +56,7 @@ user-risk-score {
         border-bottom: 1px solid #30a2f0;
 
         box-shadow: none;
-        background-color: #013056;
+        var(--second-widgets-background-color);
     }
 
     .user-risk-score-control {
@@ -65,11 +68,11 @@ user-risk-score {
         height: calc(15px + 3vh);
         padding: 0 10px 0 20px;
 
-        background-color: #e5e5e5;
+        var(--second-widgets-background-color);
         box-shadow: 0 1px 7px rgba(0, 0, 0, 0.4);
 
         svg {
-            fill: #013f71;
+            fill: var(--second-widgets-titles-icon-fill);
         }
 
         .k-dropdown {
@@ -95,7 +98,7 @@ user-risk-score {
     }
 
     .list-title {
-        color: #01294a;
+        color: var(--second-widgets-titles-text-color);
         font-family: 'Open Sans', sans-serif;
         font-size: 14px;
         font-weight: 400;
@@ -108,7 +111,7 @@ user-risk-score {
     }
 
     .control-title {
-        color: #004f8f;
+        color: var(--second-widgets-titles-text-color);
         font-family: 'Open Sans', sans-serif;
         font-size: 12px;
         font-weight: 400;
@@ -157,9 +160,7 @@ user-risk-score {
 
         //transition: background-color 30s;
 
-        &:hover {
-            background-color: #f0f0f0;
-        }
+
 
         &.last-alert {
             .alert-item-inner-wrapper {
@@ -183,7 +184,7 @@ user-risk-score {
             }
 
             .alert-item-inner-wrapper {
-                background-color: #0c558a;
+                background-color: #3f7db5;
                 border-bottom: 0;
                 padding: 15px 20px;
             }
@@ -227,7 +228,9 @@ user-risk-score {
         flex-shrink: 0;
 
         border-bottom: 1px solid #adcdfa;
-
+        &:hover {
+            background-color: var(--second-widgets-titles-text-color);
+        }
     }
 
     .score-box-column {
@@ -295,7 +298,7 @@ user-risk-score {
     }
 
     .alert-name {
-        color: #004f8f;
+        color: #3f7db5;
         font-size: 12px;
         line-height: 15px;
         flex: 1 0;
@@ -311,6 +314,7 @@ user-risk-score {
         top: 0;
         margin-right: 6px;
         padding: 0 6px 1px;
+        color: #838485;
     }
 
     .indicators-list-mask {
