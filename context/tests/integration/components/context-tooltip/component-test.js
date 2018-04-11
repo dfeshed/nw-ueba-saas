@@ -4,6 +4,7 @@ import wait from 'ember-test-helpers/wait';
 import Service from '@ember/service';
 import Evented from '@ember/object/evented';
 import { waitForSockets } from '../../../helpers/wait-for-sockets';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 const eventBusStub = Service.extend(Evented, {});
 
@@ -31,6 +32,7 @@ moduleForComponent('context-tooltip', 'Integration | Component | context tooltip
     insertTetherFix();
     this.register('service:event-bus', eventBusStub);
     this.inject.service('event-bus', { as: 'eventBus' });
+    initialize(this);
   },
   afterEach() {
     removeTetherFix();

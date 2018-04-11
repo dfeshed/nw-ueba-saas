@@ -5,11 +5,16 @@ import computed, { equal } from 'ember-computed-decorators';
 import safeCallback from 'component-lib/utils/safe-callback';
 import { connect } from 'ember-redux';
 import { updateActiveTab } from 'context/actions/context-creators';
-import { next } from '@ember/runloop';
+import { getSummaryData } from 'context/actions/model-summary';
+
+const stateToComputed = ({ context: { hover: { modelSummary } } }) => ({
+  modelSummary
+});
 
 const dispatchToActions = {
   // Sets the active tab of the context panel's state.
-  updateActiveTab
+  updateActiveTab,
+  getSummaryData
 };
 
 // Maps the dataSource name from summary records to the name of a
@@ -66,23 +71,6 @@ const ContextTooltipRecords = Component.extend({
   clickDataAction: null,
 
   /**
-   * An array of streaming summary-level data for the current `model`.
-   * @see context/addon/services/context#summary()
-   *
-   * When `model` is set to a valid entity type-id pair, this component will fetch summary-level data for the
-   * given entity from the `context` service.  That data array will be streamed to this component's `modelSummary`
-   * property, and can then be rendered in the UI.
-   *
-   * @type {{name: String, count: *, severity: *, lastUpdated: Number}[]}
-   * @public
-   */
-  @computed('model')
-  modelSummary(model = {}) {
-    next(this, '_fetchSummary', model);
-    return [];
-  },
-
-  /**
    * Indicates whether to show the "context unavailable" message in the UI.
    * Only returns true if the data fetch hit an error. If fetch completes successfully but returns no data, we should
    * still NOT show the "context unavailable" message because there may be additional non-summary data available in Context Panel.
@@ -91,6 +79,12 @@ const ContextTooltipRecords = Component.extend({
    */
   @equal('modelStatus', 'error')
   isContextUnavailable: null,
+
+  init() {
+    this._super(...arguments);
+    const { model } = this;
+    this.send('getSummaryData', model);
+  },
 
   /**
    * Same data as `modelArray` but arranged in a particular order, and with zeroes or hyphens possibly inserted
@@ -146,48 +140,6 @@ const ContextTooltipRecords = Component.extend({
    */
   modelStatus: null,
 
-  /**
-   * Kicks off stream request for summary data.
-   * The responses are then used to update this component's `modelStatus` and `modelSummary`.
-   * Before kicking off the request, `modelStatus` is reset to `null` (if model is empty) or `'streaming'`.
-   * @private
-   */
-  _fetchSummary(model) {
-    const { type, id } = model || {};
-    if (!type || !id) {
-
-      // Model is not well-defined, reset to inert state.
-      this.setProperties({
-        modelStatus: null,
-        modelSummary: []
-      });
-    } else {
-
-      // Model is well-defined, prepare to fetch data.
-      this.setProperties({
-        modelStatus: 'streaming',
-        modelSummary: []
-      });
-
-      // Define a callback that will update our `modelStatus` string and append to our `modelSummary` array.
-      const callback = (type, id, status, records) => {
-
-        // Since this callback is invoked async and the tooltip component is short-lived,
-        // check to make sure this component is still alive before manipulating it.
-        if (this.get('isDestroying') || this.get('isDestroyed')) {
-          return;
-        }
-
-        this.set('modelStatus', status);
-        if (records) {
-          this.get('modelSummary').clear().pushObjects(records);
-        }
-      };
-
-      this.get('context').summary([ model ], callback);
-    }
-
-  },
 
   actions: {
     // Handles clicks on each data record.
@@ -201,4 +153,4 @@ const ContextTooltipRecords = Component.extend({
   }
 });
 
-export default connect(undefined, dispatchToActions)(ContextTooltipRecords);
+export default connect(stateToComputed, dispatchToActions)(ContextTooltipRecords);

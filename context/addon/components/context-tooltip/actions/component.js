@@ -3,10 +3,20 @@ import layout from './template';
 import safeCallback from 'component-lib/utils/safe-callback';
 import computed from 'ember-computed-decorators';
 import { isEmpty } from '@ember/utils';
+import { connect } from 'ember-redux';
 import { pivotToInvestigateUrl } from 'context/util/context-data-modifier';
+import { getSummaryData } from 'context/actions/model-summary';
 import { inject as service } from '@ember/service';
 
-export default Component.extend({
+const stateToComputed = ({ context: { hover: { modelSummary } } }) => ({
+  modelSummary
+});
+
+const dispatchToActions = {
+  getSummaryData
+};
+
+const ContextToolTipActions = Component.extend({
   tagName: 'ul',
   layout,
   classNames: ['rsa-context-tooltip-actions'],
@@ -53,6 +63,16 @@ export default Component.extend({
   },
 
   /**
+   * Indicates whether or not to show the link to Pivot to Archer.
+   * @type {Boolean}
+   * @private
+  */
+  @computed('entityType', 'entityId')
+  showArcherLink(entityType, entityId) {
+    return !isEmpty(entityId) && !!(String(entityType).match(/IP|HOST/));
+  },
+
+  /**
    * This URL will navigate the user to the Classic Investigate UI with a query for the entity, but
    * without any particular device (Concentrator/Broker) selected; the user will be prompted to select the device
    * before the query is executed.
@@ -60,6 +80,21 @@ export default Component.extend({
    * @private
    */
   pivotToInvestigateUrl: '',
+
+  /**
+   * This URL will navigate the user to the Archer Device Page if user is logged in or Archer Log in Page
+   * if user is not logged in.
+   * @type {String}
+   * @private
+   */
+  @computed('showArcherLink', 'modelSummary.[]')
+  pivotToArcherUrl(showArcherLink, summary) {
+    let archerDetails;
+    if (showArcherLink) {
+      archerDetails = summary ? summary.findBy('name', 'Archer') : null;
+    }
+    return archerDetails ? archerDetails.url : null;
+  },
 
   /**
    * Computes the Pivot To Investigate link URL for the current entity type & id.
@@ -108,3 +143,5 @@ export default Component.extend({
     }
   }
 });
+
+export default connect(stateToComputed, dispatchToActions)(ContextToolTipActions);

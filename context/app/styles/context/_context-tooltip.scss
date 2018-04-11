@@ -57,6 +57,12 @@ $contextTooltipDatumPadding: 0px;
     text-decoration: none;
   }
 
+  .disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    display: inline-block;
+  }
+
   .action {
     @include rsa-font(body, small);
     padding: rsa-whitespace(least) 0;

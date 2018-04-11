@@ -64,7 +64,8 @@
     "eslint-plugin-ember-suave": "^1.0.0",
     "seamless-immutable": "7.1.2",
     "loader.js": "^4.2.3",
-    "lodash-es": "4.17.4"
+    "lodash-es": "4.17.4",
+    "ember-dependency-lookup": "2.0.0"
   },
   "engines": {
     "node": "7.5.0"

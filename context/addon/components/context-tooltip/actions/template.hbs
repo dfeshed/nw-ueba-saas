@@ -8,6 +8,16 @@
     </li>
   </a>
 {{/if}}
+{{#if showArcherLink}}
+  <a href="{{pivotToArcherUrl}}" class="{{unless pivotToArcherUrl "disabled"}}" target="_blank">
+    <li class="action js-test-pivot-to-archer-link">
+      {{rsa-icon name="search" size="small"}}
+      <span class="label">
+        {{t 'context.tooltip.archer'}}
+      </span>
+    </li>
+  </a>
+{{/if}}
 {{#if showEndpointLink}}
   <a href="ecatui://{{entityId}}" title="{{t 'context.hostSummary.endpoint'}}" target="_blank">
     <li class="action js-test-endpoint-link">
