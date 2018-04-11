@@ -8,7 +8,7 @@ user-risk-score {
     display: flex;
     flex-flow: column nowrap;
 
-    border: 1px solid #fff;
+    border: var(--second-widgets-border);
 
 
     .user-risk-score-box {
@@ -24,7 +24,7 @@ user-risk-score {
             flex: 1;
 
             color: var(--main-critical-severity-color);
-            font-family: 'RobotoSlab', sans-serif;
+            font-family: 'Open Sans', sans-serif;
             font-size: 8vh;
             line-height: 8vh;
             margin-top: 1vh;
@@ -53,10 +53,10 @@ user-risk-score {
         font-family: 'Open Sans', sans-serif;
         font-size: 14px;
         font-weight: 400;
-        border-bottom: 1px solid #30a2f0;
+        border-bottom: 1px solid #fff;
 
         box-shadow: none;
-        var(--second-widgets-background-color);
+        background-color: var(--second-widgets-background-color);
     }
 
     .user-risk-score-control {
@@ -67,8 +67,9 @@ user-risk-score {
 
         height: calc(15px + 3vh);
         padding: 0 10px 0 20px;
+        border-bottom: 1px solid #fff;
 
-        var(--second-widgets-background-color);
+        background-color: var(--second-widgets-background-color);
         box-shadow: 0 1px 7px rgba(0, 0, 0, 0.4);
 
         svg {
@@ -180,7 +181,7 @@ user-risk-score {
             }
 
             .alert-stats, .alert-name, .alert-date {
-                color: white;
+                color: var(--second-widgets-titles-text-color);
             }
 
             .alert-item-inner-wrapper {
@@ -251,7 +252,7 @@ user-risk-score {
         background-color: #3f7db5;
         border-radius: 3px;
         color: #fafdff;
-        font-family: 'RobotoSlab', sans-serif;
+        font-family: 'Open Sans', sans-serif;
         font-size: 12px;
         font-weight: 400;
         line-height: 15px;
@@ -298,7 +299,7 @@ user-risk-score {
     }
 
     .alert-name {
-        color: #3f7db5;
+        color: var(--second-widgets-titles-text-color);
         font-size: 12px;
         line-height: 15px;
         flex: 1 0;
@@ -348,7 +349,7 @@ user-risk-score {
             }
 
             .indicator-item {
-                color: #004f8f;
+                color: #3f7db5;
                 font-weight: 700;
                 letter-spacing: -0.4px;
             }
