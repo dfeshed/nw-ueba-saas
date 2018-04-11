@@ -8,6 +8,7 @@ import { getLocales } from 'sa/reducers/global/preferences/selectors';
 const english = { id: 'en_US', key: 'en-us', label: 'english', displayLabel: 'English' };
 const spanish = { id: 'es_MX', key: 'es-mx', label: 'spanish', fileName: 'spanish_es-mx.js', displayLabel: 'Spanish' };
 const german = { id: 'de_DE', key: 'de-de', label: 'german', fileName: 'german_de-de.js', displayLabel: 'German' };
+const japanese = { id: 'ja_JP', key: 'ja-jp', label: 'japanese', fileName: 'japanese_ja-jp.js', displayLabel: 'Japanese' };
 
 module('Unit | Route | application', function(hooks) {
   setupTest(hooks);
@@ -35,7 +36,7 @@ module('Unit | Route | application', function(hooks) {
     await promise;
 
     locales = getLocales(redux.getState());
-    assert.deepEqual(locales, [english, german, spanish]);
+    assert.deepEqual(locales, [english, german, japanese, spanish]);
   });
 
   test('when error thrown the default locales are still available', async function(assert) {

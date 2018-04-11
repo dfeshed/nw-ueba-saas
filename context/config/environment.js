@@ -13,7 +13,8 @@ module.exports = function(/* environment, appConfig */) {
       types: ['info', 'success', 'warning', 'error']
     },
     moment: {
-      includeTimezone: 'subset'
+      includeLocales: true,
+      includeTimezone: 'all'
     },
     i18n: {
       defaultLocale: 'en-us',

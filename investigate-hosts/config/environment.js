@@ -16,8 +16,8 @@ module.exports = function(environment/* , appConfig */) {
       readyDelay: 0 // 1500,
     },
     moment: {
-      includeLocales: ['en'],
-      includeTimezone: '2010-2020'
+      includeLocales: true,
+      includeTimezone: 'all'
     },
     i18n: {
       defaultLocale: 'en-us',

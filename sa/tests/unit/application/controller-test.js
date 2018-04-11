@@ -170,6 +170,41 @@ module('Unit | Controller | application', function(hooks) {
     return settled();
   });
 
+  test('moment will be updated when locale changes', async function(assert) {
+    assert.expect(2);
+
+    const dynamicScripts = () => document.body.querySelectorAll('script#dynamicLocale');
+
+    const moment = this.owner.lookup('service:moment');
+    const redux = this.owner.lookup('service:redux');
+
+    this.owner.lookup('controller:application');
+
+    patchFetch(() => {
+      return new Promise(function(resolve) {
+        resolve({
+          ok: true,
+          text() {
+          }
+        });
+      });
+    });
+
+    redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'es_MX', key: 'es-mx', label: 'spanish', fileName: 'spanish_es-mx.js' } });
+
+    return settled().then(async () => {
+      assert.equal(get(moment, 'locale'), 'es-mx');
+
+      redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'en_US', key: 'en-us', label: 'english' } });
+
+      return settled().then(async () => {
+        assert.equal(get(moment, 'locale'), 'en-us');
+      });
+    }).finally(async () => {
+      document.body.removeChild(dynamicScripts()[0]);
+    });
+  });
+
   test('will fetch/append script and set i18n to correct character set when locale changes', async function(assert) {
     assert.expect(17);
 

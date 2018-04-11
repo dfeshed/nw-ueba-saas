@@ -1,4 +1,5 @@
 import { module, test } from 'qunit';
+import Component from '@ember/component';
 import hbs from 'htmlbars-inline-precompile';
 import { patchFlash } from 'sa/tests/helpers/patch-flash';
 import { localStorageClear } from 'sa/tests/helpers/wait-for';
@@ -7,8 +8,9 @@ import { render, find, findAll, settled } from '@ember/test-helpers';
 import { patchReducer } from 'sa/tests/helpers/vnext-patch';
 import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 import { patchSocket, throwSocket } from 'sa/tests/helpers/patch-socket';
+import { getLocale } from 'sa/reducers/global/preferences/selectors';
 
-const germanLocale = 'German';
+const japaneseLocale = 'Japanese';
 const englishLocale = 'English';
 const powerSelect = '.power-select';
 const labelSelector = '.rsa-form-label';
@@ -21,7 +23,7 @@ module('Integration | Component | rsa-locale-preferences', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function() {
-    const initState = { global: { preferences: { locale: { id: 'en_US', key: 'en-us', label: 'english' }, locales: [{ id: 'en_US', key: 'en-us', label: 'english' }, { id: 'de_DE', key: 'de-de', label: 'german' }] } } };
+    const initState = { global: { preferences: { locale: { id: 'en_US', key: 'en-us', label: 'english' }, locales: [{ id: 'en_US', key: 'en-us', label: 'english' }, { id: 'ja_JP', key: 'ja-jp', label: 'japanese' }] } } };
     patchReducer(this, initState);
   });
 
@@ -51,7 +53,7 @@ module('Integration | Component | rsa-locale-preferences', function(hooks) {
     clickTrigger(powerSelect);
     assert.equal(findAll(optionsSelector).length, 2);
     assert.equal(trim(find(`${optionsSelector}:nth-of-type(1)`).textContent), englishLocale);
-    assert.equal(trim(find(`${optionsSelector}:nth-of-type(2)`).textContent), germanLocale);
+    assert.equal(trim(find(`${optionsSelector}:nth-of-type(2)`).textContent), japaneseLocale);
   });
 
   test('onchange of the select should alter the active locale', async function(assert) {
@@ -64,17 +66,17 @@ module('Integration | Component | rsa-locale-preferences', function(hooks) {
       assert.equal(modelName, 'preferences');
       assert.deepEqual(query, {
         data: {
-          userLocale: 'de_DE'
+          userLocale: 'ja_JP'
         }
       });
     });
 
     clickTrigger(powerSelect);
-    selectChoose(powerSelector, germanLocale);
+    selectChoose(powerSelector, japaneseLocale);
 
     return settled().then(async () => {
       const powerSelect = find(powerSelector);
-      assert.equal(trim(powerSelect.textContent), germanLocale);
+      assert.equal(trim(powerSelect.textContent), japaneseLocale);
     });
   });
 
@@ -93,11 +95,55 @@ module('Integration | Component | rsa-locale-preferences', function(hooks) {
     });
 
     clickTrigger(powerSelect);
-    selectChoose(powerSelector, germanLocale);
+    selectChoose(powerSelector, japaneseLocale);
 
     return settled().then(async () => {
       const powerSelect = find(powerSelector);
-      assert.equal(trim(powerSelect.textContent), germanLocale);
+      assert.equal(trim(powerSelect.textContent), japaneseLocale);
+    });
+  });
+
+  test('datetime will reflect proper locale after change occurs', async function(assert) {
+    assert.expect(4);
+
+    class FakeClazz extends Component {
+      get layout() {
+        return hbs`<div class="fakeTime">{{moment-format (moment "1991-01-01 6:00 AM" "HH:mm A") "A"}}</div>{{rsa-locale-preferences}}`;
+      }
+    }
+
+    this.owner.register('component:test-clazz', FakeClazz);
+    this.owner.inject('component:test-clazz', 'moment', 'service:moment');
+
+    const moment = this.owner.lookup('service:moment');
+    const redux = this.owner.lookup('service:redux');
+    const unsubscribe = redux.store.subscribe(() => {
+      const activeLocale = getLocale(redux.store.getState());
+      if (activeLocale.id === 'ja_JP') {
+        moment.changeLocale(activeLocale.key);
+        unsubscribe();
+      }
+    });
+
+    await render(hbs`{{test-clazz}}`);
+
+    assert.equal(find('.fakeTime').textContent, 'PM');
+
+    patchSocket((method, modelName, query) => {
+      assert.deepEqual(query, {
+        data: {
+          userLocale: 'ja_JP'
+        }
+      });
+    });
+
+    clickTrigger(powerSelect);
+    selectChoose(powerSelector, japaneseLocale);
+
+    return settled().then(async () => {
+      const powerSelect = find(powerSelector);
+      assert.equal(trim(powerSelect.textContent), japaneseLocale);
+      assert.equal(find('.fakeTime').textContent, '午後');
     });
   });
 });

@@ -10,6 +10,7 @@ const cssVariablesSupported = window.CSS &&
     window.CSS.supports && window.CSS.supports('--a', 0);
 
 export default Controller.extend({
+  moment: service(),
   redux: service(),
   flashMessages: service(),
   fatalErrors: service(),
@@ -90,11 +91,13 @@ export default Controller.extend({
   _addDynamicLocale(key, fileName) {
     if (!fileName) {
       this.set('i18n.locale', key);
+      get(this, 'moment').changeLocale(key);
     } else {
       const scriptUrl = `/locales/${fileName}`;
       fetch(scriptUrl).then((fetched) => fetched.text()).then((body) => {
         this._appendLocaleScript(body);
         this.set('i18n.locale', key);
+        get(this, 'moment').changeLocale(key);
       }).catch(() => {
         const translationService = get(this, 'i18n');
         const flashMessages = get(this, 'flashMessages');

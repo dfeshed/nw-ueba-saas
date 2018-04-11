@@ -22,8 +22,8 @@ module.exports = function(environment) {
       types: ['info', 'success', 'warning', 'error']
     },
     moment: {
-      includeLocales: ['en'],
-      includeTimezone: 'subset'
+      includeLocales: true,
+      includeTimezone: 'all'
     },
     i18n: {
       defaultLocale: 'en-us',

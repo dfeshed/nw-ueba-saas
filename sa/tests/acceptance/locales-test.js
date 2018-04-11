@@ -10,6 +10,7 @@ import { visit, currentURL, settled } from '@ember/test-helpers';
 const english = { id: 'en_US', key: 'en-us', label: 'english' };
 const spanish = { id: 'es_MX', key: 'es-mx', label: 'spanish', fileName: 'spanish_es-mx.js' };
 const german = { id: 'de_DE', key: 'de-de', label: 'german', fileName: 'german_de-de.js' };
+const japanese = { id: 'ja_JP', key: 'ja-jp', label: 'japanese', fileName: 'japanese_ja-jp.js' };
 
 const setupLocalStorage = (locale, locales) => {
   localStorage.setItem('reduxPersist:global', JSON.stringify({
@@ -46,7 +47,7 @@ module('Acceptance | locales', function(hooks) {
     const redux = this.owner.lookup('service:redux');
     const { locale, locales } = redux.getState().global.preferences;
     assert.deepEqual(locale, english);
-    assert.deepEqual(locales, [english, german, spanish]);
+    assert.deepEqual(locales, [english, german, japanese, spanish]);
 
     await login();
 
@@ -74,7 +75,7 @@ module('Acceptance | locales', function(hooks) {
     const redux = this.owner.lookup('service:redux');
     const { locale, locales } = redux.getState().global.preferences;
     assert.deepEqual(locale, spanish);
-    assert.deepEqual(locales, [english, german, spanish]);
+    assert.deepEqual(locales, [english, german, japanese, spanish]);
 
     await login();
 
