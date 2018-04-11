@@ -180,6 +180,15 @@ fs-header-bar {
 
             .k-widget {
                 width: 100%;
+
+                input {
+                    background-color: var(--main-widgets-background-color);
+                    &::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+                        color: var(--main-widgets-titles-text-color);
+                        opacity: 0.7; /* Firefox */
+                    }
+
+                }
             }
         }
 

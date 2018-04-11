@@ -303,6 +303,10 @@ user-risk-score {
         font-size: 12px;
         line-height: 15px;
         flex: 1 0;
+
+        &:hover {
+            color: #000;
+        }
     }
 
     .alert-date {

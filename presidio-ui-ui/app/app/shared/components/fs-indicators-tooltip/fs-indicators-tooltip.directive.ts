@@ -49,7 +49,7 @@ module Fortscale.shared.components.fsIndicatorsTooltip {
                 fixed: true,
                 removeElementsOnHide: false,
                 group: 'indicators',
-                background: '#f0f7f8',
+                background: '#eeeeee',
                 borderRadius: 3,
                 borderColor: '#f0f7f8',
                 shadow: true,

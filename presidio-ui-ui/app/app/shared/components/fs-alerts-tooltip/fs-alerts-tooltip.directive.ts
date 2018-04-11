@@ -52,7 +52,7 @@ module Fortscale.shared.components.fsUserTooltip {
                 fixed: true,
                 removeElementsOnHide: false,
                 group: 'users',
-                background: '#f0f7f8',
+                background: '#eeeeee',
                 borderRadius: 3,
                 borderColor: '#f0f7f8',
                 shadow: true,
