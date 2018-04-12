@@ -8,8 +8,29 @@ const _goal = (state) => state.investigate.eventResults.goal;
 const _resultsData = (state) => state.investigate.eventResults.data;
 const _status = (state) => state.investigate.eventResults.status;
 const _sessionId = (state) => state.investigate.queryNode.sessionId;
+const _errorMessage = (state) => state.investigate.eventResults.message;
 
-export const eventResultsErrorMessage = (state) => state.investigate.eventResults.message;
+/* Two types of message formats
+    - Case one -> 'rule syntax error: expecting <unary operator> or <relational operator> here: "does 45454 && time="2018-04-09 15:48:00" - "2018-04-10 15:47:59""'
+    - Case two -> rule syntax error: unrecognized key sdcsdcs
+
+    The regex below trims of the timestamp. (if there is one)
+    trim everything starting at "&& time" till the end of line. Example below
+    'rule syntax error: expecting <unary operator> or <relational operator> here: "does 45454 && time="2018-04-09 15:48:00" - "2018-04-10 15:47:59'
+    to 'rule syntax error: expecting <unary operator> or <relational operator> here: "does 45454
+ */
+export const eventResultsErrorMessage = createSelector(
+  [_errorMessage],
+  (errorMessage) => {
+    if (errorMessage && errorMessage.indexOf('rule syntax error') === 0) {
+      const string = errorMessage.replace('rule syntax error', 'syntax error');
+      const messageString = string.replace(/(&&\stime).*/g, '');
+      return messageString;
+    } else {
+      return errorMessage;
+    }
+  }
+);
 
 export const isEventResultsError = createSelector(
   [_status],

@@ -64,21 +64,21 @@
 
   &.guided {
     a.guided-link {
-        color: text-color(secondary, light);
+        color: text-color(primary, light);
         pointer-events: none;
     }
   }
 
   &.freeForm {
     a.freeForm-link {
-      color: text-color(secondary, light);
+      color: text-color(primary, light);
       pointer-events: none;
     }
   }
 
   &.nextGen {
     a.nextGen-link {
-      color: text-color(secondary, light);
+      color: text-color(primary, light);
       pointer-events: none;
     }
   }
@@ -92,7 +92,7 @@
     align-content: flex-start;
     a {
       text-decoration: none;
-      color: text-color(navigation, link);
+      color: text-color(secondary);
       margin: rsa-whitespace(least) rsa-whitespace(less);
     }
     .query-bar-options {
