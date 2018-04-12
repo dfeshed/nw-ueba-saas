@@ -56,6 +56,7 @@ export default Component.extend({
      * @public
      */
     navigateToProcessAnalysis() {
+      window.open(`${window.location.origin}/investigate/process-analysis/`, '_blank', 'width=1000,height=700');
     }
   }
 });

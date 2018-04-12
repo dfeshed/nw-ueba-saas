@@ -55,7 +55,8 @@ const saModuleDependants = {
   'investigate-shared': [
     'investigate-events',
     'investigate-hosts',
-    'investigate-files'
+    'investigate-files',
+    'sa'
   ],
   'investigate-events': ['sa'],
   'investigate-hosts': ['sa'],

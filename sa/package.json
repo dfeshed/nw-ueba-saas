@@ -88,7 +88,8 @@
       "../packager",
       "../context",
       "../preferences",
-      "../hosts-scan-configure"
+      "../hosts-scan-configure",
+      "../investigate-shared"
     ]
   },
   "engines": {
