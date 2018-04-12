@@ -23,6 +23,7 @@ const dispatchToActions = (dispatch) => {
       dispatch(DictionaryActions.getAllStatusTypes());
       dispatch(DictionaryActions.getAllEnabledUsers());
       dispatch(DictionaryActions.getAllCategories());
+      dispatch(DictionaryActions.getAllEscalationStatuses());
     }
   };
 };

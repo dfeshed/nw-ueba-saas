@@ -69,3 +69,8 @@ export const getMilestoneTypes = createSelector(
   dictionariesState,
   (dictionariesState) => dictionariesState.milestoneTypes
 );
+
+export const getEscalationStatuses = createSelector(
+  dictionariesState,
+  (dictionariesState) => dictionariesState.escalationStatuses
+);

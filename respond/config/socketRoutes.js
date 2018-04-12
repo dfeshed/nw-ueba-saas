@@ -146,6 +146,13 @@ const respondConfigGen = function(environment) {
         requestDestination: '/ws/respond/options/status'
       }
     },
+    'escalation-statuses': {
+      socketUrl,
+      findAll: {
+        subscriptionDestination: '/user/queue/incidents/escalationStatuses',
+        requestDestination: '/ws/respond/incidents/escalationStatuses'
+      }
+    },
     'milestone-types': {
       socketUrl,
       findAll: {

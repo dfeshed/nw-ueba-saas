@@ -9,7 +9,8 @@ import {
   getAllEnabledUsers,
   getAllPriorityTypes,
   getAllStatusTypes,
-  getAllCategories } from 'respond/actions/creators/dictionary-creators';
+  getAllCategories,
+  getAllEscalationStatuses } from 'respond/actions/creators/dictionary-creators';
 import RSVP from 'rsvp';
 import wait from 'ember-test-helpers/wait';
 import { patchReducer } from '../../../../helpers/vnext-patch';
@@ -23,7 +24,7 @@ module('Integration | Component | Respond Incident Filters', function(hooks) {
   });
 
   hooks.beforeEach(function() {
-    setState = (state) => {
+    setState = (state = {}) => {
       const fullState = { respond: { incidents: state } };
       patchReducer(this, Immutable.from(fullState));
       const redux = this.owner.lookup('service:redux');
@@ -32,7 +33,8 @@ module('Integration | Component | Respond Incident Filters', function(hooks) {
         redux.dispatch(getAllEnabledUsers()),
         redux.dispatch(getAllPriorityTypes()),
         redux.dispatch(getAllStatusTypes()),
-        redux.dispatch(getAllCategories())
+        redux.dispatch(getAllCategories()),
+        redux.dispatch(getAllEscalationStatuses())
       ]);
     };
     initialize(this.owner);
@@ -171,5 +173,18 @@ module('Integration | Component | Respond Incident Filters', function(hooks) {
     setState({ itemsFilters: { 'assignee.id': ['local'] } });
     await render(hbs`{{rsa-incidents/filter-controls}}`);
     assert.equal(findAll('.filter-option.assignee-filter .rsa-form-checkbox-label.show-only-unassigned.disabled').length, 1);
+  });
+
+  test('The escalation status checkbox filters appear in the filter panel', async function(assert) {
+    assert.expect(2);
+    setState();
+    await init;
+    this.set('updateFilter', function(filter) {
+      assert.deepEqual(filter, { escalationStatus: ['ESCALATED'] });
+    });
+    await render(hbs`{{rsa-incidents/filter-controls updateFilter=(action updateFilter)}}`);
+    const selector = '.filter-option.escalation-status-filter .rsa-form-checkbox-label';
+    assert.equal(findAll(selector).length, 2, 'There should be 2 status filter options');
+    await click(`${selector} input.rsa-form-checkbox:first-of-type`);
   });
 });

@@ -144,5 +144,20 @@ export default {
       modelName: 'milestone-types',
       query: {}
     });
+  },
+
+  /**
+   * Returns a list of all known incident escalation statuses
+   * @method getAllEscalationStatuses
+   * @returns {*}
+   * @public
+   */
+  getAllEscalationStatuses() {
+    const request = lookup('service:request');
+    return request.promiseRequest({
+      method: 'findAll',
+      modelName: 'escalation-statuses',
+      query: {}
+    });
   }
 };

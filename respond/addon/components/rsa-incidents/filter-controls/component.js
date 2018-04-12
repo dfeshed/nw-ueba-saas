@@ -5,7 +5,8 @@ import { debounce } from '@ember/runloop';
 import {
   getTopLevelCategoryNames,
   getPriorityTypes,
-  getStatusTypes
+  getStatusTypes,
+  getEscalationStatuses
 } from 'respond/selectors/dictionaries';
 
 import {
@@ -15,7 +16,8 @@ import {
   getIsUnassignedFilters,
   getAssigneeFilters,
   getCategoryFilters,
-  hasAssigneeFilter
+  hasAssigneeFilter,
+  getEscalationStatusFilters
 } from 'respond/selectors/incidents';
 
 import { getEnabledUsers } from 'respond/selectors/users';
@@ -28,11 +30,13 @@ const stateToComputed = (state) => {
     isUnassignedFilter: getIsUnassignedFilters(state),
     assigneeFilters: getAssigneeFilters(state),
     hasAssigneeFilter: hasAssigneeFilter(state),
+    escalationStatusFilters: getEscalationStatusFilters(state),
     priorityTypes: getPriorityTypes(state),
     statusTypes: getStatusTypes(state),
     categoryFilters: getCategoryFilters(state),
     categoryTags: getTopLevelCategoryNames(state),
-    users: getEnabledUsers(state)
+    users: getEnabledUsers(state),
+    escalationStatuses: getEscalationStatuses(state)
   };
 };
 
@@ -97,6 +101,13 @@ const IncidentFilters = Component.extend({
       const priorityFilters = this.get('priorityFilters');
       this.get('updateFilter')({
         priority: priorityFilters.includes(priority) ? priorityFilters.without(priority) : [...priorityFilters, priority]
+      });
+    },
+
+    toggleEscalationStatusFilter(escalationStatus) {
+      const escalationStatusFilters = this.get('escalationStatusFilters');
+      this.get('updateFilter')({
+        escalationStatus: escalationStatusFilters.includes(escalationStatus) ? escalationStatusFilters.without(escalationStatus) : [...escalationStatusFilters, escalationStatus]
       });
     },
 

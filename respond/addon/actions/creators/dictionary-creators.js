@@ -141,6 +141,19 @@ const getAllMilestoneTypes = () => {
   };
 };
 
+/**
+ * Action creator for fetching all known incident escalation statuses
+ * @method getAllEscalationStatuses
+ * @public
+ * @returns {Object}
+ */
+const getAllEscalationStatuses = () => {
+  return {
+    type: ACTION_TYPES.FETCH_ESCALATION_STATUSES,
+    promise: dictionaries.getAllEscalationStatuses()
+  };
+};
+
 export {
   getAllUsers,
   getAllEnabledUsers,
@@ -152,5 +165,6 @@ export {
   getAllAlertTypes,
   getAllAlertSources,
   getAllAlertNames,
-  getAllMilestoneTypes
+  getAllMilestoneTypes,
+  getAllEscalationStatuses
 };

@@ -92,3 +92,8 @@ export const getCategoryFilters = createSelector(
   getItemsFilters,
   (itemsFilters) => itemsFilters['categories.parent']
 );
+
+export const getEscalationStatusFilters = createSelector(
+  getItemsFilters,
+  (itemsFilters) => itemsFilters.escalationStatus || []
+);

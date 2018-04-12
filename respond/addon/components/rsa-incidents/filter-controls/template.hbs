@@ -74,3 +74,20 @@
     {{category}}
   {{/power-select-multiple}}
 </section>
+<section class="filter-option escalation-status-filter">
+  <h2>{{ t 'respond.incident.escalationStatus'}}</h2>
+  {{#each escalationStatuses as |escalationStatusType|}}
+    <div>
+      <label class="rsa-form-checkbox-label {{if (contains escalationStatusType escalationStatusFilters) 'checked'}}">
+        {{rsa-form-checkbox
+          checked=(contains escalationStatusType escalationStatusFilters )
+          change=(action 'toggleEscalationStatusFilter' escalationStatusType)}}
+        {{#if (or (eq escalationStatusType 'NON_ESCALATED') (eq escalationStatusType 'ESCALATED'))}}
+          <span>{{t (concat 'respond.escalationStatus.' escalationStatusType)}}</span>
+        {{else}}
+          <span>{{escalationStatusType}}</span>
+        {{/if}}
+      </label>
+    </div>
+  {{/each}}
+</section>

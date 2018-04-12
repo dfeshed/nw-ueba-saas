@@ -980,6 +980,7 @@ export default {
     incident: {
       escalate: 'Escalate',
       escalated: 'Escalated',
+      escalationStatus: 'Escalation Status',
       created: 'Created',
       status: 'Status',
       priority: 'Priority',
@@ -1311,6 +1312,10 @@ export default {
       REMEDIATED: 'Remediated',
       RISK_ACCEPTED: 'Risk Accepted',
       NOT_APPLICABLE: 'Not Applicable'
+    },
+    escalationStatus: {
+      ESCALATED: 'Escalated',
+      NON_ESCALATED: 'Not Escalated'
     },
     priority: {
       LOW: 'Low',
