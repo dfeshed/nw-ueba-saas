@@ -1,0 +1,10 @@
+{{!-- {{#each filters as |filter|}}
+  {{query-container/query-pill
+    filter=(readonly filter)
+    sendMessage=(action 'handleMessage')
+  }}
+{{/each}} --}}
+{{query-container/query-pill
+  isActive=true
+  sendMessage=(action 'handleMessage' this.elementId)
+}}

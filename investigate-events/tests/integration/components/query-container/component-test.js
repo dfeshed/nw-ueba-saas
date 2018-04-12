@@ -81,7 +81,7 @@ module('Integration | Component | query-container', function(hooks) {
     await click('.query-bar-select-actions .nextGen-link');
     return settled().then(() => {
       assert.ok(find('.rsa-investigate-query-container.nextGen'), 'Expected to see NextGen Query Bar');
-      assert.equal(find('.rsa-investigate-nextGen-query-bar input').placeholder, 'Next Gen Query Bar', 'Expected a placeholder');
+      assert.equal(findAll('.query-pills').length, 1, 'Expected to see Query Pills component');
     });
 
   });

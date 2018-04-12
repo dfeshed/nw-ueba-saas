@@ -24,8 +24,12 @@ export default handleActions({
         const { filter: filters } = action.payload.request;
         const filter = filters.find((e) => e.field === 'endpointId');
         const { value: serviceId } = filter;
-        const languageCache = s.languageCache.setIn([serviceId], action.payload.data);
-        return s.merge({ language: action.payload.data, languageCache });
+        const data = action.payload.data.map((d) => ({
+          ...d,
+          formattedName: d.metaName ? `${d.metaName} (${d.displayName})` : d.displayName
+        }));
+        const languageCache = s.languageCache.setIn([serviceId], data);
+        return s.merge({ language: data, languageCache });
       }
     });
   },

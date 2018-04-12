@@ -11,7 +11,7 @@
     {{else if (eq queryView 'freeForm')}}
       {{query-container/free-form freeFormText=freeFormText executeQuery=(route-action 'executeQuery')}}
     {{else if (eq queryView 'nextGen')}}
-      {{query-container/next-gen}}
+      {{query-container/query-pills filters=(readonly filters) executeQuery=(route-action 'executeQuery')}}
     {{/if}}
   </div>
   <div class='query-bar-select-actions'>
@@ -22,6 +22,7 @@
     <a class='nextGen-link' title={{t 'investigate.nextGen.linkTitle'}} href='' {{action (mut queryView) 'nextGen'}}>Next Gen Mode</a>
   </div>
 </div>
+
 {{#rsa-form-button
   class='execute-query-button'
   defaultAction=(route-action 'executeQuery' criteria)

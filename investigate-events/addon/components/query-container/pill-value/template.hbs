@@ -1,0 +1,10 @@
+{{#if isActive}}
+  {{input
+    autofocus='true'
+    key-up='onKeyUp'
+    type='text'
+    value=(readonly valueString)
+  }}
+{{else}}
+  {{valueString}}
+{{/if}}

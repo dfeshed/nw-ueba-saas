@@ -1,0 +1,18 @@
+{{query-container/pill-meta
+  isActive=(readonly isMetaActive)
+  sendMessage=(action 'handleMessage')
+  selection=(readonly selectedMeta)
+}}
+&nbsp;
+{{query-container/pill-operator
+  isActive=(readonly isOperatorActive)
+  meta=(readonly selectedMeta)
+  selection=(readonly selectedOperator)
+  sendMessage=(action 'handleMessage')
+}}
+&nbsp;
+{{query-container/pill-value
+  isActive=(readonly isValueActive)
+  sendMessage=(action 'handleMessage')
+  valueString=(readonly valueString)
+}}

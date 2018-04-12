@@ -27,10 +27,9 @@ export const defaultMetaGroup = createSelector(
   })
 );
 
-// leaving out time as we already have panel to select time range for our queryBuilder
+// leaving out time as we already have panel to select time range for our
+// queryBuilder
 export const metaKeySuggestionsForQueryBuilder = createSelector(
   [_language],
-  (language = []) => {
-    return language.filter((item) => item.metaName !== 'time');
-  }
+  (language = []) => language.filter((d) => d.metaName !== 'time')
 );

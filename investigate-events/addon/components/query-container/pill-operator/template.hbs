@@ -1,0 +1,20 @@
+{{#if isActive}}
+  {{#power-select-typeahead
+      allowClear=false
+      defaultHighlighted=null
+      extra=(hash labelPath='metaName')
+      initiallyOpened=true
+      matcher=_matcher
+      matchTriggerWidth=false
+      noMatchesMessage='All Operators Filtered out'
+      onchange=(action 'onChange')
+      onfocus=(action 'onFocus')
+      options=options
+      selected=selection
+      as |operator|
+    }}
+    {{operator.displayName}}
+  {{/power-select-typeahead}}
+{{else}}
+  {{selection.displayName}}
+{{/if}}
