@@ -121,7 +121,9 @@ When the last page is encountered, the API returns a flag which indicates it has
 
 The `Cursor` keeps track of the `marker`s as it moves through the result. There are four paging functions on the `Cursor`. `first`, `previous`, `next`, and `last`. When needed -- as with `previous` and `last` -- the `Cursor` uses the stored `marker`s to traverse the result. But unless the `marker` has been encountered for the last page, `last` cannot be used.
 
-If a `Cursor` function is called that does not logically make sense, the cursor will do nothing; for instance, if on the `first` page and `previous` is called or if on the `last` page and `next` is called the functions will NOOP. Additionally, you cannot call `last` until the last page has been encountered via `next`ing. A call to `last` when the last marker isn't known will also NOOP.
+If a `Cursor` function is called that does not logically make sense, the cursor will do nothing; for instance, if on the `first` page and `previous` is called or if on the `last` page and `next` is called the functions will NOOP because the desired outcome has already taken place.
+
+However, you cannot call `last` until the last page has been encountered via `next`ing. A call to `last` when the last marker isn't known will throw an error.
 
 To help the consumer of the `Cursor` know what can be executed the `Cursor` exposes a set of flags -- `canFirst`, `canPrevious`, `canNext` and `canLast` -- which can be used to prevent certain pagination user interactions.
 

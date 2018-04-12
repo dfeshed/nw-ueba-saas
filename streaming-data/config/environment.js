@@ -104,6 +104,10 @@ module.exports = function(/* environment, appConfig */) {
           subscriptionDestination: '/test/subscription/stream/_12',
           requestDestination: '/test/request/stream/_12',
           cancelDestination: '/test/request/stream/_12'
+        },
+        'paged-stream/_1': {
+          subscriptionDestination: '/test/subscription/paged-stream/_1',
+          requestDestination: '/test/request/paged-stream/_1'
         }
       }
     }

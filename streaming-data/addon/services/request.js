@@ -3,6 +3,7 @@ import {
   StreamCache,
   promiseRequest,
   streamRequest,
+  pagedStreamRequest,
   Socket,
   ping
 } from './data-access';
@@ -56,6 +57,11 @@ export default Service.extend({
   streamRequest(opts) {
     const routeName = this._currentRouteName();
     streamRequest(opts, routeName);
+  },
+
+  pagedStreamRequest(opts) {
+    const routeName = this._currentRouteName();
+    return pagedStreamRequest(opts, routeName);
   },
 
   ping(modelName) {

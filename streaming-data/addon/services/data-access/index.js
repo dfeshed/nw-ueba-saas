@@ -3,6 +3,7 @@ import { StreamCache, Stream } from './streams';
 import {
   promiseRequest,
   streamRequest,
+  pagedStreamRequest,
   ping
 } from './requests';
 
@@ -12,5 +13,6 @@ export {
   Stream,
   streamRequest,
   promiseRequest,
+  pagedStreamRequest,
   ping
 };

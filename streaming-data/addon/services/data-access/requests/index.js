@@ -101,6 +101,54 @@ const streamRequest = ({
 };
 
 /**
+ * For details see streaming-data README
+ *
+ * @param {string} options.method used to indentify socket condfiguration in the app's config/environment.js
+ * @param {string} options.modelName The type of model (i.e., data record) that is being requested. This will be used
+ *  to look up a corresponding socket configuration in the app's `config/environment.js` file.
+ * @param {object} options.query Arbitrary hash of inputs for the query.
+ * @param {function} options.onResponse callback that is called when the stream returns data. The response object
+ *  from the stream is passed to this callback
+ * @param {object} [options.streamOptions] Optional hash of configuration properties for the stream constructor.
+ * @param {function} [options.onInit] callback that is called when the stream is about to start.
+ * @param {function} [options.onCompleted] callback that is called when the stream completes. Nothing is passed to
+ *  this function
+ * @param {function} [options.onError] callback that is called if the stream errors out. The bad response is passed
+ *  to this callback
+ * @param {string} routeName the route on which the request is being made
+ * @returns {undefined}
+ * @public
+ */
+const pagedStreamRequest = (options, routeName) => {
+  return function() {
+    const functionMakePageRequest = () => {
+
+      const onReject = options.onError || function(response) {
+        warn(
+          `Unhandled error in stream, method: ${options.method}, modelName: ${options.modelName}, code: ${response.code}`,
+          { id: 'stremaing-data.request.pagedStreamRequest' }
+        );
+      };
+
+      assert('Cannot call pagedStreamRequest without onResponse', options.onResponse);
+
+      promiseRequest(options, routeName, 'pagedStreamRequest')
+        .then(options.onResponse)
+        .catch(onReject);
+    };
+
+    functionMakePageRequest();
+
+    return {
+      first() {},
+      previous() {},
+      next() {},
+      last() {}
+    };
+  }();
+};
+
+/**
  * API for interfacing with endpoints via promises.
  *
  * This takes various parameters used to interface/interact with streams on websockets but allows
@@ -127,6 +175,8 @@ const streamRequest = ({
  * @param {function} [onInit] callback that is called when the stream is about to start. This callback is
  *  handled a function that can be used to stop the stream's execution
  * @param {object} [streamOptions] Optional hash of configuration properties for the stream constructor.
+ * @param {string} rootCall where promiseRequest call originated from, used when promiseRequest executed
+ *  internally to provide better error messaging
  * @returns {RSVP.Promise}
  * @public
  */
@@ -136,25 +186,24 @@ const promiseRequest = ({
     query,
     onInit,
     streamOptions = {}
-  }, routeName) => {
-  let stream;
+  }, routeName, rootCall = 'promiseRequest') => {
 
   if (routeName === undefined || routeName === '') {
-    routeName = _missingRouteNameWarning('promiseRequest', method, modelName);
+    routeName = _missingRouteNameWarning(rootCall, method, modelName);
   }
 
-  _baseAsserts(method, modelName, query, 'promiseRequest');
+  _baseAsserts(method, modelName, query, rootCall);
 
-  try {
-    stream = Socket.createStream(method, modelName, query, streamOptions);
-  } catch (err) {
-    return null;
-  }
+  // Create the object required to create correct socket connection
+  const stream = Socket.createStream(method, modelName, query, streamOptions);
 
+  // register the stream with the cache for future maintenance
   StreamCache.registerStream(stream, method, modelName, routeName, streamOptions);
 
   return new RSVP.Promise((resolve, reject) => {
     let hangup;
+
+    // Start stream/socket connection
     stream.subscribe({
       onInit(stopStreaming) {
         hangup = stopStreaming;
@@ -216,5 +265,6 @@ const ping = (modelName) => {
 export {
   promiseRequest,
   streamRequest,
+  pagedStreamRequest,
   ping
 };

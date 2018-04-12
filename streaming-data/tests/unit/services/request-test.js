@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import EmberObject from '@ember/object';
 
 import sinon from 'sinon';
@@ -20,6 +18,26 @@ test('observes route changes', function(assert) {
   router.set('currentRouteName', 'bar');
 
   assert.ok(requestService._routeCleanup.calledOnce, 'when route changes request service takes action');
+});
+
+test('streamRequest will throw socket config error if environment config not present', function(assert) {
+  assert.expect(1);
+  const router = EmberObject.create({ currentRouteName: 'foo' });
+  const requestService = Request.create({ router });
+
+  try {
+    requestService.streamRequest({
+      onResponse: noop,
+      modelName: 'foo',
+      query: {},
+      method: 'foo'
+    });
+  } catch (err) {
+    assert.equal(
+      err.message,
+      'Invalid socket stream configuration:. model: foo, method: foo',
+      'error message from throw error is correct');
+  }
 });
 
 test('will not break if right things passed into streamRequest', function(assert) {
@@ -104,6 +122,28 @@ test('will break if wrong things passed into streamRequest', function(assert) {
   }
 });
 
+test('pagedStreamRequest will not break when right things passed in', function(assert) {
+  assert.expect(1);
+  const router = EmberObject.create({ currentRouteName: 'foo' });
+  const requestService = Request.create({ router });
+
+  try {
+    requestService.pagedStreamRequest({
+      onResponse: noop,
+      modelName: 'foo',
+      query: {},
+      method: 'foo'
+    });
+    assert.ok(false, 'error should have been thrown (WebsocketConfigurationNotFoundException)');
+  } catch (err) {
+    assert.equal(
+      err.name,
+      'WebsocketConfigurationNotFoundException',
+      'error thrown shows it made it beyond asserts and attempted to create socket'
+    );
+  }
+});
+
 test('will break if wrong things passed into promiseRequest', function(assert) {
   assert.expect(3);
   const router = EmberObject.create({ currentRouteName: 'foo' });
@@ -119,7 +159,8 @@ test('will break if wrong things passed into promiseRequest', function(assert) {
     assert.equal(
       err.message,
       'Assertion Failed: Cannot call promiseRequest without method',
-      'error was thrown because method not set');
+      'error was thrown because method not set'
+    );
   }
 
   try {
@@ -132,7 +173,8 @@ test('will break if wrong things passed into promiseRequest', function(assert) {
     assert.equal(
       err.message,
       'Assertion Failed: Cannot call promiseRequest without modelName',
-      'error was thrown because modelName not set');
+      'error was thrown because modelName not set'
+    );
   }
 
   try {
@@ -145,17 +187,102 @@ test('will break if wrong things passed into promiseRequest', function(assert) {
     assert.equal(
       err.message,
       'Assertion Failed: Cannot call promiseRequest without query',
-      'error was thrown because query not set');
+      'error was thrown because query not set'
+    );
   }
 });
 
-test('streamRequest will throw socket config error if environment config not present', function(assert) {
+test('will break if wrong things passed into pagedStreamRequest', function(assert) {
+  assert.expect(4);
+  const router = EmberObject.create({ currentRouteName: 'foo' });
+  const requestService = Request.create({ router });
+
+  try {
+    requestService.pagedStreamRequest({
+      modelName: 'foo',
+      query: {},
+      method: undefined,
+      onResponse() {}
+    });
+  } catch (err) {
+    assert.equal(
+      err.message,
+      'Assertion Failed: Cannot call pagedStreamRequest without method',
+      'error was thrown because method not set'
+    );
+  }
+
+  try {
+    requestService.pagedStreamRequest({
+      modelName: null,
+      query: {},
+      method: 'foo',
+      onResponse() {}
+    });
+  } catch (err) {
+    assert.equal(
+      err.message,
+      'Assertion Failed: Cannot call pagedStreamRequest without modelName',
+      'error was thrown because modelName not set');
+  }
+
+  try {
+    requestService.pagedStreamRequest({
+      modelName: 'bar',
+      query: undefined,
+      method: 'foo',
+      onResponse() {}
+    });
+  } catch (err) {
+    assert.equal(
+      err.message,
+      'Assertion Failed: Cannot call pagedStreamRequest without query',
+      'error was thrown because query not set'
+    );
+  }
+
+  try {
+    requestService.pagedStreamRequest({
+      modelName: 'bar',
+      query: undefined,
+      method: 'foo'
+    });
+  } catch (err) {
+    assert.equal(
+      err.message,
+      'Assertion Failed: Cannot call pagedStreamRequest without onResponse',
+      'error was thrown because onResponse not set'
+    );
+  }
+});
+
+
+test('promiseRequest will throw socket config error if environment config not present', function(assert) {
   assert.expect(1);
   const router = EmberObject.create({ currentRouteName: 'foo' });
   const requestService = Request.create({ router });
 
   try {
-    requestService.streamRequest({
+    requestService.promiseRequest({
+      modelName: 'foo',
+      query: {},
+      method: 'foo'
+    });
+  } catch (err) {
+    assert.equal(
+      err.message,
+      'Invalid socket stream configuration:. model: foo, method: foo',
+      'error message from throw error is correct');
+  }
+});
+
+test('pagedStreamRequest will throw socket config error if environment config not present', function(assert) {
+  assert.expect(1);
+  const router = EmberObject.create({ currentRouteName: 'foo' });
+  const requestService = Request.create({ router });
+
+  try {
+    requestService.pagedStreamRequest({
       onResponse: noop,
       modelName: 'foo',
       query: {},
@@ -169,20 +296,6 @@ test('streamRequest will throw socket config error if environment config not pre
   }
 });
 
-test('promiseRequest return null if environment config not present', function(assert) {
-  assert.expect(1);
-  const router = EmberObject.create({ currentRouteName: 'foo' });
-  const requestService = Request.create({ router });
-
-  const output = requestService.promiseRequest({
-    modelName: 'foo',
-    query: {},
-    method: 'foo'
-  });
-
-  assert.equal(output, null, 'promiseRequest returns null when no config present');
-});
-
 test('ping resolves to success', function(assert) {
   const done = assert.async();
   assert.expect(1);
@@ -192,7 +305,6 @@ test('ping resolves to success', function(assert) {
     assert.ok(true, 'should return the socket information');
     done();
   });
-
 });
 
 test('ping resolves to failure', function(assert) {
@@ -201,12 +313,12 @@ test('ping resolves to failure', function(assert) {
   const router = EmberObject.create({ currentRouteName: 'foo' });
   const requestService = Request.create({ router });
   requestService.ping('test-ping/_fail')
-    .then(function () {
+    .then(function() {
       assert.ok(false, 'ping should not have succeeded');
       done();
     })
     .catch(function() {
       assert.ok(true, 'ping should fail');
       done();
-  });
+    });
 });
