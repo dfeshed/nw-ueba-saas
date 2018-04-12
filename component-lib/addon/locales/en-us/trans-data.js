@@ -1652,7 +1652,7 @@ export default {
       'transport.http.auth.failed': 'Could not fetch context from this data source - Authorization failed.',
       archer: {
         noData: 'Data in RSA Archer is not available.',
-        notConfigured: 'Archer data source is not configured and refer help documentation to configure.',
+        notConfigured: 'Configure Archer as a data source, add or enable to pivot successfully.',
         notReachable: 'Check the data source connectivity to Archer.'
       }
     },
