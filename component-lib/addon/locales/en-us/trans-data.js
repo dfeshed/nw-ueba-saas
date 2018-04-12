@@ -7,6 +7,15 @@ export default {
     'en-us': 'English',
     ja: 'Japanese'
   },
+  monitor: {
+    title: 'Monitor'
+  },
+  config: {
+    title: 'Configure'
+  },
+  admin: {
+    title: 'Admin'
+  },
   passwordPolicy: {
     passwordPolicyRequestError: 'There was an issue retrieving your password policy.',
     passwordPolicyMinChars: 'Must be at least {{passwordPolicyMinChars}} characters',
