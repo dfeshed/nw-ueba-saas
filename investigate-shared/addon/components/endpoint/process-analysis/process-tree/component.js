@@ -2,6 +2,7 @@ import Component from '@ember/component';
 import layout from './template';
 import zoomed from './helpers/zoomed';
 import { run } from '@ember/runloop';
+import { connect } from 'ember-redux';
 
 import { select, event } from 'd3-selection';
 import { zoom } from 'd3-zoom';
@@ -11,7 +12,11 @@ import computed from 'ember-computed-decorators';
 
 import { transitionElbow, elbow, updateRect, appendRect, appendText, updateText } from './helpers/d3-helpers';
 
-export default Component.extend({
+const stateToComputed = (state) => ({
+  treeData: state.investigateShared.endpoint.processTree.rawProcessData
+});
+
+const TreeComponent = Component.extend({
 
   layout,
 
@@ -122,48 +127,6 @@ export default Component.extend({
       })
       .on('zoom', zoomCallback);
     return zoomBehaviour;
-  },
-
-  treeData: {
-    'name': 'Evil.exe',
-    'id': 1,
-    'riskScore': 25,
-    'children': [
-      {
-        'name': 'cmd.exe',
-        'id': 2,
-        'riskScore': 25,
-        'children': [
-          {
-            'name': 'notepad.exe',
-            'id': 3,
-            'riskScore': 25,
-            'children': []
-          },
-          {
-            'name': 'winword.exe',
-            'id': 4,
-            'riskScore': 87
-          }
-        ]
-      },
-      {
-        'name': 'cmd.exe',
-        'riskScore': 15,
-        'id': 6,
-        'children': []
-      },
-      {
-        'name': 'evil-new.exe',
-        'riskScore': 100,
-        'id': 9
-      },
-      {
-        'name': 'cmd.exe',
-        'riskScore': 25,
-        'id': 8
-      }
-    ]
   },
 
   didInsertElement() {
@@ -389,3 +352,5 @@ export default Component.extend({
     this.buildChart(d);
   }
 });
+
+export default connect(stateToComputed)(TreeComponent);
