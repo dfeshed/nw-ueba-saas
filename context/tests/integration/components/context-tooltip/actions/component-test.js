@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { render } from '@ember/test-helpers';
+import { click, find, findAll, render } from '@ember/test-helpers';
 import Service from '@ember/service';
 import rsvp from 'rsvp';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -64,10 +64,10 @@ module('Integration | Component | context tooltip actions', function(hooks) {
     addToListAction=addToListAction}}`);
 
 
-    assert.equal(this.$('.rsa-context-tooltip-actions').length, 1, 'Expected to find root DOM node');
-    assert.equal(this.$('.action').length, 4, 'Expected to find 4 action menu options');
+    assert.equal(findAll('.rsa-context-tooltip-actions').length, 1, 'Expected to find root DOM node');
+    assert.equal(findAll('.action').length, 4, 'Expected to find 4 action menu options');
       // Click the third option, that's the Add To List option
-    this.$('.action').eq(3).trigger('click');
+    await click(findAll('.action')[3]);
   });
 
   test('it only shows the Pivot to Endpoint link for IPs, HOSTs & MAC addresses', async function(assert) {
@@ -80,31 +80,31 @@ module('Integration | Component | context tooltip actions', function(hooks) {
     entityType=entityType
     entityId=entityId}}`);
 
-    assert.ok(this.$('.js-test-endpoint-link').length, 'Expected to find endpoint link for IP');
+    assert.ok(findAll('.js-test-endpoint-link').length, 'Expected to find endpoint link for IP');
 
     this.setProperties({
       entityType: 'HOST',
       entityId: 'MACHINE1'
     });
-    assert.ok(this.$('.js-test-endpoint-link').length, 'Expected to find endpoint link for HOST');
+    assert.ok(findAll('.js-test-endpoint-link').length, 'Expected to find endpoint link for HOST');
 
     this.setProperties({
       entityType: 'MAC_ADDRESS',
       entityId: 'aa:bb:cc:dd'
     });
-    assert.ok(this.$('.js-test-endpoint-link').length, 'Expected to find endpoint link for MAC address');
+    assert.ok(findAll('.js-test-endpoint-link').length, 'Expected to find endpoint link for MAC address');
 
     this.setProperties({
       entityType: 'USER',
       entityId: 'username1'
     });
-    assert.notOk(this.$('.js-test-endpoint-link').length, 'Expected to NOT find endpoint link for user');
+    assert.notOk(findAll('.js-test-endpoint-link').length, 'Expected to NOT find endpoint link for user');
 
     this.setProperties({
       entityType: 'IP',
       entityId: null
     });
-    assert.notOk(this.$('.js-test-endpoint-link').length, 'Expected to NOT find endpoint link for empty IP');
+    assert.notOk(findAll('.js-test-endpoint-link').length, 'Expected to NOT find endpoint link for empty IP');
   });
   test('it only shows the Pivot to Investigate link for IPs, HOSTs, MACs, DOMAINs, USERs & FILE_NAMEs', async function(assert) {
 
@@ -117,49 +117,49 @@ module('Integration | Component | context tooltip actions', function(hooks) {
       entityType=entityType
       entityId=entityId}}`);
 
-    assert.ok(this.$('.js-test-pivot-to-investigate-link').length, 'Expected to find investigate link for IP');
+    assert.ok(findAll('.js-test-pivot-to-investigate-link').length, 'Expected to find investigate link for IP');
     this.setProperties({
       entityType: 'HOST',
       entityId: 'MACHINE1'
     });
 
-    assert.ok(this.$('.js-test-pivot-to-investigate-link').length, 'Expected to find investigate link for HOST');
+    assert.ok(findAll('.js-test-pivot-to-investigate-link').length, 'Expected to find investigate link for HOST');
     this.setProperties({
       entityType: 'MAC_ADDRESS',
       entityId: 'aa:bb:cc:dd:ee:ff'
     });
 
-    assert.ok(this.$('.js-test-pivot-to-investigate-link').length, 'Expected to find investigate link for MAC with 6-pairs');
+    assert.ok(findAll('.js-test-pivot-to-investigate-link').length, 'Expected to find investigate link for MAC with 6-pairs');
     this.setProperties({
       entityType: 'MAC_ADDRESS',
       entityId: 'aa:bb:cc:dd:ee:ff:11:22'
     });
 
-    assert.notOk(this.$('.js-test-pivot-to-investigate-link').length, 'Expected to NOT find investigate link for MAC with 8-pairs');
+    assert.notOk(findAll('.js-test-pivot-to-investigate-link').length, 'Expected to NOT find investigate link for MAC with 8-pairs');
     this.setProperties({
       entityType: 'DOMAIN',
       entityId: 'www.g00gle.com'
     });
 
-    assert.ok(this.$('.js-test-pivot-to-investigate-link').length, 'Expected to find investigate link for DOMAIN');
+    assert.ok(findAll('.js-test-pivot-to-investigate-link').length, 'Expected to find investigate link for DOMAIN');
     this.setProperties({
       entityType: 'USER',
       entityId: 'username1'
     });
 
-    assert.ok(this.$('.js-test-pivot-to-investigate-link').length, 'Expected to find investigate link for USER');
+    assert.ok(findAll('.js-test-pivot-to-investigate-link').length, 'Expected to find investigate link for USER');
     this.setProperties({
       entityType: 'FILE_NAME',
       entityId: 'foo.pdf'
     });
 
-    assert.ok(this.$('.js-test-pivot-to-investigate-link').length, 'Expected to find investigate link for FILE_NAME');
+    assert.ok(findAll('.js-test-pivot-to-investigate-link').length, 'Expected to find investigate link for FILE_NAME');
     this.setProperties({
       entityType: 'IP',
       entityId: null
     });
 
-    assert.notOk(this.$('.js-test-pivot-to-investigate-link').length, 'Expected to NOT find investigate link for empty IP');
+    assert.notOk(findAll('.js-test-pivot-to-investigate-link').length, 'Expected to NOT find investigate link for empty IP');
   });
 
   test('it only shows the Pivot to Archer link for IPs, HOSTs', async function(assert) {
@@ -172,49 +172,49 @@ module('Integration | Component | context tooltip actions', function(hooks) {
       entityType=entityType
       entityId=entityId}}`);
 
-    assert.ok(this.$('.js-test-pivot-to-archer-link').length, 'Expected to find archer link for IP');
+    assert.ok(findAll('.js-test-pivot-to-archer-link').length, 'Expected to find archer link for IP');
     this.setProperties({
       entityType: 'HOST',
       entityId: 'MACHINE1'
     });
 
-    assert.ok(this.$('.js-test-pivot-to-archer-link').length, 'Expected to find archer link for HOST');
+    assert.ok(findAll('.js-test-pivot-to-archer-link').length, 'Expected to find archer link for HOST');
     this.setProperties({
       entityType: 'MAC_ADDRESS',
       entityId: 'aa:bb:cc:dd:ee:ff'
     });
 
-    assert.notOk(this.$('.js-test-pivot-to-archer-link').length, 'Expected to NOT find archer link for MAC');
+    assert.notOk(findAll('.js-test-pivot-to-archer-link').length, 'Expected to NOT find archer link for MAC');
     this.setProperties({
       entityType: 'DOMAIN',
       entityId: 'www.g00gle.com'
     });
 
-    assert.notOk(this.$('.js-test-pivot-to-archer-link').length, 'Expected to NOT find archer link for DOMAIN');
+    assert.notOk(findAll('.js-test-pivot-to-archer-link').length, 'Expected to NOT find archer link for DOMAIN');
     this.setProperties({
       entityType: 'USER',
       entityId: 'username1'
     });
 
-    assert.notOk(this.$('.js-test-pivot-to-archer-link').length, 'Expected to NOT find archer link for USER');
+    assert.notOk(findAll('.js-test-pivot-to-archer-link').length, 'Expected to NOT find archer link for USER');
     this.setProperties({
       entityType: 'FILE_NAME',
       entityId: 'foo.pdf'
     });
 
-    assert.notOk(this.$('.js-test-pivot-to-archer-link').length, 'Expected to NOT find archer link for FILE_NAME');
+    assert.notOk(findAll('.js-test-pivot-to-archer-link').length, 'Expected to NOT find archer link for FILE_NAME');
     this.setProperties({
       entityType: 'IP',
       entityId: null
     });
 
-    assert.notOk(this.$('.js-test-pivot-to-archer-link').length, 'Expected to NOT find archer link for empty IP');
+    assert.notOk(findAll('.js-test-pivot-to-archer-link').length, 'Expected to NOT find archer link for empty IP');
     this.setProperties({
       entityType: 'HOST',
       entityId: null
     });
 
-    assert.notOk(this.$('.js-test-pivot-to-archer-link').length, 'Expected to NOT find archer link for empty HOST');
+    assert.notOk(findAll('.js-test-pivot-to-archer-link').length, 'Expected to NOT find archer link for empty HOST');
   });
 
   test('the query in the Pivot to Investigate link includes the meta keys from the meta map', async function(assert) {
@@ -231,7 +231,7 @@ module('Integration | Component | context tooltip actions', function(hooks) {
       entityId=entityId
     }}`);
 
-    const url = this.$('a[href]').attr('href');
+    const url = find('a[href]').getAttribute('href');
     assert.ok(!!url.match(/query/), 'Expected to find a link to an investigation query');
     Object.keys(metaMap).forEach((key) => {
       assert.ok(!!url.indexOf(key) > -1, `Expected to find meta key ${key} in query URL`);

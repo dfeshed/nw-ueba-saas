@@ -23,7 +23,9 @@ const dispatchToActions = {
 const recordNameToTabMap = {
   IOC: 'Endpoint',
   Modules: 'Endpoint',
-  Machines: 'Endpoint'
+  Machines: 'Endpoint',
+  criticality: 'Archer',
+  riskRating: 'Archer'
 };
 
 // Maps the dataSource name to the data type.
@@ -33,15 +35,16 @@ const recordNameToDataTypeMap = {
   Machines: 'string',
   'LiveConnect-Ip': 'string',
   'LiveConnect-File': 'string',
-  'LiveConnect-Domain': 'string'
+  'LiveConnect-Domain': 'string',
+  'Archer': 'string'
 };
 
 // Maps an entity type to the list of dataSource names that we expect to receive data from.
 // Used to layout the UI as we await data values to stream in from server.
 const entityTypeToRecordNamesMap = {
   DEFAULT: ['Incidents', 'Alerts', 'LIST'],
-  IP: ['Incidents', 'Alerts', 'LIST', 'Machines', 'LiveConnect-Ip'],
-  HOST: ['Incidents', 'Alerts', 'LIST', 'Machines'],
+  IP: ['Incidents', 'Alerts', 'LIST', 'Machines', 'LiveConnect-Ip', 'Archer'],
+  HOST: ['Incidents', 'Alerts', 'LIST', 'Machines', 'Archer'],
   MAC_ADDRESS: ['Incidents', 'Alerts', 'LIST', 'Machines'],
   FILE_HASH: ['Incidents', 'Alerts', 'LIST', 'LiveConnect-File'],
   DOMAIN: ['Incidents', 'Alerts', 'LIST', 'LiveConnect-Domain']
@@ -103,34 +106,63 @@ const ContextTooltipRecords = Component.extend({
   resolvedModelSummary(summary, status, type) {
     summary = summary || [];
 
+    // final resolved model summary which will return to UI.
+    const finalModelSummary = [];
+
     // Loop thru the expected data sources for this entity type.
     const recordNames = entityTypeToRecordNamesMap[type] || entityTypeToRecordNamesMap.DEFAULT;
-    return recordNames
-      .map((name) => {
+
+    recordNames
+      .forEach((name) => {
 
         // Do we have data from this data source?
         const found = summary.findBy('name', name);
         if (found) {
+          const record = { ...found };
+          if (name === 'Archer') {
+            // For Archer data source calling _populateArcherAttributes to populate Criticality & Risk Rating attributes
+            // which will displayed in UI
+            this._populateArcherAttributes(finalModelSummary, record);
+          } else {
+            // For Other data sources display count or severity
+            record.attr = record.severity ? record.severity : record.count;
+            finalModelSummary.push(record);
+          }
 
-          // Yes we have the data. Include it in UI.
-          return found;
         } else if (status !== 'streaming') {
 
           // We don't have the data, and we are not awaiting anymore data.
           // Show the data source in the UI anyway, along with a zero or hyphen (depending on data type).
           const dataType = recordNameToDataTypeMap[name] || recordNameToDataTypeMap.DEFAULT;
-          return {
-            name,
-            count: (dataType === 'string') ? '-' : 0
-          };
-        } else {
-
-          // We don't have the data, but we are still streaming data.
-          // Don't show anything yet for this data source.
-          return null;
+          if (name === 'Archer') {
+            this._populateArcherAttributes(finalModelSummary, null);
+          } else {
+            finalModelSummary.push({
+              name,
+              attr: (dataType === 'string') ? '-' : 0
+            });
+          }
         }
-      })
-      .compact();
+      });
+    return finalModelSummary;
+  },
+
+  /*
+   * Populating Criticality & Risk Rating attributes of Archer Data Source
+   * NOTE: in UI, Risk Rating is displayed as Asset Risk
+   * @private
+   */
+  _populateArcherAttributes(finalModelSummary, record) {
+
+    finalModelSummary.push({
+      name: 'criticality',
+      attr: record && record.criticality ? record.criticality : '-'
+    });
+    finalModelSummary.push({
+      name: 'riskRating',
+      attr: record && record.riskRating ? record.riskRating : '-'
+    });
+
   },
 
   /**

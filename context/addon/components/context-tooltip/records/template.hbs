@@ -6,8 +6,8 @@
   <div class="rsa-context-tooltip-records__records">
     {{#each resolvedModelSummary as |record|}}
       <div class="rsa-context-tooltip-records__record {{record.name}}" {{action "clickRecord" record}}>
-        <h4 class="value" title="{{if record.severity record.severity record.count}}">
-          {{if record.severity record.severity record.count}}
+        <h4 class="value" title="{{record.attr}}">
+          {{record.attr}}
         </h4>
         <p class="text">
           {{t (concat 'context.tooltip.dataSourceNames.' record.name)}}

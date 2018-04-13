@@ -44,6 +44,7 @@ $contextTooltipDatumPadding: 0px;
 
     &-footer {
       @include rsa-font(header, small);
+      padding-top: rsa-whitespace(less);
     }
   }
 
@@ -104,7 +105,7 @@ $contextTooltipDatumPadding: 0px;
       overflow: hidden;
     }
 
-    &.Machines .value, &.LiveConnect .value {
+    &.Machines .value, &.LiveConnect .value, &.criticality .value, &.riskRating .value {
       font-size: 90%;
       line-height: 1.75rem;
     }

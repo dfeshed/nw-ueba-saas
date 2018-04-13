@@ -10,7 +10,7 @@ const fiveMinutes = 5 * 60 * 1000;
 const entityRecords = function() {
   const lastUpdated = String(Number(new Date() - fiveMinutes));
   const all = [
-    { name: 'Archer', count: null, url: 'www.google.com' },
+    { name: 'Archer', count: null, url: 'www.google.com', criticality: 'Low', riskRating: 'Medium', lastUpdated },
     { name: 'Incidents', count: String(randInt()), lastUpdated },
     { name: 'Alerts', count: String(randInt()), lastUpdated },
     { name: 'LIST', count: String(randInt()), lastUpdated },

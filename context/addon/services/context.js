@@ -335,11 +335,13 @@ export default Service.extend({
 
       // Parse out the records for that entity.
       const { type, data } = summaryData[id];
-      const records = data.map(({ name, count, severity, url, lastUpdated }) => ({
+      const records = data.map(({ name, count, severity, url, criticality, riskRating, lastUpdated }) => ({
         name,
         count: Number(count),
         severity,
         url,
+        criticality,
+        riskRating,
         lastUpdated: Number(lastUpdated)
       }));
 

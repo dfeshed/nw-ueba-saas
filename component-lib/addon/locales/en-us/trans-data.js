@@ -1695,7 +1695,9 @@ export default {
         Modules: 'Modules',
         'LiveConnect-Ip': 'LiveConnect',
         'LiveConnect-File': 'LiveConnect',
-        'LiveConnect-Domain': 'LiveConnect'
+        'LiveConnect-Domain': 'LiveConnect',
+        criticality: 'Criticality',
+        riskRating: 'Asset Risk'
       }
     }
   },
