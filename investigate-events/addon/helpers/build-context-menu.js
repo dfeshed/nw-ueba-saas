@@ -36,7 +36,9 @@ export function _buildInvestigateUrl(selected, queryOperator, contextDetails, di
     parentQuery = `(${parentQuery}) && `;
   }
   const newQuery = _buildQuery([{ meta: metaName, value: metaValue, operator: queryOperator }], metaFormatMap);
-  const query = encodeURIComponent(parentQuery.concat(newQuery));
+  // classic does decodeURI( decodeURIComponent(pillA) + ' && ' + decodeURIComponent(pillB)...)
+  // so encode the query in that pattern
+  const query = encodeURI(encodeURIComponent(parentQuery.concat(newQuery)));
   const formattedStartDate = moment(startTime > 0 ? startTime * 1000 : startTime).tz('utc').format();
   const formattedEndDate = moment(endTime > 0 ? endTime * 1000 : endTime).tz('utc').format();
   return `/investigation/endpointid/${endpointId}/navigate/query/${query}/date/${formattedStartDate}/${formattedEndDate}`;

@@ -34,7 +34,7 @@ test('it builds the correct investigation drill URL', function(assert) {
       { metaName: 'device.type', format: 'Text' } ]
   };
   const investigateUrl = _buildInvestigateUrl(selection, '=', contextDetails);
-  const expected = '/investigation/endpointid/service-1/navigate/query/(ip.dst%20%3D%202.2.2.2%20%26%26%20device.type%20%3D%20\'cisco\')%20%26%26%20ip.src%20%3D%201.1.1.1/date/2017-11-15T17:54:38Z/2017-11-15T17:54:48Z';
+  const expected = '/investigation/endpointid/service-1/navigate/query/(ip.dst%2520%253D%25202.2.2.2%2520%2526%2526%2520device.type%2520%253D%2520\'cisco\')%2520%2526%2526%2520ip.src%2520%253D%25201.1.1.1/date/2017-11-15T17:54:38Z/2017-11-15T17:54:48Z';
   assert.equal(investigateUrl, expected, 'Investigate URL should be compiled properly');
 });
 
@@ -60,7 +60,7 @@ test('it builds the correct investigation refocus URL', function(assert) {
       }]
   };
   const investigateUrl = _buildInvestigateUrl(selection, '=', contextDetails, true);
-  const expectedUrl = '/investigation/endpointid/service-1/navigate/query/ip.src%20%3D%20\'1.1.1.1\'/date/2017-11-15T17:54:38Z/2017-11-15T17:54:48Z';
+  const expectedUrl = '/investigation/endpointid/service-1/navigate/query/ip.src%2520%253D%2520\'1.1.1.1\'/date/2017-11-15T17:54:38Z/2017-11-15T17:54:48Z';
   assert.equal(investigateUrl, expectedUrl, 'Investigate URL should be compiled properly');
 });
 
