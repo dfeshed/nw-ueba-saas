@@ -10,7 +10,7 @@ const VALID_EVENT_PATTERN = /^[0-9-]+$/;
 const VALID_PASSWORD_PATTERN = /^[!-~]{3,}$/;
 
 export const validatePackageConfig = (formData) => {
-  const { port, server, serviceName, displayName, certificatePassword } = formData;
+  const { port, server, serviceName, displayName, certificatePassword, driverServiceName, driverDisplayName } = formData;
   if (!VALID_IP_PATTERN.test(server) && !VALID_HOST_NAME_PATTERN.test(server)) {
     return {
       isServerError: true,
@@ -48,6 +48,18 @@ export const validatePackageConfig = (formData) => {
   if (!VALID_DISPLAY_NAME_PATTERN.test(displayName)) {
     return {
       isDisplayNameError: true,
+      invalidDisplayNameMessage: 'packager.errorMessages.invalidName'
+    };
+  }
+  if (!VALID_DISPLAY_NAME_PATTERN.test(driverServiceName)) {
+    return {
+      isDriverServiceNameError: true,
+      invalidServiceNameMessage: 'packager.errorMessages.invalidName'
+    };
+  }
+  if (!VALID_DISPLAY_NAME_PATTERN.test(driverDisplayName)) {
+    return {
+      isDriverDisplayNameError: true,
       invalidDisplayNameMessage: 'packager.errorMessages.invalidName'
     };
   }

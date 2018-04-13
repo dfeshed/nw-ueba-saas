@@ -54,10 +54,12 @@ const setConfig = (configData, configType, callback) => {
       meta: {
         onSuccess: (response) => {
           debug(`${ACTION_TYPES.GET_INFO} ${JSON.stringify(response)}`);
+          const { request: { data: { packageConfig } } } = response;
+          const agentMode = packageConfig.fullAgent ? 'full' : 'insight';
           if (response.data.id) {
-            let url = `${downloadURL}?id=${response.data.id}`;
+            let url = `${downloadURL}?id=${response.data.id}&agentmode=${agentMode}`;
             if (configType === 'LOG_CONFIG') {
-              url = `${downloadURLLogConfig}?id=${response.data.id}&filename=${configData.logCollectionConfig.configName}`;
+              url = `${downloadURLLogConfig}?id=${response.data.id}&filename=${configData.logCollectionConfig.configName}&agentmode=${agentMode}`;
             }
             dispatch({ type: ACTION_TYPES.DOWNLOAD_PACKAGE, payload: url });
           }

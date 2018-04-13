@@ -1772,8 +1772,12 @@ export default {
     loadExistingLogConfig: 'Load Existing Configuration...',
     description: 'Description',
     title: 'Packager',
-    becon: 'Becon',
+    becon: 'Beacon',
     displayName: 'Display Name*',
+    driverServiceName: 'Driver Service Name*',
+    driverDisplayName: 'Driver Display Name*',
+    driverDescription: 'Driver Description',
+    monitoringMode: 'Enable Monitoring',
     upload: {
       success: 'Configuration file loaded successfully.',
       failure: 'Unable to upload Configuration file.'
@@ -1799,6 +1803,7 @@ export default {
     emptyName: 'Configuration name is empty',
     channelFilter: 'Channel Filters',
     specialCharacter: 'Configuration name contains special character.',
+    fullAgent: 'Full Agent',
     channel: {
       add: 'Add a new channel',
       name: 'CHANNEL NAME *',

@@ -1,4 +1,16 @@
 <div class="server-input-group">
+  {{#if isFusionEnabled}}
+    <div class="field">
+      {{#x-toggle
+        showLabels=true
+        onLabel=(t 'packager.fullAgent')
+        value=isFullAgentEnabled
+        onToggle=(action 'enableFullAgent') as |fullAgent|}}
+          {{fullAgent.switch}}
+          {{fullAgent.onLabel value=(not isFullAgentEnabled)}}
+      {{/x-toggle}}
+    </div>
+  {{/if}}
   <div class="field">
     <hbox xs="12">
       <div class="col-xs-5 host-ip-js">
@@ -102,6 +114,43 @@
     {{rsa-form-input maxLength=256 label=(t 'packager.description') value=configData.packageConfig.description}}
   </div>
 </div>
+{{#if isFullAgentEnabled}}
+  <div class="server-input-group driver-server-input-group">
+    <div class="field">
+      <hbox xs="12">
+        <div class="col-xs-5 service-name-js">
+          {{rsa-form-input
+            isError=isDriverServiceNameError
+            class='service-name-input-js'
+            errorMessage=(t invalidServiceNameMessage)
+            maxLength=256
+            label=(t 'packager.driverServiceName')
+            value=configData.packageConfig.driverServiceName}}
+        </div>
+        <div class="col-xs-5 display-name-js">
+          {{rsa-form-input
+            isError=isDriverDisplayNameError
+            class='display-name-input-js'
+            errorMessage=(t invalidDisplayNameMessage)
+            maxLength=256
+            label=(t 'packager.driverDisplayName')
+            value=configData.packageConfig.driverDisplayName}}
+        </div>
+      </hbox>
+    </div>
+  </div>
+  <div class="field driver-description-section">
+    <div class="col-xs-10">
+      {{rsa-form-input maxLength=256 label=(t 'packager.driverDescription') value=configData.packageConfig.driverDescription}}
+    </div>
+  </div>
+  <div class="field monitoring-mode-section">
+    <label class="rsa-form-checkbox-label {{if isMonitorModeEnabled 'checked'}}">
+      {{rsa-form-checkbox checked=isMonitorModeEnabled}}
+      {{t 'packager.monitoringMode'}}
+    </label>
+  </div>
+{{/if}}
 <div class="windows-log-collection">
   <div class="field">
     <label class="rsa-form-checkbox-label {{if isLogCollectionEnabled 'checked'}}">

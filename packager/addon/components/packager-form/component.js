@@ -74,6 +74,12 @@ const formComponent = Component.extend({
 
   autoUninstall: null,
 
+  isFusionEnabled: true,
+
+  isFullAgentEnabled: false,
+
+  isMonitorModeEnabled: false,
+
   @computed('configData.packageConfig.server', 'configData.packageConfig.port', 'isUpdating')
   isDisabled(server, port, isUpdating) {
     return isEmpty(server) || isEmpty(port) || isUpdating;
@@ -116,7 +122,9 @@ const formComponent = Component.extend({
       invalidDisplayNameMessage: null,
       invalidTableItem: null,
       isPasswordError: null,
-      passwordInvalidMessage: null
+      passwordInvalidMessage: null,
+      isDriverDisplayNameError: false,
+      isDriverServiceNameError: false
     });
   },
 
@@ -180,6 +188,16 @@ const formComponent = Component.extend({
         this.set('configData.packageConfig.autoUninstall', date);
       } else {
         this.set('configData.packageConfig.autoUninstall', null);
+      }
+      if (!this.get('isFullAgentEnabled')) {
+        this.set('configData.packageConfig.driverServiceName', undefined);
+        this.set('configData.packageConfig.driverDisplayName', undefined);
+        this.set('configData.packageConfig.driverDescription', undefined);
+        this.set('configData.packageConfig.monitoringModeEnabled', undefined);
+        this.set('configData.packageConfig.fullAgent', false);
+      } else {
+        this.set('configData.packageConfig.monitoringModeEnabled', this.get('isMonitorModeEnabled'));
+        this.set('configData.packageConfig.fullAgent', this.get('isFullAgentEnabled'));
       }
       if (!this.get('isLogCollectionEnabled')) {
         // only package data need to be send when windows log collection is not enable
@@ -284,6 +302,9 @@ const formComponent = Component.extend({
     },
     onForceOverwiteChange() {
       this.toggleProperty('configData.packageConfig.forceOverwrite');
+    },
+    enableFullAgent() {
+      this.toggleProperty('isFullAgentEnabled');
     }
   }
 
