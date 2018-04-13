@@ -8,6 +8,8 @@
   {{rsa-round-decimal value=(get item column.field)}}
 {{else if (eq column.format 'SIGNATURE')}}
   {{signature-text (get item column.field) (get item column.signer)}}
+{{else if (eq column.field 'status')}}
+  {{itemStatus}}
 {{else}}
   {{get item column.field}}
 {{/if}}
