@@ -24,6 +24,12 @@ echo "Latest file: " $FULL_RPM_FILE_NAME
 echo "started building sa-ui images..."
 docker build -f ./scripts/jenkins/docker/Dockerfile --no-cache --rm --build-arg DTR=${DTR} --build-arg RPM_FILE_NAME=${RPM_FILE_NAME} -t ${DTR}/rsa/rsa-nw-ui:${SA_UI_IMAGE_TAG} .
 
-echo "Finished building rsa-nw-ui image..."
-echo "Pushing rsa-nw-ui image..."
-docker push ${DTR}/rsa/rsa-nw-ui:${SA_UI_IMAGE_TAG}
+# assume we are publishing to DTR unless told otherwise
+PUBLISH_DOCKER_IMAGE=${PUBLISH_DOCKER_IMAGE:-true}
+
+if [ "${PUBLISH_DOCKER_IMAGE}" == "true" ]
+then
+  echo "Finished building rsa-nw-ui image..."
+  echo "Pushing rsa-nw-ui image..."
+  docker push ${DTR}/rsa/rsa-nw-ui:${SA_UI_IMAGE_TAG}
+fi
