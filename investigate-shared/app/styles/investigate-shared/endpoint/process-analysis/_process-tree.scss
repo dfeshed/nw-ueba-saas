@@ -1,0 +1,96 @@
+.process-tree {
+  cursor: move; /* fallback if grab cursor is unsupported */
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+  height: 100%;
+  #force-layout__grid {
+    .grid-axis {
+      &.major {
+        stroke: text-color(primary, dark);
+        stroke-width: 1pt;
+      }
+      &.minor {
+        stroke: text-color(primary, darker);
+        stroke-width: 0.5pt;
+      }
+    }
+  }
+
+  &.is-panning {
+    cursor: grabbing;
+    cursor: -moz-grabbing;
+    cursor: -webkit-grabbing;
+  }
+
+
+  &[data-zoom="0.0"],
+  &[data-zoom="0.1"],
+  &[data-zoom="0.2"] {
+    .text {
+      font-size: 0;
+    }
+    .line {
+      stroke-width: 2pt;
+    }
+    #force-layout__grid {
+      .grid-axis {
+        &.minor {
+          display: none;
+        }
+      }
+    }
+  }
+
+  &[data-zoom="0.3"],
+  &[data-zoom="0.4"],
+  &[data-zoom="0.5"] {
+    .rsa-force-layout-node .text {
+      font-size: 120%;
+    }
+    .rsa-force-layout-link .text {
+      font-size: 0;
+    }
+    .line {
+      stroke-width: 1.5pt;
+    }
+    #force-layout__grid {
+      .grid-axis {
+        &.minor {
+          display: none;
+        }
+      }
+    }
+  }
+
+  .node-rect {
+    stroke-width: 1px;
+    &.is-low {
+      fill: #8BC34A
+    }
+    &.is-high {
+      fill: #FF5722;
+    }
+    &.is-medium {
+      fill: #FFC107;
+    }
+    &.is-danger {
+      fill: #EC2227
+    }
+  }
+
+  .process {
+    cursor: pointer;
+  }
+
+  .link {
+    fill: none;
+    stroke: rgba(155,155,155,.8);
+    stroke-width: 1.5px;
+  }
+  .text-icon {
+    fill: text-color(primary);;
+  }
+}
+
+

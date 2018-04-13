@@ -1,0 +1,47 @@
+.process-tree-legend {
+  position: absolute;
+  margin: rsa-whitespace();
+  left: 0;
+  bottom: 0;
+  padding: rsa-whitespace(least) rsa-whitespace(least);
+  @include rsa-font(body,small);
+  line-height: 1.35;
+  text-align: right;
+  background-color: background-color(primary,darker, nearly-opaque);
+}
+
+.legends {
+  width: 50%;
+  float: right;
+  list-style: none;
+  display: table;
+  border-spacing: 3px 2px;
+  border-collapse: separate;
+  > li {
+    display: table-cell;
+    > * {
+      display: table-cell;
+    }
+  }
+
+}
+
+.legend {
+  padding: 8px;
+  text-align: center;
+  &.danger {
+    background: background-color(accentOne);
+  }
+  &.high {
+    background: background-color(accentThree);
+  }
+  &.medium {
+    background: background-color(accentFour);
+  }
+  &.low {
+    background: background-color(accentTwo);
+  }
+}
+.choice {
+  padding-left: 5px;
+}
