@@ -30,6 +30,7 @@ Router.map(function() {
       this.route('action-bar');
       this.route('layout-manager');
       this.route('fatal-error');
+      this.route('standard-errors');
       this.route('contextual-help');
       this.route('flash-messages');
       this.route('panels');

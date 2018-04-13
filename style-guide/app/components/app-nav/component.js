@@ -21,7 +21,8 @@ export default Component.extend({
         { name: 'Modals', link: 'modal' },
         { name: 'Page Titles', link: 'page-titles' },
         { name: 'Panels', link: 'panels' },
-        { name: 'Panel Message', link: 'panel-message' }
+        { name: 'Panel Message', link: 'panel-message' },
+        { name: 'Standard Errors', link: 'standard-errors' }
       ]
     },
     {

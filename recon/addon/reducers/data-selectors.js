@@ -37,7 +37,6 @@ export const errorMessage = createSelector(
       case 2:
         ret = i18n.t('recon.error.missingRecon', { id: eventId });
         break;
-      case 13:
       case 110:
         ret = i18n.t('recon.error.permissionError');
         break;

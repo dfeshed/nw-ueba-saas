@@ -1,0 +1,63 @@
+<hbox fit>
+  {{spec-masthead model=model}}
+</hbox>
+
+<hbox>
+  <fill block class="scroll-box">
+    {{#spec-category title="Demo and Usage"}}
+      {{#spec-member}}
+        <p>
+          First, begin by importing the service inject method and the handleInvestigateErrorCode method.
+        </p>
+
+        {{!-- BEGIN-SNIPPET standardErrors1
+        import { inject as service } from '@ember/service';
+        import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
+        END-SNIPPET --}}
+        {{code-snippet name="standardErrors1.hbs"}}
+
+        <p>
+          Next, inject the standard-errors service.
+        </p>
+
+        {{!-- BEGIN-SNIPPET standardErrors2
+        standardErrors: service(),
+        END-SNIPPET --}}
+        {{code-snippet name="standardErrors2.hbs"}}
+
+        <p>
+          Lastly, call display on the standard-errors service passing the errorObj returned by handleInvestigateErrorCode.
+          The response from handleInvestigateErrorCode will contain 4 keys: type, messageLocaleKey, errorCode, and logInConsole.
+        </p>
+
+        {{!-- BEGIN-SNIPPET standardErrors3
+        const response = { errorCode: 110 };
+        const errorObj = handleInvestigateErrorCode(response);
+        this.get('standardErrors').display(errorObj);
+        END-SNIPPET --}}
+        {{code-snippet name="standardErrors3.hbs"}}
+
+        {{#rsa-form-button defaultAction=(action 'displayCommonMessage')}}Display Common Error{{/rsa-form-button}}
+
+        <p>
+          Uncommon errorCodes will also log to the console to provide additional context in case User assistance is required.
+        </p>
+
+        {{!-- BEGIN-SNIPPET standardErrors4
+        const response = { errorCode: 203 };
+        const errorObj = handleInvestigateErrorCode(response);
+        this.get('standardErrors').display(errorObj);
+        END-SNIPPET --}}
+        {{code-snippet name="standardErrors4.hbs"}}
+
+        {{#rsa-form-button defaultAction=(action 'displayUncommonMessage')}}Display Uncommon Error{{/rsa-form-button}}
+
+        <p>
+          It's important to understand, usage of the standardErrors.display method is optional.
+          The errorObj returned by handleInvestigateErrorCode can be used in it's raw form when specific UX is required.
+        </p>
+
+      {{/spec-member}}
+    {{/spec-category}}
+  </fill>
+</hbox>
