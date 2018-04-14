@@ -5,21 +5,11 @@ $contentAccordionHeaderTypeColor: text-color(primary, light);
 $contentAccordionBodyTypeColor: text-color(primary, lighter);
 $contentAccordionBodyBackgroundColor: background-color(primary, dark, nearly-opaque);
 
-$contentBadgeIconColor: border-color(primary, lightest);
-$contentBadgeIconLabelColor: text-color(primary, light);
-
 $contentBadgeScoreCircleColor: text-color(primary, lightest);
 $contentBadgeScoreLabelColor: text-color(primary, lightest);
 
-$contentCardBackgroundColor: background-color(neutral, dark, translucent);
-$contentCardBorderColor: border-color(primary, darker);
-
 $contentDefinitionLabelColor: text-color(primary, lighter);
 $contentDefinitionValueColor: text-color(primary, lightest);
-
-$contentIpConnectionsTypeColor: text-color(primary, lighter);
-$contentIpConnectionsCircleColor: text-color(primary, light);
-$contentIpConnectionsDirectionIconColor: text-color(primary, light);
 
 $contentLabelColor: text-color(neutral);
 $contentLabelInvertedColor: text-color(neutral, dark);
@@ -34,12 +24,9 @@ $contentUpdateIndicatorTypeColor: text-color(primary, light);
 
 @import 'chart';
 @import 'content-accordion';
-@import 'content-badge-icon';
 @import 'content-badge-score';
-@import 'content-card';
 @import 'content-datetime';
 @import 'content-definition';
-@import 'content-ip-connections';
 @import 'content-label';
 @import 'content-section-header';
 @import 'icons';

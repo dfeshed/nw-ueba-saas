@@ -51,14 +51,11 @@ Router.map(function() {
     this.route('content', function() {
       this.route('sectionHeader');
       this.route('accordion');
-      this.route('card');
       this.route('definition');
       this.route('badgeScore');
-      this.route('badgeIcon');
       this.route('datetime');
       this.route('label');
       this.route('memorySize');
-      this.route('ipConnections');
       this.route('tetheredPanels');
       this.route('contextMenu');
     });

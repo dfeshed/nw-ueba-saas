@@ -64,7 +64,6 @@ export default Ember$.extend({}, BaseSelectors, {
         'view_context': 'centered button[class=\'rsa-form-button\']'
       },
       'card': {
-        'rsaContentCard': '.rsa-content-card',
         'allIncElm': 'header[class^=rsa-respond-index__toolbar] a[class=ember-view]',
         'incSection': 'section[class$=rsa-d3list]',
         'incTile': {

@@ -41,7 +41,6 @@ export default Component.extend({
       header: 'Content Components',
       category: 'demos.content',
       pages: [
-        { name: 'Badge Icon', link: 'badgeIcon' },
         { name: 'Badge Score', link: 'badgeScore' },
         { name: 'Context Menu', link: 'contextMenu' },
         { name: 'Datetime', link: 'datetime' },
