@@ -5,11 +5,7 @@
       percent=percent
       enabled=(is-equal status 'streaming')
     }}
-    {{#if isInvalidQuery}}
-      {{rsa-panel-message title=(t 'investigate.invalidQueryError.title') message=(t 'investigate.invalidQueryError.description')}}
-    {{else}}
-      {{events-table-container/events-table contextItems=(build-context-menu)}}
-    {{/if}}
+    {{events-table-container/events-table contextItems=(build-context-menu)}}
   </section>
 
   <footer class="scroll-message">

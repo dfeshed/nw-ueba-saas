@@ -84,18 +84,6 @@ export default class DataHelper {
     return this;
   }
 
-  isInvalidQuery(flag) {
-    if (flag) {
-      _set(this.state, 'eventCount.status', 'rejected');
-      _set(this.state, 'eventCount.reason', 11);
-      return this;
-    } else {
-      _set(this.state, 'eventCount.status', 'resolved');
-      _set(this.state, 'eventCount.reason', 0);
-      return this;
-    }
-  }
-
   atLeastOneQueryIssued(flag) {
     _set(this.state, 'queryNode.atLeastOneQueryIssued', flag);
     return this;

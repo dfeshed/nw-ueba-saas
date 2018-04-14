@@ -122,20 +122,6 @@ test('persisted column group is preselected in the drop down', function(assert) 
   });
 });
 
-test('it should show error message when query is invalid', function(assert) {
-  new ReduxDataHelper(setState).columnGroup('SUMMARY').columnGroups(EventColumnGroups).isInvalidQuery(true).build();
-  this.render(hbs`{{events-table-container}}`);
-  assert.equal(this.$('.rsa-panel-message .title').text().trim(), 'No events found.', 'Appropriate error title for invaild query response');
-  assert.equal(this.$('.rsa-panel-message .message').text().trim(), 'Your filter criteria is invalid. Examine query for syntax errors.', 'Appropriate error description for invaild query response');
-});
-
-test('it should not show an error message when query is valid', function(assert) {
-  new ReduxDataHelper(setState).columnGroup('SUMMARY').columnGroups(EventColumnGroups).isInvalidQuery(false).build();
-  this.render(hbs`{{events-table-container}}`);
-  assert.notEqual(this.$('.rsa-panel-message .title').text().trim(), 'No events found.', 'Appropriate error title for invaild query response');
-  assert.notEqual(this.$('.rsa-panel-message .message').text().trim(), 'Your filter criteria is invalid. Examine query for syntax errors.', 'Appropriate error description for invaild query response');
-});
-
 test('it should show "no results" message only if there are zero results', function(assert) {
   new ReduxDataHelper(setState).columnGroup('SUMMARY').columnGroups(EventColumnGroups).eventResults([]).build();
   this.render(hbs`{{events-table-container}}`);
