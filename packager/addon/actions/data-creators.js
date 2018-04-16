@@ -57,9 +57,9 @@ const setConfig = (configData, configType, callback) => {
           const { request: { data: { packageConfig } } } = response;
           const agentMode = packageConfig.fullAgent ? 'full' : 'insight';
           if (response.data.id) {
-            let url = `${downloadURL}?id=${response.data.id}&agentmode=${agentMode}`;
+            let url = `${downloadURL}?id=${response.data.id}&agentMode=${agentMode}`;
             if (configType === 'LOG_CONFIG') {
-              url = `${downloadURLLogConfig}?id=${response.data.id}&filename=${configData.logCollectionConfig.configName}&agentmode=${agentMode}`;
+              url = `${downloadURLLogConfig}?id=${response.data.id}&filename=${configData.logCollectionConfig.configName}&agentMode=${agentMode}`;
             }
             dispatch({ type: ACTION_TYPES.DOWNLOAD_PACKAGE, payload: url });
           }
