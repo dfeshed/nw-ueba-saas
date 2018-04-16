@@ -4,6 +4,18 @@ const common = require('../../common');
 
 let mergedConfig;
 
+const investigateConfigGen = function(env) {
+  const eventsSocketURL = common.determineSocketUrl(env, '/investigate/socket');
+  return {
+    'core-event': {
+      eventsSocketURL,
+      stream: {
+        subscriptionDestination: '/user/queue/investigate/events',
+        requestDestination: '/ws/investigate/events/stream'
+      }
+    }
+  };
+};
 
 module.exports = function(environment) {
   // cache it, prevents super spammy console as this gets called
@@ -15,7 +27,7 @@ module.exports = function(environment) {
   if (!environment) {
     return {};
   }
-  const configGenerators = [];
+  const configGenerators = [investigateConfigGen];
   mergedConfig = common.mergeSocketConfigs(configGenerators, environment);
   return mergedConfig;
 };

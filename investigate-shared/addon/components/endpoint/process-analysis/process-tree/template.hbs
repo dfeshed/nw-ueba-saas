@@ -21,3 +21,8 @@
     </g>
   </g>
 </svg>
+{{#if isStreaming}}
+  <centered class="rsa-fast-force__wait">
+    {{rsa-loader size="large" label=(t 'investigateShared.endpoint.renderingGraph')}}
+  </centered>
+{{/if}}

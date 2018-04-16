@@ -9,6 +9,6 @@ export default combineReducers({
   context,
   ...global,
   ...recon,
-  packager,
-  investigateShared
+  ...investigateShared,
+  packager
 });

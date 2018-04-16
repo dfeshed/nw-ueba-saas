@@ -1,54 +1,45 @@
 import Immutable from 'seamless-immutable';
 import * as ACTION_TYPES from 'investigate-shared/actions/types/endpoint';
 import reduxActions from 'redux-actions';
-import { handle } from 'redux-pack';
 
 const initialState = {
-  rawProcessData: {
-    'name': 'Evil.exe',
-    'id': 1,
-    'riskScore': 25,
-    'children': [
-      {
-        'name': 'cmd.exe',
-        'id': 2,
-        'riskScore': 25,
-        'children': [
-          {
-            'name': 'notepad.exe',
-            'id': 3,
-            'riskScore': 25,
-            'children': []
-          },
-          {
-            'name': 'winword.exe',
-            'id': 4,
-            'riskScore': 87
-          }
-        ]
-      },
-      {
-        'name': 'cmd.exe',
-        'riskScore': 15,
-        'id': 6,
-        'children': []
-      },
-      {
-        'name': 'evil-new.exe',
-        'riskScore': 100,
-        'id': 9
-      },
-      {
-        'name': 'cmd.exe',
-        'riskScore': 25,
-        'id': 8
-      }
-    ]
-  }
+  queryInput: null,
+  streaming: false,
+  rawData: [],
+  rootNode: null,
+  error: null
+};
+
+const _rootNode = (rootNode, rawData, processName, checksum, agentId) => {
+  return {
+    processName,
+    checksum,
+    agentId,
+    children: rawData
+  };
 };
 
 export default reduxActions.handleActions({
-  [ACTION_TYPES.FETCH_PROCESS_TREE_DATA]: (state, action) => (
-    handle(state, action, {})
-  )
+
+  [ACTION_TYPES.INIT_EVENTS_STREAMING]: (state) => {
+    return state.merge({ streaming: true, error: null });
+  },
+
+  [ACTION_TYPES.COMPLETED_EVENTS_STREAMING]: (state) => {
+    const { processName, agentId, checksum } = state.queryInput;
+    const { rawData, rootNode } = state;
+    return state.merge({ streaming: false, rootNode: _rootNode(rootNode, rawData, processName, checksum, agentId) });
+  },
+
+  [ACTION_TYPES.SET_EVENTS_PAGE_ERROR]: (state, { payload }) => {
+    return state.merge(payload);
+  },
+
+  [ACTION_TYPES.SET_EVENTS]: (state, { payload }) => {
+    return state.set('rawData', payload);
+  },
+
+  [ACTION_TYPES.SET_PROCESS_ANALYSIS_INPUT]: (state, { payload }) => {
+    return state.set('queryInput', payload);
+  }
 }, Immutable.from(initialState));

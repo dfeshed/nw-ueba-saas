@@ -1,9 +1,12 @@
+{{#if hasError}}
+  {{rsa-panel-message title=(t 'investigateShared.endpoint.errorTitle') message=errorMessage}}
+{{else}}
+  <vbox xs="3" class="process-list-box"></vbox>
 
-<vbox xs="3" class="process-list-box"></vbox>
+  <vbox xs="6" class="process-list-box">
+    {{endpoint/process-analysis/process-tree treeData=treeData}}
+    {{endpoint/process-analysis/process-tree-legend}}
+  </vbox>
 
-<vbox xs="6" class="process-list-box">
-  {{endpoint/process-analysis/process-tree}}
-  {{endpoint/process-analysis/process-tree-legend}}
-</vbox>
-
-<vbox xs="3" class="process-list-box"></vbox>
+  <vbox xs="3" class="process-list-box"></vbox>
+{{/if}}

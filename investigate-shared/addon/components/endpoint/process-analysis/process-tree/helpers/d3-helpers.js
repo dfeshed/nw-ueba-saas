@@ -86,14 +86,14 @@ export const appendRect = function({ node, className = 'node-rect', width = 0, h
  * @param opacity
  * @public
  */
-export const appendText = function({ node, dy, dx, text, className, anchor, opacity }) {
+export const appendText = function({ node, dy, dx, className, anchor, opacity }) {
   node.append('text')
     .attr('class', className)
     .attr('dx', dx)
     .attr('dy', dy)
     .attr('text-anchor', anchor)
     .style('fill-opacity', opacity)
-    .text(truncateText(text));
+    .text((d) => truncateText(d.data.processName));
 };
 /**
  * Updates the text property on 'update' event

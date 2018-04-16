@@ -2847,5 +2847,11 @@ export default {
     error: {
       generic: 'An unexpected error has occurred attempting to retrieve this data.'
     }
+  },
+  investigateShared: {
+    endpoint: {
+      renderingGraph: 'Rendering graph...',
+      errorTitle: 'Query Error'
+    }
   }
 };

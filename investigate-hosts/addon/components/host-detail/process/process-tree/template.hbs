@@ -18,7 +18,11 @@
       as |item index column|}}
       {{#if column.componentClass}}
         {{#rsa-data-table/body-cell item=item column=column}}
-          {{host-detail/process/process-tree/process-name item=item index=index onToggleExpand=(action 'handleToggleExpand')}}
+          {{host-detail/process/process-tree/process-name
+            agentId=agentId
+            item=item
+            index=index
+            onToggleExpand=(action 'handleToggleExpand')}}
         {{/rsa-data-table/body-cell}}
       {{else}}
         {{rsa-data-table/body-cell item=item column=column}}

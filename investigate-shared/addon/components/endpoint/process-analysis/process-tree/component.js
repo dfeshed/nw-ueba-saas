@@ -12,8 +12,10 @@ import computed from 'ember-computed-decorators';
 
 import { transitionElbow, elbow, updateRect, appendRect, appendText, updateText } from './helpers/d3-helpers';
 
+import { isStreaming } from 'investigate-shared/reducers/endpoint/process-tree/selectors';
+
 const stateToComputed = (state) => ({
-  treeData: state.investigateShared.endpoint.processTree.rawProcessData
+  isStreaming: isStreaming(state)
 });
 
 const TreeComponent = Component.extend({
@@ -24,7 +26,11 @@ const TreeComponent = Component.extend({
 
   classNames: 'process-tree',
 
+  classNameBindings: ['isStreaming:show-nodes:hide-nodes'],
+
   attributeBindings: ['zoom:data-zoom'],
+
+  isStreaming: false,
 
   /**
    * D3 tree minmum zoom
@@ -78,6 +84,8 @@ const TreeComponent = Component.extend({
    */
   collapseIcon: '\ue9ad', // Unicode
 
+  rootNode: null,
+
   @computed('nodeSize', 'nodeSeparation')
   treeInstance(nodeSize, nodeSeparation) {
     const treeInstance = tree()
@@ -100,15 +108,6 @@ const TreeComponent = Component.extend({
     return null;
   },
 
-  @computed('treeData')
-  rootNode(treeData) {
-    // Assigns parent, children, height, depth
-    const root = hierarchy(treeData, (d) => d.children || []);
-    root.x0 = 0;
-    root.y0 = 0;
-    return root;
-  },
-
   @computed('element')
   zoomBehaviour(element) {
     const el = select(element);
@@ -129,9 +128,17 @@ const TreeComponent = Component.extend({
     return zoomBehaviour;
   },
 
-  didInsertElement() {
+  didReceiveAttrs() {
     this._super(...arguments);
-    run.schedule('afterRender', this, '_initializeChart');
+    const treeData = this.get('treeData');
+    if (treeData) {
+      // Assigns parent, children, height, depth
+      const root = hierarchy(treeData, (d) => d.children || []);
+      root.x0 = 0;
+      root.y0 = 0;
+      this.set('rootNode', root);
+      run.schedule('afterRender', this, '_initializeChart');
+    }
   },
 
   /**
@@ -151,7 +158,6 @@ const TreeComponent = Component.extend({
     if (rootNode.children && rootNode.children.length) {
       rootNode.children.forEach(run.bind(this, '_collapse'));
     }
-
     this.buildChart(rootNode);
   },
 
@@ -254,7 +260,7 @@ const TreeComponent = Component.extend({
     const { rectWidth, duration } = this.getProperties('rectWidth', 'duration');
 
     const link = svg.selectAll('path.link')
-      .data(links, (d) => d.data.id);
+      .data(links, (d) => d.data.checksum);
 
     const linkEnter = link.enter().append('path')
       .attr('class', 'link')
@@ -290,7 +296,7 @@ const TreeComponent = Component.extend({
    */
   _addNodes(svg, nodes, source) {
     const { rectWidth: width, rectHeight: height, duration } = this.getProperties('rectWidth', 'rectHeight', 'duration');
-    const node = svg.selectAll('g.process').data(nodes, (process) => process.data.id);
+    const node = svg.selectAll('g.process').data(nodes, (process) => process.data.checksum);
 
     const nodeEnter = node.enter().append('g')
       .attr('class', 'process')
@@ -306,7 +312,7 @@ const TreeComponent = Component.extend({
     appendRect({ node: nodeEnter });
 
     // Display process name inside the  rectangle
-    appendText({ className: 'process-name', node: nodeEnter, dx: 0, dy: 0, opacity: 0, text: (d) => d.data.name });
+    appendText({ className: 'process-name', node: nodeEnter, dx: 0, dy: 0, opacity: 0 });
 
     const nodeUpdate = node.merge(nodeEnter)
       .transition()

@@ -12,8 +12,8 @@ const dispatchToActions = {
 
 const stateToComputed = (state) => ({
   treeAsList: processTree(state),
-  isProcessTreeLoading: state.endpoint.process.isProcessTreeLoading
-
+  isProcessTreeLoading: state.endpoint.process.isProcessTreeLoading,
+  agentId: state.endpoint.detailsInput.agentId
 });
 
 const TreeComponent = Component.extend({
