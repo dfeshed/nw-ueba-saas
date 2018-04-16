@@ -176,7 +176,7 @@ module('Integration | Component | Respond Incident Filters', function(hooks) {
   });
 
   test('The escalation status checkbox filters appear in the filter panel', async function(assert) {
-    assert.expect(2);
+    assert.expect(3);
     setState();
     await init;
     this.set('updateFilter', function(filter) {
@@ -184,7 +184,9 @@ module('Integration | Component | Respond Incident Filters', function(hooks) {
     });
     await render(hbs`{{rsa-incidents/filter-controls updateFilter=(action updateFilter)}}`);
     const selector = '.filter-option.escalation-status-filter .rsa-form-checkbox-label';
-    assert.equal(findAll(selector).length, 2, 'There should be 2 status filter options');
+    // The mock data only returns "Remediated", but the default statuses (ESCALATED, NON_ESCALATED) always are added and appear with translation
+    assert.equal(findAll(selector).length, 3, 'There should be 3 status filter options (Escalated, Not Escalated, Remediated)');
+    assert.equal(findAll(selector)[2].textContent.trim(), 'Remediated', 'The third option is displayed without translation');
     await click(`${selector} input.rsa-form-checkbox:first-of-type`);
   });
 });

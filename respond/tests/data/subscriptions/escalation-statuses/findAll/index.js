@@ -1,6 +1,5 @@
 const data = [
-  'ESCALATED',
-  'NON_ESCALATED'
+  'Remediated'
 ];
 
 export default {
