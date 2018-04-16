@@ -1,32 +1,68 @@
-import defaultPropertyConfig from 'investigate-hosts/components/host-detail/base-property-config';
-
-const driverProperty = [
-  {
-    sectionName: 'Process',
-    fields: [
-      {
-        field: 'createTime',
-        format: 'DATE'
-      },
-      {
-        field: 'eprocess',
-        format: 'HEX'
-      },
-      {
-        field: 'pid'
-      },
-      {
-        field: 'imageBase',
-        format: 'HEX'
-      },
-      {
-        field: 'imageSize',
-        format: 'SIZE'
-      }
-    ]
-  }
-];
-
-const config = [...defaultPropertyConfig, ...driverProperty];
-
-export default config;
+export default {
+  windows: [
+    {
+      sectionName: 'Tasks',
+      fields: [
+        {
+          field: 'creatorUser'
+        },
+        {
+          field: 'executeUser'
+        },
+        {
+          field: 'fileId'
+        },
+        {
+          field: 'name'
+        },
+        {
+          field: 'launchArguments'
+        },
+        {
+          field: 'triggerString'
+        },
+        {
+          field: 'status'
+        }
+      ]
+    }
+  ],
+  linux: [
+    {
+      sectionName: 'Tasks',
+      fields: [
+        {
+          field: 'fileId'
+        },
+        {
+          field: 'launchArguments'
+        },
+        {
+          field: 'triggerString'
+        },
+        {
+          field: 'user'
+        }
+      ]
+    }
+  ],
+  mac: [
+    {
+      sectionName: 'Tasks',
+      fields: [
+        {
+          field: 'fileId'
+        },
+        {
+          field: 'launchArguments'
+        },
+        {
+          field: 'triggerString'
+        },
+        {
+          field: 'user'
+        }
+      ]
+    }
+  ]
+};

@@ -1,7 +1,8 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import columnsConfig from './tasks-columns';
-import propertyConfig from './task-property-config';
+import tasksPropertyConfig from './task-property-config';
+import defaultPropertyConfig from 'investigate-hosts/components/host-detail/base-property-config';
 import { setSelectedRow } from 'investigate-hosts/actions/data-creators/autoruns';
 import {
   isTaskDataLoading,
@@ -27,7 +28,10 @@ const dispatchToActions = {
 const Tasks = Component.extend({
   tagName: '',
 
-  propertyConfig,
+  @computed('machineOsType')
+  propertyConfig(machineOsType) {
+    return [...defaultPropertyConfig, ...tasksPropertyConfig[machineOsType]];
+  },
 
   @computed('machineOsType')
   columnsConfig(machineOsType) {

@@ -8,7 +8,8 @@ import {
   selectedServiceFileProperties
 } from 'investigate-hosts/reducers/details/autorun/selectors';
 import columnsConfig from './services-columns';
-import propertyConfig from './services-property-config';
+import servicesPropertyConfig from './services-property-config';
+import defaultPropertyConfig from 'investigate-hosts/components/host-detail/base-property-config';
 import computed from 'ember-computed-decorators';
 
 const stateToComputed = (state) => {
@@ -26,7 +27,10 @@ const dispatchToActions = {
 
 const Services = Component.extend({
 
-  propertyConfig,
+  @computed('machineOsType')
+  propertyConfig(machineOsType) {
+    return [...defaultPropertyConfig, ...servicesPropertyConfig[machineOsType]];
+  },
 
   tagName: '',
 
