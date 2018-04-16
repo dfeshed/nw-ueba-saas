@@ -55,7 +55,7 @@ const setConfig = (configData, configType, callback) => {
         onSuccess: (response) => {
           debug(`${ACTION_TYPES.GET_INFO} ${JSON.stringify(response)}`);
           const { request: { data: { packageConfig } } } = response;
-          const agentMode = packageConfig.fullAgent ? 'full' : 'insight';
+          const agentMode = packageConfig.fullAgent ? 'Full' : 'Insights';
           if (response.data.id) {
             let url = `${downloadURL}?id=${response.data.id}&agentMode=${agentMode}`;
             if (configType === 'LOG_CONFIG') {
