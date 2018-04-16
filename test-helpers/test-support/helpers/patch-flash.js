@@ -1,5 +1,10 @@
 import { lookup } from 'ember-dependency-lookup';
 
+const revertPatch = (original) => {
+  const flashMessages = lookup('service:flash-messages');
+  flashMessages.add = original;
+};
+
 export function patchFlash(callback) {
   const flashMessages = lookup('service:flash-messages');
   const origFunc = flashMessages.add;
@@ -11,4 +16,5 @@ export function patchFlash(callback) {
     }
     return origFunc.apply(this, arguments);
   };
+  return revertPatch.bind(null, origFunc);
 }

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { handleActions } from 'redux-actions';
 import { handle } from 'redux-pack';
 import Immutable from 'seamless-immutable';
@@ -16,7 +17,8 @@ const scheduleReducer = handleActions({
       start: (s) => s.merge({ fetchScheduleStatus: 'wait' }),
       success: (s) => {
         const { payload: { data } } = action;
-        return s.merge({ config: data || { name: 'default' }, fetchScheduleStatus: 'completed' });
+        const merged = _.extend({}, s.config, data);
+        return s.merge({ config: merged, fetchScheduleStatus: 'completed' });
       },
       failure: (s) => {
         return s.set('fetchScheduleStatus', 'error');

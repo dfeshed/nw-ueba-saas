@@ -1,6 +1,7 @@
 import { test, module } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { bindActionCreators } from 'redux';
+import { settled } from '@ember/test-helpers';
 import { localStorageClear } from 'sa/tests/helpers/wait-for';
 import { patchFlash } from 'sa/tests/helpers/patch-flash';
 import { patchReducer } from 'sa/tests/helpers/vnext-patch';
@@ -102,4 +103,32 @@ module('Unit | Actions | Creators | Preferences', function(hooks) {
     assert.equal(locale.id, 'en_US');
   });
 
+  test('updateLocaleByKey will not blow up when userLocale undefined', async function(assert) {
+    assert.expect(2);
+
+    setState({
+      locale: { id: 'en_US', key: 'en-us', label: 'english' },
+      locales: [
+        { id: 'en_US', key: 'en-us', label: 'english' }
+      ]
+    });
+
+    const redux = this.owner.lookup('service:redux');
+
+    let locale = getLocale(redux.getState());
+    assert.equal(locale.id, 'en_US');
+
+    const done = patchFlash(() => {
+      assert.ok(false, 'should not flash error message when userLocale undefined');
+    });
+
+    bindActionCreators(updateLocaleByKey, redux.dispatch.bind(redux))();
+
+    return settled().then(async () => {
+      locale = getLocale(redux.getState());
+      assert.equal(locale.id, 'en_US');
+    }).finally(async () => {
+      done();
+    });
+  });
 });

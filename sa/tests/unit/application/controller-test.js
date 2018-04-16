@@ -16,6 +16,7 @@ module('Unit | Controller | application', function(hooks) {
 
   hooks.beforeEach(function() {
     this.owner.inject('controller', 'i18n', 'service:i18n');
+    return localStorageClear();
   });
 
   hooks.afterEach(function() {

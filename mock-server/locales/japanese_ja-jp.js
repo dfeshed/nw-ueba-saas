@@ -5,8 +5,8 @@ define('sa/locales/ja-jp/translations', ['exports'], function (exports) {
     value: true
   });
   exports.default = {
-  appTitle: 'NetWitness Suite',
-  pageTitle: '{{section}} - NetWitness Suite',
+  appTitle: 'NetWitness Platform',
+  pageTitle: '{{section}} - NetWitness Platform',
   empty: '',
   languages: {
     en: '英語',
@@ -361,73 +361,6 @@ define('sa/locales/ja-jp/translations', ['exports'], function (exports) {
     GB: 'GB',
     TB: 'TB'
   },
-  previousMonth: '前月',
-  nextMonth: '翌月',
-  months() {
-    return [
-      '1月',
-      '2月',
-      '3月',
-      '4月',
-      '5月',
-      '6月',
-      '7月',
-      '8月',
-      '9月',
-      '10月',
-      '11月',
-      '12月'
-    ];
-  },
-  monthsShort() {
-    return [
-      '1月',
-      '2月',
-      '3月',
-      '4月',
-      '5月',
-      '6月',
-      '7月',
-      '8月',
-      '9月',
-      '10月',
-      '11月',
-      '12月'
-    ];
-  },
-  weekdays() {
-    return [
-      '日曜日',
-      '月曜日',
-      '火曜日',
-      '水曜日',
-      '木曜日',
-      '金曜日',
-      '土曜日'
-    ];
-  },
-  weekdaysShort() {
-    return [
-      '日',
-      '月曜',
-      '火',
-      '水',
-      '木',
-      '金',
-      '土'
-    ];
-  },
-  weekdaysMin() {
-    return [
-      '日',
-      '月曜',
-      '火',
-      '水',
-      '木',
-      '金',
-      '土'
-    ];
-  },
   midnight: '午前0時',
   noon: '正午',
   investigate: {
@@ -463,10 +396,6 @@ define('sa/locales/ja-jp/translations', ['exports'], function (exports) {
     error: {
       title: 'データをロードできません。',
       description: 'データ レコードを取得しようとしたときに予期しないエラーが発生しました。'
-    },
-    invalidQueryError: {
-      title: 'イベントは見つかりませんでした。',
-      description: 'ご使用のフィルター条件は無効です。構文エラーがないかクエリを確認してください。'
     },
     meta: {
       title: 'メタ',

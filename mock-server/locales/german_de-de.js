@@ -5,8 +5,8 @@ define('sa/locales/de-de/translations', ['exports'], function (exports) {
     value: true
   });
   exports.default = {
-  appTitle: 'NetWitness Suite',
-  pageTitle: '{{section}} – NetWitness Suite',
+  appTitle: 'NetWitness Platform',
+  pageTitle: '{{section}} – NetWitness Platform',
   empty: '',
   languages: {
     en: 'Englisch',
@@ -361,73 +361,6 @@ define('sa/locales/de-de/translations', ['exports'], function (exports) {
     GB: 'GB',
     TB: 'TB'
   },
-  previousMonth: 'Vorheriger Monat',
-  nextMonth: 'Nächsten Monat',
-  months() {
-    return [
-      'Januar',
-      'Februar',
-      'März',
-      'April',
-      'Mai',
-      'Juni',
-      'Juli',
-      'August',
-      'September',
-      'Oktober',
-      'November',
-      'Dezember'
-    ];
-  },
-  monthsShort() {
-    return [
-      'Jan',
-      'Feb',
-      'Mrz',
-      'Apr',
-      'Mai',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Okt',
-      'Nov',
-      'Dez'
-    ];
-  },
-  weekdays() {
-    return [
-      'Sonntag',
-      'Montag',
-      'Dienstag',
-      'Mittwoch',
-      'Donnerstag',
-      'Freitag',
-      'Samstag'
-    ];
-  },
-  weekdaysShort() {
-    return [
-      'So',
-      'Monatl.',
-      'Di',
-      'Mi',
-      'Do',
-      'Fr',
-      'Sa'
-    ];
-  },
-  weekdaysMin() {
-    return [
-      'So',
-      'Monatl.',
-      'Di',
-      'Mi',
-      'Do',
-      'Fr',
-      'Sa'
-    ];
-  },
   midnight: '0:00',
   noon: '12:00',
   investigate: {
@@ -463,10 +396,6 @@ define('sa/locales/de-de/translations', ['exports'], function (exports) {
     error: {
       title: 'Daten können nicht geladen werden.',
       description: 'Beim Versuch, die Datensätze abzurufen, ist ein unerwarteter Fehler aufgetreten.'
-    },
-    invalidQueryError: {
-      title: 'Keine Ereignisse gefunden',
-      description: 'Ihre Filterkriterien sind ungültig. Überprüfen Sie die Abfrage auf Syntaxfehler.'
     },
     meta: {
       title: 'Meta',

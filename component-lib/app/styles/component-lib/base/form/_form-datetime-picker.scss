@@ -41,8 +41,18 @@
   color: text-color(primary);
 }
 
+.flatpickr-months span.flatpickr-prev-month,
+.flatpickr-months span.flatpickr-next-month {
+  fill: text-color(primary, lightest);
+  &:hover svg {
+    fill: text-color(primary, light);
+  }
+}
+
 .flatpickr-current-month {
   @include rsa-font(header);
+
+  color: text-color(primary, lightest);
 
   .numInputWrapper {
     width: 20%;

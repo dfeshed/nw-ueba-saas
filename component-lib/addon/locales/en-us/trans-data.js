@@ -1,6 +1,6 @@
 export default {
-  appTitle: 'NetWitness Suite',
-  pageTitle: '{{section}} - NetWitness Suite',
+  appTitle: 'NetWitness Platform',
+  pageTitle: '{{section}} - NetWitness Platform',
   empty: '',
   languages: {
     en: 'English',
@@ -377,73 +377,6 @@ export default {
     MB: 'MB',
     GB: 'GB',
     TB: 'TB'
-  },
-  previousMonth: 'Previous Month',
-  nextMonth: 'Next Month',
-  months() {
-    return [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December'
-    ];
-  },
-  monthsShort() {
-    return [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec'
-    ];
-  },
-  weekdays() {
-    return [
-      'Sunday',
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday',
-      'Saturday'
-    ];
-  },
-  weekdaysShort() {
-    return [
-      'Sun',
-      'Mon',
-      'Tue',
-      'Wed',
-      'Thu',
-      'Fri',
-      'Sat'
-    ];
-  },
-  weekdaysMin() {
-    return [
-      'Sun',
-      'Mon',
-      'Tue',
-      'Wed',
-      'Thu',
-      'Fri',
-      'Sat'
-    ];
   },
   midnight: 'Midnight',
   noon: 'Noon',

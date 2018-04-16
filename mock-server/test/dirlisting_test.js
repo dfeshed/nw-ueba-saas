@@ -37,7 +37,7 @@ describe('directory listing', () => {
     request(server)
       .get('/locales/spanish_es-mx.js')
       .expect('Content-Type', /text\/javascript/)
-      .expect('Content-Length', '118402')
+      .expect('Content-Length', '117279')
       .end(function(err, res) {
         if (err) {
           throw err;

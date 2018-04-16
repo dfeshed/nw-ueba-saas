@@ -4,11 +4,10 @@ import hbs from 'htmlbars-inline-precompile';
 import { patchFlash } from 'sa/tests/helpers/patch-flash';
 import { localStorageClear } from 'sa/tests/helpers/wait-for';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, findAll, settled } from '@ember/test-helpers';
+import { render, click, find, findAll, settled } from '@ember/test-helpers';
 import { patchReducer } from 'sa/tests/helpers/vnext-patch';
 import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 import { patchSocket, throwSocket } from 'sa/tests/helpers/patch-socket';
-import { getLocale } from 'sa/reducers/global/preferences/selectors';
 
 const japaneseLocale = 'Japanese';
 const englishLocale = 'English';
@@ -104,46 +103,30 @@ module('Integration | Component | rsa-locale-preferences', function(hooks) {
   });
 
   test('datetime will reflect proper locale after change occurs', async function(assert) {
-    assert.expect(4);
+    assert.expect(2);
 
     class FakeClazz extends Component {
       get layout() {
-        return hbs`<div class="fakeTime">{{moment-format (moment "1991-01-01 6:00 AM" "HH:mm A") "A"}}</div>{{rsa-locale-preferences}}`;
+        return hbs`<div onclick={{action go}} class="time">{{moment-format (moment "1991-01-01 6:00 AM" "HH:mm A") "A"}}</div>`;
       }
     }
 
     this.owner.register('component:test-clazz', FakeClazz);
-    this.owner.inject('component:test-clazz', 'moment', 'service:moment');
 
     const moment = this.owner.lookup('service:moment');
-    const redux = this.owner.lookup('service:redux');
-    const unsubscribe = redux.store.subscribe(() => {
-      const activeLocale = getLocale(redux.store.getState());
-      if (activeLocale.id === 'ja_JP') {
-        moment.changeLocale(activeLocale.key);
-        unsubscribe();
-      }
+
+    this.set('go', () => {
+      moment.changeLocale('ja-jp');
     });
 
-    await render(hbs`{{test-clazz}}`);
+    await render(hbs`{{test-clazz go=(action go)}}`);
 
-    assert.equal(find('.fakeTime').textContent, 'PM');
+    assert.equal(find('.time').textContent, 'PM');
 
-    patchSocket((method, modelName, query) => {
-      assert.deepEqual(query, {
-        data: {
-          userLocale: 'ja_JP'
-        }
-      });
-    });
-
-    clickTrigger(powerSelect);
-    selectChoose(powerSelector, japaneseLocale);
+    await click('.time');
 
     return settled().then(async () => {
-      const powerSelect = find(powerSelector);
-      assert.equal(trim(powerSelect.textContent), japaneseLocale);
-      assert.equal(find('.fakeTime').textContent, '午後');
+      assert.equal(find('.time').textContent, '午後');
     });
   });
 });

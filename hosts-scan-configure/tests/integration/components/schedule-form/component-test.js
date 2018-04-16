@@ -153,7 +153,11 @@ test('should display the save button', function(assert) {
 
 test('when save button is disabled', function(assert) {
   const config = {
-    enabled: false
+    ...hostsScan.config,
+    scheduleConfig: {
+      ...hostsScan.config.scheduleConfig,
+      enabled: false
+    }
   };
   new ReduxDataHelper(setState)
     .hostsScanConfig(config)

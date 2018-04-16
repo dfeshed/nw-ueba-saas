@@ -46,7 +46,7 @@ export function updateLocaleByKey(userLocale) {
   return (dispatch, getState) => {
     const state = getState();
     const locale = getLocale(state);
-    if (locale && locale.id !== userLocale) {
+    if (userLocale && locale && locale.id !== userLocale) {
       const locales = getLocales(state);
       const localeFound = locales && locales.filter((loc) => loc.id === userLocale);
       if (localeFound && localeFound.length === 1) {
