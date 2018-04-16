@@ -78,7 +78,7 @@ const formComponent = Component.extend({
 
   isFullAgentEnabled: false,
 
-  isMonitorModeEnabled: false,
+  isMonitorModeEnabled: true,
 
   @computed('configData.packageConfig.server', 'configData.packageConfig.port', 'isUpdating')
   isDisabled(server, port, isUpdating) {

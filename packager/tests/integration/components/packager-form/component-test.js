@@ -283,17 +283,19 @@ module('Integration | Component | packager-form', function(hooks) {
   });
 
   test('required fields are rendered when full agent is enabled', async function(assert) {
-    assert.expect(5);
+    assert.expect(6);
     await render(hbs`{{packager-form isFullAgentEnabled=true}}`);
     const driverServiceEl = findAll('.driver-server-input-group');
     const driverServiceNameEl = findAll('.driver-server-input-group .service-name-js input');
     const driverDisplayNameEl = findAll('.driver-server-input-group .display-name-js input');
     const driverDescriptionEl = findAll('.driver-description-section input');
     const monitoringModeCheckboxEl = findAll('.monitoring-mode-section');
+    const enableMonitoringChecked = findAll('.monitoring-mode-section label.checked');
     assert.equal(driverServiceEl.length, 1, 'driver section is rendered');
     assert.equal(driverServiceNameEl.length, 1, 'driver service name input is rendered');
     assert.equal(driverDisplayNameEl.length, 1, 'driver display name is rendered');
     assert.equal(driverDescriptionEl.length, 1, 'driver description is rendered');
     assert.equal(monitoringModeCheckboxEl.length, 1, 'monitoring mode is rendered');
+    assert.equal(enableMonitoringChecked.length, 1, 'monitoring mode is checked by default');
   });
 });
