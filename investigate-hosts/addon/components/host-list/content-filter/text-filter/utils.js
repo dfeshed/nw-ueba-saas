@@ -6,6 +6,7 @@ const TEXT_FILTER_REGEX_TYPES = {
   macAddress: /^(?:[0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$/,
   macAddressContains: /^[0-9A-Fa-f:]*$/,
   osDescription: /^[A-Za-z0-9-.()\s]*$/,
+  countryCode: /^[A-Za-z_]*$/,
   onlyAlphabetChars: /^[A-Za-z]*$/,
   allKeyboardChars: /^([!-~])*$/,
   allKeyboardCharsWithSpace: /^([!-~\s])*$/

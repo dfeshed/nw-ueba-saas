@@ -174,8 +174,8 @@ const FILTER_TYPES = [
     'selected': false,
     'panelId': 'isoCountryCode',
     'isDefault': false,
-    'filterType': 'onlyAlphabetChars',
-    'invalidError': 'invalidCharsAlphabetOnly'
+    'filterType': 'countryCode',
+    'invalidError': 'invalidCountryCode'
   },
   {
     'propertyName': 'machineIdentity.agentMode',

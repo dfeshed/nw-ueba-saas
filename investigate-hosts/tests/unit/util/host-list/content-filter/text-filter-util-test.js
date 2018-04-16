@@ -69,3 +69,14 @@ test('OS Description Text filter util test', function(assert) {
   assert.equal(evaluateTextAgainstRegEx(invalidValue, 'osDescription'), 1, 'Invalid OS Description');
 });
 
+// Country Code
+test('Country Code Text filter util test', function(assert) {
+  const validValue = [{ value: '_India' }, { value: 'US' }];
+  assert.equal(evaluateTextAgainstRegEx(validValue, 'countryCode'), 0, 'Valid Country Code');
+});
+
+test('Country Code Text filter util test', function(assert) {
+  const invalidValue = [{ value: 'US_' }, { value: 'India@' }];
+  assert.equal(evaluateTextAgainstRegEx(invalidValue, 'countryCode'), 1, 'Invalid Country Code');
+});
+

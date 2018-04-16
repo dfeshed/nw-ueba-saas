@@ -2275,6 +2275,7 @@ export default {
         invalidAgentVersion: 'Please enter a valid Agent Version',
         invalidMacAddress: 'Please enter a valid MAC address',
         invalidOsDescription: 'Alphabet, numbers and .,-,() are allowed',
+        invalidCountryCode: 'Can only contain alphabet and _ .',
         invalidCharacters: 'Can contain alphanumeric or special characters.',
         invalidCharsAlphabetOnly: 'Numbers and special characters are not allowed',
         invalidCharsAlphaNumericOnly: 'Special characters are not allowed',
