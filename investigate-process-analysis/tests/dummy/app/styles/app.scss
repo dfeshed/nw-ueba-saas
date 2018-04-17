@@ -1,0 +1,57 @@
+@charset "UTF-8";
+
+/* pulling in component-lib from inside respond */
+@import 'component-lib/manifest';
+
+/* Pulling in local investigate-process-analysis styles */
+@import "investigate-process-analysis/manifest";
+
+
+// Beautification of dummy app splash page for Engine dummy app -- purely cosmetic with no effect on application code
+body.investigate-process-analysis-engine-dummy {
+  color: text-color(primary, light);
+  .engine-splash-page {
+    .rsa-logo {
+      .rsa-logo__title {
+        color: text-color(accentTwo);
+        text-align: center;
+        font-size: 25px;
+      }
+    }
+    a:-webkit-any-link {
+      text-decoration: none;
+    }
+  }
+}
+
+
+/*
+  Overlays the context panel over the right-side of the app's main outlet.
+  The panel is hidden unless we have some entity to display inside of it.
+*/
+.investigate-process-analysis-engine-dummy {
+  &__main {
+
+    &-body {
+      z-index: 1;
+    }
+
+    &-aside {
+      overflow: hidden;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      width: 0;
+      z-index: 2;
+      transition: width 300ms;
+    }
+  }
+}
+
+.investigate-process-analysis-engine {
+  .background-icon {
+    font-size: 15rem;
+    color: text-color(accentOne, dark);
+  }
+}

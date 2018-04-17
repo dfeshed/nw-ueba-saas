@@ -66,6 +66,7 @@ prepareApp preferences
 prepareApp test-helpers
 prepareApp ember-route-action-helper
 prepareApp broccoli-theme
+prepareApp investigate-process-analysis
 prepareApp sa
 
 cd $CWD

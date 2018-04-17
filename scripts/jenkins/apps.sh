@@ -228,6 +228,7 @@ buildEmberApp investigate-hosts false true true
 buildEmberApp investigate-files false true true
 buildEmberApp respond false true true
 buildEmberApp configure false true true
+buildEmberApp investigate-process-analysis false true true
 buildEmberApp sa true true true
 buildLibrary broccoli-theme
 

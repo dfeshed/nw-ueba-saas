@@ -16,7 +16,8 @@ const ALL_SUBMODULES = [
   'preferences',
   'test-helpers',
   'ember-route-action-helper',
-  'hosts-scan-configure'
+  'hosts-scan-configure',
+  'investigate-process-analysis'
 ];
 
 // A configuration that lists each submodule with
@@ -36,7 +37,8 @@ const saModuleDependants = {
     'configure',
     'context',
     'preferences',
-    'hosts-scan-configure'
+    'hosts-scan-configure',
+    'investigate-process-analysis'
   ],
   docs: [], // lol
   'mock-server': [
@@ -50,17 +52,20 @@ const saModuleDependants = {
     'respond',
     'configure',
     'context',
-    'hosts-scan-configure'
+    'hosts-scan-configure',
+    'investigate-process-analysis'
   ],
   'investigate-shared': [
     'investigate-events',
     'investigate-hosts',
     'investigate-files',
+    'investigate-process-analysis',
     'sa'
   ],
   'investigate-events': ['sa'],
   'investigate-hosts': ['sa'],
   'investigate-files': ['sa'],
+  'investigate-process-analysis': ['sa'],
   packager: ['sa'],
   recon: [
     'sa',
@@ -82,7 +87,8 @@ const saModuleDependants = {
     'sa',
     'style-guide',
     'context',
-    'hosts-scan-configure'
+    'hosts-scan-configure',
+    'investigate-process-analysis'
   ],
   'style-guide': [], // style-guide is an end state app, nothing depends on it
   context: [

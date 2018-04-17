@@ -1,0 +1,23 @@
+<ul class="rsa-flash-messages">
+  {{#each flashMessages.queue as |flash|}}
+    {{#flash-message tagName="li" flash=flash as |component flash|}}
+      <hbox align="stretch">
+        <centered xs="2">
+          {{rsa-icon name=flash.iconName style=flash.iconStyle size=flash.iconSize}}
+        </centered>
+        <vbox xs="9" justify="center" class="message">
+          {{flash.message}}
+        </vbox>
+        <vbox xs="1" justify="start" align="center">
+          {{rsa-icon name="close"}}
+        </vbox>
+      </hbox>
+    {{/flash-message}}
+  {{/each}}
+</ul>
+<article class="investigate-process-analysis-engine-dummy__main">
+  <section fill class="investigate-process-analysis-engine-dummy__main-body">
+    {{outlet}}
+  </section>
+</article>
+<div id='modalDestination'></div>
