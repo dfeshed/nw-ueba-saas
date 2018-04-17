@@ -110,8 +110,8 @@ const FILTER_TYPES = [
     'isDefault': false
   },
   {
-    'propertyName': 'machineIdentity.group',
-    'label': 'investigateHosts.hosts.column.machineIdentity.group',
+    'propertyName': 'machineIdentity.groups',
+    'label': 'investigateHosts.hosts.column.groups',
     'filterControl': 'host-list/content-filter/text-filter',
     'selected': false,
     'panelId': 'group',
