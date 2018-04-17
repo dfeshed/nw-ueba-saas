@@ -121,30 +121,148 @@ const streamRequest = ({
  */
 const pagedStreamRequest = (options, routeName) => {
   return function() {
+
+    assert('Cannot call pagedStreamRequest without onResponse', options.onResponse);
+    _baseAsserts(options.method, options.modelName, options.query, 'pagedStreamRequest');
+
+    const onReject = options.onError || function(response) {
+      warn(
+        `Unhandled error in stream, method: ${options.method}, modelName: ${options.modelName}, code: ${response.code}`,
+        { id: 'stremaing-data.request.pagedStreamRequest' }
+      );
+    };
+
+    // no marker for first page, so leave that undefined
+    const markers = [undefined];
+
+    // Indicates if the last page has been received.
+    // Once set to true, stays true, so if last page
+    // is received again, we do not duplicate
+    // 'completed' functionality
+    let hasBeenCompleted = false;
+
+    // A 1-based page number
+    let currentPage = 1;
+
+    const originalFilters = options.query.filters ? [ ...options.query.filters ] : [];
+
     const functionMakePageRequest = () => {
 
-      const onReject = options.onError || function(response) {
-        warn(
-          `Unhandled error in stream, method: ${options.method}, modelName: ${options.modelName}, code: ${response.code}`,
-          { id: 'stremaing-data.request.pagedStreamRequest' }
-        );
-      };
+      const pageMarker = markers[currentPage - 1];
 
-      assert('Cannot call pagedStreamRequest without onResponse', options.onResponse);
+      // undefined means first page, no marker
+      if (pageMarker === undefined) {
+        options.query.filters = originalFilters;
+      } else {
+        // otherwise need to create a marker for request
+        options.query.filters = [
+          ...originalFilters,
+          {
+            field: 'marker',
+            value: pageMarker
+          }
+        ];
+      }
+
+      // close over currentPage so subsequent requests do not alter it
+      // while this request is still being processed
+      const promiseResponse = function(currentPage) {
+
+        return (response) => {
+
+          // Much depends on meta being present
+          if (response.meta) {
+            const { complete } = response.meta;
+
+            // If ths is the first time the stream has indicated it
+            // it is complete, then fire the callback
+            if (complete === true && !hasBeenCompleted) {
+              hasBeenCompleted = true;
+              if (options.onCompleted) {
+                options.onCompleted();
+              }
+            }
+
+            // if the current page we are requesting is
+            // for a page of results we haven't seen yet,
+            // and the meta has a marker in it, then
+            // append the new page marker to the marker list
+            if (currentPage === markers.length) {
+              markers.push(response.meta.marker);
+            }
+
+            setCursorFlags(response.meta.marker);
+          }
+
+          options.onResponse(response);
+        };
+      }(currentPage);
 
       promiseRequest(options, routeName, 'pagedStreamRequest')
-        .then(options.onResponse)
+        .then(promiseResponse)
         .catch(onReject);
     };
 
+    // returned to client, is the API to interact with pages of
+    // the stream
+    const cursor = {
+      canFirst: false,
+      canPrevious: false,
+      canNext: false,
+      canLast: false,
+      first() {
+        if (cursor.canFirst) {
+          currentPage = 1;
+          functionMakePageRequest();
+        }
+      },
+      previous() {
+        if (cursor.canPrevious) {
+          currentPage--;
+          functionMakePageRequest();
+        }
+      },
+      next() {
+        if (cursor.canNext) {
+          currentPage++;
+          functionMakePageRequest();
+        }
+      },
+      last() {
+        if (!hasBeenCompleted) {
+          throw new Error('Last page has not yet been encountered, you cannot call Cursor.last()');
+        }
+
+        if (cursor.canLast) {
+          currentPage = markers.length - 1;
+          functionMakePageRequest();
+        }
+      }
+    };
+
+    // set flags inside the cursor for use both internally and by user
+    const setCursorFlags = (currentMarker) => {
+      const numberOfMarkers = markers.length;
+      const indexOfCurrentMarker = markers.lastIndexOf(currentMarker);
+
+      // only 1 marker then all flags stay with default (false)
+      if (numberOfMarkers > 1) {
+        const notOnFirstPage = indexOfCurrentMarker > 1;
+        cursor.canFirst = notOnFirstPage;
+        cursor.canPrevious = notOnFirstPage;
+
+        const onLastPage = hasBeenCompleted && indexOfCurrentMarker === numberOfMarkers - 1;
+        cursor.canNext = !onLastPage;
+
+        cursor.canLast = hasBeenCompleted && indexOfCurrentMarker < numberOfMarkers - 1;
+      }
+    };
+
+    // kick off the first request and return the cursor,
+    // subsequent requests take place via cursor function calls
     functionMakePageRequest();
 
-    return {
-      first() {},
-      previous() {},
-      next() {},
-      last() {}
-    };
+    return cursor;
   }();
 };
 
