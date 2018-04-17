@@ -16,6 +16,29 @@ export default {
   admin: {
     title: 'Admin'
   },
+  errorPages: {
+    errorLabel: 'Error Description',
+    back: 'Back',
+    support: 'Support',
+    documentation: 'Documentation',
+    viewOnlineDocs: 'View online documentation for details about the error.',
+    notFound: {
+      errorDescription: 'Oops! The requested link was not found.',
+      subtitle: 'Page Not Found',
+      title: '404'
+    },
+    error: {
+      errorDescription: 'We\'ve encountered an internal error and cannot proceed. Here are some reasons why you might be seeing this error page:',
+      bulletA: 'The Legacy NetWitness UI may still be starting up. Please wait a few minutes and try again.',
+      bulletB: 'If after a few minutes you are still receiving this message, please check to make sure that the NetWitness Legacy UI is properly running. ',
+      subtitle: 'Internal Server Error'
+    },
+    permissionDenied: {
+      errorDescription: '403 Forbidden is an HTTP status code returned by a web server when a user requests a web page or media that the server does not allow them to. In other words, the server can be reached, but the server declined to allow access to the page.',
+      subtitle: 'You cannot access the requested page.',
+      title: 'Forbidden.'
+    }
+  },
   errorDictionaryMessages: {
     code: 'Error Code',
     investigateEvents: {
