@@ -1,6 +1,6 @@
 package fortscale.utils.pagination;
 
-import javafx.util.Pair;
+import fortscale.utils.data.Pair;
 import org.springframework.data.mongodb.core.aggregation.ArrayOperators;
 
 import java.util.*;
