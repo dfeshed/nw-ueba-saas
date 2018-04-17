@@ -1,0 +1,10 @@
+
+.idea/
+presidio-ui-webapp/target/
+presidio-ui-ui/node/
+presidio-ui-ui/node_modules/
+presidio-ui-ui/dist/
+presidio-ui-ui/target/
+presidio-ui-common/target/
+presidio-ui-webapp/src/main/webapp/resources/
+*.lst
