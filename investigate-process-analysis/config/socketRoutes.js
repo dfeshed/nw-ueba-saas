@@ -1,9 +1,16 @@
 /* eslint-env node */
 
 const common = require('../../common');
-const processAnalysisConfigGen = function() {
+const processAnalysisConfigGen = function(env) {
+  const eventsSocketURL = common.determineSocketUrl(env, '/investigate/socket');
   return {
-
+    'core-event': {
+      socketUrl: eventsSocketURL,
+      stream: {
+        subscriptionDestination: '/user/queue/investigate/events',
+        requestDestination: '/ws/investigate/events/stream'
+      }
+    }
   };
 };
 

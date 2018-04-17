@@ -8,7 +8,7 @@ const App = Application.extend({
   podModulePrefix: config.podModulePrefix,
   Resolver,
   engines: {
-    processAnalysis: {
+    investigateProcessAnalysis: {
       dependencies: {
         services: [
           '-document',

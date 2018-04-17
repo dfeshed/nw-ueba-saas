@@ -8,7 +8,7 @@ const investigateConfigGen = function(env) {
   const eventsSocketURL = common.determineSocketUrl(env, '/investigate/socket');
   return {
     'core-event': {
-      eventsSocketURL,
+      socketUrl: eventsSocketURL,
       stream: {
         subscriptionDestination: '/user/queue/investigate/events',
         requestDestination: '/ws/investigate/events/stream'
