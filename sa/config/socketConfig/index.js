@@ -9,7 +9,6 @@ const preferencesConfigGen = require('../../../preferences').socketRouteGenerato
 const respondConfigGen = require('../../../respond').socketRouteGenerator;
 const configureConfigGen = require('../../../configure').socketRouteGenerator;
 const packagerConfigGen = require('../../../packager').socketRouteGenerator;
-const investigateSharedConfig = require('../../../investigate-shared').socketRouteGenerator;
 const adminConfigGen = require('./administration');
 
 // order matters, first config in wins if there are matching configs
@@ -22,7 +21,6 @@ const configGenerators = [
   contextConfigGen,
   preferencesConfigGen,
   packagerConfigGen,
-  investigateSharedConfig,
   adminConfigGen
 ];
 

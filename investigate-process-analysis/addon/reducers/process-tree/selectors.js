@@ -2,9 +2,9 @@ import reselect from 'reselect';
 
 const { createSelector } = reselect;
 
-const _rootNode = (state) => state.investigateShared.endpoint.processTree.rootNode;
-const _streaming = (state) => state.investigateShared.endpoint.processTree.streaming;
-const _error = (state) => state.investigateShared.endpoint.processTree.error;
+const _rootNode = (state) => state.processAnalysis.processTree.rootNode;
+const _streaming = (state) => state.processAnalysis.processTree.streaming;
+const _error = (state) => state.processAnalysis.processTree.error;
 
 export const treeData = createSelector(
   [_rootNode],

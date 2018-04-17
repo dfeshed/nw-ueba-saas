@@ -12,12 +12,10 @@ module('Unit | Selectors | process-tree', function() {
 
   test('treeData returns the data for rendering tree', function(assert) {
     const state = Immutable.from({
-      investigateShared: {
-        endpoint: {
-          processTree: {
-            rootNode: {
-              processName: 'test'
-            }
+      processAnalysis: {
+        processTree: {
+          rootNode: {
+            processName: 'test'
           }
         }
       }
@@ -29,11 +27,9 @@ module('Unit | Selectors | process-tree', function() {
 
   test('isStreaming', function(assert) {
     let state = Immutable.from({
-      investigateShared: {
-        endpoint: {
-          processTree: {
-            streaming: false
-          }
+      processAnalysis: {
+        processTree: {
+          streaming: false
         }
       }
     });
@@ -42,11 +38,9 @@ module('Unit | Selectors | process-tree', function() {
     assert.equal(streaming, false);
 
     state = Immutable.from({
-      investigateShared: {
-        endpoint: {
-          processTree: {
-            streaming: true
-          }
+      processAnalysis: {
+        processTree: {
+          streaming: true
         }
       }
     });
@@ -57,11 +51,9 @@ module('Unit | Selectors | process-tree', function() {
 
   test('hasError', function(assert) {
     let state = Immutable.from({
-      investigateShared: {
-        endpoint: {
-          processTree: {
-            error: null
-          }
+      processAnalysis: {
+        processTree: {
+          error: null
         }
       }
     });
@@ -70,11 +62,9 @@ module('Unit | Selectors | process-tree', function() {
     assert.equal(error, false);
 
     state = Immutable.from({
-      investigateShared: {
-        endpoint: {
-          processTree: {
-            error: 'xyz'
-          }
+      processAnalysis: {
+        processTree: {
+          error: 'xyz'
         }
       }
     });
@@ -85,11 +75,9 @@ module('Unit | Selectors | process-tree', function() {
 
   test('errorMessage', function(assert) {
     const state = Immutable.from({
-      investigateShared: {
-        endpoint: {
-          processTree: {
-            error: 'failed'
-          }
+      processAnalysis: {
+        processTree: {
+          error: 'failed'
         }
       }
     });

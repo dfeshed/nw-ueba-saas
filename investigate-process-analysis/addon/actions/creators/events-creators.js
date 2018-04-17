@@ -1,5 +1,6 @@
 import fetchStreamingEvents from 'investigate-shared/actions/api/investigate-events/events';
 import * as ACTION_TYPES from 'investigate-process-analysis/actions/types';
+import _ from 'lodash';
 
 // Common functions.
 const commonHandlers = function(dispatch) {
@@ -107,6 +108,7 @@ const _hasherizeEventMeta = (event) => {
       }
       event[meta[0]] = meta[1];
     }
+    event.id = _.uniqueId('event_'); // Adding unique id to node, currently server is not sending
     event.metas = null;
     event.children = [];
   }

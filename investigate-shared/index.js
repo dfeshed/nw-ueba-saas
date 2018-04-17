@@ -21,9 +21,5 @@ module.exports = {
   },
 
   // See ../common.js for details on this function
-  isDevelopingAddon: isDevelopingAddon(projectName),
-
-  socketRouteGenerator: require('./config/socketRoutes'),
-
-  mockDestinations: path.join(__dirname, 'tests', 'data', 'subscriptions')
+  isDevelopingAddon: isDevelopingAddon(projectName)
 };

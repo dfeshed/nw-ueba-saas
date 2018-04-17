@@ -1,7 +1,5 @@
 /* eslint-env node */
 
-const socketRouteGenerator = require('../../../config/socketRoutes');
-
 module.exports = function(environment) {
   const ENV = {
     modulePrefix: 'dummy',
@@ -47,8 +45,5 @@ module.exports = function(environment) {
   if (environment === 'production') {
     // Intentionally left blank
   }
-
-  ENV.socketRoutes = socketRouteGenerator(environment);
-
   return ENV;
 };
