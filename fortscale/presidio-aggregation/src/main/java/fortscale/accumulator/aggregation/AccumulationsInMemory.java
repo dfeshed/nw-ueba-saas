@@ -1,6 +1,6 @@
 package fortscale.accumulator.aggregation;
 
-import javafx.util.Pair;
+import fortscale.utils.data.Pair;
 import presidio.ade.domain.record.accumulator.AccumulatedAggregationFeatureRecord;
 
 import java.util.HashMap;

@@ -4,7 +4,7 @@ import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.time.TimeRange;
-import javafx.util.Pair;
+import fortscale.utils.data.Pair;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

@@ -3,7 +3,7 @@ package fortscale.utils.pagination;
 import fortscale.utils.pagination.events.SimpleUserEvent;
 import fortscale.utils.pagination.store.SimpleUserEventStore;
 import fortscale.utils.time.TimeRange;
-import javafx.util.Pair;
+import fortscale.utils.data.Pair;
 import org.junit.Before;
 import org.junit.Test;
 

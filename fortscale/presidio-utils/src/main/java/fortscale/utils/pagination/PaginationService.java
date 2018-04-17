@@ -2,7 +2,7 @@ package fortscale.utils.pagination;
 
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeRange;
-import javafx.util.Pair;
+import fortscale.utils.data.Pair;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -5,7 +5,7 @@ import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.model.metrics.CategoryRarityModelBuilderMetricsContainer;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
-import javafx.util.Pair;
+import fortscale.utils.data.Pair;
 import org.junit.Assert;
 import org.junit.Test;
 

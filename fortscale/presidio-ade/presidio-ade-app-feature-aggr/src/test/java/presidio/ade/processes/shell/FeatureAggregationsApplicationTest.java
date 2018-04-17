@@ -17,7 +17,7 @@ import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.test.category.ModuleTestCategory;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.time.TimeService;
-import javafx.util.Pair;
+import fortscale.utils.data.Pair;
 import org.apache.commons.collections.map.HashedMap;
 import org.junit.Assert;
 import org.junit.Before;
