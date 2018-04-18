@@ -100,13 +100,13 @@ this.request.streamRequest({
 });
 ```
 
-## `.pagedStreamRequest(opts): Cursor` (Pending)
+## `.pagedStreamRequest(opts): Cursor`
 
-`pagedStreamRequest` has the same API and behaves like a `streamRequest`, in fact it uses a `streamRequest` under the hood. `pagedStreamRequest`s are to be used on specific endpoints that provide streams of data in pages where the items of each page are of __indeterminate total size__. `pagedStreamRequest`s maintain an internal stack of page markers that allow for `next`, `previous`, `first` and `last` calls on the `Cursor` object that is returned by `pagedStreamRequest`.
+`pagedStreamRequest` has the same API and behaves somewhat like a `streamRequest`. `pagedStreamRequest`s are to be used on specific endpoints that provide streams of data in pages where the items of each page are of __indeterminate total size__. `pagedStreamRequest`s maintain an internal stack of page markers that allow for `next`, `previous`, `first` and `last` calls on the `Cursor` object that is returned by `pagedStreamRequest`.
 
 ### Pages Based on Content Size
 
-In a typical pagination scenario, the items that make up a page are clearly defined and an API can indicate how many pages there are. This allows an API consumer to ask for the last page or "page 24". However, when the items that make up a page can vary widely in size (10b vs 500k), it makes sense for API and UI performance reasons to define a page based on the size of the items rather than the number of items. `pagedStreamRequest`'s pages are size-based. How big depends on the API, `pagedStreamRequest` does not care. `pagedStreamRequest` APIs work with a min and max size. A page cannot be smaller than the min or larger than the max.
+In a typical pagination scenario, the items that make up a page are clearly defined and an API can indicate how many pages there are. This allows an API consumer to ask for the last page or "page 24". However, when the items that make up a page can vary widely in size (10b vs 500k), it makes sense for API and UI performance reasons to define a page based on the size of the items rather than the number of items. APIs fulfilling `pagedStreamRequest` requests are assumed to be returning pages based on size. How big depends on the API, `pagedStreamRequest` does not care. `pagedStreamRequest` APIs work with a min and max size. A page cannot be smaller than the min or larger than the max.
 
 - if a page min is 100k, page 1 could have just one item if the first item is 101k.
 - if a page min is 100k, page 1 could have 11 items if the 11th item pushes the size over 100k
@@ -117,7 +117,7 @@ In a typical pagination scenario, the items that make up a page are clearly defi
 
 After the initial call of `pagedStreamRequest`, paging takes place via the returned `Cursor`. Each request to an API for a page returns a `marker` which indicates where the next page starts. If only the first page had been visited, `Cursor.next()` would send the first page's `marker` to the API, so the API knows to pick up after the first page. The value of `marker` isn't significant to the `Cursor`, only to the API in question. `marker` could be a simple page number, or it could be some other meaningful piece of data the API can use to keep track of response location. `marker`s are not exposed to the consumer of `pagedStreamRequest` or the `Cursor`, they are tracked internally.
 
-When the last page is encountered, the API returns a flag which indicates it has reached the end of the result (and the `onCompleted` handler is called).
+When the last page is encountered, the API returns a flag which indicates it has reached the end of the result (and the `onCompleted` handler is called). This flag is the same `meta.complete` currently returned by typical streaming APIs.
 
 The `Cursor` keeps track of the `marker`s as it moves through the result. There are four paging functions on the `Cursor`. `first`, `previous`, `next`, and `last`. When needed -- as with `previous` and `last` -- the `Cursor` uses the stored `marker`s to traverse the result. But unless the `marker` has been encountered for the last page, `last` cannot be used.
 
@@ -135,8 +135,8 @@ Do not use this if the API you intend to hit hasn't been coded to specifically h
 
 - Multiple messages are not sent per page. So `onResponse` is only called once per API/Cursor call.
 - `batch` and `limit` stream parameters (for APIs) are ignored
-- `pagedStreamRequest` does not keep subscriptions open for future messages, instead it assumes another page will not be requested and shuts down. This prevents users needing to maintain the subscription.
-- `onCompleted` isn't called after each page, it is called only when the last page is returned. Even after `onCompleted` has been called, the `Cursor` is still usable.
+- `pagedStreamRequest` does not keep subscriptions open for future messages, instead it assumes another page will not be requested and shuts down. This prevents users needing to maintain the subscription. This means that technically no streaming (in the traditional sense) is taking place under the hood, but the usage of `pagedStreamRequest` maintains the facade.
+- `onCompleted` isn't called after each page, it is called only when the last page is returned. Even after `onCompleted` has been called, the `Cursor` is still usable. If the last page is returned in multiple calls (i.e. `last()` => `previous()` => `last()`) the `onCompleted` callback is only called once.
 - `onResponse` and `onInit` are not provided a callback to stop the stream since a request only has one response.
 - There is no `onStopped` handler.
 
@@ -200,6 +200,10 @@ if (cursor.canLast) {
   cursor.last();
 }
 ```
+
+## TODO
+
+* The `itemTooLarge` implementation needs to be included.
 
 ## `.promiseRequest(opts): RSVP.Promise`
 
