@@ -1,3 +1,21 @@
+# [8.2.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v8.1.0)
+## Features
+* [ASOC-45715](https://bedfordjira.na.rsa.net/browse/ASOC-50937):&emsp;UI has the capability to filter on assigned and unassigned incidents at the same time
+* [ASOC-47375](https://bedfordjira.na.rsa.net/browse/ASOC-47375):&emsp;Respond button colors update
+* [ASOC-48235](https://bedfordjira.na.rsa.net/browse/ASOC-48235):&emsp;NW 11.1 Patch - Validate Endpoint Refactor
+* [ASOC-50036](https://bedfordjira.na.rsa.net/browse/ASOC-50036):&emsp;Timerange preference is not honored in Ember when navigating from Classic
+* [ASOC-50937](https://bedfordjira.na.rsa.net/browse/ASOC-50937):&emsp;Add advanced query toggle
+* [ASOC-51158](https://bedfordjira.na.rsa.net/browse/ASOC-51158):&emsp;Add Escalate Button to Incident Inspector with Confirmation
+* [ASOC-51160](https://bedfordjira.na.rsa.net/browse/ASOC-51160):&emsp;Add a filter dropdown for escalation status to the Incidents filter panel
+* [ASOC-51425](https://bedfordjira.na.rsa.net/browse/ASOC-51425):&emsp;Ability to move investigate-server from NW Server
+* [ASOC-51560](https://bedfordjira.na.rsa.net/browse/ASOC-51560):&emsp;Introduce toggle that preserves basic/advanced but provides home for new pill componentry
+* [ASOC-51676](https://bedfordjira.na.rsa.net/browse/ASOC-51676):&emsp;Create error code dictionary in Ember
+* [ASOC-51717](https://bedfordjira.na.rsa.net/browse/ASOC-51717):&emsp;Persistent Module IOC App rule creation for MAC
+* [ASOC-51763](https://bedfordjira.na.rsa.net/browse/ASOC-51763):&emsp;Non Persistent Module - App rule creation for Windows - Levels 2 and 3
+* [ASOC-52257](https://bedfordjira.na.rsa.net/browse/ASOC-52257):&emsp;Upgrade scenario for 11.1.0.1 patch
+* [ASOC-52757](https://bedfordjira.na.rsa.net/browse/ASOC-52757):&emsp;ESA Rule Alerts for Machine and Module IOC App rules
+      
+
 # [8.1.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v8.1.0)
 ## Features
 * [ASOC-50210](https://bedfordjira.na.rsa.net/browse/ASOC-50210):&emsp;Intermittent websocket issue causing UI to not load
