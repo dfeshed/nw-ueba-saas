@@ -181,8 +181,6 @@
 
 .rsa- {
   &logo {
-    max-width: 20rem;
-
     /* fudge factor, to compensate because logo is not horizontally symmetrical */
     /* margin-left: 7px; */
 
@@ -225,11 +223,6 @@
 
       .rsa-logo__letter {
         @include rsa-vendor-prefix(animation, rsa-logo-fillredletter 1000ms linear 0s 1 both);
-      }
-
-      /* Optional title text outside the SVG area. */
-      .rsa-logo__title {
-        @include rsa-vendor-prefix(animation, rsa-logo-spreadletters 3000ms ease-out 1000ms 1 both);
       }
     }
   }

@@ -179,10 +179,6 @@
   }
 
   grid {
-    &.display-policies {
-      width: calc(#{$applicationLoginWidth} * 3);
-    }
-
     &:not(.display-policies) {
       vbox:first-child {
         display: none;
@@ -207,10 +203,6 @@
       margin: 0 rsa-whitespace() rsa-whitespace();
       color: rgba(189,189,189, 1);
     }
-  }
-
-  .login {
-    width: $applicationLoginWidth;
   }
 
   .login, .change-password {
