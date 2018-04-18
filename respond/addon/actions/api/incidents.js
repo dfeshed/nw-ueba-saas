@@ -236,14 +236,14 @@ export default {
     });
   },
 
-  createIncidentFromAlerts(name, alertIds) {
+  createIncidentFromAlerts(incidentDetails, alertIds) {
     const request = lookup('service:request');
     return request.promiseRequest({
       method: 'createRecord',
       modelName: 'incidents',
       query: {
         data: {
-          entity: { name },
+          entity: incidentDetails,
           associated: alertIds
         }
       }

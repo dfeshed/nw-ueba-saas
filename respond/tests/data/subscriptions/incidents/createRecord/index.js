@@ -41,25 +41,12 @@ const data = {
     'groupBySourceIp': null,
     'groupByDestinationIp': null,
     'createdFromRule': false
-  },
-  'request': {
-    'id': 'req-3',
-    'data': {
-      'entity': {
-        'name': 'Testing 123'
-      },
-      'associated': [
-        {
-          'id': '5833fee2a7c89226086a0956'
-        }
-      ]
-    }
   }
 };
 
 export default {
-  subscriptionDestination: '/queue/incidents/create',
-  requestDestination: '/ws/respond/incidents/create',
+  subscriptionDestination: '/queue/incident/create',
+  requestDestination: '/ws/respond/incident/create',
   message() {
     return data;
   }

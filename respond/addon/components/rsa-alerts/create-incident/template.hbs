@@ -1,8 +1,48 @@
-<p>
-  {{t 'respond.incidents.actions.actionMessages.createIncidentInstruction' alertCount=alertIds.length}}
-</p>
-{{rsa-form-input label=(t 'respond.incidents.incidentName') value=incidentName}}
+<div class="create-incident-form">
+  <p>
+    {{t 'respond.incidents.actions.actionMessages.createIncidentInstruction' alertCount=alertIds.length}}
+  </p>
+  {{rsa-form-input label=(t 'respond.incidents.incidentName') value=name}}
 
+  <label class="rsa-form-label power-select create-incident-priority">
+    <div class="label-text">
+      {{t 'respond.incident.priority'}}
+    </div>
+    {{#power-select
+      options=priorityTypes
+      selected=priority
+      searchEnabled=false
+      onchange=(action (mut priority)) as |option|}}
+      {{t (concat 'respond.priority.' option)}}
+    {{/power-select}}
+  </label>
+  <label class="rsa-form-label power-select create-incident-assignee">
+    <div class="label-text">
+      {{t 'respond.incident.assignee'}}
+    </div>
+    {{#power-select
+      options=enabledUsers
+      selected=assignee
+      searchEnabled=false
+      placeholder=(t 'respond.incident.chooseAssignee')
+      onchange=(action (mut assignee)) as |option|}}
+      {{or option.name option.id}}
+    {{/power-select}}
+  </label>
+  <label class="rsa-form-label power-select create-incident-categories">
+    <div class="label-text">
+      {{t 'respond.incident.categories'}}
+    </div>
+    {{#power-select-multiple
+      options=groupedCategories
+      selected=categories
+      searchEnabled=false
+      placeholder=(t 'respond.incident.chooseCategory')
+      onchange=(action (mut categories)) as |category|}}
+      {{category.parent}}: {{category.name}}
+    {{/power-select-multiple}}
+  </label>
+</div>
 <footer>
   <hbox class="modal-footer-buttons">
     {{#rsa-form-button defaultAction='handleCancel' class='cancel'}}

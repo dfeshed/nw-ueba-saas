@@ -7,11 +7,11 @@ $footerHeight: 40px;
 .rsa-application-modal-content.create-incident-modal {
   width: 33%;
   height: 33%;
-  max-height: 300px;
-  min-height: 250px;
+  max-height: 450px;
+  min-height: 450px;
 
   .modal-content {
-    padding: rsa-whitespace();
+    height: calc(100% - #{$modalHeaderHeight});
   }
 }
 

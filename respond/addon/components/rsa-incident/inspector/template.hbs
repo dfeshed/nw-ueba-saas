@@ -14,7 +14,7 @@
           <div>{{t 'respond.details.error'}}</div>
         </div>
       {{else}}
-        {{rsa-incidents/inspector-header info=info}}
+        {{rsa-incidents/inspector-header info=info updateItem=(action 'updateItem')}}
       {{/if}}
     </h2>
   </box>

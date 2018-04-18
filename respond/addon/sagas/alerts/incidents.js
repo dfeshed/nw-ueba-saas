@@ -6,9 +6,9 @@ import { success, failure } from 'respond/sagas/flash-messages';
 
 function* createIncidentAsync(action) {
   try {
-    const { incidentName, alertIds } = action;
+    const { incidentDetails, alertIds } = action;
     yield put({ type: ACTION_TYPES.START_TRANSACTION });
-    const payload = yield call(Incidents.createIncidentFromAlerts, incidentName, alertIds);
+    const payload = yield call(Incidents.createIncidentFromAlerts, incidentDetails, alertIds);
     yield put({ type: ACTION_TYPES.CREATE_INCIDENT, payload });
     lookup('service:eventBus').trigger('rsa-application-modal-close-create-incident');
     success('respond.incidents.actions.actionMessages.incidentCreated', { incidentId: payload.data.id });

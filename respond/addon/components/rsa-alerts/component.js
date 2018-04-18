@@ -9,6 +9,9 @@ const dispatchToActions = (dispatch) => {
       dispatch(DictionaryActions.getAllAlertTypes());
       dispatch(DictionaryActions.getAllAlertSources());
       dispatch(DictionaryActions.getAllAlertNames());
+      dispatch(DictionaryActions.getAllPriorityTypes());
+      dispatch(DictionaryActions.getAllCategories());
+      dispatch(DictionaryActions.getAllEnabledUsers());
     }
   };
 };

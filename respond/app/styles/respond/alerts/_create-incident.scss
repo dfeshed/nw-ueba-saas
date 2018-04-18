@@ -1,6 +1,14 @@
 .rsa-create-incident {
+  height: 100%;
+
+  .create-incident-form {
+    padding: 0 rsa-whitespace();
+    overflow-y: auto;
+    height: calc(100% - #{$footerHeight});
+  }
   p, label {
     padding: rsa-whitespace();
+    display: block;
   }
 
   footer {
