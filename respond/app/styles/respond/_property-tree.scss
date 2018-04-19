@@ -11,4 +11,8 @@
   .has-context-data {
     @include rsa-has-context-data();
   }
+
+  a {
+    color: text-color(secondary, light);
+  }
 }

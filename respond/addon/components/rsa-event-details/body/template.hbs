@@ -225,8 +225,8 @@
 {{#rsa-property-tree
   model=model
   skipUnknowns=false
-  order="detector, size, data, related_links"
-  hidden="from, to, detected_by, file, indicatorId, id, timestamp, type, description, source, destination, domain, enrichment"
+  order="detector, size, data"
+  hidden="from, to, detected_by, file, indicatorId, id, timestamp, type, description, source, destination, domain, enrichment, related_links"
   scalarValueComponentClass="rsa-event-details/body-value"
   propertyNameFormatter=propertyNameFormatter
 as |property|
@@ -242,3 +242,27 @@ as |property|
     {{/nested.nested}}
   {{/property.nested}}
 {{/rsa-property-tree}}
+
+{{!Related Links section}}
+{{#with model.related_links as |links|}}
+  <div class="rsa-property-tree related-links">
+    <table>
+      <tr class="key">
+        <td class="key-name">
+          {{t 'respond.eventDetails.labels.related_links'}}
+        </td>
+        <td class="key-value">
+          <div class="rsa-property-tree">
+            <table>
+              {{#each links as |link|}}
+                <tr class="related-link">
+                  <a href="{{link.url}}">{{split-and-capitalize link.type}}</a>
+                </tr>
+              {{/each}}
+            </table>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+{{/with}}
