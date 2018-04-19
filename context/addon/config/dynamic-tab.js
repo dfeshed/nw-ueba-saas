@@ -112,9 +112,9 @@ export default [{
   ],
   headerButtons: [
     'add-to-list',
-    'endpoint',
     'investigate',
-    'archer'
+    'archer',
+    'endpoint'
   ]
 },
 
@@ -148,8 +148,8 @@ export default [{
   ],
   headerButtons: [
     'add-to-list',
-    'endpoint',
-    'investigate'
+    'investigate',
+    'endpoint'
   ]
 },
 
@@ -167,9 +167,9 @@ export default [{
   ],
   headerButtons: [
     'add-to-list',
-    'endpoint',
     'investigate',
-    'archer'
+    'archer',
+    'endpoint'
   ]
 },
 

@@ -1,3 +1,9 @@
+<li class="action" {{action "openAddToListModal"}}>
+  {{rsa-icon name="list-bullets-1" size="small"}}
+  <label class="label">
+    {{t 'context.addToList.title'}}
+  </label>
+</li>
 {{#if pivotToInvestigateUrl}}
   <a href="{{pivotToInvestigateUrl}}" target="_blank">
     <li class="action js-test-pivot-to-investigate-link">
@@ -9,14 +15,16 @@
   </a>
 {{/if}}
 {{#if showArcherLink}}
-  <a href="{{pivotToArcherUrl}}" class="{{unless pivotToArcherUrl "disabled"}}" target="_blank">
-    <li class="action js-test-pivot-to-archer-link">
-      {{rsa-icon name="search" size="small"}}
-      <span class="label">
-        {{t 'context.tooltip.archer'}}
-      </span>
-    </li>
-  </a>
+  <span title="{{unless pivotToArcherUrl (t 'context.tooltip.archerToolTip')}}">
+    <a href="{{pivotToArcherUrl}}" class="{{unless pivotToArcherUrl "disabled"}}" target="_blank">
+      <li class="action js-test-pivot-to-archer-link">
+        {{rsa-icon name="search" size="small"}}
+        <span class="label">
+          {{t 'context.tooltip.archer'}}
+        </span>
+      </li>
+    </a>
+  </span>
 {{/if}}
 {{#if showEndpointLink}}
   <a href="ecatui://{{entityId}}" title="{{t 'context.hostSummary.endpoint'}}" target="_blank">
@@ -28,9 +36,3 @@
     </li>
   </a>
 {{/if}}
-<li class="action" {{action "openAddToListModal"}}>
-  {{rsa-icon name="list-bullets-1" size="small"}}
-  <label class="label">
-    {{t 'context.addToList.title'}}
-  </label>
-</li>

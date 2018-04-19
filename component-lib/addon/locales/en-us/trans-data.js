@@ -1649,6 +1649,7 @@ export default {
       events: 'Pivot to Events',
       archer: 'Pivot to Archer',
       contextUnavailable: 'No context data available at this time.',
+      archerToolTip: 'Add or enable Archer or Data is not available.',
       dataSourceNames: {
         Incidents: 'Incidents',
         Alerts: 'Alerts',

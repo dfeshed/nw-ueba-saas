@@ -5,6 +5,7 @@ import { click, find, findAll, render } from '@ember/test-helpers';
 import Service from '@ember/service';
 import rsvp from 'rsvp';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import * as ACTION_TYPES from 'context/actions/types';
 
 const entityType = 'IP';
 const entityId = '10.20.30.40';
@@ -66,8 +67,8 @@ module('Integration | Component | context tooltip actions', function(hooks) {
 
     assert.equal(findAll('.rsa-context-tooltip-actions').length, 1, 'Expected to find root DOM node');
     assert.equal(findAll('.action').length, 4, 'Expected to find 4 action menu options');
-      // Click the third option, that's the Add To List option
-    await click(findAll('.action')[3]);
+      // Click the first option, that's the Add To List option
+    await click(findAll('.action')[0]);
   });
 
   test('it only shows the Pivot to Endpoint link for IPs, HOSTs & MAC addresses', async function(assert) {
@@ -236,5 +237,49 @@ module('Integration | Component | context tooltip actions', function(hooks) {
     Object.keys(metaMap).forEach((key) => {
       assert.ok(!!url.indexOf(key) > -1, `Expected to find meta key ${key} in query URL`);
     });
+  });
+
+  test('Enable/Disable Pivot to Archer link based on summary data', async function(assert) {
+    const entityId = '192.168.101.66';
+    const entityType = 'IP';
+
+    // Test Model Summary to be dispatched to context-tooltip actions to enable pivot to archer link in hover over
+    let modelSummary = { name: 'Archer', count: null, url: 'www.google.com', criticality: 'Low', riskRating: 'Medium' };
+
+    const redux = this.owner.lookup('service:redux');
+
+    redux.dispatch({
+      type: ACTION_TYPES.GET_SUMMARY_DATA,
+      payload: [modelSummary]
+    });
+
+    this.setProperties({
+      entityType,
+      entityId
+    });
+
+    await render(hbs`{{context-tooltip/actions
+      entityType=entityType
+      entityId=entityId
+    }}`);
+
+    assert.notOk(findAll('a.disabled').length, 'Expected not to find Pivot To Archer link disabled');
+    assert.equal(findAll('span')[1].title, '', 'Expected not to find tooltip for Pivot To Archer link');
+
+    // Test Model Summary to be dispatched to context-tooltip actions to disable pivot to archer link in hover over
+    modelSummary = { name: 'Archer', count: null, url: null };
+
+    redux.dispatch({
+      type: ACTION_TYPES.GET_SUMMARY_DATA,
+      payload: [modelSummary]
+    });
+
+    this.setProperties({
+      entityType,
+      entityId
+    });
+
+    assert.ok(findAll('a.disabled').length, 'Expected to find Pivot To Archer link disabled');
+    assert.equal(findAll('span')[1].title, 'Add or enable Archer or Data is not available.', 'Expected to find tooltip for Pivot To Archer link');
   });
 });
