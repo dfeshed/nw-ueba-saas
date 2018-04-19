@@ -7,11 +7,27 @@ export default Component.extend({
   classNameBindings: ['isActive', ':pill-value'],
 
   isActive: false,
+  initialKeyUp: true,
   sendMessage: () => {},
   valueString: null,
 
+  didRender() {
+    const input = this.element.querySelector('input');
+    if (input) {
+      input.focus();
+    }
+  },
+
   actions: {
     onKeyUp(input, event) {
+      // For some reason, when this component is activated and creates the
+      //  input, it's reacting to the Enter key pressed from the pill-operator
+      // component and sends out the VALUE_ENTER_KEY event. It should not do
+      // this.
+      if (this.get('initialKeyUp') && event.keyCode === 13) {
+        this.toggleProperty('initialKeyUp');
+        return;
+      }
       // 'keyCode' is deprecated in favor of 'key', but the Ember test-helpers
       // don't support 'key'
       switch (event.keyCode) {

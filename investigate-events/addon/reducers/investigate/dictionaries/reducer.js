@@ -13,6 +13,18 @@ const _initialState = Immutable.from({
   aliasesError: false
 });
 
+const _sortByMetaName = (a, b) => {
+  const nameA = a.metaName.toUpperCase();
+  const nameB = b.metaName.toUpperCase();
+  if (nameA < nameB) {
+    return -1;
+  }
+  if (nameA > nameB) {
+    return 1;
+  }
+  return 0;
+};
+
 export default handleActions({
   // Handles the results from a Promise call to fetch `language` for a given
   // service.
@@ -27,7 +39,7 @@ export default handleActions({
         const data = action.payload.data.map((d) => ({
           ...d,
           formattedName: d.metaName ? `${d.metaName} (${d.displayName})` : d.displayName
-        }));
+        })).sort(_sortByMetaName);
         const languageCache = s.languageCache.setIn([serviceId], data);
         return s.merge({ language: data, languageCache });
       }

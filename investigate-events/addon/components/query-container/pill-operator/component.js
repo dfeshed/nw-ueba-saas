@@ -101,5 +101,9 @@ export default Component.extend({
 
   // Function that power-select uses to make an autosuggest match. This function
   // looks at the operators's displayName property for a match.
-  _matcher: (o, input) => o.displayName.indexOf(input)
+  _matcher: (o, input) => {
+    const _displayName = o.displayName.toLowerCase();
+    const _input = input.toLowerCase();
+    return _displayName.indexOf(_input);
+  }
 });

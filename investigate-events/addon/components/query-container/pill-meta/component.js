@@ -22,6 +22,11 @@ const PillMeta = Component.extend({
       this._broadcast(MESSAGE_TYPES.META_SELECTED, selection);
     },
     onFocus(powerSelectAPI /* event */) {
+      if (powerSelectAPI.lastSearchedText) {
+        // When gaining focus, if there was a previous search term, let's clear
+        // it out by performing a blank search.
+        powerSelectAPI.actions.search('');
+      }
       powerSelectAPI.actions.open();
     }
   },
@@ -44,7 +49,12 @@ const PillMeta = Component.extend({
 
   // Function that power-select uses to make an autosuggest match. This function
   // looks at the meta's metaName and displayName properties for a match.
-  _matcher: (m, input) => m.metaName.indexOf(input) & m.displayName.indexOf(input)
+  _matcher: (m, input) => {
+    const _input = input.toLowerCase();
+    const _metaName = m.metaName.toLowerCase();
+    const _displayName = m.displayName.toLowerCase();
+    return _metaName.indexOf(_input) & _displayName.indexOf(_input);
+  }
 });
 
 export default connect(stateToComputed)(PillMeta);

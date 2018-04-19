@@ -1,9 +1,14 @@
 {{#if isActive}}
+  {{!--
+    initiallyOpened should be set to "true", but if you do that the
+    defaultHighlighted property has no effect (first item not highlighted).
+    https://github.com/cibernox/ember-power-select-typeahead/issues/71
+   --}}
   {{#power-select-typeahead
       allowClear=false
-      defaultHighlighted=null
-      extra=(hash labelPath='metaName')
-      initiallyOpened=true
+      defaultHighlighted=undefined
+      extra=(hash labelPath='displayName')
+      initiallyOpened=false
       matcher=_matcher
       matchTriggerWidth=false
       noMatchesMessage='All Operators Filtered out'

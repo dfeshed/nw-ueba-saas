@@ -26,6 +26,12 @@ export default Component.extend({
     }
   },
 
+  keyUp() {
+    // Stop propogation of event so that things like the events
+    // data table don't react to arrow keys being pressed.
+    return false;
+  },
+
   actions: {
     /**
      * Handler for all messages coming from pill components
@@ -107,8 +113,7 @@ export default Component.extend({
       selectedOperator,
       isMetaActive: false,
       isOperatorActive: false,
-      isValueActive: selectedOperator.hasValue,
-      isActive: selectedOperator.hasValue
+      isValueActive: selectedOperator.hasValue
     });
   },
 

@@ -1,8 +1,18 @@
 .rsa-investigate-query-container {
-  display: grid;
-  grid-template-columns: 1fr 2fr 3fr 1fr;
-  grid-column-gap: rsa-whitespace(less);
-  align-items: start;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+
+  &__service-selector,
+  &__time-selector {
+    margin-right: rsa-whitespace(less);
+  }
+  .query-bar-selection {
+    margin-right: rsa-whitespace(less);
+    flex-grow: 1;
+  }
+
 
   .execute-query-button {
     .rsa-form-button {
@@ -152,6 +162,9 @@
   .pill-operator,
   .pill-value {
     height: rsa-whitespace(more);
+    input {
+      width: 100%;
+    }
   }
   .ember-power-select-typeahead-input,
   .ember-power-select-trigger {

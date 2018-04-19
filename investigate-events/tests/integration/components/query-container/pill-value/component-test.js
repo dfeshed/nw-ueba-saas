@@ -47,6 +47,10 @@ module('Integration | Component | Pill Value', function(hooks) {
       assert.equal(data, undefined, 'Wrong input string');
     });
     await render(hbs`{{query-container/pill-value isActive=true sendMessage=(action handleMessage)}}`);
+    // Trigger ENTER twice because of some unknown issue with the interaction of
+    // pill-operator and pill-value when used within the query-pill component.
+    // I'm hoping I can figure out the root cause so I can remove this hack
+    await triggerKeyEvent('.pill-value input', 'keyup', '13');
     await triggerKeyEvent('.pill-value input', 'keyup', '13');
     return settled();
   });
