@@ -29,6 +29,7 @@ Router.map(function() {
       this.mount('investigate-hosts', { path: 'hosts' });
       this.mount('investigate-files', { path: 'files' });
       this.route('recon');
+      this.mount('investigate-process-analysis', { path: 'process-analysis' });
     });
   });
 

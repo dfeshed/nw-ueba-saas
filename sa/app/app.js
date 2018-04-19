@@ -106,6 +106,25 @@ const App = Application.extend({
           'protected.investigate.investigate-files': 'protected.investigate.investigate-files'
         }
       }
+    },
+    investigateProcessAnalysis: {
+      dependencies: {
+        services: [
+          '-document',
+          'access-control',
+          'contextual-help',
+          'dateFormat',
+          'timeFormat',
+          'timezone',
+          'i18n',
+          'flashMessages',
+          'eventBus',
+          'router'
+        ],
+        externalRoutes: {
+          protected: 'protected'
+        }
+      }
     }
   }
 });

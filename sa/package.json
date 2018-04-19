@@ -89,7 +89,8 @@
       "../context",
       "../preferences",
       "../hosts-scan-configure",
-      "../investigate-shared"
+      "../investigate-shared",
+      "../investigate-process-analysis"
     ]
   },
   "engines": {

@@ -2,8 +2,9 @@ import Component from '@ember/component';
 import { get, set } from '@ember/object';
 import computed, { alias } from 'ember-computed-decorators';
 import { htmlSafe } from '@ember/string';
-import moment from 'moment';
 import { inject as service } from '@ember/service';
+
+import { buildTimeRange } from 'investigate-shared/utils/time-util';
 
 const BASE_PADDING = 30;
 
@@ -51,22 +52,6 @@ export default Component.extend({
     ];
   },
 
-  _buildTimeRange() {
-    const endTime = moment().endOf('minute');
-    const startTime = moment(endTime).subtract(1, 'days').add(1, 'minutes').startOf('minute');
-    return {
-      startTime: this._getTimezoneTime(startTime).unix(),
-      endTime: this._getTimezoneTime(endTime).unix()
-    };
-  },
-
-  _getTimezoneTime(browserTime) {
-    const { zoneId } = this.get('timezone.selected');
-    const timeWithoutZone = moment(browserTime).parseZone(browserTime).format('YYYY-MM-DD HH:mm:ss'); // Removing browser timezone information
-    const timeInUserTimeZone = moment.tz(timeWithoutZone, zoneId);
-    return timeInUserTimeZone;
-  },
-
   actions: {
     toggleExpand() {
       const { item, index } = this.getProperties('item', 'index');
@@ -79,14 +64,15 @@ export default Component.extend({
      * @public
      */
     navigateToProcessAnalysis() {
+      const { zoneId } = this.get('timezone.selected');
       const { item, agentId } = this.getProperties('item', 'agentId');
       const { name, checksumSha256 } = item;
-      const timeRange = this._buildTimeRange();
-      const timeStr = `startTime=${timeRange.startTime}&endTime=${timeRange.endTime}`;
-      const serviceId = '46afbb7c-1156-45fb-bc4c-b5143a529610&agentId'; // Will be removed
-      const queryParams = `?checksum=${checksumSha256}&serviceId=${serviceId}=${agentId}&processName=${name}&${timeStr}`;
+      const timeRange = buildTimeRange(1, 'days', zoneId);
+      const timeStr = `st=${timeRange.startTime.unix()}&et=${timeRange.endTime.unix()}`;
+      const serviceId = '46afbb7c-1156-45fb-bc4c-b5143a529610'; // Will be removed
+      const queryParams = `checksum=${checksumSha256}&sid=${serviceId}&aid=${agentId}&pn=${name}&${timeStr}`;
 
-      window.open(`${window.location.origin}/investigate/process-analysis?${queryParams}`, '_blank', 'width=1000,height=700');
+      window.open(`${window.location.origin}/investigate/process-analysis?${queryParams}`, '_blank', 'width=1440,height=900');
     }
   }
 });
