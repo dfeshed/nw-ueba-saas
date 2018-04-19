@@ -12,7 +12,7 @@
     {{/rsa-content-tethered-panel-trigger}}
     {{#rsa-content-tethered-panel panelId=(concat 'tabs' tab.field) style="primary" position='left' displayCloseButton=false}}
       <div  class ='rsa-context-panel__tabs__tooltip'>
-        {{t tab.title}} {{unless tab.loadingIcon tab.toolTipText}}
+        {{t tab.title}}{{if tab.toolTipText (t tab.toolTipText)}}
       </div>
     {{/rsa-content-tethered-panel}}
   {{/each}}
