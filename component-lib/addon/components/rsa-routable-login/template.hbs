@@ -6,6 +6,8 @@
 
       {{#if displayEula}}
         <h3>{{t 'login.eula.title'}}</h3>
+      {{else if displaySecurityBanner}}
+        <h3>{{{securityBannerTitle}}}</h3>
       {{/if}}
     </header>
 
@@ -21,6 +23,19 @@
           isFullWidth=true
           testId="btnAcceptEula"
           isDisabled=eulaContentPending}}
+          {{t 'login.eula.agree'}}
+        {{/rsa-form-button}}
+      </form>
+    {{else if displaySecurityBanner}}
+      <form class="eula" {{action "acceptSecurityBanner" on="submit"}}>
+        <div class="banner-content">
+          {{{securityBannerText}}}
+        </div>
+
+        {{#rsa-form-button
+          type="submit"
+          style="primary"
+          isFullWidth=true}}
           {{t 'login.eula.agree'}}
         {{/rsa-form-button}}
       </form>

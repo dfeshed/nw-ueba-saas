@@ -96,6 +96,12 @@ export default Component.extend({
 
   passwordPolicyCannotIncludeId: null,
 
+  securityBannerTitle: null,
+
+  securityBannerText: null,
+
+  displaySecurityBanner: null,
+
   @computed('eulaKey')
   displayEula: {
     get(eulaKey) {
@@ -278,15 +284,33 @@ export default Component.extend({
             warn(error, { id: 'component-lib.components.rsa-routable-login.component' });
           });
         }
-      } else {
-        this.$('.js-test-login-username-input').focus();
       }
+
+      this.get('ajax').request('/display/security/securitybanner/get').then((response) => {
+        const [config] = response.data;
+
+        if (config.securityBannerEnabled) {
+          this.setProperties({
+            securityBannerTitle: config.securityBannerTitle,
+            securityBannerText: config.securityBannerText,
+            displaySecurityBanner: true
+          });
+        } else {
+          this.$('.js-test-login-username-input').focus();
+        }
+      }).catch((error) => {
+        warn(error, { id: 'component-lib.components.rsa-routable-login.component' });
+      });
     });
   },
 
   actions: {
     acceptEula() {
       this.set('displayEula', false);
+    },
+
+    acceptSecurityBanner() {
+      this.set('displaySecurityBanner', false);
     },
 
     authenticate() {

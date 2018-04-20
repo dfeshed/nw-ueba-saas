@@ -64,6 +64,11 @@
     }
   }
 
+  .banner-content {
+    @extend .eula-content;
+    padding: 12px;
+  }
+
   .login-wrapper {
     padding: rsa-whitespace(more);
     background: rgba(22,22,22, .6);
