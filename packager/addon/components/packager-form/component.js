@@ -6,7 +6,10 @@ import moment from 'moment';
 import { connect } from 'ember-redux';
 import { inject as service } from '@ember/service';
 import _ from 'lodash';
-import { listOfServices } from '../../reducers/selectors';
+import { listOfServices,
+  defaultDriverDescription,
+  defaultDriverDisplayName,
+  defaultDriverServiceName } from '../../reducers/selectors';
 import { getConfiguration } from 'packager/actions/fetch/packager';
 import {
   validatePackageConfig,
@@ -21,10 +24,16 @@ import {
   saveUIState
 } from '../../actions/data-creators';
 
-
 const stateToComputed = (state) => ({
   // Already saved agent information
   configData: _.cloneDeep(state.packager.defaultPackagerConfig),
+
+  defaultDriverDescription: defaultDriverDescription(state),
+
+  defaultDriverServiceName: defaultDriverServiceName(state),
+
+  defaultDriverDisplayName: defaultDriverDisplayName(state),
+
   // Flag to indicate config is currently updating or not
   isUpdating: state.packager.updating,
   // fetching decoder and concentrator
@@ -103,6 +112,39 @@ const formComponent = Component.extend({
   @computed()
   panelId() {
     return `winLogCollectionTooltip-${this.get('elementId')}`;
+  },
+
+  @computed('isFullAgentEnabled', 'configData.packageConfig.driverDisplayName')
+  driverDisplayName(isFullAgentEnabled, displayName) {
+    if (isFullAgentEnabled) {
+      if (displayName) {
+        return displayName;
+      }
+      return this.get('defaultDriverDisplayName');
+    }
+    return null;
+  },
+
+  @computed('isFullAgentEnabled', 'configData.packageConfig.driverServiceName')
+  driverServiceName(isFullAgentEnabled, serviceName) {
+    if (isFullAgentEnabled) {
+      if (serviceName) {
+        return serviceName;
+      }
+      return this.get('defaultDriverServiceName');
+    }
+    return null;
+  },
+
+  @computed('isFullAgentEnabled', 'configData.packageConfig.driverDescription')
+  driverDescription(isFullAgentEnabled, driverDescription) {
+    if (isFullAgentEnabled) {
+      if (driverDescription) {
+        return driverDescription;
+      }
+      return this.get('defaultDriverDescription');
+    }
+    return null;
   },
 
   resetErrorProperties() {
@@ -196,6 +238,9 @@ const formComponent = Component.extend({
         this.set('configData.packageConfig.monitoringModeEnabled', undefined);
         this.set('configData.packageConfig.fullAgent', false);
       } else {
+        this.set('configData.packageConfig.driverServiceName', this.get('driverServiceName'));
+        this.set('configData.packageConfig.driverDisplayName', this.get('driverDisplayName'));
+        this.set('configData.packageConfig.driverDescription', this.get('driverDescription'));
         this.set('configData.packageConfig.monitoringModeEnabled', this.get('isMonitorModeEnabled'));
         this.set('configData.packageConfig.fullAgent', this.get('isFullAgentEnabled'));
       }

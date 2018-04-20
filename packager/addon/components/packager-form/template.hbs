@@ -125,7 +125,7 @@
             errorMessage=(t invalidServiceNameMessage)
             maxLength=256
             label=(t 'packager.driverServiceName')
-            value=configData.packageConfig.driverServiceName}}
+            value=driverServiceName}}
         </div>
         <div class="col-xs-5 display-name-js">
           {{rsa-form-input
@@ -134,14 +134,14 @@
             errorMessage=(t invalidDisplayNameMessage)
             maxLength=256
             label=(t 'packager.driverDisplayName')
-            value=configData.packageConfig.driverDisplayName}}
+            value=driverDisplayName}}
         </div>
       </hbox>
     </div>
   </div>
   <div class="field driver-description-section">
     <div class="col-xs-10">
-      {{rsa-form-input maxLength=256 label=(t 'packager.driverDescription') value=configData.packageConfig.driverDescription}}
+      {{rsa-form-input maxLength=256 label=(t 'packager.driverDescription') value=driverDescription}}
     </div>
   </div>
   <div class="field monitoring-mode-section">
