@@ -34,8 +34,8 @@ const PivotToInvestigate = Component.extend({
   item: null,
 
   timeRange: {
-    value: 24,
-    unit: 'hours'
+    value: 2,
+    unit: 'days'
   },
 
   selectedService: null,
