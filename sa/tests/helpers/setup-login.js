@@ -3,6 +3,7 @@ import { fillIn, click, getContext, settled } from '@ember/test-helpers';
 import Authenticator from 'component-lib/authenticators/oauth-authenticator';
 import { Promise } from 'rsvp';
 import { get } from '@ember/object';
+import { localStorageClear } from '../helpers/wait-for';
 
 const SESSION_SERVICE_KEY = 'service:session';
 const invalidateSession = function() {
@@ -29,12 +30,16 @@ export function setupLoginTest(hooks) {
     invalidateSession();
     localStorage.removeItem('rsa-oauth2-jwt-access-token');
     localStorage.removeItem('rsa-post-auth-redirect');
-    localStorage.setItem('rsa::netWitness::eulaAccepted', true);
+    return localStorageClear().then(() => {
+      localStorage.setItem('rsa::netWitness::eulaAccepted', true);
+    });
   });
 
   hooks.afterEach(function() {
     teardownSockets.apply(this);
+    return localStorageClear();
   });
+
 }
 
 export async function login() {

@@ -1,7 +1,6 @@
 import { test, module } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupLoginTest, login } from '../helpers/setup-login';
-import { localStorageClear } from '../helpers/wait-for';
 import { waitForSockets } from '../helpers/wait-for-sockets';
 import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 import { waitForRedux } from '../helpers/wait-for-redux';
@@ -18,10 +17,6 @@ module('Acceptance | theme', function(hooks) {
       }
     }));
     return waitForRedux('global.preferences.theme', 'LIGHT');
-  });
-
-  hooks.afterEach(function() {
-    return localStorageClear();
   });
 
   test('theme will rehydrate from local storage on boot', async function(assert) {

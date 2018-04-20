@@ -10,7 +10,7 @@ const Router = EmberRouter.extend({
   rootURL: config.rootURL,
 
   setTitle(title) {
-    this.get('headData').set('title', title);
+    this.get('headData').set('_title', title);
   }
 
 });

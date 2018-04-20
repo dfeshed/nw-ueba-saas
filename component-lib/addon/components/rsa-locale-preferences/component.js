@@ -14,7 +14,9 @@ const dispatchToActions = {
 };
 
 const LocalePreferences = Component.extend({
-  layout
+  layout,
+  testId: 'locale-preferences',
+  attributeBindings: ['testId:test-id']
 });
 
 export default connect(stateToComputed, dispatchToActions)(LocalePreferences);
