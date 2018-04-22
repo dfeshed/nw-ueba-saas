@@ -1,12 +1,14 @@
 import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
-import moment from 'moment';
 import { next } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import { get } from '@ember/object';
 import { connect } from 'ember-redux';
 import { getAllServices } from 'investigate-hosts/actions/data-creators/host';
 import $ from 'jquery';
+
+import { buildTimeRange } from 'investigate-shared/utils/time-util';
+
 
 const INVESTIGATE_META_MAPPING = {
   'machine.machineName': 'alias.host',
@@ -44,7 +46,6 @@ const PivotToInvestigate = Component.extend({
 
   item: null,
 
-
   investigateText: null,
 
   timeRange: {
@@ -52,7 +53,6 @@ const PivotToInvestigate = Component.extend({
     unit: 'days'
   },
 
-  selectedService: null,
 
   @computed
   contextItems() {
@@ -66,29 +66,6 @@ const PivotToInvestigate = Component.extend({
       }
     ];
   },
-
-  @computed('selectedService')
-  isDisabled(selectedService) {
-    return !selectedService;
-  },
-
-  @computed('serviceList')
-  isLoadingServices(serviceList) {
-    return !serviceList;
-  },
-
-  columnsConfig: [
-    {
-      field: 'displayName',
-      title: 'Service Name',
-      width: '50%'
-    },
-    {
-      field: 'name',
-      title: 'Service Type',
-      width: '43%'
-    }
-  ],
 
   _buildFilter() {
     const { metaName, metaValue, item } = this.getProperties('metaName', 'metaValue', 'item');
@@ -112,30 +89,17 @@ const PivotToInvestigate = Component.extend({
     return `${metaName} = "${metaValue}"`;
   },
 
-  _buildTimeRange() {
-    const { value, unit } = this.get('timeRange');
-    const endTime = moment().endOf('minute');
-    const startTime = moment(endTime).subtract(value, unit).add(1, 'minutes').startOf('minute');
-    return {
-      startTime: this._getTimezoneTime(startTime),
-      endTime: this._getTimezoneTime(endTime)
-    };
-  },
-
-  _getTimezoneTime(browserTime) {
-    const { zoneId } = this.get('timezone.selected');
-    const timeWithoutZone = moment(browserTime).parseZone(browserTime).format('YYYY-MM-DD HH:mm:ss'); // Removing browser timezone information
-    const timeInUserTimeZone = moment.tz(timeWithoutZone, zoneId);
-    return timeInUserTimeZone;
-  },
-
   /**
    * Opens the investigate page with events query
    * @private
    */
   _navigateToInvestigateEventsAnalysis() {
+    const { zoneId } = this.get('timezone.selected');
+    const { value, unit } = this.get('timeRange');
+    const { startTime, endTime } = buildTimeRange(value, unit, zoneId);
+
     const selectedService = this.get('selectedService');
-    const { startTime, endTime } = this._buildTimeRange();
+
     const mf = this._buildFilter();
     const queryParams = {
       sid: selectedService, // Service Id
@@ -154,8 +118,12 @@ const PivotToInvestigate = Component.extend({
    * @private
    */
   _navigateToInvestigateNavigate() {
+    const { zoneId } = this.get('timezone.selected');
+    const { value, unit } = this.get('timeRange');
+    const { startTime, endTime } = buildTimeRange(value, unit, zoneId);
+
     const selectedService = this.get('selectedService');
-    const { startTime, endTime } = this._buildTimeRange();
+
     const mf = this._buildFilter();
     const baseURL = `${window.location.origin}/investigation/endpointid/${selectedService}/navigate/query`;
     const query = encodeURIComponent(mf);
@@ -167,14 +135,9 @@ const PivotToInvestigate = Component.extend({
   _closeModal() {
     this.get('eventBus').trigger('rsa-application-modal-close-service-modal');
     this.set('showServiceModal', false);
-    this.set('selectedService', null);
   },
 
   actions: {
-    onToggleRowSelection(item, index, e, table) {
-      table.set('selectedIndex', index);
-      this.set('selectedService', item.id);
-    },
 
     toggleServiceSelection() {
       this.set('showServiceModal', true);
@@ -198,7 +161,6 @@ const PivotToInvestigate = Component.extend({
 
     onModalClose() {
       this.set('showServiceModal', false);
-      this.set('selectedService', null);
     }
   }
 });

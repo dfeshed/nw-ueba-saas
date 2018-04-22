@@ -1,0 +1,29 @@
+{{#rsa-application-modal
+  style='standard service-modal'
+  eventId=eventId
+  label=modalTitle
+  onClose=(action 'onModalClose')}}
+  <div class="modal-content">
+    {{#rsa-data-table
+      items=serviceList
+      onRowClick=(action 'onRowSelection')
+      columnsConfig=columnsConfig}}
+      {{rsa-data-table/header}}
+      {{#if isLoadingServices}}
+        <centered>
+          {{rsa-loader size='small'}}
+        </centered>
+      {{else}}
+        {{#rsa-data-table/body as |item index column|}}
+          {{rsa-data-table/body-cell item=item column=column}}
+        {{/rsa-data-table/body}}
+      {{/if}}
+    {{/rsa-data-table}}
+  </div>
+  <footer>
+    <hbox class="modal-footer-buttons">
+      {{!-- Yeilding footer buttons --}}
+      {{yield selectedService isDisabled}}
+    </hbox>
+  </footer>
+{{/rsa-application-modal}}
