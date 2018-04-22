@@ -9,105 +9,107 @@
     <!-- endinject -->
 </head>
 <body ng-controller="MainController" ng-class="{ 'sidebar-minimized': sidebarMinimized }">
-    <ng-include src="'assets/svgs-spritesheet/symbols.svg'"></ng-include>
-    <!-- Page loader animation -->
-    <div id="app-loader" ng-class="{ 'loader-hidden': hideLoader }">
-        <!--<img class="login-background-image">-->
-        <div class="app-loader-container"  style="display: none" id="questbranding">
+<ng-include src="'assets/svgs-spritesheet/symbols.svg'"></ng-include>
+<!-- Page loader animation -->
+<div id="app-loader" ng-class="{ 'loader-hidden': hideLoader }">
+    <!--<img class="login-background-image">-->
+    <div class="app-loader-container"  style="display: none" id="questbranding">
 
-            <div class="app-loader-loader-logo" >
-                <img src="assets/images/icons/rsa_logo.svg" alt="" class="logo-image">
+        <div class="app-loader-loader-logo" >
+            <img src="assets/images/icons/rsa_logo.svg" alt="" class="logo-image">
 
-                <span class="app-loader-container-text">Change Auditor</span>
-            </div>
-            <div class="app-loader-loader-spinner">
-                <img src="assets/images/spin_orange_64_animation.gif">
-            </div>
-            <div class="app-loader-footer">
-                <!--<span class="company-name">-->
-                    <!--<i class="fa fa-copyright" aria-hidden="true"></i> <span id="current-year"></span> FORTSCALE LTD All Rights Reserved-->
-                <!--</span>-->
+            <span class="app-loader-container-text">Change Auditor</span>
+        </div>
+        <div class="app-loader-loader-spinner">
+            <img src="assets/images/spin_orange_64_animation.gif">
+        </div>
+        <div class="app-loader-footer">
+            <!--<span class="company-name">-->
+            <!--<i class="fa fa-copyright" aria-hidden="true"></i> <span id="current-year"></span> FORTSCALE LTD All Rights Reserved-->
+            <!--</span>-->
+        </div>
+    </div>
+    <div class="app-loader-container" id="fortscalebranding" style="display: none;">
+
+        <div class="app-loader-loader-logo">
+            <!--<img src="assets/images/white-fortscale-logo.png" alt="" class="logo-image">-->
+            <span class="app-loader-container-text">RSA&reg; NetWitness&reg; UEBA</span>
+        </div>
+        <div class="app-loader-loader-spinner">
+            <div class="rsa-loader is-larger">
+                <div class="rsa-loader__wheel"></div>
             </div>
         </div>
-        <div class="app-loader-container" id="fortscalebranding" style="display: none">
-
-            <div class="app-loader-loader-logo">
-                <!--<img src="assets/images/white-fortscale-logo.png" alt="" class="logo-image">-->
-                <span class="app-loader-container-text">Presidio UEBA</span>
-            </div>
-            <div class="app-loader-loader-spinner">
-                <img src="assets/images/inprogress.gif">
-            </div>
-            <div class="app-loader-footer">
-                <!--<span class="company-name">-->
-                <!--<i class="fa fa-copyright" aria-hidden="true"></i> <span id="current-year"></span> FORTSCALE LTD All Rights Reserved-->
-                <!--</span>-->
-            </div>
+        <div class="app-loader-footer">
+            <!--<span class="company-name">-->
+            <!--<i class="fa fa-copyright" aria-hidden="true"></i> <span id="current-year"></span> FORTSCALE LTD All Rights Reserved-->
+            <!--</span>-->
         </div>
-
-
     </div>
 
-    <script>
-        //For verndor that want to hide fortscale branding it should be false
-        var fortscaleBrandMode=true;
+
+</div>
+
+<script>
+    //For verndor that want to hide fortscale branding it should be false
+    var fortscaleBrandMode=true;
 
 
-        if (fortscaleBrandMode){
-            document.title = "Fortscale";
-            change_favicon('images/fortscale_icon.png');
+    if (fortscaleBrandMode){
+        document.title = "Fortscale";
+        change_favicon('images/fortscale_icon.png');
 //            $("#questbranding").hide();
-            showById('fortscalebranding');
-        } else {
-            document.title = "Threat Detection";
-            change_favicon('images/quest.ico');
+        showById('fortscalebranding');
+    } else {
+        document.title = "Threat Detection";
+        change_favicon('images/quest.ico');
 //            $("fortscalebranding").hide();
-            showById('questbranding');
+        showById('questbranding');
 
-        }
+    }
 
-        function showById(elementId){
-            var container = document.getElementById(elementId);
-            container.style.display = 'block';
-        }
+    function showById(elementId){
+        var container = document.getElementById(elementId);
+        container.style.display = 'block';
+    }
 
-        function change_favicon(img) {
-            var favicon = document.querySelector('link[rel="shortcut icon"]');
-            favicon = document.createElement('link');
-            favicon.setAttribute('rel', 'shortcut icon');
-            var head = document.querySelector('head');
-            head.appendChild(favicon);
-            favicon.setAttribute('type', 'image/png');
-            favicon.setAttribute('href', img);
-        }
+    function change_favicon(img) {
+        var favicon = document.querySelector('link[rel="shortcut icon"]');
+        favicon = document.createElement('link');
+        favicon.setAttribute('rel', 'shortcut icon');
+        var head = document.querySelector('head');
+        head.appendChild(favicon);
+        favicon.setAttribute('type', 'image/png');
+        favicon.setAttribute('href', img);
+    }
 
-    </script>
+</script>
 
-    <fs-header-bar logged-in-user="loggedInUser"></fs-header-bar>
+<fs-header-bar logged-in-user="loggedInUser"></fs-header-bar>
 
-    <!-- Main content area -->
-    <div class="main">
-        <div ui-view class="main-ui-view"></div>
-        <div dropdown-menu-delegate ng-view></div>
-    </div>
+<!-- Main content area -->
+<div class="main">
+    <div ui-view class="main-ui-view"></div>
+    <div dropdown-menu-delegate ng-view></div>
+</div>
 
-    <!-- Modals -->
-    <div class="modal-overlay" ng-show="modal.show" ng-class="{show: modal.show}">
-        <div class="modal" ng-include="modal.src"></div>
-    </div>
+<!-- Modals -->
+<div class="modal-overlay" ng-show="modal.show" ng-class="{show: modal.show}">
+    <div class="modal" ng-include="modal.src"></div>
+</div>
 
-    <!-- Load inline views -->
-    <ng-include src="'scripts/directives/param_controls/control_templates.html'"></ng-include>
-    <ng-include src="'scripts/modules/explore/filters/filter_input_templates.html'"></ng-include>
+<!-- Load inline views -->
+<ng-include src="'scripts/directives/param_controls/control_templates.html'"></ng-include>
+<ng-include src="'scripts/modules/explore/filters/filter_input_templates.html'"></ng-include>
 
-    <!-- Load configuration and bootstrap the app -->
-    <div ng-app="Loader"></div>
+<!-- Load configuration and bootstrap the app -->
+<div ng-app="Loader"></div>
 
-    <!-- inject:js -->
-    <!-- endinject -->
+<!-- inject:js -->
+<!-- endinject -->
 
-    <!-- include templates -->
-    <script src="assets/js/fs-templates.min.js"></script>
+<!-- include templates -->
+<script src="assets/js/fs-templates.min.js"></script>
 
 </body>
 </html>
