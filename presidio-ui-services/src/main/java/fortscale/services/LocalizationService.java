@@ -24,7 +24,7 @@ public interface  LocalizationService {
      * @param locale - the languge that we like to present
      * @return
      */
-    Map<String, String> getAllLocalizationStringsByPrefix(String prefix, Locale locale);
+//    Map<String, String> getAllLocalizationStringsByPrefix(String prefix, Locale locale);
 
 
     /**

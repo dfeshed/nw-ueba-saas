@@ -1,8 +1,9 @@
 package fortscale.web.webconf;
 
 import fortscale.services.ApplicationConfigurationService;
+import fortscale.utils.configurations.ConfigrationServerClientUtils;
 import fortscale.utils.logging.Logger;
-import fortscale.web.ConfigrationServerClientUtils;
+
 import fortscale.web.exceptions.handlers.FortscaleRestErrorResolver;
 import fortscale.web.exceptions.handlers.RestExceptionHandler;
 import fortscale.web.extensions.FortscaleCustomEditorService;
