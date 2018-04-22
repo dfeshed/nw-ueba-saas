@@ -76,8 +76,8 @@ public class ConfigrationServerClientUtils {
      * @return
      */
     private ConfigurationServcerClientSettings readSettings(){
-        String moduleName = SpringPropertiesUtil.getProperty("cawebapp.module.name");
-        String profile =SpringPropertiesUtil.getProperty("cawebapp.profile.name");
+        String moduleName = SpringPropertiesUtil.getProperty("webapp.module.name");
+        String profile =SpringPropertiesUtil.getProperty("webapp.profile.name");
         if (StringUtils.isBlank(profile)){
             profile=null;
         }
