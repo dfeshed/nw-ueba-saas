@@ -40,14 +40,14 @@ public class MongoUserDetailsService implements UserDetailsService, Initializing
 	
 	@Autowired
 	private AnalystRepository analystRepository;
-	@Value("${analyst.first.admin.username}" )
-	private String firstAdminUserName;
-	@Value("${analyst.first.admin.password}" )
-	private String firstAdminPassword;
-	@Value("${analyst.first.admin.firstname}" )
-	private String firstAdminFirstName;
-	@Value("${analyst.first.admin.lastname}" )
-	private String firstAdminLastName;
+//	@Value("${analyst.first.admin.username}" )
+//	private String firstAdminUserName;
+//	@Value("${analyst.first.admin.password}" )
+//	private String firstAdminPassword;
+//	@Value("${analyst.first.admin.firstname}" )
+//	private String firstAdminFirstName;
+//	@Value("${analyst.first.admin.lastname}" )
+//	private String firstAdminLastName;
 	
 
 	@Override
@@ -214,12 +214,12 @@ public class MongoUserDetailsService implements UserDetailsService, Initializing
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		if(analystAuthRepository.count() == 0) {
-			try {
-				create(firstAdminUserName, firstAdminPassword, firstAdminUserName, firstAdminFirstName, firstAdminLastName);
-			} catch (Exception e) {
-				logger.error("got the following error while trying to add the first analyst record.", e);
-			}
-		}
+//		if(analystAuthRepository.count() == 0) {
+//			try {
+//				create(firstAdminUserName, firstAdminPassword, firstAdminUserName, firstAdminFirstName, firstAdminLastName);
+//			} catch (Exception e) {
+//				logger.error("got the following error while trying to add the first analyst record.", e);
+//			}
+//		}
 	}
 }
