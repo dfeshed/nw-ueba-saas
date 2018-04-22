@@ -85,10 +85,10 @@ module Fortscale.layouts.overview.components.alertsSeverityByDay {
                         "marginRight": 30,
                         "marginTop": 40,
                         "colors": [
-                            "#D32F2F",
-                            "#FD7F1B",
-                            "#69BDBD",
-                            "#61aa02"
+                            "#ec2226",
+                            "#ff5724",
+                            "#ffc105",
+                            "#8bc34b"
                         ],
                         "startDuration": 1,
                         "fontFamily": "'Open Sans', sans-serif",

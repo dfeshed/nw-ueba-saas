@@ -9,7 +9,7 @@ user-activity-countries {
     flex-flow: column nowrap;
 
     .flex-column {
-        background-color: #f0f7f8;
+        background-color: var(--main-widgets-background-color);
         display: flex;
         flex-flow: column nowrap;
     }
@@ -72,7 +72,7 @@ user-activity-countries {
         }
 
         &--ountry-percent {
-            font-family: 'RobotoSlab', sans-serif;
+            font-family: 'Open Sans', sans-serif;
         }
 
     }

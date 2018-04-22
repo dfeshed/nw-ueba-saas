@@ -17,7 +17,7 @@
                 displayName: 'Date Range in Days',
                 description: 'Default value for all Date Range in Days in the application, in days, from now.',
                 type: 'integer',
-                value: 60
+                value: 180
             })
             .addConfigItem({
                 id: 'default.daysAgo',
@@ -45,7 +45,7 @@
                 displayName: 'Top Related Days Range',
                 description: 'Default value for User-Overview Top-Related date range, in days, from now.',
                 type: 'integer',
-                value: 60
+                value: 180
             })
             .addConfigItem({
                 id: 'default.topRelatedListLimit',
@@ -93,7 +93,7 @@
                 description: 'Overview\'s long date range value, in days, from now. ' +
                 'Used in "Alerts Status"s right chart, and in "Alerts Severity"s chart.',
                 type: 'integer',
-                value: 60
+                value: 180
             })
             .addConfigItem({
                 id: 'ui.overview.numberOfRiskUsers',

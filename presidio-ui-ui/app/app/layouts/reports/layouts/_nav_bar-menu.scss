@@ -92,7 +92,7 @@
 
                 margin: 0;
                 padding: 7px 10px 7px 24px;
-                background-color: #f0f7f8;
+                background-color: var(--main-widgets-background-color);
                 transition: background 0.2s, color 0.5s;
 
                 cursor: pointer;

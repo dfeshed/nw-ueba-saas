@@ -1,23 +1,15 @@
 <!--<pre>{{$ctrl.severity}}</pre>-->
 <div ng-switch="$ctrl.severity" class="fs-severity-tag" ng-attr-title="Score: {{$ctrl.score}}">
-    <div ng-switch-when="Critical" class="fs-severity-tag--icon-container">
-        <svg class="fs-severity-tag--icon fs-severity-tag--icon--critical">
-            <use xlink:href="#severity-icon-critical"></use>
-        </svg>
+    <div ng-switch-when="Critical" class="fs-severity-tag--icon-container--critical">
+        <span>C</span>
     </div>
-    <div ng-switch-when="High" class="fs-severity-tag--icon-container">
-        <svg class="fs-severity-tag--icon fs-severity-tag--icon--high">
-            <use xlink:href="#severity-icon-high"></use>
-        </svg>
+    <div ng-switch-when="High" class="fs-severity-tag--icon-container--high">
+        <span>H</span>
     </div>
-    <div ng-switch-when="Medium" class="fs-severity-tag--icon-container">
-        <svg class="fs-severity-tag--icon fs-severity-tag--icon--medium">
-            <use xlink:href="#severity-icon-medium"></use>
-        </svg>
+    <div ng-switch-when="Medium" class="fs-severity-tag--icon-container--medium">
+        <span>M</span>
     </div>
-    <div ng-switch-when="Low" class="fs-severity-tag--icon-container">
-        <svg class="fs-severity-tag--icon fs-severity-tag--icon--low">
-            <use xlink:href="#severity-icon-low"></use>
-        </svg>
+    <div ng-switch-when="Low" class="fs-severity-tag--icon-container--low">
+        <span>L</span>
     </div>
 </div>

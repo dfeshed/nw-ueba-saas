@@ -25,7 +25,7 @@ body {
         box-sizing: border-box;
         height: 40px;
         padding: 11px;
-        background-color: #f0f7f8;
+        background-color: var(--main-widgets-background-color);
         color: #333;
         font-family: Roboto,sans-serif;
         min-width: 1024px;

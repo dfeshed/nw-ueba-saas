@@ -92,8 +92,8 @@
     .user-score {
         flex: 1;
         flex: 0 0 10%;
-        color: #D32F2F;
-        font-family: 'RobotoSlab', sans-serif;
+        color: var(--main-critical-severity-color);
+        font-family: 'Open Sans', sans-serif;
         font-size: 4vh;
         line-height: 6vh;
         font-weight: 400;
@@ -110,16 +110,16 @@
         .score-severity {
 
             &--low {
-                color: $clrLow;
+                color: var(--main-low-severity-color);
             }
             &--medium {
-                color: $clrMedium;
+                color: var(--main-medium-severity-color);
             }
             &--high {
-                color: $clrHigh;
+                color: var(--main-high-severity-color);
             }
             &--critical {
-                color: $clrCritical;
+                color: var(--main-critical-severity-color);
             }
         }
     }

@@ -10,8 +10,8 @@
     display: flex;
     flex-direction: column;
 
-    color: #024d89;
-    fill: #016a9c;
+    color: var(--main-widgets-titles-text-color);
+    fill: var(--main-widgets-titles-icon-fill);
 
 
     .filters-header{
@@ -39,7 +39,7 @@
         border-bottom-style: solid;
         border-bottom-width: 1px;
         border-bottom-color: #01294a;
-        
+
 
         display: flex;
         flex-direction: column;
@@ -81,7 +81,7 @@
             justify-content: center;
 
             .favorites-titles {
-                color: #004f8f;
+                color: var(--main-widgets-titles-text-color);
                 font-family: 'Open Sans', sans-serif;;
                 font-size: 14px;
                 font-weight: 700;

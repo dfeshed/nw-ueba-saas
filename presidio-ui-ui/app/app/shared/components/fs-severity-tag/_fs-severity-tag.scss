@@ -8,28 +8,36 @@
     margin: 0;
     padding: 0;
 
-    &--icon-container {
-        display: inline-block;
-
+    @mixin circle-severity-mixin {
+        // write the css here
+        border-radius: 50%;
+        color: #FFF;
+        align-items: center;
+        display: flex;
+        justify-content: center;
         width: 29px;
         height: 29px;
     }
 
-    &--icon {
-        width: 100%;
-        height: 100%;
+    &--icon-container {
+
+
 
         &--critical {
-            fill: $clrCritical;
+            @include circle-severity-mixin;
+            background: var(--main-critical-severity-color);
         }
         &--high {
-            fill: $clrHigh;
+            @include circle-severity-mixin;
+            background: var(--main-high-severity-color);
         }
         &--medium {
-            fill: $clrMedium;
+            @include circle-severity-mixin;
+            background: var(--main-medium-severity-color);
         }
         &--low {
-            fill: $clrLow;
+            @include circle-severity-mixin;
+            background: var(--main-low-severity-color);
         }
     }
 }

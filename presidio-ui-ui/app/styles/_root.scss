@@ -43,7 +43,28 @@
 }
 
 html, body{ height: 100%; }
-:root{-webkit-print-color-adjust:exact}
+:root{
+    -webkit-print-color-adjust:exact;
+    --main-widgets-titles-text-color: #000;
+    --main-widgets-titles-icon-fill: #000;
+    --main-widgets-background-color: #eee;
+    --filter-list-text-color: #007db8;
+    --main-critical-severity-color: #ec2226;
+    --main-high-severity-color: #ff5724;
+    --main-medium-severity-color: #ffc105;
+    --main-low-severity-color: #8bc34b;
+
+    --second-widgets-background-color: #000;
+    --second-widgets-titles-icon-fill: #fff;
+    --second-widgets-titles-text-color: #fff;
+    --second-widgets-border: 1px solid #fff;
+
+    --header-bar-background-color: #000;
+    --header-bar-text-color: #bdbdbd;
+    --header-bar-text-color-highligth: #fff;
+
+
+}
 
 body{
   @extend .flex-vertical;

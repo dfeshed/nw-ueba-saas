@@ -1,7 +1,7 @@
 $textColor: #333;
 
 $headerHeight: 40px;
-$headerBackground: #f0f7f8;
+$headerBackground: var(--header-bar-background-color);
 $headerColor: #004f8f;
 
 $mainPadding: 23px;
@@ -46,10 +46,6 @@ $headerBtnHoverColor: #0f9f1a;
 $dashboardHeaderHeight: 36px;
 $innerDashboardBorderColor: #ddd;
 
-$severityLowColor : #61aa02;
-$severityMediumColor : #69BDBD;
-$severityHighColor : #FD7F1B;
-$severityCriticalColor : #D32F2F;
 
 
 $basicFontSize: 15px;

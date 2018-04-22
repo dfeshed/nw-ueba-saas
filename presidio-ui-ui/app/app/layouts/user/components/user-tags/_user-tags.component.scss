@@ -42,7 +42,7 @@ user-tags {
 
 
             &:hover {
-                background-color: lighten($clrIKBlueMain, 10%);
+                background-color: $clrIKBlueMain;
             }
 
             &.ng-hide {

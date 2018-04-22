@@ -55,10 +55,10 @@
             display: flex;
             flex-flow: row nowrap;
 
-            padding: 21px;
+            padding: 20px 21px 21px 21px;
 
             background-color: $clrIKBlueMain;
-            height: calc(100vh - #{$headerHeight} - 42px);
+            height: calc(100vh - 50px - 42px);
         }
     }
     /**********************

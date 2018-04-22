@@ -15,7 +15,7 @@
     height: 100%;
     flex:1;
     .filter-pane{
-        background-color: #f0f7f8;
+        background-color: var(--main-widgets-background-color);
         width: 350px;
         margin: 20px 10px 20px 20px;
     }
@@ -29,13 +29,13 @@
 
         .top-pane {
             height: 80px;
-            background-color: #f0f7f8;
+            background-color: var(--main-widgets-background-color);
             margin-bottom: 20px;
             flex-shrink: 0;
 
         }
         .grid-pane {
-            background-color: #f0f7f8;
+            background-color: var(--main-widgets-background-color);
             flex: 1;
             overflow-y: hidden;
         }

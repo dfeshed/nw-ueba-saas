@@ -5,7 +5,7 @@
             <div class="indicator-info-value">{{::$ctrl.indicator.name}} <span ng-show='::$ctrl.indicator.evidenceType ==="AnomalyAggregatedEvent"'>({{::$ctrl.indicator.timeframe}})<span></div>
         </div>
         <div class="indicator-datasource indicator-info-item">
-            <div class="indicator-info-label">Contribution to SMART</div>
+            <div class="indicator-info-label">Contribution to Alert</div>
             <div class="indicator-info-value">{{::$ctrl.indicator.scoreContribution}}%</div>
         </div>
         <div class="indicator-value indicator-info-item" ng-if="::$ctrl.indicator.evidenceType!=='StaticIndicator'">

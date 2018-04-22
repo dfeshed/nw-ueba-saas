@@ -31,7 +31,7 @@ module Fortscale.shared.components.fsPercentageCircle {
                   'textX' :  parseInt(ctrl.radius) + parseInt(2),
                   'textY' : ctrl.radius*2/3,
                   'percent' : ctrl.percentage,
-                  'color': '#016a9c',
+                  'color': '#fff',
                    'fontSize': 8,
                     'circleCenter': parseInt(ctrl.radius)+parseInt(1)
                 };

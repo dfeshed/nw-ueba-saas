@@ -8,7 +8,7 @@
 
     padding: 15px 18px;
 
-    background-color: #f0f7f8;
+    background-color: var(--main-widgets-background-color);
     height: 20px;
 
     fs-severity-tag {
@@ -40,19 +40,19 @@
             margin-right: 3px;
 
             &.Critical {
-                color: $clrCritical;
+                color: var(--main-critical-severity-color);
             }
 
             &.High {
-                color: $clrHigh;
+                color: var(--main-high-severity-color);
             }
 
             &.Medium {
-                color: $clrMedium;
+                color: var(--main-medium-severity-color);
             }
 
             &.Low {
-                color: $clrLow;
+                color: var(--main-low-severity-color);
             }
         }
 

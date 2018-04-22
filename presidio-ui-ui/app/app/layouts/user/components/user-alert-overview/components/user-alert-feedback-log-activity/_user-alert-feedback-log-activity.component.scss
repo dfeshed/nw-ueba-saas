@@ -60,7 +60,7 @@
                         background-color: #3f7db5;
                         border-radius: 3px;
                         color: #fafdff;
-                        font-family: 'RobotoSlab', sans-serif;
+                        font-family: 'Open Sans', sans-serif;
                         font-size: 12px;
                         font-weight: 400;
                         line-height: 15px;
@@ -86,16 +86,16 @@
             font-size: 18px;
 
             &.score-severity-low {
-                color: #61AA02;
+                color: var(--main-low-severity-color);
             }
             &.score-severity-medium {
-                color: #69BDBD;
+                color: var(--main-medium-severity-color);
             }
             &.score-severity-high {
-                color: #FD7F1B;
+                color: var(--main-high-severity-color);
             }
             &.score-severity-critical {
-                color: #D32F2F;
+                color: var(--main-critical-severity-color);
             }
         }
 }

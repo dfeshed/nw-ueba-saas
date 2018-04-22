@@ -43,16 +43,16 @@
                 opacity: 0.35;
             }
             &.critical {
-                background-color: #D32F2F;
+                background-color: var(--main-critical-severity-color);
             }
             &.high {
-                background-color: #FD7F1B;
+                background-color: var(--main-high-severity-color);
             }
             &.medium {
-                background-color: #69BDBD;
+                background-color: var(--main-medium-severity-color);
             }
             &.low {
-                background-color: #61aa02;
+                background-color: var(--main-low-severity-color);
             }
 
         }

@@ -8,20 +8,23 @@ user-risk-score {
     display: flex;
     flex-flow: column nowrap;
 
+    border: var(--second-widgets-border);
+
+
     .user-risk-score-box {
         height: calc(10vh + 40px);
         flex-shrink: 0;
 
         display: flex;
         flex-flow: column nowrap;
-
-        background-image: radial-gradient(ellipse farthest-corner at 50% 140%, #165d88 0%, #013056 70%);
+        background-color: var(--second-widgets-background-color);
+        //background-image: radial-gradient(ellipse farthest-corner at 50% 140%, #165d88 0%, #013056 70%);
 
         &--score {
             flex: 1;
 
-            color: #D32F2F;
-            font-family: 'RobotoSlab', sans-serif;
+            color: var(--main-critical-severity-color);
+            font-family: 'Open Sans', sans-serif;
             font-size: 8vh;
             line-height: 8vh;
             margin-top: 1vh;
@@ -30,16 +33,16 @@ user-risk-score {
 
             &.score-severity {
                 &--low {
-                    color: $clrLow;
+                    color: var(--main-low-severity-color);
                 }
                 &--medium {
-                    color: $clrMedium;
+                    color: var(--main-medium-severity-color);
                 }
                 &--high {
-                    color: $clrHigh;
+                    color: var(--main-high-severity-color);
                 }
                 &--critical {
-                    color: $clrCritical;
+                    color: var(--main-critical-severity-color);
                 }
             }
         }
@@ -50,10 +53,10 @@ user-risk-score {
         font-family: 'Open Sans', sans-serif;
         font-size: 14px;
         font-weight: 400;
-        border-bottom: 1px solid #30a2f0;
+        border-bottom: 1px solid #fff;
 
         box-shadow: none;
-        background-color: #013056;
+        background-color: var(--second-widgets-background-color);
     }
 
     .user-risk-score-control {
@@ -64,17 +67,18 @@ user-risk-score {
 
         height: calc(15px + 3vh);
         padding: 0 10px 0 20px;
+        border-bottom: 1px solid #fff;
 
-        background-color: #e5e5e5;
+        background-color: var(--second-widgets-background-color);
         box-shadow: 0 1px 7px rgba(0, 0, 0, 0.4);
 
         svg {
-            fill: #013f71;
+            fill: var(--second-widgets-titles-icon-fill);
         }
 
         .k-dropdown {
             width: 90px;
-            background-color: #f0f7f8;
+            background-color: var(--main-widgets-background-color);
             border: 1px solid #d4d4d4;
             border-radius: 3px;
 
@@ -95,7 +99,7 @@ user-risk-score {
     }
 
     .list-title {
-        color: #01294a;
+        color: var(--second-widgets-titles-text-color);
         font-family: 'Open Sans', sans-serif;
         font-size: 14px;
         font-weight: 400;
@@ -108,7 +112,7 @@ user-risk-score {
     }
 
     .control-title {
-        color: #004f8f;
+        color: var(--second-widgets-titles-text-color);
         font-family: 'Open Sans', sans-serif;
         font-size: 12px;
         font-weight: 400;
@@ -157,9 +161,7 @@ user-risk-score {
 
         //transition: background-color 30s;
 
-        &:hover {
-            background-color: #f0f0f0;
-        }
+
 
         &.last-alert {
             .alert-item-inner-wrapper {
@@ -179,11 +181,11 @@ user-risk-score {
             }
 
             .alert-stats, .alert-name, .alert-date {
-                color: white;
+                color: var(--second-widgets-titles-text-color);
             }
 
             .alert-item-inner-wrapper {
-                background-color: #0c558a;
+                background-color: #3f7db5;
                 border-bottom: 0;
                 padding: 15px 20px;
             }
@@ -227,7 +229,9 @@ user-risk-score {
         flex-shrink: 0;
 
         border-bottom: 1px solid #adcdfa;
-
+        &:hover {
+            background-color: var(--second-widgets-titles-text-color);
+        }
     }
 
     .score-box-column {
@@ -248,7 +252,7 @@ user-risk-score {
         background-color: #3f7db5;
         border-radius: 3px;
         color: #fafdff;
-        font-family: 'RobotoSlab', sans-serif;
+        font-family: 'Open Sans', sans-serif;
         font-size: 12px;
         font-weight: 400;
         line-height: 15px;
@@ -295,10 +299,14 @@ user-risk-score {
     }
 
     .alert-name {
-        color: #004f8f;
+        color: var(--second-widgets-titles-text-color);
         font-size: 12px;
         line-height: 15px;
         flex: 1 0;
+
+        &:hover {
+            color: #000;
+        }
     }
 
     .alert-date {
@@ -311,6 +319,7 @@ user-risk-score {
         top: 0;
         margin-right: 6px;
         padding: 0 6px 1px;
+        color: #838485;
     }
 
     .indicators-list-mask {
@@ -344,7 +353,7 @@ user-risk-score {
             }
 
             .indicator-item {
-                color: #004f8f;
+                color: #3f7db5;
                 font-weight: 700;
                 letter-spacing: -0.4px;
             }
