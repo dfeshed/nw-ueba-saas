@@ -5,13 +5,13 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: #E3F2FD;
+    background-color: #000000;
     overflow: hidden;
 
     z-index: -1;
 
     &.loader-hidden{
-      display: none;
+        display: none;
     }
 
     .login-background-image {
@@ -35,7 +35,7 @@
         flex-flow: column nowrap;
         overflow: hidden;
 
-        color: #01294a;
+        color: #fff;
         font-family: 'Open Sans', sans-serif;
         font-size: 14px;
         font-weight: 400;
@@ -67,6 +67,7 @@
             flex-flow: column nowrap;
             justify-content: center;
             align-items: center;
+            padding-bottom: 20px;
             img {
                 width:480px;
             }
@@ -78,16 +79,110 @@
             }
 
         }
-         .app-loader-loader-spinner {
-                flex: 1;
-                display: flex;
-                flex-flow: column nowrap;
-                justify-content: flex-start;
-                align-items: center;
+        .app-loader-loader-spinner {
+            flex: 1;
+            display: flex;
+            flex-flow: column nowrap;
+            justify-content: flex-start;
+            align-items: center;
 
-              img {
-                  width:90px;
-              }
+            .rsa-loader {
+                display: inline-block;
+            }
+
+            .rsa-loader__wheel {
+                border-style: solid;
+                background-clip: border-box;
+                margin: 0 auto;
+                border-color: rgba(33,33,33,1);
+                border-top-color: rgba(0,148,218,1);
+                /* The "..." enables support for arguments that include commas. */
+                -webkit-animation: spin 1000ms infinite linear;
+                -ms-animation: spin 1000ms infinite linear;
+                -moz-animation: spin 1000ms infinite linear;
+                -o-animation: spin 1000ms infinite linear;
+                animation: spin 1000ms infinite linear;
+            }
+
+            @-ms-keyframes spin {
+                from {
+                    -ms-transform: rotate(0deg);
+                }
+                to {
+                    -ms-transform: rotate(360deg);
+                }
+            }
+            @-moz-keyframes spin {
+                from {
+                    -moz-transform: rotate(0deg);
+                }
+                to {
+                    -moz-transform: rotate(360deg);
+                }
+            }
+            @-webkit-keyframes spin {
+                from {
+                    -webkit-transform: rotate(0deg);
+                }
+                to {
+                    -webkit-transform: rotate(360deg);
+                }
+            }
+            @keyframes spin {
+                from {
+                    transform: rotate(0deg);
+                }
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+
+            .rsa-loader__text {
+                font-family: 'Open Sans';
+                font-style: normal;
+                font-weight: 400;
+                font-size: .85rem;
+                text-align: center;
+                color: white;
+                margin-top: rsa-whitespace();
+            }
+
+            .rsa-loader.is-small .rsa-loader__wheel {
+                width: 14px;
+                height: 14px;
+                border-radius: 15px;
+                border-width: 2px;
+            }
+            .rsa-loader.is-medium .rsa-loader__wheel {
+                width: 21px;
+                height: 21px;
+                border-radius: 15px;
+                border-width: 2px;
+            }
+            .rsa-loader.is-large .rsa-loader__wheel {
+                width: 42px;
+                height: 42px;
+                border-radius: 27px;
+                border-width: 3px;
+            }
+            .rsa-loader.is-larger .rsa-loader__wheel {
+                width: 70px;
+                height: 70px;
+                border-radius: 43px;
+                border-width: 3px;
+            }
+            .rsa-loader.is-largest .rsa-loader__wheel {
+                width: 105px;
+                height: 105px;
+                border-radius: 64px;
+                border-width: 3px;
+            }
+
+            img {
+                width:90px;
+            }
+
+
         }
 
 

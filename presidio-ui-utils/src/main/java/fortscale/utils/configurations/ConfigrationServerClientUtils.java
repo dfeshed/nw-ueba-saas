@@ -30,8 +30,8 @@ public class ConfigrationServerClientUtils {
      */
     public Properties readConfigurationAsProperties() throws Exception {
         //Read the configuration server settings
-        String moduleName = SpringPropertiesUtil.getProperty("cawebapp.module.name");
-        String profile =SpringPropertiesUtil.getProperty("cawebapp.profile.name");
+        String moduleName = SpringPropertiesUtil.getProperty("webapp.module.name");
+        String profile =SpringPropertiesUtil.getProperty("webapp.profile.name");
         ConfigurationServcerClientSettings conf = readSettings(moduleName,profile);
         return readConfigurationInternal(conf);
 
