@@ -246,12 +246,12 @@
 	<distributionManagement>
 		<!-- push changes to artifactory, distribute use of sdk -->
 		<repository>
-			<id>central</id>
+			<id>asoc-releases</id>
 			<name>repo1.rsa.lab.emc.com-releases</name>
 			<url>https://repo1.rsa.lab.emc.com:8443/artifactory/presidio-test-utils</url>
 		</repository>
 		<snapshotRepository>
-			<id>snapshots</id>
+			<id>asoc-snapshots</id>
 			<name>repo1.rsa.lab.emc.com-snapshots</name>
 			<url>https://repo1.rsa.lab.emc.com:8443/artifactory/presidio-test-utils</url>
 		</snapshotRepository>
