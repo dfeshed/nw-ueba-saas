@@ -245,15 +245,23 @@
  
 	<distributionManagement>
 		<!-- push changes to artifactory, distribute use of sdk -->
-		<snapshotRepository>
-			<id>mirror.fortscale.dom</id>
-			<name>mirror.fortscale.dom-snapshots</name>
-			<url>http://mirror.fortscale.dom/artifactory/presidio-test-utils-snapshot-local</url>
-		</snapshotRepository>
 		<repository>
-			<id>mirror.fortscale.dom</id>
-			<name>mirror.fortscale.dom-snapshots</name>
-			<url>http://mirror.fortscale.dom/artifactory/presidio-test-utils-snapshot-local</url>
+			<id>central</id>
+			<name>repo1.rsa.lab.emc.com-releases</name>
+			<url>https://repo1.rsa.lab.emc.com:8443/artifactory/presidio-test-utils</url>
 		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<name>repo1.rsa.lab.emc.com-snapshots</name>
+			<url>https://repo1.rsa.lab.emc.com:8443/artifactory/presidio-test-utils</url>
+		</snapshotRepository>
+
 	</distributionManagement>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>asoc-build-repo</id>
+			<url>http://repo1.rsa.lab.emc.com:8081/artifactory/asoc-build-repo</url>
+		</pluginRepository>
+	</pluginRepositories>
+
 </project>
