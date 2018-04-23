@@ -22,7 +22,10 @@
             <url>https://repo1.rsa.lab.emc.com:8443/artifactory/presidio-test-utils</url>
         </repository>
         <repository>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 43fd294... update artifactory paths
             <id>asoc-snapshots</id>
             <name>repo1.rsa.lab.emc.com-snapshots</name>
             <url>https://repo1.rsa.lab.emc.com:8443/artifactory/presidio-test-utils</url>
