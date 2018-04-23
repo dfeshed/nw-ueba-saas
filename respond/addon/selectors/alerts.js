@@ -49,3 +49,38 @@ export const getAlertNames = createSelector(
     return a.localeCompare(b);
   }))
 );
+
+const getItemsFilters = createSelector(
+  alertsState,
+  (alertsState) => alertsState.itemsFilters || {}
+);
+
+export const getAlertTypeFilters = createSelector(
+  getItemsFilters,
+  (itemsFilters) => itemsFilters['alert.type'] || []
+);
+
+export const getAlertSourceFilters = createSelector(
+  getItemsFilters,
+  (itemsFilters) => itemsFilters['alert.source'] || []
+);
+
+export const getAlertNameFilters = createSelector(
+  getItemsFilters,
+  (itemsFilters) => itemsFilters['alert.name'] || []
+);
+
+export const getSeverityFilters = createSelector(
+  getItemsFilters,
+  (itemsFilters) => {
+    const defaultSeverityRange = [0, 100];
+    const severityFilter = itemsFilters['alert.severity'];
+    return severityFilter ? [severityFilter.start, severityFilter.end] : defaultSeverityRange;
+  }
+);
+
+export const getPartOfIncidentFilters = createSelector(
+  getItemsFilters,
+  (itemsFilters) => itemsFilters.partOfIncident || []
+);
+

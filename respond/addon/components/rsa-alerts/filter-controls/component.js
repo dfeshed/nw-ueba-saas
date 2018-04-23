@@ -1,28 +1,28 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { getAlertNames } from 'respond/selectors/alerts';
+import {
+  getAlertNames,
+  getAlertTypeFilters,
+  getAlertSourceFilters,
+  getAlertNameFilters,
+  getSeverityFilters,
+  getPartOfIncidentFilters
+} from 'respond/selectors/alerts';
 
-const defaultSeverityRange = [0, 100];
+import {
+  getAlertTypes,
+  getAlertSources
+} from 'respond/selectors/dictionaries';
 
 const stateToComputed = (state) => {
-  const {
-    respond: {
-      dictionaries: { alertTypes, alertSources },
-      alerts: { itemsFilters }
-    }
-  } = state;
-
-  const severityFilter = itemsFilters['alert.severity'];
-  const severityRange = severityFilter ? [severityFilter.start, severityFilter.end] : defaultSeverityRange;
-
   return {
-    alertTypeFilters: itemsFilters['alert.type'] || [],
-    alertSourceFilters: itemsFilters['alert.source'] || [],
-    alertNameFilters: itemsFilters['alert.name'] || [],
-    severityFilter: severityRange,
-    partOfIncidentFilters: itemsFilters.partOfIncident || [],
-    alertTypes,
-    alertSources,
+    alertTypeFilters: getAlertTypeFilters(state),
+    alertSourceFilters: getAlertSourceFilters(state),
+    alertNameFilters: getAlertNameFilters(state),
+    severityFilter: getSeverityFilters(state),
+    partOfIncidentFilters: getPartOfIncidentFilters(state),
+    alertTypes: getAlertTypes(state),
+    alertSources: getAlertSources(state),
     alertNames: getAlertNames(state)
   };
 };

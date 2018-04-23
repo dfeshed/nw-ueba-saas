@@ -171,7 +171,7 @@ module('Integration | Component | Respond Alerts Add to Incident', function(hook
     const actionSpy = sinon.spy(addAlertsCreators, 'updateSearchIncidentsSortBy');
     setState({ ...initialState });
     await render(hbs`{{rsa-alerts/add-to-incident}}`);
-    this.$('.rsa-data-table .rsa-icon.sort').first().click();
+    this.$('.rsa-data-table .header-title').first().click();
     return settled().then(() => {
       assert.ok(actionSpy.calledOnce, 'The updateSearchIncidentsSortBy action was called once');
     });

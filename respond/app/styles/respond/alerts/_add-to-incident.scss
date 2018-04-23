@@ -14,8 +14,25 @@ $searchInputHeight: 75.5px;
   .rsa-data-table {
     height: calc(100% - #{$searchInputHeight});
 
-    .rsa-data-table-header .sortable-item .sort.current-sort {
-      display: inline;
+    .rsa-data-table-header .rsa-data-table-header-cell {
+      .header-title {
+        &.sortable {
+          cursor: pointer;
+        }
+
+        .sort-indicator {
+          visibility: hidden;
+          position: absolute;
+          right: 7px;
+
+          &.sorted {
+            visibility: visible;
+          }
+        }
+        &:hover .sort-indicator {
+          visibility: visible;
+        }
+      }
     }
 
     .rsa-data-table-body-row {

@@ -13,16 +13,15 @@
 
   {{#rsa-data-table/header translateTitles=true as |column|}}
 
-    {{t column.title}}
+    <div {{action 'handleResultsSortBy' column isSortDescending}} class="header-title {{if (not column.disableSort) 'sortable'}}">
+      {{t column.title}}
+      {{#unless column.disableSort}}
+        <span class="sort-indicator {{if (eq column.field sortBy) 'sorted'}}">
+          {{rsa-icon size="small" name=(if isSortDescending "arrow-down-7" "arrow-up-7")}}
+        </span>
+      {{/unless}}
+    </div>
 
-    {{! COLUMN SORT }}
-    {{#unless column.disableSort}}
-      {{rsa-icon
-        click=(action 'handleResultsSortBy' column isSortDescending)
-        name=(if isSortDescending 'arrow-down-7' 'arrow-up-7')
-        class=(concat "sort " (if (eq column.field sortBy) 'current-sort'))
-      }}
-    {{/unless}}
   {{/rsa-data-table/header}}
 
   {{#if (eq incidentSearchStatus 'streaming')}}
