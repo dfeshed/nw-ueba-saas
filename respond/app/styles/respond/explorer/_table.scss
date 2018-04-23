@@ -43,11 +43,22 @@
           font-size: 0.85rem;
         }
       }
-      button {
-        cursor: pointer;
-        &.column-sort {
+      .header-title {
+        &.sortable {
+          cursor: pointer;
+        }
+
+        .sort-indicator {
+          visibility: hidden;
           position: absolute;
           right: 7px;
+
+          &.sorted {
+            visibility: visible;
+          }
+        }
+        &:hover .sort-indicator {
+          visibility: visible;
         }
       }
     }

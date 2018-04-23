@@ -12,8 +12,9 @@ import wait from 'ember-test-helpers/wait';
 import sinon from 'sinon';
 import RSVP from 'rsvp';
 import $ from 'jquery';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
-let dispatchSpy, redux, initialize;
+let dispatchSpy, redux, init;
 
 const task = {
   'id': 'REM-30',
@@ -43,6 +44,7 @@ moduleForComponent('rsa-remediation-tasks/task', 'Integration | Component | Reme
   integration: true,
   resolver: engineResolverFor('respond'),
   beforeEach() {
+    initialize(this);
     this.registry.injection('component', 'i18n', 'service:i18n');
 
     this.inject.service('redux');
@@ -50,11 +52,12 @@ moduleForComponent('rsa-remediation-tasks/task', 'Integration | Component | Reme
 
     dispatchSpy = sinon.spy(redux, 'dispatch');
 
-    // initialize all of the required data into redux app state
-    initialize = RSVP.allSettled([
+    // init all of the required data into redux app state
+    init = RSVP.allSettled([
       redux.dispatch(getAllPriorityTypes()),
       redux.dispatch(getAllRemediationStatusTypes())
     ]);
+
   },
   afterEach() {
     dispatchSpy.restore();
@@ -75,7 +78,7 @@ test('The rsa-remediation-tasks/new-task component renders to the DOM', function
 });
 
 test('The remediation task\'s data is rendered as expected', function(assert) {
-  return initialize.then(() => {
+  return init.then(() => {
     this.set('task', task);
     this.render(hbs`{{rsa-remediation-tasks/task info=task}}`);
     assert.equal(this.$('.metadata.task-name .editable-field__value').text().trim(), 'Stop the presses!', 'The task name is rendered as expected');
@@ -87,7 +90,7 @@ test('The remediation task\'s data is rendered as expected', function(assert) {
 });
 
 test('The priority options appear in the dropdown', function(assert) {
-  return initialize.then(() => {
+  return init.then(() => {
     this.set('task', task);
     this.render(hbs`{{rsa-remediation-tasks/task info=task}}`);
     const selector = '.metadata.task-priority';
@@ -97,7 +100,7 @@ test('The priority options appear in the dropdown', function(assert) {
 });
 
 test('The status options appear in the dropdown', function(assert) {
-  return initialize.then(() => {
+  return init.then(() => {
     this.set('task', task);
     this.render(hbs`{{rsa-remediation-tasks/task info=task}}`);
     const selector = '.metadata.task-status';
@@ -109,7 +112,7 @@ test('The status options appear in the dropdown', function(assert) {
 test('The delete button dispatches a deleteItem action', function(assert) {
   const actionSpy = sinon.spy(RemediationTaskCreators, 'deleteItem');
 
-  return initialize.then(() => {
+  return init.then(() => {
     this.set('task', task);
     this.render(hbs`{{rsa-remediation-tasks/task info=task}}`);
     this.$('header .delete button').click();
@@ -128,7 +131,7 @@ test('The delete button dispatches a deleteItem action', function(assert) {
 test('The priority picker dispatches an updateItem action', function(assert) {
   const actionSpy = sinon.spy(RemediationTaskCreators, 'updateItem');
 
-  return initialize.then(() => {
+  return init.then(() => {
     this.set('task', task);
     this.render(hbs`{{rsa-remediation-tasks/task info=task}}`);
     const selector = '.metadata.task-priority';
@@ -145,7 +148,7 @@ test('The priority picker dispatches an updateItem action', function(assert) {
 test('The status picker dispatches an updateItem action', function(assert) {
   const actionSpy = sinon.spy(RemediationTaskCreators, 'updateItem');
 
-  return initialize.then(() => {
+  return init.then(() => {
     this.set('task', task);
     this.render(hbs`{{rsa-remediation-tasks/task info=task}}`);
     const selector = '.metadata.task-status';
@@ -160,7 +163,7 @@ test('The status picker dispatches an updateItem action', function(assert) {
 });
 
 test('The assignee and priority fields are disabled when the task is closed', function(assert) {
-  return initialize.then(() => {
+  return init.then(() => {
     this.set('task', { ...task, status: 'REMEDIATED' });
     this.render(hbs`{{rsa-remediation-tasks/task info=task}}`);
     assert.equal(this.$('.metadata.task-priority .edit-button .ember-power-select-trigger[aria-disabled=true]').length, 1, 'The priority picker is disabled');

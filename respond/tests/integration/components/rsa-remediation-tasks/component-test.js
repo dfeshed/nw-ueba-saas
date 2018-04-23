@@ -43,7 +43,7 @@ const selectors = {
   closeInspectorButton: '.close-inspector button',
   firstRowSelectCheckbox: '.rsa-explorer-table .rsa-data-table-body-cell:eq(0) .rsa-form-checkbox-label',
   selectAllCheckbox: '.rsa-explorer-table .rsa-data-table-header-cell:eq(0) .rsa-form-checkbox-label',
-  createdColumnSortButton: '.rsa-explorer-table .column-sort:eq(0)',
+  createdColumnSortButton: '.rsa-explorer-table .sort-indicator:eq(0)',
   explorerTableErrorMessage: '.rsa-explorer-table .items-error',
   deleteButton: '.rsa-respond-explorer .rsa-explorer-toolbar .is-danger button',
   confirmationOkButton: '.modal-footer-buttons .is-primary button',

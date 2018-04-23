@@ -15,6 +15,12 @@ export default Component.extend({
   @empty('focusedItem') hasNoFocusedItem: true,
 
   actions: {
+    sort(column, isSortDescending) {
+      if (!column.disableSort) {
+        const sortField = column.sortField || column.field;
+        this.sendAction('sortBy', sortField, !isSortDescending);
+      }
+    },
     handleRowClickAction(item, index, event) {
       const $eventTarget = this.$(event.target);
 

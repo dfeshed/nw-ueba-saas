@@ -7,7 +7,6 @@
   columnsConfig=(readonly columns)}}
 
   {{#rsa-data-table/header translateTitles=true as |column|}}
-
     {{#if (eq column.dataType 'checkbox')}}
       <label class="rsa-form-checkbox-label {{if isSelectAll 'checked'}}">
         {{rsa-form-checkbox
@@ -16,15 +15,15 @@
         }}
       </label>
     {{else}}
-      {{t column.title}}
+      <div {{action 'sort' column isSortDescending}} class="header-title {{if (not column.disableSort) 'sortable'}}">
+        {{t column.title}}
+        {{#unless column.disableSort}}
+          <span class="sort-indicator {{if (or (eq sortField column.field) (eq sortField column.sortField)) 'sorted'}}">
+            {{rsa-icon size="small" name=(if isSortDescending "arrow-down-7" "arrow-up-7")}}
+          </span>
+        {{/unless}}
+      </div>
     {{/if}}
-
-    {{! COLUMN SORT }}
-    {{#unless column.disableSort}}
-      <button class={{unless (or (eq sortField column.field) (eq sortField column.sortField)) "column-sort hideSort expand" "column-sort expand"}} {{action sortBy (if column.sortField column.sortField column.field) (if isSortDescending false true)  on='click'}}>
-        {{rsa-icon size="small" name=(if isSortDescending "arrow-down-12" "arrow-up-12")}}
-      </button>
-    {{/unless}}
   {{/rsa-data-table/header}}
 
   {{#if (eq fetchStatus 'wait')}}
