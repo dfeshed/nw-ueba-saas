@@ -18,7 +18,7 @@ public class RandomMultiMachineGeneratorTest {
 
         String actualMachineId = generator.getNext().getMachineId();
         System.out.println(actualMachineId);
-        Assert.assertEquals(actualMachineId,"M60_CnIekKmgNlhOmUzLXjgyd_D1");
+        Assert.assertTrue(actualMachineId.equals("M60_CnIekKmgNlhOmUzLXjgyd_D1")||actualMachineId.equals("M60_CnIekKmgNlhOmUzLXjgyd_D2"));
 
         for (int i = 0; i< 100; i++) {
             System.out.println(generator.getNext().getMachineId());
