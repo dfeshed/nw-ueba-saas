@@ -174,39 +174,6 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>${maven-surefire-plugin.version}</version>
-				<dependencies>
-					<dependency>
-						<groupId>org.apache.maven.surefire</groupId>
-						<artifactId>surefire-junit47</artifactId>
-						<version>${maven-surefire-plugin.version}</version>
-					</dependency>
-				</dependencies>
-				<configuration>
-					<!-- Sets the VM argument line used when unit tests are run. -->
-					<argLine>${surefireArgLine}</argLine>
-					<excludes>
-						<exclude>${test.exclude}</exclude>
-					</excludes>
-					<includes>
-						<include>${test.include}</include>
-					</includes>
-					<groups>${test.groups}</groups>
-					<excludedGroups>${test.exgroup}</excludedGroups>
-				</configuration>
-				<executions>
-					<execution>
-						<id>default-test</id>
-						<phase>test</phase>
-						<goals>
-							<goal>test</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
 				<version>${maven-surefire-plugin.version}</version>
 				<dependencies>
