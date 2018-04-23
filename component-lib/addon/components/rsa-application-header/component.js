@@ -29,12 +29,16 @@ export default Component.extend(ContextualHelp, {
     this._super(...arguments);
 
     const config = getOwner(this).resolveRegistration('config:environment');
-    const tokenKey = config['ember-simple-auth'].accessTokenKey;
-    const token = localStorage.getItem(tokenKey);
+    const authConfig = config['ember-simple-auth'];
 
-    if (token) {
-      const decodedToken = jwtDecode(token);
-      this.set('username', decodedToken.user_name);
+    if (authConfig) {
+      const tokenKey = authConfig.accessTokenKey;
+      const token = localStorage.getItem(tokenKey);
+
+      if (token) {
+        const decodedToken = jwtDecode(token);
+        this.set('username', decodedToken.user_name);
+      }
     }
   },
 

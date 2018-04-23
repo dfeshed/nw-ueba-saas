@@ -5,10 +5,7 @@ import hbs from 'htmlbars-inline-precompile';
 // const { Object: EmberObject } = Ember;
 
 moduleForComponent('/rsa-application-user-preferences-panel', 'Integration | Component | rsa-application-user-preferences-panel', {
-  integration: true,
-  beforeEach() {
-    this.inject.service('redux');
-  }
+  integration: true
 });
 
 test('it includes the proper classes', function(assert) {
