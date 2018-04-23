@@ -35,7 +35,7 @@ public class EmbeddedElasticsearchInitialiser {
 
         try {
             embeddedElastic = EmbeddedElastic.builder()
-                    .withElasticVersion(EL_TEST_VERSION)
+//                    .withElasticVersion(EL_TEST_VERSION)// if download url is specified , the version should not be specified
                     .withStartTimeout(2, TimeUnit.MINUTES)
                     .withSetting(PopularProperties.TRANSPORT_TCP_PORT, EL_TEST_PORT)
                     .withSetting(PopularProperties.CLUSTER_NAME, EL_TEST_CLUSTER)
