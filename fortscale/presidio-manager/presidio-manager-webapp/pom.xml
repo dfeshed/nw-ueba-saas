@@ -315,6 +315,10 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
+                            <environmentVariables>
+                                <key>MAVEN_HOME</key>
+                                <value>${env.M2_HOME}</value>
+                            </environmentVariables>
                             <executable>${basedir}/compile-client${script.extension}</executable>
                         </configuration>
                     </execution>
@@ -325,6 +329,10 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
+                            <environmentVariables>
+                                <key>MAVEN_HOME</key>
+                                <value>${env.M2_HOME}</value>
+                            </environmentVariables>
                             <executable>${basedir}/deploy-client${script.extension}</executable>
                             <arguments>
                                 <argument>${project.version}</argument>

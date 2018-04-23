@@ -17,44 +17,14 @@
 
     <repositories>
         <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>libs-releases</id>
-            <name>libs-release</name>
-            <url>http://mirror.fortscale.dom/artifactory/libs-release</url>
+            <id>asoc-releases</id>
+            <name>repo1.rsa.lab.emc.com-releases</name>
+            <url>https://repo1.rsa.lab.emc.com:8443/artifactory/presidio-test-utils</url>
         </repository>
         <repository>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <id>libs-snapshots</id>
-            <name>libs-snapshot</name>
-            <url>http://mirror.fortscale.dom/artifactory/libs-snapshot</url>
-        </repository>
-        <repository>
-            <!--
-                All remote repositories are here: Cloudera, Spring, Splunk, etc.
-                Adding more:
-                1. Login as artifactory admin.
-                2. Go to admin -> repositories.
-                3. Add new remote repository.
-                4. Edit remote-repos virtual repository.
-                    4.1. Add the new remote repository there.
-            -->
-            <id>all-remotes</id>
-            <name>remote-repos</name>
-            <url>http://mirror.fortscale.dom/artifactory/remote-repos</url>
-        </repository>
-        <repository>
-            <id>spring-libs-snapshot</id>
-            <name>Spring Snapshot Repository</name>
-            <url>http://repo.spring.io/libs-snapshot</url>
-        </repository>
-        <repository>
-            <id>mirror.fortscale.dom</id>
-            <name>mirror.fortscale.dom-snapshots</name>
-            <url>http://mirror.fortscale.dom/artifactory/presidio-test-utils-snapshot-local</url>
+            <id>asoc-snapshots</id>
+            <name>repo1.rsa.lab.emc.com-snapshots</name>
+            <url>https://repo1.rsa.lab.emc.com:8443/artifactory/presidio-test-utils</url>
             <snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
@@ -64,20 +34,8 @@
 
     <pluginRepositories>
         <pluginRepository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>releases</id>
-            <name>plugins-release</name>
-            <url>http://mirror.fortscale.dom/artifactory/plugins-release</url>
-        </pluginRepository>
-        <pluginRepository>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <id>snapshots</id>
-            <name>plugins-snapshot</name>
-            <url>http://mirror.fortscale.dom/artifactory/plugins-snapshot</url>
+            <id>asoc-build-repo</id>
+            <url>http://repo1.rsa.lab.emc.com:8081/artifactory/asoc-build-repo</url>
         </pluginRepository>
     </pluginRepositories>
 
@@ -732,17 +690,18 @@
         </profile>
     </profiles>
 
+
     <distributionManagement>
-        <!-- Push changes to artifactory, distribute use of SDK -->
-        <snapshotRepository>
-            <id>mirror.fortscale.dom</id>
-            <name>mirror.fortscale.dom-snapshots</name>
-            <url>http://mirror.fortscale.dom/artifactory/presidio-snapshot-local</url>
-        </snapshotRepository>
         <repository>
-            <id>mirror.fortscale.dom</id>
-            <name>mirror.fortscale.dom-snapshots</name>
-            <url>http://mirror.fortscale.dom/artifactory/presidio-snapshot-local</url>
+            <id>asoc-releases</id>
+            <name>repo1.rsa.lab.emc.com-releases</name>
+            <url>https://repo1.rsa.lab.emc.com:8443/artifactory/asoc-releases</url>
         </repository>
+        <snapshotRepository>
+            <id>asoc-snapshots</id>
+            <name>repo1.rsa.lab.emc.com-snapshots</name>
+            <url>https://repo1.rsa.lab.emc.com:8443/artifactory/asoc-snapshots</url>
+        </snapshotRepository>
     </distributionManagement>
+
 </project>
