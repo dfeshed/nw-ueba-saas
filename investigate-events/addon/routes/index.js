@@ -21,7 +21,6 @@ import {
 export default Route.extend({
   contextualHelp: service(),
   redux: service(),
-  _routing: service('-routing'),
 
   /**
    * The `queryParams` property controls how changes to query params in the URL
@@ -119,14 +118,19 @@ export default Route.extend({
 
       if (query && start && end) {
         const { serviceId } = this.get('redux').getState().investigate.queryNode;
-        const routing = this.get('_routing');
-        // TODO - GTB
-        const url = routing.generateURL(
-          routing.get('currentRouteName'),
-          [`${serviceId}/${start}/${end}/${query}`],
-          { eventId: undefined }
-        );
-        window.open(url, '_blank');
+        // query is a string that looks like 'ip.dst=192.168.90.92&&tcp.dstport=49419&&ip.src=160.176.226.63'
+        const qp = {
+          et: end,
+          mf: encodeURIComponent(query),
+          sid: serviceId,
+          st: start,
+          mps: META_PANEL_SIZES.MIN,
+          eid: undefined
+        };
+        query = serializeQueryParams(qp);
+        const { location } = window;
+        const path = `${location.origin}${location.pathname}?${query}`;
+        window.open(path, '_blank');
       }
     },
 
