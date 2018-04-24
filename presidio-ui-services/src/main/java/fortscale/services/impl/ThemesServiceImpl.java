@@ -3,7 +3,6 @@ package fortscale.services.impl;
 import fortscale.services.ThemesService;
 import fortscale.utils.configurations.ConfigrationServerClientUtils;
 import fortscale.utils.spring.SpringPropertiesUtil;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
