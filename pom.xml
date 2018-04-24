@@ -64,27 +64,42 @@
     </modules>
 
     <distributionManagement>
-        <!-- push changes to artifactory, distribute use of sdk -->
-        <snapshotRepository>
-            <id>mirror.fortscale.dom</id>
-            <name>mirror.fortscale.dom-snapshots</name>
-            <url>http://mirror.fortscale.dom/artifactory/presidio-snapshot-local</url>
-        </snapshotRepository>
         <repository>
-            <id>mirror.fortscale.dom</id>
-            <name>mirror.fortscale.dom-snapshots</name>
-            <url>http://mirror.fortscale.dom/artifactory/presidio-snapshot-local</url>
+            <id>asoc-releases</id>
+            <name>repo1.rsa.lab.emc.com-releases</name>
+            <url>https://repo1.rsa.lab.emc.com:8443/artifactory/asoc-releases</url>
         </repository>
+        <snapshotRepository>
+            <id>asoc-snapshots</id>
+            <name>repo1.rsa.lab.emc.com-snapshots</name>
+            <url>https://repo1.rsa.lab.emc.com:8443/artifactory/asoc-snapshots</url>
+        </snapshotRepository>
     </distributionManagement>
 
     <repositories>
         <repository>
-            <id>snapshots</id>
-            <url>http://mirror.fortscale.dom/artifactory/presidio-snapshot-local</url>
-            <releases>
+            <id>asoc-releases</id>
+            <name>repo1.rsa.lab.emc.com-releases</name>
+            <url>https://repo1.rsa.lab.emc.com:8443/artifactory/presidio-test-utils</url>
+        </repository>
+        <repository>
+            <id>asoc-snapshots</id>
+            <name>repo1.rsa.lab.emc.com-snapshots</name>
+            <url>https://repo1.rsa.lab.emc.com:8443/artifactory/presidio-test-utils</url>
+            <snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
-            </releases>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>asoc-releases</id>
+            <name>repo1.rsa.lab.emc.com-releases</name>
+            <url>https://repo1.rsa.lab.emc.com:8443/artifactory/asoc-releases</url>
+        </repository>
+        <repository>
+            <id>asoc-snapshots</id>
+            <name>repo1.rsa.lab.emc.com-snapshots</name>
+            <url>https://repo1.rsa.lab.emc.com:8443/artifactory/asoc-snapshots</url>
             <snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
