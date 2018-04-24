@@ -28,16 +28,16 @@ const IncidentOverview = Component.extend({
    */
   info: null,
 
-  @computed()
+  @computed('i18n.locale')
   unassignedLabel() {
     const i18n = this.get('i18n');
     return i18n.t('respond.assignee.none');
   },
 
-  @computed('info.assignee')
-  assigneeName(assignee) {
+  @computed('info.assignee', 'unassignedLabel')
+  assigneeName(assignee, unassignedLabel) {
     // if there's no assignee, return the unassigned label, otherwise the name or ID of the assignee
-    return !assignee ? this.get('unassignedLabel') : (assignee.name || assignee.id);
+    return !assignee ? unassignedLabel : (assignee.name || assignee.id);
   },
 
   @computed('info.assignee', 'users')

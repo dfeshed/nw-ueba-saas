@@ -1,6 +1,8 @@
+import { set } from '@ember/object';
 import { module, test } from 'qunit';
+import { run } from '@ember/runloop';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled } from '@ember/test-helpers';
+import { find, render, settled } from '@ember/test-helpers';
 import Immutable from 'seamless-immutable';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from '../../../../helpers/engine-resolver';
@@ -9,6 +11,7 @@ import { patchReducer } from '../../../../helpers/vnext-patch';
 import { clickTrigger, selectChoose } from '../../../../helpers/ember-power-select';
 
 let setState;
+const trim = (text) => text && text.replace(/\s\s+/g, ' ').trim() || undefined;
 
 module('Integration | Component | Incident Overview', function(hooks) {
   setupRenderingTest(hooks, {
@@ -60,5 +63,24 @@ module('Integration | Component | Incident Overview', function(hooks) {
     await render(hbs`{{rsa-incident/overview info=info infoStatus='completed' updateItem=updateItem}}`);
     clickTrigger('.assignee');
     selectChoose('.assignee', '(Unassigned)');
+  });
+
+  test('The unassigned option from the assigne dropdown properly updates when locale is changed', async function(assert) {
+    assert.expect(2);
+
+    await render(hbs`{{rsa-incident/overview info=info infoStatus='completed'}}`);
+
+    const unassigned = '(未割り当て)';
+    const i18n = this.owner.lookup('service:i18n');
+    run(i18n, 'addTranslations', 'ja-jp', { 'respond.assignee.none': unassigned });
+
+    const selector = '.assignee .edit-button';
+    assert.equal(trim(find(selector).textContent), '(Unassigned)');
+
+    set(i18n, 'locale', 'ja-jp');
+
+    return settled().then(async () => {
+      assert.equal(trim(find(selector).textContent), unassigned);
+    });
   });
 });
