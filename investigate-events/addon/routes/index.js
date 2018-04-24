@@ -124,8 +124,7 @@ export default Route.extend({
           mf: encodeURIComponent(query),
           sid: serviceId,
           st: start,
-          mps: META_PANEL_SIZES.MIN,
-          eid: undefined
+          mps: META_PANEL_SIZES.MIN
         };
         query = serializeQueryParams(qp);
         const { location } = window;
