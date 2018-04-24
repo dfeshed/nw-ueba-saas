@@ -137,7 +137,9 @@ export default Component.extend({
    * @private
    */
   _getTimeFormat() {
-    return this.get('timeFormat.selected.format') || this.get('timeFormat.options').findBy('key', config.timeFormatDefault).format;
+    const timeFormat = this.get('timeFormat.selected.format') || this.get('timeFormat.options').findBy('key', config.timeFormatDefault).format;
+    // remove the milliseconds since the date control doesn't support that level of precision, and it causes issue with AM / PM in the picker.
+    return timeFormat.replace('.SSS', '');
   },
 
   /**
