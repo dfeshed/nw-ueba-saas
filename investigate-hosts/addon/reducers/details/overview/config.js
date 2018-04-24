@@ -163,8 +163,8 @@ const SECURITY_CONFIG = {
       }
     },
     {
-      keyword: 'kextDevMode',
-      value: 'Kext Dev Mode',
+      keyword: 'kextSigningDisabled',
+      value: 'Kext Signing Disabled',
       label: {
         red: 'Unsigned kernel extensions are allowed to be loaded on this agent.',
         green: 'Unsigned kernel extensions are not allowed to be loaded on this agent.'
