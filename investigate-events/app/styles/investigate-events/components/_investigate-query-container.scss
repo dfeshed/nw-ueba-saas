@@ -75,6 +75,10 @@
         color: text-color(primary, light);
         pointer-events: none;
     }
+    .rsa-investigate-free-form-query-bar, .query-pills {
+      display: none;
+    }
+    
   }
 
   &.freeForm {
@@ -82,12 +86,18 @@
       color: text-color(primary, light);
       pointer-events: none;
     }
+    .rsa-query-meta, .query-pills {
+      display: none;
+    }
   }
 
   &.nextGen {
     a.nextGen-link {
       color: text-color(primary, light);
       pointer-events: none;
+    }
+    .rsa-query-meta, .rsa-investigate-free-form-query-bar {
+      display: none;
     }
   }
 

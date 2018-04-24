@@ -17,7 +17,10 @@ const _initialState = Immutable.from({
   queryTimeFormat: undefined,
   serviceId: undefined,
   sessionId: undefined,
-  startTime: 0
+  startTime: 0,
+  queryView: 'guided',
+  freeFormText: undefined,
+  toggledOnceFlag: false
 });
 
 const _cloneQueryParams = (state) => {
@@ -97,6 +100,18 @@ export default handleActions({
 
   [ACTION_TYPES.SESSION_SELECTED]: (state, { payload }) => {
     return state.set('sessionId', payload);
+  },
+
+  [ACTION_TYPES.SET_QUERY_VIEW]: (state, { payload }) => {
+    return state.set('queryView', payload);
+  },
+
+  [ACTION_TYPES.SET_FREE_FORM_TEXT]: (state, { payload }) => {
+    return state.set('freeFormText', payload);
+  },
+
+  [ACTION_TYPES.TOGGLE_FOCUS_FLAG]: (state, { payload }) => {
+    return state.set('toggledOnceFlag', payload);
   },
 
   [ACTION_TYPES.SERVICE_SELECTED]: (state, { payload }) => {

@@ -44,6 +44,11 @@ export default class DataHelper {
     return this;
   }
 
+  queryView(view) {
+    _set(this.state, 'queryNode.queryView', view);
+    return this;
+  }
+
   columnGroup(columnGroup) {
     _set(this.state, 'data.columnGroup', columnGroup);
     return this;
@@ -98,6 +103,7 @@ export default class DataHelper {
     _set(this.state, 'queryNode.metaFilter', { conditions: [] });
     _set(this.state, 'queryNode.previouslySelectedTimeRanges', {});
     _set(this.state, 'queryNode.serviceId', '1');
+    _set(this.state, 'queryNode.queryView', 'guided');
     if (flag) {
       _set(this.state, 'queryNode.isDirty', true);
       _set(this.state, 'services.serviceData', [{ id: '1' }]);

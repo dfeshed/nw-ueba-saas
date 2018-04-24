@@ -13,6 +13,8 @@ const _previousQueryParams = (state) => state.investigate.queryNode.previousQuer
 const _queryTimeFormat = (state) => state.investigate.queryNode.queryTimeFormat;
 const _serviceId = (state) => state.investigate.queryNode.serviceId;
 const _startTime = (state) => state.investigate.queryNode.startTime;
+const _queryView = (state) => state.investigate.queryNode.queryView;
+const _toggledOnceFlag = (state) => state.investigate.queryNode.toggledOnceFlag;
 
 
 // SELECTOR FUNCTIONS
@@ -64,6 +66,16 @@ export const hasRequiredValuesToQuery = createSelector(
 export const canFetchEvents = createSelector(
   [_serviceId, _startTime, _endTime],
   (serviceId, startTime, endTime) => !!(serviceId && startTime && endTime)
+);
+
+export const guidedHasFocus = createSelector(
+  [_queryView, _toggledOnceFlag],
+  (queryView, toggledOnceFlag) => queryView === 'guided' && toggledOnceFlag
+);
+
+export const freeFormHasFocus = createSelector(
+  [_queryView, _toggledOnceFlag],
+  (queryView, toggledOnceFlag) => queryView === 'freeForm' && toggledOnceFlag
 );
 
 /**

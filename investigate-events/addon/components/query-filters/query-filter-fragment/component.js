@@ -9,6 +9,7 @@ import {
   dirtyQueryToggle,
   validateIndividualQuery
 } from 'investigate-events/actions/query-validation-creators';
+import { toggleFocusFlag } from 'investigate-events/actions/interaction-creators';
 
 const quoteValue = (value) => {
 
@@ -66,7 +67,8 @@ const isInt = (value) => {
 
 const dispatchToActions = {
   dirtyQueryToggle,
-  validateIndividualQuery
+  validateIndividualQuery,
+  toggleFocusFlag
 };
 
 const QueryFragmentComponent = Component.extend({
@@ -295,14 +297,6 @@ const QueryFragmentComponent = Component.extend({
         .prop('type', 'text')
         .prop('spellcheck', false);
     }
-    const hasFocus = this.get('guidedHasFocus');
-    if (hasFocus) {
-      input.focus();
-
-      /* helps remove focus in cases when user hard resets(clicks on Event Analysis)
-      or executes a query */
-      this.sendAction('toggleFocusFlag', false);
-    }
   },
 
   didReceiveAttrs() {
@@ -347,6 +341,9 @@ const QueryFragmentComponent = Component.extend({
       }
     } else {
       this.send('dirtyQueryToggle');
+      /* helps remove focus in cases when user hard resets(clicks on Event Analysis)
+      or executes a query */
+      this.send('toggleFocusFlag', false);
     }
   },
 
@@ -977,4 +974,4 @@ const QueryFragmentComponent = Component.extend({
 
 });
 
-export default connect(null, dispatchToActions)(QueryFragmentComponent);
+export default connect(undefined, dispatchToActions)(QueryFragmentComponent);

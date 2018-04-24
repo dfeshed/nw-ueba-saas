@@ -6,7 +6,8 @@ import {
   selectedTimeRange,
   selectedTimeRangeId,
   selectedTimeRangeName,
-  useDatabaseTime
+  useDatabaseTime,
+  guidedHasFocus
 } from 'investigate-events/reducers/investigate/query-node/selectors';
 import TIME_RANGES from 'investigate-events/constants/time-ranges';
 
@@ -266,4 +267,16 @@ test('has required inputs to query', function(assert) {
     }
   };
   assert.ok(hasRequiredValuesToQuery(state), 'Missing some required state to query');
+});
+
+test('check guidedHasFocus', function(assert) {
+  const state = {
+    investigate: {
+      queryNode: {
+        queryView: 'guided',
+        toggledOnceFlag: true
+      }
+    }
+  };
+  assert.equal(guidedHasFocus(state), true, 'Should have focus');
 });

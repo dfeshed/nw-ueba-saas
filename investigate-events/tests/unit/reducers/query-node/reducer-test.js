@@ -91,3 +91,42 @@ test('test SET_PREFERENCES when payload does not have queryTimeFormat and no cur
 
   assert.equal(result.queryTimeFormat, undefined);
 });
+
+test('test SET_QUERY_VIEW reducer sets the correct mode provided', function(assert) {
+  const prevState = Immutable.from({
+    queryView: 'guided'
+  });
+  const action = {
+    type: ACTION_TYPES.SET_QUERY_VIEW,
+    payload: 'freeForm'
+  };
+  const result = reducer(prevState, action);
+
+  assert.equal(result.queryView, 'freeForm');
+});
+
+test('test SET_FREE_FORM_TEXT reducer sets the correct text query provided', function(assert) {
+  const prevState = Immutable.from({
+    freeFormText: ''
+  });
+  const action = {
+    type: ACTION_TYPES.SET_FREE_FORM_TEXT,
+    payload: 'medium = 1'
+  };
+  const result = reducer(prevState, action);
+
+  assert.equal(result.freeFormText, 'medium = 1');
+});
+
+test('test TOGGLE_FOCUS_FLAG reducer sets the correct flag provided', function(assert) {
+  const prevState = Immutable.from({
+    toggledOnceFlag: false
+  });
+  const action = {
+    type: ACTION_TYPES.TOGGLE_FOCUS_FLAG,
+    payload: true
+  };
+  const result = reducer(prevState, action);
+
+  assert.equal(result.toggledOnceFlag, true);
+});

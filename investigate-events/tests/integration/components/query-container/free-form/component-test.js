@@ -25,19 +25,17 @@ module('Integration | Component | free-form', function(hooks) {
   });
 
   test('it triggers action when user enters text and presses enter', async function(assert) {
-    assert.expect(2);
-
-    this.set('freeFormText', '');
+    assert.expect(1);
 
     this.set('executeQuery', (text) => {
       assert.equal(text, 'medium = 1', 'Expected text in the search bar');
     });
 
-    await render(hbs`{{query-container/free-form freeFormText=freeFormText executeQuery=(action executeQuery)}}`);
+    await render(hbs`{{query-container/free-form executeQuery=(action executeQuery)}}`);
 
     await click('.rsa-investigate-free-form-query-bar input');
     await fillIn('.rsa-investigate-free-form-query-bar input', 'medium = 1');
-    assert.equal(this.get('freeFormText'), 'medium = 1', 'Expected freeFormText to be set with correct values');
+
     pressEnter(this.$('.rsa-investigate-free-form-query-bar input'));
 
   });

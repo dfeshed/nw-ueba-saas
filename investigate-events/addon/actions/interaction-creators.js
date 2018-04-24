@@ -9,7 +9,7 @@ import {
   getDefaultPreferences
 } from 'investigate-events/reducers/investigate/data-selectors';
 import { lookup } from 'ember-dependency-lookup';
-
+import { encodeMetaFilterConditions } from './fetch/utils';
 
 export const setMetaPanelSize = (size) => {
   if (size) {
@@ -108,6 +108,45 @@ export const setReconClosed = () => ({
     isReconOpen: false
   }
 });
+
+export const setQueryView = (view, filters = []) => {
+  return (dispatch) => {
+    if (filters && filters.length > 0) {
+      let rawText = encodeMetaFilterConditions(filters);
+      rawText = rawText.replace(/(&&\s)$.*/g, '').trim(); // remove && from the end
+      dispatch(setFreeFormText(rawText));
+    }
+    dispatch(toggleFocusFlag(true));
+    dispatch({
+      type: ACTION_TYPES.SET_QUERY_VIEW,
+      payload: view
+    });
+  };
+};
+
+export const setFreeFormText = (text) => {
+  return (dispatch, getState) => {
+    const previousText = getState().investigate.queryNode.freeFormText;
+    if (previousText !== text) {
+      dispatch({
+        type: ACTION_TYPES.SET_FREE_FORM_TEXT,
+        payload: text
+      });
+    }
+  };
+};
+
+export const toggleFocusFlag = (flag) => {
+  return (dispatch, getState) => {
+    const previousFlag = getState().investigate.queryNode.toggledOnceFlag;
+    if (previousFlag !== flag) {
+      dispatch({
+        type: ACTION_TYPES.TOGGLE_FOCUS_FLAG,
+        payload: flag
+      });
+    }
+  };
+};
 
 export const setColumnGroup = (selectedGroup) => {
   return (dispatch, getState) => {
