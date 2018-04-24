@@ -1,4 +1,6 @@
 import { module, test } from 'qunit';
+import { set } from '@ember/object';
+import { run } from '@ember/runloop';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from '../../../helpers/engine-resolver';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -74,5 +76,24 @@ module('Integration | Component | query-filters', function(hooks) {
     assert.ok($fragment[0].classList.contains('edit-active'));
   });
 
+  test('The placeholder properly updates when locale is changed', async function(assert) {
+    assert.expect(2);
 
+    new ReduxDataHelper(setState).setQueryFiltersMeta(false).build();
+
+    await render(hbs`{{query-filters}}`);
+
+    const placeholder = 'メタ キー、演算子、値を入力（オプション）';
+    const i18n = this.owner.lookup('service:i18n');
+    run(i18n, 'addTranslations', 'ja-jp', { 'queryBuilder.placeholder': placeholder });
+
+    const selector = '.rsa-query-meta .rsa-query-fragment.edit-active input';
+    assert.equal(find(selector).placeholder, 'Enter a Meta Key, Operator, and Value (optional)');
+
+    set(i18n, 'locale', 'ja-jp');
+
+    return settled().then(async () => {
+      assert.equal(find(selector).placeholder, placeholder);
+    });
+  });
 });

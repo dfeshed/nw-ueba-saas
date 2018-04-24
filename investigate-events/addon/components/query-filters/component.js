@@ -86,9 +86,10 @@ const QueryFiltersComponent = Component.extend(EKMixin, {
   processedPreloadedFilters: null,
   filters: null,
 
-  @computed('filters.length', 'i18n')
-  placeholder(filtersLength, i18n) {
+  @computed('filters.length', 'i18n.locale')
+  placeholder(filtersLength) {
     if (filtersLength === 1) {
+      const i18n = this.get('i18n');
       return i18n.t('queryBuilder.placeholder');
     }
   },
