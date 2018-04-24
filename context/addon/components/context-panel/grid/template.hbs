@@ -1,0 +1,9 @@
+{{context-panel/data-source-header contextData=contextData dataSourceDetails=dataSourceDetails}}
+
+{{#each-in dataSourceData as |label content|}}
+<div class='rsa-context-panel__config-grid__layout col-xs-3'>
+    <div>{{rsa-content-definition label=label}}</div>
+    <div>{{content}}</div>
+</div>
+{{/each-in}}
+

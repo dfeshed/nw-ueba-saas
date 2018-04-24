@@ -1,10 +1,12 @@
 <section class={{bodyStyleClass}}>
-  {{#if (eq activedataSource.displayType 'grid')}}
+  {{#if (eq activedataSource.displayType 'dynamic-grid')}}
     {{context-panel/dynamic-grid dataSourceDetails=activedataSource.details}}
   {{else if (eq activedataSource.displayType 'table')}}
     {{context-panel/data-table dataSourceDetails=activedataSource.details}}
   {{else if (eq activedataSource.displayType 'endpoint')}}
     {{context-panel/endpoint dataSource=activedataSource.details}}
+  {{else if (eq activedataSource.displayType 'grid')}}
+    {{context-panel/grid dataSourceDetails=activedataSource.details}}
   {{else if (eq activedataSource.displayType 'liveConnect')}}
     {{context-panel/live-connect
       model=model

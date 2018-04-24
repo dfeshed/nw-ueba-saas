@@ -27,6 +27,11 @@ export default class DataHelper {
     this.setState = setState;
   }
 
+  setData(path, data) {
+    _set(this.state, path, data);
+    return this;
+  }
+
   // Trigger setState, also return the resulting state
   // in case it needs to be used/checked
   build() {

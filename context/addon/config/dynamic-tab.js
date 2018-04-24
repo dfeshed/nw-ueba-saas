@@ -9,7 +9,7 @@ const datasources = {
         field: 'Machines',
         title: 'context.hostSummary.title',
         dataSourceType: 'Machines',
-        displayType: 'grid',
+        displayType: 'dynamic-grid',
         tabRequired: false
       },
       Modules: {
@@ -91,7 +91,7 @@ const datasources = {
     field: 'Users',
     title: 'context.header.users',
     dataSourceType: 'Users',
-    displayType: 'grid',
+    displayType: 'dynamic-grid',
     class: 'account-circle-1',
     tabRequired: true
   }

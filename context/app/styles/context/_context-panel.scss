@@ -167,6 +167,21 @@ radial-gradient(circle at 85% 85%, background-color(primary, darker, almost-tran
     align-content: center;
     display: flex;
   }
+  &__config-grid {
+    color: $font-fade-color;
+    height: 100%;
+    width: calc(100% - 4px);
+    padding-top: rsa-whitespace();
+    &__layout {
+      float: left;
+      width: 25%;
+      padding: 0 12px 0;
+      display: block;
+      height: auto;
+      overflow: hidden;
+      min-height: 70px;
+    }
+  }
   &__grid,
   &__context-data-table {
     color: $font-fade-color;
