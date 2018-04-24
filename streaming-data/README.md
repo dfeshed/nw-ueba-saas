@@ -106,12 +106,11 @@ this.request.streamRequest({
 
 ### Pages Based on Content Size
 
-In a typical pagination scenario, the items that make up a page are clearly defined and an API can indicate how many pages there are. This allows an API consumer to ask for the last page or "page 24". However, when the items that make up a page can vary widely in size (10b vs 500k), it makes sense for API and UI performance reasons to define a page based on the size of the items rather than the number of items. APIs fulfilling `pagedStreamRequest` requests are assumed to be returning pages based on size. How big depends on the API, `pagedStreamRequest` does not care. `pagedStreamRequest` APIs work with a min and max size. A page cannot be smaller than the min or larger than the max.
+In a typical pagination scenario, the items that make up a page are clearly defined and an API can indicate how many pages there are. This allows an API consumer to ask for the last page or "page 24". However, when the items that make up a page can vary widely in size (10b vs 500k), it makes sense for API and UI performance reasons to define a page based on the size of the items rather than the number of items. APIs fulfilling `pagedStreamRequest` requests are assumed to be returning pages based on size. How big depends on the API, `pagedStreamRequest` does not care. `pagedStreamRequest` APIs work with a max size. A page will be made up of as many items fit under the max.
 
-- if a page min is 100k, page 1 could have just one item if the first item is 101k.
-- if a page min is 100k, page 1 could have 11 items if the 11th item pushes the size over 100k
 - if a page max is 500k, page 1 could have 1 item if the first item is 495k and the 2nd item is 10k.
-- if a page max is 500k, page 1 could have 1 items if the very first item is over 500k. In this case the item returned will contain an indication that the item is too big to return. This is not considered an error, so instead of the `onError` handler being called, the `onResponse` handler would be called. The "too big item" is effectively a page unto itself and `pagedStreamRequest` treats it as such. It is up to the consumer to determine how to use this sort of page. After encountering this oversized page, `next` would move beyond it.
+- if a page max is 500k, page 1 could have 10 items if the first 10 items add up to 495k and the 11th item is 10k.
+- if a page max is 500k, page 1 could have 1 item if the very first item is over 500k. In this case the item returned will contain an indication that the item is too big to return. This is not considered an error, so instead of the `onError` handler being called, the `onResponse` handler would be called. The "too big item" is effectively a page unto itself and `pagedStreamRequest` treats it as such. It is up to the consumer to determine how to use this sort of page. After encountering this oversized page, `next` would move beyond it.
 
 ### How Paging Works
 
