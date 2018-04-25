@@ -46,7 +46,7 @@ const DownloadPacketComponent = Component.extend(ReconExport, {
 
   downloadFormats: downloadFormat,
 
-  @computed('isDownloading', 'defaultPacketFormat')
+  @computed('isDownloading', 'defaultPacketFormat', 'i18n.locale')
   caption(isDownloading, defaultPacketFormat) {
     if (isDownloading) {
       return this.get('i18n').t('recon.packetView.isDownloading');

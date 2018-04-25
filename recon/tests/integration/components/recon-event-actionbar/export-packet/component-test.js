@@ -1,136 +1,198 @@
-import { moduleForComponent, test } from 'ember-qunit';
-import wait from 'ember-test-helpers/wait';
+import { module, test } from 'qunit';
+import { run } from '@ember/runloop';
+import Service from '@ember/service';
 import hbs from 'htmlbars-inline-precompile';
+import { set, computed } from '@ember/object';
+import { setupRenderingTest } from 'ember-qunit';
 import DataHelper from '../../../../helpers/data-helper';
-import { patchFlash } from '../../../../helpers/patch-flash';
-import { getOwner } from '@ember/application';
-import EmberObject from '@ember/object';
+import { click, render, find, findAll, settled } from '@ember/test-helpers';
 
 const data = {
   eventType: { name: 'NETWORK' }
 };
 
-moduleForComponent('recon-event-actionbar/export-packet', 'Integration | Component | recon event actionbar/export packet', {
-  integration: true,
-  beforeEach() {
-    this.set('accessControl', EmberObject.create({}));
-    this.set('accessControl.hasInvestigateContentExportAccess', true);
-    this.registry.injection('component:recon-event-actionbar/export-packet', 'i18n', 'service:i18n');
-    this.inject.service('redux');
-    this.inject.service('flash-messages');
-    this.inject.service('access-control');
-  }
-});
+const trim = (text) => text && text.replace(/\s\s+/g, ' ').trim();
 
-test('it renders', function(assert) {
-  new DataHelper(this.get('redux')).initializeData();
+module('Integration | Component | recon event actionbar/export packet', function(hooks) {
+  setupRenderingTest(hooks);
 
-  this.render(hbs`{{recon-event-actionbar/export-packet accessControl=accessControl}}`);
-
-  return wait().then(() => {
-    const str = this.$()[0].innerText.trim();
-    assert.equal(str, 'Download PCAP');
+  hooks.beforeEach(function() {
+    this.owner.register('service:accessControl', Service.extend({
+      hasInvestigateContentExportAccess: computed(function() {
+        return true;
+      })
+    }));
   });
-});
 
-test('the menu renders properly and has the correct labels for export pcap menu', function(assert) {
-  const _data = {
-    ...data,
-    fileExtractStatus: 'idle'
-  };
-  new DataHelper(this.get('redux')).initializeData(_data);
+  test('The caption properly updates when locale is changed', async function(assert) {
+    assert.expect(2);
 
-  this.render(hbs`{{recon-event-actionbar/export-packet accessControl=accessControl}}`);
-  this.$('.rsa-split-dropdown').find('.rsa-form-button').click();
+    const redux = this.owner.lookup('service:redux');
+    new DataHelper(redux).initializeData();
 
-  return wait().then(() => {
-    const ulEl = this.$('.rsa-split-dropdown').next();
-    const ulElChildren = ulEl.children();
+    await render(hbs`{{recon-event-actionbar/export-packet}}`);
 
-    assert.equal(ulEl.hasClass('expanded'), true);
-    assert.equal(ulElChildren[0].innerText.trim(), 'Download PCAP');
-    assert.equal(ulElChildren[1].innerText.trim(), 'Download All Payloads');
-    assert.equal(ulElChildren[2].innerText.trim(), 'Download Request Payload');
-    assert.equal(ulElChildren[3].innerText.trim(), 'Download Response Payload');
+    const downloadPCAP = 'PCAPのダウンロード';
+    const i18n = this.owner.lookup('service:i18n');
+    run(i18n, 'addTranslations', 'ja-jp', { 'recon.packetView.downloadPCAP': downloadPCAP });
+
+    const selector = 'button';
+    assert.equal(trim(find(selector).textContent), 'Download PCAP');
+
+    set(i18n, 'locale', 'ja-jp');
+
+    return settled().then(async () => {
+      assert.equal(trim(find(selector).textContent), downloadPCAP);
+    });
   });
-});
 
-test('the button is hidden when accessControl.hasInvestigateContentExportAccess is false', function(assert) {
-  const _data = {
-    ...data,
-    fileExtractStatus: 'idle'
-  };
-  new DataHelper(this.get('redux')).initializeData(_data);
+  test('the menu renders properly and has the correct labels for export pcap menu', async function(assert) {
+    assert.expect(9);
 
-  this.set('accessControl.hasInvestigateContentExportAccess', false);
+    const _data = {
+      ...data,
+      fileExtractStatus: 'idle'
+    };
 
-  this.render(hbs`{{recon-event-actionbar/export-packet accessControl=accessControl}}`);
+    const redux = this.owner.lookup('service:redux');
+    new DataHelper(redux).initializeData(_data);
 
-  return wait().then(() => {
-    assert.equal(this.$('.export-packet-button').length, 0);
+    await render(hbs`{{recon-event-actionbar/export-packet}}`);
+
+    const downloadPCAP = 'PCAPのダウンロード';
+    const downloadPayload1 = 'リクエスト ペイロードのダウンロード';
+    const downloadPayload2 = 'レスポンス ペイロードのダウンロード';
+    const downloadPayload = 'すべてのペイロードのダウンロード';
+    const i18n = this.owner.lookup('service:i18n');
+    run(i18n, 'addTranslations', 'ja-jp', {
+      'recon.packetView.downloadPCAP': downloadPCAP,
+      'recon.packetView.downloadPayload1': downloadPayload1,
+      'recon.packetView.downloadPayload2': downloadPayload2,
+      'recon.packetView.downloadPayload': downloadPayload
+    });
+
+    await click('.rsa-split-dropdown .rsa-form-button');
+
+    const selector = '.recon-button-menu';
+    const buttonMenu = find(selector);
+    assert.ok(buttonMenu.classList.contains('expanded'));
+
+    assert.equal(trim(find(`${selector} li:nth-of-type(1)`).textContent), 'Download PCAP');
+    assert.equal(trim(find(`${selector} li:nth-of-type(2)`).textContent), 'Download All Payloads');
+    assert.equal(trim(find(`${selector} li:nth-of-type(3)`).textContent), 'Download Request Payload');
+    assert.equal(trim(find(`${selector} li:nth-of-type(4)`).textContent), 'Download Response Payload');
+
+    set(i18n, 'locale', 'ja-jp');
+
+    return settled().then(async () => {
+      assert.equal(trim(find(`${selector} li:nth-of-type(1)`).textContent), downloadPCAP);
+      assert.equal(trim(find(`${selector} li:nth-of-type(2)`).textContent), downloadPayload);
+      assert.equal(trim(find(`${selector} li:nth-of-type(3)`).textContent), downloadPayload1);
+      assert.equal(trim(find(`${selector} li:nth-of-type(4)`).textContent), downloadPayload2);
+    });
   });
-});
 
-test('it renders proper label when export pcap data', function(assert) {
-  new DataHelper(this.get('redux'))
-    .initializeData(data)
-    .startDownloadingData();
+  test('the button is hidden when accessControl.hasInvestigateContentExportAccess is false', async function(assert) {
+    const _data = {
+      ...data,
+      fileExtractStatus: 'idle'
+    };
 
-  this.render(hbs`{{recon-event-actionbar/export-packet accessControl=accessControl}}`);
+    this.owner.register('service:accessControl', Service.extend({
+      hasInvestigateContentExportAccess: computed(function() {
+        return false;
+      })
+    }));
 
-  return wait().then(() => {
-    const str = this.$()[0].innerText.trim();
-    assert.equal(str, 'Downloading...');
+    const redux = this.owner.lookup('service:redux');
+    new DataHelper(redux).initializeData(_data);
+
+    await render(hbs`{{recon-event-actionbar/export-packet}}`);
+
+    return settled().then(async () => {
+      assert.equal(findAll('.export-packet-button').length, 0);
+    });
   });
-});
 
-/*
- *checks if serviceCall for getPreferences is happening successfully
- * if default download preference is changed to eg Payload, then corresponding caption should change and reflect the same
-*/
-test('Recon should pick default Packet format set by user', function(assert) {
-  new DataHelper(this.get('redux')).initializeData().setDownloadFormatToPayload();
-  this.render(hbs`{{recon-event-actionbar/export-packet accessControl=accessControl}}`);
-  return wait().then(() => {
-    const str = this.$()[0].innerText.trim();
-    assert.equal(str, 'Download All Payloads');
+  test('it renders proper label when export pcap data', async function(assert) {
+    assert.expect(2);
+
+    const redux = this.owner.lookup('service:redux');
+    new DataHelper(redux).initializeData(data).startDownloadingData();
+
+    await render(hbs`{{recon-event-actionbar/export-packet}}`);
+
+    const isDownloading = 'ダウンロードしています...';
+    const i18n = this.owner.lookup('service:i18n');
+    run(i18n, 'addTranslations', 'ja-jp', { 'recon.packetView.isDownloading': isDownloading });
+
+    const selector = 'button';
+    assert.equal(trim(find(selector).textContent), 'Downloading...');
+
+    set(i18n, 'locale', 'ja-jp');
+
+    return settled().then(async () => {
+      assert.equal(trim(find(selector).textContent), isDownloading);
+    });
   });
-});
 
-test('the extracted file must be downloaded automatically', function(assert) {
-  const fileLink = 'http://extracted-file-download-link/';
-  new DataHelper(this.get('redux'))
-      .initializeData()
-      .setAutoDownloadPreference(true)
-      .setExtractedFileLink(fileLink);
-  this.render(hbs`{{recon-event-actionbar/export-packet accessControl=accessControl}}`);
+  test('Recon should pick default Packet format set by user', async function(assert) {
+    assert.expect(2);
 
-  return wait().then(() => {
-    const iframe = this.$('.js-export-packet-iframe');
+    const redux = this.owner.lookup('service:redux');
+    new DataHelper(redux).initializeData().setDownloadFormatToPayload();
+
+    await render(hbs`{{recon-event-actionbar/export-packet}}`);
+
+    const downloadPayload = 'すべてのペイロードのダウンロード';
+    const i18n = this.owner.lookup('service:i18n');
+    run(i18n, 'addTranslations', 'ja-jp', { 'recon.packetView.downloadPayload': downloadPayload });
+
+    const selector = 'button';
+    assert.equal(trim(find(selector).textContent), 'Download All Payloads');
+
+    set(i18n, 'locale', 'ja-jp');
+
+    return settled().then(async () => {
+      assert.equal(trim(find(selector).textContent), downloadPayload);
+    });
+  });
+
+  test('the extracted file must be downloaded automatically', async function(assert) {
+    assert.expect(2);
+
+    const fileLink = 'http://extracted-file-download-link/';
+
+    const redux = this.owner.lookup('service:redux');
+    new DataHelper(redux)
+        .initializeData()
+        .setAutoDownloadPreference(true)
+        .setExtractedFileLink(fileLink);
+
+    await render(hbs`{{recon-event-actionbar/export-packet}}`);
+
+    const selector = '.js-export-packet-iframe';
+    const iframe = findAll(selector);
     assert.equal(iframe.length, 1);
-    assert.equal(iframe[0].src, fileLink);
-  });
-});
-
-test('the extracted file must not be downloaded automatically', function(assert) {
-  const fileLink = 'http://extracted-file-download-link/';
-  new DataHelper(this.get('redux'))
-      .initializeData()
-      .setAutoDownloadPreference(false)
-      .setExtractedFileLink(fileLink);
-
-  patchFlash((flash) => {
-    const translation = getOwner(this).lookup('service:i18n');
-    const expectedMsg = translation.t('recon.extractedFileReady');
-    assert.equal(flash.type, 'success');
-    assert.equal(flash.message.string, expectedMsg);
+    assert.equal(find(selector).src, fileLink);
   });
 
-  this.render(hbs`{{recon-event-actionbar/export-packet accessControl=accessControl}}`);
+  test('the extracted file must not be downloaded automatically', async function(assert) {
+    assert.expect(2);
 
-  return wait().then(() => {
-    const iframe = this.$('.js-export-packet-iframe');
+    const fileLink = 'http://extracted-file-download-link/';
+
+    const redux = this.owner.lookup('service:redux');
+    new DataHelper(redux)
+        .initializeData()
+        .setAutoDownloadPreference(false)
+        .setExtractedFileLink(fileLink);
+
+    await render(hbs`{{recon-event-actionbar/export-packet}}`);
+
+    const selector = '.js-export-packet-iframe';
+    const iframe = findAll(selector);
     assert.equal(iframe.length, 1);
-    assert.equal(iframe[0].src, '');
+    assert.equal(find(selector).src, '');
   });
 });
