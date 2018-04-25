@@ -4,5 +4,5 @@
         // .constant('BASE_URL', '/api')
         // .constant('BASE_WEBSOCKET_URL', '/');
         .constant('BASE_URL', 'api')
-        .constant('BASE_WEBSOCKET_URL', '/caui-webapp');
+        .constant('BASE_WEBSOCKET_URL', '/tdui-webapp');
 }());

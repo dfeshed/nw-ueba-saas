@@ -102,147 +102,147 @@ module.exports = function (request, response, next) {
  * Routes definitions
  */
 
-    // route: /caui-webapp/api/alerts
+    // route: /tdui-webapp/api/alerts
     // Disabled: true
 routes.push(new Route({
-    urlRgx: /\/caui-webapp\/api\/alerts/,
+    urlRgx: /\/tdui-webapp\/api\/alerts/,
     method: 'GET',
     body: require('./mocks/alerts.mock.json'),
     disabled: true
 }));
 
-// route: /caui-webapp/api/application_configuration
+// route: /tdui-webapp/api/application_configuration
 // Disabled: true
 routes.push(new Route({
-    urlRgx: /\/caui-webapp\/api\/application_configuration/,
+    urlRgx: /\/tdui-webapp\/api\/application_configuration/,
     method: 'GET',
     body: require('./mocks/application-configuration.mock.json'),
     disabled: true
 }));
 
-// route: /caui-webapp/api/pxgrid
+// route: /tdui-webapp/api/pxgrid
 // Disabled: true
 routes.push(new Route({
-    urlRgx: /\/caui-webapp\/api\/pxgrid/,
+    urlRgx: /\/tdui-webapp\/api\/pxgrid/,
     method: 'POST',
     body: {server: '666.666.666.666'},
     disabled: true
 }));
 
-// route: /caui-webapp/api/pxgrid/generate_cer
+// route: /tdui-webapp/api/pxgrid/generate_cer
 // Disabled: true
 routes.push(new Route({
-    urlRgx: /\/caui-webapp\/api\/pxgrid\/generate_cer/,
+    urlRgx: /\/tdui-webapp\/api\/pxgrid\/generate_cer/,
     method: 'GET',
     body: 'ok',
     disabled: true
 }));
 
-// route: /caui-webapp/api/pxgrid/update_cer
+// route: /tdui-webapp/api/pxgrid/update_cer
 // Disabled: false
 routes.push(new Route({
-    urlRgx: /\/caui-webapp\/api\/pxgrid\/update_cer/,
+    urlRgx: /\/tdui-webapp\/api\/pxgrid\/update_cer/,
     method: 'POST',
     body: '{}',
     status: 204,
     disabled: true
 }));
-// route: /caui-webapp/api/user/user_tags
+// route: /tdui-webapp/api/user/user_tags
 // Disabled: true
 routes.push(new Route({
-    urlRgx: /\/caui-webapp\/api\/user\/user_tags/,
+    urlRgx: /\/tdui-webapp\/api\/user\/user_tags/,
     method: 'POST',
     body: {},
     disabled: true
 }));
 
-// route: /caui-webapp/api/analytics
+// route: /tdui-webapp/api/analytics
 // Disabled: true
 routes.push(new Route({
-    urlRgx: /\/caui-webapp\/api\/analytics/,
+    urlRgx: /\/tdui-webapp\/api\/analytics/,
     method: 'POST',
     body: {},
     status: 204,
     disabled: true
 }));
 
-// route: /caui-webapp/api/user?size=5&sort_field=score
+// route: /tdui-webapp/api/user?size=5&sort_field=score
 // For: High Risk Users
 // Disabled: true
 routes.push(new Route({
-    urlRgx: /\/caui-webapp\/api\/user\?size=5&sort_field=score/,
+    urlRgx: /\/tdui-webapp\/api\/user\?size=5&sort_field=score/,
     method: 'GET',
     body: require('./mocks/mock-high-risk-users.json'),
     status: 200,
     disabled: true
 }));
-// route: /caui-webapp/api/alerts?...
+// route: /tdui-webapp/api/alerts?...
 // For: Top Ten Alerts
 // Disabled: true
 routes.push(new Route({
-    urlRgx: /\/caui-webapp\/api\/alerts\?.*/,
+    urlRgx: /\/tdui-webapp\/api\/alerts\?.*/,
     method: 'GET',
     body: require('./mocks/top-ten-alerts.json'),
     status: 200,
     disabled: true
 }));
-// route: /caui-webapp/api/user/:userId/activity/locations
+// route: /tdui-webapp/api/user/:userId/activity/locations
 // For: Top Ten Alerts
 // Disabled: true
 routes.push(new Route({
-    urlRgx: /\/caui-webapp\/api\/user\/.*\/activity\/locations.*?/,
+    urlRgx: /\/tdui-webapp\/api\/user\/.*\/activity\/locations.*?/,
     method: 'GET',
     body: require('./mocks/activity-top-coutry-user.json'),
     status: 200,
     disabled: true
 }));
 
-// route: /caui-webapp/api/user/:userId/activity/locations
+// route: /tdui-webapp/api/user/:userId/activity/locations
 // For: Top Ten Alerts
 // Disabled: true
 routes.push(new Route({
-    urlRgx: /\/caui-webapp\/api\/organization\/activity\/locations.*?/,
+    urlRgx: /\/tdui-webapp\/api\/organization\/activity\/locations.*?/,
     method: 'GET',
     body: require('./mocks/activity-top-country-organization.json'),
     status: 200,
     disabled: true
 }));
 
-// route: /caui-webapp/api/user/:userId/activity/authentications
+// route: /tdui-webapp/api/user/:userId/activity/authentications
 // For: Top Ten Alerts
 // Disabled: false
 routes.push(new Route({
-    urlRgx: /\/caui-webapp\/api\/user\/.*\/activity\/authentications.*?/,
+    urlRgx: /\/tdui-webapp\/api\/user\/.*\/activity\/authentications.*?/,
     method: 'GET',
     body: require('./mocks/activity-authentication-user.json'),
     status: 200,
     disabled: true
 }));
-// route: /caui-webapp/api/user/:userId/activity/working-hours
+// route: /tdui-webapp/api/user/:userId/activity/working-hours
 // For: Top Ten Alerts
 // Disabled: false
 routes.push(new Route({
-    urlRgx: /\/caui-webapp\/api\/user\/.*\/activity\/working-hours.*?/,
+    urlRgx: /\/tdui-webapp\/api\/user\/.*\/activity\/working-hours.*?/,
     method: 'GET',
     body: require('./mocks/activity-working-hours.json'),
     status: 200,
     disabled: true
 }));
-// route: /caui-webapp/api/user/:userId/activity/source-devices
+// route: /tdui-webapp/api/user/:userId/activity/source-devices
 // For: Top Ten Alerts
 // Disabled: false
 routes.push(new Route({
-    urlRgx: /\/caui-webapp\/api\/user\/.*\/activity\/source-devices.*?/,
+    urlRgx: /\/tdui-webapp\/api\/user\/.*\/activity\/source-devices.*?/,
     method: 'GET',
     body: require('./mocks/activity-source-devices-user.json'),
     status: 200,
     disabled: true
 }));
-// route: /caui-webapp/api/user/:userId/activity/data-usage
+// route: /tdui-webapp/api/user/:userId/activity/data-usage
 // For: Top Ten Alerts
 // Disabled: false
 routes.push(new Route({
-    urlRgx: /\/caui-webapp\/api\/user\/.*\/activity\/data-usage.*?/,
+    urlRgx: /\/tdui-webapp\/api\/user\/.*\/activity\/data-usage.*?/,
     method: 'GET',
     body: require('./mocks/activity-data-usage-user.json'),
     status: 200,
@@ -250,7 +250,7 @@ routes.push(new Route({
 }));
 
 routes.push(new Route({
-    urlRgx: /\/caui-webapp\/api\/log_repository/,
+    urlRgx: /\/tdui-webapp\/api\/log_repository/,
     method: 'GET',
     body: require('./mocks/get-log-repository.json'),
     status: 200,

@@ -3,23 +3,23 @@
 	"port": 3000,
 	"lrPort": 35729,
 	"proxy": {
-		"baseUrl": "/caui-webapp/api/*",
+		"baseUrl": "/tdui-webapp/api/*",
 		"redirects": {
-			"/caui-webapp/api/analyst/logout": "/caui-webapp/signin.html"
+			"/tdui-webapp/api/analyst/logout": "/tdui-webapp/signin.html"
 		}
 	},
 	"apiCache": {
 		"cacheFolder": "api_cache",
 		"useWhiteList": true,
 		"whiteListUrls": [
-			"/caui-webapp/api/getEntities",
-			"/caui-webapp/api/dataQuery",
-			"/caui-webapp/api/analyst/me/details",
-			"/caui-webapp/api/notifications",
-			"/caui-webapp/api/monitor"
+			"/tdui-webapp/api/getEntities",
+			"/tdui-webapp/api/dataQuery",
+			"/tdui-webapp/api/analyst/me/details",
+			"/tdui-webapp/api/notifications",
+			"/tdui-webapp/api/monitor"
 		],
 		"clearCacheOnUrls": [
-			"/caui-webapp/api/analyst/login"
+			"/tdui-webapp/api/analyst/login"
 		]
 	}
 }

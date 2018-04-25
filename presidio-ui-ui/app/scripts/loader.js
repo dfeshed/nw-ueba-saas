@@ -1,9 +1,9 @@
 (function () {
     'use strict';
     angular.module("Loader",
-        ["DataEntities", "Controls", 'Fortscale.shared.services.assert', "Fortscale.remoteAppConfig"])
-        .run(["dataEntities", "controls", "remoteAppConfig", "$q",
-            function (dataEntities, controls, remoteAppConfig, $q) {
+        ["DataEntities", "Controls", 'Fortscale.shared.services.assert', "Fortscale.remoteAppConfig","ColorThemes"])
+        .run(["dataEntities", "controls", "remoteAppConfig", "colorThemes","$q",
+            function (dataEntities, controls, remoteAppConfig, colorThemes, $q) {
 
                 // If last login was more then an hour ago
                 // var lastLoginTime = parseInt(localStorage.getItem('last-login-time'), 10);
@@ -19,7 +19,7 @@
                 // }
 
                 var initPromises = [dataEntities.initEntities(), controls.initControls(),
-                    remoteAppConfig.initRemoteAppConfig()];
+                    remoteAppConfig.initRemoteAppConfig(), colorThemes.initThemes()];
 
                 // After all pre loaded resources were loaded will start the Fortscale application
                 $q.all(initPromises).then(function () {

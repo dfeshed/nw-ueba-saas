@@ -57,7 +57,7 @@ function getMethod (req) {
  * @returns {string}
  */
 function getProxyUrl (req) {
-    return proxyConfig.proxyApiUrl + ':' + proxyConfig.proxyApiPort + "/caui-webapp" + req.url;
+    return proxyConfig.proxyApiUrl + ':' + proxyConfig.proxyApiPort + "/tdui-webapp" + req.url;
 }
 
 

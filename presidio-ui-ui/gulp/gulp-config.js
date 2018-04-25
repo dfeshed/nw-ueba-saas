@@ -150,6 +150,10 @@ config.srcIndexAppScripts = _.map([
     'scripts/modules/data_entities/classes/DataEntityFieldType.js',
     'scripts/modules/data_entities/services/dataEntityFieldTypes.js',
 
+    // Colors Themes
+    'scripts/modules/colors_themes/color_themes_module.js',
+    'scripts/modules/colors_themes/services/colorThemes.js',
+
     // Data Queries
     'scripts/modules/data_queries/data_queries_module.js',
     'scripts/modules/data_queries/classes/DataQuery.js',

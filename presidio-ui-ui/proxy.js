@@ -125,7 +125,7 @@ function setRoutes(settings) {
 
         // Root redirect
     app.get('/', function (req, res) {
-        res.redirect('/caui-webapp/');
+        res.redirect('/tdui-webapp/');
     });
 
     // Insert mocks
@@ -224,13 +224,13 @@ function setRoutes(settings) {
 
     if (settings.lrPort) {
         // Setup LiveReload to reload the browser on files changes
-        app.use('/caui-webapp', livereload({
+        app.use('/tdui-webapp', livereload({
             port: settings.lrPort
         }));
     }
 
     // Serve static files
-    app.use('/caui-webapp', express.static(path.join(__dirname, 'dist')));
+    app.use('/tdui-webapp', express.static(path.join(__dirname, 'dist')));
 }
 
 

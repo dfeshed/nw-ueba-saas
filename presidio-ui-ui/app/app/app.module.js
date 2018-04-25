@@ -25,6 +25,7 @@
 		"Format",
 		"Conditions",
 		"DataEntities",
+		"ColorThemes",
 		"State",
 		"Styles",
 		"Transforms",

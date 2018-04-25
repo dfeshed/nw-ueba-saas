@@ -16,12 +16,12 @@
         i {
             color: var(--main-medium-severity-color);
         }
-    },
-&.fs-score-icon-low {
-    i {
-        color: var(--main-low-severity-color);
     }
-}
+    &.fs-score-icon-low {
+        i {
+            color: var(--main-low-severity-color);
+        }
+    }
     &.fs-score-icon-hide {
         display: none;
     }

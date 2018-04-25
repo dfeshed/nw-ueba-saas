@@ -1,4 +1,4 @@
-package fortscale.web;
+package fortscale.utils.configurations;
 
 import fortscale.utils.spring.SpringPropertiesUtil;
 import org.apache.commons.codec.binary.Base64;
@@ -9,6 +9,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.IOException;
 import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.util.Properties;
@@ -29,14 +30,35 @@ public class ConfigrationServerClientUtils {
      */
     public Properties readConfigurationAsProperties() throws Exception {
         //Read the configuration server settings
-        ConfigurationServcerClientSettings conf = readSettings();
+        String moduleName = SpringPropertiesUtil.getProperty("webapp.module.name");
+        String profile =SpringPropertiesUtil.getProperty("webapp.profile.name");
+        ConfigurationServcerClientSettings conf = readSettings(moduleName,profile);
+        return readConfigurationInternal(conf);
 
+
+    }
+
+    /**
+     * This method use to read single configuration file froms server and return the properties
+     * @return Properties container
+     * @throws Exception
+     */
+    public Properties readConfigurationAsProperties(String moduleName, String profile) throws Exception {
+
+        ConfigurationServcerClientSettings conf = readSettings(moduleName,profile);
+        return readConfigurationInternal(conf);
+
+
+    }
+
+    private Properties readConfigurationInternal(ConfigurationServcerClientSettings conf) throws IOException {
         //Build the URL path
         String path = "/" + conf.getModuleName();
+        String profile = "default";
         if (conf.getProfile() != null && conf.getProfile().length() > 0) {
-            path += "-" + conf.getProfile();
+            profile = conf.getProfile();
         }
-        path += ".properties";
+        path += "-" + profile + ".properties";
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(conf.getServerUrl())
                 .path(path);
@@ -44,7 +66,6 @@ public class ConfigrationServerClientUtils {
         //Build the rest request
         HttpHeaders headers = createBasicAuthenticationHeaders(conf.getServerUserName(), conf.getServerUserNamePassword());
         HttpEntity<?> entity = new HttpEntity<>(headers);
-
 
 
         String stringOfPropertiesFile = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, entity, String.class).getBody();
@@ -75,9 +96,8 @@ public class ConfigrationServerClientUtils {
      * Extract configuration server settings from properties file
      * @return
      */
-    private ConfigurationServcerClientSettings readSettings(){
-        String moduleName = SpringPropertiesUtil.getProperty("cawebapp.module.name");
-        String profile =SpringPropertiesUtil.getProperty("cawebapp.profile.name");
+    private ConfigurationServcerClientSettings readSettings(String moduleName, String profile){
+
         if (StringUtils.isBlank(profile)){
             profile=null;
         }
