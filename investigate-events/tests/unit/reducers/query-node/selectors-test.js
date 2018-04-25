@@ -7,7 +7,8 @@ import {
   selectedTimeRangeId,
   selectedTimeRangeName,
   useDatabaseTime,
-  guidedHasFocus
+  guidedHasFocus,
+  freeFormHasFocus
 } from 'investigate-events/reducers/investigate/query-node/selectors';
 import TIME_RANGES from 'investigate-events/constants/time-ranges';
 
@@ -279,4 +280,16 @@ test('check guidedHasFocus', function(assert) {
     }
   };
   assert.equal(guidedHasFocus(state), true, 'Should have focus');
+});
+
+test('check freeFormHasFocus', function(assert) {
+  const state = {
+    investigate: {
+      queryNode: {
+        queryView: 'freeForm',
+        toggledOnceFlag: true
+      }
+    }
+  };
+  assert.equal(freeFormHasFocus(state), true, 'Should have focus');
 });

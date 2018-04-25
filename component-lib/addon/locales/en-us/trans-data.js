@@ -416,15 +416,18 @@ export default {
     timeRange: 'Time Range',
     filter: 'Filter',
     guided: {
-      linkTitle: 'Guided Mode'
+      linkTitle: 'Guided Mode',
+      textLabel: 'Guided Mode'
     },
     freeForm: {
       linkTitle: 'Free-Form Mode',
-      placeholder: 'Free Form Query Bar'
+      placeholder: 'Free Form Query Bar',
+      textLabel: 'Free-Form Mode'
     },
     nextGen: {
       linkTitle: 'Next Gen Mode',
-      placeholder: 'Next Gen Query Bar'
+      placeholder: 'Next Gen Query Bar',
+      textLabel: 'Next Gen Mode'
     },
     size: {
       bytes: 'bytes',

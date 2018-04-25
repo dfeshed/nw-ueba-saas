@@ -62,9 +62,9 @@ export default handleActions({
   },
 
   [ACTION_TYPES.INITIALIZE_INVESTIGATE]: (state, { payload, hardReset }) => {
+    const localStorageObj = JSON.parse(localStorage.getItem('reduxPersist:investigate'));
     if (hardReset) {
       // Check if the previously selected serviceId and timeRange are persisted in localStorage
-      const localStorageObj = JSON.parse(localStorage.getItem('reduxPersist:investigate'));
       if (!localStorageObj) {
         return _initialState;
       } else {
@@ -72,11 +72,17 @@ export default handleActions({
         return state.merge({
           ..._initialState,
           serviceId: localStorageObj.queryNode.serviceId,
-          previouslySelectedTimeRanges: localStorageObj.queryNode.previouslySelectedTimeRanges
+          previouslySelectedTimeRanges: localStorageObj.queryNode.previouslySelectedTimeRanges,
+          queryView: localStorageObj.queryNode.queryView
         });
       }
 
     } else {
+      // pull out previously selected view (if present)
+      let previousView;
+      if (localStorageObj) {
+        previousView = localStorageObj.queryNode.queryView;
+      }
       const hasIncommingQueryParams = !!(payload.endTime && payload.serviceId && payload.startTime);
       const { previouslySelectedTimeRanges } = state;
       const newRange = {};
@@ -89,7 +95,8 @@ export default handleActions({
         serviceId: payload.serviceId,
         previouslySelectedTimeRanges: previouslySelectedTimeRanges.merge(newRange),
         sessionId: payload.sessionId && parseInt(payload.sessionId, 10) || undefined,
-        startTime: payload.startTime && parseInt(payload.startTime, 10) || 0
+        startTime: payload.startTime && parseInt(payload.startTime, 10) || 0,
+        queryView: previousView ? previousView : state.queryView
       }, { deep: true });
     }
   },

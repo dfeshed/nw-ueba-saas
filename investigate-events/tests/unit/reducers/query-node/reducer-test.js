@@ -130,3 +130,22 @@ test('test TOGGLE_FOCUS_FLAG reducer sets the correct flag provided', function(a
 
   assert.equal(result.toggledOnceFlag, true);
 });
+
+
+test('test INITIALIZE_INVESTIGATE reducer sets the correct view from localStorage', function(assert) {
+  /* INTENT- overwrites queryView */
+  const prevState = Immutable.from({
+    queryView: 'freeForm',
+    previouslySelectedTimeRanges: { 2: 'LAST_24_HOURS' }
+  });
+  const action = {
+    type: ACTION_TYPES.INITIALIZE_INVESTIGATE,
+    payload: {
+      metaFilter: {},
+      selectedTimeRangeId: 'ALL_DATA'
+    }
+  };
+  const result = reducer(prevState, action);
+
+  assert.equal(result.queryView, 'freeForm');
+});
