@@ -1,0 +1,22 @@
+$navbarHeight: 49px;
+
+page.admin-engine {
+  min-height: 100vh;
+  color: text-color(primary, lightest);
+}
+
+.admin-engine {
+  /* Common background for all sub-routes. */
+  background-color: background-color(primary, darkest);
+  
+  /* Tab strip for sub-routes: myRoute, someRoute, anotherRoute. Matches investigate color. */
+  > .rsa-nav-tab-group {
+    height: $navbarHeight;
+    background-color: background-color(primary, darker);
+
+    .rsa-nav-tab {
+      cursor: pointer;
+    }
+  }
+
+}

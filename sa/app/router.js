@@ -34,6 +34,7 @@ Router.map(function() {
   });
 
   this.route('not-found', { path: '/*path' });
+  this.mount('admin');
 });
 
 export default Router;

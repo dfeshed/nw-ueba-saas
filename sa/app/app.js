@@ -9,6 +9,25 @@ const App = Application.extend({
   Resolver,
 
   engines: {
+    admin: {
+      dependencies: {
+        services: [
+          '-document',
+          'access-control',
+          'contextual-help',
+          'dateFormat',
+          'timeFormat',
+          'timezone',
+          'i18n',
+          'flashMessages',
+          'eventBus',
+          'router'
+        ],
+        externalRoutes: {
+          protected: 'protected'
+        }
+      }
+    },
     investigateEvents: {
       dependencies: {
         services: [

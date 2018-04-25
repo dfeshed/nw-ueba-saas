@@ -9,6 +9,7 @@ const ALL_SUBMODULES = [
   'investigate-files',
   'respond',
   'configure',
+  'admin',
   'sa',
   'streaming-data',
   'style-guide',
@@ -35,6 +36,7 @@ const saModuleDependants = {
     'packager',
     'respond',
     'configure',
+    'admin',
     'context',
     'preferences',
     'hosts-scan-configure',
@@ -51,6 +53,7 @@ const saModuleDependants = {
     'packager',
     'respond',
     'configure',
+    'admin',
     'context',
     'hosts-scan-configure',
     'investigate-process-analysis'
@@ -74,6 +77,7 @@ const saModuleDependants = {
   sa: [], // sa is an end state app, nothing depends on it
   respond: ['sa'],
   configure: ['sa'],
+  admin: ['sa'],
   scripts: ALL_SUBMODULES, // Everything depends on scripts
   'streaming-data': [
     'recon',
@@ -84,6 +88,7 @@ const saModuleDependants = {
     'packager',
     'respond',
     'configure',
+    'admin',
     'sa',
     'style-guide',
     'context',
