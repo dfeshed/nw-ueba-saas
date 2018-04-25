@@ -12,7 +12,7 @@ The recon addon can be used by defining just one component in your template:
   index=state.recon.index
   total=state.recon.total
   isExpanded=state.recon.isExpanded
-  closeAction=(route-action 'reconClose')
+  closeAction=closeAction
   expandAction=(route-action 'reconExpand')
   shrinkAction=(route-action 'reconShrink')
   language=state.dictionaries.language

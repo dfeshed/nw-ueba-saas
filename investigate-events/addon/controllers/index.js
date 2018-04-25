@@ -9,5 +9,13 @@ export default Controller.extend({
     'mf',  // metaFilters
     'mps', // metaPanelSize
     'rs'   // reconSize
-  ]
+  ],
+
+  actions: {
+
+    // let router handle this
+    controllerReconClose() {
+      this.send('reconClose');
+    }
+  }
 });

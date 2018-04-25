@@ -75,12 +75,6 @@ export default handleActions({
    */
   [ACTION_TYPES.SET_META_PANEL_SIZE]: (state, { payload }) => {
     const metaPanelSize = unknownMetaSize(payload) ? META_PANEL_SIZES.DEFAULT : payload;
-    // const { previousSize } = state;
-    // // When expanding meta panel from its minimized state, ensure recon panel is
-    // // closed.
-    // if (previousSize === 'min') {
-    //   this.send('reconClose', false);
-    // }
     return state.merge({ metaPanelSize });
   },
 

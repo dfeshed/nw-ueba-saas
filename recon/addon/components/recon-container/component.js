@@ -100,7 +100,7 @@ const ReconContainer = Component.extend({
 
   closeRecon: observer('isReconOpen', function() {
     if (!this.get('isReconOpen')) {
-      this.sendAction('closeAction');
+      this.get('closeAction')();
     }
   }),
 
