@@ -17,7 +17,7 @@
             restPath = _restPath;
         };
 
-        function ColorThemesConfigFactory (assert, BASE_URL, $http) {
+        function ColorThemesConfigFactory (assert, BASE_URL, $http, $timeout) {
             var remoteThemseApi;
 
             /**
@@ -39,8 +39,12 @@
                 return $http.get(remoteThemseApi._getUrl())
                     .then(function (res) {
                         //Init the colors set
-                        _.forOwn(res.data.data, function(value, key) {
-                            document.documentElement.style.setProperty(`--${key}`, value);
+                        $timeout(function() {
+                            _.forOwn(res.data.data, function(value, key) {
+                                console.log(`--${key}`);
+                                console.log(value);
+                                angular.element('body')[0].style.setProperty("--"+key,value);
+                            });
                         });
                     })
                     .catch(function (err) {
@@ -49,6 +53,8 @@
                         remoteConfigList = {};
                     });
             }
+
+
             //
             // /**
             //  * Returns a duplicated list of remote config list.
@@ -70,13 +76,13 @@
             };
 
             return remoteThemseApi;
-        }
+        },
 
         provider.$get = [
-            'assert', 'BASE_URL', '$http',
+            'assert', 'BASE_URL', '$http','$timeout',
             ColorThemesConfigFactory
         ];
-    }
+    },
 
     ColorThemesConfigProvider.$inject = [];
 
