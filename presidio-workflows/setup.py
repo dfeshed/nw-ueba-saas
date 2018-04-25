@@ -63,7 +63,7 @@ setup(name='presidio-workflows',
       author_email='fsgit@fortscale.com',
       packages=find_packages(),
       install_requires=[
-          'apache-airflow[devel]==1.8.2', 'psycopg2', 'python-dateutil'
+          'sqlalchemy==1.1.18', 'psycopg2','nose', 'apache-airflow[devel]==1.9.0', 'python-dateutil', 'lxml<4.0,>=3.6.0', 'virtualenv'
       ],
       cmdclass={'test': Tox},
       setup_requires=['pytest-runner', 'tox-setuptools', 'tox'],
