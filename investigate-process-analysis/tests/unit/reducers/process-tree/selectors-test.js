@@ -2,26 +2,28 @@ import { module, test } from 'qunit';
 import Immutable from 'seamless-immutable';
 
 import {
-  treeData,
   hasError,
   isStreaming,
-  errorMessage
+  errorMessage,
+  rootProcess,
+  queryInput,
+  children
 } from 'investigate-process-analysis/reducers/process-tree/selectors';
 
 module('Unit | Selectors | process-tree', function() {
 
-  test('treeData returns the data for rendering tree', function(assert) {
+  test('rootProcess returns root', function(assert) {
     const state = Immutable.from({
       processAnalysis: {
         processTree: {
-          rootNode: {
-            processName: 'test'
+          queryInput: {
+            pn: 'test'
           }
         }
       }
     });
 
-    const data = treeData(state);
+    const data = rootProcess(state);
     assert.equal(data.processName, 'test');
   });
 
@@ -84,6 +86,36 @@ module('Unit | Selectors | process-tree', function() {
 
     const message = errorMessage(state);
     assert.equal(message, 'failed');
+  });
+
+  test('queryInput', function(assert) {
+    const state = Immutable.from({
+      processAnalysis: {
+        processTree: {
+          queryInput: {
+            sid: '1',
+            pn: 'test'
+          }
+        }
+      }
+    });
+    const result = queryInput(state);
+    assert.equal(result.sid, '1');
+  });
+  test('children', function(assert) {
+    const state = Immutable.from({
+      processAnalysis: {
+        processTree: {
+          queryInput: {
+            sid: '1',
+            pn: 'test'
+          },
+          rawData: new Array(10)
+        }
+      }
+    });
+    const result = children(state);
+    assert.equal(result.length, 10);
   });
 });
 

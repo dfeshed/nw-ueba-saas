@@ -1,7 +1,6 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 import { initProcessAnalysis } from 'investigate-process-analysis/actions/creators/init-creators';
-import { getEvents } from 'investigate-process-analysis/actions/creators/events-creators';
 import { run } from '@ember/runloop';
 
 export default Route.extend({
@@ -21,7 +20,6 @@ export default Route.extend({
     const redux = this.get('redux');
     run.next(() => {
       redux.dispatch(initProcessAnalysis(params));
-      redux.dispatch(getEvents());
     });
   }
 });

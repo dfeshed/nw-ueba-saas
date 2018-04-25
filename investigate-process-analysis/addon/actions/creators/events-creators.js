@@ -2,8 +2,10 @@ import fetchStreamingEvents from 'investigate-shared/actions/api/investigate-eve
 import * as ACTION_TYPES from 'investigate-process-analysis/actions/types';
 import _ from 'lodash';
 
+const callbacksDefault = { onComplete() {} };
+
 // Common functions.
-const commonHandlers = function(dispatch) {
+const commonHandlers = function(dispatch, callbacks) {
   return {
     onError(response = {}) {
       const { meta } = response;
@@ -15,6 +17,7 @@ const commonHandlers = function(dispatch) {
     },
     onCompleted() {
       dispatch({ type: ACTION_TYPES.COMPLETED_EVENTS_STREAMING });
+      callbacks.onComplete();
     }
   };
 };
@@ -49,10 +52,16 @@ const _getMetaFilter = (agentId, processName) => {
  * Fetches a stream of events for the given query node.
  * @public
  */
-export const getEvents = () => {
+export const getEvents = (selectedNode, callbacks = callbacksDefault) => {
   return (dispatch, getState) => {
     const state = getState();
-    const { et, st, pn: processName, sid, aid: agentId } = state.processAnalysis.processTree.queryInput;
+    const { et, st, pn, sid, aid: agentId } = state.processAnalysis.processTree.queryInput;
+
+    let processName = pn;
+
+    if (selectedNode) {
+      processName = selectedNode;
+    }
 
     const queryNode = {
       endTime: et,
@@ -83,7 +92,7 @@ export const getEvents = () => {
           dispatch({ type: ACTION_TYPES.SET_EVENTS, payload });
         }
       },
-      ...commonHandlers(dispatch)
+      ...commonHandlers(dispatch, callbacks)
     };
     fetchStreamingEvents(queryNode, null, streamLimit, streamBatch, handlers);
   };
@@ -110,6 +119,5 @@ const _hasherizeEventMeta = (event) => {
     }
     event.id = _.uniqueId('event_'); // Adding unique id to node, currently server is not sending
     event.metas = null;
-    event.children = [];
   }
 };

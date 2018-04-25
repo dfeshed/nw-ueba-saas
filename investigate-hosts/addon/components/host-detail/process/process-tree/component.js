@@ -5,12 +5,14 @@ import { connect } from 'ember-redux';
 import { updateRowVisibility } from './utils';
 import { processTree } from 'investigate-hosts/reducers/details/process/selectors';
 import { getProcessDetails } from 'investigate-hosts/actions/data-creators/process';
+import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
 
 const dispatchToActions = {
   getProcessDetails
 };
 
 const stateToComputed = (state) => ({
+  serviceList: serviceList(state),
   treeAsList: processTree(state),
   isProcessTreeLoading: state.endpoint.process.isProcessTreeLoading,
   agentId: state.endpoint.detailsInput.agentId

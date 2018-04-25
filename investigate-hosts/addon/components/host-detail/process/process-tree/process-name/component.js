@@ -2,19 +2,33 @@ import Component from '@ember/component';
 import { get, set } from '@ember/object';
 import computed, { alias } from 'ember-computed-decorators';
 import { htmlSafe } from '@ember/string';
+import { next } from '@ember/runloop';
+import { getAllServices } from 'investigate-hosts/actions/data-creators/host';
+import { connect } from 'ember-redux';
 import { inject as service } from '@ember/service';
 
 import { buildTimeRange } from 'investigate-shared/utils/time-util';
 
 const BASE_PADDING = 30;
 
-export default Component.extend({
+const dispatchToActions = {
+  getAllServices
+};
+
+
+const ProcessName = Component.extend({
 
   timezone: service(),
+
+  eventBus: service(),
 
   classNames: ['process-name-column'],
 
   agentId: null,
+
+  showServiceModal: false,
+
+  serviceList: null,
 
   /**
    * To show the icon in th UI
@@ -46,10 +60,15 @@ export default Component.extend({
       {
         label: 'Process Analysis',
         action() {
-          cntx.send('navigateToProcessAnalysis');
+          cntx.send('toggleServiceSelection');
         }
       }
     ];
+  },
+
+  _closeModal() {
+    this.get('eventBus').trigger('rsa-application-modal-close-service-modal');
+    this.set('showServiceModal', false);
   },
 
   actions: {
@@ -63,16 +82,32 @@ export default Component.extend({
      * navigate to process analysis page
      * @public
      */
-    navigateToProcessAnalysis() {
+    navigateToProcessAnalysis(serviceId) {
       const { zoneId } = this.get('timezone.selected');
       const { item, agentId } = this.getProperties('item', 'agentId');
       const { name, checksumSha256 } = item;
       const timeRange = buildTimeRange(1, 'days', zoneId);
       const timeStr = `st=${timeRange.startTime.unix()}&et=${timeRange.endTime.unix()}`;
-      const serviceId = '46afbb7c-1156-45fb-bc4c-b5143a529610'; // Will be removed
       const queryParams = `checksum=${checksumSha256}&sid=${serviceId}&aid=${agentId}&pn=${name}&${timeStr}`;
 
       window.open(`${window.location.origin}/investigate/process-analysis?${queryParams}`, '_blank', 'width=1440,height=900');
+    },
+
+    toggleServiceSelection() {
+      this.set('showServiceModal', true);
+      this.send('getAllServices');
+      next(() => {
+        this.get('eventBus').trigger('rsa-application-modal-open-service-modal');
+      });
+    },
+
+    onCancel() {
+      this._closeModal();
+    },
+
+    onModalClose() {
+      this.set('showServiceModal', false);
     }
   }
 });
+export default connect(null, dispatchToActions)(ProcessName);

@@ -6,8 +6,7 @@ import * as ACTION_TYPES from 'investigate-process-analysis/actions/types';
 const initialState = Immutable.from({
   queryInput: null,
   streaming: false,
-  rawData: [],
-  rootNode: null,
+  rawData: null,
   error: null
 });
 
@@ -55,7 +54,7 @@ module('Unit | Reducers | process-tree', function() {
     assert.equal(result.queryInput.pn, 'test');
   });
 
-  test('COMPLETED_EVENTS_STREAMING will sets the root node', function(assert) {
+  test('COMPLETED_EVENTS_STREAMING will sets streaming', function(assert) {
     const previous = Immutable.from({
       rawData: [],
       queryInput: {
@@ -63,11 +62,10 @@ module('Unit | Reducers | process-tree', function() {
         aid: 1,
         checkSum: 'xyz'
       },
-      streaming: false,
+      streaming: true,
       error: null
     });
     const result = reducer(previous, { type: ACTION_TYPES.COMPLETED_EVENTS_STREAMING });
     assert.equal(result.streaming, false, 'streaming is set to false');
-    assert.equal(result.rootNode.processName, 'test', 'Expected to set process name to rootNode');
   });
 });

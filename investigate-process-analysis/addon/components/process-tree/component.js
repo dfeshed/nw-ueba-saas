@@ -1,21 +1,29 @@
 import Component from '@ember/component';
-import zoomed from './helpers/zoomed';
+import computed from 'ember-computed-decorators';
 import { run } from '@ember/runloop';
 import { connect } from 'ember-redux';
 
 import { select, event } from 'd3-selection';
 import { zoom } from 'd3-zoom';
 import { tree, hierarchy } from 'd3-hierarchy';
-
-import computed from 'ember-computed-decorators';
-
 import { transitionElbow, elbow, updateRect, appendRect, appendText, updateText } from './helpers/d3-helpers';
 
-import { isStreaming } from 'investigate-process-analysis/reducers/process-tree/selectors';
+import zoomed from './helpers/zoomed';
+
+
+import { isStreaming, children, rootProcess } from 'investigate-process-analysis/reducers/process-tree/selectors';
+import { getEvents } from 'investigate-process-analysis/actions/creators/events-creators';
 
 const stateToComputed = (state) => ({
-  isStreaming: isStreaming(state)
+  rootProcess: rootProcess(state),
+  isStreaming: isStreaming(state),
+  children: children(state)
 });
+
+const dispatchToActions = {
+  getEvents
+};
+
 
 const TreeComponent = Component.extend({
 
@@ -127,14 +135,22 @@ const TreeComponent = Component.extend({
 
   didReceiveAttrs() {
     this._super(...arguments);
-    const treeData = this.get('treeData');
-    if (treeData) {
-      // Assigns parent, children, height, depth
-      const root = hierarchy(treeData, (d) => d.children || []);
-      root.x0 = 0;
-      root.y0 = 0;
-      this.set('rootNode', root);
-      run.schedule('afterRender', this, '_initializeChart');
+    this.set('rootNode', null);
+    // If query input changes then need to re-render the tree
+    if (this.get('queryInput')) {
+      const onComplete = () => {
+        const rootNode = this.get('rootProcess');
+        rootNode.children = this.get('children');
+
+        const root = hierarchy(rootNode, (d) => d.children || []);
+        root.x0 = 0;
+        root.y0 = 0;
+
+        this.set('rootNode', root);
+
+        this._initializeChart();
+      };
+      this.send('getEvents', null, { onComplete });
     }
   },
 
@@ -257,7 +273,7 @@ const TreeComponent = Component.extend({
     const { rectWidth, duration } = this.getProperties('rectWidth', 'duration');
 
     const link = svg.selectAll('path.link')
-      .data(links, (d) => d.data.id);
+      .data(links, (d) => d.data ? d.data.id : d.id);
 
     const linkEnter = link.enter().append('path')
       .attr('class', 'link')
@@ -293,7 +309,7 @@ const TreeComponent = Component.extend({
    */
   _addNodes(svg, nodes, source) {
     const { rectWidth: width, rectHeight: height, duration } = this.getProperties('rectWidth', 'rectHeight', 'duration');
-    const node = svg.selectAll('g.process').data(nodes, (process) => process.data.id);
+    const node = svg.selectAll('g.process').data(nodes, (process) => process.data ? process.data.id : process.id);
 
     const nodeEnter = node.enter().append('g')
       .attr('class', 'process')
@@ -339,11 +355,23 @@ const TreeComponent = Component.extend({
 
   expandProcess(d) {
     event.stopImmediatePropagation();
-    if (d._children) {
+    if (d._children || d.children) {
       d.children = d._children;
       d._children = null;
+      this.buildChart(d);
+    } else {
+      const onComplete = () => {
+        const children = this.get('children');
+        if (children && children.length) {
+          const nodes = this._getNewNodes(d, children);
+          d.children = nodes;
+          d.data.children = nodes;
+          d._children = null;
+          this.buildChart(d);
+        }
+      };
+      this.send('getEvents', d.data.processName, { onComplete });
     }
-    this.buildChart(d);
   },
 
   collapseProcess(d) {
@@ -353,7 +381,17 @@ const TreeComponent = Component.extend({
       d.children = null;
     }
     this.buildChart(d);
+  },
+  _getNewNodes(selectedNode, children) {
+    const nodes = children.map((item) => {
+      const newNode = hierarchy(item);
+      newNode.depth = selectedNode.depth + 1;
+      newNode.height = selectedNode.height - 1;
+      newNode.parent = selectedNode;
+      return newNode;
+    });
+    return nodes;
   }
 });
 
-export default connect(stateToComputed)(TreeComponent);
+export default connect(stateToComputed, dispatchToActions)(TreeComponent);

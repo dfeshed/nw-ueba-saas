@@ -5,18 +5,8 @@ import reduxActions from 'redux-actions';
 const initialState = {
   queryInput: null,
   streaming: false,
-  rawData: [],
-  rootNode: null,
+  rawData: null,
   error: null
-};
-
-const _rootNode = (rootNode, rawData, processName, checksum, agentId) => {
-  return {
-    processName,
-    checksum,
-    agentId,
-    children: rawData
-  };
 };
 
 export default reduxActions.handleActions({
@@ -26,16 +16,16 @@ export default reduxActions.handleActions({
   },
 
   [ACTION_TYPES.COMPLETED_EVENTS_STREAMING]: (state) => {
-    const { pn: processName, aid: agentId, checksum } = state.queryInput;
-    const { rawData, rootNode } = state;
-    return state.merge({ streaming: false, rootNode: _rootNode(rootNode, rawData, processName, checksum, agentId) });
+    return state.merge({
+      streaming: false
+    });
   },
 
   [ACTION_TYPES.SET_EVENTS_PAGE_ERROR]: (state, { payload }) => {
     return state.merge(payload);
   },
 
-  [ACTION_TYPES.SET_EVENTS]: (state, { payload }) => {
+  [ACTION_TYPES.SET_EVENTS]: (state, { payload = [] }) => {
     return state.set('rawData', payload);
   },
 

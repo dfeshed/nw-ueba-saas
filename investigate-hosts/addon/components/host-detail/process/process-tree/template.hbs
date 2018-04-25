@@ -19,6 +19,7 @@
       {{#if column.componentClass}}
         {{#rsa-data-table/body-cell item=item column=column}}
           {{host-detail/process/process-tree/process-name
+            serviceList=serviceList
             agentId=agentId
             item=item
             index=index
