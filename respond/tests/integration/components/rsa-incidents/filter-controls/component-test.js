@@ -175,9 +175,17 @@ module('Integration | Component | Respond Incident Filters', function(hooks) {
     assert.equal(findAll('.filter-option.assignee-filter .rsa-form-checkbox-label.show-only-unassigned.disabled').length, 1);
   });
 
-  test('The escalation status checkbox filters appear in the filter panel', async function(assert) {
+  test('The escalation status checkbox filters do not appear in the filter panel when isEscalateAvailable is false', async function(assert) {
+    setState({ isEscalateAvailable: false });
+    await init;
+    await render(hbs`{{rsa-incidents/filter-controls}}`);
+    const selector = '.filter-option.escalation-status-filter .rsa-form-checkbox-label';
+    assert.equal(findAll(selector).length, 0, 'There should be 0 escalation status status filter options');
+  });
+
+  test('The escalation status checkbox filters appear in the filter panel when isEscalateAvailable is true', async function(assert) {
     assert.expect(3);
-    setState();
+    setState({ isEscalateAvailable: true });
     await init;
     this.set('updateFilter', function(filter) {
       assert.deepEqual(filter, { escalationStatus: ['ESCALATED'] });

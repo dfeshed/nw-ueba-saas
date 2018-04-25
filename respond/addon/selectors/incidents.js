@@ -97,3 +97,8 @@ export const getEscalationStatusFilters = createSelector(
   getItemsFilters,
   (itemsFilters) => itemsFilters.escalationStatus || []
 );
+
+export const isEscalateAvailable = createSelector(
+  incidentsState,
+  (incidentsState) => incidentsState.isEscalateAvailable
+);

@@ -4,11 +4,15 @@ import reduxActions from 'redux-actions';
 import { load, persist } from './util/local-storage';
 import explorerInitialState from './util/explorer-reducer-initial-state';
 import explorerReducers from './util/explorer-reducer-fns';
+import { handle } from 'redux-pack';
 
 const localStorageKey = 'rsa::nw::respond::incidents';
 
 // Load local storage values and incorporate into initial state
 const initialState = load(explorerInitialState, localStorageKey);
+
+// default (initial) state for escalation feature is false/off
+initialState.isEscalateAvailable = false;
 
 // If there are no filters, add the baseline date range filter
 if (!initialState.itemsFilters) {
@@ -50,7 +54,18 @@ const incidentsReducers = reduxActions.handleActions({
   [ACTION_TYPES.CLEAR_FOCUS_INCIDENTS]: explorerReducers.clearFocusItem,
   [ACTION_TYPES.TOGGLE_INCIDENT_SELECTED]: explorerReducers.toggleSelectItem,
   [ACTION_TYPES.TOGGLE_SELECT_ALL_INCIDENTS]: explorerReducers.toggleSelectAll,
-  [ACTION_TYPES.SORT_BY]: persistState(explorerReducers.sortBy)
+  [ACTION_TYPES.SORT_BY]: persistState(explorerReducers.sortBy),
+  [ACTION_TYPES.FETCH_INCIDENTS_SETTINGS]: (state, action) => (
+    handle(state, action, {
+      success: (s) => {
+        const { payload: { data: { isArcherDataSourceConfigured } } } = action;
+        return s.set('isEscalateAvailable', isArcherDataSourceConfigured);
+      },
+      failure: (s) => {
+        return s.set('isEscalateAvailable', false);
+      }
+    })
+  )
 
 }, Immutable.from(initialState));
 

@@ -17,7 +17,8 @@ import {
   getAssigneeFilters,
   getCategoryFilters,
   hasAssigneeFilter,
-  getEscalationStatusFilters
+  getEscalationStatusFilters,
+  isEscalateAvailable
 } from 'respond/selectors/incidents';
 
 import { getEnabledUsers } from 'respond/selectors/users';
@@ -36,6 +37,7 @@ const stateToComputed = (state) => {
     categoryFilters: getCategoryFilters(state),
     categoryTags: getTopLevelCategoryNames(state),
     users: getEnabledUsers(state),
+    isEscalateAvailable: isEscalateAvailable(state),
     escalationStatuses: getEscalationStatuses(state)
   };
 };

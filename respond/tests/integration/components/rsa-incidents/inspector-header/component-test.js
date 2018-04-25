@@ -29,10 +29,9 @@ module('Integration | Component | Incident Inspector Header', function(hooks) {
   };
 
   test('The rsa-incidents/inspector-header component renders to the DOM', async function(assert) {
-    await render(hbs`{{rsa-incidents/inspector-header updateItem=update}}`);
+    await render(hbs`{{rsa-incidents/inspector-header updateItem=update isEscalateAvailable=false}}`);
     assert.equal(findAll('.incident-inspector-header').length, 1, 'The incident inspector header is found in the DOM');
-    assert.equal(findAll(selectors.escalateButton).length, 1, 'The escalate button appears in the DOM');
-    assert.equal(find(selectors.escalateButton).disabled, false, 'The escalate button is not disabled');
+    assert.equal(findAll(selectors.escalateButton).length, 0, 'The escalate button does not appear in the DOM');
   });
 
   test('The rsa-incidents/inspector-header contains the expected data for display', async function(assert) {
@@ -57,13 +56,18 @@ module('Integration | Component | Incident Inspector Header', function(hooks) {
     return updateEditableField('.incident-inspector-header', 'Something Wicked This Way Went');
   });
 
+  test('The Escalate Button appears if isEscalateAvailable is true', async function(assert) {
+    await render(hbs`{{rsa-incidents/inspector-header updateItem=update isEscalateAvailable=true}}`);
+    assert.equal(findAll(selectors.escalateButton).length, 1, 'The escalate button appears in the DOM');
+  });
+
   test('The Escalate button is disabled when the incident has a status of CLOSED', async function(assert) {
     this.set('info', {
       id: 'INC-1234',
       name: 'Something Wicked This Way Comes',
       status: 'CLOSED'
     });
-    await render(hbs`{{rsa-incidents/inspector-header info=info}}`);
+    await render(hbs`{{rsa-incidents/inspector-header info=info isEscalateAvailable=true}}`);
     assert.equal(find(selectors.escalateButton).disabled, true);
   });
 
@@ -73,7 +77,7 @@ module('Integration | Component | Incident Inspector Header', function(hooks) {
       name: 'Something Wicked This Way Comes',
       status: 'CLOSED_FALSE_POSITIVE'
     });
-    await render(hbs`{{rsa-incidents/inspector-header info=info}}`);
+    await render(hbs`{{rsa-incidents/inspector-header info=info isEscalateAvailable=true}}`);
     assert.equal(find(selectors.escalateButton).disabled, true);
   });
 
@@ -83,7 +87,7 @@ module('Integration | Component | Incident Inspector Header', function(hooks) {
       name: 'Something Wicked This Way Comes',
       escalationStatus: 'ESCALATED'
     });
-    await render(hbs`{{rsa-incidents/inspector-header info=info}}`);
+    await render(hbs`{{rsa-incidents/inspector-header info=info isEscalateAvailable=true}}`);
     assert.equal(findAll(selectors.escalateButton).length, 0);
     assert.equal(findAll(selectors.escalatedIcon).length, 1);
   });
@@ -107,7 +111,7 @@ module('Integration | Component | Incident Inspector Header', function(hooks) {
       id: 'INC-1234',
       name: 'Something Wicked This Way Comes'
     });
-    await render(hbs`{{rsa-incidents/inspector-header info=info}}`);
+    await render(hbs`{{rsa-incidents/inspector-header info=info isEscalateAvailable=true}}`);
     await click(selectors.escalateButton);
     await click(selectors.confirmButton);
   });
@@ -125,7 +129,7 @@ module('Integration | Component | Incident Inspector Header', function(hooks) {
       id: 'INC-1234',
       name: 'Something Wicked This Way Comes'
     });
-    await render(hbs`{{rsa-incidents/inspector-header info=info}}`);
+    await render(hbs`{{rsa-incidents/inspector-header info=info isEscalateAvailable=true}}`);
     await click(selectors.escalateButton);
     await click(selectors.confirmButton);
   });

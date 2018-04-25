@@ -52,7 +52,7 @@
   {{#explorer.inspector
     inspectorHeaderComponent='rsa-incidents/inspector-header'
     inspectorContentComponent='rsa-incident/overview' as |inspector|}}
-    {{inspector.inspectorHeader}}
+    {{inspector.inspectorHeader isEscalateAvailable=isEscalateAvailable}}
     {{inspector.inspectorContent infoStatus='completed'}}
   {{/explorer.inspector}}
 {{/rsa-explorer}}

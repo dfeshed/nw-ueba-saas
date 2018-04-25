@@ -236,6 +236,21 @@ export default {
     });
   },
 
+  /**
+   * Returns incidents related system settings
+   * @method getIncidentsSettings
+   * @public
+   * @returns {*}
+   */
+  getIncidentsSettings() {
+    const request = lookup('service:request');
+    return request.promiseRequest({
+      method: 'findAll',
+      modelName: 'incidents-settings',
+      query: {}
+    });
+  },
+
   createIncidentFromAlerts(incidentDetails, alertIds) {
     const request = lookup('service:request');
     return request.promiseRequest({

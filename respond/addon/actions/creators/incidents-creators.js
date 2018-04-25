@@ -441,6 +441,13 @@ const escalate = (incidentId, callbacks = callbacksDefault) => {
   };
 };
 
+const getIncidentsSettings = () => {
+  return {
+    type: ACTION_TYPES.FETCH_INCIDENTS_SETTINGS,
+    promise: Incidents.getIncidentsSettings()
+  };
+};
+
 // UI STATE CREATORS - INCIDENT
 
 const setHideViz = (hideViz) => ({ type: ACTION_TYPES.SET_HIDE_VIZ, payload: hideViz });
@@ -471,6 +478,7 @@ export {
   clearFocusItem,
   toggleSelectAll,
   getIncident,
+  getIncidentsSettings,
   getStoryline,
   getStorylineEvents,
   initializeIncident,

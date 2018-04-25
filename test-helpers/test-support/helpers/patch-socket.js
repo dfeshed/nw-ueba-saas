@@ -10,16 +10,28 @@ function waitForStop(stream) {
   counter += 1;
 
   const origStop = stream.stop;
-  stream.stop = function() {
-    counter -= 1;
-    let applied;
-    try {
-      applied = origStop.apply(this, arguments);
-    } finally {
-      stream.stop = origStop;
-    }
-    return applied;
+  const origCompleted = stream.completed;
+
+  // patches the original stop/completed functions to adjust the wait counter
+  const handle = function(originalFunc) {
+    return function() {
+      counter -= 1;
+      let applied;
+      try {
+        applied = originalFunc.apply(this, arguments);
+      } finally {
+        // since we don't know which original function was replaced, restore them both
+        stream.stop = origStop;
+        stream.completed = origCompleted;
+      }
+      return applied;
+    };
   };
+  // Promise requests get stopped (i.e., stream.stop is called when they are done)
+  stream.stop = handle(stream.stop);
+  // Stream requests get completed (i.e., stream.completed is called with they are done)
+  stream.completed = handle(stream.completed);
+
   return stream;
 }
 

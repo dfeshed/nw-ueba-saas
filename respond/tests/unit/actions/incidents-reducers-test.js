@@ -44,4 +44,19 @@ module('Unit | Utility | Incidents Reducer (non-Explorer)', function() {
     const endState = incidentsReducer(Immutable.from(initState), action);
     assert.deepEqual(endState, expectedEndState);
   });
+
+  test('When FETCH_INCIDENT_SETTINGS succeeds, the state is updated', function(assert) {
+    const initState = {
+      isEscalateAvailable: false
+    };
+    const expectedEndState = {
+      isEscalateAvailable: true
+    };
+    const action = makePackAction(LIFECYCLE.SUCCESS, {
+      type: ACTION_TYPES.FETCH_INCIDENTS_SETTINGS,
+      payload: { data: { isArcherDataSourceConfigured: true } }
+    });
+    const endState = incidentsReducer(Immutable.from(initState), action);
+    assert.deepEqual(endState, expectedEndState);
+  });
 });

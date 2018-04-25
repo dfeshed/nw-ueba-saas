@@ -34,6 +34,13 @@ const respondConfigGen = function(environment) {
         requestDestination: '/ws/respond/incident/escalate'
       }
     },
+    'incidents-settings': {
+      socketUrl,
+      findAll: {
+        subscriptionDestination: '/user/queue/incidents/configuration',
+        requestDestination: '/ws/respond/incidents/configuration'
+      }
+    },
     'incidents-count': {
       socketUrl,
       queryRecord: {
