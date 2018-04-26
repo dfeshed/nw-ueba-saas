@@ -20,13 +20,24 @@ module('Integration | Component | context-panel/pivotToArcher', function(hooks) 
     this.owner.register('service:context', contextStub);
   });
 
-  test('Test Pivot to Archer rendered', async function(assert) {
+  test('Test Pivot to Archer rendered for IP', async function(assert) {
     this.set('entityId', '1.1.1.1');
     this.set('entityType', 'IP');
     await render(hbs`{{context-panel entityId=entityId entityType=entityType }}`);
 
     return waitFor('.rsa-nav-tab-group').then(() => {
-      assert.equal(findAll('div.rsa-context-panel__linkButton').length, 1, 'Pivot to Archer link is displayed');
+      assert.equal(findAll('div.rsa-context-panel__linkButton').length, 1, 'Pivot to Archer link is displayed for IP');
+    });
+  });
+
+  test('Pivot to Archer link is available for MAC_ADDRESS', async function(assert) {
+    this.setProperties({
+      entityType: 'MAC_ADDRESS',
+      entityId: '00:50:56:BA:60:18'
+    });
+    await render(hbs`{{context-panel entityId=entityId entityType=entityType }}`);
+    return waitFor('.rsa-nav-tab-group').then(() => {
+      assert.equal(findAll('div.rsa-context-panel__linkButton').length, 1, 'Pivot to Archer link is displayed for MAC_ADDRESS');
     });
   });
 

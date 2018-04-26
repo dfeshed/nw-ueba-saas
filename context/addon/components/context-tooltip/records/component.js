@@ -45,7 +45,7 @@ const entityTypeToRecordNamesMap = {
   DEFAULT: ['Incidents', 'Alerts', 'LIST'],
   IP: ['Incidents', 'Alerts', 'LIST', 'Machines', 'LiveConnect-Ip', 'Archer'],
   HOST: ['Incidents', 'Alerts', 'LIST', 'Machines', 'Archer'],
-  MAC_ADDRESS: ['Incidents', 'Alerts', 'LIST', 'Machines'],
+  MAC_ADDRESS: ['Incidents', 'Alerts', 'LIST', 'Machines', 'Archer'],
   FILE_HASH: ['Incidents', 'Alerts', 'LIST', 'LiveConnect-File'],
   DOMAIN: ['Incidents', 'Alerts', 'LIST', 'LiveConnect-Domain']
 };

@@ -69,7 +69,7 @@ const ContextToolTipActions = Component.extend({
   */
   @computed('entityType', 'entityId')
   showArcherLink(entityType, entityId) {
-    return !isEmpty(entityId) && !!(String(entityType).match(/IP|HOST/));
+    return !isEmpty(entityId) && !!(String(entityType).match(/IP|HOST|MAC\_ADDRESS/));
   },
 
   /**

@@ -142,6 +142,7 @@ export default [{
   title: 'context.modules.title',
   columns: [
     datasources.list,
+    datasources.archer,
     datasources.endpoint,
     datasources.incident,
     datasources.alert
@@ -149,6 +150,7 @@ export default [{
   headerButtons: [
     'add-to-list',
     'investigate',
+    'archer',
     'endpoint'
   ]
 },

@@ -163,7 +163,7 @@ module('Integration | Component | context tooltip actions', function(hooks) {
     assert.notOk(findAll('.js-test-pivot-to-investigate-link').length, 'Expected to NOT find investigate link for empty IP');
   });
 
-  test('it only shows the Pivot to Archer link for IPs, HOSTs', async function(assert) {
+  test('it only shows the Pivot to Archer link for IPs, HOSTs & MAC addresses', async function(assert) {
     this.setProperties({
       entityType: 'IP',
       entityId: '10.20.30.40'
@@ -172,49 +172,48 @@ module('Integration | Component | context tooltip actions', function(hooks) {
     await render(hbs`{{context-tooltip/actions
       entityType=entityType
       entityId=entityId}}`);
-
     assert.ok(findAll('.js-test-pivot-to-archer-link').length, 'Expected to find archer link for IP');
+
     this.setProperties({
       entityType: 'HOST',
       entityId: 'MACHINE1'
     });
-
     assert.ok(findAll('.js-test-pivot-to-archer-link').length, 'Expected to find archer link for HOST');
+
     this.setProperties({
       entityType: 'MAC_ADDRESS',
       entityId: 'aa:bb:cc:dd:ee:ff'
     });
+    assert.ok(findAll('.js-test-pivot-to-archer-link').length, 'Expected to find archer link for MAC');
 
-    assert.notOk(findAll('.js-test-pivot-to-archer-link').length, 'Expected to NOT find archer link for MAC');
     this.setProperties({
       entityType: 'DOMAIN',
       entityId: 'www.g00gle.com'
     });
-
     assert.notOk(findAll('.js-test-pivot-to-archer-link').length, 'Expected to NOT find archer link for DOMAIN');
+
     this.setProperties({
       entityType: 'USER',
       entityId: 'username1'
     });
-
     assert.notOk(findAll('.js-test-pivot-to-archer-link').length, 'Expected to NOT find archer link for USER');
+
     this.setProperties({
       entityType: 'FILE_NAME',
       entityId: 'foo.pdf'
     });
-
     assert.notOk(findAll('.js-test-pivot-to-archer-link').length, 'Expected to NOT find archer link for FILE_NAME');
+
     this.setProperties({
       entityType: 'IP',
       entityId: null
     });
-
     assert.notOk(findAll('.js-test-pivot-to-archer-link').length, 'Expected to NOT find archer link for empty IP');
+
     this.setProperties({
       entityType: 'HOST',
       entityId: null
     });
-
     assert.notOk(findAll('.js-test-pivot-to-archer-link').length, 'Expected to NOT find archer link for empty HOST');
   });
 

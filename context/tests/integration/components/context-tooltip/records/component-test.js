@@ -27,7 +27,7 @@ module('Integration | Component | context tooltip records', function(hooks) {
   });
 
   test('it only renders criticality and asset risk for IPs, HOSTs', async function(assert) {
-    assert.expect(5);
+    assert.expect(7);
 
     const criticality = 'Criticality';
     const assetRisk = 'Asset Risk';
@@ -44,6 +44,13 @@ module('Integration | Component | context tooltip records', function(hooks) {
 
     assert.ok(findAll('.rsa-context-tooltip-records__record .text')[4].textContent.indexOf(criticality), 'Expected to find Criticality Attribute for HOST');
     assert.ok(findAll('.rsa-context-tooltip-records__record .text')[5].textContent.indexOf(assetRisk), 'Expected to find Asset Risk Attribute for HOST');
+
+    this.setProperties({
+      model: { type: 'MAC_ADDRESS', id: '00:50:56:BA:60:18' }
+    });
+    assert.ok(findAll('.rsa-context-tooltip-records__record .text')[4].textContent.indexOf(criticality), 'Expected to find Criticality Attribute for HOST');
+    assert.ok(findAll('.rsa-context-tooltip-records__record .text')[5].textContent.indexOf(assetRisk), 'Expected to find Asset Risk Attribute for HOST');
+
 
     this.setProperties({
       model: { type: 'USER', id: 'testuser' }
