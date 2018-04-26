@@ -5,7 +5,7 @@ import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import sinon from 'sinon';
 
-import { clickTrigger, selectChoose } from '../../../helpers/ember-power-select';
+import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 import { applyPatch, revertPatch } from '../../../helpers/patch-reducer';
 import startApp from '../../../helpers/start-app';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';

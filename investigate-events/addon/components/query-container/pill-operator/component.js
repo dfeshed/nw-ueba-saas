@@ -29,7 +29,7 @@ const VALUE = 'value';
 const indices = [NONE, KEY, VALUE];
 
 export default Component.extend({
-  classNameBindings: ['isActive', ':pill-operator'],
+  classNameBindings: ['isActive', ':pill-operator', 'selection:has-selection'],
 
   isActive: false,
   meta: null,
@@ -67,6 +67,14 @@ export default Component.extend({
       // We schedule this after render to give time for the power-select to
       // be rendered before trying to focus on it.
       scheduleOnce('afterRender', this, '_focusOnPowerSelectTrigger');
+    }
+  },
+
+  click() {
+    // If this component is not active and the user clicks on it, dispatch an
+    // action so that the parent can coordinate the activation of this component.
+    if (!this.get('isActive')) {
+      this._broadcast(MESSAGE_TYPES.OPERATOR_CLICKED);
     }
   },
 

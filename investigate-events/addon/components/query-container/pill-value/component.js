@@ -7,7 +7,6 @@ export default Component.extend({
   classNameBindings: ['isActive', ':pill-value'],
 
   isActive: false,
-  initialKeyUp: true,
   sendMessage: () => {},
   valueString: null,
 
@@ -20,19 +19,16 @@ export default Component.extend({
 
   actions: {
     onKeyUp(input, event) {
-      // For some reason, when this component is activated and creates the
-      //  input, it's reacting to the Enter key pressed from the pill-operator
-      // component and sends out the VALUE_ENTER_KEY event. It should not do
-      // this.
-      if (this.get('initialKeyUp') && event.keyCode === 13) {
-        this.toggleProperty('initialKeyUp');
-        return;
-      }
       // 'keyCode' is deprecated in favor of 'key', but the Ember test-helpers
       // don't support 'key'
       switch (event.keyCode) {
         case 13:// Enter
-          this._broadcast(MESSAGE_TYPES.VALUE_ENTER_KEY);
+          // For some reason, when this component is activated and creates the
+          // input, it's reacting to the ENTER key pressed from pill-operator
+          // and sends out this event. It should not do this.
+          if (this.get('valueString') !== null && !this._isInputEmpty(input)) {
+            this._broadcast(MESSAGE_TYPES.VALUE_ENTER_KEY);
+          }
           break;
         case 27:// Escape
           this._broadcast(MESSAGE_TYPES.VALUE_ESCAPE_KEY);
@@ -63,5 +59,12 @@ export default Component.extend({
    */
   _broadcast(type, data) {
     this.get('sendMessage')(type, data);
+  },
+
+  _isInputEmpty: (input) => {
+    const trimmedInput = input.trim();
+    const isEmpty = trimmedInput.length === 0;
+    const hasEmptyQuotes = trimmedInput.match(/^['"]\s*['"]$/);
+    return isEmpty || (hasEmptyQuotes && hasEmptyQuotes.length > 0);
   }
 });

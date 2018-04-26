@@ -37,6 +37,9 @@ module('Integration | Component | Pill Operator', function(hooks) {
     assert.expect(2);
     this.set('meta', meta);
     this.set('handleMessage', (type, data) => {
+      if (type == 'PILL::OPERATOR_CLICKED') {
+        return; // don't care about click events
+      }
       assert.equal(type, 'PILL::OPERATOR_SELECTED', 'Wrong message type');
       assert.deepEqual(data, eq, 'Wrong message data');
     });

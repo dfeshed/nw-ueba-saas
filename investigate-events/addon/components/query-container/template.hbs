@@ -7,7 +7,7 @@
     {{query-filters filters=filters executeQuery=(route-action 'executeQuery')}}
     {{!-- filters - to transform them to text in free-form --}}
     {{query-container/free-form filters=filters executeQuery=(route-action 'executeQuery')}}
-    {{query-container/query-pills filters=(readonly filters) executeQuery=(route-action 'executeQuery')}}
+    {{query-container/query-pills filters=(readonly filters) executeQuery=(route-action 'executeQuery' filters)}}
   </div>
   <div class='query-bar-select-actions'>
     <a class='guided-link' title={{t 'investigate.guided.linkTitle'}} href='' {{action 'changeView' 'guided'}}>{{t 'investigate.guided.textLabel'}}</a>

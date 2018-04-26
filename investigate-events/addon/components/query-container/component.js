@@ -26,7 +26,7 @@ const QueryContainer = Component.extend({
 
   @computed('queryView', 'freeFormText', 'filters')
   criteria(queryView, freeFormText, filters) {
-    if (queryView === 'guided') {
+    if (queryView === 'guided' || queryView === 'nextGen') {
       return filters;
     } else if (queryView === 'freeForm') {
       return freeFormText;

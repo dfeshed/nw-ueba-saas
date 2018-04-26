@@ -17,6 +17,21 @@ export default Component.extend({
   selectedOperator: null,
   valueString: null,
 
+  init() {
+    this._super(arguments);
+    this.set('_messageHandlerMap', {
+      [MESSAGE_TYPES.META_SELECTED]: (data) => this._metaSelected(data),
+      [MESSAGE_TYPES.OPERATOR_CLICKED]: () => this._operatorClicked(),
+      [MESSAGE_TYPES.OPERATOR_SELECTED]: (data) => this._operatorSelected(data),
+      [MESSAGE_TYPES.VALUE_SET]: (data) => this._valueSet(data),
+      [MESSAGE_TYPES.VALUE_ENTER_KEY]: () => this._createPill(),
+      [MESSAGE_TYPES.VALUE_ESCAPE_KEY]: () => this._cancelPillCreation(),
+      [MESSAGE_TYPES.VALUE_BACKSPACE_KEY]: (data) => this._backspaceKeyPressed(data),
+      [MESSAGE_TYPES.VALUE_ARROW_LEFT_KEY]: (data) => this._leftArrowKeyPressed(data),
+      [MESSAGE_TYPES.VALUE_ARROW_RIGHT_KEY]: (data) => this._rightArrowKeyPressed(data)
+    });
+  },
+
   didInsertElement() {
     this._super(...arguments);
     this._broadcast(MESSAGE_TYPES.PILL_INITIALIZED);
@@ -41,35 +56,13 @@ export default Component.extend({
      * @public
      */
     handleMessage(type, data) {
-      switch (type) {
-        case MESSAGE_TYPES.META_SELECTED:
-          this._metaSelected(data);
-          break;
-        case MESSAGE_TYPES.OPERATOR_SELECTED:
-          this._operatorSelected(data);
-          break;
-        case MESSAGE_TYPES.VALUE_SET:
-          this._valueSet(data);
-          break;
-        case MESSAGE_TYPES.VALUE_ENTER_KEY:
-          this._createPill(data);
-          break;
-        case MESSAGE_TYPES.VALUE_ESCAPE_KEY:
-          this._cancelPillCreation();
-          break;
-        case MESSAGE_TYPES.VALUE_BACKSPACE_KEY:
-          this._backspaceKeyPressed(data);
-          break;
-        case MESSAGE_TYPES.VALUE_ARROW_LEFT_KEY:
-          this._leftArrowKeyPressed(data);
-          break;
-        case MESSAGE_TYPES.VALUE_ARROW_RIGHT_KEY:
-          this._rightArrowKeyPressed(data);
-          break;
-        default:
-          // Any messages that do not match expected message types get send up
-          // to the query-pills component.
-          this._broadcast(type, data);
+      const messageHandlerFn = this.get('_messageHandlerMap')[type];
+      if (messageHandlerFn) {
+        messageHandlerFn(data);
+      } else {
+        // Any messages that do not match expected message types get send up
+        // to the query-pills component.
+        this._broadcast(type, data);
       }
     }
   },
@@ -103,6 +96,20 @@ export default Component.extend({
   },
 
   /**
+   * Handles operator being clicked.
+   * @private
+   */
+  _operatorClicked() {
+    // save operator and move focus to value if the operator accepts values
+    this.setProperties({
+      isMetaActive: false,
+      isOperatorActive: true,
+      isValueActive: false,
+      isActive: true
+    });
+  },
+
+  /**
    * Handles selected pill operator.
    * @param {Object} selectedOperator The selected operator value
    * @private
@@ -113,8 +120,15 @@ export default Component.extend({
       selectedOperator,
       isMetaActive: false,
       isOperatorActive: false,
-      isValueActive: selectedOperator.hasValue
+      isValueActive: selectedOperator.hasValue,
+      isActive: selectedOperator.hasValue
     });
+    if (!selectedOperator.hasValue) {
+      // an operator that does not accept a value was selected,
+      // so create the pill
+      this.set('valueString', null);
+      this._broadcast(MESSAGE_TYPES.PILL_CREATED, this._createFilter());
+    }
   },
 
   /**
@@ -130,6 +144,21 @@ export default Component.extend({
       isValueActive: false,
       isActive: false
     });
+    const value = this.get('valueString').trim();
+    this._broadcast(MESSAGE_TYPES.PILL_CREATED, this._createFilter(value));
+  },
+
+  /**
+   * Creates a filter to be used for metaFilters.
+   * @param {*} value The value of the filter. Does not have to be specified if
+   * operator is a type that does not have a value.
+   * @return {Object} A filter
+   * @private
+   */
+  _createFilter(value = null) {
+    const meta = this.get('selectedMeta.metaName');
+    const operator = this.get('selectedOperator.displayName');
+    return { meta, operator, value };
   },
 
   /**

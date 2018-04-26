@@ -2,7 +2,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
 import { applyPatch, revertPatch } from '../../../../helpers/patch-reducer';
-import { selectChoose, clickTrigger } from '../../../../helpers/ember-power-select';
+import { selectChoose, clickTrigger } from 'ember-power-select/test-support/helpers';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import $ from 'jquery';
 import wait from 'ember-test-helpers/wait';
