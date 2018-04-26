@@ -63,6 +63,7 @@ setup(name='presidio-workflows',
       author_email='fsgit@fortscale.com',
       packages=find_packages(),
       install_requires=[
+          # TODO: verify final version of each dependency
           'sqlalchemy==1.1.18', 'psycopg2','nose', 'apache-airflow[devel]==1.9.0', 'python-dateutil', 'lxml<4.0,>=3.6.0', 'virtualenv'
       ],
       cmdclass={'test': Tox},
