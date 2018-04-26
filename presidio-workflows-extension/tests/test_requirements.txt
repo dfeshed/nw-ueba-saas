@@ -4,4 +4,10 @@ pytest
 requests
 pytz
 mock
-apache-airflow[devel]==1.8.2
+sqlalchemy==1.1.18
+psycopg2
+nose
+apache-airflow[devel]==1.9.0
+python-dateutil
+lxml<4.0,>=3.6.0
+../presidio-workflows-extension/.tox/dist/presidio-workflows-extension-1.0.zip
