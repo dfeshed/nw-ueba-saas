@@ -51,9 +51,12 @@
     {{#each (list-tab active getFilteredList) as |row|}}
       <hbox>
         <vbox xs="1" class="rsa-context-tree-table__checkbox">
-          {{rsa-form-checkbox
+          <label class="rsa-form-checkbox-label {{if row.enabled 'checked'}}">
+            {{rsa-form-checkbox
             checked=row.enabled
-            click=(action 'toggleCheckbox' row)}}
+            change=(action 'toggleCheckbox' row)}}
+          </label>
+
         </vbox>
         <vbox xs="4" class="rsa-context-tree-table__checkbox">{{row.name}}</vbox>
         <vbox xs="7" class="rsa-context-tree-table__checkbox">{{row.description}}</vbox>
