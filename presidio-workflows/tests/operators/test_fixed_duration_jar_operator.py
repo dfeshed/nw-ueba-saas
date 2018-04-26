@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 
 import pytest
 from airflow import DAG
+from airflow.utils.db import initdb
 
 from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
 from presidio.utils.configuration.config_server_reader_test_builder import ConfigServerConfigurationReaderTestBuilder
@@ -17,7 +18,9 @@ COMMAND = 'run'
 class TestFixedDurationJarOpertor():
     @classmethod
     def setup_class(cls):
+        initdb()
         ConfigServerConfigurationReaderTestBuilder().build()
+
     def test_invalid_execution_date(self):
         """
     
