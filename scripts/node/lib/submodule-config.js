@@ -10,6 +10,7 @@ const ALL_SUBMODULES = [
   'respond',
   'configure',
   'admin',
+  'admin-source-management',
   'sa',
   'streaming-data',
   'style-guide',
@@ -37,6 +38,7 @@ const saModuleDependants = {
     'respond',
     'configure',
     'admin',
+    'admin-source-management',
     'context',
     'preferences',
     'hosts-scan-configure',
@@ -54,6 +56,7 @@ const saModuleDependants = {
     'respond',
     'configure',
     'admin',
+    'admin-source-management',
     'context',
     'hosts-scan-configure',
     'investigate-process-analysis'
@@ -78,6 +81,7 @@ const saModuleDependants = {
   respond: ['sa'],
   configure: ['sa'],
   admin: ['sa'],
+  'admin-source-management': ['sa','admin'],
   scripts: ALL_SUBMODULES, // Everything depends on scripts
   'streaming-data': [
     'recon',
@@ -89,6 +93,7 @@ const saModuleDependants = {
     'respond',
     'configure',
     'admin',
+    'admin-source-management',
     'sa',
     'style-guide',
     'context',

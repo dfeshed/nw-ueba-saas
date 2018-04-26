@@ -61,6 +61,7 @@ prepareApp investigate-hosts
 prepareApp investigate-files
 prepareApp respond
 prepareApp configure
+prepareApp admin-source-management
 prepareApp admin
 prepareApp context
 prepareApp preferences

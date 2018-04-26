@@ -1,0 +1,20 @@
+@charset "UTF-8";
+
+/* pulling in component-lib from inside admin-source-management */
+@import 'component-lib/manifest';
+
+/* Pulling in local admin-source-management styles */
+@import 'admin-source-management/manifest';
+
+html, body {
+  height: 100%;
+}
+
+body {
+  color: text-color(primary, light);
+  margin: 0;
+}
+
+page {
+  min-height: 100vh;
+}

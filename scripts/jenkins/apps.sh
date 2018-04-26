@@ -229,6 +229,7 @@ buildEmberApp investigate-files false true true
 buildEmberApp respond false true true
 buildEmberApp configure false true true
 buildEmberApp investigate-process-analysis false true true
+buildEmberApp admin-source-management false true true
 buildEmberApp admin false true true
 buildEmberApp sa true true true
 buildLibrary broccoli-theme

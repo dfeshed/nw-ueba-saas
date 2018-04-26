@@ -37,6 +37,7 @@ nukeNode investigate-hosts
 nukeNode investigate-files
 nukeNode respond
 nukeNode configure
+nukeNode admin-source-management
 nukeNode admin
 nukeNode context
 nukeNode preferences
