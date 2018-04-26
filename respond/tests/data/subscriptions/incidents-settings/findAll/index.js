@@ -3,8 +3,8 @@ const data = {
 };
 
 export default {
-  subscriptionDestination: '/user/queue/incidents/configuration',
-  requestDestination: '/ws/respond/incidents/configuration',
+  subscriptionDestination: '/user/queue/incidents/escalation/configuration',
+  requestDestination: '/ws/respond/incidents/escalation/configuration',
   message(/* frame */) {
     return {
       data

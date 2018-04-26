@@ -37,8 +37,8 @@ const respondConfigGen = function(environment) {
     'incidents-settings': {
       socketUrl,
       findAll: {
-        subscriptionDestination: '/user/queue/incidents/configuration',
-        requestDestination: '/ws/respond/incidents/configuration'
+        subscriptionDestination: '/user/queue/incidents/escalation/configuration',
+        requestDestination: '/ws/respond/incidents/escalation/configuration'
       }
     },
     'incidents-count': {
