@@ -5,7 +5,7 @@ import alertsCreators from './alert-creators';
 import journalCreators from './journal-creators';
 
 export default {
-  'remediation-tasks': remediationTaskCreators,
+  remediationTasks: remediationTaskCreators,
   dictionaries: dictionaryCreators,
   incidents: incidentsCreators,
   alerts: alertsCreators,

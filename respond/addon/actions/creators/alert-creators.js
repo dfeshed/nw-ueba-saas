@@ -1,8 +1,36 @@
 import { alerts } from '../api';
 import * as ACTION_TYPES from '../types';
 import { next } from '@ember/runloop';
+import * as dictionaryCreators from './dictionary-creators';
+import { getEnabledUsers } from 'respond/selectors/users';
+import {
+  getPriorityTypes,
+  getAlertTypes,
+  getAlertSources
+} from 'respond/selectors/dictionaries';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
+
+const initializeAlerts = () => {
+  return (dispatch, getState) => {
+    const state = getState();
+    dispatch(getItems());
+
+    if (!getEnabledUsers(state).length) {
+      dispatch(dictionaryCreators.getAllEnabledUsers());
+    }
+    if (!getPriorityTypes(state).length) {
+      dispatch(dictionaryCreators.getAllPriorityTypes());
+    }
+    if (!getAlertTypes(state).length) {
+      dispatch(dictionaryCreators.getAllAlertTypes());
+    }
+    if (!getAlertSources(state).length) {
+      dispatch(dictionaryCreators.getAllAlertSources());
+    }
+    dispatch(dictionaryCreators.getAllAlertNames());
+  };
+};
 
 /**
  * Action creator that dispatches a set of actions for fetching alerts (with or without filters) and sorted by one field.
@@ -223,6 +251,7 @@ const getAlertEvents = (alertId) => ({
 const resizeAlertInspector = (width) => ({ type: ACTION_TYPES.RESIZE_ALERT_INSPECTOR, payload: width });
 
 export {
+  initializeAlerts,
   getItems,
   getOriginalAlert,
   deleteItem,

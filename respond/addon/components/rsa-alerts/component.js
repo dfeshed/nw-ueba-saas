@@ -1,24 +1,9 @@
 import Component from '@ember/component';
-import { connect } from 'ember-redux';
 import columns from './columns';
-import * as DictionaryActions from 'respond/actions/creators/dictionary-creators';
+import creators from 'respond/actions/creators';
 
-const dispatchToActions = (dispatch) => {
-  return {
-    bootstrap() {
-      dispatch(DictionaryActions.getAllAlertTypes());
-      dispatch(DictionaryActions.getAllAlertSources());
-      dispatch(DictionaryActions.getAllAlertNames());
-      dispatch(DictionaryActions.getAllPriorityTypes());
-      dispatch(DictionaryActions.getAllCategories());
-      dispatch(DictionaryActions.getAllEnabledUsers());
-    }
-  };
-};
-
-const Alerts = Component.extend({
+export default Component.extend({
   classNames: 'rsa-alerts',
-  columns
+  columns,
+  creators: creators.alerts
 });
-
-export default connect(undefined, dispatchToActions)(Alerts);

@@ -1,11 +1,10 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import * as DictionaryActions from 'respond/actions/creators/dictionary-creators';
-import * as IncidentsCreators from 'respond/actions/creators/incidents-creators';
 import columns from './columns';
 import { hasSelectedClosedIncidents, isEscalateAvailable } from 'respond/selectors/incidents';
 import { getPriorityTypes, getStatusTypes } from 'respond/selectors/dictionaries';
 import { getAssigneeOptions } from 'respond/selectors/users';
+import creators from 'respond/actions/creators';
 
 const stateToComputed = (state) => {
   return {
@@ -17,22 +16,10 @@ const stateToComputed = (state) => {
   };
 };
 
-const dispatchToActions = (dispatch) => {
-  return {
-    bootstrap() {
-      dispatch(IncidentsCreators.getIncidentsSettings());
-      dispatch(DictionaryActions.getAllPriorityTypes());
-      dispatch(DictionaryActions.getAllStatusTypes());
-      dispatch(DictionaryActions.getAllEnabledUsers());
-      dispatch(DictionaryActions.getAllCategories());
-      dispatch(DictionaryActions.getAllEscalationStatuses());
-    }
-  };
-};
-
 const Incidents = Component.extend({
   classNames: ['rsa-incidents'],
-  columns
+  columns,
+  creators: creators.incidents
 });
 
-export default connect(stateToComputed, dispatchToActions)(Incidents);
+export default connect(stateToComputed)(Incidents);

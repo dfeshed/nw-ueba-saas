@@ -1,7 +1,7 @@
 {{#rsa-explorer
   columns=columns
-  namespace='alerts'
-  bootstrap=(action 'bootstrap') as |explorer|}}
+  reduxSpace='respond.alerts'
+  creators=creators as |explorer|}}
 
   {{#explorer.toolbar toolbarControlsComponent='rsa-alerts/toolbar-controls' as |toolbar|}}
     {{toolbar.toolbarControls}}

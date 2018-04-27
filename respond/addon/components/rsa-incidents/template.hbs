@@ -1,7 +1,7 @@
 {{#rsa-explorer
+  creators=creators
   columns=columns
-  namespace='incidents'
-  bootstrap=(action 'bootstrap') as |explorer|}}
+  reduxSpace='respond.incidents' as |explorer|}}
 
   {{#explorer.toolbar toolbarControlsComponent='rsa-incidents/toolbar-controls' as |toolbar|}}
     {{toolbar.toolbarControls

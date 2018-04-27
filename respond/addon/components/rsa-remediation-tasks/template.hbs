@@ -1,8 +1,7 @@
 {{#rsa-explorer
   columns=columns
-  namespace='remediation-tasks'
-  bootstrap=(action 'bootstrap')
-  as |explorer|}}
+  reduxSpace='respond.remediationTasks'
+  creators=creators as |explorer|}}
 
   {{#explorer.toolbar toolbarControlsComponent='rsa-remediation-tasks/toolbar-controls' as |toolbar|}}
     {{toolbar.toolbarControls}}

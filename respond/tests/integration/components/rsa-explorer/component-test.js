@@ -6,9 +6,11 @@ import engineResolverFor from '../../../helpers/engine-resolver';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import waitForReduxStateChange from '../../../helpers/redux-async-helpers';
 import remediationTaskCreators from 'respond/actions/creators/remediation-task-creators';
+import { patchReducer } from '../../../helpers/vnext-patch';
 import sinon from 'sinon';
+import Immutable from 'seamless-immutable';
 
-let dispatchSpy, redux;
+let setState, redux;
 
 module('Integration | Component | Explorer', function(hooks) {
   setupRenderingTest(hooks, {
@@ -16,36 +18,27 @@ module('Integration | Component | Explorer', function(hooks) {
   });
 
   hooks.beforeEach(function() {
-    redux = this.owner.lookup('service:redux');
-    dispatchSpy = sinon.spy(redux, 'dispatch');
+    setState = (state = {}) => {
+      const fullState = { respond: { remediationTasks: state } };
+      patchReducer(this, Immutable.from(fullState));
+      redux = this.owner.lookup('service:redux');
+    };
     initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
   });
 
-  hooks.afterEach(function() {
-    dispatchSpy.restore();
-  });
-
   test('The Explorer component renders to the DOM', async function(assert) {
     this.set('columns', []);
-    await render(hbs`{{rsa-explorer columns=columns namespace='remediation-tasks'}}`);
+    this.set('creators', remediationTaskCreators);
+    await render(hbs`{{rsa-explorer columns=columns reduxSpace='respond.remediationTasks' creators=creators}}`);
     assert.equal(findAll('.rsa-respond-explorer').length, 1, 'The Explorer component should be found in the DOM');
-  });
-
-  test('The Explorer initialize/getItems action is dispatched on init', async function(assert) {
-    assert.expect(2);
-    const actionSpy = sinon.spy(remediationTaskCreators, 'getItems');
-    this.set('columns', []);
-    await render(hbs`{{rsa-explorer columns=columns namespace='remediation-tasks'}}`);
-    assert.ok(dispatchSpy.calledOnce);
-    assert.ok(actionSpy.calledOnce);
-    actionSpy.restore();
   });
 
   test('The yielded toolbar component renders to the DOM with block content', async function(assert) {
     this.set('columns', []);
+    this.set('creators', remediationTaskCreators);
     await render(hbs`
-      {{#rsa-explorer columns=columns namespace='remediation-tasks' as |explorer|}}
+      {{#rsa-explorer columns=columns reduxSpace='respond.remediationTasks' creators=creators as |explorer|}}
         {{#explorer.toolbar}}
           <div class="block-content"></div>
         {{/explorer.toolbar}}
@@ -56,8 +49,9 @@ module('Integration | Component | Explorer', function(hooks) {
 
   test('The yielded filters component renders to the DOM with block content', async function(assert) {
     this.set('columns', []);
+    this.set('creators', remediationTaskCreators);
     await render(hbs`
-      {{#rsa-explorer columns=columns namespace='remediation-tasks' as |explorer|}}
+      {{#rsa-explorer columns=columns reduxSpace='respond.remediationTasks' creators=creators as |explorer|}}
         {{#explorer.filters}}
           <div class="block-content"></div>
         {{/explorer.filters}}
@@ -72,8 +66,9 @@ module('Integration | Component | Explorer', function(hooks) {
       field: 'name',
       title: 'respond.remediationTasks.list.name'
     }]);
+    this.set('creators', remediationTaskCreators);
     await render(hbs`
-      {{#rsa-explorer columns=columns namespace='remediation-tasks' as |explorer|}}
+      {{#rsa-explorer columns=columns reduxSpace='respond.remediationTasks' creators=creators as |explorer|}}
         {{#explorer.table}}
 
         {{/explorer.table}}
@@ -87,8 +82,9 @@ module('Integration | Component | Explorer', function(hooks) {
       field: 'name',
       title: 'respond.remediationTasks.list.name'
     }]);
+    this.set('creators', remediationTaskCreators);
     await render(hbs`
-      {{#rsa-explorer columns=columns namespace='remediation-tasks' as |explorer|}}
+      {{#rsa-explorer columns=columns reduxSpace='respond.remediationTasks' creators=creators as |explorer|}}
         {{#explorer.inspector as |inspector| }}
           {{#inspector.inspectorContent}}
             <div class="block-content"></div>
@@ -100,17 +96,9 @@ module('Integration | Component | Explorer', function(hooks) {
     assert.equal(findAll('.rsa-respond-explorer .rsa-explorer-inspector .block-content').length, 1, 'Explorer inspector block content renders');
   });
 
-  test('The Explorer fetches items and stores into state property "items"', async function(assert) {
-    assert.expect(1);
-    this.set('columns', []);
-    const reduxStateChange = waitForReduxStateChange(redux, 'respond.remediationTasks.items');
-    await render(hbs`{{rsa-explorer columns=columns namespace='remediation-tasks'}}`);
-    const items = await reduxStateChange;
-    assert.equal(items.length, 6, 'The explorer has six items in state');
-  });
-
   test('The select all header checkbox adds all items updates isSelectAll in app state', async function(assert) {
     assert.expect(4);
+    setState({ items: [{}, {}, {}] });
     const actionSpy = sinon.spy(remediationTaskCreators, 'toggleSelectAll');
     this.set('columns', [{
       title: 'respond.remediationTasks.list.select',
@@ -119,9 +107,9 @@ module('Integration | Component | Explorer', function(hooks) {
       field: 'selectItem',
       dataType: 'checkbox'
     }]);
-    const reduxStateChange = waitForReduxStateChange(redux, 'respond.remediationTasks.items');
+    this.set('creators', remediationTaskCreators);
     await render(hbs`
-    {{#rsa-explorer columns=columns namespace='remediation-tasks' as |explorer|}}
+    {{#rsa-explorer columns=columns reduxSpace='respond.remediationTasks' creators=creators as |explorer|}}
       {{#explorer.table}}
         {{#if (eq column.dataType 'checkbox') }}
           <label class="rsa-form-checkbox-label {{if (contains item.id explorer.instance.itemsSelected) 'checked'}}">
@@ -135,8 +123,6 @@ module('Integration | Component | Explorer', function(hooks) {
     // Header column should have a checkbox for select all
     assert.equal(findAll(selectAllCheckboxSelector).length, 1, 'Select all column has a checkbox');
 
-    // Wait until the items are added
-    await reduxStateChange;
     // Check the checkbox and expect the isSelectAll state to be true and itemsSelected to have six items in the array
     const selectAll = waitForReduxStateChange(redux, 'respond.remediationTasks.isSelectAll');
     await click(selectAllCheckboxSelector);
@@ -144,7 +130,7 @@ module('Integration | Component | Explorer', function(hooks) {
     const { remediationTasks } = redux.getState().respond;
     assert.ok(actionSpy.calledOnce);
     assert.ok(remediationTasks.isSelectAll);
-    assert.equal(remediationTasks.itemsSelected.length, 6, 'The itemsSelected app state property has a length of 6');
+    assert.equal(remediationTasks.itemsSelected.length, 3, 'The itemsSelected app state property has a length of 6');
     actionSpy.restore();
   });
 
@@ -154,8 +140,9 @@ module('Integration | Component | Explorer', function(hooks) {
       field: 'name',
       title: 'respond.remediationTasks.list.name'
     }]);
+    this.set('creators', remediationTaskCreators);
     await render(hbs`
-      {{#rsa-explorer columns=columns namespace='remediation-tasks' as |explorer|}}
+      {{#rsa-explorer columns=columns reduxSpace='respond.remediationTasks' creators=creators  as |explorer|}}
         {{#explorer.table}}
 
         {{/explorer.table}}

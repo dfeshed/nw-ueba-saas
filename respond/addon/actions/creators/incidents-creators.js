@@ -1,11 +1,38 @@
 import { Incidents, alerts } from '../api';
 import * as ACTION_TYPES from '../types';
-import * as DictionaryCreators from './dictionary-creators';
+import * as dictionaryCreators from './dictionary-creators';
 import { next } from '@ember/runloop';
 import { getRemediationTasksForIncident } from 'respond/actions/creators/remediation-task-creators';
 import RSVP from 'rsvp';
+import { getEnabledUsers } from 'respond/selectors/users';
+import {
+  getPriorityTypes,
+  getStatusTypes,
+  getCategoryTags
+} from 'respond/selectors/dictionaries';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
+
+const initializeIncidents = () => {
+  return (dispatch, getState) => {
+    const state = getState();
+    dispatch(getItems());
+
+    if (!getEnabledUsers(state).length) {
+      dispatch(dictionaryCreators.getAllEnabledUsers());
+    }
+    if (!getPriorityTypes(state).length) {
+      dispatch(dictionaryCreators.getAllPriorityTypes());
+    }
+    if (!getStatusTypes(state).length) {
+      dispatch(dictionaryCreators.getAllStatusTypes());
+    }
+    if (!getCategoryTags(state).length) {
+      dispatch(dictionaryCreators.getAllCategories());
+    }
+    dispatch(dictionaryCreators.getAllEscalationStatuses());
+  };
+};
 
 /**
  * Action creator that dispatches a set of actions for fetching incidents (with or without filters) and sorted by one field.
@@ -322,19 +349,19 @@ const initializeIncident = (incidentId) => {
 
       // If we haven't already fetched users (say, from incidents route), fetch now
       if (!state.respond.users.usersStatus) {
-        dispatch(DictionaryCreators.getAllEnabledUsers());
+        dispatch(dictionaryCreators.getAllEnabledUsers());
       }
       if (!state.respond.dictionaries.priorityTypes.length) {
-        dispatch(DictionaryCreators.getAllPriorityTypes());
+        dispatch(dictionaryCreators.getAllPriorityTypes());
       }
       if (!state.respond.dictionaries.statusTypes.length) {
-        dispatch(DictionaryCreators.getAllStatusTypes());
+        dispatch(dictionaryCreators.getAllStatusTypes());
       }
       if (!state.respond.dictionaries.remediationStatusTypes.length) {
-        dispatch(DictionaryCreators.getAllRemediationStatusTypes());
+        dispatch(dictionaryCreators.getAllRemediationStatusTypes());
       }
       if (!state.respond.dictionaries.milestoneTypes.length) {
-        dispatch(DictionaryCreators.getAllMilestoneTypes());
+        dispatch(dictionaryCreators.getAllMilestoneTypes());
       }
     }
   };
@@ -464,6 +491,7 @@ const toggleSelectLink = (id) => ({ type: ACTION_TYPES.TOGGLE_INCIDENT_SELECTION
 const clearSelection = () => ({ type: ACTION_TYPES.CLEAR_INCIDENT_SELECTION });
 
 export {
+  initializeIncidents,
   escalate,
   getItems,
   updateItem,

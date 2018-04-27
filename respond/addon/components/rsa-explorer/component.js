@@ -2,14 +2,12 @@ import Component from '@ember/component';
 import { isArray } from '@ember/array';
 import { assert } from '@ember/debug';
 import { connect } from 'ember-redux';
-import actionBroker from 'respond/actions/action-creator-broker';
 import { inject as service } from '@ember/service';
-import { camelize } from '@ember/string';
-import { isPresent } from '@ember/utils';
 import { gt, alias, empty } from 'ember-computed-decorators';
 import FLASH_MESSAGE_TYPES from 'respond/utils/flash-message-types';
 import Confirmable from 'respond/mixins/confirmable';
 import Notifications from 'respond/mixins/notifications';
+import { get } from '@ember/object';
 
 /**
  * The Explorer component's redux state will always use the same base set of properties (e.g., items, itemsSelected,
@@ -17,11 +15,10 @@ import Notifications from 'respond/mixins/notifications';
  *
  * Rather than require all parent components to declare their own stateToComputed, which will always be the same for
  * each Explorer implementation, the stateToComputed is baked into the Explorer component itself and utilizes a
- * declared 'namespace' to dynamically find the space in the application state that has all of the required properties.
+ * declared 'reduxSpace' to dynamically find the area in redux state that has all of the required properties.
  *
- * If, for example, the Explorer is declared with the namespace 'remediation-tasks', the stateToComputed will expect
- * to find all Explorer properties at respond.remediationTasks. If the namespace is 'alerts', the stateToComputed will
- * expect to find all Explorer properties at respond.alerts.
+ * If, for example, the Explorer is declared with the reduxSpace 'respond.incidents', the stateToComputed will expect
+ * to find all Explorer properties in redux state at 'respond.incidents.
  *
  * This automatic resolution of state properties therefore means we can define stateToComputed once as part of Explorer,
  * and not at a higher level consumer component.
@@ -29,9 +26,7 @@ import Notifications from 'respond/mixins/notifications';
  * @private
  */
 const stateToComputed = function(state) {
-  const { respond } = state;
-  const namespace = this.get('namespace');
-  const stateSpace = respond[camelize(namespace)] || {};
+  const stateSpace = get(state, this.get('reduxSpace')) || {};
   const itemsFilters = stateSpace.itemsFilters || {};
 
   return {
@@ -55,43 +50,37 @@ const stateToComputed = function(state) {
  * The Explorer has an interface of required methods/actions that are used to define and implement all of the Explorer
  * behaviors (e.g., toggling the filter panel, selecting items, updating filters, sorting, etc.
  *
- * The dispatchToActions function uses the Explorer's namespace to automatically find and execute the
- * redux action creator functions. A simple function called the actionBroker (which is aware of all known creator
- * functions), auto-resolves the proper function to use by doing a lookup with the namespace.
- *
- * Like stateToComputed, this automatic resolution of action creator functions means we can define the dispatchToActions
- * once as part of Explorer and not at a higher level for each and every consumer of the Exploer component.
+ * The dispatchToActions function uses the creators attribute (an object that implements the explorer action-creator
+ * interface) to dispatch all of the expected actions that the explorer component supports.
  * @param dispatch
  * @private
  */
 const dispatchToActions = function(dispatch) {
-  const namespace = this.get('namespace');
-
+  const creators = this.get('creators');
   return {
-    getItems: () => actionBroker(dispatch, namespace, 'getItems'),
-    updateItem: (entityId, fieldName, value, revert = () => {}) => actionBroker(dispatch, namespace, 'updateItem', entityId, fieldName, value, {
+    getItems: () => dispatch(creators.getItems()),
+    updateItem: (entityId, fieldName, value, revert = () => {}) => dispatch(creators.updateItem(entityId, fieldName, value, {
       onSuccess: () => (this.send('showFlashMessage', FLASH_MESSAGE_TYPES.SUCCESS, 'respond.entities.actionMessages.updateSuccess')),
       onFailure: () => {
         revert();
         this.send('showFlashMessage', FLASH_MESSAGE_TYPES.ERROR, 'respond.entities.actionMessages.updateFailure');
       }
-    }),
-    deleteItem: (entityId) => actionBroker(dispatch, namespace, 'deleteItem', entityId, {
+    })),
+    deleteItem: (entityId) => dispatch(creators.deleteItem(entityId, {
       onSuccess: () => (this.send('showFlashMessage', FLASH_MESSAGE_TYPES.SUCCESS, 'respond.entities.actionMessages.updateSuccess')),
       onFailure: () => (this.send('showFlashMessage', FLASH_MESSAGE_TYPES.ERROR, 'respond.entities.actionMessages.updateFailure'))
-    }),
-    toggleFilterPanel: () => actionBroker(dispatch, namespace, 'toggleFilterPanel'),
-    updateFilter: (change) => actionBroker(dispatch, namespace, 'updateFilter', change),
-    resetFilters: () => actionBroker(dispatch, namespace, 'resetFilters'),
-    toggleCustomDate: () => actionBroker(dispatch, namespace, 'toggleCustomDateRestriction'),
-    select: (item) => actionBroker(dispatch, namespace, 'toggleItemSelected', item.id),
-    focus: (item) => actionBroker(dispatch, namespace, 'toggleFocusItem', item),
-    clearFocusItem: () => actionBroker(dispatch, namespace, 'clearFocusItem'),
-    toggleSelectAll: () => actionBroker(dispatch, namespace, 'toggleSelectAll'),
-    sortBy: (sortField, isSortDescending) => actionBroker(dispatch, namespace, 'sortBy', sortField, isSortDescending)
+    })),
+    toggleFilterPanel: () => dispatch(creators.toggleFilterPanel()),
+    updateFilter: (change) => dispatch(creators.updateFilter(change)),
+    resetFilters: () => dispatch(creators.resetFilters()),
+    toggleCustomDate: () => dispatch(creators.toggleCustomDateRestriction()),
+    select: (item) => dispatch(creators.toggleItemSelected(item.id)),
+    focus: (item) => dispatch(creators.toggleFocusItem(item)),
+    clearFocusItem: () => dispatch(creators.clearFocusItem()),
+    toggleSelectAll: () => dispatch(creators.toggleSelectAll()),
+    sortBy: (sortField, isSortDescending) => dispatch(creators.sortBy(sortField, isSortDescending))
   };
 };
-
 
 /**
  * The Explorer is a high-level component that consists of a layout containing the following child components:
@@ -115,23 +104,22 @@ const Explorer = Component.extend(Notifications, Confirmable, {
   redux: service(),
 
   /**
-   * Each instance of an explorer can use a different namespace, which helps the component resolve the associated
-   * action creators via the action-creator-broker, as well as the place in app state that holds all of related
-   * properties
-   * @property namespace
+   * Each instance of an explorer can use a different reduxSpace, which helps resolve the redux app state that holds
+   * all of related properties
+   * @property reduxSpace
    * @type {string}
    * @public
    */
-  namespace: '',
+  reduxSpace: '',
+
+  creators: null,
 
   onInit: function() {
     const columns = this.get('columns');
+    const creators = this.get('creators');
     assert('A "columns" attribute referencing an array must be passed to the Explorer to define the columns in the ' +
       'Explorer list', columns && isArray(columns));
-    assert('A namespace attribute must be provied', isPresent(this.get('namespace')));
-    this.sendAction('bootstrap');
-    this.send('getItems');
-
+    assert('A "creators" attribute must be provided that contains all of the explorer interface functions', creators);
   }.on('init'),
 
   /**

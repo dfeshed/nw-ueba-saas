@@ -1,7 +1,34 @@
 import { RemediationTasks } from '../api';
 import * as ACTION_TYPES from '../types';
+import * as dictionaryCreators from './dictionary-creators';
+import { getAllUsers } from 'respond/selectors/users';
+import {
+  getPriorityTypes,
+  getRemediationStatusTypes,
+  getRemediationTypes
+} from 'respond/selectors/dictionaries';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
+
+const initializeTasks = () => {
+  return (dispatch, getState) => {
+    const state = getState();
+    dispatch(getItems());
+
+    if (!getAllUsers(state).length) {
+      dispatch(dictionaryCreators.getAllUsers());
+    }
+    if (!getPriorityTypes(state).length) {
+      dispatch(dictionaryCreators.getAllPriorityTypes());
+    }
+    if (!getRemediationStatusTypes(state).length) {
+      dispatch(dictionaryCreators.getAllRemediationStatusTypes());
+    }
+    if (!getRemediationTypes(state).length) {
+      dispatch(dictionaryCreators.getAllRemediationTypes());
+    }
+  };
+};
 
 /**
  * Action creator that dispatches a set of actions for fetching remediation tasks (with or without filters) and sorted by one field.
@@ -184,6 +211,7 @@ const sortBy = (sortField, isSortDescending) => {
 const toggleFilterPanel = () => ({ type: ACTION_TYPES.TOGGLE_FILTER_PANEL_REMEDIATION_TASKS });
 
 export {
+  initializeTasks,
   getItems,
   updateItem,
   deleteItem,
