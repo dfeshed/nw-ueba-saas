@@ -64,7 +64,7 @@ export default Component.extend({
   _isInputEmpty: (input) => {
     const trimmedInput = input.trim();
     const isEmpty = trimmedInput.length === 0;
-    const hasEmptyQuotes = trimmedInput.match(/^['"]\s*['"]$/);
+    const hasEmptyQuotes = trimmedInput.match(/^['"]\s*['"]$|^['"]$/);
     return isEmpty || (hasEmptyQuotes && hasEmptyQuotes.length > 0);
   }
 });

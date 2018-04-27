@@ -19,6 +19,8 @@ module('Unit | Component | Pill Value', function(hooks) {
     assert.ok(comp._isInputEmpty('  ""   '), 'Double quotes with padding should be empty');
     assert.ok(comp._isInputEmpty('  \'   \'  '), 'Single quoted spaces with padding should be empty');
     assert.ok(comp._isInputEmpty('  "   "  '), 'Double quoted spaces with padding should be empty');
+    assert.ok(comp._isInputEmpty('\''), 'Text with one single quote should be empty');
+    assert.ok(comp._isInputEmpty('"'), 'Text with one double quote should  be empty');
     assert.notOk(comp._isInputEmpty('foo'), 'Text should not be empty');
     assert.notOk(comp._isInputEmpty('\'foo\''), 'Single quoted text should not be empty');
     assert.notOk(comp._isInputEmpty('"foo"'), 'Double quoted text should not be empty');
@@ -28,6 +30,5 @@ module('Unit | Component | Pill Value', function(hooks) {
     assert.notOk(comp._isInputEmpty('foo\'bar'), 'Text with inner single quote should not be empty');
     assert.notOk(comp._isInputEmpty('foo"bar'), 'Text with inner double quote should not be empty');
     assert.notOk(comp._isInputEmpty('foo\'bar\'baz'), 'Text with inner single quotes should not be empty');
-    assert.notOk(comp._isInputEmpty('foo"bar"baz'), 'Text with inner double quotes should not be empty');
   });
 });
