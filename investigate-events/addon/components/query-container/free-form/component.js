@@ -21,13 +21,7 @@ const freeForm = Component.extend({
     // transform the pills(if present) to raw text
     if (this.get('filters')) {
       const filters = this.get('filters').slice();
-      let guidedFiltersString;
-      if (filters.length > 1) {
-        filters.pop(); // remove the empty object
-        guidedFiltersString = encodeMetaFilterConditions(filters);
-      } else {
-        guidedFiltersString = encodeMetaFilterConditions(filters).trim();
-      }
+      const guidedFiltersString = encodeMetaFilterConditions(filters).replace(/(&&\s*)*$/g, '').trim();
       this.send('setFreeFormText', guidedFiltersString);
     }
 
