@@ -111,9 +111,8 @@ export const setReconClosed = () => ({
 
 export const setQueryView = (view, filters = []) => {
   return (dispatch) => {
-    if (filters && filters.length > 0) {
-      let rawText = encodeMetaFilterConditions(filters);
-      rawText = rawText.replace(/(&&\s)$.*/g, '').trim(); // remove && from the end
+    if (filters) {
+      const rawText = encodeMetaFilterConditions(filters).replace(/(&&\s*)$.*/g, '').trim(); // remove && from the end
       dispatch(setFreeFormText(rawText));
     }
     dispatch(toggleFocusFlag(true));

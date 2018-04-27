@@ -22,7 +22,7 @@ const conditions = [{
 }, {
   meta: 'foo',
   operator: 'exists',
-  value: 'bar'
+  value: ''
 }, {
   meta: 'foo',
   operator: 'begins',
@@ -68,7 +68,7 @@ test('encodeMetaFilterConditions correctly encodes conditions', function(assert)
   assert.expect(1);
   const result = encodeMetaFilterConditions(conditions);
 
-  assert.equal(result, 'foo=bar && foo exists && foo begins \'//\'');
+  assert.equal(result, 'foo = bar && foo exists  && foo begins \'//\'');
 });
 
 test('encodeMetaFilterConditions correctly encodes complex filters', function(assert) {
@@ -82,7 +82,7 @@ test('encodeMetaFilterConditions returns empty string when properties are undefi
   assert.expect(1);
   const result = encodeMetaFilterConditions(filters);
 
-  assert.equal(result, 'foo');
+  assert.equal(result, 'foo  ');
 });
 
 test('uriEncodeFreeFormText encodes text correctly', function(assert) {

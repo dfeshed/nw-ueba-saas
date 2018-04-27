@@ -154,14 +154,7 @@ export const encodeMetaFilterConditions = (conditions = []) => {
       if (complexFilter) {
         return `(${complexFilter})`;
       } else {
-        if (['contains', 'ends', 'begins'].includes(operator)) {
-          return `${meta} ${operator} ${value}`;
-        } else if (['!exists', 'exists'].includes(operator)) {
-          return `${meta} ${operator}`;
-        } else {
-          return `${(meta) ? meta : ''}${(operator) ? operator : ''}${(value) ? value : ''}`;
-
-        }
+        return `${(meta) ? meta.trim() : ''} ${(operator) ? operator.trim() : ''} ${(value) ? value.trim() : ''}`;
       }
     })
     .join(' && ');
