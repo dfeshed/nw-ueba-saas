@@ -1,42 +1,45 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
-import engineResolverFor from '../../../helpers/engine-resolver';
-import { applyPatch, revertPatch } from '../../../helpers/patch-reducer';
+import engineResolver from '../../../helpers/engine-resolver';
+import { findAll, render } from '@ember/test-helpers';
+import { patchReducer } from '../../../helpers/vnext-patch';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import Immutable from 'seamless-immutable';
 
 let setState;
-moduleForComponent('host-container', 'Integration | Component | host container', {
-  integration: true,
-  resolver: engineResolverFor('investigate-hosts'),
-  beforeEach() {
-    this.registry.injection('component', 'i18n', 'service:i18n');
+
+module('Integration | Component | host-container', function(hooks) {
+  setupRenderingTest(hooks, {
+    resolver: engineResolver('investigate-hosts')
+  });
+  hooks.beforeEach(function() {
     setState = (state) => {
-      applyPatch(state);
-      this.inject.service('redux');
+      patchReducer(this, Immutable.from(state));
     };
-  },
-  afterEach() {
-    revertPatch();
-  }
-});
+    initialize(this.owner);
+    this.owner.inject('component', 'i18n', 'service:i18n');
+  });
 
-test('it renders host container', function(assert) {
-  this.render(hbs`{{host-container}}`);
-  assert.equal(this.$('.host-container').length, 1, 'host container rendered');
-});
+  test('it renders host container', async function(assert) {
+    await render(hbs`{{host-container}}`);
+    assert.equal(findAll('.host-container').length, 1, 'host container rendered');
+  });
 
-test('it renders host container detail', function(assert) {
-  new ReduxDataHelper(setState)
-    .hasMachineId(true)
-    .build();
-  this.render(hbs`{{host-container}}`);
-  assert.equal(this.$('.host-container-detail').length, 1, 'host container detail rendered');
-});
+  test('it renders host container detail', async function(assert) {
+    new ReduxDataHelper(setState)
+      .hasMachineId(true)
+      .build();
+    await render(hbs`{{host-container}}`);
+    assert.equal(findAll('.host-container-detail').length, 1, 'host container detail rendered');
+  });
 
-test('it renders host container list', function(assert) {
-  new ReduxDataHelper(setState)
-    .hasMachineId(false)
-    .build();
-  this.render(hbs`{{host-container}}`);
-  assert.equal(this.$('.host-container-list').length, 1, 'host container list rendered');
+  test('it renders host container list', async function(assert) {
+    new ReduxDataHelper(setState)
+      .hasMachineId(false)
+      .build();
+    await render(hbs`{{host-container}}`);
+    assert.equal(findAll('.host-container-list').length, 1, 'host container list rendered');
+  });
 });

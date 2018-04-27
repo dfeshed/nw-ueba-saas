@@ -1,44 +1,46 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
+import { find, findAll, render } from '@ember/test-helpers';
 import ReduxDataHelper from '../../../../../../helpers/redux-data-helper';
-import engineResolverFor from '../../../../../../helpers/engine-resolver';
-import { applyPatch, revertPatch } from '../../../../../../helpers/patch-reducer';
+import engineResolver from '../../../../../../helpers/engine-resolver';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import { patchReducer } from '../../../../../../helpers/vnext-patch';
+
+import Immutable from 'seamless-immutable';
 
 let setState;
-moduleForComponent('host-list/host-table/action-bar/export-button', 'Integration | Component | host table action bar export button', {
-  integration: true,
-  resolver: engineResolverFor('investigate-hosts'),
-  beforeEach() {
-    this.registry.injection('component', 'i18n', 'service:i18n');
+module('Integration | Component | host-list/host-table/action-bar/export-button', function(hooks) {
+  setupRenderingTest(hooks, {
+    resolver: engineResolver('investigate-hosts')
+  });
+  hooks.beforeEach(function() {
     setState = (state) => {
-      applyPatch(state);
-      this.inject.service('redux');
+      patchReducer(this, Immutable.from(state));
     };
-  },
-  afterEach() {
-    revertPatch();
-  }
-});
+    initialize(this.owner);
+    this.owner.inject('component', 'i18n', 'service:i18n');
+  });
+  test('it renders host table action bar export button', async function(assert) {
+    await render(hbs`{{host-list/host-table/action-bar/export-button}}`);
+    assert.equal(findAll('.rsa-form-button-wrapper').length, 1, 'export button is rendered');
+  });
 
-test('it renders host table action bar export button', function(assert) {
-  this.render(hbs`{{host-list/host-table/action-bar/export-button}}`);
-  assert.equal(this.$('.rsa-form-button-wrapper').length, 1, 'export button is rendered');
-});
+  test('it renders host table action bar export button when exportStatus is streaming', async function(assert) {
+    new ReduxDataHelper(setState)
+      .hostExportStatus('streaming')
+      .build();
+    await render(hbs`{{host-list/host-table/action-bar/export-button}}`);
+    assert.equal(findAll('.rsa-form-button-wrapper button .rsa-loader').length, 1, 'loader is rendered');
+    assert.equal(find('.rsa-form-button-wrapper button').textContent.trim(), 'Downloading', 'downloading export button is rendered');
+  });
 
-test('it renders host table action bar export button when exportStatus is streaming', function(assert) {
-  new ReduxDataHelper(setState)
-    .hostExportStatus('streaming')
-    .build();
-  this.render(hbs`{{host-list/host-table/action-bar/export-button}}`);
-  assert.equal(this.$('.rsa-form-button-wrapper button .rsa-loader').length, 1, 'loader is rendered');
-  assert.equal(this.$('.rsa-form-button-wrapper button')[0].innerText.trim(), 'Downloading', 'downloading export button is rendered');
-});
-
-test('it renders host table action bar export button when exportStatus is completed', function(assert) {
-  new ReduxDataHelper(setState)
-    .hostExportStatus('completed')
-    .build();
-  this.render(hbs`{{host-list/host-table/action-bar/export-button}}`);
-  assert.equal(this.$('.rsa-form-button-wrapper button .rsa-loader').length, 0, 'loader is not present');
-  assert.equal(this.$('.rsa-form-button-wrapper button')[0].innerText.trim(), 'Export to CSV', 'default export button is rendered');
+  test('it renders host table action bar export button when exportStatus is completed', async function(assert) {
+    new ReduxDataHelper(setState)
+      .hostExportStatus('completed')
+      .build();
+    await render(hbs`{{host-list/host-table/action-bar/export-button}}`);
+    assert.equal(findAll('.rsa-form-button-wrapper button .rsa-loader').length, 0, 'loader is not present');
+    assert.equal(find('.rsa-form-button-wrapper button').textContent.trim(), 'Export to CSV', 'default export button is rendered');
+  });
 });
