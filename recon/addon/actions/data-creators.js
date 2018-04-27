@@ -14,6 +14,7 @@ import { warn } from 'ember-debug';
 
 import * as ACTION_TYPES from './types';
 import { createToggleActionCreator } from './visual-creators';
+import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 import {
   eventTypeFromMetaArray,
   isEndpointEvent,
@@ -364,8 +365,8 @@ const initializeRecon = (reconInputs) => {
         promise: fetchReconSummary(reconInputs),
         meta: {
           onFailure(response) {
-            dispatch(_checkForFatalApiError(response.code));
-            warn('Could not retrieve event summary', { id: 'recon.actions.data-creators' });
+            const { errorCode } = handleInvestigateErrorCode(response);
+            dispatch(_checkForFatalApiError(errorCode));
           }
         }
       });

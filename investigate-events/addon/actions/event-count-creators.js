@@ -1,9 +1,6 @@
 import fetchCount from './fetch/event-count';
 import * as ACTION_TYPES from './types';
-
-const {
-  log
-} = console;
+import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 
 /**
  * Creates a thunk to retrieve the count of events for a given query.
@@ -20,7 +17,7 @@ export default function getEventCount() {
       promise: fetchCount(serviceId, startTime, endTime, metaFilter.conditions, language, threshold),
       meta: {
         onFailure(response) {
-          log('GET_EVENT_COUNT', response);
+          handleInvestigateErrorCode(response, 'GET_EVENT_COUNT');
         }
       }
     });

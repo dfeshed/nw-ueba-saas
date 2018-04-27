@@ -2,16 +2,16 @@ import fetchStreamingEvents from './fetch/events';
 import { fetchLog } from './fetch/logs';
 import * as ACTION_TYPES from './types';
 import { getActiveQueryNode } from 'investigate-events/reducers/investigate/query-node/selectors';
+import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 
 // Common functions.
 const commonHandlers = function(dispatch) {
   return {
     onError(response = {}) {
-      const { code, meta } = response;
-      const message = (meta) ? meta.message : undefined;
+      const { errorCode, serverMessage } = handleInvestigateErrorCode(response);
       dispatch({
         type: ACTION_TYPES.SET_EVENTS_PAGE_ERROR,
-        payload: { status: 'error', reason: code, message }
+        payload: { status: 'error', reason: errorCode, message: serverMessage }
       });
     },
     onCompleted() {

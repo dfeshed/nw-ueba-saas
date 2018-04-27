@@ -4,6 +4,7 @@ import formatUtil from './format-util';
 import { isLogEvent } from 'component-lib/utils/log-utils';
 import { select } from 'd3-selection';
 import { lookup } from 'ember-dependency-lookup';
+import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 
 const RESERVED_KEYS = [ 'eth.src', 'eth.dst', 'ip.src', 'ipv6.src', 'ip.dst', 'ipv6.dst', 'tcp.srcport', 'tcp.dstport', 'udp.srcport', 'udp.dstport', 'session.split'];
 const RESERVED_KEY_HASH = {};
@@ -312,11 +313,7 @@ function buildLogContent(item) {
       text = lookup('service:i18n').t('investigate.generic.loading');
       break;
     case 'rejected':
-      if (item.errorCode === 129) {
-        text = lookup('service:i18n').t('investigate.generic.rolledOut');
-      } else {
-        text = lookup('service:i18n').t('investigate.generic.rejected');
-      }
+      text = lookup('service:i18n').t(handleInvestigateErrorCode(item).messageLocaleKey);
       break;
     default:
       tooltip = data;

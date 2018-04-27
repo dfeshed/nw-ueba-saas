@@ -752,6 +752,7 @@ const QueryFragmentComponent = Component.extend({
               });
 
               this._prevalidation();
+
               if (this.get('validateWithServer') && !this.get('queryFragmentInvalid')) {
                 this.send('validateIndividualQuery', this.get('filter'), this._validateComplete.bind(this));
               }

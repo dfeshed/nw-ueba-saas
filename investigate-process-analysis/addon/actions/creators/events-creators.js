@@ -1,6 +1,7 @@
 import fetchStreamingEvents from 'investigate-shared/actions/api/investigate-events/events';
 import * as ACTION_TYPES from 'investigate-process-analysis/actions/types';
 import _ from 'lodash';
+import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 
 const callbacksDefault = { onComplete() {} };
 
@@ -8,11 +9,10 @@ const callbacksDefault = { onComplete() {} };
 const commonHandlers = function(dispatch, callbacks) {
   return {
     onError(response = {}) {
-      const { meta } = response;
-      const message = (meta) ? meta.message : undefined;
+      const errorObj = handleInvestigateErrorCode(response);
       dispatch({
         type: ACTION_TYPES.SET_EVENTS_PAGE_ERROR,
-        payload: { error: message, streaming: false }
+        payload: { error: errorObj.serverMessage, streaming: false }
       });
     },
     onCompleted() {

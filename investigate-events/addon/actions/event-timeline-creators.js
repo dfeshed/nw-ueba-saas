@@ -1,9 +1,6 @@
 import fetchTimeline from './fetch/event-timeline';
 import * as ACTION_TYPES from './types';
-
-const {
-  log
-} = console;
+import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 
 /**
  * Creates a thunk to retrieve the event timeline for a given query.
@@ -19,7 +16,7 @@ export default function getEventTimeline() {
       promise: fetchTimeline(serviceId, startTime, endTime, metaFilter.conditions, language),
       meta: {
         onFailure(response) {
-          log('GET_EVENT_TIMELINE', response);
+          handleInvestigateErrorCode(response, 'GET_EVENT_TIMELINE');
         }
       }
     });
