@@ -1,9 +1,10 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from '../../../../helpers/engine-resolver';
-import $ from 'jquery';
+import { setupRenderingTest } from 'ember-qunit';
+import { click, render, find, findAll, fillIn } from '@ember/test-helpers';
+
 import { patchSocket } from '../../../../helpers/patch-socket';
-import wait from 'ember-test-helpers/wait';
 
 const configValue = {
   'propertyName': 'firstFileName',
@@ -12,108 +13,96 @@ const configValue = {
   'selected': true
 };
 
-moduleForComponent('content-filter/text-filter', 'Integration | Component | content filter/text filter', {
-  integration: true,
-  resolver: engineResolverFor('investigate-files'),
-  beforeEach() {
-    this.registry.injection('component', 'i18n', 'service:i18n');
-    this.set('config', configValue);
-  }
-});
-
-test('Text-filter button renders', function(assert) {
-  this.render(hbs`{{content-filter/text-filter config=config}}`);
-  const textFilterComponent = this.$().find('.text-filter');
-  assert.equal(this.$(textFilterComponent).length, 1);
-});
-
-test('Text-filter click on the tirgger filter', function(assert) {
-  this.render(hbs`{{content-filter/text-filter config=config}}`);
-  this.$('.filter-trigger-button').trigger('click');
-  return wait().then(() => {
-    assert.equal($('.text-filter__content').length, 1);
+module('content-filter/text-filter', 'Integration | Component | content filter/text filter', function(hooks) {
+  setupRenderingTest(hooks, {
+    resolver: engineResolverFor('investigate-files')
   });
-});
 
-test('Text-filter validating invalid text entered', function(assert) {
-  this.render(hbs`{{content-filter/text-filter config=config}}`);
-  this.$('.filter-trigger-button').trigger('click');
-  return wait().then(() => {
-    $('.ember-text-field').val('').change();
-    $('.rsa-form-button')[1].click();
-    return wait().then(() => {
-      const textIndex = $('.input-error').text().indexOf('Invalid');
-      assert.notEqual(textIndex, -1, 'Update text filter with empty value validated');
-    });
+  hooks.beforeEach(function() {
+    this.owner.inject('component', 'i18n', 'service:i18n');
   });
-});
 
-test('Text-filter validating 257 characters text entered', function(assert) {
-  this.render(hbs`{{content-filter/text-filter config=config}}`);
-  this.$('.filter-trigger-button').trigger('click');
-  return wait().then(() => {
+  test('Text-filter button renders', async function(assert) {
+    this.set('config', { ...configValue });
+    await render(hbs`{{content-filter/text-filter config=config}}`);
+    await click('.filter-trigger-button');
+    assert.equal(findAll('.text-filter').length, 1);
+  });
+
+  test('Text-filter click on the tirgger filter', async function(assert) {
+    this.set('config', { ...configValue });
+    await render(hbs`{{content-filter/text-filter config=config}}`);
+    await click('.filter-trigger-button');
+    assert.equal(findAll('.text-filter__content').length, 1);
+  });
+
+  test('Text-filter validating invalid text entered', async function(assert) {
+    this.set('config', { ...configValue });
+    await render(hbs`{{content-filter/text-filter config=config}}`);
+    await click('.filter-trigger-button');
+
+    document.querySelector('.ember-text-field').value = '';
+    await click('.footer .rsa-form-button');
+    const textIndex = find('.input-error').textContent.trim().indexOf('Invalid');
+    assert.notEqual(textIndex, -1, 'Update text filter with empty value validated');
+  });
+
+  test('Text-filter validating 257 characters text entered', async function(assert) {
+    this.set('config', { ...configValue });
+    await render(hbs`{{content-filter/text-filter config=config}}`);
+    await click('.filter-trigger-button');
     const char257 = `The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown
     fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
     The quick brown fox jumps over the lazy dog`;
 
-    $('.ember-text-field').val(char257).change();
-    $('.rsa-form-button')[1].click();
-    return wait().then(() => {
-      const textIndex = $('.input-error').text().indexOf('Filter input longer than 256 characters');
-      assert.notEqual(textIndex, -1, 'Update text filter with 257 characters validated');
-    });
+    await fillIn('.ember-text-field', char257);
+    await click(findAll('.rsa-form-button')[1]);
+    const textIndex = find('.input-error').textContent.trim().indexOf('Filter input longer than 256 characters');
+    assert.notEqual(textIndex, -1, 'Update text filter with 257 characters validated');
   });
-});
 
-test('Text-filter validating invalid charecters text entered', function(assert) {
-  this.render(hbs`{{content-filter/text-filter config=config}}`);
-  this.$('.filter-trigger-button').trigger('click');
-  return wait().then(() => {
+  test('Text-filter validating invalid charecters text entered', async function(assert) {
+    this.set('config', { ...configValue });
+    await render(hbs`{{content-filter/text-filter config=config}}`);
+    await click('.filter-trigger-button');
     const fileName = 'file123❄@Name';
 
-    $('.ember-text-field').val(fileName).change();
-    $('.rsa-form-button')[1].click();
-    return wait().then(() => {
-      const textIndex = $('.input-error').text().indexOf('Can contain alphanumeric or special characters');
-      assert.notEqual(textIndex, -1, 'Text filter can contain alphanumeric or special characters');
-    });
+    await fillIn('.ember-text-field', fileName);
+    await click(findAll('.rsa-form-button')[1]);
+    const textIndex = find('.input-error').textContent.trim().indexOf('Can contain alphanumeric or special characters');
+    assert.notEqual(textIndex, -1, 'Text filter can contain alphanumeric or special characters');
   });
-});
 
-test('Text-filter request query test', function(assert) {
+  test('Text-filter request query test', async function(assert) {
 
-  assert.expect(2);
+    assert.expect(2);
+    this.set('config', { ...configValue });
+    await render(hbs`{{content-filter/text-filter config=config}}`);
+    await click('.filter-trigger-button');
 
-  this.render(hbs`{{content-filter/text-filter config=config}}`);
-  this.$('.filter-trigger-button').trigger('click');
+    patchSocket((method, model, query) => {
+      assert.equal(method, 'search');
+      assert.deepEqual(query.data.criteria.expressionList, [{
+        propertyName: 'firstFileName',
+        propertyValues: [{ value: 'app' }],
+        restrictionType: 'LIKE'
+      }]);
+    });
+    await fillIn('.ember-text-field', 'app');
+    await click('.footer button');
+  });
 
-  patchSocket((method, model, query) => {
-    assert.equal(method, 'search');
-    assert.deepEqual(query.data.criteria.expressionList, [{
+  test('Text-filter updating filter label', async function(assert) {
+
+    assert.expect(1);
+
+    const expression = {
       propertyName: 'firstFileName',
       propertyValues: [{ value: 'app' }],
       restrictionType: 'LIKE'
-    }]);
-  });
-  return wait().then(() => {
-    $('.ember-text-field').val('app').change();
-    $('.footer button').trigger('click');
-  });
-});
-
-test('Text-filter updating filter label', function(assert) {
-
-  assert.expect(1);
-
-  const expression = {
-    propertyName: 'firstFileName',
-    propertyValues: [{ value: 'app' }],
-    restrictionType: 'LIKE'
-  };
-
-  this.set('config', { ...configValue, expression });
-  this.render(hbs`{{content-filter/text-filter config=config}}`);
-  return wait().then(() => {
-    assert.equal(this.$('.filter-trigger-button span').text().trim(), 'FileName: Contains app', 'Filter label text displayed according to filter value');
+    };
+    this.set('config', { ...configValue, expression });
+    await render(hbs`{{content-filter/text-filter config=config}}`);
+    assert.equal(find('.filter-trigger-button span').textContent.trim(), 'FileName: Contains app', 'Filter label text displayed according to filter value');
   });
 });

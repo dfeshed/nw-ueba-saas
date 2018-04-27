@@ -23,10 +23,10 @@
         {{/power-select}}
       </div>
       {{#if (eq restrictionType.type 'BETWEEN')}}
-        <div class='number-filter__body__input col-xs-3'>
+        <div class='number-filter__body__input between_input_start col-xs-3'>
           {{rsa-form-input type='number' value=start keyPress=(action 'keyDown')}}
         </div>
-        <div class='number-filter__body__input col-xs-3'>
+        <div class='number-filter__body__input between_input_end col-xs-3'>
           {{rsa-form-input type='number' value=end keyPress=(action 'keyDown')}}
         </div>
       {{else}}
@@ -39,7 +39,7 @@
       <hbox>
         <div class='rsa-form-radio-group body__radio'>
           {{#each units as |type|}}
-            <label class="rsa-form-radio-label {{if (eq type selectedUnit) 'checked'}}">
+            <label class="rsa-form-radio-label {{type}} {{if (eq type selectedUnit) 'checked'}}">
               {{radio-button
                 value=type
                 groupValue=selectedUnit}}

@@ -1,36 +1,32 @@
-import { moduleForComponent, test } from 'ember-qunit';
-import hbs from 'htmlbars-inline-precompile';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from '../../../../helpers/engine-resolver';
-import wait from 'ember-test-helpers/wait';
+import { render, find, findAll } from '@ember/test-helpers';
+import hbs from 'htmlbars-inline-precompile';
 
-moduleForComponent('contet-filter/filter-trigger', 'Integration | Component | filter trigger', {
-  integration: true,
-  resolver: engineResolverFor('investigate-files'),
-  beforeEach() {
-    this.registry.injection('component', 'i18n', 'service:i18n');
-  }
-});
-
-test('it should render the button with passed label', function(assert) {
-
-  this.set('filterLabel', 'size');
-
-  this.render(hbs`{{content-filter/filter-trigger filterLabel=filterLabel}}`);
-
-  return wait().then(() => {
-    assert.equal(this.$('.filter-label').text().trim(), 'size');
+module('contet-filter/filter-trigger', 'Integration | Component | filter trigger', function(hooks) {
+  setupRenderingTest(hooks, {
+    resolver: engineResolverFor('investigate-files')
   });
-});
 
-test('it should show remove button', function(assert) {
+  hooks.beforeEach(function() {
+    this.owner.inject('component', 'i18n', 'service:i18n');
+  });
 
-  this.setProperties({ filterLabel: 'size', showRemoveButton: true, removeAction: () => {} });
+  test('it should render the button with passed label', async function(assert) {
 
-  this.render(hbs`{{content-filter/filter-trigger filterLabel=filterLabel showRemoveButton=showRemoveButton removeAction=removeAction}}`);
+    this.set('filterLabel', 'size');
 
-  return wait().then(() => {
-    assert.equal(this.$('.filter-label').text().trim(), 'size');
-    const $icon = this.$('.rsa-icon-remove-circle-2-filled');
-    assert.ok($icon.length, 'Expected to find close icon in DOM.');
+    await render(hbs`{{content-filter/filter-trigger filterLabel=filterLabel}}`);
+    assert.equal(find('.filter-label').textContent.trim(), 'size');
+  });
+
+  test('it should show remove button', async function(assert) {
+
+    this.setProperties({ filterLabel: 'size', showRemoveButton: true, removeAction: () => {} });
+
+    await render(hbs`{{content-filter/filter-trigger filterLabel=filterLabel showRemoveButton=showRemoveButton removeAction=removeAction}}`);
+    assert.equal(find('.filter-label').textContent.trim(), 'size');
+    assert.ok(findAll('.rsa-icon-remove-circle-2-filled').length, 'Expected to find close icon in DOM.');
   });
 });
