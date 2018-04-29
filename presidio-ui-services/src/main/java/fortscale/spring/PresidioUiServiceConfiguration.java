@@ -33,16 +33,6 @@ import java.util.List;
 public class PresidioUiServiceConfiguration {
 
 
-
-    @Value("${spring.cloud.config.uri}")
-    String configurationServerUrl;
-
-    @Value("${spring.cloud.config.username}")
-    String configurationServerUserName;
-
-    @Value("${spring.cloud.config.password}")
-    String configurationServerUserNamePassword;
-
     @Value("${presidio.themes.module.name}")
     String themesModule;
 
@@ -57,16 +47,13 @@ public class PresidioUiServiceConfiguration {
         return new AlertCommentsServiceImpl();
     }
 
-    @Bean
-    ConfigrationServerClientUtils configrationServerClientUtils(){
-        RestTemplate restTemplate = new RestTemplate();
-        return new ConfigrationServerClientUtils(restTemplate,configurationServerUrl,configurationServerUserName,configurationServerUserNamePassword);
-    }
+
     @Bean
     LocalizationService localizationService(){
         MemoryBasedCache memoryBasedCache = new MemoryBasedCache(1000,3600,String.class);
-        return new LocalizationServiceImpl(memoryBasedCache, applicationConfigurationService(),configrationServerClientUtils());
+        return new LocalizationServiceImpl(memoryBasedCache, applicationConfigurationService(),configrationServerClientUtils);
     }
+
 
     @Bean
     AlertsService alertsService(){
@@ -94,7 +81,7 @@ public class PresidioUiServiceConfiguration {
 
     @Bean
     ThemesServiceImpl themesService(){
-        return new ThemesServiceImpl(themesModule,themesProfile,configrationServerClientUtils());
+        return new ThemesServiceImpl(themesModule,themesProfile,configrationServerClientUtils);
     }
 
 
@@ -141,4 +128,6 @@ public class PresidioUiServiceConfiguration {
     private DataEntitiesConfig dataEntitiesConfig;
 
 
+    @Autowired
+    private ConfigrationServerClientUtils configrationServerClientUtils;
 }

@@ -3,6 +3,7 @@ package presidio.ui.presidiouiapp.spring;
 
 import fortscale.services.*;
 
+import fortscale.spring.PresidioUiRemoteConfigurationClientConfiguration;
 import fortscale.spring.PresidioUiServiceConfiguration;
 
 import fortscale.utils.FilteringPropertiesConfigurationHandler;
