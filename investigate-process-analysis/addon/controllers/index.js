@@ -7,6 +7,7 @@ export default Controller.extend({
     'checksum',
     'st', // start time
     'et', // end time
-    'sid' // metaPanelSize
+    'sid',
+    'osType' // metaPanelSize
   ]
 });

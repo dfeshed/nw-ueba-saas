@@ -8,5 +8,11 @@
     {{process-tree-legend}}
   </vbox>
 
-  <vbox xs="3" class="process-list-box"></vbox>
+  <vbox xs="3" class="process-list-box">
+    {{process-property-panel
+      title=(t 'investigateProcessAnalysis.property.title')
+      data=fileProperties
+      config=config
+      localeNameSpace='investigateProcessAnalysis.property.file'}}
+  </vbox>
 {{/if}}

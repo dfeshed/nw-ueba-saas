@@ -2,8 +2,16 @@
 
 const common = require('../../common');
 const processAnalysisConfigGen = function(env) {
+  const endpointSocketUrl = common.determineSocketUrl(env, '/endpoint/socket');
   const eventsSocketURL = common.determineSocketUrl(env, '/investigate/socket');
   return {
+   'endpoint': {
+      socketUrl: endpointSocketUrl,
+      getProcessAnalysisDetails: {
+        subscriptionDestination: '/user/queue/endpoint/file/get',
+        requestDestination: '/ws/endpoint/file/get'
+      }
+    },
     'core-event': {
       socketUrl: eventsSocketURL,
       stream: {

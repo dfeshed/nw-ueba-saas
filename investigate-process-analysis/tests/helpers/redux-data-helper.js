@@ -41,4 +41,8 @@ export default class DataHelper {
     _set(this.state, 'processTree.queryInput', data);
     return this;
   }
+  error(value = false) {
+    _set(this.state, 'processTree.error', value);
+    return this;
+  }
 }

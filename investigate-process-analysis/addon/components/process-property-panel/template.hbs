@@ -1,0 +1,20 @@
+<box fit class="header-section">
+  <hbox fit class="header-section__title">
+    <h2>{{title}}</h2>
+  </hbox>
+</box>
+<box class="content-section">
+  {{!--If block level contents are provided--}}
+  {{#each properties as |property|}}
+    <hbox fit class="content-section__section-name">{{property.sectionName}}</hbox>
+    {{#each property.fields as |field|}}
+      <hbox fit class="content-section__property col-xs-12" align="center">
+        {{process-property-panel/property-name property=field}}
+        {{process-property-panel/property-value property=field}}
+      </hbox>
+    {{/each}}
+    <hr class="divider">
+  {{else}}
+    {{rsa-panel-message message=(t 'investigateHosts.common.emptyMessage')}}
+  {{/each}}
+</box>

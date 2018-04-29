@@ -2817,5 +2817,117 @@ export default {
       renderingGraph: 'Rendering graph...',
       errorTitle: 'Query Error'
     }
+  },
+  investigateProcessAnalysis: {
+    property: {
+      title: 'File Properties',
+      file: {
+        features: 'Features',
+        fileId: 'FileId',
+        id: 'ID',
+        serviceName: 'ServiceName',
+        state: 'State',
+        description: 'Description',
+        type: 'Type',
+        displayName: 'Display Name',
+        win32ErrorCode: 'win32ErrorCode',
+        creatorUser: 'Creator User',
+        executeUser: 'Execute User',
+        companyName: 'Company Name',
+        registryPath: 'Registry Path',
+        launchArguments: 'Launch Arguments',
+        triggerString: 'Trigger String',
+        user: 'User',
+        name: 'Name',
+        status: 'Status',
+        checksumMd5: 'MD5',
+        checksumSha1: 'SHA1',
+        checksumSha256: 'SHA256',
+        machineOsType: 'Operating System',
+        timeCreated: 'Created',
+        timeModified: 'Modified',
+        timeAccessed: 'Accessed',
+        createTime: 'Process Created',
+        pid: 'PID',
+        eprocess: 'EPROCESS',
+        path: 'Full Path',
+        sameDirectoryFileCounts: {
+          nonExe: '# Non-Executables',
+          exe: '# Executables',
+          subFolder: '# Folder',
+          exeSameCompany: '#Same company Executables'
+        },
+        elf: {
+          classType: 'Class Type',
+          data: 'Data',
+          entryPoint: 'Entry Point',
+          features: 'Features',
+          type: 'Type',
+          sectionNames: 'Section Names',
+          importedLibraries: 'Imported Libraries'
+        },
+        pe: {
+          timeStamp: 'Timestamp',
+          imageSize: 'Image Size',
+          numberOfExportedFunctions: 'Exported Functions',
+          numberOfNamesExported: 'Exported Names',
+          numberOfExecuteWriteSections: 'Execute Write Sections',
+          features: 'Features',
+          sectionNames: 'Section Names',
+          importedLibraries: 'Imported Libraries',
+          resources: {
+            originalFileName: 'Filename',
+            company: 'Company',
+            description: 'Description',
+            version: 'Version'
+          }
+        },
+        macho: {
+          uuid: 'Uuid',
+          identifier: 'Identifier',
+          minOsxVersion: 'Osx Version',
+          features: 'Features',
+          flags: 'Flags',
+          numberOfLoadCommands: 'Loaded Commands',
+          version: 'Version',
+          sectionNames: 'Section Names',
+          importedLibraries: 'Imported Libraries'
+        },
+        signature: {
+          timeStamp: 'Timestamp',
+          thumbprint: 'Thumbprint',
+          features: 'Features',
+          signer: 'Signer'
+        },
+        process: {
+          title: 'Process',
+          processName: 'Process Name',
+          eprocess: 'EPROCESS',
+          integrityLevel: 'Integrity',
+          parentPath: 'Parent Path',
+          threadCount: 'Thread Count',
+          owner: 'Owner',
+          sessionId: 'Session ID',
+          createUtcTime: 'Created',
+          imageBase: 'Image Base',
+          imageSize: 'Image Size'
+        },
+        entropy: 'Entropy',
+        firstFileName: 'FileName',
+        fileName: 'FileName',
+        format: 'Format',
+        sectionNames: 'Section Names',
+        importedLibraries: 'Imported Libraries',
+        size: 'Size',
+        imageBase: 'Image Base',
+        imageSize: 'Image Size',
+        loaded: 'Loaded',
+        fileProperties: {
+          entropy: 'Entropy',
+          size: 'Size',
+          format: 'Format'
+        }
+      }
+    }
   }
 };

@@ -1,0 +1,9 @@
+{{#if (eq format 'DATE')}}
+  {{#if text}}
+    {{rsa-content-datetime timestamp=text}}
+  {{/if}}
+{{else if (eq format 'SIZE')}}
+  {{rsa-content-memsize size=text}}
+{{else}}
+  {{text}}
+{{/if}}

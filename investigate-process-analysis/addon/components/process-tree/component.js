@@ -13,6 +13,7 @@ import zoomed from './helpers/zoomed';
 
 import { isStreaming, children, rootProcess } from 'investigate-process-analysis/reducers/process-tree/selectors';
 import { getEvents } from 'investigate-process-analysis/actions/creators/events-creators';
+import { fetchProcessDetails } from 'investigate-process-analysis/actions/data-creators/process-properties';
 
 const stateToComputed = (state) => ({
   rootProcess: rootProcess(state),
@@ -21,7 +22,8 @@ const stateToComputed = (state) => ({
 });
 
 const dispatchToActions = {
-  getEvents
+  getEvents,
+  fetchProcessDetails
 };
 
 
@@ -135,6 +137,9 @@ const TreeComponent = Component.extend({
 
   didReceiveAttrs() {
     this._super(...arguments);
+    if (this.isDestroyed) {
+      return;
+    }
     this.set('rootNode', null);
     // If query input changes then need to re-render the tree
     if (this.get('queryInput')) {
@@ -146,11 +151,17 @@ const TreeComponent = Component.extend({
         root.x0 = 0;
         root.y0 = 0;
 
+        if (this.isDestroyed) {
+          return;
+        }
         this.set('rootNode', root);
 
         this._initializeChart();
       };
       this.send('getEvents', null, { onComplete });
+      const { checksum } = this.get('queryInput');
+      const hashes = [checksum];
+      this.send('fetchProcessDetails', { hashes });
     }
   },
 
@@ -354,6 +365,10 @@ const TreeComponent = Component.extend({
   },
 
   expandProcess(d) {
+    const checksum = d.data.checksum ? d.data.checksum : d.data['checksum.dst'];
+    const hashes = [checksum];
+    this.send('fetchProcessDetails', { hashes });
+
     event.stopImmediatePropagation();
     if (d._children || d.children) {
       d.children = d._children;

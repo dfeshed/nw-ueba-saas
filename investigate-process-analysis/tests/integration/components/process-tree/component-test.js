@@ -28,7 +28,10 @@ module('Integration | Component | process-tree', function(hooks) {
       sid: '1',
       pn: 'test',
       st: 1231233,
-      et: 13123
+      et: 13123,
+      osType: 'windows',
+      checksum: '07d15ddf2eb7be486d01bcabab7ad8df35b7942f25f5261e3c92cd7a8931190a',
+      aid: '51687D32-BB0F-A424-1D64-A8B94C957BD2'
     };
     this.set('queryInput', queryInput);
     new ReduxDataHelper(setState).queryInput(queryInput).build();
@@ -38,14 +41,17 @@ module('Integration | Component | process-tree', function(hooks) {
   });
 
   test('it should expand the node on click', async function(assert) {
-    const queryInput = {
+    const queryInputs = {
       sid: '1',
       pn: 'test',
       st: 1231233,
-      et: 13123
+      et: 13123,
+      osType: 'windows',
+      checksum: '07d15ddf2eb7be486d01bcabab7ad8df35b7942f25f5261e3c92cd7a8931190a',
+      aid: '51687D32-BB0F-A424-1D64-A8B94C957BD2'
     };
-    this.set('queryInput', queryInput);
-    new ReduxDataHelper(setState).queryInput(queryInput).build();
+    this.set('queryInput', queryInputs);
+    new ReduxDataHelper(setState).queryInput(queryInputs).build();
     await render(hbs`{{process-tree queryInput=queryInput}}`);
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
     await selectAll('.process:nth-of-type(2)').dispatch('click');

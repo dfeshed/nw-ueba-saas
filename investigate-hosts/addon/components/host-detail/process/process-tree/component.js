@@ -15,7 +15,8 @@ const stateToComputed = (state) => ({
   serviceList: serviceList(state),
   treeAsList: processTree(state),
   isProcessTreeLoading: state.endpoint.process.isProcessTreeLoading,
-  agentId: state.endpoint.detailsInput.agentId
+  agentId: state.endpoint.detailsInput.agentId,
+  osType: state.endpoint.overview.hostDetails.machine.machineOsType
 });
 
 const TreeComponent = Component.extend({

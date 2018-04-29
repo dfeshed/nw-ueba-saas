@@ -25,6 +25,10 @@ moduleForComponent('host-detail/process/process-tree', 'Integration | Component 
 
 test('Column Names appear in datatable header', function(assert) {
   assert.expect(3);
+  new ReduxDataHelper(setState)
+  .machineOSType('windows')
+  .build();
+
   this.render(hbs`{{host-detail/process/process-tree}}`);
 
   assert.equal(this.$('.rsa-data-table-header .rsa-data-table-header-cell').length, 2, '2 columns in header');
@@ -36,6 +40,7 @@ test('Get the length of visible items in datatable', function(assert) {
   new ReduxDataHelper(setState)
     .processList(processData.processList)
     .processTree(processData.processTree)
+    .machineOSType('windows')
     .selectedTab(null)
     .build();
   this.render(hbs`
@@ -58,6 +63,7 @@ test('Check that row click action is handled', function(assert) {
     .processList(processData.processList)
     .processTree(processData.processTree)
     .selectedTab(null)
+    .machineOSType('windows')
     .build();
   this.render(hbs`
     <style>
@@ -87,18 +93,19 @@ test('Check that row click action is handled', function(assert) {
 });
 
 test('Should apply rsa-loader if process tree is loading', function(assert) {
-  new ReduxDataHelper(setState).isProcessTreeLoading(true).build();
+  new ReduxDataHelper(setState).isProcessTreeLoading(true).machineOSType('windows').build();
   this.render(hbs`{{host-detail/process/process-tree}}`);
   assert.equal(this.$('.rsa-loader').hasClass('is-medium'), true, 'rsa-loader applied when process tree is loading');
 });
 
 test('Should not apply rsa-loader if process tree loading is complete', function(assert) {
-  new ReduxDataHelper(setState).isProcessTreeLoading(false).build();
+  new ReduxDataHelper(setState).isProcessTreeLoading(false).machineOSType('windows').build();
   this.render(hbs`{{host-detail/process/process-tree}}`);
   assert.equal(this.$('.rsa-loader').hasClass('is-medium'), false, 'rsa-loader not applied when process tree loading is complete');
 });
 
 test('Check that no results message rendered if there is no process information', function(assert) {
+  new ReduxDataHelper(setState).machineOSType('windows').build();
   this.render(hbs`{{host-detail/process/process-tree}}`);
   assert.equal(this.$('.rsa-data-table-body').text().trim(), 'No process information were found', 'No process information message rendered');
 });
@@ -109,6 +116,7 @@ test('Renders number of process-names, its leaf nodes & non-leaf nodes', functio
     .processList(processData.processList)
     .processTree(processData.processTree)
     .selectedTab(null)
+    .machineOSType('windows')
     .build();
   this.render(hbs`
     <style>
@@ -132,6 +140,7 @@ test('Style property of process name is computed correctly for different levels 
     .processList(processData.processList)
     .processTree(processData.processTree)
     .selectedTab(null)
+    .machineOSType('windows')
     .build();
   this.render(hbs`
     <style>
@@ -155,6 +164,7 @@ test('Check that toggle expand action is called', function(assert) {
     .processList(processData.processList)
     .processTree(processData.processTree)
     .selectedTab(null)
+    .machineOSType('windows')
     .build();
   this.render(hbs`
     <style>

@@ -33,6 +33,7 @@ test('it renders data when isProcessDataEmpty is true', function(assert) {
   new ReduxDataHelper(setState)
     .processList([])
     .processTree([])
+    .machineOSType('windows')
     .build();
   // set height to get all lazy rendered items on the page
   this.render(hbs`
@@ -51,6 +52,7 @@ test('it renders data when isProcessDataEmpty is false', function(assert) {
     .processList(processList)
     .processTree(processTree)
     .processDetails(processDetails)
+    .machineOSType('windows')
     .build();
 
   // set height to get all lazy rendered items on the page
@@ -67,6 +69,7 @@ test('it renders data when isProcessDataEmpty is false', function(assert) {
 test('it should not show toggle tree button when navigating from search result', function(assert) {
   new ReduxDataHelper(setState)
     .selectedTab({ tabName: 'PROCESS' })
+    .machineOSType('windows')
     .build();
   // set height to get all lazy rendered items on the page
   this.render(hbs`
@@ -85,6 +88,7 @@ test('it should toggle the tree view to list view', function(assert) {
     .processTree(processTree)
     .processDetails(processDetails)
     .isTreeView(true)
+    .machineOSType('windows')
     .build();
   // set height to get all lazy rendered items on the page
   this.render(hbs`

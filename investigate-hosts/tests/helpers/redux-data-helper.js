@@ -137,6 +137,10 @@ export default class DataHelper {
     _set(this.state, 'process.processList', value);
     return this;
   }
+  machineOSType(value) {
+    _set(this.state, 'overview.hostDetails.machine.machineOsType', value);
+    return this;
+  }
   processTree(value) {
     _set(this.state, 'process.processTree', value);
     return this;
