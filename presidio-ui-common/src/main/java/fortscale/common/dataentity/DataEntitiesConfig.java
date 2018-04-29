@@ -4,6 +4,7 @@ import fortscale.utils.TreeNode;
 //import fortscale.utils.hdfs.partition.PartitionStrategy;
 //import fortscale.utils.hdfs.partition.PartitionsUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.stereotype.Component;
@@ -351,13 +352,6 @@ public class DataEntitiesConfig  implements EmbeddedValueResolverAware,Initializ
 
         entity.setName(entityName);
 
-        String entityNameForMenu = entityConfig.getNameForMenu();
-        if (entityNameForMenu == null){
-            entityNameForMenu = getExtendableValue(entityId, "nameForMenu");
-            entityConfig.setNameForMenu(entityNameForMenu);
-        }
-
-        entity.setNameForMenu(entityNameForMenu);
 
 
 
@@ -394,6 +388,15 @@ public class DataEntitiesConfig  implements EmbeddedValueResolverAware,Initializ
         }
         entity.setIsAbstract(isAbstractEntity);
 
+        if (BooleanUtils.isFalse(isAbstractEntity)) {
+            String entityNameForMenu = entityConfig.getNameForMenu();
+            if (entityNameForMenu == null) {
+                entityNameForMenu = getExtendableValue(entityId, "nameForMenu");
+                entityConfig.setNameForMenu(entityNameForMenu);
+            }
+
+            entity.setNameForMenu(entityNameForMenu);
+        }
         Boolean showInExplore = entityConfig.getShowInExplore();
         if (showInExplore == null){
             String showInExploreStr   = getExtendableValue(entityId, "show_in_explore");

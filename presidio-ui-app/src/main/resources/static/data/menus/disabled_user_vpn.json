@@ -1,0 +1,14 @@
+{
+    "id": "disabled_user_ssh",
+    "items": [
+        {
+            "text": "View VPN events after {{displayname}} was disabled",
+            "conditions": [{
+                "field": "accountisdisabled",
+                "operator": "equals",
+                "value": true
+            }],
+			"url": "#/d/explore/vpn?filters=vpn.normalized_username%3D{{username}},vpn.event_time%3D%3E[persons.disableaccounttime]"
+        }
+    ]
+}

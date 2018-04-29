@@ -1,0 +1,12 @@
+{
+    "endpoint": {
+        "entity": "normalizedUsernameToId"
+    },
+    "mock_data": "userFind",
+    "params": [
+        {
+            "field": "normalizedUsername",
+            "dashboardParam": "normalized_username"
+        }
+    ]
+}

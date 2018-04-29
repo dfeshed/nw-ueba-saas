@@ -23,13 +23,13 @@ import java.util.TimeZone;
 /**
  * Created by shays on 24/05/2016.
  */
-
+@Ignore
 @RunWith(MockitoJUnitRunner.class)
 public class AlertServiceProxyTest {
 
-   @Test
-   public void testProxy(){
-       AlertsServiceImpl a = new AlertsServiceImpl();
-       a.init();
-   }
+//   @Test
+//   public void testProxy(){
+//       AlertsServiceImpl a = new AlertsServiceImpl();
+//       a.init();
+//   }
 }

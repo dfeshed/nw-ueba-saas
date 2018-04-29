@@ -1,0 +1,90 @@
+{
+    "noDataMessage": "No logins found.",
+    "loadingDataMessage": "Loading login events",
+    "views": [
+        {
+            "type": "table",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "User",
+                        "value": "{{displayname}}",
+                        "sortBy": "displayname",
+                        "menu": {
+                            "id": "user_login",
+                            "params": {
+                                "displayname": "{{displayname || username}}",
+                                "username": "{{username}}",
+                                "userid": "{{id}}"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Source IP / Machine Name",
+                        "value": "{{normalized_src_machine}}",
+                        "sortBy": "normalized_src_machine",
+                        "valueTooltip": "Source score: {{hostnamescore:toFixed:2}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "normalized_src_machineScore"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "hostnamescore"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Destination Hostname",
+                        "value": "{{normalized_dst_machine}}",
+                        "sortBy": "normalized_dst_machine",
+                        "valueTooltip": "Destination hostname score: {{destscore:toFixed:2}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "destscore"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "destscore"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Time",
+                        "value": "{{time:date}}",
+                        "sortBy": "eventTime",
+                        "valueTooltip": "Login time score: {{eventTimeScore:toFixed:2}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "eventTimeScore"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "eventTimeScore"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Score",
+                        "value": "{{eventScore}}",
+                        "sortBy": "eventScore",
+                        "sortDirection": -1,
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "eventScore"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "eventScore"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

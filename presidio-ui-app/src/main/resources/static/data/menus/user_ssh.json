@@ -1,0 +1,33 @@
+{
+    "id": "user_ssh",
+    "items": [
+        {
+            "text": "Go to {{displayname}}'s profile",
+            "onSelect": [
+                {
+                    "action": "innerUrl",
+                    "actionOptions": {
+                        "url": "/user/{{userid}}/user_overview"
+                    }
+                },
+                {
+                    "action": "closeAllPopups"
+                }
+            ]
+        },
+        {
+            "text": "Investigate {{displayname}}'s SSH logins",
+            "onSelect": [
+                {
+                    "action": "innerUrl",
+                    "actionOptions": {
+						"url": "/d/explore/ssh?filters=ssh.normalized_username%3D{{username}}"
+                    }
+                },
+                {
+                    "action": "closeAllPopups"
+                }
+            ]
+        }
+    ]
+}

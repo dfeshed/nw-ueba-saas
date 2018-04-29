@@ -1,0 +1,11 @@
+{
+    "dashboardId": "high_privileged_accounts_executives",
+    "title": "Executive Accounts",
+    "description": "Information about Executives",
+    "extends": "high_privileged_accounts",
+    "params": {
+        "columnNameToQuery":"is_user_executive",
+        "columnNameToQuery_legacy":"isuserexecutive",
+        "accountType": "executive"
+    }
+}

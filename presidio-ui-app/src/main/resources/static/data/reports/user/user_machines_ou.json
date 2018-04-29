@@ -1,0 +1,31 @@
+{
+    "endpoint": {
+        "entity": "user",
+        "subEntityName": "destination",
+        "subEntityId": "ou",
+        "method": "distribution"
+    },
+	"requiredParams": ["id"],
+    "params": [
+        {
+            "dashboardParam": "userId",
+            "field": "id",
+			"isRequired": true
+        },
+        {
+            "dashboardParam": "minscore",
+            "field": "minScore"
+        },
+		{
+			"field": "latestDate",
+			"dashboardParam": "event_dates",
+			"value":"{{event_dates.split(',')[1]}}"
+		},
+		{
+			"field": "earliestDate",
+			"dashboardParam": "event_dates",
+			"value":"{{event_dates.split(',')[0]}}"
+		}
+    ],
+    "mock_data": "user.user_machines_ou"
+}

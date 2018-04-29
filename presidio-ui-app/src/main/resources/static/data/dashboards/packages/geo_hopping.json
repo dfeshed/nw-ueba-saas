@@ -1,0 +1,57 @@
+{
+    "id": "geo_hopping",
+    "title": "VPN Geo Hopping",
+    "description": "Used to identify odd VPN connections for users who are connecting from various countries in a short and unreasonable amount of time",
+    "noDataMessage": "No geo hopping events found for the selected parameters.",
+	"show" : {
+		"conditions": [
+			{
+				"operator": "entityExists",
+				"value": "vpn_session"
+			}
+		]
+	},
+    "controls": [
+		{
+			"label": "Events Time",
+			"type": "dateRange",
+			"param": "notifications_events_dates",
+			"value": {
+				"timeStart": "-7d",
+				"timeEnd": "0d"
+			}
+		},
+        {
+            "label": "User",
+            "type": "search",
+            "settings": {
+                "search": {
+                    "dataEntity": "users",
+					"dataEntityField": "normalized_username",
+					"labelField": "vpn_usernames"
+				},
+				"resultField": "normalized_username",
+				"labelField": "vpn_usernames",
+				"value": "{{normalized_username}}",
+                "showValueOnSelect": true,
+                "placeholder": "All users"
+            },
+            "param": "user"
+        }
+    ],
+    "widgets": [
+        {
+            "id": "geo_hopping",
+			"forceRefresh": true,
+            "title": "VPN Geo Hopping Sessions per User",
+            "views": [
+                {
+                    "type": "htmlWidget",
+                    "settings": {
+                        "url": "data/dashboards/packages/geo_hopping/geo_hopping.html"
+                    }
+                }
+            ]
+        }
+    ]
+}

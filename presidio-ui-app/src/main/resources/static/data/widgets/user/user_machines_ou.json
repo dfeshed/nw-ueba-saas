@@ -1,0 +1,20 @@
+{
+	"id": "user_machines_ou",
+    "title": "Destination Machine OU",
+    "description": "Organizational Units of the user's destination machines",
+    "reportId": "user.user_machines_ou",
+	"height": 250,
+    "views": [
+        {
+            "type": "pie",
+            "settings": {
+                "label": "propertyValue",
+                "value": "count",
+                "tooltipText": "{{propertyValue}}: {{count}} events ({{_percent}}%)",
+                "options": {
+                    "radius": 80
+                }
+            }
+        }
+    ]
+}

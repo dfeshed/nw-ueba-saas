@@ -1,0 +1,10 @@
+{
+    "entity": "user",
+    "params": {
+        "fromPage": "{{terminated_users_table.value.page}}",
+        "size": "{{terminated_users_table.value.pageSize}}",
+        "sort_field": "{{terminated_users_table.value.sortBy}}",
+        "sort_direction": "{{terminated_users_table.value.sortDirection}}",
+        "is_terminated_with_activity": true
+    }
+}

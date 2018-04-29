@@ -1,0 +1,40 @@
+{
+    "renderHeader": false,
+    "className": "no-border no-margins",
+    "style": { "margin-top": "10px" },
+    "views": [
+        {
+            "type": "table",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "Username",
+                        "value": "{{normalized_username}}",
+						"menu": {
+							"id": "user",
+							"params": {
+								"normalizedUsername": "{{normalized_username}}"
+							}
+						}
+                    },
+                    {
+                        "name": "User Total Score",
+                        "value": "{{total_score:round}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "total_score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "total_score"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+	"exploreBased": true,
+	"reportId": "score_users_bubbles_popup"
+}

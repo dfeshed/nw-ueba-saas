@@ -1,0 +1,19 @@
+{
+    "id": "top_events",
+    "title": "Top Suspicious Events",
+    "description": "A list of the latest most suspicious events - Kerberos logins, SSH and VPN",
+    "noDataMessage": "No events found.",
+	"show" : {
+		"conditions": [
+			{
+				"operator": "entityExists",
+				"value": "scored_access_event"
+			}
+		]
+	},
+    "widgets": [
+        {
+            "widgetId": "packages.top_10.top_events"
+        }
+    ]
+}

@@ -1,0 +1,61 @@
+{
+    "id": "user_login",
+    "items": [
+        {
+            "text": "Go to {{displayname}}'s profile",
+            "onSelect": [
+                {
+                    "action": "innerUrl",
+                    "actionOptions": {
+                        "url": "/user/{{userid}}/user_overview"
+                    }
+                },
+                {
+                    "action": "closeAllPopups"
+                }
+            ]
+        },
+        {
+            "text": "Investigate {{displayname}}'s Kerberos logins",
+            "onSelect": [
+                {
+                    "action": "innerUrl",
+                    "actionOptions": {
+						"url": "/d/explore/kerberos_logins?filters=kerberos_logins.normalized_username%3D{{username}}"
+                    }
+                },
+                {
+                    "action": "closeAllPopups"
+                }
+            ]
+        },
+        {
+            "text": "Investigate {{displayname}}'s SSH logins",
+            "onSelect": [
+                {
+                    "action": "innerUrl",
+                    "actionOptions": {
+						"url": "/d/explore/ssh?filters=ssh.normalized_username%3D{{username}}"
+                    }
+                },
+                {
+                    "action": "closeAllPopups"
+                }
+            ]
+        },
+        {
+            "text": "Investigate {{displayname}}'s VPN logins",
+            "onSelect": [
+                {
+                    "action": "innerUrl",
+                    "actionOptions": {
+						"url": "/d/explore/vpn?filters=vpn.normalized_username%3D{{username}}"
+                    }
+                },
+                {
+                    "action": "closeAllPopups"
+                }
+            ]
+        }
+    ]
+}

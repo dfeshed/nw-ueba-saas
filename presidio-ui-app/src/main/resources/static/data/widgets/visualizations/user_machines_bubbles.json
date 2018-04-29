@@ -1,0 +1,27 @@
+{
+    "message":{
+        "type": "maxResults",
+        "params": {
+            "maxResults": 50
+        }
+    },
+    "views": [
+        {
+            "type": "bubbles",
+            "settings": {
+                "label": "{{displayname}}",
+                "childIdField": "service_name",
+                "tooltipText": "{{name}}: {{value}} {{value:pluralOrSingular:Machine:Machines}} ({{_percent:toFixed:2}}% of all machines)",
+                "onSelect": {
+                    "action": "openPopup",
+                    "actionOptions": {
+                        "widgetId": "visualizations.user_machines_bubbles_popup",
+                        "title": "Machines Accessed By {{name}}",
+                        "width": 500,
+                        "height": 360
+                    }
+                }
+            }
+        }
+    ]
+}

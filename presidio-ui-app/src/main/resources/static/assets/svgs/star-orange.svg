@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="18" height="17" viewBox="0 0 18 17">
+  <defs>
+    <style>
+      .star-orange-1 {
+        fill: #fea700;
+        fill-rule: evenodd;
+      }
+    </style>
+  </defs>
+  <path id="Shape_1_copy" data-name="Shape 1 copy" class="star-orange-1" d="M37,79l2.966,5.342L46,85.494l-4.2,4.453L42.562,96,37,93.409,31.438,96,32.2,89.946,28,85.494l6.033-1.151L37,79" transform="translate(-28 -79)"/>
+</svg>

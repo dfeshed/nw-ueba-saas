@@ -37,22 +37,21 @@ import java.util.*;
 public class AlertsServiceImpl extends RemoteClientServiceAbs<AlertsApi> implements AlertsService {
 
 
-    /**
-     * Mongo repository for users
-     */
-    @Autowired
+
     private UserService userService;
-
-    @Autowired
     private AlertConverterHelper alertConverterHelper;
-
-    @Autowired
     private AlertCommentsService alertCommentsService;
+    private AggregationConverterHelper aggregationConverterHelper;
 
-
-    private AggregationConverterHelper aggregationConverterHelper = new AggregationConverterHelper();
     private static final String SEVERITY_COLUMN_NAME = "severity";
     private static final String FEEDBACK_COLUMN_NAME = "Feedback";
+
+    public AlertsServiceImpl(UserService userService, AlertConverterHelper alertConverterHelper, AlertCommentsService alertCommentsService, AggregationConverterHelper aggregationConverterHelper) {
+        this.userService = userService;
+        this.alertConverterHelper = alertConverterHelper;
+        this.alertCommentsService = alertCommentsService;
+        this.aggregationConverterHelper = aggregationConverterHelper;
+    }
 
     private Set<String> feedbackNoRejectedSet;
 

@@ -1,0 +1,11 @@
+{
+    "entity": "user",
+    "params": {
+        "size": "{{users_table.value.pageSize}}",
+        "fromPage": "{{users_table.value.page}}",
+        "sort_field": "{{users_table.value.sortBy}}",
+        "sort_direction": "{{users_table.value.sortDirection}}",
+        "userTags": "{{userTags.value}}",
+        "minScore": 0
+            }
+}

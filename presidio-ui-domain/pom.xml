@@ -54,11 +54,7 @@
 			<artifactId>presidio-ui-utils</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<scope>test</scope>
-		</dependency>
+
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-collections4</artifactId>
@@ -73,30 +69,30 @@
 		<dependency>
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
-			<version>${joda-time.version}</version>
+			<!--<version>${joda-time.version}</version>-->
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>junit</groupId>-->
+			<!--<artifactId>junit</artifactId>-->
+			<!--<scope>test</scope>-->
+		<!--</dependency>-->
 
 		<!-- Test -->
 		<dependency>
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest-library</artifactId>
-			<version>${hamcrest.version}</version>
+			<!--<version>${hamcrest.version}</version>-->
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest-core</artifactId>
-			<version>${hamcrest.version}</version>
+			<!--<version>${hamcrest.version}</version>-->
 			<scope>test</scope>
 		</dependency>
 
@@ -154,11 +150,11 @@
 			<version>${commons-codec.version}</version>
 		</dependency>
 		<!-- json parsing library -->
-		<dependency>
-			<groupId>net.minidev</groupId>
-			<artifactId>json-smart</artifactId>
-			<version>${json-smart.version}</version>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>net.minidev</groupId>-->
+			<!--<artifactId>json-smart</artifactId>-->
+			<!--&lt;!&ndash;<version>${json-smart.version}</version>&ndash;&gt;-->
+		<!--</dependency>-->
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
@@ -178,11 +174,11 @@
 		</dependency>
 
 		<!--                     -->
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<scope>test</scope>
-		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>org.mockito</groupId>-->
+			<!--<artifactId>mockito-all</artifactId>-->
+			<!--&lt;!&ndash;<scope>test</scope>&ndash;&gt;-->
+		<!--</dependency>-->
 
 		<dependency>
 			<groupId>io.springfox</groupId>

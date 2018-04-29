@@ -1,0 +1,68 @@
+[
+
+    {
+        "html": "High Privileged Accounts"
+
+
+    },
+    {
+        "html": "External Access to the Network",
+        "items": [
+            {
+                "html": "VPN Anomalous Data Usage",
+                "sref": "reports.externalAccessToNetwork.suspiciousVPNDataAmount",
+                "srefActive": "reports.externalAccessToNetwork.suspiciousVPNDataAmount"
+            },
+            {
+                "html": "VPN Anomalous Geolocation Sequences",
+                "sref": "reports.externalAccessToNetwork.VPNGeoHopping",
+                "srefActive": "reports.externalAccessToNetwork.VPNGeoHopping"
+            }
+        ]
+    },
+    {
+        "html": "Device Investigation",
+        "items": [
+            {
+                "html": "IP Investigation",
+                "sref": "reports.deviceMonitoring.IPInvestigation",
+                "srefActive": "reports.deviceMonitoring.IPInvestigation"
+            },
+            {
+                "html": "Suspicious Device Access",
+                "sref": "reports.deviceMonitoring.suspiciousEndpointAccess",
+                "srefActive": "reports.deviceMonitoring.suspiciousEndpointAccess"
+            },
+            {
+                "html": "Sensitive Resources Monitoring",
+                "sref": "reports.deviceMonitoring.sensitiveResourcesMonitoring",
+                "srefActive": "reports.deviceMonitoring.sensitiveResourcesMonitoring"
+            }
+        ]
+    },
+    {
+        "html": "Stale Accounts",
+        "items": [
+            {
+                "html": "Disabled Accounts",
+                "sref": "reports.staleAccountsMonitoring.disabledUserAccounts",
+                "srefActive": "reports.staleAccountsMonitoring.disabledUserAccounts"
+            },
+            {
+                "html": "Inactive Accounts",
+                "sref": "reports.staleAccountsMonitoring.inactiveUserAccounts",
+                "srefActive": "reports.staleAccountsMonitoring.inactiveUserAccounts"
+            },
+            {
+                "html": "Disabled Accounts with Network Activity",
+                "sref": "reports.staleAccountsMonitoring.disabledUserWithNetwork",
+                "srefActive": "reports.staleAccountsMonitoring.disabledUserWithNetwork"
+            },
+            {
+                "html": "Terminated Accounts with Network Activity",
+                "sref": "reports.staleAccountsMonitoring.terminatedUserWithNetwork",
+                "srefActive": "reports.staleAccountsMonitoring.terminatedUserWithNetwork"
+            }
+        ]
+    }
+]

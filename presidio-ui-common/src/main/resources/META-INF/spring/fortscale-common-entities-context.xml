@@ -18,7 +18,7 @@
     <!-- Data Entities -->
     <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
         <property name="location" value="classpath:META-INF/entities.properties" />
-        <property name="ignoreUnresolvablePlaceholders" value="true" />
+        <property name="ignoreUnresolvablePlaceholders" value="false" />
         <property name="localOverride" value="true" />
     </bean>
 

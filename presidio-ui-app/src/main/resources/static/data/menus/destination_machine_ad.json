@@ -1,0 +1,17 @@
+{
+    "id": "destination_machine",
+    "items": [
+        {
+            "text": "Investigate Kerberos logins to {{machineName}}",
+            "url": "#/d/explore/kerberos_logins?filters=destination_machine={{machineName}}"
+        },
+        {
+            "text": "Investigate Kerberos logins to {{machineName}} by {{displayname || username}}",
+            "url": "#/d/explore/kerberos_logins?filters=kerberos_logins.destination_machine={{machineName}},kerberos_logins.normalized_username={{username}}",
+            "conditions": [{
+                "field": "username",
+                "operator": "isTruthy"
+            }]
+        }
+    ]
+}

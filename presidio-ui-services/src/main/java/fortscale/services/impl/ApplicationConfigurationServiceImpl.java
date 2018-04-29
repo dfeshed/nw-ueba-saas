@@ -13,10 +13,14 @@ import java.util.*;
 @Service("applicationConfigurationService")
 public class ApplicationConfigurationServiceImpl implements ApplicationConfigurationService {
 
-    @Autowired
+
     private ApplicationConfigurationRepository applicationConfigurationRepository;
     private static Logger logger = Logger.getLogger(ApplicationConfigurationServiceImpl.class);
     private static final ObjectMapper objectMapper= new ObjectMapper();
+
+    public ApplicationConfigurationServiceImpl(ApplicationConfigurationRepository applicationConfigurationRepository) {
+        this.applicationConfigurationRepository = applicationConfigurationRepository;
+    }
 
     /**
      * Returns a list of ApplicationConfiguration documents

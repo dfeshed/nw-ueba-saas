@@ -1,0 +1,23 @@
+{
+    "dashboardId": "explore",
+	"browserTitle": "Explore",
+    "className": "dashboard-noPadding",
+    "columns": [
+        {
+            "className": "no-border",
+            "widgets": [
+                {
+                    "flags": { "noBorder": true, "fullHeight": true },
+                    "views": [
+                        {
+                            "type": "explore",
+							"settings": {
+								"includeExport": true
+							}
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

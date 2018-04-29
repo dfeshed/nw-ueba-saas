@@ -1,0 +1,114 @@
+{
+    "id": "top_login_events",
+    "reportId": "all_users_logins",
+    "title": "Top Suspicious Logins",
+    "loadingDataMessage": "Loading login events",
+	"show": {
+		"conditions": [
+			{
+				"operator": "entityExists",
+				"value": "kerberos_logins"
+			}
+		]
+	},
+    "views": [
+        {
+            "type": "table",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "Username",
+                        "value": "{{normalized_username}}",
+                        "menu": {
+                            "id": "user_login",
+                            "params": {
+                                "displayname": "{{normalized_username}}",
+                                "username": "{{normalized_username}}",
+                                "userid": "{{id}}"
+                            }
+                        },
+                        "tags": "user"
+                    },
+                    {
+                        "name": "Source IP / Machine Name",
+                        "value": "{{source_machine}}",
+                        "valueTooltip": "Source score: {{normalized_src_machine_score:toFixed:2}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "normalized_src_machine_score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "normalized_src_machine_score"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Destination Hostname",
+                        "value": "{{destination_machine}}",
+                        "valueTooltip": "Destination hostname score: {{destination_machine_score:toFixed:2}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "destination_machine_score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "destination_machine_score"
+                            }
+                        },
+                        "tags": "machine"
+                    },
+                    {
+                        "name": "Error Code",
+                        "value": "{{failure_code}}",
+                        "link": "#/d/explore/kerberos_logins?filters=kerberos_logins.failure_code={{failure_code}}",
+                        "valueTooltip": "Error code score: {{failure_code_score:toFixed:2}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "failure_code_score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "failure_code_score"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Time",
+                        "value": "{{event_time:date}}",
+                        "valueTooltip": "Login time score: {{event_time_score:toFixed:2}}",
+                        "sortDirection": -1,
+                        "sortBy": "event_time",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "event_time_score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "event_time_score"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Score",
+                        "value": "{{event_score}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "event_score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "event_score"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

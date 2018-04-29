@@ -1,0 +1,93 @@
+{
+    "dashboardId": "high_privileged_accounts",
+    "title": "High Privileged Accounts",
+    "nameDescription": "Information about Admins or Executives",
+    "controls": [
+		{
+			"label": "Events Time",
+			"type": "dateRange",
+			"param": "high_privileged_accounts_event_dates",
+			"value": {
+				"timeStart": "-7d",
+				"timeEnd": "0d"
+			}
+		},
+        { "controlId": "minscore" }
+
+    ],
+    "columns": [
+        {
+            "weight": 4,
+            "widgets": [
+                {
+                    "widgetId": "dashboards.high_privileged_accounts.high_privileged_users_dist",
+                    "priority": 2
+                }
+            ]
+        },
+        {
+            "weight": 11,
+            "rows": [
+                {
+                    "columns": [
+                        {
+                            "widgets": [
+                                {
+                                    "widgetId": "dashboards.high_privileged_accounts.high_privileged_suspicious_events",
+                                    "priority": 1,
+									"show" : {
+										"conditions": [
+											{
+												"operator": "entityExists",
+												"value": "scored_access_event"
+											}
+										]
+									}
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "columns": [
+                        {
+							"show" : {
+								"conditions": [
+									{
+										"operator": "entityExists",
+										"value": "auth_event"
+									}
+								]
+							},
+                            "weight": 6,
+                            "widgets": [
+                                {
+                                    "widgetId": "dashboards.high_privileged_accounts.high_privileged_sensitive_source_machines",
+                                    "priority": 3
+                                }
+                            ]
+                        },
+                        {
+                            "weight": 9,
+                            "widgets": [
+                                {
+                                    "widgetId": "dashboards.high_privileged_accounts.high_privileged_sensitive_destination_machines",
+									"show" : {
+										"conditions": [
+											{
+												"operator": "entityExists",
+												"value": "auth_event"
+											}
+										]
+									},
+                                    "priority": 4
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+
+}

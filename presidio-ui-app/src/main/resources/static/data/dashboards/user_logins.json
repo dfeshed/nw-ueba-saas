@@ -1,0 +1,116 @@
+{
+    "dashboardId": "user_logins",
+    "columns": [
+        {
+            "widgets": [
+                {
+                    "report": {
+                        "searchId": "user_logins_history",
+                        "fields": [
+                            {
+                                "name": "date",
+                                "type": "date"
+                            },
+                            {
+                                "name": "score",
+                                "type": "number"
+                            },
+                            {
+                                "name": "averageScore",
+                                "type": "number"
+                            }
+                        ],
+                        "params": [
+                            {
+                                "field": "id",
+                                "name": "id",
+                                "dashboardParam": "entityId"
+                            }
+                        ]
+                    },
+                    "title": "User logins score for the last 7 days",
+                    "views": [
+                        {
+                            "type": "barsChart",
+                            "settings": {
+                                "options": {
+                                    "height": "200px",
+                                    "width": "100%",
+                                    "createAxes": false,
+                                    "barLabelsFont": {
+                                        "size": 16,
+                                        "color": "#b7b7b7"
+                                    },
+                                    "labelsFont": {
+                                        "size": "14px"
+                                    },
+                                    "labels": {
+                                        "height": 20,
+                                        "margin": 13,
+                                        "handleEvents": true
+                                    },
+                                    "selectable": true,
+                                    "showSelectionBar": true,
+                                    "padding": { "top": 0, "right": 50, "left": 50, "bottom": 0 }
+                                },
+                                "selectedIndex": "last",
+                                "series": [
+                                    {
+                                        "field": "score",
+                                        "label": "{{@entityId}}'s score",
+                                        "style": "score",
+                                        "styleParams": {
+                                            "value": "score"
+                                        }
+                                    },
+                                    {
+                                        "field": "averageScore",
+                                        "label": "Average user's score",
+                                        "color": "#e7e7e7",
+                                        "barLabelsColor": "#aaaaaa"
+                                    }
+                                ],
+                                "labels": {
+                                    "field": "date",
+                                    "value": "{{date}}",
+                                    "styleField": "score",
+                                    "format": "date",
+                                    "formatOptions": { "format": "MM/DD" }
+                                },
+                                "selectionBar": {
+                                    "styleField": "score"
+                                },
+                                "events": [
+                                    {
+                                        "eventName": "click",
+                                        "action": "setParams",
+                                        "actionOptions": {
+                                            "updateUrl": false,
+                                            "params": {
+                                                "currentDate": "{{date}}"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "widgetId": "user_logins"
+                },
+                {
+                    "widgetId": "user_login_rate",
+                    "report": {
+                        "params": [
+                            {
+                                "dashboardParam": "loginsUser",
+                                "field": "username"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}

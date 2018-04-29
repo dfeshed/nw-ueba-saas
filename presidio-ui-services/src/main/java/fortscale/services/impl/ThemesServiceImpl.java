@@ -18,13 +18,15 @@ public class ThemesServiceImpl implements ThemesService {
 
     private String CSS_VAR_PREFIX="css.var.";
 
-    private ConfigrationServerClientUtils configrationServerClientUtils = new ConfigrationServerClientUtils();
+    private ConfigrationServerClientUtils configrationServerClientUtils;
 
-    @PostConstruct
-    public void init(){
-        module = SpringPropertiesUtil.getProperty("presidio.themes.module.name");
-        profile =SpringPropertiesUtil.getProperty("presidio.themes.default.profile.namee");
+    public ThemesServiceImpl(String module, String profile, ConfigrationServerClientUtils configrationServerClientUtils) {
+        this.module = module;
+        this.profile = profile;
+        this.configrationServerClientUtils = configrationServerClientUtils;
     }
+
+
     public Map<String,String> getDefaultTheme(){
         try {
             Properties p = configrationServerClientUtils.readConfigurationAsProperties(module,profile);

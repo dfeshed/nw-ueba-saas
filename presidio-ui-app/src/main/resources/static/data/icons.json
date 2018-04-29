@@ -1,0 +1,61 @@
+{
+    "plusMinus": [
+        {
+            "type": "double-angle-up",
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "greaterThan",
+                    "value": 20
+                }
+            ]
+        },
+        {
+            "type": "angle-up",
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "greaterThan",
+                    "value": 0
+                }
+            ]
+        },
+        {
+            "type": "double-angle-down",
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "lesserThan",
+                    "value": -20
+                }
+            ]
+        },
+        {
+            "type": "angle-down",
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "lesserThan",
+                    "value": 0
+                }
+            ]
+        }
+    ],
+    "scoreBox": [
+        {
+            "type": "stop",
+            "tooltip": "{{tooltip}}",
+            "conditions": [
+                {
+                    "field": "{{value}}",
+                    "operator": "greaterThan",
+                    "value": 49
+                }
+            ],
+            "style": "score",
+            "styleParams": {
+                "value": "value"
+            }
+        }
+    ]
+}

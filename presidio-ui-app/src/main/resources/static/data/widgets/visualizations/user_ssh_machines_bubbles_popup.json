@@ -1,0 +1,29 @@
+{
+    "dataPath": "popup.data.members",
+    "renderHeader": false,
+    "className": "no-border no-margins",
+    "style": { "margin-top": "10px" },
+	"show": {
+		"conditions": [
+			{
+				"operator": "entityExists",
+				"value": "ssh"
+			}
+		]
+	},
+    "views": [
+        {
+            "type": "table",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "Machine Name",
+                        "value": "{{target_machine}}",
+                        "valueTooltip": "Investigate logins into {{target_machine}}",
+                        "link": "#/d/explore/ssh?filters=ssh.target_machine%3D{{target_machine}}"
+                    }
+                ]
+            }
+        }
+    ]
+}

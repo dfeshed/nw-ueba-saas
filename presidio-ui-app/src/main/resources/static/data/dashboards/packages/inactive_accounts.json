@@ -1,0 +1,55 @@
+{
+    "id": "inactive_accounts",
+    "title": "Inactive Users Status",
+    "description": "Active Directory accounts which are inactive but are not disabled",
+    "noDataMessage": "No users found.",
+    "controls": [
+        {
+            "label": "No activity since",
+            "type": "date",
+            "param": "users.last_activity_date",
+            "value": "-1month",
+            "isRequired": true,
+            "paramGroup": "filters",
+            "formatParam": "<={{value:date:valueOf}}",
+            "settings": {
+                "maxDate": "0",
+                "endOfDay": true
+            }
+        },
+		{
+			"hide": true,
+			"type": "constant",
+			"param": "users.account_is_disabled",
+			"paramGroup": "filters",
+			"value": "false"
+		}
+    ],
+    "columns": [
+        {
+            "widgets": [
+                {
+                    "id": "inactive_accounts",
+                    "flags": {
+                        "contentsOnly": true
+                    },
+                    "className": "widget-noPadding",
+                    "title": "Accounts",
+                    "params": {
+                        "entityId": "users",
+                        "tableview_sort": "display_name",
+                        "tableview_fields": "normalized_username,display_name,department,last_activity_date,total_score"
+                    },
+                    "views": [
+                        {
+                            "type": "explore",
+                            "settings": {
+                                "viewOnly": true
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -57,22 +57,12 @@ public class EvidencesServiceImpl extends RemoteClientServiceAbs<AlertsApi> impl
 	final String TAG_DATA_ENTITY ="active_directory";
 
 
-	@Autowired
-	DataEntitiesConfig dataEntitiesConfig;
 
-	/**
-	 * Mongo repository for evidences
-	 */
-
-
-	@Autowired
+	private DataEntitiesConfig dataEntitiesConfig;
 	private UserService userService;
+	private IndicatorConverter indicatorConverter;
 
-//	@Autowired
-//	private UserSupportingInformationService userSupportingInformationService;
-//
 
-	private IndicatorConverter indicatorConverter = new IndicatorConverter();
 
 	// Severity thresholds for evidence
 	@Value("${evidence.severity.medium:80}")
@@ -84,10 +74,18 @@ public class EvidencesServiceImpl extends RemoteClientServiceAbs<AlertsApi> impl
 	@Value("${collection.evidence.tag.score:50}")
 	protected double tagScore;
 
+
+
 	/**
 	 * Keeps mapping between score and severity
 	 */
 	private NavigableMap<Integer,Severity> scoreToSeverity = new TreeMap<>();
+
+	public EvidencesServiceImpl(DataEntitiesConfig dataEntitiesConfig, UserService userService, IndicatorConverter indicatorConverter) {
+		this.dataEntitiesConfig = dataEntitiesConfig;
+		this.userService = userService;
+		this.indicatorConverter = indicatorConverter;
+	}
 
 	@Override
 	public void afterPropertiesSet() throws Exception {

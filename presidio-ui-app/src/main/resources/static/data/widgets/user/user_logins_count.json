@@ -1,0 +1,49 @@
+{
+    "views": [
+        {
+            "type": "multiLine",
+            "height": 300,
+            "settings": {
+                "series": "status",
+                "y": "login_count",
+                "x": "day",
+                "xType": {
+                    "type": "date",
+                    "format": "%Y-%m-%d"
+                },
+                "minYValue": 0,
+				"minXValue": "{{:sinceNow:valueOf:-7d:start}}",
+				"maxXValue": "{{:sinceNow:valueOf:0d:end}}",
+                "tooltipText": "{{status}} events on {{day:date:MM/DD/YYYY}}: {{login_count}}",
+                "axes": {
+                    "x": {
+                        "type": "time",
+                        "timeFormat": "days",
+                        "ticks": {
+                            "unit": "days",
+                            "interval": 1
+                        }
+                    },
+                    "y": {
+                        "label": "Events Count",
+                        "tickFormat": "d"
+                    }
+                },
+                "scales": {
+                    "x": {
+                        "type": "time"
+                    },
+                    "y": {}
+                },
+                "color": {
+                    "map": "status",
+                    "field": "status"
+                },
+                "legend": {
+                    "type": "circles",
+                    "position": "right"
+                }
+            }
+        }
+    ]
+}

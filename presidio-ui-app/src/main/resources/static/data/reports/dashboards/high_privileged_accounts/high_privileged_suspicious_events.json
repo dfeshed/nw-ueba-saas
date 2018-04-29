@@ -1,0 +1,62 @@
+{
+	"_mock_data": "dashboards.high_privileged_accounts.high_privileged_suspicious_events_logins",
+	"endpoint": {
+		"api": "dataQuery",
+		"dataQuery": {
+			"entity": "scored_access_event",
+			"conditions": [
+				{
+					"type": "field",
+					"id": "event_time_utc",
+					"operator": "dateRange",
+					"valueParam": "dateRange"
+				},
+				{
+					"type": "field",
+					"id": "event_score",
+					"operator": "greaterThanOrEquals",
+					"valueParam": "minscore"
+				},
+				{
+					"type": "field",
+					"id": "{{@userTypeField}}",
+					"operator": "equals",
+					"value": true
+				}
+			],
+			"sort": [
+				{
+					"field": "event_score",
+					"direction": "desc"
+				}
+			],
+			"limit": 20
+		}
+	},
+	"process": [
+		{
+			"processId": "groupByField",
+			"params": {
+				"field": "username"
+			}
+		}
+	],
+	"params": [
+		{
+			"field": "dateRange",
+			"dashboardParam": "high_privileged_accounts_event_dates",
+			"isRequired": true
+		},
+		{
+			"field": "userTypeField",
+			"dashboardParam": "columnNameToQuery",
+			"default": "is_user_administrator",
+			"value": "{{columnNameToQuery}}"
+		},
+		{
+			"field": "minscore",
+			"dashboardParam": "minscore",
+			"default": "50"
+		}
+	]
+}

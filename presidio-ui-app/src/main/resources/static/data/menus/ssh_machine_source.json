@@ -1,0 +1,109 @@
+{
+    "id": "login_machine_source",
+    "items": [
+        {
+            "text": "All users who logged in from {{machineName}} to other machines by SSH",
+            "onSelect": {
+                "action": "openPopup",
+                "actionOptions": {
+                    "widgetId": "popup_graph",
+                    "title": "All users who logged in from {{machineName}} to other machines, {{:sinceNow:MM/DD/YYYY:-14days}} - {{:sinceNow:MM/DD/YYYY}}",
+                    "width": 700,
+                    "height": 381,
+                    "controls": [{
+                        "type": "link",
+                        "text": "Investigate logins from {{sourceIp}}",
+						"href": "#/d/explore/kerberos_logins?filters=kerberos_logins.source_machine%3D{{sourceIp}}&visualization=machine_users",
+                        "onClick": {
+                            "action": "closeAllPopups"
+                        }
+                    }],
+                    "params": {
+                        "entityId": "kerberos_logins",
+                        "filters": "kerberos_logins.source_machine={{machineName}}",
+                        "sourceIp": "{{machineName}}",
+                        "visualization": "machine_users"
+                    }
+                }
+            }
+        },
+        {
+            "text": "All machines {{displayName}} logged in from, {{:sinceNow:MM/DD/YYYY:-14days}} - {{:sinceNow:MM/DD/YYYY}}",
+            "onSelect": {
+                "action": "openPopup",
+                "actionOptions": {
+                    "widgetId": "popup_graph",
+                    "title": "All Machines {{displayName}} Logged In From, {{:sinceNow:MM/DD/YYYY:-14days}} - {{:sinceNow:MM/DD/YYYY}}",
+                    "width": 700,
+                    "height": 381,
+                    "controls": [{
+                        "type": "link",
+                        "text": "Investigate machines {{displayName:removeAtDomain}} logged in from",
+						"href": "#/d/explore/kerberos_logins?filters=users.ad_usernames%3D{{displayName}}&visualization=user_machines",
+                        "onClick": {
+                            "action": "closeAllPopups"
+                        }
+                    }],
+                    "params": {
+                        "entityId": "kerberos_logins",
+                        "filters": "kerberos_logins.username={{userName}}",
+                        "displayName": "{{userName}}",
+                        "visualization": "user_machines"
+                    }
+                }
+            }
+        },
+        {
+            "text": "All logins from {{machineName}} for all users, {{:sinceNow:MM/DD/YYYY:-14days}} - {{:sinceNow:MM/DD/YYYY}}",
+            "onSelect": {
+                "action": "openPopup",
+                "actionOptions": {
+                    "widgetId": "popup_graph",
+                    "title": "All logins from {{machineName}} for all users, {{:sinceNow:MM/DD/YYYY:-14days}} - {{:sinceNow:MM/DD/YYYY}}",
+                    "width": 700,
+                    "height": 331,
+                    "controls": [{
+                        "type": "link",
+                        "text": "Investigate logins from {{sourceIp}}",
+						"href": "#/d/explore/kerberos_logins?filters=kerberos_logins.source_machine%3D{{sourceIp}}&visualization=login_events_time",
+                        "onClick": {
+                            "action": "closeAllPopups"
+                        }
+                    }],
+                    "params": {
+                        "entityId": "kerberos_logins",
+                        "filters": "kerberos_logins.source_machine={{machineName}}",
+                        "sourceIp": "{{machineName}}",
+                        "visualization": "login_events_time"
+                    }
+                }
+            }
+        },
+        {
+            "text": "All machines that were logged into from {{machineName}}, {{:sinceNow:MM/DD/YYYY:-14days}} - {{:sinceNow:MM/DD/YYYY}}",
+            "onSelect": {
+                "action": "openPopup",
+                "actionOptions": {
+                    "widgetId": "popup_graph",
+                    "title": "All machines that were logged into from {{machineName}}, {{:sinceNow:MM/DD/YYYY:-14days}} - {{:sinceNow:MM/DD/YYYY}}",
+                    "width": 700,
+                    "height": 381,
+                    "controls": [{
+                        "type": "link",
+                        "text": "Investigate logins from {{sourceIp}}",
+						"href": "#/d/explore/kerberos_logins?filters=kerberos_logins.source_machine%3D{{sourceIp}}&visualization=source_machine_destinations",
+                        "onClick": {
+                            "action": "closeAllPopups"
+                        }
+                    }],
+                    "params": {
+                        "entityId": "kerberos_logins",
+                        "filters": "kerberos_logins.source_machine={{machineName}}",
+                        "sourceIp": "{{machineName}}",
+                        "visualization": "source_machine_destinations"
+                    }
+                }
+            }
+        }
+    ]
+}

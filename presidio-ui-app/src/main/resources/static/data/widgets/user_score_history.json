@@ -1,0 +1,114 @@
+{
+    "reportId": "user_score_history",
+    "title": "User score for the last 7 days",
+    "refreshOn": ["userName"],
+    "requiredParams": ["userName"],
+    "minWidth": 720,
+    "views": [
+        {
+            "type": "barsChart",
+            "settings": {
+                "options": {
+                    "height": "200px",
+                    "width": "100%",
+                    "createAxes": false,
+                    "barLabelsFont": {
+                        "size": 16,
+                        "color": "#b7b7b7"
+                    },
+                    "labelsFont": {
+                        "size": "14px"
+                    },
+                    "labels": {
+                        "height": 20,
+                        "margin": 13,
+                        "handleEvents": true
+                    },
+                    "selectable": true,
+                    "showSelectionBar": false,
+                    "padding": { "top": 0, "right": 50, "left": 50, "bottom": 0 },
+                    "tooltip": "{{seriesLabel}}'s score for {{barLabel}}: {{barValue}}",
+                    "values": {
+                        "min": 0,
+                        "max": 100
+                    }
+                },
+                "selectedData": { "date": "{{@date}}" },
+                "selectedIndex": "last",
+                "series": [
+                    {
+                        "field": "score",
+                        "label": "{{@userName}}",
+                        "style": "score",
+                        "styleParams": {
+                            "value": "score"
+                        },
+                        "nullDisplay": "(No data)"
+                    },
+                    {
+                        "field": "avgScore",
+                        "label": "Average user",
+                        "color": "#e7e7e7",
+                        "barLabelsColor": "#aaaaaa",
+                        "legend": "Average User"
+                    }
+                ],
+                "labels": {
+                    "field": "date",
+                    "value": "{{date}}",
+                    "predefinedValues": {
+                        "type": "date",
+                        "first": "-7days",
+                        "last": "now"
+                    },
+                    "styleField": "score",
+                    "transform": {
+                        "method": "date",
+                        "options": {
+                            "format": "MM/DD/YYYY"
+                        }
+                    }
+                },
+                "legend": {
+                    "items": [
+                        {
+                            "value": "Critical",
+                            "color": "#D77576"
+                        },
+                        {
+                            "value": "High",
+                            "color": "#F59925"
+                        },
+                        {
+                            "value": "Medium",
+                            "color": "#F2CA3A"
+                        },
+                        {
+                            "value": "Low",
+                            "color": "#80BFF0"
+                        },
+                        {
+                            "value": "Average User",
+                            "color": "#e7e7e7"
+                        }
+                    ]
+                },
+                "selectionBar": {
+                    "styleField": "score"
+                },
+                "events": [
+                    {
+                        "eventName": "click",
+                        "action": "setParams",
+                        "actionOptions": {
+                            "updateUrl": true,
+                            "params": {
+                                "date": "{{date}}"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

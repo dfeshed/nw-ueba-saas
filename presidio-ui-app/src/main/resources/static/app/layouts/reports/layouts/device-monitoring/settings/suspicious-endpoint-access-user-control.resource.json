@@ -1,0 +1,23 @@
+{
+    "entity": "dataQuery",
+    "params": {
+        "dataQuery": {
+            "fields": [{"id": "normalized_username"}],
+            "entities": ["kerberos_logins"],
+            "sort": [{"field": {"id": "normalized_username"}}],
+            "conditions": {
+                "type": "term",
+                "logicalOperator": "AND",
+                "terms": [{
+                    "field": {"id": "normalized_username"},
+                    "queryOperator": "startsWith",
+                    "type": "field",
+                    "value": "{{search}}"
+                }]
+            },
+            "limit": 10,
+            "offset": 0,
+            "groupBy": [{"id": "normalized_username"}]
+        }
+    }
+}

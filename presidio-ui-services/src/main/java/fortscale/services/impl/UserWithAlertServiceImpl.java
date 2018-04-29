@@ -26,27 +26,31 @@ import java.util.Set;
 
     private static Logger logger = Logger.getLogger(UserWithAlertService.class);
 
-	@Autowired private UserService userService;
+	private UserService userService;
 
-	@Autowired private AlertsService alertsService;
+	private AlertsService alertsService;
 
-
-
-
-	@Autowired()
-	@Qualifier("filterToUsersCache")
+//	@Autowired()
+//	@Qualifier("filterToUsersCache")
 	private CacheHandler<UserRestFilter, List<User>> filterToUsersCache;
 
 
 	private List<String> fieldsRequired;
 
-	public UserWithAlertServiceImpl() {
+	public UserWithAlertServiceImpl(UserService userService, AlertsService alertsService,
+									CacheHandler<UserRestFilter, List<User>> filterToUsersCache) {
+
+		this.userService = userService;
+		this.alertsService = alertsService;
+
 		fieldsRequired = new ArrayList<>();
 		fieldsRequired.add(User.ID_FIELD);
 		fieldsRequired.add(User.usernameField);
 		fieldsRequired.add(User.followedField);
 		fieldsRequired.add(User.displayNameField);
 	}
+
+
 
 	@Override public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest, List<String> fieldsRequired,boolean fetchUserslerts) {
 		List<User> result = new ArrayList<>();

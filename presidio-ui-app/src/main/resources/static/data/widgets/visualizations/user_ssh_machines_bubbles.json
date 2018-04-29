@@ -1,0 +1,35 @@
+{
+    "message":{
+        "type": "maxResults",
+        "params": {
+            "maxResults": 80
+        }
+    },
+	"show": {
+		"conditions": [
+			{
+				"operator": "entityExists",
+				"value": "ssh"
+			}
+		]
+	},
+    "views": [
+        {
+            "type": "bubbles",
+            "settings": {
+                "label": "{{displayname || username}}",
+                "childIdField": "target_machine",
+                "tooltipText": "{{name}}: {{value}} {{value:pluralOrSingular:Machine:Machines}} ({{_percent:toFixed:2}}% of all machines)",
+                "onSelect": {
+                    "action": "openPopup",
+                    "actionOptions": {
+                        "widgetId": "visualizations.user_ssh_machines_bubbles_popup",
+                        "title": "Machines Accessed By {{name}} Using SSH",
+                        "width": 500,
+                        "height": 360
+                    }
+                }
+            }
+        }
+    ]
+}

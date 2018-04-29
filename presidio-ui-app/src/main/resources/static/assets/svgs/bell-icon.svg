@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="15" viewBox="0 0 16 15">
+  <defs>
+    <style>
+      .bell-icon {
+        fill-rule: evenodd;
+      }
+    </style>
+  </defs>
+  <path class="bell-icon" d="M53,370H52.5a4.351,4.351,0,0,1-1.5-3v-3a5,5,0,0,0-10,0v3a4.351,4.351,0,0,1-1.5,3H39a1,1,0,0,0,0,2h5a2,2,0,0,0,4,0h5A1,1,0,1,0,53,370Z" transform="translate(-38 -359)"/>
+</svg>

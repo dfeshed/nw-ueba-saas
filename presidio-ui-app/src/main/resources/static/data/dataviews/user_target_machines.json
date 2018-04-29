@@ -1,0 +1,38 @@
+{
+    "id": "user_target_machines",
+    "name": "User Target Machines",
+    "entities": [ "ad_logins", "persons" ],
+    "entitiesJoin": [
+        {
+            "persons": "username",
+            "ad_logins": "normalized_username"
+        }
+    ],
+    "visualizations": [
+        {
+            "id": "user_target_machines",
+            "title": "Target Machines For The Selected User(s) And Their Login Counts",
+            "widgetId": "visualizations.user_machines_bars",
+            "height": 300,
+            "data": {
+                "mainEntity": "ad_logins",
+                "fields": [
+                    {
+                        "field": "service_name",
+                        "alias": "label",
+                        "entity": "ad_logins",
+                        "func": "lcase(service_name)"
+                    },
+                    {
+                        "field": "time",
+                        "alias": "login_count",
+                        "func": "count(*)",
+                        "entity": "ad_logins"
+                    }
+                ],
+                "groupBy": "lcase(service_name)",
+                "limit": 50
+            }
+        }
+    ]
+}

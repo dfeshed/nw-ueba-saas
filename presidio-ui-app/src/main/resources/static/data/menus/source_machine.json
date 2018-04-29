@@ -1,0 +1,35 @@
+{
+    "id": "source_machine",
+    "items": [
+        {
+            "text": "Investigate Kerberos logins from {{machineName}}",
+            "url": "#/d/explore/kerberos_logins?filters=kerberos_logins.source_machine%3D{{machineName}}"
+        },
+
+        {
+            "text": "Investigate Kerberos logins from {{machineName}} by {{displayname || username}}",
+            "url": "#/d/explore/kerberos_logins?filters=kerberos_logins.source_machine={{machineName}},kerberos_logins.normalized_username={{username}}",
+            "conditions": [{
+                "field": "username",
+                "operator": "isTruthy"
+            }]
+        },
+        {
+            "text": "Investigate SSH logins from {{machineName}}",
+            "url": "#/d/explore/ssh?filters=ssh.source_machine%3D{{machineName}}"
+        },
+        {
+            "text": "Investigate SSH logins from {{machineName}} by {{displayname || username}}",
+            "url": "#/d/explore/ssh?filters=ssh.source_machine={{machineName}},ssh.normalized_username={{username}}",
+            "conditions": [{
+                "field": "username",
+                "operator": "isTruthy"
+            }]
+        },
+        {
+            "text": "Investigate VPN requests from {{machineName}}",
+            "url": "#/d/explore/vpn?filters=vpn.source_machine%3D{{machineName}}"
+        }
+
+    ]
+}

@@ -1,0 +1,114 @@
+{
+    "name": "Table",
+    "settings": [
+        {
+            "id": "pageSize",
+            "name": "Page Size",
+            "type": "number",
+            "default": 20
+        },
+        {
+            "id": "allowPaging",
+            "name": "Paging",
+            "type": "boolean",
+            "default": false
+        },
+        {
+            "id": "fields",
+            "name": "Fields",
+            "type": "objectArray",
+            "sortable": true,
+            "addText": "Add field",
+            "memberSettings": [
+                {
+                    "id": "name",
+                    "name": "Name",
+                    "type": "string"
+                },
+                {
+                    "id": "value",
+                    "name": "Value",
+                    "type": "parsed"
+                },
+                {
+                    "id": "link",
+                    "name": "Link",
+                    "type": "parsed"
+                },
+
+                {
+                    "id": "sortBy",
+                    "name": "SortBy",
+                    "type": "dataField"
+                },
+                {
+                    "id": "sortDirection",
+                    "name": "Sort Direction",
+                    "type": "number"
+                },
+                {
+                    "id": "transform",
+                    "name": "Transform",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "id": "method",
+                            "type": "string",
+                            "name": "Method"
+                        }
+                    ]
+                },
+                {
+                    "id": "style",
+                    "name": "Style",
+                    "type": "string"
+                },
+                {
+                    "id": "styleParams",
+                    "name": "Style params",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "id": "value",
+                            "name": "Value",
+                            "type": "dataField",
+                            "dataFieldType": "number"
+                        }
+                    ]
+                },
+                {
+                    "id": "renderHeader",
+                    "name": "Render Header",
+                    "type": "boolean",
+                    "default": true
+                },
+                {
+                    "id": "headerColspan",
+                    "name": "Header Colspan",
+                    "type": "number",
+                    "default": 1
+                },
+                {
+                    "id": "icon",
+                    "name": "Icon",
+                    "type": "string"
+                },
+                {
+                    "id": "className",
+                    "name": "Class",
+                    "type": "string"
+                },
+                {
+                    "id": "valueTooltip",
+                    "name": "Tooltip",
+                    "type": "string"
+                },
+                {
+                    "id": "noValueDisplay",
+                    "name": "No Value Display",
+                    "type": "string"
+                }
+            ]
+        }
+    ]
+}

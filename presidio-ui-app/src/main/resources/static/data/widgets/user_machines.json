@@ -1,0 +1,40 @@
+{
+    "title": "Source Machines Login",
+    "description": "Source Machines of the user",
+    "reportId": "user_machines",
+    "noDataMessage": "No machines found",
+    "views": [
+        {
+            "type": "pie",
+            "settings": {
+                "label": "hostname",
+                "value": "logoncount",
+                "options": {
+					"height": "280px",
+                    "radius": 100
+                }
+            }
+        },
+        {
+            "type": "table",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "Machine Name",
+                        "value": "{{hostname}}",
+                        "spanRowsIfEqual": true,
+                        "tags": "machine"
+                    },
+                    {
+                        "name": "Login Count",
+                        "value": "{{logoncount}}"
+                    },
+                    {
+                        "name": "Last Sign-in",
+                        "value": "{{lastlogon:date}}"
+                    }
+                ]
+            }
+        }
+    ]
+}

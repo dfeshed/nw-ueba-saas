@@ -1,0 +1,21 @@
+{
+    "reportId": "user_profile",
+    "title": "User Profile",
+    "views": [
+        {
+            "type": "list",
+            "settings": {
+                "item": {
+                    "icon": {
+                        "type": "stop",
+                        "style": "score",
+                        "styleParams": {
+                            "value": "severity"
+                        }
+                    },
+                    "value": "{{text}}"
+                }
+            }
+        }
+    ]
+}

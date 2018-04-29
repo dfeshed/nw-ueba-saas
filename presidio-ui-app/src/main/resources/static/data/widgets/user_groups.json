@@ -1,0 +1,103 @@
+{
+    "title": "Group Membership - {{@date:date:MM/DD/YYYY}}",
+    "reportId": "user_groups",
+    "controls": [
+        {
+            "type": "link",
+            "text": "Investigate Group Membership",
+            "href": "#/d/explore/users?filters=user_groups.username%3D{{@loginsUser}}&visualization=group_users_bubbles",
+            "refreshOn": ["date"]
+        }
+    ],
+    "noDataMessage": "No group membership data available for this date.",
+    "views": [
+        {
+            "type": "table",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "Group",
+                        "value": "{{featureUniqueName}}",
+                        "transform": {
+                            "method": "group",
+                            "options": {
+                                "divider": " <i class='icon-caret-right'></i> "
+                            }
+                        },
+                        "sortBy": "featureUniqueName"
+                    },
+                    {
+                        "name": "Group Type",
+                        "switch": [
+                            {
+                                "conditions": [{
+                                    "field": "isDistList",
+                                    "fieldType": "boolean",
+                                    "operator": "equals",
+                                    "value": "true"
+                                }],
+                                "field": {
+                                    "value": "Distribution List"
+                                }
+                            },
+                            {
+                                "field": {
+                                    "value": "Active Directory Group"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Group Information",
+                        "switch": [
+                            {
+                                "conditions": [{
+                                    "field": "isDistList",
+                                    "fieldType": "boolean",
+                                    "operator": "equals",
+                                    "value": true
+                                }],
+                                "field": {
+                                    "value": ""
+                                }
+                            },
+                            {
+                                "conditions": [{
+                                    "field": "explanation.featureCount",
+                                    "fieldType": "int",
+                                    "operator": "equals",
+                                    "value": 1
+                                }],
+                                "field": {
+                                    "value": "Only this user has this group"
+                                }
+                            },
+                            {
+                                "field": {
+                                    "value": "{{explanation.featureCount}} ({{explanation.featureDistribution:decimalToPercentage}}%) users have this group."
+                                }
+                            }
+                        ],
+                        "sortBy": "explanation.featureDescription"
+                    },
+                    {
+                        "name": "Score",
+                        "value": "{{featureScore}}",
+                        "sortBy": "featureScore",
+                        "sortDirection": -1,
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "featureScore"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "featureScore"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

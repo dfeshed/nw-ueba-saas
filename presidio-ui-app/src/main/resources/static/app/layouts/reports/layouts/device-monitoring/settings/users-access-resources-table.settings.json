@@ -1,0 +1,45 @@
+{
+    "scrollable": false,
+    "groupable": false,
+    "sortable": {
+        "mode": "single"
+    },
+    "pageable": false,
+    "dataSource": {
+        "sort": [
+            {
+                "field": "events_max_score",
+                "dir": "desc"
+            },
+            {
+                "field": "event_count",
+                "dir": "desc"
+            }
+        ]
+    },
+    "columns": [
+        {
+            "title": "Username",
+            "field": "display_name",
+            "template": "<a  ng-href=\"{{'\\#username/' + dataItem.normalized_username}}\">{{ dataItem.username }}</a>"
+        },
+        {
+            "title": "Department",
+            "field": "department",
+            "template": "{{dataItem.department | orNA}}"
+        },
+        {
+            "title": "Data Sources",
+            "field": "type"
+        },
+        {
+            "title": "Events Count",
+            "field": "event_count"
+        },
+        {
+            "title": "Highest Scored Event",
+            "field": "events_max_score",
+            "template": "<fs-score-icon score='::dataItem.events_max_score'></fs-score-icon>{{ dataItem.events_max_score | orNA}}"
+        }
+    ]
+}

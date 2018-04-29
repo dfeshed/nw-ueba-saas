@@ -1,0 +1,44 @@
+{
+    "message":{
+        "type": "maxResults",
+        "params": {
+            "maxResults": 100
+        }
+    },
+    "views": [
+        {
+            "type": "links",
+            "settings": {
+                "graphOptions": {
+                    "height": 480,
+                    "onDblClick": {
+                        "action": "setParams",
+                        "actionOptions": {
+                            "updateUrl": true,
+                            "params": {
+                                "{{custom}}.{{field}}": "^{{name}}"
+                            }
+                        }
+                    }
+                },
+                "icons": {
+                    "users": "images/svg/user.svg",
+                    "groups": "images/svg/group.svg"
+                },
+                "nodes": [
+                    {
+                        "name": "group_dn",
+                        "group": "Groups",
+                        "custom": "user_groups",
+                        "label": "{{group_dn:groupName}}"
+                    },
+                    {
+                        "name": "displayname",
+                        "group": "Users",
+                        "custom": "user_groups"
+                    }
+                ]
+            }
+        }
+    ]
+}

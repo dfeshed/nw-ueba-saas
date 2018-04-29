@@ -1,0 +1,12 @@
+{
+    "renderHeader": false,
+    "className": "widget-container no-border widget-noPadding no-margins",
+    "views": [
+        {
+            "type": "explore",
+            "settings": {
+                "viewOnly": true
+            }
+        }
+    ]
+}

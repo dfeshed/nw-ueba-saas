@@ -1,0 +1,51 @@
+{
+	"id": "users_for_ip",
+	"reportId": "users_for_ip",
+	"title": "Users for this IP address",
+	"noDataMessage": "No data available for these dates and ip address",
+	"views": [
+		{
+			"type": "table",
+			"settings": {
+				"fields": [
+					{
+						"name": "Normalized Username",
+						"value": "{{normalized_username}}",
+                        "menu": {
+                            "id": "user",
+                            "params": {
+                                "normalizedUsername": "{{normalized_username}}",
+                                "username": "{{username}}"
+                            }
+                        }
+
+					},
+					{
+						"name": "Date",
+						"value": "{{event_time:date:MMM DD YYYY}}"
+					},
+					{
+						"name": "Events #",
+						"value": "{{total_count|0}}"
+					},
+					{
+						"name": "Suspicious Kerb.",
+						"value": "{{kerberos_count|0}}"
+					},
+					{
+						"name": "Suspicious SSH",
+						"value": "{{ssh_count|0}}"
+					},
+                    {
+                        "name": "Suspicious VPN",
+                        "value": "{{vpn_count|0}}"
+                    },
+					{
+						"name": "Devices #",
+						"value": "{{devices_count|0}}"
+					}
+				]
+			}
+		}
+	]
+}

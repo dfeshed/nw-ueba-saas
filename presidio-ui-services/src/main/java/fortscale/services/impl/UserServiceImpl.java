@@ -72,12 +72,15 @@ public class UserServiceImpl extends RemoteClientServiceAbs<UsersApi> implements
 	@Value("${list.of.builtin.ad.users:Administrator,Guest,krbtgt}")
 	private String listOfBuiltInADUsers;
 
-	@Autowired
+
 	private UserConverterHelper userConverterHelper;
-
-	private AggregationConverterHelper aggregationConverterHelper = new AggregationConverterHelper();
-
+	private AggregationConverterHelper aggregationConverterHelper;
 	private List<String> setOfBuiltInADUsers;
+
+	public UserServiceImpl(UserConverterHelper userConverterHelper, AggregationConverterHelper aggregationConverterHelper) {
+		this.userConverterHelper = userConverterHelper;
+		this.aggregationConverterHelper = aggregationConverterHelper;
+	}
 
 	// For unit tests only
 	protected int getPageSize() {

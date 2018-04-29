@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="19" height="18" viewBox="0 0 19 18">
+  <defs>
+    <style>
+      .start-white-filled-icon-1 {
+        fill: white;
+        stroke: gray;
+        stroke-width: 1px;
+        fill-rule: evenodd;
+      }
+    </style>
+  </defs>
+  <path class="start-white-filled-icon-1" d="M37,100l2.966,5.343L46,106.494l-4.2,4.452L42.562,117,37,114.409,31.438,117l0.762-6.054L28,106.494l6.033-1.151L37,100" transform="translate(-27.5 -99.5)"/>
+</svg>

@@ -1,0 +1,36 @@
+{
+    "id": "high_privileged_sensitive_source_machines",
+    "title": "Sensitive Source Machines",
+    "description": "Summary details of source machines from which {{@columnNameToQuery:matches:is_user_administrator:Administrators:Executives}} accessed sensitive machines",
+    "reportId": "dashboards.high_privileged_accounts.high_privileged_sensitive_source_machines",
+	"show" : {
+		"conditions": [
+			{
+				"operator": "entityExists",
+				"value": "auth_event"
+			}
+		]
+	},
+    "views": [
+        {
+            "type": "table",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "Hostname",
+                        "value": "{{source_machine}}",
+                        "tags": "machine"
+                    },
+                    {
+                        "name": "Users Count",
+                        "value": "{{user_count}}"
+                    },
+                    {
+                        "name": "Logins Count",
+                        "value": "{{login_count}}"
+                    }
+                ]
+            }
+        }
+    ]
+}

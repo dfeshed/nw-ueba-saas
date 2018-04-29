@@ -34,11 +34,11 @@ public class LocalizationServiceImpl implements LocalizationService, Initializin
     //Cache for messages. Refresh every hour,
     //Map locale name <String> to Map of <message_key,message_text>
     //I.E. <"IL",<"bla.ba", "text for key bla bla">
-    @Autowired
-    @Qualifier("messagesChache")
+//    @Autowired
+//    @Qualifier("messagesChache")
     private CacheHandler<Locale, Map<String,String>> messagesCache;
 
-    @Autowired
+//    @Autowired
     private ApplicationConfigurationService applicationConfigurationService;
 
 
@@ -48,7 +48,16 @@ public class LocalizationServiceImpl implements LocalizationService, Initializin
     @Value("#{'${languages.supported}'.split(',')}")
     private List<String> languages;
 
-    ConfigrationServerClientUtils configrationServerClientUtils = new ConfigrationServerClientUtils();
+    ConfigrationServerClientUtils configrationServerClientUtils;
+
+    public LocalizationServiceImpl(CacheHandler<Locale, Map<String, String>> messagesCache,
+                                   ApplicationConfigurationService applicationConfigurationService,
+                                   ConfigrationServerClientUtils configrationServerClientUtils) {
+        this.messagesCache = messagesCache;
+        this.applicationConfigurationService = applicationConfigurationService;
+        this.configrationServerClientUtils = configrationServerClientUtils;
+    }
+
     @Override
     public Map<String, String> getAllLocalizationStrings(Locale locale) {
 

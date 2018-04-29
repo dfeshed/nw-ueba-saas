@@ -1,0 +1,35 @@
+{
+    "dataPath": "popup.data.members",
+    "renderHeader": false,
+    "className": "no-border no-margins",
+    "style": { "margin-top": "10px" },
+    "views": [
+        {
+            "type": "table",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "Username",
+                        "value": "{{displayname}}",
+                        "valueTooltip": "Click to open {{displayname}}'s profile",
+                        "link": "#/user/{{uid}}/user_overview"
+                    },
+                    {
+                        "name": "Score For The User",
+                        "value": "{{score:round}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "score"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
