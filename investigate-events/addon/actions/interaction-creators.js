@@ -115,10 +115,12 @@ export const setQueryView = (view, filters = []) => {
       const rawText = encodeMetaFilterConditions(filters).replace(/(&&\s*)*$/g, '').trim(); // remove && from the end
       dispatch(setFreeFormText(rawText));
     }
-    dispatch(toggleFocusFlag(true));
     dispatch({
       type: ACTION_TYPES.SET_QUERY_VIEW,
-      payload: view
+      payload: {
+        queryView: view,
+        toggledOnceFlag: true
+      }
     });
   };
 };
@@ -130,18 +132,6 @@ export const setFreeFormText = (text) => {
       dispatch({
         type: ACTION_TYPES.SET_FREE_FORM_TEXT,
         payload: text
-      });
-    }
-  };
-};
-
-export const toggleFocusFlag = (flag) => {
-  return (dispatch, getState) => {
-    const previousFlag = getState().investigate.queryNode.toggledOnceFlag;
-    if (previousFlag !== flag) {
-      dispatch({
-        type: ACTION_TYPES.TOGGLE_FOCUS_FLAG,
-        payload: flag
       });
     }
   };

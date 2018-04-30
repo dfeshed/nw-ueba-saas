@@ -341,9 +341,6 @@ const QueryFragmentComponent = Component.extend({
       }
     } else {
       this.send('dirtyQueryToggle');
-      /* helps remove focus in cases when user hard resets(clicks on Event Analysis)
-      or executes a query */
-      this.send('toggleFocusFlag', false);
     }
   },
 

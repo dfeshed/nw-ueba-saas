@@ -94,15 +94,20 @@ test('test SET_PREFERENCES when payload does not have queryTimeFormat and no cur
 
 test('test SET_QUERY_VIEW reducer sets the correct mode provided', function(assert) {
   const prevState = Immutable.from({
-    queryView: 'guided'
+    queryView: 'guided',
+    toggledOnceFlag: false
   });
   const action = {
     type: ACTION_TYPES.SET_QUERY_VIEW,
-    payload: 'freeForm'
+    payload: {
+      queryView: 'freeForm',
+      toggledOnceFlag: true
+    }
   };
   const result = reducer(prevState, action);
 
   assert.equal(result.queryView, 'freeForm');
+  assert.equal(result.toggledOnceFlag, true);
 });
 
 test('test SET_FREE_FORM_TEXT reducer sets the correct text query provided', function(assert) {
@@ -117,20 +122,6 @@ test('test SET_FREE_FORM_TEXT reducer sets the correct text query provided', fun
 
   assert.equal(result.freeFormText, 'medium = 1');
 });
-
-test('test TOGGLE_FOCUS_FLAG reducer sets the correct flag provided', function(assert) {
-  const prevState = Immutable.from({
-    toggledOnceFlag: false
-  });
-  const action = {
-    type: ACTION_TYPES.TOGGLE_FOCUS_FLAG,
-    payload: true
-  };
-  const result = reducer(prevState, action);
-
-  assert.equal(result.toggledOnceFlag, true);
-});
-
 
 test('test INITIALIZE_INVESTIGATE reducer sets the correct view from localStorage', function(assert) {
   /* INTENT- overwrites queryView */

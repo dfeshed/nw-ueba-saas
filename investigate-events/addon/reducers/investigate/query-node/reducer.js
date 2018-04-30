@@ -110,15 +110,14 @@ export default handleActions({
   },
 
   [ACTION_TYPES.SET_QUERY_VIEW]: (state, { payload }) => {
-    return state.set('queryView', payload);
+    return state.merge({
+      queryView: payload.queryView,
+      toggledOnceFlag: payload.toggledOnceFlag
+    });
   },
 
   [ACTION_TYPES.SET_FREE_FORM_TEXT]: (state, { payload }) => {
     return state.set('freeFormText', payload);
-  },
-
-  [ACTION_TYPES.TOGGLE_FOCUS_FLAG]: (state, { payload }) => {
-    return state.set('toggledOnceFlag', payload);
   },
 
   [ACTION_TYPES.SERVICE_SELECTED]: (state, { payload }) => {
