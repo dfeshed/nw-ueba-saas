@@ -1,7 +1,7 @@
 <h1> {{t 'configure.logsParser.logParsers'}} </h1>
 <table class='parserTable'>
   {{#each logs as |log index|}}
-    <tr><td class='{{if (eq clickedLog index) 'active'}}'{{action "selectLogParser" index log.name}}>
+    <tr><td class='{{if (eq index 0) 'firstItem'}} {{if (eq clickedLogIndex index) 'active'}}'{{action "selectLogParser" log.name index}}>
       {{log.name}}
     </td></tr>
   {{/each}}

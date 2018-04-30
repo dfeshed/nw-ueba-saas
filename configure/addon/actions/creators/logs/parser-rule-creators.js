@@ -22,10 +22,10 @@ const findAllLogParsers = () => {
   };
 };
 
-const getRules = (id) => {
+const getRules = (name) => {
   return {
     type: ACTION_TYPES.FETCH_PARSER_RULES,
-    promise: api.getRules(id)
+    promise: api.getRules(name)
   };
 };
 
@@ -36,17 +36,17 @@ const addRule = (id) => {
   };
 };
 
-const selectLogParser = (index, name) => {
+const selectParserRule = (name, index) => {
   return {
-    type: ACTION_TYPES.SELECT_LOG_PARSER,
-    payload: { 'logName': name, 'clickedLog': index }
+    type: ACTION_TYPES.SELECT_PARSER_RULE,
+    payload: { 'ruleName': name, 'clickedRuleIndex': index }
   };
 };
 
-const selectParserRule = (index, name) => {
+const selectLogParser = (name, index) => {
   return {
-    type: ACTION_TYPES.SELECT_PARSER_RULE,
-    payload: { 'ruleName': name, 'clickedRule': index }
+    type: ACTION_TYPES.SELECT_LOG_PARSER,
+    payload: { 'logName': name, 'clickedLogIndex': index }
   };
 };
 
@@ -56,6 +56,6 @@ export {
   getRules,
   addRule,
   findAllLogParsers,
-  selectLogParser,
-  selectParserRule
+  selectParserRule,
+  selectLogParser
 };

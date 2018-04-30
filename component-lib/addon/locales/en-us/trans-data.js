@@ -532,7 +532,16 @@ export default {
       wait: 'Loading log Parsers...',
       logParserRules: 'Log Parser Rules',
       logParsers: 'Log Parsers',
-      rules: 'Rules'
+      rules: 'Rules',
+      tokens: 'Token',
+      mapping: 'Meta',
+      valueMatching: 'Matching',
+      type: 'Type',
+      pattern: 'Pattern',
+      values: 'Values',
+      error: {
+        generic: 'An unexpected error has occurred attempting to retrieve this data.'
+      }
     },
     title: 'Configure',
     liveContent: 'Live Content',

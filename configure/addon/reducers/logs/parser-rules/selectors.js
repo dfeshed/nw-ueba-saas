@@ -9,14 +9,41 @@ export const findAllLogParsers = createSelector(
   (parserRulesState) => parserRulesState.parserRules
 );
 
+export const getRules = createSelector(
+  parserRulesState,
+  (parserRulesState) => parserRulesState.rules
+);
+
 export const getSelectedLogName = createSelector(
   parserRulesState,
-  (parserRulesState) => parserRulesState.selectedParserId
+  (parserRulesState) => parserRulesState.selectedLogName
 );
 
 export const getSelectedRuleId = createSelector(
   parserRulesState,
   (parserRulesState) => parserRulesState.selectedRuleId
+);
+
+export const getFirstLogName = createSelector(
+  findAllLogParsers,
+  (allLogs) => {
+    if (allLogs && allLogs[0]) {
+      return allLogs[0].name;
+    } else {
+      return '';
+    }
+  }
+);
+
+export const getFirstRuleName = createSelector(
+  getRules,
+  (rules) => {
+    if (rules && rules[0]) {
+      return rules[0].name;
+    } else {
+      return '';
+    }
+  }
 );
 
 const _getFormats = createSelector(
@@ -34,42 +61,45 @@ export const isLoading = createSelector(
   (parserRulesState) => parserRulesState.parserRulesStatus === 'wait'
 );
 
-export const getClickedRule = createSelector(
+export const isLoadingRules = createSelector(
   parserRulesState,
-  (parserRulesState) => parserRulesState.clickedRule
+  (parserRulesState) => parserRulesState.rulesStatus === 'wait'
 );
 
-export const getClickedLog = createSelector(
+export const isLoadingError = createSelector(
   parserRulesState,
-  (parserRulesState) => parserRulesState.clickedLog
+  (parserRulesState) => parserRulesState.parserRulesStatus === 'error'
 );
 
-export const getRules = createSelector(
-  findAllLogParsers,
-  getSelectedLogName,
-  (logParsers, logName) => {
-    const selectedParser = logParsers.filter((log) => log.name === logName);
-    if (selectedParser[0]) {
-      if (selectedParser[0].parserFiles[1]) {
-        return selectedParser[0].parserFiles[0].parserRules.concat(selectedParser[0].parserFiles[1].parserRules);
-      } else {
-        return selectedParser[0].parserFiles[0].parserRules;
-      }
-    } else {
-      return [];
-    }
-  }
+export const isLoadingRulesError = createSelector(
+  parserRulesState,
+  (parserRulesState) => parserRulesState.rulesStatus === 'error'
 );
+
+export const getClickedLogIndex = createSelector(
+  parserRulesState,
+  (parserRulesState) => parserRulesState.clickedLogIndex
+);
+
+export const getClickedRuleIndex = createSelector(
+  parserRulesState,
+  (parserRulesState) => parserRulesState.clickedRuleIndex
+);
+
 
 export const getSelectedRule = createSelector(
   getRules,
   getSelectedRuleId,
   (rules, selectedRuleId) => {
-    return rules.filter((rule) => rule.name === selectedRuleId)[0];
+    if (rules) {
+      return rules.filter((rule) => rule.name === selectedRuleId)[0];
+    } else {
+      return '';
+    }
   }
 );
 
-export const getSelectedRuleRegex = createSelector(
+export const getRuleRegex = createSelector(
   getSelectedRule,
   _getFormats,
   (selectedRule, formats) => {
@@ -83,7 +113,28 @@ export const getSelectedRuleRegex = createSelector(
   }
 );
 
-export const getSelectedRuleTokens = createSelector(
+export const getRuleMatches = createSelector(
+  getSelectedRule,
+  _getFormats,
+  (selectedRule, formats) => {
+    if (selectedRule) {
+      if (selectedRule.pattern.format) {
+        return formats.filter((format) => format.type === selectedRule.pattern.format)[0].matches;
+      } else {
+        return '';
+      }
+    }
+  }
+);
+// this is only a place holder for UI drop down
+export const getRuleValues = createSelector(
+  _getFormats,
+  (formats) => {
+    return formats.map((format) => format.type);
+  }
+);
+
+export const getRuleTokens = createSelector(
   getSelectedRule,
   (selectedRule) => {
     return selectedRule ? selectedRule.literals : '';

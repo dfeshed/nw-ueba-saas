@@ -37,7 +37,12 @@ function getRules(id) {
     method: 'getRules',
     modelName: 'parser-rules',
     query: {
-      ruleId: id
+      filter: [{
+        field: 'name',
+        value: id }],
+      sort: [],
+      stream: {},
+      id: ''
     }
   });
 }

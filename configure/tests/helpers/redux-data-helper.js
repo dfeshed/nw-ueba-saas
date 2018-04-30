@@ -38,12 +38,83 @@ export default class DataHelper {
   }
 
   parserRulesWait(flag) {
-    _set(this.state, 'logs.parserRules.parserRules', [{ _id: '5a8c578ee4b0f72441e1941b', name: 'builtin' }]);
+    _set(this.state, 'logs.parserRules.parserRules', [{ name: 'builtin' }]);
     if (flag) {
       _set(this.state, 'logs.parserRules.parserRulesStatus', 'wait');
     } else {
       _set(this.state, 'logs.parserRules.parserRulesStatus', 'completed');
     }
+    return this;
+  }
+
+  parserRulesData(flag) {
+    _set(this.state, 'logs.parserRules.rules', [{ name: 'ipv4' }]);
+    if (flag) {
+      _set(this.state, 'logs.parserRules.rulesStatus', 'wait');
+    } else {
+      _set(this.state, 'logs.parserRules.rulesStatus', 'completed');
+    }
+    return this;
+  }
+
+  parserRulesFormatData(rule) {
+    _set(this.state, 'logs.parserRules.rules', [{
+      'name': 'ipv4',
+      'literals': [
+        {
+          'value': 'ipv4= '
+        }
+      ],
+      'pattern': {
+        'captures': [
+          {
+            'key': 'ipv4',
+            'index': '1'
+          }
+        ],
+        'format': 'ipv4'
+      },
+      'ruleMetas': []
+    },
+    {
+      'name': 'ipv6',
+      'literals': [
+        {
+          'value': 'ipv6= '
+        }
+      ],
+      'pattern': {
+        'captures': [
+          {
+            'key': 'ipv6',
+            'index': '1'
+          }
+        ],
+        'format': 'ipv6'
+      },
+      'ruleMetas': []
+    }]);
+    _set(this.state, 'logs.parserRules.clickedRuleIndex', 0);
+    _set(this.state, 'logs.parserRules.rulesStatus', 'completed');
+    _set(this.state, 'logs.parserRules.formats', [{
+      name: 'Regex Pattern',
+      pattern: '',
+      matches: 'This matches Regex',
+      type: 'regex'
+    },
+    {
+      name: 'IPV4 Address',
+      pattern: '(?:[0-9]{1,3}\\.){3}[0-9]{1,3}',
+      matches: 'This matches IPV4 addresses',
+      type: 'ipv4'
+    },
+    {
+      name: 'IPV6 Address',
+      pattern: '((([0-9A-Fa-f]{1,4}:){1,6}:)|(([0-9A-Fa-f]{1,4}:){7}))([0-9A-Fa-f]{1,4})|::1|::0',
+      matches: 'This matches IPV6 addresses',
+      type: 'ipv6'
+    }]);
+    _set(this.state, 'logs.parserRules.selectedRuleId', rule);
     return this;
   }
 }

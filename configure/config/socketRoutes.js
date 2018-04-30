@@ -13,16 +13,16 @@ const configureConfigGen = function(environment) {
     'parser-rules': {
       socketUrl: socketUrlLogs,
       findAllLogParsers: {
-        subscriptionDestination: '/user/queue/content/parser/get',
-        requestDestination: '/ws/content/parser/get'
+        subscriptionDestination: '/user/queue/content/parser/list',
+        requestDestination: '/ws/content/parser/list'
       },
       getFormats: {
         subscriptionDestination: '/user/queue/content/parser/formats',
         requestDestination: '/ws/content/parser/formats'
       },
       getRules: {
-        subscriptionDestination: '/user/queue/parser/rules',
-        requestDestination: '/ws/logs/parser/rules'
+        subscriptionDestination: '/user/queue/content/parser/rules',
+        requestDestination: '/ws/content/parser/rules'
       },
       queryRecord: {
         subscriptionDestination: '/user/queue/parser-rules/rule',

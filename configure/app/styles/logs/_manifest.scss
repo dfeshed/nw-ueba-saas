@@ -9,7 +9,25 @@
     margin-top: 20%;
   }
   h1 {
+    color: text-color(primary, light);
     @include rsa-font(header, larger);
+  }
+  h2 {
+    color: text-color(primary, light);
+    @include rsa-font(header, small);
+    margin-bottom: rsa-whitespace();
+  }
+  .matchingMapping {
+    width: 100%;
+    margin-top: rsa-whitespace(more);
+    td {
+      padding: rsa-whitespace(less);
+      color: text-color(neutral);
+      @include rsa-font(default, small);
+    }
+  }
+  p.firstLogName, p.firstRuleName {
+    display: none;
   }
   .parserContainer  {
     overflow : hidden;
@@ -23,6 +41,11 @@
     border: 1px solid border-color(neutral);
     border-bottom-width: 0px;
   }
+  .value-mapping, .value-matching {
+    border-left: 1px solid border-color(primary, dark);
+    padding-left: rsa-whitespace();
+  }
+
   .leftArea, .centerArea, .rightArea {
     margin:0px;
     width: 19.5%;
@@ -30,7 +53,7 @@
     .parserTable {
       width: 100%;
       margin-top: rsa-whitespace();
-      td{
+      td {
         padding: rsa-whitespace(less);
         color: text-color(neutral);
         cursor: pointer;
@@ -52,6 +75,9 @@
       overflow: auto;
       padding: rsa-whitespace();
     }
+  }
+  .vSpacerFirst {
+    margin-top: rsa-whitespace();
   }
   .tdMessage {
     vertical-align: bottom;

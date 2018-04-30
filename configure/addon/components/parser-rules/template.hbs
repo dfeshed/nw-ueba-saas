@@ -3,6 +3,10 @@
     <div class='loading'>
       {{rsa-loader size='large' label=(t 'configure.logsParser.wait')}}
     </div>
+  {{else if isLoadingError}}
+    <div class='loading'>
+      {{t 'configure.logsParser.error.generic'}}
+    </div>
   {{else}}
     <table class='parserContainer'>
       <tr>
@@ -17,40 +21,19 @@
             {{/if}}
           </h1>
           <div class='centerTop'>
-            <p>
-              Type = {{ruleType}}
-            </p>
-            <p>
-              Meta
-              <table class='parserTable'>
-                {{#each ruleMetas as |meta index|}}
-                  <tr>
-                    <td>
-                      {{meta.index}}
-                    </td>
-                    <td>
-                      {{meta.key}}
-                    </td>
-                    <td>
-                      {{meta.format}}
-                    </td>
-                  </tr>
-                {{/each}}
-              </table>
-            </p>
-            <p>
-            Tokens 
-              <table class='parserTable'>
-                {{#each ruleTokens as |token index|}}
-                  <tr><td class='{{if (eq clickedToken index) 'active'}}'>
-                    {{token.value}}
-                  </td></tr>
-                {{/each}}
-              </table>
-            </p>
-            <p>
-              Pattern = {{ruleRegex}}
-            </p>
+            <table class='matchingMapping'>
+              <tr>
+                <td>
+                  {{parser-rules/token-matching}}
+                </td>
+                <td class='centerTopCenter'>
+                  {{parser-rules/value-matching}}
+                </td>
+                <td>
+                  {{parser-rules/value-mapping}}
+                </td>
+              </tr>
+            </table>
           </div>
         </td>
         <td rowspan="2" class='border rightArea'>

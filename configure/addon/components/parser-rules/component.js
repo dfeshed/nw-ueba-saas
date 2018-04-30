@@ -1,12 +1,9 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { isLoading,
-  getSelectedRuleTokens,
-  getSelectedRuleRegex,
-  getType,
-  getMeta,
   getSelectedLogName,
-  getSelectedRuleId
+  getSelectedRuleId,
+  isLoadingError
 } from 'configure/reducers/logs/parser-rules/selectors';
 
 import Ember from 'ember';
@@ -14,10 +11,7 @@ const { $ } = Ember;
 
 const stateToComputed = (state) => ({
   isLoading: isLoading(state),
-  ruleRegex: getSelectedRuleRegex(state),
-  ruleTokens: getSelectedRuleTokens(state),
-  ruleType: getType(state),
-  ruleMetas: getMeta(state),
+  isLoadingError: isLoadingError(state),
   logName: getSelectedLogName(state),
   ruleName: getSelectedRuleId(state)
 });

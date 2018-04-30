@@ -6,11 +6,11 @@ import { handle } from 'redux-pack';
 const initialState = {
   parserRulesStatus: null, // wait, completed, error,
   parserRules: [],
-  selectedParserId: null,
+  selectedLogName: null,
   selectedRuleId: null,
   formats: [],
-  clickedLog: -1,
-  clickedRule: -1
+  clickedRuleIndex: 0,
+  clickedLogIndex: 0
 };
 
 export default reduxActions.handleActions({
@@ -29,8 +29,6 @@ export default reduxActions.handleActions({
         return state.merge(
           {
             parserRules: action.payload.data,
-            clickedLog: -1,
-            selectedParserId: '',
             selectedRuleId: ''
           }
         );
@@ -40,7 +38,9 @@ export default reduxActions.handleActions({
   [ACTION_TYPES.GET_FORMATS]: (state, action) => (
     handle(state, action, {
       start: (state) => state,
-      failure: (state) => state,
+      failure: (state) => {
+        return state.set('parserRulesStatus', 'error');
+      },
       success: (state) => {
         const theFormats = action.payload.data;
         return state.merge(
@@ -52,21 +52,45 @@ export default reduxActions.handleActions({
       }
     })
   ),
-  [ACTION_TYPES.SELECT_LOG_PARSER]: (state, { payload }) => {
-    return state.merge(
-      {
-        clickedLog: payload.clickedLog,
-        selectedParserId: payload.logName,
-        selectedRuleId: '',
-        clickedRule: -1
+  [ACTION_TYPES.FETCH_PARSER_RULES]: (state, action) => (
+    handle(state, action, {
+      start: (state) => {
+        return state.merge({
+          rules: [],
+          rulesStatus: 'wait'
+        });
+      },
+      failure: (state) => {
+        return state.set('rulesStatus', 'error');
+      },
+      success: (state) => {
+        const theRules = action.payload.data;
+        return state.merge(
+          {
+            rules: theRules,
+            rulesStatus: 'completed',
+            selectedRuleId: '',
+            clickedRuleIndex: -1
+          }
+        );
       }
-    );
-  },
+    })
+  ),
+
   [ACTION_TYPES.SELECT_PARSER_RULE]: (state, { payload }) => {
     return state.merge(
       {
-        clickedRule: payload.clickedRule,
+        clickedRuleIndex: payload.clickedRuleIndex,
         selectedRuleId: payload.ruleName
+      }
+    );
+  },
+
+  [ACTION_TYPES.SELECT_LOG_PARSER]: (state, { payload }) => {
+    return state.merge(
+      {
+        clickedLogIndex: payload.clickedLogIndex,
+        selectedLogName: payload.logName
       }
     );
   }
