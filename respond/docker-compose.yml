@@ -19,7 +19,7 @@ services:
       - "5672:5672"
 
   respond-server:
-    image: asoc-dtr2.rsa.lab.emc.com/rsa/respond-server:11.0.0-latest
+    image: asoc-dtr2.rsa.lab.emc.com/rsa/respond-server:11.2.0-latest
     ports:
       - "7003:7003"
     depends_on:

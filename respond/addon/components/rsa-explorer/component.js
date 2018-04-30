@@ -60,15 +60,15 @@ const dispatchToActions = function(dispatch) {
   return {
     getItems: () => dispatch(creators.getItems()),
     updateItem: (entityId, fieldName, value, revert = () => {}) => dispatch(creators.updateItem(entityId, fieldName, value, {
-      onSuccess: () => (this.send('showFlashMessage', FLASH_MESSAGE_TYPES.SUCCESS, 'respond.entities.actionMessages.updateSuccess')),
+      onSuccess: () => (this.send('showFlashMessage', FLASH_MESSAGE_TYPES.SUCCESS, 'rsaExplorer.flash.updateSuccess')),
       onFailure: () => {
         revert();
         this.send('showFlashMessage', FLASH_MESSAGE_TYPES.ERROR, 'respond.entities.actionMessages.updateFailure');
       }
     })),
     deleteItem: (entityId) => dispatch(creators.deleteItem(entityId, {
-      onSuccess: () => (this.send('showFlashMessage', FLASH_MESSAGE_TYPES.SUCCESS, 'respond.entities.actionMessages.updateSuccess')),
-      onFailure: () => (this.send('showFlashMessage', FLASH_MESSAGE_TYPES.ERROR, 'respond.entities.actionMessages.updateFailure'))
+      onSuccess: () => (this.send('showFlashMessage', FLASH_MESSAGE_TYPES.SUCCESS, 'rsaExplorer.flash.updateSuccess')),
+      onFailure: () => (this.send('showFlashMessage', FLASH_MESSAGE_TYPES.ERROR, 'rsaExplorer.flash.updateFailure'))
     })),
     toggleFilterPanel: () => dispatch(creators.toggleFilterPanel()),
     updateFilter: (change) => dispatch(creators.updateFilter(change)),
@@ -99,7 +99,7 @@ const dispatchToActions = function(dispatch) {
  */
 const Explorer = Component.extend(Notifications, Confirmable, {
   tagName: 'vbox',
-  classNames: ['rsa-respond-explorer', 'flexi-fit'],
+  classNames: ['rsa-explorer', 'flexi-fit'],
   classNameBindings: ['isFilterPanelOpen:show-filters', 'focusedItem:show-inspector', 'isTransactionUnderway:transaction-in-progress'],
   redux: service(),
 

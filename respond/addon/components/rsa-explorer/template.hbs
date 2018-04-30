@@ -34,7 +34,7 @@
           isSelectAll=isSelectAll
           items=items
           fetchStatus=itemsStatus
-          noResultsMessage=(or noResultsMessage (t 'respond.explorer.noResults'))
+          noResultsMessage=(or noResultsMessage (t 'rsaExplorer.noResults'))
           sortBy=(action 'sortBy')
           toggleSelectAll=(action 'toggleSelectAll')
           focus=(action 'focus')
@@ -46,9 +46,9 @@
       <box class="items-footer">
         {{#if (not-eq itemsStatus "wait") }}
           <centered>
-            <span>{{t 'respond.explorer.footer' count=itemsCount total=itemsTotal}}</span>
+            <span>{{t 'rsaExplorer.footer' count=itemsCount total=itemsTotal}}</span>
             <span class="vertical-separator"></span>
-            <span class="selection-count">{{ t 'respond.incidents.selectionCount' selectionCount=selectionCount}}</span>
+            <span class="selection-count">{{ t 'rsaExplorer.selectionCount' selectionCount=selectionCount}}</span>
           </centered>
         {{/if}}
       </box>
@@ -73,20 +73,20 @@
     </centered>
   </div>
 {{/if}}
-{{#rsa-application-modal eventId='bulk-update-entities' label=(t "respond.explorer.confirmation.updateTitle") style="standard respond-confirmation-dialog"}}
-  <div class='modal-content rsa-respond-bulk-update-confirm'>
-    <p>{{t 'respond.explorer.confirmation.bulkUpdateConfrimation'}}:</p>
+{{#rsa-application-modal eventId='bulk-update-entities' label=(t "rsaExplorer.confirmation.updateTitle") style="standard explorer-confirmation-dialog"}}
+  <div class='modal-content rsa-explorer-bulk-update-confirm'>
+    <p>{{t 'rsaExplorer.confirmation.bulkUpdateConfrimation'}}:</p>
     <ul>
       <li>
-        <span class="label">{{t 'respond.explorer.confirmation.field'}}:</span>
+        <span class="label">{{t 'rsaExplorer.confirmation.field'}}:</span>
         <span class="value"><em>{{confirmationData.fieldLabel}}</em></span>
       </li>
       <li>
-        <span class="label">{{t 'respond.explorer.confirmation.value'}}:</span>
+        <span class="label">{{t 'rsaExplorer.confirmation.value'}}:</span>
         <span class="value">{{confirmationData.valueLabel}}</span>
       </li>
       <li>
-        <span class="label">{{t 'respond.explorer.confirmation.recordCountAffected'}}:</span>
+        <span class="label">{{t 'rsaExplorer.confirmation.recordCountAffected'}}:</span>
         <span class="value">{{confirmationData.count}}</span>
       </li>
     </ul>
@@ -102,12 +102,12 @@
     </hbox>
   </footer>
 {{/rsa-application-modal}}
-{{#rsa-application-modal eventId='delete-entities' label=(t "respond.explorer.confirmation.deleteTitle") style="standard respond-confirmation-dialog"}}
-  <div class='modal-content rsa-respond-bulk-update-confirm'>
+{{#rsa-application-modal eventId='delete-entities' label=(t "rsaExplorer.confirmation.deleteTitle") style="standard explorer-confirmation-dialog"}}
+  <div class='modal-content rsa-explorer-bulk-delete-confirm'>
     {{#if confirmationData.warning}}
       <p>{{confirmationData.warning}}</p>
     {{/if}}
-    <p>{{t 'respond.explorer.confirmation.deleteConfirmation' count=confirmationData.count}}</p>
+    <p>{{t 'rsaExplorer.confirmation.deleteConfirmation' count=confirmationData.count}}</p>
   </div>
   <footer>
     <hbox class="modal-footer-buttons">

@@ -16,6 +16,6 @@ $navbarHeight: 49px;
 }
 
 // Adjust the explorer height to account for the navigation
-.respond-engine .rsa-respond-explorer {
+.respond-engine .rsa-explorer {
   height: calc(100vh - #{$navbarHeight});
 }

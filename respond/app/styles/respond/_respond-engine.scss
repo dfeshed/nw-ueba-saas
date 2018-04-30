@@ -1,4 +1,7 @@
 .respond-engine {
+  min-height: 100vh;
+  color: text-color(primary, lightest);
+
   /* Common background for all sub-routes. */
   background-color:$respondBackgroundColor;
 

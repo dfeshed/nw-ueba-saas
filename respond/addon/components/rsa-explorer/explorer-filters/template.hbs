@@ -1,11 +1,11 @@
-<h2 class="header">{{rsa-icon name='filter-2'}}{{t 'respond.filters'}}</h2>
+<h2 class="header">{{rsa-icon name='filter-2'}}{{t 'rsaExplorer.filters.label'}}</h2>
 <section class="body">
   <section class="filter-option created-filter">
     <hbox class="time-range-label">
-      <h2>{{ t 'respond.explorer.filters.timeRange'}}</h2>
+      <h2>{{ t 'rsaExplorer.filters.timeRange'}}</h2>
       {{#x-toggle
         showLabels=true
-        onLabel=(t 'respond.explorer.filters.customDateRange')
+        onLabel=(t 'rsaExplorer.filters.customDateRange')
         value=(readonly hasCustomDate)
         onToggle=(action 'toggleCustomDate') as |toggle|}}
         {{toggle.switch}}
@@ -15,13 +15,13 @@
     {{#liquid-bind hasCustomDate use=(if hasCustomDate "toUp" "toDown") as |currentIsCustomRange|}}
       {{#if currentIsCustomRange}}
         {{rsa-form-datetime
-          label=(t 'respond.explorer.filters.customStartDate')
+          label=(t 'rsaExplorer.filters.customStartDate')
           isError=hasCustomDateError
           value=(unbound customDateRangeStart)
           onChange=(action 'customStartDateChanged')
           errorMessage=customDateErrorMessage}}
         {{rsa-form-datetime
-          label=(t 'respond.explorer.filters.customEndDate')
+          label=(t 'rsaExplorer.filters.customEndDate')
           value=(unbound customDateRangeEnd)
           onChange=(action 'customEndDateChanged')}}
       {{else}}
@@ -30,7 +30,7 @@
           selected=selectedTimeframe
           searchEnabled=false
           onchange=(action "onChangeTimeframe") as |time|}}
-          {{t (concat 'respond.timeframeOptions.' time.name) }}
+          {{t (concat 'rsaExplorer.timeframeOptions.' time.name) }}
         {{/power-select}}
       {{/if}}
     {{/liquid-bind}}
@@ -41,6 +41,6 @@
   {{#rsa-form-button
     isFullWidth=true
     defaultAction='reset'}}
-    {{t 'respond.explorer.filters.reset'}}
+    {{t 'rsaExplorer.filters.reset'}}
   {{/rsa-form-button}}
 </footer>

@@ -114,13 +114,13 @@
   {{#rsa-application-modal
     eventId='delete-task'
     onClose=(action 'cancel')
-    label=(t "respond.explorer.confirmation.deleteTitle")
+    label=(t "respond.confirmation.deleteTitle")
     style="standard respond-confirmation-dialog"}}
     <div class='modal-content'>
       {{#if confirmationData.warning}}
         <p>{{confirmationData.warning}}</p>
       {{/if}}
-      <p>{{t 'respond.explorer.confirmation.deleteConfirmation' count=confirmationData.count}}</p>
+      <p>{{t 'respond.confirmation.deleteConfirmation' count=confirmationData.count}}</p>
     </div>
     <footer>
       <hbox class="modal-footer-buttons">

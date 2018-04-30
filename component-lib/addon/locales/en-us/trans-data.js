@@ -694,28 +694,14 @@ export default {
     select: 'Select',
     close: 'Close',
     empty: '(empty)',
-    filters: 'Filters',
     errorPage: {
       serviceDown: 'Respond Server is offline',
       serviceDownDescription: 'The Respond Server is not running or is inaccessible. Check with your administrator to resolve this issue.',
       fetchError: 'An error has occurred. The Respond Server may be offline or inaccessible.'
     },
-    timeframeOptions: {
-      LAST_5_MINUTES: 'Last 5 Minutes',
-      LAST_10_MINUTES: 'Last 10 Minutes',
-      LAST_15_MINUTES: 'Last 15 Minutes',
-      LAST_30_MINUTES: 'Last 30 Minutes',
-      LAST_HOUR: 'Last Hour',
-      LAST_3_HOURS: 'Last 3 Hours',
-      LAST_6_HOURS: 'Last 6 Hours',
-      LAST_TWELVE_HOURS: 'Last 12 Hours',
-      LAST_TWENTY_FOUR_HOURS: 'Last 24 Hours',
-      LAST_FORTY_EIGHT_HOURS: 'Last 2 Days',
-      LAST_5_DAYS: 'Last 5 Days',
-      LAST_7_DAYS: 'Last 7 Days',
-      LAST_14_DAYS: 'Last 14 Days',
-      LAST_30_DAYS: 'Last 30 Days',
-      ALL_TIME: 'All Data'
+    confirmation: {
+      deleteTitle: 'Confirm Delete',
+      deleteConfirmation: 'Are you sure you want to delete {{count}} record(s)? Once applied, this deletion cannot be reversed.'
     },
     entities: {
       incidents: 'Incidents',
@@ -732,30 +718,6 @@ export default {
         saveFailure: 'There was a problem saving this record'
       },
       alert: 'Alert'
-    },
-    explorer: {
-      noResults: 'No results were found. Try expanding your time range or adjusting existing filters to include more results.',
-      confirmation: {
-        updateTitle: 'Confirm Update',
-        deleteTitle: 'Confirm Delete',
-        bulkUpdateConfrimation: 'You are about to make the following changes to more than one item',
-        deleteConfirmation: 'Are you sure you want to delete {{count}} record(s)? Once applied, this deletion cannot be reversed.',
-        field: 'Field',
-        value: 'Value',
-        recordCountAffected: 'Number of items'
-      },
-      filters: {
-        timeRange: 'Time Range',
-        reset: 'Reset Filters',
-        customDateRange: 'Custom Date Range',
-        customStartDate: 'Start Date',
-        customEndDate: 'End Date',
-        customDateErrorStartAfterEnd: 'The start date and time cannot be the same or later than the end date'
-      },
-      inspector: {
-        overview: 'Overview'
-      },
-      footer: 'Showing {{count}} out of {{total}} items'
     },
     remediationTasks: {
       loading: 'Loading Tasks',
@@ -849,18 +811,11 @@ export default {
         deselectAll: 'Deselect all'
       },
       filters: {
-        timeRange: 'Time Range',
         incidentId: 'Incident ID',
         idFilterPlaceholder: 'e.g., INC-123',
         idFilterError: 'The ID must match the format: INC-###',
-        reset: 'Reset Filters',
-        customDateRange: 'Custom Date Range',
-        customStartDate: 'Start Date',
-        customEndDate: 'End Date',
-        customDateErrorStartAfterEnd: 'The start date and time cannot be the same or later than the end date',
         showOnlyUnassigned: 'Show only unassigned incidents'
       },
-      selectionCount: '{{selectionCount}} selected',
       label: 'Incidents',
       list: {
         select: 'Select',
@@ -2929,5 +2884,59 @@ export default {
         }
       }
     }
+  },
+  rsaExplorer: {
+    timeframeOptions: {
+      LAST_5_MINUTES: 'Last 5 Minutes',
+      LAST_10_MINUTES: 'Last 10 Minutes',
+      LAST_15_MINUTES: 'Last 15 Minutes',
+      LAST_30_MINUTES: 'Last 30 Minutes',
+      LAST_HOUR: 'Last Hour',
+      LAST_3_HOURS: 'Last 3 Hours',
+      LAST_6_HOURS: 'Last 6 Hours',
+      LAST_TWELVE_HOURS: 'Last 12 Hours',
+      LAST_TWENTY_FOUR_HOURS: 'Last 24 Hours',
+      LAST_FORTY_EIGHT_HOURS: 'Last 2 Days',
+      LAST_5_DAYS: 'Last 5 Days',
+      LAST_7_DAYS: 'Last 7 Days',
+      LAST_14_DAYS: 'Last 14 Days',
+      LAST_30_DAYS: 'Last 30 Days',
+      ALL_TIME: 'All Data'
+    },
+    flash: {
+      updateSuccess: 'Your change was successful',
+      updateFailure: 'There was a problem updating the field for this record',
+      createSuccess: 'You successfully added a new record',
+      createFailure: 'There was a problem creating this record',
+      deleteSuccess: 'You successfully deleted this record',
+      deleteFailure: 'There was a problem deleting this record',
+      saveSuccess: 'Your changes were successfully saved',
+      saveFailure: 'There was a problem saving this record'
+    },
+    noResults: 'No results were found. Try expanding your time range or adjusting existing filters to include more results.',
+    confirmation: {
+      updateTitle: 'Confirm Update',
+      deleteTitle: 'Confirm Delete',
+      bulkUpdateConfrimation: 'You are about to make the following changes to more than one item',
+      deleteConfirmation: 'Are you sure you want to delete {{count}} record(s)? Once applied, this deletion cannot be reversed.',
+      field: 'Field',
+      value: 'Value',
+      recordCountAffected: 'Number of items'
+    },
+    filters: {
+      label: 'Filters',
+      timeRange: 'Time Range',
+      reset: 'Reset Filters',
+      customDateRange: 'Custom Date Range',
+      customStartDate: 'Start Date',
+      customEndDate: 'End Date',
+      customDateErrorStartAfterEnd: 'The start date and time cannot be the same or later than the end date'
+    },
+    inspector: {
+      overview: 'Overview'
+    },
+    footer: 'Showing {{count}} out of {{total}} items',
+    selectionCount: '{{selectionCount}} selected',
+    fetchError: 'An error has occurred. The server may be offline or inaccessible.'
   }
 };

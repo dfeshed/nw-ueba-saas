@@ -29,7 +29,7 @@ module('Integration | Component | Respond Alerts', function(hooks) {
   });
 
   const selectors = {
-    explorer: '.rsa-respond-explorer',
+    explorer: '.rsa-explorer',
     filterPanelToggleButton: '.close-filters button',
     tableRow: '.rsa-explorer-table .rsa-data-table-body-row',
     tableCell: '.rsa-data-table-body-cell',
@@ -42,7 +42,7 @@ module('Integration | Component | Respond Alerts', function(hooks) {
     selectAllCheckbox: '.rsa-explorer-table .rsa-data-table-header-cell:first-of-type .rsa-form-checkbox-label',
     createdColumnSortButton: '.rsa-explorer-table .sort-indicator:first-of-type',
     explorerTableErrorMessage: '.rsa-explorer-table .items-error',
-    deleteButton: '.rsa-respond-explorer .rsa-explorer-toolbar .is-danger button',
+    deleteButton: '.rsa-explorer .rsa-explorer-toolbar .is-danger button',
     confirmationOkButton: '.modal-footer-buttons .is-primary button',
     noResultsMessage: '.rsa-explorer-table .no-results-message .message'
   };
@@ -64,7 +64,7 @@ module('Integration | Component | Respond Alerts', function(hooks) {
   test('The component shows an error message if there is an error fetching alerts', async function(assert) {
     const done = throwSocket({ methodToThrow: 'stream', modelNameToThrow: 'alerts' });
     setState();
-    const errorMessage = i18n.t('respond.errorPage.fetchError');
+    const errorMessage = i18n.t('rsaExplorer.fetchError');
     await render(hbs`{{rsa-alerts}}`);
     assert.equal(find(selectors.explorerTableErrorMessage).textContent.trim(), errorMessage, 'An error message is displayed if the fetch of tasks fails');
     done();
@@ -140,9 +140,9 @@ module('Integration | Component | Respond Alerts', function(hooks) {
   test('Clicking on the delete button deletes the item after confirming via dialog', async function(assert) {
     assert.expect(3);
     const done = assert.async();
-    const noResultsMessage = i18n.t('respond.explorer.noResults');
+    const noResultsMessage = i18n.t('rsaExplorer.noResults');
     patchFlash((flash) => {
-      const expectedMessage = i18n.t('respond.entities.actionMessages.updateSuccess');
+      const expectedMessage = i18n.t('rsaExplorer.flash.updateSuccess');
       assert.equal(flash.type, 'success');
       assert.equal(flash.message.string, expectedMessage);
       done();

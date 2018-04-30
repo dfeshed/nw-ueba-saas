@@ -31,7 +31,7 @@ module('Integration | Component | Explorer', function(hooks) {
     this.set('columns', []);
     this.set('creators', remediationTaskCreators);
     await render(hbs`{{rsa-explorer columns=columns reduxSpace='respond.remediationTasks' creators=creators}}`);
-    assert.equal(findAll('.rsa-respond-explorer').length, 1, 'The Explorer component should be found in the DOM');
+    assert.equal(findAll('.rsa-explorer').length, 1, 'The Explorer component should be found in the DOM');
   });
 
   test('The yielded toolbar component renders to the DOM with block content', async function(assert) {
@@ -43,8 +43,8 @@ module('Integration | Component | Explorer', function(hooks) {
           <div class="block-content"></div>
         {{/explorer.toolbar}}
       {{/rsa-explorer}}`);
-    assert.equal(findAll('.rsa-respond-explorer .rsa-explorer-toolbar .more-filters-button').length, 1, 'The Explorer toolbar component renders');
-    assert.equal(findAll('.rsa-respond-explorer .rsa-explorer-toolbar .block-content').length, 1, 'The toolbar block content renders');
+    assert.equal(findAll('.rsa-explorer .rsa-explorer-toolbar .more-filters-button').length, 1, 'The Explorer toolbar component renders');
+    assert.equal(findAll('.rsa-explorer .rsa-explorer-toolbar .block-content').length, 1, 'The toolbar block content renders');
   });
 
   test('The yielded filters component renders to the DOM with block content', async function(assert) {
@@ -56,9 +56,9 @@ module('Integration | Component | Explorer', function(hooks) {
           <div class="block-content"></div>
         {{/explorer.filters}}
       {{/rsa-explorer}}`);
-    assert.equal(findAll('.rsa-respond-explorer .explorer-filters .body').length, 1, 'The Explorer filters component renders');
-    assert.equal(findAll('.rsa-respond-explorer .explorer-filters footer .rsa-form-button').length, 1, 'The reset button renders');
-    assert.equal(findAll('.rsa-respond-explorer .explorer-filters .body .block-content').length, 1, 'The filters block content renders');
+    assert.equal(findAll('.rsa-explorer .explorer-filters .body').length, 1, 'The Explorer filters component renders');
+    assert.equal(findAll('.rsa-explorer .explorer-filters footer .rsa-form-button').length, 1, 'The reset button renders');
+    assert.equal(findAll('.rsa-explorer .explorer-filters .body .block-content').length, 1, 'The filters block content renders');
   });
 
   test('The yielded table component renders to the DOM with block content', async function(assert) {
@@ -73,8 +73,8 @@ module('Integration | Component | Explorer', function(hooks) {
 
         {{/explorer.table}}
       {{/rsa-explorer}}`);
-    assert.equal(findAll('.rsa-respond-explorer .rsa-explorer-table .rsa-data-table').length, 1, 'The Explorer table component renders');
-    assert.equal(find('.rsa-respond-explorer .rsa-explorer-table .rsa-data-table .rsa-data-table-header-cell').textContent.trim(), 'Name', 'Explorer table column renders');
+    assert.equal(findAll('.rsa-explorer .rsa-explorer-table .rsa-data-table').length, 1, 'The Explorer table component renders');
+    assert.equal(find('.rsa-explorer .rsa-explorer-table .rsa-data-table .rsa-data-table-header-cell').textContent.trim(), 'Name', 'Explorer table column renders');
   });
 
   test('The yielded inspector component renders to the DOM with block content', async function(assert) {
@@ -92,8 +92,8 @@ module('Integration | Component | Explorer', function(hooks) {
         {{/explorer.inspector}}
       {{/rsa-explorer}}`);
 
-    assert.equal(findAll('.rsa-respond-explorer .rsa-explorer-inspector').length, 1, 'The Explorer inspector component renders');
-    assert.equal(findAll('.rsa-respond-explorer .rsa-explorer-inspector .block-content').length, 1, 'Explorer inspector block content renders');
+    assert.equal(findAll('.rsa-explorer .rsa-explorer-inspector').length, 1, 'The Explorer inspector component renders');
+    assert.equal(findAll('.rsa-explorer .rsa-explorer-inspector .block-content').length, 1, 'Explorer inspector block content renders');
   });
 
   test('The select all header checkbox adds all items updates isSelectAll in app state', async function(assert) {
@@ -118,7 +118,7 @@ module('Integration | Component | Explorer', function(hooks) {
           {{/if}}
       {{/explorer.table}}
     {{/rsa-explorer}}`);
-    const selectAllCheckboxSelector = '.rsa-respond-explorer .rsa-explorer-table .rsa-data-table .rsa-data-table-header-cell input[type=checkbox]';
+    const selectAllCheckboxSelector = '.rsa-explorer .rsa-explorer-table .rsa-data-table .rsa-data-table-header-cell input[type=checkbox]';
 
     // Header column should have a checkbox for select all
     assert.equal(findAll(selectAllCheckboxSelector).length, 1, 'Select all column has a checkbox');
@@ -147,9 +147,9 @@ module('Integration | Component | Explorer', function(hooks) {
 
         {{/explorer.table}}
       {{/rsa-explorer}}`);
-    assert.equal(findAll('.rsa-respond-explorer .rsa-explorer-table .rsa-data-table').length, 1, 'The Explorer table component renders');
-    assert.equal(find('.rsa-respond-explorer .rsa-explorer-table .rsa-data-table .rsa-data-table-header-cell').textContent.trim(), 'Name', 'Explorer table column renders');
-    await click('.rsa-respond-explorer .rsa-explorer-table .rsa-data-table .rsa-data-table-header-cell .header-title');
+    assert.equal(findAll('.rsa-explorer .rsa-explorer-table .rsa-data-table').length, 1, 'The Explorer table component renders');
+    assert.equal(find('.rsa-explorer .rsa-explorer-table .rsa-data-table .rsa-data-table-header-cell').textContent.trim(), 'Name', 'Explorer table column renders');
+    await click('.rsa-explorer .rsa-explorer-table .rsa-data-table .rsa-data-table-header-cell .header-title');
     assert.ok(actionSpy.calledOnce);
     actionSpy.restore();
   });
