@@ -66,10 +66,6 @@
   optionalDependencies:
     websocket latest
 
-"@types/rsvp@^3.0.0":
-  version "3.3.1"
-  resolved "https://registry.npmjs.org/@types/rsvp/-/rsvp-3.3.1.tgz#6420db1ad5f9fcca040002266de89feb7eea1096"
-
 Base64@~0.2.0:
   version "0.2.1"
   resolved "https://registry.npmjs.org/Base64/-/Base64-0.2.1.tgz#ba3a4230708e186705065e66babdd4c35cf60028"
@@ -159,6 +155,12 @@ amd-name-resolver@0.0.7:
 amd-name-resolver@1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/amd-name-resolver/-/amd-name-resolver-1.0.0.tgz#0e593b28d6fa3326ab1798107edaea961046e8d8"
+  dependencies:
+    ensure-posix-path "^1.0.1"
+
+amd-name-resolver@1.2.0:
+  version "1.2.0"
+  resolved "https://registry.npmjs.org/amd-name-resolver/-/amd-name-resolver-1.2.0.tgz#fc41b3848824b557313897d71f8d5a0184fbe679"
   dependencies:
     ensure-posix-path "^1.0.1"
 
@@ -1386,7 +1388,7 @@ broccoli-autoprefixer@^4.1.0:
     object-assign "^4.0.1"
     postcss "^5.0.4"
 
-broccoli-babel-transpiler@^5.6.1, broccoli-babel-transpiler@^5.6.2:
+broccoli-babel-transpiler@^5.6.2:
   version "5.7.2"
   resolved "https://registry.npmjs.org/broccoli-babel-transpiler/-/broccoli-babel-transpiler-5.7.2.tgz#756c30544775144e984333b7115f42c916ba08e0"
   dependencies:
@@ -1499,7 +1501,7 @@ broccoli-config-replace@^1.1.2:
     debug "^2.2.0"
     fs-extra "^0.24.0"
 
-broccoli-debug@^0.6.0, broccoli-debug@^0.6.1, broccoli-debug@^0.6.2:
+broccoli-debug@^0.6.1, broccoli-debug@^0.6.2:
   version "0.6.3"
   resolved "https://registry.npmjs.org/broccoli-debug/-/broccoli-debug-0.6.3.tgz#1f33bb0eacb5db81366f0492524c82b1217eb578"
   dependencies:
@@ -1511,7 +1513,7 @@ broccoli-debug@^0.6.0, broccoli-debug@^0.6.1, broccoli-debug@^0.6.2:
     symlink-or-copy "^1.1.8"
     tree-sync "^1.2.2"
 
-broccoli-debug@^0.6.3:
+broccoli-debug@^0.6.3, broccoli-debug@^0.6.4:
   version "0.6.4"
   resolved "https://registry.npmjs.org/broccoli-debug/-/broccoli-debug-0.6.4.tgz#986eb3d2005e00e3bb91f9d0a10ab137210cd150"
   dependencies:
@@ -1827,17 +1829,15 @@ broccoli-templater@^1.0.0:
     broccoli-stew "^1.2.0"
     lodash.template "^3.3.2"
 
-broccoli-test-helper@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.npmjs.org/broccoli-test-helper/-/broccoli-test-helper-1.1.0.tgz#7ec8a5efc33e2299b6592ca066f6f58645480bda"
+broccoli-test-helper@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.npmjs.org/broccoli-test-helper/-/broccoli-test-helper-1.2.0.tgz#d01005d8611fd73ebe1b29552bf052ff59badfb4"
   dependencies:
-    "@types/rsvp" "^3.0.0"
     broccoli "^1.1.0"
     fixturify "^0.3.2"
     fs-tree-diff "^0.5.6"
     mktemp "^0.4.0"
     rimraf "^2.5.4"
-    rsvp "^3.3.3"
     walk-sync "^0.3.1"
 
 "broccoli-theme@file:broccoli-theme":
@@ -3236,9 +3236,9 @@ ember-ajax@3.0.0:
   dependencies:
     ember-cli-babel "^6.0.0"
 
-ember-asset-loader@^0.3.0:
-  version "0.3.1"
-  resolved "https://registry.npmjs.org/ember-asset-loader/-/ember-asset-loader-0.3.1.tgz#5fc0bbd3ac458da4997dc6454df4c91d75c09b5a"
+ember-asset-loader@^0.4.3:
+  version "0.4.3"
+  resolved "https://registry.npmjs.org/ember-asset-loader/-/ember-asset-loader-0.4.3.tgz#cb59e1d0631f71046fc6e043a78337fea7f4c0a2"
   dependencies:
     broccoli-caching-writer "^3.0.3"
     broccoli-funnel "^1.0.8"
@@ -3283,7 +3283,7 @@ ember-cli-babel@^5.0.0, ember-cli-babel@^5.1.5, ember-cli-babel@^5.1.6, ember-cl
     ember-cli-version-checker "^1.0.2"
     resolve "^1.1.2"
 
-ember-cli-babel@^6.0.0, ember-cli-babel@^6.0.0-beta.4, ember-cli-babel@^6.0.0-beta.7, ember-cli-babel@^6.1.0, ember-cli-babel@^6.3.0, ember-cli-babel@^6.6.0, ember-cli-babel@^6.7.1, ember-cli-babel@^6.7.2, ember-cli-babel@^6.8.1, ember-cli-babel@^6.8.2:
+ember-cli-babel@^6.0.0, ember-cli-babel@^6.0.0-beta.4, ember-cli-babel@^6.0.0-beta.7, ember-cli-babel@^6.1.0, ember-cli-babel@^6.3.0, ember-cli-babel@^6.6.0, ember-cli-babel@^6.7.2, ember-cli-babel@^6.8.1, ember-cli-babel@^6.8.2:
   version "6.8.2"
   resolved "https://registry.npmjs.org/ember-cli-babel/-/ember-cli-babel-6.8.2.tgz#eac2785964f4743f4c815cd53c6288f00cc087d7"
   dependencies:
@@ -3840,27 +3840,26 @@ ember-diff-attrs@^0.2.1:
     ember-cli-babel "^6.6.0"
     ember-weakmap "^3.0.0"
 
-ember-engines@0.5.12:
-  version "0.5.12"
-  resolved "https://registry.npmjs.org/ember-engines/-/ember-engines-0.5.12.tgz#4d05ded30f52cd50c2bd14d914f7f557eb053118"
+ember-engines@0.5.18:
+  version "0.5.18"
+  resolved "https://registry.npmjs.org/ember-engines/-/ember-engines-0.5.18.tgz#facf41e9914cc9170f1dda37537f27e4ad01a3da"
   dependencies:
-    amd-name-resolver "0.0.7"
+    amd-name-resolver "1.2.0"
     babel-plugin-compact-reexports "^0.1.1"
-    broccoli-babel-transpiler "^5.6.1"
+    broccoli-babel-transpiler "^6.1.2"
     broccoli-concat "^3.0.1"
-    broccoli-debug "^0.6.0"
+    broccoli-debug "^0.6.4"
     broccoli-dependency-funnel "^2.0.1"
     broccoli-file-creator "^1.1.0"
-    broccoli-funnel "^1.0.8"
-    broccoli-merge-trees "^1.0.0"
-    broccoli-test-helper "^1.1.0"
+    broccoli-funnel "^2.0.1"
+    broccoli-merge-trees "^2.0.0"
+    broccoli-test-helper "^1.2.0"
     calculate-cache-key-for-tree "^1.0.0"
-    ember-asset-loader "^0.3.0"
-    ember-cli-babel "^6.7.1"
+    ember-asset-loader "^0.4.3"
+    ember-cli-babel "^6.11.0"
     ember-cli-preprocess-registry "^3.0.0"
     ember-cli-string-utils "^1.0.0"
-    ember-cli-version-checker "^2.0.0"
-    exists-sync "0.0.3"
+    ember-cli-version-checker "^2.1.0"
     lodash "^4.12.0"
 
 ember-exam@0.7.0:
