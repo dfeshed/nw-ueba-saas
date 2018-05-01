@@ -30,6 +30,7 @@ const initializeIncidents = () => {
     if (!getCategoryTags(state).length) {
       dispatch(dictionaryCreators.getAllCategories());
     }
+    dispatch(getIncidentsSettings());
     dispatch(dictionaryCreators.getAllEscalationStatuses());
   };
 };
@@ -363,6 +364,7 @@ const initializeIncident = (incidentId) => {
       if (!state.respond.dictionaries.milestoneTypes.length) {
         dispatch(dictionaryCreators.getAllMilestoneTypes());
       }
+      dispatch(getIncidentsSettings());
     }
   };
 };

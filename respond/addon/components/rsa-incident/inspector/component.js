@@ -12,6 +12,7 @@ import {
   getStorylineStatus
 } from 'respond/selectors/storyline';
 import {
+  isEscalateAvailable,
   getIncidentId,
   getIncidentInfo,
   getIncidentInfoStatus,
@@ -33,7 +34,8 @@ const stateToComputed = (state) => {
     viewMode: getViewMode(state),
     width: getInspectorWidth(state),
     storyPointCount: storyPointCount(state),
-    storyEventCount: storyEventCount(state)
+    storyEventCount: storyEventCount(state),
+    isEscalateAvailable: isEscalateAvailable(state)
   };
 };
 
