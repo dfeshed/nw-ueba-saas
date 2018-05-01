@@ -10,7 +10,7 @@ import {
 import TIME_RANGES from 'investigate-events/constants/time-ranges';
 import { fetchServices } from './fetch/services';
 import { lookup } from 'ember-dependency-lookup';
-
+import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 
 const noop = () => {};
 
@@ -46,6 +46,7 @@ export const getDictionaries = (resolve = noop, reject = noop) => {
           promise: fetchLanguage(serviceId),
           meta: {
             onFailure(response) {
+              handleInvestigateErrorCode(response, 'FETCH_LANGUAGE');
               reject(response);
             },
             onFinish() {
@@ -68,6 +69,7 @@ export const getDictionaries = (resolve = noop, reject = noop) => {
           promise: fetchAliases(serviceId),
           meta: {
             onFailure(response) {
+              handleInvestigateErrorCode(response, 'FETCH_ALIASES');
               reject(response);
             },
             onFinish() {
@@ -103,8 +105,8 @@ const _getColumnGroups = () => {
         type: ACTION_TYPES.COLUMNS_RETRIEVE,
         promise: fetchColumnGroups(),
         meta: {
-          onFailure() {
-            // log('getColumnGroups, onFailure', response);
+          onFailure(response) {
+            handleInvestigateErrorCode(response, 'GET_COLUMN_GROUPS');
           }
         }
       });
@@ -235,6 +237,7 @@ export const getServices = (resolve = noop, reject = noop) => {
             resolve();
           },
           onFailure(response) {
+            handleInvestigateErrorCode(response, 'GET_SERVICES');
             reject(response);
           }
         }

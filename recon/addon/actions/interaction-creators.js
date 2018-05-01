@@ -1,11 +1,11 @@
 import { get } from '@ember/object';
 import { isArray } from '@ember/array';
-import { warn } from '@ember/debug';
 
 import * as ACTION_TYPES from './types';
 import { fetchExtractJobId } from './fetch';
 import { getHeaderItem } from 'recon/utils/recon-event-header';
 import { selectedFiles } from 'recon/reducers/files/selectors';
+import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 import {
   isEndpointEvent,
   isLogEvent
@@ -77,8 +77,7 @@ const extractFiles = (type = 'FILES') => {
       promise: fetchExtractJobId(endpointId, eventId, type, filename, selectedFileNames, eventType),
       meta: {
         onFailure(response) {
-          const warnResponse = JSON.stringify(response);
-          warn(`Error fetching job id for extraction ${endpointId} ${eventId} ${warnResponse}`, { id: 'recon.actions.interaction-creators' });
+          handleInvestigateErrorCode(response, `FETCH_EXTRACT_JOB_ID; ${endpointId} ${eventId}`);
         }
       }
     });

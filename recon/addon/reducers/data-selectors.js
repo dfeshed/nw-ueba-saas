@@ -1,11 +1,11 @@
 import { createSelector } from 'reselect';
 import { lookup } from 'ember-dependency-lookup';
 import { isPacketView } from 'recon/reducers/visuals/selectors';
+import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 
 const _contentError = (recon) => recon.data.contentError;
 const _contentLoading = (recon) => recon.data.contentLoading;
 const _headerLoading = (recon) => recon.header.headerLoading;
-const _eventId = (recon) => recon.data.eventId;
 
 /**
  * Use to determine if there was an error retrieving the content of a
@@ -29,21 +29,10 @@ export const isContentError = createSelector(
  * @public
  */
 export const errorMessage = createSelector(
-  [_contentError, _eventId],
-  (contentError, eventId) => {
-    const i18n = lookup('service:i18n');
-    let ret;
-    switch (contentError) {
-      case 2:
-        ret = i18n.t('recon.error.missingRecon', { id: eventId });
-        break;
-      case 110:
-        ret = i18n.t('recon.error.permissionError');
-        break;
-      default:
-        ret = i18n.t('recon.error.generic');
-    }
-    return ret;
+  [_contentError],
+  (contentError) => {
+    const { messageLocaleKey } = handleInvestigateErrorCode({ code: contentError });
+    return lookup('service:i18n').t(messageLocaleKey);
   }
 );
 

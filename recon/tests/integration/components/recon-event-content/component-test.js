@@ -33,7 +33,7 @@ test('it renders child view', function(assert) {
 test('it renders content error', function(assert) {
   new DataHelper(this.get('redux'))
     .setViewToText()
-    .contentRetrieveFailure(2);
+    .contentRetrieveFailure(129);
   this.render(hbs`{{recon-event-content accessControl=accessControl}}`);
   return wait().then(() => {
     assert.equal(this.$().find('.rsa-panel-message').length, 1, 'Content error not set');

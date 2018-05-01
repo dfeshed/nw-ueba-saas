@@ -10,7 +10,6 @@
  */
 import { lookup } from 'ember-dependency-lookup';
 import { later } from '@ember/runloop';
-import { warn } from 'ember-debug';
 
 import * as ACTION_TYPES from './types';
 import { createToggleActionCreator } from './visual-creators';
@@ -66,8 +65,8 @@ const _retrieveMeta = (dataState) => {
           // and fetch data for that view
           dispatch(determineReconView(data));
         },
-        onFailure() {
-          warn('Could not retrieve event meta', { id: 'recon.actions.data-creators' });
+        onFailure(response) {
+          handleInvestigateErrorCode(response, 'RETRIEVE_META');
         }
       }
     });
@@ -90,10 +89,10 @@ const _fetchTextData = function(dispatch, state) {
  * @return {function} redux-thunk
  * @private
  */
-const _handleContentError = (response, type) => {
+const _handleContentError = (response) => {
   return (dispatch) => {
     if (response.code !== 2) {
-      warn(`Could not retrieve ${type} recon data`, { id: 'recon.actions.data-creators' });
+      handleInvestigateErrorCode(response);
     }
     dispatch({
       type: ACTION_TYPES.CONTENT_RETRIEVE_FAILURE,
@@ -337,10 +336,10 @@ const initializeRecon = (reconInputs) => {
           type: ACTION_TYPES.LANGUAGE_RETRIEVE,
           promise: fetchLanguage(reconInputs),
           meta: {
-            onFailure() {
+            onFailure(response) {
               // failure to get language is no good, but
               // is not critical error no need to dispatch
-              warn('Could not retrieve language', { id: 'recon.actions.data-creators' });
+              handleInvestigateErrorCode(response, 'FETCH_LANGUAGE');
             }
           }
         });
@@ -353,8 +352,8 @@ const initializeRecon = (reconInputs) => {
           type: ACTION_TYPES.ALIASES_RETRIEVE,
           promise: fetchAliases(reconInputs),
           meta: {
-            onFailure() {
-              warn('Could not retrieve aliases', { id: 'recon.actions.data-creators' });
+            onFailure(response) {
+              handleInvestigateErrorCode(response, 'FETCH_ALIASES');
             }
           }
         });
@@ -365,7 +364,7 @@ const initializeRecon = (reconInputs) => {
         promise: fetchReconSummary(reconInputs),
         meta: {
           onFailure(response) {
-            const { errorCode } = handleInvestigateErrorCode(response);
+            const { errorCode } = handleInvestigateErrorCode(response, 'FETCH_RECON_SUMMARY');
             dispatch(_checkForFatalApiError(errorCode));
           }
         }
@@ -557,8 +556,8 @@ const initializeNotifications = () => {
         }
       },
       // some job failed
-      () => {
-        warn('Error in file extract job', { id: 'recon.actions.data-creators' });
+      (response) => {
+        handleInvestigateErrorCode(response, 'FETCH_NOTIFICATIONS');
       }
     );
   };

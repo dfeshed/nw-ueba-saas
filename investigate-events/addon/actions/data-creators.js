@@ -6,6 +6,7 @@ import getEventTimeline from './event-timeline-creators';
 import { eventsGetFirst } from './events-creators';
 import { setQueryTimeRange } from 'investigate-events/actions/interaction-creators';
 import { selectedTimeRange, canFetchEvents } from 'investigate-events/reducers/investigate/query-node/selectors';
+import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 
 const noop = () => {};
 
@@ -53,7 +54,8 @@ export const getServiceSummary = (resolve = noop, reject = noop) => {
             _isFirstTime = false;
             resolve();
           },
-          onFailure() {
+          onFailure(response) {
+            handleInvestigateErrorCode(response, 'GET_SERVICES_SUMMARY');
             reject();
           }
         }
@@ -78,4 +80,3 @@ export const fetchInvestigateData = () => {
     }
   };
 };
-

@@ -48,7 +48,11 @@ const investigateEventsErrorCodeDictionary = {
 function _parseAndLogErrorCode(response, errorCodeDictionary, requestName) {
   const errorCode = response.code || response.errorCode || response['error-code'];
   const message = response.meta ? response.meta.message : response['unhandled-error'] || '';
-  const errorObject = errorCodeDictionary[errorCode];
+  let errorObject = errorCodeDictionary[errorCode];
+
+  if (isEmpty(errorObject)) {
+    errorObject = { type: 'UNHANDLED_ERROR', messageLocaleKey: genericMsgKey, sendServerMessage: false };
+  }
 
   /* eslint-disable no-console */
   console.warn('----- ERROR RECEIVED -----');
