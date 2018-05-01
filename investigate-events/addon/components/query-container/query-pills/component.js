@@ -1,11 +1,17 @@
 import Component from '@ember/component';
 import * as MESSAGE_TYPES from '../message-types';
 import { warn } from '@ember/debug';
+import { connect } from 'ember-redux';
+import { dirtyQueryToggle } from 'investigate-events/actions/query-validation-creators';
 
 const { log } = console;
 const _debug = (data) => log('pills', data);
 
-export default Component.extend({
+const dispatchToActions = {
+  dirtyQueryToggle
+};
+
+const QueryPills = Component.extend({
   classNames: ['query-pills'],
 
   filters: [],
@@ -79,6 +85,8 @@ export default Component.extend({
     const filtersAsArray = new Array();
     filterMap.forEach((d) => filtersAsArray.push({ ...d, saved: true }));
     this.set('filters', filtersAsArray);
+    // Mark the query as dirty since we created a pill
+    this.send('dirtyQueryToggle');
   },
 
   /**
@@ -91,3 +99,5 @@ export default Component.extend({
     filterMap.set(key, null);
   }
 });
+
+export default connect(null, dispatchToActions)(QueryPills);

@@ -1,17 +1,18 @@
-<input type="text"
-  value={{text}}
-  role="combobox"
-  id="ember-power-select-typeahead-input-{{select.uniqueId}}"
-  class="ember-power-select-typeahead-input ember-power-select-search-input"
+<input
   autocomplete="off"
-  placeholder={{placeholder}}
-  oninput={{onInput}}
-  onfocus={{onFocus}}
-  onblur={{onBlur}}
+  class="ember-power-select-typeahead-input ember-power-select-search-input"
   disabled={{select.disabled}}
+  id="ember-power-select-typeahead-input-{{select.uniqueId}}"
+  onblur={{action "handleBlur"}}
+  onfocus={{action "handleFocus"}}
+  oninput={{action "handleInput"}}
   onkeydown={{action "handleKeydown"}}
   onmousedown={{action "stopPropagation"}}
-  size={{valueLength}}>
+  placeholder={{placeholder}}
+  role="combobox"
+  size={{size}}
+  type="text"
+  value={{text}}>
 {{#if select.loading}}
   <span class="ember-power-select-typeahead-loading-indicator"></span>
 {{/if}}

@@ -10,16 +10,12 @@ import { computed } from '@ember/object';
 import { isBlank } from '@ember/utils';
 import { run } from '@ember/runloop';
 
+// const { log } = console;
+
 export default Component.extend({
   bindClassNames: ['has-selection:select'],
   tagName: '',
   value: '',
-  valueLength: 1,
-
-  _calculateSize(value) {
-    const length = (value && value.length) ? value.length : 1;
-    this.set('valueLength', length);
-  },
 
   /**
    * value for input
@@ -33,6 +29,24 @@ export default Component.extend({
       return v;
     }
   }),
+
+  /**
+   * Value for input's "size" attribute
+   * @private
+   */
+  size: computed('text', function() {
+    let _size = 0;
+    return {
+      get() {
+        const selectedTextLength = this.get('text').length || 1;
+        return _size > 0 ? _size : selectedTextLength;
+      },
+      set(key, value) {
+        _size = value;
+        return value;
+      }
+    };
+  }()),
 
   /**
    * Lifecycle Hook
@@ -57,7 +71,6 @@ export default Component.extend({
       const newText = this.getSelectedAsText();
       if (input.value !== newText) {
         input.value = newText;
-        this._calculateSize(input.value);
       }
       this.set('text', newText);
     }
@@ -73,22 +86,18 @@ export default Component.extend({
 
   actions: {
     /**
-     * on mousedown prevent propagation of event
-     *
-     * @private
-     * @method stopPropagation
+     * On mousedown prevent propagation of event
      * @param {Object} event
+     * @private
      */
     stopPropagation(e) {
       e.stopPropagation();
     },
 
     /**
-     * called from power-select internals
-     *
-     * @private
-     * @method handleKeydown
+     * Called from power-select internals
      * @param {Object} event
+     * @private
      */
     handleKeydown(e) {
       // up or down arrow and if not open, no-op and prevent parent handlers
@@ -105,15 +114,55 @@ export default Component.extend({
         if (!select.isOpen && this.get('loadingMessage')) {
           run.schedule('actions', null, select.actions.open);
         }
-        // +1 because this function is called before the <input/> registers
-        // the key that was pressed.
-        this._calculateSize(e.target.value + 1);
         e.stopPropagation();
       }
 
       // optional, passed from power-select
       const onkeydown = this.get('onKeydown');
       if (onkeydown && onkeydown(e) === false) {
+        return false;
+      }
+    },
+
+    /**
+     * Called from power-select internals. Sets `size` to length of the typed
+     * text, or `1`.
+     * @param {Object} event
+     * @private
+     */
+    handleInput(e) {
+      this.set('size', e.target.value.length || 1);
+      const oninput = this.get('onInput');
+      if (oninput) {
+        oninput(e);
+      }
+    },
+
+    /**
+     * Called from power-select internals. Sets `size` back to default value of
+     * `0`.
+     * @param {Object} event
+     * @private
+     */
+    handleFocus(e) {
+      this.set('size', 0);
+      const onfocus = this.get('onFocus');
+      if (onfocus && onfocus(e) === false) {
+        return false;
+      }
+    },
+
+    /**
+     * Called from power-select internals. Sets `size` back to what was
+     * previously selected as losing focus will not set a new value, so the old
+     * value is still correct.
+     * @param {Object} event
+     * @private
+     */
+    handleBlur(e) {
+      this.set('size', this.get('text'));
+      const onblur = this.get('onBlur');
+      if (onblur && onblur(e) === false) {
         return false;
       }
     }
