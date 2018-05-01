@@ -1,9 +1,10 @@
 package presidio.ui.presidiouiapp.spring;
 
 
+import fortscale.common.dataentity.DataEntitiesConfig;
 import fortscale.services.*;
 
-import fortscale.spring.PresidioUiRemoteConfigurationClientConfiguration;
+
 import fortscale.spring.PresidioUiServiceConfiguration;
 
 import fortscale.utils.FilteringPropertiesConfigurationHandler;
@@ -35,9 +36,10 @@ public class WebConf{
         return new FortscaleCustomEditorService();
     }
     @Bean
-    ShayController shayController(){
-        return new ShayController();
+    ApiController apiController(){
+        return new ApiController(dataEntitiesConfig,userServiceFacade);
     }
+
 
     @Bean
     ApiAlertController alertController(){
@@ -73,6 +75,16 @@ public class WebConf{
         return new ApiUserController(userServiceFacade,userTagService,userService,userWithAlertService);
     }
 
+    @Bean
+    ApiAnalystController apiAnalystController(){
+        return new ApiAnalystController();
+    }
+
+    @Bean
+    ApiSystemSetupTagsController apiSystemSetupTagsController(){
+        return new ApiSystemSetupTagsController();
+    }
+
     @Autowired
     UserServiceFacade userServiceFacade;
 
@@ -106,4 +118,7 @@ public class WebConf{
     @Autowired
     EvidencesService evidencesService;
 
-    }
+    @Autowired
+    DataEntitiesConfig dataEntitiesConfig;
+
+}

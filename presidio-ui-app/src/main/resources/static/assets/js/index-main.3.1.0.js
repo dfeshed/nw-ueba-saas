@@ -6224,11 +6224,13 @@ angular.module("ColorThemes", []);
             };
             return remoteThemseApi;
         }
+        ;
         provider.$get = [
             'assert', 'BASE_URL', '$http', '$timeout',
             ColorThemesConfigFactory
         ];
     }
+    ;
     ColorThemesConfigProvider.$inject = [];
     angular.module('ColorThemes', [])
         .provider('colorThemes', ColorThemesConfigProvider);
@@ -34684,7 +34686,7 @@ var Fortscale;
         function FsSimpleTabsStripController() {
             var ctrl = this;
             _.each(this.bullets, function (bullet) {
-                if (bullet.id === ctrl.activeId) {
+                if (_.toNumber(bullet.id) === ctrl.activeId) {
                     ctrl.activeBullet = bullet;
                 }
             });
@@ -44151,9 +44153,9 @@ var Fortscale;
                  * @private
                  */
                 UserController.prototype._initLoadingSequence = function () {
+                    // let promiseTags = this._initLoadingTags();
+                    // this.fsNanobarAutomationService.addPromise(this.NANOBAR_ID, promiseTags);
                     var _this = this;
-                    var promiseTags = this._initLoadingTags();
-                    this.fsNanobarAutomationService.addPromise(this.NANOBAR_ID, promiseTags);
                     var promiseUser = this._initLoadUser()
                         .then(function () {
                         if (!_this.user) {
@@ -45026,10 +45028,10 @@ var Fortscale;
                     })
                         .then(function (res) {
                         // Validate data
-                        if (typeof res.data.dataBean === "undefined" || typeof res.data.dataBean.data === "undefined") {
+                        if (typeof res.data === "undefined" || typeof res.data.data === "undefined") {
                             throw new ReferenceError("getUsers: The was no \"data\" property in the response body.");
                         }
-                        var count = res.data.dataBean.data;
+                        var count = res.data.data;
                         return count;
                     })
                         .catch(function (err) {
@@ -45049,10 +45051,10 @@ var Fortscale;
                     })
                         .then(function (res) {
                         // Validate data
-                        if (typeof res.data.dataBean === "undefined" || typeof res.data.dataBean.data === "undefined") {
+                        if (typeof res.data === "undefined" || typeof res.data.data === "undefined") {
                             throw new ReferenceError("getUsers: The was no \"data\" property in the response body.");
                         }
-                        var count = res.data.dataBean.data;
+                        var count = res.data.data;
                         return count;
                     })
                         .catch(function (err) {
@@ -45095,7 +45097,7 @@ var Fortscale;
                     return this.$q.all(promisses)
                         .then(function (res) {
                         // Validate data
-                        var favoriteUserFilters = res[0].data.dataBean.data;
+                        var favoriteUserFilters = res[0].data.data;
                         if (!favoriteUserFilters) {
                             throw new ReferenceError("getUsersFilters: The was no \"data\" property in the response body.");
                         }
@@ -48683,8 +48685,8 @@ var Fortscale;
                  * @private
                  */
                 OverviewController.prototype._initLoadingSequence = function () {
+                    // this._initLoadingTags(),
                     var promises = [
-                        this._initLoadingTags(),
                         this._initLoadingHighRiskUsers(),
                         this._initLoadingTopAlerts(),
                         this._initLoadingUsersTagsStatistics()

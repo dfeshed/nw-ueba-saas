@@ -125,11 +125,11 @@ module Fortscale.layouts.users {
             })
                 .then((res:any) => {
                     // Validate data
-                    if (typeof res.data.dataBean === "undefined" || typeof res.data.dataBean.data === "undefined") {
+                    if (typeof res.data === "undefined" || typeof res.data.data === "undefined") {
                         throw new ReferenceError(`getUsers: The was no "data" property in the response body.`);
                     }
 
-                    let count:number = res.data.dataBean.data;
+                    let count:number = res.data.data;
                     return count;
                 })
                 .catch(err => {
@@ -149,11 +149,11 @@ module Fortscale.layouts.users {
             })
                 .then((res:any) => {
                     // Validate data
-                    if (typeof res.data.dataBean === "undefined" || typeof res.data.dataBean.data === "undefined") {
+                    if (typeof res.data === "undefined" || typeof res.data.data === "undefined") {
                         throw new ReferenceError(`getUsers: The was no "data" property in the response body.`);
                     }
 
-                    let count:number = res.data.dataBean.data;
+                    let count:number = res.data.data;
                     return count;
                 })
                 .catch(err => {
@@ -202,7 +202,7 @@ module Fortscale.layouts.users {
                 .then((res:any[]) => {
                     // Validate data
 
-                    let favoriteUserFilters:FavoriteUserFilter[] = res[0].data.dataBean.data;
+                    let favoriteUserFilters:FavoriteUserFilter[] = res[0].data.data;
                     if (!favoriteUserFilters) {
                         throw new ReferenceError(`getUsersFilters: The was no "data" property in the response body.`);
                     }

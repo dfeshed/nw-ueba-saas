@@ -40,13 +40,13 @@ import java.util.List;
 public class ApiAnalystController extends BaseController{
 
 	public static final String MOCK_ANALYST_USER = "ca-admin";
-	@Autowired
-	private MongoUserDetailsService mongoUserDetailsService;
-	@Autowired
-	private AnalystService analystService;
-
-	@Autowired
-	private UserService userService;
+//	@Autowired
+//	private MongoUserDetailsService mongoUserDetailsService;
+//	@Autowired
+//	private AnalystService analystService;
+//
+//	@Autowired
+//	private UserService userService;
 //	@Autowired
 //	private ConfigurationService configurationService;
 
@@ -85,7 +85,7 @@ public class ApiAnalystController extends BaseController{
 		if (result.hasErrors()) {
 			throw new Exception(result.toString());
 		}
-		mongoUserDetailsService.changePassword(username.toString(), password.toString(), newPassword.toString());
+//		mongoUserDetailsService.changePassword(username.toString(), password.toString(), newPassword.toString());
 	}
 	
 	@RequestMapping(value="/update", method=RequestMethod.POST)
@@ -99,8 +99,8 @@ public class ApiAnalystController extends BaseController{
 			Model model) throws InvalidCredentialsException{
 		AnalystAuth analystAuth = getThisAnalystAuth();
 		//getting analyst auth with credential.
-		analystAuth = mongoUserDetailsService.getAnalystAuthByUsernameAndPassword(analystAuth.getUsername(), password);
-		mongoUserDetailsService.updateUser(analystAuth.getUsername(), username, newPassword, username, firstName, lastName);		
+//		analystAuth = mongoUserDetailsService.getAnalystAuthByUsernameAndPassword(analystAuth.getUsername(), password);
+//		mongoUserDetailsService.updateUser(analystAuth.getUsername(), username, newPassword, username, firstName, lastName);
 	}
 	
 //	@RequestMapping(value="/updateScoreDistribution", method=RequestMethod.GET)
@@ -134,7 +134,7 @@ public class ApiAnalystController extends BaseController{
 			@RequestParam(defaultValue="true") Boolean follow,
 			Model model){
 		AnalystAuth analystAuth = getThisAnalystAuth();
-		userService.updateSingleUserWatched(userId,follow);
+//		userService.updateSingleUserWatched(userId,follow);
 
 //		if(analystAuth != null) {
 //			analystService.followUser(analystAuth, userId, follow);

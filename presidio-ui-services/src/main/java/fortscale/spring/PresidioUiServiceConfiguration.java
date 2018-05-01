@@ -5,6 +5,9 @@ import fortscale.domain.core.User;
 import fortscale.domain.core.dao.ApplicationConfigurationRepository;
 import fortscale.domain.rest.UserRestFilter;
 import fortscale.domain.spring.PresidioUiDomainConfiguration;
+import fortscale.remote.RemoteAlertClientService;
+
+import fortscale.remote.RemoteUserClientService;
 import fortscale.services.*;
 import fortscale.services.cache.MemoryBasedCache;
 import fortscale.services.impl.*;
@@ -12,15 +15,13 @@ import fortscale.services.presidio.core.converters.AggregationConverterHelper;
 import fortscale.services.presidio.core.converters.AlertConverterHelper;
 import fortscale.services.presidio.core.converters.IndicatorConverter;
 import fortscale.services.presidio.core.converters.UserConverterHelper;
+
 import fortscale.utils.configurations.ConfigrationServerClientUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.*;
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
-import org.springframework.web.client.RestTemplate;
+
 import presidio.utils.spring.PresidioUiUtilsConfiguration;
 
 import java.util.ArrayList;
@@ -29,7 +30,8 @@ import java.util.List;
 @Configuration
 
 @Import({PresidioUiUtilsConfiguration.class, PresidioUiDomainConfiguration.class,
-        PresidioUiCommonConfig.class})
+        PresidioUiCommonConfig.class,
+        RemoteClientsConfiguration.class})
 public class PresidioUiServiceConfiguration {
 
 
@@ -55,11 +57,14 @@ public class PresidioUiServiceConfiguration {
     }
 
 
+
+
     @Bean
     AlertsService alertsService(){
+
         AggregationConverterHelper aggregationConverterHelper= new AggregationConverterHelper();
         AlertConverterHelper alertConverterHelper = new AlertConverterHelper();
-        return new AlertsServiceImpl(userService(),alertConverterHelper,alertCommentsService(),aggregationConverterHelper);
+        return new AlertsServiceImpl(userService(),alertConverterHelper,alertCommentsService(),aggregationConverterHelper, remoteAlertClientService);
     }
 
 
@@ -67,7 +72,7 @@ public class PresidioUiServiceConfiguration {
     UserService userService(){
         UserConverterHelper userConverterHelper = new UserConverterHelper();
         AggregationConverterHelper aggregationConverterHelper = new AggregationConverterHelper();
-        return new UserServiceImpl(userConverterHelper, aggregationConverterHelper) ;
+        return new UserServiceImpl(userConverterHelper, aggregationConverterHelper,remoteUsersClientService) ;
 
     }
 
@@ -75,7 +80,7 @@ public class PresidioUiServiceConfiguration {
     EvidencesService evidencesService(){
 
         IndicatorConverter indicatorConverter = new IndicatorConverter();
-        return new EvidencesServiceImpl(dataEntitiesConfig,userService(),indicatorConverter) ;
+        return new EvidencesServiceImpl(dataEntitiesConfig,userService(),indicatorConverter,remoteAlertClientService) ;
 
     }
 
@@ -130,4 +135,10 @@ public class PresidioUiServiceConfiguration {
 
     @Autowired
     private ConfigrationServerClientUtils configrationServerClientUtils;
+
+    @Autowired
+    private RemoteAlertClientService remoteAlertClientService;
+
+    @Autowired
+    private RemoteUserClientService remoteUsersClientService;
 }

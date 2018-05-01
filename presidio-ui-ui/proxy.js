@@ -18,6 +18,8 @@ var program = require('commander');
 
 var app = express();
 
+var serverAppPath = "";//"/tdui-webapp";
+
 /**
  * CLI Settings
  */
@@ -125,7 +127,7 @@ function setRoutes(settings) {
 
         // Root redirect
     app.get('/', function (req, res) {
-        res.redirect('/tdui-webapp/');
+        res.redirect(serverAppPath+'/');
     });
 
     // Insert mocks
@@ -224,13 +226,13 @@ function setRoutes(settings) {
 
     if (settings.lrPort) {
         // Setup LiveReload to reload the browser on files changes
-        app.use('/tdui-webapp', livereload({
+        app.use(serverAppPath, livereload({
             port: settings.lrPort
         }));
     }
 
     // Serve static files
-    app.use('/tdui-webapp', express.static(path.join(__dirname, 'dist')));
+    app.use(serverAppPath, express.static(path.join(__dirname, 'dist')));
 }
 
 

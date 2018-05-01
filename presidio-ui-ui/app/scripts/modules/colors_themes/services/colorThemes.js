@@ -76,13 +76,13 @@
             };
 
             return remoteThemseApi;
-        },
+        };
 
         provider.$get = [
             'assert', 'BASE_URL', '$http','$timeout',
             ColorThemesConfigFactory
         ];
-    },
+    };
 
     ColorThemesConfigProvider.$inject = [];
 

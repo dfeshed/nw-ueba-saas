@@ -36,14 +36,13 @@ public class ApiController{
 	private static Logger logger = Logger.getLogger(ApiController.class);
 
 
-	@Autowired
 	protected DataEntitiesConfig dataEntitiesConfig;
-
-
-    @Autowired
 	private UserServiceFacade userServiceFacade;
 
-
+	public ApiController(DataEntitiesConfig dataEntitiesConfig, UserServiceFacade userServiceFacade) {
+		this.dataEntitiesConfig = dataEntitiesConfig;
+		this.userServiceFacade = userServiceFacade;
+	}
 
 	/**
 	 *  The format of the dates in the exported file

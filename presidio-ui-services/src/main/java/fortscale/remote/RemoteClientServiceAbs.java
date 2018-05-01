@@ -1,6 +1,7 @@
-package fortscale.services.impl;
+package fortscale.remote;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+import fortscale.services.impl.ApiClientDeligator;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import presidio.output.client.client.ApiClient;
@@ -37,7 +38,7 @@ public abstract class RemoteClientServiceAbs<T> {
     protected abstract T getControllerInstance(ApiClient delegatorApiClient);
 
 
-    protected T getConterollerApi() {
+    public T getConterollerApi() {
         return conterollerApi;
     }
 

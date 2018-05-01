@@ -5,7 +5,6 @@ import fortscale.aggregation.feature.services.historicaldata.SupportingInformati
 import fortscale.common.dataentity.DataEntitiesConfig;
 import fortscale.common.dataentity.DataEntity;
 import fortscale.common.dataentity.DataEntityField;
-import fortscale.common.dataentity.QueryValueType;
 import fortscale.domain.core.*;
 
 import fortscale.domain.core.User;
@@ -15,31 +14,28 @@ import fortscale.domain.historical.data.SupportingInformationDualKey;
 import fortscale.domain.historical.data.SupportingInformationKey;
 import fortscale.domain.historical.data.SupportingInformationSingleKey;
 import fortscale.domain.historical.data.SupportingInformationTimestampKey;
+import fortscale.remote.RemoteAlertClientService;
+import fortscale.remote.RemoteClientServiceAbs;
 import fortscale.services.EvidencesService;
 import fortscale.services.UserService;
-import fortscale.services.UserSupportingInformationService;
 import fortscale.services.presidio.core.converters.IndicatorConverter;
 import fortscale.temp.EvidenceMockBuilder;
 import fortscale.temp.HardCodedMocks;
-import fortscale.utils.time.TimeUtils;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
-import org.apache.commons.collections.ListUtils;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import presidio.output.client.api.AlertsApi;
 import presidio.output.client.client.ApiClient;
 import presidio.output.client.client.ApiException;
 import presidio.output.client.model.*;
 
 import java.util.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -49,19 +45,20 @@ import java.util.TreeMap;
  * Date: 6/23/2015.
  */
 @Service("evidencesService")
-public class EvidencesServiceImpl extends RemoteClientServiceAbs<AlertsApi> implements EvidencesService, InitializingBean {
+public class EvidencesServiceImpl implements EvidencesService, InitializingBean {
 
 	public static final int DEFAULT_EVENT_PAGE_SIZE = 50;
 	public static final int DEFAULT_EVENT_PAGE_NUMBER = 0;
 	final String TAG_ANOMALY_TYPE_FIELD_NAME = "tag";
 	final String TAG_DATA_ENTITY ="active_directory";
 
+	private static Logger logger = Logger.getLogger(UserServiceImpl.class);
 
 
 	private DataEntitiesConfig dataEntitiesConfig;
 	private UserService userService;
 	private IndicatorConverter indicatorConverter;
-
+	private RemoteAlertClientService remoteAlertClientService;
 
 
 	// Severity thresholds for evidence
@@ -81,10 +78,11 @@ public class EvidencesServiceImpl extends RemoteClientServiceAbs<AlertsApi> impl
 	 */
 	private NavigableMap<Integer,Severity> scoreToSeverity = new TreeMap<>();
 
-	public EvidencesServiceImpl(DataEntitiesConfig dataEntitiesConfig, UserService userService, IndicatorConverter indicatorConverter) {
+	public EvidencesServiceImpl(DataEntitiesConfig dataEntitiesConfig, UserService userService, IndicatorConverter indicatorConverter, RemoteAlertClientService remoteAlertClientService) {
 		this.dataEntitiesConfig = dataEntitiesConfig;
 		this.userService = userService;
 		this.indicatorConverter = indicatorConverter;
+		this.remoteAlertClientService = remoteAlertClientService;
 	}
 
 	@Override
@@ -156,7 +154,7 @@ public class EvidencesServiceImpl extends RemoteClientServiceAbs<AlertsApi> impl
 
 	public SupportingInformationData getSupportingInformationIndicatorId(String indicatorId){
 		try {
-			Indicator indicator = this.getConterollerApi().getIndicatorByAlert(indicatorId,"0",true);
+			Indicator indicator = remoteAlertClientService.getConterollerApi().getIndicatorByAlert(indicatorId,"0",true);
 			if (indicator==null || indicator.getHistoricalData()==null){
 				return null;
 			}
@@ -247,7 +245,7 @@ public class EvidencesServiceImpl extends RemoteClientServiceAbs<AlertsApi> impl
 	public Evidence findById(String id) {
 
 		try {
-			Indicator indicator = this.getConterollerApi().getIndicatorByAlert(id,"0",false);
+			Indicator indicator = remoteAlertClientService.getConterollerApi().getIndicatorByAlert(id,"0",false);
 			Evidence evidence = indicatorConverter.convertIndicator(indicator,AlertTimeframe.Hourly,"missing-username");
 			return evidence;
 		} catch (ApiException e) {
@@ -322,11 +320,6 @@ public class EvidencesServiceImpl extends RemoteClientServiceAbs<AlertsApi> impl
 	}
 
 
-	@Override
-	protected AlertsApi getControllerInstance(ApiClient delegatoeApiClient) {
-		return new AlertsApi(delegatoeApiClient);
-	}
-
 	/**
 	 * Get the indicator and return list of fields.
 	 * Each field is a key-value map
@@ -358,7 +351,7 @@ public class EvidencesServiceImpl extends RemoteClientServiceAbs<AlertsApi> impl
 		try {
 			Evidence indicator = findById(evidenceId);
 			DataEntity dataEntity = dataEntitiesConfig.getAllLeafeEntities().get(indicator.getDataEntitiesIds().get(0));
-			EventsWrapper eventsWrapper = super.getConterollerApi().getIndicatorEventsByAlert(evidenceId,"0",eventQuery);
+			EventsWrapper eventsWrapper = remoteAlertClientService.getConterollerApi().getIndicatorEventsByAlert(evidenceId,"0",eventQuery);
 
 			for (Map<String, Object> event:eventsWrapper.getEvents()){
 				Map<String, Object> fieldsToAppned = convertEventFields(dataEntity, event);

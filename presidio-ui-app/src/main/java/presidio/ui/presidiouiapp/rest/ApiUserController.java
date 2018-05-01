@@ -147,6 +147,8 @@ public class ApiUserController extends BaseController {
 
 
 	@RequestMapping(value="/count", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
 	public DataBean<Integer> countUsers(UserRestFilter userRestFilter) {
 		Integer count = userWithAlertService.countUsersByFilter(userRestFilter);
 		DataBean<Integer> bean = new DataBean<>();
@@ -157,6 +159,8 @@ public class ApiUserController extends BaseController {
 
 	@RequestMapping(value = "/{filterName}/favoriteFilter", method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	@LogException
 	public ResponseEntity<Response> addFavoriteFilter(@RequestBody UserFilter userFilter,
 			@PathVariable String filterName) {
 		try {
@@ -174,6 +178,8 @@ public class ApiUserController extends BaseController {
 	}
 
 	@RequestMapping(value = "/favoriteFilter/{filterId}", method = RequestMethod.DELETE)
+	@ResponseBody
+	@LogException
 	public ResponseEntity<Response> deleteFavoriteFilter(@PathVariable String filterId) {
 		long lineDeleted = userService.deleteFavoriteFilter(filterId);
 		if (lineDeleted > 0) {
@@ -185,6 +191,8 @@ public class ApiUserController extends BaseController {
 	}
 
 	@RequestMapping(value = "/favoriteFilter", method = RequestMethod.GET)
+	@ResponseBody
+	@LogException
 	public DataBean<List<FavoriteUserFilter>> getFavoriteFilters() {
 		List<FavoriteUserFilter> allFavoriteFilters = userService.getAllFavoriteFilters();
 		DataBean<List<FavoriteUserFilter>> result = new DataBean<>();

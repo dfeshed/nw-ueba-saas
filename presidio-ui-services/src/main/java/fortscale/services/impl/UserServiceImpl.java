@@ -12,6 +12,8 @@ import fortscale.domain.core.dao.rest.Users;
 import fortscale.domain.rest.UserFilter;
 import fortscale.domain.rest.UserRestFilter;
 
+import fortscale.remote.RemoteClientServiceAbs;
+import fortscale.remote.RemoteUserClientService;
 import fortscale.services.UserService;
 
 import fortscale.services.presidio.core.converters.AggregationConverterHelper;
@@ -20,10 +22,8 @@ import fortscale.utils.JksonSerilaizablePair;
 
 import fortscale.utils.logging.Logger;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections.SetUtils;
-import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -46,7 +46,7 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
 @Service("userService")
-public class UserServiceImpl extends RemoteClientServiceAbs<UsersApi> implements UserService {
+public class UserServiceImpl implements UserService {
 
 	private static Logger logger = Logger.getLogger(UserServiceImpl.class);
 	private static final String SEARCH_FIELD_PREFIX = "##";
@@ -76,10 +76,13 @@ public class UserServiceImpl extends RemoteClientServiceAbs<UsersApi> implements
 	private UserConverterHelper userConverterHelper;
 	private AggregationConverterHelper aggregationConverterHelper;
 	private List<String> setOfBuiltInADUsers;
+	private RemoteUserClientService remoteUserClientService;
 
-	public UserServiceImpl(UserConverterHelper userConverterHelper, AggregationConverterHelper aggregationConverterHelper) {
+	public UserServiceImpl(UserConverterHelper userConverterHelper, AggregationConverterHelper aggregationConverterHelper,
+						   RemoteUserClientService remoteUserClientService) {
 		this.userConverterHelper = userConverterHelper;
 		this.aggregationConverterHelper = aggregationConverterHelper;
+		this.remoteUserClientService = remoteUserClientService;
 	}
 
 	// For unit tests only
@@ -131,7 +134,7 @@ public class UserServiceImpl extends RemoteClientServiceAbs<UsersApi> implements
 		if (ids!=null) {
 			for (String id:ids){
 				try {
-					presidio.output.client.model.User userFromResponse = super.getConterollerApi().getUser(id,true);
+					presidio.output.client.model.User userFromResponse = remoteUserClientService.getConterollerApi().getUser(id,true);
 
 					if (userFromResponse!=null){
 						User user = userConverterHelper.convertFromResponseToUi(userFromResponse);
@@ -149,7 +152,7 @@ public class UserServiceImpl extends RemoteClientServiceAbs<UsersApi> implements
 		UserQuery userQuery = new UserQuery();
 		userQuery.addAggregateByItem(UserQuery.AggregateByEnum.ALERT_CLASSIFICATIONS);
 		try {
-			Map<String,Map<String,Long>> aggregationData = super.getConterollerApi().getUsers(userQuery).getAggregationData();
+			Map<String,Map<String,Long>> aggregationData = remoteUserClientService.getConterollerApi().getUsers(userQuery).getAggregationData();
 			Map<String,Integer> classificiations = aggregationConverterHelper.convertAggregation(aggregationData,UserQuery.AggregateByEnum.ALERT_CLASSIFICATIONS.name());
 			return classificiations;
 
@@ -560,7 +563,7 @@ public class UserServiceImpl extends RemoteClientServiceAbs<UsersApi> implements
 //	public Users findByUsernameAndPage(String username,PageRequest page){
 //		UserQuery userQuery = this.userConverterHelper.convertQueryForUserNameFromUi(username,page);
 //		try {
-//			super.getConterollerApi().getUsers(userQuery);
+//			remoteUserClientService.getConterollerApi().getUsers(userQuery);
 //		} catch (ApiException e) {
 //			logger.error("Some error have beanAccourd");
 //		}
@@ -577,7 +580,7 @@ public class UserServiceImpl extends RemoteClientServiceAbs<UsersApi> implements
 		UserQuery userQuery = userConverterHelper.convertUiFilterToQueryDto(userRestFilter,pageRequest,relevantUserIds,fetchAlertsOnUsers);
 		Users users=null;
 		try {
-			UsersWrapper usersWrapper = super.getConterollerApi().getUsers(userQuery);
+			UsersWrapper usersWrapper = remoteUserClientService.getConterollerApi().getUsers(userQuery);
 			if (usersWrapper!=null && usersWrapper.getTotal()>0){
 				users= new Users(userConverterHelper.convertResponseToUiDto(usersWrapper.getUsers()),usersWrapper.getTotal());
 
@@ -656,7 +659,7 @@ public class UserServiceImpl extends RemoteClientServiceAbs<UsersApi> implements
 			UserPatchBody userPatchBody = new UserPatchBody();
 			userPatchBody.setJsonPatch(jsonPatch);
 			userPatchBody.setUserQuery(userQuery);
-			super.getConterollerApi().updateUsers(userPatchBody);
+			remoteUserClientService.getConterollerApi().updateUsers(userPatchBody);
 		} catch (ApiException e) {
 			e.printStackTrace();
 		}
@@ -675,7 +678,7 @@ public class UserServiceImpl extends RemoteClientServiceAbs<UsersApi> implements
 		}
 
 		try {
-			super.getConterollerApi().updateUser(userId,jsonPatch);
+			remoteUserClientService.getConterollerApi().updateUser(userId,jsonPatch);
 		} catch (ApiException e) {
 			e.printStackTrace();
 		}
@@ -716,7 +719,7 @@ public class UserServiceImpl extends RemoteClientServiceAbs<UsersApi> implements
 //		userQuery.addAggregateByItem(UserQuery.AggregateByEnum.I);
 //
 //		try {
-//			Map<String, Map<String, Long>> aggregationData = super.getConterollerApi().getAlerts(alertQuery).getAggregationData();
+//			Map<String, Map<String, Long>> aggregationData = remoteUserClientService.getConterollerApi().getAlerts(alertQuery).getAggregationData();
 //			Map<String, Integer> aggregation = aggregationConverterHelper.convertAggregation(aggregationData, AlertQuery.AggregateByEnum.INDICATOR_NAMES.name());
 //
 //			return  aggregation;
@@ -738,7 +741,7 @@ public class UserServiceImpl extends RemoteClientServiceAbs<UsersApi> implements
 		userQuery.addAggregateByItem(UserQuery.AggregateByEnum.INDICATORS);
 
 		try {
-			Map<String, Map<String, Long>> aggregationData = super.getConterollerApi().getUsers(userQuery).getAggregationData();
+			Map<String, Map<String, Long>> aggregationData = remoteUserClientService.getConterollerApi().getUsers(userQuery).getAggregationData();
 			Map<String, Integer> aggregation = aggregationConverterHelper.convertAggregation(aggregationData, UserQuery.AggregateByEnum.INDICATORS.name());
 
 			return  aggregation;
@@ -759,7 +762,7 @@ public class UserServiceImpl extends RemoteClientServiceAbs<UsersApi> implements
 		Map<String,Map<String,Integer>> response=new HashMap<>();
 
 		try {
-			UsersWrapper usersWrapper = this.getConterollerApi().getUsers(userQuery);
+			UsersWrapper usersWrapper = remoteUserClientService.getConterollerApi().getUsers(userQuery);
 			Map<String,Long> counts = usersWrapper.getAggregationData().get(UserQuery.AggregateByEnum.SEVERITY.name());
 
 
@@ -794,7 +797,7 @@ public class UserServiceImpl extends RemoteClientServiceAbs<UsersApi> implements
 
 		Users users = null;
 		try {
-			UsersWrapper usersWrapper = super.getConterollerApi().getUsers(userQuery);
+			UsersWrapper usersWrapper = remoteUserClientService.getConterollerApi().getUsers(userQuery);
 			List<User> usersList = this.userConverterHelper.convertResponseToUiDto(usersWrapper.getUsers());
 			users = new Users(usersList,usersWrapper.getTotal());
 		} catch (ApiException e) {
@@ -815,8 +818,5 @@ public class UserServiceImpl extends RemoteClientServiceAbs<UsersApi> implements
 		return new User();
 	}
 
-	@Override
-	protected UsersApi getControllerInstance(ApiClient delegatorApiClient) {
-		return new UsersApi( delegatorApiClient);
-	}
+
 }

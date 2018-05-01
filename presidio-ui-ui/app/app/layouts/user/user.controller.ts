@@ -211,8 +211,8 @@ module Fortscale.layouts.user {
          * @private
          */
         _initLoadingSequence ():void {
-            let promiseTags = this._initLoadingTags();
-            this.fsNanobarAutomationService.addPromise(this.NANOBAR_ID, promiseTags);
+            // let promiseTags = this._initLoadingTags();
+            // this.fsNanobarAutomationService.addPromise(this.NANOBAR_ID, promiseTags);
 
             let promiseUser = this._initLoadUser()
                 .then(() => {

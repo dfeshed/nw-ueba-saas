@@ -54,6 +54,8 @@ public class IndicatorConverter {
 
 
 
+
+
         Double contributionScore = indicator.getScoreContribution();
         if (contributionScore!=null){
             contributionScore=contributionScore*100;
