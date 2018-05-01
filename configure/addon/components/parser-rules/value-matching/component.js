@@ -15,7 +15,6 @@ const ValueMatching = Component.extend({
   itemSelected: null,
   actions: {
     setSelect(item) {
-      this.set('theMatchVal', item);
       this.set('itemSelected', item);
     }
   },

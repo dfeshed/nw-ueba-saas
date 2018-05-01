@@ -1,11 +1,13 @@
 {{#if ruleTokens}}
   <h2> {{t 'configure.logsParser.tokens'}} </h2>
-  <table class='parserTable'>
-    {{#each ruleTokens as |token index|}}
-      <tr class='{{if (eq index 0) 'firstItem'}}'><td>
-        {{token.value}}
-      </td></tr>
-    {{/each}}
-  </table>
+  <div class="tokenScroll">
+    <table class='parserTable'>
+      {{#each ruleTokens as |token index|}}
+        <tr class='{{if (eq index 0) 'firstItem'}}'><td>
+          {{token.value}}
+        </td></tr>
+      {{/each}}
+    </table>
+  </div>
 {{/if}}
         

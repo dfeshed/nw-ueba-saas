@@ -72,7 +72,6 @@
     vertical-align: top;
     position: relative;
     .centerTop {
-      overflow: auto;
       padding: rsa-whitespace();
     }
   }
@@ -91,5 +90,11 @@
     overflow: auto;
     padding: rsa-whitespace();
     height: 200px;
+  }
+  .token-matching {
+    .tokenScroll {
+      max-height: 250px;
+      overflow: auto;
+    }
   }
 }

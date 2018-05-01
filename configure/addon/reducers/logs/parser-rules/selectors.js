@@ -104,8 +104,9 @@ export const getRuleRegex = createSelector(
   _getFormats,
   (selectedRule, formats) => {
     if (selectedRule) {
-      if (selectedRule.pattern.format) {
-        return formats.filter((format) => format.type === selectedRule.pattern.format)[0].pattern;
+      const frmt = selectedRule.pattern.format;
+      if (frmt) {
+        return formats.filter((format) => format.type === frmt.toLowerCase())[0].pattern;
       } else {
         return selectedRule.pattern.regex;
       }
@@ -118,8 +119,9 @@ export const getRuleMatches = createSelector(
   _getFormats,
   (selectedRule, formats) => {
     if (selectedRule) {
-      if (selectedRule.pattern.format) {
-        return formats.filter((format) => format.type === selectedRule.pattern.format)[0].matches;
+      const frmt = selectedRule.pattern.format;
+      if (frmt) {
+        return formats.filter((format) => format.type === frmt.toLowerCase())[0].matches;
       } else {
         return '';
       }
