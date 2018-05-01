@@ -712,6 +712,23 @@ export default {
       deleteTitle: 'Confirm Delete',
       deleteConfirmation: 'Are you sure you want to delete {{count}} record(s)? Once applied, this deletion cannot be reversed.'
     },
+    timeframeOptions: {
+      LAST_5_MINUTES: 'Last 5 Minutes',
+      LAST_10_MINUTES: 'Last 10 Minutes',
+      LAST_15_MINUTES: 'Last 15 Minutes',
+      LAST_30_MINUTES: 'Last 30 Minutes',
+      LAST_HOUR: 'Last Hour',
+      LAST_3_HOURS: 'Last 3 Hours',
+      LAST_6_HOURS: 'Last 6 Hours',
+      LAST_TWELVE_HOURS: 'Last 12 Hours',
+      LAST_TWENTY_FOUR_HOURS: 'Last 24 Hours',
+      LAST_FORTY_EIGHT_HOURS: 'Last 2 Days',
+      LAST_5_DAYS: 'Last 5 Days',
+      LAST_7_DAYS: 'Last 7 Days',
+      LAST_14_DAYS: 'Last 14 Days',
+      LAST_30_DAYS: 'Last 30 Days',
+      ALL_TIME: 'All Data'
+    },
     entities: {
       incidents: 'Incidents',
       remediationTasks: 'Tasks',

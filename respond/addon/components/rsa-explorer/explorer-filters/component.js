@@ -82,7 +82,7 @@ export default Component.extend({
 
     if (isPresent(start) && isPresent(end) && start >= end) {
       hasError = true;
-      errorMessage = i18n.t('respond.incidents.filters.customDateErrorStartAfterEnd');
+      errorMessage = i18n.t('rsaExplorer.filters.customDateErrorStartAfterEnd');
     }
     this.set('customDateErrorMessage', errorMessage);
     return hasError;

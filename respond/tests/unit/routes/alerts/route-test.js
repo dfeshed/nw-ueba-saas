@@ -1,6 +1,7 @@
 import { moduleFor, test } from 'ember-qunit';
 import engineResolverFor from '../../../helpers/engine-resolver';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import * as alertCreators from 'respond/actions/creators/alert-creators';
 import sinon from 'sinon';
 
 moduleFor('route:alerts', 'Unit | Route | alerts', {
@@ -36,4 +37,12 @@ test('the contextual-help "topic" are set on activation and unset on deactivatio
 
   route.deactivate();
   assert.equal(route.get('contextualHelp.topic'), null, 'The contextual-help topic is reverted to null on deactivate');
+});
+
+test('ensure the expected action creator is called', function(assert) {
+  const initializeAlerts = sinon.spy(alertCreators, 'initializeAlerts');
+  const route = this.subject();
+  route.model();
+  assert.equal(initializeAlerts.calledOnce, true, 'initializeAlerts is called once');
+  initializeAlerts.restore();
 });

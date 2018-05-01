@@ -6,7 +6,8 @@ import { getEnabledUsers } from 'respond/selectors/users';
 import {
   getPriorityTypes,
   getAlertTypes,
-  getAlertSources
+  getAlertSources,
+  getCategoryTags
 } from 'respond/selectors/dictionaries';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
@@ -27,6 +28,9 @@ const initializeAlerts = () => {
     }
     if (!getAlertSources(state).length) {
       dispatch(dictionaryCreators.getAllAlertSources());
+    }
+    if (!getCategoryTags(state).length) {
+      dispatch(dictionaryCreators.getAllCategories());
     }
     dispatch(dictionaryCreators.getAllAlertNames());
   };
