@@ -18,10 +18,6 @@ public class ConfigrationServerClientUtilsMock extends ConfigrationServerClientU
         super(restTemplate, serverUrl, serverUserName, serverUserNamePassword);
     }
 
-    @Override
-    public Properties readConfigurationAsProperties() throws Exception {
-        return properties;
-    }
 
     @Override
     public Properties readConfigurationAsProperties(String moduleName, String profile) throws Exception {

@@ -37,21 +37,6 @@ public class ConfigrationServerClientUtils {
      * @return Properties container
      * @throws Exception
      */
-    public Properties readConfigurationAsProperties() throws Exception {
-        //Read the configuration server settings
-        String moduleName = SpringPropertiesUtil.getProperty("webapp.module.name");
-        String profile =SpringPropertiesUtil.getProperty("webapp.profile.name");
-        ConfigurationServcerClientSettings conf = readSettings(moduleName,profile);
-        return readConfigurationInternal(conf);
-
-
-    }
-
-    /**
-     * This method use to read single configuration file froms server and return the properties
-     * @return Properties container
-     * @throws Exception
-     */
     public Properties readConfigurationAsProperties(String moduleName, String profile) throws Exception {
 
         ConfigurationServcerClientSettings conf = readSettings(moduleName,profile);

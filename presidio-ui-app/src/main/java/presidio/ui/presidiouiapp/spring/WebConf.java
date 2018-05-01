@@ -8,12 +8,17 @@ import fortscale.services.*;
 import fortscale.spring.PresidioUiServiceConfiguration;
 
 import fortscale.utils.FilteringPropertiesConfigurationHandler;
+import fortscale.utils.configurations.ConfigrationServerClientUtils;
+import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 
 import presidio.ui.presidiouiapp.beans.request.AlertFilterHelperImpl;
 import presidio.ui.presidiouiapp.extensions.FortscaleCustomEditorService;
 import presidio.ui.presidiouiapp.rest.*;
+import presidio.utils.spring.PropertySourceConfigurer;
+
+import java.util.Properties;
 
 
 /**
@@ -25,6 +30,7 @@ import presidio.ui.presidiouiapp.rest.*;
 @Configuration
 @Import({PresidioUiServiceConfiguration.class})
 public class WebConf{
+
 
     @Bean
     BindindControllerAdvice bindindControllerAdvice(){
@@ -120,5 +126,6 @@ public class WebConf{
 
     @Autowired
     DataEntitiesConfig dataEntitiesConfig;
+
 
 }
