@@ -1,9 +1,0 @@
-{
-    "renderControls": false,
-    "renderHeader": false,
-    "views": [
-        {
-            "type": "investigator"
-        }
-    ]
-}

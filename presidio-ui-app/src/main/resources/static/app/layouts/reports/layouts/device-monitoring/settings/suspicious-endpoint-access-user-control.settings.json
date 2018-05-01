@@ -1,6 +1,0 @@
-{
-    "dataValueField": "normalized_username",
-    "dataTextField": "normalized_username",
-    "placeholder": "All Users",
-    "updateOnNull": true
-}

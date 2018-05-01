@@ -1,6 +1,0 @@
-{
-    "dataValueField": "username",
-    "dataTextField": "username",
-    "placeholder": "All Users",
-    "updateOnNull": true
-}

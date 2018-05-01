@@ -1,6 +1,0 @@
-{
-    "dataValueField": "username",
-    "dataTextField": "fallBackDisplayName",
-    "placeholder": "All Users",
-    "updateOnNull": true
-}

@@ -1,9 +1,0 @@
-{
-    "title": "Users",
-    "renderControls": false,
-    "views": [
-        {
-            "type": "userComparison"
-        }
-    ]
-}

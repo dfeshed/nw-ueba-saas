@@ -1,8 +1,0 @@
-{
-    "value": {
-        "page": 1,
-        "pageSize": 10,
-        "sortBy": "lastActivity",
-        "sortDirection": "DESC"
-    }
-}
