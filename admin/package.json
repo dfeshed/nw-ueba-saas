@@ -80,7 +80,8 @@
       "../test-helpers",
       "../component-lib",
       "../streaming-data",
-      "../context"
+      "../context",
+      "../admin-source-management"
     ]
   },
   "private": true

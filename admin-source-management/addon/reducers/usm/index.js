@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
-import usm from 'admin-source-management/reducers/usm';
+import groups from './groups-reducers';
 
 export default combineReducers({
-  usm
+  groups
 });

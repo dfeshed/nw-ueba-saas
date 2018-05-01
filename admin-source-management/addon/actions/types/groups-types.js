@@ -1,0 +1,1 @@
+export const FETCH_GROUPS = 'USM::FETCH_GROUPS';

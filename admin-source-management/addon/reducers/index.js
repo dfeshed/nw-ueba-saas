@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
-// import addon reducer(s)
+import usm from './usm/index';
 
 export default combineReducers({
-  // combine addon reducer(s)
+  usm
 });

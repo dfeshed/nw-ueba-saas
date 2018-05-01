@@ -1,0 +1,36 @@
+<hbox class="main-zone">
+
+  <vbox class="filter-zone">
+    Filters...
+  </vbox>
+
+  <vbox class="items-zone">
+    <box fit class="toolbar-zone">
+      Items header/toolbar...
+    </box>
+    <box class="items-main">
+      <box class="items-body">
+        {{#rsa-data-table
+          items=groups
+          columnsConfig=columns}}
+
+          {{#rsa-data-table/header as |column|}}
+            {{column.title}}
+          {{/rsa-data-table/header}}
+
+          {{#rsa-data-table/body as |item index column|}}
+            {{rsa-data-table/body-cell item=item column=column}}
+          {{/rsa-data-table/body}}
+        {{/rsa-data-table}}
+      </box>
+      <box class="items-footer">
+        Items footer/toolbar
+      </box>
+    </box>
+  </vbox>
+
+  <vbox class="inspector-zone">
+    Details...
+  </vbox>
+
+</hbox>

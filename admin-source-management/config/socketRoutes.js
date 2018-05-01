@@ -1,42 +1,41 @@
 /* eslint-env node */
 
 const common = require('../../common');
-
 const adminUsmConfigGen = function(environment) {
 
   // As new microservices need to be used in this Admin engine, we'll need to adjust the socketUrl handling,
-  const someSocketUrl = common.determineSocketUrl(environment, '/somePrefix/socket');
+  const usmSocketUrl = common.determineSocketUrl(environment, '/usm/socket');
 
   return {
-    /*someModelName: {
-      socketUrl: someSocketUrl,
+    groups: {
+      socketUrl: usmSocketUrl,
       findAll: {
-        subscriptionDestination: '/user/queue/somePrefix/someModel',
-        requestDestination: '/ws/somePrefix/someModel'
-      },
+        subscriptionDestination: '/user/queue/usm/groups',
+        requestDestination: '/ws/usm/groups'
+      }/*,
       queryRecord: {
-        subscriptionDestination: '/user/queue/somePrefix/someModel/read',
-        requestDestination: '/ws/somePrefix/someModel/read'
+        subscriptionDestination: '/user/queue/usm/groups/read',
+        requestDestination: '/ws/usm/groups/read'
       },
       createRecord: {
-        subscriptionDestination: '/user/queue/somePrefix/someModel/create',
-        requestDestination: '/ws/somePrefix/someModel/create'
+        subscriptionDestination: '/user/queue/usm/groups/create',
+        requestDestination: '/ws/usm/groups/create'
       },
       updateRecord: {
-        subscriptionDestination: '/user/queue/somePrefix/someModel/update',
-        requestDestination: '/ws/somePrefix/someModel/update'
+        subscriptionDestination: '/user/queue/usm/groups/update',
+        requestDestination: '/ws/usm/groups/update'
       },
       deleteRecord: {
-        subscriptionDestination: '/user/queue/somePrefix/someModel/delete',
-        requestDestination: '/ws/somePrefix/someModel/delete'
-      }
-    }*/
+        subscriptionDestination: '/user/queue/usm/groups/delete',
+        requestDestination: '/ws/usm/groups/delete'
+      }*/
+    }
   };
 };
 
 // order matters, first config in wins if there are matching configs
 const configGenerators = [
-  //adminUsmConfigGen
+  adminUsmConfigGen
 ];
 
 let socketConfig = null;
