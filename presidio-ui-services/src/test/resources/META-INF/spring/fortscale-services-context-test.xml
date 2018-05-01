@@ -14,20 +14,6 @@
 	
 
 	
-	<!--<bean id="authDAO" class="fortscale.services.domain.fe.dao.AuthDAOImpl"/>-->
-	<!---->
-	<!---->
-	<!--<bean id="vpnDAO" class="fortscale.services.domain.fe.dao.VpnDAOImpl"/>-->
-	<!---->
-	<!--<bean id="impalaJdbcTemplate" class="fortscale.services.domain.jdbc.JdbcOperationsTest"/>-->
-	<!---->
-	
-	<!--<bean id="mongoTemplate" class="fortscale.services.domain.jdbc.MongoTemplateDummy"></bean>-->
-
-	<!--<bean id="usernameService" class="fortscale.services.impl.UsernameService">-->
-		<!--<property name="lazyUsernameCachesUpdate" value="false"/>-->
-	<!--</bean>-->
-
 	<context:component-scan base-package="fortscale.services"/>
 	
 </beans>

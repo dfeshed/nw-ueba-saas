@@ -84,11 +84,7 @@ public class DemoIndicatorsFactory extends DemoFactoryAbstract<Evidence>{
         e.setDataEntitiesIds(Arrays.asList(csvRecord.get("dataSource")));
         generateSupportingInformation(e, csvRecord);
         return e;
-//        } catch (Exception e1){
-//            System.out.print("exception when creating indicator:");
-//            System.out.print(e1.toString());
-//            return null;
-//        }
+
 
     }
 
@@ -150,22 +146,5 @@ public class DemoIndicatorsFactory extends DemoFactoryAbstract<Evidence>{
     public List<Evidence> getEvidences() throws Exception {
         return getData(csvRecord -> this.getRecord(csvRecord),getFileName(),headers());
     }
-//    public List<User> getList() throws IOException {
-//        List<User> users = new ArrayList<>();
-//        getRawRecorsIterator("demo-users.csv", FILE_HEADER_MAPPING).forEach((record)->{
-//            String username = record.get("Username");
-//            int riskScore = Integer.parseInt(record.get("Risk Score"));
-//            int totalAlert= Integer.parseInt(record.get("Total Alerts"));
-//
-//            User user = new User();
-//            user.setAlertsCount(totalAlert);
-//            user.setScore(riskScore);
-//            user.setUsername(username);
-//            user.setMockId(username);
-//            users.add(user);
-//        });
-//
-//
-//        return users;
-//    }
+
 }

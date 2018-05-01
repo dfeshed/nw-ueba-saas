@@ -11,7 +11,6 @@
 	<artifactId>presidio-ui-domain</artifactId>
 	<version>1.1.0-SNAPSHOT</version>
 
-	
 
 	<pluginRepositories>
 		<pluginRepository>
@@ -38,17 +37,10 @@
 		<hamcrest.version>1.3</hamcrest.version>
 		<thrift.version>0.9.0</thrift.version>
 		<commons-pool.version>1.4</commons-pool.version>
-		<!--<kite-version>1.0.0</kite-version>-->
-		<!-- maven plugins versions -->
 		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
 	</properties>
 
 	<dependencies>
-		<!--<dependency>-->
-			<!--<groupId>org.kitesdk</groupId>-->
-			<!--<artifactId>kite-morphlines-core</artifactId>-->
-			<!--<version>${kite-version}</version>-->
-		<!--</dependency>-->
 		<dependency>
 			<groupId>${project.parent.groupId}</groupId>
 			<artifactId>presidio-ui-utils</artifactId>
@@ -75,11 +67,6 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
 		</dependency>
-		<!--<dependency>-->
-			<!--<groupId>junit</groupId>-->
-			<!--<artifactId>junit</artifactId>-->
-			<!--<scope>test</scope>-->
-		<!--</dependency>-->
 
 		<!-- Test -->
 		<dependency>
@@ -101,44 +88,10 @@
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-mongodb</artifactId>
 		</dependency>
-
-		<!--<dependency>-->
-			<!--<groupId>org.springframework.data</groupId>-->
-			<!--<artifactId>spring-data-hadoop</artifactId>-->
-			<!--<exclusions>-->
-				<!--<exclusion>-->
-					<!--<groupId>org.springframework</groupId>-->
-					<!--<artifactId>spring-context-support</artifactId>-->
-				<!--</exclusion>-->
-				<!--<exclusion>-->
-					<!--<groupId>org.slf4j</groupId>-->
-					<!--<artifactId>slf4j-log4j12</artifactId>-->
-				<!--</exclusion>-->
-				<!--<exclusion>-->
-					<!--<artifactId>jsp-api</artifactId>-->
-					<!--<groupId>javax.servlet.jsp</groupId>-->
-				<!--</exclusion>-->
-				<!--<exclusion>-->
-					<!--<artifactId>servlet-api-2.5</artifactId>-->
-					<!--<groupId>org.mortbay.jetty</groupId>-->
-				<!--</exclusion>-->
-				<!--<exclusion>-->
-					<!--<groupId>javax.servlet</groupId>-->
-					<!--<artifactId>servlet-api</artifactId>-->
-				<!--</exclusion>-->
-			<!--</exclusions>-->
-		<!--</dependency>-->
-
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-commons</artifactId>
 		</dependency>
- 
-
-
-
-
-
 		<dependency>
 			<groupId>commons-pool</groupId>
 			<artifactId>commons-pool</artifactId>
@@ -149,13 +102,6 @@
 			<artifactId>commons-codec</artifactId>
 			<version>${commons-codec.version}</version>
 		</dependency>
-		<!-- json parsing library -->
-		<!--<dependency>-->
-			<!--<groupId>net.minidev</groupId>-->
-			<!--<artifactId>json-smart</artifactId>-->
-			<!--&lt;!&ndash;<version>${json-smart.version}</version>&ndash;&gt;-->
-		<!--</dependency>-->
-
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-joda</artifactId>
@@ -172,14 +118,6 @@
 			<artifactId>validation-api</artifactId>
 			<version>1.1.0.Final</version>
 		</dependency>
-
-		<!--                     -->
-		<!--<dependency>-->
-			<!--<groupId>org.mockito</groupId>-->
-			<!--<artifactId>mockito-all</artifactId>-->
-			<!--&lt;!&ndash;<scope>test</scope>&ndash;&gt;-->
-		<!--</dependency>-->
-
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>

@@ -559,20 +559,6 @@ public class UserServiceImpl implements UserService {
 		return null;
 	}
 
-//	@Override
-//	public Users findByUsernameAndPage(String username,PageRequest page){
-//		UserQuery userQuery = this.userConverterHelper.convertQueryForUserNameFromUi(username,page);
-//		try {
-//			remoteUserClientService.getConterollerApi().getUsers(userQuery);
-//		} catch (ApiException e) {
-//			logger.error("Some error have beanAccourd");
-//		}
-//	}
-
-//	public Map<String, Integer> countUsersByDisplayName(Set<String> displayNames){
-//		return  null;
-//	}
-
 	@Override public Users findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest,
 											 Set<String> relevantUserIds, List<String> fieldsRequired,boolean fetchAlertsOnUsers) {
 
@@ -596,22 +582,6 @@ public class UserServiceImpl implements UserService {
 		return users;
 	}
 
-//	private List<Criteria> getCriteriaListByFilterAndUserIds(UserRestFilter userRestFilter,
-//															 Set<String> relevantUserNames) {
-////		List<Criteria> criteriaList = userRepository.getUsersCriteriaByFilters(userRestFilter);
-////
-////		// If there was filter for alert type or anomaly type or locations
-////		// we want to add criteria for getting data of specific users
-////		if (CollectionUtils.isNotEmpty(userRestFilter.getAnomalyTypesAsSet())
-////				|| CollectionUtils.isNotEmpty(userRestFilter.getAlertTypes())
-////				|| CollectionUtils.isNotEmpty(userRestFilter.getLocations())
-////				|| CollectionUtils.isNotEmpty(userRestFilter.getUserIds())) {
-////			criteriaList.add(userRepository.getUserCriteriaByUserIds(relevantUserNames));
-////		}
-////
-////		return criteriaList;
-//		return null;
-//	}
 
 	@Override public int countUsersByFilter(UserRestFilter userRestFilter, Set<String> relevantUsers) {
 

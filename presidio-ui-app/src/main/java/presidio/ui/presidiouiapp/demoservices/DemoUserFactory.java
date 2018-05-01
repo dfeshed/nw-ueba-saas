@@ -41,22 +41,5 @@ public class  DemoUserFactory extends DemoFactoryAbstract<User>{
     public List getUsers() throws Exception {
         return getData(csvRecord -> this.getRecord(csvRecord),getFileName(),headers());
     }
-//    public List<User> getList() throws IOException {
-//        List<User> users = new ArrayList<>();
-//        getRawRecorsIterator("demo-users.csv", FILE_HEADER_MAPPING).forEach((record)->{
-//            String username = record.get("Username");
-//            int riskScore = Integer.parseInt(record.get("Risk Score"));
-//            int totalAlert= Integer.parseInt(record.get("Total Alerts"));
-//
-//            User user = new User();
-//            user.setAlertsCount(totalAlert);
-//            user.setScore(riskScore);
-//            user.setUsername(username);
-//            user.setMockId(username);
-//            users.add(user);
-//        });
-//
-//
-//        return users;
-//    }
+
 }

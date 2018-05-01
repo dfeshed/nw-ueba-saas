@@ -78,19 +78,6 @@ public class ApiAlertController extends BaseController {
 	}
 
 
-	//	@RequestMapping(value="/exist-anomaly-types", method = RequestMethod.GET)
-//	@ResponseBody
-//	@LogException
-//	public List<String> getDistinctAnomalyType () {
-//		Set<DataSourceAnomalyTypePair> dataSourceAnomalyTypePairs =  alertsService.getDistinctAnomalyType();
-//		String seperator  = "@@@";
-//		//Todo: in version 2.7 change the response to set of objects instead of string with seperator
-//		List<String> response = new ArrayList<>();
-//		for (DataSourceAnomalyTypePair anomalyType : dataSourceAnomalyTypePairs){
-//			response.add(anomalyType.getDataSource()+seperator+anomalyType.getAnomalyType());
-//		}
-//		return response;
-//	}
 
 	@RequestMapping(value="/exist-anomaly-types", method = RequestMethod.GET)
 	@ResponseBody
@@ -318,7 +305,7 @@ public class ApiAlertController extends BaseController {
 	}
 
 	private String getAnalystUserName(HttpServletRequest request){
-//		@RequestHeader("Authenticated_User") String authenticatedUser
+
 		String username = request.getHeader(AUTHENTICATED_USER_HEADER_PARAM_NAME);
 		if (StringUtils.isBlank(username)){
 			logger.warn("User updating system is not authenticated");
@@ -326,29 +313,7 @@ public class ApiAlertController extends BaseController {
 		} else {
 			return username;
 		}
-		//TODO: no users yet. Should be taken from header
-//		return ApiAnalystController.MOCK_ANALYST_USER;
-//		SecurityContextImpl securityContext = (SecurityContextImpl)(session.getAttribute("SPRING_SECURITY_CONTEXT"));
-//
-//		if (securityContext.getAuthentication()==null){
-//			throw new RuntimeException("User is not logged in");
-//		}
-//
-//		Authentication authentication = securityContext.getAuthentication();
-//		if (authentication == null){
-//			throw new RuntimeException("User is not logged in");
-//		}
-//
-//		AnalystAuth analyst = (AnalystAuth)authentication.getPrincipal();
-//		if (analyst == null){
-//			throw new RuntimeException("User is not logged in");
-//		}
-//		String analystName = analyst.getUsername();
-//		if (StringUtils.isBlank(analystName)){
-//			throw new RuntimeException("User is not logged in");
-//		}
-//
-//		return analystName;
+
 	}
 
 	@ApiOperation(value = "Add new comment on the alert", notes = "The comment include the analyst details, date, and text", response = AnalystCommentFeedback.class)
@@ -446,9 +411,6 @@ public class ApiAlertController extends BaseController {
 		}
 
 		alertCommentsService.deleteComment(analystFeedback);
-
-//		alert.getAnalystFeedback().remove(analystFeedback);
-//		alertsService.saveAlertInRepository(alert);
 
 		return new ResponseEntity(HttpStatus.OK);
 	}

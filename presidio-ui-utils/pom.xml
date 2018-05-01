@@ -13,25 +13,6 @@
 
     <packaging>jar</packaging>
 
-    <!--<pluginRepositories>-->
-        <!--<pluginRepository>-->
-            <!--<snapshots>-->
-                <!--<enabled>false</enabled>-->
-            <!--</snapshots>-->
-            <!--<id>releases</id>-->
-            <!--<name>plugins-release</name>-->
-            <!--<url>http://mirror.fortscale.dom/artifactory/plugins-release</url>-->
-        <!--</pluginRepository>-->
-        <!--<pluginRepository>-->
-            <!--<snapshots>-->
-                <!--<enabled>true</enabled>-->
-            <!--</snapshots>-->
-            <!--<id>snapshots</id>-->
-            <!--<name>plugins-snapshot</name>-->
-            <!--<url>http://mirror.fortscale.dom/artifactory/plugins-snapshot</url>-->
-        <!--</pluginRepository>-->
-    <!--</pluginRepositories>-->
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <joda-time.version>2.3</joda-time.version>
@@ -40,7 +21,6 @@
         <commons-lang.version>2.6</commons-lang.version>
         <commons-pool.version>1.4</commons-pool.version>
 
-        <!--<janino.version>2.5.15</janino.version>-->
         <perf4j.version>0.9.7</perf4j.version>
         <commons-jexl.version>1.1</commons-jexl.version>
         <commons-httpclient.version>3.0.1</commons-httpclient.version>
@@ -124,8 +104,6 @@
             <artifactId>spring-aspects</artifactId>
         </dependency>
 
-
-
         <!-- for mockit:mock - see https://bitbucket.org/kubek2k/springockito/wiki/Home -->
         <dependency>
             <groupId>org.kubek2k</groupId>
@@ -179,27 +157,11 @@
             <version>1.0</version>
             <scope>provided</scope>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>junit</groupId>-->
-            <!--<artifactId>junit</artifactId>-->
-            <!--<scope>compile</scope>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>pl.pragmatists</groupId>-->
-            <!--<artifactId>JUnitParams</artifactId>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
-
         <dependency>
             <groupId>org.springframework.retry</groupId>
             <artifactId>spring-retry</artifactId>
             <version>${springretry.version}</version>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.mockito</groupId>-->
-            <!--<artifactId>mockito-all</artifactId>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib</artifactId>
@@ -211,12 +173,6 @@
             <artifactId>fongo</artifactId>
             <scope>test</scope>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>ch.qos.logback</groupId>-->
-            <!--<artifactId>logback-access</artifactId>-->
-
-        <!--</dependency>-->
-
     </dependencies>
 
     <build>

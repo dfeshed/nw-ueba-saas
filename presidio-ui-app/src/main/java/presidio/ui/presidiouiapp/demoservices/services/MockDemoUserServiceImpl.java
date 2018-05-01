@@ -308,23 +308,6 @@ public class MockDemoUserServiceImpl implements UserService {
 	}
 
 
-//	private List<Criteria> getCriteriaListByFilterAndUserIds(UserRestFilter userRestFilter,
-//															 Set<String> relevantUserNames) {
-////		List<Criteria> criteriaList = userRepository.getUsersCriteriaByFilters(userRestFilter);
-////
-////		// If there was filter for alert type or anomaly type or locations
-////		// we want to add criteria for getting data of specific users
-////		if (CollectionUtils.isNotEmpty(userRestFilter.getAnomalyTypesAsSet())
-////				|| CollectionUtils.isNotEmpty(userRestFilter.getAlertTypes())
-////				|| CollectionUtils.isNotEmpty(userRestFilter.getLocations())
-////				|| CollectionUtils.isNotEmpty(userRestFilter.getUserIds())) {
-////			criteriaList.add(userRepository.getUserCriteriaByUserIds(relevantUserNames));
-////		}
-////
-////		return criteriaList;
-//		List<User> users = demoBuilder.getUsers();
-//		return null;
-//	}
 
 	@Override public int countUsersByFilter(UserRestFilter userRestFilter, Set<String> relevantUsers) {
 
@@ -387,7 +370,7 @@ public class MockDemoUserServiceImpl implements UserService {
 		for (Severity severity : Severity.values()){
 			long count = findUsersByFilter(userRestFilter,null,null,null,true).getUsers()
 					.stream()
-//					.filter(user->user.getScore()>0)
+
 					.filter(user->severity.equals(user.getScoreSeverity()))
 					.count();
 			Map<String,Integer> internalMap = new HashMap<>();

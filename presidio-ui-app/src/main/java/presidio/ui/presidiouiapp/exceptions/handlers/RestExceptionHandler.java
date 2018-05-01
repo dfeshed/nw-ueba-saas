@@ -213,7 +213,6 @@ public class RestExceptionHandler extends AbstractHandlerExceptionResolver imple
         if (!WebUtils.isIncludeRequest(webRequest.getRequest())) {
             webRequest.getResponse().setStatus(error.getStatus().value());
         }
-        //support response.sendError ?
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })

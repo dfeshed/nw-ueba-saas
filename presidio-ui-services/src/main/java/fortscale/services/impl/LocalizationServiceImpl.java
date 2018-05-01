@@ -31,14 +31,8 @@ public class LocalizationServiceImpl implements LocalizationService, Initializin
 
     private static final String UI_MESSAGE_PREFIX = "ui.message.";
 
-    //Cache for messages. Refresh every hour,
-    //Map locale name <String> to Map of <message_key,message_text>
-    //I.E. <"IL",<"bla.ba", "text for key bla bla">
-//    @Autowired
-//    @Qualifier("messagesChache")
-    private CacheHandler<Locale, Map<String,String>> messagesCache;
 
-//    @Autowired
+    private CacheHandler<Locale, Map<String,String>> messagesCache;
     private ApplicationConfigurationService applicationConfigurationService;
 
 

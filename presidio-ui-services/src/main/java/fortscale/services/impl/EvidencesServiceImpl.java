@@ -94,63 +94,12 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 		scoreToSeverity.put(critical, Severity.Critical);
 	}
 
-//	@Override
-//	public Evidence createTransientEvidence(EntityType entityType, String entityTypeFieldName, String entityName,
-//											EvidenceType evidenceType, Date startDate, Date endDate,
-//											List<String> dataEntitiesIds, Double score, String anomalyValue,
-//											String anomalyTypeFieldName, Integer totalAmountOfEvents, EvidenceTimeframe evidenceTimeframe) {
-//		// casting score to int
-//		int intScore = score.intValue();
-//
-//		// calculate severity
-//		Severity severity = scoreToSeverity.get(scoreToSeverity.floorKey(intScore));
-//
-//		// create new transient evidence (do not save to Mongo yet)
-//		return new Evidence(entityType, entityTypeFieldName, entityName, evidenceType, startDate.getTime(),
-//				endDate.getTime(), anomalyTypeFieldName, anomalyValue, dataEntitiesIds, intScore, severity,
-//				totalAmountOfEvents, evidenceTimeframe);
-//	}
-
-//	@Override public Evidence createTagEvidence(EntityType entityType, String entityTypeFieldName, String entityName,
-//			Long startDate, long endDate, String tag){
-//
-//		// Create data entities array for tag evidence with constant value
-//		List<String> dataEntitiesIds = new ArrayList<>();
-//		dataEntitiesIds.add(TAG_DATA_ENTITY);
-//
-//		Evidence evidence = createTransientEvidence(entityType, entityTypeFieldName, entityName, EvidenceType.Tag,
-//				new Date(startDate), new Date(endDate), dataEntitiesIds, tagScore, tag,
-//				TAG_ANOMALY_TYPE_FIELD_NAME, 0, null);
-//
-//		setTagEvidenceSupportingInformationData(evidence);
-//
-//		// Save evidence to MongoDB
-//		saveEvidenceInRepository(evidence);
-//
-//		return evidence;
-//	}
-//
-//	@Override public void setTagEvidenceSupportingInformationData(Evidence evidence){
-//		User user = getUserIdByUserName(evidence.getEntityName());
-//		EntitySupportingInformation entitySupportingInformation =  userSupportingInformationService.createUserSupportingInformation(user, userService);
-//
-//		evidence.setSupportingInformation(entitySupportingInformation);
-//	}
-
-	public User getUserIdByUserName(String userName) {
-		return userService.findByUsername(userName);
-	}
 
 	@Override
 	public void saveEvidenceInRepository(Evidence evidence) {
 		saveEvidence(evidence);
 	}
 
-//	@Override
-//	public List<Evidence> findByEvidenceTypeAndAnomalyValueIn(EvidenceType evidenceType, String[] anomalyValues) {
-//		return getEvidencesMocks();
-//
-//	}
 
 	public SupportingInformationData getSupportingInformationIndicatorId(String indicatorId){
 		try {
@@ -258,38 +207,6 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 		return new EvidenceMockBuilder(1).createInstance();
 	}
 
-//	/**
-//	 * Finds evidences in mongo based on entity, time and type of feature
-//	 * @param entityEvent
-//	 * @param entityName
-//	 * @param dataEntities
-//	 * @param featureName
-//	 * @return
-//	 */
-//	public List<Evidence> findFeatureEvidences(EntityType entityEvent, String entityName, DateRange endDateRange,
-//			String dataEntities, String featureName) {
-//		return evidencesRepository.findFeatureEvidencesByFeatureEndTime(entityEvent, entityName, endDateRange.getFromTime(), endDateRange.getToTime(), dataEntities, featureName);
-//	}
-
-	public  List<Evidence> findByStartDateGreaterThanEqualAndEndDateLessThanEqualAndEvidenceTypeAndEntityName(
-			long startDate, long endDate, String evidenceType, String entityName) {
-		return getEvidencesMocks();
-	}
-
-	public  List<Evidence> findByEndDateBetweenAndEvidenceTypeAndEntityName(
-			long startDate, long endDate, String evidenceType, String entityName) {
-		return getEvidencesMocks();
-	}
-
-	public List<Evidence> findEvidence(DateRange dateRange, String anomalyType, String entityName){
-		if (StringUtils.isBlank(entityName)){
-			return getEvidencesMocks();
-		} else {
-			return getEvidencesMocks();
-
-		}
-
-	}
 
 	/**
 	 * Saves evidence in Mongo
@@ -309,10 +226,7 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 		return getEvidencesMocks();
 	}
 
-//	@Override
-//	public List<String> getDistinctAnomalyType() {
-//		return ListUtils.EMPTY_LIST;
-//	}
+
 
 	@Override
 	public List<Evidence> getEvidencesById(List<String> evidenceIds) {

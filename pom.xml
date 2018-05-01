@@ -32,9 +32,7 @@
         <junit.version>4.12</junit.version>
         <junitparams.version>1.0.2</junitparams.version>
         <jsonassert.version>1.2.3</jsonassert.version>
-        <!--<mockito.version>1.9.0</mockito.version>-->
         <springokito.version>1.0.9</springokito.version>
-        <!--<logback.version>1.0.13</logback.version>-->
         <org.springframework-version>4.3.8.RELEASE</org.springframework-version>
         <spring.security.core.version>4.1.0.RELEASE</spring.security.core.version>
         <spring-data-mongodb.version>1.9.3.RELEASE</spring-data-mongodb.version>
@@ -56,6 +54,20 @@
         <test.int.exgroups></test.int.exgroups>
         <org.aspectj-version>1.7.3</org.aspectj-version>
         <guava.version>15.0</guava.version>
+        <servlet-api.version>3.1.0</servlet-api.version>
+        <java-lang-config.version>1.8</java-lang-config.version>
+        <springretry.version>1.1.2.RELEASE</springretry.version>
+        <json-smart.version>2.2.1</json-smart.version>
+        <net.minidev.accessors-smart.version>1.1</net.minidev.accessors-smart.version>
+        <esper-version>5.2.0</esper-version>
+        <org.codehaus.mojo.version>1.4.0</org.codehaus.mojo.version>
+        <cxf.version>3.1.0</cxf.version>
+        <swager.version>2.2.2</swager.version>
+        <asm-commons.version>5.0.3</asm-commons.version>
+        <commons-codec.version>1.9</commons-codec.version>
+        <slf4j.version>1.7.25</slf4j.version>
+        <jackson.version>2.9.0</jackson.version>
+
         <!-- maven plugins versions -->
         <maven-download-plugin.version>1.1.0</maven-download-plugin.version>
         <maven-resources-plugin.version>2.6</maven-resources-plugin.version>
@@ -66,23 +78,7 @@
         <maven-jar-plugin.version>2.4</maven-jar-plugin.version>
         <maven-surefire-plugin.version>2.16</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>2.16</maven-failsafe-plugin.version>
-        <servlet-api.version>3.1.0</servlet-api.version>
-        <java-lang-config.version>1.8</java-lang-config.version>
-        <springretry.version>1.1.2.RELEASE</springretry.version>
-        <json-smart.version>2.2.1</json-smart.version>
-        <net.minidev.accessors-smart.version>1.1</net.minidev.accessors-smart.version>
-        <esper-version>5.2.0</esper-version>
-        <org.codehaus.mojo.version>1.4.0</org.codehaus.mojo.version>
-        <cxf.version>3.1.0</cxf.version>
-        <!--<hibernate-validator.version>5.2.4.Final</hibernate-validator.version>-->
-        <swager.version>2.2.2</swager.version>
-        <!-- eclipse plugins versions -->
-
-        <asm-commons.version>5.0.3</asm-commons.version>
-
-
-        <commons-codec.version>1.9</commons-codec.version>
-		
+        <spring-cloud-starter-config.version>1.4.3.RELEASE</spring-cloud-starter-config.version>
 		
         <!--<rpm.version.major>1</rpm.version.major>-->
         <!--<rpm.version.minor>1</rpm.version.minor>-->
@@ -91,10 +87,8 @@
 
         <!-- NOTE: ALL dependencies' versions should be here -->
         <rpm-maven-plugin.version>2.1.5</rpm-maven-plugin.version>
-        <slf4j.version>1.7.25</slf4j.version>
-        <jackson.version>2.9.0</jackson.version>
-        <!--<h2.version>1.4.193</h2.version>-->
-        <spring-cloud-starter-config.version>1.4.3.RELEASE</spring-cloud-starter-config.version>
+
+
     </properties>
 
     <dependencyManagement>
@@ -126,12 +120,6 @@
                 <version>${springokito.version}</version>
                 <scope>test</scope>
             </dependency>
-            <!--<dependency>-->
-                <!--<groupId>pl.pragmatists</groupId>-->
-                <!--<artifactId>JUnitParams</artifactId>-->
-                <!--<version>${junitparams.version}</version>-->
-                <!--<scope>test</scope>-->
-            <!--</dependency>-->
             <!-- mock framework for mongodb -->
             <dependency>
                 <groupId>com.github.fakemongo</groupId>
