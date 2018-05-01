@@ -106,7 +106,7 @@
     }
     .query-bar-options {
       @include border(1px, solid, primary, lighter);
-      height: 40px;
+      min-height: 40px;
       box-sizing: border-box;
     }
 
