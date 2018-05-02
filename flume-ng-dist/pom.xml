@@ -127,6 +127,10 @@
             <groupId>presidio.flume.core.flume-ng-sinks</groupId>
             <artifactId>flume-hdfs-sink</artifactId>
         </dependency>
+       <!-- <dependency>
+            <groupId>presidio.flume.core.flume-ng-sinks</groupId>
+            <artifactId>flume-ng-kafka-sink</artifactId>
+        </dependency>-->
         <dependency>
             <groupId>presidio.flume.core.flume-ng-sinks</groupId>
             <artifactId>flume-ng-morphline-solr-sink</artifactId>
@@ -142,7 +146,23 @@
             <artifactId>flume-jms-source</artifactId>
         </dependency>
 
-
+        <!--<dependency>
+            <groupId>presidio.flume.core.flume-ng-sources</groupId>
+            <artifactId>flume-kafka-source</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>presidio.flume.core.flume-ng-sources</groupId>
+            <artifactId>flume-taildir-source</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>presidio.flume.core.flume-ng-clients</groupId>
+            <artifactId>flume-ng-log4jappender</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>presidio.flume.core.flume-ng-clients</groupId>
+            <artifactId>flume-ng-log4jappender</artifactId>
+            <classifier>jar-with-dependencies</classifier>
+        </dependency>-->
         <dependency>
             <groupId>presidio.flume.core</groupId>
             <artifactId>flume-tools</artifactId>
