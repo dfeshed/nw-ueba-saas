@@ -44,8 +44,8 @@ export default {
     investigateEvents: {
       'MISCONFIGURED_SERVICE_CERTIFICATE': 'No authorization server certificates configured.',
       'ACCESS_DENIED': 'Insufficient permissions for the requested data. If you believe you should have access, ask your administrator to provide the necessary permissions.',
-      'SESSION_REMOVED': 'Raw data not loaded. It has rolled out of the database.',
-      'PACKETS_NOT_FOUND': 'Raw data not loaded. It has rolled out of the database.',
+      'SESSION_REMOVED': 'Data not loaded. It has rolled out of the database.',
+      'PACKETS_NOT_FOUND': 'Data not loaded. It has rolled out of the database.',
       'GENERIC': 'An unexpected error has occurred attempting to retrieve this data.'
     }
   },
