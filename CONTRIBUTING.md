@@ -163,10 +163,10 @@ The following is a list of steps to perform to close out a sprint.
 2. Update the version in the root `package.json` file.
 3. After the PR with the above changes has been merge, tag master with the new version.
 ```
-  $ git tag -a v7.4.0 -m'End of Sprint 7.4'
-  $ git push asoc v7.4.0
+  $ git tag -a v8.0.0 -m'End of Sprint 8.0'
+  $ git push asoc v8.0.0
 ```
-4. Update the sa-ui entry in the _Sprint Component List_ on the [WIKI](https://wiki.na.rsa.net/display/ENVNG/11.1+Sprint+RPMs).
+4. Update the sa-ui entry in the _Sprint Component List_ on the [WIKI](https://wiki.na.rsa.net/display/ENVNG/11.2+Sprint+RPMs).
 
 ## Points of Contact
 ### Context Hub

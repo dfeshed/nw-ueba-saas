@@ -1,4 +1,25 @@
-# [8.2.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v8.1.0)
+# [8.3.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v8.3.0)
+## Features
+* [ASOC-39648](https://bedfordjira.na.rsa.net/browse/ASOC-39648):&emsp;Create links using URL in Related Links
+* [ASOC-43960](https://bedfordjira.na.rsa.net/browse/ASOC-43960):&emsp;Priority, assignee, category fields are missing from 'Create to Incident' modal
+* [ASOC-51161](https://bedfordjira.na.rsa.net/browse/ASOC-51161):&emsp;Hide the escalation status filter control if the escalate status button is also hidden
+* [ASOC-51219](https://bedfordjira.na.rsa.net/browse/ASOC-51219):&emsp;L10N: Transform vendor files into ES2015 modules
+* [ASOC-51259](https://bedfordjira.na.rsa.net/browse/ASOC-51259):&emsp;Windows Changes to Post Process Events [ Agent to Server]
+* [ASOC-51261](https://bedfordjira.na.rsa.net/browse/ASOC-51261):&emsp;PSR Tool Changes to Send Tracking Events
+* [ASOC-51562](https://bedfordjira.na.rsa.net/browse/ASOC-51562):&emsp;Single Pill Creation - Basic Entry
+* [ASOC-51574](https://bedfordjira.na.rsa.net/browse/ASOC-51574):&emsp;Support dynamic locales
+* [ASOC-51863](https://bedfordjira.na.rsa.net/browse/ASOC-51863):&emsp;Clicking Anywhere on Data Grid Header Cell Toggles Sort
+* [ASOC-52734](https://bedfordjira.na.rsa.net/browse/ASOC-52734):&emsp;Windows Changes to Post Registry Events [Agent to Server]
+* [ASOC-52777](https://bedfordjira.na.rsa.net/browse/ASOC-52777):&emsp;Map service call to appropriate common error code in dictionary
+* [ASOC-53027](https://bedfordjira.na.rsa.net/browse/ASOC-53027):&emsp;NW 11.1 Patch - Validate Endpoint Refactor
+* [ASOC-53543](https://bedfordjira.na.rsa.net/browse/ASOC-53543):&emsp;Show configurable data by making grid dynamic
+* [ASOC-53657](https://bedfordjira.na.rsa.net/browse/ASOC-53657):&emsp;Enable Hover and lookup in Mac Address meta for Archer
+* [ASOC-53750](https://bedfordjira.na.rsa.net/browse/ASOC-53750):&emsp;PSR tool changes to implement UDP beaconing
+* [ASOC-53844](https://bedfordjira.na.rsa.net/browse/ASOC-53844):&emsp;Verify 8.1,2 stories with ISO/OVA build
+* [ASOC-53918](https://bedfordjira.na.rsa.net/browse/ASOC-53918):&emsp;Verify 8.1,2 stories with ISO/OVA build
+
+
+# [8.2.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v8.2.0)
 ## Features
 * [ASOC-45715](https://bedfordjira.na.rsa.net/browse/ASOC-50937):&emsp;UI has the capability to filter on assigned and unassigned incidents at the same time
 * [ASOC-47375](https://bedfordjira.na.rsa.net/browse/ASOC-47375):&emsp;Respond button colors update
