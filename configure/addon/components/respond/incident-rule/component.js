@@ -14,7 +14,7 @@ import {
   hasMissingInformation,
   getVisited
 } from 'configure/reducers/respond/incident-rules/rule/selectors';
-import Confirmable from 'configure/mixins/confirmable';
+import Confirmable from 'component-lib/mixins/confirmable';
 import { connect } from 'ember-redux';
 import { inject } from '@ember/service';
 

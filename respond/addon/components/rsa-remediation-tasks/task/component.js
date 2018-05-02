@@ -2,9 +2,8 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import { updateItem, deleteItem } from 'respond/actions/creators/remediation-task-creators';
-import Confirmable from 'respond/mixins/confirmable';
-import Notifications from 'respond/mixins/notifications';
-import FLASH_MESSAGE_TYPES from 'respond/utils/flash-message-types';
+import Confirmable from 'component-lib/mixins/confirmable';
+import Notifications from 'component-lib/mixins/notifications';
 import { inject as service } from '@ember/service';
 
 const closedStatuses = ['REMEDIATED', 'RISK_ACCEPTED', 'NOT_APPLICABLE'];
@@ -26,10 +25,10 @@ const dispatchToActions = (dispatch) => {
   return {
     update(entityId, field, updatedValue, revertCallback = () => {}) {
       dispatch(updateItem(entityId, field, updatedValue, {
-        onSuccess: () => (this.send('showFlashMessage', FLASH_MESSAGE_TYPES.SUCCESS, 'respond.entities.actionMessages.updateSuccess')),
+        onSuccess: () => (this.send('success', 'respond.entities.actionMessages.updateSuccess')),
         onFailure: () => {
           revertCallback();
-          this.send('showFlashMessage', FLASH_MESSAGE_TYPES.ERROR, 'respond.entities.actionMessages.updateFailure');
+          this.send('failure', 'respond.entities.actionMessages.updateFailure');
         }
       }));
     },
@@ -41,8 +40,8 @@ const dispatchToActions = (dispatch) => {
         warning: i18n.t('respond.remediationTasks.actions.actionMessages.deleteWarning')
       }, () => {
         dispatch(deleteItem(taskId, {
-          onSuccess: () => (this.send('showFlashMessage', FLASH_MESSAGE_TYPES.SUCCESS, 'respond.entities.actionMessages.updateSuccess')),
-          onFailure: () => (this.send('showFlashMessage', FLASH_MESSAGE_TYPES.ERROR, 'respond.entities.actionMessages.updateFailure'))
+          onSuccess: () => (this.send('success', 'respond.entities.actionMessages.updateSuccess')),
+          onFailure: () => (this.send('failure', 'respond.entities.actionMessages.updateFailure'))
         }));
       });
     }

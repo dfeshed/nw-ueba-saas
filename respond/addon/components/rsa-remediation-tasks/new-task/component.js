@@ -2,8 +2,7 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { createItem } from 'respond/actions/creators/remediation-task-creators';
 import computed from 'ember-computed-decorators';
-import FLASH_MESSAGE_TYPES from 'respond/utils/flash-message-types';
-import Notifications from 'respond/mixins/notifications';
+import Notifications from 'component-lib/mixins/notifications';
 import { getPriorityTypes } from 'respond/selectors/dictionaries';
 import { getTasksStatus } from 'respond/selectors/incidents';
 
@@ -20,10 +19,10 @@ const dispatchToActions = (dispatch) => {
       dispatch(createItem(task, {
         onSuccess: () => {
           this.set('isTaskCreated', true);
-          this.send('showFlashMessage', FLASH_MESSAGE_TYPES.SUCCESS, 'respond.entities.actionMessages.updateSuccess');
+          this.send('success', 'respond.entities.actionMessages.updateSuccess');
           this.get('onCreated')();
         },
-        onFailure: () => (this.send('showFlashMessage', FLASH_MESSAGE_TYPES.ERROR, 'respond.entities.actionMessages.createFailure'))
+        onFailure: () => (this.send('failure', 'respond.entities.actionMessages.createFailure'))
       }));
     }
   };

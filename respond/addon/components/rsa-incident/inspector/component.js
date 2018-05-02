@@ -20,8 +20,7 @@ import {
   getInspectorWidth } from 'respond/selectors/incidents';
 import DragBehavior from 'respond/utils/behaviors/drag';
 import { htmlSafe } from '@ember/string';
-import FLASH_MESSAGE_TYPES from 'respond/utils/flash-message-types';
-import Notifications from 'respond/mixins/notifications';
+import Notifications from 'component-lib/mixins/notifications';
 import $ from 'jquery';
 import { inject as service } from '@ember/service';
 
@@ -48,8 +47,8 @@ const dispatchToActions = (dispatch) => ({
   },
   updateItem(entityId, fieldName, value) {
     dispatch(updateItem(entityId, fieldName, value, {
-      onSuccess: () => (this.send('showFlashMessage', FLASH_MESSAGE_TYPES.SUCCESS, 'respond.entities.actionMessages.updateSuccess')),
-      onFailure: () => (this.send('showFlashMessage', FLASH_MESSAGE_TYPES.ERROR, 'respond.entities.actionMessages.updateFailure'))
+      onSuccess: () => (this.send('success', 'respond.entities.actionMessages.updateSuccess')),
+      onFailure: () => (this.send('success', 'respond.entities.actionMessages.updateFailure'))
     }));
   }
 });

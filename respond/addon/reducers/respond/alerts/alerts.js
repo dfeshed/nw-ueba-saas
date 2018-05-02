@@ -3,8 +3,8 @@ import * as ACTION_TYPES from 'respond/actions/types';
 import reduxActions from 'redux-actions';
 import { handle } from 'redux-pack';
 import { load, persist } from '../util/local-storage';
-import explorerInitialState from '../util/explorer-reducer-initial-state';
-import explorerReducers from '../util/explorer-reducer-fns';
+import explorerInitialState from 'component-lib/utils/rsa-explorer/explorer-reducer-initial-state';
+import explorerReducers from 'component-lib/utils/rsa-explorer/explorer-reducer-fns';
 
 const localStorageKey = 'rsa::nw::respond::alerts';
 // Load local storage values and incorporate into initial state

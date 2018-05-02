@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
-import Notifications from 'respond/mixins/notifications';
+import Notifications from 'component-lib/mixins/notifications';
 import { isEmpty, typeOf } from '@ember/utils';
 import * as ACTION_TYPES from '../../../actions/types';
 import {

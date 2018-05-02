@@ -12,7 +12,6 @@ $respondBackgroundColor: background-color(custom, respond);
 @import "group-table/manifest";
 @import "items-sheet";
 @import "property-tree";
-@import "explorer/manifest";
 @import "incident/manifest";
 @import "incidents/manifest";
 @import "alert/manifest";
@@ -23,4 +22,3 @@ $respondBackgroundColor: background-color(custom, respond);
 @import "common/editable-field";
 @import "remediation/manifest";
 @import "resizer";
-

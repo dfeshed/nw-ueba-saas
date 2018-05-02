@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import Confirmable from 'configure/mixins/confirmable';
+import Confirmable from 'component-lib/mixins/confirmable';
 import { deleteRule, cloneRule } from 'configure/actions/creators/respond/incident-rule-creators';
 import {
   hasSelectedRule,

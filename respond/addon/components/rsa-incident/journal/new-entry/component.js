@@ -2,8 +2,7 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { createJournalEntry } from 'respond/actions/creators/journal-creators';
 import { empty } from 'ember-computed-decorators';
-import Notifications from 'respond/mixins/notifications';
-import FLASH_MESSAGE_TYPES from 'respond/utils/flash-message-types';
+import Notifications from 'component-lib/mixins/notifications';
 
 const stateToComputed = ({ respond: { dictionaries: { milestoneTypes } } }) => ({
   milestoneTypes
@@ -14,10 +13,10 @@ const dispatchToActions = (dispatch) => {
     createEntry(entry) {
       dispatch(createJournalEntry(entry, {
         onSuccess: () => {
-          this.send('showFlashMessage', FLASH_MESSAGE_TYPES.SUCCESS, 'respond.entities.actionMessages.updateSuccess');
+          this.send('success', 'respond.entities.actionMessages.updateSuccess');
           this.setProperties({ notes: null, milestone: null });
         },
-        onFailure: () => (this.send('showFlashMessage', FLASH_MESSAGE_TYPES.ERROR, 'respond.entities.actionMessages.createFailure'))
+        onFailure: () => (this.send('failure', 'respond.entities.actionMessages.createFailure'))
       }));
     }
   };

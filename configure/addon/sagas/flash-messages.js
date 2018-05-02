@@ -1,5 +1,5 @@
 import { lookup } from 'ember-dependency-lookup';
-import FLASH_MESSAGE_TYPES from 'configure/utils/flash-message-types';
+import { FLASH_MESSAGE_TYPES } from 'component-lib/mixins/notifications';
 
 function showFlashMessage(type, i18nKey, context) {
   const i18n = lookup('service:i18n');

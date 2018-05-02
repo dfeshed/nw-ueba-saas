@@ -27,7 +27,7 @@ import {
 import {
   getGroupedCategories
 } from 'configure/reducers/respond/dictionaries/selectors';
-import Confirmable from 'configure/mixins/confirmable';
+import Confirmable from 'component-lib/mixins/confirmable';
 import { connect } from 'ember-redux';
 import { inject } from '@ember/service';
 
