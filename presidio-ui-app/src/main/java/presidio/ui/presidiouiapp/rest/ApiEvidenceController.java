@@ -15,7 +15,7 @@ import fortscale.services.LocalizationService;
 
 import fortscale.utils.FilteringPropertiesConfigurationHandler;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.logging.annotation.LogException;
+
 
 
 import fortscale.domain.rest.HistoricalDataRestFilter;
@@ -81,7 +81,7 @@ public class ApiEvidenceController  {
 
 	@RequestMapping(value="/distinct-field/{fieldName}", method = RequestMethod.GET)
 	@ResponseBody
-	@LogException
+	//@LogException
 	public List getDisticntByFieldName (@PathVariable String fieldName) {
 		return evidencesService.getDistinctByFieldName(fieldName);
 	}
@@ -92,7 +92,7 @@ public class ApiEvidenceController  {
 	 */
 	@RequestMapping(value="{id}",method = RequestMethod.GET)
 	@ResponseBody
-	@LogException
+	//@LogException
 	public DataBean<Evidence> getEvidence(@PathVariable String id) {
 		DataBean<Evidence> ret = new DataBean<>();
 		Evidence evidence = evidencesService.findById(id);
@@ -114,7 +114,7 @@ public class ApiEvidenceController  {
 	 */
 	@RequestMapping(value = "/{id}/events", method = RequestMethod.GET)
 	@ResponseBody
-	@LogException
+	//@LogException
 	public DataBean<List<Map<String, Object>>> getEvents(@PathVariable String id,
 															 @RequestParam(defaultValue = "true") boolean request_total,
 															 @RequestParam(defaultValue = "true") boolean use_cache,
@@ -246,7 +246,7 @@ public class ApiEvidenceController  {
 	 */
 	@RequestMapping(value="/selfCheck", method=RequestMethod.GET)
 	@ResponseBody
-	@LogException
+	//@LogException
 	public Date selfCheck(){
 		return new Date();
 	}
@@ -265,7 +265,7 @@ public class ApiEvidenceController  {
 	 */
 	@RequestMapping(value="/{id}/historical-data",method = RequestMethod.GET)
 	@ResponseBody
-	@LogException
+	//@LogException
 	public DataBean<List<SupportingInformationEntry>> getEvidenceSupportingInformation(@PathVariable(value = "id") String evidenceId,
 																		   HistoricalDataRestFilter historicalDataRestFilter) {
 		DataBean<List<SupportingInformationEntry>> supportingInformationBean = new DataBean<>();
@@ -342,7 +342,7 @@ public class ApiEvidenceController  {
 	 */
 	@RequestMapping(value="/statistics", method = RequestMethod.GET)
 	@ResponseBody
-	@LogException
+	//@LogException
 	public DataBean<IndicatorStatisticsEntity> getStatistics(
 			@RequestParam(required=true, value = "start_range") String timeRange)
 	{

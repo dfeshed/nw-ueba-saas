@@ -8,7 +8,7 @@ import fortscale.services.analyst.AnalystService;
 
 import fortscale.services.security.MongoUserDetailsService;
 import fortscale.utils.logging.annotation.HideSensitiveArgumentsFromLog;
-import fortscale.utils.logging.annotation.LogException;
+
 import presidio.ui.presidiouiapp.BaseController;
 import presidio.ui.presidiouiapp.beans.AnalystBean;
 import presidio.ui.presidiouiapp.beans.DataBean;
@@ -75,7 +75,7 @@ public class ApiAnalystController extends BaseController{
 //	}
 	
 	@RequestMapping(value="/changePassword", method=RequestMethod.POST)
-	@LogException
+	//@LogException
 	@HideSensitiveArgumentsFromLog//Don't print users passwords to the log
 	public void changePassword(@Valid Username username,
 			@Valid Password password,
@@ -89,7 +89,7 @@ public class ApiAnalystController extends BaseController{
 	}
 	
 	@RequestMapping(value="/update", method=RequestMethod.POST)
-	@LogException
+//	@LogException
 	@HideSensitiveArgumentsFromLog//Don't print users passwords to the log
 	public void update(@RequestParam(required=true) String password,
 			@RequestParam(required=false) String username,
@@ -111,7 +111,7 @@ public class ApiAnalystController extends BaseController{
 	
 	@RequestMapping(value="/me/details", method=RequestMethod.GET)
 	@ResponseBody
-	@LogException
+	//@LogException
 	public DataBean<List<AnalystBean>> details(Model model){
 //		AnalystAuth analystAuth = getThisAnalystAuth();
 //		if(analystAuth != null) {
@@ -129,7 +129,7 @@ public class ApiAnalystController extends BaseController{
 	
 	
 	@RequestMapping(value="/followUser", method=RequestMethod.GET)
-	@LogException
+//	@LogException
 	public void followUser(@RequestParam(required=true) String userId,
 			@RequestParam(defaultValue="true") Boolean follow,
 			Model model){

@@ -8,7 +8,7 @@ import fortscale.common.dataentity.DataEntity;
 import fortscale.common.dataentity.DataEntityField;
 
 import fortscale.utils.logging.Logger;
-import fortscale.utils.logging.annotation.LogException;
+
 import presidio.ui.presidiouiapp.beans.DataBean;
 import presidio.ui.presidiouiapp.beans.UserIdBean;
 import org.apache.commons.lang.StringUtils;
@@ -52,7 +52,6 @@ public class ApiController{
 
 
 	@RequestMapping("/**")
-	@LogException
     public void unmappedRequest(HttpServletRequest request) {
 		StringBuilder builder = new StringBuilder("There is no resource for path ");
         builder.append(request.getRequestURI());
@@ -71,14 +70,13 @@ public class ApiController{
 	
 	@RequestMapping(value="/normalizedUsernameToId", method=RequestMethod.GET)
 	@ResponseBody
-	@LogException
 	public DataBean<List<UserIdBean>> normalizedUsernameToId(@RequestParam(required=true) String normalizedUsername) {
 		DataBean<List<UserIdBean>> ret = new DataBean<List<UserIdBean>>();
 		List<UserIdBean> idList = new LinkedList<UserIdBean>();
 			
 		// translate the normalized username to user id
 //		String userId = userServiceFacade.findByNormalizedUserName(normalizedUsername);
-		String userId = "Shay";
+		String userId = "userId";
 		idList.add(new UserIdBean(userId));
 		
 		ret.setData(idList);
@@ -87,87 +85,12 @@ public class ApiController{
 	}
 	
 	
-	/**
-	 * 
-	 * @param query			The SQL query from the client. 
-	 * 						This query shouldn't contain the "LIMIT" and "OFFSET" in case of paging
-	 * @param countQuery	The count query. Not mandatory.
-	 * @param useCache		"True" if we wish to use existing results from cache (if exist).
-	 * 						Not mandatory. "False" by default
-	 * @param page			The requested page number (starting from 0). Not mandatory. 
-	 * 						If null no paging will be used
-	 * @param pageSize		The page size. Not mandatory. "20" by default. 
-	 * 						Relevant only if "page" was requested
-	 * @param model			The model
-	 * @return				List of results according to the query and paging
-	 */
-//	@RequestMapping(value="/investigate", method=RequestMethod.GET)
-//	@ResponseBody
-//	@LogException
-//	public DataBean<List<Map<String, Object>>> investigate(@RequestParam(required=true) String query,
-//			@RequestParam(required=false) String countQuery,
-//			@RequestParam(defaultValue="false") boolean useCache,
-//			@RequestParam(required=false) Integer page, // starting from 0
-//			@RequestParam(defaultValue="20") Integer pageSize,
-//			Model model){
-//
-//		// Add offset and limit according to page
-//		Integer offsetInLimit = null;
-//
-//		// the request shouldn't include "limit" if page was sent, but in order to be on the safe size, we check it
-//		boolean usePaging = (page != null && !query.toLowerCase().contains(" limit "));
-//
-//		if (usePaging) {
-//			if (page < 0) throw new InvalidValueException("Page number must be greater than 0");
-//			if (pageSize > CACHE_LIMIT) throw new InvalidValueException("Page size must be less than " + CACHE_LIMIT);
-//			int location = page * pageSize;
-//			offsetInLimit = (location % CACHE_LIMIT);
-//			int offsetInQuery = (location / CACHE_LIMIT) * CACHE_LIMIT; // casting to int creates "floor"
-//			query += " LIMIT " + CACHE_LIMIT + " OFFSET " + offsetInQuery;
-//		}
-//
-//		// check if the query is in the cache before returning results
-//		if (useCache) {
-//			DataBean<List<Map<String, Object>>> cachedResults = investigateQueryCache.getIfPresent(query);
-//			if (cachedResults!=null) {
-//				if (usePaging) {
-//					// take only relevant page from cache
-//					return createDataForPage(pageSize, offsetInLimit, cachedResults);
-//				} else {
-//					return cachedResults;
-//				}
-//			}
-//		}
-//
-//		// perform the query
-//		DataBean<List<Map<String, Object>>> retBean = new DataBean<>();
-//		List<Map<String, Object>> resultsMap = impalaJdbcTemplate.query(query, new ColumnMapRowMapper());
-//		int total = resultsMap.size();
-//		if(countQuery != null) {
-//			total = impalaJdbcTemplate.queryForObject(countQuery, Integer.class);
-//		}
-//		retBean.setData(resultsMap);
-//		retBean.setTotal(total);
-//		DataBean<List<Map<String, Object>>> retBeanForPage = retBean;
-//
-//		// take only relevant page from results
-//		if (usePaging) {
-//			retBeanForPage = createDataForPage(pageSize, offsetInLimit, retBean);
-//		}
-//
-//		// cache results if needed, store results with up to 200 rows in the cache to protect memory
-//		if (useCache && resultsMap.size() <= CACHE_LIMIT) // Query real size is 200.
-//			investigateQueryCache.put(query, retBean);
-//
-//		return retBeanForPage;
-//	}
 
     /**
      * @return List of entities available to the front-end
      */
     @RequestMapping(value="/getEntities", method=RequestMethod.GET)
     @ResponseBody
-    @LogException
     public DataBean<List<DataEntity>> getEntities(){
         DataBean<List<DataEntity>> entities = new DataBean<List<DataEntity>>();
         try {

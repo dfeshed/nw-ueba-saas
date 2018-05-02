@@ -1,9 +1,16 @@
 package presidio.utils.spring;
 
+import fortscale.utils.image.ImageUtils;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
+
 
 @Configuration
-@ImportResource({"classpath*:META-INF/spring/fortscale-common-context.xml","classpath*:META-INF/spring/fortscale-logging-context.xml"})
 public class PresidioUiUtilsConfiguration {
+    @Bean(name = "imageUtils")
+    ImageUtils imageUtils(){
+        return new ImageUtils();
+    }
+
+
 }

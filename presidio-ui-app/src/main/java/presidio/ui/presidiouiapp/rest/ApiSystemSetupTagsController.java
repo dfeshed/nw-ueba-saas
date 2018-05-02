@@ -5,7 +5,7 @@ import fortscale.domain.core.Tag;
 
 
 import fortscale.utils.logging.Logger;
-import fortscale.utils.logging.annotation.LogException;
+
 
 import io.swagger.annotations.Api;
 
@@ -35,7 +35,7 @@ public class ApiSystemSetupTagsController extends BaseController {
      */
     @RequestMapping(value="/user_tags", method= RequestMethod.GET)
     @ResponseBody
-    @LogException
+//    @LogException
     @ApiOperation(value = "Get all the tags exists in the system", response = DataBean.class)
     public DataBean<List<Tag>> getAllTags(@RequestParam(defaultValue = "false") boolean includeDeleted) {
         logger.info("Getting all tags");

@@ -1,7 +1,7 @@
 package presidio.ui.presidiouiapp.rest;
 
 
-import fortscale.utils.logging.annotation.LogException;
+
 
 import fortscale.services.LocalizationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ public class ApiLocalization {
      * @return
      */
     @RequestMapping(value="/{locale}", method = RequestMethod.GET)
-    @LogException
+//    @LogException
     public @ResponseBody
     DataBean<Map<String, String>> getMessages(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
                                               @PathVariable("locale") Locale locale){
@@ -57,7 +57,7 @@ public class ApiLocalization {
      * @return
      */
     @RequestMapping(method = RequestMethod.GET)
-    @LogException
+//    @LogException
     public @ResponseBody
     DataBean<Map<String, String>> getMessages(HttpServletRequest httpRequest, HttpServletResponse httpResponse){
         return getMessages(httpRequest, httpResponse, localizationService.getDefaultLocale());

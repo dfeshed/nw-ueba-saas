@@ -4,7 +4,7 @@ import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.EncryptionUtils;
 import fortscale.utils.logging.annotation.HideSensitiveArgumentsFromLog;
-import fortscale.utils.logging.annotation.LogException;
+
 import fortscale.utils.logging.annotation.LogSensitiveFunctionsAsEnum;
 import presidio.ui.presidiouiapp.BaseController;
 import presidio.ui.presidiouiapp.beans.DataBean;
@@ -61,7 +61,7 @@ public class ApiApplicationConfigurationController extends BaseController {
      */
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    @LogException
+//    @LogException
     public DataBean<List<ApplicationConfiguration>> getConfigurations(String[] namespace) {
         DataBean<List<ApplicationConfiguration>> applicationConfigurationDataList = new DataBean<>();
         List<ApplicationConfiguration> applicationConfigurationList = null;
@@ -89,7 +89,7 @@ public class ApiApplicationConfigurationController extends BaseController {
      */
     @RequestMapping(method = RequestMethod.POST)
     @HideSensitiveArgumentsFromLog(sensitivityCondition = LogSensitiveFunctionsAsEnum.APPLICATION_CONFIGURATION)
-    @LogException
+//    @LogException
     public ResponseEntity updateConfigItems(@RequestBody String body) throws JSONException {
         // Parse json. Return BAD_REQUEST If can not parse
         JSONObject params;

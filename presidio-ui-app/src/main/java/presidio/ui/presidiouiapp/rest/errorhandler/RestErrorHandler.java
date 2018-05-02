@@ -17,7 +17,7 @@ import java.util.List;
  * Created by shays on 07/05/2016.
  */
 
-@ControllerAdvice
+    @ControllerAdvice
     public class RestErrorHandler {
 
     /**

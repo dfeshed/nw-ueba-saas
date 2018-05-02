@@ -21,7 +21,7 @@ import fortscale.domain.analyst.Analyst;
 import fortscale.domain.analyst.AnalystAuth;
 import fortscale.services.analyst.AnalystService;
 import fortscale.services.security.MongoUserDetailsService;
-import fortscale.utils.logging.annotation.LogException;
+
 import presidio.ui.presidiouiapp.BaseController;
 import presidio.ui.presidiouiapp.beans.AnalystBean;
 import presidio.ui.presidiouiapp.beans.DataBean;
@@ -42,7 +42,7 @@ public class ApiAdminAnalystController extends BaseController{
 	private AnalystService analystService;
 
 	@RequestMapping(value="/addAnalyst", method=RequestMethod.POST)
-	@LogException
+	////@LogException
 	public void addAnalyst(@Valid Username username,
 			@Valid Password password,
 			@Valid FirstName firstName,
@@ -57,7 +57,7 @@ public class ApiAdminAnalystController extends BaseController{
 	}
 	
 	@RequestMapping(value="/renewPassword", method=RequestMethod.POST)
-	@LogException
+	//@LogException
 	public void renewPassword(@RequestBody RenewPasswordRequest renewPasswordRequest) throws InvalidCredentialsException{
 		AnalystAuth analystAuth = getThisAnalystAuth();
 		//getting analyst auth with credential.
@@ -66,7 +66,7 @@ public class ApiAdminAnalystController extends BaseController{
 	}
 	
 	@RequestMapping(value="/disableAnalyst", method=RequestMethod.POST)
-	@LogException
+	//@LogException
 	public void disableAnalyst(@Valid Username username, BindingResult result, Model model){
 		if (result.hasErrors()) {
 			throw new RuntimeException(result.toString());
@@ -76,7 +76,7 @@ public class ApiAdminAnalystController extends BaseController{
 	}
 	
 	@RequestMapping(value="/enableAnalyst", method=RequestMethod.POST)
-	@LogException
+	//@LogException
 	public void enableAnalyst(@Valid Username username, BindingResult result, Model model){
 		if (result.hasErrors()) {
 			throw new RuntimeException(result.toString());
@@ -87,7 +87,7 @@ public class ApiAdminAnalystController extends BaseController{
 	
 	@RequestMapping(value="/details", method=RequestMethod.GET)
 	@ResponseBody
-	@LogException
+	//@LogException
 	public DataBean<List<AnalystBean>> details(@RequestParam(defaultValue="true") Boolean onlyEnabled, Model model){
 		DataBean<List<AnalystBean>> ret = new DataBean<List<AnalystBean>>();
 		List<Analyst> analysts = onlyEnabled ? analystService.findAllNonDisabledUsers() : analystService.findAll();

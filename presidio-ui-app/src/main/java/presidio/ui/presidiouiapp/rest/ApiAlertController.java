@@ -16,7 +16,7 @@ import fortscale.services.AlertsService;
 import fortscale.services.LocalizationService;
 import fortscale.services.exception.UserNotFoundExeption;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.logging.annotation.LogException;
+
 import presidio.ui.presidiouiapp.BaseController;
 import presidio.ui.presidiouiapp.beans.DataBean;
 import presidio.ui.presidiouiapp.beans.ValueCountBean;
@@ -29,7 +29,6 @@ import presidio.ui.presidiouiapp.rest.entities.AlertStatisticsEntity;
 import io.swagger.annotations.*;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -81,7 +80,7 @@ public class ApiAlertController extends BaseController {
 
 	@RequestMapping(value="/exist-anomaly-types", method = RequestMethod.GET)
 	@ResponseBody
-	@LogException
+	//@LogException
 	public Map<String,Integer> getDistinctAnomalyType () {
 		Map<String,Integer> anomalyTypePairs =  alertsService.getDistinctAnomalyType();
 		List<String> response = new ArrayList<>();
@@ -92,7 +91,7 @@ public class ApiAlertController extends BaseController {
 
 	@RequestMapping(value="/exist-alert-types", method = RequestMethod.GET)
 	@ResponseBody
-	@LogException
+	//@LogException
 	public DataBean<Set<ValueCountBean>> getDistinctAlertNames(@RequestParam(required=true, value = "ignore_rejected")Boolean ignoreRejected){
 		Set<ValueCountBean> alertTypesNameAndCount = new HashSet<>();
 
@@ -121,7 +120,7 @@ public class ApiAlertController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.GET , value = "/export")
-	@LogException
+	//@LogException
 	public void exportAlertsToCsv(HttpServletRequest httpRequest, HttpServletResponse httpResponse, Locale locale,
 								  AlertRestFilter alertRestFilter)  throws  Exception{
 		/*
@@ -194,7 +193,7 @@ public class ApiAlertController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(method = RequestMethod.GET)
-	@LogException
+	//@LogException
 	public @ResponseBody
 	DataBean<List<Alert>> getAlerts(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
 									AlertRestFilter filter) {
@@ -267,7 +266,7 @@ public class ApiAlertController extends BaseController {
 	 */
 	@RequestMapping(value="/statistics", method = RequestMethod.GET)
 	@ResponseBody
-	@LogException
+	//@LogException
 	public DataBean<AlertStatisticsEntity> getStatistics(
 			@RequestParam(required=true, value = "start_range") DateRange startRange)
 	{
@@ -323,7 +322,7 @@ public class ApiAlertController extends BaseController {
 			@ApiResponse(code = 404, message = "Alert Not Found")})
 	@ApiParam(name = "AnalystCommentFeedback", value = "AnalystCommentFeedback details", required = true)
 	@RequestMapping(method = RequestMethod.POST, value = "/{id}/comments", consumes = MediaType.APPLICATION_JSON_VALUE)
-	@LogException
+	//@LogException
 	@ResponseBody
 	public ResponseEntity<?> addComment(HttpServletRequest httpRequest, @PathVariable String id,
 										@RequestBody @Valid CommentFeedbackRequest request
@@ -353,7 +352,7 @@ public class ApiAlertController extends BaseController {
 	}
 
 	@RequestMapping(method = RequestMethod.PATCH, value = "{id}/comments/{commentId}")
-	@LogException
+	//@LogException
 	@ResponseBody
 	public ResponseEntity updateComment(HttpServletRequest httpRequest, @PathVariable String id, @PathVariable String commentId,
 										@RequestBody @Valid CommentFeedbackRequest request) {
@@ -390,7 +389,7 @@ public class ApiAlertController extends BaseController {
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "{id}/comments/{commentId}")
-	@LogException
+	//@LogException
 	@ResponseBody
 	public ResponseEntity deleteComment(HttpServletRequest httpRequest,@PathVariable String id, @PathVariable String commentId) {
 //		updateCommentDeletedByAnalyst(httpRequest, id, commentId);
@@ -452,7 +451,7 @@ public class ApiAlertController extends BaseController {
 	 * @throws Exception
 	 */
 	@RequestMapping(method = RequestMethod.POST)
-	@LogException
+	//@LogException
 	@ResponseBody
 	public Alert addAlert(@Valid @RequestBody Alert alert) throws Exception{
 		throw new RuntimeException("NOT SUPPORTED");
@@ -467,7 +466,7 @@ public class ApiAlertController extends BaseController {
 	 */
 	@RequestMapping(value="{id}", method = RequestMethod.GET)
 	@ResponseBody
-	@LogException
+	//@LogException
 	public DataBean<Alert> getAlertsById(@PathVariable String id)
 	{
 		Alert alert = alertsService.getAlertById(id);
@@ -488,7 +487,7 @@ public class ApiAlertController extends BaseController {
 	 * @throws JSONException
 	 */
 	@RequestMapping(value="{id}", method = RequestMethod.PATCH)
-	@LogException
+	//@LogException
 	public ResponseEntity<?> updateStatus(HttpServletRequest httpRequest, @PathVariable String id,
 										  @Valid @RequestBody AlertUpdateStatusRequest request){
 		// Getting the relevant alert
@@ -522,7 +521,7 @@ public class ApiAlertController extends BaseController {
 	 */
 	@RequestMapping(value="/selfCheck", method=RequestMethod.GET)
 	@ResponseBody
-	@LogException
+	//@LogException
 	public Date selfCheck(){
 		return new Date();
 	}

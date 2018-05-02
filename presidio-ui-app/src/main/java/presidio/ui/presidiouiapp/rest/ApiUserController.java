@@ -15,7 +15,7 @@ import fortscale.temp.HardCodedMocks;
 import fortscale.temp.MockScenarioGenerator;
 
 import fortscale.utils.logging.Logger;
-import fortscale.utils.logging.annotation.LogException;
+
 
 
 
@@ -123,7 +123,7 @@ public class ApiUserController extends BaseController {
 	/**
 	 * The API to get all users. GET: /api/user
 	 */
-	@RequestMapping(method = RequestMethod.GET) @ResponseBody @LogException
+	@RequestMapping(method = RequestMethod.GET) @ResponseBody 
 	public DataBean<List<UserDetailsBean>> getUsers(UserRestFilter userRestFilter) {
 
 		PageRequest pageRequest = createPaging(userRestFilter);
@@ -148,7 +148,7 @@ public class ApiUserController extends BaseController {
 
 	@RequestMapping(value="/count", method=RequestMethod.GET)
 	@ResponseBody
-	@LogException
+
 	public DataBean<Integer> countUsers(UserRestFilter userRestFilter) {
 		Integer count = userWithAlertService.countUsersByFilter(userRestFilter);
 		DataBean<Integer> bean = new DataBean<>();
@@ -160,7 +160,7 @@ public class ApiUserController extends BaseController {
 	@RequestMapping(value = "/{filterName}/favoriteFilter", method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	@LogException
+	
 	public ResponseEntity<Response> addFavoriteFilter(@RequestBody UserFilter userFilter,
 			@PathVariable String filterName) {
 		try {
@@ -179,7 +179,7 @@ public class ApiUserController extends BaseController {
 
 	@RequestMapping(value = "/favoriteFilter/{filterId}", method = RequestMethod.DELETE)
 	@ResponseBody
-	@LogException
+	
 	public ResponseEntity<Response> deleteFavoriteFilter(@PathVariable String filterId) {
 		long lineDeleted = userService.deleteFavoriteFilter(filterId);
 		if (lineDeleted > 0) {
@@ -192,7 +192,7 @@ public class ApiUserController extends BaseController {
 
 	@RequestMapping(value = "/favoriteFilter", method = RequestMethod.GET)
 	@ResponseBody
-	@LogException
+	
 	public DataBean<List<FavoriteUserFilter>> getFavoriteFilters() {
 		List<FavoriteUserFilter> allFavoriteFilters = userService.getAllFavoriteFilters();
 		DataBean<List<FavoriteUserFilter>> result = new DataBean<>();
@@ -204,7 +204,7 @@ public class ApiUserController extends BaseController {
 
 //	@RequestMapping(value="/search", method=RequestMethod.GET)
 //	@ResponseBody
-//	@LogException
+//	//@LogException
 //	public  DataBean<List<UserSearchBean>> search(@RequestParam(required = true) String prefix,
 //			@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size) {
 //		List<User> users = userServiceFacade.findBySearchFieldContaining(prefix, page, size);
@@ -217,7 +217,7 @@ public class ApiUserController extends BaseController {
 
 	@RequestMapping(value="/exist-anomaly-types", method = RequestMethod.GET)
 	@ResponseBody
-	@LogException
+//	//@LogException
 	public Map<String,Integer> getDistinctAnomalyType () {
 		Map<String,Integer> anomalyTypePairs =  userService.getDistinctAnomalyType();
 
@@ -227,7 +227,7 @@ public class ApiUserController extends BaseController {
 
 	@RequestMapping(value="/extendedSearch", method=RequestMethod.GET)
 	@ResponseBody
-	@LogException
+//	//@LogException
 	public DataBean<List<UserDetailsBean>> extendedSearch(UserRestFilter userRestFilter){
 		DataBean<List<UserDetailsBean>> result = new DataBean<>();
 
@@ -259,7 +259,7 @@ public class ApiUserController extends BaseController {
 	 */
 	@RequestMapping(value="/{username}/userdata", method=RequestMethod.GET)
 	@ResponseBody
-	@LogException
+//	//@LogException
 	public DataBean<List<UserDetailsBean>> userDataByName(@PathVariable String username) {
 		User user = userService.findByUsername(username);
 //		setSeverityOnUsersList(Arrays.asList(user));
@@ -273,7 +273,7 @@ public class ApiUserController extends BaseController {
 	 */
 	@RequestMapping(value="/{ids}/details", method=RequestMethod.GET)
 	@ResponseBody
-	@LogException
+//	//@LogException
 	public DataBean<List<UserDetailsBean>> details(@PathVariable List<String> ids,
 			@RequestParam(required = false, value = "add_alerts_and_devices") Boolean addAlertsAndDevices) {
 		// Get Users
@@ -293,7 +293,7 @@ public class ApiUserController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value="{id}", method = RequestMethod.POST)
-	@LogException
+//	//@LogException
 	public Response addRemoveTag(@PathVariable String id, @RequestBody String body) throws JSONException {
 		User user = userService.findOne(id);
 		JSONObject params = new JSONObject(body);
@@ -321,7 +321,7 @@ public class ApiUserController extends BaseController {
 	 * @return
 	 */
 	@RequestMapping(value="/{addTag}/{tagNames}/tagUsers", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	@LogException
+//	//@LogException
 	@ResponseBody
 	public ResponseEntity<UsersCount> addRemoveTagByFilter(@RequestBody UserRestFilter userRestFilter,
 														   @PathVariable Boolean addTag, @PathVariable List<String> tagNames) throws JSONException {
@@ -343,7 +343,7 @@ public class ApiUserController extends BaseController {
 
 	@RequestMapping(value="/followedUsers", method=RequestMethod.GET)
 	@ResponseBody
-	@LogException
+//	//@LogException
 	public DataBean<List<String>> followedUsers() {
 		List<String> userIds = userService.findByFollowed().stream().map(User::getId).
 				collect(Collectors.toList());
@@ -355,7 +355,7 @@ public class ApiUserController extends BaseController {
 
 	@RequestMapping(value="/usersDetails", method=RequestMethod.GET)
 	@ResponseBody
-	@LogException
+//	//@LogException
 	public DataBean<List<UserDetailsBean>> usersDetails(@RequestParam(required = true) List<String> ids) {
 		List<User> users = userService.findByIds(ids);
 //		setSeverityOnUsersList(users);
@@ -364,7 +364,7 @@ public class ApiUserController extends BaseController {
 
 	@RequestMapping(value="/usersTagsCount", method=RequestMethod.GET)
 	@ResponseBody
-	@LogException
+//	//@LogException
 	public DataBean<List<TagPair>> usersTagsCount() {
 		List<TagPair> result = new ArrayList();
 		Map<String, Long> items = userService.groupByTags(false);
@@ -381,7 +381,7 @@ public class ApiUserController extends BaseController {
 
 	@RequestMapping(value="/followedUsersDetails", method=RequestMethod.GET)
 	@ResponseBody
-	@LogException
+//	//@LogException
 	public DataBean<List<UserDetailsBean>> followedUsersDetails(Model model) {
 		Set<User> users = userService.findByFollowed();
 
@@ -391,7 +391,7 @@ public class ApiUserController extends BaseController {
 
 //	@RequestMapping(value="/{id}/machines", method=RequestMethod.GET)
 //	@ResponseBody
-//	@LogException
+//	//@LogException
 //	public DataBean<List<UserMachine>> userMachines(@PathVariable String id) {
 //		List<UserMachine> userMachines = userServiceFacade.getUserMachines(id);
 //		DataBean<List<UserMachine>> ret = new DataBean<>();
@@ -402,7 +402,7 @@ public class ApiUserController extends BaseController {
 
 //	@RequestMapping(value="/usersMachines", method=RequestMethod.GET)
 //	@ResponseBody
-//	@LogException
+//	//@LogException
 //	public DataBean<List<UserMachinesBean>> usersMachines(@RequestParam(required = true) List<String> ids) {
 //		List<User> users = userService.findByIds(ids);
 //		return usersMachinesAux(users);
@@ -413,7 +413,7 @@ public class ApiUserController extends BaseController {
 	 */
 //	@RequestMapping(value="/{uid}/destination/{param}/distribution", method=RequestMethod.GET)
 //	@ResponseBody
-//	@LogException
+//	//@LogException
 //	public DataBean<Collection<PropertyEntry>> getDestinationPropertyDistribution(@PathVariable String uid,
 //			@PathVariable String param, @RequestParam(defaultValue="50") int minScore,
 //			@RequestParam(required = false) Long latestDate, @RequestParam(required = false) Long earliestDate,
@@ -434,7 +434,7 @@ public class ApiUserController extends BaseController {
 
 	@RequestMapping(value = "/severityBar", method = RequestMethod.GET)
 	@ResponseBody
-	@LogException
+	////@LogException
 	public DataBean<Map<String, Map<String, Integer>>> getSeverityBarInfo(UserRestFilter userRestFilter){
 		DataBean<Map<String, Map<String, Integer>>> dataBean = new DataBean<>();
 
@@ -450,7 +450,7 @@ public class ApiUserController extends BaseController {
 
 	@RequestMapping(value="/exist-alert-types", method = RequestMethod.GET)
 	@ResponseBody
-	@LogException
+	////@LogException
 	public DataBean<Set<AlertTypesCountBean>> getDistinctAlertNames(@RequestParam(required=true,
 			value = "ignore_rejected") Boolean ignoreRejected) {
 		//TODO: ignore rejected is not supported
@@ -468,7 +468,7 @@ public class ApiUserController extends BaseController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET , value = "/export")
-	@LogException
+	//@LogException
 	public void exportUsersToCsv(UserRestFilter filter, HttpServletResponse httpResponse)  throws  Exception{
 		PageRequest pageRequest = new PageRequest(FIRST_PAGE_INDEX, DEFAULT_EXPORT_USERS_SIZE);
 
@@ -502,7 +502,7 @@ public class ApiUserController extends BaseController {
 
 	@RequestMapping(value="/{watch}/followUsers", method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE)
-	@LogException
+	//@LogException
 	public ResponseEntity<UsersCount> followUsersByFilter(@RequestBody UserRestFilter userRestFilter, @PathVariable Boolean watch) {
 
 		if (userRestFilter.getSize() == null) {
@@ -516,7 +516,7 @@ public class ApiUserController extends BaseController {
 
 	@RequestMapping(value="/{fieldName}/distinctValues", method=RequestMethod.GET)
 	@ResponseBody
-	@LogException
+	//@LogException
 	public DataBean<List<String>> getDistinctValues(@PathVariable String fieldName) {
 
 		List<String> distinctValues = userService.getDistinctValuesByFieldName(fieldName);
@@ -567,7 +567,7 @@ public class ApiUserController extends BaseController {
 
 
 	@RequestMapping(value="/entities", method = RequestMethod.GET)
-	@LogException
+	//@LogException
 	public @ResponseBody
 	DataBean<Set<Map<String, String>>> getEntities(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
 													@RequestParam(required=false, value = "entity_name") String entityName,

@@ -1,7 +1,7 @@
 package presidio.ui.presidiouiapp.rest;
 
 import fortscale.services.ThemesService;
-import fortscale.utils.logging.annotation.LogException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -26,7 +26,6 @@ public class ApiThemes {
     }
 
     @RequestMapping(value="/", method = RequestMethod.GET)
-    @LogException
     public @ResponseBody
     DataBean<Map<String, String>> getDefaultTheme(){
 
