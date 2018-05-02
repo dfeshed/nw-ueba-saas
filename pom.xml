@@ -38,7 +38,8 @@
         <spring-data-mongodb.version>1.9.3.RELEASE</spring-data-mongodb.version>
         <spring-data-commons.version>1.12.3.RELEASE</spring-data-commons.version>
         <spring-data-hadoop.version>2.2.0.RELEASE</spring-data-hadoop.version>
-        <fongo.version>1.6.8</fongo.version>
+        <!--<fongo.version>1.6.8</fongo.version>-->
+        <fongo.version>2.1.0</fongo.version>
         <quartz.version>2.2.1</quartz.version>
         <jackson.version>2.9.0</jackson.version>
         <jackson.dataformat.version>2.9.0</jackson.dataformat.version>

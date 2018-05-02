@@ -84,7 +84,7 @@ public final class EmailAddress implements Serializable{
 	}
 
 	@Component
-	static class EmailAddressToStringConverter implements Converter<EmailAddress, String> {
+	public static class EmailAddressToStringConverter implements Converter<EmailAddress, String> {
 
 		/* 
 		 * (non-Javadoc)
@@ -97,7 +97,7 @@ public final class EmailAddress implements Serializable{
 	}
 
 	@Component
-	static class StringToEmailAddressConverter implements Converter<String, EmailAddress> {
+	public static class StringToEmailAddressConverter implements Converter<String, EmailAddress> {
 
 		/*
 		 * (non-Javadoc)

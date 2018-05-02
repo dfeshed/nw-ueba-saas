@@ -133,7 +133,14 @@
             <artifactId>presidio-ui-output-client-remote</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.fakemongo</groupId>
+            <artifactId>fongo</artifactId>
+            <version>${fongo.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
+
 
 
 	<!--<profiles>-->

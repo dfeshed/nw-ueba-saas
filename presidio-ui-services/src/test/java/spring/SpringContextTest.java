@@ -19,9 +19,9 @@ import presidio.output.client.client.ApiException;
 @RunWith(SpringRunner.class)
 @SpringBootTest()
 @ActiveProfiles("mock")
-@ContextConfiguration(classes = {PresidioUiServiceConfiguration.class,  SpringMongoConfiguration.class})
+@ContextConfiguration(classes = {PresidioUiServiceConfiguration.class})
 @TestPropertySource("classpath:test.properties")
-@Import(SpringContextTestsConfiguration.class)
+@Import({SpringContextTestsConfiguration.class,FongoTestsConfiguration.class})
 public class SpringContextTest {
 
         @Autowired
