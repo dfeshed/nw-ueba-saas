@@ -125,7 +125,7 @@ function _validateChannels(channels, errorObj) {
   return error;
 }
 
-export const validateLogConfigFields = (formData, errorObj) => {
+export const validateLogConfigFields = (formData, isLogCollectionStatus, errorObj) => {
   const { configName, primaryDestination, channels } = formData;
   let error = null;
 
@@ -141,13 +141,15 @@ export const validateLogConfigFields = (formData, errorObj) => {
       errorMessage: 'packager.specialCharacter'
     };
   }
-  if (isEmpty(primaryDestination)) {
-    return {
-      errorClass: 'is-error',
-      className: 'rsa-form-label is-error power-select'
-    };
-  }
+  if (isLogCollectionStatus) {
+    if (isEmpty(primaryDestination)) {
+      return {
+        errorClass: 'is-error',
+        className: 'rsa-form-label is-error power-select'
+      };
+    }
 
-  error = _validateChannels(channels, errorObj);
+    error = _validateChannels(channels, errorObj);
+  }
   return error;
 };

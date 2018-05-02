@@ -178,6 +178,25 @@
         </div>
       </hbox>
 
+      <div class="rsa-form-radio-group col-xs-12 field">
+        <h4 class='rsa-form-radio-group-label'>{{t 'packager.statusLabel'}}</h4>
+        <label class="rsa-form-radio-label {{if (eq 'enabled' status) 'checked'}}">
+          {{radio-button
+          radioClass='status-type'
+          value='enabled'
+          groupValue=status}}
+          {{t 'packager.enabled'}}
+        </label>
+
+        <label class="rsa-form-radio-label {{if (eq 'disabled' status) 'checked'}}" title={{t 'packager.tooltip'}}>
+        {{radio-button
+        radioClass='status-type'
+        value='disabled'
+        groupValue=status}}
+        {{t 'packager.disabled'}}
+        </label>
+      </div>
+
       <div class="col-xs-12 field primary-log-decoder-container">
         <label class={{className}}>
           <div class="label-text">

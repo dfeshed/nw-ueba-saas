@@ -89,7 +89,7 @@ test('validateLogConfigFields - empty primaryDestination', function(assert) {
     protocol: 'Test',
     channels: []
   };
-  const error = validateLogConfigFields(formData);
+  const error = validateLogConfigFields(formData, true);
   assert.deepEqual(error, {
     'errorClass': 'is-error',
     'className': 'rsa-form-label is-error power-select'
@@ -126,4 +126,28 @@ test('validateLogConfigFields - empty configName', function(assert) {
     isConfigError: true,
     errorMessage: 'packager.emptyName'
   });
+});
+
+test('validateLogConfigFields - empty configName when status is disabled', function(assert) {
+  const formData = {
+    configName: '',
+    enabled: false
+  };
+
+  const error = validateLogConfigFields(formData, false);
+  assert.deepEqual(error, {
+    isConfigError: true,
+    errorMessage: 'packager.emptyName'
+  });
+});
+
+test('validateLogConfigFields - valid when status is disabled', function(assert) {
+  const formData = {
+    configName: 'TEST',
+    primaryDestination: '',
+    protocol: 'Test',
+    channels: [{ channel: 'Security', filter: 'Include', eventId: '123' }]
+  };
+  const error = validateLogConfigFields(formData, false);
+  assert.equal(error, null);
 });

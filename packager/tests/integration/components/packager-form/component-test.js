@@ -298,4 +298,15 @@ module('Integration | Component | packager-form', function(hooks) {
     assert.equal(monitoringModeCheckboxEl.length, 1, 'monitoring mode is rendered');
     assert.equal(enableMonitoringChecked.length, 1, 'monitoring mode is checked by default');
   });
+
+  test('Enabled is selected when status is enabled', async function(assert) {
+    assert.expect(2);
+    new ReduxDataHelper(setState)
+      .setData('defaultPackagerConfig', newConfig)
+      .build();
+    this.set('status', 'enabled');
+    await render(hbs `{{packager-form isLogCollectionEnabled=true status=status}}`);
+    assert.equal(findAll('.status-type').length, 2, '2 radio buttons are available for enable and disabled');
+    assert.equal(find('.rsa-form-radio-label.checked').textContent.trim(), 'Enabled');
+  });
 });

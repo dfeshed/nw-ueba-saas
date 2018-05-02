@@ -89,6 +89,11 @@ const formComponent = Component.extend({
 
   isMonitorModeEnabled: true,
 
+  status: 'enabled',
+
+  @computed('status')
+  enabled: (status) => status !== 'disabled',
+
   @computed('configData.packageConfig.server', 'configData.packageConfig.port', 'isUpdating')
   isDisabled(server, port, isUpdating) {
     return isEmpty(server) || isEmpty(port) || isUpdating;
@@ -191,7 +196,7 @@ const formComponent = Component.extend({
   _getCallbackFunction() {
     return {
       onFailure: (response) => {
-        const error = validateLogConfigFields(this.get('configData.logCollectionConfig'), response.meta);
+        const error = validateLogConfigFields(this.get('configData.logCollectionConfig'), this.get('enabled'), response.meta);
         this.setProperties(error);
       },
       onSuccess: () => {
@@ -209,6 +214,9 @@ const formComponent = Component.extend({
         const responseConfiguration = response.data;
         this.set('selectedProtocol', responseConfiguration.protocol);
         this.set('configData.logCollectionConfig', responseConfiguration);
+        if (!responseConfiguration.enabled) {
+          this.set('status', 'disabled');
+        }
         if (responseConfiguration.hasErrors) {
           const warningMessage = `packager.errorMessages.${responseConfiguration.errorMessage}`;
           flashMessage.warning(`${i18nMessages.t('packager.upload.success')} ${i18nMessages.t(warningMessage)}`);
@@ -256,12 +264,12 @@ const formComponent = Component.extend({
         }
       } else {
         let error;
-        this.set('configData.logCollectionConfig.enabled', true);
+        this.set('configData.logCollectionConfig.enabled', this.get('enabled'));
         this.set('configData.logCollectionConfig.protocol', this.get('selectedProtocol'));
         this.set('configData.logCollectionConfig.testLogOnLoad', this.get('testLog'));
         const packageConfigError = error = validatePackageConfig(this.get('configData.packageConfig'));
         if (!packageConfigError) {
-          error = validateLogConfigFields(this.get('configData.logCollectionConfig'));
+          error = validateLogConfigFields(this.get('configData.logCollectionConfig'), this.get('enabled'));
         }
         this.setProperties(error);
         if (!error) {
@@ -277,13 +285,13 @@ const formComponent = Component.extend({
 
     generateLogConfig() {
       this.resetErrorProperties();
-      const error = validateLogConfigFields(this.get('configData.logCollectionConfig'));
+      const error = validateLogConfigFields(this.get('configData.logCollectionConfig'), this.get('enabled'));
       this.setProperties(error);
       if (!error) {
         // only log config data need to be send on click of this button.
         this.send('saveUIState', this.get('configData'));
         this.set('configData.logCollectionConfig.testLogOnLoad', this.get('testLog'));
-        this.set('configData.logCollectionConfig.enabled', true);
+        this.set('configData.logCollectionConfig.enabled', this.get('enabled'));
         this.set('configData.logCollectionConfig.protocol', this.get('selectedProtocol'));
         this.send('setConfig', { logCollectionConfig: this.get('configData.logCollectionConfig') }, 'LOG_CONFIG', this._getCallbackFunction());
       } else {

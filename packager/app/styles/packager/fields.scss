@@ -19,6 +19,9 @@
         padding-right: rsa-whitespace();
       }
     }
+    .rsa-form-radio-label {
+      padding-bottom: rsa-whitespace(least);
+    }
   }
   .server-input-group {
     div:first-child {

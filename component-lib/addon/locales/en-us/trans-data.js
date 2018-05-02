@@ -1700,7 +1700,8 @@ export default {
       INVALID_PROTOCOL: 'Warning: The protocol is invalid.',
       CHANNEL_NAME_INVALID: 'Warning: The channel name is invalid.',
       EMPTY_CHANNELS: 'Warning: The channel name is empty.',
-      CHANNEL_FILTER_INVALID: 'Warning: The channel filter is invalid.'
+      CHANNEL_FILTER_INVALID: 'Warning: The channel filter is invalid.',
+      DESTINATIONS_NOT_UNIQUE: 'Warning: Primary Destination and Secondary Destination are same.'
     },
     errorPage: {
       errorTitle: 'Endpoint Server is offline',
@@ -1737,8 +1738,12 @@ export default {
     autoUninstall: 'Auto Uninstall',
     forceOverwrite: 'Force Overwrite',
     windowsLogCollectionCongfig: 'Windows Log Collection Configuration',
-    enableWindowsLogCollection: 'Enable Windows Log Collection',
+    enableWindowsLogCollection: 'Configure Windows Log Collection',
     configurationName: 'Configuration Name*',
+    statusLabel: 'Status',
+    enabled: 'Enabled',
+    disabled: 'Disabled',
+    tooltip: 'Configuration information will be saved but logs will not be forwarded',
     primaryLogDecoder: 'Primary Log Decoder/Log collector*',
     secondaryLogDecoder: 'Secondary Log Decoder/Log Collector',
     protocol: 'Protocol',
