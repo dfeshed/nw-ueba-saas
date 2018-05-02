@@ -7,15 +7,12 @@ import fortscale.common.dataentity.DataEntity;
 import fortscale.common.dataentity.DataEntityField;
 import fortscale.domain.core.*;
 
-import fortscale.domain.core.User;
 import fortscale.domain.core.dao.rest.Events;
-import fortscale.domain.dto.DateRange;
 import fortscale.domain.historical.data.SupportingInformationDualKey;
 import fortscale.domain.historical.data.SupportingInformationKey;
 import fortscale.domain.historical.data.SupportingInformationSingleKey;
 import fortscale.domain.historical.data.SupportingInformationTimestampKey;
-import fortscale.remote.RemoteAlertClientService;
-import fortscale.remote.RemoteClientServiceAbs;
+import fortscale.presidio.output.client.api.AlertsPresidioOutputClient;
 import fortscale.services.EvidencesService;
 import fortscale.services.UserService;
 import fortscale.services.presidio.core.converters.IndicatorConverter;
@@ -58,7 +55,7 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 	private DataEntitiesConfig dataEntitiesConfig;
 	private UserService userService;
 	private IndicatorConverter indicatorConverter;
-	private RemoteAlertClientService remoteAlertClientService;
+	private AlertsPresidioOutputClient remoteAlertClientService;
 
 
 	// Severity thresholds for evidence
@@ -78,7 +75,7 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 	 */
 	private NavigableMap<Integer,Severity> scoreToSeverity = new TreeMap<>();
 
-	public EvidencesServiceImpl(DataEntitiesConfig dataEntitiesConfig, UserService userService, IndicatorConverter indicatorConverter, RemoteAlertClientService remoteAlertClientService) {
+	public EvidencesServiceImpl(DataEntitiesConfig dataEntitiesConfig, UserService userService, IndicatorConverter indicatorConverter, AlertsPresidioOutputClient remoteAlertClientService) {
 		this.dataEntitiesConfig = dataEntitiesConfig;
 		this.userService = userService;
 		this.indicatorConverter = indicatorConverter;

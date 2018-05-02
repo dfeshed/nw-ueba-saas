@@ -8,8 +8,7 @@ import fortscale.domain.core.alert.analystfeedback.AnalystRiskFeedback;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DailySeveiryConuntDTO;
 import fortscale.domain.dto.DateRange;
-import fortscale.remote.RemoteAlertClientService;
-import fortscale.remote.RemoteClientServiceAbs;
+import fortscale.presidio.output.client.api.AlertsPresidioOutputClient;
 import fortscale.services.AlertCommentsService;
 import fortscale.services.AlertsService;
 import fortscale.services.UserService;
@@ -23,8 +22,6 @@ import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import presidio.output.client.api.AlertsApi;
-import presidio.output.client.client.ApiClient;
 import presidio.output.client.client.ApiException;
 import presidio.output.client.model.*;
 
@@ -39,7 +36,7 @@ import java.util.*;
 public class AlertsServiceImpl implements AlertsService {
 
 
-    private final RemoteAlertClientService remoteAlertClientService;
+    private final AlertsPresidioOutputClient remoteAlertClientService;
     private final UserService userService;
     private final AlertConverterHelper alertConverterHelper;
     private final AlertCommentsService alertCommentsService;
@@ -51,7 +48,7 @@ public class AlertsServiceImpl implements AlertsService {
     protected Logger logger = Logger.getLogger(this.getClass());
 
     public AlertsServiceImpl(UserService userService, AlertConverterHelper alertConverterHelper, AlertCommentsService alertCommentsService,
-                             AggregationConverterHelper aggregationConverterHelper,RemoteAlertClientService remoteAlertClientService) {
+                             AggregationConverterHelper aggregationConverterHelper,AlertsPresidioOutputClient remoteAlertClientService) {
         this.userService = userService;
         this.alertConverterHelper = alertConverterHelper;
         this.alertCommentsService = alertCommentsService;

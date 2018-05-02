@@ -10,7 +10,7 @@
 
     <artifactId>presidio-ui-app</artifactId>
 
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <name>presidio-ui-app</name>
     <description>Demo project for Spring Boot</description>

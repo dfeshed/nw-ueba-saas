@@ -12,8 +12,8 @@ import fortscale.domain.core.dao.rest.Users;
 import fortscale.domain.rest.UserFilter;
 import fortscale.domain.rest.UserRestFilter;
 
-import fortscale.remote.RemoteClientServiceAbs;
-import fortscale.remote.RemoteUserClientService;
+import fortscale.presidio.output.client.api.UsersPresidioOutputClient;
+
 import fortscale.services.UserService;
 
 import fortscale.services.presidio.core.converters.AggregationConverterHelper;
@@ -76,10 +76,10 @@ public class UserServiceImpl implements UserService {
 	private UserConverterHelper userConverterHelper;
 	private AggregationConverterHelper aggregationConverterHelper;
 	private List<String> setOfBuiltInADUsers;
-	private RemoteUserClientService remoteUserClientService;
+	private UsersPresidioOutputClient remoteUserClientService;
 
 	public UserServiceImpl(UserConverterHelper userConverterHelper, AggregationConverterHelper aggregationConverterHelper,
-						   RemoteUserClientService remoteUserClientService) {
+						   UsersPresidioOutputClient remoteUserClientService) {
 		this.userConverterHelper = userConverterHelper;
 		this.aggregationConverterHelper = aggregationConverterHelper;
 		this.remoteUserClientService = remoteUserClientService;

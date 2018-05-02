@@ -5,9 +5,8 @@ import fortscale.domain.core.User;
 import fortscale.domain.core.dao.ApplicationConfigurationRepository;
 import fortscale.domain.rest.UserRestFilter;
 import fortscale.domain.spring.PresidioUiDomainConfiguration;
-import fortscale.remote.RemoteAlertClientService;
-
-import fortscale.remote.RemoteUserClientService;
+import fortscale.presidio.output.client.api.AlertsPresidioOutputClient;
+import fortscale.presidio.output.client.api.UsersPresidioOutputClient;
 import fortscale.services.*;
 import fortscale.services.cache.MemoryBasedCache;
 import fortscale.services.impl.*;
@@ -31,7 +30,7 @@ import java.util.List;
 
 @Import({PresidioUiUtilsConfiguration.class, PresidioUiDomainConfiguration.class,
         PresidioUiCommonConfig.class,
-        RemoteClientsConfiguration.class})
+        PresidioUiOutputClientConfig.class})
 public class PresidioUiServiceConfiguration {
 
 
@@ -137,8 +136,8 @@ public class PresidioUiServiceConfiguration {
     private ConfigrationServerClientUtils configrationServerClientUtils;
 
     @Autowired
-    private RemoteAlertClientService remoteAlertClientService;
+    private AlertsPresidioOutputClient remoteAlertClientService;
 
     @Autowired
-    private RemoteUserClientService remoteUsersClientService;
+    private UsersPresidioOutputClient remoteUsersClientService;
 }

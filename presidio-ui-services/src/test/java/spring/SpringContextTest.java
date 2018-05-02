@@ -1,7 +1,7 @@
 package spring;
 
-import fortscale.remote.fake.FakeRemoteAlertClientService;
-import fortscale.remote.fake.FakeRemoteUserClientService;
+import fortscale.presidio.output.client.api.AlertsPresidioOutputClient;
+import fortscale.presidio.output.client.api.UsersPresidioOutputClient;
 import fortscale.spring.PresidioUiServiceConfiguration;
 import fortscale.utils.mongodb.config.SpringMongoConfiguration;
 import org.junit.Assert;
@@ -18,17 +18,17 @@ import presidio.output.client.client.ApiException;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest()
-@ActiveProfiles("fake")
+@ActiveProfiles("mock")
 @ContextConfiguration(classes = {PresidioUiServiceConfiguration.class,  SpringMongoConfiguration.class})
 @TestPropertySource("classpath:test.properties")
 @Import(SpringContextTestsConfiguration.class)
 public class SpringContextTest {
 
         @Autowired
-        private FakeRemoteAlertClientService fakeRemoteAlertClientService;
+        private AlertsPresidioOutputClient fakeRemoteAlertClientService;
 
         @Autowired
-        private FakeRemoteUserClientService fakeRemoteUserClientService;
+        private UsersPresidioOutputClient fakeRemoteUserClientService;
 
 
         @Test

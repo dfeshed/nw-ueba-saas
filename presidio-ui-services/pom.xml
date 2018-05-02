@@ -55,6 +55,11 @@
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>${project.parent.groupId}</groupId>
+			<artifactId>presidio-ui-output-client-api</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 		</dependency>
@@ -118,5 +123,52 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>presidio-ui-output-client-mock</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>presidio-ui-output-client-remote</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
     </dependencies>
+
+
+	<!--<profiles>-->
+		<!--<profile>-->
+			<!--<id>default</id>-->
+            <!--<activation>-->
+                <!--&lt;!&ndash;<activeByDefault>true</activeByDefault>&ndash;&gt;-->
+                <!--&lt;!&ndash;<property>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<name>!mockdata</name>&ndash;&gt;-->
+                <!--&lt;!&ndash;</property>&ndash;&gt;-->
+            <!--</activation>-->
+			<!--<dependencies>-->
+				<!--<dependency>-->
+					<!--<groupId>${project.parent.groupId}</groupId>-->
+					<!--<artifactId>presidio-ui-output-client-remote</artifactId>-->
+					<!--<version>${project.parent.version}</version>-->
+				<!--</dependency>-->
+			<!--</dependencies>-->
+		<!--</profile>-->
+		<!--<profile>-->
+			<!--<id>mockdata</id>-->
+            <!--&lt;!&ndash; to use mock data execute maven with mvn -Dmockdata &ndash;&gt;-->
+            <!--<activation>-->
+                <!--&lt;!&ndash;<property>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<name>mockdata</name>&ndash;&gt;-->
+                <!--&lt;!&ndash;</property>&ndash;&gt;-->
+            <!--</activation>-->
+			<!--<dependencies>-->
+				<!--<dependency>-->
+					<!--<groupId>${project.parent.groupId}</groupId>-->
+					<!--<artifactId>presidio-ui-output-client-mock</artifactId>-->
+					<!--<version>${project.parent.version}</version>-->
+				<!--</dependency>-->
+
+			<!--</dependencies>-->
+		<!--</profile>-->
+	<!--</profiles>-->
 </project>
