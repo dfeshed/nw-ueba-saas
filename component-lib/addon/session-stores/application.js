@@ -1,5 +1,5 @@
-import CookieStore from 'ember-simple-auth/session-stores/cookie';
+import LocalStorage from 'ember-simple-auth/session-stores/local-storage';
 
-export default CookieStore.extend({
-  cookieName: 'rsa-nw-ui-session'
+export default LocalStorage.extend({
+  key: 'rsa-nw-ui-session'
 });

@@ -7,7 +7,7 @@
 
 import { inject as service } from '@ember/service';
 
-import $ from 'jquery';
+import fetch from 'component-lib/services/fetch';
 import { run } from '@ember/runloop';
 import { isEmpty } from '@ember/utils';
 import RSVP from 'rsvp';
@@ -24,6 +24,8 @@ const { useMockServer, mockServerUrl } = config;
 export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
 
   serverTokenEndpoint: '/oauth/token',
+
+  checkTokenEndpoint: '/oauth/check',
 
   clientId: 'nw_ui',
 
@@ -88,17 +90,16 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
   _logoutAndInvalidate() {
     const csrfKey = this.get('csrfLocalstorageKey');
 
-    $.ajax({
-      type: 'POST',
-      url: '/oauth/logout',
-      timeout: 15000,
+    fetch('/oauth/logout', {
+      credentials: 'same-origin',
+      method: 'POST',
       headers: {
         'X-CSRF-TOKEN': localStorage.getItem(csrfKey)
       },
-      data: {
+      body: {
         access_token: this.get('session').get('data.authenticated.access_token')
       }
-    }).always(() => {
+    }).finally(() => {
       localStorage.removeItem(csrfKey);
       this.get('session').invalidate();
     });
@@ -157,22 +158,29 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
 
   restore(data) {
     return new RSVP.Promise((resolve, reject) => {
-      const now = (new Date()).getTime();
-      const refreshAccessTokens = this.get('refreshAccessTokens');
-      if (!isEmpty(data.expires_at) && data.expires_at < now) {
-        if (refreshAccessTokens) {
-          this._refreshAccessToken(data.expires_in, data.refresh_token).then(resolve, reject);
-        } else {
+
+      fetch(this.get('checkTokenEndpoint'), { credentials: 'same-origin' }).then((response) => {
+        // Http Status code 401/500 is 'successful'. See https://github.com/github/fetch#caveats
+        if (response.status >= 300) {
           reject();
         }
-      } else {
-        if (!this._validate(data)) {
-          reject();
+
+        const now = (new Date()).getTime();
+        const refreshAccessTokens = this.get('refreshAccessTokens');
+        if (!isEmpty(data.expires_at) && data.expires_at < now) {
+          if (refreshAccessTokens) {
+            this._refreshAccessToken(data.expires_in, data.refresh_token).then(resolve, reject);
+          } else {
+            reject();
+          }
         } else {
-          this._scheduleAccessTokenRefresh(data.expires_in, data.expires_at, data.refresh_token);
-          resolve(data);
+          if (!this._validate(data)) {
+            reject();
+          } else {
+            resolve(data);
+          }
         }
-      }
+      }).catch(reject);
     });
   },
 
