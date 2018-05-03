@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>package</artifactId>
+        <groupId>com.rsa.netwitness.presidio</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>rsa-nw-presidio-core</artifactId>
+    <build>
+        <plugins>
+            <!-- create RPM -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>rpm-maven-plugin</artifactId>
+                <configuration>
+                    <summary>Presidio(UEBA) core batch applications and workflow py package</summary>
+                    <mappings>
+                        <mapping>
+                            <directoryIncluded>false</directoryIncluded>
+                            <directory>${presidio-app.directory}/batch</directory>
+                            <username>presidio</username>
+                            <groupname>presidio</groupname>
+                            <sources>
+                                <source>
+                                    <includes>
+                                        <include>*.jar</include>
+                                    </includes>
+                                    <location>${presidio-core-build.directory}</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <!--TODO: add egg mapping once python artifactory is set-->
+                    </mappings>
+                    <requires>
+                        <require>java &gt; 1.8</require>
+                    </requires>
+                    <description>
+                        Presidio(UEBA) batch applications and the matching workflow python packages
+                    </description>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

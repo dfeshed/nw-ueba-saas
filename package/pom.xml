@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.rsa.netwitness.presidio</groupId>
+    <artifactId>package</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>rsa-nw-presidio-core</module>
+    </modules>
+    <parent>
+        <artifactId>rpm-builder</artifactId>
+        <groupId>com.rsa.netwitness.infrastructure.rpm</groupId>
+        <version>3.0.0-SNAPSHOT</version>
+    </parent>
+    <repositories>
+        <!-- ASOC Tier-2 repository -->
+        <repository>
+            <id>repo1.rsa.lab.emc.com-build</id>
+            <url>http://repo1.rsa.lab.emc.com:8081/artifactory/asoc-build-repo</url>
+        </repository>
+    </repositories>
+
+    <properties>
+        <presidio-app.directory>
+            <!--Base application directory.
+            should contain batch apps, python packages and scripts used by core and its extensions-->
+            /var/lib/netwitness/presidio
+        </presidio-app.directory>
+        <presidio-core-build.directory>
+            <!-- Fortscale presidio-core built binaries directory-->
+            ${project.basedir}/../../fortscale/target/dependencies
+        </presidio-core-build.directory>
+    </properties>
+
+
+</project>
