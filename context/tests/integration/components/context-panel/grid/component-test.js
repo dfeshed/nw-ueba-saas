@@ -64,4 +64,28 @@ module('Integration | Component | context-panel/grid', function(hooks) {
     assert.equal(findAll('.rsa-context-panel__config-grid__layout').length, 10, 'total 10 fields should display for Archer');
   });
 
+
+  test('no fields should display when result is empty', async function(assert) {
+    const lookupData = [{
+      'Archer': {
+        'dataSourceType': 'Archer',
+        'dataSourceGroup': 'Archer',
+        'connectionName': 'test'
+      } }];
+
+    const emptyData = {
+      lookupKey: '10.10.100.10',
+      meta: 'IP',
+      lookupData
+    };
+
+    new ReduxDataHelper(setState)
+      .setData('context', emptyData)
+      .build();
+    this.set('dataSourceDetails', dataSourceDetails);
+    await render(hbs`{{context-panel/grid dataSourceDetails=dataSourceDetails}}`);
+    assert.equal(findAll('.rsa-context-panel__config-grid').length, 1, 'configurable grid is rendered.');
+    assert.equal(findAll('.rsa-context-panel__config-grid__layout').length, 0, 'no fields are available as resultList is empty');
+  });
+
 });

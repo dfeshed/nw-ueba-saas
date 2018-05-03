@@ -16,8 +16,11 @@ const GridComponent = Component.extend({
 
   @computed('lookupData.[]', 'dataSourceDetails')
   dataSourceData([lookupData], dataSourceDetails) {
-    const [ dsData ] = getData(lookupData, dataSourceDetails);
-    return _.omit(dsData, 'Url');
+    const dsData = getData(lookupData, dataSourceDetails);
+    if (dsData) {
+      const [ gridData ] = dsData;
+      return _.omit(gridData, 'Url');
+    }
   }
 });
 export default connect(stateToComputed)(GridComponent);
