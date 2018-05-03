@@ -12,14 +12,12 @@ import java.util.Set;
 @Service("userServiceFacade")
 public class UserServiceFacadeImpl implements UserServiceFacade{
 	
-	@Autowired
+
 	private UserService userService;
-//	@Autowired
-//	private UserUpdateScoreService userUpdateScoreService;
-//	@Autowired
-//	private UserScoreService userScoreService;
-//	@Autowired
-//	private UsernameService usernameService;
+
+	public UserServiceFacadeImpl(UserService userService) {
+		this.userService = userService;
+	}
 
 	@Override
 	public List<User> findBySearchFieldContaining(String prefix, int page, int size) {

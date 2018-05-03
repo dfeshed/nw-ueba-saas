@@ -2,7 +2,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>1.5.13.BUILD-SNAPSHOT</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
 	<groupId>presidio.ui</groupId>
     <artifactId>presidio-ui</artifactId>
     <version>1.1.0-SNAPSHOT</version>
@@ -13,7 +18,7 @@
 
 
     <properties>
-	
+        <open-csv.version>2.3</open-csv.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!--RPM VERSION-->
@@ -27,15 +32,14 @@
         <junit.version>4.12</junit.version>
         <junitparams.version>1.0.2</junitparams.version>
         <jsonassert.version>1.2.3</jsonassert.version>
-        <mockito.version>1.9.0</mockito.version>
         <springokito.version>1.0.9</springokito.version>
-        <logback.version>1.0.13</logback.version>
         <org.springframework-version>4.3.8.RELEASE</org.springframework-version>
         <spring.security.core.version>4.1.0.RELEASE</spring.security.core.version>
         <spring-data-mongodb.version>1.9.3.RELEASE</spring-data-mongodb.version>
         <spring-data-commons.version>1.12.3.RELEASE</spring-data-commons.version>
         <spring-data-hadoop.version>2.2.0.RELEASE</spring-data-hadoop.version>
-        <fongo.version>1.6.8</fongo.version>
+        <!--<fongo.version>1.6.8</fongo.version>-->
+        <fongo.version>2.1.0</fongo.version>
         <quartz.version>2.2.1</quartz.version>
         <jackson.version>2.9.0</jackson.version>
         <jackson.dataformat.version>2.9.0</jackson.dataformat.version>
@@ -51,6 +55,20 @@
         <test.int.exgroups></test.int.exgroups>
         <org.aspectj-version>1.7.3</org.aspectj-version>
         <guava.version>15.0</guava.version>
+        <servlet-api.version>3.1.0</servlet-api.version>
+        <java-lang-config.version>1.8</java-lang-config.version>
+        <springretry.version>1.1.2.RELEASE</springretry.version>
+        <json-smart.version>2.2.1</json-smart.version>
+        <net.minidev.accessors-smart.version>1.1</net.minidev.accessors-smart.version>
+        <esper-version>5.2.0</esper-version>
+        <org.codehaus.mojo.version>1.4.0</org.codehaus.mojo.version>
+        <cxf.version>3.1.0</cxf.version>
+        <swager.version>2.2.2</swager.version>
+        <asm-commons.version>5.0.3</asm-commons.version>
+        <commons-codec.version>1.9</commons-codec.version>
+        <slf4j.version>1.7.25</slf4j.version>
+        <jackson.version>2.9.0</jackson.version>
+
         <!-- maven plugins versions -->
         <maven-download-plugin.version>1.1.0</maven-download-plugin.version>
         <maven-resources-plugin.version>2.6</maven-resources-plugin.version>
@@ -61,23 +79,7 @@
         <maven-jar-plugin.version>2.4</maven-jar-plugin.version>
         <maven-surefire-plugin.version>2.16</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>2.16</maven-failsafe-plugin.version>
-        <servlet-api.version>3.1.0</servlet-api.version>
-        <java-lang-config.version>1.8</java-lang-config.version>
-        <springretry.version>1.1.2.RELEASE</springretry.version>
-        <json-smart.version>2.2.1</json-smart.version>
-        <net.minidev.accessors-smart.version>1.1</net.minidev.accessors-smart.version>
-        <esper-version>5.2.0</esper-version>
-        <org.codehaus.mojo.version>1.4.0</org.codehaus.mojo.version>
-        <cxf.version>3.1.0</cxf.version>
-        <hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
-        <swager.version>2.2.2</swager.version>
-        <!-- eclipse plugins versions -->
-
-        <asm-commons.version>5.0.3</asm-commons.version>
-
-
-        <commons-codec.version>1.9</commons-codec.version>
-		
+        <spring-cloud-starter-config.version>1.4.3.RELEASE</spring-cloud-starter-config.version>
 		
         <!--<rpm.version.major>1</rpm.version.major>-->
         <!--<rpm.version.minor>1</rpm.version.minor>-->
@@ -86,92 +88,26 @@
 
         <!-- NOTE: ALL dependencies' versions should be here -->
         <rpm-maven-plugin.version>2.1.5</rpm-maven-plugin.version>
-        <slf4j.version>1.7.25</slf4j.version>
-        <jackson.version>2.9.0</jackson.version>
-        <!--<h2.version>1.4.193</h2.version>-->
+
+
     </properties>
 
     <dependencyManagement>
-	  <dependencies>
+        <dependencies>
             <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slf4j.version}</version>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-config</artifactId>
+                <version>${spring-cloud-starter-config.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-log4j12</artifactId>
-                <version>${slf4j.version}</version>
+                <groupId>net.sf.opencsv</groupId>
+                <artifactId>opencsv</artifactId>
+                <version>${open-csv.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>log4j-over-slf4j</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>jcl-over-slf4j</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>jul-to-slf4j</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-   
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-collections4</artifactId>
-                <version>4.1</version>
-            </dependency>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>pl.pragmatists</groupId>
-                <artifactId>JUnitParams</artifactId>
-                <version>${junitparams.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.skyscreamer</groupId>
-                <artifactId>jsonassert</artifactId>
-                <version>${jsonassert.version}</version>
-                <scope>test</scope>
-            </dependency>
-
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-csv</artifactId>
                 <version>1.4</version>
-            </dependency>
-
-            <dependency>
-                <groupId>jdk.tools</groupId>
-                <artifactId>jdk.tools</artifactId>
-                <version>${java-lang-config.version}</version>
-                <scope>system</scope>
-                <systemPath>${JAVA_HOME}/lib/tools.jar</systemPath>
-            </dependency>
-            <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>javax.servlet-api</artifactId>
-                <version>${servlet-api.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.ow2.asm</groupId>
-                <artifactId>asm-commons</artifactId>
-                <version>${asm-commons.version}</version>
-            </dependency>
-            <!-- mockito unit test mocking framework -->
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-all</artifactId>
-                <version>${mockito.version}</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.kubek2k</groupId>
@@ -193,179 +129,10 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>org.springframework.data</groupId>
-                <artifactId>spring-data-commons</artifactId>
-                <version>${spring-data-commons.version}</version>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>4.1</version>
             </dependency>
-            <dependency>
-                <groupId>org.springframework.data</groupId>
-                <artifactId>spring-data-hadoop</artifactId>
-                <version>${spring-data-hadoop.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>javax.servlet</groupId>
-                        <artifactId>servlet-api</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-
-            <dependency>
-                <groupId>com.fasterxml.jackson.datatype</groupId>
-                <artifactId>jackson-datatype-json-org</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-core</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-annotations</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.jaxrs</groupId>
-                <artifactId>jackson-jaxrs-json-provider</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.dataformat</groupId>
-                <artifactId>jackson-dataformat-csv</artifactId>
-                <version>${jackson.dataformat.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.datatype</groupId>
-                <artifactId>jackson-datatype-joda</artifactId>
-                <version>${jackson.datatype.version}</version>
-            </dependency>
-
-            <!-- Spring dependencies -->
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-orm</artifactId>
-                <version>${org.springframework-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-core</artifactId>
-                <version>${org.springframework-version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-beans</artifactId>
-                <version>${org.springframework-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context</artifactId>
-                <version>${org.springframework-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-aop</artifactId>
-                <version>${org.springframework-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-aspects</artifactId>
-                <version>${org.springframework-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-web</artifactId>
-                <version>${org.springframework-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-webmvc</artifactId>
-                <version>${org.springframework-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-messaging</artifactId>
-                <version>${org.springframework-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-expression</artifactId>
-                <version>${org.springframework-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context-support</artifactId>
-                <version>${org.springframework-version}</version>
-            </dependency>
-
-
-            <!-- Spring Security -->
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-core</artifactId>
-                <version>${spring.security.core.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-web</artifactId>
-                <version>${spring.security.core.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-config</artifactId>
-                <version>${spring.security.core.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-taglibs</artifactId>
-                <version>${spring.security.core.version}</version>
-            </dependency>
-
-            <!-- Spring Data Mongo DB -->
-            <dependency>
-                <groupId>org.springframework.data</groupId>
-                <artifactId>spring-data-mongodb</artifactId>
-                <version>${spring-data-mongodb.version}</version>
-            </dependency>
-
-
-            <!-- Spring test -->
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-test</artifactId>
-                <version>${org.springframework-version}</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.aspectj</groupId>
-                <artifactId>aspectjrt</artifactId>
-                <version>${org.aspectj-version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.aspectj</groupId>
-                <artifactId>aspectjweaver</artifactId>
-                <version>${org.aspectj-version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.aspectj</groupId>
-                <artifactId>aspectjtools</artifactId>
-                <version>${org.aspectj-version}</version>
-            </dependency>
-
             <dependency>
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger2</artifactId>
@@ -377,56 +144,8 @@
                 <artifactId>springfox-swagger-ui</artifactId>
                 <version>${swager.version}</version>
             </dependency>
-           
         </dependencies>
-
     </dependencyManagement>
-    <dependencies>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jul-to-slf4j</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>${logback.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-            <version>${logback.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-access</artifactId>
-            <version>${logback.version}</version>
-        </dependency>
-
-        <!--  for JSON provider -->
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-core</artifactId>
-            <version>${cxf.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-rs-extension-providers</artifactId>
-            <version>${cxf.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-rs-client</artifactId>
-            <version>${cxf.version}</version>
-        </dependency>
-    </dependencies>
 
     <build>
         <plugins>
@@ -502,10 +221,11 @@
     <modules>
         <module>presidio-ui-utils</module>
         <module>presidio-ui-common</module>
+        <module>presidio-ui-output-client</module>
         <module>presidio-ui-domain</module>
         <module>presidio-ui-services</module>
         <module>presidio-ui-ui</module>
-        <module>presidio-ui-webapp</module>
+        <module>presidio-ui-app</module>
     </modules>
 	
 	 <distributionManagement>

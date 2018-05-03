@@ -69,4 +69,14 @@ public class SpringPropertiesUtil extends PropertyPlaceholderConfigurer {
         return subSet;
     }
 
+    public static Properties getProperties(){
+
+        Properties p = new Properties();
+        for (Map.Entry<String, String> prop : propertiesMap.entrySet()){
+            p.put(prop.getKey(),prop.getValue());
+        }
+        return p;
+
+    }
+
 }

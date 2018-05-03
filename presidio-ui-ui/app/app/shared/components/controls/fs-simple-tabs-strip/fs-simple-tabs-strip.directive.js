@@ -7,7 +7,7 @@
         function FsSimpleTabsStripController () {
             var ctrl = this;
             _.each(this.bullets,function(bullet){
-                if (bullet.id === ctrl.activeId){
+                if (_.toNumber(bullet.id) === ctrl.activeId){
                     ctrl.activeBullet = bullet;
                 }
             });

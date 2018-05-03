@@ -158,11 +158,12 @@ module Fortscale.layouts.overview {
          * @private
          */
         _initLoadingSequence ():void {
+
             let promises:ng.IPromise<void>[] = [
-                this._initLoadingTags(),
                 this._initLoadingHighRiskUsers(),
                 this._initLoadingTopAlerts(),
                 this._initLoadingUsersTagsStatistics(),
+                this._initLoadingTags(),
                 ...this._initLoadingAlertStats(),
                 this._initLoadingAlertsSeverityByDay()
             ];

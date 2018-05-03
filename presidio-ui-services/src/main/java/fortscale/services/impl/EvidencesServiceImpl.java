@@ -5,41 +5,34 @@ import fortscale.aggregation.feature.services.historicaldata.SupportingInformati
 import fortscale.common.dataentity.DataEntitiesConfig;
 import fortscale.common.dataentity.DataEntity;
 import fortscale.common.dataentity.DataEntityField;
-import fortscale.common.dataentity.QueryValueType;
 import fortscale.domain.core.*;
 
-import fortscale.domain.core.User;
 import fortscale.domain.core.dao.rest.Events;
-import fortscale.domain.dto.DateRange;
 import fortscale.domain.historical.data.SupportingInformationDualKey;
 import fortscale.domain.historical.data.SupportingInformationKey;
 import fortscale.domain.historical.data.SupportingInformationSingleKey;
 import fortscale.domain.historical.data.SupportingInformationTimestampKey;
+import fortscale.presidio.output.client.api.AlertsPresidioOutputClient;
 import fortscale.services.EvidencesService;
 import fortscale.services.UserService;
-import fortscale.services.UserSupportingInformationService;
 import fortscale.services.presidio.core.converters.IndicatorConverter;
 import fortscale.temp.EvidenceMockBuilder;
 import fortscale.temp.HardCodedMocks;
-import fortscale.utils.time.TimeUtils;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
-import org.apache.commons.collections.ListUtils;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import presidio.output.client.api.AlertsApi;
 import presidio.output.client.client.ApiClient;
 import presidio.output.client.client.ApiException;
 import presidio.output.client.model.*;
 
 import java.util.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -49,30 +42,21 @@ import java.util.TreeMap;
  * Date: 6/23/2015.
  */
 @Service("evidencesService")
-public class EvidencesServiceImpl extends RemoteClientServiceAbs<AlertsApi> implements EvidencesService, InitializingBean {
+public class EvidencesServiceImpl implements EvidencesService, InitializingBean {
 
 	public static final int DEFAULT_EVENT_PAGE_SIZE = 50;
 	public static final int DEFAULT_EVENT_PAGE_NUMBER = 0;
 	final String TAG_ANOMALY_TYPE_FIELD_NAME = "tag";
 	final String TAG_DATA_ENTITY ="active_directory";
 
-
-	@Autowired
-	DataEntitiesConfig dataEntitiesConfig;
-
-	/**
-	 * Mongo repository for evidences
-	 */
+	private static Logger logger = Logger.getLogger(UserServiceImpl.class);
 
 
-	@Autowired
+	private DataEntitiesConfig dataEntitiesConfig;
 	private UserService userService;
+	private IndicatorConverter indicatorConverter;
+	private AlertsPresidioOutputClient remoteAlertClientService;
 
-//	@Autowired
-//	private UserSupportingInformationService userSupportingInformationService;
-//
-
-	private IndicatorConverter indicatorConverter = new IndicatorConverter();
 
 	// Severity thresholds for evidence
 	@Value("${evidence.severity.medium:80}")
@@ -84,10 +68,19 @@ public class EvidencesServiceImpl extends RemoteClientServiceAbs<AlertsApi> impl
 	@Value("${collection.evidence.tag.score:50}")
 	protected double tagScore;
 
+
+
 	/**
 	 * Keeps mapping between score and severity
 	 */
 	private NavigableMap<Integer,Severity> scoreToSeverity = new TreeMap<>();
+
+	public EvidencesServiceImpl(DataEntitiesConfig dataEntitiesConfig, UserService userService, IndicatorConverter indicatorConverter, AlertsPresidioOutputClient remoteAlertClientService) {
+		this.dataEntitiesConfig = dataEntitiesConfig;
+		this.userService = userService;
+		this.indicatorConverter = indicatorConverter;
+		this.remoteAlertClientService = remoteAlertClientService;
+	}
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -98,67 +91,16 @@ public class EvidencesServiceImpl extends RemoteClientServiceAbs<AlertsApi> impl
 		scoreToSeverity.put(critical, Severity.Critical);
 	}
 
-//	@Override
-//	public Evidence createTransientEvidence(EntityType entityType, String entityTypeFieldName, String entityName,
-//											EvidenceType evidenceType, Date startDate, Date endDate,
-//											List<String> dataEntitiesIds, Double score, String anomalyValue,
-//											String anomalyTypeFieldName, Integer totalAmountOfEvents, EvidenceTimeframe evidenceTimeframe) {
-//		// casting score to int
-//		int intScore = score.intValue();
-//
-//		// calculate severity
-//		Severity severity = scoreToSeverity.get(scoreToSeverity.floorKey(intScore));
-//
-//		// create new transient evidence (do not save to Mongo yet)
-//		return new Evidence(entityType, entityTypeFieldName, entityName, evidenceType, startDate.getTime(),
-//				endDate.getTime(), anomalyTypeFieldName, anomalyValue, dataEntitiesIds, intScore, severity,
-//				totalAmountOfEvents, evidenceTimeframe);
-//	}
-
-//	@Override public Evidence createTagEvidence(EntityType entityType, String entityTypeFieldName, String entityName,
-//			Long startDate, long endDate, String tag){
-//
-//		// Create data entities array for tag evidence with constant value
-//		List<String> dataEntitiesIds = new ArrayList<>();
-//		dataEntitiesIds.add(TAG_DATA_ENTITY);
-//
-//		Evidence evidence = createTransientEvidence(entityType, entityTypeFieldName, entityName, EvidenceType.Tag,
-//				new Date(startDate), new Date(endDate), dataEntitiesIds, tagScore, tag,
-//				TAG_ANOMALY_TYPE_FIELD_NAME, 0, null);
-//
-//		setTagEvidenceSupportingInformationData(evidence);
-//
-//		// Save evidence to MongoDB
-//		saveEvidenceInRepository(evidence);
-//
-//		return evidence;
-//	}
-//
-//	@Override public void setTagEvidenceSupportingInformationData(Evidence evidence){
-//		User user = getUserIdByUserName(evidence.getEntityName());
-//		EntitySupportingInformation entitySupportingInformation =  userSupportingInformationService.createUserSupportingInformation(user, userService);
-//
-//		evidence.setSupportingInformation(entitySupportingInformation);
-//	}
-
-	public User getUserIdByUserName(String userName) {
-		return userService.findByUsername(userName);
-	}
 
 	@Override
 	public void saveEvidenceInRepository(Evidence evidence) {
 		saveEvidence(evidence);
 	}
 
-//	@Override
-//	public List<Evidence> findByEvidenceTypeAndAnomalyValueIn(EvidenceType evidenceType, String[] anomalyValues) {
-//		return getEvidencesMocks();
-//
-//	}
 
 	public SupportingInformationData getSupportingInformationIndicatorId(String indicatorId){
 		try {
-			Indicator indicator = this.getConterollerApi().getIndicatorByAlert(indicatorId,"0",true);
+			Indicator indicator = remoteAlertClientService.getConterollerApi().getIndicatorByAlert(indicatorId,"0",true);
 			if (indicator==null || indicator.getHistoricalData()==null){
 				return null;
 			}
@@ -249,7 +191,7 @@ public class EvidencesServiceImpl extends RemoteClientServiceAbs<AlertsApi> impl
 	public Evidence findById(String id) {
 
 		try {
-			Indicator indicator = this.getConterollerApi().getIndicatorByAlert(id,"0",false);
+			Indicator indicator = remoteAlertClientService.getConterollerApi().getIndicatorByAlert(id,"0",false);
 			Evidence evidence = indicatorConverter.convertIndicator(indicator,AlertTimeframe.Hourly,"missing-username");
 			return evidence;
 		} catch (ApiException e) {
@@ -262,38 +204,6 @@ public class EvidencesServiceImpl extends RemoteClientServiceAbs<AlertsApi> impl
 		return new EvidenceMockBuilder(1).createInstance();
 	}
 
-//	/**
-//	 * Finds evidences in mongo based on entity, time and type of feature
-//	 * @param entityEvent
-//	 * @param entityName
-//	 * @param dataEntities
-//	 * @param featureName
-//	 * @return
-//	 */
-//	public List<Evidence> findFeatureEvidences(EntityType entityEvent, String entityName, DateRange endDateRange,
-//			String dataEntities, String featureName) {
-//		return evidencesRepository.findFeatureEvidencesByFeatureEndTime(entityEvent, entityName, endDateRange.getFromTime(), endDateRange.getToTime(), dataEntities, featureName);
-//	}
-
-	public  List<Evidence> findByStartDateGreaterThanEqualAndEndDateLessThanEqualAndEvidenceTypeAndEntityName(
-			long startDate, long endDate, String evidenceType, String entityName) {
-		return getEvidencesMocks();
-	}
-
-	public  List<Evidence> findByEndDateBetweenAndEvidenceTypeAndEntityName(
-			long startDate, long endDate, String evidenceType, String entityName) {
-		return getEvidencesMocks();
-	}
-
-	public List<Evidence> findEvidence(DateRange dateRange, String anomalyType, String entityName){
-		if (StringUtils.isBlank(entityName)){
-			return getEvidencesMocks();
-		} else {
-			return getEvidencesMocks();
-
-		}
-
-	}
 
 	/**
 	 * Saves evidence in Mongo
@@ -313,21 +223,13 @@ public class EvidencesServiceImpl extends RemoteClientServiceAbs<AlertsApi> impl
 		return getEvidencesMocks();
 	}
 
-//	@Override
-//	public List<String> getDistinctAnomalyType() {
-//		return ListUtils.EMPTY_LIST;
-//	}
+
 
 	@Override
 	public List<Evidence> getEvidencesById(List<String> evidenceIds) {
 		return getEvidencesMocks();
 	}
 
-
-	@Override
-	protected AlertsApi getControllerInstance(ApiClient delegatoeApiClient) {
-		return new AlertsApi(delegatoeApiClient);
-	}
 
 	/**
 	 * Get the indicator and return list of fields.
@@ -360,7 +262,7 @@ public class EvidencesServiceImpl extends RemoteClientServiceAbs<AlertsApi> impl
 		try {
 			Evidence indicator = findById(evidenceId);
 			DataEntity dataEntity = dataEntitiesConfig.getAllLeafeEntities().get(indicator.getDataEntitiesIds().get(0));
-			EventsWrapper eventsWrapper = super.getConterollerApi().getIndicatorEventsByAlert(evidenceId,"0",eventQuery);
+			EventsWrapper eventsWrapper = remoteAlertClientService.getConterollerApi().getIndicatorEventsByAlert(evidenceId,"0",eventQuery);
 
 			for (Map<String, Object> event:eventsWrapper.getEvents()){
 				Map<String, Object> fieldsToAppned = convertEventFields(dataEntity, event);

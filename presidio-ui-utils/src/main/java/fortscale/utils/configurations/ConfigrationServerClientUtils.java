@@ -20,22 +20,16 @@ import java.util.Properties;
 public class ConfigrationServerClientUtils {
 
     //One time instance for rest template
-    private RestTemplate restTemplate = new RestTemplate();
+    private RestTemplate restTemplate;
+    private String serverUrl;
+    private String serverUserName;
+    private String serverUserNamePassword;
 
-
-    /**
-     * This method use to read single configuration file froms server and return the properties
-     * @return Properties container
-     * @throws Exception
-     */
-    public Properties readConfigurationAsProperties() throws Exception {
-        //Read the configuration server settings
-        String moduleName = SpringPropertiesUtil.getProperty("webapp.module.name");
-        String profile =SpringPropertiesUtil.getProperty("webapp.profile.name");
-        ConfigurationServcerClientSettings conf = readSettings(moduleName,profile);
-        return readConfigurationInternal(conf);
-
-
+    public ConfigrationServerClientUtils(RestTemplate restTemplate, String serverUrl, String serverUserName, String serverUserNamePassword) {
+        this.restTemplate = restTemplate;
+        this.serverUrl = serverUrl;
+        this.serverUserName = serverUserName;
+        this.serverUserNamePassword = serverUserNamePassword;
     }
 
     /**
@@ -101,9 +95,7 @@ public class ConfigrationServerClientUtils {
         if (StringUtils.isBlank(profile)){
             profile=null;
         }
-        String serverUrl = SpringPropertiesUtil.getProperty("spring.cloud.config.uri");
-        String serverUserName = SpringPropertiesUtil.getProperty("spring.cloud.config.username");
-        String serverUserNamePassword = SpringPropertiesUtil.getProperty("spring.cloud.config.password");
+
         return  new ConfigurationServcerClientSettings(moduleName,profile,serverUrl,serverUserName,serverUserNamePassword);
     }
 

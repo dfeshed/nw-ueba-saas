@@ -78,23 +78,6 @@
             <version>4.1.8.RELEASE</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <!--<dependency>-->
-            <!--<groupId>presidio-ui</groupId>-->
-            <!--<artifactId>presidio-ui-utils</artifactId>-->
-            <!--<version>1.1.0-SNAPSHOT</version>-->
-        <!--</dependency>-->
-        <dependency>
             <groupId>${project.parent.groupId}</groupId>
             <artifactId>presidio-ui-utils</artifactId>
             <version>${project.parent.version}</version>
@@ -105,20 +88,11 @@
             <version>${json-smart.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.9.5</version>
-        </dependency>
-        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>15.0</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <version>4.1.8.RELEASE</version>
-        </dependency>
+
 
 
     </dependencies>

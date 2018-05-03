@@ -7,3 +7,8 @@ presidio-ui-ui/target/
 presidio-ui-common/target/
 presidio-ui-webapp/src/main/webapp/resources/
 *.lst
+*.iml
+*.iml
+presidio-ui-output-client/presidio-ui-output-client-api/target/
+presidio-ui-output-client/presidio-ui-output-client-mock/target/
+presidio-ui-output-client/presidio-ui-output-client-remote/target/

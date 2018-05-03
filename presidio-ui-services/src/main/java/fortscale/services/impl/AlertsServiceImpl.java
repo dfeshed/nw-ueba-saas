@@ -8,21 +8,20 @@ import fortscale.domain.core.alert.analystfeedback.AnalystRiskFeedback;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DailySeveiryConuntDTO;
 import fortscale.domain.dto.DateRange;
+import fortscale.presidio.output.client.api.AlertsPresidioOutputClient;
 import fortscale.services.AlertCommentsService;
 import fortscale.services.AlertsService;
 import fortscale.services.UserService;
 import fortscale.services.exception.UserNotFoundExeption;
 import fortscale.services.presidio.core.converters.AggregationConverterHelper;
 import fortscale.services.presidio.core.converters.AlertConverterHelper;
+import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import presidio.output.client.api.AlertsApi;
-import presidio.output.client.client.ApiClient;
 import presidio.output.client.client.ApiException;
 import presidio.output.client.model.*;
 
@@ -34,25 +33,28 @@ import java.util.*;
  * Date: 6/23/2015.
  */
 @Service("alertsService")
-public class AlertsServiceImpl extends RemoteClientServiceAbs<AlertsApi> implements AlertsService {
+public class AlertsServiceImpl implements AlertsService {
 
 
-    /**
-     * Mongo repository for users
-     */
-    @Autowired
-    private UserService userService;
+    private final AlertsPresidioOutputClient remoteAlertClientService;
+    private final UserService userService;
+    private final AlertConverterHelper alertConverterHelper;
+    private final AlertCommentsService alertCommentsService;
+    private final AggregationConverterHelper aggregationConverterHelper;
 
-    @Autowired
-    private AlertConverterHelper alertConverterHelper;
-
-    @Autowired
-    private AlertCommentsService alertCommentsService;
-
-
-    private AggregationConverterHelper aggregationConverterHelper = new AggregationConverterHelper();
     private static final String SEVERITY_COLUMN_NAME = "severity";
     private static final String FEEDBACK_COLUMN_NAME = "Feedback";
+
+    protected Logger logger = Logger.getLogger(this.getClass());
+
+    public AlertsServiceImpl(UserService userService, AlertConverterHelper alertConverterHelper, AlertCommentsService alertCommentsService,
+                             AggregationConverterHelper aggregationConverterHelper,AlertsPresidioOutputClient remoteAlertClientService) {
+        this.userService = userService;
+        this.alertConverterHelper = alertConverterHelper;
+        this.alertCommentsService = alertCommentsService;
+        this.aggregationConverterHelper = aggregationConverterHelper;
+        this.remoteAlertClientService = remoteAlertClientService;
+    }
 
     private Set<String> feedbackNoRejectedSet;
 
@@ -79,7 +81,7 @@ public class AlertsServiceImpl extends RemoteClientServiceAbs<AlertsApi> impleme
     public Long count(PageRequest pageRequest) {
         try {
             AlertQuery query = alertConverterHelper.convertUiFilterToQueryDto(pageRequest,null,null,null,null,null,null,null,null,false);
-            AlertsWrapper alertsBean = super.getConterollerApi().getAlerts(query);
+            AlertsWrapper alertsBean = remoteAlertClientService.getConterollerApi().getAlerts(query);
 
             return alertsBean.getTotal().longValue();
 
@@ -113,7 +115,7 @@ public class AlertsServiceImpl extends RemoteClientServiceAbs<AlertsApi> impleme
 
         Alerts alerts = null;
         try {
-            AlertsWrapper alertsBean = super.getConterollerApi().getAlerts(query);
+            AlertsWrapper alertsBean = remoteAlertClientService.getConterollerApi().getAlerts(query);
 
             alerts = new Alerts(alertConverterHelper.convertResponseToUiDto(alertsBean), alertsBean.getTotal().longValue());
 
@@ -197,7 +199,7 @@ public class AlertsServiceImpl extends RemoteClientServiceAbs<AlertsApi> impleme
     public Alert getAlertById(String id) {
 
         try {
-            presidio.output.client.model.Alert singleAlert = super.getConterollerApi().getAlert(id,true);
+            presidio.output.client.model.Alert singleAlert = remoteAlertClientService.getConterollerApi().getAlert(id,true);
             return alertConverterHelper.convertResponseToUiDto(singleAlert);
         } catch (ApiException e) {
             logger.error("some error took place while asking for alert by id from presidio output");
@@ -230,7 +232,7 @@ public class AlertsServiceImpl extends RemoteClientServiceAbs<AlertsApi> impleme
         aggregateBy.add(aggregateByEnum);
         query.aggregateBy(aggregateBy);
         try {
-            AlertsWrapper alertsWrapper = super.getConterollerApi().getAlerts(query);
+            AlertsWrapper alertsWrapper = remoteAlertClientService.getConterollerApi().getAlerts(query);
             Map<String,Map<String,Long>> results = alertsWrapper.getAggregationData();
 
             return  aggregationConverterHelper.convertAggregation(results,aggregateByEnum.name());
@@ -302,7 +304,7 @@ public class AlertsServiceImpl extends RemoteClientServiceAbs<AlertsApi> impleme
         AlertQuery alertQuery = new AlertQuery();
         alertQuery.addAggregateByItem(AlertQuery.AggregateByEnum.CLASSIFICATIONS);
         try {
-            Map<String,Map<String,Long>> aggregationData = super.getConterollerApi().getAlerts(alertQuery).getAggregationData();
+            Map<String,Map<String,Long>> aggregationData = remoteAlertClientService.getConterollerApi().getAlerts(alertQuery).getAggregationData();
             Map<String,Integer> classificiations = aggregationConverterHelper.convertAggregation(aggregationData,AlertQuery.AggregateByEnum.CLASSIFICATIONS.name());
             return classificiations;
 
@@ -340,7 +342,7 @@ public class AlertsServiceImpl extends RemoteClientServiceAbs<AlertsApi> impleme
         alertQuery.addAggregateByItem(AlertQuery.AggregateByEnum.INDICATOR_NAMES);
 
         try {
-            Map<String, Map<String, Long>> aggregationData = super.getConterollerApi().getAlerts(alertQuery).getAggregationData();
+            Map<String, Map<String, Long>> aggregationData = remoteAlertClientService.getConterollerApi().getAlerts(alertQuery).getAggregationData();
             Map<String, Integer> aggregation = aggregationConverterHelper.convertAggregation(aggregationData, AlertQuery.AggregateByEnum.INDICATOR_NAMES.name());
 
             return  aggregation;
@@ -412,7 +414,7 @@ public class AlertsServiceImpl extends RemoteClientServiceAbs<AlertsApi> impleme
                 null,null,null,null,false );
         alertQuery.addAggregateByItem(AlertQuery.AggregateByEnum.SEVERITY_DAILY);
         try {
-            Map<String,Map<String,Long>> aggregationData = super.getConterollerApi().getAlerts(alertQuery).getAggregationData();
+            Map<String,Map<String,Long>> aggregationData = remoteAlertClientService.getConterollerApi().getAlerts(alertQuery).getAggregationData();
             Map<String,Integer> aggregation = aggregationConverterHelper.convertAggregation(aggregationData,AlertQuery.AggregateByEnum.SEVERITY_DAILY.name());
 
             for (Map.Entry<String,Integer> entry:aggregation.entrySet()){
@@ -508,7 +510,7 @@ public class AlertsServiceImpl extends RemoteClientServiceAbs<AlertsApi> impleme
                     UpdateFeedbackRequest updateFeedbackRequest = new UpdateFeedbackRequest();
                     updateFeedbackRequest.setAlertIds(Arrays.asList(alert.getId()));
                     updateFeedbackRequest.setFeedback(feedbackForUpdate);
-                    super.getConterollerApi().updateAlertsFeedback(updateFeedbackRequest);
+                    remoteAlertClientService.getConterollerApi().updateAlertsFeedback(updateFeedbackRequest);
                 } catch (ApiException e) {
                     logger.error("Failed updating user stauts");
                     throw new RuntimeException("Can't update user status");
@@ -548,8 +550,4 @@ public class AlertsServiceImpl extends RemoteClientServiceAbs<AlertsApi> impleme
     }
 
 
-    @Override
-    protected AlertsApi getControllerInstance(ApiClient delegatoeApiClient) {
-        return new AlertsApi(delegatoeApiClient);
-    }
 }
