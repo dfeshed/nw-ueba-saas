@@ -64,6 +64,63 @@ test('it builds the correct investigation refocus URL', function(assert) {
   assert.equal(investigateUrl, expectedUrl, 'Investigate URL should be compiled properly');
 });
 
+test('it builds the correct Apply Drill in New Tab URL', function(assert) {
+  const selection = {
+    metaName: 'ip.src',
+    metaValue: '1.1.1.1'
+  };
+  const contextDetails = {
+    endpointId: 'service-1',
+    startTime: 1510768478,
+    endTime: 1510768488,
+    queryConditions: [
+      {
+        meta: 'user',
+        value: 'nt service\\mssqlserver',
+        operator: '='
+      }
+    ]
+  };
+  const contextDetails2 = {
+    endpointId: 'service-1',
+    startTime: 1510768478,
+    endTime: 1510768488,
+    queryConditions: [
+      {
+        meta: 'user',
+        value: 'nt service\\mssqlserver',
+        operator: '='
+      },
+      {
+        meta: 'user.all',
+        value: 'NT Service\\MSSQLSERVER',
+        operator: '='
+      }
+    ]
+  };
+  const contextDetails3 = {
+    endpointId: 'service-1',
+    startTime: 1510768478,
+    endTime: 1510768488,
+    queryConditions: [
+      {
+        meta: 'user.dst',
+        value: '\'',
+        operator: 'contains'
+      }
+    ]
+  };
+  let investigateUrl = _buildInvestigateUrl(selection, '=', contextDetails);
+  let expected = '/investigation/endpointid/service-1/navigate/query/(user%2520%253D%2520\'nt%2520service%255Cmssqlserver\')%2520%2526%2526%2520ip.src%2520%253D%2520\'1.1.1.1\'/date/2017-11-15T17:54:38Z/2017-11-15T17:54:48Z';
+  assert.equal(investigateUrl, expected, 'Correct Apply Drill in New Tab URL1');
+  investigateUrl = _buildInvestigateUrl(selection, '=', contextDetails2);
+  expected = '/investigation/endpointid/service-1/navigate/query/(user%2520%253D%2520\'nt%2520service%255Cmssqlserver\'%2520%2526%2526%2520user.all%2520%253D%2520\'NT%2520Service%255CMSSQLSERVER\')%2520%2526%2526%2520ip.src%2520%253D%2520\'1.1.1.1\'/date/2017-11-15T17:54:38Z/2017-11-15T17:54:48Z';
+  assert.equal(investigateUrl, expected, 'Correct Apply Drill in New Tab URL2');
+  investigateUrl = _buildInvestigateUrl(selection, '=', contextDetails3);
+  expected = '/investigation/endpointid/service-1/navigate/query/(user.dst%2520contains%2520\'\'\')%2520%2526%2526%2520ip.src%2520%253D%2520\'1.1.1.1\'/date/2017-11-15T17:54:38Z/2017-11-15T17:54:48Z';
+  assert.equal(investigateUrl, expected, 'Correct Apply Drill in New Tab URL3');
+});
+
 test('it builds hosts URL with the correct query', function(assert) {
   const selection = {
     metaName: 'ip.src',

@@ -21,16 +21,23 @@ const _buildQuery = function(conditions = [], metaFormatMap = {}) {
   return conditions.map((condition) => {
     const metaFormat = metaFormatMap[condition.meta];
     const { meta, value, operator } = condition;
-    const surroundInQuotes = !metaFormat || String(metaFormat).toLowerCase() === 'text';
-    const valueEncoded = surroundInQuotes ? `'${String(value).replace(/[\'\"]/g, '')}'` : value;
+    // if the metavalue already starts with a quote, don't add additional quotes
+    const surroundInQuotes = !metaFormat || (String(metaFormat).toLowerCase() === 'text' && value.search(/[\'\"]/g) !== 0);
+    const valueEncoded = surroundInQuotes ? `'${String(value)}'` : value;
     return `${meta} ${operator} ${valueEncoded}`;
   }).join(' && ');
 };
 
 export function _buildInvestigateUrl(selected, queryOperator, contextDetails, discardParentQuery) {
-  const { metaName, metaValue } = selected;
+  const { metaName } = selected;
+  let { metaValue } = selected;
+  // Escape backslash eg: NT Service\MSSQLSERVER to NT Service\\MSSQLSERVER so that on pivoting to classic, the query does not blow up.
+  metaValue = metaValue.replace(/\\/g, '\\\\');
+  // Escape single and double quotations eg: 'eu'Tl' to 'eu\'Tl'
+  metaValue = metaValue.replace(/[\'\"]/g, '\\\'');
   const { endpointId, startTime, endTime, queryConditions, language } = contextDetails;
   const metaFormatMap = _prepareMetaFormatMap(language);
+  // parentQuery is the already existing meta filters on the page
   let parentQuery = discardParentQuery ? '' : _buildQuery(queryConditions, metaFormatMap);
   if (parentQuery !== '') {
     parentQuery = `(${parentQuery}) && `;
