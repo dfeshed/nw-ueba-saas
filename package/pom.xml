@@ -19,8 +19,12 @@
     <repositories>
         <!-- ASOC Tier-2 repository -->
         <repository>
-            <id>repo1.rsa.lab.emc.com-build</id>
-            <url>http://repo1.rsa.lab.emc.com:8081/artifactory/asoc-build-repo</url>
+            <id>asoc-releases</id>
+            <url>https://repo1.rsa.lab.emc.com:8443/artifactory/asoc-releases</url>
+        </repository>
+        <repository>
+            <id>asoc-snapshots</id>
+            <url>https://repo1.rsa.lab.emc.com:8443/artifactory/asoc-snapshots</url>
         </repository>
     </repositories>
 
@@ -30,10 +34,7 @@
             should contain batch apps, python packages and scripts used by core and its extensions-->
             /var/lib/netwitness/presidio
         </presidio-app.directory>
-        <presidio-core-build.directory>
-            <!-- Fortscale presidio-core built binaries directory-->
-            ${project.basedir}/../../fortscale/target/dependencies
-        </presidio-core-build.directory>
+        <presidio-core.version>1.1-0-SNAPSHOT</presidio-core.version>
     </properties>
 
 

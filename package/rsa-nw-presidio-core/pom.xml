@@ -10,8 +10,91 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>rsa-nw-presidio-core</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-ade-app-accumulate-aggr</artifactId>
+            <version>${presidio-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-adapter</artifactId>
+            <version>${presidio-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-ade-app-accumulate-smart</artifactId>
+            <version>${presidio-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-ade-app-feature-aggr</artifactId>
+            <version>${presidio-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-ade-app-manager</artifactId>
+            <version>${presidio-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-ade-app-model-feature-buckets</artifactId>
+            <version>${presidio-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-ade-app-modeling</artifactId>
+            <version>${presidio-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-ade-app-score-aggr</artifactId>
+            <version>${presidio-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-ade-app-smart</artifactId>
+            <version>${presidio-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-input-core</artifactId>
+            <version>${presidio-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-output-forwarder</artifactId>
+            <version>${presidio-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-output-processor</artifactId>
+            <version>${presidio-core.version}</version>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
+            <!-- download dependency chain for RPM bundling -->
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-client-dependencies</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/dependencies</outputDirectory>
+                            <excludeTransitive>true</excludeTransitive>
+                            <stripVersion>true</stripVersion>
+                            <stripClassifier>true</stripClassifier>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- create RPM -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -29,7 +112,7 @@
                                     <includes>
                                         <include>*.jar</include>
                                     </includes>
-                                    <location>${presidio-core-build.directory}</location>
+                                    <location>${project.build.directory}/dependencies</location>
                                 </source>
                             </sources>
                         </mapping>
@@ -45,4 +128,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>
