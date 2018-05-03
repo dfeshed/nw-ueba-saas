@@ -21,13 +21,7 @@ import presidio.webapp.spring.OutputWebappProductionConfiguration;
 @ComponentScan(
         excludeFilters = {@ComponentScan.Filter(type = FilterType.REGEX, pattern = "fortscale.*"),
                 @ComponentScan.Filter(type = FilterType.REGEX, pattern = "presidio.*")})
-public class FortscaleOutputWebApplication extends SpringBootServletInitializer {
-
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(new Object[]{FortscaleOutputWebApplication.class,
-                OutputWebappProductionConfiguration.class});
-    }
+public class FortscaleOutputWebApplication{
 
     public static void main(String[] args) {
         SpringApplication.run(new Object[]{FortscaleOutputWebApplication.class, OutputWebappProductionConfiguration.class}, args);
