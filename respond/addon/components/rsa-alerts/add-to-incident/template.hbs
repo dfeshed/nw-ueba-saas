@@ -13,7 +13,7 @@
 
   {{#rsa-data-table/header translateTitles=true as |column|}}
 
-    <div {{action 'handleResultsSortBy' column isSortDescending}} class="header-title {{if (not column.disableSort) 'sortable'}}">
+    <div {{action 'handleResultsSortBy' column isSortDescending}} class="header-title {{if (not column.disableSort) 'sortable'}}" title="{{t column.title}}">
       {{t column.title}}
       {{#unless column.disableSort}}
         <span class="sort-indicator {{if (eq column.field sortBy) 'sorted'}}">
