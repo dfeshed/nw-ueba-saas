@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>package</artifactId>
+        <groupId>com.rsa.netwitness.presidio</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>rsa-nw-presidio-core</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-ade-app-accumulate-aggr</artifactId>
+            <version>${presidio-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-adapter</artifactId>
+            <version>${presidio-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-ade-app-accumulate-smart</artifactId>
+            <version>${presidio-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-ade-app-feature-aggr</artifactId>
+            <version>${presidio-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-ade-app-manager</artifactId>
+            <version>${presidio-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-ade-app-model-feature-buckets</artifactId>
+            <version>${presidio-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-ade-app-modeling</artifactId>
+            <version>${presidio-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-ade-app-score-aggr</artifactId>
+            <version>${presidio-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-ade-app-smart</artifactId>
+            <version>${presidio-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-input-core</artifactId>
+            <version>${presidio-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-output-forwarder</artifactId>
+            <version>${presidio-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-output-processor</artifactId>
+            <version>${presidio-core.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- download dependency chain for RPM bundling -->
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-client-dependencies</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/dependencies</outputDirectory>
+                            <excludeTransitive>true</excludeTransitive>
+                            <stripVersion>true</stripVersion>
+                            <stripClassifier>true</stripClassifier>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- create RPM -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>rpm-maven-plugin</artifactId>
+                <configuration>
+                    <summary>Presidio(UEBA) core batch applications and workflow py package</summary>
+                    <mappings>
+                        <mapping>
+                            <directoryIncluded>false</directoryIncluded>
+                            <directory>${presidio-app.directory}/batch</directory>
+                            <username>presidio</username>
+                            <groupname>presidio</groupname>
+                            <sources>
+                                <source>
+                                    <includes>
+                                        <include>*.jar</include>
+                                    </includes>
+                                    <location>${project.build.directory}/dependencies</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <!--TODO: add egg mapping once python artifactory is set-->
+                    </mappings>
+                    <requires>
+                        <require>java &gt; 1.8</require>
+                    </requires>
+                    <description>
+                        Presidio(UEBA) batch applications and the matching workflow python packages
+                    </description>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
