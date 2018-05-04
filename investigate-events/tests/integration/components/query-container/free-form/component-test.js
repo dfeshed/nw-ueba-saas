@@ -25,13 +25,19 @@ module('Integration | Component | free-form', function(hooks) {
   });
 
   test('it triggers action when user enters text and presses enter', async function(assert) {
-    assert.expect(1);
-
-    this.set('executeQuery', (text) => {
+    assert.expect(2);
+    this.set('filters', []);
+    this.set('addFilters', (text) => {
       assert.equal(text, 'medium = 1', 'Expected text in the search bar');
+      const [ m, o, v ] = text.split(' ');
+      this.set('filters', [{ meta: m, operator: o, value: v }]);
     });
 
-    await render(hbs`{{query-container/free-form executeQuery=(action executeQuery)}}`);
+    this.set('executeQuery', (filters) => {
+      assert.deepEqual(filters, [{ meta: 'medium', operator: '=', value: '1' }], 'Expected filter being executed');
+    });
+
+    await render(hbs`{{query-container/free-form filters=filters addFilters=(action addFilters) executeQuery=(action executeQuery)}}`);
 
     await click('.rsa-investigate-free-form-query-bar input');
     await fillIn('.rsa-investigate-free-form-query-bar input', 'medium = 1');

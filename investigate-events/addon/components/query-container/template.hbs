@@ -6,7 +6,7 @@
   <div class='query-bar-options'>
     {{query-filters filters=filters executeQuery=(route-action 'executeQuery')}}
     {{!-- filters - to transform them to text in free-form --}}
-    {{query-container/free-form filters=filters executeQuery=(route-action 'executeQuery')}}
+    {{query-container/free-form filters=filters freeFormText=freeFormText addFilters=(action 'addFilters') executeQuery=(route-action 'executeQuery')}}
     {{query-container/query-pills filters=filters executeQuery=(route-action 'executeQuery')}}
   </div>
   <div class='query-bar-select-actions'>
@@ -20,7 +20,7 @@
 
 {{#rsa-form-button
   class='execute-query-button'
-  defaultAction=(route-action 'executeQuery' criteria)
+  defaultAction=(route-action 'executeQuery' filters)
   isDisabled=(not hasRequiredValuesToQuery)
   style='primary'}}
   Query Events

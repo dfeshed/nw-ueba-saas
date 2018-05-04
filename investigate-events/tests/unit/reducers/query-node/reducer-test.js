@@ -110,19 +110,6 @@ test('test SET_QUERY_VIEW reducer sets the correct mode provided', function(asse
   assert.equal(result.toggledOnceFlag, true);
 });
 
-test('test SET_FREE_FORM_TEXT reducer sets the correct text query provided', function(assert) {
-  const prevState = Immutable.from({
-    freeFormText: ''
-  });
-  const action = {
-    type: ACTION_TYPES.SET_FREE_FORM_TEXT,
-    payload: 'medium = 1'
-  };
-  const result = reducer(prevState, action);
-
-  assert.equal(result.freeFormText, 'medium = 1');
-});
-
 test('test INITIALIZE_INVESTIGATE reducer sets the correct view from localStorage', function(assert) {
   /* INTENT- overwrites queryView */
   const prevState = Immutable.from({

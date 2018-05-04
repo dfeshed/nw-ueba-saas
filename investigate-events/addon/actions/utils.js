@@ -1,10 +1,14 @@
 import { assert } from '@ember/debug';
 import { get, getProperties } from '@ember/object';
-import { isBlank, isEmpty } from '@ember/utils';
+import { isBlank } from '@ember/utils';
 import { run } from '@ember/runloop';
 import RSVP from 'rsvp';
 import { encodeMetaFilterConditions } from 'investigate-events/actions/fetch/utils';
 import TIME_RANGES from 'investigate-events/constants/time-ranges';
+
+const operators = [
+  '!=', '<=', '<', '>=', '>', '=', '!exists', 'exists', 'contains', 'begins', 'ends'
+];
 
 /**
  * Adds a session id filter to a given Core query filter. Appends a condition
@@ -237,9 +241,6 @@ function _parseMetaFilterUri(uri) {
     // an empty string in it, which is not what we want.  So we check for '' and return [] explicitly here.
     return [];
   }
-  const operators = [
-    '!=', '<=', '<', '>=', '>', '=', '!exists', 'exists', 'contains', 'begins', 'ends'
-  ];
 
   // look for a set of double quotes
   // replace found forward slashes with a temp placeholder because forward slashes are used to split the uri
@@ -292,6 +293,33 @@ function _parseMetaFilterUri(uri) {
     });
 }
 
+// reusing the parseMetaFilterUri logic. Will need something better here. Or just return a complex filter
+function transformTextToFilters(freeFormText) {
+
+  const operator = operators.find((option) => {
+    return freeFormText.includes(option);
+  });
+
+  const chunks = freeFormText.split(operator);
+  if (chunks.length > 2) {
+    const [ meta, ...value ] = chunks;
+    return {
+      meta,
+      operator,
+      value: value.join(operator)
+    };
+  } else {
+    const [ meta, value ] = chunks;
+    return { meta, operator, value };
+  }
+
+}
+
+function filterIsPresent(filters, freeFormText) {
+  const currentFilters = encodeMetaFilterConditions(filters).replace(/(&&\s*)*$/g, '').trim();
+  return currentFilters === freeFormText.trim();
+}
+
 function serializeQueryParams(qp = []) {
   const keys = Object.keys(qp);
   const values = Object.values(qp);
@@ -314,27 +342,15 @@ function uriEncodeMetaFilters(filters = []) {
 
       if (d.complexFilter) {
         ret = d.complexFilter;
-      } else {
-        if (d.operator === 'exists' || d.operator === '!exists') {
-          ret = `${d.meta} ${d.operator}`;
-        } else if (d.meta && d.operator && d.value) {
-          ret = `${d.meta}${d.operator}${d.value}`;
-        }
-        return encodeURIComponent(ret);
+      } else { // there can be conditions where meta/operator/value is missing because freeFormText can now create pills. Once we put in the complex filter logic, we should revert it back.
+        ret = `${(d.meta) ? d.meta.trim() : ''} ${(d.operator) ? d.operator.trim() : ''} ${(d.value) ? d.value.trim() : ''}`;
       }
+      return encodeURIComponent(ret);
     })
     .filter((d) => !!d)
     .join('/');
 
   return encodedFilters || undefined;
-}
-
-function uriEncodeFreeFormText(rawText) {
-  if (isEmpty(rawText)) {
-    return undefined;
-  } else {
-    return encodeURIComponent(rawText);
-  }
 }
 
 export {
@@ -343,6 +359,7 @@ export {
   parseQueryParams,
   serializeQueryParams,
   uriEncodeMetaFilters,
-  uriEncodeFreeFormText,
-  _getTimeRangeIdFromRange
+  _getTimeRangeIdFromRange,
+  transformTextToFilters,
+  filterIsPresent
 };

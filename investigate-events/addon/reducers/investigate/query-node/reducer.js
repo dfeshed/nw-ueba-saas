@@ -19,7 +19,6 @@ const _initialState = Immutable.from({
   sessionId: undefined,
   startTime: 0,
   queryView: 'guided',
-  freeFormText: undefined,
   toggledOnceFlag: false
 });
 
@@ -114,10 +113,6 @@ export default handleActions({
       queryView: payload.queryView,
       toggledOnceFlag: payload.toggledOnceFlag
     });
-  },
-
-  [ACTION_TYPES.SET_FREE_FORM_TEXT]: (state, { payload }) => {
-    return state.set('freeFormText', payload);
   },
 
   [ACTION_TYPES.SERVICE_SELECTED]: (state, { payload }) => {

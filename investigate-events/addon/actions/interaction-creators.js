@@ -9,7 +9,6 @@ import {
   getDefaultPreferences
 } from 'investigate-events/reducers/investigate/data-selectors';
 import { lookup } from 'ember-dependency-lookup';
-import { encodeMetaFilterConditions } from './fetch/utils';
 
 export const setMetaPanelSize = (size) => {
   if (size) {
@@ -109,30 +108,12 @@ export const setReconClosed = () => ({
   }
 });
 
-export const setQueryView = (view, filters = []) => {
-  return (dispatch) => {
-    if (filters) {
-      const rawText = encodeMetaFilterConditions(filters).replace(/(&&\s*)*$/g, '').trim(); // remove && from the end
-      dispatch(setFreeFormText(rawText));
-    }
-    dispatch({
-      type: ACTION_TYPES.SET_QUERY_VIEW,
-      payload: {
-        queryView: view,
-        toggledOnceFlag: true
-      }
-    });
-  };
-};
-
-export const setFreeFormText = (text) => {
-  return (dispatch, getState) => {
-    const previousText = getState().investigate.queryNode.freeFormText;
-    if (previousText !== text) {
-      dispatch({
-        type: ACTION_TYPES.SET_FREE_FORM_TEXT,
-        payload: text
-      });
+export const setQueryView = (view) => {
+  return {
+    type: ACTION_TYPES.SET_QUERY_VIEW,
+    payload: {
+      queryView: view,
+      toggledOnceFlag: true
     }
   };
 };

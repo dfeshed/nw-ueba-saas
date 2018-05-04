@@ -41,8 +41,6 @@ const complexConditions = [{
   complexFilter: 'bar=\'foo\'||baz=foo'
 }];
 
-const rawText = 'medium = 1 && sessionid = 1';
-
 test('parseQueryParams correctly parses URI', function(assert) {
   assert.expect(8);
   const result = queryUtils.parseQueryParams(params);
@@ -85,20 +83,6 @@ test('encodeMetaFilterConditions returns empty string when properties are undefi
   assert.equal(result, 'foo  ');
 });
 
-test('uriEncodeFreeFormText encodes text correctly', function(assert) {
-  assert.expect(1);
-  const result = queryUtils.uriEncodeFreeFormText(rawText);
-
-  assert.equal(result, 'medium%20%3D%201%20%26%26%20sessionid%20%3D%201');
-});
-
-test('uriEncodeFreeFormText sends out undefined when empty', function(assert) {
-  assert.expect(1);
-  const result = queryUtils.uriEncodeFreeFormText('');
-
-  assert.equal(result, undefined);
-});
-
 test('_getTimeRangeIdFromRange returns the TimeRangeId correctly', function(assert) {
   assert.expect(4);
   const result1 = queryUtils._getTimeRangeIdFromRange(1522698300, 1522698599); // last 5 mins
@@ -109,4 +93,33 @@ test('_getTimeRangeIdFromRange returns the TimeRangeId correctly', function(asse
   assert.equal(result3, 'LAST_30_DAYS');
   const result4 = queryUtils._getTimeRangeIdFromRange(1520879520, 1522698599); // ALL_DATA
   assert.equal(result4, 'ALL_DATA');
+});
+
+test('transformTextToFilters returns filter object', function(assert) {
+  assert.expect(1);
+  const freeFormText = 'medium = 1';
+  const result = queryUtils.transformTextToFilters(freeFormText);
+
+  assert.deepEqual(result, { meta: 'medium ', operator: '=', value: ' 1' });
+
+});
+
+test('filterIsPresent return false when filters array and freeFormText are different', function(assert) {
+  assert.expect(1);
+  const freeFormText = 'medium = 1';
+  const filters = [{ meta: 'medium', operator: '=', value: '2' }];
+
+  const result = queryUtils.filterIsPresent(filters, freeFormText);
+
+  assert.notOk(result, 'Filter is not present');
+});
+
+test('filterIsPresent return true when filters array and freeFormText are same', function(assert) {
+  assert.expect(1);
+  const freeFormText = 'medium = 1';
+  const filters = [{ meta: 'medium', operator: '=', value: '1' }];
+
+  const result = queryUtils.filterIsPresent(filters, freeFormText);
+
+  assert.ok(result, 'Filter is present');
 });

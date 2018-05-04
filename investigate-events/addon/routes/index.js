@@ -10,8 +10,7 @@ import {
 import { dirtyQueryToggle } from 'investigate-events/actions/query-validation-creators';
 import {
   serializeQueryParams,
-  uriEncodeMetaFilters,
-  uriEncodeFreeFormText
+  uriEncodeMetaFilters
 } from 'investigate-events/actions/utils';
 import {
   META_PANEL_SIZES,
@@ -64,21 +63,14 @@ export default Route.extend({
 
   actions: {
     executeQuery(metaFilters, externalLink = false) {
-      /* Both guided and free-form mode use the same route action
-         check if the metaFilters passed in are from
-          -guided mode -> array of filters
-          -freeForm mode -> string */
-      const freeForm = !Array.isArray(metaFilters);
-      if (!freeForm) {
-        metaFilters = metaFilters.filterBy('saved', true);
-      }
 
+      metaFilters = metaFilters.filterBy('saved', true);
       const redux = this.get('redux');
       // Save the metaFilters to state
       const { data, queryNode } = redux.getState().investigate;
       const qp = {
         et: queryNode.endTime,
-        mf: (freeForm) ? uriEncodeFreeFormText(metaFilters) : uriEncodeMetaFilters(metaFilters),
+        mf: uriEncodeMetaFilters(metaFilters),
         mps: data.metaPanelSize,
         rs: data.reconSize,
         sid: queryNode.serviceId,
