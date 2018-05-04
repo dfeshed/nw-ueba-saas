@@ -60,7 +60,7 @@ test('it builds the correct investigation refocus URL', function(assert) {
       }]
   };
   const investigateUrl = _buildInvestigateUrl(selection, '=', contextDetails, true);
-  const expectedUrl = '/investigation/endpointid/service-1/navigate/query/ip.src%2520%253D%2520\'1.1.1.1\'/date/2017-11-15T17:54:38Z/2017-11-15T17:54:48Z';
+  const expectedUrl = '/investigation/endpointid/service-1/navigate/query/ip.src%2520%253D%25201.1.1.1/date/2017-11-15T17:54:38Z/2017-11-15T17:54:48Z';
   assert.equal(investigateUrl, expectedUrl, 'Investigate URL should be compiled properly');
 });
 
@@ -110,15 +110,50 @@ test('it builds the correct Apply Drill in New Tab URL', function(assert) {
       }
     ]
   };
+  const contextDetails4 = {
+    endpointId: 'service-1',
+    startTime: 1510768478,
+    endTime: 1510768488,
+    queryConditions: [
+      {
+        meta: 'filename',
+        value: '\'a``j1.[]1restonvirginia.sys\'',
+        operator: '='
+      }
+    ]
+  };
+  const contextDetails5 = {
+    endpointId: 'service-1',
+    startTime: 1510768478,
+    endTime: 1510768488,
+    queryConditions: [
+      {
+        meta: 'filename',
+        value: '\'a``j1.[]1restonvirginia.sys\'',
+        operator: '='
+      },
+      {
+        meta: 'param',
+        value: '/B /nologo %systemroot%\\\\system32\\\\calluxxprovider.vbs $(Arg0) $(Arg1) $(Arg2)',
+        operator: '='
+      }
+    ]
+  };
   let investigateUrl = _buildInvestigateUrl(selection, '=', contextDetails);
-  let expected = '/investigation/endpointid/service-1/navigate/query/(user%2520%253D%2520\'nt%2520service%255Cmssqlserver\')%2520%2526%2526%2520ip.src%2520%253D%2520\'1.1.1.1\'/date/2017-11-15T17:54:38Z/2017-11-15T17:54:48Z';
+  let expected = '/investigation/endpointid/service-1/navigate/query/(user%2520%253D%2520nt%2520service%255Cmssqlserver)%2520%2526%2526%2520ip.src%2520%253D%25201.1.1.1/date/2017-11-15T17:54:38Z/2017-11-15T17:54:48Z';
   assert.equal(investigateUrl, expected, 'Correct Apply Drill in New Tab URL1');
   investigateUrl = _buildInvestigateUrl(selection, '=', contextDetails2);
-  expected = '/investigation/endpointid/service-1/navigate/query/(user%2520%253D%2520\'nt%2520service%255Cmssqlserver\'%2520%2526%2526%2520user.all%2520%253D%2520\'NT%2520Service%255CMSSQLSERVER\')%2520%2526%2526%2520ip.src%2520%253D%2520\'1.1.1.1\'/date/2017-11-15T17:54:38Z/2017-11-15T17:54:48Z';
+  expected = '/investigation/endpointid/service-1/navigate/query/(user%2520%253D%2520nt%2520service%255Cmssqlserver%2520%2526%2526%2520user.all%2520%253D%2520NT%2520Service%255CMSSQLSERVER)%2520%2526%2526%2520ip.src%2520%253D%25201.1.1.1/date/2017-11-15T17:54:38Z/2017-11-15T17:54:48Z';
   assert.equal(investigateUrl, expected, 'Correct Apply Drill in New Tab URL2');
   investigateUrl = _buildInvestigateUrl(selection, '=', contextDetails3);
-  expected = '/investigation/endpointid/service-1/navigate/query/(user.dst%2520contains%2520\'\'\')%2520%2526%2526%2520ip.src%2520%253D%2520\'1.1.1.1\'/date/2017-11-15T17:54:38Z/2017-11-15T17:54:48Z';
+  expected = '/investigation/endpointid/service-1/navigate/query/(user.dst%2520contains%2520\')%2520%2526%2526%2520ip.src%2520%253D%25201.1.1.1/date/2017-11-15T17:54:38Z/2017-11-15T17:54:48Z';
   assert.equal(investigateUrl, expected, 'Correct Apply Drill in New Tab URL3');
+  investigateUrl = _buildInvestigateUrl(selection, '=', contextDetails4);
+  expected = '/investigation/endpointid/service-1/navigate/query/(filename%2520%253D%2520\'a%2560%2560j1.%255B%255D1restonvirginia.sys\')%2520%2526%2526%2520ip.src%2520%253D%25201.1.1.1/date/2017-11-15T17:54:38Z/2017-11-15T17:54:48Z';
+  assert.equal(investigateUrl, expected, 'Correct Apply Drill in New Tab URL4');
+  investigateUrl = _buildInvestigateUrl(selection, '=', contextDetails5);
+  expected = '/investigation/endpointid/service-1/navigate/query/(filename%2520%253D%2520\'a%2560%2560j1.%255B%255D1restonvirginia.sys\'%2520%2526%2526%2520param%2520%253D%2520%252FB%2520%252Fnologo%2520%2525systemroot%2525%255C%255Csystem32%255C%255Ccalluxxprovider.vbs%2520%2524(Arg0)%2520%2524(Arg1)%2520%2524(Arg2))%2520%2526%2526%2520ip.src%2520%253D%25201.1.1.1/date/2017-11-15T17:54:38Z/2017-11-15T17:54:48Z';
+  assert.equal(investigateUrl, expected, 'Correct Apply Drill in New Tab URL5');
 });
 
 test('it builds hosts URL with the correct query', function(assert) {
@@ -138,7 +173,7 @@ test('it builds URL even when languages is null', function(assert) {
     metaValue: '1.1.1.1'
   };
   const investigateUrl = _buildHostsUrl(selection, { language: null });
-  const expectedUrl = '/investigate/hosts?query=ip.src%20%3D%20\'1.1.1.1\'';
+  const expectedUrl = '/investigate/hosts?query=ip.src%20%3D%201.1.1.1';
   assert.equal(investigateUrl, expectedUrl, 'URL should be correctly compiled');
 });
 
