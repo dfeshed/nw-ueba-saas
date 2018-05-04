@@ -47,4 +47,34 @@ module('Integration | Component | Pill Operator', function(hooks) {
     selectChoose(operatorPowerSelectTrigger, powerSelectOption, 0);// option "="
     return settled();
   });
+
+  test('it selects an operator if a trailing SPACE is entered and there is one option', async function(assert) {
+    assert.expect(2);
+    this.set('meta', meta);
+    this.set('handleMessage', (type, data) => {
+      assert.equal(type, 'PILL::OPERATOR_SELECTED', 'Wrong message type');
+      assert.deepEqual(data, eq, 'Wrong message data');
+    });
+    await render(hbs`{{query-container/pill-operator isActive=true meta=meta sendMessage=(action handleMessage)}}`);
+    // We go back to old-skool jQuery for this because fillIn() performs a focus
+    // event on the input every time you call it which causes the search to
+    // clear out. PowerSelect test helper typeInSearch() ends up just calling
+    // fillIn(). Also, fillIn() doesn't seem to properly trigger an InputEvent,
+    // so the input handler doesn't get a down-selected list of meta options.
+    this.$('input').val('=').trigger('input');
+    this.$('input').val(' ').trigger('input');
+    return settled();
+  });
+
+  test('it does not select an operator if a trailing SPACE is entered and there is more than one option', async function(assert) {
+    assert.expect(0);
+    this.set('meta', meta);
+    this.set('handleMessage', () => {
+      assert.notOk('The sendMessage handler was erroneously invoked');
+    });
+    await render(hbs`{{query-container/pill-operator isActive=true meta=meta sendMessage=(action handleMessage)}}`);
+    this.$('input').val('e').trigger('input');
+    this.$('input').val(' ').trigger('input');
+    return settled();
+  });
 });

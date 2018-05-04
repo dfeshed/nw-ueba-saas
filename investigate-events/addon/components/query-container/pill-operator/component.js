@@ -6,6 +6,8 @@ import * as MESSAGE_TYPES from '../message-types';
 
 // const { log } = console;
 
+const leadingSpaces = /^[\s\uFEFF\xA0]+/;
+
 const makeOperatorExpensive = (obj) => ({ ...obj, isExpensive: true });
 
 const eq = { displayName: '=', isExpensive: false, hasValue: true };
@@ -84,6 +86,21 @@ export default Component.extend({
     },
     onFocus(powerSelectAPI /* event */) {
       powerSelectAPI.actions.open();
+    },
+    /**
+     * This function is called on every `input` event from the power-select's
+     * trigger element. It's looking for an input string that ends with a space.
+     * If it finds one and the power-select has been down-selected to one
+     * result, then trigger a `select` event on the power-select. Ultimately,
+     * this triggers the `onChange` action above.
+     * @private
+     */
+    onInput(input, powerSelectAPI /* event */) {
+      const isSpace = input.slice(-1) === ' ';
+      const { results } = powerSelectAPI;
+      if (isSpace && results.length === 1) {
+        powerSelectAPI.actions.select(results[0]);
+      }
     }
   },
 
@@ -107,11 +124,19 @@ export default Component.extend({
     }
   },
 
-  // Function that power-select uses to make an autosuggest match. This function
-  // looks at the operators's displayName property for a match.
-  _matcher: (o, input) => {
-    const _displayName = o.displayName.toLowerCase();
-    const _input = input.toLowerCase();
-    return _displayName.indexOf(_input);
+  /**
+   * Function that power-select uses to make an autosuggest match. This function
+   * looks at the operators's `displayName` property for a match. This matched
+   * from the beginning of the operator string. So `ex` will match `exists`,
+   * but not `!exists`.
+   * @param {Object} operator An operator object
+   * @param {string} input The search string
+   * @return {number} The index of the string match. Either `-1` or `0`.
+   * @private
+   */
+  _matcher: (operator, input) => {
+    const _input = input.toLowerCase().replace(leadingSpaces, '');
+    const _displayName = operator.displayName.toLowerCase();
+    return _displayName.indexOf(_input) === 0 ? 0 : -1;
   }
 });

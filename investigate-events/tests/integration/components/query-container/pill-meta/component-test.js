@@ -16,7 +16,8 @@ const initialState = {
   language: [
     { count: 0, format: 'Text', metaName: 'a', flags: 1, displayName: 'A' },
     { count: 0, format: 'Text', metaName: 'b', flags: 2, displayName: 'B' },
-    { count: 0, format: 'Text', metaName: 'c', flags: 3, displayName: 'C' }
+    { count: 0, format: 'Text', metaName: 'c', flags: 3, displayName: 'C' },
+    { count: 0, format: 'Text', metaName: 'cc', flags: 3, displayName: 'CC' }
   ]
 };
 
@@ -65,6 +66,36 @@ module('Integration | Component | Pill Meta', function(hooks) {
     });
     await render(hbs`{{query-container/pill-meta isActive=true sendMessage=(action handleMessage)}}`);
     selectChoose(metaPowerSelectTrigger, powerSelectOption, 1);// option b
+    return settled();
+  });
+
+  test('it selects meta if a trailing SPACE is entered and there is one option', async function(assert) {
+    assert.expect(2);
+    setState({ ...initialState });
+    this.set('handleMessage', (type, data) => {
+      assert.equal(type, 'PILL::META_SELECTED', 'Wrong message type');
+      assert.deepEqual(data, initialState.language[1], 'Wrong message data');
+    });
+    await render(hbs`{{query-container/pill-meta isActive=true sendMessage=(action handleMessage)}}`);
+    // We go back to old-skool jQuery for this because fillIn() performs a focus
+    // event on the input every time you call it which causes the search to
+    // clear out. PowerSelect test helper typeInSearch() ends up just calling
+    // fillIn(). Also, fillIn() doesn't seem to properly trigger an InputEvent,
+    // so the input handler doesn't get a down-selected list of meta options.
+    this.$('input').val('b').trigger('input');
+    this.$('input').val(' ').trigger('input');
+    return settled();
+  });
+
+  test('it does not selects meta if a trailing SPACE is entered and there is more than one option', async function(assert) {
+    assert.expect(0);
+    setState({ ...initialState });
+    this.set('handleMessage', () => {
+      assert.notOk('The sendMessage handler was erroneously invoked');
+    });
+    await render(hbs`{{query-container/pill-meta isActive=true sendMessage=(action handleMessage)}}`);
+    this.$('input').val('c').trigger('input');
+    this.$('input').val(' ').trigger('input');
     return settled();
   });
 });
