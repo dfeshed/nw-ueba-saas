@@ -1,4 +1,6 @@
 const data = [
+  null,
+  undefined,
   'incident1',
   'country_dst',
   'Windows suspicious admin activity Shared object accessed',

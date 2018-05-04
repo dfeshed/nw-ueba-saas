@@ -76,7 +76,11 @@ export default reduxActions.handleActions({
     handle(state, action, {
       start: (s) => s.set('alertNames', []),
       failure: (s) => s.set('alertNames', []),
-      success: (s) => s.set('alertNames', action.payload.data) }
+      success: (s) => {
+        const validNames = action.payload.data.filter((name) => name !== null);
+        return s.set('alertNames', validNames);
+      }
+    }
     )
   ),
 

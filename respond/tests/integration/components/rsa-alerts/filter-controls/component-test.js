@@ -12,7 +12,7 @@ import RSVP from 'rsvp';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 
-let init, setState;
+let setState;
 
 module('Integration | Component | Respond Alerts Filters', function(hooks) {
   setupRenderingTest(hooks, {
@@ -20,12 +20,12 @@ module('Integration | Component | Respond Alerts Filters', function(hooks) {
   });
 
   hooks.beforeEach(function() {
-    setState = (state = {}) => {
+    setState = async (state = {}) => {
       const fullState = { respond: { incidents: state } };
       patchReducer(this, Immutable.from(fullState));
       const redux = this.owner.lookup('service:redux');
       // initialize all of the required data into redux app state
-      init = RSVP.allSettled([
+      return RSVP.allSettled([
         redux.dispatch(getAllAlertTypes()),
         redux.dispatch(getAllAlertSources()),
         redux.dispatch(getAllAlertNames())
@@ -37,8 +37,9 @@ module('Integration | Component | Respond Alerts Filters', function(hooks) {
 
   test('The Alerts Filters component renders to the DOM', async function(assert) {
     assert.expect(1);
-    setState();
-    await init;
+
+    await setState();
+
     this.set('updateFilter', function() {});
     await render(hbs`{{rsa-alerts/filter-controls updateFilter=(action updateFilter)}}`);
     assert.ok(findAll('.filter-option').length >= 1, 'The Alerts Filters component should be found in the DOM');
@@ -46,8 +47,9 @@ module('Integration | Component | Respond Alerts Filters', function(hooks) {
 
   test('All of the alert type filters appear as checkboxes, and clicking one dispatches an action', async function(assert) {
     assert.expect(2);
-    setState();
-    await init;
+
+    await setState();
+
     this.set('updateFilter', function() {
       assert.ok(true);
     });
@@ -59,8 +61,9 @@ module('Integration | Component | Respond Alerts Filters', function(hooks) {
 
   test('All of the alert source filters appear as checkboxes, and clicking one dispatches an action', async function(assert) {
     assert.expect(2);
-    setState();
-    await init;
+
+    await setState();
+
     this.set('updateFilter', function() {
       assert.ok(true);
     });
@@ -72,8 +75,9 @@ module('Integration | Component | Respond Alerts Filters', function(hooks) {
 
   test('All of the part-of-incident filter options appear as checkboxes, and clicking one dispatches an action', async function(assert) {
     assert.expect(2);
-    setState();
-    await init;
+
+    await setState();
+
     this.set('updateFilter', function() {
       assert.ok(true);
     });
@@ -85,8 +89,8 @@ module('Integration | Component | Respond Alerts Filters', function(hooks) {
   });
 
   test('The severity slider filter appears in the DOM', async function(assert) {
-    setState();
-    await init;
+    await setState();
+
     await render(hbs`{{rsa-alerts/filter-controls}}`);
     const selector = '.filter-option.severity-filter .noUi-tooltip';
     assert.equal(findAll(selector).length, 2, 'The are two tooltips');
@@ -96,12 +100,15 @@ module('Integration | Component | Respond Alerts Filters', function(hooks) {
 
   test('All of the alert name filters appear as checkboxes, and clicking one dispatches an action', async function(assert) {
     assert.expect(2);
-    setState();
-    await init;
+
+    await setState();
+
     this.set('updateFilter', function() {
       assert.ok(true);
     });
+
     await render(hbs`{{rsa-alerts/filter-controls updateFilter=(action updateFilter)}}`);
+
     const selector = '.filter-option.alert-name-filter .rsa-form-checkbox-label';
     // lazy rendering of the list means we cannot assert that the full set of alert names are present
     assert.ok(findAll(selector).length >= 1, 'There should be at least one alert name filter options');
