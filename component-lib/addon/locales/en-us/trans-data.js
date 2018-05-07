@@ -1728,6 +1728,7 @@ export default {
     driverDisplayName: 'Driver Display Name*',
     driverDescription: 'Driver Description',
     monitoringMode: 'Enable Monitoring',
+    forceOverwriteWarningMessage: 'Force overwrite option is applicable only for windows agent',
     upload: {
       success: 'Configuration file loaded successfully.',
       failure: 'Unable to upload Configuration file.'

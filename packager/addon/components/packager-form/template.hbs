@@ -78,7 +78,7 @@
     }}
 </div>
 <div class="field force-overwrite">
-  <label class="rsa-form-checkbox-label {{if configData.packageConfig.forceOverwrite 'checked'}}">
+  <label class="rsa-form-checkbox-label {{if configData.packageConfig.forceOverwrite 'checked'}}" title={{t 'packager.forceOverwriteWarningMessage'}}>
     {{rsa-form-checkbox
       checked=configData.packageConfig.forceOverwrite
       change=(action 'onForceOverwiteChange')}}
