@@ -5,11 +5,18 @@ const processAnalysisConfigGen = function(env) {
   const endpointSocketUrl = common.determineSocketUrl(env, '/endpoint/socket');
   const eventsSocketURL = common.determineSocketUrl(env, '/investigate/socket');
   return {
-   'endpoint': {
+    'endpoint': {
       socketUrl: endpointSocketUrl,
       getProcessAnalysisDetails: {
         subscriptionDestination: '/user/queue/endpoint/file/get',
         requestDestination: '/ws/endpoint/file/get'
+      }
+    },
+    'core-event-count': {
+      socketUrl: eventsSocketURL,
+      stream: {
+        subscriptionDestination: '/user/queue/investigate/events/count',
+        requestDestination: '/ws/investigate/events/count'
       }
     },
     'core-event': {

@@ -9,6 +9,7 @@ const initialState = {
   error: null
 };
 
+
 export default reduxActions.handleActions({
 
   [ACTION_TYPES.INIT_EVENTS_STREAMING]: (state) => {
@@ -31,5 +32,18 @@ export default reduxActions.handleActions({
 
   [ACTION_TYPES.SET_PROCESS_ANALYSIS_INPUT]: (state, { payload }) => {
     return state.set('queryInput', payload);
+  },
+
+  [ACTION_TYPES.SET_EVENTS_COUNT]: (state, { payload }) => {
+    const { rawData } = state;
+    const newData = rawData.map((data) => {
+      if (payload && payload[data.processName]) {
+        return data.set('childCount', payload[data.processName].data);
+      }
+      return data;
+    });
+    return state.set('rawData', newData);
   }
+
+
 }, Immutable.from(initialState));

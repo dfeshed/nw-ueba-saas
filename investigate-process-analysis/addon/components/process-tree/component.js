@@ -3,10 +3,10 @@ import computed from 'ember-computed-decorators';
 import { run } from '@ember/runloop';
 import { connect } from 'ember-redux';
 
-import { select, event } from 'd3-selection';
+import { select, event, selectAll } from 'd3-selection';
 import { zoom } from 'd3-zoom';
 import { tree, hierarchy } from 'd3-hierarchy';
-import { transitionElbow, elbow, updateRect, appendRect, appendText, updateText } from './helpers/d3-helpers';
+import { transitionElbow, elbow, appendText, updateText, appendIcon } from './helpers/d3-helpers';
 
 import zoomed from './helpers/zoomed';
 
@@ -14,6 +14,7 @@ import zoomed from './helpers/zoomed';
 import { isStreaming, children, rootProcess } from 'investigate-process-analysis/reducers/process-tree/selectors';
 import { getEvents } from 'investigate-process-analysis/actions/creators/events-creators';
 import { fetchProcessDetails } from 'investigate-process-analysis/actions/data-creators/process-properties';
+import { truncateText } from './util/data';
 
 const stateToComputed = (state) => ({
   rootProcess: rootProcess(state),
@@ -46,6 +47,8 @@ const TreeComponent = Component.extend({
    */
   zoomMin: 0.1,
 
+  zoom: 0.8,
+
   /**
    * D3 tree maximum zoom
    * @property
@@ -65,23 +68,23 @@ const TreeComponent = Component.extend({
    * @property
    * @public
    */
-  rectWidth: 150,
+  rectWidth: 56,
 
   /**
    * Tree node rectangle height
    * @property
    * @public
    */
-  rectHeight: 30,
+  rectHeight: 56,
 
-  nodeSize: [50, 50],
+  nodeSize: [56, 56],
 
   /**
    * Specify the gap between the two node
    * @property
    * @public
    */
-  nodeSeparation: 0.85,
+  nodeSeparation: 2,
 
   /**
    * Icon to represent the collapse tree node. If you want to add the icon in D3 svg we use font-icon code. Here it's
@@ -90,6 +93,8 @@ const TreeComponent = Component.extend({
    * @public
    */
   collapseIcon: '\ue9ad', // Unicode
+
+  expandIcon: '\ue904', // Unicode
 
   rootNode: null,
 
@@ -135,36 +140,6 @@ const TreeComponent = Component.extend({
     return zoomBehaviour;
   },
 
-  didReceiveAttrs() {
-    this._super(...arguments);
-    if (this.isDestroyed) {
-      return;
-    }
-    this.set('rootNode', null);
-    // If query input changes then need to re-render the tree
-    if (this.get('queryInput')) {
-      const onComplete = () => {
-        const rootNode = this.get('rootProcess');
-        rootNode.children = this.get('children');
-
-        const root = hierarchy(rootNode, (d) => d.children || []);
-        root.x0 = 0;
-        root.y0 = 0;
-
-        if (this.isDestroyed) {
-          return;
-        }
-        this.set('rootNode', root);
-
-        this._initializeChart();
-      };
-      this.send('getEvents', null, { onComplete });
-      const { checksum } = this.get('queryInput');
-      const hashes = [checksum];
-      this.send('fetchProcessDetails', { hashes });
-    }
-  },
-
   /**
    * Initialize the required object for rendering the D3 tree chart.
    * @private
@@ -185,92 +160,19 @@ const TreeComponent = Component.extend({
     this.buildChart(rootNode);
   },
 
-  /**
-   * Build the chart for given source and root node
-   * @param source
-   * @public
-   */
-  buildChart(source) {
+  _getRootNode() {
+    const rootNode = this.get('rootProcess');
+    const children = this.get('children');
+    const childCount = children ? children.length : 0;
 
-    const { rootNode, svg, treeInstance } = this.getProperties('rootNode', 'svg', 'treeInstance');
+    if (childCount) {
+      rootNode.children = children;
+      rootNode.childCount = childCount;
+      rootNode.expanded = true;
+    }
 
-    // Re calculate the tree layout
-    const tree = treeInstance(rootNode);
-
-    const nodes = tree.descendants();
-    const links = tree.descendants().slice(1);
-
-    // Calculating the height of the tree
-    nodes.forEach((d) => {
-      d.y = d.depth * 260;
-    });
-
-    // Creating the links with enter, update and exit functionality
-    this._addLinks(svg, links, source);
-
-    // Creating the nodes with enter, update and exit functionality
-    this._addNodes(svg, nodes, source);
-
-    // Creating the collapse with enter, update and exit functionality
-    this._addCollapseButton(svg);
-
-    // Stash the old positions for transition.
-    nodes.forEach((process) => {
-      process.x0 = process.x;
-      process.y0 = process.y;
-    });
-  },
-
-  /**
-   * Adding the collapse icon on expanded node. To identify whether node is expanded or not using node's children
-   * property. If node has the children that means node is expanded else not
-   * @private
-   */
-  _addCollapseButton(svg) {
-
-    const { rectWidth, duration, collapseIcon } = this.getProperties('svg', 'rectWidth', 'duration', 'collapseIcon');
-
-    const node = svg.selectAll('g.process');
-
-    const buttons = node.selectAll('text.text-icon')
-      .data(function(d) {
-        return d.children && d.children.length ? [d] : [];
-      });
-
-    const buttonEnter = buttons.enter();
-
-    buttonEnter.append('text')
-      .attr('class', 'text-icon')
-      .style('fill-opacity', 0)
-      .attr('dy', '8')
-      .attr('font-family', 'nw-icon-library-all-1')
-      .attr('font-size', function() {
-        return '1em';
-      })
-      .on('mousedown', function() {
-        // Stopping the event propagation this is required in d3.v4 else zoom wil take the priority
-        event.stopImmediatePropagation();
-      })
-      .on('click', run.bind(this, 'collapseProcess'))
-      .text(function() {
-        return collapseIcon;
-      });
-
-    const buttonUpdate = node.merge(buttonEnter);
-
-    buttonUpdate.select('text.text-icon')
-      .transition()
-      .duration(duration)
-      .style('fill-opacity', 1)
-      .attr('dx', (rectWidth / 2))
-      .attr('dy', '8');
-
-
-    buttons.exit()
-      .transition()
-      .duration(duration)
-      .style('fill-opacity', 0)
-      .remove();
+    rootNode.id = 1;
+    return rootNode;
   },
 
   /**
@@ -298,7 +200,7 @@ const TreeComponent = Component.extend({
     // Update the old links positions
     linkUpdate.transition()
       .duration(duration)
-      .attr('d', (d) => elbow(d, rectWidth, 90));
+      .attr('d', (d) => elbow(d, rectWidth));
 
     // Remove any exiting links
     link.exit().transition()
@@ -310,7 +212,88 @@ const TreeComponent = Component.extend({
       .remove();
   },
 
+  _getNewNodes(selectedNode, children) {
+    return children.map((item) => {
+      const newNode = hierarchy(item);
+      newNode.depth = selectedNode.depth + 1;
+      newNode.height = selectedNode.height - 1;
+      newNode.parent = selectedNode;
+      return newNode;
+    });
+  },
 
+  _appendExpandCollapseIcon(nodeEnter, collapseIcon, expandIcon, width) {
+
+    const collapseWrapper = nodeEnter.append('g')
+      .attr('class', 'button-wrapper')
+      .on('click', run.bind(this, 'expandCollapseProcess'));
+
+    const text = (d) => {
+      if (d.data.childCount || d.children) {
+        if (d.data.expanded) {
+          return collapseIcon;
+        } else {
+          return expandIcon;
+        }
+      }
+      return '';
+    };
+    appendIcon({ className: 'text-icon', node: collapseWrapper, dx: (width / 2) + 14, fontSize: '1.25em', text });
+  },
+
+  _onNodeEnter(node, source) {
+    const { expandIcon, collapseIcon, rectWidth: width } = this.getProperties('expandIcon', 'collapseIcon', 'rectWidth');
+    const nodeEnter = node.enter().append('g')
+      .attr('class', 'process')
+      .attr('data-id', function(d) {
+        return d.data.id;
+      })
+      .attr('transform', () => {
+        return `translate(${ source.y0 + width / 2 },${ source.x0 })`;
+      })
+      .on('click', run.bind(this, 'processProperties'))
+      .on('mousedown', function() {
+        event.stopImmediatePropagation();
+      });
+
+    this._appendExpandCollapseIcon(nodeEnter, collapseIcon, expandIcon, width);
+
+    nodeEnter.append('circle')
+      .attr('class', 'process');
+
+    appendText({ className: 'process-name', node: nodeEnter, dx: 0, dy: 0, opacity: 0, text: (d) => truncateText(d.data.processName) });
+
+    appendIcon({ className: 'process-icon', node: nodeEnter, fontSize: '2.5em', text: '\ue944' });
+
+    appendText({ className: 'child-count', node: nodeEnter, dx: (width / 2) + 26, dy: 0, opacity: 1, text: (d) => d.data.childCount });
+
+    return nodeEnter;
+  },
+
+  _onNodeUpdate(node, nodeEnter) {
+    const { duration } = this.getProperties('duration');
+    const nodeUpdate = node.merge(nodeEnter)
+      .transition()
+      .duration(duration)
+      .attr('transform', (d) => `translate(${ d.y },${ d.x })`);
+
+    nodeUpdate.select('circle.process')
+      .attr('cursor', 'pointer')
+      .attr('r', '2rem');
+
+    updateText({ className: 'process-name', node: nodeUpdate, dx: 0, dy: '3em', opacity: 1 });
+  },
+
+  _onNodeExit(node, source) {
+    const { rectWidth: width, duration } = this.getProperties('rectWidth', 'duration');
+    const nodeExit = node.exit()
+      .transition()
+      .duration(duration)
+      .attr('transform', () => `translate(${ source.y + width / 2 - 20},${ source.x })`)
+      .remove();
+
+    updateText({ className: 'process-name', dy: '-3em', node: nodeExit });
+  },
   /**
    *
    * @param svg
@@ -319,41 +302,12 @@ const TreeComponent = Component.extend({
    * @private
    */
   _addNodes(svg, nodes, source) {
-    const { rectWidth: width, rectHeight: height, duration } = this.getProperties('rectWidth', 'rectHeight', 'duration');
     const node = svg.selectAll('g.process').data(nodes, (process) => process.data ? process.data.id : process.id);
 
-    const nodeEnter = node.enter().append('g')
-      .attr('class', 'process')
-      .attr('transform', () => {
-        return `translate(${ source.y0 + width / 2 },${ source.x0 })`;
-      })
-      .on('mousedown', function() {
-        event.stopImmediatePropagation();
-      })
-      .on('click', run.bind(this, 'expandProcess'));
+    const nodeEnter = this._onNodeEnter(node, source);
+    this._onNodeUpdate(node, nodeEnter);
+    this._onNodeExit(node, source);
 
-    // Append the rectangle on entering the node
-    appendRect({ node: nodeEnter });
-
-    // Display process name inside the  rectangle
-    appendText({ className: 'process-name', node: nodeEnter, dx: 0, dy: 0, opacity: 0 });
-
-    const nodeUpdate = node.merge(nodeEnter)
-      .transition()
-      .duration(duration)
-      .attr('transform', (d) => `translate(${ d.y },${ d.x })`);
-
-    updateRect({ node: nodeUpdate, rx: 10, ry: 10, width, height, x: -(width / 2), y: -(height / 2) });
-    updateText({ className: 'process-name', node: nodeUpdate, dx: -(width / 2) + 10, dy: '0.3em', opacity: 1 });
-
-    const nodeExit = node.exit()
-      .transition()
-      .duration(duration)
-      .attr('transform', () => `translate(${ source.y + width / 2 - 20},${ source.x })`)
-      .remove();
-
-    updateRect({ node: nodeExit });
-    updateText({ className: 'process-name', dy: '-0.3em', node: nodeExit });
   },
 
   _collapse(d) {
@@ -364,12 +318,87 @@ const TreeComponent = Component.extend({
     }
   },
 
-  expandProcess(d) {
-    const checksum = d.data.checksum ? d.data.checksum : d.data['checksum.dst'];
-    const hashes = [checksum];
-    this.send('fetchProcessDetails', { hashes });
+  didReceiveAttrs() {
+    this._super(...arguments);
 
+    if (this.isDestroyed) {
+      return;
+    }
+
+    this.set('rootNode', null);
+    // If query input changes then need to re-render the tree
+    if (this.get('queryInput')) {
+      const onComplete = () => {
+        const rootNode = this._getRootNode();
+
+        const root = hierarchy(rootNode, (d) => d.children || []);
+        root.x0 = 0;
+        root.y0 = 0;
+
+        if (this.isDestroyed) {
+          return;
+        }
+        this.set('rootNode', root);
+
+        this._initializeChart();
+      };
+      this.send('getEvents', null, { onComplete });
+      const { checksum } = this.get('queryInput');
+      const hashes = [checksum];
+      this.send('fetchProcessDetails', { hashes });
+    }
+  },
+
+  /**
+   * Build the chart for given source and root node
+   * @param source
+   * @public
+   */
+  buildChart(source) {
+
+    const { rootNode, svg, treeInstance } = this.getProperties('rootNode', 'svg', 'treeInstance');
+
+    // Re calculate the tree layout
+    const tree = treeInstance(rootNode);
+
+    const nodes = tree.descendants();
+    const links = tree.descendants().slice(1);
+
+    // Calculating the height of the tree
+    nodes.forEach((d) => {
+      d.y = d.depth * 220;
+    });
+
+    // Creating the links with enter, update and exit functionality
+    this._addLinks(svg, links, source);
+
+    // Creating the nodes with enter, update and exit functionality
+    this._addNodes(svg, nodes, source);
+
+    // Stash the old positions for transition.
+    nodes.forEach((process) => {
+      process.x0 = process.x;
+      process.y0 = process.y;
+    });
+  },
+
+  expandCollapseProcess(d) {
     event.stopImmediatePropagation();
+    d.data.expanded = !d.data.expanded;
+    if (d.data.childCount) {
+      if (d.data.expanded) {
+        this.expandProcess(d);
+      } else {
+        this.collapseProcess(d);
+      }
+
+      const { expandIcon, collapseIcon } = this.getProperties('expandIcon', 'collapseIcon');
+      const icon = d.data.expanded ? collapseIcon : expandIcon;
+      select(`*[data-id='${ d.data.id }']`).select('text.text-icon').text(icon);
+    }
+  },
+
+  expandProcess(d) {
     if (d._children || d.children) {
       d.children = d._children;
       d._children = null;
@@ -389,6 +418,18 @@ const TreeComponent = Component.extend({
     }
   },
 
+  processProperties(d) {
+    const checksum = d.data.checksum ? d.data.checksum : d.data['checksum.dst'];
+    const hashes = [checksum];
+    this.send('fetchProcessDetails', { hashes });
+
+    // Update the node style
+    selectAll('circle.process').classed('selected', false);
+    selectAll('.process-icon').classed('selected', false);
+    select(`*[data-id='${ d.data.id }']`).select('circle.process').classed('selected', true);
+    select(`*[data-id='${ d.data.id }']`).select('.process-icon').classed('selected', true);
+  },
+
   collapseProcess(d) {
     event.stopImmediatePropagation();
     if (d.children) {
@@ -396,16 +437,6 @@ const TreeComponent = Component.extend({
       d.children = null;
     }
     this.buildChart(d);
-  },
-  _getNewNodes(selectedNode, children) {
-    const nodes = children.map((item) => {
-      const newNode = hierarchy(item);
-      newNode.depth = selectedNode.depth + 1;
-      newNode.height = selectedNode.height - 1;
-      newNode.parent = selectedNode;
-      return newNode;
-    });
-    return nodes;
   }
 });
 

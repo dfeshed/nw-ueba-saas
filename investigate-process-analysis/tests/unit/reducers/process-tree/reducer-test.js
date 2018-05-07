@@ -68,4 +68,24 @@ module('Unit | Reducers | process-tree', function() {
     const result = reducer(previous, { type: ACTION_TYPES.COMPLETED_EVENTS_STREAMING });
     assert.equal(result.streaming, false, 'streaming is set to false');
   });
+
+  test('SET_EVENTS_COUNT will sets event count', function(assert) {
+    const previous = Immutable.from({
+      rawData: [
+        {
+          processName: 'test',
+          childCount: 0
+        }
+      ],
+      queryInput: {
+        pn: 'test',
+        aid: 1,
+        checkSum: 'xyz'
+      },
+      streaming: true,
+      error: null
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.SET_EVENTS_COUNT, payload: { test: { data: 1 } } });
+    assert.equal(result.rawData[0].childCount, 1);
+  });
 });

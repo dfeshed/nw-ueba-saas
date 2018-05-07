@@ -1,5 +1,7 @@
 import redux from 'redux';
 import thunk from 'redux-thunk';
+import createSaga from 'redux-saga';
+import rootSaga from 'investigate-process-analysis/sagas/index';
 import { middleware } from 'redux-pack';
 import reducers from 'investigate-process-analysis/reducers/index';
 import ReduxService from 'ember-redux/services/redux';
@@ -7,10 +9,14 @@ import ReduxService from 'ember-redux/services/redux';
 const { createStore, applyMiddleware, compose } = redux;
 
 export function patchReducer(context, initState) {
+  const sagaMiddleware = createSaga();
+
   const makeStoreInstance = () => {
-    const middlewares = applyMiddleware(thunk, middleware);
+    const middlewares = applyMiddleware(thunk, middleware, sagaMiddleware);
     const createStoreWithMiddleware = compose(middlewares)(createStore);
-    return createStoreWithMiddleware(reducers, initState);
+    const store = createStoreWithMiddleware(reducers, initState);
+    sagaMiddleware.run(rootSaga);
+    return store;
   };
 
   context.owner.register('service:redux', ReduxService.extend({ makeStoreInstance }));

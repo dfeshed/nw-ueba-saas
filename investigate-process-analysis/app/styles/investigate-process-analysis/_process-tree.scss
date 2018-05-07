@@ -63,22 +63,24 @@
     }
   }
 
-  .node-rect {
-    stroke-width: 1px;
-    &.is-low {
-      fill: #8BC34A
-    }
-    &.is-high {
-      fill: #FF5722;
-    }
-    &.is-medium {
-      fill: #FFC107;
-    }
-    &.is-danger {
-      fill: #EC2227
+
+  circle {
+    fill: transparent;
+    stroke: rgba(155,155,155,.8);
+    stroke-width: 1.5px;
+    &.selected {
+      fill: background-color(neutral, base);
     }
   }
 
+  .process-icon {
+
+    fill: text-color(primary);
+
+    &.selected {
+      fill: text-color(primary, dark);
+    }
+  }
   .process {
     cursor: pointer;
   }
@@ -88,10 +90,12 @@
     stroke: rgba(155,155,155,.8);
     stroke-width: 1.5px;
   }
-  .text-icon {
-    fill: text-color(primary);;
+
+  .text-icon, .process-icon, .child-count, .process-name {
+    fill: text-color(neutral);
   }
 }
+
 .rsa-fast-force__wait {
   position: absolute;
   top: 0;

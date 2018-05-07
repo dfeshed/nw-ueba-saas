@@ -2,11 +2,12 @@ import fetchStreamingEvents from 'investigate-shared/actions/api/investigate-eve
 import * as ACTION_TYPES from 'investigate-process-analysis/actions/types';
 import _ from 'lodash';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
+import { getQueryNode } from './util';
 
 const callbacksDefault = { onComplete() {} };
 
 // Common functions.
-const commonHandlers = function(dispatch, callbacks) {
+const commonHandlers = function(dispatch, queryNode, callbacks) {
   return {
     onError(response = {}) {
       const errorObj = handleInvestigateErrorCode(response);
@@ -16,38 +17,12 @@ const commonHandlers = function(dispatch, callbacks) {
       });
     },
     onCompleted() {
-      dispatch({ type: ACTION_TYPES.COMPLETED_EVENTS_STREAMING });
-      callbacks.onComplete();
+      dispatch({ type: ACTION_TYPES.GET_EVENTS_COUNT_SAGA, onComplete: callbacks.onComplete });
     }
   };
 };
 
-const _getMetaFilter = (agentId, processName) => {
-  return {
-    conditions: [
-      {
-        meta: 'agent.id',
-        operator: '=',
-        value: `'${agentId}'`
-      },
-      {
-        meta: 'action',
-        operator: '=',
-        value: '\'createProcess\''
-      },
-      {
-        meta: 'device.type',
-        operator: '=',
-        value: '\'nwendpoint\''
-      },
-      {
-        meta: 'filename.src',
-        operator: '=',
-        value: `'${processName}'`
-      }
-    ]
-  };
-};
+
 /**
  * Fetches a stream of events for the given query node.
  * @public
@@ -55,21 +30,7 @@ const _getMetaFilter = (agentId, processName) => {
 export const getEvents = (selectedNode, callbacks = callbacksDefault) => {
   return (dispatch, getState) => {
     const state = getState();
-    const { et, st, pn, sid, aid: agentId } = state.processAnalysis.processTree.queryInput;
-
-    let processName = pn;
-
-    if (selectedNode) {
-      processName = selectedNode;
-    }
-
-    const queryNode = {
-      endTime: et,
-      startTime: st,
-      queryTimeFormat: 'DB',
-      serviceId: sid,
-      metaFilter: _getMetaFilter(agentId, processName)
-    };
+    const queryNode = getQueryNode(state.processAnalysis.processTree.queryInput, selectedNode);
 
     const streamLimit = 100000;
     const streamBatch = 100000; // Would like to get all the events in one batch
@@ -92,7 +53,7 @@ export const getEvents = (selectedNode, callbacks = callbacksDefault) => {
           dispatch({ type: ACTION_TYPES.SET_EVENTS, payload });
         }
       },
-      ...commonHandlers(dispatch, callbacks)
+      ...commonHandlers(dispatch, queryNode, callbacks)
     };
     fetchStreamingEvents(queryNode, null, streamLimit, streamBatch, handlers);
   };
@@ -117,6 +78,7 @@ const _hasherizeEventMeta = (event) => {
       }
       event[meta[0]] = meta[1];
     }
+    event.childCount = 0;
     event.id = _.uniqueId('event_'); // Adding unique id to node, currently server is not sending
     event.metas = null;
   }

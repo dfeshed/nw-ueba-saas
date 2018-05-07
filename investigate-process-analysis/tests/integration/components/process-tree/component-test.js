@@ -37,7 +37,7 @@ module('Integration | Component | process-tree', function(hooks) {
     new ReduxDataHelper(setState).queryInput(queryInput).build();
     await render(hbs`{{process-tree queryInput=queryInput}}`);
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
-    assert.equal(findAll('.process').length, 24, 'Expected to render 5 nodes');
+    assert.equal(findAll('circle.process').length, 24, 'Expected to render 24 nodes');
   });
 
   test('it should expand the node on click', async function(assert) {
@@ -54,8 +54,8 @@ module('Integration | Component | process-tree', function(hooks) {
     new ReduxDataHelper(setState).queryInput(queryInputs).build();
     await render(hbs`{{process-tree queryInput=queryInput}}`);
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
-    await selectAll('.process:nth-of-type(2)').dispatch('click');
+    await selectAll('g.process:nth-of-type(2) .button-wrapper').dispatch('click');
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
-    assert.equal(findAll('.process').length, 47, 'Expected to render 7 nodes');
+    assert.equal(findAll('circle.process').length, 47, 'Expected to render 7 nodes');
   });
 });
