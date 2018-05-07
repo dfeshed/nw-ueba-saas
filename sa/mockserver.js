@@ -1,26 +1,20 @@
-/* eslint-disable */
+/* eslint-env node */
 
-var reconMocks = require('../recon').mockDestinations;
-var respondMocks = require('../respond').mockDestinations;
-var configureMocks = require('../configure').mockDestinations;
-var contextMocks = require('../context').mockDestinations;
-var investigateEventsMocks = require('../investigate-events').mockDestinations;
-var investigateFilesMocks = require('../investigate-files').mockDestinations;
-var investigateHostsMocks = require('../investigate-hosts').mockDestinations;
-var preferencesMocks = require('../preferences').mockDestinations;
+const respondMocks = require('../respond').mockDestinations;
+const configureMocks = require('../configure').mockDestinations;
+const contextMocks = require('../context').mockDestinations;
+const investigateMocks = require('../investigate').mockDestinations;
+const preferencesMocks = require('../preferences').mockDestinations;
 
-var path = require('path');
-var administrationMocks = path.join(__dirname, 'tests', 'data', 'subscriptions');
+const path = require('path');
+const administrationMocks = path.join(__dirname, 'tests', 'data', 'subscriptions');
 
 require('mock-server').startServer({
   subscriptionLocations: [
-    reconMocks,
+    ...investigateMocks,
     respondMocks,
     configureMocks,
     contextMocks,
-    investigateEventsMocks,
-    investigateFilesMocks,
-    investigateHostsMocks,
     preferencesMocks,
     administrationMocks
   ]

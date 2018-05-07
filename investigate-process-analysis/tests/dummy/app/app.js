@@ -21,10 +21,7 @@ const App = Application.extend({
           'flashMessages',
           'eventBus',
           'router'
-        ],
-        externalRoutes: {
-          protected: 'protected'
-        }
+        ]
       }
     }
   }

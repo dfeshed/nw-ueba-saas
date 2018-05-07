@@ -5,6 +5,11 @@ const EngineAddon = require('ember-engines/lib/engine-addon');
 const { isDevelopingAddon } = require('../common');
 const projectName = 'investigate-events';
 
+const subscriptionPath = path.join(__dirname, 'tests', 'data');
+const recon = require('../recon').mockDestinations;
+const preferences = require('../preferences').mockDestinations;
+
+
 module.exports = EngineAddon.extend({
   name: projectName,
 
@@ -33,7 +38,8 @@ module.exports = EngineAddon.extend({
 
   socketRouteGenerator: require('./config/socketRoutes'),
 
-  mockDestinations: path.join(__dirname, 'tests', 'data', 'subscriptions'),
+  // local mock endpoints last as any dupes = last one wins
+  mockDestinations: [subscriptionPath, ...recon, preferences],
 
   // See ../common.js for details on this function
   isDevelopingAddon: isDevelopingAddon(projectName),

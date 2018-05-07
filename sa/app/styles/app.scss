@@ -6,9 +6,6 @@
 /* Import context styles from addon */
 @import 'context/manifest';
 
-/* Import investigate events styles from engine */
-@import 'investigate-events/manifest';
-
 /* Import recon styles from addon */
 @import 'recon/manifest';
 
@@ -20,6 +17,12 @@
 
 /* Imports all styles from settings addon */
 @import 'preferences/manifest';
+
+/* Import investigate hosts styles from engine */
+@import 'investigate/manifest';
+
+/* Import investigate hosts styles from engine */
+@import 'investigate-events/manifest';
 
 /* Import investigate files styles from engine */
 @import 'investigate-files/manifest';

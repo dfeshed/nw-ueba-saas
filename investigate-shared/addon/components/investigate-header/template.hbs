@@ -1,0 +1,32 @@
+<nav class="rsa-investigate__nav">
+  <div class="rsa-nav-tab-group">
+    {{#each tabs as |tab|}}
+      {{#rsa-nav-tab align='left' isActive=tab.isActive}}
+        {{#if tab.isActive}}
+          {{#if (eq tab.name 'investigate.investigate-events')}}
+            {{#link-to (query-params sid=undefined st=undefined et=undefined eid=undefined mf=undefined mps=undefined rs=undefined)}}
+              {{tab.label}}
+            {{/link-to}}
+          {{else if (eq tab.name 'investigate.investigate-hosts')}}
+            {{#link-to (query-params machineId=null tabName=null)}}
+              {{tab.label}}
+            {{/link-to}}
+          {{else}}
+            <a href='#'>{{tab.label}}</a>
+          {{/if}}
+        {{else if tab.isClassic}}
+          <a href={{tab.url}} class={{concat 'js-test-investigate-' tab.label '-classic'}}>{{tab.label}}</a>
+        {{else}}
+          {{#link-to-external tab.name class=(concat 'js-test-investigate-' tab.name '-classic')}}
+            {{tab.label}}
+          {{/link-to-external}}
+        {{/if}}
+      {{/rsa-nav-tab}}
+    {{/each}}
+  </div>
+
+  <div class="investigate-controls">
+    {{yield iconBar}}
+  </div>
+</nav>
+{{yield main}}

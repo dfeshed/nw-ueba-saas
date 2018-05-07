@@ -28,9 +28,8 @@ const Eng = Engine.extend({
       'eventBus'
     ],
     externalRoutes: [
-      'protected',
-      'protected.investigate.investigate-files',
-      'protected.investigate.investigate-hosts'
+      'investigate.investigate-files',
+      'investigate.investigate-hosts'
     ]
   }
 });

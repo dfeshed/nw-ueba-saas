@@ -59,6 +59,7 @@ prepareApp investigate-shared
 prepareApp investigate-events
 prepareApp investigate-hosts
 prepareApp investigate-files
+prepareApp investigate
 prepareApp respond
 prepareApp configure
 prepareApp admin-source-management

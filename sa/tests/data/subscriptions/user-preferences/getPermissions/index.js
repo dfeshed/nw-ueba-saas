@@ -10,7 +10,8 @@ export default {
         'accessInvestigationModule',
         'respond-server.*',
         'investigate-server.*',
-        'integration-server.*'
+        'integration-server.*',
+        'endpoint-server.machine.read'
       ]
     };
   }

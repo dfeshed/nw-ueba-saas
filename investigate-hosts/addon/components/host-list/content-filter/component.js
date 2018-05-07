@@ -126,7 +126,7 @@ const ContentFilter = Component.extend({
     },
 
     resetFilter() {
-      const routName = 'protected.investigate.investigate-hosts.hosts';
+      const routName = 'investigate.investigate-hosts.hosts';
       this.get('routing').transitionTo(routName, [], { query: null });
       this.send('resetFilters');
     },

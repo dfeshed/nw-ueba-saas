@@ -5,6 +5,9 @@ const path = require('path');
 const { isDevelopingAddon } = require('../common');
 const projectName = 'recon';
 
+const subscriptionPath = path.join(__dirname, 'tests', 'data');
+const preferencesMocks = require('../preferences').mockDestinations;
+
 module.exports = {
   name: projectName,
 
@@ -25,5 +28,5 @@ module.exports = {
 
   socketRouteGenerator: require('./config/socketRoutes'),
 
-  mockDestinations: path.join(__dirname, 'tests', 'data', 'subscriptions')
+  mockDestinations: [subscriptionPath, preferencesMocks]
 };

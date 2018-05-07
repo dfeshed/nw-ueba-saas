@@ -1,8 +1,7 @@
 /* eslint-disable */
 const path = require('path');
-const subscriptionPath = path.join(__dirname, 'tests', 'data');
-const preferences = require('../preferences').mockDestinations;
+const allMocks = require('./index').mockDestinations;
 
 require('mock-server').startServer({
-  subscriptionLocations: [subscriptionPath, preferences]
+  subscriptionLocations: allMocks
 });

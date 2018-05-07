@@ -7,6 +7,7 @@ const ALL_SUBMODULES = [
   'investigate-events',
   'investigate-hosts',
   'investigate-files',
+  'investigate',
   'respond',
   'configure',
   'admin',
@@ -52,6 +53,7 @@ const saModuleDependants = {
     'investigate-events',
     'investigate-hosts',
     'investigate-files',
+    'investigate',
     'packager',
     'respond',
     'configure',
@@ -80,6 +82,7 @@ const saModuleDependants = {
   sa: [], // sa is an end state app, nothing depends on it
   respond: ['sa'],
   configure: ['sa'],
+  investigate: ['sa'],
   admin: ['sa'],
   'admin-source-management': ['sa','admin'],
   scripts: ALL_SUBMODULES, // Everything depends on scripts

@@ -1,2 +1,50 @@
-@import 'components/manifest';
-@import 'routes/manifest';
+$appNavigationHeaderHeight: 40px;
+$configureNavigationHeight: 48px;
+$respondNavigationHeight: 48px;
+$incidentsToolbarHeight: 40px;
+
+.rsa-protected {
+
+  &__outlet {
+    z-index: 1;
+  }
+
+  &__aside {
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 0;
+    z-index: 2;
+    transition: width 300ms;
+  }
+
+  &.has-entity-info {
+    .rsa-protected {
+      &__aside {
+        width: 75%;
+        box-shadow: 0 0 rsa-whitespace() background-color(neutral, dark, nearly-opaque);
+      }
+    }
+  }
+}
+
+.rsa-protected page.respond-engine {
+  min-height: calc(100vh - #{$appNavigationHeaderHeight});
+  .rsa-explorer, .rsa-aggregation-rules, .rsa-aggregation-rule {
+    height: calc(100vh - #{$appNavigationHeaderHeight} - #{$respondNavigationHeight});
+
+    .main-zone {
+      height: calc(100vh - #{$appNavigationHeaderHeight + $incidentsToolbarHeight + $respondNavigationHeight});
+    }
+  }
+}
+
+.rsa-protected page.configure-engine {
+  min-height: calc(100vh - #{$appNavigationHeaderHeight});
+  .rsa-incident-rules, .rsa-incident-rule, .respond-notifications {
+    height: calc(100vh - #{$appNavigationHeaderHeight} - #{$configureNavigationHeight});
+  }
+}
+

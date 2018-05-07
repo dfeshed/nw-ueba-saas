@@ -35,6 +35,7 @@ nukeNode investigate-shared
 nukeNode investigate-events
 nukeNode investigate-hosts
 nukeNode investigate-files
+nukeNode investigate
 nukeNode respond
 nukeNode configure
 nukeNode admin-source-management

@@ -85,7 +85,8 @@
       "../streaming-data",
       "../recon",
       "../context",
-      "../preferences"
+      "../preferences",
+      "../investigate-shared"
     ]
   },
   "private": true

@@ -79,9 +79,11 @@
       "../test-helpers",
       "../component-lib",
       "../streaming-data",
+      "../investigate",
       "../investigate-events",
       "../investigate-hosts",
       "../investigate-files",
+      "../investigate-process-analysis",
       "../respond",
       "../configure",
       "../recon",
@@ -90,13 +92,12 @@
       "../preferences",
       "../hosts-scan-configure",
       "../investigate-shared",
-      "../investigate-process-analysis",
       "../admin",
       "../admin-source-management"
     ]
   },
   "engines": {
-    "node": "7.5.0"
+    "node": "8.9.4"
   },
   "private": true
 }

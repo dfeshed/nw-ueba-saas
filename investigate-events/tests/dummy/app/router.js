@@ -9,7 +9,6 @@ const DummyRouter = Router.extend({
 DummyRouter.map(function() {
   this.mount('investigate-events', { path: 'investigate/events' });
   this.route('not-found', { path: '*invalidinvestigatepath' });
-  this.route('protected');
   this.route('files');
   this.route('hosts');
 });

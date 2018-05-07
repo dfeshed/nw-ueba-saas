@@ -1,0 +1,13 @@
+@charset "UTF-8";
+
+/* Pulling in local investigate-events styles */
+@import 'investigate/manifest';
+
+@import 'component-lib/manifest';
+@import 'investigate-events/manifest';
+@import 'investigate-files/manifest';
+@import 'investigate-hosts/manifest';
+@import 'investigate-process-analysis/manifest';
+@import 'recon/manifest';
+@import 'preferences/manifest';
+

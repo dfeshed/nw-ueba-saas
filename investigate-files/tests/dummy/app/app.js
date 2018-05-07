@@ -22,9 +22,8 @@ const App = Application.extend({
           'flashMessages'
         ],
         externalRoutes: {
-          protected: 'protected',
-          'protected.investigate.investigate-events': 'events',
-          'protected.investigate.investigate-hosts': 'hosts'
+          'investigate.investigate-events': 'events',
+          'investigate.investigate-hosts': 'hosts'
         }
       }
     }

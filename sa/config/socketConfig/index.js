@@ -1,28 +1,22 @@
 /* eslint-env node */
 
 const common = require('../../../common');
-const investigateConfigGen = require('../../../investigate-events').socketRouteGenerator;
-const investigateConfigFiles = require('../../../investigate-files').socketRouteGenerator;
-const investigateConfigHosts = require('../../../investigate-hosts').socketRouteGenerator;
+const investigateConfig = require('../../../investigate').socketRouteGenerator;
 const contextConfigGen = require('../../../context').socketRouteGenerator;
 const preferencesConfigGen = require('../../../preferences').socketRouteGenerator;
 const respondConfigGen = require('../../../respond').socketRouteGenerator;
 const configureConfigGen = require('../../../configure').socketRouteGenerator;
 const packagerConfigGen = require('../../../packager').socketRouteGenerator;
-const processAnalysisConfigGen = require('../../../investigate-process-analysis').socketRouteGenerator;
 const adminConfigGen = require('./administration');
 
 // order matters, first config in wins if there are matching configs
 const configGenerators = [
-  investigateConfigGen,
-  investigateConfigHosts,
-  investigateConfigFiles,
+  investigateConfig,
   respondConfigGen,
   configureConfigGen,
   contextConfigGen,
   preferencesConfigGen,
   packagerConfigGen,
-  processAnalysisConfigGen,
   adminConfigGen
 ];
 

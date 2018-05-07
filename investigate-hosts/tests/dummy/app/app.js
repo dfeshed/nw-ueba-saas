@@ -23,9 +23,8 @@ const App = Application.extend({
           'eventBus'
         ],
         externalRoutes: {
-          protected: 'protected',
-          'protected.investigate.investigate-events': 'events',
-          'protected.investigate.investigate-files': 'files'
+          'investigate.investigate-events': 'events',
+          'investigate.investigate-files': 'files'
         }
       }
     }

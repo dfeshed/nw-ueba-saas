@@ -21,9 +21,6 @@ const Eng = Engine.extend({
       'flashMessages',
       'eventBus',
       'router'
-    ],
-    externalRoutes: [
-      'protected'
     ]
   }
 });

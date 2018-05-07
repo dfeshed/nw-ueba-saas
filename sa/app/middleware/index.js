@@ -11,30 +11,9 @@ const globalFilter = createFilter(
   ]
 );
 
-const reconFilter = createFilter(
-  'recon',
-  [
-    'packets.isPayloadOnly',
-    'packets.hasStyledBytes',
-    'packets.hasSignaturesHighlighted',
-    'packets.packetsPageSize',
-    'text.decode',
-    'visuals.defaultReconView',
-    'visuals.currentReconView',
-    'visuals.isReconExpanded',
-    'visuals.isRequestShown',
-    'visuals.isResponseShown',
-    'visuals.isHeaderOpen',
-    'visuals.isMetaShown',
-    'visuals.defaultLogFormat',
-    'visuals.defaultPacketFormat',
-    'files.isAutoDownloadFile'
-  ]
-);
-
 const setup = (store) => {
   persistStore(store, {
-    transforms: [globalFilter, reconFilter],
+    transforms: [globalFilter],
     debounce: 1000
   });
 };

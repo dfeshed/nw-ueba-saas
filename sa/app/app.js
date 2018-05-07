@@ -28,27 +28,6 @@ const App = Application.extend({
         }
       }
     },
-    investigateEvents: {
-      dependencies: {
-        services: [
-          '-document',
-          'access-control',
-          'contextual-help',
-          'dateFormat',
-          'timeFormat',
-          'timezone',
-          'i18n',
-          'flashMessages',
-          'eventBus',
-          'app-version'
-        ],
-        externalRoutes: {
-          protected: 'protected',
-          'protected.investigate.investigate-files': 'protected.investigate.investigate-files',
-          'protected.investigate.investigate-hosts': 'protected.investigate.investigate-hosts'
-        }
-      }
-    },
     respond: {
       dependencies: {
         services: [
@@ -86,6 +65,49 @@ const App = Application.extend({
         }
       }
     },
+    investigate: {
+      dependencies: {
+        services: [
+          '-document',
+          'access-control',
+          'contextual-help',
+          'dateFormat',
+          'timeFormat',
+          'timezone',
+          'i18n',
+          'flashMessages',
+          'eventBus',
+          'app-version',
+          'router'
+        ],
+        externalRoutes: {
+          'investigate.investigate-files': 'protected.investigate.investigate-files',
+          'investigate.investigate-events': 'protected.investigate.investigate-events',
+          'investigate.investigate-hosts': 'protected.investigate.investigate-hosts'
+        }
+      }
+    },
+    investigateEvents: {
+      dependencies: {
+        services: [
+          '-document',
+          'access-control',
+          'contextual-help',
+          'dateFormat',
+          'timeFormat',
+          'timezone',
+          'i18n',
+          'flashMessages',
+          'eventBus',
+          'router',
+          'app-version'
+        ],
+        externalRoutes: {
+          'investigate.investigate-files': 'protected.investigate.investigate-files',
+          'investigate.investigate-hosts': 'protected.investigate.investigate-hosts'
+        }
+      }
+    },
     investigateFiles: {
       dependencies: {
         services: [
@@ -100,9 +122,8 @@ const App = Application.extend({
           'eventBus'
         ],
         externalRoutes: {
-          protected: 'protected',
-          'protected.investigate.investigate-events': 'protected.investigate.investigate-events',
-          'protected.investigate.investigate-hosts': 'protected.investigate.investigate-hosts'
+          'investigate.investigate-events': 'protected.investigate.investigate-events',
+          'investigate.investigate-hosts': 'protected.investigate.investigate-hosts'
         }
       }
     },
@@ -120,9 +141,8 @@ const App = Application.extend({
           'eventBus'
         ],
         externalRoutes: {
-          protected: 'protected',
-          'protected.investigate.investigate-events': 'protected.investigate.investigate-events',
-          'protected.investigate.investigate-files': 'protected.investigate.investigate-files'
+          'investigate.investigate-files': 'protected.investigate.investigate-files',
+          'investigate.investigate-events': 'protected.investigate.investigate-events'
         }
       }
     },
@@ -139,10 +159,7 @@ const App = Application.extend({
           'flashMessages',
           'eventBus',
           'router'
-        ],
-        externalRoutes: {
-          protected: 'protected'
-        }
+        ]
       }
     }
   }

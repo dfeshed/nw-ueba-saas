@@ -24,13 +24,7 @@ Router.map(function() {
     this.route('packager');
     this.mount('respond');
     this.mount('configure');
-    this.route('investigate', function() {
-      this.mount('investigate-events', { path: 'events' });
-      this.mount('investigate-hosts', { path: 'hosts' });
-      this.mount('investigate-files', { path: 'files' });
-      this.route('recon');
-      this.mount('investigate-process-analysis', { path: 'process-analysis' });
-    });
+    this.mount('investigate');
   });
 
   this.route('not-found', { path: '/*path' });

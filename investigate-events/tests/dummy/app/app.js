@@ -22,9 +22,8 @@ const App = Application.extend({
           'eventBus'
         ],
         externalRoutes: {
-          protected: 'protected',
-          'protected.investigate.investigate-files': 'files',
-          'protected.investigate.investigate-hosts': 'hosts'
+          'investigate.investigate-files': 'files',
+          'investigate.investigate-hosts': 'hosts'
         }
       }
     }

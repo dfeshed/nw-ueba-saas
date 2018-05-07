@@ -217,7 +217,7 @@ buildEmberApp component-lib false false true
 buildEmberApp packager false true true
 buildEmberApp recon false true true
 buildEmberApp context false true true
-buildEmberApp investigate-shared false true true
+buildEmberApp investigate-shared false true false
 buildEmberApp preferences false true true
 buildEmberApp test-helpers false false false
 buildEmberApp ember-route-action-helper false false false
@@ -226,6 +226,7 @@ buildEmberApp style-guide true false false
 buildEmberApp investigate-events false true true
 buildEmberApp investigate-hosts false true true
 buildEmberApp investigate-files false true true
+buildEmberApp investigate false true true
 buildEmberApp respond false true true
 buildEmberApp configure false true true
 buildEmberApp investigate-process-analysis false true true

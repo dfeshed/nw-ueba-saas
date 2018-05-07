@@ -21,9 +21,8 @@ const Eng = Engine.extend({
       'flashMessages'
     ],
     externalRoutes: [
-      'protected',
-      'protected.investigate.investigate-events',
-      'protected.investigate.investigate-hosts'
+      'investigate.investigate-events',
+      'investigate.investigate-hosts'
     ]
   }
 });

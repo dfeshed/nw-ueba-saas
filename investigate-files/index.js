@@ -7,6 +7,10 @@ const EngineAddon = require('ember-engines/lib/engine-addon');
 const common = require('../common');
 const projectName = 'investigate-files';
 
+const subscriptionPath = path.join(__dirname, 'tests', 'data');
+const preferencesMocks = require('../preferences').mockDestinations;
+const investigateHostsMocks = require('../investigate-hosts').mockDestinations;
+
 module.exports = EngineAddon.extend({
   name: projectName,
 
@@ -36,7 +40,11 @@ module.exports = EngineAddon.extend({
 
   socketRouteGenerator: require('./config/socketRoutes'),
 
-  mockDestinations: path.join(__dirname, 'tests', 'data', 'subscriptions'),
+  mockDestinations: [
+    subscriptionPath,
+    preferencesMocks,
+    ...investigateHostsMocks
+  ],
 
   // See ../common.js for details on this function
   isDevelopingAddon: common.isDevelopingAddon(projectName),

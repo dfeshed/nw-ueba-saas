@@ -108,7 +108,8 @@ module.exports = function(environment) {
       'searchLiveResources',
       'accessInvestigationModule',
       'respond-server.*',
-      'integration-server.*'
+      'integration-server.*',
+      'endpoint-server.machine.read'
     ];
 
     // ENV.APP.LOG_RESOLVER = true;
@@ -129,7 +130,8 @@ module.exports = function(environment) {
       'searchLiveResources',
       'accessInvestigationModule',
       'respond-server.*',
-      'integration-server.*'
+      'integration-server.*',
+      'endpoint-server.machine.read'
     ];
 
     // Testem prefers this...
