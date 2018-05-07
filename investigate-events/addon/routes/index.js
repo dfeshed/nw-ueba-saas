@@ -8,10 +8,8 @@ import {
   setReconPanelSize
 } from 'investigate-events/actions/interaction-creators';
 import { dirtyQueryToggle } from 'investigate-events/actions/query-validation-creators';
-import {
-  serializeQueryParams,
-  uriEncodeMetaFilters
-} from 'investigate-events/actions/utils';
+import { uriEncodeMetaFilters } from 'investigate-events/actions/utils';
+import { serializeQueryParams } from 'investigate-shared/utils/query-utils';
 import {
   META_PANEL_SIZES,
   RECON_PANEL_SIZES

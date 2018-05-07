@@ -320,14 +320,6 @@ function filterIsPresent(filters, freeFormText) {
   return currentFilters === freeFormText.trim();
 }
 
-function serializeQueryParams(qp = []) {
-  const keys = Object.keys(qp);
-  const values = Object.values(qp);
-  return keys.map((d, i) => `${d}=${values[i]}`).join('&');
-  // Once we drop IE11 we should be able to use Object.entries
-  // return Object.entries(qp).map((d) => `${d[0]}=${d[1]}`).join('&');
-}
-
 /**
  * Encodes a given list of meta conditions into a URI string component that can be used for routing.
  * The reverse of `parseMetaFilterUri()`.
@@ -357,7 +349,6 @@ export {
   buildMetaValueStreamInputs,
   executeMetaValuesRequest,
   parseQueryParams,
-  serializeQueryParams,
   uriEncodeMetaFilters,
   _getTimeRangeIdFromRange,
   transformTextToFilters,

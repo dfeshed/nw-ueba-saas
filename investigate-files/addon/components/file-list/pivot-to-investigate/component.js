@@ -6,7 +6,7 @@ import { inject as service } from '@ember/service';
 import { get } from '@ember/object';
 import { connect } from 'ember-redux';
 import { getAllServices } from 'investigate-files/actions/data-creators';
-import $ from 'jquery';
+import { serializeQueryParams } from 'investigate-shared/utils/query-utils';
 
 const INVESTIGATE_META_MAPPING = {
   'checksumSha256': 'checksum',
@@ -90,13 +90,14 @@ const PivotToInvestigate = Component.extend({
     const mf = this._buildFilter();
     const queryParams = {
       sid: selectedService, // Service Id
-      mf, // Meta filter
+      mf: encodeURI(encodeURIComponent(mf)), // Meta filter
       st: startTime.tz('utc').format('X'), // Stat time
       et: endTime.tz('utc').format('X'), // End time
       mps: 'default', // Meta panel size
       rs: 'max' // Recon size
     };
-    const path = `${window.location.origin}/investigate/events?${$.param(queryParams)}`;
+    const query = serializeQueryParams(queryParams);
+    const path = `${window.location.origin}/investigate/events?${query}`;
     this._closeModal();
     window.open(path);
   },
@@ -109,7 +110,7 @@ const PivotToInvestigate = Component.extend({
     const { startTime, endTime } = this._buildTimeRange();
     const mf = this._buildFilter();
     const baseURL = `${window.location.origin}/investigation/endpointid/${selectedService}/navigate/query`;
-    const query = encodeURIComponent(mf);
+    const query = encodeURI(encodeURIComponent(mf));
     const path = `${baseURL}/${query}/date/${startTime.tz('utc').format()}/${endTime.tz('utc').format()}`;
     this._closeModal();
     window.open(path);
