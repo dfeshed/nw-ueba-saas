@@ -46,6 +46,7 @@ export default {
       'ACCESS_DENIED': 'Insufficient permissions for the requested data. If you believe you should have access, ask your administrator to provide the necessary permissions.',
       'SESSION_REMOVED': 'Data not loaded. It has rolled out of the database.',
       'PACKETS_NOT_FOUND': 'Data not loaded. It has rolled out of the database.',
+      'DEVICE_OFFLINE': 'Data not loaded. The underlying service is offline.',
       'GENERIC': 'An unexpected error has occurred attempting to retrieve this data.'
     }
   },

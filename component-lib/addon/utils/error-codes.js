@@ -13,6 +13,7 @@ const investigateEventsErrorCodeDictionary = {
   119: { type: 'LENGTH_EXCEEDED', messageLocaleKey: null, sendServerMessage: true },
   129: { type: 'SESSION_REMOVED', messageLocaleKey: `${localeRoot}.SESSION_REMOVED`, sendServerMessage: false },
   130: { type: 'PACKETS_NOT_FOUND', messageLocaleKey: `${localeRoot}.PACKETS_NOT_FOUND`, sendServerMessage: false },
+  1002: { type: 'DEVICE_OFFLINE', messageLocaleKey: `${localeRoot}.DEVICE_OFFLINE`, sendServerMessage: false },
   // uncommon codes
   12: { type: 'MISSING_SECURITY_TOKEN', messageLocaleKey: genericMsgKey, sendServerMessage: false },
   109: { type: 'TIMEOUT', messageLocaleKey: genericMsgKey, sendServerMessage: false },
@@ -47,6 +48,12 @@ const investigateEventsErrorCodeDictionary = {
 
 function _parseAndLogErrorCode(response, errorCodeDictionary, requestName) {
   const errorCode = response.code || response.errorCode || response['error-code'];
+
+  // not an error code, do not process
+  if (errorCode === 1) {
+    return;
+  }
+
   const message = response.meta ? response.meta.message : response['unhandled-error'] || '';
   let errorObject = errorCodeDictionary[errorCode];
 
