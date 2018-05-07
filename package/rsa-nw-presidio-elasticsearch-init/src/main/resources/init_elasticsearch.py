@@ -9,9 +9,6 @@ import os
 import requests
 import string
 
-BASE_PATH = '/home/presidio/presidio-core/'
-ELASTICSEARCH_PATH = BASE_PATH + 'el-extensions'
-VENDOR_ELASTICSEARCH_PATH = BASE_PATH + 'el-extensions-vendor'
 MACHINE_URL = 'http://localhost:9200/'
 URL_KIBANA = MACHINE_URL + '.kibana/'
 URL_KIBANA_PATTERNS = URL_KIBANA + 'index-pattern/'
@@ -41,10 +38,12 @@ VENDOR_ELASTIC_INIT = 'vendor'
 TEST_ELASTIC_INIT = 'test'
 ELASTICSEARCH_TEMPLATE_NAME_POSITION_IN_TEMPLATE = 0
 INDEX_ALREADY_EXISTS_EXCEPTION = 'index_already_exists_exception'
-EVENT_TIME = {"presidio-monitoring": "timestamp", "presidio-monitoring-logical": "logicTime",
+EVENT_TIME = {"presidio-monitoring": "timestamp",
+              "presidio-monitoring-logical": "logicTime",
               "presidio-output-alert": "startDate",
-              "presidio-output-event": "eventTime", "presidio-output-indicator": "startDate",
-              "presidio-monitoring": "timestemp", "presidio-output-logical": "logicTime",
+              "presidio-output-event": "eventTime",
+              "presidio-output-indicator": "startDate",
+              "presidio-output-logical": "logicTime",
               "presidio-output-user": "createdDate"}
 
 
@@ -256,13 +255,14 @@ def init_elasticsearch(path):
             create_index_by_order(newpath, subfolder)
 
 
-def main(path, rpm):
-    if rpm == TEST_ELASTIC_INIT:
-        MACHINE_URL = 'http://localhost:9350/'
-    if rpm == CORE_ELASTIC_INIT:
-        init_elasticsearch(path + INDEXES)
-        update_kibana_index_from_file(path + INDEX_PATTERN, URL_KIBANA_PATTERNS)
-        create_default_pattern(path + DEFAULT)
+
+
+def main(path, elasticsearch_url):
+    global MACHINE_URL
+    MACHINE_URL = elasticsearch_url
+    init_elasticsearch(path + INDEXES)
+    update_kibana_index_from_file(path + INDEX_PATTERN, URL_KIBANA_PATTERNS)
+    create_default_pattern(path + DEFAULT)
     update_kibana_index_from_file(path + SEARCHES, URL_KIBANA_SEARCHES)
     update_kibana_index_from_file(path + VISUALIZATION, URL_KIBANA_VISUALIZATIONS)
     update_kibana_index_from_file(path + DASHBOARDS, URL_KIBANA_DASHBOARDS)
@@ -271,12 +271,8 @@ def main(path, rpm):
 parser = argparse.ArgumentParser(description='init elasticseatch and kibana')
 parser.add_argument('--resources_path', type=str, required=True,
                     help='path of resources files for elasticsearch and kibana')
-parser.add_argument('--run_type', type=str, required=True, help='core/vendor')
+parser.add_argument('--elasticsearch_url', type=str,
+                    default="http://localhost:9200",help="network address of elasticsearch to be updated with indexes and schema")
 args = parser.parse_args()
 
-if __name__ == "__main__":
-    if args.run_type in [CORE_ELASTIC_INIT, VENDOR_ELASTIC_INIT, TEST_ELASTIC_INIT]:
-        main(args.resources_path, args.run_type)
-    else:
-        msg = "Bad param={} ".format(args.run_type)
-        raise Exception(msg)
+main(args.resources_path, args.elasticsearch_url)

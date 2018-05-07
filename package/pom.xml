@@ -10,6 +10,7 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>rsa-nw-presidio-core</module>
+        <module>rsa-nw-presidio-elasticsearch-init</module>
     </modules>
     <parent>
         <artifactId>rpm-builder</artifactId>
