@@ -70,6 +70,10 @@ const start = function({ subscriptionLocations, routes }, cb) {
   });
   app.use('/oauth/token', authRoute);
 
+  app.use('/oauth/check', function(req, res) {
+    res.json({});
+  });
+
   _processConfiguredRoutes(routes, app);
 
   app.ws('/socket/*', function(ws /* , req */) {
