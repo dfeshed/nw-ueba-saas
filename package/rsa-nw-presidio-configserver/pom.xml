@@ -44,6 +44,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>rpm-maven-plugin</artifactId>
+                <version>${rpm-maven-plugin.version}</version>
                 <configuration>
                     <summary>Presidio(UEBA) core configuration server</summary>
                     <mappings>

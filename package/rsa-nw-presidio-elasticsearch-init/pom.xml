@@ -15,7 +15,7 @@
         <plugins>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>3.0.2</version>
+                <version>${maven-resources-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>copy-resources</id>
@@ -40,6 +40,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>rpm-maven-plugin</artifactId>
+                <version>${rpm-maven-plugin.version}</version>
                 <configuration>
                     <summary>Presidio(UEBA) elasticsearch &amp; kibana init resources</summary>
                     <defineStatements>
@@ -49,8 +50,8 @@
                         <mapping>
                             <directoryIncluded>false</directoryIncluded>
                             <directory>${presidio-app.directory}/elasticsearch/init</directory>
-                            <username>presidio</username>
-                            <groupname>presidio</groupname>
+                            <username>${presidio.username}</username>
+                            <groupname>${presidio.groupname}</groupname>
                             <sources>
                                 <source>
                                     <location>${project.build.directory}/extra-resources</location>

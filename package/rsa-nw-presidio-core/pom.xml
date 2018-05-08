@@ -99,14 +99,15 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>rpm-maven-plugin</artifactId>
+                <version>${rpm-maven-plugin.version}</version>
                 <configuration>
                     <summary>Presidio(UEBA) core batch applications and workflow py package</summary>
                     <mappings>
                         <mapping>
                             <directoryIncluded>false</directoryIncluded>
                             <directory>${presidio-app.directory}/batch</directory>
-                            <username>presidio</username>
-                            <groupname>presidio</groupname>
+                            <username>${presidio.username}</username>
+                            <groupname>${presidio.groupname}</groupname>
                             <sources>
                                 <source>
                                     <includes>
