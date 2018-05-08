@@ -6,6 +6,7 @@ import { updateRowVisibility } from './utils';
 import { processTree } from 'investigate-hosts/reducers/details/process/selectors';
 import { getProcessDetails } from 'investigate-hosts/actions/data-creators/process';
 import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
+import { machineOsType } from 'investigate-hosts/reducers/details/overview/selectors';
 
 const dispatchToActions = {
   getProcessDetails
@@ -16,7 +17,7 @@ const stateToComputed = (state) => ({
   treeAsList: processTree(state),
   isProcessTreeLoading: state.endpoint.process.isProcessTreeLoading,
   agentId: state.endpoint.detailsInput.agentId,
-  osType: state.endpoint.overview.hostDetails.machine.machineOsType
+  osType: machineOsType(state)
 });
 
 const TreeComponent = Component.extend({

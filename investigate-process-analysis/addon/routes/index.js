@@ -21,5 +21,15 @@ export default Route.extend({
     run.next(() => {
       redux.dispatch(initProcessAnalysis(params));
     });
+    // Setting title to the process-analysis window.
+    document.title = params.pn;
+  },
+  activate() {
+    // To hide the navigation header in process analysis window.
+    document.getElementsByTagName('body')[0].classList.add('process-analysis');
+  },
+  deactivate() {
+    document.getElementsByTagName('body')[0].classList.remove('process-analysis');
   }
+
 });

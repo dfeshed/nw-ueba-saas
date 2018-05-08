@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 
-import { getQueryNode } from 'investigate-process-analysis/actions/creators/util';
+import { getQueryNode, hasherizeEventMeta } from 'investigate-process-analysis/actions/creators/util';
 
 module('Unit | Selectors | process-tree', function() {
 
@@ -20,6 +20,16 @@ module('Unit | Selectors | process-tree', function() {
 
     queryNode = getQueryNode(input, 'test-2');
     assert.equal(queryNode.metaFilter.conditions[3].value, '\'test-2\'', 'should use passed process name');
+  });
+
+  test('hasherizeEventMeta returns object of the events', function(assert) {
+
+    const event = { metas: [ ['agent.id', '12345'], ['filename.dst', 'testFileName.exe'] ] };
+    hasherizeEventMeta(event);
+
+    assert.equal(event.agentId, 12345);
+    assert.equal(event.processName, 'testFileName.exe');
+
   });
 
 });

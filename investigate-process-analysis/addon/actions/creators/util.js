@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 export const getQueryNode = function(input, selectedNode) {
   const { et, st, pn, sid, aid: agentId } = input;
 
@@ -55,4 +57,39 @@ const _getMetaFilter = (agentId, processName) => {
       }
     ]
   };
+};
+
+/**
+ * Event response is in ['key', 'value] formate, So need to convert the event meta into object
+ * @param {*} event
+ * @returns {*} event
+ * @public
+ */
+export const hasherizeEventMeta = (event) => {
+  if (event) {
+    const { metas } = event;
+    if (!metas) {
+      return;
+    }
+    const len = (metas && metas.length) || 0;
+    let i;
+    for (i = 0; i < len; i++) {
+      const meta = metas[i];
+      if (meta[0] === 'filename.dst') {
+        event.processName = meta[1];
+      }
+      if (meta[0] === 'agent.id') {
+        event.agentId = meta[1];
+      }
+      if (meta[0] === 'checksum.dst') {
+        if (meta[1].length === 64) {
+          event.checksum = meta[1];
+        }
+      }
+      event[meta[0]] = meta[1];
+    }
+    event.childCount = 0;
+    event.id = _.uniqueId('event_'); // Adding unique id to node, currently server is not sending
+    event.metas = null;
+  }
 };

@@ -1,3 +1,9 @@
 @import "process-analysis-container";
 @import "process-tree";
 @import "process-tree-legend";
+
+.process-analysis {
+  .rsa-application-header{
+    display: none;
+  }
+}

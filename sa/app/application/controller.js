@@ -19,7 +19,6 @@ export default Controller.extend({
 
   @computed('session.isAuthenticated', 'currentPath')
   authenticatedAndPageFound(isAuthenticated, path) {
-
     if (!isAuthenticated || path === 'not-found' || path === 'internal-error') {
       return false;
     } else {

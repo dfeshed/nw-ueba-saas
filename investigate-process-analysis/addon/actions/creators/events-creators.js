@@ -1,8 +1,7 @@
 import fetchStreamingEvents from 'investigate-shared/actions/api/investigate-events/events';
 import * as ACTION_TYPES from 'investigate-process-analysis/actions/types';
-import _ from 'lodash';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
-import { getQueryNode } from './util';
+import { getQueryNode, hasherizeEventMeta } from './util';
 
 const callbacksDefault = { onComplete() {} };
 
@@ -49,7 +48,7 @@ export const getEvents = (selectedNode, callbacks = callbacksDefault) => {
            (description === 'Executing' && percent < 100 && payload.length === 0)) {
           return;
         } else {
-          payload.forEach(_hasherizeEventMeta);
+          payload.forEach(hasherizeEventMeta);
           dispatch({ type: ACTION_TYPES.SET_EVENTS, payload });
         }
       },
@@ -57,29 +56,4 @@ export const getEvents = (selectedNode, callbacks = callbacksDefault) => {
     };
     fetchStreamingEvents(queryNode, null, streamLimit, streamBatch, handlers);
   };
-};
-
-
-const _hasherizeEventMeta = (event) => {
-  if (event) {
-    const { metas } = event;
-    if (!metas) {
-      return;
-    }
-    const len = (metas && metas.length) || 0;
-    let i;
-    for (i = 0; i < len; i++) {
-      const meta = metas[i];
-      if (meta[0] === 'filename.dst') {
-        event.processName = meta[1];
-      }
-      if (meta[0] === 'agent.id') {
-        event.agentId = meta[1];
-      }
-      event[meta[0]] = meta[1];
-    }
-    event.childCount = 0;
-    event.id = _.uniqueId('event_'); // Adding unique id to node, currently server is not sending
-    event.metas = null;
-  }
 };
