@@ -337,7 +337,7 @@ function uriEncodeMetaFilters(filters = []) {
       } else { // there can be conditions where meta/operator/value is missing because freeFormText can now create pills. Once we put in the complex filter logic, we should revert it back.
         ret = `${(d.meta) ? d.meta.trim() : ''} ${(d.operator) ? d.operator.trim() : ''} ${(d.value) ? d.value.trim() : ''}`;
       }
-      return encodeURIComponent(ret);
+      return isBlank(ret) ? undefined : encodeURIComponent(ret);
     })
     .filter((d) => !!d)
     .join('/');

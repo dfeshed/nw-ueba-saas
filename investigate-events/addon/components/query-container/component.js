@@ -73,7 +73,7 @@ const QueryContainer = Component.extend({
     addFilters(str) {
       const filters = this.get('filters');
       // check for empty string or if the filter is already present
-      if (str.length > 1 && !filterIsPresent(filters, str)) {
+      if (!filterIsPresent(filters, str)) {
         const filter = transformTextToFilters(str.trim());
         // In case there is a addition
         // 1. empty the array - this makes it easier for us to add, instead of finding out what we're missing and adding that specific filter
