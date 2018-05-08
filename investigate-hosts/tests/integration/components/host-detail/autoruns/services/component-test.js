@@ -3,7 +3,7 @@ import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
 import Immutable from 'seamless-immutable';
 
-import engineResolverFor from '../../../../../helpers/engine-resolver';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { applyPatch, revertPatch } from '../../../../../helpers/patch-reducer';
 
 import services from '../../../state/autoruns.service';

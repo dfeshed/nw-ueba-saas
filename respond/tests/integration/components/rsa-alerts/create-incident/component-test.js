@@ -2,7 +2,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { click, findAll, render } from '@ember/test-helpers';
-import engineResolverFor from '../../../../helpers/engine-resolver';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import RSVP from 'rsvp';

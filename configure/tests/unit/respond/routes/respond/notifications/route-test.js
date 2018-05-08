@@ -1,5 +1,5 @@
 import { moduleFor, test } from 'ember-qunit';
-import engineResolverFor from '../../../../../helpers/engine-resolver';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 
 moduleFor('route:respond/notifications', 'Unit | Route | respond/notifications', {
   needs: ['service:accessControl', 'service:contextualHelp', 'service:i18n', 'service:redux', 'service:appVersion'],

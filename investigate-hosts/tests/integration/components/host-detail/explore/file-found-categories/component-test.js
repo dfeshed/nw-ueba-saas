@@ -1,6 +1,6 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import engineResolverFor from '../../../../../helpers/engine-resolver';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { patchSocket } from '../../../../../helpers/patch-socket';
 
 moduleForComponent('host-detail/explore/file-found-categories', 'Integration | Component | host detail explore file found categories', {

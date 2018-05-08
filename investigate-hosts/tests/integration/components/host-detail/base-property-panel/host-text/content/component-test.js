@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import engineResolver from '../../../../../../helpers/engine-resolver';
+import engineResolver from 'ember-engines/test-support/engine-resolver-for';
 import { find, findAll, render } from '@ember/test-helpers';
 
 module('Integration | Component | host-detail/base-property-panel/host-text/content', function(hooks) {

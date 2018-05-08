@@ -1,6 +1,6 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import engineResolverFor from '../../../../helpers/engine-resolver';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import wait from 'ember-test-helpers/wait';
 import { SINCE_WHEN_TYPES } from 'respond/utils/since-when-types';
 import $ from 'jquery';
@@ -27,7 +27,7 @@ test('it renders the header DOM and results DOM as expected', function(assert) {
     items
   });
 
-  this.render(hbs`{{#rsa-alerts-search/results 
+  this.render(hbs`{{#rsa-alerts-search/results
     entity=entity
     timeFrameName=timeFrameName
     itemsStatus=itemsStatus
@@ -64,7 +64,7 @@ test('it renders a loading icon when the results status is streaming', function(
     items
   });
 
-  this.render(hbs`{{rsa-alerts-search/results 
+  this.render(hbs`{{rsa-alerts-search/results
     entity=entity
     timeFrameName=timeFrameName
     itemsStatus="streaming"

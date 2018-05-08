@@ -4,7 +4,7 @@ import Immutable from 'seamless-immutable';
 import exploreData from '../../../../../state/explore.fileSearchResults';
 import { patchSocket } from '../../../../../../../helpers/patch-socket';
 import * as DataCreators from 'investigate-hosts/actions/data-creators/details';
-import engineResolverFor from '../../../../../../../helpers/engine-resolver';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import ReduxDataHelper from '../../../../../../../helpers/redux-data-helper';
 import { applyPatch, revertPatch } from '../../../../../../../helpers/patch-reducer';
 import $ from 'jquery';

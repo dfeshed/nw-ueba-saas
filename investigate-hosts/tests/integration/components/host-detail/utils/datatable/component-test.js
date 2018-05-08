@@ -1,7 +1,7 @@
 import { moduleForComponent, test, skip } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
-import engineResolver from '../../../../../helpers/engine-resolver';
+import engineResolver from 'ember-engines/test-support/engine-resolver-for';
 
 const dataItems = [
   {

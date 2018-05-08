@@ -1,4 +1,4 @@
-import engineResolverFor from '../../../../helpers/engine-resolver';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { updateEditableField } from '../../../../helpers/editable-field';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';

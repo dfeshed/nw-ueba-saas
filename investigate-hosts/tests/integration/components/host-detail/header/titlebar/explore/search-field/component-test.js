@@ -2,7 +2,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import ReduxDataHelper from '../../../../../../../helpers/redux-data-helper';
 import Immutable from 'seamless-immutable';
-import engineResolverFor from '../../../../../../../helpers/engine-resolver';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { applyPatch, revertPatch } from '../../../../../../../helpers/patch-reducer';
 import wait from 'ember-test-helpers/wait';
 

@@ -1,6 +1,6 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import engineResolverFor from '../../../../../helpers/engine-resolver';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import DataHelper from '../../../../../helpers/data-helper';
 import editableFieldHelper from '../../../../../helpers/editable-field';
 import { getAllMilestoneTypes } from 'respond/actions/creators/dictionary-creators';

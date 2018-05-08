@@ -3,7 +3,7 @@ import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import { patchSocket } from '../../../../helpers/patch-socket';
-import engineResolverFor from '../../../../helpers/engine-resolver';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { applyPatch, revertPatch } from '../../../../helpers/patch-reducer';
 
 import hostFiles from '../../state/host.files';

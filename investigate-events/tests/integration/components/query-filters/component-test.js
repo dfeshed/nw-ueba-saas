@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { set } from '@ember/object';
 import { run } from '@ember/runloop';
 import hbs from 'htmlbars-inline-precompile';
-import engineResolverFor from '../../../helpers/engine-resolver';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { triggerKeyUp } from 'ember-keyboard';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';

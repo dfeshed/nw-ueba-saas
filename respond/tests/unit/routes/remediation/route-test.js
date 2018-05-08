@@ -1,5 +1,5 @@
 import { moduleFor, test } from 'ember-qunit';
-import engineResolverFor from '../../../helpers/engine-resolver';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import * as tasksCreators from 'respond/actions/creators/remediation-task-creators';
 import sinon from 'sinon';

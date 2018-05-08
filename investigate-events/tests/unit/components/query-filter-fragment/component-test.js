@@ -1,5 +1,5 @@
 import { moduleForComponent, test } from 'ember-qunit';
-import engineResolverFor from '../../../helpers/engine-resolver';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 
 moduleForComponent('query-filters/query-filter-fragment', 'Unit | Component | query filter fragment', {
   unit: true,

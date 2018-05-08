@@ -1,6 +1,6 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import engineResolverFor from '../../../../helpers/engine-resolver';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import wait from 'ember-test-helpers/wait';
 import { SINCE_WHEN_TYPES } from 'respond/utils/since-when-types';
 
@@ -20,7 +20,7 @@ test('it renders the form with correct default state based on its inputs', funct
     inputText
   });
 
-  this.render(hbs`{{rsa-alerts-search/form 
+  this.render(hbs`{{rsa-alerts-search/form
     selectedTimeFrameName=selectedTimeFrameName
     inputText=inputText
     selectedEntityTypeName=selectedEntityTypeName
@@ -47,7 +47,7 @@ test('it fires the onSubmit callback when the Search button is clicked', functio
       assert.ok(true, 'onSubmit was invoked');
     }
   });
-  this.render(hbs`{{rsa-alerts-search/form 
+  this.render(hbs`{{rsa-alerts-search/form
     selectedTimeFrameName=selectedTimeFrameName
     selectedEntityTypeName=selectedEntityTypeName
     isSearchUnderway=false
@@ -73,7 +73,7 @@ test('it disables the onSubmit button when empty inputText is given', function(a
       assert.ok(true, 'onSubmit was invoked');
     }
   });
-  this.render(hbs`{{rsa-alerts-search/form 
+  this.render(hbs`{{rsa-alerts-search/form
     selectedTimeFrameName=selectedTimeFrameName
     selectedEntityTypeName=selectedEntityTypeName
     isSearchUnderway=false
@@ -103,7 +103,7 @@ test('it disables all inputs and wires a Cancel button to a callback when a sear
     }
   });
 
-  this.render(hbs`{{rsa-alerts-search/form 
+  this.render(hbs`{{rsa-alerts-search/form
     selectedTimeFrameName=selectedTimeFrameName
     selectedEntityTypeName=selectedEntityTypeName
     isSearchUnderway=true

@@ -1,7 +1,7 @@
 import { moduleForComponent, test, skip } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
-import engineResolverFor from '../../../../../helpers/engine-resolver';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { applyPatch, revertPatch } from '../../../../../helpers/patch-reducer';
 import { patchFlash } from '../../../../../helpers/patch-flash';
 import wait from 'ember-test-helpers/wait';

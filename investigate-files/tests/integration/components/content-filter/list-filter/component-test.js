@@ -3,7 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { find, findAll, render, click, triggerEvent } from '@ember/test-helpers';
 
 import hbs from 'htmlbars-inline-precompile';
-import engineResolverFor from '../../../../helpers/engine-resolver';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { patchSocket } from '../../../../helpers/patch-socket';
 
 let i18n;

@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { findAll, render, click } from '@ember/test-helpers';
-import engineResolver from '../../../../../helpers/engine-resolver';
+import engineResolver from 'ember-engines/test-support/engine-resolver-for';
 
 module('Integration | Component | host-list/host-table/sort-button', function(hooks) {
   setupRenderingTest(hooks, {

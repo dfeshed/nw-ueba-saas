@@ -5,7 +5,7 @@ import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
-import engineResolverFor from '../../../helpers/engine-resolver';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { applyPatch, revertPatch } from '../../../helpers/patch-reducer';
 import $ from 'jquery';
 

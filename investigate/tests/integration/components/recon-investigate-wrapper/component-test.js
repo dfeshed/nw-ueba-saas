@@ -15,7 +15,7 @@ component.
 // import { setupRenderingTest } from 'ember-qunit';
 // import { render, click, findAll, settled } from '@ember/test-helpers';
 // import Service from '@ember/service';
-// import engineResolverFor from '../../../helpers/engine-resolver';
+// import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 
 // const accessControl = Service.extend({
 //   hasReconAccess: true

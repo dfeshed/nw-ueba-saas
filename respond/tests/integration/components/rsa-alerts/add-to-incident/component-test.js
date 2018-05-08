@@ -3,7 +3,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
-import engineResolverFor from '../../../../helpers/engine-resolver';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import * as addAlertsCreators from 'respond/actions/creators/add-alerts-to-incident-creators';
 import Immutable from 'seamless-immutable';
 import { patchFlash } from '../../../../helpers/patch-flash';

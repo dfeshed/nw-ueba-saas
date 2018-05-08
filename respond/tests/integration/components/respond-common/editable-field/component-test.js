@@ -2,7 +2,7 @@ import { blur, click, fillIn, find, findAll, render, settled } from '@ember/test
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import engineResolverFor from '../../../../helpers/engine-resolver';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { typeOf } from '@ember/utils';
 
 module('Integration | Component | Editable Field', function(hooks) {

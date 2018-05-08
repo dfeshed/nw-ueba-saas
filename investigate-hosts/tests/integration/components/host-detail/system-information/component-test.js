@@ -6,7 +6,7 @@ import { patchReducer } from '../../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import Immutable from 'seamless-immutable';
 import { linux, windows, mac } from '../../state/overview.hostdetails';
-import engineResolver from '../../../../helpers/engine-resolver';
+import engineResolver from 'ember-engines/test-support/engine-resolver-for';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 
 let setState;

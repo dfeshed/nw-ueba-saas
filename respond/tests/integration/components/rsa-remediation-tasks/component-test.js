@@ -2,7 +2,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { module, test } from 'qunit';
 import { click, findAll, find, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import engineResolverFor from '../../../helpers/engine-resolver';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import waitForReduxStateChange from '../../../helpers/redux-async-helpers';
 import { throwSocket, patchSocket } from '../../../helpers/patch-socket';
 import { patchFlash } from '../../../helpers/patch-flash';

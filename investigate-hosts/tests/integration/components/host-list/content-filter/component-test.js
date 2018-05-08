@@ -6,7 +6,7 @@ import { patchReducer } from '../../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import Immutable from 'seamless-immutable';
 
-import engineResolver from '../../../../helpers/engine-resolver';
+import engineResolver from 'ember-engines/test-support/engine-resolver-for';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 
 import endpoint from '../../state/schema';

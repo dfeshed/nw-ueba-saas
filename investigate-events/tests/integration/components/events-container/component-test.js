@@ -4,7 +4,7 @@ import { render, find, findAll } from '@ember/test-helpers';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { setupRenderingTest } from 'ember-qunit';
 
-import engineResolverFor from '../../../helpers/engine-resolver';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../helpers/vnext-patch';
 

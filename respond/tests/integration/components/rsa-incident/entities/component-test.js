@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { clearRender, render, findAll, settled } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import engineResolverFor from '../../../../helpers/engine-resolver';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import Immutable from 'seamless-immutable';
 import { next, scheduleOnce } from '@ember/runloop';
 import { timerFlush } from 'd3-timer';

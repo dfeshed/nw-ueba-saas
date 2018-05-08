@@ -5,7 +5,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { find, render, settled } from '@ember/test-helpers';
 import Immutable from 'seamless-immutable';
 import hbs from 'htmlbars-inline-precompile';
-import engineResolverFor from '../../../../helpers/engine-resolver';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { incidentDetails } from '../../../../data/data';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import { clickTrigger, selectChoose } from '../../../../helpers/ember-power-select';

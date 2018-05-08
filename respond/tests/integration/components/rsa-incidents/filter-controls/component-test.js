@@ -4,7 +4,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import Immutable from 'seamless-immutable';
 import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger, selectChoose } from '../../../../helpers/ember-power-select';
-import engineResolverFor from '../../../../helpers/engine-resolver';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import {
   getAllEnabledUsers,
   getAllPriorityTypes,

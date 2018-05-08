@@ -1,7 +1,7 @@
 import { set, get } from '@ember/object';
 import { moduleForComponent, skip } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import engineResolverFor from '../../../../helpers/engine-resolver';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 
 moduleForComponent('meta-view/key-values', 'Integration | Component | meta-view/key values', {
   integration: true,

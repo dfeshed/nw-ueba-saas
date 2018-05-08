@@ -3,7 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { find, findAll, render } from '@ember/test-helpers';
 import ReduxDataHelper from '../../../../../../helpers/redux-data-helper';
-import engineResolver from '../../../../../../helpers/engine-resolver';
+import engineResolver from 'ember-engines/test-support/engine-resolver-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { patchReducer } from '../../../../../../helpers/vnext-patch';
 

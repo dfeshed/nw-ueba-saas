@@ -3,7 +3,7 @@ import { run } from '@ember/runloop';
 import EmberObject, { set, get } from '@ember/object';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import engineResolverFor from '../../../../helpers/engine-resolver';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 
 moduleForComponent('events-table-container/row-container', 'Integration | Component | events table row', {

@@ -1,7 +1,7 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import $ from 'jquery';
 import hbs from 'htmlbars-inline-precompile';
-import engineResolverFor from '../../../helpers/engine-resolver';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { applyPatch, revertPatch } from '../../../helpers/patch-reducer';
 import { waitFor } from 'ember-wait-for-test-helper/wait-for';

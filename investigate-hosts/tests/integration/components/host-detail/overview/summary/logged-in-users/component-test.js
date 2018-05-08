@@ -4,7 +4,7 @@ import { linux } from '../../../../state/overview.hostdetails';
 import wait from 'ember-test-helpers/wait';
 import Immutable from 'seamless-immutable';
 
-import engineResolverFor from '../../../../../../helpers/engine-resolver';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { applyPatch, revertPatch } from '../../../../../../helpers/patch-reducer';
 
 let setState;

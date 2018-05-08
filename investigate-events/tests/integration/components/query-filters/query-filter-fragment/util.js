@@ -1,5 +1,5 @@
 import hbs from 'htmlbars-inline-precompile';
-import engineResolverFor from '../../../../helpers/engine-resolver';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 
 const pressEnter = (input) => {
   input.trigger({

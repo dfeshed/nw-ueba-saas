@@ -1,6 +1,6 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import engineResolverFor from '../../../../helpers/engine-resolver';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import sinon from 'sinon';
 import DataHelper from '../../../../helpers/data-helper';
 import * as IncidentsCreators from 'respond/actions/creators/incidents-creators';

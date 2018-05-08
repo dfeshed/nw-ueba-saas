@@ -1,7 +1,7 @@
 import RSVP from 'rsvp';
 import { test } from 'qunit';
 import moduleForAcceptance from '../helpers/module-for-acceptance';
-import engineResolverFor from '../helpers/engine-resolver';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { selectorToExist } from 'ember-wait-for-test-helper/wait-for';
 import $ from 'jquery';
 import requests from 'streaming-data/services/data-access/requests';

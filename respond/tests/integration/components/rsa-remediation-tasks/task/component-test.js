@@ -1,6 +1,6 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import engineResolverFor from '../../../../helpers/engine-resolver';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import triggerNativeEvent from '../../../../helpers/trigger-native-event';
 import { clickTrigger } from '../../../../helpers/ember-power-select';
 import * as RemediationTaskCreators from 'respond/actions/creators/remediation-task-creators';

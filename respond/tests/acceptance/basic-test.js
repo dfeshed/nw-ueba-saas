@@ -1,6 +1,6 @@
 import { test } from 'qunit';
 import moduleForAcceptance from '../helpers/module-for-acceptance';
-import engineResolverFor from '../helpers/engine-resolver';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import teardownSockets from '../helpers/teardown-sockets';
 
 moduleForAcceptance('Acceptance | basic', {

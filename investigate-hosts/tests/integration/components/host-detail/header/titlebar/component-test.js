@@ -1,6 +1,6 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import engineResolver from '../../../../../helpers/engine-resolver';
+import engineResolver from 'ember-engines/test-support/engine-resolver-for';
 import { applyPatch, revertPatch } from '../../../../../helpers/patch-reducer';
 import startApp from '../../../../../helpers/start-app';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';

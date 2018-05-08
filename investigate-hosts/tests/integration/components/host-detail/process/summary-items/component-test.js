@@ -1,7 +1,7 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
-import engineResolverFor from '../../../../../helpers/engine-resolver';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 
 moduleForComponent('host-detail/process/summary-items', 'Integration | Component | endpoint host-detail/process/summary-items', {
   integration: true,
@@ -43,8 +43,8 @@ test('this is to test the summary items present in the process tab', function(as
 test('this is to test the hasBlock', function(assert) {
   this.setProperties({ config, data });
   this.render(hbs`{{#host-detail/process/summary-items
-    data=data 
-    config=config as |summary|}} 
+    data=data
+    config=config as |summary|}}
      {{#summary.property as |label value|}}
        {{label}}{{value}}
      {{/summary.property}}

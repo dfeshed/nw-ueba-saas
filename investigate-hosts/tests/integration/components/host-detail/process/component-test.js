@@ -1,7 +1,7 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
-import engineResolver from '../../../../helpers/engine-resolver';
+import engineResolver from 'ember-engines/test-support/engine-resolver-for';
 import { applyPatch, revertPatch } from '../../../../helpers/patch-reducer';
 import {
   processDetails,
@@ -37,7 +37,7 @@ test('it renders data when isProcessDataEmpty is true', function(assert) {
     .build();
   // set height to get all lazy rendered items on the page
   this.render(hbs`
-    {{host-detail/process}}    
+    {{host-detail/process}}
   `);
 
   return wait().then(() => {
