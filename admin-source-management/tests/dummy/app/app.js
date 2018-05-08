@@ -6,7 +6,27 @@ import config from './config/environment';
 const App = Application.extend({
   modulePrefix: config.modulePrefix,
   podModulePrefix: config.podModulePrefix,
-  Resolver
+  Resolver,
+  engines: {
+    adminSourceManagement: {
+      dependencies: {
+        services: [
+          '-document',
+          'access-control',
+          'contextual-help',
+          'dateFormat',
+          'timeFormat',
+          'timezone',
+          'i18n',
+          'flashMessages',
+          'eventBus',
+          'router'
+        ],
+        externalRoutes: {
+        }
+      }
+    }
+  }
 });
 
 loadInitializers(App, config.modulePrefix);

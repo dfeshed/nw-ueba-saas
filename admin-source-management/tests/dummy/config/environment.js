@@ -2,13 +2,33 @@
 
 const socketRouteGenerator = require('../../../config/socketRoutes');
 const common = require('../../../../common');
+const mockPort = process.env.MOCK_PORT || 9999;
+const mockServerUrl = `http://localhost:${mockPort}`;
+const useMockServer = !process.env.NOMOCK;
 
 module.exports = function(environment) {
   const ENV = {
     modulePrefix: 'dummy',
     environment,
+    mockServerUrl,
+    useMockServer,
+    mockPort,
     rootURL: '/',
     locationType: 'auto',
+    dateFormatDefault: 'MM/dd/yyyy',
+    timeFormatDefault: 'HR24',
+    timezoneDefault: 'America/Los_Angeles',
+    timezones: [
+      {
+        'displayLabel': 'UTC (GMT+00:00)',
+        'offset': 'GMT+00:00',
+        'zoneId': 'UTC'
+      },
+      {
+        'displayLabel': 'America/Los Angeles (GMT-07:00)',
+        'offset': 'GMT-07:00',
+        'zoneId': 'America/Los_Angeles'
+      }],
     flashMessageDefaults: {
       timeout: 5000,
       extendedTimeout: 0,
@@ -28,16 +48,18 @@ module.exports = function(environment) {
       }
     },
 
-    featureFlags: common.addFeatureFlags(environment),
-
     APP: {
       // Here you can pass flags/options to your application instance
       // when it is created
     },
     moment: {
-      includeLocales: ['en'],
+      includeLocales: ['en', 'ja'],
       includeTimezone: 'subset'
-    }
+    },
+    i18n: {
+      defaultLocale: 'en'
+    },
+    featureFlags: common.addFeatureFlags(environment)
   };
 
   if (environment === 'development') {
@@ -46,6 +68,7 @@ module.exports = function(environment) {
     // ENV.APP.LOG_TRANSITIONS = true;
     // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
     // ENV.APP.LOG_VIEW_LOOKUPS = true;
+    // ENV.roles = ['respond-server.*', 'integration-server.*'];
   }
 
   if (environment === 'test') {
@@ -57,6 +80,7 @@ module.exports = function(environment) {
     ENV.APP.LOG_VIEW_LOOKUPS = false;
 
     ENV.APP.rootElement = '#ember-testing';
+    // ENV.roles = ['respond-server.*', 'integration-server.*'];
   }
 
   // if (environment === 'production') {

@@ -3,15 +3,7 @@
     {{#flash-message tagName="li" flash=flash as |component flash|}}
       <hbox align="stretch">
         <centered xs="2">
-          {{#if (eq flash.type 'success')}}
-            {{rsa-icon name='check-circle-2' style=flash.iconStyle size=flash.iconSize}}
-          {{else if (eq flash.type 'warning')}}
-            {{rsa-icon name='report-problem-circle' style=flash.iconStyle size=flash.iconSize}}
-          {{else if (eq flash.type 'error')}}
-            {{rsa-icon name='delete-1' style='filled' size=flash.iconSize}}
-          {{else}}
-            {{rsa-icon name='information-circle' style=flash.iconStyle size=flash.iconSize}}
-          {{/if}}
+          {{rsa-icon name=flash.iconName style=flash.iconStyle size=flash.iconSize}}
         </centered>
         <vbox xs="9" justify="center" class="message">
           {{flash.message}}
@@ -23,4 +15,9 @@
     {{/flash-message}}
   {{/each}}
 </ul>
-{{admin-source-management-container}}
+<article class="admin-source-management-engine-dummy__main">
+  <section fill class="admin-source-management-engine-dummy__main-body">
+    {{outlet}}
+  </section>
+</article>
+<div id='modalDestination'></div>

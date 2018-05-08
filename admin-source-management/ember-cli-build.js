@@ -6,14 +6,14 @@ shim(EmberAddon);
 
 module.exports = function(defaults) {
   const app = new EmberAddon(defaults, {
-    'ember-cli-babel': {
-      includePolyfill: true
-    },
     babel: {
       plugins: [
         'transform-object-rest-spread',
         'transform-decorators-legacy'
       ]
+    },
+    'ember-cli-babel': {
+      includePolyfill: true
     }
   });
 

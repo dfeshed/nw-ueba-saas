@@ -1,7 +1,7 @@
 # admin-source-management
 
-Addon for (unified) source management.
+Engine for (unified) source management.
 
-```hbs
-{{admin-source-management-container}}
-```
+# TODO
+
+Dev environment instructions here...

@@ -1,7 +1,6 @@
-/* eslint-disable */
-const path = require('path');
-const subscriptionPath = path.join(__dirname, 'tests', 'data');
+/* eslint-env node */
+const allMocks = require('./index').mockDestinations;
 
 require('mock-server').startServer({
-  subscriptionLocations: subscriptionPath
+  subscriptionLocations: allMocks
 });
