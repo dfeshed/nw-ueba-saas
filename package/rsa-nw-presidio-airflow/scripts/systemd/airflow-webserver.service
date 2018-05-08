@@ -1,0 +1,18 @@
+[Unit]
+Description=Airflow webserver daemon
+After=network.target postgresql.service mysql.service redis.service rabbitmq-server.service
+Wants=postgresql.service mysql.service redis.service rabbitmq-server.service
+[Service]
+PIDFile=/run/airflow/webserver.pid
+EnvironmentFile=/etc/sysconfig/airflow
+User=presidio
+Group=presidio
+Type=forking
+ExecStart=/usr/bin/bash -c ‘source ${AIRFLOW_VENV}/bin/activate ; airflow webserver — pid /run/airflow/webserver.pid’
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s TERM $MAINPID
+Restart=on-failure
+RestartSec=42s
+PrivateTmp=true
+[Install]
+WantedBy=multi-user.target
