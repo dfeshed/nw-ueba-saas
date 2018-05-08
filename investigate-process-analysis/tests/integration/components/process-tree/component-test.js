@@ -40,6 +40,23 @@ module('Integration | Component | process-tree', function(hooks) {
     assert.equal(findAll('circle.process').length, 24, 'Expected to render 24 nodes');
   });
 
+  test('it should display child count for process', async function(assert) {
+    const queryInput = {
+      sid: '1',
+      pn: 'test',
+      st: 1231233,
+      et: 13123,
+      osType: 'windows',
+      checksum: '07d15ddf2eb7be486d01bcabab7ad8df35b7942f25f5261e3c92cd7a8931190a',
+      aid: '51687D32-BB0F-A424-1D64-A8B94C957BD2'
+    };
+    this.set('queryInput', queryInput);
+    new ReduxDataHelper(setState).queryInput(queryInput).build();
+    await render(hbs`{{process-tree queryInput=queryInput}}`);
+    await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
+    assert.equal(find('.child-count').textContent, 23, 'Expected to render child count');
+  });
+
   test('it should expand the node on click', async function(assert) {
     const queryInputs = {
       sid: '1',

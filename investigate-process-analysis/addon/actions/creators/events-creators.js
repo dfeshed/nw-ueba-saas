@@ -7,7 +7,7 @@ import { getQueryNode } from './util';
 const callbacksDefault = { onComplete() {} };
 
 // Common functions.
-const commonHandlers = function(dispatch, queryNode, callbacks) {
+const commonHandlers = function(dispatch, callbacks) {
   return {
     onError(response = {}) {
       const errorObj = handleInvestigateErrorCode(response);
@@ -53,7 +53,7 @@ export const getEvents = (selectedNode, callbacks = callbacksDefault) => {
           dispatch({ type: ACTION_TYPES.SET_EVENTS, payload });
         }
       },
-      ...commonHandlers(dispatch, queryNode, callbacks)
+      ...commonHandlers(dispatch, callbacks)
     };
     fetchStreamingEvents(queryNode, null, streamLimit, streamBatch, handlers);
   };

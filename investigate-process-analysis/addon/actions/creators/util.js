@@ -16,7 +16,20 @@ export const getQueryNode = function(input, selectedNode) {
   };
   return queryNode;
 };
-
+/**
+ * To construct a process tree need to get all the createProcess event for given host and a process and it should include
+ * only endpoint related events. Always query will contain fixed set of meta, agent.id, action, type and file name
+ *
+ * agent.id -> for a given host
+ * action -> to get only createProcess events
+ * device.type -> to get only endpoint related events
+ * fileName.src -> selected process
+ *
+ * @param agentId
+ * @param processName
+ * @returns {{conditions: *[]}}
+ * @private
+ */
 const _getMetaFilter = (agentId, processName) => {
   return {
     conditions: [

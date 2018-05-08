@@ -265,7 +265,7 @@ const TreeComponent = Component.extend({
 
     appendIcon({ className: 'process-icon', node: nodeEnter, fontSize: '2.5em', text: '\ue944' });
 
-    appendText({ className: 'child-count', node: nodeEnter, dx: (width / 2) + 26, dy: 0, opacity: 1, text: (d) => d.data.childCount });
+    appendText({ className: 'child-count', node: nodeEnter, dx: (width / 2) + 26, dy: 0, opacity: 1, text: (d) => d.data.childCount ? d.data.childCount : '' });
 
     return nodeEnter;
   },
