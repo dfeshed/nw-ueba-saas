@@ -22,8 +22,11 @@ export const headerErrorMessage = createSelector(
   [_headerErrorCode],
   (headerErrorCode) => {
     const errorObj = handleInvestigateErrorCode({ code: headerErrorCode });
-    // We're not returning an error string for code 110 because it's handled in
-    // the body of the recon, and can not happen seperately in the header.
+
+    if (!errorObj) {
+      return;
+    }
+
     return lookup('service:i18n').t(errorObj.messageLocaleKey);
   }
 );
