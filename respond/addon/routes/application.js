@@ -1,13 +1,18 @@
 import Route from '@ember/routing/route';
+import { Promise } from 'rsvp';
 import { inject as service } from '@ember/service';
 import $ from 'jquery';
+import { get } from '@ember/object';
 import config from 'ember-get-config';
+import { recon } from 'respond/actions/api';
+import { bindActionCreators } from 'redux';
 
 const { useMockServer, mockServerUrl, environment } = config;
 
 export default Route.extend({
 
   contextualHelp: service(),
+  redux: service(),
   i18n: service(),
 
   title(tokens) {
@@ -43,6 +48,24 @@ export default Route.extend({
     healthCheck.catch(() => {
       controller.set('respondServerOffline', true); // in case the server is offline
     });
+  },
+
+  getServices(redux) {
+    const getServices = bindActionCreators(recon.getServices, redux.dispatch.bind(redux));
+    return new Promise((resolve) => {
+      return getServices().then(() => {
+        resolve();
+      }).catch(() => {
+        // eslint-disable-next-line no-console
+        console.log('Error fetching core services');
+        resolve();
+      });
+    });
+  },
+
+  model() {
+    const redux = get(this, 'redux');
+    return this.getServices(redux);
   },
 
   activate() {

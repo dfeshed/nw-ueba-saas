@@ -2,6 +2,8 @@
 
 const common = require('../../common');
 const contextConfigGen = require('../../context').socketRouteGenerator;
+const investigateConfig = require('../../investigate').socketRouteGenerator;
+
 const respondConfigGen = function(environment) {
 
   const socketUrl = common.determineSocketUrl(environment, '/respond/socket');
@@ -210,6 +212,7 @@ const respondConfigGen = function(environment) {
 // order matters, first config in wins if there are matching configs
 const configGenerators = [
   respondConfigGen,
+  investigateConfig,
   contextConfigGen
 ];
 

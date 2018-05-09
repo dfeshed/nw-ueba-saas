@@ -13,6 +13,7 @@ export default [].concat(
       },
       'description': 'IPIOC',
       'from': 'INENDEBS1L2C',
+      'event_source': '10.4.61.33:56005',
       'source': {
         'device': {
           'dns_hostname': 'INENDEBS1L2C',
@@ -25,6 +26,7 @@ export default [].concat(
       'to': 'host.example.com',
       'type': 'Instant IOC',
       'user': '',
+      'event_source_id': '150',
       'timestamp': 1399530494000
     }
   ], [
@@ -32,6 +34,7 @@ export default [].concat(
       'score': 257,
       'detected_by': 'INENDEBS1L2C',
       'description': 'MachineIOC',
+      'event_source': null,
       'source': {
         'user': {
           'username': 'example\\alice'
@@ -49,6 +52,7 @@ export default [].concat(
         'ldap_ou': 'CN=MACHINENAME,OU=Servers,DC=corp,DC=example,DC=com'
       },
       'user': 'example\\alice',
+      'event_source_id': '151',
       'timestamp': 1399530494000
     }
   ], [
