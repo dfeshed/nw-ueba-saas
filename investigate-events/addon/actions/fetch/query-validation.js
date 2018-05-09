@@ -2,7 +2,7 @@ import {
   conditionsFilter,
   queryPromiseRequest,
   serviceIdFilter
-} from './utils';
+} from 'investigate-shared/actions/api/events/utils';
 
 /**
 * Validate each query

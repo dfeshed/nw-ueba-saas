@@ -3,7 +3,7 @@ import { get, getProperties } from '@ember/object';
 import { isBlank } from '@ember/utils';
 import { run } from '@ember/runloop';
 import RSVP from 'rsvp';
-import { encodeMetaFilterConditions } from 'investigate-events/actions/fetch/utils';
+import { encodeMetaFilterConditions } from 'investigate-shared/actions/api/events/utils';
 import TIME_RANGES from 'investigate-events/constants/time-ranges';
 
 const operators = [

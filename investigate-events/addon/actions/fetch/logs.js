@@ -2,7 +2,7 @@ import {
   sessionIdsFilter,
   serviceIdFilter,
   streamingRequest
-} from './utils';
+} from 'investigate-shared/actions/api/events/utils';
 
 /**
  * Fetch a single log of a log event.

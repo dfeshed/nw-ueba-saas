@@ -1,4 +1,4 @@
-import fetchStreamingEvents from 'investigate-shared/actions/api/investigate-events/events';
+import fetchStreamingEvents from 'investigate-shared/actions/api/events/events';
 import * as ACTION_TYPES from 'investigate-process-analysis/actions/types';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 import { getQueryNode, hasherizeEventMeta } from './util';

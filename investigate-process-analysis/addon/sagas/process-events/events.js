@@ -1,6 +1,6 @@
 import { call, all, put, takeLatest, select } from 'redux-saga/effects';
 import * as ACTION_TYPES from 'investigate-process-analysis/actions/types';
-import fetchEventCount from 'investigate-shared/actions/api/investigate-events/event-count';
+import fetchEventCount from 'investigate-shared/actions/api/events/event-count';
 import { getQueryNode } from 'investigate-process-analysis/actions/creators/util';
 
 /**

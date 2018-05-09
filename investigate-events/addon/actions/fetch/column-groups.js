@@ -1,6 +1,6 @@
 import {
   findAllPromiseRequest
-} from './utils';
+} from 'investigate-shared/actions/api/events/utils';
 
 /**
  * Fetch all of column groups.

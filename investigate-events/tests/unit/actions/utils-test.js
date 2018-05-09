@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 
 import queryUtils from 'investigate-events/actions/utils';
-import { encodeMetaFilterConditions } from 'investigate-events/actions/fetch/utils';
+import { encodeMetaFilterConditions } from 'investigate-shared/actions/api/events/utils';
 
 module('Unit | Helper | query utils');
 

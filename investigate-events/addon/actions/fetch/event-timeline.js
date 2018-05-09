@@ -4,7 +4,7 @@ import {
   queryPromiseRequest,
   serviceIdFilter,
   timeRangeFilter
-} from './utils';
+} from 'investigate-shared/actions/api/events/utils';
 
 /**
  * Fetch the number of event results for a given query.

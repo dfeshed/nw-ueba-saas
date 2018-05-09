@@ -4,7 +4,7 @@ import { hasRequiredValuesToQuery, guidedHasFocus, freeFormHasFocus } from 'inve
 import computed from 'ember-computed-decorators';
 import { setQueryView } from 'investigate-events/actions/interaction-creators';
 import { run } from '@ember/runloop';
-import { encodeMetaFilterConditions } from 'investigate-events/actions/fetch/utils';
+import { encodeMetaFilterConditions } from 'investigate-shared/actions/api/events/utils';
 import { transformTextToFilters, filterIsPresent } from 'investigate-events/actions/utils';
 import EmberObject from '@ember/object';
 

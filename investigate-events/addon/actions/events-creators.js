@@ -1,4 +1,4 @@
-import fetchStreamingEvents from './fetch/events';
+import fetchStreamingEvents from 'investigate-shared/actions/api/events/events';
 import { fetchLog } from './fetch/logs';
 import * as ACTION_TYPES from './types';
 import { getActiveQueryNode } from 'investigate-events/reducers/investigate/query-node/selectors';

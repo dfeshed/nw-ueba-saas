@@ -1,7 +1,7 @@
 import {
   queryPromiseRequest,
   serviceIdFilter
-} from './utils';
+} from 'investigate-shared/actions/api/events/utils';
 
 /**
  * Fetch the language for a given service.

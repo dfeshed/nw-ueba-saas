@@ -1,4 +1,4 @@
-import fetchCount from './fetch/event-count';
+import fetchCount from 'investigate-shared/actions/api/events/event-count';
 import * as ACTION_TYPES from './types';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 

@@ -2,7 +2,7 @@ import {
   findAllPromiseRequest,
   queryPromiseRequest,
   serviceIdFilter
-} from './utils';
+} from 'investigate-shared/actions/api/events/utils';
 
 /**
  * Fetch all of the services to which we're connected.
