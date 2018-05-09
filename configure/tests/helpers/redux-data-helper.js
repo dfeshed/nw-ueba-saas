@@ -38,27 +38,27 @@ export default class DataHelper {
   }
 
   parserRulesWait(flag) {
-    _set(this.state, 'logs.parserRules.parserRules', [{ name: 'builtin' }]);
+    _set(this.state, 'content.logParserRules.logParsers', [{ name: 'builtin' }]);
     if (flag) {
-      _set(this.state, 'logs.parserRules.parserRulesStatus', 'wait');
+      _set(this.state, 'content.logParserRules.logParsersStatus', 'wait');
     } else {
-      _set(this.state, 'logs.parserRules.parserRulesStatus', 'completed');
+      _set(this.state, 'content.logParserRules.logParsersStatus', 'completed');
     }
     return this;
   }
 
   parserRulesData(flag) {
-    _set(this.state, 'logs.parserRules.rules', [{ name: 'ipv4' }]);
+    _set(this.state, 'content.logParserRules.parserRules', [{ name: 'ipv4' }]);
     if (flag) {
-      _set(this.state, 'logs.parserRules.rulesStatus', 'wait');
+      _set(this.state, 'content.logParserRules.parserRulesStatus', 'wait');
     } else {
-      _set(this.state, 'logs.parserRules.rulesStatus', 'completed');
+      _set(this.state, 'content.logParserRules.parserRulesStatus', 'completed');
     }
     return this;
   }
 
-  parserRulesFormatData(rule) {
-    _set(this.state, 'logs.parserRules.rules', [{
+  parserRulesFormatData(index) {
+    _set(this.state, 'content.logParserRules.parserRules', [{
       'name': 'ipv4',
       'literals': [
         {
@@ -94,9 +94,9 @@ export default class DataHelper {
       },
       'ruleMetas': []
     }]);
-    _set(this.state, 'logs.parserRules.clickedRuleIndex', 0);
-    _set(this.state, 'logs.parserRules.rulesStatus', 'completed');
-    _set(this.state, 'logs.parserRules.formats', [{
+    _set(this.state, 'content.logParserRules.clickedParserRuleIndex', 0);
+    _set(this.state, 'content.logParserRules.parserRulesStatus', 'completed');
+    _set(this.state, 'content.logParserRules.ruleFormats', [{
       name: 'Regex Pattern',
       pattern: '',
       matches: 'This matches Regex',
@@ -114,7 +114,7 @@ export default class DataHelper {
       matches: 'This matches IPV6 addresses',
       type: 'ipv6'
     }]);
-    _set(this.state, 'logs.parserRules.selectedRuleId', rule);
+    _set(this.state, 'content.logParserRules.clickedParserRuleIndex', index);
     return this;
   }
 }

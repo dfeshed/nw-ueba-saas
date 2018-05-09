@@ -1,0 +1,18 @@
+<h1> {{t 'configure.logsParser.rules'}} </h1>
+{{#if isLoadingParserRules}}
+  <div class='loading'>
+    {{rsa-loader size='large'}}
+  </div>
+{{else if isLoadingParserRulesError}}
+  <div class='loading'>
+    {{t 'configure.logsParser.error.generic'}}
+  </div>
+{{else}}
+  <table class='parserTable'>
+    {{#each parserRules as |parserRule index|}}
+      <tr><td class='{{if (eq index 0) 'firstItem'}} {{if (eq clickedParserRuleIndex index) 'active'}}'{{action "selectParserRule" parserRule.name index}}>
+        {{parserRule.name}}
+      </td></tr>
+    {{/each}}
+  </table>
+{{/if}}

@@ -10,39 +10,19 @@ const configureConfigGen = function(environment) {
   const socketUrlLogs = common.determineSocketUrl(environment, '/content/socket');
 
   return {
-    'parser-rules': {
+    'log-parser-rules': {
       socketUrl: socketUrlLogs,
       findAllLogParsers: {
         subscriptionDestination: '/user/queue/content/parser/list',
         requestDestination: '/ws/content/parser/list'
       },
-      getFormats: {
+      fetchRuleFormats: {
         subscriptionDestination: '/user/queue/content/parser/formats',
         requestDestination: '/ws/content/parser/formats'
       },
-      getRules: {
+      fetchParserRules: {
         subscriptionDestination: '/user/queue/content/parser/rules',
         requestDestination: '/ws/content/parser/rules'
-      },
-      queryRecord: {
-        subscriptionDestination: '/user/queue/parser-rules/rule',
-        requestDestination: '/ws/logs/parser-rules/rule'
-      },
-      createRecord: {
-        subscriptionDestination: '/user/queue/parser-rules/rule/create',
-        requestDestination: '/ws/logs/parser-rules/rule/create'
-      },
-      updateRecord: {
-        subscriptionDestination: '/user/queue/parser-rules/rule/update',
-        requestDestination: '/ws/logs/parser-rules/rule/update'
-      },
-      deleteRecord: {
-        subscriptionDestination: '/user/queue/parser-rules/rule/delete',
-        requestDestination: '/ws/logs/parser-rules/rule/delete'
-      },
-      addRecord: {
-        subscriptionDestination: '/user/queue/parser-rules/rule/add',
-        requestDestination: '/ws/logs/parser-rules/rule/add'
       }
     },
     'category-tags': {

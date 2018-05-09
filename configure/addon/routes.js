@@ -8,7 +8,7 @@ export default buildRoutes(function() {
     this.route('incident-rule', { path: 'incident-rule/:rule_id' });
   });
   this.route('content', function() {
-    this.route('log-parser');
+    this.route('log-parser-rules');
   });
   this.route('hosts-scan');
   this.route('not-found', { path: '*invalidconfigurepath' });

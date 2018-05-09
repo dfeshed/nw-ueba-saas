@@ -1,7 +1,7 @@
 import { moduleFor, test } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 
-moduleFor('route:content/log-parser', 'Unit | Route | log parser', {
+moduleFor('route:content/log-parser-rules', 'Unit | Route | log parser rules', {
   needs: ['service:redux'],
   resolver: engineResolverFor('configure')
 });

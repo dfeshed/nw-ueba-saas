@@ -1,0 +1,48 @@
+<div class="parserWrapper">
+  {{#if isLoading}}
+    <div class='loading'>
+      {{rsa-loader size='large' label=(t 'configure.logsParser.wait')}}
+    </div>
+  {{else if isLoadingError}}
+    <div class='loading'>
+      {{t 'configure.logsParser.error.generic'}}
+    </div>
+  {{else}}
+    <table class='parserContainer'>
+      <tr>
+        <td rowspan="2" class='border leftArea'>
+          {{content/log-parser-rules/log-parsers}}
+        </td>
+        <td class='centerArea'>
+          <h1>
+            {{logParserName}}
+            {{#if parserRuleName}}
+              - {{parserRuleName}}
+            {{/if}}
+          </h1>
+          <div class='centerTop'>
+            <table class='matchingMapping'>
+              <tr>
+                <td>
+                  {{content/log-parser-rules/token-matching}}
+                </td>
+                <td class='centerTopCenter'>
+                  {{content/log-parser-rules/value-matching}}
+                </td>
+                <td>
+                  {{content/log-parser-rules/value-mapping}}
+                </td>
+              </tr>
+            </table>
+          </div>
+        </td>
+        <td rowspan="2" class='border rightArea'>
+          {{content/log-parser-rules/parser-rules-list}}
+        </td>
+      </tr>
+      <tr>
+        <td class='tdMessage'>{{content/log-parser-rules/log-message}}</td>
+      </tr>
+    </table>
+  {{/if}}
+</div>
