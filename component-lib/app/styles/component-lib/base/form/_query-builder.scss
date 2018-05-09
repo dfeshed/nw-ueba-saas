@@ -102,6 +102,10 @@
       color: text-color(primary, lightest);
     }
 
+    &.with-complex-filter {
+      background-color: background-color(primary, dark);
+    }
+
     &.empty {
       max-width: 1.5rem;
       margin-right: 0;

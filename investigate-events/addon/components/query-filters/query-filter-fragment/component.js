@@ -79,7 +79,8 @@ const QueryFragmentComponent = Component.extend({
   classNameBindings: [
     'editActive', 'selected', 'empty',
     'typing', 'prevIsEditing', 'isExpensive',
-    'queryFragmentInvalid', 'metaIndex'
+    'queryFragmentInvalid', 'metaIndex',
+    'withComplexFilter'
   ],
 
   type: 'meta',
@@ -134,6 +135,11 @@ const QueryFragmentComponent = Component.extend({
     } else {
       return false;
     }
+  },
+
+  @computed('complexFilter')
+  withComplexFilter(complexFilter) {
+    return isEmpty(complexFilter) !== true;
   },
 
   @computed('metaFormat', 'metaIndex', 'metaOptions', 'meta')
@@ -550,9 +556,9 @@ const QueryFragmentComponent = Component.extend({
 
       run.next(() => {
         prunedList.forEach((pill) => {
-          if (isEmpty(pill.get('meta')) && isEmpty(pill.get('operator')) && isEmpty(pill.get('value'))) {
+          if (isEmpty(pill.get('meta')) && isEmpty(pill.get('operator')) && isEmpty(pill.get('value')) && isEmpty(pill.get('complexFilter'))) {
             this.deleteFilter(pill);
-          } else if (!isEmpty(pill.get('meta')) && !isEmpty(pill.get('operator')) && !isEmpty(pill.get('value'))) {
+          } else if ((!isEmpty(pill.get('meta')) && !isEmpty(pill.get('operator')) && !isEmpty(pill.get('value'))) || !isEmpty(pill.get('complexFilter'))) {
             pill.set('editActive', false);
           }
         });

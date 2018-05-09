@@ -152,7 +152,12 @@ export const encodeMetaFilterConditions = (conditions = []) => {
       const { meta, value, operator, complexFilter } = condition;
 
       if (complexFilter) {
-        return `(${complexFilter})`;
+        // if there is already a bracket added, do not add another
+        if (complexFilter.startsWith('(') && complexFilter.endsWith(')')) {
+          return complexFilter;
+        } else {
+          return `(${complexFilter})`;
+        }
       } else {
         return `${(meta) ? meta.trim() : ''} ${(operator) ? operator.trim() : ''} ${(value) ? value.trim() : ''}`;
       }

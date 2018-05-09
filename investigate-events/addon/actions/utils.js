@@ -10,6 +10,7 @@ const operators = [
   '!=', '<=', '<', '>=', '>', '=', '!exists', 'exists', 'contains', 'begins', 'ends'
 ];
 
+const complexOperators = ['||', '&&', '(', ')', 'length', 'regex'];
 /**
  * Adds a session id filter to a given Core query filter. Appends a condition
  * for session id, but only if a session id is given.
@@ -259,9 +260,10 @@ function _parseMetaFilterUri(uri) {
       queryString = queryString.replace(/__slash_place_holder__/g, '/');
 
       const decodedQuery = decodeURIComponent(queryString);
-      if (queryString.includes('||') || queryString.includes('&&')) {
+      const hasComplexItem = complexOperators.some((operator) => decodedQuery.includes(operator));
+      if (hasComplexItem) {
         return {
-          complexFilter: queryString
+          complexFilter: decodedQuery
         };
       }
 
@@ -293,8 +295,14 @@ function _parseMetaFilterUri(uri) {
     });
 }
 
-// reusing the parseMetaFilterUri logic. Will need something better here. Or just return a complex filter
 function transformTextToFilters(freeFormText) {
+
+  const hasComplexItem = complexOperators.some((operator) => freeFormText.includes(operator));
+  if (hasComplexItem) {
+    return {
+      complexFilter: freeFormText
+    };
+  }
 
   const operator = operators.find((option) => {
     return freeFormText.includes(option);
@@ -334,7 +342,7 @@ function uriEncodeMetaFilters(filters = []) {
 
       if (d.complexFilter) {
         ret = d.complexFilter;
-      } else { // there can be conditions where meta/operator/value is missing because freeFormText can now create pills. Once we put in the complex filter logic, we should revert it back.
+      } else {
         ret = `${(d.meta) ? d.meta.trim() : ''} ${(d.operator) ? d.operator.trim() : ''} ${(d.value) ? d.value.trim() : ''}`;
       }
       return isBlank(ret) ? undefined : encodeURIComponent(ret);

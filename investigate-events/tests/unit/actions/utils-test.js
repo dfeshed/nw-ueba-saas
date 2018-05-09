@@ -96,11 +96,24 @@ test('_getTimeRangeIdFromRange returns the TimeRangeId correctly', function(asse
 });
 
 test('transformTextToFilters returns filter object', function(assert) {
-  assert.expect(1);
+  assert.expect(2);
   const freeFormText = 'medium = 1';
   const result = queryUtils.transformTextToFilters(freeFormText);
 
   assert.deepEqual(result, { meta: 'medium ', operator: '=', value: ' 1' });
+  assert.equal(result.complexFilter, undefined, 'Complex Filter doesnt exist');
+
+});
+
+test('transformTextToFilters returns complex filter object', function(assert) {
+  assert.expect(4);
+  const freeFormText = 'medium = 1 || medium = 32';
+  const result = queryUtils.transformTextToFilters(freeFormText);
+
+  assert.deepEqual(result, { complexFilter: 'medium = 1 || medium = 32' });
+  assert.equal(result.meta, undefined, 'meta doesnt exist');
+  assert.equal(result.operator, undefined, 'operator doesnt exist');
+  assert.equal(result.value, undefined, 'value doesnt exist');
 
 });
 

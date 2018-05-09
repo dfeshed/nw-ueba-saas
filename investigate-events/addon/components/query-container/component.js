@@ -8,16 +8,18 @@ import { encodeMetaFilterConditions } from 'investigate-shared/actions/api/event
 import { transformTextToFilters, filterIsPresent } from 'investigate-events/actions/utils';
 import EmberObject from '@ember/object';
 
-const addToArray = (filters, m = null, o = null, v = null) => {
+const addToArray = (filterObject) => {
+  const { filters, meta, operator, value, complexFilter } = filterObject;
   const obj = EmberObject.create({
-    meta: m,
-    operator: o,
-    value: v,
+    meta,
+    operator,
+    value,
     filterIndex: filters.length,
-    filter: null,
-    editActive: m === null,
+    filter: undefined,
+    editActive: meta === undefined && complexFilter === undefined,
     selected: false,
-    saved: m !== null
+    saved: (meta || complexFilter) !== undefined,
+    complexFilter
   });
   return filters.pushObject(obj);
 };
@@ -71,17 +73,21 @@ const QueryContainer = Component.extend({
       });
     },
     addFilters(str) {
-      const filters = this.get('filters');
-      // check for empty string or if the filter is already present
-      if (!filterIsPresent(filters, str)) {
+      const filtersList = this.get('filters');
+      // check if the filter is already present
+      if (!filterIsPresent(filtersList, str)) {
         const filter = transformTextToFilters(str.trim());
         // In case there is a addition
         // 1. empty the array - this makes it easier for us to add, instead of finding out what we're missing and adding that specific filter
-        // 2. convert freeFormText into one single pill
+        // 2. convert freeFormText into one single pill - can be either a complex or a regular filter
         // 3. add an empty editActive filter, so that a brand new filter is ready to be created in guided mode
-        filters.removeObjects(filters);
-        addToArray(filters, filter.meta, filter.operator, filter.value);
-        addToArray(filters); // will need an empty object with `editActive: true, saved: false`
+        filtersList.removeObjects(filtersList);
+        if (filter.complexFilter) {
+          addToArray({ filters: filtersList, complexFilter: filter.complexFilter });
+        } else {
+          addToArray({ filters: filtersList, meta: filter.meta, operator: filter.operator, value: filter.value });
+        }
+        addToArray({ filters: filtersList }); // will need an empty object with `editActive: true, saved: false`
       }
     }
   }
