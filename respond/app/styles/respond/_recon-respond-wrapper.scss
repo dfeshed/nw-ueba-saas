@@ -1,0 +1,12 @@
+.recon-standalone-container {
+  display: flex;
+  max-width: 75%;
+  align-self: flex-end;
+  flex-direction: column;
+  flex: 1 0 auto;
+
+ .recon-event-wrapper {
+    border-top: 1px solid border-color(secondary);
+    flex: 1 1 auto;
+  }
+}

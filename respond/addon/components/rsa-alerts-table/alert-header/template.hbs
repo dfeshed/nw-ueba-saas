@@ -33,6 +33,7 @@
       {{#if group.events}}
         {{#if group.enrichments.length}}
           <span
+            test-id="alertsTableToggleEnrichments"
             class="rsa-alerts-table-alert-header__enrichments tab {{if isEnrichmentsTabActive 'active'}}"
             {{action "toggleEnrichments" bubbles=false}}>
             {{group.enrichments.length}} enrichments
@@ -40,6 +41,7 @@
           </span>
         {{/if}}
         <span
+          test-id="alertsTableToggleEvents"
           class="rsa-alerts-table-alert-header__events tab {{if isEventsTabActive 'active'}}"
           {{action "toggleEvents" bubbles=false}}>
           {{group.events.length}} {{t 'respond.storyline.events'}}

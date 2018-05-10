@@ -6,6 +6,9 @@
 /* pulling in context from inside respond */
 @import 'context/manifest';
 
+/* Import recon styles from addon */
+@import 'recon/manifest';
+
 /* Pulling in local respond styles */
 @import 'respond/manifest';
 

@@ -1,7 +1,7 @@
 import AlertsTable from 'respond/components/rsa-alerts-table/component';
 import { get } from '@ember/object';
 import { connect } from 'ember-redux';
-import { storyPointsWithEventsSorted } from 'respond/selectors/storyline';
+import { storyPointsWithEventsSorted, storyPointEventSelections } from 'respond/selectors/storyline';
 import {
   singleSelectStoryPoint,
   toggleSelectStoryPoint,
@@ -9,16 +9,10 @@ import {
   toggleSelectEvent
 } from 'respond/actions/creators/incidents-creators';
 
-const stateToComputed = (state) => {
-  const { respond: { incident: { selection: { type, ids } } } } = state;
-  return {
-    groups: storyPointsWithEventsSorted(state),
-    selections: {
-      areGroups: type === 'storyPoint',
-      ids: (type === 'storyPoint' || type === 'event') ? ids : []
-    }
-  };
-};
+const stateToComputed = (state) => ({
+  groups: storyPointsWithEventsSorted(state),
+  selections: storyPointEventSelections(state)
+});
 
 
 const dispatchToActions = (dispatch) => ({

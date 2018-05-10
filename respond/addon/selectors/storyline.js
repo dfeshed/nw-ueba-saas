@@ -118,6 +118,17 @@ export const storyPointsWithEventsSorted = createSelector(
   }
 );
 
+export const storyPointEventSelections = createSelector(
+  incidentState,
+  (incidentState) => {
+    const { selection: { type, ids } } = incidentState;
+    return {
+      areGroups: type === 'storyPoint',
+      ids: (type === 'storyPoint' || type === 'event') ? ids : []
+    };
+  }
+);
+
 /**
  * Collects all the normalized events from the incident indicators into a single flat array.
  * This is the list to be used for displaying the incident's events in a flat table UI.

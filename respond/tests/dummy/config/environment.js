@@ -77,7 +77,7 @@ module.exports = function(environment) {
     ENV.APP.LOG_VIEW_LOOKUPS = false;
 
     ENV.APP.rootElement = '#ember-testing';
-    ENV.roles = ['respond-server.*'];
+    ENV.roles = ['respond-server.*', 'investigate-server.*'];
   }
 
   // if (environment === 'production') {

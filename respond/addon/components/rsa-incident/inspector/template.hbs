@@ -21,12 +21,14 @@
   <hbox fit justify="center" nowrap class="rsa-incident-inspector__toolbar">
     <span
       class="rsa-tab text-only {{if (eq viewMode 'overview') 'is-active' ''}}"
+      test-id="incidentInspectorOverview"
       {{action (action "setViewModeAction" "overview")}}>
       {{t 'respond.incident.overview'}}
     </span>
     <span
       class="rsa-tab text-only {{if (eq viewMode 'storyline') 'is-active' ''}}"
       title="{{if isStorylineCutoff (t 'respond.incident.indicatorsCutoff' limit=storyPointCount expected=storyPointCountExpected)}}"
+      test-id="incidentInspectorIndicators"
       {{action (action "setViewModeAction" "storyline")}}>
       {{t 'respond.incident.indicators'}} {{#with storyPointCount as |count|}}({{count}}{{if isStorylineCutoff '+'}}){{/with}}
     </span>
