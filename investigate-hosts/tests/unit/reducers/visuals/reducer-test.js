@@ -10,6 +10,8 @@ test('should return the initial state', function(assert) {
   assert.deepEqual(result, {
     activeAutorunTab: 'AUTORUNS',
     activeHostDetailTab: 'OVERVIEW',
+    activeHostPropertyTab: 'HOST',
+    activeDataSourceTab: 'ALERTS',
     isTreeView: true,
     showDeleteHostsModal: false,
     hostDetailsLoading: false,
@@ -30,6 +32,8 @@ test('The RESET_INPUT_DATA action reset to initial state', function(assert) {
   const expectedEndState = {
     activeAutorunTab: 'AUTORUNS',
     activeHostDetailTab: 'OVERVIEW',
+    activeHostPropertyTab: 'HOST',
+    activeDataSourceTab: 'ALERTS',
     isTreeView: true,
     showDeleteHostsModal: false,
     hostDetailsLoading: false,
@@ -52,6 +56,24 @@ test('The CHANGE_DETAIL_TAB action sets the newly selected tab to state', functi
 
   const result = reducer(previous, { type: ACTION_TYPES.CHANGE_DETAIL_TAB, payload: { tabName: 'OVERVIEW' } });
 
+  assert.deepEqual(result, expectedEndState);
+});
+
+test('The CHANGE_DATASOURCE_TAB action sets the newly selected tab to state', function(assert) {
+  const previous = Immutable.from({
+    activeDataSourceTab: 'ALERTS'
+  });
+  const expectedEndState = { activeDataSourceTab: 'INCIDENTS' };
+  const result = reducer(previous, { type: ACTION_TYPES.CHANGE_DATASOURCE_TAB, payload: { tabName: 'INCIDENTS' } });
+  assert.deepEqual(result, expectedEndState);
+});
+
+test('The CHANGE_PROPERTY_TAB action sets the newly selected tab to state', function(assert) {
+  const previous = Immutable.from({
+    activeHostPropertyTab: 'HOST'
+  });
+  const expectedEndState = { activeHostPropertyTab: 'ALERTS' };
+  const result = reducer(previous, { type: ACTION_TYPES.CHANGE_PROPERTY_TAB, payload: { tabName: 'ALERTS' } });
   assert.deepEqual(result, expectedEndState);
 });
 

@@ -5,6 +5,8 @@ import {
   selectedAutorunTab,
   getAutorunTabs,
   getHostDetailTabs,
+  getHostPropertyTab,
+  getDataSourceTab,
   selectedTabComponent } from 'investigate-hosts/reducers/visuals/selectors';
 
 module('Unit | selectors | visuals');
@@ -43,6 +45,30 @@ test('getHostDetailTabs', function(assert) {
   });
   const result = getHostDetailTabs(state).findBy('name', 'FILES');
   assert.equal(result.selected, true, 'FILES Tab should be selected');
+});
+
+test('getHostPropertyTab', function(assert) {
+  const state = Immutable.from({
+    endpoint: {
+      visuals: {
+        activeHostPropertyTab: 'HOST'
+      }
+    }
+  });
+  const result = getHostPropertyTab(state).findBy('name', 'HOST');
+  assert.equal(result.selected, true, 'HOST Tab should be selected');
+});
+
+test('getDataSourceTab', function(assert) {
+  const state = Immutable.from({
+    endpoint: {
+      visuals: {
+        activeDataSourceTab: 'INCIDENTS'
+      }
+    }
+  });
+  const result = getDataSourceTab(state).findBy('name', 'INCIDENTS');
+  assert.equal(result.selected, true, 'Incidents Tab should be selected');
 });
 
 test('getSelectedDetailTab', function(assert) {

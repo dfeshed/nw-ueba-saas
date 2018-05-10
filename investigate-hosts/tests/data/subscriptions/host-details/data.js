@@ -18,7 +18,8 @@ module.exports = {
     'networkInterfaces': [{
       'name': 'ens160',
       'macAddress': '00:50:56:01:47:01',
-      'ipv6': 'fe80::250:56ff:fe01:4701',
+      'ipv4': ['10.40.15.186'],
+      'ipv6': ['fe80::250:56ff:fe01:4701'],
       'gateway': ['0.0.0.0'],
       'promiscuous': false
     }, {
@@ -28,13 +29,7 @@ module.exports = {
       'ipv6': ['fe80::250:56ff:fe01:2bb5'],
       'gateway': ['10.40.12.1'],
       'promiscuous': false
-    }, {
-      'name': 'lo',
-      'ipv4': ['127.0.0.1'],
-      'ipv6': ['::1'],
-      'gateway': ['0.0.0.0'],
-      'promiscuous': false
-    }],
+    }, { 'name': 'lo', 'ipv4': ['127.0.0.1'], 'ipv6': ['::1'], 'gateway': ['0.0.0.0'], 'promiscuous': false }],
     'users': [{
       'name': 'root',
       'sessionId': 0,

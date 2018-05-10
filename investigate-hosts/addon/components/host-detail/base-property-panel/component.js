@@ -41,7 +41,7 @@ const HostPropertyPanel = Component.extend({
    * @requires title
    * @public
    */
-  title: 'Property Panel',
+  title: '',
 
   /**
    * Bind value to the search box.

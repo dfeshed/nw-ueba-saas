@@ -18,6 +18,32 @@ const AUTORUN_TABS = [
   }
 ];
 
+const HOST_PROPERTIES_TABS = [
+  {
+    label: 'investigateHosts.tabs.hostProperties',
+    name: 'HOST'
+  },
+  {
+    label: 'investigateHosts.tabs.alerts',
+    name: 'ALERTS'
+  },
+  {
+    label: 'investigateHosts.tabs.incidents',
+    name: 'INCIDENTS'
+  }
+];
+
+const DATASOURCE_TABS = [
+  {
+    label: 'investigateHosts.tabs.alerts',
+    name: 'ALERTS'
+  },
+  {
+    label: 'investigateHosts.tabs.incidents',
+    name: 'INCIDENTS'
+  }
+];
+
 const HOST_DETAILS_TABS = [
   {
     label: 'investigateHosts.tabs.overview',
@@ -60,6 +86,8 @@ const HOST_DETAILS_TABS = [
 const { createSelector } = reselect;
 const _activeHostDetailTab = (state) => state.endpoint.visuals.activeHostDetailTab || 'OVERVIEW';
 const _activeAutorunTab = (state) => state.endpoint.visuals.activeAutorunTab || 'AUTORUNS';
+const _activeHostPropertyTab = (state) => state.endpoint.visuals.activeHostPropertyTab || 'HOST';
+const _activeDataSourceTab = (state) => state.endpoint.visuals.activeDataSourceTab || 'ALERTS';
 
 export const getAutorunTabs = createSelector(
   [_activeAutorunTab],
@@ -90,5 +118,19 @@ export const selectedTabComponent = createSelector(
       return selectedTab.componentClass;
     }
     return 'host-detail/overview'; // Default selected tab
+  }
+);
+
+export const getHostPropertyTab = createSelector(
+  [_activeHostPropertyTab],
+  (activeHostPropertyTab) => {
+    return HOST_PROPERTIES_TABS.map((tab) => ({ ...tab, selected: tab.name === activeHostPropertyTab }));
+  }
+);
+
+export const getDataSourceTab = createSelector(
+  [_activeDataSourceTab],
+  (activeDataSourceTab) => {
+    return DATASOURCE_TABS.map((tab) => ({ ...tab, selected: tab.name === activeDataSourceTab }));
   }
 );

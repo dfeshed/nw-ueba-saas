@@ -5,6 +5,8 @@ import Immutable from 'seamless-immutable';
 const visualsInitialState = Immutable.from({
   activeAutorunTab: 'AUTORUNS',
   activeHostDetailTab: 'OVERVIEW',
+  activeHostPropertyTab: 'HOST',
+  activeDataSourceTab: 'ALERTS',
   isTreeView: true,
   showDeleteHostsModal: false,
   hostDetailsLoading: false,
@@ -21,6 +23,8 @@ const visuals = handleActions({
   [ACTION_TYPES.CHANGE_DETAIL_TAB]: (state, { payload: { tabName } }) => {
     return state.set('activeHostDetailTab', tabName);
   },
+  [ACTION_TYPES.CHANGE_DATASOURCE_TAB]: (state, { payload: { tabName } }) => state.set('activeDataSourceTab', tabName),
+  [ACTION_TYPES.CHANGE_PROPERTY_TAB]: (state, { payload: { tabName } }) => state.set('activeHostPropertyTab', tabName),
 
   [ACTION_TYPES.TOGGLE_DELETE_HOSTS_MODAL]: (state) => {
     return state.set('showDeleteHostsModal', !state.showDeleteHostsModal);

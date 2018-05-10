@@ -134,6 +134,9 @@ const setNewTabView = (tabName) => {
   };
 };
 
+const setHostPropertyTabView = (tabName) => ({ type: ACTION_TYPES.CHANGE_PROPERTY_TAB, payload: { tabName } });
+const setDataSourceTab = (tabName) => ({ type: ACTION_TYPES.CHANGE_DATASOURCE_TAB, payload: { tabName } });
+
 /**
  * An Action Creator for changing the autoruns view.
  *
@@ -205,6 +208,8 @@ export {
   changeDetailTab,
   setScanTime,
   setNewTabView,
+  setHostPropertyTabView,
+  setDataSourceTab,
   setTransition,
   exportFileContext,
   loadDetailsWithExploreInput,

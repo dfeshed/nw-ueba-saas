@@ -20,6 +20,22 @@
   .rsa-icon.is-small{
     padding-right: rsa-whitespace(least);
   }
+  .host-properties-box {
+    @include border-left(1px, solid, primary, dark);
+    .rsa-nav-tab  .label{
+      color: text-color(primary, lighter);
+      @include rsa-font(header, small);
+      font-size: 0.85rem;
+    }
+    .rsa-nav-tab.is-active .label {
+      color: text-color(secondary, light);
+    }
+    .rsa-nav-tab.is-left-aligned-primary {
+      margin: 0 rsa-whitespace() 0;
+      padding: rsa-whitespace(less) 0;
+      border-bottom-width: 3px;
+    }
+  }
 }
 .user-info-content {
   padding-left: rsa-whitespace();

@@ -2,6 +2,7 @@
 @import "service-modal";
 
 $filter-panel-width: 250px;
+$risk-panel-width: 250px;
 
 .host-container {
    max-height: calc(100vw - 50px);
@@ -14,6 +15,7 @@ $filter-panel-width: 250px;
   }
   .filter-zone {
     @include border-right(1px, solid, primary, dark);
+    min-width: $filter-panel-width;
     max-width: $filter-panel-width;
     overflow: auto;
     overflow-x: hidden;
@@ -37,6 +39,25 @@ $filter-panel-width: 250px;
       @include rsa-font(header, larger);
       line-height: 2rem;
       color: text-color(primary, lightest);
+    }
+  }
+
+  .risk-property-zone {
+    min-width: $risk-panel-width;
+    max-width: $risk-panel-width;
+    @include border-left(1px, solid, primary, dark);
+    .rsa-nav-tab  .label{
+      @include rsa-font(header, small);
+      color: text-color(primary, lighter);
+      font-size: 0.85rem;
+    }
+    .rsa-nav-tab.is-active .label{
+      color: text-color(secondary, light);
+    }
+    .rsa-nav-tab.is-left-aligned-primary {
+      margin: 0 rsa-whitespace() 0;
+      padding: rsa-whitespace(less) 0;
+      border-bottom-width: 3px;
     }
   }
 
@@ -74,6 +95,6 @@ $filter-panel-width: 250px;
 }
 
 .machine-zone {
-  width: calc(100vw - 250px);
-  max-width: calc(100vw - 250px);
+  width: calc(100vw - 500px);
+  max-width: calc(100vw - 500px);
 }

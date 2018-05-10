@@ -13,7 +13,18 @@
         {{host-list/content-filter/system-filters}}
       </box>
     </box>
-    {{host-list/host-table}}
+    <box class="table-zone">
+      {{host-list/host-table}}
+    </box>
+    <box class="risk-property-zone">
+        <box fit>
+          {{#host-detail/utils/host-title-bar tabs=dataSourceTabs defaultAction=(action 'setDataSourceTab') as |tab|}}
+            <div class="label">{{t tab.label}}</div>
+          {{/host-detail/utils/host-title-bar}}
+        </box>
+        <box>
+          {{endpoint/risk-panel activeDataSourceTab=activeDataSourceTab}}
+        </box>
+    </box>
   </hbox>
-
 {{/if}}

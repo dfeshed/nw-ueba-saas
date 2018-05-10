@@ -3,12 +3,22 @@
     <vbox xs="9" class="host-detail-box scroll-box">
       {{host-detail/overview/summary}}
     </vbox>
-    <vbox xs="3" class="host-properties-box scroll-box">
+    <vbox xs="3" class="host-properties-box">
       {{#if domIsReady}}
-        {{host-detail/overview/property-panel
-          title=(t 'investigateHosts.hosts.properties.title')
-          data=hostData
-          localeNameSpace='investigateHosts.hosts.properties'}}
+        <box fit>
+          {{#host-detail/utils/host-title-bar tabs=hostPropertyTabs defaultAction=(action 'setHostPropertyTabView') as |tab|}}
+            <div class="label">{{t tab.label}}</div>
+          {{/host-detail/utils/host-title-bar}}
+        </box>
+        <box>
+          {{#if (eq activePropertyTab 'HOST')}}
+            {{host-detail/overview/property-panel
+              data=hostData
+              localeNameSpace='investigateHosts.hosts.properties'}}
+          {{else}}
+            {{endpoint/risk-panel activeDataSourceTab=activeDataSourceTab}}
+          {{/if}}
+        </box>
       {{else}}
         <centered>
           {{rsa-loader size='medium'}}

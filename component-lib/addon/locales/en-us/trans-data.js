@@ -2076,7 +2076,10 @@ export default {
       libraries: 'Libraries',
       explore: 'Explore',
       securityProducts: 'Security Products',
-      windowsPatches: 'Windows Patches'
+      windowsPatches: 'Windows Patches',
+      hostProperties: 'Host Properties',
+      alerts: 'Alerts',
+      incidents: 'Incidents'
     },
     systemInformation: {
       ipAddress: 'IP Address',
@@ -2434,7 +2437,6 @@ export default {
       },
 
       properties: {
-        title: 'Host Properties',
         filter: 'Type to filter list',
         checkbox: 'Show properties with values only',
         machine: {

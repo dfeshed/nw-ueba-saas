@@ -1,7 +1,9 @@
 <box fit class="header-section">
-  <hbox fit class="header-section__title">
-    <h2>{{title}}</h2>
-  </hbox>
+  {{#if title}}
+    <hbox fit class="header-section__title">
+      <h2>{{title}}</h2>
+    </hbox>
+  {{/if}}
   <hbox fit class="header-section__search-box">
     {{rsa-form-input value=_searchText placeholder=(t 'investigateHosts.hosts.properties.filter')}}
   </hbox>
