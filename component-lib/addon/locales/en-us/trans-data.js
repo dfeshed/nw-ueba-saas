@@ -2356,10 +2356,9 @@ export default {
           moduleScore: 'Module Score',
           highestScoringModules: 'Highest Scoring Module'
         },
-        groups: 'Agent Group',
-        policy: 'Agent Policy',
         machineIdentity: {
           machineName: 'Hostname',
+          group: 'Agent Group',
           agentMode: 'Agent Mode',
           agent: {
             exeCompileTime: 'Agent - User Mode Compile Time',
