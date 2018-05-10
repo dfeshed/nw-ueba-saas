@@ -73,8 +73,8 @@ module('Integration | Component | rsa alerts table recon link', function(hooks) 
     assert.deepEqual(transitions, [{
       name: 'incident.recon',
       queryParams: {
-        endpointId: '150',
-        eventId: '555d9a6fe4b0d37c827d402d'
+        endpointId: '555d9a6fe4b0d37c827d402d',
+        eventId: '150'
       }
     }]);
 

@@ -47,7 +47,7 @@ test('incident details storyline events open event analysis on click', function(
   andThen(function() {
     return wait().then(() => {
       assert.equal(find(reconWrapperSelector).length, 1);
-      assert.equal(currentURL(), '/respond/incident/INC-123/recon?endpointId=150&eventId=555d9a6fe4b0d37c827d402d', 'The route has changed to recon and includes queryParams for eventId and endpointId');
+      assert.equal(currentURL(), '/respond/incident/INC-123/recon?endpointId=555d9a6fe4b0d37c827d402d&eventId=150', 'The route has changed to recon and includes queryParams for eventId and endpointId');
       return wait().then(() => done());
     });
   });

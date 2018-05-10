@@ -19,9 +19,9 @@ const ReconLink = Component.extend({
     return hasReconAccess;
   },
 
-  @alias('item.event_source_id') endpointId: null,
+  @alias('item.event_source_id') eventId: null,
   @computed('services', 'item.event_source')
-  eventId(services, eventSource) {
+  endpointId(services, eventSource) {
     if (!eventSource) {
       return null;
     }
