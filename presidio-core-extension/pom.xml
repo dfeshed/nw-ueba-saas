@@ -1,0 +1,101 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>presidio.netwitness</groupId>
+    <artifactId>presidio-netwitness</artifactId>
+    <version>1.1-0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>presidio-netwitness</name>
+
+
+    <properties>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <!--RPM VERSION-->
+        <presidio.core.version>1.1-0-SNAPSHOT</presidio.core.version>
+        <rpm.version.major>1</rpm.version.major>
+        <rpm.version.minor>0</rpm.version.minor>
+        <rpm.version.build>0</rpm.version.build>
+        <rpm.version>${rpm.version.major}.${rpm.version.minor}</rpm.version>
+
+        <!-- NOTE: ALL dependencies' versions should be here -->
+        <rpm-maven-plugin.version>2.1.5</rpm-maven-plugin.version>
+        <slf4j.version>1.7.25</slf4j.version>
+    </properties>
+
+
+    <modules>
+        <module>presidio-netwitness-flume</module>
+        <module>presidio-netwitness-monitoring</module>
+    </modules>
+
+    <distributionManagement>
+        <!-- push changes to artifactory, distribute use of sdk -->
+        <snapshotRepository>
+            <id>mirror.fortscale.dom</id>
+            <name>mirror.fortscale.dom-snapshots</name>
+            <url>http://mirror.fortscale.dom/artifactory/presidio-snapshot-local</url>
+        </snapshotRepository>
+        <repository>
+            <id>mirror.fortscale.dom</id>
+            <name>mirror.fortscale.dom-snapshots</name>
+            <url>http://mirror.fortscale.dom/artifactory/presidio-snapshot-local</url>
+        </repository>
+    </distributionManagement>
+
+    <profiles>
+        <profile>
+            <id>rpm</id>
+            <modules>
+                <module>presidio-netwitness-rpm</module>
+            </modules>
+        </profile>
+    </profiles>
+
+    <repositories>
+      <!--  <repository>
+            <id>asoc-releases</id>
+            <name>repo1.rsa.lab.emc.com-releases</name>
+            <url>https://repo1.rsa.lab.emc.com:8443/artifactory/asoc-releases</url>
+        </repository>
+        <repository>
+            <id>asoc-snapshots</id>
+            <name>repo1.rsa.lab.emc.com-snapshots</name>
+            <url>https://repo1.rsa.lab.emc.com:8443/artifactory/asoc-snapshots</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>-->
+    </repositories>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>log4j-over-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jul-to-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+        </dependencies>
+
+    </dependencyManagement>
+
+</project>
