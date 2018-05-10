@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>presidio.netwitness</groupId>
+        <artifactId>presidio-netwitness</artifactId>
+        <version>1.1-0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>presidio-netwitness-flume</artifactId>
+    <name>presidio-netwitness-flume</name>
+
+    <properties>
+        <flume.version>1.1.0-SNAPSHOT</flume.version>
+        <jersey.version>2.25</jersey.version>
+        <tomcat.version>8.5.16</tomcat.version>
+        <javax.servlet.version>3.1.0</javax.servlet.version>
+        <junit.version>RELEASE</junit.version>
+        <copyDependencies.version>3.0.1</copyDependencies.version>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>${copyDependencies.version}</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/libext</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.0.2</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/flume-configuration</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>flume-configuration</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>rsa-repo</id>
+            <url>http://repo1.rsa.lab.emc.com:8081/artifactory/asoc-build-repo/</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>presidio.flume.core</groupId>
+            <artifactId>flume-ng-core</artifactId>
+            <version>${flume.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>javax.servlet-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.mortbay.jetty</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>io.netty</groupId>
+                    <artifactId>netty</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                </exclusion>
+
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>presidio.flume.core</groupId>
+            <artifactId>fortscale-flume-common</artifactId>
+            <version>${flume.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>presidio.flume.core</groupId>
+            <artifactId>fortscale-flume-sinks</artifactId>
+            <version>${flume.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>presidio.flume.core</groupId>
+            <artifactId>fortscale-flume-sources</artifactId>
+            <version>${flume.version}</version>
+        </dependency>
+
+
+    </dependencies>
+
+
+</project>
