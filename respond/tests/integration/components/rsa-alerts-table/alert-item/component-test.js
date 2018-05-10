@@ -1,15 +1,12 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import Service from '@ember/service';
 import hbs from 'htmlbars-inline-precompile';
+import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import wait from 'ember-test-helpers/wait';
-
-moduleForComponent('rsa-alerts-table/alert-item', 'Integration | Component | rsa alerts table alert item', {
-  integration: true,
-  resolver: engineResolverFor('respond')
-});
+import { render, findAll } from '@ember/test-helpers';
 
 const event = {
-  id: 'event1'
+  id: '586ecf95ecd25950034e1312:0'
 };
 
 const enrichment = {
@@ -20,22 +17,33 @@ const enrichment = {
   allEnrichments: {}
 };
 
-test('it renders an enrichment if given an object with isEnrichment, an event otherwise', function(assert) {
-  this.set('item', enrichment);
-  this.render(hbs`{{rsa-alerts-table/alert-item item=item index=0}}`);
+module('Integration | Component | rsa alerts table alert item', function(hooks) {
+  setupRenderingTest(hooks, {
+    resolver: engineResolverFor('respond')
+  });
 
-  return wait()
-    .then(() => {
-      assert.equal(this.$('.rsa-alerts-table-alert-item').length, 1, 'Expected to find root DOM node.');
-      assert.ok(this.$('.enrichment').length, 'Expected to find enrichment DOM');
-      assert.notOk(this.$('.event').length, 'Expected to not find event DOM');
+  hooks.beforeEach(function() {
+    this.owner.inject('component', 'i18n', 'service:i18n');
+    this.owner.register('service:-routing', Service.extend({
+      currentRouteName: 'incident'
+    }));
+  });
 
-      // Swap out the data item for an event.
-      this.set('item', event);
-      return wait();
-    })
-    .then(() => {
-      assert.notOk(this.$('.enrichment').length, 'Expected to not find enrichment DOM');
-      assert.ok(this.$('.event').length, 'Expected to find event DOM');
-    });
+  test('it renders an enrichment if given an object with isEnrichment, an event otherwise', async function(assert) {
+    assert.expect(7);
+
+    this.set('item', enrichment);
+    await render(hbs`{{rsa-alerts-table/alert-item item=item index=0}}`);
+
+    assert.equal(findAll('.rsa-alerts-table-alert-item').length, 1, 'Expected to find root DOM node.');
+    assert.ok(findAll('.enrichment').length, 'Expected to find enrichment DOM');
+    assert.notOk(findAll('.event').length, 'Expected to not find event DOM');
+    assert.notOk(findAll('[test-id=respondReconLink]').length, 'Expected to not find event recon link');
+
+    this.set('item', event);
+
+    assert.notOk(findAll('.enrichment').length, 'Expected to not find enrichment DOM');
+    assert.ok(findAll('.event').length, 'Expected to find event DOM');
+    assert.ok(findAll('[test-id=respondReconLink]').length, 'Expected to find event recon link');
+  });
 });

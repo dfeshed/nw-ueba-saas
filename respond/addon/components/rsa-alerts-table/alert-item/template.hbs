@@ -23,7 +23,7 @@
         <div class="event">
           <hbox nowrap class="event-header">
             <vbox fit class="timestamp">
-              <span>{{item.type}}</span>
+              {{rsa-alerts-table/recon-link item=item}}
             </vbox>
             <vbox fill align="end" class="event-type">
               {{rsa-content-datetime timestamp=item.timestamp displayMilliseconds=false}}
