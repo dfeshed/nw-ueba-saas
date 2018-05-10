@@ -907,6 +907,7 @@ const QueryFragmentComponent = Component.extend({
         }
 
         if (['exists', '!exists'].includes(selection.displayName)) {
+          this.send('dirtyQueryToggle');
           this.setProperties({
             value: null,
             saved: true,
