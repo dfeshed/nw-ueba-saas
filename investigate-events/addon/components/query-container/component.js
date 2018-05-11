@@ -25,7 +25,7 @@ const addToArray = (filterObject) => {
 };
 
 const transformToString = (filters) => {
-  return encodeMetaFilterConditions(filters).replace(/(&&\s*)*$/g, '').trim();
+  return encodeMetaFilterConditions(filters).trim();
 };
 
 const stateToComputed = (state) => ({

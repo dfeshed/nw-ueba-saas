@@ -136,6 +136,13 @@ export const streamingRequest = (modelName, query = {}, handlers = {}, streamOpt
   });
 };
 
+// In order to avoid empty condition objects contributing to an extra `&&` being appended to the string
+// we filter out objects which have none of the attributes - meta, operator, value or complexFilter defined
+// If none of the values are present - do not bother proceeding to map and encode them
+export const _isValidQueryFilter = (condition) => {
+  return !!condition.meta || !!condition.operator || !!condition.value || !!condition.complexFilter;
+};
+
 /**
  * Encodes a given list of meta conditions into a "where clause" string that can
  * be used by NetWitness Core.
@@ -148,6 +155,7 @@ export const streamingRequest = (modelName, query = {}, handlers = {}, streamOpt
  */
 export const encodeMetaFilterConditions = (conditions = []) => {
   return conditions
+    .filter((condition) => _isValidQueryFilter(condition))
     .map((condition) => {
       const { meta, value, operator, complexFilter } = condition;
 

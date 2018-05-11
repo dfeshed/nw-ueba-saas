@@ -1,7 +1,6 @@
 import { module, test } from 'qunit';
 
 import queryUtils from 'investigate-events/actions/utils';
-import { encodeMetaFilterConditions } from 'investigate-shared/actions/api/events/utils';
 
 module('Unit | Helper | query utils');
 
@@ -14,32 +13,6 @@ const params = {
   sid: 2,
   st: 3
 };
-
-const conditions = [{
-  meta: 'foo',
-  operator: '=',
-  value: 'bar'
-}, {
-  meta: 'foo',
-  operator: 'exists',
-  value: ''
-}, {
-  meta: 'foo',
-  operator: 'begins',
-  value: '\'//\''
-}];
-
-const filters = [{
-  meta: 'foo',
-  operator: undefined,
-  value: undefined
-}];
-
-const complexConditions = [{
-  complexFilter: 'foo=\'bar\'||foo=baz'
-}, {
-  complexFilter: 'bar=\'foo\'||baz=foo'
-}];
 
 test('parseQueryParams correctly parses URI', function(assert) {
   assert.expect(8);
@@ -60,27 +33,6 @@ test('parseQueryParams correctly parses forward slashes and operators in text fo
   assert.equal(result.metaFilter.conditions[0].meta, 'a', 'forward slash was not parsed correctly');
   assert.equal(result.metaFilter.conditions[0].operator, '=', 'forward slash was not parsed correctly');
   assert.equal(result.metaFilter.conditions[0].value, '\'a/=b=/a\'', 'forward slash was not parsed correctly');
-});
-
-test('encodeMetaFilterConditions correctly encodes conditions', function(assert) {
-  assert.expect(1);
-  const result = encodeMetaFilterConditions(conditions);
-
-  assert.equal(result, 'foo = bar && foo exists  && foo begins \'//\'');
-});
-
-test('encodeMetaFilterConditions correctly encodes complex filters', function(assert) {
-  assert.expect(1);
-  const result = encodeMetaFilterConditions(complexConditions);
-
-  assert.equal(result, '(foo=\'bar\'||foo=baz) && (bar=\'foo\'||baz=foo)');
-});
-
-test('encodeMetaFilterConditions returns empty string when properties are undefined', function(assert) {
-  assert.expect(1);
-  const result = encodeMetaFilterConditions(filters);
-
-  assert.equal(result, 'foo  ');
 });
 
 test('_getTimeRangeIdFromRange returns the TimeRangeId correctly', function(assert) {
