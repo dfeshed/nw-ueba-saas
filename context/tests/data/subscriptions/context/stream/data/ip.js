@@ -10,17 +10,18 @@ export default [
     'connectionName': 'test',
     'resultList': [
       {
-        'Risk Rating': 'Medium Low',
-        'IP Address': '24.218.91.113',
-        'Business Unit': [ 'Alberta', 'North American IT Shared Services', 'U.S. Finance' ],
-        'Device ID': '218053',
-        'Host Name': 'appserver01.archer-tech.com',
-        'Device Name': 'APPSERVER01',
-        'Criticality Rating': 'Medium-High',
-        'Type': 'Web Server',
-        'Device Owner': 'John',
-        'Facilities': ['Corporate Headquarters', 'Kansas City Data Center'],
-        'Url': 'www.google.com'
+        'Device Owner': '',
+        'Business Unit': '',
+        'Host Name': 'NewHost',
+        'MAC Address': '',
+        'Url': 'HTTPS://10.31.204.245/RSAArcher/default.aspx?requestUrl=..%2fGenericContent%2fRecord.aspx%3fid%3d324945%26moduleId%3d71',
+        'Facilities': '',
+        'Risk Rating': '',
+        'IP Address': '10.30.91.91',
+        'Type': 'Desktop',
+        'Device ID': '324945',
+        'Device Name': 'New Device',
+        'Criticality Rating': 'Not Rated'
       }
     ],
     'resultMeta': {
@@ -28,6 +29,7 @@ export default [
       'root': null,
       'limit': 0
     },
+    'order': [ 'Criticality Rating', 'Risk Rating', 'Device Name', 'Host Name', 'IP Address', 'Device ID', 'Type', 'MAC Address', 'Facilities', 'Business Unit', 'Device Owner', 'Url' ],
     'pagingEnabled': false,
     'currentPageId': 0,
     'failed': false,

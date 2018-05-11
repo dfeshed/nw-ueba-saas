@@ -5,5 +5,6 @@ export default {
   footerRequired: true,
   header: '',
   footer: '',
-  title: 'context.archer.title'
+  title: 'context.archer.title',
+  skippedField: ['Url']
 };

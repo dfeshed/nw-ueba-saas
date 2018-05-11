@@ -45,6 +45,17 @@ const getData = (lookupData, { dataSourceGroup, sortColumn, sortOrder }) => {
   return data;
 };
 
+const getOrder = (lookupData, { dataSourceGroup, skippedField }) => {
+  if (!lookupData || !lookupData[dataSourceGroup] || isEmpty(lookupData[dataSourceGroup].order)) {
+    return;
+  }
+  const order = lookupData[dataSourceGroup].order.asMutable();
+  if (skippedField) {
+    return order.filter((data) => !skippedField.includes(data));
+  }
+  return order;
+};
+
 const getTimeWindow = (dsData, i18n) => {
   if (dsData && dsData.resultMeta && dsData.resultMeta.timeQuerySubmitted) {
     let timeWindow = i18n.t('context.timeUnit.allData');
@@ -177,5 +188,6 @@ export {
   getErrorMessage,
   getTabs,
   getSortedData,
-  pivotToInvestigateUrl
+  pivotToInvestigateUrl,
+  getOrder
 };

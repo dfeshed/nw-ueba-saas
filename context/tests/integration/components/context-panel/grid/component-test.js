@@ -20,19 +20,21 @@ module('Integration | Component | context-panel/grid', function(hooks) {
       'connectionName': 'test',
       'resultList': [
         {
-          'Risk Rating': 'Medium Low',
-          'IP Address': '24.218.91.113',
-          'Business Unit': [ 'Alberta', 'North American IT Shared Services', 'U.S. Finance' ],
-          'Device ID': '218053',
-          'Host Name': 'appserver01.archer-tech.com',
-          'Device Name': 'APPSERVER01',
-          'Criticality Rating': 'Medium-High',
-          'Type': 'Web Server',
-          'Device Owner': 'John',
-          'Facilities': ['Corporate Headquarters', 'Kansas City Data Center'],
-          'Url': 'www.google.com'
+          'Device Owner': '',
+          'Business Unit': '',
+          'Host Name': 'NewHost',
+          'MAC Address': '',
+          'Url': 'HTTPS://10.31.204.245/RSAArcher/default.aspx?requestUrl=..%2fGenericContent%2fRecord.aspx%3fid%3d324945%26moduleId%3d71',
+          'Facilities': '',
+          'Risk Rating': '',
+          'IP Address': '10.30.91.91',
+          'Type': 'Desktop',
+          'Device ID': '324945',
+          'Device Name': 'New Device',
+          'Criticality Rating': 'Not Rated'
         }
-      ]
+      ],
+      'order': [ 'Criticality Rating', 'Risk Rating', 'Device Name', 'Host Name', 'IP Address', 'Device ID', 'Type', 'MAC Address', 'Facilities', 'Business Unit', 'Device Owner', 'Url' ]
     } }];
 
   const contextData = {
@@ -61,7 +63,54 @@ module('Integration | Component | context-panel/grid', function(hooks) {
     this.set('dataSourceDetails', dataSourceDetails);
     await render(hbs`{{context-panel/grid dataSourceDetails=dataSourceDetails}}`);
     assert.equal(findAll('.rsa-context-panel__config-grid').length, 1, 'configurable grid is rendered.');
-    assert.equal(findAll('.rsa-context-panel__config-grid__layout').length, 10, 'total 10 fields should display for Archer');
+    assert.equal(findAll('.rsa-context-panel__config-grid__layout').length, 11, 'total 11 fields should display for Archer');
+  });
+
+
+  test('no fields should display when result is empty', async function(assert) {
+    const lookupData = [{
+      'Archer': {
+        'dataSourceType': 'Archer',
+        'dataSourceGroup': 'Archer',
+        'connectionName': 'test'
+      } }];
+
+    const emptyData = {
+      lookupKey: '10.10.100.10',
+      meta: 'IP',
+      lookupData
+    };
+
+    new ReduxDataHelper(setState)
+      .setData('context', emptyData)
+      .build();
+    this.set('dataSourceDetails', dataSourceDetails);
+    await render(hbs`{{context-panel/grid dataSourceDetails=dataSourceDetails}}`);
+    assert.equal(findAll('.rsa-context-panel__config-grid').length, 1, 'configurable grid is rendered.');
+    assert.equal(findAll('.rsa-context-panel__config-grid__layout').length, 0, 'no fields are available as resultList is empty');
+  });
+
+  test('number of fields displayed and resultList is same', async function(assert) {
+    const archerDetails = {
+      class: 'rsa-context-panel__grid__archer-details',
+      dataSourceGroup: 'Archer',
+      headerRequired: false,
+      footerRequired: true,
+      header: '',
+      footer: '',
+      title: 'context.archer.title'
+    };
+
+    new ReduxDataHelper(setState)
+      .setData('context', contextData)
+      .build();
+    this.set('dataSourceDetails', archerDetails);
+    await render(hbs `{{context-panel/grid dataSourceDetails=dataSourceDetails}}`);
+    assert.equal(findAll('.rsa-context-panel__config-grid').length, 1, 'configurable grid is rendered.');
+    assert.equal(findAll('.rsa-context-panel__config-grid__layout').length, 12, 'same number fields are displayed');
+    assert.ok(findAll('.rsa-context-panel__config-grid__layout')[0].textContent.indexOf('Criticality Rating'), 'Criticality Rating is the first field to display');
+    assert.ok(findAll('.rsa-context-panel__config-grid__layout')[10].textContent.indexOf('Device Owner'), 'Device Owner is the last field to display');
+
   });
 
 

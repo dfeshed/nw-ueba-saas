@@ -2,8 +2,7 @@ import layout from './template';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import Component from '@ember/component';
-import { getData } from 'context/util/context-data-modifier';
-import _ from 'lodash';
+import { getData, getOrder } from 'context/util/context-data-modifier';
 
 const stateToComputed = ({ context: { context } }) => ({
   lookupData: context.lookupData
@@ -17,9 +16,17 @@ const GridComponent = Component.extend({
   @computed('lookupData.[]', 'dataSourceDetails')
   dataSourceData([lookupData], dataSourceDetails) {
     const dsData = getData(lookupData, dataSourceDetails);
+    const orderDetails = getOrder(lookupData, dataSourceDetails);
+    const orderedArray = [];
     if (dsData) {
-      const [ gridData ] = dsData;
-      return _.omit(gridData, 'Url');
+      dsData.forEach((data) => {
+        orderDetails.forEach((order) => {
+          const orderedData = {};
+          orderedData[order] = data[order];
+          orderedArray.push({ ...orderedData });
+        });
+      });
+      return orderedArray;
     }
   }
 });
