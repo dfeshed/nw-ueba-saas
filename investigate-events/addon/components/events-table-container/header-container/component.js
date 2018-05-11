@@ -5,16 +5,12 @@ import { connect } from 'ember-redux';
 import { later } from '@ember/runloop';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 import { setColumnGroup } from 'investigate-events/actions/interaction-creators';
-import {
-  getSelectedColumnGroup,
-  getColumnGroups
-} from 'investigate-events/reducers/investigate/data-selectors';
-
+import { getSelectedColumnGroup } from 'investigate-events/reducers/investigate/data-selectors';
 
 const stateToComputed = (state) => ({
   reconSize: state.investigate.data.reconSize,
   isReconOpen: state.investigate.data.isReconOpen,
-  columnGroups: getColumnGroups(state),
+  columnGroups: state.investigate.data.columnGroups,
   selectedColumnGroup: getSelectedColumnGroup(state)
 });
 
@@ -25,6 +21,16 @@ const dispatchToActions = {
 const EventsTable = Component.extend({
   classNames: 'rsa-investigate-events-table__header',
   tagName: 'hbox',
+
+  @computed('columnGroups', 'i18n.locale')
+  localizedColumnGroups(columnGroups) {
+    if (columnGroups) {
+      return [
+        { groupName: this.get('i18n').t('investigate.events.columnGroups.custom'), options: columnGroups.filter((column) => !column.ootb) },
+        { groupName: this.get('i18n').t('investigate.events.columnGroups.default'), options: columnGroups.filter((column) => column.ootb) }
+      ];
+    }
+  },
 
   @computed('reconSize')
   toggleEvents(size) {

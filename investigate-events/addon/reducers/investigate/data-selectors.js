@@ -2,6 +2,7 @@ import reselect from 'reselect';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
 import $ from 'jquery';
 import { lookup } from 'ember-dependency-lookup';
+import { isEmpty } from '@ember/utils';
 
 const { createSelector } = reselect;
 
@@ -13,6 +14,7 @@ const _data = (state) => state.investigate.eventTimeline.data;
 const _status = (state) => state.investigate.eventTimeline.status;
 const _columnGroups = (state) => state.investigate.data.columnGroups;
 const _columnGroup = (state) => state.investigate.data.columnGroup;
+export const hasColumnGroups = (state) => !isEmpty(state.investigate.data.columnGroups);
 export const getDefaultPreferences = (state) => state.investigate.data.eventsPreferencesConfig.defaultPreferences.asMutable();
 
 // SELECTOR FUNCTIONS

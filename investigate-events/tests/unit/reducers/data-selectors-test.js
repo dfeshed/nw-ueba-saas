@@ -5,7 +5,8 @@ import {
   isDataEmpty,
   shouldShowStatus,
   getSelectedColumnGroup,
-  getColumns
+  getColumns,
+  hasColumnGroups
 } from 'investigate-events/reducers/investigate/data-selectors';
 import EventColumnGroups from '../../data/subscriptions/investigate-columns/data';
 
@@ -161,4 +162,29 @@ test('Should get mutable columns for data table', function(assert) {
   const columns = getColumns(state);
   assert.equal(columns.length, 5);
   assert.notOk(columns.isMutable, 'Columns should not be a mutable object.');
+});
+
+test('Should set hasColumnGroups', function(assert) {
+  assert.ok(
+    hasColumnGroups(
+      Immutable.from({
+        investigate: {
+          data: {
+            columnGroup: 'SUMMARY',
+            columnGroups: EventColumnGroups
+          }
+        }
+      })
+    ), 'hasColumnGroups should be true'
+  );
+
+  assert.notOk(
+    hasColumnGroups(
+      Immutable.from({
+        investigate: {
+          data: {}
+        }
+      })
+    ), 'hasColumnGroups should be false'
+  );
 });

@@ -1,11 +1,11 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { getColumnGroups } from 'investigate-events/reducers/investigate/data-selectors';
 import { percentageOfEventsDataReturned } from 'investigate-events/reducers/investigate/event-results/selectors';
+import { hasColumnGroups } from 'investigate-events/reducers/investigate/data-selectors';
 
 const stateToComputed = (state) => ({
   status: state.investigate.eventResults.status,
-  columnGroups: getColumnGroups(state),
+  hasColumnGroups: hasColumnGroups(state),
   percent: percentageOfEventsDataReturned(state)
 });
 
