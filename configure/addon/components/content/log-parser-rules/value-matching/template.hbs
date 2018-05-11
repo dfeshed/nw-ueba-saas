@@ -1,32 +1,27 @@
-{{#if parserRuleRegex}}
-  <h2> {{t 'configure.logsParser.values'}} </h2> 
-  <div class='vSpacer vSpacerFirst ruleValues'> 
-    <label class="rsa-form-label power-select">
-      {{#power-select
-        placeholder="Make a selection"
-        options=parserRuleValues
-        selected=itemSelected
-        allowClear=true
-        searchPlaceholder="Type to filter options"      
-        onchange=(action 'setSelect') as |option|}}
-        {{option}}
-      {{/power-select}}
-    </label>
-  </div>
+<h2> {{t 'configure.logsParser.values'}} </h2> 
+<div class='vSpacer vSpacerFirst ruleValues'> 
+  <label class="rsa-form-label power-select">
+    {{#power-select
+      placeholder="Make a selection"
+      options=parserRuleValues
+      selected=itemSelected
+      allowClear=true
+      searchPlaceholder="Type to filter options"      
+      onchange=(action 'setSelect') as |option|}}
+      {{option}}
+    {{/power-select}}
+  </label>
+</div>
 
-  {{#if parserRuleType}}
-    <div class='vSpacer ruleType'>
-      {{rsa-form-input label=(t 'configure.logsParser.type') value=parserRuleType isReadOnly=true isInline=true}}
-    </div>
-  {{/if}}
-  {{#if parserRuleMatches}}
-    <div class='vSpacer ruleMatches'>
-      {{rsa-form-input label=(t 'configure.logsParser.valueMatching') value=parserRuleMatches isReadOnly=true isInline=true}}
-    </div>
-  {{/if}}
-  {{#if parserRuleRegex}}
-    <div class='vSpacer ruleRegex'>
-      {{rsa-form-input label=(t 'configure.logsParser.pattern') value=parserRuleRegex isInline=true isReadOnly=isRegexSelected}}
-    </div>
-  {{/if}}
-{{/if}}
+<div class='vSpacer ruleType'>
+  {{rsa-form-input label=(t 'configure.logsParser.type') value=parserRuleType isReadOnly=true isInline=true}}
+</div>
+
+<div class='vSpacer ruleMatches'>
+  {{rsa-form-input label=(t 'configure.logsParser.valueMatching') value=parserRuleMatches isReadOnly=true isInline=true}}
+</div>
+
+<div class='vSpacer ruleRegex'>
+  {{rsa-form-input label=(t 'configure.logsParser.pattern') value=parserRuleRegex isInline=true isReadOnly=isRegexSelected}}
+</div>
+

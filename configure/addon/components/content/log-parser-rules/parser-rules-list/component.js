@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import {
   parserRules,
-  clickedParserRuleIndex,
+  selectedParserRuleIndex,
   isLoadingParserRules,
   isLoadingParserRulesError
 } from 'configure/reducers/content/log-parser-rules/selectors';
@@ -12,7 +12,7 @@ const stateToComputed = (state) => ({
   isLoadingParserRules: isLoadingParserRules(state),
   isLoadingParserRulesError: isLoadingParserRulesError(state),
   parserRules: parserRules(state),
-  clickedParserRuleIndex: clickedParserRuleIndex(state)
+  selectedParserRuleIndex: selectedParserRuleIndex(state)
 });
 
 const dispatchToActions = {

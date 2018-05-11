@@ -94,7 +94,7 @@ export default class DataHelper {
       },
       'ruleMetas': []
     }]);
-    _set(this.state, 'content.logParserRules.clickedParserRuleIndex', 0);
+    _set(this.state, 'content.logParserRules.selectedParserRuleIndex', 0);
     _set(this.state, 'content.logParserRules.parserRulesStatus', 'completed');
     _set(this.state, 'content.logParserRules.ruleFormats', [{
       name: 'Regex Pattern',
@@ -114,7 +114,7 @@ export default class DataHelper {
       matches: 'This matches IPV6 addresses',
       type: 'ipv6'
     }]);
-    _set(this.state, 'content.logParserRules.clickedParserRuleIndex', index);
+    _set(this.state, 'content.logParserRules.selectedParserRuleIndex', index);
     return this;
   }
 }

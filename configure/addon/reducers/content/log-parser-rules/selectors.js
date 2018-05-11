@@ -6,8 +6,8 @@ const _parserRulesState = (state) => state.configure.content.logParserRules;
 const _ruleFormats = (state) => _parserRulesState(state).ruleFormats;
 export const logParsers = (state) => _parserRulesState(state).logParsers;
 export const parserRules = (state) => _parserRulesState(state).parserRules;
-export const clickedLogParserIndex = (state) => _parserRulesState(state).clickedLogParserIndex;
-export const clickedParserRuleIndex = (state) => _parserRulesState(state).clickedParserRuleIndex;
+export const selectedLogParserIndex = (state) => _parserRulesState(state).selectedLogParserIndex;
+export const selectedParserRuleIndex = (state) => _parserRulesState(state).selectedParserRuleIndex;
 
 export const isLoadingLogParser = createSelector(
   _parserRulesState,
@@ -29,31 +29,9 @@ export const isLoadingParserRulesError = createSelector(
   (parserRulesState) => parserRulesState.parserRulesStatus === 'error'
 );
 
-export const firstLogParserName = createSelector(
-  logParsers,
-  (allLogs) => {
-    if (allLogs && allLogs[0]) {
-      return allLogs[0].name;
-    } else {
-      return '';
-    }
-  }
-);
-
-export const firstParserRuleName = createSelector(
-  parserRules,
-  (rules) => {
-    if (rules && rules[0]) {
-      return rules[0].name;
-    } else {
-      return '';
-    }
-  }
-);
-
 export const selectedLogParserName = createSelector(
   logParsers,
-  clickedLogParserIndex,
+  selectedLogParserIndex,
   (allLogs, index) => {
     if (allLogs && allLogs[index]) {
       return allLogs[index].name;
@@ -65,7 +43,7 @@ export const selectedLogParserName = createSelector(
 
 export const selectedParserRuleName = createSelector(
   parserRules,
-  clickedParserRuleIndex,
+  selectedParserRuleIndex,
   (rules, index) => {
     if (rules && rules[index]) {
       return rules[index].name;
@@ -75,20 +53,18 @@ export const selectedParserRuleName = createSelector(
   }
 );
 
-export const selectedParserRule = createSelector(
+const _selectedParserRule = createSelector(
   parserRules,
-  selectedParserRuleName,
-  (rules, selectedRule) => {
+  selectedParserRuleIndex,
+  (rules, index) => {
     if (rules) {
-      return rules.filter((rule) => rule.name === selectedRule)[0];
-    } else {
-      return '';
+      return rules[index];
     }
   }
 );
 
 export const parserRuleRegex = createSelector(
-  selectedParserRule,
+  _selectedParserRule,
   _ruleFormats,
   (selectedRule, formats) => {
     if (selectedRule) {
@@ -103,15 +79,13 @@ export const parserRuleRegex = createSelector(
 );
 
 export const parserRuleMatches = createSelector(
-  selectedParserRule,
+  _selectedParserRule,
   _ruleFormats,
   (selectedRule, formats) => {
     if (selectedRule) {
       const frmt = selectedRule.pattern.format;
       if (frmt) {
         return formats.filter((format) => format.type === frmt.toLowerCase())[0].matches;
-      } else {
-        return '';
       }
     }
   }
@@ -125,30 +99,34 @@ export const parserRuleValues = createSelector(
 );
 
 export const parserRuleTokens = createSelector(
-  selectedParserRule,
+  _selectedParserRule,
   (selectedRule) => {
-    return selectedRule ? selectedRule.literals : '';
+    if (selectedRule) {
+      return selectedRule.literals;
+    }
   }
 );
 
 export const parserRuleType = createSelector(
-  selectedParserRule,
+  _selectedParserRule,
   (selectedRule) => {
     if (selectedRule) {
-      return selectedRule.pattern.format ? selectedRule.pattern.format : '';
-    } else {
-      return '';
+      return selectedRule.pattern.format;
     }
   }
 );
 
 export const parserRuleMeta = createSelector(
-  selectedParserRule,
+  _selectedParserRule,
   (selectedRule) => {
     if (selectedRule) {
-      return selectedRule.pattern.captures ? selectedRule.pattern.captures : [];
-    } else {
-      return [];
+      return selectedRule.pattern.captures;
     }
+  }
+);
+export const hasSelectedParserRule = createSelector(
+  selectedParserRuleIndex,
+  (index) => {
+    return index !== -1;
   }
 );

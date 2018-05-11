@@ -9,8 +9,8 @@ const initialState = {
   parserRules: [],
   parserRulesStatus: null, // wait, completed, error,
   ruleFormats: [],
-  clickedParserRuleIndex: -1,
-  clickedLogParserIndex: -1
+  selectedParserRuleIndex: -1,
+  selectedLogParserIndex: -1
 };
 
 export default reduxActions.handleActions({
@@ -63,8 +63,7 @@ export default reduxActions.handleActions({
         return state.merge(
           {
             parserRules: theRules,
-            parserRulesStatus: 'completed',
-            clickedParserRuleIndex: -1
+            parserRulesStatus: 'completed'
           }
         );
       }
@@ -72,11 +71,16 @@ export default reduxActions.handleActions({
   ),
 
   [ACTION_TYPES.SELECT_PARSER_RULE]: (state, { payload }) => {
-    return state.set('clickedParserRuleIndex', payload.clickedParserRuleIndex);
+    return state.set('selectedParserRuleIndex', payload);
   },
 
   [ACTION_TYPES.SELECT_LOG_PARSER]: (state, { payload }) => {
-    return state.set('clickedLogParserIndex', payload.clickedLogParserIndex);
+    return state.merge(
+      {
+        selectedLogParserIndex: payload,
+        selectedParserRuleIndex: -1
+      }
+    );
   }
   // delete and add parser rules are no implemented and will be added in subsequent PRs
   /*

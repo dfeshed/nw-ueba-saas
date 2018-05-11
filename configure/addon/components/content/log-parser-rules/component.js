@@ -4,7 +4,8 @@ import {
   isLoadingLogParser,
   selectedLogParserName,
   selectedParserRuleName,
-  isLoadingLogParserError
+  isLoadingLogParserError,
+  hasSelectedParserRule
 } from 'configure/reducers/content/log-parser-rules/selectors';
 
 import Ember from 'ember';
@@ -14,7 +15,8 @@ const stateToComputed = (state) => ({
   isLoading: isLoadingLogParser(state),
   isLoadingError: isLoadingLogParserError(state),
   logParserName: selectedLogParserName(state),
-  parserRuleName: selectedParserRuleName(state)
+  parserRuleName: selectedParserRuleName(state),
+  hasSelectedParserRule: hasSelectedParserRule(state)
 });
 
 const ParserRules = Component.extend({

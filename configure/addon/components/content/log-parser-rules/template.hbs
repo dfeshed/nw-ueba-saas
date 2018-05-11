@@ -21,19 +21,21 @@
             {{/if}}
           </h1>
           <div class='centerTop'>
-            <table class='matchingMapping'>
-              <tr>
-                <td>
-                  {{content/log-parser-rules/token-matching}}
-                </td>
-                <td class='centerTopCenter'>
-                  {{content/log-parser-rules/value-matching}}
-                </td>
-                <td>
-                  {{content/log-parser-rules/value-mapping}}
-                </td>
-              </tr>
-            </table>
+            {{#if hasSelectedParserRule}}
+              <table class='matchingMapping'>
+                <tr>
+                  <td>
+                    {{content/log-parser-rules/token-matching}}
+                  </td>
+                  <td class='centerTopCenter'>
+                    {{content/log-parser-rules/value-matching}}
+                  </td>
+                  <td>
+                    {{content/log-parser-rules/value-mapping}}
+                  </td>
+                </tr>
+              </table>
+             {{/if}}
           </div>
         </td>
         <td rowspan="2" class='border rightArea'>

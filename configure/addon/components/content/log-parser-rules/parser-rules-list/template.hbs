@@ -10,7 +10,7 @@
 {{else}}
   <table class='parserTable'>
     {{#each parserRules as |parserRule index|}}
-      <tr><td class='{{if (eq index 0) 'firstItem'}} {{if (eq clickedParserRuleIndex index) 'active'}}'{{action "selectParserRule" parserRule.name index}}>
+      <tr><td class='{{if (eq index 0) 'firstItem'}} {{if (eq selectedParserRuleIndex index) 'active'}}'{{action "selectParserRule" index}}>
         {{parserRule.name}}
       </td></tr>
     {{/each}}

@@ -2,18 +2,18 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import {
   logParsers,
-  firstLogParserName,
-  firstParserRuleName,
-  clickedLogParserIndex
+  selectedParserRuleName,
+  selectedLogParserIndex,
+  selectedLogParserName
 } from 'configure/reducers/content/log-parser-rules/selectors';
 import parserRuleCreators from 'configure/actions/creators/content/log-parser-rule-creators';
 import { inject } from '@ember/service';
 
 const stateToComputed = (state) => ({
   logParsers: logParsers(state),
-  firstLogParserName: firstLogParserName(state),
-  firstParserRuleName: firstParserRuleName(state),
-  clickedLogParserIndex: clickedLogParserIndex(state)
+  logParserName: selectedLogParserName(state),
+  parserRuleName: selectedParserRuleName(state),
+  selectedLogParserIndex: selectedLogParserIndex(state)
 });
 
 const LogParsers = Component.extend({
@@ -22,7 +22,7 @@ const LogParsers = Component.extend({
   actions: {
     selectLogParser(name, index) {
       const redux = this.get('redux');
-      redux.dispatch(parserRuleCreators.selectLogParser(name, index));
+      redux.dispatch(parserRuleCreators.selectLogParser(index));
       redux.dispatch(parserRuleCreators.fetchParserRules(name));
     }
   },
@@ -30,13 +30,12 @@ const LogParsers = Component.extend({
     this._super(...arguments);
     const redux = this.get('redux');
     setTimeout(() => {// will not brake on slow network but some data will be missing in UI on page load
-      const firstLogParserName = this.get('firstLogParserName');
-      redux.dispatch(parserRuleCreators.fetchParserRules(firstLogParserName));
-      redux.dispatch(parserRuleCreators.selectLogParser(firstLogParserName, 0));
+      const logParserName = this.get('logParserName');
+      redux.dispatch(parserRuleCreators.selectLogParser(0));
+      redux.dispatch(parserRuleCreators.fetchParserRules(logParserName));
     }, 1500);
     setTimeout(() => {
-      const firstParserRuleName = this.get('firstParserRuleName');
-      redux.dispatch(parserRuleCreators.selectParserRule(firstParserRuleName, 0));
+      redux.dispatch(parserRuleCreators.selectParserRule(0));
     }, 3500);
   }
 });

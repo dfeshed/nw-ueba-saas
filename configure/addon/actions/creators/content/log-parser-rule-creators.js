@@ -14,14 +14,21 @@ const addParserRule = (id) => {
   };
 }; */
 
-const fetchRuleFormats = () => {
+const initializeLogParserRules = () => {
+  return (dispatch) => {
+    dispatch(_findAllLogParsers());
+    dispatch(_fetchRuleFormats());
+  };
+};
+
+const _fetchRuleFormats = () => {
   return {
     type: ACTION_TYPES.FETCH_FORMATS,
     promise: api.fetchRuleFormats()
   };
 };
 
-const findAllLogParsers = () => {
+const _findAllLogParsers = () => {
   return {
     type: ACTION_TYPES.FIND_ALL,
     promise: api.findAllLogParsers()
@@ -35,26 +42,25 @@ const fetchParserRules = (name) => {
   };
 };
 
-const selectParserRule = (name, index) => {
+const selectParserRule = (index) => {
   return {
     type: ACTION_TYPES.SELECT_PARSER_RULE,
-    payload: { 'parserRuleName': name, 'clickedParserRuleIndex': index }
+    payload: index
   };
 };
 
-const selectLogParser = (name, index) => {
+const selectLogParser = (index) => {
   return {
     type: ACTION_TYPES.SELECT_LOG_PARSER,
-    payload: { 'logParserName': name, 'clickedLogParserIndex': index }
+    payload: index
   };
 };
 
 export {
   // addParserRule,
   // deleteParserRule,
-  fetchRuleFormats,
+  initializeLogParserRules,
   fetchParserRules,
-  findAllLogParsers,
   selectParserRule,
   selectLogParser
 };
