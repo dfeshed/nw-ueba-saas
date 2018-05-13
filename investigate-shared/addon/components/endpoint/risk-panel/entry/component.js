@@ -1,9 +1,10 @@
 import Component from '@ember/component';
 import layout from './template';
+import { inject as service } from '@ember/service';
 
 export default Component.extend({
   layout,
-  tagName: 'vbox',
-  classNames: ['risk-properties-panel', 'flexi-fit'],
-  data: ''
+  dateFormat: service(),
+  timeFormat: service(),
+  timezone: service()
 });

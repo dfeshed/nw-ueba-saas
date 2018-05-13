@@ -1,2 +1,7 @@
-<hbox fit class="rsa-risk-panel-body">
-</hbox>
+<box fit class="rsa-risk-panel">
+  {{#each data as |entry|}}
+    {{#rsa-content-accordion animate=true isCollapsed=true class='rsa-risk-panel__title' label=entry.alert.name}}
+      {{endpoint/risk-panel/entry entry=entry}}
+    {{/rsa-content-accordion}}
+  {{/each}}
+</box>

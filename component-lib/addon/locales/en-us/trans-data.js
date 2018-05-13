@@ -2081,6 +2081,14 @@ export default {
       alerts: 'Alerts',
       incidents: 'Incidents'
     },
+    alerts: {
+      source: 'Source',
+      timestamp: 'Created',
+      risk_score: 'Severity',
+      name: 'Name',
+      numEvents: '# Events',
+      incidentId: 'Incident ID'
+    },
     systemInformation: {
       ipAddress: 'IP Address',
       dnsName: 'DNS Name',

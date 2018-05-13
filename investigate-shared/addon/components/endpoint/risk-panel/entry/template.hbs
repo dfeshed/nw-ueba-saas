@@ -1,0 +1,14 @@
+<vbox class='rsa-risk-panel__entry'>
+  {{#each-in entry.alert as |key value|}}
+    <hbox class='rsa-risk-panel__entry__field'>
+      {{#unless (eq key 'name')}}
+        <span class='label'>{{t (get-label 'investigateHosts.alerts' key)}}:</span>
+        {{#if (eq key 'timestamp')}}
+          <span>{{parse-timestamp value timezone dateFormat timeFormat i18n.locale}}</span>
+        {{else}}
+          <span>{{value}}</span>
+        {{/if}}
+      {{/unless}}
+    </hbox>
+  {{/each-in}}
+</vbox>

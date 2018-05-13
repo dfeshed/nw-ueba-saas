@@ -1,0 +1,1 @@
+export { default, getLabel } from 'investigate-shared/helpers/get-label';

@@ -3,8 +3,28 @@ $propertyPanelWidth: 400px;
 .risk-properties-panel {
   height: 100%;
 }
-.rsa-risk-panel-body {
+.rsa-risk-panel {
   overflow: auto;
   position: relative;
   padding: 0 rsa-whitespace(less);
+  &__title {
+    margin-top: rsa-whitespace();
+    h3 {
+      color: text-color(secondary);
+      font-weight: bold;
+    }
+  }
+  &__entry {
+    padding: rsa-whitespace(less);
+    margin-left: rsa-whitespace();
+    &__field {
+      span {
+        padding: rsa-whitespace(least);
+        font-size: 0.85rem;
+      }
+      .label {
+        width: 55px;
+      }
+    }
+  }
 }
