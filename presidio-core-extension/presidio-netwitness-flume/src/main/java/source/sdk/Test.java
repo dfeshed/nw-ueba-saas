@@ -10,13 +10,19 @@ public class Test {
 
     public static void main(String[] args){
         ConfigurationServerClientService configurationServerClientService = null;
-        NetwitnessStreamingSDK netwitnessStreamingSDK = new NetwitnessStreamingSDK();
-        netwitnessStreamingSDK.startStreaming(Schema.AUTHENTICATION, Instant.ofEpochSecond(1518143160), Instant.ofEpochSecond(1518143460));
-        while (netwitnessStreamingSDK.hasNext()) {
-            System.out.println(netwitnessStreamingSDK.next());
+        NetwitnessEventsStream eventsStream = new NetwitnessEventsStream();
+
+        try {
+            eventsStream.startStreaming(Schema.AUTHENTICATION, Instant.ofEpochSecond(1518143160), Instant.ofEpochSecond(1518143460));
+            while (eventsStream.hasNext()) {
+                System.out.println(eventsStream.next());
+            }
+        } catch (Exception ex) {
+            throw  ex;
+        } finally {
+            eventsStream.stopStreaming();
         }
 
-        netwitnessStreamingSDK.stopStreaming();
     }
 
 
