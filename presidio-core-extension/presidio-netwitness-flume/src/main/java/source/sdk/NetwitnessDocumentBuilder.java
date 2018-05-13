@@ -3,6 +3,7 @@ package source.sdk;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import domain.NetwitnessAuthenticationEvent;
 import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractDocument;
 import org.json.JSONException;
@@ -41,7 +42,7 @@ public class NetwitnessDocumentBuilder {
         try {
             switch (schema) {
                 case AUTHENTICATION: {
-                    document = objectMapper.readValue(jsonObject.toString(), domain.NetwitnessAuthenticationMessage.class);
+                    document = objectMapper.readValue(jsonObject.toString(), NetwitnessAuthenticationEvent.class);
                     break;
                 }
                 default: {

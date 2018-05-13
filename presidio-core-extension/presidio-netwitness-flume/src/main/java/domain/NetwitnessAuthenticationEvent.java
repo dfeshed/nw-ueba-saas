@@ -6,7 +6,7 @@ import fortscale.domain.core.AbstractAuditableDocument;
 import java.time.Instant;
 import java.util.List;
 
-public class NetwitnessAuthenticationMessage extends AbstractAuditableDocument {
+public class NetwitnessAuthenticationEvent extends AbstractAuditableDocument {
 
     public static final String EVENT_SOURCE_ID_FIELD_NAME = "event_source_id";
     public static final String EVENT_ALIAS_FIELD_NAME = "alias_host";
@@ -85,7 +85,7 @@ public class NetwitnessAuthenticationMessage extends AbstractAuditableDocument {
 
     @Override
     public String toString() {
-        return "NetwitnessAuthenticationMessage{" +
+        return "NetwitnessAuthenticationEvent{" +
                 "eventId='" + eventId + '\'' +
                 ", aliasHost=" + aliasHost +
                 ", eventSource='" + eventSource + '\'' +

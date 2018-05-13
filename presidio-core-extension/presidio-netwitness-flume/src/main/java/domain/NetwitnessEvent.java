@@ -6,11 +6,11 @@ import fortscale.domain.core.AbstractAuditableDocument;
 
 import java.util.Map;
 
-public class NetwitnessMessage extends AbstractAuditableDocument {
+public class NetwitnessEvent extends AbstractAuditableDocument {
 
     public static final String META_FIELDS = "META_FIELDS";
 
-    public NetwitnessMessage() {
+    public NetwitnessEvent() {
         super();
     }
 
@@ -30,7 +30,7 @@ public class NetwitnessMessage extends AbstractAuditableDocument {
 
     @Override
     public String toString() {
-        return "NetwitnessMessage{" +
+        return "NetwitnessEvent{" +
                 "metaFields=" + metaFields +
                 '}';
     }
