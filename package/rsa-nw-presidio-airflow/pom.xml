@@ -53,6 +53,8 @@
                         <require>python2-pip</require>
                         <require>mariadb-devel</require>
                         <require>libffi-devel</require>
+                        <require>gcc</require>
+                        <require>gcc-c++</require>
                     </requires>
                     <mappings>
                         <mapping>
