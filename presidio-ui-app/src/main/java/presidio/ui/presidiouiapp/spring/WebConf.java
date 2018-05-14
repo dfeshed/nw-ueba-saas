@@ -1,6 +1,7 @@
 package presidio.ui.presidiouiapp.spring;
 
 
+import com.futureprocessing.spring.infrastructure.security.SecurityConfig;
 import fortscale.common.dataentity.DataEntitiesConfig;
 import fortscale.services.*;
 
@@ -12,6 +13,7 @@ import fortscale.utils.FilteringPropertiesConfigurationHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 
+import presidio.rsa.auth.spring.WebSecurityConfiguration;
 import presidio.ui.presidiouiapp.beans.request.AlertFilterHelperImpl;
 import presidio.ui.presidiouiapp.extensions.FortscaleCustomEditorService;
 import presidio.ui.presidiouiapp.rest.*;
@@ -25,7 +27,7 @@ import presidio.ui.presidiouiapp.rest.errorhandler.RestErrorHandler;
 
 
 @Configuration
-@Import({PresidioUiServiceConfiguration.class})
+@Import({PresidioUiServiceConfiguration.class,SecurityConfig.class})
 public class WebConf{
 
 
