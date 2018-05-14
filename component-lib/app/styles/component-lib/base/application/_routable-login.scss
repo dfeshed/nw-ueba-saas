@@ -23,9 +23,9 @@
     border-color: rgba(117,117,117, 1);
     border-width: 1px;
     border-style: solid;
-    height: 65vh;
+    height: 45vh;
     overflow: auto;
-    width: 50vw;
+    width: 36vw;
     @include rsa-font(paragraph);
     font-weight: 300;
     background: rgba(22,22,22, 1);
@@ -82,7 +82,7 @@
 
     &.has-error {
       border-color: rgba(236,34,39, 1);
-      border-width: 1px;
+      border-width: 0px;
       border-style: solid;
       animation: shake 0.65s cubic-bezier(.36,.07,.19,.97) both;
 
@@ -107,10 +107,7 @@
   }
 
   header {
-    height: 2rem;
     margin: calc(#{rsa-whitespace(more)} * -1);
-    margin-bottom: rsa-whitespace(more);
-    background-color: rgba(33,33,33, 1);
     padding: rsa-whitespace(more) rsa-whitespace(more);
     position: relative;
 
@@ -119,36 +116,53 @@
       right: 0;
       top: 0;
       padding: rsa-whitespace(more) rsa-whitespace(more);
-      line-height: 2rem;
+      line-height: 1.5rem;
       color: rgba(189,189,189, 1);
     }
 
     .rsa-logo {
-      height: 2rem;
+      height: 12rem;
+      width: 28rem;
       overflow: hidden;
       white-space: nowrap;
       vertical-align: middle;
       text-align: left;
       flex: none;
+      background-image: url('images/NW-Login-Header.png');
+      background-repeat: no-repeat;
+      background-size: 268px 127px;
+      background-position-x: center;
+      margin-left: auto;
+      margin-right: auto;
+    }
 
-      svg {
-        stroke: #be3a34;
-        width: $applicationLoginHeaderLogoWidth;
-        position: relative;
-        vertical-align: middle;
-        padding: rsa-whitespace(least) 0;
-      }
+    .rsa-eula-logo {
+      height: 4rem;
+      overflow: hidden;
+      white-space: nowrap;
+      flex: none;
+      background-image: url('images/NW-UI-Logo-white.png');
+      background-repeat: no-repeat;
+      background-size: 50%;
+    }
 
-      h2 {
-        padding: rsa-whitespace(least);
-        padding-left: rsa-whitespace(less);
-        margin-left: rsa-whitespace(less);
-        border-left: 1px solid rgba(238,238,238, 1);
-        vertical-align: middle;
-        @include rsa-font(header, large);
-        white-space: nowrap;
-        display: inline-block;
-      }
+    svg {
+      stroke: #be3a34;
+      width: $applicationLoginHeaderLogoWidth;
+      position: relative;
+      vertical-align: middle;
+      padding: rsa-whitespace(least) 0;
+    }
+
+    h2 {
+      padding: rsa-whitespace(least);
+      padding-left: rsa-whitespace(less);
+      margin-left: rsa-whitespace(less);
+      border-left: 1px solid rgba(238,238,238, 1);
+      vertical-align: middle;
+      @include rsa-font(header, large);
+      white-space: nowrap;
+      display: inline-block;
     }
   }
 
@@ -165,19 +179,16 @@
       input {
         color: rgba(250,250,250, 1);
         margin-bottom: rsa-whitespace();
-        border-bottom: 1px solid rgba(189,189,189, 1);
       }
     }
     .rsa-form-button-wrapper.is-primary:not(.is-disabled):not(.is-icon-only):hover .rsa-form-button {
       color: rgba(250,250,250, 1);
     }
     .rsa-form-button-wrapper.is-disabled:not(.is-icon-only) .rsa-form-button {
-      border-color: rgba(117,117,117, 1);
       color: rgba(117,117,117, 1);
     }
     .rsa-form-button {
       &:not(.is-disabled) {
-        border-color: rgba(250,250,250, 1);
         color: rgba(250,250,250, 1);
       }
     }
@@ -212,6 +223,9 @@
 
   .login, .change-password {
     overflow: hidden;
+    width: 19rem;
+    margin-left: auto;
+    margin-right: auto;
 
     .rsa-form-button {
       margin-bottom: rsa-whitespace();

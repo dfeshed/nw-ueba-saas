@@ -165,6 +165,8 @@ module.exports = {
     this.import('vendor/fonts/open-sans-v13-latin-800.woff2', { destDir: 'assets/fonts/' });
 
     this.import('vendor/NW-Background-Blur.jpg', { destDir: 'assets/images/' });
+    this.import('vendor/NW-Login-Header.png', { destDir: 'assets/images/' });
+    this.import('vendor/NW-UI-Logo-white.png', { destDir: 'assets/images/' });
 
     this.import('vendor/favicon-32x32.png', { destDir: 'assets/images/' });
 

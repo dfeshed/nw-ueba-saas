@@ -214,31 +214,6 @@
       color: rgba(238,238,238, 1);
     }
 
-    &.animated {
-      &__brick {
-        /*
-        @include rsa-vendor-prefix(animation, rsa-logo-fillredbrick 2000ms linear 0ms 1 both);
-        */
-      }
-
-      .rsa-logo__letter {
-        @include rsa-vendor-prefix(animation, rsa-logo-fillredletter 1000ms linear 0s 1 both);
-      }
-    }
-  }
-
-  /*
-  @workaround Rules for IE9 and IE10 only. These browsers don't support animating SVG elements' strokes, so
-  we use different styling which fades in the SVG elements in a staggered sequence.
-  */
-  @media screen and (min-width:0\0) {
-    &logo.animated {
-      &__brick {
-        -ms-animation: rsa-fade-in 2000ms linear 0ms 1 both;
-      }
-      &__letter {
-        -ms-animation: rsa-fade-in 1000ms linear 1000ms 1 both;
-      }
-    }
+    
   }
 }
