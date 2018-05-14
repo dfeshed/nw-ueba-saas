@@ -7,7 +7,7 @@ module('Unit | Helper | query utils');
 const params = {
   et: 0,
   eid: 1,
-  mf: 'a%3D\'a/%3Db%3D/a\'',
+  mf: 'filename%3D\'a\\\'^(j0-1restonvirginia.sys',
   mps: 'default',
   rs: 'max',
   sid: 2,
@@ -30,9 +30,9 @@ test('parseQueryParams correctly parses URI', function(assert) {
 test('parseQueryParams correctly parses forward slashes and operators in text format conditions', function(assert) {
   assert.expect(3);
   const result = queryUtils.parseQueryParams(params);
-  assert.equal(result.metaFilter.conditions[0].meta, 'a', 'forward slash was not parsed correctly');
+  assert.equal(result.metaFilter.conditions[0].meta, 'filename', 'forward slash was not parsed correctly');
   assert.equal(result.metaFilter.conditions[0].operator, '=', 'forward slash was not parsed correctly');
-  assert.equal(result.metaFilter.conditions[0].value, '\'a/=b=/a\'', 'forward slash was not parsed correctly');
+  assert.equal(result.metaFilter.conditions[0].value, '\'a\\\'^(j0-1restonvirginia.sys', 'forward slash was not parsed correctly');
 });
 
 test('_getTimeRangeIdFromRange returns the TimeRangeId correctly', function(assert) {
