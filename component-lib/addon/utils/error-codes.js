@@ -50,7 +50,7 @@ function _parseAndLogErrorCode(response, errorCodeDictionary, requestName) {
   const errorCode = response.code || response.errorCode || response['error-code'];
 
   // not an error code, do not process
-  if (errorCode === 1) {
+  if (errorCode === 1 || isEmpty(errorCode)) {
     return;
   }
 

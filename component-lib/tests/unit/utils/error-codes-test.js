@@ -175,3 +175,7 @@ test('handleInvestigateErrorCode returns the correct error object', function(ass
     assert.ok(keys.includes('serverMessage'));
   });
 });
+
+test('handleInvestigateErrorCode returns nothing if not passed a code', function(assert) {
+  assert.equal(handleInvestigateErrorCode({}), undefined);
+});

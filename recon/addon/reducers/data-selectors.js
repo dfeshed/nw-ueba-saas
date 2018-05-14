@@ -31,8 +31,13 @@ export const isContentError = createSelector(
 export const errorMessage = createSelector(
   [_contentError],
   (contentError) => {
-    const { messageLocaleKey } = handleInvestigateErrorCode({ code: contentError });
-    return lookup('service:i18n').t(messageLocaleKey);
+    const errorObj = handleInvestigateErrorCode({ code: contentError });
+
+    if (!errorObj) {
+      return;
+    }
+
+    return lookup('service:i18n').t(errorObj.messageLocaleKey);
   }
 );
 
