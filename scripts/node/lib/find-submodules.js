@@ -8,10 +8,49 @@ const buildUniqueList = (things) => {
   }, {}));
 };
 
+// files that when changed should not affect
+// what modules are built, just toss them out
+const BLACKLIST = [
+
+  // Because our translations are centralized in component-lib
+  // and because component-lib is used by everything, anytime
+  // someone changes component-lib to just update a translation
+  // key, most of the modules are built. For now, avoid this,
+  // see how that goes.
+  //
+  // Down side? If some test depends on specific text, and that
+  // text changes, and the module the test is in does not,
+  // the test will not fail and will instead trip up the next
+  // build that does change the module the test is in. Tradeoffs!
+  // Thankfully changing some text in a test isn't a huge burden,
+  // but it will slow someone's PR process down.
+  'component-lib/addon/locales/en-us/trans-data.js',
+
+  // nested docs
+  'mock-server/README.md',
+  'streaming-data/README.md',
+
+  // root level documentation
+  'README.md',
+  'CHANGELOG.md',
+  'CONTRIBUTING.md',
+  'PULL_REQUEST_TEMPLATE.md'
+];
+
 const submodulesAffected = (submoduleList) => {
 
   // Get all files passed in
-  const files = process.argv.splice(2);
+  let files = process.argv.splice(2);
+
+  files = files.filter((file) => {
+    if (BLACKLIST.includes(file)) {
+      // uncomment to debug
+      // console.log(`Blacklisted file will not affect build`, file);
+      return false;
+    }
+
+    return true;
+  });
 
   // If no files changed, just do a vanilla sa build
   if (files.length === 0) {
@@ -36,7 +75,7 @@ const submodulesAffected = (submoduleList) => {
   // Build list of apps to build based on above configuration
   // start with the list of things actually changed, then
   // append the dependents for those changed things
-  var appsToBuild = changedSubmodules;
+  let appsToBuild = changedSubmodules;
   changedSubmodules.forEach((app) => {
     if (!submoduleList[app]) {
       console.error('submodule unaccounted for in the build configuration!', app);
