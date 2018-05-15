@@ -17,7 +17,7 @@ export default Component.extend({
   tagName: '',
   i18n: service(),
 
-  @computed('i18n.locale', 'name')
+  @computed('name', 'i18n.locale')
   tooltipText(name) {
     return this.get('i18n').t(`recon.eventHeader.${name}Tooltip`);
   },
