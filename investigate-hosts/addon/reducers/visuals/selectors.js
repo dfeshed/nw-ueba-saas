@@ -25,22 +25,22 @@ const HOST_PROPERTIES_TABS = [
   },
   {
     label: 'investigateHosts.tabs.alerts',
-    name: 'ALERTS'
+    name: 'ALERT'
   },
   {
     label: 'investigateHosts.tabs.incidents',
-    name: 'INCIDENTS'
+    name: 'INCIDENT'
   }
 ];
 
 const DATASOURCE_TABS = [
   {
     label: 'investigateHosts.tabs.alerts',
-    name: 'ALERTS'
+    name: 'ALERT'
   },
   {
     label: 'investigateHosts.tabs.incidents',
-    name: 'INCIDENTS'
+    name: 'INCIDENT'
   }
 ];
 
@@ -87,7 +87,9 @@ const { createSelector } = reselect;
 const _activeHostDetailTab = (state) => state.endpoint.visuals.activeHostDetailTab || 'OVERVIEW';
 const _activeAutorunTab = (state) => state.endpoint.visuals.activeAutorunTab || 'AUTORUNS';
 const _activeHostPropertyTab = (state) => state.endpoint.visuals.activeHostPropertyTab || 'HOST';
-const _activeDataSourceTab = (state) => state.endpoint.visuals.activeDataSourceTab || 'ALERTS';
+const _activeDataSourceTab = (state) => state.endpoint.visuals.activeDataSourceTab || 'ALERT';
+const _context = (state) => state.endpoint.visuals.lookupData;
+
 
 export const getAutorunTabs = createSelector(
   [_activeAutorunTab],
@@ -132,5 +134,67 @@ export const getDataSourceTab = createSelector(
   [_activeDataSourceTab],
   (activeDataSourceTab) => {
     return DATASOURCE_TABS.map((tab) => ({ ...tab, selected: tab.name === activeDataSourceTab }));
+  }
+);
+
+export const getAlertsCount = createSelector(
+  [_context],
+  (context) => {
+    let count = 0;
+    if (context && context[0].Alerts) {
+      count = context[0].Alerts.resultList.length;
+    }
+    return count;
+  }
+);
+
+export const getIncidentsCount = createSelector(
+  [_context],
+  (context) => {
+    let count = 0;
+    if (context && context[0].Incidents) {
+      count = context[0].Incidents.resultList.length;
+    }
+    return count;
+  }
+);
+
+export const getContext = createSelector(
+  [_context, _activeDataSourceTab],
+  (context, activeDataSourceTab) => {
+    let result = '';
+    const activeTab = activeDataSourceTab === 'ALERT' ? 'Alerts' : 'Incidents';
+    if (context && context[0][activeTab]) {
+      result = context[0][activeTab].resultList;
+    }
+    if (result) {
+      if (activeTab === 'Alerts') {
+        result = result.map((alert) => {
+          const incident = alert.incidentId;
+          return { ...alert.alert, incident };
+        });
+      }
+    }
+    return result;
+  }
+);
+
+export const getOverviewContext = createSelector(
+  [_context, _activeHostPropertyTab],
+  (context, activeHostPropertyTab) => {
+    let result = '';
+    const activeTab = activeHostPropertyTab === 'ALERT' ? 'Alerts' : 'Incidents';
+    if (context && context[0][activeTab]) {
+      result = context[0][activeTab].resultList;
+    }
+    if (result) {
+      if (activeTab === 'Alerts') {
+        result = result.map((alert) => {
+          const incident = alert.incidentId;
+          return { ...alert.alert, incident };
+        });
+      }
+    }
+    return result;
   }
 );

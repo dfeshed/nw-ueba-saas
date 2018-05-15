@@ -3,8 +3,9 @@
   {{#rsa-data-table
     lazy=true
     items=hostList
-    columnsConfig=updatedColumns}}
-    {{host-list/host-table/host-table-header}}
+    columnsConfig=updatedColumns
+    onRowClick=(action 'onRowSelection')}}
+      {{host-list/host-table/host-table-header}}
     {{#if (eq hostFetchStatus 'wait')}}
       <centered>
         {{rsa-loader size='larger'}}

@@ -2,11 +2,13 @@ const common = require('../../../common');
 const agentSocket = require('./agentRoutes');
 const endpointSocket = require('./endpointRoutes');
 const hostDetailSocket = require('./hostDetails');
+const adminSocket = require('./adminRoutes');
 
 const configGenerator = [
   agentSocket,
   endpointSocket,
-  hostDetailSocket
+  hostDetailSocket,
+  adminSocket
 ];
 
 

@@ -63,11 +63,11 @@ test('getDataSourceTab', function(assert) {
   const state = Immutable.from({
     endpoint: {
       visuals: {
-        activeDataSourceTab: 'INCIDENTS'
+        activeDataSourceTab: 'INCIDENT'
       }
     }
   });
-  const result = getDataSourceTab(state).findBy('name', 'INCIDENTS');
+  const result = getDataSourceTab(state).findBy('name', 'INCIDENT');
   assert.equal(result.selected, true, 'Incidents Tab should be selected');
 });
 

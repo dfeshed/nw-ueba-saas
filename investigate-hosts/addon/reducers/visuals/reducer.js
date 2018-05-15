@@ -1,16 +1,18 @@
 import { handleActions } from 'redux-actions';
 import * as ACTION_TYPES from 'investigate-hosts/actions/types';
 import Immutable from 'seamless-immutable';
+import { contextDataParser } from 'investigate-hosts/helpers/context-parser';
 
 const visualsInitialState = Immutable.from({
   activeAutorunTab: 'AUTORUNS',
   activeHostDetailTab: 'OVERVIEW',
   activeHostPropertyTab: 'HOST',
-  activeDataSourceTab: 'ALERTS',
+  activeDataSourceTab: 'ALERT',
   isTreeView: true,
   showDeleteHostsModal: false,
   hostDetailsLoading: false,
-  activeSystemInformationTab: 'HOST_ENTRIES'
+  activeSystemInformationTab: 'HOST_ENTRIES',
+  lookupData: [{}]
 });
 
 const visuals = handleActions({
@@ -32,7 +34,14 @@ const visuals = handleActions({
 
   [ACTION_TYPES.SET_SYSTEM_INFORMATION_TAB]: (state, { payload: { tabName } }) => {
     return state.set('activeSystemInformationTab', tabName);
-  }
+  },
+
+  [ACTION_TYPES.SET_CONTEXT_DATA]: (state, { payload }) => {
+    const lookupData = [].concat(contextDataParser([payload, state.lookupData]));
+    return state.merge({ lookupData });
+  },
+
+  [ACTION_TYPES.CLEAR_PREVIOUS_CONTEXT]: (state) => state.set('lookupData', [{} ])
 }, visualsInitialState);
 
 export default visuals;

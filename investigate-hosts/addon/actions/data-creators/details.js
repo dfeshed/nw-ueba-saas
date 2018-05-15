@@ -1,5 +1,5 @@
 import * as ACTION_TYPES from '../types';
-import { HostDetails } from '../api';
+import { HostDetails, Machines } from '../api';
 import { handleError } from '../creator-utils';
 import { getAllProcess, toggleProcessView } from './process';
 import {
@@ -66,6 +66,7 @@ const _getHostDetails = (forceRefresh) => {
           onSuccess: (response) => {
             dispatch({ type: ACTION_TYPES.RESET_HOST_DETAILS });
             dispatch(_fetchDataForSelectedTab());
+            dispatch(getContextData(response.data.machine.machineName));
             const debugResponse = JSON.stringify(response);
             debug(`onSuccess: ${ACTION_TYPES.FETCH_HOST_DETAILS} ${debugResponse}`);
           },
@@ -77,6 +78,30 @@ const _getHostDetails = (forceRefresh) => {
     }
   };
 };
+
+const getContextData = (machineName) => {
+  return (dispatch) => {
+    const entity = {
+      entityType: 'HOST',
+      entityId: machineName
+    };
+    const query = {
+      filter: [
+        { field: 'meta', value: entity.entityType },
+        { field: 'value', value: entity.entityId }
+      ]
+    };
+    Machines.getContext(query, {
+      initState: () => {
+        dispatch({ type: ACTION_TYPES.CLEAR_PREVIOUS_CONTEXT });
+      },
+      onResponse: ({ data }) => {
+        dispatch({ type: ACTION_TYPES.SET_CONTEXT_DATA, payload: data });
+      }
+    });
+  };
+};
+
 
 const _fetchDataForSelectedTab = () => {
   return (dispatch, getState) => {
@@ -112,7 +137,6 @@ const _fetchDataForSelectedTab = () => {
           dispatch(getProcessAndLib());
         }
         break;
-
     }
   };
 };

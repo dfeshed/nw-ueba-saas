@@ -6,5 +6,6 @@ export default Component.extend({
   layout,
   dateFormat: service(),
   timeFormat: service(),
-  timezone: service()
+  timezone: service(),
+  activeDataSourceTab: ''
 });

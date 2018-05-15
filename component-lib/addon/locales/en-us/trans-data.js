@@ -2081,16 +2081,23 @@ export default {
       securityProducts: 'Security Products',
       windowsPatches: 'Windows Patches',
       hostProperties: 'Host Properties',
-      alerts: 'Alerts',
-      incidents: 'Incidents'
+      alerts: 'Alerts ({{count}})',
+      incidents: 'Incidents ({{count}})'
     },
-    alerts: {
+    context: {
       source: 'Source',
       timestamp: 'Created',
       risk_score: 'Severity',
       name: 'Name',
       numEvents: '# Events',
-      incidentId: 'Incident ID'
+      incident: 'Incident ID',
+      _id: 'ID',
+      priority: 'Priority',
+      status: 'Status',
+      alertCount: 'Alerts',
+      averageAlertRiskScore: 'Risk Score',
+      created: 'Created',
+      assignee: 'Assignee'
     },
     systemInformation: {
       ipAddress: 'IP Address',

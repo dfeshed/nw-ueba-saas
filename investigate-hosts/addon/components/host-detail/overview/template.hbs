@@ -7,16 +7,22 @@
       {{#if domIsReady}}
         <box fit>
           {{#host-detail/utils/host-title-bar tabs=hostPropertyTabs defaultAction=(action 'setHostPropertyTabView') as |tab|}}
-            <div class="label">{{t tab.label}}</div>
+            {{#if (eq tab.name 'ALERT')}}
+              <div class="label">{{t tab.label count=alertsCount}}</div>
+            {{else if (eq tab.name 'INCIDENT')}}
+              <div class="label">{{t tab.label count=incidentsCount}}</div>
+            {{else}}
+              <div class="label">{{t tab.label}}</div>
+            {{/if}}
           {{/host-detail/utils/host-title-bar}}
         </box>
-        <box>
+        <box class='scroll-box'>
           {{#if (eq activePropertyTab 'HOST')}}
             {{host-detail/overview/property-panel
               data=hostData
               localeNameSpace='investigateHosts.hosts.properties'}}
           {{else}}
-            {{endpoint/risk-panel activeDataSourceTab=activeDataSourceTab}}
+            {{endpoint/risk-panel activeDataSourceTab=activePropertyTab data=overviewContext}}
           {{/if}}
         </box>
       {{else}}

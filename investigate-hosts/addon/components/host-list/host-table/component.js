@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { getHostTableColumns } from 'investigate-hosts/reducers/schema/selectors';
-import { getNextMachines, setHostColumnSort } from 'investigate-hosts/actions/data-creators/host';
+import { getNextMachines, setHostColumnSort, handleRowSelection } from 'investigate-hosts/actions/data-creators/host';
 import {
   processedHostList,
   serviceList,
@@ -30,7 +30,8 @@ const dispatchToActions = {
   toggleMachineSelected,
   toggleIconVisibility,
   setSelectedHost,
-  setHostColumnSort
+  setHostColumnSort,
+  handleRowSelection
 };
 
 const HostTable = Component.extend({
@@ -52,6 +53,16 @@ const HostTable = Component.extend({
     return _.sortBy(columnList, [(column) => {
       return i18n.t(column.title).toString();
     }]);
+  },
+
+  actions: {
+    onRowSelection(item) {
+      const entity = {
+        entityType: 'HOST',
+        entityId: item.machineIdentity.machineName
+      };
+      this.send('handleRowSelection', entity);
+    }
   }
 });
 export default connect(stateToComputed, dispatchToActions)(HostTable);

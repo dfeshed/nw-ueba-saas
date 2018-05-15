@@ -198,6 +198,17 @@ const deleteSearch = (id) => {
     query: { data: { id } }
   });
 };
+const getContext = (query, handlers) => {
+  return streamRequest({
+    method: 'stream',
+    modelName: 'context-service',
+    query,
+    onInit: handlers.initState,
+    streamOptions: { requireRequestId: true },
+    onResponse: handlers.onResponse,
+    onError: handlers.onError
+  });
+};
 
 export default {
   getAllServices,
@@ -210,5 +221,6 @@ export default {
   stopScanRequest,
   deleteHosts,
   notifyAgentStatus,
-  deleteSearch
+  deleteSearch,
+  getContext
 };

@@ -3,7 +3,7 @@ import layout from './template';
 
 export default Component.extend({
   layout,
-  tagName: 'vbox',
+  tagName: 'box',
   classNames: ['risk-properties-panel', 'flexi-fit'],
   data: ''
 });

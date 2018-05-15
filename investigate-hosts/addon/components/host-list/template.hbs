@@ -19,10 +19,16 @@
     <box class="risk-property-zone">
         <box fit>
           {{#host-detail/utils/host-title-bar tabs=dataSourceTabs defaultAction=(action 'setDataSourceTab') as |tab|}}
-            <div class="label">{{t tab.label}}</div>
+            {{#if (eq tab.name 'ALERT')}}
+              <div class="label">{{t tab.label count=alertsCount}}</div>
+            {{else if (eq tab.name 'INCIDENT')}}
+              <div class="label">{{t tab.label count=incidentsCount}}</div>
+            {{else}}
+              <div class="label">{{t tab.label}}</div>
+            {{/if}}
           {{/host-detail/utils/host-title-bar}}
         </box>
-        {{endpoint/risk-panel activeDataSourceTab=activeDataSourceTab}}
+        {{endpoint/risk-panel activeDataSourceTab=activeDataSourceTab data=context}}
     </box>
   </hbox>
 {{/if}}

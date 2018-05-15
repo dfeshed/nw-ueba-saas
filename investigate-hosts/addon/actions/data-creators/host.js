@@ -298,6 +298,26 @@ const stopScan = (agentIds, callbacks = callbacksDefault) => {
     });
 };
 
+const handleRowSelection = (entity) => {
+  return (dispatch) => {
+    const query = {
+      filter: [
+        { field: 'meta', value: entity.entityType },
+        { field: 'value', value: entity.entityId }
+      ]
+    };
+    Machines.getContext(query, {
+      initState: () => {
+        dispatch({ type: ACTION_TYPES.CLEAR_PREVIOUS_CONTEXT });
+      },
+      onResponse: ({ data }) => {
+        dispatch({ type: ACTION_TYPES.SET_CONTEXT_DATA, payload: data });
+      }
+      // onError: _handleError()
+    });
+  };
+};
+
 
 export {
   getAllServices,
@@ -311,6 +331,7 @@ export {
   initializeHostPage,
   initializeHostsPreferences,
   startScan,
-  stopScan
+  stopScan,
+  handleRowSelection
 };
 
