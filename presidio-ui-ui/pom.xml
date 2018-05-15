@@ -93,6 +93,7 @@
                             <nodeDownloadRoot>https://libhq-ro.rsa.lab.emc.com/SA/tools/nodejs/dist/</nodeDownloadRoot>
                             <npmRegistryURL>https://repo1.rsa.lab.emc.com:8443/artifactory/registry-npmjs-org/</npmRegistryURL>
                             <npmDownloadRoot>https://repo1.rsa.lab.emc.com:8443/artifactory/asoc-npm-virt/</npmDownloadRoot>
+                            <npmInheritsProxyConfigFromMaven>true</npmInheritsProxyConfigFromMaven>
                             <!-- optional: where to download node and npm from. Defaults to https://nodejs.org/dist/ -->
                             <!--<downloadRoot>http://myproxy.example.org/nodejs/</downloadRoot>-->
                         </configuration>
