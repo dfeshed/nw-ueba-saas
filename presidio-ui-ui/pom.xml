@@ -95,7 +95,7 @@
                             <!-- <npmDownloadRoot>https://repo1.rsa.lab.emc.com:8443/artifactory/asoc-npm-virt/</npmDownloadRoot> -->
                             <!-- optional: where to download node and npm from. Defaults to https://nodejs.org/dist/ -->
                             <!--<downloadRoot>http://myproxy.example.org/nodejs/</downloadRoot>-->
-                            <nodeProxies>http://emc-proxy1:82</nodeProxies>
+                            <!-- <nodeProxies>http://emc-proxy1:82</nodeProxies> -->
                         </configuration>
                     </plugin>
                 </plugins>
