@@ -6,7 +6,6 @@ import net.sf.ehcache.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.core.Authentication;
 import presidio.rsa.auth.PresidioUiNwAuthenticationToken;
 
 import java.util.UUID;

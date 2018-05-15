@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 
 import org.springframework.security.authentication.encoding.MessageDigestPasswordEncoder;
@@ -14,6 +15,7 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 import presidio.rsa.auth.CookieBearerTokenExtractor;
+import presidio.rsa.auth.TokenBearerWrapper;
 
 
 import javax.servlet.FilterChain;
@@ -43,11 +45,18 @@ public class AuthenticationFilter extends GenericFilterBean {
         HttpServletRequest httpRequest = asHttp(request);
         HttpServletResponse httpResponse = asHttp(response);
 
+
+
+
 //        Optional<String> username = Optional.ofNullable(httpRequest.getHeader("X-Auth-Username"));
 //        Optional<String> password = Optional.ofNullable(httpRequest.getHeader("X-Auth-Password"));
 //        Optional<String> token = Optional.ofNullable(httpRequest.getHeader("X-Auth-Token"));
+        Optional<TokenBearerWrapper> tokenBearerWrapper = Optional.ofNullable(cookieBearerTokenExtractor.retrieveToken((HttpServletRequest)request));
+        Optional<String> token = Optional.empty();
+        if (tokenBearerWrapper.isPresent()){
+            token = Optional.ofNullable(tokenBearerWrapper.get().getToken());
+        }
 
-        Optional<String> token = Optional.ofNullable(cookieBearerTokenExtractor.retrieveToken((HttpServletRequest)request));
 //        String resourcePath = new UrlPathHelper().getPathWithinApplication(httpRequest);
 
         try {
@@ -60,6 +69,12 @@ public class AuthenticationFilter extends GenericFilterBean {
             if (token.isPresent()) {
                 logger.debug("Trying to authenticate user by X-Auth-Token method. Token: {}", token);
                 processTokenAuthentication(token);
+                //If no exception authentication success
+                cookieBearerTokenExtractor.updateToken((HttpServletRequest)request,(HttpServletResponse) response,tokenBearerWrapper.get());
+            } else {
+                //No token in the coockie or header
+                throw new BadCredentialsException("Invalid token or token expired");
+
             }
 
             logger.debug("AuthenticationFilter is passing request down the filter chain");

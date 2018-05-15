@@ -5,14 +5,13 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-//import org.springframework.security.core.GrantedAuthority;
+
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import presidio.rsa.auth.PresidioNwAuthService;
 import presidio.rsa.auth.PresidioUiNwAuthenticationToken;
 import presidio.rsa.auth.duplicates.Token;
 
 import java.security.GeneralSecurityException;
-//import java.util.Collection;
 import java.util.Optional;
 
 public class TokenAuthenticationProvider implements AuthenticationProvider {
@@ -36,6 +35,7 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
 //        }
         PresidioUiNwAuthenticationToken authenticationWithToken =  tokenService.retrieve(encodedJwtToken.get());
 
+
         if (authenticationWithToken!=null){
             return authenticationWithToken;
         }
@@ -57,10 +57,10 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
             PresidioUiNwAuthenticationToken resultOfAuthentication = new PresidioUiNwAuthenticationToken(token);
             tokenService.store(encodedJwtToken.get(), resultOfAuthentication);
             return resultOfAuthentication;
-        } catch (GeneralSecurityException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw new BadCredentialsException("Invalid token or token expired");
         }
-        throw new BadCredentialsException("Invalid token or token expired");
+
 
     }
 
