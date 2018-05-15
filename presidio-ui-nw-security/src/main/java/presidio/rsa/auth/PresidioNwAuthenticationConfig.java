@@ -26,6 +26,9 @@ import javax.servlet.http.HttpServletResponse;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class PresidioNwAuthenticationConfig extends WebSecurityConfigurerAdapter {
 
+    @Value("${PRESIDIO_UI_ROLE:presidio-ui}")
+    private String presidioUiRoleName;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.
@@ -33,8 +36,8 @@ public class PresidioNwAuthenticationConfig extends WebSecurityConfigurerAdapter
                 sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).
                 and().
                 authorizeRequests().
-                //TODO: Administrator is role match to the granted authority on the token, need to updated once we decide on name and create token relevant for this authority
-                anyRequest().hasAnyRole("Administrators").
+
+                anyRequest().hasAnyRole(presidioUiRoleName).
 
                 and().
                 anonymous().disable().
