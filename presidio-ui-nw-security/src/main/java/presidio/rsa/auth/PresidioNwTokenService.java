@@ -9,9 +9,13 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.UUID;
 
-public class TokenService {
+/**
+ * A cache service for the authentication base on token string
+ *
+ */
+public class PresidioNwTokenService {
 
-    private static final Logger logger = LoggerFactory.getLogger(TokenService.class);
+    private static final Logger logger = LoggerFactory.getLogger(PresidioNwTokenService.class);
     private static final Cache restApiAuthTokenCache = CacheManager.getInstance().getCache("restApiAuthTokenCache");
     public static final int HALF_AN_HOUR_IN_MILLISECONDS = 30 * 60 * 1000;
 
@@ -25,7 +29,7 @@ public class TokenService {
         return UUID.randomUUID().toString();
     }
 
-    public void store(String token, PresidioUiNwAuthenticationToken authentication) {
+    public void store(String token, PresidioNwAuthenticationToken authentication) {
         restApiAuthTokenCache.put(new Element(token, authentication));
     }
 
@@ -33,8 +37,8 @@ public class TokenService {
         return restApiAuthTokenCache.get(token) != null;
     }
 
-    public PresidioUiNwAuthenticationToken retrieve(String token) {
+    public PresidioNwAuthenticationToken retrieve(String token) {
         Element element = restApiAuthTokenCache.get(token);
-        return element == null ? null : (PresidioUiNwAuthenticationToken) element.getObjectValue();
+        return element == null ? null : (PresidioNwAuthenticationToken) element.getObjectValue();
     }
 }

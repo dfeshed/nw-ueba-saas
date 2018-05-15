@@ -1,4 +1,4 @@
-package presidio.rsa.auth;
+package presidio.rsa.auth.token.bearer;
 
 
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
@@ -11,7 +11,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Optional;
 
 
 /**
@@ -20,6 +19,13 @@ import java.util.Optional;
 @Component
 public class CookieBearerTokenExtractor extends BearerTokenExtractor {
 
+    public static final String ACCESS_TOKEN = "access_token";
+
+    /**
+     * Extract token from the header or query param of cookie
+     * @param request
+     * @return TokenBearerWrapper (origin or token  + token as string)
+     */
     public TokenBearerWrapper retrieveToken(HttpServletRequest request) {
         TokenBearerOrigin origin = TokenBearerOrigin.HEADER;
         String tokenValue = extractHeaderToken(request);
@@ -36,6 +42,12 @@ public class CookieBearerTokenExtractor extends BearerTokenExtractor {
         return new TokenBearerWrapper(tokenValue,origin);
     }
 
+    /**
+     * Try to extract the token from the cookie
+     * @param request
+     * @param tokenValue
+     * @return Token as string or null
+     */
     private String getTokenFromCookie(HttpServletRequest request, String tokenValue) {
         for (Cookie cookie : request.getCookies()) {
             if (cookie.getName().equals(OAuth2AccessToken.ACCESS_TOKEN)) {
@@ -46,8 +58,13 @@ public class CookieBearerTokenExtractor extends BearerTokenExtractor {
         return tokenValue;
     }
 
+    /**
+     * Try to extract the the token from the query param
+     * @param request
+     * @return token as string or null
+     */
     private String extractTokenFromQueryParam(HttpServletRequest request) {
-       String queryToken =  request.getParameter("access_token");
+       String queryToken =  request.getParameter(ACCESS_TOKEN);
        if (StringUtils.isEmpty(queryToken)){
            return null;
        } else {
@@ -73,7 +90,7 @@ public class CookieBearerTokenExtractor extends BearerTokenExtractor {
 
         //If the token come from header or from query param
         if (tokenBearerWrapper.getToken()!=null){
-            response.addCookie(new Cookie("access_token",tokenBearerWrapper.getToken()));
+            response.addCookie(new Cookie(ACCESS_TOKEN,tokenBearerWrapper.getToken()));
         }
 
 
@@ -91,16 +108,20 @@ public class CookieBearerTokenExtractor extends BearerTokenExtractor {
         }
     }
 
+    /**
+     * Return the query string without the access token if exists
+     * @param queryString
+     * @param token
+     * @return
+     */
     private String removeTokenFromQueryString(String queryString, String token) {
 
         if (queryString == null){
             return "";
         }
-        queryString = queryString.replaceAll("access_token="+token,"");
+        queryString = queryString.replaceAll(ACCESS_TOKEN+"="+token,"");
         queryString = queryString.replaceAll("&&","&");
         return queryString;
-
-
 
     }
 }

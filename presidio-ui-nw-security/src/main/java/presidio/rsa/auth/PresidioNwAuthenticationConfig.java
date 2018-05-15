@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -11,17 +12,25 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.util.CollectionUtils;
 import presidio.rsa.auth.spring.KeyStoreConfigProperties;
+import presidio.rsa.auth.token.bearer.CookieBearerTokenExtractor;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 @Configuration
 //@EnableWebMvcSecurity
 @EnableScheduling
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class PresidioNwAuthenticationConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${presidio.user.role}")
     private String presidioUiUser;
@@ -34,12 +43,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 and().
                 authorizeRequests().
 //                antMatchers(actuatorEndpoints()).hasRole(backendAdminRole).
-                anyRequest().authenticated().
+                anyRequest().hasAnyRole("Administrators").
                 and().
                 anonymous().disable().
                 exceptionHandling().authenticationEntryPoint(unauthorizedEntryPoint());
 
-        http.addFilterBefore(new AuthenticationFilter(authenticationManager(),cookieBearerTokenExtractor()), BasicAuthenticationFilter.class)
+        http.addFilterBefore(new PresidioNwAuthenticationFilter(authenticationManager(),cookieBearerTokenExtractor()), BasicAuthenticationFilter.class)
 //                .addFilterBefore(new ManagementEndpointAuthenticationFilter(authenticationManager()), BasicAuthenticationFilter.class)
         ;
     }
@@ -68,8 +77,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public TokenService tokenService() {
-        return new TokenService();
+    public PresidioNwTokenService tokenService() {
+        return new PresidioNwTokenService();
     }
 
 //    @Bean
@@ -89,7 +98,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public AuthenticationProvider tokenAuthenticationProvider() {
-        return new TokenAuthenticationProvider(tokenService(),presidioNwAuthService());
+        return new PresidioNwTokenAuthenticationProvider(tokenService(),presidioNwAuthService());
     }
 
     @Bean
@@ -103,9 +112,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
+    @Bean
+    RoleHierarchy roleHierarchy() {
+        return new PresidioNwRoleHierarchy();
 
-//      <cache name="restApiAuthTokenCache" eternal="false" maxElementsInMemory="0" overflowToDisk="false"
-//           timeToLiveSeconds="14400" memoryStoreEvictionPolicy="LRU">
-//        <persistence strategy="none"/>
-//    </cache>
+    }
 }

@@ -14,6 +14,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
+import presidio.rsa.auth.token.bearer.CookieBearerTokenExtractor;
+import presidio.rsa.auth.token.bearer.TokenBearerWrapper;
 
 
 import javax.servlet.FilterChain;
@@ -25,15 +27,16 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
-public class AuthenticationFilter extends GenericFilterBean {
+public class PresidioNwAuthenticationFilter extends GenericFilterBean {
 
-    private final static Logger logger = LoggerFactory.getLogger(AuthenticationFilter.class);
-    public static final String TOKEN_SESSION_KEY = "token";
-    public static final String USER_SESSION_KEY = "user";
+    private final static Logger logger = LoggerFactory.getLogger(PresidioNwAuthenticationFilter.class);
+    private static final String TOKEN_SESSION_KEY = "token";
+    private static final String USER_SESSION_KEY = "user";
+
     private AuthenticationManager authenticationManager;
     private CookieBearerTokenExtractor cookieBearerTokenExtractor;
 
-    public AuthenticationFilter(AuthenticationManager authenticationManager, CookieBearerTokenExtractor cookieBearerTokenExtractor) {
+    public PresidioNwAuthenticationFilter(AuthenticationManager authenticationManager, CookieBearerTokenExtractor cookieBearerTokenExtractor) {
         this.authenticationManager = authenticationManager;
         this.cookieBearerTokenExtractor = cookieBearerTokenExtractor;
     }
@@ -43,37 +46,27 @@ public class AuthenticationFilter extends GenericFilterBean {
         HttpServletRequest httpRequest = asHttp(request);
         HttpServletResponse httpResponse = asHttp(response);
 
-
-
-
-//        Optional<String> username = Optional.ofNullable(httpRequest.getHeader("X-Auth-Username"));
-//        Optional<String> password = Optional.ofNullable(httpRequest.getHeader("X-Auth-Password"));
-//        Optional<String> token = Optional.ofNullable(httpRequest.getHeader("X-Auth-Token"));
-        Optional<TokenBearerWrapper> tokenBearerWrapper = Optional.ofNullable(cookieBearerTokenExtractor.retrieveToken((HttpServletRequest)request));
+        //Get TokenBearerWrapper which contain the token as string and the origin of the token (HEADERM, COOKIE, REQUEST)
+        Optional<TokenBearerWrapper> tokenBearerWrapper = Optional.ofNullable(cookieBearerTokenExtractor.retrieveToken(httpRequest));
         Optional<String> token = Optional.empty();
         if (tokenBearerWrapper.isPresent()){
             token = Optional.ofNullable(tokenBearerWrapper.get().getToken());
         }
 
-//        String resourcePath = new UrlPathHelper().getPathWithinApplication(httpRequest);
-
         try {
-//            if (postToAuthenticate(httpRequest, resourcePath)) {
-//                logger.debug("Trying to authenticate user {} by X-Auth-Username method", username);
-//                processUsernamePasswordAuthentication(httpResponse, username, password);
-//                return;
-//            }
+            //Authenticate using the extracted token
 
             if (token.isPresent()) {
                 logger.debug("Trying to authenticate user by X-Auth-Token method. Token: {}", token);
                 processTokenAuthentication(token);
-                //If no exception authentication success
-                cookieBearerTokenExtractor.updateToken((HttpServletRequest)request,(HttpServletResponse) response,tokenBearerWrapper.get());
+                //If no exception, authentication success
+                cookieBearerTokenExtractor.updateToken((HttpServletRequest)request,httpResponse,tokenBearerWrapper.get());
             } else {
                 //No token in the coockie or header
                 throw new BadCredentialsException("Invalid token or token expired");
 
             }
+
 
             logger.debug("AuthenticationFilter is passing request down the filter chain");
             addSessionContextToLogging();
@@ -115,24 +108,6 @@ public class AuthenticationFilter extends GenericFilterBean {
         return (HttpServletResponse) response;
     }
 
-//    private boolean postToAuthenticate(HttpServletRequest httpRequest, String resourcePath) {
-//        return ApiController.AUTHENTICATE_URL.equalsIgnoreCase(resourcePath) && httpRequest.getMethod().equals("POST");
-//    }
-
-//    private void processUsernamePasswordAuthentication(HttpServletResponse httpResponse, Optional<String> username, Optional<String> password) throws IOException {
-//        Authentication resultOfAuthentication = tryToAuthenticateWithUsernameAndPassword(username, password);
-//        SecurityContextHolder.getContext().setAuthentication(resultOfAuthentication);
-//        httpResponse.setStatus(HttpServletResponse.SC_OK);
-//        TokenResponse tokenResponse = new TokenResponse(resultOfAuthentication.getDetails().toString());
-//        String tokenJsonResponse = new ObjectMapper().writeValueAsString(tokenResponse);
-//        httpResponse.addHeader("Content-Type", "application/json");
-//        httpResponse.getWriter().print(tokenJsonResponse);
-//    }
-
-//    private Authentication tryToAuthenticateWithUsernameAndPassword(Optional<String> username, Optional<String> password) {
-//        UsernamePasswordAuthenticationToken requestAuthentication = new UsernamePasswordAuthenticationToken(username, password);
-//        return tryToAuthenticate(requestAuthentication);
-//    }
 
     private void processTokenAuthentication(Optional<String> token) {
         Authentication resultOfAuthentication = tryToAuthenticateWithToken(token);

@@ -1,4 +1,4 @@
-package presidio.rsa.auth;
+package presidio.rsa.auth.token.bearer;
 
 public enum TokenBearerOrigin {
 

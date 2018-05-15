@@ -12,12 +12,12 @@ import presidio.rsa.auth.duplicates.Token;
 
 import java.util.Optional;
 
-public class TokenAuthenticationProvider implements AuthenticationProvider {
+public class PresidioNwTokenAuthenticationProvider implements AuthenticationProvider {
 
-    private TokenService tokenService;
+    private PresidioNwTokenService tokenService;
 
     private PresidioNwAuthService presidioNwAuthService;
-    public TokenAuthenticationProvider(TokenService tokenService, PresidioNwAuthService presidioNwAuthService) {
+    public PresidioNwTokenAuthenticationProvider(PresidioNwTokenService tokenService, PresidioNwAuthService presidioNwAuthService) {
         this.tokenService = tokenService;
         this.presidioNwAuthService = presidioNwAuthService;
     }
@@ -31,7 +31,7 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
 //        if (!tokenService.contains(encodedJwtToken.get())) {
 //            throw new BadCredentialsException("Invalid token or token expired");
 //        }
-        PresidioUiNwAuthenticationToken authenticationWithToken =  tokenService.retrieve(encodedJwtToken.get());
+        PresidioNwAuthenticationToken authenticationWithToken =  tokenService.retrieve(encodedJwtToken.get());
 
 
         if (authenticationWithToken!=null){
@@ -52,7 +52,7 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
         try {
             Token token = presidioNwAuthService.verifyAccess(encodedJwtToken.get());
 
-            PresidioUiNwAuthenticationToken resultOfAuthentication = new PresidioUiNwAuthenticationToken(token);
+            PresidioNwAuthenticationToken resultOfAuthentication = new PresidioNwAuthenticationToken(token);
             tokenService.store(encodedJwtToken.get(), resultOfAuthentication);
             return resultOfAuthentication;
         } catch (Exception e) {

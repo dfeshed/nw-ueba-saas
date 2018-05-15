@@ -6,11 +6,11 @@ import presidio.rsa.auth.duplicates.Token;
 
 import java.util.Collection;
 
-public class PresidioUiNwAuthenticationToken implements Authentication {
+public class PresidioNwAuthenticationToken implements Authentication {
 
     private Token token;
 
-    public PresidioUiNwAuthenticationToken(Token token) {
+    public PresidioNwAuthenticationToken(Token token) {
         this.token = token;
     }
 

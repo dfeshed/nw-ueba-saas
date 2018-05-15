@@ -1,7 +1,7 @@
 package presidio.ui.presidiouiapp.spring;
 
 
-import presidio.rsa.auth.SecurityConfig;
+import presidio.rsa.auth.PresidioNwAuthenticationConfig;
 import fortscale.common.dataentity.DataEntitiesConfig;
 import fortscale.services.*;
 
@@ -26,7 +26,7 @@ import presidio.ui.presidiouiapp.rest.errorhandler.RestErrorHandler;
 
 
 @Configuration
-@Import({PresidioUiServiceConfiguration.class,SecurityConfig.class})
+@Import({PresidioUiServiceConfiguration.class, PresidioNwAuthenticationConfig.class})
 public class WebConf{
 
 
