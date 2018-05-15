@@ -91,7 +91,7 @@
                             <!-- optional: with node version greater than 4.0.0 will use npm provided by node distribution -->
                             <npmVersion>3.3.3</npmVersion>
                             <nodeDownloadRoot>https://libhq-ro.rsa.lab.emc.com/SA/tools/nodejs/dist/</nodeDownloadRoot>
-                            <npmRegistryURL>https://repo1.rsa.lab.emc.com:8443/artifactory/registry-npmjs-org/</npmRegistryURL>
+                            <npmRegistryURL>http://repo1.rsa.lab.emc.com:8080/artifactory/registry-npmjs-org/</npmRegistryURL>
                             <npmDownloadRoot>https://repo1.rsa.lab.emc.com:8443/artifactory/asoc-npm-virt/</npmDownloadRoot>
                             <environmentVariables><HTTP_PROXY>http://emc-proxy1:82</HTTP_PROXY></environmentVariables>
                             <!-- optional: where to download node and npm from. Defaults to https://nodejs.org/dist/ -->
