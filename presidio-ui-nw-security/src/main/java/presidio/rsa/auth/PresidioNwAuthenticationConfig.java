@@ -12,19 +12,14 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.util.CollectionUtils;
+
 import presidio.rsa.auth.spring.KeyStoreConfigProperties;
 import presidio.rsa.auth.token.bearer.CookieBearerTokenExtractor;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+
 
 @Configuration
 //@EnableWebMvcSecurity
@@ -42,28 +37,22 @@ public class PresidioNwAuthenticationConfig extends WebSecurityConfigurerAdapter
                 sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).
                 and().
                 authorizeRequests().
-//                antMatchers(actuatorEndpoints()).hasRole(backendAdminRole).
+
                 anyRequest().hasAnyRole("Administrators").
                 and().
                 anonymous().disable().
                 exceptionHandling().authenticationEntryPoint(unauthorizedEntryPoint());
 
         http.addFilterBefore(new PresidioNwAuthenticationFilter(authenticationManager(),cookieBearerTokenExtractor()), BasicAuthenticationFilter.class)
-//                .addFilterBefore(new ManagementEndpointAuthenticationFilter(authenticationManager()), BasicAuthenticationFilter.class)
+
         ;
     }
 
-//    private String[] actuatorEndpoints() {
-//        return new String[]{ApiController.AUTOCONFIG_ENDPOINT, ApiController.BEANS_ENDPOINT, ApiController.CONFIGPROPS_ENDPOINT,
-//                ApiController.ENV_ENDPOINT, ApiController.MAPPINGS_ENDPOINT,
-//                ApiController.METRICS_ENDPOINT, ApiController.SHUTDOWN_ENDPOINT};
-//    }
+
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.
-//        authenticationProvider(domainUsernamePasswordAuthenticationProvider()).
-//                authenticationProvider(backendAdminUsernamePasswordAuthenticationProvider()).
                 authenticationProvider(tokenAuthenticationProvider());
     }
     @Bean
