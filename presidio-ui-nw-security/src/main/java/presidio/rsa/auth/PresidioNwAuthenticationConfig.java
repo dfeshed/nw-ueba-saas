@@ -22,13 +22,9 @@ import javax.servlet.http.HttpServletResponse;
 
 
 @Configuration
-//@EnableWebMvcSecurity
 @EnableScheduling
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class PresidioNwAuthenticationConfig extends WebSecurityConfigurerAdapter {
-
-    @Value("${presidio.user.role}")
-    private String presidioUiUser;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
