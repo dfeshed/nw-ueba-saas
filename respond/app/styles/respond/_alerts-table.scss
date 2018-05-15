@@ -284,11 +284,20 @@ $alertsTableDotSize: 5px;
     color: text-color(primary, lighter);
   }
 
+  .event .event-header span a {
+    color: text-color(secondary, light);
+  }
+
   &.is-selected {
     background: background-color(secondary, dark);
 
-    .event .event-header span {
-      color: text-color(primary, lightest);
+    .event .event-header {
+      span {
+        color: text-color(primary, lightest);
+        a {
+          color: text-color(secondary, light);
+        }
+      }
     }
 
     .event {

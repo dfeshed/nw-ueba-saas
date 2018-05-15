@@ -1,5 +1,27 @@
-{{recon-container
-  endpointId=endpointId
-  eventId=eventId
-  aliases=aliases
-  language=language}}
+<hbox nowrap class="recon-container__main" style={{resolvedWidth}}>
+  <vbox nowrap fill>
+
+  <header class="recon-container__header">
+    <hbox class="recon-container__header__inner">
+      <vbox xs="10">
+        <div class="recon-respond-header">{{t 'respond.investigation.eventAnalysis'}}</div>
+      </vbox>
+      <vbox xs="2" class="recon-container__header-icons">
+        <div>
+          <span class="recon-container__header-close-icon">
+            <button test-id="reconRespondCloseBtn" onclick={{action "close"}} class="recon-container__header-close" title={{t 'respond.close'}}>
+              {{rsa-icon style='filled' name='close'}}
+            </button>
+          </span>
+        </div>
+      </vbox>
+    </hbox>
+  </header>
+
+  {{recon-container
+     endpointId=endpointId
+     eventId=eventId
+     aliases=aliases
+     language=language}}
+  </vbox>
+</hbox>

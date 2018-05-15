@@ -8,5 +8,11 @@ export default Route.extend({
     endpointId: {
       refreshModel: false
     }
+  },
+  actions: {
+    reconClose() {
+      const { incidentId } = this.context;
+      this.transitionTo('incident', incidentId);
+    }
   }
 });

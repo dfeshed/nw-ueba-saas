@@ -1,4 +1,5 @@
 import { test } from 'qunit';
+import { run } from '@ember/runloop';
 import wait from 'ember-test-helpers/wait';
 import moduleForAcceptance from '../helpers/module-for-acceptance';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
@@ -13,7 +14,7 @@ moduleForAcceptance('Acceptance | storyline', {
 });
 
 test('incident details storyline events open event analysis on click', function(assert) {
-  assert.expect(7);
+  assert.expect(8);
 
   const done = waitForSockets();
 
@@ -21,6 +22,7 @@ test('incident details storyline events open event analysis on click', function(
   const toggleEventsSelector = '[test-id=alertsTableToggleEvents]';
   const reconLinkSelector = '[test-id=respondReconLink]';
   const reconWrapperSelector = '[test-id=reconRespondWrapper]';
+  const closeReconButton = '[test-id=reconRespondCloseBtn]';
 
   visit('/respond/incident/INC-123');
 
@@ -48,7 +50,14 @@ test('incident details storyline events open event analysis on click', function(
     return wait().then(() => {
       assert.equal(find(reconWrapperSelector).length, 1);
       assert.equal(currentURL(), '/respond/incident/INC-123/recon?endpointId=555d9a6fe4b0d37c827d402d&eventId=150', 'The route has changed to recon and includes queryParams for eventId and endpointId');
-      return wait().then(() => done());
+
+      run(() => {
+        click(closeReconButton);
+        return wait().then(() => {
+          assert.equal(currentURL(), '/respond/incident/INC-123', 'The route has dropped the queryParams because recon was closed');
+          return wait().then(() => done());
+        });
+      });
     });
   });
 });

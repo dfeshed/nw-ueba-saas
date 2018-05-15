@@ -704,6 +704,9 @@ export default {
     select: 'Select',
     close: 'Close',
     empty: '(empty)',
+    investigation: {
+      eventAnalysis: 'Event Analysis'
+    },
     errorPage: {
       serviceDown: 'Respond Server is offline',
       serviceDownDescription: 'The Respond Server is not running or is inaccessible. Check with your administrator to resolve this issue.',
