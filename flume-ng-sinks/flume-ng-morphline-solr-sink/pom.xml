@@ -32,8 +32,8 @@ limitations under the License.
 
     <repositories>
         <repository>
-            <id>twitter-twttr</id>
-            <url>http://maven.twttr.com/</url>
+            <id>libs-snapshot</id>
+            <url>http://repo1.rsa.lab.emc.com:8081/artifactory/libs-snapshot/</url>
         </repository>
     </repositories>
 
