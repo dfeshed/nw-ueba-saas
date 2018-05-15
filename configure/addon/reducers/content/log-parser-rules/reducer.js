@@ -78,7 +78,7 @@ export default reduxActions.handleActions({
     return state.merge(
       {
         selectedLogParserIndex: payload,
-        selectedParserRuleIndex: -1
+        selectedParserRuleIndex: 0
       }
     );
   }

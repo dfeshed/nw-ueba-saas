@@ -3,7 +3,7 @@
   {{#each logParsers as |logParser index|}}
     <tr>
       <td class='{{if (eq index 0) 'firstItem'}}
-      {{if (eq selectedLogParserIndex index) 'active'}}'{{action "selectLogParser" logParser.name index}}>
+      {{if (eq selectedLogParserIndex index) 'active'}}'{{action "selectLogParser" index}}>
         {{logParser.name}}
       </td>
     </tr>

@@ -125,8 +125,8 @@ export const parserRuleMeta = createSelector(
   }
 );
 export const hasSelectedParserRule = createSelector(
-  selectedParserRuleIndex,
-  (index) => {
-    return index !== -1;
+  selectedParserRuleName,
+  (name) => {
+    return name !== '';
   }
 );
