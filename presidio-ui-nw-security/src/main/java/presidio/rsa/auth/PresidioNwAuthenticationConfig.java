@@ -81,20 +81,7 @@ public class PresidioNwAuthenticationConfig extends WebSecurityConfigurerAdapter
         return new PresidioNwTokenService();
     }
 
-//    @Bean
-//    public ExternalServiceAuthenticator someExternalServiceAuthenticator() {
-//        return new SomeExternalServiceAuthenticator();
-//    }
 
-//    @Bean
-//    public AuthenticationProvider domainUsernamePasswordAuthenticationProvider() {
-//        return new DomainUsernamePasswordAuthenticationProvider(tokenService(), someExternalServiceAuthenticator());
-//    }
-
-//    @Bean
-//    public AuthenticationProvider backendAdminUsernamePasswordAuthenticationProvider() {
-//        return new BackendAdminUsernamePasswordAuthenticationProvider();
-//    }
 
     @Bean
     public AuthenticationProvider tokenAuthenticationProvider() {

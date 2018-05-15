@@ -6,11 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 
 /**
- * Framework utility methods for working with Launch components, configuration and other support
- * classes.
- *
- * @author Abram Thielke
- * @since 0.9
+ * Copied from LunchUtils - need to decide how to reuse code with being depended on all launch project
+ * TODO: https://bedfordjira.na.rsa.net/browse/ASOC-55722
  */
 public final class LaunchUtils {
 

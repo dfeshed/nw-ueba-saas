@@ -15,6 +15,10 @@ import java.io.IOException;
 
 /**
  * CookieBearerTokenExtractor inspects request for access_token
+ *
+ *
+ * Partial Copied from Lunch project- need to decide how to reuse code without being depended on all launch project
+ *
  */
 @Component
 public class CookieBearerTokenExtractor extends BearerTokenExtractor {
@@ -25,7 +29,9 @@ public class CookieBearerTokenExtractor extends BearerTokenExtractor {
      * Extract token from the header or query param of cookie
      * @param request
      * @return TokenBearerWrapper (origin or token  + token as string)
+     * TODO: https://bedfordjira.na.rsa.net/browse/ASOC-55722
      */
+
     public TokenBearerWrapper retrieveToken(HttpServletRequest request) {
         TokenBearerOrigin origin = TokenBearerOrigin.HEADER;
         String tokenValue = extractHeaderToken(request);

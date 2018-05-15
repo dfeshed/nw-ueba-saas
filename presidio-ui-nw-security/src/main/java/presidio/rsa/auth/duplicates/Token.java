@@ -17,10 +17,8 @@ import java.util.stream.Collectors;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_DEFAULT;
 
 /**
- * An authentication token
- *
- * @author Aldrin D'Souza
- * @since 0.13
+ * Copied from Launch project- need to decide how to reuse code without being depended on all launch project
+ * TODO: https://bedfordjira.na.rsa.net/browse/ASOC-55722
  */
 
 @JsonInclude(NON_DEFAULT)

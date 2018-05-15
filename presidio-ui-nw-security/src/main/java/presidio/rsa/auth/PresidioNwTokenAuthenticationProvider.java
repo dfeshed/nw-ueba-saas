@@ -28,26 +28,13 @@ public class PresidioNwTokenAuthenticationProvider implements AuthenticationProv
         if (!encodedJwtToken.isPresent() || encodedJwtToken.get().isEmpty()) {
             throw new BadCredentialsException("Invalid token");
         }
-//        if (!tokenService.contains(encodedJwtToken.get())) {
-//            throw new BadCredentialsException("Invalid token or token expired");
-//        }
+
         PresidioNwAuthenticationToken authenticationWithToken =  tokenService.retrieve(encodedJwtToken.get());
 
 
         if (authenticationWithToken!=null){
             return authenticationWithToken;
         }
-
-
-
-//        AuthenticationWithToken resultOfAuthentication = externalServiceAuthenticator.authenticate(username.get(), password.get());
-//        String newToken = tokenService.generateNewToken();
-//        resultOfAuthentication.setToken(newToken);
-//        tokenService.store(newToken, resultOfAuthentication);
-//        String encodedJwtToken = cookieBearerTokenExtractor.retrieveToken(request);
-
-//        LOG.debug("token : {}", encodedJwtToken);
-
 
         try {
             Token token = presidioNwAuthService.verifyAccess(encodedJwtToken.get());

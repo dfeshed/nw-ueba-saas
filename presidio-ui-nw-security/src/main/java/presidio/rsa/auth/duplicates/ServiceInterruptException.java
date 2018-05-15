@@ -1,11 +1,8 @@
 package presidio.rsa.auth.duplicates;
 
 /**
- * This class defines an exception that components can throw during initialization of the lifecycle to signal the
- * service cannot continue.
- *
- * @author Tim Menninger
- * @since 0.9
+ * Copied from Launch project- need to decide how to reuse code without being depended on all launch project
+ * TODO: https://bedfordjira.na.rsa.net/browse/ASOC-55722
  */
 public class ServiceInterruptException extends Exception {
 
