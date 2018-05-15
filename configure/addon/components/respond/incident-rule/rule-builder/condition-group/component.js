@@ -18,7 +18,7 @@ const stateToComputed = (state) => {
   };
 };
 
-const groupOperators = ['and', 'or', 'not'];
+const groupOperators = ['and', 'or', 'nor'];
 
 const dispatchToActions = function(dispatch) {
   return {

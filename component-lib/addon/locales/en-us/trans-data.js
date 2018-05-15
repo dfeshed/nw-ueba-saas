@@ -645,7 +645,7 @@ export default {
         groupOperators: {
           and: 'All of these',
           or: 'Any of these',
-          not: 'None of these'
+          nor: 'None of these'
         },
         value: 'Value',
         hasGroupsWithoutConditions: 'All groups must have at least one condition',
