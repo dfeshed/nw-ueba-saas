@@ -5,6 +5,7 @@ import moduleForAcceptance from '../helpers/module-for-acceptance';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import teardownSockets from '../helpers/teardown-sockets';
 import { waitForSockets } from '../helpers/wait-for-sockets';
+import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 
 moduleForAcceptance('Acceptance | storyline', {
   resolver: engineResolverFor('respond'),
@@ -34,6 +35,10 @@ test('incident details storyline events open event analysis on click', function(
   click(indicatorsSelector);
 
   andThen(function() {
+    return waitFor(() => find(toggleEventsSelector).length > 0);
+  });
+
+  andThen(function() {
     assert.ok(find(toggleEventsSelector).length > 0);
   });
 
@@ -53,8 +58,8 @@ test('incident details storyline events open event analysis on click', function(
 
       run(() => {
         click(closeReconButton);
-        return wait().then(() => {
-          assert.equal(currentURL(), '/respond/incident/INC-123', 'The route has dropped the queryParams because recon was closed');
+        return waitFor(() => currentURL && currentURL() === '/respond/incident/INC-123').then(() => {
+          assert.ok(true, 'The route has dropped the queryParams because recon was closed');
           return wait().then(() => done());
         });
       });
