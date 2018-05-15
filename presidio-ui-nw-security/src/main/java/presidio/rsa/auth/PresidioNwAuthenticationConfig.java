@@ -33,8 +33,9 @@ public class PresidioNwAuthenticationConfig extends WebSecurityConfigurerAdapter
                 sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).
                 and().
                 authorizeRequests().
-
+                //TODO: Administrator is role match to the granted authority on the token, need to updated once we decide on name and create token relevant for this authority
                 anyRequest().hasAnyRole("Administrators").
+
                 and().
                 anonymous().disable().
                 exceptionHandling().authenticationEntryPoint(unauthorizedEntryPoint());
