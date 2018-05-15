@@ -14,7 +14,8 @@ import {
   hasAssigneeFilter,
   getIsUnassignedFilters,
   getCategoryFilters,
-  isEscalateAvailable
+  isEscalateAvailable,
+  getVisibleEntityTypes
 } from 'respond/selectors/incidents';
 import data from '../../data/data';
 
@@ -22,13 +23,16 @@ const { incidents: items } = data;
 
 const info = { id: 'INC-123' };
 
+const entityTypes = ['host', 'ip', 'mac_address', 'domain', 'user', 'file_name', 'file_hash'];
+
 const incident = Immutable.from({
   id: 'INC-123',
   info,
   infoStatus: 'completed',
   storylineStatus: 'wait',
   viewMode: 'storyline',
-  inspectorWidth: 400
+  inspectorWidth: 400,
+  visibleEntityTypes: entityTypes
 });
 
 const incidents = Immutable.from({
@@ -61,6 +65,7 @@ module('Unit | Utility | Incidents Selector', function() {
     assert.equal(getIncidentInfoStatus(state), 'completed', 'The returned value from the getIncidentInfoStatus selector is as expected');
     assert.equal(getViewMode(state), 'storyline', 'The returned value from the getViewMode selector is as expected');
     assert.equal(getInspectorWidth(state), 400, 'The returned value from the getInspectorWidth selector is as expected');
+    assert.deepEqual(getVisibleEntityTypes(state), entityTypes, 'The returned value from getVisibleEntityTypes is as expected');
   });
 
   test('Basic incidents selectors', function(assert) {

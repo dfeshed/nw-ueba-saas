@@ -7,6 +7,49 @@ $entityFileNameColor: $cyan;
 $entityFileHashColor: $cyan;
 
 .rsa-incident-entities {
+
+  &.ip-hidden {
+    .rsa-force-layout-node.ip, .rsa-force-layout-link.source-ip, .rsa-force-layout-link.target-ip {
+      display: none;
+    }
+  }
+
+  &.host-hidden {
+    .rsa-force-layout-node.host, .rsa-force-layout-link.source-host, .rsa-force-layout-link.target-host {
+      display: none;
+    }
+  }
+
+  &.domain-hidden {
+    .rsa-force-layout-node.domain, .rsa-force-layout-link.source-domain, .rsa-force-layout-link.target-domain {
+      display: none;
+    }
+  }
+
+  &.mac_address-hidden {
+    .rsa-force-layout-node.mac-address, .rsa-force-layout-link.source-mac-address, .rsa-force-layout-link.target-mac-address{
+      display: none;
+    }
+  }
+
+  &.user-hidden {
+    .rsa-force-layout-node.user, .rsa-force-layout-link.source-user, .rsa-force-layout-link.target-user{
+      display: none;
+    }
+  }
+
+  &.file_name-hidden {
+    .rsa-force-layout-node.file-name, .rsa-force-layout-link.source-file-name, .rsa-force-layout-link.target-file-name {
+      display: none;
+    }
+  }
+
+  &.file_hash-hidden {
+    .rsa-force-layout-node.file-hash, .rsa-force-layout-link.source-file-hash, .rsa-force-layout-link.target-file-hash{
+      display: none;
+    }
+  }
+
   rect.grid {
     pointer-events: none;
   }
@@ -19,6 +62,7 @@ $entityFileHashColor: $cyan;
   }
 
   .rsa-force-layout {
+
     &-node {
       opacity: 1;
       transition: opacity 0.3s;

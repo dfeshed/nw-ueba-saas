@@ -108,7 +108,7 @@ export default function() {
   // Build link DOM for entering data.
   const linksEnter = linksAll.enter();
   const linksEnterGroup = linksEnter.append('g')
-    .attr('class', (d) => `rsa-force-layout-link ${dasherize(d.type || '')}`);
+    .attr('class', (d) => `rsa-force-layout-link ${dasherize(d.type || '')} source-${dasherize(d.source.type || 'unknown')} target-${dasherize(d.target.type || 'unknown')}`);
   linksEnterGroup.append('line')
     .attr('class', 'line')
     .attr('x1', 0)

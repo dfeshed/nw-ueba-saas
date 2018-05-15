@@ -53,6 +53,11 @@ export const getTasksStatus = createSelector(
   (incidentState) => incidentState.tasksStatus
 );
 
+export const getVisibleEntityTypes = createSelector(
+  incidentState,
+  (incidentState) => incidentState.visibleEntityTypes
+);
+
 export const getItemsFilters = createSelector(
   incidentsState,
   (incidentsState) => incidentsState.itemsFilters || {}

@@ -5,6 +5,7 @@ import { handle } from 'redux-pack';
 import { load, persist } from './util/local-storage';
 import { toggle } from 'respond/utils/immut/array';
 import { isArray } from '@ember/array';
+import _ from 'lodash';
 
 const localStorageKey = 'rsa::nw::respond::incident';
 
@@ -63,7 +64,10 @@ let initialState = {
 
   // status of the call to add a given set of related indicators to the current event
   // either 'wait', 'success' or 'error'
-  addRelatedIndicatorsStatus: null
+  addRelatedIndicatorsStatus: null,
+
+  // the types of nodes in the nodal graph that are visible to the user
+  visibleEntityTypes: ['host', 'ip', 'mac_address', 'domain', 'user', 'file_name', 'file_hash']
 };
 
 // Load local storage values and incorporate into initial state
@@ -349,6 +353,13 @@ const incident = reduxActions.handleActions({
       searchStatus: 'error',
       stopSearchStream: null
     });
+  },
+
+  [ACTION_TYPES.TOGGLE_ENTITY_VISIBILITY]: (state, action) => {
+    const { payload: { entity } } = action;
+    return state.set('visibleEntityTypes', _.includes(state.visibleEntityTypes, entity) ?
+      _.without(state.visibleEntityTypes, entity) :
+      [...state.visibleEntityTypes, entity]);
   },
 
   [ACTION_TYPES.ADD_RELATED_INDICATORS]: (state, action) => (

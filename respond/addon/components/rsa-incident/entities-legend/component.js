@@ -2,6 +2,17 @@ import Component from '@ember/component';
 import computed, { notEmpty } from 'ember-computed-decorators';
 import { dasherize } from '@ember/string';
 import safeCallback from 'component-lib/utils/safe-callback';
+import { connect } from 'ember-redux';
+import { toggleEntityVisibility } from 'respond/actions/creators/incidents-creators';
+import { getVisibleEntityTypes } from 'respond/selectors/incidents';
+
+const stateToComputed = (state) => ({
+  visibleEntityTypes: getVisibleEntityTypes(state)
+});
+
+const dispatchToActions = {
+  toggleEntityVisibility
+};
 
 const EntitiesLegend = Component.extend({
   classNames: ['rsa-incident-entities-legend'],
@@ -66,4 +77,4 @@ const EntitiesLegend = Component.extend({
   }
 });
 
-export default EntitiesLegend;
+export default connect(stateToComputed, dispatchToActions)(EntitiesLegend);

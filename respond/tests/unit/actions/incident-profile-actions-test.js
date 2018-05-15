@@ -72,7 +72,8 @@ module('Unit | Utility | Incident Profile Actions - Reducers', function() {
         ids: ['12345']
       },
       tasks: [{}],
-      tasksStatus: 'wait'
+      tasksStatus: 'wait',
+      visibleEntityTypes: ['host', 'ip', 'mac_address', 'domain', 'user', 'file_name', 'file_hash']
     };
 
     const expectedEndState = {
@@ -96,7 +97,8 @@ module('Unit | Utility | Incident Profile Actions - Reducers', function() {
         ids: []
       },
       tasks: [],
-      tasksStatus: null
+      tasksStatus: null,
+      visibleEntityTypes: ['host', 'ip', 'mac_address', 'domain', 'user', 'file_name', 'file_hash']
     };
 
     const action = {

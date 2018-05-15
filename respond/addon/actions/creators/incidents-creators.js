@@ -491,6 +491,7 @@ const toggleSelectNode = (id) => ({ type: ACTION_TYPES.TOGGLE_INCIDENT_SELECTION
 const singleSelectLink = (id) => ({ type: ACTION_TYPES.SET_INCIDENT_SELECTION, payload: { type: 'link', id } });
 const toggleSelectLink = (id) => ({ type: ACTION_TYPES.TOGGLE_INCIDENT_SELECTION, payload: { type: 'link', id } });
 const clearSelection = () => ({ type: ACTION_TYPES.CLEAR_INCIDENT_SELECTION });
+const toggleEntityVisibility = (entity) => ({ type: ACTION_TYPES.TOGGLE_ENTITY_VISIBILITY, payload: { entity } });
 
 export {
   initializeIncidents,
@@ -531,5 +532,6 @@ export {
   startSearchRelatedIndicators,
   stopSearchRelatedIndicators,
   addRelatedIndicatorsToIncident,
-  clearAddRelatedIndicatorsStatus
+  clearAddRelatedIndicatorsStatus,
+  toggleEntityVisibility
 };
