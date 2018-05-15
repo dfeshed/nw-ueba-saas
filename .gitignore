@@ -12,3 +12,4 @@ presidio-ui-webapp/src/main/webapp/resources/
 presidio-ui-output-client/presidio-ui-output-client-api/target/
 presidio-ui-output-client/presidio-ui-output-client-mock/target/
 presidio-ui-output-client/presidio-ui-output-client-remote/target/
+presidio-ui-nw-security/target/
