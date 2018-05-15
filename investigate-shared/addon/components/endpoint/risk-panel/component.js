@@ -4,6 +4,6 @@ import layout from './template';
 export default Component.extend({
   layout,
   tagName: 'box',
-  classNames: ['risk-properties-panel', 'flexi-fit'],
+  classNames: ['risk-properties-panel'],
   data: ''
 });
