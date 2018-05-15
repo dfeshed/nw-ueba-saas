@@ -5,14 +5,17 @@ import { patchReducer } from '../../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
 import hbs from 'htmlbars-inline-precompile';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
-import { find, findAll, render, waitUntil } from '@ember/test-helpers';
+import { click, fillIn, find, findAll, focus, render, waitUntil } from '@ember/test-helpers';
+
+// const { log } = console;
 
 const meta = '.pill-meta';
 const metaPowerSelect = '.pill-meta .ember-power-select-trigger';
+const metaInput = '.pill-meta input';
 const operator = '.pill-operator';
 const operatorPowerSelect = '.pill-operator .ember-power-select-trigger';
 const powerSelectOption = '.ember-power-select-option';
-const value = '.pill-value input';
+const valueInput = '.pill-value input';
 const trim = (text) => text.replace(/\s+/g, '').trim();
 
 const initialState = {
@@ -44,7 +47,7 @@ module('Integration | Component | Query Pill', function(hooks) {
     await render(hbs`{{query-container/query-pill sendMessage=(action handleMessage)}}`);
   });
 
-  test('it activates meta-pill if active upon initialization', async function(assert) {
+  test('it activates pill-meta if active upon initialization', async function(assert) {
     setState({ ...initialState });
     await render(hbs`{{query-container/query-pill isActive=true}}`);
     assert.equal(findAll(metaPowerSelect).length, 1);
@@ -68,13 +71,34 @@ module('Integration | Component | Query Pill', function(hooks) {
     assert.equal(trim(find(operator).textContent), '=');
   });
 
-  test('it sets meta-value active after selecting an operator', async function(assert) {
+  test('it sets pill-value active after selecting an operator', async function(assert) {
     setState({ ...initialState });
     await render(hbs`{{query-container/query-pill isActive=true}}`);
     selectChoose(metaPowerSelect, powerSelectOption, 0);// option A
     await waitUntil(() => find(operatorPowerSelect));
     selectChoose(operatorPowerSelect, powerSelectOption, 0);// option =
     await waitUntil(() => find(operator));
-    assert.equal(findAll(value).length, 1, 'Missing value input field');
+    assert.equal(findAll(valueInput).length, 1, 'Missing value input field');
+  });
+
+  test('it allows you to edit the meta after it was selected', async function(assert) {
+    setState({ ...initialState });
+    await render(hbs`{{query-container/query-pill isActive=true}}`);
+    // Select meta option A
+    await selectChoose(meta, powerSelectOption, 0);
+    assert.equal(trim(find(meta).textContent), 'a');
+    // Verify that operator gets control
+    await focus(operatorPowerSelect);
+    assert.equal(findAll(powerSelectOption).length, 7);
+    // Click back on meta and verify that 1 down-selected option is visible
+    await click(meta);
+    await focus(metaPowerSelect);
+    assert.equal(findAll(powerSelectOption).length, 1);
+    // Clear input to show all meta options
+    await fillIn(metaInput, '');
+    assert.equal(findAll(powerSelectOption).length, 3);
+    // Select meta options B
+    await selectChoose(meta, powerSelectOption, 1);
+    assert.equal(trim(find(meta).textContent), 'b');
   });
 });

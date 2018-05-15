@@ -1,4 +1,5 @@
 import Component from '@ember/component';
+import { and, empty } from 'ember-computed-decorators';
 import * as MESSAGE_TYPES from '../message-types';
 
 const { log } = console;
@@ -6,8 +7,24 @@ const { log } = console;
 export default Component.extend({
   classNameBindings: ['isActive', ':query-pill'],
 
+  /**
+   * Pre-populated filter. This would normally be a `metaFilter` defined in the
+   * URL.
+   * @type {Object}
+   * @public
+   */
   filter: null,
+  /**
+   * Does this component currently have focus?
+   * @type {boolean}
+   * @public
+   */
   isActive: false,
+  /**
+   * An action to call when sending messages and data to the parent component.
+   * @type {function}
+   * @public
+   */
   sendMessage: () => {},
 
   isMetaActive: false,
@@ -17,14 +34,44 @@ export default Component.extend({
   selectedOperator: null,
   valueString: null,
 
+  /**
+   * The meta control can expand to take all the space if there is no operator
+   * selected.
+   * @private
+   */
+  @empty('selectedOperator')
+  canMetaExpand: true,
+
+  /**
+   * Should the meta field take up 100% of the available pill space?
+   * @public
+   */
+  @and('canMetaExpand', 'isMetaActive')
+  shouldMetaExpand: false,
+
+  /**
+   * The operator can expand to take all the space if there is no value set
+   * @private
+   */
+  @empty('valueString')
+  canOperatorExpand: true,
+
+  /**
+   * Should the operator field take up 100% of the available pill space?
+   * @public
+   */
+  @and('canOperatorExpand', 'isOperatorActive')
+  shouldOperatorExpand: false,
+
   init() {
     this._super(arguments);
     this.set('_messageHandlerMap', {
+      [MESSAGE_TYPES.META_CLICKED]: () => this._metaClicked(),
       [MESSAGE_TYPES.META_SELECTED]: (data) => this._metaSelected(data),
       [MESSAGE_TYPES.OPERATOR_CLICKED]: () => this._operatorClicked(),
       [MESSAGE_TYPES.OPERATOR_SELECTED]: (data) => this._operatorSelected(data),
       [MESSAGE_TYPES.VALUE_SET]: (data) => this._valueSet(data),
-      [MESSAGE_TYPES.VALUE_ENTER_KEY]: () => this._createPill(),
+      [MESSAGE_TYPES.VALUE_ENTER_KEY]: (data) => this._createPill(data),
       [MESSAGE_TYPES.VALUE_ESCAPE_KEY]: () => this._cancelPillCreation(),
       [MESSAGE_TYPES.VALUE_BACKSPACE_KEY]: (data) => this._backspaceKeyPressed(data),
       [MESSAGE_TYPES.VALUE_ARROW_LEFT_KEY]: (data) => this._leftArrowKeyPressed(data),
@@ -81,12 +128,24 @@ export default Component.extend({
   },
 
   /**
+   * Handles meta being clicked.
+   * @private
+   */
+  _metaClicked() {
+    this.setProperties({
+      isMetaActive: true,
+      isOperatorActive: false,
+      isValueActive: false,
+      isActive: true
+    });
+  },
+
+  /**
    * Handles selected pill meta.
    * @param {Object} selectedMeta The selected meta value
    * @private
    */
   _metaSelected(selectedMeta) {
-    // save meta and move focus to the operator
     this.setProperties({
       selectedMeta,
       isMetaActive: false,
@@ -133,19 +192,21 @@ export default Component.extend({
 
   /**
    * Handles creating a new pill.
+   * @param {string} data Value of pill
    * @private
    */
-  _createPill() {
+  _createPill(data) {
     // TODO - Sure more will happen here, just doing this for now to see that
     // something different happens when hitting the Enter key.
+    const valueString = data;
     this.setProperties({
       isMetaActive: false,
       isOperatorActive: false,
       isValueActive: false,
-      isActive: false
+      isActive: false,
+      valueString
     });
-    const value = this.get('valueString').trim();
-    this._broadcast(MESSAGE_TYPES.PILL_CREATED, this._createFilter(value));
+    this._broadcast(MESSAGE_TYPES.PILL_CREATED, this._createFilter(valueString));
   },
 
   /**

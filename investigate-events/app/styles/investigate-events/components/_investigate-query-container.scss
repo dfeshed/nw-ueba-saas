@@ -164,7 +164,7 @@
       border-color: transparent;
       flex: 1 0 auto;
     }
-    > div.is-active:not(.has-selection) {
+    > div.is-expanded {
       flex-grow: 1;
       input {
         width: 100%;

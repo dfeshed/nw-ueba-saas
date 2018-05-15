@@ -24,7 +24,7 @@ module('Integration | Component | Pill Value', function(hooks) {
       assert.equal(type, 'PILL::VALUE_ARROW_LEFT_KEY', 'Wrong message type');
     });
     await render(hbs`{{query-container/pill-value isActive=true sendMessage=(action handleMessage)}}`);
-    await triggerKeyEvent('.pill-value input', 'keyup', LEFT_ARROW_KEY);
+    await triggerKeyEvent('.pill-value input', 'keydown', LEFT_ARROW_KEY);
     return settled();
   });
 
@@ -34,7 +34,7 @@ module('Integration | Component | Pill Value', function(hooks) {
       assert.equal(type, 'PILL::VALUE_ARROW_RIGHT_KEY', 'Wrong message type');
     });
     await render(hbs`{{query-container/pill-value isActive=true sendMessage=(action handleMessage)}}`);
-    await triggerKeyEvent('.pill-value input', 'keyup', RIGHT_ARROW_KEY);
+    await triggerKeyEvent('.pill-value input', 'keydown', RIGHT_ARROW_KEY);
     return settled();
   });
 
@@ -45,7 +45,7 @@ module('Integration | Component | Pill Value', function(hooks) {
       assert.equal(data, '', 'Wrong input string');
     });
     await render(hbs`{{query-container/pill-value isActive=true sendMessage=(action handleMessage)}}`);
-    await triggerKeyEvent('.pill-value input', 'keyup', BACKSPACE_KEY);
+    await triggerKeyEvent('.pill-value input', 'keydown', BACKSPACE_KEY);
     return settled();
   });
 
@@ -55,7 +55,7 @@ module('Integration | Component | Pill Value', function(hooks) {
       assert.ok(false, 'Should not have received PILL::VALUE_ENTER_KEY message');
     });
     await render(hbs`{{query-container/pill-value isActive=true sendMessage=(action handleMessage)}}`);
-    await triggerKeyEvent('.pill-value input', 'keyup', ENTER_KEY);
+    await triggerKeyEvent('.pill-value input', 'keydown', ENTER_KEY);
     return settled();
   });
 
@@ -63,10 +63,12 @@ module('Integration | Component | Pill Value', function(hooks) {
     assert.expect(2);
     this.set('handleMessage', (type, data) => {
       assert.equal(type, 'PILL::VALUE_ENTER_KEY', 'Wrong message type');
-      assert.equal(data, undefined, 'Wrong input string');
+      assert.equal(data, 'x', 'Wrong input string');
     });
-    await render(hbs`{{query-container/pill-value isActive=true valueString='x' sendMessage=(action handleMessage)}}`);
-    await triggerKeyEvent('.pill-value input', 'keyup', ENTER_KEY);
+    await render(hbs`{{query-container/pill-value isActive=true sendMessage=(action handleMessage)}}`);
+    await fillIn('.pill-value input', 'x');
+    await triggerKeyEvent('.pill-value input', 'keydown', X_KEY);
+    await triggerKeyEvent('.pill-value input', 'keydown', ENTER_KEY);
     return settled();
   });
 
@@ -76,21 +78,19 @@ module('Integration | Component | Pill Value', function(hooks) {
       assert.equal(type, 'PILL::VALUE_ESCAPE_KEY', 'Wrong message type');
     });
     await render(hbs`{{query-container/pill-value isActive=true sendMessage=(action handleMessage)}}`);
-    await triggerKeyEvent('.pill-value input', 'keyup', ESCAPE_KEY);
+    await triggerKeyEvent('.pill-value input', 'keydown', ESCAPE_KEY);
     return settled();
   });
 
-  test('it broadcasts a message when an "x" key is pressed', async function(assert) {
+  test('it properly trims the last character off the input when pressing the BACKSPACE key', async function(assert) {
     assert.expect(2);
     this.set('handleMessage', (type, data) => {
-      assert.equal(type, 'PILL::VALUE_SET', 'Wrong message type');
-      assert.equal(data, 'x', 'Wrong input string');
+      assert.equal(type, 'PILL::VALUE_BACKSPACE_KEY', 'Wrong message type');
+      assert.equal(data, 'foo', 'Trailing character was not trimmed');
     });
     await render(hbs`{{query-container/pill-value isActive=true sendMessage=(action handleMessage)}}`);
-    // To work around a possible bug in @ember/test-helpers, I'll fill in the
-    // input with an "x", then trigger the keyup event.
-    await fillIn('.pill-value input', 'x');
-    await triggerKeyEvent('.pill-value input', 'keyup', X_KEY);
+    await fillIn('.pill-value input', 'fooX');
+    await triggerKeyEvent('.pill-value input', 'keydown', BACKSPACE_KEY);
     return settled();
   });
 });

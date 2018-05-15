@@ -1,4 +1,5 @@
 import Component from '@ember/component';
+import { scheduleOnce } from '@ember/runloop';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
@@ -13,21 +14,75 @@ const stateToComputed = (state) => ({
 });
 
 const PillMeta = Component.extend({
-  classNameBindings: ['isActive', ':pill-meta'],
+  classNameBindings: ['isActive', 'isExpanded', ':pill-meta'],
 
+  /**
+   * Does this component currently have focus?
+   * @type {boolean}
+   * @public
+   */
   isActive: false,
+  /**
+   * Does this component consume the full width of its parent, or is it sized to
+   * match its contents?
+   * @type {boolean}
+   * @public
+   */
+  isExpanded: true,
+  /**
+   * The option that is currently selected
+   * @type {Object}
+   * @public
+   */
   selection: null,
+  /**
+   * An action to call when sending messages and data to the parent component.
+   * @type {function}
+   * @public
+   */
   sendMessage: () => {},
+
+  @computed('isActive', 'options')
+  isActiveWithOptions: (isActive, options) => isActive && options.length > 0,
+
+  didUpdateAttrs() {
+    this._super(...arguments);
+    if (this.get('isActive')) {
+      // We schedule this after render to give time for the power-select to
+      // be rendered before trying to focus on it.
+      scheduleOnce('afterRender', this, '_focusOnPowerSelectTrigger');
+    }
+  },
+
+  click() {
+    // If this component is not active and the user clicks on it, dispatch an
+    // action so that the parent can coordinate the activation of this component.
+    if (!this.get('isActive')) {
+      this._broadcast(MESSAGE_TYPES.META_CLICKED);
+    }
+  },
 
   actions: {
     onChange(selection /* powerSelectAPI, event */) {
       this._broadcast(MESSAGE_TYPES.META_SELECTED, selection);
     },
     onFocus(powerSelectAPI /* event */) {
-      if (powerSelectAPI.lastSearchedText) {
-        // When gaining focus, if there was a previous search term, let's clear
-        // it out by performing a blank search.
+      const selection = this.get('selection');
+      if (powerSelectAPI.lastSearchedText && !selection) {
+        // If we gain focus and `lastSearchText` exists, power-select will use
+        // that to down-select the list of options. This can happen if the user
+        // enters some text, focuses away, then comes back. What they previously
+        // types will effect the list of options.
         powerSelectAPI.actions.search('');
+      } else if (selection) {
+        // Check to see if the selected option is valid for the power-select
+        // options and select it if it is; otherwise clear it out.
+        const option = this.get('options').find((d) => d.metaName === selection.metaName);
+        if (option) {
+          powerSelectAPI.actions.search(option.metaName);
+        } else {
+          this.set('selection', null);
+        }
       }
       powerSelectAPI.actions.open();
     },
@@ -36,7 +91,9 @@ const PillMeta = Component.extend({
      * trigger element. It's looking for an input string that ends with a space.
      * If it finds one and the power-select has been down-selected to one
      * result, then trigger a `select` event on the power-select. Ultimately,
-     * this triggers the `onChange` action above.
+     * this triggers the `onChange` action above. If the input string is empty,
+     * it resets the `selection`. We do this to prevent the previously
+     * highlighted item from staying highlighted.
      * @private
      */
     onInput(input, powerSelectAPI /* event */) {
@@ -44,6 +101,8 @@ const PillMeta = Component.extend({
       const { results } = powerSelectAPI;
       if (isSpace && results.length === 1) {
         powerSelectAPI.actions.select(results[0]);
+      } else if (input.length === 0) {
+        this.set('selection', null);
       }
     }
   },
@@ -61,8 +120,12 @@ const PillMeta = Component.extend({
     this.get('sendMessage')(type, data);
   },
 
-  @computed('isActive', 'options')
-  _isActive: (isActive, options) => isActive && options.length > 0,
+  _focusOnPowerSelectTrigger() {
+    const trigger = this.element.querySelector('.ember-power-select-trigger input');
+    if (trigger) {
+      trigger.focus();
+    }
+  },
 
   /**
    * Function that power-select uses to make an autosuggest match. This function

@@ -14,29 +14,26 @@ const dispatchToActions = {
 const QueryPills = Component.extend({
   classNames: ['query-pills'],
 
+  /**
+   * A Collection of `metaFilter` objects, usually defined in the URL.
+   * @type {object[]}
+   * @public
+   */
   filters: [],
 
   /**
-   * @private
-   */
-  _hasFocus: false,
-
-  /**
    * Map of filters that have been converted to pills for display on the UI.
+   * @type {Map}
    * @private
    */
-  _filterMap: new Map(),
+  filterMap: new Map(),
 
   willDestroyElement() {
     this._super(arguments);
-    const map = this.get('_filterMap');
+    const map = this.get('filterMap');
     if (map) {
       map.clear();
     }
-  },
-
-  click() {
-    this.set('_hasFocus', true);
   },
 
   actions: {
@@ -69,7 +66,6 @@ const QueryPills = Component.extend({
   // ************************************************************************ //
   //                          PRIVATE FUNCTIONS                               //
   // ************************************************************************ //
-
   /**
    * Adds pill to `_filters` Map.
    * @param {*} key A unique id
@@ -77,7 +73,7 @@ const QueryPills = Component.extend({
    * @private
    */
   _pillCreated(key, value) {
-    const filterMap = this.get('_filterMap');
+    const filterMap = this.get('filterMap');
     filterMap.set(key, value);
     // Set the filters array so that 2-way data binding will pick up the pills
     // and make them available for the route's `executeQuery` action. Also set
@@ -95,7 +91,7 @@ const QueryPills = Component.extend({
    * @private
    */
   _pillInitialized(key) {
-    const filterMap = this.get('_filterMap');
+    const filterMap = this.get('filterMap');
     filterMap.set(key, null);
   }
 });

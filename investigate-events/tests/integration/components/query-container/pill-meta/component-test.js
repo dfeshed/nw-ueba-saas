@@ -5,7 +5,9 @@ import { patchReducer } from '../../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
 import hbs from 'htmlbars-inline-precompile';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
-import { find, findAll, render, settled } from '@ember/test-helpers';
+import { click, find, findAll, render, settled, triggerKeyEvent } from '@ember/test-helpers';
+
+const TAB_KEY = 9;
 
 const meta = '.pill-meta';
 const metaPowerSelectTrigger = '.pill-meta .ember-power-select-trigger';
@@ -97,5 +99,19 @@ module('Integration | Component | Pill Meta', function(hooks) {
     this.$('input').val('c').trigger('input');
     this.$('input').val(' ').trigger('input');
     return settled();
+  });
+
+  test('it clears out last search if Power Select looses, then gains focus', async function(assert) {
+    setState({ ...initialState });
+    await render(hbs`{{query-container/pill-meta isActive=true}}`);
+    // focus and assert number of options
+    await click(metaPowerSelectTrigger);
+    assert.equal(findAll(powerSelectOption).length, 4);
+    // blur and assert no options present
+    await triggerKeyEvent(metaPowerSelectTrigger, 'keydown', TAB_KEY);
+    assert.equal(findAll(powerSelectOption).length, 0);
+    // focus and assert number of options
+    await click(metaPowerSelectTrigger);
+    assert.equal(findAll(powerSelectOption).length, 4);
   });
 });

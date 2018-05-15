@@ -1,9 +1,11 @@
-import { module, skip, test } from 'qunit';
+import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
-import { selectChoose } from 'ember-power-select/test-support/helpers';
-import { find, findAll, render, settled } from '@ember/test-helpers';
+import { selectChoose, typeInSearch } from 'ember-power-select/test-support/helpers';
+import { find, findAll, focus, render, settled, triggerKeyEvent } from '@ember/test-helpers';
+
+const TAB_KEY = 9;
 
 const operator = '.pill-operator';
 const operatorPowerSelectTrigger = '.pill-operator .ember-power-select-trigger';
@@ -25,12 +27,22 @@ module('Integration | Component | Pill Operator', function(hooks) {
     assert.equal(trim(find(operator).textContent), eq.displayName);
   });
 
-  // This test is skipped due to a ember-power-select-typeahead bug
+  // There is a bug with ember-power-select-typeahead.
   // https://github.com/cibernox/ember-power-select-typeahead/issues/71
-  skip('it shows an open Power Select if active', async function(assert) {
+  // The workaround is to provide focus to operator after rendering it.
+  test('it shows an open Power Select if active', async function(assert) {
     this.set('meta', meta);
     await render(hbs`{{query-container/pill-operator isActive=true meta=meta}}`);
-    assert.equal(findAll(powerSelectOption).length, 7);
+    await focus(operatorPowerSelectTrigger);
+    const options = findAll(powerSelectOption);
+    assert.equal(options.length, 7);
+    assert.equal(options[0].textContent.trim(), '=');
+    assert.equal(options[1].textContent.trim(), '!=');
+    assert.equal(options[2].textContent.trim(), 'exists');
+    assert.equal(options[3].textContent.trim(), '!exists');
+    assert.equal(options[4].textContent.trim(), 'contains');
+    assert.equal(options[5].textContent.trim(), 'begins');
+    assert.equal(options[6].textContent.trim(), 'ends');
   });
 
   test('it broadcasts a message when a Power Select option is choosen', async function(assert) {
@@ -44,7 +56,8 @@ module('Integration | Component | Pill Operator', function(hooks) {
       assert.deepEqual(data, eq, 'Wrong message data');
     });
     await render(hbs`{{query-container/pill-operator isActive=true meta=meta sendMessage=(action handleMessage)}}`);
-    selectChoose(operatorPowerSelectTrigger, powerSelectOption, 0);// option "="
+    await focus(operatorPowerSelectTrigger);
+    await selectChoose(operatorPowerSelectTrigger, powerSelectOption, 0);// option "="
     return settled();
   });
 
@@ -56,6 +69,7 @@ module('Integration | Component | Pill Operator', function(hooks) {
       assert.deepEqual(data, eq, 'Wrong message data');
     });
     await render(hbs`{{query-container/pill-operator isActive=true meta=meta sendMessage=(action handleMessage)}}`);
+    await focus(operatorPowerSelectTrigger);
     // We go back to old-skool jQuery for this because fillIn() performs a focus
     // event on the input every time you call it which causes the search to
     // clear out. PowerSelect test helper typeInSearch() ends up just calling
@@ -73,8 +87,44 @@ module('Integration | Component | Pill Operator', function(hooks) {
       assert.notOk('The sendMessage handler was erroneously invoked');
     });
     await render(hbs`{{query-container/pill-operator isActive=true meta=meta sendMessage=(action handleMessage)}}`);
+    await focus(operatorPowerSelectTrigger);
     this.$('input').val('e').trigger('input');
     this.$('input').val(' ').trigger('input');
     return settled();
+  });
+
+  test('it clears out last search if Power Select looses, then gains focus', async function(assert) {
+    this.set('meta', meta);
+    await render(hbs`{{query-container/pill-operator isActive=true meta=meta}}`);
+    await focus(operatorPowerSelectTrigger);
+    // assert number of options
+    assert.equal(findAll(powerSelectOption).length, 7);
+    // perform a search that down-selects the list of options
+    await typeInSearch('e');
+    assert.equal(findAll(powerSelectOption).length, 2); // exists and ends
+    // blur and assert no options present
+    await triggerKeyEvent(operatorPowerSelectTrigger, 'keydown', TAB_KEY);
+    assert.equal(findAll(powerSelectOption).length, 0);
+    // focus and assert number of options
+    await focus(operatorPowerSelectTrigger);
+    assert.equal(findAll(powerSelectOption).length, 7);
+  });
+
+  test('it allows you to reselect an operator after it was previously selected', async function(assert) {
+    assert.expect(4);
+    this.set('meta', meta);
+    this.set('handleMessage', (type, data) => {
+      if (type == 'PILL::OPERATOR_CLICKED') {
+        return; // don't care about click events
+      }
+      assert.equal(type, 'PILL::OPERATOR_SELECTED', 'Wrong message type');
+      assert.deepEqual(data, eq, 'Wrong message data');
+    });
+    await render(hbs`{{query-container/pill-operator isActive=true meta=meta sendMessage=(action handleMessage)}}`);
+    await focus(operatorPowerSelectTrigger);
+    // Select an option
+    await selectChoose(operatorPowerSelectTrigger, powerSelectOption, 0);// option "="
+    // Reselect the same option
+    await selectChoose(operatorPowerSelectTrigger, powerSelectOption, 0);// option "="
   });
 });

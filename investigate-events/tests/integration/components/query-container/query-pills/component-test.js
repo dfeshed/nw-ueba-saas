@@ -8,6 +8,7 @@ import { selectChoose } from 'ember-power-select/test-support/helpers';
 import { fillIn, find, findAll, render, settled, triggerKeyEvent, waitUntil } from '@ember/test-helpers';
 
 const ENTER_KEY = '13';
+const X_KEY = '88';
 
 const metaPowerSelect = '.pill-meta .ember-power-select-trigger';
 const operatorPowerSelect = '.pill-operator .ember-power-select-trigger';
@@ -55,8 +56,8 @@ module('Integration | Component | Query Pills', function(hooks) {
     // Fill in the value, to properly simulate the event we need to fillIn AND
     // triggerKeyEvent for the "x" character.
     await fillIn(value, 'x');
-    await triggerKeyEvent(value, 'keyup', '88');// x
-    await triggerKeyEvent(value, 'keyup', ENTER_KEY);
+    await triggerKeyEvent(value, 'keydown', X_KEY);// x
+    await triggerKeyEvent(value, 'keydown', ENTER_KEY);
 
     return settled().then(async () => {
       const filters = this.get('filters');

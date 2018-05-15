@@ -31,11 +31,38 @@ const VALUE = 'value';
 const indices = [NONE, KEY, VALUE];
 
 export default Component.extend({
-  classNameBindings: ['isActive', ':pill-operator', 'selection:has-selection'],
+  classNameBindings: ['isActive', 'isExpanded', ':pill-operator'],
 
+  /**
+   * Does this component currently have focus?
+   * @type {boolean}
+   * @public
+   */
   isActive: false,
+  /**
+   * Does this component consume the full width of its parent, or is it sized to
+   * match its contents?
+   * @type {boolean}
+   * @public
+   */
+  isExpanded: true,
+  /**
+   * A meta object. Used to determin which operators to display.
+   * @type {Object}
+   * @public
+   */
   meta: null,
+  /**
+   * The option that is currently selected
+   * @type {Object}
+   * @public
+   */
   selection: null,
+  /**
+   * An action to call when sending messages and data to the parent component.
+   * @type {function}
+   * @public
+   */
   sendMessage: () => {},
 
   @computed('meta')
@@ -57,8 +84,9 @@ export default Component.extend({
         // sessionid is a special case in the sense that it is the only
         // non-indexed key that has these 4 options because it's a primary key.
         options = operatorsForSessionId;
+      } else {
+        options = defaultOperators;
       }
-      options = defaultOperators;
     }
     return options;
   },
@@ -85,21 +113,60 @@ export default Component.extend({
       this._broadcast(MESSAGE_TYPES.OPERATOR_SELECTED, selection);
     },
     onFocus(powerSelectAPI /* event */) {
+      const selection = this.get('selection');
+      if (powerSelectAPI.lastSearchedText && !selection) {
+        // If we gain focus and `lastSearchText` exists, power-select will use
+        // that to down-select the list of options. This can happen if the user
+        // enters some text, focuses away, then comes back. What they previously
+        // types will effect the list of options.
+        powerSelectAPI.actions.search('');
+      } else if (selection) {
+        // Check to see if the selected option is valid for the power-select
+        // options and select it if it is; otherwise clear it out.
+        const option = this.get('options').find((d) => d.displayName === selection.displayName);
+        if (option) {
+          powerSelectAPI.actions.search(option.displayName);
+        } else {
+          this.set('selection', null);
+        }
+      }
       powerSelectAPI.actions.open();
     },
     /**
      * This function is called on every `input` event from the power-select's
      * trigger element. It's looking for an input string that ends with a space.
      * If it finds one and the power-select has been down-selected to one
-     * result, then trigger a `select` event on the power-select. Ultimately,
-     * this triggers the `onChange` action above.
+     * result, then broadcast a `select` event. If the input string is empty,
+     * it resets the `selection`. We do this to prevent the previously
+     * highlighted item from staying highlighted.
      * @private
      */
     onInput(input, powerSelectAPI /* event */) {
       const isSpace = input.slice(-1) === ' ';
       const { results } = powerSelectAPI;
       if (isSpace && results.length === 1) {
-        powerSelectAPI.actions.select(results[0]);
+        this._broadcast(MESSAGE_TYPES.OPERATOR_SELECTED, results[0]);
+      } else if (input.length === 0) {
+        this.set('selection', null);
+      }
+    },
+    /**
+     * This function is called every time a key is pressed, and is invoked
+     * before power-select reacts to the key that was pressed. This is here to
+     * handle one specific case. If the user presses ENTER, selecting an
+     * operator that was already selected. In that case, power-select does
+     * nothing, but we want the focus to move onto the pill value.
+     * As a side note, we cannot combine `onInput`'s functionality here because
+     * this code runs before any down-selection of options happens.
+     * @private
+     */
+    onKeyDown(powerSelectAPI, event) {
+      if (event.keyCode === 13) {
+        const { selected } = powerSelectAPI;
+        const selection = this.get('selection');
+        if (selection && selected && selection === selected) {
+          this._broadcast(MESSAGE_TYPES.OPERATOR_SELECTED, selection);
+        }
       }
     }
   },

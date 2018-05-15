@@ -11,7 +11,7 @@ module('Unit | Component | Query Pills', function(hooks) {
     const comp = this.owner.lookup('component:query-container/query-pills');
     const pillId = 'pill1';
     comp._pillInitialized(pillId);
-    const filterMap = comp.get('_filterMap');
+    const filterMap = comp.get('filterMap');
     const filter = filterMap.get(pillId);
     assert.equal(filter, null, 'Null filter was not created');
   });
@@ -23,7 +23,7 @@ module('Unit | Component | Query Pills', function(hooks) {
     comp._pillCreated(pillId, pillObj);
 
     // Test for addition to filter map
-    const filterMap = comp.get('_filterMap');
+    const filterMap = comp.get('filterMap');
     const filter = filterMap.get(pillId);
     assert.deepEqual(filter, pillObj, 'Filter was not created');
 

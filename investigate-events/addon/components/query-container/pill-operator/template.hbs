@@ -3,23 +3,24 @@
     initiallyOpened should be set to "true", but if you do that the
     defaultHighlighted property has no effect (first item not highlighted).
     https://github.com/cibernox/ember-power-select-typeahead/issues/71
-   --}}
+  --}}
   {{#power-select-typeahead
-      allowClear=false
-      defaultHighlighted=undefined
-      extra=(hash labelPath='displayName')
-      initiallyOpened=false
-      matcher=_matcher
-      matchTriggerWidth=false
-      noMatchesMessage='All Operators Filtered out'
-      onchange=(action 'onChange')
-      onfocus=(action 'onFocus')
-      oninput=(action 'onInput')
-      options=options
-      selected=selection
-      triggerComponent='query-container/resizable-input'
-      as |operator|
-    }}
+    allowClear=false
+    defaultHighlighted=undefined
+    extra=(hash labelPath='displayName')
+    initiallyOpened=false
+    matcher=_matcher
+    matchTriggerWidth=false
+    noMatchesMessage='All Operators Filtered out'
+    onchange=(action 'onChange')
+    onfocus=(action 'onFocus')
+    oninput=(action 'onInput')
+    onkeydown=(action 'onKeyDown')
+    options=options
+    selected=selection
+    triggerComponent='query-container/resizable-input'
+    as |operator|
+  }}
     {{operator.displayName}}
   {{/power-select-typeahead}}
 {{else}}

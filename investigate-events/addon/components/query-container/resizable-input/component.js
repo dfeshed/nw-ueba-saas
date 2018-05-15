@@ -7,8 +7,6 @@
  */
 import Component from '@ember/component';
 import { computed } from '@ember/object';
-import { isBlank } from '@ember/utils';
-import { run } from '@ember/runloop';
 
 // const { log } = console;
 
@@ -62,10 +60,8 @@ export default Component.extend({
     if (!oldSelect) {
       return;
     }
-    /*
-     * We need to update the input field with value of the selected option
-     * whenever we're closing the select box.
-     */
+    // We need to update the input field with value of the selected option
+    // whenever we're closing the select box.
     if (oldSelect.isOpen && !newSelect.isOpen && newSelect.searchText) {
       const input = document.querySelector(`#ember-power-select-typeahead-input-${newSelect.uniqueId}`);
       const newText = this.getSelectedAsText();
@@ -73,14 +69,6 @@ export default Component.extend({
         input.value = newText;
       }
       this.set('text', newText);
-    }
-
-    if (newSelect.lastSearchedText !== oldSelect.lastSearchedText) {
-      if (isBlank(newSelect.lastSearchedText)) {
-        run.schedule('actions', null, newSelect.actions.close, null, true);
-      } else {
-        run.schedule('actions', null, newSelect.actions.open);
-      }
     }
   },
 
@@ -109,11 +97,6 @@ export default Component.extend({
       const isLetter = e.keyCode >= 48 && e.keyCode <= 90 || e.keyCode === 32; // Keys 0-9, a-z or SPACE
       // if isLetter, escape or enter, prevent parent handlers from being notified
       if (isLetter || [13, 27].indexOf(e.keyCode) > -1) {
-        const select = this.get('select');
-        // open if loading msg configured
-        if (!select.isOpen && this.get('loadingMessage')) {
-          run.schedule('actions', null, select.actions.open);
-        }
         e.stopPropagation();
       }
 
