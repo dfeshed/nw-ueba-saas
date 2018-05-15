@@ -1,4 +1,4 @@
-package com.futureprocessing.spring.infrastructure.security;
+package presidio.rsa.auth;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +14,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
-import presidio.rsa.auth.CookieBearerTokenExtractor;
-import presidio.rsa.auth.TokenBearerWrapper;
 
 
 import javax.servlet.FilterChain;

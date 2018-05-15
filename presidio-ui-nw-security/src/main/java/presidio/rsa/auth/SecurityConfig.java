@@ -1,4 +1,4 @@
-package com.futureprocessing.spring.infrastructure.security;
+package presidio.rsa.auth;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -13,9 +13,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import presidio.rsa.auth.CookieBearerTokenExtractor;
-import presidio.rsa.auth.PresidioNwAuthService;
-import presidio.rsa.auth.PresidioNwAuthServiceImpl;
 import presidio.rsa.auth.spring.KeyStoreConfigProperties;
 
 import javax.servlet.http.HttpServletResponse;
@@ -26,8 +23,8 @@ import javax.servlet.http.HttpServletResponse;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Value("${backend.admin.role}")
-    private String backendAdminRole;
+    @Value("${presidio.user.role}")
+    private String presidioUiUser;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -104,4 +101,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationEntryPoint unauthorizedEntryPoint() {
         return (request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
+
+
+
+//      <cache name="restApiAuthTokenCache" eternal="false" maxElementsInMemory="0" overflowToDisk="false"
+//           timeToLiveSeconds="14400" memoryStoreEvictionPolicy="LRU">
+//        <persistence strategy="none"/>
+//    </cache>
 }

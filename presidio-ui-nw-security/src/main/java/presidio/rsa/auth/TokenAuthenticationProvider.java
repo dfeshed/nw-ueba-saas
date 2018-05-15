@@ -1,4 +1,4 @@
-package com.futureprocessing.spring.infrastructure.security;
+package presidio.rsa.auth;
 
 
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -7,11 +7,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
-import presidio.rsa.auth.PresidioNwAuthService;
-import presidio.rsa.auth.PresidioUiNwAuthenticationToken;
 import presidio.rsa.auth.duplicates.Token;
 
-import java.security.GeneralSecurityException;
+
 import java.util.Optional;
 
 public class TokenAuthenticationProvider implements AuthenticationProvider {

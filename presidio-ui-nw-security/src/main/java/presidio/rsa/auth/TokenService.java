@@ -1,4 +1,4 @@
-package com.futureprocessing.spring.infrastructure.security;
+package presidio.rsa.auth;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
@@ -6,7 +6,6 @@ import net.sf.ehcache.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
-import presidio.rsa.auth.PresidioUiNwAuthenticationToken;
 
 import java.util.UUID;
 
