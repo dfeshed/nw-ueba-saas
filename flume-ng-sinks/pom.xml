@@ -40,7 +40,7 @@ limitations under the License.
 
     <modules>
         <module>flume-hdfs-sink</module>
-        <module>flume-ng-morphline-solr-sink</module>
+        <!--<module>flume-ng-morphline-solr-sink</module>-->
     </modules>
 
     <profiles>
@@ -55,34 +55,34 @@ limitations under the License.
             </activation>
         </profile>
 
-        <profile>
-            <id>hadoop-2</id>
-            <activation>
-                <property>
-                    <name>flume.hadoop.profile</name>
-                    <value>2</value>
-                </property>
-            </activation>
-            <!-- add the flume-dataset-sink, which is only compatible with hadoop-2
-                 -->
-            <modules>
-                <module>flume-hive-sink</module>
-            </modules>
-        </profile>
+        <!--<profile>-->
+            <!--<id>hadoop-2</id>-->
+            <!--<activation>-->
+                <!--<property>-->
+                    <!--<name>flume.hadoop.profile</name>-->
+                    <!--<value>2</value>-->
+                <!--</property>-->
+            <!--</activation>-->
+            <!--&lt;!&ndash; add the flume-dataset-sink, which is only compatible with hadoop-2-->
+                 <!--&ndash;&gt;-->
+            <!--<modules>-->
+                <!--<module>flume-hive-sink</module>-->
+            <!--</modules>-->
+        <!--</profile>-->
 
-        <profile>
-            <id>hbase-1</id>
-            <activation>
-                <property>
-                    <name>!flume.hadoop.profile</name>
-                </property>
-            </activation>
-            <!-- add the flume-dataset-sink, which is only compatible with hadoop-2
-                 -->
-            <modules>
-                <module>flume-hive-sink</module>
-            </modules>
-        </profile>
+        <!--<profile>-->
+            <!--<id>hbase-1</id>-->
+            <!--<activation>-->
+                <!--<property>-->
+                    <!--<name>!flume.hadoop.profile</name>-->
+                <!--</property>-->
+            <!--</activation>-->
+            <!--&lt;!&ndash; add the flume-dataset-sink, which is only compatible with hadoop-2-->
+                 <!--&ndash;&gt;-->
+            <!--<modules>-->
+                <!--<module>flume-hive-sink</module>-->
+            <!--</modules>-->
+        <!--</profile>-->
 
 
     </profiles>

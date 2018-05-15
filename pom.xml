@@ -91,6 +91,14 @@
                 <updatePolicy>always</updatePolicy>
             </snapshots>
         </repository>
+       <repository>
+           <id>libs-snapshot</id>
+           <url>http://repo1.rsa.lab.emc.com:8081/artifactory/libs-snapshot/</url>
+           <snapshots>
+               <enabled>true</enabled>
+               <updatePolicy>always</updatePolicy>
+           </snapshots>
+       </repository>
     </repositories>
 
     <profiles>
@@ -1003,11 +1011,11 @@
                 <version>1.1.0-SNAPSHOT</version>
             </dependency>
 
-            <dependency>
-                <groupId>presidio.flume.core.flume-ng-sinks</groupId>
-                <artifactId>flume-hive-sink</artifactId>
-                <version>1.1.0-SNAPSHOT</version>
-            </dependency>
+            <!--<dependency>-->
+                <!--<groupId>presidio.flume.core.flume-ng-sinks</groupId>-->
+                <!--<artifactId>flume-hive-sink</artifactId>-->
+                <!--<version>1.1.0-SNAPSHOT</version>-->
+            <!--</dependency>-->
 
             <dependency>
                 <groupId>presidio.flume.core.flume-ng-sinks</groupId>
@@ -1020,11 +1028,11 @@
                 <artifactId>flume-ng-hbase-sink</artifactId>
                 <version>1.7.0</version>
             </dependency>
-            <dependency>
-                <groupId>presidio.flume.core.flume-ng-sinks</groupId>
-                <artifactId>flume-ng-morphline-solr-sink</artifactId>
-                <version>1.1.0-SNAPSHOT</version>
-            </dependency>
+            <!--<dependency>-->
+                <!--<groupId>presidio.flume.core.flume-ng-sinks</groupId>-->
+                <!--<artifactId>flume-ng-morphline-solr-sink</artifactId>-->
+                <!--<version>1.1.0-SNAPSHOT</version>-->
+            <!--</dependency>-->
 
             <dependency>
                 <groupId>presidio.flume.core.flume-ng-sinks</groupId>
