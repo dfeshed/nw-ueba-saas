@@ -1,4 +1,4 @@
-package source.sdk;
+package presidio.nw.flume.sdk;
 
 import com.rsa.asoc.streams.RecordSource;
 import com.rsa.asoc.streams.RecordStream;
@@ -28,12 +28,15 @@ public class NetwitnessEventsStream extends AbstractNetwitnessEventsStream {
 
     private static final String BROKER_END_POINT = "nw://admin:netwitness@10.25.67.33:50005";
     private static final String UEBA = "ueba";
+    private static final String QUERY = "query";
+    private static final String TIME_FIELD = "timeField";
+
 
     private static Logger logger = LoggerFactory.getLogger(NetwitnessEventsStream.class);
 
     @Override
-    public CloseableIterator<Map<String, Object>> iterator(Schema schema, Instant startDate, Instant endDate) {
-        return new EventsStreamIterator(schema, startDate, endDate);
+    public CloseableIterator<Map<String, Object>> iterator(Schema schema, Instant startDate, Instant endDate, Map<String, String> config) {
+        return new EventsStreamIterator(schema, startDate, endDate, config);
     }
 
 
@@ -42,11 +45,13 @@ public class NetwitnessEventsStream extends AbstractNetwitnessEventsStream {
         private AtomicBoolean isRunning = new AtomicBoolean(true);
         private RecordStream stream;
 
-        public EventsStreamIterator(Schema schema, Instant startDate, Instant endDate) {
+        public EventsStreamIterator(Schema schema, Instant startDate, Instant endDate, Map<String, String> configurations) {
             try {
+                String query = configurations.get(QUERY);
+                String timeField = configurations.get(TIME_FIELD);
                 stream = buildStream(UEBA);
                 isRunning.set(true);
-                addSource(startDate, endDate, stream);
+                addSource(startDate, endDate, stream, query, timeField);
             } catch (Exception ex) {
                 logger.error("start streaming failed", ex);
             }
@@ -99,11 +104,11 @@ public class NetwitnessEventsStream extends AbstractNetwitnessEventsStream {
             return  stream;
         }
 
-        private void addSource(Instant startTime, Instant endTime, RecordStream stream) throws URISyntaxException {
+        private void addSource(Instant startTime, Instant endTime, RecordStream stream, String query, String timeField) throws URISyntaxException {
             URIBuilder uriBuilder = new URIBuilder(BROKER_END_POINT);
 
             uriBuilder.addParameter(NwParameter.Mechanism.name(), "query");
-            //uriBuilder.addParameter(NwParameter.TimeMeta.name(), "event.time");
+            uriBuilder.addParameter(NwParameter.TimeMeta.name(), timeField);
 
             // start streaming parameter
             long minutesBack = TimeUnit.MINUTES.convert(Duration.between(startTime, Instant.now()).get(ChronoUnit.SECONDS),TimeUnit.SECONDS) ;
@@ -114,9 +119,7 @@ public class NetwitnessEventsStream extends AbstractNetwitnessEventsStream {
             uriBuilder.addParameter(NwParameter.CollectionDurationInMinutes.name(), Long.valueOf(collectionDurationInMinutes).toString());
 
             // event source
-            uriBuilder.addParameter(NwParameter.Query.name(), "select *");
-            // uriBuilder.addParameter(NwParameter.Query.name(), "select * where alias.host exists && reference.id = '4624'");
-            //uriBuilder.addParameter(NwParameter.Query.name(), "select * where event.source="+eventSource);
+            uriBuilder.addParameter(NwParameter.Query.name(), query);
 
             stream.addSource(uriBuilder.build());
         }

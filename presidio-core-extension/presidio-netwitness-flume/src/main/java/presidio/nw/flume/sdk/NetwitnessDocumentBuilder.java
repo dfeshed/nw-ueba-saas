@@ -1,15 +1,13 @@
-package source.sdk;
+package presidio.nw.flume.sdk;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import domain.NetwitnessAuthenticationEvent;
 import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractDocument;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import presidio.nw.flume.domain.NetwitnessEvent;
 
 import java.util.Map;
 
@@ -37,18 +35,11 @@ public class NetwitnessDocumentBuilder {
 
 
     public AbstractDocument buildDocument(Schema schema, Map<String, Object> netwitnessEvent) {
-        JSONObject jsonObject = getJsonFromMap(netwitnessEvent);
         AbstractDocument document = null;
         try {
-            switch (schema) {
-                case AUTHENTICATION: {
-                    document = objectMapper.readValue(jsonObject.toString(), NetwitnessAuthenticationEvent.class);
-                    break;
-                }
-                default: {
-                    throw new Exception("Failed to get events. Unsupported schema:" + schema.toString());
-                }
-            }
+             String jsonResp = objectMapper.writeValueAsString(netwitnessEvent);
+             NetwitnessEvent ns = new NetwitnessEvent();
+             document = objectMapper.readValue(jsonResp, NetwitnessEvent.class);
         } catch (Exception e) {
             final String errorMessage = String.format("Failed to buildDocument for schema:%s, netwitnessEvent:%s", schema, netwitnessEvent);
             logger.error(errorMessage, e);
@@ -57,21 +48,4 @@ public class NetwitnessDocumentBuilder {
         return document;
     }
 
-
-    private JSONObject getJsonFromMap(Map<String, Object> map) throws JSONException {
-        JSONObject jsonData = new JSONObject();
-        for (String key : map.keySet()) {
-            Object value = map.get(key);
-            if (value instanceof Map<?, ?>) {
-                value = getJsonFromMap((Map<String, Object>) value);
-            } else if(value instanceof Object[]) {
-                Object[] arr = (Object[]) value;
-                value = arr.length > 0? arr[0]: null;
-            }
-            if (value!=null) {
-                jsonData.put(key, value);
-            }
-        }
-        return jsonData;
-    }
 }
