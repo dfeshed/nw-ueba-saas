@@ -20,14 +20,33 @@ public class PresidioNwRoleHierarchy implements RoleHierarchy {
 
     @Override
     public Collection<? extends GrantedAuthority> getReachableGrantedAuthorities(Collection<? extends GrantedAuthority> grantedAuthorities) {
+
         Collection<SimpleGrantedAuthority> grantedRoles = new HashSet<>();
-        if (!CollectionUtils.isEmpty(grantedAuthorities)){
-            grantedAuthorities.forEach((grantedAuthority)->{
-                String authorotyName = grantedAuthority.getAuthority();
-                SimpleGrantedAuthority role = new SimpleGrantedAuthority(ROLE_PREFIX +authorotyName);
-                grantedRoles.add(role);
-            });
+        if (grantedAuthorities==null){
+            return grantedRoles;
         }
+
+
+        //For each authority,get all relevant roles
+        grantedAuthorities.forEach((grantedAuthority)->{
+            grantedRoles.addAll(getRolesFromAuthority(grantedAuthority));
+        });
+
+
+        return grantedRoles;
+    }
+
+    /**
+     *
+     * @param grantedAuthority
+     * @return all of roles associated with the granted authority
+     */
+    private Collection<SimpleGrantedAuthority> getRolesFromAuthority(GrantedAuthority grantedAuthority) {
+
+        Collection<SimpleGrantedAuthority> grantedRoles = new HashSet<>();
+        String authorityName = grantedAuthority.getAuthority();
+        SimpleGrantedAuthority role = new SimpleGrantedAuthority(ROLE_PREFIX +authorityName);
+        grantedRoles.add(role);
         return grantedRoles;
     }
 

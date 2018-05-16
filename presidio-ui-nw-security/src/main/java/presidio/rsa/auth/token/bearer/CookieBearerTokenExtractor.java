@@ -11,7 +11,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * CookieBearerTokenExtractor inspects request for access_token
@@ -24,6 +25,7 @@ import java.io.IOException;
 public class CookieBearerTokenExtractor extends BearerTokenExtractor {
 
     public static final String ACCESS_TOKEN = "access_token";
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
      * Extract token from the header or query param of cookie
@@ -45,6 +47,7 @@ public class CookieBearerTokenExtractor extends BearerTokenExtractor {
             origin = TokenBearerOrigin.COOKIE;
         }
 
+        logger.debug("Token: {}     retrieved from origin: {}",tokenValue,origin);
         return new TokenBearerWrapper(tokenValue,origin);
     }
 
@@ -96,7 +99,9 @@ public class CookieBearerTokenExtractor extends BearerTokenExtractor {
 
         //If the token come from header or from query param
         if (tokenBearerWrapper.getToken()!=null){
+
             response.addCookie(new Cookie(ACCESS_TOKEN,tokenBearerWrapper.getToken()));
+            logger.debug("Token set on cookie");
         }
 
 
@@ -108,9 +113,15 @@ public class CookieBearerTokenExtractor extends BearerTokenExtractor {
 
             try {
                 response.sendRedirect(requestUrl);
+                logger.debug("URL redirected to remove token. New URL: {}",requestUrl);
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+
+
+
         }
     }
 

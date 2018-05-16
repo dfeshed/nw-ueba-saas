@@ -42,7 +42,7 @@ import java.util.stream.Stream;
 @Service
 public class PresidioNwAuthServiceImpl implements PresidioNwAuthService{
 
-    private static final Logger LOG = LoggerFactory.getLogger(PresidioNwAuthServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     /**
@@ -118,10 +118,10 @@ public class PresidioNwAuthServiceImpl implements PresidioNwAuthService{
 
         // Is this a refresh token and we didn't issue it
         if (token.isRefresh()) {
-            LOG.warn("Fortscale does not support refresh tokens");
+            logger.warn("Fortscale does not support refresh tokens");
         }
 
-        LOG.info("Authentication Token {}", token);
+        logger.info("Authentication Token {}", token);
 
         // Not expired, but can anyone vouch for it.
         boolean valid = tokenVerifiers.stream()
@@ -141,11 +141,11 @@ public class PresidioNwAuthServiceImpl implements PresidioNwAuthService{
     public boolean verifySignature(Jwt token, Token claimed, SignatureVerifier verifier) {
         try {
             token.verifySignature(verifier);
-            LOG.info("Accepted token for {} issued by {}", claimed.getUserName(), claimed.getIss());
+            logger.info("Accepted token for {} issued by {}", claimed.getUserName(), claimed.getIss());
             return true;
         }
         catch (Exception e) {
-            LOG.trace("Token verification failure", e);
+            logger.trace("Token verification failure", e);
             return false;
         }
     }
@@ -163,7 +163,7 @@ public class PresidioNwAuthServiceImpl implements PresidioNwAuthService{
                 .map(RsaVerifier::new)
                 .collect(Collectors.toList());
 
-        LOG.debug("Token verifiers size:" + tokenVerifiers.size());
+        logger.debug("Token verifiers size:" + tokenVerifiers.size());
 
     }
 
@@ -196,7 +196,7 @@ public class PresidioNwAuthServiceImpl implements PresidioNwAuthService{
     }
 
 
-    public static void initializeCryptoJ(int mode, boolean onlyApproved) throws ServiceInterruptException {
+    private void initializeCryptoJ(int mode, boolean onlyApproved) throws ServiceInterruptException {
         try {
             // Set the crypto mode based on FIPS stance
             CryptoJ.setMode(mode);
@@ -207,7 +207,7 @@ public class PresidioNwAuthServiceImpl implements PresidioNwAuthService{
             Security.insertProviderAt(jsafeJce, 1);
             Security.insertProviderAt(jsseProvider, 2);
 
-//             If we must use only approved providers exclusively
+            //If we must use only approved providers exclusively
             if (onlyApproved) {
                 // Remove the others
                 Arrays.stream(Security.getProviders())
@@ -215,7 +215,7 @@ public class PresidioNwAuthServiceImpl implements PresidioNwAuthService{
                         .forEach(p -> Security.removeProvider(p.getName()));
             }
 
-            LOG.info("Initialized service cryptography with {} providers (BSAFE={}, FIPS-140={}).",
+            logger.info("Initialized service cryptography with {} providers (BSAFE={}, FIPS-140={}).",
                     Security.getProviders().length, CryptoJVersion.getProductID(), CryptoJ.isFIPS140Compliant());
 
             // Register this class for crypto-events

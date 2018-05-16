@@ -46,6 +46,7 @@ public class PresidioNwAuthenticationFilter extends GenericFilterBean {
         HttpServletRequest httpRequest = asHttp(request);
         HttpServletResponse httpResponse = asHttp(response);
 
+        logger.debug("Extracting token from request");
         //Get TokenBearerWrapper which contain the token as string and the origin of the token (HEADERM, COOKIE, REQUEST)
         Optional<TokenBearerWrapper> tokenBearerWrapper = Optional.ofNullable(cookieBearerTokenExtractor.retrieveToken(httpRequest));
         Optional<String> token = Optional.empty();
@@ -68,7 +69,7 @@ public class PresidioNwAuthenticationFilter extends GenericFilterBean {
             }
 
 
-            logger.debug("AuthenticationFilter is passing request down the filter chain");
+            logger.debug("Authentication succeeded PresidioNwAuthenticationFilter is passing request down the filter chain");
             addSessionContextToLogging();
             chain.doFilter(request, response);
         } catch (InternalAuthenticationServiceException internalAuthenticationServiceException) {
