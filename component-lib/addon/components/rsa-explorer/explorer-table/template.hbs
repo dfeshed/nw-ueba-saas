@@ -18,7 +18,8 @@
       <div {{action 'sort' column isSortDescending}} class="header-title {{if (not column.disableSort) 'sortable'}}" title="{{t column.title}}">
         {{t column.title}}
         {{#unless column.disableSort}}
-          <span class="sort-indicator {{if (or (eq sortField column.field) (eq sortField column.sortField)) 'sorted'}}">
+          <span class="sort-indicator {{if (or (eq sortField column.field) (eq sortField column.sortField))
+            (if isSortDescending 'sorted descending' 'sorted ascending')}}">
             {{rsa-icon size="small" name=(if isSortDescending "arrow-down-7" "arrow-up-7")}}
           </span>
         {{/unless}}

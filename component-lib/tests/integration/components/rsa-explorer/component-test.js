@@ -73,6 +73,7 @@ module('Integration | Component | RSA Explorer', function(hooks) {
       title: 'respond.remediationTasks.list.name'
     }]);
     this.set('creators', creators);
+    setState({ sortField: 'name', isSortDescending: false });
     await render(hbs`
       {{#rsa-explorer columns=columns reduxSpace='componentLib.explorer' creators=creators as |explorer|}}
         {{#explorer.table}}
@@ -81,6 +82,7 @@ module('Integration | Component | RSA Explorer', function(hooks) {
       {{/rsa-explorer}}`);
     assert.equal(findAll('.rsa-explorer .rsa-explorer-table .rsa-data-table').length, 1, 'The Explorer table component renders');
     assert.equal(find('.rsa-explorer .rsa-explorer-table .rsa-data-table .rsa-data-table-header-cell').textContent.trim(), 'Name', 'Explorer table column renders');
+    assert.equal(findAll('.sort-indicator.sorted.ascending').length, 1, 'The column indicates via class name that it is sorted and which direction it is sorted in');
   });
 
   test('The yielded inspector component renders to the DOM with block content', async function(assert) {
