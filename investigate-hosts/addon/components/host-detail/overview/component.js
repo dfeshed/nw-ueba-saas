@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { getHostPropertyTab, getOverviewContext, getAlertsCount, getIncidentsCount } from 'investigate-hosts/reducers/visuals/selectors';
+import { getHostPropertyTab, getContext, getAlertsCount, getIncidentsCount } from 'investigate-hosts/reducers/visuals/selectors';
 import { setHostPropertyTabView } from 'investigate-hosts/actions/data-creators/details';
 
 const stateToComputed = (state) => ({
@@ -8,7 +8,7 @@ const stateToComputed = (state) => ({
   animation: state.endpoint.detailsInput.animation,
   activePropertyTab: state.endpoint.visuals.activeHostPropertyTab,
   hostPropertyTabs: getHostPropertyTab(state),
-  overviewContext: getOverviewContext(state),
+  context: getContext(state),
   alertsCount: getAlertsCount(state),
   incidentsCount: getIncidentsCount(state)
 });

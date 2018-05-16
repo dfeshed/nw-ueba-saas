@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { getHostTableColumns } from 'investigate-hosts/reducers/schema/selectors';
-import { getNextMachines, setHostColumnSort, handleRowSelection } from 'investigate-hosts/actions/data-creators/host';
+import { getNextMachines, setHostColumnSort, fetchHostContext } from 'investigate-hosts/actions/data-creators/host';
 import {
   processedHostList,
   serviceList,
@@ -31,7 +31,7 @@ const dispatchToActions = {
   toggleIconVisibility,
   setSelectedHost,
   setHostColumnSort,
-  handleRowSelection
+  fetchHostContext
 };
 
 const HostTable = Component.extend({
@@ -62,6 +62,10 @@ const HostTable = Component.extend({
         entityId: item.machineIdentity.machineName
       };
       this.send('handleRowSelection', entity);
+    },
+    toggleSelectedRow(item, index, e, table) {
+      table.set('selectedIndex', index);
+      this.send('fetchHostContext', item.machine.machineName);
     }
   }
 });

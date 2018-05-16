@@ -89,6 +89,14 @@ const _activeAutorunTab = (state) => state.endpoint.visuals.activeAutorunTab || 
 const _activeHostPropertyTab = (state) => state.endpoint.visuals.activeHostPropertyTab || 'HOST';
 const _activeDataSourceTab = (state) => state.endpoint.visuals.activeDataSourceTab || 'ALERT';
 const _context = (state) => state.endpoint.visuals.lookupData;
+const _agentId = (state) => state.endpoint.detailsInput.agentId;
+
+export const hasMachineId = createSelector(
+  _agentId,
+  (agentId) => {
+    return !!agentId;
+  },
+);
 
 
 export const getAutorunTabs = createSelector(
@@ -137,6 +145,13 @@ export const getDataSourceTab = createSelector(
   }
 );
 
+export const getRiskPanelActiveTab = createSelector(
+  [_activeDataSourceTab, _activeHostPropertyTab, hasMachineId],
+  (activeDataSourceTab, activeHostPropertyTab, hasMachineId) => {
+    return hasMachineId ? activeHostPropertyTab : activeDataSourceTab;
+  }
+);
+
 export const getAlertsCount = createSelector(
   [_context],
   (context) => {
@@ -160,30 +175,10 @@ export const getIncidentsCount = createSelector(
 );
 
 export const getContext = createSelector(
-  [_context, _activeDataSourceTab],
-  (context, activeDataSourceTab) => {
+  [_context, getRiskPanelActiveTab],
+  (context, riskPanelActiveTab) => {
     let result = '';
-    const activeTab = activeDataSourceTab === 'ALERT' ? 'Alerts' : 'Incidents';
-    if (context && context[0][activeTab]) {
-      result = context[0][activeTab].resultList;
-    }
-    if (result) {
-      if (activeTab === 'Alerts') {
-        result = result.map((alert) => {
-          const incident = alert.incidentId;
-          return { ...alert.alert, incident };
-        });
-      }
-    }
-    return result;
-  }
-);
-
-export const getOverviewContext = createSelector(
-  [_context, _activeHostPropertyTab],
-  (context, activeHostPropertyTab) => {
-    let result = '';
-    const activeTab = activeHostPropertyTab === 'ALERT' ? 'Alerts' : 'Incidents';
+    const activeTab = riskPanelActiveTab === 'ALERT' ? 'Alerts' : 'Incidents';
     if (context && context[0][activeTab]) {
       result = context[0][activeTab].resultList;
     }

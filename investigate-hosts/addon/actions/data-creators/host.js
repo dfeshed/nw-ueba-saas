@@ -298,12 +298,12 @@ const stopScan = (agentIds, callbacks = callbacksDefault) => {
     });
 };
 
-const handleRowSelection = (entity) => {
+const fetchHostContext = (machineName) => {
   return (dispatch) => {
     const query = {
       filter: [
-        { field: 'meta', value: entity.entityType },
-        { field: 'value', value: entity.entityId }
+        { field: 'meta', value: 'HOST' },
+        { field: 'value', value: machineName }
       ]
     };
     Machines.getContext(query, {
@@ -312,12 +312,14 @@ const handleRowSelection = (entity) => {
       },
       onResponse: ({ data }) => {
         dispatch({ type: ACTION_TYPES.SET_CONTEXT_DATA, payload: data });
+      },
+      onError: ({ meta }) => {
+        const error = (meta && meta.message) ? meta.message : 'admin.error';
+        handleError(ACTION_TYPES.SET_CONTEXT_DATA, `context.error.${error}`);
       }
-      // onError: _handleError()
     });
   };
 };
-
 
 export {
   getAllServices,
@@ -332,6 +334,6 @@ export {
   initializeHostsPreferences,
   startScan,
   stopScan,
-  handleRowSelection
+  fetchHostContext
 };
 
