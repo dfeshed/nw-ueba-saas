@@ -76,7 +76,7 @@ public class ConfigurationManagerService implements ConfigurationProcessingServi
                 }
             }
         }
-        return new PresidioManagerConfiguration(dataPipeLineConfiguration, presidioSystemConfiguration, outputConfigurationCreator);
+        return new PresidioManagerConfiguration(dataPipeLineConfiguration, presidioSystemConfiguration, outputConfigurationCreator, dataPullingConfiguration);
     }
 
 }

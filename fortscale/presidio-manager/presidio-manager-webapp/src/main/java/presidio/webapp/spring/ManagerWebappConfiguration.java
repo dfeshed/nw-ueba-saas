@@ -25,7 +25,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 @Configuration
-@Import(value = {SecurityManagerConfiguration.class, AirflowConfiguration.class, ManagerServiceConfig.class, ConfigServerClientServiceConfiguration.class, ForwardingConfiguration.class})
+@Import(value = {SecurityManagerConfiguration.class, AirflowConfiguration.class, ManagerServiceConfig.class, ConfigServerClientServiceConfiguration.class, ForwardingConfiguration.class, DataPullingConfiguration.class})
 public class ManagerWebappConfiguration {
 
     @Value("#{'${spring.profiles.active:default}'.split(',')}")
@@ -51,9 +51,13 @@ public class ManagerWebappConfiguration {
     @Autowired
     private ConfigurationServerClientService configServerClient;
 
+    @Autowired
+    @Resource(name = "configurationDataPullingService")
+    ConfigurationProcessingService configurationDataPullingService;
+
     @Bean
     ConfigurationManagerService configurationServiceImpl() {
-        return new ConfigurationManagerService(configurationAirflowServcie, configurationSecurityService, configurationForwarderService);
+        return new ConfigurationManagerService(configurationAirflowServcie, configurationSecurityService, configurationForwarderService, configurationDataPullingService);
     }
 
     @Bean

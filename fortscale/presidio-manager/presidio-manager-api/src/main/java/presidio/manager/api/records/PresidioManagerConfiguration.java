@@ -25,10 +25,11 @@ public class PresidioManagerConfiguration {
     public PresidioManagerConfiguration() {
     }
 
-    public PresidioManagerConfiguration(DataPipeLineConfiguration dataPipeLineConfiguration, PresidioSystemConfiguration systemConfiguration, OutputConfigurationCreator outputConfigurationCreator) {
+    public PresidioManagerConfiguration(DataPipeLineConfiguration dataPipeLineConfiguration, PresidioSystemConfiguration systemConfiguration, OutputConfigurationCreator outputConfigurationCreator, DataPullingConfiguration dataPullingConfiguration) {
         this.dataPipeLineConfiguration = dataPipeLineConfiguration;
         this.systemConfiguration = systemConfiguration;
         this.outputConfigurationCreator = outputConfigurationCreator;
+        this.dataPullingConfiguration = dataPullingConfiguration;
     }
 
     public OutputConfigurationCreator getOutputConfigurationCreator() {
