@@ -23,7 +23,7 @@ limitations under the License.
     <parent>
         <artifactId>presidio-flume</artifactId>
         <groupId>presidio.flume.core</groupId>
-        <version>1.0-11</version>
+        <version>${presidio-flume.version}</version>
     </parent>
 
     <artifactId>flume-ng-channels</artifactId>

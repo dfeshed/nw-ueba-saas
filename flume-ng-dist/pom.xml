@@ -24,7 +24,7 @@
     <parent>
         <artifactId>presidio-flume</artifactId>
         <groupId>presidio.flume.core</groupId>
-        <version>1.0-11</version>
+        <version>${presidio-flume.version}</version>
     </parent>
 
     <artifactId>flume-ng-dist</artifactId>
@@ -59,35 +59,35 @@
     </build>
 
     <profiles>
-        <profile>
-            <id>hadoop-2</id>
-            <activation>
-                <property>
-                    <name>flume.hadoop.profile</name>
-                    <value>2</value>
-                </property>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>presidio.flume.core.flume-ng-sinks</groupId>
-                    <artifactId>flume-hive-sink</artifactId>
-                </dependency>
-            </dependencies>
-        </profile>
-        <profile>
-            <id>hbase-1</id>
-            <activation>
-                <property>
-                    <name>!flume.hadoop.profile</name>
-                </property>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>presidio.flume.core.flume-ng-sinks</groupId>
-                    <artifactId>flume-hive-sink</artifactId>
-                </dependency>
-            </dependencies>
-        </profile>
+        <!--<profile>-->
+            <!--<id>hadoop-2</id>-->
+            <!--<activation>-->
+                <!--<property>-->
+                    <!--<name>flume.hadoop.profile</name>-->
+                    <!--<value>2</value>-->
+                <!--</property>-->
+            <!--</activation>-->
+            <!--<dependencies>-->
+                <!--<dependency>-->
+                    <!--<groupId>presidio.flume.core.flume-ng-sinks</groupId>-->
+                    <!--<artifactId>flume-hive-sink</artifactId>-->
+                <!--</dependency>-->
+            <!--</dependencies>-->
+        <!--</profile>-->
+        <!--<profile>-->
+            <!--<id>hbase-1</id>-->
+            <!--<activation>-->
+                <!--<property>-->
+                    <!--<name>!flume.hadoop.profile</name>-->
+                <!--</property>-->
+            <!--</activation>-->
+            <!--<dependencies>-->
+                <!--<dependency>-->
+                    <!--<groupId>presidio.flume.core.flume-ng-sinks</groupId>-->
+                    <!--<artifactId>flume-hive-sink</artifactId>-->
+                <!--</dependency>-->
+            <!--</dependencies>-->
+        <!--</profile>-->
     </profiles>
 
     <dependencies>
@@ -131,16 +131,16 @@
             <groupId>presidio.flume.core.flume-ng-sinks</groupId>
             <artifactId>flume-ng-kafka-sink</artifactId>
         </dependency>-->
-        <dependency>
-            <groupId>presidio.flume.core.flume-ng-sinks</groupId>
-            <artifactId>flume-ng-morphline-solr-sink</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                    <artifactId>jackson-databind</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>presidio.flume.core.flume-ng-sinks</groupId>-->
+            <!--<artifactId>flume-ng-morphline-solr-sink</artifactId>-->
+            <!--<exclusions>-->
+                <!--<exclusion>-->
+                    <!--<groupId>com.fasterxml.jackson.core</groupId>-->
+                    <!--<artifactId>jackson-databind</artifactId>-->
+                <!--</exclusion>-->
+            <!--</exclusions>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>presidio.flume.core.flume-ng-sources</groupId>
             <artifactId>flume-jms-source</artifactId>
@@ -174,17 +174,17 @@
         <dependency>
             <groupId>presidio.flume.core</groupId>
             <artifactId>fortscale-flume-common</artifactId>
-            <version>1.0-11</version>
+            <version>${presidio-flume.version}</version>
         </dependency>
         <dependency>
             <groupId>presidio.flume.core</groupId>
             <artifactId>fortscale-flume-sources</artifactId>
-            <version>1.0-11</version>
+            <version>${presidio-flume.version}</version>
         </dependency>
         <dependency>
             <groupId>presidio.flume.core</groupId>
             <artifactId>fortscale-flume-sinks</artifactId>
-            <version>1.0-11</version>
+            <version>${presidio-flume.version}</version>
         </dependency>
     </dependencies>
 
