@@ -62,27 +62,25 @@ test('Datetime filter clicking on update filter', function(assert) {
   this.get('timezone').set('selected', { zoneId: 'Kwajalein' });
   // Setting configuration to the component
   this.set('config', filterConfig);
-
-  patchSocket((method, model, query) => {
-    assert.equal(method, 'machines');
-    assert.deepEqual(query.data.criteria.expressionList, [{
-      'isCustom': false,
-      'propertyName': 'machine.scanStartTime',
-      'propertyValues': [
-        {
-          'relative': true,
-          'relativeValueType': 'Minutes',
-          'value': 5,
-          'valueType': 'DATE'
-        }
-      ],
-      'restrictionType': 'GREATER_THAN'
-    }]);
-  });
-
   this.render(hbs`{{host-list/content-filter/datetime-filter config=config}}`);
   this.$('.filter-trigger-button').trigger('click');
   return wait().then(() => {
+    patchSocket((method, model, query) => {
+      assert.equal(method, 'machines');
+      assert.deepEqual(query.data.criteria.expressionList, [{
+        'isCustom': false,
+        'propertyName': 'machine.scanStartTime',
+        'propertyValues': [
+          {
+            'relative': true,
+            'relativeValueType': 'Minutes',
+            'value': 5,
+            'valueType': 'DATE'
+          }
+        ],
+        'restrictionType': 'GREATER_THAN'
+      }]);
+    });
     $('.rsa-form-button')[1].click();
     assert.equal($('.datetime-filter__content').length, 1);
   });
@@ -94,26 +92,25 @@ test('Datetime filter clicking on NOT IN', function(assert) {
   // Setting configuration to the component
   this.set('config', filterConfig);
 
-  patchSocket((method, model, query) => {
-    assert.equal(method, 'machines');
-    assert.deepEqual(query.data.criteria.expressionList, [{
-      'isCustom': false,
-      'propertyName': 'machine.scanStartTime',
-      'propertyValues': [
-        {
-          'relative': true,
-          'relativeValueType': 'Minutes',
-          'value': 5,
-          'valueType': 'DATE'
-        }
-      ],
-      'restrictionType': 'LESS_THAN'
-    }]);
-  });
-
   this.render(hbs`{{host-list/content-filter/datetime-filter config=config}}`);
   this.$('.filter-trigger-button').trigger('click');
   return wait().then(() => {
+    patchSocket((method, model, query) => {
+      assert.equal(method, 'machines');
+      assert.deepEqual(query.data.criteria.expressionList, [{
+        'isCustom': false,
+        'propertyName': 'machine.scanStartTime',
+        'propertyValues': [
+          {
+            'relative': true,
+            'relativeValueType': 'Minutes',
+            'value': 5,
+            'valueType': 'DATE'
+          }
+        ],
+        'restrictionType': 'LESS_THAN'
+      }]);
+    });
     $('.rsa-form-radio-label')[1].click();
     $('.rsa-form-button')[1].click();
     assert.equal($('.datetime-filter__content').length, 1);
