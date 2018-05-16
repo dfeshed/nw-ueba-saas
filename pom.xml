@@ -78,11 +78,6 @@
 
     <repositories>
         <repository>
-<<<<<<< HEAD
-            <id>snapshots</id>
-            <url>http://mirror.fortscale.dom/artifactory/presidio-snapshot-local</url>
-
-=======
             <id>asoc-releases</id>
             <name>repo1.rsa.lab.emc.com-releases</name>
             <url>https://repo1.rsa.lab.emc.com:8443/artifactory/presidio-test-utils</url>
@@ -109,7 +104,6 @@
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
             </snapshots>
->>>>>>> e0a47ae... update artifactory paths
         </repository>
     </repositories>
 
