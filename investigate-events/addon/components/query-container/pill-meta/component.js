@@ -90,10 +90,11 @@ const PillMeta = Component.extend({
      * This function is called on every `input` event from the power-select's
      * trigger element. It's looking for an input string that ends with a space.
      * If it finds one and the power-select has been down-selected to one
-     * result, then trigger a `select` event on the power-select. Ultimately,
-     * this triggers the `onChange` action above. If the input string is empty,
-     * it resets the `selection`. We do this to prevent the previously
-     * highlighted item from staying highlighted.
+     * result, or the full `metaName` has been typed, then trigger a `select`
+     * event on the power-select. Ultimately, this triggers the `onChange`
+     * action above.
+     * If the input string is empty, it resets the `selection`. We do this to
+     * prevent the previously highlighted item from staying highlighted.
      * @private
      */
     onInput(input, powerSelectAPI /* event */) {
@@ -101,6 +102,11 @@ const PillMeta = Component.extend({
       const { results } = powerSelectAPI;
       if (isSpace && results.length === 1) {
         powerSelectAPI.actions.select(results[0]);
+      } else if (isSpace && results.length > 1) {
+        const match = this._hasExactMatch(input.trim(), results);
+        if (match) {
+          powerSelectAPI.actions.select(match);
+        }
       } else if (input.length === 0) {
         this.set('selection', null);
       }
@@ -126,6 +132,15 @@ const PillMeta = Component.extend({
       trigger.focus();
     }
   },
+
+  /**
+   * Looks for a meta object with an exact match based on `metaName`.
+   * @param {string} text The text to look for
+   * @param {Object[]} metas An array of meta objects
+   * @return {Object|undefined} The matching object or undefined
+   * @private
+   */
+  _hasExactMatch: (text, metas = []) => metas.find((m) => m.metaName === text),
 
   /**
    * Function that power-select uses to make an autosuggest match. This function

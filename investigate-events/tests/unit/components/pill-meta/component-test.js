@@ -19,4 +19,15 @@ module('Unit | Component | Pill Meta', function(hooks) {
     assert.equal(comp._matcher(m2, 'baz'), 0, 'Did not find item in "metaName"');
     assert.equal(comp._matcher(m3, '   baz'), 0, 'Did not ignore leading spaces');
   });
+
+  test('Can properly detect an exact meta match', function(assert) {
+    const comp = this.owner.lookup('component:query-container/pill-meta');
+    const metas = [
+      { displayName: 'Foo', metaName: 'foo' },
+      { displayName: 'Foo Bar', metaName: 'foo.bar' },
+      { displayName: 'Baz', metaName: 'baz' }
+    ];
+    assert.notOk(comp._hasExactMatch('foobar', metas), 'Erroneously found matching item');
+    assert.equal(comp._hasExactMatch('foo', metas), metas[0], 'Did not find matching item');
+  });
 });

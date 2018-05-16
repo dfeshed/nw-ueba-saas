@@ -5,7 +5,7 @@ import { patchReducer } from '../../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
 import hbs from 'htmlbars-inline-precompile';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
-import { click, find, findAll, render, settled, triggerKeyEvent } from '@ember/test-helpers';
+import { click, fillIn, find, findAll, render, settled, triggerKeyEvent } from '@ember/test-helpers';
 
 const TAB_KEY = 9;
 
@@ -19,7 +19,8 @@ const initialState = {
     { count: 0, format: 'Text', metaName: 'a', flags: 1, displayName: 'A' },
     { count: 0, format: 'Text', metaName: 'b', flags: 2, displayName: 'B' },
     { count: 0, format: 'Text', metaName: 'c', flags: 3, displayName: 'C' },
-    { count: 0, format: 'Text', metaName: 'cc', flags: 3, displayName: 'CC' }
+    { count: 0, format: 'Text', metaName: 'c.a', flags: 3, displayName: 'C(A)' },
+    { count: 0, format: 'Text', metaName: 'c.b', flags: 3, displayName: 'C(B)' }
   ]
 };
 
@@ -79,14 +80,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
       assert.deepEqual(data, initialState.language[1], 'Wrong message data');
     });
     await render(hbs`{{query-container/pill-meta isActive=true sendMessage=(action handleMessage)}}`);
-    // We go back to old-skool jQuery for this because fillIn() performs a focus
-    // event on the input every time you call it which causes the search to
-    // clear out. PowerSelect test helper typeInSearch() ends up just calling
-    // fillIn(). Also, fillIn() doesn't seem to properly trigger an InputEvent,
-    // so the input handler doesn't get a down-selected list of meta options.
-    this.$('input').val('b').trigger('input');
-    this.$('input').val(' ').trigger('input');
-    return settled();
+    await fillIn('input', 'b ');
   });
 
   test('it does not selects meta if a trailing SPACE is entered and there is more than one option', async function(assert) {
@@ -96,9 +90,18 @@ module('Integration | Component | Pill Meta', function(hooks) {
       assert.notOk('The sendMessage handler was erroneously invoked');
     });
     await render(hbs`{{query-container/pill-meta isActive=true sendMessage=(action handleMessage)}}`);
-    this.$('input').val('c').trigger('input');
-    this.$('input').val(' ').trigger('input');
-    return settled();
+    await fillIn('input', 'c. ');// Will match 2 items (c.a and c.b)
+  });
+
+  test('it selects meta if a trailing SPACE is entered and there is an exact match', async function(assert) {
+    assert.expect(2);
+    setState({ ...initialState });
+    this.set('handleMessage', (type, data) => {
+      assert.equal(type, 'PILL::META_SELECTED', 'Wrong message type');
+      assert.deepEqual(data, initialState.language[2], 'Wrong message data');
+    });
+    await render(hbs`{{query-container/pill-meta isActive=true sendMessage=(action handleMessage)}}`);
+    await fillIn('input', 'c ');
   });
 
   test('it clears out last search if Power Select looses, then gains focus', async function(assert) {
@@ -106,12 +109,12 @@ module('Integration | Component | Pill Meta', function(hooks) {
     await render(hbs`{{query-container/pill-meta isActive=true}}`);
     // focus and assert number of options
     await click(metaPowerSelectTrigger);
-    assert.equal(findAll(powerSelectOption).length, 4);
+    assert.equal(findAll(powerSelectOption).length, 5);
     // blur and assert no options present
     await triggerKeyEvent(metaPowerSelectTrigger, 'keydown', TAB_KEY);
     assert.equal(findAll(powerSelectOption).length, 0);
     // focus and assert number of options
     await click(metaPowerSelectTrigger);
-    assert.equal(findAll(powerSelectOption).length, 4);
+    assert.equal(findAll(powerSelectOption).length, 5);
   });
 });

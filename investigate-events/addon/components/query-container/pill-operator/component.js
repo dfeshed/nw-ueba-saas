@@ -136,9 +136,10 @@ export default Component.extend({
      * This function is called on every `input` event from the power-select's
      * trigger element. It's looking for an input string that ends with a space.
      * If it finds one and the power-select has been down-selected to one
-     * result, then broadcast a `select` event. If the input string is empty,
-     * it resets the `selection`. We do this to prevent the previously
-     * highlighted item from staying highlighted.
+     * result, then broadcast a `select` event. Ultimately, this triggers the
+     * `onChange` action above.
+     * If the input string is empty, it resets the `selection`. We do this to
+     * prevent the previously highlighted item from staying highlighted.
      * @private
      */
     onInput(input, powerSelectAPI /* event */) {
