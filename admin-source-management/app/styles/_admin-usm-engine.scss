@@ -19,4 +19,13 @@ page.admin-usm-engine {
     }
   }
 
+  .loading-overlay {
+    @include rsa-fill-abs();
+    z-index: 2;
+    background-color: background-color(neutral,dark,translucent);
+    centered {
+      height: 100%;
+    }
+  }
+
 }

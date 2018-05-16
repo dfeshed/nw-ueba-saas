@@ -7,7 +7,7 @@ const Router = EmberRouter.extend({
 });
 
 Router.map(function() {
-  this.mount('admin-source-management');
+  this.mount('admin-source-management', { path: '/usm' });
 });
 
 export default Router;

@@ -1,0 +1,53 @@
+<!-- side wizard nav -->
+<vbox xs="4" class="group-sidebar">
+  <centered fit>
+    <h2>Wizard Nav...</h2>
+  </centered>
+</vbox>
+
+<!-- form -->
+<box class="group-form">
+  <hbox class="group-toolbar">
+    {{#rsa-form-button style='primary' class='confirm-button' 
+      tabIndex="3"
+      defaultAction="save"
+      isDisabled=hasMissingRequiredData
+    }}
+      {{t 'adminUsm.group.save'}}
+    {{/rsa-form-button}}
+    {{#rsa-form-button class='cancel-button' defaultAction=(route-action 'transitionToGroups')}}
+      {{t 'adminUsm.group.cancel'}}
+    {{/rsa-form-button}}
+  </hbox>
+
+  <label class="group-control-label">Identify</label>
+  <div class="group-control">
+    {{rsa-form-input
+      tabIndex="1"
+      label="Group Name"
+      placeholder="Enter a unique group name"
+      value=(readonly group.name)
+      maxLength=256
+      focusOut=(action "handleNameChange" value="target.value")
+    }}
+  </div>
+  <div class="group-control">
+    {{rsa-form-textarea
+      tabIndex="2"
+      label="Group Description"
+      placeholder="Enter a description"
+      value=(readonly group.description)
+      maxLength=8000
+      focusOut=(action 'handleDescriptionChange' value='target.value')
+    }}
+  </div>
+</box>
+
+{{!-- Overlay to prevent interactions while loading --}}
+{{#if isGroupLoading}}
+  <div class="loading-overlay">
+    <centered>
+      {{rsa-loader size="large"}}
+    </centered>
+  </div>
+{{/if}}

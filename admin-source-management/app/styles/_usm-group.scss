@@ -1,0 +1,29 @@
+.usm-group {
+
+  .group-form {
+    padding-right: rsa-whitespace(more);
+    padding-bottom: rsa-whitespace(more);
+    padding-left: rsa-whitespace(more);
+  }
+
+  .group-toolbar {
+    padding-top: rsa-whitespace();
+    padding-bottom: rsa-whitespace();
+    button {
+      margin-right: rsa-whitespace();
+    }
+  }
+
+  .group-control-label {
+    margin-top: rsa-whitespace();
+    @include rsa-font(header);
+  }
+
+  .group-control {
+    padding-top: rsa-whitespace(more);
+    > label {
+      margin-bottom: rsa-whitespace(least);
+    }
+  }
+
+}

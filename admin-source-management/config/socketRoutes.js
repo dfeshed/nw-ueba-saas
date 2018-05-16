@@ -12,22 +12,23 @@ const adminUsmConfigGen = function(environment) {
       findAll: {
         subscriptionDestination: '/user/queue/usm/groups',
         requestDestination: '/ws/usm/groups'
-      }/*,
-      queryRecord: {
-        subscriptionDestination: '/user/queue/usm/groups/read',
-        requestDestination: '/ws/usm/groups/read'
       },
-      createRecord: {
-        subscriptionDestination: '/user/queue/usm/groups/create',
-        requestDestination: '/ws/usm/groups/create'
-      },
+      /*queryRecord: {
+        subscriptionDestination: '/user/queue/usm/group/get',
+        requestDestination: '/ws/usm/group/get'
+      },*/
+      /*createRecord: {
+        subscriptionDestination: '/user/queue/usm/group/set',
+        requestDestination: '/ws/usm/group/set'
+      },*/
       updateRecord: {
-        subscriptionDestination: '/user/queue/usm/groups/update',
-        requestDestination: '/ws/usm/groups/update'
-      },
+        subscriptionDestination: '/user/queue/usm/group/set',
+        requestDestination: '/ws/usm/group/set'
+      }
+      /*,
       deleteRecord: {
-        subscriptionDestination: '/user/queue/usm/groups/delete',
-        requestDestination: '/ws/usm/groups/delete'
+        subscriptionDestination: '/user/queue/usm/group/remove',
+        requestDestination: '/ws/usm/group/remove'
       }*/
     }
   };

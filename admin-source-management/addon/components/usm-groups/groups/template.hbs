@@ -6,7 +6,12 @@
 
   <vbox class="items-zone">
     <box fit class="toolbar-zone">
-      Items header/toolbar...
+      {{#link-to 'group-create'}}
+        {{#rsa-form-button}}
+          {{rsa-icon name='add-1' style='lined'}}
+          {{t 'adminUsm.groups.new'}}
+        {{/rsa-form-button}}
+      {{/link-to}}
     </box>
     <box class="items-main">
       <box class="items-body">

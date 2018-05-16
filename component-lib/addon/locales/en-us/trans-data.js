@@ -2952,6 +2952,20 @@ export default {
       }
     }
   },
+  // begin admin-source-management (a.k.a USM)
+  adminUsm: {
+    groups: {
+      new: 'Add New'
+    },
+    group: {
+      save: 'Save and Publish',
+      cancel: 'Cancel',
+      identify: 'Identify',
+      groupName: 'Group Name',
+      groupDescription: 'Group Description'
+    }
+  },
+  // end admin-source-management (a.k.a USM)
   rsaExplorer: {
     timeframeOptions: {
       LAST_5_MINUTES: 'Last 5 Minutes',
