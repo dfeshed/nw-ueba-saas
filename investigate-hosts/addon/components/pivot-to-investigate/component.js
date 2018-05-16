@@ -93,16 +93,14 @@ const PivotToInvestigate = Component.extend({
    * Opens the investigate page with events query
    * @private
    */
-  _navigateToInvestigateEventsAnalysis() {
+  _navigateToInvestigateEventsAnalysis(serviceId) {
     const { zoneId } = this.get('timezone.selected');
     const { value, unit } = this.get('timeRange');
     const { startTime, endTime } = buildTimeRange(value, unit, zoneId);
 
-    const selectedService = this.get('selectedService');
-
     const mf = this._buildFilter();
     const queryParams = {
-      sid: selectedService, // Service Id
+      sid: serviceId, // Service Id
       mf: encodeURI(encodeURIComponent(mf)), // Meta filter
       st: startTime.tz('utc').format('X'), // Stat time
       et: endTime.tz('utc').format('X'), // End time
@@ -118,15 +116,13 @@ const PivotToInvestigate = Component.extend({
    * Opens the investigate/navigate page with query
    * @private
    */
-  _navigateToInvestigateNavigate() {
+  _navigateToInvestigateNavigate(serviceId) {
     const { zoneId } = this.get('timezone.selected');
     const { value, unit } = this.get('timeRange');
     const { startTime, endTime } = buildTimeRange(value, unit, zoneId);
 
-    const selectedService = this.get('selectedService');
-
     const mf = this._buildFilter();
-    const baseURL = `${window.location.origin}/investigation/endpointid/${selectedService}/navigate/query`;
+    const baseURL = `${window.location.origin}/investigation/endpointid/${serviceId}/navigate/query`;
     const query = encodeURI(encodeURIComponent(mf));
     const path = `${baseURL}/${query}/date/${startTime.tz('utc').format()}/${endTime.tz('utc').format()}`;
     this._closeModal();
@@ -152,12 +148,12 @@ const PivotToInvestigate = Component.extend({
       this._closeModal();
     },
 
-    pivotToInvestigateEventAnalysis() {
-      this._navigateToInvestigateEventsAnalysis();
+    pivotToInvestigateEventAnalysis(serviceId) {
+      this._navigateToInvestigateEventsAnalysis(serviceId);
     },
 
-    pivotToInvestigateNavigate() {
-      this._navigateToInvestigateNavigate();
+    pivotToInvestigateNavigate(serviceId) {
+      this._navigateToInvestigateNavigate(serviceId);
     },
 
     onModalClose() {
