@@ -241,4 +241,14 @@ export default class DataHelper {
     _set(this.state, 'machines.hostExportStatus', exportStatus);
     return this;
   }
+
+  lookupData(data) {
+    _set(this.state, 'visuals.lookupData', data);
+    return this;
+  }
+
+  activeHostPropertyTab(hostPropertyTab) {
+    _set(this.state, 'visuals.activeHostPropertyTab', hostPropertyTab);
+    return this;
+  }
 }

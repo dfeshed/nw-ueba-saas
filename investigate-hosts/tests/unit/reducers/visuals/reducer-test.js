@@ -5,6 +5,34 @@ import * as ACTION_TYPES from 'investigate-hosts/actions/types';
 
 module('Unit | Reducers | Visuals');
 
+const contextData = {
+  data: [
+    {
+      'dataSourceType': 'Alerts',
+      'dataSourceGroup': 'Alerts',
+      'resultList': [
+        {
+          '_id': {
+            '$oid': '5ae9b79826362f0bbbfae082'
+          },
+          'receivedTime': {
+            '$date': '2018-05-02T13:05:28.222Z'
+          },
+          'alert': {
+            'source': 'Event Stream Analysis',
+            'timestamp': {
+              '$date': '2018-05-02T13:05:28.000Z'
+            },
+            'risk_score': 70,
+            'name': 'Unsigned Creates Remote Thread',
+            'numEvents': 1
+          }
+        }
+      ]
+    }
+  ]
+};
+
 test('should return the initial state', function(assert) {
   const result = reducer(undefined, {});
   assert.deepEqual(result, {
@@ -134,4 +162,20 @@ test('The SET_SYSTEM_INFORMATION_TAB action sets the system information tab', fu
   const result = reducer(previous, { type: ACTION_TYPES.SET_SYSTEM_INFORMATION_TAB, payload: { tabName: 'SECURITY_PRODUCTS' } });
 
   assert.deepEqual(result, expectedEndState);
+});
+
++test('Fetch the data from context server', function(assert) {
+  const previous = Immutable.from({
+    lookupData: [{}]
+  });
+  const newEndState = reducer(previous, { type: ACTION_TYPES.SET_CONTEXT_DATA, payload: contextData.data });
+  assert.equal(newEndState.lookupData.length, 1);
+});
+
+test('The context state being cleared', function(assert) {
+  const previous = Immutable.from({
+    lookupData: contextData.data
+  });
+  const newEndState = reducer(previous, { type: ACTION_TYPES.CLEAR_PREVIOUS_CONTEXT });
+  assert.deepEqual(newEndState.lookupData[0], {}, 'lookupData state is cleared.');
 });
