@@ -1,3 +1,25 @@
+# [8.4.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v8.4.0)
+## Features
+* [ASOC-44399](https://bedfordjira.na.rsa.net/browse/ASOC-44399):&emsp;Allow user to hide node types on nodal graph
+* [ASOC-50120](https://bedfordjira.na.rsa.net/browse/ASOC-50120):&emsp;Refactor persistence of authentication token in Ember
+* [ASOC-50963](https://bedfordjira.na.rsa.net/browse/ASOC-50963):&emsp;Transform query when switch from advanced to basic
+* [ASOC-50964](https://bedfordjira.na.rsa.net/browse/ASOC-50964):&emsp;Tool tip on advanced query in basic mode
+* [ASOC-51213](https://bedfordjira.na.rsa.net/browse/ASOC-51213):&emsp;Add Event Recon view into Incident Detail view
+* [ASOC-51215](https://bedfordjira.na.rsa.net/browse/ASOC-51215):&emsp;Custom header for event analysis component
+* [ASOC-51567](https://bedfordjira.na.rsa.net/browse/ASOC-51567):&emsp;Single Pill Creation - Managing Spaces
+* [ASOC-51642](https://bedfordjira.na.rsa.net/browse/ASOC-51642):&emsp;Lookup core device id from event source id (ember side)
+* [ASOC-51670](https://bedfordjira.na.rsa.net/browse/ASOC-51670):&emsp;Update text reconstruction streaming to honor maximum message size for reactive streaming
+* [ASOC-51697](https://bedfordjira.na.rsa.net/browse/ASOC-51697):&emsp;Merge code from ASOC-43865
+* [ASOC-52775](https://bedfordjira.na.rsa.net/browse/ASOC-52775):&emsp;Map service call to appropriate less common error code in dictionary
+* [ASOC-52777](https://bedfordjira.na.rsa.net/browse/ASOC-52777):&emsp;Map service call to appropriate common error code in dictionary
+* [ASOC-53042](https://bedfordjira.na.rsa.net/browse/ASOC-53042):&emsp;Sort services alphabetically
+* [ASOC-53541](https://bedfordjira.na.rsa.net/browse/ASOC-53541):&emsp;Able to import the attributes which are available in context panel and also import if any additional attributes
+* [ASOC-53886](https://bedfordjira.na.rsa.net/browse/ASOC-53886):&emsp;Investigate Localization Issue Exploration
+* [ASOC-54099](https://bedfordjira.na.rsa.net/browse/ASOC-54099):&emsp;Draft Release Notes through Sprint 8.3
+* [ASOC-54285](https://bedfordjira.na.rsa.net/browse/ASOC-54285):&emsp;Componentize Respond's RSA-Explorer View
+* [ASOC-54312](https://bedfordjira.na.rsa.net/browse/ASOC-54312):&emsp;Able to view this fields by default from 11.2 Business Process and Mac Address
+
+
 # [8.3.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v8.3.0)
 ## Features
 * [ASOC-39648](https://bedfordjira.na.rsa.net/browse/ASOC-39648):&emsp;Create links using URL in Related Links
