@@ -32,7 +32,7 @@ module('Integration | Component | query-filters', function(hooks) {
     assert.equal(findAll('.rsa-query-meta').length, 1, 'Expected 1 .rsa-query-meta');
     assert.equal(findAll('.rsa-query-meta .rsa-query-fragment').length, 1, 'Expected 1 .rsa-query-fragment');
     assert.equal(findAll('.rsa-query-meta .rsa-query-fragment.edit-active').length, 1, 'Expected 1 .rsa-query-fragment.edit-active');
-    assert.equal(find('.rsa-query-meta .rsa-query-fragment.edit-active input').placeholder, 'Enter a Meta Key, Operator, and Value (optional)', 'Expected a placeholder');
+    assert.equal(find('.rsa-query-meta .rsa-query-fragment.edit-active input').placeholder, 'Enter a simple query consisting of a Meta Key, Operator, and Value (optional)', 'Expected a placeholder');
     assert.equal(findAll('.rsa-query-meta input:focus').length, 0, 'Expected .rsa-query-meta to not have focus');
   });
 
@@ -88,7 +88,7 @@ module('Integration | Component | query-filters', function(hooks) {
     run(i18n, 'addTranslations', 'ja-jp', { 'queryBuilder.placeholder': placeholder });
 
     const selector = '.rsa-query-meta .rsa-query-fragment.edit-active input';
-    assert.equal(find(selector).placeholder, 'Enter a Meta Key, Operator, and Value (optional)');
+    assert.equal(find(selector).placeholder, 'Enter a simple query consisting of a Meta Key, Operator, and Value (optional)');
 
     set(i18n, 'locale', 'ja-jp');
 

@@ -129,6 +129,7 @@
       input {
         display: block;
         @include rsa-input-placeholder(text-color(primary));
+        padding-left: rsa-whitespace(less);
       }
 
       .invisible-edit-trigger {

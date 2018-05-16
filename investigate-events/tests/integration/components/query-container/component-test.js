@@ -51,7 +51,7 @@ module('Integration | Component | query-container', function(hooks) {
       .hasRequiredValuesToQuery(true)
       .build();
     await render(hbs`{{query-container}}`);
-    assert.equal(find('.rsa-query-meta .rsa-query-fragment.edit-active input').placeholder, 'Enter a Meta Key, Operator, and Value (optional)', 'Expected a placeholder');
+    assert.equal(find('.rsa-query-meta .rsa-query-fragment.edit-active input').placeholder, 'Enter a simple query consisting of a Meta Key, Operator, and Value (optional)', 'Expected a placeholder');
     assert.ok(find('.rsa-investigate-query-container.guided'), 'Expected to see Guided Query Bar');
     assert.notOk(find('.rsa-query-meta .rsa-query-fragment input:focus'), 'Should not have focus the first time it renders');
 
@@ -59,7 +59,7 @@ module('Integration | Component | query-container', function(hooks) {
     return settled().then(() => {
       assert.ok(find('.rsa-investigate-query-container.freeForm'), 'Expected to see Free Form Query Bar');
       assert.ok(find('.rsa-investigate-free-form-query-bar input:focus'), 'Expected focus on free-form');
-      assert.equal(find('.rsa-investigate-free-form-query-bar input').placeholder, 'Free Form Query Bar', 'Expected a placeholder');
+      assert.equal(find('.rsa-investigate-free-form-query-bar input').placeholder, 'Enter a complex query consisting of a Meta Key, Operator, and Value (optional)', 'Expected a placeholder');
 
       click('.query-bar-select-actions .guided-link');
       return settled().then(() => {
@@ -75,7 +75,7 @@ module('Integration | Component | query-container', function(hooks) {
       .hasRequiredValuesToQuery(true)
       .build();
     await render(hbs`{{query-container}}`);
-    assert.equal(find('.rsa-query-meta .rsa-query-fragment.edit-active input').placeholder, 'Enter a Meta Key, Operator, and Value (optional)', 'Expected a placeholder');
+    assert.equal(find('.rsa-query-meta .rsa-query-fragment.edit-active input').placeholder, 'Enter a simple query consisting of a Meta Key, Operator, and Value (optional)', 'Expected a placeholder');
     assert.ok(find('.rsa-investigate-query-container.guided'), 'Expected to see Guided Query Bar');
 
     await click('.query-bar-select-actions .nextGen-link');

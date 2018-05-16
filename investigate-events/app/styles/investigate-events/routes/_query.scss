@@ -62,12 +62,7 @@ $investigateReconFullWidth: 100%;
         color: text-color(accentFour);
       }
       .rsa-investigate-query-tips-header {
-        @include rsa-row(center, middle);
         @include rsa-font(body, small);
-        border-radius: rsa-whitespace(less);
-        padding: rsa-whitespace(more);
-        margin: rsa-whitespace(more) rsa-whitespace(more) 0 rsa-whitespace(more);
-        background-color: background-color(primary, darker);
         li {
           padding: rsa-whitespace() 0 0;
           margin-left: rsa-whitespace();
@@ -82,26 +77,47 @@ $investigateReconFullWidth: 100%;
         .text .rsa-icon-arrow-right-7-lined {
           margin: 0 rsa-whitespace(less) 0 rsa-whitespace(less);
         }
-        .fakepill {
-          display: inline-flex;
-          position: relative;
-          flex: 0 0 auto;
-          align-self: center;
-          margin: calc(#{rsa-whitespace(least)} - 1px);
-          border-radius: rsa-whitespace(least);
-          @include border(1px, solid, primary, lighter);
-          color: text-color(primary, lightest);
-          padding: rsa-whitespace(less);
+        .text .highlight {
+          font-weight: bold;
+        }
 
-          .delete-filter-icon {
-          margin-left: rsa-whitespace(less);
-          margin-top: 1px;
-          color: text-color(primary, light);
-          display: inline-flex;
-          align-self: center;
-
+        .section-1 {
+          flex-basis: 0;
+          border-radius: rsa-whitespace(less);
+          padding: rsa-whitespace(more);
+          margin: rsa-whitespace(more) rsa-whitespace() rsa-whitespace(more) rsa-whitespace(more);
+          background-color: background-color(primary, darker);
+          .fakepill {
+            display: inline-flex;
+            position: relative;
+            flex: 0 0 auto;
+            align-self: center;
+            margin: calc(#{rsa-whitespace(least)} - 1px);
+            border-radius: rsa-whitespace(least);
+            @include border(1px, solid, primary, lighter);
+            color: text-color(primary, lightest);
+            padding: rsa-whitespace(less);
+  
+            .delete-filter-icon {
+            margin-left: rsa-whitespace(less);
+            margin-top: 1px;
+            color: text-color(primary, light);
+            display: inline-flex;
+            align-self: center;
+  
+            }
           }
         }
+
+        .section-2 {
+          flex-basis: 0;
+          border-radius: rsa-whitespace(less);
+          padding: rsa-whitespace(more);
+          margin: rsa-whitespace(more) rsa-whitespace(more) rsa-whitespace(more) rsa-whitespace();
+          background-color: background-color(primary, darker);
+          line-height: 1.7em;
+        }
+
       }
 
       .rsa-inveatigate-query-tips-section {
@@ -125,14 +141,14 @@ $investigateReconFullWidth: 100%;
           flex-basis: 0;
           border-radius: rsa-whitespace(less);
           padding: rsa-whitespace(more);
-          margin: rsa-whitespace(more) rsa-whitespace() rsa-whitespace(more) rsa-whitespace(more);
+          margin: rsa-whitespace() rsa-whitespace() rsa-whitespace(more) rsa-whitespace(more);
           background-color: background-color(primary, darker);
         }
         .rsa-investigate-query-tips-section-mouse {
           flex-basis: 0;
           border-radius: rsa-whitespace(less);
           padding: rsa-whitespace(more);
-          margin: rsa-whitespace(more) rsa-whitespace(more) rsa-whitespace(more) rsa-whitespace();
+          margin: rsa-whitespace() rsa-whitespace(more) rsa-whitespace(more) rsa-whitespace();
           background-color: background-color(primary, darker);
         }
       }

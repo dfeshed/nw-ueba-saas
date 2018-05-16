@@ -180,7 +180,7 @@ export default {
     delete: 'Delete selected filters',
     deleteFilter: 'Delete this filter',
     edit: 'Edit this filter',
-    placeholder: 'Enter a Meta Key, Operator, and Value (optional)',
+    placeholder: 'Enter a simple query consisting of a Meta Key, Operator, and Value (optional)',
     querySelected: 'Query with selected filters',
     querySelectedNewTab: 'Query with selected filters in a new tab',
     expensive: 'Performing this operation might take more time.',
@@ -422,7 +422,7 @@ export default {
     },
     freeForm: {
       linkTitle: 'Free-Form Mode',
-      placeholder: 'Free Form Query Bar',
+      placeholder: 'Enter a complex query consisting of a Meta Key, Operator, and Value (optional)',
       textLabel: 'Free-Form Mode'
     },
     nextGen: {
@@ -472,11 +472,26 @@ export default {
       eventTips: {
         noResults: 'No results yet. Please select a service, time range, and submit a query',
         head: {
-          header: 'QUERY FILTER EXAMPLES',
-          text: {
+          headerOne: 'GUIDED MODE QUERY FILTER EXAMPLES',
+          textOne: {
             one: 'Find outbound HTTP events with a user agent of some version of Mozilla',
             two: 'Find failed login windows events',
             three: 'Find endpoint events with tasks having filenames ending with exe'
+          },
+          headerTwo: 'FREE-FORM MODE QUERY FILTER EXAMPLES',
+          textTwo: {
+            one: {
+              description: 'Find events with a 4- to 6-character-long username that contains admin',
+              example: 'user.all length 4-6 && user.all regex ".*admin*"'
+            },
+            two: {
+              description: 'Find events that are either HTTP network events or related to aix or ciscoasa logs',
+              example: 'service=80 || (device.type = "aix","ciscoasa")'
+            },
+            three: {
+              description: 'Find all outbound events not going to Canada and the United States',
+              example: 'direction = "outbound" AND not (country.dst = "united states" || country.dst = "canada")'
+            }
           }
         },
         section: {
