@@ -145,6 +145,25 @@ export const initializeInvestigate = (params, hardReset = false) => {
         // We have minimum required params for querying
           dispatch(fetchInvestigateData());
         }
+      }).catch((response) => {
+        const errorObj = handleInvestigateErrorCode(response);
+
+        if (!errorObj) {
+          return;
+        }
+
+        const { errorCode, messageLocaleKey } = errorObj;
+
+        if (errorCode === 13) {
+          dispatch({
+            type: ACTION_TYPES.SET_EVENTS_PAGE_ERROR,
+            payload: {
+              status: 'error',
+              reason: errorCode,
+              message: lookup('service:i18n').t(messageLocaleKey).toString()
+            }
+          });
+        }
       });
     });
   };
