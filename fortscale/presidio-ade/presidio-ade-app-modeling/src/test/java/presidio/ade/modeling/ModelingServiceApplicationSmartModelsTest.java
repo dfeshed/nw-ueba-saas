@@ -17,7 +17,7 @@ import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.test.category.ModuleTestCategory;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
-import javafx.util.Pair;
+import fortscale.utils.data.Pair;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

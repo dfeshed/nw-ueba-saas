@@ -1,1 +1,1 @@
-mvn deploy:deploy-file -f target/generated-sources/swagger -DpomFile=pom.xml -Dfile=target/presidio-manager-generated-client-%1.jar -DrepositoryId=mirror.fortscale.dom -Durl=http://mirror.fortscale.dom/artifactory/presidio-snapshot-local
+mvn deploy:deploy-file -f target/generated-sources/swagger -DpomFile=pom.xml -Dfile=target/presidio-manager-generated-client-%1.jar -DrepositoryId=asoc-snapshots -Durl=https://repo1.rsa.lab.emc.com:8443/artifactory/asoc-snapshots

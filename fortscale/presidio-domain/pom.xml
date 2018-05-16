@@ -9,48 +9,7 @@
     <artifactId>presidio-domain</artifactId>
     <name>presidio-domain</name>
 
-    <repositories>
-        <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>libs-releases</id>
-            <name>libs-release</name>
-            <url>http://mirror.fortscale.dom/artifactory/libs-release</url>
-        </repository>
-        <repository>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <id>libs-snapshots</id>
-            <name>libs-snapshot</name>
-            <url>http://mirror.fortscale.dom/artifactory/libs-snapshot</url>
-        </repository>
-        <repository>
-            <id>all-remotes</id>
-            <name>remote-repos</name>
-            <url>http://mirror.fortscale.dom/artifactory/remote-repos</url>
-        </repository>
-    </repositories>
 
-    <pluginRepositories>
-        <pluginRepository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>releases</id>
-            <name>plugins-release</name>
-            <url>http://mirror.fortscale.dom/artifactory/plugins-release</url>
-        </pluginRepository>
-        <pluginRepository>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <id>snapshots</id>
-            <name>plugins-snapshot</name>
-            <url>http://mirror.fortscale.dom/artifactory/plugins-snapshot</url>
-        </pluginRepository>
-    </pluginRepositories>
 
     <dependencies>
         <dependency>

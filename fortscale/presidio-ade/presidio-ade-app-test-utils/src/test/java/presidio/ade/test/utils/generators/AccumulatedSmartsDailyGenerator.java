@@ -6,7 +6,7 @@ import fortscale.accumulator.smart.SmartAccumulatorService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.time.TimeRange;
-import javafx.util.Pair;
+import fortscale.utils.data.Pair;
 import presidio.ade.domain.record.accumulator.AccumulatedSmartRecord;
 import presidio.ade.domain.record.aggregated.*;
 import presidio.data.generators.common.GeneratorException;
