@@ -43,9 +43,9 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
     const redux = get(this, 'redux');
     return fetch('/locales/').then((fetched) => fetched.json()).then((locales) => {
       redux.dispatch({ type: ACTION_TYPES.ADD_PREFERENCES_LOCALES, locales });
-    }).catch((error) => {
+    }).catch(() => {
       // eslint-disable-next-line no-console
-      console.log('Error fetching locales', error);
+      console.log('fetching dynamic locales failed');
     });
   },
 
