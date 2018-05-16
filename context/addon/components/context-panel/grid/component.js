@@ -18,7 +18,7 @@ const GridComponent = Component.extend({
     const dsData = getData(lookupData, dataSourceDetails);
     const orderDetails = getOrder(lookupData, dataSourceDetails);
     const orderedArray = [];
-    if (dsData) {
+    if (dsData && orderDetails) {
       dsData.forEach((data) => {
         orderDetails.forEach((order) => {
           const orderedData = {};
