@@ -13,6 +13,7 @@
         <module>rsa-nw-presidio-elasticsearch-init</module>
         <module>rsa-nw-presidio-configserver</module>
         <module>rsa-nw-presidio-airflow</module>
+        <module>rsa-nw-presidio-output</module>
     </modules>
     <parent>
         <artifactId>rpm-builder</artifactId>
