@@ -83,9 +83,10 @@
 
         <!-- NOTE: ALL dependencies' versions should be here -->
         <rpm-maven-plugin.version>2.1.5</rpm-maven-plugin.version>
-
-
+        <ehcache-core.version>2.6.9</ehcache-core.version>
     </properties>
+
+
 
     <dependencyManagement>
         <dependencies>
@@ -138,6 +139,11 @@
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger-ui</artifactId>
                 <version>${swager.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.sf.ehcache</groupId>
+                <artifactId>ehcache-core</artifactId>
+                <version>${ehcache-core.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -260,6 +266,12 @@
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
             </snapshots>
+        </repository>
+
+        <!-- Must use the ASOC Tier-2 repository exclusively. -->
+        <repository>
+            <id>repo1.rsa.lab.emc.com-build</id>
+            <url>http://repo1.rsa.lab.emc.com:8081/artifactory/asoc-build-repo</url>
         </repository>
     </repositories>
 	

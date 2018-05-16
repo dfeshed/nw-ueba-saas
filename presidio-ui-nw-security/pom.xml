@@ -16,14 +16,6 @@
         <bsafe.version>6.2.2.1</bsafe.version>
     </properties>
 
-    <repositories>
-        <!-- Must use the ASOC Tier-2 repository exclusively. -->
-        <repository>
-            <id>repo1.rsa.lab.emc.com-build</id>
-            <url>http://repo1.rsa.lab.emc.com:8081/artifactory/asoc-build-repo</url>
-        </repository>
-    </repositories>
-
     <!-- Distribution controls where the CI job pushes artifacts -->
     <distributionManagement>
         <!-- Everything must go to the ASOC Tier-2 repositories. -->
@@ -64,7 +56,6 @@
         <dependency>
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache-core</artifactId>
-            <version>2.6.9</version>
         </dependency>
 
         <!-- Use RSA Crypto -->

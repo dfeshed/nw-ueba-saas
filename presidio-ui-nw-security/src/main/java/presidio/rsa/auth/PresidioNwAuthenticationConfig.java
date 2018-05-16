@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class PresidioNwAuthenticationConfig extends WebSecurityConfigurerAdapter {
 
-    @Value("${PRESIDIO_UI_ROLE:presidio-ui}")
+    @Value("${presidio.ui.role:presidio-ui}")
     private String presidioUiRoleName;
 
     @Override
