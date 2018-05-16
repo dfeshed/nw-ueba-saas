@@ -64,7 +64,7 @@
                         </mapping>
                         <mapping>
                             <directoryIncluded>false</directoryIncluded>
-                            <directory>/usr/lib/systemd/system/presidio-configserver</directory>
+                            <directory>/usr/lib/systemd/system/</directory>
                             <username>presidio</username>
                             <groupname>presidio</groupname>
                             <sources>
