@@ -1,7 +1,5 @@
 import buildRoutes from 'ember-engines/routes';
 
 export default buildRoutes(function() {
-  this.route('usm', function() {
-    this.route('groups');
-  });
+  this.mount('admin-source-management', { path: '/usm' });
 });

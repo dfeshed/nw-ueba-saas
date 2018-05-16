@@ -1,7 +1,7 @@
 /* eslint-env node */
 
 const common = require('../../common');
-const usmConfiguration = require('../../admin-source-management').socketRouteGenerator;
+const adminSourceManagementConfig = require('../../admin-source-management').socketRouteGenerator;
 
 const adminConfigGen = function(environment) {
 
@@ -37,8 +37,8 @@ const adminConfigGen = function(environment) {
 
 // order matters, first config in wins if there are matching configs
 const configGenerators = [
-  adminConfigGen,
-  usmConfiguration
+  // adminConfigGen,
+  adminSourceManagementConfig
 ];
 
 let socketConfig = null;

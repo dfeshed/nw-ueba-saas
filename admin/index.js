@@ -1,11 +1,11 @@
 /* eslint-env node */
 'use strict';
 
-const path = require('path');
 const EngineAddon = require('ember-engines/lib/engine-addon');
 
 const common = require('../common');
 const projectName = 'admin';
+const adminSourceManagementMocks = require('../admin-source-management').mockDestinations;
 
 module.exports = EngineAddon.extend({
   name: projectName,
@@ -16,7 +16,7 @@ module.exports = EngineAddon.extend({
 
   init() {
     // babel stuff declared here in order to enable
-    // investigate working by itself outside of sa
+    // admin working by itself outside of sa
     this._super.init && this._super.init.apply(this, arguments);
     this.options = this.options || {};
     this.options.babel = this.options.babel || {};
@@ -36,7 +36,9 @@ module.exports = EngineAddon.extend({
 
   socketRouteGenerator: require('./config/socketRoutes'),
 
-  mockDestinations: path.join(__dirname, 'tests', 'data', 'subscriptions'),
+  mockDestinations: [
+    ...adminSourceManagementMocks
+  ],
 
   // See ../common.js for details on this function
   isDevelopingAddon: common.isDevelopingAddon(projectName),

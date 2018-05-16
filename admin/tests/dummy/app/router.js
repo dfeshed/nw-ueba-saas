@@ -10,7 +10,6 @@ const Router = ERouter.extend({
 
 Router.map(function() {
   this.mount('admin');
-  this.route('protected');
 });
 
 export default Router;

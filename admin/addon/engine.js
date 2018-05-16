@@ -25,10 +25,11 @@ const Eng = Engine.extend({
       'i18n',
       'flashMessages',
       'eventBus',
-      'router'
+      'router',
+      'app-version'
     ],
     externalRoutes: [
-      'protected'
+      'admin.admin-source-management'
     ]
   }
 });
