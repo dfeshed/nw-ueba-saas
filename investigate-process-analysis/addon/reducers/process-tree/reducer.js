@@ -7,7 +7,8 @@ const initialState = {
   streaming: false,
   rawData: null,
   error: null,
-  selectedProcess: null
+  selectedProcess: null,
+  path: [ '0' ]
 };
 
 
@@ -38,7 +39,9 @@ export default reduxActions.handleActions({
   [ACTION_TYPES.SET_SELECTED_PROCESS]: (state, { payload }) => {
     return state.set('selectedProcess', payload);
   },
-
+  [ACTION_TYPES.SET_NODE_PATH]: (state, { payload }) => {
+    return state.set('path', state.path.concat([payload]));
+  },
 
   [ACTION_TYPES.SET_EVENTS_COUNT]: (state, { payload }) => {
     const { rawData } = state;

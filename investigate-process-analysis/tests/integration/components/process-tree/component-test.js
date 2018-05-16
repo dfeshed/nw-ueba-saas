@@ -35,10 +35,10 @@ module('Integration | Component | process-tree', function(hooks) {
       aid: '51687D32-BB0F-A424-1D64-A8B94C957BD2'
     };
     this.set('queryInput', queryInput);
-    new ReduxDataHelper(setState).queryInput(queryInput).build();
+    new ReduxDataHelper(setState).path(['0', '2', '3']).queryInput(queryInput).build();
     await render(hbs`{{process-tree queryInput=queryInput}}`);
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
-    assert.equal(findAll('circle.process').length, 4, 'Expected to render 4 nodes');
+    assert.equal(findAll('circle.process').length, 3, 'Expected to render 4 nodes');
   });
 
   test('it should display child count for process', async function(assert) {
@@ -53,7 +53,7 @@ module('Integration | Component | process-tree', function(hooks) {
       aid: '51687D32-BB0F-A424-1D64-A8B94C957BD2'
     };
     this.set('queryInput', queryInput);
-    new ReduxDataHelper(setState).queryInput(queryInput).build();
+    new ReduxDataHelper(setState).path(['0', '2', '3']).queryInput(queryInput).build();
     await render(hbs`{{process-tree queryInput=queryInput}}`);
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
     assert.equal(find('.child-count').textContent, 1, 'Expected to render child count');
@@ -71,7 +71,7 @@ module('Integration | Component | process-tree', function(hooks) {
       aid: '51687D32-BB0F-A424-1D64-A8B94C957BD2'
     };
     this.set('queryInput', queryInputs);
-    new ReduxDataHelper(setState).queryInput(queryInputs).build();
+    new ReduxDataHelper(setState).path(['0', '2', '3']).queryInput(queryInputs).build();
     await render(hbs`{{process-tree queryInput=queryInput}}`);
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
     await selectAll('g.process:nth-of-type(2) .button-wrapper').dispatch('click');

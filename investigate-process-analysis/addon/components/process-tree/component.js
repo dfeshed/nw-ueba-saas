@@ -12,7 +12,8 @@ import {
   isStreaming,
   children,
   rootProcess,
-  selectedProcess
+  selectedProcess,
+  selectedProcessPath
 } from 'investigate-process-analysis/reducers/process-tree/selectors';
 
 import { getParentAndChildEvents, getChildEvents, setSelectedProcess } from 'investigate-process-analysis/actions/creators/events-creators';
@@ -25,7 +26,8 @@ const stateToComputed = (state) => ({
   rootProcess: rootProcess(state),
   isStreaming: isStreaming(state),
   children: children(state),
-  selectedProcess: selectedProcess(state)
+  selectedProcess: selectedProcess(state),
+  path: selectedProcessPath(state)
 });
 
 const dispatchToActions = {
@@ -353,8 +355,21 @@ const TreeComponent = Component.extend({
     // If query input changes then need to re-render the tree
     if (this.get('queryInput')) {
       const onComplete = () => {
-        const rootNode = this._prepareTreeData(this.get('children')); // Only initial load
-        const root = hierarchy(rootNode[0], (d) => d.children || []);
+        const { children, selectedProcess, path } = this.getProperties('children', 'selectedProcess', 'path');
+
+        // Hide the children which are not in the selected process path
+        for (let i = 0; i < children.length; i++) {
+          const child = children[i];
+          child.hidden = true;
+          if (path.includes(child.processId) || selectedProcess === child.parentId) {
+            child.hidden = false;
+          }
+        }
+
+        const rootNode = this._prepareTreeData(children); // Only initial load
+        const root = hierarchy(rootNode[0], (d) => {
+          return d.children.filter((child) => !child.hidden);
+        });
         root.x0 = 0;
         root.y0 = 0;
 
@@ -446,7 +461,7 @@ const TreeComponent = Component.extend({
     const checksum = d.data.checksum ? d.data.checksum : d.data['checksum.dst'];
     const hashes = [checksum];
     this.send('fetchProcessDetails', { hashes });
-    this.send('setSelectedProcess', d.data);
+    this.send('setSelectedProcess', d.data.processId);
     this.addSelectedClass(d.data.processId);
 
   },

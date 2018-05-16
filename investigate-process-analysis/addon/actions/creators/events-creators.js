@@ -7,7 +7,6 @@ const callbacksDefault = { onComplete() {} };
 
 let data = [];
 let done = false;
-
 // Common functions.
 const commonHandlers = function(dispatch, callbacks) {
   return {
@@ -64,6 +63,7 @@ export const getParentAndChildEvents = (pid, callbacks = callbacksDefault) => {
         data = data.concat(payload);
         const parent = payload.filter((item) => item['vid.dst'] === pid);
         if (parent && parent.length) {
+          dispatch({ type: ACTION_TYPES.SET_NODE_PATH, payload: parent[0]['vid.dst'] });
           dispatch(getParentAndChildEvents(parent[0]['vid.src'], callbacks));
         } else {
           if (payload && payload.length) {
@@ -79,6 +79,7 @@ export const getParentAndChildEvents = (pid, callbacks = callbacksDefault) => {
               return _getNode(item);
             });
             newData.push(root);
+            dispatch({ type: ACTION_TYPES.SET_NODE_PATH, payload: node['vid.src'] });
             dispatch({ type: ACTION_TYPES.SET_EVENTS, payload: newData.uniqBy('processId') });
           } else {
             dispatch({ type: ACTION_TYPES.SET_EVENTS, payload: [] });

@@ -8,7 +8,8 @@ const initialState = Immutable.from({
   streaming: false,
   rawData: null,
   error: null,
-  selectedProcess: null
+  selectedProcess: null,
+  path: [ '0' ]
 });
 
 module('Unit | Reducers | process-tree', function() {

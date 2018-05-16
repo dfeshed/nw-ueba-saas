@@ -6,6 +6,7 @@ const _streaming = (state) => state.processAnalysis.processTree.streaming;
 const _error = (state) => state.processAnalysis.processTree.error;
 const _queryInput = (state) => state.processAnalysis.processTree.queryInput;
 const _rawData = (state) => state.processAnalysis.processTree.rawData;
+const _path = (state) => state.processAnalysis.processTree.path || [];
 
 export const queryInput = createSelector(
   [_queryInput],
@@ -63,5 +64,12 @@ export const selectedProcess = createSelector(
   queryInput,
   (queryInput) => {
     return queryInput ? queryInput.vid : '';
+  }
+);
+
+export const selectedProcessPath = createSelector(
+  _path,
+  (_path) => {
+    return _path;
   }
 );
