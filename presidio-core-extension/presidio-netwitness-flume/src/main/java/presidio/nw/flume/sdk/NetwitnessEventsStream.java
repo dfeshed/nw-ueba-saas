@@ -27,9 +27,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class NetwitnessEventsStream extends AbstractNetwitnessEventsStream {
 
     private static final String BROKER_END_POINT = "nw://admin:netwitness@10.25.67.33:50005";
-    private static final String UEBA = "ueba";
-    private static final String QUERY = "query";
-    private static final String TIME_FIELD = "timeField";
+    protected static final String UEBA = "ueba";
+    protected static final String QUERY = "query";
+    protected static final String TIME_FIELD = "timeField";
 
 
     private static Logger logger = LoggerFactory.getLogger(NetwitnessEventsStream.class);

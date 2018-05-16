@@ -27,8 +27,8 @@ public class NetwitnessEvent extends AbstractDocument {
     }
 
 
-   // @Override
-   // public String toString() {
-   //     return "NetwitnessEvent {" + metaFields + '}';
-   // }
+    @Override
+    public String toString() {
+        return "NetwitnessEvent {" + metaFields + '}';
+    }
 }
