@@ -5,7 +5,7 @@ import {
   errorMessage,
   queryInput
 } from 'investigate-process-analysis/reducers/process-tree/selectors';
-import { fetchProcessDetails } from 'investigate-process-analysis/actions/data-creators/process-properties';
+import { fetchProcessDetails } from 'investigate-process-analysis/actions/creators/process-properties';
 import {
   processProperties,
   propertyConfig

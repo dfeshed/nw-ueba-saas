@@ -7,7 +7,8 @@ const initialState = Immutable.from({
   queryInput: null,
   streaming: false,
   rawData: null,
-  error: null
+  error: null,
+  selectedProcess: null
 });
 
 module('Unit | Reducers | process-tree', function() {
@@ -74,7 +75,8 @@ module('Unit | Reducers | process-tree', function() {
       rawData: [
         {
           processName: 'test',
-          childCount: 0
+          childCount: 0,
+          processId: 1
         }
       ],
       queryInput: {
@@ -85,7 +87,15 @@ module('Unit | Reducers | process-tree', function() {
       streaming: true,
       error: null
     });
-    const result = reducer(previous, { type: ACTION_TYPES.SET_EVENTS_COUNT, payload: { test: { data: 1 } } });
+    const result = reducer(previous, { type: ACTION_TYPES.SET_EVENTS_COUNT, payload: { 1: { data: 1 } } });
     assert.equal(result.rawData[0].childCount, 1);
+  });
+
+  test('SET_SELECTED_PROCESS sets selected process', function(assert) {
+    const previous = Immutable.from({
+      selectedProcess: null
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.SET_SELECTED_PROCESS, payload: '1' });
+    assert.equal(result.selectedProcess, '1');
   });
 });

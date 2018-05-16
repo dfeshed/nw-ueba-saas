@@ -8,6 +8,7 @@ export default Controller.extend({
     'st', // start time
     'et', // end time
     'sid',
-    'osType' // metaPanelSize
+    'osType', // metaPanelSize
+    'vid' // Process identification
   ]
 });

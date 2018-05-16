@@ -8,22 +8,30 @@ import { zoom } from 'd3-zoom';
 import { tree, hierarchy } from 'd3-hierarchy';
 import { transitionElbow, elbow, appendText, updateText, appendIcon } from './helpers/d3-helpers';
 
-import zoomed from './helpers/zoomed';
+import {
+  isStreaming,
+  children,
+  rootProcess,
+  selectedProcess
+} from 'investigate-process-analysis/reducers/process-tree/selectors';
 
+import { getParentAndChildEvents, getChildEvents, setSelectedProcess } from 'investigate-process-analysis/actions/creators/events-creators';
+import { fetchProcessDetails } from 'investigate-process-analysis/actions/creators/process-properties';
 
-import { isStreaming, children, rootProcess } from 'investigate-process-analysis/reducers/process-tree/selectors';
-import { getEvents } from 'investigate-process-analysis/actions/creators/events-creators';
-import { fetchProcessDetails } from 'investigate-process-analysis/actions/data-creators/process-properties';
 import { truncateText } from './util/data';
+import zoomed from './helpers/zoomed';
 
 const stateToComputed = (state) => ({
   rootProcess: rootProcess(state),
   isStreaming: isStreaming(state),
-  children: children(state)
+  children: children(state),
+  selectedProcess: selectedProcess(state)
 });
 
 const dispatchToActions = {
-  getEvents,
+  setSelectedProcess,
+  getParentAndChildEvents,
+  getChildEvents,
   fetchProcessDetails
 };
 
@@ -145,7 +153,12 @@ const TreeComponent = Component.extend({
    * @private
    */
   _initializeChart() {
-    const { element, rootNode, zoomBehaviour } = this.getProperties('element', 'rootNode', 'zoomBehaviour');
+    const {
+      element,
+      rootNode,
+      zoomBehaviour,
+      selectedProcess
+    } = this.getProperties('element', 'rootNode', 'zoomBehaviour', 'selectedProcess');
     const el = select(element);
     this.centeringElement = el.select('.centering-element');
 
@@ -153,26 +166,8 @@ const TreeComponent = Component.extend({
     parent.call(zoomBehaviour);
 
     this.parent = parent;
-    // Show only 1 level of child node
-    if (rootNode.children && rootNode.children.length) {
-      rootNode.children.forEach(run.bind(this, '_collapse'));
-    }
     this.buildChart(rootNode);
-  },
-
-  _getRootNode() {
-    const rootNode = this.get('rootProcess');
-    const children = this.get('children');
-    const childCount = children ? children.length : 0;
-
-    if (childCount) {
-      rootNode.children = children;
-      rootNode.childCount = childCount;
-      rootNode.expanded = true;
-    }
-
-    rootNode.id = 1;
-    return rootNode;
+    this.addSelectedClass(selectedProcess);
   },
 
   /**
@@ -186,7 +181,7 @@ const TreeComponent = Component.extend({
     const { rectWidth, duration } = this.getProperties('rectWidth', 'duration');
 
     const link = svg.selectAll('path.link')
-      .data(links, (d) => d.data ? d.data.id : d.id);
+      .data(links, (d) => d.data ? d.data.processId : d.processId);
 
     const linkEnter = link.enter().append('path')
       .attr('class', 'link')
@@ -246,7 +241,7 @@ const TreeComponent = Component.extend({
     const nodeEnter = node.enter().append('g')
       .attr('class', 'process')
       .attr('data-id', function(d) {
-        return d.data.id;
+        return d.data.processId;
       })
       .attr('transform', () => {
         return `translate(${ source.y0 + width / 2 },${ source.x0 })`;
@@ -261,11 +256,24 @@ const TreeComponent = Component.extend({
     nodeEnter.append('circle')
       .attr('class', 'process');
 
-    appendText({ className: 'process-name', node: nodeEnter, dx: 0, dy: 0, opacity: 0, text: (d) => truncateText(d.data.processName) });
+    appendText({
+      className: 'process-name',
+      node: nodeEnter,
+      dx: 0,
+      dy: 0,
+      opacity: 0,
+      text: (d) => truncateText(d.data.processName)
+    });
 
-    appendIcon({ className: 'process-icon', node: nodeEnter, fontSize: '2.5em', text: '\ue944' });
+    appendIcon({ className: 'process-icon', node: nodeEnter, fontSize: '2em', text: '\ue944' });
 
-    appendText({ className: 'child-count', node: nodeEnter, dx: (width / 2) + 26, dy: 0, opacity: 1, text: (d) => d.data.childCount ? d.data.childCount : '' });
+    appendText({
+      className: 'child-count',
+      node: nodeEnter,
+      dx: (width / 2) + 26,
+      dy: 0, opacity: 1,
+      text: (d) => d.data.childCount ? d.data.childCount : ''
+    });
 
     return nodeEnter;
   },
@@ -302,7 +310,7 @@ const TreeComponent = Component.extend({
    * @private
    */
   _addNodes(svg, nodes, source) {
-    const node = svg.selectAll('g.process').data(nodes, (process) => process.data ? process.data.id : process.id);
+    const node = svg.selectAll('g.process').data(nodes, (process) => process.data ? process.data.processId : process.processId);
 
     const nodeEnter = this._onNodeEnter(node, source);
     this._onNodeUpdate(node, nodeEnter);
@@ -310,12 +318,28 @@ const TreeComponent = Component.extend({
 
   },
 
-  _collapse(d) {
-    if (d.children) {
-      d._children = d.children;
-      d._children.forEach(run.bind(this, '_collapse'));
-      d.children = null;
+  /**
+   * Creates the tree type data from the flat array, based on processId and parentId
+   * @param eventsData
+   * @returns {Array}
+   * @private
+   */
+  _prepareTreeData(eventsData) {
+    const hashTable = {};
+    eventsData.forEach((aData) => hashTable[aData.processId] = { ...aData, children: [] });
+    const dataTree = [];
+    eventsData.forEach((aData) => {
+      if (aData.parentId) {
+        hashTable[aData.parentId].expanded = true;
+        hashTable[aData.parentId].children.push(hashTable[aData.processId]);
+      } else {
+        dataTree.push(hashTable[aData.processId]);
+      }
+    });
+    if (!dataTree.length) {
+      dataTree.push(this.get('rootProcess'));
     }
+    return dataTree;
   },
 
   didReceiveAttrs() {
@@ -329,9 +353,8 @@ const TreeComponent = Component.extend({
     // If query input changes then need to re-render the tree
     if (this.get('queryInput')) {
       const onComplete = () => {
-        const rootNode = this._getRootNode();
-
-        const root = hierarchy(rootNode, (d) => d.children || []);
+        const rootNode = this._prepareTreeData(this.get('children')); // Only initial load
+        const root = hierarchy(rootNode[0], (d) => d.children || []);
         root.x0 = 0;
         root.y0 = 0;
 
@@ -342,12 +365,13 @@ const TreeComponent = Component.extend({
 
         this._initializeChart();
       };
-      this.send('getEvents', null, { onComplete });
+      this.send('getParentAndChildEvents', this.get('selectedProcess'), { onComplete });
       const { checksum } = this.get('queryInput');
       const hashes = [checksum];
       this.send('fetchProcessDetails', { hashes });
     }
   },
+
 
   /**
    * Build the chart for given source and root node
@@ -394,7 +418,7 @@ const TreeComponent = Component.extend({
 
       const { expandIcon, collapseIcon } = this.getProperties('expandIcon', 'collapseIcon');
       const icon = d.data.expanded ? collapseIcon : expandIcon;
-      select(`*[data-id='${ d.data.id }']`).select('text.text-icon').text(icon);
+      select(`*[data-id='${ d.data.processId }']`).select('text.text-icon').text(icon);
     }
   },
 
@@ -414,7 +438,7 @@ const TreeComponent = Component.extend({
           this.buildChart(d);
         }
       };
-      this.send('getEvents', d.data.processName, { onComplete });
+      this.send('getChildEvents', d.data.processId, { onComplete });
     }
   },
 
@@ -422,12 +446,17 @@ const TreeComponent = Component.extend({
     const checksum = d.data.checksum ? d.data.checksum : d.data['checksum.dst'];
     const hashes = [checksum];
     this.send('fetchProcessDetails', { hashes });
+    this.send('setSelectedProcess', d.data);
+    this.addSelectedClass(d.data.processId);
 
+  },
+
+  addSelectedClass(id) {
     // Update the node style
     selectAll('circle.process').classed('selected', false);
     selectAll('.process-icon').classed('selected', false);
-    select(`*[data-id='${ d.data.id }']`).select('circle.process').classed('selected', true);
-    select(`*[data-id='${ d.data.id }']`).select('.process-icon').classed('selected', true);
+    select(`*[data-id='${id}']`).select('circle.process').classed('selected', true);
+    select(`*[data-id='${id}']`).select('.process-icon').classed('selected', true);
   },
 
   collapseProcess(d) {

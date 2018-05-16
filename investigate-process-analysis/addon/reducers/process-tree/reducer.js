@@ -6,7 +6,8 @@ const initialState = {
   queryInput: null,
   streaming: false,
   rawData: null,
-  error: null
+  error: null,
+  selectedProcess: null
 };
 
 
@@ -34,11 +35,16 @@ export default reduxActions.handleActions({
     return state.set('queryInput', payload);
   },
 
+  [ACTION_TYPES.SET_SELECTED_PROCESS]: (state, { payload }) => {
+    return state.set('selectedProcess', payload);
+  },
+
+
   [ACTION_TYPES.SET_EVENTS_COUNT]: (state, { payload }) => {
     const { rawData } = state;
     const newData = rawData.map((data) => {
-      if (payload && payload[data.processName]) {
-        return data.set('childCount', payload[data.processName].data);
+      if (payload && payload[data.processId]) {
+        return data.set('childCount', payload[data.processId].data);
       }
       return data;
     });

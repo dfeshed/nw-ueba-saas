@@ -26,6 +26,7 @@ module('Integration | Component | process-tree', function(hooks) {
   test('it renders the process tree', async function(assert) {
     const queryInput = {
       sid: '1',
+      vid: '2',
       pn: 'test',
       st: 1231233,
       et: 13123,
@@ -37,12 +38,13 @@ module('Integration | Component | process-tree', function(hooks) {
     new ReduxDataHelper(setState).queryInput(queryInput).build();
     await render(hbs`{{process-tree queryInput=queryInput}}`);
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
-    assert.equal(findAll('circle.process').length, 24, 'Expected to render 24 nodes');
+    assert.equal(findAll('circle.process').length, 4, 'Expected to render 4 nodes');
   });
 
   test('it should display child count for process', async function(assert) {
     const queryInput = {
       sid: '1',
+      vid: '4',
       pn: 'test',
       st: 1231233,
       et: 13123,
@@ -54,12 +56,13 @@ module('Integration | Component | process-tree', function(hooks) {
     new ReduxDataHelper(setState).queryInput(queryInput).build();
     await render(hbs`{{process-tree queryInput=queryInput}}`);
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
-    assert.equal(find('.child-count').textContent, 23, 'Expected to render child count');
+    assert.equal(find('.child-count').textContent, 1, 'Expected to render child count');
   });
 
   test('it should expand the node on click', async function(assert) {
     const queryInputs = {
       sid: '1',
+      vid: '4',
       pn: 'test',
       st: 1231233,
       et: 13123,
@@ -73,6 +76,6 @@ module('Integration | Component | process-tree', function(hooks) {
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
     await selectAll('g.process:nth-of-type(2) .button-wrapper').dispatch('click');
     await waitUntil(() => !find('.rsa-fast-force__wait'), { timeout: Infinity });
-    assert.equal(findAll('circle.process').length, 47, 'Expected to render 7 nodes');
+    assert.equal(findAll('circle.process').length, 4, 'Expected to render 4 nodes');
   });
 });

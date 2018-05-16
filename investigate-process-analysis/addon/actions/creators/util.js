@@ -1,12 +1,10 @@
-import _ from 'lodash';
+export const getQueryNode = function(input, selectedVid, isFetchParent) {
+  const { et, st, sid, aid: agentId, vid } = input;
 
-export const getQueryNode = function(input, selectedNode) {
-  const { et, st, pn, sid, aid: agentId } = input;
+  let processId = vid;
 
-  let processName = pn;
-
-  if (selectedNode) {
-    processName = selectedNode;
+  if (vid) {
+    processId = selectedVid;
   }
 
   const queryNode = {
@@ -14,7 +12,7 @@ export const getQueryNode = function(input, selectedNode) {
     startTime: st,
     queryTimeFormat: 'DB',
     serviceId: sid,
-    metaFilter: _getMetaFilter(agentId, processName)
+    metaFilter: _getMetaFilter(agentId, processId, isFetchParent)
   };
   return queryNode;
 };
@@ -32,7 +30,7 @@ export const getQueryNode = function(input, selectedNode) {
  * @returns {{conditions: *[]}}
  * @private
  */
-const _getMetaFilter = (agentId, processName) => {
+const _getMetaFilter = (agentId, pid, isFetchParent) => {
   return {
     conditions: [
       {
@@ -51,9 +49,7 @@ const _getMetaFilter = (agentId, processName) => {
         value: '\'nwendpoint\''
       },
       {
-        meta: 'filename.src',
-        operator: '=',
-        value: `'${processName}'`
+        value: isFetchParent ? `(vid.src = \'${pid}\' || vid.dst = \'${pid}\')` : `(vid.src = \'${pid}\')`
       }
     ]
   };
@@ -89,7 +85,6 @@ export const hasherizeEventMeta = (event) => {
       event[meta[0]] = meta[1];
     }
     event.childCount = 0;
-    event.id = _.uniqueId('event_'); // Adding unique id to node, currently server is not sending
     event.metas = null;
   }
 };

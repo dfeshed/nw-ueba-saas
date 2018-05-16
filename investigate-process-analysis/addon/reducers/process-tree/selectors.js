@@ -58,3 +58,10 @@ export const rootProcess = createSelector(
     return null;
   }
 );
+
+export const selectedProcess = createSelector(
+  queryInput,
+  (queryInput) => {
+    return queryInput ? queryInput.vid : '';
+  }
+);

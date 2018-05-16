@@ -85,10 +85,10 @@ const ProcessName = Component.extend({
     navigateToProcessAnalysis(serviceId) {
       const { zoneId } = this.get('timezone.selected');
       const { item, agentId, osType } = this.getProperties('item', 'agentId', 'osType');
-      const { name, checksumSha256 } = item;
+      const { name, checksumSha256, vpid } = item;
       const timeRange = buildTimeRange(1, 'days', zoneId);
       const timeStr = `st=${timeRange.startTime.unix()}&et=${timeRange.endTime.unix()}`;
-      const osTypeParam = `osType=${osType}`;
+      const osTypeParam = `osType=${osType}&vid=${vpid}`;
       const queryParams = `checksum=${checksumSha256}&sid=${serviceId}&aid=${agentId}&pn=${name}&${timeStr}&${osTypeParam}`;
 
       window.open(`${window.location.origin}/investigate/process-analysis?${queryParams}`, '_blank', 'width=1440,height=900');

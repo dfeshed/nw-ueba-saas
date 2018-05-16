@@ -7,7 +7,8 @@ import {
   errorMessage,
   rootProcess,
   queryInput,
-  children
+  children,
+  selectedProcess
 } from 'investigate-process-analysis/reducers/process-tree/selectors';
 
 module('Unit | Selectors | process-tree', function() {
@@ -116,6 +117,22 @@ module('Unit | Selectors | process-tree', function() {
     });
     const result = children(state);
     assert.equal(result.length, 10);
+  });
+
+  test('selectedProcess', function(assert) {
+    const state = Immutable.from({
+      processAnalysis: {
+        processTree: {
+          queryInput: {
+            sid: '1',
+            vid: '123'
+          },
+          rawData: new Array(10)
+        }
+      }
+    });
+    const result = selectedProcess(state);
+    assert.equal(result, 123);
   });
 });
 

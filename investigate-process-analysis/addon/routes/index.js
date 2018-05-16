@@ -13,7 +13,8 @@ export default Route.extend({
     checksum: { refreshModel: true },  // checksum
     st: { refreshModel: true },  // start time
     et: { replace: true },      // end time
-    sid: { replace: true }        // service id
+    sid: { replace: true },       // service id
+    vid: { replace: true }        // process identification
   },
 
   model(params) {

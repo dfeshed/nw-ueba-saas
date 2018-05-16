@@ -31,18 +31,16 @@ function* fetchEventsCountAsync(action) {
     const { queryInput, rawData: children } = state.processAnalysis.processTree;
 
     const apiCalls = children.reduce((result, child) => {
-
-      const queryNode = getQueryNode(queryInput, child.processName);
+      const queryNode = getQueryNode(queryInput, child.processId);
       const { serviceId, startTime, endTime, metaFilter } = queryNode;
       // call api response will stored as key and value
-      result[child.processName] = call(fetchEventCount, serviceId, startTime, endTime, metaFilter.conditions, null, null, false);
+      result[child.processId] = call(fetchEventCount, serviceId, startTime, endTime, metaFilter.conditions, null, null, false);
 
       return result;
     }, {});
 
     const payload = yield all(apiCalls);
     yield put({ type: ACTION_TYPES.SET_EVENTS_COUNT, payload });
-
     // Event loading is complete
     yield put({ type: ACTION_TYPES.COMPLETED_EVENTS_STREAMING });
 
