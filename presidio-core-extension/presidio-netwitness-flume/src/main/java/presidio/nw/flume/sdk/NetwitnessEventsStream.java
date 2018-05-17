@@ -2,7 +2,6 @@ package presidio.nw.flume.sdk;
 
 import com.rsa.asoc.streams.RecordSource;
 import com.rsa.asoc.streams.RecordStream;
-import com.rsa.asoc.streams.base.Configuration;
 import com.rsa.asoc.streams.base.DefaultRecordStream;
 import com.rsa.asoc.streams.policy.BufferedSourceStreamPolicy;
 import com.rsa.asoc.streams.policy.RecordStreamPolicy;
@@ -14,9 +13,12 @@ import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.util.CloseableIterator;
+import presidio.config.server.client.ConfigurationServerClientService;
+import presidio.config.server.factory.ConfigurationServerClientServiceFactory;
+import presidio.nw.flume.model.Configuration;
+import presidio.nw.flume.model.DataPullingConfiguration;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -26,19 +28,44 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class NetwitnessEventsStream extends AbstractNetwitnessEventsStream {
 
-    private static final String BROKER_END_POINT = "nw://admin:netwitness@10.25.67.33:50005";
+//    private static final String BROKER_END_POINT = "nw://admin:netwitness@10.25.67.33:50005";
     protected static final String UEBA = "ueba";
     protected static final String QUERY = "query";
     protected static final String TIME_FIELD = "timeField";
-
+    private ConfigurationServerClientService configurationServerClientService;
 
     private static Logger logger = LoggerFactory.getLogger(NetwitnessEventsStream.class);
+
+    public NetwitnessEventsStream() {
+        final ConfigurationServerClientServiceFactory configurationServerClientServiceFactory = new ConfigurationServerClientServiceFactory();
+        try {
+            this.configurationServerClientService = configurationServerClientServiceFactory.createConfigurationServerClientService();
+        } catch (Exception e) {
+            logger.error("failed to start netwitness event stream", e);
+        }
+    }
 
     @Override
     public CloseableIterator<Map<String, Object>> iterator(Schema schema, Instant startDate, Instant endDate, Map<String, String> config) {
         return new EventsStreamIterator(schema, startDate, endDate, config);
     }
 
+    private String readDataPullingSourceConfiguration() throws Exception {
+        DataPullingConfiguration dataPullingConfiguration = null;
+        try {
+            dataPullingConfiguration = configurationServerClientService.readConfigurationAsJson("application-presidio", "default", Configuration.class).getDataPulling();
+        } catch (Exception e) {
+            String errorMessage = String.format("Failed to fetch. Failed to get configuration from config server %s", configurationServerClientService);
+            logger.error(errorMessage, e);
+            throw new Exception(errorMessage, e);
+        }
+
+        if(dataPullingConfiguration == null) {
+            logger.error("Failed to read data pulling source from configuration server");
+            throw new Exception("Failed to read data pulling source from configuration server");
+        }
+        return dataPullingConfiguration.getSource();
+    }
 
     private class EventsStreamIterator implements CloseableIterator<Map<String, Object>>{
 
@@ -92,7 +119,7 @@ public class NetwitnessEventsStream extends AbstractNetwitnessEventsStream {
         }
 
         private RecordStream buildStream(String name) {
-            Configuration configuration = new Configuration(URI.create(name), RecordStreamPolicyParameter.SUPPORTED);
+            com.rsa.asoc.streams.base.Configuration configuration = new com.rsa.asoc.streams.base.Configuration(URI.create(name), RecordStreamPolicyParameter.SUPPORTED);
             RecordStreamPolicy policy = new BufferedSourceStreamPolicy(configuration);
             RecordStreamPolicyDecorator recordStreamPolicyDecorator = new RecordStreamPolicyDecorator(policy) {
                 public void handleSourceComplete(RecordSource source) {
@@ -104,8 +131,9 @@ public class NetwitnessEventsStream extends AbstractNetwitnessEventsStream {
             return  stream;
         }
 
-        private void addSource(Instant startTime, Instant endTime, RecordStream stream, String query, String timeField) throws URISyntaxException {
-            URIBuilder uriBuilder = new URIBuilder(BROKER_END_POINT);
+        private void addSource(Instant startTime, Instant endTime, RecordStream stream, String query, String timeField) throws Exception {
+            String source = readDataPullingSourceConfiguration();
+            URIBuilder uriBuilder = new URIBuilder(source);
 
             uriBuilder.addParameter(NwParameter.Mechanism.name(), "query");
             uriBuilder.addParameter(NwParameter.TimeMeta.name(), timeField);
