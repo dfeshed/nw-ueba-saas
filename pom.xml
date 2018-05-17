@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.13.BUILD-SNAPSHOT</version>
+        <version>1.5.13.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 	<groupId>presidio.ui</groupId>
@@ -227,43 +227,41 @@
         <module>presidio-ui-ui</module>
         <module>presidio-ui-app</module>
     </modules>
-	
-	 <distributionManagement>
-        <!-- push changes to artifactory, distribute use of sdk -->
-        <snapshotRepository>
-            <id>mirror.fortscale.dom</id>
-            <name>mirror.fortscale.dom-snapshots</name>
-            <url>http://mirror.fortscale.dom/artifactory/presidio-snapshot-local</url>
-        </snapshotRepository>
-        <repository>
-            <id>mirror.fortscale.dom</id>
-            <name>mirror.fortscale.dom-snapshots</name>
-            <url>http://mirror.fortscale.dom/artifactory/presidio-snapshot-local</url>
-        </repository>
-    </distributionManagement>
-	
-	<repositories>
-        <repository>
-            <id>snapshots</id>
-            <url>http://mirror.fortscale.dom/artifactory/presidio-snapshot-local</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-            </snapshots>
-        </repository>
 
+
+    <distributionManagement>
         <repository>
-            <id>all-remotes</id>
-            <name>remote-repos</name>
-            <url>http://mirror.fortscale.dom/artifactory/remote-repos</url>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-            </snapshots>
+            <id>asoc-releases</id>
+            <name>repo1.rsa.lab.emc.com-releases</name>
+            <url>https://repo1.rsa.lab.emc.com:8443/artifactory/asoc-releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>asoc-snapshots</id>
+            <name>repo1.rsa.lab.emc.com-snapshots</name>
+            <url>https://repo1.rsa.lab.emc.com:8443/artifactory/asoc-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>asoc-build-repo</id>
+            <url>http://repo1.rsa.lab.emc.com:8081/artifactory/asoc-build-repo</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <repositories>
+        <!-- ASOC Tier-2 repository -->
+        <repository>
+            <id>asoc-releases</id>
+            <url>https://repo1.rsa.lab.emc.com:8443/artifactory/asoc-releases</url>
+        </repository>
+        <repository>
+            <id>asoc-snapshots</id>
+            <url>https://repo1.rsa.lab.emc.com:8443/artifactory/asoc-snapshots</url>
+        </repository>
+        <repository>
+            <id>spring-release</id>
+            <url>https://repo1.rsa.lab.emc.com:8443/artifactory/spring-release</url>
         </repository>
     </repositories>
 	

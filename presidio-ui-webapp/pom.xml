@@ -14,25 +14,6 @@
 
 	<packaging>war</packaging>
 
-	<pluginRepositories>
-		<pluginRepository>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<id>releases</id>
-			<name>plugins-release</name>
-			<url>http://mirror.fortscale.dom/artifactory/plugins-release</url>
-		</pluginRepository>
-		<pluginRepository>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<id>snapshots</id>
-			<name>plugins-snapshot</name>
-			<url>http://mirror.fortscale.dom/artifactory/plugins-snapshot</url>
-		</pluginRepository>
-	</pluginRepositories>
-
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
