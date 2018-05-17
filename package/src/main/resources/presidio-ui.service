@@ -1,0 +1,17 @@
+[Unit]
+Description=Presidio UI application daemon
+After= network.target
+
+[Service]
+User=presidio
+Group=presidio
+Type=simple
+ExecStart=/usr/bin/java -jar /usr/sbin/presidio/ui/presidio-ui-app.jar
+KillMode=mixed
+KillSignal=SIGKILL
+Restart=on-failure
+RestartSec=5s
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
