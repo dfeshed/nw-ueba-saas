@@ -13,6 +13,7 @@
         <module>rsa-nw-presidio-elasticsearch-init</module>
         <module>rsa-nw-presidio-configserver</module>
         <module>rsa-nw-presidio-output</module>
+        <module>rsa-nw-presidio-manager</module>
         <module>rsa-nw-presidio-airflow</module>
     </modules>
     <parent>

@@ -1,0 +1,17 @@
+[Unit]
+Description=Presidio manager REST API daemon
+After= network.target
+
+[Service]
+User=presidio
+Group=presidio
+Type=simple
+ExecStart=/usr/bin/java -jar /usr/sbin/presidio/configserver/presidio-manager-webapp-*.jar
+KillMode=mixed
+KillSignal=SIGKILL
+Restart=on-failure
+RestartSec=5s
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
