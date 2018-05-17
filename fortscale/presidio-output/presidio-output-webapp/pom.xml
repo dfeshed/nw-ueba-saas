@@ -220,7 +220,7 @@
                                     <artifactId>${project.artifactId}</artifactId>
                                     <version>${project.version}</version>
                                     <type>${project.packaging}</type>
-                                    <destFileName>presidio-output.war</destFileName>
+                                    <destFileName>presidio-output.jar</destFileName>
                                 </artifactItem>
                             </artifactItems>
                             <outputDirectory>../../target/war-dependencies</outputDirectory>
