@@ -2,8 +2,8 @@
 {{#unless session.isAuthenticated}}
   <div class="login-wrapper {{if hasError 'has-error'}}">
     <header>
-      {{rsa-logo title=(t 'appTitle') displayEula=displayEula}}
-        
+      {{rsa-logo title=(t 'appTitle')}}
+
       {{#if displayEula}}
         <h3>{{t 'login.eula.title'}}</h3>
       {{else if displaySecurityBanner}}
