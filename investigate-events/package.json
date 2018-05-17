@@ -87,6 +87,7 @@
       "../recon",
       "../context",
       "../preferences",
+      "../rsa-context-menu",
       "../investigate-shared"
     ]
   },

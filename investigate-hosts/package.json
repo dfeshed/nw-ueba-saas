@@ -78,6 +78,7 @@
       "../component-lib",
       "../streaming-data",
       "../preferences",
+      "../rsa-context-menu",
       "../investigate-shared"
     ]
   },

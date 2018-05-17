@@ -46,6 +46,7 @@ nukeNode test-helpers
 nukeNode ember-route-action-helper
 nukeNode broccoli-theme
 nukeNode investigate-process-analysis
+nukeNode rsa-context-menu
 nukeNode sa
 
 red "                               ________________

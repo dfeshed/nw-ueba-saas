@@ -20,7 +20,8 @@ const ALL_SUBMODULES = [
   'test-helpers',
   'ember-route-action-helper',
   'hosts-scan-configure',
-  'investigate-process-analysis'
+  'investigate-process-analysis',
+  'rsa-context-menu'
 ];
 
 // A configuration that lists each submodule with
@@ -43,7 +44,8 @@ const saModuleDependants = {
     'context',
     'preferences',
     'hosts-scan-configure',
-    'investigate-process-analysis'
+    'investigate-process-analysis',
+    'rsa-context-menu'
   ],
   docs: [], // lol
   'mock-server': [
@@ -61,7 +63,8 @@ const saModuleDependants = {
     'admin-source-management',
     'context',
     'hosts-scan-configure',
-    'investigate-process-analysis'
+    'investigate-process-analysis',
+    'rsa-context-menu'
   ],
   'investigate-shared': [
     'investigate-events',
@@ -84,7 +87,7 @@ const saModuleDependants = {
   configure: ['sa'],
   investigate: ['sa'],
   admin: ['sa'],
-  'admin-source-management': ['sa','admin'],
+  'admin-source-management': ['sa', 'admin'],
   scripts: ALL_SUBMODULES, // Everything depends on scripts
   'streaming-data': [
     'recon',
@@ -111,6 +114,13 @@ const saModuleDependants = {
   preferences: [
     'sa',
     'investigate-events'
+  ],
+  'rsa-context-menu': [
+    'sa',
+    'investigate-events',
+    'investigate-hosts',
+    'recon',
+    'style-guide'
   ],
   'test-helpers': [],
   'ember-route-action-helper': [],

@@ -41,7 +41,8 @@
 /** Import process analysis-shared */
 @import "investigate-process-analysis/manifest";
 
+/* Imports styles specific to rsa-context-menu. */
+@import 'rsa-context-menu/manifest';
+
 /* Imports styles specific for this sa app. */
 @import 'sa/manifest';
-
-

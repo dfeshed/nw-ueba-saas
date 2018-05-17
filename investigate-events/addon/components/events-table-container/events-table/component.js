@@ -1,4 +1,4 @@
-import RsaContextMenu from 'component-lib/components/rsa-context-menu/component';
+import RsaContextMenu from 'rsa-context-menu/components/rsa-context-menu/component';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { getColumns } from 'investigate-events/reducers/investigate/data-selectors';

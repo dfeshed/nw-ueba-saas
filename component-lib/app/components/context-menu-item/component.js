@@ -1,1 +1,0 @@
-export { default } from 'component-lib/components/context-menu-item/component';

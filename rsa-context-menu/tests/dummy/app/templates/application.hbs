@@ -1,0 +1,18 @@
+<grid responsive>
+  <box class="col-xs-3">
+    <aside>
+      <h1>RSA-Context-Menu-Example</h1>
+    </aside>
+  </box>
+  <box class="col-xs-9">
+    <aside>
+      {{#rsa-context-menu
+        contextItems=contextItems
+        contextDetails=scope
+        contextSelection="Right clicked item"}}
+        Right click here
+      {{/rsa-context-menu}}
+    </aside>
+  </box>
+</grid>
+{{context-menu}}

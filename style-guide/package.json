@@ -62,6 +62,7 @@
   "ember-addon": {
     "paths": [
       "../component-lib",
+      "../rsa-context-menu", 
       "../streaming-data"
     ]
   },
