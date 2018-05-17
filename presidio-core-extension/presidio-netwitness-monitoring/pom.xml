@@ -13,7 +13,7 @@
     <name>presidio-netwitness-monitoring</name>
 
     <properties>
-        <maven-resources-plugin.version>2.6.1</maven-resources-plugin.version>
+        <maven-resources-plugin.version>2.6</maven-resources-plugin.version>
     </properties>
 
     <build>
