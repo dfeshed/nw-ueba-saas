@@ -75,7 +75,8 @@ const dispatchToActions = (dispatch) => ({
 
 const IncidentAlertsSearch = Component.extend({
   tagName: '',
-  layout
+  layout,
+  useLazyRendering: true
 });
 
 export default connect(stateToComputed, dispatchToActions)(IncidentAlertsSearch);

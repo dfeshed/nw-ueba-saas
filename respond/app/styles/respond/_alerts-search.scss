@@ -95,5 +95,10 @@ $alertsSearchLineHeight: 2rem;
         display: none;
       }
     }
+
+    .disabled-control-message {
+      @include rsa-font(default, small);
+      color: text-color(primary);
+    }
   }
 }

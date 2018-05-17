@@ -1018,7 +1018,8 @@ export default {
           addToIncident: 'Add To Incident',
           addingAlert: 'Adding Alert to Incident',
           unableToAddAlert: 'Unable to add Alert to Incident.',
-          pleaseTryAgain: 'Please try again.'
+          pleaseTryAgain: 'Please try again.',
+          closedIncident: 'You cannot add an indicator to a closed incident'
         }
       }
     },

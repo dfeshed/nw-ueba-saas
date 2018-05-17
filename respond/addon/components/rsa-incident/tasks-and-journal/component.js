@@ -6,8 +6,7 @@ import {
 import Component from '@ember/component';
 import computed, { alias } from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
-
-const closedStatuses = ['CLOSED', 'CLOSED_FALSE_POSITIVE'];
+import { isIncidentClosed } from 'respond/helpers/is-incident-closed';
 
 const stateToComputed = (state) => {
   const { respond: { incident: { id, info, isShowingTasksAndJournal, tasks, tasksStatus, tasksJournalMode } } } = state;
@@ -40,7 +39,7 @@ const IncidentTasksJournalPanel = Component.extend({
 
   @computed('info.status')
   isIncidentClosed(status) {
-    return closedStatuses.includes(status);
+    return isIncidentClosed(status);
   },
 
   // The incident's notes can be undefined/null, in which case default to zero

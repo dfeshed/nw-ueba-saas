@@ -6,6 +6,9 @@ export default Component.extend({
   layout,
   classNames: ['rsa-alerts-search-results'],
 
+  // whether the search results should be lazily rendered
+  useLazyRendering: true,
+
   // The entity { type, id } that these search results queried for
   entity: null,
 

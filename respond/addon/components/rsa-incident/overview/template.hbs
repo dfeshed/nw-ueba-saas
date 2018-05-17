@@ -33,9 +33,9 @@
           selected=info.priority
           matchTriggerWidth=false
           searchEnabled=false
-          disabled=(or (eq info.status 'CLOSED') (eq info.status 'CLOSED_FALSE_POSITIVE'))
+          disabled=(is-incident-closed info.status)
           triggerComponent=(component "respond-common/button-trigger"
-            isDisabled=(or (eq info.status 'CLOSED') (eq info.status 'CLOSED_FALSE_POSITIVE'))
+            isDisabled=(is-incident-closed info.status)
             label=(t (concat 'respond.priority.' info.priority)))
           onchange=(action 'update' info.id 'priority') as |option|}}
           {{t (concat 'respond.priority.' option)}}
@@ -76,10 +76,10 @@
           options=users
           selected=selectedUserOption
           matchTriggerWidth=false
-          disabled=(or (eq info.status 'CLOSED') (eq info.status 'CLOSED_FALSE_POSITIVE'))
+          disabled=(is-incident-closed info.status)
           searchEnabled=false
           triggerComponent=(component "respond-common/button-trigger"
-            isDisabled=(or (eq info.status 'CLOSED') (eq info.status 'CLOSED_FALSE_POSITIVE'))
+            isDisabled=(is-incident-closed info.status)
             label=assigneeName)
           onchange=(action 'handleUpdateAssignee' info.id 'assignee') as |option|}}
           {{#if (eq option.id 'UNASSIGNED')}}

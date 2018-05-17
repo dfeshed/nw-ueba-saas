@@ -2,6 +2,7 @@ import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 import { connect } from 'ember-redux';
 import * as incidentCreators from 'respond/actions/creators/incidents-creators';
+import { isIncidentClosed } from 'respond/helpers/is-incident-closed';
 import Notifications from 'component-lib/mixins/notifications';
 import computed from 'ember-computed-decorators';
 
@@ -31,8 +32,7 @@ const IncidentInspectorHeader = Component.extend(Notifications, {
 
   @computed('info.status', 'info.escalationStatus', 'accessControl.respondCanManageIncidents')
   isEscalationDisabled(status, escalationStatus, canManageIncidents) {
-    const closedStatuses = ['CLOSED', 'CLOSED_FALSE_POSITIVE'];
-    return closedStatuses.includes(status) || canManageIncidents === false;
+    return isIncidentClosed(status) || canManageIncidents === false;
   },
   actions: {
     updateName(entityId, fieldName, updatedValue, originalValue, revertCallback) {

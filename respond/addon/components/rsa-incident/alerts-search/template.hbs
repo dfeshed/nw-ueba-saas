@@ -31,6 +31,7 @@
     timeFrameName=searchTimeFrameName
     itemsStatus=searchStatus
     items=searchResults
+    useLazyRendering=useLazyRendering
     as |item index column|
   }}
     <hbox nowrap class="alert">
@@ -63,14 +64,13 @@
 
         {{!Alert events count and link}}
         <hbox nowrap>
-          <box fill class="p">
-            {{item.alert.numEvents}}&nbsp;{{t (if (eq 1 item.alert.numEvents) 'respond.storyline.event' 'respond.storyline.events')}}
+          <box fill class="p event-count">
+            {{item.alert.numEvents}} {{t (if (eq 1 item.alert.numEvents) 'respond.storyline.event' 'respond.storyline.events')}}
           </box>
           <box fit align="end" class="p">
             {{#link-to 'alert' item.id target="_blank"}}{{t 'respond.incident.search.results.openInNewWindow'}}{{/link-to}}
           </box>
         </hbox>
-
 
         {{!Add To Incident Button}}
         {{#if (eq item.incidentId incidentId)}}
@@ -98,9 +98,12 @@
 
           {{!Alert is not part of any incident}}
           <div class="incident-action not-part-of-incident">
-            {{#rsa-form-button style="primary" defaultAction=(action "addToIncident" item)}}
+            {{#rsa-form-button style="primary" defaultAction=(action "addToIncident" item) isDisabled=(is-incident-closed incidentInfo.status)}}
               {{t 'respond.incident.search.actions.addToIncident'}}
             {{/rsa-form-button}}
+            {{#if (is-incident-closed incidentInfo.status)}}
+              <div class="disabled-control-message">{{t 'respond.incident.search.actions.closedIncident'}}</div>
+            {{/if}}
           </div>
 
         {{/if}}
