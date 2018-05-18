@@ -22,8 +22,7 @@ export default Route.extend({
     run.next(() => {
       redux.dispatch(initProcessAnalysis(params));
     });
-    // Setting title to the process-analysis window.
-    document.title = params.pn;
+    document.title = '';
   },
   activate() {
     // To hide the navigation header in process analysis window.

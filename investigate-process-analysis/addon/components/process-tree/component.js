@@ -377,7 +377,7 @@ const TreeComponent = Component.extend({
           return;
         }
         this.set('rootNode', root);
-
+        document.title = `${root.data['alias.host']} - ${root.data.processName}`;
         this._initializeChart();
       };
       this.send('getParentAndChildEvents', this.get('selectedProcess'), { onComplete });
@@ -463,7 +463,7 @@ const TreeComponent = Component.extend({
     this.send('fetchProcessDetails', { hashes });
     this.send('setSelectedProcess', d.data.processId);
     this.addSelectedClass(d.data.processId);
-
+    document.title = `${d.data['alias.host']} - ${d.data.processName}`;
   },
 
   addSelectedClass(id) {
