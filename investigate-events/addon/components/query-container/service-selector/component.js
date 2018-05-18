@@ -14,7 +14,7 @@ import { inject as service } from '@ember/service';
 const dispatchToActions = { setService };
 
 const stateToComputed = (state) => ({
-  isCoreServiceNotUpdated: isCoreServiceNotUpdated(state, lookup('service:appVersion').version),
+  isCoreServiceNotUpdated: isCoreServiceNotUpdated(state, lookup('service:appVersion')),
   isSummaryDataInvalid: isSummaryDataInvalid(state),
   serviceDisplayName: getServiceDisplayName(state),
   isServicesLoading: state.investigate.services.isServicesLoading,
@@ -29,6 +29,7 @@ const ServiceSelector = Component.extend({
   classNames: ['rsa-investigate-query-container__service-selector'],
 
   i18n: service(),
+  appVersion: service(),
 
   @computed()
   panelId() {
@@ -85,11 +86,13 @@ const ServiceSelector = Component.extend({
  * After  - java.lang.NullPointerException
  * @public
  */
-  @computed('isCoreServiceNotUpdated', 'isServicesRetrieveError', 'isSummaryDataInvalid', 'hasSummaryData', 'summaryErrorMessage', 'i18n')
+  @computed('isCoreServiceNotUpdated', 'isServicesRetrieveError', 'isSummaryDataInvalid', 'hasSummaryData', 'summaryErrorMessage', 'i18n', 'i18n.locale')
   selectedServiceMessage(isCoreServiceNotUpdated, isServicesRetrieveError, isSummaryDataInvalid, hasSummaryData, summaryErrorMessage, i18n) {
     let title = null;
     if (isCoreServiceNotUpdated) {
-      title = i18n.t('investigate.services.coreServiceNotUpdated');
+      const version = this.get('appVersion.marketingVersion');
+      const minVersion = this.get('appVersion.minServiceVersion');
+      title = i18n.t('investigate.services.coreServiceNotUpdated', { version, minVersion });
     } else if (isServicesRetrieveError) {
       title = i18n.t('investigate.services.error.description');
     } else if (isSummaryDataInvalid && summaryErrorMessage) {

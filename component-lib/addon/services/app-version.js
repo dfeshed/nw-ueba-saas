@@ -15,5 +15,25 @@ export default Service.extend({
   @computed('version')
   marketingVersion: (version) => {
     return version.replace(/(\d+).(\d+).(\d+).(\d+).*/g, '$1.$2.$3.$4');
+  },
+
+  @readOnly
+  @computed('version')
+  minServiceVersion: (version) => {
+    const prunedVersion = version.replace(/(\d+).(\d+).(\d+).(\d+).*/g, '$1.$2');
+
+    let minServiceVersion;
+    switch (prunedVersion) {
+      case '11.0':
+        minServiceVersion = prunedVersion;
+        break;
+      case '11.1':
+        minServiceVersion = prunedVersion;
+        break;
+      default:
+        minServiceVersion = (Number(prunedVersion) - .1).toString();
+    }
+    return minServiceVersion;
   }
+
 });

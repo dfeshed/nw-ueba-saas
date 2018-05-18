@@ -41,7 +41,7 @@ test('when core version is not set', function(assert) {
   assert.equal(coreVersion, null, 'Core version is not set');
 });
 
-test('determine if core services are not updated', function(assert) {
+test('determine if core services are not updated with 10.x', function(assert) {
   const state = {
     investigate: {
       services: {
@@ -55,13 +55,13 @@ test('determine if core services are not updated', function(assert) {
     }
   };
 
-  const appVersion = '11.1.0.0';
+  const appVersion = { version: '11.1.0.0', minServiceVersion: '11.1' };
   const flag = isCoreServiceNotUpdated(state, appVersion);
 
   assert.ok(flag, 'Core Service is not updated');
 });
 
-test('determine if core services are updated', function(assert) {
+test('determine if core services are not updated with 11.x', function(assert) {
   const state = {
     investigate: {
       services: {
@@ -74,7 +74,45 @@ test('determine if core services are updated', function(assert) {
       }
     }
   };
-  const appVersion = '11.1.0.0';
+
+  const appVersion = { version: '11.3.0.0', minServiceVersion: '11.2' };
+  const flag = isCoreServiceNotUpdated(state, appVersion);
+
+  assert.ok(flag, 'Core Service is not updated');
+});
+
+test('determine if core services are updated with 11.1', function(assert) {
+  const state = {
+    investigate: {
+      services: {
+        serviceData: [
+          { id: 'id1', displayName: 'Service Name', name: 'SN', version: '11.1.0.0-7206.5.21dd2e7' }
+        ]
+      },
+      queryNode: {
+        serviceId: 'sd1'
+      }
+    }
+  };
+  const appVersion = { version: '11.1.0.0', minServiceVersion: '11.1' };
+  const flag = isCoreServiceNotUpdated(state, appVersion);
+  assert.notOk(flag, 'Core Service is up to date');
+});
+
+test('determine if core services are updated beyond 11.1', function(assert) {
+  const state = {
+    investigate: {
+      services: {
+        serviceData: [
+          { id: 'id1', displayName: 'Service Name', name: 'SN', version: '11.3.0.0-7206.5.21dd2e7' }
+        ]
+      },
+      queryNode: {
+        serviceId: 'sd1'
+      }
+    }
+  };
+  const appVersion = { version: '11.2.0.0', minServiceVersion: '11.1' };
   const flag = isCoreServiceNotUpdated(state, appVersion);
   assert.notOk(flag, 'Core Service is up to date');
 });

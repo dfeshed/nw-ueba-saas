@@ -142,7 +142,7 @@ export default class DataHelper {
   isSummaryDataInvalid(flag, id, errorMessage) {
     if (flag) {
       _set(this.state, 'queryNode.serviceId', id);
-      _set(this.state, 'services.serviceData', [{ id, displayName: id, name: id, version: '0.0.0' }]);
+      _set(this.state, 'services.serviceData', [{ id, displayName: id, name: id, version: '11.1.0.0' }]);
       _set(this.state, 'services.isSummaryRetrieveError', true);
       _set(this.state, 'services.summaryErrorMessage', errorMessage);
     } else {
@@ -154,11 +154,11 @@ export default class DataHelper {
   hasSummaryData(flag, id) {
     if (flag) {
       _set(this.state, 'queryNode.serviceId', id);
-      _set(this.state, 'services.serviceData', [{ id, displayName: id, name: id, version: '0.0.0' }]);
+      _set(this.state, 'services.serviceData', [{ id, displayName: id, name: id, version: '11.1.0.0' }]);
       _set(this.state, 'services.summaryData', { startTime: 1 });
     } else {
       _set(this.state, 'queryNode.serviceId', id);
-      _set(this.state, 'services.serviceData', [{ id, displayName: id, name: id, version: '0.0.0' }]);
+      _set(this.state, 'services.serviceData', [{ id, displayName: id, name: id, version: '11.1.0.0' }]);
       _set(this.state, 'services.summaryData', { startTime: 0 });
       _set(this.state, 'services.isServicesRetrieveError', false);
     }
