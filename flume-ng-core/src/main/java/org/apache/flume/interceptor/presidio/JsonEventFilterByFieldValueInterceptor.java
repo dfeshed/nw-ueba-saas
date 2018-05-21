@@ -23,11 +23,13 @@ public class JsonEventFilterByFieldValueInterceptor extends AbstractPresidioJson
     private final List<String> fields;
     private final List<String> regexList;
     private final Operation operation;
+    private final Boolean filterOut;
 
-    public JsonEventFilterByFieldValueInterceptor(List<String> fields, List<String> regexList, Operation operation) {
+    public JsonEventFilterByFieldValueInterceptor(List<String> fields, List<String> regexList, Operation operation, Boolean filterOut) {
         this.fields = fields;
         this.regexList = regexList;
         this.operation = operation;
+        this.filterOut = filterOut;
     }
 
     @Override
@@ -57,25 +59,43 @@ public class JsonEventFilterByFieldValueInterceptor extends AbstractPresidioJson
 
             if (isMatched) {
                 if (operation == Operation.OR) {
-                    logger.trace("Filtering event {} because it matched the following filter: field: {}, fieldValue: {}, regex: {}.", eventBodyAsJson, currField, currFieldValue, currRegex);
-                    String failureReason = String.format("Filtering event because field %s matched regular expression. The values was %s",currField,currFieldValue);
-                    monitoringService.reportFailedEventMetric(failureReason,1);
-                    return null;
+                    if(filterOut) {
+                        logger.trace("Filtering event {} because it matched the following filter: field: {}, fieldValue: {}, regex: {}.", eventBodyAsJson, currField, currFieldValue, currRegex);
+                        String failureReason = String.format("Filtering event because field %s matched regular expression. The values was %s", currField, currFieldValue);
+                        monitoringService.reportFailedEventMetric(failureReason, 1);
+                        return null;
+                    } else {
+                        return event;
+                    }
                 }
             } else {
                 if (operation == Operation.AND) {
-                    event.setBody(eventBodyAsJson.toString().getBytes());
-                    return event;
+                    if(filterOut) {
+                        return event;
+                    } else{
+                        monitoringService.reportFailedEventMetric("EVENT_FILTERED_ACCORDING_TO_CONFIGURATION2",1);
+                        return null;
+                    }
                 }
             }
         }
 
-        if (operation == Operation.OR) { /* we got here and couldn't filter? - we shouldn't filter */
-            event.setBody(eventBodyAsJson.toString().getBytes());
-            return event;
-        } else {  /* we got here and couldn't NOT-filter? - we should filter */
-            monitoringService.reportFailedEventMetric("EVENT_FILTERED_ACCORDING_TO_CONFIGURATION2",1);
-            return null;
+        if (operation == Operation.OR) { /* Nothing matched */
+            if(filterOut) {
+                return event;
+            } else{
+                logger.trace("Filtering event {} because it didn't match any pattern", eventBodyAsJson);
+                String failureReason = String.format("Filtering event because it didn't match any pattern");
+                monitoringService.reportFailedEventMetric(failureReason, 1);
+                return null;
+            }
+        } else {  /* All matched */
+            if(filterOut) {
+                monitoringService.reportFailedEventMetric("EVENT_FILTERED_ACCORDING_TO_CONFIGURATION2", 1);
+                return null;
+            } else {
+                return event;
+            }
         }
     }
 
@@ -97,10 +117,14 @@ public class JsonEventFilterByFieldValueInterceptor extends AbstractPresidioJson
         static final String DEFAULT_DELIMITER_VALUE = ",";
         static final String OPERATION_CONF_NAME = "operation";
         static final String DEFAULT_OP_VALUE = "OR";
+        static final String FILTER_OUT_CONF_NAME = "filter_out";
+        static final boolean DEFAULT_FILTER_OUT_VALUE = true;
+
 
         private List<String> fields;
         private List<String> regexList;
         private Operation operation;
+        private Boolean filterOut;
 
         @Override
         public void doConfigure(Context context) {
@@ -114,6 +138,8 @@ public class JsonEventFilterByFieldValueInterceptor extends AbstractPresidioJson
 
             String opAsString = context.getString(OPERATION_CONF_NAME, DEFAULT_OP_VALUE);
             operation = Operation.createOperation(opAsString);
+
+            filterOut = context.getBoolean(FILTER_OUT_CONF_NAME, DEFAULT_FILTER_OUT_VALUE);
 
             final String[] fieldArray = fieldsArrayAsString.split(delim);
             String currField;
@@ -139,7 +165,7 @@ public class JsonEventFilterByFieldValueInterceptor extends AbstractPresidioJson
 
         @Override
         public AbstractPresidioJsonInterceptor doBuild() {
-            final JsonEventFilterByFieldValueInterceptor jsonFilterByFieldValueInterceptor = new JsonEventFilterByFieldValueInterceptor(fields, regexList, operation);
+            final JsonEventFilterByFieldValueInterceptor jsonFilterByFieldValueInterceptor = new JsonEventFilterByFieldValueInterceptor(fields, regexList, operation, filterOut);
             logger.info("Creating JsonFilterByFieldValueInterceptor: {}", jsonFilterByFieldValueInterceptor);
             return jsonFilterByFieldValueInterceptor;
         }
