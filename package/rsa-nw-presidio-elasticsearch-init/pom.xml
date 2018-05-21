@@ -48,7 +48,7 @@
                     </defineStatements>
                     <mappings>
                         <mapping>
-                            <directoryIncluded>false</directoryIncluded>
+                            <directoryIncluded>true</directoryIncluded>
                             <directory>${presidio-app.directory}/elasticsearch/init</directory>
                             <username>${presidio.username}</username>
                             <groupname>${presidio.groupname}</groupname>
