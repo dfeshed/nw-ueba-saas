@@ -113,6 +113,44 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${maven-resources-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <!--add airflow plugins to package-->
+                        <id>copy airflow plugins</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/dependencies/airflow-plugins</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>../../presidio-workflows/presidio/plugins/</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <!--add airflow dags to package-->
+                        <id>copy airflow dags</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/dependencies/airflow-dags</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>../../presidio-workflows/presidio/dags/</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- create RPM -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -120,6 +158,12 @@
                 <version>${rpm-maven-plugin.version}</version>
                 <configuration>
                     <summary>Presidio(UEBA) core batch applications and workflow py package</summary>
+                    <defineStatements>
+                        <defineStatement>_unpackaged_files_terminate_build 0</defineStatement>
+                        <defineStatement>_binaries_in_noarch_packages_terminate_build 0</defineStatement>
+                    </defineStatements>
+                    <defaultGroupname>${presidio.groupname}</defaultGroupname>
+                    <defaultUsername>${presidio.username}</defaultUsername>
                     <mappings>
                         <mapping>
                             <directoryIncluded>false</directoryIncluded>
@@ -146,6 +190,28 @@
                                         <include>*.egg</include>
                                     </includes>
                                     <location>${project.build.directory}/dependencies/eggs</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directoryIncluded>false</directoryIncluded>
+                            <directory>${presidio-app.directory}/airflow/plugins</directory>
+                            <username>${presidio.username}</username>
+                            <groupname>${presidio.groupname}</groupname>
+                            <sources>
+                                <source>
+                                    <location>${project.build.directory}/dependencies/airflow-plugins</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directoryIncluded>false</directoryIncluded>
+                            <directory>${presidio-app.directory}/airflow/dags</directory>
+                            <username>${presidio.username}</username>
+                            <groupname>${presidio.groupname}</groupname>
+                            <sources>
+                                <source>
+                                    <location>${project.build.directory}/dependencies/airflow-dags</location>
                                 </source>
                             </sources>
                         </mapping>
