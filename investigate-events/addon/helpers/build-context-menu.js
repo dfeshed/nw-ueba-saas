@@ -61,100 +61,100 @@ export function _buildHostsUrl(selected, contextDetails) {
   return `/investigate/hosts?query=${encodeURIComponent(query)}`;
 }
 
-const _getTranslated = function(i18nKey) {
+const _getTranslated = function(i18n, i18nKey) {
   // i18n.t() returns a SafeString object. Later, when this is converted to immutable before storing in redux, the
   // SafeString object is converted to Immutable object causing the toString() to be overriden. This results in
   // the string rendered as [object Object]. To avoid this, convert SafeString to plain string here itself.
-  const i18n = lookup('service:i18n');
   return i18n.t(i18nKey).toString();
 };
 
 export function buildContextMenu() {
+  const i18n = lookup('service:i18n');
   return [
     {
-      label: _getTranslated('recon.contextmenu.copy'),
+      label: _getTranslated(i18n, 'recon.contextmenu.copy'),
       action(selection) {
         copyToClipboard(selection[0].metaValue);
       }
     },
     {
-      label: _getTranslated('recon.contextmenu.refocus'),
+      label: _getTranslated(i18n, 'recon.contextmenu.refocus'),
       action(selection, contextDetails) {
         // Current query is discarded in case of refocus
         _openUrl(_buildInvestigateUrl(selection[0], '=', contextDetails, true));
       }
     },
     {
-      label: _getTranslated('recon.contextmenu.applyDrill'),
+      label: _getTranslated(i18n, 'recon.contextmenu.applyDrill'),
       action(selection, contextDetails) {
         _openUrl(_buildInvestigateUrl(selection[0], '=', contextDetails));
       }
     },
     {
-      label: _getTranslated('recon.contextmenu.applyNEDrill'),
+      label: _getTranslated(i18n, 'recon.contextmenu.applyNEDrill'),
       action(selection, contextDetails) {
         _openUrl(_buildInvestigateUrl(selection[0], '!=', contextDetails));
       }
     },
     {
-      label: _getTranslated('recon.contextmenu.hostslookup'),
+      label: _getTranslated(i18n, 'recon.contextmenu.hostslookup'),
       action(selection, contextDetails) {
         _openUrl(_buildHostsUrl(selection[0], contextDetails));
       }
     },
     {
-      label: _getTranslated('recon.contextmenu.endpointIoc'),
+      label: _getTranslated(i18n, 'recon.contextmenu.endpointIoc'),
       action(selection) {
         _openUrl(`ecatui://${selection[0].metaValue}`);
       }
     },
     {
-      label: _getTranslated('recon.contextmenu.livelookup'),
+      label: _getTranslated(i18n, 'recon.contextmenu.livelookup'),
       action(selection) {
         _openUrl(`/live/search?metaValue=${selection[0].metaValue}`);
       }
     },
     {
-      label: _getTranslated('recon.contextmenu.externalLinks'),
+      label: _getTranslated(i18n, 'recon.contextmenu.externalLinks'),
       subActions: [
         {
-          label: _getTranslated('recon.contextmenu.external.google'),
+          label: _getTranslated(i18n, 'recon.contextmenu.external.google'),
           action(selection) {
             _openUrl(`http://www.google.com/search?q=${selection[0].metaValue}`);
           }
         },
         {
-          label: _getTranslated('recon.contextmenu.external.sansiphistory'),
+          label: _getTranslated(i18n, 'recon.contextmenu.external.sansiphistory'),
           action(selection) {
             _openUrl(`http://isc.sans.org/ipinfo.html?ip=${selection[0].metaValue}`);
           }
         },
         {
-          label: _getTranslated('recon.contextmenu.external.centralops'),
+          label: _getTranslated(i18n, 'recon.contextmenu.external.centralops'),
           action(selection) {
             _openUrl(`http://centralops.net/co/DomainDossier.aspx?addr=${selection[0].metaValue}&amp;dom_whois=true&amp;dom_dns=true&amp;net_whois=true`);
           }
         },
         {
-          label: _getTranslated('recon.contextmenu.external.robtexipsearch'),
+          label: _getTranslated(i18n, 'recon.contextmenu.external.robtexipsearch'),
           action(selection) {
             _openUrl(`http://www.robtex.com/ip/${selection[0].metaValue}.html`);
           }
         },
         {
-          label: _getTranslated('recon.contextmenu.external.ipvoid'),
+          label: _getTranslated(i18n, 'recon.contextmenu.external.ipvoid'),
           action(selection) {
             _openUrl(`http://www.ipvoid.com/scan/${selection[0].metaValue}/`);
           }
         },
         {
-          label: _getTranslated('recon.contextmenu.external.urlvoid'),
+          label: _getTranslated(i18n, 'recon.contextmenu.external.urlvoid'),
           action(selection) {
             _openUrl(`http://www.urlvoid.com/scan/${selection[0].metaValue}/`);
           }
         },
         {
-          label: _getTranslated('recon.contextmenu.external.threatexpert'),
+          label: _getTranslated(i18n, 'recon.contextmenu.external.threatexpert'),
           action(selection) {
             _openUrl(`http://www.threatexpert.com/reports.aspx?find=${selection[0].metaValue}`);
           }

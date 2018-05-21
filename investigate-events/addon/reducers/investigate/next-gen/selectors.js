@@ -1,0 +1,1 @@
+export const pillsData = (state) => state.investigate.nextGen.pillsData;

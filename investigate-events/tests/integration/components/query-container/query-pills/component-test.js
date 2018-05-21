@@ -2,10 +2,13 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { patchReducer } from '../../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 import { fillIn, find, findAll, render, settled, triggerKeyEvent, waitUntil } from '@ember/test-helpers';
+import sinon from 'sinon';
+
+import { patchReducer } from '../../../../helpers/vnext-patch';
+import nextGenCreators from 'investigate-events/actions/next-gen-creators';
 
 const ENTER_KEY = '13';
 const X_KEY = '88';
@@ -16,14 +19,20 @@ const powerSelectOption = '.ember-power-select-option';
 const value = '.pill-value input';
 
 const initialState = {
-  language: [
-    { count: 0, format: 'Text', metaName: 'a', flags: 1, displayName: 'A' },
-    { count: 0, format: 'Text', metaName: 'b', flags: 1, displayName: 'B' },
-    { count: 0, format: 'Text', metaName: 'c', flags: 1, displayName: 'C' }
-  ]
+  dictionaries: {
+    language: [
+      { count: 0, format: 'Text', metaName: 'a', flags: 1, displayName: 'A' },
+      { count: 0, format: 'Text', metaName: 'b', flags: 2, displayName: 'B' },
+      { count: 0, format: 'Text', metaName: 'c', flags: 3, displayName: 'C' }
+    ]
+  },
+  nextGen: {
+    pillsData: []
+  }
 };
 
 let setState;
+const newActionSpy = sinon.spy(nextGenCreators, 'addNextGenPill');
 
 module('Integration | Component | Query Pills', function(hooks) {
   setupRenderingTest(hooks, {
@@ -32,17 +41,25 @@ module('Integration | Component | Query Pills', function(hooks) {
 
   hooks.beforeEach(function() {
     setState = (state) => {
-      const fullState = { investigate: { dictionaries: state } };
+      const fullState = { investigate: state };
       patchReducer(this, Immutable.from(fullState));
     };
   });
 
-  test('Upon initialization, one active pill is created and tracked', async function(assert) {
+  hooks.afterEach(function() {
+    newActionSpy.reset();
+  });
+
+  hooks.after(function() {
+    newActionSpy.restore();
+  });
+
+  test('Upon initialization, one active pill is created', async function(assert) {
     await render(hbs`{{query-container/query-pills}}`);
     assert.equal(findAll('.query-pill').length, 1, 'There should only be one query-pill.');
   });
 
-  test('It creates a pill when supplied with meta, operator, and value', async function(assert) {
+  test('Creating a pill sets filters and sends action for redux state update', async function(assert) {
     setState({ ...initialState });
     this.set('filters', []);
 
@@ -60,25 +77,18 @@ module('Integration | Component | Query Pills', function(hooks) {
     await triggerKeyEvent(value, 'keydown', ENTER_KEY);
 
     return settled().then(async () => {
+      // Internal (temporary) filters maintained
       const filters = this.get('filters');
       assert.equal(filters.length, 1, 'A filter was not created');
+
+      // action to store in state called
+      assert.equal(newActionSpy.callCount, 1, 'The add pill action creator was called once');
+      assert.deepEqual(
+        newActionSpy.args[0][0],
+        { pillData: { meta: 'a', operator: '=', value: 'x' }, position: 0 },
+        'The action creator was called with the right arguments'
+      );
     });
   });
 
-  test('It creates a pill when supplied with meta and operator that does not accept a value', async function(assert) {
-    setState({ ...initialState });
-    this.set('filters', []);
-
-    await render(hbs`{{query-container/query-pills filters=filters isActive=true}}`);
-    // Choose the first meta option
-    selectChoose(metaPowerSelect, powerSelectOption, 0);// option A
-    await waitUntil(() => find(operatorPowerSelect));
-    // Choose the first operator option
-    selectChoose(operatorPowerSelect, powerSelectOption, 2);// option exists
-
-    return settled().then(async () => {
-      const filters = this.get('filters');
-      assert.equal(filters.length, 1, 'A filter was not created');
-    });
-  });
 });

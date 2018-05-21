@@ -7,25 +7,11 @@ module('Unit | Component | Query Pills', function(hooks) {
     resolver: engineResolverFor('investigate-events')
   });
 
-  test('Handle pill initialization', function(assert) {
-    const comp = this.owner.lookup('component:query-container/query-pills');
-    const pillId = 'pill1';
-    comp._pillInitialized(pillId);
-    const filterMap = comp.get('filterMap');
-    const filter = filterMap.get(pillId);
-    assert.equal(filter, null, 'Null filter was not created');
-  });
-
   test('Handle pill creation', function(assert) {
     const comp = this.owner.lookup('component:query-container/query-pills');
-    const pillId = 'pill1';
+    const pillPosition = 0;
     const pillObj = { meta: 'foo', operator: '=', value: 'bar' };
-    comp._pillCreated(pillId, pillObj);
-
-    // Test for addition to filter map
-    const filterMap = comp.get('filterMap');
-    const filter = filterMap.get(pillId);
-    assert.deepEqual(filter, pillObj, 'Filter was not created');
+    comp._pillCreated(pillObj, pillPosition);
 
     // Test for addition to 'filters' array
     const filtersAsArray = comp.get('filters');

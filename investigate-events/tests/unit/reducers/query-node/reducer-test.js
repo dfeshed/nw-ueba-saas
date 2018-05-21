@@ -127,3 +127,20 @@ test('test INITIALIZE_INVESTIGATE reducer sets the correct view from localStorag
 
   assert.equal(result.queryView, 'freeForm');
 });
+
+test('test ACTION_TYPES.ADD_NEXT_GEN_PILL sets query to dirty', function(assert) {
+  const prevState = Immutable.from({
+    isDirty: false
+  });
+
+  const action = {
+    type: ACTION_TYPES.ADD_NEXT_GEN_PILL,
+    payload: {
+      pillData: { foo: 1234 },
+      position: 0
+    }
+  };
+  const result = reducer(prevState, action);
+
+  assert.equal(result.isDirty, true);
+});

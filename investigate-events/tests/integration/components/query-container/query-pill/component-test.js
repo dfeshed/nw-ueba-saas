@@ -5,7 +5,10 @@ import { patchReducer } from '../../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
 import hbs from 'htmlbars-inline-precompile';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
-import { click, fillIn, find, findAll, focus, render, waitUntil } from '@ember/test-helpers';
+import { click, fillIn, find, findAll, focus, render, triggerKeyEvent, waitUntil } from '@ember/test-helpers';
+
+const ENTER_KEY = '13';
+const X_KEY = '88';
 
 // const { log } = console;
 
@@ -19,12 +22,18 @@ const valueInput = '.pill-value input';
 const trim = (text) => text.replace(/\s+/g, '').trim();
 
 const initialState = {
-  language: [
-    { count: 0, format: 'Text', metaName: 'a', flags: 1, displayName: 'A' },
-    { count: 0, format: 'Text', metaName: 'b', flags: 2, displayName: 'B' },
-    { count: 0, format: 'Text', metaName: 'c', flags: 3, displayName: 'C' }
-  ]
+  dictionaries: {
+    language: [
+      { count: 0, format: 'Text', metaName: 'a', flags: 1, displayName: 'A' },
+      { count: 0, format: 'Text', metaName: 'b', flags: 2, displayName: 'B' },
+      { count: 0, format: 'Text', metaName: 'c', flags: 3, displayName: 'C' }
+    ]
+  },
+  nextGen: {
+    pillsData: []
+  }
 };
+
 
 let setState;
 
@@ -35,14 +44,14 @@ module('Integration | Component | Query Pill', function(hooks) {
 
   hooks.beforeEach(function() {
     setState = (state) => {
-      const fullState = { investigate: { dictionaries: state } };
+      const fullState = { investigate: state };
       patchReducer(this, Immutable.from(fullState));
     };
   });
 
   test('it sends a message that it was initialized', async function(assert) {
-    this.set('handleMessage', (message) => {
-      assert.equal(message, 'PILL::INITIALIZED', 'Initalization message does not match');
+    this.set('handleMessage', (messageType) => {
+      assert.equal(messageType, 'PILL::INITIALIZED', 'Initalization message does not match');
     });
     await render(hbs`{{query-container/query-pill sendMessage=(action handleMessage)}}`);
   });
@@ -100,5 +109,80 @@ module('Integration | Component | Query Pill', function(hooks) {
     // Select meta options B
     await selectChoose(meta, powerSelectOption, 1);
     assert.equal(trim(find(meta).textContent), 'b');
+  });
+
+  test('A pill when supplied with meta, operator, and value will send a message to create', async function(assert) {
+    const done = assert.async();
+    setState({ ...initialState });
+
+    this.set('handleMessage', (messageType, data, position) => {
+
+      // first message will be initialized, get rid of it
+      if (messageType === 'PILL::INITIALIZED') {
+        return;
+      }
+
+      assert.equal(messageType, 'PILL::CREATED', 'Message sent for pill create is not correct');
+      assert.deepEqual(data, { meta: 'a', operator: '=', value: 'x' }, 'Message sent for pill create contains correct pill data');
+      assert.equal(position, 0, 'Message sent for pill create contains correct pill position');
+
+      done();
+    });
+
+    await render(hbs`
+      {{query-container/query-pill
+        position=0
+        isActive=true
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    // Choose the first meta option
+    selectChoose(metaPowerSelect, powerSelectOption, 0); // option A
+    await waitUntil(() => find(operatorPowerSelect));
+
+    // Choose the first operator option
+    selectChoose(operatorPowerSelect, powerSelectOption, 0); // option =
+    await waitUntil(() => find(valueInput));
+
+    // Fill in the value, to properly simulate the event we need to fillIn AND
+    // triggerKeyEvent for the "x" character.
+    await fillIn(valueInput, 'x');
+    await triggerKeyEvent(valueInput, 'keydown', X_KEY); // x
+    await triggerKeyEvent(valueInput, 'keydown', ENTER_KEY);
+  });
+
+  test('A pill when supplied with meta and operator that does not accept a value will send a message to create', async function(assert) {
+    const done = assert.async();
+    setState({ ...initialState });
+
+    this.set('handleMessage', (messageType, data, position) => {
+
+      // first message will be initialized, get rid of it
+      if (messageType === 'PILL::INITIALIZED') {
+        return;
+      }
+
+      assert.equal(messageType, 'PILL::CREATED', 'Message sent for pill create is not correct');
+      assert.deepEqual(data, { meta: 'a', operator: 'exists', value: null }, 'Message sent for pill create contains correct pill data');
+      assert.equal(position, 0, 'Message sent for pill create contains correct pill position');
+
+      done();
+    });
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    // Choose the first meta option
+    selectChoose(metaPowerSelect, powerSelectOption, 0); // option A
+    await waitUntil(() => find(operatorPowerSelect));
+
+    // Choose the third operator option which does not require a value
+    selectChoose(operatorPowerSelect, powerSelectOption, 2); // option exists
   });
 });

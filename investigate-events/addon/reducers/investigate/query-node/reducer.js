@@ -166,5 +166,11 @@ export default handleActions({
       isDirty: payload,
       previousQueryParams: payload ? state.previousQueryParams : undefined
     });
+  },
+
+  // Added a pill, therefore query is dirty
+  [ACTION_TYPES.ADD_NEXT_GEN_PILL]: (state) => {
+    return state.set('isDirty', true);
   }
+
 }, _initialState);

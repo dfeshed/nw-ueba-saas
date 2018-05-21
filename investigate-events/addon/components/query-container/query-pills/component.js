@@ -2,55 +2,39 @@ import Component from '@ember/component';
 import * as MESSAGE_TYPES from '../message-types';
 import { warn } from '@ember/debug';
 import { connect } from 'ember-redux';
-import { dirtyQueryToggle } from 'investigate-events/actions/query-validation-creators';
+
+import { pillsData } from 'investigate-events/reducers/investigate/next-gen/selectors';
+import { addNextGenPill } from 'investigate-events/actions/next-gen-creators';
 
 const { log } = console;
 const _debug = (data) => log('pills', data);
 
+const stateToComputed = (state) => ({
+  pillsData: pillsData(state)
+});
+
 const dispatchToActions = {
-  dirtyQueryToggle
+  addNextGenPill
 };
 
 const QueryPills = Component.extend({
   classNames: ['query-pills'],
 
-  /**
-   * A Collection of `metaFilter` objects, usually defined in the URL.
-   * @type {object[]}
-   * @public
-   */
-  filters: [],
-
-  /**
-   * Map of filters that have been converted to pills for display on the UI.
-   * @type {Map}
-   * @private
-   */
-  filterMap: new Map(),
-
-  willDestroyElement() {
-    this._super(arguments);
-    const map = this.get('filterMap');
-    if (map) {
-      map.clear();
-    }
-  },
-
   actions: {
     /**
      * Handler for all messages coming from pills.
-     * @param {string} id The unique id of the pill sending the message
      * @param {string} type The event type from `message-types`
      * @param {Object} data The event data
+     * @param {Object} position The position of the pill being messaged
      * @public
      */
-    handleMessage(id, type, data) {
+    handleMessage(type, data, position) {
       switch (type) {
         case MESSAGE_TYPES.PILL_CREATED:
-          this._pillCreated(id, data);
+          this._pillCreated(data, position);
           break;
         case MESSAGE_TYPES.PILL_INITIALIZED:
-          this._pillInitialized(id);
+          // Do nothing right now
           break;
         case MESSAGE_TYPES.DEBUG:
           _debug(data);
@@ -58,7 +42,7 @@ const QueryPills = Component.extend({
         default:
           // The buck stops here
           warn(`An unhandled query pill message of type "${type}" has occured \
-            from an element with the id "${id}".`);
+            from an element with the id "${data.id}".`);
       }
     }
   },
@@ -67,33 +51,22 @@ const QueryPills = Component.extend({
   //                          PRIVATE FUNCTIONS                               //
   // ************************************************************************ //
   /**
-   * Adds pill to `_filters` Map.
-   * @param {*} key A unique id
+   * Adds pill to state
    * @param {*} value The data for the pill
    * @private
    */
-  _pillCreated(key, value) {
-    const filterMap = this.get('filterMap');
-    filterMap.set(key, value);
-    // Set the filters array so that 2-way data binding will pick up the pills
-    // and make them available for the route's `executeQuery` action. Also set
-    // `saved` to true so `uriEncodeMetaFilters` picks it up.
-    const filtersAsArray = new Array();
-    filterMap.forEach((d) => filtersAsArray.push({ ...d, saved: true }));
-    this.set('filters', filtersAsArray);
-    // Mark the query as dirty since we created a pill
-    this.send('dirtyQueryToggle');
-  },
+  _pillCreated(data, position) {
+    // LEGACY FILTERS SET TO KEEP NEAR-TERM SEARCH WORKING
+    // Take current pills, add new one, mark that they are 'saved'
+    const pillsData = [ ...this.get('pillsData'), data ]
+      .map((d) => {
+        return { ...d, saved: true };
+      });
+    this.set('filters', pillsData);
+    // END LEGACY FILTERS SET TO KEEP NEAR-TERM SEARCH WORKING
 
-  /**
-   * Add empty object to `_filters` Map.
-   * @param  {*} key A unique id
-   * @private
-   */
-  _pillInitialized(key) {
-    const filterMap = this.get('filterMap');
-    filterMap.set(key, null);
+    this.send('addNextGenPill', { pillData: data, position });
   }
 });
 
-export default connect(null, dispatchToActions)(QueryPills);
+export default connect(stateToComputed, dispatchToActions)(QueryPills);

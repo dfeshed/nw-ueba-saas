@@ -1,10 +1,12 @@
-{{!-- {{#each filters as |filter|}}
+{{!-- {{#each pillsData as | pillData index |}}
   {{query-container/query-pill
-    filter=(readonly filter)
+    pillData=(readonly pillData)
     sendMessage=(action 'handleMessage')
+    position=index
   }}
 {{/each}} --}}
 {{query-container/query-pill
   isActive=true
-  sendMessage=(action 'handleMessage' this.elementId)
+  sendMessage=(action 'handleMessage')
+  position=0
 }}

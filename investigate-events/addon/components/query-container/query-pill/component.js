@@ -8,18 +8,27 @@ export default Component.extend({
   classNameBindings: ['isActive', ':query-pill'],
 
   /**
-   * Pre-populated filter. This would normally be a `metaFilter` defined in the
-   * URL.
+   * The position of this pill relative to other pills.
+   * Used when messaging up to parent.
+   * @type {Number}
+   * @public
+   */
+  position: null,
+
+  /**
+   * Pre-populated Pill Data.
    * @type {Object}
    * @public
    */
-  filter: null,
+  pillData: null,
+
   /**
    * Does this component currently have focus?
    * @type {boolean}
    * @public
    */
   isActive: false,
+
   /**
    * An action to call when sending messages and data to the parent component.
    * @type {function}
@@ -124,7 +133,7 @@ export default Component.extend({
    * @private
    */
   _broadcast(type, data) {
-    this.get('sendMessage')(type, data);
+    this.get('sendMessage')(type, data, this.get('position'));
   },
 
   /**
@@ -186,7 +195,7 @@ export default Component.extend({
       // an operator that does not accept a value was selected,
       // so create the pill
       this.set('valueString', null);
-      this._broadcast(MESSAGE_TYPES.PILL_CREATED, this._createFilter());
+      this._broadcast(MESSAGE_TYPES.PILL_CREATED, this._createPillData());
     }
   },
 
@@ -206,17 +215,18 @@ export default Component.extend({
       isActive: false,
       valueString
     });
-    this._broadcast(MESSAGE_TYPES.PILL_CREATED, this._createFilter(valueString));
+    this._broadcast(MESSAGE_TYPES.PILL_CREATED, this._createPillData(valueString));
   },
 
   /**
-   * Creates a filter to be used for metaFilters.
-   * @param {*} value The value of the filter. Does not have to be specified if
+   * Creates a pillData object
+   *
+   * @param {*} value The pill value. Does not have to be specified if
    * operator is a type that does not have a value.
-   * @return {Object} A filter
+   * @return {Object} The pill data
    * @private
    */
-  _createFilter(value = null) {
+  _createPillData(value = null) {
     const meta = this.get('selectedMeta.metaName');
     const operator = this.get('selectedOperator.displayName');
     return { meta, operator, value };
