@@ -95,6 +95,24 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <!--package presidio workflows python packages-->
+                <artifactId>exec-maven-plugin</artifactId>
+                <groupId>org.codehaus.mojo</groupId>
+                <executions>
+                    <execution>
+                        <id>build presidio workflows py</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>scripts/build-workflows.sh</executable>
+                            <arguments><argument>${build.githash}</argument></arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- create RPM -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -117,7 +135,20 @@
                                 </source>
                             </sources>
                         </mapping>
-                        <!--TODO: add egg mapping once python artifactory is set-->
+                        <mapping>
+                            <directoryIncluded>false</directoryIncluded>
+                            <directory>${presidio-app.directory}/pypackages</directory>
+                            <username>${presidio.username}</username>
+                            <groupname>${presidio.groupname}</groupname>
+                            <sources>
+                                <source>
+                                    <includes>
+                                        <include>*.egg</include>
+                                    </includes>
+                                    <location>${project.build.directory}/dependencies/eggs</location>
+                                </source>
+                            </sources>
+                        </mapping>
                     </mappings>
                     <requires>
                         <require>java &gt; 1.8</require>
