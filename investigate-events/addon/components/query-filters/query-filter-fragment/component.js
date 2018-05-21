@@ -142,6 +142,15 @@ const QueryFragmentComponent = Component.extend({
     return isEmpty(complexFilter) !== true;
   },
 
+  @computed('withComplexFilter', 'i18n.locale')
+  complexFilterTooltip(withComplexFilter) {
+    if (withComplexFilter) {
+      const i18n = this.get('i18n');
+      const notEditableDescription = i18n.t('queryBuilder.notEditable').string;
+      return notEditableDescription.concat('Filter: ', this.get('complexFilter'));
+    }
+  },
+
   @computed('metaFormat', 'metaIndex', 'metaOptions', 'meta')
   operatorOptions(metaFormat, metaIndex, metaOptions, meta) {
     // const efficientIndex = metaIndex === 'value';

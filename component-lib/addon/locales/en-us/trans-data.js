@@ -184,7 +184,7 @@ export default {
     querySelected: 'Query with selected filters',
     querySelectedNewTab: 'Query with selected filters in a new tab',
     expensive: 'Performing this operation might take more time.',
-    notEditable: 'Filters created or modified in free-form mode must be edited in the same mode.',
+    notEditable: 'Filters created or modified in free-form mode must be edited in the same mode. \n',
     validationMessages: {
       time: 'You must enter a valid date.',
       text: 'Strings must be quoted with "',

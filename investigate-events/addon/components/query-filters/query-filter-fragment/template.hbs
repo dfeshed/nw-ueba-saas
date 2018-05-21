@@ -42,7 +42,7 @@
     {{/if}}
     {{#rsa-context-menu contextItems=contextItems}}
       {{#if complexFilter}}
-        <span title={{t 'queryBuilder.notEditable'}}>{{complexFilter}}</span>
+        <span title={{complexFilterTooltip}}>{{complexFilter}}</span>
       {{else}}
           {{filter}}
       {{/if}}
