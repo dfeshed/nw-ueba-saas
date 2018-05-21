@@ -21,15 +21,17 @@ public class JsonFieldSwitchCaseInterceptor extends AbstractPresidioJsonIntercep
     private Pattern patternCondition;
     private final String originField;
     private final String destinationField;
+    private String destinationDefaultValue;
     private final String[] cases;
     private final String[] casesValues;
 
     JsonFieldSwitchCaseInterceptor(String conditionField, Pattern patternCondition,String originField,
-                                   String destinationField, String[] cases, String[] casesValues) {
+                                   String destinationField, String destinationDefaultValue, String[] cases, String[] casesValues) {
         this.conditionField = conditionField;
         this.patternCondition = patternCondition;
         this.originField = originField;
         this.destinationField = destinationField;
+        this.destinationDefaultValue = destinationDefaultValue;
         this.cases = cases;
         this.casesValues = casesValues;
     }
@@ -65,7 +67,7 @@ public class JsonFieldSwitchCaseInterceptor extends AbstractPresidioJsonIntercep
 
     private void handleField(JsonObject eventBodyAsJson) {
         JsonElement jsonElement = eventBodyAsJson.get(originField);
-        String destinationValue = null;
+        String destinationValue = destinationDefaultValue;
         if(jsonElement != null && !jsonElement.isJsonNull()){
             String originFieldValue = jsonElement.getAsString();
             for(int i = 0; i < cases.length; i++){
@@ -96,16 +98,19 @@ public class JsonFieldSwitchCaseInterceptor extends AbstractPresidioJsonIntercep
         static final String REGEX_CONDITION_CONF_NAME = "regex_condition";
         static final String ORIGIN_FIELD_CONF_NAME = "origin_field";
         static final String DESTINATION_FIELD_CONF_NAME = "destination_field";
+        static final String DESTINATION_DEFALUT_VALUE_CONF_NAME = "destination_default_value";
         static final String CASES_CONF_NAME = "cases";
         static final String CASES_VALUES_CONF_NAME = "cases_values";
         static final String CASES_DELIM_CONF_NAME = "cases_delim";
 
         private static final String DEFAULT_DELIM_VALUE = ";";
+        private static final String DESTINATION_DEFALUT_VALUE = null;
 
         private String conditionField;
         private Pattern patternCondition;
         private String originField;
         private String destinationField;
+        private String destinationDefaultValue;
         private String[] cases;
         private String[] casesValues;
 
@@ -119,6 +124,7 @@ public class JsonFieldSwitchCaseInterceptor extends AbstractPresidioJsonIntercep
             }
             originField = context.getString(ORIGIN_FIELD_CONF_NAME);
             destinationField = context.getString(DESTINATION_FIELD_CONF_NAME);
+            destinationDefaultValue = context.getString(DESTINATION_DEFALUT_VALUE_CONF_NAME, DESTINATION_DEFALUT_VALUE);
             String casesDelimiter = context.getString(CASES_DELIM_CONF_NAME, DEFAULT_DELIM_VALUE);
 
             cases = getStringArrayFromConfiguration(context, CASES_CONF_NAME, casesDelimiter);
@@ -131,12 +137,13 @@ public class JsonFieldSwitchCaseInterceptor extends AbstractPresidioJsonIntercep
 
         @Override
         public AbstractPresidioJsonInterceptor doBuild() {
-            logger.info("Creating JsonFieldSwitchCaseInterceptor: {}={}, {}={}, {}={}, {}={}, {}={}, {}={}",
+            logger.info("Creating JsonFieldSwitchCaseInterceptor: {}={}, {}={}, {}={}, {}={}, {}={}, {}={}, {}={}",
                     CONDITION_FIELD_CONF_NAME, conditionField, REGEX_CONDITION_CONF_NAME, patternCondition,
                     ORIGIN_FIELD_CONF_NAME, originField, DESTINATION_FIELD_CONF_NAME, destinationField,
+                    DESTINATION_DEFALUT_VALUE_CONF_NAME, destinationDefaultValue,
                     CASES_CONF_NAME, cases, CASES_VALUES_CONF_NAME, casesValues);
             return new JsonFieldSwitchCaseInterceptor(conditionField, patternCondition, originField,
-                    destinationField, cases, casesValues);
+                    destinationField, destinationDefaultValue, cases, casesValues);
         }
 
     }
