@@ -6,7 +6,7 @@ After= network.target
 User=presidio
 Group=presidio
 Type=simple
-ExecStart=/usr/bin/java -jar /usr/sbin/presidio/ui/presidio-ui-app.jar
+ExecStart=/usr/bin/java -Dserver.port=8883 -jar /usr/sbin/presidio/ui/presidio-ui-app.jar
 KillMode=mixed
 KillSignal=SIGKILL
 Restart=on-failure
