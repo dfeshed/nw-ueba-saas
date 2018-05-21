@@ -75,6 +75,13 @@ public class JsonFieldSwitchCaseInterceptor extends AbstractPresidioJsonIntercep
                 String curCase = cases[i];
                 if(originFieldValue.contains(curCase)){
                     destinationValue = casesValues[i];
+                    if(destinationValue.startsWith("${") && destinationValue.endsWith("}")){
+                        JsonElement destJsonElem = eventBodyAsJson.get(destinationValue.substring(2,destinationValue.length() - 1));
+                        destinationValue = null;
+                        if(destJsonElem != null && !destJsonElem.isJsonNull()) {
+                            destinationValue = destJsonElem.getAsString();
+                        }
+                    }
                     break;
                 }
             }

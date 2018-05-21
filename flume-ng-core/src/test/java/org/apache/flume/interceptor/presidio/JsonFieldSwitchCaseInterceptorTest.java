@@ -41,6 +41,10 @@ public class JsonFieldSwitchCaseInterceptorTest {
     private static final String CASES_VALUES = String.join(";", FILE_CREATED, FILE_OPEN, FILE_MODIFIED, FILE_WRITE_DAC_PERMISSION_CHANGED, FILE_WRITE_OWNER_PERMISSION_CHANGED);
     private static final String EVENT_CODE_FIELD_NAME = "reference_id";
 
+    private static final String ALIAS_HOST_FIELD_NAME = "alias_host";
+    private static final String HOST_SRC_FIELD_NAME = "host_src";
+    private static final String SRC_MACHINE = "src_machine";
+
 
     @Before
     public void init() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
@@ -106,7 +110,7 @@ public class JsonFieldSwitchCaseInterceptorTest {
         Assert.assertTrue(String.format("The operation type field has not been added. event: %s", eventBody),
                 eventBody.contains(OPERATION_TYPE_FIELD_NAME));
         String operationTypeKeyValue = buildKeyValue(OPERATION_TYPE_FIELD_NAME, expectedOperationType);
-        Assert.assertTrue(String.format("The operation type field has been added incorrectly. key value: %s, event: %s", operationTypeKeyValue, eventBody),
+        Assert.assertTrue(String.format("The operation type field has been added incorrectly. expected key value: %s, event: %s", operationTypeKeyValue, eventBody),
                 eventBody.contains(operationTypeKeyValue));
     }
 
@@ -208,5 +212,92 @@ public class JsonFieldSwitchCaseInterceptorTest {
         Assert.assertTrue(String.format("The operation type should have been null since the accesses values input do not" +
                         " have resoving in the configuration. event: %s", eventBody),
                 eventBody.contains(operationTypeKeyValue));
+    }
+
+    private String wrapWithDollar(String fieldName){
+        return String.format("${%s}", fieldName);
+    }
+
+    private String dollarCaseValueTest(String eventCode, String aliasHostValue, String hostSrcValue){
+        Context ctx = new Context();
+        ctx.put(JsonFieldSwitchCaseInterceptor.Builder.ORIGIN_FIELD_CONF_NAME, EVENT_CODE_FIELD_NAME);
+        ctx.put(JsonFieldSwitchCaseInterceptor.Builder.DESTINATION_FIELD_CONF_NAME, SRC_MACHINE);
+        ctx.put(JsonFieldSwitchCaseInterceptor.Builder.CASES_CONF_NAME, String.join(CASES_DELIM, "4624", "4776", "4769"));
+        ctx.put(JsonFieldSwitchCaseInterceptor.Builder.CASES_DELIM_CONF_NAME, CASES_DELIM);
+        ctx.put(JsonFieldSwitchCaseInterceptor.Builder.CASES_VALUES_CONF_NAME,
+                String.join(";",wrapWithDollar(ALIAS_HOST_FIELD_NAME), wrapWithDollar(HOST_SRC_FIELD_NAME),wrapWithDollar(ALIAS_HOST_FIELD_NAME)));
+
+        builder.configure(ctx);
+
+        Interceptor interceptor = builder.build();
+        MockMonitorInitiator.setMockMonitor(interceptor);
+
+        ArrayList<String> fields = new ArrayList<>();
+        String eventCodeKeyValue = buildKeyValue(EVENT_CODE_FIELD_NAME, eventCode);
+        fields.add(eventCodeKeyValue);
+        String aliasHostKeyValue = buildKeyValue(ALIAS_HOST_FIELD_NAME, aliasHostValue);
+        fields.add(aliasHostKeyValue);
+        String hostSrcKeyValue = buildKeyValue(HOST_SRC_FIELD_NAME, hostSrcValue);
+        fields.add(hostSrcKeyValue);
+
+        Event event = buildEvent(fields);
+
+        event = interceptor.intercept(event);
+        Assert.assertNotNull(event);
+
+        String eventBody = new String(event.getBody());
+        Assert.assertTrue(String.format("The following key value has been removed or changed. key value: %s, event: %s",
+                eventCodeKeyValue, eventBody),eventBody.contains(eventCodeKeyValue));
+        Assert.assertTrue(String.format("The following key value has been removed or changed. key value: %s, event: %s",
+                aliasHostKeyValue, eventBody),eventBody.contains(aliasHostKeyValue));
+        Assert.assertTrue(String.format("The following key value has been removed or changed. key value: %s, event: %s",
+                hostSrcKeyValue, eventBody),eventBody.contains(hostSrcKeyValue));
+        Assert.assertTrue(String.format("The %s field has not been added. event: %s", SRC_MACHINE, eventBody),
+                eventBody.contains(SRC_MACHINE));
+
+        return eventBody;
+    }
+
+    @Test
+    public void dollarCaseValueTest1(){
+        String eventCode = "4444";
+        String aliasHostValue = "aliasHostMachine";
+        String hostSrcValue = "hostSrcValue";
+        String eventBody = dollarCaseValueTest(eventCode,aliasHostValue, hostSrcValue);
+
+        String srcMachineKeyValue = buildKeyNullValue(SRC_MACHINE);
+        Assert.assertTrue(String.format("The %s should have been null since %s" +
+                        " have no mapping in the configuration. event: %s", SRC_MACHINE, eventCode, eventBody),
+                eventBody.contains(srcMachineKeyValue));
+    }
+
+    @Test
+    public void dollarCaseValueTest2(){
+        String eventCode = "4624";
+        String aliasHostValue = "aliasHostMachine";
+        String hostSrcValue = "hostSrcValue";
+        String eventBody = dollarCaseValueTest(eventCode,aliasHostValue, hostSrcValue);
+
+        String srcMachineKeyValue = buildKeyValue(SRC_MACHINE, aliasHostValue);
+        Assert.assertTrue(String.format("The %s field has been added with the wrong value. expected key value: %s, event: %s", SRC_MACHINE, srcMachineKeyValue, eventBody),
+                eventBody.contains(srcMachineKeyValue));
+
+        eventCode = "4769";
+        eventBody = dollarCaseValueTest(eventCode,aliasHostValue, hostSrcValue);
+        Assert.assertTrue(String.format("The %s field has been added with the wrong value. expected key value: %s, event: %s", SRC_MACHINE, srcMachineKeyValue, eventBody),
+                eventBody.contains(srcMachineKeyValue));
+    }
+
+    @Test
+    public void dollarCaseValueTest3(){
+        String eventCode = "4776";
+        String aliasHostValue = "aliasHostMachine";
+        String hostSrcValue = "hostSrcValue";
+        String eventBody = dollarCaseValueTest(eventCode,aliasHostValue, hostSrcValue);
+
+
+        String srcMachineKeyValue = buildKeyValue(SRC_MACHINE, hostSrcValue);
+        Assert.assertTrue(String.format("The %s field has been added with the wrong value. expected key value: %s, event: %s", SRC_MACHINE, srcMachineKeyValue, eventBody),
+                eventBody.contains(srcMachineKeyValue));
     }
 }
