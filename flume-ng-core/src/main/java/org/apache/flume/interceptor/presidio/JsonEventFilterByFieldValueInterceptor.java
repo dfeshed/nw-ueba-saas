@@ -20,22 +20,44 @@ public class JsonEventFilterByFieldValueInterceptor extends AbstractPresidioJson
 
     private static final Logger logger = LoggerFactory.getLogger(JsonEventFilterByFieldValueInterceptor.class);
 
+    private String conditionField;
+    private Pattern patternCondition;
     private final List<String> fields;
     private final List<String> regexList;
     private final Operation operation;
     private final Boolean filterOut;
 
-    public JsonEventFilterByFieldValueInterceptor(List<String> fields, List<String> regexList, Operation operation, Boolean filterOut) {
+    public JsonEventFilterByFieldValueInterceptor(String conditionField, Pattern patternCondition, List<String> fields, List<String> regexList, Operation operation, Boolean filterOut) {
+        this.conditionField = conditionField;
+        this.patternCondition = patternCondition;
         this.fields = fields;
         this.regexList = regexList;
         this.operation = operation;
         this.filterOut = filterOut;
     }
 
+    private boolean testCondition(JsonObject eventBodyAsJson){
+        boolean conditionResult = true;
+        if(conditionField != null){
+            JsonElement jsonElement = eventBodyAsJson.get(conditionField);
+            if(jsonElement == null || jsonElement.isJsonNull()){
+                conditionResult = false;
+            } else{
+                String fieldValue = jsonElement.getAsString();
+                conditionResult = patternCondition.matcher(fieldValue).matches();
+            }
+        }
+        return conditionResult;
+    }
+
     @Override
     public Event doIntercept(Event event) {
         final String eventBodyAsString = new String(event.getBody());
         JsonObject eventBodyAsJson = new JsonParser().parse(eventBodyAsString).getAsJsonObject();
+
+        if(!testCondition(eventBodyAsJson)){
+            return event;
+        }
         String currField;
         String currFieldValue = null;
         String currRegex;
@@ -111,6 +133,8 @@ public class JsonEventFilterByFieldValueInterceptor extends AbstractPresidioJson
      */
     public static class Builder extends AbstractPresidioInterceptorBuilder {
 
+        static final String CONDITION_FIELD_CONF_NAME = "condition_field";
+        static final String REGEX_CONDITION_CONF_NAME = "regex_condition";
         static final String FIELDS_CONF_NAME = "fields";
         static final String REGEX_LIST_CONF_NAME = "regexList";
         static final String DELIMITER_CONF_NAME = "delimiter";
@@ -120,7 +144,8 @@ public class JsonEventFilterByFieldValueInterceptor extends AbstractPresidioJson
         static final String FILTER_OUT_CONF_NAME = "filter_out";
         static final boolean DEFAULT_FILTER_OUT_VALUE = true;
 
-
+        private String conditionField;
+        private Pattern patternCondition;
         private List<String> fields;
         private List<String> regexList;
         private Operation operation;
@@ -128,6 +153,11 @@ public class JsonEventFilterByFieldValueInterceptor extends AbstractPresidioJson
 
         @Override
         public void doConfigure(Context context) {
+            conditionField = context.getString(CONDITION_FIELD_CONF_NAME, null);
+            if(conditionField != null){
+                String regexCondition = context.getString(REGEX_CONDITION_CONF_NAME);
+                patternCondition = Pattern.compile(regexCondition);
+            }
             String fieldsArrayAsString = context.getString(FIELDS_CONF_NAME);
             Preconditions.checkArgument(StringUtils.isNotEmpty(fieldsArrayAsString), FIELDS_CONF_NAME + " can not be empty.");
 
@@ -165,7 +195,8 @@ public class JsonEventFilterByFieldValueInterceptor extends AbstractPresidioJson
 
         @Override
         public AbstractPresidioJsonInterceptor doBuild() {
-            final JsonEventFilterByFieldValueInterceptor jsonFilterByFieldValueInterceptor = new JsonEventFilterByFieldValueInterceptor(fields, regexList, operation, filterOut);
+            final JsonEventFilterByFieldValueInterceptor jsonFilterByFieldValueInterceptor =
+                    new JsonEventFilterByFieldValueInterceptor(conditionField, patternCondition, fields, regexList, operation, filterOut);
             logger.info("Creating JsonFilterByFieldValueInterceptor: {}", jsonFilterByFieldValueInterceptor);
             return jsonFilterByFieldValueInterceptor;
         }

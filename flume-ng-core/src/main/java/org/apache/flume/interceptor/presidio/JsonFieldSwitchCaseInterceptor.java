@@ -56,9 +56,6 @@ public class JsonFieldSwitchCaseInterceptor extends AbstractPresidioJsonIntercep
             if(jsonElement == null || jsonElement.isJsonNull()){
                 conditionResult = false;
             } else{
-                // When the json value contains double backslash ("//")
-                // using JsonObject.getAsString() will return a string with single backslash.
-                // This workaround will return the correct value.
                 String fieldValue = jsonElement.getAsString();
                 conditionResult = patternCondition.matcher(fieldValue).matches();
             }
