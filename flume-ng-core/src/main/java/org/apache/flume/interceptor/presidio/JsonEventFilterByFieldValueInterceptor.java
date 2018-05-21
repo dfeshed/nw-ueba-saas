@@ -35,33 +35,27 @@ public class JsonEventFilterByFieldValueInterceptor extends AbstractPresidioJson
         final String eventBodyAsString = new String(event.getBody());
         JsonObject eventBodyAsJson = new JsonParser().parse(eventBodyAsString).getAsJsonObject();
         String currField;
-        String currFieldValue;
+        String currFieldValue = null;
         String currRegex;
         Pattern pattern;
         Matcher matcher;
         for (int i = 0; i < fields.size(); i++) {
             currField = fields.get(i);
-            if (currField.startsWith("additionalInfo#")) {
-                final JsonObject additionalInfo = eventBodyAsJson.get("additionalInfo").getAsJsonObject();
-                currFieldValue = additionalInfo.get(currField.substring(15)).getAsString();
-                if (currFieldValue == null || currFieldValue.isEmpty()) {
-                    currFieldValue = "";
-                }
+
+            final JsonElement jsonElement = eventBodyAsJson.get(currField);
+            currRegex = regexList.get(i);
+            boolean isMatched;
+            if (jsonElement != null && !jsonElement.isJsonNull()) {
+                currFieldValue = jsonElement.getAsString();
+                pattern = Pattern.compile(currRegex);
+                matcher = pattern.matcher(currFieldValue);
+                isMatched = matcher.matches();
             } else {
-
-                final JsonElement jsonElement = eventBodyAsJson.get(currField);
-                if (jsonElement != null && !jsonElement.isJsonNull()) {
-                    currFieldValue = jsonElement.getAsString();
-                } else {
-                    currFieldValue = "";
-
-                }
+                isMatched = false;
             }
 
-            currRegex = regexList.get(i);
-            pattern = Pattern.compile(currRegex);
-            matcher = pattern.matcher(currFieldValue);
-            if (matcher.matches()) {
+
+            if (isMatched) {
                 if (operation == Operation.OR) {
                     logger.trace("Filtering event {} because it matched the following filter: field: {}, fieldValue: {}, regex: {}.", eventBodyAsJson, currField, currFieldValue, currRegex);
                     String failureReason = String.format("Filtering event because field %s matched regular expression. The values was %s",currField,currFieldValue);
