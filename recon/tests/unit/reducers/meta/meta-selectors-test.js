@@ -7,7 +7,9 @@ import {
   isEndpointEvent,
   nweCallbackId,
   eventType,
-  eventTypeFromMetaArray
+  eventTypeFromMetaArray,
+  processAnalysisQueryString,
+  isProcessAnalysisDisabled
 } from 'recon/reducers/meta/selectors';
 
 module('Unit | selector | meta');
@@ -214,4 +216,50 @@ test('eventTypeFromMetaArray', function(assert) {
   assert.equal(tests.metaNoMedium.name, 'NETWORK', 'eventType should return network when meta but no medium');
   assert.equal(tests.emptyMeta.name, 'NETWORK', 'eventType should return network when empty meta');
   assert.equal(tests.noMeta.name, 'NETWORK', 'eventType should return network when no meta');
+});
+
+
+test('processAnalysisQueryString  test', function(assert) {
+
+  const data = {
+    investigate: {
+      queryNode: {
+        serviceId: '123456'
+      }
+    },
+    recon: {
+      data: {
+        queryInputs: {
+          startTime: 10,
+          endTime: 12
+        }
+      },
+      meta: {
+        meta: [
+          ['OS', 'windows'],
+          ['checksum.src', 'test-checksum'],
+          ['agent.id', 'abcd'],
+          ['filename.src', 'testfile'],
+          ['vid.src', 1]
+        ]
+      }
+    }
+  };
+  const result = processAnalysisQueryString(Immutable.from(data));
+  assert.equal(result, 'checksum=test-checksum&sid=123456&aid=abcd&pn=testfile&st=10&et=12&osType=windows&vid=1', 'should return valid queryString');
+});
+
+test('isProcessAnalysisDisabled test', function(assert) {
+
+  const data = {
+    recon: {
+      meta: {
+        meta: [
+          ['vid.src', 1]
+        ]
+      }
+    }
+  };
+  const result = isProcessAnalysisDisabled(Immutable.from(data));
+  assert.equal(result, false, 'should return valid boolean value for isProcessAnalysisDesabled');
 });

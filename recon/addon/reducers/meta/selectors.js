@@ -1,6 +1,8 @@
 import { createSelector } from 'reselect';
 
 import { RECON_VIEW_TYPES_BY_NAME } from 'recon/utils/reconstruction-types';
+import { getMetaValue } from '../util';
+
 
 /*
  * An array to store possible event types, currently just logs and network
@@ -35,6 +37,15 @@ const _metaDirect = (meta) => meta;
 const _meta = (state) => {
   return state.meta.asMutable().meta || [];
 };
+
+// Takes meta from state
+const _eventMeta = (state) => state.recon.meta.meta || [];
+
+// Takes queryInputs from state
+const _queryInputs = (state) => state.recon.data.queryInputs || {};
+
+// Takes queryNode from state
+const _queryNode = (state) => state.investigate ? state.investigate.queryNode : {};
 
 const _determineEventType = (meta) => {
   if (!meta || meta.length === 0) {
@@ -95,4 +106,33 @@ export const isLogEvent = createSelector(
   eventType,
   isEndpointEvent,
   (eventType, isEndpointEvent) => eventType.name === EVENT_TYPES_BY_NAME.LOG.name && !isEndpointEvent
+);
+
+export const processAnalysisQueryString = createSelector(
+  _eventMeta,
+  _queryInputs,
+  _queryNode,
+  (eventMeta, queryInputs, queryNode) => {
+    const timeStr = `st=${queryInputs.startTime}&et=${queryInputs.endTime}`;
+    const osType = getMetaValue('OS', eventMeta);
+    const agentId = getMetaValue('agent.id', eventMeta);
+    const checksumSha256 = getMetaValue('checksum.src', eventMeta);
+    const vpid = getMetaValue('vid.src', eventMeta);
+    const fileName = getMetaValue('filename.src', eventMeta);
+    const { serviceId } = queryNode;
+    const osTypeParam = `osType=${osType}&vid=${vpid}`;
+
+    const queryParams = `checksum=${checksumSha256}&sid=${serviceId}&aid=${agentId}&pn=${fileName}&${timeStr}&${osTypeParam}`;
+    return queryParams;
+  }
+);
+
+export const isProcessAnalysisDisabled = createSelector(
+  _eventMeta,
+  (eventMeta) => {
+    if (getMetaValue('vid.src', eventMeta)) {
+      return false;
+    }
+    return true;
+  }
 );

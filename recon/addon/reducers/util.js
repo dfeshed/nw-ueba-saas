@@ -42,3 +42,23 @@ export const handlePreference = (obj, key, state) => {
 
   return value;
 };
+
+/**
+ * To get the selected key value from event array
+ * @param {*} event
+ * @returns {*} event
+ * @public
+ */
+export const getMetaValue = (key, event) => {
+  if (event) {
+    const len = (event.length) || 0;
+    let i;
+    for (i = 0; i < len; i++) {
+      const meta = event[i];
+      if (meta[0] === key) {
+        return meta[1];
+      }
+    }
+  }
+  return null;
+};
