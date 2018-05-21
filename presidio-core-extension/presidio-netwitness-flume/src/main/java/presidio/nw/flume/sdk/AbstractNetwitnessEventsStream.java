@@ -12,12 +12,10 @@ import java.util.Map;
 
 public abstract class AbstractNetwitnessEventsStream implements EventsStream {
 
-
     private static Logger logger = LoggerFactory.getLogger(AbstractNetwitnessEventsStream.class);
 
     private CloseableIterator<Map<String, Object>> eventsIterator;
     private Schema schema;
-
 
     public abstract CloseableIterator<Map<String, Object>> iterator(Schema schema, Instant startDate, Instant endDate, Map<String, String> config);
 
@@ -32,9 +30,12 @@ public abstract class AbstractNetwitnessEventsStream implements EventsStream {
     }
 
     public AbstractDocument next(){
+        AbstractDocument document = null;
         Map<String, Object> event = eventsIterator.next();
-        AbstractDocument document = NetwitnessDocumentBuilder.getInstance().buildDocument(schema, event);
-        logger.debug("NW document: " + document);
+        if (event != null) {
+            document = NetwitnessDocumentBuilder.getInstance().buildDocument(schema, event);
+            logger.debug("NW document: " + document);
+        }
         return document;
     }
 
