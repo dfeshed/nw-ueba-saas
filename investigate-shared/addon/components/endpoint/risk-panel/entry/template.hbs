@@ -1,14 +1,14 @@
 <vbox class='risk-properties-panel__entry'>
   {{#each-in entry as |key value|}}
-    <hbox class='risk-properties-panel__entry__field'>
-      {{#unless (eq key 'name')}}
+    {{#unless (eq key 'name')}}
+      <hbox class='risk-properties-panel__entry__field'>
         <span class='label'>{{t (get-label 'investigateHosts.context' key)}}:</span>
         {{#if (or (eq key 'timestamp')(eq key 'created'))}}
           <span>{{parse-timestamp value timezone dateFormat timeFormat i18n.locale}}</span>
         {{else}}
           <span>{{value}}</span>
         {{/if}}
-      {{/unless}}
-    </hbox>
+      </hbox>
+    {{/unless}}
   {{/each-in}}
 </vbox>

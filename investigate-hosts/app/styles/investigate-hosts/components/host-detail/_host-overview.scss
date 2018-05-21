@@ -31,6 +31,7 @@
       color: text-color(secondary, light);
     }
     .rsa-nav-tab.is-left-aligned-primary {
+      cursor: pointer;
       margin: 0 rsa-whitespace() 0;
       padding: rsa-whitespace(less) 0;
       border-bottom-width: 3px;

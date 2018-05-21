@@ -5,8 +5,13 @@ import {
   selectedAutorunTab,
   getAutorunTabs,
   getHostDetailTabs,
+  hasMachineId,
   getHostPropertyTab,
   getDataSourceTab,
+  getRiskPanelActiveTab,
+  getAlertsCount,
+  getIncidentsCount,
+  getContext,
   selectedTabComponent } from 'investigate-hosts/reducers/visuals/selectors';
 
 module('Unit | selectors | visuals');
@@ -59,6 +64,42 @@ test('getHostPropertyTab', function(assert) {
   assert.equal(result.selected, true, 'HOST Tab should be selected');
 });
 
+test('hasMachineId returns true', function(assert) {
+  const state = Immutable.from({
+    endpoint: { detailsInput: { agentId: 'abc' } }
+  });
+  assert.equal(hasMachineId(state), true, 'Has machine Id');
+});
+
+test('hasMachineId returns false', function(assert) {
+  const state = Immutable.from({
+    endpoint: { detailsInput: { agentId: '' } }
+  });
+  assert.equal(hasMachineId(state), false, 'Does not Have machine Id');
+});
+
+test('getRiskPanelActiveTab - Host Property Tab is active', function(assert) {
+  const state = Immutable.from({
+    endpoint: {
+      detailsInput: { agentId: 'abc' },
+      visuals: { activeHostPropertyTab: 'HOST', activeDataSourceTab: 'ALERT' }
+    }
+  });
+  const result = getRiskPanelActiveTab(state);
+  assert.equal(result, 'HOST', 'Host property tab is active');
+});
+
+test('getRiskPanelActiveTab - Datasource Property Tab is active', function(assert) {
+  const state = Immutable.from({
+    endpoint: {
+      detailsInput: { agentId: '' },
+      visuals: { activeHostPropertyTab: 'HOST', activeDataSourceTab: 'ALERT' }
+    }
+  });
+  const result = getRiskPanelActiveTab(state);
+  assert.equal(result, 'ALERT', 'Datasource property tab is active');
+});
+
 test('getDataSourceTab', function(assert) {
   const state = Immutable.from({
     endpoint: {
@@ -81,6 +122,56 @@ test('getSelectedDetailTab', function(assert) {
   });
   const result = getHostDetailTabs(state).findBy('name', 'FILES');
   assert.equal(result.selected, true, 'FILES Tab should be selected');
+});
+
+test('getContext returns incidents', function(assert) {
+  // If agentId is present, activeHostPropertyTab will be used
+  const state = Immutable.from({
+    endpoint: {
+      detailsInput: { agentId: 'abc' },
+      visuals: {
+        lookupData: [{
+          Incidents: {
+            resultList: [{ _id: 'INC-18409', name: 'RespondAlertsESA for user199' }]
+          }
+        }],
+        activeHostPropertyTab: 'INCIDENT',
+        activeDataSourceTab: 'ALERT'
+      }
+    }
+  });
+  const result = getContext(state);
+  assert.equal(result.length, 1, '1 incidents are fetched');
+  assert.equal(getIncidentsCount(state), 1, 'Incident count is correct');
+});
+
+test('getContext returns alerts', function(assert) {
+  const state = Immutable.from({
+    endpoint: {
+      detailsInput: { agentId: '' },
+      visuals: {
+        lookupData: [
+          {
+            Alerts: {
+              resultList: [{
+                alert: { source: 'Event Stream Analysis 1' },
+                incidentId: 'INC-18409'
+              },
+              {
+                alert: { source: 'Event Stream Analysis 2' },
+                incidentId: 'INC-18410'
+              }]
+            }
+          }
+        ],
+        activeHostPropertyTab: 'INCIDENT',
+        activeDataSourceTab: 'ALERT'
+      }
+    }
+  });
+  const result = getContext(state);
+  assert.equal(result.length, 2, '2 Alerts fetched');
+  assert.equal(getAlertsCount(state), 2, 'Alerts count is correct');
 });
 
 test('selectedTabComponent', function(assert) {
