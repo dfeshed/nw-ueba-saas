@@ -20,7 +20,7 @@ const _meta = (recon) => recon.meta.meta;
  * @return {object[]} An Array of Arrays that contain the event meta
  * @private
  */
-const _getEventMetaByKey = (eventMeta, key) => eventMeta.filter((meta) => meta[0] === key);
+const _getEventMetaByKey = (eventMeta, key) => eventMeta && eventMeta.filter((meta) => meta[0] === key);
 
 const _isString = (s) => Object.prototype.toString.call(s) === '[object String]';
 
@@ -122,7 +122,7 @@ export const metaHighlightCount = createSelector(
       const metaKeys = getMetaKeysByEventType(eventTypeName);
       const fullText = renderedText.map((p) => p.text).join(' ');
       metaKeys.forEach((metaKey) => {
-        const metas = _getEventMetaByKey(eventMeta, metaKey);
+        const metas = _getEventMetaByKey(eventMeta, metaKey) || [];
         for (let i = 0; i < metas.length; i++) {
           const meta = metas[i];
           if (meta && meta.length === 2) {

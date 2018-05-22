@@ -20,6 +20,8 @@ export default GroupHeader.extend({
   layout,
   classNames: ['rsa-alerts-table-alert-header'],
   classNameBindings: ['isFirst', 'isLast', 'isSelected'],
+  testId: 'alertsTableHeader',
+  attributeBindings: ['testId:test-id'],
 
   // True if this group is the first group in the entire table's `groups` array.
   @equal('index', 0)

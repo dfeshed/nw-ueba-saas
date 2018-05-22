@@ -74,7 +74,8 @@ module('Integration | Component | rsa alerts table recon link', function(hooks) 
       name: 'incident.recon',
       queryParams: {
         endpointId: '555d9a6fe4b0d37c827d402d',
-        eventId: '150'
+        eventId: '150',
+        selection: '586ecf95ecd25950034e1312:0'
       }
     }]);
 

@@ -4,6 +4,8 @@ import computed, { equal } from 'ember-computed-decorators';
 export default Group.extend({
   classNames: ['rsa-alerts-table-alert'],
   classNameBindings: ['isFirst', 'isLast'],
+  testId: 'alertsTableSection',
+  attributeBindings: ['testId:test-id'],
 
   // True if this group is the first group in the entire table's `groups` array.
   @equal('index', 0)

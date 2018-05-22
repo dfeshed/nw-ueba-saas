@@ -13,9 +13,10 @@ import $ from 'jquery';
  */
 export default Component.extend(HasSizeAttr, Clickable, {
   layout,
+  testId: 'groupTableItem',
   classNames: ['rsa-group-table-group-item'],
   classNameBindings: ['isSelected'],
-  attributeBindings: ['style'],
+  attributeBindings: ['testId:test-id', 'style'],
 
   /**
    * Configurable name of the Ember.Component class to be used for rendering cells. This can be overwritten

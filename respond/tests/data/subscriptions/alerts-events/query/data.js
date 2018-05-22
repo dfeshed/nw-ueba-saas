@@ -34,13 +34,13 @@ export default [].concat(
       'score': 257,
       'detected_by': 'INENDEBS1L2C',
       'description': 'MachineIOC',
-      'event_source': null,
+      'event_source': '10.4.61.28:56003',
       'source': {
         'user': {
           'username': 'example\\alice'
         }
       },
-      'type': 'Instant IOC',
+      'type': 'Another IOC',
       'detector': {
         'dns_hostname': 'INENDEBS1L2C',
         'os': 'Windows 7',
@@ -52,7 +52,7 @@ export default [].concat(
         'ldap_ou': 'CN=MACHINENAME,OU=Servers,DC=corp,DC=example,DC=com'
       },
       'user': 'example\\alice',
-      'event_source_id': '151',
+      'event_source_id': '154',
       'timestamp': 1399530494000
     }
   ], [

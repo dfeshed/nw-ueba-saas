@@ -2,6 +2,7 @@ import reselect from 'reselect';
 import arrayFlattenBy from 'respond/utils/array/flatten-by';
 import arrayFilterByList from 'respond/utils/array/filter-by-list';
 import StoryPoint from 'respond/utils/storypoint/storypoint';
+import { set, setProperties } from '@ember/object';
 const { createSelector } = reselect;
 
 const incidentState = (state) => state.respond.incident;
@@ -15,6 +16,17 @@ const storylineState = (state) => state.respond.storyline;
 export const incidentInfo = createSelector(
   incidentState,
   (incidentState) => incidentState.info || {}
+);
+
+export const storyPointEventSelections = createSelector(
+  incidentState,
+  (incidentState) => {
+    const { selection: { type, ids } } = incidentState;
+    return {
+      areGroups: type === 'storyPoint',
+      ids: (type === 'storyPoint' || type === 'event') ? ids : []
+    };
+  }
 );
 
 export const getStoryline = createSelector(
@@ -79,15 +91,15 @@ export const storyPoints = createSelector(
  * @private
  */
 export const storyPointsWithEvents = createSelector(
-  [ storyPoints, storylineEvents ],
-  (storyPoints, storylineEvents) => {
+  [ storyPoints, storylineEvents, storyPointEventSelections ],
+  (storyPoints, storylineEvents, selections) => {
     (storyPoints || []).forEach((storyPoint) => {
 
       // If the storyPoint doesn't have events yet, fetch them from storylineEvents state.
       if (!storyPoint.get('events')) {
         const payload = (storylineEvents || []).findBy('indicatorId', storyPoint.get('indicator.id'));
         if (payload) {
-          storyPoint.set('events', payload.events);
+          set(storyPoint, 'events', payload.events);
         }
       }
 
@@ -95,9 +107,21 @@ export const storyPointsWithEvents = createSelector(
       // For example, if the events have no enrichments and the child items are supposed to display enrichments,
       // then there are no child items to display, so we should mark it closed. Otherwise, if we leave it opened,
       // the UI will render it as open but not render any child items, which would be an awkward state.
-      if (storyPoint.get('events')) {
+      const storyPointEvents = storyPoint.get('events');
+      if (storyPointEvents) {
         if (!storyPoint.get('items.length')) {
-          storyPoint.set('isOpen', false);
+          set(storyPoint, 'isOpen', false);
+        }
+
+        const selectedIncident = selections && selections.ids && storyPointEvents && storyPointEvents.filter((e) => {
+          return e && e.id && selections.ids.includes(e.id);
+        })[0];
+
+        if (selectedIncident) {
+          setProperties(storyPoint, {
+            showEnrichmentsAsItems: false,
+            isOpen: true
+          });
         }
       }
     });
@@ -115,17 +139,6 @@ export const storyPointsWithEventsSorted = createSelector(
   storyPointsWithEvents,
   (storyPointsWithEvents) => {
     return storyPointsWithEvents.sortBy('indicator.timestamp');
-  }
-);
-
-export const storyPointEventSelections = createSelector(
-  incidentState,
-  (incidentState) => {
-    const { selection: { type, ids } } = incidentState;
-    return {
-      areGroups: type === 'storyPoint',
-      ids: (type === 'storyPoint' || type === 'event') ? ids : []
-    };
   }
 );
 
