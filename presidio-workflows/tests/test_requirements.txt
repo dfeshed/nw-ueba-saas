@@ -7,7 +7,7 @@ mock
 sqlalchemy==1.1.18
 psycopg2
 nose
-apache-airflow[devel]==1.9.0
+apache-airflow[devel]==1.8.2
 python-dateutil
 lxml<4.0,>=3.6.0
 ../presidio-workflows-extension/.tox/dist/presidio-workflows-extension-1.0.zip
