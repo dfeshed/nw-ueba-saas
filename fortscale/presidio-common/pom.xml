@@ -6,8 +6,9 @@
     <parent>
         <groupId>fortscale</groupId>
         <artifactId>fortscale</artifactId>
-        <version>1.0-11</version>
+        <version>2.0.0-SNAPSHOT</version>
     </parent>
+    <version>2.0.0-SNAPSHOT</version>
     <artifactId>presidio-common</artifactId>
 
     <properties>
@@ -30,7 +31,7 @@
         <dependency>
             <groupId>fortscale</groupId>
             <artifactId>presidio-utils</artifactId>
-            <version>1.0-11</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>io.swagger</groupId>
