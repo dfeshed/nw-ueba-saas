@@ -29,15 +29,34 @@ public class JsonSearchAndReplaceInterceptor extends AbstractPresidioJsonInterce
     private static final Logger logger = LoggerFactory
             .getLogger(JsonSearchAndReplaceInterceptor.class);
 
+    private String conditionField;
+    private Pattern patternCondition;
     private final List<String> fields;
     private final List<String> searchPatterns;
     private final List<String> replaceStrings;
 
 
-    public JsonSearchAndReplaceInterceptor(List<String> fields, List<String> searchPatterns, List<String> replaceStrings) {
+    public JsonSearchAndReplaceInterceptor(String conditionField, Pattern patternCondition,
+                                           List<String> fields, List<String> searchPatterns, List<String> replaceStrings) {
+        this.conditionField = conditionField;
+        this.patternCondition = patternCondition;
         this.fields = fields;
         this.searchPatterns = searchPatterns;
         this.replaceStrings = replaceStrings;
+    }
+
+    private boolean testCondition(JsonObject eventBodyAsJson){
+        boolean conditionResult = true;
+        if(conditionField != null){
+            JsonElement jsonElement = eventBodyAsJson.get(conditionField);
+            if(jsonElement == null || jsonElement.isJsonNull()){
+                conditionResult = false;
+            } else{
+                String fieldValue = jsonElement.getAsString();
+                conditionResult = patternCondition.matcher(fieldValue).matches();
+            }
+        }
+        return conditionResult;
     }
 
     @Override
@@ -47,6 +66,10 @@ public class JsonSearchAndReplaceInterceptor extends AbstractPresidioJsonInterce
         JsonObject eventBodyAsJson;
         eventBodyAsJson = new JsonParser().parse(eventBodyAsString).getAsJsonObject();
 
+        boolean conditionResult = testCondition(eventBodyAsJson);
+        if(!conditionResult) {
+            return event;
+        }
 
         JsonElement originalValue;
         for (int i = 0; i < fields.size(); i++) {
@@ -85,10 +108,14 @@ public class JsonSearchAndReplaceInterceptor extends AbstractPresidioJsonInterce
      */
     public static class Builder extends AbstractPresidioInterceptorBuilder {
 
+        private String conditionField;
+        private Pattern patternCondition;
         private List<String> fields;
         private List<String> searchPatterns;
         private List<String> replaceStrings;
 
+        static final String CONDITION_FIELD_CONF_NAME = "condition_field";
+        static final String REGEX_CONDITION_CONF_NAME = "regex_condition";
         public static final String DELIMITER_CONF_NAME = "delimiter";
         public static final String DEFAULT_DELIMITER_VALUE = ",";
         public static final String FIELDS_CONF_NAME = "fields";
@@ -98,6 +125,11 @@ public class JsonSearchAndReplaceInterceptor extends AbstractPresidioJsonInterce
 
         @Override
         public void doConfigure(Context context) {
+            conditionField = context.getString(CONDITION_FIELD_CONF_NAME, null);
+            if(conditionField != null){
+                String regexCondition = context.getString(REGEX_CONDITION_CONF_NAME);
+                patternCondition = Pattern.compile(regexCondition);
+            }
             String delimiter = context.getString(DELIMITER_CONF_NAME, DEFAULT_DELIMITER_VALUE);
             final String[] fields = getStringArrayFromConfiguration(context, FIELDS_CONF_NAME, delimiter);
             final String[] searchPatterns = getStringArrayFromConfiguration(context, SEARCH_PATTERNS_CONF_NAME, delimiter);
@@ -139,7 +171,7 @@ public class JsonSearchAndReplaceInterceptor extends AbstractPresidioJsonInterce
 
         @Override
         public AbstractPresidioJsonInterceptor doBuild() {
-            final JsonSearchAndReplaceInterceptor jsonSearchAndReplaceInterceptor = new JsonSearchAndReplaceInterceptor(fields, searchPatterns, replaceStrings);
+            final JsonSearchAndReplaceInterceptor jsonSearchAndReplaceInterceptor = new JsonSearchAndReplaceInterceptor(conditionField, patternCondition, fields, searchPatterns, replaceStrings);
             logger.info("Creating JsonSearchAndReplaceInterceptor: {}", jsonSearchAndReplaceInterceptor);
             return jsonSearchAndReplaceInterceptor;
         }

@@ -79,37 +79,12 @@ public class JsonFieldSwitchCaseInterceptorTest {
         return builder.build();
     }
 
-    private Event buildEvent(List<String> fields){
-        StringBuilder eventBuilder = new StringBuilder();
-        eventBuilder.append("{");
-        boolean isFirst = true;
-        for(String field: fields){
-            if(!isFirst){
-                eventBuilder.append(",");
-            } else {
-                isFirst = false;
-            }
-            eventBuilder.append(field);
-        }
-        eventBuilder.append("}");
-
-        return EventBuilder.withBody(eventBuilder.toString(), Charsets.UTF_8);
-    }
-
-    private String buildKeyValue(String key, String value){
-        return String.format("\"%s\":\"%s\"", key, value);
-    }
-
-    private String buildKeyNullValue(String key){
-        return String.format("\"%s\":null", key);
-    }
-
     private void interceptEventAndTestOperationType(boolean includeEventCodeConf, String eventCode, String accessesValue, String expectedOperationType){
         String eventBody = interceptEvent(includeEventCodeConf,eventCode, accessesValue);
 
         Assert.assertTrue(String.format("The operation type field has not been added. event: %s", eventBody),
                 eventBody.contains(OPERATION_TYPE_FIELD_NAME));
-        String operationTypeKeyValue = buildKeyValue(OPERATION_TYPE_FIELD_NAME, expectedOperationType);
+        String operationTypeKeyValue = JsonInterceptorUtil.buildKeyValue(OPERATION_TYPE_FIELD_NAME, expectedOperationType);
         Assert.assertTrue(String.format("The operation type field has been added incorrectly. expected key value: %s, event: %s", operationTypeKeyValue, eventBody),
                 eventBody.contains(operationTypeKeyValue));
     }
@@ -118,15 +93,15 @@ public class JsonFieldSwitchCaseInterceptorTest {
         Interceptor interceptor = initInteceptorWithAccessesContext(includeEventCodeConf);
         MockMonitorInitiator.setMockMonitor(interceptor);
         ArrayList<String> fields = new ArrayList<>();
-        String accessesKeyValue = buildKeyValue(ACCESSES_FIELD_NAME, accessesValue);
+        String accessesKeyValue = JsonInterceptorUtil.buildKeyValue(ACCESSES_FIELD_NAME, accessesValue);
         fields.add(accessesKeyValue);
         String eventCodeKeyValue = null;
         if(eventCode!=null) {
-            eventCodeKeyValue = buildKeyValue(EVENT_CODE_FIELD_NAME, eventCode);
+            eventCodeKeyValue = JsonInterceptorUtil.buildKeyValue(EVENT_CODE_FIELD_NAME, eventCode);
             fields.add(eventCodeKeyValue);
         }
 
-        Event event = buildEvent(fields);
+        Event event = JsonInterceptorUtil.buildEvent(fields);
 
         event = interceptor.intercept(event);
         Assert.assertNotNull(event);
@@ -208,7 +183,7 @@ public class JsonFieldSwitchCaseInterceptorTest {
 
         Assert.assertTrue(String.format("The operation type field has not been added. event: %s", eventBody),
                 eventBody.contains(OPERATION_TYPE_FIELD_NAME));
-        String operationTypeKeyValue = buildKeyNullValue(OPERATION_TYPE_FIELD_NAME);
+        String operationTypeKeyValue = JsonInterceptorUtil.buildKeyNullValue(OPERATION_TYPE_FIELD_NAME);
         Assert.assertTrue(String.format("The operation type should have been null since the accesses values input do not" +
                         " have resoving in the configuration. event: %s", eventBody),
                 eventBody.contains(operationTypeKeyValue));
@@ -233,14 +208,14 @@ public class JsonFieldSwitchCaseInterceptorTest {
         MockMonitorInitiator.setMockMonitor(interceptor);
 
         ArrayList<String> fields = new ArrayList<>();
-        String eventCodeKeyValue = buildKeyValue(EVENT_CODE_FIELD_NAME, eventCode);
+        String eventCodeKeyValue = JsonInterceptorUtil.buildKeyValue(EVENT_CODE_FIELD_NAME, eventCode);
         fields.add(eventCodeKeyValue);
-        String aliasHostKeyValue = buildKeyValue(ALIAS_HOST_FIELD_NAME, aliasHostValue);
+        String aliasHostKeyValue = JsonInterceptorUtil.buildKeyValue(ALIAS_HOST_FIELD_NAME, aliasHostValue);
         fields.add(aliasHostKeyValue);
-        String hostSrcKeyValue = buildKeyValue(HOST_SRC_FIELD_NAME, hostSrcValue);
+        String hostSrcKeyValue = JsonInterceptorUtil.buildKeyValue(HOST_SRC_FIELD_NAME, hostSrcValue);
         fields.add(hostSrcKeyValue);
 
-        Event event = buildEvent(fields);
+        Event event = JsonInterceptorUtil.buildEvent(fields);
 
         event = interceptor.intercept(event);
         Assert.assertNotNull(event);
@@ -265,7 +240,7 @@ public class JsonFieldSwitchCaseInterceptorTest {
         String hostSrcValue = "hostSrcValue";
         String eventBody = dollarCaseValueTest(eventCode,aliasHostValue, hostSrcValue);
 
-        String srcMachineKeyValue = buildKeyNullValue(SRC_MACHINE);
+        String srcMachineKeyValue = JsonInterceptorUtil.buildKeyNullValue(SRC_MACHINE);
         Assert.assertTrue(String.format("The %s should have been null since %s" +
                         " have no mapping in the configuration. event: %s", SRC_MACHINE, eventCode, eventBody),
                 eventBody.contains(srcMachineKeyValue));
@@ -278,7 +253,7 @@ public class JsonFieldSwitchCaseInterceptorTest {
         String hostSrcValue = "hostSrcValue";
         String eventBody = dollarCaseValueTest(eventCode,aliasHostValue, hostSrcValue);
 
-        String srcMachineKeyValue = buildKeyValue(SRC_MACHINE, aliasHostValue);
+        String srcMachineKeyValue = JsonInterceptorUtil.buildKeyValue(SRC_MACHINE, aliasHostValue);
         Assert.assertTrue(String.format("The %s field has been added with the wrong value. expected key value: %s, event: %s", SRC_MACHINE, srcMachineKeyValue, eventBody),
                 eventBody.contains(srcMachineKeyValue));
 
@@ -296,7 +271,7 @@ public class JsonFieldSwitchCaseInterceptorTest {
         String eventBody = dollarCaseValueTest(eventCode,aliasHostValue, hostSrcValue);
 
 
-        String srcMachineKeyValue = buildKeyValue(SRC_MACHINE, hostSrcValue);
+        String srcMachineKeyValue = JsonInterceptorUtil.buildKeyValue(SRC_MACHINE, hostSrcValue);
         Assert.assertTrue(String.format("The %s field has been added with the wrong value. expected key value: %s, event: %s", SRC_MACHINE, srcMachineKeyValue, eventBody),
                 eventBody.contains(srcMachineKeyValue));
     }
