@@ -45,6 +45,13 @@
         </snapshotRepository>
     </distributionManagement>
 
+    <pluginRepositories>
+        <pluginRepository>
+            <id>asoc-build-repo</id>
+            <url>http://repo1.rsa.lab.emc.com:8081/artifactory/asoc-build-repo</url>
+        </pluginRepository>
+    </pluginRepositories>
+
     <profiles>
         <profile>
             <id>rpm</id>
@@ -53,21 +60,19 @@
             </modules>
         </profile>
     </profiles>
-
     <repositories>
+        <!-- ASOC Tier-2 repository -->
         <repository>
             <id>asoc-releases</id>
-            <name>repo1.rsa.lab.emc.com-releases</name>
-            <url>https://repo1.rsa.lab.emc.com:8443/artifactory/presidio-test-utils</url>
+            <url>https://repo1.rsa.lab.emc.com:8443/artifactory/asoc-releases</url>
         </repository>
         <repository>
             <id>asoc-snapshots</id>
-            <name>repo1.rsa.lab.emc.com-snapshots</name>
-            <url>https://repo1.rsa.lab.emc.com:8443/artifactory/presidio-test-utils</url>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-            </snapshots>
+            <url>https://repo1.rsa.lab.emc.com:8443/artifactory/asoc-snapshots</url>
+        </repository>
+        <repository>
+            <id>spring-release</id>
+            <url>https://repo1.rsa.lab.emc.com:8443/artifactory/spring-release</url>
         </repository>
     </repositories>
 

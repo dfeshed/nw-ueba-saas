@@ -13,7 +13,7 @@
     <name>presidio-netwitness-monitoring</name>
 
     <properties>
-        <maven-resources-plugin.version>2.6</maven-resources-plugin.version>
+        <maven-resources-plugin.version>2.6.1</maven-resources-plugin.version>
     </properties>
 
     <build>
@@ -26,7 +26,7 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
-            <plugin>
+            <!--plugin>
                 <artifactId>maven-clean-plugin</artifactId>
                 <configuration>
                     <filesets>
@@ -40,7 +40,7 @@
                         </fileset>
                     </filesets>
                 </configuration>
-            </plugin>
+            </plugin-->
             <!-- Copy resource folder -->
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -69,16 +69,6 @@
             </plugin>
         </plugins>
     </build>
-
-    <repositories>
-        <repository>
-            <id>snapshots</id>
-            <url>http://mirror.fortscale.dom/artifactory/presidio-snapshot-local</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </repository>
-    </repositories>
 
     <dependencies>
 
