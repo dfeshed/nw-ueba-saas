@@ -16,10 +16,35 @@ const defaultConfig = [
         field: 'format'
       }
     ]
+  },
+  {
+    sectionName: 'Process',
+    fields: [
+      {
+        field: 'process.createUtcTime',
+        format: 'DATE'
+      },
+      {
+        field: 'process.eprocess',
+        format: 'HEX'
+      },
+      {
+        field: 'process.integrityLevel'
+      },
+      {
+        field: 'process.parentPath'
+      },
+      {
+        field: 'process.threadCount'
+      },
+      {
+        field: 'process.sessionId'
+      }
+    ]
   }
 ];
 const filePropertiesConfig = {
-  windows: {
+  windows: [{
     sectionName: 'File.PE',
     fields: [
       {
@@ -62,7 +87,60 @@ const filePropertiesConfig = {
       }
     ]
   },
-  mac: {
+  {
+    sectionName: 'File.Location',
+    fields: [
+      {
+        field: 'path'
+      },
+      {
+        field: 'sameDirectoryFileCounts.nonExe'
+      },
+      {
+        field: 'sameDirectoryFileCounts.exe'
+      },
+      {
+        field: 'sameDirectoryFileCounts.subFolder'
+      },
+      {
+        field: 'sameDirectoryFileCounts.exeSameCompany'
+      }
+    ]
+  },
+  {
+    sectionName: 'File.Hash',
+    fields: [
+      {
+        field: 'checksumMd5'
+      },
+      {
+        field: 'checksumSha1'
+      },
+      {
+        field: 'checksumSha256'
+      }
+    ]
+  },
+  {
+    sectionName: 'File.Signature',
+    fields: [
+      {
+        field: 'signature.features',
+        format: 'SIGNATURE'
+      },
+      {
+        field: 'signature.timeStamp',
+        format: 'DATE'
+      },
+      {
+        field: 'signature.thumbprint'
+      },
+      {
+        field: 'signature.signer'
+      }
+    ]
+  }],
+  mac: [{
     sectionName: 'File.MachO',
     fields: [
       {
@@ -94,7 +172,60 @@ const filePropertiesConfig = {
       }
     ]
   },
-  linux: {
+  {
+    sectionName: 'File.Location',
+    fields: [
+      {
+        field: 'path'
+      },
+      {
+        field: 'sameDirectoryFileCounts.nonExe'
+      },
+      {
+        field: 'sameDirectoryFileCounts.exe'
+      },
+      {
+        field: 'sameDirectoryFileCounts.subFolder'
+      },
+      {
+        field: 'sameDirectoryFileCounts.exeSameCompany'
+      }
+    ]
+  },
+  {
+    sectionName: 'File.Hash',
+    fields: [
+      {
+        field: 'checksumMd5'
+      },
+      {
+        field: 'checksumSha1'
+      },
+      {
+        field: 'checksumSha256'
+      }
+    ]
+  },
+  {
+    sectionName: 'File.Signature',
+    fields: [
+      {
+        field: 'signature.features',
+        format: 'SIGNATURE'
+      },
+      {
+        field: 'signature.timeStamp',
+        format: 'DATE'
+      },
+      {
+        field: 'signature.thumbprint'
+      },
+      {
+        field: 'signature.signer'
+      }
+    ]
+  }],
+  linux: [{
     sectionName: 'File.ELF',
     fields: [
       {
@@ -119,8 +250,8 @@ const filePropertiesConfig = {
         field: 'elf.sectionNames'
       }
     ]
-  }
+  }]
 };
 
-const config = (os) => [...defaultConfig, ...[filePropertiesConfig[os]]];
+const config = (os) => [...defaultConfig, ...filePropertiesConfig[os]];
 export default config;
