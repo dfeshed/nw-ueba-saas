@@ -55,6 +55,11 @@
         </dependency>
         <dependency>
             <groupId>presidio.ui</groupId>
+            <artifactId>presidio-ui-nw-security</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>presidio.ui</groupId>
             <artifactId>presidio-ui-domain</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>

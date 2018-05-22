@@ -2,10 +2,9 @@ package fortscale.services.impl;
 
 import fortscale.services.ThemesService;
 import fortscale.utils.configurations.ConfigrationServerClientUtils;
-import fortscale.utils.spring.SpringPropertiesUtil;
+
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;

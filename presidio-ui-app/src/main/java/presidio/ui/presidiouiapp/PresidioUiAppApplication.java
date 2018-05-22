@@ -1,5 +1,7 @@
 package presidio.ui.presidiouiapp;
 
+import fortscale.presidio.db.mongo.MongodbMockConfig;
+import fortscale.presidio.remote.conf.spring.PresidioUiRemoteConfigurationClientMockConfiguration;
 import fortscale.spring.PresidioUiRemoteConfigurationClientConfiguration;
 import fortscale.utils.mongodb.config.SpringMongoConfiguration;
 import org.springframework.boot.SpringApplication;
@@ -11,8 +13,8 @@ import org.springframework.context.annotation.Import;
 import presidio.ui.presidiouiapp.spring.WebConf;
 
 
-@Import({SpringMongoConfiguration.class,
-         WebConf.class,PresidioUiRemoteConfigurationClientConfiguration.class})
+@Import({SpringMongoConfiguration.class, MongodbMockConfig.class,
+         WebConf.class,PresidioUiRemoteConfigurationClientConfiguration.class,PresidioUiRemoteConfigurationClientMockConfiguration.class})
 @SpringBootApplication
 @ComponentScan(
         excludeFilters = {@ComponentScan.Filter( type = FilterType.REGEX, pattern = "fortscale.*"),
