@@ -50,6 +50,10 @@
             <id>asoc-build-repo</id>
             <url>http://repo1.rsa.lab.emc.com:8081/artifactory/asoc-build-repo</url>
         </pluginRepository>
+        <pluginRepository>
+            <id>repo1-local</id>
+            <url>http://repo1.rsa.lab.emc.com:8081/artifactory/repo1-local</url>
+        </pluginRepository>
     </pluginRepositories>
 
     <profiles>
