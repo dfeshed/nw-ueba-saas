@@ -124,7 +124,7 @@
                             <groupname>presidio</groupname>
                             <sources>
                                 <source>
-                                    <location>${project.parent.build.directory}/eggs</location>
+                                    <location>${project.build.directory}/dependencies/eggs</location>
                                 </source>
                             </sources>
                         </mapping>
