@@ -82,6 +82,32 @@ public class JsonRegexCaptureAndFormatInterceptorTest {
         assertEvent(event, "userId", "bobby");
     }
 
+    @Test
+    public void test_case_insensitive_matching() {
+        AbstractPresidioJsonInterceptor interceptor = buildInterceptor(
+                "{\"pattern\":\".*(?i:fail).*\",\"format\":\"FAILURE\"}," +
+                "{\"pattern\":\".*(?i:succ).*\",\"format\":\"SUCCESS\"}"
+        );
+
+        Event event = buildEvent("user.dst", "YOU FAIL TO AMAZE ME");
+        assertEvent(interceptor.doIntercept(event), "userId", "FAILURE");
+
+        event = buildEvent("user.dst", "I Failed Once");
+        assertEvent(interceptor.doIntercept(event), "userId", "FAILURE");
+
+        event = buildEvent("user.dst", "failure is not an option");
+        assertEvent(interceptor.doIntercept(event), "userId", "FAILURE");
+
+        event = buildEvent("user.dst", "IF YOU DON'T TRY, YOU WON'T SUCCEED");
+        assertEvent(interceptor.doIntercept(event), "userId", "SUCCESS");
+
+        event = buildEvent("user.dst", "I Succeeded!");
+        assertEvent(interceptor.doIntercept(event), "userId", "SUCCESS");
+
+        event = buildEvent("user.dst", "the key to success is...");
+        assertEvent(interceptor.doIntercept(event), "userId", "SUCCESS");
+    }
+
     private static AbstractPresidioJsonInterceptor buildInterceptor(String captureAndFormatConfiguration) {
         String configuration =
                 "{\"sourceKey\":\"user.dst\",\"destinationKey\":\"userId\",\"captureAndFormatConfigurations\":["
