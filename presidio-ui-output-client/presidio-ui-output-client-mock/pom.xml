@@ -41,6 +41,17 @@
             <artifactId>presidio-ui-utils</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        <dependency>
+            <groupId>presidio.ui</groupId>
+            <artifactId>presidio-ui-nw-security</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.fakemongo</groupId>
+            <artifactId>fongo</artifactId>
+            <version>${fongo.version}</version>
+            <scope>compile</scope>
+        </dependency>
 
     </dependencies>
 

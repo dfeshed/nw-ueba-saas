@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 @Configuration
-@Profile("mock")
+@Profile("mock-data")
 public class PresidioUiOutputMockClientConfig {
 
         @Bean()

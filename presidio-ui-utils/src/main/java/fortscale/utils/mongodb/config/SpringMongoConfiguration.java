@@ -6,10 +6,7 @@ import fortscale.utils.mongodb.converter.FSMappingMongoConverter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.*;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.core.convert.CustomConversions;
@@ -28,6 +25,7 @@ import java.util.List;
 @EnableMongoRepositories(basePackages = "fortscale")
 // scan converters defined at fortscale domain
 @ComponentScan(basePackages = "fortscale.domain",includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = Converter.class),excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX,pattern = ".*(?<!Converter)$"))
+@Profile("!mock-mongo")
 public class SpringMongoConfiguration extends AbstractMongoConfiguration {
 
     @Autowired
