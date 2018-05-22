@@ -8,8 +8,10 @@ export default Service.extend({
     this._flags = Object.create(null);
   },
 
-  setup(flags) {
-    this._resetFlags();
+  setFeatureFlags(flags, reset) {
+    if (reset) {
+      this._resetFlags();
+    }
     for (const flag in flags) {
       if (flags.hasOwnProperty(flag)) {
         if (flags[flag]) {
@@ -32,11 +34,7 @@ export default Service.extend({
   },
 
   isEnabled(feature) {
-    const isEnabled = this._featureIsEnabled(feature);
-    if (this._logFeatureFlagMissEnabled() && !isEnabled) {
-      this._logFeatureFlagMiss(feature);
-    }
-    return isEnabled;
+    return this._featureIsEnabled(feature);
   },
 
   _resetFlags() {
@@ -50,6 +48,10 @@ export default Service.extend({
 
   _normalizeFlag(flag) {
     return camelize(flag);
+  },
+
+  unknownProperty(key) {
+    return this.isEnabled(key);
   }
 
 });

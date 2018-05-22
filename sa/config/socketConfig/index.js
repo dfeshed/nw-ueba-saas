@@ -8,6 +8,7 @@ const respondConfigGen = require('../../../respond').socketRouteGenerator;
 const configureConfigGen = require('../../../configure').socketRouteGenerator;
 const packagerConfigGen = require('../../../packager').socketRouteGenerator;
 const adminConfigGen = require('./administration');
+const featuresConfigGen = require('./features');
 
 // order matters, first config in wins if there are matching configs
 const configGenerators = [
@@ -17,7 +18,8 @@ const configGenerators = [
   contextConfigGen,
   preferencesConfigGen,
   packagerConfigGen,
-  adminConfigGen
+  adminConfigGen,
+  featuresConfigGen
 ];
 
 let socketConfig = null;

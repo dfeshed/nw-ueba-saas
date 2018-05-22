@@ -35,6 +35,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
   userIdle: service(),
   userActivity: service(),
   eventBus: service(),
+  features: service(),
 
   queryParams: {
     /**
@@ -49,6 +50,24 @@ export default Route.extend(AuthenticatedRouteMixin, {
   },
 
   iframedIntoClassic: false,
+
+  getEndpointFeatures() {
+    const request = get(this, 'request');
+    return new RSVP.Promise((resolve, reject) => {
+      request.promiseRequest({
+        method: 'getSupportedFeatures',
+        modelName: 'endpointFeatures',
+        query: {}
+      }).then((response) => {
+        this.get('features').setFeatureFlags(response.data);
+        resolve();
+      }).catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error('Error loading feature flags', error);
+        reject();
+      });
+    });
+  },
 
   getPermissions() {
     const request = get(this, 'request');
@@ -159,6 +178,9 @@ export default Route.extend(AuthenticatedRouteMixin, {
     const permissionsPromise = this.getPermissions();
     const timezonesPromise = this.getTimezones();
     const preferencesPromise = this.getPreferences();
+
+    // Set feature flags
+    this.getEndpointFeatures();
 
     return RSVP.all([preferencesPromise, timezonesPromise, permissionsPromise]).catch(() => {
       // eslint-disable-next-line no-console
