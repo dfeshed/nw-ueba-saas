@@ -73,6 +73,10 @@
             <id>spring-release</id>
             <url>https://repo1.rsa.lab.emc.com:8443/artifactory/spring-release</url>
         </repository>
+       <repository>
+            <id>asoc-build-repo</id>
+            <url>http://repo1.rsa.lab.emc.com:8081/artifactory/asoc-build-repo/</url>
+       </repository>
     </repositories>
 
     <dependencyManagement>
