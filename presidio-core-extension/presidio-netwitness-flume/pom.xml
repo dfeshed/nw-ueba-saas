@@ -120,16 +120,17 @@
             <version>${flume.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>presidio.flume.core</groupId>
-            <artifactId>fortscale-flume-sinks</artifactId>
-            <version>${flume.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>presidio.flume.core</groupId>
             <artifactId>fortscale-flume-sources</artifactId>
             <version>${flume.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.rsa.asoc.libraries</groupId>
+            <artifactId>record-streams-source-netwitness</artifactId>
+            <version>1.0.0</version>
         </dependency>
 
 
