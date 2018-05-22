@@ -156,7 +156,6 @@
                             wait ${!}
                             echo "Mongo: creating presidio user"
                             sleep 5
-                            mongo localhost:27017/netwitness /temp/mongo_create_ca_user.js
                             echo "Stopping mongo service"
                             systemctl stop mongod.service
                             wait ${!}
@@ -179,13 +178,6 @@
 
                             echo "Restarting tomcat"
                             systemctl restart tomcat.service
-                            <!--copy httpd template file -->
-                            echo "copying httpd template"
-                            cp ${rpm-maven-plugin.resources}/httpd.conf /etc/httpd/conf/
-                            chmod 777 /etc/httpd/conf/httpd.conf
-
-                            echo "restarting httpd"
-                            systemctl restart httpd
                             <!--end of post installation -->
                         </script>
                     </postinstallScriptlet>
