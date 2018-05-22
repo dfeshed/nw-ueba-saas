@@ -19,7 +19,7 @@ export default Route.extend({
   },
   model({ selection }, { params }) {
     // eslint-disable-next-line
-    const { incident_id } = params['respond.incident'];
+    const { incident_id } = params['protected.respond.incident'] || params['respond.incident'];
     // eslint-disable-next-line
     this.incidentId = incident_id;
     const redux = get(this, 'redux');
