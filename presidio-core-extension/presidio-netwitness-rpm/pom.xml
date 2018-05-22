@@ -80,38 +80,12 @@
                     <mappings>
                         <mapping>
                             <directoryIncluded>false</directoryIncluded>
-                            <directory>${tomcat_webapps_path}</directory>
-                            <username>tomcat</username>
-                            <groupname>tomcat</groupname>
-                            <sources>
-                                <source>
-                                    <location>
-                                        ${project.basedir}/../presidio-netwitness-connector/presidio-netwitness-connector-manager-webapp/target/presidio-netwitness-manager.war
-                                    </location>
-                                </source>
-                            </sources>
-                        </mapping>
-                        <mapping>
-                            <directoryIncluded>false</directoryIncluded>
                             <directory>${flume_home_directory}/plugins.d/PresidioRestSource/libext</directory>
                             <username>presidio</username>
                             <groupname>presidio</groupname>
                             <sources>
                                 <source>
                                     <location>${project.basedir}/../presidio-netwitness-flume/target/libext/</location>
-                                </source>
-                            </sources>
-                        </mapping>
-                        <mapping>
-                            <directoryIncluded>false</directoryIncluded>
-                            <directory>${flume_home_directory}/plugins.d/PresidioRestSource/lib</directory>
-                            <username>presidio</username>
-                            <groupname>presidio</groupname>
-                            <sources>
-                                <source>
-                                    <location>
-                                        ${project.basedir}/../presidio-netwitness-flume/target/presidio-netwitness-flume-${project.version}.jar
-                                    </location>
                                 </source>
                             </sources>
                         </mapping>
@@ -148,50 +122,7 @@
                             <groupname>presidio</groupname>
                             <sources>
                                 <source>
-                                    <location>${project.parent.build.directory}/eggs</location>
-                                </source>
-                            </sources>
-                        </mapping>
-                        <mapping>
-                            <directoryIncluded>false</directoryIncluded>
-                            <directory>${rpm-maven-plugin.directory}</directory>
-                            <username>presidio</username>
-                            <groupname>presidio</groupname>
-                            <sources>
-                                <source>
-                                    <location>src/main/python</location>
-                                </source>
-                            </sources>
-                        </mapping>
-                        <mapping>
-                            <directory>${rpm-maven-plugin.directory}</directory>
-                            <username>presidio</username>
-                            <groupname>presidio</groupname>
-                            <sources>
-                                <source>
-                                    <location>src/main/python</location>
-                                </source>
-                            </sources>
-                        </mapping>
-                        <mapping>
-                            <!-- El extensions mapping-->
-                            <directoryIncluded>true</directoryIncluded>
-                            <directory>${rpm-maven-plugin.deployment_target_directory}/el-extensions-vendor</directory>
-                            <username>presidio</username>
-                            <groupname>presidio</groupname>
-                            <sources>
-                                <source>
-                                    <location>${project.parent.build.directory}/../presidio-netwitness-monitoring/target/resources/elasticsearch</location>
-                                </source>
-                            </sources>
-                        </mapping>
-                        <mapping>
-                            <directory>${rpm-maven-plugin.resources}</directory>
-                            <username>presidio</username>
-                            <groupname>presidio</groupname>
-                            <sources>
-                                <source>
-                                    <location>resources</location>
+                                    <location>${project.build.directory}/eggs</location>
                                 </source>
                             </sources>
                         </mapping>
@@ -248,11 +179,6 @@
 
                             echo "Restarting tomcat"
                             systemctl restart tomcat.service
-
-                            <!-- Install the elasticsearch objects (searches, visualize and dashboards)-->
-                            chmod +x ${presidio_home_path}/installation/installation-scripts/vendor/init_lp_elasticsearch.sh
-                            ${presidio_home_path}/installation/installation-scripts/vendor/init_lp_elasticsearch.sh
-
                             <!--copy httpd template file -->
                             echo "copying httpd template"
                             cp ${rpm-maven-plugin.resources}/httpd.conf /etc/httpd/conf/
