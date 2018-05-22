@@ -16,6 +16,7 @@ import fortscale.services.presidio.core.converters.IndicatorConverter;
 import fortscale.services.presidio.core.converters.UserConverterHelper;
 
 import fortscale.utils.configurations.ConfigrationServerClientUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;

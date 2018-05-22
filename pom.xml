@@ -34,11 +34,6 @@
         <jsonassert.version>1.2.3</jsonassert.version>
         <springokito.version>1.0.9</springokito.version>
         <org.springframework-version>4.3.8.RELEASE</org.springframework-version>
-        <spring.security.core.version>4.1.0.RELEASE</spring.security.core.version>
-        <spring-data-mongodb.version>1.9.3.RELEASE</spring-data-mongodb.version>
-        <spring-data-commons.version>1.12.3.RELEASE</spring-data-commons.version>
-        <spring-data-hadoop.version>2.2.0.RELEASE</spring-data-hadoop.version>
-        <!--<fongo.version>1.6.8</fongo.version>-->
         <fongo.version>2.1.0</fongo.version>
         <quartz.version>2.2.1</quartz.version>
         <jackson.version>2.9.0</jackson.version>
@@ -88,9 +83,10 @@
 
         <!-- NOTE: ALL dependencies' versions should be here -->
         <rpm-maven-plugin.version>2.1.5</rpm-maven-plugin.version>
-
-
+        <ehcache-core.version>2.6.9</ehcache-core.version>
     </properties>
+
+
 
     <dependencyManagement>
         <dependencies>
@@ -126,7 +122,7 @@
                 <groupId>com.github.fakemongo</groupId>
                 <artifactId>fongo</artifactId>
                 <version>${fongo.version}</version>
-                <scope>test</scope>
+                <!--<scope>test</scope>-->
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -143,6 +139,11 @@
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger-ui</artifactId>
                 <version>${swager.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.sf.ehcache</groupId>
+                <artifactId>ehcache-core</artifactId>
+                <version>${ehcache-core.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -219,6 +220,7 @@
     </build>
 
     <modules>
+        <module>presidio-ui-nw-security</module>
         <module>presidio-ui-utils</module>
         <module>presidio-ui-common</module>
         <module>presidio-ui-output-client</module>
@@ -262,6 +264,12 @@
         <repository>
             <id>spring-release</id>
             <url>https://repo1.rsa.lab.emc.com:8443/artifactory/spring-release</url>
+        </repository>
+
+        <!-- Must use the ASOC Tier-2 repository exclusively. -->
+        <repository>
+            <id>repo1.rsa.lab.emc.com-build</id>
+            <url>http://repo1.rsa.lab.emc.com:8081/artifactory/asoc-build-repo</url>
         </repository>
     </repositories>
 	

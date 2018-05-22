@@ -1,13 +1,11 @@
 package spring;
 
-import fortscale.utils.configurations.ConfigrationServerClientUtils;
-import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import fortscale.utils.configurations.ConfigrationServerClientUtilsImpl;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Properties;
 
-public class ConfigrationServerClientUtilsMock extends ConfigrationServerClientUtils{
+public class ConfigrationServerClientUtilsMock extends ConfigrationServerClientUtilsImpl {
 
     Properties properties;
     public ConfigrationServerClientUtilsMock(Properties properties){

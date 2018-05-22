@@ -1,7 +1,7 @@
 package spring;
 
 
-import fortscale.utils.configurations.ConfigrationServerClientUtils;
+import fortscale.utils.configurations.ConfigrationServerClientUtilsImpl;
 
 import fortscale.utils.spring.SpringPropertiesUtil;
 import org.springframework.context.annotation.Bean;
@@ -21,7 +21,7 @@ public class SpringContextTestsConfiguration  {
 
 
     @Bean
-    ConfigrationServerClientUtils configrationServerClientUtilsMock() throws IOException {
+    ConfigrationServerClientUtilsImpl configrationServerClientUtilsMock() throws IOException {
         return new ConfigrationServerClientUtilsMock(testProperties());
     }
 

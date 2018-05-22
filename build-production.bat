@@ -1,0 +1,1 @@
+mvn clean install -Pbuild_gulp_prod
