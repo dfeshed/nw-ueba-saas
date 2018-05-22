@@ -21,16 +21,16 @@
             {{/if}}
           </h1>
           <div class='centerTop'>
-            {{#if hasSelectedParserRule}}
+            {{#if canShowSelectedParserRule}}
               <table class='matchingMapping'>
                 <tr>
-                  <td>
+                  <td class='token'>
                     {{content/log-parser-rules/token-matching}}
                   </td>
-                  <td class='centerTopCenter'>
+                  <td class='values'>
                     {{content/log-parser-rules/value-matching}}
                   </td>
-                  <td>
+                  <td class="meta">
                     {{content/log-parser-rules/value-mapping}}
                   </td>
                 </tr>

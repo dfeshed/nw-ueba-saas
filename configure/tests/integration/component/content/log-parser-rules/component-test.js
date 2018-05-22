@@ -26,5 +26,18 @@ module('Integration | Component | parser rules', function(hooks) {
     await render(hbs`{{content/log-parser-rules}}`);
     assert.ok(find('.loading'), 'The spinner did not show');
   });
+
+  test('Dont show matchingMapping if formats are missing', async function(assert) {
+    new ReduxDataHelper(setState).parserRulesFormatData(0, false).build();
+    await render(hbs`{{content/log-parser-rules}}`);
+    assert.notOk(find('.matchingMapping'), 'matchingMapping area is showing');
+  });
+
+  test('Show matchingMapping if formats are there', async function(assert) {
+    new ReduxDataHelper(setState).parserRulesFormatData(0, true).build();
+    await render(hbs`{{content/log-parser-rules}}`);
+    assert.ok(find('.matchingMapping'), 'matchingMapping area is not showing');
+  });
+
 });
 

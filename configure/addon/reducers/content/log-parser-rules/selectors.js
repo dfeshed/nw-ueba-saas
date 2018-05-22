@@ -86,6 +86,8 @@ export const parserRuleMatches = createSelector(
       const frmt = selectedRule.pattern.format;
       if (frmt) {
         return formats.filter((format) => format.type === frmt.toLowerCase())[0].matches;
+      } else {
+        return formats[0].matches;
       }
     }
   }
@@ -94,7 +96,7 @@ export const parserRuleMatches = createSelector(
 export const parserRuleValues = createSelector(
   _ruleFormats,
   (formats) => {
-    return formats.map((format) => format.type);
+    return formats.map((format) => format.name);
   }
 );
 
@@ -108,10 +110,11 @@ export const parserRuleTokens = createSelector(
 );
 
 export const parserRuleType = createSelector(
+  _ruleFormats,
   _selectedParserRule,
-  (selectedRule) => {
+  (formats, selectedRule) => {
     if (selectedRule) {
-      return selectedRule.pattern.format;
+      return selectedRule.pattern.format ? selectedRule.pattern.format : formats[0].type;
     }
   }
 );
@@ -124,9 +127,17 @@ export const parserRuleMeta = createSelector(
     }
   }
 );
+
 export const hasSelectedParserRule = createSelector(
   selectedParserRuleName,
   (name) => {
-    return name !== '';
+    return (name !== '');
+  }
+);
+
+export const hasRuleFormats = createSelector(
+  _ruleFormats,
+  (frmts) => {
+    return !!(frmts && frmts[0]);
   }
 );

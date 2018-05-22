@@ -24,44 +24,46 @@ module('Integration | Component | value matching', function(hooks) {
   });
 
   test('values selector', async function(assert) {
-    new ReduxDataHelper(setState).parserRulesFormatData(0).build();
+    new ReduxDataHelper(setState).parserRulesFormatData(0, true).build();
     await render(hbs`{{content/log-parser-rules/value-matching}}`);
     assert.ok(find('.ruleValues'), 'values selector is not showing');
   });
 
   test('Show type field value', async function(assert) {
-    new ReduxDataHelper(setState).parserRulesFormatData(0).build();
+    new ReduxDataHelper(setState).parserRulesFormatData(1, true).build();
+    await render(hbs`{{content/log-parser-rules/value-matching}}`);
+    assert.equal(this.$('.ruleType input').val(), 'regex', 'Show type field value is not showing or not regex');
+  });
+
+  test('Change type field value', async function(assert) {
+    new ReduxDataHelper(setState).parserRulesFormatData(0, true).build();
     await render(hbs`{{content/log-parser-rules/value-matching}}`);
     assert.equal(this.$('.ruleType input').val(), 'ipv4', 'Show type field value is not showing or not ipv4');
   });
 
-  test('Change type field value', async function(assert) {
-    new ReduxDataHelper(setState).parserRulesFormatData(1).build();
-    await render(hbs`{{content/log-parser-rules/value-matching}}`);
-    assert.equal(this.$('.ruleType input').val(), 'ipv6', 'Show type field value is not showing or not ipv6');
-  });
-
-  test('values selector regex', async function(assert) {
-    new ReduxDataHelper(setState).parserRulesFormatData(0).build();
+  test('Don\'t Select Regex Pattern', async function(assert) {
+    new ReduxDataHelper(setState).parserRulesFormatData(0, true).build();
     await render(hbs`{{content/log-parser-rules}}`);
-    assert.ok(find('.ruleRegex .is-read-only'), 'Pattern field is not read only');
+    assert.notOk(find('.ruleRegex'), 'Pattern field is showing');
   });
 
-  test('values selector regex', async function(assert) {
-    new ReduxDataHelper(setState).parserRulesFormatData(1).build();
+  test('Select Regex Pattern', async function(assert) {
+    new ReduxDataHelper(setState).parserRulesFormatData(1, true).build();
     await render(hbs`{{content/log-parser-rules/value-matching}}`);
     clickTrigger('.value-matching');
-    selectChoose('.value-matching', 'regex');
-    assert.notOk(find('.ruleRegex .is-read-only'), 'Pattern field is read only, not editeble');
+    selectChoose('.value-matching', 'Regex Pattern');
+    assert.ok(find('.ruleRegex'), 'Pattern field is not showing');
   });
   test('Show pattern field value', async function(assert) {
-    new ReduxDataHelper(setState).parserRulesFormatData(0).build();
+    new ReduxDataHelper(setState).parserRulesFormatData(1, true).build();
     await render(hbs`{{content/log-parser-rules/value-matching}}`);
-    assert.equal(this.$('.ruleRegex input').val(), '(?:[0-9]{1,3}\\.){3}[0-9]{1,3}', 'Show ruleRegex field value is not showing or not correct');
+    clickTrigger('.value-matching');
+    selectChoose('.value-matching', 'Regex Pattern');
+    assert.equal(this.$('.ruleRegex textarea').val(), '\\s*([\\w_.@-]*)', 'Show ruleRegex field value is not showing or not correct');
   });
   test('Show matching field value', async function(assert) {
-    new ReduxDataHelper(setState).parserRulesFormatData(1).build();
+    new ReduxDataHelper(setState).parserRulesFormatData(0, true).build();
     await render(hbs`{{content/log-parser-rules/value-matching}}`);
-    assert.equal(this.$('.ruleMatches input').val(), 'This matches IPV6 addresses', 'Show matching field value is not showing or not correct');
+    assert.equal(this.$('.ruleMatches input').val(), 'This matches IPV4 addresses', 'Show matching field value is not showing or not correct');
   });
 });

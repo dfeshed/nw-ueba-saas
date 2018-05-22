@@ -21,9 +21,22 @@
     width: 100%;
     margin-top: rsa-whitespace(more);
     td {
+      vertical-align: top;
+      overflow: hidden;
+      display: inline-block;
+      white-space: nowrap;
       padding: rsa-whitespace(less);
       color: text-color(neutral);
       @include rsa-font(default, small);
+    }
+    td.token {
+      width: 20%;
+    }
+    td.values {
+      width: 50%;
+    }
+    td.meta {
+      width: 30%;
     }
   }
   p.firstLogName, p.firstRuleName {
@@ -41,7 +54,14 @@
     border: 1px solid border-color(neutral);
     border-bottom-width: 0px;
   }
-  .value-mapping, .value-matching {
+  .value-mapping {
+    border-left: 1px solid border-color(primary, dark);
+    padding-left: rsa-whitespace();
+    td.metaIndex {
+      width: 10%;
+    }
+  }
+  .value-matching {
     border-left: 1px solid border-color(primary, dark);
     padding-left: rsa-whitespace();
   }
@@ -73,6 +93,9 @@
     position: relative;
     .centerTop {
       padding: rsa-whitespace();
+      .ruleRegex {
+        margin-top: rsa-whitespace(more);
+      }
     }
   }
   .vSpacerFirst {
@@ -93,8 +116,17 @@
   }
   .token-matching {
     .tokenScroll {
-      max-height: 250px;
+      max-height: 300px;
       overflow: auto;
+    }
+  }
+  .rules-list {
+    .icon {
+      float: right;
+    }
+    h1 {
+      float: left;
+      margin-bottom: 10px;
     }
   }
 }

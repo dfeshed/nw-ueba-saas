@@ -37,6 +37,13 @@ const _findAllLogParsers = () => {
   };
 };
 
+const initializeLogParserRules = () => {
+  return (dispatch) => {
+    dispatch(_fetchRuleFormats());
+    dispatch(_findAllLogParsers());
+  };
+};
+
 const _fetchParserRules = (name) => {
   return {
     type: ACTION_TYPES.FETCH_PARSER_RULES,
@@ -48,13 +55,6 @@ const selectParserRule = (index) => {
   return {
     type: ACTION_TYPES.SELECT_PARSER_RULE,
     payload: index
-  };
-};
-
-const initializeLogParserRules = () => {
-  return (dispatch) => {
-    dispatch(_findAllLogParsers());
-    dispatch(_fetchRuleFormats());
   };
 };
 

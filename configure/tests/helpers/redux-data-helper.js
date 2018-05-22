@@ -57,7 +57,7 @@ export default class DataHelper {
     return this;
   }
 
-  parserRulesFormatData(index) {
+  parserRulesFormatData(index, formats) {
     _set(this.state, 'content.logParserRules.parserRules', [{
       'name': 'ipv4',
       'literals': [
@@ -77,7 +77,7 @@ export default class DataHelper {
       'ruleMetas': []
     },
     {
-      'name': 'ipv6',
+      'name': 'Client Username',
       'literals': [
         {
           'value': 'ipv6= '
@@ -90,30 +90,32 @@ export default class DataHelper {
             'index': '1'
           }
         ],
-        'format': 'ipv6'
+        'regex': '\\s*([\\w_.@-]*)'
       },
       'ruleMetas': []
     }]);
     _set(this.state, 'content.logParserRules.selectedParserRuleIndex', 0);
     _set(this.state, 'content.logParserRules.parserRulesStatus', 'completed');
-    _set(this.state, 'content.logParserRules.ruleFormats', [{
-      name: 'Regex Pattern',
-      pattern: '',
-      matches: 'This matches Regex',
-      type: 'regex'
-    },
-    {
-      name: 'IPV4 Address',
-      pattern: '(?:[0-9]{1,3}\\.){3}[0-9]{1,3}',
-      matches: 'This matches IPV4 addresses',
-      type: 'ipv4'
-    },
-    {
-      name: 'IPV6 Address',
-      pattern: '((([0-9A-Fa-f]{1,4}:){1,6}:)|(([0-9A-Fa-f]{1,4}:){7}))([0-9A-Fa-f]{1,4})|::1|::0',
-      matches: 'This matches IPV6 addresses',
-      type: 'ipv6'
-    }]);
+    if (formats) {
+      _set(this.state, 'content.logParserRules.ruleFormats', [{
+        name: 'Regex Pattern',
+        pattern: '',
+        matches: 'This matches Regex',
+        type: 'regex'
+      },
+      {
+        name: 'IPV4 Address',
+        pattern: '(?:[0-9]{1,3}\\.){3}[0-9]{1,3}',
+        matches: 'This matches IPV4 addresses',
+        type: 'ipv4'
+      },
+      {
+        name: 'IPV6 Address',
+        pattern: '((([0-9A-Fa-f]{1,4}:){1,6}:)|(([0-9A-Fa-f]{1,4}:){7}))([0-9A-Fa-f]{1,4})|::1|::0',
+        matches: 'This matches IPV6 addresses',
+        type: 'ipv6'
+      }]);
+    }
     _set(this.state, 'content.logParserRules.selectedParserRuleIndex', index);
     return this;
   }

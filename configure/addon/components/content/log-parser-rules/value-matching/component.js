@@ -25,7 +25,7 @@ const ValueMatching = Component.extend({
   },
   @computed('itemSelected')
   isRegexSelected(itemSelected) {
-    return itemSelected !== 'regex';
+    return itemSelected === 'Regex Pattern';
   }
 });
 export default connect(stateToComputed)(ValueMatching);
