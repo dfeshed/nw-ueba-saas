@@ -76,13 +76,6 @@
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <id>rsa-repo</id>
-            <url>http://repo1.rsa.lab.emc.com:8081/artifactory/asoc-build-repo/</url>
-        </repository>
-    </repositories>
-
     <dependencies>
 
         <dependency>

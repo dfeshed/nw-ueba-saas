@@ -50,6 +50,10 @@
             <id>asoc-build-repo</id>
             <url>http://repo1.rsa.lab.emc.com:8081/artifactory/asoc-build-repo</url>
         </pluginRepository>
+        <pluginRepository>
+            <id>repo1-local</id>
+            <url>http://repo1.rsa.lab.emc.com:8081/artifactory/repo1-local</url>
+        </pluginRepository>
     </pluginRepositories>
 
     <profiles>
@@ -60,21 +64,28 @@
             </modules>
         </profile>
     </profiles>
+
     <repositories>
-        <!-- ASOC Tier-2 repository -->
         <repository>
             <id>asoc-releases</id>
+            <name>repo1.rsa.lab.emc.com-releases</name>
             <url>https://repo1.rsa.lab.emc.com:8443/artifactory/asoc-releases</url>
         </repository>
         <repository>
             <id>asoc-snapshots</id>
+            <name>repo1.rsa.lab.emc.com-snapshots</name>
             <url>https://repo1.rsa.lab.emc.com:8443/artifactory/asoc-snapshots</url>
         </repository>
         <repository>
             <id>spring-release</id>
             <url>https://repo1.rsa.lab.emc.com:8443/artifactory/spring-release</url>
         </repository>
+        <repository>
+            <id>asoc-build-repo</id>
+            <url>http://repo1.rsa.lab.emc.com:8081/artifactory/asoc-build-repo/</url>
+        </repository>
     </repositories>
+
 
     <dependencyManagement>
         <dependencies>
