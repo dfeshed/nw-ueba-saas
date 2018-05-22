@@ -1,5 +1,13 @@
-{{#each data as |entry|}}
-  {{#rsa-content-accordion animate=true isCollapsed=true class='risk-properties-panel__title' label=entry.name}}
-    {{endpoint/risk-panel/entry entry=entry}}
-  {{/rsa-content-accordion}}
-{{/each}}
+{{#if errorMessage}}
+  {{rsa-panel-message message=(t errorMessage)}}
+{{else}}
+  {{#each data as |entry|}}
+    {{#rsa-content-accordion animate=true isCollapsed=true class='risk-properties-panel__title' label=entry.name}}
+      {{endpoint/risk-panel/entry entry=entry}}
+    {{/rsa-content-accordion}}
+  {{else}}
+    {{rsa-panel-message message=(t 'investigateHosts.common.emptyMessage')}}
+  {{/each}}
+{{/if}}
+
+

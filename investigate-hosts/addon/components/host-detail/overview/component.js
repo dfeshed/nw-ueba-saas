@@ -7,6 +7,7 @@ const stateToComputed = (state) => ({
   host: state.endpoint.overview.hostDetails,
   animation: state.endpoint.detailsInput.animation,
   activePropertyTab: state.endpoint.visuals.activeHostPropertyTab,
+  contextError: state.endpoint.visuals.contextError,
   hostPropertyTabs: getHostPropertyTab(state),
   context: getContext(state),
   alertsCount: getAlertsCount(state),

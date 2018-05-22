@@ -48,4 +48,16 @@ module('Integration | Component | host-detail/overwiew', function(hooks) {
       assert.equal(findAll('.host-properties-box .risk-properties-panel .rsa-content-accordion').length, 2, 'Risk panel populated with two available Incidents');
     });
   });
+
+  test('error message when context server is not reachable', async function(assert) {
+    new ReduxDataHelper(initState)
+      .lookupData(lookupData)
+      .activeHostPropertyTab('ALERT')
+      .host(linux.overview.hostDetails)
+      .setContextError('investigateHosts.context.error.context.service.timeout')
+      .build();
+    await render(hbs`{{host-detail/overview domIsReady=true}}`);
+    waitUntil(() => find('.rsa-panel-message'));
+    assert.equal(findAll('.message')[0].textContent.trim(), 'Context Hub server is not running or is inaccessible. Check with your Administrator to resolve this issue.', 'error message displayed.');
+  });
 });

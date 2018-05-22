@@ -315,7 +315,7 @@ const fetchHostContext = (machineName) => {
       },
       onError: ({ meta }) => {
         const error = (meta && meta.message) ? meta.message : 'admin.error';
-        handleError(ACTION_TYPES.SET_CONTEXT_DATA, `context.error.${error}`);
+        dispatch({ type: ACTION_TYPES.CONTEXT_ERROR, payload: `investigateHosts.context.error.${error}` });
       }
     });
   };

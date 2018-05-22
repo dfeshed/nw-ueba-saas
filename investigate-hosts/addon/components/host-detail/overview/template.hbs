@@ -22,7 +22,7 @@
               data=hostData
               localeNameSpace='investigateHosts.hosts.properties'}}
           {{else}}
-            {{endpoint/risk-panel activeDataSourceTab=activePropertyTab data=context}}
+            {{endpoint/risk-panel activeDataSourceTab=activePropertyTab data=context errorMessage=contextError}}
           {{/if}}
         </box>
       {{else}}

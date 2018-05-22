@@ -12,7 +12,8 @@ const visualsInitialState = Immutable.from({
   showDeleteHostsModal: false,
   hostDetailsLoading: false,
   activeSystemInformationTab: 'HOST_ENTRIES',
-  lookupData: [{}]
+  lookupData: [{}],
+  contextError: null
 });
 
 const visuals = handleActions({
@@ -41,7 +42,10 @@ const visuals = handleActions({
     return state.merge({ lookupData });
   },
 
-  [ACTION_TYPES.CLEAR_PREVIOUS_CONTEXT]: (state) => state.set('lookupData', [{} ])
+  [ACTION_TYPES.CLEAR_PREVIOUS_CONTEXT]: (state) => state.set('lookupData', [{} ]),
+
+  [ACTION_TYPES.CONTEXT_ERROR]: (state, { payload }) => state.set('contextError', payload)
+
 }, visualsInitialState);
 
 export default visuals;

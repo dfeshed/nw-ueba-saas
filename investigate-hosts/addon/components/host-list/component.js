@@ -10,6 +10,7 @@ import {
 const stateToComputed = (state) => ({
   schemaLoading: state.endpoint.schema.schemaLoading,
   activeDataSourceTab: state.endpoint.visuals.activeDataSourceTab,
+  contextError: state.endpoint.visuals.contextError,
   dataSourceTabs: getDataSourceTab(state),
   context: getContext(state),
   alertsCount: getAlertsCount(state),

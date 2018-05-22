@@ -251,4 +251,9 @@ export default class DataHelper {
     _set(this.state, 'visuals.activeHostPropertyTab', hostPropertyTab);
     return this;
   }
+
+  setContextError(value) {
+    _set(this.state, 'visuals.contextError', value);
+    return this;
+  }
 }

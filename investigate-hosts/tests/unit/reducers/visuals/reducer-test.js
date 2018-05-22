@@ -44,6 +44,7 @@ test('should return the initial state', function(assert) {
     showDeleteHostsModal: false,
     hostDetailsLoading: false,
     activeSystemInformationTab: 'HOST_ENTRIES',
+    contextError: null,
     lookupData: [{}]
   });
 });
@@ -56,6 +57,7 @@ test('The RESET_INPUT_DATA action reset to initial state', function(assert) {
     showDeleteHostsModal: false,
     hostDetailsLoading: true,
     activeSystemInformationTab: 'HOST_ENTRIES',
+    contextError: null,
     lookupData: [{}]
   });
 
@@ -67,6 +69,7 @@ test('The RESET_INPUT_DATA action reset to initial state', function(assert) {
     isTreeView: true,
     showDeleteHostsModal: false,
     hostDetailsLoading: false,
+    contextError: null,
     activeSystemInformationTab: 'HOST_ENTRIES',
     lookupData: [{}]
   };
@@ -178,4 +181,12 @@ test('The context state being cleared', function(assert) {
   });
   const newEndState = reducer(previous, { type: ACTION_TYPES.CLEAR_PREVIOUS_CONTEXT });
   assert.deepEqual(newEndState.lookupData[0], {}, 'lookupData state is cleared.');
+});
+
+test('contextError state when context server is not reachable', function(assert) {
+  const previous = Immutable.from({
+    contextError: null
+  });
+  const newEndState = reducer(previous, { type: ACTION_TYPES.CONTEXT_ERROR, payload: 'context.error.timeout' });
+  assert.deepEqual(newEndState.contextError, 'context.error.timeout', 'contextError state has been changed to true.');
 });
