@@ -33,6 +33,9 @@ public class PresidioNwAuthenticationMockConfig extends WebSecurityConfigurerAda
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.
+                //All this app to be embedded in the IFrame from any origin
+                headers().frameOptions().disable().
+                and().
                 csrf().disable().
                 sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).
                 and().

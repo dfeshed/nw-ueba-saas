@@ -33,7 +33,12 @@ public class PresidioNwAuthenticationConfig extends WebSecurityConfigurerAdapter
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
         http.
+                //All this app to be embedded in the IFrame if used from same origin
+                headers().frameOptions().sameOrigin().
+                and().
+                //Disable csrf
                 csrf().disable().
                 sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).
                 and().
