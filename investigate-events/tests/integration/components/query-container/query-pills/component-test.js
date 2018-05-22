@@ -91,4 +91,36 @@ module('Integration | Component | Query Pills', function(hooks) {
     });
   });
 
+  test('newPillPosition is set correctly', async function(assert) {
+    setState({
+      ...initialState,
+      nextGen: {
+        pillsData: [1, 2, 3]
+      }
+    });
+
+    this.set('filters', []);
+
+    await render(hbs`{{query-container/query-pills filters=filters isActive=true}}`);
+    // Choose the first meta option
+    selectChoose(metaPowerSelect, powerSelectOption, 0);// option A
+    await waitUntil(() => find(operatorPowerSelect));
+    // Choose the first operator option
+    selectChoose(operatorPowerSelect, powerSelectOption, 0);// option =
+    await waitUntil(() => find(value));
+    // Fill in the value, to properly simulate the event we need to fillIn AND
+    // triggerKeyEvent for the "x" character.
+    await fillIn(value, 'x');
+    await triggerKeyEvent(value, 'keydown', X_KEY);// x
+    await triggerKeyEvent(value, 'keydown', ENTER_KEY);
+
+    return settled().then(async () => {
+      // action to store in state called
+      assert.deepEqual(
+        newActionSpy.args[0][0].position,
+        3,
+        'the position is correct'
+      );
+    });
+  });
 });

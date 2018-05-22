@@ -168,8 +168,20 @@ export default handleActions({
     });
   },
 
+  // TODO
+  // isDirty should be a selector that
+  // combines the current query with the
+  // one currently loaded. That'll take
+  // some work to get right, for now,
+  // ham-fisting this.
+
   // Added a pill, therefore query is dirty
   [ACTION_TYPES.ADD_NEXT_GEN_PILL]: (state) => {
+    return state.set('isDirty', true);
+  },
+
+  // Deleted a pill, therefore query is dirty
+  [ACTION_TYPES.DELETE_NEXT_GEN_PILL]: (state) => {
     return state.set('isDirty', true);
   }
 

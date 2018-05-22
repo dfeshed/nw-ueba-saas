@@ -2,6 +2,7 @@ import Component from '@ember/component';
 import * as MESSAGE_TYPES from '../message-types';
 import { warn } from '@ember/debug';
 import { connect } from 'ember-redux';
+import computed from 'ember-computed-decorators';
 
 import { pillsData } from 'investigate-events/reducers/investigate/next-gen/selectors';
 import { addNextGenPill } from 'investigate-events/actions/next-gen-creators';
@@ -13,12 +14,16 @@ const stateToComputed = (state) => ({
   pillsData: pillsData(state)
 });
 
+
 const dispatchToActions = {
   addNextGenPill
 };
 
 const QueryPills = Component.extend({
   classNames: ['query-pills'],
+
+  @computed('pillsData')
+  newPillPosition: (pillsData) => pillsData.length,
 
   actions: {
     /**
@@ -32,6 +37,9 @@ const QueryPills = Component.extend({
       switch (type) {
         case MESSAGE_TYPES.PILL_CREATED:
           this._pillCreated(data, position);
+          break;
+        case MESSAGE_TYPES.PILL_DELETED:
+          this._pillDeleted(data);
           break;
         case MESSAGE_TYPES.PILL_INITIALIZED:
           // Do nothing right now
@@ -52,21 +60,38 @@ const QueryPills = Component.extend({
   // ************************************************************************ //
   /**
    * Adds pill to state
-   * @param {*} value The data for the pill
+   * @param {*} pillData The data for the pill
+   * @param {*} position The position of the pill in the array
    * @private
    */
-  _pillCreated(data, position) {
+  _pillCreated(pillData, position) {
     // LEGACY FILTERS SET TO KEEP NEAR-TERM SEARCH WORKING
     // Take current pills, add new one, mark that they are 'saved'
-    const pillsData = [ ...this.get('pillsData'), data ]
+    const pillsData = [ ...this.get('pillsData'), pillData ]
       .map((d) => {
         return { ...d, saved: true };
       });
     this.set('filters', pillsData);
     // END LEGACY FILTERS SET TO KEEP NEAR-TERM SEARCH WORKING
 
-    this.send('addNextGenPill', { pillData: data, position });
+    this.send('addNextGenPill', { pillData, position });
+  },
+
+  /**
+   * Delete pill from state
+   * @param {*} pillData The data for the pill
+   * @private
+   */
+  _pillDeleted(pillData) {
+    // LEGACY FILTERS SET TO KEEP NEAR-TERM SEARCH WORKING
+    // Take current pills, add new one, mark that they are 'saved'
+    const pillsData = this.get('pillsData').filter((pD) => pD.id !== pillData.id);
+    this.set('filters', pillsData);
+    // END LEGACY FILTERS SET TO KEEP NEAR-TERM SEARCH WORKING
+
+    this.send('deleteNextGenPill', { pillData });
   }
+
 });
 
 export default connect(stateToComputed, dispatchToActions)(QueryPills);

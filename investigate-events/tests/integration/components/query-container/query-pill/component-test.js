@@ -7,8 +7,8 @@ import hbs from 'htmlbars-inline-precompile';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 import { click, fillIn, find, findAll, focus, render, triggerKeyEvent, waitUntil } from '@ember/test-helpers';
 
-const ENTER_KEY = '13';
-const X_KEY = '88';
+const ENTER_KEY = 13;
+const X_KEY = 88;
 
 // const { log } = console;
 
@@ -33,7 +33,6 @@ const initialState = {
     pillsData: []
   }
 };
-
 
 let setState;
 

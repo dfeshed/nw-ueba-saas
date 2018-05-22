@@ -14,7 +14,7 @@ const noParamsInState = Immutable.from({
   previouslySelectedTimeRanges: {}
 });
 
-test('test ACTION_TYPES.REHYDRATE reducer when url has a serviceId and localStorage has a different serviceId', function(assert) {
+test('ACTION_TYPES.REHYDRATE reducer when url has a serviceId and localStorage has a different serviceId', function(assert) {
   const action = {
     type: ACTION_TYPES.REHYDRATE,
     payload: {
@@ -31,7 +31,7 @@ test('test ACTION_TYPES.REHYDRATE reducer when url has a serviceId and localStor
   assert.equal(result.serviceId, '2');
 });
 
-test('test ACTION_TYPES.REHYDRATE reducer when url does not have a serviceId while the localStorage has one', function(assert) {
+test('ACTION_TYPES.REHYDRATE reducer when url does not have a serviceId while the localStorage has one', function(assert) {
   const action = {
     type: ACTION_TYPES.REHYDRATE,
     payload: {
@@ -48,7 +48,7 @@ test('test ACTION_TYPES.REHYDRATE reducer when url does not have a serviceId whi
   assert.equal(result.serviceId, '5');
 });
 
-test('test SET_PREFERENCES when payload contains queryTimeFormat', function(assert) {
+test('SET_PREFERENCES when payload contains queryTimeFormat', function(assert) {
 
   const prevState = Immutable.from({
     queryTimeFormat: null
@@ -64,7 +64,7 @@ test('test SET_PREFERENCES when payload contains queryTimeFormat', function(asse
   assert.equal(result.queryTimeFormat, 'DB');
 });
 
-test('test SET_PREFERENCES when payload does not contain queryTimeFormat', function(assert) {
+test('SET_PREFERENCES when payload does not contain queryTimeFormat', function(assert) {
 
   const prevState = Immutable.from({
     queryTimeFormat: 'WALL'
@@ -78,7 +78,7 @@ test('test SET_PREFERENCES when payload does not contain queryTimeFormat', funct
   assert.equal(result.queryTimeFormat, 'WALL');
 });
 
-test('test SET_PREFERENCES when payload does not have queryTimeFormat and no current value set for queryTimeFormat', function(assert) {
+test('SET_PREFERENCES when payload does not have queryTimeFormat and no current value set for queryTimeFormat', function(assert) {
 
   const prevState = Immutable.from({
     queryTimeFormat: undefined
@@ -92,7 +92,7 @@ test('test SET_PREFERENCES when payload does not have queryTimeFormat and no cur
   assert.equal(result.queryTimeFormat, undefined);
 });
 
-test('test SET_QUERY_VIEW reducer sets the correct mode provided', function(assert) {
+test('SET_QUERY_VIEW reducer sets the correct mode provided', function(assert) {
   const prevState = Immutable.from({
     queryView: 'guided',
     toggledOnceFlag: false
@@ -110,7 +110,7 @@ test('test SET_QUERY_VIEW reducer sets the correct mode provided', function(asse
   assert.equal(result.toggledOnceFlag, true);
 });
 
-test('test INITIALIZE_INVESTIGATE reducer sets the correct view from localStorage', function(assert) {
+test('INITIALIZE_INVESTIGATE reducer sets the correct view from localStorage', function(assert) {
   /* INTENT- overwrites queryView */
   const prevState = Immutable.from({
     queryView: 'freeForm',
@@ -128,7 +128,7 @@ test('test INITIALIZE_INVESTIGATE reducer sets the correct view from localStorag
   assert.equal(result.queryView, 'freeForm');
 });
 
-test('test ACTION_TYPES.ADD_NEXT_GEN_PILL sets query to dirty', function(assert) {
+test('ACTION_TYPES.ADD_NEXT_GEN_PILL sets query to dirty', function(assert) {
   const prevState = Immutable.from({
     isDirty: false
   });
@@ -142,5 +142,21 @@ test('test ACTION_TYPES.ADD_NEXT_GEN_PILL sets query to dirty', function(assert)
   };
   const result = reducer(prevState, action);
 
-  assert.equal(result.isDirty, true);
+  assert.equal(result.isDirty, true, 'isDirty is set correctly');
+});
+
+test('ACTION_TYPES.DELETE_NEXT_GEN_PILL sets query to dirty', function(assert) {
+  const prevState = Immutable.from({
+    isDirty: false
+  });
+
+  const action = {
+    type: ACTION_TYPES.DELETE_NEXT_GEN_PILL,
+    payload: {
+      pillData: { id: 1 }
+    }
+  };
+  const result = reducer(prevState, action);
+
+  assert.equal(result.isDirty, true, 'isDirty is set correctly');
 });

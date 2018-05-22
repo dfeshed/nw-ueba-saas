@@ -6,14 +6,24 @@ import Immutable from 'seamless-immutable';
 module('Unit | Reducers | next-gen');
 
 const stateWithPills = Immutable.from({
-  pillsData: [1, 2]
+  pillsData: [{
+    id: '1',
+    foo: 'bar'
+  }, {
+    id: '2',
+    foo: 'baz'
+  }]
 });
 
 const emptyState = Immutable.from({
   pillsData: []
 });
 
-test('ACTION_TYPES.ADD_NEXT_GEN_PILL adds pill to empty list', function(assert) {
+//
+// ADD_NEXT_GEN_PILL
+//
+
+test('ADD_NEXT_GEN_PILL adds pill to empty list', function(assert) {
   const action = {
     type: ACTION_TYPES.ADD_NEXT_GEN_PILL,
     payload: {
@@ -23,11 +33,11 @@ test('ACTION_TYPES.ADD_NEXT_GEN_PILL adds pill to empty list', function(assert) 
   };
   const result = reducer(emptyState, action);
 
-  assert.equal(result.pillsData.length, 1);
-  assert.equal(result.pillsData[0].foo, 1234);
+  assert.equal(result.pillsData.length, 1, 'pillsData is the correct length');
+  assert.equal(result.pillsData[0].foo, 1234, 'pillsData item is in the right position');
 });
 
-test('ACTION_TYPES.ADD_NEXT_GEN_PILL adds pill to beginning of list', function(assert) {
+test('ADD_NEXT_GEN_PILL adds pill to beginning of list', function(assert) {
   const action = {
     type: ACTION_TYPES.ADD_NEXT_GEN_PILL,
     payload: {
@@ -37,11 +47,11 @@ test('ACTION_TYPES.ADD_NEXT_GEN_PILL adds pill to beginning of list', function(a
   };
   const result = reducer(stateWithPills, action);
 
-  assert.equal(result.pillsData.length, 3);
-  assert.equal(result.pillsData[0].foo, 1234);
+  assert.equal(result.pillsData.length, 3, 'pillsData is the correct length');
+  assert.equal(result.pillsData[0].foo, 1234, 'pillsData item is in the right position');
 });
 
-test('ACTION_TYPES.ADD_NEXT_GEN_PILL adds pill to the middle of a list', function(assert) {
+test('ADD_NEXT_GEN_PILL adds pill to the middle of a list', function(assert) {
   const action = {
     type: ACTION_TYPES.ADD_NEXT_GEN_PILL,
     payload: {
@@ -51,11 +61,11 @@ test('ACTION_TYPES.ADD_NEXT_GEN_PILL adds pill to the middle of a list', functio
   };
   const result = reducer(stateWithPills, action);
 
-  assert.equal(result.pillsData.length, 3);
-  assert.equal(result.pillsData[1].foo, 1234);
+  assert.equal(result.pillsData.length, 3, 'pillsData is the correct length');
+  assert.equal(result.pillsData[1].foo, 1234, 'pillsData item is in the right position');
 });
 
-test('ACTION_TYPES.ADD_NEXT_GEN_PILL adds pill to end of list', function(assert) {
+test('ADD_NEXT_GEN_PILL adds pill to end of list', function(assert) {
   const action = {
     type: ACTION_TYPES.ADD_NEXT_GEN_PILL,
     payload: {
@@ -65,6 +75,26 @@ test('ACTION_TYPES.ADD_NEXT_GEN_PILL adds pill to end of list', function(assert)
   };
   const result = reducer(stateWithPills, action);
 
-  assert.equal(result.pillsData.length, 3);
-  assert.equal(result.pillsData[2].foo, 1234);
+  assert.equal(result.pillsData.length, 3, 'pillsData is the correct length');
+  assert.equal(result.pillsData[2].foo, 1234, 'pillsData item is in the right position');
+});
+
+//
+// DELETE_NEXT_GEN_PILL
+//
+
+test('DELETE_NEXT_GEN_PILL removes the pill provided', function(assert) {
+  const action = {
+    type: ACTION_TYPES.DELETE_NEXT_GEN_PILL,
+    payload: {
+      pillData: {
+        id: '1',
+        foo: 1234
+      }
+    }
+  };
+  const result = reducer(stateWithPills, action);
+
+  assert.equal(result.pillsData.length, 1, 'pillsData is the correct length');
+  assert.equal(result.pillsData[0].id, 2, 'pillsData item is in the right position');
 });

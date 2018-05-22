@@ -21,4 +21,5 @@ module('Unit | Component | Query Pills', function(hooks) {
     assert.equal(filtersAsArray[0].value, pillObj.value, 'Value does not match');
     assert.ok(filtersAsArray[0].saved, 'Property "saved" was not set or was false');
   });
+
 });

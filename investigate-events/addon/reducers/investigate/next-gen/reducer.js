@@ -24,5 +24,12 @@ export default handleActions({
       newPillData,
       ...state.pillsData.slice(position)
     ]));
+  },
+
+  [ACTION_TYPES.DELETE_NEXT_GEN_PILL]: (state, { payload }) => {
+    const { pillData: { id } } = payload;
+    const newPills = state.pillsData.filter((pD) => pD.id !== id);
+    return state.set('pillsData', newPills);
   }
+
 }, _initialState);
