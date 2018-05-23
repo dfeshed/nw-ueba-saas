@@ -1,0 +1,13 @@
+{{#rsa-data-table
+        items=items
+        columnsConfig=columnsConfig}}
+  {{#rsa-data-table/header as |column|}}
+    {{column.title}}
+  {{/rsa-data-table/header}}
+  {{#rsa-data-table/body as |item index column|}}
+    {{rsa-data-table/body-cell item=item column=column}}
+  {{/rsa-data-table/body}}
+{{/rsa-data-table}}
+<box class="items-footer">
+  Items footer/toolbar
+</box>

@@ -1,0 +1,1 @@
+export { default } from 'admin-source-management/components/table-listing/component';

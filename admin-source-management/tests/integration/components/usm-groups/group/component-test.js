@@ -7,7 +7,7 @@ import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import Immutable from 'seamless-immutable';
 import { patchReducer } from '../../../../helpers/vnext-patch';
-import * as groupCreators from 'admin-source-management/actions/creators/group-creators';
+import * as groupCreators from 'admin-source-management/actions/data-creators/group-creators';
 
 const initialState = {
   group: {

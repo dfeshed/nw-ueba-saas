@@ -1,7 +1,7 @@
 import Immutable from 'seamless-immutable';
 import reduxActions from 'redux-actions';
 import { handle } from 'redux-pack';
-import * as ACTION_TYPES from 'admin-source-management/actions/types/groups-types';
+import * as ACTION_TYPES from 'admin-source-management/actions/types';
 
 const initialState = {
   group: {

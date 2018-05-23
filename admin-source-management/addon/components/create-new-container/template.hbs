@@ -1,0 +1,51 @@
+<!-- side wizard nav -->
+<vbox xs="4" class="sidebar">
+  <centered fit>
+    <h2>Wizard Nav...</h2>
+  </centered>
+</vbox>
+
+<!-- form -->
+<box class="form">
+  <hbox class="toolbar">
+    {{#rsa-form-button style='primary' class='confirm-button'
+                       tabIndex="3"
+                       defaultAction="save"
+                       isDisabled=hasMissingRequiredData
+    }}
+      {{t 'adminUsm.button.save'}}
+    {{/rsa-form-button}}
+    {{#rsa-form-button class='cancel-button' defaultAction=(route-action 'transitionToPolicies')}}
+      {{t 'adminUsm.button.cancel'}}
+    {{/rsa-form-button}}
+  </hbox>
+  <div class="control">
+    {{rsa-form-input
+                tabIndex="1"
+                label=(t 'adminUsm.policy.name')
+                placeholder=(t 'adminUsm.policy.namePlaceholder')
+                value=(readonly policy.name)
+                maxLength=256
+                focusOut=(action "handleNameChange" value="target.value")
+     }}
+  </div>
+  <div class="control">
+    {{rsa-form-textarea
+                tabIndex="2"
+                label=(t 'adminUsm.policy.description')
+                placeholder=(t 'adminUsm.policy.descPlaceholder')
+                value=(readonly policy.description)
+                maxLength=8000
+                focusOut=(action 'handleDescriptionChange' value='target.value')
+    }}
+  </div>
+</box>
+
+{{!-- Overlay to prevent interactions while loading --}}
+{{#if isPolicyLoading}}
+  <div class="loading-overlay">
+    <centered>
+      {{rsa-loader size="large"}}
+    </centered>
+  </div>
+{{/if}}

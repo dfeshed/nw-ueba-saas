@@ -2,7 +2,7 @@ import Immutable from 'seamless-immutable';
 import { module, test } from 'qunit';
 import { LIFECYCLE } from 'redux-pack';
 import makePackAction from '../../helpers/make-pack-action';
-import * as ACTION_TYPES from 'admin-source-management/actions/types/groups-types';
+import * as ACTION_TYPES from 'admin-source-management/actions/types';
 import reducers from 'admin-source-management/reducers/usm/groups-reducers';
 
 module('Unit | Reducers | Groups Reducers');

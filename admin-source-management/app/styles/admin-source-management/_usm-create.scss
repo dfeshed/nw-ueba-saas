@@ -1,12 +1,12 @@
-.usm-group {
+.usm-group, .usm-policy {
 
-  .group-form {
+  .form {
     padding-right: rsa-whitespace(more);
     padding-bottom: rsa-whitespace(more);
     padding-left: rsa-whitespace(more);
   }
 
-  .group-toolbar {
+  .toolbar {
     padding-top: rsa-whitespace();
     padding-bottom: rsa-whitespace();
     button {
@@ -14,12 +14,12 @@
     }
   }
 
-  .group-control-label {
+  .control-label {
     margin-top: rsa-whitespace();
     @include rsa-font(header);
   }
 
-  .group-control {
+  .control {
     padding-top: rsa-whitespace(more);
     > label {
       margin-bottom: rsa-whitespace(least);

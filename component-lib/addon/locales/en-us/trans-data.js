@@ -2964,15 +2964,23 @@ export default {
   },
   // begin admin-source-management (a.k.a USM)
   adminUsm: {
-    groups: {
-      new: 'Add New'
+    button: {
+      addNew: 'Add New',
+      save: 'Save and Publish',
+      cancel: 'Cancel'
     },
     group: {
-      save: 'Save and Publish',
-      cancel: 'Cancel',
       identify: 'Identify',
-      groupName: 'Group Name',
-      groupDescription: 'Group Description'
+      name: 'Group Name',
+      namePlaceholder: 'Enter a unique group name',
+      description: 'Group Description',
+      descPlaceholder: 'Enter a description'
+    },
+    policy: {
+      name: 'Policy Name',
+      namePlaceholder: 'Enter a unique policy name',
+      description: 'Policy Description',
+      descPlaceholder: 'Enter a description'
     }
   },
   // end admin-source-management (a.k.a USM)

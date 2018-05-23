@@ -21,10 +21,33 @@ const App = Application.extend({
           'i18n',
           'flashMessages',
           'eventBus',
-          'router'
+          'router',
+          'app-version'
         ],
         externalRoutes: {
-          protected: 'protected'
+          protected: 'protected',
+          'admin.admin-source-management': 'admin.admin-source-management'
+        }
+      }
+    },
+    adminSourceManagement: {
+      dependencies: {
+        services: [
+          '-document',
+          'access-control',
+          'contextual-help',
+          'dateFormat',
+          'timeFormat',
+          'timezone',
+          'i18n',
+          'flashMessages',
+          'eventBus',
+          'router',
+          'app-version'
+        ],
+        externalRoutes: {
+          protected: 'protected',
+          'admin.admin-source-management': 'admin.admin-source-management'
         }
       }
     },

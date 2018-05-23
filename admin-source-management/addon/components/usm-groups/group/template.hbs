@@ -1,41 +1,41 @@
 <!-- side wizard nav -->
-<vbox xs="4" class="group-sidebar">
+<vbox xs="4" class="sidebar">
   <centered fit>
     <h2>Wizard Nav...</h2>
   </centered>
 </vbox>
 
 <!-- form -->
-<box class="group-form">
-  <hbox class="group-toolbar">
+<box class="form">
+  <hbox class="toolbar">
     {{#rsa-form-button style='primary' class='confirm-button' 
       tabIndex="3"
       defaultAction="save"
       isDisabled=hasMissingRequiredData
     }}
-      {{t 'adminUsm.group.save'}}
+      {{t 'adminUsm.button.save'}}
     {{/rsa-form-button}}
     {{#rsa-form-button class='cancel-button' defaultAction=(route-action 'transitionToGroups')}}
-      {{t 'adminUsm.group.cancel'}}
+      {{t 'adminUsm.button.cancel'}}
     {{/rsa-form-button}}
   </hbox>
 
-  <label class="group-control-label">Identify</label>
-  <div class="group-control">
+  <label class="control-label">Identify</label>
+  <div class="control">
     {{rsa-form-input
       tabIndex="1"
-      label="Group Name"
-      placeholder="Enter a unique group name"
+      label=(t 'adminUsm.group.name')
+      placeholder=(t 'adminUsm.group.namePlaceholder')
       value=(readonly group.name)
       maxLength=256
       focusOut=(action "handleNameChange" value="target.value")
     }}
   </div>
-  <div class="group-control">
+  <div class="control">
     {{rsa-form-textarea
       tabIndex="2"
-      label="Group Description"
-      placeholder="Enter a description"
+      label=(t 'adminUsm.group.description')
+      placeholder=(t 'adminUsm.group.descPlaceholder')
       value=(readonly group.description)
       maxLength=8000
       focusOut=(action 'handleDescriptionChange' value='target.value')

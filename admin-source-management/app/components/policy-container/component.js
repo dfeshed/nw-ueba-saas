@@ -1,0 +1,1 @@
+export { default } from 'admin-source-management/components/policy-container/component';

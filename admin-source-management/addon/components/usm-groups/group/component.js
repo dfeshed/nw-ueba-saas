@@ -8,7 +8,7 @@ import {
 import {
   editGroup,
   saveGroup
-} from 'admin-source-management/actions/creators/group-creators';
+} from 'admin-source-management/actions/data-creators/group-creators';
 
 const stateToComputed = (state) => ({
   group: group(state),

@@ -1,4 +1,4 @@
-import * as ACTION_TYPES from 'admin-source-management/actions/types/groups-types';
+import * as ACTION_TYPES from 'admin-source-management/actions/types';
 import groupsAPI from 'admin-source-management/actions/api/groups-api';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };

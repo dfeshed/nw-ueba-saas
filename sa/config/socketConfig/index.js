@@ -7,6 +7,7 @@ const preferencesConfigGen = require('../../../preferences').socketRouteGenerato
 const respondConfigGen = require('../../../respond').socketRouteGenerator;
 const configureConfigGen = require('../../../configure').socketRouteGenerator;
 const packagerConfigGen = require('../../../packager').socketRouteGenerator;
+const usmAdminConfigGen = require('../../../admin').socketRouteGenerator;
 const adminConfigGen = require('./administration');
 const featuresConfigGen = require('./features');
 
@@ -18,6 +19,7 @@ const configGenerators = [
   contextConfigGen,
   preferencesConfigGen,
   packagerConfigGen,
+  usmAdminConfigGen,
   adminConfigGen,
   featuresConfigGen
 ];

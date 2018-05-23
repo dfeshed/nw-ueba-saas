@@ -1,18 +1,18 @@
 import Route from '@ember/routing/route';
 import { inject } from '@ember/service';
-import { initializeGroup } from 'admin-source-management/actions/data-creators/group-creators';
+import { initializePolicy } from 'admin-source-management/actions/data-creators/policy';
 
 export default Route.extend({
   redux: inject(),
 
   model() {
     const redux = this.get('redux');
-    redux.dispatch(initializeGroup());
+    redux.dispatch(initializePolicy());
   },
 
   actions: {
-    transitionToGroups() {
-      this.transitionTo('groups');
+    transitionToPolicies() {
+      this.transitionTo('policies');
     }
   }
 });
