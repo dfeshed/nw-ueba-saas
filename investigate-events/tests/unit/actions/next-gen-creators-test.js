@@ -23,4 +23,13 @@ module('Unit | Actions | NextGen Creators', function() {
     assert.equal(action.type, ACTION_TYPES.DELETE_NEXT_GEN_PILL, 'action has the correct type');
     assert.equal(action.payload.pillData, 'foo', 'action pillData has the right value');
   });
+
+  test('editNextGenPill action creator returns proper type and payload', function(assert) {
+    const action = nextGenCreators.editNextGenPill({
+      pillData: 'foo'
+    });
+
+    assert.equal(action.type, ACTION_TYPES.EDIT_NEXT_GEN_PILL, 'action has the correct type');
+    assert.equal(action.payload.pillData, 'foo', 'action pillData has the right value');
+  });
 });

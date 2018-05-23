@@ -2,34 +2,21 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import Immutable from 'seamless-immutable';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 import { fillIn, find, findAll, render, settled, triggerKeyEvent, waitUntil } from '@ember/test-helpers';
 import sinon from 'sinon';
 
 import { patchReducer } from '../../../../helpers/vnext-patch';
+import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import nextGenCreators from 'investigate-events/actions/next-gen-creators';
 
-const ENTER_KEY = '13';
-const X_KEY = '88';
+const ENTER_KEY = 13;
+const X_KEY = 88;
 
 const metaPowerSelect = '.pill-meta .ember-power-select-trigger';
 const operatorPowerSelect = '.pill-operator .ember-power-select-trigger';
 const powerSelectOption = '.ember-power-select-option';
 const value = '.pill-value input';
-
-const initialState = {
-  dictionaries: {
-    language: [
-      { count: 0, format: 'Text', metaName: 'a', flags: 1, displayName: 'A' },
-      { count: 0, format: 'Text', metaName: 'b', flags: 2, displayName: 'B' },
-      { count: 0, format: 'Text', metaName: 'c', flags: 3, displayName: 'C' }
-    ]
-  },
-  nextGen: {
-    pillsData: []
-  }
-};
 
 let setState;
 const newActionSpy = sinon.spy(nextGenCreators, 'addNextGenPill');
@@ -41,8 +28,7 @@ module('Integration | Component | Query Pills', function(hooks) {
 
   hooks.beforeEach(function() {
     setState = (state) => {
-      const fullState = { investigate: state };
-      patchReducer(this, Immutable.from(fullState));
+      patchReducer(this, state);
     };
   });
 
@@ -60,7 +46,7 @@ module('Integration | Component | Query Pills', function(hooks) {
   });
 
   test('Creating a pill sets filters and sends action for redux state update', async function(assert) {
-    setState({ ...initialState });
+    new ReduxDataHelper(setState).language().pillsData().build();
     this.set('filters', []);
 
     await render(hbs`{{query-container/query-pills filters=filters isActive=true}}`);
@@ -92,12 +78,10 @@ module('Integration | Component | Query Pills', function(hooks) {
   });
 
   test('newPillPosition is set correctly', async function(assert) {
-    setState({
-      ...initialState,
-      nextGen: {
-        pillsData: [1, 2, 3]
-      }
-    });
+    new ReduxDataHelper(setState)
+      .language()
+      .pillsData([1, 2, 3])
+      .build();
 
     this.set('filters', []);
 

@@ -8,6 +8,13 @@ export const addNextGenPill = ({ pillData, position }) => ({
   }
 });
 
+export const editNextGenPill = ({ pillData }) => ({
+  type: ACTION_TYPES.EDIT_NEXT_GEN_PILL,
+  payload: {
+    pillData
+  }
+});
+
 export const deleteNextGenPill = ({ pillData }) => ({
   type: ACTION_TYPES.DELETE_NEXT_GEN_PILL,
   payload: {

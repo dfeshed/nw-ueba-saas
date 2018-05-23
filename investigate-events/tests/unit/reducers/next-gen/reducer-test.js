@@ -98,3 +98,41 @@ test('DELETE_NEXT_GEN_PILL removes the pill provided', function(assert) {
   assert.equal(result.pillsData.length, 1, 'pillsData is the correct length');
   assert.equal(result.pillsData[0].id, 2, 'pillsData item is in the right position');
 });
+
+//
+// EDIT_NEXT_GEN_PILL
+//
+
+test('EDIT_NEXT_GEN_PILL edits first pill provided', function(assert) {
+  const action = {
+    type: ACTION_TYPES.EDIT_NEXT_GEN_PILL,
+    payload: {
+      pillData: {
+        id: '1',
+        foo: 1234
+      }
+    }
+  };
+  const result = reducer(stateWithPills, action);
+
+  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
+  assert.equal(result.pillsData[0].id, 1, 'pillsData item is in the right position');
+  assert.equal(result.pillsData[0].foo, 1234, 'pillsData item had its data updated');
+});
+
+test('EDIT_NEXT_GEN_PILL edits last pill provided', function(assert) {
+  const action = {
+    type: ACTION_TYPES.EDIT_NEXT_GEN_PILL,
+    payload: {
+      pillData: {
+        id: '2',
+        foo: 8907
+      }
+    }
+  };
+  const result = reducer(stateWithPills, action);
+
+  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
+  assert.equal(result.pillsData[1].id, 2, 'pillsData item is in the right position');
+  assert.equal(result.pillsData[1].foo, 8907, 'pillsData item had its data updated');
+});

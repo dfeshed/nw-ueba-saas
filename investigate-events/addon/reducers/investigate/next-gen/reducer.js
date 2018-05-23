@@ -26,6 +26,20 @@ export default handleActions({
     ]));
   },
 
+  [ACTION_TYPES.EDIT_NEXT_GEN_PILL]: (state, { payload }) => {
+    const { pillData } = payload;
+
+    const position = state.pillsData.map((pD) => pD.id).indexOf(pillData.id);
+
+    const newPillsData = Immutable.from([
+      ...state.pillsData.slice(0, position),
+      { ...pillData },
+      ...state.pillsData.slice(position + 1)
+    ]);
+
+    return state.set('pillsData', newPillsData);
+  },
+
   [ACTION_TYPES.DELETE_NEXT_GEN_PILL]: (state, { payload }) => {
     const { pillData: { id } } = payload;
     const newPills = state.pillsData.filter((pD) => pD.id !== id);

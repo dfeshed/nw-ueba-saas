@@ -44,6 +44,15 @@ export default Component.extend({
   valueString: null,
 
   /**
+   * Is this component being used to create a new pill
+   * or is it an already existing pill
+   * @type {boolean}
+   * @public
+   */
+  @computed('pillData')
+  isExistingPill: (pillData) => !!pillData && !!pillData.id,
+
+  /**
    * The meta control can expand to take all the space if there is no operator
    * selected and no value set.
    * @private
@@ -206,9 +215,18 @@ export default Component.extend({
    * @private
    */
   _createPill(data) {
-    // TODO - Sure more will happen here, just doing this for now to see that
-    // something different happens when hitting the Enter key.
     const valueString = data;
+    const pillData = this._createPillData(valueString);
+
+    // TODO
+    //
+    // Eventually we will not want to turn "new" pills
+    // into real pills, instead clearing them out and letting
+    // them remain blank new pill templates. Real pills
+    // would be added via state and state interation in the
+    // pills template. This would mean that the changes we
+    // make here would be different based on new vs edit
+    //
     this.setProperties({
       isMetaActive: false,
       isOperatorActive: false,
@@ -216,7 +234,12 @@ export default Component.extend({
       isActive: false,
       valueString
     });
-    this._broadcast(MESSAGE_TYPES.PILL_CREATED, this._createPillData(valueString));
+
+    if (this.get('isExistingPill')) {
+      this._broadcast(MESSAGE_TYPES.PILL_EDITED, pillData);
+    } else {
+      this._broadcast(MESSAGE_TYPES.PILL_CREATED, pillData);
+    }
   },
 
   /**

@@ -1,6 +1,12 @@
 import Immutable from 'seamless-immutable';
 import CONFIG from 'investigate-events/reducers/investigate/config';
 
+const DEFAULT_LANGUAGES = [
+  { count: 0, format: 'Text', metaName: 'a', flags: 1, displayName: 'A' },
+  { count: 0, format: 'Text', metaName: 'b', flags: 2, displayName: 'B' },
+  { count: 0, format: 'Text', metaName: 'c', flags: 3, displayName: 'C' }
+];
+
 const _set = (obj, key, val) => {
   if (obj[key]) {
     obj[key] = val;
@@ -192,4 +198,17 @@ export default class DataHelper {
     }
     return this;
   }
+
+  language(language = DEFAULT_LANGUAGES) {
+    _set(this.state, 'dictionaries.language', language);
+    return this;
+  }
+
+  // NEXT GEN
+
+  pillsData(pD = []) {
+    _set(this.state, 'nextGen.pillsData', pD);
+    return this;
+  }
+
 }

@@ -1,11 +1,13 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { patchReducer } from '../../../../helpers/vnext-patch';
-import Immutable from 'seamless-immutable';
 import hbs from 'htmlbars-inline-precompile';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 import { click, fillIn, find, findAll, focus, render, triggerKeyEvent, waitUntil } from '@ember/test-helpers';
+
+import { patchReducer } from '../../../../helpers/vnext-patch';
+import ReduxDataHelper from '../../../../helpers/redux-data-helper';
+
 
 const ENTER_KEY = 13;
 const X_KEY = 88;
@@ -21,19 +23,6 @@ const powerSelectOption = '.ember-power-select-option';
 const valueInput = '.pill-value input';
 const trim = (text) => text.replace(/\s+/g, '').trim();
 
-const initialState = {
-  dictionaries: {
-    language: [
-      { count: 0, format: 'Text', metaName: 'a', flags: 1, displayName: 'A' },
-      { count: 0, format: 'Text', metaName: 'b', flags: 2, displayName: 'B' },
-      { count: 0, format: 'Text', metaName: 'c', flags: 3, displayName: 'C' }
-    ]
-  },
-  nextGen: {
-    pillsData: []
-  }
-};
-
 let setState;
 
 module('Integration | Component | Query Pill', function(hooks) {
@@ -43,8 +32,7 @@ module('Integration | Component | Query Pill', function(hooks) {
 
   hooks.beforeEach(function() {
     setState = (state) => {
-      const fullState = { investigate: state };
-      patchReducer(this, Immutable.from(fullState));
+      patchReducer(this, state);
     };
   });
 
@@ -56,13 +44,13 @@ module('Integration | Component | Query Pill', function(hooks) {
   });
 
   test('it activates pill-meta if active upon initialization', async function(assert) {
-    setState({ ...initialState });
+    new ReduxDataHelper(setState).language().pillsData().build();
     await render(hbs`{{query-container/query-pill isActive=true}}`);
     assert.equal(findAll(metaPowerSelect).length, 1);
   });
 
   test('it allows you to select a meta value', async function(assert) {
-    setState({ ...initialState });
+    new ReduxDataHelper(setState).language().pillsData().build();
     await render(hbs`{{query-container/query-pill isActive=true}}`);
     selectChoose(metaPowerSelect, powerSelectOption, 0);// option a
     await waitUntil(() => !find(metaPowerSelect));
@@ -70,7 +58,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   });
 
   test('it allows you to select an operator after a meta value was selected', async function(assert) {
-    setState({ ...initialState });
+    new ReduxDataHelper(setState).language().pillsData().build();
     await render(hbs`{{query-container/query-pill isActive=true}}`);
     selectChoose(metaPowerSelect, powerSelectOption, 0);// option A
     await waitUntil(() => find(operatorPowerSelect));
@@ -80,7 +68,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   });
 
   test('it sets pill-value active after selecting an operator', async function(assert) {
-    setState({ ...initialState });
+    new ReduxDataHelper(setState).language().pillsData().build();
     await render(hbs`{{query-container/query-pill isActive=true}}`);
     selectChoose(metaPowerSelect, powerSelectOption, 0);// option A
     await waitUntil(() => find(operatorPowerSelect));
@@ -90,7 +78,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   });
 
   test('it allows you to edit the meta after it was selected', async function(assert) {
-    setState({ ...initialState });
+    new ReduxDataHelper(setState).language().pillsData().build();
     await render(hbs`{{query-container/query-pill isActive=true}}`);
     // Select meta option A
     await selectChoose(meta, powerSelectOption, 0);
@@ -112,7 +100,7 @@ module('Integration | Component | Query Pill', function(hooks) {
 
   test('A pill when supplied with meta, operator, and value will send a message to create', async function(assert) {
     const done = assert.async();
-    setState({ ...initialState });
+    new ReduxDataHelper(setState).language().pillsData().build();
 
     this.set('handleMessage', (messageType, data, position) => {
 
@@ -153,7 +141,7 @@ module('Integration | Component | Query Pill', function(hooks) {
 
   test('A pill when supplied with meta and operator that does not accept a value will send a message to create', async function(assert) {
     const done = assert.async();
-    setState({ ...initialState });
+    new ReduxDataHelper(setState).language().pillsData().build();
 
     this.set('handleMessage', (messageType, data, position) => {
 

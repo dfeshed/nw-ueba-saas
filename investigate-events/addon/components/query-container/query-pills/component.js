@@ -41,6 +41,9 @@ const QueryPills = Component.extend({
         case MESSAGE_TYPES.PILL_DELETED:
           this._pillDeleted(data);
           break;
+        case MESSAGE_TYPES.PILL_EDITED:
+          this._pillEdited(data);
+          break;
         case MESSAGE_TYPES.PILL_INITIALIZED:
           // Do nothing right now
           break;
@@ -90,6 +93,27 @@ const QueryPills = Component.extend({
     // END LEGACY FILTERS SET TO KEEP NEAR-TERM SEARCH WORKING
 
     this.send('deleteNextGenPill', { pillData });
+  },
+
+  /**
+   * Edit pill in state
+   * @param {*} pillData The data for the pill
+   * @private
+   */
+  _pillEdited(pillData) {
+    // LEGACY FILTERS SET TO KEEP NEAR-TERM SEARCH WORKING
+    // Take current pills, add new one, mark that they are 'saved'
+    const pillsData = this.get('pillsData');
+    const position = pillsData.map((pD) => pD.id).indexOf(pillData.id);
+    const newPillsData = [
+      ...pillsData.slice(0, position),
+      { ...pillData },
+      ...pillsData.slice(position + 1)
+    ];
+    this.set('filters', newPillsData);
+    // END LEGACY FILTERS SET TO KEEP NEAR-TERM SEARCH WORKING
+
+    this.send('editNextGenPill', { pillData });
   }
 
 });
