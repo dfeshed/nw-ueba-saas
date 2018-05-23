@@ -140,19 +140,6 @@
                             </sources>
                         </mapping>
                     </mappings>
-                    <preinstallScriptlet>
-                        <script>
-                            <!-- pre installation commands: -->
-                            echo "Stopping Tomcat"
-                            systemctl stop tomcat.service
-
-                            echo "Removing core's webapp - TEMPORARY"
-                            rm -rf /opt/tomcat/webapps/presidio-manager*
-
-
-                            <!-- end of pre installation -->
-                        </script>
-                    </preinstallScriptlet>
                     <postinstallScriptlet>
                         <script>
                             <!-- post installation commands: -->
