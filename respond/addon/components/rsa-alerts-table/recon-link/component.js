@@ -30,12 +30,17 @@ const ReconLink = Component.extend({
     if (!patternMatch) {
       return null;
     }
+    return this.lookupCoreDevice(services, patternMatch);
+  },
+
+  lookupCoreDevice(services, patternMatch) {
     const [ , eventHost, eventPort ] = patternMatch;
     const lookup = _.filter(services, (service) => {
       const { host, port } = service;
       const hostFound = host && host == eventHost;
       const portFound = port && port == eventPort;
-      return hostFound && portFound;
+      const portFallbackFound = port && parseInt(port, 10) + 6000 == eventPort;
+      return hostFound && (portFound || portFallbackFound);
     });
     return lookup && lookup.length === 1 && lookup[0].id;
   },
