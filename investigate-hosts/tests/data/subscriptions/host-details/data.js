@@ -217,5 +217,6 @@ module.exports = {
     'lastUpdatedTime': '2017-07-11T05:42:57.021Z',
     'agentMode': 'userModeOnly'
   },
-  'agentStatus': { 'lastSeenTime': 1500091621745, 'scanStatus': 'idle' }
+  'agentStatus': { 'lastSeenTime': 1500091621745, 'scanStatus': 'idle' },
+  'groups': { 'name': 'group1', 'type': 'type1', 'id': 'id1' }
 };

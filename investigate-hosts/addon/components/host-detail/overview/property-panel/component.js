@@ -26,7 +26,12 @@ export default PropertyPanel.extend({
           const { fieldPrefix, field, labelKey } = fieldItem;
           const label = `${this.get('localeNameSpace')}.${labelKey}`;
           // If field prefix combine that field to get the value
-          const value = fieldPrefix ? get(data, `${fieldPrefix}.${field}`) : get(data, field);
+          let value = fieldPrefix ? get(data, `${fieldPrefix}.${field}`) : get(data, field);
+          if (field === 'groups') {
+            value = value.map((v) => {
+              return v.name;
+            });
+          }
           return {
             ...fieldItem,
             value,

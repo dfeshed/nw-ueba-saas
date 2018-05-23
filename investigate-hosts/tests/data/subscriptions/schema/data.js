@@ -251,9 +251,9 @@ export default {
       'wrapperType': 'STRING'
     },
     {
-      'name': 'machineIdentity.group',
+      'name': 'groups',
       'description': '',
-      'searchable': false,
+      'searchable': true,
       'defaultProjection': false,
       'wrapperType': 'STRING'
     },

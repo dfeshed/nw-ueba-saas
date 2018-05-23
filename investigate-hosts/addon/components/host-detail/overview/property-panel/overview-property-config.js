@@ -1,5 +1,15 @@
 export default [
   {
+    sectionName: 'Groups',
+    prefix: 'groups',
+    fields: [
+      {
+        field: 'groups',
+        labelKey: 'groups'
+      }
+    ]
+  },
+  {
     sectionName: 'Agent',
     fields: [
       {

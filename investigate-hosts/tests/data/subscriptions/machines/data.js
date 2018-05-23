@@ -11,6 +11,18 @@ export default {
       'lastUpdatedTime': '2017-03-08T11:55:33.814Z',
       'scanStatus': 'idle'
     },
+    'groups': [
+      {
+        'id': 'group-id1',
+        'type': 'group-type1',
+        'name': 'group-name1'
+      },
+      {
+        'id': 'group-id2',
+        'type': 'group-type2',
+        'name': 'group-name2'
+      }
+    ],
     'machineIdentity': {
       'id': 'C1C6F9C1-74D1-43C9-CBD4-289392F6442F',
       'group': 'default',
@@ -157,6 +169,18 @@ export default {
     'analysisData': {
       'machineRiskScore': 89
     },
+    'groups': [
+      {
+        'id': 'group-id1',
+        'type': 'group-type',
+        'name': 'group-nameA'
+      },
+      {
+        'id': 'group-id2',
+        'type': 'group-type2',
+        'name': 'group-nameB'
+      }
+    ],
     'machineIdentity': {
       'id': '019A39C8-3E18-387F-EAD4-EA217519638A',
       'group': 'default',

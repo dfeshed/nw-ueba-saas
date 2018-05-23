@@ -240,6 +240,15 @@ const FILTER_TYPES = [
     'isDefault': false,
     'filterType': 'ip',
     'invalidError': 'invalidIP'
+  },
+  {
+    'propertyName': 'groups.name',
+    'label': 'investigateHosts.hosts.column.groups.name',
+    'filterControl': 'host-list/content-filter/text-filter',
+    'selected': false,
+    'panelId': 'groups',
+    'isDefault': false,
+    'invalidError': 'invalidGroup'
   }
 
 ];

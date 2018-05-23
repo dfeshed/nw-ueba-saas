@@ -9,7 +9,7 @@ const defaultConfig = {
   selected: [],
   propertyName: 'signature',
   panelId: 'list-filter-test',
-  label: 'investigateHosts.hosts.column.machineIdentity.group',
+  label: 'investigateHosts.hosts.column.groups.name',
   options: ['singned', 'unsigned', 'other'],
   expression: {
   }
@@ -26,14 +26,14 @@ test('it should render the list filter button', function(assert) {
   this.set('config', defaultConfig);
   this.render(hbs`{{host-list/content-filter/list-filter config=config}}`);
   assert.equal(this.$('.filter-trigger-button').length, 1, 'List filter button exists');
-  assert.equal(this.$('.filter-trigger-button span').text().trim(), 'Agent Group: All', 'Should display correct filter label');
+  assert.equal(this.$('.filter-trigger-button span').text().trim(), 'Agent Groups: All', 'Should display correct filter label');
 });
 
 test('should show filter options on clicking the trigger button', function(assert) {
   this.set('config', defaultConfig);
   this.render(hbs`{{host-list/content-filter/list-filter config=config}}`);
   assert.equal(this.$('.filter-trigger-button').length, 1, 'List filter button exists');
-  assert.equal(this.$('.filter-trigger-button span').text().trim(), 'Agent Group: All', 'Should display correct filter label');
+  assert.equal(this.$('.filter-trigger-button span').text().trim(), 'Agent Groups: All', 'Should display correct filter label');
   this.$('.filter-trigger-button').trigger('click');
   return wait().then(() => {
     assert.equal($('.list-filter__content').length, 1);
@@ -50,7 +50,7 @@ test('it parse the given expression correctly for display', function(assert) {
   };
   this.set('config', { ...defaultConfig, expression });
   this.render(hbs`{{host-list/content-filter/list-filter config=config}}`);
-  assert.equal(this.$('.filter-trigger-button span').text().trim(), 'Agent Group: singned', 'Should display correct filter label');
+  assert.equal(this.$('.filter-trigger-button span').text().trim(), 'Agent Groups: singned', 'Should display correct filter label');
   this.$('.filter-trigger-button').trigger('click');
   return wait().then(() => {
     assert.equal($('.list-filter__content').length, 1);
@@ -77,7 +77,7 @@ test('it should send correct expression for filtering on update', function(asser
     }]);
   });
   this.render(hbs`{{host-list/content-filter/list-filter config=config}}`);
-  assert.equal(this.$('.filter-trigger-button span').text().trim(), 'Agent Group: singned', 'Should display correct filter label');
+  assert.equal(this.$('.filter-trigger-button span').text().trim(), 'Agent Groups: singned', 'Should display correct filter label');
   this.$('.filter-trigger-button').trigger('click');
   return wait().then(() => {
     assert.equal($('.list-filter__content').length, 1);
@@ -85,7 +85,7 @@ test('it should send correct expression for filtering on update', function(asser
     $('.list-filter__content input:eq(1)').change();
     $('.footer button').trigger('click');
     return wait().then(() => {
-      assert.equal(this.$('.filter-trigger-button span').text().trim(), 'Agent Group: singned', 'Should display correct filter label');
+      assert.equal(this.$('.filter-trigger-button span').text().trim(), 'Agent Groups: singned', 'Should display correct filter label');
     });
   });
 });

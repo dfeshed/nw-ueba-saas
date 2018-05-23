@@ -2321,6 +2321,9 @@ export default {
           scanStatus: 'Agent Scan Status',
           lastSeenTime: 'Agent Last Seen'
         },
+        groups: {
+          name: 'Agent Groups'
+        },
         machine: {
           machineOsType: 'Operating System',
           machineName: 'Hostname',
@@ -2401,7 +2404,6 @@ export default {
         },
         machineIdentity: {
           machineName: 'Hostname',
-          group: 'Agent Group',
           agentMode: 'Agent Mode',
           agent: {
             exeCompileTime: 'Agent - User Mode Compile Time',
@@ -2479,6 +2481,7 @@ export default {
       properties: {
         filter: 'Type to filter list',
         checkbox: 'Show properties with values only',
+        groups: 'Groups',
         machine: {
           securityConfigurations: 'Security Configurations',
           hostFileEntries: {
