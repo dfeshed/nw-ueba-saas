@@ -41,7 +41,8 @@ public enum InterceptorType {
     JSON_TIMESTAMP_WITH_OFFSET(JsonTimestampWithOffsetFormatterInterceptor.Builder.class),
     JSON_SEARCH_AND_REPLACE(JsonSearchAndReplaceInterceptor.Builder.class),
     JSON_FIELD_SWITCH_CASE_INTERCEPTOR(JsonFieldSwitchCaseInterceptor.Builder.class),
-    JSON_ARRAY_TO_SINGLE(JsonArrayToElementInterceptor.Builder.class);
+    JSON_ARRAY_TO_SINGLE(JsonArrayToElementInterceptor.Builder.class),
+    JSON_EPOCH(JsonEpochInterceptor.Builder.class);
 
     private final Class<? extends Interceptor.Builder> builderClass;
 
