@@ -50,6 +50,7 @@ public class JsonRegexCaptorAndFormatter {
     }
 
     public JSONObject captureAndFormat(JSONObject jsonObject) {
+        if (!jsonObject.has(sourceKey)) return jsonObject;
         String sourceValue = jsonObject.getString(sourceKey);
         Object destinationValue = JSONObject.NULL;
 
