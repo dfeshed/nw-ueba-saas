@@ -11,17 +11,10 @@ import {
   BATCH_TYPES
 } from 'recon/actions/util/batch-data-handler';
 
-const BATCH_CHARACTER_SIZE = 20000;
-const TIME_BETWEEN_BATCHES = [500];
+const BATCH_CHARACTER_SIZE = 15000;
+const TIME_BETWEEN_BATCHES = [400];
 
 const TEXT_BATCH_SIZE = 50;
-
-const selector = (response) => {
-  if (response.data && response.data.length > 0) {
-    return response.data;
-  }
-  return null;
-};
 
 export const fetchTextData = (
   { endpointId, eventId, decode, maxPacketsForText },
@@ -34,7 +27,8 @@ export const fetchTextData = (
   const streamingQuery = addStreaming(basicQuery, undefined, TEXT_BATCH_SIZE);
   const maxPacketsQuery = addMaxPackets(streamingQuery, maxPacketsForText);
   const decodeQuery = addDecode(maxPacketsQuery, decode);
-  request.streamRequest({
+
+  const cursor = request.pagedStreamRequest({
     method: 'stream',
     modelName: 'reconstruction-text-data',
     query: decodeQuery,
@@ -42,7 +36,19 @@ export const fetchTextData = (
       cancelPreviouslyExecuting: true // can only have one event's text at a time
     },
     onResponse: batchDataHandler({
-      dataHandler: HANDLERS.socketResponse(selector, dispatchData),
+      dataHandler: HANDLERS.socketResponse((response) => {
+        if (response.data && response.data.length > 0) {
+          const packetProgress = response.meta['packet-progress'];
+          // call cursor.next repeatedly until MT sends complete = true
+          // Note that we keep getting a marker with the meta, until complete = true
+          // limit of 2500 packets will be removed once pagination is in place
+          if (packetProgress < 2500 && !response.meta.complete) {
+            cursor.next();
+          }
+          return response.data;
+        }
+        return null;
+      }, dispatchData),
       batchType: BATCH_TYPES.TEXT,
       batchCallback: dispatchBatch,
       batchSize: BATCH_CHARACTER_SIZE,

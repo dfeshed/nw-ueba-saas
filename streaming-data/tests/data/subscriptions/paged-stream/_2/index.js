@@ -23,8 +23,8 @@ export default {
     let filters = [];
     if (frame.body) {
       const parsedBody = JSON.parse(frame.body);
-      if (parsedBody.filters) {
-        filters = parsedBody.filters;
+      if (parsedBody.filter) {
+        filters = parsedBody.filter;
       }
     }
     const markerFilter = filters.find((f) => f.field === 'marker');

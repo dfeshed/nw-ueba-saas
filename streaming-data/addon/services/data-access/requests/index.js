@@ -144,7 +144,7 @@ const pagedStreamRequest = (options, routeName) => {
     // A 1-based page number
     let currentPage = 1;
 
-    const originalFilters = options.query.filters ? [ ...options.query.filters ] : [];
+    const originalFilters = options.query.filter ? [ ...options.query.filter ] : [];
 
     const functionMakePageRequest = () => {
 
@@ -152,10 +152,11 @@ const pagedStreamRequest = (options, routeName) => {
 
       // undefined means first page, no marker
       if (pageMarker === undefined) {
-        options.query.filters = originalFilters;
+        options.query.filter = originalFilters;
       } else {
-        // otherwise need to create a marker for request
-        options.query.filters = [
+        // otherwise need to create a marker for the SEND request for subsequent calls
+        // eg: { "filter": [.... {"field": "marker","value": "44"}]
+        options.query.filter = [
           ...originalFilters,
           {
             field: 'marker',
@@ -173,7 +174,8 @@ const pagedStreamRequest = (options, routeName) => {
           // Much depends on meta being present
           if (response.meta) {
             const { complete } = response.meta;
-
+            // Check if MT flagging this response as too big
+            const isItemTooLarge = response.meta['REACTIVE-MESSAGES-DROPPED'];
             // If ths is the first time the stream has indicated it
             // it is complete, then fire the callback
             if (complete === true && !hasBeenCompleted) {
@@ -191,7 +193,7 @@ const pagedStreamRequest = (options, routeName) => {
               markers.push(response.meta.marker);
             }
 
-            setCursorFlags(response.meta.marker);
+            setCursorFlags(response.meta.marker, isItemTooLarge);
           }
 
           options.onResponse(response);
@@ -210,6 +212,7 @@ const pagedStreamRequest = (options, routeName) => {
       canPrevious: false,
       canNext: false,
       canLast: false,
+      itemTooLarge: false,
       first() {
         if (cursor.canFirst) {
           currentPage = 1;
@@ -241,10 +244,13 @@ const pagedStreamRequest = (options, routeName) => {
     };
 
     // set flags inside the cursor for use both internally and by user
-    const setCursorFlags = (currentMarker) => {
+    const setCursorFlags = (currentMarker, isItemTooLarge = false) => {
       const numberOfMarkers = markers.length;
       const indexOfCurrentMarker = markers.lastIndexOf(currentMarker);
-
+      // The caller to the pagedStreamRequest needs to know if the item is too big so that it can be handled correctly with an appropriate message on the UI.
+      if (isItemTooLarge) {
+        cursor.itemTooLarge = true;
+      }
       // only 1 marker then all flags stay with default (false)
       if (numberOfMarkers > 1) {
         const notOnFirstPage = indexOfCurrentMarker > 1;
