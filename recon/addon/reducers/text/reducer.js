@@ -46,7 +46,7 @@ const textReducer = handleActions({
     const textContent = (state.textContent || Immutable.from([])).concat(augmentedEntries);
 
     let { maxPacketsReached } = state;
-    if (payload.meta && payload.meta.MAX_PACKETS_THRESHOLD) {
+    if (payload.meta && payload.meta['MAX-PACKETS-THRESHOLD']) {
       maxPacketsReached = true;
     }
     return state.merge({ textContent, maxPacketsReached });
