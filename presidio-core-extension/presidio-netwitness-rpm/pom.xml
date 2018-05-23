@@ -127,18 +127,18 @@
                                 </source>
                             </sources>
                         </mapping>
-                        <!--<mapping>-->
+                        <mapping>
                             <!-- package presidio workflows library-->
-                            <!--<directoryIncluded>false</directoryIncluded>-->
-                            <!--<directory>${rpm-maven-plugin.workflows_packages_directory}</directory>-->
-                            <!--<username>presidio</username>-->
-                            <!--<groupname>presidio</groupname>-->
-                            <!--<sources>-->
-                                <!--<source>-->
-                                    <!--<location>${project.build.directory}/eggs</location>-->
-                                <!--</source>-->
-                            <!--</sources>-->
-                        <!--</mapping>-->
+                            <directoryIncluded>false</directoryIncluded>
+                            <directory>${rpm-maven-plugin.workflows_packages_directory}</directory>
+                            <username>presidio</username>
+                            <groupname>presidio</groupname>
+                            <sources>
+                                <source>
+                                    <location>${project.build.directory}/eggs</location>
+                                </source>
+                            </sources>
+                        </mapping>
                     </mappings>
                     <preinstallScriptlet>
                         <script>
