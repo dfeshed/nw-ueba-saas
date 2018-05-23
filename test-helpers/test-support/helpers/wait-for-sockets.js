@@ -18,13 +18,13 @@ const updateCounter = (excluded, method) => {
   };
 };
 
-export function waitForSockets(excluding) {
+export function waitForSockets(excluding, waitUntil) {
   if (Socket.createStream !== originalCreateStreamFunc) {
     throw 'A previous call to waitForSockets() never reverted the patch after the test was completed. To fix this, call the function returned from this method after your test is completed';
   }
 
   let counter = 0;
-  registerWaiter(() => counter === 0);
+  registerWaiter(() => counter === (waitUntil || 0));
 
   const decrementStop = function(stream, updateFunc) {
     const origStop = stream.stop;

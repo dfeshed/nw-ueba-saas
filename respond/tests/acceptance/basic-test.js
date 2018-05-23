@@ -15,7 +15,8 @@ moduleForAcceptance('Acceptance | basic', {
 test('visiting an unknown route redirects to /respond/incidents', function(assert) {
   assert.expect(1);
 
-  const done = waitForSockets();
+  const waitUntil = -1;
+  const done = waitForSockets(['stream'], waitUntil);
 
   visit('/respond/blahblah');
 
@@ -31,7 +32,8 @@ test('visiting an unknown route redirects to /respond/incidents', function(asser
 test('visiting /respond redirects to /respond/incidents', function(assert) {
   assert.expect(1);
 
-  const done = waitForSockets();
+  const waitUntil = -1;
+  const done = waitForSockets(['stream'], waitUntil);
 
   visit('/respond');
 

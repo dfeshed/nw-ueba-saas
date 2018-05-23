@@ -1,5 +1,4 @@
 import Route from '@ember/routing/route';
-import { Promise } from 'rsvp';
 import { inject as service } from '@ember/service';
 import $ from 'jquery';
 import { get } from '@ember/object';
@@ -52,20 +51,18 @@ export default Route.extend({
 
   getServices(redux) {
     const getServices = bindActionCreators(recon.getServices, redux.dispatch.bind(redux));
-    return new Promise((resolve) => {
-      return getServices().then(() => {
-        resolve();
-      }).catch(() => {
-        // eslint-disable-next-line no-console
-        console.log('Error fetching core services');
-        resolve();
-      });
-    });
+    try {
+      getServices();
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log('Error fetching core services: ', e);
+    }
   },
 
   model() {
     const redux = get(this, 'redux');
-    return this.getServices(redux);
+    this.getServices(redux);
+    return {};
   },
 
   activate() {

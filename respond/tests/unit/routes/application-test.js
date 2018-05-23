@@ -4,8 +4,11 @@ import { setupTest } from 'ember-qunit';
 import { patchSocket, throwSocket } from '../../helpers/patch-socket';
 import { patchReducer } from '../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
+import { computed } from '@ember/object';
 import { getServices, isServicesLoading, isServicesRetrieveError } from 'respond/reducers/respond/recon/selectors';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import { waitFor } from 'ember-wait-for-test-helper/wait-for';
+import { settled } from '@ember/test-helpers';
 import ApplicationRoute from 'respond/routes/application';
 
 const getServiceState = (state) => {
@@ -19,6 +22,8 @@ const getServiceState = (state) => {
   };
 };
 
+let route, redux;
+
 module('Unit | Route | application', function(hooks) {
   setupTest(hooks);
 
@@ -28,13 +33,17 @@ module('Unit | Route | application', function(hooks) {
     this.owner.register('service:-routing', Service.extend({
       currentRouteName: 'application'
     }));
+    redux = this.owner.lookup('service:redux');
+    const PatchedRoute = ApplicationRoute.extend({
+      redux: computed(function() {
+        return redux;
+      })
+    });
+    route = PatchedRoute.create();
   });
 
   test('should fetch services and push service data into redux', async function(assert) {
     assert.expect(12);
-
-    const route = ApplicationRoute.create();
-    const redux = this.owner.lookup('service:redux');
 
     let { services, loading, error } = getServiceState(redux.getState());
     assert.equal(loading, undefined);
@@ -47,16 +56,17 @@ module('Unit | Route | application', function(hooks) {
       assert.deepEqual(query, {});
     });
 
-    const promise = route.getServices(redux);
+    route.model();
 
     ({ services, loading, error } = getServiceState(redux.getState()));
     assert.equal(loading, true);
     assert.equal(error, undefined);
     assert.equal(services, undefined);
 
-    await promise;
-
-    ({ services, loading, error } = getServiceState(redux.getState()));
+    await waitFor(() => {
+      ({ services, loading, error } = getServiceState(redux.getState()));
+      return services && Object.keys(services).length === 4;
+    });
 
     assert.equal(loading, false);
     assert.equal(error, false);
@@ -99,9 +109,6 @@ module('Unit | Route | application', function(hooks) {
   test('any failure fetching services will recover gracefully', async function(assert) {
     assert.expect(9);
 
-    const route = ApplicationRoute.create();
-    const redux = this.owner.lookup('service:redux');
-
     let { services, loading, error } = getServiceState(redux.getState());
     assert.equal(loading, undefined);
     assert.equal(error, undefined);
@@ -109,22 +116,23 @@ module('Unit | Route | application', function(hooks) {
 
     const done = throwSocket({ methodToThrow: 'findAll', modelNameToThrow: 'core-service' });
 
-    const promise = route.getServices(redux);
+    route.model();
 
     ({ services, loading, error } = getServiceState(redux.getState()));
     assert.equal(loading, true);
     assert.equal(error, undefined);
     assert.deepEqual(services, undefined);
 
-    return promise.then(async () => {
+    await waitFor(() => {
       ({ services, loading, error } = getServiceState(redux.getState()));
-      assert.equal(loading, false);
-      assert.equal(error, true);
-      assert.deepEqual(services, undefined);
-      done();
-    }).catch(() => {
-      assert.ok(false, 'should not have re-thrown exception');
+      return loading === false;
     });
+
+    assert.equal(loading, false);
+    assert.equal(error, true);
+    assert.deepEqual(services, undefined);
+
+    return settled().then(() => done());
   });
 
 });
