@@ -483,8 +483,8 @@ export default {
           headerTwo: 'FREE-FORM MODE QUERY FILTER EXAMPLES',
           textTwo: {
             one: {
-              description: 'Find events with a 4 to 6 character long username that contains admin',
-              example: 'user.all length 4-6 && user.all regex ".*admin*"'
+              description: 'Find events with an 8 to 11 character username similar to atreeman-72',
+              example: 'user.all length 8-11 && (user.all regex "^a[a-z]{2}ee[a-z]{3}-[0-9]{2}")'
             },
             two: {
               description: 'Find events that are either HTTP network events or related to aix or ciscoasa logs',
