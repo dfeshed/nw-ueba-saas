@@ -91,8 +91,7 @@ const PillMeta = Component.extend({
      * trigger element. It's looking for an input string that ends with a space.
      * If it finds one and the power-select has been down-selected to one
      * result, or the full `metaName` has been typed, then trigger a `select`
-     * event on the power-select. Ultimately, this triggers the `onChange`
-     * action above.
+     * event on the power-select.
      * If the input string is empty, it resets the `selection`. We do this to
      * prevent the previously highlighted item from staying highlighted.
      * @private
@@ -101,11 +100,11 @@ const PillMeta = Component.extend({
       const isSpace = input.slice(-1) === ' ';
       const { options, results } = powerSelectAPI;
       if (isSpace && results.length === 1) {
-        powerSelectAPI.actions.select(results[0]);
+        this._broadcast(MESSAGE_TYPES.META_SELECTED, results[0]);
       } else if (isSpace && results.length > 1) {
         const match = this._hasExactMatch(input.trim(), results);
         if (match) {
-          powerSelectAPI.actions.select(match);
+          this._broadcast(MESSAGE_TYPES.META_SELECTED, match);
         }
       } else if (input.length === 0) {
         this.set('selection', null);
