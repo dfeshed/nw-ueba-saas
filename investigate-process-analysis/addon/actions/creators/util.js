@@ -49,7 +49,7 @@ const _getMetaFilter = (agentId, pid, isFetchParent) => {
         value: '\'nwendpoint\''
       },
       {
-        value: isFetchParent ? `(vid.src = \'${pid}\' || vid.dst = \'${pid}\')` : `(vid.src = \'${pid}\')`
+        value: isFetchParent ? `(vid.src = ${pid} || vid.dst = ${pid})` : `(vid.src = ${pid})`
       }
     ]
   };

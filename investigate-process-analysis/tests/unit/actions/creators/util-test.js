@@ -9,7 +9,7 @@ module('Unit | Selectors | process-tree', function() {
     const input = {
       et: 1234567890,
       st: 1234566790,
-      vid: '1',
+      vid: 1,
       pn: 'test',
       sid: 1,
       aid: 2
@@ -20,7 +20,7 @@ module('Unit | Selectors | process-tree', function() {
     assert.equal(queryNode.metaFilter.conditions.length, 4, 'should contains 4 conditions');
 
     queryNode = getQueryNode(input, '1');
-    assert.equal(queryNode.metaFilter.conditions[3].value, '(vid.src = \'1\')', 'should use passed process name');
+    assert.equal(queryNode.metaFilter.conditions[3].value, '(vid.src = 1)', 'should use passed process name');
   });
 
   test('hasherizeEventMeta returns object of the events', function(assert) {
