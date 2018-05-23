@@ -116,21 +116,28 @@ module('Integration | Component | Incident Inspector Header', function(hooks) {
     await click(selectors.confirmButton);
   });
 
-  test('If the api call for escalation fails, an error flash message is shown', async function(assert) {
-    assert.expect(2);
-    throwSocket();
-    patchFlash((flash) => {
-      const translation = this.owner.lookup('service:i18n');
-      const expectedMessage = translation.t('respond.incidents.actions.actionMessages.escalationFailure', { incidentId: 'INC-1234' });
-      assert.equal(flash.type, 'error');
-      assert.equal(flash.message.string, expectedMessage);
-    });
-    this.set('info', {
-      id: 'INC-1234',
-      name: 'Something Wicked This Way Comes'
-    });
-    await render(hbs`{{rsa-incidents/inspector-header info=info isEscalateAvailable=true}}`);
-    await click(selectors.escalateButton);
-    await click(selectors.confirmButton);
-  });
+  const _testEscalationFailureMessages = function(errorCode, i18nKeyLeaf) {
+    return async function(assert) {
+      assert.expect(2);
+      throwSocket({ message: { code: errorCode } });
+      patchFlash((flash) => {
+        const translation = this.owner.lookup('service:i18n');
+        const expectedMessage = translation.t(`respond.incidents.actions.actionMessages.${i18nKeyLeaf}`, { incidentId: 'INC-1234' });
+        assert.equal(flash.type, 'error');
+        assert.equal(flash.message.string, expectedMessage);
+      });
+      this.set('info', {
+        id: 'INC-1234',
+        name: 'Something Wicked This Way Comes'
+      });
+      await render(hbs`{{rsa-incidents/inspector-header info=info isEscalateAvailable=true}}`);
+      await click(selectors.escalateButton);
+      await click(selectors.confirmButton);
+    };
+  };
+
+  test('If the api call for escalation fails with code 1, the proper error flash message is shown', _testEscalationFailureMessages(1, 'sendToArcherFailed'));
+  test('If the api call for escalation fails with code 31, the proper error flash message is shown', _testEscalationFailureMessages(31, 'sendToArcherConnectionFailed'));
+  test('If the api call for escalation fails with code 32, the proper error flash message is shown', _testEscalationFailureMessages(32, 'sendToArcherMetadataLoadFailed'));
+  test('If the api call for escalation fails with code 33, the proper error flash message is shown', _testEscalationFailureMessages(33, 'sendToArcherValidationFailed'));
 });

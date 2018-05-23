@@ -852,8 +852,11 @@ export default {
           addAlertToIncidentFailed: 'There was a problem adding the selected alerts to this incident',
           confirmEscalationTitle: 'Confirm Escalation',
           confirmEscalation: 'Are you sure you want to escalate this incident? This action is not reversible and may initiate additional business processes in external systems.',
-          escalationSuccess: 'Incident {{incidentId}} has been escalated',
-          escalationFailure: 'There was a problem escalating incident {{incidentId}}'
+          escalationSuccess: 'Incident {{incidentId}} has been escalated to Archer',
+          sendToArcherConnectionFailed: 'Could not connect to Archer. Archer may be unavailable or the credentials may be incorrect.',
+          sendToArcherMetadataLoadFailed: 'Could not send incident ({{incidentId}}) to Archer. There was a problem loading Archer field definitions.',
+          sendToArcherValidationFailed: 'Could not send incident ({{incidentId}}) to Archer because of a validation failure. There is required information missing or there are values that are too long.',
+          sendToArcherFailed: 'There was a problem sending this incident ({{incidentId}}) to Archer. Note: This feature only supports Archer version 6.4 or later.'
         },
         deselectAll: 'Deselect all'
       },

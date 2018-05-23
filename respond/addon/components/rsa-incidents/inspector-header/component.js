@@ -11,7 +11,16 @@ const dispatchToActions = (dispatch) => {
     escalate(incidentId) {
       dispatch(incidentCreators.escalate(incidentId, {
         onSuccess: () => (this.send('success', 'respond.incidents.actions.actionMessages.escalationSuccess', { incidentId })),
-        onFailure: () => (this.send('failure', 'respond.incidents.actions.actionMessages.escalationFailure', { incidentId }))
+        onFailure: (response = {}) => {
+          const { code } = response;
+          const errorCodesToI18n = {
+            31: 'sendToArcherConnectionFailed',
+            32: 'sendToArcherMetadataLoadFailed',
+            33: 'sendToArcherValidationFailed'
+          };
+          const i18nFailureKey = `respond.incidents.actions.actionMessages.${(errorCodesToI18n[code] || 'sendToArcherFailed')}`;
+          this.send('failure', i18nFailureKey, { incidentId }, { sticky: true });
+        }
       }));
     }
   };
