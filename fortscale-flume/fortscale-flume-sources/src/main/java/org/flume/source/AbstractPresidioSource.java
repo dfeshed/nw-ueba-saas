@@ -45,6 +45,7 @@ public abstract class AbstractPresidioSource extends AbstractEventDrivenSource i
     protected void doConfigure(Context context) throws FlumeException {
         isBatch = context.getBoolean(CommonStrings.IS_BATCH, false);
         applicationName = context.getString(CommonStrings.APPLICATION_NAME, this.getName());
+        schema = context.getString(CommonStrings.SCHEMA_NAME);
         doPresidioConfigure(context);
     }
 
