@@ -55,6 +55,8 @@ const formComponent = Component.extend({
 
   flashMessages: service(),
 
+  features: service(),
+
   minDate: 'today',
 
   errorClass: null,
@@ -82,8 +84,6 @@ const formComponent = Component.extend({
   testLog: true,
 
   autoUninstall: null,
-
-  isFusionEnabled: true,
 
   isFullAgentEnabled: false,
 

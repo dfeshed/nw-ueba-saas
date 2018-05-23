@@ -2,6 +2,7 @@ import { connect } from 'ember-redux';
 import Component from '@ember/component';
 import { setDataSourceTab, setHostPropertyTabView } from 'investigate-hosts/actions/data-creators/details';
 import { getDataSourceTab, getContext, getAlertsCount, getIncidentsCount } from 'investigate-hosts/reducers/visuals/selectors';
+import { inject as service } from '@ember/service';
 
 import {
   resetFilters
@@ -26,7 +27,9 @@ const Container = Component.extend({
 
   tagName: '',
 
-  classNames: 'host-list show-more-filter main-zone'
+  classNames: 'host-list show-more-filter main-zone',
+
+  features: service()
 
 });
 

@@ -16,7 +16,8 @@
     <box class="table-zone">
       {{host-list/host-table}}
     </box>
-    <box class="risk-property-zone">
+    {{#if features.rsaEndpointFusion}}
+      <box class="risk-property-zone">
         <box fit>
           {{#host-detail/utils/host-title-bar tabs=dataSourceTabs defaultAction=(action 'setDataSourceTab') as |tab|}}
             {{#if (eq tab.name 'ALERT')}}
@@ -28,7 +29,8 @@
             {{/if}}
           {{/host-detail/utils/host-title-bar}}
         </box>
-        {{endpoint/risk-panel activeDataSourceTab=activeDataSourceTab data=context errorMessage = contextError}}
-    </box>
+          {{endpoint/risk-panel activeDataSourceTab=activeDataSourceTab data=context errorMessage = contextError}}
+      </box>
+    {{/if}}
   </hbox>
 {{/if}}

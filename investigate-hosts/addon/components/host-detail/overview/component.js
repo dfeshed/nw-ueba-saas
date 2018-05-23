@@ -2,6 +2,7 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { getHostPropertyTab, getContext, getAlertsCount, getIncidentsCount } from 'investigate-hosts/reducers/visuals/selectors';
 import { setHostPropertyTabView } from 'investigate-hosts/actions/data-creators/details';
+import { inject as service } from '@ember/service';
 
 const stateToComputed = (state) => ({
   host: state.endpoint.overview.hostDetails,
@@ -25,6 +26,8 @@ const HostOverview = Component.extend({
   classNames: ['host-overview'],
 
   domIsReady: false,
+
+  features: service(),
 
   didRender() {
     // Delay rendering the property panel

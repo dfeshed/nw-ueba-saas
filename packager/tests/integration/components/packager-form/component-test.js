@@ -10,8 +10,9 @@ import { find, findAll, render, click } from '@ember/test-helpers';
 import { patchReducer } from '../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import Immutable from 'seamless-immutable';
+import Service from '@ember/service';
 
-let setState;
+let setState, saFeatures;
 const setPackagerConfigMethodStub = sinon.stub(Packager, 'setPackagerConfig');
 const newConfig = {
   'packageConfig': {
@@ -39,6 +40,7 @@ const devices = [{
   'family': null,
   'meta': { }
 }];
+const featuresService = Service.extend({});
 
 module('Integration | Component | packager-form', function(hooks) {
   setupRenderingTest(hooks);
@@ -46,6 +48,9 @@ module('Integration | Component | packager-form', function(hooks) {
     setState = (state) => {
       patchReducer(this, Immutable.from(state));
     };
+    this.owner.register('service:features', featuresService);
+    saFeatures = this.owner.lookup('service:features');
+    saFeatures.rsaEndpointFusion = true;
     initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
   });

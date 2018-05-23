@@ -5,18 +5,21 @@
     </vbox>
     <vbox xs="3" class="host-properties-box">
       {{#if domIsReady}}
-        <box fit>
-          {{#host-detail/utils/host-title-bar tabs=hostPropertyTabs defaultAction=(action 'setHostPropertyTabView') as |tab|}}
-            {{#if (eq tab.name 'ALERT')}}
-              <div class="label">{{t tab.label count=alertsCount}}</div>
-            {{else if (eq tab.name 'INCIDENT')}}
-              <div class="label">{{t tab.label count=incidentsCount}}</div>
-            {{else}}
-              <div class="label">{{t tab.label}}</div>
-            {{/if}}
-          {{/host-detail/utils/host-title-bar}}
-        </box>
+        {{#if features.rsaEndpointFusion}}
+          <box fit>
+           {{#host-detail/utils/host-title-bar tabs=hostPropertyTabs defaultAction=(action 'setHostPropertyTabView') as |tab|}}
+             {{#if (eq tab.name 'ALERT')}}
+               <div class="label">{{t tab.label count=alertsCount}}</div>
+             {{else if (eq tab.name 'INCIDENT')}}
+               <div class="label">{{t tab.label count=incidentsCount}}</div>
+             {{else}}
+               <div class="label">{{t tab.label}}</div>
+             {{/if}}
+           {{/host-detail/utils/host-title-bar}}
+          </box>
+        {{/if}}
         <box class='scroll-box'>
+        {{#if features.rsaEndpointFusion}}
           {{#if (eq activePropertyTab 'HOST')}}
             {{host-detail/overview/property-panel
               data=hostData
@@ -24,6 +27,12 @@
           {{else}}
             {{endpoint/risk-panel activeDataSourceTab=activePropertyTab data=context errorMessage=contextError}}
           {{/if}}
+        {{else}}
+          {{host-detail/overview/property-panel
+            title=(t 'investigateHosts.tabs.hostProperties')
+            data=hostData
+            localeNameSpace='investigateHosts.hosts.properties'}}
+        {{/if}}
         </box>
       {{else}}
         <centered>

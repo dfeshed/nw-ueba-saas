@@ -4,11 +4,17 @@
       {{rsa-icon name="arrow-down-12"}}
     </span>
   {{/if}}
-  {{#rsa-context-menu contextItems=contextItems}}
+  {{#if features.rsaEndpointFusion}}
+    {{#rsa-context-menu contextItems=contextItems}}
+      <span title="{{item.name}}" class="process-name {{unless item.hasChild 'is-leaf'}}">
+        {{item.name}}
+      </span>
+    {{/rsa-context-menu}}
+  {{else}}
     <span title="{{item.name}}" class="process-name {{unless item.hasChild 'is-leaf'}}">
       {{item.name}}
     </span>
-  {{/rsa-context-menu}}
+  {{/if}}
 </span>
 {{#if showServiceModal}}
   {{#endpoint/core-services-modal

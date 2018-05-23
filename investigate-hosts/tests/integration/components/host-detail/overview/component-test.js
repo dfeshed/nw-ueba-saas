@@ -9,8 +9,11 @@ import Immutable from 'seamless-immutable';
 import { lookupData } from '../../../../integration/components/state/visual.lookupData';
 import { linux } from '../../../../integration/components/state/overview.hostdetails';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
+import Service from '@ember/service';
 
-let initState;
+let initState, saFeatures;
+const featuresService = Service.extend({});
+
 module('Integration | Component | host-detail/overwiew', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolver('investigate-hosts')
@@ -19,6 +22,9 @@ module('Integration | Component | host-detail/overwiew', function(hooks) {
     initState = (state) => {
       patchReducer(this, Immutable.from(state));
     };
+    this.owner.register('service:features', featuresService);
+    saFeatures = this.owner.lookup('service:features');
+    saFeatures.rsaEndpointFusion = true;
     initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
   });

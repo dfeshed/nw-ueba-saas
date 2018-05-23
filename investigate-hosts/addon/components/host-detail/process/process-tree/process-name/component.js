@@ -22,6 +22,8 @@ const ProcessName = Component.extend({
 
   eventBus: service(),
 
+  features: service(),
+
   classNames: ['process-name-column'],
 
   agentId: null,
