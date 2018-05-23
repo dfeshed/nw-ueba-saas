@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import { scheduleOnce } from '@ember/runloop';
+import { next, scheduleOnce } from '@ember/runloop';
 import { isEmpty } from '@ember/utils';
 import computed from 'ember-computed-decorators';
 import * as MESSAGE_TYPES from '../message-types';
@@ -144,11 +144,14 @@ export default Component.extend({
      */
     onInput(input, powerSelectAPI /* event */) {
       const isSpace = input.slice(-1) === ' ';
-      const { results } = powerSelectAPI;
+      const { options, results } = powerSelectAPI;
       if (isSpace && results.length === 1) {
         this._broadcast(MESSAGE_TYPES.OPERATOR_SELECTED, results[0]);
       } else if (input.length === 0) {
         this.set('selection', null);
+        // Set the power-select highlight on the next runloop so that the
+        // power-select has time to render the full list of options.
+        next(this, () => powerSelectAPI.actions.highlight(options[0]));
       }
     },
     /**

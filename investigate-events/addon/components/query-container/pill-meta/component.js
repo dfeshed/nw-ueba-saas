@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import { scheduleOnce } from '@ember/runloop';
+import { next, scheduleOnce } from '@ember/runloop';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
@@ -99,7 +99,7 @@ const PillMeta = Component.extend({
      */
     onInput(input, powerSelectAPI /* event */) {
       const isSpace = input.slice(-1) === ' ';
-      const { results } = powerSelectAPI;
+      const { options, results } = powerSelectAPI;
       if (isSpace && results.length === 1) {
         powerSelectAPI.actions.select(results[0]);
       } else if (isSpace && results.length > 1) {
@@ -109,6 +109,28 @@ const PillMeta = Component.extend({
         }
       } else if (input.length === 0) {
         this.set('selection', null);
+        // Set the power-select highlight on the next runloop so that the
+        // power-select has time to render the full list of options.
+        next(this, () => powerSelectAPI.actions.highlight(options[0]));
+      }
+    },
+    /**
+     * This function is called every time a key is pressed, and is invoked
+     * before power-select reacts to the key that was pressed. This is here to
+     * handle one specific case. If the user presses ENTER, selecting an
+     * operator that was already selected. In that case, power-select does
+     * nothing, but we want the focus to move onto the pill value.
+     * As a side note, we cannot combine `onInput`'s functionality here because
+     * this code runs before any down-selection of options happens.
+     * @private
+     */
+    onKeyDown(powerSelectAPI, event) {
+      if (event.keyCode === 13) {
+        const { selected } = powerSelectAPI;
+        const selection = this.get('selection');
+        if (selection && selected && selection === selected) {
+          this._broadcast(MESSAGE_TYPES.META_SELECTED, selection);
+        }
       }
     }
   },

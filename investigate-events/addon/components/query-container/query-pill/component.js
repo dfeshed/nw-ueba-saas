@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import { and, empty } from 'ember-computed-decorators';
+import computed, { and, empty } from 'ember-computed-decorators';
 import * as MESSAGE_TYPES from '../message-types';
 
 const { log } = console;
@@ -45,11 +45,11 @@ export default Component.extend({
 
   /**
    * The meta control can expand to take all the space if there is no operator
-   * selected.
+   * selected and no value set.
    * @private
    */
-  @empty('selectedOperator')
-  canMetaExpand: true,
+  @computed('selectedOperator', 'valueString')
+  canMetaExpand: (op, vs) => !op && !vs,
 
   /**
    * Should the meta field take up 100% of the available pill space?
@@ -157,6 +157,7 @@ export default Component.extend({
   _metaSelected(selectedMeta) {
     this.setProperties({
       selectedMeta,
+      selectedOperator: null,
       isMetaActive: false,
       isOperatorActive: true,
       isValueActive: false
