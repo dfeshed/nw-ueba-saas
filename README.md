@@ -41,7 +41,11 @@ Presidio core is extended by [presidio-netwitness](https://github.rsa.lab.emc.co
 
 #### Integration tests jenkins on [Herzelia-tier2](https://rsahzlabauth.corp.emc.com:900/)
 
-TODO
+* Pull request triggered component tests jobs: TODO
+
+* Nightly End2End tests jobs: TODO
+
+* Performance tests jobs: TODO
 
 ## Installation
 
