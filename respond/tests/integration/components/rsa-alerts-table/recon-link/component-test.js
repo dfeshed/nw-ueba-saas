@@ -28,7 +28,7 @@ module('Integration | Component | rsa alerts table recon link', function(hooks) 
               host: '10.4.61.33',
               id: '555d9a6fe4b0d37c827d402d',
               name: 'CONCENTRATOR',
-              port: 50005,
+              port: 56005,
               version: '11.2.0.0'
             }
           }
@@ -58,7 +58,7 @@ module('Integration | Component | rsa alerts table recon link', function(hooks) 
     this.set('item', {
       id: '586ecf95ecd25950034e1312:0',
       indicatorId: '586ecf95ecd25950034e1312',
-      event_source: '10.4.61.33:50005',
+      event_source: '10.4.61.33:56005',
       event_source_id: '150',
       type: 'Instant IOC'
     });
@@ -92,7 +92,7 @@ module('Integration | Component | rsa alerts table recon link', function(hooks) 
     this.set('item', {
       id: '586ecf95ecd25950034e1312:0',
       indicatorId: '586ecf95ecd25950034e1312',
-      event_source: '10.4.61.33:50005',
+      event_source: '10.4.61.33:56005',
       event_source_id: '150',
       type: 'Instant IOC'
     });
@@ -103,7 +103,7 @@ module('Integration | Component | rsa alerts table recon link', function(hooks) 
     this.set('item', {
       id: '586ecf95ecd25950034e1312:0',
       indicatorId: '586ecf95ecd25950034e1312',
-      event_source: '10.4.61.33:50005',
+      event_source: '10.4.61.33:56005',
       event_source_id: null,
       type: 'Instant IOC'
     });
@@ -118,7 +118,7 @@ module('Integration | Component | rsa alerts table recon link', function(hooks) 
     this.set('item', {
       id: '586ecf95ecd25950034e1312:0',
       indicatorId: '586ecf95ecd25950034e1312',
-      event_source: 'sandbox:50005',
+      event_source: 'sandbox:56005',
       event_source_id: '150',
       type: 'Instant IOC'
     });
@@ -171,7 +171,7 @@ module('Integration | Component | rsa alerts table recon link', function(hooks) 
     this.set('item', {
       id: '586ecf95ecd25950034e1312:0',
       indicatorId: '586ecf95ecd25950034e1312',
-      event_source: '10.4.61.33:50005',
+      event_source: '10.4.61.33:56005',
       event_source_id: '150',
       type: 'Instant IOC'
     });
@@ -204,7 +204,7 @@ module('Integration | Component | rsa alerts table recon link', function(hooks) 
     this.set('item', {
       id: '586ecf95ecd25950034e1312:0',
       indicatorId: '586ecf95ecd25950034e1312',
-      event_source: '10.4.61.33:50005',
+      event_source: '10.4.61.33:56005',
       type: 'Instant IOC'
     });
 
@@ -220,7 +220,7 @@ module('Integration | Component | rsa alerts table recon link', function(hooks) 
     this.set('item', {
       id: '586ecf95ecd25950034e1312:0',
       indicatorId: '586ecf95ecd25950034e1312',
-      event_source: '10.4.61.33:50005',
+      event_source: '10.4.61.33:56005',
       event_source_id: '150',
       type: 'Instant IOC'
     });
@@ -243,7 +243,7 @@ module('Integration | Component | rsa alerts table recon link', function(hooks) 
     this.set('item', {
       id: '586ecf95ecd25950034e1312:0',
       indicatorId: '586ecf95ecd25950034e1312',
-      event_source: '10.4.61.33:56005',
+      event_source: '10.4.61.33:50005',
       event_source_id: '150',
       type: 'Instant IOC'
     });
@@ -266,7 +266,7 @@ module('Integration | Component | rsa alerts table recon link', function(hooks) 
               host: '10.4.61.33',
               id: '555d9a6fe4b0d37c827d402d',
               name: 'CONCENTRATOR',
-              port: '50003',
+              port: '56003',
               version: '11.2.0.0'
             }
           }
@@ -277,7 +277,7 @@ module('Integration | Component | rsa alerts table recon link', function(hooks) 
     this.set('item', {
       id: '586ecf95ecd25950034e1312:0',
       indicatorId: '586ecf95ecd25950034e1312',
-      event_source: '10.4.61.33:56003',
+      event_source: '10.4.61.33:50003',
       event_source_id: '150',
       type: 'Instant IOC'
     });

@@ -39,7 +39,7 @@ const ReconLink = Component.extend({
       const { host, port } = service;
       const hostFound = host && host == eventHost;
       const portFound = port && port == eventPort;
-      const portFallbackFound = port && parseInt(port, 10) + 6000 == eventPort;
+      const portFallbackFound = port && port - 6000 == eventPort;
       return hostFound && (portFound || portFallbackFound);
     });
     return lookup && lookup.length === 1 && lookup[0].id;
