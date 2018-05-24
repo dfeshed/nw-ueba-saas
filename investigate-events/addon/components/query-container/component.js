@@ -7,6 +7,7 @@ import { run } from '@ember/runloop';
 import { encodeMetaFilterConditions } from 'investigate-shared/actions/api/events/utils';
 import { transformTextToFilters, filterIsPresent } from 'investigate-events/actions/utils';
 import EmberObject from '@ember/object';
+import config from 'ember-get-config';
 
 const addToArray = (filterObject) => {
   const { filters, meta, operator, value, complexFilter } = filterObject;
@@ -41,10 +42,9 @@ const dispatchToActions = {
 
 const QueryContainer = Component.extend({
   classNames: ['rsa-investigate-query-container', 'rsa-button-group'],
-
   tagName: 'nav',
-
   classNameBindings: ['queryView'],
+  showNextGenFeature: config.featureFlags.nextGen,
 
   // should replace the computed with a selector once filters are in state
   @computed('filters.[]')

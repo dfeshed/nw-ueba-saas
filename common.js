@@ -157,6 +157,7 @@ const mergeSocketConfigs = function(configGenerators, environment) {
             if (!previous[modelName][method]) {
               previous[modelName][method] = methods[method];
             } else {
+              /* eslint-disable no-console */
               console.log('Ignoring duplicate socket config for', modelName, method);
             }
           });
@@ -194,7 +195,7 @@ const addFeatureFlags = function(environment) {
     return featureFlagConfig;
   }
 
-  featureFlagConfig = {}
+  featureFlagConfig = {};
 
   Object.keys(featureFlagDefaultHash).forEach((featureFlag) => {
     const providedDefault = featureFlagDefaultHash[featureFlag];

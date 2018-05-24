@@ -1,3 +1,4 @@
+/* eslint-env node */
 module.exports = {
   // used to manage future features
   future(environment, flagValue) {
@@ -16,6 +17,9 @@ module.exports = {
     }
 
     // otherwise return the flagValue
+    return flagValue;
+  },
+  nextGen(environment, flagValue = true) {
     return flagValue;
   }
 };
