@@ -72,8 +72,7 @@ export const getParentAndChildEvents = (pid, callbacks = callbacksDefault) => {
             const root = { ...node,
               processName: node['filename.src'],
               processId: node['vid.src'],
-              parentId: 0,
-              expanded: true
+              parentId: 0
             };
             const newData = data.map((item) => {
               return _getNode(item);

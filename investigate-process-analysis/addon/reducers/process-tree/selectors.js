@@ -53,7 +53,9 @@ export const rootProcess = createSelector(
       return {
         processName: queryInput.pn,
         checksum: queryInput.checksum,
-        agentId: queryInput.aid
+        agentId: queryInput.aid,
+        hidden: false,
+        children: []
       };
     }
     return null;

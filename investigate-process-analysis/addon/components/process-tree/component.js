@@ -215,6 +215,11 @@ const TreeComponent = Component.extend({
       newNode.depth = selectedNode.depth + 1;
       newNode.height = selectedNode.height - 1;
       newNode.parent = selectedNode;
+      if (newNode.children && newNode.children.length) {
+        newNode.children.forEach((d) => {
+          d.depth = newNode.depth + 1;
+        });
+      }
       return newNode;
     });
   },
@@ -323,17 +328,23 @@ const TreeComponent = Component.extend({
   /**
    * Creates the tree type data from the flat array, based on processId and parentId
    * @param eventsData
+   * @param selectedProcess
+   * @param path
    * @returns {Array}
    * @private
    */
-  _prepareTreeData(eventsData) {
+  _prepareTreeData(eventsData, selectedProcess, path) {
     const hashTable = {};
-    eventsData.forEach((aData) => hashTable[aData.processId] = { ...aData, children: [] });
+    eventsData.forEach((aData) => hashTable[aData.processId] = { ...aData, children: [], _children: [] });
     const dataTree = [];
     eventsData.forEach((aData) => {
+      hashTable[aData.processId].expanded = selectedProcess === aData.processId;
       if (aData.parentId) {
-        hashTable[aData.parentId].expanded = true;
-        hashTable[aData.parentId].children.push(hashTable[aData.processId]);
+        if (path.includes(aData.processId) || selectedProcess === aData.parentId) {
+          hashTable[aData.parentId].children.push(hashTable[aData.processId]);
+        } else {
+          hashTable[aData.parentId]._children.push(hashTable[aData.processId]);
+        }
       } else {
         dataTree.push(hashTable[aData.processId]);
       }
@@ -355,21 +366,15 @@ const TreeComponent = Component.extend({
     // If query input changes then need to re-render the tree
     if (this.get('queryInput')) {
       const onComplete = () => {
+
         const { children, selectedProcess, path } = this.getProperties('children', 'selectedProcess', 'path');
 
-        // Hide the children which are not in the selected process path
-        for (let i = 0; i < children.length; i++) {
-          const child = children[i];
-          child.hidden = true;
-          if (path.includes(child.processId) || selectedProcess === child.parentId) {
-            child.hidden = false;
-          }
-        }
+        const rootNode = this._prepareTreeData(children, selectedProcess, path); // Only initial load
 
-        const rootNode = this._prepareTreeData(children); // Only initial load
         const root = hierarchy(rootNode[0], (d) => {
-          return d.children.filter((child) => !child.hidden);
+          return d.children || [];
         });
+
         root.x0 = 0;
         root.y0 = 0;
 
@@ -381,6 +386,7 @@ const TreeComponent = Component.extend({
         this._initializeChart();
       };
       this.send('getParentAndChildEvents', this.get('selectedProcess'), { onComplete });
+
       const { checksum } = this.get('queryInput');
       const hashes = [checksum];
       this.send('fetchProcessDetails', { hashes });
@@ -401,7 +407,7 @@ const TreeComponent = Component.extend({
     const tree = treeInstance(rootNode);
 
     const nodes = tree.descendants();
-    const links = tree.descendants().slice(1);
+    const links = nodes.slice(1);
 
     // Calculating the height of the tree
     nodes.forEach((d) => {
@@ -439,7 +445,15 @@ const TreeComponent = Component.extend({
 
   expandProcess(d) {
     if (d._children || d.children) {
-      d.children = d._children;
+      let modifiedChildren = [];
+      // Show remaining children
+      if (d.data._children && d.data._children.length) {
+        modifiedChildren = d.children.concat(this._getNewNodes(d, d.data._children));
+        d.data._children = null;
+      } else {
+        modifiedChildren = d.children || [];
+      }
+      d.children = d._children || modifiedChildren;
       d._children = null;
       this.buildChart(d);
     } else {
