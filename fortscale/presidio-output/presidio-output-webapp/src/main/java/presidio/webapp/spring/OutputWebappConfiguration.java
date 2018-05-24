@@ -16,14 +16,11 @@ import presidio.output.domain.services.users.UserPersistencyService;
 import presidio.output.domain.spring.PresidioOutputPersistencyServiceConfig;
 import presidio.webapp.controllers.alerts.AlertsApi;
 import presidio.webapp.controllers.alerts.AlertsController;
+import presidio.webapp.controllers.licensing.DailyMetricsApi;
+import presidio.webapp.controllers.licensing.DailyMetricsController;
 import presidio.webapp.controllers.users.UsersApi;
 import presidio.webapp.controllers.users.UsersApiController;
-import presidio.webapp.service.FeedbackService;
-import presidio.webapp.service.FeedbackServiceImpl;
-import presidio.webapp.service.RestAlertService;
-import presidio.webapp.service.RestAlertServiceImpl;
-import presidio.webapp.service.RestUserService;
-import presidio.webapp.service.RestUserServiceImpl;
+import presidio.webapp.service.*;
 
 @Import({PresidioOutputPersistencyServiceConfig.class, AlertSeverityServiceConfig.class, UserSeverityServiceConfig.class, MongoConfig.class})
 @Configuration
@@ -46,6 +43,11 @@ public class OutputWebappConfiguration {
         return new RestAlertServiceImpl(alertService, feedbackService(), pageNumberAlert, pageSizeAlert);
     }
 
+    @Bean
+    RestMetricsService restMetricsService() {
+        return new RestMetricServiceImpl();
+    }
+
     @Value("${default.page.size.for.rest.user}")
     private int pageSizeUser;
 
@@ -66,6 +68,11 @@ public class OutputWebappConfiguration {
     @Bean
     AlertsApi getAlertsController() {
         return new AlertsController(restAlertService());
+    }
+
+    @Bean
+    DailyMetricsApi getPresidioMetricsController() {
+        return new DailyMetricsController(restMetricsService());
     }
 
     @Bean
