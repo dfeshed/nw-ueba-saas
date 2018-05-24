@@ -64,7 +64,7 @@ export default Component.extend(HighlightsEntities, {
   },
 
   // Formatter to convert normalized event's property names into user-friendly display names.
-  @computed
+  @computed('i18n.locale')
   propertyNameFormatter() {
     const i18n = this.get('i18n');
     const prefix = 'respond.eventDetails.labels.';

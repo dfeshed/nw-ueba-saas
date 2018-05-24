@@ -1192,7 +1192,9 @@ export default {
         ua_num_events: 'Occurences in the last week',
         ua_ratio: 'Percentage of IPs With Rare User Agent',
         ua_ratio_score: 'Rare User Agent Score',
-        ua_cond_cardinality: 'IPs with Rare User Agent'
+        ua_cond_cardinality: 'IPs with Rare User Agent',
+        event_source: 'Event Source',
+        event_source_id: 'Event Source ID'
       },
       periodValue: {
         hours: 'hour(s)',

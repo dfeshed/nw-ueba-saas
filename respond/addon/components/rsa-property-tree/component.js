@@ -118,13 +118,12 @@ export default Component.extend({
    * @type {{key: String, value: *, type: String, isNestedValue: Boolean}[]}
    * @private
    */
-  @computed('model', 'resolvedOrder', 'modelPath')
-  keys(model, resolvedOrder, modelPath) {
+  @computed('model', 'resolvedOrder', 'modelPath', 'propertyNameFormatter')
+  keys(model, resolvedOrder, modelPath, propertyNameFormatter) {
     if (!model) {
       return [];
     }
 
-    const propertyNameFormatter = this.get('propertyNameFormatter');
     return resolvedOrder
       .filter((name) => !isEmpty(model[name]))
       .map((name) => {

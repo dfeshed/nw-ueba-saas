@@ -1,7 +1,9 @@
 import { setupRenderingTest } from 'ember-qunit';
 import { module, test } from 'qunit';
+import { set } from '@ember/object';
 import hbs from 'htmlbars-inline-precompile';
-import { findAll, render } from '@ember/test-helpers';
+import { findAll, find, render, settled } from '@ember/test-helpers';
+import { run } from '@ember/runloop';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
@@ -42,6 +44,27 @@ module('Integration | Component | Event Details', function(hooks) {
     assert.equal(links[0].href.match(urlPartsRegex)[3], relatedLinks[0].url, 'The url for the first link matches that found in the data');
     assert.equal(links[1].textContent.trim(), 'Investigate Destination Domain', 'The text for the second link matches the type (after split/capitalized)');
     assert.equal(links[1].href.match(urlPartsRegex)[3], relatedLinks[1].url, 'The url for the second link matches that found in the data');
+  });
+
+  test('The event details labels properly update when locale is changed', async function(assert) {
+    assert.expect(2);
+    this.set('eventDetails', {
+      timestamp: 1399530494000
+    });
+    await render(hbs`{{rsa-event-details/body model=eventDetails}}`);
+
+    const timestampInGerman = 'Zeitstempel';
+    const i18n = this.owner.lookup('service:i18n');
+    run(i18n, 'addTranslations', 'de-de', { 'respond.eventDetails.labels.timestamp': timestampInGerman });
+
+    const selector = '.rsa-event-details-body table tr:first-of-type td:first-of-type';
+    assert.equal(find(selector).textContent.trim(), 'Timestamp');
+
+    set(i18n, 'locale', 'de-de');
+
+    return settled().then(async () => {
+      assert.equal(find(selector).textContent.trim(), timestampInGerman);
+    });
   });
 });
 
