@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import presidio.webapp.model.Metric;
 import presidio.webapp.model.MetricQuery;
+import presidio.webapp.model.MetricsWrapper;
 
 public interface DailyMetricsApi {
 
@@ -19,9 +20,9 @@ public interface DailyMetricsApi {
     @RequestMapping(value = "/ueba-daily-metrics",
             produces = "application/json",
             method = RequestMethod.GET)
-    default ResponseEntity<Metric> getMetrics(
+    default ResponseEntity<MetricsWrapper> getMetrics(
             @ApiParam(value = "metrics query", required = true) MetricQuery metricQuery) {
         // do some magic!
-        return new ResponseEntity<Metric>(HttpStatus.OK);
+        return new ResponseEntity<MetricsWrapper>(HttpStatus.OK);
     }
 }
