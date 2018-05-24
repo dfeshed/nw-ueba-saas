@@ -430,7 +430,8 @@ export default {
     nextGen: {
       linkTitle: 'Next Gen Mode',
       placeholder: 'Next Gen Query Bar',
-      textLabel: 'Next Gen Mode'
+      textLabel: 'Next Gen Mode',
+      deletePill: 'Delete this filter'
     },
     size: {
       bytes: 'bytes',

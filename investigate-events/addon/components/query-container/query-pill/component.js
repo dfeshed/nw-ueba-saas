@@ -27,7 +27,7 @@ export default Component.extend({
    * @type {boolean}
    * @public
    */
-  isActive: false,
+  isActive: true,
 
   /**
    * An action to call when sending messages and data to the parent component.
@@ -51,6 +51,14 @@ export default Component.extend({
    */
   @computed('pillData')
   isExistingPill: (pillData) => !!pillData && !!pillData.id,
+
+  /**
+   * Is this pill able to be deleted?
+   * @type {boolean}
+   * @public
+   */
+  @computed('isExistingPill', 'isActive')
+  isDeletable: (isExistingPill, isActive) => isExistingPill && !isActive,
 
   /**
    * The meta control can expand to take all the space if there is no operator

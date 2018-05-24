@@ -18,7 +18,10 @@
   sendMessage=(action 'handleMessage')
   valueString=(readonly valueString)
 }}
-
-{{#if isExistingPill}}
-  {{!-- delete-pill component here-ish --}}
+&nbsp;
+{{!-- This won't be true at the moment --}}
+{{#if isDeletable}}
+  {{query-container/delete-pill
+    sendMessage=(action 'handleMessage')
+  }}
 {{/if}}

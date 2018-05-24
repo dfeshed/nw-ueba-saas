@@ -3,10 +3,11 @@
     pillData=(readonly pillData)
     sendMessage=(action 'handleMessage')
     position=index
+    isActive=false
   }}
 {{/each}} --}}
+
 {{query-container/query-pill
-  isActive=true
   sendMessage=(action 'handleMessage')
   position=newPillPosition
 }}

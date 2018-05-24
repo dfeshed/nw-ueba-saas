@@ -21,6 +21,7 @@ const operator = '.pill-operator';
 const operatorPowerSelect = '.pill-operator .ember-power-select-trigger';
 const powerSelectOption = '.ember-power-select-option';
 const valueInput = '.pill-value input';
+const deletePill = '.delete-pill';
 const trim = (text) => text.replace(/\s+/g, '').trim();
 
 let setState;
@@ -171,5 +172,26 @@ module('Integration | Component | Query Pill', function(hooks) {
 
     // Choose the third operator option which does not require a value
     selectChoose(operatorPowerSelect, powerSelectOption, 2); // option exists
+  });
+
+  test('presents a delete icon when not active and pill created', async function(assert) {
+    this.set('pillData', { id: 1 });
+    new ReduxDataHelper(setState).language().build();
+    await render(hbs`{{query-container/query-pill isActive=false pillData=pillData}}`);
+    assert.equal(findAll(deletePill).length, 1, 'Delete pill component is present');
+  });
+
+  test('does not present a delete icon when not a created pill', async function(assert) {
+    this.set('pillData', null);
+    new ReduxDataHelper(setState).language().build();
+    await render(hbs`{{query-container/query-pill isActive=false pillData=pillData}}`);
+    assert.equal(findAll(deletePill).length, 0, 'Delete pill component is not present');
+  });
+
+  test('does not present a delete icon when when active', async function(assert) {
+    this.set('pillData', { id: 1 });
+    new ReduxDataHelper(setState).language().build();
+    await render(hbs`{{query-container/query-pill isActive=true pillData=pillData}}`);
+    assert.equal(findAll(deletePill).length, 0, 'Delete pill component is not present');
   });
 });
