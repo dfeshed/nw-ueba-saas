@@ -20,7 +20,6 @@ public class ActiveDirectoryRawEvent extends AbstractInputDocument {
     @Field(IS_USER_ADMIN_FIELD_NAME)
     private boolean isUserAdmin;
 
-    @NotEmpty
     @Field(OBJECT_ID_FIELD_NAME)
     private String objectId;
 
