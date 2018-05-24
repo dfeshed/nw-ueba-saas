@@ -6,6 +6,7 @@ import * as ACTION_TYPES from 'respond/actions/types';
 
 export default Route.extend({
   redux: service(),
+  accessControl: service(),
   queryParams: {
     eventId: {
       refreshModel: false
@@ -15,6 +16,12 @@ export default Route.extend({
     },
     selection: {
       refreshModel: false
+    }
+  },
+  beforeModel() {
+    const hasReconAccess = get(this, 'accessControl.hasReconAccess');
+    if (!hasReconAccess) {
+      this.transitionTo('incident');
     }
   },
   model({ selection }, { params }) {
