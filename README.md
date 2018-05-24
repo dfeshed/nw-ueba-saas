@@ -1,4 +1,3 @@
-# presidio-core
 Presidio Core
 ========
 
@@ -29,4 +28,4 @@ Modules
    
 Installation
 =======
-See package [readme file](../package/README.md)
+See package [readme file](/package/README.md)
