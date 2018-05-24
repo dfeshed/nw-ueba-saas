@@ -55,11 +55,11 @@ const setConfig = (configData, configType, callback) => {
         onSuccess: (response) => {
           debug(`${ACTION_TYPES.GET_INFO} ${JSON.stringify(response)}`);
           const { request: { data: { packageConfig } } } = response;
-          const agentMode = packageConfig.fullAgent ? 'Full' : 'Insights';
+          const agentMode = packageConfig && packageConfig.fullAgent ? 'Full' : 'Insights';
           if (response.data.id) {
             let url = `${downloadURL}?id=${response.data.id}&agentMode=${agentMode}`;
             if (configType === 'LOG_CONFIG') {
-              url = `${downloadURLLogConfig}?id=${response.data.id}&filename=${configData.logCollectionConfig.configName}&agentMode=${agentMode}`;
+              url = `${downloadURLLogConfig}?id=${response.data.id}&filename=${configData.logCollectionConfig.configName}`;
             }
             dispatch({ type: ACTION_TYPES.DOWNLOAD_PACKAGE, payload: url });
           }
