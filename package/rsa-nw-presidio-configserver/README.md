@@ -4,10 +4,18 @@ Presidio utilizes [Spring cloud config](http://cloud.spring.io/spring-cloud-stat
 
 
 
-### Installation
+## Installation
 
 ```sh
-$ yum install rsa-nw-presidio-configserver
-$ systemctl start presidio-configserver
+yum -y install rsa-nw-presidio-configserver
+systemctl daemon-reload
+systemctl enable presidio-configserver
+systemctl start presidio-configserver
 ```
+
+## Usage
+After installation should be accessible via [http://localhost:8888](http://localhost:8888)
+
+### Configuration overrides
+can be achieved by placing a matching *.properties or *.yml file under /etc/netwitness/presidio/configserver/configurations/ 
 

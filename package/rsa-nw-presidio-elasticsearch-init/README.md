@@ -9,8 +9,13 @@ Presidio requires a set of elasticsearch indexes puplated with index-patterns, d
 Presidio elk init requires [Python](https://www.python.org/download/releases/2.7.5/) v2.7.5 to run.
 
 ```sh
-$ yum install rsa-nw-presidio-elasticsearch-init
-$ python /var/lib/netwitness/presidio/elasticsearch/init/init_elasticsearch.py --resources_path /var/lib/netwitness/presidio/elasticsearch/init/data/ --elasticsearch_url http://localhost:9200/
+yum -y install rsa-nw-presidio-elasticsearch-init
+
+source /etc/sysconfig/airflow
+python -m virtualenv $AIRFLOW_VENV
+source $AIRFLOW_VENV/bin/activate
+python /var/lib/netwitness/presidio/elasticsearch/init/init_elasticsearch.py --resources_path /var/lib/netwitness/presidio/elasticsearch/init/data/ --elasticsearch_url http://localhost:9200/
+deactivate
 ```
 
 ### Development
