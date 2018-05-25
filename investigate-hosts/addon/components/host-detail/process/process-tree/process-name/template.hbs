@@ -4,34 +4,7 @@
       {{rsa-icon name="arrow-down-12"}}
     </span>
   {{/if}}
-  {{#if features.rsaEndpointFusion}}
-    {{#rsa-context-menu contextItems=contextItems}}
-      <span title="{{item.name}}" class="process-name {{unless item.hasChild 'is-leaf'}}">
-        {{item.name}}
-      </span>
-    {{/rsa-context-menu}}
-  {{else}}
-    <span title="{{item.name}}" class="process-name {{unless item.hasChild 'is-leaf'}}">
-      {{item.name}}
-    </span>
-  {{/if}}
+  <span title="{{item.name}}" class="process-name {{unless item.hasChild 'is-leaf'}}">
+    {{item.name}}
+  </span>
 </span>
-{{#if showServiceModal}}
-  {{#endpoint/core-services-modal
-    onClose=(action 'onModalClose')
-    modalTitle=(t 'investigateHosts.pivotToInvestigate.title')
-    serviceList=serviceList as |selectedService isDisabled|}}
-
-    {{#rsa-form-button defaultAction='onCancel'}}
-      {{t 'forms.cancel'}}
-    {{/rsa-form-button}}
-
-    {{#rsa-form-button
-      isDisabled=isDisabled
-      style='primary'
-      click=(action 'navigateToProcessAnalysis' selectedService.id)}}
-      Process Analysis
-    {{/rsa-form-button}}
-
-  {{/endpoint/core-services-modal}}
-{{/if}}

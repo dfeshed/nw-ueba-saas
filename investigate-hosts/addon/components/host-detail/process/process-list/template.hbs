@@ -20,14 +20,9 @@
       as |item index column|}}
       {{#rsa-data-table/body-cell column=column}}
         {{#if (eq column.field 'name')}}
-          {{host-detail/process/process-list/process-name
-            serviceList=serviceList
-            agentId=agentId
-            item=item
-            index=index
-            osType=osType
-            column=column
-          }}
+          {{#host-detail/process/pivot-to-process-analysis serviceList=serviceList agentId=agentId osType=osType contextSelection=item}}
+            <span title="{{get item column.field}}">{{get item column.field}}</span>
+          {{/host-detail/process/pivot-to-process-analysis}}
         {{else}}
           <span title="{{get item column.field}}">{{get item column.field}}</span>
         {{/if}}

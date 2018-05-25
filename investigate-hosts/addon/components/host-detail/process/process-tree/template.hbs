@@ -18,13 +18,15 @@
       as |item index column|}}
       {{#if column.componentClass}}
         {{#rsa-data-table/body-cell item=item column=column}}
-          {{host-detail/process/process-tree/process-name
-            serviceList=serviceList
-            agentId=agentId
-            item=item
-            index=index
-            osType=osType
-            onToggleExpand=(action 'handleToggleExpand')}}
+          {{#host-detail/process/pivot-to-process-analysis serviceList=serviceList agentId=agentId osType=osType contextSelection=item}}
+            {{host-detail/process/process-tree/process-name
+              serviceList=serviceList
+              agentId=agentId
+              item=item
+              index=index
+              osType=osType
+              onToggleExpand=(action 'handleToggleExpand')}}
+          {{/host-detail/process/pivot-to-process-analysis}}
         {{/rsa-data-table/body-cell}}
       {{else}}
         {{rsa-data-table/body-cell item=item column=column}}
@@ -32,3 +34,4 @@
     {{/rsa-data-table/body}}
   {{/if}}
 {{/rsa-data-table}}
+
