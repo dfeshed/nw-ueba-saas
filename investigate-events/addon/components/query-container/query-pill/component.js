@@ -174,7 +174,6 @@ export default Component.extend({
   _metaSelected(selectedMeta) {
     this.setProperties({
       selectedMeta,
-      selectedOperator: null,
       isMetaActive: false,
       isOperatorActive: true,
       isValueActive: false
