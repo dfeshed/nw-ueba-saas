@@ -53,14 +53,14 @@ module('Integration | Component | Pill Meta', function(hooks) {
   });
 
   test('it shows a Power Select if active and has options', async function(assert) {
-    new ReduxDataHelper(setState).language(LANGUAGE).pillsData().build();
+    new ReduxDataHelper(setState).language(LANGUAGE).pillsDataEmpty().build();
     await render(hbs`{{query-container/pill-meta isActive=true}}`);
     assert.equal(findAll(metaPowerSelectTrigger).length, 1);
   });
 
   test('it broadcasts a message when a Power Select option is choosen', async function(assert) {
     assert.expect(2);
-    new ReduxDataHelper(setState).language(LANGUAGE).pillsData().build();
+    new ReduxDataHelper(setState).language(LANGUAGE).pillsDataEmpty().build();
     this.set('handleMessage', (type, data) => {
       assert.equal(type, 'PILL::META_SELECTED', 'Wrong message type');
       assert.deepEqual(data, LANGUAGE[1], 'Wrong message data');
@@ -72,7 +72,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
 
   test('it selects meta if a trailing SPACE is entered and there is one option', async function(assert) {
     assert.expect(2);
-    new ReduxDataHelper(setState).language(LANGUAGE).pillsData().build();
+    new ReduxDataHelper(setState).language(LANGUAGE).pillsDataEmpty().build();
     this.set('handleMessage', (type, data) => {
       assert.equal(type, 'PILL::META_SELECTED', 'Wrong message type');
       assert.deepEqual(data, LANGUAGE[1], 'Wrong message data');
@@ -83,7 +83,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
 
   test('it does not selects meta if a trailing SPACE is entered and there is more than one option', async function(assert) {
     assert.expect(0);
-    new ReduxDataHelper(setState).language(LANGUAGE).pillsData().build();
+    new ReduxDataHelper(setState).language(LANGUAGE).pillsDataEmpty().build();
     this.set('handleMessage', () => {
       assert.notOk('The sendMessage handler was erroneously invoked');
     });
@@ -93,7 +93,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
 
   test('it selects meta if a trailing SPACE is entered and there is an exact match', async function(assert) {
     assert.expect(2);
-    new ReduxDataHelper(setState).language(LANGUAGE).pillsData().build();
+    new ReduxDataHelper(setState).language(LANGUAGE).pillsDataEmpty().build();
     this.set('handleMessage', (type, data) => {
       assert.equal(type, 'PILL::META_SELECTED', 'Wrong message type');
       assert.deepEqual(data, LANGUAGE[2], 'Wrong message data');
@@ -103,7 +103,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
   });
 
   test('it clears out last search if Power Select looses, then gains focus', async function(assert) {
-    new ReduxDataHelper(setState).language(LANGUAGE).pillsData().build();
+    new ReduxDataHelper(setState).language(LANGUAGE).pillsDataEmpty().build();
     await render(hbs`{{query-container/pill-meta isActive=true}}`);
     // focus and assert number of options
     await click(metaPowerSelectTrigger);

@@ -7,7 +7,7 @@ import { click, fillIn, find, findAll, focus, render, triggerKeyEvent, waitUntil
 
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
-
+import { enrichedPillsData } from 'investigate-events/reducers/investigate/next-gen/selectors';
 
 const ENTER_KEY = 13;
 const X_KEY = 88;
@@ -20,8 +20,10 @@ const metaInput = '.pill-meta input';
 const operator = '.pill-operator';
 const operatorPowerSelect = '.pill-operator .ember-power-select-trigger';
 const powerSelectOption = '.ember-power-select-option';
+const pillValue = '.pill-value';
 const valueInput = '.pill-value input';
 const deletePill = '.delete-pill';
+
 const trim = (text) => text.replace(/\s+/g, '').trim();
 
 let setState;
@@ -45,13 +47,13 @@ module('Integration | Component | Query Pill', function(hooks) {
   });
 
   test('it activates pill-meta if active upon initialization', async function(assert) {
-    new ReduxDataHelper(setState).language().pillsData().build();
+    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
     await render(hbs`{{query-container/query-pill isActive=true}}`);
     assert.equal(findAll(metaPowerSelect).length, 1);
   });
 
   test('it allows you to select a meta value', async function(assert) {
-    new ReduxDataHelper(setState).language().pillsData().build();
+    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
     await render(hbs`{{query-container/query-pill isActive=true}}`);
     selectChoose(metaPowerSelect, powerSelectOption, 0);// option a
     await waitUntil(() => !find(metaPowerSelect));
@@ -59,7 +61,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   });
 
   test('it allows you to select an operator after a meta value was selected', async function(assert) {
-    new ReduxDataHelper(setState).language().pillsData().build();
+    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
     await render(hbs`{{query-container/query-pill isActive=true}}`);
     selectChoose(metaPowerSelect, powerSelectOption, 0);// option A
     await waitUntil(() => find(operatorPowerSelect));
@@ -69,7 +71,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   });
 
   test('it sets pill-value active after selecting an operator', async function(assert) {
-    new ReduxDataHelper(setState).language().pillsData().build();
+    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
     await render(hbs`{{query-container/query-pill isActive=true}}`);
     selectChoose(metaPowerSelect, powerSelectOption, 0);// option A
     await waitUntil(() => find(operatorPowerSelect));
@@ -79,7 +81,7 @@ module('Integration | Component | Query Pill', function(hooks) {
   });
 
   test('it allows you to edit the meta after it was selected', async function(assert) {
-    new ReduxDataHelper(setState).language().pillsData().build();
+    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
     await render(hbs`{{query-container/query-pill isActive=true}}`);
     // Select meta option A
     await selectChoose(meta, powerSelectOption, 0);
@@ -101,7 +103,7 @@ module('Integration | Component | Query Pill', function(hooks) {
 
   test('A pill when supplied with meta, operator, and value will send a message to create', async function(assert) {
     const done = assert.async();
-    new ReduxDataHelper(setState).language().pillsData().build();
+    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
 
     this.set('handleMessage', (messageType, data, position) => {
 
@@ -142,7 +144,7 @@ module('Integration | Component | Query Pill', function(hooks) {
 
   test('A pill when supplied with meta and operator that does not accept a value will send a message to create', async function(assert) {
     const done = assert.async();
-    new ReduxDataHelper(setState).language().pillsData().build();
+    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
 
     this.set('handleMessage', (messageType, data, position) => {
 
@@ -193,5 +195,54 @@ module('Integration | Component | Query Pill', function(hooks) {
     new ReduxDataHelper(setState).language().build();
     await render(hbs`{{query-container/query-pill isActive=true pillData=pillData}}`);
     assert.equal(findAll(deletePill).length, 0, 'Delete pill component is not present');
+  });
+
+  test('messages up that a pill needs to be deleted when delete icon clicked', async function(assert) {
+    const done = assert.async();
+
+    this.set('handleMessage', (messageType, data, position) => {
+
+      // first message will be initialized, get rid of it
+      if (messageType === 'PILL::INITIALIZED') {
+        return;
+      }
+
+      assert.equal(messageType, 'PILL::DELETED', 'Message sent for pill delete is not correct');
+      assert.deepEqual(data, { id: '1', meta: 'a', operator: '=', value: 'x' }, 'Message sent for pill create contains correct pill data');
+      assert.equal(position, 0, 'Message sent for pill create contains correct pill position');
+
+      done();
+    });
+
+    new ReduxDataHelper(setState).language().build();
+    const pills = new ReduxDataHelper().language().pillsDataPopulated().build();
+    const enrichedPills = enrichedPillsData(pills);
+    this.set('pillData', enrichedPills[0]);
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=false
+        pillData=pillData
+        position=0
+        sendMessage=(action handleMessage)
+    }}`);
+    await click(deletePill);
+  });
+
+  test('prepopulates with data when passed existing pill', async function(assert) {
+    new ReduxDataHelper(setState).language().build();
+    const pills = new ReduxDataHelper().language().pillsDataPopulated().build();
+    const enrichedPills = enrichedPillsData(pills);
+    this.set('pillData', enrichedPills[0]);
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=false
+        pillData=pillData
+      }}`
+    );
+
+    assert.equal(trim(find(meta).textContent), 'a');
+    assert.equal(trim(find(operator).textContent), '=');
+    assert.equal(trim(find(pillValue).textContent), 'x');
   });
 });

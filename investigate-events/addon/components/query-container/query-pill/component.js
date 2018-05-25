@@ -96,6 +96,7 @@ export default Component.extend({
       [MESSAGE_TYPES.META_SELECTED]: (data) => this._metaSelected(data),
       [MESSAGE_TYPES.OPERATOR_CLICKED]: () => this._operatorClicked(),
       [MESSAGE_TYPES.OPERATOR_SELECTED]: (data) => this._operatorSelected(data),
+      [MESSAGE_TYPES.PILL_DELETED]: (data) => this._deletePill(data),
       [MESSAGE_TYPES.VALUE_SET]: (data) => this._valueSet(data),
       [MESSAGE_TYPES.VALUE_ENTER_KEY]: (data) => this._createPill(data),
       [MESSAGE_TYPES.VALUE_ESCAPE_KEY]: () => this._cancelPillCreation(),
@@ -103,6 +104,15 @@ export default Component.extend({
       [MESSAGE_TYPES.VALUE_ARROW_LEFT_KEY]: (data) => this._leftArrowKeyPressed(data),
       [MESSAGE_TYPES.VALUE_ARROW_RIGHT_KEY]: (data) => this._rightArrowKeyPressed(data)
     });
+
+    if (this.get('isExistingPill')) {
+      const { meta, operator, value } = this.get('pillData');
+      this.setProperties({
+        selectedMeta: meta,
+        selectedOperator: operator,
+        valueString: value
+      });
+    }
   },
 
   didInsertElement() {
@@ -217,6 +227,14 @@ export default Component.extend({
   },
 
   /**
+   * Handles messaging around deleting this pill
+   * @private
+   */
+  _deletePill() {
+    this._broadcast(MESSAGE_TYPES.PILL_DELETED, this._createPillData());
+  },
+
+  /**
    * Handles creating a new pill.
    * @param {string} data Value of pill
    * @private
@@ -260,7 +278,20 @@ export default Component.extend({
   _createPillData(value = null) {
     const meta = this.get('selectedMeta.metaName');
     const operator = this.get('selectedOperator.displayName');
-    return { meta, operator, value };
+    const pillData = {
+      meta,
+      operator
+    };
+
+    // If is an existing pill, add id to object
+    if (this.get('isExistingPill')) {
+      pillData.id = this.get('pillData.id');
+      pillData.value = this.get('pillData.value');
+    } else {
+      pillData.value = value;
+    }
+
+    return pillData;
   },
 
   /**

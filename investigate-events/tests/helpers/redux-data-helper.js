@@ -7,6 +7,18 @@ const DEFAULT_LANGUAGES = [
   { count: 0, format: 'Text', metaName: 'c', flags: 3, displayName: 'C' }
 ];
 
+const DEFAULT_PILLS_DATA = [{
+  meta: 'a',
+  operator: '=',
+  value: 'x',
+  id: '1'
+}, {
+  meta: 'b',
+  operator: '=',
+  value: 'y',
+  id: '2'
+}];
+
 const _set = (obj, key, val) => {
   if (obj[key]) {
     obj[key] = val;
@@ -40,7 +52,9 @@ export default class DataHelper {
     const state = Immutable.from({
       investigate: this.state
     });
-    this.setState(state);
+    if (this.setState) {
+      this.setState(state);
+    }
     return state.asMutable();
   }
 
@@ -206,7 +220,12 @@ export default class DataHelper {
 
   // NEXT GEN
 
-  pillsData(pD = []) {
+  pillsDataEmpty() {
+    _set(this.state, 'nextGen.pillsData', []);
+    return this;
+  }
+
+  pillsDataPopulated(pD = DEFAULT_PILLS_DATA) {
     _set(this.state, 'nextGen.pillsData', pD);
     return this;
   }

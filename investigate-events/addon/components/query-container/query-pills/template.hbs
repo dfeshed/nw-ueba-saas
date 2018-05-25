@@ -1,11 +1,11 @@
-{{!-- {{#each pillsData as | pillData index |}}
+{{#each pillsData key="id" as | pillData index |}}
   {{query-container/query-pill
     pillData=(readonly pillData)
     sendMessage=(action 'handleMessage')
     position=index
     isActive=false
   }}
-{{/each}} --}}
+{{/each}}
 
 {{query-container/query-pill
   sendMessage=(action 'handleMessage')

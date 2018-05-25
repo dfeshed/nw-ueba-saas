@@ -2,21 +2,23 @@ import Component from '@ember/component';
 import { next, scheduleOnce } from '@ember/runloop';
 import { isEmpty } from '@ember/utils';
 import computed from 'ember-computed-decorators';
+
 import * as MESSAGE_TYPES from '../message-types';
+import {
+  eq,
+  notEq,
+  exists,
+  notExists,
+  begins,
+  contains,
+  ends
+} from 'investigate-events/util/possible-operators';
 
 // const { log } = console;
 
 const leadingSpaces = /^[\s\uFEFF\xA0]+/;
 
 const makeOperatorExpensive = (obj) => ({ ...obj, isExpensive: true });
-
-const eq = { displayName: '=', isExpensive: false, hasValue: true };
-const notEq = { displayName: '!=', isExpensive: false, hasValue: true };
-const exists = { displayName: 'exists', isExpensive: false, hasValue: false };
-const notExists = { displayName: '!exists', isExpensive: false, hasValue: false };
-const begins = { displayName: 'begins', isExpensive: false, hasValue: true };
-const contains = { displayName: 'contains', isExpensive: true, hasValue: true };
-const ends = { displayName: 'ends', isExpensive: true, hasValue: true };
 
 const operatorsForMetaIndexedByKey = [exists, notExists, makeOperatorExpensive(eq), makeOperatorExpensive(notEq)];
 const operatorsForMetaIndexedByKeyWithTextFormat = [exists, notExists, makeOperatorExpensive(eq), makeOperatorExpensive(notEq), makeOperatorExpensive(begins), ends, contains];

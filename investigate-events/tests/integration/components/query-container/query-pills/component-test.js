@@ -3,7 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
-import { fillIn, find, findAll, render, settled, triggerKeyEvent, waitUntil } from '@ember/test-helpers';
+import { fillIn, click, find, findAll, render, settled, triggerKeyEvent, waitUntil } from '@ember/test-helpers';
 import sinon from 'sinon';
 
 import { patchReducer } from '../../../../helpers/vnext-patch';
@@ -17,9 +17,11 @@ const metaPowerSelect = '.pill-meta .ember-power-select-trigger';
 const operatorPowerSelect = '.pill-operator .ember-power-select-trigger';
 const powerSelectOption = '.ember-power-select-option';
 const value = '.pill-value input';
+const deletePill = '.delete-pill';
 
 let setState;
 const newActionSpy = sinon.spy(nextGenCreators, 'addNextGenPill');
+const deleteActionSpy = sinon.spy(nextGenCreators, 'deleteNextGenPill');
 
 module('Integration | Component | Query Pills', function(hooks) {
   setupRenderingTest(hooks, {
@@ -34,10 +36,12 @@ module('Integration | Component | Query Pills', function(hooks) {
 
   hooks.afterEach(function() {
     newActionSpy.reset();
+    deleteActionSpy.reset();
   });
 
   hooks.after(function() {
     newActionSpy.restore();
+    deleteActionSpy.restore();
   });
 
   test('Upon initialization, one active pill is created', async function(assert) {
@@ -46,7 +50,7 @@ module('Integration | Component | Query Pills', function(hooks) {
   });
 
   test('Creating a pill sets filters and sends action for redux state update', async function(assert) {
-    new ReduxDataHelper(setState).language().pillsData().build();
+    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
     this.set('filters', []);
 
     await render(hbs`{{query-container/query-pills filters=filters isActive=true}}`);
@@ -80,7 +84,7 @@ module('Integration | Component | Query Pills', function(hooks) {
   test('newPillPosition is set correctly', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
-      .pillsData([1, 2, 3])
+      .pillsDataPopulated()
       .build();
 
     this.set('filters', []);
@@ -102,9 +106,32 @@ module('Integration | Component | Query Pills', function(hooks) {
       // action to store in state called
       assert.deepEqual(
         newActionSpy.args[0][0].position,
-        3,
+        2,
         'the position is correct'
       );
     });
   });
+
+  test('Deleting a pill sets filters and sends action for redux state update', async function(assert) {
+    new ReduxDataHelper(setState).language().pillsDataPopulated().build();
+    this.set('filters', []);
+
+    await render(hbs`{{query-container/query-pills isActive=true filters=filters}}`);
+    await click(deletePill);
+
+    return settled().then(async () => {
+      // Internal (temporary) filters maintained
+      const filters = this.get('filters');
+      assert.equal(filters.length, 1, 'Down to one filter');
+
+      // action to store in state called
+      assert.equal(deleteActionSpy.callCount, 1, 'The delete pill action creator was called once');
+      assert.deepEqual(
+        deleteActionSpy.args[0][0],
+        { pillData: { id: '1', meta: 'a', operator: '=', value: 'x' } },
+        'The action creator was called with the right arguments'
+      );
+    });
+  });
+
 });
