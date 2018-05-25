@@ -277,7 +277,7 @@ const QueryFragmentComponent = Component.extend({
   prevIsEditing(filterList, filterIndex) {
     if (!isEmpty(filterList)) {
       const prev = filterList.objectAt(filterIndex - 1);
-      return isEmpty(prev) ? false : prev.get('editActive');
+      return (isEmpty(prev) || !prev.get) ? false : prev.get('editActive');
     }
   },
 

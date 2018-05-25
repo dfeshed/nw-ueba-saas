@@ -2,21 +2,14 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { selectChoose } from 'ember-power-select/test-support/helpers';
-import { fillIn, click, find, findAll, render, settled, triggerKeyEvent, waitUntil } from '@ember/test-helpers';
+import { click, findAll, render, settled } from '@ember/test-helpers';
 import sinon from 'sinon';
 
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import nextGenCreators from 'investigate-events/actions/next-gen-creators';
+import { createBasicPill } from '../pill-util';
 
-const ENTER_KEY = 13;
-const X_KEY = 88;
-
-const metaPowerSelect = '.pill-meta .ember-power-select-trigger';
-const operatorPowerSelect = '.pill-operator .ember-power-select-trigger';
-const powerSelectOption = '.ember-power-select-option';
-const value = '.pill-value input';
 const deletePill = '.delete-pill';
 
 let setState;
@@ -54,17 +47,8 @@ module('Integration | Component | Query Pills', function(hooks) {
     this.set('filters', []);
 
     await render(hbs`{{query-container/query-pills filters=filters isActive=true}}`);
-    // Choose the first meta option
-    selectChoose(metaPowerSelect, powerSelectOption, 0);// option A
-    await waitUntil(() => find(operatorPowerSelect));
-    // Choose the first operator option
-    selectChoose(operatorPowerSelect, powerSelectOption, 0);// option =
-    await waitUntil(() => find(value));
-    // Fill in the value, to properly simulate the event we need to fillIn AND
-    // triggerKeyEvent for the "x" character.
-    await fillIn(value, 'x');
-    await triggerKeyEvent(value, 'keydown', X_KEY);// x
-    await triggerKeyEvent(value, 'keydown', ENTER_KEY);
+
+    await createBasicPill();
 
     return settled().then(async () => {
       // Internal (temporary) filters maintained
@@ -90,17 +74,8 @@ module('Integration | Component | Query Pills', function(hooks) {
     this.set('filters', []);
 
     await render(hbs`{{query-container/query-pills filters=filters isActive=true}}`);
-    // Choose the first meta option
-    selectChoose(metaPowerSelect, powerSelectOption, 0);// option A
-    await waitUntil(() => find(operatorPowerSelect));
-    // Choose the first operator option
-    selectChoose(operatorPowerSelect, powerSelectOption, 0);// option =
-    await waitUntil(() => find(value));
-    // Fill in the value, to properly simulate the event we need to fillIn AND
-    // triggerKeyEvent for the "x" character.
-    await fillIn(value, 'x');
-    await triggerKeyEvent(value, 'keydown', X_KEY);// x
-    await triggerKeyEvent(value, 'keydown', ENTER_KEY);
+
+    await createBasicPill();
 
     return settled().then(async () => {
       // action to store in state called

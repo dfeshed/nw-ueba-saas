@@ -1,8 +1,20 @@
 import Component from '@ember/component';
 import computed, { and, empty } from 'ember-computed-decorators';
+import _ from 'lodash';
+
 import * as MESSAGE_TYPES from '../message-types';
 
 const { log } = console;
+
+const RESET_PROPS = {
+  isActive: true,
+  selectedMeta: null,
+  selectedOperator: null,
+  valueString: null,
+  isMetaActive: true,
+  isOperatorActive: false,
+  isValueActive: false
+};
 
 export default Component.extend({
   classNameBindings: ['isActive', ':query-pill'],
@@ -98,7 +110,13 @@ export default Component.extend({
       [MESSAGE_TYPES.OPERATOR_SELECTED]: (data) => this._operatorSelected(data),
       [MESSAGE_TYPES.PILL_DELETED]: (data) => this._deletePill(data),
       [MESSAGE_TYPES.VALUE_SET]: (data) => this._valueSet(data),
-      [MESSAGE_TYPES.VALUE_ENTER_KEY]: (data) => this._createPill(data),
+      [MESSAGE_TYPES.VALUE_ENTER_KEY]: (data) => {
+        if (this.get('isExistingPill')) {
+          this._editPill(data);
+        } else {
+          this._createPill(data);
+        }
+      },
       [MESSAGE_TYPES.VALUE_ESCAPE_KEY]: () => this._cancelPillCreation(),
       [MESSAGE_TYPES.VALUE_BACKSPACE_KEY]: (data) => this._backspaceKeyPressed(data),
       [MESSAGE_TYPES.VALUE_ARROW_LEFT_KEY]: (data) => this._leftArrowKeyPressed(data),
@@ -163,6 +181,21 @@ export default Component.extend({
     this.get('sendMessage')(type, data, this.get('position'));
   },
 
+  _reset() {
+    this.setProperties(RESET_PROPS);
+  },
+
+  /**
+   * Checks current internal state and compares it to the starting state
+   * to determine if we are in a "started over" situation. Helps
+   * avoid needless prop updates.
+   * @private
+   */
+  _hasBeenReset() {
+    const props = this.getProperties(Object.keys(RESET_PROPS));
+    return _.isEqual(props, RESET_PROPS);
+  },
+
   /**
    * Handles meta being clicked.
    * @private
@@ -221,8 +254,7 @@ export default Component.extend({
     if (!selectedOperator.hasValue) {
       // an operator that does not accept a value was selected,
       // so create the pill
-      this.set('valueString', null);
-      this._broadcast(MESSAGE_TYPES.PILL_CREATED, this._createPillData());
+      this._createPill();
     }
   },
 
@@ -240,31 +272,43 @@ export default Component.extend({
    * @private
    */
   _createPill(data) {
-    const valueString = data;
-    const pillData = this._createPillData(valueString);
+    const pillData = this._createPillData(data);
 
-    // TODO
+    this._broadcast(MESSAGE_TYPES.PILL_CREATED, pillData);
+
+    // Because this is a "new pill template" pill, when we
+    // create a new pill we need to clean this up so another one
+    // can be added using the same empty pill. We are effecively
+    // starting over and making it so a user can just keep
+    // typing and creating pills.
     //
-    // Eventually we will not want to turn "new" pills
-    // into real pills, instead clearing them out and letting
-    // them remain blank new pill templates. Real pills
-    // would be added via state and state interation in the
-    // pills template. This would mean that the changes we
-    // make here would be different based on new vs edit
-    //
+    // Worth noting, it is expected the `position` property
+    // would be incremented/updated by the parent.
+    this._reset();
+  },
+
+  /**
+   * Handles editing an existing pill
+   * @param {string} data Value of pill
+   * @private
+   */
+  _editPill(data) {
+    const pillData = this._createPillData(data);
+
+    this._broadcast(MESSAGE_TYPES.PILL_EDITED, pillData);
+
+    // shutting this down, but not concerned with setting
+    // data as the data should be refreshed back down through state.
+    // Enivitably this pill is going to be replaced with a new one
+    // because an edited pill is a replacement of the previous pill.
+    // We are just making everything inactive in case that takes a
+    // few millis.
     this.setProperties({
       isMetaActive: false,
       isOperatorActive: false,
       isValueActive: false,
-      isActive: false,
-      valueString
+      isActive: false
     });
-
-    if (this.get('isExistingPill')) {
-      this._broadcast(MESSAGE_TYPES.PILL_EDITED, pillData);
-    } else {
-      this._broadcast(MESSAGE_TYPES.PILL_CREATED, pillData);
-    }
   },
 
   /**
@@ -300,7 +344,15 @@ export default Component.extend({
    * @private
    */
   _valueSet(data) {
-    if (data !== undefined) {
+    // if the pill has already moved on to starting over
+    // because of a value being set (which causes a pill
+    // create/edit), then do not bother setting the value
+    // as it'll be cleared out.
+    //
+    // If mid-creation, we will cause a backtracking-render
+    // Ember error if we update the value here because we
+    // clear it out as a part of submitting the pill
+    if (!this._hasBeenReset() && data !== undefined) {
       this.set('valueString', data);
     }
   },

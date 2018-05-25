@@ -3,14 +3,12 @@ import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
-import { click, fillIn, find, findAll, focus, render, triggerKeyEvent, waitUntil } from '@ember/test-helpers';
+import { click, fillIn, find, findAll, focus, render, waitUntil } from '@ember/test-helpers';
 
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import { enrichedPillsData } from 'investigate-events/reducers/investigate/next-gen/selectors';
-
-const ENTER_KEY = 13;
-const X_KEY = 88;
+import { createBasicPill } from '../pill-util';
 
 // const { log } = console;
 
@@ -127,19 +125,7 @@ module('Integration | Component | Query Pill', function(hooks) {
       }}
     `);
 
-    // Choose the first meta option
-    selectChoose(metaPowerSelect, powerSelectOption, 0); // option A
-    await waitUntil(() => find(operatorPowerSelect));
-
-    // Choose the first operator option
-    selectChoose(operatorPowerSelect, powerSelectOption, 0); // option =
-    await waitUntil(() => find(valueInput));
-
-    // Fill in the value, to properly simulate the event we need to fillIn AND
-    // triggerKeyEvent for the "x" character.
-    await fillIn(valueInput, 'x');
-    await triggerKeyEvent(valueInput, 'keydown', X_KEY); // x
-    await triggerKeyEvent(valueInput, 'keydown', ENTER_KEY);
+    await createBasicPill();
   });
 
   test('A pill when supplied with meta and operator that does not accept a value will send a message to create', async function(assert) {
@@ -244,5 +230,39 @@ module('Integration | Component | Query Pill', function(hooks) {
     assert.equal(trim(find(meta).textContent), 'a');
     assert.equal(trim(find(operator).textContent), '=');
     assert.equal(trim(find(pillValue).textContent), 'x');
+  });
+
+  test('A pill clears out and is available to create more pills', async function(assert) {
+    const done = assert.async(2);
+    assert.expect(3);
+
+    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+
+    this.set('handleMessage', (messageType) => {
+
+      // first message will be initialized, get rid of it
+      if (messageType === 'PILL::INITIALIZED') {
+        return;
+      }
+
+      assert.equal(messageType, 'PILL::CREATED', 'Message sent for pill create is not correct');
+
+      done();
+    });
+
+    await render(hbs`
+      {{query-container/query-pill
+        position=0
+        isActive=true
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    await createBasicPill();
+
+    // meta power select should now be visible
+    assert.equal(findAll(metaPowerSelect).length, 1);
+
+    await createBasicPill();
   });
 });

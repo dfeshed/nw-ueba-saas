@@ -116,7 +116,7 @@ test('EDIT_NEXT_GEN_PILL edits first pill provided', function(assert) {
   const result = reducer(stateWithPills, action);
 
   assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
-  assert.equal(result.pillsData[0].id, 1, 'pillsData item is in the right position');
+  assert.ok(result.pillsData[0].id !== '1', 'updated pillsData item has updated ID');
   assert.equal(result.pillsData[0].foo, 1234, 'pillsData item had its data updated');
 });
 
@@ -133,6 +133,6 @@ test('EDIT_NEXT_GEN_PILL edits last pill provided', function(assert) {
   const result = reducer(stateWithPills, action);
 
   assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
-  assert.equal(result.pillsData[1].id, 2, 'pillsData item is in the right position');
+  assert.ok(result.pillsData[1].id !== '2', 'pillsData id has changed');
   assert.equal(result.pillsData[1].foo, 8907, 'pillsData item had its data updated');
 });

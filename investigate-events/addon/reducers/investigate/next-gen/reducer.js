@@ -31,9 +31,16 @@ export default handleActions({
 
     const position = state.pillsData.map((pD) => pD.id).indexOf(pillData.id);
 
+    // Edited pills are effectively NEW pills we slide into the right
+    // spot. We want to give them new IDs.
+    const newPillData = {
+      ...pillData,
+      id: _.uniqueId('nextGenPill_')
+    };
+
     const newPillsData = Immutable.from([
       ...state.pillsData.slice(0, position),
-      { ...pillData },
+      { ...newPillData },
       ...state.pillsData.slice(position + 1)
     ]);
 
