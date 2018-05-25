@@ -6,31 +6,27 @@ import sinon from 'sinon';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import Immutable from 'seamless-immutable';
+import { clickTrigger, selectChoose } from '../../../../helpers/ember-power-select';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import * as groupCreators from 'admin-source-management/actions/data-creators/group-creators';
+import { initialState as _initialState } from 'admin-source-management/reducers/usm/group-reducers';
 
 const initialState = {
-  group: {
-    id: null,
-    name: null,
-    description: null,
-    createdBy: null,
-    createdOn: null,
-    lastModifiedBy: null,
-    lastModifiedOn: null
-  },
-
-  groupSaveStatus: null // wait, complete, error
+  ..._initialState
 };
 
 const saveGroupData = Immutable.from({
-  'id': 'group_001',
-  'name': 'Zebra 001',
-  'description': 'Zebra 001 of group group_001',
-  'createdBy': 'local',
-  'createdOn': 1523655354337,
-  'lastModifiedBy': 'local',
-  'lastModifiedOn': 1523655354337
+  id: 'group_001',
+  name: 'Zebra 001',
+  description: 'Zebra 001 of group group_001',
+  createdBy: 'local',
+  createdOn: 1523655354337,
+  lastModifiedBy: 'local',
+  lastModifiedOn: 1523655354337,
+  osTypes: [],
+  osDescriptions: [],
+  ipRangeStart: '192.168.10.1',
+  ipRangeEnd: '192.168.10.10'
 });
 
 let setState;
@@ -77,7 +73,7 @@ module('Integration | Component | Group', function(hooks) {
     const actionSpy = sinon.spy(groupCreators, 'editGroup');
     setState({ ...initialState });
     await render(hbs`{{usm-groups/group}}`);
-    const el = findAll('input')[0]; // eslint-disable-line ember-suave/prefer-destructuring
+    const el = findAll('.group-name input')[0]; // eslint-disable-line ember-suave/prefer-destructuring
     await focus(el);
     el.value = 'test name';
     // await triggerKeyEvent(el, 'keyup', 'e');  // might go back to this with debounce
@@ -93,7 +89,7 @@ module('Integration | Component | Group', function(hooks) {
     const actionSpy = sinon.spy(groupCreators, 'editGroup');
     setState({ ...initialState });
     await render(hbs`{{usm-groups/group}}`);
-    const el = findAll('textarea')[0]; // eslint-disable-line ember-suave/prefer-destructuring
+    const el = findAll('.group-description textarea')[0]; // eslint-disable-line ember-suave/prefer-destructuring
     await focus(el);
     el.value = 'test description';
     // await triggerKeyEvent(el, 'keyup', 'n'); // might go back to this with debounce
@@ -101,6 +97,67 @@ module('Integration | Component | Group', function(hooks) {
     return settled().then(() => {
       assert.ok(actionSpy.calledOnce, 'The editGroup action (EDIT_GROUP) was called once');
       assert.ok(actionSpy.calledWith('group.description', 'test description'));
+      actionSpy.restore();
+    });
+  });
+
+  test('Typing in the IP Range Start control dispatches the editGroup action creator (EDIT_GROUP)', async function(assert) {
+    const actionSpy = sinon.spy(groupCreators, 'editGroup');
+    setState({ ...initialState });
+    await render(hbs`{{usm-groups/group}}`);
+    const el = findAll('.ip-range-start input')[0]; // eslint-disable-line ember-suave/prefer-destructuring
+    await focus(el);
+    el.value = '192.168.10.1';
+    // await triggerKeyEvent(el, 'keyup', 'e');  // might go back to this with debounce
+    await blur(el);
+    return settled().then(() => {
+      assert.ok(actionSpy.calledOnce, 'The editGroup action (EDIT_GROUP) was called once');
+      assert.ok(actionSpy.calledWith('group.ipRangeStart', '192.168.10.1'));
+      actionSpy.restore();
+    });
+  });
+
+  test('Typing in the IP Range End control dispatches the editGroup action creator (EDIT_GROUP)', async function(assert) {
+    const actionSpy = sinon.spy(groupCreators, 'editGroup');
+    setState({ ...initialState });
+    await render(hbs`{{usm-groups/group}}`);
+    const el = findAll('.ip-range-end input')[0]; // eslint-disable-line ember-suave/prefer-destructuring
+    await focus(el);
+    el.value = '192.168.10.10';
+    // await triggerKeyEvent(el, 'keyup', 'e');  // might go back to this with debounce
+    await blur(el);
+    return settled().then(() => {
+      assert.ok(actionSpy.calledOnce, 'The editGroup action (EDIT_GROUP) was called once');
+      assert.ok(actionSpy.calledWith('group.ipRangeEnd', '192.168.10.10'));
+      actionSpy.restore();
+    });
+  });
+
+  test('Changing the OS Type select control dispatches the editGroup action creator (EDIT_GROUP)', async function(assert) {
+    const actionSpy = sinon.spy(groupCreators, 'editGroup');
+    setState({ ...initialState });
+    await render(hbs`{{usm-groups/group}}`);
+    clickTrigger('.control .os-type');
+    selectChoose('.control .os-type', 'Lynn Ucks');
+    return settled().then(() => {
+      // should be called twice because we also trigger it for osDescriptions
+      assert.ok(actionSpy.calledTwice, 'The editGroup action (EDIT_GROUP) was called twice');
+      assert.ok(actionSpy.calledWith('group.osTypes', ['lynn_001'])); // should be called with array of ID's
+      assert.ok(actionSpy.calledWith('group.osDescriptions', [])); // should be called with empty array of ID's
+      actionSpy.restore();
+    });
+  });
+
+  test('Changing the OS Description select control dispatches the editGroup action creator (EDIT_GROUP)', async function(assert) {
+    const actionSpy = sinon.spy(groupCreators, 'editGroup');
+    // pre-select an osType so the osDescription select has options available
+    setState({ ...initialState, group: { ...initialState.group, osTypes: ['lynn_001'] } });
+    await render(hbs`{{usm-groups/group}}`);
+    clickTrigger('.control .os-description');
+    selectChoose('.control .os-description', 'Ucks Desktop');
+    return settled().then(() => {
+      assert.ok(actionSpy.calledOnce, 'The editGroup action (EDIT_GROUP) was called once');
+      assert.ok(actionSpy.calledWith('group.osDescriptions', ['ucks_001'])); // should be called with empty array of ID's
       actionSpy.restore();
     });
   });

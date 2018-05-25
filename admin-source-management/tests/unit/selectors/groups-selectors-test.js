@@ -6,8 +6,6 @@ import {
   isGroupsLoading
 } from 'admin-source-management/selectors/groups-selectors';
 
-module('Unit | Selectors | Groups Selectors');
-
 const fullState = {
   usm: {
     groups: {
@@ -29,17 +27,21 @@ const fetchGroupsData = [
   }
 ];
 
-test('groups selector', function(assert) {
-  const state = cloneDeep(fullState).value();
-  state.usm.groups.groups = fetchGroupsData;
-  assert.deepEqual(groups(Immutable.from(state)), fetchGroupsData, 'The returned value from the groups selector is as expected');
-});
+module('Unit | Selectors | Groups Selectors', function() {
 
-test('isGroupsLoading selector', function(assert) {
-  const state = cloneDeep(fullState).value();
-  state.usm.groups.groupsStatus = 'wait';
-  assert.equal(isGroupsLoading(Immutable.from(state)), true, 'isGroupsLoading should return true when status is wait');
+  test('groups selector', function(assert) {
+    const state = cloneDeep(fullState).value();
+    state.usm.groups.groups = fetchGroupsData;
+    assert.deepEqual(groups(Immutable.from(state)), fetchGroupsData, 'The returned value from the groups selector is as expected');
+  });
 
-  state.usm.groups.groupsStatus = 'complete';
-  assert.equal(isGroupsLoading(Immutable.from(state)), false, 'isGroupsLoading should return false when status is completed');
+  test('isGroupsLoading selector', function(assert) {
+    const state = cloneDeep(fullState).value();
+    state.usm.groups.groupsStatus = 'wait';
+    assert.equal(isGroupsLoading(Immutable.from(state)), true, 'isGroupsLoading should return true when status is wait');
+
+    state.usm.groups.groupsStatus = 'complete';
+    assert.equal(isGroupsLoading(Immutable.from(state)), false, 'isGroupsLoading should return false when status is completed');
+  });
+
 });

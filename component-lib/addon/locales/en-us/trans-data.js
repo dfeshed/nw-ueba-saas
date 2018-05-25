@@ -2982,7 +2982,16 @@ export default {
       name: 'Group Name',
       namePlaceholder: 'Enter a unique group name',
       description: 'Group Description',
-      descPlaceholder: 'Enter a description'
+      descPlaceholder: 'Enter a description',
+      define: 'Define',
+      ipRange: 'IP Range',
+      ipRangeStartPlaceholder: 'Beginning IP',
+      ipRangeTo: 'to',
+      ipRangeEndPlaceholder: 'End IP',
+      osType: 'OS Type',
+      osTypePlaceholder: 'Choose OS Type(s)',
+      osDescription: 'OS Description',
+      osDescriptionPlaceholder: 'Choose OS Description(s)'
     },
     policy: {
       name: 'Policy Name',

@@ -6,7 +6,11 @@ export default [
     'createdBy': 'local',
     'createdOn': 1523655354337,
     'lastModifiedBy': 'local',
-    'lastModifiedOn': 1523655354337
+    'lastModifiedOn': 1523655354337,
+    'osTypes': [],
+    'osDescriptions': [],
+    'ipRangeStart': null,
+    'ipRangeEnd': null
   },
   {
     'id': 'group_012',
@@ -15,7 +19,11 @@ export default [
     'createdBy': 'local',
     'createdOn': 1523655368173,
     'lastModifiedBy': 'local',
-    'lastModifiedOn': 1523655368173
+    'lastModifiedOn': 1523655368173,
+    'osTypes': [],
+    'osDescriptions': [],
+    'ipRangeStart': null,
+    'ipRangeEnd': null
   },
   {
     'id': 'group_002',
@@ -24,7 +32,11 @@ export default [
     'createdBy': 'local',
     'createdOn': 1523655354337,
     'lastModifiedBy': 'local',
-    'lastModifiedOn': 1523655354337
+    'lastModifiedOn': 1523655354337,
+    'osTypes': [],
+    'osDescriptions': [],
+    'ipRangeStart': null,
+    'ipRangeEnd': null
   },
   //
   {
@@ -34,7 +46,11 @@ export default [
     'createdBy': 'local',
     'createdOn': 1523655368173,
     'lastModifiedBy': 'local',
-    'lastModifiedOn': 1523655368173
+    'lastModifiedOn': 1523655368173,
+    'osTypes': [],
+    'osDescriptions': [],
+    'ipRangeStart': null,
+    'ipRangeEnd': null
   },
   {
     'id': 'group_003',
@@ -43,7 +59,11 @@ export default [
     'createdBy': 'local',
     'createdOn': 1523655354337,
     'lastModifiedBy': 'local',
-    'lastModifiedOn': 1523655354337
+    'lastModifiedOn': 1523655354337,
+    'osTypes': [],
+    'osDescriptions': [],
+    'ipRangeStart': null,
+    'ipRangeEnd': null
   },
   {
     'id': 'group_010',
@@ -52,7 +72,11 @@ export default [
     'createdBy': 'local',
     'createdOn': 1523655368173,
     'lastModifiedBy': 'local',
-    'lastModifiedOn': 1523655368173
+    'lastModifiedOn': 1523655368173,
+    'osTypes': [],
+    'osDescriptions': [],
+    'ipRangeStart': null,
+    'ipRangeEnd': null
   },
   //
   {
@@ -62,7 +86,11 @@ export default [
     'createdBy': 'local',
     'createdOn': 1523655354337,
     'lastModifiedBy': 'local',
-    'lastModifiedOn': 1523655354337
+    'lastModifiedOn': 1523655354337,
+    'osTypes': [],
+    'osDescriptions': [],
+    'ipRangeStart': null,
+    'ipRangeEnd': null
   },
   {
     'id': 'group_009',
@@ -71,7 +99,11 @@ export default [
     'createdBy': 'local',
     'createdOn': 1523655368173,
     'lastModifiedBy': 'local',
-    'lastModifiedOn': 1523655368173
+    'lastModifiedOn': 1523655368173,
+    'osTypes': [],
+    'osDescriptions': [],
+    'ipRangeStart': null,
+    'ipRangeEnd': null
   },
   {
     'id': 'group_005',
@@ -80,7 +112,11 @@ export default [
     'createdBy': 'local',
     'createdOn': 1523655354337,
     'lastModifiedBy': 'local',
-    'lastModifiedOn': 1523655354337
+    'lastModifiedOn': 1523655354337,
+    'osTypes': [],
+    'osDescriptions': [],
+    'ipRangeStart': null,
+    'ipRangeEnd': null
   },
   //
   {
@@ -90,7 +126,11 @@ export default [
     'createdBy': 'local',
     'createdOn': 1523655368173,
     'lastModifiedBy': 'local',
-    'lastModifiedOn': 1523655368173
+    'lastModifiedOn': 1523655368173,
+    'osTypes': [],
+    'osDescriptions': [],
+    'ipRangeStart': null,
+    'ipRangeEnd': null
   },
   {
     'id': 'group_006',
@@ -99,7 +139,11 @@ export default [
     'createdBy': 'local',
     'createdOn': 1523655354337,
     'lastModifiedBy': 'local',
-    'lastModifiedOn': 1523655354337
+    'lastModifiedOn': 1523655354337,
+    'osTypes': [],
+    'osDescriptions': [],
+    'ipRangeStart': null,
+    'ipRangeEnd': null
   },
   {
     'id': 'group_007',
@@ -108,7 +152,11 @@ export default [
     'createdBy': 'local',
     'createdOn': 1523655368173,
     'lastModifiedBy': 'local',
-    'lastModifiedOn': 1523655368173
+    'lastModifiedOn': 1523655368173,
+    'osTypes': [],
+    'osDescriptions': [],
+    'ipRangeStart': null,
+    'ipRangeEnd': null
   },
   //
   {
@@ -118,7 +166,11 @@ export default [
     'createdBy': 'local',
     'createdOn': 1523655354337,
     'lastModifiedBy': 'local',
-    'lastModifiedOn': 1523655354337
+    'lastModifiedOn': 1523655354337,
+    'osTypes': [],
+    'osDescriptions': [],
+    'ipRangeStart': null,
+    'ipRangeEnd': null
   },
   {
     'id': 'group_014',
@@ -127,7 +179,11 @@ export default [
     'createdBy': 'local',
     'createdOn': 1523655368173,
     'lastModifiedBy': 'local',
-    'lastModifiedOn': 1523655368173
+    'lastModifiedOn': 1523655368173,
+    'osTypes': [],
+    'osDescriptions': [],
+    'ipRangeStart': null,
+    'ipRangeEnd': null
   }
 
 ];

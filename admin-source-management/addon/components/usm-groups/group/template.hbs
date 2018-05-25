@@ -9,8 +9,8 @@
 <box class="form">
   <hbox class="toolbar">
     {{#rsa-form-button style='primary' class='confirm-button' 
-      tabIndex="3"
-      defaultAction="save"
+      tabIndex='30'
+      defaultAction='save'
       isDisabled=hasMissingRequiredData
     }}
       {{t 'adminUsm.button.save'}}
@@ -20,26 +20,77 @@
     {{/rsa-form-button}}
   </hbox>
 
-  <label class="control-label">Identify</label>
+  <label class="control-label">{{t 'adminUsm.group.identify'}}</label>
   <div class="control">
-    {{rsa-form-input
-      tabIndex="1"
+    {{rsa-form-input class='group-name'
+      tabIndex='1'
       label=(t 'adminUsm.group.name')
       placeholder=(t 'adminUsm.group.namePlaceholder')
       value=(readonly group.name)
       maxLength=256
-      focusOut=(action "handleNameChange" value="target.value")
+      focusOut=(action 'handleNameChange' value='target.value')
     }}
   </div>
   <div class="control">
-    {{rsa-form-textarea
-      tabIndex="2"
+    {{rsa-form-textarea class='group-description'
+      tabIndex='2'
       label=(t 'adminUsm.group.description')
       placeholder=(t 'adminUsm.group.descPlaceholder')
       value=(readonly group.description)
       maxLength=8000
       focusOut=(action 'handleDescriptionChange' value='target.value')
     }}
+  </div>
+
+  <label class="control-label">{{t 'adminUsm.group.define'}}</label>
+  <hbox class="control">
+    {{rsa-form-input class='ip-range-start'
+      tabIndex='3'
+      label=(t 'adminUsm.group.ipRange')
+      placeholder=(t 'adminUsm.group.ipRangeStartPlaceholder')
+      value=(readonly group.ipRangeStart)
+      maxLength=256
+      focusOut=(action 'handleiIpRangeStartChange' value='target.value')
+    }}
+    <span class="ip-range-to">{{t 'adminUsm.group.ipRangeTo'}}</span>
+    {{rsa-form-input class='ip-range-end'
+      tabIndex='4'
+      label=(t 'adminUsm.group.ipRange')
+      placeholder=(t 'adminUsm.group.ipRangeEndPlaceholder')
+      value=(readonly group.ipRangeEnd)
+      maxLength=256
+      focusOut=(action 'handleiIpRangeEndChange' value='target.value')
+    }}
+  </hbox>
+  <div class="control">
+    <label class="rsa-form-label power-select">
+      <div class="label-text">
+        {{t 'adminUsm.group.osType'}}
+      </div>
+      {{#power-select-multiple class='os-type'
+        placeholder=(t 'adminUsm.group.osTypePlaceholder')
+        options=osTypes
+        selected=selectedOsTypes
+        searchField='name'
+        onchange=(action 'handleOsTypeChange') as |option|}}
+          {{option.name}}
+      {{/power-select-multiple}}
+    </label>
+  </div>
+  <div class="control">
+    <label class="rsa-form-label power-select">
+      <div class="label-text">
+        {{t 'adminUsm.group.osDescription'}}
+      </div>
+      {{#power-select-multiple class='os-description'
+        placeholder=(t 'adminUsm.group.osDescriptionPlaceholder')
+        options=osDescriptions
+        selected=selectedOsDescriptions
+        searchField='name'
+        onchange=(action 'handleOsDescriptionChange') as |option|}}
+          {{option.name}}
+      {{/power-select-multiple}}
+    </label>
   </div>
 </box>
 

@@ -2,6 +2,10 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import {
   group,
+  osTypes,
+  selectedOsTypes,
+  osDescriptions,
+  selectedOsDescriptions,
   isGroupLoading,
   hasMissingRequiredData
 } from 'admin-source-management/selectors/group-selectors';
@@ -12,6 +16,10 @@ import {
 
 const stateToComputed = (state) => ({
   group: group(state),
+  osTypes: osTypes(state),
+  selectedOsTypes: selectedOsTypes(state),
+  osDescriptions: osDescriptions(state),
+  selectedOsDescriptions: selectedOsDescriptions(state),
   isGroupLoading: isGroupLoading(state),
   hasMissingRequiredData: hasMissingRequiredData(state)
 });
@@ -44,6 +52,21 @@ const UsmGroup = Component.extend({
     },
     handleDescriptionChange(value) {
       this.send('edit', 'group.description', value);
+    },
+    handleiIpRangeStartChange(value) {
+      this.send('edit', 'group.ipRangeStart', value);
+    },
+    handleiIpRangeEndChange(value) {
+      this.send('edit', 'group.ipRangeEnd', value);
+    },
+    handleOsTypeChange(value) {
+      // power-select-multiple passes an array of objects, we only want the ID's
+      this.send('edit', 'group.osTypes', value.map((osType) => osType.id));
+      this.send('handleOsDescriptionChange', this.get('selectedOsDescriptions'));
+    },
+    handleOsDescriptionChange(value) {
+      // power-select-multiple passes an array of objects, we only want the ID's
+      this.send('edit', 'group.osDescriptions', value.map((osDescription) => osDescription.id));
     }
   }
 });

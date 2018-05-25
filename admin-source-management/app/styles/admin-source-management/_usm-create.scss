@@ -26,4 +26,13 @@
     }
   }
 
+  .ip-range-to {
+    align-self: flex-end;
+    padding: rsa-whitespace(less);
+  }
+
+  .ip-range-end > span {
+    visibility: hidden;
+  }
+
 }

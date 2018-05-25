@@ -3,7 +3,7 @@ import reduxActions from 'redux-actions';
 import { handle } from 'redux-pack';
 import * as ACTION_TYPES from 'admin-source-management/actions/types';
 
-const initialState = {
+export const initialState = {
   group: {
     id: null,
     name: null,
@@ -11,8 +11,42 @@ const initialState = {
     createdBy: null,
     createdOn: null,
     lastModifiedBy: null,
-    lastModifiedOn: null
+    lastModifiedOn: null,
+    osTypes: [], // ID's only
+    osDescriptions: [], // ID's only
+    ipRangeStart: null,
+    ipRangeEnd: null
   },
+
+  osTypes: [
+    {
+      id: 'lynn_001',
+      name: 'Lynn Ucks',
+      osDescriptions: [
+        { id: 'ucks_001', name: 'Ucks Desktop' },
+        { id: 'ucks_002', name: 'Ucks Mobile' },
+        { id: 'ucks_003', name: 'Ucks Server' }
+      ]
+    },
+    {
+      id: 'apple_001',
+      name: 'Apple Tosh',
+      osDescriptions: [
+        { id: 'tosh_001', name: 'Tosh Desktop' },
+        { id: 'tosh_002', name: 'Tosh Mobile' },
+        { id: 'tosh_003', name: 'Tosh Server' }
+      ]
+    },
+    {
+      id: 'win_001',
+      name: 'Win D0ze',
+      osDescriptions: [
+        { id: 'doze_001', name: 'Doze Desktop' },
+        { id: 'doze_002', name: 'Doze Mobile' },
+        { id: 'doze_003', name: 'Doze Server' }
+      ]
+    }
+  ],
 
   groupSaveStatus: null // wait, complete, error
 };
