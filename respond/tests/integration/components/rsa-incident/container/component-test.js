@@ -407,4 +407,24 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
     assert.equal(findAll(`${alertsSelector}:nth-of-type(5) ${toggleEventsSelector}`).length, 1);
     assert.equal(findAll(`${alertsSelector}:nth-of-type(5) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 0);
   });
+
+  test('storyline will mark alerts for event analysis even without selection or enrichments', async function(assert) {
+    setState({
+      respond: {
+        recon: Immutable.from(DATA.generateRecon()),
+        incident: Immutable.from(DATA.generateIncident({ withSelection: false })),
+        storyline: DATA.generateStoryline({ withEnrichment: false })
+      }
+    });
+
+    await render(hbs`{{rsa-incident/container}}`);
+
+    assert.equal(findAll(alertsSelector).length, 8);
+
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1);
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 1);
+
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(5) ${toggleEventsSelector}`).length, 1);
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(5) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 0);
+  });
 });

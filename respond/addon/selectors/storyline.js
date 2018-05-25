@@ -120,15 +120,15 @@ export const storyPointsWithEvents = createSelector(
       if (storyPointEvents) {
         if (!storyPoint.get('items.length')) {
           set(storyPoint, 'isOpen', false);
-        } else {
-          const eventsWithEventAnalysis = storyPointEvents.filter((item) => {
-            const eventId = get(item, 'event_source_id');
-            const eventSource = get(item, 'event_source');
-            return eventId && hasReconAccess() && lookupCoreDevice(reconState.serviceData, eventSource);
-          });
-          if (eventsWithEventAnalysis.toArray().length > 0) {
-            set(storyPoint, 'supportsRecon', true);
-          }
+        }
+
+        const eventsWithEventAnalysis = storyPointEvents.filter((item) => {
+          const eventId = get(item, 'event_source_id');
+          const eventSource = get(item, 'event_source');
+          return eventId && hasReconAccess() && lookupCoreDevice(reconState.serviceData, eventSource);
+        });
+        if (eventsWithEventAnalysis.toArray().length > 0) {
+          set(storyPoint, 'supportsRecon', true);
         }
 
         const selectedIncident = selections && selections.ids && storyPointEvents && storyPointEvents.filter((e) => {
