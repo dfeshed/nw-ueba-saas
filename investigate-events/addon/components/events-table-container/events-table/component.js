@@ -49,6 +49,7 @@ const EventsTableContextMenu = RsaContextMenu.extend({
     const metaName = attributes.getNamedItem('metaname');
     const metaValue = attributes.getNamedItem('metavalue');
     if (metaName && metaValue) {
+      this.set('moduleName', 'EventGrid');
       this.set('metaName', metaName.value);
       this.set('metaValue', metaValue.value);
       this._super(...arguments);

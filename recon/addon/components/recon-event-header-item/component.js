@@ -39,13 +39,16 @@ export default Component.extend({
   metaValuePairs(key, value, name) {
     let metaValuePairs = null;
     if (isNetworkAddress(name)) {
-      metaValuePairs = [getIpAddressMetaValue(key, value)];
+      const ipAddressMetaValue = getIpAddressMetaValue(key, value);
+      ipAddressMetaValue.moduleName = 'EventGrid';
+      metaValuePairs = [ipAddressMetaValue];
       const portMetaValuePair = getPortMetaValue(key, value);
       if (portMetaValuePair) {
+        portMetaValuePair.moduleName = 'EventGrid';
         metaValuePairs.push(portMetaValuePair);
       }
     } else {
-      metaValuePairs = [{ metaName: key, metaValue: value, displayValue: value }];
+      metaValuePairs = [{ moduleName: 'EventGrid', metaName: key, metaValue: value, displayValue: value }];
     }
     return metaValuePairs;
   },
