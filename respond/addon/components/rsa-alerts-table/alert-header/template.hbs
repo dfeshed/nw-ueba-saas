@@ -44,6 +44,9 @@
           test-id="alertsTableToggleEvents"
           class="rsa-alerts-table-alert-header__events tab {{if isEventsTabActive 'active'}}"
           {{action "toggleEvents" bubbles=false}}>
+          {{#if group.supportsRecon}}
+            <span test-id="alertsTableReconVisualCue" class="event-analysis-supported tab">EA</span>
+          {{/if}}
           {{group.events.length}} {{t 'respond.storyline.events'}}
           {{rsa-icon name="arrow-down-8" size="smaller"}}
         </span>

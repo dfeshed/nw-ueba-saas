@@ -4,14 +4,16 @@ import Service from '@ember/service';
 import { computed } from '@ember/object';
 import Immutable from 'seamless-immutable';
 import hbs from 'htmlbars-inline-precompile';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { setupRenderingTest } from 'ember-qunit';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import { click, render, findAll, find } from '@ember/test-helpers';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 
-let setState;
+let setState, hasPermission;
 
 const alertsSelector = '[test-id=alertsTableSection]';
+const eventAnalysisSelector = '[test-id=alertsTableReconVisualCue]';
 const toggleEventsSelector = '[test-id=alertsTableToggleEvents]';
 const toggleEnrichmentsSelector = '[test-id=alertsTableToggleEnrichments]';
 const groupsSelector = '[test-id=groupTableItem]';
@@ -24,6 +26,8 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
   });
 
   hooks.beforeEach(function() {
+    hasPermission = true;
+    initialize(this.owner);
     setState = (state) => {
       patchReducer(this, state);
     };
@@ -38,7 +42,7 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
     }));
     this.owner.register('service:accessControl', Service.extend({
       hasReconAccess: computed(function() {
-        return true;
+        return hasPermission;
       })
     }));
   });
@@ -313,5 +317,94 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).length, 1);
     assert.ok(find(`${alertsSelector}:nth-of-type(2) ${alertsHeaderSelector}`).classList.contains('is-open'));
+  });
+
+  test('storyline will explicitly mark alerts that support event analysis', async function(assert) {
+    setState({
+      respond: {
+        recon: Immutable.from(DATA.generateRecon()),
+        incident: Immutable.from(DATA.generateIncident({ withSelection: true })),
+        storyline: DATA.generateStoryline({ withEnrichment: true })
+      }
+    });
+
+    await render(hbs`{{rsa-incident/container}}`);
+
+    assert.equal(findAll(alertsSelector).length, 8);
+
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1);
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 1);
+
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector}`).length, 1);
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(3) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 1);
+
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(5) ${toggleEventsSelector}`).length, 1);
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(5) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 0);
+  });
+
+  test('storyline will not mark alerts for event analysis when user does not have permission', async function(assert) {
+    hasPermission = false;
+
+    setState({
+      respond: {
+        recon: Immutable.from(DATA.generateRecon()),
+        incident: Immutable.from(DATA.generateIncident({ withSelection: true })),
+        storyline: DATA.generateStoryline({ withEnrichment: true, withEventSourceId: false })
+      }
+    });
+
+    await render(hbs`{{rsa-incident/container}}`);
+
+    assert.equal(findAll(alertsSelector).length, 8);
+
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1);
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 0);
+
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(5) ${toggleEventsSelector}`).length, 1);
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(5) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 0);
+  });
+
+  test('storyline will not mark alerts for event analysis when event does not have event source id value', async function(assert) {
+    setState({
+      respond: {
+        recon: Immutable.from(DATA.generateRecon()),
+        incident: Immutable.from(DATA.generateIncident({ withSelection: true })),
+        storyline: DATA.generateStoryline({ withEnrichment: true, withEventSourceId: false })
+      }
+    });
+
+    await render(hbs`{{rsa-incident/container}}`);
+
+    assert.equal(findAll(alertsSelector).length, 8);
+
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1);
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 0);
+
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(5) ${toggleEventsSelector}`).length, 1);
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(5) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 0);
+  });
+
+  test('storyline will not mark alerts for event analysis when no core devices are available', async function(assert) {
+    setState({
+      respond: {
+        recon: Immutable.from({
+          serviceData: undefined,
+          isServicesLoading: undefined,
+          isServicesRetrieveError: undefined
+        }),
+        incident: Immutable.from(DATA.generateIncident({ withSelection: true })),
+        storyline: DATA.generateStoryline({ withEnrichment: true })
+      }
+    });
+
+    await render(hbs`{{rsa-incident/container}}`);
+
+    assert.equal(findAll(alertsSelector).length, 8);
+
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1);
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 0);
+
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(5) ${toggleEventsSelector}`).length, 1);
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(5) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 0);
   });
 });

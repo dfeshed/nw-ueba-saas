@@ -253,7 +253,7 @@ export const generateRecon = () => {
   return Object.assign({}, reconState);
 };
 
-export const generateStoryline = ({ withEnrichment }) => {
+export const generateStoryline = ({ withEnrichment, withEventSourceId }) => {
   const state = Object.assign({}, storylineState);
   const storylineIds = [
     '5afb3edc2de080511717841a',
@@ -264,8 +264,10 @@ export const generateStoryline = ({ withEnrichment }) => {
     '5afb3edc2de080511717846f',
     '5afb3edc2de080511717847g'
   ];
+  const eventSourceIdValue = withEventSourceId === undefined ? true : withEventSourceId;
+  const eventSourceId = eventSourceIdValue ? '150' : null;
   const enrichment = withEnrichment ? Object.assign({}, enrichmentState) : '';
-  const storylineEvents = storylineIds.map((id) => {
+  const storylineEvents = storylineIds.map((id, index) => {
     return {
       indicatorId: id,
       events: [
@@ -306,7 +308,7 @@ export const generateStoryline = ({ withEnrichment }) => {
           },
           description: '',
           domain_src: '',
-          event_source: '10.4.61.33:56005',
+          event_source: index > 2 ? '' : '10.4.61.33:56005',
           source: {
             device: {
               compliance_rating: '',
@@ -344,7 +346,7 @@ export const generateStoryline = ({ withEnrichment }) => {
           host_src: '',
           from: '161.253.40.218:2045',
           timestamp: 1526414954000,
-          event_source_id: '150',
+          event_source_id: eventSourceId,
           related_links: [
             {
               type: 'investigate_original_event',

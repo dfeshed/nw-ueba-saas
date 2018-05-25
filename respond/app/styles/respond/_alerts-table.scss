@@ -270,6 +270,22 @@ $alertsTableDotSize: 5px;
       background-color: background-color(secondary,light);
       color: text-color(primary,darker);
     }
+
+    & span.event-analysis-supported {
+      border: 0;
+      height: 15.5px;
+      padding-top: 2px;
+      padding-right: 3px;
+      padding-left: 3px;
+      margin-left: -7px;
+      margin-right: 2px;
+      margin-bottom: -4px;
+      vertical-align: top;
+      display:inline-block;
+      @include rsa-font(regular, smaller);
+      color: text-color(secondary, lighter);
+      background-color: background-color(secondary, darkest);
+    }
   }
 
   .severity {

@@ -2,9 +2,13 @@ import reselect from 'reselect';
 import arrayFlattenBy from 'respond/utils/array/flatten-by';
 import arrayFilterByList from 'respond/utils/array/filter-by-list';
 import StoryPoint from 'respond/utils/storypoint/storypoint';
-import { set, setProperties } from '@ember/object';
+import { get, set, setProperties } from '@ember/object';
+import { lookup } from 'ember-dependency-lookup';
+import { lookupCoreDevice } from 'respond/utils/storypoint/event-analysis';
+
 const { createSelector } = reselect;
 
+const reconState = (state) => state.respond.recon;
 const incidentState = (state) => state.respond.incident;
 const storylineState = (state) => state.respond.storyline;
 
@@ -84,6 +88,11 @@ export const storyPoints = createSelector(
   (incidentIndicators) => incidentIndicators.map((indicator) => StoryPoint.create({ indicator }))
 );
 
+const hasReconAccess = () => {
+  const accessControl = lookup('service:accessControl');
+  return get(accessControl, 'hasReconAccess');
+};
+
 /**
  * The same array as `storyPoints`, but populates each member's `events` property
  * with the data currently in the `storylineEvents` state.
@@ -91,8 +100,8 @@ export const storyPoints = createSelector(
  * @private
  */
 export const storyPointsWithEvents = createSelector(
-  [ storyPoints, storylineEvents, storyPointEventSelections ],
-  (storyPoints, storylineEvents, selections) => {
+  [ storyPoints, storylineEvents, storyPointEventSelections, reconState ],
+  (storyPoints, storylineEvents, selections, reconState) => {
     (storyPoints || []).forEach((storyPoint) => {
 
       // If the storyPoint doesn't have events yet, fetch them from storylineEvents state.
@@ -111,6 +120,15 @@ export const storyPointsWithEvents = createSelector(
       if (storyPointEvents) {
         if (!storyPoint.get('items.length')) {
           set(storyPoint, 'isOpen', false);
+        } else {
+          const eventsWithEventAnalysis = storyPointEvents.filter((item) => {
+            const eventId = get(item, 'event_source_id');
+            const eventSource = get(item, 'event_source');
+            return eventId && hasReconAccess() && lookupCoreDevice(reconState.serviceData, eventSource);
+          });
+          if (eventsWithEventAnalysis.toArray().length > 0) {
+            set(storyPoint, 'supportsRecon', true);
+          }
         }
 
         const selectedIncident = selections && selections.ids && storyPointEvents && storyPointEvents.filter((e) => {
