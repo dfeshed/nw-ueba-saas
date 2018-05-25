@@ -1,7 +1,11 @@
 {{#if features.rsaEndpointFusion}}
-  {{#rsa-context-menu contextItems=contextItems contextSelection=contextSelection}}
+  {{#if (eq osType 'linux')}}
     {{yield}}
-  {{/rsa-context-menu}}
+  {{else}}
+    {{#rsa-context-menu contextItems=contextItems contextSelection=contextSelection}}
+      {{yield}}
+    {{/rsa-context-menu}}
+  {{/if}}
 
   {{#if showServiceModal}}
     {{#endpoint/core-services-modal
