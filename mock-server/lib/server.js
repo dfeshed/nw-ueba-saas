@@ -9,6 +9,7 @@ import WebSocket from 'ws';
 import eWs from 'express-ws';
 import chalk from 'chalk';
 import clone from 'clone';
+import contextualActions from '../shared/contextual-actions';
 
 import {
   parseMessage,
@@ -52,6 +53,14 @@ const start = function({ subscriptionLocations, routes }, cb) {
     res.json({ 'version': '10.6.0.0-SNAPSHOT', 'commit': 28, 'changeset': 'f716b11', 'date': 1435711785000 });
   });
   app.use('/socket/info', infoRoute);
+
+  // action route for all context menu actions
+  // eslint-disable-next-line new-cap
+  const actionRoute = express.Router();
+  actionRoute.get('/', function(req, res) {
+    res.json(contextualActions);
+  });
+  app.use('/admin/contextmenu/configuration.json', actionRoute);
 
   // auth route which delivers a fake auth token response for login simulation
   // eslint-disable-next-line new-cap

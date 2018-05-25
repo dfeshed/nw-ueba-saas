@@ -57,7 +57,8 @@
     "eslint-plugin-ember-suave": "^1.0.0",
     "flexi": "2.0.1",
     "highlightjs": "9.8.0",
-    "loader.js": "^4.2.3"
+    "loader.js": "^4.2.3",
+    "ember-fetch": "^3.4.4"
   },
   "ember-addon": {
     "paths": [

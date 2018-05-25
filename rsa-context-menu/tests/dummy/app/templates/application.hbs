@@ -14,5 +14,19 @@
       {{/rsa-context-menu}}
     </aside>
   </box>
+  <box class="col-xs-3">
+    <aside>
+      <h1>RSA-Context-Menu-For-Event-Analysis</h1>
+    </aside>
+  </box>
+  <box class="col-xs-9">
+    <aside>
+      {{#rsa-context-menu
+        contextDetails=scope
+        contextSelection=contextSelection}}
+        Mata Value
+      {{/rsa-context-menu}}
+    </aside>
+  </box>
 </grid>
 {{context-menu}}
