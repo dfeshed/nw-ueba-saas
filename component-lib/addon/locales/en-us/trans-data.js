@@ -1448,7 +1448,9 @@ export default {
       deviceOwnerTitle: 'Device Owner Title',
       businessUnit: 'Business Unit',
       facility: 'Facility',
-      ipAddress: 'Internal IP Address'
+      ipAddress: 'Internal IP Address',
+      businessProcesses: 'Business Processes',
+      macAddress: 'MAC Address'
     },
     modules: {
       title: 'Top Suspicious Modules',

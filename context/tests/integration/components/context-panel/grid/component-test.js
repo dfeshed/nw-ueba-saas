@@ -174,4 +174,43 @@ module('Integration | Component | context-panel/grid', function(hooks) {
     assert.equal(findAll('.rsa-context-panel__config-grid__layout').length, 0, 'configurable grid is empty.');
   });
 
+  test('show non-translated label name when attribute is not ootb', async function(assert) {
+    const lookupData = [{
+      'Archer': {
+        'dataSourceType': 'Archer',
+        'dataSourceGroup': 'Archer',
+        'connectionName': 'test',
+        'resultList': [
+          {
+            'Device Owner': '',
+            'Business Unit': '',
+            'Host Name': 'NewHost',
+            'MAC Address': '',
+            'Url': 'HTTPS://10.31.204.245/RSAArcher/default.aspx?requestUrl=..%2fGenericContent%2fRecord.aspx%3fid%3d324945%26moduleId%3d71',
+            'Facilities': '',
+            'Risk Rating': '',
+            'IP Address': '10.30.91.91',
+            'Type': 'Desktop',
+            'Device ID': '324945',
+            'Device Name': 'New Device',
+            'Criticality Rating': 'Not Rated',
+            'Manufacturer': 'Archer'
+          }
+        ],
+        'order': [ 'Criticality Rating', 'Risk Rating', 'Manufacturer', 'Device Name', 'Host Name', 'IP Address', 'Device ID', 'Type', 'MAC Address', 'Facilities', 'Business Unit', 'Device Owner', 'Url' ]
+      } }];
+
+    const contextData = {
+      lookupKey: '10.10.100.10',
+      meta: 'IP',
+      lookupData
+    };
+    new ReduxDataHelper(setState)
+      .setData('context', contextData)
+      .build();
+    this.set('dataSourceDetails', dataSourceDetails);
+    await render(hbs `{{context-panel/grid dataSourceDetails=dataSourceDetails}}`);
+    assert.ok(findAll('.rsa-context-panel__config-grid__layout')[2].textContent.indexOf('Manufacturer'), 'Manufacturer label name is taken from resultList response');
+  });
+
 });

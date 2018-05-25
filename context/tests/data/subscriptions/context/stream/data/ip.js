@@ -21,7 +21,8 @@ export default [
         'Type': 'Desktop',
         'Device ID': '324945',
         'Device Name': 'New Device',
-        'Criticality Rating': 'Not Rated'
+        'Criticality Rating': 'Not Rated',
+        'Business Processes': [ 'Process 1', 'Process 2', 'Process 3', 'Process 4' ]
       }
     ],
     'resultMeta': {
@@ -29,7 +30,7 @@ export default [
       'root': null,
       'limit': 0
     },
-    'order': [ 'Criticality Rating', 'Risk Rating', 'Device Name', 'Host Name', 'IP Address', 'Device ID', 'Type', 'MAC Address', 'Facilities', 'Business Unit', 'Device Owner', 'Url' ],
+    'order': [ 'Criticality Rating', 'Risk Rating', 'Device Name', 'Host Name', 'Business Processes', 'IP Address', 'Device ID', 'Type', 'MAC Address', 'Facilities', 'Business Unit', 'Device Owner', 'Url' ],
     'pagingEnabled': false,
     'currentPageId': 0,
     'failed': false,
