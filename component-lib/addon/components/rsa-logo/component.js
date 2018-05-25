@@ -28,16 +28,9 @@ export default Component.extend({
   tagName: 'div',
 
   // Base class prefix for all instances.
-  classNames: 'rsa-logo',
-  classNameBindings: ['animated'],
-
-  /**
-   * If true, indicates that the logo uses CSS animation.
-   * @type boolean
-   * @default true
-   * @public
-   */
-  animated: true,
+  classNameBindings: ['displayEula:rsa-eula-logo:rsa-logo'],
+  displayEula: null,
+  legacyRsaLogo: true,
 
   /**
    * Comma-delimited list of animation delays (in millisec) for the component's DOM nodes.  These delays will be
