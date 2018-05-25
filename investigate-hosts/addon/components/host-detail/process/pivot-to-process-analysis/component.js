@@ -64,6 +64,7 @@ const PivotToPA = Component.extend({
       const queryParams = `checksum=${checksumSha256}&sid=${serviceId}&aid=${agentId}&pn=${name}&${timeStr}&${osTypeParam}`;
 
       window.open(`${window.location.origin}/investigate/process-analysis?${queryParams}`, '_blank', 'width=1440,height=900');
+      this._closeModal();
     },
 
     toggleServiceSelection(item) {
