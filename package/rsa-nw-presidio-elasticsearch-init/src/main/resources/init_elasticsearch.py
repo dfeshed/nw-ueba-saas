@@ -8,6 +8,7 @@ import logging
 import os
 import requests
 import string
+import multiprocessing
 
 MACHINE_URL = 'http://localhost:9200/'
 URL_KIBANA = MACHINE_URL + '.kibana/'
@@ -255,10 +256,18 @@ def init_elasticsearch(path):
             create_index_by_order(newpath, subfolder)
 
 
+def update_visualization_by_num_of_cores(path):
+    with open(path,'r') as file:
+        filedata = file.read()
+    filedata=filedata.replace("${host.amount_of_cores}",str(multiprocessing.cpu_count()))
+    with open(path,'w') as file:
+        file.write(filedata)
+
 
 
 def main(path, elasticsearch_url):
     global MACHINE_URL
+    update_visualization_by_num_of_cores(path + VISUALIZATION + "/metricbeat_visualizations.json")
     MACHINE_URL = elasticsearch_url
     init_elasticsearch(path + INDEXES)
     update_kibana_index_from_file(path + INDEX_PATTERN, URL_KIBANA_PATTERNS)
