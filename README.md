@@ -23,7 +23,19 @@ Spring profiles:
 
 URL: <http://localhost:8883/index.html>
 
+## Build
+#### Jenkins on [Bedford-tier2](https://rsabwlabauth.corp.emc.com:900/):
 
+* Pull request triggered java UT jobs: https://asoc-esa-jenkins.rsa.lab.emc.com/view/UEBA/job/presidio-ui-pr/
+
+* Manually triggered java UT jobs: https://asoc-esa-jenkins.rsa.lab.emc.com/view/UEBA/job/presidio-ui/
+
+* Package building job: https://asoc-esa-jenkins.rsa.lab.emc.com/view/UEBA/job/presidio-ui-packages/
+
+
+## Installation
+
+See package [readme file](/package/README.md)
 
 
 
