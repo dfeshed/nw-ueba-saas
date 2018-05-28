@@ -108,6 +108,62 @@ public class JsonRegexCaptureAndFormatInterceptorTest {
         assertEvent(interceptor.doIntercept(event), "userId", "SUCCESS");
     }
 
+    @Test
+    public void test_machine_normalization_colon() {
+        AbstractPresidioJsonInterceptor interceptor = buildInterceptor(
+                "{\"pattern\":\".*:.*\",\"format\":\"colon\"}"
+        );
+
+        Event event = buildEvent("user.dst", "FE80:0000:0000:0000:0202:B3FF:FE1E:8329");
+        assertEvent(interceptor.doIntercept(event), "userId", "colon");
+
+        event = buildEvent("user.dst", "[2001:db8:0:1]:80");
+        assertEvent(interceptor.doIntercept(event), "userId", "colon");
+
+        event = buildEvent("user.dst", "MY-DESKTOP1");
+        assertEvent(interceptor.doIntercept(event), "userId", "my-desktop1");
+    }
+
+    @Test
+    public void test_machine_normalization_fqdn() {
+        AbstractPresidioJsonInterceptor interceptor = buildInterceptor(
+                "{\"pattern\":\"(\\\\\\\\\\\\\\\\)?(.+)\\\\..+\\\\..+\",\"format\":\"%s\"," +
+                "\"capturingGroupConfigurations\":[{\"index\":2,\"caseFormat\":\"LOWER\"}]}"
+        );
+
+        Event event = buildEvent("user.dst", "host.domain.local");
+        assertEvent(interceptor.doIntercept(event), "userId", "host");
+
+        event = buildEvent("user.dst", "MACHINE.CORP.GLOBAL");
+        assertEvent(interceptor.doIntercept(event), "userId", "machine");
+
+        event = buildEvent("user.dst", "\\\\\\\\HOST.DOMAIN.LOCAL");
+        assertEvent(interceptor.doIntercept(event), "userId", "host");
+
+        event = buildEvent("user.dst", "\\\\\\\\machine.corp.global");
+        assertEvent(interceptor.doIntercept(event), "userId", "machine");
+
+        event = buildEvent("user.dst", "Host@Domain.Local");
+        assertEvent(interceptor.doIntercept(event), "userId", "host@domain.local");
+    }
+
+    @Test
+    public void test_machine_normalization_preceding_backslashes() {
+        AbstractPresidioJsonInterceptor interceptor = buildInterceptor(
+                "{\"pattern\":\"(\\\\\\\\\\\\\\\\)?(.+)\",\"format\":\"[%s]\"," +
+                "\"capturingGroupConfigurations\":[{\"index\":2,\"caseFormat\":\"LOWER\"}]}"
+        );
+
+        Event event = buildEvent("user.dst", "my-machine1");
+        assertEvent(interceptor.doIntercept(event), "userId", "[my-machine1]");
+
+        event = buildEvent("user.dst", "MY-MACHINE1");
+        assertEvent(interceptor.doIntercept(event), "userId", "[my-machine1]");
+
+        event = buildEvent("user.dst", "\\\\\\\\My-Machine1");
+        assertEvent(interceptor.doIntercept(event), "userId", "[my-machine1]");
+    }
+
     private static AbstractPresidioJsonInterceptor buildInterceptor(String captureAndFormatConfiguration) {
         String configuration =
                 "{\"sourceKey\":\"user.dst\",\"destinationKey\":\"userId\",\"captureAndFormatConfigurations\":["
