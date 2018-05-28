@@ -1,6 +1,6 @@
 export default {
-  subscriptionDestination: '/user/queue/administration/context/get/liveconnect/userprefs',
-  requestDestination: '/ws/administration/context/get/liveconnect/userprefs',
+  subscriptionDestination: '/user/queue/contexthub/context/get/liveconnect/userprefs',
+  requestDestination: '/ws/contexthub/context/get/liveconnect/userprefs',
   count: 0,
   message(/* frame */) {
     return {

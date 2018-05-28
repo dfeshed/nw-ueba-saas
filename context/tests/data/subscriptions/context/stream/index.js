@@ -1,9 +1,9 @@
 import data from './data';
 
 export default {
-  subscriptionDestination: '/user/queue/administration/context/lookup',
-  requestDestination: '/ws/administration/context/lookup',
-  cancelDestination: '/ws/administration/context/cancel',
+  subscriptionDestination: '/user/queue/contexthub/context/lookup',
+  requestDestination: '/ws/contexthub/context/lookup',
+  cancelDestination: '/ws/contexthub/context/cancel',
   page(frame, sendMessage) {
     const filters = JSON.parse(frame.body).filter;
     if (filters) {

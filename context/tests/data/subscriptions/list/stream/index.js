@@ -1,8 +1,8 @@
 import data from './data';
 
 export default {
-  subscriptionDestination: '/user/queue/administration/context/list',
-  requestDestination: '/ws/administration/context/list',
+  subscriptionDestination: '/user/queue/contexthub/context/list',
+  requestDestination: '/ws/contexthub/context/list',
   message(/* frame */) {
     return {
       data,

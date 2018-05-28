@@ -1,6 +1,6 @@
 export default {
-  subscriptionDestination: '/user/queue/administration/context/liveconnect/feedback',
-  requestDestination: '/ws/administration/context/liveconnect/feedback',
+  subscriptionDestination: '/user/queue/contexthub/context/liveconnect/feedback',
+  requestDestination: '/ws/contexthub/context/liveconnect/feedback',
   count: 0,
   message(/* frame */) {
     const data = { code: 0 };

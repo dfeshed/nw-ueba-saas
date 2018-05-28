@@ -1,8 +1,8 @@
 import data from './data';
 
 export default {
-  subscriptionDestination: '/user/queue/administration/context/liveconnect/related',
-  requestDestination: '/ws/administration/context/liveconnect/related',
+  subscriptionDestination: '/user/queue/contexthub/context/liveconnect/related',
+  requestDestination: '/ws/contexthub/context/liveconnect/related',
   message(/* frame */) {
     return {
       data,

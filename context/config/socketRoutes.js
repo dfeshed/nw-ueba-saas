@@ -4,95 +4,95 @@ const common = require('../../common');
 
 module.exports = function(environment) {
 
-  const socketUrl = common.determineSocketUrl(environment, '/administration/socket');
+  const socketUrl = common.determineSocketUrl(environment, '/contexthub/socket');
 
   return {
     context: {
       socketUrl,
       stream: {
         defaultStreamLimit: 100000,
-        subscriptionDestination: '/user/queue/administration/context/lookup',
-        requestDestination: '/ws/administration/context/lookup',
-        cancelDestination: '/ws/administration/context/cancel'
+        subscriptionDestination: '/user/queue/contexthub/context/lookup',
+        requestDestination: '/ws/contexthub/context/lookup',
+        cancelDestination: '/ws/contexthub/context/cancel'
       }
     },
     'list': {
       socketUrl,
       stream: {
         defaultStreamLimit: 100000,
-        subscriptionDestination: '/user/queue/administration/context/list',
-        requestDestination: '/ws/administration/context/list',
-        cancelDestination: '/ws/administration/context/cancel'
+        subscriptionDestination: '/user/queue/contexthub/context/list',
+        requestDestination: '/ws/contexthub/context/list',
+        cancelDestination: '/ws/contexthub/context/cancel'
       }
     },
     'save-entries':{
       socketUrl,
       stream: {
         defaultStreamLimit: 100000,
-        subscriptionDestination: '/user/queue/administration/context/list/save',
-        requestDestination: '/ws/administration/context/list/save',
-        cancelDestination: '/ws/administration/context/cancel'
+        subscriptionDestination: '/user/queue/contexthub/context/list/save',
+        requestDestination: '/ws/contexthub/context/list/save',
+        cancelDestination: '/ws/contexthub/context/cancel'
       }
     },
     'create-list':{
       socketUrl,
       stream: {
         defaultStreamLimit: 100000,
-        subscriptionDestination: '/user/queue/administration/context/list/create',
-        requestDestination: '/ws/administration/context/list/create',
-        cancelDestination: '/ws/administration/context/cancel'
+        subscriptionDestination: '/user/queue/contexthub/context/list/create',
+        requestDestination: '/ws/contexthub/context/list/create',
+        cancelDestination: '/ws/contexthub/context/cancel'
       }
     },
     'data-sources':{
       socketUrl,
       stream: {
         defaultStreamLimit: 100000,
-        subscriptionDestination: '/user/queue/administration/context/data-sources',
-        requestDestination: '/ws/administration/context/data-sources',
-        cancelDestination: '/ws/administration/context/cancel'
+        subscriptionDestination: '/user/queue/contexthub/context/data-sources',
+        requestDestination: '/ws/contexthub/context/data-sources',
+        cancelDestination: '/ws/contexthub/context/cancel'
       }
     },
     'related-entity': {
       socketUrl,
       stream: {
-        subscriptionDestination: '/user/queue/administration/context/liveconnect/related',
-        requestDestination: '/ws/administration/context/liveconnect/related'
+        subscriptionDestination: '/user/queue/contexthub/context/liveconnect/related',
+        requestDestination: '/ws/contexthub/context/liveconnect/related'
       }
     },
     'liveconnect-feedback': {
       socketUrl,
       createRecord: {
-        subscriptionDestination: '/user/queue/administration/context/liveconnect/feedback',
-        requestDestination: '/ws/administration/context/liveconnect/feedback'
+        subscriptionDestination: '/user/queue/contexthub/context/liveconnect/feedback',
+        requestDestination: '/ws/contexthub/context/liveconnect/feedback'
       }
     },
     'skill-level': {
       socketUrl,
       queryRecord: {
-        subscriptionDestination: '/user/queue/administration/context/get/liveconnect/userprefs',
-        requestDestination: '/ws/administration/context/get/liveconnect/userprefs'
+        subscriptionDestination: '/user/queue/contexthub/context/get/liveconnect/userprefs',
+        requestDestination: '/ws/contexthub/context/get/liveconnect/userprefs'
       }
     },
     'entity-type': {
       socketUrl,
       findAll: {
-        subscriptionDestination: '/user/queue/administration/context/types',
-        requestDestination: '/ws/administration/context/types'
+        subscriptionDestination: '/user/queue/contexthub/context/types',
+        requestDestination: '/ws/contexthub/context/types'
       }
     },
     'entity-summary': {
       socketUrl,
       stream: {
-        subscriptionDestination: '/user/queue/administration/context/flagging',
-        requestDestination: '/ws/administration/context/flagging',
-        cancelDestination: '/ws/administration/context/cancel'
+        subscriptionDestination: '/user/queue/contexthub/context/flagging',
+        requestDestination: '/ws/contexthub/context/flagging',
+        cancelDestination: '/ws/contexthub/context/cancel'
       }
     },
     'entity-meta': {
       socketUrl,
       findAll: {
-        subscriptionDestination: '/user/queue/administration/context/metas',
-        requestDestination: '/ws/administration/context/metas'
+        subscriptionDestination: '/user/queue/contexthub/context/metas',
+        requestDestination: '/ws/contexthub/context/metas'
       }
     }
   };

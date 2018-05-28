@@ -26,8 +26,8 @@ const entityRecords = function() {
 
 
 export default {
-  subscriptionDestination: '/user/queue/administration/context/flagging',
-  requestDestination: '/ws/administration/context/flagging',
+  subscriptionDestination: '/user/queue/contexthub/context/flagging',
+  requestDestination: '/ws/contexthub/context/flagging',
   page(frame, sendMessage) {
 
     const { body } = frame;

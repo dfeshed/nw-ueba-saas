@@ -1,7 +1,7 @@
 export default {
-  subscriptionDestination: '/user/queue/administration/context/list/create',
-  requestDestination: '/ws/administration/context/list/create',
-  canceltDestination: '/ws/administration/context/cancel',
+  subscriptionDestination: '/user/queue/contexthub/context/list/create',
+  requestDestination: '/ws/contexthub/context/list/create',
+  canceltDestination: '/ws/contexthub/context/cancel',
   count: 0,
   message(/* frame */) {
     const data = { code: 0 };
