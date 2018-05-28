@@ -10,6 +10,36 @@ export default [
     ]
   },
   {
+    sectionName: 'Scan Schedule',
+    prefix: 'scheduleConfig',
+    fields: [
+      {
+        field: 'scheduleConfig.enabled',
+        labelKey: 'scheduleConfig.enabled'
+      },
+      {
+        field: 'scheduleConfig.scanInterval',
+        labelKey: 'scheduleConfig.scanInterval'
+      },
+      {
+        field: 'scheduleConfig.startTime',
+        labelKey: 'scheduleConfig.startTime'
+      },
+      {
+        field: 'scheduleConfig.scheduleStartDate',
+        labelKey: 'scheduleConfig.scheduleStartDate'
+      },
+      {
+        field: 'scheduleConfig.scanOptions.cpuMax',
+        labelKey: 'scheduleConfig.scanOptions.cpuMax'
+      },
+      {
+        field: 'scheduleConfig.scanOptions.cpuMaxVm',
+        labelKey: 'scheduleConfig.scanOptions.cpuMaxVm'
+      }
+    ]
+  },
+  {
     sectionName: 'Agent',
     fields: [
       {

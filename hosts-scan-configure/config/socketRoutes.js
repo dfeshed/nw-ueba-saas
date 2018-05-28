@@ -10,12 +10,12 @@ const scheduleConfig = function(environment) {
     schedule: {
       socketUrl,
       get: {
-        subscriptionDestination: '/user/queue/endpoint/policy/get',
-        requestDestination: '/ws/endpoint/policy/get'
+        subscriptionDestination: '/user/queue/endpoint/insights-policy/get',
+        requestDestination: '/ws/endpoint/insights-policy/get'
       },
       update: {
-        subscriptionDestination: '/user/queue/endpoint/policy/set',
-        requestDestination: '/ws/endpoint/policy/set'
+        subscriptionDestination: '/user/queue/endpoint/insights-policy/set',
+        requestDestination: '/ws/endpoint/insights-policy/set'
       }
     }
   };

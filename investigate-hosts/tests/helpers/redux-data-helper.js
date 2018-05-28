@@ -256,4 +256,9 @@ export default class DataHelper {
     _set(this.state, 'visuals.contextError', value);
     return this;
   }
+
+  policy(data) {
+    _set(this.state, 'overview.policyDetails', data);
+    return this;
+  }
 }

@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { getHostPropertyTab, getContext, getAlertsCount, getIncidentsCount } from 'investigate-hosts/reducers/visuals/selectors';
+import { getPropertyData } from 'investigate-hosts/reducers/details/overview/selectors';
 import { setHostPropertyTabView } from 'investigate-hosts/actions/data-creators/details';
 import { inject as service } from '@ember/service';
 
@@ -12,7 +13,8 @@ const stateToComputed = (state) => ({
   hostPropertyTabs: getHostPropertyTab(state),
   context: getContext(state),
   alertsCount: getAlertsCount(state),
-  incidentsCount: getIncidentsCount(state)
+  incidentsCount: getIncidentsCount(state),
+  propertyData: getPropertyData(state)
 });
 
 const dispatchToActions = {

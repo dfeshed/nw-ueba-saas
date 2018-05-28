@@ -67,6 +67,7 @@ const _getHostDetails = (forceRefresh) => {
           onSuccess: (response) => {
             dispatch({ type: ACTION_TYPES.RESET_HOST_DETAILS });
             dispatch(_fetchDataForSelectedTab());
+            dispatch(_fetchPolicyDetails(agentId));
             dispatch(fetchHostContext(response.data.machine.machineName));
             const debugResponse = JSON.stringify(response);
             debug(`onSuccess: ${ACTION_TYPES.FETCH_HOST_DETAILS} ${debugResponse}`);
@@ -117,6 +118,21 @@ const _fetchDataForSelectedTab = () => {
     }
   };
 };
+
+const _fetchPolicyDetails = (agentId) => (
+  {
+    type: ACTION_TYPES.FETCH_POLICY_DETAILS,
+    promise: HostDetails.policyDetails({ agentId }),
+    meta: {
+      onSuccess: (response) => {
+        const debugResponse = JSON.stringify(response);
+        debug(`onSuccess: ${ACTION_TYPES.FETCH_POLICY_DETAILS} ${debugResponse}`);
+      },
+      onFailure: (response) => handleError(ACTION_TYPES.FETCH_POLICY_DETAILS, response)
+    }
+  }
+);
+
 /**
  * An Action Creator for changing a detail view.
  *

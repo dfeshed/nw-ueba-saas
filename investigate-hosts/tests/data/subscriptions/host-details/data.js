@@ -218,5 +218,32 @@ module.exports = {
     'agentMode': 'userModeOnly'
   },
   'agentStatus': { 'lastSeenTime': 1500091621745, 'scanStatus': 'idle' },
-  'groups': { 'name': 'group1', 'type': 'type1', 'id': 'id1' }
+  'groups': [{ 'name': 'group1', 'type': 'type1', 'id': 'id1' }],
+  'scheduledScanConfig': {
+    'enabled': true,
+    'recurrentSchedule': {
+      'recurrence': {
+        'interval': 1,
+        'unit': 'WEEKS'
+      },
+      'startTime': {
+        'hour': 18,
+        'minute': 23,
+        'second': 18,
+        'nano': 186000000
+      },
+      'runOnDays': [
+        1,
+        2
+      ],
+      'scheduleStartDate': 1526993598139
+    },
+    'scanOptions': {
+      'cpuMax': 10,
+      'cpuMaxVm': 20,
+      'foldersToExclude': [
+        'c:\\'
+      ]
+    }
+  }
 };

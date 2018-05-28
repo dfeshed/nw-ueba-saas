@@ -89,10 +89,19 @@ const getFileSearchResults = (filterObj, { onResponse = NOOP, onInit = NOOP, onE
   });
 };
 
+const policyDetails = (data) => {
+  return promiseRequest({
+    method: 'getPolicyDetails',
+    modelName: 'endpoint',
+    query: { data }
+  });
+};
+
 export default {
   getAllSnapShots,
   getHostDetails,
   getFileContextData,
   exportFileContext,
-  getFileSearchResults
+  getFileSearchResults,
+  policyDetails
 };

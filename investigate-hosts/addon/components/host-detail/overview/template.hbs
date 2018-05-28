@@ -1,5 +1,5 @@
-{{#liquid-bind host use=(if host animation "default") as |hostData|}}
-  {{#if host}}
+{{#liquid-bind propertyData use=(if propertyData animation "default") as |hostData|}}
+  {{#if propertyData }}
     <vbox xs="9" class="host-detail-box scroll-box">
       {{host-detail/overview/summary}}
     </vbox>
@@ -7,32 +7,32 @@
       {{#if domIsReady}}
         {{#if features.rsaEndpointFusion}}
           <box fit>
-           {{#host-detail/utils/host-title-bar tabs=hostPropertyTabs defaultAction=(action 'setHostPropertyTabView') as |tab|}}
-             {{#if (eq tab.name 'ALERT')}}
-               <div class="label">{{t tab.label count=alertsCount}}</div>
-             {{else if (eq tab.name 'INCIDENT')}}
-               <div class="label">{{t tab.label count=incidentsCount}}</div>
-             {{else}}
-               <div class="label">{{t tab.label}}</div>
-             {{/if}}
-           {{/host-detail/utils/host-title-bar}}
+            {{#host-detail/utils/host-title-bar tabs=hostPropertyTabs defaultAction=(action 'setHostPropertyTabView') as |tab|}}
+              {{#if (eq tab.name 'ALERT')}}
+                <div class="label">{{t tab.label count=alertsCount}}</div>
+              {{else if (eq tab.name 'INCIDENT')}}
+                <div class="label">{{t tab.label count=incidentsCount}}</div>
+              {{else}}
+                <div class="label">{{t tab.label}}</div>
+              {{/if}}
+            {{/host-detail/utils/host-title-bar}}
           </box>
         {{/if}}
         <box class='scroll-box'>
-        {{#if features.rsaEndpointFusion}}
-          {{#if (eq activePropertyTab 'HOST')}}
+          {{#if features.rsaEndpointFusion}}
+            {{#if (eq activePropertyTab 'HOST')}}
+              {{host-detail/overview/property-panel
+                data=hostData
+                localeNameSpace='investigateHosts.hosts.properties'}}
+            {{else}}
+              {{endpoint/risk-panel activeDataSourceTab=activePropertyTab data=context errorMessage=contextError}}
+            {{/if}}
+          {{else}}
             {{host-detail/overview/property-panel
+              title=(t 'investigateHosts.tabs.hostProperties')
               data=hostData
               localeNameSpace='investigateHosts.hosts.properties'}}
-          {{else}}
-            {{endpoint/risk-panel activeDataSourceTab=activePropertyTab data=context errorMessage=contextError}}
           {{/if}}
-        {{else}}
-          {{host-detail/overview/property-panel
-            title=(t 'investigateHosts.tabs.hostProperties')
-            data=hostData
-            localeNameSpace='investigateHosts.hosts.properties'}}
-        {{/if}}
         </box>
       {{else}}
         <centered>

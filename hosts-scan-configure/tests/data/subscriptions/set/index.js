@@ -1,6 +1,6 @@
 export default {
-  subscriptionDestination: '/user/queue/endpoint/policy/set',
-  requestDestination: '/ws/endpoint/policy/set',
+  subscriptionDestination: '/user/queue/endpoint/insights-policy/set',
+  requestDestination: '/ws/endpoint/insights-policy/set',
   message(/* frame */) {
     return {
       data: {

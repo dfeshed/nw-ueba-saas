@@ -11,7 +11,8 @@ const initialState = {
   hostDetails: null,
   downloadId: null,
   exportJSONStatus: 'completed',
-  arrangeSecurityConfigsBy: 'alphabetical'
+  arrangeSecurityConfigsBy: 'alphabetical',
+  policyDetails: null
 };
 
 test('should return the initial state', function(assert) {
@@ -38,6 +39,18 @@ test('The FETCH_HOST_DETAILS sets the host details information', function(assert
   });
   const newEndState = reducer(previous, newAction);
   assert.equal(newEndState.hostDetails.hostName, 'test');
+});
+
+test('The FETCH_POLICY_DETAILS sets the policy details information', function(assert) {
+  const previous = Immutable.from({
+    policyDetails: null
+  });
+  const newAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.FETCH_POLICY_DETAILS,
+    payload: { data: { scheduledScanConfig: { enabled: true } } }
+  });
+  const newEndState = reducer(previous, newAction);
+  assert.equal(newEndState.policyDetails.scheduledScanConfig.enabled, true);
 });
 
 test('The FETCH_DOWNLOAD_FILECONTEXT_JOB_ID download id', function(assert) {

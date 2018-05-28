@@ -10,6 +10,7 @@ import { lookupData } from '../../../../integration/components/state/visual.look
 import { linux } from '../../../../integration/components/state/overview.hostdetails';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import Service from '@ember/service';
+import policyData from '../../../../data/subscriptions/policy/data';
 
 let initState, saFeatures;
 const featuresService = Service.extend({});
@@ -30,10 +31,11 @@ module('Integration | Component | host-detail/overwiew', function(hooks) {
   });
 
 
-  test('The risk panel populating with alerts and incidents', async function(assert) {
+  test('  The risk panel populating with alerts and incidents', async function(assert) {
     new ReduxDataHelper(initState)
       .lookupData(lookupData)
       .activeHostPropertyTab('ALERT')
+      .policy(policyData)
       .host(linux.overview.hostDetails).build();
     await render(hbs`{{host-detail/overview domIsReady=true}}`);
     assert.equal(findAll('.host-properties-box .host-title-bar .rsa-nav-tab:nth-child(2) div.label')[0].textContent.trim(), 'Alerts (1)', 'Alerts tab is appearing in overview page');
@@ -59,6 +61,7 @@ module('Integration | Component | host-detail/overwiew', function(hooks) {
     new ReduxDataHelper(initState)
       .lookupData(lookupData)
       .activeHostPropertyTab('ALERT')
+      .policy(policyData)
       .host(linux.overview.hostDetails)
       .setContextError('investigateHosts.context.error.context.service.timeout')
       .build();

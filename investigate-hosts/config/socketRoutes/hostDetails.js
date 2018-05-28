@@ -31,6 +31,10 @@ module.exports = function(env) {
       fileContextSearch: {
         subscriptionDestination: '/user/queue/endpoint/filecontext/search',
         requestDestination: '/ws/endpoint/filecontext/search/stream'
+      },
+      getPolicyDetails: {
+        subscriptionDestination: '/user/queue/endpoint/policy/get',
+        requestDestination: '/ws/endpoint/policy/get'
       }
     }
   };

@@ -2490,6 +2490,16 @@ export default {
         filter: 'Type to filter list',
         checkbox: 'Show properties with values only',
         groups: 'Groups',
+        scheduleConfig: {
+          enabled: 'Enabled',
+          scanInterval: 'Recurrence',
+          startTime: 'Start Time',
+          scheduleStartDate: 'Start Date',
+          scanOptions: {
+            cpuMax: 'CPU Max',
+            cpuMaxVm: 'CPU Max VM'
+          }
+        },
         machine: {
           securityConfigurations: 'Security Configurations',
           hostFileEntries: {

@@ -9,6 +9,8 @@ const _exportJsonStatus = (state) => state.endpoint.overview.exportJSONStatus;
 const _agentStatus = (state) => state.endpoint.machines.agentStatus;
 const _downloadId = (state) => state.endpoint.overview.downloadId;
 const _arrangeSecurityConfigsBy = (state) => state.endpoint.overview.arrangeSecurityConfigsBy;
+const _policyDetails = (state) => state.endpoint.overview.policyDetails || [];
+
 
 const _hostAgentStatus = createSelector(
   _hostDetails,
@@ -178,4 +180,34 @@ export const isMachineLinux = createSelector(
 export const isMachineWindows = createSelector(
   machineOsType,
   (machineOsType) => machineOsType && (machineOsType.toLowerCase() === 'windows')
+);
+
+export const getPropertyData = createSelector(
+  [_policyDetails, _hostDetails],
+  (policyDetails, hostDetails) => {
+    if (policyDetails.scheduledScanConfig) {
+      const { scheduledScanConfig } = policyDetails;
+      const { recurrentSchedule, scanOptions } = scheduledScanConfig;
+      const { recurrence, startTime, runOnDays, scheduleStartDate } = recurrentSchedule;
+      const { unit, interval } = recurrence;
+      let scanInterval = '';
+      if (unit === 'DAYS') {
+        scanInterval = (interval === 1 ? 'Every Day' : `Every ${interval} Days`);
+      } else {
+        const week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        const weekDay = week[runOnDays[0] + 1];
+        scanInterval = `Every ${interval} week(s) on ${weekDay}`;
+      }
+      const scheduleConfig = {
+        enabled: policyDetails.scheduledScanConfig.enabled,
+        scanInterval,
+        startTime,
+        scheduleStartDate,
+        scanOptions
+      };
+      return {
+        ...hostDetails, scheduleConfig
+      };
+    }
+  }
 );

@@ -7,7 +7,8 @@ const initialState = Immutable.from({
   hostDetails: null,
   downloadId: null,
   exportJSONStatus: 'completed',
-  arrangeSecurityConfigsBy: 'alphabetical'
+  arrangeSecurityConfigsBy: 'alphabetical',
+  policyDetails: null
 });
 
 const hostDetails = reduxActions.handleActions({
@@ -17,6 +18,12 @@ const hostDetails = reduxActions.handleActions({
   [ACTION_TYPES.FETCH_HOST_DETAILS]: (state, action) => {
     return handle(state, action, {
       success: (s) => s.merge({ hostDetails: action.payload.data, loadingStatus: 'completed' })
+    });
+  },
+
+  [ACTION_TYPES.FETCH_POLICY_DETAILS]: (state, action) => {
+    return handle(state, action, {
+      success: (s) => s.merge({ policyDetails: action.payload.data, loadingStatus: 'completed' })
     });
   },
 

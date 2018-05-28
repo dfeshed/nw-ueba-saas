@@ -5,11 +5,13 @@ import filePropertyConfig from './subscriptions/file-property-panel/property-con
 import filePropertyData from './subscriptions/file-property-panel/property-data/data';
 import fileSearchResults from './subscriptions/explore/data';
 import snapShot from './subscriptions/snapShot/data';
+import policy from './subscriptions/policy/data';
 export {
   hosts,
   hostSchema,
   filePropertyConfig,
   filePropertyData,
   fileSearchResults,
-  snapShot
+  snapShot,
+  policy
 };
