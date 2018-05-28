@@ -19,6 +19,7 @@ const defaultConfig = [
   },
   {
     sectionName: 'Process',
+    isExpanded: true,
     fields: [
       {
         field: 'process.createUtcTime',

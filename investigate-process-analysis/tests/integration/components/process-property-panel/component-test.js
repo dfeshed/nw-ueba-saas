@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll } from '@ember/test-helpers';
+import { render, findAll, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -47,12 +47,16 @@ module('Integration | Component | process-property-panel', function(hooks) {
   test('Process property panel renders', async function(assert) {
     this.set('defaultConfig', defaultConfig);
     this.set('data', fileProperties[0]);
+    this.set('currentConfig', { name: 'File.General', isExpanded: false });
     await render(hbs`{{process-property-panel
       title=(t 'investigateProcessAnalysis.property.title')
       data=data
       config=defaultConfig
-      localeNameSpace='investigateProcessAnalysis.property.file'}}`);
-    assert.equal(findAll('.content-section__property').length, 4, 'Expected to render 4 file properties');
+      localeNameSpace='investigateProcessAnalysis.property.file'
+      currentConfig=currentConfig}}`);
+    assert.equal(findAll('.content-section__property').length, 0, 'Expected to render 0 file properties when hidden');
+    await click('.content-section__section-name');
+    assert.equal(findAll('.content-section__property').length, 4, 'Expected to render 4 file properties when shown');
   });
 
   test('it renders the title for property panel', async function(assert) {

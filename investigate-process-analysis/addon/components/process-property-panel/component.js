@@ -65,14 +65,21 @@ export default Component.extend({
   },
 
   /**
+   * An object containing data of currently expanded/hidden property.
+   * @type {object}
+   * @public
+   */
+  currentConfig: {},
+
+  /**
    * Prepares the property array setting the value to the each property reading it from the data.
    * @param data
    * @returns {Array}
    * @public
    */
-  @computed('data', 'config')
-  properties(data, config) {
-    if (data && config) {
+  @computed('data', 'config', 'currentConfig')
+  properties(data, config, currentConfig) {
+    if (data && config && currentConfig) {
       const i18n = this.get('i18n');
       const clonedConfig = [...config];
       this.updateConfig(data, clonedConfig);
@@ -93,12 +100,20 @@ export default Component.extend({
         });
 
         set(item, 'fields', fields);
-
+        if (item.sectionName === currentConfig.name) {
+          set(item, 'isExpanded', currentConfig.isExpanded);
+        }
         return item;
       });
       return properties;
     }
     return [];
+  },
+
+  actions: {
+    toggleBody(config) {
+      this.set('currentConfig', { name: config.sectionName, isExpanded: !config.isExpanded });
+    }
   }
 
 });
