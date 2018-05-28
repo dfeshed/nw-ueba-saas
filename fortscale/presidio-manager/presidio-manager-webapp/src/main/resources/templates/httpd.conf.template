@@ -398,7 +398,7 @@ SSLSessionCacheTimeout  900
 
     #  RewriteEngine on
 
-    #  RewriteRule  "/caui-webapp/(.*)$" "http://localhost:8080/caui-webapp/$1" [NE,R,P]
+    #  RewriteRule  "/caui-webapp/(.*)$" "http://localhost:8883/$1" [NE,R,P]
 
     # RequestHeader set Authenticated_User %{REMOTE_USER}s
     #</Location>
@@ -413,7 +413,7 @@ SSLSessionCacheTimeout  900
        AuthUserFile /etc/httpd/conf/.applicationpasswd
        require valid-user
        RewriteEngine on
-       RewriteRule  "/caui-webapp/(.*)$" "http://localhost:8080/caui-webapp/$1" [NE,R,P]
+       RewriteRule  "/caui-webapp/(.*)$" "http://localhost:8883/$1" [NE,R,P]
     </Location>
 
     # Kerberos Kibana
