@@ -28,7 +28,7 @@ const contextDetails = {
 module('Unit | Utility | non-url-actions-handler', function() {
 
   test('this should return non supported actions list and common actions support', function(assert) {
-    assert.equal(nonSupportedActionList.length, 9, `Currently following actions are not supported : ${nonSupportedActionList.concat(',')}`);
+    assert.equal(nonSupportedActionList.length, 11, `Currently following actions are not supported : ${nonSupportedActionList.concat(',')}`);
   });
 
   test('test nonUrlBasedActions for drillDownNewTabEquals', function(assert) {

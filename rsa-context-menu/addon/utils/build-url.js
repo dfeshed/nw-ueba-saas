@@ -4,6 +4,10 @@ export const openUrl = (url) => {
   window.open(url);
 };
 
+export const changeUrl = (url) => {
+  window.location.href = url;
+};
+
 const _prepareMetaFormatMap = (language) => {
   if (!language) {
     return {};

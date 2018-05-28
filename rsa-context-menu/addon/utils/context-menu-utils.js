@@ -41,5 +41,5 @@ export const mergeObjectArray = (srcArray, mergeArray) => {
  * @public
  */
 export const componentCSSList = {
-  EventGrid: ['nw-event-value', 'nw-event-value-drillable-equals', 'nw-event-value-drillable-not-equals']
+  EventGrid: ['nw-event-value', 'nw-event-value-drillable-equals', 'nw-event-value-drillable-not-equals', 'nw-event-value-drillable-contains']
 };

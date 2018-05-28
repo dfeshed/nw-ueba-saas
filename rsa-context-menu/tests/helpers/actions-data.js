@@ -15,7 +15,7 @@ export default {
     groupName: 'refocusNewTabGroup',
     pluginRawConfig: '',
     disabled: '',
-    id: 'InvestigationEventRefocusNewTabSplitSessionsNewTab',
+    id: 'InvestigationEventRefocusNewTabSplitSessionsNew',
     moduleClasses: [
       'UAP.investigation.events.view.EventGrid'
     ],
@@ -35,7 +35,7 @@ export default {
     groupName: 'refocusNewTabGroup',
     pluginRawConfig: '',
     disabled: '',
-    id: 'InvestigationEventRefocusNewTabSplitSessionsNewTab',
+    id: 'InvestigationEventRefocusNewTabSplitSessions',
     moduleClasses: [
       'UAP.investigation.events.view.EventGrid'
     ],

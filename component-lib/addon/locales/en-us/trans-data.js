@@ -2970,6 +2970,62 @@ export default {
       }
     }
   },
+  // Begin context menu
+  contextmenu: {
+    actions: {
+      applyDrillInNewTabLabel: 'Apply Drill in New Tab',
+      applyNotEqualsInNewTabLabel: 'Apply !EQUALS Drill in New Tab',
+      applyNotEqualsDrillLabel: 'Apply !EQUALS Drill',
+      getOpenInNewTab: 'Open in New Tab',
+      visualizeGeoMapLabel: 'Geo-map Locations in New Tab',
+      getLookupInLive: 'Live Lookup',
+      changeSelectedToOpenLabel: 'Change Selected to Open',
+      changeSelectedToClosedLabel: 'Change Selected to Closed',
+      changeSelectedToAutoLabel: 'Change Selected to Auto',
+      changeSelectedToHiddenLabel: 'Change Selected to Hidden',
+      refocusInvestigationInNewTabLabel: 'Refocus Investigation in New Tab',
+      scan: 'Scan for Malware',
+      getHashLookup: 'Hash Lookup',
+      getECATIoc: 'Endpoint Thick Client Lookup',
+      getGoogle: 'Google',
+      getRobtex: 'Robtex',
+      sansIPHistoryLabel: 'SANS IP History',
+      googleMalwareDiagnosticsLabel: 'Google Malware Diagnostic for IPs and Hostnames',
+      mcAfeeHostnameSiteAdvisorLabel: 'McAfee SiteAdvisor for Hostnames',
+      getBFKPassiveDNSCollection: 'BFK Passive DNS Collection',
+      getCentralOpsWhoisForIPsAndHostnames: 'CentralOps Whois for IPs and Hostnames',
+      getMalwaredomainlistSearch: 'Malwaredomainlist.com Search',
+      getRobtexIPSearch: 'Robtex IP Search',
+      getThreatExpertSearch: 'ThreatExpert Search',
+      getUrlVoidSearch: 'UrlVoid Search',
+      viewInSuspiciousDomainReport: 'Suspicious Domain Report',
+      viewInHostProfileReport: 'Host Profile Report',
+      viewInVPNSessionReport: 'Suspicious VPN Session Report',
+      contextServiceDefaultAction: 'Context Lookup',
+      eventReconTitle: 'Event Reconstruction',
+      viewInSuspiciousDNSActivityReport: 'Suspicious DNS Activity Report',
+      getAddToListLabel: 'Add/Remove from List(s)',
+      getCopy: 'Copy',
+      viewDetailsNewRecon: 'Event Analysis',
+      applyContainsDrillLabel: 'Apply Contains Drill',
+      applyContainsInNewTabLabel: 'Apply Contains Drill in New Tab',
+      applyRefocusLabel: 'Apply EQUALS',
+      applyRefocusNotEqualsLabel: 'Apply !EQUALS',
+      applyRefocusContainsLabel: 'Apply Contains',
+      applyRefocusSessionSplitsLabel: 'Find Session Fragments',
+      applyRefocusInNewTabLabel: 'Refocus EQUALS Drill in New Tab',
+      applyRefocusNotEqualsInNewTabLabel: 'Refocus !EQUALS Drill in New Tab',
+      applyRefocusContainsInNewTabLabel: 'Refocus Contains Drill in New Tab',
+      applyRefocusSessionSplitsInNewTabLabel: 'Find Session Fragments in New Tab'
+    },
+    groups: {
+      investigationGroup: 'Investigation',
+      externalLookupGroup: 'External Lookup',
+      contextGroupDataScience: 'Data Science',
+      refocusGroup: 'Refocus',
+      refocusNewTabGroup: 'Refocus New Tab'
+    }
+  },
   // begin admin-source-management (a.k.a USM)
   adminUsm: {
     button: {
