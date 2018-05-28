@@ -16,54 +16,6 @@ import static org.mockito.Mockito.*;
 public class JsonRegexCaptureAndFormatInterceptorTest {
 
     @Test
-    public void test_ipv4_pattern_match1() {
-        AbstractPresidioJsonInterceptor interceptor = buildInterceptor(
-                "{\"pattern\":\"(\\\\\\\\)?\\\\d{1,3}.\\\\d{1,3}.\\\\d{1,3}.\\\\d{1,3}(:\\\\d+){0,1}\",\"format\":\"\"," +
-                        "\"capturingGroupConfigurations\":[]}"
-        );
-
-        Event event = buildEvent("user.dst", "10.64.152.163");
-        event = interceptor.doIntercept(event);
-        assertEvent(event, "userId", "");
-    }
-
-    @Test
-    public void test_ipv4_pattern_match2() {
-        AbstractPresidioJsonInterceptor interceptor = buildInterceptor(
-                "{\"pattern\":\"(\\\\\\\\\\\\\\\\)?\\\\d{1,3}.\\\\d{1,3}.\\\\d{1,3}.\\\\d{1,3}\",\"format\":\" \"," +
-                        "\"capturingGroupConfigurations\":[]}"
-        );
-
-        Event event = buildEvent("user.dst", "\\\\\\\\10.64.152.163");
-        event = interceptor.doIntercept(event);
-        assertEvent(event, "userId", " ");
-    }
-
-    @Test
-    public void test_ipv4_pattern_no_match1() {
-        AbstractPresidioJsonInterceptor interceptor = buildInterceptor(
-                "{\"pattern\":\"(\\\\\\\\\\\\\\\\)?\\\\d{1,3}.\\\\d{1,3}.\\\\d{1,3}.\\\\d{1,3}(:\\\\d+){0,1}\",\"format\": \"\"," +
-                        "\"capturingGroupConfigurations\":[]}"
-        );
-
-        Event event = buildEvent("user.dst", "\\\\10.64.152.163");
-        event = interceptor.doIntercept(event);
-        assertEvent(event, "userId", "\\10.64.152.163");
-    }
-
-    @Test
-    public void test_ipv4_pattern_no_match2() {
-        AbstractPresidioJsonInterceptor interceptor = buildInterceptor(
-                "{\"pattern\":\"(\\\\\\\\\\\\\\\\)?\\\\d{1,3}.\\\\d{1,3}.\\\\d{1,3}.\\\\d{1,3}(:\\\\d+){0,1}\",\"format\":\"\"," +
-                        "\"capturingGroupConfigurations\":[]}"
-        );
-
-        Event event = buildEvent("user.dst", "a.64.152.163");
-        event = interceptor.doIntercept(event);
-        assertEvent(event, "userId", "a.64.152.163");
-    }
-
-    @Test
     public void test_ldap_format_with_common_name_alone() {
         AbstractPresidioJsonInterceptor interceptor = buildInterceptor(
                 "{\"pattern\":\"CN=([^,]+)\",\"format\":\"%s\"," +
@@ -171,6 +123,50 @@ public class JsonRegexCaptureAndFormatInterceptorTest {
 
         event = buildEvent("user.dst", "MY-DESKTOP1");
         assertEvent(interceptor.doIntercept(event), "userId", "my-desktop1");
+    }
+
+    @Test
+    public void test_ipv4_pattern_match1() {
+        AbstractPresidioJsonInterceptor interceptor = buildInterceptor(
+                "{\"pattern\":\"(\\\\\\\\)?\\\\d{1,3}.\\\\d{1,3}.\\\\d{1,3}.\\\\d{1,3}(:\\\\d+){0,1}\",\"format\":\"\"}"
+        );
+
+        Event event = buildEvent("user.dst", "10.64.152.163");
+        event = interceptor.doIntercept(event);
+        assertEvent(event, "userId", "");
+    }
+
+    @Test
+    public void test_ipv4_pattern_match2() {
+        AbstractPresidioJsonInterceptor interceptor = buildInterceptor(
+                "{\"pattern\":\"(\\\\\\\\\\\\\\\\)?\\\\d{1,3}.\\\\d{1,3}.\\\\d{1,3}.\\\\d{1,3}\",\"format\":\" \"}"
+        );
+
+        Event event = buildEvent("user.dst", "\\\\\\\\10.64.152.163");
+        event = interceptor.doIntercept(event);
+        assertEvent(event, "userId", " ");
+    }
+
+    @Test
+    public void test_ipv4_pattern_no_match1() {
+        AbstractPresidioJsonInterceptor interceptor = buildInterceptor(
+                "{\"pattern\":\"(\\\\\\\\\\\\\\\\)?\\\\d{1,3}.\\\\d{1,3}.\\\\d{1,3}.\\\\d{1,3}(:\\\\d+){0,1}\",\"format\": \"\"}"
+        );
+
+        Event event = buildEvent("user.dst", "\\\\10.64.152.163");
+        event = interceptor.doIntercept(event);
+        assertEvent(event, "userId", "\\10.64.152.163");
+    }
+
+    @Test
+    public void test_ipv4_pattern_no_match2() {
+        AbstractPresidioJsonInterceptor interceptor = buildInterceptor(
+                "{\"pattern\":\"(\\\\\\\\\\\\\\\\)?\\\\d{1,3}.\\\\d{1,3}.\\\\d{1,3}.\\\\d{1,3}(:\\\\d+){0,1}\",\"format\":\"\"}"
+        );
+
+        Event event = buildEvent("user.dst", "a.64.152.163");
+        event = interceptor.doIntercept(event);
+        assertEvent(event, "userId", "a.64.152.163");
     }
 
     @Test
