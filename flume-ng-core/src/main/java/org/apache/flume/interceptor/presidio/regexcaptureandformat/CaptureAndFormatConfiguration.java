@@ -41,7 +41,7 @@ public class CaptureAndFormatConfiguration {
             @JsonProperty("capturingGroupConfigurations") List<CapturingGroupConfiguration> capturingGroupConfigurations) {
 
         this.pattern = Pattern.compile(Validate.notEmpty(pattern, "pattern cannot be empty or null."));
-        this.format = Validate.notEmpty(format, "format cannot be empty or null.");
+        this.format = Validate.notNull(format, "format cannot be null.");
         // Can be empty or null if there are no capturing groups.
         this.capturingGroupConfigurations = capturingGroupConfigurations;
     }

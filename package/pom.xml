@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.rsa.netwitness.presidio</groupId>
+    <artifactId>rsa-nw-presidio-flume</artifactId>
+    <version>2.0.0-SNAPSHOT</version>
+    <parent>
+        <artifactId>rpm-builder</artifactId>
+        <groupId>com.rsa.netwitness.infrastructure.rpm</groupId>
+        <version>3.0.0-SNAPSHOT</version>
+    </parent>
+
+    <properties>
+        <presidio-app.directory>
+            <!--Base application directory.
+            should contain batch apps, python packages and scripts used by core and its extensions-->
+            /var/lib/netwitness/presidio
+        </presidio-app.directory>
+        <flume_home_directory>${presidio-app.directory}/flume/</flume_home_directory>
+        <rpm-maven-plugin.version>2.1.5</rpm-maven-plugin.version>
+    </properties>
+
+    <dependencies>
+
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>rpm-maven-plugin</artifactId>
+                <version>${rpm-maven-plugin.version}</version>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>generate-rpm</id>
+                        <goals>
+                            <goal>rpm</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <group>Application/Collectors</group>
+                    <release>${rpm.version.build}</release>
+                    <needarch>true</needarch>
+                    <mappings>
+                        <mapping>
+                            <directoryIncluded>false</directoryIncluded>
+                            <directory>${flume_home_directory}</directory>
+                            <username>presidio</username>
+                            <groupname>presidio</groupname>
+                            <sources>
+                                <source>
+                                    <location>
+                                        ${project.basedir}/../flume-ng-dist/target/apache-flume-${project.version}-bin/apache-flume-${project.version}-bin/
+                                    </location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directoryIncluded>false</directoryIncluded>
+                            <directory>${flume_home_directory}/conf</directory>
+                            <username>presidio</username>
+                            <groupname>presidio</groupname>
+                            <sources>
+                                <source>
+                                    <location>
+                                        ${project.basedir}/../fortscale-flume/resources/flume-logback.xml
+                                    </location>
+                                </source>
+                            </sources>
+                        </mapping>
+                    </mappings>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
+
+</project>

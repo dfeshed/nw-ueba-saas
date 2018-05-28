@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.google.common.base.Stopwatch;
 import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractDocument;
 import org.apache.flume.Context;
@@ -16,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import java.nio.charset.Charset;
 import java.time.Instant;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static org.apache.flume.CommonStrings.END_DATE;
 import static org.apache.flume.CommonStrings.START_DATE;
@@ -24,6 +26,13 @@ import static org.apache.flume.CommonStrings.START_DATE;
 public abstract class AbstractStreamablePresidioSource extends AbstractPresidioSource {
 
     private static Logger logger = LoggerFactory.getLogger(AbstractStreamablePresidioSource.class);
+
+    private final Stopwatch initStopWatch = Stopwatch.createUnstarted();
+
+    private final Stopwatch streamingStopWatch = Stopwatch.createUnstarted();
+
+    private final Stopwatch processingStopWatch = Stopwatch.createUnstarted();
+
     private int totalEvents = 0;
 
     protected SourceFetcher sourceFetcher;
@@ -48,12 +57,20 @@ public abstract class AbstractStreamablePresidioSource extends AbstractPresidioS
         logger.info("{} is processing events for {}: {}, {}: {}.", getName(), START_DATE, END_DATE, startDate, endDate);
 
         try {
+            initStopWatch.start();
             startStreaming(Schema.createSchema(schema), startDate, endDate, config);
+            initStopWatch.stop();
 
             while (hasNext()) {
+
+                streamingStopWatch.start();
                 AbstractDocument event = next();
+                streamingStopWatch.stop();
+
                 if (event!=null) {
+                    processingStopWatch.start();
                     processEvent(event);
+                    processingStopWatch.stop();
                     totalEvents++;
                 }
             }
@@ -77,6 +94,12 @@ public abstract class AbstractStreamablePresidioSource extends AbstractPresidioS
 
     @Override
     protected void doStop() throws FlumeException {
+        logger.info("\n" + "STREAMING SOURCE: total events: {}, init time: {} sec., streaming time: {} sec., processing time: {} sec.",
+                    totalEvents,
+                    initStopWatch.elapsed(TimeUnit.SECONDS),
+                    streamingStopWatch.elapsed(TimeUnit.SECONDS),
+                    processingStopWatch.elapsed(TimeUnit.SECONDS));
+
         try {
             flumePresidioExternalMonitoringService.manualExportMetrics();
         } catch (Exception e) {
