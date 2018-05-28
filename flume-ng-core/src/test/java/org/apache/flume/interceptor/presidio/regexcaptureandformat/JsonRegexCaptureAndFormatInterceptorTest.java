@@ -160,14 +160,14 @@ public class JsonRegexCaptureAndFormatInterceptorTest {
     @Test
     public void test_machine_normalization_colon() {
         AbstractPresidioJsonInterceptor interceptor = buildInterceptor(
-                "{\"pattern\":\".*:.*\",\"format\":\"colon\"}"
+                "{\"pattern\":\".*:.*\",\"format\":\"\"}"
         );
 
         Event event = buildEvent("user.dst", "FE80:0000:0000:0000:0202:B3FF:FE1E:8329");
-        assertEvent(interceptor.doIntercept(event), "userId", "colon");
+        assertEvent(interceptor.doIntercept(event), "userId", "");
 
         event = buildEvent("user.dst", "[2001:db8:0:1]:80");
-        assertEvent(interceptor.doIntercept(event), "userId", "colon");
+        assertEvent(interceptor.doIntercept(event), "userId", "");
 
         event = buildEvent("user.dst", "MY-DESKTOP1");
         assertEvent(interceptor.doIntercept(event), "userId", "my-desktop1");
