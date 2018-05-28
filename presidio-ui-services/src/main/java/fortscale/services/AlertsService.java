@@ -3,7 +3,6 @@ package fortscale.services;
 import fortscale.domain.core.Alert;
 import fortscale.domain.core.AlertFeedback;
 import fortscale.domain.core.AlertStatus;
-import fortscale.domain.core.alert.analystfeedback.AnalystRiskFeedback;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DailySeveiryConuntDTO;
 import fortscale.domain.dto.DateRange;
@@ -108,7 +107,7 @@ public interface AlertsService {
 //	Set<String> getDistinctAlertNames(Boolean ignoreRejected);
 
 
-	AnalystRiskFeedback updateAlertStatus(Alert alert, AlertStatus alertStatus, AlertFeedback alertFeedback, String analystUserName) throws UserNotFoundExeption;
+	Alert updateAlertStatus(Alert alert, AlertStatus alertStatus, AlertFeedback alertFeedback, String analystUserName) throws UserNotFoundExeption;
 
 	void saveAlertInRepository(Alert alert);
 }

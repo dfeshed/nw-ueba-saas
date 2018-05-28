@@ -3,13 +3,11 @@ package fortscale.services.impl;
 import fortscale.domain.core.*;
 import fortscale.domain.core.Alert;
 import fortscale.domain.core.User;
-import fortscale.domain.core.alert.analystfeedback.AnalystFeedback;
-import fortscale.domain.core.alert.analystfeedback.AnalystRiskFeedback;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DailySeveiryConuntDTO;
 import fortscale.domain.dto.DateRange;
 import fortscale.presidio.output.client.api.AlertsPresidioOutputClient;
-import fortscale.services.AlertCommentsService;
+
 import fortscale.services.AlertsService;
 import fortscale.services.UserService;
 import fortscale.services.exception.UserNotFoundExeption;
@@ -39,7 +37,7 @@ public class AlertsServiceImpl implements AlertsService {
     private final AlertsPresidioOutputClient remoteAlertClientService;
     private final UserService userService;
     private final AlertConverterHelper alertConverterHelper;
-    private final AlertCommentsService alertCommentsService;
+
     private final AggregationConverterHelper aggregationConverterHelper;
 
     private static final String SEVERITY_COLUMN_NAME = "severity";
@@ -47,11 +45,11 @@ public class AlertsServiceImpl implements AlertsService {
 
     protected Logger logger = Logger.getLogger(this.getClass());
 
-    public AlertsServiceImpl(UserService userService, AlertConverterHelper alertConverterHelper, AlertCommentsService alertCommentsService,
+    public AlertsServiceImpl(UserService userService, AlertConverterHelper alertConverterHelper,
                              AggregationConverterHelper aggregationConverterHelper,AlertsPresidioOutputClient remoteAlertClientService) {
         this.userService = userService;
         this.alertConverterHelper = alertConverterHelper;
-        this.alertCommentsService = alertCommentsService;
+
         this.aggregationConverterHelper = aggregationConverterHelper;
         this.remoteAlertClientService = remoteAlertClientService;
     }
@@ -128,33 +126,33 @@ public class AlertsServiceImpl implements AlertsService {
             alerts = new Alerts(Collections.emptyList(),0);
         }
 
-        if (loadComments && alerts.getAlerts().size()>0){
-            updateCommentsOnAlert(alerts);
-
-        }
+//        if (loadComments && alerts.getAlerts().size()>0){
+//            updateCommentsOnAlert(alerts);
+//
+//        }
         return alerts;
 
 
 
     }
 
-    private void updateCommentsOnAlert(Alerts alerts) {
-        Set<String> alertIds = new HashSet<>();
-        alerts.getAlerts().forEach(alert->{
-            alertIds.add(alert.getId());
-        });
-        Map<String, List<AnalystFeedback>> commentsPerAlert = this.alertCommentsService.getCommentByAlertIds(alertIds);
-        if (MapUtils.isEmpty(commentsPerAlert)){
-            return;
-        }
-
-        alerts.getAlerts().forEach(alert->{
-            List<AnalystFeedback> comments = commentsPerAlert.get(alert.getId());
-            if (CollectionUtils.isNotEmpty(comments)){
-                alert.setAnalystFeedback(comments);
-            }
-        });
-    }
+//    private void updateCommentsOnAlert(Alerts alerts) {
+//        Set<String> alertIds = new HashSet<>();
+//        alerts.getAlerts().forEach(alert->{
+//            alertIds.add(alert.getId());
+//        });
+//        Map<String, List<AnalystFeedback>> commentsPerAlert = this.alertCommentsService.getCommentByAlertIds(alertIds);
+//        if (MapUtils.isEmpty(commentsPerAlert)){
+//            return;
+//        }
+//
+//        alerts.getAlerts().forEach(alert->{
+//            List<AnalystFeedback> comments = commentsPerAlert.get(alert.getId());
+//            if (CollectionUtils.isNotEmpty(comments)){
+//                alert.setAnalystFeedback(comments);
+//            }
+//        });
+//    }
 
     /**
      * This method return list of entityIDs to look for.
@@ -472,10 +470,10 @@ public class AlertsServiceImpl implements AlertsService {
 
 
     @Override
-    public AnalystRiskFeedback updateAlertStatus(Alert alert, AlertStatus alertStatus, AlertFeedback alertFeedback, String analystUserName) throws UserNotFoundExeption {
+    public Alert updateAlertStatus(Alert alert, AlertStatus alertStatus, AlertFeedback alertFeedback, String analystUserName) throws UserNotFoundExeption {
 
         boolean alertUpdated = false;
-        AnalystRiskFeedback analystRiskFeedback = null;
+
 
         if (alert != null) {
 
@@ -492,15 +490,7 @@ public class AlertsServiceImpl implements AlertsService {
             }
 
             if (alertUpdated) {
-                // Check what was the alerts' user score contribution before the status update
-//				double userScoreContributionBeforeUpdate = alert.getUserScoreContribution();
 
-                // Save the alert to repository
-//				saveAlertInRepository(alert);
-
-                // Get the users' score and severity after the status update
-
-                // Create analystRiskFeedback, add it to the alert and save
                 User oldUser = getUser(alert);
                 //Update Presidio-Output
                 List<presidio.output.client.model.AlertQuery.FeedbackEnum> feedbackEnum = alertConverterHelper.getFeedbackConverter().convertUiFilterToQueryDto(alertFeedback.name());
@@ -521,15 +511,13 @@ public class AlertsServiceImpl implements AlertsService {
 
                 User newUser = getUser(alert);
 
-                analystRiskFeedback = new AnalystRiskFeedback(analystUserName, alertFeedback,
-                        oldUser.getScore(),newUser.getScore(),
-                        newUser.getScoreSeverity(), System.currentTimeMillis(),alert.getId());
-
-                alertCommentsService.addComment(analystRiskFeedback);
 
             }
+            return alert;
+        } else {
+            return null;
         }
-        return analystRiskFeedback;
+
 
     }
 

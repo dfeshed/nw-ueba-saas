@@ -50,7 +50,7 @@ public class WebConf{
     ApiAlertController alertController(){
 
         AlertFilterHelperImpl alertFilterHelper = new AlertFilterHelperImpl();
-        return new ApiAlertController(alertCommentsService,alertFilterHelper,localizationService,alertsService);
+        return new ApiAlertController(alertFilterHelper,localizationService,alertsService);
     }
 
     @Bean
@@ -111,9 +111,6 @@ public class WebConf{
     @Autowired
     ThemesService themesService;
 
-
-    @Autowired
-    AlertCommentsService alertCommentsService;
 
 
     @Autowired

@@ -5,13 +5,9 @@ import fortscale.domain.core.*;
 import fortscale.domain.core.Alert;
 import fortscale.domain.core.AlertFeedback;
 import fortscale.domain.core.AlertStatus;
-import fortscale.domain.core.alert.analystfeedback.AnalystCommentFeedback;
-import fortscale.domain.core.alert.analystfeedback.AnalystFeedback;
-import fortscale.domain.core.alert.analystfeedback.AnalystRiskFeedback;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DailySeveiryConuntDTO;
 import fortscale.domain.dto.DateRange;
-import fortscale.services.AlertCommentsService;
 import fortscale.services.AlertsService;
 import fortscale.services.LocalizationService;
 import fortscale.services.exception.UserNotFoundExeption;
@@ -64,13 +60,13 @@ public class ApiAlertController extends BaseController {
 
 	private static final String OPEN_STATUS = "Open";
 
-	private AlertCommentsService alertCommentsService;
+
 	private AlertFilterHelperImpl alertFilterHelper;
 	private LocalizationService localizationService;
 	private AlertsService alertsService;
 
-	public ApiAlertController(AlertCommentsService alertCommentsService, AlertFilterHelperImpl alertFilterHelper, LocalizationService localizationService, AlertsService alertsService) {
-		this.alertCommentsService = alertCommentsService;
+	public ApiAlertController(AlertFilterHelperImpl alertFilterHelper, LocalizationService localizationService, AlertsService alertsService) {
+
 		this.alertFilterHelper = alertFilterHelper;
 		this.localizationService = localizationService;
 		this.alertsService = alertsService;
@@ -315,120 +311,8 @@ public class ApiAlertController extends BaseController {
 
 	}
 
-	@ApiOperation(value = "Add new comment on the alert", notes = "The comment include the analyst details, date, and text", response = AnalystCommentFeedback.class)
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Successful retrieval of user detail", response = AnalystCommentFeedback.class),
-			@ApiResponse(code = 400, message = "Analyst name different the username"),
-			@ApiResponse(code = 404, message = "Alert Not Found")})
-	@ApiParam(name = "AnalystCommentFeedback", value = "AnalystCommentFeedback details", required = true)
-	@RequestMapping(method = RequestMethod.POST, value = "/{id}/comments", consumes = MediaType.APPLICATION_JSON_VALUE)
-	//@LogException
-	@ResponseBody
-	public ResponseEntity<?> addComment(HttpServletRequest httpRequest, @PathVariable String id,
-										@RequestBody @Valid CommentFeedbackRequest request
-	) {
-		Alert alert = alertsService.getAlertById(id);
-		String analystName = null;
 
-		try {
-			analystName = getAnalystUserName(httpRequest);
-		} catch (Exception e) {
-			return new ResponseEntity(e, HttpStatus.BAD_REQUEST);
-		}
 
-		if (alert == null) {
-			return new ResponseEntity("Alert id doesn't exist " + id, HttpStatus.NOT_FOUND);
-		}
-
-		AnalystCommentFeedback comment = new AnalystCommentFeedback(analystName, request.getCommentText(),
-				System.currentTimeMillis(),id);
-
-//		alert.addAnalystFeedback(comment);
-//
-//
-//		alertsService.saveAlertInRepository(alert);
-		alertCommentsService.addComment(comment);
-		return new ResponseEntity(comment, HttpStatus.CREATED);
-	}
-
-	@RequestMapping(method = RequestMethod.PATCH, value = "{id}/comments/{commentId}")
-	//@LogException
-	@ResponseBody
-	public ResponseEntity updateComment(HttpServletRequest httpRequest, @PathVariable String id, @PathVariable String commentId,
-										@RequestBody @Valid CommentFeedbackRequest request) {
-		Alert alert = alertsService.getAlertById(id);
-		String analystName = null;
-		try {
-			analystName = getAnalystUserName(httpRequest);
-		} catch (Exception e) {
-			return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
-		}
-
-		if (alert == null) {
-			return new ResponseEntity("Alert id doesn't exist " + id, HttpStatus.BAD_REQUEST);
-		}
-		AnalystFeedback analystFeedback = alertCommentsService.getCommentById(commentId);
-
-		if (analystFeedback == null) {
-			return new ResponseEntity("Alert doesn't have comment with id " + commentId, HttpStatus.BAD_REQUEST);
-		}
-
-		if (!(analystFeedback instanceof AnalystCommentFeedback)){
-			return new ResponseEntity("Cannot update analyst feedback other then comment", HttpStatus.BAD_REQUEST);
-		}
-
-		AnalystCommentFeedback comment = (AnalystCommentFeedback) analystFeedback;
-
-		if (!comment.getCommentText().equals(request.getCommentText())) {
-			comment.setCommentText(request.getCommentText());
-			comment.setAnalystUserName(analystName);
-			alertCommentsService.updateComment(comment);
-		}
-
-		return new ResponseEntity(comment, HttpStatus.OK);
-	}
-
-	@RequestMapping(method = RequestMethod.DELETE, value = "{id}/comments/{commentId}")
-	//@LogException
-	@ResponseBody
-	public ResponseEntity deleteComment(HttpServletRequest httpRequest,@PathVariable String id, @PathVariable String commentId) {
-//		updateCommentDeletedByAnalyst(httpRequest, id, commentId);
-		Alert alert = alertsService.getAlertById(id);
-
-		if (alert == null) {
-			return new ResponseEntity("Alert id doesn't exist " + id, HttpStatus.BAD_REQUEST);
-		}
-
-		AnalystFeedback analystFeedback = alertCommentsService.getCommentById(commentId);
-
-		if (analystFeedback== null || !analystFeedback.getAlertId().equals(id)){
-			return new ResponseEntity(String.format("No comment with id {} on alert {}", commentId, id) , HttpStatus.BAD_REQUEST);
-		}
-
-		if (!(analystFeedback instanceof AnalystCommentFeedback)){
-			return new ResponseEntity("Cannot delete analyst feedback other then comment", HttpStatus.BAD_REQUEST);
-		}
-
-		alertCommentsService.deleteComment(analystFeedback);
-
-		return new ResponseEntity(HttpStatus.OK);
-	}
-
-	/**
-	 * Before deleted the analyst, update who was the last to update the comment
-	 * @param httpRequest
-	 * @param id
-	 * @param commentId
-	 */
-	private void updateCommentDeletedByAnalyst(HttpServletRequest httpRequest, @PathVariable String id, @PathVariable String commentId) {
-		AnalystFeedback analystFeedback = alertCommentsService.getCommentById(commentId);
-		if (analystFeedback instanceof AnalystCommentFeedback) {
-			CommentFeedbackRequest commentRequest = new CommentFeedbackRequest(((AnalystCommentFeedback) analystFeedback).getCommentText());
-			updateComment(httpRequest, id, commentId, commentRequest);
-		} else {
-			throw new RuntimeException("Cannot update non comment feedback");
-		}
-	}
 
 	private void updateEvidenceFields(Alert alert){
 		if(alert != null && alert.getEvidences() != null) {
@@ -505,8 +389,8 @@ public class ApiAlertController extends BaseController {
 		}
 
 		try {
-			AnalystRiskFeedback analystRiskFeedback = alertsService.updateAlertStatus(alert, request.getStatus(), request.getFeedback(), analystUserName);
-			return new ResponseEntity(analystRiskFeedback, HttpStatus.OK);
+			alert= alertsService.updateAlertStatus(alert, request.getStatus(), request.getFeedback(), analystUserName);
+			return new ResponseEntity(alert,HttpStatus.OK);
 		} catch (UserNotFoundExeption userNotFoundExeption){
 			return new ResponseEntity(String.format("User with id {} not found", alert.getEntityId()), HttpStatus.BAD_REQUEST);
 		}
