@@ -1,5 +1,9 @@
 # Presidio Core Package
-Presidio rpms parent module
+Presidio RPMs parent module - reposinble for creating rpms for all sub-mudles. 
+
+* Package/pom.xml is a child pom to [rpm-builder infra](https://github.rsa.lab.emc.com/asoc/rpm-builder).
+
+* RPMs deliver files by RPM Standards [here](https://wiki.na.rsa.net/display/RPA/RPM+Standards+-+Consistency+and+Cloud+Friendly)
 
 ## Modules
 
