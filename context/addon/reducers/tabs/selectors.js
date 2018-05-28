@@ -107,5 +107,5 @@ export const onLiveConnectTab = createSelector(
 export const getArcherUrl = createSelector(
   [_archerData],
   (archerData) => {
-    return !isEmpty(archerData) ? archerData[0].Url : '';
+    return !isEmpty(archerData) ? archerData[0].internal_pivot_archer_request_url : '';
   });

@@ -14,7 +14,7 @@ export default [
         'Business Unit': '',
         'Host Name': 'NewHost',
         'MAC Address': '',
-        'Url': 'HTTPS://10.31.204.245/RSAArcher/default.aspx?requestUrl=..%2fGenericContent%2fRecord.aspx%3fid%3d324945%26moduleId%3d71',
+        'internal_pivot_archer_request_url': 'HTTPS://10.31.204.245/RSAArcher/default.aspx?requestUrl=..%2fGenericContent%2fRecord.aspx%3fid%3d324945%26moduleId%3d71',
         'Facilities': '',
         'Risk Rating': '',
         'IP Address': '10.30.91.91',
@@ -30,7 +30,7 @@ export default [
       'root': null,
       'limit': 0
     },
-    'order': [ 'Criticality Rating', 'Risk Rating', 'Device Name', 'Host Name', 'Business Processes', 'IP Address', 'Device ID', 'Type', 'MAC Address', 'Facilities', 'Business Unit', 'Device Owner', 'Url' ],
+    'order': [ 'Criticality Rating', 'Risk Rating', 'Device Name', 'Host Name', 'Business Processes', 'IP Address', 'Device ID', 'Type', 'MAC Address', 'Facilities', 'Business Unit', 'Device Owner', 'internal_pivot_archer_request_url' ],
     'pagingEnabled': false,
     'currentPageId': 0,
     'failed': false,

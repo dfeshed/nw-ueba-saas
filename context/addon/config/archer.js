@@ -6,7 +6,7 @@ export default {
   header: '',
   footer: '',
   title: 'context.archer.title',
-  skippedField: ['Url'],
+  skippedField: ['internal_pivot_archer_request_url'],
   localisationField:
   {
     'Criticality Rating': 'context.archer.criticalityRating',

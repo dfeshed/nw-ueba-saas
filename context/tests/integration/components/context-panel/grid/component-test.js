@@ -24,7 +24,7 @@ module('Integration | Component | context-panel/grid', function(hooks) {
           'Business Unit': '',
           'Host Name': 'NewHost',
           'MAC Address': '',
-          'Url': 'HTTPS://10.31.204.245/RSAArcher/default.aspx?requestUrl=..%2fGenericContent%2fRecord.aspx%3fid%3d324945%26moduleId%3d71',
+          'internal_pivot_archer_request_url': 'HTTPS://10.31.204.245/RSAArcher/default.aspx?requestUrl=..%2fGenericContent%2fRecord.aspx%3fid%3d324945%26moduleId%3d71',
           'Facilities': '',
           'Risk Rating': '',
           'IP Address': '10.30.91.91',
@@ -34,7 +34,7 @@ module('Integration | Component | context-panel/grid', function(hooks) {
           'Criticality Rating': 'Not Rated'
         }
       ],
-      'order': [ 'Criticality Rating', 'Risk Rating', 'Device Name', 'Host Name', 'IP Address', 'Device ID', 'Type', 'MAC Address', 'Facilities', 'Business Unit', 'Device Owner', 'Url' ]
+      'order': [ 'Criticality Rating', 'Risk Rating', 'Device Name', 'Host Name', 'IP Address', 'Device ID', 'Type', 'MAC Address', 'Facilities', 'Business Unit', 'Device Owner', 'internal_pivot_archer_request_url' ]
     } }];
 
   const contextData = {

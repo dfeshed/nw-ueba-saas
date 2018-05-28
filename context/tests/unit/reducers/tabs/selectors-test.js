@@ -36,7 +36,7 @@ test('determine archer url when available', function(assert) {
         dataSourceGroup: 'Archer',
         resultList: [
           {
-            'Url': 'www.google.com'
+            'internal_pivot_archer_request_url': 'www.google.com'
           }]
       }
     }]
