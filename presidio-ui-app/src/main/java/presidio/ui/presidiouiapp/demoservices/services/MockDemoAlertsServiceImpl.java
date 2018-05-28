@@ -1,7 +1,6 @@
 package presidio.ui.presidiouiapp.demoservices.services;
 
 import fortscale.domain.core.*;
-import fortscale.domain.core.alert.analystfeedback.AnalystRiskFeedback;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DailySeveiryConuntDTO;
 import fortscale.domain.dto.DateRange;
@@ -482,9 +481,9 @@ public class MockDemoAlertsServiceImpl implements AlertsService {
 
 
 	@Override
-	public AnalystRiskFeedback updateAlertStatus(Alert alert, AlertStatus alertStatus, AlertFeedback alertFeedback, String analystUserName) {
+	public Alert updateAlertStatus(Alert alert, AlertStatus alertStatus, AlertFeedback alertFeedback, String analystUserName) {
 		boolean alertUpdated = false;
-		AnalystRiskFeedback analystRiskFeedback = null;
+
 
 		if (alert != null) {
 
@@ -507,21 +506,10 @@ public class MockDemoAlertsServiceImpl implements AlertsService {
 				// Save the alert to repository
 				saveAlertInRepository(alert);
 
-				// Get the users' score and severity after the status update
-				User user = userService.getUserById(alert.getEntityId());
-//				Severity userSeverity = userScoreService.getUserSeverityForScore(user.getScore());
 
-				// Create analystRiskFeedback, add it to the alert and save
-				analystRiskFeedback = new AnalystRiskFeedback(analystUserName, alertFeedback,
-						userScoreContributionBeforeUpdate, user.getScore(),
-						user.getScoreSeverity(), System.currentTimeMillis(),alert.getId());
-				alert.addAnalystFeedback(analystRiskFeedback);
-				recalculateUserScore(user);
-				demoBuilder.populateUserSeverity();
-				saveAlertInRepository(alert);
 			}
 		}
-		return analystRiskFeedback;
+		return alert;
 
 	}
 

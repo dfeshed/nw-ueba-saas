@@ -141,11 +141,11 @@ module Fortscale.layouts.user {
 
             let currentFeedback: any = AlertFeedback[this.alert.feedback];
 
-            //Calculate "risk button" presentation
-            this._applyShrinkExpand(AlertFeedback.Approved ===  currentFeedback,
-                this.ACTUAL_RISK_CHECKED_SELECTOR,
-                this.ACTUAL_RISK_UNCHECKED_SELECTOR,
-                false);
+            // //Calculate "risk button" presentation
+            // this._applyShrinkExpand(AlertFeedback.Approved ===  currentFeedback,
+            //     this.ACTUAL_RISK_CHECKED_SELECTOR,
+            //     this.ACTUAL_RISK_UNCHECKED_SELECTOR,
+            //     false);
 
 
             //Calculate "not a risk button" presentation
