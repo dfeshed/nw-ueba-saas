@@ -14,7 +14,6 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.mockito.Mockito.*;
 
 public class JsonRegexCaptureAndFormatInterceptorTest {
-
     @Test
     public void test_ldap_format_with_common_name_alone() {
         AbstractPresidioJsonInterceptor interceptor = buildInterceptor(
@@ -150,7 +149,7 @@ public class JsonRegexCaptureAndFormatInterceptorTest {
     @Test
     public void test_ipv4_pattern_no_match1() {
         AbstractPresidioJsonInterceptor interceptor = buildInterceptor(
-                "{\"pattern\":\"(\\\\\\\\\\\\\\\\)?\\\\d{1,3}.\\\\d{1,3}.\\\\d{1,3}.\\\\d{1,3}(:\\\\d+){0,1}\",\"format\": \"\"}"
+                "{\"pattern\":\"(\\\\\\\\\\\\\\\\)?\\\\d{1,3}.\\\\d{1,3}.\\\\d{1,3}.\\\\d{1,3}(:\\\\d+){0,1}\",\"format\":\"\"}"
         );
 
         Event event = buildEvent("user.dst", "\\\\10.64.152.163");
@@ -209,10 +208,10 @@ public class JsonRegexCaptureAndFormatInterceptorTest {
         assertEvent(interceptor.doIntercept(event), "userId", "[my-machine1]");
     }
 
-    private static AbstractPresidioJsonInterceptor buildInterceptor(String captureAndFormatConfiguration) {
+    private static AbstractPresidioJsonInterceptor buildInterceptor(String captureAndFormatConfigurations) {
         String configuration =
                 "{\"sourceKey\":\"user.dst\",\"destinationKey\":\"userId\",\"captureAndFormatConfigurations\":["
-                + (isBlank(captureAndFormatConfiguration) ? EMPTY : captureAndFormatConfiguration + ",")
+                + (isBlank(captureAndFormatConfigurations) ? EMPTY : captureAndFormatConfigurations + ",")
                 + "{\"pattern\":\"(.+)\",\"format\":\"%s\",\"capturingGroupConfigurations\":[{\"index\":1,\"caseFormat\":\"LOWER\"}]}]}";
         Context context = mock(Context.class);
         when(context.getString(eq(Builder.CONFIGURATION_KEY))).thenReturn(configuration);

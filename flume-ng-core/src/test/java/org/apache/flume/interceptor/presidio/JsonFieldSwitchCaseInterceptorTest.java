@@ -1,20 +1,26 @@
 package org.apache.flume.interceptor.presidio;
 
-import com.google.common.base.Charsets;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
-import org.apache.flume.event.EventBuilder;
+import org.apache.flume.event.JSONEvent;
 import org.apache.flume.interceptor.Interceptor;
 import org.apache.flume.interceptor.InterceptorBuilderFactory;
 import org.apache.flume.interceptor.InterceptorType;
+import org.apache.flume.interceptor.presidio.JsonFieldSwitchCaseInterceptor.Builder;
 import org.apache.flume.tools.MockMonitorInitiator;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.List;
 
+import static java.util.Collections.singletonMap;
+import static org.apache.flume.interceptor.presidio.JsonFieldSwitchCaseInterceptor.Builder.*;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Testing JsonFieldSwitchCaseInterceptor based on the 4663 and the logic of the operation type.
@@ -67,11 +73,7 @@ public class JsonFieldSwitchCaseInterceptorTest {
         return ctx;
     }
 
-    private Interceptor initInteceptorWithAccessesContext(){
-        return initInteceptorWithAccessesContext(false);
-    }
-
-    private Interceptor initInteceptorWithAccessesContext(boolean isAddConditionConfiguration){
+    private Interceptor initInterceptorWithAccessesContext(boolean isAddConditionConfiguration) {
         Context ctx = createContextWithAccessesConfiguration(isAddConditionConfiguration);
 
         builder.configure(ctx);
@@ -90,7 +92,7 @@ public class JsonFieldSwitchCaseInterceptorTest {
     }
 
     private String interceptEvent(boolean includeEventCodeConf, String eventCode, String accessesValue){
-        Interceptor interceptor = initInteceptorWithAccessesContext(includeEventCodeConf);
+        Interceptor interceptor = initInterceptorWithAccessesContext(includeEventCodeConf);
         MockMonitorInitiator.setMockMonitor(interceptor);
         ArrayList<String> fields = new ArrayList<>();
         String accessesKeyValue = JsonInterceptorUtil.buildKeyValue(ACCESSES_FIELD_NAME, accessesValue);
@@ -134,8 +136,6 @@ public class JsonFieldSwitchCaseInterceptorTest {
     public void interceptFileCreatedEventWithNoEventCodeConfAndNoEventCodeValueTest() {
         interceptEventAndTestOperationType(false,null, ACCESSES_CREATE_OPERATION_VALUE, FILE_CREATED);
     }
-
-
 
     @Test
     public void interceptFileCreatedEventWithNoEventCodeValueTest() {
@@ -185,7 +185,7 @@ public class JsonFieldSwitchCaseInterceptorTest {
                 eventBody.contains(OPERATION_TYPE_FIELD_NAME));
         String operationTypeKeyValue = JsonInterceptorUtil.buildKeyNullValue(OPERATION_TYPE_FIELD_NAME);
         Assert.assertTrue(String.format("The operation type should have been null since the accesses values input do not" +
-                        " have resoving in the configuration. event: %s", eventBody),
+                        " have resolving in the configuration. event: %s", eventBody),
                 eventBody.contains(operationTypeKeyValue));
     }
 
@@ -274,5 +274,69 @@ public class JsonFieldSwitchCaseInterceptorTest {
         String srcMachineKeyValue = JsonInterceptorUtil.buildKeyValue(SRC_MACHINE, hostSrcValue);
         Assert.assertTrue(String.format("The %s field has been added with the wrong value. expected key value: %s, event: %s", SRC_MACHINE, srcMachineKeyValue, eventBody),
                 eventBody.contains(srcMachineKeyValue));
+    }
+
+    @Test
+    public void hierarchicalDestinationFieldTest() {
+        Builder builder = new Builder();
+        Context context = mock(Context.class);
+        when(context.getString(eq(ORIGIN_FIELD_CONF_NAME))).thenReturn("reference_id");
+        when(context.getString(eq(DESTINATION_FIELD_CONF_NAME))).thenReturn("additionalInfo.secondaryObjectId");
+        when(context.getString(eq(CASES_DELIM_CONF_NAME), anyString())).thenReturn(",");
+        when(context.getString(eq(CASES_CONF_NAME), anyString())).thenReturn("4733,4728,4756,4757,4717,4729,4732");
+        when(context.getString(eq(CASES_VALUES_CONF_NAME), anyString())).thenReturn("${group};${group};${group};${group};${accesses};${group};${group}");
+        builder.doConfigure(context);
+        AbstractPresidioJsonInterceptor interceptor = builder.doBuild();
+        Event event = new JSONEvent();
+
+        // additionalInfo should be added, and a new key-value pair should be added
+        JSONObject jsonObject = new JSONObject()
+                .put("reference_id", "4733")
+                .put("group", "My Group");
+        event.setBody(jsonObject.toString().getBytes());
+        jsonObject = new JSONObject(new String(interceptor.doIntercept(event).getBody()));
+        Assert.assertEquals("My Group", jsonObject.getJSONObject("additionalInfo").getString("secondaryObjectId"));
+
+        // additionalInfo is present with an existing key-value pair, and a new key-value pair should be added
+        jsonObject = new JSONObject()
+                .put("reference_id", "4728")
+                .put("group", "Your Group")
+                .put("additionalInfo", new JSONObject(singletonMap("yetAnotherKey", "yetAnotherValue")));
+        event.setBody(jsonObject.toString().getBytes());
+        jsonObject = new JSONObject(new String(interceptor.doIntercept(event).getBody()));
+        Assert.assertEquals("yetAnotherValue", jsonObject.getJSONObject("additionalInfo").getString("yetAnotherKey"));
+        Assert.assertEquals("Your Group", jsonObject.getJSONObject("additionalInfo").getString("secondaryObjectId"));
+
+        // additionalInfo is present with an existing key-value pair, and this key-value pair should be overwritten
+        jsonObject = new JSONObject()
+                .put("reference_id", "4756")
+                .put("group", "Our Group")
+                .put("additionalInfo", new JSONObject(singletonMap("secondaryObjectId", "yetAnotherValue")));
+        event.setBody(jsonObject.toString().getBytes());
+        jsonObject = new JSONObject(new String(interceptor.doIntercept(event).getBody()));
+        Assert.assertEquals(1, jsonObject.getJSONObject("additionalInfo").length());
+        Assert.assertEquals("Our Group", jsonObject.getJSONObject("additionalInfo").getString("secondaryObjectId"));
+
+        when(context.getString(eq(DESTINATION_FIELD_CONF_NAME))).thenReturn("first.second.third");
+        builder.doConfigure(context);
+        interceptor = builder.doBuild();
+
+        // first, second and third should be added
+        jsonObject = new JSONObject()
+                .put("reference_id", "4757")
+                .put("group", "Wizards");
+        event.setBody(jsonObject.toString().getBytes());
+        jsonObject = new JSONObject(new String(interceptor.doIntercept(event).getBody()));
+        Assert.assertEquals("Wizards", jsonObject.getJSONObject("first").getJSONObject("second").getString("third"));
+
+        // first is present, and second and third should be added
+        jsonObject = new JSONObject()
+                .put("reference_id", "4717")
+                .put("accesses", "Lizards")
+                .put("first", new JSONObject(singletonMap("yetAnotherKey", "yetAnotherValue")));
+        event.setBody(jsonObject.toString().getBytes());
+        jsonObject = new JSONObject(new String(interceptor.doIntercept(event).getBody()));
+        Assert.assertEquals("yetAnotherValue", jsonObject.getJSONObject("first").getString("yetAnotherKey"));
+        Assert.assertEquals("Lizards", jsonObject.getJSONObject("first").getJSONObject("second").getString("third"));
     }
 }
