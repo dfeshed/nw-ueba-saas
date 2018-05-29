@@ -4,7 +4,8 @@ import Immutable from 'seamless-immutable';
 import {
   processProperties,
   osType,
-  rootHash
+  rootHash,
+  hasProperties
 } from 'investigate-process-analysis/reducers/process-properties/selectors';
 
 module('Unit | Selectors | process-properties', function() {
@@ -52,5 +53,21 @@ module('Unit | Selectors | process-properties', function() {
     const data = rootHash(state);
     assert.equal(data, 'f6066162e9e4f279d2d5f0c207c209ae8c2b13fc7555186f32c7e8ce49eb52a2');
   });
+
+  test('hasProperties returns the hash of the root node', function(assert) {
+    const state = Immutable.from({
+      processAnalysis: {
+        processProperties: {
+          hostDetails: [
+           { checksumSha256: 'xyz' }
+          ]
+        }
+      }
+    });
+
+    const data = hasProperties(state);
+    assert.equal(data, true);
+  });
+
 
 });

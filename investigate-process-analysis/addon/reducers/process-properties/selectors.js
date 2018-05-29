@@ -38,3 +38,15 @@ export const propertyConfig = createSelector(
   (propertyConfig) => propertyConfig
 );
 
+export const hasProperties = createSelector(
+  _processProperties,
+  (processProperties) => {
+    if (processProperties && processProperties.length > 0) {
+      if (processProperties[0].checksumSha256) {
+        return true;
+      }
+    }
+    return false;
+  }
+);
+

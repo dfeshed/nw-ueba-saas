@@ -1,9 +1,17 @@
 import Component from '@ember/component';
+import { connect } from 'ember-redux';
 import layout from './template';
 import computed from 'ember-computed-decorators';
 import { set, get } from '@ember/object';
+import {
+  hasProperties
+ } from 'investigate-process-analysis/reducers/process-properties/selectors';
 
-export default Component.extend({
+const stateToComputed = (state) => ({
+  hasProperties: hasProperties(state)
+});
+
+const ProcessPropertyPanel = Component.extend({
   layout,
 
   tagName: 'vbox',
@@ -117,4 +125,6 @@ export default Component.extend({
   }
 
 });
+
+export default connect(stateToComputed)(ProcessPropertyPanel);
 

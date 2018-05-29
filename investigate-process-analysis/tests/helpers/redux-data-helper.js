@@ -50,4 +50,8 @@ export default class DataHelper {
     _set(this.state, 'processTree.error', value);
     return this;
   }
+  processProperties(processProperties) {
+    _set(this.state, 'processProperties.hostDetails', processProperties);
+    return this;
+  }
 }

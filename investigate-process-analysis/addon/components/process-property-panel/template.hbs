@@ -5,7 +5,8 @@
 </box>
 <box class="content-section">
   {{!--If block level contents are provided--}}
-  {{#each properties as |property|}}
+  {{#if hasProperties}}
+    {{#each properties as |property|}}
     <hbox fit class="content-section__section-name" {{action "toggleBody" property}}>{{property.sectionName}}</hbox>
     {{#if property.isExpanded}}
       {{#each property.fields as |field|}}
@@ -16,7 +17,10 @@
       {{/each}}
     {{/if}}
     <hr class="divider">
+    {{else}}
+      {{rsa-panel-message message=(t 'investigateHosts.common.emptyMessage')}}
+    {{/each}}
   {{else}}
     {{rsa-panel-message message=(t 'investigateHosts.common.emptyMessage')}}
-  {{/each}}
+  {{/if}}
 </box>
