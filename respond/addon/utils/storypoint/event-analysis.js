@@ -14,7 +14,8 @@ export const lookupCoreDevice = (services, eventSource) => {
     const { host, port } = service;
     const hostFound = host && host == eventHost;
     const portFound = port && port == eventPort;
-    return hostFound && portFound;
+    const portFallbackFound = port && port - 6000 == eventPort;
+    return hostFound && (portFound || portFallbackFound);
   });
   return lookup && lookup.length === 1 && lookup[0].id;
 };

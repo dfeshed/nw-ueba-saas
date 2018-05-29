@@ -50,7 +50,7 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
   test('storyline with enrichments and events will pre select event when incident selection type event', async function(assert) {
     setState({
       respond: {
-        recon: Immutable.from(DATA.generateRecon()),
+        recon: DATA.generateRecon(),
         incident: Immutable.from(DATA.generateIncident({ withSelection: true })),
         storyline: DATA.generateStoryline({ withEnrichment: true })
       }
@@ -138,7 +138,7 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
   test('storyline with only events will pre select event when incident selection type event', async function(assert) {
     setState({
       respond: {
-        recon: Immutable.from(DATA.generateRecon()),
+        recon: DATA.generateRecon(),
         incident: Immutable.from(DATA.generateIncident({ withSelection: true })),
         storyline: DATA.generateStoryline({ withEnrichment: false })
       }
@@ -219,7 +219,7 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
   test('storyline with only events will not pre select event when no incident selected', async function(assert) {
     setState({
       respond: {
-        recon: Immutable.from(DATA.generateRecon()),
+        recon: DATA.generateRecon(),
         incident: Immutable.from(DATA.generateIncident({ withSelection: false })),
         storyline: DATA.generateStoryline({ withEnrichment: false })
       }
@@ -322,7 +322,7 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
   test('storyline will explicitly mark alerts that support event analysis', async function(assert) {
     setState({
       respond: {
-        recon: Immutable.from(DATA.generateRecon()),
+        recon: DATA.generateRecon(),
         incident: Immutable.from(DATA.generateIncident({ withSelection: true })),
         storyline: DATA.generateStoryline({ withEnrichment: true })
       }
@@ -347,7 +347,7 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
 
     setState({
       respond: {
-        recon: Immutable.from(DATA.generateRecon()),
+        recon: DATA.generateRecon(),
         incident: Immutable.from(DATA.generateIncident({ withSelection: true })),
         storyline: DATA.generateStoryline({ withEnrichment: true, withEventSourceId: false })
       }
@@ -367,7 +367,7 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
   test('storyline will not mark alerts for event analysis when event does not have event source id value', async function(assert) {
     setState({
       respond: {
-        recon: Immutable.from(DATA.generateRecon()),
+        recon: DATA.generateRecon(),
         incident: Immutable.from(DATA.generateIncident({ withSelection: true })),
         storyline: DATA.generateStoryline({ withEnrichment: true, withEventSourceId: false })
       }
@@ -387,11 +387,11 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
   test('storyline will not mark alerts for event analysis when no core devices are available', async function(assert) {
     setState({
       respond: {
-        recon: Immutable.from({
+        recon: {
           serviceData: undefined,
           isServicesLoading: undefined,
           isServicesRetrieveError: undefined
-        }),
+        },
         incident: Immutable.from(DATA.generateIncident({ withSelection: true })),
         storyline: DATA.generateStoryline({ withEnrichment: true })
       }
@@ -411,7 +411,7 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
   test('storyline will mark alerts for event analysis even without selection or enrichments', async function(assert) {
     setState({
       respond: {
-        recon: Immutable.from(DATA.generateRecon()),
+        recon: DATA.generateRecon(),
         incident: Immutable.from(DATA.generateIncident({ withSelection: false })),
         storyline: DATA.generateStoryline({ withEnrichment: false })
       }
@@ -423,6 +423,66 @@ module('Integration | Component | rsa-incident/container', function(hooks) {
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1);
     assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 1);
+
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(5) ${toggleEventsSelector}`).length, 1);
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(5) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 0);
+  });
+
+  test('storyline will mark alerts for event analysis when core devices use non ssl mode', async function(assert) {
+    setState({
+      respond: {
+        recon: DATA.generateRecon(),
+        incident: Immutable.from(DATA.generateIncident({ withSelection: false })),
+        storyline: DATA.generateStoryline({ withEnrichment: false, withSslEventSource: false })
+      }
+    });
+
+    await render(hbs`{{rsa-incident/container}}`);
+
+    assert.equal(findAll(alertsSelector).length, 8);
+
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1);
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 1);
+
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(5) ${toggleEventsSelector}`).length, 1);
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(5) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 0);
+  });
+
+  test('storyline will mark alerts for event analysis when core devices use non ssl mode and port is string type', async function(assert) {
+    setState({
+      respond: {
+        recon: DATA.generateRecon('56005'),
+        incident: Immutable.from(DATA.generateIncident({ withSelection: false })),
+        storyline: DATA.generateStoryline({ withEnrichment: false })
+      }
+    });
+
+    await render(hbs`{{rsa-incident/container}}`);
+
+    assert.equal(findAll(alertsSelector).length, 8);
+
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1);
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 1);
+
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(5) ${toggleEventsSelector}`).length, 1);
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(5) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 0);
+  });
+
+  test('storyline will not blow up when attempting to match core devices using fallback and port is non numeric', async function(assert) {
+    setState({
+      respond: {
+        recon: DATA.generateRecon('apple'),
+        incident: Immutable.from(DATA.generateIncident({ withSelection: false })),
+        storyline: DATA.generateStoryline({ withEnrichment: false })
+      }
+    });
+
+    await render(hbs`{{rsa-incident/container}}`);
+
+    assert.equal(findAll(alertsSelector).length, 8);
+
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector}`).length, 1);
+    assert.equal(findAll(`${alertsSelector}:nth-of-type(2) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 0);
 
     assert.equal(findAll(`${alertsSelector}:nth-of-type(5) ${toggleEventsSelector}`).length, 1);
     assert.equal(findAll(`${alertsSelector}:nth-of-type(5) ${toggleEventsSelector} > ${eventAnalysisSelector}`).length, 0);

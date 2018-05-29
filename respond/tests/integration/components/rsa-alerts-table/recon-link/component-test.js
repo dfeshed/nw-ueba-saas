@@ -236,4 +236,89 @@ module('Integration | Component | rsa alerts table recon link', function(hooks) 
     assert.equal(find(selector).textContent.trim(), eventType);
     assert.equal(findAll(linkTo).length, 0);
   });
+
+  test('when core devices use non ssl mode the device guid is available using fallback', async function(assert) {
+    assert.expect(2);
+
+    this.set('item', {
+      id: '586ecf95ecd25950034e1312:0',
+      indicatorId: '586ecf95ecd25950034e1312',
+      event_source: '10.4.61.33:50005',
+      event_source_id: '150',
+      type: 'Instant IOC'
+    });
+
+    await render(hbs`{{rsa-alerts-table/recon-link item=item}}`);
+
+    assert.equal(find(selector).textContent.trim(), eventType);
+    assert.equal(findAll(linkTo).length, 1);
+  });
+
+  test('when core devices use non ssl mode the device guid is available using fallback when port is string type', async function(assert) {
+    assert.expect(2);
+
+    patchReducer(this, Immutable.from({
+      respond: {
+        recon: {
+          serviceData: {
+            '555d9a6fe4b0d37c827d402e': {
+              displayName: 'loki-concentrator',
+              host: '10.4.61.33',
+              id: '555d9a6fe4b0d37c827d402d',
+              name: 'CONCENTRATOR',
+              port: '50003',
+              version: '11.2.0.0'
+            }
+          }
+        }
+      }
+    }));
+
+    this.set('item', {
+      id: '586ecf95ecd25950034e1312:0',
+      indicatorId: '586ecf95ecd25950034e1312',
+      event_source: '10.4.61.33:50003',
+      event_source_id: '150',
+      type: 'Instant IOC'
+    });
+
+    await render(hbs`{{rsa-alerts-table/recon-link item=item}}`);
+
+    assert.equal(find(selector).textContent.trim(), eventType);
+    assert.equal(findAll(linkTo).length, 1);
+  });
+
+  test('will not blow up when attempting to match core devices using fallback and port is non numeric', async function(assert) {
+    assert.expect(2);
+
+    patchReducer(this, Immutable.from({
+      respond: {
+        recon: {
+          serviceData: {
+            '555d9a6fe4b0d37c827d402e': {
+              displayName: 'loki-concentrator',
+              host: '10.4.61.33',
+              id: '555d9a6fe4b0d37c827d402d',
+              name: 'CONCENTRATOR',
+              port: 'apple',
+              version: '11.2.0.0'
+            }
+          }
+        }
+      }
+    }));
+
+    this.set('item', {
+      id: '586ecf95ecd25950034e1312:0',
+      indicatorId: '586ecf95ecd25950034e1312',
+      event_source: '10.4.61.33:56003',
+      event_source_id: '150',
+      type: 'Instant IOC'
+    });
+
+    await render(hbs`{{rsa-alerts-table/recon-link item=item}}`);
+
+    assert.equal(find(selector).textContent.trim(), eventType);
+    assert.equal(findAll(linkTo).length, 0);
+  });
 });

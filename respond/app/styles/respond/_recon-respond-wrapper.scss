@@ -54,8 +54,6 @@
   }
 
   .recon-container {
-    &.loading {
-      background-color: background-color(primary, darkest);
-    }
+    background-color: background-color(primary, darkest);
   }
 }

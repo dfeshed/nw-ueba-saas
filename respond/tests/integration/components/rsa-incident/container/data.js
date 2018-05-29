@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 const reconState = {
   serviceData: {
     '555d9a6fe4b0d37c827d402d': {
@@ -249,11 +251,25 @@ const enrichmentState = {
   }
 };
 
-export const generateRecon = () => {
-  return Object.assign({}, reconState);
+export const generateRecon = (port) => {
+  const state = Object.assign({}, reconState);
+  const portValue = port ? port : 56005;
+  const devices = _.mapValues(state.serviceData, (device) => {
+    const firstConcentrator = '555d9a6fe4b0d37c827d402d';
+    if (device.id === firstConcentrator) {
+      return _.defaults({
+        port: portValue
+      }, device);
+    }
+    return device;
+  });
+  return {
+    ...state,
+    serviceData: { ...state.serviceData, ...devices }
+  };
 };
 
-export const generateStoryline = ({ withEnrichment, withEventSourceId }) => {
+export const generateStoryline = ({ withEnrichment, withEventSourceId, withSslEventSource }) => {
   const state = Object.assign({}, storylineState);
   const storylineIds = [
     '5afb3edc2de080511717841a',
@@ -266,6 +282,10 @@ export const generateStoryline = ({ withEnrichment, withEventSourceId }) => {
   ];
   const eventSourceIdValue = withEventSourceId === undefined ? true : withEventSourceId;
   const eventSourceId = eventSourceIdValue ? '150' : null;
+
+  const withSslEventSourceValue = withSslEventSource === undefined ? true : withSslEventSource;
+  const eventSource = withSslEventSourceValue ? '10.4.61.33:56005' : '10.4.61.33:50005';
+
   const enrichment = withEnrichment ? Object.assign({}, enrichmentState) : '';
   const storylineEvents = storylineIds.map((id, index) => {
     return {
@@ -308,7 +328,7 @@ export const generateStoryline = ({ withEnrichment, withEventSourceId }) => {
           },
           description: '',
           domain_src: '',
-          event_source: index > 2 ? '' : '10.4.61.33:56005',
+          event_source: index > 2 ? '' : eventSource,
           source: {
             device: {
               compliance_rating: '',
