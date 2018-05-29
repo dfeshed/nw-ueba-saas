@@ -5,7 +5,7 @@ import sinon from 'sinon';
 import windowProxy from 'rsa-context-menu/utils/window-proxy';
 
 const selection = {
-  'moduleName': 'EventGrid',
+  'moduleName': 'EventAnalysisPanel',
   'metaName': 'ip.src',
   'metaValue': '17.127.255.150'
 };

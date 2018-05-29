@@ -17,7 +17,7 @@ export default {
     disabled: '',
     id: 'InvestigationEventRefocusNewTabSplitSessionsNewTab',
     moduleClasses: [
-      'UAP.investigation.events.view.EventGrid'
+      'UAP.investigation.events.view.EventAnalysisPanel'
     ],
     order: '8'
   }, {
@@ -37,7 +37,7 @@ export default {
     disabled: '',
     id: 'InvestigationEventRefocusNewTabSplitSessionsNewTab',
     moduleClasses: [
-      'UAP.investigation.events.view.EventGrid'
+      'UAP.investigation.analysis.view.EventAnalysisPanel'
     ],
     order: '8'
   }, {
@@ -56,7 +56,7 @@ export default {
     disabled: '',
     id: 'copyMetaAction',
     moduleClasses: [
-      'UAP.investigation.events.view.EventGrid'
+      'UAP.investigation.analysis.view.EventAnalysisPanel'
     ],
     order: '8'
   }, {
@@ -75,7 +75,7 @@ export default {
     disabled: '',
     id: 'contextServiceDefaultAction',
     moduleClasses: [
-      'UAP.investigation.events.view.EventGrid'
+      'UAP.investigation.analysis.view.EventAnalysisPanel'
     ],
     order: '8'
   }, {
@@ -95,7 +95,7 @@ export default {
     disabled: '',
     id: 'InvestigationEventRefocusNewTabSplitSessionsNewTabNew',
     moduleClasses: [
-      'UAP.investigation.events.view.EventGrid'
+      'UAP.investigation.analysis.view.EventAnalysisPanel'
     ],
     order: '8'
   }, {
@@ -115,7 +115,7 @@ export default {
     disabled: '',
     id: 'InvestigationEventRefocusNewTabSplitSessionsNewTab',
     moduleClasses: [
-      'UAP.investigation.events.view.EventGrid'
+      'UAP.investigation.analysis.view.EventAnalysisPanel'
     ],
     order: '8'
   }]

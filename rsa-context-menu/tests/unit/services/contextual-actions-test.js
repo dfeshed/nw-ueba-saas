@@ -7,12 +7,12 @@ import { next } from '@ember/runloop';
 
 let serv = null;
 
-const assertForEventGridIPActions = (actions, assert) => {
+const assertForEventAnalysisPanelIPActions = (actions, assert) => {
   assert.equal(actions.length, 3, 'Should have minimum three actions');
   assert.ok(actions.find((action) => action.label === 'copyMetaAction'), 'Should have copy action');
 };
 
-const assertForEventGridDefaultActions = (actions, assert) => {
+const assertForEventAnalysisPanelDefaultActions = (actions, assert) => {
   assert.equal(actions.length, 2, 'Should have minimum three actions');
   assert.ok(actions.find((action) => action.label === 'copyMetaAction'), 'Should have copy action');
 };
@@ -41,9 +41,9 @@ module('Unit | Service | contextual-actions', function(hooks) {
     serv = this.owner.lookup('service:contextual-actions');
     assert.ok(serv);
     next(() => {
-      assertForEventGridIPActions(serv.getContextualActionsForGivenScope('EventGrid', 'ip.src'), assert);
-      assertForEventGridDefaultActions(serv.getContextualActionsForGivenScope('EventGrid', 'test'), assert);
-      assertForNonSupportedActions(serv.getContextualActionsForGivenScope('EventGrid', 'test'), assert);
+      assertForEventAnalysisPanelIPActions(serv.getContextualActionsForGivenScope('EventAnalysisPanel', 'ip.src'), assert);
+      assertForEventAnalysisPanelDefaultActions(serv.getContextualActionsForGivenScope('EventAnalysisPanel', 'test'), assert);
+      assertForNonSupportedActions(serv.getContextualActionsForGivenScope('EventAnalysisPanel', 'test'), assert);
     });
   });
 

@@ -179,7 +179,7 @@ Need not to pass context menu item in that case. As items will be taken from SA 
 Need to add module name in Context Selection. 
 
 ```js
-contextSelection: { moduleName: 'EventGrid', metaName: 'ip.src', metaValue: '10.10.10.10' }
+contextSelection: { moduleName: 'EventAnalysisPanel', metaName: 'ip.src', metaValue: '10.10.10.10' }
 ```
 
 Right click menu items will appaer based on moduleName and meta name. For same module different meta will show diffferent context actions.

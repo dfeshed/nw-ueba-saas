@@ -28,5 +28,5 @@ export default Controller.extend({
       ]
     }
   ],
-  contextSelection: { moduleName: 'EventGrid', metaName: 'ip.src', metaValue: '10.10.10.10' }
+  contextSelection: { moduleName: 'EventAnalysisPanel', metaName: 'ip.src', metaValue: '10.10.10.10' }
 });

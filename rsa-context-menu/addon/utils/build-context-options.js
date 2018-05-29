@@ -27,7 +27,7 @@ const _filteredActionList = (contextActions) => {
     ],
     groupName: 'refocusNewTabGroup',
     moduleClasses: [
-      'UAP.investigation.events.view.EventGrid'
+      'UAP.investigation.analysis.view.EventAnalysisPanel'
     ]
   }]
  * Output: [{
@@ -101,7 +101,7 @@ const _getFlattenAction = (contextActions) => {
  * OOTB menu items hard coded actions will be used (from context-menu utility).
  * Input: return of _getFlattenAction(contextActions)
  * Output: {
-    EventGrid: {
+    EventAnalysisPanel: {
       'ip.src': [
         {
           label: applyRefocusSessionSplitsInNewTabLabel,

@@ -130,7 +130,7 @@ const MetaContentItem = Component.extend({
   },
 
   @computed('name', 'value')
-  contextSelection: (metaName, metaValue) => ({ moduleName: 'EventGrid', metaName, metaValue }),
+  contextSelection: (metaName, metaValue) => ({ moduleName: 'EventAnalysisPanel', metaName, metaValue }),
 
   @computed('queryInputs', 'language')
   contextMenuData(queryInputs, language) {

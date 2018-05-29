@@ -12,7 +12,7 @@ module('Unit | Utility | build-context-options', function() {
       }
     });
     assert.ok(result);
-    assert.equal(result.EventGrid['ip.src'].length, 2, 'Should retrun only 2 actions');
-    assert.notOk(result.EventGrid.test, 'Should not be having any actions');
+    assert.equal(result.EventAnalysisPanel['ip.src'].length, 2, 'Should retrun only 2 actions');
+    assert.notOk(result.EventAnalysisPanel.test, 'Should not be having any actions');
   });
 });

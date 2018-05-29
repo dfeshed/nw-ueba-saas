@@ -40,15 +40,15 @@ export default Component.extend({
     let metaValuePairs = null;
     if (isNetworkAddress(name)) {
       const ipAddressMetaValue = getIpAddressMetaValue(key, value);
-      ipAddressMetaValue.moduleName = 'EventGrid';
+      ipAddressMetaValue.moduleName = 'EventAnalysisPanel';
       metaValuePairs = [ipAddressMetaValue];
       const portMetaValuePair = getPortMetaValue(key, value);
       if (portMetaValuePair) {
-        portMetaValuePair.moduleName = 'EventGrid';
+        portMetaValuePair.moduleName = 'EventAnalysisPanel';
         metaValuePairs.push(portMetaValuePair);
       }
     } else {
-      metaValuePairs = [{ moduleName: 'EventGrid', metaName: key, metaValue: value, displayValue: value }];
+      metaValuePairs = [{ moduleName: 'EventAnalysisPanel', metaName: key, metaValue: value, displayValue: value }];
     }
     return metaValuePairs;
   },

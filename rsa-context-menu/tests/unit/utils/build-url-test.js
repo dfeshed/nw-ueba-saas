@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { buildInvestigateUrl, buildHostsUrl, buildEventAnalysisUrl } from 'rsa-context-menu/utils/build-url';
 
 const selection = {
-  'moduleName': 'EventGrid',
+  'moduleName': 'EventAnalysisPanel',
   'metaName': 'ip.src',
   'metaValue': '17.127.255.150'
 };
