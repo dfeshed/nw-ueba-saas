@@ -1,7 +1,7 @@
 {
   "system": {
-    "krbServiceName": "HTTP/hostname@fortscale.dom",
     "username": "presidio@somecompany.dom",
+    "krbServiceName": "HTTP/hostname@fortscale.dom",
     "password": "password",
     "ldapUrl": "ldap://XXX.XXX.XXX.XXX/dc=EXAMPLE,DC=COM?sAMAccountName",
     "realmName": "EXAMPLE.COM",
@@ -10,10 +10,7 @@
   },
   "dataPipeline": {
     "schemas": [
-      "file"
-    ],
-    "badSchemas": [
-      "file"
+      "FILE"
     ],
     "startTime": "2007-12-03T10:15:30Z"
   },
@@ -31,6 +28,5 @@
     }
   },
   "dataPulling": {
-    "source": "nw://admin:netwitness@10.25.67.33:50005"
   }
 }

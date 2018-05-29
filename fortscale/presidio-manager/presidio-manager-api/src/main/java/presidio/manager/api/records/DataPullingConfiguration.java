@@ -32,6 +32,11 @@ public class DataPullingConfiguration {
             setKeyValue(key, node.get(key).asText());
         }
 
+        if(node.size() == 0) {
+            isStructureValid = false;
+            return;
+        }
+
         if (unknownFields.isEmpty())
             isStructureValid = true;
 

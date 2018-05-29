@@ -10,5 +10,8 @@
   },
   "general": {
     "general": "general"
+  },
+  "dataPulling": {
+    "source": "nw://admin:netwitness@10.25.67.33:50005"
   }
 }

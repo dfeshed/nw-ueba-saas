@@ -21,7 +21,7 @@ public class ConfigurationDataPullingService implements ConfigurationProcessingS
     private final String UNSUPPORTED_ERROR_MESSAGE = "Unsupported Error, %s field is not supported.";
     private final String UNSUPPORTED_ERROR_MESSAGE_BAD_VALUE = "Unsupported Error, %s field is missing or has bad value.";
     private final String UNSUPPORTED_ERROR_MESSAGE_MISSING_FIELD = "Unsupported Error, %s field is missing.";
-    private final String MISSING_DATA_ERROR_MESSAGE = "Missing forwarder configuration";
+    private final String MISSING_DATA_ERROR_MESSAGE = "Missing data pulling configuration";
     private final String MISSING_PROPERTY = "missingProperty";
     private final String SOURCE_FIELD = "source";
 
@@ -36,6 +36,12 @@ public class ConfigurationDataPullingService implements ConfigurationProcessingS
             logger.error("Missing data pulling configuration");
             return validationResults;
         }
+//        if (dataPullingConfiguration.getSource() == null || dataPullingConfiguration.getSource().isEmpty()) {
+//            ConfigurationBadParamDetails error = new ConfigurationBadParamDetails(DATA_PULLING, DATA_PULLING, MISSING_PROPERTY, LOCATION_TYPE, MISSING_DATA_ERROR_MESSAGE);
+//            validationResults.addError(error);
+//            logger.error("Missing data pulling configuration");
+//        }
+
         if (!dataPullingConfiguration.isStructureValid()) {
             return createUnsupportedError(dataPullingConfiguration);
         }

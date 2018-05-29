@@ -38,7 +38,7 @@ public class ConfigurationAirflowServiceTest {
         Instant startTime = Instant.parse("2007-12-03T10:15:30Z");
         JsonNode jsonNode = mapper.readTree("{\"schemas\": [\"FILE\"],\"startTime\": \"" + startTime.toString() + "\"}");
         JsonNode jsonNode2 = mapper.readTree("{\"syslog\": {\"alert\": {\"host\": \"test\",\"port\": \"1\"},\"user\": {\"host\": \"testTest\",\"port\": \"2\"}}}");
-        JsonNode jsonNodeDataPulling = mapper.readTree("{\"dataPulling\": {\"source\": \"source\" " + "\"}");
+        JsonNode jsonNodeDataPulling = mapper.readTree("{\"dataPulling\": {\"source\": \"source\" " + "}}");
         DataPipeLineConfiguration dataPipeline = new DataPipeLineConfiguration(jsonNode);
         PresidioSystemConfiguration systemConf = new PresidioSystemConfiguration();
         OutputConfigurationCreator outputConfigurationCreator = new OutputConfigurationCreator(jsonNode2);
