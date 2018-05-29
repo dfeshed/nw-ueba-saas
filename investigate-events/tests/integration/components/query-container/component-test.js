@@ -1,4 +1,4 @@
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
@@ -37,7 +37,7 @@ module('Integration | Component | query-container', function(hooks) {
     assert.notOk(find('.execute-query-button').classList.contains('is-disabled'), 'Expected is-disabled CSS class on the submit button.');
   });
 
-  test('it displays three query bar links', async function(assert) {
+  skip('it displays three query bar links', async function(assert) {
     new ReduxDataHelper(setState)
       .hasRequiredValuesToQuery(true)
       .build();
@@ -70,7 +70,7 @@ module('Integration | Component | query-container', function(hooks) {
 
   });
 
-  test('it displays nextGen query bar when clicked', async function(assert) {
+  skip('it displays nextGen query bar when clicked', async function(assert) {
     new ReduxDataHelper(setState)
       .hasRequiredValuesToQuery(true)
       .build();
