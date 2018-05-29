@@ -13,15 +13,14 @@ import java.util.regex.Pattern;
 
 
 public class JsonFieldSwitchCaseInterceptor extends AbstractPresidioJsonInterceptor {
+    private static final Logger logger = LoggerFactory.getLogger(JsonFieldSwitchCaseInterceptor.class);
+    private static final String DESTINATION_FIELD_DELIMITER_REGEX = "\\.";
 
-    private static final Logger logger = LoggerFactory
-            .getLogger(JsonFieldSwitchCaseInterceptor.class);
-
-    private String conditionField;
-    private Pattern patternCondition;
+    private final String conditionField;
+    private final Pattern patternCondition;
     private final String originField;
-    private final String destinationField;
-    private String destinationDefaultValue;
+    private final String[] destinationFieldParts;
+    private final String destinationDefaultValue;
     private final String[] cases;
     private final String[] casesValues;
 
@@ -30,7 +29,7 @@ public class JsonFieldSwitchCaseInterceptor extends AbstractPresidioJsonIntercep
         this.conditionField = conditionField;
         this.patternCondition = patternCondition;
         this.originField = originField;
-        this.destinationField = destinationField;
+        this.destinationFieldParts = destinationField.split(DESTINATION_FIELD_DELIMITER_REGEX);
         this.destinationDefaultValue = destinationDefaultValue;
         this.cases = cases;
         this.casesValues = casesValues;
@@ -85,9 +84,19 @@ public class JsonFieldSwitchCaseInterceptor extends AbstractPresidioJsonIntercep
                 }
             }
         }
-        eventBodyAsJson.addProperty(destinationField, destinationValue);
+
+        addDestinationValue(eventBodyAsJson, destinationValue);
     }
 
+    private void addDestinationValue(JsonObject jsonObject, String destinationValue) {
+        for (int i = 0; i < destinationFieldParts.length - 1; i++) {
+            String destinationFieldPart = destinationFieldParts[i];
+            if (!jsonObject.has(destinationFieldPart)) jsonObject.add(destinationFieldPart, new JsonObject());
+            jsonObject = jsonObject.getAsJsonObject(destinationFieldPart);
+        }
+
+        jsonObject.addProperty(destinationFieldParts[destinationFieldParts.length - 1], destinationValue);
+    }
 
     /**
      * Builder which builds new instance of the JsonFieldSwitchCaseInterceptor.
@@ -98,13 +107,13 @@ public class JsonFieldSwitchCaseInterceptor extends AbstractPresidioJsonIntercep
         static final String REGEX_CONDITION_CONF_NAME = "regex_condition";
         static final String ORIGIN_FIELD_CONF_NAME = "origin_field";
         static final String DESTINATION_FIELD_CONF_NAME = "destination_field";
-        static final String DESTINATION_DEFALUT_VALUE_CONF_NAME = "destination_default_value";
+        static final String DESTINATION_DEFAULT_VALUE_CONF_NAME = "destination_default_value";
         static final String CASES_CONF_NAME = "cases";
         static final String CASES_VALUES_CONF_NAME = "cases_values";
         static final String CASES_DELIM_CONF_NAME = "cases_delim";
 
         private static final String DEFAULT_DELIM_VALUE = ";";
-        private static final String DESTINATION_DEFALUT_VALUE = null;
+        private static final String DESTINATION_DEFAULT_VALUE = null;
 
         private String conditionField;
         private Pattern patternCondition;
@@ -124,7 +133,7 @@ public class JsonFieldSwitchCaseInterceptor extends AbstractPresidioJsonIntercep
             }
             originField = context.getString(ORIGIN_FIELD_CONF_NAME);
             destinationField = context.getString(DESTINATION_FIELD_CONF_NAME);
-            destinationDefaultValue = context.getString(DESTINATION_DEFALUT_VALUE_CONF_NAME, DESTINATION_DEFALUT_VALUE);
+            destinationDefaultValue = context.getString(DESTINATION_DEFAULT_VALUE_CONF_NAME, DESTINATION_DEFAULT_VALUE);
             String casesDelimiter = context.getString(CASES_DELIM_CONF_NAME, DEFAULT_DELIM_VALUE);
 
             cases = getStringArrayFromConfiguration(context, CASES_CONF_NAME, casesDelimiter);
@@ -140,7 +149,7 @@ public class JsonFieldSwitchCaseInterceptor extends AbstractPresidioJsonIntercep
             logger.info("Creating JsonFieldSwitchCaseInterceptor: {}={}, {}={}, {}={}, {}={}, {}={}, {}={}, {}={}",
                     CONDITION_FIELD_CONF_NAME, conditionField, REGEX_CONDITION_CONF_NAME, patternCondition,
                     ORIGIN_FIELD_CONF_NAME, originField, DESTINATION_FIELD_CONF_NAME, destinationField,
-                    DESTINATION_DEFALUT_VALUE_CONF_NAME, destinationDefaultValue,
+                    DESTINATION_DEFAULT_VALUE_CONF_NAME, destinationDefaultValue,
                     CASES_CONF_NAME, cases, CASES_VALUES_CONF_NAME, casesValues);
             return new JsonFieldSwitchCaseInterceptor(conditionField, patternCondition, originField,
                     destinationField, destinationDefaultValue, cases, casesValues);
