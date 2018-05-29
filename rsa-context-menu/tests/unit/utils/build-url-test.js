@@ -43,13 +43,13 @@ module('Unit | Utility | build-url', function() {
 
   test('it forms the Event Analysis Url', function(assert) {
     const eventEnalysisUrl = buildEventAnalysisUrl(selection, '=', contextDetails);
-    assert.equal(eventEnalysisUrl, '/investigate/events?&mf=ip.src%2520%253D%252017.127.255.150', 'expected host url formed');
+    assert.ok(eventEnalysisUrl.indexOf('&mf=ip.src%2520%253D%252017.127.255.150') > 0, 'expected host url formed');
   });
 
   test('it forms the Event Analysis for refocus ', function(assert) {
     selection.metaValue = '17.127.255.250';
     const eventEnalysisUrl = buildEventAnalysisUrl(selection, '=', contextDetails, true);
-    assert.equal(eventEnalysisUrl, '/investigate/events?&mf=ip.src%2520%253D%252017.127.255.250', 'expected host url formed');
+    assert.ok(eventEnalysisUrl.indexOf('mf=ip.src%2520%253D%252017.127.255.250') > 0, 'expected host url formed');
     selection.metaValue = '17.127.255.150';
   });
 

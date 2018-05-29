@@ -223,7 +223,7 @@ File name:: /sa-ui/rsa-context-menu/addon/utils/non-url-actions-handler.js
 
 export const nonUrlBasedActions = {
   drillDownNewTabEquals: ([selection], contextDetails) => {
-    openUrl(buildInvestigateUrl(selection, '=', contextDetails));
+    windowProxy.openInNewTab(buildInvestigateUrl(selection, '=', contextDetails));
   }
 }
 ```

@@ -1,5 +1,6 @@
 import copyToClipboard from 'component-lib/utils/copy-to-clipboard';
-import { openUrl, changeUrl, buildInvestigateUrl, buildEventAnalysisUrl } from 'rsa-context-menu/utils/build-url';
+import { buildInvestigateUrl, buildEventAnalysisUrl } from 'rsa-context-menu/utils/build-url';
+import windowProxy from 'rsa-context-menu/utils/window-proxy';
 
 /**
  * Non Url based OOTB actions List.
@@ -39,54 +40,54 @@ import { openUrl, changeUrl, buildInvestigateUrl, buildEventAnalysisUrl } from '
  */
 export const nonUrlBasedActions = {
   drillDownNewTabEquals: ([selection], contextDetails) => {
-    openUrl(buildInvestigateUrl(selection, '=', contextDetails));
+    windowProxy.openInNewTab(buildInvestigateUrl(selection, '=', contextDetails));
   },
   drillDownNewTabNotEquals: ([selection], contextDetails) => {
-    openUrl(buildInvestigateUrl(selection, '!=', contextDetails));
+    windowProxy.openInNewTab(buildInvestigateUrl(selection, '!=', contextDetails));
   },
   drillDownNotEquals: ([selection], contextDetails) => {
     // Need to revisit this action.
-    openUrl(buildInvestigateUrl(selection, '!=', contextDetails));
+    windowProxy.openInNewTab(buildInvestigateUrl(selection, '!=', contextDetails));
   },
   copyMetaAction: ([selection]) => {
     copyToClipboard(selection.metaValue);
   },
   rootDrill: ([selection], contextDetails) => {
     // Need to revisit this action.
-    openUrl(buildInvestigateUrl(selection, '!=', contextDetails));
+    windowProxy.openInNewTab(buildInvestigateUrl(selection, '!=', contextDetails));
   },
   InvestigationEventDrillDownEquals: ([selection], contextDetails) => {
-    openUrl(buildEventAnalysisUrl(selection, '=', contextDetails));
+    windowProxy.openInNewTab(buildEventAnalysisUrl(selection, '=', contextDetails));
   },
   InvestigationEventDrillDownNotEquals: ([selection], contextDetails) => {
-    changeUrl(buildEventAnalysisUrl(selection, '!=', contextDetails));
+    windowProxy.openInCurrentTab(buildEventAnalysisUrl(selection, '!=', contextDetails));
   },
   InvestigationEventDrillDownNotEqualsNewTab: ([selection], contextDetails) => {
-    openUrl(buildEventAnalysisUrl(selection, '!=', contextDetails));
+    windowProxy.openInNewTab(buildEventAnalysisUrl(selection, '!=', contextDetails));
   },
   InvestigationEventDrillDownContainsNewTab: ([selection], contextDetails) => {
-    openUrl(buildEventAnalysisUrl(selection, 'contains', contextDetails));
+    windowProxy.openInNewTab(buildEventAnalysisUrl(selection, 'contains', contextDetails));
   },
   InvestigationEventDrillDownContains: ([selection], contextDetails) => {
-    changeUrl(buildEventAnalysisUrl(selection, 'contains', contextDetails));
+    windowProxy.openInCurrentTab(buildEventAnalysisUrl(selection, 'contains', contextDetails));
   },
   InvestigationEventRefocusEquals: ([selection], contextDetails) => {
-    changeUrl(buildEventAnalysisUrl(selection, '=', contextDetails, true));
+    windowProxy.openInCurrentTab(buildEventAnalysisUrl(selection, '=', contextDetails, true));
   },
   InvestigationEventRefocusNotEquals: ([selection], contextDetails) => {
-    changeUrl(buildEventAnalysisUrl(selection, '!=', contextDetails, true));
+    windowProxy.openInCurrentTab(buildEventAnalysisUrl(selection, '!=', contextDetails, true));
   },
   InvestigationEventRefocusContains: ([selection], contextDetails) => {
-    changeUrl(buildEventAnalysisUrl([selection], 'contains', contextDetails, true));
+    windowProxy.openInCurrentTab(buildEventAnalysisUrl([selection], 'contains', contextDetails, true));
   },
   InvestigationEventRefocusNewTabEquals: ([selection], contextDetails) => {
-    openUrl(buildEventAnalysisUrl(selection, '=', contextDetails, true));
+    windowProxy.openInNewTab(buildEventAnalysisUrl(selection, '=', contextDetails, true));
   },
   InvestigationEventRefocusNewTabNotEqualsNewTab: ([selection], contextDetails) => {
-    openUrl(buildEventAnalysisUrl(selection, '!=', contextDetails, true));
+    windowProxy.openInNewTab(buildEventAnalysisUrl(selection, '!=', contextDetails, true));
   },
   InvestigationEventRefocusNewTabContainsNewTab: ([selection], contextDetails) => {
-    openUrl(buildEventAnalysisUrl(selection, 'contains', contextDetails, true));
+    windowProxy.openInNewTab(buildEventAnalysisUrl(selection, 'contains', contextDetails, true));
   }
 };
 

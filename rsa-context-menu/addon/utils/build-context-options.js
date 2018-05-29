@@ -4,7 +4,7 @@ import {
   nonUrlBasedActions,
   nonSupportedActionList
 } from 'rsa-context-menu/utils/non-url-actions-handler';
-import { openUrl } from 'rsa-context-menu/utils/build-url';
+import windowProxy from 'rsa-context-menu/utils/window-proxy';
 
 /**
  * This function will remove all disabled functions.
@@ -35,7 +35,7 @@ const _filteredActionList = (contextActions) => {
     menuAction: {
       label: applyRefocusSessionSplitsInNewTabLabel,
       action(selection, contextDetails) {
-        openUrl(action.urlFormat.replace('{0}', selection[0].metaValue));
+        windowProxy.openInNewTab(action.urlFormat.replace('{0}', selection[0].metaValue));
       }
     }
   }]
@@ -48,7 +48,7 @@ const _getModifiedActions = (contextActions, i18n) => {
       label: i18n.exists(`contextmenu.actions.${action.displayName}`) ? i18n.t(`contextmenu.actions.${action.displayName}`) : action.displayName,
       action(selection, contextDetails) {
         if (action.urlFormat) {
-          openUrl(action.urlFormat.replace('{0}', selection[0].metaValue).replace('{1}', selection[0].metaName));
+          windowProxy.openInNewTab(action.urlFormat.replace('{0}', selection[0].metaValue).replace('{1}', selection[0].metaName));
         } else if (nonUrlBasedActions[action.id]) {
           nonUrlBasedActions[action.id](selection, contextDetails);
         } else {

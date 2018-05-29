@@ -1,13 +1,5 @@
 import moment from 'moment';
 
-export const openUrl = (url) => {
-  window.open(url);
-};
-
-export const changeUrl = (url) => {
-  window.location.href = url;
-};
-
 const _prepareMetaFormatMap = (language) => {
   if (!language) {
     return {};
@@ -70,27 +62,21 @@ export const buildEventAnalysisUrl = (selected, queryOperator, contextDetails, r
   const metaFormatMap = _prepareMetaFormatMap(contextDetails.language);
   const href = window.location.href.split('?');
   let queryParam = (href.length > 1) ? href[1] : '';
-  queryParam = decodeURIComponent(decodeURI(queryParam));
+  queryParam = decodeURIComponent(decodeURI(queryParam)).split('&');
+  let mf = queryParam.find((param) => param.startsWith('mf='));
+  // Need to close recon for all scenario.
+  queryParam = queryParam.filter((param) => !param.startsWith('eid=') && !param.startsWith('mf='));
+  // queryParam = queryParam.replace(/eid=/, '');
   const query = _buildQuery([{ meta: selected.metaName, value: selected.metaValue, operator: queryOperator }], metaFormatMap);
-  let mf = queryParam.match(/mf=(.*)&/) ? queryParam.match(/mf=(.*)&/)[1] : null;
-  // TODO: Can remove this need to change regex to support both '&mf=abc&' and '&mf=abc'
-  let alreadyPresent = false;
-  if (!mf) {
-    mf = queryParam.match(/mf=(.*)/) ? queryParam.match(/mf=(.*)/)[1] : null;
-    if (mf) {
-      alreadyPresent = true;
-    }
-  }
+  mf = mf && mf.match(/mf=(.*)/) ? mf.match(/mf=(.*)/)[1] : null;
 
-  if (!mf) {
+  if (!mf || refocus) {
     // If no meta filter add new one.
-    queryParam += `&mf=${encodeURI(encodeURIComponent(query))}`;
-  } else if (refocus) {
-    // If refocus passed then remove current filter and set new one.
-    queryParam = queryParam.replace(alreadyPresent ? /mf=(.*)/ : /mf=(.*)&/, `&mf=${encodeURI(encodeURIComponent(query))}`);
+    mf = `mf=${encodeURI(encodeURIComponent(query))}`;
   } else {
     // If further need to drill add to existing meta filter value.
-    queryParam = queryParam.replace(alreadyPresent ? /mf=(.*)/ : /mf=(.*)&/, `&mf=${encodeURI(encodeURIComponent(`${mf}|${query}`))}`);
+    mf = `mf=${encodeURI(encodeURIComponent(`${mf}|${query}`))}`;
   }
+  queryParam = queryParam.concat(mf).join('&');
   return `/investigate/events?${queryParam}`;
 };
