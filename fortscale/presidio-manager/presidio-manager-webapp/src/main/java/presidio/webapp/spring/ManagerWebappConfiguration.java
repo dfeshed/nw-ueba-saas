@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.config.server.client.ConfigurationServerClientService;
 import presidio.config.server.spring.ConfigServerClientServiceConfiguration;
-import presidio.forwarder.manager.spring.ForwardingConfiguration;
 import presidio.manager.airlfow.spring.AirflowConfiguration;
 import presidio.manager.api.service.ConfigurationProcessingService;
 import presidio.manager.api.service.ManagerService;
@@ -20,6 +19,7 @@ import presidio.webapp.controller.configuration.ConfigurationApiController;
 import presidio.webapp.controller.datapipeline.DataPipelineApi;
 import presidio.webapp.controller.datapipeline.DataPipelineApiController;
 import presidio.webapp.service.ConfigurationManagerService;
+import presidio.forwarder.manager.spring.ForwardingConfiguration;
 
 import javax.annotation.Resource;
 import java.util.List;

@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * SecuredConfiguration
  */
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-08-07T07:15:37.402Z")
+@javax.annotation.Generated(value = "PresidioManagerConfiguration", date = "2017-08-07T07:15:37.402Z")
 
 public class Configuration {
   @JsonProperty("system")

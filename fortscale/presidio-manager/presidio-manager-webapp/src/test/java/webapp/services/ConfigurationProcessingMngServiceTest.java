@@ -14,6 +14,7 @@ import presidio.manager.airlfow.service.ConfigurationAirflowService;
 import presidio.manager.api.records.PresidioManagerConfiguration;
 import presidio.manager.api.records.ValidationResults;
 import presidio.security.manager.service.ConfigurationSecurityService;
+import presidio.webapp.service.ConfigurationDataPullingService;
 import presidio.webapp.service.ConfigurationManagerService;
 
 import java.io.File;
@@ -49,7 +50,7 @@ public class ConfigurationProcessingMngServiceTest {
         forwarderMissingOutputForwarder = setJson("invalid_configuration_missing_outputForwarder.json");
         forwarderFalseAndSyslogInOutputConfiguration = setJson("invalid_configuration_false_and_syslog.json");
         forwarderFalseAndWithoutSyslog = setJson("valid_configuration_enableForwarder_false.json");
-        configurationManagerService = new ConfigurationManagerService(new ConfigurationAirflowService(null, "workflows", null, null), new ConfigurationSecurityService(null, null, "/tmp/httpdtest.conf", "/tmp/krb5test.conf", false), new ConfigurationForwarderService());
+        configurationManagerService = new ConfigurationManagerService(new ConfigurationAirflowService(null, "workflows", null, null), new ConfigurationSecurityService(null, null, "/tmp/httpdtest.conf", "/tmp/krb5test.conf", false), new ConfigurationForwarderService(), new ConfigurationDataPullingService());
     }
 
     @Test
