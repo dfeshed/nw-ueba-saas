@@ -81,19 +81,33 @@ export default reduxActions.handleActions({
         selectedParserRuleIndex: 0
       }
     );
-  }
-  // delete and add parser rules are no implemented and will be added in subsequent PRs
-  /*
+  },
+
   [ACTION_TYPES.DELETE_PARSER_RULE]: (state, action) => (
     handle(state, action, {
-      start: (state) => state,
-      failure: (state) => state,
+      start: (state) => {
+        return state.set('deleteRuleStatus', 'wait');
+      },
+      failure: (state) => {
+        return state.set('deleteRuleStatus', 'error');
+      },
       success: (state) => {
-        const deletedRuleId = action.payload.data;
-        return state.set('parserRules', state.parserRules.filter((rule) => rule._id !== deletedRuleId));
+        const selectedIndex = state.selectedParserRuleIndex;
+        const theRules = state.parserRules;
+        return state.merge(
+          {
+            parserRules: theRules.filter((rule, index) => index !== selectedIndex),
+            selectedParserRuleIndex: -1,
+            deleteRuleStatus: 'completed'
+          }
+        );
       }
     })
-  ),
+  )
+
+  // add parser rules are no implemented and will be added in subsequent PRs
+  /*
+
   [ACTION_TYPES.ADD_PARSER_RULE]: (state, action) => (
     handle(state, action, {
       start: (state) => state,

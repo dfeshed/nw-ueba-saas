@@ -70,7 +70,7 @@ export const parserRuleRegex = createSelector(
     if (selectedRule) {
       const frmt = selectedRule.pattern.format;
       if (frmt) {
-        return formats.filter((format) => format.type === frmt.toLowerCase())[0].pattern;
+        return formats.filter((format) => format.type.toLowerCase() === frmt.toLowerCase())[0].pattern;
       } else {
         return selectedRule.pattern.regex;
       }
@@ -85,7 +85,7 @@ export const parserRuleMatches = createSelector(
     if (selectedRule) {
       const frmt = selectedRule.pattern.format;
       if (frmt) {
-        return formats.filter((format) => format.type === frmt.toLowerCase())[0].matches;
+        return formats.filter((format) => format.type.toLowerCase() === frmt.toLowerCase())[0].matches;
       } else {
         return formats[0].matches;
       }
@@ -140,4 +140,22 @@ export const hasRuleFormats = createSelector(
   (frmts) => {
     return !!(frmts && frmts[0]);
   }
+);
+
+export const filterDeletedRule = createSelector(
+  parserRules,
+  selectedParserRuleIndex,
+  (rules, selectedIndex) => {
+    return rules.filter((rule, index) => index !== selectedIndex);
+  }
+);
+
+export const isDeletingParserRule = createSelector(
+  _parserRulesState,
+  (parserRulesState) => parserRulesState.deleteRuleStatus === 'wait'
+);
+
+export const isDeletingParserRuleError = createSelector(
+  _parserRulesState,
+  (parserRulesState) => parserRulesState.deleteRuleStatus === 'error'
 );

@@ -1,14 +1,11 @@
 import * as ACTION_TYPES from 'configure/actions/types/content';
 import api from 'configure/actions/api/content/log-parser-rules';
 
-import { selectedLogParserName } from 'configure/reducers/content/log-parser-rules/selectors';
+import {
+  filterDeletedRule,
+  selectedLogParserName } from 'configure/reducers/content/log-parser-rules/selectors';
 
-/* const deleteParserRule = (id) => {
-  return {
-    type: ACTION_TYPES.DELETE_PARSER_RULE,
-    promise: api.deleteParserRule(id)
-  };
-};
+/*
 const addParserRule = (id) => {
   return {
     type: ACTION_TYPES.ADD_PARSER_RULE,
@@ -69,9 +66,24 @@ const selectLogParser = (index) => {
   };
 };
 
+const _deleteParserRule = (logParserName, filteredRule) => {
+  return {
+    type: ACTION_TYPES.DELETE_PARSER_RULE,
+    promise: api.deleteParserRule(logParserName, filteredRule)
+  };
+};
+
+const deleteParserRule = () => {
+  return (dispatch, getState) => {
+    const logParserName = selectedLogParserName(getState());
+    const filteredRule = filterDeletedRule(getState());
+    dispatch(_deleteParserRule(logParserName, filteredRule));
+  };
+};
+
 export {
   // addParserRule,
-  // deleteParserRule,
+  deleteParserRule,
   initializeLogParserRules,
   selectLogParser,
   selectParserRule

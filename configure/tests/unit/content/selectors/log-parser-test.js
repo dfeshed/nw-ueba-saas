@@ -1,7 +1,11 @@
 import { module, test } from 'qunit';
 import {
   hasRuleFormats,
-  hasSelectedParserRule
+  hasSelectedParserRule,
+  filterDeletedRule,
+  parserRuleMatches,
+  isDeletingParserRule,
+  isDeletingParserRuleError
 } from 'configure/reducers/content/log-parser-rules/selectors';
 
 module('Unit | Selectors | log-parser-rules');
@@ -10,11 +14,21 @@ const state = {
   configure: {
     content: {
       logParserRules: {
-        ruleFormats: [1, 2, 3],
+        ruleFormats: [{ type: 'fOO', matches: 'result' }, { type: 'fOO2', matches: 'result2' }],
         selectedParserRuleIndex: 0,
+        deleteRuleStatus: 'error',
         parserRules: [
           {
-            name: 'foo'
+            name: 'foo',
+            pattern: {
+              format: 'Foo'
+            }
+          },
+          {
+            name: 'foo2',
+            pattern: {
+              format: 'Foo2'
+            }
           }
         ]
       }
@@ -25,10 +39,21 @@ const state = {
 const stateInit = {
   configure: {
     content: {
-      logParserRules: {}
+      logParserRules: {
+        deleteRuleStatus: 'wait'
+      }
     }
   }
 };
+
+const filteredRule = [
+  {
+    name: 'foo2',
+    pattern: {
+      format: 'Foo2'
+    }
+  }
+];
 
 test('Test Booleans hasRuleFormats', function(assert) {
   assert.equal(hasRuleFormats(state), true, 'The formats are loaded and hasRuleFormats is true');
@@ -37,4 +62,22 @@ test('Test Booleans hasRuleFormats', function(assert) {
 test('Test Booleans hasSelectedParserRule', function(assert) {
   assert.equal(hasSelectedParserRule(state), true, 'A parser rule is selected and hasSelectedParserRule is true');
   assert.equal(hasSelectedParserRule(stateInit), false, 'A parser rule is not selected and hasSelectedParserRule is false');
+});
+test('filterDeletedRule by selectedParserRuleIndex', function(assert) {
+  assert.deepEqual(filterDeletedRule(state), filteredRule, 'The rule with index === 0 was filtered');
+});
+test('parserRuleMatches toLowerCase', function(assert) {
+  assert.equal(parserRuleMatches(state), 'result', 'parserRuleMatches Foo and fOO');
+});
+test('isDeletingParserRule wait', function(assert) {
+  assert.equal(isDeletingParserRule(stateInit), true, 'waiting for delete confirmation');
+});
+test('isDeletingParserRuleError error', function(assert) {
+  assert.equal(isDeletingParserRuleError(state), true, 'error getting delete confirmation');
+});
+test('isDeletingParserRule wait', function(assert) {
+  assert.equal(isDeletingParserRule(state), false, 'waiting for delete no confirmation');
+});
+test('isDeletingParserRuleError error', function(assert) {
+  assert.equal(isDeletingParserRuleError(stateInit), false, 'no error getting delete confirmation');
 });

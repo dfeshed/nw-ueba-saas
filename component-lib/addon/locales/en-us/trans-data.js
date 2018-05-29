@@ -560,6 +560,15 @@ export default {
       values: 'Values',
       error: {
         generic: 'An unexpected error has occurred attempting to retrieve this data.'
+      },
+      modals: {
+        ok: 'OK',
+        cancel: 'Cancel',
+        confirmDeleteRule: 'Confirm Delete Rule',
+        okDeleteRule: 'Click OK to delete Rule'
+      },
+      buttons: {
+        delete: 'Delete'
       }
     },
     title: 'Configure',

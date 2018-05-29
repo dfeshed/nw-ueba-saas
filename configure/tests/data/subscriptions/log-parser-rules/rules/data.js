@@ -152,7 +152,10 @@ export default [
       ],
       'format': 'Hostname'
     },
-    'ruleMetas': []
+    'ruleMetas': [],
+    'dirty': false,
+    'ootb': true,
+    'override': false
   },
   {
     '_id': '5ab290bbe4b06cf1a6a1de87',
@@ -430,7 +433,10 @@ export default [
       ],
       'format': 'Hostname'
     },
-    'ruleMetas': []
+    'ruleMetas': [],
+    'dirty': false,
+    'ootb': true,
+    'override': false
   },
   {
     '_id': '5ab290bbe4b06cf1a6a1de88',
@@ -495,7 +501,10 @@ export default [
       ],
       'regex': '\\s*([\\w_.@-]*)'
     },
-    'ruleMetas': []
+    'ruleMetas': [],
+    'dirty': false,
+    'ootb': true,
+    'override': false
   },
   {
     '_id': '5ab290bbe4b06cf1a6a1de89',
@@ -662,7 +671,10 @@ export default [
       ],
       'regex': '\\s*([\\w_.@-]*)'
     },
-    'ruleMetas': []
+    'ruleMetas': [],
+    'dirty': false,
+    'ootb': true,
+    'override': false
   },
   {
     '_id': '5ab290bbe4b06cf1a6a1de8a',
@@ -787,7 +799,10 @@ export default [
       ],
       'format': 'UInt16'
     },
-    'ruleMetas': []
+    'ruleMetas': [],
+    'dirty': false,
+    'ootb': true,
+    'override': false
   },
   {
     '_id': '5ab290bbe4b06cf1a6a1de8b',
@@ -909,7 +924,10 @@ export default [
       ],
       'format': 'UInt16'
     },
-    'ruleMetas': []
+    'ruleMetas': [],
+    'dirty': false,
+    'ootb': true,
+    'override': false
   },
   {
     '_id': '5ab290bbe4b06cf1a6a1de8c',
@@ -971,7 +989,10 @@ export default [
       ],
       'format': 'UInt16'
     },
-    'ruleMetas': []
+    'ruleMetas': [],
+    'dirty': false,
+    'ootb': true,
+    'override': false
   },
   {
     '_id': '5ab290bbe4b06cf1a6a1de8d',
@@ -1069,7 +1090,10 @@ export default [
       ],
       'format': 'MAC'
     },
-    'ruleMetas': []
+    'ruleMetas': [],
+    'dirty': false,
+    'ootb': true,
+    'override': false
   },
   {
     '_id': '5ab290bbe4b06cf1a6a1de8e',
@@ -1170,7 +1194,10 @@ export default [
       ],
       'format': 'MAC'
     },
-    'ruleMetas': []
+    'ruleMetas': [],
+    'dirty': false,
+    'ootb': true,
+    'override': false
   },
   {
     '_id': '5ab290bbe4b06cf1a6a1de8f',
@@ -1226,7 +1253,10 @@ export default [
       ],
       'format': 'MAC'
     },
-    'ruleMetas': []
+    'ruleMetas': [],
+    'dirty': false,
+    'ootb': true,
+    'override': false
   },
   {
     '_id': '5ab290bbe4b06cf1a6a1de90',
@@ -1449,7 +1479,10 @@ export default [
       ],
       'regex': '\\s*(\\b(?:[0-9]{1,3}\\.){3}[0-9]{1,3}\\b):?(\\d*)'
     },
-    'ruleMetas': []
+    'ruleMetas': [],
+    'dirty': false,
+    'ootb': true,
+    'override': false
   },
   {
     '_id': '5ab290bbe4b06cf1a6a1de91',
@@ -1630,7 +1663,10 @@ export default [
       ],
       'regex': '\\s*(\\b(?:[0-9]{1,3}\\.){3}[0-9]{1,3}\\b):?(\\d*)'
     },
-    'ruleMetas': []
+    'ruleMetas': [],
+    'dirty': false,
+    'ootb': true,
+    'override': false
   },
   {
     '_id': '5ab290bbe4b06cf1a6a1de92',
@@ -1718,7 +1754,10 @@ export default [
       ],
       'regex': '\\s*(\\b(?:[0-9]{1,3}\\.){3}[0-9]{1,3}\\b):?(\\d*)'
     },
-    'ruleMetas': []
+    'ruleMetas': [],
+    'dirty': false,
+    'ootb': true,
+    'override': false
   },
   {
     '_id': '5ab290bbe4b06cf1a6a1de93',
@@ -1813,7 +1852,10 @@ export default [
       ],
       'format': 'EMail'
     },
-    'ruleMetas': []
+    'ruleMetas': [],
+    'dirty': false,
+    'ootb': true,
+    'override': false
   },
   {
     '_id': '5ab290bbe4b06cf1a6a1de94',
@@ -1881,7 +1923,10 @@ export default [
       ],
       'format': 'EMail'
     },
-    'ruleMetas': []
+    'ruleMetas': [],
+    'dirty': false,
+    'ootb': true,
+    'override': false
   },
   {
     '_id': '5ab290bbe4b06cf1a6a1de95',
@@ -1967,6 +2012,9 @@ export default [
       ],
       'format': 'URI'
     },
-    'ruleMetas': []
+    'ruleMetas': [],
+    'dirty': false,
+    'ootb': true,
+    'override': false
   }
 ];

@@ -56,8 +56,21 @@ function fetchRuleFormats() {
   });
 }
 
+function deleteParserRule(selectedLogParserName, filterDeletedRule) {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'deleteParserRule',
+    modelName: 'log-parser-rules',
+    query: {
+      logDeviceParserName: selectedLogParserName,
+      action: 'DELETE_RULE',
+      parserRules: filterDeletedRule
+    }
+  });
+}
+
 export default {
-  // deleteParserRule,
+  deleteParserRule,
   // addParserRule,
   fetchRuleFormats,
   fetchParserRules,

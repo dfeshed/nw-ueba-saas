@@ -28,6 +28,18 @@ module('Integration | Component | rules-list', function(hooks) {
     assert.ok(find('.parser-rules-list .loading'), 'The rules spinner did not show');
   });
 
+  test('Delete Rules will wait', async function(assert) {
+    new ReduxDataHelper(setState).parserRulesDeleteWait(true).build();
+    await render(hbs`{{content/log-parser-rules/parser-rules-list}}`);
+    assert.ok(find('.parser-rules-list .loading'), 'The rules spinner did not show when deleting');
+  });
+
+  test('Delete Rules is completed', async function(assert) {
+    new ReduxDataHelper(setState).parserRulesDeleteWait(false).build();
+    await render(hbs`{{content/log-parser-rules/parser-rules-list}}`);
+    assert.notOk(find('.parser-rules-list .loading'), 'Delete rule not completed');
+  });
+
   test('Rules will render', async function(assert) {
     new ReduxDataHelper(setState).parserRulesData(false).build();
     await render(hbs`{{content/log-parser-rules/parser-rules-list}}`);
@@ -42,4 +54,20 @@ module('Integration | Component | rules-list', function(hooks) {
       assert.ok(find('.parser-rules-list .active'), 'The rule was not selected');
     });
   });
+
+  test('Delete a rule', async function(assert) {
+    new ReduxDataHelper(setState).parserRulesData(false).build();
+    await render(hbs`{{content/log-parser-rules/parser-rules-list}}`);
+    await click('.parser-rules-list .firstItem');
+    return settled().then(() => {
+      click('.parser-rules-list .deleteRule button');
+      return settled().then(() => {
+        click('.parser-rules-list .deleteRule .confirmation-modal .is-primary button');
+        return settled().then(() => {
+          assert.notOk(find('.parser-rules-list .active'), 'The rule was not deleted');
+        });
+      });
+    });
+  });
+
 });

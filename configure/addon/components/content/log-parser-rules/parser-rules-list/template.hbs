@@ -1,9 +1,20 @@
 <h1> {{t 'configure.logsParser.rules'}} </h1>
+
+{{content/log-parser-rules/parser-rules-list/buttons-container}} 
+
 {{#if isLoadingParserRules}}
   <div class='loading'>
     {{rsa-loader size='large'}}
   </div>
 {{else if isLoadingParserRulesError}}
+  <div class='loading'>
+    {{t 'configure.logsParser.error.generic'}}
+  </div>
+{{else if isDeletingParserRule}}
+  <div class='loading'>
+     {{rsa-loader size='large'}}
+  </div>
+{{else if isDeletingParserRuleError}}
   <div class='loading'>
     {{t 'configure.logsParser.error.generic'}}
   </div>
