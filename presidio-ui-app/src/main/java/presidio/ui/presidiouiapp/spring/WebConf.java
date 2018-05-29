@@ -33,7 +33,8 @@ import java.util.List;
 
 @Configuration
 @Import({PresidioUiServiceConfiguration.class, PresidioNwAuthenticationConfig.class, PresidioNwAuthenticationMockConfig.class})
-public class WebConf{
+//TODO: when moving to spring 5, WebMvcConfigurerAdapter, and instead we need to implement WebMvcConfigurer
+public class WebConf extends WebMvcConfigurerAdapter{
 
 
     @Bean
