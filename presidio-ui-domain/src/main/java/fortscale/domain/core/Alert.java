@@ -1,6 +1,5 @@
 package fortscale.domain.core;
 
-import fortscale.domain.core.alert.analystfeedback.AnalystFeedback;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
@@ -76,8 +75,6 @@ public class Alert extends AbstractDocument implements Serializable {
 	@Field(anomalyTypeField)
 	private Set<DataSourceAnomalyTypePair> dataSourceAnomalyTypePair;
 
-	@Field(analystFeedbackField)
-	private List<AnalystFeedback> analystFeedback = new ArrayList<>();
 
 	public Alert() {
 	}
@@ -95,7 +92,6 @@ public class Alert extends AbstractDocument implements Serializable {
 		this.severityCode = this.severity.ordinal();
 		this.status = alert.getStatus();
 		this.feedback = alert.getFeedback();
-		this.analystFeedback = alert.getAnalystFeedback();
 		this.entityId = alert.getEntityId();
 		this.timeframe = alert.getTimeframe();
 		this.dataSourceAnomalyTypePair = alert.getDataSourceAnomalyTypePair();
@@ -206,13 +202,6 @@ public class Alert extends AbstractDocument implements Serializable {
 		this.status = status;
 	}
 
-	public List<AnalystFeedback> getAnalystFeedback() {
-		return analystFeedback;
-	}
-
-	public void setAnalystFeedback(List<AnalystFeedback> analystFeedback) {
-		this.analystFeedback = analystFeedback;
-	}
 
 	public String getName() {
 		return name;
@@ -348,11 +337,5 @@ public class Alert extends AbstractDocument implements Serializable {
 		this.userScoreContributionFlag = userScoreContributionFlag;
 	}
 
-	public void addAnalystFeedback(AnalystFeedback analystFeedback){
-		this.getAnalystFeedback().add(0, analystFeedback);
-	}
 
-//	public AnalystFeedback getAnalystFeedback(String analystFeedbackId){
-//		return analystFeedback.stream().filter(analystFeedback -> analystFeedback.getId().equals(analystFeedbackId)).findFirst().orElse(null);
-//	}
 }

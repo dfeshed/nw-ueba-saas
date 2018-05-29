@@ -8,6 +8,9 @@ import presidio.output.client.model.AlertsWrapper;
 import presidio.output.client.model.Indicator;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -85,10 +88,22 @@ public class FakeAlertsCreator {
         severity.put(Alert.SeverityEnum.LOW.name(),20L);
 
         Map<String,Long> severityDaily = new HashMap<>();
-        severityDaily.put("1514775600:"+Alert.SeverityEnum.CRITICAL.name(),100L);
-        severityDaily.put("1514775600:"+Alert.SeverityEnum.HIGH.name(),20L);
-        severityDaily.put("1514775600:"+Alert.SeverityEnum.MEDIUM.name(),20L);
-        severityDaily.put("1514775600:"+Alert.SeverityEnum.LOW.name(),20L);
+        final int NUMBER_OF_DAYS = 60;
+
+        LocalDate today = LocalDate.now();
+        final  ZoneId zoneId = ZoneId.systemDefault();
+
+
+        for (long i=0; i< NUMBER_OF_DAYS; i++) {
+            LocalDate day = today.minusDays(i+1);
+
+            long epoch = day.atStartOfDay(zoneId).toEpochSecond() *1000;
+
+            severityDaily.put(epoch+":" + Alert.SeverityEnum.CRITICAL.name(), 15L);
+            severityDaily.put(epoch+":" + Alert.SeverityEnum.HIGH.name(), 30L);
+            severityDaily.put(epoch+":" + Alert.SeverityEnum.MEDIUM.name(), 60L);
+            severityDaily.put(epoch+":" + Alert.SeverityEnum.LOW.name(), 100L);
+        }
 
         Map<String,Long> classification = new HashMap<>();
         classification.put("Alert 1",100L);

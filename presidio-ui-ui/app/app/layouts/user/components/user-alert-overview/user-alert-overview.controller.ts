@@ -15,7 +15,7 @@ module Fortscale.layouts.user {
         updateComment:any;
         deleteComment:any;
         addComment:any;
-        analystMap:any = {};//Map the analyst name as retrived from the API to analyst object
+
 
         alerts:any = null;
         alert:any;
@@ -50,24 +50,7 @@ module Fortscale.layouts.user {
             );
         }
 
-        /**
-         * When component loaded, we load a map from each analyst names as apear on the comment, to full display name.
-         * @private
-         */
-        _initAnalystFullNames () {
-            let ctrl:any = this;
 
-            this.authService.getAllUsers().then((result)=> {
-                _.forEach(result, function (value, key) {
-                    ctrl.analystMap[value.emailAddress] = value.fullName;
-                });
-            })
-                .catch((err) => {
-                    this.toastrService.warning(
-                        `Can't load analyst full names `);
-                });
-
-        }
 
         /**
          * Extract delegated methods from user controller and save it on this controller
@@ -100,9 +83,7 @@ module Fortscale.layouts.user {
         }
 
         _init () {
-         //   this._initCurrentAlert();
             this._initAlertsWatch();
-            this._initAnalystFullNames();
             this._initPopulatedFunctions();
         }
 

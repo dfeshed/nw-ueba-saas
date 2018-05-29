@@ -73,6 +73,9 @@ module Fortscale.layouts.overview.components.alertsSeverityByDay {
 
                 let dataProvider = this._digestAlertsSeverity();
 
+                let smallDeviceWidth:boolean = window.screen.width < 1400;
+                let columnWidth:number  = smallDeviceWidth ? 8 : 12;
+
                 let chart = AmCharts.makeChart(this.containerElement[0],
                     {
                         "type": "serial",
@@ -140,7 +143,8 @@ module Fortscale.layouts.overview.components.alertsSeverityByDay {
                                 "title": "Critical",
                                 "type": "column",
                                 "valueField": "Critical",
-                                "showHandOnHover": true
+                                "showHandOnHover": true,
+                                "fixedColumnWidth":columnWidth
                             },
                             {
                                 "balloonText": "[[value]] [[title]] alerts on  [[category]]",
@@ -150,7 +154,8 @@ module Fortscale.layouts.overview.components.alertsSeverityByDay {
                                 "title": "High",
                                 "type": "column",
                                 "valueField": "High",
-                                "showHandOnHover": true
+                                "showHandOnHover": true,
+                                "fixedColumnWidth":columnWidth
                             },
                             {
                                 "balloonText": "[[value]] [[title]] alerts on  [[category]]",
@@ -160,7 +165,8 @@ module Fortscale.layouts.overview.components.alertsSeverityByDay {
                                 "title": "Medium",
                                 "type": "column",
                                 "valueField": "Medium",
-                                "showHandOnHover": true
+                                "showHandOnHover": true,
+                                "fixedColumnWidth":columnWidth
                             },
                             {
                                 "balloonText": "[[value]] [[title]] alerts on  [[category]]",
@@ -170,7 +176,8 @@ module Fortscale.layouts.overview.components.alertsSeverityByDay {
                                 "title": "Low",
                                 "type": "column",
                                 "valueField": "Low",
-                                "showHandOnHover": true
+                                "showHandOnHover": true,
+                                "fixedColumnWidth":columnWidth
                             }
                         ],
                         "guides": [],

@@ -8,8 +8,6 @@ import fortscale.services.cache.CacheHandler;
 import fortscale.utils.configurations.ConfigrationServerClientUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

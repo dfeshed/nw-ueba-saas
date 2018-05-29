@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>presidio.ui</groupId>
+        <artifactId>presidio-ui</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>presidio-ui-nw-security</artifactId>
+
+    <properties>
+        <secure-store.version>1.0.1</secure-store.version>
+        <bsafe.version>6.2.2.1</bsafe.version>
+    </properties>
+
+    <!-- Distribution controls where the CI job pushes artifacts -->
+    <distributionManagement>
+        <!-- Everything must go to the ASOC Tier-2 repositories. -->
+        <repository>
+            <!-- Release to asoc-releases -->
+            <id>repo1.rsa.lab.emc.com-release</id>
+            <url>http://repo1.rsa.lab.emc.com:8081/artifactory/asoc-releases</url>
+        </repository>
+        <snapshotRepository>
+            <!-- Snapshots to asoc-snapshots -->
+            <id>repo1.rsa.lab.emc.com-release</id>
+            <url>http://repo1.rsa.lab.emc.com:8081/artifactory/asoc-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+    <!-- This Project should not be depended on any presidio-core modules
+         because presidio UI also consume it-->
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security.oauth</groupId>
+            <artifactId>spring-security-oauth2</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-jwt</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache-core</artifactId>
+        </dependency>
+
+        <!-- Use RSA Crypto -->
+        <dependency>
+            <groupId>com.rsa.bsafe</groupId>
+            <artifactId>toolkit</artifactId>
+            <version>${bsafe.version}</version>
+            <type>pom</type>
+            <exclusions>
+                <!-- CertJ is no longer maintained - do not use it -->
+                <exclusion>
+                    <artifactId>certj</artifactId>
+                    <groupId>com.rsa.bsafe</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+
+    </dependencies>
+
+
+</project>

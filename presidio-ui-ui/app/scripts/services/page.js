@@ -5,7 +5,8 @@
         return {
             setPageTitle: function(title) {
                 if (FORTSCALE_BRAND_UI) {
-                    document.title = "Fortscale - " + title;
+                    // document.title = "UEBA - NetWitness - " + title;
+                    document.title = "UEBA - NetWitness";
                 } else {
                     document.title = "Threat Detection - " + title;
                 }

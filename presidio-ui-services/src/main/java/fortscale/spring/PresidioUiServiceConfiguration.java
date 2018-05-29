@@ -16,6 +16,7 @@ import fortscale.services.presidio.core.converters.IndicatorConverter;
 import fortscale.services.presidio.core.converters.UserConverterHelper;
 
 import fortscale.utils.configurations.ConfigrationServerClientUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
@@ -42,13 +43,6 @@ public class PresidioUiServiceConfiguration {
 
 
 
-
-    @Bean
-    AlertCommentsService alertCommentsService(){
-        return new AlertCommentsServiceImpl();
-    }
-
-
     @Bean
     LocalizationService localizationService(){
         MemoryBasedCache memoryBasedCache = new MemoryBasedCache(1000,3600,String.class);
@@ -63,7 +57,7 @@ public class PresidioUiServiceConfiguration {
 
         AggregationConverterHelper aggregationConverterHelper= new AggregationConverterHelper();
         AlertConverterHelper alertConverterHelper = new AlertConverterHelper();
-        return new AlertsServiceImpl(userService(),alertConverterHelper,alertCommentsService(),aggregationConverterHelper, remoteAlertClientService);
+        return new AlertsServiceImpl(userService(),alertConverterHelper,aggregationConverterHelper, remoteAlertClientService);
     }
 
 
