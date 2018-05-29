@@ -1,6 +1,7 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 import { initializeInvestigate } from 'investigate-events/actions/initialization-creators';
+import { updateSummaryData } from 'investigate-events/actions/data-creators';
 import {
   setMetaPanelSize,
   setReconClosed,
@@ -14,6 +15,9 @@ import {
   META_PANEL_SIZES,
   RECON_PANEL_SIZES
 } from 'investigate-events/constants/panelSizes';
+
+const SUMMARY_CALL_INTERVAL = 60000;
+let timerId;
 
 export default Route.extend({
   contextualHelp: service(),
@@ -43,11 +47,17 @@ export default Route.extend({
   activate() {
     this.set('contextualHelp.module', this.get('contextualHelp.investigateModule'));
     this.set('contextualHelp.topic', this.get('contextualHelp.invEventAnalysis'));
+    // Scheduler for retrieving latest summaryData.
+    // Helps in cases where the service hasn't been re-selected or the page has not been refreshed
+    // in a long time.
+    timerId = setInterval(() => this.get('redux').dispatch(updateSummaryData()), SUMMARY_CALL_INTERVAL);
   },
 
   deactivate() {
     this.set('contextualHelp.module', null);
     this.set('contextualHelp.topic', null);
+    // terminate the continous polling of summary
+    clearInterval(timerId);
   },
 
   model(params) {

@@ -46,6 +46,10 @@ export default handleActions({
     });
   },
 
+  [ACTION_TYPES.SUMMARY_UPDATE]: (state, { payload }) => {
+    return state.set('summaryData', payload);
+  },
+
   [ACTION_TYPES.INITIALIZE_INVESTIGATE]: (state, { hardReset }) => {
     // hardReset is true when
     // 1) Loading the Event Analysis page for the first time

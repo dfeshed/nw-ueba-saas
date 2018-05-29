@@ -1,6 +1,8 @@
 import { module, test } from 'qunit';
 import Immutable from 'seamless-immutable';
 import {
+  isCoreServiceNotUpdated,
+  getCoreDeviceVersion,
   getDbEndTime,
   getDbStartTime,
   hasSummaryData
@@ -60,4 +62,115 @@ test('handle different inputs when retrieving database start time', function(ass
 
   const missingSummaryState = state.setIn(['investigate', 'services', 'summaryData'], null);
   assert.equal(getDbStartTime(missingSummaryState), null, 'time should be null');
+});
+
+test('determine correct core version is returned', function(assert) {
+  const state = {
+    investigate: {
+      services: {
+        serviceData: [
+          { id: 'id1', displayName: 'Service Name', name: 'SN', version: '10.6.5.0-7206.5.21dd2e7' }
+        ]
+      },
+      queryNode: {
+        serviceId: 'sd1'
+      }
+    }
+  };
+
+  const coreVersion = getCoreDeviceVersion(state);
+  assert.equal(coreVersion, '10.6.5.0-7206.5.21dd2e7', 'Correct core version');
+});
+
+test('when core version is not set', function(assert) {
+  const state = {
+    investigate: {
+      services: {
+        serviceData: [
+          {}
+        ]
+      },
+      queryNode: {
+        serviceId: 'sd1'
+      }
+    }
+  };
+  const coreVersion = getCoreDeviceVersion(state);
+  assert.equal(coreVersion, null, 'Core version is not set');
+});
+
+test('determine if core services are not updated with 10.x', function(assert) {
+  const state = {
+    investigate: {
+      services: {
+        serviceData: [
+          { id: 'id1', displayName: 'Service Name', name: 'SN', version: '10.6.5.0-7206.5.21dd2e7' }
+        ]
+      },
+      queryNode: {
+        serviceId: 'sd1'
+      }
+    }
+  };
+
+  const appVersion = { version: '11.1.0.0', minServiceVersion: '11.1' };
+  const flag = isCoreServiceNotUpdated(state, appVersion);
+
+  assert.ok(flag, 'Core Service is not updated');
+});
+
+test('determine if core services are not updated with 11.x', function(assert) {
+  const state = {
+    investigate: {
+      services: {
+        serviceData: [
+          { id: 'id1', displayName: 'Service Name', name: 'SN', version: '11.1.0.0-7206.5.21dd2e7' }
+        ]
+      },
+      queryNode: {
+        serviceId: 'sd1'
+      }
+    }
+  };
+
+  const appVersion = { version: '11.3.0.0', minServiceVersion: '11.2' };
+  const flag = isCoreServiceNotUpdated(state, appVersion);
+
+  assert.ok(flag, 'Core Service is not updated');
+});
+
+test('determine if core services are updated with 11.1', function(assert) {
+  const state = {
+    investigate: {
+      services: {
+        serviceData: [
+          { id: 'id1', displayName: 'Service Name', name: 'SN', version: '11.1.0.0-7206.5.21dd2e7' }
+        ]
+      },
+      queryNode: {
+        serviceId: 'sd1'
+      }
+    }
+  };
+  const appVersion = { version: '11.1.0.0', minServiceVersion: '11.1' };
+  const flag = isCoreServiceNotUpdated(state, appVersion);
+  assert.notOk(flag, 'Core Service is up to date');
+});
+
+test('determine if core services are updated beyond 11.1', function(assert) {
+  const state = {
+    investigate: {
+      services: {
+        serviceData: [
+          { id: 'id1', displayName: 'Service Name', name: 'SN', version: '11.3.0.0-7206.5.21dd2e7' }
+        ]
+      },
+      queryNode: {
+        serviceId: 'sd1'
+      }
+    }
+  };
+  const appVersion = { version: '11.2.0.0', minServiceVersion: '11.1' };
+  const flag = isCoreServiceNotUpdated(state, appVersion);
+  assert.notOk(flag, 'Core Service is up to date');
 });

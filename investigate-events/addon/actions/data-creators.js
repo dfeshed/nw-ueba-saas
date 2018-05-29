@@ -66,6 +66,39 @@ export const getServiceSummary = (resolve = noop, reject = noop) => {
   };
 };
 
+/**
+ * This is called from a scheduler which polls for the latest summaryData
+ * so we can reset our query start/end time.
+ * This solves the problem of stale events and their counts.
+ * @public
+ */
+export const updateSummaryData = () => {
+  return (dispatch, getState) => {
+    const state = getState();
+    const { serviceId } = state.investigate.queryNode;
+    const { summaryData } = state.investigate.services;
+    if (serviceId && summaryData) {
+      fetchSummary(serviceId)
+      .then((response) => {
+        // check for any differences in summaryData objects
+        if (JSON.stringify(summaryData) !== JSON.stringify(response.data)) {
+          dispatch({
+            type: ACTION_TYPES.SUMMARY_UPDATE,
+            payload: response.data
+          });
+          // This will update the latest start and end time in queryNode - which is
+          // ultimately used by executeQuery to get results from MT
+          const range = selectedTimeRange(state);
+          dispatch(setQueryTimeRange(range));
+        }
+      })
+      .catch((error) => {
+        handleInvestigateErrorCode(error, 'UPDATE_SUMMARY_SCHEDULER');
+      });
+    }
+  };
+};
+
 export const fetchInvestigateData = () => {
   return (dispatch, getState) => {
     if (canFetchEvents(getState())) {
