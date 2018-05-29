@@ -9,12 +9,12 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>rsa-nw-presidio-core</module>
         <module>rsa-nw-presidio-elasticsearch-init</module>
         <module>rsa-nw-presidio-configserver</module>
         <module>rsa-nw-presidio-output</module>
         <module>rsa-nw-presidio-manager</module>
         <module>rsa-nw-presidio-airflow</module>
+        <module>rsa-nw-presidio-core</module>
     </modules>
     <parent>
         <artifactId>rpm-builder</artifactId>
