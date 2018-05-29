@@ -14,10 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 
 import presidio.rsa.auth.mock.PresidioNwAuthenticationMockConfig;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import presidio.ui.presidiouiapp.beans.request.AlertFilterHelperImpl;
 import presidio.ui.presidiouiapp.extensions.FortscaleCustomEditorService;
+import presidio.ui.presidiouiapp.extensions.RenamingProcessor;
 import presidio.ui.presidiouiapp.rest.*;
 import presidio.ui.presidiouiapp.rest.errorhandler.RestErrorHandler;
+
+import java.util.List;
 
 
 /**
@@ -94,6 +99,23 @@ public class WebConf{
     RestErrorHandler restErrorHandler(){
         return new RestErrorHandler();
     }
+
+    @Bean
+    RenamingProcessor renamingProcessor(){
+        return new RenamingProcessor(true);
+    }
+
+    /**
+     * Adding naming processor as argument resolver
+     * The naming processor init and register FortscaleCustomEditorService
+     */
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+        argumentResolvers.add(renamingProcessor());
+
+    }
+
+
 
     @Autowired
     UserServiceFacade userServiceFacade;

@@ -30,8 +30,8 @@ public class FortscaleCustomEditorService {
         classToCustomEditor.put(DateRange.class, new DateRangeEditor());
 
         //Register DataSourceAnomalyTypePairListWrapperPropertyEditor custom editor
-        DataSourceAnomalyTypePairListWrapperPropertyEditor dataSourceAnomalyTypePairListWrapperPropertyEditor = new DataSourceAnomalyTypePairListWrapperPropertyEditor();
-        classToCustomEditor.put(AlertRestFilter.DataSourceAnomalyTypePairListWrapper.class, dataSourceAnomalyTypePairListWrapperPropertyEditor);
+//        DataSourceAnomalyTypePairListWrapperPropertyEditor dataSourceAnomalyTypePairListWrapperPropertyEditor = new DataSourceAnomalyTypePairListWrapperPropertyEditor();
+//        classToCustomEditor.put(AlertRestFilter.DataSourceAnomalyTypePairListWrapper.class, dataSourceAnomalyTypePairListWrapperPropertyEditor);
 
     }
 
