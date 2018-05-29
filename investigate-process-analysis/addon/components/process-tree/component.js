@@ -108,6 +108,14 @@ const TreeComponent = Component.extend({
 
   rootNode: null,
 
+  _ieEdgeDetection() {
+    // Internet Explorer
+    const isIE = false || !!document.documentMode;
+    // Edge
+    const isEdge = !isIE && !!window.StyleMedia;
+    return isIE || isEdge;
+  },
+
   @computed('nodeSize', 'nodeSeparation')
   treeInstance(nodeSize, nodeSeparation) {
     const treeInstance = tree()
@@ -296,6 +304,11 @@ const TreeComponent = Component.extend({
       .attr('cursor', 'pointer')
       .attr('r', '2rem');
 
+    if (this._ieEdgeDetection()) { // icon is positioned according to the browser
+      nodeUpdate.select('text.process-icon')
+        .attr('dy', '.5em');
+    }
+
     updateText({ className: 'process-name', node: nodeUpdate, dx: 0, dy: '3em', opacity: 1 });
   },
 
@@ -369,6 +382,7 @@ const TreeComponent = Component.extend({
     this.set('rootNode', null);
     // If query input changes then need to re-render the tree
     if (this.get('queryInput')) {
+      const { checksum, pn } = this.get('queryInput');
       const onComplete = () => {
 
         const { children, selectedProcess, path } = this.getProperties('children', 'selectedProcess', 'path');
@@ -386,12 +400,11 @@ const TreeComponent = Component.extend({
           return;
         }
         this.set('rootNode', root);
-        document.title = this._documentTitle(root.data['alias.host'], root.data.processName);
+        document.title = this._documentTitle(root.data['alias.host'], pn);
         this._initializeChart();
       };
       this.send('getParentAndChildEvents', this.get('selectedProcess'), { onComplete });
 
-      const { checksum } = this.get('queryInput');
       const hashes = [checksum];
       this.send('fetchProcessDetails', { hashes });
     }
