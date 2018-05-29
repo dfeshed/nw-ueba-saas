@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.rsa.netwitness.presidio</groupId>
+    <artifactId>package</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>rsa-nw-presidio-elasticsearch-init</module>
+        <module>rsa-nw-presidio-configserver</module>
+        <module>rsa-nw-presidio-output</module>
+        <module>rsa-nw-presidio-manager</module>
+        <module>rsa-nw-presidio-airflow</module>
+        <module>rsa-nw-presidio-core</module>
+    </modules>
+    <parent>
+        <artifactId>rpm-builder</artifactId>
+        <groupId>com.rsa.netwitness.infrastructure.rpm</groupId>
+        <version>3.0.0-SNAPSHOT</version>
+    </parent>
+    <repositories>
+        <!-- ASOC Tier-2 repository -->
+        <repository>
+            <id>asoc-releases</id>
+            <url>https://repo1.rsa.lab.emc.com:8443/artifactory/asoc-releases</url>
+        </repository>
+        <repository>
+            <id>asoc-snapshots</id>
+            <url>https://repo1.rsa.lab.emc.com:8443/artifactory/asoc-snapshots</url>
+        </repository>
+    </repositories>
+
+    <properties>
+        <presidio-app.directory>
+            <!--Base application directory.
+            should contain batch apps, python packages and scripts used by core and its extensions-->
+            /var/lib/netwitness/presidio
+        </presidio-app.directory>
+        <presidio-core.version>1.1-0-SNAPSHOT</presidio-core.version>
+        <rpm-maven-plugin.version>2.2.0</rpm-maven-plugin.version>
+        <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
+        <presidio.username>presidio</presidio.username>
+        <presidio.groupname>presidio</presidio.groupname>
+        <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
+    </properties>
+
+
+</project>

@@ -192,7 +192,7 @@
                                     <artifactId>${project.artifactId}</artifactId>
                                     <version>${project.version}</version>
                                     <type>${project.packaging}</type>
-                                    <destFileName>presidio-manager.war</destFileName>
+                                    <destFileName>presidio-manager.jar</destFileName>
                                 </artifactItem>
                             </artifactItems>
                             <outputDirectory>../../target/war-dependencies</outputDirectory>
