@@ -3,6 +3,7 @@ package org.apache.flume.interceptor.presidio.regexcaptureandformat;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 
 import java.util.List;
@@ -50,7 +51,16 @@ public class JsonRegexCaptorAndFormatter {
     }
 
     public JsonObject captureAndFormat(JsonObject jsonObject) {
-        if (!jsonObject.has(sourceKey) || jsonObject.get(sourceKey).isJsonNull()) return jsonObject;
+        // destinationKey should be consistent with sourceKey:
+        // If sourceKey is not present, destinationKey should not be present.
+        // If sourceKey is null, destinationKey should be null.
+        if (!jsonObject.has(sourceKey)) {
+            return jsonObject;
+        } else if (jsonObject.get(sourceKey).isJsonNull()) {
+            jsonObject.add(destinationKey, JsonNull.INSTANCE);
+            return jsonObject;
+        }
+
         String sourceValue = jsonObject.get(sourceKey).getAsString();
         String destinationValue = null;
 

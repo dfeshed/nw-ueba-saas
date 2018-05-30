@@ -8,10 +8,9 @@ import org.apache.flume.Context;
 import org.apache.flume.Event;
 import org.apache.flume.interceptor.presidio.AbstractPresidioInterceptorBuilder;
 import org.apache.flume.interceptor.presidio.AbstractPresidioJsonInterceptor;
-import org.json.JSONObject;
 
 /**
- * Deserializes an {@link Event} to a {@link JSONObject},
+ * Deserializes an {@link Event} to a {@link JsonObject},
  * and uses a {@link JsonRegexCaptorAndFormatter} for interception.
  *
  * @author Lior Govrin.
