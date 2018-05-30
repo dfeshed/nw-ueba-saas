@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.JsonObject;
 
-
 import java.util.List;
 import java.util.regex.Matcher;
 
@@ -14,11 +13,11 @@ import static org.apache.commons.lang3.Validate.notEmpty;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
 /**
- * Takes from a given {@link JSONObject} the string associated with {@link #sourceKey} and looks for the first
+ * Takes from a given {@link JsonObject} the string associated with {@link #sourceKey} and looks for the first
  * {@link CaptureAndFormatConfiguration} x, such that the string matches x's pattern (the configurations are traversed
  * in order). If a match is found, the {@link JsonRegexCaptorAndFormatter} creates a formatted string using x's format
  * and the arguments configured by x's {@link CaptureAndFormatConfiguration#capturingGroupConfigurations}. Then it puts
- * the key-value pair {@link #destinationKey}-{newly created formatted string} in the given {@link JSONObject}. If a
+ * the key-value pair {@link #destinationKey}-{newly created formatted string} in the given {@link JsonObject}. If a
  * match isn't found, the {@link #destinationKey} is associated with null.
  *
  * @author Lior Govrin.
@@ -51,7 +50,7 @@ public class JsonRegexCaptorAndFormatter {
     }
 
     public JsonObject captureAndFormat(JsonObject jsonObject) {
-        if (!jsonObject.has(sourceKey)) return jsonObject;
+        if (!jsonObject.has(sourceKey) || jsonObject.get(sourceKey).isJsonNull()) return jsonObject;
         String sourceValue = jsonObject.get(sourceKey).getAsString();
         String destinationValue = null;
 
