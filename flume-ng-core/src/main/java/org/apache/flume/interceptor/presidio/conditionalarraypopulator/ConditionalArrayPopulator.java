@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import org.json.JSONObject;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -15,10 +15,10 @@ import static org.apache.commons.lang3.Validate.notBlank;
 import static org.apache.commons.lang3.Validate.notEmpty;
 
 /**
- * Takes from a given {@link JSONObject} the string associated with {@link #sourceKey} and looks for the first
+ * Takes from a given {@link JsonObject} the string associated with {@link #sourceKey} and looks for the first
  * {@link ConditionAndArrayValues} x, such that the string matches x's pattern (the configurations are traversed in
  * order). If a match is found, the {@link ConditionalArrayPopulator} adds all the values configured in x to the
- * {@link JSONObject}'s array associated with {@link #destinationKey}. If it exists, the array can be overwritten
+ * {@link JsonObject}'s array associated with {@link #destinationKey}. If it exists, the array can be overwritten
  * beforehand (i.e. before starting the look up) by turning on the {@link #overwriteArray} flag.
  *
  * @author Lior Govrin.
@@ -55,9 +55,19 @@ public class ConditionalArrayPopulator {
     }
 
     public JsonObject checkAndPopulateArray(JsonObject jsonObject) {
-        if (!jsonObject.has(sourceKey) || jsonObject.get(sourceKey).isJsonNull()) return jsonObject;
+        // destinationKey should be consistent with sourceKey:
+        // If sourceKey is not present, destinationKey should not be present.
+        // If sourceKey is null, destinationKey should be null.
+        if (!jsonObject.has(sourceKey)) {
+            return jsonObject;
+        } else if (jsonObject.get(sourceKey).isJsonNull()) {
+            jsonObject.add(destinationKey, JsonNull.INSTANCE);
+            return jsonObject;
+        }
+
         String sourceValue = jsonObject.get(sourceKey).getAsString();
-        JsonArray jsonArray = overwriteArray || !jsonObject.has(destinationKey) ? new JsonArray() : jsonObject.getAsJsonArray(destinationKey);
+        JsonArray jsonArray = overwriteArray || !jsonObject.has(destinationKey)
+                ? new JsonArray() : jsonObject.getAsJsonArray(destinationKey);
 
         for (ConditionAndArrayValues conditionAndArrayValues : conditionAndArrayValuesList) {
             Matcher matcher = conditionAndArrayValues.getPattern().matcher(sourceValue);
