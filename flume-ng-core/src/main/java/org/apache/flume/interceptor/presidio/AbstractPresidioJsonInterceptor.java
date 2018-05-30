@@ -99,10 +99,10 @@ public abstract class AbstractPresidioJsonInterceptor implements Interceptor, Mo
 
     protected void setJsonObject(Event event, JsonObject eventBodyAsJson) {
         if (event instanceof JsonObjectEvent) {
-            return;
+            ((JsonObjectEvent) event).setEventBodyAsJson(eventBodyAsJson);
+        } else {
+            event.setBody(eventBodyAsJson.toString().getBytes());
         }
-
-        event.setBody(eventBodyAsJson.toString().getBytes());
     }
 
     public String getApplicationName() {
