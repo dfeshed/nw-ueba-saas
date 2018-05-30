@@ -31,6 +31,10 @@ module('Integration | Component | Event Details', function(hooks) {
       {
         type: 'investigate_destination_domain',
         url: '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/%2Fdate%2F2015-10-27T18%3A37%3A05.000Z%2F2015-10-27T18%3A47%3A05.000Z'
+      },
+      {
+        type: 'should_not_appear',
+        url: ''
       }
     ];
     this.set('eventDetails', {

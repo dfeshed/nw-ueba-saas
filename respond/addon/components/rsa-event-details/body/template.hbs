@@ -255,9 +255,11 @@ as |property|
           <div class="rsa-property-tree">
             <table>
               {{#each links as |link|}}
-                <tr class="related-link">
-                  <a href="{{link.url}}" target="_blank">{{split-and-capitalize link.type}}</a>
-                </tr>
+                {{#if link.url}}
+                  <tr class="related-link">
+                    <a href="{{link.url}}" target="_blank">{{split-and-capitalize link.type}}</a>
+                  </tr>
+                {{/if}}
               {{/each}}
             </table>
           </div>
