@@ -1,3 +1,23 @@
+# [8.5.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v8.4.0)
+## Features
+* [ASOC-44915](https://bedfordjira.na.rsa.net/browse/ASOC-44915):&emsp;Use new reactiveStreamRequest API for text packets
+* [ASOC-50965](https://bedfordjira.na.rsa.net/browse/ASOC-50965):&emsp;Basic to advanced and back with no change
+* [ASOC-51098](https://bedfordjira.na.rsa.net/browse/ASOC-51098):&emsp;Respond - Add Visual Cue in Storyline for Event Recon view Availability
+* [ASOC-51216](https://bedfordjira.na.rsa.net/browse/ASOC-51216):&emsp;Respond - Add permissions for the incident/alert details routes (ember)
+* [ASOC-51564](https://bedfordjira.na.rsa.net/browse/ASOC-51564):&emsp;Single Pill Creation - Updating Meta
+* [ASOC-51568](https://bedfordjira.na.rsa.net/browse/ASOC-51568):&emsp;Single Pill Creation - Power Select Features
+* [ASOC-51866](https://bedfordjira.na.rsa.net/browse/ASOC-51866):&emsp;Handle all special characters when linking into Investigation/Investigate
+* [ASOC-53987](https://bedfordjira.na.rsa.net/browse/ASOC-53987):&emsp;Action on the Event Analysis-Meta Panel should be driven by Context Menu Action definitions
+* [ASOC-54201](https://bedfordjira.na.rsa.net/browse/ASOC-54201):&emsp;Update Guided & Free-Form Mode default hint text and examples
+* [ASOC-54284](https://bedfordjira.na.rsa.net/browse/ASOC-54284):&emsp;Update breadcrumb and meta/column group details when profile applied
+* [ASOC-54360](https://bedfordjira.na.rsa.net/browse/ASOC-54360):&emsp;Action on the Event Analysis-Event List should be driven by Context Menu Action definitions
+* [ASOC-54361](https://bedfordjira.na.rsa.net/browse/ASOC-54361):&emsp;Action on the Event Analysis-Header should be driven by Context Menu Action definitions
+* [ASOC-54494](https://bedfordjira.na.rsa.net/browse/ASOC-54494):&emsp;Framework updates to support Profile Groups
+* [ASOC-55348](https://bedfordjira.na.rsa.net/browse/ASOC-55348):&emsp;Localization of Archer out of the box fields
+* [ASOC-55398](https://bedfordjira.na.rsa.net/browse/ASOC-55398):&emsp;When incident is closed we should not be able to add related indicators to that incident
+* [ASOC-55944](https://bedfordjira.na.rsa.net/browse/ASOC-55944):&emsp;Turn off NextGen once 11.2 release branch is created
+
+
 # [8.4.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v8.4.0)
 ## Features
 * [ASOC-44399](https://bedfordjira.na.rsa.net/browse/ASOC-44399):&emsp;Allow user to hide node types on nodal graph
