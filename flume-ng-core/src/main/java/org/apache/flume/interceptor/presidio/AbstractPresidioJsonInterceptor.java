@@ -52,13 +52,13 @@ public abstract class AbstractPresidioJsonInterceptor implements Interceptor, Mo
         if (isGotControlDoneMessage(event)) {
             return event;
         }
-        monitoringService.reportTotalEventMetric(1);
+       // monitoringService.reportTotalEventMetric(1);
         try {
             Event eventResult = doIntercept(event);
             if (eventResult == null) {
                 //Do nothing, expected from the implementation to report why the events filtered.
             } else {
-                monitoringService.reportSuccessEventMetric(1);
+                //monitoringService.reportSuccessEventMetric(1);
             }
             return eventResult;
         } catch (ConfigurationException e) {
