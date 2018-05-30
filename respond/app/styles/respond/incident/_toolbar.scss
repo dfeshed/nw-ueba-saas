@@ -2,4 +2,10 @@
   .journal {
     margin-left: rsa-whitespace();
   }
+  .rsa-form-button-wrapper {
+    margin-left: rsa-whitespace(least);
+    &.is-active button {
+      border-bottom: 3px solid border-color(secondary);
+    }
+  }
 }
