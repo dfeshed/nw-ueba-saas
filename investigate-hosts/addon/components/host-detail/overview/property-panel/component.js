@@ -4,6 +4,7 @@ import config from './overview-property-config';
 import PropertyPanel from 'investigate-hosts/components/host-detail/base-property-panel/component';
 import { get } from '@ember/object';
 import _ from 'lodash';
+import { inject as service } from '@ember/service';
 
 /**
  * Overide the the `host-detail/base-property-panel` to accommodate different json structure
@@ -13,7 +14,17 @@ export default PropertyPanel.extend({
 
   config,
 
-  @computed('data', 'config')
+  features: service(),
+
+  @computed('config', 'features.rsaEndpointFusion')
+  enabledConfig(config, rsaEndpointFusion) {
+    if (rsaEndpointFusion) {
+      return config;
+    }
+    return config.filter((conf) => !conf.isFusionFeature);
+  },
+
+  @computed('data', 'enabledConfig')
   properties(data, config) {
     assert('Cannot instantiate Summary panel without configuration.', config);
     config = this.updateConfig(data, config);
