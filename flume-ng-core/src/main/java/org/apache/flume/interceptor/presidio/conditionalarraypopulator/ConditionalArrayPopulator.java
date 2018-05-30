@@ -55,7 +55,7 @@ public class ConditionalArrayPopulator {
     }
 
     public JsonObject checkAndPopulateArray(JsonObject jsonObject) {
-        if (!jsonObject.has(sourceKey)) return jsonObject;
+        if (!jsonObject.has(sourceKey) || jsonObject.get(sourceKey).isJsonNull()) return jsonObject;
         String sourceValue = jsonObject.get(sourceKey).getAsString();
         JsonArray jsonArray = overwriteArray || !jsonObject.has(destinationKey) ? new JsonArray() : jsonObject.getAsJsonArray(destinationKey);
 
