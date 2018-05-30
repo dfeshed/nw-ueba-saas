@@ -84,7 +84,8 @@ export default class DataHelper {
         ],
         'format': 'ipv4'
       },
-      'ruleMetas': []
+      'ruleMetas': [],
+      'ootb': false
     },
     {
       'name': 'Client Username',
@@ -102,7 +103,8 @@ export default class DataHelper {
         ],
         'regex': '\\s*([\\w_.@-]*)'
       },
-      'ruleMetas': []
+      'ruleMetas': [],
+      'ootb': true
     }]);
     _set(this.state, 'content.logParserRules.selectedParserRuleIndex', 0);
     _set(this.state, 'content.logParserRules.parserRulesStatus', 'completed');

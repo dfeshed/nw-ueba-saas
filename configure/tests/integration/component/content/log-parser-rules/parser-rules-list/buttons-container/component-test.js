@@ -45,4 +45,15 @@ module('Integration | Component | delete-rules', function(hooks) {
     });
   });
 
+  test('Try to delete a non ootb rule', async function(assert) {
+    new ReduxDataHelper(setState).parserRulesFormatData(0, true).build();
+    await render(hbs`{{content/log-parser-rules/parser-rules-list/buttons-container}}`);
+    assert.notOk(find('.buttonsContainer .deleteRule .is-disabled'), 'Delete button is disabled');
+  });
+  test('Try to delete a ootb rule', async function(assert) {
+    new ReduxDataHelper(setState).parserRulesFormatData(1, true).build();
+    await render(hbs`{{content/log-parser-rules/parser-rules-list/buttons-container}}`);
+    assert.ok(find('.buttonsContainer .deleteRule .is-disabled'), 'Delete button is not disabled');
+  });
+
 });

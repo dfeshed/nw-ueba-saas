@@ -2,13 +2,15 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import {
   hasSelectedParserRule,
-  selectedParserRuleName
+  selectedParserRuleName,
+  isOotb
 } from 'configure/reducers/content/log-parser-rules/selectors';
 import { deleteParserRule } from 'configure/actions/creators/content/log-parser-rule-creators';
 
 const stateToComputed = (state) => ({
   hasSelectedParserRule: hasSelectedParserRule(state),
-  selectedParserRuleName: selectedParserRuleName(state)
+  selectedParserRuleName: selectedParserRuleName(state),
+  isOotb: isOotb(state)
 });
 
 const dispatchToActions = {

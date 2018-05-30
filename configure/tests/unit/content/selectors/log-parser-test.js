@@ -5,7 +5,8 @@ import {
   filterDeletedRule,
   parserRuleMatches,
   isDeletingParserRule,
-  isDeletingParserRuleError
+  isDeletingParserRuleError,
+  isOotb
 } from 'configure/reducers/content/log-parser-rules/selectors';
 
 module('Unit | Selectors | log-parser-rules');
@@ -22,13 +23,15 @@ const state = {
             name: 'foo',
             pattern: {
               format: 'Foo'
-            }
+            },
+            ootb: true
           },
           {
             name: 'foo2',
             pattern: {
               format: 'Foo2'
-            }
+            },
+            ootb: false
           }
         ]
       }
@@ -51,7 +54,8 @@ const filteredRule = [
     name: 'foo2',
     pattern: {
       format: 'Foo2'
-    }
+    },
+    ootb: false
   }
 ];
 
@@ -80,4 +84,8 @@ test('isDeletingParserRule wait', function(assert) {
 });
 test('isDeletingParserRuleError error', function(assert) {
   assert.equal(isDeletingParserRuleError(stateInit), false, 'no error getting delete confirmation');
+});
+
+test('isOotb', function(assert) {
+  assert.equal(isOotb(state), true, 'is ootb');
 });

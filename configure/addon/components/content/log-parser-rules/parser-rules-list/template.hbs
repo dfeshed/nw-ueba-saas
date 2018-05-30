@@ -23,6 +23,9 @@
     {{#each parserRules as |parserRule index|}}
       <tr><td class='{{if (eq index 0) 'firstItem'}} {{if (eq selectedParserRuleIndex index) 'active'}}'{{action "selectParserRule" index}}>
         {{parserRule.name}}
+        {{#if parserRule.ootb}}
+           [RSA]
+        {{/if}}
       </td></tr>
     {{/each}}
   </table>

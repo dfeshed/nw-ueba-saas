@@ -61,7 +61,10 @@ export default [
       ],
       'format': 'Hostname'
     },
-    'ruleMetas': []
+    'ruleMetas': [],
+    'dirty': false,
+    'ootb': false,
+    'override': false
   },
   {
     '_id': '5ab290bbe4b06cf1a6a1de85',
@@ -123,7 +126,10 @@ export default [
       ],
       'format': 'Hostname'
     },
-    'ruleMetas': []
+    'ruleMetas': [],
+    'dirty': false,
+    'ootb': false,
+    'override': false
   },
   {
     '_id': '5ab290bbe4b06cf1a6a1de86',

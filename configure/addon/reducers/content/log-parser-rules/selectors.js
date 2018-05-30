@@ -9,6 +9,7 @@ export const parserRules = (state) => _parserRulesState(state).parserRules;
 export const selectedLogParserIndex = (state) => _parserRulesState(state).selectedLogParserIndex;
 export const selectedParserRuleIndex = (state) => _parserRulesState(state).selectedParserRuleIndex;
 
+
 export const isLoadingLogParser = createSelector(
   _parserRulesState,
   (parserRulesState) => parserRulesState.logParsersStatus === 'wait'
@@ -158,4 +159,13 @@ export const isDeletingParserRule = createSelector(
 export const isDeletingParserRuleError = createSelector(
   _parserRulesState,
   (parserRulesState) => parserRulesState.deleteRuleStatus === 'error'
+);
+
+export const isOotb = createSelector(
+  _selectedParserRule,
+  (rule) => {
+    if (rule) {
+      return !!(rule.ootb);
+    }
+  }
 );
