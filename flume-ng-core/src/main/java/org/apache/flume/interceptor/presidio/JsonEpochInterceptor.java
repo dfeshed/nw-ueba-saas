@@ -49,8 +49,8 @@ public class JsonEpochInterceptor extends AbstractPresidioJsonInterceptor {
 
     @Override
     public Event doIntercept(Event event) {
-        final String eventBodyAsString = new String(event.getBody());
-        JsonObject eventBodyAsJson = new JsonParser().parse(eventBodyAsString).getAsJsonObject();
+
+        JsonObject eventBodyAsJson = getJsonObject(event);
         JsonElement jsonElement = eventBodyAsJson.get(originField);
 
         if (jsonElement == null || jsonElement.isJsonNull()) {
@@ -76,7 +76,7 @@ public class JsonEpochInterceptor extends AbstractPresidioJsonInterceptor {
                    originFormat, DateFormats.names());
         }
 
-        event.setBody(eventBodyAsJson.toString().getBytes());
+        setJsonObject(event, eventBodyAsJson);
         return event;
     }
 

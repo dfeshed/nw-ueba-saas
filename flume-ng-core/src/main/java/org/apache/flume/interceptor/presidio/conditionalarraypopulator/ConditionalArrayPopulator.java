@@ -3,7 +3,9 @@ package org.apache.flume.interceptor.presidio.conditionalarraypopulator;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.json.JSONArray;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -52,21 +54,21 @@ public class ConditionalArrayPopulator {
         this.conditionAndArrayValuesList = conditionAndArrayValuesList;
     }
 
-    public JSONObject checkAndPopulateArray(JSONObject jsonObject) {
+    public JsonObject checkAndPopulateArray(JsonObject jsonObject) {
         if (!jsonObject.has(sourceKey)) return jsonObject;
-        String sourceValue = jsonObject.getString(sourceKey);
-        JSONArray jsonArray = overwriteArray || !jsonObject.has(destinationKey) ? new JSONArray() : jsonObject.getJSONArray(destinationKey);
+        String sourceValue = jsonObject.get(sourceKey).getAsString();
+        JsonArray jsonArray = overwriteArray || !jsonObject.has(destinationKey) ? new JsonArray() : jsonObject.getAsJsonArray(destinationKey);
 
         for (ConditionAndArrayValues conditionAndArrayValues : conditionAndArrayValuesList) {
             Matcher matcher = conditionAndArrayValues.getPattern().matcher(sourceValue);
 
             if (matcher.matches()) {
-                conditionAndArrayValues.getValues().forEach(jsonArray::put);
+                conditionAndArrayValues.getValues().forEach(value -> jsonArray.add(new JsonPrimitive(value)));
                 break;
             }
         }
 
-        jsonObject.put(destinationKey, jsonArray);
+        jsonObject.add(destinationKey, jsonArray);
         return jsonObject;
     }
 }

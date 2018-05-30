@@ -37,14 +37,12 @@ public class JsonFieldSwitchCaseInterceptor extends AbstractPresidioJsonIntercep
 
     @Override
     public Event doIntercept(Event event) {
-        final String eventBodyAsString = new String(event.getBody());
 
-        JsonObject eventBodyAsJson;
-        eventBodyAsJson = new JsonParser().parse(eventBodyAsString).getAsJsonObject();
+        JsonObject eventBodyAsJson = getJsonObject(event);
         boolean conditionResult = testCondition(eventBodyAsJson);
         if(conditionResult) {
             handleField(eventBodyAsJson);
-            event.setBody(eventBodyAsJson.toString().getBytes());
+            setJsonObject(event, eventBodyAsJson);
         }
 
         return event;

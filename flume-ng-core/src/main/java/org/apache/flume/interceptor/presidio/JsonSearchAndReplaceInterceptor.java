@@ -61,10 +61,8 @@ public class JsonSearchAndReplaceInterceptor extends AbstractPresidioJsonInterce
 
     @Override
     public Event doIntercept(Event event) {
-        final String eventBodyAsString = new String(event.getBody());
 
-        JsonObject eventBodyAsJson;
-        eventBodyAsJson = new JsonParser().parse(eventBodyAsString).getAsJsonObject();
+        JsonObject eventBodyAsJson = getJsonObject(event);
 
         boolean conditionResult = testCondition(eventBodyAsJson);
         if(!conditionResult) {
@@ -90,7 +88,7 @@ public class JsonSearchAndReplaceInterceptor extends AbstractPresidioJsonInterce
         }
 
 
-        event.setBody(eventBodyAsJson.toString().getBytes());
+        setJsonObject(event, eventBodyAsJson);
         return event;
     }
 

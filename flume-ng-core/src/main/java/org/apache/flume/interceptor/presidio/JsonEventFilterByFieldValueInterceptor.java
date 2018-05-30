@@ -52,8 +52,7 @@ public class JsonEventFilterByFieldValueInterceptor extends AbstractPresidioJson
 
     @Override
     public Event doIntercept(Event event) {
-        final String eventBodyAsString = new String(event.getBody());
-        JsonObject eventBodyAsJson = new JsonParser().parse(eventBodyAsString).getAsJsonObject();
+        JsonObject eventBodyAsJson = getJsonObject(event);
 
         if(!testCondition(eventBodyAsJson)){
             return event;

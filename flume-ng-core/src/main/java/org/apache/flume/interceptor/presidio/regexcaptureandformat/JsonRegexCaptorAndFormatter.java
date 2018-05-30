@@ -3,7 +3,8 @@ package org.apache.flume.interceptor.presidio.regexcaptureandformat;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
+
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -49,10 +50,10 @@ public class JsonRegexCaptorAndFormatter {
         this.captureAndFormatConfigurations = captureAndFormatConfigurations;
     }
 
-    public JSONObject captureAndFormat(JSONObject jsonObject) {
+    public JsonObject captureAndFormat(JsonObject jsonObject) {
         if (!jsonObject.has(sourceKey)) return jsonObject;
-        String sourceValue = jsonObject.getString(sourceKey);
-        Object destinationValue = JSONObject.NULL;
+        String sourceValue = jsonObject.get(sourceKey).getAsString();
+        String destinationValue = null;
 
         for (CaptureAndFormatConfiguration captureAndFormatConfiguration : captureAndFormatConfigurations) {
             Matcher matcher = captureAndFormatConfiguration.getPattern().matcher(sourceValue);
@@ -64,7 +65,7 @@ public class JsonRegexCaptorAndFormatter {
             }
         }
 
-        jsonObject.put(destinationKey, destinationValue);
+        jsonObject.addProperty(destinationKey, destinationValue);
         return jsonObject;
     }
 
