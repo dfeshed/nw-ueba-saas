@@ -1,6 +1,7 @@
 package org.apache.flume.interceptor.presidio.conditionalarraypopulator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonObject;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.lang3.Validate;
 import org.apache.flume.Context;
@@ -24,10 +25,9 @@ public class JsonConditionalArrayPopulatorInterceptor extends AbstractPresidioJs
 
     @Override
     public Event doIntercept(Event event) {
-        String body = new String(event.getBody());
-        JSONObject jsonObject = new JSONObject(body);
+        JsonObject jsonObject = getJsonObject(event);
         jsonObject = conditionalArrayPopulator.checkAndPopulateArray(jsonObject);
-        event.setBody(jsonObject.toString().getBytes());
+        setJsonObject(event, jsonObject);
         return event;
     }
 

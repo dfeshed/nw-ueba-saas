@@ -10,7 +10,7 @@ import fortscale.domain.core.AbstractDocument;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
 import org.apache.flume.FlumeException;
-import org.apache.flume.event.EventBuilder;
+import org.apache.flume.event.JsonEventBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -125,7 +125,7 @@ public abstract class AbstractStreamablePresidioSource extends AbstractPresidioS
 
             final String eventAsString;
             eventAsString = mapper.writeValueAsString(event);
-            final Event flumeEvent = EventBuilder.withBody(eventAsString, Charset.defaultCharset());
+            final Event flumeEvent = JsonEventBuilder.withBody(eventAsString, Charset.defaultCharset());
             logger.trace("{} has finished processing event {}. Sending event to channel", getName(), flumeEvent);
             getChannelProcessor().processEvent(flumeEvent); // Store the Event into this Source's associated Channel(s)
         } catch (JsonProcessingException e) {

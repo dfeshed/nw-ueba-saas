@@ -28,10 +28,8 @@ public class JsonArrayToElementInterceptor extends AbstractPresidioJsonIntercept
 
     @Override
     public Event doIntercept(Event event) {
-        final String eventBodyAsString = new String(event.getBody());
 
-        JsonObject eventBodyAsJson;
-        eventBodyAsJson = new JsonParser().parse(eventBodyAsString).getAsJsonObject();
+        JsonObject eventBodyAsJson = getJsonObject(event);
         JsonElement jsonElement = eventBodyAsJson.get(originField);
         if (eventBodyAsJson.has(originField)) {
             if (jsonElement != null && !jsonElement.isJsonNull() && jsonElement.isJsonArray() && jsonElement.getAsJsonArray().size() > index) {
@@ -40,7 +38,7 @@ public class JsonArrayToElementInterceptor extends AbstractPresidioJsonIntercept
             }
         }
 
-        event.setBody(eventBodyAsJson.toString().getBytes());
+        setJsonObject(event, eventBodyAsJson);
         return event;
     }
 

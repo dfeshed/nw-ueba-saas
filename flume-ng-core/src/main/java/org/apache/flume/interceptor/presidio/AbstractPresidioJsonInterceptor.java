@@ -1,6 +1,8 @@
 package org.apache.flume.interceptor.presidio;
 
 import com.google.common.collect.Lists;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.flume.CommonStrings;
 import org.apache.flume.Event;
@@ -8,6 +10,7 @@ import org.apache.flume.FlumePresidioExternalMonitoringService;
 import org.apache.flume.FlumePresidioExternalMonitoringService.FlumeComponentType;
 import org.apache.flume.conf.ConfigurationException;
 import org.apache.flume.conf.MonitorDetails;
+import org.apache.flume.event.JsonObjectEvent;
 import org.apache.flume.interceptor.Interceptor;
 import org.apache.flume.marker.MonitorUses;
 import org.slf4j.Logger;
@@ -82,6 +85,24 @@ public abstract class AbstractPresidioJsonInterceptor implements Interceptor, Mo
     @Override
     public void close() {
 
+    }
+
+    protected JsonObject getJsonObject(Event event) {
+        if (event instanceof JsonObjectEvent) {
+            return ((JsonObjectEvent) event).getEventBodyAsJson();
+        }
+
+        final String eventBodyAsString = new String(event.getBody());
+        JsonObject eventBodyAsJson = new JsonParser().parse(eventBodyAsString).getAsJsonObject();
+        return eventBodyAsJson;
+    }
+
+    protected void setJsonObject(Event event, JsonObject eventBodyAsJson) {
+        if (event instanceof JsonObjectEvent) {
+            return;
+        }
+
+        event.setBody(eventBodyAsJson.toString().getBytes());
     }
 
     public String getApplicationName() {
