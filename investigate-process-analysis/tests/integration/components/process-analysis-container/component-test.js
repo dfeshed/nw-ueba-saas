@@ -17,6 +17,6 @@ module('Integration | Component | process-analysis-container', function(hooks) {
 
   test('process-analysis/container renders', async function(assert) {
     await render(hbs`{{process-analysis-container}}`);
-    assert.equal(findAll('.process-list-box').length, 3, '3 columns present');
+    assert.equal(findAll('.process-list-box').length, 2, '2 columns present');
   });
 });

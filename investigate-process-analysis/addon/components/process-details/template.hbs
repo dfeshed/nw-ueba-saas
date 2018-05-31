@@ -1,0 +1,11 @@
+ <div class="rsa-nav-tab-group">
+    {{#each tabs as |tab|}}
+      {{#rsa-nav-tab align='left' isActive=tab.isActive click=(action 'activate' tab)}}
+        <div class="label">
+          {{tab.label}}
+          <span class="icon">{{rsa-icon name='expand-6'}}</span>
+        </div>
+      {{/rsa-nav-tab}}
+    {{/each}}
+  </div>
+  {{component tabComponent}}

@@ -4,13 +4,13 @@ import { render, findAll, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import Immutable from 'seamless-immutable';
-import ReduxDataHelper from '../../../helpers/redux-data-helper';
-import { patchReducer } from '../../../helpers/vnext-patch';
+import ReduxDataHelper from '../../../../helpers/redux-data-helper';
+import { patchReducer } from '../../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 let setState;
 
-module('Integration | Component | process-property-panel', function(hooks) {
+module('Integration | Component | process-details/process-property-panel', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-process-analysis')
   });
@@ -23,30 +23,6 @@ module('Integration | Component | process-property-panel', function(hooks) {
     this.owner.inject('component', 'i18n', 'service:i18n');
   });
 
-  const defaultConfig = [
-    {
-      sectionName: 'File.General',
-      fields: [
-        {
-          field: 'firstFileName'
-        },
-        {
-          field: 'entropy'
-        },
-        {
-          field: 'size',
-          format: 'SIZE'
-        },
-        {
-          field: 'format'
-        },
-        {
-          field: 'checksumSha256'
-        }
-      ]
-    }
-  ];
-
   const processProperties = [
     {
       firstFileName: 'services.exe',
@@ -54,26 +30,26 @@ module('Integration | Component | process-property-panel', function(hooks) {
       checksumSha256: 'xyz'
     }
   ];
+  const queryInput = {
+    osType: 'windows'
+  };
 
   test('Process property panel renders', async function(assert) {
-    new ReduxDataHelper(setState).processProperties(processProperties).build();
-    this.set('defaultConfig', defaultConfig);
-    this.set('data', processProperties[0]);
+    new ReduxDataHelper(setState)
+    .processProperties(processProperties)
+    .queryInput(queryInput)
+    .build();
+
     this.set('currentConfig', { name: 'File.General', isExpanded: false });
-    await render(hbs`{{process-property-panel
-      title=(t 'investigateProcessAnalysis.property.title')
-      data=data
-      config=defaultConfig
-      localeNameSpace='investigateProcessAnalysis.property.file'
-      currentConfig=currentConfig}}`);
-    assert.equal(findAll('.content-section__property').length, 0, 'Expected to render 0 file properties when hidden');
+    await render(hbs`{{process-details/process-property-panel currentConfig=currentConfig}}`);
+    assert.equal(findAll('.content-section__property').length, 6, 'Expected to render 6 file properties when hidden');
     await click('.content-section__section-name');
-    assert.equal(findAll('.content-section__property').length, 5, 'Expected to render 5 file properties when shown');
+    assert.equal(findAll('.content-section__property').length, 10, 'Expected to render 10 file properties when shown');
   });
 
   test('it renders the title for property panel', async function(assert) {
     this.set('title', 'Test Panel');
-    await render(hbs`{{process-property-panel  title=title}}`);
+    await render(hbs`{{process-details/process-property-panel  title=title}}`);
     assert.equal(this.element.querySelector('.header-section .header-section__title h2').textContent.trim(), 'Test Panel');
   });
 

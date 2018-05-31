@@ -22,7 +22,7 @@ module('Integration | Component | process-property-panel/property-name', functio
       displayName: 'SIZE'
     };
     this.set('field', field);
-    await render(hbs`{{process-property-panel/property-name property=field}}`);
+    await render(hbs`{{process-details/process-property-panel/property-name property=field}}`);
     assert.equal(this.element.querySelectorAll('.property-name').length, 1, 'Should display name');
   });
 });

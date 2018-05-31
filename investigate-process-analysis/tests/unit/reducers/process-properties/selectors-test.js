@@ -55,7 +55,7 @@ module('Unit | Selectors | process-properties', function() {
   });
 
   test('hasProperties returns the hash of the root node', function(assert) {
-    const state = Immutable.from({
+    const state1 = Immutable.from({
       processAnalysis: {
         processProperties: {
           hostDetails: [
@@ -65,8 +65,19 @@ module('Unit | Selectors | process-properties', function() {
       }
     });
 
-    const data = hasProperties(state);
-    assert.equal(data, true);
+    const state2 = Immutable.from({
+      processAnalysis: {
+        processProperties: {
+          hostDetails: []
+        }
+      }
+    });
+
+    const test1 = hasProperties(state1);
+    const test2 = hasProperties(state2);
+
+    assert.equal(test1, true);
+    assert.equal(test2, false);
   });
 
 

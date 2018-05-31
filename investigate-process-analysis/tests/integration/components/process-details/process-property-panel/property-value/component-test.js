@@ -22,7 +22,7 @@ module('Integration | Component | process-property-panel/property-value', functi
       displayName: 'SIZE'
     };
     this.set('field', field);
-    await render(hbs`{{process-property-panel/property-value property=field}}`);
+    await render(hbs`{{process-details/process-property-panel/property-value property=field}}`);
     assert.equal(this.element.querySelector('.rsa-content-memsize .units').textContent.trim(), 'bytes', 'Should display size');
   });
 
@@ -33,7 +33,7 @@ module('Integration | Component | process-property-panel/property-value', functi
       displayName: 'TIMESTAMP'
     };
     this.set('field', field);
-    await render(hbs`{{process-property-panel/property-value property=field}}`);
+    await render(hbs`{{process-details/process-property-panel/property-value property=field}}`);
     assert.equal(this.element.querySelectorAll('.rsa-content-datetime').length, 1, 'Should display timestamp');
   });
 });

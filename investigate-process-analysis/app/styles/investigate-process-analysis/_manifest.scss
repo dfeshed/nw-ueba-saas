@@ -1,6 +1,8 @@
 @import "process-analysis-container";
 @import "process-tree";
 @import "process-tree-legend";
+@import "process-property-panel";
+@import "process-details";
 
 .process-analysis {
   .rsa-application-header{
@@ -12,3 +14,19 @@
     cursor: pointer;
   }
 }
+.rsa-nav-tab {
+  .label {
+    cursor: pointer;
+    .icon {
+      display: none;
+    }
+  }
+  &.is-active {
+    .label {
+      .icon {
+        display: inline;
+      }
+    }
+  }
+}
+

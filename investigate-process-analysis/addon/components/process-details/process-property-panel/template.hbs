@@ -11,8 +11,8 @@
     {{#if property.isExpanded}}
       {{#each property.fields as |field|}}
         <hbox fit class="content-section__property col-xs-12" align="center">
-          {{process-property-panel/property-name property=field}}
-          {{process-property-panel/property-value property=field}}
+          {{process-details/process-property-panel/property-name property=field}}
+          {{process-details/process-property-panel/property-value property=field}}
         </hbox>
       {{/each}}
     {{/if}}

@@ -4,11 +4,15 @@ import layout from './template';
 import computed from 'ember-computed-decorators';
 import { set, get } from '@ember/object';
 import {
-  hasProperties
+  hasProperties,
+  processProperties,
+  propertyConfig
  } from 'investigate-process-analysis/reducers/process-properties/selectors';
 
 const stateToComputed = (state) => ({
-  hasProperties: hasProperties(state)
+  hasProperties: hasProperties(state),
+  propertyDetails: processProperties(state),
+  config: propertyConfig(state)
 });
 
 const ProcessPropertyPanel = Component.extend({
@@ -16,16 +20,16 @@ const ProcessPropertyPanel = Component.extend({
 
   tagName: 'vbox',
 
-  classNames: ['host-property-panel'],
+  classNames: ['process-property-panel'],
 
   /**
    * Namespace for the locale.
    * @type {string}
-   * @default: 'investigateProcessAnalysis.property'
+   * @default: 'investigateProcessAnalysis.property.file'
    * @requires localeNameSpace
    * @public
    */
-  localeNameSpace: 'investigateProcessAnalysis.property',
+  localeNameSpace: 'investigateProcessAnalysis.property.file',
 
   /**
    * Title of the property panel
@@ -35,14 +39,6 @@ const ProcessPropertyPanel = Component.extend({
    * @public
    */
   title: 'Property Panel',
-
-  /**
-   * Data to display
-   * @type {object}
-   * @requires data
-   * @public
-   */
-  data: { },
 
   /**
    * Required configuration that specifies properties to be displayed.
@@ -80,14 +76,26 @@ const ProcessPropertyPanel = Component.extend({
   currentConfig: {},
 
   /**
+   * Data to display
+   * @type {object}
+   * @requires data
+   * @public
+   */
+  @computed('propertyDetails')
+  data(propertyDetails) {
+    return propertyDetails ? propertyDetails[0] : [];
+  },
+
+  /**
    * Prepares the property array setting the value to the each property reading it from the data.
    * @param data
    * @returns {Array}
    * @public
    */
+
   @computed('data', 'config', 'currentConfig')
   properties(data, config, currentConfig) {
-    if (data && config && currentConfig) {
+    if (data && config) {
       const i18n = this.get('i18n');
       const clonedConfig = [...config];
       this.updateConfig(data, clonedConfig);
@@ -108,7 +116,7 @@ const ProcessPropertyPanel = Component.extend({
         });
 
         set(item, 'fields', fields);
-        if (item.sectionName === currentConfig.name) {
+        if (currentConfig && item.sectionName === currentConfig.name) {
           set(item, 'isExpanded', currentConfig.isExpanded);
         }
         return item;
