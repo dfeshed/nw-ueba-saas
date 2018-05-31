@@ -1,4 +1,6 @@
 .usm-group, .usm-policy {
+  height: calc(100vh - 50px);
+
 
   .form {
     padding-right: rsa-whitespace(more);
@@ -22,6 +24,7 @@
   .control {
     padding-top: rsa-whitespace(more);
     > label {
+      width: 45%;
       margin-bottom: rsa-whitespace(least);
     }
   }

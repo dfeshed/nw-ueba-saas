@@ -24,7 +24,6 @@ test('isFetchingSchedule', function(assert) {
   assert.equal(tests.completed, false, 'isFetchingSchedule should return false when status is completed');
 });
 
-
 test('weekOptions', function(assert) {
   assert.expect(1);
   const schedule = Immutable.from(
@@ -52,7 +51,6 @@ test('weekOptions', function(assert) {
   assert.deepEqual(result[0], expected, 'should add label and isActive');
 });
 
-
 test('runIntervalConfig', function(assert) {
   assert.expect(1);
   const schedule = Immutable.from(
@@ -78,6 +76,7 @@ test('runIntervalConfig', function(assert) {
   };
   assert.deepEqual(result, expected, 'should return the processed run interval configuration');
 });
+
 test('startDate', function(assert) {
   assert.expect(2);
   const schedule = Immutable.from(

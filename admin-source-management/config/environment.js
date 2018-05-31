@@ -20,7 +20,9 @@ module.exports = function(environment/* , appConfig */) {
       includeTimezone: 'subset'
     },
     i18n: {
-      defaultLocale: 'en'
+      defaultLocale: 'en-us',
+      defaultFallback: true,
+      includedLocales: ['en-us']
     }
   };
 };

@@ -6,13 +6,27 @@ import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import Immutable from 'seamless-immutable';
 import { patchReducer } from '../../../helpers/vnext-patch';
+import { patchFlash } from '../../../helpers/patch-flash';
 import { waitForSockets } from '../../../helpers/wait-for-sockets';
-import wait from 'ember-test-helpers/wait';
 
 const initialState = {
   policy: {
     name: '',
-    description: ''
+    description: '',
+    scheduleConfig: {
+      enabledScheduledScan: false,
+      scheduleOptions: {
+        scanStartDate: null,
+        scanStartTime: [10, 0],
+        recurrenceInterval: 5,
+        recurrenceIntervalUnit: 'DAYS',
+        runOnDaysOfWeek: []
+      },
+      scanOptions: {
+        cpuMaximum: 75,
+        cpuMaximumOnVirtualMachine: 85
+      }
+    }
   },
   policyList: [],
   policyStatus: null,
@@ -20,49 +34,63 @@ const initialState = {
 };
 
 const policyData = Immutable.from({
-  'id': 'policy_001',
-  'name': 'Policy 001',
-  'description': 'Policy 001 of policy policy_001'
+  id: 'policy_001',
+  name: 'Policy 001',
+  description: 'Policy 001 of policy policy_001',
+  scheduleConfig: {
+    scheduleOptions: {
+      scanStartTime: [10, 0]
+    }
+  }
 });
 
 let setState;
 
-module('Integration | Component | create-new-container', function(hooks) {
+module('Integration | Component | form-container', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('admin-source-management')
   });
 
   hooks.beforeEach(function() {
+    initialize(this.owner);
     setState = (state) => {
       const fullState = { policy: state };
       patchReducer(this, Immutable.from(fullState));
     };
-    initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
+    this.owner.lookup('service:dateFormat').set('selected', 'MM/dd/yyyy');
+    this.owner.lookup('service:timeFormat').set('selected', 'HR12');
+
   });
 
   test('Save button is disabled when there is no policy name', async function(assert) {
     setState({ ...initialState });
-    await render(hbs`{{create-new-container}}`);
+    await render(hbs`{{form-container}}`);
     assert.equal(findAll('.confirm-button.is-disabled').length, 1, 'The Save button is disabled when there is no policy name');
   });
 
   test('Clicking the save button calls transitionToPolicies', async function(assert) {
-    assert.expect(1);
+    assert.expect(3);
     const done = waitForSockets();
     setState({ ...initialState, policy: policyData });
+
+    patchFlash((flash) => {
+      assert.equal(flash.type, 'success');
+      assert.equal(flash.message.string, 'Saved successfully');
+      done();
+    });
+
     this.set('transitionToPolicies', () => {
       assert.ok('transition to policy called');
     });
-    await render(hbs`{{create-new-container transitionToPolicies=(action transitionToPolicies)}}`);
+    await render(hbs`{{form-container transitionToPolicies=(action transitionToPolicies)}}`);
     const el = findAll('.confirm-button:not(.is-disabled) button')[0]; // eslint-disable-line ember-suave/prefer-destructuring
     await click(el);
-    return wait().then(() => done());
   });
 
   test('A loading spinner is displayed if the policySaveStatus property is "wait"', async function(assert) {
     setState({ ...initialState, policySaveStatus: 'wait' });
-    await render(hbs`{{create-new-container}}`);
+    await render(hbs`{{form-container}}`);
     assert.equal(findAll('.loading-overlay .rsa-loader').length, 1, 'A loading spinner appears');
   });
 });

@@ -28,7 +28,7 @@ Router.map(function() {
   });
 
   this.route('not-found', { path: '/*path' });
-  this.mount('admin');
+  this.mount('admin', { path: 'manage' });
 });
 
 export default Router;

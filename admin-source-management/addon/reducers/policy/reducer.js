@@ -6,7 +6,21 @@ import * as ACTION_TYPES from 'admin-source-management/actions/types';
 const initialState = {
   policy: {
     name: '',
-    description: ''
+    description: '',
+    scheduleConfig: {
+      enabledScheduledScan: false,
+      scheduleOptions: {
+        scanStartDate: null,
+        scanStartTime: '10:00',
+        recurrenceInterval: 5,
+        recurrenceIntervalUnit: 'DAYS',
+        runOnDaysOfWeek: []
+      },
+      scanOptions: {
+        cpuMaximum: 75,
+        cpuMaximumOnVirtualMachine: 85
+      }
+    }
   },
   policyList: [],
   policyStatus: null,
@@ -47,6 +61,8 @@ export default reduxActions.handleActions({
     const fields = field.split('.');
     return state.setIn(fields, value);
   },
+
+  [ACTION_TYPES.UPDATE_POLICY_PROPERTY]: (state, action) => state.merge({ policy: action.payload }, { deep: true }),
 
   [ACTION_TYPES.SAVE_POLICY]: (state, action) => (
     handle(state, action, {

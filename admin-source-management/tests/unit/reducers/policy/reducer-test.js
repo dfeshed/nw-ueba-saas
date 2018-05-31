@@ -10,7 +10,21 @@ module('Unit | Reducers | Policy Reducers');
 const initialState = {
   policy: {
     name: '',
-    description: ''
+    description: '',
+    scheduleConfig: {
+      enabledScheduledScan: false,
+      scheduleOptions: {
+        scanStartDate: null,
+        scanStartTime: '10:00',
+        recurrenceInterval: 5,
+        recurrenceIntervalUnit: 'DAYS',
+        runOnDaysOfWeek: []
+      },
+      scanOptions: {
+        cpuMaximum: 75,
+        cpuMaximumOnVirtualMachine: 85
+      }
+    }
   },
   policyList: [],
   policyStatus: null,
@@ -78,19 +92,44 @@ test('on EDIT_POLICY, name & description are properly set', function(assert) {
   };
   const nameEndState = reducers(Immutable.from(initialState), nameAction);
   assert.deepEqual(nameEndState, nameExpectedEndState, `policy name is ${nameExpected}`);
+});
 
-  // edit description test
-  const descExpected = 'desc 001';
-  const descExpectedEndState = {
-    ...initialState,
-    policy: { ...initialState.policy, description: descExpected }
+test('on UPDATE_POLICY policy is updated', function(assert) {
+  const payload = {
+    scheduleConfig: {
+      scheduleOptions: {
+        recurrenceIntervalUnit: 'WEEKS'
+      }
+    }
   };
-  const descAction = {
-    type: ACTION_TYPES.EDIT_POLICY,
-    payload: { field: 'policy.description', value: descExpected }
+
+  const endState = {
+    policy: {
+      name: '',
+      description: '',
+      scheduleConfig: {
+        enabledScheduledScan: false,
+        scheduleOptions: {
+          scanStartDate: null,
+          scanStartTime: '10:00',
+          recurrenceInterval: 5,
+          recurrenceIntervalUnit: 'WEEKS',
+          runOnDaysOfWeek: []
+        },
+        scanOptions: {
+          cpuMaximum: 75,
+          cpuMaximumOnVirtualMachine: 85
+        }
+      }
+    },
+    policyList: [],
+    policyStatus: null,
+    policySaveStatus: null // wait, complete, error
   };
-  const descEndState = reducers(Immutable.from(initialState), descAction);
-  assert.deepEqual(descEndState, descExpectedEndState, `policy description is ${descExpected}`);
+  const nameAction = { type: ACTION_TYPES.UPDATE_POLICY_PROPERTY, payload };
+
+  const nameEndState = reducers(Immutable.from(initialState), nameAction);
+  assert.deepEqual(nameEndState, endState, 'recurrenceIntervalUnit is updated along with recurrenceInterval');
 });
 
 test('on SAVE_POLICY start, groupSaveStatus is properly set', function(assert) {

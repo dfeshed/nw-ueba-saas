@@ -37,6 +37,43 @@ const editPolicy = (field, value) => {
   };
 };
 
+const updatePolicyProperty = (key, value) => {
+  let payload = {};
+  if (key === 'enabledScheduledScan') {
+    payload = {
+      scheduleConfig: {
+        enabledScheduledScan: value
+      }
+    };
+  } else if (key === 'cpuMaximum' || key === 'cpuMaximumOnVirtualMachine') {
+    payload = {
+      scheduleConfig: {
+        scanOptions: {
+          [key]: value
+        }
+      }
+    };
+  } else if (key === 'recurrenceIntervalUnit') {
+    payload = {
+      scheduleConfig: {
+        scheduleOptions: {
+          recurrenceIntervalUnit: value,
+          recurrenceInterval: 1
+        }
+      }
+    };
+  } else {
+    payload = {
+      scheduleConfig: {
+        scheduleOptions: {
+          [key]: value
+        }
+      }
+    };
+  }
+  return { type: ACTION_TYPES.UPDATE_POLICY_PROPERTY, payload };
+};
+
 const savePolicy = (policy, callbacks = callbacksDefault) => {
   return {
     type: ACTION_TYPES.SAVE_POLICY,
@@ -61,6 +98,7 @@ export {
   initializePolicy,
   fetchPolicyList,
   newPolicy,
+  updatePolicyProperty,
   editPolicy,
   savePolicy
 };

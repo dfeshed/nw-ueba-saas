@@ -1,5 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
+import Notifications from 'component-lib/mixins/notifications';
+
 import {
   isPolicyLoading,
   hasMissingRequiredData,
@@ -10,6 +12,7 @@ import {
   savePolicy,
   editPolicy
 } from 'admin-source-management/actions/data-creators/policy';
+
 
 const stateToComputed = (state) => ({
   policy: currentPolicy(state),
@@ -24,17 +27,24 @@ const dispatchToActions = (dispatch) => ({
     }
   },
   save() {
-    const onSuccess = () => {
-      const transitionToPolicies = this.get('transitionToPolicies');
-      transitionToPolicies();
+    const callBackOptions = {
+      onSuccess: () => {
+        this.send('success', 'adminUsm.policy.scheduleConfiguration.saveSuccess');
+        const transitionToPolicies = this.get('transitionToPolicies');
+        transitionToPolicies();
+      },
+      onFailure: () => {
+        this.send('failure', 'ERROR');
+      }
     };
-    dispatch(savePolicy(this.get('policy'), { onSuccess }));
+    dispatch(savePolicy(this.get('policy'), callBackOptions));
   }
 });
 
-const UsmPolicy = Component.extend({
+const UsmPolicy = Component.extend(Notifications, {
   tagName: 'hbox',
-  classNames: ['usm-policy', 'flexi-fit'],
+
+  classNames: ['usm-policy scroll-box'],
 
   actions: {
     handleNameChange(value) {

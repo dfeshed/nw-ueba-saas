@@ -14,7 +14,6 @@ export default Route.extend({
   dateFormat: service(),
   timeFormat: service(),
   timezone: service(),
-  i18n: service(),
 
   model() {
 

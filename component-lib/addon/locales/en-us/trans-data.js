@@ -2852,13 +2852,13 @@ export default {
         MONTHS: 'month(s)'
       },
       week: {
-        monday: 'M',
-        tuesday: 'T',
-        wednesday: 'W',
-        thursday: 'T',
-        friday: 'F',
-        saturday: 'S',
-        sunday: 'S'
+        MONDAY: 'M',
+        TUESDAY: 'T',
+        WEDNESDAY: 'W',
+        THURSDAY: 'T',
+        FRIDAY: 'F',
+        SATURDAY: 'S',
+        SUNDAY: 'S'
       }
     },
     startTime: 'Start Time',
@@ -3072,7 +3072,47 @@ export default {
       name: 'Policy Name',
       namePlaceholder: 'Enter a unique policy name',
       description: 'Policy Description',
-      descPlaceholder: 'Enter a description'
+      descPlaceholder: 'Enter a description',
+      scheduleConfiguration: {
+        title: 'Scan Schedule',
+        save: 'Save',
+        enable: 'Enable',
+        saveSuccess: 'Saved successfully',
+        startDate: 'Start Date',
+        recurrenceInterval: {
+          title: 'Recurrence Interval',
+          options: {
+            daily: 'Daily',
+            weekly: 'Weekly',
+            monthly: 'Monthly'
+          },
+          every: 'Every',
+          on: 'On',
+          intervalText: {
+            DAYS: 'day(s)',
+            WEEKS: 'week(s)',
+            MONTHS: 'month(s)'
+          },
+          week: {
+            MONDAY: 'M',
+            TUESDAY: 'T',
+            WEDNESDAY: 'W',
+            THURSDAY: 'T',
+            FRIDAY: 'F',
+            SATURDAY: 'S',
+            SUNDAY: 'S'
+          }
+        },
+        startTime: 'Start Time',
+        cpuThrottling: {
+          title: 'Agent CPU Throttling',
+          cpuMax: 'CPU Maximum ( % )',
+          vmMax: 'Virtual Machine Maximum ( % ) '
+        },
+        error: {
+          generic: 'An unexpected error has occurred attempting to retrieve this data.'
+        }
+      }
     }
   },
   // end admin-source-management (a.k.a USM)

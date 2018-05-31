@@ -1,11 +1,17 @@
 import { module, test } from 'qunit';
 import Immutable from 'seamless-immutable';
 import cloneDeep from 'lodash';
+import moment from 'moment';
+
 import {
   isPolicyListLoading,
   isPolicyLoading,
   currentPolicy,
-  hasMissingRequiredData
+  hasMissingRequiredData,
+  weekOptions,
+  startDate,
+  startTime,
+  runIntervalConfig
 } from 'admin-source-management/reducers/policy/selector';
 
 module('Unit | Selectors | Policy Selectors');
@@ -13,8 +19,22 @@ module('Unit | Selectors | Policy Selectors');
 const fullState = {
   policy: {
     policy: {
-      id: null,
-      name: null
+      name: '',
+      description: '',
+      scheduleConfig: {
+        enabledScheduledScan: false,
+        scheduleOptions: {
+          scanStartDate: null,
+          scanStartTime: [10, 0],
+          recurrenceInterval: 5,
+          recurrenceIntervalUnit: 'DAYS',
+          runOnDaysOfWeek: []
+        },
+        scanOptions: {
+          cpuMaximum: 75,
+          cpuMaximumOnVirtualMachine: 85
+        }
+      }
     },
     policyList: [],
     policyStatus: null,
@@ -65,4 +85,83 @@ test('isPolicyListLoading selector', function(assert) {
 
   state.policy.policyStatus = 'complete';
   assert.equal(isPolicyListLoading(Immutable.from(state)), false, 'isPolicyListLoading should return false when status is completed');
+});
+
+test('startDate', function(assert) {
+  assert.expect(2);
+  const result = startDate(fullState);
+  assert.deepEqual(result, 'today', 'should return today if start date is empty');
+  const state2 = {
+    policy: {
+      policy: {
+        scheduleConfig: {
+          scheduleOptions: {
+            scanStartDate: '01/10/2018'
+          }
+        }
+      }
+    }
+  };
+  const result2 = startDate(state2);
+  assert.deepEqual(result2, moment('01/10/2018').toISOString(), 'should return iso format date');
+});
+
+test('startTime', function(assert) {
+  const state = {
+    policy: {
+      policy: {
+        scheduleConfig: {
+          scheduleOptions: {
+            scanStartTime: '10:45'
+          }
+        }
+      }
+    }
+  };
+  const result2 = startTime(state);
+  assert.deepEqual(result2, '10:45', 'should return time');
+});
+
+test('weekOptions', function(assert) {
+  assert.expect(1);
+  const state = {
+    policy: {
+      policy: {
+        scheduleConfig: {
+          scheduleOptions: {
+            recurrenceIntervalUnit: 'WEEKS',
+            runOnDaysOfWeek: ['SUNDAY']
+          }
+        }
+      }
+    }
+  };
+  const result = weekOptions(state);
+  const expected = {
+    'week': 'SUNDAY',
+    'isActive': true,
+    'label': 'adminUsm.policy.scheduleConfiguration.recurrenceInterval.week.SUNDAY'
+  };
+  assert.deepEqual(result[0], expected, 'should add label and isActive');
+});
+
+test('runIntervalConfig', function(assert) {
+  assert.expect(1);
+  const state = {
+    policy: {
+      policy: {
+        scheduleConfig: {
+          scheduleOptions: {
+            recurrenceIntervalUnit: 'WEEKS'
+          }
+        }
+      }
+    }
+  };
+  const result = runIntervalConfig(state);
+  const expected = {
+    'options': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
+    'runLabel': 'adminUsm.policy.scheduleConfiguration.recurrenceInterval.intervalText.WEEKS'
+  };
+  assert.deepEqual(result, expected, 'should return the processed run interval configuration');
 });

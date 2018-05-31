@@ -35,14 +35,15 @@ export default class DataHelper {
     return state.asMutable();
   }
 
-  // somethingInState(something) {
-  //   _set(this.state, 'usm.something', something);
-  //   return this;
-  // }
+  policy(config) {
+    _set(this.state, 'policy', config);
+    return this;
+  }
 
-  // groupsStatus(status) {
-  //   _set(this.state, 'usm.groupsStatus', status);
-  //   return this;
-  // }
+  fetchPolicyStatus(status) {
+    _set(this.state, 'policy.policyStatus', status);
+    return this;
+  }
+
 
 }
