@@ -77,7 +77,7 @@ $header-height: 40px;
       position: absolute;
       right: rsa-whitespace();
       label {
-        overflow: visible;
+        max-width: 125px;
       }
     }
   }

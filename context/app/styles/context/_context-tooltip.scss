@@ -69,6 +69,7 @@ $contextTooltipDatumPadding: 0px;
     padding: rsa-whitespace(least) 0;
     color: text-color(primary, lighter);
     cursor: pointer;
+    max-width: 190px;
 
     .icon {
       padding-right: rsa-whitespace(less);

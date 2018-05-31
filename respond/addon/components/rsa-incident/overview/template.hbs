@@ -1,7 +1,7 @@
 {{#if (eq infoStatus 'completed')}}
 {{! Created time}}
   <p class="created">
-    <label>{{t 'respond.incident.created'}}:</label>
+    <label title="{{t 'respond.incident.created'}}">{{t 'respond.incident.created'}}:</label>
     <span>
       {{rsa-content-datetime
         timestamp=info.created
@@ -19,13 +19,13 @@
   </p>
 
   <p class="score">
-    <label>{{t 'respond.incident.riskScore'}}</label>
+    <label title="{{t 'respond.incident.riskScore'}}">{{t 'respond.incident.riskScore'}}:</label>
     <span>{{info.riskScore}}</span>
   </p>
 
   {{! Priority}}
   <p class="priority">
-    <label>{{t 'respond.incident.priority'}}:</label>
+    <label title="{{t 'respond.incident.priority'}}">{{t 'respond.incident.priority'}}:</label>
     {{#if accessControl.respondCanManageIncidents}}
       <div class="edit-button">
         {{#power-select
@@ -48,7 +48,7 @@
 
   {{! Status}}
   <p class="status">
-    <label>{{t 'respond.incident.status'}}:</label>
+    <label title="{{t 'respond.incident.status'}}">{{t 'respond.incident.status'}}:</label>
     {{#if accessControl.respondCanManageIncidents}}
       <div class="edit-button">
         {{#power-select
@@ -69,7 +69,7 @@
 
   {{! Assignee}}
   <p class="assignee">
-    <label>{{t 'respond.incident.assignee'}}:</label>
+    <label title="{{t 'respond.incident.assignee'}}">{{t 'respond.incident.assignee'}}:</label>
     {{#if accessControl.respondCanManageIncidents}}
       <div class="edit-button">
         {{#power-select
@@ -96,7 +96,7 @@
 
   {{! Sources ("Event Stream Analysis", "ECAT", etc)}}
   <p class="sources">
-    <label>{{t 'respond.incident.sources'}}:</label>
+    <label title="{{t 'respond.incident.sources'}}">{{t 'respond.incident.sources'}}:</label>
     <span>
       {{#each info.sources as |source|}}
         <span class="source">{{t (concat 'respond.alert.source.' source)}}</span>
@@ -106,7 +106,7 @@
 
   {{! Categories ("Malware", "C2", etc)}}
   <p class="categories">
-    <label>{{t 'respond.incident.categories'}}:</label>
+    <label title="{{t 'respond.incident.categories'}}">{{t 'respond.incident.categories'}}:</label>
     <span>
       {{#each info.categories as |category|}}
         <span class="category">
@@ -120,7 +120,7 @@
 
   {{! Alert count}}
   <p class="catalyst-count">
-    <label>{{t 'respond.incident.catalystCount'}}:</label>
+    <label title="{{t 'respond.incident.catalystCount'}}">{{t 'respond.incident.catalystCount'}}:</label>
     <span>
       {{info.alertCount}} {{t 'respond.incident.alertCount'}}, {{info.eventCount}} {{t 'respond.incident.eventCount'}}
     </span>
