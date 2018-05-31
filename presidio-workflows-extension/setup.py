@@ -50,7 +50,7 @@ def get_build_number():
 
 
 setup(name='presidio-workflows-extension',
-      version='1.0' + get_build_number(),
+      version='1.0' ,
       description='Industry\'s First Embedded User and Entity Behavioral Analytics Engine. - python packages',
       long_description=readme(),
       classifiers=[
