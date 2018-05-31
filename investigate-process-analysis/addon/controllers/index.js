@@ -9,6 +9,7 @@ export default Controller.extend({
     'et', // end time
     'sid',
     'osType', // metaPanelSize
-    'vid' // Process identification
+    'vid', // Process identification
+    'hn' // Host name
   ]
 });

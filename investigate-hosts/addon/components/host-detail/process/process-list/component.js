@@ -3,7 +3,7 @@ import { connect } from 'ember-redux';
 import { processList } from 'investigate-hosts/reducers/details/process/selectors';
 import { getProcessDetails, sortBy } from 'investigate-hosts/actions/data-creators/process';
 import { serviceList } from 'investigate-hosts/reducers/hosts/selectors';
-import { machineOsType } from 'investigate-hosts/reducers/details/overview/selectors';
+import { machineOsType, hostName } from 'investigate-hosts/reducers/details/overview/selectors';
 
 const dispatchToActions = {
   getProcessDetails,
@@ -17,7 +17,8 @@ const stateToComputed = (state) => ({
   isProcessTreeLoading: state.endpoint.process.isProcessTreeLoading,
   serviceList: serviceList(state),
   agentId: state.endpoint.detailsInput.agentId,
-  osType: machineOsType(state)
+  osType: machineOsType(state),
+  hostName: hostName(state)
 });
 
 const ListComponent = Component.extend({

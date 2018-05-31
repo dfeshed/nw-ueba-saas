@@ -27,6 +27,8 @@ const PivotToPA = Component.extend({
 
   osType: null,
 
+  hostName: null,
+
   /**
    * context menu config for process analysis
    * @public
@@ -56,12 +58,12 @@ const PivotToPA = Component.extend({
      */
     navigateToProcessAnalysis(serviceId) {
       const { zoneId } = this.get('timezone.selected');
-      const { item, agentId, osType } = this.getProperties('item', 'agentId', 'osType');
+      const { item, agentId, osType, hostName } = this.getProperties('item', 'agentId', 'osType', 'hostName');
       const { name, checksumSha256, vpid } = item;
       const timeRange = buildTimeRange(1, 'days', zoneId);
       const timeStr = `st=${timeRange.startTime.unix()}&et=${timeRange.endTime.unix()}`;
       const osTypeParam = `osType=${osType}&vid=${vpid}`;
-      const queryParams = `checksum=${checksumSha256}&sid=${serviceId}&aid=${agentId}&pn=${name}&${timeStr}&${osTypeParam}`;
+      const queryParams = `checksum=${checksumSha256}&sid=${serviceId}&aid=${agentId}&hn=${hostName}&pn=${name}&${timeStr}&${osTypeParam}`;
 
       window.open(`${window.location.origin}/investigate/process-analysis?${queryParams}`, '_blank', 'width=1440,height=900');
       this._closeModal();

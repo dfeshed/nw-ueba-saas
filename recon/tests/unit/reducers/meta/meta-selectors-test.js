@@ -240,13 +240,14 @@ test('processAnalysisQueryString  test', function(assert) {
           ['checksum.src', 'test-checksum'],
           ['agent.id', 'abcd'],
           ['filename.src', 'testfile'],
-          ['vid.src', 1]
+          ['vid.src', 1],
+          ['alias.host', 'TestHostName']
         ]
       }
     }
   };
   const result = processAnalysisQueryString(Immutable.from(data));
-  assert.equal(result, 'checksum=test-checksum&sid=123456&aid=abcd&pn=testfile&st=10&et=12&osType=windows&vid=1', 'should return valid queryString');
+  assert.equal(result, 'checksum=test-checksum&sid=123456&aid=abcd&hn=TestHostName&pn=testfile&st=10&et=12&osType=windows&vid=1', 'should return valid queryString');
 });
 
 test('isProcessAnalysisDisabled test', function(assert) {

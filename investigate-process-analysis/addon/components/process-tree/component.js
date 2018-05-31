@@ -7,6 +7,7 @@ import { select, event, selectAll } from 'd3-selection';
 import { zoom } from 'd3-zoom';
 import { tree, hierarchy } from 'd3-hierarchy';
 import { transitionElbow, elbow, appendText, updateText, appendIcon } from './helpers/d3-helpers';
+import { ieEdgeDetection } from 'component-lib/utils/browser-detection';
 
 import {
   isStreaming,
@@ -107,14 +108,6 @@ const TreeComponent = Component.extend({
   expandIcon: '\ue904', // Unicode
 
   rootNode: null,
-
-  _ieEdgeDetection() {
-    // Internet Explorer
-    const isIE = false || !!document.documentMode;
-    // Edge
-    const isEdge = !isIE && !!window.StyleMedia;
-    return isIE || isEdge;
-  },
 
   @computed('nodeSize', 'nodeSeparation')
   treeInstance(nodeSize, nodeSeparation) {
@@ -304,9 +297,9 @@ const TreeComponent = Component.extend({
       .attr('cursor', 'pointer')
       .attr('r', '2rem');
 
-    if (this._ieEdgeDetection()) { // icon is positioned according to the browser
+    if (ieEdgeDetection()) { // icon is positioned according to the browser
       nodeUpdate.select('text.process-icon')
-        .attr('dy', '.5em');
+        .attr('dy', '.4em');
     }
 
     updateText({ className: 'process-name', node: nodeUpdate, dx: 0, dy: '3em', opacity: 1 });
@@ -368,7 +361,8 @@ const TreeComponent = Component.extend({
     return dataTree;
   },
 
-  _documentTitle(hostName, processName) {
+  _documentTitle(processName) {
+    const { hn: hostName } = this.get('queryInput');
     return hostName ? `${hostName} - ${processName}` : `${processName}`;
   },
 
@@ -400,7 +394,8 @@ const TreeComponent = Component.extend({
           return;
         }
         this.set('rootNode', root);
-        document.title = this._documentTitle(root.data['alias.host'], pn);
+
+        document.title = this._documentTitle(pn);
         this._initializeChart();
       };
       this.send('getParentAndChildEvents', this.get('selectedProcess'), { onComplete });
@@ -494,7 +489,7 @@ const TreeComponent = Component.extend({
     this.send('fetchProcessDetails', { hashes });
     this.send('setSelectedProcess', d.data.processId);
     this.addSelectedClass(d.data.processId);
-    document.title = this._documentTitle(d.data['alias.host'], d.data.processName);
+    document.title = this._documentTitle(d.data.processName);
   },
 
   addSelectedClass(id) {

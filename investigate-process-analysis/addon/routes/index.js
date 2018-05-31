@@ -14,7 +14,8 @@ export default Route.extend({
     st: { refreshModel: true },  // start time
     et: { replace: true },      // end time
     sid: { replace: true },       // service id
-    vid: { replace: true }        // process identification
+    vid: { replace: true },        // process identification
+    hn: { refreshModel: true }   // host name
   },
 
   model(params) {

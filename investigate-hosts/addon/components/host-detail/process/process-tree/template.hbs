@@ -18,7 +18,7 @@
       as |item index column|}}
       {{#if column.componentClass}}
         {{#rsa-data-table/body-cell item=item column=column}}
-          {{#host-detail/process/pivot-to-process-analysis serviceList=serviceList agentId=agentId osType=osType contextSelection=item}}
+          {{#host-detail/process/pivot-to-process-analysis serviceList=serviceList agentId=agentId osType=osType hostName=hostName contextSelection=item}}
             {{host-detail/process/process-tree/process-name
               serviceList=serviceList
               agentId=agentId

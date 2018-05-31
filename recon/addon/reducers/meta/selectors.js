@@ -121,8 +121,9 @@ export const processAnalysisQueryString = createSelector(
     const fileName = getMetaValue('filename.src', eventMeta);
     const { serviceId } = queryNode;
     const osTypeParam = `osType=${osType}&vid=${vpid}`;
+    const hostName = getMetaValue('alias.host', eventMeta);
 
-    const queryParams = `checksum=${checksumSha256}&sid=${serviceId}&aid=${agentId}&pn=${fileName}&${timeStr}&${osTypeParam}`;
+    const queryParams = `checksum=${checksumSha256}&sid=${serviceId}&aid=${agentId}&hn=${hostName}&pn=${fileName}&${timeStr}&${osTypeParam}`;
     return queryParams;
   }
 );
