@@ -5,6 +5,8 @@
         <span class='label'>{{t (get-label 'investigateHosts.context' key)}}:</span>
         {{#if (or (eq key 'timestamp')(eq key 'created'))}}
           <span>{{parse-timestamp value timezone dateFormat timeFormat i18n.locale}}</span>
+        {{else if (or (eq key 'incident')(eq key '_id'))}}
+          {{endpoint/risk-panel/respond-link entryId=value}}
         {{else}}
           <span>{{value}}</span>
         {{/if}}
