@@ -9,15 +9,13 @@ echo "creating virtualenv at: $BUILD_VENV"
 python -m virtualenv $BUILD_VENV
 source $BUILD_VENV/bin/activate
 
-pip install setuptools>=38 --verbose
 echo "building presidio_extension"
 cd ../../presidio-workflows-extension/
-python setup.py bdist_egg --verbose --dist-dir $BUILD_OUTPUT
+python setup.py bdist_egg --dist-dir $BUILD_OUTPUT
 echo "finished building presidio_extension"
 
 echo "building presidio-workflows"
 cd ../presidio-workflows/
-python setup.py bdist_egg --verbose --dist-dir $BUILD_OUTPUT
+python setup.py bdist_egg --dist-dir $BUILD_OUTPUT
 echo "finished building presidio-workflows"
-deactivate
 
