@@ -208,6 +208,17 @@ export const getPropertyData = createSelector(
       return {
         ...hostDetails, scheduleConfig
       };
+    } else {
+      const scheduleConfig = {
+        enabled: '',
+        scanInterval: '',
+        startTime: '',
+        scheduleStartDate: '',
+        scanOptions: ''
+      };
+      return {
+        ...hostDetails, scheduleConfig
+      };
     }
   }
 );
