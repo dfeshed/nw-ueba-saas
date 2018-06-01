@@ -2,11 +2,11 @@
   {{#each-in entry as |key value|}}
     {{#unless (eq key 'name')}}
       <hbox class='risk-properties-panel__entry__field'>
-        <span class='label'>{{t (get-label 'investigateHosts.context' key)}}:</span>
+        <span class='entry-label'>{{t (get-label 'investigateHosts.context' key)}}</span>
         {{#if (or (eq key 'timestamp')(eq key 'created'))}}
-          <span>{{parse-timestamp value timezone dateFormat timeFormat i18n.locale}}</span>
+          <span class="entry-value">{{parse-timestamp value timezone dateFormat timeFormat i18n.locale}}</span>
         {{else if (or (eq key 'incident')(eq key '_id'))}}
-          {{endpoint/risk-panel/respond-link entryId=value}}
+          <span>{{endpoint/risk-panel/respond-link entryId=value}}</span>
         {{else}}
           <span>{{value}}</span>
         {{/if}}

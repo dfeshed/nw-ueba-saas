@@ -4,7 +4,7 @@
   position: relative;
   padding: 0 rsa-whitespace(less);
   &__title {
-    margin-top: rsa-whitespace();
+    margin-top: rsa-whitespace(least);
     h3 {
       color: text-color(secondary);
       font-weight: bold;
@@ -16,16 +16,22 @@
     margin-left: rsa-whitespace();
     &__field {
       span {
-        padding: rsa-whitespace(least);
-        font-size: 0.85rem;
+        padding: rsa-whitespace(least) 0;
       }
-      .label {
-        width: 55px;
+      .entry-label {
+        font-size: 0.85rem;
+        width: 65px;
+        text-align: right;
+        padding-right: rsa-whitespace();
+        color: text-color(primary, light);
+      }
+      .entry-value {
+        font-size: 1rem;
       }
     }
   }
 
   .respond-link {
-    font-size: .85rem;
+    font-size: 1rem;
   }
 }
