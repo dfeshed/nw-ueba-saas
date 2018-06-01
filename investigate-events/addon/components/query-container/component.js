@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { hasRequiredValuesToQuery, guidedHasFocus, freeFormHasFocus } from 'investigate-events/reducers/investigate/query-node/selectors';
 import computed from 'ember-computed-decorators';
-import { setQueryView } from 'investigate-events/actions/interaction-creators';
+import { setQueryView, setQueryTimeRange, setService } from 'investigate-events/actions/interaction-creators';
 import { run } from '@ember/runloop';
 import { encodeMetaFilterConditions } from 'investigate-shared/actions/api/events/utils';
 import { transformTextToFilters, filterIsPresent } from 'investigate-events/actions/utils';
@@ -33,11 +33,17 @@ const stateToComputed = (state) => ({
   hasRequiredValuesToQuery: hasRequiredValuesToQuery(state),
   guidedHasFocus: guidedHasFocus(state),
   freeFormHasFocus: freeFormHasFocus(state),
-  queryView: state.investigate.queryNode.queryView
+  queryView: state.investigate.queryNode.queryView,
+  startTime: state.investigate.queryNode.startTime,
+  endTime: state.investigate.queryNode.endTime,
+  services: state.investigate.services,
+  serviceId: state.investigate.queryNode.serviceId
 });
 
 const dispatchToActions = {
-  setQueryView
+  setQueryView,
+  setQueryTimeRange,
+  setService
 };
 
 const QueryContainer = Component.extend({

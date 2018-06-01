@@ -1,35 +1,70 @@
 import Component from '@ember/component';
 import computed, { or } from 'ember-computed-decorators';
-import { connect } from 'ember-redux';
 import {
   isCoreServiceNotUpdated,
   isSummaryDataInvalid,
   getServiceDisplayName,
   hasSummaryData
-} from 'investigate-events/reducers/investigate/services/selectors';
-import { setService } from 'investigate-events/actions/interaction-creators';
+} from 'investigate-shared/selectors/services/selectors';
+
 import { lookup } from 'ember-dependency-lookup';
+
 import { inject as service } from '@ember/service';
 
-const dispatchToActions = { setService };
-
-const stateToComputed = (state) => ({
-  isCoreServiceNotUpdated: isCoreServiceNotUpdated(state, lookup('service:appVersion')),
-  isSummaryDataInvalid: isSummaryDataInvalid(state),
-  serviceDisplayName: getServiceDisplayName(state),
-  isServicesLoading: state.investigate.services.isServicesLoading,
-  isServicesRetrieveError: state.investigate.services.isServicesRetrieveError,
-  isSummaryLoading: state.investigate.services.isSummaryLoading,
-  services: state.investigate.services.serviceData,
-  summaryErrorMessage: state.investigate.services.summaryErrorMessage,
-  hasSummaryData: hasSummaryData(state)
-});
+import layout from './template';
 
 const ServiceSelector = Component.extend({
+  layout,
+
   classNames: ['rsa-investigate-query-container__service-selector'],
 
   i18n: service(),
+
   appVersion: service(),
+
+  services: null,
+
+  isCoreServiceNotUpdated: false,
+
+  isSummaryDataInvalid: false,
+
+  serviceDisplayName: '',
+
+  isServicesLoading: false,
+
+  isServicesRetrieveError: false,
+
+  isSummaryLoading: false,
+
+  serviceData: null,
+
+  summaryErrorMessage: '',
+
+  onServiceSelection: null,
+
+  didReceiveAttrs() {
+    this._super(...arguments);
+    const services = this.get('services');
+    const state = {
+      services,
+      serviceId: this.get('serviceId')
+    };
+    if (services) {
+      this.setProperties(
+        {
+          isCoreServiceNotUpdated: isCoreServiceNotUpdated(state, lookup('service:appVersion')),
+          isSummaryDataInvalid: isSummaryDataInvalid(state),
+          serviceDisplayName: getServiceDisplayName(state),
+          isServicesLoading: services.isServicesLoading,
+          isServicesRetrieveError: services.isServicesRetrieveError,
+          isSummaryLoading: services.isSummaryLoading,
+          serviceData: services.serviceData,
+          summaryErrorMessage: services.summaryErrorMessage,
+          hasSummaryData: hasSummaryData(state)
+        }
+      );
+    }
+  },
 
   @computed()
   panelId() {
@@ -107,4 +142,4 @@ const ServiceSelector = Component.extend({
   }
 });
 
-export default connect(stateToComputed, dispatchToActions)(ServiceSelector);
+export default ServiceSelector;

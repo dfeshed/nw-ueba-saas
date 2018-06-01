@@ -1,13 +1,12 @@
-
 import Component from '@ember/component';
-import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
-import TIME_RANGES from 'investigate-events/constants/time-ranges';
-import { setQueryTimeRange } from 'investigate-events/actions/interaction-creators';
-
-const dispatchToActions = { setQueryTimeRange };
+import TIME_RANGES from 'investigate-shared/constants/time-ranges';
+import layout from './template';
 
 const TimeSelector = Component.extend({
+
+  layout,
+
   classNames: ['rsa-investigate-query-container__time-selector'],
 
   // This temporarily disables the tooltip until we can figure out how to
@@ -22,6 +21,12 @@ const TimeSelector = Component.extend({
    */
   timeRanges: TIME_RANGES.RANGES,
 
+  onTimeSelection: null,
+
+  startTime: null,
+
+  endTime: null,
+
   @computed()
   panelId() {
     return `queryTimerangeTooltip-${this.get('elementId')}`;
@@ -29,4 +34,4 @@ const TimeSelector = Component.extend({
 
 });
 
-export default connect(undefined, dispatchToActions)(TimeSelector);
+export default TimeSelector;

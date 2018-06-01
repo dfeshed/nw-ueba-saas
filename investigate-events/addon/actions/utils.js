@@ -4,7 +4,7 @@ import { isBlank } from '@ember/utils';
 import { run } from '@ember/runloop';
 import RSVP from 'rsvp';
 import { encodeMetaFilterConditions } from 'investigate-shared/actions/api/events/utils';
-import TIME_RANGES from 'investigate-events/constants/time-ranges';
+import TIME_RANGES from 'investigate-shared/constants/time-ranges';
 
 const operators = [
   '!=', '<=', '<', '>=', '>', '=', '!exists', 'exists', 'contains', 'begins', 'ends'

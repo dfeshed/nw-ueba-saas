@@ -1,5 +1,5 @@
 import reselect from 'reselect';
-import TIME_RANGES from 'investigate-events/constants/time-ranges';
+import TIME_RANGES from 'investigate-shared/constants/time-ranges';
 import { selectedService, hasSummaryData } from 'investigate-events/reducers/investigate/services/selectors';
 const { createSelector } = reselect;
 

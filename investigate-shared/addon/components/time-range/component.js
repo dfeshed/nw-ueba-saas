@@ -1,14 +1,15 @@
 import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
-import { connect } from 'ember-redux';
-
-const stateToComputed = (state) => ({
-  startTime: state.investigate.queryNode.startTime,
-  endTime: state.investigate.queryNode.endTime
-});
+import layout from './template';
 
 const TimeRangeComponent = Component.extend({
+  layout,
+
   classNames: 'rsa-investigate-time-range',
+
+  startTime: null,
+
+  endTime: null,
 
   @computed('startTime')
   _startTimeMilli(startTime) {
@@ -22,4 +23,4 @@ const TimeRangeComponent = Component.extend({
 
 });
 
-export default connect(stateToComputed)(TimeRangeComponent);
+export default TimeRangeComponent;

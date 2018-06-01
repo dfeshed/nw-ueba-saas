@@ -10,7 +10,8 @@ import {
   guidedHasFocus,
   freeFormHasFocus
 } from 'investigate-events/reducers/investigate/query-node/selectors';
-import TIME_RANGES from 'investigate-events/constants/time-ranges';
+
+import TIME_RANGES from 'investigate-shared/constants/time-ranges';
 
 module('Unit | Selectors | queryNode');
 

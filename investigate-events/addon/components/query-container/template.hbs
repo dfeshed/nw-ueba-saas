@@ -1,6 +1,6 @@
-{{query-container/service-selector}}
+{{service-selector services=services serviceId=serviceId onServiceSelection=(action 'setService')}}
 
-{{query-container/time-selector}}
+{{time-selector startTime=startTime endTime=endTime onTimeSelection=(action 'setQueryTimeRange')}}
 
 <div class='query-bar-selection'>
   <div class='query-bar-options'>

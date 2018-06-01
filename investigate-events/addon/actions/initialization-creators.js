@@ -7,7 +7,7 @@ import {
   fetchInvestigateData,
   getServiceSummary
 } from './data-creators';
-import TIME_RANGES from 'investigate-events/constants/time-ranges';
+import TIME_RANGES from 'investigate-shared/constants/time-ranges';
 import { fetchServices } from './fetch/services';
 import { lookup } from 'ember-dependency-lookup';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
