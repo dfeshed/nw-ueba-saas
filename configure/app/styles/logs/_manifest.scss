@@ -1,8 +1,30 @@
+
+div.modal-content.addNewRule {
+  padding: rsa-whitespace();
+  padding-top: rsa-whitespace(more);
+  width: 500px;
+  vertical-align: text-bottom;
+  .rsa-form-button-wrapper {
+    float: right;
+    padding-top: 115px;
+    padding-bottom: rsa-whitespace();
+  }
+}
+
 .parserWrapper {
   width: 100%;
   position: relative; 
   margin-top: rsa-whitespace();
   color: text-color(neutral);
+  .dotRed {
+    height: 10px;
+    width: 10px;
+    background-color: #C91818;
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 5px;
+    vertical-align: bottom;
+  }
   .buttonsContainer {
     margin-top: rsa-whitespace(more);
     border-bottom: 1px solid border-color(primary);
@@ -10,6 +32,7 @@
     height: 40px;
     hbox {
       margin-left: rsa-whitespace();
+      float: left;
     }
   }
   .loading {

@@ -23,8 +23,11 @@
     {{#each parserRules as |parserRule index|}}
       <tr><td class='{{if (eq index 0) 'firstItem'}} {{if (eq selectedParserRuleIndex index) 'active'}}'{{action "selectParserRule" index}}>
         {{parserRule.name}}
-        {{#if parserRule.ootb}}
+        {{#if parserRule.outOfBox}}
            [RSA]
+        {{/if}}
+        {{#if parserRule.dirty}}
+           <span class="dotRed"></span>
         {{/if}}
       </td></tr>
     {{/each}}

@@ -6,7 +6,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import ReduxDataHelper from '../../../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../../../helpers/vnext-patch';
-
+import $ from 'jquery';
 
 let setState;
 
@@ -54,6 +54,20 @@ module('Integration | Component | delete-rules', function(hooks) {
     new ReduxDataHelper(setState).parserRulesFormatData(1, true).build();
     await render(hbs`{{content/log-parser-rules/parser-rules-list/buttons-container}}`);
     assert.ok(find('.buttonsContainer .deleteRule .is-disabled'), 'Delete button is not disabled');
+  });
+
+  test('Add a new rule modal', async function(assert) {
+    new ReduxDataHelper(setState).parserRulesFormatData(1, true).build();
+    await render(hbs`{{content/log-parser-rules/parser-rules-list/buttons-container}}`);
+    assert.ok(find('.buttonsContainer .addNewRule .modal-trigger'), 'Add New button is not showing');
+    click('.buttonsContainer .addNewRule .modal-trigger');
+    return settled().then(() => {
+      assert.equal($('#modalDestination .addNewRule button').length, 1, 'Modal is not showing');
+      $('#modalDestination .addNewRule .ember-text-field.ember-view').val('123');
+      return settled().then(() => {
+        assert.equal($('#modalDestination .addNewRule input').val(), '123', 'Name of rule is 123');
+      });
+    });
   });
 
 });

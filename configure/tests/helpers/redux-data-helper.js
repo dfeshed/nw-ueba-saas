@@ -85,7 +85,7 @@ export default class DataHelper {
         'format': 'ipv4'
       },
       'ruleMetas': [],
-      'ootb': false
+      'outOfBox': false
     },
     {
       'name': 'Client Username',
@@ -104,7 +104,7 @@ export default class DataHelper {
         'regex': '\\s*([\\w_.@-]*)'
       },
       'ruleMetas': [],
-      'ootb': true
+      'outOfBox': true
     }]);
     _set(this.state, 'content.logParserRules.selectedParserRuleIndex', 0);
     _set(this.state, 'content.logParserRules.parserRulesStatus', 'completed');

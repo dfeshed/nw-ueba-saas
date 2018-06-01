@@ -63,7 +63,7 @@ export default [
     },
     'ruleMetas': [],
     'dirty': false,
-    'ootb': false,
+    'outOfBox': false,
     'override': false
   },
   {
@@ -128,7 +128,7 @@ export default [
     },
     'ruleMetas': [],
     'dirty': false,
-    'ootb': false,
+    'outOfBox': false,
     'override': false
   },
   {
@@ -160,7 +160,7 @@ export default [
     },
     'ruleMetas': [],
     'dirty': false,
-    'ootb': true,
+    'outOfBox': true,
     'override': false
   },
   {
@@ -441,7 +441,7 @@ export default [
     },
     'ruleMetas': [],
     'dirty': false,
-    'ootb': true,
+    'outOfBox': true,
     'override': false
   },
   {
@@ -509,7 +509,7 @@ export default [
     },
     'ruleMetas': [],
     'dirty': false,
-    'ootb': true,
+    'outOfBox': true,
     'override': false
   },
   {
@@ -679,7 +679,7 @@ export default [
     },
     'ruleMetas': [],
     'dirty': false,
-    'ootb': true,
+    'outOfBox': true,
     'override': false
   },
   {
@@ -807,7 +807,7 @@ export default [
     },
     'ruleMetas': [],
     'dirty': false,
-    'ootb': true,
+    'outOfBox': true,
     'override': false
   },
   {
@@ -932,7 +932,7 @@ export default [
     },
     'ruleMetas': [],
     'dirty': false,
-    'ootb': true,
+    'outOfBox': true,
     'override': false
   },
   {
@@ -997,7 +997,7 @@ export default [
     },
     'ruleMetas': [],
     'dirty': false,
-    'ootb': true,
+    'outOfBox': true,
     'override': false
   },
   {
@@ -1098,7 +1098,7 @@ export default [
     },
     'ruleMetas': [],
     'dirty': false,
-    'ootb': true,
+    'outOfBox': true,
     'override': false
   },
   {
@@ -1202,7 +1202,7 @@ export default [
     },
     'ruleMetas': [],
     'dirty': false,
-    'ootb': true,
+    'outOfBox': true,
     'override': false
   },
   {
@@ -1261,7 +1261,7 @@ export default [
     },
     'ruleMetas': [],
     'dirty': false,
-    'ootb': true,
+    'outOfBox': true,
     'override': false
   },
   {
@@ -1487,7 +1487,7 @@ export default [
     },
     'ruleMetas': [],
     'dirty': false,
-    'ootb': true,
+    'outOfBox': true,
     'override': false
   },
   {
@@ -1671,7 +1671,7 @@ export default [
     },
     'ruleMetas': [],
     'dirty': false,
-    'ootb': true,
+    'outOfBox': true,
     'override': false
   },
   {
@@ -1762,7 +1762,7 @@ export default [
     },
     'ruleMetas': [],
     'dirty': false,
-    'ootb': true,
+    'outOfBox': true,
     'override': false
   },
   {
@@ -1860,7 +1860,7 @@ export default [
     },
     'ruleMetas': [],
     'dirty': false,
-    'ootb': true,
+    'outOfBox': true,
     'override': false
   },
   {
@@ -1931,7 +1931,7 @@ export default [
     },
     'ruleMetas': [],
     'dirty': false,
-    'ootb': true,
+    'outOfBox': true,
     'override': false
   },
   {
@@ -2020,7 +2020,7 @@ export default [
     },
     'ruleMetas': [],
     'dirty': false,
-    'ootb': true,
+    'outOfBox': true,
     'override': false
   }
 ];

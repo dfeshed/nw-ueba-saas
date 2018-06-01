@@ -165,7 +165,7 @@ export const isOotb = createSelector(
   _selectedParserRule,
   (rule) => {
     if (rule) {
-      return !!(rule.ootb);
+      return !!(rule.outOfBox);
     }
   }
 );

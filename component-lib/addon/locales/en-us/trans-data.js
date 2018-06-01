@@ -563,12 +563,17 @@ export default {
       },
       modals: {
         ok: 'OK',
+        addRule: 'Add Rule',
         cancel: 'Cancel',
         confirmDeleteRule: 'Confirm Delete Rule',
-        okDeleteRule: 'Click OK to delete Rule'
+        okDeleteRule: 'Click OK to delete Rule',
+        ruleName: 'Rule Name',
+        addNewRule: 'Add New Rule',
+        pleaseEnterRuleName: 'Please Enter Rule Name'
       },
       buttons: {
-        delete: 'Delete'
+        delete: 'Delete',
+        addRule: 'Add Rule'
       }
     },
     title: 'Configure',

@@ -1,4 +1,19 @@
 {{#if hasSelectedParserRule}}
+
+  <hbox class="addNewRule">
+    {{#rsa-application-modal
+      label=(t 'configure.logsParser.modals.addNewRule')
+      eventId='addNewRule'}}
+      <div class='modal-trigger'>
+        {{#rsa-form-button}}{{t 'configure.logsParser.buttons.addRule'}}{{/rsa-form-button}}
+      </div>
+      <div class='modal-content addNewRule'>
+        {{rsa-form-input label=(t 'configure.logsParser.modals.ruleName') value=newRuleName placeholder=(t 'configure.logsParser.modals.pleaseEnterRuleName')}}
+        {{#rsa-form-button style='primary' click=(action 'addNewParserRule' newRuleName)}} {{t 'configure.logsParser.modals.addRule'}}{{/rsa-form-button}}{{ruleName}}
+      </div>
+    {{/rsa-application-modal}}
+  </hbox>
+
   <hbox class="rsa-button-with-confirmation deleteRule">
     {{#rsa-button-with-confirmation
         title= (t 'configure.logsParser.modals.confirmDeleteRule')
@@ -11,3 +26,4 @@
     {{/rsa-button-with-confirmation}}
   </hbox>
 {{/if}}
+

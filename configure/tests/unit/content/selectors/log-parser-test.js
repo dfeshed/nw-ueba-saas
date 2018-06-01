@@ -24,14 +24,14 @@ const state = {
             pattern: {
               format: 'Foo'
             },
-            ootb: true
+            outOfBox: true
           },
           {
             name: 'foo2',
             pattern: {
               format: 'Foo2'
             },
-            ootb: false
+            outOfBox: false
           }
         ]
       }
@@ -55,7 +55,7 @@ const filteredRule = [
     pattern: {
       format: 'Foo2'
     },
-    ootb: false
+    outOfBox: false
   }
 ];
 

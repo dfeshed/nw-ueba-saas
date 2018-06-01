@@ -93,31 +93,39 @@ export default reduxActions.handleActions({
       },
       success: (state) => {
         const selectedIndex = state.selectedParserRuleIndex;
-        const theRules = state.parserRules;
+        const allRules = state.parserRules;
         return state.merge(
           {
-            parserRules: theRules.filter((rule, index) => index !== selectedIndex),
-            selectedParserRuleIndex: -1,
+            parserRules: allRules.filter((rule, index) => index !== selectedIndex),
+            selectedParserRuleIndex: 0,
             deleteRuleStatus: 'completed'
           }
         );
       }
     })
-  )
+  ),
 
-  // add parser rules are no implemented and will be added in subsequent PRs
-  /*
-
-  [ACTION_TYPES.ADD_PARSER_RULE]: (state, action) => (
-    handle(state, action, {
-      start: (state) => state,
-      failure: (state) => state,
-      success: (state) => {
-        const deletedRuleId = action.payload.data;
-        const thisRule = state.parserRules.filter((rule) => rule._id === deletedRuleId);
-        return state.set('parserRules', state.parserRules.concat(thisRule));
+  [ACTION_TYPES.ADD_NEW_PARSER_RULE]: (state, { payload }) => {
+    const allRules = state.parserRules;
+    return state.merge(
+      {
+        selectedParserRuleIndex: allRules.length,
+        parserRules: allRules.concat({
+          name: payload,
+          literals: [],
+          pattern: {
+            captures: [
+              {
+              }
+            ],
+            regex: ''
+          },
+          ruleMetas: [],
+          dirty: true,
+          outOfBox: false,
+          override: false
+        })
       }
-    })
-  )
-  */
+    );
+  }
 }, Immutable.from(initialState));

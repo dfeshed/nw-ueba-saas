@@ -5,14 +5,6 @@ import {
   filterDeletedRule,
   selectedLogParserName } from 'configure/reducers/content/log-parser-rules/selectors';
 
-/*
-const addParserRule = (id) => {
-  return {
-    type: ACTION_TYPES.ADD_PARSER_RULE,
-    promise: api.addParserRule(id)
-  };
-}; */
-
 const _fetchRuleFormats = () => {
   return {
     type: ACTION_TYPES.FETCH_FORMATS,
@@ -81,8 +73,15 @@ const deleteParserRule = () => {
   };
 };
 
+const addNewParserRule = (name) => {
+  return {
+    type: ACTION_TYPES.ADD_NEW_PARSER_RULE,
+    payload: name
+  };
+};
+
 export {
-  // addParserRule,
+  addNewParserRule,
   deleteParserRule,
   initializeLogParserRules,
   selectLogParser,
