@@ -2136,6 +2136,9 @@ export default {
       error: {
         'context.service.timeout': 'Context Hub server is not running or is inaccessible. Check with your Administrator to resolve this issue.',
         'admin.error': 'Admin service is not reachable. Check your service connectivity.'
+      },
+      button: {
+        close: 'Close Risk Panel'
       }
     },
     systemInformation: {

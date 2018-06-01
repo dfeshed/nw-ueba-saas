@@ -6,7 +6,7 @@
   <section class="filters panel-control-group" fit>
     {{host-list/content-filter}}
   </section>
-  <hbox>
+  <hbox class="host-list-items {{if showRiskPanel 'show-risk-panel' ''}}">
     <box class="filter-zone">
       <h2>{{t 'investigateHosts.files.filter.filters'}}</h2>
       <box class="favourite-filters">
@@ -18,18 +18,25 @@
     </box>
     {{#if features.rsaEndpointFusion}}
       <box class="risk-property-zone">
-        <box fit>
-          {{#host-detail/utils/host-title-bar tabs=dataSourceTabs defaultAction=(action 'setDataSourceTab') as |tab|}}
-            {{#if (eq tab.name 'ALERT')}}
-              <div class="label">{{t tab.label count=alertsCount}}</div>
-            {{else if (eq tab.name 'INCIDENT')}}
-              <div class="label">{{t tab.label count=incidentsCount}}</div>
-            {{else}}
-              <div class="label">{{t tab.label}}</div>
-            {{/if}}
-          {{/host-detail/utils/host-title-bar}}
-        </box>
-          {{endpoint/risk-panel activeDataSourceTab=activeDataSourceTab data=context errorMessage = contextError}}
+        <hbox fit>
+          <vbox>
+            {{#host-detail/utils/host-title-bar tabs=dataSourceTabs defaultAction=(action 'setDataSourceTab') as |tab|}}
+              {{#if (eq tab.name 'ALERT')}}
+                <div class="label">{{t tab.label count=alertsCount}}</div>
+              {{else if (eq tab.name 'INCIDENT')}}
+                <div class="label">{{t tab.label count=incidentsCount}}</div>
+              {{else}}
+                <div class="label">{{t tab.label}}</div>
+              {{/if}}
+            {{/host-detail/utils/host-title-bar}}
+          </vbox>
+          <vbox class="risk-zone-close-button">
+            {{#rsa-form-button class='header-button' isIconOnly=true click=(action 'closeRiskPanel') }}
+              {{rsa-icon class='close-icon' name='close' title=(t 'investigateHosts.context.button.close')}}
+            {{/rsa-form-button}}
+          </vbox>
+        </hbox>
+        {{endpoint/risk-panel activeDataSourceTab=activeDataSourceTab data=context errorMessage = contextError}}
       </box>
     {{/if}}
   </hbox>

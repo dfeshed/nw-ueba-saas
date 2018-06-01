@@ -2,7 +2,7 @@
 @import "service-modal";
 
 $filter-panel-width: 250px;
-$risk-panel-width: 250px;
+$risk-panel-width: 300px;
 
 .host-container {
    max-height: calc(100vw - 50px);
@@ -43,9 +43,14 @@ $risk-panel-width: 250px;
   }
 
   .risk-property-zone {
-    min-width: $risk-panel-width;
-    max-width: $risk-panel-width;
-    @include border-left(1px, solid, primary, dark);
+    min-width: 0;
+    max-width: 0;
+    padding: 0;
+    overflow: hidden;
+    opacity: opacity-value(transparent);
+    @include rsa-vendor-prefix(transition-property, max-width, min-width, padding, opacity);
+    @include rsa-vendor-prefix(transition-duration, 0.3s, 0.3s, 0.3s, 0.1s);
+
     .rsa-nav-tab  .label{
       @include rsa-font(header, small);
       color: text-color(primary, lighter);
@@ -60,6 +65,35 @@ $risk-panel-width: 250px;
       padding: rsa-whitespace(less) 0;
       border-bottom-width: 3px;
     }
+    .close-icon {
+      font-size: 14px;
+    }
+    .risk-zone-close-button {
+      width: 16px;
+      max-width: 16px;
+      margin-right: 20px;
+    }
+  }
+  .show-risk-panel {
+    .risk-property-zone {
+      @include border-left(1px, solid, primary, dark);
+      min-width: $risk-panel-width;
+      max-width: $risk-panel-width;
+      padding: 0;
+      overflow: auto;
+      overflow-x: hidden;
+      opacity: opacity-value(opaque);
+    }
+    .machine-zone {
+      height: 100vh;
+      width: calc(100vw - #{$risk-panel-width + $filter-panel-width});
+    }
+  }
+  .machine-zone {
+    @include rsa-vendor-prefix(transition-property, width);
+    @include rsa-vendor-prefix(transition-duration, 0.3s);
+    width: calc(100vw - #{$filter-panel-width});
+    height: 100vh;
   }
 
   .favourite-filters {
@@ -93,9 +127,4 @@ $risk-panel-width: 250px;
       min-width: 98%
     }
   }
-}
-
-.machine-zone {
-  width: calc(100vw - 500px);
-  max-width: calc(100vw - 500px);
 }

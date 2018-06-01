@@ -1,6 +1,7 @@
 import { connect } from 'ember-redux';
 import Component from '@ember/component';
 import { setDataSourceTab, setHostPropertyTabView } from 'investigate-hosts/actions/data-creators/details';
+import { toggleRiskPanel } from 'investigate-hosts/actions/data-creators/host';
 import { getDataSourceTab, getContext, getAlertsCount, getIncidentsCount } from 'investigate-hosts/reducers/visuals/selectors';
 import { inject as service } from '@ember/service';
 
@@ -15,13 +16,15 @@ const stateToComputed = (state) => ({
   dataSourceTabs: getDataSourceTab(state),
   context: getContext(state),
   alertsCount: getAlertsCount(state),
-  incidentsCount: getIncidentsCount(state)
+  incidentsCount: getIncidentsCount(state),
+  showRiskPanel: state.endpoint.visuals.showRiskPanel
 });
 
 const dispatchToActions = {
   resetFilters,
   setDataSourceTab,
-  setHostPropertyTabView
+  setHostPropertyTabView,
+  toggleRiskPanel
 };
 const Container = Component.extend({
 
@@ -29,7 +32,13 @@ const Container = Component.extend({
 
   classNames: 'host-list show-more-filter main-zone',
 
-  features: service()
+  features: service(),
+
+  actions: {
+    closeRiskPanel() {
+      this.send('toggleRiskPanel', false);
+    }
+  }
 
 });
 

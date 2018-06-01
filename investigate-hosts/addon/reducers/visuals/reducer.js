@@ -13,7 +13,8 @@ const visualsInitialState = Immutable.from({
   hostDetailsLoading: false,
   activeSystemInformationTab: 'HOST_ENTRIES',
   lookupData: [{}],
-  contextError: null
+  contextError: null,
+  showRiskPanel: false
 });
 
 const visuals = handleActions({
@@ -44,7 +45,9 @@ const visuals = handleActions({
 
   [ACTION_TYPES.CLEAR_PREVIOUS_CONTEXT]: (state) => state.set('lookupData', [{} ]),
 
-  [ACTION_TYPES.CONTEXT_ERROR]: (state, { payload }) => state.set('contextError', payload)
+  [ACTION_TYPES.CONTEXT_ERROR]: (state, { payload }) => state.set('contextError', payload),
+
+  [ACTION_TYPES.TOGGLE_RISK_PANEL_VISIBILITY]: (state, { payload }) => state.set('showRiskPanel', payload)
 
 }, visualsInitialState);
 

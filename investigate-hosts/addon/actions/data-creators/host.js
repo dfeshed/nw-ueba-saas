@@ -321,6 +321,8 @@ const fetchHostContext = (machineName) => {
   };
 };
 
+const toggleRiskPanel = (visibility) => ({ type: ACTION_TYPES.TOGGLE_RISK_PANEL_VISIBILITY, payload: visibility });
+
 export {
   getAllServices,
   getAllSchemas,
@@ -334,6 +336,7 @@ export {
   initializeHostsPreferences,
   startScan,
   stopScan,
-  fetchHostContext
+  fetchHostContext,
+  toggleRiskPanel
 };
 
