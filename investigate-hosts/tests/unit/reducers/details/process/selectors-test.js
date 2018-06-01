@@ -15,7 +15,8 @@ import {
   noProcessData,
   enrichedDllData,
   processList,
-  isProcessLoading
+  isProcessLoading,
+  isJazzAgent
 } from 'investigate-hosts/reducers/details/process/selectors';
 
 test('getProcessData', function(assert) {
@@ -358,4 +359,34 @@ test('isProcessLoading', function(assert) {
     }
   }));
   assert.equal(result, true);
+});
+
+test('isJazzAgent return true when the agentVersion includes 11.1', function(assert) {
+  const result = isJazzAgent(Immutable.from({
+    endpoint: {
+      overview: {
+        hostDetails: {
+          machine: {
+            agentVersion: '11.1.0'
+          }
+        }
+      }
+    }
+  }));
+  assert.equal(result, true);
+});
+
+test('isJazzAgent return false when the agentVersion does not includes 11.1', function(assert) {
+  const result = isJazzAgent(Immutable.from({
+    endpoint: {
+      overview: {
+        hostDetails: {
+          machine: {
+            agentVersion: '11.2.0'
+          }
+        }
+      }
+    }
+  }));
+  assert.equal(result, false);
 });

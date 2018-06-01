@@ -1,5 +1,5 @@
 {{#if features.rsaEndpointFusion}}
-  {{#if (eq osType 'linux')}}
+  {{#if disabledContextMenu}}
     {{yield}}
   {{else}}
     {{#rsa-context-menu contextItems=contextItems contextSelection=contextSelection}}

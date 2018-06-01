@@ -10,6 +10,7 @@ const _dllData = (state) => state.endpoint.process.dllList;
 const _selectedTab = (state) => state.endpoint.explore.selectedTab;
 const _processDetailsLoading = (state) => state.endpoint.process.processDetailsLoading;
 const _isProcessTreeLoading = (state) => state.endpoint.process.isProcessTreeLoading;
+const _hostDetails = (state) => state.endpoint.overview.hostDetails || {};
 
 const _getTree = (selectedTab, tabName, data) => {
   if (selectedTab && selectedTab.tabName === tabName) {
@@ -146,3 +147,12 @@ export const isProcessLoading = createSelector(
 );
 
 export const noProcessData = createSelector(processTree, (tree) => !tree.length);
+
+export const isJazzAgent = createSelector(
+  _hostDetails,
+  (hostDetails) => {
+    if (hostDetails && hostDetails.machine) {
+      const { machine: { agentVersion } } = hostDetails;
+      return agentVersion && agentVersion.includes('11.1');
+    }
+  });

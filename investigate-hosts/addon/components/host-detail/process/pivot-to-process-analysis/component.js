@@ -4,12 +4,16 @@ import { connect } from 'ember-redux';
 import { getAllServices } from 'investigate-hosts/actions/data-creators/host';
 import { next } from '@ember/runloop';
 import { inject as service } from '@ember/service';
-
 import { buildTimeRange } from 'investigate-shared/utils/time-util';
+import { isJazzAgent } from 'investigate-hosts/reducers/details/process/selectors';
 
 const dispatchToActions = {
   getAllServices
 };
+
+const stateToComputed = (state) => ({
+  isJazzAgent: isJazzAgent(state)
+});
 
 const PivotToPA = Component.extend({
 
@@ -44,6 +48,11 @@ const PivotToPA = Component.extend({
         }
       }
     ];
+  },
+
+  @computed('osType', 'isJazzAgent')
+  disabledContextMenu(osType, isJazzAgent) {
+    return osType === 'linux' || isJazzAgent;
   },
 
   _closeModal() {
@@ -87,4 +96,4 @@ const PivotToPA = Component.extend({
     }
   }
 });
-export default connect(null, dispatchToActions)(PivotToPA);
+export default connect(stateToComputed, dispatchToActions)(PivotToPA);
