@@ -11,5 +11,5 @@ python -m virtualenv $BUILD_VENV
 
 echo "building presidio_extension"
 cd ../presidio-workflows-extension/
-python setup.py bdist_egg --dist-dir $BUILD_OUTPUT --build_number=$1
+python setup.py bdist_egg --dist-dir $BUILD_OUTPUT
 echo "finished building presidio_extension"
