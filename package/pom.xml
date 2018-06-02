@@ -116,7 +116,7 @@
                         </mapping>
                         <mapping>
                             <directoryIncluded>false</directoryIncluded>
-                            <directory>${presidio-app.directory}/pypackages</directory>
+                            <directory>${presidio-app.directory}/pypackages-ext</directory>
                             <username>${presidio.username}</username>
                             <groupname>${presidio.groupname}</groupname>
                             <sources>
