@@ -20,76 +20,103 @@ public class JsonEventFilterByFieldValueInterceptor extends AbstractPresidioJson
 
     private static final Logger logger = LoggerFactory.getLogger(JsonEventFilterByFieldValueInterceptor.class);
 
+    private String conditionField;
+    private Pattern patternCondition;
     private final List<String> fields;
     private final List<String> regexList;
     private final Operation operation;
+    private final Boolean filterOut;
 
-    public JsonEventFilterByFieldValueInterceptor(List<String> fields, List<String> regexList, Operation operation) {
+    public JsonEventFilterByFieldValueInterceptor(String conditionField, Pattern patternCondition, List<String> fields, List<String> regexList, Operation operation, Boolean filterOut) {
+        this.conditionField = conditionField;
+        this.patternCondition = patternCondition;
         this.fields = fields;
         this.regexList = regexList;
         this.operation = operation;
+        this.filterOut = filterOut;
+    }
+
+    private boolean testCondition(JsonObject eventBodyAsJson){
+        boolean conditionResult = true;
+        if(conditionField != null){
+            JsonElement jsonElement = eventBodyAsJson.get(conditionField);
+            if(jsonElement == null || jsonElement.isJsonNull()){
+                conditionResult = false;
+            } else{
+                String fieldValue = jsonElement.getAsString();
+                conditionResult = patternCondition.matcher(fieldValue).matches();
+            }
+        }
+        return conditionResult;
     }
 
     @Override
     public Event doIntercept(Event event) {
-        final String eventBodyAsString = new String(event.getBody());
-        JsonObject eventBodyAsJson = new JsonParser().parse(eventBodyAsString).getAsJsonObject();
+        JsonObject eventBodyAsJson = getJsonObject(event);
+
+        if(!testCondition(eventBodyAsJson)){
+            return event;
+        }
         String currField;
-        String currFieldValue;
+        String currFieldValue = null;
         String currRegex;
         Pattern pattern;
         Matcher matcher;
         for (int i = 0; i < fields.size(); i++) {
             currField = fields.get(i);
-            if (currField.startsWith("additionalInfo#")) {
-                final JsonObject additionalInfo = eventBodyAsJson.get("additionalInfo").getAsJsonObject();
-                currFieldValue = additionalInfo.get(currField.substring(15)).getAsString();
-                if (currFieldValue == null || currFieldValue.isEmpty()) {
-                    currFieldValue = "";
-                }
+
+            final JsonElement jsonElement = eventBodyAsJson.get(currField);
+            currRegex = regexList.get(i);
+            boolean isMatched;
+            if (jsonElement != null && !jsonElement.isJsonNull()) {
+                currFieldValue = jsonElement.getAsString();
+                pattern = Pattern.compile(currRegex);
+                matcher = pattern.matcher(currFieldValue);
+                isMatched = matcher.matches();
             } else {
-                final JsonElement jsonElement = eventBodyAsJson.get(currField);
-                if (jsonElement != null && !jsonElement.isJsonNull()) {
-                    currFieldValue = jsonElement.getAsString();
-                } else {
-                    currFieldValue = "";
-                }
+                isMatched = false;
             }
 
-            currRegex = regexList.get(i);
-            if (currRegex.equals(EMPTY_STRING)) {
-                currRegex = "";
-            } else if (currRegex.equals(NULL_STRING)) {
-                if (currFieldValue == null) {
-                    logger.trace("Filtering event {} because it matched the following filter: field: {}, fieldValue: {}, regex: {}.", eventBodyAsJson, currField, NULL_STRING, currRegex);
-                    String failureReason = String.format("Filtering event because field %s matched regular expression. The value was %s", currField, NULL_STRING);
-                    monitoringService.reportFailedEventMetric(failureReason, 1);
-                    return null;
-                }
-            }
-            pattern = Pattern.compile(currRegex);
-            matcher = pattern.matcher(currFieldValue);
-            if (matcher.matches()) {
+
+            if (isMatched) {
                 if (operation == Operation.OR) {
-                    logger.trace("Filtering event {} because it matched the following filter: field: {}, fieldValue: {}, regex: {}.", eventBodyAsJson, currField, currFieldValue, currRegex);
-                    String failureReason = String.format("Filtering event because field %s matched regular expression. The value was %s", currField, currFieldValue);
-                    monitoringService.reportFailedEventMetric(failureReason, 1);
-                    return null;
+                    if(filterOut) {
+                        logger.trace("Filtering event {} because it matched the following filter: field: {}, fieldValue: {}, regex: {}.", eventBodyAsJson, currField, currFieldValue, currRegex);
+                        String failureReason = String.format("Filtering event because field %s matched regular expression. The values was %s", currField, currFieldValue);
+                        monitoringService.reportFailedEventMetric(failureReason, 1);
+                        return null;
+                    } else {
+                        return event;
+                    }
                 }
             } else {
                 if (operation == Operation.AND) {
-                    event.setBody(eventBodyAsJson.toString().getBytes());
-                    return event;
+                    if(filterOut) {
+                        return event;
+                    } else{
+                        monitoringService.reportFailedEventMetric("EVENT_FILTERED_ACCORDING_TO_CONFIGURATION2",1);
+                        return null;
+                    }
                 }
             }
         }
 
-        if (operation == Operation.OR) { /* we got here and couldn't filter? - we shouldn't filter */
-            event.setBody(eventBodyAsJson.toString().getBytes());
-            return event;
-        } else {  /* we got here and couldn't NOT-filter? - we should filter */
-            monitoringService.reportFailedEventMetric("EVENT_FILTERED_ACCORDING_TO_CONFIGURATION2", 1);
-            return null;
+        if (operation == Operation.OR) { /* Nothing matched */
+            if(filterOut) {
+                return event;
+            } else{
+                logger.trace("Filtering event {} because it didn't match any pattern", eventBodyAsJson);
+                String failureReason = String.format("Filtering event because it didn't match any pattern");
+                monitoringService.reportFailedEventMetric(failureReason, 1);
+                return null;
+            }
+        } else {  /* All matched */
+            if(filterOut) {
+                monitoringService.reportFailedEventMetric("EVENT_FILTERED_ACCORDING_TO_CONFIGURATION2", 1);
+                return null;
+            } else {
+                return event;
+            }
         }
     }
 
@@ -105,19 +132,31 @@ public class JsonEventFilterByFieldValueInterceptor extends AbstractPresidioJson
      */
     public static class Builder extends AbstractPresidioInterceptorBuilder {
 
+        static final String CONDITION_FIELD_CONF_NAME = "condition_field";
+        static final String REGEX_CONDITION_CONF_NAME = "regex_condition";
         static final String FIELDS_CONF_NAME = "fields";
         static final String REGEX_LIST_CONF_NAME = "regexList";
         static final String DELIMITER_CONF_NAME = "delimiter";
         static final String DEFAULT_DELIMITER_VALUE = ",";
         static final String OPERATION_CONF_NAME = "operation";
         static final String DEFAULT_OP_VALUE = "OR";
+        static final String FILTER_OUT_CONF_NAME = "filter_out";
+        static final boolean DEFAULT_FILTER_OUT_VALUE = true;
 
+        private String conditionField;
+        private Pattern patternCondition;
         private List<String> fields;
         private List<String> regexList;
         private Operation operation;
+        private Boolean filterOut;
 
         @Override
         public void doConfigure(Context context) {
+            conditionField = context.getString(CONDITION_FIELD_CONF_NAME, null);
+            if(conditionField != null){
+                String regexCondition = context.getString(REGEX_CONDITION_CONF_NAME);
+                patternCondition = Pattern.compile(regexCondition);
+            }
             String fieldsArrayAsString = context.getString(FIELDS_CONF_NAME);
             Preconditions.checkArgument(StringUtils.isNotEmpty(fieldsArrayAsString), FIELDS_CONF_NAME + " can not be empty.");
 
@@ -128,6 +167,8 @@ public class JsonEventFilterByFieldValueInterceptor extends AbstractPresidioJson
 
             String opAsString = context.getString(OPERATION_CONF_NAME, DEFAULT_OP_VALUE);
             operation = Operation.createOperation(opAsString);
+
+            filterOut = context.getBoolean(FILTER_OUT_CONF_NAME, DEFAULT_FILTER_OUT_VALUE);
 
             final String[] fieldArray = fieldsArrayAsString.split(delim);
             String currField;
@@ -153,7 +194,8 @@ public class JsonEventFilterByFieldValueInterceptor extends AbstractPresidioJson
 
         @Override
         public AbstractPresidioJsonInterceptor doBuild() {
-            final JsonEventFilterByFieldValueInterceptor jsonFilterByFieldValueInterceptor = new JsonEventFilterByFieldValueInterceptor(fields, regexList, operation);
+            final JsonEventFilterByFieldValueInterceptor jsonFilterByFieldValueInterceptor =
+                    new JsonEventFilterByFieldValueInterceptor(conditionField, patternCondition, fields, regexList, operation, filterOut);
             logger.info("Creating JsonFilterByFieldValueInterceptor: {}", jsonFilterByFieldValueInterceptor);
             return jsonFilterByFieldValueInterceptor;
         }

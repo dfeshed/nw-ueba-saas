@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>presidio.flume.core</groupId>
     <artifactId>presidio-flume</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>2.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Presidio Flume</name>
@@ -14,7 +14,7 @@
     <properties>
         <!--RPM VERSION-->
 
-        <rpm.version.major>1</rpm.version.major>
+        <rpm.version.major>2</rpm.version.major>
         <rpm.version.minor>0</rpm.version.minor>
         <rpm.version.build>0</rpm.version.build>
         <rpm.version>${rpm.version.major}.${rpm.version.minor}</rpm.version>
@@ -41,9 +41,8 @@
         <xalan.verion>2.7.1</xalan.verion>
         <xerces.version>2.9.1</xerces.version>
         <rpm-maven-plugin.version>2.1.5</rpm-maven-plugin.version>
-        <presidio.core.version>1.1-0-SNAPSHOT</presidio.core.version>
+        <presidio.core.version>2.0.0-SNAPSHOT</presidio.core.version>
         <jackson.version>2.9.0</jackson.version>
-
     </properties>
 
     <modules>
@@ -733,7 +732,13 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>11.0.2</version>
+                <version>19.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.code.findbugs</groupId>
+                <artifactId>jsr305</artifactId>
+                <version>3.0.2</version>
             </dependency>
 
             <dependency>
@@ -948,90 +953,91 @@
             <dependency>
                 <groupId>presidio.flume.core</groupId>
                 <artifactId>flume-ng-configuration</artifactId>
-                <version>1.1.0-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>presidio.flume.core</groupId>
                 <artifactId>flume-ng-core</artifactId>
-                <version>1.1.0-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>presidio.flume.core</groupId>
                 <artifactId>flume-tools</artifactId>
-                <version>1.1.0-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>presidio.flume.core</groupId>
                 <artifactId>flume-ng-node</artifactId>
-                <version>1.1.0-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>presidio.flume.core.flume-ng-channels</groupId>
                 <artifactId>flume-file-channel</artifactId>
-                <version>1.1.0-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>presidio.flume.core.flume-ng-channels</groupId>
                 <artifactId>flume-jdbc-channel</artifactId>
-                <version>1.1.0-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>presidio.flume.core.flume-ng-channels</groupId>
                 <artifactId>flume-kafka-channel</artifactId>
-                <version>1.7.0</version>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>presidio.flume.core.flume-ng-channels</groupId>
                 <artifactId>flume-spillable-memory-channel</artifactId>
-                <version>1.1.0-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>presidio.flume.core.flume-ng-channels</groupId>
                 <artifactId>flume-recoverable-memory-channel</artifactId>
-                <version>1.7.0</version>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>presidio.flume.core.flume-shared</groupId>
                 <artifactId>flume-shared-kafka-test</artifactId>
-                <version>1.1.0-SNAPSHOT</version>
+                <version>${project.version}</version>
                 <scope>test</scope>
             </dependency>
 
             <dependency>
                 <groupId>presidio.flume.core.flume-ng-sinks</groupId>
                 <artifactId>flume-hdfs-sink</artifactId>
-                <version>1.1.0-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
 
             <!--<dependency>-->
                 <!--<groupId>presidio.flume.core.flume-ng-sinks</groupId>-->
                 <!--<artifactId>flume-hive-sink</artifactId>-->
-                <!--<version>1.1.0-SNAPSHOT</version>-->
+                <!--<version>${project.version}</version>-->
             <!--</dependency>-->
 
             <dependency>
                 <groupId>presidio.flume.core.flume-ng-sinks</groupId>
                 <artifactId>flume-irc-sink</artifactId>
-                <version>1.7.0</version>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>presidio.flume.core.flume-ng-sinks</groupId>
                 <artifactId>flume-ng-hbase-sink</artifactId>
-                <version>1.7.0</version>
+                <version>${project.version}</version>
             </dependency>
+
             <!--<dependency>-->
                 <!--<groupId>presidio.flume.core.flume-ng-sinks</groupId>-->
                 <!--<artifactId>flume-ng-morphline-solr-sink</artifactId>-->
-                <!--<version>1.1.0-SNAPSHOT</version>-->
+                <!--<version>${project.version}</version>-->
             <!--</dependency>-->
 
             <dependency>
@@ -1043,7 +1049,7 @@
             <dependency>
                 <groupId>presidio.flume.core.flume-ng-sources</groupId>
                 <artifactId>flume-jms-source</artifactId>
-                <version>1.1.0-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>
@@ -1055,7 +1061,7 @@
             <dependency>
                 <groupId>presidio.flume.core</groupId>
                 <artifactId>flume-ng-sdk</artifactId>
-                <version>1.1.0-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>
@@ -1067,7 +1073,7 @@
             <dependency>
                 <groupId>presidio.flume.core</groupId>
                 <artifactId>flume-ng-sdk</artifactId>
-                <version>1.1.0-SNAPSHOT</version>
+                <version>${project.version}</version>
                 <classifier>tests</classifier>
                 <scope>test</scope>
             </dependency>
@@ -1075,26 +1081,13 @@
             <dependency>
                 <groupId>presidio.flume.core</groupId>
                 <artifactId>flume-ng-auth</artifactId>
-                <version>1.1.0-SNAPSHOT</version>
-            </dependency>
-
-            <dependency>
-                <groupId>presidio.flume.core.flume-ng-clients</groupId>
-                <artifactId>flume-ng-log4jappender</artifactId>
-                <version>1.7.0</version>
-            </dependency>
-
-            <dependency>
-                <groupId>presidio.flume.core.flume-ng-clients</groupId>
-                <artifactId>flume-ng-log4jappender</artifactId>
-                <version>1.7.0</version>
-                <classifier>jar-with-dependencies</classifier>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>presidio.flume.core</groupId>
                 <artifactId>flume-ng-embedded-agent</artifactId>
-                <version>1.1.0-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>

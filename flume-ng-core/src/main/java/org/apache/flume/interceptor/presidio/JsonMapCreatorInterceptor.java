@@ -40,8 +40,7 @@ public class JsonMapCreatorInterceptor extends AbstractPresidioJsonInterceptor {
 
     @Override
     public Event doIntercept(Event event) {
-        final String eventBodyAsString = new String(event.getBody());
-        JsonObject eventBodyAsJson = new JsonParser().parse(eventBodyAsString).getAsJsonObject();
+        JsonObject eventBodyAsJson = getJsonObject(event);
 
         JsonObject mapToAdd;
         if (overrideExistingMap || !eventBodyAsJson.has(mapKeyName)) {
@@ -76,7 +75,7 @@ public class JsonMapCreatorInterceptor extends AbstractPresidioJsonInterceptor {
             eventBodyAsJson.add(mapKeyName, mapToAdd);
         }
 
-        event.setBody(eventBodyAsJson.toString().getBytes());
+        setJsonObject(event, eventBodyAsJson);
         return event;
     }
 

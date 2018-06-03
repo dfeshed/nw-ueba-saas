@@ -15,18 +15,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.flume.interceptor;
 
 import org.apache.flume.interceptor.presidio.*;
+import org.apache.flume.interceptor.presidio.conditionalarraypopulator.JsonConditionalArrayPopulatorInterceptor;
+import org.apache.flume.interceptor.presidio.regexcaptureandformat.JsonRegexCaptureAndFormatInterceptor;
 
 public enum InterceptorType {
-
     TIMESTAMP(org.apache.flume.interceptor.TimestampInterceptor.Builder.class),
     HOST(org.apache.flume.interceptor.HostInterceptor.Builder.class),
     STATIC(org.apache.flume.interceptor.StaticInterceptor.Builder.class),
-    REGEX_FILTER(
-            org.apache.flume.interceptor.RegexFilteringInterceptor.Builder.class),
+    REGEX_FILTER(org.apache.flume.interceptor.RegexFilteringInterceptor.Builder.class),
     REGEX_EXTRACTOR(org.apache.flume.interceptor.RegexExtractorInterceptor.Builder.class),
     SEARCH_REPLACE(org.apache.flume.interceptor.SearchAndReplaceInterceptor.Builder.class),
     JSON_RENAMER(JsonFieldRenamerInterceptor.Builder.class),
@@ -39,7 +38,12 @@ public enum InterceptorType {
     JSON_REGEX_PREDICATOR(JsonRegexPredicatorInterceptor.Builder.class),
     JSON_CASE(JsonCaseInterceptor.Builder.class),
     JSON_TIMESTAMP_WITH_OFFSET(JsonTimestampWithOffsetFormatterInterceptor.Builder.class),
-    JSON_SEARCH_AND_REPLACE(JsonSearchAndReplaceInterceptor.Builder.class);
+    JSON_SEARCH_AND_REPLACE(JsonSearchAndReplaceInterceptor.Builder.class),
+    JSON_FIELD_SWITCH_CASE_INTERCEPTOR(JsonFieldSwitchCaseInterceptor.Builder.class),
+    JSON_ARRAY_TO_SINGLE(JsonArrayToElementInterceptor.Builder.class),
+    JSON_EPOCH(JsonEpochInterceptor.Builder.class),
+    JSON_CONDITIONAL_ARRAY_POPULATOR(JsonConditionalArrayPopulatorInterceptor.Builder.class),
+    JSON_REGEX_CAPTURE_AND_FORMAT(JsonRegexCaptureAndFormatInterceptor.Builder.class);
 
     private final Class<? extends Interceptor.Builder> builderClass;
 
@@ -50,5 +54,4 @@ public enum InterceptorType {
     public Class<? extends Interceptor.Builder> getBuilderClass() {
         return builderClass;
     }
-
 }

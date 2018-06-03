@@ -39,8 +39,7 @@ public class JsonFieldValueReplacerInterceptor extends AbstractPresidioJsonInter
 
     @Override
     public Event doIntercept(Event event) {
-        final String eventBodyAsString = new String(event.getBody());
-        JsonObject eventBodyAsJson = new JsonParser().parse(eventBodyAsString).getAsJsonObject();
+        JsonObject eventBodyAsJson =  getJsonObject(event);
 
         String currField;
         String currValueToReplaceRegexValue;
@@ -78,7 +77,7 @@ public class JsonFieldValueReplacerInterceptor extends AbstractPresidioJsonInter
             }
         }
 
-        event.setBody(eventBodyAsJson.toString().getBytes());
+        setJsonObject(event, eventBodyAsJson);
         return event;
     }
 

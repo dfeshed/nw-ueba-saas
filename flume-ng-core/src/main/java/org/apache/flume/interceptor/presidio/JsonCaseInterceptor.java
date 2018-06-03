@@ -37,11 +37,8 @@ public class JsonCaseInterceptor extends AbstractPresidioJsonInterceptor {
 
     @Override
     public Event doIntercept(Event event) {
-        final String eventBodyAsString = new String(event.getBody());
 
-        JsonObject eventBodyAsJson;
-        eventBodyAsJson = new JsonParser().parse(eventBodyAsString).getAsJsonObject();
-
+        JsonObject eventBodyAsJson = getJsonObject(event);
 
         String currField;
         String currOperation;
@@ -69,7 +66,7 @@ public class JsonCaseInterceptor extends AbstractPresidioJsonInterceptor {
         }
 
 
-        event.setBody(eventBodyAsJson.toString().getBytes());
+        setJsonObject(event, eventBodyAsJson);
         return event;
     }
 
