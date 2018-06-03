@@ -33,6 +33,6 @@ public class AdapterConfig {
         PresidioInputPersistencyServiceFactory inputPersistencyServiceFactory = new PresidioInputPersistencyServiceFactory();
         final PresidioInputPersistencyService presidioInputPersistencyService = inputPersistencyServiceFactory.createPresidioInputPersistencyService();
         return new FlumeAdapterExecutionService(new ProcessExecutor(),
-                new FlumeConfigurationUtil("adapter", "ca"), new AdapterConfigurationUtil(configurationServerClientService), presidioInputPersistencyService, mongoTemplate);
+                new FlumeConfigurationUtil("adapter", "nw"), new AdapterConfigurationUtil(configurationServerClientService), presidioInputPersistencyService, mongoTemplate);
     }
 }

@@ -18,4 +18,3 @@ echo "building presidio-workflows"
 cd ../presidio-workflows/
 python setup.py bdist_egg --dist-dir $BUILD_OUTPUT
 echo "finished building presidio-workflows"
-
