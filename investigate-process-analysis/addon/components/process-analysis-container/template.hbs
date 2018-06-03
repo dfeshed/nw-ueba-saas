@@ -1,11 +1,11 @@
 {{#if hasError}}
   {{rsa-panel-message title=(t 'investigateShared.endpoint.errorTitle') message=errorMessage}}
 {{else}}
-  <vbox xs="9" class="process-list-box">
+  <div class="process-list-box processTreeBox {{if isEventsSelected 'collapse' 'expand'}}">
     {{process-tree queryInput=queryInput}}
-  </vbox>
+  </div>
 
-  <vbox xs="3" class="process-list-box">
+  <div class="process-list-box processDetailsBox {{unless isEventsSelected 'collapse' 'expand'}}">
    {{process-details}}
-  </vbox>
+  </div>
 {{/if}}

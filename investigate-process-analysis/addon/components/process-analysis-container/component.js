@@ -5,6 +5,7 @@ import {
   errorMessage,
   queryInput
 } from 'investigate-process-analysis/reducers/process-tree/selectors';
+import { isEventsSelected } from 'investigate-process-analysis/reducers/process-visuals/selectors';
 import { fetchProcessDetails } from 'investigate-process-analysis/actions/creators/process-properties';
 
 const dispatchToActions = {
@@ -14,7 +15,8 @@ const dispatchToActions = {
 const stateToComputed = (state) => ({
   hasError: hasError(state),
   errorMessage: errorMessage(state),
-  queryInput: queryInput(state)
+  queryInput: queryInput(state),
+  isEventsSelected: isEventsSelected(state)
 });
 
 const WrapperComponent = Component.extend({

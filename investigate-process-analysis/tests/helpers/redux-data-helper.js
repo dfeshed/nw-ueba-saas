@@ -54,4 +54,8 @@ export default class DataHelper {
     _set(this.state, 'processProperties.hostDetails', processProperties);
     return this;
   }
+  detailsTabSelected(detailsTabSelected) {
+    _set(this.state, 'processVisuals.detailsTabSelected', detailsTabSelected);
+    return this;
+  }
 }

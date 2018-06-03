@@ -13,6 +13,7 @@ const stateToComputed = (state) => ({
 
 const EventsTableComponent = Component.extend({
   layout,
+  tagName: 'hbox',
   classNames: ['process-events-table']
 });
 export default connect(stateToComputed)(EventsTableComponent);
