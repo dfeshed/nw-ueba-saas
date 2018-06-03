@@ -2,14 +2,13 @@ package fortscale.ml.model.metrics;
 
 import fortscale.ml.model.builder.TimeModelBuilderConf;
 import fortscale.utils.time.TimeService;
-import presidio.monitoring.records.Metric;
+import presidio.monitoring.sdk.api.services.model.Metric;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.monitoring.services.export.MetricsExporter;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 

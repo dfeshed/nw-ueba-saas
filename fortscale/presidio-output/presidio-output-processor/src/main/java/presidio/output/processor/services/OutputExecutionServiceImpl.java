@@ -16,7 +16,9 @@ import presidio.output.processor.services.alert.AlertService;
 import presidio.output.processor.services.user.UserService;
 import presidio.output.processor.services.user.UsersAlertData;
 
+import java.time.Duration;
 import java.time.Instant;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -151,6 +153,18 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
     public void updateAllUsersData() throws Exception {
         this.userService.updateUserData();
+
+        reportDailyOutputMetrics();
+    }
+
+    private void reportDailyOutputMetrics() {
+        //calculate number of active users in the last 24 hours
+        //active user = user with smart (smart score >= 0)
+        Instant endDate = Instant.now();
+        Instant startDate = endDate.minus(Duration.ofHours(24));
+        int distinctSmartUsers = adeManagerSdk.getDistinctSmartUsers(new TimeRange(startDate, endDate));
+        outputMonitoringService.reportNumActiveUsersLastDay(distinctSmartUsers, startDate);
+
     }
 
     private void storeAlerts(List<Alert> alerts) {

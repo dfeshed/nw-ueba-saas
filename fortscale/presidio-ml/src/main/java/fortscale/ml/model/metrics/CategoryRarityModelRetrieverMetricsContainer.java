@@ -1,13 +1,8 @@
 package fortscale.ml.model.metrics;
 
 import fortscale.ml.model.retriever.CategoricalFeatureValueRetrieverConf;
-import presidio.monitoring.records.Metric;
-import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.monitoring.services.export.MetricsExporter;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Metrics on category rarity model retriever

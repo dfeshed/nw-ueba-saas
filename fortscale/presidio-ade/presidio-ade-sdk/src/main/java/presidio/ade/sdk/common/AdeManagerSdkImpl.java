@@ -6,6 +6,7 @@ import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.smart.record.conf.SmartRecordConf;
 import fortscale.smart.record.conf.SmartRecordConfService;
+import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
@@ -23,6 +24,7 @@ import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import presidio.ade.domain.store.enriched.StoreManagerAwareEnrichedDataStore;
 import presidio.ade.domain.store.scored.ScoredEnrichedDataStore;
 import presidio.ade.domain.store.smart.SmartDataReader;
+import presidio.ade.domain.store.smart.SmartRecordsMetadata;
 import presidio.ade.sdk.historical_runs.HistoricalRunParams;
 import presidio.ade.sdk.online_run.OnlineRunParams;
 
@@ -268,6 +270,17 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
     public PageIterator<SmartRecord> getSmartRecords(int pageSize, int maxGroupSize, TimeRange timeRange, int scoreThreshold) {
         Collection<String> configurationNames = smartRecordConfService.getSmartRecordConfs().stream().map(SmartRecordConf::getName).collect(Collectors.toSet());
         return new MultipleSmartCollectionsPaginationService(configurationNames, smartDataReader, pageSize, maxGroupSize).getPageIterator(timeRange, scoreThreshold);
+    }
+
+    @Override
+    public int getDistinctSmartUsers(TimeRange timeRange) {
+        //reading smarts from the hourly smarts collections only!
+        SmartRecordsMetadata smartRecordsMetadata = new SmartRecordsMetadata("userId_hourly", timeRange.getStart(), timeRange.getEnd());
+        List<ContextIdToNumOfItems> contextIdToNumOfSmarts = smartDataReader.aggregateContextIdToNumOfEvents(smartRecordsMetadata, 0);
+        if(contextIdToNumOfSmarts == null) {
+            return 0;
+        }
+        return contextIdToNumOfSmarts.size();
     }
 
     @Override

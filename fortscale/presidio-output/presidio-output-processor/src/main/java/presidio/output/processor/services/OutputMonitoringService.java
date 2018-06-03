@@ -1,7 +1,7 @@
 package presidio.output.processor.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import presidio.monitoring.records.Metric;
+import presidio.monitoring.sdk.api.services.model.Metric;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.output.domain.records.alerts.Alert;
@@ -17,7 +17,8 @@ import java.util.Map;
  */
 public class OutputMonitoringService {
 
-    private static final String NUMBEANOMALY_EVENTS_METRIC_NAME = "number_of_anomaly_events";
+    private static final String NUM_ANOMALY_EVENTS_METRIC_NAME = "number_of_anomaly_events";
+    private static final String NUM_ACTIVE_USERS_LAST_DAY_METRIC_NAME = "active_users_last_day";
     private final String NUMBER_OF_ALERTS_METRIC_NAME = "number_of_alerts_created";
     private final String NUMBER_OF_USERS_METRIC_NAME = "number_of_users_created";
     private final String LAST_SMART_TIME_METRIC_NAME = "last_smart_time";
@@ -64,11 +65,21 @@ public class OutputMonitoringService {
         }
 
         Map<MetricEnums.MetricTagKeysEnum, String> tags = new HashMap<>();
-        metricCollectingService.addMetric(new Metric.MetricBuilder().setMetricName(NUMBEANOMALY_EVENTS_METRIC_NAME).
+        metricCollectingService.addMetric(new Metric.MetricBuilder().setMetricName(NUM_ANOMALY_EVENTS_METRIC_NAME).
                 setMetricValue(eventsCount).
                 setMetricTags(tags).
                 setMetricUnit(MetricEnums.MetricUnitType.NUMBER).
                 setMetricLogicTime(startDate).
+                build());
+    }
+
+    public void reportNumActiveUsersLastDay(int count, Instant logicalTime) {
+        Map<MetricEnums.MetricTagKeysEnum, String> tags = new HashMap<>();
+        metricCollectingService.addMetric(new Metric.MetricBuilder().setMetricName(NUM_ACTIVE_USERS_LAST_DAY_METRIC_NAME).
+                setMetricValue(count).
+                setMetricTags(tags).
+                setMetricUnit(MetricEnums.MetricUnitType.NUMBER).
+                setMetricLogicTime(logicalTime).
                 build());
     }
 }

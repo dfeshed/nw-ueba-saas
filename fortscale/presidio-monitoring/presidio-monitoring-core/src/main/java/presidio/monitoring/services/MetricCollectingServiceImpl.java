@@ -2,7 +2,7 @@ package presidio.monitoring.services;
 
 import fortscale.utils.logging.Logger;
 import presidio.monitoring.endPoint.PresidioMetricBucket;
-import presidio.monitoring.records.Metric;
+import presidio.monitoring.sdk.api.services.model.Metric;
 
 public class MetricCollectingServiceImpl implements MetricCollectingService {
 

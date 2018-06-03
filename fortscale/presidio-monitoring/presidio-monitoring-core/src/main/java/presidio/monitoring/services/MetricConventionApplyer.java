@@ -1,6 +1,6 @@
 package presidio.monitoring.services;
 
-import presidio.monitoring.records.Metric;
+import presidio.monitoring.sdk.api.services.model.Metric;
 
 /**
  *

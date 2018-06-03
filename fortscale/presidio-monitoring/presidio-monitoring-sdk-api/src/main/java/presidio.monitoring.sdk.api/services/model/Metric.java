@@ -1,4 +1,4 @@
-package presidio.monitoring.records;
+package presidio.monitoring.sdk.api.services.model;
 
 
 import org.apache.commons.collections.MapUtils;
