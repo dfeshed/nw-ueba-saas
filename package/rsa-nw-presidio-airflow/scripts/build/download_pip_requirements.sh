@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 mkdir -p $1/airflow
 mkdir -p $1/virtualenv
 pip download virtualenv==15.2.0 -d $1/virtualenv
