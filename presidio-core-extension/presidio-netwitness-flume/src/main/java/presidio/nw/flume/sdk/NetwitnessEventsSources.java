@@ -28,10 +28,8 @@ public class NetwitnessEventsSources {
     }
 
     public List<String> getSourcesURI() {
-        List sources = Collections.singletonList(BROKER_END_POINT);
-        return sources;
 
-        /*DataPullingConfiguration dataPullingConfiguration = null;
+        DataPullingConfiguration dataPullingConfiguration = null;
         try {
             dataPullingConfiguration = configurationServerClientService.readConfigurationAsJson("application-presidio", "default", Configuration.class).getDataPulling();
         } catch (Exception e) {
@@ -46,6 +44,6 @@ public class NetwitnessEventsSources {
         }
 
         List sources = Collections.singletonList(dataPullingConfiguration.getSource());
-        return sources;*/
+        return sources;
     }
 }

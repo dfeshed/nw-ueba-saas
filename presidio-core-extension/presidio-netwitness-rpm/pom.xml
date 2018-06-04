@@ -6,7 +6,7 @@
     <parent>
         <groupId>presidio.netwitness</groupId>
         <artifactId>presidio-netwitness</artifactId>
-        <version>1.1-0-SNAPSHOT</version>
+        <version>2.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>presidio-netwitness-rpm</artifactId>
@@ -80,20 +80,7 @@
                     <mappings>
                         <mapping>
                             <directoryIncluded>false</directoryIncluded>
-                            <directory>${tomcat_webapps_path}</directory>
-                            <username>tomcat</username>
-                            <groupname>tomcat</groupname>
-                            <sources>
-                                <source>
-                                    <location>
-                                        ${project.basedir}/../presidio-netwitness-connector/presidio-netwitness-connector-manager-webapp/target/presidio-netwitness-manager.war
-                                    </location>
-                                </source>
-                            </sources>
-                        </mapping>
-                        <mapping>
-                            <directoryIncluded>false</directoryIncluded>
-                            <directory>${flume_home_directory}/plugins.d/PresidioRestSource/libext</directory>
+                            <directory>${flume_home_directory}/plugins.d/PresidioStreamingSource/libext</directory>
                             <username>presidio</username>
                             <groupname>presidio</groupname>
                             <sources>
@@ -104,7 +91,7 @@
                         </mapping>
                         <mapping>
                             <directoryIncluded>false</directoryIncluded>
-                            <directory>${flume_home_directory}/plugins.d/PresidioRestSource/lib</directory>
+                            <directory>${flume_home_directory}/plugins.d/PresidioStreamingSource/lib</directory>
                             <username>presidio</username>
                             <groupname>presidio</groupname>
                             <sources>
@@ -148,67 +135,11 @@
                             <groupname>presidio</groupname>
                             <sources>
                                 <source>
-                                    <location>${project.parent.build.directory}/eggs</location>
-                                </source>
-                            </sources>
-                        </mapping>
-                        <mapping>
-                            <directoryIncluded>false</directoryIncluded>
-                            <directory>${rpm-maven-plugin.directory}</directory>
-                            <username>presidio</username>
-                            <groupname>presidio</groupname>
-                            <sources>
-                                <source>
-                                    <location>src/main/python</location>
-                                </source>
-                            </sources>
-                        </mapping>
-                        <mapping>
-                            <directory>${rpm-maven-plugin.directory}</directory>
-                            <username>presidio</username>
-                            <groupname>presidio</groupname>
-                            <sources>
-                                <source>
-                                    <location>src/main/python</location>
-                                </source>
-                            </sources>
-                        </mapping>
-                        <mapping>
-                            <!-- El extensions mapping-->
-                            <directoryIncluded>true</directoryIncluded>
-                            <directory>${rpm-maven-plugin.deployment_target_directory}/el-extensions-vendor</directory>
-                            <username>presidio</username>
-                            <groupname>presidio</groupname>
-                            <sources>
-                                <source>
-                                    <location>${project.parent.build.directory}/../presidio-netwitness-monitoring/target/resources/elasticsearch</location>
-                                </source>
-                            </sources>
-                        </mapping>
-                        <mapping>
-                            <directory>${rpm-maven-plugin.resources}</directory>
-                            <username>presidio</username>
-                            <groupname>presidio</groupname>
-                            <sources>
-                                <source>
-                                    <location>resources</location>
+                                    <location>${project.build.directory}/eggs</location>
                                 </source>
                             </sources>
                         </mapping>
                     </mappings>
-                    <preinstallScriptlet>
-                        <script>
-                            <!-- pre installation commands: -->
-                            echo "Stopping Tomcat"
-                            systemctl stop tomcat.service
-
-                            echo "Removing core's webapp - TEMPORARY"
-                            rm -rf /opt/tomcat/webapps/presidio-manager*
-
-
-                            <!-- end of pre installation -->
-                        </script>
-                    </preinstallScriptlet>
                     <postinstallScriptlet>
                         <script>
                             <!-- post installation commands: -->
@@ -225,7 +156,6 @@
                             wait ${!}
                             echo "Mongo: creating presidio user"
                             sleep 5
-                            mongo localhost:27017/netwitness /temp/mongo_create_ca_user.js
                             echo "Stopping mongo service"
                             systemctl stop mongod.service
                             wait ${!}
@@ -248,18 +178,6 @@
 
                             echo "Restarting tomcat"
                             systemctl restart tomcat.service
-
-                            <!-- Install the elasticsearch objects (searches, visualize and dashboards)-->
-                            chmod +x ${presidio_home_path}/installation/installation-scripts/vendor/init_lp_elasticsearch.sh
-                            ${presidio_home_path}/installation/installation-scripts/vendor/init_lp_elasticsearch.sh
-
-                            <!--copy httpd template file -->
-                            echo "copying httpd template"
-                            cp ${rpm-maven-plugin.resources}/httpd.conf /etc/httpd/conf/
-                            chmod 777 /etc/httpd/conf/httpd.conf
-
-                            echo "restarting httpd"
-                            systemctl restart httpd
                             <!--end of post installation -->
                         </script>
                     </postinstallScriptlet>
