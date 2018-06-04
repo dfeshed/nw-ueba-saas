@@ -1,6 +1,6 @@
 import config from 'ember-get-config';
 import * as ACTION_TYPES from './types';
-import { fetchSummary } from './fetch/services';
+import { fetchSummary } from 'investigate-shared/actions/api/services';
 import getEventCount from './event-count-creators';
 import getEventTimeline from './event-timeline-creators';
 import { eventsGetFirst } from './events-creators';

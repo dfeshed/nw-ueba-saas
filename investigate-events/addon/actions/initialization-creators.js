@@ -8,7 +8,7 @@ import {
   getServiceSummary
 } from './data-creators';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
-import { fetchServices } from './fetch/services';
+import { fetchServices } from 'investigate-shared/actions/api/services';
 import { lookup } from 'ember-dependency-lookup';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 
