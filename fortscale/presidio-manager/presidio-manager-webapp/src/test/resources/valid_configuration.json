@@ -26,5 +26,8 @@
         "port": "2"
       }
     }
+  },
+  "dataPulling": {
+    "source": "nw://admin:netwitness@10.25.67.33:50005"
   }
 }

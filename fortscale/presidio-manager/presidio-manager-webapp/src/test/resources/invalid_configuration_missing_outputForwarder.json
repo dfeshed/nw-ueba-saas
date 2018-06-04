@@ -13,5 +13,8 @@
       "FILE"
     ],
     "startTime": "2007-12-03T10:15:30Z"
+  },
+  "dataPulling": {
+    "source": "nw://admin:netwitness@10.25.67.33:50005"
   }
 }

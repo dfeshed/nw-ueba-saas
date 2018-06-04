@@ -7,6 +7,8 @@ import presidio.ade.domain.record.enriched.BaseEnrichedContext;
 public class AdeEnrichedActiveDirectoryContext  extends BaseEnrichedContext {
 
     private String userId;
+    private String srcMachineId;
+    private String srcMachineNameRegexCluster;
     private EventResult result;
     private Boolean isUserAdmin;
     private String operationType;
@@ -18,6 +20,8 @@ public class AdeEnrichedActiveDirectoryContext  extends BaseEnrichedContext {
     public AdeEnrichedActiveDirectoryContext(EnrichedActiveDirectoryRecord enrichedActiveDirectoryRecord) {
         super(enrichedActiveDirectoryRecord.getEventId());
         this.userId = enrichedActiveDirectoryRecord.getUserId();
+        this.srcMachineId = enrichedActiveDirectoryRecord.getSrcMachineId();
+        this.srcMachineNameRegexCluster = enrichedActiveDirectoryRecord.getSrcMachineNameRegexCluster();
         this.result = enrichedActiveDirectoryRecord.getResult();
         this.isUserAdmin = enrichedActiveDirectoryRecord.getUserAdmin();
         this.operationType = enrichedActiveDirectoryRecord.getOperationType();
@@ -29,6 +33,22 @@ public class AdeEnrichedActiveDirectoryContext  extends BaseEnrichedContext {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getSrcMachineId() {
+        return srcMachineId;
+    }
+
+    public void setSrcMachineId(String srcMachineId) {
+        this.srcMachineId = srcMachineId;
+    }
+
+    public String getSrcMachineNameRegexCluster() {
+        return srcMachineNameRegexCluster;
+    }
+
+    public void setSrcMachineNameRegexCluster(String srcMachineNameRegexCluster) {
+        this.srcMachineNameRegexCluster = srcMachineNameRegexCluster;
     }
 
     public EventResult getResult() {

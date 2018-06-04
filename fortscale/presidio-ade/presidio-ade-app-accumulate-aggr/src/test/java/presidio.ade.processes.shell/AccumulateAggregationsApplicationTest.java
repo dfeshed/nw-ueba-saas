@@ -138,7 +138,7 @@ public class AccumulateAggregationsApplicationTest extends EnrichedDataBaseAppTe
         int expectedAccumulatedRecordsSize = daysBackFrom - daysBackTo;
         int expectedAggregatedFeatureValuesSize = endHourOfDay - startHourOfDay;
         List<Double> expectedAggregatedFeatureValues = Arrays.asList(0d,6d);
-        List<Integer> optionalExpectedNumOfDifferentUsersInCollection = Arrays.asList(2, 4, 18);
+        List<Integer> optionalExpectedNumOfDifferentUsersInCollection = Arrays.asList(2, 4, 20);
         assert_each_aggr_feature_has_accumulation("FileHourly", startInstant, expectedAccumulatedRecordsSize,
                 expectedAggregatedFeatureValuesSize, expectedAggregatedFeatureValues, optionalExpectedNumOfDifferentUsersInCollection);
     }
@@ -212,6 +212,7 @@ public class AccumulateAggregationsApplicationTest extends EnrichedDataBaseAppTe
         fileOperationGenerators.add(new AdeFileOperationGeneratorTemplateFactory().createMoveFromSharedFileOperationsGenerator());
         fileOperationGenerators.add(new AdeFileOperationGeneratorTemplateFactory().createMoveToSharedFileOperationsGenerator());
         fileOperationGenerators.add(new AdeFileOperationGeneratorTemplateFactory().createDownloadFileOperationsGenerator());
+        fileOperationGenerators.add(new AdeFileOperationGeneratorTemplateFactory().createCopyFileOperationsGenerator());
 
         return fileOperationGenerators;
     }

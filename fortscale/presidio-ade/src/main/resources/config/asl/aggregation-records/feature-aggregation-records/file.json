@@ -184,6 +184,21 @@
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_sum_func"
       }
+    },
+    {
+      "name": "numberOfFileCopiedUserIdFileHourly",
+      "type": "F",
+      "bucketConfName": "fileCopiedCounterUserIdFileHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "fileCopiedCounter"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
     }
   ]
 }

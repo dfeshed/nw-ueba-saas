@@ -50,7 +50,7 @@ def get_build_number():
 
 
 setup(name='presidio-workflows-extension',
-      version='1.0' + get_build_number(),
+      version='1.0' ,
       description='Industry\'s First Embedded User and Entity Behavioral Analytics Engine. - python packages',
       long_description=readme(),
       classifiers=[
@@ -63,7 +63,8 @@ setup(name='presidio-workflows-extension',
       author_email='fsgit@fortscale.com',
       packages=find_packages(),
       install_requires=[
-          'apache-airflow[devel]==1.8.2', 'psycopg2', 'python-dateutil'
+          'sqlalchemy==1.1.18', 'psycopg2', 'nose', 'apache-airflow[devel,postgres,crypto,password]==1.9.0',
+          'python-dateutil', 'lxml<4.0,>=3.6.0', 'virtualenv', 'elasticsearch>=5.0.0,<6.0.0'
       ],
       cmdclass={'test': Tox},
       setup_requires=['pytest-runner', 'tox-setuptools', 'tox'],

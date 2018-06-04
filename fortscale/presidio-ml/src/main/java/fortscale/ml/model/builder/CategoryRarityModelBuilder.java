@@ -4,7 +4,7 @@ import fortscale.common.feature.CategoricalFeatureValue;
 import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.metrics.CategoryRarityModelBuilderMetricsContainer;
-import javafx.util.Pair;
+import fortscale.utils.data.Pair;
 import org.springframework.util.Assert;
 
 import java.time.Instant;

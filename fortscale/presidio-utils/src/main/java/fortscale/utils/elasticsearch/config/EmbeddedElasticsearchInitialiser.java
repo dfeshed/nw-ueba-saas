@@ -6,6 +6,7 @@ import pl.allegro.tech.embeddedelasticsearch.EmbeddedElastic;
 import pl.allegro.tech.embeddedelasticsearch.PopularProperties;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -16,6 +17,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class EmbeddedElasticsearchInitialiser {
 
+    public static final String EL_DOWNLOAD_URL = "https://libhq-ro.rsa.lab.emc.com/SA/tools/elastic/elasticsearch-5.0.0.zip";
     private final Logger logger = Logger.getLogger(EmbeddedElasticsearchInitialiser.class);
 
     public static String EL_TEST_VERSION = "5.0.0";
@@ -30,12 +32,14 @@ public class EmbeddedElasticsearchInitialiser {
             return;
         }
         logger.debug("starting embedded elasticsearch");
+
         try {
             embeddedElastic = EmbeddedElastic.builder()
-                    .withElasticVersion(EL_TEST_VERSION)
+//                    .withElasticVersion(EL_TEST_VERSION)// if download url is specified , the version should not be specified
                     .withStartTimeout(2, TimeUnit.MINUTES)
                     .withSetting(PopularProperties.TRANSPORT_TCP_PORT, EL_TEST_PORT)
                     .withSetting(PopularProperties.CLUSTER_NAME, EL_TEST_CLUSTER)
+                    .withDownloadUrl(new URL(EL_DOWNLOAD_URL))
                     .withSetting("node.max_local_storage_nodes", 3)
                     .withCleanInstallationDirectoryOnStop(true)
                     .build()

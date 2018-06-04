@@ -504,6 +504,24 @@
       "FILE_DOWNLOADED": [
         "FILE_ACTION"
       ],
+      "FILE_ACCESSED": [
+        "FILE_ACTION"
+      ],
+      "FILE_CHECKED_IN": [
+        "FILE_ACTION"
+      ],
+      "FILE_CHECKED_OUT_DISCARDED": [
+        "FILE_ACTION"
+      ],
+      "FILE_CHECKED_OUT": [
+        "FILE_ACTION"
+      ],
+      "FOLDER_ACCESSED": [
+        "FILE_ACTION"
+      ],
+      "FOLDER_MODIFIED": [
+        "FILE_ACTION"
+      ],
       "FOLDER_AUDITING_CHANGED": [
         "FILE_PERMISSION_CHANGE"
       ],

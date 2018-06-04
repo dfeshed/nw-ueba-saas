@@ -14,6 +14,7 @@ import presidio.manager.airlfow.service.ConfigurationAirflowService;
 import presidio.manager.api.records.PresidioManagerConfiguration;
 import presidio.manager.api.records.ValidationResults;
 import presidio.security.manager.service.ConfigurationSecurityService;
+import presidio.webapp.service.ConfigurationDataPullingService;
 import presidio.webapp.service.ConfigurationManagerService;
 
 import java.io.File;
@@ -33,6 +34,8 @@ public class ConfigurationProcessingMngServiceTest {
     private JsonNode forwarderFalseAndSyslogInOutputConfiguration;
     private JsonNode forwarderFalseAndWithoutSyslog;
     private JsonNode dataPipeLineWithInvalidSchema;
+    private JsonNode dataPullingMissingConfiguration;
+    private JsonNode dataPullingMissingSourceConfiguration;
     private JsonNode jsonWithGeneralError;
     @Autowired
     private ApplicationContext ctx;
@@ -49,7 +52,9 @@ public class ConfigurationProcessingMngServiceTest {
         forwarderMissingOutputForwarder = setJson("invalid_configuration_missing_outputForwarder.json");
         forwarderFalseAndSyslogInOutputConfiguration = setJson("invalid_configuration_false_and_syslog.json");
         forwarderFalseAndWithoutSyslog = setJson("valid_configuration_enableForwarder_false.json");
-        configurationManagerService = new ConfigurationManagerService(new ConfigurationAirflowService(null, "workflows", null, null), new ConfigurationSecurityService(null, null, "/tmp/httpdtest.conf", "/tmp/krb5test.conf", false), new ConfigurationForwarderService());
+        dataPullingMissingConfiguration = setJson("invalid_configuration_missing_dataPulling.json");
+        dataPullingMissingSourceConfiguration = setJson("invalid_configuration_missing_dataPulling_source.json");
+        configurationManagerService = new ConfigurationManagerService(new ConfigurationAirflowService(null, "workflows", null, null), new ConfigurationSecurityService(null, null, "/tmp/httpdtest.conf", "/tmp/krb5test.conf", false), new ConfigurationForwarderService(), new ConfigurationDataPullingService());
     }
 
     @Test
@@ -75,7 +80,7 @@ public class ConfigurationProcessingMngServiceTest {
     public void invalidPresidioConfigurationOnlySystem() {
         PresidioManagerConfiguration presidioManagerConfiguration = configurationManagerService.presidioManagerConfigurationFactory(presidioConfigurationOnlySystem);
         ValidationResults validationResults = configurationManagerService.validateConfiguration(presidioManagerConfiguration);
-        Assert.assertEquals(2, validationResults.getErrorsList().size());
+        Assert.assertEquals(3, validationResults.getErrorsList().size());
     }
 
     @Test
@@ -109,6 +114,20 @@ public class ConfigurationProcessingMngServiceTest {
     @Test
     public void forwarderMissingOutputForwarder() {
         PresidioManagerConfiguration presidioManagerConfiguration = configurationManagerService.presidioManagerConfigurationFactory(forwarderMissingOutputForwarder);
+        ValidationResults validationResults = configurationManagerService.validateConfiguration(presidioManagerConfiguration);
+        Assert.assertEquals(1, validationResults.getErrorsList().size());
+    }
+
+    @Test
+    public void dataPullingMissingConfiguration() {
+        PresidioManagerConfiguration presidioManagerConfiguration = configurationManagerService.presidioManagerConfigurationFactory(dataPullingMissingConfiguration);
+        ValidationResults validationResults = configurationManagerService.validateConfiguration(presidioManagerConfiguration);
+        Assert.assertEquals(1, validationResults.getErrorsList().size());
+    }
+
+    @Test
+    public void dataPullingMissingConfiguration_missingSourceProperty() {
+        PresidioManagerConfiguration presidioManagerConfiguration = configurationManagerService.presidioManagerConfigurationFactory(dataPullingMissingSourceConfiguration);
         ValidationResults validationResults = configurationManagerService.validateConfiguration(presidioManagerConfiguration);
         Assert.assertEquals(1, validationResults.getErrorsList().size());
     }

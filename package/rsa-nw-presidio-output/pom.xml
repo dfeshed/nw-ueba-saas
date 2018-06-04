@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>package</artifactId>
+        <groupId>com.rsa.netwitness.presidio</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>rsa-nw-presidio-output</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-output-webapp</artifactId>
+            <version>${presidio-core.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+
+            <!-- download dependency chain for RPM bundling -->
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-client-dependencies</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/dependencies</outputDirectory>
+                            <excludeTransitive>true</excludeTransitive>
+                            <stripVersion>true</stripVersion>
+                            <stripClassifier>true</stripClassifier>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- create RPM -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>rpm-maven-plugin</artifactId>
+                <version>${rpm-maven-plugin.version}</version>
+                <configuration>
+                    <summary>Presidio(UEBA) core output REST API server</summary>
+                    <mappings>
+                        <mapping>
+                            <directoryIncluded>false</directoryIncluded>
+                            <directory>/usr/sbin/presidio/output</directory>
+                            <username>presidio</username>
+                            <groupname>presidio</groupname>
+                            <sources>
+                                <source>
+                                    <includes>
+                                        <include>*.jar</include>
+                                    </includes>
+                                    <location>${project.build.directory}/dependencies</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directoryIncluded>false</directoryIncluded>
+                            <directory>/usr/lib/systemd/system</directory>
+                            <username>presidio</username>
+                            <groupname>presidio</groupname>
+                            <sources>
+                                <source>
+                                    <includes>
+                                        <include>presidio-output.service</include>
+                                    </includes>
+                                    <location>src/main/resources</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                    </mappings>
+                    <requires>
+                        <require>java &gt; 1.8</require>
+                    </requires>
+                    <description>
+                        Presidio(UEBA) core output server
+                    </description>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
