@@ -1,5 +1,24 @@
 .process-analysis-container {
   height: 100vh;
+  .query-container {
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    margin: .5rem 1rem;
+    .rsa-form-button {
+      height: 40px;
+      white-space: nowrap;
+    }
+  }
+}
+.rsa-loader {
+  height: 0.9rem;
+  margin-right: rsa-whitespace(less);
+  margin-left: -(rsa-whitespace(least));
+}
+
+.disclaimer {
+  color:text-color(accentThree);
 }
 
 .processTreeBox, .processDetailsBox {

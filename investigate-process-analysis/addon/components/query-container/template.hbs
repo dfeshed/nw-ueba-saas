@@ -1,0 +1,8 @@
+{{service-selector services=services serviceId=serviceId onServiceSelection=(action 'setSelectedService')}}
+{{time-selector startTime=startTime endTime=endTime onTimeSelection=(action 'setQueryTimeRange')}}
+{{#rsa-form-button
+  class='execute-query-button'
+  defaultAction=(route-action 'executeQuery')
+  style='primary'}}
+  Analyse
+{{/rsa-form-button}}

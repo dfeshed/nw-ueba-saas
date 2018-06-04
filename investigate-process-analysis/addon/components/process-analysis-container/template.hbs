@@ -2,6 +2,7 @@
   {{rsa-panel-message title=(t 'investigateShared.endpoint.errorTitle') message=errorMessage}}
 {{else}}
   <div class="process-list-box processTreeBox {{if isEventsSelected 'collapse' 'expand'}}">
+    {{query-container}}
     {{process-tree queryInput=queryInput}}
   </div>
 

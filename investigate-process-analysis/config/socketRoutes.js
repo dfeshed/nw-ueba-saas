@@ -25,6 +25,20 @@ const processAnalysisConfigGen = function(env) {
         subscriptionDestination: '/user/queue/investigate/events',
         requestDestination: '/ws/investigate/events/stream'
       }
+    },
+    'core-service': {
+      socketUrl: eventsSocketURL,
+      findAll: {
+        subscriptionDestination: '/user/queue/investigate/endpoints',
+        requestDestination: '/ws/investigate/endpoints'
+      }
+    },
+    'core-summary': {
+      socketUrl: eventsSocketURL,
+      query: {
+        subscriptionDestination: '/user/queue/investigate/summary',
+        requestDestination: '/ws/investigate/summary'
+      }
     }
   };
 };
