@@ -3,6 +3,8 @@ package presidio.output.domain.records.alerts;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringExclude;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Mapping;
 import org.springframework.data.elasticsearch.annotations.Setting;
@@ -10,6 +12,7 @@ import presidio.output.domain.records.AbstractElasticDocument;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -83,6 +86,7 @@ public class Alert extends AbstractElasticDocument {
     private List<String> indicatorsNames;
 
     @JsonIgnore
+    @ToStringExclude
     private transient List<Indicator> indicators;
 
     @JsonProperty(USER_TAGS_FIELD_NAME)
@@ -269,24 +273,10 @@ public class Alert extends AbstractElasticDocument {
 
     @Override
     public String toString() {
-        return "Alert{" +
-                "classifications=" + classifications +
-                ", userName='" + userName + '\'' +
-                ", indexedUserName='" + indexedUserName + '\'' +
-                ", smartId='" + smartId + '\'' +
-                ", userId='" + userId + '\'' +
-                ", vendorUserId='" + vendorUserId + '\'' +
-                ", startDate=" + startDate +
-                ", endDate=" + endDate +
-                ", score=" + score +
-                ", indicatorsNum=" + indicatorsNum +
-                ", timeframe=" + timeframe +
-                ", severity=" + severity +
-                ", indicatorsNames=" + indicatorsNames +
-                ", indicators=" + indicators +
-                ", userTags=" + userTags +
-                ", contributionToUserScore=" + contributionToUserScore +
-                ", feedback=" + feedback +
-                '}';
+        return (new ReflectionToStringBuilder(this) {
+            protected boolean accept(Field f) {
+                return super.accept(f) && !f.getName().equals("indicators");
+            }
+        }).toString();
     }
 }

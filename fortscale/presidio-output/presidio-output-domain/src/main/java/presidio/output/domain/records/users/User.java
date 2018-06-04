@@ -2,6 +2,7 @@ package presidio.output.domain.records.users;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.common.general.ThreadLocalWithBatchInformation;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Mapping;
 import org.springframework.data.elasticsearch.annotations.Setting;
@@ -258,20 +259,6 @@ public class User extends AbstractElasticDocument {
 
     @Override
     public String toString() {
-        return "User{" +
-                "userId='" + userId + '\'' +
-                ", userName='" + userName + '\'' +
-                ", indexedUserName='" + indexedUserName + '\'' +
-                ", userDisplayName='" + userDisplayName + '\'' +
-                ", userDisplayNameSortLowercase='" + userDisplayNameSortLowercase + '\'' +
-                ", score=" + score +
-                ", alertClassifications=" + alertClassifications +
-                ", indicators=" + indicators +
-                ", severity=" + severity +
-                ", tags=" + tags +
-                ", alertsCount=" + alertsCount +
-                ", updatedByLogicalStartDate=" + updatedByLogicalStartDate +
-                ", updatedByLogicalEndDate=" + updatedByLogicalEndDate +
-                '}';
+        return ReflectionToStringBuilder.toString(this);
     }
 }
