@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+set -e
+
 echo "stoping airflow services"
 systemctl stop airflow-webserver
 systemctl stop airflow-scheduler
