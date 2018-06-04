@@ -135,12 +135,6 @@
             <artifactId>presidio-forwarder-manager</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>fortscale</groupId>
-            <artifactId>presidio-forwarder-manager</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
     </dependencies>
 
     <profiles>
