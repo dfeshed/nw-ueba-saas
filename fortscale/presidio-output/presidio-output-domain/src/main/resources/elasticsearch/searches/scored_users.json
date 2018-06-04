@@ -1,0 +1,30 @@
+[
+  {
+    "_id": "d6856410-00ef-11e8-b7dc-63e69023fe2a",
+    "_type": "search",
+    "_source": {
+      "title": "Scored Users",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "severity",
+        "userName",
+        "userDisplayName",
+        "tags",
+        "score",
+        "alertsCount",
+        "alertClassifications",
+        "indicators",
+        "userId"
+      ],
+      "sort": [
+        "score",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"presidio-output-user\",\"highlightAll\":true,\"version\":true,\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[{\"meta\":{\"negate\":true,\"index\":\"presidio-output-user\",\"key\":\"score\",\"value\":\"0\",\"disabled\":false,\"alias\":null},\"query\":{\"match\":{\"score\":{\"query\":0,\"type\":\"phrase\"}}},\"$state\":{\"store\":\"appState\"}}]}"
+      }
+    }
+  }
+]
