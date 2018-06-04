@@ -273,10 +273,6 @@ public class Alert extends AbstractElasticDocument {
 
     @Override
     public String toString() {
-        return (new ReflectionToStringBuilder(this) {
-            protected boolean accept(Field f) {
-                return super.accept(f) && !f.getName().equals("indicators");
-            }
-        }).toString();
+        return ReflectionToStringBuilder.toString(this);
     }
 }
