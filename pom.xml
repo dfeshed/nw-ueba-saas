@@ -238,31 +238,28 @@
             </plugins>
         </pluginManagement>
 	</build>
- 
+
 	<modules>
-		 <module>presidio-data-generators</module>
+		<module>presidio-data-generators</module>
 	</modules>
 
-
 	<distributionManagement>
-		<!-- push changes to artifactory, distribute use of sdk -->
 		<repository>
 			<id>asoc-releases</id>
 			<name>repo1.rsa.lab.emc.com-releases</name>
-			<url>https://repo1.rsa.lab.emc.com:8443/artifactory/presidio-test-utils</url>
+			<url>https://repo1.rsa.lab.emc.com:8443/artifactory/asoc-releases</url>
 		</repository>
 		<snapshotRepository>
 			<id>asoc-snapshots</id>
 			<name>repo1.rsa.lab.emc.com-snapshots</name>
-			<url>https://repo1.rsa.lab.emc.com:8443/artifactory/presidio-test-utils</url>
+			<url>https://repo1.rsa.lab.emc.com:8443/artifactory/asoc-snapshots</url>
 		</snapshotRepository>
-
 	</distributionManagement>
+
 	<pluginRepositories>
 		<pluginRepository>
 			<id>asoc-build-repo</id>
 			<url>http://repo1.rsa.lab.emc.com:8081/artifactory/asoc-build-repo</url>
 		</pluginRepository>
 	</pluginRepositories>
-
 </project>
