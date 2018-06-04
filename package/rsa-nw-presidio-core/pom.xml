@@ -220,6 +220,7 @@
                             <directory>${presidio-app.directory}/install/pypackages-install</directory>
                             <username>${presidio.username}</username>
                             <groupname>${presidio.groupname}</groupname>
+                            <filemode>755</filemode>
                             <sources>
                                 <source>
                                     <location>scripts/install/</location>
