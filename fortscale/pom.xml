@@ -131,6 +131,7 @@
         <jackson-coreutils.version>1.8</jackson-coreutils.version>
         <commons-io.version>2.4</commons-io.version>
         <presidio-data-generators.version>2.0.0-SNAPSHOT</presidio-data-generators.version>
+        <auto-service.version>1.0-rc3</auto-service.version>
     </properties>
 
     <dependencyManagement>
@@ -472,6 +473,11 @@
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>${commons-io.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.auto.service</groupId>
+                <artifactId>auto-service</artifactId>
+                <version>${auto-service.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
