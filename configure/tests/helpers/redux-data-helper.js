@@ -57,6 +57,16 @@ export default class DataHelper {
     return this;
   }
 
+  parserRulesSaveWait(flag) {
+    _set(this.state, 'content.logParserRules.logParsers', [{ name: 'builtin' }]);
+    if (flag) {
+      _set(this.state, 'content.logParserRules.saveRuleStatus', 'wait');
+    } else {
+      _set(this.state, 'content.logParserRules.saveRuleStatus', 'completed');
+    }
+    return this;
+  }
+
   parserRulesData(flag) {
     _set(this.state, 'content.logParserRules.parserRules', [{ name: 'ipv4' }]);
     if (flag) {

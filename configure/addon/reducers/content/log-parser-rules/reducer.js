@@ -60,10 +60,15 @@ export default reduxActions.handleActions({
       },
       success: (state) => {
         const theRules = action.payload.data;
+        let selectedIndex = state.selectedParserRuleIndex;
+        if (theRules.length == selectedIndex) {
+          selectedIndex = 0; // select first rule when rest and last rule is dirty and selected
+        }
         return state.merge(
           {
             parserRules: theRules,
-            parserRulesStatus: 'completed'
+            parserRulesStatus: 'completed',
+            selectedParserRuleIndex: selectedIndex
           }
         );
       }
@@ -99,6 +104,25 @@ export default reduxActions.handleActions({
             parserRules: allRules.filter((rule, index) => index !== selectedIndex),
             selectedParserRuleIndex: 0,
             deleteRuleStatus: 'completed'
+          }
+        );
+      }
+    })
+  ),
+
+  [ACTION_TYPES.SAVE_PARSER_RULE]: (state, action) => (
+    handle(state, action, {
+      start: (state) => {
+        return state.set('saveRuleStatus', 'wait');
+      },
+      failure: (state) => {
+        return state.set('saveRuleStatus', 'error');
+      },
+      success: (state) => {
+        return state.merge(
+          {
+            selectedParserRuleIndex: 0,
+            saveRuleStatus: 'completed'
           }
         );
       }

@@ -73,3 +73,33 @@ test('With ADD_NEW_PARSER_RULE, the action is successfull', function(assert) {
   const result = reducer(initialState, action);
   assert.deepEqual(result, expectedResult);
 });
+
+test('With SAVE_PARSER_RULE, the action has started', function(assert) {
+  const expectedResult = {
+    ...initialState,
+    saveRuleStatus: 'wait'
+  };
+  const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.SAVE_PARSER_RULE });
+  const result = reducer(initialState, action);
+  assert.deepEqual(result, expectedResult);
+});
+
+test('With SAVE_PARSER_RULE, the action has errors', function(assert) {
+  const expectedResult = {
+    ...initialState,
+    saveRuleStatus: 'error'
+  };
+  const action = makePackAction(LIFECYCLE.FAILURE, { type: ACTION_TYPES.SAVE_PARSER_RULE });
+  const result = reducer(initialState, action);
+  assert.deepEqual(result, expectedResult);
+});
+
+test('With SAVE_PARSER_RULE, the action is successfull', function(assert) {
+  const expectedResult = {
+    ...initialState,
+    saveRuleStatus: 'completed'
+  };
+  const action = makePackAction(LIFECYCLE.SUCCESS, { type: ACTION_TYPES.SAVE_PARSER_RULE });
+  const result = reducer(initialState, action);
+  assert.deepEqual(result, expectedResult);
+});

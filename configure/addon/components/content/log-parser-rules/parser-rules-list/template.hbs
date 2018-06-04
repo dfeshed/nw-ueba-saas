@@ -18,6 +18,14 @@
   <div class='loading'>
     {{t 'configure.logsParser.error.generic'}}
   </div>
+{{else if isSavingParserRule}}
+  <div class='loading'>
+     {{rsa-loader size='large'}}
+  </div>
+{{else if isSavingParserRuleError}}
+  <div class='loading'>
+    {{t 'configure.logsParser.error.generic'}}
+  </div>
 {{else}}
   <table class='parserTable'>
     {{#each parserRules as |parserRule index|}}

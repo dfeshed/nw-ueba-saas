@@ -25,9 +25,13 @@ const configureConfigGen = function(environment) {
         requestDestination: '/ws/content/parser/rules'
       },
       deleteParserRule: {
-        subscriptionDestination: '/user/queue/content/parser/update',
-        requestDestination: '/ws/content/parser/update'
+        subscriptionDestination: '/user/queue/content/parser/rules/update',
+        requestDestination: '/ws/content/parser/rules/update'
       },
+      saveParserRule: {
+        subscriptionDestination: '/user/queue/content/parser/rules/update',
+        requestDestination: '/ws/content/parser/rules/update'
+      }
     },
     'category-tags': {
       socketUrl,

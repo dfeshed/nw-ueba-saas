@@ -160,6 +160,15 @@ export const isDeletingParserRuleError = createSelector(
   _parserRulesState,
   (parserRulesState) => parserRulesState.deleteRuleStatus === 'error'
 );
+export const isSavingParserRule = createSelector(
+  _parserRulesState,
+  (parserRulesState) => parserRulesState.saveRuleStatus === 'wait'
+);
+
+export const isSavingParserRuleError = createSelector(
+  _parserRulesState,
+  (parserRulesState) => parserRulesState.saveRuleStatus === 'error'
+);
 
 export const isOotb = createSelector(
   _selectedParserRule,

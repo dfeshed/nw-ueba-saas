@@ -1,0 +1,10 @@
+<hbox class="rsa-button saveRule">
+  {{#rsa-form-button style='primary' defaultAction='saveParserRule'}}
+      {{t 'configure.logsParser.buttons.save'}}
+  {{/rsa-form-button}}
+</hbox>
+<hbox class="rsa-button resetRule">
+  {{#rsa-form-button defaultAction='fetchParserRules' name=selectedLogParserName}}
+      {{t 'configure.logsParser.buttons.reset'}}
+  {{/rsa-form-button}}
+</hbox>

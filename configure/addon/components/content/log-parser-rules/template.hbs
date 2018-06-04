@@ -9,7 +9,7 @@
     </div>
   {{else}}
     <table class='parserContainer'>
-      <tr>
+      <tr class='trTop'>
         <td rowspan="2" class='border leftArea'>
           {{content/log-parser-rules/log-parsers}}
         </td>
@@ -35,6 +35,7 @@
                   </td>
                 </tr>
               </table>
+              {{content/log-parser-rules/save-reset-rule}}
              {{/if}}
           </div>
         </td>
@@ -42,7 +43,7 @@
           {{content/log-parser-rules/parser-rules-list}}
         </td>
       </tr>
-      <tr>
+      <tr class='trMessage'>
         <td class='tdMessage'>{{content/log-parser-rules/log-message}}</td>
       </tr>
     </table>

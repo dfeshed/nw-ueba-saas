@@ -573,7 +573,9 @@ export default {
       },
       buttons: {
         delete: 'Delete',
-        addRule: 'Add Rule'
+        addRule: 'Add Rule',
+        save: 'Save',
+        reset: 'Reset'
       }
     },
     title: 'Configure',

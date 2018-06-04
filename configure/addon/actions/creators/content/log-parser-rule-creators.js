@@ -3,7 +3,8 @@ import api from 'configure/actions/api/content/log-parser-rules';
 
 import {
   filterDeletedRule,
-  selectedLogParserName } from 'configure/reducers/content/log-parser-rules/selectors';
+  selectedLogParserName,
+  parserRules } from 'configure/reducers/content/log-parser-rules/selectors';
 
 const _fetchRuleFormats = () => {
   return {
@@ -33,7 +34,7 @@ const initializeLogParserRules = () => {
   };
 };
 
-const _fetchParserRules = (name) => {
+const fetchParserRules = (name) => {
   return {
     type: ACTION_TYPES.FETCH_PARSER_RULES,
     promise: api.fetchParserRules(name)
@@ -54,7 +55,7 @@ const selectLogParser = (index) => {
       payload: index
     });
     const logParserName = selectedLogParserName(getState());
-    dispatch(_fetchParserRules(logParserName));
+    dispatch(fetchParserRules(logParserName));
   };
 };
 
@@ -64,7 +65,6 @@ const _deleteParserRule = (logParserName, filteredRule) => {
     promise: api.deleteParserRule(logParserName, filteredRule)
   };
 };
-
 const deleteParserRule = () => {
   return (dispatch, getState) => {
     const logParserName = selectedLogParserName(getState());
@@ -80,10 +80,33 @@ const addNewParserRule = (name) => {
   };
 };
 
+const _saveParserRule = (logParserName, rules) => {
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.SAVE_PARSER_RULE,
+      promise: api.saveParserRule(logParserName, rules),
+      meta: {
+        onSuccess() {
+          dispatch(fetchParserRules(logParserName));
+        }
+      }
+    });
+  };
+};
+const saveParserRule = () => {
+  return (dispatch, getState) => {
+    const logParserName = selectedLogParserName(getState());
+    const rules = parserRules(getState());
+    dispatch(_saveParserRule(logParserName, rules));
+  };
+};
+
 export {
   addNewParserRule,
   deleteParserRule,
   initializeLogParserRules,
   selectLogParser,
-  selectParserRule
+  selectParserRule,
+  fetchParserRules,
+  saveParserRule
 };
