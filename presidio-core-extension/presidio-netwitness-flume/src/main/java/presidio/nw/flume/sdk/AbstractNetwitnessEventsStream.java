@@ -40,7 +40,9 @@ public abstract class AbstractNetwitnessEventsStream implements EventsStream {
     }
 
     public void stopStreaming(){
-        eventsIterator.close();
+        if (eventsIterator != null) {
+            eventsIterator.close();
+        }
     }
 
 }
