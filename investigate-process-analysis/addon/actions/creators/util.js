@@ -1,4 +1,4 @@
-export const getQueryNode = function(input, selectedVid, isFetchParent) {
+export const getQueryNode = function(input, selectedVid, isFetchParent, isList) {
   const { et, st, sid, aid: agentId, vid } = input;
 
   let processId = vid;
@@ -12,7 +12,7 @@ export const getQueryNode = function(input, selectedVid, isFetchParent) {
     startTime: st,
     queryTimeFormat: 'DB',
     serviceId: sid,
-    metaFilter: _getMetaFilter(agentId, processId, isFetchParent)
+    metaFilter: _getMetaFilter(isList, agentId, processId, isFetchParent)
   };
   return queryNode;
 };
@@ -30,29 +30,31 @@ export const getQueryNode = function(input, selectedVid, isFetchParent) {
  * @returns {{conditions: *[]}}
  * @private
  */
-const _getMetaFilter = (agentId, pid, isFetchParent) => {
-  return {
-    conditions: [
-      {
-        meta: 'agent.id',
-        operator: '=',
-        value: `'${agentId}'`
-      },
-      {
-        meta: 'action',
-        operator: '=',
-        value: '\'createProcess\''
-      },
-      {
-        meta: 'device.type',
-        operator: '=',
-        value: '\'nwendpoint\''
-      },
-      {
-        value: isFetchParent ? `(vid.src = \'${pid}\' || vid.dst = \'${pid}\')` : `(vid.src = \'${pid}\')`
-      }
-    ]
-  };
+const _getMetaFilter = (isList, agentId, pid, isFetchParent) => {
+  const query = [
+    {
+      meta: 'agent.id',
+      operator: '=',
+      value: `'${agentId}'`
+    },
+    {
+      meta: 'action',
+      operator: '=',
+      value: '\'createProcess\''
+    },
+    {
+      meta: 'device.type',
+      operator: '=',
+      value: '\'nwendpoint\''
+    },
+    {
+      value: isFetchParent ? `(vid.src = \'${pid}\' || vid.dst = \'${pid}\')` : `(vid.src = \'${pid}\')`
+    }
+  ];
+  if (isList) {
+    return { conditions: [query[0], query[3]] };
+  }
+  return { conditions: query };
 };
 
 /**

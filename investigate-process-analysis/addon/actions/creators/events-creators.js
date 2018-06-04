@@ -7,6 +7,7 @@ const callbacksDefault = { onComplete() {} };
 
 let data = [];
 let done = false;
+let eventsListDone = false;
 // Common functions.
 const commonHandlers = function(dispatch, callbacks) {
   return {
@@ -25,18 +26,59 @@ const commonHandlers = function(dispatch, callbacks) {
       if (done) {
         done = false;
         dispatch({ type: ACTION_TYPES.GET_EVENTS_COUNT_SAGA, onComplete: callbacks.onComplete });
+      } else if (eventsListDone) {
+        eventsListDone = false;
+        dispatch({ type: ACTION_TYPES.COMPLETED_EVENTS_STREAMING });
       }
     }
   };
 };
+
 const _getEvents = (pid, onResponse, callbacks, isFetchParents) => {
   return (dispatch, getState) => {
     const state = getState();
-    const queryNode = getQueryNode(state.processAnalysis.processTree.queryInput, pid, isFetchParents);
+    const queryNode = getQueryNode(state.processAnalysis.processTree.queryInput, pid, isFetchParents, false);
     const streamLimit = 100000;
     const streamBatch = 100000;
     const handlers = {
       onResponse,
+      ...commonHandlers(dispatch, callbacks)
+    };
+    fetchStreamingEvents(queryNode, null, streamLimit, streamBatch, handlers);
+  };
+};
+
+
+/**
+ * Fetches a stream of events for the given query node.
+ * @public
+ */
+export const selectedProcessEvents = (pid, callbacks = callbacksDefault) => {
+  return (dispatch, getState) => {
+    const state = getState();
+    const queryNode = getQueryNode(state.processAnalysis.processTree.queryInput, pid, true, true);
+    const streamLimit = 100000;
+    const streamBatch = 100000; // Would like to get all the events in one batch
+
+    const handlers = {
+      onInit(stopStream) {
+        this.stopStreaming = stopStream;
+        dispatch({ type: ACTION_TYPES.INIT_EVENTS_STREAMING });
+      },
+      onResponse(response) {
+        const { data: _payload, meta } = response || {};
+        const payload = Array.isArray(_payload) ? _payload : [];
+        const description = meta ? meta.description : null;
+        const percent = meta ? meta.percent : 0;
+        if (description === 'Queued' ||
+           (description === 'Executing' && percent < 100 && payload.length === 0)) {
+          return;
+        } else {
+          payload.forEach(hasherizeEventMeta);
+          dispatch({ type: ACTION_TYPES.SET_SELECTED_EVENTS, payload });
+          eventsListDone = true;
+        }
+      },
       ...commonHandlers(dispatch, callbacks)
     };
     fetchStreamingEvents(queryNode, null, streamLimit, streamBatch, handlers);

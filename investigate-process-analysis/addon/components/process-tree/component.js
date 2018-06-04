@@ -17,7 +17,11 @@ import {
   selectedProcessPath
 } from 'investigate-process-analysis/reducers/process-tree/selectors';
 
-import { getParentAndChildEvents, getChildEvents, setSelectedProcess } from 'investigate-process-analysis/actions/creators/events-creators';
+import {
+  getParentAndChildEvents,
+  getChildEvents,
+  setSelectedProcess,
+  selectedProcessEvents } from 'investigate-process-analysis/actions/creators/events-creators';
 import { fetchProcessDetails } from 'investigate-process-analysis/actions/creators/process-properties';
 
 import { truncateText } from './util/data';
@@ -35,7 +39,8 @@ const dispatchToActions = {
   setSelectedProcess,
   getParentAndChildEvents,
   getChildEvents,
-  fetchProcessDetails
+  fetchProcessDetails,
+  selectedProcessEvents
 };
 
 
@@ -397,6 +402,7 @@ const TreeComponent = Component.extend({
 
         document.title = this._documentTitle(pn);
         this._initializeChart();
+        this.send('selectedProcessEvents', this.get('selectedProcess'), {});
       };
       this.send('getParentAndChildEvents', this.get('selectedProcess'), { onComplete });
 
@@ -487,6 +493,7 @@ const TreeComponent = Component.extend({
     const checksum = d.data.checksum ? d.data.checksum : d.data['checksum.dst'];
     const hashes = [checksum];
     this.send('fetchProcessDetails', { hashes });
+    this.send('selectedProcessEvents', d.data.processId, {});
     this.send('setSelectedProcess', d.data.processId);
     this.addSelectedClass(d.data.processId);
     document.title = this._documentTitle(d.data.processName);

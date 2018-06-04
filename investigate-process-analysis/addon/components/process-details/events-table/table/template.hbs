@@ -1,0 +1,11 @@
+{{#rsa-data-table
+  items=eventsData
+  columnsConfig=config}}
+  {{#rsa-data-table/header as |column|}}
+    {{column.title}} 
+  {{/rsa-data-table/header}}
+
+  {{#rsa-data-table/body as |item index column|}}
+    {{process-details/events-table/table/body-cell item=item column=column}}
+  {{/rsa-data-table/body}}
+{{/rsa-data-table}}

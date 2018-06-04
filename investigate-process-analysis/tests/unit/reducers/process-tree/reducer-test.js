@@ -99,4 +99,21 @@ module('Unit | Reducers | process-tree', function() {
     const result = reducer(previous, { type: ACTION_TYPES.SET_SELECTED_PROCESS, payload: '1' });
     assert.equal(result.selectedProcess, '1');
   });
+
+  test('SET_SELECTED_EVENTS will sets eventsData', function(assert) {
+    const previous = Immutable.from({
+      eventsData: []
+    });
+    const eventsData = [
+      {
+        sessionId: 45328,
+        time: 1525950159000
+      },
+      {
+        sessionId: 45337,
+        time: 1525950159000
+      }];
+    const result = reducer(previous, { type: ACTION_TYPES.SET_SELECTED_EVENTS, payload: eventsData });
+    assert.equal(result.eventsData.length, 2);
+  });
 });

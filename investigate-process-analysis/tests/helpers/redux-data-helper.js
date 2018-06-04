@@ -58,4 +58,8 @@ export default class DataHelper {
     _set(this.state, 'processVisuals.detailsTabSelected', detailsTabSelected);
     return this;
   }
+  eventsData(data = []) {
+    _set(this.state, 'processTree.eventsData', data);
+    return this;
+  }
 }

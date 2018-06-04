@@ -1,4 +1,5 @@
 import reselect from 'reselect';
+import config from './process-events-table-config';
 
 const { createSelector } = reselect;
 
@@ -7,6 +8,9 @@ const _error = (state) => state.processAnalysis.processTree.error;
 const _queryInput = (state) => state.processAnalysis.processTree.queryInput;
 const _rawData = (state) => state.processAnalysis.processTree.rawData;
 const _path = (state) => state.processAnalysis.processTree.path || [];
+
+export const eventsData = (state) => state.processAnalysis.processTree.eventsData;
+export const eventsTableConfig = () => config;
 
 export const queryInput = createSelector(
   [_queryInput],

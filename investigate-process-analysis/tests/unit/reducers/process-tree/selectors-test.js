@@ -8,7 +8,9 @@ import {
   rootProcess,
   queryInput,
   children,
-  selectedProcess
+  selectedProcess,
+  eventsData,
+  eventsTableConfig
 } from 'investigate-process-analysis/reducers/process-tree/selectors';
 
 module('Unit | Selectors | process-tree', function() {
@@ -133,6 +135,22 @@ module('Unit | Selectors | process-tree', function() {
     });
     const result = selectedProcess(state);
     assert.equal(result, 123);
+  });
+
+  test('eventsData', function(assert) {
+    const state = Immutable.from({
+      processAnalysis: {
+        processTree: {
+          eventsData: new Array(10)
+        }
+      }
+    });
+    const result = eventsData(state);
+    assert.equal(result.length, 10);
+  });
+  test('eventsTableConfig', function(assert) {
+    const result = eventsTableConfig();
+    assert.equal(result.length, 10);
   });
 });
 
