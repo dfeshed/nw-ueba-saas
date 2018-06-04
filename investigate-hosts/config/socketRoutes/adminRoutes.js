@@ -4,16 +4,16 @@ const common = require('../../../common');
 
 module.exports = function(environment) {
 
-  const socketUrl = common.determineSocketUrl(environment, '/administration/socket');
+  const socketUrl = common.determineSocketUrl(environment, '/contexthub/socket');
 
   return {
     'context-service': {
       socketUrl,
       stream: {
         defaultStreamLimit: 100000,
-        subscriptionDestination: '/user/queue/administration/context/lookup',
-        requestDestination: '/ws/administration/context/lookup',
-        cancelDestination: '/ws/administration/context/cancel'
+        subscriptionDestination: '/user/queue/contexthub/context/lookup',
+        requestDestination: '/ws/contexthub/context/lookup',
+        cancelDestination: '/ws/contexthub/context/cancel'
       }
     }
   };

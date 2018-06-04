@@ -6,7 +6,6 @@ import { setHostPropertyTabView } from 'investigate-hosts/actions/data-creators/
 import { inject as service } from '@ember/service';
 
 const stateToComputed = (state) => ({
-  host: state.endpoint.overview.hostDetails,
   animation: state.endpoint.detailsInput.animation,
   activePropertyTab: state.endpoint.visuals.activeHostPropertyTab,
   contextError: state.endpoint.visuals.contextError,

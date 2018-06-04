@@ -226,12 +226,7 @@ module.exports = {
         'interval': 1,
         'unit': 'WEEKS'
       },
-      'startTime': {
-        'hour': 18,
-        'minute': 23,
-        'second': 18,
-        'nano': 186000000
-      },
+      'startTime': '22/01/2018',
       'runOnDays': [
         1,
         2

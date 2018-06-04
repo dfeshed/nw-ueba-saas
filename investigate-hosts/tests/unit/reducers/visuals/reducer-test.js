@@ -193,3 +193,11 @@ test('contextError state when context server is not reachable', function(assert)
   const newEndState = reducer(previous, { type: ACTION_TYPES.CONTEXT_ERROR, payload: 'context.error.timeout' });
   assert.deepEqual(newEndState.contextError, 'context.error.timeout', 'contextError state has been changed to true.');
 });
+
+test('toggling risk panel visibility in host list page', function(assert) {
+  const previous = Immutable.from({
+    showRiskPanel: false
+  });
+  const newEndState = reducer(previous, { type: ACTION_TYPES.TOGGLE_RISK_PANEL_VISIBILITY, payload: true });
+  assert.deepEqual(newEndState.showRiskPanel, true, 'state for risk panel visibilty is turned on.');
+});
