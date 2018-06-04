@@ -1,5 +1,6 @@
 import * as ACTION_TYPES from 'admin-source-management/actions/types';
 import groupsAPI from 'admin-source-management/actions/api/groups-api';
+import policyAPI from 'admin-source-management/actions/api/policy';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
@@ -12,6 +13,19 @@ const initializeGroup = (groupId) => {
     } else {
       dispatch(newGroup());
     }
+
+    dispatch(initGroupFetchPolicies());
+  };
+};
+
+/**
+ * Fetches the policies available to be tied to a group
+ * @public
+ */
+const initGroupFetchPolicies = () => {
+  return {
+    type: ACTION_TYPES.INIT_GROUP_FETCH_POLICIES,
+    promise: policyAPI.fetchPolicy()
   };
 };
 

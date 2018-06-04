@@ -6,6 +6,7 @@ import * as ACTION_TYPES from 'admin-source-management/actions/types';
 import reducers, {
   initialState as _initialState
 } from 'admin-source-management/reducers/usm/group-reducers';
+import policiesData from '../../../tests/data/subscriptions/policy/findAll/data';
 
 const initialState = {
   ..._initialState
@@ -22,7 +23,8 @@ const saveGroupData = {
   osTypes: [],
   osDescriptions: [],
   ipRangeStart: '192.168.10.1',
-  ipRangeEnd: '192.168.10.10'
+  ipRangeEnd: '192.168.10.10',
+  policy: null // map of { 'type': 'policyID' }  ( ex. { 'edrPolicy': 'id_abc123' } )
 };
 
 module('Unit | Reducers | Group Reducers', function() {
@@ -126,6 +128,43 @@ module('Unit | Reducers | Group Reducers', function() {
     };
     const osDescriptionsEndState = reducers(Immutable.from(initialState), osDescriptionsAction);
     assert.deepEqual(osDescriptionsEndState, osDescriptionsExpectedEndState, `group osDescriptions is ${osDescriptionsExpected}`);
+
+    // edit policy test
+    const policyExpected = { edrPolicy: 'policy_001' };
+    const policyExpectedEndState = {
+      ...initialState,
+      group: { ...initialState.group, policy: policyExpected }
+    };
+    const policyAction = {
+      type: ACTION_TYPES.EDIT_GROUP,
+      payload: { field: 'group.policy', value: policyExpected }
+    };
+    const policyEndState = reducers(Immutable.from(initialState), policyAction);
+    assert.deepEqual(policyEndState, policyExpectedEndState, `group policy is ${policyExpected}`);
+  });
+
+  test('on INIT_GROUP_FETCH_POLICIES start, initGroupFetchPoliciesStatus is properly set', function(assert) {
+    const expectedEndState = {
+      ...initialState,
+      initGroupFetchPoliciesStatus: 'wait'
+    };
+    const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.INIT_GROUP_FETCH_POLICIES });
+    const endState = reducers(Immutable.from(initialState), action);
+    assert.deepEqual(endState, expectedEndState, 'initGroupFetchPoliciesStatus is wait');
+  });
+
+  test('on INIT_GROUP_FETCH_POLICIES success, policies & initGroupFetchPoliciesStatus are properly set', function(assert) {
+    const expectedEndState = {
+      ...initialState,
+      policies: [...policiesData],
+      initGroupFetchPoliciesStatus: 'complete'
+    };
+    const action = makePackAction(LIFECYCLE.SUCCESS, {
+      type: ACTION_TYPES.INIT_GROUP_FETCH_POLICIES,
+      payload: { data: [...policiesData] }
+    });
+    const endState = reducers(Immutable.from(initialState), action);
+    assert.deepEqual(endState, expectedEndState, 'policies populated & initGroupFetchPoliciesStatus is complete');
   });
 
   test('on SAVE_GROUP start, groupSaveStatus is properly set', function(assert) {

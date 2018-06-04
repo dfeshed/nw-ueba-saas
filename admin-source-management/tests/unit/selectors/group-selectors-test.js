@@ -7,10 +7,13 @@ import {
   selectedOsTypes,
   osDescriptions,
   selectedOsDescriptions,
+  policies,
+  selectedPolicy,
   isGroupLoading,
   hasMissingRequiredData
 } from 'admin-source-management/selectors/group-selectors';
 import { initialState as _initialState } from 'admin-source-management/reducers/usm/group-reducers';
+import policiesData from '../../../tests/data/subscriptions/policy/findAll/data';
 
 const initialState = {
   ..._initialState
@@ -33,7 +36,8 @@ const saveGroupData = {
   osTypes: [],
   osDescriptions: [],
   ipRangeStart: '192.168.10.1',
-  ipRangeEnd: '192.168.10.10'
+  ipRangeEnd: '192.168.10.10',
+  policy: null // map of { 'type': 'policyID' }  ( ex. { 'edrPolicy': 'id_abc123' } )
 };
 
 module('Unit | Selectors | Group Selectors', function() {
@@ -90,13 +94,38 @@ module('Unit | Selectors | Group Selectors', function() {
     assert.deepEqual(selectedOsDescriptions(Immutable.from(state)), selectedOsDescriptionsData, 'The returned value from the selectedOsDescriptions selector is as expected');
   });
 
+  test('policies selector', function(assert) {
+    const state = cloneDeep(fullState).value();
+    state.usm.group.policies = [...policiesData];
+    assert.deepEqual(policies(Immutable.from(state)), policiesData, 'The returned value from the policies selector is as expected');
+  });
+
+  test('selectedPolicy selector', function(assert) {
+    const state = cloneDeep(fullState).value();
+    // policy holds map of { 'type': 'policyID' }
+    state.usm.group.group = { ...saveGroupData, policy: { edrPolicy: 'policy_001' } };
+    state.usm.group.policies = [...policiesData];
+    // the selector looks up the policy object by the type:ID map, so use the first policy object
+    const selectedPolicyData = { ...state.usm.group.policies[0] };
+    assert.deepEqual(selectedPolicy(Immutable.from(state)), selectedPolicyData, 'The returned value from the selectedPolicy selector is as expected');
+  });
+
   test('isGroupLoading selector', function(assert) {
     const state = cloneDeep(fullState).value();
     state.usm.group.groupSaveStatus = 'wait';
-    assert.equal(isGroupLoading(Immutable.from(state)), true, 'isGroupLoading should return true when status is wait');
+    assert.equal(isGroupLoading(Immutable.from(state)), true, 'isGroupLoading should return true when groupSaveStatus is wait');
 
     state.usm.group.groupSaveStatus = 'complete';
-    assert.equal(isGroupLoading(Immutable.from(state)), false, 'isGroupLoading should return false when status is complete');
+    assert.equal(isGroupLoading(Immutable.from(state)), false, 'isGroupLoading should return false when groupSaveStatus is complete');
+
+    // reset groupSaveStatus
+    state.usm.group.groupSaveStatus = null;
+
+    state.usm.group.initGroupFetchPoliciesStatus = 'wait';
+    assert.equal(isGroupLoading(Immutable.from(state)), true, 'isGroupLoading should return true when initGroupFetchPoliciesStatus is wait');
+
+    state.usm.group.initGroupFetchPoliciesStatus = 'complete';
+    assert.equal(isGroupLoading(Immutable.from(state)), false, 'isGroupLoading should return false when initGroupFetchPoliciesStatus is complete');
   });
 
   test('hasMissingRequiredData selector', function(assert) {

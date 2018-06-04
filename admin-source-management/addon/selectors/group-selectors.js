@@ -5,6 +5,10 @@ const { createSelector } = reselect;
 
 const groupState = (state) => state.usm.group;
 
+/**
+ * the group object to be created/updated/saved
+ * @public
+ */
 export const group = createSelector(
   groupState,
   (groupState) => groupState.group
@@ -81,9 +85,45 @@ export const selectedOsDescriptions = createSelector(
   }
 );
 
+/**
+ * the policies objects to fill the policy select/dropdown
+ * @public
+ */
+export const policies = createSelector(
+  groupState,
+  (groupState) => groupState.policies
+);
+
+/**
+ * we need the selected policy object, but group.policy has a map of { 'type': 'policyID' } ( ex. { 'edrPolicy': 'id_abc123' } ),
+ * so we'll find the policy object by the type:ID map for the selected policy
+ * @public
+ */
+export const selectedPolicy = createSelector(
+  group, policies,
+  (group, policies) => {
+    let selected = null;
+    if (!group.policy) {
+      return selected;
+    }
+    for (let p = 0; p < policies.length; p++) {
+      const policy = policies[p];
+      const groupPolicyId = group.policy[policy.type];
+      if (policy.id === groupPolicyId) {
+        selected = policy;
+        break;
+      }
+    }
+    return selected;
+  }
+);
+
 export const isGroupLoading = createSelector(
   groupState,
-  (groupState) => groupState.groupSaveStatus === 'wait'
+  (groupState) => {
+    return groupState.groupSaveStatus === 'wait' ||
+      groupState.initGroupFetchPoliciesStatus === 'wait';
+  }
 );
 
 export const hasMissingRequiredData = createSelector(

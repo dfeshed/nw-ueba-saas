@@ -15,7 +15,7 @@
     }}
       {{t 'adminUsm.button.save'}}
     {{/rsa-form-button}}
-    {{#rsa-form-button class='cancel-button' defaultAction=(route-action 'transitionToGroups')}}
+    {{#rsa-form-button class='cancel-button' defaultAction='cancel'}}
       {{t 'adminUsm.button.cancel'}}
     {{/rsa-form-button}}
   </hbox>
@@ -90,6 +90,25 @@
         onchange=(action 'handleOsDescriptionChange') as |option|}}
           {{option.name}}
       {{/power-select-multiple}}
+    </label>
+  </div>
+
+  <label class="control-label">{{t 'adminUsm.group.applyPolicy'}}
+    <span class="apply-policy-optional">{{t 'adminUsm.group.applyPolicyOptional'}}</span>
+  </label>
+  <div class="control policy">
+    <label class="rsa-form-label power-select">
+      <div class="label-text">
+        {{t 'adminUsm.group.policy'}}
+      </div>
+      {{#power-select
+        placeholder=(t 'adminUsm.group.policyPlaceholder')
+        options=policies
+        selected=selectedPolicy
+        searchField='name'
+        onchange=(action 'handlePolicyChange') as |option|}}
+          {{option.name}}
+      {{/power-select}}
     </label>
   </div>
 </box>

@@ -10,6 +10,7 @@ import { clickTrigger, selectChoose } from '../../../../helpers/ember-power-sele
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import * as groupCreators from 'admin-source-management/actions/data-creators/group-creators';
 import { initialState as _initialState } from 'admin-source-management/reducers/usm/group-reducers';
+import policiesData from '../../../../../tests/data/subscriptions/policy/findAll/data';
 
 const initialState = {
   ..._initialState
@@ -26,7 +27,8 @@ const saveGroupData = Immutable.from({
   osTypes: [],
   osDescriptions: [],
   ipRangeStart: '192.168.10.1',
-  ipRangeEnd: '192.168.10.10'
+  ipRangeEnd: '192.168.10.10',
+  policy: null // map of { 'type': 'policyID' }  ( ex. { 'edrPolicy': 'id_abc123' } )
 });
 
 let setState;
@@ -61,6 +63,12 @@ module('Integration | Component | Group', function(hooks) {
     setState({ ...initialState, group: { ...initialState.group, name: 'Group 001' } });
     await render(hbs`{{usm-groups/group}}`);
     assert.equal(findAll('.confirm-button:not(.is-disabled)').length, 1, 'The Save button is enabled when there is a group name');
+  });
+
+  test('A loading spinner is displayed if the initGroupFetchPoliciesStatus property is "wait"', async function(assert) {
+    setState({ ...initialState, initGroupFetchPoliciesStatus: 'wait' });
+    await render(hbs`{{usm-groups/group}}`);
+    assert.equal(findAll('.loading-overlay .rsa-loader').length, 1, 'A loading spinner appears in the dom');
   });
 
   test('A loading spinner is displayed if the groupSaveStatus property is "wait"', async function(assert) {
@@ -158,6 +166,21 @@ module('Integration | Component | Group', function(hooks) {
     return settled().then(() => {
       assert.ok(actionSpy.calledOnce, 'The editGroup action (EDIT_GROUP) was called once');
       assert.ok(actionSpy.calledWith('group.osDescriptions', ['ucks_001'])); // should be called with empty array of ID's
+      actionSpy.restore();
+    });
+  });
+
+  test('Changing the Policy select control dispatches the editGroup action creator (EDIT_GROUP)', async function(assert) {
+    const actionSpy = sinon.spy(groupCreators, 'editGroup');
+    setState({ ...initialState, policies: [...policiesData] });
+    await render(hbs`{{usm-groups/group}}`);
+    // power-select does not seem to render added class(es) like power-select-multiple,
+    // so .policy was added to the control wrapper div
+    clickTrigger('.control.policy');
+    selectChoose('.control.policy', 'EMC 001');
+    return settled().then(() => {
+      assert.ok(actionSpy.calledOnce, 'The editGroup action (EDIT_GROUP) was called once');
+      assert.ok(actionSpy.calledWith('group.policy', { edrPolicy: 'policy_001' })); // should be called with type:ID map
       actionSpy.restore();
     });
   });

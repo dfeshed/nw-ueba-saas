@@ -6,6 +6,8 @@ import {
   selectedOsTypes,
   osDescriptions,
   selectedOsDescriptions,
+  policies,
+  selectedPolicy,
   isGroupLoading,
   hasMissingRequiredData
 } from 'admin-source-management/selectors/group-selectors';
@@ -20,6 +22,8 @@ const stateToComputed = (state) => ({
   selectedOsTypes: selectedOsTypes(state),
   osDescriptions: osDescriptions(state),
   selectedOsDescriptions: selectedOsDescriptions(state),
+  policies: policies(state),
+  selectedPolicy: selectedPolicy(state),
   isGroupLoading: isGroupLoading(state),
   hasMissingRequiredData: hasMissingRequiredData(state)
 });
@@ -39,6 +43,11 @@ const dispatchToActions = (dispatch) => ({
       transitionToGroups();
     };
     dispatch(saveGroup(this.get('group'), { onSuccess }));
+  },
+  // cancel changes to the group
+  cancel() {
+    const transitionToGroups = this.get('transitionToGroups');
+    transitionToGroups();
   }
 });
 
@@ -67,6 +76,12 @@ const UsmGroup = Component.extend({
     handleOsDescriptionChange(value) {
       // power-select-multiple passes an array of objects, we only want the ID's
       this.send('edit', 'group.osDescriptions', value.map((osDescription) => osDescription.id));
+    },
+    handlePolicyChange(value) {
+      // power-select passes the whole object, we want a map of { 'type': 'policyID' }
+      const policyMap = {};
+      policyMap[value.type] = value.id; // ex. { 'edrPolicy': 'id_abc123' }
+      this.send('edit', 'group.policy', policyMap);
     }
   }
 });

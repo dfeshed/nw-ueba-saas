@@ -4,6 +4,7 @@ import { handle } from 'redux-pack';
 import * as ACTION_TYPES from 'admin-source-management/actions/types';
 
 export const initialState = {
+  // the group object to be created/updated/saved
   group: {
     id: null,
     name: null,
@@ -15,9 +16,11 @@ export const initialState = {
     osTypes: [], // ID's only
     osDescriptions: [], // ID's only
     ipRangeStart: null,
-    ipRangeEnd: null
+    ipRangeEnd: null,
+    policy: null // map of { 'type': 'policyID' }  ( ex. { 'edrPolicy': 'id_abc123' } )
   },
 
+  // the osType objects & osDescriptions objects to fill the selects/dropdowns
   osTypes: [
     {
       id: 'lynn_001',
@@ -48,15 +51,37 @@ export const initialState = {
     }
   ],
 
+  // the policies objects to fill the policy select/dropdown
+  policies: [],
+
+  initGroupFetchPoliciesStatus: null, // wait, complete, error
   groupSaveStatus: null // wait, complete, error
 };
 
 export default reduxActions.handleActions({
 
+  [ACTION_TYPES.INIT_GROUP_FETCH_POLICIES]: (state, action) => (
+    handle(state, action, {
+      start: (state) => {
+        return state.set('initGroupFetchPoliciesStatus', 'wait');
+      },
+      failure: (state) => {
+        return state.set('initGroupFetchPoliciesStatus', 'error');
+      },
+      success: (state) => {
+        return state.merge({
+          policies: action.payload.data,
+          initGroupFetchPoliciesStatus: 'complete'
+        });
+      }
+    })
+  ),
+
   [ACTION_TYPES.NEW_GROUP]: (state /* , action */) => {
     return state.merge({
       group: { ...initialState.group },
-      groupSaveStatus: null
+      groupSaveStatus: null,
+      initGroupFetchPoliciesStatus: null
     });
   },
 

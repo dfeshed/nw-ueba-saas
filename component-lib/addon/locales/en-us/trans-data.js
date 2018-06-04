@@ -3071,7 +3071,11 @@ export default {
       osType: 'OS Type',
       osTypePlaceholder: 'Choose OS Type(s)',
       osDescription: 'OS Description',
-      osDescriptionPlaceholder: 'Choose OS Description(s)'
+      osDescriptionPlaceholder: 'Choose OS Description(s)',
+      applyPolicy: 'Apply Policy',
+      applyPolicyOptional: '(Optional)',
+      policy: 'Policy',
+      policyPlaceholder: 'Choose a policy'
     },
     policy: {
       name: 'Policy Name',

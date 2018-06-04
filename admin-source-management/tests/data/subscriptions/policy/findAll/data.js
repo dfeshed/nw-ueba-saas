@@ -1,6 +1,7 @@
 export default [
   {
     id: 'policy_001',
+    type: 'edrPolicy',
     name: 'EMC 001',
     description: 'EMC 001 of policy policy_001',
     scheduleConfig: {
@@ -19,8 +20,9 @@ export default [
     }
   },
   {
-    'id': 'policy_012',
-    'name': 'EMC Reston! 012',
-    'description': 'EMC Reston 012 of policy policy_012'
+    id: 'policy_012',
+    type: 'edrPolicy',
+    name: 'EMC Reston! 012',
+    description: 'EMC Reston 012 of policy policy_012'
   }
 ];
