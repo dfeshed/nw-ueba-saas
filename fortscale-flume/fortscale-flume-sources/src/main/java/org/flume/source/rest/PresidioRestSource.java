@@ -63,8 +63,8 @@ public class PresidioRestSource extends AbstractPageablePresidioSource implement
     }
 
     @Override
-    protected List<AbstractDocument> doFetch(Schema schema, int pageNum) {
-        return ((RestApi) sourceFetcher).findByDateTimeBetween(schema, startDate, endDate, pageNum, batchSize);
+    protected List<AbstractDocument> doFetch(int pageNum) {
+        return ((RestApi) sourceFetcher).findByDateTimeBetween(Schema.createSchema(schema), startDate, endDate, pageNum, batchSize);
     }
 
     private RestApi createRestApiImpl(String restApiImplClassName) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, java.lang.reflect.InvocationTargetException {
@@ -101,6 +101,4 @@ public class PresidioRestSource extends AbstractPageablePresidioSource implement
         }
         return true;
     }
-
-
 }

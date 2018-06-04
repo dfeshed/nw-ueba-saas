@@ -29,24 +29,22 @@ import java.util.zip.ZipInputStream;
 
 /**
  * This Source read events from AWS S3 storage
- *
  */
 public class PresidioAwsS3Source extends CsvFormatSource {
 
     private static final Logger logger = Logger.getLogger(PresidioAwsS3Source.class);
-    protected static final String AWS_BUKCET_NAME = "bucketName";
+    protected static final String AWS_BUCKET_NAME = "bucketName";
     protected static final String AWS_KEY = "awsKey";
     protected static final String AWS_SECRET_KEY = "awsSecretKey";
     protected static final String AWS_REGION = "awsRegion";
     protected static final String TENANT_PREFIX = "tenantPrefix";
     protected static final String SCHEMA_PREFIX = "schemaPrefix";
     protected static final String IS_COMPRESSED = "";
-    protected static final String STARTDATE_REGEXP = "startDateRegexp";
+    protected static final String START_DATE_REGEXP = "startDateRegexp";
     protected static final String TS_IN_FILE_NAME_IS_SECOND ="tsInFileNameIsSecond";
     private static final String SKIP_THAT_HOUR = "skip" ;
     private static final String FILES_EXTENSIONS = "filesExtenstions";
     private static final String COMPRESSION_EXTENSION  = "compressionExtension";
-
 
     //From configuration
     private String bucketName;
@@ -54,33 +52,22 @@ public class PresidioAwsS3Source extends CsvFormatSource {
     private String schemaPrefix;
     private boolean isCompressed;
     private boolean tsInFileNameIsSecond;
-    private String compressionExtension;
-
 
     //build during doPresidioConfigure
-    private BasicAWSCredentials awsCreds;
     private AmazonS3 s3Client;
     private String objectNameExtension;
     private Pattern startDatePattern;
     private String specificFilesToLook;
     private String objectPath;
 
-
-
-
-
-
     @SuppressWarnings("unchecked")
     public void doPresidioConfigure(Context context) {
-
-
-
         //Configure the specific S3 source properties
         try {
             super.doPresidioConfigure(context);
             logger.debug("context is: {}", context);
             setName("presidio-flume-aws-s3-source");
-            bucketName = context.getString(AWS_BUKCET_NAME, "");
+            bucketName = context.getString(AWS_BUCKET_NAME, "");
             String awsKey = context.getString(AWS_KEY, "");
             String awsSecretKey = context.getString(AWS_SECRET_KEY, "");
             String awsRegion = context.getString(AWS_REGION, "");
@@ -88,56 +75,43 @@ public class PresidioAwsS3Source extends CsvFormatSource {
             schemaPrefix = context.getString(SCHEMA_PREFIX, "");
             isCompressed = context.getBoolean(IS_COMPRESSED, false);
             tsInFileNameIsSecond = context.getBoolean(TS_IN_FILE_NAME_IS_SECOND,true);
-            String startDateRegexp = context.getString(STARTDATE_REGEXP, "");
-            String filesExtenstions = context.getString(FILES_EXTENSIONS, "csv");
-            compressionExtension = context.getString(COMPRESSION_EXTENSION, "zip");
-
+            String startDateRegexp = context.getString(START_DATE_REGEXP, "");
+            String fileExtensions = context.getString(FILES_EXTENSIONS, "csv");
+            String compressionExtension = context.getString(COMPRESSION_EXTENSION, "zip");
             startDatePattern = Pattern.compile(startDateRegexp);
 
             if(isCompressed)
                 objectNameExtension=compressionExtension;
             else
-                objectNameExtension= filesExtenstions;
+                objectNameExtension = fileExtensions;
 
             specificFilesToLook = ".*" + tenantPrefix + "_" + schemaPrefix + ".*\\."+objectNameExtension;
-
-
             //create the S3 client instance
-            this.awsCreds = new BasicAWSCredentials(awsKey, awsSecretKey);
+            BasicAWSCredentials awsCredentials = new BasicAWSCredentials(awsKey, awsSecretKey);
             this.s3Client = AmazonS3ClientBuilder.standard()
-                    .withCredentials(new AWSStaticCredentialsProvider(awsCreds)).withRegion(Regions.fromName(awsRegion))
+                    .withCredentials(new AWSStaticCredentialsProvider(awsCredentials)).withRegion(Regions.fromName(awsRegion))
                     .build();
-
-
             objectPath = getNextFilePath();
-
         } catch (Exception e) {
             logger.error("Error configuring AwsS3 Source!", e);
         }
-
     }
-
 
     /**
      * The method that populated the filePath - basically responsible to get the path of the next file
      * This implementation will be based on the list of objects in the S3 compare to the startDate of that execution (the logical data that should be processed)
      * In case we have Object on S3 that his logical start date is bigger or equal from the current logical execution we will assign at the filePath parameter that value
-     *
      */
     @SuppressWarnings("unchecked")
     protected String getNextFilePath() {
-
         try {
             ListObjectsV2Result result = getListOfObjectsFromS3();
-
             List<S3ObjectSummary> objects = result.getObjectSummaries();
-
             //get teh minimal value of start date from the relevant list of files (based on tenant and schema name -
             //Remember that the file name convention is <tenantId>_<schema_name>_<logical start date>_<logical end date>.<extension>
             Optional<String> optionalMinStartDate = objects.stream().
                     filter(s -> s.getKey().matches(specificFilesToLook)).
                     map(s -> parseStartDateFromObjectName(s.getKey())).filter(this::isItRelevantFile).sorted().min(String.CASE_INSENSITIVE_ORDER);
-
             //If there is minimal value this is the potential next file to process
             //need to compare it to the given start date in case its bigger or equal to the given start sate
             //We need to work on that file
@@ -149,18 +123,16 @@ public class PresidioAwsS3Source extends CsvFormatSource {
                     String fileRegexp = ".*" + tenantPrefix + "_" + schemaPrefix + "_" + minStartDate + ".*\\." + objectNameExtension;
                     Optional<S3ObjectSummary> s3ObjectSummaryOptional = objects.stream().filter(s -> s.getKey().matches(fileRegexp)).findFirst();
                     return s3ObjectSummaryOptional.isPresent() ? s3ObjectSummaryOptional.get().getKey() : null;
-
                 }
-
             }
             return SKIP_THAT_HOUR;
         }
         catch (Exception e){
             logger.error("Exception occur during the decision of which is the next object to processed in Bucket : " + bucketName);
             logger.error("Exception Details: " + e);
-        }   return null;
+        }
 
-
+        return null;
     }
 
     private String parseStartDateFromObjectName(String str )
@@ -178,13 +150,11 @@ public class PresidioAwsS3Source extends CsvFormatSource {
         return tsInFileNameIsSecond ? Long.valueOf(filename) >= startDate.getEpochSecond() : Long.valueOf(filename) >= startDate.toEpochMilli();
     }
 
-
     /**
      * This method handle the call for AWS for getting the list of objects from a given bucket name
      * @return -  ListObjectsV2Result - Result that contain List of S3ObjectsSummary
      */
     private ListObjectsV2Result getListOfObjectsFromS3() {
-
         ListObjectsV2Result result = null;
         try {
             logger.debug("Listing objects from bucket - " + bucketName);
@@ -212,10 +182,10 @@ public class PresidioAwsS3Source extends CsvFormatSource {
         return result;
     }
 
-
-
-
-
+    @Override
+    protected List<AbstractDocument> doFetch(int pageNum) {
+        return doFetch(Schema.createSchema(schema), pageNum);
+    }
 
     @SuppressWarnings("unchecked")
     protected List<AbstractDocument> doFetch(Schema schema,int pageNum) {
@@ -225,7 +195,6 @@ public class PresidioAwsS3Source extends CsvFormatSource {
         if(objectPath == null){
             logger.warn("No object was define to be processed");
             return null;
-
         }
 
         //In case that we decide to skip this hour return empty list
@@ -233,13 +202,10 @@ public class PresidioAwsS3Source extends CsvFormatSource {
         if (objectPath.equals(SKIP_THAT_HOUR))
             return  new ArrayList<>();
         try{
-
             //Get the specific object from S3
             S3Object s3object = s3Client.getObject(new GetObjectRequest(
                     bucketName, objectPath));
-
             InputStream objectData = s3object.getObjectContent();
-
 
             if (isCompressed)
             {
@@ -247,7 +213,6 @@ public class PresidioAwsS3Source extends CsvFormatSource {
                 ZipInputStream zipStream =  new ZipInputStream(new BufferedInputStream(objectData));
                 //Get the actual object
                 zipStream.getNextEntry();
-
                 //Create buffer reader for reading the content
                 reader = new BufferedReader(new InputStreamReader(zipStream));
             }
@@ -257,14 +222,11 @@ public class PresidioAwsS3Source extends CsvFormatSource {
             genericEvents = getGenericRawEventsFromCsv(reader);
             return convertEvents(genericEvents);
         }
-
         catch (Exception e)
         {
             logger.error("Error during retrieving file from S3 for schema - " + schema + " from bucket - " + bucketName);
             logger.error("Exception Details: " + e);
             return null;
         }
-
     }
-
 }

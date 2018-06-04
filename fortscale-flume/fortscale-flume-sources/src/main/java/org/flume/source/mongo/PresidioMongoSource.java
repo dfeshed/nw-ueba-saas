@@ -104,8 +104,8 @@ public class PresidioMongoSource extends AbstractPageablePresidioSource implemen
     }
 
     @Override
-    protected List<AbstractDocument> doFetch(Schema schema, int pageNum) {
-        return ((SourceMongoRepository) sourceFetcher).findByDateTimeBetween(schema, collectionName, startDate.minusMillis(1), endDate, pageNum, batchSize, dateTimeField);
+    protected List<AbstractDocument> doFetch(int pageNum) {
+        return ((SourceMongoRepository) sourceFetcher).findByDateTimeBetween(Schema.createSchema(schema), collectionName, startDate.minusMillis(1), endDate, pageNum, batchSize, dateTimeField);
     }
 
     protected SourceMongoRepository createRepository(String dbName, String host, int port, String username, String password)

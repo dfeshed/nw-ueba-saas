@@ -48,8 +48,8 @@ public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractPresidi
 
     @Override
     public Event doIntercept(Event event) {
-        final String eventBodyAsString = new String(event.getBody());
-        JsonObject eventBodyAsJson = new JsonParser().parse(eventBodyAsString).getAsJsonObject();
+
+        JsonObject eventBodyAsJson = getJsonObject(event);
 
         final String originTimestamp = eventBodyAsJson.get(originField).getAsString();
 
@@ -75,7 +75,7 @@ public class JsonTimestampWithOffsetFormatterInterceptor extends AbstractPresidi
         }
 
 
-        event.setBody(eventBodyAsJson.toString().getBytes());
+        setJsonObject(event, eventBodyAsJson);
         return event;
     }
 

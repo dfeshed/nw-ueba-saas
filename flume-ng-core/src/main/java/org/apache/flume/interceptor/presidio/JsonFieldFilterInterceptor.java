@@ -23,8 +23,7 @@ public class JsonFieldFilterInterceptor extends AbstractPresidioJsonInterceptor 
 
     @Override
     public Event doIntercept(Event event) {
-        final String eventBodyAsString = new String(event.getBody());
-        JsonObject eventBodyAsJson = new JsonParser().parse(eventBodyAsString).getAsJsonObject();
+        JsonObject eventBodyAsJson = getJsonObject(event);
         for (int i = 0; i < fields.size(); i++) {
             String currField = fields.get(i);
             final JsonElement jsonElement = eventBodyAsJson.get(currField);
@@ -42,7 +41,7 @@ public class JsonFieldFilterInterceptor extends AbstractPresidioJsonInterceptor 
             }
         }
 
-        event.setBody(eventBodyAsJson.toString().getBytes());
+        setJsonObject(event, eventBodyAsJson);
         return event;
     }
 
