@@ -5,8 +5,7 @@ import { debounce } from '@ember/runloop';
 import {
   getTopLevelCategoryNames,
   getPriorityTypes,
-  getStatusTypes,
-  getEscalationStatuses
+  getStatusTypes
 } from 'respond/selectors/dictionaries';
 
 import {
@@ -17,8 +16,8 @@ import {
   getAssigneeFilters,
   getCategoryFilters,
   hasAssigneeFilter,
-  getEscalationStatusFilters,
-  isEscalateAvailable
+  getSentToArcherFilters,
+  isSendToArcherAvailable
 } from 'respond/selectors/incidents';
 
 import { getEnabledUsers } from 'respond/selectors/users';
@@ -31,14 +30,13 @@ const stateToComputed = (state) => {
     isUnassignedFilter: getIsUnassignedFilters(state),
     assigneeFilters: getAssigneeFilters(state),
     hasAssigneeFilter: hasAssigneeFilter(state),
-    escalationStatusFilters: getEscalationStatusFilters(state),
+    sentToArcherFilters: getSentToArcherFilters(state),
     priorityTypes: getPriorityTypes(state),
     statusTypes: getStatusTypes(state),
     categoryFilters: getCategoryFilters(state),
     categoryTags: getTopLevelCategoryNames(state),
     users: getEnabledUsers(state),
-    isEscalateAvailable: isEscalateAvailable(state),
-    escalationStatuses: getEscalationStatuses(state)
+    isSendToArcherAvailable: isSendToArcherAvailable(state)
   };
 };
 
@@ -50,7 +48,7 @@ const stateToComputed = (state) => {
  */
 const IncidentFilters = Component.extend({
   tagName: '',
-
+  sentToArcherTypes: [true, false],
   isIdFilterValid: true,
 
   /**
@@ -106,10 +104,10 @@ const IncidentFilters = Component.extend({
       });
     },
 
-    toggleEscalationStatusFilter(escalationStatus) {
-      const escalationStatusFilters = this.get('escalationStatusFilters');
+    toggleSentToArcherStatusFilter(sentToArcher) {
+      const sentToArcherFilters = this.get('sentToArcherFilters');
       this.get('updateFilter')({
-        escalationStatus: escalationStatusFilters.includes(escalationStatus) ? escalationStatusFilters.without(escalationStatus) : [...escalationStatusFilters, escalationStatus]
+        sentToArcher: sentToArcherFilters.includes(sentToArcher) ? sentToArcherFilters.without(sentToArcher) : [...sentToArcherFilters, sentToArcher]
       });
     },
 

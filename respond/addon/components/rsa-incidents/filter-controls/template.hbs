@@ -74,20 +74,16 @@
     {{category}}
   {{/power-select-multiple}}
 </section>
-{{#if isEscalateAvailable}}
-  <section class="filter-option escalation-status-filter">
-    <h2>{{ t 'respond.incident.escalationStatus'}}</h2>
-    {{#each escalationStatuses as |escalationStatusType|}}
+{{#if isSendToArcherAvailable}}
+  <section class="filter-option sent-to-archer-filter">
+    <h2>{{ t 'respond.incident.sentToArcher'}}</h2>
+    {{#each sentToArcherTypes as |sentToArcherType|}}
       <div>
-        <label class="rsa-form-checkbox-label {{if (contains escalationStatusType escalationStatusFilters) 'checked'}}">
+        <label class="rsa-form-checkbox-label {{if (contains sentToArcherType sentToArcherFilters) 'checked'}}">
           {{rsa-form-checkbox
-            checked=(contains escalationStatusType escalationStatusFilters )
-            change=(action 'toggleEscalationStatusFilter' escalationStatusType)}}
-          {{#if (or (eq escalationStatusType 'NON_ESCALATED') (eq escalationStatusType 'ESCALATED'))}}
-            <span>{{t (concat 'respond.escalationStatus.' escalationStatusType)}}</span>
-          {{else}}
-            <span>{{escalationStatusType}}</span>
-          {{/if}}
+            checked=(contains sentToArcherType sentToArcherFilters )
+            change=(action 'toggleSentToArcherStatusFilter' sentToArcherType)}}
+          <span>{{t (concat 'respond.common.' sentToArcherType)}}</span>
         </label>
       </div>
     {{/each}}

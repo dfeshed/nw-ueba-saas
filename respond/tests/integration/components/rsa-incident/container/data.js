@@ -161,7 +161,7 @@ const incidentState = {
       '64.233.185.19',
       '161.253.48.56'
     ],
-    escalationStatus: 'NON_ESCALATED',
+    sentToArcher: false,
     createdFromRule: true
   },
   infoStatus: 'completed',

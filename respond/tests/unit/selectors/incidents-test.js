@@ -14,7 +14,7 @@ import {
   hasAssigneeFilter,
   getIsUnassignedFilters,
   getCategoryFilters,
-  isEscalateAvailable,
+  isSendToArcherAvailable,
   getVisibleEntityTypes
 } from 'respond/selectors/incidents';
 import data from '../../data/data';
@@ -36,7 +36,7 @@ const incident = Immutable.from({
 });
 
 const incidents = Immutable.from({
-  isEscalateAvailable: true,
+  isSendToArcherAvailable: true,
   itemsFilters: {
     priority: ['LOW'],
     status: ['CLOSED', 'NEW'],
@@ -75,7 +75,7 @@ module('Unit | Utility | Incidents Selector', function() {
     assert.deepEqual(getAssigneeFilters(state), ['meiskm', 'local']);
     assert.ok(hasAssigneeFilter(state));
     assert.ok(getIsUnassignedFilters(state));
-    assert.ok(isEscalateAvailable(state));
+    assert.ok(isSendToArcherAvailable(state));
     assert.deepEqual(getCategoryFilters(state), ['ENVIRONMENTAL']);
   });
 

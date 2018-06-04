@@ -12,8 +12,7 @@ const initialState = {
   alertTypes: [],
   alertSources: [],
   alertNames: [],
-  milestoneTypes: [],
-  escalationStatuses: []
+  milestoneTypes: []
 };
 
 export default reduxActions.handleActions({
@@ -89,12 +88,6 @@ export default reduxActions.handleActions({
       start: (s) => s.set('milestoneTypes', []),
       failure: (s) => s.set('milestoneTypes', []),
       success: (s) => s.set('milestoneTypes', action.payload.data) }
-    )
-  ),
-
-  [ACTION_TYPES.FETCH_ESCALATION_STATUSES]: (state, action) => (
-    handle(state, action, {
-      success: (s) => s.set('escalationStatuses', action.payload.data) }
     )
   )
 }, Immutable.from(initialState));

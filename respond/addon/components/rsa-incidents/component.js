@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import columns from './columns';
-import { hasSelectedClosedIncidents, isEscalateAvailable } from 'respond/selectors/incidents';
+import { hasSelectedClosedIncidents, isSendToArcherAvailable } from 'respond/selectors/incidents';
 import { getPriorityTypes, getStatusTypes } from 'respond/selectors/dictionaries';
 import { getAssigneeOptions } from 'respond/selectors/users';
 import creators from 'respond/actions/creators';
@@ -12,7 +12,7 @@ const stateToComputed = (state) => {
     statusTypes: getStatusTypes(state),
     users: getAssigneeOptions(state),
     hasSelectedClosedIncidents: hasSelectedClosedIncidents(state),
-    isEscalateAvailable: isEscalateAvailable(state)
+    isSendToArcherAvailable: isSendToArcherAvailable(state)
   };
 };
 

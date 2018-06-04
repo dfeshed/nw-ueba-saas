@@ -8,9 +8,12 @@ import computed from 'ember-computed-decorators';
 
 const dispatchToActions = (dispatch) => {
   return {
-    escalate(incidentId) {
-      dispatch(incidentCreators.escalate(incidentId, {
-        onSuccess: () => (this.send('success', 'respond.incidents.actions.actionMessages.escalationSuccess', { incidentId })),
+    sendToArcher(incidentId) {
+      dispatch(incidentCreators.sendToArcher(incidentId, {
+        onSuccess: (response) => (this.send('success', 'respond.incidents.actions.actionMessages.sendToArcherSuccess', {
+          incidentId,
+          archerIncidentId: response.meta.archerIncidentId
+        })),
         onFailure: (response = {}) => {
           const { code } = response;
           const errorCodesToI18n = {
@@ -31,16 +34,16 @@ const IncidentInspectorHeader = Component.extend(Notifications, {
   accessControl: service(),
 
   /**
-   * Indicates whether or not the escalate incident feature is available. If so, the escalate button will
-   * be shown in the inspector header. Currently, escalate will only be available if an Archer data source
+   * Indicates whether or not the send incident to archer feature is available. If so, the Send to Archer button will
+   * be shown in the inspector header. Currently, send-to-archer will only be available if an Archer data source
    * is configured in Context Hub. Default: false
-   * @property isEscalateAvailable
+   * @property isSendToArcherAvailable
    * @public
    */
-  isEscalateAvailable: false,
+  isSendToArcherAvailable: false,
 
-  @computed('info.status', 'info.escalationStatus', 'accessControl.respondCanManageIncidents')
-  isEscalationDisabled(status, escalationStatus, canManageIncidents) {
+  @computed('info.status', 'info.sentToArcher', 'accessControl.respondCanManageIncidents')
+  isSendToArcherDisabled(status, sentToArcher, canManageIncidents) {
     return isIncidentClosed(status) || canManageIncidents === false;
   },
   actions: {

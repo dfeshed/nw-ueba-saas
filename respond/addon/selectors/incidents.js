@@ -97,12 +97,12 @@ export const getCategoryFilters = createSelector(
   (itemsFilters) => itemsFilters['categories.parent']
 );
 
-export const getEscalationStatusFilters = createSelector(
+export const getSentToArcherFilters = createSelector(
   getItemsFilters,
-  (itemsFilters) => itemsFilters.escalationStatus || []
+  (itemsFilters) => itemsFilters.sentToArcher || []
 );
 
-export const isEscalateAvailable = createSelector(
+export const isSendToArcherAvailable = createSelector(
   incidentsState,
-  (incidentsState) => incidentsState.isEscalateAvailable
+  (incidentsState) => incidentsState.isSendToArcherAvailable
 );

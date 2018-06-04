@@ -11,7 +11,7 @@ module('Unit | Utility | Incidents Reducer (non-Explorer)', function() {
     id: 'INC-2'
   };
 
-  test('When ESCALATE_INCIDENT succeeds, the state is updated', function(assert) {
+  test('When SEND_INCIDENT_TO_ARCHER succeeds, the state is updated', function(assert) {
     const initState = {
       items: [
         {
@@ -28,18 +28,17 @@ module('Unit | Utility | Incidents Reducer (non-Explorer)', function() {
         },
         {
           id: 'INC-2',
-          escalationStatus: 'ESCALATED'
+          sentToArcher: true
         }
       ],
       focusedItem: {
         id: 'INC-2',
-        escalationStatus: 'ESCALATED'
-      },
-      isTransactionUnderway: false
+        sentToArcher: true
+      }
     };
     const action = makePackAction(LIFECYCLE.SUCCESS, {
-      type: ACTION_TYPES.ESCALATE_INCIDENT,
-      payload: { data: { id: 'INC-2', escalationStatus: 'ESCALATED' } }
+      type: ACTION_TYPES.SEND_INCIDENT_TO_ARCHER,
+      payload: { data: { id: 'INC-2', sentToArcher: true } }
     });
     const endState = incidentsReducer(Immutable.from(initState), action);
     assert.deepEqual(endState, expectedEndState);
@@ -47,10 +46,10 @@ module('Unit | Utility | Incidents Reducer (non-Explorer)', function() {
 
   test('When FETCH_INCIDENT_SETTINGS succeeds, the state is updated', function(assert) {
     const initState = {
-      isEscalateAvailable: false
+      isSendToArcherAvailable: false
     };
     const expectedEndState = {
-      isEscalateAvailable: true
+      isSendToArcherAvailable: true
     };
     const action = makePackAction(LIFECYCLE.SUCCESS, {
       type: ACTION_TYPES.FETCH_INCIDENTS_SETTINGS,

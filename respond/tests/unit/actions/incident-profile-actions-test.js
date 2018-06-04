@@ -159,20 +159,20 @@ module('Unit | Utility | Incident Profile Actions - Reducers', function() {
     assert.deepEqual(endState, expectedEndState);
   });
 
-  test('When ESCALATE_INCIDENT succeeds, the state is updated', function(assert) {
+  test('When SEND_INCIDENT_TO_ARCHER succeeds, the state is updated', function(assert) {
     const initState = {
       info: {
-        escalationStatus: 'NON_ESCALATED'
+        sentToArcher: false
       }
     };
     const expectedEndState = {
       info: {
-        escalationStatus: 'ESCALATED'
+        sentToArcher: true
       }
     };
     const action = makePackAction(LIFECYCLE.SUCCESS, {
-      type: ACTION_TYPES.ESCALATE_INCIDENT,
-      payload: { data: { escalationStatus: 'ESCALATED' } }
+      type: ACTION_TYPES.SEND_INCIDENT_TO_ARCHER,
+      payload: { data: { sentToArcher: true } }
     });
     const endState = incidentReducer(Immutable.from(initState), action);
     assert.deepEqual(endState, expectedEndState);

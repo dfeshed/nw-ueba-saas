@@ -11,8 +11,8 @@ const localStorageKey = 'rsa::nw::respond::incidents';
 // Load local storage values and incorporate into initial state
 const initialState = load(explorerInitialState, localStorageKey);
 
-// default (initial) state for escalation feature is false/off
-initialState.isEscalateAvailable = false;
+// default (initial) state for sendToArcher feature is false/off
+initialState.isSendToArcherAvailable = false;
 
 // If there are no filters, add the baseline date range filter
 if (!initialState.itemsFilters) {
@@ -59,13 +59,24 @@ const incidentsReducers = reduxActions.handleActions({
     handle(state, action, {
       success: (s) => {
         const { payload: { data: { isArcherDataSourceConfigured } } } = action;
-        return s.set('isEscalateAvailable', isArcherDataSourceConfigured);
+        return s.set('isSendToArcherAvailable', isArcherDataSourceConfigured);
       },
       failure: (s) => {
-        return s.set('isEscalateAvailable', false);
+        return s.set('isSendToArcherAvailable', false);
       }
     })
-  )
+  ),
+  [ACTION_TYPES.SEND_INCIDENT_TO_ARCHER]: (state, action) => {
+    return handle(state, action, {
+      success: (s) => {
+        const { payload: { data: updatedIncident } } = action;
+        return s.merge({
+          items: s.items.map((item) => item.id === updatedIncident.id ? updatedIncident : item),
+          focusedItem: s.focusedItem && s.focusedItem.id === updatedIncident.id ? updatedIncident : s.focusedItem
+        });
+      }
+    });
+  }
 
 }, Immutable.from(initialState));
 

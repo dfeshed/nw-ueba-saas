@@ -220,15 +220,15 @@ export default {
   },
 
   /**
-   * Escalates an incident
-   * @method escalate
+   * Sends an incident to Archer
+   * @method sendToArcher
    * @public
    * @param incidentId
    */
-  escalate(incidentId) {
+  sendToArcher(incidentId) {
     const request = lookup('service:request');
     return request.promiseRequest({
-      method: 'escalate',
+      method: 'sendToArcher',
       modelName: 'incidents',
       query: {
         incidentId

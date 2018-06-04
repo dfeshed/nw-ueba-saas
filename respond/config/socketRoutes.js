@@ -31,16 +31,16 @@ const respondConfigGen = function(environment) {
         subscriptionDestination: '/user/queue/incidents/delete',
         requestDestination: '/ws/respond/incidents/delete'
       },
-      escalate: {
-        subscriptionDestination: '/user/queue/incident/escalate',
-        requestDestination: '/ws/respond/incident/escalate'
+      sendToArcher: {
+        subscriptionDestination: '/user/queue/incidents/archer/send',
+        requestDestination: '/ws/respond/incidents/archer/send'
       }
     },
     'incidents-settings': {
       socketUrl,
       findAll: {
-        subscriptionDestination: '/user/queue/incidents/escalation/configuration',
-        requestDestination: '/ws/respond/incidents/escalation/configuration'
+        subscriptionDestination: '/user/queue/incidents/archer/configuration',
+        requestDestination: '/ws/respond/incidents/archer/configuration'
       }
     },
     'incidents-count': {

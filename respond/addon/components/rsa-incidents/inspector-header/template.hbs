@@ -8,21 +8,21 @@
     onFieldChange=(action 'updateName' info.id 'name')
   }}
 </div>
-{{#if isEscalateAvailable}}
-  <div class="action-control escalate-incident">
-    {{#if (or (eq info.escalationStatus 'NON_ESCALATED') (not info.escalationStatus))}}
+{{#if isSendToArcherAvailable}}
+  <div class="action-control send-to-archer">
+    {{#if (not info.sentToArcher)}}
       <div class="rsa-button-with-confirmation">
         {{#rsa-button-with-confirmation
-          isDisabled=isEscalationDisabled
-          title=(t 'respond.incidents.actions.actionMessages.confirmEscalationTitle')
+          isDisabled=isSendToArcherDisabled
+          title=(t 'respond.incidents.actions.actionMessages.confirmSendToArcherTitle')
           cancelButtonLabel=(t 'forms.cancel')
-          confirmationMessage=(t 'respond.incidents.actions.actionMessages.confirmEscalation')
-          onConfirm=(action 'escalate' info.id)}}
-          {{t 'respond.incident.escalate'}}
+          confirmationMessage=(t 'respond.incidents.actions.actionMessages.confirmSendToArcher')
+          onConfirm=(action 'sendToArcher' info.id)}}
+          {{t 'respond.incident.sendToArcher'}}
         {{/rsa-button-with-confirmation}}
       </div>
     {{else}}
-      {{rsa-icon name='report-problem-triangle'}} {{t 'respond.incident.escalated'}}
+      {{rsa-icon name='report-problem-triangle'}} {{t 'respond.incident.sentToArcher'}}
     {{/if}}
   </div>
 {{/if}}

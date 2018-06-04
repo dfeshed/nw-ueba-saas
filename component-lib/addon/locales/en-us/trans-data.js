@@ -865,9 +865,9 @@ export default {
           createIncidentInstruction: 'An incident will be created from the selected {{alertCount}} alert(s). Please provide a name for the incident.',
           addAlertToIncidentSucceeded: 'You successfully added the selected alerts to {{incidentId}}.',
           addAlertToIncidentFailed: 'There was a problem adding the selected alerts to this incident',
-          confirmEscalationTitle: 'Confirm Escalation',
-          confirmEscalation: 'Are you sure you want to escalate this incident? This action is not reversible and may initiate additional business processes in external systems.',
-          escalationSuccess: 'Incident {{incidentId}} has been escalated to Archer',
+          confirmSendToArcherTitle: 'Confirm Send to Archer',
+          confirmSendToArcher: 'Are you sure you want to send this incident to Archer? This action is not reversible.',
+          sendToArcherSuccess: 'Incident {{incidentId}} has been sent to Archer. The new Archer Incident ID is {{archerIncidentId}}',
           sendToArcherConnectionFailed: 'Could not connect to Archer. Archer may be unavailable or the credentials may be incorrect.',
           sendToArcherMetadataLoadFailed: 'Could not send incident ({{incidentId}}) to Archer. There was a problem loading Archer field definitions.',
           sendToArcherValidationFailed: 'Could not send incident ({{incidentId}}) to Archer because of a validation failure. There is required information missing or there are values that are too long.',
@@ -963,9 +963,8 @@ export default {
       backToAlerts: 'Back To Alerts'
     },
     incident: {
-      escalate: 'Escalate',
-      escalated: 'Escalated',
-      escalationStatus: 'Escalation Status',
+      sendToArcher: 'Send to Archer',
+      sentToArcher: 'Sent to Archer',
       created: 'Created',
       status: 'Status',
       priority: 'Priority',
@@ -1302,10 +1301,6 @@ export default {
       REMEDIATED: 'Remediated',
       RISK_ACCEPTED: 'Risk Accepted',
       NOT_APPLICABLE: 'Not Applicable'
-    },
-    escalationStatus: {
-      ESCALATED: 'Escalated',
-      NON_ESCALATED: 'Not Escalated'
     },
     priority: {
       LOW: 'Low',

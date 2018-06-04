@@ -31,7 +31,6 @@ const initializeIncidents = () => {
       dispatch(dictionaryCreators.getAllCategories());
     }
     dispatch(getIncidentsSettings());
-    dispatch(dictionaryCreators.getAllEscalationStatuses());
   };
 };
 
@@ -455,10 +454,10 @@ const addRelatedIndicatorsToIncident = (indicatorIds, incidentId, callbacks) => 
 
 const clearAddRelatedIndicatorsStatus = () => ({ type: ACTION_TYPES.CLEAR_ADD_RELATED_INDICATORS_STATUS });
 
-const escalate = (incidentId, callbacks = callbacksDefault) => {
+const sendToArcher = (incidentId, callbacks = callbacksDefault) => {
   return {
-    type: ACTION_TYPES.ESCALATE_INCIDENT,
-    promise: Incidents.escalate(incidentId),
+    type: ACTION_TYPES.SEND_INCIDENT_TO_ARCHER,
+    promise: Incidents.sendToArcher(incidentId),
     meta: {
       onSuccess: (response) => {
         callbacks.onSuccess(response);
@@ -495,7 +494,7 @@ const toggleEntityVisibility = (entity) => ({ type: ACTION_TYPES.TOGGLE_ENTITY_V
 
 export {
   initializeIncidents,
-  escalate,
+  sendToArcher,
   getItems,
   updateItem,
   deleteItem,

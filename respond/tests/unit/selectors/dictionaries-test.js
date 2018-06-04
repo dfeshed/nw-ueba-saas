@@ -9,8 +9,7 @@ import {
   getAlertTypes,
   getAlertSources,
   getAlertNames,
-  getMilestoneTypes,
-  getEscalationStatuses
+  getMilestoneTypes
 } from 'respond/selectors/dictionaries';
 
 module('Unit | Utility | Dictionary Selectors', function() {
@@ -24,8 +23,7 @@ module('Unit | Utility | Dictionary Selectors', function() {
     alertTypes: [],
     alertSources: [],
     alertNames: [],
-    milestoneTypes: [],
-    escalationStatuses: ['ESCALATED', 'NON_ESCALATED']
+    milestoneTypes: []
   });
 
   const state = {
@@ -44,7 +42,6 @@ module('Unit | Utility | Dictionary Selectors', function() {
     assert.equal(getAlertSources(state), dictionaries.alertSources, 'The returned value from the getAlertSources selector is as expected');
     assert.equal(getAlertNames(state), dictionaries.alertNames, 'The returned value from the getAlertNames selector is as expected');
     assert.equal(getMilestoneTypes(state), dictionaries.milestoneTypes, 'The returned value from the getMilestoneTypes selector is as expected');
-    assert.equal(getEscalationStatuses(state), dictionaries.escalationStatuses, 'The returned value from the getEscalationStatuses selector is as expected');
   });
 });
 

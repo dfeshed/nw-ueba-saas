@@ -18,20 +18,20 @@ module('Integration | Component | Incident Inspector Header', function(hooks) {
     this.owner.inject('component', 'i18n', 'service:i18n');
   });
 
-  const escalateControl = '.action-control.escalate-incident';
+  const sentToArcherControl = '.action-control.send-to-archer';
   const selectors = {
     incidentId: '.incident-inspector-header .id',
     incidentName: '.incident-inspector-header .name',
-    escalateButton: `${escalateControl} button`,
+    sendToArcherButton: `${sentToArcherControl} button`,
     confirmButton: 'footer .modal-footer-buttons .is-primary button',
-    escalatedIcon: `${escalateControl} .rsa-icon`,
-    escalateControl
+    sentToArcherIcon: `${sentToArcherControl} .rsa-icon`,
+    sentToArcherControl
   };
 
   test('The rsa-incidents/inspector-header component renders to the DOM', async function(assert) {
-    await render(hbs`{{rsa-incidents/inspector-header updateItem=update isEscalateAvailable=false}}`);
+    await render(hbs`{{rsa-incidents/inspector-header updateItem=update isSendToArcherAvailable=false}}`);
     assert.equal(findAll('.incident-inspector-header').length, 1, 'The incident inspector header is found in the DOM');
-    assert.equal(findAll(selectors.escalateButton).length, 0, 'The escalate button does not appear in the DOM');
+    assert.equal(findAll(selectors.sendToArcherButton).length, 0, 'The escalate button does not appear in the DOM');
   });
 
   test('The rsa-incidents/inspector-header contains the expected data for display', async function(assert) {
@@ -56,46 +56,46 @@ module('Integration | Component | Incident Inspector Header', function(hooks) {
     return updateEditableField('.incident-inspector-header', 'Something Wicked This Way Went');
   });
 
-  test('The Escalate Button appears if isEscalateAvailable is true', async function(assert) {
-    await render(hbs`{{rsa-incidents/inspector-header updateItem=update isEscalateAvailable=true}}`);
-    assert.equal(findAll(selectors.escalateButton).length, 1, 'The escalate button appears in the DOM');
+  test('The Send To Archer Button appears if isSendToArcherAvailable is true', async function(assert) {
+    await render(hbs`{{rsa-incidents/inspector-header updateItem=update isSendToArcherAvailable=true}}`);
+    assert.equal(findAll(selectors.sendToArcherButton).length, 1, 'The escalate button appears in the DOM');
   });
 
-  test('The Escalate button is disabled when the incident has a status of CLOSED', async function(assert) {
+  test('The Send To Archer button is disabled when the incident has a status of CLOSED', async function(assert) {
     this.set('info', {
       id: 'INC-1234',
       name: 'Something Wicked This Way Comes',
       status: 'CLOSED'
     });
-    await render(hbs`{{rsa-incidents/inspector-header info=info isEscalateAvailable=true}}`);
-    assert.equal(find(selectors.escalateButton).disabled, true);
+    await render(hbs`{{rsa-incidents/inspector-header info=info isSendToArcherAvailable=true}}`);
+    assert.equal(find(selectors.sendToArcherButton).disabled, true);
   });
 
-  test('The Escalate button is disabled when the incident has a status of CLOSED_FALSE_POSITIVE', async function(assert) {
+  test('The Send To Archer button is disabled when the incident has a status of CLOSED_FALSE_POSITIVE', async function(assert) {
     this.set('info', {
       id: 'INC-1234',
       name: 'Something Wicked This Way Comes',
       status: 'CLOSED_FALSE_POSITIVE'
     });
-    await render(hbs`{{rsa-incidents/inspector-header info=info isEscalateAvailable=true}}`);
-    assert.equal(find(selectors.escalateButton).disabled, true);
+    await render(hbs`{{rsa-incidents/inspector-header info=info isSendToArcherAvailable=true}}`);
+    assert.equal(find(selectors.sendToArcherButton).disabled, true);
   });
 
-  test('An escalated incident shows an escalated icon/label instead of a button', async function(assert) {
+  test('An incident sent to archer shows an icon/label instead of a button', async function(assert) {
     this.set('info', {
       id: 'INC-1234',
       name: 'Something Wicked This Way Comes',
-      escalationStatus: 'ESCALATED'
+      sentToArcher: true
     });
-    await render(hbs`{{rsa-incidents/inspector-header info=info isEscalateAvailable=true}}`);
-    assert.equal(findAll(selectors.escalateButton).length, 0);
-    assert.equal(findAll(selectors.escalatedIcon).length, 1);
+    await render(hbs`{{rsa-incidents/inspector-header info=info isSendToArcherAvailable=true}}`);
+    assert.equal(findAll(selectors.sendToArcherButton).length, 0);
+    assert.equal(findAll(selectors.sentToArcherIcon).length, 1);
   });
 
-  test('Clicking the escalate button calls the escalate endpoint with the incident ID and shows a success flash message', async function(assert) {
+  test('Clicking the Send To Archer button calls the send-to-archer endpoint with the incident ID and shows a success flash message', async function(assert) {
     assert.expect(5);
     patchSocket((method, modelName, query) => {
-      assert.equal(method, 'escalate');
+      assert.equal(method, 'sendToArcher');
       assert.equal(modelName, 'incidents');
       assert.deepEqual(query, {
         incidentId: 'INC-1234'
@@ -103,7 +103,8 @@ module('Integration | Component | Incident Inspector Header', function(hooks) {
     });
     patchFlash((flash) => {
       const translation = this.owner.lookup('service:i18n');
-      const expectedMessage = translation.t('respond.incidents.actions.actionMessages.escalationSuccess', { incidentId: 'INC-1234' });
+      // Note: the archerIncidentId is mocked in the mock server data
+      const expectedMessage = translation.t('respond.incidents.actions.actionMessages.sendToArcherSuccess', { incidentId: 'INC-1234', archerIncidentId: '12321349' });
       assert.equal(flash.type, 'success');
       assert.equal(flash.message.string, expectedMessage);
     });
@@ -111,8 +112,8 @@ module('Integration | Component | Incident Inspector Header', function(hooks) {
       id: 'INC-1234',
       name: 'Something Wicked This Way Comes'
     });
-    await render(hbs`{{rsa-incidents/inspector-header info=info isEscalateAvailable=true}}`);
-    await click(selectors.escalateButton);
+    await render(hbs`{{rsa-incidents/inspector-header info=info isSendToArcherAvailable=true}}`);
+    await click(selectors.sendToArcherButton);
     await click(selectors.confirmButton);
   });
 
@@ -130,8 +131,8 @@ module('Integration | Component | Incident Inspector Header', function(hooks) {
         id: 'INC-1234',
         name: 'Something Wicked This Way Comes'
       });
-      await render(hbs`{{rsa-incidents/inspector-header info=info isEscalateAvailable=true}}`);
-      await click(selectors.escalateButton);
+      await render(hbs`{{rsa-incidents/inspector-header info=info isSendToArcherAvailable=true}}`);
+      await click(selectors.sendToArcherButton);
       await click(selectors.confirmButton);
     };
   };

@@ -1,6 +1,5 @@
 import { lookup } from 'ember-dependency-lookup';
 import RSVP from 'rsvp';
-import _ from 'lodash';
 
 export default {
   /**
@@ -144,26 +143,6 @@ export default {
       method: 'findAll',
       modelName: 'milestone-types',
       query: {}
-    });
-  },
-
-  /**
-   * Returns a list of all known incident escalation statuses. The default escalation statuses are ESCALATED and
-   * NON_ESCALATED, but customers can use the API to add their own statuses.
-   * @method getAllEscalationStatuses
-   * @returns {*}
-   * @public
-   */
-  getAllEscalationStatuses() {
-    const request = lookup('service:request');
-    const defaultEscalationStatuses = ['ESCALATED', 'NON_ESCALATED'];
-    return new RSVP.Promise(function(resolve) {
-      request.promiseRequest({ method: 'findAll', modelName: 'escalation-statuses', query: {}
-      }).then((response) => {
-        // ensure that the data always includes default statuses (i.e., an ESCALATED status and a NON_ESCALATED status)
-        response.data = _.union(defaultEscalationStatuses, response.data);
-        resolve(response);
-      }).catch(() => resolve({ data: defaultEscalationStatuses }));
     });
   }
 };

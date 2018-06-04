@@ -182,7 +182,7 @@ const incident = reduxActions.handleActions({
     });
   },
 
-  [ACTION_TYPES.ESCALATE_INCIDENT]: (state, action) => {
+  [ACTION_TYPES.SEND_INCIDENT_TO_ARCHER]: (state, action) => {
     return handle(state, action, {
       success: (s) => s.set('info', action.payload.data)
     });

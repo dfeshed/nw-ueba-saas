@@ -1,10 +1,10 @@
 const data = {
-  isArcherDataSourceConfigured: false
+  isArcherDataSourceConfigured: true
 };
 
 export default {
-  subscriptionDestination: '/user/queue/incidents/escalation/configuration',
-  requestDestination: '/ws/respond/incidents/escalation/configuration',
+  subscriptionDestination: '/user/queue/incidents/archer/configuration',
+  requestDestination: '/ws/respond/incidents/archer/configuration',
   message(/* frame */) {
     return {
       data

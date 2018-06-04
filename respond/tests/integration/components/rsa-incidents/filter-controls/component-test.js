@@ -9,8 +9,7 @@ import {
   getAllEnabledUsers,
   getAllPriorityTypes,
   getAllStatusTypes,
-  getAllCategories,
-  getAllEscalationStatuses } from 'respond/actions/creators/dictionary-creators';
+  getAllCategories } from 'respond/actions/creators/dictionary-creators';
 import RSVP from 'rsvp';
 import wait from 'ember-test-helpers/wait';
 import { patchReducer } from '../../../../helpers/vnext-patch';
@@ -33,8 +32,7 @@ module('Integration | Component | Respond Incident Filters', function(hooks) {
         redux.dispatch(getAllEnabledUsers()),
         redux.dispatch(getAllPriorityTypes()),
         redux.dispatch(getAllStatusTypes()),
-        redux.dispatch(getAllCategories()),
-        redux.dispatch(getAllEscalationStatuses())
+        redux.dispatch(getAllCategories())
       ]);
     };
     initialize(this.owner);
@@ -175,26 +173,24 @@ module('Integration | Component | Respond Incident Filters', function(hooks) {
     assert.equal(findAll('.filter-option.assignee-filter .rsa-form-checkbox-label.show-only-unassigned.disabled').length, 1);
   });
 
-  test('The escalation status checkbox filters do not appear in the filter panel when isEscalateAvailable is false', async function(assert) {
-    setState({ isEscalateAvailable: false });
+  test('The "Sent to Archer" status checkbox filters do not appear in the filter panel when isSendToArcherAvailable is false', async function(assert) {
+    setState({ isSendToArcherAvailable: false });
     await init;
     await render(hbs`{{rsa-incidents/filter-controls}}`);
-    const selector = '.filter-option.escalation-status-filter .rsa-form-checkbox-label';
-    assert.equal(findAll(selector).length, 0, 'There should be 0 escalation status status filter options');
+    const selector = '.filter-option.sent-to-archer-filter .rsa-form-checkbox-label';
+    assert.equal(findAll(selector).length, 0, 'There should be 0 sent-to-archer filter options');
   });
 
-  test('The escalation status checkbox filters appear in the filter panel when isEscalateAvailable is true', async function(assert) {
-    assert.expect(3);
-    setState({ isEscalateAvailable: true });
+  test('The "Sent to Archer" checkbox filters appear in the filter panel when isSendToArcherAvailable is true', async function(assert) {
+    assert.expect(2);
+    setState({ isSendToArcherAvailable: true });
     await init;
     this.set('updateFilter', function(filter) {
-      assert.deepEqual(filter, { escalationStatus: ['ESCALATED'] });
+      assert.deepEqual(filter, { sentToArcher: [true] });
     });
     await render(hbs`{{rsa-incidents/filter-controls updateFilter=(action updateFilter)}}`);
-    const selector = '.filter-option.escalation-status-filter .rsa-form-checkbox-label';
-    // The mock data only returns "Remediated", but the default statuses (ESCALATED, NON_ESCALATED) always are added and appear with translation
-    assert.equal(findAll(selector).length, 3, 'There should be 3 status filter options (Escalated, Not Escalated, Remediated)');
-    assert.equal(findAll(selector)[2].textContent.trim(), 'Remediated', 'The third option is displayed without translation');
+    const selector = '.filter-option.sent-to-archer-filter .rsa-form-checkbox-label';
+    assert.equal(findAll(selector).length, 2, 'There should be 2 sent to archer filter options (Yes and No)');
     await click(`${selector} input.rsa-form-checkbox:first-of-type`);
   });
 });
