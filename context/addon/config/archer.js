@@ -7,6 +7,7 @@ export default {
   footer: '',
   title: 'context.archer.title',
   skippedField: ['internal_pivot_archer_request_url'],
+  groupField: 'Business Processes',
   localisationField:
   {
     'Criticality Rating': 'context.archer.criticalityRating',

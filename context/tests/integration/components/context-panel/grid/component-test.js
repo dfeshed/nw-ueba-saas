@@ -31,7 +31,8 @@ module('Integration | Component | context-panel/grid', function(hooks) {
           'Type': 'Desktop',
           'Device ID': '324945',
           'Device Name': 'New Device',
-          'Criticality Rating': 'Not Rated'
+          'Criticality Rating': 'Not Rated',
+          'Business Processes': [ 'Process 1', 'Process 2', 'Process 3', 'Process 4' ]
         }
       ],
       'order': [ 'Criticality Rating', 'Risk Rating', 'Device Name', 'Host Name', 'IP Address', 'Device ID', 'Type', 'MAC Address', 'Facilities', 'Business Unit', 'Device Owner', 'internal_pivot_archer_request_url' ]
@@ -213,4 +214,16 @@ module('Integration | Component | context-panel/grid', function(hooks) {
     assert.ok(findAll('.rsa-context-panel__config-grid__layout')[2].textContent.indexOf('Manufacturer'), 'Manufacturer label name is taken from resultList response');
   });
 
+  test('Business process is displayed as panel', async function(assert) {
+    new ReduxDataHelper(setState)
+      .setData('context', contextData)
+      .build();
+    const content = [ 'Process 1', 'Process 2', 'Process 3', 'Process 4' ];
+    this.set('content', content);
+    await render(hbs`{{context-panel/dynamic-grid/group
+          groupData=content
+          title='context.archer.businessProcesses'
+          }}`);
+    assert.equal(findAll('.rsa-context-panel__grid__host-details__tetheredPanel')[0].textContent.trim(), '4');
+  });
 });

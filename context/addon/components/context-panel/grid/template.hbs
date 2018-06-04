@@ -3,12 +3,19 @@
   {{#each dataSourceData as |gridData|}}
     {{#each-in gridData as |label content|}}
       <div class='rsa-context-panel__config-grid__layout col-xs-3'>
-        {{#if (get dataSourceDetails.localisationField label)}}
-          <div>{{rsa-content-definition label=(t (get dataSourceDetails.localisationField label))}}</div>
+        {{#if (and (eq label dataSourceDetails.groupField) (gt content.length 3))}}
+          {{context-panel/dynamic-grid/group
+          groupData=content
+          title=(get dataSourceDetails.localisationField label)
+          }}
         {{else}}
-          <div>{{rsa-content-definition label=label}}</div>
+          {{#if (get dataSourceDetails.localisationField label)}}
+            <div>{{rsa-content-definition label=(t (get dataSourceDetails.localisationField label))}}</div>
+          {{else}}
+            <div>{{rsa-content-definition label=label}}</div>
+          {{/if}}
+          {{if content content '-'}}
         {{/if}}
-        {{if content content '-'}}
       </div>
     {{/each-in}}
   {{/each}}
