@@ -19,12 +19,12 @@
         <repository>
             <id>asoc-releases</id>
             <name>repo1.rsa.lab.emc.com-releases</name>
-            <url>https://repo1.rsa.lab.emc.com:8443/artifactory/presidio-test-utils</url>
+            <url>https://repo1.rsa.lab.emc.com:8443/artifactory/asoc-releases</url>
         </repository>
         <repository>
             <id>asoc-snapshots</id>
             <name>repo1.rsa.lab.emc.com-snapshots</name>
-            <url>https://repo1.rsa.lab.emc.com:8443/artifactory/presidio-test-utils</url>
+            <url>https://repo1.rsa.lab.emc.com:8443/artifactory/asoc-snapshots</url>
             <snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
