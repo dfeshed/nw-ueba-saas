@@ -24,11 +24,14 @@ import presidio.output.processor.services.user.UserService;
  * Created by shays on 17/05/2017.
  */
 @Configuration
-@Import({PresidioMonitoringConfiguration.class})
+@Import({PresidioMonitoringConfiguration.class, AdeManagerSdkConfig.class})
 public class OutputMonitoringConfiguration {
+
+    @Autowired
+    private AdeManagerSdk adeManagerSdk;
 
     @Bean
     public OutputMonitoringService outputMonitoringService() {
-        return new OutputMonitoringService();
+        return new OutputMonitoringService(adeManagerSdk);
     }
 }

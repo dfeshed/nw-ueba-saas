@@ -44,6 +44,7 @@ import static java.util.stream.Collectors.toMap;
  */
 public class AdeManagerSdkImpl implements AdeManagerSdk {
     private static final String SCHEMA = "schema";
+    private static final String HOURLY_SMART_CONF_NAME = "userId_hourly";
 
     private StoreManagerAwareEnrichedDataStore storeManagerAwareEnrichedDataStore;
     private SmartDataReader smartDataReader;
@@ -275,7 +276,7 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
     @Override
     public int getDistinctSmartUsers(TimeRange timeRange) {
         //reading smarts from the hourly smarts collections only!
-        SmartRecordsMetadata smartRecordsMetadata = new SmartRecordsMetadata("userId_hourly", timeRange.getStart(), timeRange.getEnd());
+        SmartRecordsMetadata smartRecordsMetadata = new SmartRecordsMetadata(HOURLY_SMART_CONF_NAME, timeRange.getStart(), timeRange.getEnd());
         List<ContextIdToNumOfItems> contextIdToNumOfSmarts = smartDataReader.aggregateContextIdToNumOfEvents(smartRecordsMetadata, 0);
         if(contextIdToNumOfSmarts == null) {
             return 0;

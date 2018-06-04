@@ -16,9 +16,7 @@ import presidio.output.processor.services.alert.AlertService;
 import presidio.output.processor.services.user.UserService;
 import presidio.output.processor.services.user.UsersAlertData;
 
-import java.time.Duration;
 import java.time.Instant;
-import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -41,6 +39,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
 
     private final int SMART_THRESHOLD_FOR_GETTING_SMART_ENTITIES = 0;
+
     private static final String ADE_SMART_USER_ID = "userId";
 
     public OutputExecutionServiceImpl(AdeManagerSdk adeManagerSdk,
@@ -80,6 +79,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         List<User> users = new ArrayList<>();
         List<SmartRecord> smarts = null;
         List<Alert> alerts = new ArrayList<>();
+        int indicatorsCountHourly = 0;
         while (smartPageIterator.hasNext()) {
             smarts = smartPageIterator.next();
             for (SmartRecord smart : smarts) {
@@ -107,6 +107,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                     UsersAlertData usersAlertData = new UsersAlertData(alertEntity.getContributionToUserScore(), 1, alertEntity.alertPrimaryClassification(), alertEntity.getIndicatorsNames());
                     userService.addUserAlertData(userEntity, usersAlertData);
                     alerts.add(alertEntity);
+                    indicatorsCountHourly += alertEntity.getIndicatorsNum();
 
                     String classification = alertEntity.alertPrimaryClassification();
                     outputMonitoringService.reportTotalAlertCount(1, alertEntity.getSeverity(), classification, startDate);
@@ -123,6 +124,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
         storeUsers(users); //Get the generated users with the new elasticsearch ID
         outputMonitoringService.reportTotalUsersCount(users.size(), startDate);
+        outputMonitoringService.reportNumericMetric(outputMonitoringService.INDICATORS_COUNT_HOURLY_METRIC_NAME, indicatorsCountHourly, startDate);
 
         if (CollectionUtils.isNotEmpty(smarts)) {
             outputMonitoringService.reportLastSmartTimeProcessed(smarts.get(smarts.size() - 1).getStartInstant().toEpochMilli(), startDate);
@@ -154,18 +156,10 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     public void updateAllUsersData() throws Exception {
         this.userService.updateUserData();
 
-        reportDailyOutputMetrics();
+        outputMonitoringService.reportDailyMetrics();
     }
 
-    private void reportDailyOutputMetrics() {
-        //calculate number of active users in the last 24 hours
-        //active user = user with smart (smart score >= 0)
-        Instant endDate = Instant.now();
-        Instant startDate = endDate.minus(Duration.ofHours(24));
-        int distinctSmartUsers = adeManagerSdk.getDistinctSmartUsers(new TimeRange(startDate, endDate));
-        outputMonitoringService.reportNumActiveUsersLastDay(distinctSmartUsers, startDate);
 
-    }
 
     private void storeAlerts(List<Alert> alerts) {
         if (CollectionUtils.isNotEmpty(alerts)) {
