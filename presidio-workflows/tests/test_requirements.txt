@@ -10,4 +10,5 @@ nose
 apache-airflow[devel]==1.9.0
 python-dateutil
 lxml<4.0,>=3.6.0
+setuptools-scm==2.1.0
 ../presidio-workflows-extension/.tox/dist/presidio-workflows-extension-1.0.zip
