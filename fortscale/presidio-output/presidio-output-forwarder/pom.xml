@@ -114,7 +114,6 @@
                 </executions>
                 <configuration>
                     <mainClass>${start-class}</mainClass>
-                    <classifier>exec</classifier>
                 </configuration>
             </plugin>
             <plugin>
