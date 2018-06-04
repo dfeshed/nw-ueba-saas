@@ -7,7 +7,7 @@ echo "installing presidio_workflows in virtualenv"
 source /etc/sysconfig/airflow
 source $AIRFLOW_VENV/bin/activate
 cd /var/lib/netwitness/presidio/pypackages
-easy_install presidio_workflows*.egg
+OWB_ALLOW_NON_FIPS=on python -m easy_install presidio_workflows*.egg
 deactivate
 
 echo "starting airflow services"
