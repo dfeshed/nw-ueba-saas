@@ -15,6 +15,23 @@
     <page>
       {{context-panel entityId="100" entityType=entityType}}
     </page>
+    <ul class="rsa-flash-messages">
+      {{#each flashMessages.queue as |flash|}}
+        {{#flash-message tagName="li" flash=flash as |component flash|}}
+          <hbox align="stretch">
+            <centered xs="2">
+              {{rsa-icon name=flash.iconName style=flash.iconStyle size=flash.iconSize}}
+            </centered>
+            <vbox xs="9" justify="center" class="message">
+              {{flash.message}}
+            </vbox>
+            <vbox xs="1" justify="start" align="center">
+              {{rsa-icon name="close"}}
+            </vbox>
+          </hbox>
+        {{/flash-message}}
+      {{/each}}
+    </ul>
     <div id='modalDestination'></div>
     {{context-panel/add-to-list entity=entityToAddToList}}  
   </box>

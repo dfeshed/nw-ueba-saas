@@ -24,6 +24,13 @@ const isDataSourceEnabled = (contextData, dataSourceGroup, defaultEnable) => {
   return isNotEmpty(contextData, dataSourceGroup, defaultEnable) || !isNotError(contextData, dataSourceGroup);
 };
 
+const getWarningInfo = (lookupData, { dataSourceGroup }) => {
+  if (!lookupData || !lookupData[dataSourceGroup] || !lookupData[dataSourceGroup].warning.type) {
+    return;
+  }
+  return lookupData[dataSourceGroup].warning;
+};
+
 const getData = (lookupData, { dataSourceGroup, sortColumn, sortOrder }) => {
   if (!lookupData || !lookupData[dataSourceGroup] || isEmpty(lookupData[dataSourceGroup].resultList)) {
     return;
@@ -189,5 +196,6 @@ export {
   getTabs,
   getSortedData,
   pivotToInvestigateUrl,
-  getOrder
+  getOrder,
+  getWarningInfo
 };

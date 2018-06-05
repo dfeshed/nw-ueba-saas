@@ -8,6 +8,10 @@ export default [
     'dataSourceType': 'Archer',
     'dataSourceGroup': 'Archer',
     'connectionName': 'test',
+    'warning': {
+      'data': 'report1 , qwerty',
+      'type': 'invalidAttributes'
+    },
     'resultList': [
       {
         'Device Owner': '',

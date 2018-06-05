@@ -1647,7 +1647,8 @@ export default {
       archer: {
         noData: 'Data in RSA Archer is not available.',
         notConfigured: 'Configure Archer as a data source, add or enable to pivot successfully.',
-        notReachable: 'Check the data source connectivity to Archer.'
+        notReachable: 'Check the data source connectivity to Archer.',
+        invalidAttributes: ' attribute(s) are not imported.'
       }
     },
     footer: {

@@ -8,42 +8,18 @@ import Immutable from 'seamless-immutable';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { revertPatch } from '../../../../helpers/patch-reducer';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
+import lookupData from '../../../../data/archer-data';
 
+
+const contextData = {
+  lookupKey: '10.10.100.10',
+  meta: 'IP',
+  lookupData
+};
 
 let setState;
 module('Integration | Component | context-panel/grid', function(hooks) {
   setupRenderingTest(hooks);
-  const lookupData = [{
-    'Archer': {
-      'dataSourceType': 'Archer',
-      'dataSourceGroup': 'Archer',
-      'connectionName': 'test',
-      'resultList': [
-        {
-          'Device Owner': '',
-          'Business Unit': '',
-          'Host Name': 'NewHost',
-          'MAC Address': '',
-          'internal_pivot_archer_request_url': 'HTTPS://10.31.204.245/RSAArcher/default.aspx?requestUrl=..%2fGenericContent%2fRecord.aspx%3fid%3d324945%26moduleId%3d71',
-          'Facilities': '',
-          'Risk Rating': '',
-          'IP Address': '10.30.91.91',
-          'Type': 'Desktop',
-          'Device ID': '324945',
-          'Device Name': 'New Device',
-          'Criticality Rating': 'Not Rated',
-          'Business Processes': [ 'Process 1', 'Process 2', 'Process 3', 'Process 4' ]
-        }
-      ],
-      'order': [ 'Criticality Rating', 'Risk Rating', 'Device Name', 'Host Name', 'IP Address', 'Device ID', 'Type', 'MAC Address', 'Facilities', 'Business Unit', 'Device Owner', 'internal_pivot_archer_request_url' ]
-    } }];
-
-  const contextData = {
-    lookupKey: '10.10.100.10',
-    meta: 'IP',
-    lookupData
-  };
-
   hooks.beforeEach(function() {
     setState = (state) => {
       patchReducer(this, Immutable.from(state));
@@ -73,8 +49,12 @@ module('Integration | Component | context-panel/grid', function(hooks) {
       'Archer': {
         'dataSourceType': 'Archer',
         'dataSourceGroup': 'Archer',
-        'connectionName': 'test'
-      } }];
+        'connectionName': 'test',
+        'warning': {
+          'data': 'report1 , qwerty'
+        }
+      }
+    }];
 
     const emptyData = {
       lookupKey: '10.10.100.10',
@@ -120,7 +100,10 @@ module('Integration | Component | context-panel/grid', function(hooks) {
       'Archer': {
         'dataSourceType': 'Archer',
         'dataSourceGroup': 'Archer',
-        'connectionName': 'test'
+        'connectionName': 'test',
+        'warning': {
+          'data': 'report1 , qwerty'
+        }
       } }];
 
     const emptyData = {
@@ -144,6 +127,9 @@ module('Integration | Component | context-panel/grid', function(hooks) {
         'dataSourceType': 'Archer',
         'dataSourceGroup': 'Archer',
         'connectionName': 'test',
+        'warning': {
+          'data': 'report1 , qwerty'
+        },
         'resultList': [
           {
             'Device Owner': '',
@@ -181,6 +167,9 @@ module('Integration | Component | context-panel/grid', function(hooks) {
         'dataSourceType': 'Archer',
         'dataSourceGroup': 'Archer',
         'connectionName': 'test',
+        'warning': {
+          'data': 'report1 , qwerty'
+        },
         'resultList': [
           {
             'Device Owner': '',
@@ -226,4 +215,34 @@ module('Integration | Component | context-panel/grid', function(hooks) {
           }}`);
     assert.equal(findAll('.rsa-context-panel__grid__host-details__tetheredPanel')[0].textContent.trim(), '4');
   });
+
+  test('flashMessage is displayed when attributes are not imported properly', async function(assert) {
+    const archerWarning = {
+      'warning': {
+        'data': 'report1 , qwerty',
+        'type': 'invalidAttributes'
+      }
+    };
+    lookupData[0].Archer.warning.type = 'invalidAttributes';
+    const contextData = {
+      lookupKey: '10.10.100.10',
+      meta: 'IP',
+      lookupData
+    };
+    const translation = this.owner.lookup('service:i18n');
+    const flashMessages = {
+      warning(msg) {
+        const warningMessage = `context.error.archer.${archerWarning.warning.type}`;
+        const expectedMessage = archerWarning.warning.data + translation.t(warningMessage);
+        assert.equal(msg, expectedMessage);
+      }
+    };
+    new ReduxDataHelper(setState)
+      .setData('context', contextData)
+      .build();
+    this.set('dataSourceDetails', dataSourceDetails);
+    this.set('flashMessages', flashMessages);
+    await render(hbs`{{context-panel/grid dataSourceDetails=dataSourceDetails flashMessages=flashMessages}}`);
+  });
+
 });
