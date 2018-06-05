@@ -15,7 +15,6 @@ const stateToComputed = ({ recon, recon: { meta, text, data, dictionaries } }) =
   metaLoading: meta.metaLoading,
   metaToHighlight: text.metaToHighlight,
   metaHighlightCount: metaHighlightCount(recon),
-  contextMenuItems: data.contextMenuItems,
   queryInputs: data.queryInputs,
   language: dictionaries.language
 });

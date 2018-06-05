@@ -12,8 +12,8 @@ test('it calculates and returns Y-offset for context menu', function(assert) {
 
 test('it should return all supported CssClass List for context menu actions', function(assert) {
   const cssClassList = componentCSSList.EventAnalysisPanel;
-  assert.equal(cssClassList.length, 4, 'Expected Three classes for EventAnalysisPanel');
-  assert.equal(cssClassList.toString(), 'nw-event-value,nw-event-value-drillable-equals,nw-event-value-drillable-not-equals,nw-event-value-drillable-contains', 'Expected Three classes for EventAnalysisPanel');
+  assert.equal(cssClassList.length, 3, 'Expected Three classes for EventAnalysisPanel');
+  assert.equal(cssClassList.toString(), 'nw-event-value,nw-event-value-drillable-equals,nw-event-value-drillable-not-equals', 'Expected Three classes for EventAnalysisPanel');
 });
 
 test('mergeObjectArray should return combined object', function(assert) {

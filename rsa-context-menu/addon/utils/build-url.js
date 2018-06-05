@@ -1,4 +1,6 @@
 import moment from 'moment';
+import windowProxy from 'rsa-context-menu/utils/window-proxy';
+import _ from 'lodash';
 
 const _prepareMetaFormatMap = (language) => {
   if (!language) {
@@ -60,23 +62,24 @@ export const buildHostsUrl = (selected, contextDetails) => {
  */
 export const buildEventAnalysisUrl = (selected, queryOperator, contextDetails, refocus) => {
   const metaFormatMap = _prepareMetaFormatMap(contextDetails.language);
-  const href = window.location.href.split('?');
-  let queryParam = (href.length > 1) ? href[1] : '';
-  queryParam = decodeURIComponent(decodeURI(queryParam)).split('&');
-  let mf = queryParam.find((param) => param.startsWith('mf='));
+  const href = windowProxy.currentUri().split('?');
+  const queryParam = (href.length > 1) ? href[1] : '';
+  const queryParamArray = queryParam.split('&');
+  const mf = queryParamArray.find((param) => _.startsWith(param, 'mf='));
   // Need to close recon for all scenario.
-  queryParam = queryParam.filter((param) => !param.startsWith('eid=') && !param.startsWith('mf='));
+  const queryParamWithoutMFandEID = queryParamArray.filter((param) => !_.startsWith(param, 'eid=') && !_.startsWith(param, 'mf='));
   // queryParam = queryParam.replace(/eid=/, '');
   const query = _buildQuery([{ meta: selected.metaName, value: selected.metaValue, operator: queryOperator }], metaFormatMap);
-  mf = mf && mf.match(/mf=(.*)/) ? mf.match(/mf=(.*)/)[1] : null;
-
-  if (!mf || refocus) {
+  const match = mf && mf.match(/mf=(.*)/);
+  const metaFilter = match && match[1] ? match[1] : null;
+  let mfToPass = null;
+  if (!metaFilter || refocus) {
     // If no meta filter add new one.
-    mf = `mf=${encodeURI(encodeURIComponent(query))}`;
+    mfToPass = `mf=${encodeURI(encodeURIComponent(query))}`;
   } else {
     // If further need to drill add to existing meta filter value.
-    mf = `mf=${encodeURI(encodeURIComponent(`${mf}|${query}`))}`;
+    mfToPass = `mf=${metaFilter}/${encodeURI(encodeURIComponent(query))}`;
   }
-  queryParam = queryParam.concat(mf).join('&');
-  return `/investigate/events?${queryParam}`;
+  const queryParamToPass = queryParamWithoutMFandEID.concat(mfToPass).join('&');
+  return `/investigate/events?${queryParamToPass}`;
 };

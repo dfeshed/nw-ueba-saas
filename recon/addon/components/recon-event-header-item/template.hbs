@@ -20,7 +20,6 @@
     {{else if hasKey}}
       {{#each metaValuePairs as |metaValuePair|}}
         {{#rsa-context-menu
-          contextItems=contextMenuItems
           contextSelection=metaValuePair
           contextDetails=contextMenuData}}
           {{metaValuePair.displayValue}}

@@ -14,7 +14,6 @@ const stateToComputed = ({ recon }) => ({
   isHeaderOpen: recon.visuals.isHeaderOpen,
   headerItems: recon.header.headerItems,
   headerError: recon.header.headerError,
-  contextMenuItems: recon.data.contextMenuItems,
   queryInputs: recon.data.queryInputs,
   language: recon.dictionaries.language
 });

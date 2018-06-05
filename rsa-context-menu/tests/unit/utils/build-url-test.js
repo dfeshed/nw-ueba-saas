@@ -1,4 +1,6 @@
 import { module, test } from 'qunit';
+import sinon from 'sinon';
+import windowProxy from 'rsa-context-menu/utils/window-proxy';
 import { buildInvestigateUrl, buildHostsUrl, buildEventAnalysisUrl } from 'rsa-context-menu/utils/build-url';
 
 const selection = {
@@ -51,6 +53,15 @@ module('Unit | Utility | build-url', function() {
     const eventEnalysisUrl = buildEventAnalysisUrl(selection, '=', contextDetails, true);
     assert.ok(eventEnalysisUrl.indexOf('mf=ip.src%2520%253D%252017.127.255.250') > 0, 'expected host url formed');
     selection.metaValue = '17.127.255.150';
+  });
+
+  test('it forms the Event Analysis for Apply Drill with complex filter', function(assert) {
+    const currentUriStub = sinon.stub(windowProxy, 'currentUri', () => 'www.google.com?mf=ip.src%2520%253D%252017.127.255.250');
+    selection.metaValue = '17.127.255.150';
+    const eventEnalysisUrl = buildEventAnalysisUrl(selection, '=', contextDetails, false);
+    assert.ok(eventEnalysisUrl.indexOf('mf=ip.src%2520%253D%252017.127.255.250/ip.src%2520%253D%252017.127.255.150') > 0, 'expected host url formed');
+    selection.metaValue = '17.127.255.150';
+    currentUriStub.restore();
   });
 
 });

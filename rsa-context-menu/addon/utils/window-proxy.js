@@ -4,6 +4,9 @@ const windowProxy = {
   },
   openInNewTab: (url) => {
     window.open(url);
+  },
+  currentUri: () => {
+    return window.location.href;
   }
 };
 
