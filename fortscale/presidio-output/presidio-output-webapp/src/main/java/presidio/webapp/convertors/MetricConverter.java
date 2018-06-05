@@ -17,7 +17,13 @@ public class MetricConverter implements RestPersistencyConvertor<MetricDocument,
     @Override
     public Metric convertFromPersistentToRest(MetricDocument persistantObject) {
 
-        Number value = persistantObject.getValue().get(MetricEnums.MetricValues.DEFAULT_METRIC_VALUE);
+        return convertFromPersistentToRest(persistantObject,MetricEnums.MetricValues.DEFAULT_METRIC_VALUE);
+    }
+
+
+    public Metric convertFromPersistentToRest(MetricDocument persistantObject, MetricEnums.MetricValues valueType) {
+
+        Number value = persistantObject.getValue().get(valueType);
         Metric metric = new Metric(
                 persistantObject.getName(),
                 value,

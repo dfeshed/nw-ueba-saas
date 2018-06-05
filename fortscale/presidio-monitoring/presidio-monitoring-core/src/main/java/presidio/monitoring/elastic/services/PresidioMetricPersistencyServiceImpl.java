@@ -1,6 +1,7 @@
 package presidio.monitoring.elastic.services;
 
 import fortscale.utils.logging.Logger;
+import fortscale.utils.time.TimeRange;
 import org.springframework.stereotype.Service;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.records.MetricDocument;
@@ -35,11 +36,9 @@ public class PresidioMetricPersistencyServiceImpl implements PresidioMetricPersi
     }
 
     @Override
-    public List<MetricDocument> getMetricsByNamesAndTime(Collection<String> names, Instant from, Instant to){
+    public List<MetricDocument> getMetricsByNamesAndTime(Collection<String> names, TimeRange timeRange){
 
-        Date fromDate = new Date(from.toEpochMilli());
-        Date toDate = new Date(to.toEpochMilli());
-        return metricRepository.findByNameInAndTimestampGreaterThanEqualAndTimestampLessThan(names,fromDate,toDate);
+        return metricRepository.findByNameInAndTimestampGreaterThanEqualAndTimestampLessThan(names,timeRange.getStart().toEpochMilli(),timeRange.getEnd().toEpochMilli());
     }
 
     @Override
