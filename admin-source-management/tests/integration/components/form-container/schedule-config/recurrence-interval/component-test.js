@@ -1,12 +1,15 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll } from '@ember/test-helpers';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
 import { clickTrigger } from '../../../../../helpers/ember-power-select';
 
 module('Integration | Component | form-container/schedule-config/recurrence-interval', function(hooks) {
-  setupRenderingTest(hooks);
+  setupRenderingTest(hooks, {
+    resolver: engineResolverFor('admin-source-management')
+  });
 
   test('should render recurrence interval fields', async function(assert) {
     await render(hbs`{{form-container/schedule-config/recurrence-interval}}`);

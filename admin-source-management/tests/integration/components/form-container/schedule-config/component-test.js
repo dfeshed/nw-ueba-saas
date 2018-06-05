@@ -5,6 +5,7 @@ import hbs from 'htmlbars-inline-precompile';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 let setState, redux;
@@ -33,7 +34,9 @@ const initialState = {
 };
 
 module('Integration | Component | form-container/schedule-config', function(hooks) {
-  setupRenderingTest(hooks);
+  setupRenderingTest(hooks, {
+    resolver: engineResolverFor('admin-source-management')
+  });
   hooks.beforeEach(function() {
     initialize(this.owner);
     setState = (state) => {

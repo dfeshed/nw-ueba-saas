@@ -34,7 +34,7 @@ const dispatchToActions = (dispatch) => ({
         transitionToPolicies();
       },
       onFailure: () => {
-        this.send('failure', 'ERROR');
+        this.send('failure', 'adminUsm.policy.scheduleConfiguration.error.generic');
       }
     };
     dispatch(savePolicy(this.get('policy'), callBackOptions));
@@ -44,7 +44,7 @@ const dispatchToActions = (dispatch) => ({
 const UsmPolicy = Component.extend(Notifications, {
   tagName: 'hbox',
 
-  classNames: ['usm-policy scroll-box'],
+  classNames: ['usm-policy', 'scroll-box'],
 
   actions: {
     handleNameChange(value) {

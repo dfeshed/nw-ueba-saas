@@ -1,5 +1,4 @@
 import Component from '@ember/component';
-import layout from './template';
 import { connect } from 'ember-redux';
 import { updatePolicyProperty } from 'admin-source-management/actions/data-creators/policy';
 import { scanOptions } from 'admin-source-management/reducers/policy/selector';
@@ -13,9 +12,7 @@ const dispatchToActions = {
 };
 
 
-const SCAN_OPTIONS = Component.extend({
-  layout,
-
+const ScanOptions = Component.extend({
   tagName: 'box',
 
   classNames: 'scan-options',
@@ -30,5 +27,5 @@ const SCAN_OPTIONS = Component.extend({
 
 });
 
-export default connect(stateToComputed, dispatchToActions)(SCAN_OPTIONS);
+export default connect(stateToComputed, dispatchToActions)(ScanOptions);
 

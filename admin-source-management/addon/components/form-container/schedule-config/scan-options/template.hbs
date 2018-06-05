@@ -1,17 +1,17 @@
 <h4 class='text'>{{t 'adminUsm.policy.scheduleConfiguration.cpuThrottling.cpuMax'}}</h4>
 {{range-slider
-        start=[scanOptions.cpuMaximum]
-        format=format
-        min=5
-        step=1
-        connect=false
-        on-change=(action 'updatePolicyProperty' 'cpuMaximum')}}
+  start=[scanOptions.cpuMaximum]
+  format=format
+  min=5
+  step=1
+  connect=false
+  on-change=(action 'updatePolicyProperty' 'cpuMaximum')}}
 
 <h4 class='text'>{{t 'adminUsm.policy.scheduleConfiguration.cpuThrottling.vmMax'}}</h4>
 {{range-slider
-        min=5
-        start=[scanOptions.cpuMaximumOnVirtualMachine]
-        format=format
-        step=1
-        connect=false
-        on-change=(action 'updatePolicyProperty' 'cpuMaximumOnVirtualMachine')}}
+  min=5
+  start=[scanOptions.cpuMaximumOnVirtualMachine]
+  format=format
+  step=1
+  connect=false
+  on-change=(action 'updatePolicyProperty' 'cpuMaximumOnVirtualMachine')}}

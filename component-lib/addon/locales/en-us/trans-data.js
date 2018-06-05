@@ -3120,7 +3120,7 @@ export default {
           vmMax: 'Virtual Machine Maximum ( % ) '
         },
         error: {
-          generic: 'An unexpected error has occurred attempting to retrieve this data.'
+          generic: 'An unexpected error has occurred.'
         }
       }
     }

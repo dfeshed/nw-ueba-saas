@@ -12,8 +12,25 @@ const COUNTER = {
   'WEEKS': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
 };
 
+const RADIO_BUTTONS_CONFIG = {
+  name: 'recurrence',
+  label: 'adminUsm.policy.scheduleConfiguration.recurrenceInterval.title',
+  type: 'radioGroup',
+  items: [
+    {
+      name: 'DAYS',
+      label: 'adminUsm.policy.scheduleConfiguration.recurrenceInterval.options.daily'
+    },
+    {
+      name: 'WEEKS',
+      label: 'adminUsm.policy.scheduleConfiguration.recurrenceInterval.options.weekly'
+    }
+  ]
+};
+
 const policyState = (state) => state.policy;
 const scheduleConfig = (state) => state.policy.policy.scheduleConfig || {};
+export const radioButtonConfig = () => RADIO_BUTTONS_CONFIG;
 
 export const isPolicyListLoading = createSelector(
   policyState,

@@ -1,5 +1,4 @@
 import Component from '@ember/component';
-import layout from './template';
 import { connect } from 'ember-redux';
 import {
   isEnabled,
@@ -15,7 +14,7 @@ import {
 import { isEmpty } from '@ember/utils';
 
 const stateToComputed = (state) => ({
-  enabled: isEnabled(state),
+  isEnabled: isEnabled(state),
   startDate: startDate(state),
   startTime: startTime(state),
   config: state.policy.scheduleConfig
@@ -27,15 +26,9 @@ const dispatchToActions = {
 };
 
 const Form = Component.extend({
-  layout,
-
   tagName: 'hbox',
 
   classNames: 'schedule-config',
-
-  isDirty: false,
-
-  errorMessage: 'adminUsm.policy.scheduleConfiguration.error.generic',
 
   actions: {
     toggleEnable() {

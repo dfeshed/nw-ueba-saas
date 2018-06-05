@@ -4,37 +4,37 @@
     {{#each radioButtonConfig.items as |item|}}
       <label class="rsa-form-radio-label {{if (eq item.name schedule.recurrenceIntervalUnit) 'checked'}}">
         {{radio-button
-                radioClass='recurrence-type'
-                value=item.name
-                changed=(action 'updatePolicyProperty' 'recurrenceIntervalUnit' item.name)
-                groupValue=schedule.recurrenceIntervalUnit}}
-          {{t item.label}}
+          radioClass='recurrence-type'
+          value=item.name
+          changed=(action 'updatePolicyProperty' 'recurrenceIntervalUnit' item.name)
+          groupValue=schedule.recurrenceIntervalUnit}}
+        {{t item.label}}
       </label>
     {{/each}}
   </hbox>
 </vbox>
 <hbox class='recurrence-run-interval'>
   <span class='text'>{{t 'adminUsm.policy.scheduleConfiguration.recurrenceInterval.every'}}</span>
-    <div class="recurrence-run-interval__list">
-      <label class="rsa-form-label power-select">
-        {{#power-select
-                triggerClass="inline"
-                options=runIntervalConfig.options
-                selected=schedule.recurrenceInterval
-                onchange=(action 'updatePolicyProperty' 'recurrenceInterval') as |selectedDays|}}
-          {{selectedDays}}
-        {{/power-select}}
-      </label>
-    </div>
-    <span class='text'>{{t runIntervalConfig.runLabel}}</span>
+  <div class="recurrence-run-interval__list">
+    <label class="rsa-form-label power-select">
+      {{#power-select
+        triggerClass="inline"
+        options=runIntervalConfig.options
+        selected=schedule.recurrenceInterval
+        onchange=(action 'updatePolicyProperty' 'recurrenceInterval') as |selectedDays|}}
+        {{selectedDays}}
+      {{/power-select}}
+    </label>
+  </div>
+  <span class='text'>{{t runIntervalConfig.runLabel}}</span>
 </hbox>
 {{#if isWeeklyInterval}}
   <hbox class='recurrence-run-interval__week-options'>
     <div class='text'>{{t 'adminUsm.policy.scheduleConfiguration.recurrenceInterval.on'}}</div>
-      {{#each weekOptions as |option|}}
-        {{#rsa-form-button class='week-button' click=(action 'selectWeek' option.week) isPrimary=option.isActive }}
-          {{t option.label}}
-        {{/rsa-form-button}}
-      {{/each}}
+    {{#each weekOptions as |option|}}
+      {{#rsa-form-button class='week-button' click=(action 'selectWeek' option.week) isPrimary=option.isActive }}
+        {{t option.label}}
+      {{/rsa-form-button}}
+    {{/each}}
   </hbox>
 {{/if}}
