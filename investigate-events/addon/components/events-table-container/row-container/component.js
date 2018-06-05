@@ -18,8 +18,9 @@ export default Component.extend(RowMixin, {
   timezone: service(),
 
   // Formatting configuration options. Passed to utils that generate cell DOM.
-  @computed('table.aliases', 'dateFormat.selected.format', 'timeFormat.selected.format', 'i18n', 'timezone.selected.zoneId')
-  _opts(aliases, dateFormat, timeFormat, i18n, timeZone) {
+  @computed('table.aliases', 'dateFormat.selected.format', 'timeFormat.selected.format', 'i18n.locale', 'timezone.selected.zoneId')
+  _opts(aliases, dateFormat, timeFormat, locale, timeZone) {
+    const i18n = get(this, 'i18n');
     return {
       aliases,
       defaultWidth: DEFAULT_WIDTH,
@@ -40,16 +41,16 @@ export default Component.extend(RowMixin, {
           'undefined': i18n.t('investigate.medium.undefined')
         }
       },
-      locale: this.get('i18n.locale'),
+      locale,
       timeZone
     };
   },
 
   /**
-   * Triggers a repaint when timezone changes to update time value formatting.
+   * Triggers a repaint when timezone changes to update time value formatting or when locale is updated
    * @private
    */
-  _datetimeDidChange: observer('timezone.selected', 'dateFormat.selected.format', 'timeFormat.selected.format', function() {
+  _datetimeDidChange: observer('i18n.locale', 'timezone.selected', 'dateFormat.selected.format', 'timeFormat.selected.format', function() {
     this._renderCells();
   }),
 
