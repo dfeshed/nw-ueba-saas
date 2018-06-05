@@ -5,6 +5,9 @@ import org.springframework.stereotype.Service;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.records.MetricDocument;
 
+import java.time.Instant;
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -29,5 +32,18 @@ public class PresidioMetricPersistencyServiceImpl implements PresidioMetricPersi
             logger.debug("Exporting metrics to elastic, number of metrics {}", metricDocument.size());
         }
         return metricRepository.save(metricDocument);
+    }
+
+    @Override
+    public List<MetricDocument> getMetricsByNamesAndTime(Collection<String> names, Instant from, Instant to){
+
+        Date fromDate = new Date(from.toEpochMilli());
+        Date toDate = new Date(to.toEpochMilli());
+        return metricRepository.findByNameInAndTimestampGreaterThanEqualAndTimestampLessThan(names,fromDate,toDate);
+    }
+
+    @Override
+    public List<MetricDocument> getMetricsByNames(Collection<String> names) {
+        return metricRepository.findByNameIn(names);
     }
 }
