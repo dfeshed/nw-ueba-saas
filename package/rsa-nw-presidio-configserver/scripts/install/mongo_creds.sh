@@ -44,7 +44,7 @@ then
 
 elif [ "$DB" == "presidio-ui" ]
 then
-    echo "INFO: modifed presidio-db password"
+    echo "INFO: modifed presidio-ui-db password"
     echo "mongo.db.password=$ENC_PASS" >> $CONFIG_DIR$UI_CONF_FILE_NAME
 
 else
