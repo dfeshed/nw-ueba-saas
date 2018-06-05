@@ -377,7 +377,8 @@ const TreeComponent = Component.extend({
     if (this.isDestroyed) {
       return;
     }
-
+    // clear the tree
+    select('.tree-layer').selectAll('*').remove();
     this.set('rootNode', null);
     // If query input changes then need to re-render the tree
     if (this.get('queryInput')) {
