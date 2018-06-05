@@ -1,6 +1,7 @@
 package presidio.output.domain.services;
 
 import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
+import fortscale.utils.time.TimeRange;
 import org.assertj.core.util.Lists;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.index.reindex.DeleteByQueryAction;
@@ -110,10 +111,10 @@ public class MetricsPersistencyServiceTest {
         metricPersistencyService.save(getMetricDocument(name3,Date.from(theDayAfter)));
 
 
-        Instant startOfDay = Instant.parse("2017-11-03T00:00:00.00Z");
-        Instant endOfDay =   Instant.parse("2018-02-04T00:00:00.00Z");
 
-        List<MetricDocument> results = metricPersistencyService.getMetricsByNamesAndTime(Arrays.asList(name1,name2),startOfDay,endOfDay);
+        TimeRange timeRange = new TimeRange(Instant.parse("2017-12-03T00:00:00.00Z"),Instant.parse("2017-12-04T00:00:00.00Z"));
+
+        List<MetricDocument> results = metricPersistencyService.getMetricsByNamesAndTime(Arrays.asList(name1,name2),timeRange);
         Assert.assertEquals(2,results.size());
 
         boolean name1Found = results.get(0).getName().equals(name1) || results.get(1).getName().equals(name1);
