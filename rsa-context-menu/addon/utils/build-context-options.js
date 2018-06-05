@@ -48,7 +48,10 @@ const _getModifiedActions = (contextActions, i18n) => {
       label: i18n.exists(`contextmenu.actions.${action.displayName}`) ? i18n.t(`contextmenu.actions.${action.displayName}`) : action.displayName,
       action(selection, contextDetails) {
         if (action.urlFormat) {
-          windowProxy.openInNewTab(action.urlFormat.replace('{0}', selection[0].metaValue).replace('{1}', selection[0].metaName));
+          // encoding required to prevent special chars
+          // from blowing up the app
+          const encodedMetaValue = encodeURIComponent(selection[0].metaValue);
+          windowProxy.openInNewTab(action.urlFormat.replace('{0}', encodedMetaValue).replace('{1}', selection[0].metaName));
         } else if (nonUrlBasedActions[action.id]) {
           nonUrlBasedActions[action.id](selection, contextDetails);
         } else {
