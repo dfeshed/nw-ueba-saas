@@ -130,6 +130,10 @@
         display: block;
         @include rsa-input-placeholder(text-color(primary));
         padding-left: rsa-whitespace(less);
+        @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+          /* IE10+ CSS styles go here */
+          height: 100%;
+        } 
       }
 
       .invisible-edit-trigger {
@@ -222,6 +226,12 @@
       .invisible-edit-trigger {
         display: none;
       }
+    }
+    .ember-power-select-typeahead-input, .ember-power-select-search-input {
+      @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+        /* IE10+ CSS styles go here */
+        height: 100%;
+      } 
     }
   }
 }
