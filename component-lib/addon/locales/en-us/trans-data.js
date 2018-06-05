@@ -960,7 +960,8 @@ export default {
         'Web Threat Detection': 'Web Threat Detection',
         'Malware Analysis': 'Malware Analysis',
         'Reporting Engine': 'Reporting Engine',
-        'NetWitness Investigate': 'NetWitness Investigate'
+        'NetWitness Investigate': 'NetWitness Investigate',
+        'User Entity Behavior Analytics': 'User Entity Behavior Analytics'
       },
       backToAlerts: 'Back To Alerts'
     },
