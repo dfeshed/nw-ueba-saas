@@ -180,7 +180,7 @@ export default {
     delete: 'Delete selected filters',
     deleteFilter: 'Delete this filter',
     edit: 'Edit this filter',
-    placeholder: 'Enter a simple query consisting of a Meta Key, Operator, and Value (optional)',
+    placeholder: 'Enter individual statements consisting of a Meta Key, Operator, and Value (optional)',
     querySelected: 'Query with selected filters',
     querySelectedNewTab: 'Query with selected filters in a new tab',
     expensive: 'Performing this operation might take more time.',
@@ -424,7 +424,7 @@ export default {
     },
     freeForm: {
       linkTitle: 'Free-Form Mode',
-      placeholder: 'Enter a complex query consisting of a Meta Key, Operator, and Value (optional)',
+      placeholder: 'Enter multiple complex statements consisting of a Meta Key, Operator, and Value (optional)',
       textLabel: 'Free-Form Mode'
     },
     nextGen: {
