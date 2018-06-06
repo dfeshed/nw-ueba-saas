@@ -20,6 +20,7 @@ import presidio.rsa.auth.duplicates.Token;
 import presidio.rsa.auth.spring.KeyStoreConfigProperties;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -87,7 +88,8 @@ public class PresidioNwAuthServiceImpl implements PresidioNwAuthService{
     public void initializeKeyStore() throws GeneralSecurityException,
             IOException, ServiceInterruptException {
 
-        if (!configProperties.getKeyStoreLocation().exists()) {
+        File keyStoreFile =  new File(configProperties.getKeyStoreLocation()) ;
+        if (!keyStoreFile.exists()) {
             throw new IllegalArgumentException(configProperties.getKeyStoreLocation() + " does not exist");
         }
 
