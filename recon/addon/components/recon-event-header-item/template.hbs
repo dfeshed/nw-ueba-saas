@@ -14,7 +14,9 @@
   {{/if}}
   <div class="value">
     {{#if isDate}}
-      {{rsa-content-datetime timestamp=asInteger}}
+      {{rsa-content-datetime
+        displayMilliseconds=false
+        timestamp=asInteger}}
     {{else if isByteSize}}
       {{value}} {{t 'memsize.B'}}
     {{else if hasKey}}
