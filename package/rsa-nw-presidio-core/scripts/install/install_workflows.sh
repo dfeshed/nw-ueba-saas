@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 set -e
-echo "stoping airflow services"
-systemctl stop airflow-webserver
-systemctl stop airflow-scheduler
 
 echo "installing presidio_workflows in virtualenv"
 source /etc/sysconfig/airflow
@@ -14,6 +11,3 @@ AIRFLOW_HOME=$AIRFLOW_HOME OWB_ALLOW_NON_FIPS=on python -c "from presidio.charts
 
 deactivate
 
-echo "starting airflow services"
-systemctl start airflow-webserver
-systemctl start airflow-scheduler
