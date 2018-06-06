@@ -8,6 +8,7 @@ let mergedConfig;
 const filesConfigGen = function(environment) {
 
   const socketUrl = common.determineSocketUrl(environment, '/endpoint/socket');
+  const contextSocketUrl = common.determineSocketUrl(environment, '/contexthub/socket');
 
   return {
     'endpoint-server-ping': {
@@ -45,6 +46,15 @@ const filesConfigGen = function(environment) {
       deleteFilter: {
         subscriptionDestination: '/user/queue/endpoint/filter/remove',
         requestDestination: '/ws/endpoint/filter/remove'
+      }
+    },
+    'context-service': {
+      socketUrl: contextSocketUrl,
+      stream: {
+        defaultStreamLimit: 100000,
+        subscriptionDestination: '/user/queue/contexthub/context/lookup',
+        requestDestination: '/ws/contexthub/context/lookup',
+        cancelDestination: '/ws/contexthub/context/cancel'
       }
     }
   };

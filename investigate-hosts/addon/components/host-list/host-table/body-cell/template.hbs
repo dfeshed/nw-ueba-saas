@@ -7,7 +7,7 @@
 {{else if (eq column.field 'machine.machineName')}}
   <hbox class="machine-name-holder">
     <div class="host-name">
-      {{#link-to "hosts" (query-params machineId=item.id tabName='OVERVIEW')}}{{get item column.field}}{{/link-to}}
+      {{#link-to "hosts" (query-params machineId=item.id tabName='OVERVIEW') bubbles=false}}{{get item column.field}}{{/link-to}}
     </div>
     <div class="pivot-to-investigate">
       {{pivot-to-investigate item=item metaName='machine.machineName' serviceList=serviceList}}

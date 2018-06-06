@@ -1,5 +1,5 @@
 {{content-filter}}
-<hbox>
+<hbox class="file-list-items {{if showRiskPanel 'show-risk-panel' ''}}">
   <box class="filter-zone">
     <h2>{{t 'investigateFiles.filter.filters'}}</h2>
     <box class="favourite-filters">
@@ -26,6 +26,29 @@
       {{file-pager}}
     </box>
   </box>
+  {{#if features.rsaEndpointFusion}}
+    <box class="risk-property-zone">
+      <hbox fit>
+        <vbox>
+          {{#title-bar tabs=dataSourceTabs defaultAction=(action 'setDataSourceTab') as |tab|}}
+            {{#if (eq tab.name 'ALERT')}}
+              <div class="label">{{t tab.label count=alertsCount}}</div>
+            {{else if (eq tab.name 'INCIDENT')}}
+              <div class="label">{{t tab.label count=incidentsCount}}</div>
+            {{else}}
+              <div class="label">{{t tab.label}}</div>
+            {{/if}}
+          {{/title-bar}}
+        </vbox>
+        <vbox class="risk-zone-close-button">
+          {{#rsa-form-button class='header-button' isIconOnly=true click=(action 'closeRiskPanel') }}
+            {{rsa-icon class='close-icon' name='close' title=(t 'investigateHosts.context.button.close')}}
+          {{/rsa-form-button}}
+        </vbox>
+      </hbox>
+      {{endpoint/risk-panel activeDataSourceTab=activeDataSourceTab data=context errorMessage = contextError}}
+    </box>
+  {{/if}}
 </hbox>
 
 

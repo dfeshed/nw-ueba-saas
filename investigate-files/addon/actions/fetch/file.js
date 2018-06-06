@@ -1,4 +1,4 @@
-import { promiseRequest } from 'streaming-data/services/data-access/requests';
+import { promiseRequest, streamRequest } from 'streaming-data/services/data-access/requests';
 import {
   addSortBy,
   addFilter
@@ -101,11 +101,25 @@ const deleteFilter = (id) => {
   });
 };
 
+const getContext = (query, handlers) => {
+  return streamRequest({
+    method: 'stream',
+    modelName: 'context-service',
+    query,
+    onInit: handlers.initState,
+    streamOptions: { requireRequestId: true },
+    onResponse: handlers.onResponse,
+    onError: handlers.onError
+  });
+};
+
+
 export default {
   fetchFiles,
   fileExport,
   createCustomSearch,
   getSavedFilters,
   deleteFilter,
-  getAllServices
+  getAllServices,
+  getContext
 };

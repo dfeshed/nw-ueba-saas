@@ -1,7 +1,7 @@
 import { handleActions } from 'redux-actions';
 import * as ACTION_TYPES from 'investigate-hosts/actions/types';
 import Immutable from 'seamless-immutable';
-import { contextDataParser } from 'investigate-hosts/helpers/context-parser';
+import { contextDataParser } from 'investigate-shared/helpers/context-parser';
 
 const visualsInitialState = Immutable.from({
   activeAutorunTab: 'AUTORUNS',

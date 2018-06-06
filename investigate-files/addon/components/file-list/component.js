@@ -4,9 +4,12 @@ import { fileCountForDisplay, serviceList } from 'investigate-files/reducers/fil
 import { columns } from 'investigate-files/reducers/schema/selectors';
 import computed from 'ember-computed-decorators';
 import _ from 'lodash';
+import { inject as service } from '@ember/service';
 import {
   sortBy,
-  getPageOfFiles
+  getPageOfFiles,
+  fetchFileContext,
+  toggleRiskPanel
 } from 'investigate-files/actions/data-creators';
 
 const stateToComputed = (state) => ({
@@ -22,7 +25,9 @@ const stateToComputed = (state) => ({
 
 const dispatchToActions = {
   sortBy,
-  getPageOfFiles
+  getPageOfFiles,
+  fetchFileContext,
+  toggleRiskPanel
 };
 
 /**
@@ -32,6 +37,8 @@ const dispatchToActions = {
 const FileList = Component.extend({
 
   tagName: '',
+
+  features: service(),
 
   @computed('columnConfig')
   updatedColumns(columns) {
@@ -43,6 +50,16 @@ const FileList = Component.extend({
     return _.sortBy(columnList, [(column) => {
       return i18n.t(column.title).toString();
     }]);
+  },
+
+  actions: {
+    toggleSelectedRow(item, index, e, table) {
+      if (this.get('features.rsaEndpointFusion')) {
+        table.set('selectedIndex', index);
+        this.send('toggleRiskPanel', true);
+        this.send('fetchFileContext', item.firstFileName);
+      }
+    }
   }
 });
 

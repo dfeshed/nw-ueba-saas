@@ -18,7 +18,8 @@ const Eng = Engine.extend({
       'timezone',
       'i18n',
       'eventBus',
-      'flashMessages'
+      'flashMessages',
+      'features'
     ],
     externalRoutes: [
       'investigate.investigate-events',

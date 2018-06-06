@@ -22,6 +22,34 @@ const FILE_LIST = [
   }
 ];
 
+const contextData = {
+  data: [
+    {
+      'dataSourceType': 'Alerts',
+      'dataSourceGroup': 'Alerts',
+      'resultList': [
+        {
+          '_id': {
+            '$oid': '5ae9b79826362f0bbbfae082'
+          },
+          'receivedTime': {
+            '$date': '2018-05-02T13:05:28.222Z'
+          },
+          'alert': {
+            'source': 'Event Stream Analysis',
+            'timestamp': {
+              '$date': '2018-05-02T13:05:28.000Z'
+            },
+            'risk_score': 70,
+            'name': 'Unsigned Creates Remote Thread',
+            'numEvents': 1
+          }
+        }
+      ]
+    }
+  ]
+};
+
 test('should return the initial state', function(assert) {
   const result = reducer(undefined, {});
   assert.deepEqual(result, {
@@ -35,7 +63,11 @@ test('should return the initial state', function(assert) {
     isSortDescending: true,
     downloadStatus: 'completed',
     downloadId: null,
-    listOfServices: null
+    listOfServices: null,
+    activeDataSourceTab: 'ALERT',
+    lookupData: [{}],
+    showRiskPanel: false,
+    contextError: null
   });
 });
 
@@ -200,4 +232,45 @@ test('The GET_LIST_OF_SERVICES will set listOfServices', function(assert) {
   const result = reducer(initialResult, newAction);
 
   assert.deepEqual(result.listOfServices, [{ name: 'broker' }, { name: 'concentrator' }, { name: 'decoder' }], 'listOfServices value is set');
+});
+
+test('The CHANGE_DATASOURCE_TAB action sets the newly selected tab to state', function(assert) {
+  const previous = Immutable.from({
+    activeDataSourceTab: 'ALERT'
+  });
+  const expectedEndState = { activeDataSourceTab: 'INCIDENT' };
+  const result = reducer(previous, { type: ACTION_TYPES.CHANGE_DATASOURCE_TAB, payload: { tabName: 'INCIDENT' } });
+  assert.deepEqual(result, expectedEndState);
+});
+
+test('Fetch the data from context server', function(assert) {
+  const previous = Immutable.from({
+    lookupData: [{}]
+  });
+  const newEndState = reducer(previous, { type: ACTION_TYPES.SET_CONTEXT_DATA, payload: contextData.data });
+  assert.equal(newEndState.lookupData.length, 1);
+});
+
+test('The context state being cleared', function(assert) {
+  const previous = Immutable.from({
+    lookupData: contextData.data
+  });
+  const newEndState = reducer(previous, { type: ACTION_TYPES.CLEAR_PREVIOUS_CONTEXT });
+  assert.deepEqual(newEndState.lookupData[0], {}, 'lookupData state is cleared.');
+});
+
+test('contextError state when context server is not reachable', function(assert) {
+  const previous = Immutable.from({
+    contextError: null
+  });
+  const newEndState = reducer(previous, { type: ACTION_TYPES.CONTEXT_ERROR, payload: 'context.error.timeout' });
+  assert.deepEqual(newEndState.contextError, 'context.error.timeout', 'contextError state has been changed to true.');
+});
+
+test('toggling risk panel visibility in host list page', function(assert) {
+  const previous = Immutable.from({
+    showRiskPanel: false
+  });
+  const newEndState = reducer(previous, { type: ACTION_TYPES.TOGGLE_RISK_PANEL_VISIBILITY, payload: true });
+  assert.deepEqual(newEndState.showRiskPanel, true, 'state for risk panel visibility is turned on.');
 });

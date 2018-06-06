@@ -3,6 +3,7 @@ import { handle } from 'redux-pack';
 import Immutable from 'seamless-immutable';
 
 import * as ACTION_TYPES from 'investigate-files/actions/types';
+import { contextDataParser } from 'investigate-shared/helpers/context-parser';
 
 const fileListState = Immutable.from({
   files: [],
@@ -15,7 +16,11 @@ const fileListState = Immutable.from({
   isSortDescending: true,
   downloadStatus: 'completed',
   downloadId: null,
-  listOfServices: null
+  listOfServices: null,
+  activeDataSourceTab: 'ALERT',
+  lookupData: [{}],
+  showRiskPanel: false,
+  contextError: null
 });
 
 const _handleAppendFiles = (action) => {
@@ -74,7 +79,21 @@ const fileListReducer = handleActions({
 
   [ACTION_TYPES.INCREMENT_PAGE_NUMBER]: (state) => state.set('pageNumber', state.pageNumber + 1),
 
-  [ACTION_TYPES.RESET_DOWNLOAD_ID]: (state) => state.set('downloadId', null)
+  [ACTION_TYPES.RESET_DOWNLOAD_ID]: (state) => state.set('downloadId', null),
+
+  [ACTION_TYPES.CHANGE_DATASOURCE_TAB]: (state, { payload: { tabName } }) => state.set('activeDataSourceTab', tabName),
+
+  [ACTION_TYPES.SET_CONTEXT_DATA]: (state, { payload }) => {
+    const lookupData = [].concat(contextDataParser([payload, state.lookupData]));
+    return state.merge({ lookupData });
+  },
+
+  [ACTION_TYPES.CLEAR_PREVIOUS_CONTEXT]: (state) => state.set('lookupData', [{} ]),
+
+  [ACTION_TYPES.TOGGLE_RISK_PANEL_VISIBILITY]: (state, { payload }) => state.set('showRiskPanel', payload),
+
+  [ACTION_TYPES.CONTEXT_ERROR]: (state, { payload }) => state.set('contextError', payload)
+
 }, fileListState);
 
 export default fileListReducer;

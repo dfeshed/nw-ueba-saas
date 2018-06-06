@@ -1,7 +1,8 @@
 {{#rsa-data-table
   lazy=true
   items=files
-  columnsConfig=updatedColumns}}
+  columnsConfig=updatedColumns
+  onRowClick=(action 'toggleSelectedRow')}}
   {{#file-list/header enableColumnFilter=true translateTitles=true enableColumnSelector=true as |column|}}
     <span class='js-move-handle'>
       {{t column.title}}

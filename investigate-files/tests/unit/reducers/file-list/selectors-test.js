@@ -6,7 +6,11 @@ import {
   hasFiles,
   fileExportLink,
   fileCountForDisplay,
-  serviceList
+  serviceList,
+  getDataSourceTab,
+  getAlertsCount,
+  getIncidentsCount,
+  getContext
 } from 'investigate-files/reducers/file-list/selectors';
 
 module('Unit | selectors | file-list');
@@ -98,3 +102,61 @@ test('serviceList', function(assert) {
   }));
   assert.deepEqual(listOfServicesNull, null, 'Supported services available is null');
 });
+
+test('getDataSourceTab', function(assert) {
+  const state = Immutable.from({
+    files: {
+      fileList: {
+        activeDataSourceTab: 'INCIDENT'
+      }
+    }
+  });
+  const result = getDataSourceTab(state).findBy('name', 'INCIDENT');
+  assert.equal(result.selected, true, 'Incidents Tab should be selected');
+});
+
+test('getContext returns incidents', function(assert) {
+  const state = Immutable.from({
+    files: {
+      fileList: {
+        lookupData: [{
+          Incidents: {
+            resultList: [{ _id: 'INC-18409', name: 'RespondAlertsESA for user199' }]
+          }
+        }],
+        activeDataSourceTab: 'INCIDENT'
+      }
+    }
+  });
+  const result = getContext(state);
+  assert.equal(result.length, 1, '1 incidents are fetched');
+  assert.equal(getIncidentsCount(state), 1, 'Incident count is correct');
+});
+
+test('getContext returns alerts', function(assert) {
+  const state = Immutable.from({
+    files: {
+      fileList: {
+        lookupData: [
+          {
+            Alerts: {
+              resultList: [{
+                alert: { source: 'Event Stream Analysis 1' },
+                incidentId: 'INC-18409'
+              },
+              {
+                alert: { source: 'Event Stream Analysis 2' },
+                incidentId: 'INC-18410'
+              }]
+            }
+          }
+        ],
+        activeDataSourceTab: 'ALERT'
+      }
+    }
+  });
+  const result = getContext(state);
+  assert.equal(result.length, 2, '2 Alerts fetched');
+  assert.equal(getAlertsCount(state), 2, 'Alerts count is correct');
+});
+

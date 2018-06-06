@@ -2,21 +2,31 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 
 import { isSchemaLoaded } from 'investigate-files/reducers/schema/selectors';
-import { hasFiles } from 'investigate-files/reducers/file-list/selectors';
+import { hasFiles, getContext, getAlertsCount, getIncidentsCount, getDataSourceTab } from 'investigate-files/reducers/file-list/selectors';
 import {
   fetchSchemaInfo,
-  resetDownloadId
+  resetDownloadId,
+  setDataSourceTab,
+  toggleRiskPanel
 } from 'investigate-files/actions/data-creators';
+import { inject as service } from '@ember/service';
 
 const stateToComputed = (state) => ({
   isSchemaLoaded: isSchemaLoaded(state),
   areFilesLoading: state.files.fileList.areFilesLoading,
-  hasFiles: hasFiles(state)
+  hasFiles: hasFiles(state),
+  dataSourceTabs: getDataSourceTab(state),
+  context: getContext(state),
+  alertsCount: getAlertsCount(state),
+  incidentsCount: getIncidentsCount(state),
+  showRiskPanel: state.files.fileList.showRiskPanel
 });
 
 const dispatchToActions = {
   fetchSchemaInfo,
-  resetDownloadId
+  resetDownloadId,
+  setDataSourceTab,
+  toggleRiskPanel
 };
 
 /**
@@ -28,6 +38,8 @@ const Files = Component.extend({
 
   classNames: 'rsa-investigate-files main-zone',
 
+  features: service(),
+
   willDestroyElement() {
     this.send('resetDownloadId');
   },
@@ -36,6 +48,12 @@ const Files = Component.extend({
     this._super(...arguments);
     if (!this.get('hasFiles')) {
       this.send('fetchSchemaInfo');
+    }
+  },
+
+  actions: {
+    closeRiskPanel() {
+      this.send('toggleRiskPanel', false);
     }
   }
 });

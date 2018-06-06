@@ -333,6 +333,34 @@ const getAllServices = () => ({
   }
 });
 
+const setDataSourceTab = (tabName) => ({ type: ACTION_TYPES.CHANGE_DATASOURCE_TAB, payload: { tabName } });
+
+const fetchFileContext = (fileName) => {
+  return (dispatch) => {
+    const query = {
+      filter: [
+        { field: 'meta', value: 'FILE_NAME' },
+        { field: 'value', value: fileName }
+      ]
+    };
+    File.getContext(query, {
+      initState: () => {
+        dispatch({ type: ACTION_TYPES.CLEAR_PREVIOUS_CONTEXT });
+      },
+      onResponse: ({ data }) => {
+        dispatch({ type: ACTION_TYPES.SET_CONTEXT_DATA, payload: data });
+      },
+      onError: ({ meta }) => {
+        const error = (meta && meta.message) ? meta.message : 'admin.error';
+        dispatch({ type: ACTION_TYPES.CONTEXT_ERROR, payload: `investigateHosts.context.error.${error}` });
+      }
+    });
+  };
+};
+
+
+const toggleRiskPanel = (visibility) => ({ type: ACTION_TYPES.TOGGLE_RISK_PANEL_VISIBILITY, payload: visibility });
+
 export {
   addSystemFilter,
   removeFilter,
@@ -352,5 +380,8 @@ export {
   setFilesFilter,
   getAllServices,
   setSystemFilterFlag,
-  initializeFilesPreferences
+  initializeFilesPreferences,
+  setDataSourceTab,
+  fetchFileContext,
+  toggleRiskPanel
 };
