@@ -1,0 +1,8 @@
+{{#if isAddNewPill}}
+  {{query-container/query-pill
+    sendMessage=(action 'handleMessage')
+    position=newPillPosition
+  }}
+{{else}}
+  <span class='new-pill-trigger' {{action "triggerNewPill"}}>|</span>
+{{/if}}

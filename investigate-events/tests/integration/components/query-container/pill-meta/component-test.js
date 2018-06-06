@@ -9,6 +9,7 @@ import { patchReducer } from '../../../../helpers/vnext-patch';
 import ReduxDataHelper, { DEFAULT_LANGUAGES } from '../../../../helpers/redux-data-helper';
 
 const TAB_KEY = 9;
+const ESCAPE_KEY = '27';
 
 const meta = '.pill-meta';
 const metaPowerSelectTrigger = '.pill-meta .ember-power-select-trigger';
@@ -59,6 +60,18 @@ module('Integration | Component | Pill Meta', function(hooks) {
     });
     await render(hbs`{{query-container/pill-meta isActive=true sendMessage=(action handleMessage)}}`);
     selectChoose(metaPowerSelectTrigger, powerSelectOption, 1);// option b
+    return settled();
+  });
+
+  test('it broadcasts a message when the ESCAPE key is pressed', async function(assert) {
+    assert.expect(1);
+    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    this.set('handleMessage', (type) => {
+      assert.equal(type, 'PILL::META_ESCAPE_KEY', 'Wrong message type');
+    });
+    await render(hbs`{{query-container/pill-meta isActive=true sendMessage=(action handleMessage)}}`);
+    await focus(metaPowerSelectTrigger);
+    await triggerKeyEvent(metaPowerSelectTrigger, 'keydown', ESCAPE_KEY);
     return settled();
   });
 

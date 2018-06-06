@@ -3,7 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
-import { click, fillIn, find, findAll, focus, render, waitUntil } from '@ember/test-helpers';
+import { click, fillIn, find, findAll, focus, render, triggerKeyEvent, waitUntil } from '@ember/test-helpers';
 
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
@@ -21,6 +21,8 @@ const powerSelectOption = '.ember-power-select-option';
 const pillValue = '.pill-value';
 const valueInput = '.pill-value input';
 const deletePill = '.delete-pill';
+
+const ESCAPE_KEY = '27';
 
 const trim = (text) => text.replace(/\s+/g, '').trim();
 
@@ -214,6 +216,35 @@ module('Integration | Component | Query Pill', function(hooks) {
     await click(deletePill);
   });
 
+  test('messages up a pill has cancelled when child componenent sents ESCAPE', async function(assert) {
+    const done = assert.async();
+
+    this.set('handleMessage', (messageType, data, position) => {
+
+      // first message will be initialized, get rid of it
+      if (messageType === 'PILL::INITIALIZED') {
+        return;
+      }
+
+      assert.equal(messageType, 'PILL::CANCELLED', 'Message sent for pill cancel is not correct');
+      assert.equal(position, 0, 'Message sent for pill create contains correct pill position');
+
+      done();
+    });
+
+    new ReduxDataHelper(setState).language().build();
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    await focus(metaPowerSelect);
+    await triggerKeyEvent(metaPowerSelect, 'keydown', ESCAPE_KEY);
+  });
+
   test('prepopulates with data when passed existing pill', async function(assert) {
     new ReduxDataHelper(setState).language().build();
     const pills = new ReduxDataHelper().language().pillsDataPopulated().build();
@@ -224,8 +255,8 @@ module('Integration | Component | Query Pill', function(hooks) {
       {{query-container/query-pill
         isActive=false
         pillData=pillData
-      }}`
-    );
+      }}
+    `);
 
     assert.equal(trim(find(meta).textContent), 'a');
     assert.equal(trim(find(operator).textContent), '=');

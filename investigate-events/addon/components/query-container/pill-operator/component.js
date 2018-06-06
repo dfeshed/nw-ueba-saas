@@ -167,6 +167,13 @@ export default Component.extend({
      * @private
      */
     onKeyDown(powerSelectAPI, event) {
+      // if the key pressed is an escape, then bubble that out and
+      // escape further processing
+      if (event.keyCode === 27) {
+        this._broadcast(MESSAGE_TYPES.OPERATOR_ESCAPE_KEY);
+        return;
+      }
+
       if (event.keyCode === 13) {
         const { selected } = powerSelectAPI;
         const selection = this.get('selection');

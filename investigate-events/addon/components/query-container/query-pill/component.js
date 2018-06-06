@@ -105,8 +105,10 @@ export default Component.extend({
     this._super(arguments);
     this.set('_messageHandlerMap', {
       [MESSAGE_TYPES.META_CLICKED]: () => this._metaClicked(),
+      [MESSAGE_TYPES.META_ESCAPE_KEY]: () => this._cancelPillCreation(),
       [MESSAGE_TYPES.META_SELECTED]: (data) => this._metaSelected(data),
       [MESSAGE_TYPES.OPERATOR_CLICKED]: () => this._operatorClicked(),
+      [MESSAGE_TYPES.OPERATOR_ESCAPE_KEY]: () => this._cancelPillCreation(),
       [MESSAGE_TYPES.OPERATOR_SELECTED]: (data) => this._operatorSelected(data),
       [MESSAGE_TYPES.PILL_DELETED]: (data) => this._deletePill(data),
       [MESSAGE_TYPES.VALUE_SET]: (data) => this._valueSet(data),
@@ -362,8 +364,8 @@ export default Component.extend({
    * @private
    */
   _cancelPillCreation() {
-    // TODO
-    log('_cancelPillCreation() called');
+    // Inform container that this pill component is cancelling out of creation
+    this._broadcast(MESSAGE_TYPES.PILL_CANCELLED, null);
   },
 
   /**

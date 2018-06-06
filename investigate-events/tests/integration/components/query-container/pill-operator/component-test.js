@@ -6,6 +6,7 @@ import { selectChoose, typeInSearch } from 'ember-power-select/test-support/help
 import { find, findAll, focus, render, settled, triggerKeyEvent } from '@ember/test-helpers';
 
 const TAB_KEY = 9;
+const ESCAPE_KEY = '27';
 
 const operator = '.pill-operator';
 const operatorPowerSelectTrigger = '.pill-operator .ember-power-select-trigger';
@@ -58,6 +59,21 @@ module('Integration | Component | Pill Operator', function(hooks) {
     await render(hbs`{{query-container/pill-operator isActive=true meta=meta sendMessage=(action handleMessage)}}`);
     await focus(operatorPowerSelectTrigger);
     await selectChoose(operatorPowerSelectTrigger, powerSelectOption, 0);// option "="
+    return settled();
+  });
+
+  test('it broadcasts a message when the ESCAPE key is pressed', async function(assert) {
+    assert.expect(1);
+    this.set('meta', meta);
+    this.set('handleMessage', (type) => {
+      if (type == 'PILL::OPERATOR_CLICKED') {
+        return; // don't care about click events
+      }
+      assert.equal(type, 'PILL::OPERATOR_ESCAPE_KEY', 'Wrong message type');
+    });
+    await render(hbs`{{query-container/pill-operator isActive=true meta=meta sendMessage=(action handleMessage)}}`);
+    await focus(operatorPowerSelectTrigger);
+    await triggerKeyEvent(operatorPowerSelectTrigger, 'keydown', ESCAPE_KEY);
     return settled();
   });
 
