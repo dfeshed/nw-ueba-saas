@@ -2,6 +2,8 @@
 
 An rpm wrap to [apache-airflow](https://airflow.apache.org/) python package
 
+### Environment variable
+<%@include file="scripts/systemd/airflow"%>
 
 
 ### Installation
