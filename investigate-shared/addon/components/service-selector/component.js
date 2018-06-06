@@ -52,7 +52,7 @@ const ServiceSelector = Component.extend({
     if (services) {
       this.setProperties(
         {
-          isCoreServiceNotUpdated: isCoreServiceNotUpdated(state, lookup('service:appVersion')),
+          isCoreServiceNotUpdated: isCoreServiceNotUpdated(state, lookup('service:appVersion').get('minServiceVersion')),
           isSummaryDataInvalid: isSummaryDataInvalid(state),
           serviceDisplayName: getServiceDisplayName(state),
           isServicesLoading: services.isServicesLoading,

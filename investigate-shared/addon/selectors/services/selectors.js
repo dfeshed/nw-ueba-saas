@@ -81,13 +81,12 @@ export const isSummaryDataInvalid = createSelector(
   }
 );
 
-export const isCoreServiceNotUpdated = (state, { version, minServiceVersion }) => {
+export const isCoreServiceNotUpdated = (state, minServiceVersion) => {
   const coreDeviceVersion = getCoreDeviceVersion(state);
 
-  if (coreDeviceVersion && version && minServiceVersion) {
+  if (coreDeviceVersion && minServiceVersion) {
     const coreVersion = Number(coreDeviceVersion.match(serviceIdRegex)[0]);
-    const appVersion = Number(version.match(serviceIdRegex)[0]);
-    return coreVersion < appVersion;
+    return coreVersion < Number(minServiceVersion);
   }
   return false;
 };

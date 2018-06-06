@@ -50,8 +50,7 @@ test('determine if core services are not updated with 10.x', function(assert) {
     }
   };
 
-  const appVersion = { version: '11.1.0.0', minServiceVersion: '11.1' };
-  const flag = isCoreServiceNotUpdated(state, appVersion);
+  const flag = isCoreServiceNotUpdated(state, '11.1');
 
   assert.ok(flag, 'Core Service is not updated');
 });
@@ -68,8 +67,7 @@ test('determine if core services are not updated with 11.x', function(assert) {
     }
   };
 
-  const appVersion = { version: '11.3.0.0', minServiceVersion: '11.2' };
-  const flag = isCoreServiceNotUpdated(state, appVersion);
+  const flag = isCoreServiceNotUpdated(state, '11.2');
 
   assert.ok(flag, 'Core Service is not updated');
 });
@@ -85,8 +83,7 @@ test('determine if core services are updated with 11.1', function(assert) {
       serviceId: 'sd1'
     }
   };
-  const appVersion = { version: '11.1.0.0', minServiceVersion: '11.1' };
-  const flag = isCoreServiceNotUpdated(state, appVersion);
+  const flag = isCoreServiceNotUpdated(state, '11.1');
   assert.notOk(flag, 'Core Service is up to date');
 });
 
@@ -101,7 +98,6 @@ test('determine if core services are updated beyond 11.1', function(assert) {
       serviceId: 'sd1'
     }
   };
-  const appVersion = { version: '11.2.0.0', minServiceVersion: '11.1' };
-  const flag = isCoreServiceNotUpdated(state, appVersion);
+  const flag = isCoreServiceNotUpdated(state, '11.1');
   assert.notOk(flag, 'Core Service is up to date');
 });
