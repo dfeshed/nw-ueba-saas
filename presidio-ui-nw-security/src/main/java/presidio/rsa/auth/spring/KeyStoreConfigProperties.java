@@ -1,5 +1,6 @@
 package presidio.rsa.auth.spring;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -18,17 +19,17 @@ public class KeyStoreConfigProperties {
      * Location of the keystore
      * Todo: need to verify how to get the real certificate on integration environment + production
      */
-    private File keyStoreLocation =  new File("C:/repositories/auth-verify/trust-store//keystore.p12") ;
+    @Value("${nw.security.certificate.file.location:'C:/repositories/auth-verify/trust-store/keystore.p12'}")
+    private String keyStoreLocation;
+
 
     /**
      * Secret to open the keystore.
-     *
-     * Warning: this is for temporary usage. Not to be used in the end application
-     * Todo: need to verify how to get the real secret on integration environment + production
      */
-    private String secret = "netwitness";
+    @Value("${nw.security.certificate.secret:netwitness}")
+    private String secret;
 
-    public File getKeyStoreLocation() {
+    public String getKeyStoreLocation() {
         return keyStoreLocation;
     }
 
