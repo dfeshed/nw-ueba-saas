@@ -2,28 +2,27 @@
 
   <hbox class="addNewRule">
     {{#rsa-application-modal
-      label=(t 'configure.logsParser.modals.addNewRule')
+      label=(t 'configure.logsParser.modals.addRule.title')
       eventId='addNewRule'}}
       <div class='modal-trigger'>
         {{#rsa-form-button}}{{t 'configure.logsParser.buttons.addRule'}}{{/rsa-form-button}}
       </div>
       <div class='modal-content addNewRule'>
-        {{rsa-form-input label=(t 'configure.logsParser.modals.ruleName') value=newRuleName placeholder=(t 'configure.logsParser.modals.pleaseEnterRuleName')}}
-        {{#rsa-form-button style='primary' click=(action 'addNewParserRule' newRuleName)}} {{t 'configure.logsParser.modals.addRule'}}{{/rsa-form-button}}{{ruleName}}
+        {{rsa-form-input label=(t 'configure.logsParser.modals.addRule.ruleName') value=newRuleName placeholder=(t 'configure.logsParser.modals.addRule.pleaseEnterRuleName')}}
+        {{#rsa-form-button style='primary' click=(action 'addNewParserRule' newRuleName)}} {{t 'configure.logsParser.modals.addRule.title'}}{{/rsa-form-button}}{{ruleName}}
       </div>
     {{/rsa-application-modal}}
   </hbox>
 
   <hbox class="rsa-button-with-confirmation deleteRule">
     {{#rsa-button-with-confirmation
-        title= (t 'configure.logsParser.modals.confirmDeleteRule')
-        confirmButtonLabel=(t 'configure.logsParser.modals.ok')
+        title=(t 'configure.logsParser.modals.deleteRule.title')
+        confirmationMessage=(t 'configure.logsParser.modals.deleteRule.confirm' ruleName=selectedParserRuleName)
+        confirmButtonLabel=(t 'configure.logsParser.modals.deleteRule.ok')
         isDisabled= isOotb
         cancelButtonLabel=(t 'configure.logsParser.modals.cancel')
-        onConfirm=( action 'deleteParserRule')
-        confirmationMessage=(concat (t 'configure.logsParser.modals.okDeleteRule') ' \'' selectedParserRuleName '\'')}}
-        {{t 'configure.logsParser.buttons.delete'}}
+        onConfirm=( action 'deleteParserRule')}}
+      {{t 'configure.logsParser.buttons.delete'}}
     {{/rsa-button-with-confirmation}}
   </hbox>
 {{/if}}
-

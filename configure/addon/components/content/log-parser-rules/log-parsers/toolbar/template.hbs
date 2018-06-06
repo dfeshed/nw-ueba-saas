@@ -1,0 +1,14 @@
+{{#if selectedLogParserName}}
+  <hbox class="rsa-button-with-confirmation deploy-log-parser">
+    {{#rsa-button-with-confirmation
+        title=(t 'configure.logsParser.modals.deployLogParser.title')
+        style="primary"
+        confirmationMessage=(t 'configure.logsParser.modals.deployLogParser.confirm' logParser=selectedLogParserName )
+        confirmButtonLabel=(t 'configure.logsParser.modals.deployLogParser.ok')
+        cancelButtonLabel=(t 'configure.logsParser.modals.cancel')
+        isDisabled= hasNoDeployableRules
+        onConfirm=( action 'deployLogParser')}}
+      {{rsa-icon name="synchronize-3"}} {{t 'configure.logsParser.buttons.deploy'}}
+    {{/rsa-button-with-confirmation}}
+  </hbox>
+{{/if}}

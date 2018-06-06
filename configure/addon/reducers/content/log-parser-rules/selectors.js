@@ -148,6 +148,21 @@ export const isOotb = createSelector(
   }
 );
 
+export const hasDeployableRules = createSelector(
+  parserRules,
+  (rules) => {
+    if (rules) {
+      let index;
+      for (index = 0; index < rules.length; ++index) {
+        if (!rules[index].outOfBox) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+);
+
 export const selectedParserRuleFormat = createSelector(
   _selectedParserRule,
   _selectedFormat,

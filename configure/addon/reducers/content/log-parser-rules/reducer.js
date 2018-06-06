@@ -158,5 +158,20 @@ export default reduxActions.handleActions({
         })
       }
     );
-  }
+  },
+
+  [ACTION_TYPES.DEPLOY_LOG_PARSER]: (state, action) => (
+    handle(state, action, {
+      start: (state) => {
+        return state.set('deployLogParserStatus', 'wait');
+      },
+      failure: (state) => {
+        return state.set('deployLogParserStatus', 'error');
+      },
+      success: (state) => {
+        return state.set('deployLogParserStatus', 'completed');
+      }
+    })
+  )
+
 }, Immutable.from(initialState));

@@ -1,5 +1,6 @@
 import * as ACTION_TYPES from 'configure/actions/types/content';
 import api from 'configure/actions/api/content/log-parser-rules';
+import { success, failure } from 'configure/sagas/flash-messages';
 
 import {
   filterDeletedRule,
@@ -86,6 +87,37 @@ const addNewParserRule = (name) => {
   };
 };
 
+const _deployLogParser = (logParserName) => {
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.DEPLOY_LOG_PARSER,
+      promise: api.deployLogParser(logParserName),
+      meta: {
+        onSuccess() {
+          const status = arguments.length > 1 && arguments[0] !== undefined ? arguments[0].data : {};
+          if (status == 'COMPLETE') {
+            success('configure.logsParser.modals.deployLogParser.success', { logParser: logParserName });
+          } else if (status == 'PARTIAL') {
+            failure('configure.logsParser.modals.deployLogParser.partialSuccess', { logParser: logParserName });
+          } else {
+            failure('configure.logsParser.modals.deployLogParser.failure', { logParser: logParserName });
+          }
+        },
+        onFailure() {
+          failure('configure.logsParser.modals.deployLogParser.apiError', { logParser: logParserName });
+        }
+      }
+    });
+  };
+};
+
+const deployLogParser = () => {
+  return (dispatch, getState) => {
+    const logParserName = selectedLogParserName(getState());
+    dispatch(_deployLogParser(logParserName));
+  };
+};
+
 const saveParserRule = () => {
   return (dispatch, getState) => {
     const logParserName = selectedLogParserName(getState());
@@ -105,6 +137,7 @@ const saveParserRule = () => {
 export {
   addNewParserRule,
   deleteParserRule,
+  deployLogParser,
   initializeLogParserRules,
   selectLogParser,
   selectParserRule,

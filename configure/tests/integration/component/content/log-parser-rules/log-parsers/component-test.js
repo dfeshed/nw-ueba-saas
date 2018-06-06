@@ -23,13 +23,13 @@ module('Integration | Component | log parsers', function(hooks) {
   });
 
   test('Log Parsers will render', async function(assert) {
-    new ReduxDataHelper(setState).parserRulesWait(false).build();
+    new ReduxDataHelper(setState).parserRulesSaveWait(false).parserRulesFormatData(0, true).build();
     await render(hbs`{{content/log-parser-rules/log-parsers}}`);
     assert.equal(find('.log-parsers .firstItem').textContent.trim(), 'builtin', 'Log Parsers did render');
   });
 
   test('Select a log parser', async function(assert) {
-    new ReduxDataHelper(setState).parserRulesWait(false).build();
+    new ReduxDataHelper(setState).parserRulesWait(false).parserRulesFormatData(0, true).build();
     await render(hbs`{{content/log-parser-rules/log-parsers}}`);
     await click('.log-parsers .firstItem');
     return settled().then(() => {

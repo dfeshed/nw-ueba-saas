@@ -563,17 +563,32 @@ export default {
       },
       modals: {
         ok: 'OK',
-        addRule: 'Add Rule',
         cancel: 'Cancel',
-        confirmDeleteRule: 'Confirm Delete Rule',
-        okDeleteRule: 'Click OK to delete Rule',
-        ruleName: 'Rule Name',
-        addNewRule: 'Add New Rule',
-        pleaseEnterRuleName: 'Please Enter Rule Name'
+        addRule: {
+          title: 'Add New Rule',
+          ruleName: 'Rule Name',
+          pleaseEnterRuleName: 'Please Enter Rule Name',
+          ok: 'Add New Rule'
+        },
+        deleteRule: {
+          title: 'Delete Rule',
+          confirm: 'Delete rule \'{{ruleName}}\' from this log parser?',
+          ok: 'Delete Rule'
+        },
+        deployLogParser: {
+          title: 'Deploy Parser',
+          confirm: 'Deploy rules for log parser \'{{logParser}}\' to all Log Decoders?',
+          success: 'Successfully deployed rules to all Log Decoders for log parser \'{{logParser}}\'',
+          partialSuccess: 'Failed deploying rules to some Log Decoders for log parser \'{{logParser}}\'',
+          failure: 'Failed deploying rules to Log Decoders for log parser \'{{logParser}}\'',
+          apiError: 'Communication error while deploying rules for log parser \'{{logParser}}\'',
+          ok: 'Deploy Parser'
+        }
       },
       buttons: {
-        delete: 'Delete',
         addRule: 'Add Rule',
+        delete: 'Delete',
+        deploy: 'Deploy',
         save: 'Save',
         reset: 'Reset'
       }

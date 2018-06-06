@@ -47,6 +47,18 @@ function deleteParserRule(selectedLogParserName, filterDeletedRule) {
   });
 }
 
+function deployLogParser(selectedLogParserName) {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'deployLogParser',
+    modelName: 'log-parser-rules',
+    query: {
+      data: selectedLogParserName,
+      action: 'DEPLOY_LOG_PARSER'
+    }
+  });
+}
+
 function saveParserRule(selectedLogParserName, rules) {
   const request = lookup('service:request');
   return request.promiseRequest({
@@ -62,6 +74,7 @@ function saveParserRule(selectedLogParserName, rules) {
 
 export default {
   deleteParserRule,
+  deployLogParser,
   saveParserRule,
   fetchRuleFormats,
   fetchParserRules,

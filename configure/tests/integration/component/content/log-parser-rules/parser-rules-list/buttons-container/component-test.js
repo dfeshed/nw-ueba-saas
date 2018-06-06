@@ -26,41 +26,41 @@ module('Integration | Component | delete-rules', function(hooks) {
   test('Delete button shows', async function(assert) {
     new ReduxDataHelper(setState).parserRulesFormatData(1, true).build();
     await render(hbs`{{content/log-parser-rules/parser-rules-list/buttons-container}}`);
-    assert.ok(find('.buttonsContainer .deleteRule'), 'Delete button is not showing');
+    assert.ok(find('.buttons-container .deleteRule'), 'Delete button is not showing');
   });
 
   test('Delete button does not shows', async function(assert) {
     new ReduxDataHelper(setState).parserRulesFormatData(-1, true).build();
     await render(hbs`{{content/log-parser-rules/parser-rules-list/buttons-container}}`);
-    assert.notOk(find('.buttonsContainer .deleteRule'), 'Delete button is showing');
+    assert.notOk(find('.buttons-container .deleteRule'), 'Delete button is showing');
   });
 
   test('Delete a rule confirmation', async function(assert) {
-    new ReduxDataHelper(setState).parserRulesFormatData(0, true).build();
+    new ReduxDataHelper(setState).parserRulesFormatData(0, true).parserRulesSaveWait(false).build();
     await render(hbs`{{content/log-parser-rules/parser-rules-list/buttons-container}}`);
-    click('.buttonsContainer .deleteRule button');
+    click('.buttons-container .deleteRule button');
     return settled().then(() => {
-      assert.ok(find('.buttonsContainer .deleteRule .confirmation-modal'), 'Modal Confirmation is not showing');
-      assert.equal(find('.buttonsContainer .deleteRule .confirmation-modal .modal-content p').textContent.trim(), 'Click OK to delete Rule \'ipv4\'', 'Confirm message is incorrect');
+      assert.ok(find('.buttons-container .deleteRule .confirmation-modal'), 'Modal Confirmation is not showing');
+      assert.equal(find('.buttons-container .deleteRule .confirmation-modal .modal-content p').textContent.trim(), 'Delete rule \'ipv4\' from this log parser?', 'Confirm message is incorrect');
     });
   });
 
   test('Try to delete a non ootb rule', async function(assert) {
     new ReduxDataHelper(setState).parserRulesFormatData(0, true).build();
     await render(hbs`{{content/log-parser-rules/parser-rules-list/buttons-container}}`);
-    assert.notOk(find('.buttonsContainer .deleteRule .is-disabled'), 'Delete button is disabled');
+    assert.notOk(find('.buttons-container .deleteRule .is-disabled'), 'Delete button is disabled');
   });
   test('Try to delete a ootb rule', async function(assert) {
     new ReduxDataHelper(setState).parserRulesFormatData(1, true).build();
     await render(hbs`{{content/log-parser-rules/parser-rules-list/buttons-container}}`);
-    assert.ok(find('.buttonsContainer .deleteRule .is-disabled'), 'Delete button is not disabled');
+    assert.ok(find('.buttons-container .deleteRule .is-disabled'), 'Delete button is not disabled');
   });
 
   test('Add a new rule modal', async function(assert) {
     new ReduxDataHelper(setState).parserRulesFormatData(1, true).build();
     await render(hbs`{{content/log-parser-rules/parser-rules-list/buttons-container}}`);
-    assert.ok(find('.buttonsContainer .addNewRule .modal-trigger'), 'Add New button is not showing');
-    click('.buttonsContainer .addNewRule .modal-trigger');
+    assert.ok(find('.buttons-container .addNewRule .modal-trigger'), 'Add New button is not showing');
+    click('.buttons-container .addNewRule .modal-trigger');
     return settled().then(() => {
       assert.equal($('#modalDestination .addNewRule button').length, 1, 'Modal is not showing');
       $('#modalDestination .addNewRule .ember-text-field.ember-view').val('123');

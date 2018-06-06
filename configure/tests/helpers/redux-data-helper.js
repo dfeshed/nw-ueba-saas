@@ -44,6 +44,7 @@ export default class DataHelper {
     } else {
       _set(this.state, 'content.logParserRules.logParsersStatus', 'completed');
     }
+    _set(this.state, 'content.logParserRules.selectedLogParserIndex', 0);
     return this;
   }
 

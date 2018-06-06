@@ -12,7 +12,7 @@
   </div>
 {{else if isDeletingParserRule}}
   <div class='loading'>
-     {{rsa-loader size='large'}}
+    {{rsa-loader size='large'}}
   </div>
 {{else if isDeletingParserRuleError}}
   <div class='loading'>
@@ -20,7 +20,7 @@
   </div>
 {{else if isSavingParserRule}}
   <div class='loading'>
-     {{rsa-loader size='large'}}
+    {{rsa-loader size='large'}}
   </div>
 {{else if isSavingParserRuleError}}
   <div class='loading'>
@@ -29,15 +29,17 @@
 {{else}}
   <table class='parserTable'>
     {{#each parserRules as |parserRule index|}}
-      <tr><td class='{{if (eq index 0) 'firstItem'}} {{if (eq selectedParserRuleIndex index) 'active'}}'{{action "selectParserRule" index}}>
-        {{parserRule.name}}
-        {{#if parserRule.outOfBox}}
-           [RSA]
-        {{/if}}
-        {{#if parserRule.dirty}}
-           <span class="dotRed"></span>
-        {{/if}}
-      </td></tr>
+      <tr>
+        <td class='{{if (eq index 0) 'firstItem'}} {{if (eq selectedParserRuleIndex index) 'active'}}'{{action "selectParserRule" index}}>
+          {{parserRule.name}}
+          {{#if parserRule.outOfBox}}
+            [RSA]
+          {{/if}}
+          {{#if parserRule.dirty}}
+            <span class="dotRed"></span>
+          {{/if}}
+        </td>
+      </tr>
     {{/each}}
   </table>
 {{/if}}

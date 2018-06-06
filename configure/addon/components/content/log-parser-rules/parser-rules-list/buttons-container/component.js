@@ -2,6 +2,7 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { inject } from '@ember/service';
 import {
+  selectedLogParserName,
   hasSelectedParserRule,
   selectedParserRuleName,
   isOotb
@@ -9,6 +10,7 @@ import {
 import { deleteParserRule, addNewParserRule } from 'configure/actions/creators/content/log-parser-rule-creators';
 
 const stateToComputed = (state) => ({
+  selectedLogParserName: selectedLogParserName(state),
   hasSelectedParserRule: hasSelectedParserRule(state),
   selectedParserRuleName: selectedParserRuleName(state),
   isOotb: isOotb(state)
@@ -18,9 +20,9 @@ const dispatchToActions = {
   deleteParserRule
 };
 
-const ButtonsContainer = Component.extend({
+const LogParserRulesToolbar = Component.extend({
   tagName: 'div',
-  classNames: ['buttonsContainer'],
+  classNames: ['log-parser-rules-toolbar', 'buttons-container'],
   newRuleName: '',
   eventBus: inject(),
   redux: inject(),
@@ -35,4 +37,4 @@ const ButtonsContainer = Component.extend({
     }
   }
 });
-export default connect(stateToComputed, dispatchToActions)(ButtonsContainer);
+export default connect(stateToComputed, dispatchToActions)(LogParserRulesToolbar);
