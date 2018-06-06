@@ -11,7 +11,7 @@
       <div class="rsa-context-panel__grid__host-details__groupdata">{{groupSize}}</div>
     {{/rsa-content-tethered-panel-trigger}}
     {{#rsa-content-tethered-panel panelId=tetherPanelId displayCloseButton=false position='top-left'}}
-      <section>
+      <section class="rsa-context-panel__grid__host-details__group">
         {{#each groupDataArray as |cellData |}}
           <div class="rsa-context-panel__grid__host-details__field-value" title= {{cellData}}>
             {{cellData}}

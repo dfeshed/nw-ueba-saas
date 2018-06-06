@@ -323,6 +323,10 @@ radial-gradient(circle at 85% 85%, background-color(primary, darker, almost-tran
       &__groupdata {
         color: text-color(secondary);
       }
+      &__group {
+        overflow-y: scroll;
+        height: 500px;
+      }
       &__field-value {
         padding-bottom: rsa-whitespace(least);
         @include rsa-font(default, small);
