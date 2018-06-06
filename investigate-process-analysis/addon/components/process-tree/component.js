@@ -8,6 +8,7 @@ import { zoom } from 'd3-zoom';
 import { tree, hierarchy } from 'd3-hierarchy';
 import { transitionElbow, elbow, appendText, updateText, appendIcon } from './helpers/d3-helpers';
 import { ieEdgeDetection } from 'component-lib/utils/browser-detection';
+import { resetFilterValue } from 'investigate-process-analysis/actions/creators/process-filter';
 
 import {
   isStreaming,
@@ -40,7 +41,8 @@ const dispatchToActions = {
   getParentAndChildEvents,
   getChildEvents,
   fetchProcessDetails,
-  selectedProcessEvents
+  selectedProcessEvents,
+  resetFilterValue
 };
 
 
@@ -387,6 +389,8 @@ const TreeComponent = Component.extend({
 
         const { children, selectedProcess, path } = this.getProperties('children', 'selectedProcess', 'path');
 
+        this.send('setSelectedProcess', selectedProcess);
+
         const rootNode = this._prepareTreeData(children, selectedProcess, path); // Only initial load
 
         const root = hierarchy(rootNode[0], (d) => {
@@ -497,6 +501,7 @@ const TreeComponent = Component.extend({
     this.send('selectedProcessEvents', d.data.processId, {});
     this.send('setSelectedProcess', d.data.processId);
     this.addSelectedClass(d.data.processId);
+    this.send('resetFilterValue', d.data.processId);
     document.title = this._documentTitle(d.data.processName);
   },
 

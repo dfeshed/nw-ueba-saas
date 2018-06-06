@@ -2994,6 +2994,10 @@ export default {
           format: 'Format'
         }
       }
+    },
+    filter: {
+      title: 'Filters',
+      filterReset: 'Reset Filter'
     }
   },
   // Begin context menu

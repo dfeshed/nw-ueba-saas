@@ -1,4 +1,4 @@
-export const getQueryNode = function(input, selectedVid, isFetchParent, isList) {
+export const getQueryNode = function(input, selectedVid, isFetchParent, isList, filters) {
   const { et, st, sid, aid: agentId, vid } = input;
 
   let processId = vid;
@@ -12,7 +12,7 @@ export const getQueryNode = function(input, selectedVid, isFetchParent, isList) 
     startTime: st,
     queryTimeFormat: 'DB',
     serviceId: sid,
-    metaFilter: _getMetaFilter(isList, agentId, processId, isFetchParent)
+    metaFilter: _getMetaFilter(isList, agentId, processId, isFetchParent, filters)
   };
   return queryNode;
 };
@@ -30,7 +30,7 @@ export const getQueryNode = function(input, selectedVid, isFetchParent, isList) 
  * @returns {{conditions: *[]}}
  * @private
  */
-const _getMetaFilter = (isList, agentId, pid, isFetchParent) => {
+const _getMetaFilter = (isList, agentId, pid, isFetchParent, filters) => {
   const query = [
     {
       meta: 'agent.id',
@@ -52,7 +52,12 @@ const _getMetaFilter = (isList, agentId, pid, isFetchParent) => {
     }
   ];
   if (isList) {
-    return { conditions: [query[0], query[3]] };
+    let conditions = [query[0], query[3]];
+    if (filters && filters.length) {
+      conditions = conditions.concat(filters);
+    }
+
+    return { conditions };
   }
   return { conditions: query };
 };

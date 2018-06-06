@@ -1,0 +1,6 @@
+<span class='label'>{{t 'investigateProcessAnalysis.filter.title'}}</span> 
+<span class='resetFilter' {{action 'resetFilterValue' selectedProcess}}>{{t 'investigateProcessAnalysis.filter.filterReset'}}</span>
+
+{{#each filterConfig as |filter|}}
+  {{process-details/events-filter-panel/meta-filter filter=filter}}
+{{/each}}

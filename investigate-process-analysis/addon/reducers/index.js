@@ -4,6 +4,7 @@ import processProperties from './process-properties/reducer';
 import processVisuals from './process-visuals/reducer';
 import services from './services/reducer';
 import query from './query/reducer';
+import processFilter from './process-filter/reducer';
 
 export default combineReducers({
   processAnalysis: combineReducers({
@@ -11,6 +12,7 @@ export default combineReducers({
     processProperties,
     processVisuals,
     services,
-    query
+    query,
+    processFilter
   })
 });

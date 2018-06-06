@@ -1,0 +1,6 @@
+<div class='filterName'>{{filter.name}} ({{filter.options.length}})</div>
+<hr>
+
+{{#each filter.options as |item|}}
+  {{process-details/events-filter-panel/filter-items-wrapper filterName=filter.name option=item.name}}
+{{/each}}

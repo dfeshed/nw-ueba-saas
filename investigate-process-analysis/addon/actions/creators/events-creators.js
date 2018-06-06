@@ -2,6 +2,7 @@ import fetchStreamingEvents from 'investigate-shared/actions/api/events/events';
 import * as ACTION_TYPES from 'investigate-process-analysis/actions/types';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 import { getQueryNode, hasherizeEventMeta } from './util';
+import { constructFilterQueryString } from 'investigate-process-analysis/reducers/process-filter/selectors';
 
 const callbacksDefault = { onComplete() {} };
 
@@ -56,7 +57,8 @@ const _getEvents = (pid, onResponse, callbacks, isFetchParents) => {
 export const selectedProcessEvents = (pid, callbacks = callbacksDefault) => {
   return (dispatch, getState) => {
     const state = getState();
-    const queryNode = getQueryNode(state.processAnalysis.processTree.queryInput, pid, true, true);
+    const filters = constructFilterQueryString(state);
+    const queryNode = getQueryNode(state.processAnalysis.processTree.queryInput, pid, true, true, filters);
     const streamLimit = 100000;
     const streamBatch = 100000; // Would like to get all the events in one batch
 

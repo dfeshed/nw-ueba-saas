@@ -1,0 +1,31 @@
+.eventsFilterPanel {
+  font-size: 12px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  color: text-color(primary, lighter);
+  .label {
+    text-align: left;
+  }
+  .resetFilter {
+    float: right;
+  }
+  .meta-filter {
+    margin: 8px 5px 8px 0;
+    .filterName {
+      margin: 8px 0;
+      text-transform: capitalize;
+    }
+    .filterItem {
+      display: inline-block;
+      border-radius: 5px;
+      border: 1px solid #fff;
+      padding: 2px 5px;
+      margin: 5px;
+      cursor: pointer;
+      &.is-selected {
+        background-color: border-color(secondary);
+        border: 1px solid border-color(secondary);
+      }
+    }
+  }
+}
