@@ -4,13 +4,11 @@ const { createSelector } = reselect;
 
 const _parserRulesState = (state) => state.configure.content.logParserRules;
 const _ruleFormats = (state) => _parserRulesState(state).ruleFormats;
-// export const selectedParserRuleFormat = (state) => _parserRulesState(state).selectedFormat;
+const _selectedFormat = (state) => _parserRulesState(state).selectedFormat;
 export const logParsers = (state) => _parserRulesState(state).logParsers;
 export const parserRules = (state) => _parserRulesState(state).parserRules;
 export const selectedLogParserIndex = (state) => _parserRulesState(state).selectedLogParserIndex;
 export const selectedParserRuleIndex = (state) => _parserRulesState(state).selectedParserRuleIndex;
-export const _selectedFormat = (state) => _parserRulesState(state).selectedFormat;
-
 
 export const isLoadingLogParser = createSelector(
   _parserRulesState,
@@ -156,7 +154,7 @@ export const selectedParserRuleFormat = createSelector(
   _ruleFormats,
   (selectedParserRule, _selectedFormat, ruleFormats) => {
     if (_selectedFormat) {
-      return ruleFormats.filter((format) => format.name.toLowerCase() === _selectedFormat.toLowerCase())[0];
+      return ruleFormats.filter((format) => format.name === _selectedFormat)[0];
     } else if (selectedParserRule) {
       const frmt = selectedParserRule.pattern.format ? selectedParserRule.pattern.format : 'regex';
       return ruleFormats.filter((format) => format.type.toLowerCase() === frmt.toLowerCase())[0];

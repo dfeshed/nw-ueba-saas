@@ -35,12 +35,6 @@ module('Integration | Component | value matching', function(hooks) {
     assert.equal(this.$('.ruleType input').val(), 'ipv6', 'Show type field value is not showing or not ipv4');
   });
 
-  /* test('Don\'t Select Regex Pattern', async function(assert) {
-    new ReduxDataHelper(setState).parserRulesData(true).build();
-    await render(hbs`{{content/log-parser-rules}}`);
-    assert.ok(find('.ruleRegex'), 'Pattern field is showing');
-  }); */
-
   test('Select Regex Pattern', async function(assert) {
     new ReduxDataHelper(setState).parserRulesFormatData(1, true).build();
     await render(hbs`{{content/log-parser-rules/value-matching}}`);

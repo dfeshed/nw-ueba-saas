@@ -6,6 +6,7 @@ import {
   parserRuleRegex
 } from 'configure/reducers/content/log-parser-rules/selectors';
 import { selectFormatValue } from 'configure/actions/creators/content/log-parser-rule-creators';
+import computed from 'ember-computed-decorators';
 
 const stateToComputed = (state) => ({
   parserRuleFormatNames: parserRuleFormatNames(state),
@@ -18,6 +19,10 @@ const dispatchToActions = {
 };
 
 const ValueMatching = Component.extend({
-  classNames: ['value-matching']
+  classNames: ['value-matching'],
+  @computed('selectedParserRuleFormat')
+  isRegex(selectedParserRuleFormat) {
+    return selectedParserRuleFormat.type === 'regex';
+  }
 });
 export default connect(stateToComputed, dispatchToActions)(ValueMatching);

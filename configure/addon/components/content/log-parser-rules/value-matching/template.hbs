@@ -20,7 +20,7 @@
 <div class='vSpacer ruleMatches'>
   {{rsa-form-input label=(t 'configure.logsParser.valueMatching') value=selectedParserRuleFormat.matches isReadOnly=true isInline=true}}
 </div>
-{{#if (eq selectedParserRuleFormat.type 'regex')}}
+{{#if isRegex}}
   <div class='vSpacer ruleRegex'>
     {{rsa-form-textarea label=(t 'configure.logsParser.pattern') value=parserRuleRegex isInline=true isReadOnly=true}}
   </div>
