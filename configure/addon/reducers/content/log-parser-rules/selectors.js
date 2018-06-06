@@ -4,10 +4,12 @@ const { createSelector } = reselect;
 
 const _parserRulesState = (state) => state.configure.content.logParserRules;
 const _ruleFormats = (state) => _parserRulesState(state).ruleFormats;
+// export const selectedParserRuleFormat = (state) => _parserRulesState(state).selectedFormat;
 export const logParsers = (state) => _parserRulesState(state).logParsers;
 export const parserRules = (state) => _parserRulesState(state).parserRules;
 export const selectedLogParserIndex = (state) => _parserRulesState(state).selectedLogParserIndex;
 export const selectedParserRuleIndex = (state) => _parserRulesState(state).selectedParserRuleIndex;
+export const _selectedFormat = (state) => _parserRulesState(state).selectedFormat;
 
 
 export const isLoadingLogParser = createSelector(
@@ -66,35 +68,14 @@ const _selectedParserRule = createSelector(
 
 export const parserRuleRegex = createSelector(
   _selectedParserRule,
-  _ruleFormats,
-  (selectedRule, formats) => {
+  (selectedRule) => {
     if (selectedRule) {
-      const frmt = selectedRule.pattern.format;
-      if (frmt) {
-        return formats.filter((format) => format.type.toLowerCase() === frmt.toLowerCase())[0].pattern;
-      } else {
-        return selectedRule.pattern.regex;
-      }
+      return selectedRule.pattern.regex ? selectedRule.pattern.regex : '';
     }
   }
 );
 
-export const parserRuleMatches = createSelector(
-  _selectedParserRule,
-  _ruleFormats,
-  (selectedRule, formats) => {
-    if (selectedRule) {
-      const frmt = selectedRule.pattern.format;
-      if (frmt) {
-        return formats.filter((format) => format.type.toLowerCase() === frmt.toLowerCase())[0].matches;
-      } else {
-        return formats[0].matches;
-      }
-    }
-  }
-);
-// this is only a place holder for UI drop down
-export const parserRuleValues = createSelector(
+export const parserRuleFormatNames = createSelector(
   _ruleFormats,
   (formats) => {
     return formats.map((format) => format.name);
@@ -106,16 +87,6 @@ export const parserRuleTokens = createSelector(
   (selectedRule) => {
     if (selectedRule) {
       return selectedRule.literals;
-    }
-  }
-);
-
-export const parserRuleType = createSelector(
-  _ruleFormats,
-  _selectedParserRule,
-  (formats, selectedRule) => {
-    if (selectedRule) {
-      return selectedRule.pattern.format ? selectedRule.pattern.format : formats[0].type;
     }
   }
 );
@@ -175,6 +146,20 @@ export const isOotb = createSelector(
   (rule) => {
     if (rule) {
       return !!(rule.outOfBox);
+    }
+  }
+);
+
+export const selectedParserRuleFormat = createSelector(
+  _selectedParserRule,
+  _selectedFormat,
+  _ruleFormats,
+  (selectedParserRule, _selectedFormat, ruleFormats) => {
+    if (_selectedFormat) {
+      return ruleFormats.filter((format) => format.name.toLowerCase() === _selectedFormat.toLowerCase())[0];
+    } else if (selectedParserRule) {
+      const frmt = selectedParserRule.pattern.format ? selectedParserRule.pattern.format : 'regex';
+      return ruleFormats.filter((format) => format.type.toLowerCase() === frmt.toLowerCase())[0];
     }
   }
 );

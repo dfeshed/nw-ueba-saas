@@ -69,11 +69,26 @@ export default class DataHelper {
 
   parserRulesData(flag) {
     _set(this.state, 'content.logParserRules.parserRules', [{ name: 'ipv4' }]);
+    _set(this.state, 'content.logParserRules.selectedParserRuleIndex', 0);
     if (flag) {
       _set(this.state, 'content.logParserRules.parserRulesStatus', 'wait');
     } else {
       _set(this.state, 'content.logParserRules.parserRulesStatus', 'completed');
     }
+    _set(this.state, 'content.logParserRules.selectedFormat', 'IPV4 Address');
+    _set(this.state, 'content.logParserRules.ruleFormats', [{
+      name: 'Regex Pattern',
+      pattern: '',
+      matches: 'This matches Regex',
+      type: 'regex'
+    },
+    {
+      name: 'IPV4 Address',
+      pattern: '(?:[0-9]{1,3}\\.){3}[0-9]{1,3}',
+      matches: 'This matches IPV4 addresses',
+      type: 'ipv4'
+    }
+    ]);
     return this;
   }
 
@@ -116,9 +131,13 @@ export default class DataHelper {
       'ruleMetas': [],
       'outOfBox': true
     }]);
-    _set(this.state, 'content.logParserRules.selectedParserRuleIndex', 0);
     _set(this.state, 'content.logParserRules.parserRulesStatus', 'completed');
     if (formats) {
+      if (index == 0) {
+        _set(this.state, 'content.logParserRules.selectedFormat', 'IPV4 Address');
+      } else {
+        _set(this.state, 'content.logParserRules.selectedFormat', 'IPV6 Address');
+      }
       _set(this.state, 'content.logParserRules.ruleFormats', [{
         name: 'Regex Pattern',
         pattern: '',

@@ -3,7 +3,6 @@ import {
   hasRuleFormats,
   hasSelectedParserRule,
   filterDeletedRule,
-  parserRuleMatches,
   isDeletingParserRule,
   isDeletingParserRuleError,
   isOotb
@@ -69,9 +68,6 @@ test('Test Booleans hasSelectedParserRule', function(assert) {
 });
 test('filterDeletedRule by selectedParserRuleIndex', function(assert) {
   assert.deepEqual(filterDeletedRule(state), filteredRule, 'The rule with index === 0 was filtered');
-});
-test('parserRuleMatches toLowerCase', function(assert) {
-  assert.equal(parserRuleMatches(state), 'result', 'parserRuleMatches Foo and fOO');
 });
 test('isDeletingParserRule wait', function(assert) {
   assert.equal(isDeletingParserRule(stateInit), true, 'waiting for delete confirmation');

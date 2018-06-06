@@ -1,31 +1,23 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import {
-  parserRuleRegex,
-  parserRuleType,
-  parserRuleMatches,
-  parserRuleValues
+  parserRuleFormatNames,
+  selectedParserRuleFormat,
+  parserRuleRegex
 } from 'configure/reducers/content/log-parser-rules/selectors';
-import computed from 'ember-computed-decorators';
+import { selectFormatValue } from 'configure/actions/creators/content/log-parser-rule-creators';
 
 const stateToComputed = (state) => ({
-  parserRuleRegex: parserRuleRegex(state),
-  parserRuleType: parserRuleType(state),
-  parserRuleMatches: parserRuleMatches(state),
-  parserRuleValues: parserRuleValues(state)
+  parserRuleFormatNames: parserRuleFormatNames(state),
+  selectedParserRuleFormat: selectedParserRuleFormat(state),
+  parserRuleRegex: parserRuleRegex(state)
 });
 
+const dispatchToActions = {
+  selectFormatValue
+};
+
 const ValueMatching = Component.extend({
-  classNames: ['value-matching'],
-  itemSelected: null,
-  actions: {
-    setSelect(item) {
-      this.set('itemSelected', item);
-    }
-  },
-  @computed('itemSelected')
-  isRegexSelected(itemSelected) {
-    return itemSelected === 'Regex Pattern';
-  }
+  classNames: ['value-matching']
 });
-export default connect(stateToComputed)(ValueMatching);
+export default connect(stateToComputed, dispatchToActions)(ValueMatching);

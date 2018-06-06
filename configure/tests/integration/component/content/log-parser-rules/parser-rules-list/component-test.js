@@ -47,7 +47,7 @@ module('Integration | Component | rules-list', function(hooks) {
   });
 
   test('Select a rule', async function(assert) {
-    new ReduxDataHelper(setState).parserRulesData(false).build();
+    new ReduxDataHelper(setState).parserRulesFormatData(1, true).build();
     await render(hbs`{{content/log-parser-rules/parser-rules-list}}`);
     await click('.parser-rules-list .firstItem');
     return settled().then(() => {
@@ -56,7 +56,7 @@ module('Integration | Component | rules-list', function(hooks) {
   });
 
   test('Delete a rule', async function(assert) {
-    new ReduxDataHelper(setState).parserRulesData(false).build();
+    new ReduxDataHelper(setState).parserRulesFormatData(1, true).build();
     await render(hbs`{{content/log-parser-rules/parser-rules-list}}`);
     await click('.parser-rules-list .firstItem');
     return settled().then(() => {

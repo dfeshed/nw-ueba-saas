@@ -34,10 +34,20 @@ const initializeLogParserRules = () => {
   };
 };
 
-const fetchParserRules = (name) => {
+const fetchParserRules = () => {
+  return (dispatch, getState) => {
+    const logParserName = selectedLogParserName(getState());
+    dispatch({
+      type: ACTION_TYPES.FETCH_PARSER_RULES,
+      promise: api.fetchParserRules(logParserName)
+    });
+  };
+};
+
+const selectFormatValue = (value) => {
   return {
-    type: ACTION_TYPES.FETCH_PARSER_RULES,
-    promise: api.fetchParserRules(name)
+    type: ACTION_TYPES.SELECT_FORMAT_VALUE,
+    payload: value
   };
 };
 
@@ -49,27 +59,23 @@ const selectParserRule = (index) => {
 };
 
 const selectLogParser = (index) => {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch({
       type: ACTION_TYPES.SELECT_LOG_PARSER,
       payload: index
     });
-    const logParserName = selectedLogParserName(getState());
-    dispatch(fetchParserRules(logParserName));
+    dispatch(fetchParserRules());
   };
 };
 
-const _deleteParserRule = (logParserName, filteredRule) => {
-  return {
-    type: ACTION_TYPES.DELETE_PARSER_RULE,
-    promise: api.deleteParserRule(logParserName, filteredRule)
-  };
-};
 const deleteParserRule = () => {
   return (dispatch, getState) => {
     const logParserName = selectedLogParserName(getState());
     const filteredRule = filterDeletedRule(getState());
-    dispatch(_deleteParserRule(logParserName, filteredRule));
+    dispatch({
+      type: ACTION_TYPES.DELETE_PARSER_RULE,
+      promise: api.deleteParserRule(logParserName, filteredRule)
+    });
   };
 };
 
@@ -80,24 +86,19 @@ const addNewParserRule = (name) => {
   };
 };
 
-const _saveParserRule = (logParserName, rules) => {
-  return (dispatch) => {
+const saveParserRule = () => {
+  return (dispatch, getState) => {
+    const logParserName = selectedLogParserName(getState());
+    const rules = parserRules(getState());
     dispatch({
       type: ACTION_TYPES.SAVE_PARSER_RULE,
       promise: api.saveParserRule(logParserName, rules),
       meta: {
         onSuccess() {
-          dispatch(fetchParserRules(logParserName));
+          dispatch(fetchParserRules());
         }
       }
     });
-  };
-};
-const saveParserRule = () => {
-  return (dispatch, getState) => {
-    const logParserName = selectedLogParserName(getState());
-    const rules = parserRules(getState());
-    dispatch(_saveParserRule(logParserName, rules));
   };
 };
 
@@ -108,5 +109,6 @@ export {
   selectLogParser,
   selectParserRule,
   fetchParserRules,
-  saveParserRule
+  saveParserRule,
+  selectFormatValue
 };

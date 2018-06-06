@@ -10,7 +10,8 @@ const initialState = {
   parserRulesStatus: null, // wait, completed, error,
   ruleFormats: [],
   selectedParserRuleIndex: -1,
-  selectedLogParserIndex: -1
+  selectedLogParserIndex: -1,
+  selectedFormat: null
 };
 
 export default reduxActions.handleActions({
@@ -26,7 +27,12 @@ export default reduxActions.handleActions({
         return state.set('logParserStatus', 'error');
       },
       success: (state) => {
-        return state.set('logParsers', action.payload.data);
+        return state.merge(
+          {
+            logParsers: action.payload.data,
+            selectedParserRuleIndex: 0
+          }
+        );
       }
     })
   ),
@@ -37,10 +43,9 @@ export default reduxActions.handleActions({
         return state.set('logParserStatus', 'error');
       },
       success: (state) => {
-        const theFormats = action.payload.data;
         return state.merge(
           {
-            ruleFormats: theFormats,
+            ruleFormats: action.payload.data,
             logParserStatus: 'completed'
           }
         );
@@ -60,15 +65,13 @@ export default reduxActions.handleActions({
       },
       success: (state) => {
         const theRules = action.payload.data;
-        let selectedIndex = state.selectedParserRuleIndex;
-        if (theRules.length == selectedIndex) {
-          selectedIndex = 0; // select first rule when rest and last rule is dirty and selected
-        }
+        const selectedIndex = state.selectedParserRuleIndex;
         return state.merge(
           {
             parserRules: theRules,
             parserRulesStatus: 'completed',
-            selectedParserRuleIndex: selectedIndex
+            selectedParserRuleIndex: (theRules.length == selectedIndex) ? selectedIndex : 0,
+            selectedFormat: null
           }
         );
       }
@@ -76,16 +79,20 @@ export default reduxActions.handleActions({
   ),
 
   [ACTION_TYPES.SELECT_PARSER_RULE]: (state, { payload }) => {
-    return state.set('selectedParserRuleIndex', payload);
+    return state.merge(
+      {
+        selectedParserRuleIndex: payload,
+        selectedFormat: null
+      }
+    );
+  },
+
+  [ACTION_TYPES.SELECT_FORMAT_VALUE]: (state, { payload }) => {
+    return state.set('selectedFormat', payload);
   },
 
   [ACTION_TYPES.SELECT_LOG_PARSER]: (state, { payload }) => {
-    return state.merge(
-      {
-        selectedLogParserIndex: payload,
-        selectedParserRuleIndex: 0
-      }
-    );
+    return state.set('selectedLogParserIndex', payload);
   },
 
   [ACTION_TYPES.DELETE_PARSER_RULE]: (state, action) => (
