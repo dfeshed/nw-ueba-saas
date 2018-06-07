@@ -117,7 +117,7 @@ export const processAnalysisQueryString = createSelector(
     const osType = getMetaValue('OS', eventMeta);
     const agentId = getMetaValue('agent.id', eventMeta);
     const checksumSha256 = getMetaValue('checksum.src', eventMeta);
-    const vpid = getMetaValue('vid.src', eventMeta);
+    const vpid = getMetaValue('process.vid.src', eventMeta);
     const fileName = getMetaValue('filename.src', eventMeta);
     const { serviceId } = queryNode;
     const osTypeParam = `osType=${osType}&vid=${vpid}`;
@@ -131,7 +131,7 @@ export const processAnalysisQueryString = createSelector(
 export const isProcessAnalysisDisabled = createSelector(
   _eventMeta,
   (eventMeta) => {
-    if (getMetaValue('vid.src', eventMeta)) {
+    if (getMetaValue('process.vid.src', eventMeta)) {
       return false;
     }
     return true;

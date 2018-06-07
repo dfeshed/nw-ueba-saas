@@ -66,4 +66,9 @@ export default class DataHelper {
     _set(this.state, 'processFilter', processFilter);
     return this;
   }
+
+  selectedProcess(process = { processId: 1 }) {
+    _set(this.state, 'processTree.selectedProcess', process);
+    return this;
+  }
 }

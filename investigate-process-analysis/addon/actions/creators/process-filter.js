@@ -4,7 +4,7 @@ import { selectedProcessEvents } from 'investigate-process-analysis/actions/crea
 export const updateFilterValue = (input) => {
   return (dispatch) => {
     dispatch({ type: ACTION_TYPES.UPDATE_FILTER_ITEMS, payload: input });
-    dispatch(selectedProcessEvents(input.selectedProcess));
+    dispatch(selectedProcessEvents(input.selectedProcess.processId));
   };
 };
 

@@ -67,7 +67,7 @@ module('Integration | Component | events-filter-panel', function(hooks) {
 
 
   test('events-filter-panel/container renders', async function(assert) {
-    new ReduxDataHelper(setState).processFilter(processFilter).build();
+    new ReduxDataHelper(setState).selectedProcess().processFilter(processFilter).build();
 
     await render(hbs`{{process-details/events-filter-panel}}`);
     assert.equal(findAll('.label').length, 1, 'Title present');

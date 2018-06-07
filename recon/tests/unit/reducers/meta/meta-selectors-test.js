@@ -240,7 +240,7 @@ test('processAnalysisQueryString  test', function(assert) {
           ['checksum.src', 'test-checksum'],
           ['agent.id', 'abcd'],
           ['filename.src', 'testfile'],
-          ['vid.src', 1],
+          ['process.vid.src', 1],
           ['alias.host', 'TestHostName']
         ]
       }
@@ -256,7 +256,7 @@ test('isProcessAnalysisDisabled test', function(assert) {
     recon: {
       meta: {
         meta: [
-          ['vid.src', 1]
+          ['process.vid.src', 1]
         ]
       }
     }
