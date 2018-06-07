@@ -6,7 +6,7 @@ After= network.target
 User=presidio
 Group=presidio
 Type=simple
-ExecStart=/usr/bin/java -Dspring.profiles.active=mock-authentication -Dserver.port=8883 -Dnw.security.certificate.alias=nwca-cert -Dnw.security.certificate.file.location=/etc/pki/nw/trust/truststore.p12 -Dnw.security.certificate.secret=changeit -jar /usr/sbin/presidio/ui/presidio-ui-app.jar
+ExecStart=/usr/bin/java -Dserver.port=8883 -Dnw.security.certificate.alias=node -Dnw.security.certificate.file.location=/etc/pki/nw/node/node.p12 -Dnw.security.certificate.secret=changeit -jar /usr/sbin/presidio/ui/presidio-ui-app.jar
 KillMode=mixed
 KillSignal=SIGKILL
 Restart=on-failure
