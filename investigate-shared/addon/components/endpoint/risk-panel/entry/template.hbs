@@ -1,16 +1,16 @@
 <vbox class='risk-properties-panel__entry'>
-  {{#each-in entry as |key value|}}
-    {{#unless (eq key 'name')}}
+  {{#each orderedFields as |field|}}
+    {{#if (get entry field)}}
       <hbox class='risk-properties-panel__entry__field'>
-        <span class='entry-label'>{{t (get-label 'investigateHosts.context' key)}}</span>
-        {{#if (or (eq key 'timestamp')(eq key 'created'))}}
-          <span class="entry-value">{{parse-timestamp value timezone dateFormat timeFormat i18n.locale}}</span>
-        {{else if (or (eq key 'incident')(eq key '_id'))}}
-          <span>{{endpoint/risk-panel/respond-link entryId=value}}</span>
+        <span class='entry-label'>{{t (get-label 'investigateHosts.context' field)}}</span>
+        {{#if (or (eq field 'timestamp')(eq field 'created'))}}
+          <span class="entry-value">{{parse-timestamp (get entry field) timezone dateFormat timeFormat i18n.locale}}</span>
+        {{else if (or (eq field 'incident')(eq field '_id'))}}
+          <span>{{endpoint/risk-panel/respond-link entryId=(get entry field)}}</span>
         {{else}}
-          <span>{{value}}</span>
+          <span>{{get entry field}}</span>
         {{/if}}
       </hbox>
-    {{/unless}}
-  {{/each-in}}
+    {{/if}}
+  {{/each}}
 </vbox>
