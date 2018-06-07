@@ -37,7 +37,9 @@ export const errorMessage = createSelector(
       return;
     }
 
-    return lookup('service:i18n').t(errorObj.messageLocaleKey);
+    const { errorCode, type, messageLocaleKey } = errorObj;
+
+    return lookup('service:i18n').t(messageLocaleKey, { errorCode, type });
   }
 );
 

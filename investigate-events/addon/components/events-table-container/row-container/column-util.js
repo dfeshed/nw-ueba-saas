@@ -304,6 +304,8 @@ function buildDefaultCellContent($content, field, item, opts) {
 function buildLogContent(item) {
   const status = item.logStatus || '';
   const data = item.log || '';
+
+  let errorObj;
   let text = '';
   let tooltip = '';
 
@@ -313,7 +315,8 @@ function buildLogContent(item) {
       text = lookup('service:i18n').t('investigate.generic.loading');
       break;
     case 'rejected':
-      text = lookup('service:i18n').t(handleInvestigateErrorCode(item).messageLocaleKey);
+      errorObj = handleInvestigateErrorCode(item);
+      text = lookup('service:i18n').t(errorObj.messageLocaleKey, { errorCode: errorObj.errorCode, type: errorObj.type });
       break;
     default:
       tooltip = data;

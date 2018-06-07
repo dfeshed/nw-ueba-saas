@@ -7,18 +7,13 @@ export default Service.extend({
 
   i18n: service(),
 
-  display({ messageLocaleKey, errorCode, sendServerMessage, serverMessage }) {
+  display({ messageLocaleKey, errorCode, type, sendServerMessage, serverMessage }) {
     const i18n = this.get('i18n');
-
-    const codeStr = i18n.t('errorDictionaryMessages.code');
-    const errorMessage = sendServerMessage ? serverMessage : i18n.t(messageLocaleKey);
+    const errorMessage = sendServerMessage ? serverMessage : i18n.t(messageLocaleKey, { errorCode, type });
 
     if (!isEmpty(errorMessage)) {
-      const flashMessage = `${errorMessage} (${codeStr} ${errorCode})`;
-
-      this.get('flashMessages').error(flashMessage);
-
-      return flashMessage;
+      this.get('flashMessages').error(errorMessage);
+      return errorMessage;
     }
   }
 

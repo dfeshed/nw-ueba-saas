@@ -152,7 +152,7 @@ export const initializeInvestigate = (params, hardReset = false) => {
           return;
         }
 
-        const { errorCode, messageLocaleKey } = errorObj;
+        const { errorCode, messageLocaleKey, type } = errorObj;
 
         if (errorCode === 13) {
           dispatch({
@@ -160,7 +160,7 @@ export const initializeInvestigate = (params, hardReset = false) => {
             payload: {
               status: 'error',
               reason: errorCode,
-              message: lookup('service:i18n').t(messageLocaleKey).toString()
+              message: lookup('service:i18n').t(messageLocaleKey, { errorCode, type }).toString()
             }
           });
         }
