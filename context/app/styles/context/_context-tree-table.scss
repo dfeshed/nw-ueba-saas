@@ -130,6 +130,9 @@
     padding-bottom: rsa-whitespace();
     @include rsa-font(default, small);
     color: text-color(neutral);
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &__addtoListBox, &__createList{
