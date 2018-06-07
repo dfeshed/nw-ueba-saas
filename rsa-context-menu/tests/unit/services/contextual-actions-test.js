@@ -13,8 +13,8 @@ const assertForEventAnalysisPanelIPActions = (actions, assert) => {
 };
 
 const assertForEventAnalysisPanelDefaultActions = (actions, assert) => {
-  assert.equal(actions.length, 2, 'Should have minimum three actions');
-  assert.ok(actions.find((action) => action.label === 'copyMetaAction'), 'Should have copy action');
+  assert.equal(actions.length, 3, 'Should have minimum three actions');
+  assert.ok(actions.find((action) => action.label === 'nw-event-value-drillable-contains'), 'Should have copy action');
 };
 
 const assertForNonSupportedActions = (actions, assert) => {
@@ -42,7 +42,7 @@ module('Unit | Service | contextual-actions', function(hooks) {
     assert.ok(serv);
     next(() => {
       assertForEventAnalysisPanelIPActions(serv.getContextualActionsForGivenScope('EventAnalysisPanel', 'ip.src'), assert);
-      assertForEventAnalysisPanelDefaultActions(serv.getContextualActionsForGivenScope('EventAnalysisPanel', 'test'), assert);
+      assertForEventAnalysisPanelDefaultActions(serv.getContextualActionsForGivenScope('EventAnalysisPanel', 'test', 'Text'), assert);
       assertForNonSupportedActions(serv.getContextualActionsForGivenScope('EventAnalysisPanel', 'test'), assert);
     });
   });

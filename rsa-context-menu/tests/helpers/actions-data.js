@@ -98,5 +98,24 @@ export default {
       'UAP.investigation.analysis.view.EventAnalysisPanel'
     ],
     order: '8'
+  }, {
+    urlFormat: 'http://www.google.com/search?q={0}',
+    displayName: 'nw-event-value-drillable-contains',
+    cssClasses: [
+      'nw-event-value-drillable-contains'
+    ],
+    description: '',
+    type: 'UAP.common.contextmenu.actions.AbstractContextAction',
+    version: '1',
+    modules: [
+      'investigation'
+    ],
+    pluginRawConfig: '',
+    disabled: '',
+    id: 'InvestigationEventRefocusNewTabSplitSessionsNewTabNew',
+    moduleClasses: [
+      'UAP.investigation.analysis.view.EventAnalysisPanel'
+    ],
+    order: '8'
   }]
 };

@@ -12,7 +12,7 @@ export default Component.extend(contextMenuMixin, {
     * Component need to pass moduleName and metaName in context selection for using configured actions.
     * @private
     */
-    let { moduleName, metaName } = this.get('contextSelection');
+    let { moduleName, metaName, format } = this.get('contextSelection');
     /**
     * Since the events table is a special custom table which has html tags with meta and value injected from the javascript
     * we cannot use the rsa-context-menu component as-is. This extended class captures the right click event, extracts the
@@ -24,11 +24,12 @@ export default Component.extend(contextMenuMixin, {
     if (!moduleName) {
       moduleName = this.get('moduleName');
       metaName = this.get('metaName');
+      format = this.get('metaFormat');
     }
 
     //  If moduleName is passed then contextItems will be ignored and rsa-context-menu will use configured actions.
     if (moduleName) {
-      this.set('contextItems', this.get('contextualActions').getContextualActionsForGivenScope(moduleName, metaName));
+      this.set('contextItems', this.get('contextualActions').getContextualActionsForGivenScope(moduleName, metaName, format));
     }
     this._super(e);
   }

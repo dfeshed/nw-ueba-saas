@@ -34,11 +34,12 @@ export default Service.extend({
  * This public API returns context menu item for given moduleName and scope.
  * @public
 */
-  getContextualActionsForGivenScope(moduleName, scope) {
+  getContextualActionsForGivenScope(moduleName, scope, metaFormat) {
     const actions = this.get('moduleBasedActions');
     let mergedAction = [];
+    const componentCSS = (componentCSSList[moduleName] || []).concat(componentCSSList[metaFormat]);
     mergedAction = actions && actions[moduleName] && actions[moduleName][scope] ? actions[moduleName][scope] : [];
-    _.forEach(componentCSSList[moduleName], (currentSelector) => {
+    _.forEach(componentCSS, (currentSelector) => {
       const actionsFromCss = actions && actions[moduleName] && actions[moduleName][currentSelector] ? actions[moduleName][currentSelector] : [];
       mergedAction = mergeObjectArray(mergedAction, actionsFromCss);
     });

@@ -3,6 +3,7 @@ import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { getColumns } from 'investigate-events/reducers/investigate/data-selectors';
 import { selectedIndex } from 'investigate-events/reducers/investigate/event-results/selectors';
+import { metaFormatMap } from 'rsa-context-menu/utils/meta-format-selector';
 import { eventsGetMore, eventsLogsGet } from 'investigate-events/actions/events-creators';
 
 const stateToComputed = (state) => ({
@@ -15,7 +16,8 @@ const stateToComputed = (state) => ({
   endpointId: state.investigate.queryNode.serviceId,
   startTime: state.investigate.queryNode.startTime,
   endTime: state.investigate.queryNode.endTime,
-  queryConditions: state.investigate.queryNode.metaFilter.conditions
+  queryConditions: state.investigate.queryNode.metaFilter.conditions,
+  metaFormatMap: metaFormatMap(state.investigate.dictionaries.language)
 });
 
 const dispatchToActions = {
@@ -48,10 +50,14 @@ const EventsTableContextMenu = RsaContextMenu.extend({
   contextMenu({ target: { attributes } }) {
     const metaName = attributes.getNamedItem('metaname');
     const metaValue = attributes.getNamedItem('metavalue');
+    const metaFormatMap = this.get('metaFormatMap');
     if (metaName && metaValue) {
-      this.set('moduleName', 'EventAnalysisPanel');
-      this.set('metaName', metaName.value);
-      this.set('metaValue', metaValue.value);
+      this.setProperties({
+        moduleName: 'EventAnalysisPanel',
+        metaName: metaName.value,
+        metaValue: metaValue.value,
+        format: metaFormatMap[metaName.value]
+      });
       this._super(...arguments);
     } else {
       if (this.get('contextMenuService').deactivate) {

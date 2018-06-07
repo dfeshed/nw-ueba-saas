@@ -4,6 +4,7 @@ import computed, { alias, bool } from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { highlightMeta } from 'recon/actions/interaction-creators';
 
+
 const dispatchToActions = {
   highlightMeta
 };
@@ -129,8 +130,8 @@ const MetaContentItem = Component.extend({
     this.set('isHovering', false);
   },
 
-  @computed('name', 'value')
-  contextSelection: (metaName, metaValue) => ({ moduleName: 'EventAnalysisPanel', metaName, metaValue }),
+  @computed('name', 'value', 'metaFormatMap')
+  contextSelection: (metaName, metaValue, metaFormatMap) => ({ moduleName: 'EventAnalysisPanel', metaName, metaValue, format: metaFormatMap[metaName] }),
 
   @computed('queryInputs', 'language')
   contextMenuData(queryInputs, language) {

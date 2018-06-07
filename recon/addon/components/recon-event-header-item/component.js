@@ -35,8 +35,10 @@ export default Component.extend({
 
   // Returns an array of objects, each object containing metaName and metaValue. The size of the array would usually be
   // one, except for network addresses, for which the first element would be the IP address, followed by port.
-  @computed('key', 'value', 'name')
-  metaValuePairs(key, value, name) {
+  // MetaFormat is used to evaluate format of meta for context menu item. Some context menu items are supported for
+  // specific meta format only.
+  @computed('key', 'value', 'name', 'metaFormatMap')
+  metaValuePairs(key, value, name, metaFormatMap) {
     let metaValuePairs = null;
     if (isNetworkAddress(name)) {
       const ipAddressMetaValue = getIpAddressMetaValue(key, value);
@@ -48,7 +50,7 @@ export default Component.extend({
         metaValuePairs.push(portMetaValuePair);
       }
     } else {
-      metaValuePairs = [{ moduleName: 'EventAnalysisPanel', metaName: key, metaValue: value, displayValue: value }];
+      metaValuePairs = [{ moduleName: 'EventAnalysisPanel', metaName: key, metaValue: value, displayValue: value, format: metaFormatMap[key] }];
     }
     return metaValuePairs;
   },

@@ -6,6 +6,7 @@ import {
   metaHighlightCount
 } from 'recon/reducers/text/selectors';
 import layout from './template';
+import { metaFormatMap } from 'rsa-context-menu/utils/meta-format-selector';
 
 const stateToComputed = ({ recon, recon: { meta, text, data, dictionaries } }) => ({
   eventHasPayload: eventHasPayload(recon),
@@ -16,7 +17,8 @@ const stateToComputed = ({ recon, recon: { meta, text, data, dictionaries } }) =
   metaToHighlight: text.metaToHighlight,
   metaHighlightCount: metaHighlightCount(recon),
   queryInputs: data.queryInputs,
-  language: dictionaries.language
+  language: dictionaries.language,
+  metaFormatMap: metaFormatMap(dictionaries.language)
 });
 
 const MetaContentComponent = Component.extend({

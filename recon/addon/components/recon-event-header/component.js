@@ -7,6 +7,7 @@ import {
   HAS_TOOLTIP
 } from 'recon/utils/recon-event-header';
 import { headerErrorMessage } from 'recon/reducers/header/selectors';
+import { metaFormatMap } from 'rsa-context-menu/utils/meta-format-selector';
 import layout from './template';
 
 const stateToComputed = ({ recon }) => ({
@@ -15,7 +16,8 @@ const stateToComputed = ({ recon }) => ({
   headerItems: recon.header.headerItems,
   headerError: recon.header.headerError,
   queryInputs: recon.data.queryInputs,
-  language: recon.dictionaries.language
+  language: recon.dictionaries.language,
+  metaFormatMap: metaFormatMap(recon.dictionaries.language)
 });
 
 const EventHeaderComponent = Component.extend({

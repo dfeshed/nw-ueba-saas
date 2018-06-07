@@ -41,5 +41,6 @@ export const mergeObjectArray = (srcArray, mergeArray) => {
  * @public
  */
 export const componentCSSList = {
-  EventAnalysisPanel: ['nw-event-value', 'nw-event-value-drillable-equals', 'nw-event-value-drillable-not-equals']
+  EventAnalysisPanel: ['nw-event-value', 'nw-event-value-drillable-equals', 'nw-event-value-drillable-not-equals'],
+  Text: ['nw-event-value-drillable-contains']
 };
