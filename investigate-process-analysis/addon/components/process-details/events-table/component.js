@@ -14,6 +14,6 @@ const stateToComputed = (state) => ({
 const EventsTableComponent = Component.extend({
   layout,
   tagName: 'hbox',
-  classNames: ['process-events-table']
+  classNames: ['process-events-details']
 });
 export default connect(stateToComputed)(EventsTableComponent);

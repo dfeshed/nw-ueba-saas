@@ -13,7 +13,7 @@ const dispatchToActions = {
 
 const eventsFilterPanel = Component.extend({
 
-  classNames: ['eventsFilterPanel', 'rsa-nav-tab', 'is-left-aligned-primary']
+  classNames: ['eventsFilterPanel']
 
 });
 

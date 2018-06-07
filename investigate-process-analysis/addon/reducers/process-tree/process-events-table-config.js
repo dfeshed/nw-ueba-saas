@@ -14,36 +14,36 @@ export default [
     title: 'category'
   },
   {
-    field: 'filename.src',
-    title: 'Source file name'
-  },
-  {
-    field: 'filename.dst',
-    title: 'Target file name'
-  },
-  {
     field: 'action',
     title: 'Action'
+  },
+  {
+    field: 'filename.src',
+    title: 'Source file name'
   },
   {
     field: 'param.src',
     title: 'Source Parameter'
   },
   {
-    field: 'param.dst',
-    title: 'Target Parameter'
-  },
-  {
     field: 'directory.src',
     title: 'source directory'
   },
   {
-    field: 'directory.dst',
-    title: 'target directory'
-  },
-  {
     field: 'ip.src',
     title: 'Source IP'
+  },
+  {
+    field: 'filename.dst',
+    title: 'Target file name'
+  },
+  {
+    field: 'param.dst',
+    title: 'Target Parameter'
+  },
+  {
+    field: 'directory.dst',
+    title: 'target directory'
   },
   {
     field: 'ip.dst',
