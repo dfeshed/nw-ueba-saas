@@ -1,6 +1,7 @@
 package presidio.monitoring.elastic.services;
 
 
+import fortscale.utils.time.TimeRange;
 import presidio.monitoring.records.MetricDocument;
 
 import java.time.Instant;
@@ -14,7 +15,7 @@ public interface PresidioMetricPersistencyService {
 
     Iterable<MetricDocument> save(List<MetricDocument> metricDocument);
 
-    List<MetricDocument> getMetricsByNamesAndTime(Collection<String> names, Instant from, Instant to);
+    List<MetricDocument> getMetricsByNamesAndTime(Collection<String> names, TimeRange timeRange);
 
     List<MetricDocument> getMetricsByNames(Collection<String> names);
 }

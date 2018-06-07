@@ -1,6 +1,7 @@
 package presidio.webapp.controllers.licensing;
 
 import fortscale.utils.logging.Logger;
+import fortscale.utils.time.TimeRange;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import presidio.webapp.model.MetricsWrapper;
 import presidio.webapp.service.RestMetricsService;
 
 
+import javax.validation.ValidationException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -33,16 +35,20 @@ public class DailyMetricsController implements DailyMetricsApi {
 
     @Override
     public ResponseEntity<MetricsWrapper> getMetrics(MetricQuery metricQuery) {
-        Instant startTime = Instant.now().truncatedTo(ChronoUnit.DAYS);
-        Instant endTime = startTime.plus(1, ChronoUnit.DAYS);
+        Instant startOfDay = Instant.now().truncatedTo(ChronoUnit.DAYS).minus(1,ChronoUnit.DAYS);
+        TimeRange timeRange = new TimeRange(startOfDay,startOfDay.plus(1, ChronoUnit.DAYS) );
 
 
         logger.debug(String.format("fetching daily metrics information for metrics: %s", metricQuery.getMetricNames().toString()));
 
-        //Temp implementation!
-//        Metric metric = new Metric("numOfActiveUsersInLastDay", 1, "java.lang.Number", Instant.now(), Instant.now());
 
-        List<Metric> metrics = restMetricsService.getMetricsByNamesAndTime(metricQuery.getMetricNames(),startTime,endTime);
+        List<Metric> metrics=null;
+        try {
+            metrics = restMetricsService.getMetricsByNamesAndTime(metricQuery.getMetricNames(),timeRange);
+        } catch (ValidationException e){
+            logger.error(e.getMessage());
+        }
+
         MetricsWrapper metricWrapper = new MetricsWrapper();
         metricWrapper.setMetrics(metrics);
         metricWrapper.setTotal(metrics.size());
