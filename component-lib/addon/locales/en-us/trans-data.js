@@ -3025,13 +3025,22 @@ export default {
         }
       }
     },
+    processExecutionDetails: {
+      userAll: 'User Name',
+      eventTime: 'Event Time',
+      directoryDst: 'File Location',
+      checksum: 'Checksum',
+      paramDst: 'Launch Arguments',
+      sessionId: 'Session Id',
+      processName: 'Process Name'
+    },
     tabs: {
       properties: 'Properties',
       events: 'Events ({{count}})'
     },
     eventsTable: {
       header: 'Events'
-	  },
+    },
     filter: {
       title: 'Filters',
       filterReset: 'Reset Filter'

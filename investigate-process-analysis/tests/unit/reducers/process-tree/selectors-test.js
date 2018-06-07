@@ -127,6 +127,9 @@ module('Unit | Selectors | process-tree', function() {
     const state = Immutable.from({
       processAnalysis: {
         processTree: {
+          selectedProcess: {
+            processName: 'test'
+          },
           queryInput: {
             sid: '1',
             vid: '123'
@@ -136,7 +139,7 @@ module('Unit | Selectors | process-tree', function() {
       }
     });
     const result = selectedProcess(state);
-    assert.equal(result, 123);
+    assert.equal(result.processName, 'test');
   });
 
   test('eventsData', function(assert) {

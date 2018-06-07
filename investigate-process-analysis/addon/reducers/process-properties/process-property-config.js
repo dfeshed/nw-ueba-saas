@@ -16,32 +16,6 @@ const defaultConfig = [
         field: 'format'
       }
     ]
-  },
-  {
-    sectionName: 'Process',
-    isExpanded: true,
-    fields: [
-      {
-        field: 'process.createUtcTime',
-        format: 'DATE'
-      },
-      {
-        field: 'process.eprocess',
-        format: 'HEX'
-      },
-      {
-        field: 'process.integrityLevel'
-      },
-      {
-        field: 'process.parentPath'
-      },
-      {
-        field: 'process.threadCount'
-      },
-      {
-        field: 'process.sessionId'
-      }
-    ]
   }
 ];
 const filePropertiesConfig = {
@@ -85,26 +59,6 @@ const filePropertiesConfig = {
       },
       {
         field: 'pe.sectionNames'
-      }
-    ]
-  },
-  {
-    sectionName: 'File.Location',
-    fields: [
-      {
-        field: 'path'
-      },
-      {
-        field: 'sameDirectoryFileCounts.nonExe'
-      },
-      {
-        field: 'sameDirectoryFileCounts.exe'
-      },
-      {
-        field: 'sameDirectoryFileCounts.subFolder'
-      },
-      {
-        field: 'sameDirectoryFileCounts.exeSameCompany'
       }
     ]
   },
@@ -174,26 +128,6 @@ const filePropertiesConfig = {
     ]
   },
   {
-    sectionName: 'File.Location',
-    fields: [
-      {
-        field: 'path'
-      },
-      {
-        field: 'sameDirectoryFileCounts.nonExe'
-      },
-      {
-        field: 'sameDirectoryFileCounts.exe'
-      },
-      {
-        field: 'sameDirectoryFileCounts.subFolder'
-      },
-      {
-        field: 'sameDirectoryFileCounts.exeSameCompany'
-      }
-    ]
-  },
-  {
     sectionName: 'File.Hash',
     fields: [
       {
@@ -223,32 +157,6 @@ const filePropertiesConfig = {
       },
       {
         field: 'signature.signer'
-      }
-    ]
-  }],
-  linux: [{
-    sectionName: 'File.ELF',
-    fields: [
-      {
-        field: 'elf.classType'
-      },
-      {
-        field: 'elf.data'
-      },
-      {
-        field: 'elf.entryPoint'
-      },
-      {
-        field: 'elf.type'
-      },
-      {
-        field: 'elf.features'
-      },
-      {
-        field: 'elf.importedLibraries'
-      },
-      {
-        field: 'elf.sectionNames'
       }
     ]
   }]

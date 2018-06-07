@@ -1,24 +1,12 @@
 import Component from '@ember/component';
-import { connect } from 'ember-redux';
 import layout from './template';
 import computed from 'ember-computed-decorators';
 import { set, get } from '@ember/object';
-import {
-  hasProperties,
-  processProperties,
-  propertyConfig
- } from 'investigate-process-analysis/reducers/process-properties/selectors';
 
-const stateToComputed = (state) => ({
-  hasProperties: hasProperties(state),
-  propertyDetails: processProperties(state),
-  config: propertyConfig(state)
-});
-
-const ProcessPropertyPanel = Component.extend({
+export default Component.extend({
   layout,
 
-  tagName: 'vbox',
+  tagName: 'box',
 
   classNames: ['process-property-panel'],
 
@@ -59,32 +47,12 @@ const ProcessPropertyPanel = Component.extend({
   config: [],
 
   /**
-   * Override this method if changes required in config before processing.
-   * @param config
-   * @returns {*}
-   * @private
-   */
-  updateConfig(data, config) {
-    return config;
-  },
-
-  /**
-   * An object containing data of currently expanded/hidden property.
-   * @type {object}
-   * @public
-   */
-  currentConfig: {},
-
-  /**
    * Data to display
    * @type {object}
    * @requires data
    * @public
    */
-  @computed('propertyDetails')
-  data(propertyDetails) {
-    return propertyDetails ? propertyDetails[0] : [];
-  },
+  data: null,
 
   /**
    * Prepares the property array setting the value to the each property reading it from the data.
@@ -93,12 +61,11 @@ const ProcessPropertyPanel = Component.extend({
    * @public
    */
 
-  @computed('data', 'config', 'currentConfig')
-  properties(data, config, currentConfig) {
+  @computed('data', 'config')
+  properties(data, config) {
     if (data && config) {
       const i18n = this.get('i18n');
       const clonedConfig = [...config];
-      this.updateConfig(data, clonedConfig);
       // Loop through the list of property and set the value for each field
       const properties = clonedConfig.map((item) => {
         let { fieldPrefix } = item;
@@ -114,25 +81,11 @@ const ProcessPropertyPanel = Component.extend({
           set(fieldItem, 'displayName', i18n.t(label));
           return fieldItem;
         });
-
         set(item, 'fields', fields);
-        if (currentConfig && item.sectionName === currentConfig.name) {
-          set(item, 'isExpanded', currentConfig.isExpanded);
-        }
         return item;
       });
       return properties;
     }
     return [];
-  },
-
-  actions: {
-    toggleBody(config) {
-      this.set('currentConfig', { name: config.sectionName, isExpanded: !config.isExpanded });
-    }
   }
-
 });
-
-export default connect(stateToComputed)(ProcessPropertyPanel);
-

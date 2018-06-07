@@ -14,9 +14,9 @@ module('Unit | Selectors | process-properties', function() {
     const state = Immutable.from({
       processAnalysis: {
         processProperties: {
-          hostDetails: {
+          hostDetails: [{
             operatingSystem: 'windows'
-          }
+          }]
         }
       }
     });

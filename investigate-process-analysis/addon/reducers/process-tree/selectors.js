@@ -9,6 +9,7 @@ const _error = (state) => state.processAnalysis.processTree.error;
 const _queryInput = (state) => state.processAnalysis.processTree.queryInput;
 const _rawData = (state) => state.processAnalysis.processTree.rawData;
 const _path = (state) => state.processAnalysis.processTree.path || [];
+const _selectedProcess = (state) => state.processAnalysis.processTree.selectedProcess || {};
 const _eventsSortField = (state) => state.processAnalysis.processTree.eventsSortField;
 const _eventsData = (state) => state.processAnalysis.processTree.eventsData;
 
@@ -85,6 +86,7 @@ export const rootProcess = createSelector(
         processName: queryInput.pn,
         checksum: queryInput.checksum,
         agentId: queryInput.aid,
+        processId: queryInput.vid,
         hidden: false,
         children: []
       };
@@ -94,10 +96,8 @@ export const rootProcess = createSelector(
 );
 
 export const selectedProcess = createSelector(
-  queryInput,
-  (queryInput) => {
-    return queryInput ? queryInput.vid : '';
-  }
+  _selectedProcess,
+  (selectedProcess) => selectedProcess
 );
 
 export const selectedProcessPath = createSelector(

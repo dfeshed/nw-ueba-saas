@@ -1,5 +1,6 @@
 import reselect from 'reselect';
 import config from './process-property-config';
+import executionConfig from './proess-execution-config';
 
 const { createSelector } = reselect;
 
@@ -16,10 +17,16 @@ const _propertyConfig = (state) => {
   const OSType = state.processAnalysis.processTree.queryInput ? state.processAnalysis.processTree.queryInput.osType : null;
   return OSType ? config(OSType) : [];
 };
+
+export const processExecutionConfig = () => {
+  return executionConfig;
+};
+
+
 export const processProperties = createSelector(
   _processProperties,
   (processProperties) => {
-    return processProperties;
+    return processProperties ? processProperties[0] : [];
   }
 );
 

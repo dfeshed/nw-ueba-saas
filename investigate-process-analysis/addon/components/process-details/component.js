@@ -1,5 +1,4 @@
 import Component from '@ember/component';
-import layout from './template';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { setDetailsTab } from 'investigate-process-analysis/actions/creators/process-visuals';
@@ -19,7 +18,7 @@ const TABS = [
   {
     label: 'investigateProcessAnalysis.tabs.properties',
     name: 'Properties',
-    component: 'process-details/process-property-panel'
+    component: 'process-details/property-container'
   },
   {
     label: 'investigateProcessAnalysis.tabs.events',
@@ -29,9 +28,12 @@ const TABS = [
 ];
 
 const processDetails = Component.extend({
-  layout,
+
+  tagName: '',
+
   activeTab: 'Properties',
-  tabComponent: 'process-details/process-property-panel',
+
+  tabComponent: 'process-details/property-container',
 
   @computed('activeTab')
   tabs(activeTab) {

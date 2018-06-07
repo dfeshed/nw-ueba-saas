@@ -1,0 +1,17 @@
+{{#rsa-content-accordion
+  animate=true
+  class='file-properties execution-details'
+  label='Process Execution Details'}}
+  {{process-details/process-property-panel
+    class='execution-details'
+    hasProperties=hasProperties
+    localeNameSpace='investigateProcessAnalysis.processExecutionDetails'
+    config=executionConfig
+    data=processDetails}}
+{{/rsa-content-accordion}}
+{{#rsa-content-accordion
+  animate=true
+  class='file-properties'
+  label='File Properties'}}
+ {{process-details/process-property-panel hasProperties=hasProperties config=propertyConfig data=propertyDetails}}
+{{/rsa-content-accordion}}

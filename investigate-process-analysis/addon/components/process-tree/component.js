@@ -8,13 +8,11 @@ import { zoom } from 'd3-zoom';
 import { tree, hierarchy } from 'd3-hierarchy';
 import { transitionElbow, elbow, appendText, updateText, appendIcon } from './helpers/d3-helpers';
 import { ieEdgeDetection } from 'component-lib/utils/browser-detection';
-import { resetFilterValue } from 'investigate-process-analysis/actions/creators/process-filter';
 
 import {
   isStreaming,
   children,
   rootProcess,
-  selectedProcess,
   selectedProcessPath
 } from 'investigate-process-analysis/reducers/process-tree/selectors';
 
@@ -24,6 +22,7 @@ import {
   setSelectedProcess,
   selectedProcessEvents } from 'investigate-process-analysis/actions/creators/events-creators';
 import { fetchProcessDetails } from 'investigate-process-analysis/actions/creators/process-properties';
+import { resetFilterValue } from 'investigate-process-analysis/actions/creators/process-filter';
 
 import { truncateText } from './util/data';
 import zoomed from './helpers/zoomed';
@@ -32,8 +31,8 @@ const stateToComputed = (state) => ({
   rootProcess: rootProcess(state),
   isStreaming: isStreaming(state),
   children: children(state),
-  selectedProcess: selectedProcess(state),
-  path: selectedProcessPath(state)
+  path: selectedProcessPath(state),
+  selectedProcessId: state.processAnalysis.processTree.queryInput ? state.processAnalysis.processTree.queryInput.vid : ''
 });
 
 const dispatchToActions = {
@@ -167,8 +166,8 @@ const TreeComponent = Component.extend({
       element,
       rootNode,
       zoomBehaviour,
-      selectedProcess
-    } = this.getProperties('element', 'rootNode', 'zoomBehaviour', 'selectedProcess');
+      selectedProcessId
+    } = this.getProperties('element', 'rootNode', 'zoomBehaviour', 'selectedProcessId');
     const el = select(element);
     this.centeringElement = el.select('.centering-element');
 
@@ -177,7 +176,7 @@ const TreeComponent = Component.extend({
 
     this.parent = parent;
     this.buildChart(rootNode);
-    this.addSelectedClass(selectedProcess);
+    this.addSelectedClass(selectedProcessId);
   },
 
   /**
@@ -346,14 +345,14 @@ const TreeComponent = Component.extend({
    * @returns {Array}
    * @private
    */
-  _prepareTreeData(eventsData, selectedProcess, path) {
+  _prepareTreeData(eventsData, selectedProcessId, path) {
     const hashTable = {};
     eventsData.forEach((aData) => hashTable[aData.processId] = { ...aData, children: [], _children: [] });
     const dataTree = [];
     eventsData.forEach((aData) => {
-      hashTable[aData.processId].expanded = selectedProcess === aData.processId;
+      hashTable[aData.processId].expanded = selectedProcessId === aData.processId;
       if (aData.parentId) {
-        if (path.includes(aData.processId) || selectedProcess === aData.parentId) {
+        if (path.includes(aData.processId) || selectedProcessId === aData.parentId) {
           hashTable[aData.parentId].children.push(hashTable[aData.processId]);
         } else {
           hashTable[aData.parentId]._children.push(hashTable[aData.processId]);
@@ -387,11 +386,13 @@ const TreeComponent = Component.extend({
       const { checksum, pn } = this.get('queryInput');
       const onComplete = () => {
 
-        const { children, selectedProcess, path } = this.getProperties('children', 'selectedProcess', 'path');
+        const { children, selectedProcessId, path } = this.getProperties('children', 'selectedProcessId', 'path');
 
-        this.send('setSelectedProcess', selectedProcess);
+        const selectedProcess = children.filter((child) => child.processId === selectedProcessId);
 
-        const rootNode = this._prepareTreeData(children, selectedProcess, path); // Only initial load
+        this.send('setSelectedProcess', selectedProcess[0]);
+
+        const rootNode = this._prepareTreeData(children, selectedProcessId, path); // Only initial load
 
         const root = hierarchy(rootNode[0], (d) => {
           return d.children || [];
@@ -407,9 +408,9 @@ const TreeComponent = Component.extend({
 
         document.title = this._documentTitle(pn);
         this._initializeChart();
-        this.send('selectedProcessEvents', this.get('selectedProcess'), {});
+        this.send('selectedProcessEvents', this.get('selectedProcessId'), {});
       };
-      this.send('getParentAndChildEvents', this.get('selectedProcess'), { onComplete });
+      this.send('getParentAndChildEvents', this.get('selectedProcessId'), { onComplete });
 
       const hashes = [checksum];
       this.send('fetchProcessDetails', { hashes });
@@ -499,7 +500,7 @@ const TreeComponent = Component.extend({
     const hashes = [checksum];
     this.send('fetchProcessDetails', { hashes });
     this.send('selectedProcessEvents', d.data.processId, {});
-    this.send('setSelectedProcess', d.data.processId);
+    this.send('setSelectedProcess', d.data);
     this.addSelectedClass(d.data.processId);
     this.send('resetFilterValue', d.data.processId);
     document.title = this._documentTitle(d.data.processName);

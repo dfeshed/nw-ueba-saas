@@ -10,6 +10,7 @@
       white-space: nowrap;
     }
   }
+
 }
 .rsa-loader {
   height: 0.9rem;
@@ -30,4 +31,27 @@
   &.expand {
     width: 74%
   }
+}
+
+.ember-tether .panel-content {
+  max-height: 30rem;
+  overflow: unset;
+}
+
+.property-container {
+  .rsa-content-accordion h3 {
+    color: text-color(secondary, light);
+  }
+  .process-property-panel {
+    height: calc(64vh);
+    overflow-y: auto;
+    margin: 0 0 0 22px;
+  }
+}
+
+.execution-details.process-property-panel {
+  height: 210px;
+}
+.execution-details {
+  padding-top: 10px;
 }
