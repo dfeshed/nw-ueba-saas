@@ -2,6 +2,8 @@
 
 An rpm wrap to [apache-airflow](https://airflow.apache.org/) python package
 
+### Environment variable
+see [service env file](/package/rsa-nw-presidio-airflow/scripts/systemd/airflow)
 
 
 ### Installation

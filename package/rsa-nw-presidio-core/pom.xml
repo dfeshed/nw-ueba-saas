@@ -5,7 +5,7 @@
     <parent>
         <artifactId>package</artifactId>
         <groupId>com.rsa.netwitness.presidio</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>2.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -176,6 +176,17 @@
                                         <include>*.jar</include>
                                     </includes>
                                     <location>${project.build.directory}/dependencies</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directoryIncluded>true</directoryIncluded>
+                            <directory>${presidio-app.directory}/asl</directory>
+                            <username>${presidio.username}</username>
+                            <groupname>${presidio.groupname}</groupname>
+                            <sources>
+                                <source>
+                                    <location>../../fortscale/presidio-ade/src/main/resources/config/asl</location>
                                 </source>
                             </sources>
                         </mapping>

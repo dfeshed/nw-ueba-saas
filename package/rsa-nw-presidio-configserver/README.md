@@ -8,6 +8,10 @@ Presidio utilizes [Spring cloud config](http://cloud.spring.io/spring-cloud-stat
 
 ```sh
 yum -y install rsa-nw-presidio-configserver
+
+/var/lib/netwitness/presidio/install/configserver/mongo_creds.sh --db presidio-ui --pass P@ssw0rd
+/var/lib/netwitness/presidio/install/configserver/mongo_creds.sh --db presidio --pass P@ssw0rd
+
 systemctl daemon-reload
 systemctl enable presidio-configserver
 systemctl start presidio-configserver

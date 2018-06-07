@@ -1,7 +1,7 @@
 package presidio.output.forwarder.shell;
 
 import fortscale.utils.logging.Logger;
-import presidio.output.forwarder.services.PresidioOutputForwardService;
+import presidio.output.forwarder.services.OutputForwardService;
 
 import java.time.Instant;
 
@@ -9,9 +9,9 @@ public class OutputForwarderExecutionService {
     private static final Logger logger = Logger.getLogger(OutputForwarderExecutionService.class);
 
 
-    private PresidioOutputForwardService presidioOutputForwardService;
+    private OutputForwardService presidioOutputForwardService;
 
-    public OutputForwarderExecutionService(PresidioOutputForwardService presidioOutputForwardService) {
+    public OutputForwarderExecutionService(OutputForwardService presidioOutputForwardService) {
         this.presidioOutputForwardService = presidioOutputForwardService;
     }
 
