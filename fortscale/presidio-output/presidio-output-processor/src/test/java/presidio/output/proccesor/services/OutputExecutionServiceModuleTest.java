@@ -9,12 +9,10 @@ import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.data.Pair;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -28,6 +26,10 @@ import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.domain.record.enriched.file.EnrichedFileRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataAdeToCollectionNameTranslator;
 import presidio.ade.domain.store.smart.SmartDataToCollectionNameTranslator;
+import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
+import presidio.monitoring.records.MetricDocument;
+import presidio.monitoring.sdk.api.services.enums.MetricEnums;
+import presidio.monitoring.services.export.MetricsExporter;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.alerts.IndicatorEvent;
@@ -41,6 +43,7 @@ import presidio.output.domain.translator.OutputToCollectionNameTranslator;
 import presidio.output.proccesor.spring.OutputProcessorTestConfiguration;
 import presidio.output.proccesor.spring.TestConfig;
 import presidio.output.processor.services.OutputExecutionServiceImpl;
+import presidio.output.processor.services.OutputMonitoringService;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -68,6 +71,14 @@ public class OutputExecutionServiceModuleTest {
 
     @Autowired
     private PresidioElasticsearchTemplate esTemplate;
+
+    @Autowired
+    private PresidioMetricPersistencyService metricPersistencyService;
+
+    @Autowired
+    private MetricsExporter metricsExporter;
+
+    private static String OUTPUT_DAILY_METRIC_NAME_PREFIX = "output-core.";
 
     @Before
     public void setup() {
@@ -177,8 +188,27 @@ public class OutputExecutionServiceModuleTest {
         }
     }
 
+    @Ignore
     @Test
-    public void dailyOutputJob_updateAllUsersData() {
+    public void dailyOutputJob_testDailyMetricReporting() {
+//        //preparation- storing hourly metrics into elastic
+//        MetricDocument scoringMetric1 = new MetricDocument();
+//        scoringMetric1.setName("smart.scoring");
+//        HashMap<MetricEnums.MetricValues, Number> value = new HashMap<>();
+//        value.put(MetricEnums.MetricValues.AMOUNT_OF_SCORED, 1);
+//        scoringMetric1.setValue(value);
+//        scoringMetric1.setTimestamp(new Date());
+//
+//        MetricDocument scoringMetric2 = new MetricDocument();
+//        scoringMetric2.setName("smart.scoring");
+//        value.put(MetricEnums.MetricValues.AMOUNT_OF_SCORED, 1);
+//        scoringMetric2.setValue(value);
+//        scoringMetric2.setTimestamp(new Date());
+//
+//        //Store metrics into elastic
+//        List<MetricDocument> scoringMetricDocuments = Arrays.asList(scoringMetric1, scoringMetric2);
+//        metricPersistencyService.save(scoringMetricDocuments);
+
         try {
             outputExecutionService.updateAllUsersData();
 
@@ -186,6 +216,16 @@ public class OutputExecutionServiceModuleTest {
             e.printStackTrace();
             Assert.fail();
         }
+
+        metricsExporter.manualExportMetrics(MetricsExporter.MetricBucketEnum.APPLICATION);
+
+        List<MetricDocument> metricsByNames = metricPersistencyService.getMetricsByNames(Arrays.asList(OUTPUT_DAILY_METRIC_NAME_PREFIX + OutputMonitoringService.NUM_ACTIVE_USERS_LAST_DAY_METRIC_NAME));
+        Assert.assertEquals(1, metricsByNames);
+        Assert.assertEquals(8, metricsByNames.get(0).getValue()); //8 users according to the smarts generated at the beginning of this test
+
+//        metricsByNames = metricPersistencyService.getMetricsByNames(Arrays.asList(OUTPUT_DAILY_METRIC_NAME_PREFIX + OutputMonitoringService.SMARTS_COUNT_LAST_DAY_METRIC_NAME));
+//        Assert.assertEquals(1, metricsByNames);
+//        Assert.assertEquals(2, metricsByNames.get(0).getValue()); //according to hourly metrics generated at the beginning of this test
     }
 
     @Test
