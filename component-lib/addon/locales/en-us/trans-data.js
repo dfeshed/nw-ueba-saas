@@ -3016,7 +3016,7 @@ export default {
     },
     eventsTable: {
       header: 'Events'
-	},
+	  },
     filter: {
       title: 'Filters',
       filterReset: 'Reset Filter'

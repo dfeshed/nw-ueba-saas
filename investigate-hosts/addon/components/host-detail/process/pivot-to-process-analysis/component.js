@@ -6,13 +6,16 @@ import { next } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import { buildTimeRange } from 'investigate-shared/utils/time-util';
 import { isJazzAgent } from 'investigate-hosts/reducers/details/process/selectors';
+import { isEcatAgent } from 'investigate-hosts/reducers/details/overview/selectors';
+
 
 const dispatchToActions = {
   getAllServices
 };
 
 const stateToComputed = (state) => ({
-  isJazzAgent: isJazzAgent(state)
+  isJazzAgent: isJazzAgent(state),
+  isEcatAgent: isEcatAgent(state)
 });
 
 const PivotToPA = Component.extend({
@@ -50,9 +53,9 @@ const PivotToPA = Component.extend({
     ];
   },
 
-  @computed('osType', 'isJazzAgent')
-  disabledContextMenu(osType, isJazzAgent) {
-    return osType === 'linux' || isJazzAgent;
+  @computed('osType', 'isJazzAgent', 'isEcatAgent')
+  disabledContextMenu(osType, isJazzAgent, isEcatAgent) {
+    return osType === 'linux' || isJazzAgent || isEcatAgent;
   },
 
   _closeModal() {

@@ -153,6 +153,6 @@ export const isJazzAgent = createSelector(
   (hostDetails) => {
     if (hostDetails && hostDetails.machine) {
       const { machine: { agentVersion } } = hostDetails;
-      return agentVersion && agentVersion.includes('11.1');
+      return agentVersion && agentVersion.startsWith('11.1');
     }
   });

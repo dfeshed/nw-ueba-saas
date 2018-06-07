@@ -166,7 +166,8 @@ export const isEcatAgent = createSelector(
   _hostDetails,
   (hostDetails) => {
     if (hostDetails && hostDetails.machine) {
-      return hostDetails.machine.agentVersion.startsWith('4.4');
+      const { machine: { agentVersion } } = hostDetails;
+      return agentVersion && agentVersion.startsWith('4.4');
     }
     return false;
   }
