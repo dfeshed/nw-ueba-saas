@@ -10,7 +10,7 @@ import Immutable from 'seamless-immutable';
 
 let setState;
 
-module('Integration | Component | process-analysis-container', function(hooks) {
+module('Integration | Component | events-filter-panel', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-process-analysis')
   });
