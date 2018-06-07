@@ -38,7 +38,7 @@ export const fetchTextData = (
     onResponse: batchDataHandler({
       dataHandler: HANDLERS.socketResponse((response) => {
         if (response.data && response.data.length > 0) {
-          const packetProgress = response.meta['packet-progress'];
+          const packetProgress = response.meta['packet-progress'] || 0;
           // call cursor.next repeatedly until MT sends complete = true
           // Note that we keep getting a marker with the meta, until complete = true
           // limit of 2500 packets will be removed once pagination is in place

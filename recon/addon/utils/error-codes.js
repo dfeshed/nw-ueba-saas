@@ -28,6 +28,12 @@ const _ERROR_CODES = [
     description: 'SessionId too long',
     isFatal: true,
     isContent: false
+  },
+  {
+    code: 1000,
+    description: 'Session unavailable',
+    isFatal: true,
+    isContent: false
   }
 ];
 

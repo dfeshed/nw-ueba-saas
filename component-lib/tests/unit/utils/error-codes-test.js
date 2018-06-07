@@ -7,7 +7,7 @@ module('Unit | Helper | Error Codes');
 test('investigateEventsErrorCodeDictionary has correct entries', function(assert) {
   const codes = investigateEventsErrorCodeDictionary;
 
-  assert.equal(Object.keys(codes).length, 36);
+  assert.equal(Object.keys(codes).length, 37);
 
   assert.equal(codes[11].type, 'INVALID_SYNTAX');
   assert.equal(codes[11].messageLocaleKey, null);
@@ -32,6 +32,10 @@ test('investigateEventsErrorCodeDictionary has correct entries', function(assert
   assert.equal(codes[130].type, 'PACKETS_NOT_FOUND');
   assert.equal(codes[130].messageLocaleKey, 'errorDictionaryMessages.investigateEvents.PACKETS_NOT_FOUND');
   assert.equal(codes[130].sendServerMessage, false);
+
+  assert.equal(codes[1000].type, 'SESSION_REMOVED');
+  assert.equal(codes[1000].messageLocaleKey, 'errorDictionaryMessages.investigateEvents.SESSION_REMOVED');
+  assert.equal(codes[1000].sendServerMessage, false);
 
   assert.equal(codes[1002].type, 'DEVICE_OFFLINE');
   assert.equal(codes[1002].messageLocaleKey, 'errorDictionaryMessages.investigateEvents.DEVICE_OFFLINE');
@@ -156,7 +160,7 @@ test('investigateEventsErrorCodeDictionary has correct entries', function(assert
 
 test('handleInvestigateErrorCode returns the correct error object', function(assert) {
   [
-    11, 119, 13, 110, 129, 130, 1002, 12, 109, 111, 112, 113, 114, 115,
+    11, 119, 13, 110, 129, 130, 1000, 1002, 12, 109, 111, 112, 113, 114, 115,
     116, 117, 118, 122, 123, 124, 125, 126, 127, 128, 131, 132,
     133, 135, 136, 137, 138, 139, 200, 201, 202, 203
   ].forEach((errorCode) => {
