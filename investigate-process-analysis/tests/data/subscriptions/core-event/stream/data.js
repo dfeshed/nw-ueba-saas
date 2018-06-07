@@ -25,11 +25,11 @@ export default function() {
           '0769b94396554b157ff08179c76061ac'
         ],
         [
-          'vid.src',
+          'process.vid.src',
           '0'
         ],
         [
-          'vid.dst',
+          'process.vid.dst',
           '2'
         ],
         [
@@ -71,11 +71,11 @@ export default function() {
           '0769b94396554b157ff08179c76061ac'
         ],
         [
-          'vid.src',
+          'process.vid.src',
           '2'
         ],
         [
-          'vid.dst',
+          'process.vid.dst',
           '3'
         ],
         [
@@ -117,11 +117,11 @@ export default function() {
           '0769b94396554b157ff08179c76061ac'
         ],
         [
-          'vid.src',
+          'process.vid.src',
           '3'
         ],
         [
-          'vid.dst',
+          'process.vid.dst',
           '4'
         ],
         [

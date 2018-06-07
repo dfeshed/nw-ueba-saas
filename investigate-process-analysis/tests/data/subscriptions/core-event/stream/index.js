@@ -12,16 +12,16 @@ export default {
     const eventList = data();
     const query = (filter || []).find((ele) => ele.field === 'query');
     const queryValue = query && query.value;
-    const childAndParent = queryValue.indexOf('vid.src') && queryValue.valueOf('vid.dst');
+    const childAndParent = queryValue.indexOf('process.vid.src') && queryValue.valueOf('process.vid.dst');
 
-    const match = queryValue ? String(queryValue).match(/vid.src = ([0-9]+)?/i) : null;
+    const match = queryValue ? String(queryValue).match(/process.vid.src = ([0-9]+)?/i) : null;
     const vid = match && match[1];
     const results = !vid ? eventList : eventList.filter(function(evt) {
       const data = hasherizeEventMeta(evt);
       if (childAndParent) {
-        return data['vid.dst'] === vid || data['vid.src'] === vid;
+        return data['process.vid.dst'] === vid || data['process.vid.src'] === vid;
       } else {
-        return data['vid.dst'] === vid;
+        return data['process.vid.dst'] === vid;
       }
     });
 

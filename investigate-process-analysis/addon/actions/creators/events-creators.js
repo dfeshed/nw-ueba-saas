@@ -105,24 +105,24 @@ export const getParentAndChildEvents = (pid, callbacks = callbacksDefault) => {
       } else {
         payload.forEach(hasherizeEventMeta);
         data = data.concat(payload);
-        const parent = payload.filter((item) => item['vid.dst'] === pid);
+        const parent = payload.filter((item) => item.processVidDst === pid);
         if (parent && parent.length) {
-          dispatch({ type: ACTION_TYPES.SET_NODE_PATH, payload: parent[0]['vid.dst'] });
-          dispatch(getParentAndChildEvents(parent[0]['vid.src'], callbacks));
+          dispatch({ type: ACTION_TYPES.SET_NODE_PATH, payload: parent[0].processVidDst });
+          dispatch(getParentAndChildEvents(parent[0].processVidSrc, callbacks));
         } else {
           if (payload && payload.length) {
             // If there is no parent make current event as parent node taking the first node if duplicate
             const [node] = payload;
             const root = { ...node,
-              processName: node['filename.src'],
-              processId: node['vid.src'],
+              processName: node.filenameSrc,
+              processId: node.processVidSrc,
               parentId: 0
             };
             const newData = data.map((item) => {
               return _getNode(item);
             });
             newData.push(root);
-            dispatch({ type: ACTION_TYPES.SET_NODE_PATH, payload: node['vid.src'] });
+            dispatch({ type: ACTION_TYPES.SET_NODE_PATH, payload: node.processVidSrc });
             dispatch({ type: ACTION_TYPES.SET_EVENTS, payload: newData.uniqBy('processId') });
           } else {
             dispatch({ type: ACTION_TYPES.SET_EVENTS, payload: [] });
@@ -166,9 +166,9 @@ export const setSortField = (field) => ({ type: ACTION_TYPES.SET_SORT_FIELD, pay
 
 const _getNode = (item) => {
   return { ...item,
-    processName: item['filename.dst'],
-    processId: item['vid.dst'],
-    parentId: item['vid.src']
+    processName: item.filenameDst,
+    processId: item.processVidDst,
+    parentId: item.processVidSrc
   };
 };
 

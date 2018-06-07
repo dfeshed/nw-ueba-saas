@@ -1,3 +1,4 @@
+import { camelize } from '@ember/string';
 export const getQueryNode = function(input, selectedVid, isFetchParent, isList, filters) {
   const { et, st, sid, aid: agentId, vid } = input;
 
@@ -48,7 +49,7 @@ const _getMetaFilter = (isList, agentId, pid, isFetchParent, filters) => {
       value: '\'nwendpoint\''
     },
     {
-      value: isFetchParent ? `(vid.src = \'${pid}\' || vid.dst = \'${pid}\')` : `(vid.src = \'${pid}\')`
+      value: isFetchParent ? `(process.vid.src = \'${pid}\' || process.vid.dst = \'${pid}\')` : `(process.vid.src = \'${pid}\')`
     },
     {
       value: '(category=\'Process Event\' || category = \'Registry Event\' || category = \'File Event\' || category = \'Network Event\')'
@@ -92,7 +93,7 @@ export const hasherizeEventMeta = (event) => {
           event.checksum = meta[1];
         }
       }
-      event[meta[0]] = meta[1];
+      event[camelize(meta[0])] = meta[1];
     }
     event.childCount = 0;
     event.metas = null;

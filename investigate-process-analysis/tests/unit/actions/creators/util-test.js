@@ -20,7 +20,7 @@ module('Unit | Selectors | process-tree', function() {
     assert.equal(queryNode.metaFilter.conditions.length, 5, 'should contains 5 conditions');
 
     queryNode = getQueryNode(input, '1');
-    assert.equal(queryNode.metaFilter.conditions[3].value, '(vid.src = \'1\')', 'should use passed process name');
+    assert.equal(queryNode.metaFilter.conditions[3].value, '(process.vid.src = \'1\')', 'should use passed process name');
   });
 
   test('hasherizeEventMeta returns object of the events', function(assert) {
