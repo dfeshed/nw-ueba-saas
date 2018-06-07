@@ -35,7 +35,7 @@ public class DailyMetricsController implements DailyMetricsApi {
 
     @Override
     public ResponseEntity<MetricsWrapper> getMetrics(MetricQuery metricQuery) {
-        Instant startOfDay = Instant.now().truncatedTo(ChronoUnit.DAYS);
+        Instant startOfDay = Instant.now().truncatedTo(ChronoUnit.DAYS).minus(1,ChronoUnit.DAYS);
         TimeRange timeRange = new TimeRange(startOfDay,startOfDay.plus(1, ChronoUnit.DAYS) );
 
 
