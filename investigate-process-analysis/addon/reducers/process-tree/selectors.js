@@ -1,5 +1,6 @@
 import reselect from 'reselect';
 import config from './process-events-table-config';
+import _ from 'lodash';
 
 const { createSelector } = reselect;
 
@@ -8,9 +9,35 @@ const _error = (state) => state.processAnalysis.processTree.error;
 const _queryInput = (state) => state.processAnalysis.processTree.queryInput;
 const _rawData = (state) => state.processAnalysis.processTree.rawData;
 const _path = (state) => state.processAnalysis.processTree.path || [];
+const _eventsSortField = (state) => state.processAnalysis.processTree.eventsSortField;
+const _eventsData = (state) => state.processAnalysis.processTree.eventsData;
 
-export const eventsData = (state) => state.processAnalysis.processTree.eventsData;
 export const eventsTableConfig = () => config;
+
+export const eventsSortField = createSelector(
+  [_eventsSortField],
+  (eventsSortField) => {
+    return eventsSortField;
+  }
+);
+export const eventsData = createSelector(
+  [_eventsData, _eventsSortField],
+  (eventsData, eventsSortField) => {
+    let data = eventsData;
+    if (eventsSortField && eventsSortField.type == 'DESC') {
+      data = _.sortBy(eventsData, eventsSortField.field).reverse();
+    } else if (eventsSortField && eventsSortField.type == 'ASC') {
+      data = _.sortBy(eventsData, eventsSortField.field);
+    }
+    return data;
+  }
+);
+export const eventsCount = createSelector(
+  [eventsData],
+  (eventsData) => {
+    return eventsData ? eventsData.length : 0;
+  }
+);
 
 export const queryInput = createSelector(
   [_queryInput],

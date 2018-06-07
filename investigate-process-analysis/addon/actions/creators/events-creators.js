@@ -162,6 +162,7 @@ export const getChildEvents = (pid, callbacks = callbacksDefault) => {
 };
 
 export const setSelectedProcess = (process) => ({ type: ACTION_TYPES.SET_SELECTED_PROCESS, payload: process });
+export const setSortField = (field) => ({ type: ACTION_TYPES.SET_SORT_FIELD, payload: field });
 
 const _getNode = (item) => {
   return { ...item,

@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll } from '@ember/test-helpers';
+import { render, findAll, find, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -28,77 +28,11 @@ module('Integration | Component | process-details/events-table/table', function(
       {
         sessionId: 45328,
         time: 1525950159000,
-        metas: null,
-        sessionid: 45328,
-        size: 41,
-        'forward.ip': '10.40.12.6',
-        'ip.all': '10.40.12.59',
-        medium: 32,
-        'device.type': 'nwendpoint',
-        features: 'windows',
-        checksum: '08c450382abdc53a93590df05b884e12',
-        directory: 'C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\',
-        filename: 'mscoreei.dll',
-        'filename.all': 'Launcher.exe',
-        extension: 'dll',
-        'file.attributes': 'archive',
-        'directory.src': 'C:\\Users\\ecat\\Desktop\\lab\\',
-        'filename.src': 'Launcher.exe',
-        category: 'Dll',
-        'nwe.callback_id': 'nwe-call-back-id-here',
-        OS: 'Microsoft Windows 10 Enterprise',
-        'alias.ip': '10.40.12.59',
-        netname: 'private misc',
-        agentId: 'FC48BDDF-9BA7-C3D2-D072-62025DCC968E',
-        'agent.id': 'FC48BDDF-9BA7-C3D2-D072-62025DCC968E',
-        'alias.host': 'DESKTOP-OC7FKKS',
-        'host.all': 'DESKTOP-OC7FKKS',
-        'event.time': 1525974660000,
-        'msg.id': 'nwendpoint',
-        'device.disc': 30,
-        'device.disc.type': 'nwendpoint',
-        kig_thread: '0',
-        did: 'nodex',
-        rid: 45328,
-        childCount: 0,
         id: 'event_3'
       },
       {
         sessionId: 45337,
         time: 1525950159000,
-        metas: null,
-        sessionid: 45337,
-        size: 41,
-        'forward.ip': '10.40.12.6',
-        'ip.all': '10.40.12.59',
-        medium: 32,
-        'device.type': 'nwendpoint',
-        features: 'installer',
-        checksum: '08c450382abdc53a93590df05b884e12',
-        directory: 'C:\\Program Files\\ESET\\ESET Endpoint Antivirus\\',
-        filename: 'eplgHooks.dll',
-        'filename.all': 'Launcher.exe',
-        extension: 'dll',
-        'file.attributes': 'archive',
-        'directory.src': 'C:\\Users\\ecat\\Desktop\\lab\\',
-        'filename.src': 'Launcher.exe',
-        category: 'Dll',
-        'nwe.callback_id': 'nwe-call-back-id-here',
-        OS: 'Microsoft Windows 10 Enterprise',
-        'alias.ip': '10.40.12.59',
-        netname: 'private misc',
-        agentId: 'FC48BDDF-9BA7-C3D2-D072-62025DCC968E',
-        'agent.id': 'FC48BDDF-9BA7-C3D2-D072-62025DCC968E',
-        'alias.host': 'DESKTOP-OC7FKKS',
-        'host.all': 'DESKTOP-OC7FKKS',
-        'event.time': 1525974660000,
-        'msg.id': 'nwendpoint',
-        'device.disc': 30,
-        'device.disc.type': 'nwendpoint',
-        kig_thread: '0',
-        did: 'nodex',
-        rid: 45337,
-        childCount: 0,
         id: 'event_4'
       }];
 
@@ -111,7 +45,17 @@ module('Integration | Component | process-details/events-table/table', function(
     timeFormat.set('_selected', { format: 'hh:mm:ss' });
     dateFormat.set('_selected', { format: 'YYYY-MM-DD' });
 
+    assert.expect(5);
+
     await render(hbs`{{process-details/events-table/table}}`);
     assert.equal(findAll('.rsa-data-table-body-row').length, 2, 'Expected to render 2 rows');
+    assert.equal(find('.label').textContent, 'Events (2)', 'Expected 2 Events count');
+    await click('.ember-power-select-trigger');
+    assert.equal(findAll('.ember-power-select-option').length, 2, 'Expected to options');
+    await click('.ember-power-select-option');
+    assert.equal(find('.ember-power-select-selected-item').textContent.trim(), 'Event Time-ASC', 'Selected option should be Event Time-ASC');
+    await click('.ember-power-select-trigger');
+    await click(findAll('.ember-power-select-option')[1]);
+    assert.equal(find('.ember-power-select-selected-item').textContent.trim(), 'Event Time-DESC', 'Selected option should be Event Time-ASC');
   });
 });

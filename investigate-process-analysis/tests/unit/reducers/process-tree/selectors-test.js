@@ -10,7 +10,9 @@ import {
   children,
   selectedProcess,
   eventsData,
-  eventsTableConfig
+  eventsTableConfig,
+  eventsSortField,
+  eventsCount
 } from 'investigate-process-analysis/reducers/process-tree/selectors';
 
 module('Unit | Selectors | process-tree', function() {
@@ -150,7 +152,30 @@ module('Unit | Selectors | process-tree', function() {
   });
   test('eventsTableConfig', function(assert) {
     const result = eventsTableConfig();
-    assert.equal(result.length, 10);
+    assert.equal(result.length, 12);
+  });
+  test('eventsSortField', function(assert) {
+    const state = Immutable.from({
+      processAnalysis: {
+        processTree: {
+          eventsSortField: { field: 'event.time' }
+        }
+      }
+    });
+    const result = eventsSortField(state);
+    assert.equal(result.field, 'event.time');
+  });
+
+  test('eventCount', function(assert) {
+    const state = Immutable.from({
+      processAnalysis: {
+        processTree: {
+          eventsData: new Array(10)
+        }
+      }
+    });
+    const result = eventsCount(state);
+    assert.equal(result, 10);
   });
 });
 

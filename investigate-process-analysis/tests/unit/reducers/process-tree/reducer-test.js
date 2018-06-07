@@ -9,7 +9,8 @@ const initialState = Immutable.from({
   rawData: null,
   error: null,
   selectedProcess: null,
-  path: [ '0' ]
+  path: [ '0' ],
+  eventsSortField: null
 });
 
 module('Unit | Reducers | process-tree', function() {
@@ -115,5 +116,14 @@ module('Unit | Reducers | process-tree', function() {
       }];
     const result = reducer(previous, { type: ACTION_TYPES.SET_SELECTED_EVENTS, payload: eventsData });
     assert.equal(result.eventsData.length, 2);
+  });
+
+  test('SET_SORT_FIELD will sets eventsData', function(assert) {
+    const previous = Immutable.from({
+      eventsData: []
+    });
+    const sortField = { label: 'Event Time', field: 'event.time', type: 'DESC' };
+    const result = reducer(previous, { type: ACTION_TYPES.SET_SORT_FIELD, payload: sortField });
+    assert.equal(result.eventsSortField.label, 'Event Time');
   });
 });

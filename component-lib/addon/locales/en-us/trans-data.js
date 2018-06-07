@@ -3010,6 +3010,13 @@ export default {
         }
       }
     },
+    tabs: {
+      properties: 'Properties',
+      events: 'Events ({{count}})'
+    },
+    eventsTable: {
+      header: 'Events'
+	},
     filter: {
       title: 'Filters',
       filterReset: 'Reset Filter'

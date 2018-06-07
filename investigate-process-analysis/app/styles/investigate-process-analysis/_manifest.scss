@@ -31,4 +31,11 @@
     }
   }
 }
+.rsa-data-table-body {
+  .rsa-data-table-body-rows {
+    min-height: 83vh!important;
+  }
+  min-height: 85vh!important;
+  overflow-y: scroll;
+}
 

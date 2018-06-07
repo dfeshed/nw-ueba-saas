@@ -1,6 +1,11 @@
 export default [
   {
     field: 'time',
+    title: 'Collection Time',
+    type: 'date'
+  },
+  {
+    field: 'event.time',
     title: 'Event Time',
     type: 'date'
   },
@@ -30,7 +35,11 @@ export default [
   },
   {
     field: 'directory.src',
-    title: 'directory'
+    title: 'source directory'
+  },
+  {
+    field: 'directory.dst',
+    title: 'target directory'
   },
   {
     field: 'ip.src',

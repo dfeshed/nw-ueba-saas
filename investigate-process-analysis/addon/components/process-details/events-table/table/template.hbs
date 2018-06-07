@@ -1,3 +1,26 @@
+<hbox fit>
+  <vbox fit>
+    <label class="label">{{t 'investigateProcessAnalysis.tabs.events' count=eventsCount}}</label>
+  </vbox>
+  <vbox fit>
+    <div class="rsa-button-group panel-control-group events-sort-field">
+      <label class="rsa-form-label power-select">
+        <span class="label-text">Sort By</span>
+        {{#power-select
+          searchEnabled=false
+          placeholder="Select a field"
+          triggerClass="inline"
+          options=options
+          selected=selectedSortField
+          onchange=(action 'setSortField') as |option|}}
+          {{#if option}}
+            {{option.label}}-{{option.type}}
+          {{/if}}
+        {{/power-select}}
+      </label>
+    </div>
+  </vbox>
+</hbox>
 {{#rsa-data-table
   items=eventsData
   columnsConfig=config}}

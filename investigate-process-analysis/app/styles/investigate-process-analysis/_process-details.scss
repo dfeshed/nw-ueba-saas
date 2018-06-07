@@ -3,3 +3,16 @@
     height: 100vh;
   }
 }
+.label {
+  color: text-color(primary, lighter);
+}
+.events-sort-field {
+  width: 267px;
+  margin: -7px 21px 7px 31px;
+  .power-select {
+    width: 126px;
+  } 
+  .ember-power-select-trigger {
+    width: 9rem;
+  }
+}

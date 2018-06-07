@@ -17,7 +17,7 @@ module('Unit | Selectors | process-tree', function() {
     let queryNode = getQueryNode(input);
 
     assert.equal(queryNode.serviceId, 1);
-    assert.equal(queryNode.metaFilter.conditions.length, 4, 'should contains 4 conditions');
+    assert.equal(queryNode.metaFilter.conditions.length, 5, 'should contains 5 conditions');
 
     queryNode = getQueryNode(input, '1');
     assert.equal(queryNode.metaFilter.conditions[3].value, '(vid.src = \'1\')', 'should use passed process name');

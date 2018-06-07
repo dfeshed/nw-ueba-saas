@@ -2,7 +2,11 @@
     {{#each tabs as |tab|}}
       {{#rsa-nav-tab align='left' isActive=tab.isActive click=(action 'activate' tab)}}
         <div class="label">
-          {{tab.label}}
+           {{#if (eq tab.name 'Events')}}
+             {{t tab.label count=eventsCount}}
+           {{else}}
+             {{t tab.label}}     
+           {{/if}}
           <span class="icon">{{rsa-icon name='expand-6'}}</span>
         </div>
       {{/rsa-nav-tab}}

@@ -49,10 +49,13 @@ const _getMetaFilter = (isList, agentId, pid, isFetchParent, filters) => {
     },
     {
       value: isFetchParent ? `(vid.src = \'${pid}\' || vid.dst = \'${pid}\')` : `(vid.src = \'${pid}\')`
+    },
+    {
+      value: '(category=\'Process Event\' || category = \'Registry Event\' || category = \'File Event\' || category = \'Network Event\')'
     }
   ];
   if (isList) {
-    let conditions = [query[0], query[3]];
+    let conditions = [query[0], query[3], query[4]];
     if (filters && filters.length) {
       conditions = conditions.concat(filters);
     }

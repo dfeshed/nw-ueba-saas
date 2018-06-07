@@ -1,16 +1,28 @@
 import Component from '@ember/component';
-import layout from './template';
 import { connect } from 'ember-redux';
-import { eventsData } from 'investigate-process-analysis/reducers/process-tree/selectors';
-import { eventsTableConfig } from '../../../../reducers/process-tree/selectors';
+import {
+  eventsData,
+  eventsCount,
+  eventsTableConfig,
+  eventsSortField
+ } from 'investigate-process-analysis/reducers/process-tree/selectors';
+import { setSortField } from 'investigate-process-analysis/actions/creators/events-creators';
 
 const stateToComputed = (state) => ({
   eventsData: eventsData(state),
-  config: eventsTableConfig()
+  config: eventsTableConfig(),
+  eventsCount: eventsCount(state),
+  selectedSortField: eventsSortField(state)
 });
 
+const dispatchToActions = {
+  setSortField
+};
 const processEventsTable = Component.extend({
-  layout,
-  classNames: ['process-events-table']
+  classNames: ['process-events-table'],
+  options: [
+    { label: 'Event Time', field: 'evemt.time', type: 'ASC' },
+    { label: 'Event Time', field: 'event.time', type: 'DESC' }
+  ]
 });
-export default connect(stateToComputed)(processEventsTable);
+export default connect(stateToComputed, dispatchToActions)(processEventsTable);

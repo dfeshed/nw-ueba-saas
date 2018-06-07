@@ -8,7 +8,8 @@ const initialState = {
   rawData: null,
   error: null,
   selectedProcess: null,
-  path: [ '0' ]
+  path: [ '0' ],
+  eventsSortField: null
 };
 
 
@@ -44,6 +45,10 @@ export default reduxActions.handleActions({
   },
   [ACTION_TYPES.SET_NODE_PATH]: (state, { payload }) => {
     return state.set('path', state.path.concat([payload]));
+  },
+
+  [ACTION_TYPES.SET_SORT_FIELD]: (state, action) => {
+    return state.set('eventsSortField', action.payload);
   },
 
   [ACTION_TYPES.SET_EVENTS_COUNT]: (state, { payload }) => {
