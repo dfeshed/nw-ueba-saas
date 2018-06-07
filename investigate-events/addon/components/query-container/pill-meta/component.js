@@ -4,6 +4,7 @@ import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import * as MESSAGE_TYPES from '../message-types';
+import { isArrowLeft, isArrowRight, isEnter, isEscape } from 'investigate-events/util/keys';
 
 // const { log } = console;
 
@@ -126,17 +127,24 @@ const PillMeta = Component.extend({
     onKeyDown(powerSelectAPI, event) {
       // if the key pressed is an escape, then bubble that out and
       // escape further processing
-      if (event.keyCode === 27) {
+      if (isEscape(event)) {
         this._broadcast(MESSAGE_TYPES.META_ESCAPE_KEY);
-        return;
-      }
-
-      if (event.keyCode === 13) {
+      } else if (isEnter(event)) {
         const { selected } = powerSelectAPI;
         const selection = this.get('selection');
         if (selection && selected && selection === selected) {
           this._broadcast(MESSAGE_TYPES.META_SELECTED, selection);
         }
+      } else if (isArrowRight(event)) {
+        const { selected } = powerSelectAPI;
+        // Check if cursor position (selectionStart) is at the end of the
+        // string. We use the selected metaName for comparision because we only
+        // want to move forward if there's a selection.
+        if (selected && event.target.selectionStart === selected.metaName.length) {
+          this._broadcast(MESSAGE_TYPES.META_ARROW_RIGHT_KEY);
+        }
+      } else if (isArrowLeft(event)) {
+        this._broadcast(MESSAGE_TYPES.META_ARROW_LEFT_KEY);
       }
     }
   },

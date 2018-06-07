@@ -88,18 +88,7 @@ export default Component.extend({
      * @private
      */
     handleKeydown(e) {
-      // up or down arrow and if not open, no-op and prevent parent handlers
-      // from being notified
-      if ([38, 40].indexOf(e.keyCode) > -1 && !this.get('select.isOpen')) {
-        e.stopPropagation();
-        return;
-      }
-      const isLetter = e.keyCode >= 48 && e.keyCode <= 90 || e.keyCode === 32; // Keys 0-9, a-z or SPACE
-      // if isLetter, escape or enter, prevent parent handlers from being notified
-      if (isLetter || [13, 27].indexOf(e.keyCode) > -1) {
-        e.stopPropagation();
-      }
-
+      e.stopPropagation();
       // optional, passed from power-select
       const onkeydown = this.get('onKeydown');
       if (onkeydown && onkeydown(e) === false) {
@@ -143,7 +132,7 @@ export default Component.extend({
      * @private
      */
     handleBlur(e) {
-      this.set('size', this.get('text'));
+      this.set('size', this.get('text').length);
       const onblur = this.get('onBlur');
       if (onblur && onblur(e) === false) {
         return false;
@@ -152,7 +141,8 @@ export default Component.extend({
   },
 
   /**
-   * obtains seleted value based on complex object or primitive value from power-select publicAPI
+   * obtains seleted value based on complex object or primitive value from
+   * power-select publicAPI
    *
    * @private
    * @method getSelectedAsText

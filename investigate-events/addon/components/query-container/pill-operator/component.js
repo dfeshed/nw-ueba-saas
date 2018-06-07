@@ -4,15 +4,8 @@ import { isEmpty } from '@ember/utils';
 import computed from 'ember-computed-decorators';
 
 import * as MESSAGE_TYPES from '../message-types';
-import {
-  eq,
-  notEq,
-  exists,
-  notExists,
-  begins,
-  contains,
-  ends
-} from 'investigate-events/util/possible-operators';
+import { begins, contains, ends, eq, exists, notEq, notExists } from 'investigate-events/util/possible-operators';
+import { isArrowLeft, isArrowRight, isBackspace, isEnter, isEscape } from 'investigate-events/util/keys';
 
 // const { log } = console;
 
@@ -120,7 +113,7 @@ export default Component.extend({
         // If we gain focus and `lastSearchText` exists, power-select will use
         // that to down-select the list of options. This can happen if the user
         // enters some text, focuses away, then comes back. What they previously
-        // types will effect the list of options.
+        // typed will effect the list of options.
         powerSelectAPI.actions.search('');
       } else if (selection) {
         // Check to see if the selected option is valid for the power-select
@@ -167,18 +160,24 @@ export default Component.extend({
      * @private
      */
     onKeyDown(powerSelectAPI, event) {
-      // if the key pressed is an escape, then bubble that out and
-      // escape further processing
-      if (event.keyCode === 27) {
+      if (isEscape(event)) {
         this._broadcast(MESSAGE_TYPES.OPERATOR_ESCAPE_KEY);
-        return;
-      }
-
-      if (event.keyCode === 13) {
+      } else if (isEnter(event)) {
         const { selected } = powerSelectAPI;
         const selection = this.get('selection');
         if (selection && selected && selection === selected) {
           this._broadcast(MESSAGE_TYPES.OPERATOR_SELECTED, selection);
+        }
+      } else if (isBackspace(event) && event.target.value === '') {
+        this._broadcast(MESSAGE_TYPES.OPERATOR_BACKSPACE_KEY);
+      } else if (isArrowLeft(event)) {
+        if (event.target.selectionStart < 1) {
+          this._broadcast(MESSAGE_TYPES.OPERATOR_ARROW_LEFT_KEY);
+        }
+      } else if (isArrowRight(event)) {
+        const { selected } = powerSelectAPI;
+        if (selected && event.target.selectionStart === selected.displayName.length) {
+          this._broadcast(MESSAGE_TYPES.OPERATOR_ARROW_RIGHT_KEY);
         }
       }
     }

@@ -9,6 +9,7 @@ import { patchReducer } from '../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import { enrichedPillsData } from 'investigate-events/reducers/investigate/next-gen/selectors';
 import { createBasicPill } from '../pill-util';
+import KEY_MAP from 'investigate-events/util/keys';
 
 // const { log } = console;
 
@@ -22,7 +23,7 @@ const pillValue = '.pill-value';
 const valueInput = '.pill-value input';
 const deletePill = '.delete-pill';
 
-const ESCAPE_KEY = '27';
+const ESCAPE_KEY = KEY_MAP.escape.code;
 
 const trim = (text) => text.replace(/\s+/g, '').trim();
 
