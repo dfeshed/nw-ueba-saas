@@ -180,6 +180,17 @@
                             </sources>
                         </mapping>
                         <mapping>
+                            <directoryIncluded>true</directoryIncluded>
+                            <directory>${presidio-app.directory}/asl</directory>
+                            <username>${presidio.username}</username>
+                            <groupname>${presidio.groupname}</groupname>
+                            <sources>
+                                <source>
+                                    <location>../../fortscale/presidio-ade/src/main/resources/config/asl</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
                             <directoryIncluded>false</directoryIncluded>
                             <directory>${presidio-app.directory}/pypackages</directory>
                             <username>${presidio.username}</username>
