@@ -318,8 +318,8 @@ public class AlertServiceTest {
         // event
         EnrichedEvent activeDirectoryEvent3 = new ActiveDirectoryEnrichedEvent(Instant.now(),
                 startDate.plus(30, ChronoUnit.MINUTES), "eventId3", Schema.ACTIVE_DIRECTORY.toString(), "userId",
-                "username", "userDisplayName", "dataSource", "USER_PASSWORD_NEVER_EXPIRES_OPTION_CHANGED",
-                Arrays.asList("USER_MANAGEMENT", "SECURITY_SENSITIVE_OPERATION"), EventResult.SUCCESS, "resultCode",
+                "username", "userDisplayName", "dataSource", "MEMBER_REMOVED_FROM_SECURITY_ENABLED_LOCAL_GROUP",
+                Arrays.asList("GROUP_MEMBERSHIP_OPERATION", "SECURITY_SENSITIVE_OPERATION"), EventResult.SUCCESS, "resultCode",
                 new HashMap<>(), Boolean.FALSE, "objectId");
         mongoTemplate.save(activeDirectoryEvent3, new OutputToCollectionNameTranslator().toCollectionName(Schema.ACTIVE_DIRECTORY));
 
