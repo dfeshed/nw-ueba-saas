@@ -32,6 +32,7 @@
             <url>https://repo1.rsa.lab.emc.com:8443/artifactory/asoc-snapshots</url>
             <snapshots>
                 <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
             </snapshots>
         </repository>
     </repositories>
