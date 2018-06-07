@@ -25,7 +25,10 @@
               "type": "list-conditional-scorer",
               "name": "operationType.userIdGroupMembershipSecuritySensitive.activeDirectory.score",
               "conditional-field": "operationTypeCategories",
-              "conditional-value": ["SECURITY_SENSITIVE_OPERATION","GROUP_MEMBERSHIP_OPERATION"],
+              "conditional-value": [
+                "SECURITY_SENSITIVE_OPERATION",
+                "GROUP_MEMBERSHIP_OPERATION"
+              ],
               "scorer": {
                 "type": "max-scorer-container",
                 "name": "operationType.userIdSecuritySensitive.activeDirectory.score",
@@ -59,7 +62,9 @@
               "type": "list-conditional-scorer",
               "name": "operationType.userIdObjectManagement.activeDirectory.score",
               "conditional-field": "operationTypeCategories",
-              "conditional-value": ["OBJECT_MANAGEMENT"],
+              "conditional-value": [
+                "OBJECT_MANAGEMENT"
+              ],
               "scorer": {
                 "type": "max-scorer-container",
                 "name": "operationType.userIdObjectManagement.activeDirectory.score",
@@ -159,56 +164,10 @@
             },
             {
               "type": "constant-regex-scorer",
-              "name": "passwordChangedByNonOwner.userId.activeDirectory.score",
-              "regex": "USER_PASSWORD_CHANGED_BY_NON_OWNER",
-              "regex-field-name": "operationType",
-              "constant-score": 10
-            },
-            {
-              "type": "constant-regex-scorer",
-              "name": "strongAuthenticationMethodChanged.userId.activeDirectory.score",
-              "regex": "STRONG_AUTHENTICATION_METHOD_CHANGED",
-              "regex-field-name": "operationType",
-              "constant-score": 10
-            },
-            {
-              "type": "constant-regex-scorer",
-              "name": "strongAuthenticationPhoneAppDetailChanged.userId.activeDirectory.score",
-              "regex": "STRONG_AUTHENTICATION_PHONE_APP_DETAIL_CHANGED",
-              "regex-field-name": "operationType",
-              "constant-score": 10
-            },
-            {
-              "type": "constant-regex-scorer",
-              "name": "strongAuthenticationPhoneUserDetailChanged.userId.activeDirectory.score",
-              "regex": "STRONG_AUTHENTICATION_PHONE_USER_DETAIL_CHANGED",
-              "regex-field-name": "operationType",
-              "constant-score": 10
-            },
-            {
-              "type": "constant-regex-scorer",
-              "name": "strongAuthenticationRequirementChanged.userId.activeDirectory.score",
-              "regex": "STRONG_AUTHENTICATION_REQUIREMENT_CHANGED",
-              "regex-field-name": "operationType",
-              "constant-score": 10
-            },
-            {
-              "type": "constant-regex-scorer",
               "name": "userPasswordReset.userId.activeDirectory.score",
               "regex": "USER_PASSWORD_RESET",
               "regex-field-name": "operationType",
               "constant-score": 10
-            },
-            {
-              "type": "list-conditional-scorer",
-              "name": "memberAddedToCriticalGroup.userId.activeDirectory.score",
-              "conditional-field": "operationTypeCategories",
-              "conditional-value": ["SECURITY_SENSITIVE_OPERATION","GROUP_MEMBERSHIP_ADD_OPERATION"],
-              "scorer": {
-                "type": "constant-scorer",
-                "name": "memberAddedToCriticalGroup.userId.activeDirectory.score",
-                "constant-score": 10
-              }
             }
           ]
         }
