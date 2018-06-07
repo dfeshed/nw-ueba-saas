@@ -5,14 +5,14 @@
     <parent>
         <groupId>presidio.ui</groupId>
         <artifactId>presidio-ui</artifactId>
-        <version>1.1.0-SNAPSHOT</version>
+        <version>2.0.0-SNAPSHOT</version>
     </parent>
 
 
 
     <name>presidio-ui-ui</name>
     <artifactId>presidio-ui-ui</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>2.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
 
