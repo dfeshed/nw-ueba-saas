@@ -29,11 +29,22 @@ public class KeyStoreConfigProperties {
     @Value("${nw.security.certificate.secret:netwitness}")
     private String secret;
 
+    /**
+     * Secret to open the keystore.
+     */
+    @Value("${nw.security.certificate.alias:SERVICE}")
+    private String alias;
+
+
     public String getKeyStoreLocation() {
         return keyStoreLocation;
     }
 
     public String getSecret() {
         return secret;
+    }
+
+    public String getAlias() {
+        return alias;
     }
 }

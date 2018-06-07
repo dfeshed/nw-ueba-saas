@@ -155,7 +155,7 @@ public class PresidioNwAuthServiceImpl implements PresidioNwAuthService{
     private void loadTokenVerifiers() throws GeneralSecurityException {
 
         // Get the certificates the service uses itself.
-        List<X509Certificate> chain = getCertificateChain("SERVICE");
+        List<X509Certificate> chain = getCertificateChain(this.configProperties.getAlias());
 
         // Set verifiers to accept signatures from the self and all trusted keys
         tokenVerifiers = Stream.concat(Stream.of(chain.get(0)), getTrustedCertificates().stream())
