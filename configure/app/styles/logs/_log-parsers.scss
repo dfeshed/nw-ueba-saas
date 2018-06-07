@@ -1,0 +1,54 @@
+$footerHeight: 40px;
+
+.configure-engine .log-parsers {
+  .log-parser-toolbar {
+    margin: rsa-whitespace(more) 0 rsa-whitespace(least) 0;
+    padding-bottom: rsa-whitespace();
+    border-bottom: 1px solid border-color(primary);
+
+    .action-control {
+      margin-left: rsa-whitespace(least);
+      display: inline-block;
+      &:first-of-type {
+        margin-left: rsa-whitespace();
+      }
+    }
+  }
+}
+
+.add-log-parser {
+  .add-log-parser-form {
+    padding: rsa-whitespace();
+    .add-log-parser-instruction {
+      padding: rsa-whitespace() 0;
+      @include rsa-font(paragraph);
+      color: text-color(primary, light);
+    }
+    .form-option {
+      margin-bottom: rsa-whitespace();
+    }
+  }
+  footer {
+    height: $footerHeight;
+    box-sizing: border-box;
+    position: absolute;
+    bottom: rsa-whitespace();
+    width: 100%;
+    padding: rsa-whitespace(less);
+
+    .modal-footer-buttons {
+      justify-content: flex-end;
+      .rsa-form-button-wrapper {
+        margin: 0 rsa-whitespace() rsa-whitespace() rsa-whitespace();
+      }
+    }
+  }
+}
+
+
+
+
+#modalDestination .add-log-parser-modal {
+  width: 400px;
+  height: 500px;
+}

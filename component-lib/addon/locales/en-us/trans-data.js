@@ -548,7 +548,7 @@ export default {
   },
   configure: {
     logsParser: {
-      wait: 'Loading log Parsers...',
+      wait: 'Loading Log Parsers...',
       logParserRules: 'Log Parser Rules',
       logParsers: 'Log Parsers',
       rules: 'Rules',
@@ -591,6 +591,21 @@ export default {
         deploy: 'Deploy',
         save: 'Save',
         reset: 'Reset'
+      },
+      addParser: {
+        label: 'Add Parser',
+        addNew: 'Add New',
+        instruction: 'Use dynamic parser rules to create a new dynamic log parser or add to an existing log parser.',
+        selectParser: 'Select Log Parser',
+        deviceDisplayName: 'Device Display Name',
+        deviceDisplayNamePlaceholder: 'Enter a display name for this log parser',
+        deviceType: 'Device Type',
+        deviceTypePlaceholder: 'Enter a device type',
+        deviceClass: 'Device Class',
+        cloneFrom: 'Clone Dynamic Parser Rules From',
+        new: 'New',
+        addParserSuccessful: 'A new parser has been successfully added.',
+        addParserFailed: 'A problem occurred while trying to add this new parser.'
       }
     },
     title: 'Configure',

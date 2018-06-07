@@ -1,10 +1,40 @@
 import { lookup } from 'ember-dependency-lookup';
 
+function addLogParser(parser) {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'update',
+    modelName: 'log-parser-rules',
+    query: {
+      ...parser,
+      action: 'ADD_PARSER'
+    }
+  });
+}
+
 function findAllLogParsers() {
   const request = lookup('service:request');
   return request.promiseRequest({
     method: 'findAllLogParsers',
     modelName: 'log-parser-rules',
+    query: {}
+  });
+}
+
+function fetchDeviceTypes() {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'findAll',
+    modelName: 'device-types',
+    query: {}
+  });
+}
+
+function fetchDeviceClasses() {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'findAll',
+    modelName: 'device-classes',
     query: {}
   });
 }
@@ -73,9 +103,12 @@ function saveParserRule(selectedLogParserName, rules) {
 }
 
 export default {
+  addLogParser,
   deleteParserRule,
   deployLogParser,
   saveParserRule,
+  fetchDeviceClasses,
+  fetchDeviceTypes,
   fetchRuleFormats,
   fetchParserRules,
   findAllLogParsers

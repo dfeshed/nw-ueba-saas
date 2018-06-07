@@ -35,6 +35,24 @@ const configureConfigGen = function(environment) {
       saveParserRule: {
         subscriptionDestination: '/user/queue/content/parser/rules/update',
         requestDestination: '/ws/content/parser/rules/update'
+      },
+      update: {
+        subscriptionDestination: '/user/queue/content/parser/update',
+        requestDestination: '/ws/content/parser/update'
+      }
+    },
+    'device-types': {
+      socketUrl: socketUrlLogs,
+      findAll: {
+        subscriptionDestination: '/user/queue/content/parser/device/types',
+        requestDestination: '/ws/content/parser/device/types'
+      }
+    },
+    'device-classes': {
+      socketUrl: socketUrlLogs,
+      findAll: {
+        subscriptionDestination: '/user/queue/content/parser/device/class',
+        requestDestination: '/ws/content/parser/device/class'
       }
     },
     'category-tags': {

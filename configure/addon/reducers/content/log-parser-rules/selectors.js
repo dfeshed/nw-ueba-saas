@@ -9,6 +9,8 @@ export const logParsers = (state) => _parserRulesState(state).logParsers;
 export const parserRules = (state) => _parserRulesState(state).parserRules;
 export const selectedLogParserIndex = (state) => _parserRulesState(state).selectedLogParserIndex;
 export const selectedParserRuleIndex = (state) => _parserRulesState(state).selectedParserRuleIndex;
+export const deviceTypes = (state) => _parserRulesState(state).deviceTypes;
+export const deviceClasses = (state) => _parserRulesState(state).deviceClasses;
 
 export const isLoadingLogParser = createSelector(
   _parserRulesState,
@@ -174,5 +176,14 @@ export const selectedParserRuleFormat = createSelector(
       const frmt = selectedParserRule.pattern.format ? selectedParserRule.pattern.format : 'regex';
       return ruleFormats.filter((format) => format.type.toLowerCase() === frmt.toLowerCase())[0];
     }
+  }
+);
+
+// Returns all device types that are not already represented in the set of log parsers
+export const availableDeviceTypes = createSelector(
+  deviceTypes, logParsers,
+  (deviceTypes, logParsers) => {
+    const logParserNames = logParsers.map((parser) => parser.name);
+    return deviceTypes.filter((deviceType) => !logParserNames.includes(deviceType.name));
   }
 );

@@ -1,14 +1,26 @@
-{{#if selectedLogParserName}}
-  <hbox class="rsa-button-with-confirmation deploy-log-parser">
-    {{#rsa-button-with-confirmation
-        title=(t 'configure.logsParser.modals.deployLogParser.title')
-        style="primary"
-        confirmationMessage=(t 'configure.logsParser.modals.deployLogParser.confirm' logParser=selectedLogParserName )
-        confirmButtonLabel=(t 'configure.logsParser.modals.deployLogParser.ok')
-        cancelButtonLabel=(t 'configure.logsParser.modals.cancel')
-        isDisabled= hasNoDeployableRules
-        onConfirm=( action 'deployLogParser')}}
-      {{rsa-icon name="synchronize-3"}} {{t 'configure.logsParser.buttons.deploy'}}
-    {{/rsa-button-with-confirmation}}
-  </hbox>
+<div class="rsa-button-with-confirmation action-control deploy-log-parser">
+  {{#rsa-button-with-confirmation
+    title=(t 'configure.logsParser.modals.deployLogParser.title')
+    style="primary"
+    confirmationMessage=(t 'configure.logsParser.modals.deployLogParser.confirm' logParser=selectedLogParserName )
+    confirmButtonLabel=(t 'configure.logsParser.modals.deployLogParser.ok')
+    cancelButtonLabel=(t 'configure.logsParser.modals.cancel')
+    isDisabled=(or hasNoDeployableRules (not selectedLogParserName))
+    onConfirm=(action 'deployLogParser')}}
+    {{rsa-icon name="synchronize-3"}} {{t 'configure.logsParser.buttons.deploy'}}
+  {{/rsa-button-with-confirmation}}
+</div>
+<div class="action-control add-new-log-parser">
+  {{#rsa-form-button
+    isDisabled=false
+    defaultAction='addLogParser'}}
+    {{t 'configure.logsParser.addParser.addNew'}}
+  {{/rsa-form-button}}
+</div>
+{{#if (eq activeModalId 'add-log-parser')}}
+  {{#rsa-application-modal eventId='add-log-parser' label="Add Dynamic Log Parser" style="standard add-log-parser-modal"}}
+    <div class='modal-content'>
+      {{content/log-parser-rules/log-parsers/add-log-parser onLogParserAdded=(action 'closeModal' 'add-log-parser')}}
+    </div>
+  {{/rsa-application-modal}}
 {{/if}}

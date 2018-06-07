@@ -8,9 +8,87 @@ import makePackAction from '../../../helpers/make-pack-action';
 module('Unit | Utility | log-parser-rules Reducer');
 
 const initialState = Immutable.from({
+  logParsers: [{ name: 'ciscopix' }],
   selectedParserRuleIndex: 0,
   parserRules: [{ name: 'foo' }, { name: 'foo2' }],
-  deleteRuleStatus: null
+  deleteRuleStatus: null,
+  deviceTypes: [],
+  deviceTypesStatus: null,
+  deviceClasses: [],
+  deviceClassesStatus: null,
+  isTransactionUnderway: false
+});
+
+test('With FETCH_DEVICE_TYPES, the start handler updates state', function(assert) {
+  const expectedResult = {
+    ...initialState,
+    deviceTypesStatus: 'wait'
+  };
+  const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_DEVICE_TYPES });
+  const result = reducer(initialState, action);
+  assert.deepEqual(result, expectedResult);
+});
+
+test('With FETCH_DEVICE_TYPES, the error handler updates state', function(assert) {
+  const expectedResult = {
+    ...initialState,
+    deviceTypesStatus: 'error'
+  };
+  const action = makePackAction(LIFECYCLE.FAILURE, { type: ACTION_TYPES.FETCH_DEVICE_TYPES });
+  const result = reducer(initialState, action);
+  assert.deepEqual(result, expectedResult);
+});
+
+test('With FETCH_DEVICE_CLASSES, the start handler updates state', function(assert) {
+  const expectedResult = {
+    ...initialState,
+    deviceClassesStatus: 'wait'
+  };
+  const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_DEVICE_CLASSES });
+  const result = reducer(initialState, action);
+  assert.deepEqual(result, expectedResult);
+});
+
+test('With FETCH_DEVICE_CLASSES, the error handler updates state', function(assert) {
+  const expectedResult = {
+    ...initialState,
+    deviceClassesStatus: 'error'
+  };
+  const action = makePackAction(LIFECYCLE.FAILURE, { type: ACTION_TYPES.FETCH_DEVICE_CLASSES });
+  const result = reducer(initialState, action);
+  assert.deepEqual(result, expectedResult);
+});
+
+test('With ADD_LOG_PARSER, the start handler updates state', function(assert) {
+  const expectedResult = {
+    ...initialState,
+    isTransactionUnderway: true
+  };
+  const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.ADD_LOG_PARSER });
+  const result = reducer(initialState, action);
+  assert.deepEqual(result, expectedResult);
+});
+
+test('With ADD_LOG_PARSER, the error handler updates state', function(assert) {
+  const expectedResult = {
+    ...initialState,
+    isTransactionUnderway: false
+  };
+  const action = makePackAction(LIFECYCLE.FAILURE, { type: ACTION_TYPES.ADD_LOG_PARSER });
+  const result = reducer(initialState, action);
+  assert.deepEqual(result, expectedResult);
+});
+
+test('With ADD_LOG_PARSER, the success handler updates state', function(assert) {
+  const expectedResult = {
+    ...initialState,
+    logParsers: [{ name: 'ciscopix' }, { name: 'test' }],
+    selectedLogParserIndex: 1,
+    isTransactionUnderway: false
+  };
+  const action = makePackAction(LIFECYCLE.SUCCESS, { type: ACTION_TYPES.ADD_LOG_PARSER, payload: { data: { name: 'test' } } });
+  const result = reducer(initialState, action);
+  assert.deepEqual(result, expectedResult);
 });
 
 test('With DELETE_PARSER_RULE, the action has started', function(assert) {
@@ -35,6 +113,7 @@ test('With DELETE_PARSER_RULE, the action has errors', function(assert) {
 
 test('With DELETE_PARSER_RULE, the action is successfull', function(assert) {
   const expectedResult = {
+    ...initialState,
     selectedParserRuleIndex: 0,
     parserRules: [{ name: 'foo2' }],
     deleteRuleStatus: 'completed'

@@ -6,122 +6,110 @@ import {
   isDeletingParserRule,
   isDeletingParserRuleError,
   isOotb,
-  selectedParserRuleFormat
+  selectedParserRuleFormat,
+  logParsers,
+  deviceTypes,
+  deviceClasses,
+  availableDeviceTypes
 } from 'configure/reducers/content/log-parser-rules/selectors';
 
 module('Unit | Selectors | log-parser-rules');
 
-const state = {
-  configure: {
-    content: {
-      logParserRules: {
-        ruleFormats: [{ type: 'fOO', matches: 'result', name: 'abc' }, { type: 'fOO2', matches: 'result2', name: 'def' }],
-        selectedParserRuleIndex: 0,
-        deleteRuleStatus: 'error',
-        selectedFormat: 'abc',
-        parserRules: [
-          {
-            name: 'foo',
-            pattern: {
-              format: 'Foo'
-            },
-            outOfBox: true
-          },
-          {
-            name: 'foo2',
-            pattern: {
-              format: 'Foo2'
-            },
-            outOfBox: false
-          }
-        ]
-      }
-    }
-  }
-};
-
-const stateNoSelectedFormat = {
-  configure: {
-    content: {
-      logParserRules: {
-        ruleFormats: [{ type: 'fOO', matches: 'result', name: 'abc' }, { type: 'fOO2', matches: 'result2', name: 'def' }],
-        selectedParserRuleIndex: 0,
-        deleteRuleStatus: 'error',
-        selectedFormat: null,
-        parserRules: [
-          {
-            name: 'foo',
-            pattern: {
-              format: 'Foo'
-            },
-            outOfBox: true
-          },
-          {
-            name: 'foo2',
-            pattern: {
-              format: 'Foo2'
-            },
-            outOfBox: false
-          }
-        ]
-      }
-    }
-  }
-};
-
-const stateInit = {
-  configure: {
-    content: {
-      logParserRules: {
-        deleteRuleStatus: 'wait'
-      }
-    }
-  }
-};
-
-const filteredRule = [
-  {
-    name: 'foo2',
-    pattern: {
-      format: 'Foo2'
+const logParserRules = {
+  logParsers: [{ name: 'ciscopix' }],
+  ruleFormats: [{ type: 'fOO', matches: 'result', name: 'abc' }, { type: 'fOO2', matches: 'result2', name: 'def' }],
+  selectedParserRuleIndex: 0,
+  deleteRuleStatus: 'error',
+  selectedFormat: 'abc',
+  deviceTypes: [{ name: 'ciscopix', desc: 'Cisco', category: 'Intrusion' }, {
+    name: 'apache',
+    desc: 'Apache Web Server',
+    category: 'Server'
+  }],
+  deviceClasses: ['Intrusion', 'Wireless Access'],
+  parserRules: [
+    {
+      name: 'foo',
+      pattern: {
+        format: 'Foo'
+      },
+      outOfBox: true
     },
-    outOfBox: false
-  }
-];
+    {
+      name: 'foo2',
+      pattern: {
+        format: 'Foo2'
+      },
+      outOfBox: false
+    }
+  ]
+};
 
-const selectedFormat = { type: 'fOO', matches: 'result', name: 'abc' };
+const state = (state = logParserRules) => ({
+  configure: {
+    content: {
+      logParserRules: {
+        ...logParserRules,
+        ...state
+      }
+    }
+  }
+});
+
+test('Basic selector expectations', function(assert) {
+  assert.equal(logParsers(state()), logParserRules.logParsers, 'The logParsers selector returns the logParsers from state');
+  assert.equal(deviceTypes(state()), logParserRules.deviceTypes, 'The deviceTypes selector returns the deviceTypes from state');
+  assert.equal(deviceClasses(state()), logParserRules.deviceClasses, 'The deviceClasses selector returns the deviceClasses from state');
+});
+
+test('The availableDeviceTypes selector filters out any entries in logParsers with the same name property', function(assert) {
+  assert.deepEqual(availableDeviceTypes(state()), [{ name: 'apache', desc: 'Apache Web Server', category: 'Server' }]);
+});
 
 test('Test Booleans hasRuleFormats', function(assert) {
-  assert.equal(hasRuleFormats(state), true, 'The formats are loaded and hasRuleFormats is true');
-  assert.equal(hasRuleFormats(stateInit), false, 'The formats are not loaded and hasRuleFormats is false');
+  assert.equal(hasRuleFormats(state()), true, 'The formats are loaded and hasRuleFormats is true');
+  assert.equal(hasRuleFormats(state({ ruleFormats: null })), false, 'The formats are not loaded and hasRuleFormats is false');
 });
+
 test('Test Booleans hasSelectedParserRule', function(assert) {
-  assert.equal(hasSelectedParserRule(state), true, 'A parser rule is selected and hasSelectedParserRule is true');
-  assert.equal(hasSelectedParserRule(stateInit), false, 'A parser rule is not selected and hasSelectedParserRule is false');
+  assert.equal(hasSelectedParserRule(state()), true, 'A parser rule is selected and hasSelectedParserRule is true');
+  assert.equal(hasSelectedParserRule(state({ selectedParserRuleIndex: -1 })), false, 'A parser rule is not selected and hasSelectedParserRule is false');
 });
+
 test('filterDeletedRule by selectedParserRuleIndex', function(assert) {
-  assert.deepEqual(filterDeletedRule(state), filteredRule, 'The rule with index === 0 was filtered');
+  const filteredRule = [
+    {
+      name: 'foo2',
+      pattern: {
+        format: 'Foo2'
+      },
+      outOfBox: false
+    }
+  ];
+  assert.deepEqual(filterDeletedRule(state()), filteredRule, 'The rule with index === 0 was filtered');
 });
 test('isDeletingParserRule wait', function(assert) {
-  assert.equal(isDeletingParserRule(stateInit), true, 'waiting for delete confirmation');
+  assert.equal(isDeletingParserRule(state({ deleteRuleStatus: 'wait' })), true, 'waiting for delete confirmation');
 });
 test('isDeletingParserRuleError error', function(assert) {
-  assert.equal(isDeletingParserRuleError(state), true, 'error getting delete confirmation');
+  assert.equal(isDeletingParserRuleError(state()), true, 'error getting delete confirmation');
 });
 test('isDeletingParserRule wait', function(assert) {
-  assert.equal(isDeletingParserRule(state), false, 'waiting for delete no confirmation');
+  assert.equal(isDeletingParserRule(state()), false, 'waiting for delete no confirmation');
 });
 test('isDeletingParserRuleError error', function(assert) {
-  assert.equal(isDeletingParserRuleError(stateInit), false, 'no error getting delete confirmation');
+  assert.equal(isDeletingParserRuleError(state({ deleteRuleStatus: 'wait' })), false, 'no error getting delete confirmation');
 });
 
 test('isOotb', function(assert) {
-  assert.equal(isOotb(state), true, 'is ootb');
+  assert.equal(isOotb(state()), true, 'is ootb');
 });
 
 test('selectedParserRuleFormat with _selectedFormat', function(assert) {
-  assert.deepEqual(selectedParserRuleFormat(state), selectedFormat, 'OK');
+  const selectedFormat = { type: 'fOO', matches: 'result', name: 'abc' };
+  assert.deepEqual(selectedParserRuleFormat(state()), selectedFormat, 'OK');
 });
 test('selectedParserRuleFormat without _selectedFormat', function(assert) {
-  assert.deepEqual(selectedParserRuleFormat(stateNoSelectedFormat), selectedFormat, 'OK');
+  const selectedFormat = { type: 'fOO', matches: 'result', name: 'abc' };
+  assert.deepEqual(selectedParserRuleFormat(state({ selectedFormat: null })), selectedFormat, 'OK');
 });

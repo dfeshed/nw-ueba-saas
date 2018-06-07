@@ -6,12 +6,17 @@ import { handle } from 'redux-pack';
 const initialState = {
   logParsers: [],
   logParserStatus: null, // wait, completed, error,
+  deviceTypes: [],
+  deviceTypesStatus: null, // wait, completed, error
+  deviceClasses: [],
+  deviceClassesStatus: null, // wait, completed, error
   parserRules: [],
   parserRulesStatus: null, // wait, completed, error,
   ruleFormats: [],
   selectedParserRuleIndex: -1,
   selectedLogParserIndex: -1,
-  selectedFormat: null
+  selectedFormat: null,
+  isTransactionUnderway: false
 };
 
 export default reduxActions.handleActions({
@@ -172,6 +177,58 @@ export default reduxActions.handleActions({
         return state.set('deployLogParserStatus', 'completed');
       }
     })
-  )
+  ),
 
+  [ACTION_TYPES.FETCH_DEVICE_TYPES]: (state, action) => (
+    handle(state, action, {
+      start: (state) => state.merge({
+        deviceTypesStatus: 'wait',
+        deviceTypes: []
+      }),
+      failure: (state) => state.set('deviceTypesStatus', 'error'),
+      success: (state) => {
+        const { payload: { data: deviceTypes } } = action;
+        return state.merge(
+          {
+            deviceTypes: [{ }, ...deviceTypes],
+            deviceTypesStatus: 'completed'
+          }
+        );
+      }
+    })
+  ),
+  [ACTION_TYPES.FETCH_DEVICE_CLASSES]: (state, action) => (
+    handle(state, action, {
+      start: (state) => state.merge({
+        deviceClassesStatus: 'wait',
+        deviceClasses: []
+      }),
+      failure: (state) => state.set('deviceClassesStatus', 'error'),
+      success: (state) => {
+        const { payload: { data: deviceClasses } } = action;
+        return state.merge(
+          {
+            deviceClasses,
+            deviceClassesStatus: 'completed'
+          }
+        );
+      }
+    })
+  ),
+  [ACTION_TYPES.ADD_LOG_PARSER]: (state, action) => (
+    handle(state, action, {
+      start: (state) => state.set('isTransactionUnderway', true),
+      failure: (state) => state.set('isTransactionUnderway', false),
+      success: (state) => {
+        const { payload: { data: addedParser } } = action;
+        return state.merge(
+          {
+            logParsers: [...state.logParsers, addedParser],
+            selectedLogParserIndex: state.logParsers.length,
+            isTransactionUnderway: false
+          }
+        );
+      }
+    })
+  )
 }, Immutable.from(initialState));

@@ -7,6 +7,28 @@ import {
   selectedLogParserName,
   parserRules } from 'configure/reducers/content/log-parser-rules/selectors';
 
+const defaultCallbacks = {
+  onSuccess() {},
+  onFailure() {}
+};
+
+const addLogParser = (logParser = {}, callbacks = defaultCallbacks) => {
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.ADD_LOG_PARSER,
+      promise: api.addLogParser(logParser),
+      meta: {
+        onSuccess() {
+          callbacks.onSuccess();
+          // fetch the parser rules for the newly created parser
+          dispatch(fetchParserRules(logParser.logDeviceParserName));
+        },
+        onFailure: callbacks.onFailure
+      }
+    });
+  };
+};
+
 const _fetchRuleFormats = () => {
   return {
     type: ACTION_TYPES.FETCH_FORMATS,
@@ -14,9 +36,9 @@ const _fetchRuleFormats = () => {
   };
 };
 
-const _findAllLogParsers = () => {
+const fetchLogParsers = () => {
   return (dispatch) => {
-    dispatch({
+    return dispatch({
       type: ACTION_TYPES.FIND_ALL,
       promise: api.findAllLogParsers(),
       meta: {
@@ -28,10 +50,26 @@ const _findAllLogParsers = () => {
   };
 };
 
+const fetchDeviceTypes = () => {
+  return {
+    type: ACTION_TYPES.FETCH_DEVICE_TYPES,
+    promise: api.fetchDeviceTypes()
+  };
+};
+
+const fetchDeviceClasses = () => {
+  return {
+    type: ACTION_TYPES.FETCH_DEVICE_CLASSES,
+    promise: api.fetchDeviceClasses()
+  };
+};
+
 const initializeLogParserRules = () => {
   return (dispatch) => {
     dispatch(_fetchRuleFormats());
-    dispatch(_findAllLogParsers());
+    dispatch(fetchLogParsers());
+    dispatch(fetchDeviceTypes());
+    dispatch(fetchDeviceClasses());
   };
 };
 
@@ -135,6 +173,7 @@ const saveParserRule = () => {
 };
 
 export {
+  addLogParser,
   addNewParserRule,
   deleteParserRule,
   deployLogParser,
@@ -143,5 +182,8 @@ export {
   selectParserRule,
   fetchParserRules,
   saveParserRule,
-  selectFormatValue
+  selectFormatValue,
+  fetchLogParsers,
+  fetchDeviceTypes,
+  fetchDeviceClasses
 };

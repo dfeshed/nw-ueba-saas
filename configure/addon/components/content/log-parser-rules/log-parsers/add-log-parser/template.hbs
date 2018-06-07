@@ -1,0 +1,74 @@
+<div class="add-log-parser-form">
+  <aside class="add-log-parser-instruction">
+    {{t 'configure.logsParser.addParser.instruction'}}
+  </aside>
+  <section class="form-option log-parser">
+    <label class="rsa-form-label power-select">
+      <div class="label-text">
+        {{t 'configure.logsParser.addParser.selectParser'}}
+      </div>
+      {{#power-select
+        selected=selectedDeviceType
+        options=(readonly deviceTypes)
+        searchField="desc"
+        onchange=(action (mut selectedDeviceType)) as |logParsers|}}
+        {{or logParsers.desc (t 'configure.logsParser.addParser.new')}}
+      {{/power-select}}
+    </label>
+  </section>
+  <section class="form-option log-parser-display-name">
+    {{rsa-form-input
+      label=(t 'configure.logsParser.addParser.deviceDisplayName')
+      placeholder=(t 'configure.logsParser.addParser.deviceDisplayNamePlaceholder')
+      isDisabled=isExistingDeviceType
+      value=displayName
+      maxLength=30
+    }}
+  </section>
+  <section class="form-option log-parser-name">
+    {{rsa-form-input
+      label=(t 'configure.logsParser.addParser.deviceType')
+      placeholder=(t 'configure.logsParser.addParser.deviceTypePlaceholder')
+      isDisabled=isExistingDeviceType
+      value=logDeviceParserName
+    }}
+  </section>
+  <section class="form-option device-class">
+    <label class="rsa-form-label power-select">
+      <div class="label-text">
+        {{t 'configure.logsParser.addParser.deviceClass'}}
+      </div>
+      {{#power-select
+        options=(readonly deviceClasses)
+        selected=deviceClass
+        disabled=isExistingDeviceType
+        onchange=(action (mut deviceClass)) as |deviceClass|}}
+        {{deviceClass}}
+      {{/power-select}}
+    </label>
+  </section>
+  <section class="form-option clone-from">
+    <label class="rsa-form-label power-select">
+      <div class="label-text">
+        {{t 'configure.logsParser.addParser.cloneFrom'}}
+      </div>
+      {{#power-select
+        options=(readonly logParsers)
+        selected=cloneFrom
+        onchange=(action (mut cloneFrom)) as |logParser|}}
+        {{logParser.name}}
+      {{/power-select}}
+    </label>
+  </section>
+</div>
+<footer>
+  <hbox class="modal-footer-buttons">
+    {{#rsa-form-button
+      class="apply"
+      style='primary'
+      isDisabled=(not isValid)
+      defaultAction='handleAddParser'}}
+      {{t 'configure.logsParser.addParser.label'}}
+    {{/rsa-form-button}}
+  </hbox>
+</footer>

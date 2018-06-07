@@ -1,5 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
+import { next } from '@ember/runloop';
+import { inject as service } from '@ember/service';
 import {
   selectedLogParserName,
   hasDeployableRules
@@ -16,7 +18,25 @@ const dispatchToActions = {
 };
 
 const LogParsersToolbar = Component.extend({
-  tagName: 'div',
-  classNames: ['log-parser-toolbar', 'buttons-container']
+  classNames: ['log-parser-toolbar', 'buttons-container'],
+  eventBus: service(),
+  actions: {
+    showModal(modalId) {
+      this.set('activeModalId', modalId);
+      next(() => {
+        this.get('eventBus').trigger(`rsa-application-modal-open-${modalId}`);
+      });
+    },
+    closeModal(modalId) {
+      this.get('eventBus').trigger(`rsa-application-modal-close-${modalId}`);
+      this.set('activeModalId', null);
+    },
+    addLogParser() {
+      this.send('showModal', 'add-log-parser');
+    }
+  }
 });
+
 export default connect(stateToComputed, dispatchToActions)(LogParsersToolbar);
+
+
