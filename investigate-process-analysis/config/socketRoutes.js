@@ -12,11 +12,11 @@ const processAnalysisConfigGen = function(env) {
         requestDestination: '/ws/endpoint/file/get'
       }
     },
-    'core-event-count': {
+    'core-event-count-distinct': {
       socketUrl: eventsSocketURL,
       stream: {
-        subscriptionDestination: '/user/queue/investigate/events/count',
-        requestDestination: '/ws/investigate/events/count'
+        subscriptionDestination: '/user/queue/investigate/events/countdistinct',
+        requestDestination: '/ws/investigate/events/countdistinct'
       }
     },
     'core-event': {

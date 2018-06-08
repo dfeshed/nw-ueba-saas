@@ -1,6 +1,6 @@
 import { call, all, put, takeLatest, select } from 'redux-saga/effects';
 import * as ACTION_TYPES from 'investigate-process-analysis/actions/types';
-import fetchEventCount from 'investigate-shared/actions/api/events/event-count';
+import fetchDistinctCount from 'investigate-shared/actions/api/events/event-count-distinct';
 import { getQueryNode } from 'investigate-process-analysis/actions/creators/util';
 
 /**
@@ -34,7 +34,7 @@ function* fetchEventsCountAsync(action) {
       const queryNode = getQueryNode(queryInput, child.processId);
       const { serviceId, startTime, endTime, metaFilter } = queryNode;
       // call api response will stored as key and value
-      result[child.processId] = call(fetchEventCount, serviceId, startTime, endTime, metaFilter.conditions, null, null, false);
+      result[child.processId] = call(fetchDistinctCount, serviceId, startTime, endTime, metaFilter.conditions, null, null, false);
 
       return result;
     }, {});

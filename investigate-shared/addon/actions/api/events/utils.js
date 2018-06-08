@@ -15,6 +15,13 @@ import { lookup } from 'ember-dependency-lookup';
 export const conditionsFilter = (value) => ({ field: 'query', value });
 
 /**
+ * Creates a metaFilter conditions filter
+ * @param {string} value - A query string
+ * @return {object} A field/value object
+ * @public
+ */
+export const selectFilter = (value) => ({ field: 'select', value });
+/**
  * Creates a serviceId filter
  * @param {string|number} value - The Id of the service
  * @return {object} A field/value object
