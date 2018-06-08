@@ -22,16 +22,56 @@
   color:text-color(accentThree);
 }
 
-.processTreeBox, .processDetailsBox {
+
+.processDetailsBox {
   display: block;
   transition: width .5s;
-  &.collapse {
-    width: 25%
+  width: 0;
+}
+.processTreeBox {
+  display: block;
+  transition: width .5s;
+  width: calc(100vw - 4px);
+}
+
+.process-list-box {
+  border: none;
+}
+
+.show-process-details {
+  .process-list-box {
+    @include border(1px, solid, primary, dark);
+    position: relative;
   }
-  &.expand {
-    width: 74%
+  .processDetailsBox {
+    display: block;
+    transition: width .5s;
+    &.collapse {
+      width: 700px
+    }
+    &.expand {
+      width: calc(100vw - 504px)
+    }
+    &.collapse-event-panel {
+      width: calc(100vw/2 - 4px);
+    }
+  }
+
+  .processTreeBox {
+    display: block;
+    transition: width .5s;
+    &.collapse {
+      width: 500px
+    }
+    &.expand {
+      width: calc(100vw - 704px)
+    }
+    &.collapse-event-panel {
+      width: calc(100vw - (100vw/2))
+    }
   }
 }
+
 
 .ember-tether .panel-content {
   max-height: 30rem;
@@ -54,4 +94,8 @@
 }
 .execution-details {
   padding-top: 10px;
+}
+
+.process-details-buttons {
+  padding: 10px;
 }

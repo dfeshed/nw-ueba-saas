@@ -4,7 +4,9 @@ import reducer from 'investigate-process-analysis/reducers/process-visuals/reduc
 import * as ACTION_TYPES from 'investigate-process-analysis/actions/types';
 
 const initialState = Immutable.from({
-  detailsTabSelected: 'Properties'
+  detailsTabSelected: 'Properties',
+  isEventPanelExpanded: true,
+  isProcessDetailsVisible: true
 });
 
 module('Unit | Reducers | process-visuals', function() {
@@ -19,4 +21,13 @@ module('Unit | Reducers | process-visuals', function() {
     assert.equal(result.detailsTabSelected, 'Events', 'Selected tab as been updated in the State');
   });
 
+  test('TOGGLE_EVENT_PANEL_EXPANDED set event panel expanded', function(assert) {
+    const result = reducer(initialState, { type: ACTION_TYPES.TOGGLE_EVENT_PANEL_EXPANDED });
+    assert.equal(result.isEventPanelExpanded, false);
+  });
+
+  test('TOGGLE_PROCESS_DETAILS_VISIBILITY set selected tab', function(assert) {
+    const result = reducer(initialState, { type: ACTION_TYPES.TOGGLE_PROCESS_DETAILS_VISIBILITY });
+    assert.equal(result.isProcessDetailsVisible, false);
+  });
 });

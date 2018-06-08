@@ -8,7 +8,7 @@ import { zoom } from 'd3-zoom';
 import { tree, hierarchy } from 'd3-hierarchy';
 import { transitionElbow, elbow, appendText, updateText, appendIcon } from './helpers/d3-helpers';
 import { ieEdgeDetection } from 'component-lib/utils/browser-detection';
-
+import { toggleProcessDetailsVisibility } from 'investigate-process-analysis/actions/creators/process-visuals';
 import {
   isStreaming,
   children,
@@ -32,7 +32,8 @@ const stateToComputed = (state) => ({
   isStreaming: isStreaming(state),
   children: children(state),
   path: selectedProcessPath(state),
-  selectedProcessId: state.processAnalysis.processTree.queryInput ? state.processAnalysis.processTree.queryInput.vid : ''
+  selectedProcessId: state.processAnalysis.processTree.queryInput ? state.processAnalysis.processTree.queryInput.vid : '',
+  isProcessDetailsVisible: state.processAnalysis.processVisuals.isProcessDetailsVisible
 });
 
 const dispatchToActions = {
@@ -41,7 +42,8 @@ const dispatchToActions = {
   getChildEvents,
   fetchProcessDetails,
   selectedProcessEvents,
-  resetFilterValue
+  resetFilterValue,
+  toggleProcessDetailsVisibility
 };
 
 
@@ -501,6 +503,9 @@ const TreeComponent = Component.extend({
     this.send('fetchProcessDetails', { hashes });
     this.send('selectedProcessEvents', d.data.processId, {});
     this.send('setSelectedProcess', d.data);
+    if (!this.get('isProcessDetailsVisible')) {
+      this.send('toggleProcessDetailsVisibility');
+    }
     this.addSelectedClass(d.data.processId);
     this.send('resetFilterValue', d.data.processId);
     document.title = this._documentTitle(d.data.processName);

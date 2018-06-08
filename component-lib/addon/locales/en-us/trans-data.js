@@ -3035,6 +3035,10 @@ export default {
       sessionId: 'Session Id',
       processName: 'Process Name'
     },
+    buttons: {
+      expandDetails: 'Process Details Expand/Collapse',
+      close: 'Process Details Close'
+    },
     tabs: {
       properties: 'Properties',
       events: 'Events ({{count}})'

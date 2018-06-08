@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
-import { setDetailsTab } from 'investigate-process-analysis/actions/creators/process-visuals';
+import { setDetailsTab, toggleEventPanelExpanded, toggleProcessDetailsVisibility } from 'investigate-process-analysis/actions/creators/process-visuals';
 import { eventsCount } from 'investigate-process-analysis/reducers/process-tree/selectors';
 
 
@@ -10,7 +10,9 @@ const stateToComputed = (state) => ({
 });
 
 const dispatchToActions = {
-  setDetailsTab
+  setDetailsTab,
+  toggleEventPanelExpanded,
+  toggleProcessDetailsVisibility
 };
 
 // Investigate TABS, order is important
@@ -35,6 +37,11 @@ const processDetails = Component.extend({
 
   tabComponent: 'process-details/property-container',
 
+  isReconExpanded: true,
+
+  @computed('isReconExpanded')
+  toggleEventsClass: (isReconExpanded) => isReconExpanded ? 'shrink-diagonal-2' : 'expand-diagonal-4',
+
   @computed('activeTab')
   tabs(activeTab) {
     return TABS.map((t) => {
@@ -49,7 +56,17 @@ const processDetails = Component.extend({
       this.set('activeTab', tab.name);
       this.set('tabComponent', tab.component);
       this.send('setDetailsTab', tab.name);
+    },
+
+    toggleDetailsExpanded() {
+      this.toggleProperty('isReconExpanded');
+      this.send('toggleEventPanelExpanded');
+    },
+
+    closeDetails() {
+      this.send('toggleProcessDetailsVisibility');
     }
+
   }
 });
 
