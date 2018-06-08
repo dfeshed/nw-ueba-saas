@@ -65,13 +65,14 @@ $risk-panel-width: 500px;
       padding: rsa-whitespace(less) 0;
       border-bottom-width: 3px;
     }
-    .close-icon {
-      font-size: 14px;
-    }
+
     .risk-zone-close-button {
       width: 16px;
       max-width: 16px;
       margin-right: 20px;
+      .close-icon {
+        font-size: 10px;
+      }
     }
   }
   .show-risk-panel {

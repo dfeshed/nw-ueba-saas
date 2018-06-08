@@ -19,7 +19,8 @@ const stateToComputed = (state) => ({
   context: getContext(state),
   alertsCount: getAlertsCount(state),
   incidentsCount: getIncidentsCount(state),
-  showRiskPanel: state.files.fileList.showRiskPanel
+  showRiskPanel: state.files.fileList.showRiskPanel,
+  activeDataSourceTab: state.files.fileList.activeDataSourceTab
 });
 
 const dispatchToActions = {
