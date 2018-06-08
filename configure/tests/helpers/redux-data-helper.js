@@ -27,6 +27,11 @@ export default class DataHelper {
     this.setState = setState;
   }
 
+  _setBaseState() {
+    _set(this.state, 'content.logParserRules.logParsers', [{ name: 'builtin' }]);
+    _set(this.state, 'content.logParserRules.selectedLogParserIndex', 0);
+  }
+
   // Trigger setState, also return the resulting state
   // in case it needs to be used/checked
   build() {
@@ -38,18 +43,17 @@ export default class DataHelper {
   }
 
   parserRulesWait(flag) {
-    _set(this.state, 'content.logParserRules.logParsers', [{ name: 'builtin' }]);
+    this._setBaseState();
     if (flag) {
       _set(this.state, 'content.logParserRules.logParsersStatus', 'wait');
     } else {
       _set(this.state, 'content.logParserRules.logParsersStatus', 'completed');
     }
-    _set(this.state, 'content.logParserRules.selectedLogParserIndex', 0);
     return this;
   }
 
   parserRulesDeleteWait(flag) {
-    _set(this.state, 'content.logParserRules.logParsers', [{ name: 'builtin' }]);
+    this._setBaseState();
     if (flag) {
       _set(this.state, 'content.logParserRules.deleteRuleStatus', 'wait');
     } else {
@@ -59,7 +63,7 @@ export default class DataHelper {
   }
 
   parserRulesSaveWait(flag) {
-    _set(this.state, 'content.logParserRules.logParsers', [{ name: 'builtin' }]);
+    this._setBaseState();
     if (flag) {
       _set(this.state, 'content.logParserRules.saveRuleStatus', 'wait');
     } else {
@@ -69,6 +73,7 @@ export default class DataHelper {
   }
 
   parserRulesData(flag) {
+    this._setBaseState();
     _set(this.state, 'content.logParserRules.parserRules', [{ name: 'ipv4' }]);
     _set(this.state, 'content.logParserRules.selectedParserRuleIndex', 0);
     if (flag) {
@@ -94,6 +99,7 @@ export default class DataHelper {
   }
 
   parserRulesFormatData(index, formats) {
+    this._setBaseState();
     _set(this.state, 'content.logParserRules.parserRules', [{
       'name': 'ipv4',
       'literals': [

@@ -11,6 +11,7 @@ export const selectedLogParserIndex = (state) => _parserRulesState(state).select
 export const selectedParserRuleIndex = (state) => _parserRulesState(state).selectedParserRuleIndex;
 export const deviceTypes = (state) => _parserRulesState(state).deviceTypes;
 export const deviceClasses = (state) => _parserRulesState(state).deviceClasses;
+export const isTransactionUnderway = (state) => _parserRulesState(state).isTransactionUnderway;
 
 export const isLoadingLogParser = createSelector(
   _parserRulesState,
@@ -32,16 +33,15 @@ export const isLoadingParserRulesError = createSelector(
   (parserRulesState) => parserRulesState.parserRulesStatus === 'error'
 );
 
-export const selectedLogParserName = createSelector(
+export const selectedLogParser = createSelector(
   logParsers,
   selectedLogParserIndex,
-  (allLogs, index) => {
-    if (allLogs && allLogs[index]) {
-      return allLogs[index].name;
-    } else {
-      return '';
-    }
-  }
+  (parsers, index) => parsers[index]
+);
+
+export const selectedLogParserName = createSelector(
+  selectedLogParser,
+  (selectedParser) => selectedParser ? selectedParser.name : ''
 );
 
 export const selectedParserRuleName = createSelector(

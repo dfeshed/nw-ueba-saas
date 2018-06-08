@@ -10,13 +10,17 @@ import {
   logParsers,
   deviceTypes,
   deviceClasses,
-  availableDeviceTypes
+  availableDeviceTypes,
+  isTransactionUnderway,
+  selectedLogParser,
+  selectedLogParserName
 } from 'configure/reducers/content/log-parser-rules/selectors';
 
 module('Unit | Selectors | log-parser-rules');
 
 const logParserRules = {
   logParsers: [{ name: 'ciscopix' }],
+  selectedLogParserIndex: 0,
   ruleFormats: [{ type: 'fOO', matches: 'result', name: 'abc' }, { type: 'fOO2', matches: 'result2', name: 'def' }],
   selectedParserRuleIndex: 0,
   deleteRuleStatus: 'error',
@@ -42,7 +46,8 @@ const logParserRules = {
       },
       outOfBox: false
     }
-  ]
+  ],
+  isTransactionUnderway: false
 };
 
 const state = (state = logParserRules) => ({
@@ -57,9 +62,14 @@ const state = (state = logParserRules) => ({
 });
 
 test('Basic selector expectations', function(assert) {
+
   assert.equal(logParsers(state()), logParserRules.logParsers, 'The logParsers selector returns the logParsers from state');
   assert.equal(deviceTypes(state()), logParserRules.deviceTypes, 'The deviceTypes selector returns the deviceTypes from state');
   assert.equal(deviceClasses(state()), logParserRules.deviceClasses, 'The deviceClasses selector returns the deviceClasses from state');
+  assert.equal(isTransactionUnderway(state()), logParserRules.isTransactionUnderway, 'The isTransactionUnderway selector returns the isTransactionUnderway value from state');
+  assert.deepEqual(selectedLogParser(state()), { name: 'ciscopix' }, 'The log parser with the selected index is returned');
+  assert.equal(selectedLogParserName(state()), 'ciscopix', 'The name of the selected parser is returned');
+  assert.equal(selectedLogParserName(state({ logParsers: [] })), '', 'An empty string is returned if the selected log parser cannot be found');
 });
 
 test('The availableDeviceTypes selector filters out any entries in logParsers with the same name property', function(assert) {

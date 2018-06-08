@@ -49,3 +49,11 @@
     </table>
   {{/if}}
 </div>
+{{! Overlay to prevent interactions during transactions }}
+{{#if isTransactionUnderway}}
+  <div class="transaction-overlay">
+    <centered>
+      {{rsa-loader size="large"}}
+    </centered>
+  </div>
+{{/if}}

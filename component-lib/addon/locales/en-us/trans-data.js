@@ -576,6 +576,13 @@ export default {
           confirm: 'Delete rule \'{{ruleName}}\' from this log parser?',
           ok: 'Delete Rule'
         },
+        deleteParser: {
+          title: 'Delete Parser',
+          confirm: 'Are you sure you want to delete Parser \'{{parserName}}\'?',
+          ok: 'Delete Parser',
+          success: 'You successfully deleted parser \'{{parserName}}\'',
+          failure: 'There was an unexpected problem deleting \'{{parserName}}\''
+        },
         deployLogParser: {
           title: 'Deploy Parser',
           confirm: 'Deploy rules for log parser \'{{logParser}}\' to all Log Decoders?',

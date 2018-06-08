@@ -29,6 +29,24 @@ const addLogParser = (logParser = {}, callbacks = defaultCallbacks) => {
   };
 };
 
+const deleteLogParser = (parser) => {
+  const parserName = parser.displayName ? `${parser.displayName} (${parser.name})` : parser.name;
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.DELETE_LOG_PARSER,
+      promise: api.deleteLogParser(parser.name),
+      meta: {
+        onSuccess() {
+          success('configure.logsParser.modals.deleteParser.success', { parserName });
+        },
+        onFailure() {
+          failure('configure.logsParser.modals.deleteParser.failure', { parserName });
+        }
+      }
+    });
+  };
+};
+
 const _fetchRuleFormats = () => {
   return {
     type: ACTION_TYPES.FETCH_FORMATS,
@@ -175,6 +193,7 @@ const saveParserRule = () => {
 export {
   addLogParser,
   addNewParserRule,
+  deleteLogParser,
   deleteParserRule,
   deployLogParser,
   initializeLogParserRules,

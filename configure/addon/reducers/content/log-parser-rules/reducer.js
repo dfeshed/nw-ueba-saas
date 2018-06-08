@@ -230,5 +230,21 @@ export default reduxActions.handleActions({
         );
       }
     })
-  )
+  ),
+  [ACTION_TYPES.DELETE_LOG_PARSER]: (state, action) => (
+  handle(state, action, {
+    start: (state) => state.set('isTransactionUnderway', true),
+    failure: (state) => state.set('isTransactionUnderway', false),
+    success: (state) => {
+      const { payload: { data } } = action;
+      return state.merge(
+        {
+          logParsers: state.logParsers.filter((parser) => parser.name !== data.name),
+          selectedLogParserIndex: 0,
+          isTransactionUnderway: false
+        }
+      );
+    }
+  })
+)
 }, Immutable.from(initialState));

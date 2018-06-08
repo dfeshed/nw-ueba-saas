@@ -7,7 +7,8 @@ import {
   selectedParserRuleName,
   isLoadingLogParserError,
   hasSelectedParserRule,
-  hasRuleFormats
+  hasRuleFormats,
+  isTransactionUnderway
 } from 'configure/reducers/content/log-parser-rules/selectors';
 
 import Ember from 'ember';
@@ -19,11 +20,13 @@ const stateToComputed = (state) => ({
   logParserName: selectedLogParserName(state),
   parserRuleName: selectedParserRuleName(state),
   hasSelectedParserRule: hasSelectedParserRule(state),
-  hasRuleFormats: hasRuleFormats(state)
+  hasRuleFormats: hasRuleFormats(state),
+  isTransactionUnderway: isTransactionUnderway(state)
 });
 
 const ParserRules = Component.extend({
   classNames: ['log-parser-rules'],
+  classNameBindings: ['isTransactionUnderway:transaction-in-progress'],
   @and('hasSelectedParserRule', 'hasRuleFormats')
   canShowSelectedParserRule: true,
   didRender() {

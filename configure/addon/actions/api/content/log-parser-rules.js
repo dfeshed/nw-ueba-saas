@@ -12,6 +12,18 @@ function addLogParser(parser) {
   });
 }
 
+function deleteLogParser(logDeviceParserName) {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'update',
+    modelName: 'log-parser-rules',
+    query: {
+      logDeviceParserName,
+      action: 'DELETE_PARSER'
+    }
+  });
+}
+
 function findAllLogParsers() {
   const request = lookup('service:request');
   return request.promiseRequest({
@@ -104,6 +116,7 @@ function saveParserRule(selectedLogParserName, rules) {
 
 export default {
   addLogParser,
+  deleteLogParser,
   deleteParserRule,
   deployLogParser,
   saveParserRule,

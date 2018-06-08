@@ -91,6 +91,38 @@ test('With ADD_LOG_PARSER, the success handler updates state', function(assert) 
   assert.deepEqual(result, expectedResult);
 });
 
+test('With DELETE_LOG_PARSER, the start handler updates state', function(assert) {
+  const expectedResult = {
+    ...initialState,
+    isTransactionUnderway: true
+  };
+  const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.DELETE_LOG_PARSER });
+  const result = reducer(initialState, action);
+  assert.deepEqual(result, expectedResult);
+});
+
+test('With DELETE_LOG_PARSER, the error handler updates state', function(assert) {
+  const expectedResult = {
+    ...initialState,
+    isTransactionUnderway: false
+  };
+  const action = makePackAction(LIFECYCLE.FAILURE, { type: ACTION_TYPES.DELETE_LOG_PARSER });
+  const result = reducer(initialState, action);
+  assert.deepEqual(result, expectedResult);
+});
+
+test('With DELETE_LOG_PARSER, the success handler updates state', function(assert) {
+  const expectedResult = {
+    ...initialState,
+    logParsers: [],
+    selectedLogParserIndex: 0,
+    isTransactionUnderway: false
+  };
+  const action = makePackAction(LIFECYCLE.SUCCESS, { type: ACTION_TYPES.DELETE_LOG_PARSER, payload: { data: { name: 'ciscopix' } } });
+  const result = reducer(initialState, action);
+  assert.deepEqual(result, expectedResult);
+});
+
 test('With DELETE_PARSER_RULE, the action has started', function(assert) {
   const expectedResult = {
     ...initialState,
