@@ -7,7 +7,11 @@ module('Unit | Helper | Error Codes');
 test('investigateEventsErrorCodeDictionary has correct entries', function(assert) {
   const codes = investigateEventsErrorCodeDictionary;
 
-  assert.equal(Object.keys(codes).length, 37);
+  assert.equal(Object.keys(codes).length, 38);
+
+  assert.equal(codes[1].type, 'UNHANDLED_ERROR');
+  assert.equal(codes[1].messageLocaleKey, 'errorDictionaryMessages.investigateEvents.GENERIC');
+  assert.equal(codes[1].sendServerMessage, true);
 
   assert.equal(codes[11].type, 'INVALID_SYNTAX');
   assert.equal(codes[11].messageLocaleKey, null);
@@ -160,7 +164,7 @@ test('investigateEventsErrorCodeDictionary has correct entries', function(assert
 
 test('handleInvestigateErrorCode returns the correct error object', function(assert) {
   [
-    11, 119, 13, 110, 129, 130, 1000, 1002, 12, 109, 111, 112, 113, 114, 115,
+    1, 11, 119, 13, 110, 129, 130, 1000, 1002, 12, 109, 111, 112, 113, 114, 115,
     116, 117, 118, 122, 123, 124, 125, 126, 127, 128, 131, 132,
     133, 135, 136, 137, 138, 139, 200, 201, 202, 203
   ].forEach((errorCode) => {

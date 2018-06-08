@@ -42,12 +42,12 @@ export default {
   errorDictionaryMessages: {
     code: 'Error Code',
     investigateEvents: {
-      'MISCONFIGURED_SERVICE_CERTIFICATE': 'No authorization server certificates configured. code: {{code}} - {{type}}',
-      'ACCESS_DENIED': 'Insufficient permissions for the requested data. If you believe you should have access, ask your administrator to provide the necessary permissions. code: {{code}} - {{type}}',
-      'SESSION_REMOVED': 'Data not loaded. It has rolled out of the database. code: {{code}} - {{type}}',
-      'PACKETS_NOT_FOUND': 'Data not loaded. It has rolled out of the database. code: {{code}} - {{type}}',
-      'DEVICE_OFFLINE': 'Data not loaded. The underlying service is offline. code: {{code}} - {{type}}',
-      'GENERIC': 'An unexpected error has occurred attempting to retrieve this data. If further details are available, they can be found in the console. code: {{code}} - {{type}}'
+      'MISCONFIGURED_SERVICE_CERTIFICATE': 'No authorization server certificates configured. code: {{errorCode}} - {{type}}',
+      'ACCESS_DENIED': 'Insufficient permissions for the requested data. If you believe you should have access, ask your administrator to provide the necessary permissions. code: {{errorCode}} - {{type}}',
+      'SESSION_REMOVED': 'Data not loaded. It has rolled out of the database. code: {{errorCode}} - {{type}}',
+      'PACKETS_NOT_FOUND': 'Data not loaded. It has rolled out of the database. code: {{errorCode}} - {{type}}',
+      'DEVICE_OFFLINE': 'Data not loaded. The underlying service is offline. code: {{errorCode}} - {{type}}',
+      'GENERIC': 'An unexpected error has occurred attempting to retrieve this data. If further details are available, they can be found in the console. code: {{errorCode}} - {{type}}'
     }
   },
   passwordPolicy: {

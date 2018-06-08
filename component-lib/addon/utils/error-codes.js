@@ -16,6 +16,7 @@ const investigateEventsErrorCodeDictionary = {
   1000: { type: 'SESSION_REMOVED', messageLocaleKey: `${localeRoot}.SESSION_REMOVED`, sendServerMessage: false },
   1002: { type: 'DEVICE_OFFLINE', messageLocaleKey: `${localeRoot}.DEVICE_OFFLINE`, sendServerMessage: false },
   // uncommon codes
+  1: { type: 'UNHANDLED_ERROR', messageLocaleKey: genericMsgKey, sendServerMessage: true },
   12: { type: 'MISSING_SECURITY_TOKEN', messageLocaleKey: genericMsgKey, sendServerMessage: false },
   109: { type: 'TIMEOUT', messageLocaleKey: genericMsgKey, sendServerMessage: false },
   111: { type: 'INVALID_PARAMETER', messageLocaleKey: genericMsgKey, sendServerMessage: false },
@@ -51,7 +52,7 @@ function _parseAndLogErrorCode(response, errorCodeDictionary, requestName) {
   const errorCode = response.code || response.errorCode || response['error-code'];
 
   // not an error code, do not process
-  if (errorCode === 1 || isEmpty(errorCode)) {
+  if (isEmpty(errorCode)) {
     return;
   }
 
@@ -59,7 +60,7 @@ function _parseAndLogErrorCode(response, errorCodeDictionary, requestName) {
   let errorObject = errorCodeDictionary[errorCode];
 
   if (isEmpty(errorObject)) {
-    errorObject = { type: 'UNHANDLED_ERROR', messageLocaleKey: genericMsgKey, sendServerMessage: false };
+    errorObject = { type: 'UNHANDLED_ERROR', messageLocaleKey: genericMsgKey, sendServerMessage: true };
   }
 
   /* eslint-disable no-console */
