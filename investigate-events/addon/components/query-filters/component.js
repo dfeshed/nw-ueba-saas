@@ -8,7 +8,7 @@ import { connect } from 'ember-redux';
 import { inject as service } from '@ember/service';
 import { on } from '@ember/object/evented';
 import { dirtyQueryToggle } from 'investigate-events/actions/query-validation-creators';
-import { queryParams } from 'investigate-events/reducers/investigate/query-node/selectors';
+import { hasRequiredValuesToQuery, queryParams } from 'investigate-events/reducers/investigate/query-node/selectors';
 import $ from 'jquery';
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 
@@ -53,6 +53,7 @@ const blurEdit = (filters, focusInput, focusIndex, modifier) => {
 };
 
 const stateToComputed = (state) => ({
+  hasRequiredValuesToQuery: hasRequiredValuesToQuery(state),
   preloadedFilters: queryParams(state).metaFilter.conditions,
   metaOptions: metaKeySuggestionsForQueryBuilder(state)
 });
@@ -308,12 +309,14 @@ const QueryFiltersComponent = Component.extend(EKMixin, {
     },
 
     executeQuery(filters, externalLink) {
-      if (isEmpty(filters)) {
-        filters = this.get('filters');
-      }
+      if (this.get('hasRequiredValuesToQuery')) {
+        if (isEmpty(filters)) {
+          filters = this.get('filters');
+        }
 
-      this.set('processedPreloadedFilters', filters);
-      this.executeQuery(filters, externalLink);
+        this.set('processedPreloadedFilters', filters);
+        this.executeQuery(filters, externalLink);
+      }
     },
 
     insertFilter(filter, filterList) {

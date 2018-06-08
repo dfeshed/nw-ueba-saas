@@ -2,9 +2,9 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { render, fillIn, click } from '@ember/test-helpers';
-
+import { patchReducer } from '../../../../helpers/vnext-patch';
+import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 
 const pressEnter = (input) => {
   input.trigger({
@@ -15,17 +15,22 @@ const pressEnter = (input) => {
   });
 };
 
+let setState;
+
 module('Integration | Component | free-form', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-events')
   });
 
   hooks.beforeEach(function() {
-    initialize(this.owner);
+    setState = (state) => {
+      patchReducer(this, state);
+    };
   });
 
   test('it triggers action when user enters text and presses enter', async function(assert) {
     assert.expect(2);
+    new ReduxDataHelper(setState).hasRequiredValuesToQuery(true).build();
     this.set('filters', []);
     this.set('addFilters', (text) => {
       assert.equal(text, 'medium = 1', 'Expected text in the search bar');

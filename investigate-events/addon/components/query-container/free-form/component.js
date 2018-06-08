@@ -1,6 +1,11 @@
 import Component from '@ember/component';
 import { dirtyQueryToggle } from 'investigate-events/actions/query-validation-creators';
+import { hasRequiredValuesToQuery } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { connect } from 'ember-redux';
+
+const stateToComputed = (state) => ({
+  hasRequiredValuesToQuery: hasRequiredValuesToQuery(state)
+});
 
 const dispatchToActions = {
   dirtyQueryToggle
@@ -11,10 +16,12 @@ const freeForm = Component.extend({
 
   actions: {
     keyDown(e) {
-      this.send('dirtyQueryToggle');
-      if (e.keyCode === 13) {
-        this.$('input').blur();
-        this.executeQuery(this.get('filters'));
+      if (this.get('hasRequiredValuesToQuery')) {
+        this.send('dirtyQueryToggle');
+        if (e.keyCode === 13) {
+          this.$('input').blur();
+          this.executeQuery(this.get('filters'));
+        }
       }
     },
 
@@ -26,4 +33,4 @@ const freeForm = Component.extend({
 
 });
 
-export default connect(undefined, dispatchToActions)(freeForm);
+export default connect(stateToComputed, dispatchToActions)(freeForm);
