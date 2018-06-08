@@ -367,7 +367,10 @@ test('isJazzAgent return true when the agentVersion includes 11.1', function(ass
       overview: {
         hostDetails: {
           machine: {
-            agentVersion: '11.1.0'
+            agentVersion: '11.2.0'
+          },
+          machineIdentity: {
+            agentMode: 'userModeOnly'
           }
         }
       }
@@ -383,6 +386,9 @@ test('isJazzAgent return false when the agentVersion does not includes 11.1', fu
         hostDetails: {
           machine: {
             agentVersion: '11.2.0'
+          },
+          machineIdentity: {
+            agentMode: 'full'
           }
         }
       }

@@ -151,8 +151,8 @@ export const noProcessData = createSelector(processTree, (tree) => !tree.length)
 export const isJazzAgent = createSelector(
   _hostDetails,
   (hostDetails) => {
-    if (hostDetails && hostDetails.machine) {
-      const { machine: { agentVersion } } = hostDetails;
-      return agentVersion && agentVersion.startsWith('11.1');
+    if (hostDetails && hostDetails.machineIdentity && hostDetails.machine) {
+      const { machine: { agentVersion }, machineIdentity: { agentMode } } = hostDetails;
+      return (agentVersion && agentVersion.startsWith('11.2')) && (agentMode === 'userModeOnly');
     }
   });
