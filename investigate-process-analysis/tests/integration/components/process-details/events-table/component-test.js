@@ -34,7 +34,7 @@ module('Integration | Component | process-details/events-table', function(hooks)
         time: 1525950159000
       }];
 
-    new ReduxDataHelper(setState).eventsData(eventsData).error(null).build();
+    new ReduxDataHelper(setState).selectedProcess().eventsData(eventsData).error(null).build();
     const timezone = this.owner.lookup('service:timezone');
     const timeFormat = this.owner.lookup('service:timeFormat');
     const dateFormat = this.owner.lookup('service:dateFormat');

@@ -52,4 +52,16 @@ module('Unit | Reducers | process-filter', function() {
     assert.deepEqual(result, initialState, 'Filters have been set to initial state');
   });
 
+  test('UPDATE_ACTION_FILTER_ITEMS Updates the schema with relevent action config for the selected categories', function(assert) {
+    const updatedState = Immutable.from({
+      schema: [...filterConfig],
+      filter: {
+        action: [],
+        category: ['File Event']
+      }
+    });
+    const result = reducer(updatedState, { type: ACTION_TYPES.UPDATE_ACTION_FILTER_ITEMS, payload: { isSelected: true, optionSelected: 'Registry Event' } });
+    assert.equal(result.schema[1].options.length, 22, 'Action filter list is updated based on the Category selected');
+  });
+
 });

@@ -1,11 +1,6 @@
 export default [
   {
-    field: 'time',
-    title: 'Collection Time',
-    type: 'date'
-  },
-  {
-    field: 'event.time',
+    field: 'eventTime',
     title: 'Event Time',
     type: 'date'
   },
@@ -18,35 +13,35 @@ export default [
     title: 'Action'
   },
   {
-    field: 'filename.src',
+    field: 'filenameSrc',
     title: 'Source file name'
   },
   {
-    field: 'param.src',
+    field: 'paramSrc',
     title: 'Source Parameter'
   },
   {
-    field: 'directory.src',
+    field: 'directorySrc',
     title: 'source directory'
   },
   {
-    field: 'ip.src',
+    field: 'ipSrc',
     title: 'Source IP'
   },
   {
-    field: 'filename.dst',
+    field: 'filenameDst',
     title: 'Target file name'
   },
   {
-    field: 'param.dst',
+    field: 'paramDst',
     title: 'Target Parameter'
   },
   {
-    field: 'directory.dst',
+    field: 'directoryDst',
     title: 'target directory'
   },
   {
-    field: 'ip.dst',
+    field: 'ipDst',
     title: 'Target IP'
   }
 ];

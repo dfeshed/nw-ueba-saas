@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
-import { updateFilterValue } from 'investigate-process-analysis/actions/creators/process-filter';
+import { updateFilterValue, updateActionFilterItems } from 'investigate-process-analysis/actions/creators/process-filter';
 import { selectedFilterItemsArray } from 'investigate-process-analysis/reducers/process-filter/selectors';
 
 const stateToComputed = (state) => ({
@@ -10,7 +10,8 @@ const stateToComputed = (state) => ({
 });
 
 const dispatchToActions = {
-  updateFilterValue
+  updateFilterValue,
+  updateActionFilterItems
 };
 
 const filterItemsWrapper = Component.extend({
@@ -28,6 +29,9 @@ const filterItemsWrapper = Component.extend({
     toggleSelection(filterName, optionSelected) {
       const isSelected = !this.get('isSelected');
       const selectedProcess = this.get('selectedProcess');
+      if (filterName === 'category') {
+        this.send('updateActionFilterItems', { isSelected, optionSelected });
+      }
       this.send('updateFilterValue', { filterName, optionSelected, isSelected, selectedProcess });
     }
   }

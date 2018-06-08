@@ -4,7 +4,7 @@ import { resetFilterValue } from 'investigate-process-analysis/actions/creators/
 
 const stateToComputed = (state) => ({
   filterConfig: state.processAnalysis.processFilter.schema,
-  selectedProcess: state.processAnalysis.processTree.selectedProcess
+  selectedProcessId: state.processAnalysis.processTree.selectedProcess.processId
 });
 
 const dispatchToActions = {

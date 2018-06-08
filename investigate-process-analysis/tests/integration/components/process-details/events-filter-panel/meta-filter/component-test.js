@@ -33,7 +33,7 @@ module('Integration | Component | meta-filter', function(hooks) {
     await render(hbs`{{process-details/events-filter-panel/meta-filter filter=filter}}`);
 
     assert.equal(findAll('.filterName').length, 1, 'filter name container present');
-    assert.equal(find('.filterName').textContent.trim(), 'category (4)', 'Title value "Filters" present');
+    assert.equal(find('.filterName').textContent.trim(), 'category', 'Title value "Category" present');
     assert.equal(findAll('.filterItem').length, 4, 'filter-items-wrapper present and 4 options are present');
 
   });
