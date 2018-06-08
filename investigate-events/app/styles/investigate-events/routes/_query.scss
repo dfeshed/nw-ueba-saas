@@ -31,7 +31,7 @@ $investigateReconFullWidth: 100%;
   &__header {
     background-color: background-color(primary,darkest);
     @include border-bottom(1px, solid, neutral, dark);
-    @include rsa-vendor-prefix(flex-shrink, 1);
+    @include rsa-vendor-prefix(flex-shrink, 0);
     padding: rsa-whitespace(least) rsa-whitespace();
     .rsa-investigate-query {
       .rsa-investigate-query-input {

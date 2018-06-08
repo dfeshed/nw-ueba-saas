@@ -7,13 +7,13 @@
   &__service-selector,
   &__time-selector {
     margin-right: rsa-whitespace(less);
-  }
-  .query-bar-selection {
-    margin-right: rsa-whitespace(less);
-    flex-grow: 1;
+    display: flex;
+    flex: 0 0 auto;
   }
 
   .execute-query-button {
+    display: flex;
+    flex: 0 0 auto;
     .rsa-form-button {
       padding-top: calc(#{rsa-whitespace(less)} + #{rsa-whitespace(least)});
       padding-bottom: calc(#{rsa-whitespace(less)} + #{rsa-whitespace(least)});
@@ -99,6 +99,11 @@
   }
 
   .query-bar-selection {
+    margin-right: rsa-whitespace(less);
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 100%;
+    min-width: 350px;
     a {
       text-decoration: none;
       color: text-color(secondary);
