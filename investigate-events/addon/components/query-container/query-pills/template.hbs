@@ -5,6 +5,14 @@
     position=index
     isActive=false
   }}
+
+  {{!-- Do not want to have new pill trigger component after last pill --}}
+  {{#if (not-eq (add index 1) newPillPosition)}}
+    {{query-container/new-pill-trigger
+      sendMessage=(action 'handleMessage')
+      newPillPosition=(add index 1)
+    }}
+  {{/if}}
 {{/each}}
 
 {{query-container/query-pill

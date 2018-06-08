@@ -11,6 +11,7 @@ import nextGenCreators from 'investigate-events/actions/next-gen-creators';
 import { createBasicPill } from '../pill-util';
 
 const deletePill = '.delete-pill';
+const newPillTrigger = '.new-pill-trigger';
 
 let setState;
 const newActionSpy = sinon.spy(nextGenCreators, 'addNextGenPill');
@@ -85,6 +86,50 @@ module('Integration | Component | Query Pills', function(hooks) {
         'the position is correct'
       );
     });
+  });
+
+  test('new pill triggers render appropriately', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .pillsDataPopulated()
+      .build();
+
+    this.set('filters', []);
+
+    await render(hbs`{{query-container/query-pills filters=filters isActive=true}}`);
+
+    assert.equal(findAll('.new-pill-trigger-container').length, 1, 'There should only be one new pill trigger.');
+
+    await createBasicPill();
+
+    assert.equal(findAll('.new-pill-trigger-container').length, 2, 'There should now be two new pill triggers.');
+  });
+
+  test('Creating a pill with the new pill trigger sets filters and sends action for redux state update', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .pillsDataPopulated()
+      .build();
+
+    this.set('filters', []);
+
+    await render(hbs`{{query-container/query-pills filters=filters isActive=true}}`);
+
+    await click(newPillTrigger);
+
+    await createBasicPill(true);
+
+    // Internal (temporary) filters maintained
+    const filters = this.get('filters');
+    assert.equal(filters.length, 3, 'A filter was not created');
+
+    // action to store in state called
+    assert.equal(newActionSpy.callCount, 1, 'The add pill action creator was called once');
+    assert.deepEqual(
+      newActionSpy.args[0][0],
+      { pillData: { meta: 'a', operator: '=', value: 'x' }, position: 1 },
+      'The action creator was called with the right arguments including the proper position'
+    );
   });
 
   test('Deleting a pill sets filters and sends action for redux state update', async function(assert) {

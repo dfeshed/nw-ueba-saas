@@ -4,5 +4,5 @@
     position=newPillPosition
   }}
 {{else}}
-  <span class='new-pill-trigger' {{action "triggerNewPill"}}>|</span>
+  <div title={{t 'queryBuilder.insertFilter'}} class='new-pill-trigger' {{action "triggerNewPill"}}>&nbsp;</div>
 {{/if}}

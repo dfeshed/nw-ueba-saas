@@ -150,6 +150,26 @@
     overflow-x: hidden;
     overflow-y: auto;
   }
+
+  .new-pill-trigger {
+    @include rsa-layer(controls);
+    background-color: opacity-value(transparent);
+    border-radius: rsa-whitespace(most);
+    display: flex;
+    flex: 0 0 auto;
+    position: absolute;
+    float: left;
+    margin-left: -.93rem;
+    margin-top: .45rem;
+    width: 1.85rem;
+    height: 1.85rem;
+
+    &:hover {
+      cursor: text;
+      background-color: background-color(accentTwo, base, translucent)
+    }
+  }
+
   .query-pill {
     @include border(1px, solid, primary, lighter);
     border-radius: rsa-whitespace(least);
