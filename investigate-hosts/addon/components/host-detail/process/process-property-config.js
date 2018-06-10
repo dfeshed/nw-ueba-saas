@@ -9,8 +9,7 @@ const fileProperty = [
         format: 'DATE'
       },
       {
-        field: 'process.eprocess',
-        format: 'HEX'
+        field: 'process.eprocess'
       },
       {
         field: 'process.integrityLevel'
