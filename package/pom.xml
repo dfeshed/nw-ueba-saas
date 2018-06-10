@@ -67,6 +67,23 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <!-- build presidio-netwitness-flume -->
+                <artifactId>exec-maven-plugin</artifactId>
+                <groupId>org.codehaus.mojo</groupId>
+                <executions>
+                    <execution>
+                        <id>build presidio-netwitness-flume</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>scripts/build/mvn-on-presidio-netwitness-flume.sh</executable>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- download dependency chain for RPM bundling -->
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -102,7 +119,7 @@
                     <mappings>
                         <mapping>
                             <directoryIncluded>false</directoryIncluded>
-                            <directory>${presidio-app.directory}/batch</directory>
+                            <directory>${presidio-app.directory}/plugins.d/PresidioStreamingSource/lib</directory>
                             <username>${presidio.username}</username>
                             <groupname>${presidio.groupname}</groupname>
                             <sources>
@@ -137,6 +154,28 @@
                             <sources>
                                 <source>
                                     <location>scripts/install/</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directoryIncluded>false</directoryIncluded>
+                            <directory>${flume_home_directory}/conf/adapter</directory>
+                            <username>${presidio.username}</username>
+                            <groupname>${presidio.groupname}</groupname>
+                            <sources>
+                                <source>
+                                    <location>../presidio-core-extension/presidio-netwitness-flume/flume-configuration/adapter</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directoryIncluded>false</directoryIncluded>
+                            <directory>${flume_home_directory}/plugins.d/PresidioStreamingSource/libext</directory>
+                            <username>${presidio.username}</username>
+                            <groupname>${presidio.groupname}</groupname>
+                            <sources>
+                                <source>
+                                    <location>../presidio-core-extension/presidio-netwitness-flume/target/libext</location>
                                 </source>
                             </sources>
                         </mapping>
