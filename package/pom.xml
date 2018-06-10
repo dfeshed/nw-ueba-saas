@@ -140,6 +140,39 @@
                                 </source>
                             </sources>
                         </mapping>
+                        <mapping>
+                            <directoryIncluded>false</directoryIncluded>
+                            <directory>${flume_home_directory}/conf/adapter</directory>
+                            <username>${presidio.username}</username>
+                            <groupname>${presidio.groupname}</groupname>
+                            <sources>
+                                <source>
+                                    <location>../presidio-core-extension/presidio-netwitness-flume/flume-configuration/adapter</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directoryIncluded>false</directoryIncluded>
+                            <directory>${flume_home_directory}/plugins.d/PresidioStreamingSource/libext</directory>
+                            <username>${presidio.username}</username>
+                            <groupname>${presidio.groupname}</groupname>
+                            <sources>
+                                <source>
+                                    <location>../presidio-core-extension/presidio-netwitness-flume/target/libext</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directoryIncluded>false</directoryIncluded>
+                            <directory>${flume_home_directory}/plugins.d/PresidioStreamingSource/lib</directory>
+                            <username>${presidio.username}</username>
+                            <groupname>${presidio.groupname}</groupname>
+                            <sources>
+                                <source>
+                                    <location>../presidio-core-extension/presidio-netwitness-flume/target/presidio-netwitness-flume-${project.version}.jar</location>
+                                </source>
+                            </sources>
+                        </mapping>
                     </mappings>
                     <requires>
                         <require>java &gt; 1.8</require>
