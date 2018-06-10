@@ -26,6 +26,8 @@ URL: <http://localhost:8883/index.html>
 ## Build
 #### Jenkins on [Bedford-tier2](https://rsabwlabauth.corp.emc.com:900/):
 
+* Triggered on push to master: https://asoc-esa-jenkins.rsa.lab.emc.com/view/UEBA/job/presidio-ui-master/
+
 * Pull request triggered java UT jobs: https://asoc-esa-jenkins.rsa.lab.emc.com/view/UEBA/job/presidio-ui-pr/
 
 * Manually triggered java UT jobs: https://asoc-esa-jenkins.rsa.lab.emc.com/view/UEBA/job/presidio-ui/
