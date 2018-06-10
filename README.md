@@ -29,6 +29,8 @@ Presidio core is extended by [presidio-netwitness](https://github.rsa.lab.emc.co
 ## Build
 #### Jenkins on [Bedford-tier2](https://rsabwlabauth.corp.emc.com:900/):
 
+* on push to master tirggered java UT & deploy jobs: https://asoc-esa-jenkins.rsa.lab.emc.com/job/presidio-core-master/
+
 * Pull request triggered java UT jobs: https://asoc-esa-jenkins.rsa.lab.emc.com/view/UEBA/job/presidio-core-pr/
 
 * Pull request triggered python UT jobs: https://asoc-esa-jenkins.rsa.lab.emc.com/view/UEBA/job/presidio-core-workflows-pr/
