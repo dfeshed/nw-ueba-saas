@@ -5,6 +5,8 @@ Extension package of [presidio-flume](https://github.rsa.lab.emc.com/asoc/presid
 ## Build
 #### Jenkins on [Bedford-tier2](https://rsabwlabauth.corp.emc.com:900/):
 
+* Triggered on push to master: https://asoc-esa-jenkins.rsa.lab.emc.com/view/UEBA/job/presidio-nw-extension-master/
+
 * Pull request triggered java UT jobs: https://asoc-esa-jenkins.rsa.lab.emc.com/view/UEBA/job/presidio-nw-extension-pr/
 
 * Pull request triggered python UT jobs: https://asoc-esa-jenkins.rsa.lab.emc.com/view/UEBA/job/presidio-nw-extension-workflows-pr/
