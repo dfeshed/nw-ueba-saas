@@ -50,3 +50,12 @@ Presidio core is extended by [presidio-netwitness](https://github.rsa.lab.emc.co
 ## Installation
 
 See package [readme file](/package/README.md)
+
+## Artifacts
+* Java artifacts are available at artifactory:
+  * http://repo1.rsa.lab.emc.com:8081/artifactory/webapp/#/artifacts/browse/tree/General/asoc-snapshots
+  * http://repo1.rsa.lab.emc.com:8081/artifactory/webapp/#/artifacts/browse/tree/General/asoc-releases
+
+* RPM artifacts are available at: http://libhq-ro.rsa.lab.emc.com/SA/YUM/centos7/RSA/11.2/11.2.0/11.2.0.0/
+
+* Image files artifacts are available at: https://libhq-ro.rsa.lab.emc.com/SA/Platform/ci/master/promoted/
