@@ -10,7 +10,7 @@
             "type": "score-exponential-steps-mapper",
             "name": "numberOfSuccessfulAuthentications.userId.authentication.hourly.mapper",
             "score-mapping-conf": {
-              "amountOfSteps": 100000,
+              "amountOfSteps": 25,
               "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
