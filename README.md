@@ -2,7 +2,17 @@
 
 ## Introduction
 
-presidio test utililities for used for data generators
+presidio test utililities for used for data generators.
+
+# dependency
+```xml            
+<dependency>
+                <groupId>presidio-test-utils</groupId>
+                <artifactId>presidio-data-generators</artifactId>
+                <version>${presidio-data-generators.version}</version>
+                <scope>test</scope>
+</dependency>
+```
 
 ## Build
 #### Jenkins on [Bedford-tier2](https://rsabwlabauth.corp.emc.com:900/):
