@@ -47,7 +47,7 @@ module('Integration | Component | rules-list', function(hooks) {
   });
 
   test('Select a rule', async function(assert) {
-    new ReduxDataHelper(setState).parserRulesFormatData(1, true).build();
+    new ReduxDataHelper(setState).parserRulesFormatData(0, true).build();
     await render(hbs`{{content/log-parser-rules/parser-rules-list}}`);
     await click('.parser-rules-list .firstItem');
     return settled().then(() => {

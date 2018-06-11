@@ -104,7 +104,7 @@ export default class DataHelper {
       'name': 'ipv4',
       'literals': [
         {
-          'value': 'ipv4= '
+          'value': 'ipv4='
         }
       ],
       'pattern': {
@@ -123,7 +123,7 @@ export default class DataHelper {
       'name': 'Client Username',
       'literals': [
         {
-          'value': 'ipv6= '
+          'value': 'ipv6='
         }
       ],
       'pattern': {
@@ -139,11 +139,31 @@ export default class DataHelper {
       'outOfBox': true
     }]);
     _set(this.state, 'content.logParserRules.parserRulesStatus', 'completed');
+    _set(this.state, 'content.logParserRules.parserRuleTokens', [{
+      'value': 'ipv6='
+    },
+    {
+      'value': 'ipv4='
+    }]);
     if (formats) {
       if (index == 0) {
         _set(this.state, 'content.logParserRules.selectedFormat', 'IPV4 Address');
+        _set(this.state, 'content.logParserRules.parserRuleTokens', [{
+          'value': 'ipv4='
+        }]);
       } else {
         _set(this.state, 'content.logParserRules.selectedFormat', 'IPV6 Address');
+        _set(this.state, 'content.logParserRules.parserRuleTokens', [
+          {
+            'value': 'ipv6='
+          },
+          {
+            'value': 'second token'
+          },
+          {
+            'value': 'last'
+          }
+        ]);
       }
       _set(this.state, 'content.logParserRules.ruleFormats', [{
         name: 'Regex Pattern',

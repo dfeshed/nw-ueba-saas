@@ -598,7 +598,8 @@ export default {
         delete: 'Delete',
         deploy: 'Deploy',
         save: 'Save',
-        reset: 'Reset'
+        reset: 'Reset',
+        pleaseEnterNewToken: 'Please Enter New Token'
       },
       addParser: {
         label: 'Add Parser',

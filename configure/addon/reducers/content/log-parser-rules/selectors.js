@@ -5,6 +5,7 @@ const { createSelector } = reselect;
 const _parserRulesState = (state) => state.configure.content.logParserRules;
 const _ruleFormats = (state) => _parserRulesState(state).ruleFormats;
 const _selectedFormat = (state) => _parserRulesState(state).selectedFormat;
+export const parserRuleTokens = (state) => _parserRulesState(state).parserRuleTokens;
 export const logParsers = (state) => _parserRulesState(state).logParsers;
 export const parserRules = (state) => _parserRulesState(state).parserRules;
 export const selectedLogParserIndex = (state) => _parserRulesState(state).selectedLogParserIndex;
@@ -79,15 +80,6 @@ export const parserRuleFormatNames = createSelector(
   _ruleFormats,
   (formats) => {
     return formats.map((format) => format.name);
-  }
-);
-
-export const parserRuleTokens = createSelector(
-  _selectedParserRule,
-  (selectedRule) => {
-    if (selectedRule) {
-      return selectedRule.literals;
-    }
   }
 );
 

@@ -16,7 +16,8 @@ const initialState = Immutable.from({
   deviceTypesStatus: null,
   deviceClasses: [],
   deviceClassesStatus: null,
-  isTransactionUnderway: false
+  isTransactionUnderway: false,
+  parserRuleTokens: [{ 'value': 'foo' }]
 });
 
 test('With FETCH_DEVICE_TYPES, the start handler updates state', function(assert) {
@@ -211,6 +212,49 @@ test('With SAVE_PARSER_RULE, the action is successfull', function(assert) {
     saveRuleStatus: 'completed'
   };
   const action = makePackAction(LIFECYCLE.SUCCESS, { type: ACTION_TYPES.SAVE_PARSER_RULE });
+  const result = reducer(initialState, action);
+  assert.deepEqual(result, expectedResult);
+});
+
+test('With ACTION_TYPES.ADD_RULE_TOKEN, the action is successfull', function(assert) {
+  const expectedResult = {
+    ...initialState,
+    parserRuleTokens: [{ 'value': 'foo2' }, { 'value': 'foo' }]
+  };
+  const payload = 'foo2';
+  const action = makePackAction(LIFECYCLE.SUCCESS, { type: ACTION_TYPES.ADD_RULE_TOKEN, payload });
+  const result = reducer(initialState, action);
+  assert.deepEqual(result, expectedResult);
+});
+
+test('With ACTION_TYPES.DELETE_RULE_TOKEN, the action is successfull', function(assert) {
+  const expectedResult = {
+    ...initialState,
+    parserRuleTokens: []
+  };
+  const payload = 0;
+  const action = makePackAction(LIFECYCLE.SUCCESS, { type: ACTION_TYPES.DELETE_RULE_TOKEN, payload });
+  const result = reducer(initialState, action);
+  assert.deepEqual(result, expectedResult);
+});
+
+test('With ACTION_TYPES.EDIT_RULE_TOKEN, the action is successfull', function(assert) {
+  const expectedResult = {
+    ...initialState,
+    parserRuleTokens: [{ 'value': 'fooX' }]
+  };
+  const payload = { index: 0, token: 'fooX' };
+  const action = makePackAction(LIFECYCLE.SUCCESS, { type: ACTION_TYPES.EDIT_RULE_TOKEN, payload });
+  const result = reducer(initialState, action);
+  assert.deepEqual(result, expectedResult);
+});
+
+test('With ACTION_TYPES.ADD_RULE_TOKEN, add existing token', function(assert) {
+  const expectedResult = {
+    ...initialState
+  };
+  const payload = 'foo';
+  const action = makePackAction(LIFECYCLE.SUCCESS, { type: ACTION_TYPES.ADD_RULE_TOKEN, payload });
   const result = reducer(initialState, action);
   assert.deepEqual(result, expectedResult);
 });

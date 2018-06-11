@@ -1,11 +1,20 @@
 <h2> {{t 'configure.logsParser.tokens'}} </h2>
 <div class="tokenScroll">
-  <table class='parserTable'>
+  <ul>
+    <li class="add-token">
+      {{#rsa-form-button isIconOnly=true defaultAction=(action 'addToken')}}
+        {{rsa-icon name='add-1' size='small' class='add-button'}}
+      {{/rsa-form-button}}
+      {{rsa-form-input maxLength=64 value=newToken placeholder=(t 'configure.logsParser.buttons.pleaseEnterNewToken')}}
+    </li>
+   {{log 'render template'}}
     {{#each parserRuleTokens as |token index|}}
-      <tr class='{{if (eq index 0) 'firstItem'}}'><td>
-        {{token.value}}
-      </td></tr>
+      <li class='{{if (eq index 0) 'firstItem'}}'>
+        {{#rsa-form-button isIconOnly=true defaultAction=(action 'deleteRuleToken' index)}}
+          {{rsa-icon name='bin-1' size='small'}}
+        {{/rsa-form-button}}
+        {{rsa-form-input maxLength=64 value=(unbound token.value) focusOut=(action 'editToken' token.value index)}}
+      </li>
     {{/each}}
-  </table>
+  </ul>
 </div>
-        

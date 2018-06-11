@@ -22,7 +22,7 @@ module('Integration | Component | Configure - Content - Add Log Parser', functio
   hooks.beforeEach(function() {
     initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
-    setState = (state = {}) => {
+    setState = (state = { selectedParserRuleIndex: 0 }) => {
       const fullState = {
         configure: {
           content: {

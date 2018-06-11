@@ -65,18 +65,17 @@ div.modal-content.addNewRule {
       overflow: hidden;
       display: inline-block;
       white-space: nowrap;
-      padding: rsa-whitespace(less);
       color: text-color(neutral);
       @include rsa-font(default, small);
     }
     td.token {
-      width: 20%;
+      width: 25%;
     }
     td.values {
       width: 50%;
     }
     td.meta {
-      width: 30%;
+      width: 25%;
     }
   }
   p.firstLogName, p.firstRuleName {
@@ -158,9 +157,21 @@ div.modal-content.addNewRule {
     height: 100%;
   }
   .token-matching {
-    .tokenScroll {
+    div.tokenScroll {
       max-height: 300px;
       overflow: auto;
+      .rsa-form-input input {
+        font-size: 10px;
+      }
+      .rsa-form-button-wrapper {
+        float: right;
+      }
+      .rsa-form-input {
+        width: 80%;
+      }
+      li {
+        padding-right: rsa-whitespace(less);
+      }
     }
   }
   .rules-list {

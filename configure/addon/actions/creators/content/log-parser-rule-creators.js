@@ -190,6 +190,25 @@ const saveParserRule = () => {
   };
 };
 
+const addRuleToken = (token) => {
+  return {
+    type: ACTION_TYPES.ADD_RULE_TOKEN,
+    payload: token
+  };
+};
+const editRuleToken = (token, index) => {
+  return {
+    type: ACTION_TYPES.EDIT_RULE_TOKEN,
+    payload: { index, token }
+  };
+};
+const deleteRuleToken = (index) => {
+  return {
+    type: ACTION_TYPES.DELETE_RULE_TOKEN,
+    payload: index
+  };
+};
+
 export {
   addLogParser,
   addNewParserRule,
@@ -204,5 +223,8 @@ export {
   selectFormatValue,
   fetchLogParsers,
   fetchDeviceTypes,
-  fetchDeviceClasses
+  fetchDeviceClasses,
+  addRuleToken,
+  editRuleToken,
+  deleteRuleToken
 };

@@ -29,12 +29,6 @@ module('Integration | Component | delete-rules', function(hooks) {
     assert.ok(find('.buttons-container .deleteRule'), 'Delete button is not showing');
   });
 
-  test('Delete button does not shows', async function(assert) {
-    new ReduxDataHelper(setState).parserRulesFormatData(-1, true).build();
-    await render(hbs`{{content/log-parser-rules/parser-rules-list/buttons-container}}`);
-    assert.notOk(find('.buttons-container .deleteRule'), 'Delete button is showing');
-  });
-
   test('Delete a rule confirmation', async function(assert) {
     new ReduxDataHelper(setState).parserRulesFormatData(0, true).parserRulesSaveWait(false).build();
     await render(hbs`{{content/log-parser-rules/parser-rules-list/buttons-container}}`);

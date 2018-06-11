@@ -13,10 +13,11 @@ const initialState = {
   parserRules: [],
   parserRulesStatus: null, // wait, completed, error,
   ruleFormats: [],
-  selectedParserRuleIndex: -1,
-  selectedLogParserIndex: -1,
+  selectedParserRuleIndex: 0,
+  selectedLogParserIndex: 0,
   selectedFormat: null,
-  isTransactionUnderway: false
+  isTransactionUnderway: false,
+  parserRuleTokens: []
 };
 
 export default reduxActions.handleActions({
@@ -32,12 +33,7 @@ export default reduxActions.handleActions({
         return state.set('logParserStatus', 'error');
       },
       success: (state) => {
-        return state.merge(
-          {
-            logParsers: action.payload.data,
-            selectedParserRuleIndex: 0
-          }
-        );
+        return state.set('logParsers', action.payload.data);
       }
     })
   ),
@@ -69,14 +65,14 @@ export default reduxActions.handleActions({
         return state.set('parserRulesStatus', 'error');
       },
       success: (state) => {
-        const theRules = action.payload.data;
+        const rules = action.payload.data;
         const selectedIndex = state.selectedParserRuleIndex;
         return state.merge(
           {
-            parserRules: theRules,
+            parserRules: rules,
             parserRulesStatus: 'completed',
-            selectedParserRuleIndex: (theRules.length == selectedIndex) ? selectedIndex : 0,
-            selectedFormat: null
+            selectedFormat: null,
+            parserRuleTokens: rules[selectedIndex].literals
           }
         );
       }
@@ -84,10 +80,12 @@ export default reduxActions.handleActions({
   ),
 
   [ACTION_TYPES.SELECT_PARSER_RULE]: (state, { payload }) => {
+    const rules = state.parserRules;
     return state.merge(
       {
         selectedParserRuleIndex: payload,
-        selectedFormat: null
+        selectedFormat: null,
+        parserRuleTokens: rules[payload].literals
       }
     );
   },
@@ -246,5 +244,33 @@ export default reduxActions.handleActions({
       );
     }
   })
-)
+  ),
+  [ACTION_TYPES.ADD_RULE_TOKEN]: (state, { payload }) => {
+    const newToken = [{ 'value': payload }];
+    const ruleTokens = state.parserRuleTokens;
+    const tokenExists = ruleTokens.some((tkn) => tkn.value === payload);
+    if (!tokenExists && payload !== '') {
+      return state.set('parserRuleTokens', newToken.concat(ruleTokens));
+    } else {
+      return state;
+    }
+  },
+
+  [ACTION_TYPES.EDIT_RULE_TOKEN]: (state, { payload }) => {
+    const item = payload.index;
+    const newToken = { 'value': payload.token };
+    const ruleTokens = state.parserRuleTokens;
+    const tokenExists = ruleTokens.some((tkn) => tkn.value === payload.token);
+    if (!tokenExists && payload.token !== '') {
+      return state.set('parserRuleTokens', ruleTokens.map((token, index) => index === item ? newToken : token));
+    } else {
+      return state;
+    }
+  },
+
+  [ACTION_TYPES.DELETE_RULE_TOKEN]: (state, { payload }) => {
+    const ruleTokens = state.parserRuleTokens;
+    return state.set('parserRuleTokens', ruleTokens.filter((token, index) => index !== payload));
+  }
+
 }, Immutable.from(initialState));
