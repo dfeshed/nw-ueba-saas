@@ -37,4 +37,17 @@
     font-size: 1rem;
     color: text-color(secondary, light);
   }
+  .filter-option {
+    margin: 0 rsa-whitespace();
+    h2 {
+      @include rsa-font(header, small);
+      padding-top: rsa-whitespace();
+      color: text-color(primary, light);
+    }
+  }
+  .filter-message {
+    padding: rsa-whitespace(less);
+    color: text-color(primary, light);
+    @include rsa-font(default);
+  }
 }

@@ -1,13 +1,27 @@
 {{#if errorMessage}}
   {{rsa-panel-message message=(t errorMessage)}}
 {{else}}
-  {{#each data as |entry|}}
-    {{#rsa-content-accordion animate=true isCollapsed=true class='risk-properties-panel__title' label=entry.name}}
-      {{endpoint/risk-panel/entry entry=entry type=activeDataSourceTab}}
-    {{/rsa-content-accordion}}
-  {{else}}
-    {{rsa-panel-message message=(t 'investigateHosts.common.emptyMessage')}}
-  {{/each}}
+  <section class="filter-option">
+  <h2>{{ t 'investigateHosts.context.score'}}</h2>
+  {{range-slider
+    start=filterRange
+    step=1
+    on-change='updateFilter'}}
+    <div class="filter-message">
+      {{t 'investigateHosts.context.filterMessage' filterCount=filteredData.length totalCount=data.length}}
+    </div>
+  </section>
+  <box>
+    {{#if filteredData}}
+      {{#each filteredData as |entry|}}
+        {{#rsa-content-accordion animate=true isCollapsed=true class='risk-properties-panel__title' label=entry.name}}
+          {{endpoint/risk-panel/entry entry=entry type=activeDataSourceTab}}
+        {{/rsa-content-accordion}}
+      {{/each}}
+    {{else}}
+      {{rsa-panel-message message=(t 'investigateHosts.common.emptyMessage')}}
+    {{/if}}
+  </box>
 {{/if}}
 
 

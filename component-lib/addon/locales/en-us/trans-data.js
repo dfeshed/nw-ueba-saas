@@ -2162,6 +2162,7 @@ export default {
       incidents: 'Incidents ({{count}})'
     },
     context: {
+      score: 'Score',
       source: 'Source',
       timestamp: 'Created',
       risk_score: 'Severity',
@@ -2181,7 +2182,8 @@ export default {
       },
       button: {
         close: 'Close Risk Panel'
-      }
+      },
+      filterMessage: 'Filtered {{filterCount}} out of {{totalCount}}'
     },
     systemInformation: {
       ipAddress: 'IP Address',

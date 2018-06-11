@@ -15,7 +15,7 @@ const DATA = [
     incident: 'INC-1234',
     name: 'Autorun Unsigned In AppDataLocal Directory',
     numEvents: 1,
-    risk_score: 70,
+    risk_score: 80,
     source: 'Event Stream Analysis'
   }
 ];
@@ -29,5 +29,13 @@ module('Integration | Component | endpoint/risk-panel', function(hooks) {
     await render(hbs`{{endpoint/risk-panel activeDataSourceTab=activePropertyTab data=data}}`);
     assert.equal(findAll('.risk-properties-panel__title').length, 2, '2 Incident entries are present');
     assert.equal(find('.risk-properties-panel__title h3').textContent.trim(), 'Autorun Unsigned In AppDataLocal Directory');
+  });
+
+  test('The risk panel populating with alerts and incidents with filter', async function(assert) {
+    this.set('data', DATA);
+    this.set('activePropertyTab', 'ALERT');
+    this.set('range', [0, 70]);
+    await render(hbs`{{endpoint/risk-panel activeDataSourceTab=activePropertyTab data=data filterRange=range}}`);
+    assert.equal(findAll('.risk-properties-panel__title').length, 1, '1 Incident entry is present');
   });
 });
