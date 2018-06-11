@@ -58,6 +58,18 @@
                                 </source>
                             </sources>
                         </mapping>
+                        <mapping>
+                            <directoryIncluded>true</directoryIncluded>
+
+                            <directory>${presidio-app.directory}/elasticsearch/init/data/indexes</directory>
+                            <username>${presidio.username}</username>
+                            <groupname>${presidio.groupname}</groupname>
+                            <sources>
+                                <source>
+                                    <location>../../fortscale/presidio-utils/src/main/resources/elasticsearch/indexes/</location>
+                                </source>
+                            </sources>
+                        </mapping>
                     </mappings>
                     <requires>
                         <require>python &gt;= 2.7.5</require>
