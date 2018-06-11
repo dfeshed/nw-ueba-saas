@@ -3,7 +3,9 @@ import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { render, click } from '@ember/test-helpers';
+
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
+import PILL_SELECTORS from '../pill-selectors';
 
 module('Integration | Component | delete-pill', function(hooks) {
   setupRenderingTest(hooks, {
@@ -18,6 +20,6 @@ module('Integration | Component | delete-pill', function(hooks) {
     });
 
     await render(hbs`{{query-container/delete-pill sendMessage=sendMessage}}`);
-    await click('.delete-pill');
+    await click(PILL_SELECTORS.deletePill);
   });
 });

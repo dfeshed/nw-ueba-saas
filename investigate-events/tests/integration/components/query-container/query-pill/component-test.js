@@ -13,15 +13,7 @@ import KEY_MAP from 'investigate-events/util/keys';
 
 // const { log } = console;
 
-const meta = '.pill-meta';
-const metaPowerSelect = '.pill-meta .ember-power-select-trigger';
-const metaInput = '.pill-meta input';
-const operator = '.pill-operator';
-const operatorPowerSelect = '.pill-operator .ember-power-select-trigger';
-const powerSelectOption = '.ember-power-select-option';
-const pillValue = '.pill-value';
-const valueInput = '.pill-value input';
-const deletePill = '.delete-pill';
+import PILL_SELECTORS from '../pill-selectors';
 
 const ESCAPE_KEY = KEY_MAP.escape.code;
 
@@ -50,56 +42,56 @@ module('Integration | Component | Query Pill', function(hooks) {
   test('it activates pill-meta if active upon initialization', async function(assert) {
     new ReduxDataHelper(setState).language().pillsDataEmpty().build();
     await render(hbs`{{query-container/query-pill isActive=true}}`);
-    assert.equal(findAll(metaPowerSelect).length, 1);
+    assert.equal(findAll(PILL_SELECTORS.metaTrigger).length, 1);
   });
 
   test('it allows you to select a meta value', async function(assert) {
     new ReduxDataHelper(setState).language().pillsDataEmpty().build();
     await render(hbs`{{query-container/query-pill isActive=true}}`);
-    selectChoose(metaPowerSelect, powerSelectOption, 0);// option a
-    await waitUntil(() => !find(metaPowerSelect));
-    assert.equal(trim(find(meta).textContent), 'a');
+    selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0);// option a
+    await waitUntil(() => !find(PILL_SELECTORS.metaTrigger));
+    assert.equal(trim(find(PILL_SELECTORS.meta).textContent), 'a');
   });
 
   test('it allows you to select an operator after a meta value was selected', async function(assert) {
     new ReduxDataHelper(setState).language().pillsDataEmpty().build();
     await render(hbs`{{query-container/query-pill isActive=true}}`);
-    selectChoose(metaPowerSelect, powerSelectOption, 0);// option A
-    await waitUntil(() => find(operatorPowerSelect));
-    selectChoose(operatorPowerSelect, powerSelectOption, 0);// option =
-    await waitUntil(() => find(operator));
-    assert.equal(trim(find(operator).textContent), '=');
+    selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0);// option A
+    await waitUntil(() => find(PILL_SELECTORS.operatorTrigger));
+    selectChoose(PILL_SELECTORS.operatorTrigger, PILL_SELECTORS.powerSelectOption, 0);// option =
+    await waitUntil(() => find(PILL_SELECTORS.operator));
+    assert.equal(trim(find(PILL_SELECTORS.operator).textContent), '=');
   });
 
   test('it sets pill-value active after selecting an operator', async function(assert) {
     new ReduxDataHelper(setState).language().pillsDataEmpty().build();
     await render(hbs`{{query-container/query-pill isActive=true}}`);
-    selectChoose(metaPowerSelect, powerSelectOption, 0);// option A
-    await waitUntil(() => find(operatorPowerSelect));
-    selectChoose(operatorPowerSelect, powerSelectOption, 0);// option =
-    await waitUntil(() => find(operator));
-    assert.equal(findAll(valueInput).length, 1, 'Missing value input field');
+    selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0);// option A
+    await waitUntil(() => find(PILL_SELECTORS.operatorTrigger));
+    selectChoose(PILL_SELECTORS.operatorTrigger, PILL_SELECTORS.powerSelectOption, 0);// option =
+    await waitUntil(() => find(PILL_SELECTORS.operator));
+    assert.equal(findAll(PILL_SELECTORS.valueInput).length, 1, 'Missing value input field');
   });
 
   test('it allows you to edit the meta after it was selected', async function(assert) {
     new ReduxDataHelper(setState).language().pillsDataEmpty().build();
     await render(hbs`{{query-container/query-pill isActive=true}}`);
     // Select meta option A
-    await selectChoose(meta, powerSelectOption, 0);
-    assert.equal(trim(find(meta).textContent), 'a');
+    await selectChoose(PILL_SELECTORS.meta, PILL_SELECTORS.powerSelectOption, 0);
+    assert.equal(trim(find(PILL_SELECTORS.meta).textContent), 'a');
     // Verify that operator gets control
-    await focus(operatorPowerSelect);
-    assert.equal(findAll(powerSelectOption).length, 7);
+    await focus(PILL_SELECTORS.operatorTrigger);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 7);
     // Click back on meta and verify that 1 down-selected option is visible
-    await click(meta);
-    await focus(metaPowerSelect);
-    assert.equal(findAll(powerSelectOption).length, 1);
+    await click(PILL_SELECTORS.meta);
+    await focus(PILL_SELECTORS.metaTrigger);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 1);
     // Clear input to show all meta options
-    await fillIn(metaInput, '');
-    assert.equal(findAll(powerSelectOption).length, 5);
+    await fillIn(PILL_SELECTORS.metaInput, '');
+    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 5);
     // Select meta options B
-    await selectChoose(meta, powerSelectOption, 1);
-    assert.equal(trim(find(meta).textContent), 'b');
+    await selectChoose(PILL_SELECTORS.meta, PILL_SELECTORS.powerSelectOption, 1);
+    assert.equal(trim(find(PILL_SELECTORS.meta).textContent), 'b');
   });
 
   test('A pill when supplied with meta, operator, and value will send a message to create', async function(assert) {
@@ -158,32 +150,32 @@ module('Integration | Component | Query Pill', function(hooks) {
     `);
 
     // Choose the first meta option
-    selectChoose(metaPowerSelect, powerSelectOption, 0); // option A
-    await waitUntil(() => find(operatorPowerSelect));
+    selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0); // option A
+    await waitUntil(() => find(PILL_SELECTORS.operatorTrigger));
 
     // Choose the third operator option which does not require a value
-    selectChoose(operatorPowerSelect, powerSelectOption, 2); // option exists
+    selectChoose(PILL_SELECTORS.operatorTrigger, PILL_SELECTORS.powerSelectOption, 2); // option exists
   });
 
   test('presents a delete icon when not active and pill created', async function(assert) {
     this.set('pillData', { id: 1 });
     new ReduxDataHelper(setState).language().build();
     await render(hbs`{{query-container/query-pill isActive=false pillData=pillData}}`);
-    assert.equal(findAll(deletePill).length, 1, 'Delete pill component is present');
+    assert.equal(findAll(PILL_SELECTORS.deletePill).length, 1, 'Delete pill component is present');
   });
 
   test('does not present a delete icon when not a created pill', async function(assert) {
     this.set('pillData', null);
     new ReduxDataHelper(setState).language().build();
     await render(hbs`{{query-container/query-pill isActive=false pillData=pillData}}`);
-    assert.equal(findAll(deletePill).length, 0, 'Delete pill component is not present');
+    assert.equal(findAll(PILL_SELECTORS.deletePill).length, 0, 'Delete pill component is not present');
   });
 
   test('does not present a delete icon when when active', async function(assert) {
     this.set('pillData', { id: 1 });
     new ReduxDataHelper(setState).language().build();
     await render(hbs`{{query-container/query-pill isActive=true pillData=pillData}}`);
-    assert.equal(findAll(deletePill).length, 0, 'Delete pill component is not present');
+    assert.equal(findAll(PILL_SELECTORS.deletePill).length, 0, 'Delete pill component is not present');
   });
 
   test('messages up that a pill needs to be deleted when delete icon clicked', async function(assert) {
@@ -214,7 +206,7 @@ module('Integration | Component | Query Pill', function(hooks) {
         position=0
         sendMessage=(action handleMessage)
     }}`);
-    await click(deletePill);
+    await click(PILL_SELECTORS.deletePill);
   });
 
   test('messages up a pill has cancelled when child componenent sents ESCAPE', async function(assert) {
@@ -242,8 +234,8 @@ module('Integration | Component | Query Pill', function(hooks) {
       }}
     `);
 
-    await focus(metaPowerSelect);
-    await triggerKeyEvent(metaPowerSelect, 'keydown', ESCAPE_KEY);
+    await focus(PILL_SELECTORS.metaTrigger);
+    await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', ESCAPE_KEY);
   });
 
   test('prepopulates with data when passed existing pill', async function(assert) {
@@ -259,9 +251,9 @@ module('Integration | Component | Query Pill', function(hooks) {
       }}
     `);
 
-    assert.equal(trim(find(meta).textContent), 'a');
-    assert.equal(trim(find(operator).textContent), '=');
-    assert.equal(trim(find(pillValue).textContent), 'x');
+    assert.equal(trim(find(PILL_SELECTORS.meta).textContent), 'a');
+    assert.equal(trim(find(PILL_SELECTORS.operator).textContent), '=');
+    assert.equal(trim(find(PILL_SELECTORS.value).textContent), 'x');
   });
 
   test('A pill clears out and is available to create more pills', async function(assert) {
@@ -293,7 +285,7 @@ module('Integration | Component | Query Pill', function(hooks) {
     await createBasicPill();
 
     // meta power select should now be visible
-    assert.equal(findAll(metaPowerSelect).length, 1);
+    assert.equal(findAll(PILL_SELECTORS.metaTrigger).length, 1);
 
     await createBasicPill();
   });

@@ -7,9 +7,7 @@ import { click, find, findAll, render, triggerKeyEvent } from '@ember/test-helpe
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import { createBasicPill } from '../pill-util';
-
-const newPillTrigger = '.new-pill-trigger';
-const metaPowerSelectTrigger = '.pill-meta .ember-power-select-trigger';
+import PILL_SELECTORS from '../pill-selectors';
 
 const ESCAPE_KEY = '27';
 
@@ -28,24 +26,24 @@ module('Integration | Component | new-pill-trigger', function(hooks) {
 
   test('shows trigger by default', async function(assert) {
     await render(hbs`{{query-container/new-pill-trigger}}`);
-    assert.ok(find(newPillTrigger) !== null, 'trigger renders by default');
+    assert.ok(find(PILL_SELECTORS.newPillTrigger) !== null, 'trigger renders by default');
   });
 
   test('shows new pill entry when trigger is triggered', async function(assert) {
     new ReduxDataHelper(setState).language().pillsDataEmpty().build();
     await render(hbs`{{query-container/new-pill-trigger}}`);
-    await click(newPillTrigger);
-    assert.equal(findAll(metaPowerSelectTrigger).length, 1);
+    await click(PILL_SELECTORS.newPillTrigger);
+    assert.equal(findAll(PILL_SELECTORS.metaTrigger).length, 1);
   });
 
   test('ESC key returns user to trigger', async function(assert) {
     new ReduxDataHelper(setState).language().pillsDataEmpty().build();
     await render(hbs`{{query-container/new-pill-trigger}}`);
-    await click(newPillTrigger);
-    assert.equal(findAll(metaPowerSelectTrigger).length, 1);
-    await focus(metaPowerSelectTrigger);
-    await triggerKeyEvent(metaPowerSelectTrigger, 'keydown', ESCAPE_KEY);
-    assert.equal(findAll(metaPowerSelectTrigger).length, 0);
+    await click(PILL_SELECTORS.newPillTrigger);
+    assert.equal(findAll(PILL_SELECTORS.metaTrigger).length, 1);
+    await focus(PILL_SELECTORS.metaTrigger);
+    await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', ESCAPE_KEY);
+    assert.equal(findAll(PILL_SELECTORS.metaTrigger).length, 0);
   });
 
   test('it broadcasts a message when a pill is created', async function(assert) {
@@ -61,7 +59,7 @@ module('Integration | Component | new-pill-trigger', function(hooks) {
         newPillPosition=5
         sendMessage=(action handleMessage)}}
     `);
-    await click(newPillTrigger);
+    await click(PILL_SELECTORS.newPillTrigger);
     await createBasicPill();
   });
 });

@@ -10,8 +10,7 @@ import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import nextGenCreators from 'investigate-events/actions/next-gen-creators';
 import { createBasicPill } from '../pill-util';
 
-const deletePill = '.delete-pill';
-const newPillTrigger = '.new-pill-trigger';
+import PILL_SELECTORS from '../pill-selectors';
 
 let setState;
 const newActionSpy = sinon.spy(nextGenCreators, 'addNextGenPill');
@@ -40,7 +39,7 @@ module('Integration | Component | Query Pills', function(hooks) {
 
   test('Upon initialization, one active pill is created', async function(assert) {
     await render(hbs`{{query-container/query-pills}}`);
-    assert.equal(findAll('.query-pill').length, 1, 'There should only be one query-pill.');
+    assert.equal(findAll(PILL_SELECTORS.allPills).length, 1, 'There should only be one query-pill.');
   });
 
   test('Creating a pill sets filters and sends action for redux state update', async function(assert) {
@@ -98,11 +97,11 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await render(hbs`{{query-container/query-pills filters=filters isActive=true}}`);
 
-    assert.equal(findAll('.new-pill-trigger-container').length, 1, 'There should only be one new pill trigger.');
+    assert.equal(findAll(PILL_SELECTORS.newPillTriggerContainer).length, 1, 'There should only be one new pill trigger.');
 
     await createBasicPill();
 
-    assert.equal(findAll('.new-pill-trigger-container').length, 2, 'There should now be two new pill triggers.');
+    assert.equal(findAll(PILL_SELECTORS.newPillTriggerContainer).length, 2, 'There should now be two new pill triggers.');
   });
 
   test('Creating a pill with the new pill trigger sets filters and sends action for redux state update', async function(assert) {
@@ -115,7 +114,7 @@ module('Integration | Component | Query Pills', function(hooks) {
 
     await render(hbs`{{query-container/query-pills filters=filters isActive=true}}`);
 
-    await click(newPillTrigger);
+    await click(PILL_SELECTORS.newPillTrigger);
 
     await createBasicPill(true);
 
@@ -137,7 +136,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     this.set('filters', []);
 
     await render(hbs`{{query-container/query-pills isActive=true filters=filters}}`);
-    await click(deletePill);
+    await click(PILL_SELECTORS.deletePill);
 
     return settled().then(async () => {
       // Internal (temporary) filters maintained
