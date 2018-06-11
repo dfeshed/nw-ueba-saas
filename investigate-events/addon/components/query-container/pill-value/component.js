@@ -46,34 +46,41 @@ export default Component.extend({
     /**
      * Why the keydown event? Because the power-select components use keydown to
      * handle keyboard interactions. This can cause situations where you press a
-     * key when the operator has focus, but the for some seemingly unknown
-     * reason, this component reacts. Using keydown has little consequence
-     * except for BACKSPACE handling. We need to manually trim the last
-     * character befor send the event since it hasn't been removed from the
-     * input yet.
+     * key when this has focus, but another component reacts. To combat this for
+     * certain key types, we delay processing the key press until `onKeyUp`.
+     * See note at bottom of file.
+     * @param {string} input The value from the DOM input element
      * @param {Object} event A KeyboardEvent
      * @private
      */
     onKeyDown(input, event) {
       input = input || '';// guard against undefined or null
-      // 'keyCode' is deprecated in favor of 'key', but the Ember test-helpers
-      // don't support 'key'
-      if (isBackspace(event) && input.length === 0) {
-        this._broadcast(MESSAGE_TYPES.VALUE_BACKSPACE_KEY);
+      if (isBackspace(event)) {
+        this.set('atLeftEdge', input.length === 0);
       } else if (isEnter(event) && !this._isInputEmpty(input)) {
         this._broadcast(MESSAGE_TYPES.VALUE_ENTER_KEY, input);
       } else if (isEscape(event)) {
         this._broadcast(MESSAGE_TYPES.VALUE_ESCAPE_KEY, input);
       } else if (isArrowLeft(event)) {
-        // Why are we handling ARROW_LEFT on KEYUP and KEYDOWN? See note below.
         this.set('atLeftEdge', event.target.selectionStart === 0);
       }
     },
+    /**
+     * Handles `keyup` events. See note at end of file for rational behind
+     * handling up and down events for same key.
+     * @param {string} input The value from the DOM input element
+     * @param {Object} event A KeyboardEvent
+     * @private
+     */
     onKeyUp(input, event) {
+      input = input || '';// guard against undefined or null
       if (isArrowLeft(event)) {
-        // Why are we handling ARROW_LEFT on KEYUP and KEYDOWN? See note below.
         if (this.get('atLeftEdge')) {
-          this._broadcast(MESSAGE_TYPES.VALUE_ARROW_LEFT_KEY);
+          this._broadcast(MESSAGE_TYPES.VALUE_ARROW_LEFT_KEY, input);
+        }
+      } else if (isBackspace(event)) {
+        if (this.get('atLeftEdge')) {
+          this._broadcast(MESSAGE_TYPES.VALUE_BACKSPACE_KEY);
         }
       }
     }
@@ -102,8 +109,8 @@ export default Component.extend({
 
 // NOTES
 /*
- * So, why are we handling key-up and key-down for the ARROW_LEFT key? It's a
- * bit of an event dance. Let's say we have the following string in the input:
+ * So, why are we handling key-up and key-down for the certain keys? It's a bit
+ * of an event dance. Let's say we have the following string in the input:
  *
  * "bar"
  *

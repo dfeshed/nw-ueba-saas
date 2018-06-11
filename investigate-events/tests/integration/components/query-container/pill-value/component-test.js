@@ -45,6 +45,7 @@ module('Integration | Component | Pill Value', function(hooks) {
     await render(hbs`{{query-container/pill-value isActive=true sendMessage=(action handleMessage)}}`);
     await fillIn(valueInput, 'xx');
     await triggerKeyEvent(valueInput, 'keydown', BACKSPACE_KEY);
+    await triggerKeyEvent(valueInput, 'keyup', BACKSPACE_KEY);
     return settled();
   });
 
@@ -59,6 +60,7 @@ module('Integration | Component | Pill Value', function(hooks) {
     });
     await render(hbs`{{query-container/pill-value isActive=true sendMessage=(action handleMessage)}}`);
     await triggerKeyEvent(valueInput, 'keydown', BACKSPACE_KEY);
+    await triggerKeyEvent(valueInput, 'keyup', BACKSPACE_KEY);
   });
 
   test('it does not broadcasts a message when the ENTER key is pressed and there is no value', async function(assert) {

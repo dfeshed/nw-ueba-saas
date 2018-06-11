@@ -116,7 +116,7 @@ export default Component.extend({
       [MESSAGE_TYPES.OPERATOR_ESCAPE_KEY]: () => this._cancelPillCreation(),
       [MESSAGE_TYPES.OPERATOR_SELECTED]: (data) => this._operatorSelected(data),
       [MESSAGE_TYPES.PILL_DELETED]: (data) => this._deletePill(data),
-      [MESSAGE_TYPES.VALUE_ARROW_LEFT_KEY]: () => this._valueArrowLeft(),
+      [MESSAGE_TYPES.VALUE_ARROW_LEFT_KEY]: (data) => this._valueArrowLeft(data),
       [MESSAGE_TYPES.VALUE_ARROW_RIGHT_KEY]: (data) => this._rightArrowKeyPressed(data),
       [MESSAGE_TYPES.VALUE_BACKSPACE_KEY]: () => this._valueBackspace(),
       [MESSAGE_TYPES.VALUE_ENTER_KEY]: (data) => {
@@ -337,8 +337,9 @@ export default Component.extend({
    * value.
    * @private
    */
-  _valueArrowLeft() {
+  _valueArrowLeft(data) {
     this.setProperties({
+      valueString: data,
       isMetaActive: false,
       isOperatorActive: true,
       isValueActive: false
