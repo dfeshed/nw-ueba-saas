@@ -39,7 +39,7 @@ export default {
       name: 'openProcessBrowser'
     },
     {
-      name: 'openProcessOs'
+      name: 'openOSProcess'
     },
     {
       name: 'createProcess'
