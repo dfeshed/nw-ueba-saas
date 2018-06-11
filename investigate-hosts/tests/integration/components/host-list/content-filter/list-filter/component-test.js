@@ -9,7 +9,7 @@ const defaultConfig = {
   selected: [],
   propertyName: 'signature',
   panelId: 'list-filter-test',
-  label: 'investigateHosts.hosts.column.groups.name',
+  label: 'investigateHosts.hosts.column.groupPolicy.groups.name',
   options: ['singned', 'unsigned', 'other'],
   expression: {
   }

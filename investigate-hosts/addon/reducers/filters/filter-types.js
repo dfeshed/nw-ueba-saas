@@ -242,8 +242,8 @@ const FILTER_TYPES = [
     'invalidError': 'invalidIP'
   },
   {
-    'propertyName': 'groups.name',
-    'label': 'investigateHosts.hosts.column.groups.name',
+    'propertyName': 'groupPolicy.groups.name',
+    'label': 'investigateHosts.hosts.column.groupPolicy.groups.name',
     'filterControl': 'host-list/content-filter/text-filter',
     'selected': false,
     'panelId': 'groups',

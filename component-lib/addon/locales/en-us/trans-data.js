@@ -2386,8 +2386,10 @@ export default {
           scanStatus: 'Agent Scan Status',
           lastSeenTime: 'Agent Last Seen'
         },
-        groups: {
-          name: 'Agent Groups'
+        groupPolicy: {
+          groups: {
+            name: 'Agent Groups'
+          }
         },
         machine: {
           machineOsType: 'Operating System',

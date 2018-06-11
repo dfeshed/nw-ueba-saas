@@ -2,10 +2,9 @@ export default [
   {
     sectionName: 'Groups',
     isFusionFeature: true,
-    prefix: 'groups',
     fields: [
       {
-        field: 'groups',
+        field: 'groupPolicy.groups',
         labelKey: 'groups'
       }
     ]
