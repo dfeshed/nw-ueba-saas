@@ -4,8 +4,10 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
 import { selectChoose, typeInSearch } from 'ember-power-select/test-support/helpers';
 import { fillIn, find, findAll, focus, render, settled, triggerKeyEvent } from '@ember/test-helpers';
+
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
 import KEY_MAP from 'investigate-events/util/keys';
+import PILL_SELECTORS from '../pill-selectors';
 
 // const { log } = console;
 
@@ -15,10 +17,6 @@ const ARROW_RIGHT = KEY_MAP.arrowRight.code;
 const ESCAPE_KEY = KEY_MAP.escape.code;
 const BACKSPACE_KEY = KEY_MAP.backspace.code;
 
-const operator = '.pill-operator';
-const operatorPowerSelectTrigger = '.pill-operator .ember-power-select-trigger';
-const operatorPowerSelectInput = '.pill-operator .ember-power-select-trigger input';
-const powerSelectOption = '.ember-power-select-option';
 const trim = (text) => text.replace(/\s+/g, '').trim();
 const meta = { count: 0, format: 'Text', metaName: 'a', flags: 1, displayName: 'A' };
 const eq = { displayName: '=', isExpensive: false, hasValue: true };
@@ -33,7 +31,7 @@ module('Integration | Component | Pill Operator', function(hooks) {
     // it'd be an empty string.
     this.set('selection', eq);
     await render(hbs`{{query-container/pill-operator isActive=false selection=selection}}`);
-    assert.equal(trim(find(operator).textContent), eq.displayName);
+    assert.equal(trim(find(PILL_SELECTORS.operator).textContent), eq.displayName);
   });
 
   // There is a bug with ember-power-select-typeahead.
@@ -42,8 +40,8 @@ module('Integration | Component | Pill Operator', function(hooks) {
   test('it shows an open Power Select if active', async function(assert) {
     this.set('meta', meta);
     await render(hbs`{{query-container/pill-operator isActive=true meta=meta}}`);
-    await focus(operatorPowerSelectTrigger);
-    const options = findAll(powerSelectOption);
+    await focus(PILL_SELECTORS.operatorTrigger);
+    const options = findAll(PILL_SELECTORS.powerSelectOption);
     assert.equal(options.length, 7);
     assert.equal(options[0].textContent.trim(), '=');
     assert.equal(options[1].textContent.trim(), '!=');
@@ -65,7 +63,7 @@ module('Integration | Component | Pill Operator', function(hooks) {
       }
     });
     await render(hbs`{{query-container/pill-operator isActive=true meta=meta sendMessage=(action handleMessage)}}`);
-    await selectChoose(operatorPowerSelectTrigger, powerSelectOption, 0);// option "="
+    await selectChoose(PILL_SELECTORS.operatorTrigger, PILL_SELECTORS.powerSelectOption, 0);// option "="
   });
 
   test('it broadcasts a message when the ARROW_LEFT key is pressed', async function(assert) {
@@ -79,7 +77,7 @@ module('Integration | Component | Pill Operator', function(hooks) {
       }
     });
     await render(hbs`{{query-container/pill-operator isActive=true meta=meta sendMessage=(action handleMessage)}}`);
-    await triggerKeyEvent(operatorPowerSelectInput, 'keydown', ARROW_LEFT);
+    await triggerKeyEvent(PILL_SELECTORS.operatorInput, 'keydown', ARROW_LEFT);
   });
 
   test('it does not broadcasts a message when the ARROW_RIGHT key is pressed and there is no selection', async function(assert) {
@@ -89,7 +87,7 @@ module('Integration | Component | Pill Operator', function(hooks) {
       assert.notOk('message dispatched');
     });
     await render(hbs`{{query-container/pill-operator isActive=true meta=meta sendMessage=(action handleMessage)}}`);
-    await triggerKeyEvent(operatorPowerSelectInput, 'keydown', ARROW_RIGHT);
+    await triggerKeyEvent(PILL_SELECTORS.operatorInput, 'keydown', ARROW_RIGHT);
     return settled();
   });
 
@@ -106,8 +104,8 @@ module('Integration | Component | Pill Operator', function(hooks) {
       }
     });
     await render(hbs`{{query-container/pill-operator isActive=true meta=meta selection=selection sendMessage=(action handleMessage)}}`);
-    await selectChoose(operatorPowerSelectTrigger, powerSelectOption, 0);
-    await triggerKeyEvent(operatorPowerSelectInput, 'keydown', ARROW_RIGHT);
+    await selectChoose(PILL_SELECTORS.operatorTrigger, PILL_SELECTORS.powerSelectOption, 0);
+    await triggerKeyEvent(PILL_SELECTORS.operatorInput, 'keydown', ARROW_RIGHT);
   });
 
   test('it does not broadcasts a message when the BACKSPACE key is pressed mid string', async function(assert) {
@@ -117,8 +115,8 @@ module('Integration | Component | Pill Operator', function(hooks) {
       assert.notOk('message dispatched');
     });
     await render(hbs`{{query-container/pill-operator isActive=true meta=meta sendMessage=(action handleMessage)}}`);
-    await fillIn(operatorPowerSelectInput, 'beg');
-    await triggerKeyEvent(operatorPowerSelectInput, 'keydown', BACKSPACE_KEY);
+    await fillIn(PILL_SELECTORS.operatorInput, 'beg');
+    await triggerKeyEvent(PILL_SELECTORS.operatorInput, 'keydown', BACKSPACE_KEY);
     return settled();
   });
 
@@ -133,7 +131,7 @@ module('Integration | Component | Pill Operator', function(hooks) {
       }
     });
     await render(hbs`{{query-container/pill-operator isActive=true meta=meta sendMessage=(action handleMessage)}}`);
-    await triggerKeyEvent(operatorPowerSelectInput, 'keydown', BACKSPACE_KEY);
+    await triggerKeyEvent(PILL_SELECTORS.operatorInput, 'keydown', BACKSPACE_KEY);
   });
 
   test('it broadcasts a message when the ESCAPE key is pressed', async function(assert) {
@@ -145,7 +143,7 @@ module('Integration | Component | Pill Operator', function(hooks) {
       done();
     });
     await render(hbs`{{query-container/pill-operator isActive=true meta=meta sendMessage=(action handleMessage)}}`);
-    await triggerKeyEvent(operatorPowerSelectInput, 'keydown', ESCAPE_KEY);
+    await triggerKeyEvent(PILL_SELECTORS.operatorInput, 'keydown', ESCAPE_KEY);
   });
 
   test('it selects an operator if a trailing SPACE is entered and there is one option', async function(assert) {
@@ -164,8 +162,8 @@ module('Integration | Component | Pill Operator', function(hooks) {
     // clear out. PowerSelect test helper typeInSearch() ends up just calling
     // fillIn(). Also, fillIn() doesn't seem to properly trigger an InputEvent,
     // so the input handler doesn't get a down-selected list of meta options.
-    this.$(operatorPowerSelectInput).val('=').trigger('input');
-    this.$(operatorPowerSelectInput).val(' ').trigger('input');
+    this.$(PILL_SELECTORS.operatorInput).val('=').trigger('input');
+    this.$(PILL_SELECTORS.operatorInput).val(' ').trigger('input');
   });
 
   test('it does not select an operator if a trailing SPACE is entered and there is more than one option', async function(assert) {
@@ -175,26 +173,26 @@ module('Integration | Component | Pill Operator', function(hooks) {
       assert.notOk('message dispatched');
     });
     await render(hbs`{{query-container/pill-operator isActive=true meta=meta sendMessage=(action handleMessage)}}`);
-    this.$(operatorPowerSelectInput).val('e').trigger('input');
-    this.$(operatorPowerSelectInput).val(' ').trigger('input');
+    this.$(PILL_SELECTORS.operatorInput).val('e').trigger('input');
+    this.$(PILL_SELECTORS.operatorInput).val(' ').trigger('input');
     return settled();
   });
 
   test('it clears out last search if Power Select looses, then gains focus', async function(assert) {
     this.set('meta', meta);
     await render(hbs`{{query-container/pill-operator isActive=true meta=meta}}`);
-    await focus(operatorPowerSelectTrigger);
+    await focus(PILL_SELECTORS.operatorTrigger);
     // assert number of options
-    assert.equal(findAll(powerSelectOption).length, 7);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 7);
     // perform a search that down-selects the list of options
     await typeInSearch('e');
-    assert.equal(findAll(powerSelectOption).length, 2); // exists and ends
+    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 2); // exists and ends
     // blur and assert no options present
-    await triggerKeyEvent(operatorPowerSelectInput, 'keydown', TAB_KEY);
-    assert.equal(findAll(powerSelectOption).length, 0);
+    await triggerKeyEvent(PILL_SELECTORS.operatorInput, 'keydown', TAB_KEY);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 0);
     // focus and assert number of options
-    await focus(operatorPowerSelectTrigger);
-    assert.equal(findAll(powerSelectOption).length, 7);
+    await focus(PILL_SELECTORS.operatorTrigger);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 7);
   });
 
   test('it allows you to reselect an operator after it was previously selected', async function(assert) {
@@ -213,8 +211,8 @@ module('Integration | Component | Pill Operator', function(hooks) {
     });
     await render(hbs`{{query-container/pill-operator isActive=true meta=meta sendMessage=(action handleMessage)}}`);
     // Select an option
-    await selectChoose(operatorPowerSelectTrigger, powerSelectOption, 0);// option "="
+    await selectChoose(PILL_SELECTORS.operatorTrigger, PILL_SELECTORS.powerSelectOption, 0);// option "="
     // Reselect the same option
-    await selectChoose(operatorPowerSelectTrigger, powerSelectOption, 0);// option "="
+    await selectChoose(PILL_SELECTORS.operatorTrigger, PILL_SELECTORS.powerSelectOption, 0);// option "="
   });
 });

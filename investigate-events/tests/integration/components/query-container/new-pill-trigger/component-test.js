@@ -8,6 +8,7 @@ import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import { createBasicPill } from '../pill-util';
 import PILL_SELECTORS from '../pill-selectors';
+import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
 
 const ESCAPE_KEY = '27';
 
@@ -50,7 +51,7 @@ module('Integration | Component | new-pill-trigger', function(hooks) {
     new ReduxDataHelper(setState).language().pillsDataEmpty().build();
     assert.expect(3);
     this.set('handleMessage', (type, data, position) => {
-      assert.equal(type, 'PILL::CREATED', 'Wrong message type');
+      assert.equal(type, MESSAGE_TYPES.PILL_CREATED, 'Wrong message type');
       assert.deepEqual(data, { meta: 'a', operator: '=', value: 'x' }, 'Message sent for pill create contains correct pill data');
       assert.equal(position, 5, 'Wrong position number');
     });

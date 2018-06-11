@@ -9,15 +9,12 @@ import { patchReducer } from '../../../../helpers/vnext-patch';
 import ReduxDataHelper, { DEFAULT_LANGUAGES } from '../../../../helpers/redux-data-helper';
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
 import KEY_MAP from 'investigate-events/util/keys';
+import PILL_SELECTORS from '../pill-selectors';
 
 const ARROW_RIGHT = KEY_MAP.arrowRight.code;
 const ESCAPE_KEY = KEY_MAP.escape.code;
 const TAB_KEY = KEY_MAP.tab.code;
 
-const meta = '.pill-meta';
-const metaPowerSelectTrigger = '.pill-meta .ember-power-select-trigger';
-const metaPowerSelectInput = '.pill-meta .ember-power-select-trigger input';
-const powerSelectOption = '.ember-power-select-option';
 const trim = (text) => text.replace(/\s+/g, '').trim();
 
 let setState;
@@ -38,7 +35,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
     // it'd be an empty string.
     this.set('selection', DEFAULT_LANGUAGES[0]);
     await render(hbs`{{query-container/pill-meta isActive=false selection=selection}}`);
-    assert.equal(trim(find(meta).textContent), 'a');
+    assert.equal(trim(find(PILL_SELECTORS.meta).textContent), 'a');
   });
 
   test('it shows only value if active, but no options', async function(assert) {
@@ -46,13 +43,13 @@ module('Integration | Component | Pill Meta', function(hooks) {
     // it'd be an empty string.
     this.set('selection', DEFAULT_LANGUAGES[0]);
     await render(hbs`{{query-container/pill-meta isActive=true selection=selection}}`);
-    assert.equal(trim(find(meta).textContent), 'a');
+    assert.equal(trim(find(PILL_SELECTORS.meta).textContent), 'a');
   });
 
   test('it shows a Power Select if active and has options', async function(assert) {
     new ReduxDataHelper(setState).language().pillsDataEmpty().build();
     await render(hbs`{{query-container/pill-meta isActive=true}}`);
-    assert.equal(findAll(metaPowerSelectTrigger).length, 1);
+    assert.equal(findAll(PILL_SELECTORS.metaTrigger).length, 1);
   });
 
   test('it broadcasts a message when a Power Select option is choosen', async function(assert) {
@@ -66,7 +63,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
       }
     });
     await render(hbs`{{query-container/pill-meta isActive=true sendMessage=(action handleMessage)}}`);
-    selectChoose(metaPowerSelectTrigger, powerSelectOption, 1);// option b
+    selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 1);// option b
   });
 
   test('it does not broadcasts a message when the ARROW_RIGHT key is pressed and there is no selection', async function(assert) {
@@ -76,7 +73,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
       assert.notOk('message dispatched');
     });
     await render(hbs`{{query-container/pill-meta isActive=true sendMessage=(action handleMessage)}}`);
-    await triggerKeyEvent(metaPowerSelectInput, 'keydown', ARROW_RIGHT);
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_RIGHT);
     return settled();
   });
 
@@ -93,8 +90,8 @@ module('Integration | Component | Pill Meta', function(hooks) {
       }
     });
     await render(hbs`{{query-container/pill-meta isActive=true selection=selection sendMessage=(action handleMessage)}}`);
-    await selectChoose(metaPowerSelectTrigger, powerSelectOption, 1);
-    await triggerKeyEvent(metaPowerSelectInput, 'keydown', ARROW_RIGHT);
+    await selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 1);
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_RIGHT);
   });
 
   test('it broadcasts a message when the ESCAPE key is pressed', async function(assert) {
@@ -109,7 +106,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
     });
     await render(hbs`{{query-container/pill-meta isActive=true sendMessage=(action handleMessage)}}`);
     // await focus(metaPowerSelectTrigger);
-    await triggerKeyEvent(metaPowerSelectInput, 'keydown', ESCAPE_KEY);
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ESCAPE_KEY);
   });
 
   test('it selects meta if a trailing SPACE is entered and there is one option', async function(assert) {
@@ -154,18 +151,18 @@ module('Integration | Component | Pill Meta', function(hooks) {
   test('it clears out last search if Power Select looses, then gains focus', async function(assert) {
     new ReduxDataHelper(setState).language().pillsDataEmpty().build();
     await render(hbs`{{query-container/pill-meta isActive=true}}`);
-    await focus(metaPowerSelectTrigger);
+    await focus(PILL_SELECTORS.metaTrigger);
     // assert number of options
-    assert.equal(findAll(powerSelectOption).length, 5);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 5);
     // perform a search that down-selects the list of options
     await typeInSearch('c');
-    assert.equal(findAll(powerSelectOption).length, 3); // c, c.a, c.b
+    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 3); // c, c.a, c.b
     // blur and assert no options present
-    await triggerKeyEvent(metaPowerSelectTrigger, 'keydown', TAB_KEY);
-    assert.equal(findAll(powerSelectOption).length, 0);
+    await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', TAB_KEY);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 0);
     // focus and assert number of options
-    await focus(metaPowerSelectTrigger);
-    assert.equal(findAll(powerSelectOption).length, 5);
+    await focus(PILL_SELECTORS.metaTrigger);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 5);
     return settled();
   });
 });

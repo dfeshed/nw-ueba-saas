@@ -1,21 +1,23 @@
 import { fillIn, find, waitUntil, triggerKeyEvent } from '@ember/test-helpers';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 
+import PILL_SELECTORS from './pill-selectors';
+
 const ENTER_KEY = 13;
 const X_KEY = 88;
 
 const pillSelectors = {
-  metaPowerSelect: '.pill-meta .ember-power-select-trigger',
-  operatorPowerSelect: '.pill-operator .ember-power-select-trigger',
-  powerSelectOption: '.ember-power-select-option',
-  valueInput: '.pill-value input'
+  metaPowerSelect: PILL_SELECTORS.metaTrigger,
+  operatorPowerSelect: PILL_SELECTORS.operatorTrigger,
+  powerSelectOption: PILL_SELECTORS.powerSelectOption,
+  valueInput: PILL_SELECTORS.valueInput
 };
 
 const pillTriggerSelectors = {
-  metaPowerSelect: '.new-pill-trigger-container .pill-meta .ember-power-select-trigger',
-  operatorPowerSelect: '.new-pill-trigger-container .pill-operator .ember-power-select-trigger',
-  powerSelectOption: '.ember-power-select-option',
-  valueInput: '.new-pill-trigger-container .pill-value input'
+  metaPowerSelect: `${PILL_SELECTORS.newPillTriggerContainer} ${PILL_SELECTORS.metaTrigger}`,
+  operatorPowerSelect: `${PILL_SELECTORS.newPillTriggerContainer} ${PILL_SELECTORS.operatorTrigger}`,
+  powerSelectOption: PILL_SELECTORS.powerSelectOption,
+  valueInput: `${PILL_SELECTORS.newPillTriggerContainer} ${PILL_SELECTORS.valueInput}`
 };
 
 export const createBasicPill = async function(fromTrigger) {

@@ -10,6 +10,7 @@ import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import { enrichedPillsData } from 'investigate-events/reducers/investigate/next-gen/selectors';
 import { createBasicPill } from '../pill-util';
 import KEY_MAP from 'investigate-events/util/keys';
+import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
 
 // const { log } = console;
 
@@ -34,7 +35,7 @@ module('Integration | Component | Query Pill', function(hooks) {
 
   test('it sends a message that it was initialized', async function(assert) {
     this.set('handleMessage', (messageType) => {
-      assert.equal(messageType, 'PILL::INITIALIZED', 'Initalization message does not match');
+      assert.equal(messageType, MESSAGE_TYPES.PILL_INITIALIZED, 'Initalization message does not match');
     });
     await render(hbs`{{query-container/query-pill sendMessage=(action handleMessage)}}`);
   });
@@ -101,11 +102,11 @@ module('Integration | Component | Query Pill', function(hooks) {
     this.set('handleMessage', (messageType, data, position) => {
 
       // first message will be initialized, get rid of it
-      if (messageType === 'PILL::INITIALIZED') {
+      if (messageType === MESSAGE_TYPES.PILL_INITIALIZED) {
         return;
       }
 
-      assert.equal(messageType, 'PILL::CREATED', 'Message sent for pill create is not correct');
+      assert.equal(messageType, MESSAGE_TYPES.PILL_CREATED, 'Message sent for pill create is not correct');
       assert.deepEqual(data, { meta: 'a', operator: '=', value: 'x' }, 'Message sent for pill create contains correct pill data');
       assert.equal(position, 0, 'Message sent for pill create contains correct pill position');
 
@@ -130,11 +131,11 @@ module('Integration | Component | Query Pill', function(hooks) {
     this.set('handleMessage', (messageType, data, position) => {
 
       // first message will be initialized, get rid of it
-      if (messageType === 'PILL::INITIALIZED') {
+      if (messageType === MESSAGE_TYPES.PILL_INITIALIZED) {
         return;
       }
 
-      assert.equal(messageType, 'PILL::CREATED', 'Message sent for pill create is not correct');
+      assert.equal(messageType, MESSAGE_TYPES.PILL_CREATED, 'Message sent for pill create is not correct');
       assert.deepEqual(data, { meta: 'a', operator: 'exists', value: null }, 'Message sent for pill create contains correct pill data');
       assert.equal(position, 0, 'Message sent for pill create contains correct pill position');
 
@@ -184,11 +185,11 @@ module('Integration | Component | Query Pill', function(hooks) {
     this.set('handleMessage', (messageType, data, position) => {
 
       // first message will be initialized, get rid of it
-      if (messageType === 'PILL::INITIALIZED') {
+      if (messageType === MESSAGE_TYPES.PILL_INITIALIZED) {
         return;
       }
 
-      assert.equal(messageType, 'PILL::DELETED', 'Message sent for pill delete is not correct');
+      assert.equal(messageType, MESSAGE_TYPES.PILL_DELETED, 'Message sent for pill delete is not correct');
       assert.deepEqual(data, { id: '1', meta: 'a', operator: '=', value: 'x' }, 'Message sent for pill create contains correct pill data');
       assert.equal(position, 0, 'Message sent for pill create contains correct pill position');
 
@@ -215,11 +216,11 @@ module('Integration | Component | Query Pill', function(hooks) {
     this.set('handleMessage', (messageType, data, position) => {
 
       // first message will be initialized, get rid of it
-      if (messageType === 'PILL::INITIALIZED') {
+      if (messageType === MESSAGE_TYPES.PILL_INITIALIZED) {
         return;
       }
 
-      assert.equal(messageType, 'PILL::CANCELLED', 'Message sent for pill cancel is not correct');
+      assert.equal(messageType, MESSAGE_TYPES.PILL_CANCELLED, 'Message sent for pill cancel is not correct');
       assert.equal(position, 0, 'Message sent for pill create contains correct pill position');
 
       done();
@@ -265,11 +266,11 @@ module('Integration | Component | Query Pill', function(hooks) {
     this.set('handleMessage', (messageType) => {
 
       // first message will be initialized, get rid of it
-      if (messageType === 'PILL::INITIALIZED') {
+      if (messageType === MESSAGE_TYPES.PILL_INITIALIZED) {
         return;
       }
 
-      assert.equal(messageType, 'PILL::CREATED', 'Message sent for pill create is not correct');
+      assert.equal(messageType, MESSAGE_TYPES.PILL_CREATED, 'Message sent for pill create is not correct');
 
       done();
     });
