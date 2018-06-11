@@ -14,7 +14,7 @@ yum -y install rsa-nw-presidio-configserver
 /var/lib/netwitness/presidio/install/configserver/mongo_creds.sh --db presidio --pass P@ssw0rd
 
 # Configure RabitMQ credentials
-/var/lib/netwitness/presidio/install/configserver/rabitmq_creds.sh --hostname localhost --port 5672 --exchange carlos.alerts --virtualhost /rsa/system --username guest --password guest
+/var/lib/netwitness/presidio/install/configserver/rabbitmq_creds.sh --hostname localhost --port 5672 --exchange carlos.alerts --virtualhost /rsa/system --username guest --password guest
 
 systemctl daemon-reload
 systemctl enable presidio-configserver
