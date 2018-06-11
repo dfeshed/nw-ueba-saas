@@ -501,7 +501,6 @@ const TreeComponent = Component.extend({
     const checksum = d.data.checksum ? d.data.checksum : d.data['checksum.dst'];
     const hashes = [checksum];
     this.send('fetchProcessDetails', { hashes });
-    this.send('selectedProcessEvents', d.data.processId, {});
     this.send('setSelectedProcess', _.omit(d.data, 'children'));
     if (!this.get('isProcessDetailsVisible')) {
       this.send('toggleProcessDetailsVisibility');

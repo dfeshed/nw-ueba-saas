@@ -2,7 +2,9 @@ import { call, all, put, takeLatest, select } from 'redux-saga/effects';
 import * as ACTION_TYPES from 'investigate-process-analysis/actions/types';
 import fetchDistinctCount from 'investigate-shared/actions/api/events/event-count-distinct';
 import { getQueryNode, getMetaFilterFor } from 'investigate-process-analysis/actions/creators/util';
+import _ from 'lodash';
 
+const MAX_PENDING_QUERIES = 15; // SDK configuration, currently hardcoded for UI
 /**
  * For each child process getting the children count.
  * Iterating over the list of children and invoking the fetchEventCount api for each children and waiting for all the
@@ -31,26 +33,17 @@ function* fetchEventsCountAsync(action) {
     const { queryInput, rawData: children } = state.processAnalysis.processTree;
     const queryNode = getQueryNode(queryInput);
     const { serviceId, startTime, endTime, agentId } = queryNode;
+    let payload = {};
 
-    const apiCalls = children.reduce((result, child) => {
-      const { conditions } = getMetaFilterFor('CHILD', agentId, child.processId);
-      // call api response will stored as key and value
-      result[child.processId] = call(
-        fetchDistinctCount,
-        'process.vid.src',
-        serviceId,
-        startTime,
-        endTime,
-        conditions,
-        null,
-        null,
-        false
-      );
+    // If pending query exceeded the limit then SDK is throwing the error, to overcome the error, splitting the
+    // children into chunks
+    const childrenChunks = _.chunk(children, MAX_PENDING_QUERIES);
 
-      return result;
-    }, {});
+    for (let i = 0; i < childrenChunks.length; i++) {
+      const result = yield all(getAPICalls(serviceId, startTime, endTime, agentId, childrenChunks[i]));
+      payload = { ...payload, ...result };
+    }
 
-    const payload = yield all(apiCalls);
     yield put({ type: ACTION_TYPES.SET_EVENTS_COUNT, payload });
     // Event loading is complete
     yield put({ type: ACTION_TYPES.COMPLETED_EVENTS_STREAMING });
@@ -62,6 +55,26 @@ function* fetchEventsCountAsync(action) {
   }
 }
 
+const getAPICalls = (serviceId, startTime, endTime, agentId, children) => {
+  const apiCalls = children.reduce((result, child) => {
+    const { conditions } = getMetaFilterFor('CHILD', agentId, child.processId);
+    // call api response will stored as key and value
+    result[child.processId] = call(
+      fetchDistinctCount,
+      'process.vid.src',
+      serviceId,
+      startTime,
+      endTime,
+      conditions,
+      null,
+      null,
+      false
+    );
+
+    return result;
+  }, {});
+  return apiCalls;
+};
 
 export function* fetchEventsCount() {
   yield takeLatest(ACTION_TYPES.GET_EVENTS_COUNT_SAGA, fetchEventsCountAsync);
