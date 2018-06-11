@@ -37,8 +37,8 @@ test('investigateEventsErrorCodeDictionary has correct entries', function(assert
   assert.equal(codes[130].messageLocaleKey, 'errorDictionaryMessages.investigateEvents.PACKETS_NOT_FOUND');
   assert.equal(codes[130].sendServerMessage, false);
 
-  assert.equal(codes[1000].type, 'SESSION_REMOVED');
-  assert.equal(codes[1000].messageLocaleKey, 'errorDictionaryMessages.investigateEvents.SESSION_REMOVED');
+  assert.equal(codes[1000].type, 'SESSION_NOT_AVAILABLE');
+  assert.equal(codes[1000].messageLocaleKey, 'errorDictionaryMessages.investigateEvents.SESSION_NOT_AVAILABLE');
   assert.equal(codes[1000].sendServerMessage, false);
 
   assert.equal(codes[1002].type, 'DEVICE_OFFLINE');

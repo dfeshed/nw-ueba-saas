@@ -13,7 +13,7 @@ const investigateEventsErrorCodeDictionary = {
   119: { type: 'LENGTH_EXCEEDED', messageLocaleKey: null, sendServerMessage: true },
   129: { type: 'SESSION_REMOVED', messageLocaleKey: `${localeRoot}.SESSION_REMOVED`, sendServerMessage: false },
   130: { type: 'PACKETS_NOT_FOUND', messageLocaleKey: `${localeRoot}.PACKETS_NOT_FOUND`, sendServerMessage: false },
-  1000: { type: 'SESSION_REMOVED', messageLocaleKey: `${localeRoot}.SESSION_REMOVED`, sendServerMessage: false },
+  1000: { type: 'SESSION_NOT_AVAILABLE', messageLocaleKey: `${localeRoot}.SESSION_NOT_AVAILABLE`, sendServerMessage: false },
   1002: { type: 'DEVICE_OFFLINE', messageLocaleKey: `${localeRoot}.DEVICE_OFFLINE`, sendServerMessage: false },
   // uncommon codes
   1: { type: 'UNHANDLED_ERROR', messageLocaleKey: genericMsgKey, sendServerMessage: true },
