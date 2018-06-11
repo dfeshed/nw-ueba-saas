@@ -1,12 +1,14 @@
-<span class="filter-list__item-label ellipsis" title="{{filter.name}}" {{action applyCustomFilter filter on='click'}}>
-  {{filter.name}}
-</span>
-{{#rsa-button-with-confirmation
-  style='danger'
-  class='delete-filter'
-  title=(t 'investigateFiles.deleteTitle')
-  isIconOnly=true
-  confirmationMessage=(t 'investigateFiles.filter.customFilters.delete.confirmMessage')
-  onConfirm=deleteFilter}}
-  {{rsa-icon name='bin-1' title=(t 'investigateFiles.deleteTitle')}}
-{{/rsa-button-with-confirmation}}
+{{#unless filter.systemFilter}}
+  <span class="filter-list__item-label ellipsis" title="{{filter.name}}" {{action applyCustomFilter filter on='click'}}>
+    {{filter.name}}
+  </span>
+  {{#rsa-button-with-confirmation
+    style='danger'
+    class='delete-filter'
+    title=(t 'investigateFiles.deleteTitle')
+    isIconOnly=true
+    confirmationMessage=(t 'investigateFiles.filter.customFilters.delete.confirmMessage')
+    onConfirm=deleteFilter}}
+    {{rsa-icon name='bin-1' title=(t 'investigateFiles.deleteTitle')}}
+  {{/rsa-button-with-confirmation}}
+{{/unless}}
