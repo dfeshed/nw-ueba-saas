@@ -8,14 +8,14 @@ import {
   selectFilter
 } from './utils';
 
-export default function fetchDistinctCount(serviceId, startTime, endTime, conditions, language, threshold, cancelPreviouslyExecuting = true) {
+export default function fetchDistinctCount(column, serviceId, startTime, endTime, conditions, language, threshold, cancelPreviouslyExecuting = true) {
   const query = {
     filter: [
       serviceIdFilter(serviceId),
       thresholdFilter(threshold),
-      selectFilter('process.vid.src'),
+      selectFilter(column),
       timeRangeFilter(startTime, endTime),
-      conditionsFilter(encodeMetaFilterConditions(conditions, language))
+      conditionsFilter(encodeMetaFilterConditions(conditions))
     ]
   };
   return streamPromiseRequest(

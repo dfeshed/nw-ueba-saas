@@ -1,5 +1,67 @@
 import { camelize } from '@ember/string';
-export const getQueryNode = function(input, selectedVid, isFetchParent, isList, filters) {
+
+/**
+ * Common to all the query in process analysis
+ * @param agentId
+ * @returns {*[]}
+ * @private
+ */
+const _commonFilter = (agentId) => {
+  const query = [
+    {
+      meta: 'agent.id',
+      operator: '=',
+      value: `'${agentId}'`
+    },
+    {
+      meta: 'device.type',
+      operator: '=',
+      value: '\'nwendpoint\''
+    },
+    {
+      value: '(category=\'Process Event\' || category = \'Registry Event\' || category = \'File Event\' || category = \'Network Event\')'
+    }
+  ];
+  return query;
+};
+/**
+ * Create Porcess Filter
+ * @returns {{meta: string, operator: string, value: string}}
+ * @private
+ */
+const _createProcessFilter = () => {
+  return {
+    meta: 'action',
+    operator: '=',
+    value: '\'createProcess\''
+  };
+};
+
+/**
+ * Process Id filter
+ * @param pid
+ * @param isParentAndChild
+ * @returns {{value: string}}
+ * @private
+ */
+const _processIdFilter = (pid, isParentAndChild) => {
+  if (isParentAndChild) {
+    return { value: `(process.vid.src = \'${pid}\' || process.vid.dst = \'${pid}\')` };
+  } else {
+    return { value: `(process.vid.src = \'${pid}\')` };
+  }
+};
+
+/**
+ * Returns query node
+ * @param input
+ * @param selectedVid
+ * @param type
+ * @param filters
+ * @returns {{agentId: *, endTime: *, startTime: *, queryTimeFormat: string, serviceId: *, metaFilter: {conditions}}}
+ * @public
+ */
+export const getQueryNode = function(input, selectedVid, type, filters) {
   const { et, st, sid, aid: agentId, vid } = input;
 
   let processId = vid;
@@ -9,15 +71,24 @@ export const getQueryNode = function(input, selectedVid, isFetchParent, isList, 
   }
 
   const queryNode = {
+    agentId,
     endTime: et,
     startTime: st,
     queryTimeFormat: 'DB',
     serviceId: sid,
-    metaFilter: _getMetaFilter(isList, agentId, processId, isFetchParent, filters)
+    metaFilter: getMetaFilterFor(type, agentId, processId, filters)
   };
   return queryNode;
 };
+
+
 /**
+ * Construct the meta filter conditions based on the filterFor property
+ * Filter For includes:
+ * PARENT_CHILD: While constructing the tree for given process we need to fetch both it's children and parent
+ * CHILD: For a given process need get all the children
+ * FILTER: Apply the filter in events table
+ *
  * To construct a process tree need to get all the createProcess event for given host and a process and it should include
  * only endpoint related events. Always query will contain fixed set of meta, agent.id, action, type and file name
  *
@@ -26,44 +97,35 @@ export const getQueryNode = function(input, selectedVid, isFetchParent, isList, 
  * device.type -> to get only endpoint related events
  * fileName.src -> selected process
  *
- * @param agentId
- * @param processName
- * @returns {{conditions: *[]}}
- * @private
+ * @public
+ *
  */
-const _getMetaFilter = (isList, agentId, pid, isFetchParent, filters) => {
-  const query = [
-    {
-      meta: 'agent.id',
-      operator: '=',
-      value: `'${agentId}'`
-    },
-    {
-      meta: 'action',
-      operator: '=',
-      value: '\'createProcess\''
-    },
-    {
-      meta: 'device.type',
-      operator: '=',
-      value: '\'nwendpoint\''
-    },
-    {
-      value: isFetchParent ? `(process.vid.src = \'${pid}\' || process.vid.dst = \'${pid}\')` : `(process.vid.src = \'${pid}\')`
-    },
-    {
-      value: '(category=\'Process Event\' || category = \'Registry Event\' || category = \'File Event\' || category = \'Network Event\')'
-    }
-  ];
-  if (isList) {
-    let conditions = [query[0], query[3], query[4]];
-    if (filters && filters.length) {
-      conditions = conditions.concat(filters);
-    }
+export const getMetaFilterFor = (filterFor, agentId, pid, filters) => {
+  let conditions = _commonFilter(agentId);
 
-    return { conditions };
+  switch (filterFor) {
+    case 'PARENT_CHILD':
+      conditions = conditions.concat([
+        _createProcessFilter(),
+        _processIdFilter(pid, true)
+      ]);
+      break;
+    case 'CHILD':
+      conditions = conditions.concat([
+        _createProcessFilter(),
+        _processIdFilter(pid, false)
+      ]);
+      break;
+    case 'FILTER':
+      conditions = conditions.concat([
+        _processIdFilter(pid, true)
+      ]);
+      if (filters && filters.length) {
+        conditions = conditions.concat(filters);
+      }
+      break;
   }
-  return { conditions: query };
+  return { conditions };
 };
 
 /**

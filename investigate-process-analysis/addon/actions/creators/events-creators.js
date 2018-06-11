@@ -35,10 +35,11 @@ const commonHandlers = function(dispatch, callbacks) {
   };
 };
 
-const _getEvents = (pid, onResponse, callbacks, isFetchParents) => {
+const _getEvents = (pid, onResponse, callbacks, type) => {
   return (dispatch, getState) => {
     const state = getState();
-    const queryNode = getQueryNode(state.processAnalysis.processTree.queryInput, pid, isFetchParents, false);
+    const queryNode = getQueryNode(state.processAnalysis.processTree.queryInput, pid, type);
+
     const streamLimit = 100000;
     const streamBatch = 100000;
     const handlers = {
@@ -58,7 +59,7 @@ export const selectedProcessEvents = (pid, callbacks = callbacksDefault) => {
   return (dispatch, getState) => {
     const state = getState();
     const filters = constructFilterQueryString(state);
-    const queryNode = getQueryNode(state.processAnalysis.processTree.queryInput, pid, true, true, filters);
+    const queryNode = getQueryNode(state.processAnalysis.processTree.queryInput, pid, 'FILTER', filters);
     const streamLimit = 100000;
     const streamBatch = 100000; // Would like to get all the events in one batch
 
@@ -131,7 +132,7 @@ export const getParentAndChildEvents = (pid, callbacks = callbacksDefault) => {
         }
       }
     };
-    dispatch(_getEvents(pid, onResponse, callbacks, true));
+    dispatch(_getEvents(pid, onResponse, callbacks, 'PARENT_CHILD'));
   };
 };
 
@@ -157,7 +158,7 @@ export const getChildEvents = (pid, callbacks = callbacksDefault) => {
         }
       }
     };
-    dispatch(_getEvents(pid, onResponse, callbacks));
+    dispatch(_getEvents(pid, onResponse, callbacks, 'CHILD'));
   };
 };
 

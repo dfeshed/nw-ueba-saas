@@ -1,7 +1,7 @@
 import { call, all, put, takeLatest, select } from 'redux-saga/effects';
 import * as ACTION_TYPES from 'investigate-process-analysis/actions/types';
 import fetchDistinctCount from 'investigate-shared/actions/api/events/event-count-distinct';
-import { getQueryNode } from 'investigate-process-analysis/actions/creators/util';
+import { getQueryNode, getMetaFilterFor } from 'investigate-process-analysis/actions/creators/util';
 
 /**
  * For each child process getting the children count.
@@ -29,12 +29,23 @@ function* fetchEventsCountAsync(action) {
   const { onComplete } = action;
   try {
     const { queryInput, rawData: children } = state.processAnalysis.processTree;
+    const queryNode = getQueryNode(queryInput);
+    const { serviceId, startTime, endTime, agentId } = queryNode;
 
     const apiCalls = children.reduce((result, child) => {
-      const queryNode = getQueryNode(queryInput, child.processId);
-      const { serviceId, startTime, endTime, metaFilter } = queryNode;
+      const { conditions } = getMetaFilterFor('CHILD', agentId, child.processId);
       // call api response will stored as key and value
-      result[child.processId] = call(fetchDistinctCount, serviceId, startTime, endTime, metaFilter.conditions, null, null, false);
+      result[child.processId] = call(
+        fetchDistinctCount,
+        'process.vid.src',
+        serviceId,
+        startTime,
+        endTime,
+        conditions,
+        null,
+        null,
+        false
+      );
 
       return result;
     }, {});

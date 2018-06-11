@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 
-import { getQueryNode, hasherizeEventMeta } from 'investigate-process-analysis/actions/creators/util';
+import { getQueryNode, getMetaFilterFor, hasherizeEventMeta } from 'investigate-process-analysis/actions/creators/util';
 
 module('Unit | Selectors | process-tree', function() {
 
@@ -14,13 +14,10 @@ module('Unit | Selectors | process-tree', function() {
       sid: 1,
       aid: 2
     };
-    let queryNode = getQueryNode(input);
+    const queryNode = getQueryNode(input);
 
     assert.equal(queryNode.serviceId, 1);
-    assert.equal(queryNode.metaFilter.conditions.length, 5, 'should contains 5 conditions');
-
-    queryNode = getQueryNode(input, '1');
-    assert.equal(queryNode.metaFilter.conditions[3].value, '(process.vid.src = \'1\')', 'should use passed process name');
+    assert.equal(queryNode.metaFilter.conditions.length, 3, 'should contains 3 conditions');
   });
 
   test('hasherizeEventMeta returns object of the events', function(assert) {
@@ -31,6 +28,16 @@ module('Unit | Selectors | process-tree', function() {
     assert.equal(event.agentId, 12345);
     assert.equal(event.processName, 'testFileName.exe');
 
+  });
+
+  test('getMetaFilterFor returns correct conditions for parent and child', function(assert) {
+    const { conditions } = getMetaFilterFor('PARENT_CHILD', '1', '2');
+    assert.equal(conditions[4].value, '(process.vid.src = \'2\' || process.vid.dst = \'2\')');
+  });
+
+  test('getMetaFilterFor returns correct conditions for filters', function(assert) {
+    const { conditions } = getMetaFilterFor('PARENT_CHILD', '1', '2', [ {}, {} ]);
+    assert.equal(conditions.length, 5);
   });
 
 });
