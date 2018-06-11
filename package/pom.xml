@@ -119,7 +119,7 @@
                     <mappings>
                         <mapping>
                             <directoryIncluded>false</directoryIncluded>
-                            <directory>${presidio-app.directory}/plugins.d/PresidioStreamingSource/lib</directory>
+                            <directory>${flume_home_directory}/plugins.d/PresidioStreamingSource/lib</directory>
                             <username>${presidio.username}</username>
                             <groupname>${presidio.groupname}</groupname>
                             <sources>
