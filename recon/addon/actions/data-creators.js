@@ -38,7 +38,11 @@ import {
   fetchReconFiles,
   fetchReconSummary,
   fetchTextData,
-  batchTextData
+  batchTextData,
+  cursorFirst,
+  cursorPrevious,
+  cursorNext,
+  cursorLast
 } from './fetch';
 import { packetTotal } from 'recon/reducers/header/selectors';
 import CookieStore from 'component-lib/session-stores/application';
@@ -78,6 +82,7 @@ const _fetchTextData = function(dispatch, state) {
     _getTextAndPacketInputs(state),
     (payload) => dispatch({ type: ACTION_TYPES.TEXT_RECEIVE_PAGE, payload }),
     (payload) => dispatch({ type: ACTION_TYPES.TEXT_RENDER_NEXT, payload }),
+    (payload) => dispatch({ type: ACTION_TYPES.TEXT_UPDATE_CURSOR, payload }),
     (response) => dispatch(_handleContentError(response, 'decode'))
   );
 };
@@ -106,7 +111,6 @@ const _getTextAndPacketInputs = ({ recon: { data, packets, text } }) => ({
   eventId: data.eventId,
   packetsPageSize: packets.packetsPageSize,
   packetsRowIndex: (packets.pageNumber - 1) * packets.packetsPageSize,
-  maxPacketsForText: text.maxPacketsForText,
   decode: text.decode
 });
 
@@ -249,6 +253,46 @@ const changePacketsPerPage = (packetsPerPage) => {
       payload: packetsPerPage
     });
     dispatch(pageFirst());
+  };
+};
+
+const textPageFirst = () => {
+  return (dispatch) => {
+    dispatch(_textChangePageNumber(1));
+    cursorFirst();
+  };
+};
+
+const textPagePrevious = () => {
+  return (dispatch, getState) => {
+    const textPageNumber = Number(getState().recon.text.textPageNumber) - 1;
+    dispatch(_textChangePageNumber(textPageNumber));
+    cursorPrevious();
+  };
+};
+
+const textPageNext = () => {
+  return (dispatch, getState) => {
+    const textPageNumber = Number(getState().recon.text.textPageNumber) + 1;
+    dispatch(_textChangePageNumber(textPageNumber));
+    cursorNext();
+  };
+};
+
+const textPageLast = () => {
+  return (dispatch, getState) => {
+    const { recon: { text: { textLastPage } } } = getState();
+    dispatch(_textChangePageNumber(textLastPage));
+    cursorLast();
+  };
+};
+
+const _textChangePageNumber = (textPageNumber) => {
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.TEXT_CHANGE_PAGE_NUMBER,
+      payload: textPageNumber
+    });
   };
 };
 
@@ -608,6 +652,10 @@ export {
   pageNext,
   pageLast,
   changePacketsPerPage,
+  textPageFirst,
+  textPagePrevious,
+  textPageNext,
+  textPageLast,
   setNewReconView,
   teardownNotifications,
   toggleMetaData,

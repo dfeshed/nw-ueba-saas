@@ -6,7 +6,7 @@ moduleForComponent('recon-pager', 'Integration | Component | recon pager', {
 });
 
 test('it renders for Packet view with the appropriate css class names', function(assert) {
-  assert.expect(3);
+  assert.expect(2);
   this.setProperties({
     eventIndex: 1,
     eventTotal: 1000,
@@ -15,17 +15,16 @@ test('it renders for Packet view with the appropriate css class names', function
   this.render(hbs`{{recon-pager eventIndex=eventIndex eventTotal=eventTotal isPacket=isPacket}}`);
 
   assert.equal(this.$('.recon-pager').length, 1, 'Expected DOM with base CSS class');
-  assert.equal(this.$().text().length, 209, 'Expected no extra text');
-  assert.equal(this.$('.packet-pagination').length, 1, 'Pagination controls expected');
+  assert.equal(this.$('.packet-pagination').length, 1, 'Packet Pagination controls expected');
 });
 
-test('it renders for non Packet views with the appropriate css class names', function(assert) {
+test('it renders text view with the appropriate css class names', function(assert) {
   this.setProperties({
     eventIndex: 1,
-    eventTotal: 1000
+    eventTotal: 1000,
+    isText: true
   });
-  this.render(hbs`{{recon-pager eventIndex=eventIndex eventTotal=eventTotal}}`);
-
+  this.render(hbs`{{recon-pager eventIndex=eventIndex eventTotal=eventTotal isText=isText}}`);
   assert.equal(this.$('.recon-pager').length, 1, 'Expected DOM with base CSS class');
-  assert.equal(this.$().text().length, 36, 'Expected extra text');
+  assert.equal(this.$('.text-pagination').length, 1, 'Text Pagination controls expected');
 });

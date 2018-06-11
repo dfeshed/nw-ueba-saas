@@ -1,0 +1,49 @@
+<div class="data-pagination">
+  {{#rsa-form-button
+    defaultAction=(action 'textPageFirst')
+    isIconOnly=true
+    isDisabled=(not textPagePrevious)
+    class='page-first-button'}}
+    {{rsa-icon
+      title=(t 'recon.reconPager.packetPagnationPageFirst')
+      class='rsa-icon-arrow-left-9-filled'
+      size='smaller'}}
+  {{/rsa-form-button}}
+
+  {{#rsa-form-button
+    defaultAction=(action 'textPagePrevious')
+    isIconOnly=true
+    isDisabled=(not textPagePrevious)
+    class='page-previous-button'}}
+    {{rsa-icon
+      title=(t 'recon.reconPager.packetPagnationPagePrevious')
+      class='rsa-icon-arrow-left-12-filled'
+      size='smaller'}}
+  {{/rsa-form-button}}
+
+  <label class="page-text-box">
+    <input class="readonly-page-number" readonly value={{currentPage}}>
+  </label>
+
+  {{#rsa-form-button
+    defaultAction=(action 'textPageNext')
+    isIconOnly=true
+    isDisabled=(not textPageNext)
+    class='page-next-button'}}
+    {{rsa-icon
+      title=(t 'recon.reconPager.packetPagnationPageNext')
+      class='rsa-icon-arrow-right-12-filled'
+      size='smaller'}}
+  {{/rsa-form-button}}
+
+  {{#rsa-form-button
+    defaultAction=(action 'textPageLast')
+    isIconOnly=true
+    isDisabled=(not textPageLast)
+    class='page-last-button'}}
+    {{rsa-icon
+      title=(t 'recon.reconPager.packetPagnationPageLast')
+      class='rsa-icon-arrow-right-9-filled'
+      size='smaller'}}
+  {{/rsa-form-button}}
+</div>

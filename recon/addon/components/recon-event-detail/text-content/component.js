@@ -26,8 +26,6 @@ const stateToComputed = ({ recon }) => ({
   hasTextContent: hasTextContent(recon),
   isLogEvent: isLogEvent(recon),
   isEndpointEvent: isEndpointEvent(recon),
-  maxPacketsForText: recon.text.maxPacketsForText,
-  maxPacketsReached: recon.text.maxPacketsReached,
   metaToHighlight: recon.text.metaToHighlight,
   packetTotal: packetTotal(recon),
   numberOfItems: numberOfRenderableTextEntries(recon),
@@ -45,25 +43,6 @@ const TextReconComponent = Component.extend(ReconPagerMixin, StickyHeaderMixin, 
   stickySelector: '.scroll-box .rsa-text-entry',
   stickyHeaderSelector: '.is-sticky.recon-request-response-header',
   i18n: service(),
-
-  @computed('maxPacketsReached', 'maxPacketsForText', 'packetTotal')
-  maxPacketMessaging(maxPacketsReached, maxPacketCount, packetTotal) {
-    if (maxPacketsReached) {
-      const message = this.get('i18n').t('recon.textView.maxPacketsReached', {
-        maxPacketCount,
-        packetTotal: packetTotal || '...'
-      });
-
-      const disclaimer = this.get('i18n').t('recon.textView.maxPacketsReachedTooltip', {
-        maxPacketCount
-      });
-
-      return {
-        message,
-        disclaimer
-      };
-    }
-  },
 
   @computed('stickyContent.firstPacketId', 'showMoreFinishedTracker.[]')
   hideStickyShowMore: (id, trackedIds) => trackedIds.includes(id),

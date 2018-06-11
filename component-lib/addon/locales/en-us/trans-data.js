@@ -251,8 +251,6 @@ export default {
       downloadXml: 'Download XML',
       headerShowing: 'Showing',
       isDownloading: 'Downloading...',
-      maxPacketsReached: 'Rendered <span class="darker">{{maxPacketCount}} (Max)</span> of <span class="darker">{{packetTotal}}</span> packets',
-      maxPacketsReachedTooltip: 'The limit of {{maxPacketCount}} packets to render a single event has been reached; no additional packets will be rendered for this event. The packet threshold ensures the best rendering experience.',
       rawEndpointHeader: 'Raw Endpoint',
       rawLogHeader: 'Raw Log',
       renderingMore: 'Showing more...',

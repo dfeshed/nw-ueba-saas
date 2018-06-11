@@ -53,14 +53,6 @@ const reconPagerComponent = Component.extend({
    */
   isText: false,
 
-  /**
-   * When isText, this is messaging indicating that max packets have been reached
-   * @type Boolean
-   * @default false
-   * @public
-   */
-  maxPacketMessaging: null,
-
   // Resolve to `true` if we have all the packets.
   @computed('packetCount', 'packetTotal')
   isHidden(total = 0, pageSize = 0) {

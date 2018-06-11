@@ -112,7 +112,6 @@ export default class DataHelper {
 
   _onView(view) {
     _set(this.state, 'visuals.currentReconView', view);
-    _set(this.state, 'visuals.defaultReconView', view);
   }
 
   isTextView() {
@@ -139,6 +138,25 @@ export default class DataHelper {
 
   apiFatalErrorCode(code) {
     _set(this.state, 'data.apiFatalErrorCode', code);
+    return this;
+  }
+
+  // Text
+  textPageNumber(setTo) {
+    _set(this.state, 'text.textPageNumber', setTo);
+    return this;
+  }
+
+  textLastPage(setTo) {
+    _set(this.state, 'text.textLastPage', setTo);
+    return this;
+  }
+
+  textSetCursorFlags(canFirst, canPrevious, canNext, canLast) {
+    _set(this.state, 'text.canFirst', canFirst);
+    _set(this.state, 'text.canPrevious', canPrevious);
+    _set(this.state, 'text.canNext', canNext);
+    _set(this.state, 'text.canLast', canLast);
     return this;
   }
 }

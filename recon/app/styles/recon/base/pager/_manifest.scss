@@ -29,7 +29,8 @@
     color: text-color(primary, lightest);
   }
 
-  .packet-pagination {
+  .packet-pagination,
+  .text-pagination {
     display: -webkit-flex;
     display: flex;
     -webkit-flex-direction: row;
@@ -70,6 +71,12 @@
           width: 21px;
           -moz-appearance:textfield;
           background-color: background-color(primary,dark);
+        }
+        .readonly-page-number {
+          cursor: default;
+          margin-left: rsa-whitespace(less);
+          text-align: center;
+          width: 21px;
         }
         .input-page-number::-webkit-outer-spin-button,
         .input-page-number::-webkit-inner-spin-button {

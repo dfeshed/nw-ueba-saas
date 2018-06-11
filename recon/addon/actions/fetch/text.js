@@ -2,8 +2,7 @@ import { lookup } from 'ember-dependency-lookup';
 import {
   buildBaseQuery,
   addStreaming,
-  addDecode,
-  addMaxPackets
+  addDecode
 } from '../util/query-util';
 import {
   batchDataHandler,
@@ -15,20 +14,21 @@ const BATCH_CHARACTER_SIZE = 15000;
 const TIME_BETWEEN_BATCHES = [400];
 
 const TEXT_BATCH_SIZE = 50;
+let cursor;
 
 export const fetchTextData = (
-  { endpointId, eventId, decode, maxPacketsForText },
+  { endpointId, eventId, decode },
   dispatchData,
   dispatchBatch,
+  dispatchCursor,
   dispatchError
 ) => {
   const request = lookup('service:request');
   const basicQuery = buildBaseQuery(endpointId, eventId);
   const streamingQuery = addStreaming(basicQuery, undefined, TEXT_BATCH_SIZE);
-  const maxPacketsQuery = addMaxPackets(streamingQuery, maxPacketsForText);
-  const decodeQuery = addDecode(maxPacketsQuery, decode);
+  const decodeQuery = addDecode(streamingQuery, decode);
 
-  const cursor = request.pagedStreamRequest({
+  cursor = request.pagedStreamRequest({
     method: 'stream',
     modelName: 'reconstruction-text-data',
     query: decodeQuery,
@@ -38,13 +38,8 @@ export const fetchTextData = (
     onResponse: batchDataHandler({
       dataHandler: HANDLERS.socketResponse((response) => {
         if (response.data && response.data.length > 0) {
-          const packetProgress = response.meta['packet-progress'] || 0;
-          // call cursor.next repeatedly until MT sends complete = true
-          // Note that we keep getting a marker with the meta, until complete = true
-          // limit of 2500 packets will be removed once pagination is in place
-          if (packetProgress < 2500 && !response.meta.complete) {
-            cursor.next();
-          }
+          // dispatch the cursor to state so that components/selectors can use it's properties like canFirst, canNext etc to perform UI actions.
+          dispatchCursor(cursor);
           return response.data;
         }
         return null;
@@ -56,6 +51,25 @@ export const fetchTextData = (
     }),
     onError: dispatchError
   });
+};
+
+// The below four functions directly call the methods on the cursor object that is returned by the streaming-data API. The client can paginate (keep calling cursor.next) until MT sends complete = true. At that point we set that page as the lastPage.
+// Note that we keep getting a marker with the response, until complete = true
+// However this marker is not exposed to the client, streaming-data takes care of markers and only exposes the cursor object.
+export const cursorNext = () => {
+  cursor.next();
+};
+
+export const cursorPrevious = () => {
+  cursor.previous();
+};
+
+export const cursorLast = () => {
+  cursor.last();
+};
+
+export const cursorFirst = () => {
+  cursor.first();
 };
 
 // Takes data provided and dispatchs it in batches

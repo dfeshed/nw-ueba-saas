@@ -6,11 +6,15 @@ import { augmentResult, handleSetTo } from 'recon/reducers/util';
 
 const textInitialState = Immutable.from({
   decode: true,
-
-  // the maximum number of packets represented in the textContent
-  maxPacketsForText: 2500,
-  // If the max packets reached for this event
-  maxPacketsReached: false,
+  // storing page number in the state, so that it can be displayed in the recon-pager footer
+  textPageNumber: 1,
+  // once lastpage is encountered, this gets set to the page number of the last page
+  textLastPage: null,
+  // properties on the cursor object that indicate what actions we can take for pagination controls
+  canFirst: false,
+  canPrevious: false,
+  canNext: false,
+  canLast: false,
   // The string representing meta to search for in the text
   metaToHighlight: null,
 
@@ -44,12 +48,29 @@ const textReducer = handleActions({
   [ACTION_TYPES.TEXT_RECEIVE_PAGE]: (state, { payload }) => {
     const augmentedEntries = augmentResult(payload.data);
     const textContent = (state.textContent || Immutable.from([])).concat(augmentedEntries);
-
-    let { maxPacketsReached } = state;
-    if (payload.meta && payload.meta['MAX-PACKETS-THRESHOLD']) {
-      maxPacketsReached = true;
+    let { textLastPage } = state;
+    // once we get complete=true from MT, there is no more data to paginate.
+    // Save the last page to state
+    if (payload.meta && payload.meta.complete) {
+      textLastPage = state.textPageNumber;
     }
-    return state.merge({ textContent, maxPacketsReached });
+    return state.merge({ textContent, textLastPage });
+  },
+
+  [ACTION_TYPES.TEXT_UPDATE_CURSOR]: (state, { payload }) => {
+    return state.merge({
+      canFirst: payload.canFirst,
+      canPrevious: payload.canPrevious,
+      canNext: payload.canNext,
+      canLast: payload.canLast
+    });
+  },
+
+  [ACTION_TYPES.TEXT_CHANGE_PAGE_NUMBER]: (state, { payload }) => {
+    return state.merge({
+      textContent: [],
+      textPageNumber: payload
+    });
   },
 
   [ACTION_TYPES.CHANGE_RECON_VIEW]: (state) => state.set('renderIds', []),
