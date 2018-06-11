@@ -111,60 +111,66 @@ public class OutputMonitoringService {
     }
 
     public void reportDailyMetrics() {
-        //----Report daily metric- number of active users in the last 24 hours---
-        //active user = user with smart (smart score >= 0)
+
         Instant endDate = Instant.now();
         Instant startDate = endDate.minus(Duration.ofHours(24));
-        int distinctSmartUsers = adeManagerSdk.getDistinctSmartUsers(new TimeRange(startDate, endDate));
-        reportNumericMetric(NUM_ACTIVE_USERS_LAST_DAY_METRIC_NAME, distinctSmartUsers, startDate);
+        TimeRange timeRange = new TimeRange(startDate, endDate);
 
-        //----Report daily metric- num of smarts---
-        //read from elastic all hourly metrics named "smart.scoring" with value "amountOfScored" for the last day
-        List<MetricDocument> scoringHourlyMetrics = metricPersistencyService.getMetricsByNamesAndTime(Collections.singleton("smart.scoring"), startDate, endDate);
-        List<Number> smartsCountHourlyValues = scoringHourlyMetrics.stream().
-                map(metricDocument -> metricDocument.getValue().get(MetricEnums.MetricValues.AMOUNT_OF_SCORED))
-                .collect(Collectors.toList());
-        int sumOfHourlySmartsCount = smartsCountHourlyValues.stream().mapToInt(Number::intValue).sum();
-        reportNumericMetric(SMARTS_COUNT_LAST_DAY_METRIC_NAME, sumOfHourlySmartsCount, startDate);
-
-        //----Report daily metric- num of alerts---
-        List<MetricDocument> alertCountHourlyMetrics = metricPersistencyService.getMetricsByNamesAndTime(Collections.singleton(OUTPUT_METRIC_NAME_PREFIX + NUMBER_OF_ALERTS_METRIC_NAME), startDate, endDate);
-        List<Number> alertCountHourlyValues = alertCountHourlyMetrics.stream().
-                map(metricDocument -> metricDocument.getValue().get(MetricEnums.MetricValues.DEFAULT_METRIC_VALUE))
-                .collect(Collectors.toList());
-        int alertCount = alertCountHourlyValues.stream().mapToInt(Number::intValue).sum();
-        reportNumericMetric(ALERTS_COUNT_LAST_DAY_METRIC_NAME, alertCount, startDate);
+        reportActiveUsersDaily(timeRange);
+        reportSmartsCountDaily(timeRange, "smart.scoring", MetricEnums.MetricValues.AMOUNT_OF_SCORED, SMARTS_COUNT_LAST_DAY_METRIC_NAME);
+        reportDailyMetric(timeRange, OUTPUT_METRIC_NAME_PREFIX, NUMBER_OF_ALERTS_METRIC_NAME, ALERTS_COUNT_LAST_DAY_METRIC_NAME);
 
         //----Report daily metric- indicators count (output)---
-        List<MetricDocument> indicatorCountHourlyMetrics = metricPersistencyService.getMetricsByNamesAndTime(Collections.singleton(OUTPUT_METRIC_NAME_PREFIX + INDICATORS_COUNT_HOURLY_METRIC_NAME), startDate, endDate);
-        List<Number> indicatorCountHourlyValues = indicatorCountHourlyMetrics.stream().
-                map(metricDocument -> metricDocument.getValue().get(MetricEnums.MetricValues.DEFAULT_METRIC_VALUE))
-                .collect(Collectors.toList());
-        int indicatorsCount = indicatorCountHourlyValues.stream().mapToInt(Number::intValue).sum();
-        reportNumericMetric(OUTPUT_INDICATORS_COUNT_DAILY_METRIC_NAME, indicatorsCount, startDate);
+        reportDailyMetric(timeRange, OUTPUT_METRIC_NAME_PREFIX, INDICATORS_COUNT_HOURLY_METRIC_NAME, OUTPUT_INDICATORS_COUNT_DAILY_METRIC_NAME);
 
         //----Report daily metric- events processed count (input)---
-        List<MetricDocument> eventCountHourlyMetrics = metricPersistencyService.getMetricsByNamesAndTime(Collections.singleton(INPUT_METRIC_NAME_PREFIX + INPUT_TOTAL_EVENTS_PROCESSED_METRIC_NAME), startDate, endDate);
-        List<Number> eventCountHourlyValues = eventCountHourlyMetrics.stream().
-                map(metricDocument -> metricDocument.getValue().get(MetricEnums.MetricValues.DEFAULT_METRIC_VALUE))
-                .collect(Collectors.toList());
-        int eventProcessedNum = eventCountHourlyValues.stream().mapToInt(Number::intValue).sum();
-        reportNumericMetric(EVENTS_PROCESSED_COUNT_DAILY_METRIC_NAME, eventProcessedNum, startDate);
+        reportDailyMetric(timeRange, INPUT_METRIC_NAME_PREFIX, INPUT_TOTAL_EVENTS_PROCESSED_METRIC_NAME, EVENTS_PROCESSED_COUNT_DAILY_METRIC_NAME);
 
         //----Report daily metric- indicators count (ADE)---
-        List<MetricDocument> scoreIndicatorCountHourlyMetrics = metricPersistencyService.getMetricsByNamesAndTime(Collections.singleton("score-aggregation.AggregationRecordsCreator"), startDate, endDate);
+        reportIndicatorsCountDaily(timeRange);
+
+    }
+
+    private void reportIndicatorsCountDaily(TimeRange timeRange) {
+        //get number of scored indicators hourly
+        List<MetricDocument> scoreIndicatorCountHourlyMetrics = metricPersistencyService.getMetricsByNamesAndTime(Collections.singleton("score-aggregation.AggregationRecordsCreator"), timeRange);
         List<Number> scoreIndicatorCountHourlyValues = scoreIndicatorCountHourlyMetrics.stream().
                 map(metricDocument -> metricDocument.getValue().get(MetricEnums.MetricValues.DEFAULT_METRIC_VALUE))
                 .collect(Collectors.toList());
         int smartsIndicatorsNum = scoreIndicatorCountHourlyValues.stream().mapToInt(Number::intValue).sum();
 
-        List<MetricDocument> featureIndicatorCountHourlyMetrics = metricPersistencyService.getMetricsByNamesAndTime(Collections.singleton("feature-aggregation.AggregationRecordsCreator"), startDate, endDate);
+        //get number of feature indicators hourly
+        List<MetricDocument> featureIndicatorCountHourlyMetrics = metricPersistencyService.getMetricsByNamesAndTime(Collections.singleton("feature-aggregation.AggregationRecordsCreator"), timeRange);
         List<Number> featureIndicatorCountHourlyValues = featureIndicatorCountHourlyMetrics.stream().
                 map(metricDocument -> metricDocument.getValue().get(MetricEnums.MetricValues.DEFAULT_METRIC_VALUE))
                 .collect(Collectors.toList());
         smartsIndicatorsNum += featureIndicatorCountHourlyValues.stream().mapToInt(Number::intValue).sum();
-        reportNumericMetric(ADE_INDICATORS_COUNT_DAILY_METRIC_NAME, smartsIndicatorsNum, startDate);
+        reportNumericMetric(ADE_INDICATORS_COUNT_DAILY_METRIC_NAME, smartsIndicatorsNum, timeRange.getStart());
+    }
 
+    private void reportDailyMetric(TimeRange timeRange, String metricNamePrefix, String metricName, String value) {
+        List<MetricDocument> alertCountHourlyMetrics = metricPersistencyService.getMetricsByNamesAndTime(Collections.singleton(metricNamePrefix + metricName), timeRange);
+        List<Number> alertCountHourlyValues = alertCountHourlyMetrics.stream().
+                map(metricDocument -> metricDocument.getValue().get(MetricEnums.MetricValues.DEFAULT_METRIC_VALUE))
+                .collect(Collectors.toList());
+        int alertCount = alertCountHourlyValues.stream().mapToInt(Number::intValue).sum();
+        reportNumericMetric(value, alertCount, timeRange.getStart());
+    }
+
+    private void reportSmartsCountDaily(TimeRange timeRange, String metricName, MetricEnums.MetricValues amountOfScored, String smartsCountLastDayMetricName) {
+        List<MetricDocument> scoringHourlyMetrics = metricPersistencyService.getMetricsByNamesAndTime(Collections.singleton(metricName), timeRange);
+        List<Number> smartsCountHourlyValues = scoringHourlyMetrics.stream().
+                map(metricDocument -> metricDocument.getValue().get(amountOfScored))
+                .collect(Collectors.toList());
+        int sumOfHourlySmartsCount = smartsCountHourlyValues.stream().mapToInt(Number::intValue).sum();
+        reportNumericMetric(smartsCountLastDayMetricName, sumOfHourlySmartsCount, timeRange.getStart());
+    }
+
+    private void reportActiveUsersDaily(TimeRange timeRange) {
+        //----Report daily metric- number of active users in the last 24 hours---
+        //active user = user with smart (smart score >= 0)
+        int distinctSmartUsers = adeManagerSdk.getDistinctSmartUsers(timeRange);
+        reportNumericMetric(NUM_ACTIVE_USERS_LAST_DAY_METRIC_NAME, distinctSmartUsers, timeRange.getStart());
     }
 
 }

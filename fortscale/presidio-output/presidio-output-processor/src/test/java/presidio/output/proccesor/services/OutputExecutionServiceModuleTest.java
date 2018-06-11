@@ -188,46 +188,6 @@ public class OutputExecutionServiceModuleTest {
         }
     }
 
-    @Ignore
-    @Test
-    public void dailyOutputJob_testDailyMetricReporting() {
-//        //preparation- storing hourly metrics into elastic
-//        MetricDocument scoringMetric1 = new MetricDocument();
-//        scoringMetric1.setName("smart.scoring");
-//        HashMap<MetricEnums.MetricValues, Number> value = new HashMap<>();
-//        value.put(MetricEnums.MetricValues.AMOUNT_OF_SCORED, 1);
-//        scoringMetric1.setValue(value);
-//        scoringMetric1.setTimestamp(new Date());
-//
-//        MetricDocument scoringMetric2 = new MetricDocument();
-//        scoringMetric2.setName("smart.scoring");
-//        value.put(MetricEnums.MetricValues.AMOUNT_OF_SCORED, 1);
-//        scoringMetric2.setValue(value);
-//        scoringMetric2.setTimestamp(new Date());
-//
-//        //Store metrics into elastic
-//        List<MetricDocument> scoringMetricDocuments = Arrays.asList(scoringMetric1, scoringMetric2);
-//        metricPersistencyService.save(scoringMetricDocuments);
-
-        try {
-            outputExecutionService.updateAllUsersData();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
-
-        metricsExporter.manualExportMetrics(MetricsExporter.MetricBucketEnum.APPLICATION);
-
-        List<MetricDocument> metricsByNames = metricPersistencyService.getMetricsByNames(Arrays.asList(OUTPUT_DAILY_METRIC_NAME_PREFIX + OutputMonitoringService.NUM_ACTIVE_USERS_LAST_DAY_METRIC_NAME));
-        Assert.assertEquals(1, metricsByNames);
-        Assert.assertEquals(8, metricsByNames.get(0).getValue()); //8 users according to the smarts generated at the beginning of this test
-
-//        metricsByNames = metricPersistencyService.getMetricsByNames(Arrays.asList(OUTPUT_DAILY_METRIC_NAME_PREFIX + OutputMonitoringService.SMARTS_COUNT_LAST_DAY_METRIC_NAME));
-//        Assert.assertEquals(1, metricsByNames);
-//        Assert.assertEquals(2, metricsByNames.get(0).getValue()); //according to hourly metrics generated at the beginning of this test
-    }
-
     @Test
     public void createAlertForExistingUser() {
         User userEntity = new User(USER_ID_TEST_USER, "userName", "displayName", 95d, Arrays.asList("existingClassification"), Arrays.asList("existingIndicator"), null, UserSeverity.CRITICAL, 8);
