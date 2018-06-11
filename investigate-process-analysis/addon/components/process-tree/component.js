@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
 import { run } from '@ember/runloop';
 import { connect } from 'ember-redux';
-
+import _ from 'lodash';
 import { select, event, selectAll } from 'd3-selection';
 import { zoom } from 'd3-zoom';
 import { tree, hierarchy } from 'd3-hierarchy';
@@ -502,7 +502,7 @@ const TreeComponent = Component.extend({
     const hashes = [checksum];
     this.send('fetchProcessDetails', { hashes });
     this.send('selectedProcessEvents', d.data.processId, {});
-    this.send('setSelectedProcess', d.data);
+    this.send('setSelectedProcess', _.omit(d.data, 'children'));
     if (!this.get('isProcessDetailsVisible')) {
       this.send('toggleProcessDetailsVisibility');
     }
