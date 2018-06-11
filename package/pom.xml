@@ -68,6 +68,7 @@
                             <directory>${flume_home_directory}</directory>
                             <username>presidio</username>
                             <groupname>presidio</groupname>
+                            <filemode>755</filemode>
                             <sources>
                                 <source>
                                     <location>
