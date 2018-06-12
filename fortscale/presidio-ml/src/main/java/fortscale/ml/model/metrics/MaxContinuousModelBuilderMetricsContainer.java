@@ -2,7 +2,7 @@ package fortscale.ml.model.metrics;
 
 import fortscale.ml.model.ContinuousDataModel;
 import fortscale.ml.model.builder.gaussian.ContinuousMaxHistogramModelBuilderConf;
-import presidio.monitoring.records.Metric;
+import presidio.monitoring.sdk.api.services.model.Metric;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.monitoring.services.export.MetricsExporter;

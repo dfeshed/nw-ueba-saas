@@ -11,7 +11,7 @@ import presidio.input.core.services.converters.ConverterService;
 import presidio.input.core.services.data.AdeDataService;
 import presidio.input.core.services.transformation.TransformationService;
 import presidio.monitoring.aspect.annotations.RunTime;
-import presidio.monitoring.records.Metric;
+import presidio.monitoring.sdk.api.services.model.Metric;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.output.sdk.api.OutputDataServiceSDK;

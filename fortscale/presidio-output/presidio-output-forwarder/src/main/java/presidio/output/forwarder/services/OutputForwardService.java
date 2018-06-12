@@ -1,9 +1,8 @@
 package presidio.output.forwarder.services;
 
 import fortscale.utils.logging.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import presidio.monitoring.records.Metric;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
+import presidio.monitoring.sdk.api.services.model.Metric;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.output.forwarder.AlertsForwarder;
 import presidio.output.forwarder.IndicatorsForwarder;
