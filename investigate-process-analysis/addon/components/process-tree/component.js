@@ -385,14 +385,16 @@ const TreeComponent = Component.extend({
     this.set('rootNode', null);
     // If query input changes then need to re-render the tree
     if (this.get('queryInput')) {
-      const { checksum, pn } = this.get('queryInput');
+      const { checksum, pn, vid } = this.get('queryInput');
       const onComplete = () => {
 
         const { children, selectedProcessId, path } = this.getProperties('children', 'selectedProcessId', 'path');
 
         const selectedProcess = children.filter((child) => child.processId === selectedProcessId);
 
-        this.send('setSelectedProcess', selectedProcess[0]);
+        const defaultSelectedProcess = selectedProcess[0] ? selectedProcess[0] : { processId: vid };
+
+        this.send('setSelectedProcess', defaultSelectedProcess);
 
         const rootNode = this._prepareTreeData(children, selectedProcessId, path); // Only initial load
 
