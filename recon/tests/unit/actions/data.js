@@ -28,4 +28,34 @@ const sessionNotFound = {
   }
 };
 
-export { sessionNotFound };
+const nextgenException = {
+  'code': 1,
+  'request': {
+    'id': 'req-5',
+    'stream': {
+      'limit': 100000,
+      'batch': 100
+    },
+    'sort': [],
+    'filter': [
+      {
+        'field': 'endpointId',
+        'value': '0f9da009-2da7-4a97-ad46-7914c6787359',
+        'operator': '==',
+        'isNull': false
+      },
+      {
+        'field': 'sessionId',
+        'value': '1',
+        'operator': '==',
+        'isNull': false
+      }
+    ],
+    'filterOperator': 'and'
+  },
+  'meta': {
+    'message': 'com.rsa.asoc.transport.nw.session.NextgenException: The remote content for session 1 on device \'decoderi\' is no longer available'
+  }
+};
+
+export { sessionNotFound, nextgenException };

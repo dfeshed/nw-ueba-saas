@@ -32,6 +32,7 @@ function sendBatches({
     batches.push(dataArray.slice(i, i + batchSize));
   }
 
+  const delay = process.env.RESPONSE_DELAY;
   for (let i = 0; i < batches.length; i++) {
     setTimeout(function(index) {
       return function() {
@@ -39,7 +40,10 @@ function sendBatches({
           data: batches[index]
         };
 
-        dataToSend.meta = { complete: (index + 1) === batches.length };
+        const complete = delay && delay > 1 ? (index + 1) === batches.length : true;
+        dataToSend.meta = {
+          complete
+        };
 
         sendMessage(dataToSend);
       };

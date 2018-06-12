@@ -112,6 +112,7 @@ export default class DataHelper {
 
   _onView(view) {
     _set(this.state, 'visuals.currentReconView', view);
+    _set(this.state, 'visuals.defaultReconView', view);
   }
 
   isTextView() {
