@@ -16,8 +16,8 @@ module('Unit | Selectors | process-filter', function() {
         }
       }
     });
-    const expectedResult = [{ value: "action='createProcess'||action='openProcess'" },
-                            { value: "category='network'||category='file'" }];
+    const expectedResult = [{ value: "(action='createProcess'||action='openProcess')" },
+                            { value: "(category='network'||category='file')" }];
     const result = constructFilterQueryString(state);
     assert.deepEqual(result, expectedResult);
   });
