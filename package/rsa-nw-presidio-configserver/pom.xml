@@ -5,7 +5,7 @@
     <parent>
         <artifactId>package</artifactId>
         <groupId>com.rsa.netwitness.presidio</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>2.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -16,11 +16,39 @@
             <artifactId>presidio-configuration-server</artifactId>
             <version>${presidio-core.version}</version>
         </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-utils</artifactId>
+            <version>${presidio-core.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <finalName>EncryptionUtils</finalName>
+                            <archive>
+                                <manifest>
+                                    <mainClass>fortscale.utils.EncryptionUtils</mainClass>
+                                </manifest>
+                            </archive>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                            <appendAssemblyId>false</appendAssemblyId>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- download dependency chain for RPM bundling -->
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -72,7 +100,31 @@
                                     <includes>
                                         <include>presidio-configserver.service</include>
                                     </includes>
-                                    <location>src/main/resources</location>
+                                    <location>scripts/systemd</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <!--create overriding configuration folder-->
+                            <directoryIncluded>true</directoryIncluded>
+                            <directory>/etc/netwitness/presidio/configserver/configurations/</directory>
+                            <username>presidio</username>
+                            <groupname>presidio</groupname>
+                            <recurseDirectories>true</recurseDirectories>
+                            <configuration>true</configuration>
+                        </mapping>
+                        <mapping>
+                            <directoryIncluded>false</directoryIncluded>
+                            <directory>${presidio-app.directory}/install/configserver</directory>
+                            <username>${presidio.username}</username>
+                            <groupname>${presidio.groupname}</groupname>
+                            <filemode>755</filemode>
+                            <sources>
+                                <source>
+                                    <location>scripts/install/</location>
+                                </source>
+                                <source>
+                                    <location>target/EncryptionUtils.jar</location>
                                 </source>
                             </sources>
                         </mapping>

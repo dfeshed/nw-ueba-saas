@@ -674,7 +674,6 @@
         <module>presidio-utils</module>
         <module>presidio-common</module>
         <module>presidio-monitoring</module>
-        <module>presidio-global-config</module>
         <module>presidio-domain</module>
         <module>presidio-ade-domain</module>
         <module>presidio-ml</module>

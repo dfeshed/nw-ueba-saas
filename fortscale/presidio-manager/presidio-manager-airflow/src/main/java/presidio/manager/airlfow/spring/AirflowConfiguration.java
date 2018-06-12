@@ -20,7 +20,7 @@ public class AirflowConfiguration {
     private List<String> activeProfiles;
     @Value("${presidio.workflows.moduleName:workflows}")
     private String moduleName;
-    @Value("${presidio.workflows.config.path:/home/presidio/presidio-core/configurations/airflow}")
+    @Value("${presidio.workflows.config.path:/etc/netwitness/presidio/configserver/configurations/airflow}")
     private String configurationFilePath;
 
     @Autowired
