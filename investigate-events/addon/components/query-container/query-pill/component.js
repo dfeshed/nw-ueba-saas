@@ -50,6 +50,7 @@ export default Component.extend({
 
   isMetaActive: false,
   isOperatorActive: false,
+  isOperatorCursorLeft: false,
   isValueActive: false,
   selectedMeta: null,
   selectedOperator: null,
@@ -222,6 +223,7 @@ export default Component.extend({
     this.setProperties({
       isMetaActive: false,
       isOperatorActive: true,
+      isOperatorCursorLeft: true,
       isValueActive: false
     });
   },
@@ -342,6 +344,7 @@ export default Component.extend({
       valueString: data,
       isMetaActive: false,
       isOperatorActive: true,
+      isOperatorCursorLeft: false,
       isValueActive: false
     });
   },
@@ -357,6 +360,7 @@ export default Component.extend({
       valueString: null,
       isMetaActive: false,
       isOperatorActive: true,
+      isOperatorCursorLeft: false,
       isValueActive: false
     });
   },

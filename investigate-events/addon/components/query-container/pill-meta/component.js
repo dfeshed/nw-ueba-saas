@@ -141,10 +141,11 @@ const PillMeta = Component.extend({
         // string. We use the selected metaName for comparision because we only
         // want to move forward if there's a selection.
         if (selected && event.target.selectionStart === selected.metaName.length) {
-          this._broadcast(MESSAGE_TYPES.META_ARROW_RIGHT_KEY);
+          next(this, () => this._broadcast(MESSAGE_TYPES.META_ARROW_RIGHT_KEY));
         }
-      } else if (isArrowLeft(event)) {
-        this._broadcast(MESSAGE_TYPES.META_ARROW_LEFT_KEY);
+      } else if (isArrowLeft(event) && event.target.selectionStart === 0) {
+        // Move to the left of this pill
+        next(this, () => this._broadcast(MESSAGE_TYPES.META_ARROW_LEFT_KEY));
       }
     }
   },

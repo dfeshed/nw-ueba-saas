@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import * as MESSAGE_TYPES from '../message-types';
 import { isArrowLeft, isBackspace, isEnter, isEscape } from 'investigate-events/util/keys';
+import { next, scheduleOnce } from '@ember/runloop';
 
 // const { log } = console;
 
@@ -26,10 +27,12 @@ export default Component.extend({
    */
   valueString: null,
 
-  didRender() {
-    const input = this.element.querySelector('input');
-    if (input) {
-      input.focus();
+  didUpdateAttrs() {
+    this._super(...arguments);
+    if (this.get('isActive')) {
+      // We schedule this after render to give time for the input to
+      // be rendered before trying to focus on it.
+      scheduleOnce('afterRender', this, '_focusOnInput');
     }
   },
 
@@ -55,33 +58,14 @@ export default Component.extend({
      */
     onKeyDown(input, event) {
       input = input || '';// guard against undefined or null
-      if (isBackspace(event)) {
-        this.set('atLeftEdge', input.length === 0);
+      if (isBackspace(event) && input.length === 0) {
+        next(this, () => this._broadcast(MESSAGE_TYPES.VALUE_BACKSPACE_KEY));
       } else if (isEnter(event) && !this._isInputEmpty(input)) {
         this._broadcast(MESSAGE_TYPES.VALUE_ENTER_KEY, input);
       } else if (isEscape(event)) {
         this._broadcast(MESSAGE_TYPES.VALUE_ESCAPE_KEY, input);
-      } else if (isArrowLeft(event)) {
-        this.set('atLeftEdge', event.target.selectionStart === 0);
-      }
-    },
-    /**
-     * Handles `keyup` events. See note at end of file for rational behind
-     * handling up and down events for same key.
-     * @param {string} input The value from the DOM input element
-     * @param {Object} event A KeyboardEvent
-     * @private
-     */
-    onKeyUp(input, event) {
-      input = input || '';// guard against undefined or null
-      if (isArrowLeft(event)) {
-        if (this.get('atLeftEdge')) {
-          this._broadcast(MESSAGE_TYPES.VALUE_ARROW_LEFT_KEY, input);
-        }
-      } else if (isBackspace(event)) {
-        if (this.get('atLeftEdge')) {
-          this._broadcast(MESSAGE_TYPES.VALUE_BACKSPACE_KEY);
-        }
+      } else if (isArrowLeft(event) && event.target.selectionStart === 0) {
+        next(this, () => this._broadcast(MESSAGE_TYPES.VALUE_ARROW_LEFT_KEY, input));
       }
     }
   },
@@ -97,6 +81,14 @@ export default Component.extend({
    */
   _broadcast(type, data) {
     this.get('sendMessage')(type, data);
+  },
+
+  _focusOnInput() {
+    const input = this.element.querySelector('input');
+    if (input) {
+      input.focus();
+      input.setSelectionRange(0, 0);
+    }
   },
 
   _isInputEmpty: (input) => {

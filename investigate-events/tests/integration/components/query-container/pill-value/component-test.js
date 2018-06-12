@@ -31,7 +31,7 @@ module('Integration | Component | Pill Value', function(hooks) {
     });
     await render(hbs`{{query-container/pill-value isActive=true sendMessage=(action handleMessage)}}`);
     await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', LEFT_ARROW_KEY);
-    await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keyup', LEFT_ARROW_KEY);
+    // await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keyup', LEFT_ARROW_KEY);
   });
 
   test('it does not broadcasts a message when the BACKSPACE key is pressed and there is a value', async function(assert) {
@@ -44,7 +44,7 @@ module('Integration | Component | Pill Value', function(hooks) {
     await render(hbs`{{query-container/pill-value isActive=true sendMessage=(action handleMessage)}}`);
     await fillIn(PILL_SELECTORS.valueInput, 'xx');
     await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', BACKSPACE_KEY);
-    await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keyup', BACKSPACE_KEY);
+    // await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keyup', BACKSPACE_KEY);
     return settled();
   });
 
@@ -59,7 +59,7 @@ module('Integration | Component | Pill Value', function(hooks) {
     });
     await render(hbs`{{query-container/pill-value isActive=true sendMessage=(action handleMessage)}}`);
     await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', BACKSPACE_KEY);
-    await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keyup', BACKSPACE_KEY);
+    // await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keyup', BACKSPACE_KEY);
   });
 
   test('it does not broadcasts a message when the ENTER key is pressed and there is no value', async function(assert) {

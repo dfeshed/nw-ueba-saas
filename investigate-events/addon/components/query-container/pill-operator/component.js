@@ -169,15 +169,13 @@ export default Component.extend({
           this._broadcast(MESSAGE_TYPES.OPERATOR_SELECTED, selection);
         }
       } else if (isBackspace(event) && event.target.value === '') {
-        this._broadcast(MESSAGE_TYPES.OPERATOR_BACKSPACE_KEY);
-      } else if (isArrowLeft(event)) {
-        if (event.target.selectionStart < 1) {
-          this._broadcast(MESSAGE_TYPES.OPERATOR_ARROW_LEFT_KEY);
-        }
+        next(this, () => this._broadcast(MESSAGE_TYPES.OPERATOR_BACKSPACE_KEY));
+      } else if (isArrowLeft(event) && event.target.selectionStart === 0) {
+        next(this, () => this._broadcast(MESSAGE_TYPES.OPERATOR_ARROW_LEFT_KEY));
       } else if (isArrowRight(event)) {
         const { selected } = powerSelectAPI;
         if (selected && event.target.selectionStart === selected.displayName.length) {
-          this._broadcast(MESSAGE_TYPES.OPERATOR_ARROW_RIGHT_KEY);
+          next(this, () => this._broadcast(MESSAGE_TYPES.OPERATOR_ARROW_RIGHT_KEY));
         }
       }
     }
@@ -197,9 +195,16 @@ export default Component.extend({
   },
 
   _focusOnPowerSelectTrigger() {
-    const trigger = this.element.querySelector('.ember-power-select-trigger input');
+    const trigger = this.element.querySelector('.pill-operator input');
     if (trigger) {
       trigger.focus();
+      if (this.get('isOperatorCursorLeft')) {
+        // Set the cursor position on the next run loop.
+        next(this, () => {
+          trigger.setSelectionRange(0, 0);
+          this.set('isOperatorCursorLeft', false);
+        });
+      }
     }
   },
 
