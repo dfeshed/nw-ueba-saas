@@ -62,12 +62,14 @@
                     <description>
                         Presidio(UEBA) Flume adaptation
                     </description>
+                    <defaultGroupname>${presidio.username}</defaultGroupname>
+                    <defaultUsername>${presidio.groupname}</defaultUsername>
                     <mappings>
                         <mapping>
-                            <directoryIncluded>false</directoryIncluded>
+                            <directoryIncluded>true</directoryIncluded>
                             <directory>${flume_home_directory}</directory>
-                            <username>presidio</username>
-                            <groupname>presidio</groupname>
+                            <username>${presidio.username}</username>
+                            <groupname>${presidio.groupname}</groupname>
                             <filemode>755</filemode>
                             <sources>
                                 <source>
@@ -78,10 +80,10 @@
                             </sources>
                         </mapping>
                         <mapping>
-                            <directoryIncluded>false</directoryIncluded>
+                            <directoryIncluded>true</directoryIncluded>
                             <directory>${flume_home_directory}/conf</directory>
-                            <username>presidio</username>
-                            <groupname>presidio</groupname>
+                            <username>${presidio.username}</username>
+                            <groupname>${presidio.groupname}</groupname>
                             <sources>
                                 <source>
                                     <location>
