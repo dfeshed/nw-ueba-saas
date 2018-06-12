@@ -56,6 +56,8 @@
                         <require>gcc</require>
                         <require>gcc-c++</require>
                     </requires>
+                    <defaultGroupname>${presidio.username}</defaultGroupname>
+                    <defaultUsername>${presidio.groupname}</defaultUsername>
                     <mappings>
                         <mapping>
                             <directoryIncluded>false</directoryIncluded>

@@ -180,6 +180,34 @@
                             </sources>
                         </mapping>
                         <mapping>
+                            <directoryIncluded>true</directoryIncluded>
+                            <directory>${presidio-app.directory}/asl</directory>
+                            <username>${presidio.username}</username>
+                            <groupname>${presidio.groupname}</groupname>
+                            <sources>
+                                <source>
+                                    <location>../../fortscale/presidio-ade/src/main/resources/config/asl</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directoryIncluded>true</directoryIncluded>
+                            <directory>${presidio-app.directory}/input-mapping</directory>
+                            <username>${presidio.username}</username>
+                            <groupname>${presidio.groupname}</groupname>
+                            <sources>
+                                <source>
+                                    <includes>
+                                        <include>operation-type-category-hierarchy-mapping.json</include>
+                                        <include>operation-type-category-mapping.json</include>
+                                    </includes>
+                                    <location>
+                                        ../../fortscale/presidio-configuration/presidio-configuration-server/src/main/resources/configurations/
+                                    </location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
                             <directoryIncluded>false</directoryIncluded>
                             <directory>${presidio-app.directory}/pypackages</directory>
                             <username>${presidio.username}</username>

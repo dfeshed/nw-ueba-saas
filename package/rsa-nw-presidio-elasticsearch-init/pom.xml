@@ -46,6 +46,8 @@
                     <defineStatements>
                         <defineStatement>_unpackaged_files_terminate_build 0</defineStatement>
                     </defineStatements>
+                    <defaultGroupname>${presidio.username}</defaultGroupname>
+                    <defaultUsername>${presidio.groupname}</defaultUsername>
                     <mappings>
                         <mapping>
                             <directoryIncluded>true</directoryIncluded>
@@ -55,6 +57,18 @@
                             <sources>
                                 <source>
                                     <location>${project.build.directory}/extra-resources</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directoryIncluded>true</directoryIncluded>
+
+                            <directory>${presidio-app.directory}/elasticsearch/init/data/indexes</directory>
+                            <username>${presidio.username}</username>
+                            <groupname>${presidio.groupname}</groupname>
+                            <sources>
+                                <source>
+                                    <location>../../fortscale/presidio-utils/src/main/resources/elasticsearch/indexes/</location>
                                 </source>
                             </sources>
                         </mapping>

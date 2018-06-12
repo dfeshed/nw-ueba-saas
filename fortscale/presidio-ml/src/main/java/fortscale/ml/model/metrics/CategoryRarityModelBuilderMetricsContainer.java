@@ -1,14 +1,11 @@
 package fortscale.ml.model.metrics;
 
 import fortscale.ml.model.builder.CategoryRarityModelBuilderConf;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import presidio.monitoring.records.Metric;
+import presidio.monitoring.sdk.api.services.model.Metric;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.monitoring.services.export.MetricsExporter;
 
-import java.time.Instant;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

@@ -75,12 +75,14 @@
                 <version>${rpm-maven-plugin.version}</version>
                 <configuration>
                     <summary>Presidio(UEBA) core configuration server</summary>
+                    <defaultGroupname>${presidio.username}</defaultGroupname>
+                    <defaultUsername>${presidio.groupname}</defaultUsername>
                     <mappings>
                         <mapping>
                             <directoryIncluded>false</directoryIncluded>
                             <directory>/usr/sbin/presidio/configserver</directory>
-                            <username>presidio</username>
-                            <groupname>presidio</groupname>
+                            <username>${presidio.username}</username>
+                            <groupname>${presidio.groupname}</groupname>
                             <sources>
                                 <source>
                                     <includes>
@@ -93,8 +95,8 @@
                         <mapping>
                             <directoryIncluded>false</directoryIncluded>
                             <directory>/usr/lib/systemd/system/</directory>
-                            <username>presidio</username>
-                            <groupname>presidio</groupname>
+                            <username>${presidio.username}</username>
+                            <groupname>${presidio.groupname}</groupname>
                             <sources>
                                 <source>
                                     <includes>
@@ -108,8 +110,8 @@
                             <!--create overriding configuration folder-->
                             <directoryIncluded>true</directoryIncluded>
                             <directory>/etc/netwitness/presidio/configserver/configurations/</directory>
-                            <username>presidio</username>
-                            <groupname>presidio</groupname>
+                            <username>${presidio.username}</username>
+                            <groupname>${presidio.groupname}</groupname>
                             <recurseDirectories>true</recurseDirectories>
                             <configuration>true</configuration>
                         </mapping>

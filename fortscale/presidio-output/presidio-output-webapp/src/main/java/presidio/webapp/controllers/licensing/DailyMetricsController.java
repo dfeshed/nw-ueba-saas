@@ -1,7 +1,7 @@
 package presidio.webapp.controllers.licensing;
 
-import fortscale.common.general.Schema;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.time.TimeRange;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,8 +11,14 @@ import presidio.webapp.model.MetricQuery;
 import presidio.webapp.model.MetricsWrapper;
 import presidio.webapp.service.RestMetricsService;
 
+
+import javax.validation.ValidationException;
 import java.time.Instant;
-import java.util.Arrays;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -29,14 +35,23 @@ public class DailyMetricsController implements DailyMetricsApi {
 
     @Override
     public ResponseEntity<MetricsWrapper> getMetrics(MetricQuery metricQuery) {
-        //TODO- pagination
+        Instant startOfDay = Instant.now().truncatedTo(ChronoUnit.DAYS).minus(1,ChronoUnit.DAYS);
+        TimeRange timeRange = new TimeRange(startOfDay,startOfDay.plus(1, ChronoUnit.DAYS) );
+
+
         logger.debug(String.format("fetching daily metrics information for metrics: %s", metricQuery.getMetricNames().toString()));
 
-        //Temp implementation!
-        Metric metric = new Metric("numOfActiveUsersInLastDay", 1, "java.lang.Number", Instant.now(), Instant.now());
+
+        List<Metric> metrics=null;
+        try {
+            metrics = restMetricsService.getMetricsByNamesAndTime(metricQuery.getMetricNames(),timeRange);
+        } catch (ValidationException e){
+            logger.error(e.getMessage());
+        }
+
         MetricsWrapper metricWrapper = new MetricsWrapper();
-        metricWrapper.setMetrics(Arrays.asList(metric));
-        metricWrapper.setTotal(1);
+        metricWrapper.setMetrics(metrics);
+        metricWrapper.setTotal(metrics.size());
         return new ResponseEntity(metricWrapper, HttpStatus.OK);
     }
 

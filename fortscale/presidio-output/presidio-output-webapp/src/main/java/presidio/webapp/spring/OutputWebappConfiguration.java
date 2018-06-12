@@ -9,6 +9,9 @@ import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletCon
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import presidio.monitoring.elastic.repositories.MetricRepository;
+import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
+import presidio.monitoring.elastic.services.PresidioMetricPersistencyServiceImpl;
 import presidio.output.commons.services.spring.AlertSeverityServiceConfig;
 import presidio.output.commons.services.spring.UserSeverityServiceConfig;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
@@ -20,6 +23,7 @@ import presidio.webapp.controllers.licensing.DailyMetricsApi;
 import presidio.webapp.controllers.licensing.DailyMetricsController;
 import presidio.webapp.controllers.users.UsersApi;
 import presidio.webapp.controllers.users.UsersApiController;
+import presidio.webapp.convertors.MetricConverter;
 import presidio.webapp.service.*;
 
 @Import({PresidioOutputPersistencyServiceConfig.class, AlertSeverityServiceConfig.class, UserSeverityServiceConfig.class, MongoConfig.class})
@@ -27,10 +31,15 @@ import presidio.webapp.service.*;
 public class OutputWebappConfiguration {
 
     @Autowired
-    AlertPersistencyService alertService;
+    private AlertPersistencyService alertService;
 
     @Autowired
-    UserPersistencyService userService;
+    private UserPersistencyService userService;
+
+    @Autowired
+    private  PresidioMetricPersistencyService presidioMetricPersistencyService;
+
+
 
 
     @Bean
@@ -43,9 +52,15 @@ public class OutputWebappConfiguration {
         return new RestAlertServiceImpl(alertService, feedbackService(), pageNumberAlert, pageSizeAlert);
     }
 
+
+    @Bean
+    MetricConverter metricConvertor(){
+        return new MetricConverter();
+    }
+
     @Bean
     RestMetricsService restMetricsService() {
-        return new RestMetricServiceImpl();
+        return new RestMetricServiceImpl(presidioMetricPersistencyService,metricConvertor());
     }
 
     @Value("${default.page.size.for.rest.user}")
