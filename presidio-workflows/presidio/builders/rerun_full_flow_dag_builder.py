@@ -166,7 +166,7 @@ def build_pause_dags_operator(cleanup_dag, dag_models):
 
 def build_clean_logs_operator(cleanup_dag):
     clean_logs_operator = BashOperator(task_id='clean_logs',
-                                       bash_command="rm -rf /var/log/presidio/3p/airflow/full_flow_* && rm -rf /var/log/presidio/3p/airflow/logs/scheduler/ && rm -f /tmp/spring.log*",
+                                       bash_command="rm -rf /var/log/netwitness/presidio/3p/airflow/logs/full_flow_* && rm -rf /var/log/netwitness/presidio/3p/airflow/logs/scheduler/ ",
                                        dag=cleanup_dag)
     return clean_logs_operator
 
