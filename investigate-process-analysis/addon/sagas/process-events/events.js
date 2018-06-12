@@ -61,7 +61,7 @@ const getAPICalls = (serviceId, startTime, endTime, agentId, children) => {
     // call api response will stored as key and value
     result[child.processId] = call(
       fetchDistinctCount,
-      'process.vid.src',
+      'process.vid.dst',
       serviceId,
       startTime,
       endTime,
