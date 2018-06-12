@@ -175,7 +175,7 @@ const pagedStreamRequest = (options, routeName) => {
           if (response.meta) {
             const { complete } = response.meta;
             // Check if MT flagging this response as too big
-            const isItemTooLarge = response.meta['REACTIVE-MESSAGES-DROPPED'];
+            const isItemTooLarge = response.meta['REACTIVE-MESSAGE-TRUNCATED'];
             // If ths is the first time the stream has indicated it
             // it is complete, then fire the callback
             if (complete === true && !hasBeenCompleted) {
@@ -248,9 +248,7 @@ const pagedStreamRequest = (options, routeName) => {
       const numberOfMarkers = markers.length;
       const indexOfCurrentMarker = markers.lastIndexOf(currentMarker);
       // The caller to the pagedStreamRequest needs to know if the item is too big so that it can be handled correctly with an appropriate message on the UI.
-      if (isItemTooLarge) {
-        cursor.itemTooLarge = true;
-      }
+      cursor.itemTooLarge = isItemTooLarge;
       // only 1 marker then all flags stay with default (false)
       if (numberOfMarkers > 1) {
         const notOnFirstPage = indexOfCurrentMarker > 1;

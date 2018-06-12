@@ -15,6 +15,9 @@ const textInitialState = Immutable.from({
   canPrevious: false,
   canNext: false,
   canLast: false,
+  // If the single message is too large to render
+  // this flag will be true and we show a truncated message warning on the UI
+  itemTooLarge: false,
   // The string representing meta to search for in the text
   metaToHighlight: null,
 
@@ -62,7 +65,8 @@ const textReducer = handleActions({
       canFirst: payload.canFirst,
       canPrevious: payload.canPrevious,
       canNext: payload.canNext,
-      canLast: payload.canLast
+      canLast: payload.canLast,
+      itemTooLarge: payload.itemTooLarge
     });
   },
 
@@ -85,7 +89,14 @@ const textReducer = handleActions({
     return state.merge({
       decode: handleSetTo(payload, state.decode),
       textContent: [],
-      renderIds: []
+      renderIds: [],
+      // reset all pagination flags to initial state when decode is toggled
+      textPageNumber: 1,
+      textLastPage: null,
+      canFirst: false,
+      canPrevious: false,
+      canNext: false,
+      canLast: false
     });
   }
 

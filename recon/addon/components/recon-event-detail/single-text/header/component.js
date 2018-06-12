@@ -1,8 +1,13 @@
 import Component from '@ember/component';
-import computed from 'ember-computed-decorators';
+import computed, { alias } from 'ember-computed-decorators';
 import layout from './template';
+import { connect } from 'ember-redux';
 
-export default Component.extend({
+const stateToComputed = ({ recon: { text } }) => ({
+  isItemTooLarge: text.itemTooLarge
+});
+
+const SingleTextHeaderComponent = Component.extend({
   classNameBindings: ['isSticky', 'side'],
   classNames: ['recon-request-response-header'],
   layout,
@@ -31,6 +36,11 @@ export default Component.extend({
   @computed('displayedPercent')
   percentText(displayedPercent) {
     return (displayedPercent === 0) ? '< 1' : displayedPercent;
-  }
+  },
+
+  @alias('isItemTooLarge')
+  showTruncatedMessage: null
 
 });
+
+export default connect(stateToComputed)(SingleTextHeaderComponent);

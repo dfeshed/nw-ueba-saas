@@ -1,6 +1,9 @@
 {{#if showPercentMessage}}
   <div class="header-percent-complete">
     {{t 'recon.textView.headerShowing'}} {{percentText}}%
+    {{#if showTruncatedMessage}}
+      {{t 'recon.textView.singleMessageTruncated'}}
+    {{/if}}
   </div>
 {{/if}}
 

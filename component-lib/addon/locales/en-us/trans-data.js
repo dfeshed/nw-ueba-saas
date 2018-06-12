@@ -248,6 +248,7 @@ export default {
       downloadLog: 'Download Log',
       downloadXml: 'Download XML',
       headerShowing: 'Showing',
+      singleMessageTruncated: ' (This message has been truncated)',
       isDownloading: 'Downloading...',
       rawEndpointHeader: 'Raw Endpoint',
       rawLogHeader: 'Raw Log',
