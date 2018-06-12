@@ -85,7 +85,7 @@ export default Component.extend({
         this.get('eventBus').trigger('rsa-application-modal-close-addToList');
         debug(`Successfully saved: ${ data }`);
       }).catch(({ meta }) => {
-        const error = meta ? meta.message : 'admin.error';
+        const error = meta ? meta.message : 'context.error';
         warn(`Meta value is not saved ${ error }`, { id: 'context.components.context-panel.add-to-list.list-view.component' });
         this.setProperties({
           isDisabled: false,

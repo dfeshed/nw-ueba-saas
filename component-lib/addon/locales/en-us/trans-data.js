@@ -1667,7 +1667,7 @@ export default {
       listValidName: 'Enter valid list name (Max length is 255 characters).',
       'mongo.error': 'Unexpected database error occurred.',
       'total.entries.exceed.max': 'List size exceeds the limit 100000.',
-      'admin.error': 'Admin service is not reachable. Check your service connectivity.',
+      'context.error': 'Context  service is not reachable. Check your service connectivity.',
       'datasource.disk.usage.high': 'Low disk space. Delete unwanted data to free up space.',
       'context.service.timeout': 'Context Hub service is not reachable. Check your service connectivity.',
       'get.mongo.connect.failed': 'Database is not reachable. Retry after sometime.',
@@ -1687,7 +1687,7 @@ export default {
         noData: 'Data in RSA Archer is not available.',
         notConfigured: 'Configure Archer as a data source, add or enable to pivot successfully.',
         notReachable: 'Check the data source connectivity to Archer.',
-        invalidAttributes: ' attribute(s) are not imported.'
+        invalidAttributes: ' field(s) does not exists in Archer.'
       }
     },
     footer: {
@@ -2178,7 +2178,7 @@ export default {
       assignee: 'Assignee',
       error: {
         'context.service.timeout': 'Context Hub server is not running or is inaccessible. Check with your Administrator to resolve this issue.',
-        'admin.error': 'Admin service is not reachable. Check your service connectivity.'
+        'context.error': 'Context service is not reachable. Check your service connectivity.'
       },
       button: {
         close: 'Close Risk Panel'

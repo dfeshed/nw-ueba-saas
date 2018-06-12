@@ -81,7 +81,7 @@ const _getDataSources = (meta) => {
         }
       },
       ({ meta }) => {
-        const error = (meta && meta.message) ? meta.message : 'admin.error';
+        const error = (meta && meta.message) ? meta.message : 'context.error';
         dispatch({
           type: ACTION_TYPES.CONTEXT_ERROR,
           payload: `context.error.${error}`
@@ -114,7 +114,7 @@ const initializeContextPanel = ({ entityId, entityType }) => {
         });
       },
       ({ meta }) => {
-        const error = (meta && meta.message) ? meta.message : 'admin.error';
+        const error = (meta && meta.message) ? meta.message : 'context.error';
         dispatch({
           type: ACTION_TYPES.CONTEXT_ERROR,
           payload: `context.error.${error}`

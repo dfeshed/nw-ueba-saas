@@ -325,7 +325,7 @@ radial-gradient(circle at 85% 85%, background-color(primary, darker, almost-tran
       }
       &__group {
         overflow-y: auto;
-        height: 200px;
+        max-height: 200px;
       }
       &__field-value {
         padding-bottom: rsa-whitespace(least);

@@ -36,7 +36,7 @@ export default Component.extend({
       this.get('model.list').push(list);
       this.resetProperties();
     }).catch(({ meta }) => {
-      const error = meta ? meta.message : 'admin.error';
+      const error = meta ? meta.message : 'context.error';
       warn(`List is not created: ${ error }`, { id: 'context.components.context-panel.add-to-list.create-list-view.component' });
       this.setProperties({
         isDisabled: false,
