@@ -6,7 +6,7 @@ After= network.target
 User=presidio
 Group=presidio
 Type=simple
-ExecStart=/usr/bin/java -Dserver.port=8883 -Dnw.security.certificate.alias=service -Dnw.security.certificate.file.location=/etc/pki/nw/trust/truststore.jks -Dnw.security.certificate.secret=changeit -jar /usr/sbin/presidio/ui/presidio-ui-app.jar
+ExecStart=/usr/bin/java -Dserver.port=8883 -Dnw.security.certificate.alias=service -Dnw.security.certificate.file.location=/etc/pki/nw/presidio/token_issuer.jks -Dnw.security.certificate.secret=changeit -jar /usr/sbin/presidio/ui/presidio-ui-app.jar
 KillMode=mixed
 KillSignal=SIGKILL
 Restart=on-failure
