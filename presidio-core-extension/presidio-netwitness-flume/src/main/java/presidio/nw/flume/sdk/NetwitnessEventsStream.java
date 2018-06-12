@@ -7,6 +7,7 @@ import com.rsa.asoc.streams.RecordStreams;
 import com.rsa.asoc.streams.source.netwitness.NwParameter;
 import com.rsa.asoc.streams.source.netwitness.NwPosition;
 import fortscale.common.general.Schema;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,8 @@ public class NetwitnessEventsStream extends AbstractNetwitnessEventsStream {
 
     protected static final String QUERY = "query";
     protected static final String TIME_FIELD = "timeField";
+    protected static final String CONNECTION_TIMEOUT = "connectionTimeout";
+    protected static final String SOCKET_TIMEOUT = "socketTimeout";
 
     private NetwitnessEventsSources nwSources;
 
@@ -50,6 +53,8 @@ public class NetwitnessEventsStream extends AbstractNetwitnessEventsStream {
         private Instant endTime;
         private String query;
         private String timeField;
+        private String connectionTimeout;
+        private String socketTimeout;
 
 
         public EventsStreamIterator(Schema schema, Instant startTime, Instant endTime, List<String> sources, Map<String, String> configurations ) {
@@ -58,6 +63,8 @@ public class NetwitnessEventsStream extends AbstractNetwitnessEventsStream {
                 this.endTime = endTime;
                 this.query = configurations.get(QUERY);
                 this.timeField = configurations.get(TIME_FIELD);
+                this.connectionTimeout = configurations.get(CONNECTION_TIMEOUT);
+                this.socketTimeout = configurations.get(SOCKET_TIMEOUT);
                 this.stream = initializeStream(sources);
             } catch (Exception ex) {
                 logger.error("start streaming failed", ex);
@@ -113,6 +120,15 @@ public class NetwitnessEventsStream extends AbstractNetwitnessEventsStream {
 
                 uriBuilder.addParameter(NwParameter.Mechanism.name(), "query");
                 uriBuilder.addParameter(NwParameter.TimeMeta.name(), timeField);
+
+                // timeout parameters
+                if (StringUtils.isNoneEmpty(connectionTimeout)){
+                    uriBuilder.addParameter(NwParameter.ConnectionTimeout.name(), connectionTimeout);
+                }
+
+                if (StringUtils.isNoneEmpty(socketTimeout)){
+                    uriBuilder.addParameter(NwParameter.SocketTimeout.name(), socketTimeout);
+                }
 
                 // end streaming parameter
                 long collectionDurationInMinutes = TimeUnit.MINUTES.convert(Duration.between(startTime, endTime).get(ChronoUnit.SECONDS), TimeUnit.SECONDS);
