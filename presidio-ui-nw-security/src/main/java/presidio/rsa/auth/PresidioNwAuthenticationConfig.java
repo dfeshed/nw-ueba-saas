@@ -28,8 +28,9 @@ import javax.servlet.http.HttpServletResponse;
 @Profile("!mock-authentication")
 public class PresidioNwAuthenticationConfig extends WebSecurityConfigurerAdapter {
 
-    @Value("${presidio.ui.role:presidio-ui}")
-    private String presidioUiRoleName;
+
+    @Value("#{'${presidio.ui.role:presidio-ui}'.split(',')}")
+    private String[] presidioUiRoleName;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {

@@ -38,8 +38,11 @@ public class PresidioNwTokenAuthenticationProvider implements AuthenticationProv
 
         try {
             Token token = presidioNwAuthService.verifyAccess(encodedJwtToken.get());
-
+            if (token==null){
+                return null;
+            }
             PresidioNwAuthenticationToken resultOfAuthentication = new PresidioNwAuthenticationToken(token);
+
             tokenService.store(encodedJwtToken.get(), resultOfAuthentication);
             return resultOfAuthentication;
         } catch (Exception e) {

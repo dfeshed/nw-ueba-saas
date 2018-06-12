@@ -49,7 +49,8 @@ public class PresidioNwAuthServiceImpl implements PresidioNwAuthService{
     /**
      * The service keystore uses the PKCS#12 format
      */
-    static final String FORMAT = "PKCS12";
+    static final String DEFAULT_FORMAT = "PKCS12";
+    static final String JKS_FORMAT = "JKS";
 
 
     private KeyStoreConfigProperties configProperties;
@@ -94,7 +95,11 @@ public class PresidioNwAuthServiceImpl implements PresidioNwAuthService{
         }
 
         initializeCryptoJ(CryptoJ.NON_FIPS140_MODE, false);
-        keyStore = KeyStore.getInstance(FORMAT);
+        String keyStoreFormat = DEFAULT_FORMAT;
+        if (configProperties.getKeyStoreLocation().toLowerCase().endsWith(JKS_FORMAT.toLowerCase())){
+            keyStoreFormat = JKS_FORMAT;
+        }
+        keyStore = KeyStore.getInstance(keyStoreFormat);
 
         try (FileInputStream fis = new FileInputStream(configProperties.getKeyStoreLocation())) {
             keyStore.load(fis, configProperties.getSecret().toCharArray());
@@ -170,7 +175,18 @@ public class PresidioNwAuthServiceImpl implements PresidioNwAuthService{
     }
 
     public synchronized List<X509Certificate> getCertificateChain(String alias) throws GeneralSecurityException {
-        return Arrays.stream(keyStore.getCertificateChain(alias))
+        Certificate[] certificatesArr = keyStore.getCertificateChain(alias);
+        Certificate certificate = keyStore.getCertificate(alias);
+
+        List<Certificate> certificates = new ArrayList<>();
+        if (certificatesArr !=null){
+            certificates.addAll(Arrays.asList(certificatesArr));
+        }
+        if (certificate !=null){
+            certificates.add(certificate);
+        }
+
+        return certificates.stream()
                 .filter(c -> c instanceof X509Certificate)
                 .map(X509Certificate.class::cast)
                 .collect(Collectors.toList());
