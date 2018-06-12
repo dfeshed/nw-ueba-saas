@@ -122,11 +122,11 @@ public class NetwitnessEventsStream extends AbstractNetwitnessEventsStream {
                 uriBuilder.addParameter(NwParameter.TimeMeta.name(), timeField);
 
                 // timeout parameters
-                if (StringUtils.isNoneEmpty(connectionTimeout)){
+                if (StringUtils.isNotEmpty(connectionTimeout)){
                     uriBuilder.addParameter(NwParameter.ConnectionTimeout.name(), connectionTimeout);
                 }
 
-                if (StringUtils.isNoneEmpty(socketTimeout)){
+                if (StringUtils.isNotEmpty(socketTimeout)){
                     uriBuilder.addParameter(NwParameter.SocketTimeout.name(), socketTimeout);
                 }
 
