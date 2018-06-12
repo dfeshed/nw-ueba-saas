@@ -132,7 +132,7 @@
                             </sources>
                         </mapping>
                         <mapping>
-                            <directoryIncluded>false</directoryIncluded>
+                            <directoryIncluded>true</directoryIncluded>
                             <directory>${presidio-app.directory}/pypackages-ext</directory>
                             <username>${presidio.username}</username>
                             <groupname>${presidio.groupname}</groupname>
@@ -158,7 +158,7 @@
                             </sources>
                         </mapping>
                         <mapping>
-                            <directoryIncluded>false</directoryIncluded>
+                            <directoryIncluded>true</directoryIncluded>
                             <directory>${flume_home_directory}/conf/adapter</directory>
                             <username>${presidio.username}</username>
                             <groupname>${presidio.groupname}</groupname>
