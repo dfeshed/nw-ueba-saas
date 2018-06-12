@@ -21,8 +21,9 @@ export default Component.extend({
     const [low, high] = filterRange;
     const filterField = FILTER_FIELD[type];
     let filtered = [];
-    if (data) {
-      filtered = data.filter((entry) => {
+    const contextData = data.resultList;
+    if (contextData) {
+      filtered = contextData.filter((entry) => {
         const scoreField = entry[filterField];
         if (scoreField >= low && scoreField <= high) {
           return entry;

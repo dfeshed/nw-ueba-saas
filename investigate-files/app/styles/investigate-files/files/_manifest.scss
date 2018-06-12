@@ -139,6 +139,7 @@ page.investigate-files-engine {
     @include rsa-vendor-prefix(transition-property, width);
     @include rsa-vendor-prefix(transition-duration, 0.3s);
     width: calc(100vw - #{$filterPanelMinWidth});
+    min-height: calc(100vh - 135px);
   }
   .files-footer {
     max-height: 2rem;

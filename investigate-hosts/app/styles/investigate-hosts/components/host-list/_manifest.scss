@@ -93,6 +93,7 @@ $risk-panel-width: 500px;
   .machine-zone {
     @include rsa-vendor-prefix(transition-property, width);
     @include rsa-vendor-prefix(transition-duration, 0.3s);
+    min-height: calc(100vh - 135px);
     width: calc(100vw - #{$filter-panel-width});
     height: 100vh;
   }

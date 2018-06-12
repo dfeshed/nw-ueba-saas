@@ -40,7 +40,7 @@ module('Integration | Component | host-detail/overwiew', function(hooks) {
     await render(hbs`{{host-detail/overview domIsReady=true}}`);
     assert.equal(findAll('.host-properties-box .host-title-bar .rsa-nav-tab:nth-child(2) div.label')[0].textContent.trim(), 'Alerts (1)', 'Alerts tab is appearing in overview page');
     assert.equal(findAll('.host-properties-box .host-title-bar .rsa-nav-tab:nth-child(3) div.label')[0].textContent.trim(), 'Incidents (2)', 'Incidents tab is appearing in overview page');
-    assert.equal(findAll('.host-properties-box .risk-properties-panel').length, 1, 'Risk panel populated with one available alert');
+    assert.equal(findAll('.host-properties-box .risk-properties-panel__content').length, 1, 'Risk panel populated with one available alert');
   });
 
   skip('Toggling the alerts/incidents tabs', async function(assert) {
@@ -53,7 +53,7 @@ module('Integration | Component | host-detail/overwiew', function(hooks) {
     await click('.host-properties-box .host-title-bar .rsa-nav-tab:nth-child(3)');
     return settled().then(() => {
       assert.equal(findAll('.host-properties-box .host-title-bar .rsa-nav-tab:nth-child(3).is-active').length, 1, 'toggling of alerts and incidents tabs achieved.');
-      assert.equal(findAll('.host-properties-box .risk-properties-panel .rsa-content-accordion').length, 2, 'Risk panel populated with two available Incidents');
+      assert.equal(findAll('.host-properties-box .risk-properties-panel__content .rsa-content-accordion').length, 2, 'Risk panel populated with two available Incidents');
     });
   });
 

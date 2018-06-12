@@ -2923,7 +2923,35 @@ export default {
   investigateShared: {
     endpoint: {
       renderingGraph: 'Rendering graph...',
-      errorTitle: 'Query Error'
+      errorTitle: 'Query Error',
+      riskPanel: {
+        timeUnit: {
+          allData: 'ALL DATA',
+          HOUR: 'HOUR',
+          HOURS: 'HOURS',
+          MINUTE: 'MINUTE',
+          MINUTES: 'MINUTES',
+          DAY: 'DAY',
+          DAYS: 'DAYS',
+          MONTH: 'MONTH',
+          MONTHS: 'MONTHS',
+          YEAR: 'YEAR',
+          YEARS: 'YEARS',
+          WEEK: 'WEEK',
+          WEEKS: 'WEEKS'
+        },
+        header: {
+          lastUpdated: 'Last Updated:',
+          timeWindow: 'Time Window: '
+        },
+        footer: {
+          title: {
+            ALERT: 'Alert(s)',
+            INCIDENT: 'Incident(s)'
+          },
+          resultCount: '(First {{count}} Results)'
+        }
+      }
     }
   },
   investigateProcessAnalysis: {

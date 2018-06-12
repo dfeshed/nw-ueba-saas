@@ -28,8 +28,8 @@ module('Integration | Component | endpoint/risk-panel/entry', function(hooks) {
     });
     this.set('type', 'ALERT');
     await render(hbs`{{endpoint/risk-panel/entry entry=entry type=type}}`);
-    assert.equal(findAll('.risk-properties-panel__entry__field').length, 5, '5 alert entries are displayed (except name)');
-    assert.equal(find('.risk-properties-panel__entry__field:first-of-type .entry-label').textContent, 'Created', 'First field is Created');
+    assert.equal(findAll('.risk-properties-panel__content__entry__field').length, 5, '5 alert entries are displayed (except name)');
+    assert.equal(find('.risk-properties-panel__content__entry__field:first-of-type .entry-label').textContent, 'Created', 'First field is Created');
   });
 
   test('The risk panel populating with incident', async function(assert) {
@@ -47,7 +47,7 @@ module('Integration | Component | endpoint/risk-panel/entry', function(hooks) {
     });
     this.set('type', 'INCIDENT');
     await render(hbs`{{endpoint/risk-panel/entry entry=entry type=type}}`);
-    assert.equal(findAll('.risk-properties-panel__entry__field').length, 7, '7 incident entries are displayed (except name)');
-    assert.equal(find('.risk-properties-panel__entry__field:first-of-type .entry-label').textContent, 'Created', 'First field is Created');
+    assert.equal(findAll('.risk-properties-panel__content__entry__field').length, 7, '7 incident entries are displayed (except name)');
+    assert.equal(find('.risk-properties-panel__content__entry__field:first-of-type .entry-label').textContent, 'Created', 'First field is Created');
   });
 });

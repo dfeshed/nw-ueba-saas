@@ -177,19 +177,20 @@ export const getIncidentsCount = createSelector(
 export const getContext = createSelector(
   [_context, getRiskPanelActiveTab],
   (context, riskPanelActiveTab) => {
-    let result = '';
+    let { resultList, resultMeta } = '';
     const activeTab = riskPanelActiveTab === 'ALERT' ? 'Alerts' : 'Incidents';
     if (context && context[0][activeTab]) {
-      result = context[0][activeTab].resultList;
+      resultList = context[0][activeTab].resultList;
+      resultMeta = context[0][activeTab].resultMeta;
     }
-    if (result) {
+    if (resultList) {
       if (activeTab === 'Alerts') {
-        result = result.map((alert) => {
+        resultList = resultList.map((alert) => {
           const incident = alert.incidentId;
           return { ...alert.alert, incident };
         });
       }
     }
-    return result;
+    return { resultList, resultMeta };
   }
 );

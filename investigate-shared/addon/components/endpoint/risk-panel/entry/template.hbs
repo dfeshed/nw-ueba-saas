@@ -1,7 +1,7 @@
-<vbox class='risk-properties-panel__entry'>
+<vbox class='risk-properties-panel__content__entry'>
   {{#each orderedFields as |field|}}
     {{#if (get entry field)}}
-      <hbox class='risk-properties-panel__entry__field'>
+      <hbox class='risk-properties-panel__content__entry__field'>
         <span class='entry-label'>{{t (get-label 'investigateHosts.context' field)}}</span>
         {{#if (or (eq field 'timestamp')(eq field 'created'))}}
           <span class="entry-value">{{parse-timestamp (get entry field) timezone dateFormat timeFormat i18n.locale}}</span>

@@ -1,41 +1,60 @@
 .risk-properties-panel {
-  height: 100%;
-  overflow: auto;
-  position: relative;
-  padding: 0 rsa-whitespace(less);
-  &__title {
-    margin-top: rsa-whitespace(least);
-    h3 {
-      color: text-color(secondary);
-      font-weight: bold;
-      font-size: .85rem;
-      padding-top: 1rem;
-    }
-  }
-  &__entry {
-    padding: rsa-whitespace(less);
-    margin-left: rsa-whitespace();
+  &__header{
     color: text-color(neutral);
-    &__field {
-      span {
-        padding: rsa-whitespace(least) 0;
-      }
-      .entry-label {
-        font-size: 0.85rem;
-        width: 65px;
-        text-align: right;
-        padding-right: rsa-whitespace();
-        color: text-color(primary, light);
-      }
-      .entry-value {
-        font-size: 1rem;
-      }
+    font-size: 0.85rem;
+    padding: 1rem;
+    @include border-top(1px, solid, primary, dark, opaque);
+    &__lastUpdated{
+      float: right;
     }
   }
+  &__content{
+    height: 100%;
+    overflow: auto;
+    position: relative;
+    padding: 0 rsa-whitespace(less);
+    &__title {
+      margin-top: rsa-whitespace(least);
+      h3 {
+        color: text-color(secondary);
+        font-weight: bold;
+        font-size: .85rem;
+        padding-top: 1rem;
+      }
+    }
+    &__entry {
+      padding: rsa-whitespace(less);
+      margin-left: rsa-whitespace();
+      color: text-color(neutral);
+      &__field {
+        span {
+          padding: rsa-whitespace(least) 0;
+        }
+        .entry-label {
+          font-size: 0.85rem;
+          width: 65px;
+          text-align: right;
+          padding-right: rsa-whitespace();
+          color: text-color(primary, light);
+        }
+        .entry-value {
+          font-size: 1rem;
+        }
+      }
+    }
 
-  .respond-link {
-    font-size: 1rem;
-    color: text-color(secondary, light);
+    .respond-link {
+      font-size: 1rem;
+      color: text-color(secondary, light);
+    }
+  }
+  &__footer{
+    color: text-color(neutral);
+    font-size: 0.85rem;
+    padding: 0.5rem;
+    @include border-top(1px, solid, primary, dark, opaque);
+    text-align:right;
+    margin-top: 0.5rem;
   }
   .filter-option {
     margin: 0 rsa-whitespace();
