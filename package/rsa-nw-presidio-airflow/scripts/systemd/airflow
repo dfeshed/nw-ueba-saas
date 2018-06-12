@@ -1,8 +1,9 @@
 # This file is the environment file for Airflow. Put this file in /etc/sysconfig/airflow per default
 # configuration of the systemd unit files.
 PRESIDIO_DIR=/var/lib/netwitness/presidio
-AIRFLOW_HOME=$PRESIDIO_DIR/airflow/
-AIRFLOW_VENV=$AIRFLOW_HOME/venv
-AIRFLOW_PKG_REQ=$PRESIDIO_DIR/pypackages/airflow/requirements.txt
-FLUME_HOME=$PRESIDIO_DIR/flume/
+AIRFLOW_HOME=/var/lib/netwitness/presidio/airflow/
+AIRFLOW_VENV=/var/lib/netwitness/presidio/airflow/venv
+AIRFLOW_PKG_REQ=/var/lib/netwitness/presidio/pypackages/airflow/requirements.txt
+FLUME_HOME=/var/lib/netwitness/presidio/flume/
 OWB_ALLOW_NON_FIPS=on
+
