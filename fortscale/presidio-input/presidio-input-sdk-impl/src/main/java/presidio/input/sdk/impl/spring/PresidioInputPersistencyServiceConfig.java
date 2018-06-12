@@ -25,7 +25,7 @@ import presidio.sdk.api.utils.InputToCollectionNameTranslator;
 
 @Configuration
 @EnableMongoRepositories(basePackages = "presidio.input.sdk.impl.repositories")
-@PropertySource("classpath:inputSdk.properties")
+@PropertySource(value = {"classpath:inputSdk.properties","file:///etc/netwitness/presidio/configserver/configurations/application.properties"})
 @Import({MongoDbBulkOpUtilConfig.class})
 public class PresidioInputPersistencyServiceConfig {
 
