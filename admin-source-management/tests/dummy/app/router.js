@@ -8,6 +8,9 @@ const Router = EmberRouter.extend({
 
 Router.map(function() {
   this.mount('admin-source-management', { path: '/usm' });
+  this.route('protected');
+  // this.route('engine2PrettyPath');
+  // this.route('engine3PrettyPath');
 });
 
 export default Router;

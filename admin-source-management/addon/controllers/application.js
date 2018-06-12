@@ -19,9 +19,15 @@ export default Controller.extend({
     const path = paths.pop();
     return path === 'index' ? paths.pop() || '' : path;
   },
+
   actions: {
-    navigateTo(routeName) {
-      this.transitionToRoute(routeName);
+    // let router handle this
+    controllerNavigateToRoute(routeName) {
+      this.send('navigateToRoute', routeName);
+    },
+    // let router handle this
+    controllerRedirectToUrl(relativeUrl) {
+      this.send('redirectToUrl', relativeUrl);
     }
   }
 });

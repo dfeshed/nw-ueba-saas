@@ -53,7 +53,7 @@ const dispatchToActions = (dispatch) => ({
 
 const UsmGroup = Component.extend({
   tagName: 'hbox',
-  classNames: ['usm-group', 'flexi-fit'],
+  classNames: ['usm-group', 'scroll-box'],
 
   actions: {
     handleNameChange(value) {

@@ -11,5 +11,14 @@ export default Route.extend({
       i18n.t('appTitle')
     ]);
     return tokens.join(' - ');
+  },
+
+  actions: {
+    navigateToRoute(routeName) {
+      this.transitionTo(routeName);
+    },
+    redirectToUrl(relativeUrl) {
+      window.location.href = relativeUrl;
+    }
   }
 });

@@ -14,6 +14,7 @@ export default Route.extend({
   dateFormat: service(),
   timeFormat: service(),
   timezone: service(),
+  features: service(),
 
   model() {
 
@@ -29,6 +30,11 @@ export default Route.extend({
       'dateFormat.selected': 'MM/dd/yyyy',
       'timeFormat.selected': 'HR24',
       'timezone.selected': 'UTC'
+    });
+
+    // also set as part of protected route in sa
+    this.get('features').setFeatureFlags({
+      'rsa.usm': true
     });
 
     // When running microservices, need to login and get cookie

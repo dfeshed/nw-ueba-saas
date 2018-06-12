@@ -23,30 +23,36 @@ export const initialState = {
   // the osType objects & osDescriptions objects to fill the selects/dropdowns
   osTypes: [
     {
-      id: 'lynn_001',
-      name: 'Lynn Ucks',
+      id: 'Windows',
+      name: 'Windows',
       osDescriptions: [
-        { id: 'ucks_001', name: 'Ucks Desktop' },
-        { id: 'ucks_002', name: 'Ucks Mobile' },
-        { id: 'ucks_003', name: 'Ucks Server' }
+        { id: 'Windows Vista', name: 'Windows Vista' },
+        { id: 'Windows 7', name: 'Windows 7' },
+        { id: 'Windows 8', name: 'Windows 8' },
+        { id: 'Windows 10', name: 'Windows 10' },
+        { id: 'Windows server 2008', name: 'Windows server 2008' },
+        { id: 'Windows server 2008 R2', name: 'Windows server 2008 R2' },
+        { id: 'Windows server 2012', name: 'Windows server 2012' }
       ]
     },
     {
-      id: 'apple_001',
-      name: 'Apple Tosh',
+      id: 'Mac',
+      name: 'Mac',
       osDescriptions: [
-        { id: 'tosh_001', name: 'Tosh Desktop' },
-        { id: 'tosh_002', name: 'Tosh Mobile' },
-        { id: 'tosh_003', name: 'Tosh Server' }
+        { id: 'Mac OS X 10.9', name: 'Mac OS X 10.9' },
+        { id: 'Mac OS X 10.10', name: 'Mac OS X 10.10' },
+        { id: 'Mac OS X 10.11', name: 'Mac OS X 10.11' },
+        { id: 'macOS 10.12', name: 'macOS 10.12' }
       ]
     },
     {
-      id: 'win_001',
-      name: 'Win D0ze',
+      id: 'Linux',
+      name: 'Linux',
       osDescriptions: [
-        { id: 'doze_001', name: 'Doze Desktop' },
-        { id: 'doze_002', name: 'Doze Mobile' },
-        { id: 'doze_003', name: 'Doze Server' }
+        { id: 'CentOS 6.x', name: 'CentOS 6.x' },
+        { id: 'CentOS 7.x', name: 'CentOS 7.x' },
+        { id: 'Red Hat Enterprise 6.x', name: 'Red Hat Enterprise 6.x' },
+        { id: 'Red Hat Enterprise 7.x', name: 'Red Hat Enterprise 7.x' }
       ]
     }
   ],

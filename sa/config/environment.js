@@ -105,6 +105,12 @@ module.exports = function(environment) {
 
     ENV.roles = [
       'viewAppliances',
+      'viewServices',
+      'viewEventSources',
+      'viewUnifiedSources',
+      'accessHealthWellness',
+      'manageSystemSettings',
+      'manageSASecurity',
       'searchLiveResources',
       'accessInvestigationModule',
       'respond-server.*',
@@ -127,6 +133,12 @@ module.exports = function(environment) {
 
     ENV.roles = [
       'viewAppliances',
+      'viewServices',
+      'viewEventSources',
+      'viewUnifiedSources',
+      'accessHealthWellness',
+      'manageSystemSettings',
+      'manageSASecurity',
       'searchLiveResources',
       'accessInvestigationModule',
       'respond-server.*',

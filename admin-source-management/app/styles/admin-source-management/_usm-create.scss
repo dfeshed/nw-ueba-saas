@@ -30,8 +30,9 @@
   }
 
   .ip-range-to {
-    align-self: flex-end;
+    align-self: flex-start;
     padding: rsa-whitespace(less);
+    padding-top: rsa-whitespace(more);
   }
 
   .ip-range-end > span {

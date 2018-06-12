@@ -35,6 +35,12 @@ export default Controller.extend({
     return path.indexOf('protected.configure.') === 0;
   },
 
+  // The Admin nav tab is the same setup as the Configure nav tab above...
+  @computed('currentPath')
+  isAdminRoute(path) {
+    return path.indexOf('protected.admin.') === 0;
+  },
+
   _updateBodyClass(themeName) {
     $('body').removeClass((index, bodyClasses) => {
       const names = bodyClasses || '';

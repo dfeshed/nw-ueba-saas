@@ -25,10 +25,10 @@ Router.map(function() {
     this.mount('respond');
     this.mount('configure');
     this.mount('investigate');
+    this.mount('admin');
   });
 
   this.route('not-found', { path: '/*path' });
-  this.mount('admin', { path: 'manage' });
 });
 
 export default Router;

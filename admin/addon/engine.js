@@ -26,10 +26,14 @@ const Eng = Engine.extend({
       'flashMessages',
       'eventBus',
       'router',
-      'app-version'
+      'app-version',
+      'features'
     ],
     externalRoutes: [
+      'protected',
       'admin.admin-source-management'
+      // 'admin.admin-other-engine-2',
+      // 'admin.admin-other-engine-3'
     ]
   }
 });

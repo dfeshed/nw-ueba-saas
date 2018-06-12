@@ -146,11 +146,11 @@ module('Integration | Component | Group', function(hooks) {
     setState({ ...initialState });
     await render(hbs`{{usm-groups/group}}`);
     clickTrigger('.control .os-type');
-    selectChoose('.control .os-type', 'Lynn Ucks');
+    selectChoose('.control .os-type', 'Windows');
     return settled().then(() => {
       // should be called twice because we also trigger it for osDescriptions
       assert.ok(actionSpy.calledTwice, 'The editGroup action (EDIT_GROUP) was called twice');
-      assert.ok(actionSpy.calledWith('group.osTypes', ['lynn_001'])); // should be called with array of ID's
+      assert.ok(actionSpy.calledWith('group.osTypes', ['Windows'])); // should be called with array of ID's
       assert.ok(actionSpy.calledWith('group.osDescriptions', [])); // should be called with empty array of ID's
       actionSpy.restore();
     });
@@ -159,13 +159,13 @@ module('Integration | Component | Group', function(hooks) {
   test('Changing the OS Description select control dispatches the editGroup action creator (EDIT_GROUP)', async function(assert) {
     const actionSpy = sinon.spy(groupCreators, 'editGroup');
     // pre-select an osType so the osDescription select has options available
-    setState({ ...initialState, group: { ...initialState.group, osTypes: ['lynn_001'] } });
+    setState({ ...initialState, group: { ...initialState.group, osTypes: ['Windows'] } });
     await render(hbs`{{usm-groups/group}}`);
     clickTrigger('.control .os-description');
-    selectChoose('.control .os-description', 'Ucks Desktop');
+    selectChoose('.control .os-description', 'Windows Vista');
     return settled().then(() => {
       assert.ok(actionSpy.calledOnce, 'The editGroup action (EDIT_GROUP) was called once');
-      assert.ok(actionSpy.calledWith('group.osDescriptions', ['ucks_001'])); // should be called with empty array of ID's
+      assert.ok(actionSpy.calledWith('group.osDescriptions', ['Windows Vista']));
       actionSpy.restore();
     });
   });

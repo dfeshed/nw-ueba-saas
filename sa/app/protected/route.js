@@ -63,7 +63,40 @@ export default Route.extend(AuthenticatedRouteMixin, {
         resolve();
       }).catch((error) => {
         // eslint-disable-next-line no-console
-        console.error('Error loading feature flags', error);
+        console.error('Error loading endpoint feature flags', error);
+        reject();
+      });
+    });
+  },
+
+  // source management (a.k.a. USM)
+  getSourceManagementFeatures() {
+    const request = get(this, 'request');
+    return new RSVP.Promise((resolve, reject) => {
+      request.promiseRequest({
+        method: 'getSupportedFeatures',
+        modelName: 'sourceManagementFeatures',
+        query: {}
+      }).then((response) => {
+        this.get('features').setFeatureFlags(response.data);
+        // TODO delete this whole try/catch block once USM is GA
+        // this is a temporary ('til 11.3) special case to also let the ExtJS side of the app get to the feature flag
+        // without adding any Java controller/rabbitmq code on the SA Classic server side
+        try {
+          if (this.get('features').isEnabled('rsa.usm')) {
+            sessionStorage.setItem('features.rsaUsm', true);
+          } else {
+            sessionStorage.removeItem('features.rsaUsm');
+          }
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.error('Error storing source-management (USM) feature flags to sessionStorage', e);
+          sessionStorage.removeItem('features.rsaUsm');
+        }
+        resolve();
+      }).catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error('Error loading source-management (USM) feature flags', error);
         reject();
       });
     });
@@ -181,6 +214,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
 
     // Set feature flags
     this.getEndpointFeatures();
+    this.getSourceManagementFeatures();
 
     return RSVP.all([preferencesPromise, timezonesPromise, permissionsPromise]).catch(() => {
       // eslint-disable-next-line no-console
@@ -226,7 +260,8 @@ export default Route.extend(AuthenticatedRouteMixin, {
       (transitionName && transitionName.includes('configure')) ||
       (transitionName && transitionName.includes('respond') && this.get('accessControl.hasRespondAccess')) ||
       (transitionName && transitionName.includes('packager')) ||
-      (transitionName && transitionName.includes('investigate') && this.get('accessControl.hasInvestigateAccess'))
+      (transitionName && transitionName.includes('investigate') && this.get('accessControl.hasInvestigateAccess')) ||
+      (transitionName && transitionName.includes('admin') && this.get('accessControl.hasAdminAccess'))
     ) {
       return this.transitionTo(transitionName);
     } else if ( // classic default landing page transition with perms

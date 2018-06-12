@@ -4,6 +4,7 @@ import computed from 'ember-computed-decorators';
 
 export default Controller.extend({
   accessControl: service(),
+  features: service(),
   routing: service('-routing'),
 
   /**
@@ -19,9 +20,22 @@ export default Controller.extend({
     const path = paths.pop();
     return path === 'index' ? paths.pop() || '' : path;
   },
+
+  @computed
+  hasAdminViewUnifiedSourcesAccess() {
+    const hasUsmAccess = this.get('accessControl.hasAdminViewUnifiedSourcesAccess');
+    const isUsmEnabled = this.get('features').isEnabled('rsa.usm');
+    return hasUsmAccess && isUsmEnabled;
+  },
+
   actions: {
-    navigateTo(routeName) {
-      this.transitionToRoute(routeName);
+    // let router handle this
+    controllerNavigateToRoute(routeName) {
+      this.send('navigateToRoute', routeName);
+    },
+    // let router handle this
+    controllerRedirectToUrl(relativeUrl) {
+      this.send('redirectToUrl', relativeUrl);
     }
   }
 });

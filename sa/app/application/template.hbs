@@ -54,7 +54,7 @@
     {{/if}}
 
     {{#if accessControl.hasAdminAccess}}
-      <a href="{{accessControl.adminUrl}}" class="rsa-header-nav-admin js-test-nav-admin-link">{{t "admin.title"}}</a>
+      <a href="{{accessControl.adminUrl}}" class="rsa-header-nav-admin js-test-nav-admin-link {{if isAdminRoute 'active'}}">{{t "admin.title"}}</a>
     {{/if}}
   {{/rsa-application-header}}
 

@@ -13,9 +13,6 @@ export default {
   config: {
     title: 'Configure'
   },
-  admin: {
-    title: 'Admin'
-  },
   errorPages: {
     errorLabel: 'Error Description',
     back: 'Back',
@@ -3146,12 +3143,30 @@ export default {
       refocusNewTabGroup: 'Refocus New Tab'
     }
   },
+  // begin admin
+  admin: {
+    title: 'Admin',
+    navbar: {
+      appliances: 'Hosts',
+      services: 'Services',
+      eventSources: 'Event Sources',
+      unifiedSources: 'Unified Sources', // USM
+      healthWellness: 'Health & Wellness',
+      system: 'System',
+      security: 'Security'
+    }
+  },
+  // end admin
   // begin admin-source-management (a.k.a USM)
   adminUsm: {
+    title: 'Unified Sources', // USM
     button: {
       addNew: 'Add New',
       save: 'Save and Publish',
       cancel: 'Cancel'
+    },
+    groups: {
+      title: 'Groups'
     },
     group: {
       identify: 'Identify',
@@ -3172,6 +3187,9 @@ export default {
       applyPolicyOptional: '(Optional)',
       policy: 'Policy',
       policyPlaceholder: 'Choose a policy'
+    },
+    policies: {
+      title: 'Policies'
     },
     policy: {
       name: 'Policy Name',

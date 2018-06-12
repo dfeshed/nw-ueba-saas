@@ -9,7 +9,7 @@ export default Service.extend({
 
   // role permission lists
 
-  adminRoles: ['*', 'accessAdminModule', 'viewAppliances', 'viewServices', 'viewEventSources', 'accessHealthWellness', 'manageSystemSettings', 'manageSASecurity'],
+  adminRoles: ['*', 'accessAdminModule', 'viewAppliances', 'viewServices', 'viewEventSources', 'viewUnifiedSources', 'accessHealthWellness', 'manageSystemSettings', 'manageSASecurity'],
   configRoles: ['*', 'searchLiveResources', 'accessManageAlertHandlingRules', 'accessViewRules', 'manageLiveResources', 'manageLiveFeeds'],
 
   investigationEmberRoles: ['*', 'investigate-server.configuration.manage', 'investigate-server.logs.manage', 'investigate-server.security.read', 'investigate-server.process.manage', 'investigate-server.health.read', 'investigate-server.*', 'investigate-server.security.manage', 'investigate-server.metrics.read', 'investigate-server.event.read', 'investigate-server.content.export', 'investigate-server.content.reconstruct', 'endpoint-server.machine.read'],
@@ -156,6 +156,47 @@ export default Service.extend({
 
   // End Configure Permissions
 
+  // Begin Admin Permissions
+
+  @computed('roles.[]')
+  hasAdminViewAppliancesAccess(roles) {
+    return this._hasPermission(roles, 'viewAppliances');
+  },
+
+  @computed('roles.[]')
+  hasAdminViewServicesAccess(roles) {
+    return this._hasPermission(roles, 'viewServices');
+  },
+
+  @computed('roles.[]')
+  hasAdminViewEventSourcesAccess(roles) {
+    return this._hasPermission(roles, 'viewEventSources');
+  },
+
+  @computed('roles.[]')
+  hasAdminViewUnifiedSourcesAccess(roles) {
+    // TODO switch to viewUnifiedSources once it exists & USM is GA
+    // return this._hasPermission(roles, 'viewUnifiedSources');
+    return this._hasPermission(roles, 'viewEventSources');
+  },
+
+  @computed('roles.[]')
+  hasAdminHealthWellnessAccess(roles) {
+    return this._hasPermission(roles, 'accessHealthWellness');
+  },
+
+  @computed('roles.[]')
+  hasAdminSystemSettingsAccess(roles) {
+    return this._hasPermission(roles, 'manageSystemSettings');
+  },
+
+  @computed('roles.[]')
+  hasAdminSASecurityAccess(roles) {
+    return this._hasPermission(roles, 'manageSASecurity');
+  },
+
+  // End Admin Permissions
+
   @computed('hasInvestigateAccess', 'hasInvestigateEmberAccess', 'hasInvestigateClassicAccess')
   investigateUrl: (hasInvestigateAccess, hasInvestigateEmberAccess, hasInvestigateClassicAccess) => {
     let url = null;
@@ -181,6 +222,8 @@ export default Service.extend({
       url = '/admin/appliances';
     } else if (intersections.includes('viewEventSources')) {
       url = '/admin/eventsources';
+    } else if (intersections.includes('viewUnifiedSources')) {
+      url = '/admin/usm';
     } else if (intersections.includes('accessHealthWellness')) {
       url = '/admin/monitoring';
     } else if (intersections.includes('manageSystemSettings')) {

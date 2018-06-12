@@ -20,9 +20,14 @@ const App = Application.extend({
           'i18n',
           'flashMessages',
           'eventBus',
-          'router'
+          'router',
+          'app-version',
+          'features'
         ],
         externalRoutes: {
+          protected: 'protected'
+          // 'admin.admin-other-engine-2': 'engine2PrettyPath',
+          // 'admin.admin-other-engine-3': 'engine3PrettyPath'
         }
       }
     }

@@ -6,6 +6,12 @@ export default {
       code: 0,
       data: [
         'viewAppliances',
+        'viewServices',
+        'viewEventSources',
+        'viewUnifiedSources',
+        'accessHealthWellness',
+        'manageSystemSettings',
+        'manageSASecurity',
         'searchLiveResources',
         'accessInvestigationModule',
         'respond-server.*',

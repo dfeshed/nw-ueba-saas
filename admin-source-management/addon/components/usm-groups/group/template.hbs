@@ -21,7 +21,7 @@
   </hbox>
 
   <label class="control-label">{{t 'adminUsm.group.identify'}}</label>
-  <div class="control">
+  <hbox class="control">
     {{rsa-form-input class='group-name'
       tabIndex='1'
       label=(t 'adminUsm.group.name')
@@ -30,8 +30,8 @@
       maxLength=256
       focusOut=(action 'handleNameChange' value='target.value')
     }}
-  </div>
-  <div class="control">
+  </hbox>
+  <hbox class="control">
     {{rsa-form-textarea class='group-description'
       tabIndex='2'
       label=(t 'adminUsm.group.description')
@@ -40,7 +40,7 @@
       maxLength=8000
       focusOut=(action 'handleDescriptionChange' value='target.value')
     }}
-  </div>
+  </hbox>
 
   <label class="control-label">{{t 'adminUsm.group.define'}}</label>
   <hbox class="control">
@@ -62,7 +62,7 @@
       focusOut=(action 'handleiIpRangeEndChange' value='target.value')
     }}
   </hbox>
-  <div class="control">
+  <hbox class="control">
     <label class="rsa-form-label power-select">
       <div class="label-text">
         {{t 'adminUsm.group.osType'}}
@@ -76,8 +76,8 @@
           {{option.name}}
       {{/power-select-multiple}}
     </label>
-  </div>
-  <div class="control">
+  </hbox>
+  <hbox class="control">
     <label class="rsa-form-label power-select">
       <div class="label-text">
         {{t 'adminUsm.group.osDescription'}}
@@ -91,12 +91,12 @@
           {{option.name}}
       {{/power-select-multiple}}
     </label>
-  </div>
+  </hbox>
 
   <label class="control-label">{{t 'adminUsm.group.applyPolicy'}}
     <span class="apply-policy-optional">{{t 'adminUsm.group.applyPolicyOptional'}}</span>
   </label>
-  <div class="control policy">
+  <hbox class="control policy">
     <label class="rsa-form-label power-select">
       <div class="label-text">
         {{t 'adminUsm.group.policy'}}
@@ -110,7 +110,7 @@
           {{option.name}}
       {{/power-select}}
     </label>
-  </div>
+  </hbox>
 </box>
 
 {{!-- Overlay to prevent interactions while loading --}}

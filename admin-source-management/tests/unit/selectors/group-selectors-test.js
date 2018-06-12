@@ -57,7 +57,7 @@ module('Unit | Selectors | Group Selectors', function() {
   test('selectedOsTypes selector', function(assert) {
     const state = cloneDeep(fullState).value();
     // osTypes holds osType ID's only so use the first 2 ID's
-    state.usm.group.group = { ...saveGroupData, osTypes: ['lynn_001', 'apple_001'] };
+    state.usm.group.group = { ...saveGroupData, osTypes: ['Windows', 'Mac'] };
     // the selector looks up osType objects by ID, so use the first 2 objects
     const selectedOsTypesData = [{ ...state.usm.group.osTypes[0] }, { ...state.usm.group.osTypes[1] }];
     assert.deepEqual(selectedOsTypes(Immutable.from(state)), selectedOsTypesData, 'The returned value from the selectedOsTypes selector is as expected');
@@ -66,7 +66,7 @@ module('Unit | Selectors | Group Selectors', function() {
   test('osDescriptions selector', function(assert) {
     const state = cloneDeep(fullState).value();
     // osTypes holds osType ID's only so use the first 2 ID's
-    state.usm.group.group = { ...saveGroupData, osTypes: ['lynn_001', 'apple_001'] };
+    state.usm.group.group = { ...saveGroupData, osTypes: ['Windows', 'Mac'] };
     // the selector looks up available osDescription objects for the selected osTypes,
     // so use all of the osDescription objects for the first 2 osTypes
     const osDescriptionsData = [...state.usm.group.osTypes[0].osDescriptions, ...state.usm.group.osTypes[1].osDescriptions];
@@ -78,10 +78,10 @@ module('Unit | Selectors | Group Selectors', function() {
     state.usm.group.group = {
       ...saveGroupData,
       // osTypes holds osType ID's only so use the first 2 ID's
-      osTypes: ['lynn_001', 'apple_001'],
+      osTypes: ['Windows', 'Mac'],
       // osDescriptions holds osDescription ID's only
       // so use the first 2 osDescription ID's available for the selected osTypes
-      osDescriptions: ['ucks_001', 'ucks_002', 'tosh_001', 'tosh_002']
+      osDescriptions: ['Windows Vista', 'Windows 7', 'Mac OS X 10.9', 'Mac OS X 10.10']
     };
     // the selector looks up osDescription objects by ID,
     // so use the first 2 osDescription objects available for the selected osTypes

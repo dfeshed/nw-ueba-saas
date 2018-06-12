@@ -23,10 +23,14 @@ const App = Application.extend({
           'flashMessages',
           'eventBus',
           'router',
-          'app-version'
+          'app-version',
+          'features'
         ],
         externalRoutes: {
+          protected: 'protected',
           'admin.admin-source-management': 'admin.admin-source-management'
+          // 'admin.admin-other-engine-2': 'admin.admin-other-engine-2',
+          // 'admin.admin-other-engine-3': 'admin.admin-other-engine-3'
         }
       }
     },
@@ -43,11 +47,13 @@ const App = Application.extend({
           'flashMessages',
           'eventBus',
           'router',
-          'app-version'
+          'app-version',
+          'features'
         ],
         externalRoutes: {
-          'admin.admin-other-engine-2': 'admin.admin-other-engine-2',
-          'admin.admin-other-engine-3': 'admin.admin-other-engine-3'
+          protected: 'protected'
+          // 'admin.admin-other-engine-2': 'admin.admin-other-engine-2',
+          // 'admin.admin-other-engine-3': 'admin.admin-other-engine-3'
         }
       }
     }
