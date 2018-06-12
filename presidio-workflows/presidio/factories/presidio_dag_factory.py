@@ -1,4 +1,3 @@
-import hashlib
 import logging
 
 import dateutil.parser
@@ -48,10 +47,8 @@ class PresidioDagFactory(AbstractDagFactory):
             template_searchpath = dag_config.get("template_searchpath")
             params = dag_config.get("params")
             dagrun_timeout = dag_config.get("dagrun_timeout")
-            dag_id_hash = hashlib.md5(str(start_date) +
-                                      str(end_date) +
-                                      str(args.get("data_sources"))).hexdigest()
-            new_dag_id = "{0}_{1}".format(dag_config.get("dag_id"),dag_id_hash)
+            dag_id_start_date = str(start_date).replace(" ","_").replace(":","_")
+            new_dag_id = "{0}_{1}".format(dag_config.get("dag_id"),dag_id_start_date)
 
             if args.get("data_sources"):
                 new_dag = DAG(dag_id=new_dag_id, start_date=start_date, schedule_interval=interval, default_args=args,
