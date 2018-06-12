@@ -1,7 +1,7 @@
 package presidio.monitoring.endPoint;
 
 import org.springframework.util.ObjectUtils;
-import presidio.monitoring.records.Metric;
+import presidio.monitoring.sdk.api.services.model.Metric;
 import presidio.monitoring.records.MetricDocument;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.services.MetricConventionApplyer;

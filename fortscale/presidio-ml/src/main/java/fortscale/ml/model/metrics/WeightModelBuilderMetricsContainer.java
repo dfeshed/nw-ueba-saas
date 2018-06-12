@@ -1,20 +1,17 @@
 package fortscale.ml.model.metrics;
 
-import fortscale.ml.model.builder.CategoryRarityModelBuilderConf;
 import fortscale.smart.record.conf.ClusterConf;
-import presidio.monitoring.records.Metric;
+import presidio.monitoring.sdk.api.services.model.Metric;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.monitoring.services.export.MetricsExporter;
 import static presidio.monitoring.sdk.api.services.enums.MetricEnums.MetricTagKeysEnum.FEATURE_NAME;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static fortscale.ml.model.builder.smart_weights.WeightsModelBuilderConf.WEIGHTS_MODEL_BUILDER;
-import static presidio.monitoring.sdk.api.services.enums.MetricEnums.MetricTagKeysEnum.GROUP_NAME;
 
 /**
  * Metrics on weight model builder
