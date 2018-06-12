@@ -6,17 +6,17 @@ const defaultPackagerConfig = (state) => state.packager.defaultPackagerConfig;
 
 export const defaultDriverServiceName = createSelector(
   [defaultPackagerConfig],
-  (defaultPackagerConfig) => defaultPackagerConfig.packageConfig ? defaultPackagerConfig.packageConfig.driverServiceName : null
+  (defaultPackagerConfig) => defaultPackagerConfig.packageConfig ? defaultPackagerConfig.packageConfig.driverServiceName : ''
 );
 
 export const defaultDriverDisplayName = createSelector(
   [defaultPackagerConfig],
-  (defaultPackagerConfig) => defaultPackagerConfig.packageConfig ? defaultPackagerConfig.packageConfig.driverDisplayName : null
+  (defaultPackagerConfig) => defaultPackagerConfig.packageConfig ? defaultPackagerConfig.packageConfig.driverDisplayName : ''
 );
 
 export const defaultDriverDescription = createSelector(
   [defaultPackagerConfig],
-  (defaultPackagerConfig) => defaultPackagerConfig.packageConfig ? defaultPackagerConfig.packageConfig.driverDescription : null
+  (defaultPackagerConfig) => defaultPackagerConfig.packageConfig ? defaultPackagerConfig.packageConfig.driverDescription : ''
 );
 
 export const listOfServices = createSelector(

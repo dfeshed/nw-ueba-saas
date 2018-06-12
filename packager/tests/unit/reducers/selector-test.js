@@ -62,7 +62,7 @@ test('check for packageConfig is undefined', function(assert) {
   const driverServiceName = defaultDriverServiceName(state);
   const driverDisplayName = defaultDriverDisplayName(state);
   const driverDescription = defaultDriverDescription(state);
-  assert.deepEqual(driverDisplayName, null);
-  assert.deepEqual(driverServiceName, null);
-  assert.deepEqual(driverDescription, null);
+  assert.deepEqual(driverDisplayName, '');
+  assert.deepEqual(driverServiceName, '');
+  assert.deepEqual(driverDescription, '');
 });
