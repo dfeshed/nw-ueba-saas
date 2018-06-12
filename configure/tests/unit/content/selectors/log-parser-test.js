@@ -13,7 +13,10 @@ import {
   availableDeviceTypes,
   isTransactionUnderway,
   selectedLogParser,
-  selectedLogParserName
+  selectedLogParserName,
+  sampleLogs,
+  isHighlighting,
+  highlightedLogs
 } from 'configure/reducers/content/log-parser-rules/selectors';
 
 module('Unit | Selectors | log-parser-rules');
@@ -47,7 +50,8 @@ const logParserRules = {
       outOfBox: false
     }
   ],
-  isTransactionUnderway: false
+  isTransactionUnderway: false,
+  sampleLogs: 'Testing 123'
 };
 
 const state = (state = logParserRules) => ({
@@ -70,6 +74,9 @@ test('Basic selector expectations', function(assert) {
   assert.deepEqual(selectedLogParser(state()), { name: 'ciscopix' }, 'The log parser with the selected index is returned');
   assert.equal(selectedLogParserName(state()), 'ciscopix', 'The name of the selected parser is returned');
   assert.equal(selectedLogParserName(state({ logParsers: [] })), '', 'An empty string is returned if the selected log parser cannot be found');
+  assert.equal(sampleLogs(state()), 'Testing 123', 'The baseline sample logs are returned');
+  assert.equal(isHighlighting(state({ sampleLogsStatus: 'wait' })), true, 'isHighlighting is true when the sampleLogsStatus is wait');
+  assert.equal(isHighlighting(state({ sampleLogsStatus: 'completed' })), false, 'isHighlighting is true when the sampleLogsStatus is not wait');
 });
 
 test('The availableDeviceTypes selector filters out any entries in logParsers with the same name property', function(assert) {
@@ -122,4 +129,18 @@ test('selectedParserRuleFormat with _selectedFormat', function(assert) {
 test('selectedParserRuleFormat without _selectedFormat', function(assert) {
   const selectedFormat = { type: 'fOO', matches: 'result', name: 'abc' };
   assert.deepEqual(selectedParserRuleFormat(state({ selectedFormat: null })), selectedFormat, 'OK');
+});
+
+test('the highlightedLogs selector properly reworks the class names in the highlighted text', function(assert) {
+  const testState = {
+    sampleLogs: 'This is an <span class=\'highlight_capture_EXAMPLE\'><span class=\'highlight_literal_EXAMPLE\'>example</span> of highlighting</span> for ' +
+    'a test',
+    selectedParserRuleIndex: 0,
+    parserRules: [{ name: 'test' }, { name: 'EXAMPLE' }]
+  };
+  assert.equal(highlightedLogs(state(testState)), 'This is an <span class=\'highlight-capture EXAMPLE\'><span class=\'highlight-literal EXAMPLE\'>example</span> of highlighting</span> for a test',
+    'The class names in the html of the logs get reworked to hypnenate and remove the parser rule name when that parser is not selected');
+  assert.equal(highlightedLogs(state({ ...testState, selectedParserRuleIndex: 1 })), 'This is an <span class=\'highlight-capture is-selected\'>' +
+    '<span class=\'highlight-literal is-selected\'>example</span> of highlighting</span> for a test',
+    'The class names in the html of the logs get reworked add an is-selected class name if the selected parser rule name is found in the class name');
 });

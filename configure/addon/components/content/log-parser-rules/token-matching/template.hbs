@@ -7,7 +7,6 @@
       {{/rsa-form-button}}
       {{rsa-form-input maxLength=64 value=newToken placeholder=(t 'configure.logsParser.buttons.pleaseEnterNewToken')}}
     </li>
-   {{log 'render template'}}
     {{#each parserRuleTokens as |token index|}}
       <li class='{{if (eq index 0) 'firstItem'}}'>
         {{#rsa-form-button isIconOnly=true defaultAction=(action 'deleteRuleToken' index)}}

@@ -3,6 +3,10 @@ import * as ACTION_TYPES from 'configure/actions/types/content';
 import reduxActions from 'redux-actions';
 import { handle } from 'redux-pack';
 
+const baselineSampleLog = 'May 5 2010 15:55:49 switch : %ACE-4-400000: IDS:1000 IP Option Bad Option List by user admin@test.com ' +
+  'from 10.100.229.59 to 224.0.0.22 on port 12345. \n\nApr 29 2010 03:15:34 pvg1-ace02: %ACE-3-251008: Health probe failed ' +
+  'for server 218.83.175.75:81, connectivity error: server open timeout (no SYN ACK) domain google.com  with mac 06-00-00-00-00-00.';
+
 const initialState = {
   logParsers: [],
   logParserStatus: null, // wait, completed, error,
@@ -17,10 +21,29 @@ const initialState = {
   selectedLogParserIndex: 0,
   selectedFormat: null,
   isTransactionUnderway: false,
-  parserRuleTokens: []
+  parserRuleTokens: [],
+  sampleLogs: baselineSampleLog,
+  sampleLogsStatus: null // wait, completed, error
 };
 
 export default reduxActions.handleActions({
+
+  [ACTION_TYPES.HIGHLIGHT_SAMPLE_LOGS]: (state, action) => (
+
+    handle(state, action, {
+      start: (state) => state.set('sampleLogsStatus', 'wait'),
+      failure: (state) => state.set('sampleLogsStatus', 'error'),
+      success: (state) => {
+        return state.merge(
+          {
+            sampleLogs: action.payload.data || baselineSampleLog,
+            sampleLogsStatus: 'completed'
+          }
+        );
+      }
+    })
+  ),
+
   [ACTION_TYPES.FIND_ALL]: (state, action) => (
     handle(state, action, {
       start: (state) => {

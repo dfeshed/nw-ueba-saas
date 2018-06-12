@@ -1,4 +1,5 @@
 @import "log-parsers";
+@import "log-message";
 
 div.modal-content.addNewRule {
   padding: rsa-whitespace();
@@ -126,6 +127,9 @@ div.modal-content.addNewRule {
       }
     }
   }
+  .leftArea, .rightArea {
+    min-width: 300px;
+  }
   .centerArea {
     width: 55%;
     vertical-align: top;
@@ -146,16 +150,7 @@ div.modal-content.addNewRule {
   .trTop, .trMessage {
     height: 50%;
   }
-  pre.centerBottom {
-    border-left-width: 0px;
-    border-right-width: 0px;
-    border-bottom-width: 0px;
-    font-family: Courier New, Courier, monospace;
-    white-space: pre-wrap;
-    overflow: auto;
-    padding: rsa-whitespace();
-    height: 100%;
-  }
+
   .token-matching {
     div.tokenScroll {
       max-height: 300px;

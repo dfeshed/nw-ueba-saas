@@ -39,6 +39,10 @@ const configureConfigGen = function(environment) {
       update: {
         subscriptionDestination: '/user/queue/content/parser/update',
         requestDestination: '/ws/content/parser/update'
+      },
+      highlight: {
+        subscriptionDestination: '/user/queue/content/parser/highlight',
+        requestDestination: '/ws/content/parser/highlight'
       }
     },
     'device-types': {

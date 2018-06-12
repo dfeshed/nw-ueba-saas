@@ -40,6 +40,20 @@ test('With FETCH_DEVICE_TYPES, the error handler updates state', function(assert
   assert.deepEqual(result, expectedResult);
 });
 
+test('With FETCH_DEVICE_TYPES, the success handler updates state', function(assert) {
+  const expectedResult = {
+    ...initialState,
+    deviceTypes: [{}, { name: 'my_type' }],
+    deviceTypesStatus: 'completed'
+  };
+  const action = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.FETCH_DEVICE_TYPES,
+    payload: { data: [{ name: 'my_type' }] }
+  });
+  const result = reducer(initialState, action);
+  assert.deepEqual(result, expectedResult);
+});
+
 test('With FETCH_DEVICE_CLASSES, the start handler updates state', function(assert) {
   const expectedResult = {
     ...initialState,
@@ -56,6 +70,20 @@ test('With FETCH_DEVICE_CLASSES, the error handler updates state', function(asse
     deviceClassesStatus: 'error'
   };
   const action = makePackAction(LIFECYCLE.FAILURE, { type: ACTION_TYPES.FETCH_DEVICE_CLASSES });
+  const result = reducer(initialState, action);
+  assert.deepEqual(result, expectedResult);
+});
+
+test('With FETCH_DEVICE_CLASSES, the success handler updates state', function(assert) {
+  const expectedResult = {
+    ...initialState,
+    deviceClasses: ['Test Class'],
+    deviceClassesStatus: 'completed'
+  };
+  const action = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.FETCH_DEVICE_CLASSES,
+    payload: { data: ['Test Class'] }
+  });
   const result = reducer(initialState, action);
   assert.deepEqual(result, expectedResult);
 });
@@ -255,6 +283,40 @@ test('With ACTION_TYPES.ADD_RULE_TOKEN, add existing token', function(assert) {
   };
   const payload = 'foo';
   const action = makePackAction(LIFECYCLE.SUCCESS, { type: ACTION_TYPES.ADD_RULE_TOKEN, payload });
+  const result = reducer(initialState, action);
+  assert.deepEqual(result, expectedResult);
+});
+
+test('With HIGHLIGHT_SAMPLE_LOGS, the start handler updates state', function(assert) {
+  const expectedResult = {
+    ...initialState,
+    sampleLogsStatus: 'wait'
+  };
+  const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.HIGHLIGHT_SAMPLE_LOGS });
+  const result = reducer(initialState, action);
+  assert.deepEqual(result, expectedResult);
+});
+
+test('With HIGHLIGHT_SAMPLE_LOGS, the error handler updates state', function(assert) {
+  const expectedResult = {
+    ...initialState,
+    sampleLogsStatus: 'error'
+  };
+  const action = makePackAction(LIFECYCLE.FAILURE, { type: ACTION_TYPES.HIGHLIGHT_SAMPLE_LOGS });
+  const result = reducer(initialState, action);
+  assert.deepEqual(result, expectedResult);
+});
+
+test('With HIGHLIGHT_SAMPLE_LOGS, the success handler updates state', function(assert) {
+  const expectedResult = {
+    ...initialState,
+    sampleLogs: 'One two three',
+    sampleLogsStatus: 'completed'
+  };
+  const action = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.HIGHLIGHT_SAMPLE_LOGS,
+    payload: { data: 'One two three' }
+  });
   const result = reducer(initialState, action);
   assert.deepEqual(result, expectedResult);
 });

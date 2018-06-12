@@ -114,6 +114,18 @@ function saveParserRule(selectedLogParserName, rules) {
   });
 }
 
+function highlightSampleLogs(logs, parserRules) {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'highlight',
+    modelName: 'log-parser-rules',
+    query: {
+      logs,
+      parserRules
+    }
+  });
+}
+
 export default {
   addLogParser,
   deleteLogParser,
@@ -124,5 +136,6 @@ export default {
   fetchDeviceTypes,
   fetchRuleFormats,
   fetchParserRules,
-  findAllLogParsers
+  findAllLogParsers,
+  highlightSampleLogs
 };

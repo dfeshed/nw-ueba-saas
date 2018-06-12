@@ -14,14 +14,12 @@
 
 <hbox class="rsa-button-with-confirmation deleteRule">
   {{#rsa-button-with-confirmation
-      title=(t 'configure.logsParser.modals.deleteRule.title')
-      confirmationMessage=(t 'configure.logsParser.modals.deleteRule.confirm' ruleName=selectedParserRuleName)
-      confirmButtonLabel=(t 'configure.logsParser.modals.deleteRule.ok')
-      isDisabled= isOotb
-      cancelButtonLabel=(t 'configure.logsParser.modals.cancel')
-      onConfirm=( action 'deleteParserRule')}}
+    title=(t 'configure.logsParser.modals.deleteRule.title')
+    confirmationMessage=(t 'configure.logsParser.modals.deleteRule.confirm' ruleName=selectedParserRuleName)
+    confirmButtonLabel=(t 'configure.logsParser.modals.deleteRule.ok')
+    isDisabled= isOotb
+    cancelButtonLabel=(t 'configure.logsParser.modals.cancel')
+    onConfirm=( action 'deleteParserRule')}}
     {{t 'configure.logsParser.buttons.delete'}}
   {{/rsa-button-with-confirmation}}
 </hbox>
-
-

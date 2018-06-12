@@ -5,6 +5,7 @@ import { success, failure } from 'configure/sagas/flash-messages';
 import {
   filterDeletedRule,
   selectedLogParserName,
+  sampleLogs,
   parserRules } from 'configure/reducers/content/log-parser-rules/selectors';
 
 const defaultCallbacks = {
@@ -96,7 +97,12 @@ const fetchParserRules = () => {
     const logParserName = selectedLogParserName(getState());
     dispatch({
       type: ACTION_TYPES.FETCH_PARSER_RULES,
-      promise: api.fetchParserRules(logParserName)
+      promise: api.fetchParserRules(logParserName),
+      meta: {
+        onSuccess() {
+          dispatch(highlightSampleLogs());
+        }
+      }
     });
   };
 };
@@ -151,9 +157,9 @@ const _deployLogParser = (logParserName) => {
       meta: {
         onSuccess() {
           const status = arguments.length > 1 && arguments[0] !== undefined ? arguments[0].data : {};
-          if (status == 'COMPLETE') {
+          if (status === 'COMPLETE') {
             success('configure.logsParser.modals.deployLogParser.success', { logParser: logParserName });
-          } else if (status == 'PARTIAL') {
+          } else if (status === 'PARTIAL') {
             failure('configure.logsParser.modals.deployLogParser.partialSuccess', { logParser: logParserName });
           } else {
             failure('configure.logsParser.modals.deployLogParser.failure', { logParser: logParserName });
@@ -209,12 +215,24 @@ const deleteRuleToken = (index) => {
   };
 };
 
+const highlightSampleLogs = (logText) => {
+  return (dispatch, getState) => {
+    const logs = logText || sampleLogs(getState());
+    const rules = parserRules(getState());
+    dispatch({
+      type: ACTION_TYPES.HIGHLIGHT_SAMPLE_LOGS,
+      promise: api.highlightSampleLogs({ logs: [logs] }, rules)
+    });
+  };
+};
+
 export {
   addLogParser,
   addNewParserRule,
   deleteLogParser,
   deleteParserRule,
   deployLogParser,
+  highlightSampleLogs,
   initializeLogParserRules,
   selectLogParser,
   selectParserRule,

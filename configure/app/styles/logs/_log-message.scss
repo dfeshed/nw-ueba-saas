@@ -1,0 +1,42 @@
+.sample-log-message {
+  height: 100%;
+  line-height: 1.5rem;
+  border-top: 1px solid border-color(primary);
+  aside {
+    padding: rsa-whitespace();
+    height: 20px;
+    border-bottom: 1px solid border-color(primary);
+
+    .rsa-loader {
+      float: right;
+    }
+
+    .error {
+      color: text-color(accentFour);
+    }
+  }
+  pre {
+    white-space: pre-wrap;
+    border-left-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    font-family: Courier New, Courier, monospace;
+    overflow: auto;
+    padding: rsa-whitespace();
+    height: calc(100vh - 630px);
+  }
+
+  .highlight-capture {
+    background-color: rgba(230, 181, 82, 0.6);
+    &.is-selected {
+      background-color: rgba(37, 108, 215, 0.4);
+    }
+  }
+
+  .highlight-literal {
+    background-color: rgba(230, 181, 82, 1);
+    &.is-selected {
+      background-color: rgba(37, 108, 215, 1);
+    }
+  }
+}

@@ -556,6 +556,8 @@ export default {
       type: 'Type',
       pattern: 'Pattern',
       values: 'Values',
+      sampleLogs: 'Below are sample log messages',
+      sampleLogsError: 'There was an error highlighting the sample logs below.',
       error: {
         generic: 'An unexpected error has occurred attempting to retrieve this data.'
       },

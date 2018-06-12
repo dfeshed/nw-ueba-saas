@@ -7,7 +7,9 @@ const App = Application.extend({
   modulePrefix: config.modulePrefix,
   podModulePrefix: config.podModulePrefix,
   Resolver,
-
+  customEvents: {
+    paste: 'paste'
+  },
   engines: {
     admin: {
       dependencies: {
