@@ -34,6 +34,12 @@ const _ERROR_CODES = [
     description: 'Session unavailable',
     isFatal: true,
     isContent: false
+  },
+  {
+    code: 3,
+    description: 'Service unavailable',
+    isFatal: true,
+    isContent: false
   }
 ];
 

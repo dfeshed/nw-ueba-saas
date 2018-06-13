@@ -11,7 +11,8 @@ const _initialState = Immutable.from({
   summaryData: undefined,
   isSummaryRetrieveError: false,
   summaryErrorMessage: undefined,
-  isSummaryLoading: false
+  isSummaryLoading: false,
+  summaryErrorCode: undefined
 });
 
 export default handleActions({
@@ -38,7 +39,7 @@ export default handleActions({
   [ACTION_TYPES.SUMMARY_RETRIEVE]: (state, action) => {
     return handle(state, action, {
       start: (s) => s.merge({ isSummaryLoading: true, summaryData: undefined, isSummaryRetrieveError: false, summaryErrorMessage: undefined }),
-      failure: (s) => s.merge({ isSummaryLoading: false, isSummaryRetrieveError: true, summaryErrorMessage: action.payload.meta.message }),
+      failure: (s) => s.merge({ isSummaryLoading: false, isSummaryRetrieveError: true, summaryErrorMessage: action.payload.meta.message, summaryErrorCode: action.payload.code }),
       success: (s) => s.merge({
         isSummaryLoading: false,
         summaryData: action.payload.data

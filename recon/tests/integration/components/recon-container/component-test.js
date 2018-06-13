@@ -111,4 +111,19 @@ module('Integration | Component | recon container', function(hooks) {
     return settled().then(() => done());
   });
 
+  test('recon container with fatal error code - service unavailable 3', async function(assert) {
+    const done = waitForSockets();
+
+    new ReduxDataHelper(setState).apiFatalErrorCode(3).build();
+
+    this.set('eventId', '5');
+    this.set('oldEventId', '5');
+    this.set('endpointId', '555d9a6fe4b0d37c827d402e');
+
+    await render(hbs`{{recon-container eventId=eventId endpointId=endpointId oldEventId=oldEventId}}`);
+    assert.equal(find('.rsa-panel-message .message').textContent.trim(), 'The service is unavailable', 'Service is unavailable');
+
+    return settled().then(() => done());
+  });
+
 });

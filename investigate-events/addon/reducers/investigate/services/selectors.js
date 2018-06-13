@@ -5,6 +5,8 @@ const { createSelector } = reselect;
 // ACCESSOR FUNCTIONS
 const _services = (state) => state.investigate.services.serviceData;
 const _summaryData = (state) => state.investigate.services.summaryData;
+const _isSummaryRetrieveError = (state) => state.investigate.services.isSummaryRetrieveError;
+const _summaryErrorCode = (state) => state.investigate.services.summaryErrorCode;
 
 export const getDbEndTime = (state) => {
   const { summaryData } = state.investigate.services;
@@ -37,4 +39,9 @@ export const selectedService = createSelector(
 export const hasSummaryData = createSelector(
   [_summaryData],
   (summaryData) => !!summaryData && summaryData.startTime !== 0
+);
+
+export const hasFatalSummaryError = createSelector(
+  [_isSummaryRetrieveError, _summaryErrorCode],
+  (isSummaryRetrieveError, errorCode) => isSummaryRetrieveError && errorCode === 3
 );

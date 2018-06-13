@@ -156,6 +156,14 @@ export default class DataHelper {
     return this;
   }
 
+  hasFatalSummaryError(isError) {
+    _set(this.state, 'services.isSummaryRetrieveError', isError);
+    if (isError) {
+      _set(this.state, 'services.summaryErrorCode', 3);
+    }
+    return this;
+  }
+
   isSummaryLoading(flag) {
     _set(this.state, 'services.isSummaryLoading', flag);
     return this;

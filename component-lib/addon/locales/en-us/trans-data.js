@@ -42,7 +42,7 @@ export default {
       'MISCONFIGURED_SERVICE_CERTIFICATE': 'No authorization server certificates configured. code: {{errorCode}} - {{type}}',
       'ACCESS_DENIED': 'Insufficient permissions for the requested data. If you believe you should have access, ask your administrator to provide the necessary permissions. code: {{errorCode}} - {{type}}',
       'SESSION_REMOVED': 'Data not loaded. It has rolled out of the database. code: {{errorCode}} - {{type}}',
-      'SESSION_NOT_AVAILABLE': 'Remote content for this device is no longer available. code: {{errorCode}} - {{type}}',
+      'SESSION_NOT_AVAILABLE': 'Remote content for the session is no longer available. code: {{errorCode}} - {{type}}',
       'PACKETS_NOT_FOUND': 'Data not loaded. It has rolled out of the database. code: {{errorCode}} - {{type}}',
       'DEVICE_OFFLINE': 'Data not loaded. The underlying service is offline. code: {{errorCode}} - {{type}}',
       'GENERIC': 'An unexpected error has occurred attempting to retrieve this data. If further details are available, they can be found in the console. code: {{errorCode}} - {{type}}'
@@ -310,6 +310,7 @@ export default {
       1000: 'Session is unavailable for viewing.',
       124: 'Invalid session ID: {{eventId}}',
       11: 'The session id is too large to be handled: {{eventId}}',
+      3: 'The service is unavailable',
       permissions: 'You do not have the required permissions to view this content.'
     },
     toggles: {
@@ -466,6 +467,7 @@ export default {
         searchPlaceholder: 'Type to filter column group'
       },
       error: 'An unexpected error occurred when executing this query.',
+      fatalSummaryError: 'The service is unavailable',
       shrink: 'Shrink Events Panel',
       expand: 'Expand Events Panel',
       close: 'Close Events Panel',

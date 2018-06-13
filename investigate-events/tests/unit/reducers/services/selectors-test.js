@@ -3,7 +3,8 @@ import Immutable from 'seamless-immutable';
 import {
   getDbEndTime,
   getDbStartTime,
-  hasSummaryData
+  hasSummaryData,
+  hasFatalSummaryError
 } from 'investigate-events/reducers/investigate/services/selectors';
 
 module('Unit | Selectors | services');
@@ -40,6 +41,19 @@ const state = Immutable.from({
   }
 });
 
+const errorState = Immutable.from({
+  investigate: {
+    services: {
+      serviceData: [
+        { id: 'id1', displayName: 'Service Name', name: 'SN' },
+        { id: 'id2', displayName: 'Service Name2', name: 'SN2' }
+      ],
+      isSummaryRetrieveError: true,
+      summaryErrorCode: 3
+    }
+  }
+});
+
 test('hasSummaryData are computed correctly', function(assert) {
   assert.equal(hasSummaryData(state), true, 'The returned value from hasSummaryData selector is as expected');
 });
@@ -60,4 +74,10 @@ test('handle different inputs when retrieving database start time', function(ass
 
   const missingSummaryState = state.setIn(['investigate', 'services', 'summaryData'], null);
   assert.equal(getDbStartTime(missingSummaryState), null, 'time should be null');
+});
+
+test('check for summaryFatalError', function(assert) {
+  assert.expect(1);
+
+  assert.ok(hasFatalSummaryError(errorState), 'has fetch summary error - shut down events');
 });

@@ -7,6 +7,7 @@ import { selectedIndex, isEventResultsError, eventResultsErrorMessage } from 'in
 import { getActiveQueryNode } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { getServices } from 'investigate-events/actions/initialization-creators';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
+import { hasFatalSummaryError } from 'investigate-events/reducers/investigate/services/selectors';
 
 const stateToComputed = (state) => ({
   queryBodyClass: queryBodyClass(state),
@@ -14,6 +15,7 @@ const stateToComputed = (state) => ({
   queryNode: getActiveQueryNode(state),
   isEventResultsError: isEventResultsError(state),
   eventResultsErrorMessage: eventResultsErrorMessage(state),
+  hasFatalSummaryError: hasFatalSummaryError(state),
   aliases: state.investigate.dictionaries.aliases,
   atLeastOneQueryIssued: state.investigate.queryNode.atLeastOneQueryIssued,
   hasIncommingQueryParams: state.investigate.queryNode.hasIncommingQueryParams,

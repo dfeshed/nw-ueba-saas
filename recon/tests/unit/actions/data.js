@@ -58,4 +58,34 @@ const nextgenException = {
   }
 };
 
-export { sessionNotFound, nextgenException };
+const summaryFatalError = {
+  'code': 3,
+  'request': {
+    'id': 'req-49',
+    'stream': {
+      'limit': 100000,
+      'batch': 100
+    },
+    'sort': [],
+    'filter': [
+      {
+        'field': 'endpointId',
+        'value': '2',
+        'operator': '==',
+        'isNull': false
+      },
+      {
+        'field': 'sessionId',
+        'value': '9',
+        'operator': '==',
+        'isNull': false
+      }
+    ],
+    'filterOperator': 'and'
+  },
+  'meta': {
+    'message': 'Connection refused: no further information'
+  }
+};
+
+export { sessionNotFound, nextgenException, summaryFatalError };

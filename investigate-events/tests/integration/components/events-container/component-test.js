@@ -42,4 +42,14 @@ module('Integration | Component | events-container', function(hooks) {
     await render(hbs`{{events-container}}`);
     assert.equal(findAll('.query-error').length, 0, 'Expected query error message on page');
   });
+
+  test('it renders an error when summary has errored', async function(assert) {
+    new ReduxDataHelper(setState)
+      .isServicesRetrieveError(false)
+      .isEventResultsError(false)
+      .hasFatalSummaryError(true)
+      .build();
+    await render(hbs`{{events-container}}`);
+    assert.equal(find('.summary-error').textContent, 'The service is unavailable', 'Expected error message on page');
+  });
 });
