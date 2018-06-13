@@ -1,5 +1,6 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
+import { lookup } from 'ember-dependency-lookup';
 
 moduleForComponent('query-filters/query-filter-fragment', 'Unit | Component | query filter fragment', {
   unit: true,
@@ -8,6 +9,30 @@ moduleForComponent('query-filters/query-filter-fragment', 'Unit | Component | qu
     'service:redux'
   ],
   resolver: engineResolverFor('investigate-events')
+});
+
+test('it sets contextItems', function(assert) {
+  const component = this.subject({
+    meta: 'foo',
+    operator: '=',
+    value: 'bar',
+    filterList: [],
+    deleteFilter: () => {},
+    executeQuery: () => {},
+    i18n: lookup('service:i18n'),
+    metaIndex: 'value',
+    metaFormat: 'Text'
+  });
+
+  component.set('selected', false);
+  component.set('hasRequiredValuesToQuery', false);
+  assert.equal(component.get('contextItems.length'), 0, 'Expected no contextItems');
+
+  component.set('selected', true);
+  assert.equal(component.get('contextItems.length'), 3, 'Expected 3 contextItem');
+  assert.equal(component.get('contextItems')[0].label, 'Query with selected filters', 'Expected contextItems[1].label to match');
+  assert.equal(component.get('contextItems')[1].label, 'Query with selected filters in a new tab', 'Expected contextItems[2].label to match');
+  assert.equal(component.get('contextItems')[2].label, 'Delete selected filters', 'Expected contextItems[0].label to match');
 });
 
 test('it sets operatorOptions', function(assert) {

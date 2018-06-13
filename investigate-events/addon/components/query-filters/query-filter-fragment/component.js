@@ -187,12 +187,12 @@ const QueryFragmentComponent = Component.extend({
       return [{
         label: i18n.t('queryBuilder.querySelected'),
         action() {
-          executeQuery(filterList.filterBy('selected', true));
+          executeQuery(filterList.filterBy('selected', true), false, true);
         }
       }, {
         label: i18n.t('queryBuilder.querySelectedNewTab'),
         action() {
-          executeQuery(filterList.filterBy('selected', true), true);
+          executeQuery(filterList.filterBy('selected', true), true, true);
         }
       }, {
         label: i18n.t('queryBuilder.delete'),
@@ -201,6 +201,8 @@ const QueryFragmentComponent = Component.extend({
           executeQuery(filterList);
         }
       }];
+    } else {
+      return [];
     }
   },
 

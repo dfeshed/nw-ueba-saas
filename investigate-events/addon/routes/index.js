@@ -71,7 +71,6 @@ export default Route.extend({
 
   actions: {
     executeQuery(metaFilters, externalLink = false) {
-
       metaFilters = metaFilters.filterBy('saved', true);
       const redux = this.get('redux');
       // Save the metaFilters to state

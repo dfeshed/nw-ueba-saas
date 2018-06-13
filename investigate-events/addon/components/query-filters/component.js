@@ -308,8 +308,8 @@ const QueryFiltersComponent = Component.extend(EKMixin, {
       this.send('dirtyQueryToggle');
     },
 
-    executeQuery(filters, externalLink) {
-      if (this.get('hasRequiredValuesToQuery')) {
+    executeQuery(filters, externalLink, rightClickExecute = false) {
+      if (this.get('hasRequiredValuesToQuery') || rightClickExecute) {
         if (isEmpty(filters)) {
           filters = this.get('filters');
         }
