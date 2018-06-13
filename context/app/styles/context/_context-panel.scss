@@ -4,7 +4,6 @@ $panelBackgroundImage: radial-gradient(circle at 0px 25%, background-color(prima
 radial-gradient(circle at 70% 0px, background-color(primary, darker, almost-transparent) 0, background-color(primary, dark, transparent) 65%),
 radial-gradient(circle at 35% 65%, background-color(primary, darker, almost-transparent) 0, background-color(primary, dark, transparent) 65%),
 radial-gradient(circle at 85% 85%, background-color(primary, darker, almost-transparent) 0, background-color(primary, dark, transparent) 65%);
-
 .rsa-context-panel {
   @include rsa-vendor-prefix(flex-grow, 0);
   @include rsa-vendor-prefix(flex-shrink, 0);
@@ -23,7 +22,7 @@ radial-gradient(circle at 85% 85%, background-color(primary, darker, almost-tran
     color: text-color(primary, lightest);
     cursor: pointer;
     &:hover {
-     border-color: border-color(neutral);
+      border-color: border-color(neutral);
     }
   }
   .rsa-nav-tab-group {
@@ -176,6 +175,7 @@ radial-gradient(circle at 85% 85%, background-color(primary, darker, almost-tran
     justify-content: center;
     &__panel {
       display: block;
+      width: 100%;
     }
     &__layout {
       float: left;
@@ -193,7 +193,7 @@ radial-gradient(circle at 85% 85%, background-color(primary, darker, almost-tran
     height: 100%;
     width: calc(100% - 4px);
     display: flex;
-    justify-content: center ;
+    justify-content: center;
     .link {
       justify-content: flex-start;
     }
@@ -296,7 +296,7 @@ radial-gradient(circle at 85% 85%, background-color(primary, darker, almost-tran
       .value {
         @include rsa-word-wrap();
       }
-      vbox + vbox {
+      vbox+vbox {
         padding-left: rsa-whitespace(less);
         min-height: 50px;
         width: 80%;
@@ -399,7 +399,8 @@ radial-gradient(circle at 85% 85%, background-color(primary, darker, almost-tran
     width: calc(100% - 4px);
     overflow: auto;
     overflow-x: hidden;
-    .rsa-context-panel__loader , .rsa-context-panel__error-text{
+    .rsa-context-panel__loader,
+    .rsa-context-panel__error-text {
       display: flex;
       position: absolute;
       justify-content: center;
@@ -589,7 +590,7 @@ radial-gradient(circle at 85% 85%, background-color(primary, darker, almost-tran
         }
       }
     }
-    &__risk-reason-padding{
+    &__risk-reason-padding {
       margin-left: 50px;
     }
     &__risk-description {

@@ -10,11 +10,10 @@
           }}
         {{else}}
           {{#if (get dataSourceDetails.localisationField label)}}
-            <div>{{rsa-content-definition label=(t (get dataSourceDetails.localisationField label))}}</div>
+            <div>{{rsa-content-definition label=(t (get dataSourceDetails.localisationField label)) value=(if content content '-')}}</div>
           {{else}}
-            <div>{{rsa-content-definition label=label}}</div>
+            <div>{{rsa-content-definition label=label value=(if content content '-')}}</div>
           {{/if}}
-          {{if content content '-'}}
         {{/if}}
       </div>
     {{/each-in}}

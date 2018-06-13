@@ -1,12 +1,10 @@
 $contextTooltipDatumWidth: 75px;
 $contextTooltipDatumPadding: 0px;
-
 .rsa-context-tooltip {
   background-color: background-color(primary, darkest);
   padding: rsa-whitespace(less);
   max-width: 5 * ($contextTooltipDatumWidth + $contextTooltipDatumPadding) + 50;
   margin-top: 1px;
-
   &__header {
     @include rsa-font(default);
     white-space: nowrap;
@@ -15,15 +13,12 @@ $contextTooltipDatumPadding: 0px;
     margin-right: rsa-whitespace(more);
     line-height: 1.35;
   }
-
   &__body {
     margin-top: rsa-whitespace(less);
     line-height: 1.35;
   }
-
   &__content,
   &__aside {
-
     &-header {
       @include rsa-font(header, small);
       white-space: nowrap;
@@ -32,22 +27,18 @@ $contextTooltipDatumPadding: 0px;
       padding: rsa-whitespace(least) 0;
     }
   }
-
   &__content {
     @include border-right(1px, solid, primary, dark);
     padding-right: rsa-whitespace(less);
-
     &-body {
       margin: 0;
       max-width: 3 * ($contextTooltipDatumWidth + $contextTooltipDatumPadding);
     }
-
     &-footer {
       @include rsa-font(header, small);
       padding-top: rsa-whitespace(less);
     }
   }
-
   &__aside {
     padding-left: rsa-whitespace(less);
   }
@@ -57,20 +48,20 @@ $contextTooltipDatumPadding: 0px;
   a {
     text-decoration: none;
   }
-
   .disabled {
     opacity: 0.5;
     pointer-events: none;
     display: inline-block;
   }
-
   .action {
     @include rsa-font(body, small);
     padding: rsa-whitespace(least) 0;
     color: text-color(primary, lighter);
     cursor: pointer;
     max-width: 190px;
-
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     .icon {
       padding-right: rsa-whitespace(less);
     }
@@ -78,12 +69,10 @@ $contextTooltipDatumPadding: 0px;
 }
 
 .rsa-context-tooltip-records {
-
   &__records {
-    @include rsa-row(center,top);
+    @include rsa-row(center, top);
     @include rsa-vendor-prefix(flex-wrap, wrap);
   }
-
   &__record {
     cursor: pointer;
     display: inline-block;
@@ -94,28 +83,26 @@ $contextTooltipDatumPadding: 0px;
     overflow: hidden;
     text-overflow: ellipsis;
     @include border-bottom(3px, solid, primary, base, transparent);
-
     &:hover {
       border-bottom-color: border-color(secondary, light);
     }
-
     .value {
       @include rsa-font(base, large, uppercase);
       color: text-color(primary, lightest);
       text-overflow: ellipsis;
       overflow: hidden;
     }
-
-    &.Machines .value, &.LiveConnect .value, &.criticality .value, &.riskRating .value {
+    &.Machines .value,
+    &.LiveConnect .value,
+    &.criticality .value,
+    &.riskRating .value {
       font-size: 90%;
       line-height: 1.75rem;
     }
-
     .text {
       @include rsa-font(base, smaller, uppercase);
       color: text-color(primary, lighter);
     }
-
     .subtext,
     .subtext .rsa-content-datetime .time-ago {
       display: none;
@@ -126,9 +113,7 @@ $contextTooltipDatumPadding: 0px;
       color: text-color(primary);
       */
     }
-
   }
-
   &__error {
     text-align: center;
     padding: rsa-whitespace() 0;
