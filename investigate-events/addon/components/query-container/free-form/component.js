@@ -16,8 +16,8 @@ const freeForm = Component.extend({
 
   actions: {
     keyDown(e) {
+      this.send('dirtyQueryToggle');
       if (this.get('hasRequiredValuesToQuery')) {
-        this.send('dirtyQueryToggle');
         if (e.keyCode === 13) {
           this.$('input').blur();
           this.executeQuery(this.get('filters'));
