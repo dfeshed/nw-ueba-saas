@@ -1,4 +1,25 @@
-# [8.5.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v8.4.0)
+# [8.6.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v8.6.0)
+## Features
+* [ASOC-41949](https://bedfordjira.na.rsa.net/browse/ASOC-41949):&emsp;Create a new parser to hold rules - UI Only
+* [ASOC-45787](https://bedfordjira.na.rsa.net/browse/ASOC-45787):&emsp;Introduce pagination of packets to text analysis UI
+* [ASOC-53279](https://bedfordjira.na.rsa.net/browse/ASOC-53279):&emsp;Rebrand NetWitness Suite to NetWitness Platform
+* [ASOC-53280](https://bedfordjira.na.rsa.net/browse/ASOC-53280):&emsp;Rebrand NetWitness Suite to NetWitness Platform
+* [ASOC-53518](https://bedfordjira.na.rsa.net/browse/ASOC-53518):&emsp;Text overlapping and scaling issues (on a 13" display)
+* [ASOC-54261](https://bedfordjira.na.rsa.net/browse/ASOC-54261):&emsp;Support groups of profiles
+* [ASOC-55111](https://bedfordjira.na.rsa.net/browse/ASOC-55111):&emsp;Pill Delete
+* [ASOC-55245](https://bedfordjira.na.rsa.net/browse/ASOC-55245):&emsp;Framework localization issue
+* [ASOC-55797](https://bedfordjira.na.rsa.net/browse/ASOC-55797):&emsp;If core devices use non ssl mode to aggregate then Event recon doesn't work in Respond
+* [ASOC-56286](https://bedfordjira.na.rsa.net/browse/ASOC-56286):&emsp;Search - Layout options better
+* [ASOC-56385](https://bedfordjira.na.rsa.net/browse/ASOC-56385):&emsp;Event Analysis misaligned show/hide option links
+* [ASOC-56463](https://bedfordjira.na.rsa.net/browse/ASOC-56463):&emsp;Underline active icon in Incident Details page
+* [ASOC-56558](https://bedfordjira.na.rsa.net/browse/ASOC-56558):&emsp;Provide subset of data when payload chunk more than buffer
+* [ASOC-56580](https://bedfordjira.na.rsa.net/browse/ASOC-56580):&emsp;Business process attribute display
+* [ASOC-56781](https://bedfordjira.na.rsa.net/browse/ASOC-56781):&emsp;11.2 Investigation security testing
+* [ASOC-56957](https://bedfordjira.na.rsa.net/browse/ASOC-56957):&emsp;Add more details to uncommon error message
+* [ASOC-57134](https://bedfordjira.na.rsa.net/browse/ASOC-57134):&emsp;Encode properly special characters found to cause query execution errors v3
+
+
+# [8.5.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v8.5.0)
 ## Features
 * [ASOC-44915](https://bedfordjira.na.rsa.net/browse/ASOC-44915):&emsp;Use new reactiveStreamRequest API for text packets
 * [ASOC-50965](https://bedfordjira.na.rsa.net/browse/ASOC-50965):&emsp;Basic to advanced and back with no change
