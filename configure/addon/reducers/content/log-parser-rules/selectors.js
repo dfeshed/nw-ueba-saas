@@ -140,7 +140,7 @@ export const isSavingParserRuleError = createSelector(
   (parserRulesState) => parserRulesState.saveRuleStatus === 'error'
 );
 
-export const isOotb = createSelector(
+export const isParserRuleOutOfBox = createSelector(
   _selectedParserRule,
   (rule) => {
     if (rule) {
@@ -150,8 +150,9 @@ export const isOotb = createSelector(
 );
 
 export const hasDeployableRules = createSelector(
+  selectedLogParser,
   parserRules,
-  (rules) => {
+  (parser, rules) => {
     if (rules) {
       let index;
       for (index = 0; index < rules.length; ++index) {
@@ -160,7 +161,7 @@ export const hasDeployableRules = createSelector(
         }
       }
     }
-    return false;
+    return parser && parser.dirty && parser.deployed;
   }
 );
 

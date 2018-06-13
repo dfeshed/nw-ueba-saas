@@ -1,7 +1,7 @@
 @import "log-parsers";
 @import "log-message";
 
-div.modal-content.addNewRule {
+div.modal-content.add-new-parser-rule {
   padding: rsa-whitespace();
   padding-top: rsa-whitespace(more);
   width: 500px;
@@ -25,6 +25,9 @@ div.modal-content.addNewRule {
     display: inline-block;
     margin-left: 5px;
     vertical-align: bottom;
+  }
+  .deploy-icon {
+    color: text-color(accentOne, dark);
   }
   .save-reset-rule {
     hbox {

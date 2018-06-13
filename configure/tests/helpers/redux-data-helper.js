@@ -42,6 +42,22 @@ export default class DataHelper {
     return state.asMutable();
   }
 
+  parserListState(dirty, deployed) {
+    _set(this.state, 'content.logParserRules.logParsers', [{ name: 'ParserListState' }]);
+    if (dirty) {
+      _set(this.state, 'content.logParserRules.logParsers.dirty', true);
+    } else {
+      _set(this.state, 'content.logParserRules.logParsers.dirty', false);
+    }
+    if (deployed) {
+      _set(this.state, 'content.logParserRules.logParsers.deployed', true);
+    } else {
+      _set(this.state, 'content.logParserRules.logParsers.deployed', false);
+    }
+    _set(this.state, 'content.logParserRules.selectedLogParserIndex', 0);
+    return this;
+  }
+
   parserRulesWait(flag) {
     this._setBaseState();
     if (flag) {

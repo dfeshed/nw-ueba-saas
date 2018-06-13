@@ -568,6 +568,7 @@ export default {
           title: 'Add New Rule',
           ruleName: 'Rule Name',
           pleaseEnterRuleName: 'Please Enter Rule Name',
+          matchesExistingRuleName: 'Rule name can not match an existing rule within the same Log Parser.',
           ok: 'Add New Rule'
         },
         deleteRule: {

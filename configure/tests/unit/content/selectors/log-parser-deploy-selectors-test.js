@@ -5,62 +5,126 @@ import {
 
 module('Unit | Selectors | log-parser-deploy');
 
-const stateHasDeployableRules = {
-  configure: {
-    content: {
-      logParserRules: {
-        deployLogParserStatus: 'wait',
-        parserRules: [
-          {
-            name: 'foo',
-            pattern: {
-              format: 'Foo'
+test('hasDeployableRules-NotAllOutOfBox-Deployed-Dirty', function(assert) {
+  const state = {
+    configure: {
+      content: {
+        logParserRules: {
+          logParsers: [
+            {
+              name: 'ciscopix',
+              dirty: true,
+              deployed: true
+            }
+          ],
+          selectedLogParserIndex: 0,
+          deployLogParserStatus: 'wait',
+          parserRules: [
+            {
+              name: 'foo',
+              outOfBox: true
             },
-            outOfBox: true
-          },
-          {
-            name: 'foo2',
-            pattern: {
-              format: 'Foo2'
-            },
-            outOfBox: false
-          }
-        ]
+            {
+              name: 'foo2',
+              outOfBox: false
+            }
+          ]
+        }
       }
     }
-  }
-};
-
-const stateNoDeployableRules = {
-  configure: {
-    content: {
-      logParserRules: {
-        deployLogParserStatus: 'wait',
-        parserRules: [
-          {
-            name: 'foo',
-            pattern: {
-              format: 'Foo'
-            },
-            outOfBox: true
-          },
-          {
-            name: 'foo2',
-            pattern: {
-              format: 'Foo2'
-            },
-            outOfBox: true
-          }
-        ]
-      }
-    }
-  }
-};
-
-test('hasDeployableRules', function(assert) {
-  assert.equal(hasDeployableRules(stateHasDeployableRules), true, 'has Deployable Rules');
+  };
+  assert.equal(hasDeployableRules(state), true, 'has Deployable Rules - NotAllOutOfBox-Deployed-Dirty');
 });
 
-test('noDeployableRules', function(assert) {
-  assert.equal(hasDeployableRules(stateNoDeployableRules), false, 'no Deployable Rules');
+test('hasDeployableRules-AllOutOfBox-Deployed-Dirty', function(assert) {
+  const state = {
+    configure: {
+      content: {
+        logParserRules: {
+          logParsers: [
+            {
+              name: 'ciscopix',
+              dirty: true,
+              deployed: true
+            }
+          ],
+          selectedLogParserIndex: 0,
+          deployLogParserStatus: 'wait',
+          parserRules: [
+            {
+              name: 'foo',
+              outOfBox: true
+            },
+            {
+              name: 'foo2',
+              outOfBox: true
+            }
+          ]
+        }
+      }
+    }
+  };
+  assert.equal(hasDeployableRules(state), true, 'has Deployable Rules - AllOutOfBox-Deployed-Dirty');
+});
+
+test('noDeployableRules-AllOutOfBox-NotDeployed-NotDirty', function(assert) {
+  const state = {
+    configure: {
+      content: {
+        logParserRules: {
+          logParsers: [
+            {
+              name: 'ciscopix',
+              dirty: false,
+              deployed: false
+            }
+          ],
+          selectedLogParserIndex: 0,
+          deployLogParserStatus: 'wait',
+          parserRules: [
+            {
+              name: 'foo',
+              outOfBox: true
+            },
+            {
+              name: 'foo2',
+              outOfBox: true
+            }
+          ]
+        }
+      }
+    }
+  };
+  assert.equal(hasDeployableRules(state), false, 'no Deployable Rules - AllOutOfBox-NotDeployed-NotDirty');
+});
+
+test('noDeployableRules-AllOutOfBox-Deployed-NotDirty', function(assert) {
+  const state = {
+    configure: {
+      content: {
+        logParserRules: {
+          logParsers: [
+            {
+              name: 'ciscopix',
+              dirty: false,
+              deployed: true
+            }
+          ],
+          selectedLogParserIndex: 0,
+          deployLogParserStatus: 'wait',
+          parserRules: [
+            {
+              name: 'foo',
+              outOfBox: true
+            },
+            {
+              name: 'foo2',
+              outOfBox: true
+            }
+          ]
+        }
+      }
+    }
+  };
+  assert.equal(hasDeployableRules(state), false, 'no Deployable Rules - AllOutOfBox-Deployed-NotDirty');
 });

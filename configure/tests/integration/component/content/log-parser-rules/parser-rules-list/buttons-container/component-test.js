@@ -53,13 +53,13 @@ module('Integration | Component | delete-rules', function(hooks) {
   test('Add a new rule modal', async function(assert) {
     new ReduxDataHelper(setState).parserRulesFormatData(1, true).build();
     await render(hbs`{{content/log-parser-rules/parser-rules-list/buttons-container}}`);
-    assert.ok(find('.buttons-container .addNewRule .modal-trigger'), 'Add New button is not showing');
-    click('.buttons-container .addNewRule .modal-trigger');
+    assert.ok(find('.buttons-container .add-new-parser-rule .modal-trigger'), 'Add New button is not showing');
+    click('.buttons-container .add-new-parser-rule .modal-trigger');
     return settled().then(() => {
-      assert.equal($('#modalDestination .addNewRule button').length, 1, 'Modal is not showing');
-      $('#modalDestination .addNewRule .ember-text-field.ember-view').val('123');
+      assert.equal($('#modalDestination .add-new-parser-rule button').length, 1, 'Modal is not showing');
+      $('#modalDestination .add-new-parser-rule .ember-text-field.ember-view').val('123');
       return settled().then(() => {
-        assert.equal($('#modalDestination .addNewRule input').val(), '123', 'Name of rule is 123');
+        assert.equal($('#modalDestination .add-new-parser-rule input').val(), '123', 'Name of rule is 123');
       });
     });
   });

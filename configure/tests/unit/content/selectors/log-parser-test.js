@@ -5,7 +5,7 @@ import {
   filterDeletedRule,
   isDeletingParserRule,
   isDeletingParserRuleError,
-  isOotb,
+  isParserRuleOutOfBox,
   selectedParserRuleFormat,
   logParsers,
   deviceTypes,
@@ -118,8 +118,8 @@ test('isDeletingParserRuleError error', function(assert) {
   assert.equal(isDeletingParserRuleError(state({ deleteRuleStatus: 'wait' })), false, 'no error getting delete confirmation');
 });
 
-test('isOotb', function(assert) {
-  assert.equal(isOotb(state()), true, 'is ootb');
+test('isParserRuleOutOfBox', function(assert) {
+  assert.equal(isParserRuleOutOfBox(state()), true, 'is ootb');
 });
 
 test('selectedParserRuleFormat with _selectedFormat', function(assert) {

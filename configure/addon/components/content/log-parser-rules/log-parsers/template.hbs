@@ -7,7 +7,11 @@
     <tr>
       <td class='{{if (eq index 0) 'firstItem'}}
       {{if (eq selectedLogParserIndex index) 'active'}}'{{action "selectLogParser" index}}>
-        {{or logParser.displayName logParser.name}}
+        {{#if logParser.dirty}}
+          {{rsa-icon name="synchronize-3" class="deploy-icon"}} {{or logParser.displayName logParser.name}}{{#if (not logParser.deployed)}}-{{/if}}
+        {{else}}
+          &nbsp;&nbsp;&nbsp;&nbsp; {{or logParser.displayName logParser.name}}{{#if (not logParser.deployed)}}-{{/if}}
+        {{/if}}
       </td>
     </tr>
   {{/each}}

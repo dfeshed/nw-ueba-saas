@@ -81,6 +81,8 @@ export default reduxActions.handleActions({
       start: (state) => {
         return state.merge({
           parserRules: [],
+          selectedParserRuleIndex: 0,
+          parserRuleTokens: [],
           parserRulesStatus: 'wait'
         });
       },
@@ -95,7 +97,7 @@ export default reduxActions.handleActions({
             parserRules: rules,
             parserRulesStatus: 'completed',
             selectedFormat: null,
-            parserRuleTokens: rules[selectedIndex].literals
+            parserRuleTokens: ((rules && rules.length > 0) ? rules[selectedIndex].literals : [])
           }
         );
       }
