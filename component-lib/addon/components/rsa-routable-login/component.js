@@ -275,9 +275,9 @@ export default Component.extend({
                 resolve();
               });
             }).then(() => {
-              window.requestAnimationFrame(() => {
+              window.requestAnimationFrame(() => window.requestAnimationFrame(() => {
                 set(this, 'eulaContentDelay', true);
-              });
+              }));
             });
 
           }).catch((error) => {

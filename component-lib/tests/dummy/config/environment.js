@@ -36,6 +36,7 @@ module.exports = function(environment) {
         'offset': 'GMT-07:00',
         'zoneId': 'America/Los_Angeles'
       }],
+    requestEula: true,
     flashMessageDefaults: {
       timeout: 5000,
       extendedTimeout: 0,
