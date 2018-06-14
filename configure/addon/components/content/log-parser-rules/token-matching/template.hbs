@@ -1,39 +1,34 @@
-<h2> {{t 'configure.logsParser.tokens'}} </h2>
-<div class="tokenScroll">
-  <ul>
-    <li class="add-token">
-      {{#rsa-form-button
-        isIconOnly=true
-        isDisabled=(or isNewTokenInvalid (not isEditable))
-        defaultAction=(action 'addToken')
-      }}
-        {{rsa-icon name='add-1' size='small' class='add-button'}}
-      {{/rsa-form-button}}
-      {{rsa-form-input
-        maxLength=64
-        value=newToken
-        isDisabled=(not isEditable)
-        placeholder=(t 'configure.logsParser.buttons.pleaseEnterNewToken')
-      }}
-    </li>
-    {{#each tokens as |token index|}}
-      <li class='{{if (eq index 0) 'firstItem'}} token'>
+<li class="add-token">
+  {{#rsa-form-button
+    isIconOnly=true
+    isDisabled=(or isNewTokenInvalid (not isEditable))
+    defaultAction=(action 'addToken')
+  }}
+    {{rsa-icon name='add-1' size='small' class='add-button'}}
+  {{/rsa-form-button}}
+  {{rsa-form-input
+    maxLength=64
+    value=newToken
+    isDisabled=(not isEditable)
+    placeholder=(t 'configure.logsParser.buttons.pleaseEnterNewToken')
+  }}
+</li>
+{{#each tokens as |token index|}}
+  <li class='{{if (eq index 0) 'firstItem'}} token'>
 
-        {{#rsa-form-button
-          isIconOnly=true
-          isDisabled=(not isEditable)
-          defaultAction=(action 'deleteToken' token)
-        }}
-          {{rsa-icon name='bin-1' size='small'}}
-        {{/rsa-form-button}}
+    {{#rsa-form-button
+      isIconOnly=true
+      isDisabled=(not isEditable)
+      defaultAction=(action 'deleteToken' token)
+    }}
+      {{rsa-icon name='bin-1' size='small'}}
+    {{/rsa-form-button}}
 
-        {{rsa-form-input
-          maxLength=64
-          value=(unbound token.value)
-          isDisabled=(not isEditable)
-          focusOut=(action 'editToken' token.value index)
-        }}
-      </li>
-    {{/each}}
-  </ul>
-</div>
+    {{rsa-form-input
+      maxLength=64
+      value=(unbound token.value)
+      isDisabled=(not isEditable)
+      focusOut=(action 'editToken' token.value index)
+    }}
+  </li>
+{{/each}}

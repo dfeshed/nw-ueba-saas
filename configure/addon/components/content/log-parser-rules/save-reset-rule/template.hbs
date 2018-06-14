@@ -1,3 +1,18 @@
+<hbox>
+  {{selectedLogParserName}}
+</hbox>
+<hbox class="rsa-button-with-confirmation action-control deploy-log-parser">
+  {{#rsa-button-with-confirmation
+    title=(t 'configure.logsParser.modals.deployLogParser.title')
+    style="primary"
+    confirmationMessage=(t 'configure.logsParser.modals.deployLogParser.confirm' logParser=selectedLogParser.name )
+    confirmButtonLabel=(t 'configure.logsParser.modals.deployLogParser.ok')
+    cancelButtonLabel=(t 'configure.logsParser.modals.cancel')
+    isDisabled=(or hasNoDeployableRules (not selectedLogParser))
+    onConfirm=(action 'deployLogParser')}}
+    {{rsa-icon name="synchronize-3"}} {{t 'configure.logsParser.buttons.deploy'}}
+  {{/rsa-button-with-confirmation}}
+</hbox>
 <hbox class="rsa-button saveRule">
   {{#rsa-form-button style='primary' defaultAction='saveParserRule'}}
     {{t 'configure.logsParser.buttons.save'}}
@@ -8,3 +23,4 @@
     {{t 'configure.logsParser.buttons.reset'}}
   {{/rsa-form-button}}
 </hbox>
+<br clear='all'/>

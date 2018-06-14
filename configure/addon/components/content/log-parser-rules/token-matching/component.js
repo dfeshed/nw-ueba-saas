@@ -16,6 +16,7 @@ const dispatchToActions = {
 };
 
 const TokenMatching = Component.extend({
+  tagName: 'ul',
   classNames: ['token-matching'],
   newToken: '',
 

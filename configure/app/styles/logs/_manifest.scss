@@ -36,6 +36,7 @@ div.modal-content.add-new-parser-rule {
     hbox {
       margin: rsa-whitespace();
       margin-left: 0px;
+      margin-bottom: 0px;
       float: left;
     }
   }
@@ -66,23 +67,28 @@ div.modal-content.add-new-parser-rule {
   }
   .matchingMapping {
     width: 100%;
-    margin-top: rsa-whitespace(more);
     td {
       vertical-align: top;
-      overflow: hidden;
-      display: inline-block;
+      padding-left: rsa-whitespace();
+      padding-right: rsa-whitespace();
       white-space: nowrap;
       color: text-color(neutral);
       @include rsa-font(default, small);
     }
     td.token {
+      overflow: auto;
       width: 25%;
     }
     td.values {
-      width: 50%;
+      overflow: auto;
+      width: 40%;
     }
     td.meta {
-      width: 25%;
+      overflow: auto;
+      width: 35%;
+      div {
+        overflow: auto;
+      }
     }
   }
   p.firstLogName, p.firstRuleName {
@@ -99,18 +105,6 @@ div.modal-content.add-new-parser-rule {
     border: 1px solid border-color(neutral);
     border-top: 1px solid border-color(primary);
     border-bottom-width: 0px;
-  }
-  .value-mapping {
-    border-left: 1px solid border-color(primary, dark);
-    margin-left: rsa-whitespace();
-    padding-left: rsa-whitespace(less);
-    td.metaIndex {
-      width: 10%;
-    }
-  }
-  .value-matching {
-    border-left: 1px solid border-color(primary, dark);
-    padding-left: rsa-whitespace();
   }
 
   .leftArea, .centerArea, .rightArea {
@@ -143,37 +137,47 @@ div.modal-content.add-new-parser-rule {
     position: relative;
     .centerTop {
       padding: rsa-whitespace();
+      padding-top: 0px;
       .ruleRegex {
         margin-top: rsa-whitespace(more);
       }
+      overflow: auto;
+    }
+    .parserRuleName {
+      padding-top: rsa-whitespace();
+      margin-top: rsa-whitespace();
+      margin-bottom: rsa-whitespace();
+      border-top: 1px solid border-color(primary);
+      width: 100%;
+
+    }
+    h1 {
+      margin: 0px;
+      margin-bottom: rsa-whitespace(more);
     }
   }
-  .vSpacerFirst {
-    margin-top: rsa-whitespace();
+.value-matching {
+  label {
+    padding-top: rsa-whitespace();
   }
+}
   .tdMessage {
     vertical-align: top;
   }
-  .trTop, .trMessage {
-    height: 50%;
-  }
-
   .token-matching {
-    div.tokenScroll {
-      max-height: 300px;
-      overflow: auto;
-      .rsa-form-input input {
-        font-size: 10px;
-      }
-      .rsa-form-button-wrapper {
-        float: right;
-      }
-      .rsa-form-input {
-        width: 80%;
-      }
-      li {
-        padding-right: rsa-whitespace(less);
-      }
+    height: 300px;
+    overflow: auto;
+    .rsa-form-input input {
+      font-size: 10px;
+    }
+    .rsa-form-button-wrapper {
+      float: right;
+    }
+    .rsa-form-input {
+      width: 80%;
+    }
+    li {
+      padding-right: rsa-whitespace(less);
     }
   }
   .rules-list {

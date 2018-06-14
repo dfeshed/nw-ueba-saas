@@ -31,13 +31,17 @@ const ParserRules = Component.extend({
   canShowSelectedParserRule: true,
   didRender() {
     this._super(...arguments);
-    // table height to full window on load
+    // table height to full window on load and center are slit in half
     const p = $('.log-parser-rules').position();
     const n = Math.round(p.top) + 60;
-    $('.parserContainer').css('height', ($(window).height() - n));
-    // table height to full window on window resize
+    let h = $(window).height() - n;
+    $('.parserContainer').css('height', h);
+    $('.trTop, .trMessage, .matchingMapping').css('height', h / 2);
+    // same thing on  window resize
     $(window).resize(function() {
-      $('.parserContainer').css('height', ($(window).height() - n));
+      h = $(window).height() - n;
+      $('.parserContainer').css('height', h);
+      $('.trTop, .trMessage, .matchingMapping').css('height', h / 2);
     });
   }
 });

@@ -27,7 +27,6 @@ module('Integration | Component | Parser Toolbar', function(hooks) {
   test('Expected Toolbar buttons are found', async function(assert) {
     new ReduxDataHelper(setState).parserRulesWait(false).parserRulesFormatData(0, true).build();
     await render(hbs`{{content/log-parser-rules/log-parsers/toolbar}}`);
-    assert.ok(find('.deploy-log-parser'), 'Deploy button is not showing');
     assert.ok(find('.add-new-log-parser'), 'Add New button is not showing');
     assert.ok(find('.delete-log-parser'), 'Delete button is not showing');
   });
@@ -36,7 +35,8 @@ module('Integration | Component | Parser Toolbar', function(hooks) {
     const translation = this.owner.lookup('service:i18n');
     const expectedMessage = translation.t('configure.logsParser.modals.deployLogParser.confirm', { logParser: 'builtin' });
     new ReduxDataHelper(setState).parserRulesWait(false).parserRulesFormatData(0, true).build();
-    await render(hbs`{{content/log-parser-rules/log-parsers/toolbar}}`);
+    await render(hbs`{{content/log-parser-rules/save-reset-rule}}`);
+    assert.ok(find('.deploy-log-parser'), 'Deploy button is not showing');
     await click('.deploy-log-parser button');
     assert.ok(find('.deploy-log-parser .confirmation-modal'), 'Modal Confirmation is not showing');
     assert.equal(find('.deploy-log-parser .confirmation-modal .modal-content p').textContent.trim(), expectedMessage, 'Confirm message is incorrect');
