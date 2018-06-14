@@ -33,6 +33,15 @@ function findAllLogParsers() {
   });
 }
 
+function fetchMetas() {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'findAll',
+    modelName: 'rule-metas',
+    query: {}
+  });
+}
+
 function fetchDeviceTypes() {
   const request = lookup('service:request');
   return request.promiseRequest({
@@ -135,6 +144,7 @@ export default {
   fetchDeviceClasses,
   fetchDeviceTypes,
   fetchRuleFormats,
+  fetchMetas,
   fetchParserRules,
   findAllLogParsers,
   highlightSampleLogs

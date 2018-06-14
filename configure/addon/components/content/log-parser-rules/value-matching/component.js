@@ -38,8 +38,12 @@ const ValueMatching = Component.extend({
 
   actions: {
     handleFormatChange(format) {
-      const rule = this.get('rule');
-      const pattern = { ...rule.pattern, format: format.type };
+      const { rule, regex } = this.getProperties('rule', 'regex');
+      const updates = {
+        format: format.type === 'regex' ? null : format.type,
+        regex: format.type === 'regex' ? regex : null
+      };
+      const pattern = { ...rule.pattern, ...updates };
       const updatedRule = {
         ...rule,
         pattern

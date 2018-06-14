@@ -1,16 +1,16 @@
 <h2> {{t 'configure.logsParser.mapping'}} </h2>
-<table class='parserTable'>
-  {{#each parserRuleMetas as |meta index|}}
-    <tr class='{{if (eq index 0) 'firstItem'}}'>
-      <td class='metaIndex'>
-        {{meta.index}}
-      </td>
-      <td class='metaKey'>
-        {{meta.key}}
-      </td>
-      <td class='metaFormat'>
-        {{meta.format}}
-      </td>
-    </tr>
+<ul class='parserTable'>
+  {{#each captures as |capture index|}}
+    <li class='{{if (eq index 0) 'firstItem'}}'>
+      {{#power-select
+        placeholder="Make a selection"
+        options=metaOptions
+        selected=capture
+        searchPlaceholder="Type to filter options"
+        disabled=rule.outOfBox
+        onchange=(action 'handleMetaChange' index) as |option|}}
+        {{option.displayName}}
+      {{/power-select}}
+    </li>
   {{/each}}
-</table>
+</ul>

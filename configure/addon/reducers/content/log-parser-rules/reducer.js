@@ -27,7 +27,9 @@ const initialState = {
   deviceTypes: [],
   deviceTypesStatus: null, // wait, completed, error
   deviceClasses: [],
-  deviceClassesStatus: null // wait, completed, error
+  deviceClassesStatus: null, // wait, completed, error
+  metas: [],
+  metasStatus: null // wait, completed, error
 };
 
 export default reduxActions.handleActions({
@@ -213,6 +215,7 @@ export default reduxActions.handleActions({
       }
     })
   ),
+
   [ACTION_TYPES.FETCH_DEVICE_CLASSES]: (state, action) => (
     handle(state, action, {
       start: (state) => state.merge({
@@ -231,6 +234,26 @@ export default reduxActions.handleActions({
       }
     })
   ),
+
+  [ACTION_TYPES.FETCH_METAS]: (state, action) => (
+    handle(state, action, {
+      start: (state) => state.merge({
+        metasStatus: 'wait',
+        metas: []
+      }),
+      failure: (state) => state.set('metasStatus', 'error'),
+      success: (state) => {
+        const { payload: { data: metas } } = action;
+        return state.merge(
+          {
+            metas,
+            metasStatus: 'completed'
+          }
+        );
+      }
+    })
+  ),
+
   [ACTION_TYPES.ADD_LOG_PARSER]: (state, action) => (
     handle(state, action, {
       start: (state) => state.set('isTransactionUnderway', true),

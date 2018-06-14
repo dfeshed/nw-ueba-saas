@@ -29,6 +29,9 @@ div.modal-content.add-new-parser-rule {
   .deploy-icon {
     color: text-color(accentOne, dark);
   }
+  .outOfBox-indicator {
+    color: text-color(primary);
+  }
   .save-reset-rule {
     hbox {
       margin: rsa-whitespace();
@@ -99,7 +102,8 @@ div.modal-content.add-new-parser-rule {
   }
   .value-mapping {
     border-left: 1px solid border-color(primary, dark);
-    padding-left: rsa-whitespace();
+    margin-left: rsa-whitespace();
+    padding-left: rsa-whitespace(less);
     td.metaIndex {
       width: 10%;
     }

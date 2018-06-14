@@ -59,6 +59,13 @@ const configureConfigGen = function(environment) {
         requestDestination: '/ws/content/parser/device/class'
       }
     },
+    'rule-metas': {
+      socketUrl: socketUrlLogs,
+      findAll: {
+        subscriptionDestination: '/user/queue/content/parser/metas',
+        requestDestination: '/ws/content/parser/metas'
+      }
+    },
     'category-tags': {
       socketUrl,
       findAll: {

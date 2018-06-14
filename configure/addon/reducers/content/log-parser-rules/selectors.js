@@ -11,6 +11,7 @@ export const selectedLogParserIndex = (state) => _parserRulesState(state).select
 export const selectedParserRuleIndex = (state) => _parserRulesState(state).selectedParserRuleIndex;
 export const deviceTypes = (state) => _parserRulesState(state).deviceTypes;
 export const deviceClasses = (state) => _parserRulesState(state).deviceClasses;
+export const metas = (state) => _parserRulesState(state).metas;
 export const isTransactionUnderway = (state) => _parserRulesState(state).isTransactionUnderway;
 export const sampleLogs = (state) => _parserRulesState(state).sampleLogs;
 export const sampleLogsStatus = (state) => _parserRulesState(state).sampleLogsStatus;
@@ -69,15 +70,6 @@ export const selectedParserRuleName = createSelector(
       return rules[index].name;
     } else {
       return '';
-    }
-  }
-);
-
-export const parserRuleMeta = createSelector(
-  selectedParserRule,
-  (selectedRule) => {
-    if (selectedRule) {
-      return selectedRule.pattern.captures;
     }
   }
 );

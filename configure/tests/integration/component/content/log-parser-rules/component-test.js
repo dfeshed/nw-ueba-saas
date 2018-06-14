@@ -34,7 +34,7 @@ module('Integration | Component | parser rules', function(hooks) {
   });
 
   test('Show matchingMapping if formats are there', async function(assert) {
-    new ReduxDataHelper(setState).parserRulesFormatData(0, true).build();
+    new ReduxDataHelper(setState).parserRulesFormatData(0, true).metaOptions().build();
     await render(hbs`{{content/log-parser-rules}}`);
     assert.ok(find('.matchingMapping'), 'matchingMapping area is not showing');
   });

@@ -87,6 +87,41 @@ test('With FETCH_DEVICE_CLASSES, the success handler updates state', function(as
   assert.deepEqual(result, expectedResult);
 });
 
+test('With FETCH_METAS, the start handler updates state', function(assert) {
+  const expectedResult = {
+    ...initialState,
+    metasStatus: 'wait',
+    metas: []
+  };
+  const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_METAS });
+  const result = reducer(initialState, action);
+  assert.deepEqual(result, expectedResult);
+});
+
+test('With FETCH_METAS, the error handler updates state', function(assert) {
+  const expectedResult = {
+    ...initialState,
+    metasStatus: 'error'
+  };
+  const action = makePackAction(LIFECYCLE.FAILURE, { type: ACTION_TYPES.FETCH_METAS });
+  const result = reducer(initialState, action);
+  assert.deepEqual(result, expectedResult);
+});
+
+test('With FETCH_METAS, the success handler updates state', function(assert) {
+  const expectedResult = {
+    ...initialState,
+    metas: [{ metaName: 'device.ip', displayName: 'IPV4', format: 'IPv4' }],
+    metasStatus: 'completed'
+  };
+  const action = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.FETCH_METAS,
+    payload: { data: [{ metaName: 'device.ip', displayName: 'IPV4', format: 'IPv4' }] }
+  });
+  const result = reducer(initialState, action);
+  assert.deepEqual(result, expectedResult);
+});
+
 test('With ADD_LOG_PARSER, the start handler updates state', function(assert) {
   const expectedResult = {
     ...initialState,

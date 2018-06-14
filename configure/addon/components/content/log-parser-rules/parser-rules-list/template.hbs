@@ -1,6 +1,6 @@
 <h1> {{t 'configure.logsParser.rules'}} </h1>
 
-{{content/log-parser-rules/parser-rules-list/buttons-container}} 
+{{content/log-parser-rules/parser-rules-list/buttons-container}}
 
 {{#if isLoadingParserRules}}
   <div class='loading'>
@@ -31,12 +31,13 @@
     {{#each parserRules as |parserRule index|}}
       <tr>
         <td class='{{if (eq index 0) 'firstItem'}} {{if (eq selectedParserRuleIndex index) 'active'}}'{{action "selectParserRule" index}}>
-          {{parserRule.name}}
-          {{#if parserRule.outOfBox}}
-            [RSA]
-          {{/if}}
           {{#if parserRule.dirty}}
-            <span class="dotRed"></span>
+            {{rsa-icon name="synchronize-3" class="deploy-icon"}} {{parserRule.name}}
+          {{else}}
+            &nbsp;&nbsp;&nbsp;&nbsp; {{parserRule.name}}
+          {{/if}}
+          {{#if parserRule.outOfBox}}
+            <span class="outOfBox-indicator">&nbsp;[RSA]</span>
           {{/if}}
         </td>
       </tr>

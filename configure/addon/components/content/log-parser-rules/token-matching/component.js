@@ -3,7 +3,7 @@ import { connect } from 'ember-redux';
 import { selectedParserRule } from 'configure/reducers/content/log-parser-rules/selectors';
 import { updateSelectedRule } from 'configure/actions/creators/content/log-parser-rule-creators';
 import { next } from '@ember/runloop';
-import computed from 'ember-computed-decorators';
+import computed, { not } from 'ember-computed-decorators';
 
 const stateToComputed = (state) => {
   return {
@@ -28,6 +28,8 @@ const TokenMatching = Component.extend({
   isNewTokenInvalid(newToken, currentTokens) {
     return !newToken || !!currentTokens.findBy('value', newToken);
   },
+
+  @not('rule.outOfBox') isEditable: true,
 
   actions: {
     addToken() {

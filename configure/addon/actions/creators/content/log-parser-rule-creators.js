@@ -83,12 +83,20 @@ const fetchDeviceClasses = () => {
   };
 };
 
+const fetchMetas = () => {
+  return {
+    type: ACTION_TYPES.FETCH_METAS,
+    promise: api.fetchMetas()
+  };
+};
+
 const initializeLogParserRules = () => {
   return (dispatch) => {
     dispatch(_fetchRuleFormats());
     dispatch(fetchLogParsers());
     dispatch(fetchDeviceTypes());
     dispatch(fetchDeviceClasses());
+    dispatch(fetchMetas());
   };
 };
 

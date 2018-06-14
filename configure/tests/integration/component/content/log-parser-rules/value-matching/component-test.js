@@ -43,4 +43,11 @@ module('Integration | Component | value matching', function(hooks) {
     assert.equal(find('.ruleRegex textarea').value, '\\s*([\\w_.@-]*)', 'Show ruleRegex field value is not showing or not correct');
   });
 
+  test('Editing is disabled if the rule is out of the box', async function(assert) {
+    const rules = [{ name: 'Client Domain', outOfBox: true, pattern: { format: null, regex: '\\s*([\\w_.@-]*)' } }];
+    new ReduxDataHelper(setState).parserRules(rules).formatOptions().build();
+    await render(hbs`{{content/log-parser-rules/value-matching}}`);
+    assert.equal(find('.value-matching .ember-power-select-trigger').getAttribute('aria-disabled'), 'true');
+    assert.equal(find('.ruleRegex textarea').disabled, true);
+  });
 });

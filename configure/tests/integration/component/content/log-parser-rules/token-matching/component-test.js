@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { render, find, click, fillIn, triggerEvent } from '@ember/test-helpers';
+import { render, find, findAll, click, fillIn, triggerEvent } from '@ember/test-helpers';
 import { setupRenderingTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
@@ -24,7 +24,8 @@ module('Integration | Component | token matching', function(hooks) {
   const selectors = {
     addTokenInput: '.add-token input',
     addTokenButton: '.add-token button',
-    firstToken: '.firstItem'
+    firstToken: '.firstItem',
+    tokenInputs: 'li.token input'
   };
 
   test('The tokens are displayed in an input', async function(assert) {
@@ -63,5 +64,17 @@ module('Integration | Component | token matching', function(hooks) {
     await fillIn(`${selectors.firstToken} input`, '123');
     await triggerEvent('.firstItem input', 'focusOut');
     assert.equal(find(`${selectors.firstToken} input`).value, '123', 'the token was not edited as expected');
+  });
+
+  test('Out of box rule is not editable', async function(assert) {
+    const rules = [{ name: 'Client Domain', outOfBox: true, literals: [{ value: 'ipv4=' }, { value: 'ipv6=' }] }];
+    new ReduxDataHelper(setState).parserRules(rules).build();
+    await render(hbs`{{content/log-parser-rules/token-matching}}`);
+    assert.equal(find(selectors.addTokenButton).disabled, true, 'The add button should be disabled');
+    assert.equal(find(selectors.addTokenInput).disabled, true, 'The add token input should be disabled');
+    assert.equal(findAll(selectors.tokenInputs).length, 2, 'There are two tokens listed');
+    findAll(selectors.tokenInputs).forEach((input) => {
+      assert.equal(input.disabled, true, 'The token input should be disabled');
+    });
   });
 });

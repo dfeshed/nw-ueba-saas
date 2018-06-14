@@ -1,5 +1,6 @@
 import Immutable from 'seamless-immutable';
 import formatOptions from '../data/subscriptions/log-parser-rules/ruleFormats/data';
+import metaOptions from '../data/subscriptions/rule-meta/findAll/data';
 
 const _set = (obj, key, val) => {
   if (obj[key]) {
@@ -51,6 +52,11 @@ export default class DataHelper {
 
   formatOptions(options = formatOptions) {
     _set(this.state, 'content.logParserRules.ruleFormats', options);
+    return this;
+  }
+
+  metaOptions(options = metaOptions) {
+    _set(this.state, 'content.logParserRules.metas', options);
     return this;
   }
 

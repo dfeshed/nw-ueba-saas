@@ -15,7 +15,8 @@ import {
   selectedLogParserName,
   sampleLogs,
   isHighlighting,
-  highlightedLogs
+  highlightedLogs,
+  metas
 } from 'configure/reducers/content/log-parser-rules/selectors';
 
 module('Unit | Selectors | log-parser-rules');
@@ -49,7 +50,8 @@ const logParserRules = {
     }
   ],
   isTransactionUnderway: false,
-  sampleLogs: 'Testing 123'
+  sampleLogs: 'Testing 123',
+  metas: [{ metaName: 'device.ip' }]
 };
 
 const state = (state = logParserRules) => ({
@@ -80,6 +82,7 @@ test('Basic selector expectations', function(assert) {
   assert.equal(isDeletingParserRuleError(state({ deleteRuleStatus: 'completed' })), false);
   assert.equal(isParserRuleOutOfBox(state({ parserRules: [{ outOfBox: true }], selectedLogParserIndex: 0 })), true);
   assert.equal(isParserRuleOutOfBox(state({ parserRules: [{ outOfBox: false }], selectedLogParserIndex: 0 })), false);
+  assert.equal(metas(state()), logParserRules.metas);
 });
 
 test('The availableDeviceTypes selector filters out any entries in logParsers with the same name property', function(assert) {
