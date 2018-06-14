@@ -45,9 +45,10 @@
 html, body{ height: 100%; }
 :root{
     -webkit-print-color-adjust:exact;
-    --main-widgets-titles-text-color: #000;
-    --main-widgets-titles-icon-fill: #000;
-    --main-widgets-background-color: #eee;
+    --main-widgets-titles-text-color: #FFF;
+    --main-widgets-titles-icon-fill: #FFF;
+    --main-widgets-titles-link-color: #2A9FD8;
+    --main-widgets-background-color: #282828;
     --filter-list-text-color: #007db8;
     --main-critical-severity-color: #ec2226;
     --main-high-severity-color: #ff5724;

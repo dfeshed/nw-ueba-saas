@@ -16,7 +16,7 @@
             .alert-info-value {
                 flex: 1 0;
 
-                color: #024d89;
+                color: var(--main-widgets-titles-text-color);
                 font-family: 'Open Sans', sans-serif;
                 font-size: 14px;
                 font-weight: 400;
@@ -28,7 +28,7 @@
             .alert-info-label {
 
                 width: 14em;
-                color: #024d89;
+                color: var(--main-widgets-titles-text-color);
                 font-family: 'Open Sans', sans-serif;
                 font-size: 14px;
                 font-weight: 700;
@@ -44,7 +44,7 @@
             flex: 1 0;
             width: 90%;
 
-            color: #024d89;
+            color: var(--main-widgets-titles-text-color);
             font-family: 'Open Sans', sans-serif;
             font-size: 14px;
             font-weight: 400;

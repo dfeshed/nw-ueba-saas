@@ -4,6 +4,7 @@
     var remoteConfigList = null;
     var restPath = 'themes/';
 
+
     function ColorThemesConfigProvider () {
 
         var provider = this;
@@ -19,6 +20,16 @@
 
         function ColorThemesConfigFactory (assert, BASE_URL, $http, $timeout) {
             var remoteThemseApi;
+            var colorsCache;
+
+            let constants = {
+                MAIN_WIDGET_TITLES_TEXT_COLOR: 'main-widgets-titles-text-color',
+                SEVERITY_CRITICAL_COLOR: 'main-critical-severity-color',
+                SEVERITY_HIGH_COLOR: 'main-high-severity-color',
+                SEVERITY_MEDIUM_COLOR: 'main-medium-severity-color',
+                SEVERITY_LOW_COLOR: 'main-low-severity-color'
+            };
+
 
             /**
              * Returns the REST url
@@ -36,16 +47,23 @@
              * @returns {Promise.<T>|*}
              */
             function initThemes () {
+                let ctrl = this;
+                //Properties already loaded
+                if (!_.isNil(ctrl.colorsCache)){
+                    return Promise.resolve(ctrl.colorsCache);
+                }
                 return $http.get(remoteThemseApi._getUrl())
                     .then(function (res) {
                         //Init the colors set
-                        $timeout(function() {
+                        // $timeout(function() {
+                            let tempMap = {};
                             _.forOwn(res.data.data, function(value, key) {
-                                console.log(`--${key}`);
-                                console.log(value);
+                                tempMap[key] = value;
                                 angular.element('body')[0].style.setProperty("--"+key,value);
                             });
-                        });
+                            ctrl.colorsCache = tempMap;
+                            return tempMap;
+                        // });
                     })
                     .catch(function (err) {
                         console.error('Remote configuration could not be loaded due to an http error.');
@@ -54,24 +72,18 @@
                     });
             }
 
+            function getThemseKeysAndValues(){
+                return this.initThemes().then(function(res) {
+                    return res;
+                });
 
-            //
-            // /**
-            //  * Returns a duplicated list of remote config list.
-            //  *
-            //  * @returns {Array<{key: string, value: string}>}
-            //  */
-            // function getRemoteConfigList () {
-            //     return _.map(remoteConfigList, function (configurationItem) {
-            //         return _.merge({}, configurationItem);
-            //     });
-            // }
-
-
+            }
 
             remoteThemseApi = {
                 _getUrl: _getUrl,
                 initThemes: initThemes,
+                getThemseKeysAndValues: getThemseKeysAndValues,
+                constants:constants
 
             };
 

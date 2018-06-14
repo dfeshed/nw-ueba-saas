@@ -1,6 +1,9 @@
 <div class="alert-view-container">
     <div class="user-alert-overview-header">
-        <fs-user-alert-overview-header alerts="userAlertOverviewController.userAlerts"></fs-user-alert-overview-header>
+        <fs-user-alert-overview-header
+            alerts="userAlertOverviewController.userAlerts"
+            update-feedback-delegate="userAlertOverviewController.updateFeedback(alertId,feedbackObject)"
+        ></fs-user-alert-overview-header>
     </div>
     <div  class="user-alert-overview-description">
         <alert-description alert-model="userAlertOverviewController.alert"></alert-description>
@@ -11,20 +14,20 @@
         <div class="scrolled-area-container-inner">
             <fs-user-alert-flow alert-model="userAlertOverviewController.alert"></fs-user-alert-flow>
             <hr class="alert-view-page-seperator">
-            <div  class="user-alert-overview-notes">
-                <div class="alert-view-page-sub-headers">Analyst Notes</div>
-                <div class="alert-view-page-feedback">
-                    <div class="right-panel">
-                        <alert-feedback
-                            alert-model="userAlertOverviewController.alert"
-                            update-feedback-delegate="userAlertOverviewController.updateFeedback(alertId,feedbackObject)"
-                            ></alert-feedback>
-                    </div>
-                    <div class="left-panel">
+            <!--<div  class="user-alert-overview-notes">-->
+                <!--<div class="alert-view-page-sub-headers">Analyst Notes</div>-->
+                <!--<div class="alert-view-page-feedback">-->
+                    <!--<div class="right-panel">-->
+                        <!--<alert-feedback-->
+                            <!--alert-model="userAlertOverviewController.alert"-->
+                            <!--update-feedback-delegate="userAlertOverviewController.updateFeedback(alertId,feedbackObject)"-->
+                            <!--&gt;</alert-feedback>-->
+                    <!--</div>-->
+                    <!--<div class="left-panel">-->
 
-                    </div>
-                </div>
-            </div>
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
         </div>
     </div>
 </div>

@@ -90,7 +90,7 @@ overview-high-risk-user {
 
             &--item {
 
-                color: #024d89;
+                color: var(--main-widgets-titles-link-color);
                 font-family: 'Open Sans', sans-serif;
                 line-height: 12px;
                 font-size: 14px;
@@ -115,8 +115,9 @@ overview-high-risk-user {
             }
 
             &--name {
-                font-weight: 700;
+                font-weight: 600;
                 margin-top: 10px;
+                letter-spacing: 0.85px;
 
                 &:hover {
                     color: #0284ca;

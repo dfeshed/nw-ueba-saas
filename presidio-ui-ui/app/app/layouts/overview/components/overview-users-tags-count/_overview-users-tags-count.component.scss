@@ -9,7 +9,7 @@ overview-users-tags-count {
         flex-flow: row nowrap;
         justify-content: space-between;
 
-        padding: 15% 7% 0% 7%;
+        padding: 7% 7% 7% 7%;
 
         @media (max-height: 730px) {
             padding: 2vh;
@@ -33,7 +33,7 @@ overview-users-tags-count {
 overview-users-tags-count-item {
     .tags-count-item-container {
         display: flex;
-        flex-flow: row nowrap;
+        flex-flow: column nowrap;
         align-items: center;
         cursor: pointer;
         text-decoration: none;
@@ -79,9 +79,12 @@ overview-users-tags-count-item {
     }
 
     .stats-container {
-        color: #024d89;
+        color: var(--main-widgets-titles-link-color);
         line-height: 19px;
         transition: color 0.3s;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
 
         &--amount {
             font-family: 'Open Sans', sans-serif;
