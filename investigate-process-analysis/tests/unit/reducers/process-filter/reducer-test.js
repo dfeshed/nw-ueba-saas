@@ -52,7 +52,7 @@ module('Unit | Reducers | process-filter', function() {
     assert.deepEqual(result, initialState, 'Filters have been set to initial state');
   });
 
-  test('UPDATE_ACTION_FILTER_ITEMS Updates the schema with relevent action config for the selected categories', function(assert) {
+  test('UPDATE_ACTION_FILTER_ITEMS Updates the schema with action config as [] when more than 1 category is selected', function(assert) {
     const updatedState = Immutable.from({
       schema: [...filterConfig],
       filter: {
@@ -61,7 +61,19 @@ module('Unit | Reducers | process-filter', function() {
       }
     });
     const result = reducer(updatedState, { type: ACTION_TYPES.UPDATE_ACTION_FILTER_ITEMS, payload: { isSelected: true, optionSelected: 'Registry Event' } });
-    assert.equal(result.schema[1].options.length, 22, 'Action filter list is updated based on the Category selected');
+    assert.equal(result.schema[1].options.length, 0, 'Action filter list is updated to [] when more than 1 category is selected');
+  });
+
+  test('UPDATE_ACTION_FILTER_ITEMS Updates the schema with relevent action config for the selected categories', function(assert) {
+    const updatedState = Immutable.from({
+      schema: [...filterConfig],
+      filter: {
+        action: [],
+        category: ['File Event', 'Registry Event']
+      }
+    });
+    const result = reducer(updatedState, { type: ACTION_TYPES.UPDATE_ACTION_FILTER_ITEMS, payload: { isSelected: false, optionSelected: 'Registry Event' } });
+    assert.equal(result.schema[1].options.length, 10, 'Action filter list is updated with relevent actions if only 1 Category is selected');
   });
 
 });

@@ -4,7 +4,6 @@ import Immutable from 'seamless-immutable';
 import _ from 'lodash';
 import filterConfig from './process-filter-config';
 import actionConfig from './action-config';
-import { updatefilterActionArray } from './utils';
 
 
 const filterInitialState = {
@@ -21,19 +20,18 @@ const processFilter = reduxActions.handleActions({
   [ACTION_TYPES.UPDATE_FILTER_ITEMS]: (state, { payload: { filterName, optionSelected, isSelected } }) => {
 
     let selectedItems;
-    const { schema, filter, filter: { action } } = state;
+    const { filter } = state;
 
     if (isSelected) {
       selectedItems = [...filter[filterName], optionSelected];
     } else {
       selectedItems = [...filter[filterName]];
       _.pull(selectedItems, optionSelected);
-
-      // To remove the actions from the filter that are no longer valid when a category is unselected.
-      if (filterName === 'category') {
-        const filter = { category: selectedItems, action: updatefilterActionArray(action, schema[1].options) };
-        return state.set('filter', filter);
-      }
+    }
+    // To remove actions from the filter when more than one category is selected or no categories are selected.
+    if ((filterName === 'category') && (selectedItems.length !== 1)) {
+      const filter = { category: selectedItems, action: [] };
+      return state.set('filter', filter);
     }
 
     return state.setIn(['filter', filterName], selectedItems);
@@ -57,8 +55,9 @@ const processFilter = reduxActions.handleActions({
     } else {
       _.pull(categoryListUpdated, optionSelected);
     }
-    for (let i = 0; i < categoryListUpdated.length; i++) {
-      actionObj.options.push(...actionConfig[categoryListUpdated[i]]);
+
+    if (categoryListUpdated.length === 1) {
+      actionObj.options.push(...actionConfig[categoryListUpdated[0]]);
     }
 
     return state.set('schema', [...filterConfig, actionObj]);
