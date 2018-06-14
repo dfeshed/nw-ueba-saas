@@ -8,10 +8,12 @@ import org.springframework.cloud.config.server.environment.RepositoryException;
 import org.springframework.cloud.config.server.environment.SearchPathLocator;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.*;
+import org.springframework.util.ResourceUtils;
 import org.springframework.util.StreamUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * An {@link WritableResourceRepository} backed by a {@link SearchPathLocator}.
@@ -77,7 +79,11 @@ public class GenericWritableResourceRepository implements WritableResourceReposi
         if (locations.length == 0) {
             throw new IllegalStateException("The configuration is invalid. no location for configuration server files.");
         }
-        String location = locations[0];
+        String location = Arrays.stream(locations)
+                                .filter(locationUrl -> !locationUrl.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX))
+                                .findFirst()
+                                .orElseThrow(()-> new IllegalStateException(String.format("The configuration is invalid. no location to " +
+                                        "                   update configuration server files. locations: %s", Arrays.toString(locations))));
         return location;
     }
 

@@ -40,7 +40,7 @@ public class ForwarderConfigurationTest {
         boolean isValid = outputConfigurationCreator.isStructureValid();
         List badParams = outputConfigurationCreator.getBadParams();
         Assert.assertEquals(false, isValid);
-        Assert.assertEquals(2, badParams.size());
+        Assert.assertEquals(1, badParams.size());
     }
 
 }

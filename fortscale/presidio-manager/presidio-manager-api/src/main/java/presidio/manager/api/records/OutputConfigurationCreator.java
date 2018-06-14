@@ -20,22 +20,22 @@ public class OutputConfigurationCreator extends ConfigurationCreator implements 
 
     public OutputConfigurationCreator(JsonNode node) {
         createConfiguration(node);
-        if (syslogForwardingConfiguration == null && !isEnableForwarding) {
-            setStructureValid(true);
-        } else {
-            if (syslogForwardingConfiguration != null && isEnableForwarding) {
-                badParamsAddKeys(addPrefixToBadParams(SYSLOG, syslogForwardingConfiguration.badParams()));
-                missingParamsAddKeys(addPrefixToBadParams(SYSLOG, syslogForwardingConfiguration.missingParams()));
-            } else {
-                if (syslogForwardingConfiguration == null) {
-                    missingParamsAddKeys(SYSLOG);
-                } else {
-                    setStructureValid(false);
-                    badParamsAddKey(ENABLE_FORWARDING);
-                }
-            }
-            checkStructure();
-        }
+//        if (syslogForwardingConfiguration == null && !isEnableForwarding) {
+//            setStructureValid(true);
+//        } else {
+//            if (syslogForwardingConfiguration != null && isEnableForwarding) {
+//                badParamsAddKeys(addPrefixToBadParams(SYSLOG, syslogForwardingConfiguration.badParams()));
+//                missingParamsAddKeys(addPrefixToBadParams(SYSLOG, syslogForwardingConfiguration.missingParams()));
+//            } else {
+//                if (syslogForwardingConfiguration == null) {
+//                    missingParamsAddKeys(SYSLOG);
+//                } else {
+//                    setStructureValid(false);
+//                    badParamsAddKey(ENABLE_FORWARDING);
+//                }
+//            }
+//            checkStructure();
+//        }
     }
 
     public ConfigurationValidatable getSyslogForwardingConfiguration() {
