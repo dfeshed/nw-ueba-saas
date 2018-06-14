@@ -50,7 +50,6 @@
         <rpm.version>${rpm.version.major}.${rpm.version.minor}</rpm.version>
         <!-- All the dependency versions should be here -->
         <cglib.version>3.2.1</cglib.version>
-        <influxdb.version>2.1</influxdb.version>
         <argparse4j.version>0.7.0</argparse4j.version>
         <spring-shell.version>1.1.0.RELEASE</spring-shell.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -264,11 +263,6 @@
                         <groupId>cglib</groupId>
                     </exclusion>
                 </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.influxdb</groupId>
-                <artifactId>influxdb-java</artifactId>
-                <version>${influxdb.version}</version>
             </dependency>
             <dependency>
                 <groupId>joda-time</groupId>
