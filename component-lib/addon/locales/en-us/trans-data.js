@@ -2750,7 +2750,7 @@ export default {
         error: 'Host(s) deletion failed'
       },
       moreActions: {
-        openIn: 'Pivot to Endpoint',
+        openIn: 'Pivot to Endpoint Thick Client',
         openInErrorMessage: 'Select at least one host',
         notAnEcatAgent: 'Select only the 4.4 agent(s)',
         cancelScan: 'Stop Scan'

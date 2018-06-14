@@ -74,7 +74,7 @@ test('it renders action bar export to csv button', function(assert) {
 
 test('it renders action bar pivot to endpoint button', function(assert) {
   this.render(hbs`{{host-list/host-table/action-bar}}`);
-  assert.equal(this.$('.host-table__toolbar-buttons div:nth-child(4) button').text().trim(), 'Pivot to Endpoint', 'action bar pivot to endpoint button label');
+  assert.equal(this.$('.host-table__toolbar-buttons div:nth-child(4) button').text().trim(), 'Pivot to Endpoint Thick Client', 'action bar pivot to endpoint button label');
   assert.equal(this.$('.host-table__toolbar  div:nth-child(4) > .is-disabled').length, 0, 'action bar pivot to endpoint button is enabled');
 });
 
