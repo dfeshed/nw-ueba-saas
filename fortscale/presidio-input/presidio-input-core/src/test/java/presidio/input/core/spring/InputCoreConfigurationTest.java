@@ -18,16 +18,21 @@ import presidio.input.core.services.converters.ConverterServiceImpl;
 import presidio.input.core.services.converters.ade.ActiveDirectoryInputToAdeConverter;
 import presidio.input.core.services.converters.ade.AuthenticationInputToAdeConverter;
 import presidio.input.core.services.converters.ade.FileInputToAdeConverter;
+import presidio.input.core.services.converters.ade.PrintInputToAdeConverter;
 import presidio.input.core.services.converters.output.ActiveDirectoryInputToOutputConverter;
 import presidio.input.core.services.converters.output.AuthenticationInputToOutputConverter;
 import presidio.input.core.services.converters.output.FileInputToOutputConverter;
+import presidio.input.core.services.converters.output.PrintInputToOutputConverter;
 import presidio.input.core.services.data.AdeDataService;
 import presidio.input.core.services.impl.InputCoreManager;
 import presidio.input.core.services.impl.InputExecutionServiceImpl;
 import presidio.input.core.services.impl.SchemaFactory;
 import presidio.input.core.services.transformation.TransformationService;
 import presidio.input.core.services.transformation.TransformationServiceImpl;
-import presidio.input.core.services.transformation.managers.*;
+import presidio.input.core.services.transformation.managers.ActiveDirectoryTransformationManager;
+import presidio.input.core.services.transformation.managers.AuthenticationTransformerManager;
+import presidio.input.core.services.transformation.managers.FileTransformerManager;
+import presidio.input.core.services.transformation.managers.PrintTransformerManager;
 import presidio.input.sdk.impl.spring.PresidioInputPersistencyServiceConfig;
 import presidio.output.sdk.api.OutputDataServiceSDK;
 import presidio.output.sdk.impl.spring.OutputDataServiceConfig;
@@ -49,7 +54,7 @@ public class InputCoreConfigurationTest {
     private String operationTypeCategoryMappingFilePath;
 
     @Bean
-    public Map<Schema, Map<String, List<String>>> getOperationTypeToCategoryMapping() {
+    public Map<Schema, Map<String, List<String>>> getMapping() {
         return new HashMap<>();
     }
 
@@ -92,19 +97,25 @@ public class InputCoreConfigurationTest {
     @Bean(name = "ACTIVE_DIRECTORY.transformer")
     @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public ActiveDirectoryTransformationManager activeDirectoryTransformationManager() {
-        return new ActiveDirectoryTransformationManager(getOperationTypeToCategoryMapping());
+        return new ActiveDirectoryTransformationManager(getMapping(), getMapping());
     }
 
     @Bean(name = "AUTHENTICATION.transformer")
     @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public AuthenticationTransformerManager authenticationTransformerManager() {
-        return new AuthenticationTransformerManager(getOperationTypeToCategoryMapping());
+        return new AuthenticationTransformerManager(getMapping());
     }
 
     @Bean(name = "FILE.transformer")
     @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public FileTransformerManager fileTransformerManager() {
-        return new FileTransformerManager(getOperationTypeToCategoryMapping());
+        return new FileTransformerManager(getMapping());
+    }
+
+    @Bean(name = "PRINT.transformer")
+    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public PrintTransformerManager printTransformerManager() {
+        return new PrintTransformerManager();
     }
 
     @Bean(name = "FILE.input-output-converter")
@@ -125,6 +136,12 @@ public class InputCoreConfigurationTest {
         return new AuthenticationInputToOutputConverter();
     }
 
+    @Bean(name = "PRINT.input-output-converter")
+    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public PrintInputToOutputConverter printInputToOutputConverter() {
+        return new PrintInputToOutputConverter();
+    }
+
     @Bean(name = "FILE.input-ade-converter")
     @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public FileInputToAdeConverter fileInputToAdeConverter() {
@@ -141,6 +158,12 @@ public class InputCoreConfigurationTest {
     @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public AuthenticationInputToAdeConverter authenticationInputToAdeConverter() {
         return new AuthenticationInputToAdeConverter();
+    }
+
+    @Bean(name = "PRINT.input-ade-converter")
+    @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public PrintInputToAdeConverter printInputToAdeConverter() {
+        return new PrintInputToAdeConverter();
     }
 
 }

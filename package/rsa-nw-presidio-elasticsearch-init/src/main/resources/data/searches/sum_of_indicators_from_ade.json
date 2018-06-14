@@ -1,0 +1,50 @@
+[
+  {
+    "_id": "d6856410-00ef-11e8-b7dc-63e69023fe2a",
+    "_type": "search",
+    "_source": {
+      "title": "Scored Users",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "severity",
+        "userName",
+        "userDisplayName",
+        "tags",
+        "score",
+        "alertsCount",
+        "alertClassifications",
+        "indicators",
+        "userId"
+      ],
+      "sort": [
+        "score",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"presidio-output-user\",\"highlightAll\":true,\"version\":true,\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[{\"meta\":{\"negate\":true,\"index\":\"presidio-output-user\",\"key\":\"score\",\"value\":\"0\",\"disabled\":false,\"alias\":null},\"query\":{\"match\":{\"score\":{\"query\":0,\"type\":\"phrase\"}}},\"$state\":{\"store\":\"appState\"}}]}"
+      }
+    }
+  },
+  {
+    "_id": "1106d960-00f1-11e8-b322-a102532858e6",
+    "_type": "search",
+    "_source": {
+      "title": "Sum of indicators from ade",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "_source"
+      ],
+      "sort": [
+        "timestamp",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"presidio-monitoring\",\"highlightAll\":true,\"version\":true,\"filter\":[],\"query\":{\"query_string\":{\"query\":\"value.AMOUNT_OF_NON_ZERO_FEATURE_VALUES (where name:*.AggregationRecordsCreator AND tags.APPLICATION_NAME:\\\"score-aggregation\\\") OR value.AMOUNT_OF_NON_ZERO_SCORE (where name:*.scoring AND tags.APPLICATION_NAME:\\\"feature-aggregation\\\")\",\"analyze_wildcard\":true}}}"
+      }
+    }
+  }
+]

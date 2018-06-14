@@ -16,6 +16,10 @@ import java.time.Instant;
 @AdeRecordMetadata(adeEventType = Schema.FILE)
 public class EnrichedFileRecord extends EnrichedRecord {
     public static final String USER_ID_FIELD = "userId";
+    public static final String SRC_MACHINE_ID_FIELD = "srcMachineId";
+    public static final String SRC_MACHINE_NAME_REGEX_CLUSTER_FIELD = "srcMachineNameRegexCluster";
+    public static final String DST_MACHINE_ID_FIELD = "dstMachineId";
+    public static final String DST_MACHINE_NAME_REGEX_CLUSTER_FIELD = "dstMachineNameRegexCluster";
     public static final String ABSOLUTE_SRC_FILE_PATH_FIELD = "absoluteSrcFilePath";
     public static final String ABSOLUTE_DST_FILE_PATH_FIELD = "absoluteDstFilePath";
     public static final String ABSOLUTE_SRC_FOLDER_FILE_PATH_FIELD = "absoluteSrcFolderFilePath";
@@ -26,6 +30,14 @@ public class EnrichedFileRecord extends EnrichedRecord {
 
     @Field(USER_ID_FIELD)
     private String userId;
+    @Field(SRC_MACHINE_ID_FIELD)
+    private String srcMachineId;
+    @Field(SRC_MACHINE_NAME_REGEX_CLUSTER_FIELD)
+    private String srcMachineNameRegexCluster;
+    @Field(DST_MACHINE_ID_FIELD)
+    private String dstMachineId;
+    @Field(DST_MACHINE_NAME_REGEX_CLUSTER_FIELD)
+    private String dstMachineNameRegexCluster;
     @Field(ABSOLUTE_SRC_FILE_PATH_FIELD)
     private String absoluteSrcFilePath;
     @Field(ABSOLUTE_DST_FILE_PATH_FIELD)
@@ -56,6 +68,38 @@ public class EnrichedFileRecord extends EnrichedRecord {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getSrcMachineId() {
+        return srcMachineId;
+    }
+
+    public void setSrcMachineId(String srcMachineId) {
+        this.srcMachineId = srcMachineId;
+    }
+
+    public String getSrcMachineNameRegexCluster() {
+        return srcMachineNameRegexCluster;
+    }
+
+    public void setSrcMachineNameRegexCluster(String srcMachineNameRegexCluster) {
+        this.srcMachineNameRegexCluster = srcMachineNameRegexCluster;
+    }
+
+    public String getDstMachineId() {
+        return dstMachineId;
+    }
+
+    public void setDstMachineId(String dstMachineId) {
+        this.dstMachineId = dstMachineId;
+    }
+
+    public String getDstMachineNameRegexCluster() {
+        return dstMachineNameRegexCluster;
+    }
+
+    public void setDstMachineNameRegexCluster(String dstMachineNameRegexCluster) {
+        this.dstMachineNameRegexCluster = dstMachineNameRegexCluster;
     }
 
     public String getAbsoluteSrcFilePath() {

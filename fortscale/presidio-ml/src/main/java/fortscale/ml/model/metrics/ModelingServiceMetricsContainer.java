@@ -3,7 +3,7 @@ package fortscale.ml.model.metrics;
 import fortscale.ml.model.ModelBuilderData;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import presidio.monitoring.flush.FlushableMetricContainer;
-import presidio.monitoring.records.Metric;
+import presidio.monitoring.sdk.api.services.model.Metric;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.monitoring.services.export.MetricsExporter;

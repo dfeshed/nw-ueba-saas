@@ -9,6 +9,8 @@ import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.factory.FactoryService;
 import org.springframework.util.Assert;
 
+import java.time.Duration;
+
 /**
  * Given a {@link ModelConf}, this factory creates the corresponding {@link ModelingEngine}
  * using factory services for selectors, retrievers and builders. The engines also require
@@ -22,6 +24,7 @@ public class ModelingEngineFactory {
 	private FactoryService<IModelBuilder> modelBuilderFactoryService;
 	private ModelStore modelStore;
 	private ModelingServiceMetricsContainer modelingServiceMetricsContainer;
+	private Duration allContextsForcedSelectionInterval;
 
 	/**
 	 * C'tor.
@@ -35,13 +38,16 @@ public class ModelingEngineFactory {
 			FactoryService<IContextSelector> contextSelectorFactoryService,
 			FactoryService<AbstractDataRetriever> dataRetrieverFactoryService,
 			FactoryService<IModelBuilder> modelBuilderFactoryService,
-			ModelStore modelStore, ModelingServiceMetricsContainer modelingServiceMetricsContainer) {
+			ModelStore modelStore,
+			ModelingServiceMetricsContainer modelingServiceMetricsContainer,
+			Duration allContextsForcedSelectionInterval) {
 
 		this.contextSelectorFactoryService = contextSelectorFactoryService;
 		this.dataRetrieverFactoryService = dataRetrieverFactoryService;
 		this.modelBuilderFactoryService = modelBuilderFactoryService;
 		this.modelStore = modelStore;
 		this.modelingServiceMetricsContainer = modelingServiceMetricsContainer;
+		this.allContextsForcedSelectionInterval = allContextsForcedSelectionInterval;
 	}
 
 	/**
@@ -54,7 +60,8 @@ public class ModelingEngineFactory {
 		Assert.notNull(dataRetriever, String.format("Null data retriever for model conf %s.", modelConf.getName()));
 		IModelBuilder modelBuilder = modelBuilderFactoryService.getProduct(modelConf.getModelBuilderConf());
 		Assert.notNull(modelBuilder, String.format("Null model builder for model conf %s.", modelConf.getName()));
-		return new ModelingEngine(modelConf, contextSelector, dataRetriever, modelBuilder, modelStore, modelingServiceMetricsContainer);
+		return new ModelingEngine(modelConf, contextSelector, dataRetriever, modelBuilder,
+				modelStore, modelingServiceMetricsContainer, allContextsForcedSelectionInterval);
 	}
 
 	// If it's a global modelConf, a context selector is not configured

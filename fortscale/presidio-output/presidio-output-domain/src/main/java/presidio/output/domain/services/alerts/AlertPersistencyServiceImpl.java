@@ -1,18 +1,16 @@
 package presidio.output.domain.services.alerts;
 
+import com.google.common.collect.Iterables;
 import edu.emory.mathcs.backport.java.util.Collections;
 import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import presidio.output.domain.records.alerts.Alert;
-import presidio.output.domain.records.alerts.AlertQuery;
-import presidio.output.domain.records.alerts.Indicator;
-import presidio.output.domain.records.alerts.IndicatorEvent;
-import presidio.output.domain.records.alerts.IndicatorSummary;
+import presidio.output.domain.records.alerts.*;
 import presidio.output.domain.repositories.AlertRepository;
 import presidio.output.domain.repositories.IndicatorEventRepository;
 import presidio.output.domain.repositories.IndicatorRepository;
@@ -41,6 +39,12 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     @Autowired
     private PresidioElasticsearchTemplate elasticsearchTemplate;
 
+    @Value("${indicators.store.page.size}")
+    private int indicatorsStorePageSize;
+
+    @Value("${events.store.page.size}")
+    private int eventsStorePageSize;
+
     public Alert save(Alert alert) {
         save(Collections.singletonList(alert));
         return alert;
@@ -54,6 +58,7 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
 
         // save alerts
         Iterable<Alert> savedAlerts = alertRepository.save(alerts);
+        logger.info("{} alerts were saved", alerts.size());
 
         // save indicators
         List<Indicator> indicators = new ArrayList<Indicator>();
@@ -61,8 +66,11 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
                 .filter(alert -> alert.getIndicators() != null)
                 .forEach(alert -> indicators.addAll(alert.getIndicators()));
         if (CollectionUtils.isNotEmpty(indicators)) {
-            indicatorRepository.save(indicators);
+            //dividing indicators list to chunks-
+            Iterable<List<Indicator>> indicatorsSubSets = Iterables.partition(indicators, indicatorsStorePageSize);
+            indicatorsSubSets.forEach(indicatorsPartition -> indicatorRepository.save(indicatorsPartition));
         }
+        logger.info("{} indicators were saved", indicators.size());
 
         // save events
         List<IndicatorEvent> events = new ArrayList<IndicatorEvent>();
@@ -70,8 +78,11 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
                 .filter(indicator -> indicator.getEvents() != null)
                 .forEach(indicator -> events.addAll(indicator.getEvents()));
         if (CollectionUtils.isNotEmpty(events)) {
-            indicatorEventRepository.save(events);
+            //dividing events list to chunks-
+            Iterable<List<IndicatorEvent>> eventsSubSets = Iterables.partition(events, eventsStorePageSize);
+            eventsSubSets.forEach(eventsPartition -> indicatorEventRepository.save(eventsPartition));
         }
+        logger.info("{} events were saved", events.size());
 
         return savedAlerts;
     }
@@ -159,7 +170,7 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     @Override
     public List<Alert> removeByTimeRange(Instant startDate, Instant endDate) {
         logger.info("Going to delete alerts that were created from date {} until date {}", startDate, endDate);
-        List<Alert> removedAlerts = new ArrayList<Alert>();
+        List<Alert> removedAlerts = new ArrayList<>();
         try (Stream<Alert> alerts = findAlertsByDate(startDate, endDate)) {
             alerts.forEach(alert -> {
                 deleteAlertAndIndicators(alert);
@@ -180,15 +191,15 @@ public class AlertPersistencyServiceImpl implements AlertPersistencyService {
     }
 
     @Override
-    public Stream<Indicator> findIndicatorByDate(Instant startDate, Instant endDate){
+    public Stream<Indicator> findIndicatorByDate(Instant startDate, Instant endDate) {
         return indicatorRepository.findByStartDateGreaterThanEqualAndEndDateLessThanEqual(startDate.toEpochMilli(), endDate.toEpochMilli());
     }
 
     @Override
-    public List<IndicatorEvent> findIndicatorEventByIndicatorId(String indicatorId){
-        List<IndicatorEvent> events = new ArrayList<IndicatorEvent>();
-        try (Stream<IndicatorEvent> stream = indicatorEventRepository.findByIndicatorId(indicatorId)){
-             events = stream.collect(Collectors.toList());
+    public List<IndicatorEvent> findIndicatorEventByIndicatorId(String indicatorId) {
+        List<IndicatorEvent> events = new ArrayList<>();
+        try (Stream<IndicatorEvent> stream = indicatorEventRepository.findByIndicatorId(indicatorId)) {
+            events = stream.collect(Collectors.toList());
         }
         return events;
     }

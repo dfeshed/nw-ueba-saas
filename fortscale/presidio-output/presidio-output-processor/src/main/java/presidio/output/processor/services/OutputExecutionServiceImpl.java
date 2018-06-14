@@ -18,12 +18,7 @@ import presidio.output.processor.services.user.UsersAlertData;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by shays on 17/05/2017.
@@ -44,6 +39,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
 
     private final int SMART_THRESHOLD_FOR_GETTING_SMART_ENTITIES = 0;
+
     private static final String ADE_SMART_USER_ID = "userId";
 
     public OutputExecutionServiceImpl(AdeManagerSdk adeManagerSdk,
@@ -80,9 +76,10 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         logger.debug("Started output process with params: start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
         PageIterator<SmartRecord> smartPageIterator = adeManagerSdk.getSmartRecords(smartPageSize, smartPageSize, new TimeRange(startDate, endDate), SMART_THRESHOLD_FOR_GETTING_SMART_ENTITIES);
 
-        List<Alert> alerts = new ArrayList<>();
         List<User> users = new ArrayList<>();
         List<SmartRecord> smarts = null;
+        List<Alert> alerts = new ArrayList<>();
+        int indicatorsCountHourly = 0;
         while (smartPageIterator.hasNext()) {
             smarts = smartPageIterator.next();
             for (SmartRecord smart : smarts) {
@@ -110,6 +107,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                     UsersAlertData usersAlertData = new UsersAlertData(alertEntity.getContributionToUserScore(), 1, alertEntity.alertPrimaryClassification(), alertEntity.getIndicatorsNames());
                     userService.addUserAlertData(userEntity, usersAlertData);
                     alerts.add(alertEntity);
+                    indicatorsCountHourly += alertEntity.getIndicatorsNum();
 
                     String classification = alertEntity.alertPrimaryClassification();
                     outputMonitoringService.reportTotalAlertCount(1, alertEntity.getSeverity(), classification, startDate);
@@ -117,20 +115,21 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                 if (getCreatedUser(users, userEntity.getUserId()) == null) {
                     users.add(userEntity);
                 }
+
             }
+            storeAlerts(alerts);
+            alerts.clear();
+            outputMonitoringService.reportTotalAnomalyEvents(alerts, startDate);
         }
 
         storeUsers(users); //Get the generated users with the new elasticsearch ID
-        storeAlerts(alerts);
-
-        outputMonitoringService.reportTotalAnomalyEvents(alerts, startDate);
-
-        logger.info("output process application completed for start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
         outputMonitoringService.reportTotalUsersCount(users.size(), startDate);
+        outputMonitoringService.reportNumericMetric(outputMonitoringService.INDICATORS_COUNT_HOURLY_METRIC_NAME, indicatorsCountHourly, startDate);
 
         if (CollectionUtils.isNotEmpty(smarts)) {
             outputMonitoringService.reportLastSmartTimeProcessed(smarts.get(smarts.size() - 1).getStartInstant().toEpochMilli(), startDate);
         }
+        logger.info("output process application completed for start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
     }
 
     private User getSingleUserEntityById(String userId) {
@@ -156,7 +155,11 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
     public void updateAllUsersData() throws Exception {
         this.userService.updateUserData();
+
+        outputMonitoringService.reportDailyMetrics();
     }
+
+
 
     private void storeAlerts(List<Alert> alerts) {
         if (CollectionUtils.isNotEmpty(alerts)) {
@@ -186,10 +189,9 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
     }
 
-
     @Override
     public void applyRetentionPolicy(Instant endDate) throws Exception {
-        List<Schema> schemas = createListOfSchema();
+        List<Schema> schemas = Arrays.asList(Schema.values());
 
         schemas.forEach(schema -> {
             logger.debug("Start retention clean to mongo for schema {}", schema);
@@ -199,7 +201,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     }
 
     private void updateUsersScoreFromDeletedAlerts(List<Alert> cleanedAlerts) {
-        Set<User> usersToUpdate = new HashSet<User>();
+        Set<User> usersToUpdate = new HashSet<>();
         cleanedAlerts.forEach(alert -> {
             if (!usersToUpdate.contains(alert.getUserId())) {
                 usersToUpdate.add(userService.findUserById(alert.getUserId()));
@@ -209,16 +211,9 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         usersToUpdate.forEach(user -> {
             userService.recalculateUserAlertData(user);
         });
-        userService.save(new ArrayList<User>(usersToUpdate));
+        userService.save(new ArrayList<>(usersToUpdate));
     }
 
-    private List<Schema> createListOfSchema() {
-        List<Schema> schemas = new ArrayList<>();
-        schemas.add(Schema.AUTHENTICATION);
-        schemas.add(Schema.FILE);
-        schemas.add(Schema.ACTIVE_DIRECTORY);
-        return schemas;
-    }
 
     @Override
     public void cleanAll() throws Exception {

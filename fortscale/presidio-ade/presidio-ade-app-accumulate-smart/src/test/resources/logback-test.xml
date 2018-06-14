@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 	<include resource="presidio/logging/logback/base-test.xml" />
+	<logger name="pl.allegro.tech.embeddedelasticsearch" level="INFO"/>
 </configuration>

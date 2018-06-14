@@ -1,7 +1,6 @@
 import logging
 
 
-from airflow.operators.python_operator import ShortCircuitOperator
 
 from presidio.builders.ade.model.aggr_model_dag_builder import AggrModelDagBuilder
 from presidio.builders.ade.model.raw_model_dag_builder import RawModelDagBuilder
@@ -46,13 +45,12 @@ class AnomalyDetectionEngineModelingDagBuilder(PresidioDagBuilder):
 
         task_sensor_service = TaskSensorService()
 
-        daily_short_circuit_operator = ShortCircuitOperator(
+        daily_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
             task_id='ade_modeling_daily_short_circuit',
             dag=anomaly_detection_engine_modeling_dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
                                                                      FIX_DURATION_STRATEGY_DAILY,
-                                                                     anomaly_detection_engine_modeling_dag.schedule_interval),
-            provide_context=True
+                                                                     anomaly_detection_engine_modeling_dag.schedule_interval)
         )
 
         self._build_data_source_model_dags(anomaly_detection_engine_modeling_dag, daily_short_circuit_operator, task_sensor_service)

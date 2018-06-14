@@ -18,6 +18,7 @@ import presidio.ade.domain.store.accumulator.smart.SmartAccumulationDataReader;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static fortscale.ml.model.retriever.smart_data.SmartAccumulationFlattener.flattenSmartRecordToSmartAggrData;
 
@@ -99,7 +100,10 @@ public class AccumulatedContextSmartValueRetriever extends AbstractDataRetriever
 
     @Override
     public List<String> getContextFieldNames() {
-        return smartRecordConf.getContexts();
+        return smartRecordConf.getContextToFieldsMap().values().stream()
+                .flatMap(List::stream)
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     @Override

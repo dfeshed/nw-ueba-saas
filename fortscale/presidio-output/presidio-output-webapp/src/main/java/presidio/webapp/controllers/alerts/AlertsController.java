@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import presidio.webapp.model.*;
 import presidio.webapp.service.RestAlertService;
 
-import java.util.List;
 
 
 @Controller

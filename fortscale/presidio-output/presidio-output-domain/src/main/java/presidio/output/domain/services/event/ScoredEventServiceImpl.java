@@ -29,7 +29,8 @@ public class ScoredEventServiceImpl implements ScoredEventService {
     public Collection<ScoredEnrichedEvent> findDistinctScoredEnrichedEvent(Schema schema, String adeEventType, Pair<String, String> contextFieldAndValue, TimeRange timeRange, String distinctFieldName, Double scoreThreshold, List<Pair<String, Object>> featuresFilters, int eventsLimit, int eventsPageSize) {
 
         Map<Object, ScoredEnrichedEvent> scoredEnrichedEvent = new HashMap<Object, ScoredEnrichedEvent>();
-        EventMongoPageIterator eventMongoPageIterator = new EventMongoPageIterator(eventPersistencyService, eventsPageSize, schema, contextFieldAndValue.getSecond(), timeRange, featuresFilters, eventsLimit);
+        int totalEvents = eventPersistencyService.countEvents(schema,  contextFieldAndValue.getSecond(), timeRange, featuresFilters).intValue();
+        EventMongoPageIterator eventMongoPageIterator = new EventMongoPageIterator(eventPersistencyService, eventsPageSize, schema, contextFieldAndValue.getSecond(), timeRange, featuresFilters, totalEvents);
 
         while (eventMongoPageIterator.hasNext()) {
             List<? extends EnrichedEvent> events = eventMongoPageIterator.next();

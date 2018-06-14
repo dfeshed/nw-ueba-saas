@@ -11,7 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
 import presidio.monitoring.generator.MetricGeneratorService;
-import presidio.monitoring.records.Metric;
+import presidio.monitoring.sdk.api.services.model.Metric;
 import presidio.monitoring.records.MetricDocument;
 import presidio.monitoring.spring.MetricPersistencyServiceTestConfig;
 

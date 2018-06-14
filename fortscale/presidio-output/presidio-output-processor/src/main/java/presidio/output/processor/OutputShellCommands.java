@@ -27,7 +27,7 @@ public class OutputShellCommands implements CommandMarker {
     private OutputExecutionService executionService;
 
     @CliCommand(value = "run", help = "run events with specified time range ")
-    public void run(
+    public int run(
             @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time greater than specified start time will be processed") final Instant startTime,
 
             @CliOption(key = {CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time smaller than specified end time will be processed") final Instant endTime,
@@ -36,18 +36,18 @@ public class OutputShellCommands implements CommandMarker {
 
     ) throws Exception {
         ThreadLocalWithBatchInformation.storeBatchInformation(HOURLY_OUTPUT_PROCESSOR_RUN + startTime.toString(), new TimeRange(startTime, endTime));
-        executionService.run(startTime, endTime);
+        return executionService.doRun(startTime, endTime);
     }
 
     @CliCommand(value = "recalculate-user-score", help = "run daily calculation for output")
-    public void runDaily(
+    public int runDaily(
     ) throws Exception {
         Thread.currentThread().setName(DAILY_OUTPUT_PROCESSOR_RUN + Instant.now().toString());
-        executionService.updateAllUsersData();
+        return executionService.doUpdateAllUsersData();
     }
 
     @CliCommand(value = "cleanup", help = "clean application data for specified time range ")
-    public void cleanup(
+    public int cleanup(
             @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time greater than specified start time will be processed") final Instant startTime,
 
             @CliOption(key = {CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time smaller than specified end time will be processed") final Instant endTime,
@@ -56,22 +56,22 @@ public class OutputShellCommands implements CommandMarker {
 
 
     ) throws Exception {
-        executionService.clean(startTime, endTime);
+        return executionService.doClean(startTime, endTime);
     }
 
     @CliCommand(value = "applyRetentionPolicy", help = "clean application data from start of time to specified endTime minus configured time  ")
-    public void applyRetentionPolicy(
+    public int applyRetentionPolicy(
             @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time greater than specified start time will be processed") final Instant startTime,
 
             @CliOption(key = {CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME}, mandatory = true, help = "events with (logical) time smaller than specified end time will be processed") final Instant endTime,
             //TODO: Remove the COMMAND_LINE_FIXED_DURATION_FIELD_NAME  when fixing the JarOpertaor (Currently this is mandatory in the JarOperator)
             @CliOption(key = {CommonStrings.COMMAND_LINE_FIXED_DURATION_FIELD_NAME}, help = "the internal time intervals that the processing will be done by") final Double fixedDuration
     ) throws Exception {
-        executionService.applyRetentionPolicy(endTime);
+        return executionService.doApplyRetentionPolicy(endTime);
     }
 
     @CliCommand(value = "cleanAll", help = "clean application data for specified data source")
-    public void cleanAll() throws Exception {
-        executionService.cleanAll();
+    public int cleanAll() throws Exception {
+        return executionService.doCleanAll();
     }
 }

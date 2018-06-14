@@ -35,10 +35,10 @@ public class HistoricalDataCountByWeekdayPopulator implements HistoricalDataPopu
         Map<Integer, Map<Integer, Double>> weekdayMap = new HashMap<Integer, Map<Integer, Double>>();
 
         // fetch daily histograms
-        List<DailyHistogram<String>> dailyHistograms = historicalDataFetcher.getDailyHistogramsForFeature(timeRange, contextField, contextValue, schema, featureName, historicalDataConfig);
+        List<DailyHistogram<String, Number>> dailyHistograms = historicalDataFetcher.getDailyHistogramsForFeature(timeRange, contextField, contextValue, schema, featureName, historicalDataConfig);
 
         // iterate over days
-        for (DailyHistogram<String> dailyHistogram : dailyHistograms) {
+        for (DailyHistogram<String, Number> dailyHistogram : dailyHistograms) {
 
             Integer dayOfWeek = dailyHistogram.getDate().getDayOfWeek().ordinal();
             if (dailyHistogram.getHistogram() == null) {
@@ -48,12 +48,12 @@ public class HistoricalDataCountByWeekdayPopulator implements HistoricalDataPopu
             Map<Integer, Double> hoursMap = (weekdayMap.get(dayOfWeek) != null)? weekdayMap.get(dayOfWeek): new HashMap<Integer, Double>();
 
             // iterate over hours and aggregate the data per dayofweek / hour
-            for (Map.Entry<String, Double> hoursHistogram : dailyHistogram.getHistogram().entrySet()) {
+            for (Map.Entry<String, Number> hoursHistogram : dailyHistogram.getHistogram().entrySet()) {
 
                 Instant instant = Instant.ofEpochSecond(Long.parseLong(hoursHistogram.getKey()));
                 LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
                 int hour = localDateTime.getHour();
-                Double currValue = hoursHistogram.getValue();
+                Double currValue = (Double) hoursHistogram.getValue();
                 Double currHistogramValue = (hoursMap.get(hour) != null) ?  hoursMap.get(hour) : 0.0;
                 hoursMap.put(hour, currHistogramValue + currValue);
             }

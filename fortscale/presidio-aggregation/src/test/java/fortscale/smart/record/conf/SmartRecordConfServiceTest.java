@@ -15,12 +15,15 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import presidio.ade.domain.pagination.aggregated.AggregatedDataPaginationParam;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static java.util.Collections.singletonMap;
 import static java.util.Comparator.comparing;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
@@ -77,7 +80,7 @@ public class SmartRecordConfServiceTest {
 
 	private void assertFirstSmartRecordConf(SmartRecordConf smartRecordConf) {
 		assertEquals("test_smart_record_conf_1", smartRecordConf.getName());
-		assertEquals(singletonList("userId"), smartRecordConf.getContexts());
+		assertEquals(singletonMap("userId", singletonList("userId")), smartRecordConf.getContextToFieldsMap());
 		assertEquals(FixedDurationStrategy.HOURLY, smartRecordConf.getFixedDurationStrategy());
 		assertEquals(true, smartRecordConf.isIncludeAllAggregationRecords());
 		assertEquals(0.5, smartRecordConf.getDefaultWeight(), 0);
@@ -113,7 +116,10 @@ public class SmartRecordConfServiceTest {
 
 	private void assertSecondSmartRecordConf(SmartRecordConf smartRecordConf) {
 		assertEquals("test_smart_record_conf_2", smartRecordConf.getName());
-		assertEquals(asList("userId", "srcMachineId"), smartRecordConf.getContexts());
+		Map<String, List<String>> expectedContextToFieldsMap = new HashMap<>();
+		expectedContextToFieldsMap.put("userId", singletonList("userId"));
+		expectedContextToFieldsMap.put("machineId", singletonList("srcMachineId"));
+		assertEquals(expectedContextToFieldsMap, smartRecordConf.getContextToFieldsMap());
 		assertEquals(FixedDurationStrategy.DAILY, smartRecordConf.getFixedDurationStrategy());
 		assertEquals(false, smartRecordConf.isIncludeAllAggregationRecords());
 		assertEquals(0.25, smartRecordConf.getDefaultWeight(), 0);
@@ -167,7 +173,7 @@ public class SmartRecordConfServiceTest {
 		when(scoreAggregationRecordConf1.getName()).thenReturn("scoreAggregationRecord1");
 		AggregatedFeatureEventConf scoreAggregationRecordConf2 = mock(AggregatedFeatureEventConf.class);
 		when(scoreAggregationRecordConf2.getName()).thenReturn("scoreAggregationRecord2");
-		when(aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfs(eq(singletonList("userId")), eq(FixedDurationStrategy.HOURLY)))
+		when(aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfs(eq(FixedDurationStrategy.HOURLY), eq(singletonMap("userId", singletonList("userId")))))
 				.thenReturn(asList(featureAggregationRecordConf1, featureAggregationRecordConf2, scoreAggregationRecordConf1, scoreAggregationRecordConf2));
 	}
 

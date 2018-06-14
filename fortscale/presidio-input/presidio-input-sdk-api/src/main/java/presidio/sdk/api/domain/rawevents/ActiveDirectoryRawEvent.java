@@ -2,7 +2,6 @@ package presidio.sdk.api.domain.rawevents;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.domain.core.EventResult;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import presidio.sdk.api.domain.AbstractInputDocument;
@@ -14,13 +13,11 @@ import java.util.Map;
 @Document
 public class ActiveDirectoryRawEvent extends AbstractInputDocument {
 
-    public static final String IS_USER_ADMIN_FIELD_NAME = "isUserAdmin";
     public static final String OBJECT_ID_FIELD_NAME = "objectId";
 
     @Field(IS_USER_ADMIN_FIELD_NAME)
     private boolean isUserAdmin;
 
-    @NotEmpty
     @Field(OBJECT_ID_FIELD_NAME)
     private String objectId;
 
@@ -42,13 +39,14 @@ public class ActiveDirectoryRawEvent extends AbstractInputDocument {
         this.objectId = other.objectId;
     }
 
-    @JsonProperty(value = "isUserAdmin")
+    @JsonProperty(value = IS_USER_ADMIN_FIELD_NAME)
     public boolean getIsUserAdministrator() {
         return isUserAdmin;
     }
 
     public void setIsUserAdministrator(boolean userAdministrator) {
         isUserAdmin = userAdministrator;
+        additionalInfo.put(IS_USER_ADMIN_FIELD_NAME, Boolean.toString(isUserAdmin));
     }
 
     public String getObjectId() {
@@ -77,7 +75,7 @@ public class ActiveDirectoryRawEvent extends AbstractInputDocument {
                 ", dataSource='" + dataSource + '\'' +
                 ", userId='" + userId + '\'' +
                 ", operationType='" + operationType + '\'' +
-                ", operationTypeCategory=" + operationTypeCategory +
+                ", operationTypeCategories=" + operationTypeCategories +
                 ", result=" + result +
                 ", userName='" + userName + '\'' +
                 ", userDisplayName='" + userDisplayName + '\'' +

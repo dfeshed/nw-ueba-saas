@@ -23,6 +23,7 @@ import presidio.output.domain.records.events.AuthenticationEnrichedEvent;
 import presidio.output.domain.records.events.EnrichedEvent;
 import presidio.output.domain.translator.OutputToCollectionNameTranslator;
 import presidio.output.sdk.api.OutputDataServiceSDK;
+import presidio.sdk.api.domain.rawevents.ActiveDirectoryRawEvent;
 import presidio.sdk.api.domain.rawevents.AuthenticationRawEvent;
 import presidio.sdk.api.domain.rawevents.FileRawEvent;
 import presidio.sdk.api.services.PresidioInputPersistencyService;
@@ -30,6 +31,7 @@ import presidio.sdk.api.utils.InputToCollectionNameTranslator;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -119,7 +121,7 @@ public class InputExecutionServiceTest {
     }
 
     @Test
-    public void testRun_isSrcDriveSharedFiledIsNull_shouldKeepNullValue(){
+    public void testRun_isSrcDriveSharedFiledIsNull_shouldKeepNullValue() {
         FileRawEvent fileRawEvent = createFileRawEvent(Instant.parse("2017-12-10T14:00:00.000Z"));
         fileRawEvent.setIsSrcDriveShared(null);
         fileRawEvent.setIsDstDriveShared(null);
@@ -144,7 +146,7 @@ public class InputExecutionServiceTest {
     }
 
     @Test
-    public void testRun_isSrcDriveSharedFiledIsTrue_shouldKeepOriginalValue(){
+    public void testRun_isSrcDriveSharedFiledIsTrue_shouldKeepOriginalValue() {
         FileRawEvent fileRawEvent = createFileRawEvent(Instant.parse("2017-12-10T14:00:00.000Z"));
         fileRawEvent.setIsSrcDriveShared(true);
         fileRawEvent.setIsDstDriveShared(true);
@@ -168,6 +170,28 @@ public class InputExecutionServiceTest {
         Assert.assertEquals(true, enrichedEvents.get(0).getIsSrcDriveShared());
     }
 
+    @Test
+    public void testRun_ActiveDirectoryTransformation() {
+
+        ActiveDirectoryRawEvent activeDirectoryEvent = createActiveDirectoryEvent(Arrays.asList("A"), Instant.parse("2017-12-12T14:00:00.000Z"));
+
+        List<ActiveDirectoryRawEvent> rawEvents = new ArrayList<>();
+        rawEvents.add(activeDirectoryEvent);
+        inputPersistencyService.store(Schema.ACTIVE_DIRECTORY, rawEvents);
+
+        Instant startTime = Instant.parse("2017-12-12T14:00:00.000Z");
+        Instant endTime = Instant.parse("2017-12-12T15:00:00.000Z");
+        try {
+            executionService.run(Schema.ACTIVE_DIRECTORY, startTime, endTime, 10D);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+
+        List<FileRawEvent> enrichedEvents = mongoTemplate.findAll(FileRawEvent.class, inputToCollectionNameTranslator.toCollectionName(Schema.ACTIVE_DIRECTORY));
+        Assert.assertEquals(1, enrichedEvents.size());
+    }
+
     private EnrichedEvent createOutputAuthenticationEvent(Instant time) {
         return new AuthenticationEnrichedEvent(time, time, "eventId1", "schema", "userId", "username", "userDisplayName", "dataSource", "User authenticated through Kerberos", new ArrayList<String>(), EventResult.SUCCESS, "SUCCESS", new HashMap<>());
     }
@@ -177,7 +201,7 @@ public class InputExecutionServiceTest {
                 "dataSource", "userId", "operationType", null,
                 EventResult.SUCCESS, "userName", "userDisplayName", null,
                 "srcMachineId", "srcMachineName", "dstMachineId",
-                "dstMachineName", "dstMachineDomain", "resultCode", "site");
+                "dstMachineName", "dstMachineDomain", "resultCode", "site", "country", "city");
 
         return authenticationRawEvent;
     }
@@ -189,4 +213,11 @@ public class InputExecutionServiceTest {
         return authenticationRawEvent;
     }
 
+    public ActiveDirectoryRawEvent createActiveDirectoryEvent(List<String> operationTypeCategory, Instant eventTime) {
+        ActiveDirectoryRawEvent activeDirectoryRawEvent = new ActiveDirectoryRawEvent(eventTime, "eventId",
+                "dataSource", "userId", "operationType", operationTypeCategory,
+                EventResult.SUCCESS, "userName", "userDisplayName", null,
+                false, "objectId", "resultCode");
+        return activeDirectoryRawEvent;
+    }
 }

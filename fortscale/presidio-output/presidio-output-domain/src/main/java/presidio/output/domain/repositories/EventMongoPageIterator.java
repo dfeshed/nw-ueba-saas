@@ -19,6 +19,7 @@ public class EventMongoPageIterator<U extends EnrichedEvent> implements PageIter
     private String userId;
     private TimeRange timeRange;
     private List<Pair<String, Object>> features;
+    private int amountOfPages;
 
     public EventMongoPageIterator(EventPersistencyService eventPersistencyService, int pageSize, Schema schema, String userId, TimeRange timeRange, List<Pair<String, Object>> features, int totalAmountOfEvents) {
         this.eventPersistencyService = eventPersistencyService;
@@ -29,11 +30,12 @@ public class EventMongoPageIterator<U extends EnrichedEvent> implements PageIter
         this.userId = userId;
         this.timeRange = timeRange;
         this.features = features;
+        amountOfPages = (int)Math.ceil(((double)totalAmountOfEvents)/ pageSize);
     }
 
     @Override
     public boolean hasNext() {
-        return this.currentPage < (this.totalAmountOfEvents / this.pageSize);
+        return this.currentPage < amountOfPages;
     }
 
     @Override

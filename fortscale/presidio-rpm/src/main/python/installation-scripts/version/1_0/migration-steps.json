@@ -45,6 +45,14 @@
       "has_uninstall": "true",
       "uninstall_param": "--uninstall",
       "uninstall_description": "Uninstalling python packages"
+    },
+    {
+      "filePath": "setCatalinaParams.sh",
+      "executor": "default",
+      "description": "Updating tomcat environment variables",
+      "has_uninstall": "true",
+      "uninstall_param": "--uninstall",
+      "uninstall_description": "Uninstalling tomcat envnronment variables"
     }
   ]
 }

@@ -8,7 +8,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.monitoring.endPoint.PresidioMetricBucket;
 import presidio.monitoring.endPoint.PresidioSystemMetricsFactory;
-import presidio.monitoring.records.Metric;
+import presidio.monitoring.sdk.api.services.model.Metric;
 import presidio.monitoring.records.MetricDocument;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.spring.TestConfig;

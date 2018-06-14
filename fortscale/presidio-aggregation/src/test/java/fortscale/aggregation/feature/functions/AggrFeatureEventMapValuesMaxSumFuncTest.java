@@ -14,14 +14,14 @@ public class AggrFeatureEventMapValuesMaxSumFuncTest {
 
     @Test
     public void testCalculateAggrFeature() {
-        int max1 = 10;
-        int max2 = 20;
+        Double max1 = 10.0;
+        Double max2 = 20.0;
         String pickFeatureName = "source_machine_to_highest_score_map";
         List<Map<String, Feature>> listOfMaps = new ArrayList<>();
         listOfMaps.add(AggrFeatureFeatureToMaxRelatedFuncTestUtils.createBucketAggrFeaturesMap(
                 pickFeatureName,
-                new ImmutablePair<>(new String[]{"host_123"}, max1),
-                new ImmutablePair<>(new String[]{"host_456"}, max2)));
+                new ImmutablePair<>(new String[]{"host_123"}, max1.intValue()),
+                new ImmutablePair<>(new String[]{"host_456"}, max2.intValue())));
 
         String aggregatedFeatureName = "sum_of_highest_scores_over_src_machines_vpn_hourly";
         Feature res = new AggrFeatureEventMapValuesMaxSumFunc().calculateAggrFeature(

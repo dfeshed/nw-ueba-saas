@@ -9,7 +9,10 @@ from airflow.utils.db import provide_session
 from airflow.utils.state import State
 from copy import copy
 from elasticsearch import Elasticsearch
+from presidio.utils.airflow.operators import spring_boot_jar_operator
 
+from presidio.utils.configuration.config_server_configuration_reader_singleton import \
+    ConfigServerConfigurationReaderSingleton
 
 class RerunFullFlowDagBuilder(object):
     """
@@ -26,6 +29,7 @@ class RerunFullFlowDagBuilder(object):
         """
 
         logging.debug("populating the rerun full flow dag")
+        config_reader = ConfigServerConfigurationReaderSingleton().config_reader
 
         dag_models = get_dag_models_by_prefix("full_flow")
         dag_ids_to_clean = map(lambda x: x.dag_id, dag_models)
@@ -34,7 +38,7 @@ class RerunFullFlowDagBuilder(object):
 
         kill_dags_task_instances_operator = build_kill_dags_task_instances_operator(dag, dag_ids_to_clean)
 
-        clean_mongo_operator = build_mongo_clean_bash_operator(dag, is_remove_ca_tables)
+        clean_mongo_operator = build_mongo_clean_bash_operator(config_reader,dag, is_remove_ca_tables)
 
         clean_elastic_operator = build_clean_elastic_operator(dag)
 
@@ -147,6 +151,10 @@ def cleanup_dags_from_postgres(dag_ids, session=None):
             logging.info("executing: %s", sql)
             session.execute(sql)
 
+    sql = "DELETE FROM variable WHERE key LIKE \'{}%\'".format(spring_boot_jar_operator.RETRY_STATE_KEY_PREFIX)
+    logging.info("executing: %s", sql)
+    session.execute(sql)
+
 
 def build_pause_dags_operator(cleanup_dag, dag_models):
     pause_dags_operator = PythonOperator(task_id='pause_dags',
@@ -158,7 +166,7 @@ def build_pause_dags_operator(cleanup_dag, dag_models):
 
 def build_clean_logs_operator(cleanup_dag):
     clean_logs_operator = BashOperator(task_id='clean_logs',
-                                       bash_command="rm -rf /var/log/presidio/3p/airflow/full_flow_* && rm -rf /var/log/presidio/3p/airflow/logs/scheduler/ && rm -f /tmp/spring.log*",
+                                       bash_command="rm -rf /var/log/netwitness/presidio/3p/airflow/logs/full_flow_* && rm -rf /var/log/netwitness/presidio/3p/airflow/logs/scheduler/ ",
                                        dag=cleanup_dag)
     return clean_logs_operator
 
@@ -231,14 +239,10 @@ def build_kill_dags_task_instances_operator(cleanup_dag, dag_ids_to_clean):
     return kill_dags_task_instances_operator
 
 
-def build_mongo_clean_bash_operator(cleanup_dag, is_remove_ca_tables):
+def build_mongo_clean_bash_operator(config_reader,cleanup_dag, is_remove_ca_tables):
+    encpass=config_reader.read(conf_key="mongo.db.password")
     # build the mongo clean bash command
-    mongo_clean_bash_command = "mongo presidio -u presidio -p P@ssw0rd --eval \"db.getCollectionNames().forEach(function(t){if (0==t.startsWith('system') %s)  {print('dropping: ' +t); db.getCollection(t).drop();}});\""
-    if not is_remove_ca_tables:
-        # we want to keep the ca tables
-        mongo_clean_bash_command = mongo_clean_bash_command % "&& 0==t.startsWith('ca_')"
-    else:
-        mongo_clean_bash_command = mongo_clean_bash_command % ""
+    mongo_clean_bash_command = "MONGO_PASS=$(java -jar /var/lib/netwitness/presidio/install/configserver/EncryptionUtils.jar decrypt {0})".format(encpass) + "&& mongo presidio -u presidio -p $MONGO_PASS --eval \"db.getCollectionNames().forEach(function(t){if (0==t.startsWith('system')) {print('dropping: ' +t); db.getCollection(t).drop();}});\""
     clean_mongo_operator = BashOperator(task_id='clean_mongo',
                                         bash_command=mongo_clean_bash_command,
                                         dag=cleanup_dag)

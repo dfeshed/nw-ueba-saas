@@ -14,7 +14,7 @@ public class ActiveDirectoryInputToAdeConverter implements InputAdeConverter {
         adeRecord.setDataSource(activeDirectoryRawEvent.getDataSource());
         adeRecord.setUserId(activeDirectoryRawEvent.getUserId());
         adeRecord.setOperationType(activeDirectoryRawEvent.getOperationType());
-        adeRecord.setOperationTypeCategories(activeDirectoryRawEvent.getOperationTypeCategory());
+        adeRecord.setOperationTypeCategories(activeDirectoryRawEvent.getOperationTypeCategories());
         adeRecord.setResult(activeDirectoryRawEvent.getResult());
         adeRecord.setObjectId(activeDirectoryRawEvent.getObjectId());
         adeRecord.setUserAdmin(activeDirectoryRawEvent.isUserAdmin());

@@ -16,22 +16,29 @@ public class ConfigurationManagerService implements ConfigurationProcessingServi
     private final String GENERAL_ERROR_MESSAGE = "General error, field %s is unsupported, Valid values are [system,dataPipeline].";
     private ConfigurationProcessingService CPSAirflow;
     private ConfigurationProcessingService CPSSecurityManager;
+    private ConfigurationProcessingService CPSOutput;
+    private ConfigurationProcessingService CPSDataPullingService;
     private ValidationResults validationResults;
 
-    public ConfigurationManagerService(ConfigurationProcessingService CPSAirflow, ConfigurationProcessingService CPSSecurityManager) {
+    public ConfigurationManagerService(ConfigurationProcessingService CPSAirflow, ConfigurationProcessingService CPSSecurityManager, ConfigurationProcessingService CPSOutput, ConfigurationProcessingService CPSDataPullingService) {
         this.CPSAirflow = CPSAirflow;
         this.CPSSecurityManager = CPSSecurityManager;
+        this.CPSOutput = CPSOutput;
+        this.CPSDataPullingService = CPSDataPullingService;
     }
 
     @Override
     public boolean applyConfiguration() {
-        return CPSAirflow.applyConfiguration() && CPSSecurityManager.applyConfiguration();
+        return CPSAirflow.applyConfiguration() && CPSSecurityManager.applyConfiguration() && CPSOutput.applyConfiguration() && CPSDataPullingService.applyConfiguration();
     }
 
     @Override
     public ValidationResults validateConfiguration(PresidioManagerConfiguration presidioManagerConfiguration) {
         validationResults.addErrors(CPSSecurityManager.validateConfiguration(presidioManagerConfiguration).getErrorsList());
         validationResults.addErrors(CPSAirflow.validateConfiguration(presidioManagerConfiguration).getErrorsList());
+        validationResults.addErrors(CPSOutput.validateConfiguration(presidioManagerConfiguration).getErrorsList());
+        validationResults.addErrors(CPSDataPullingService.validateConfiguration(presidioManagerConfiguration).getErrorsList());
+
         if (validationResults.isValid())
             return new ValidationResults();
         else
@@ -43,6 +50,9 @@ public class ConfigurationManagerService implements ConfigurationProcessingServi
         validationResults = new ValidationResults();
         DataPipeLineConfiguration dataPipeLineConfiguration = null;
         PresidioSystemConfiguration presidioSystemConfiguration = null;
+        OutputConfigurationCreator outputConfigurationCreator = null;
+        DataPullingConfiguration dataPullingConfiguration = null;
+
         if (node != null) {
             Iterator<Map.Entry<String, JsonNode>> fields = node.fields();
             Map.Entry<String, JsonNode> map;
@@ -58,12 +68,22 @@ public class ConfigurationManagerService implements ConfigurationProcessingServi
                     if (key.equals(PresidioManagerConfiguration.DATA_PIPE_LINE)) {
                         dataPipeLineConfiguration = value != null ? new DataPipeLineConfiguration(value) : null;
                     } else {
-                        validationResults.addError(new ConfigurationBadParamDetails(GENERAL, key, UNSUPPORTED_FIELD_ERROR, JSON_PATH, String.format(GENERAL_ERROR_MESSAGE, key)));
+                        if (key.equals(PresidioManagerConfiguration.OUTPUT_FORWARDING)) {
+                            outputConfigurationCreator = value != null ? new OutputConfigurationCreator(value) : null;
+                        } else {
+                            if (key.equals(PresidioManagerConfiguration.DATA_PULLING)) {
+                                dataPullingConfiguration = value != null ? new DataPullingConfiguration(value) : null;
+                            }
+                            else {
+                                validationResults.addError(new ConfigurationBadParamDetails(GENERAL, key, UNSUPPORTED_FIELD_ERROR, JSON_PATH, String.format(GENERAL_ERROR_MESSAGE, key)));
+                            }
+
+                        }
                     }
                 }
             }
         }
-        return new PresidioManagerConfiguration(dataPipeLineConfiguration, presidioSystemConfiguration);
+        return new PresidioManagerConfiguration(dataPipeLineConfiguration, presidioSystemConfiguration, outputConfigurationCreator, dataPullingConfiguration);
     }
 
 }

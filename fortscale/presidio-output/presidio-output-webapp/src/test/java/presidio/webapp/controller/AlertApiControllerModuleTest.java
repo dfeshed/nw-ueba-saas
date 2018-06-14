@@ -173,7 +173,7 @@ public class AlertApiControllerModuleTest {
         Date endDate = new Date();
         List<String> indicatorNames1 = Arrays.asList("a");
         String firstUserName = "Z_normalized_username_ipusr1@somebigcompany.com";
-        presidio.output.domain.records.alerts.Alert alert1 = new presidio.output.domain.records.alerts.Alert("userId1", "smartId", null, firstUserName, startDate, endDate, 95.0d, 3, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 5D);
+        presidio.output.domain.records.alerts.Alert alert1 = new presidio.output.domain.records.alerts.Alert("userId1", "smartId", null, firstUserName, firstUserName, startDate, endDate, 95.0d, 3, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 5D);
         List<Indicator> indicators = new ArrayList<>();
         Indicator indicator1 = createIndicator(alert1.getId(), 0.5, "0.5", startDate, endDate, Schema.ACTIVE_DIRECTORY, 0.3, 0, AlertEnums.IndicatorTypes.FEATURE_AGGREGATION);
         Indicator indicator3 = createIndicator(alert1.getId(), 0.1, "0.1", startDate, endDate, Schema.ACTIVE_DIRECTORY, 0.3, 0, AlertEnums.IndicatorTypes.FEATURE_AGGREGATION);
@@ -417,7 +417,7 @@ public class AlertApiControllerModuleTest {
 
     private presidio.output.domain.records.alerts.Alert generateAlert(String userId, String smartId, List<String> classifications1, String userName, double score, AlertEnums.AlertSeverity severity, Date date) {
         return new presidio.output.domain.records.alerts.Alert(userId, smartId, classifications1,
-                userName, date, date, score, 0, AlertEnums.AlertTimeframe.HOURLY, severity, null, 0.0);
+                userName,userName, date, date, score, 0, AlertEnums.AlertTimeframe.HOURLY, severity, null, 0.0);
     }
 
     private presidio.webapp.model.Alert convertDomainAlertToRestAlert(presidio.output.domain.records.alerts.Alert alert) {

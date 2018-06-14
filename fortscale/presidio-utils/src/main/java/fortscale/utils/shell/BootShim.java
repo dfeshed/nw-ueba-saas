@@ -83,6 +83,9 @@ public class BootShim {
                     logger.error("got exception while processing command={}",cmd,commandResult.getException());
                     throw new RuntimeException(commandResult.getException());
                 }
+                Integer result = (Integer) commandResult.getResult();
+                if (result != null && result.equals(1))
+                    return ExitShellRequest.FATAL_EXIT;
             }
 
             if (successful) {

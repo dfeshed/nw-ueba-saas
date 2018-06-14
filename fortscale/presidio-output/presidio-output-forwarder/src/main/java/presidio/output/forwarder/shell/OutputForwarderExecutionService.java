@@ -1,25 +1,29 @@
 package presidio.output.forwarder.shell;
 
-import presidio.output.forwarder.services.PresidioOutputForwardService;
+import fortscale.utils.logging.Logger;
+import presidio.output.forwarder.services.OutputForwardService;
 
 import java.time.Instant;
 
 public class OutputForwarderExecutionService {
+    private static final Logger logger = Logger.getLogger(OutputForwarderExecutionService.class);
 
-    private PresidioOutputForwardService presidioOutputForwardService;
 
-    public OutputForwarderExecutionService(PresidioOutputForwardService presidioOutputForwardService) {
+    private OutputForwardService presidioOutputForwardService;
+
+    public OutputForwarderExecutionService(OutputForwardService presidioOutputForwardService) {
         this.presidioOutputForwardService = presidioOutputForwardService;
     }
 
-    public void run(Instant startDate, Instant endDate) throws Exception {
-        presidioOutputForwardService.forward(startDate, endDate);
+    public int doRun(Instant startDate, Instant endDate) throws Exception {
+        return presidioOutputForwardService.forward(startDate, endDate);
+
     }
 
-//    public void clean(Instant startDate, Instant endDate) throws Exception {
-//    }
-//
-//    public void cleanup(Instant startDate, Instant endDate, Double accumulationStrategy) throws Exception {
-//    }
+    public int doClean(Instant startTime, Instant endTime) {
+
+        logger.info("There is nothing to clean in this service");
+        return 0;
+    }
 }
 

@@ -125,17 +125,17 @@
       ]
     },
     {
-      "name": "absoluteFolderPathToHighestScoreMapUserIdPrintHourly",
+      "name": "absoluteSharedFolderPathToHighestScoreMapUserIdPrintHourly",
       "contextFieldNames": [
         "userId"
       ],
       "adeEventTypes": [
-        "scored_enriched.print.absoluteFolderPath.userId.print.score"
+        "scored_enriched.print.absoluteSharedFolderPath.userId.print.score"
       ],
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
         {
-          "name": "absoluteFolderPathToHighestScoreMap",
+          "name": "absoluteSharedFolderPathToHighestScoreMap",
           "featureNamesMap": {
             "groupBy": [
               "context.absoluteFolderPath"

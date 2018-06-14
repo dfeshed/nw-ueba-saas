@@ -27,10 +27,7 @@
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_map_values_max_sum_func",
-        "pattern": "[0-9]",
-        "replacement": "",
-        "postCondition": "(.*[a-zA-Z]){5}.*"
+        "type": "aggr_feature_map_values_max_sum_func"
       }
     },
     {
@@ -225,10 +222,7 @@
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_map_values_max_sum_func",
-        "pattern": "[0-9]",
-        "replacement": "",
-        "postCondition": "(.*[a-zA-Z]){5}.*"
+        "type": "aggr_feature_map_values_max_sum_func"
       }
     },
     {
@@ -498,10 +492,7 @@
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_map_values_max_sum_func",
-        "pattern": "[0-9]",
-        "replacement": "",
-        "postCondition": "(.*[a-zA-Z]){5}.*"
+        "type": "aggr_feature_map_values_max_sum_func"
       }
     },
     {
@@ -681,10 +672,7 @@
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_map_values_max_sum_func",
-        "pattern": "[0-9]",
-        "replacement": "",
-        "postCondition": "(.*[a-zA-Z]){5}.*"
+        "type": "aggr_feature_map_values_max_sum_func"
       }
     },
     {
@@ -880,10 +868,7 @@
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_map_values_max_sum_func",
-        "pattern": "[0-9]",
-        "replacement": "",
-        "postCondition": "(.*[a-zA-Z]){5}.*"
+        "type": "aggr_feature_map_values_max_sum_func"
       }
     },
     {
@@ -914,10 +899,7 @@
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_map_values_max_sum_func",
-        "pattern": "[0-9]",
-        "replacement": "",
-        "postCondition": "(.*[a-zA-Z]){5}.*"
+        "type": "aggr_feature_map_values_max_sum_func"
       }
     },
     {
@@ -932,10 +914,7 @@
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_map_values_max_sum_func",
-        "pattern": "[0-9]",
-        "replacement": "",
-        "postCondition": "(.*[a-zA-Z]){5}.*"
+        "type": "aggr_feature_map_values_max_sum_func"
       }
     },
     {
@@ -950,10 +929,7 @@
         ]
       },
       "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_map_values_max_sum_func",
-        "pattern": "[0-9]",
-        "replacement": "",
-        "postCondition": "(.*[a-zA-Z]){5}.*"
+        "type": "aggr_feature_map_values_max_sum_func"
       }
     },
     {

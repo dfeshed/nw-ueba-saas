@@ -1,13 +1,13 @@
 from airflow.operators.bash_operator import BashOperator
-from airflow.operators.python_operator import ShortCircuitOperator
 
+from aggr_model_dag_builder import AggrModelDagBuilder
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.operators.model.smart_model_accumulate_operator import SmartModelAccumulateOperator
 from presidio.operators.model.smart_model_operator import SmartModelOperator
 from presidio.utils.airflow.operators.sensor.task_sensor_service import TaskSensorService
+from presidio.utils.configuration.config_server_configuration_reader_singleton import \
+    ConfigServerConfigurationReaderSingleton
 from presidio.utils.services.fixed_duration_strategy import is_execution_date_valid, FIX_DURATION_STRATEGY_DAILY
-from presidio.utils.configuration.config_server_configuration_reader_singleton import ConfigServerConfigurationReaderSingleton
-from aggr_model_dag_builder import AggrModelDagBuilder
 from raw_model_dag_builder import RawModelDagBuilder
 
 
@@ -85,7 +85,7 @@ class SmartModelDagBuilder(PresidioDagBuilder):
             command=PresidioDagBuilder.presidio_command,
             smart_events_conf=self._smart_events_conf,
             dag=smart_model_dag)
-        smart_accumulate_short_circuit_operator = ShortCircuitOperator(
+        smart_accumulate_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
             task_id='smart_accumulate_short_circuit',
             dag=smart_model_dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
@@ -94,8 +94,7 @@ class SmartModelDagBuilder(PresidioDagBuilder):
                                              PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(smart_model_dag,
                                                                                                                                    self._min_gap_from_dag_start_date_to_start_accumulating,
                                                                                                                                    kwargs['execution_date'],
-                                                                                                                                   smart_model_dag.schedule_interval),
-            provide_context=True
+                                                                                                                                   smart_model_dag.schedule_interval)
         )
         task_sensor_service.add_task_short_circuit(smart_model_accumulate_operator, smart_accumulate_short_circuit_operator)
 
@@ -105,7 +104,7 @@ class SmartModelDagBuilder(PresidioDagBuilder):
                                                 session_id=smart_model_dag.dag_id.split('.', 1)[0],
                                                 dag=smart_model_dag)
 
-        smart_model_short_circuit_operator = ShortCircuitOperator(
+        smart_model_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
             task_id='smart_model_short_circuit',
             dag=smart_model_dag,
             python_callable=lambda **kwargs: is_execution_date_valid(kwargs['execution_date'],
@@ -114,8 +113,7 @@ class SmartModelDagBuilder(PresidioDagBuilder):
                                              PresidioDagBuilder.validate_the_gap_between_dag_start_date_and_current_execution_date(smart_model_dag,
                                                                                                                                    self._min_gap_from_dag_start_date_to_start_modeling,
                                                                                                                                    kwargs['execution_date'],
-                                                                                                                                   smart_model_dag.schedule_interval),
-            provide_context=True
+                                                                                                                                   smart_model_dag.schedule_interval)
         )
         task_sensor_service.add_task_sequential_sensor(smart_model_operator)
         task_sensor_service.add_task_short_circuit(smart_model_operator, smart_model_short_circuit_operator)
@@ -128,6 +126,6 @@ class SmartModelDagBuilder(PresidioDagBuilder):
         t2 = BashOperator(
             task_id='sleep',
             bash_command='sleep 5',
-            dag=smart_model_dag)
+            dag=smart_model_dag, retries=99999)
 
         return smart_model_dag

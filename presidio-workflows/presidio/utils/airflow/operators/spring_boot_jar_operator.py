@@ -15,7 +15,7 @@ from airflow.models import Variable
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
 from presidio.utils.services.string_service import is_blank
-from datetime import timedelta 
+from datetime import timedelta
 
 RETRY_ARGS_CONF_KEY = "retry_args"
 
@@ -23,6 +23,7 @@ JVM_ARGS_CONF_KEY = "jvm_args"
 
 DAGS_CONF_KEY = "dags"
 
+RETRY_STATE_KEY_PREFIX = "retry_state_"
 RETRY_RUNNING_STATE = "RUNNING"
 RETRY_FAIL_STATE = "FAIL"
 RETRY_SUCCESS_STATE = "SUCCESS"
@@ -500,7 +501,7 @@ class SpringBootJarOperator(BashOperator):
     @staticmethod
     def get_task_retry_key(context):
         ti = context['task_instance']
-        return 'retry_state_%s_%s_%s' % (ti.dag_id, ti.task_id, ti.execution_date)
+        return '%s%s_%s_%s' % (RETRY_STATE_KEY_PREFIX, ti.dag_id, ti.task_id, ti.execution_date)
 
     @staticmethod
     def clean_before_retry(context):

@@ -3,6 +3,8 @@ package presidio.output.domain.records.alerts;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringExclude;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Mapping;
 import org.springframework.data.elasticsearch.annotations.Setting;
@@ -10,13 +12,14 @@ import presidio.output.domain.records.AbstractElasticDocument;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Document(indexName = AbstractElasticDocument.INDEX_NAME + "-" + Alert.ALERT_TYPE, type = Alert.ALERT_TYPE)
-@Mapping(mappingPath = "elasticsearch/mappings/presidio-output-alert.json")
-@Setting(settingPath = "elasticsearch/mappings/settings.json")
+@Mapping(mappingPath = "elasticsearch/indexes/presidio-output-alert/mappings.json")
+@Setting(settingPath = "elasticsearch/indexes/presidio-output-alert/settings.json")
 public class Alert extends AbstractElasticDocument {
 
     public static final String ALERT_TYPE = "alert";
@@ -31,6 +34,7 @@ public class Alert extends AbstractElasticDocument {
     public static final String INDICATOR_NAMES = "indicatorsNames";
     public static final String TIMEFRAME = "timeframe";
     public static final String SEVERITY = "severity";
+    public static final String VENDOR_USER_ID = "vendorUserId";
     public static final String USER_ID = "userId";
     public static final String SMART_ID = "smartId";
     public static final String USER_TAGS_FIELD_NAME = "userTags";
@@ -54,6 +58,9 @@ public class Alert extends AbstractElasticDocument {
 
     @JsonProperty(USER_ID)
     private String userId;
+
+    @JsonProperty(VENDOR_USER_ID)
+    private String vendorUserId;
 
     @JsonProperty(START_DATE)
     private Date startDate;
@@ -79,6 +86,7 @@ public class Alert extends AbstractElasticDocument {
     private List<String> indicatorsNames;
 
     @JsonIgnore
+    @ToStringExclude
     private transient List<Indicator> indicators;
 
     @JsonProperty(USER_TAGS_FIELD_NAME)
@@ -95,11 +103,12 @@ public class Alert extends AbstractElasticDocument {
         // empty const for JSON deserialization
     }
 
-    public Alert(String userId, String smartId, List<String> classifications, String userName, Date startDate, Date endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity, List<String> userTags, Double contributionToUserScore) {
+    public Alert(String userId, String smartId, List<String> classifications, String vendorUserId, String userName, Date startDate, Date endDate, double score, int indicatorsNum, AlertEnums.AlertTimeframe timeframe, AlertEnums.AlertSeverity severity, List<String> userTags, Double contributionToUserScore) {
         super();
         this.classifications = classifications;
         this.userId = userId;
         this.smartId = smartId;
+        this.vendorUserId = vendorUserId;
         this.userName = userName;
         this.indexedUserName = userName;
         this.startDate = startDate;
@@ -242,7 +251,7 @@ public class Alert extends AbstractElasticDocument {
     }
 
     public int countRelatedEvents() {
-        if(indicators == null || indicators.size() == 0) {
+        if (indicators == null || indicators.size() == 0) {
             return 0;
         }
 
@@ -252,5 +261,18 @@ public class Alert extends AbstractElasticDocument {
                 .filter(indicator -> indicator.getEvents() != null)
                 .forEach(indicator -> events.addAll(indicator.getEvents()));
         return events.size();
+    }
+
+    public String getVendorUserId() {
+        return vendorUserId;
+    }
+
+    public void setVendorUserId(String vendorUserId) {
+        this.vendorUserId = vendorUserId;
+    }
+
+    @Override
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this);
     }
 }

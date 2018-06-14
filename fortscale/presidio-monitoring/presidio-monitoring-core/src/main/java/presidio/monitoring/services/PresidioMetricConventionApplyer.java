@@ -3,7 +3,7 @@ package presidio.monitoring.services;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
-import presidio.monitoring.records.Metric;
+import presidio.monitoring.sdk.api.services.model.Metric;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 
 import java.lang.management.ManagementFactory;

@@ -2,9 +2,11 @@
   "SmartRecordConfs": [
     {
       "name": "userId_hourly",
-      "contexts": [
-        "userId"
-      ],
+      "contextToFieldsMap": {
+        "userId": [
+          "userId"
+        ]
+      },
       "fixedDurationStrategy": "fixed_duration_hourly",
       "includeAllAggregationRecords": true,
       "excludedAggregationRecords": [

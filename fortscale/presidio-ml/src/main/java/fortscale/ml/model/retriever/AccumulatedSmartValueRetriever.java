@@ -171,7 +171,10 @@ public class AccumulatedSmartValueRetriever extends AbstractDataRetriever {
 
     @Override
     public List<String> getContextFieldNames() {
-        return smartRecordConf.getContexts();
+        return smartRecordConf.getContextToFieldsMap().values().stream()
+                .flatMap(List::stream)
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     @Override

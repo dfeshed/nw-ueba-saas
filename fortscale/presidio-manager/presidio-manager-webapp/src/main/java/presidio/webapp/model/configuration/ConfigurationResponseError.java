@@ -21,7 +21,10 @@ public class ConfigurationResponseError {
 
         SECURITY("security"),
 
-        DATA_PIPELINE("dataPipeline");
+        DATA_PIPELINE("dataPipeline"),
+
+        OUTPUT_FORWARDING("outputForwarding");
+
 
         private String value;
 

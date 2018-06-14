@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * SecuredConfiguration
  */
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-08-07T07:15:37.402Z")
+@javax.annotation.Generated(value = "PresidioManagerConfiguration", date = "2017-08-07T07:15:37.402Z")
 
 public class Configuration {
   @JsonProperty("system")
@@ -16,6 +16,26 @@ public class Configuration {
 
   @JsonProperty("dataPipeline")
   private DataConfiguration dataPipeline = null;
+
+  @JsonProperty("dataPulling")
+  private DataPullingConfiguration dataPulling = null;
+
+    @JsonProperty("outputForwarding")
+    private OutputConfiguration outputForwarding = null;
+
+
+    public Configuration outputForwarding(OutputConfiguration outputForwarding) {
+        this.outputForwarding = outputForwarding;
+        return this;
+    }
+
+    public OutputConfiguration getOutputForwarding() {
+        return outputForwarding;
+    }
+
+    public void setOutputForwarding(OutputConfiguration outputForwarding) {
+        this.outputForwarding = outputForwarding;
+    }
 
   public Configuration system(SystemConfiguration system) {
     this.system = system;
@@ -53,6 +73,13 @@ public class Configuration {
     this.dataPipeline = dataPipeline;
   }
 
+    public DataPullingConfiguration getDataPulling() {
+        return dataPulling;
+    }
+
+    public void setDataPulling(DataPullingConfiguration dataPulling) {
+        this.dataPulling = dataPulling;
+    }
 
   @Override
   public boolean equals(Object o) {
@@ -63,14 +90,15 @@ public class Configuration {
       return false;
     }
     Configuration securedConfiguration = (Configuration) o;
-    return Objects.equals(this.system, securedConfiguration.system) &&
+    return Objects.equals(this.outputForwarding, securedConfiguration.outputForwarding) &&
+            Objects.equals(this.system, securedConfiguration.system) &&
         Objects.equals(this.dataPipeline, securedConfiguration.dataPipeline);
   }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(system, dataPipeline);
-  }
+    @Override
+    public int hashCode() {
+        return Objects.hash(system, dataPipeline, outputForwarding, dataPulling);
+    }
 
   @Override
   public String toString() {
@@ -78,6 +106,7 @@ public class Configuration {
     sb.append("class SecuredConfiguration {\n");
 
     sb.append("    system: ").append(toIndentedString(system)).append("\n");
+      sb.append("    outputForwarding: ").append(toIndentedString(outputForwarding)).append("\n");
     sb.append("    dataPipeline: ").append(toIndentedString(dataPipeline)).append("\n");
     sb.append("}");
     return sb.toString();

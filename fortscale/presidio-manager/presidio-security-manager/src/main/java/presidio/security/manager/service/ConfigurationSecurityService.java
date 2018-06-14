@@ -3,7 +3,6 @@ package presidio.security.manager.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fortscale.utils.EncryptionUtils;
 import fortscale.utils.logging.Logger;
 import freemarker.template.Configuration;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;

@@ -1,8 +1,6 @@
 package fortscale.aggregation.creator;
 
 import fortscale.aggregation.feature.bucket.FeatureBucket;
-import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
-import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.feature.Feature;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
@@ -30,16 +28,13 @@ import java.util.*;
 public class AggregationRecordsCreatorImplTest {
     @Autowired
     private AggregationRecordsCreator aggregationRecordsCreator;
-    @Autowired
-    private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 
     @Test
     public void shouldReturnEmptyAggregationsForZeroFeatureBuckets() throws Exception {
         List<FeatureBucket> featureBuckets = Collections.emptyList();
         List<AdeAggregationRecord> aggregations = aggregationRecordsCreator.createAggregationRecords(featureBuckets);
         Assert.assertTrue(aggregations.isEmpty());
-        featureBuckets = null;
-        aggregations = aggregationRecordsCreator.createAggregationRecords(featureBuckets);
+        aggregations = aggregationRecordsCreator.createAggregationRecords(null);
         Assert.assertTrue(aggregations.isEmpty());
     }
 
@@ -50,15 +45,14 @@ public class AggregationRecordsCreatorImplTest {
     }
 
     private List<FeatureBucket> generateFeatureBuckets() {
-        List<AggregatedFeatureEventConf> aggregatedFeatureEventConfList = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList();
         List<FeatureBucket> featureBuckets = new LinkedList<>();
         Instant startTime = Instant.EPOCH;
         Instant endTime = startTime.plus(1, ChronoUnit.HOURS);
         FeatureBucket featureBucket = new FeatureBucket();
         featureBucket.setStartTime(startTime);
         featureBucket.setEndTime(endTime);
-        Map<String, Integer> value = new HashMap();
-        value.put("server_app_1", 14);
+        Map<String, Double> value = new HashMap<>();
+        value.put("server_app_1", 14.0);
         AggrFeatureValue aggrFeatureValue = new AggrFeatureValue(value, 1L);
 
         Feature aggrFeature = new Feature("normalized_src_machine_to_highest_score_map", aggrFeatureValue);

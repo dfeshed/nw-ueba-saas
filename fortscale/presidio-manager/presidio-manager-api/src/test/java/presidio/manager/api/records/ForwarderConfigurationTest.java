@@ -15,7 +15,7 @@ public class ForwarderConfigurationTest {
 
 
     private final String FORWARDER_JSON_FILE_NAME = "forwarder_test.json";
-    private final String BAD_FORWARDER_JSON_FILE_NAME = "to_many_params_forwarder.json";
+    private final String BAD_FORWARDER_JSON_FILE_NAME = "too_many_params_forwarder.json";
 
     @Test
     public void createSyslogMessageSenderConfigurationTest() throws IOException {
@@ -23,9 +23,9 @@ public class ForwarderConfigurationTest {
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(classLoader.getResource(FORWARDER_JSON_FILE_NAME).getFile());
         JsonNode jsonBody = mapper.readTree(file);
-        OutputConfiguration outputConfiguration = new OutputConfiguration(jsonBody);
-        boolean isValid = outputConfiguration.isStructureValid();
-        List badParams = outputConfiguration.getBadParams();
+        OutputConfigurationCreator outputConfigurationCreator = new OutputConfigurationCreator(jsonBody);
+        boolean isValid = outputConfigurationCreator.isStructureValid();
+        List badParams = outputConfigurationCreator.getBadParams();
         Assert.assertEquals(true, isValid);
         Assert.assertEquals(0, badParams.size());
     }
@@ -36,9 +36,9 @@ public class ForwarderConfigurationTest {
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(classLoader.getResource(BAD_FORWARDER_JSON_FILE_NAME).getFile());
         JsonNode jsonBody = mapper.readTree(file);
-        OutputConfiguration outputConfiguration = new OutputConfiguration(jsonBody);
-        boolean isValid = outputConfiguration.isStructureValid();
-        List badParams = outputConfiguration.getBadParams();
+        OutputConfigurationCreator outputConfigurationCreator = new OutputConfigurationCreator(jsonBody);
+        boolean isValid = outputConfigurationCreator.isStructureValid();
+        List badParams = outputConfigurationCreator.getBadParams();
         Assert.assertEquals(false, isValid);
         Assert.assertEquals(2, badParams.size());
     }

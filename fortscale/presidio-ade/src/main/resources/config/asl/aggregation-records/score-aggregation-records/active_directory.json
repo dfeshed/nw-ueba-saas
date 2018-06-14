@@ -166,29 +166,14 @@
       }
     },
     {
-      "name": "passwordChangedByNonOwnerScoreUserIdActiveDirectoryHourly",
+      "name": "userPasswordResetScoreUserIdActiveDirectoryHourly",
       "type": "P",
-      "bucketConfName": "passwordChangedByNonOwnerScoreUserIdActiveDirectoryHourly",
+      "bucketConfName": "userPasswordResetScoreUserIdActiveDirectoryHourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "aggregatedFeatureNamesMap": {
         "pick": [
-          "passwordChangedByNonOwnerScore"
-        ]
-      },
-      "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_map_values_max_sum_func"
-      }
-    },
-    {
-      "name": "memberAddedToCriticalEnterpriseGroupScoreUserIdActiveDirectoryHourly",
-      "type": "P",
-      "bucketConfName": "memberAddedToCriticalEnterpriseGroupScoreUserIdActiveDirectoryHourly",
-      "numberOfBuckets": 1,
-      "bucketsLeap": 1,
-      "aggregatedFeatureNamesMap": {
-        "pick": [
-          "memberAddedToCriticalEnterpriseGroupScore"
+          "userPasswordResetScore"
         ]
       },
       "aggregatedFeatureEventFunction": {

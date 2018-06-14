@@ -12,6 +12,7 @@ import fortscale.utils.time.TimeRange;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
@@ -165,6 +166,6 @@ public class ModelingEngineTest {
 			}
 		}
 
-		return new ModelingEngine(modelConf, selector, retriever, builder, store, modelingServiceMetricsContainer);
+		return new ModelingEngine(modelConf, selector, retriever, builder, store, modelingServiceMetricsContainer, Duration.ofDays(7));
 	}
 }

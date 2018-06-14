@@ -21,4 +21,12 @@ public interface SmartRecordsManagerSdk {
 	 * @return an iterator over {@link SmartRecord}s
 	 */
 	PageIterator<SmartRecord> getSmartRecords(int pageSize, int maxGroupSize, TimeRange timeRange, int scoreThreshold);
+
+	/**
+	 * Get number of users with smart over the specified time range.
+	 *
+	 * @param timeRange 	the start and end instants of the smart records
+	 * @return number of users which have smarts
+	 */
+	int getDistinctSmartUsers(TimeRange timeRange);
 }

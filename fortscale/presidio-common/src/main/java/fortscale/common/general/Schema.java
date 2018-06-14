@@ -3,13 +3,15 @@ package fortscale.common.general;
 import com.google.common.base.CaseFormat;
 
 public enum Schema {
-    DLPFILE("dlpfile"),
-    DLPMAIL("dlpmail"),
-    PRNLOG("prnlog"),
-    ACTIVE_DIRECTORY("active_directory"),
+    // The order is important for user update!!!!
+    // We first want to look for user data in the authentication events,
+    // then file and so on...
     AUTHENTICATION("authentication"),
     FILE("file"),
-    PRINT("print");
+    PRINT("print"),
+    ACTIVE_DIRECTORY("active_directory"),
+    // Dlp file is used only in the ade tests
+    DLPFILE("dlpfile");
 
     private String name;
 

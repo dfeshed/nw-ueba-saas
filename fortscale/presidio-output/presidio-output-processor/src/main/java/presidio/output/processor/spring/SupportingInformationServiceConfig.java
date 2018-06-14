@@ -16,10 +16,7 @@ import presidio.output.processor.services.alert.supportinginformation.Supporting
 import presidio.output.processor.services.alert.supportinginformation.SupportingInformationForScoreAggr;
 import presidio.output.processor.services.alert.supportinginformation.SupportingInformationGeneratorFactory;
 import presidio.output.processor.services.alert.supportinginformation.SupportingInformationUtils;
-import presidio.output.processor.services.alert.supportinginformation.historicaldata.HistoricalDataCountByTimePopulator;
-import presidio.output.processor.services.alert.supportinginformation.historicaldata.HistoricalDataCountByValuePopulator;
-import presidio.output.processor.services.alert.supportinginformation.historicaldata.HistoricalDataCountByWeekdayPopulator;
-import presidio.output.processor.services.alert.supportinginformation.historicaldata.HistoricalDataPopulatorFactory;
+import presidio.output.processor.services.alert.supportinginformation.historicaldata.*;
 import presidio.output.processor.services.alert.supportinginformation.historicaldata.fetchers.HistoricalDataFetcher;
 import presidio.output.processor.services.alert.supportinginformation.transformer.AbnormalSourceMachineTransformer;
 import presidio.output.processor.services.alert.supportinginformation.transformer.SupportingInformationTransformerFactory;
@@ -45,6 +42,11 @@ public class SupportingInformationServiceConfig extends ApplicationConfiguration
 
     @Autowired
     private ScoredEventService scoredEventService;
+
+    @Bean
+    public HistoricalDataCountByTimeForScoreFeaturePopulator historicalDataCountByTimeForScoreFeaturePopulator() {
+        return new HistoricalDataCountByTimeForScoreFeaturePopulator(historicalDataFetcher);
+    }
 
     @Bean
     public HistoricalDataCountByTimePopulator historicalDataCountByTimePopulator() {
@@ -102,7 +104,6 @@ public class SupportingInformationServiceConfig extends ApplicationConfiguration
                 historicalDataPopulatorFactory(),
                 supportingInformationUtils());
     }
-
 
 
     @Bean

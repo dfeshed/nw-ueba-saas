@@ -30,7 +30,7 @@ import presidio.ade.sdk.common.AdeManagerSdkConfig;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.spring.EventPersistencyServiceConfig;
 import presidio.output.processor.services.alert.supportinginformation.historicaldata.fetchers.HistoricalDataFetcher;
-import presidio.output.processor.services.alert.supportinginformation.historicaldata.fetchers.HistoricalDataFetcherADEModelsBaesd;
+import presidio.output.processor.services.alert.supportinginformation.historicaldata.fetchers.HistoricalDataFetcherADEModelsBased;
 
 @Configuration
 @Import({
@@ -96,7 +96,7 @@ public class HistoricalDataFetcherConfig {
 
     @Bean
     HistoricalDataFetcher historicalDataFetcher() {
-        return new HistoricalDataFetcherADEModelsBaesd(adeManagerSdk,
+        return new HistoricalDataFetcherADEModelsBased(adeManagerSdk,
                                                 enrichedDataStore,
                                                 inMemoryFeatureBucketAggregator(),
                                                 aggregationRecordsCreator(),

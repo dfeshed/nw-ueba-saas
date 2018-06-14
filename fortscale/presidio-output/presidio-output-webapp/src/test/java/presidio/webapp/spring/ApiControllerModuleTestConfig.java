@@ -29,6 +29,8 @@ public class ApiControllerModuleTestConfig {
         properties.put("severity.critical", 95);
         properties.put("severity.high", 90);
         properties.put("severity.mid", 80);
+        properties.put("indicators.store.page.size", 80);
+        properties.put("events.store.page.size", 80);
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
 }

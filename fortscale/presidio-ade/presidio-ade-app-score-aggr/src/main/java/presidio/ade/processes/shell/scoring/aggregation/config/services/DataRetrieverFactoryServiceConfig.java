@@ -4,7 +4,7 @@ import fortscale.aggregation.feature.bucket.FeatureBucketReaderConfig;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.factories.CategoricalFeatureValueRetrieverFactory;
 import fortscale.ml.model.retriever.factories.ContextHistogramRetrieverFactory;
-import fortscale.ml.model.retriever.factories.EpochtimeToHighestIntegerMapRetrieverFactory;
+import fortscale.ml.model.retriever.factories.EpochtimeToHighestDoubleMapRetrieverFactory;
 import fortscale.utils.factory.AbstractServiceAutowiringFactory;
 import fortscale.utils.factory.FactoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ import java.util.Collection;
         ModelScoreAggregationBucketConfigurationServiceConfig.class,
         CustomContextHistogramRetrieverFactoryConfig.class,
         CategoricalFeatureValueRetrieverFactoryConfig.class,
-        EpochtimeToHighestIntegerMapRetrieverFactoryConfig.class,
+        EpochtimeToHighestDoubleMapRetrieverFactoryConfig.class,
         // common application confs
         FeatureBucketReaderConfig.class,
         AggregationEventsAccumulationDataReaderConfig.class,
@@ -36,7 +36,7 @@ import java.util.Collection;
         excludeFilters = {
                 @Filter(type = FilterType.ASSIGNABLE_TYPE, value = ContextHistogramRetrieverFactory.class),
                 @Filter(type = FilterType.ASSIGNABLE_TYPE, value = CategoricalFeatureValueRetrieverFactory.class),
-                @Filter(type = FilterType.ASSIGNABLE_TYPE, value = EpochtimeToHighestIntegerMapRetrieverFactory.class),
+                @Filter(type = FilterType.ASSIGNABLE_TYPE, value = EpochtimeToHighestDoubleMapRetrieverFactory.class),
                 @Filter(type = FilterType.REGEX, pattern = "fortscale.ml.model.retriever.factories.smart.*")
         }
 )

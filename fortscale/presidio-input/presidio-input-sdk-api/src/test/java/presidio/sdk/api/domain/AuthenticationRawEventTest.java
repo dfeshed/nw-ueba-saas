@@ -121,7 +121,8 @@ public class AuthenticationRawEventTest {
                 "dataSource", "userId", "operationType", null,
                 EventResult.SUCCESS, "userName", "userDisplayName", null,
                 "srcMachineId", "srcMachineName", "dstMachineId",
-                "dstMachineName", "dstMachineDomain", "resultCode", "site");
+                "dstMachineName", "dstMachineDomain", "resultCode", "site",
+                "country", "city");
 
         return authenticationRawEvent;
     }

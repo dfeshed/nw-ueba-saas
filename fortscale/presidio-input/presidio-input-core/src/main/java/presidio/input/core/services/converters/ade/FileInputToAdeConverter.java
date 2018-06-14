@@ -15,7 +15,7 @@ public class FileInputToAdeConverter implements InputAdeConverter {
         adeRecord.setDataSource(fileRawEvent.getDataSource());
         adeRecord.setUserId(fileRawEvent.getUserId());
         adeRecord.setOperationType(fileRawEvent.getOperationType());
-        adeRecord.setOperationTypeCategories(fileRawEvent.getOperationTypeCategory());
+        adeRecord.setOperationTypeCategories(fileRawEvent.getOperationTypeCategories());
         adeRecord.setResult(fileRawEvent.getResult());
         adeRecord.setAbsoluteSrcFilePath(fileRawEvent.getSrcFilePath());
         adeRecord.setAbsoluteSrcFolderFilePath(fileRawEvent.getSrcFolderPath());

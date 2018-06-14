@@ -6,6 +6,7 @@ import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.smart.record.conf.SmartRecordConf;
 import fortscale.smart.record.conf.SmartRecordConfService;
+import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
@@ -23,6 +24,7 @@ import presidio.ade.domain.store.enriched.EnrichedRecordsMetadata;
 import presidio.ade.domain.store.enriched.StoreManagerAwareEnrichedDataStore;
 import presidio.ade.domain.store.scored.ScoredEnrichedDataStore;
 import presidio.ade.domain.store.smart.SmartDataReader;
+import presidio.ade.domain.store.smart.SmartRecordsMetadata;
 import presidio.ade.sdk.historical_runs.HistoricalRunParams;
 import presidio.ade.sdk.online_run.OnlineRunParams;
 
@@ -42,6 +44,7 @@ import static java.util.stream.Collectors.toMap;
  */
 public class AdeManagerSdkImpl implements AdeManagerSdk {
     private static final String SCHEMA = "schema";
+    private static final String HOURLY_SMART_CONF_NAME = "userId_hourly";
 
     private StoreManagerAwareEnrichedDataStore storeManagerAwareEnrichedDataStore;
     private SmartDataReader smartDataReader;
@@ -271,6 +274,17 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
     }
 
     @Override
+    public int getDistinctSmartUsers(TimeRange timeRange) {
+        //reading smarts from the hourly smarts collections only!
+        SmartRecordsMetadata smartRecordsMetadata = new SmartRecordsMetadata(HOURLY_SMART_CONF_NAME, timeRange.getStart(), timeRange.getEnd());
+        List<ContextIdToNumOfItems> contextIdToNumOfSmarts = smartDataReader.aggregateContextIdToNumOfEvents(smartRecordsMetadata, 0);
+        if(contextIdToNumOfSmarts == null) {
+            return 0;
+        }
+        return contextIdToNumOfSmarts.size();
+    }
+
+    @Override
     public Set<DirtyDataMarker> getDirtyDataMarkers() {
         // TODO: Implement
         return null;
@@ -278,7 +292,7 @@ public class AdeManagerSdkImpl implements AdeManagerSdk {
 
     @Override
     public void setDirtyDataMarkers(Set<DirtyDataMarker> dirtyDataMarkers) {
-        // TODO: Implement
+        // TODO: Implement TODO
     }
 
     @Override

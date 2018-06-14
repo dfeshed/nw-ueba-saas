@@ -201,6 +201,29 @@ indicators:
     type: hourly_aggregations
   classification: data_exfiltration
 
+- id: numberOfFileDownloadedUserIdFileHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_file_downloaded_operations
+  schema: FILE
+  adeEventType: file
+  anomalyDescriptior:
+    anomalyField: operationType
+    anomalyValue: FILE_DOWNLOADED
+  historicalData:
+    type: hourly_aggregations
+  classification: data_exfiltration
+
+- id: numberOfFileCopiedUserIdFileHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_file_copied_operations
+  schema: FILE
+  adeEventType: file
+  anomalyDescriptior:
+    anomalyField: operationType
+    anomalyValue: FILE_COPIED
+  historicalData:
+    type: hourly_aggregations
+  classification: data_exfiltration
 
 #*********************************************************
 #*              ACTIVE DIRECTORY INDICATORS              *
@@ -437,47 +460,19 @@ indicators:
     featureName: operationTypeHistogram
   classification: sensitive_user_status_changes
 
-- id: passwordChangedByNonOwnerScoreUserIdActiveDirectoryHourly
+- id: userPasswordResetScoreUserIdActiveDirectoryHourly
   type: STATIC_INDICATOR
-  name: user_password_changed_by_non-owner
-  adeEventType: scored_enriched.active_directory.passwordChangedByNonOwner.userId.activeDirectory.score
+  name: user_password_reset
+  adeEventType: scored_enriched.active_directory.userPasswordReset.userId.activeDirectory.score
   schema: ACTIVE_DIRECTORY
   anomalyDescriptior:
       anomalyField: operationType
-      anomalyValue: USER_PASSWORD_CHANGED_BY_NON_OWNER
+      anomalyValue: USER_PASSWORD_RESET
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
     featureName: operationTypeHistogram
   classification: sensitive_user_status_changes
-
-- id: nestedMemberAddedToCriticalEnterpriseGroupScoreUserIdActiveDirectoryHourly
-  type: STATIC_INDICATOR
-  name: nested_member_added_to_critical_enterprise_group
-  adeEventType: scored_enriched.active_directory.nestedMemberAddedToCriticalGroup.userId.activeDirectory.score
-  schema: ACTIVE_DIRECTORY
-  anomalyDescriptior:
-      anomalyField: operationType
-      anomalyValue: NESTED_MEMBER_ADDED_TO_CRITICAL_ENTERPRISE_GROUP
-  historicalData:
-    type: count_aggregations
-    featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
-    featureName: operationTypeHistogram
-  classification: elevated_privileges_granted
-
-- id: memberAddedToCriticalEnterpriseGroupScoreUserIdActiveDirectoryHourly
-  type: STATIC_INDICATOR
-  name: member_added_to_critical_enterprise_group
-  adeEventType: scored_enriched.active_directory.memberAddedToCriticalGroup.userId.activeDirectory.score
-  schema: ACTIVE_DIRECTORY
-  anomalyDescriptior:
-      anomalyField: operationType
-      anomalyValue: MEMBER_ADDED_TO_CRITICAL_ENTERPRISE_GROUP
-  historicalData:
-    type: count_aggregations
-    featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
-    featureName: operationTypeHistogram
-  classification: elevated_privileges_granted
 
 
 #*********************************************************
@@ -630,6 +625,183 @@ indicators:
     type: hourly_aggregations
   classification: abnormal_site_access
 
+#*********************************************************
+#*                PRINT INDICATORS              *
+#*********************************************************
+
+- id: highestStartInstantScoreUserIdPrintHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_print_time
+  adeEventType: scored_enriched.print.startInstant.userId.print.score
+  schema: PRINT
+  anomalyDescriptior:
+    anomalyField: eventDate
+  historicalData:
+    type: weekday_aggregations
+    featureBucketConfName: startInstantHistogramUserIdPrintDaily
+    featureName: startInstantHistogram
+  classification: non_standard_hours
+
+- id: sumOfHighestSrcMachineNameRegexClusterScoresUserIdPrintHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_source_machine_cluster_print
+  adeEventType: scored_enriched.print.srcMachineNameRegexCluster.userId.print.score
+  schema: PRINT
+  anomalyDescriptior:
+    anomalyField: srcMachineCluster
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: srcMachineNameRegexClusterHistogramUserIdPrintDaily
+    featureName: srcMachineNameRegexClusterHistogram
+  classification: print_from_abnormal_host
+
+- id: sumOfHighestDstMachineIdScoresUserIdPrintHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_destination_machine_print
+  adeEventType: scored_enriched.print.dstMachineId.userId.print.score
+  schema: PRINT
+  anomalyDescriptior:
+    anomalyField: printerId
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: dstMachineIdHistogramUserIdPrintDaily
+    featureName: dstMachineIdHistogram
+  classification: print_to_abnormal_printer
+
+- id: sumOfHighestDstMachineNameRegexClusterScoresUserIdPrintHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_destination_machine_cluster_print
+  adeEventType: scored_enriched.print.dstMachineNameRegexCluster.userId.print.score
+  schema: PRINT
+  anomalyDescriptior:
+    anomalyField: printerCluster
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: dstMachineNameRegexClusterHistogramUserIdPrintDaily
+    featureName: dstMachineNameRegexClusterHistogram
+  classification: print_to_abnormal_printer
+
+- id: sumOfHighestAbsoluteSharedFolderPathScoresUserIdPrintHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_shared_folder_path_print
+  schema: PRINT
+  adeEventType: scored_enriched.print.absoluteSharedFolderPath.userId.print.score
+  anomalyDescriptior:
+    anomalyField: srcFolderPath
+    anomalyFilters:
+      fieldName: isSrcDriveShared
+      fieldValue: true
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: absoluteSharedFolderPathHistogramUserIdPrintDaily
+    featureName: absoluteSharedFolderPathHistogram
+  classification: data_exfiltration
+
+- id: sumOfHighestFileExtensionScoresUserIdPrintHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_file_extension_print
+  adeEventType: scored_enriched.print.fileExtension.userId.print.score
+  schema: PRINT
+  anomalyDescriptior:
+    anomalyField: srcFileExtension
+  historicalData:
+    type: count_aggregations
+    featureBucketConfName: fileExtensionHistogramUserIdPrintDaily
+    featureName: fileExtensionHistogram
+  classification: data_exfiltration
+
+- id: highestNumOfPagesScoreUserIdPrintHourly
+  type: SCORE_AGGREGATION
+  name: abnormal_number_of_pages_print
+  adeEventType: scored_enriched.print.numOfPages.userId.print.score
+  schema: PRINT
+  anomalyDescriptior:
+    anomalyField: numOfPages
+  historicalData:
+    type: hourly_scored_aggregations
+    featureBucketConfName: startInstantToHighestNumOfPagesMapUserIdPrintDaily
+    featureName: startInstantToHighestNumOfPagesMap
+  classification: data_exfiltration
+
+- id: numberOfSuccessfulPrintsUserIdPrintHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_successful_prints
+  schema: PRINT
+  adeEventType: print
+  anomalyDescriptior:
+    anomalyField: result
+    anomalyValue: SUCCESS
+  historicalData:
+    type: hourly_aggregations
+  classification: data_exfiltration
+
+- id: numberOfFailedPrintsUserIdPrintHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_failed_prints
+  schema: PRINT
+  adeEventType: print
+  anomalyDescriptior:
+    anomalyField: result
+    anomalyValue: FAILURE
+  historicalData:
+    type: hourly_aggregations
+  classification: data_exfiltration
+
+- id: numberOfDistinctSrcMachineIdUserIdPrintHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_distinct_src_computers_print
+  adeEventType: print
+  schema: PRINT
+  anomalyDescriptior:
+    anomalyField: srcMachineId
+  historicalData:
+    type: hourly_aggregations
+  classification: abnormal_print_activity
+
+- id: numberOfDistinctDstMachineIdUserIdPrintHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_distinct_dst_computers_print
+  adeEventType: print
+  schema: PRINT
+  anomalyDescriptior:
+    anomalyField: printerId
+  historicalData:
+    type: hourly_aggregations
+  classification: abnormal_print_activity
+
+- id: numberOfDistinctSrcMachineNameRegexClusterUserIdPrintHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_distinct_src_computer_clusters_print
+  adeEventType: print
+  schema: PRINT
+  anomalyDescriptior:
+    anomalyField: srcMachineNameRegexClusterHistogram
+  historicalData:
+    type: hourly_aggregations
+  classification: abnormal_print_activity
+
+- id: numberOfDistinctDstMachineNameRegexClusterUserIdPrintHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_distinct_dst_computer_clusters_print
+  adeEventType: print
+  schema: PRINT
+  anomalyDescriptior:
+    anomalyField: dstMachineNameRegexClusterHistogram
+  historicalData:
+    type: hourly_aggregations
+  classification: abnormal_print_activity
+
+- id: numberOfDistinctAbsoluteFolderPathUserIdPrintHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_distinct_folders_print
+  schema: PRINT
+  adeEventType: print
+  anomalyDescriptior:
+    anomalyField: absoluteFolderPathHistogram
+  historicalData:
+    type: hourly_aggregations
+  classification: abnormal_print_activity
+
 classificationPriority:
 
 - classificationName: mass_changes_to_critical_enterprise_groups
@@ -680,14 +852,24 @@ classificationPriority:
 - classificationName: abnormal_ad_changes
   priority: 16
 
-- classificationName: sensitive_user_status_changes
+- classificationName: abnormal_print_activity
   priority: 17
 
-- classificationName: abnormal_file_access
+- classificationName: sensitive_user_status_changes
   priority: 18
 
-- classificationName: non_standard_hours
+- classificationName: print_from_abnormal_host
   priority: 19
 
-- classificationName: suspicious_user_activity
+- classificationName: abnormal_file_access
   priority: 20
+
+- classificationName: print_to_abnormal_printer
+  priority: 21
+
+- classificationName: non_standard_hours
+  priority: 22
+
+- classificationName: suspicious_user_activity
+  priority: 23
+

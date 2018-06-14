@@ -31,3 +31,11 @@ fortscale/presidio-output/presidio-output-webapp/generated/
 fortscale/presidio-connector-manager/presidio-connector-manager-impl/.mvn/
 fortscale/presidio-connector-manager/presidio-connector-manager-api/.mvn/
 fortscale/generated/swagger/client/swagger.yaml
+
+fortscale/presidio-ade/presidio-ade-app-accumulate-smart/spring-shell\.log
+
+fortscale/presidio-ade/presidio-ade-app-manager/spring-shell\.log
+
+fortscale/presidio-ade/presidio-ade-app-smart/spring-shell\.log
+
+fortscale/presidio-output/presidio-output-processor/spring-shell\.log

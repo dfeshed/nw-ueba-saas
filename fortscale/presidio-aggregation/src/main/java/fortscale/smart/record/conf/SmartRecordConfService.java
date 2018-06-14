@@ -13,6 +13,7 @@ import presidio.ade.domain.pagination.aggregated.AggregatedDataPaginationParam;
 import presidio.ade.domain.record.aggregated.AggregatedFeatureType;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -134,16 +135,17 @@ public class SmartRecordConfService extends AslConfigurationService {
 			}
 
 			FeatureBucketConf featureBucketConf = aggregatedFeatureEventConf.getBucketConf();
-			String featureBucketStrategyName = featureBucketConf.getStrategyName();
+			Predicate<List<String>> predicate = fields -> AggregatedFeatureEventsConfService
+					.checkConsistencyWithContextFieldNames(fields, featureBucketConf.getContextFieldNames());
 
-			if (!featureBucketConf.getContextFieldNames().containsAll(smartRecordConf.getContexts())) {
-				String msg = String.format("The context field names of smart record %s are not a subset " +
-						"of those of aggregation record %s.", smartRecordName, aggregationRecordName);
+			if (!smartRecordConf.getContextToFieldsMap().values().stream().allMatch(predicate)) {
+				String msg = String.format("At least one list of fields in smart record %s is not consistent with " +
+						"the context field names of aggregation record %s.", smartRecordName, aggregationRecordName);
 				logger.error(msg);
 				throw new IllegalArgumentException(msg);
 			}
 
-			if (!featureBucketStrategyName.equals(smartRecordStrategyName)) {
+			if (!featureBucketConf.getStrategyName().equals(smartRecordStrategyName)) {
 				String msg = String.format("The fixed duration strategy of aggregation record %s " +
 						"does not match that of smart record %s.", aggregationRecordName, smartRecordName);
 				logger.error(msg);
@@ -153,10 +155,9 @@ public class SmartRecordConfService extends AslConfigurationService {
 	}
 
 	private void completeClusterConfs(SmartRecordConf smartRecordConf) {
-		List<String> contexts = smartRecordConf.getContexts();
 		FixedDurationStrategy fixedDurationStrategy = smartRecordConf.getFixedDurationStrategy();
 		Collection<AggregatedFeatureEventConf> aggregatedFeatureEventConfs = aggregatedFeatureEventsConfService
-				.getAggregatedFeatureEventConfs(contexts, fixedDurationStrategy);
+				.getAggregatedFeatureEventConfs(fixedDurationStrategy, smartRecordConf.getContextToFieldsMap());
 		List<String> excludedAggregationRecords = smartRecordConf.getExcludedAggregationRecords();
 		Set<String> aggregationRecordNames = smartRecordConf.getAggregationRecordNames();
 

@@ -4,18 +4,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>presidio-manager-webapp</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <description>Fortscale Manager webapp</description>
 
     <parent>
         <artifactId>presidio-manager</artifactId>
         <groupId>fortscale</groupId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>2.0.0-SNAPSHOT</version>
     </parent>
-
+    <version>2.0.0-SNAPSHOT</version>
     <properties>
-        <tomcat.web.scope>provided</tomcat.web.scope>
+        <tomcat.web.scope>compile</tomcat.web.scope>
         <exec-maven-plugin>1.2.1</exec-maven-plugin>
     </properties>
 
@@ -131,7 +130,11 @@
             <groupId>com.github.kongchen</groupId>
             <artifactId>swagger-maven-plugin</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>presidio-forwarder-manager</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <profiles>
@@ -157,12 +160,12 @@
                 <script.extension>.sh</script.extension>
             </properties>
         </profile>
-        <profile>
-            <id>bootwar</id>
-            <properties>
-                <tomcat.web.scope>compile</tomcat.web.scope>
-            </properties>
-        </profile>
+        <!--<profile>-->
+            <!--<id>bootwar</id>-->
+            <!--<properties>-->
+                <!--<tomcat.web.scope>compile</tomcat.web.scope>-->
+            <!--</properties>-->
+        <!--</profile>-->
     </profiles>
 
     <build>
@@ -189,7 +192,7 @@
                                     <artifactId>${project.artifactId}</artifactId>
                                     <version>${project.version}</version>
                                     <type>${project.packaging}</type>
-                                    <destFileName>presidio-manager.war</destFileName>
+                                    <destFileName>presidio-manager.jar</destFileName>
                                 </artifactItem>
                             </artifactItems>
                             <outputDirectory>../../target/war-dependencies</outputDirectory>
@@ -225,8 +228,16 @@
                             <info>
                                 <title>Presidio Rest API</title>
                                 <version>${project.version}</version>
-                                <description>Fortscale Presidio is a plug-in that can be natively embedded by security infrastructure solutions to deliver the visibility and risk-based analysis they need to make better, smarter security decisions. Leveraging the engine from Fortscale’s award-winning user and entity behavioral analytics (UEBA) platform, Presidio enables SIEM, EDR/EPP, DLP, CASB, IAM and other security infrastructure vendors to quickly and simply incorporate real-time, risk-based intelligence on the activity of users and entities within the customer’s environment to enhance their own analysis and security enforcement.
-                                    [ Configuration sequence diagram ](https://www.draw.io/?state=%7B%22ids%22:%5B%220By8FcYQOrmVpVzNJQ2NuNkV0T1k%22%5D,%22action%22:%22open%22,%22userId%22:%22100443953654893261199%22%7D#G0By8FcYQOrmVpVzNJQ2NuNkV0T1k)
+                                <description>Fortscale Presidio is a plug-in that can be natively embedded by security
+                                    infrastructure solutions to deliver the visibility and risk-based analysis they need
+                                    to make better, smarter security decisions. Leveraging the engine from Fortscale’s
+                                    award-winning user and entity behavioral analytics (UEBA) platform, Presidio enables
+                                    SIEM, EDR/EPP, DLP, CASB, IAM and other security infrastructure vendors to quickly
+                                    and simply incorporate real-time, risk-based intelligence on the activity of users
+                                    and entities within the customer’s environment to enhance their own analysis and
+                                    security enforcement.
+                                    [ Configuration sequence diagram
+                                    ](https://www.draw.io/?state=%7B%22ids%22:%5B%220By8FcYQOrmVpVzNJQ2NuNkV0T1k%22%5D,%22action%22:%22open%22,%22userId%22:%22100443953654893261199%22%7D#G0By8FcYQOrmVpVzNJQ2NuNkV0T1k)
                                     [Find out more about Fortscale](http://presidio-domain)
                                 </description>
                                 <contact>
@@ -235,7 +246,7 @@
                             </info>
 
                             <host>presidio-domain</host>
-                            <basePath> </basePath>
+                            <basePath></basePath>
                             <swaggerDirectory>${basedir}/target/extra-resources/swagger</swaggerDirectory>
                             <swaggerFileName>presidio-manager-swagger</swaggerFileName>
                             <outputFormats>yaml</outputFormats>
@@ -274,7 +285,8 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>${basedir}/target/extra-resources/swagger/presidio-manager-swagger.yaml</inputSpec>
+                            <inputSpec>${basedir}/target/extra-resources/swagger/presidio-manager-swagger.yaml
+                            </inputSpec>
                             <language>java</language>
                             <library>jersey2</library>
                             <modelPackage>presidio.manager.client.model</modelPackage>
@@ -302,6 +314,10 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
+                            <environmentVariables>
+                                <key>MAVEN_HOME</key>
+                                <value>${env.M2_HOME}</value>
+                            </environmentVariables>
                             <executable>${basedir}/compile-client${script.extension}</executable>
                         </configuration>
                     </execution>
@@ -312,6 +328,10 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
+                            <environmentVariables>
+                                <key>MAVEN_HOME</key>
+                                <value>${env.M2_HOME}</value>
+                            </environmentVariables>
                             <executable>${basedir}/deploy-client${script.extension}</executable>
                             <arguments>
                                 <argument>${project.version}</argument>
