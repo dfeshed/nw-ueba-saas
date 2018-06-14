@@ -10,8 +10,8 @@ import fortscale.ml.model.metrics.CategoryRarityModelBuilderMetricsContainer;
 import fortscale.ml.model.metrics.TimeModelBuilderMetricsContainer;
 import fortscale.ml.model.metrics.TimeModelBuilderPartitionsMetricsContainer;
 import fortscale.utils.ConversionUtils;
+import fortscale.utils.data.Pair;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
-import javafx.util.Pair;
 import org.springframework.util.Assert;
 
 import java.time.Instant;
