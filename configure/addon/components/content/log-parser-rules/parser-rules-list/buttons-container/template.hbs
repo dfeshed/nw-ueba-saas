@@ -1,7 +1,8 @@
 <hbox class="action-control add-new-parser-rule">
   {{#rsa-application-modal
     label=(t 'configure.logsParser.modals.addRule.title')
-    eventId='addNewRule'}}
+    eventId='addNewRule'
+    onClose=(action 'handleCloseAddRule')}}
     <div class='modal-trigger'>
       {{#rsa-form-button}}{{t 'configure.logsParser.buttons.addRule'}}{{/rsa-form-button}}
     </div>
@@ -10,7 +11,7 @@
         label=(t 'configure.logsParser.modals.addRule.ruleName') 
         isError=matchesExistingRuleName
         errorMessage=(t 'configure.logsParser.modals.addRule.matchesExistingRuleName')
-        value=newRuleName 
+        value=newRuleName
         placeholder=(t 'configure.logsParser.modals.addRule.pleaseEnterRuleName')
       }}
       {{#rsa-form-button 

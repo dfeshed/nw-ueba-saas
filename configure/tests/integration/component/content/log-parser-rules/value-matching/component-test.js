@@ -8,7 +8,6 @@ import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
 import { clickTrigger, selectChoose } from '../../../../../helpers/ember-power-select';
 
-
 let setState;
 
 module('Integration | Component | value matching', function(hooks) {
@@ -23,35 +22,25 @@ module('Integration | Component | value matching', function(hooks) {
     initialize(this.owner);
   });
 
-  test('values selector', async function(assert) {
-    new ReduxDataHelper(setState).parserRulesFormatData(0, true).build();
+  test('The rule type and matches fields appear as expected', async function(assert) {
+    const rules = [{ name: 'Client Domain', pattern: { format: 'ipv4' } }];
+    new ReduxDataHelper(setState).parserRules(rules).formatOptions().build();
     await render(hbs`{{content/log-parser-rules/value-matching}}`);
-    assert.ok(find('.ruleValues'), 'values selector is not showing');
-  });
-
-  test('Change type field value', async function(assert) {
-    new ReduxDataHelper(setState).parserRulesFormatData(1, true).build();
-    await render(hbs`{{content/log-parser-rules/value-matching}}`);
-    assert.equal(this.$('.ruleType input').val(), 'ipv6', 'Show type field value is not showing or not ipv4');
+    assert.equal(find('.value-matching .ember-power-select-selected-item').textContent.trim(), 'IPV4 Address', 'The dropdown option does not show the correct value');
+    assert.equal(find('.ruleType input').value, 'ipv4', 'Show type field value is not showing or not ipv4');
+    assert.equal(find('.ruleMatches input').value, 'This matches IPV4 addresses', 'Show matching field value is not showing or not correct');
   });
 
   test('Select Regex Pattern', async function(assert) {
-    new ReduxDataHelper(setState).parserRulesFormatData(1, true).build();
+    const rules = [{ name: 'Client Domain', pattern: { format: 'ipv4', regex: '\\s*([\\w_.@-]*)' } }];
+    new ReduxDataHelper(setState).parserRules(rules).formatOptions().build();
     await render(hbs`{{content/log-parser-rules/value-matching}}`);
     clickTrigger('.value-matching');
     selectChoose('.value-matching', 'Regex Pattern');
-    assert.ok(find('.ruleRegex'), 'Pattern field is not showing');
+    assert.equal(find('.ruleType input').value, 'regex', 'Show type field value is not showing or not ipv4');
+    assert.equal(find('.ruleMatches input').value, 'This matches Regex', 'Show matching field value is not showing or not correct');
+    assert.ok(find('.ruleRegex textarea'), 'Pattern field is not showing');
+    assert.equal(find('.ruleRegex textarea').value, '\\s*([\\w_.@-]*)', 'Show ruleRegex field value is not showing or not correct');
   });
-  test('Show pattern field value', async function(assert) {
-    new ReduxDataHelper(setState).parserRulesFormatData(1, true).build();
-    await render(hbs`{{content/log-parser-rules/value-matching}}`);
-    clickTrigger('.value-matching');
-    selectChoose('.value-matching', 'Regex Pattern');
-    assert.equal(this.$('.ruleRegex textarea').val(), '\\s*([\\w_.@-]*)', 'Show ruleRegex field value is not showing or not correct');
-  });
-  test('Show matching field value', async function(assert) {
-    new ReduxDataHelper(setState).parserRulesFormatData(1, true).build();
-    await render(hbs`{{content/log-parser-rules/value-matching}}`);
-    assert.equal(this.$('.ruleMatches input').val(), 'This matches IPV6 addresses', 'Show matching field value is not showing or not correct');
-  });
+
 });

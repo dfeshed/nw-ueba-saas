@@ -22,19 +22,7 @@
           </h1>
           <div class='centerTop'>
             {{#if canShowSelectedParserRule}}
-              <table class='matchingMapping'>
-                <tr>
-                  <td class='token'>
-                    {{content/log-parser-rules/token-matching}}
-                  </td>
-                  <td class='values'>
-                    {{content/log-parser-rules/value-matching}}
-                  </td>
-                  <td class="meta">
-                    {{content/log-parser-rules/value-mapping}}
-                  </td>
-                </tr>
-              </table>
+              {{content/log-parser-rules/parser-rule}}
               {{content/log-parser-rules/save-reset-rule}}
             {{/if}}
           </div>

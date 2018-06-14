@@ -3,26 +3,27 @@
   <label class="rsa-form-label power-select">
     {{#power-select
       placeholder="Make a selection"
-      options=parserRuleFormatNames
-      selected=selectedParserRuleFormat.name
-      allowClear=true
+      options=formatOptions
+      selected=selectedFormat
       searchPlaceholder="Type to filter options"      
-      onchange=(action 'selectFormatValue') as |option|}}
-      {{option}}
+      onchange=(action 'handleFormatChange') as |option|}}
+      {{option.name}}
     {{/power-select}}
   </label>
 </div>
 
+{{log selectedFormat}}
+
 <div class='vSpacer ruleType'>
-  {{rsa-form-input label=(t 'configure.logsParser.type') value=selectedParserRuleFormat.type isReadOnly=true isInline=true}}
+  {{rsa-form-input label=(t 'configure.logsParser.type') value=selectedFormat.type isReadOnly=true isInline=true}}
 </div>
 
 <div class='vSpacer ruleMatches'>
-  {{rsa-form-input label=(t 'configure.logsParser.valueMatching') value=selectedParserRuleFormat.matches isReadOnly=true isInline=true}}
+  {{rsa-form-input label=(t 'configure.logsParser.valueMatching') value=selectedFormat.matches isReadOnly=true isInline=true}}
 </div>
 {{#if isRegex}}
   <div class='vSpacer ruleRegex'>
-    {{rsa-form-textarea label=(t 'configure.logsParser.pattern') value=parserRuleRegex isInline=true isReadOnly=true}}
+    {{rsa-form-textarea label=(t 'configure.logsParser.pattern') value=regex isInline=true isReadOnly=true}}
   </div>
 {{/if}}
 

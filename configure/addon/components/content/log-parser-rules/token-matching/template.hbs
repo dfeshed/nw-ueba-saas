@@ -2,14 +2,14 @@
 <div class="tokenScroll">
   <ul>
     <li class="add-token">
-      {{#rsa-form-button isIconOnly=true defaultAction=(action 'addToken')}}
+      {{#rsa-form-button isIconOnly=true isDisabled=isNewTokenInvalid defaultAction=(action 'addToken')}}
         {{rsa-icon name='add-1' size='small' class='add-button'}}
       {{/rsa-form-button}}
       {{rsa-form-input maxLength=64 value=newToken placeholder=(t 'configure.logsParser.buttons.pleaseEnterNewToken')}}
     </li>
-    {{#each parserRuleTokens as |token index|}}
+    {{#each tokens as |token index|}}
       <li class='{{if (eq index 0) 'firstItem'}}'>
-        {{#rsa-form-button isIconOnly=true defaultAction=(action 'deleteRuleToken' index)}}
+        {{#rsa-form-button isIconOnly=true defaultAction=(action 'deleteToken' token)}}
           {{rsa-icon name='bin-1' size='small'}}
         {{/rsa-form-button}}
         {{rsa-form-input maxLength=64 value=(unbound token.value) focusOut=(action 'editToken' token.value index)}}

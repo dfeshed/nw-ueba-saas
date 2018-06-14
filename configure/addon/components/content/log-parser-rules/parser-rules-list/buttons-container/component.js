@@ -56,6 +56,9 @@ const LogParserRulesToolbar = Component.extend({
       this.get('eventBus').trigger('rsa-application-modal-close-addNewRule');
       redux.dispatch(addNewParserRule(name));
       this.set('newRuleName', '');
+    },
+    handleCloseAddRule() {
+      this.set('newRuleName', '');
     }
   }
 });

@@ -107,13 +107,6 @@ const fetchParserRules = () => {
   };
 };
 
-const selectFormatValue = (value) => {
-  return {
-    type: ACTION_TYPES.SELECT_FORMAT_VALUE,
-    payload: value
-  };
-};
-
 const selectParserRule = (index) => {
   return {
     type: ACTION_TYPES.SELECT_PARSER_RULE,
@@ -196,22 +189,10 @@ const saveParserRule = () => {
   };
 };
 
-const addRuleToken = (token) => {
+const updateSelectedRule = (rule) => {
   return {
-    type: ACTION_TYPES.ADD_RULE_TOKEN,
-    payload: token
-  };
-};
-const editRuleToken = (token, index) => {
-  return {
-    type: ACTION_TYPES.EDIT_RULE_TOKEN,
-    payload: { index, token }
-  };
-};
-const deleteRuleToken = (index) => {
-  return {
-    type: ACTION_TYPES.DELETE_RULE_TOKEN,
-    payload: index
+    type: ACTION_TYPES.UPDATE_SELECTED_PARSER_RULE,
+    payload: rule
   };
 };
 
@@ -238,11 +219,8 @@ export {
   selectParserRule,
   fetchParserRules,
   saveParserRule,
-  selectFormatValue,
   fetchLogParsers,
   fetchDeviceTypes,
   fetchDeviceClasses,
-  addRuleToken,
-  editRuleToken,
-  deleteRuleToken
+  updateSelectedRule
 };

@@ -1,28 +1,51 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import {
-  parserRuleFormatNames,
-  selectedParserRuleFormat,
-  parserRuleRegex
-} from 'configure/reducers/content/log-parser-rules/selectors';
-import { selectFormatValue } from 'configure/actions/creators/content/log-parser-rule-creators';
+import { selectedParserRule, ruleFormats } from 'configure/reducers/content/log-parser-rules/selectors';
+import { updateSelectedRule } from 'configure/actions/creators/content/log-parser-rule-creators';
 import computed from 'ember-computed-decorators';
 
 const stateToComputed = (state) => ({
-  parserRuleFormatNames: parserRuleFormatNames(state),
-  selectedParserRuleFormat: selectedParserRuleFormat(state),
-  parserRuleRegex: parserRuleRegex(state)
+  rule: selectedParserRule(state),
+  formatOptions: ruleFormats(state)
 });
 
 const dispatchToActions = {
-  selectFormatValue
+  updateSelectedRule
 };
 
 const ValueMatching = Component.extend({
   classNames: ['value-matching'],
-  @computed('selectedParserRuleFormat')
-  isRegex(selectedParserRuleFormat) {
-    return selectedParserRuleFormat.type === 'regex';
+
+  @computed('rule.pattern.format')
+  format(format) {
+    return (format && format.toLowerCase()) || 'regex';
+  },
+
+  @computed('rule.pattern.regex')
+  regex(regex) {
+    return regex || '';
+  },
+
+  @computed('format', 'formatOptions')
+  selectedFormat(formatValue, formatOptions) {
+    return formatOptions.filter((option) => option.type.toLowerCase() === formatValue)[0];
+  },
+
+  @computed('selectedFormat')
+  isRegex(selectedFormat) {
+    return selectedFormat.type === 'regex';
+  },
+
+  actions: {
+    handleFormatChange(format) {
+      const rule = this.get('rule');
+      const pattern = { ...rule.pattern, format: format.type };
+      const updatedRule = {
+        ...rule,
+        pattern
+      };
+      this.send('updateSelectedRule', updatedRule);
+    }
   }
 });
 export default connect(stateToComputed, dispatchToActions)(ValueMatching);

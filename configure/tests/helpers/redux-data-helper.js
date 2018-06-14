@@ -1,4 +1,5 @@
 import Immutable from 'seamless-immutable';
+import formatOptions from '../data/subscriptions/log-parser-rules/ruleFormats/data';
 
 const _set = (obj, key, val) => {
   if (obj[key]) {
@@ -40,6 +41,17 @@ export default class DataHelper {
     });
     this.setState(state);
     return state.asMutable();
+  }
+
+  parserRules(rules, selectedIndex = 0) {
+    _set(this.state, 'content.logParserRules.parserRules', rules);
+    _set(this.state, 'content.logParserRules.selectedParserRuleIndex', selectedIndex);
+    return this;
+  }
+
+  formatOptions(options = formatOptions) {
+    _set(this.state, 'content.logParserRules.ruleFormats', options);
+    return this;
   }
 
   parserListState(dirty, deployed) {

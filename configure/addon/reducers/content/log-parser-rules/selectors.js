@@ -3,9 +3,8 @@ import reselect from 'reselect';
 const { createSelector } = reselect;
 
 const _parserRulesState = (state) => state.configure.content.logParserRules;
-const _ruleFormats = (state) => _parserRulesState(state).ruleFormats;
-const _selectedFormat = (state) => _parserRulesState(state).selectedFormat;
-export const parserRuleTokens = (state) => _parserRulesState(state).parserRuleTokens;
+
+export const ruleFormats = (state) => _parserRulesState(state).ruleFormats;
 export const logParsers = (state) => _parserRulesState(state).logParsers;
 export const parserRules = (state) => _parserRulesState(state).parserRules;
 export const selectedLogParserIndex = (state) => _parserRulesState(state).selectedLogParserIndex;
@@ -15,6 +14,16 @@ export const deviceClasses = (state) => _parserRulesState(state).deviceClasses;
 export const isTransactionUnderway = (state) => _parserRulesState(state).isTransactionUnderway;
 export const sampleLogs = (state) => _parserRulesState(state).sampleLogs;
 export const sampleLogsStatus = (state) => _parserRulesState(state).sampleLogsStatus;
+
+export const selectedParserRule = createSelector(
+  parserRules,
+  selectedParserRuleIndex,
+  (rules, index) => {
+    if (rules) {
+      return rules[index];
+    }
+  }
+);
 
 export const isHighlighting = createSelector(
   _parserRulesState,
@@ -64,34 +73,8 @@ export const selectedParserRuleName = createSelector(
   }
 );
 
-const _selectedParserRule = createSelector(
-  parserRules,
-  selectedParserRuleIndex,
-  (rules, index) => {
-    if (rules) {
-      return rules[index];
-    }
-  }
-);
-
-export const parserRuleRegex = createSelector(
-  _selectedParserRule,
-  (selectedRule) => {
-    if (selectedRule) {
-      return selectedRule.pattern.regex ? selectedRule.pattern.regex : '';
-    }
-  }
-);
-
-export const parserRuleFormatNames = createSelector(
-  _ruleFormats,
-  (formats) => {
-    return formats.map((format) => format.name);
-  }
-);
-
 export const parserRuleMeta = createSelector(
-  _selectedParserRule,
+  selectedParserRule,
   (selectedRule) => {
     if (selectedRule) {
       return selectedRule.pattern.captures;
@@ -107,12 +90,13 @@ export const hasSelectedParserRule = createSelector(
 );
 
 export const hasRuleFormats = createSelector(
-  _ruleFormats,
-  (frmts) => {
-    return !!(frmts && frmts[0]);
+  ruleFormats,
+  (ruleFormats) => {
+    return ruleFormats && !!ruleFormats.length;
   }
 );
 
+// TODO: Can we remove this and move logic elsewhere. Seems only used in the action creator for deleting rule, not in a component
 export const filterDeletedRule = createSelector(
   parserRules,
   selectedParserRuleIndex,
@@ -141,7 +125,7 @@ export const isSavingParserRuleError = createSelector(
 );
 
 export const isParserRuleOutOfBox = createSelector(
-  _selectedParserRule,
+  selectedParserRule,
   (rule) => {
     if (rule) {
       return !!(rule.outOfBox);
@@ -165,20 +149,6 @@ export const hasDeployableRules = createSelector(
   }
 );
 
-export const selectedParserRuleFormat = createSelector(
-  _selectedParserRule,
-  _selectedFormat,
-  _ruleFormats,
-  (selectedParserRule, _selectedFormat, ruleFormats) => {
-    if (_selectedFormat) {
-      return ruleFormats.filter((format) => format.name === _selectedFormat)[0];
-    } else if (selectedParserRule) {
-      const frmt = selectedParserRule.pattern.format ? selectedParserRule.pattern.format : 'regex';
-      return ruleFormats.filter((format) => format.type.toLowerCase() === frmt.toLowerCase())[0];
-    }
-  }
-);
-
 // Returns all device types that are not already represented in the set of log parsers
 export const availableDeviceTypes = createSelector(
   deviceTypes, logParsers,
@@ -188,6 +158,11 @@ export const availableDeviceTypes = createSelector(
   }
 );
 
+// Returns the sample logs which may have been highlighted (i.e., they include html spans around certain words or groups
+// of words). Each span includes a class name, either "highlight_literal_[RULE_NAME]" or "highlight_capture_[RULE_NAME]", where
+// the rule name portion of the class name has had all spaces removed. Here we want to convert the text/html so that if
+// the currently selected rule name is in the class name, we replace it with an "is-selected" class, otherwise strip out the
+// rule name altogether.
 export const highlightedLogs = createSelector(
   sampleLogs,
   selectedParserRuleName,

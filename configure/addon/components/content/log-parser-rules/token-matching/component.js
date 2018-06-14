@@ -1,35 +1,64 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { parserRuleTokens } from 'configure/reducers/content/log-parser-rules/selectors';
-import { addRuleToken, deleteRuleToken, editRuleToken } from 'configure/actions/creators/content/log-parser-rule-creators';
+import { selectedParserRule } from 'configure/reducers/content/log-parser-rules/selectors';
+import { updateSelectedRule } from 'configure/actions/creators/content/log-parser-rule-creators';
 import { next } from '@ember/runloop';
+import computed from 'ember-computed-decorators';
 
 const stateToComputed = (state) => {
   return {
-    parserRuleTokens: parserRuleTokens(state)
+    rule: selectedParserRule(state)
   };
 };
 
 const dispatchToActions = {
-  deleteRuleToken,
-  addRuleToken,
-  editRuleToken
+  updateSelectedRule
 };
 
 const TokenMatching = Component.extend({
   classNames: ['token-matching'],
   newToken: '',
+
+  @computed('rule')
+  tokens(rule) {
+    return rule.literals || [];
+  },
+
+  @computed('newToken', 'tokens')
+  isNewTokenInvalid(newToken, currentTokens) {
+    return !newToken || !!currentTokens.findBy('value', newToken);
+  },
+
   actions: {
     addToken() {
-      const token = this.get('newToken');
-      this.send('addRuleToken', token);
+      const { rule, newToken, tokens } = this.getProperties('rule', 'newToken', 'tokens');
+      const updatedRule = {
+        ...rule,
+        literals: [{ value: newToken }, ...tokens]
+      };
+      this.send('updateSelectedRule', updatedRule);
       next(this, () => this.set('newToken', ''));
     },
-    editToken(originalToken, index, event) {
-      const token = event.target.value;
-      if (token !== originalToken) {
-        this.send('editRuleToken', token, index);
+
+    editToken(originalToken, tokenIndex, event) {
+      const updatedToken = event.target.value;
+      if (updatedToken !== originalToken) {
+        const { rule, tokens } = this.getProperties('rule', 'newToken', 'tokens');
+        const updatedRule = {
+          ...rule,
+          literals: tokens.map((token, idx) => idx === tokenIndex ? { value: updatedToken } : token)
+        };
+        this.send('updateSelectedRule', updatedRule);
       }
+    },
+
+    deleteToken(tokenToDelete) {
+      const { rule, tokens } = this.getProperties('rule', 'newToken', 'tokens');
+      const updatedRule = {
+        ...rule,
+        literals: tokens.filter((token) => token.value !== tokenToDelete.value)
+      };
+      this.send('updateSelectedRule', updatedRule);
     }
   }
 });

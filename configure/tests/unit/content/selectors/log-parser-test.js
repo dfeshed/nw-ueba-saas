@@ -6,7 +6,6 @@ import {
   isDeletingParserRule,
   isDeletingParserRuleError,
   isParserRuleOutOfBox,
-  selectedParserRuleFormat,
   logParsers,
   deviceTypes,
   deviceClasses,
@@ -27,7 +26,6 @@ const logParserRules = {
   ruleFormats: [{ type: 'fOO', matches: 'result', name: 'abc' }, { type: 'fOO2', matches: 'result2', name: 'def' }],
   selectedParserRuleIndex: 0,
   deleteRuleStatus: 'error',
-  selectedFormat: 'abc',
   deviceTypes: [{ name: 'ciscopix', desc: 'Cisco', category: 'Intrusion' }, {
     name: 'apache',
     desc: 'Apache Web Server',
@@ -66,7 +64,6 @@ const state = (state = logParserRules) => ({
 });
 
 test('Basic selector expectations', function(assert) {
-
   assert.equal(logParsers(state()), logParserRules.logParsers, 'The logParsers selector returns the logParsers from state');
   assert.equal(deviceTypes(state()), logParserRules.deviceTypes, 'The deviceTypes selector returns the deviceTypes from state');
   assert.equal(deviceClasses(state()), logParserRules.deviceClasses, 'The deviceClasses selector returns the deviceClasses from state');
@@ -77,6 +74,12 @@ test('Basic selector expectations', function(assert) {
   assert.equal(sampleLogs(state()), 'Testing 123', 'The baseline sample logs are returned');
   assert.equal(isHighlighting(state({ sampleLogsStatus: 'wait' })), true, 'isHighlighting is true when the sampleLogsStatus is wait');
   assert.equal(isHighlighting(state({ sampleLogsStatus: 'completed' })), false, 'isHighlighting is true when the sampleLogsStatus is not wait');
+  assert.equal(isDeletingParserRule(state({ deleteRuleStatus: 'wait' })), true);
+  assert.equal(isDeletingParserRule(state({ deleteRuleStatus: 'completed' })), false);
+  assert.equal(isDeletingParserRuleError(state({ deleteRuleStatus: 'error' })), true);
+  assert.equal(isDeletingParserRuleError(state({ deleteRuleStatus: 'completed' })), false);
+  assert.equal(isParserRuleOutOfBox(state({ parserRules: [{ outOfBox: true }], selectedLogParserIndex: 0 })), true);
+  assert.equal(isParserRuleOutOfBox(state({ parserRules: [{ outOfBox: false }], selectedLogParserIndex: 0 })), false);
 });
 
 test('The availableDeviceTypes selector filters out any entries in logParsers with the same name property', function(assert) {
@@ -85,7 +88,7 @@ test('The availableDeviceTypes selector filters out any entries in logParsers wi
 
 test('Test Booleans hasRuleFormats', function(assert) {
   assert.equal(hasRuleFormats(state()), true, 'The formats are loaded and hasRuleFormats is true');
-  assert.equal(hasRuleFormats(state({ ruleFormats: null })), false, 'The formats are not loaded and hasRuleFormats is false');
+  assert.equal(hasRuleFormats(state({ ruleFormats: [] })), false, 'The formats are not loaded and hasRuleFormats is false');
 });
 
 test('Test Booleans hasSelectedParserRule', function(assert) {
@@ -104,31 +107,6 @@ test('filterDeletedRule by selectedParserRuleIndex', function(assert) {
     }
   ];
   assert.deepEqual(filterDeletedRule(state()), filteredRule, 'The rule with index === 0 was filtered');
-});
-test('isDeletingParserRule wait', function(assert) {
-  assert.equal(isDeletingParserRule(state({ deleteRuleStatus: 'wait' })), true, 'waiting for delete confirmation');
-});
-test('isDeletingParserRuleError error', function(assert) {
-  assert.equal(isDeletingParserRuleError(state()), true, 'error getting delete confirmation');
-});
-test('isDeletingParserRule wait', function(assert) {
-  assert.equal(isDeletingParserRule(state()), false, 'waiting for delete no confirmation');
-});
-test('isDeletingParserRuleError error', function(assert) {
-  assert.equal(isDeletingParserRuleError(state({ deleteRuleStatus: 'wait' })), false, 'no error getting delete confirmation');
-});
-
-test('isParserRuleOutOfBox', function(assert) {
-  assert.equal(isParserRuleOutOfBox(state()), true, 'is ootb');
-});
-
-test('selectedParserRuleFormat with _selectedFormat', function(assert) {
-  const selectedFormat = { type: 'fOO', matches: 'result', name: 'abc' };
-  assert.deepEqual(selectedParserRuleFormat(state()), selectedFormat, 'OK');
-});
-test('selectedParserRuleFormat without _selectedFormat', function(assert) {
-  const selectedFormat = { type: 'fOO', matches: 'result', name: 'abc' };
-  assert.deepEqual(selectedParserRuleFormat(state({ selectedFormat: null })), selectedFormat, 'OK');
 });
 
 test('the highlightedLogs selector properly reworks the class names in the highlighted text', function(assert) {

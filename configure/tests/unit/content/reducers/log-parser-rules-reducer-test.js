@@ -16,8 +16,7 @@ const initialState = Immutable.from({
   deviceTypesStatus: null,
   deviceClasses: [],
   deviceClassesStatus: null,
-  isTransactionUnderway: false,
-  parserRuleTokens: [{ 'value': 'foo' }]
+  isTransactionUnderway: false
 });
 
 test('With FETCH_DEVICE_TYPES, the start handler updates state', function(assert) {
@@ -244,48 +243,6 @@ test('With SAVE_PARSER_RULE, the action is successfull', function(assert) {
   assert.deepEqual(result, expectedResult);
 });
 
-test('With ACTION_TYPES.ADD_RULE_TOKEN, the action is successfull', function(assert) {
-  const expectedResult = {
-    ...initialState,
-    parserRuleTokens: [{ 'value': 'foo2' }, { 'value': 'foo' }]
-  };
-  const payload = 'foo2';
-  const action = makePackAction(LIFECYCLE.SUCCESS, { type: ACTION_TYPES.ADD_RULE_TOKEN, payload });
-  const result = reducer(initialState, action);
-  assert.deepEqual(result, expectedResult);
-});
-
-test('With ACTION_TYPES.DELETE_RULE_TOKEN, the action is successfull', function(assert) {
-  const expectedResult = {
-    ...initialState,
-    parserRuleTokens: []
-  };
-  const payload = 0;
-  const action = makePackAction(LIFECYCLE.SUCCESS, { type: ACTION_TYPES.DELETE_RULE_TOKEN, payload });
-  const result = reducer(initialState, action);
-  assert.deepEqual(result, expectedResult);
-});
-
-test('With ACTION_TYPES.EDIT_RULE_TOKEN, the action is successfull', function(assert) {
-  const expectedResult = {
-    ...initialState,
-    parserRuleTokens: [{ 'value': 'fooX' }]
-  };
-  const payload = { index: 0, token: 'fooX' };
-  const action = makePackAction(LIFECYCLE.SUCCESS, { type: ACTION_TYPES.EDIT_RULE_TOKEN, payload });
-  const result = reducer(initialState, action);
-  assert.deepEqual(result, expectedResult);
-});
-
-test('With ACTION_TYPES.ADD_RULE_TOKEN, add existing token', function(assert) {
-  const expectedResult = {
-    ...initialState
-  };
-  const payload = 'foo';
-  const action = makePackAction(LIFECYCLE.SUCCESS, { type: ACTION_TYPES.ADD_RULE_TOKEN, payload });
-  const result = reducer(initialState, action);
-  assert.deepEqual(result, expectedResult);
-});
 
 test('With HIGHLIGHT_SAMPLE_LOGS, the start handler updates state', function(assert) {
   const expectedResult = {
@@ -319,4 +276,19 @@ test('With HIGHLIGHT_SAMPLE_LOGS, the success handler updates state', function(a
   });
   const result = reducer(initialState, action);
   assert.deepEqual(result, expectedResult);
+});
+
+test('With UPDATE_SELECTED_PARSER_RULE, the selected rule is updated', function(assert) {
+  const updatedRule = { name: 'ciscopix', pattern: { format: 'regex' } };
+  const expectedEndState = {
+    ...initialState,
+    parserRules: [updatedRule, { name: 'foo2' }]
+  };
+
+  const action = {
+    type: ACTION_TYPES.UPDATE_SELECTED_PARSER_RULE,
+    payload: updatedRule
+  };
+  const endState = reducer(Immutable.from(initialState), action);
+  assert.deepEqual(endState, expectedEndState);
 });
