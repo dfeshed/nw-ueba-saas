@@ -2,6 +2,7 @@
 # configuration of the systemd unit files.
 PRESIDIO_DIR=/var/lib/netwitness/presidio
 AIRFLOW_HOME=/var/lib/netwitness/presidio/airflow/
+AIRFLOW_CONFIG=/var/lib/netwitness/presidio/airflow/airflow.cfg
 AIRFLOW_VENV=/var/lib/netwitness/presidio/airflow/venv
 AIRFLOW_PKG_REQ=/var/lib/netwitness/presidio/pypackages/airflow/requirements.txt
 FLUME_HOME=/var/lib/netwitness/presidio/flume/
