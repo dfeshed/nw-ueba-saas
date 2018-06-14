@@ -162,4 +162,17 @@ module('Integration | Component | Configure - Content - Add Log Parser', functio
     assert.equal(find('.device-class .ember-power-select-trigger').getAttribute('aria-disabled'), 'true', 'The device class dropdown is disabled since this is an existing device type');
     assert.equal(findAll(`${selectors.addParserButton}.is-disabled`).length, 0, 'The Add Parser Button is not disabled');
   });
+
+  test('The form shows an error and the button is disabled if the name field has a value that exists in another parser', async function(assert) {
+    const translation = this.owner.lookup('service:i18n');
+    const errorMessage = translation.t('configure.logsParser.addParser.nameExistsError');
+    setState();
+    await init;
+    await render(hbs`{{content/log-parser-rules/log-parsers/add-log-parser}}`);
+    await fillInForm(assert);
+    await fillIn(selectors.nameInput, 'builtin');
+    assert.equal(findAll('.log-parser-name .rsa-form-input.is-error').length, 1, 'The input field has an error class.');
+    assert.equal(find('.log-parser-name .rsa-form-input.is-error .input-error').textContent.trim(), errorMessage, 'The input field shows an error message');
+    assert.equal(findAll(`${selectors.addParserButton}.is-disabled`).length, 1, 'The Add Parser Button is disabled');
+  });
 });

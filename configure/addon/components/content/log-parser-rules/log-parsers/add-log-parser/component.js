@@ -50,11 +50,16 @@ const AddLogParser = Component.extend(Notifications, {
 
   displayName: null,
 
+  @computed('logParsers', 'logDeviceParserName')
+  nameAlreadyExists(logParsers, name) {
+    return !!logParsers.findBy('name', name);
+  },
+
   @notEmpty('selectedDeviceType.name') isExistingDeviceType: false,
 
-  @computed('logDeviceParserName', 'displayName', 'deviceClass')
-  isValid(name, displayName, deviceClass) {
-    return isPresent(name) && isPresent(displayName) && isPresent(deviceClass);
+  @computed('logDeviceParserName', 'displayName', 'deviceClass', 'nameAlreadyExists')
+  isValid(name, displayName, deviceClass, nameAlreadyExists) {
+    return isPresent(name) && isPresent(displayName) && isPresent(deviceClass) && !nameAlreadyExists;
   },
 
   actions: {

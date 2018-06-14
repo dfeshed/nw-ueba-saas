@@ -8,7 +8,11 @@ import makePackAction from '../../../helpers/make-pack-action';
 module('Unit | Utility | log-parser-deploy Reducer');
 
 const initialState = Immutable.from({
-  deployLogParserStatus: null
+  deployLogParserStatus: null,
+  logParsers: [{ name: 'ciscopix', dirty: true }],
+  selectedParserRuleIndex: 0,
+  selectedLogParserIndex: 0,
+  parserRules: [{ name: 'foo', dirty: true }, { name: 'foo2', dirty: true }]
 });
 
 test('With DEPLOY_LOG_PARSER, the action has started', function(assert) {
@@ -34,9 +38,18 @@ test('With DEPLOY_LOG_PARSER, the action has errors', function(assert) {
 test('With DEPLOY_LOG_PARSER, the action is successfull', function(assert) {
   const expectedResult = {
     ...initialState,
+    logParsers: [{ name: 'ciscopix', dirty: false }],
+    parserRules: [{ name: 'foo', dirty: false }, { name: 'foo2', dirty: false }],
     deployLogParserStatus: 'completed'
   };
-  const action = makePackAction(LIFECYCLE.SUCCESS, { type: ACTION_TYPES.DEPLOY_LOG_PARSER });
+  const action = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.DEPLOY_LOG_PARSER,
+    payload: {
+      data: 'COMPLETE',
+      parserRules: [{ name: 'foo', dirty: false }, { name: 'foo2', dirty: false }],
+      logDeviceParser: { name: 'ciscopix', dirty: false }
+    }
+  });
   const result = reducer(initialState, action);
   assert.deepEqual(result, expectedResult);
 });

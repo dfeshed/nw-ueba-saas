@@ -192,7 +192,14 @@ export default reduxActions.handleActions({
         return state.set('deployLogParserStatus', 'error');
       },
       success: (state) => {
-        return state.set('deployLogParserStatus', 'completed');
+        const { payload: { parserRules, logDeviceParser } } = action;
+        // update the parser in the logParsers list with the latest information from the server
+        const logParsers = state.logParsers.map((parser, index) => index === state.selectedLogParserIndex ? logDeviceParser : parser);
+        return state.merge({
+          deployLogParserStatus: 'completed',
+          parserRules,
+          logParsers
+        });
       }
     })
   ),

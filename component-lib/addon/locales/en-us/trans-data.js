@@ -616,7 +616,8 @@ export default {
         cloneFrom: 'Clone Dynamic Parser Rules From',
         new: 'New',
         addParserSuccessful: 'A new parser has been successfully added.',
-        addParserFailed: 'A problem occurred while trying to add this new parser.'
+        addParserFailed: 'A problem occurred while trying to add this new parser.',
+        nameExistsError: 'This name already exists.'
       }
     },
     title: 'Configure',
