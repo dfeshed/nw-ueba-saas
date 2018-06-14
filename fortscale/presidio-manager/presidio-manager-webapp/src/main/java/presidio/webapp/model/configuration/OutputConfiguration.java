@@ -1,5 +1,7 @@
 package presidio.webapp.model.configuration;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
@@ -10,6 +12,7 @@ import java.util.Objects;
 public class OutputConfiguration {
 
     @JsonProperty("syslog")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private SyslogForwardingConfiguration syslogForwardingConfiguration;
 
     @JsonProperty("enableForwarding")
