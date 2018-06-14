@@ -3,7 +3,7 @@ package fortscale.common.feature;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import fortscale.common.util.GenericHistogram;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
-import fortscale.utils.data.Pair;
+import javafx.util.Pair;
 
 import java.io.Serializable;
 import java.time.Instant;
