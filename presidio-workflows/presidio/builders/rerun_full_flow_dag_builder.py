@@ -129,8 +129,10 @@ def stop_kill_dag_run_task_instances(dag_run):
     for task_instance in task_instances:
         pid = task_instance.pid
         logging.info("killing pid {}".format(pid))
-        os.kill(int(pid), signal.SIGTERM)
-
+        try:
+            os.kill(int(pid), signal.SIGTERM)
+        except OSError as e:
+            logging.info("pid: {} does not exist".format(pid))
 
 def kill_dags_task_instances(dag_ids):
     for dag_id in dag_ids:
