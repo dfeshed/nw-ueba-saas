@@ -159,7 +159,7 @@ export const highlightedLogs = createSelector(
   sampleLogs,
   selectedParserRuleName,
   (sampleLogs = '', selectedRuleName) => {
-    let logs = '';
+    let logs = sampleLogs;
     const normalizedRuleName = selectedRuleName.replace(/\s/g, '');
     if (normalizedRuleName) {
       logs = sampleLogs.replace(new RegExp(`_${normalizedRuleName}'`, 'g'), '_is-selected\'');

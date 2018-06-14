@@ -2,7 +2,7 @@ import Immutable from 'seamless-immutable';
 import { module, test } from 'qunit';
 import { LIFECYCLE } from 'redux-pack';
 import * as ACTION_TYPES from 'configure/actions/types/content';
-import reducer from 'configure/reducers/content/log-parser-rules/reducer';
+import reducer, { baselineSampleLog } from 'configure/reducers/content/log-parser-rules/reducer';
 import makePackAction from '../../../helpers/make-pack-action';
 
 module('Unit | Utility | log-parser-rules Reducer');
@@ -326,4 +326,54 @@ test('With UPDATE_SELECTED_PARSER_RULE, the selected rule is updated', function(
   };
   const endState = reducer(Immutable.from(initialState), action);
   assert.deepEqual(endState, expectedEndState);
+});
+
+test('With HIGHLIGHT_SAMPLE_LOGS, the base sample logs are returned if the hightlight response has no data', function(assert) {
+  const expectedResult = {
+    ...initialState,
+    sampleLogs: baselineSampleLog,
+    sampleLogsStatus: 'completed'
+  };
+  const action = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.HIGHLIGHT_SAMPLE_LOGS,
+    payload: { }
+  });
+  const result = reducer(initialState, action);
+  assert.deepEqual(result, expectedResult);
+});
+
+test('With FETCH_PARSER_RULES, the start handler updates state', function(assert) {
+  const expectedResult = {
+    ...initialState,
+    parserRules: [],
+    parserRulesStatus: 'wait'
+  };
+  const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_PARSER_RULES });
+  const result = reducer(initialState, action);
+  assert.deepEqual(result, expectedResult);
+});
+
+test('With FETCH_PARSER_RULES, the error handler updates state', function(assert) {
+  const expectedResult = {
+    ...initialState,
+    parserRulesStatus: 'error'
+  };
+  const action = makePackAction(LIFECYCLE.FAILURE, { type: ACTION_TYPES.FETCH_PARSER_RULES });
+  const result = reducer(initialState, action);
+  assert.deepEqual(result, expectedResult);
+});
+
+test('With FETCH_PARSER_RULES, the success handler updates state', function(assert) {
+  const expectedResult = {
+    ...initialState,
+    parserRules: [{ name: 'ciscopix', literals: [{ 'value': 'ad.domain.dst ' }] }],
+    parserRulesStatus: 'completed',
+    selectedParserRuleIndex: 0
+  };
+  const action = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.FETCH_PARSER_RULES,
+    payload: { data: [{ name: 'ciscopix', literals: [{ 'value': 'ad.domain.dst ' }] }] }
+  });
+  const result = reducer(initialState, action);
+  assert.deepEqual(result, expectedResult);
 });

@@ -45,7 +45,7 @@ const TokenMatching = Component.extend({
     editToken(originalToken, tokenIndex, event) {
       const updatedToken = event.target.value;
       if (updatedToken !== originalToken) {
-        const { rule, tokens } = this.getProperties('rule', 'newToken', 'tokens');
+        const { rule, tokens } = this.getProperties('rule', 'tokens');
         const updatedRule = {
           ...rule,
           literals: tokens.map((token, idx) => idx === tokenIndex ? { value: updatedToken } : token)
@@ -55,7 +55,7 @@ const TokenMatching = Component.extend({
     },
 
     deleteToken(tokenToDelete) {
-      const { rule, tokens } = this.getProperties('rule', 'newToken', 'tokens');
+      const { rule, tokens } = this.getProperties('rule', 'tokens');
       const updatedRule = {
         ...rule,
         literals: tokens.filter((token) => token.value !== tokenToDelete.value)

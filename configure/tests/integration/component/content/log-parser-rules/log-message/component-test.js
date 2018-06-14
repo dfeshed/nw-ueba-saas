@@ -94,7 +94,7 @@ module('Integration | Component | Configure - Content - Sample Log Message', fun
     });
     await click('pre');
     await fillIn('pre', 'test');
-    triggerKeyEvent('pre', 'keyup', 65);
+    await triggerKeyEvent('pre', 'keyup', 65);
   });
 
   test('An error is shown if the highlight call fails', async function(assert) {
@@ -105,5 +105,25 @@ module('Integration | Component | Configure - Content - Sample Log Message', fun
     throwSocket();
     await triggerKeyEvent('pre', 'keyup', 65);
     assert.equal(findAll('aside .error').length, 1, 'The error message is found');
+  });
+
+  test('Arrow keys do not trigger highlight', async function(assert) {
+    setState();
+    assert.expect(1);
+    const done = assert.async();
+    await render(hbs`{{content/log-parser-rules/log-message keyUpDelay=100 }}`);
+    await click('pre');
+    await fillIn('pre', 'test');
+    patchSocket(() => {
+      assert.ok(true); // this should only hit once
+      done();
+    });
+    await triggerKeyEvent('pre', 'keyup', 37);
+    await triggerKeyEvent('pre', 'keyup', 38);
+    await triggerKeyEvent('pre', 'keyup', 39);
+    await triggerKeyEvent('pre', 'keyup', 40);
+    setTimeout(async () => {
+      await triggerKeyEvent('pre', 'keyup', 80);
+    }, 200);
   });
 });
