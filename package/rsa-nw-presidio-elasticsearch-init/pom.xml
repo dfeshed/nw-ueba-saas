@@ -46,6 +46,8 @@
                     <defineStatements>
                         <defineStatement>_unpackaged_files_terminate_build 0</defineStatement>
                     </defineStatements>
+                    <defaultGroupname>${presidio.username}</defaultGroupname>
+                    <defaultUsername>${presidio.groupname}</defaultUsername>
                     <mappings>
                         <mapping>
                             <directoryIncluded>true</directoryIncluded>

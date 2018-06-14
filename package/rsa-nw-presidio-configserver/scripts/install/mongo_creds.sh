@@ -41,12 +41,12 @@ if [ "$DB" == "presidio" ]
 then
     echo "INFO: modifed presidio-db password"
     echo "mongo.db.password=$ENC_PASS" >> $CONFIG_DIR$APP_CONF_FILE_NAME
-
+    chown presidio:presidio $CONFIG_DIR$APP_CONF_FILE_NAME
 elif [ "$DB" == "presidio-ui" ]
 then
     echo "INFO: modifed presidio-ui-db password"
     echo "mongo.db.password=$ENC_PASS" >> $CONFIG_DIR$UI_CONF_FILE_NAME
-
+    chown presidio:presidio $CONFIG_DIR$UI_CONF_FILE_NAME
 else
     echo "ERROR: DB must be presidio/presidio-ui" >&2
     exit 1

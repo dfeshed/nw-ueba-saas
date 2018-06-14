@@ -58,4 +58,5 @@ echo "rabbitmq.virtualhost=$PARAM_VIRTUALHOST" >> $CONFIGURATION_FILE
 echo "rabbitmq.password=$ENC_PASS" >> $CONFIGURATION_FILE
 echo "rabbitmq.username=$PARAM_USERNAME" >> $CONFIGURATION_FILE
 
+chown presidio:presidio $CONFIGURATION_FILE
 
