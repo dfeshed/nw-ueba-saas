@@ -24,10 +24,6 @@ const configureConfigGen = function(environment) {
         subscriptionDestination: '/user/queue/content/parser/rules',
         requestDestination: '/ws/content/parser/rules'
       },
-      deleteParserRule: {
-        subscriptionDestination: '/user/queue/content/parser/rules/update',
-        requestDestination: '/ws/content/parser/rules/update'
-      },
       deployLogParser: {
         subscriptionDestination: '/user/queue/content/parser/deploy',
         requestDestination: '/ws/content/parser/deploy'

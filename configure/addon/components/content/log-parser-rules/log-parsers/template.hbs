@@ -8,9 +8,9 @@
       <td class='{{if (eq index 0) 'firstItem'}}
       {{if (eq selectedLogParserIndex index) 'active'}}'{{action "selectLogParser" index}}>
         {{#if logParser.dirty}}
-          {{rsa-icon name="synchronize-3" class="deploy-icon"}} {{or logParser.displayName logParser.name}}{{#if (not logParser.deployed)}}-{{/if}}
+          {{rsa-icon name="synchronize-3" class="deploy-icon"}} {{or logParser.displayName logParser.name}}
         {{else}}
-          &nbsp;&nbsp;&nbsp;&nbsp; {{or logParser.displayName logParser.name}}{{#if (not logParser.deployed)}}-{{/if}}
+          &nbsp;&nbsp;&nbsp;&nbsp; {{or logParser.displayName logParser.name}}
         {{/if}}
       </td>
     </tr>

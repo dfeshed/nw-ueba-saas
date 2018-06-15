@@ -122,27 +122,15 @@ export default reduxActions.handleActions({
     return state.set('selectedLogParserIndex', payload);
   },
 
-  [ACTION_TYPES.DELETE_PARSER_RULE]: (state, action) => (
-    handle(state, action, {
-      start: (state) => {
-        return state.set('deleteRuleStatus', 'wait');
-      },
-      failure: (state) => {
-        return state.set('deleteRuleStatus', 'error');
-      },
-      success: (state) => {
-        const selectedIndex = state.selectedParserRuleIndex;
-        const allRules = state.parserRules;
-        return state.merge(
-          {
-            parserRules: allRules.filter((rule, index) => index !== selectedIndex),
-            selectedParserRuleIndex: 0,
-            deleteRuleStatus: 'completed'
-          }
-        );
+  [ACTION_TYPES.DELETE_PARSER_RULE]: (state) => {
+    const selectedRule = state.parserRules[state.selectedParserRuleIndex];
+    return state.merge(
+      {
+        parserRules: state.parserRules.filter((rule) => rule !== selectedRule),
+        selectedParserRuleIndex: 0
       }
-    })
-  ),
+    );
+  },
 
   [ACTION_TYPES.SAVE_PARSER_RULE]: (state, action) => (
     handle(state, action, {
@@ -155,7 +143,6 @@ export default reduxActions.handleActions({
       success: (state) => {
         return state.merge(
           {
-            selectedParserRuleIndex: 0,
             saveRuleStatus: 'completed',
             parserRulesOriginal: state.parserRules // once saved, the parserRulesOriginal and the parserRules should be the same
           }
@@ -174,7 +161,8 @@ export default reduxActions.handleActions({
           literals: [],
           pattern: {
             captures: [],
-            regex: ''
+            regex: '',
+            format: null
           },
           ruleMetas: [],
           dirty: true,
@@ -200,7 +188,8 @@ export default reduxActions.handleActions({
         return state.merge({
           deployLogParserStatus: 'completed',
           parserRules,
-          logParsers
+          logParsers,
+          parserRulesOriginal: parserRules // once saved, the parserRulesOriginal and the parserRules should be the same
         });
       }
     })

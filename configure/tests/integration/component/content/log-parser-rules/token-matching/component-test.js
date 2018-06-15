@@ -29,14 +29,14 @@ module('Integration | Component | token matching', function(hooks) {
   };
 
   test('The tokens are displayed in an input', async function(assert) {
-    const rules = [{ name: 'Client Domain', literals: [{ value: 'ipv4=' }] }];
+    const rules = [{ name: 'Client Domain', literals: [{ value: 'ipv4=' }], pattern: { format: null, regex: '' } }];
     new ReduxDataHelper(setState).parserRules(rules).build();
     await render(hbs`{{content/log-parser-rules/token-matching}}`);
     assert.equal(find('.token-matching .firstItem input').value, 'ipv4=', 'Token matching value is not showing or not ipv4=');
   });
 
   test('Add a new rule token', async function(assert) {
-    const rules = [{ name: 'Client Domain', literals: [{ value: 'ipv4=' }] }];
+    const rules = [{ name: 'Client Domain', literals: [{ value: 'ipv4=' }], pattern: { format: null, regex: '' } }];
     new ReduxDataHelper(setState).parserRules(rules).build();
     await render(hbs`{{content/log-parser-rules/token-matching}}`);
     assert.equal(find(selectors.addTokenButton).disabled, true, 'The add button should be disabled when there is no value in the input');
@@ -50,7 +50,7 @@ module('Integration | Component | token matching', function(hooks) {
   });
 
   test('Delete a rule token', async function(assert) {
-    const rules = [{ name: 'Client Domain', literals: [{ value: 'ipv4=' }, { value: 'ipv6=' }] }];
+    const rules = [{ name: 'Client Domain', literals: [{ value: 'ipv4=' }, { value: 'ipv6=' }], pattern: { format: null, regex: '' } }];
     new ReduxDataHelper(setState).parserRules(rules).build();
     await render(hbs`{{content/log-parser-rules/token-matching}}`);
     await click('.firstItem button');
@@ -58,7 +58,7 @@ module('Integration | Component | token matching', function(hooks) {
   });
 
   test('Edit a rule token', async function(assert) {
-    const rules = [{ name: 'Client Domain', literals: [{ value: 'ipv4=' }, { value: 'ipv6=' }] }];
+    const rules = [{ name: 'Client Domain', literals: [{ value: 'ipv4=' }, { value: 'ipv6=' }], pattern: { format: null, regex: '' } }];
     new ReduxDataHelper(setState).parserRules(rules).build();
     await render(hbs`{{content/log-parser-rules/token-matching}}`);
     await fillIn(`${selectors.firstToken} input`, '123');
@@ -67,7 +67,7 @@ module('Integration | Component | token matching', function(hooks) {
   });
 
   test('Out of box rule is not editable', async function(assert) {
-    const rules = [{ name: 'Client Domain', outOfBox: true, literals: [{ value: 'ipv4=' }, { value: 'ipv6=' }] }];
+    const rules = [{ name: 'Client Domain', outOfBox: true, literals: [{ value: 'ipv4=' }, { value: 'ipv6=' }], pattern: { format: null, regex: '' } }];
     new ReduxDataHelper(setState).parserRules(rules).build();
     await render(hbs`{{content/log-parser-rules/token-matching}}`);
     assert.equal(find(selectors.addTokenButton).disabled, true, 'The add button should be disabled');

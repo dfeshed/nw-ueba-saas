@@ -2,7 +2,6 @@ import { module, test } from 'qunit';
 import {
   hasRuleFormats,
   hasSelectedParserRule,
-  filterDeletedRule,
   isDeletingParserRule,
   isDeletingParserRuleError,
   isParserRuleOutOfBox,
@@ -97,19 +96,6 @@ test('Test Booleans hasRuleFormats', function(assert) {
 test('Test Booleans hasSelectedParserRule', function(assert) {
   assert.equal(hasSelectedParserRule(state()), true, 'A parser rule is selected and hasSelectedParserRule is true');
   assert.equal(hasSelectedParserRule(state({ selectedParserRuleIndex: -1 })), false, 'A parser rule is not selected and hasSelectedParserRule is false');
-});
-
-test('filterDeletedRule by selectedParserRuleIndex', function(assert) {
-  const filteredRule = [
-    {
-      name: 'foo2',
-      pattern: {
-        format: 'Foo2'
-      },
-      outOfBox: false
-    }
-  ];
-  assert.deepEqual(filterDeletedRule(state()), filteredRule, 'The rule with index === 0 was filtered');
 });
 
 test('the highlightedLogs selector properly reworks the class names in the highlighted text', function(assert) {

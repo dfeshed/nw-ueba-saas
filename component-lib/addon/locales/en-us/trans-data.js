@@ -587,7 +587,8 @@ export default {
         deleteRule: {
           title: 'Delete Rule',
           confirm: 'Delete rule \'{{ruleName}}\' from this log parser?',
-          ok: 'Delete Rule'
+          ok: 'Delete Rule',
+          info: 'This rule will not be permanently deleted until you save.'
         },
         deleteParser: {
           title: 'Delete Parser',

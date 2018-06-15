@@ -186,34 +186,13 @@ test('With DELETE_LOG_PARSER, the success handler updates state', function(asser
   assert.deepEqual(result, expectedResult);
 });
 
-test('With DELETE_PARSER_RULE, the action has started', function(assert) {
-  const expectedResult = {
-    ...initialState,
-    deleteRuleStatus: 'wait'
-  };
-  const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.DELETE_PARSER_RULE });
-  const result = reducer(initialState, action);
-  assert.deepEqual(result, expectedResult);
-});
-
-test('With DELETE_PARSER_RULE, the action has errors', function(assert) {
-  const expectedResult = {
-    ...initialState,
-    deleteRuleStatus: 'error'
-  };
-  const action = makePackAction(LIFECYCLE.FAILURE, { type: ACTION_TYPES.DELETE_PARSER_RULE });
-  const result = reducer(initialState, action);
-  assert.deepEqual(result, expectedResult);
-});
-
 test('With DELETE_PARSER_RULE, the action is successfull', function(assert) {
   const expectedResult = {
     ...initialState,
     selectedParserRuleIndex: 0,
-    parserRules: [{ name: 'foo2' }],
-    deleteRuleStatus: 'completed'
+    parserRules: [{ name: 'foo2' }]
   };
-  const action = makePackAction(LIFECYCLE.SUCCESS, { type: ACTION_TYPES.DELETE_PARSER_RULE });
+  const action = { type: ACTION_TYPES.DELETE_PARSER_RULE };
   const result = reducer(initialState, action);
   assert.deepEqual(result, expectedResult);
 });
@@ -230,7 +209,8 @@ test('With ADD_NEW_PARSER_RULE, the action is successfull', function(assert) {
         literals: [],
         pattern: {
           captures: [],
-          regex: ''
+          regex: '',
+          format: null
         },
         ruleMetas: [],
         dirty: true,

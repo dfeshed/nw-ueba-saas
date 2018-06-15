@@ -144,15 +144,6 @@ export const hasRuleFormats = createSelector(
   }
 );
 
-// TODO: Can we remove this and move logic elsewhere. Seems only used in the action creator for deleting rule, not in a component
-export const filterDeletedRule = createSelector(
-  parserRules,
-  selectedParserRuleIndex,
-  (rules, selectedIndex) => {
-    return rules.filter((rule, index) => index !== selectedIndex);
-  }
-);
-
 export const isDeletingParserRule = createSelector(
   _parserRulesState,
   (parserRulesState) => parserRulesState.deleteRuleStatus === 'wait'

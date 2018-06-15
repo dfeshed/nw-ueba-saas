@@ -1,9 +1,8 @@
 import * as ACTION_TYPES from 'configure/actions/types/content';
 import api from 'configure/actions/api/content/log-parser-rules';
-import { success, failure } from 'configure/sagas/flash-messages';
+import { success, failure, info } from 'configure/sagas/flash-messages';
 
 import {
-  filterDeletedRule,
   selectedLogParserName,
   sampleLogs,
   validRules,
@@ -134,13 +133,11 @@ const selectLogParser = (index) => {
 };
 
 const deleteParserRule = () => {
-  return (dispatch, getState) => {
-    const logParserName = selectedLogParserName(getState());
-    const filteredRule = filterDeletedRule(getState());
+  return (dispatch) => {
     dispatch({
-      type: ACTION_TYPES.DELETE_PARSER_RULE,
-      promise: api.deleteParserRule(logParserName, filteredRule)
+      type: ACTION_TYPES.DELETE_PARSER_RULE
     });
+    info('configure.logsParser.modals.deleteRule.info');
   };
 };
 
@@ -198,21 +195,26 @@ const saveParserRule = () => {
   };
 };
 
-const updateSelectedRule = (rule) => {
-  return {
-    type: ACTION_TYPES.UPDATE_SELECTED_PARSER_RULE,
-    payload: rule
-  };
-};
-
 const highlightSampleLogs = (logText) => {
   return (dispatch, getState) => {
-    const logs = logText || sampleLogs(getState());
+    let logs = logText || sampleLogs(getState()) || '';
+    logs = logs.replace(/<[^>]+>/g, '');
     const rules = validRules(getState()); // only provide the valid rules to the highlighting call
     dispatch({
       type: ACTION_TYPES.HIGHLIGHT_SAMPLE_LOGS,
       promise: api.highlightSampleLogs({ logs: [logs] }, rules)
     });
+  };
+};
+
+
+const updateSelectedRule = (rule) => {
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.UPDATE_SELECTED_PARSER_RULE,
+      payload: rule
+    });
+    dispatch(highlightSampleLogs());
   };
 };
 

@@ -40,6 +40,7 @@ test('With DEPLOY_LOG_PARSER, the action is successfull', function(assert) {
     ...initialState,
     logParsers: [{ name: 'ciscopix', dirty: false }],
     parserRules: [{ name: 'foo', dirty: false }, { name: 'foo2', dirty: false }],
+    parserRulesOriginal: [{ name: 'foo', dirty: false }, { name: 'foo2', dirty: false }],
     deployLogParserStatus: 'completed'
   };
   const action = makePackAction(LIFECYCLE.SUCCESS, {

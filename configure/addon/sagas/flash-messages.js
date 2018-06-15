@@ -7,6 +7,10 @@ function showFlashMessage(type, i18nKey, context) {
   flashMessages[type.name](i18n.t(i18nKey, context), { iconName: type.icon });
 }
 
+export function info(i18nKey, context) {
+  showFlashMessage(FLASH_MESSAGE_TYPES.INFO, i18nKey, context);
+}
+
 export function success(i18nKey, context) {
   showFlashMessage(FLASH_MESSAGE_TYPES.SUCCESS, i18nKey, context);
 }
