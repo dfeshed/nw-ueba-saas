@@ -1,6 +1,7 @@
 import { fillIn, find, waitUntil, triggerKeyEvent } from '@ember/test-helpers';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 
+import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
 import PILL_SELECTORS from './pill-selectors';
 
 const ENTER_KEY = 13;
@@ -14,10 +15,10 @@ const pillSelectors = {
 };
 
 const pillTriggerSelectors = {
-  metaPowerSelect: `${PILL_SELECTORS.newPillTriggerContainer} ${PILL_SELECTORS.metaTrigger}`,
-  operatorPowerSelect: `${PILL_SELECTORS.newPillTriggerContainer} ${PILL_SELECTORS.operatorTrigger}`,
+  metaPowerSelect: PILL_SELECTORS.triggerMetaPowerSelect,
+  operatorPowerSelect: PILL_SELECTORS.triggerOperatorPowerSelect,
   powerSelectOption: PILL_SELECTORS.powerSelectOption,
-  valueInput: `${PILL_SELECTORS.newPillTriggerContainer} ${PILL_SELECTORS.valueInput}`
+  valueInput: PILL_SELECTORS.triggerValueInput
 };
 
 export const createBasicPill = async function(fromTrigger) {
@@ -35,4 +36,8 @@ export const createBasicPill = async function(fromTrigger) {
   await fillIn(selectors.valueInput, 'x');
   await triggerKeyEvent(selectors.valueInput, 'keydown', X_KEY); // x
   await triggerKeyEvent(selectors.valueInput, 'keydown', ENTER_KEY);
+};
+
+export const isIgnoredInitialEvent = (event) => {
+  return [MESSAGE_TYPES.PILL_INITIALIZED, MESSAGE_TYPES.PILL_ENTERED].includes(event);
 };

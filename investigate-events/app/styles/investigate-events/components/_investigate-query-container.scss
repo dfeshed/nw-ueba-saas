@@ -224,6 +224,21 @@
       color: text-color(primary, lightest);
     }
   }
+
+  // No matter what pill is open, hide the triggers
+  .pill-open {
+    .new-pill-trigger {
+      display: none;
+    }
+  }
+
+  // If trigger is open, or editing something, also hide the template
+  .pill-trigger-open-for-add, .pill-open-for-edit {
+    .new-pill-template {
+      display: none;
+    }
+  }
+
 }
 .ember-tether {
   .panel-content {

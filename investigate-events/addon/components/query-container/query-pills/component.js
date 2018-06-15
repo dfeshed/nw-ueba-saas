@@ -27,6 +27,21 @@ const dispatchToActions = {
 const QueryPills = Component.extend({
   classNames: ['query-pills'],
 
+  classNameBindings: [
+    'isPillOpen:pill-open',
+    'isPillOpenForEdit:pill-open-for-edit',
+    'isPillTriggerOpenForAdd:pill-trigger-open-for-add'
+  ],
+
+  // Is a pill rendered by this component open for any reason?
+  isPillOpen: false,
+
+  // Is a pill rendered by this component open for edit?
+  isPillOpenForEdit: false,
+
+  // Is a pill trigger open for add?
+  isPillTriggerOpenForAdd: false,
+
   @computed('pillsData')
   newPillPosition: (pillsData) => pillsData.length,
 
@@ -52,6 +67,9 @@ const QueryPills = Component.extend({
      */
     handleMessage(type, data, position) {
       switch (type) {
+        case MESSAGE_TYPES.PILL_CANCELLED:
+          this._pillCancelled(data, position);
+          break;
         case MESSAGE_TYPES.PILL_CREATED:
           this._pillCreated(data, position);
           break;
@@ -60,6 +78,9 @@ const QueryPills = Component.extend({
           break;
         case MESSAGE_TYPES.PILL_EDITED:
           this._pillEdited(data);
+          break;
+        case MESSAGE_TYPES.PILL_ENTERED:
+          this._pillEntered(data, position);
           break;
         case MESSAGE_TYPES.PILL_INITIALIZED:
           // Do nothing right now
@@ -78,6 +99,45 @@ const QueryPills = Component.extend({
   // ************************************************************************ //
   //                          PRIVATE FUNCTIONS                               //
   // ************************************************************************ //
+
+  /**
+   * Tracks that a pill is currently being created/edited or otherwise open
+   * and focused.
+   *
+   * We can tell if a pill entered...
+   * - is an existing pill being edited if the data in the event has an id
+   * - is the end-of-the-list new pill template if the position
+   *   matches the position given to the end-of-the-list component
+   * - is from an in-between pill trigger if it is neither of the
+   *   two conditions above
+   *
+   * @private
+   */
+  _pillEntered(data, position) {
+    const isEdit = !!(data && data.id);
+    const isEndOfListPillTemplate = this.get('newPillPosition') === position;
+    const isMiddleOfListPillTrigger = !isEndOfListPillTemplate && !isEdit;
+
+    this.set('isPillOpen', true);
+    this.set('isPillOpenForEdit', isEdit);
+    this.set('isPillTriggerOpenForAdd', isMiddleOfListPillTrigger);
+  },
+
+  _pillCancelled() {
+    this._pillsExited();
+  },
+
+  /**
+   * Adjusts flags to indicate that no pills are currently open/focused
+   * for edit/add
+   * @private
+   */
+  _pillsExited() {
+    this.set('isPillOpen', false);
+    this.set('isPillOpenForEdit', false);
+    this.set('isPillTriggerOpenForAdd', false);
+  },
+
   /**
    * Adds pill to state
    * @param {*} pillData The data for the pill
@@ -94,6 +154,7 @@ const QueryPills = Component.extend({
     this.set('filters', pillsData);
     // END LEGACY FILTERS SET TO KEEP NEAR-TERM SEARCH WORKING
 
+    this._pillsExited();
     this.send('addNextGenPill', { pillData, position });
   },
 
@@ -113,6 +174,12 @@ const QueryPills = Component.extend({
   },
 
   /**
+   *
+   * TODO: WHEN EDIT IS INTRODUCED, ALL OF THIS FUNCTION
+   * NEEDS TESTING. ALSO NEED TO TEST THAT ENTERING A PILL
+   * FOR EDIT SENDS AN ENTERED EVENT UP TO THIS COMPONENT
+   * AND TRIGGERS ADDITION OF THE RIGHT CLASSES
+   *
    * Edit pill in state
    * @param {*} pillData The data for the pill
    * @private
@@ -130,6 +197,7 @@ const QueryPills = Component.extend({
     this.set('filters', newPillsData);
     // END LEGACY FILTERS SET TO KEEP NEAR-TERM SEARCH WORKING
 
+    this._pillsExited();
     this.send('editNextGenPill', { pillData });
   }
 

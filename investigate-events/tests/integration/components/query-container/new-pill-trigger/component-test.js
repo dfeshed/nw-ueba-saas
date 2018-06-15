@@ -6,11 +6,12 @@ import { click, find, findAll, render, triggerKeyEvent } from '@ember/test-helpe
 
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../helpers/vnext-patch';
-import { createBasicPill } from '../pill-util';
+import { createBasicPill, isIgnoredInitialEvent } from '../pill-util';
 import PILL_SELECTORS from '../pill-selectors';
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
+import KEY_MAP from 'investigate-events/util/keys';
 
-const ESCAPE_KEY = '27';
+const ESCAPE_KEY = KEY_MAP.escape.code;
 
 let setState;
 
@@ -47,11 +48,59 @@ module('Integration | Component | new-pill-trigger', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.metaTrigger).length, 0);
   });
 
+  test('Entering the new pill broadcasts a message', async function(assert) {
+    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    assert.expect(3);
+    this.set('handleMessage', (messageType, data, position) => {
+      if (messageType === MESSAGE_TYPES.PILL_INITIALIZED) {
+        return;
+      }
+
+      assert.equal(messageType, MESSAGE_TYPES.PILL_ENTERED, 'Wrong message type');
+      assert.deepEqual(data, undefined, 'ENTERED on new pill does not include data');
+      assert.equal(position, 5, 'Wrong position number');
+    });
+
+    await render(hbs`
+      {{query-container/new-pill-trigger
+        newPillPosition=5
+        sendMessage=(action handleMessage)}}
+    `);
+    await click(PILL_SELECTORS.newPillTrigger);
+  });
+
+  test('ESC broadcasts a cancel message', async function(assert) {
+    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    assert.expect(3);
+    this.set('handleMessage', (messageType, data, position) => {
+      if (isIgnoredInitialEvent(messageType)) {
+        return;
+      }
+
+      assert.equal(messageType, MESSAGE_TYPES.PILL_CANCELLED, 'Wrong message type');
+      assert.deepEqual(data, null, 'Cancel does not include pill data');
+      assert.equal(position, 5, 'Wrong position number');
+    });
+
+    await render(hbs`
+      {{query-container/new-pill-trigger
+        newPillPosition=5
+        sendMessage=(action handleMessage)}}
+    `);
+    await click(PILL_SELECTORS.newPillTrigger);
+    await focus(PILL_SELECTORS.metaTrigger);
+    await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', ESCAPE_KEY);
+  });
+
   test('it broadcasts a message when a pill is created', async function(assert) {
     new ReduxDataHelper(setState).language().pillsDataEmpty().build();
     assert.expect(3);
-    this.set('handleMessage', (type, data, position) => {
-      assert.equal(type, MESSAGE_TYPES.PILL_CREATED, 'Wrong message type');
+    this.set('handleMessage', (messageType, data, position) => {
+      if (isIgnoredInitialEvent(messageType)) {
+        return;
+      }
+
+      assert.equal(messageType, MESSAGE_TYPES.PILL_CREATED, 'Wrong message type');
       assert.deepEqual(data, { meta: 'a', operator: '=', value: 'x' }, 'Message sent for pill create contains correct pill data');
       assert.equal(position, 5, 'Wrong position number');
     });

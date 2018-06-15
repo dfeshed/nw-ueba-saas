@@ -38,8 +38,11 @@ export default Component.extend({
           this.set('isAddNewPill', false);
           break;
         case MESSAGE_TYPES.PILL_CANCELLED:
+          this._broadcast(type, data);
           this.set('isAddNewPill', false);
           break;
+        case MESSAGE_TYPES.PILL_ENTERED:
+          this._broadcast(MESSAGE_TYPES.PILL_ENTERED);
       }
     }
   },

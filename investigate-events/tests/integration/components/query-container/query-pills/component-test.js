@@ -2,21 +2,29 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { click, findAll, render, settled } from '@ember/test-helpers';
+import { click, findAll, render, settled, triggerKeyEvent } from '@ember/test-helpers';
 import sinon from 'sinon';
 
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import nextGenCreators from 'investigate-events/actions/next-gen-creators';
 import { createBasicPill } from '../pill-util';
-
 import PILL_SELECTORS from '../pill-selectors';
+import KEY_MAP from 'investigate-events/util/keys';
+
+const ESCAPE_KEY = KEY_MAP.escape.code;
 
 let setState;
 const newActionSpy = sinon.spy(nextGenCreators, 'addNextGenPill');
 const deleteActionSpy = sinon.spy(nextGenCreators, 'deleteNextGenPill');
 
-module('Integration | Component | Query Pills', function(hooks) {
+const allPillsAreClosed = (assert) => {
+  assert.equal(findAll(PILL_SELECTORS.pillOpen).length, 0, 'Class for pill open should not be present.');
+  assert.equal(findAll(PILL_SELECTORS.pillOpenForEdit).length, 0, 'Class for pills open for edit.');
+  assert.equal(findAll(PILL_SELECTORS.pillTriggerOpenForAdd).length, 0, 'Class for trigger open should not be present.');
+};
+
+module('Integration | Component | query-pills', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-events')
   });
@@ -47,7 +55,6 @@ module('Integration | Component | Query Pills', function(hooks) {
     this.set('filters', []);
 
     await render(hbs`{{query-container/query-pills filters=filters isActive=true}}`);
-
     await createBasicPill();
 
     return settled().then(async () => {
@@ -74,7 +81,6 @@ module('Integration | Component | Query Pills', function(hooks) {
     this.set('filters', []);
 
     await render(hbs`{{query-container/query-pills filters=filters isActive=true}}`);
-
     await createBasicPill();
 
     return settled().then(async () => {
@@ -96,11 +102,9 @@ module('Integration | Component | Query Pills', function(hooks) {
     this.set('filters', []);
 
     await render(hbs`{{query-container/query-pills filters=filters isActive=true}}`);
-
     assert.equal(findAll(PILL_SELECTORS.newPillTriggerContainer).length, 1, 'There should only be one new pill trigger.');
 
     await createBasicPill();
-
     assert.equal(findAll(PILL_SELECTORS.newPillTriggerContainer).length, 2, 'There should now be two new pill triggers.');
   });
 
@@ -113,9 +117,7 @@ module('Integration | Component | Query Pills', function(hooks) {
     this.set('filters', []);
 
     await render(hbs`{{query-container/query-pills filters=filters isActive=true}}`);
-
     await click(PILL_SELECTORS.newPillTrigger);
-
     await createBasicPill(true);
 
     // Internal (temporary) filters maintained
@@ -151,6 +153,75 @@ module('Integration | Component | Query Pills', function(hooks) {
         'The action creator was called with the right arguments'
       );
     });
+  });
+
+  test('Creating a pill leaves no classes indicating pills are open', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .pillsDataPopulated()
+      .build();
+
+    this.set('filters', []);
+
+    await render(hbs`{{query-container/query-pills filters=filters isActive=true}}`);
+    await click(PILL_SELECTORS.newPillTrigger);
+    await focus(PILL_SELECTORS.triggerMetaPowerSelect);
+    await createBasicPill(true);
+
+    allPillsAreClosed(assert);
+  });
+
+  test('Cancelling out of pill creation leaves no classes indicating pills are open', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .pillsDataPopulated()
+      .build();
+
+    this.set('filters', []);
+
+    await render(hbs`{{query-container/query-pills filters=filters isActive=true}}`);
+    await click(PILL_SELECTORS.newPillTrigger);
+    await focus(PILL_SELECTORS.triggerMetaPowerSelect);
+    await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', ESCAPE_KEY);
+
+    allPillsAreClosed(assert);
+  });
+
+  test('Beginning creation of a pill template adds specific classes to container', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .pillsDataPopulated()
+      .build();
+
+    this.set('filters', []);
+
+    await render(hbs`{{query-container/query-pills filters=filters isActive=true}}`);
+
+    assert.equal(findAll(PILL_SELECTORS.pillOpen).length, 1, 'Class for pill open should be present.');
+    assert.equal(findAll(PILL_SELECTORS.pillOpenForEdit).length, 0, 'No classes for pills open for edit');
+    assert.equal(findAll(PILL_SELECTORS.pillTriggerOpenForAdd).length, 0, 'Class for trigger open should be present.');
+  });
+
+  test('Beginning creation of a pill from trigger adds appropriate classes', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .pillsDataPopulated()
+      .build();
+
+    this.set('filters', []);
+
+    await render(hbs`{{query-container/query-pills filters=filters isActive=true}}`);
+
+    // escape out of template first
+    await focus(PILL_SELECTORS.metaPowerSelect);
+    await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', ESCAPE_KEY);
+
+    await click(PILL_SELECTORS.newPillTrigger);
+    await focus(PILL_SELECTORS.triggerMetaPowerSelect);
+
+    assert.equal(findAll(PILL_SELECTORS.pillOpen).length, 1, 'Class for pill open should be present.');
+    assert.equal(findAll(PILL_SELECTORS.pillOpenForEdit).length, 0, 'No classes for pills open for edit');
+    assert.equal(findAll(PILL_SELECTORS.pillTriggerOpenForAdd).length, 1, 'Class for trigger open should be present.');
   });
 
 });

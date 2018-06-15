@@ -8,7 +8,7 @@ import { click, fillIn, find, findAll, focus, render, triggerKeyEvent, waitUntil
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import { enrichedPillsData } from 'investigate-events/reducers/investigate/next-gen/selectors';
-import { createBasicPill } from '../pill-util';
+import { createBasicPill, isIgnoredInitialEvent } from '../pill-util';
 import KEY_MAP from 'investigate-events/util/keys';
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
 
@@ -22,7 +22,7 @@ const trim = (text) => text.replace(/\s+/g, '').trim();
 
 let setState;
 
-module('Integration | Component | Query Pill', function(hooks) {
+module('Integration | Component | query-pill', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-events')
   });
@@ -100,9 +100,7 @@ module('Integration | Component | Query Pill', function(hooks) {
     new ReduxDataHelper(setState).language().pillsDataEmpty().build();
 
     this.set('handleMessage', (messageType, data, position) => {
-
-      // first message will be initialized, get rid of it
-      if (messageType === MESSAGE_TYPES.PILL_INITIALIZED) {
+      if (isIgnoredInitialEvent(messageType)) {
         return;
       }
 
@@ -129,9 +127,7 @@ module('Integration | Component | Query Pill', function(hooks) {
     new ReduxDataHelper(setState).language().pillsDataEmpty().build();
 
     this.set('handleMessage', (messageType, data, position) => {
-
-      // first message will be initialized, get rid of it
-      if (messageType === MESSAGE_TYPES.PILL_INITIALIZED) {
+      if (isIgnoredInitialEvent(messageType)) {
         return;
       }
 
@@ -183,9 +179,7 @@ module('Integration | Component | Query Pill', function(hooks) {
     const done = assert.async();
 
     this.set('handleMessage', (messageType, data, position) => {
-
-      // first message will be initialized, get rid of it
-      if (messageType === MESSAGE_TYPES.PILL_INITIALIZED) {
+      if (isIgnoredInitialEvent(messageType)) {
         return;
       }
 
@@ -210,13 +204,11 @@ module('Integration | Component | Query Pill', function(hooks) {
     await click(PILL_SELECTORS.deletePill);
   });
 
-  test('messages up a pill has cancelled when child componenent sents ESCAPE', async function(assert) {
+  test('messages up a pill has cancelled when child componenent sends ESCAPE', async function(assert) {
     const done = assert.async();
 
     this.set('handleMessage', (messageType, data, position) => {
-
-      // first message will be initialized, get rid of it
-      if (messageType === MESSAGE_TYPES.PILL_INITIALIZED) {
+      if (isIgnoredInitialEvent(messageType)) {
         return;
       }
 
@@ -264,9 +256,7 @@ module('Integration | Component | Query Pill', function(hooks) {
     new ReduxDataHelper(setState).language().pillsDataEmpty().build();
 
     this.set('handleMessage', (messageType) => {
-
-      // first message will be initialized, get rid of it
-      if (messageType === MESSAGE_TYPES.PILL_INITIALIZED) {
+      if (isIgnoredInitialEvent(messageType)) {
         return;
       }
 
@@ -284,10 +274,32 @@ module('Integration | Component | Query Pill', function(hooks) {
     `);
 
     await createBasicPill();
-
-    // meta power select should now be visible
     assert.equal(findAll(PILL_SELECTORS.metaTrigger).length, 1);
-
     await createBasicPill();
+  });
+
+  test('A pill when focused will send ENTERED event', async function(assert) {
+    const done = assert.async();
+    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+
+    this.set('handleMessage', (messageType, data, position) => {
+      if (messageType === MESSAGE_TYPES.PILL_INITIALIZED) {
+        return;
+      }
+
+      assert.equal(messageType, MESSAGE_TYPES.PILL_ENTERED, 'Message sent for pill create is not correct');
+      assert.deepEqual(data.id, undefined, 'Pill data goes not contain an id');
+      assert.equal(position, 12, 'Message sent for pill entered contains correct pill position');
+
+      done();
+    });
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=12
+        sendMessage=(action handleMessage)
+      }}
+    `);
   });
 });

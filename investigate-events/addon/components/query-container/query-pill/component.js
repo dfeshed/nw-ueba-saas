@@ -156,6 +156,10 @@ export default Component.extend({
     return false;
   },
 
+  focusIn() {
+    this._pillEntered();
+  },
+
   actions: {
     /**
      * Handler for all messages coming from pill components
@@ -202,6 +206,10 @@ export default Component.extend({
   _hasBeenReset() {
     const props = this.getProperties(Object.keys(RESET_PROPS));
     return _.isEqual(props, RESET_PROPS);
+  },
+
+  _pillEntered() {
+    this._broadcast(MESSAGE_TYPES.PILL_ENTERED, this._createPillData());
   },
 
   // ************************ META FUNCTIONALITY **************************** //

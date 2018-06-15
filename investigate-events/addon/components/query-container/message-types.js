@@ -18,6 +18,7 @@ export const PILL_CANCELLED = 'PILL::CANCELLED';
 export const PILL_CREATED = 'PILL::CREATED';
 export const PILL_DELETED = 'PILL::DELETED';
 export const PILL_EDITED = 'PILL::EDITED';
+export const PILL_ENTERED = 'PILL::ENTERED';
 export const PILL_INITIALIZED = 'PILL::INITIALIZED';
 
 export const VALUE_ARROW_LEFT_KEY = 'PILL::VALUE_ARROW_LEFT_KEY';
