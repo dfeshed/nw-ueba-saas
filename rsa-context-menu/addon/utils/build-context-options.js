@@ -41,11 +41,12 @@ const _filteredActionList = (contextActions) => {
   }]
  * @private
 */
-const _getModifiedActions = (contextActions, i18n) => {
+const _getModifiedActions = (contextActions) => {
 
   return contextActions.map((action) => {
     action.menuAction = {
-      label: i18n.exists(`contextmenu.actions.${action.displayName}`) ? i18n.t(`contextmenu.actions.${action.displayName}`) : action.displayName,
+      labelPrefix: 'contextmenu.actions.',
+      labelVar: action.displayName,
       action(selection, contextDetails) {
         if (action.urlFormat) {
           // encoding required to prevent special chars
@@ -70,7 +71,7 @@ const _getModifiedActions = (contextActions, i18n) => {
 
 /**
  * This function will flatten action array for based on cssClassName and scope.
- * Input: output from _getModifiedActions(contextActions, i18n)
+ * Input: output from _getModifiedActions(contextActions)
  * Output: Single object will be converted as multiple object.
   [{
     ...otherProperties,
@@ -126,7 +127,7 @@ const _getFlattenAction = (contextActions) => {
   }
  * @private
  */
-const _getModuleBasedAction = (flattenAction, i18n) => {
+const _getModuleBasedAction = (flattenAction) => {
   const moduleBasedAction = {};
   const groupByModuleActions = _.groupBy(flattenAction, 'module');
   _.forEach(groupByModuleActions, (module, key) => {
@@ -141,7 +142,7 @@ const _getModuleBasedAction = (flattenAction, i18n) => {
           return action.menuAction;
         });
         if (groupkey !== 'undefined') {
-          moduleBasedAction[key][scope].push({ label: i18n.exists(`contextmenu.groups.${groupkey}`) ? i18n.t(`contextmenu.groups.${groupkey}`) : groupkey, subActions: actions });
+          moduleBasedAction[key][scope].push({ labelPrefix: 'contextmenu.groups.', labelVar: groupkey, subActions: actions });
         } else {
           moduleBasedAction[key][scope] = moduleBasedAction[key][scope].concat(actions);
         }
@@ -155,9 +156,9 @@ const _getModuleBasedAction = (flattenAction, i18n) => {
  * This function is to convert classic SA to new Format.
  * @private
 */
-export const buildContextOptions = (actions, i18n) => {
+export const buildContextOptions = (actions) => {
   const filteredAction = _filteredActionList(actions);
-  const modifiedActions = _getModifiedActions(filteredAction, i18n);
+  const modifiedActions = _getModifiedActions(filteredAction);
   const flattenAction = _getFlattenAction(modifiedActions);
-  return _getModuleBasedAction(flattenAction, i18n);
+  return _getModuleBasedAction(flattenAction);
 };

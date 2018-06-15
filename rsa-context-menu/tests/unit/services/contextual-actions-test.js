@@ -3,18 +3,33 @@ import { module, test } from 'qunit';
 import { patchFetch } from '../../helpers/patch-fetch';
 import { setupTest } from 'ember-qunit';
 import data from '../../helpers/actions-data';
-import { next } from '@ember/runloop';
-
-let serv = null;
+import { set } from '@ember/object';
+import { run } from '@ember/runloop';
+import { settled } from '@ember/test-helpers';
+import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 
 const assertForEventAnalysisPanelIPActions = (actions, assert) => {
-  assert.equal(actions.length, 4, 'Should have minimum four actions');
-  assert.ok(actions.find((action) => action.label === 'copyMetaAction'), 'Should have copy action');
+  assert.equal(actions.length, 5, 'Should have minimum five actions');
+  assert.equal(actions[0].labelPrefix, 'contextmenu.groups.');
+  assert.equal(actions[0].labelVar, 'refocusNewTabGroup');
+  assert.equal(actions[1].labelPrefix, 'contextmenu.actions.');
+  assert.equal(actions[1].labelVar, 'applyRefocusSessionSplitsInNewTabLabelNew');
+  assert.equal(actions[2].labelPrefix, 'contextmenu.actions.');
+  assert.equal(actions[2].labelVar, 'nw-event-value-drillable-contains');
+  assert.equal(actions[3].labelPrefix, 'contextmenu.groups.');
+  assert.equal(actions[3].labelVar, 'refocusNewTabGroup');
+  assert.equal(actions[4].labelPrefix, 'contextmenu.actions.');
+  assert.equal(actions[4].labelVar, 'copyMetaAction');
 };
 
 const assertForEventAnalysisPanelDefaultActions = (actions, assert) => {
   assert.equal(actions.length, 3, 'Should have minimum three actions');
-  assert.ok(actions.find((action) => action.label === 'nw-event-value-drillable-contains'), 'Should have copy action');
+  assert.equal(actions[0].labelPrefix, 'contextmenu.groups.');
+  assert.equal(actions[0].labelVar, 'refocusNewTabGroup');
+  assert.equal(actions[1].labelPrefix, 'contextmenu.actions.');
+  assert.equal(actions[1].labelVar, 'copyMetaAction');
+  assert.equal(actions[2].labelPrefix, 'contextmenu.actions.');
+  assert.equal(actions[2].labelVar, 'nw-event-value-drillable-contains');
 };
 
 const assertForNonSupportedActions = (actions, assert) => {
@@ -22,10 +37,13 @@ const assertForNonSupportedActions = (actions, assert) => {
   assert.notOk(actions.find((action) => action.id === 'contextServiceDefaultAction'), 'Should have contextServiceDefaultAction action');
 };
 
+let fetchResolved;
+
 module('Unit | Service | contextual-actions', function(hooks) {
   setupTest(hooks);
 
-  test('initialize service with proper input', async function(assert) {
+  hooks.beforeEach(function() {
+    fetchResolved = false;
     patchFetch(() => {
       return new Promise(function(resolve) {
         resolve({
@@ -33,17 +51,42 @@ module('Unit | Service | contextual-actions', function(hooks) {
           json() {
             return new Promise(function(r) {
               r(data);
+              fetchResolved = true;
             });
           }
         });
       });
     });
-    serv = this.owner.lookup('service:contextual-actions');
-    assert.ok(serv);
-    next(() => {
-      assertForEventAnalysisPanelIPActions(serv.getContextualActionsForGivenScope('EventAnalysisPanel', 'ip.src'), assert);
-      assertForEventAnalysisPanelDefaultActions(serv.getContextualActionsForGivenScope('EventAnalysisPanel', 'test', 'Text'), assert);
-      assertForNonSupportedActions(serv.getContextualActionsForGivenScope('EventAnalysisPanel', 'test'), assert);
+  });
+
+  test('initialize service with proper input', async function(assert) {
+    const service = this.owner.lookup('service:contextual-actions');
+
+    await waitFor(() => fetchResolved === true);
+
+    assertForEventAnalysisPanelIPActions(service.getContextualActionsForGivenScope('EventAnalysisPanel', 'ip.src'), assert);
+    assertForEventAnalysisPanelDefaultActions(service.getContextualActionsForGivenScope('EventAnalysisPanel', 'test', 'Text'), assert);
+    assertForNonSupportedActions(service.getContextualActionsForGivenScope('EventAnalysisPanel', 'test'), assert);
+  });
+
+  test('action label will be localization friendly', async function(assert) {
+    const i18n = this.owner.lookup('service:i18n');
+
+    const japaneseCopyMeta = 'コピーメタ';
+    run(i18n, 'addTranslations', 'ja-jp', { 'contextmenu.actions.copyMetaAction': japaneseCopyMeta });
+
+    const service = this.owner.lookup('service:contextual-actions');
+
+    await waitFor(() => fetchResolved === true);
+
+    const actions = service.getContextualActionsForGivenScope('EventAnalysisPanel', 'test', 'Text');
+    assert.ok(actions.find((action) => action.label.toString() === 'copyMetaAction'), 'Should have copy action with english label');
+
+    set(i18n, 'locale', 'ja-jp');
+
+    return settled().then(async () => {
+      const actions = service.getContextualActionsForGivenScope('EventAnalysisPanel', 'test', 'Text');
+      assert.ok(actions.find((action) => action.label.toString() === japaneseCopyMeta), 'Should have copy action with japanese label');
     });
   });
 

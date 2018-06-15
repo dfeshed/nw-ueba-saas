@@ -1,5 +1,6 @@
 import Service, { inject as service } from '@ember/service';
 import fetch from 'component-lib/services/fetch';
+import { get } from '@ember/object';
 import { log } from 'ember-debug';
 import {
   mergeObjectArray,
@@ -43,6 +44,16 @@ export default Service.extend({
       const actionsFromCss = actions && actions[moduleName] && actions[moduleName][currentSelector] ? actions[moduleName][currentSelector] : [];
       mergedAction = mergeObjectArray(mergedAction, actionsFromCss);
     });
-    return mergedAction;
+
+    const i18n = get(this, 'i18n');
+    return mergedAction.map((action) => {
+      const { labelPrefix, labelVar } = action;
+      const lookupString = `${labelPrefix}${labelVar}`;
+      const hasLocale = i18n.exists(lookupString);
+      const dynamicLabel = hasLocale ? i18n.t(lookupString) : labelVar;
+      return _.defaults({
+        label: dynamicLabel
+      }, action);
+    });
   }
 });
