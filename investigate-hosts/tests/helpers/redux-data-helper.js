@@ -59,6 +59,18 @@ export default class DataHelper {
     return this;
   }
 
+  hostList(hostList) {
+    _set(this.state, 'machines.hostList', hostList);
+    return this;
+  }
+  selectedHostList(selected) {
+    _set(this.state, 'machines.selectedHostList', selected);
+    return this;
+  }
+  hostSortField(field) {
+    _set(this.state, 'machines.hostColumnSort', field);
+    return this;
+  }
   visibleColumns(columns) {
     _set(this.state, 'schema.visibleColumns', columns);
     return this;

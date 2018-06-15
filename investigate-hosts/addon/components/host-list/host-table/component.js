@@ -70,10 +70,18 @@ const HostTable = Component.extend({
     },
     toggleSelectedRow(item, index, e, table) {
       if (this.get('features.rsaEndpointFusion')) {
-        table.set('selectedIndex', index);
-        this.send('toggleRiskPanel', true);
-        this.send('fetchHostContext', item.machine.machineName);
+        const { target: { classList } } = e;
+        if (classList.contains('rsa-icon-expand-6-filled') ||
+          classList.contains('rsa-form-checkbox-label') ||
+          classList.contains('rsa-form-checkbox')) {
+          e.stopPropagation();
+        } else {
+          table.set('selectedIndex', index);
+          this.send('toggleRiskPanel', true);
+          this.send('fetchHostContext', item.machine.machineName);
+        }
       }
+
     }
   }
 });
