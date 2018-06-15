@@ -1,4 +1,4 @@
-<div class='vSpacer vSpacerFirst ruleValues'> 
+<div class='ruleValues'>
   <label class="rsa-form-label power-select">
     {{#power-select
       placeholder="Make a selection"
@@ -12,17 +12,36 @@
   </label>
 </div>
 
-<div class='vSpacer ruleType'>
-  {{rsa-form-input label=(t 'configure.logsParser.type') value=selectedFormat.type isReadOnly=true isInline=true}}
+<div class='ruleType'>
+  {{rsa-form-input
+    label=(t 'configure.logsParser.type')
+    value=selectedFormat.type
+    isReadOnly=true
+    isInline=true
+  }}
 </div>
 
-<div class='vSpacer ruleMatches'>
-  {{rsa-form-input label=(t 'configure.logsParser.valueMatching') value=selectedFormat.matches isReadOnly=true isInline=true}}
+<div class='ruleMatches'>
+  {{rsa-form-input
+    label=(t 'configure.logsParser.valueMatching')
+    value=selectedFormat.matches
+    isReadOnly=true
+    isInline=true
+  }}
 </div>
 {{#if isRegex}}
-  <div class='vSpacer ruleRegex'>
-    {{log rule}}
-    {{rsa-form-textarea label=(t 'configure.logsParser.pattern') value=regex isInline=true isDisabled=rule.outOfBox}}
+  <div class='ruleRegex'>
+    {{rsa-form-textarea
+      label=(t 'configure.logsParser.pattern')
+      value=regex
+      isError=hasInvalidRegex
+      isInline=true
+      isDisabled=rule.outOfBox
+      focusOut=(action 'handleRegexChange')
+    }}
+    {{#if hasInvalidRegex}}
+      <span class="input-error">{{t 'configure.logsParser.invalidRegEx'}}</span>
+    {{/if}}
   </div>
 {{/if}}
 

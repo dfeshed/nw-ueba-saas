@@ -13,6 +13,7 @@ const initialState = {
 
   parserRules: [],
   parserRulesStatus: null, // wait, completed, error,
+  parserRulesOriginal: [], // a copy of the fetched parserRules for identifying changes
 
   selectedParserRuleIndex: 0,
   selectedLogParserIndex: 0,
@@ -88,6 +89,7 @@ export default reduxActions.handleActions({
       start: (state) => {
         return state.merge({
           parserRules: [],
+          parserRulesOriginal: [],
           selectedParserRuleIndex: 0,
           parserRulesStatus: 'wait'
         });
@@ -100,6 +102,7 @@ export default reduxActions.handleActions({
         return state.merge(
           {
             parserRules: rules,
+            parserRulesOriginal: rules,
             parserRulesStatus: 'completed'
           }
         );
@@ -153,7 +156,8 @@ export default reduxActions.handleActions({
         return state.merge(
           {
             selectedParserRuleIndex: 0,
-            saveRuleStatus: 'completed'
+            saveRuleStatus: 'completed',
+            parserRulesOriginal: state.parserRules // once saved, the parserRulesOriginal and the parserRules should be the same
           }
         );
       }
@@ -169,10 +173,7 @@ export default reduxActions.handleActions({
           name: payload,
           literals: [],
           pattern: {
-            captures: [
-              {
-              }
-            ],
+            captures: [],
             regex: ''
           },
           ruleMetas: [],
@@ -296,5 +297,7 @@ export default reduxActions.handleActions({
   ),
   [ACTION_TYPES.UPDATE_SELECTED_PARSER_RULE]: (state, { payload: newRule }) => {
     return state.set('parserRules', state.parserRules.map((rule, index) => index === state.selectedParserRuleIndex ? newRule : rule));
-  }
+  },
+  [ACTION_TYPES.DISCARD_RULE_CHANGES]: (state) => (state.set('parserRules', state.parserRulesOriginal))
+
 }, Immutable.from(initialState));

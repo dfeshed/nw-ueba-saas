@@ -1,12 +1,26 @@
 import reselect from 'reselect';
+import _ from 'lodash';
 
 const { createSelector } = reselect;
+
+const _isRuleInvalid = (rule) => {
+  let isInvalid = false;
+  if (!rule.literals || !rule.literals.length) { // A rule must have at least one token
+    isInvalid = true;
+  } else if (!rule.pattern.captures || !rule.pattern.captures.length) { // A rule must have at least one meta capture
+    isInvalid = true;
+  } else if (!rule.pattern.format && !rule.pattern.regex) { // If a rule is a regex rule, it must have a regex value
+    isInvalid = true;
+  }
+  return isInvalid;
+};
 
 const _parserRulesState = (state) => state.configure.content.logParserRules;
 
 export const ruleFormats = (state) => _parserRulesState(state).ruleFormats;
 export const logParsers = (state) => _parserRulesState(state).logParsers;
 export const parserRules = (state) => _parserRulesState(state).parserRules;
+const _parserRulesOriginal = (state) => _parserRulesState(state).parserRulesOriginal;
 export const selectedLogParserIndex = (state) => _parserRulesState(state).selectedLogParserIndex;
 export const selectedParserRuleIndex = (state) => _parserRulesState(state).selectedParserRuleIndex;
 export const deviceTypes = (state) => _parserRulesState(state).deviceTypes;
@@ -16,6 +30,17 @@ export const isTransactionUnderway = (state) => _parserRulesState(state).isTrans
 export const sampleLogs = (state) => _parserRulesState(state).sampleLogs;
 export const sampleLogsStatus = (state) => _parserRulesState(state).sampleLogsStatus;
 
+// Compares (deeply) the copy of the original parser rules with the current parser rules to determine if any
+// changes have been made
+export const hasRuleChanges = createSelector(
+  parserRules,
+  _parserRulesOriginal,
+  (parserRules, originalParserRules) => {
+    return !_.isEqual(parserRules, originalParserRules);
+  }
+);
+
+// Returns the currently selected parser rule
 export const selectedParserRule = createSelector(
   parserRules,
   selectedParserRuleIndex,
@@ -23,6 +48,37 @@ export const selectedParserRule = createSelector(
     if (rules) {
       return rules[index];
     }
+  }
+);
+
+// Returns an array of rule names for rules that have validation errors for the currently selected parser
+// A rule is invalid if it has no tokens (literals), no captures, or is regex but without a regex value
+export const invalidRules = createSelector(
+  parserRules,
+  (rules) => rules.reduce((accumulator, rule) => {
+    if (_isRuleInvalid(rule)) {
+      accumulator.push(rule.name);
+    }
+    return accumulator;
+  }, [])
+);
+
+// Returns true if any of the rules for the currently selected parser are invalid
+export const hasInvalidRules = createSelector(
+  invalidRules,
+  parserRules,
+  (invalidRules, rules) => {
+    // there are invalid rules if there are no rules at all, or if any one rule is invalid
+    return !rules.length || !!invalidRules.length;
+  }
+);
+
+// Returns the set of current parser rules that are valid
+export const validRules = createSelector(
+  parserRules,
+  hasInvalidRules,
+  (rules, hasInvalidRules) => {
+    return hasInvalidRules ? rules.filter((rule) => !_isRuleInvalid(rule)) : rules;
   }
 );
 
@@ -125,19 +181,30 @@ export const isParserRuleOutOfBox = createSelector(
   }
 );
 
+// Returns true if parser's rule can be deployed to the log decoder
 export const hasDeployableRules = createSelector(
-  selectedLogParser,
-  parserRules,
-  (parser, rules) => {
+  [selectedLogParser, parserRules, hasInvalidRules, hasRuleChanges],
+  (parser, rules, hasInvalidRules, hasRuleChanges) => {
+    if (hasInvalidRules || hasRuleChanges) { // unsaved changes or invalid rules do not allow deployment
+      return false;
+    }
     if (rules) {
       let index;
       for (index = 0; index < rules.length; ++index) {
-        if (!rules[index].outOfBox) {
+        if (!rules[index].outOfBox) { // a parser with at least one non-out-of-box rule can be deployed
           return true;
         }
       }
     }
-    return parser && parser.dirty && parser.deployed;
+    return parser && parser.dirty && parser.deployed; // a dirty but previously deployed parser can be redeployed
+  }
+);
+
+// Returns true if the rules can be saved (i.e., there are edits to save and no invalid rules)
+export const hasSaveableRules = createSelector(
+  hasRuleChanges, hasInvalidRules,
+  (hasChanges, hasInvalidRules) => {
+    return hasChanges && !hasInvalidRules;
   }
 );
 

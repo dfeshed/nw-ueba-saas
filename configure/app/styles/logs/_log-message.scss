@@ -27,16 +27,22 @@
   }
 
   .highlight-capture {
-    background-color: rgba(230, 181, 82, 0.6);
+    font-weight: bold;
+    background-color: #FFA000;
+    color: black; // always shows as black for non-"is-selected" hightlight text (regardless of theme)
     &.is-selected {
-      background-color: rgba(37, 108, 215, 0.4);
+      color: white; // always show as white text regardless of theme
+      background-color: #01579B;
     }
   }
 
   .highlight-literal {
-    background-color: rgba(230, 181, 82, 1);
+    font-weight: bold;
+    background-color: #FFD54F;
+    color: black; // always shows as black for non-"is-selected" hightlight text (regardless of theme)
     &.is-selected {
-      background-color: rgba(37, 108, 215, 1);
+      background-color: #03A9F4;
+      color: white; // always show as white text regardless of theme
     }
   }
 }

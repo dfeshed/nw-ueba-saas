@@ -30,12 +30,13 @@
   <table class='parserTable'>
     {{#each parserRules as |parserRule index|}}
       <tr>
-        <td class='{{if (eq index 0) 'firstItem'}} {{if (eq selectedParserRuleIndex index) 'active'}}'{{action "selectParserRule" index}}>
+        <td class="{{if (eq index 0) 'firstItem'}} {{if (eq selectedParserRuleIndex index) 'active'}} {{if (contains parserRule.name invalidRules) 'invalid-rule'}}" {{action "selectParserRule" index}}>
           {{#if parserRule.dirty}}
-            {{rsa-icon name="synchronize-3" class="deploy-icon"}} {{parserRule.name}}
+            {{rsa-icon name="synchronize-3" class="deploy-icon"}}
           {{else}}
-            &nbsp;&nbsp;&nbsp;&nbsp; {{parserRule.name}}
+            &nbsp;&nbsp;&nbsp;&nbsp;
           {{/if}}
+          <span class="parser-rule-name">{{parserRule.name}}</span>
           {{#if parserRule.outOfBox}}
             <span class="outOfBox-indicator">&nbsp;[RSA]</span>
           {{/if}}

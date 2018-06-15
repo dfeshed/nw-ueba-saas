@@ -24,6 +24,7 @@ const stateToComputed = (state) => ({
   isTransactionUnderway: isTransactionUnderway(state)
 });
 
+// TODO: unbind in willDestroy
 const ParserRules = Component.extend({
   classNames: ['log-parser-rules'],
   classNameBindings: ['isTransactionUnderway:transaction-in-progress'],

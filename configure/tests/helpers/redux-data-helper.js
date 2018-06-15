@@ -23,6 +23,21 @@ const _set = (obj, key, val) => {
   }
 };
 
+const parserRules = [{
+  name: 'ipv4',
+  outOfBox: false,
+  literals: [{ value: 'test' }],
+  pattern: {
+    captures: [{
+      key: 'domain.src',
+      index: '0',
+      format: 'IPv6'
+    }],
+    format: 'ipv6',
+    regex: ''
+  }
+}];
+
 export default class DataHelper {
   constructor(setState) {
     this.state = {};
@@ -32,6 +47,7 @@ export default class DataHelper {
   _setBaseState() {
     _set(this.state, 'content.logParserRules.logParsers', [{ name: 'builtin' }]);
     _set(this.state, 'content.logParserRules.selectedLogParserIndex', 0);
+    _set(this.state, 'content.logParserRules.parserRules', parserRules);
   }
 
   // Trigger setState, also return the resulting state
@@ -108,7 +124,7 @@ export default class DataHelper {
 
   parserRulesData(flag) {
     this._setBaseState();
-    _set(this.state, 'content.logParserRules.parserRules', [{ name: 'ipv4' }]);
+    _set(this.state, 'content.logParserRules.parserRules', parserRules);
     _set(this.state, 'content.logParserRules.selectedParserRuleIndex', 0);
     if (flag) {
       _set(this.state, 'content.logParserRules.parserRulesStatus', 'wait');
@@ -145,7 +161,8 @@ export default class DataHelper {
         'captures': [
           {
             'key': 'ipv4',
-            'index': '1'
+            'index': '1',
+            'format': 'IPV4'
           }
         ],
         'format': 'ipv4'
@@ -164,7 +181,8 @@ export default class DataHelper {
         'captures': [
           {
             'key': 'ipv6',
-            'index': '1'
+            'index': '1',
+            'format': 'IPV6'
           }
         ],
         'regex': '\\s*([\\w_.@-]*)'

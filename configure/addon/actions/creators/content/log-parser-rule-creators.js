@@ -6,6 +6,7 @@ import {
   filterDeletedRule,
   selectedLogParserName,
   sampleLogs,
+  validRules,
   parserRules } from 'configure/reducers/content/log-parser-rules/selectors';
 
 const defaultCallbacks = {
@@ -207,7 +208,7 @@ const updateSelectedRule = (rule) => {
 const highlightSampleLogs = (logText) => {
   return (dispatch, getState) => {
     const logs = logText || sampleLogs(getState());
-    const rules = parserRules(getState());
+    const rules = validRules(getState()); // only provide the valid rules to the highlighting call
     dispatch({
       type: ACTION_TYPES.HIGHLIGHT_SAMPLE_LOGS,
       promise: api.highlightSampleLogs({ logs: [logs] }, rules)
@@ -215,12 +216,17 @@ const highlightSampleLogs = (logText) => {
   };
 };
 
+const discardRuleChanges = () => ({
+  type: ACTION_TYPES.DISCARD_RULE_CHANGES
+});
+
 export {
   addLogParser,
   addNewParserRule,
   deleteLogParser,
   deleteParserRule,
   deployLogParser,
+  discardRuleChanges,
   highlightSampleLogs,
   initializeLogParserRules,
   selectLogParser,

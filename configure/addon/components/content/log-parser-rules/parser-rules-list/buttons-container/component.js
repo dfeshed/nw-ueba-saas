@@ -35,7 +35,7 @@ const LogParserRulesToolbar = Component.extend({
   @computed('newRuleName', 'selectedLogParserName', 'parserRules')
   matchesExistingRuleName(name, parser, rules) {
     if (isPresent(name) && isPresent(parser) && isPresent(rules) &&
-        (rules.filter((rule) => (rule.name === name)).length > 0)) {
+      (rules.filter((rule) => (rule.name.toLowerCase() === name.toLowerCase())).length > 0)) {
       return true;
     }
     return false;
@@ -44,7 +44,7 @@ const LogParserRulesToolbar = Component.extend({
   @computed('newRuleName', 'selectedLogParserName', 'parserRules')
   inValidRuleName(name, parser, rules) {
     if (!isPresent(name) || !isPresent(parser) || !VALID_RULENAME_REGEX.test(name) ||
-        (isPresent(rules) && (rules.filter((rule) => (rule.name === name)).length > 0))) {
+      (isPresent(rules) && (rules.filter((rule) => (rule.name.toLowerCase() === name.toLowerCase())).length > 0))) {
       return true;
     }
     return false;

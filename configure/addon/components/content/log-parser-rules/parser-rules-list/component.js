@@ -8,7 +8,8 @@ import {
   isDeletingParserRule,
   isDeletingParserRuleError,
   isSavingParserRule,
-  isSavingParserRuleError
+  isSavingParserRuleError,
+  invalidRules
 } from 'configure/reducers/content/log-parser-rules/selectors';
 import { selectParserRule } from 'configure/actions/creators/content/log-parser-rule-creators';
 
@@ -20,7 +21,8 @@ const stateToComputed = (state) => ({
   isDeletingParserRule: isDeletingParserRule(state),
   isDeletingParserRuleError: isDeletingParserRuleError(state),
   isSavingParserRule: isSavingParserRule(state),
-  isSavingParserRuleError: isSavingParserRuleError(state)
+  isSavingParserRuleError: isSavingParserRuleError(state),
+  invalidRules: invalidRules(state)
 });
 
 const dispatchToActions = {

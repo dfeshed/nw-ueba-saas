@@ -23,27 +23,27 @@ module('Integration | Component | value mapping', function(hooks) {
   });
 
   test('The meta dropdown shows the correct value', async function(assert) {
-    const rules = [{ name: 'Client Domain', pattern: { captures: [{ 'key': 'domain.dst', 'index': '0', 'format': 'Text' }] } }];
+    const rules = [{ name: 'Client Domain', pattern: { format: 'ipv4', captures: [{ 'key': 'domain.dst', 'index': '0', 'format': 'Text' }] } }];
     new ReduxDataHelper(setState).parserRules(rules).metaOptions().build();
-    await render(hbs`{{content/log-parser-rules/value-mapping}}`);
+    await render(hbs`{{content/log-parser-rules/meta-captures}}`);
     assert.equal(findAll('li .ember-power-select-selected-item').length, 1, 'There is only one capture/meta selection dropdown');
-    assert.equal(find('li .ember-power-select-selected-item').textContent.trim(), 'Destination Domain', 'The appropriate option is selected in dropdown');
+    assert.equal(find('li .ember-power-select-selected-item').textContent.trim(), 'domain.dst', 'The appropriate option is selected in dropdown');
   });
 
   test('Changing the dropdown selection updates the value in the selected rule state', async function(assert) {
-    const rules = [{ name: 'Client Domain', pattern: { captures: [{ 'key': 'domain.dst', 'index': '0', 'format': 'Text' }] } }];
+    const rules = [{ name: 'Client Domain', pattern: { format: 'ipv4', captures: [{ 'key': 'domain.dst', 'index': '0', 'format': 'Text' }] } }];
     new ReduxDataHelper(setState).parserRules(rules).metaOptions().build();
-    await render(hbs`{{content/log-parser-rules/value-mapping}}`);
-    clickTrigger('.value-mapping .firstItem');
-    selectChoose('.value-mapping .firstItem', 'Source Domain');
-    assert.equal(find('li .ember-power-select-selected-item').textContent.trim(), 'Source Domain', 'The appropriate option is selected in dropdown');
+    await render(hbs`{{content/log-parser-rules/meta-captures}}`);
+    clickTrigger('.meta-captures .firstItem');
+    selectChoose('.meta-captures .firstItem', 'domain.src');
+    assert.equal(find('li .ember-power-select-selected-item').textContent.trim(), 'domain.src', 'The appropriate option is selected in dropdown');
   });
 
   test('Editing is disabled if the rule is out of the box', async function(assert) {
     assert.expect(1);
-    const rules = [{ name: 'Client Domain', outOfBox: true, pattern: { captures: [{ 'key': 'domain.dst', 'index': '0', 'format': 'Text' }] } }];
+    const rules = [{ name: 'Client Domain', outOfBox: true, pattern: { format: 'ipv4', captures: [{ 'key': 'domain.dst', 'index': '0', 'format': 'Text' }] } }];
     new ReduxDataHelper(setState).parserRules(rules).metaOptions().build();
-    await render(hbs`{{content/log-parser-rules/value-mapping}}`);
+    await render(hbs`{{content/log-parser-rules/meta-captures}}`);
     findAll('li .ember-power-select-trigger').forEach((dropdown) => {
       assert.equal(dropdown.getAttribute('aria-disabled'), 'true');
     });

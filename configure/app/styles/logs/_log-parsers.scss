@@ -26,6 +26,10 @@ $footerHeight: 40px;
     }
     .form-option {
       margin-bottom: rsa-whitespace();
+      .ember-power-select-clear-btn {
+        font-size: 1.25rem;
+        font-weight: 200;
+      }
     }
   }
   footer {
@@ -50,5 +54,5 @@ $footerHeight: 40px;
 
 #modalDestination .add-log-parser-modal {
   width: 400px;
-  height: 500px;
+  height: 550px;
 }

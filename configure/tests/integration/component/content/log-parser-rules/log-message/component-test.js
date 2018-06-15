@@ -24,6 +24,21 @@ module('Integration | Component | Configure - Content - Sample Log Message', fun
     ' </span>10.100.229.59</span>to 224.0.0.22 on<span class=\'highlight_capture_AnyPort\'><span class=\'highlight_literal_AnyPort\'> port' +
     ' </span>12345</span>';
 
+  const parserRules = [{
+    name: 'Any Port',
+    outOfBox: false,
+    literals: [{ value: 'test' }],
+    pattern: {
+      captures: [{
+        key: 'domain.src',
+        index: '0',
+        format: 'IPv6'
+      }],
+      format: 'ipv6',
+      regex: ''
+    }
+  }];
+
   hooks.beforeEach(function() {
     initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
@@ -32,7 +47,7 @@ module('Integration | Component | Configure - Content - Sample Log Message', fun
         configure: {
           content: {
             logParserRules: {
-              parserRules: [{ name: 'Any Port' }],
+              parserRules,
               selectedParserRuleIndex: 0,
               sampleLogsStatus: 'completed',
               sampleLogs,
@@ -86,9 +101,7 @@ module('Integration | Component | Configure - Content - Sample Log Message', fun
         logs: {
           logs: ['test']
         },
-        parserRules: [{
-          name: 'Any Port'
-        }]
+        parserRules
       });
       done();
     });

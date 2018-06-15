@@ -229,10 +229,7 @@ test('With ADD_NEW_PARSER_RULE, the action is successfull', function(assert) {
         name: '123',
         literals: [],
         pattern: {
-          captures: [
-            {
-            }
-          ],
+          captures: [],
           regex: ''
         },
         ruleMetas: [],
@@ -271,7 +268,8 @@ test('With SAVE_PARSER_RULE, the action has errors', function(assert) {
 test('With SAVE_PARSER_RULE, the action is successfull', function(assert) {
   const expectedResult = {
     ...initialState,
-    saveRuleStatus: 'completed'
+    saveRuleStatus: 'completed',
+    parserRulesOriginal: initialState.parserRules
   };
   const action = makePackAction(LIFECYCLE.SUCCESS, { type: ACTION_TYPES.SAVE_PARSER_RULE });
   const result = reducer(initialState, action);
@@ -346,6 +344,7 @@ test('With FETCH_PARSER_RULES, the start handler updates state', function(assert
   const expectedResult = {
     ...initialState,
     parserRules: [],
+    parserRulesOriginal: [],
     parserRulesStatus: 'wait'
   };
   const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_PARSER_RULES });
@@ -367,6 +366,7 @@ test('With FETCH_PARSER_RULES, the success handler updates state', function(asse
   const expectedResult = {
     ...initialState,
     parserRules: [{ name: 'ciscopix', literals: [{ 'value': 'ad.domain.dst ' }] }],
+    parserRulesOriginal: [{ name: 'ciscopix', literals: [{ 'value': 'ad.domain.dst ' }] }],
     parserRulesStatus: 'completed',
     selectedParserRuleIndex: 0
   };

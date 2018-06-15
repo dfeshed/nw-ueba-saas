@@ -1,13 +1,23 @@
-<table class='matchingMapping'>
-  <tr>
-    <td class='token'>
-      {{content/log-parser-rules/token-matching}}
-    </td>
-    <td class='values'>
-      {{content/log-parser-rules/value-matching}}
-    </td>
-    <td class="meta">
-      {{content/log-parser-rules/value-mapping}}
-    </td>
-  </tr>
-</table>
+<tr style="height: 30px;">
+  <td>
+    <h2> {{t 'configure.logsParser.tokens'}} </h2>
+  </td>
+  <td>
+    <h2> {{t 'configure.logsParser.values'}} </h2>
+  </td>
+  <td>
+    <h2>{{t 'configure.logsParser.mapping'}} </h2>
+  </td>
+</tr>
+<tr>
+
+  {{content/log-parser-rules/token-matching}}
+
+  <td class='values'>
+    {{content/log-parser-rules/value-matching}}
+  </td>
+  <td class="meta">
+    {{content/log-parser-rules/meta-captures}}
+  </td>
+</tr>
+

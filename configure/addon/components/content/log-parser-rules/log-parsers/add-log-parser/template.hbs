@@ -21,6 +21,8 @@
       label=(t 'configure.logsParser.addParser.deviceDisplayName')
       placeholder=(t 'configure.logsParser.addParser.deviceDisplayNamePlaceholder')
       isDisabled=isExistingDeviceType
+      isError=displayNameAlreadyExists
+      errorMessage=(t 'configure.logsParser.addParser.displayNameExistsError')
       value=displayName
       maxLength=30
     }}
@@ -30,9 +32,10 @@
       label=(t 'configure.logsParser.addParser.deviceType')
       placeholder=(t 'configure.logsParser.addParser.deviceTypePlaceholder')
       isDisabled=isExistingDeviceType
-      isError=nameAlreadyExists
+      isError=(or nameAlreadyExists inValidParserNameWarning)
       errorMessage=(t 'configure.logsParser.addParser.nameExistsError')
       value=logDeviceParserName
+      maxLength=30
     }}
   </section>
   <section class="form-option device-class">
@@ -57,6 +60,7 @@
       {{#power-select
         options=(readonly logParsers)
         selected=cloneFrom
+        allowClear=true
         onchange=(action (mut cloneFrom)) as |logParser|}}
         {{logParser.name}}
       {{/power-select}}

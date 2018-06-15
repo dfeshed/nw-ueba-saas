@@ -15,7 +15,7 @@
         </td>
         <td class='centerArea'>
           <table class='matchingMapping'>
-            <tr>
+            <tr style="height: 100px;">
               <td colspan="4">
                 <h1>
                   {{content/log-parser-rules/save-reset-rule}}
@@ -28,28 +28,7 @@
               </td>
             </tr>
             {{#if canShowSelectedParserRule}}
-              <tr>
-                <td>
-                  <h2> {{t 'configure.logsParser.tokens'}} </h2>
-                </td>
-                <td>
-                  <h2> {{t 'configure.logsParser.values'}} </h2>
-                </td>
-                <td>
-                  <h2>{{t 'configure.logsParser.mapping'}} </h2>
-                </td>
-              </tr>
-              <tr>
-                <td class='token'>
-                  {{content/log-parser-rules/token-matching}}
-                </td>
-                <td class='values'>
-                  {{content/log-parser-rules/value-matching}}
-                </td>
-                <td class="meta">
-                  {{content/log-parser-rules/value-mapping}}
-                </td>
-              </tr>
+              {{content/log-parser-rules/parser-rule}}
             {{/if}}
           </table>
         </td>

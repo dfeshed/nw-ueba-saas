@@ -36,6 +36,21 @@ const ValueMatching = Component.extend({
     return selectedFormat.type === 'regex';
   },
 
+  @computed('regex')
+  hasInvalidRegex(regex) {
+    let isInvalid = false;
+    if (!regex) { // an null, undefined, or empty value will return as invalid
+      isInvalid = true;
+    } else { // try and copile the regex and catch any errors
+      try {
+        new RegExp(regex);
+      } catch (e) {
+        isInvalid = true;
+      }
+    }
+    return isInvalid;
+  },
+
   actions: {
     handleFormatChange(format) {
       const { rule, regex } = this.getProperties('rule', 'regex');
@@ -49,6 +64,18 @@ const ValueMatching = Component.extend({
         pattern
       };
       this.send('updateSelectedRule', updatedRule);
+    },
+
+    handleRegexChange() {
+      const { rule, regex, hasInvalidRegex } = this.getProperties('rule', 'regex', 'hasInvalidRegex');
+      if (rule.pattern.regex !== regex && !hasInvalidRegex) {
+        const pattern = { ...rule.pattern, regex };
+        const updatedRule = {
+          ...rule,
+          pattern
+        };
+        this.send('updateSelectedRule', updatedRule);
+      }
     }
   }
 });

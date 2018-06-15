@@ -23,6 +23,8 @@ const dispatchToActions = {
   addLogParser
 };
 
+const VALID_PARSERNAME_REGEX = /^[a-z][a-z0-9]{2,29}$/;
+
 const AddLogParser = Component.extend(Notifications, {
   classNames: ['add-log-parser'],
 
@@ -50,16 +52,28 @@ const AddLogParser = Component.extend(Notifications, {
 
   displayName: null,
 
+  @computed('logDeviceParserName')
+  inValidParserNameWarning(name) {
+    return !(!isPresent(name) || VALID_PARSERNAME_REGEX.test(name));
+  },
+
   @computed('logParsers', 'logDeviceParserName')
   nameAlreadyExists(logParsers, name) {
-    return !!logParsers.findBy('name', name);
+    return isPresent(logParsers) && isPresent(name) && !!logParsers.findBy('name', name);
+  },
+
+  @computed('logParsers', 'displayName')
+  displayNameAlreadyExists(logParsers, displayName) {
+    return isPresent(logParsers) && isPresent(displayName) &&
+      (logParsers.filter((parser) => (isPresent(parser.displayName) && parser.displayName.toLowerCase() === displayName.toLowerCase())).length > 0);
   },
 
   @notEmpty('selectedDeviceType.name') isExistingDeviceType: false,
 
-  @computed('logDeviceParserName', 'displayName', 'deviceClass', 'nameAlreadyExists')
-  isValid(name, displayName, deviceClass, nameAlreadyExists) {
-    return isPresent(name) && isPresent(displayName) && isPresent(deviceClass) && !nameAlreadyExists;
+  @computed('logDeviceParserName', 'displayName', 'deviceClass', 'nameAlreadyExists', 'displayNameAlreadyExists')
+  isValid(name, displayName, deviceClass, nameAlreadyExists, displayNameAlreadyExists) {
+    return isPresent(name) && isPresent(displayName) && isPresent(deviceClass) &&
+      VALID_PARSERNAME_REGEX.test(name) && !nameAlreadyExists && !displayNameAlreadyExists;
   },
 
   actions: {

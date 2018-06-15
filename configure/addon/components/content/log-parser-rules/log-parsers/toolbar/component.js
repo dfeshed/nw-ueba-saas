@@ -4,8 +4,7 @@ import { next } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 
 import {
-  selectedLogParser,
-  hasDeployableRules
+  selectedLogParser
 } from 'configure/reducers/content/log-parser-rules/selectors';
 
 import {
@@ -14,8 +13,7 @@ import {
 } from 'configure/actions/creators/content/log-parser-rule-creators';
 
 const stateToComputed = (state) => ({
-  selectedLogParser: selectedLogParser(state),
-  hasNoDeployableRules: !hasDeployableRules(state)
+  selectedLogParser: selectedLogParser(state)
 });
 
 const dispatchToActions = {

@@ -5,6 +5,37 @@ import {
 
 module('Unit | Selectors | log-parser-deploy');
 
+const outOfBoxRule = {
+  name: 'foo',
+  outOfBox: true,
+  literals: [{ value: 'test' }],
+  pattern: {
+    captures: [{
+      key: 'domain.src',
+      index: '0',
+      format: 'IPv6'
+    }],
+    format: 'ipv6',
+    regex: ''
+  }
+};
+
+const notOutOfBoxRule = {
+  name: 'foo2',
+  outOfBox: false,
+  literals: [{ value: 'test' }],
+  pattern: {
+    captures: [{
+      key: 'domain.src',
+      index: '0',
+      format: 'IPv6'
+    }],
+    format: 'ipv6',
+    regex: ''
+  }
+};
+
+
 test('hasDeployableRules-NotAllOutOfBox-Deployed-Dirty', function(assert) {
   const state = {
     configure: {
@@ -19,16 +50,8 @@ test('hasDeployableRules-NotAllOutOfBox-Deployed-Dirty', function(assert) {
           ],
           selectedLogParserIndex: 0,
           deployLogParserStatus: 'wait',
-          parserRules: [
-            {
-              name: 'foo',
-              outOfBox: true
-            },
-            {
-              name: 'foo2',
-              outOfBox: false
-            }
-          ]
+          parserRules: [outOfBoxRule, notOutOfBoxRule],
+          parserRulesOriginal: [outOfBoxRule, notOutOfBoxRule]
         }
       }
     }
@@ -50,16 +73,8 @@ test('hasDeployableRules-AllOutOfBox-Deployed-Dirty', function(assert) {
           ],
           selectedLogParserIndex: 0,
           deployLogParserStatus: 'wait',
-          parserRules: [
-            {
-              name: 'foo',
-              outOfBox: true
-            },
-            {
-              name: 'foo2',
-              outOfBox: true
-            }
-          ]
+          parserRules: [outOfBoxRule],
+          parserRulesOriginal: [outOfBoxRule]
         }
       }
     }
@@ -81,16 +96,8 @@ test('noDeployableRules-AllOutOfBox-NotDeployed-NotDirty', function(assert) {
           ],
           selectedLogParserIndex: 0,
           deployLogParserStatus: 'wait',
-          parserRules: [
-            {
-              name: 'foo',
-              outOfBox: true
-            },
-            {
-              name: 'foo2',
-              outOfBox: true
-            }
-          ]
+          parserRules: [outOfBoxRule],
+          parserRulesOriginal: [outOfBoxRule]
         }
       }
     }
@@ -112,16 +119,8 @@ test('noDeployableRules-AllOutOfBox-Deployed-NotDirty', function(assert) {
           ],
           selectedLogParserIndex: 0,
           deployLogParserStatus: 'wait',
-          parserRules: [
-            {
-              name: 'foo',
-              outOfBox: true
-            },
-            {
-              name: 'foo2',
-              outOfBox: true
-            }
-          ]
+          parserRules: [outOfBoxRule],
+          parserRulesOriginal: [outOfBoxRule]
         }
       }
     }

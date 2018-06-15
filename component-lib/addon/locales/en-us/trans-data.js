@@ -552,7 +552,7 @@ export default {
       logParserRules: 'Log Parser Rules',
       logParsers: 'Log Parsers',
       rules: 'Rules',
-      tokens: 'Token',
+      tokens: 'Tokens',
       mapping: 'Meta',
       valueMatching: 'Matching',
       type: 'Type',
@@ -560,8 +560,19 @@ export default {
       values: 'Values',
       sampleLogs: 'Below are sample log messages',
       sampleLogsError: 'There was an error highlighting the sample logs below.',
+      invalidRegEx: 'Invalid regular expression.',
       error: {
         generic: 'An unexpected error has occurred attempting to retrieve this data.'
+      },
+      tokensList: {
+        noTokensError: 'At least one token required.'
+      },
+      captures: {
+        FULL_CAPTURE: 'Full Capture',
+        FIRST_CAPTURE: 'First Capture',
+        SECOND_CAPTURE: 'Second Capture',
+        THIRD_CAPTURE: 'Third Capture',
+        noCapturesError: 'At least one meta capture selection is required.'
       },
       modals: {
         ok: 'OK',
@@ -600,7 +611,7 @@ export default {
         delete: 'Delete',
         deploy: 'Deploy',
         save: 'Save',
-        reset: 'Reset',
+        discardChanges: 'Discard Changes',
         pleaseEnterNewToken: 'Please Enter New Token'
       },
       addParser: {
@@ -617,7 +628,8 @@ export default {
         new: 'New',
         addParserSuccessful: 'A new parser has been successfully added.',
         addParserFailed: 'A problem occurred while trying to add this new parser.',
-        nameExistsError: 'This name already exists.'
+        nameExistsError: 'The name can contain only lower case characters or numbers, it must start with a character, and it must not match an already existing log parser name.',
+        displayNameExistsError: 'This display name already exists for another log parser.'
       }
     },
     title: 'Configure',

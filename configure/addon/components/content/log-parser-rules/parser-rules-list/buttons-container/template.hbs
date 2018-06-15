@@ -7,7 +7,7 @@
       {{#rsa-form-button}}{{t 'configure.logsParser.buttons.addRule'}}{{/rsa-form-button}}
     </div>
     <div class='modal-content add-new-parser-rule'>
-      {{rsa-form-input 
+      {{rsa-form-input
         label=(t 'configure.logsParser.modals.addRule.ruleName') 
         isError=matchesExistingRuleName
         errorMessage=(t 'configure.logsParser.modals.addRule.matchesExistingRuleName')

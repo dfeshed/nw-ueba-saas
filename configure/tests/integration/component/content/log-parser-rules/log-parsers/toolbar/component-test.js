@@ -31,17 +31,6 @@ module('Integration | Component | Parser Toolbar', function(hooks) {
     assert.ok(find('.delete-log-parser'), 'Delete button is not showing');
   });
 
-  test('Deploy confirmation', async function(assert) {
-    const translation = this.owner.lookup('service:i18n');
-    const expectedMessage = translation.t('configure.logsParser.modals.deployLogParser.confirm', { logParser: 'builtin' });
-    new ReduxDataHelper(setState).parserRulesWait(false).parserRulesFormatData(0, true).build();
-    await render(hbs`{{content/log-parser-rules/save-reset-rule}}`);
-    assert.ok(find('.deploy-log-parser'), 'Deploy button is not showing');
-    await click('.deploy-log-parser button');
-    assert.ok(find('.deploy-log-parser .confirmation-modal'), 'Modal Confirmation is not showing');
-    assert.equal(find('.deploy-log-parser .confirmation-modal .modal-content p').textContent.trim(), expectedMessage, 'Confirm message is incorrect');
-  });
-
   test('Delete confirmation, query payload, and flash message', async function(assert) {
     assert.expect(7);
     const translation = this.owner.lookup('service:i18n');
