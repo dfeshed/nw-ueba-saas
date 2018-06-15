@@ -200,6 +200,7 @@ module('Integration | Component | context-panel/grid', function(hooks) {
       .build();
     this.set('dataSourceDetails', dataSourceDetails);
     await render(hbs `{{context-panel/grid dataSourceDetails=dataSourceDetails}}`);
+    assert.ok(findAll('.rsa-context-panel__config-grid__panel.full-width').length, 1, 'Width should be 100%');
     assert.ok(findAll('.rsa-context-panel__config-grid__layout')[2].textContent.indexOf('Manufacturer'), 'Manufacturer label name is taken from resultList response');
   });
 

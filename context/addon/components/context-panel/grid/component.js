@@ -4,6 +4,8 @@ import computed from 'ember-computed-decorators';
 import Component from '@ember/component';
 import { getData, getOrder, getWarningInfo } from 'context/util/context-data-modifier';
 import { inject as service } from '@ember/service';
+import { next } from '@ember/runloop';
+import { isEmpty } from '@ember/utils';
 
 const stateToComputed = ({ context: { context } }) => ({
   lookupData: context.lookupData
@@ -25,8 +27,12 @@ const GridComponent = Component.extend({
     if (warningData && !this.get('isCalledOnce')) {
       this.set('isCalledOnce', true);
       const warningMessage = `context.error.archer.${warningData.type}`;
-      const flashMessage = warningData.data + this.get('i18n').t(warningMessage);
-      this.get('flashMessages').warning(flashMessage);
+      const flashMessage = `${warningData.data}${this.get('i18n').t(warningMessage)}`;
+      // Sometimes ember computed property is not triggering in current runloop. So calling warning
+      // message in next run loop.
+      next(this, () => {
+        this.get('flashMessages').warning(flashMessage);
+      });
     }
 
     if (dsData && orderDetails) {
@@ -39,6 +45,11 @@ const GridComponent = Component.extend({
       });
       return orderedArray;
     }
+  },
+
+  @computed('dataSourceData')
+  fullWidth(dataSourceData) {
+    return isEmpty(dataSourceData) ? '' : 'full-width';
   }
 });
 export default connect(stateToComputed)(GridComponent);

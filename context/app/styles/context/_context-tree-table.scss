@@ -1,28 +1,24 @@
 .rsa-context-tree-table {
-
-  .rsa-nav-tab.is-left-aligned-primary{
+  .rsa-nav-tab.is-left-aligned-primary {
     padding: rsa-whitespace(base) rsa-whitespace(least);
     margin: 0rem rsa-whitespace(less);
     display: inline-block;
     white-space: nowrap;
   }
-
   .button {
-    background:none!important;
+    background: none!important;
     border: none;
-    padding-left:50%;
+    padding-left: 50%;
     color: text-color(secondary);
     @include rsa-font(default, small);
-    text-decoration:underline;
-    cursor:pointer;
+    text-decoration: underline;
+    cursor: pointer;
   }
-  .border
-  {
+  .border {
     padding-left: rsa-whitespace(base);
     padding-top: rsa-whitespace(less);
     padding-bottom: rsa-whitespace(less);
     @include border-bottom(1px, solid, neutral, dark, nearly-transparent);
-
   }
   .heading-text {
     @include rsa-font(header, large);
@@ -31,48 +27,43 @@
   }
   .heading-text>span {
     float: right;
-    padding:rsa-whitespace(least);
+    padding: rsa-whitespace(least);
     color: $font-fade-color;
-
   }
   .rsa-content-accordion {
-
     @include border-bottom(1px, solid, neutral, dark, nearly-transparent);
-    @include rsa-font(body,small);
+    @include rsa-font(body, small);
     color: text-color(primary, lighter);
     .rsa-icon {
       padding-right: rsa-whitespace(less);
     }
     .content {
       @include rsa-font(default, small);
-      padding:0px !important
+      padding: 0px !important
     }
     h3 {
       text-transform: inherit;
       @include border-bottom(1px, solid, neutral, dark, nearly-transparent);
-      span{
+      span {
         max-width: 100%;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
       }
     }
-
   }
-
-  &__header_button{
+  &__header_button {
     padding: rsa-whitespace(less);
     .rsa-form-button {
       margin-left: rsa-whitespace(less);
       font-size: rsa-whitespace();
     }
   }
-
-  &__createList-button{
+  &__createList-button {
     @include border-bottom(1px, solid, primary);
+    max-height: 35px;
     padding: rsa-whitespace(less);
-
-    .rsa-form-button{
+    .rsa-form-button {
       color: text-color(secondary, dark)!important;
     }
     .rsa-icon {
@@ -82,119 +73,122 @@
       float: left;
     }
   }
-
-  &__button{
+  &__button {
     padding-right: rsa-whitespace(less);
   }
-
-  &__listPanel{
+  &__listPanel {
     width: 35%;
   }
-
-
-  &__createList{
-    .rsa-form-input textarea, .rsa-form-textarea textarea {
+  &__createList {
+    &_tab {
+      max-height: 50px;
+    }
+    .rsa-form-input textarea,
+    .rsa-form-textarea textarea {
       min-height: 15rem;
       width: 288%;
       max-height: 15rem;
       max-width: 499px;
     }
-
-    .create-list-header{
+    .create-list-header {
       @include rsa-font(default, large);
       text-transform: capitalize;
-      padding-bottom: 5%;
+      max-height: 40px;
+      padding-bottom: 5px;
     }
-    .list-name{
+    .list-name {
       @include rsa-font(header, small);
-      color:text-color(neutral);
+      color: text-color(neutral);
+      padding-top: rsa-whitespace();
+      max-height: 40px;
     }
-
-    .list-desc{
-      height: 300px;
+    .list-desc {
+      height: 306px;
+      max-height: 306px;
     }
-
-    .rsa-form-button{
-      width:90%;
+    .rsa-form-button {
+      width: 90%;
     }
     .rsa-form-textarea {
       padding-bottom: 12%;
       padding-top: 5%;
     }
-    .rsa-form-input{
-      width:100%;
-
+    .rsa-form-input {
+      width: 100%;
     }
   }
-  &__headerMessage{
+  &__headerMessage {
     padding-bottom: rsa-whitespace();
     @include rsa-font(default, small);
     color: text-color(neutral);
-    white-space: nowrap; 
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-height: 15px;
   }
-
-  &__addtoListBox, &__createList{
+  &__addtoListBox,
+  &__createList {
+    .listMeta {
+      max-height: 70px;
+    }
     padding: rsa-whitespace(less);
     max-width: 100%;
     width: 500px;
-    height:450px;
-
-    .rsa-nav-tab.is-left-aligned-primary{
+    height: 450px;
+    .rsa-nav-tab.is-left-aligned-primary {
       padding: rsa-whitespace(base) rsa-whitespace(less);
       margin: 0rem rsa-whitespace(least);
       display: inline-block;
       white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      max-width: 100px;
       @include rsa-font(header);
     }
     .rsa-form-label {
       color: text-color(neutral);
     }
   }
-
   &__metaValue {
     height: 69px;
   }
-
   &__metaValue input {
     width: 500px;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+    max-height: 70px;
   }
-
-  &__table_header{
+  &__table_header {
     padding: rsa-whitespace(less);
     margin: 0.5rem 0;
-
-    @include rsa-font(header,small);
+    @include rsa-font(header, small);
     color: text-color(neutral);
-    padding-left:rsa-whitespace(more);
+    padding-left: rsa-whitespace(more);
     @include border-bottom(1px, solid, neutral, dark);
   }
-
-  &__listDetails{
+  &__listDetails {
     @include rsa-font(default, small);
     margin: 0.5rem 0;
     color: text-color(primary, lighter);
-    height: 180px;
+    height: 190px;
+    max-height: 190px;
     overflow: auto;
   }
-
-
-  &__content-header,&__content-text {
+  &__listHeader {
+    max-height: 50px;
+  }
+  &__content-header,
+  &__content-text {
     white-space: nowrap;
     width: 5em;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-
   &__content-header {
     @include rsa-font(default, smaller);
     color: text-color(primary, base);
   }
-
   &__content-text {
     padding-top: rsa-whitespace(least);
     color: text-color(primary, lighter);
@@ -205,14 +199,12 @@
     padding-bottom: rsa-whitespace(less);
     @include border-bottom(1px, solid, neutral, dark, nearly-transparent);
   }
-
   &__columntitle {
-    @include rsa-font(header,small);
+    @include rsa-font(header, small);
     padding-top: rsa-whitespace(more);
     padding-bottom: rsa-whitespace(less);
     @include border-bottom(1px, solid, neutral, dark);
   }
-
   &__checkbox {
     padding-top: rsa-whitespace(less);
     padding-bottom: rsa-whitespace(less);
@@ -220,20 +212,18 @@
     padding-left: rsa-whitespace(less);
     @include rsa-word-wrap();
   }
-
-  .rsa-nav-tab{
-    .is-left-aligned-primary {
-      flex-grow: 0;
-      padding: .5rem 0.2rem;
-      margin: .7rem;
-    }}
-  .rsa-nav-tab-group{
+  .rsa-nav-tab {
     .is-left-aligned-primary {
       flex-grow: 0;
       padding: .5rem 0.2rem;
       margin: .7rem;
     }
-
   }
-
+  .rsa-nav-tab-group {
+    .is-left-aligned-primary {
+      flex-grow: 0;
+      padding: .5rem 0.2rem;
+      margin: .7rem;
+    }
+  }
 }

@@ -173,9 +173,11 @@ radial-gradient(circle at 85% 85%, background-color(primary, darker, almost-tran
     padding-top: rsa-whitespace();
     display: flex;
     justify-content: center;
+    .full-width {
+      width: 100%;
+    }
     &__panel {
       display: block;
-      width: 100%;
     }
     &__layout {
       float: left;

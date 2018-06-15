@@ -13,18 +13,24 @@
       {{rsa-icon name="arrow-right-12" size='small'}}
     </div>
   {{/rsa-form-button}}
-  <div>
+  <div class='rsa-context-tree-table__createList_tab'> 
     <hbox>
       <vbox xs="7">
         <hbox>
           {{#rsa-nav-tab isActive=(eq active "all") click=(action 'activate' 'all')}}
-            {{t 'context.addToList.tabAll'}}
+            <span title={{t 'context.addToList.tabAll'}}>
+              {{t 'context.addToList.tabAll'}}
+            </span>
           {{/rsa-nav-tab}}
           {{#rsa-nav-tab isActive=(eq active "selected") click=(action 'activate' 'selected')}}
-            {{t 'context.addToList.tabSelected'}}
+            <span title={{t 'context.addToList.tabSelected'}}>
+              {{t 'context.addToList.tabSelected'}}
+            </span>
           {{/rsa-nav-tab}}
           {{#rsa-nav-tab isActive=(eq active "unselected") click=(action 'activate' 'unselected')}}
-            {{t 'context.addToList.tabUnselected'}}
+            <span title={{t 'context.addToList.tabUnselected'}}>
+              {{t 'context.addToList.tabUnselected'}}
+            </span>
           {{/rsa-nav-tab}}
         </hbox>
       </vbox>
@@ -37,7 +43,7 @@
     </hbox>
   </div>
 
-  <div>
+  <div class='rsa-context-tree-table__listHeader'>
     <hbox>
       <vbox xs="5" class="rsa-context-tree-table__columntitle">
         {{t 'context.addToList.listTitle'}}
