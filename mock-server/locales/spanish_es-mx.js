@@ -2699,6 +2699,11 @@ define('sa/locales/es-mx/translations', ['exports'], function (exports) {
     error: {
       generic: 'Se produjo un error inesperado al intentar recuperar estos datos.'
     }
+  },
+  contextmenu: {
+    actions: {
+      copyMetaAction: 'copiar meta'
+    }
   }
 };
 });

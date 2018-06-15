@@ -2699,6 +2699,11 @@ define('sa/locales/ja-jp/translations', ['exports'], function (exports) {
     error: {
       generic: 'このデータを取得しようとしたときに、予期しないエラーが発生しました。'
     }
+  },
+  contextmenu: {
+    actions: {
+      copyMetaAction: 'コピーメタ'
+    }
   }
 };
 });

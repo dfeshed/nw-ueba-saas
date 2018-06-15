@@ -2699,6 +2699,11 @@ define('sa/locales/de-de/translations', ['exports'], function (exports) {
     error: {
       generic: 'Beim Versuch, diese Daten abzurufen, ist ein unerwarteter Fehler aufgetreten.'
     }
+  },
+  contextmenu: {
+    actions: {
+      copyMetaAction: 'kopiere Meta'
+    }
   }
 };
 });
