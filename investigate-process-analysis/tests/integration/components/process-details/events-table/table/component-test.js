@@ -45,17 +45,13 @@ module('Integration | Component | process-details/events-table/table', function(
     timeFormat.set('_selected', { format: 'hh:mm:ss' });
     dateFormat.set('_selected', { format: 'YYYY-MM-DD' });
 
-    assert.expect(5);
+    assert.expect(4);
 
     await render(hbs`{{process-details/events-table/table}}`);
     assert.equal(findAll('.rsa-data-table-body-row').length, 2, 'Expected to render 2 rows');
     assert.equal(find('.label').textContent, 'Events (2)', 'Expected 2 Events count');
-    await click('.ember-power-select-trigger');
-    assert.equal(findAll('.ember-power-select-option').length, 2, 'Expected to options');
-    await click('.ember-power-select-option');
-    assert.equal(find('.ember-power-select-selected-item').textContent.trim(), 'Event Time-ASC', 'Selected option should be Event Time-ASC');
-    await click('.ember-power-select-trigger');
-    await click(findAll('.ember-power-select-option')[1]);
-    assert.equal(find('.ember-power-select-selected-item').textContent.trim(), 'Event Time-DESC', 'Selected option should be Event Time-ASC');
+    assert.equal(findAll('.rsa-icon-arrow-down-7-filled').length, 1, 'Expected down arrow icon');
+    await click('.sort');
+    assert.equal(findAll('.rsa-icon-arrow-up-7-filled').length, 1, 'Expected up arrow icon');
   });
 });

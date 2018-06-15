@@ -2,7 +2,9 @@ export default [
   {
     field: 'eventTime',
     title: 'Event Time',
-    type: 'date'
+    type: 'date',
+    isDescending: true,
+    enableSort: true
   },
   {
     field: 'category',

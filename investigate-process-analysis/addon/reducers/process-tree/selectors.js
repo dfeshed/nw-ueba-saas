@@ -25,9 +25,9 @@ export const eventsData = createSelector(
   [_eventsData, _eventsSortField],
   (eventsData, eventsSortField) => {
     let data = eventsData;
-    if (eventsSortField && eventsSortField.type == 'DESC') {
+    if (eventsSortField && eventsSortField.isDescending) {
       data = _.sortBy(eventsData, eventsSortField.field).reverse();
-    } else if (eventsSortField && eventsSortField.type == 'ASC') {
+    } else if (eventsSortField) {
       data = _.sortBy(eventsData, eventsSortField.field);
     }
     return data;

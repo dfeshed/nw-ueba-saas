@@ -12,7 +12,7 @@ const stateToComputed = (state) => ({
   eventsData: eventsData(state),
   config: eventsTableConfig(),
   eventsCount: eventsCount(state),
-  selectedSortField: eventsSortField(state)
+  selectedSortType: eventsSortField(state)
 });
 
 const dispatchToActions = {
@@ -20,9 +20,12 @@ const dispatchToActions = {
 };
 const processEventsTable = Component.extend({
   classNames: ['process-events-table'],
-  options: [
-    { label: 'Event Time', field: 'evemt.time', type: 'ASC' },
-    { label: 'Event Time', field: 'event.time', type: 'DESC' }
-  ]
+  actions: {
+    sort(column) {
+      column.set('isDescending', !column.isDescending);
+      this.send('setSortField', { field: column.field, isDescending: column.isDescending });
+    }
+  }
+
 });
 export default connect(stateToComputed, dispatchToActions)(processEventsTable);

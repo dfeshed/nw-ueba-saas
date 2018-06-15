@@ -11,23 +11,18 @@
     min-height: 85vh!important;
     overflow-y: auto;
   }
-}
-.label {
-  color: text-color(primary, lighter);
-  font-weight: 100;
-  font-size: 1.28rem;
-  letter-spacing: 0.05rem;
-}
-.events-sort-field {
-  width: 267px;
-  margin: -7px 21px 7px 31px;
-  .power-select {
-    width: 126px;
+
+  .label {
+    color: text-color(primary, lighter);
+    font-weight: 100;
+    font-size: 1.28rem;
+    letter-spacing: 0.05rem;
   }
-  .ember-power-select-trigger {
-    width: 9rem;
+  .events-count {
+    margin: -7px 21px 7px 31px;
   }
 }
+
 
 .header-button {
   color: text-color(primary, light);
@@ -38,3 +33,4 @@
     color: text-color(primary, lightest);
   }
 }
+

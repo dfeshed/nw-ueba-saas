@@ -47,10 +47,10 @@
     display: block;
     transition: width .5s;
     &.collapse {
-      width: 700px
+      width: 700px;
     }
     &.expand {
-      width: calc(100vw - 504px)
+      width: calc(100vw - 504px);
     }
     &.collapse-event-panel {
       width: calc(100vw/2 - 4px);
