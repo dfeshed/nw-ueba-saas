@@ -21,6 +21,7 @@ export const ruleFormats = (state) => _parserRulesState(state).ruleFormats;
 export const logParsers = (state) => _parserRulesState(state).logParsers;
 export const parserRules = (state) => _parserRulesState(state).parserRules;
 const _parserRulesOriginal = (state) => _parserRulesState(state).parserRulesOriginal;
+const _deletedRules = (state) => _parserRulesState(state)._deletedRules;
 export const selectedLogParserIndex = (state) => _parserRulesState(state).selectedLogParserIndex;
 export const selectedParserRuleIndex = (state) => _parserRulesState(state).selectedParserRuleIndex;
 export const deviceTypes = (state) => _parserRulesState(state).deviceTypes;
@@ -30,11 +31,11 @@ export const isTransactionUnderway = (state) => _parserRulesState(state).isTrans
 export const sampleLogs = (state) => _parserRulesState(state).sampleLogs;
 export const sampleLogsStatus = (state) => _parserRulesState(state).sampleLogsStatus;
 
+
 // Compares (deeply) the copy of the original parser rules with the current parser rules to determine if any
 // changes have been made
 export const hasRuleChanges = createSelector(
-  parserRules,
-  _parserRulesOriginal,
+  parserRules, _parserRulesOriginal,
   (parserRules, originalParserRules) => {
     return !_.isEqual(parserRules, originalParserRules);
   }
@@ -69,7 +70,7 @@ export const hasInvalidRules = createSelector(
   parserRules,
   (invalidRules, rules) => {
     // there are invalid rules if there are no rules at all, or if any one rule is invalid
-    return !rules.length || !!invalidRules.length;
+    return (!rules.length && !_deletedRules.length) || !!invalidRules.length;
   }
 );
 

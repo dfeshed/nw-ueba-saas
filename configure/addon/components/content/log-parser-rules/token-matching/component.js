@@ -4,6 +4,7 @@ import { selectedParserRule } from 'configure/reducers/content/log-parser-rules/
 import { updateSelectedRule } from 'configure/actions/creators/content/log-parser-rule-creators';
 import { next } from '@ember/runloop';
 import computed, { not, empty } from 'ember-computed-decorators';
+import $ from 'jquery';
 
 const stateToComputed = (state) => {
   return {
@@ -27,7 +28,7 @@ const TokenMatching = Component.extend({
 
   @computed('newToken', 'tokens')
   isNewTokenInvalid(newToken, currentTokens) {
-    return !newToken || !!currentTokens.findBy('value', newToken);
+    return !newToken || !newToken.trim() || !!currentTokens.findBy('value', newToken);
   },
 
   @not('rule.outOfBox') isEditable: true,
@@ -47,6 +48,10 @@ const TokenMatching = Component.extend({
 
     editToken(originalToken, tokenIndex, event) {
       const updatedToken = event.target.value;
+      if (updatedToken.trim() === '') {
+        $(event.target).val(originalToken);
+        return;
+      }
       if (updatedToken !== originalToken) {
         const { rule, tokens } = this.getProperties('rule', 'tokens');
         const updatedRule = {

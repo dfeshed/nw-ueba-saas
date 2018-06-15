@@ -23,7 +23,7 @@ const dispatchToActions = {
   addLogParser
 };
 
-const VALID_PARSERNAME_REGEX = /^[a-z][a-z0-9]{2,29}$/;
+const VALID_PARSERNAME_REGEX = /^[a-z][a-z0-9_]{2,29}$/;
 
 const AddLogParser = Component.extend(Notifications, {
   classNames: ['add-log-parser'],

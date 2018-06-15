@@ -16,7 +16,8 @@ const initialState = Immutable.from({
   deviceTypesStatus: null,
   deviceClasses: [],
   deviceClassesStatus: null,
-  isTransactionUnderway: false
+  isTransactionUnderway: false,
+  deletedRules: []
 });
 
 test('With FETCH_DEVICE_TYPES, the start handler updates state', function(assert) {
@@ -190,7 +191,8 @@ test('With DELETE_PARSER_RULE, the action is successfull', function(assert) {
   const expectedResult = {
     ...initialState,
     selectedParserRuleIndex: 0,
-    parserRules: [{ name: 'foo2' }]
+    parserRules: [{ name: 'foo2' }],
+    deletedRules: [{ name: 'foo' }]
   };
   const action = { type: ACTION_TYPES.DELETE_PARSER_RULE };
   const result = reducer(initialState, action);

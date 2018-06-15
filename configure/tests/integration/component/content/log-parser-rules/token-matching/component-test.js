@@ -44,6 +44,8 @@ module('Integration | Component | token matching', function(hooks) {
     assert.equal(find(selectors.addTokenButton).disabled, false, 'The add button should be enabled when there is no value in the input');
     await fillIn(selectors.addTokenInput, 'ipv4=');
     assert.equal(find(selectors.addTokenButton).disabled, true, 'The add button should be disabled when another token exists with the same name');
+    await fillIn(selectors.addTokenInput, '   ');
+    assert.equal(find(selectors.addTokenButton).disabled, true, 'The add button should be disabled if it is only whitepsace');
     await fillIn(selectors.addTokenInput, '123');
     await click(selectors.addTokenButton);
     assert.equal(find('.token-matching .firstItem input').value, '123', 'Token 123 was not added');

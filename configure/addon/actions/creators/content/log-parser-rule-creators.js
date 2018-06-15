@@ -1,6 +1,7 @@
 import * as ACTION_TYPES from 'configure/actions/types/content';
 import api from 'configure/actions/api/content/log-parser-rules';
 import { success, failure, info } from 'configure/sagas/flash-messages';
+import Immutable from 'seamless-immutable';
 
 import {
   selectedLogParserName,
@@ -185,12 +186,7 @@ const saveParserRule = () => {
     const rules = parserRules(getState());
     dispatch({
       type: ACTION_TYPES.SAVE_PARSER_RULE,
-      promise: api.saveParserRule(logParserName, rules),
-      meta: {
-        onSuccess() {
-          dispatch(fetchParserRules());
-        }
-      }
+      promise: api.saveParserRule(logParserName, rules)
     });
   };
 };
@@ -209,10 +205,12 @@ const highlightSampleLogs = (logText) => {
 
 
 const updateSelectedRule = (rule) => {
+  // set the rule to dirty because it is being changed
+  const updatedRule = Immutable.isImmutable(rule) ? rule.set('dirty', true) : { ...rule, dirty: true };
   return (dispatch) => {
     dispatch({
       type: ACTION_TYPES.UPDATE_SELECTED_PARSER_RULE,
-      payload: rule
+      payload: updatedRule
     });
     dispatch(highlightSampleLogs());
   };

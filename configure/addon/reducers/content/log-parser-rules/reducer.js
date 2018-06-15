@@ -14,6 +14,7 @@ const initialState = {
   parserRules: [],
   parserRulesStatus: null, // wait, completed, error,
   parserRulesOriginal: [], // a copy of the fetched parserRules for identifying changes
+  deletedRules: [], // list of deleted rules prior to saving
 
   selectedParserRuleIndex: 0,
   selectedLogParserIndex: 0,
@@ -127,7 +128,8 @@ export default reduxActions.handleActions({
     return state.merge(
       {
         parserRules: state.parserRules.filter((rule) => rule !== selectedRule),
-        selectedParserRuleIndex: 0
+        selectedParserRuleIndex: 0,
+        deletedRules: [...state.deletedRules, selectedRule]
       }
     );
   },
@@ -141,10 +143,13 @@ export default reduxActions.handleActions({
         return state.set('saveRuleStatus', 'error');
       },
       success: (state) => {
+        const selectedParser = state.logParsers[state.selectedLogParserIndex];
         return state.merge(
           {
             saveRuleStatus: 'completed',
-            parserRulesOriginal: state.parserRules // once saved, the parserRulesOriginal and the parserRules should be the same
+            parserRulesOriginal: state.parserRules, // once saved, the parserRulesOriginal and the parserRules should be the same
+            deletedRules: [],
+            logParsers: state.logParsers.map((parser) => parser !== selectedParser ? parser : parser.set('dirty', true))
           }
         );
       }
