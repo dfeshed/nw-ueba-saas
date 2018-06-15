@@ -51,7 +51,12 @@ const _getModifiedActions = (contextActions, i18n) => {
           // encoding required to prevent special chars
           // from blowing up the app
           const encodedMetaValue = encodeURIComponent(selection[0].metaValue);
-          windowProxy.openInNewTab(action.urlFormat.replace('{0}', encodedMetaValue).replace('{1}', selection[0].metaName));
+          const pivoteUrl = action.urlFormat.replace('{0}', encodedMetaValue).replace('{1}', selection[0].metaName);
+          if (action.openInNewTab === true || action.openInNewTab === 'true') {
+            windowProxy.openInNewTab(pivoteUrl);
+          } else {
+            windowProxy.openInCurrentTab(pivoteUrl);
+          }
         } else if (nonUrlBasedActions[action.id]) {
           nonUrlBasedActions[action.id](selection, contextDetails);
         } else {

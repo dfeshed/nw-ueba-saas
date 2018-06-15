@@ -8,7 +8,7 @@ import { next } from '@ember/runloop';
 let serv = null;
 
 const assertForEventAnalysisPanelIPActions = (actions, assert) => {
-  assert.equal(actions.length, 3, 'Should have minimum three actions');
+  assert.equal(actions.length, 4, 'Should have minimum four actions');
   assert.ok(actions.find((action) => action.label === 'copyMetaAction'), 'Should have copy action');
 };
 

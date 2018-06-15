@@ -93,6 +93,7 @@ export default {
     ],
     pluginRawConfig: '',
     disabled: '',
+    openInNewTab: 'true',
     id: 'InvestigationEventRefocusNewTabSplitSessionsNewTabNew',
     moduleClasses: [
       'UAP.investigation.analysis.view.EventAnalysisPanel'
@@ -102,7 +103,8 @@ export default {
     urlFormat: 'http://www.google.com/search?q={0}',
     displayName: 'nw-event-value-drillable-contains',
     cssClasses: [
-      'nw-event-value-drillable-contains'
+      'nw-event-value-drillable-contains',
+      'ip.src'
     ],
     description: '',
     type: 'UAP.common.contextmenu.actions.AbstractContextAction',
@@ -111,6 +113,7 @@ export default {
       'investigation'
     ],
     pluginRawConfig: '',
+    openInNewTab: 'false',
     disabled: '',
     id: 'InvestigationEventRefocusNewTabSplitSessionsNewTabNew',
     moduleClasses: [

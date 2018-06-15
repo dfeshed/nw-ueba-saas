@@ -3152,7 +3152,8 @@ export default {
       applyRefocusInNewTabLabel: 'Refocus EQUALS Drill in New Tab',
       applyRefocusNotEqualsInNewTabLabel: 'Refocus !EQUALS Drill in New Tab',
       applyRefocusContainsInNewTabLabel: 'Refocus Contains Drill in New Tab',
-      applyRefocusSessionSplitsInNewTabLabel: 'Find Session Fragments in New Tab'
+      applyRefocusSessionSplitsInNewTabLabel: 'Find Session Fragments in New Tab',
+      getHostsLookup: 'Hosts Lookup'
     },
     groups: {
       investigationGroup: 'Investigation',
