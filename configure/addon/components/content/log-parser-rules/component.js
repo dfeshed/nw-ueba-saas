@@ -24,7 +24,6 @@ const stateToComputed = (state) => ({
   isTransactionUnderway: isTransactionUnderway(state)
 });
 
-// TODO: unbind in willDestroy
 const ParserRules = Component.extend({
   classNames: ['log-parser-rules'],
   classNameBindings: ['isTransactionUnderway:transaction-in-progress'],
@@ -34,7 +33,7 @@ const ParserRules = Component.extend({
     this._super(...arguments);
     // table height to full window on load and center are slit in half
     const p = $('.log-parser-rules').position();
-    const n = Math.round(p.top) + 60;
+    const n = Math.round(p.top) + 100;
     let h = $(window).height() - n;
     $('.parserContainer').css('height', h);
     $('.trTop, .trMessage, .matchingMapping').css('height', h / 2);
@@ -42,8 +41,11 @@ const ParserRules = Component.extend({
     $(window).resize(function() {
       h = $(window).height() - n;
       $('.parserContainer').css('height', h);
-      $('.trTop, .trMessage, .matchingMapping').css('height', h / 2);
+      $('.trTop, .trMessage').css('height', h / 2);
     });
+  },
+  didDestroyElement() {
+    $(window).unbind('resize');
   }
 });
 export default connect(stateToComputed)(ParserRules);

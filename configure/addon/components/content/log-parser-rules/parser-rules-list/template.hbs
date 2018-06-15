@@ -27,21 +27,25 @@
     {{t 'configure.logsParser.error.generic'}}
   </div>
 {{else}}
-  <table class='parserTable'>
-    {{#each parserRules as |parserRule index|}}
+  <div class='parser-table-container'>
+    <table class='parserTable'>
+      {{#each parserRules as |parserRule index|}}
       <tr>
         <td class="{{if (eq index 0) 'firstItem'}} {{if (eq selectedParserRuleIndex index) 'active'}} {{if (contains parserRule.name invalidRules) 'invalid-rule'}}" {{action "selectParserRule" index}}>
-          {{#if parserRule.dirty}}
-            {{rsa-icon name="synchronize-3" class="deploy-icon"}}
-          {{else}}
-            &nbsp;&nbsp;&nbsp;&nbsp;
-          {{/if}}
-          <span class="parser-rule-name">{{parserRule.name}}</span>
-          {{#if parserRule.outOfBox}}
-            <span class="outOfBox-indicator">&nbsp;[RSA]</span>
-          {{/if}}
+          <div>
+            {{#if parserRule.dirty}}
+              {{rsa-icon name="synchronize-3" class="deploy-icon"}}
+            {{else}}
+              &nbsp;&nbsp;&nbsp;&nbsp;
+            {{/if}}
+            <span class="parser-rule-name">{{parserRule.name}}</span>
+            {{#if parserRule.outOfBox}}
+              <span class="outOfBox-indicator">&nbsp;[RSA]</span>
+            {{/if}}
+          </div>
         </td>
       </tr>
-    {{/each}}
-  </table>
+      {{/each}}
+    </table>
+  </div>
 {{/if}}

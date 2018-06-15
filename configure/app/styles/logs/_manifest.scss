@@ -82,6 +82,7 @@ div.modal-content.add-new-parser-rule {
     }
     td.token {
       width: 25%;
+      height: 300px;
     }
     td.values {
       overflow: auto;
@@ -121,9 +122,6 @@ div.modal-content.add-new-parser-rule {
       }
     }
   }
-  .value-matching {
-
-  }
 
   .leftArea, .centerArea, .rightArea {
     margin:0;
@@ -153,13 +151,17 @@ div.modal-content.add-new-parser-rule {
     width: 55%;
     vertical-align: top;
     position: relative;
-    .centerTop {
-      padding: rsa-whitespace();
-      padding-top: 0px;
-      .ruleRegex {
-        margin-top: rsa-whitespace(more);
+    .value-matching {
+      label {
+        padding-top: rsa-whitespace(less);
       }
-      overflow: auto;
+    }
+    .ruleRegex {
+      margin-top: rsa-whitespace(less);
+      textarea {
+        min-height: 8rem;
+        max-height: 8rem;
+      }
     }
     .parserRuleName {
       padding-top: rsa-whitespace();
@@ -167,7 +169,13 @@ div.modal-content.add-new-parser-rule {
       margin-bottom: rsa-whitespace();
       border-top: 1px solid border-color(primary);
       width: 100%;
-
+      div {
+        overflow: hidden; 
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        max-width: 500px;
+        height: 30px;
+      }
     }
     h1 {
       margin: 0px;
@@ -202,6 +210,16 @@ div.modal-content.add-new-parser-rule {
     color: text-color(accentOne);
     padding-bottom: rsa-whitespace(less);
     display: inline-block;
+  }
+  .parser-table-container {
+    overflow: auto;
+    height: 70vh; 
+    .parserTable td div {
+      overflow: hidden; 
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      max-width: 250px;
+    }
   }
   .parser-rules-list {
     .invalid-rule {
