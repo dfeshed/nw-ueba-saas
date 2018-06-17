@@ -9,6 +9,8 @@ import os
 import requests
 import string
 import multiprocessing
+import subprocess
+
 
 MACHINE_URL = 'http://localhost:9200/'
 URL_KIBANA = MACHINE_URL + '.kibana/'
@@ -275,6 +277,7 @@ def main(path, elasticsearch_url):
     update_kibana_index_from_file(path + SEARCHES, URL_KIBANA_SEARCHES)
     update_kibana_index_from_file(path + VISUALIZATION, URL_KIBANA_VISUALIZATIONS)
     update_kibana_index_from_file(path + DASHBOARDS, URL_KIBANA_DASHBOARDS)
+    subprocess.call(["/var/lib/netwitness/presidio/elasticsearch/init/init_kibana.sh"])
 
 
 parser = argparse.ArgumentParser(description='init elasticseatch and kibana')

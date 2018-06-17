@@ -13,29 +13,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>${maven-resources-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>copy-resources</id>
-                        <!-- here the phase you need -->
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${basedir}/target/extra-resources</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>src/main/resources</directory>
-                                    <filtering>true</filtering>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
             <!-- create RPM -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -56,13 +33,30 @@
                             <groupname>${presidio.groupname}</groupname>
                             <sources>
                                 <source>
-                                    <location>${project.build.directory}/extra-resources</location>
+                                    <location>src/main/resources</location>
+                                    <excludes>
+                                        <exclude>init_kibana.sh</exclude>
+                                    </excludes>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directoryIncluded>false</directoryIncluded>
+                            <directory>${presidio-app.directory}/elasticsearch/init</directory>
+                            <username>${presidio.username}</username>
+                            <groupname>${presidio.groupname}</groupname>
+                            <filemode>755</filemode>
+                            <sources>
+                                <source>
+                                    <location>src/main/resources</location>
+                                    <includes>
+                                        <include>init_kibana.sh</include>
+                                    </includes>
                                 </source>
                             </sources>
                         </mapping>
                         <mapping>
                             <directoryIncluded>true</directoryIncluded>
-
                             <directory>${presidio-app.directory}/elasticsearch/init/data/indexes</directory>
                             <username>${presidio.username}</username>
                             <groupname>${presidio.groupname}</groupname>
@@ -75,6 +69,7 @@
                     </mappings>
                     <requires>
                         <require>python &gt;= 2.7.5</require>
+                        <require>unzip</require>
                     </requires>
                     <description>
                         Presidio(UEBA) elasticsearch &amp; kibana init for indexes, dashboards, patterns, searches, visualizations
