@@ -17,6 +17,7 @@ source /etc/sysconfig/airflow
 OWB_ALLOW_NON_FIPS=on python -m pip install --no-index --find-links=$(dirname "$AIRFLOW_PKG_REQ")/../virtualenv virtualenv==15.2.0
 OWB_ALLOW_NON_FIPS=on python -m virtualenv $AIRFLOW_VENV
 source $AIRFLOW_VENV/bin/activate
+OWB_ALLOW_NON_FIPS=on python -m pip install --no-index --find-links=$(dirname "$AIRFLOW_PKG_REQ") numpy
 OWB_ALLOW_NON_FIPS=on python -m pip install --no-index --find-links=$(dirname "$AIRFLOW_PKG_REQ") -r $AIRFLOW_PKG_REQ
 deactivate
 
