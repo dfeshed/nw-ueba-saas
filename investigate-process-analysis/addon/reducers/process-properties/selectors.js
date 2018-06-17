@@ -57,3 +57,26 @@ export const hasProperties = createSelector(
   }
 );
 
+export const processDetails = (selectedProcess = {}) => {
+  const isSourceMatching = selectedProcess.processVidSrc === selectedProcess.processId;
+
+  const processDetails = {
+    sessionId: selectedProcess.sessionId,
+    processName: selectedProcess.processName,
+    processId: selectedProcess.processId,
+    eventTime: selectedProcess.eventTime,
+    userAll: selectedProcess.userAll
+  };
+
+  if (isSourceMatching) {
+    processDetails.paramDst = selectedProcess.paramSrc;
+    processDetails.checksum = selectedProcess.checksumSrc;
+    processDetails.directoryDst = selectedProcess.directorySrc;
+  } else {
+    processDetails.paramDst = selectedProcess.paramDst;
+    processDetails.checksum = selectedProcess.checksumDst;
+    processDetails.directoryDst = selectedProcess.directoryDst;
+  }
+  return processDetails;
+};
+

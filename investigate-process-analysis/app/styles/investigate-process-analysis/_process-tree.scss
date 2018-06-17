@@ -74,7 +74,7 @@
   }
 
   .process-icon {
-
+    pointer-events: none;
     fill: text-color(primary);
 
     &.selected {

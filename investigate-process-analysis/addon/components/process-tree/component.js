@@ -9,6 +9,15 @@ import { tree, hierarchy } from 'd3-hierarchy';
 import { transitionElbow, elbow, appendText, updateText, appendIcon } from './helpers/d3-helpers';
 import { ieEdgeDetection } from 'component-lib/utils/browser-detection';
 import { toggleProcessDetailsVisibility } from 'investigate-process-analysis/actions/creators/process-visuals';
+import $ from 'jquery';
+import { inject as service } from '@ember/service';
+import { processDetails } from 'investigate-process-analysis/reducers/process-properties/selectors';
+import { fetchProcessDetails } from 'investigate-process-analysis/actions/creators/process-properties';
+import { resetFilterValue } from 'investigate-process-analysis/actions/creators/process-filter';
+import { sendTetherEvent } from 'component-lib/utils/tooltip-trigger';
+import { truncateText } from './util/data';
+import zoomed from './helpers/zoomed';
+
 import {
   isStreaming,
   children,
@@ -21,11 +30,7 @@ import {
   getChildEvents,
   setSelectedProcess,
   selectedProcessEvents } from 'investigate-process-analysis/actions/creators/events-creators';
-import { fetchProcessDetails } from 'investigate-process-analysis/actions/creators/process-properties';
-import { resetFilterValue } from 'investigate-process-analysis/actions/creators/process-filter';
 
-import { truncateText } from './util/data';
-import zoomed from './helpers/zoomed';
 
 const stateToComputed = (state) => ({
   rootProcess: rootProcess(state),
@@ -46,10 +51,15 @@ const dispatchToActions = {
   toggleProcessDetailsVisibility
 };
 
+let freeIdCounter = 0;
+let hideEvent = null;
+let displayEvent = null;
 
 const TreeComponent = Component.extend({
 
   zoomed,
+
+  eventBus: service(),
 
   classNames: 'process-tree',
 
@@ -253,7 +263,7 @@ const TreeComponent = Component.extend({
   },
 
   _onNodeEnter(node, source) {
-    const { expandIcon, collapseIcon, rectWidth: width } = this.getProperties('expandIcon', 'collapseIcon', 'rectWidth');
+    const { expandIcon, collapseIcon, rectWidth: width, eventBus } = this.getProperties('expandIcon', 'collapseIcon', 'rectWidth', 'eventBus');
     const nodeEnter = node.enter().append('g')
       .attr('class', 'process')
       .attr('data-id', function(d) {
@@ -269,7 +279,42 @@ const TreeComponent = Component.extend({
 
     this._appendExpandCollapseIcon(nodeEnter, collapseIcon, expandIcon, width);
 
-    nodeEnter.append('circle')
+    const circle = nodeEnter.append('g')
+      .attr('id', function() {
+        return `endpoint-process-${freeIdCounter++}`;
+      })
+      .on('mouseover', function(d) {
+        const $el = $(this);
+        $el.addClass('panel1');
+        if (hideEvent) {
+          run.cancel(hideEvent);
+          hideEvent = null;
+        }
+        const event = run.later(() => {
+          if (!$el[0]) {
+            return;
+          }
+          sendTetherEvent($el[0], 'panel1', eventBus, 'display', processDetails(d.data));
+        }, 200);
+        displayEvent = event;
+      })
+      .on('mouseleave', function(d) {
+        const $el = $(this);
+        $el.addClass('panel1');
+        if (displayEvent) {
+          run.cancel(displayEvent);
+          displayEvent = null;
+        }
+        const event = run.later(() => {
+          if ($el[0]) {
+            sendTetherEvent($el[0], 'panel1', eventBus, 'hide', d);
+          }
+        }, 200);
+        hideEvent = event;
+
+      });
+
+    circle.append('circle')
       .attr('class', 'process');
 
     appendText({
@@ -527,6 +572,9 @@ const TreeComponent = Component.extend({
       d.children = null;
     }
     this.buildChart(d);
+  },
+  willDestroyElement() {
+    freeIdCounter = 0;
   }
 });
 

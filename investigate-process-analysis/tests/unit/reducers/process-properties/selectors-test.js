@@ -5,7 +5,8 @@ import {
   processProperties,
   osType,
   rootHash,
-  hasProperties
+  hasProperties,
+  processDetails
 } from 'investigate-process-analysis/reducers/process-properties/selectors';
 
 module('Unit | Selectors | process-properties', function() {
@@ -80,5 +81,32 @@ module('Unit | Selectors | process-properties', function() {
     assert.equal(test2, false);
   });
 
+  test('processDetails returns the modified process details', function(assert) {
+    // Matching src
+    let selectedProcess = {
+      processId: 1,
+      processVidSrc: 1,
+      paramSrc: 'SRC',
+      paramDst: 'DST',
+      directoryDst: 'd:/',
+      directorySrc: 'c:/'
+    };
+    let result = processDetails(selectedProcess);
+    assert.equal(result.paramDst, 'SRC');
+    assert.equal(result.directoryDst, 'c:/');
+
+    // Matching dst
+    selectedProcess = {
+      processId: 1,
+      processVidSrc: 2,
+      paramSrc: 'SRC',
+      paramDst: 'DST',
+      directoryDst: 'd:/',
+      directorySrc: 'c:/'
+    };
+    result = processDetails(selectedProcess);
+    assert.equal(result.paramDst, 'DST');
+    assert.equal(result.directoryDst, 'd:/');
+  });
 
 });

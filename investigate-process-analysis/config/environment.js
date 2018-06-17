@@ -5,7 +5,7 @@ const mockPort = process.env.MOCK_PORT || 9999;
 const mockServerUrl = `http://localhost:${mockPort}`;
 
 module.exports = function(environment/* , appConfig */) {
-  return {
+  const ENV = {
     modulePrefix: 'investigate-process-analysis',
     mockServerUrl,
     mockPort,
@@ -20,7 +20,16 @@ module.exports = function(environment/* , appConfig */) {
       includeTimezone: 'all'
     },
     i18n: {
-      defaultLocale: 'en-us'
+      defaultLocale: 'en-us',
+      defaultFallback: true,
+      includedLocales: ['en-us']
     }
   };
+
+  if (environment === 'test') {
+    ENV['ember-tether'] = {
+      bodyElementId: 'ember-testing'
+    };
+  }
+  return ENV;
 };
