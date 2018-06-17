@@ -107,8 +107,8 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <executable>scripts/build/build-workflows.sh</executable>
-                            <arguments><argument>${rpm.timestamp}</argument></arguments>
+                            <executable>bash</executable>
+                            <arguments><argument>--verbose scripts/build/build-workflows.sh ${rpm.timestamp}</argument></arguments>
                         </configuration>
                     </execution>
                 </executions>
