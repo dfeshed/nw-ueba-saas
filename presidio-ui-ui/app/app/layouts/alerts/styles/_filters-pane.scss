@@ -91,7 +91,7 @@ $clrAlertsFilterLabel: #004f8f;
                         border: none;
                         input {
                             font-family: 'Open Sans', sans-serif;
-                            color: #0a0d24;
+                            color: var(--main-widgets-titles-text-color);
                             font-size: 14px;
                             line-height: 24px;
                         }
@@ -188,11 +188,11 @@ $clrAlertsFilterLabel: #004f8f;
                             box-sizing: border-box;
                             //width: #{$fsMsValueWidth - 2px};
                             text-align: left;
-                            background-color: $clrWhite;
+                            background-color: var(--main-widgets-titles-background-color);
                             //font-size: #{$basicFontSize * 0.85};
                             font-size: 14px;
                             font-family: 'Open Sans', sans-serif;
-                            color: #0a0d24;
+                            color: var(--main-widgets-titles-text-color);
 
                             &:hover {
                                 background-color: $clrGrey20;
@@ -216,6 +216,10 @@ $clrAlertsFilterLabel: #004f8f;
 
             .k-animation-container ul li {
                 width: 115px;
+            }
+
+            .k-block, .k-button, .k-draghandle, .k-grid-header, .k-grouping-header, .k-header, .k-pager-wrap, .k-toolbar, .k-treemap-tile, html .km-pane-wrapper .k-header{
+                background-color: var(--main-widgets-background-color);
             }
         }
     }
@@ -249,7 +253,7 @@ $clrAlertsFilterLabel: #004f8f;
             border: none;
             background-color: transparent;
             margin-right: 10px;
-            color: #004f8f;
+            color: var(--main-widgets-titles-link-color);
             font-size: 14px;
             text-decoration: underline;
 
@@ -261,6 +265,11 @@ $clrAlertsFilterLabel: #004f8f;
                 border: none;
             }
         }
+    }
+
+    .k-multiselect-wrap {
+        background-color: var(--main-widgets-background-color);;
+        color: var(--main-widgets-titles-text-color);
     }
 
     @media only screen and (max-height: 900px) {

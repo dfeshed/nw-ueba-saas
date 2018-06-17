@@ -22,7 +22,7 @@ $clrGrey40: #e7e7e8;
 $clrGrey20: #F7F7F7;
 $clrGrey10: #FAFAFA;
 $clrWhite: #FFFFFF;
-$clrButtonRegular: #004f8f;
+$clrButtonRegular: var(--main-widgets-titles-text-color);;
 $clrButtonHover: #8bc6f7;
 $clrButtonPressed: #4388d1;
 $clrButtonDisabled: #cbcbcb;

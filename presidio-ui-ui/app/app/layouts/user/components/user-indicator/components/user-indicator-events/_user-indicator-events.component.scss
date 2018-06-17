@@ -1,7 +1,7 @@
 user-indicator-events {
     @mixin alertPageTableOverrides() {
         tr {
-            background-color: #ececee;
+            background-color: var(--main-widgets-background-color);
             color: #024d89;
             font-family: 'Open Sans', sans-serif;
             font-size: 12px;

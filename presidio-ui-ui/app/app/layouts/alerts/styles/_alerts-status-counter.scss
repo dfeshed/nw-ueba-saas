@@ -35,31 +35,34 @@
         &--count {
 
             font-family: 'Open Sans', sans-serif;
-            font-size: 14px;
+            color: var(--main-widgets-titles-text-color);
+            font-size: 12px;
+            font-weight: 600;
 
             margin-right: 3px;
 
-            &.Critical {
-                color: var(--main-critical-severity-color);
-            }
-
-            &.High {
-                color: var(--main-high-severity-color);
-            }
-
-            &.Medium {
-                color: var(--main-medium-severity-color);
-            }
-
-            &.Low {
-                color: var(--main-low-severity-color);
-            }
+            //&.Critical {
+            //    color: var(--main-critical-severity-color);
+            //}
+            //
+            //&.High {
+            //    color: var(--main-high-severity-color);
+            //}
+            //
+            //&.Medium {
+            //    color: var(--main-medium-severity-color);
+            //}
+            //
+            //&.Low {
+            //    color: var(--main-low-severity-color);
+            //}
         }
 
         &--severity-name {
             font-family: 'Open Sans', sans-serif;
-            color: #013056;
-            font-size: 14px;
+            color: var(--main-widgets-titles-text-color);
+            font-size: 12px;
+            font-weight: 600;
         }
 
     }
@@ -78,8 +81,8 @@
         .download-icon {
             width: 16px;
             height: 16px;
-            fill: #024d89;
-            stroke: #016a9c;
+            fill: var(--main-widgets-titles-link-color);
+            stroke: var(--main-widgets-titles-link-color);
 
             display: inline-block;
 
@@ -88,7 +91,7 @@
 
         .download-text {
             font-family: 'Open Sans', sans-serif;
-            color:  #013056;
+            color:  var(--main-widgets-titles-link-color);
             font-size: 14px;
 
             &:hover {

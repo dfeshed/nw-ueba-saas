@@ -31,13 +31,13 @@
             font-size: $basicFontSize;
             text-align: left;
             box-sizing: border-box;
-            background-color: $clrWhite;
+            background-color: var(--main-widgets-titles-background-color);
             border: 1px solid $clrGrey40;
             border-radius: 0;
             position: relative;
 
             .multi-select-label{
-                color: $clrGrey100;
+                color: var(--main-widgets-titles-text-color);
                 font-size: $basicFontSize;
             }
 
