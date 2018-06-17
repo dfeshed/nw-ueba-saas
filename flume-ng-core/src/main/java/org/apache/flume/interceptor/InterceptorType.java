@@ -20,8 +20,10 @@ package org.apache.flume.interceptor;
 import org.apache.flume.interceptor.presidio.*;
 import org.apache.flume.interceptor.presidio.conditionalarraypopulator.JsonConditionalArrayPopulatorInterceptor;
 import org.apache.flume.interceptor.presidio.regexcaptureandformat.JsonRegexCaptureAndFormatInterceptor;
+import org.apache.flume.interceptor.presidio.transform.TransformerInterceptor;
 
 public enum InterceptorType {
+    TRANSFORMATOR_INTERCEPTOR(TransformerInterceptor.Builder.class),
     TIMESTAMP(org.apache.flume.interceptor.TimestampInterceptor.Builder.class),
     HOST(org.apache.flume.interceptor.HostInterceptor.Builder.class),
     STATIC(org.apache.flume.interceptor.StaticInterceptor.Builder.class),

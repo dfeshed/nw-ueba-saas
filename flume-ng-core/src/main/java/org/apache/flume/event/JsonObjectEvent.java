@@ -12,12 +12,13 @@ public class JsonObjectEvent implements Event {
     private static JsonParser jsonParser;
 
     private Map<String, String> headers;
+    private byte[] body;
     private JsonObject eventBodyAsJson;
 
 
     public JsonObjectEvent(){
         headers = new HashMap<String, String>();
-        eventBodyAsJson = new JsonObject();
+        eventBodyAsJson = null;//new JsonObject();
         jsonParser = new JsonParser();
     }
 
@@ -33,16 +34,24 @@ public class JsonObjectEvent implements Event {
 
     @Override
     public byte[] getBody() {
-        return eventBodyAsJson.toString().getBytes();
+        if(eventBodyAsJson != null) {
+            return eventBodyAsJson.toString().getBytes();
+        } else {
+            return body;
+        }
     }
 
     @Override
     public void setBody(byte[] body) {
-        final String eventBodyAsString = new String(body);
-        setEventBodyAsJson(jsonParser.parse(eventBodyAsString).getAsJsonObject());
+        this.body = body;
+        this.eventBodyAsJson = null;
     }
 
     public JsonObject getEventBodyAsJson() {
+        if(eventBodyAsJson == null) {
+            final String eventBodyAsString = new String(body);
+            setEventBodyAsJson(jsonParser.parse(eventBodyAsString).getAsJsonObject());
+        }
         return eventBodyAsJson;
     }
 

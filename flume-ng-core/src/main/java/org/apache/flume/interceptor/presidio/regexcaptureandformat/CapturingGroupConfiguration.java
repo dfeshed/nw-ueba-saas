@@ -15,7 +15,7 @@ import org.apache.commons.lang3.Validate;
  */
 @JsonAutoDetect(
         creatorVisibility = JsonAutoDetect.Visibility.ANY,
-        fieldVisibility = JsonAutoDetect.Visibility.NONE,
+        fieldVisibility = JsonAutoDetect.Visibility.ANY,
         getterVisibility = JsonAutoDetect.Visibility.NONE,
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE

@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  */
 @JsonAutoDetect(
         creatorVisibility = JsonAutoDetect.Visibility.ANY,
-        fieldVisibility = JsonAutoDetect.Visibility.NONE,
+        fieldVisibility = JsonAutoDetect.Visibility.ANY,
         getterVisibility = JsonAutoDetect.Visibility.NONE,
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE
