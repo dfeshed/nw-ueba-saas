@@ -33,7 +33,7 @@
             font-size: 14px;
             font-weight: 500;
             font-family: 'Open Sans', sans-serif;
-            color: #477489;
+            color: var(--main-widgets-titles-text-color);
 
             .sort-text{
                 padding-top: 5px;
@@ -62,7 +62,7 @@
             font-size: 16px;
             font-weight: 600;
             font-family: 'Open Sans', sans-serif;
-            color: #013056;
+            color: var(--main-widgets-titles-text-color);
             letter-spacing: 0.56px;
             padding-top: 5px;
         }

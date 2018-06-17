@@ -6,8 +6,8 @@
     .filter-name {
 
         padding: 3px 15px;
-        background-color: #016a9c;
-        color: #FFFFFF;
+        background-color:  var(--main-widgets-titles-link-color);
+        color: var(--main-widgets-titles-text-color);
         border-radius: 15px;
         display: flex;
 

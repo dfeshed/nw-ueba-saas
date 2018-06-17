@@ -98,12 +98,12 @@
                 }
 
                 overflow-y: auto;
-                background-color: #e5e5e5;
+                background-color: var(--main-widgets-background-color);
 
                 .favorite-row {
 
 
-                    color: #024d89;
+                    color: var(--main-widgets-titles-text-color);
                     font-family: 'Open Sans', sans-serif;
                     font-size: 14px;
                     line-height: 36px;
@@ -120,7 +120,7 @@
 
                     &.active {
                         font-weight: 800;
-                        color: white;
+                        color: var(--main-widgets-titles-text-color);
                         background-color: #016a9c;
 
                         .favorite-close {
