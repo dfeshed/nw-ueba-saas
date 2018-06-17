@@ -7,6 +7,7 @@ from airflow.operators.bash_operator import BashOperator
 from airflow.operators.python_operator import PythonOperator
 from airflow.utils.db import provide_session
 from airflow.utils.state import State
+from airflow import configuration
 from copy import copy
 from elasticsearch import Elasticsearch
 from presidio.utils.airflow.operators import spring_boot_jar_operator
@@ -167,9 +168,10 @@ def build_pause_dags_operator(cleanup_dag, dag_models):
 
 
 def build_clean_logs_operator(cleanup_dag):
+    airflow_base_log_folder = str(configuration.get('core', 'BASE_LOG_FOLDER'))
     clean_logs_operator = BashOperator(task_id='clean_logs',
-                                       bash_command="rm -rf /var/log/netwitness/presidio/3p/airflow/logs/full_flow_* && rm -rf /var/log/netwitness/presidio/3p/airflow/logs/scheduler/ ",
-                                       dag=cleanup_dag)
+                                       bash_command="rm -rf {}/full_flow_* && rm -rf {}/logs/scheduler/ ".format(airflow_base_log_folder,airflow_base_log_folder),
+                                       dag=cleanup_dag,retries=5)
     return clean_logs_operator
 
 
