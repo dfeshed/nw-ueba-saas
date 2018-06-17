@@ -4,18 +4,16 @@ import fortscale.common.feature.CategoricalFeatureValue;
 import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.model.metrics.CategoryRarityModelBuilderMetricsContainer;
-import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.data.Pair;
+import fortscale.utils.fixedduration.FixedDurationStrategy;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.DoubleStream;
 
 import static org.mockito.Mockito.mock;
 
@@ -118,7 +116,7 @@ public class CategoryRarityModelBuilderTest {
 		for (int i = 0; i< amountOfHours; i++) {
 			startInstant = startInstant.plus(1,ChronoUnit.HOURS);
 			for (int j = 0; j< amountOfFeatures; j++) {
-				categoricalFeatureValue.getHistogram().put(new Pair<String, Instant>(String.format("feature%d",j), startInstant), 42D);
+				categoricalFeatureValue.getHistogram().put(new Pair<>(String.format("feature%d", j), startInstant), 42D);
 			}
 		}
 		Map<Pair<String, Long>, Double> sequenceReduceData = categoryRarityModelBuilder.calcSequenceReduceData(categoricalFeatureValue);
@@ -139,20 +137,20 @@ public class CategoryRarityModelBuilderTest {
 		CategoryRarityModelBuilder categoryRarityModelBuilder = new CategoryRarityModelBuilder(config, categoryRarityMetricsContainer);
 
 		Map<Pair<String, Long>, Double> sequenceReducedData = new HashMap<>();
-		sequenceReducedData.put(new Pair<String, Long>("feature1",1L),1D);
-		sequenceReducedData.put(new Pair<String, Long>("feature1",2L),1D);
-		sequenceReducedData.put(new Pair<String, Long>("feature2",1L),1D);
-		sequenceReducedData.put(new Pair<String, Long>("feature3",1L),1D);
-		sequenceReducedData.put(new Pair<String, Long>("feature3",2L),1D);
-		sequenceReducedData.put(new Pair<String, Long>("feature4",1L),1D);
-		sequenceReducedData.put(new Pair<String, Long>("feature4",3L),1D);
-		sequenceReducedData.put(new Pair<String, Long>("feature4",4L),1D);
-		sequenceReducedData.put(new Pair<String, Long>("feature5",3L),1D);
-		sequenceReducedData.put(new Pair<String, Long>("feature5",5L),1D);
-		sequenceReducedData.put(new Pair<String, Long>("feature6",1L),1D);
+		sequenceReducedData.put(new Pair<>("feature1",1L),1D);
+		sequenceReducedData.put(new Pair<>("feature1",2L),1D);
+		sequenceReducedData.put(new Pair<>("feature2",1L),1D);
+		sequenceReducedData.put(new Pair<>("feature3",1L),1D);
+		sequenceReducedData.put(new Pair<>("feature3",2L),1D);
+		sequenceReducedData.put(new Pair<>("feature4",1L),1D);
+		sequenceReducedData.put(new Pair<>("feature4",3L),1D);
+		sequenceReducedData.put(new Pair<>("feature4",4L),1D);
+		sequenceReducedData.put(new Pair<>("feature5",3L),1D);
+		sequenceReducedData.put(new Pair<>("feature5",5L),1D);
+		sequenceReducedData.put(new Pair<>("feature6",1L),1D);
 		for(int featureIndex = 1; featureIndex <=10; featureIndex++){
 			for (long partitionIndex = 1; partitionIndex <=5; partitionIndex++){
-				sequenceReducedData.put(new Pair<String, Long>("feature7_"+featureIndex,partitionIndex),1D);
+				sequenceReducedData.put(new Pair<>("feature7_"+featureIndex,partitionIndex),1D);
 			}
 		}
 		Map<Long, Integer> occurrencesToNumOfFeatures = categoryRarityModelBuilder.calcOccurrencesToNumOfDistinctPartitions(sequenceReducedData);

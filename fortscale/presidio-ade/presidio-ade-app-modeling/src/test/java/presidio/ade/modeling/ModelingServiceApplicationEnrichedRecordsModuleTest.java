@@ -78,6 +78,7 @@ public class ModelingServiceApplicationEnrichedRecordsModuleTest extends BaseApp
     private Model expectedModel3;
     private Model expectedModel4;
     private List<ModelConf> modelConfs;
+    private ObjectMapper om;
 
     @Override
     protected String getContextTestExecutionCommand() {
@@ -99,7 +100,7 @@ public class ModelingServiceApplicationEnrichedRecordsModuleTest extends BaseApp
                 Resource::getFilename,
                 Function.identity()
         ));
-        ObjectMapper om = new ObjectMapper();
+        om = new ObjectMapper();
         expectedModel1 = om.readValue(filenameToResourceMap.get("expected_model_1.json").getURL(), Model.class);
         expectedModel2 = om.readValue(filenameToResourceMap.get("expected_model_2.json").getURL(), Model.class);
         expectedModel3 = om.readValue(filenameToResourceMap.get("expected_model_3.json").getURL(), Model.class);

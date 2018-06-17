@@ -130,8 +130,10 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
         Map<String, Double> featureToScore = getExpectedFeatureToScoreOfLowAnomaliesUser();
         Map<String, Double> featureToValue = getExpectedFeatureToValue();
         for (ScoredFeatureAggregationRecord scoredFeatureAggregationRecord : scoredFeatureAggregationRecords) {
-            Assert.assertTrue(featureToScore.get(scoredFeatureAggregationRecord.getFeatureName()).equals(scoredFeatureAggregationRecord.getScore()));
-            Assert.assertTrue(featureToValue.get(scoredFeatureAggregationRecord.getFeatureName()).equals(scoredFeatureAggregationRecord.getFeatureValue()));
+            Assert.assertEquals(String.format("wrong score for feature %s", scoredFeatureAggregationRecord.getFeatureName()),
+                    featureToScore.get(scoredFeatureAggregationRecord.getFeatureName()),scoredFeatureAggregationRecord.getScore());
+            Assert.assertEquals(String.format("wrong value for feature %s", scoredFeatureAggregationRecord.getFeatureName()),
+                    featureToValue.get(scoredFeatureAggregationRecord.getFeatureName()),scoredFeatureAggregationRecord.getFeatureValue());
         }
     }
 
@@ -439,16 +441,16 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
     private Map<String, Double> getExpectedFeatureToScoreOfLowAnomaliesUser() {
         Map<String, Double> featureToScore = new HashedMap();
         featureToScore.put("numberOfSuccessfulFileActionsUserIdFileHourly", 100.0);
-        featureToScore.put("numberOfDistinctFileOpenedUserIdFileHourly", 50.53052381387548);
-        featureToScore.put("numberOfFileMovedUserIdFileHourly", 99.99939564099758);
-        featureToScore.put("numberOfDistinctFolderOpenedUserIdFileHourly", 50.53052381387548);
-        featureToScore.put("numberOfFailedFilePermissionChangesUserIdFileHourly", 99.99961049927788);
-        featureToScore.put("numberOfFileMovedToSharedDriveUserIdFileHourly", 50.53052381387548);
+        featureToScore.put("numberOfDistinctFileOpenedUserIdFileHourly", 17.85178066230927);
+        featureToScore.put("numberOfFileMovedUserIdFileHourly", 100.0);
+        featureToScore.put("numberOfDistinctFolderOpenedUserIdFileHourly", 17.85178066230927);
+        featureToScore.put("numberOfFailedFilePermissionChangesUserIdFileHourly", 100.0);
+        featureToScore.put("numberOfFileMovedToSharedDriveUserIdFileHourly", 17.85178066230927);
         featureToScore.put("numberOfFailedFileActionsUserIdFileHourly", 100.0);
-        featureToScore.put("numberOfSuccessfulFilePermissionChangesUserIdFileHourly", 50.53052381387548);
-        featureToScore.put("numberOfSuccessfulFileRenamedUserIdFileHourly", 50.53052381387548);
-        featureToScore.put("numberOfFileDeletedUserIdFileHourly", 50.53052381387548);
-        featureToScore.put("numberOfFileMovedFromSharedDriveUserIdFileHourly", 50.53052381387548);
+        featureToScore.put("numberOfSuccessfulFilePermissionChangesUserIdFileHourly", 17.85178066230927);
+        featureToScore.put("numberOfSuccessfulFileRenamedUserIdFileHourly", 17.85178066230927);
+        featureToScore.put("numberOfFileDeletedUserIdFileHourly", 17.85178066230927);
+        featureToScore.put("numberOfFileMovedFromSharedDriveUserIdFileHourly", 17.85178066230927);
         featureToScore.put("numberOfFileDownloadedUserIdFileHourly",99.99961049927788);
         featureToScore.put("numberOfFileCopiedUserIdFileHourly", 50.53052381387548);
         return featureToScore;
@@ -463,11 +465,11 @@ public class FeatureAggregationsApplicationTest extends BaseAppTest {
         Map<String, Double> featureToScore = new HashedMap();
         featureToScore.put("numberOfSuccessfulFileActionsUserIdFileHourly", 100.0);
         featureToScore.put("numberOfDistinctFileOpenedUserIdFileHourly", 0.0);
-        featureToScore.put("numberOfFileMovedUserIdFileHourly", 99.95825421924779);
+        featureToScore.put("numberOfFileMovedUserIdFileHourly", 90.84707502883582);
         featureToScore.put("numberOfDistinctFolderOpenedUserIdFileHourly", 0.0);
-        featureToScore.put("numberOfFailedFilePermissionChangesUserIdFileHourly", 93.26795434547577);
+        featureToScore.put("numberOfFailedFilePermissionChangesUserIdFileHourly", 40.36212319396937);
         featureToScore.put("numberOfFileMovedToSharedDriveUserIdFileHourly", 0.0);
-        featureToScore.put("numberOfFailedFileActionsUserIdFileHourly", 99.99999999997135);
+        featureToScore.put("numberOfFailedFileActionsUserIdFileHourly", 100.0);
         featureToScore.put("numberOfSuccessfulFilePermissionChangesUserIdFileHourly", 0.0);
         featureToScore.put("numberOfSuccessfulFileRenamedUserIdFileHourly", 0.0);
         featureToScore.put("numberOfFileDeletedUserIdFileHourly", 0.0);
