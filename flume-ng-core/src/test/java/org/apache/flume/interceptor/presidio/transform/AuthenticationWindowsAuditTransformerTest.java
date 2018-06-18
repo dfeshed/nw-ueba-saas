@@ -69,7 +69,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
         FilterTransformer logonTypeFilter = new FilterTransformer("logon-type-filter", logonTypeEqual2Or10, true);
         JsonObjectRegexPredicate referenceIdEqual4624Or4625= new JsonObjectRegexPredicate("reference-id-equal-4624-or-4625", EVENT_CODE_FIELD_NAME, "4624|4625");
         IfElseTransformer logonTypeFilterFor4624Or4625 =
-                new IfElseTransformer("service-name-filter-for-4624-or-4625",referenceIdEqual4624Or4625, logonTypeFilter);
+                new IfElseTransformer("logon-type-filter-for-4624-or-4625",referenceIdEqual4624Or4625, logonTypeFilter);
         transformerChainList.add(logonTypeFilterFor4624Or4625);
 
         //Convert time field from EPOCH millis to EPOCH seconds
