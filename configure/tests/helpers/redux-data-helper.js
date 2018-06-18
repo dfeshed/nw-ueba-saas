@@ -102,6 +102,12 @@ export default class DataHelper {
     return this;
   }
 
+  parserRulesError() {
+    this._setBaseState();
+    _set(this.state, 'content.logParserRules.logParsersStatus', 'error');
+    return this;
+  }
+
   parserRulesDeleteWait(flag) {
     this._setBaseState();
     if (flag) {

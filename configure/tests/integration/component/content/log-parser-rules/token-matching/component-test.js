@@ -1,12 +1,12 @@
 import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { render, find, findAll, click, fillIn, triggerEvent } from '@ember/test-helpers';
+import { render, find, findAll, click, fillIn } from '@ember/test-helpers';
 import { setupRenderingTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
-
+import $ from 'jquery';
 let setState;
 
 module('Integration | Component | token matching', function(hooks) {
@@ -63,9 +63,24 @@ module('Integration | Component | token matching', function(hooks) {
     const rules = [{ name: 'Client Domain', literals: [{ value: 'ipv4=' }, { value: 'ipv6=' }], pattern: { format: null, regex: '' } }];
     new ReduxDataHelper(setState).parserRules(rules).build();
     await render(hbs`{{content/log-parser-rules/token-matching}}`);
-    await fillIn(`${selectors.firstToken} input`, '123');
-    await triggerEvent('.firstItem input', 'focusOut');
+    $('.firstItem input').val('123').focusout();
     assert.equal(find(`${selectors.firstToken} input`).value, '123', 'the token was not edited as expected');
+  });
+
+  test('Edit rule token to have same value as an existing token', async function(assert) {
+    const rules = [{ name: 'Client Domain', literals: [{ value: 'ipv4=' }, { value: 'ipv6=' }], pattern: { format: null, regex: '' } }];
+    new ReduxDataHelper(setState).parserRules(rules).build();
+    await render(hbs`{{content/log-parser-rules/token-matching}}`);
+    $('.firstItem input').val('ipv6=').focusout();
+    assert.equal(find(`${selectors.firstToken} input`).value, 'ipv4=', 'the token was edited when it was not suppost to be edited');
+  });
+
+  test('Edit rule token to have only white space', async function(assert) {
+    const rules = [{ name: 'Client Domain', literals: [{ value: 'ipv4=' }, { value: 'ipv6=' }], pattern: { format: null, regex: '' } }];
+    new ReduxDataHelper(setState).parserRules(rules).build();
+    await render(hbs`{{content/log-parser-rules/token-matching}}`);
+    $('.firstItem input').val('         ').focusout();
+    assert.equal(find(`${selectors.firstToken} input`).value, 'ipv4=', 'the token was edited when it was not suppost to be edited');
   });
 
   test('Out of box rule is not editable', async function(assert) {

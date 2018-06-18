@@ -62,7 +62,7 @@ export default reduxActions.handleActions({
         });
       },
       failure: (state) => {
-        return state.set('logParserStatus', 'error');
+        return state.set('logParsersStatus', 'error');
       },
       success: (state) => {
         return state.set('logParsers', action.payload.data);

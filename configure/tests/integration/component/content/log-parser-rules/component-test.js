@@ -27,6 +27,13 @@ module('Integration | Component | parser rules', function(hooks) {
     assert.ok(find('.loading'), 'The spinner did not show');
   });
 
+  test('Show correct error message when API server is out', async function(assert) {
+    new ReduxDataHelper(setState).parserRulesError().build();
+    await render(hbs`{{content/log-parser-rules}}`);
+    assert.equal(find('.loading').textContent.trim(), 'There was a problem loading the Content Log Parser Rules. The Content Server may be offline or inaccessible.', 'Error message is incorrect');
+
+  });
+
   test('Dont show matchingMapping if formats are missing', async function(assert) {
     new ReduxDataHelper(setState).parserRulesFormatData(0, false).build();
     await render(hbs`{{content/log-parser-rules}}`);
@@ -38,6 +45,7 @@ module('Integration | Component | parser rules', function(hooks) {
     await render(hbs`{{content/log-parser-rules}}`);
     assert.ok(find('.matchingMapping'), 'matchingMapping area is not showing');
   });
+
 
 });
 

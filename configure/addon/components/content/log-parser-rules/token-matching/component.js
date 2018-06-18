@@ -47,11 +47,11 @@ const TokenMatching = Component.extend({
 
     editToken(originalToken, tokenIndex, event) {
       const updatedToken = event.target.value;
-      // If the token is only whitespace, replace with the original/previous token
-      if (updatedToken.trim() === '') {
+      // If the token is only whitespace or it exists, replace with the original/previous token
+      const { rule, tokens } = this.getProperties('rule', 'tokens');
+      if (updatedToken.trim() === '' || tokens.some((tkn) => tkn.value === updatedToken)) {
         event.target.value = originalToken;
       } else if (updatedToken !== originalToken) {
-        const { rule, tokens } = this.getProperties('rule', 'tokens');
         const updatedRule = rule.set('literals', tokens.map((token, idx) => idx === tokenIndex ? { value: updatedToken } : token));
         this.send('updateSelectedRule', updatedRule);
       }

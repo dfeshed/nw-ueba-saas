@@ -565,7 +565,8 @@ export default {
       switchParserUnsavedChanges: 'Your parser has unsaved changes. Are you sure you want to discard these changes and switch ' +
       'to another parser?',
       error: {
-        generic: 'An unexpected error has occurred attempting to retrieve this data.'
+        generic: 'An unexpected error has occurred attempting to retrieve this data.',
+        contentOffLine: 'There was a problem loading the Content Log Parser Rules. The Content Server may be offline or inaccessible.'
       },
       tokensList: {
         noTokensError: 'At least one token required.'
