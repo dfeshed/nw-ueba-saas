@@ -152,6 +152,7 @@
     display: flex;
     flex-flow: row wrap;
     justify-content: flex-start;
+    margin-bottom: calc(0.25rem + 0.5px);
     max-height: 12rem;
     overflow-x: hidden;
     overflow-y: auto;
@@ -239,4 +240,11 @@
     }
   }
 
+}
+
+// Leftmost trigger shouldn't go over as far
+.new-pill-trigger-container:first-of-type {
+  .new-pill-trigger {
+    margin-left: -.73rem;
+  }
 }

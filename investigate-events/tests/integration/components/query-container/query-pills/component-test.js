@@ -102,10 +102,10 @@ module('Integration | Component | query-pills', function(hooks) {
     this.set('filters', []);
 
     await render(hbs`{{query-container/query-pills filters=filters isActive=true}}`);
-    assert.equal(findAll(PILL_SELECTORS.newPillTriggerContainer).length, 1, 'There should only be one new pill trigger.');
+    assert.equal(findAll(PILL_SELECTORS.newPillTriggerContainer).length, 2, 'There should two new pill triggers.');
 
     await createBasicPill();
-    assert.equal(findAll(PILL_SELECTORS.newPillTriggerContainer).length, 2, 'There should now be two new pill triggers.');
+    assert.equal(findAll(PILL_SELECTORS.newPillTriggerContainer).length, 3, 'There should now be three new pill triggers.');
   });
 
   test('Creating a pill with the new pill trigger sets filters and sends action for redux state update', async function(assert) {
@@ -128,7 +128,7 @@ module('Integration | Component | query-pills', function(hooks) {
     assert.equal(newActionSpy.callCount, 1, 'The add pill action creator was called once');
     assert.deepEqual(
       newActionSpy.args[0][0],
-      { pillData: { meta: 'a', operator: '=', value: 'x' }, position: 1 },
+      { pillData: { meta: 'a', operator: '=', value: 'x' }, position: 0 },
       'The action creator was called with the right arguments including the proper position'
     );
   });
