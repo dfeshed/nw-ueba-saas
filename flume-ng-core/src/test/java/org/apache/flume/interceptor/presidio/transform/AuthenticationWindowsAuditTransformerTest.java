@@ -49,7 +49,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
         List<IJsonObjectTransformer> transformerChainList = new ArrayList<>();
 
         // Filtering events according to the device type and user name
-        JsonObjectRegexPredicate userDstNotContainMachine = new JsonObjectRegexPredicate("user-dst-not-contain-machine", USER_DST_FIELD_NAME, "[^\\\\$]*");
+        JsonObjectRegexPredicate userDstNotContainMachine = new JsonObjectRegexPredicate("user-dst-not-contain-machine", USER_DST_FIELD_NAME, "[^\\$]*");
         JsonObjectRegexPredicate deviceTypeSnareOrNic = new JsonObjectRegexPredicate("device-type-snare-or-nic", DEVICE_TYPE_FIELD_NAME, "winevent_snare|winevent_nic");
         JsonObjectChainPredicate deviceTypeAndUserDstPredicate = new JsonObjectChainPredicate("device-type-and-user-dst-predicate",AND,
                 Arrays.asList(userDstNotContainMachine, deviceTypeSnareOrNic));
@@ -94,12 +94,12 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
             CaptureAndFormatConfiguration srcMachineIdNormalizationFirstPattern =
                     new CaptureAndFormatConfiguration(".*:.*", "", null);
         CaptureAndFormatConfiguration srcMachineIdNormalizationSecondPattern =
-                new CaptureAndFormatConfiguration(".*\\\\\\\\d{1,3}\\\\\\\\.\\\\\\\\d{1,3}\\\\\\\\.\\\\\\\\d{1,3}\\\\\\\\.\\\\\\\\d{1,3}.*", "",null);
+                new CaptureAndFormatConfiguration(".*\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}.*", "",null);
         CaptureAndFormatConfiguration srcMachineIdNormalizationThirdPattern =
-                new CaptureAndFormatConfiguration("(\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\)?([^\\\\\\\\.]+)\\\\\\\\..+", "%s",
+                new CaptureAndFormatConfiguration("(\\\\\\\\)?([^\\.]+)\\..+", "%s",
                         Arrays.asList(new CapturingGroupConfiguration(2, "LOWER")));
         CaptureAndFormatConfiguration srcMachineIdNormalizationFourthPattern =
-                new CaptureAndFormatConfiguration("(\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\)?(.+)", "%s",
+                new CaptureAndFormatConfiguration("(\\\\\\\\)?(.+)", "%s",
                 Arrays.asList(new CapturingGroupConfiguration(2, "LOWER")));
         RegexCaptorAndFormatter srcMachineIdNormalization =
                 new RegexCaptorAndFormatter("src-machine-id-normalization",
@@ -114,9 +114,9 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
                 Arrays.asList(new CapturingGroupConfiguration(1, "LOWER")));
         CaptureAndFormatConfiguration userNormalizationSecondPattern = new CaptureAndFormatConfiguration("CN=([^,]+),.+", "%s",
                 Arrays.asList(new CapturingGroupConfiguration(1, "LOWER")));
-        CaptureAndFormatConfiguration userNormalizationThirdPattern = new CaptureAndFormatConfiguration("(.+\\\\\\\\\\\\\\\\)+(.+)@.+", "%s",
+        CaptureAndFormatConfiguration userNormalizationThirdPattern = new CaptureAndFormatConfiguration("(.+\\\\)+(.+)@.+", "%s",
                 Arrays.asList(new CapturingGroupConfiguration(2, "LOWER")));
-        CaptureAndFormatConfiguration userNormalizationFourthPattern = new CaptureAndFormatConfiguration("(.+\\\\\\\\\\\\\\\\)+([^@]+)", "%s",
+        CaptureAndFormatConfiguration userNormalizationFourthPattern = new CaptureAndFormatConfiguration("(.+\\\\)+([^@]+)", "%s",
                 Arrays.asList(new CapturingGroupConfiguration(2, "LOWER")));
         CaptureAndFormatConfiguration userNormalizationFifthPattern = new CaptureAndFormatConfiguration("(.+)@.+", "%s",
                 Arrays.asList(new CapturingGroupConfiguration(1, "LOWER")));
