@@ -14,6 +14,13 @@ div.modal-content.add-new-parser-rule {
 }
 
 .parserWrapper {
+
+
+  .trMessage {
+    height:35vh;
+  }
+
+
   width: 100%;
   position: relative;
   color: text-color(neutral);
@@ -164,6 +171,8 @@ div.modal-content.add-new-parser-rule {
       textarea {
         min-height: 8rem;
         max-height: 8rem;
+        min-width: 21vw;
+        max-width: 21vw;
       }
     }
     .parserRuleName {
@@ -216,7 +225,7 @@ div.modal-content.add-new-parser-rule {
   }
   .parser-table-container {
     overflow: auto;
-    height: 70vh; 
+    height: 75vh; 
     .parserTable td div {
       overflow: hidden; 
       white-space: nowrap;
