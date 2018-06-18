@@ -1,5 +1,5 @@
 {
-  "enableForwarding": "true",
+  "enableforwarding": "true",
   "syslog": {
     "alert": {
       "host": "test",

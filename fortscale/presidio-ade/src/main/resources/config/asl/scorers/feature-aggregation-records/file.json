@@ -7,12 +7,11 @@
           "type": "low-values-score-reducer",
           "name": "numberOfSuccessfulFilePermissionChanges.userId.file.hourly.scorer",
           "base-scorer": {
-            "type": "score-exponential-mapper",
+            "type": "score-exponential-steps-mapper",
             "name": "numberOfSuccessfulFilePermissionChanges.userId.file.hourly.mapper",
             "score-mapping-conf": {
-              "minScoreToMap": 95,
-              "maxScoreToMap": 100,
-              "base": 2.5
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -49,12 +48,11 @@
           "name": "numberOfSuccessfulFileActions.userId.file.hourly.scorer",
 
           "base-scorer": {
-            "type": "score-exponential-mapper",
+            "type": "score-exponential-steps-mapper",
             "name": "numberOfSuccessfulFileActions.userId.file.hourly.mapper",
             "score-mapping-conf": {
-              "minScoreToMap": 95,
-              "maxScoreToMap": 100,
-              "base": 2.5
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -90,12 +88,11 @@
           "type": "low-values-score-reducer",
           "name": "numberOfFailedFilePermissionChanges.userId.file.hourly.scorer",
           "base-scorer": {
-            "type": "score-exponential-mapper",
+            "type": "score-exponential-steps-mapper",
             "name": "numberOfFailedFilePermissionChanges.userId.file.hourly.mapper",
             "score-mapping-conf": {
-              "minScoreToMap": 95,
-              "maxScoreToMap": 100,
-              "base": 2.5
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -131,12 +128,11 @@
           "type": "low-values-score-reducer",
           "name": "numberOfFailedFileActions.userId.file.hourly.scorer",
           "base-scorer": {
-            "type": "score-exponential-mapper",
+            "type": "score-exponential-steps-mapper",
             "name": "numberOfFailedFileActions.userId.file.hourly.mapper",
             "score-mapping-conf": {
-              "minScoreToMap": 95,
-              "maxScoreToMap": 100,
-              "base": 2.5
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -172,12 +168,11 @@
           "type": "low-values-score-reducer",
           "name": "numberOfDistinctFileOpened.userId.file.hourly.scorer",
           "base-scorer": {
-            "type": "score-exponential-mapper",
+            "type": "score-exponential-steps-mapper",
             "name": "numberOfDistinctFileOpened.userId.file.hourly.mapper",
             "score-mapping-conf": {
-              "minScoreToMap": 95,
-              "maxScoreToMap": 100,
-              "base": 2.5
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -213,12 +208,11 @@
           "type": "low-values-score-reducer",
           "name": "numberOfDistinctFolderOpened.userId.file.hourly.scorer",
           "base-scorer": {
-            "type": "score-exponential-mapper",
+            "type": "score-exponential-steps-mapper",
             "name": "numberOfDistinctFolderOpened.userId.file.hourly.mapper",
             "score-mapping-conf": {
-              "minScoreToMap": 95,
-              "maxScoreToMap": 100,
-              "base": 2.5
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -254,12 +248,11 @@
           "type": "low-values-score-reducer",
           "name": "numberOfFileDeleted.userId.file.hourly.scorer",
           "base-scorer": {
-            "type": "score-exponential-mapper",
+            "type": "score-exponential-steps-mapper",
             "name": "numberOfFileDeleted.userId.file.hourly.mapper",
             "score-mapping-conf": {
-              "minScoreToMap": 95,
-              "maxScoreToMap": 100,
-              "base": 2.5
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -295,12 +288,11 @@
           "type": "low-values-score-reducer",
           "name": "numberOfSuccessfulFileRenamed.userId.file.hourly.scorer",
           "base-scorer": {
-            "type": "score-exponential-mapper",
+            "type": "score-exponential-steps-mapper",
             "name": "numberOfSuccessfulFileRenamed.userId.file.hourly.mapper",
             "score-mapping-conf": {
-              "minScoreToMap": 95,
-              "maxScoreToMap": 100,
-              "base": 2.5
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -336,12 +328,11 @@
           "type": "low-values-score-reducer",
           "name": "numberOfFileMoved.userId.file.hourly.scorer",
           "base-scorer": {
-            "type": "score-exponential-mapper",
+            "type": "score-exponential-steps-mapper",
             "name": "numberOfFileMoved.userId.file.hourly.mapper",
             "score-mapping-conf": {
-              "minScoreToMap": 95,
-              "maxScoreToMap": 100,
-              "base": 2.5
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -377,12 +368,11 @@
           "type": "low-values-score-reducer",
           "name": "numberOfFileMovedFromSharedDrive.userId.file.hourly.scorer",
           "base-scorer": {
-            "type": "score-exponential-mapper",
+            "type": "score-exponential-steps-mapper",
             "name": "numberOfFileMovedFromSharedDrive.userId.file.hourly.mapper",
             "score-mapping-conf": {
-              "minScoreToMap": 95,
-              "maxScoreToMap": 100,
-              "base": 2.5
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -418,12 +408,11 @@
           "type": "low-values-score-reducer",
           "name": "numberOfFileMovedToSharedDrive.userId.file.hourly.scorer",
           "base-scorer": {
-            "type": "score-exponential-mapper",
+            "type": "score-exponential-steps-mapper",
             "name": "numberOfFileMovedToSharedDrive.userId.file.hourly.mapper",
             "score-mapping-conf": {
-              "minScoreToMap": 95,
-              "maxScoreToMap": 100,
-              "base": 2.5
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
             },
             "base-scorer": {
               "type": "gaussian-model-scorer",
@@ -475,6 +464,47 @@
               "additional-models": [
                 {
                   "name": "numberOfFileDownloaded.userId.prior.file.hourly"
+                }
+              ],
+              "global-influence": 15,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.numberOfFileCopiedUserIdFileHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "numberOfFileCopied.userId.file.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-mapper",
+            "name": "numberOfFileCopied.userId.file.hourly.mapper",
+            "score-mapping-conf": {
+              "minScoreToMap": 95,
+              "maxScoreToMap": 100,
+              "base": 2.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfFileCopied.userId.file.hourly.base_scorer",
+              "model": {
+                "name": "numberOfFileCopied.userId.file.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "numberOfFileCopied.userId.prior.file.hourly"
                 }
               ],
               "global-influence": 15,

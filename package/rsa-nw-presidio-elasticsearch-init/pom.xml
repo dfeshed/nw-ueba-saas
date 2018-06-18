@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>package</artifactId>
+        <groupId>com.rsa.netwitness.presidio</groupId>
+        <version>2.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>rsa-nw-presidio-elasticsearch-init</artifactId>
+
+    <build>
+        <plugins>
+            <!-- create RPM -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>rpm-maven-plugin</artifactId>
+                <version>${rpm-maven-plugin.version}</version>
+                <configuration>
+                    <summary>Presidio(UEBA) elasticsearch &amp; kibana init resources</summary>
+                    <defineStatements>
+                        <defineStatement>_unpackaged_files_terminate_build 0</defineStatement>
+                    </defineStatements>
+                    <defaultGroupname>${presidio.username}</defaultGroupname>
+                    <defaultUsername>${presidio.groupname}</defaultUsername>
+                    <mappings>
+                        <mapping>
+                            <directoryIncluded>true</directoryIncluded>
+                            <directory>${presidio-app.directory}/elasticsearch/init</directory>
+                            <username>${presidio.username}</username>
+                            <groupname>${presidio.groupname}</groupname>
+                            <sources>
+                                <source>
+                                    <location>src/main/resources</location>
+                                    <excludes>
+                                        <exclude>init_kibana.sh</exclude>
+                                    </excludes>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directoryIncluded>false</directoryIncluded>
+                            <directory>${presidio-app.directory}/elasticsearch/init</directory>
+                            <username>${presidio.username}</username>
+                            <groupname>${presidio.groupname}</groupname>
+                            <filemode>755</filemode>
+                            <sources>
+                                <source>
+                                    <location>src/main/resources</location>
+                                    <includes>
+                                        <include>init_kibana.sh</include>
+                                    </includes>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directoryIncluded>true</directoryIncluded>
+                            <directory>${presidio-app.directory}/elasticsearch/init/data/indexes</directory>
+                            <username>${presidio.username}</username>
+                            <groupname>${presidio.groupname}</groupname>
+                            <sources>
+                                <source>
+                                    <location>../../fortscale/presidio-utils/src/main/resources/elasticsearch/indexes/</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                    </mappings>
+                    <requires>
+                        <require>python &gt;= 2.7.5</require>
+                        <require>unzip</require>
+                    </requires>
+                    <description>
+                        Presidio(UEBA) elasticsearch &amp; kibana init for indexes, dashboards, patterns, searches, visualizations
+                    </description>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>

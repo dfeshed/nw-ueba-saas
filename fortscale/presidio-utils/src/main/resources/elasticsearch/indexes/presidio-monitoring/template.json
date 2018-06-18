@@ -134,10 +134,10 @@
                 "type": "long"
               },
               "MAX": {
-                "type": "long"
+                "type": "double"
               },
               "AVG": {
-                "type": "long"
+                "type": "double"
               },
               "COUNT": {
                 "type": "long"
@@ -149,7 +149,7 @@
                 "type": "long"
               },
               "MAX_SCORE": {
-                "type": "long"
+                "type": "double"
               },
               "AMOUNT_OF_SUCCEEDED_MODELS": {
                 "type": "long"
@@ -164,7 +164,7 @@
                 "type": "long"
               },
               "AVG_SIZE_OF_FEATURE_VALUES": {
-                "type": "long"
+                "type": "double"
               },
               "SUM_SIZE_OF_FEATURE_VALUES": {
                 "type": "long"
@@ -176,7 +176,7 @@
                 "type": "long"
               },
               "AVG_NUM_OF_PARTITIONS": {
-                "type": "long"
+                "type": "double"
               },
               "SUM_NUM_OF_PARTITIONS": {
                 "type": "long"
@@ -227,97 +227,97 @@
                 "type": "long"
               },
               "MIN_RESOLUTION": {
-                "type": "long"
+                "type": "double"
               },
               "MAX_RESOLUTION": {
-                "type": "long"
+                "type": "double"
               },
               "AVG_RESOLUTION": {
-                "type": "long"
+                "type": "double"
               },
               "SUM_RESOLUTION": {
-                "type": "long"
+                "type": "double"
               },
               "MAX_CONTINUOUS_MEAN": {
-                "type": "long"
+                "type": "double"
               },
               "AVG_CONTINUOUS_MEAN": {
-                "type": "long"
+                "type": "double"
               },
               "SUM_CONTINUOUS_MEAN": {
-                "type": "long"
+                "type": "double"
               },
               "MAX_MAX_CONTINUOUS_MEAN": {
-                "type": "long"
+                "type": "double"
               },
               "AVG_MAX_CONTINUOUS_MEAN": {
-                "type": "long"
+                "type": "double"
               },
               "SUM_MAX_CONTINUOUS_MEAN": {
-                "type": "long"
+                "type": "double"
               },
               "MAX_MAX_CONTINUOUS_SD": {
-                "type": "long"
+                "type": "double"
               },
               "AVG_MAX_CONTINUOUS_SD": {
-                "type": "long"
+                "type": "double"
               },
               "SUM_MAX_CONTINUOUS_SD": {
-                "type": "long"
+                "type": "double"
               },
               "MAX_CONTINUOUS_SD": {
-                "type": "long"
+                "type": "double"
               },
               "AVG_CONTINUOUS_SD": {
-                "type": "long"
+                "type": "double"
               },
               "SUM_CONTINUOUS_SD": {
-                "type": "long"
+                "type": "double"
               },
               "MAX_CONTINUOUS_N": {
-                "type": "long"
+                "type": "double"
               },
               "AVG_CONTINUOUS_N": {
-                "type": "long"
+                "type": "double"
               },
               "SUM_CONTINUOUS_N": {
-                "type": "long"
+                "type": "double"
               },
               "MAX_MAX_CONTINUOUS_N": {
-                "type": "long"
+                "type": "double"
               },
               "AVG_MAX_CONTINUOUS_N": {
-                "type": "long"
+                "type": "double"
               },
               "SUM_MAX_CONTINUOUS_N": {
-                "type": "long"
+                "type": "double"
               },
               "MAX_CONTINUOUS_MAX_VALUE": {
-                "type": "long"
+                "type": "double"
               },
               "AVG_CONTINUOUS_MAX_VALUE": {
-                "type": "long"
+                "type": "double"
               },
               "SUM_CONTINUOUS_MAX_VALUE": {
-                "type": "long"
+                "type": "double"
               },
               "MAX_MAX_CONTINUOUS_MAX_VALUE": {
-                "type": "long"
+                "type": "double"
               },
               "AVG_MAX_CONTINUOUS_MAX_VALUE": {
-                "type": "long"
+                "type": "double"
               },
               "SUM_MAX_CONTINUOUS_MAX_VALUE": {
-                "type": "long"
+                "type": "double"
               },
               "MAX_GLOBAL_SD": {
-                "type": "long"
+                "type": "double"
               },
               "AVG_GLOBAL_SD": {
-                "type": "long"
+                "type": "double"
               },
               "SUM_GLOBAL_SD": {
-                "type": "long"
+                "type": "double"
               },
               "SUCCESS_EVENTS": {
                 "type": "long"
@@ -338,10 +338,10 @@
                 "type": "long"
               },
               "AVG_PAGE_SIZE": {
-                "type": "long"
+                "type": "double"
               },
               "MAX_MEAN": {
-                "type": "long"
+                "type": "double"
               },
               "AMOUNT_OF_SEGMENT_PRIORS": {
                 "type": "long"
@@ -425,7 +425,7 @@
                 "type": "long"
               },
               "WEIGHT": {
-                "type": "long"
+                "type": "double"
               }
             }
           }

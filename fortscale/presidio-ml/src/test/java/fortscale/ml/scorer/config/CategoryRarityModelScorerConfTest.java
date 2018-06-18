@@ -286,7 +286,7 @@ public class CategoryRarityModelScorerConfTest {
         Boolean useCertaintyToCalculateScore = true;
         String modelName = "model1";
         List<String> additionalModelNames = Collections.emptyList();
-        Double xWithValueHalfFactor = 0.3333333333333333;
+        Double xWithValueHalfFactor = 0.25;
 
         public String getName() {
             return name;

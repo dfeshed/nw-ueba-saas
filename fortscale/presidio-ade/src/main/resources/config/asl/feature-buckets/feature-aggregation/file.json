@@ -239,6 +239,28 @@
           }
         }
       ]
+    },
+    {
+      "name": "fileCopiedCounterUserIdFileHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "file"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "fileCopiedCounter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.operationType == 'FILE_COPIED')]"
+          }
+        }
+      ]
     }
   ]
 }

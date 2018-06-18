@@ -17,15 +17,18 @@
               },
               "number-of-partitions-to-influence-enough": 10,
               "min-number-of-partitions-to-influence": 1,
-              "max-rare-timestamp-count": 5,
-              "max-num-of-rare-timestamps": 5,
+              "max-rare-timestamp-count": 8,
+              "max-num-of-rare-timestamps": 8,
               "use-certainty-to-calculate-score": true
             },
             {
               "type": "list-conditional-scorer",
               "name": "operationType.userIdGroupMembershipSecuritySensitive.activeDirectory.score",
               "conditional-field": "operationTypeCategories",
-              "conditional-value": ["SECURITY_SENSITIVE_OPERATION","GROUP_MEMBERSHIP_OPERATION"],
+              "conditional-value": [
+                "SECURITY_SENSITIVE_OPERATION",
+                "GROUP_MEMBERSHIP_OPERATION"
+              ],
               "scorer": {
                 "type": "max-scorer-container",
                 "name": "operationType.userIdSecuritySensitive.activeDirectory.score",
@@ -36,7 +39,7 @@
                     "model": {
                       "name": "operationType.userIdSecuritySensitive.activeDirectory"
                     },
-                    "max-rare-count": 5,
+                    "max-rare-count": 8,
                     "max-num-of-rare-features": 15,
                     "number-of-partitions-to-influence-enough": 10,
                     "use-certainty-to-calculate-score": true
@@ -47,7 +50,7 @@
                     "model": {
                       "name": "operationType.userId.activeDirectory"
                     },
-                    "max-rare-count": 5,
+                    "max-rare-count": 8,
                     "max-num-of-rare-features": 15,
                     "number-of-partitions-to-influence-enough": 10,
                     "use-certainty-to-calculate-score": true
@@ -59,7 +62,9 @@
               "type": "list-conditional-scorer",
               "name": "operationType.userIdObjectManagement.activeDirectory.score",
               "conditional-field": "operationTypeCategories",
-              "conditional-value": ["OBJECT_MANAGEMENT"],
+              "conditional-value": [
+                "OBJECT_MANAGEMENT"
+              ],
               "scorer": {
                 "type": "max-scorer-container",
                 "name": "operationType.userIdObjectManagement.activeDirectory.score",
@@ -70,7 +75,7 @@
                     "model": {
                       "name": "operationType.userIdObjectManagement.activeDirectory"
                     },
-                    "max-rare-count": 5,
+                    "max-rare-count": 8,
                     "max-num-of-rare-features": 15,
                     "number-of-partitions-to-influence-enough": 10,
                     "use-certainty-to-calculate-score": true
@@ -81,7 +86,7 @@
                     "model": {
                       "name": "operationType.userId.activeDirectory"
                     },
-                    "max-rare-count": 5,
+                    "max-rare-count": 8,
                     "max-num-of-rare-features": 15,
                     "number-of-partitions-to-influence-enough": 10,
                     "use-certainty-to-calculate-score": true
@@ -159,56 +164,10 @@
             },
             {
               "type": "constant-regex-scorer",
-              "name": "passwordChangedByNonOwner.userId.activeDirectory.score",
-              "regex": "USER_PASSWORD_CHANGED_BY_NON_OWNER",
-              "regex-field-name": "operationType",
-              "constant-score": 10
-            },
-            {
-              "type": "constant-regex-scorer",
-              "name": "strongAuthenticationMethodChanged.userId.activeDirectory.score",
-              "regex": "STRONG_AUTHENTICATION_METHOD_CHANGED",
-              "regex-field-name": "operationType",
-              "constant-score": 10
-            },
-            {
-              "type": "constant-regex-scorer",
-              "name": "strongAuthenticationPhoneAppDetailChanged.userId.activeDirectory.score",
-              "regex": "STRONG_AUTHENTICATION_PHONE_APP_DETAIL_CHANGED",
-              "regex-field-name": "operationType",
-              "constant-score": 10
-            },
-            {
-              "type": "constant-regex-scorer",
-              "name": "strongAuthenticationPhoneUserDetailChanged.userId.activeDirectory.score",
-              "regex": "STRONG_AUTHENTICATION_PHONE_USER_DETAIL_CHANGED",
-              "regex-field-name": "operationType",
-              "constant-score": 10
-            },
-            {
-              "type": "constant-regex-scorer",
-              "name": "strongAuthenticationRequirementChanged.userId.activeDirectory.score",
-              "regex": "STRONG_AUTHENTICATION_REQUIREMENT_CHANGED",
-              "regex-field-name": "operationType",
-              "constant-score": 10
-            },
-            {
-              "type": "constant-regex-scorer",
               "name": "userPasswordReset.userId.activeDirectory.score",
               "regex": "USER_PASSWORD_RESET",
               "regex-field-name": "operationType",
               "constant-score": 10
-            },
-            {
-              "type": "list-conditional-scorer",
-              "name": "memberAddedToCriticalGroup.userId.activeDirectory.score",
-              "conditional-field": "operationTypeCategories",
-              "conditional-value": ["SECURITY_SENSITIVE_OPERATION","GROUP_MEMBERSHIP_ADD_OPERATION"],
-              "scorer": {
-                "type": "constant-scorer",
-                "name": "memberAddedToCriticalGroup.userId.activeDirectory.score",
-                "constant-score": 10
-              }
             }
           ]
         }

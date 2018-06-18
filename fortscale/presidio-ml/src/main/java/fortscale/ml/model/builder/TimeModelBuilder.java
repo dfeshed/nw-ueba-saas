@@ -3,11 +3,10 @@ package fortscale.ml.model.builder;
 import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.TimeModel;
+import fortscale.ml.model.metrics.CategoryRarityModelBuilderMetricsContainer;
 import fortscale.ml.model.metrics.TimeModelBuilderMetricsContainer;
 import fortscale.ml.model.metrics.TimeModelBuilderPartitionsMetricsContainer;
 import org.springframework.util.Assert;
-
-import java.util.Map;
 
 public class TimeModelBuilder implements IModelBuilder {
     private static final String NULL_MODEL_BUILDER_DATA_ERROR_MSG = "Model builder data cannot be null.";
@@ -17,16 +16,18 @@ public class TimeModelBuilder implements IModelBuilder {
     private final int timeResolution;
     private final int bucketSize;
     private final int maxRareTimestampCount;
+    private final CategoryRarityModelBuilderMetricsContainer categoryRarityModelBuilderMetricsContainer;
     private TimeModelBuilderMetricsContainer timeModelBuilderMetricsContainer;
     private TimeModelBuilderPartitionsMetricsContainer timeModelBuilderPartitionsMetricsContainer;
 
     public TimeModelBuilder(TimeModelBuilderConf config, TimeModelBuilderMetricsContainer timeModelBuilderMetricsContainer,
-                            TimeModelBuilderPartitionsMetricsContainer partitionsMetricsContainer) {
+                            TimeModelBuilderPartitionsMetricsContainer partitionsMetricsContainer, CategoryRarityModelBuilderMetricsContainer categoryRarityModelBuilderMetricsContainer) {
         timeResolution = config.getTimeResolution();
         bucketSize = config.getBucketSize();
         maxRareTimestampCount = config.getMaxRareTimestampCount();
         this.timeModelBuilderMetricsContainer = timeModelBuilderMetricsContainer;
         this.timeModelBuilderPartitionsMetricsContainer = partitionsMetricsContainer;
+        this.categoryRarityModelBuilderMetricsContainer = categoryRarityModelBuilderMetricsContainer;
     }
 
     @Override
@@ -35,7 +36,7 @@ public class TimeModelBuilder implements IModelBuilder {
         GenericHistogram genericHistogram = castModelBuilderData(modelBuilderData);
         timeModel.init(
                 timeResolution, bucketSize, maxRareTimestampCount,
-                genericHistogram.getHistogramMap(), genericHistogram.getNumberOfPartitions(), timeModelBuilderMetricsContainer, timeModelBuilderPartitionsMetricsContainer);
+                genericHistogram.getHistogramMap(), genericHistogram.getNumberOfPartitions(), timeModelBuilderMetricsContainer, timeModelBuilderPartitionsMetricsContainer,categoryRarityModelBuilderMetricsContainer);
         return timeModel;
     }
 

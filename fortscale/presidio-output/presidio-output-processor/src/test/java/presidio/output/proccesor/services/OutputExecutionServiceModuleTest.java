@@ -8,13 +8,11 @@ import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import fortscale.utils.time.TimeRange;
-import javafx.util.Pair;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import fortscale.utils.data.Pair;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -28,6 +26,10 @@ import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.domain.record.enriched.file.EnrichedFileRecord;
 import presidio.ade.domain.store.enriched.EnrichedDataAdeToCollectionNameTranslator;
 import presidio.ade.domain.store.smart.SmartDataToCollectionNameTranslator;
+import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
+import presidio.monitoring.records.MetricDocument;
+import presidio.monitoring.sdk.api.services.enums.MetricEnums;
+import presidio.monitoring.services.export.MetricsExporter;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.Indicator;
 import presidio.output.domain.records.alerts.IndicatorEvent;
@@ -41,10 +43,13 @@ import presidio.output.domain.translator.OutputToCollectionNameTranslator;
 import presidio.output.proccesor.spring.OutputProcessorTestConfiguration;
 import presidio.output.proccesor.spring.TestConfig;
 import presidio.output.processor.services.OutputExecutionServiceImpl;
+import presidio.output.processor.services.OutputMonitoringService;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+
+import static java.time.Instant.now;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {OutputProcessorTestConfiguration.class, MongodbTestConfig.class, TestConfig.class, ElasticsearchTestConfig.class})
@@ -67,6 +72,14 @@ public class OutputExecutionServiceModuleTest {
     @Autowired
     private PresidioElasticsearchTemplate esTemplate;
 
+    @Autowired
+    private PresidioMetricPersistencyService metricPersistencyService;
+
+    @Autowired
+    private MetricsExporter metricsExporter;
+
+    private static String OUTPUT_DAILY_METRIC_NAME_PREFIX = "output-core.";
+
     @Before
     public void setup() {
         String smartUserIdHourlyCollectionName = SmartDataToCollectionNameTranslator.SMART_COLLECTION_PREFIX + "userId_hourly";
@@ -79,7 +92,7 @@ public class OutputExecutionServiceModuleTest {
 
         List<SmartRecord> smartRecords = new ArrayList<>();
 
-        TimeRange timeRange = new TimeRange(Instant.now().minus(Duration.ofDays(1)), Instant.now().plus(Duration.ofDays(1)));
+        TimeRange timeRange = new TimeRange(Instant.now().minusSeconds(1800), Instant.now());
         TimeRange timeRange2 = new TimeRange(Instant.now().minus(Duration.ofDays(100)), Instant.now().minus(Duration.ofDays(95)));
         List<Pair<String, Double>> usersToScoreList = new ArrayList<>();
         usersToScoreList.add(new Pair<>("userTest1", 90.0));
@@ -158,7 +171,7 @@ public class OutputExecutionServiceModuleTest {
     @Test
     public void createAlertForNewUser() {
         try {
-            outputExecutionService.run(Instant.now().minus(Duration.ofDays(2)), Instant.now().plus(Duration.ofDays(2)));
+            outputExecutionService.run(now().minus(Duration.ofDays(2)), now().plus(Duration.ofDays(2)));
 
             Assert.assertEquals(8, Lists.newArrayList(alertPersistencyService.findAll()).size());
             Assert.assertEquals(1, Lists.newArrayList(userPersistencyService.findAll()).size());
@@ -180,7 +193,7 @@ public class OutputExecutionServiceModuleTest {
         User userEntity = new User(USER_ID_TEST_USER, "userName", "displayName", 95d, Arrays.asList("existingClassification"), Arrays.asList("existingIndicator"), null, UserSeverity.CRITICAL, 8);
         userPersistencyService.save(userEntity);
         try {
-            outputExecutionService.run(Instant.now().minus(Duration.ofDays(2)), Instant.now().plus(Duration.ofDays(2)));
+            outputExecutionService.run(now().minus(Duration.ofDays(2)), now().plus(Duration.ofDays(2)));
 
             Assert.assertEquals(8, Lists.newArrayList(alertPersistencyService.findAll()).size());
             Assert.assertEquals(1, Lists.newArrayList(userPersistencyService.findAll()).size());
@@ -201,7 +214,7 @@ public class OutputExecutionServiceModuleTest {
     public void testCleanup() {
 
         try {
-            outputExecutionService.run(Instant.now().minus(Duration.ofDays(2)), Instant.now().plus(Duration.ofDays(2)));
+            outputExecutionService.run(now().minus(Duration.ofDays(2)), now().plus(Duration.ofDays(2)));
             Assert.assertEquals(8, Lists.newArrayList(alertPersistencyService.findAll()).size());
             Assert.assertEquals(1, Lists.newArrayList(userPersistencyService.findAll()).size());
             Page<User> users = userPersistencyService.findByUserId(USER_ID_TEST_USER, new PageRequest(0, 9999));
@@ -209,7 +222,7 @@ public class OutputExecutionServiceModuleTest {
             User user = users.iterator().next();
             Assert.assertEquals(8, user.getAlertsCount());
             Assert.assertEquals(55, new Double(user.getScore()).intValue());
-            outputExecutionService.clean(Instant.now().minus(Duration.ofDays(2)), Instant.now().plus(Duration.ofDays(2)));
+            outputExecutionService.clean(now().minus(Duration.ofDays(2)), now().plus(Duration.ofDays(2)));
             // test alerts cleanup
             Assert.assertEquals(0, Lists.newArrayList(alertPersistencyService.findAll()).size());
             users = userPersistencyService.findByUserId(USER_ID_TEST_USER, new PageRequest(0, 9999));
@@ -226,10 +239,10 @@ public class OutputExecutionServiceModuleTest {
     public void testApplyRetentionPolicy() {
         try {
             String outputFileEnrichedEventCollectionName = new OutputToCollectionNameTranslator().toCollectionName(Schema.FILE);
-            outputExecutionService.run(Instant.now().minus(Duration.ofDays(101)), Instant.now().plus(Duration.ofDays(2)));
+            outputExecutionService.run(now().minus(Duration.ofDays(101)), now().plus(Duration.ofDays(2)));
             Assert.assertEquals(10, Lists.newArrayList(alertPersistencyService.findAll()).size());
             Assert.assertEquals(2, mongoTemplate.findAll(EnrichedEvent.class, outputFileEnrichedEventCollectionName).size());
-            outputExecutionService.applyRetentionPolicy(Instant.now().plus(Duration.ofDays(1)));
+            outputExecutionService.applyRetentionPolicy(now().plus(Duration.ofDays(1)));
             // 2 alerts and 1 enriched event should have been deleted by retention
             Assert.assertEquals(1, mongoTemplate.findAll(EnrichedEvent.class, outputFileEnrichedEventCollectionName).size());
             Assert.assertEquals(8, Lists.newArrayList(alertPersistencyService.findAll()).size());
@@ -243,10 +256,10 @@ public class OutputExecutionServiceModuleTest {
     public void testApplyRetentionPolicyForNonExistingSchema() {
         try {
             String outputFileEnrichedEventCollectionName = new OutputToCollectionNameTranslator().toCollectionName(Schema.PRINT);
-            outputExecutionService.run(Instant.now().minus(Duration.ofDays(101)), Instant.now().plus(Duration.ofDays(2)));
+            outputExecutionService.run(now().minus(Duration.ofDays(101)), now().plus(Duration.ofDays(2)));
             Assert.assertEquals(10, Lists.newArrayList(alertPersistencyService.findAll()).size());
             Assert.assertEquals(0, mongoTemplate.findAll(EnrichedEvent.class, outputFileEnrichedEventCollectionName).size());
-            outputExecutionService.applyRetentionPolicy(Instant.now().plus(Duration.ofDays(1)));
+            outputExecutionService.applyRetentionPolicy(now().plus(Duration.ofDays(1)));
             Assert.assertEquals(0, mongoTemplate.findAll(EnrichedEvent.class, outputFileEnrichedEventCollectionName).size());
             Assert.assertEquals(8, Lists.newArrayList(alertPersistencyService.findAll()).size());
         } catch (Exception e) {

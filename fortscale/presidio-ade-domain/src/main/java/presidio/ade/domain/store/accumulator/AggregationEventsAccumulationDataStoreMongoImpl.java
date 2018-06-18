@@ -1,12 +1,17 @@
 package presidio.ade.domain.store.accumulator;
 
+import com.mongodb.DBObject;
+import com.mongodb.MongoCommandException;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.util.MongoDbBulkOpUtil;
 import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.time.TimeRange;
 import fortscale.utils.store.StoreManager;
 import fortscale.utils.store.StoreManagerAware;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import presidio.ade.domain.record.AdeRecord;
@@ -15,12 +20,10 @@ import presidio.ade.domain.record.aggregated.AdeContextualAggregatedRecord;
 import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 
 import java.time.Instant;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 
@@ -31,11 +34,13 @@ public class AggregationEventsAccumulationDataStoreMongoImpl implements Aggregat
     private final AccumulatedDataToCollectionNameTranslator translator;
     private final MongoDbBulkOpUtil mongoDbBulkOpUtil;
     private StoreManager storeManager;
+    private final long selectorPageSize;
 
-    public AggregationEventsAccumulationDataStoreMongoImpl(MongoTemplate mongoTemplate, AccumulatedDataToCollectionNameTranslator translator, MongoDbBulkOpUtil mongoDbBulkOpUtil) {
+    public AggregationEventsAccumulationDataStoreMongoImpl(MongoTemplate mongoTemplate, AccumulatedDataToCollectionNameTranslator translator, MongoDbBulkOpUtil mongoDbBulkOpUtil, long selectorPageSize) {
         this.mongoTemplate = mongoTemplate;
         this.translator = translator;
         this.mongoDbBulkOpUtil = mongoDbBulkOpUtil;
+        this.selectorPageSize = selectorPageSize;
     }
 
     @Override
@@ -62,15 +67,69 @@ public class AggregationEventsAccumulationDataStoreMongoImpl implements Aggregat
     public Set<String> findDistinctAcmContextsByTimeRange(
             String aggregatedFeatureName, TimeRange timeRange) {
 
-
         AccumulatedRecordsMetaData metadata = new AccumulatedRecordsMetaData(aggregatedFeatureName);
         String collectionName = getCollectionName(metadata);
 
-        Criteria startTimeCriteria = Criteria.where(AdeRecord.START_INSTANT_FIELD).gte(Date.from(timeRange.getStart())).lt(Date.from(timeRange.getEnd()));
-        Query query = new Query(startTimeCriteria);
-        Set<String> distinctContexts = (Set<String>) mongoTemplate.getCollection(collectionName).distinct(AdeContextualAggregatedRecord.CONTEXT_ID_FIELD, query.getQueryObject()).stream().collect(Collectors.toSet());
+        Date startDate = Date.from(timeRange.getStart());
+        Date endDate = Date.from(timeRange.getEnd());
+        Set<String> distinctContexts;
+        try {
+            Criteria startTimeCriteria = Criteria.where(AdeRecord.START_INSTANT_FIELD).gte(startDate).lt(endDate);
+            Query query = new Query(startTimeCriteria);
+            distinctContexts = (Set<String>) mongoTemplate.getCollection(collectionName).distinct(AdeContextualAggregatedRecord.CONTEXT_ID_FIELD, query.getQueryObject()).stream().collect(Collectors.toSet());
+        } catch (MongoCommandException e) {
+            long nextPageIndex = 0;
+            Set<String> subList;
+            distinctContexts = new HashSet<>();
+            do {
+                subList = aggregateContextIds(startDate, endDate,
+                        nextPageIndex * selectorPageSize, selectorPageSize, collectionName, true);
+                distinctContexts.addAll(subList);
+                nextPageIndex++;
+            } while (subList.size() == selectorPageSize);
+        }
 
+        logger.debug("found {} distinct contexts", distinctContexts.size());
         return distinctContexts;
+    }
+
+
+    /**
+     * Aggregate distinct contextIds
+     * @param startDate startDate
+     * @param endDate endDate
+     * @param skip skip
+     * @param limit limit
+     * @param collectionName collectionName
+     * @param allowDiskUse allowDiskUse
+     * @return set of distinct contextIds
+     */
+    private Set<String> aggregateContextIds(
+            Date startDate, Date endDate, long skip, long limit, String collectionName, boolean allowDiskUse) {
+
+        List<AggregationOperation> aggregationOperations = new LinkedList<>();
+        aggregationOperations.add(match(where(AdeRecord.START_INSTANT_FIELD).gte(startDate).lt(endDate)));
+
+        aggregationOperations.add(group(AdeContextualAggregatedRecord.CONTEXT_ID_FIELD));
+        aggregationOperations.add(project(AdeContextualAggregatedRecord.CONTEXT_ID_FIELD).and("_id").as(AdeContextualAggregatedRecord.CONTEXT_ID_FIELD)
+                .andExclude("_id"));
+
+        if (skip >= 0 && limit > 0) {
+            aggregationOperations.add(sort(Sort.Direction.ASC, AdeContextualAggregatedRecord.CONTEXT_ID_FIELD));
+            aggregationOperations.add(skip(skip));
+            aggregationOperations.add(limit(limit));
+        }
+
+        Aggregation aggregation = newAggregation(aggregationOperations).withOptions(Aggregation.newAggregationOptions().
+                allowDiskUse(allowDiskUse).build());
+
+        List<DBObject> aggrResult = mongoTemplate
+                .aggregate(aggregation, collectionName, DBObject.class)
+                .getMappedResults();
+
+        return aggrResult.stream()
+                .map(result -> (String) result.get(AdeContextualAggregatedRecord.CONTEXT_ID_FIELD))
+                .collect(Collectors.toSet());
     }
 
     @Override

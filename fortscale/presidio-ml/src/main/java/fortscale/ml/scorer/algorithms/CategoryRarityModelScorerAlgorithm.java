@@ -20,9 +20,10 @@ public class CategoryRarityModelScorerAlgorithm {
     private int maxRareCount;
     private int maxNumOfRareFeatures;
     private double xWithValueHalfFactor;
+    private double numRareEventsFactor;
 
 
-    public CategoryRarityModelScorerAlgorithm(Integer maxRareCount, Integer maxNumOfRareFeatures, double xWithValueHalfFactor) {
+    public CategoryRarityModelScorerAlgorithm(Integer maxRareCount, Integer maxNumOfRareFeatures, double xWithValueHalfFactor, double numRareEventsFactor) {
         assertMaxNumOfRareFeaturesValue(maxNumOfRareFeatures);
         assertMaxRareCountValue(maxRareCount);
         if(maxRareCount > 99) {
@@ -36,6 +37,7 @@ public class CategoryRarityModelScorerAlgorithm {
         this.maxRareCount = maxRareCount;
         this.maxNumOfRareFeatures = maxNumOfRareFeatures;
         this.xWithValueHalfFactor = xWithValueHalfFactor;
+        this.numRareEventsFactor = numRareEventsFactor;
     }
 
     public static void assertMaxRareCountValue(Integer maxRareCount) {
@@ -57,7 +59,7 @@ public class CategoryRarityModelScorerAlgorithm {
         if (totalEvents == 0 || featureCount > maxRareCount) {
             return 0D;
         }
-        double numRareEvents = 0;
+        double numRareEvents = numRareEventsFactor;
         double numDistinctRareFeatures = 0;
         List<Double> buckets = model.getBuckets();
         for (int i = 0; i < featureCount; i++) {

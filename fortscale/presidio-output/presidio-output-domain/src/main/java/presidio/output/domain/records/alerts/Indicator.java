@@ -3,6 +3,8 @@ package presidio.output.domain.records.alerts;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.common.general.Schema;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringExclude;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Mapping;
 import presidio.output.domain.records.AbstractElasticDocument;
@@ -67,6 +69,7 @@ public class Indicator extends AbstractElasticDocument {
     private int eventsNum;
 
     @JsonIgnore
+    @ToStringExclude
     private transient List<IndicatorEvent> events;
 
     public Indicator() {
@@ -175,5 +178,10 @@ public class Indicator extends AbstractElasticDocument {
 
     public void setType(AlertEnums.IndicatorTypes type) {
         this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this);
     }
 }

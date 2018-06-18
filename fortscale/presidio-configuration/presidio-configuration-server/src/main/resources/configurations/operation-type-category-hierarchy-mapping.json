@@ -1,20 +1,20 @@
 {
   "mapping": {
     "ACTIVE_DIRECTORY": {
+      "COMPUTER_MANAGEMENT": [
+        "OBJECT_MANAGEMENT"
+      ],
+      "GROUP_MANAGEMENT": [
+        "OBJECT_MANAGEMENT"
+      ],
+      "DOMAIN_MANAGEMENT": [
+        "OBJECT_MANAGEMENT"
+      ],
       "GROUP_MEMBERSHIP_ADD_OPERATION": [
         "GROUP_MEMBERSHIP_OPERATION"
       ],
       "GROUP_MEMBERSHIP_REMOVE_OPERATION": [
         "GROUP_MEMBERSHIP_OPERATION"
-      ],
-      "GROUP_MANAGEMENT": [
-        "OBJECT_MANAGEMENT"
-      ],
-      "COMPUTER_MANAGEMENT": [
-        "OBJECT_MANAGEMENT"
-      ],
-      "DOMAIN_MANAGEMENT": [
-        "OBJECT_MANAGEMENT"
       ]
     },
     "FILE": {

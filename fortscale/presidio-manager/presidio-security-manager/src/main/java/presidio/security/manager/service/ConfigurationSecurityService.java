@@ -3,7 +3,6 @@ package presidio.security.manager.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fortscale.utils.EncryptionUtils;
 import fortscale.utils.logging.Logger;
 import freemarker.template.Configuration;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
@@ -64,6 +63,10 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
 
     @Override
     public boolean applyConfiguration() {
+        return true;
+
+        // Kerberos configuration is disabled in this version
+        /*
         FileWriter fileWriter = null;
         FileWriter krb5ConfFileWriter = null;
 
@@ -120,7 +123,7 @@ public class ConfigurationSecurityService implements ConfigurationProcessingServ
         } else {
             logger.warn("not reloading httpd config. you must be running a unit test... right?");
             return true;
-        }
+        }*/
     }
 
 

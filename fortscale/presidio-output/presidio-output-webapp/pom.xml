@@ -3,14 +3,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>presidio-output-webapp</artifactId>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>presidio-output-webapp</name>
     <description>Fortscale Output</description>
-
+    <version>2.0.0-SNAPSHOT</version>
     <parent>
         <artifactId>presidio-output</artifactId>
         <groupId>fortscale</groupId>
-        <version>1.1-0-SNAPSHOT</version>
+        <version>2.0.0-SNAPSHOT</version>
     </parent>
 
     <properties>
@@ -20,7 +20,7 @@
         <java.version>1.8</java.version>
         <swagger-annotations-version>1.5.8</swagger-annotations-version>
         <exec-maven-plugin>1.2.1</exec-maven-plugin>
-        <tomcat.web.scope>provided</tomcat.web.scope>
+        <tomcat.web.scope>compile</tomcat.web.scope>
         <migbase64-version>2.2</migbase64-version>
         <jersey-version>2.22.2</jersey-version>
     </properties>
@@ -188,12 +188,12 @@
                 <script.extension>.sh</script.extension>
             </properties>
         </profile>
-        <profile>
-            <id>bootwar</id>
-            <properties>
-                <tomcat.web.scope>compile</tomcat.web.scope>
-            </properties>
-        </profile>
+        <!--<profile>-->
+            <!--<id>bootwar</id>-->
+            <!--<properties>-->
+                <!--<tomcat.web.scope>compile</tomcat.web.scope>-->
+            <!--</properties>-->
+        <!--</profile>-->
     </profiles>
 
     <build>
@@ -220,7 +220,7 @@
                                     <artifactId>${project.artifactId}</artifactId>
                                     <version>${project.version}</version>
                                     <type>${project.packaging}</type>
-                                    <destFileName>presidio-output.war</destFileName>
+                                    <destFileName>presidio-output.jar</destFileName>
                                 </artifactItem>
                             </artifactItems>
                             <outputDirectory>../../target/war-dependencies</outputDirectory>
@@ -329,6 +329,10 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
+                            <environmentVariables>
+                                <key>MAVEN_HOME</key>
+                                <value>${env.M2_HOME}</value>
+                            </environmentVariables>
                             <executable>${basedir}/compile-client${script.extension}</executable>
                         </configuration>
                     </execution>
@@ -339,6 +343,10 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
+                            <environmentVariables>
+                                <key>MAVEN_HOME</key>
+                                <value>${env.M2_HOME}</value>
+                            </environmentVariables>
                             <executable>${basedir}/deploy-client${script.extension}</executable>
                             <arguments>
                                 <argument>${project.version}</argument>

@@ -1,6 +1,7 @@
 package presidio.output.proccesor.spring;
 
 import fortscale.utils.shell.BootShimConfig;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -9,6 +10,7 @@ import org.springframework.context.annotation.Import;
 import presidio.ade.sdk.common.AdeManagerSdk;
 import presidio.monitoring.aspect.MonitoringAspects;
 import presidio.monitoring.aspect.MonitroingAspectSetup;
+import presidio.monitoring.elastic.services.PresidioMetricPersistencyServiceImpl;
 import presidio.monitoring.endPoint.PresidioMetricBucket;
 import presidio.monitoring.endPoint.PresidioSystemMetricsFactory;
 import presidio.monitoring.services.MetricCollectingService;

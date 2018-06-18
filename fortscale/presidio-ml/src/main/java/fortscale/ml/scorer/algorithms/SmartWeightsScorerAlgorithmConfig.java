@@ -10,7 +10,7 @@ public class SmartWeightsScorerAlgorithmConfig {
 
     @Value("${presidio.ade.model.smart.weights.score.fractional.power:0.4}")
     private Double fractionalPower;
-    @Value("${presidio.ade.model.smart.weights.score.minimal.cluster.score:50}")
+    @Value("${presidio.ade.model.smart.weights.score.minimal.cluster.score:25}")
     private Double minimalClusterScore;
 
     @Bean

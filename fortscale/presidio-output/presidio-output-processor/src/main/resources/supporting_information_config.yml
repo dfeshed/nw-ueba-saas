@@ -213,6 +213,18 @@ indicators:
     type: hourly_aggregations
   classification: data_exfiltration
 
+- id: numberOfFileCopiedUserIdFileHourly
+  type: FEATURE_AGGREGATION
+  name: high_number_of_file_copied_operations
+  schema: FILE
+  adeEventType: file
+  anomalyDescriptior:
+    anomalyField: operationType
+    anomalyValue: FILE_COPIED
+  historicalData:
+    type: hourly_aggregations
+  classification: data_exfiltration
+
 #*********************************************************
 #*              ACTIVE DIRECTORY INDICATORS              *
 #*********************************************************
@@ -442,104 +454,6 @@ indicators:
   anomalyDescriptior:
       anomalyField: operationType
       anomalyValue: USER_PASSWORD_NEVER_EXPIRES_OPTION_CHANGED
-  historicalData:
-    type: count_aggregations
-    featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
-    featureName: operationTypeHistogram
-  classification: sensitive_user_status_changes
-
-- id: passwordChangedByNonOwnerScoreUserIdActiveDirectoryHourly
-  type: STATIC_INDICATOR
-  name: user_password_changed_by_non-owner
-  adeEventType: scored_enriched.active_directory.passwordChangedByNonOwner.userId.activeDirectory.score
-  schema: ACTIVE_DIRECTORY
-  anomalyDescriptior:
-      anomalyField: operationType
-      anomalyValue: USER_PASSWORD_CHANGED_BY_NON_OWNER
-  historicalData:
-    type: count_aggregations
-    featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
-    featureName: operationTypeHistogram
-  classification: sensitive_user_status_changes
-
-- id: nestedMemberAddedToCriticalEnterpriseGroupScoreUserIdActiveDirectoryHourly
-  type: STATIC_INDICATOR
-  name: nested_member_added_to_critical_enterprise_group
-  adeEventType: scored_enriched.active_directory.nestedMemberAddedToCriticalGroup.userId.activeDirectory.score
-  schema: ACTIVE_DIRECTORY
-  anomalyDescriptior:
-      anomalyField: operationType
-      anomalyValue: NESTED_MEMBER_ADDED_TO_CRITICAL_ENTERPRISE_GROUP
-  historicalData:
-    type: count_aggregations
-    featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
-    featureName: operationTypeHistogram
-  classification: elevated_privileges_granted
-
-- id: memberAddedToCriticalEnterpriseGroupScoreUserIdActiveDirectoryHourly
-  type: STATIC_INDICATOR
-  name: member_added_to_critical_enterprise_group
-  adeEventType: scored_enriched.active_directory.memberAddedToCriticalGroup.userId.activeDirectory.score
-  schema: ACTIVE_DIRECTORY
-  anomalyDescriptior:
-      anomalyField: operationType
-      anomalyValue: MEMBER_ADDED_TO_CRITICAL_ENTERPRISE_GROUP
-  historicalData:
-    type: count_aggregations
-    featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
-    featureName: operationTypeHistogram
-  classification: elevated_privileges_granted
-
-- id: strongAuthenticationMethodChangedScoreUserIdActiveDirectoryHourly
-  type: STATIC_INDICATOR
-  name: strong_authentication_method_changed
-  adeEventType: scored_enriched.active_directory.strongAuthenticationMethodChanged.userId.activeDirectory.score
-  schema: ACTIVE_DIRECTORY
-  anomalyDescriptior:
-      anomalyField: operationType
-      anomalyValue: STRONG_AUTHENTICATION_METHOD_CHANGED
-  historicalData:
-    type: count_aggregations
-    featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
-    featureName: operationTypeHistogram
-  classification: sensitive_user_status_changes
-
-- id: strongAuthenticationPhoneAppDetailChangedScoreUserIdActiveDirectoryHourly
-  type: STATIC_INDICATOR
-  name: strong_authentication_phone_app_detail_changed
-  adeEventType: scored_enriched.active_directory.strongAuthenticationPhoneAppDetailChanged.userId.activeDirectory.score
-  schema: ACTIVE_DIRECTORY
-  anomalyDescriptior:
-      anomalyField: operationType
-      anomalyValue: STRONG_AUTHENTICATION_PHONE_APP_DETAIL_CHANGED
-  historicalData:
-    type: count_aggregations
-    featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
-    featureName: operationTypeHistogram
-  classification: sensitive_user_status_changes
-
-- id: strongAuthenticationPhoneUserDetailChangedScoreUserIdActiveDirectoryHourly
-  type: STATIC_INDICATOR
-  name: strong_authentication_phone_user_detail_changed
-  adeEventType: scored_enriched.active_directory.strongAuthenticationPhoneUserDetailChanged.userId.activeDirectory.score
-  schema: ACTIVE_DIRECTORY
-  anomalyDescriptior:
-      anomalyField: operationType
-      anomalyValue: STRONG_AUTHENTICATION_PHONE_USER_DETAIL_CHANGED
-  historicalData:
-    type: count_aggregations
-    featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily
-    featureName: operationTypeHistogram
-  classification: sensitive_user_status_changes
-
-- id: strongAuthenticationRequirementChangedScoreUserIdActiveDirectoryHourly
-  type: STATIC_INDICATOR
-  name: strong_authentication_requirement_changed
-  adeEventType: scored_enriched.active_directory.strongAuthenticationRequirementChanged.userId.activeDirectory.score
-  schema: ACTIVE_DIRECTORY
-  anomalyDescriptior:
-      anomalyField: operationType
-      anomalyValue: STRONG_AUTHENTICATION_REQUIREMENT_CHANGED
   historicalData:
     type: count_aggregations
     featureBucketConfName: operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily

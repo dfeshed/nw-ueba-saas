@@ -1128,7 +1128,7 @@ class REST_API(BaseView):
             with TemporaryDirectory(prefix='airflowtmplog') as tmp_dir:
                 with NamedTemporaryFile(prefix='airflow_error_logs_', dir=tmp_dir, suffix=".zip") as temp_file:
                     with ZipFile(temp_file, 'w') as temp_zip_file:
-                        log_files = set(self.searchthis('/var/log/presidio/3p/airflow','ERROR'))
+                        log_files = set(self.searchthis(str(airflow_base_log_folder), 'ERROR'))
                         # logs of failed tasks
                         for dag_run in dag_runs:
                             task_instances = dag_run.get_task_instances(state=State.FAILED)

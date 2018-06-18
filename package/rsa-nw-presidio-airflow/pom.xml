@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>package</artifactId>
+        <groupId>com.rsa.netwitness.presidio</groupId>
+        <version>2.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>rsa-nw-presidio-airflow</artifactId>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${exec-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <executable>bash</executable>
+                    <commandlineArgs>--verbose scripts/build/download_pip_requirements.sh ${project.build.directory}/dependencies/pypackages/ ${py-requirements.file}</commandlineArgs>
+                </configuration>
+            </plugin>
+            <!-- create RPM -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>rpm-maven-plugin</artifactId>
+                <version>${rpm-maven-plugin.version}</version>
+                <configuration>
+                    <summary>Airflow workflow engine</summary>
+                    <description>
+                        Airflow is a platform to programmatically author, schedule, and monitor workflows.
+                    </description>
+                    <buildRequires>
+                        <buildRequire>python2-pip</buildRequire>
+                    </buildRequires>
+                    <defineStatements>
+                        <defineStatement>_unpackaged_files_terminate_build 0</defineStatement>
+                        <defineStatement>_binaries_in_noarch_packages_terminate_build 0</defineStatement>
+                    </defineStatements>
+                    <requires>
+                        <require>python-devel</require>
+                        <require>postgresql-devel</require>
+                        <require>python2-pip</require>
+                        <require>mariadb-devel</require>
+                        <require>libffi-devel</require>
+                        <require>gcc</require>
+                        <require>gcc-c++</require>
+                    </requires>
+                    <defaultGroupname>${presidio.username}</defaultGroupname>
+                    <defaultUsername>${presidio.groupname}</defaultUsername>
+                    <mappings>
+                        <mapping>
+                            <directoryIncluded>false</directoryIncluded>
+                            <directory>/etc/sysconfig/</directory>
+                            <username>${presidio.username}</username>
+                            <groupname>${presidio.groupname}</groupname>
+                            <sources>
+                                <source>
+                                    <includes>
+                                        <!--airflow environment variables -->
+                                        <include>airflow</include>
+                                    </includes>
+                                    <location>scripts/systemd/</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directoryIncluded>false</directoryIncluded>
+                            <directory>/usr/lib/systemd/system</directory>
+                            <username>${presidio.username}</username>
+                            <groupname>${presidio.groupname}</groupname>
+                            <sources>
+                                <source>
+                                    <includes>
+                                        <include>*.service</include>
+                                    </includes>
+                                    <location>scripts/systemd/</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directoryIncluded>false</directoryIncluded>
+                            <directory>/etc/tmpfiles.d/</directory>
+                            <username>${presidio.username}</username>
+                            <groupname>${presidio.groupname}</groupname>
+                            <sources>
+                                <source>
+                                    <includes>
+                                        <include>airflow.conf</include>
+                                    </includes>
+                                    <location>scripts/systemd/</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directoryIncluded>false</directoryIncluded>
+                            <directory>${presidio-app.directory}/pypackages/</directory>
+                            <username>${presidio.username}</username>
+                            <groupname>${presidio.groupname}</groupname>
+                            <sources>
+                                <source>
+                                    <location>${project.build.directory}/dependencies/pypackages</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directoryIncluded>false</directoryIncluded>
+                            <directory>${presidio-app.directory}/pypackages/airflow</directory>
+                            <username>${presidio.username}</username>
+                            <groupname>${presidio.groupname}</groupname>
+                            <sources>
+                                <source>
+                                    <location>${py-requirements.file}</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                    </mappings>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <properties>
+        <py-requirements.file>scripts/requirements.txt</py-requirements.file>
+    </properties>
+</project>

@@ -4,7 +4,7 @@ package presidio.monitoring.endPoint;
 import com.google.common.collect.ImmutableSet;
 import fortscale.utils.logging.Logger;
 import presidio.monitoring.DefaultPublicMetricsNames;
-import presidio.monitoring.records.Metric;
+import presidio.monitoring.sdk.api.services.model.Metric;
 import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 
 import java.lang.management.*;

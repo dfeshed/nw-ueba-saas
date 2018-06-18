@@ -5,7 +5,7 @@ import fortscale.utils.pagination.BasePaginationService;
 import fortscale.utils.pagination.ContextIdToNumOfItems;
 import fortscale.utils.pagination.PageIterator;
 import fortscale.utils.time.TimeRange;
-import javafx.util.Pair;
+import fortscale.utils.data.Pair;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.domain.store.smart.SmartDataReader;
 import presidio.ade.domain.store.smart.SmartRecordsMetadata;
