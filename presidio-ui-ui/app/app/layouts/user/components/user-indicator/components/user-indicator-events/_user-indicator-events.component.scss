@@ -2,7 +2,7 @@ user-indicator-events {
     @mixin alertPageTableOverrides() {
         tr {
             background-color: var(--main-widgets-background-color);
-            color: #024d89;
+            color: var(--main-widgets-titles-text-color);;
             font-family: 'Open Sans', sans-serif;
             font-size: 12px;
             font-weight: 400;
@@ -12,7 +12,7 @@ user-indicator-events {
             }
 
             a {
-                color: #024d89;
+                color: var(--main-widgets-titles-link-color);
 
                 &:hover {
                     color: #02254a;
@@ -20,9 +20,9 @@ user-indicator-events {
 
             }
 
-            &.k-alt {
-                background-color: white;
-            }
+            //&.k-alt { //Zebra
+            //    background-color: white;
+            //}
         }
     }
 

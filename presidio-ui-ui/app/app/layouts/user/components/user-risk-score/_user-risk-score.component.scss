@@ -83,16 +83,25 @@ user-risk-score {
             border-radius: 3px;
 
             .k-state-focused, .k-state-hover {
-                background-color: white;
+                background-color: var(--main-widgets-titles-text-color);
             }
 
             .k-list-scroller{
                 background-color: #d5e3e8;
             }
+            .k-dropdown-wrap {
+                &.k-state-default {
+                    background-color: var(--main-widgets-background-color);
+                    border-color: var(--main-widgets-titles-text-color);
+                    color: var(--main-widgets-titles-text-color);
+                    background-image: none;
+                }
+            }
         }
 
         .k-input {
-            color: #30a2f0;
+            color: var(--main-widgets-titles-text-color);
+
             font-family: 'Open Sans', sans-serif;
             font-size: 12px;
             font-weight: 400;
@@ -356,7 +365,7 @@ user-risk-score {
             }
 
             .indicator-item {
-                color: #3f7db5;
+                color: var(--main-widgets-titles-text-color);;
                 font-weight: 700;
                 letter-spacing: -0.4px;
             }
