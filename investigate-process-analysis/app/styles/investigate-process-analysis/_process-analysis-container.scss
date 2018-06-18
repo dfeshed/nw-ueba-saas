@@ -54,6 +54,12 @@
     }
     &.collapse-event-panel {
       width: calc(100vw/2 - 4px);
+      .filter-panel {
+        max-width: 348px;
+      }
+      .events-table-panel {
+        max-width: calc(100vw/2 - 348px);
+      }
     }
   }
 
@@ -67,7 +73,7 @@
       width: calc(100vw - 704px)
     }
     &.collapse-event-panel {
-      width: calc(100vw - (100vw/2))
+      width: calc(100vw - (100vw/2)); 
     }
   }
 }

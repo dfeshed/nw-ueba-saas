@@ -24,10 +24,13 @@
 }
 
 .process-events-details {
+  width: 100%;
   .filter-panel {
     height: 90vh;
-    max-width: 358px;
-
+    max-width: 348px;
+  }
+  .events-table-panel {
+    max-width: calc(100vw - 853px);
   }
 }
 
