@@ -11,8 +11,7 @@ import {
   editNextGenPill
 } from 'investigate-events/actions/next-gen-creators';
 
-const { log } = console;
-const _debug = (data) => log('pills', data);
+// const { log } = console;
 
 const stateToComputed = (state) => ({
   pillsData: enrichedPillsData(state)
@@ -57,6 +56,17 @@ const QueryPills = Component.extend({
     });
   },
 
+  init() {
+    this._super(arguments);
+    this.set('_messageHandlerMap', {
+      [MESSAGE_TYPES.PILL_CANCELLED]: (data, position) => this._pillCancelled(data, position),
+      [MESSAGE_TYPES.PILL_CREATED]: (data, position) => this._pillCreated(data, position),
+      [MESSAGE_TYPES.PILL_DELETED]: (data) => this._pillDeleted(data),
+      [MESSAGE_TYPES.PILL_EDITED]: (data) => this._pillEdited(data),
+      [MESSAGE_TYPES.PILL_ENTERED]: (data, position) => this._pillEntered(data, position)
+    });
+  },
+
   actions: {
     /**
      * Handler for all messages coming from pills.
@@ -66,32 +76,16 @@ const QueryPills = Component.extend({
      * @public
      */
     handleMessage(type, data, position) {
-      switch (type) {
-        case MESSAGE_TYPES.PILL_CANCELLED:
-          this._pillCancelled(data, position);
-          break;
-        case MESSAGE_TYPES.PILL_CREATED:
-          this._pillCreated(data, position);
-          break;
-        case MESSAGE_TYPES.PILL_DELETED:
-          this._pillDeleted(data);
-          break;
-        case MESSAGE_TYPES.PILL_EDITED:
-          this._pillEdited(data);
-          break;
-        case MESSAGE_TYPES.PILL_ENTERED:
-          this._pillEntered(data, position);
-          break;
-        case MESSAGE_TYPES.PILL_INITIALIZED:
-          // Do nothing right now
-          break;
-        case MESSAGE_TYPES.DEBUG:
-          _debug(data);
-          break;
-        default:
-          // The buck stops here
-          warn(`An unhandled query pill message of type "${type}" has occured \
-            from an element with the id "${data.id}".`);
+      const messageHandlerFn = this.get('_messageHandlerMap')[type];
+      if (messageHandlerFn) {
+        messageHandlerFn(data, position);
+      } else {
+        // The buck stops here
+        warn(
+          `An unhandled query pill message of type "${type}" has occured.`,
+          null,
+          { id: 'query-pills' }
+        );
       }
     }
   },

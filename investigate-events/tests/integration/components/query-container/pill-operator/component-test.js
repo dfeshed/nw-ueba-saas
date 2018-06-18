@@ -146,6 +146,33 @@ module('Integration | Component | Pill Operator', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.operatorInput, 'keydown', ESCAPE_KEY);
   });
 
+  test('it removes the selection when the ESCAPE key is pressed', async function(assert) {
+    const done = assert.async();
+    let iteration = 1;
+    assert.expect(1);
+    this.set('meta', meta);
+    this.set('handleMessage', (type, data) => {
+      if (type === MESSAGE_TYPES.OPERATOR_SELECTED) {
+        this.set('selection', data);
+        if (iteration === 2) {
+          assert.equal(data, null, 'selection should be null');
+          done();
+        }
+        iteration++;
+      }
+    });
+    await render(hbs`
+      {{query-container/pill-operator
+        isActive=true
+        meta=meta
+        selection=selection
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await selectChoose(PILL_SELECTORS.operatorTrigger, PILL_SELECTORS.powerSelectOption, 1);
+    await triggerKeyEvent(PILL_SELECTORS.operatorInput, 'keydown', ESCAPE_KEY);
+  });
+
   test('it selects an operator if a trailing SPACE is entered and there is one option', async function(assert) {
     const done = assert.async();
     assert.expect(1);

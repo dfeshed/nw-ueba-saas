@@ -11,6 +11,8 @@ import * as MESSAGE_TYPES from 'investigate-events/components/query-container/me
 import KEY_MAP from 'investigate-events/util/keys';
 import PILL_SELECTORS from '../pill-selectors';
 
+// const { log } = console;
+
 const ARROW_RIGHT = KEY_MAP.arrowRight.code;
 const ESCAPE_KEY = KEY_MAP.escape.code;
 const TAB_KEY = KEY_MAP.tab.code;
@@ -63,7 +65,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
       }
     });
     await render(hbs`{{query-container/pill-meta isActive=true sendMessage=(action handleMessage)}}`);
-    selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 1);// option b
+    await selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 1);// option b
   });
 
   test('it does not broadcasts a message when the ARROW_RIGHT key is pressed and there is no selection', async function(assert) {
@@ -105,7 +107,26 @@ module('Integration | Component | Pill Meta', function(hooks) {
       }
     });
     await render(hbs`{{query-container/pill-meta isActive=true sendMessage=(action handleMessage)}}`);
-    // await focus(metaPowerSelectTrigger);
+    await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ESCAPE_KEY);
+  });
+
+  test('it removes the selection when the ESCAPE key is pressed', async function(assert) {
+    const done = assert.async();
+    let iteration = 1;
+    assert.expect(1);
+    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    this.set('handleMessage', (type, data) => {
+      if (type === MESSAGE_TYPES.META_SELECTED) {
+        this.set('selection', data);
+        if (iteration === 2) {
+          assert.equal(data, null, 'selection should be null');
+          done();
+        }
+        iteration++;
+      }
+    });
+    await render(hbs`{{query-container/pill-meta isActive=true selection=selection sendMessage=(action handleMessage)}}`);
+    await selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 1);
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ESCAPE_KEY);
   });
 

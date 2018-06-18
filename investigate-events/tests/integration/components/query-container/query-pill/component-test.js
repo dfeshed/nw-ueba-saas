@@ -33,13 +33,6 @@ module('Integration | Component | query-pill', function(hooks) {
     };
   });
 
-  test('it sends a message that it was initialized', async function(assert) {
-    this.set('handleMessage', (messageType) => {
-      assert.equal(messageType, MESSAGE_TYPES.PILL_INITIALIZED, 'Initalization message does not match');
-    });
-    await render(hbs`{{query-container/query-pill sendMessage=(action handleMessage)}}`);
-  });
-
   test('it activates pill-meta if active upon initialization', async function(assert) {
     new ReduxDataHelper(setState).language().pillsDataEmpty().build();
     await render(hbs`{{query-container/query-pill isActive=true}}`);
@@ -283,10 +276,6 @@ module('Integration | Component | query-pill', function(hooks) {
     new ReduxDataHelper(setState).language().pillsDataEmpty().build();
 
     this.set('handleMessage', (messageType, data, position) => {
-      if (messageType === MESSAGE_TYPES.PILL_INITIALIZED) {
-        return;
-      }
-
       assert.equal(messageType, MESSAGE_TYPES.PILL_ENTERED, 'Message sent for pill create is not correct');
       assert.deepEqual(data.id, undefined, 'Pill data goes not contain an id');
       assert.equal(position, 12, 'Message sent for pill entered contains correct pill position');

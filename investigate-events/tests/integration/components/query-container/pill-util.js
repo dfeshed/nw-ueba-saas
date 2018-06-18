@@ -39,5 +39,5 @@ export const createBasicPill = async function(fromTrigger) {
 };
 
 export const isIgnoredInitialEvent = (event) => {
-  return [MESSAGE_TYPES.PILL_INITIALIZED, MESSAGE_TYPES.PILL_ENTERED].includes(event);
+  return [MESSAGE_TYPES.PILL_ENTERED].includes(event);
 };

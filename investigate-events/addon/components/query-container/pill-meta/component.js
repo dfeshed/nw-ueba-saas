@@ -24,6 +24,12 @@ const PillMeta = Component.extend({
    */
   isActive: false,
   /**
+   * Should we automatically display the EPS dropdown?
+   * @type {boolean}
+   * @public
+   */
+  isAutoFocused: true,
+  /**
    * Does this component consume the full width of its parent, or is it sized to
    * match its contents?
    * @type {boolean}
@@ -49,9 +55,11 @@ const PillMeta = Component.extend({
   didUpdateAttrs() {
     this._super(...arguments);
     if (this.get('isActive')) {
-      // We schedule this after render to give time for the power-select to
-      // be rendered before trying to focus on it.
-      scheduleOnce('afterRender', this, '_focusOnPowerSelectTrigger');
+      if (this.get('isAutoFocused')) {
+        // We schedule this after render to give time for the power-select to
+        // be rendered before trying to focus on it.
+        scheduleOnce('afterRender', this, '_focusOnPowerSelectTrigger');
+      }
     }
   },
 
@@ -128,6 +136,14 @@ const PillMeta = Component.extend({
       // if the key pressed is an escape, then bubble that out and
       // escape further processing
       if (isEscape(event)) {
+        // Close dropdown
+        powerSelectAPI.actions.close();
+        // If we have focus, drop it like it's hot, drop it like it's hot.
+        const el = document.querySelector('.pill-meta input');
+        if (el && el === document.activeElement) {
+          el.blur();
+        }
+        // Let others know ECS was pressed
         this._broadcast(MESSAGE_TYPES.META_ESCAPE_KEY);
       } else if (isEnter(event)) {
         const { selected } = powerSelectAPI;

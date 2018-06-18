@@ -2,7 +2,8 @@
  * This component was copied from:
  * https://github.com/cibernox/ember-power-select-typeahead/blob/master/addon/components/power-select-typeahead/trigger.js
  * I added stuff to dynamically resize the input based upon the number of
- * characters typed in the input.
+ * characters typed in the input. If this isn't sufficient, take a look at
+ * https://github.com/cibernox/ember-text-measurer.
  * @public
  */
 import Component from '@ember/component';

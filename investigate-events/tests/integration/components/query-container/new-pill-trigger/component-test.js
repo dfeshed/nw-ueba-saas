@@ -52,10 +52,6 @@ module('Integration | Component | new-pill-trigger', function(hooks) {
     new ReduxDataHelper(setState).language().pillsDataEmpty().build();
     assert.expect(3);
     this.set('handleMessage', (messageType, data, position) => {
-      if (messageType === MESSAGE_TYPES.PILL_INITIALIZED) {
-        return;
-      }
-
       assert.equal(messageType, MESSAGE_TYPES.PILL_ENTERED, 'Wrong message type');
       assert.deepEqual(data, undefined, 'ENTERED on new pill does not include data');
       assert.equal(position, 5, 'Wrong position number');

@@ -49,6 +49,7 @@ export default Component.extend({
   sendMessage: () => {},
 
   isMetaActive: false,
+  isMetaAutoFocused: true,
   isOperatorActive: false,
   isOperatorCursorLeft: false,
   isValueActive: false,
@@ -143,7 +144,6 @@ export default Component.extend({
 
   didInsertElement() {
     this._super(...arguments);
-    this._broadcast(MESSAGE_TYPES.PILL_INITIALIZED);
     // When we create this instance, if it's active, set meta as active
     if (this.get('isActive')) {
       this.set('isMetaActive', true);
@@ -258,6 +258,7 @@ export default Component.extend({
     this.setProperties({
       selectedMeta,
       isMetaActive: false,
+      isMetaAutoFocused: true,
       isOperatorActive: true,
       isValueActive: false
     });
@@ -394,6 +395,29 @@ export default Component.extend({
 
   // ************************ PILL FUNCTIONALITY **************************** //
   /**
+   * Cancel pill creation. If this pill has `pillData`, then we were editing an
+   * existing pill. We don't want to reset all the data back to defaults in this
+   * case.
+   * @private
+   */
+  _cancelPillCreation() {
+    const pD = this.get('pillData');
+    if (!pD) {
+      // Reset data and prevent auto focus. The default behavior of the
+      // pill-meta component is to show a dropdown when set to active. We need
+      // to override this behavior, so we set `isMetaAutoFocused` to `false` to
+      // prevent this from happening. This auto-focus behavior is turned back
+      // on once a meta selection is made.
+      this.setProperties({
+        ...RESET_PROPS,
+        isMetaAutoFocused: false
+      });
+    }
+    // Inform container that this pill component is cancelling out of creation
+    this._broadcast(MESSAGE_TYPES.PILL_CANCELLED, pD);
+  },
+
+  /**
    * Handles creating a new pill.
    * @param {string} data Value of pill
    * @private
@@ -474,15 +498,6 @@ export default Component.extend({
   },
 
   // ************************ TODO FUNCTIONALITY **************************** //
-  /**
-   * Cancel pill creation.
-   * @private
-   */
-  _cancelPillCreation() {
-    // Inform container that this pill component is cancelling out of creation
-    this._broadcast(MESSAGE_TYPES.PILL_CANCELLED, null);
-  },
-
   /**
    * Handles the right arrow key.
    * @param {Object} data The full string value

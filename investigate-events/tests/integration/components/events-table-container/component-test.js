@@ -5,7 +5,7 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { applyPatch, revertPatch } from '../../../helpers/patch-reducer';
 import { waitFor } from 'ember-wait-for-test-helper/wait-for';
-import { clickTrigger, selectChoose } from '../../../helpers/ember-power-select';
+import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 import EventColumnGroups from '../../../data/subscriptions/investigate-columns/data';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import Helper from '@ember/component/helper';
