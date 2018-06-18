@@ -4,6 +4,7 @@ import { applyPatch, revertPatch } from '../../../helpers/patch-reducer';
 import wait from 'ember-test-helpers/wait';
 import engineResolver from 'ember-engines/test-support/engine-resolver-for';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 let setState;
 
@@ -14,6 +15,7 @@ moduleForComponent('system-filters', 'Integration | Component | System Filters',
     setState = (state) => {
       applyPatch(state);
       this.inject.service('redux');
+      initialize(this);
     };
   },
   afterEach() {

@@ -1,4 +1,4 @@
-import { promiseRequest } from 'streaming-data/services/data-access/requests';
+import { lookup } from 'ember-dependency-lookup';
 
 /**
  * Retrieves all available schema for global module from server.
@@ -6,7 +6,8 @@ import { promiseRequest } from 'streaming-data/services/data-access/requests';
  * @public
  */
 const fetchSchema = () => {
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'schema',
     modelName: 'files',
     query: {}

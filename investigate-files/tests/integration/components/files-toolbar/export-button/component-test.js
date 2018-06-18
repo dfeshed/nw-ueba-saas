@@ -5,6 +5,7 @@ import { applyPatch, revertPatch } from '../../../../helpers/patch-reducer';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import files from '../../../state/files';
 import wait from 'ember-test-helpers/wait';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 let setState;
 moduleForComponent('files-toolbar/export-button', 'Integration | Component | files toolbar/export button', {
@@ -14,6 +15,7 @@ moduleForComponent('files-toolbar/export-button', 'Integration | Component | fil
     setState = (state) => {
       applyPatch(state);
       this.inject.service('redux');
+      initialize(this);
     };
   },
   afterEach() {

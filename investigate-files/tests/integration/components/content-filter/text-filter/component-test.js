@@ -3,6 +3,7 @@ import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { setupRenderingTest } from 'ember-qunit';
 import { click, render, find, findAll, fillIn } from '@ember/test-helpers';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 import { patchSocket } from '../../../../helpers/patch-socket';
 
@@ -20,6 +21,7 @@ module('content-filter/text-filter', 'Integration | Component | content filter/t
 
   hooks.beforeEach(function() {
     this.owner.inject('component', 'i18n', 'service:i18n');
+    initialize(this.owner);
   });
 
   test('Text-filter button renders', async function(assert) {

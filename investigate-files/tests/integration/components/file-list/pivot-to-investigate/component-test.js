@@ -4,12 +4,14 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import wait from 'ember-test-helpers/wait';
 import $ from 'jquery';
 import sinon from 'sinon';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 moduleForComponent('file-list/pivot-to-investigate', 'Integration | Component | Pivot to investigate', {
   integration: true,
   resolver: engineResolverFor('investigate-files'),
   beforeEach() {
     this.registry.injection('component', 'i18n', 'service:i18n');
+    initialize(this);
   }
 });
 

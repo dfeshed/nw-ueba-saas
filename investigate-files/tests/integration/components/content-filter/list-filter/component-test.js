@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { find, findAll, render, click, triggerEvent } from '@ember/test-helpers';
-
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { patchSocket } from '../../../../helpers/patch-socket';
@@ -14,6 +14,7 @@ module('Integration | Component | content filter/list filter', function(hooks) {
   });
   hooks.beforeEach(function() {
     i18n = this.owner.lookup('service:i18n');
+    initialize(this.owner);
   });
 
   const defaultConfig = {

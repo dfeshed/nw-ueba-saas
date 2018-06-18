@@ -1,13 +1,14 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-import { ping } from 'streaming-data/services/data-access/requests';
+import { lookup } from 'ember-dependency-lookup';
 
 export default Route.extend({
 
   contextualHelp: service(),
 
   model() {
-    return ping('endpoint-server-ping')
+    const request = lookup('service:request');
+    return request.ping('endpoint-server-ping')
       .catch(function() {
         return { endpointServerOffline: true };
       });

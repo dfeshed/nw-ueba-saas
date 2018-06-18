@@ -4,6 +4,7 @@ import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { applyPatch, revertPatch } from '../../../helpers/patch-reducer';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 let setState;
 
@@ -16,6 +17,7 @@ moduleForComponent('file-pager', 'Integration | Component | file pager', {
       this.inject.service('redux');
     };
     this.registry.injection('component', 'i18n', 'service:i18n');
+    initialize(this);
   },
   afterEach() {
     revertPatch();

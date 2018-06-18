@@ -5,6 +5,7 @@ import { click, render, find, findAll, fillIn } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 import { patchSocket } from '../../../../helpers/patch-socket';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 const { module, test } = QUnit;
 const configValue = {
@@ -23,6 +24,7 @@ module('content-filter/number-filter', 'Integration | Component | content filter
 
   hooks.beforeEach(function() {
     this.owner.inject('component', 'i18n', 'service:i18n');
+    initialize(this.owner);
   });
 
   test('Number filter test', async function(assert) {

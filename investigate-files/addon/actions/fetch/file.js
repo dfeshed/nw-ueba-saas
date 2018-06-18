@@ -1,4 +1,4 @@
-import { promiseRequest, streamRequest } from 'streaming-data/services/data-access/requests';
+import { lookup } from 'ember-dependency-lookup';
 import {
   addSortBy,
   addFilter
@@ -13,7 +13,8 @@ import {
  * @returns {Promise}
  */
 const getAllServices = () => {
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'findAll',
     modelName: 'investigate-service',
     query: {}
@@ -30,10 +31,11 @@ const fetchFiles = (pageNumber, sort, expressionList) => {
     pageNumber: pageNumber || 0,
     pageSize: 100
   };
+  const request = lookup('service:request');
   const { sortField, isSortDescending: isDescending } = sort;
   query = addSortBy(query, sortField, isDescending);
   query = addFilter(query, expressionList);
-  return promiseRequest({
+  return request.promiseRequest({
     method: 'search',
     modelName: 'files',
     query: {
@@ -49,12 +51,14 @@ const fetchFiles = (pageNumber, sort, expressionList) => {
 const fileExport = (sort, expressionList, fields) => {
   let query = {};
 
+  const request = lookup('service:request');
   const { sortField, isSortDescending: isDescending } = sort;
   query = addSortBy(query, sortField, isDescending);
   query = addFilter(query, expressionList);
+
   query.fields = fields;
 
-  return promiseRequest({
+  return request.promiseRequest({
     method: 'exportFile',
     modelName: 'files',
     query: { data: query }
@@ -67,6 +71,7 @@ const fileExport = (sort, expressionList, fields) => {
  */
 
 const createCustomSearch = (filter, expressionList, filterTypeParameter) => {
+  const request = lookup('service:request');
   const { id } = filter;
   const data = {
     id,
@@ -76,9 +81,10 @@ const createCustomSearch = (filter, expressionList, filterTypeParameter) => {
   };
   if (filter) {
     data.criteria = { expressionList, 'predicateType': 'AND' };
+
   }
 
-  return promiseRequest({
+  return request.promiseRequest({
     method: 'saveFilter',
     modelName: 'files',
     query: { data }
@@ -86,7 +92,8 @@ const createCustomSearch = (filter, expressionList, filterTypeParameter) => {
 };
 
 const getSavedFilters = () => {
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'getFilter',
     modelName: 'files',
     query: {}
@@ -94,7 +101,8 @@ const getSavedFilters = () => {
 };
 
 const deleteFilter = (id) => {
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'deleteFilter',
     modelName: 'files',
     query: { data: { id } }
@@ -102,7 +110,8 @@ const deleteFilter = (id) => {
 };
 
 const getContext = (query, handlers) => {
-  return streamRequest({
+  const request = lookup('service:request');
+  return request.streamRequest({
     method: 'stream',
     modelName: 'context-service',
     query,

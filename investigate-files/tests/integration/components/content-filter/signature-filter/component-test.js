@@ -4,6 +4,7 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { setupRenderingTest } from 'ember-qunit';
 import { click, render, find, findAll } from '@ember/test-helpers';
 import { patchSocket } from '../../../../helpers/patch-socket';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 const configValue = {
   'panelId': 'signature',
@@ -21,6 +22,7 @@ module('content-filter/signature-filter', 'Integration | Component | content fil
 
   hooks.beforeEach(function() {
     this.owner.inject('component', 'i18n', 'service:i18n');
+    initialize(this.owner);
   });
 
   test('Signature filter test for signed', async function(assert) {

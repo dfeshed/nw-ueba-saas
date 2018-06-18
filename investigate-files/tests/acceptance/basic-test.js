@@ -1,11 +1,12 @@
-import RSVP from 'rsvp';
+import rsvp from 'rsvp';
 import { test } from 'qunit';
 import moduleForAcceptance from '../helpers/module-for-acceptance';
 import { selectorToExist } from 'ember-wait-for-test-helper/wait-for';
 import $ from 'jquery';
-import requests from 'streaming-data/services/data-access/requests';
 import sinon from 'sinon';
 import Service from '@ember/service';
+import { lookup } from 'ember-dependency-lookup';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 const AccessControlService = Service.extend({
   hasInvestigateEmberAccess: true,
@@ -18,6 +19,7 @@ moduleForAcceptance('Acceptance | basic', {
   beforeEach() {
     this.application.register('service:accessControl', AccessControlService);
     this.application.inject('route:application', 'accessControl', 'service:accessControl');
+    initialize(this.application);
   }
 });
 
@@ -34,9 +36,11 @@ test('visiting /investigate-files', function(assert) {
 
 });
 
-test('visiting /investigate-files shows server down message', function(assert) {
-
-  sinon.stub(requests, 'ping').returns(RSVP.reject('Error'));
+test('raghs visiting /investigate-files shows server down message', function(assert) {
+  const request = lookup('service:request');
+  sinon.stub(request, 'ping', () => {
+    return new rsvp.Promise((resolve, reject) => reject());
+  });
 
   visit('/investigate-files');
 

@@ -4,6 +4,7 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import files from '../../state/files';
 import { applyPatch, revertPatch } from '../../../helpers/patch-reducer';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 let setState;
 moduleForComponent('investigate-files-container', 'Integration | Component | investigate files container', {
@@ -15,6 +16,7 @@ moduleForComponent('investigate-files-container', 'Integration | Component | inv
       this.inject.service('redux');
     };
     this.registry.injection('component', 'i18n', 'service:i18n');
+    initialize(this);
   },
   afterEach() {
     revertPatch();
