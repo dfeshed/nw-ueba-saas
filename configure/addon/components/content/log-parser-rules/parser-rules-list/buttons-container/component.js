@@ -31,6 +31,7 @@ const LogParserRulesToolbar = Component.extend({
   newRuleName: '',
   eventBus: inject(),
   redux: inject(),
+  accessControl: inject(),
 
   @computed('newRuleName', 'selectedLogParserName', 'parserRules')
   matchesExistingRuleName(name, parser, rules) {
@@ -48,6 +49,11 @@ const LogParserRulesToolbar = Component.extend({
       return true;
     }
     return false;
+  },
+
+  @computed('isParserRuleOutOfBox', 'hasSelectedParserRule', 'accessControl.canManageLogParsers')
+  cannotDeleteRule(isParserRuleOutOfBox, hasSelectedParserRule, canManageLogParsers) {
+    return !canManageLogParsers || isParserRuleOutOfBox || !hasSelectedParserRule;
   },
 
   actions: {

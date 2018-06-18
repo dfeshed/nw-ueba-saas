@@ -4,6 +4,20 @@ import { initializeLogParserRules } from 'configure/actions/creators/content/log
 
 export default Route.extend({
   redux: inject(),
+  accessControl: inject(),
+  contextualHelp: inject(),
+  i18n: inject(),
+
+  titleToken() {
+    return this.get('i18n').t('configure.logsParser.pageTitle');
+  },
+
+  beforeModel() {
+    if (!this.get('accessControl.hasLogParsersAccess')) {
+      this.transitionToExternal('protected');
+    }
+  },
+
   model() {
     const redux = this.get('redux');
     redux.dispatch(initializeLogParserRules());

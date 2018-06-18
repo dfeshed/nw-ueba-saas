@@ -3,6 +3,7 @@ import { connect } from 'ember-redux';
 import { selectedParserRule, ruleFormats } from 'configure/reducers/content/log-parser-rules/selectors';
 import { updateSelectedRule } from 'configure/actions/creators/content/log-parser-rule-creators';
 import computed from 'ember-computed-decorators';
+import { inject as service } from '@ember/service';
 
 const stateToComputed = (state) => ({
   rule: selectedParserRule(state),
@@ -15,6 +16,8 @@ const dispatchToActions = {
 
 const ValueMatching = Component.extend({
   classNames: ['value-matching'],
+
+  accessControl: service(),
 
   @computed('rule.pattern.format')
   format(format) {

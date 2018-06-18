@@ -6,7 +6,7 @@
       selected=selectedFormat
       searchField="name"
       searchPlaceholder="Type to filter options"
-      disabled=rule.outOfBox
+      disabled=(or rule.outOfBox (not accessControl.canManageLogParsers))
       onchange=(action 'handleFormatChange') as |option|}}
       {{option.name}}
     {{/power-select}}
@@ -37,7 +37,7 @@
       value=regex
       isError=hasInvalidRegex
       isInline=true
-      isDisabled=rule.outOfBox
+      isDisabled=(or rule.outOfBox (not accessControl.canManageLogParsers))
       focusOut=(action 'handleRegexChange')
     }}
     {{#if hasInvalidRegex}}

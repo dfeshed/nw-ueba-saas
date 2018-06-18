@@ -46,8 +46,10 @@ export default class DataHelper {
 
   _setBaseState() {
     _set(this.state, 'content.logParserRules.logParsers', [{ name: 'builtin' }]);
+    _set(this.state, 'content.logParserRules.logParsersStatus', 'completed');
     _set(this.state, 'content.logParserRules.selectedLogParserIndex', 0);
     _set(this.state, 'content.logParserRules.parserRules', parserRules);
+    _set(this.state, 'content.logParserRules.parserRulesOriginal', parserRules);
   }
 
   // Trigger setState, also return the resulting state
@@ -154,9 +156,34 @@ export default class DataHelper {
     return this;
   }
 
-  parserRulesFormatData(index, formats) {
+  hasChanges() {
+    const parserRules = [{
+      name: 'new example rule',
+      'literals': [
+        {
+          'value': 'ipv4='
+        }
+      ],
+      'pattern': {
+        'captures': [
+          {
+            'key': 'ipv4',
+            'index': '1',
+            'format': 'IPV4'
+          }
+        ],
+        'format': 'ipv4'
+      },
+      'ruleMetas': [],
+      'outOfBox': false
+    }];
+    _set(this.state, 'content.logParserRules.parserRulesOriginal', parserRules);
+    return this;
+  }
+
+  parserRulesFormatData(index) {
     this._setBaseState();
-    _set(this.state, 'content.logParserRules.parserRules', [{
+    const parserRules = [{
       'name': 'ipv4',
       'literals': [
         {
@@ -195,7 +222,9 @@ export default class DataHelper {
       },
       'ruleMetas': [],
       'outOfBox': true
-    }]);
+    }];
+    _set(this.state, 'content.logParserRules.parserRules', parserRules);
+    _set(this.state, 'content.logParserRules.parserRulesOriginal', parserRules);
     _set(this.state, 'content.logParserRules.parserRulesStatus', 'completed');
     _set(this.state, 'content.logParserRules.parserRuleTokens', [{
       'value': 'ipv6='
@@ -203,45 +232,6 @@ export default class DataHelper {
     {
       'value': 'ipv4='
     }]);
-    if (formats) {
-      if (index == 0) {
-        _set(this.state, 'content.logParserRules.selectedFormat', 'IPV4 Address');
-        _set(this.state, 'content.logParserRules.parserRuleTokens', [{
-          'value': 'ipv4='
-        }]);
-      } else {
-        _set(this.state, 'content.logParserRules.selectedFormat', 'IPV6 Address');
-        _set(this.state, 'content.logParserRules.parserRuleTokens', [
-          {
-            'value': 'ipv6='
-          },
-          {
-            'value': 'second token'
-          },
-          {
-            'value': 'last'
-          }
-        ]);
-      }
-      _set(this.state, 'content.logParserRules.ruleFormats', [{
-        name: 'Regex Pattern',
-        pattern: '',
-        matches: 'This matches Regex',
-        type: 'regex'
-      },
-      {
-        name: 'IPV4 Address',
-        pattern: '(?:[0-9]{1,3}\\.){3}[0-9]{1,3}',
-        matches: 'This matches IPV4 addresses',
-        type: 'ipv4'
-      },
-      {
-        name: 'IPV6 Address',
-        pattern: '((([0-9A-Fa-f]{1,4}:){1,6}:)|(([0-9A-Fa-f]{1,4}:){7}))([0-9A-Fa-f]{1,4})|::1|::0',
-        matches: 'This matches IPV6 addresses',
-        type: 'ipv6'
-      }]);
-    }
     _set(this.state, 'content.logParserRules.selectedParserRuleIndex', index);
     return this;
   }

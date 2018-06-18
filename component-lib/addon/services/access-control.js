@@ -154,6 +154,16 @@ export default Service.extend({
     return this._hasPermission(roles, 'manageLiveFeeds');
   },
 
+  @computed('roles.[]')
+  hasLogParsersAccess(roles) {
+    return this._hasPermission(roles, 'content-server.logparser');
+  },
+
+  @computed('roles.[]')
+  canManageLogParsers(roles) {
+    return this._hasPermission(roles, 'content-server.logparser.manage');
+  },
+
   // End Configure Permissions
 
   // Begin Admin Permissions

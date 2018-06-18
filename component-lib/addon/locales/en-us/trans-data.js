@@ -548,6 +548,7 @@ export default {
   },
   configure: {
     logsParser: {
+      pageTitle: 'Log Parsers',
       wait: 'Loading Log Parsers...',
       logParserRules: 'Log Parser Rules',
       logParsers: 'Log Parsers',

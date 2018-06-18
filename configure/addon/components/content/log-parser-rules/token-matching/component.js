@@ -1,9 +1,10 @@
 import Component from '@ember/component';
+import { inject as service } from '@ember/service';
 import { connect } from 'ember-redux';
 import { selectedParserRule } from 'configure/reducers/content/log-parser-rules/selectors';
 import { updateSelectedRule } from 'configure/actions/creators/content/log-parser-rule-creators';
 import { next } from '@ember/runloop';
-import computed, { not, empty } from 'ember-computed-decorators';
+import computed, { empty } from 'ember-computed-decorators';
 
 const stateToComputed = (state) => {
   return {
@@ -18,6 +19,9 @@ const dispatchToActions = {
 const TokenMatching = Component.extend({
   tagName: 'td',
   classNames: ['token'],
+
+  accessControl: service(),
+
   newToken: '',
 
   @computed('rule')
@@ -30,7 +34,10 @@ const TokenMatching = Component.extend({
     return !newToken || !newToken.trim() || !!currentTokens.findBy('value', newToken);
   },
 
-  @not('rule.outOfBox') isEditable: true,
+  @computed('rule.outOfBox', 'accessControl.canManageLogParsers')
+  isEditable(isOutOfBox, canManageLogParsers) {
+    return !isOutOfBox && canManageLogParsers;
+  },
 
   @empty('tokens') hasNoTokens: false,
 

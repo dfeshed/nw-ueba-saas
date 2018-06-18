@@ -115,6 +115,7 @@ module.exports = function(environment) {
       'accessInvestigationModule',
       'respond-server.*',
       'integration-server.*',
+      'content-server.*',
       'endpoint-server.machine.read'
     ];
 
@@ -143,6 +144,7 @@ module.exports = function(environment) {
       'accessInvestigationModule',
       'respond-server.*',
       'integration-server.*',
+      'content-server.*',
       'endpoint-server.machine.read'
     ];
 

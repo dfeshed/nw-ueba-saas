@@ -1,5 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
+import { inject as service } from '@ember/service';
+import computed from 'ember-computed-decorators';
 import {
   selectedLogParserName,
   selectedLogParser,
@@ -26,8 +28,24 @@ const dispatchToActions = {
   saveParserRule
 };
 
-const SaveResetRule = Component.extend({
-  classNames: ['save-reset-rule']
+const DeploySaveReset = Component.extend({
+  classNames: ['save-reset-rule'],
+  accessControl: service(),
+
+  @computed('hasNoDeployableRules', 'selectedLogParser', 'accessControl.canManageLogParsers')
+  cannotDeploy(hasNoDeployableRules, selectedLogParser, canManageLogParsers) {
+    return !canManageLogParsers || !selectedLogParser || hasNoDeployableRules;
+  },
+
+  @computed('hasSaveableRules', 'accessControl.canManageLogParsers')
+  cannotSave(hasSaveableRules, canManageLogParsers) {
+    return !canManageLogParsers || !hasSaveableRules;
+  },
+
+  @computed('hasRuleChanges', 'accessControl.canManageLogParsers')
+  cannotDiscardChanges(hasRuleChanges, canManageLogParsers) {
+    return !canManageLogParsers || !hasRuleChanges;
+  }
 });
 
-export default connect(stateToComputed, dispatchToActions)(SaveResetRule);
+export default connect(stateToComputed, dispatchToActions)(DeploySaveReset);

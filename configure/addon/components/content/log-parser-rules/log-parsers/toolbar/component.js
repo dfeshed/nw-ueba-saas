@@ -2,6 +2,7 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { next } from '@ember/runloop';
 import { inject as service } from '@ember/service';
+import computed from 'ember-computed-decorators';
 
 import {
   selectedLogParser
@@ -24,6 +25,13 @@ const dispatchToActions = {
 const LogParsersToolbar = Component.extend({
   classNames: ['log-parser-toolbar'],
   eventBus: service(),
+  accessControl: service(),
+
+  @computed('selectedLogParser', 'accessControl.canManageLogParsers')
+  cannotDeleteParser(selectedLogParser, canManageLogParsers) {
+    return !canManageLogParsers || !selectedLogParser || selectedLogParser.outOfBox || selectedLogParser.deployed;
+  },
+
   actions: {
     showModal(modalId) {
       this.set('activeModalId', modalId);

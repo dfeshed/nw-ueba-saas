@@ -14,7 +14,7 @@
           selected=capture.metaOption
           searchField="metaName"
           searchPlaceholder="Type to filter options"
-          disabled=rule.outOfBox
+          disabled=(or rule.outOfBox (not accessControl.canManageLogParsers))
           allowClear=true
           onchange=(action 'handleMetaChange' index) as |option|
         }}

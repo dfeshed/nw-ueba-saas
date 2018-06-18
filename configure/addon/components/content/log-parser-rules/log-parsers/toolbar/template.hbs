@@ -1,6 +1,6 @@
 <div class="action-control add-new-log-parser">
   {{#rsa-form-button
-    isDisabled=false
+    isDisabled=(not accessControl.canManageLogParsers)
     defaultAction=(action 'showModal' 'add-log-parser')}}
     {{t 'configure.logsParser.addParser.addNew'}}
   {{/rsa-form-button}}
@@ -10,7 +10,7 @@
     title=(t 'configure.logsParser.modals.deleteParser.title')
     confirmationMessage=(t 'configure.logsParser.modals.deleteParser.confirm' parserName=(or selectedLogParser.displayName selectedLogParser.name))
     confirmButtonLabel=(t 'configure.logsParser.modals.deleteParser.ok')
-    isDisabled=(or selectedLogParser.outOfBox selectedLogParser.deployed)
+    isDisabled=cannotDeleteParser
     cancelButtonLabel=(t 'configure.logsParser.modals.cancel')
     onConfirm=(action 'deleteLogParser' selectedLogParser)}}
     {{t 'configure.logsParser.buttons.delete'}}

@@ -214,6 +214,26 @@ test('respondCanManageNotifications is set when required roles are included', fu
   assert.equal(service.get('respondCanManageNotifications'), true);
 });
 
+test('hasLogParsersAccess is set when required roles are included', function(assert) {
+  const service = this.subject();
+  service.set('roles', []);
+  assert.equal(service.get('hasLogParsersAccess'), false);
+  service.set('roles', ['content-server.logparser.read']);
+  assert.equal(service.get('hasLogParsersAccess'), true);
+  service.set('roles', ['content-server.logparser.manage']);
+  assert.equal(service.get('hasLogParsersAccess'), true);
+});
+
+test('canManageLogParsers is set when required roles are included', function(assert) {
+  const service = this.subject();
+  service.set('roles', []);
+  assert.equal(service.get('canManageLogParsers'), false);
+  service.set('roles', ['content-server.logparser.read']);
+  assert.equal(service.get('canManageLogParsers'), false);
+  service.set('roles', ['content-server.logparser.manage']);
+  assert.equal(service.get('canManageLogParsers'), true);
+});
+
 test('hasAdminAccess is set when required roles are included', function(assert) {
   const service = this.subject();
   assert.equal(service.get('hasAdminAccess'), false);

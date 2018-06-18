@@ -8,6 +8,7 @@ const Router = ERouter.extend({
 
 Router.map(function() {
   this.mount('configure');
+  this.route('protected');
 });
 
 export default Router;

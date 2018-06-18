@@ -1,5 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
+import { inject as service } from '@ember/service';
 import { metas, selectedParserRule } from 'configure/reducers/content/log-parser-rules/selectors';
 import { updateSelectedRule } from 'configure/actions/creators/content/log-parser-rule-creators';
 import computed, { empty } from 'ember-computed-decorators';
@@ -20,6 +21,8 @@ const dispatchToActions = {
 
 const MetaCaptures = Component.extend({
   classNames: ['meta-captures'],
+
+  accessControl: service(),
 
   @empty('rule.pattern.captures') hasNoCapturesConfigured: false,
 

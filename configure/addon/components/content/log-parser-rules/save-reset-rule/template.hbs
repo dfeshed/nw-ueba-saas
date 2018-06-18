@@ -8,7 +8,7 @@
     confirmationMessage=(t 'configure.logsParser.modals.deployLogParser.confirm' logParser=selectedLogParser.name )
     confirmButtonLabel=(t 'configure.logsParser.modals.deployLogParser.ok')
     cancelButtonLabel=(t 'configure.logsParser.modals.cancel')
-    isDisabled=(or hasNoDeployableRules (not selectedLogParser))
+    isDisabled=cannotDeploy
     onConfirm=(action 'deployLogParser')}}
     {{rsa-icon name="synchronize-3"}} {{t 'configure.logsParser.buttons.deploy'}}
   {{/rsa-button-with-confirmation}}
@@ -16,14 +16,14 @@
 <hbox class="rsa-button saveRule">
   {{#rsa-form-button
     style='primary'
-    isDisabled=(not hasSaveableRules)
+    isDisabled=cannotSave
     defaultAction='saveParserRule'}}
     {{t 'configure.logsParser.buttons.save'}}
   {{/rsa-form-button}}
 </hbox>
 <hbox class="rsa-button resetRule">
   {{#rsa-form-button
-    isDisabled=(not hasRuleChanges)
+    isDisabled=cannotDiscardChanges
     defaultAction='discardRuleChanges'
   }}
     {{t 'configure.logsParser.buttons.discardChanges'}}
