@@ -36,7 +36,10 @@ module('Integration | Component | process-details/events-table/table', function(
         id: 'event_4'
       }];
 
-    new ReduxDataHelper(setState).eventsData(eventsData).build();
+    new ReduxDataHelper(setState)
+    .eventsData(eventsData)
+    .eventsFilteredCount(2)
+    .build();
     const timezone = this.owner.lookup('service:timezone');
     const timeFormat = this.owner.lookup('service:timeFormat');
     const dateFormat = this.owner.lookup('service:dateFormat');

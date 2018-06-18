@@ -9,12 +9,21 @@ const initialState = {
   error: null,
   selectedProcess: null,
   path: [ '0' ],
-  eventsSortField: null
+  eventsSortField: null,
+  eventsCount: 0,
+  eventsFilteredCount: 0,
+  filterApplied: false
 };
 
 
 export default reduxActions.handleActions({
 
+  [ACTION_TYPES.UPDATE_FILTER_ITEMS]: (state) => {
+    return state.set('filterApplied', true);
+  },
+  [ACTION_TYPES.RESET_FILTER_ITEMS]: (state) => {
+    return state.set('filterApplied', false);
+  },
   [ACTION_TYPES.INIT_EVENTS_STREAMING]: (state) => {
     return state.merge({ streaming: true, error: null });
   },
@@ -33,7 +42,14 @@ export default reduxActions.handleActions({
     return state.set('rawData', payload);
   },
   [ACTION_TYPES.SET_SELECTED_EVENTS]: (state, { payload = [] }) => {
-    return state.set('eventsData', payload);
+    const stateObj = { eventsData: payload };
+    if (state.filterApplied) {
+      stateObj.eventsFilteredCount = payload.length;
+    } else {
+      stateObj.eventsFilteredCount = payload.length;
+      stateObj.eventsCount = payload.length;
+    }
+    return state.merge(stateObj);
   },
 
   [ACTION_TYPES.SET_PROCESS_ANALYSIS_INPUT]: (state, { payload }) => {

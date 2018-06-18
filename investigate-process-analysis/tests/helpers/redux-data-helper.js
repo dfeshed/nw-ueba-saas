@@ -62,6 +62,10 @@ export default class DataHelper {
     _set(this.state, 'processTree.eventsData', data);
     return this;
   }
+  eventsFilteredCount(count = 0) {
+    _set(this.state, 'processTree.eventsFilteredCount', count);
+    return this;
+  }
   processFilter(processFilter) {
     _set(this.state, 'processFilter', processFilter);
     return this;

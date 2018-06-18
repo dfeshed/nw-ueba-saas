@@ -1,11 +1,12 @@
 <hbox fit>
   <vbox fit class="events-count">
-    <label class="label">{{t 'investigateProcessAnalysis.tabs.events' count=eventsCount}}</label>
+    <label class="label">{{t 'investigateProcessAnalysis.tabs.events' count=eventsFilteredCount}}</label>
   </vbox>
 </hbox>
 {{#rsa-data-table
   items=eventsData
-  columnsConfig=config}}
+  columnsConfig=config
+  lazy=true}}
   {{#rsa-data-table/header as |column|}}
     {{column.title}} 
     {{#if column.enableSort}}

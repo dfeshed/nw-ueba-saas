@@ -12,6 +12,8 @@ const _path = (state) => state.processAnalysis.processTree.path || [];
 const _selectedProcess = (state) => state.processAnalysis.processTree.selectedProcess || {};
 const _eventsSortField = (state) => state.processAnalysis.processTree.eventsSortField;
 const _eventsData = (state) => state.processAnalysis.processTree.eventsData;
+const _eventsCount = (state) => state.processAnalysis.processTree.eventsCount;
+const _eventsFilteredCount = (state) => state.processAnalysis.processTree.eventsFilteredCount;
 
 export const eventsTableConfig = () => config;
 
@@ -34,9 +36,16 @@ export const eventsData = createSelector(
   }
 );
 export const eventsCount = createSelector(
-  [eventsData],
-  (eventsData) => {
-    return eventsData ? eventsData.length : 0;
+  [_eventsCount],
+  (eventsCount) => {
+    return eventsCount;
+  }
+);
+
+export const eventsFilteredCount = createSelector(
+  [_eventsFilteredCount],
+  (eventsFilteredCount) => {
+    return eventsFilteredCount;
   }
 );
 

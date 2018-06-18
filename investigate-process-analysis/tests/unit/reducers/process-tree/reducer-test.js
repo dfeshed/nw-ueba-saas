@@ -10,7 +10,10 @@ const initialState = Immutable.from({
   error: null,
   selectedProcess: null,
   path: [ '0' ],
-  eventsSortField: null
+  eventsSortField: null,
+  eventsCount: 0,
+  eventsFilteredCount: 0,
+  filterApplied: false
 });
 
 module('Unit | Reducers | process-tree', function() {
@@ -18,6 +21,22 @@ module('Unit | Reducers | process-tree', function() {
   test('should return the initial state', function(assert) {
     const result = reducer(undefined, {});
     assert.deepEqual(result, initialState);
+  });
+
+  test('UPDATE_FILTER_ITEMS set the filterApplied flag', function(assert) {
+    const previous = Immutable.from({
+      filterApplied: false
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.UPDATE_FILTER_ITEMS });
+    assert.equal(result.filterApplied, true, 'filterApplied is set true');
+  });
+
+  test('RESET_FILTER_ITEMS set the filterApplied flag', function(assert) {
+    const previous = Immutable.from({
+      filterApplied: true
+    });
+    const result = reducer(previous, { type: ACTION_TYPES.RESET_FILTER_ITEMS });
+    assert.equal(result.filterApplied, false, 'filterApplied is set false');
   });
 
   test('INIT_EVENTS_STREAMING reset the values', function(assert) {
@@ -118,7 +137,7 @@ module('Unit | Reducers | process-tree', function() {
     assert.equal(result.eventsData.length, 2);
   });
 
-  test('SET_SORT_FIELD will sets eventsData', function(assert) {
+  test('SET_SORT_FIELD will sets sortable field', function(assert) {
     const previous = Immutable.from({
       eventsData: []
     });

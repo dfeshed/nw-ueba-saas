@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import {
   eventsData,
-  eventsCount,
+  eventsFilteredCount,
   eventsTableConfig,
   eventsSortField
  } from 'investigate-process-analysis/reducers/process-tree/selectors';
@@ -11,7 +11,7 @@ import { setSortField } from 'investigate-process-analysis/actions/creators/even
 const stateToComputed = (state) => ({
   eventsData: eventsData(state),
   config: eventsTableConfig(),
-  eventsCount: eventsCount(state),
+  eventsFilteredCount: eventsFilteredCount(state),
   selectedSortType: eventsSortField(state)
 });
 
