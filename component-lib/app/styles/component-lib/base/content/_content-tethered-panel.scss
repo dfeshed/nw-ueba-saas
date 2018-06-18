@@ -8,6 +8,8 @@
 }
 
 .panel-content {
+  max-height: 20rem;
+  overflow: auto;
   background: background-color(primary, darkest);
   color: text-color(primary, lightest);
   text-align: left;
