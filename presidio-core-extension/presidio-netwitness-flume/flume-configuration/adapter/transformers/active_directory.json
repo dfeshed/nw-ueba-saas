@@ -1,0 +1,782 @@
+{
+  "type": "chain",
+  "name": "active-directory-windows-audit-transformer",
+  "transformerList": [
+    {
+      "type": "filter",
+      "name": "device-type-and-user-dst-filter",
+      "predicate": {
+        "type": "chain",
+        "name": "device-type-and-user-dst-predicate",
+        "operation": "AND",
+        "predicateList": [
+          {
+            "type": "regex",
+            "name": "user-dst-not-contain-machine",
+            "sourceKey": "user_dst",
+            "regex": "[^\\\\$]*"
+          },
+          {
+            "type": "regex",
+            "name": "device-type-snare-or-nic",
+            "sourceKey": "device_type",
+            "regex": "winevent_snare|winevent_nic"
+          }
+        ]
+      },
+      "filterIn": true
+    },
+    {
+      "type": "epoch",
+      "name": "date-time-millis-to-nano-representation",
+      "sourceKey": "event_time",
+      "destinationKey": "dateTime"
+    },
+    {
+      "type": "regex_captor_and_formatter",
+      "name": "user-id-normalization",
+      "sourceKey": "user_dst",
+      "destinationKey": "userId",
+      "captureAndFormatConfigurations": [
+        {
+          "pattern": "CN=([^,]+)",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 1,
+              "caseFormat": "LOWER"
+            }
+          ]
+        },
+        {
+          "pattern": "CN=([^,]+),.+",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 1,
+              "caseFormat": "LOWER"
+            }
+          ]
+        },
+        {
+          "pattern": "(.+\\\\\\\\\\\\\\\\)+(.+)@.+",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 2,
+              "caseFormat": "LOWER"
+            }
+          ]
+        },
+        {
+          "pattern": "(.+\\\\\\\\\\\\\\\\)+([^@]+)",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 2,
+              "caseFormat": "LOWER"
+            }
+          ]
+        },
+        {
+          "pattern": "(.+)@.+",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 1,
+              "caseFormat": "LOWER"
+            }
+          ]
+        },
+        {
+          "pattern": ".+",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 0,
+              "caseFormat": "LOWER"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "copy-user-dst",
+      "sourceKey": "user_dst",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "userName",
+        "userDisplayName"
+      ]
+    },
+    {
+      "type": "if_else",
+      "name": "result-normalization",
+      "predicate": {
+        "type": "key_exist",
+        "name": "event-type-exist",
+        "key": "event_type"
+      },
+      "ifTransformer": {
+        "type": "regex_captor_and_formatter",
+        "name": "result-normalization-on-event-type",
+        "sourceKey": "event_type",
+        "destinationKey": "result",
+        "captureAndFormatConfigurations": [
+          {
+            "pattern": ".*(?i:fail).*",
+            "format": "FAILURE",
+            "capturingGroupConfigurations": null
+          },
+          {
+            "pattern": ".*(?i:succ).*",
+            "format": "SUCCESS",
+            "capturingGroupConfigurations": null
+          }
+        ]
+      },
+      "elseTransformer": {
+        "type": "switch_case",
+        "name": "result-normalization-on-result-code",
+        "sourceKey": "result_code",
+        "destinationKey": "result",
+        "destinationDefaultValue": null,
+        "cases": [
+          {
+            "caseKey": "0x0",
+            "caseValue": "SUCCESS",
+            "isRegex": false
+          },
+          {
+            "caseKey": "0x.*",
+            "caseValue": "FAILURE",
+            "isRegex": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "switch_case",
+      "name": "operation_type-according-to-event-code",
+      "sourceKey": "reference_id",
+      "destinationKey": "operationType",
+      "destinationDefaultValue": null,
+      "cases": [
+        {
+          "caseKey": "4670",
+          "caseValue": "PERMISSIONS_ON_OBJECT_CHANGED",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4717",
+          "caseValue": "SYSTEM_SECURITY_ACCESS_GRANTED_TO_ACCOUNT",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4720",
+          "caseValue": "USER_ACCOUNT_CREATED",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4722",
+          "caseValue": "USER_ACCOUNT_ENABLED",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4723",
+          "caseValue": "USER_PASSWORD_CHANGED",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4724",
+          "caseValue": "USER_PASSWORD_RESET",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4725",
+          "caseValue": "USER_ACCOUNT_DISABLED",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4726",
+          "caseValue": "USER_ACCOUNT_DELETED",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4727",
+          "caseValue": "SECURITY_ENABLED_GLOBAL_GROUP_CREATED",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4728",
+          "caseValue": "MEMBER_ADDED_TO_SECURITY_ENABLED_GLOBAL_GROUP",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4729",
+          "caseValue": "MEMBER_REMOVED_FROM_SECURITY_ENABLED_GLOBAL_GROUP",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4730",
+          "caseValue": "SECURITY_ENABLED_GLOBAL_GROUP_DELETED",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4731",
+          "caseValue": "SECURITY_ENABLED_LOCAL_GROUP_CREATED",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4732",
+          "caseValue": "MEMBER_ADDED_TO_SECURITY_ENABLED_LOCAL_GROUP",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4733",
+          "caseValue": "MEMBER_REMOVED_FROM_SECURITY_ENABLED_LOCAL_GROUP",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4734",
+          "caseValue": "SECURITY_ENABLED_LOCAL_GROUP_DELETED",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4735",
+          "caseValue": "SECURITY_ENABLED_LOCAL_GROUP_CHANGED",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4737",
+          "caseValue": "SECURITY_ENABLED_GLOBAL_GROUP_CHANGED",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4738",
+          "caseValue": "USER_ACCOUNT_CHANGED",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4739",
+          "caseValue": "DOMAIN_POLICY_CHANGED",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4740",
+          "caseValue": "USER_ACCOUNT_LOCKED",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4741",
+          "caseValue": "COMPUTER_ACCOUNT_CREATED",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4742",
+          "caseValue": "COMPUTER_ACCOUNT_CHANGED",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4743",
+          "caseValue": "COMPUTER_ACCOUNT_DELETED",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4754",
+          "caseValue": "SECURITY_ENABLED_UNIVERSAL_GROUP_CREATED",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4755",
+          "caseValue": "SECURITY_ENABLED_UNIVERSAL_GROUP_CHANGED",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4756",
+          "caseValue": "MEMBER_ADDED_TO_SECURITY_ENABLED_UNIVERSAL_GROUP",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4757",
+          "caseValue": "MEMBER_REMOVED_FROM_SECURITY_ENABLED_UNIVERSAL_GROUP",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4758",
+          "caseValue": "SECURITY_ENABLED_UNIVERSAL_GROUP_DELETED",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4764",
+          "caseValue": "GROUP_TYPE_CHANGED",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4767",
+          "caseValue": "USER_ACCOUNT_UNLOCKED",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4794",
+          "caseValue": "ATTEMPT_MADE_TO_SET_DIRECTORY_SERVICES_RESTORE_MODE_ADMINISTRATOR_PASSWORD",
+          "isRegex": false
+        },
+        {
+          "caseKey": "5136",
+          "caseValue": "DIRECTORY_SERVICE_OBJECT_MODIFIED",
+          "isRegex": false
+        },
+        {
+          "caseKey": "5376",
+          "caseValue": "CREDENTIAL_MANAGER_CREDENTIALS_BACKED_UP",
+          "isRegex": false
+        },
+        {
+          "caseKey": "5377",
+          "caseValue": "CREDENTIAL_MANAGER_CREDENTIALS_RESTORED_FROM_BACKUP",
+          "isRegex": false
+        }
+      ]
+    },
+    {
+      "type": "switch_case",
+      "name": "operation_type-categories-according-to-operation-type",
+      "sourceKey": "operationType",
+      "destinationKey": "operationTypeCategory",
+      "destinationDefaultValue": null,
+      "cases": [
+        {
+          "caseKey": "COMPUTER_ACCOUNT_CREATED",
+          "caseValue": [
+            "COMPUTER_MANAGEMENT"
+          ],
+          "isRegex": false
+        },
+        {
+          "caseKey": "COMPUTER_ACCOUNT_CHANGED",
+          "caseValue": [
+            "COMPUTER_MANAGEMENT"
+          ],
+          "isRegex": false
+        },
+        {
+          "caseKey": "MEMBER_REMOVED_FROM_SECURITY_ENABLED_LOCAL_GROUP",
+          "caseValue": [
+            "GROUP_MEMBERSHIP_REMOVE_OPERATION"
+          ],
+          "isRegex": false
+        },
+        {
+          "caseKey": "SECURITY_ENABLED_LOCAL_GROUP_DELETED",
+          "caseValue": [
+            "GROUP_MANAGEMENT"
+          ],
+          "isRegex": false
+        },
+        {
+          "caseKey": "SECURITY_ENABLED_LOCAL_GROUP_CHANGED",
+          "caseValue": [
+            "GROUP_MANAGEMENT"
+          ],
+          "isRegex": false
+        },
+        {
+          "caseKey": "SECURITY_ENABLED_UNIVERSAL_GROUP_CHANGED",
+          "caseValue": [
+            "GROUP_MANAGEMENT"
+          ],
+          "isRegex": false
+        },
+        {
+          "caseKey": "ATTEMPT_MADE_TO_SET_DIRECTORY_SERVICES_RESTORE_MODE_ADMINISTRATOR_PASSWORD",
+          "caseValue": [
+            "OBJECT_MANAGEMENT"
+          ],
+          "isRegex": false
+        },
+        {
+          "caseKey": "CREDENTIAL_MANAGER_CREDENTIALS_BACKED_UP",
+          "caseValue": [
+            "OBJECT_MANAGEMENT"
+          ],
+          "isRegex": false
+        },
+        {
+          "caseKey": "CREDENTIAL_MANAGER_CREDENTIALS_RESTORED_FROM_BACKUP",
+          "caseValue": [
+            "OBJECT_MANAGEMENT"
+          ],
+          "isRegex": false
+        },
+        {
+          "caseKey": "DIRECTORY_SERVICE_OBJECT_MODIFIED",
+          "caseValue": [
+            "OBJECT_MANAGEMENT"
+          ],
+          "isRegex": false
+        },
+        {
+          "caseKey": "GROUP_TYPE_CHANGED",
+          "caseValue": [
+            "GROUP_MANAGEMENT"
+          ],
+          "isRegex": false
+        },
+        {
+          "caseKey": "PERMISSIONS_ON_OBJECT_CHANGED",
+          "caseValue": [
+            "OBJECT_MANAGEMENT"
+          ],
+          "isRegex": false
+        },
+        {
+          "caseKey": "COMPUTER_ACCOUNT_DELETED",
+          "caseValue": [
+            "COMPUTER_MANAGEMENT"
+          ],
+          "isRegex": false
+        },
+        {
+          "caseKey": "DOMAIN_POLICY_CHANGED",
+          "caseValue": [
+            "DOMAIN_MANAGEMENT"
+          ],
+          "isRegex": false
+        },
+        {
+          "caseKey": "SECURITY_ENABLED_GLOBAL_GROUP_CHANGED",
+          "caseValue": [
+            "GROUP_MANAGEMENT"
+          ],
+          "isRegex": false
+        },
+        {
+          "caseKey": "SECURITY_ENABLED_GLOBAL_GROUP_CREATED",
+          "caseValue": [
+            "GROUP_MANAGEMENT"
+          ],
+          "isRegex": false
+        },
+        {
+          "caseKey": "MEMBER_ADDED_TO_SECURITY_ENABLED_GLOBAL_GROUP",
+          "caseValue": [
+            "GROUP_MEMBERSHIP_ADD_OPERATION"
+          ],
+          "isRegex": false
+        },
+        {
+          "caseKey": "SECURITY_ENABLED_UNIVERSAL_GROUP_CREATED",
+          "caseValue": [
+            "GROUP_MANAGEMENT"
+          ],
+          "isRegex": false
+        },
+        {
+          "caseKey": "MEMBER_ADDED_TO_SECURITY_ENABLED_UNIVERSAL_GROUP",
+          "caseValue": [
+            "GROUP_MEMBERSHIP_ADD_OPERATION"
+          ],
+          "isRegex": false
+        },
+        {
+          "caseKey": "MEMBER_REMOVED_FROM_SECURITY_ENABLED_UNIVERSAL_GROUP",
+          "caseValue": [
+            "GROUP_MEMBERSHIP_REMOVE_OPERATION"
+          ],
+          "isRegex": false
+        },
+        {
+          "caseKey": "SECURITY_ENABLED_UNIVERSAL_GROUP_DELETED",
+          "caseValue": [
+            "GROUP_MANAGEMENT"
+          ],
+          "isRegex": false
+        },
+        {
+          "caseKey": "USER_ACCOUNT_CREATED",
+          "caseValue": [
+            "USER_MANAGEMENT"
+          ],
+          "isRegex": false
+        },
+        {
+          "caseKey": "USER_ACCOUNT_DELETED",
+          "caseValue": [
+            "USER_MANAGEMENT"
+          ],
+          "isRegex": false
+        },
+        {
+          "caseKey": "USER_ACCOUNT_CHANGED",
+          "caseValue": [
+            "USER_MANAGEMENT"
+          ],
+          "isRegex": false
+        },
+        {
+          "caseKey": "SYSTEM_SECURITY_ACCESS_GRANTED_TO_ACCOUNT",
+          "caseValue": [
+            "OBJECT_MANAGEMENT"
+          ],
+          "isRegex": false
+        },
+        {
+          "caseKey": "MEMBER_REMOVED_FROM_SECURITY_ENABLED_GLOBAL_GROUP",
+          "caseValue": [
+            "GROUP_MEMBERSHIP_REMOVE_OPERATION"
+          ],
+          "isRegex": false
+        },
+        {
+          "caseKey": "SECURITY_ENABLED_GLOBAL_GROUP_DELETED",
+          "caseValue": [
+            "GROUP_MANAGEMENT"
+          ],
+          "isRegex": false
+        },
+        {
+          "caseKey": "SECURITY_ENABLED_LOCAL_GROUP_CREATED",
+          "caseValue": [
+            "GROUP_MANAGEMENT"
+          ],
+          "isRegex": false
+        },
+        {
+          "caseKey": "MEMBER_ADDED_TO_SECURITY_ENABLED_LOCAL_GROUP",
+          "caseValue": [
+            "GROUP_MEMBERSHIP_ADD_OPERATION"
+          ],
+          "isRegex": false
+        }
+      ]
+    },
+    {
+      "type": "switch_case",
+      "name": "object-id-according-to-reference-id",
+      "sourceKey": "reference_id",
+      "destinationKey": "objectId",
+      "destinationDefaultValue": null,
+      "cases": [
+        {
+          "caseKey": "4741",
+          "caseValue": "${user_src}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4742",
+          "caseValue": "${user_src}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4733",
+          "caseValue": "${user_src}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4734",
+          "caseValue": "${group}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4735",
+          "caseValue": "${group}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4755",
+          "caseValue": "${group}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4740",
+          "caseValue": "${user_src}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "5136",
+          "caseValue": "${obj_name}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4764",
+          "caseValue": "${group}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4670",
+          "caseValue": "${obj_name}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4743",
+          "caseValue": "${user_src}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4737",
+          "caseValue": "${group}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4727",
+          "caseValue": "${group}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4728",
+          "caseValue": "${user_src}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4754",
+          "caseValue": "${group}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4756",
+          "caseValue": "${user_src}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4757",
+          "caseValue": "${user_src}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4758",
+          "caseValue": "${group}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4720",
+          "caseValue": "${user_src}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4722",
+          "caseValue": "${user_src}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4723",
+          "caseValue": "${user_src}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4724",
+          "caseValue": "${user_src}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4725",
+          "caseValue": "${user_src}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4726",
+          "caseValue": "${user_src}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4738",
+          "caseValue": "${user_src}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4767",
+          "caseValue": "${user_src}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4717",
+          "caseValue": "${user_src}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4729",
+          "caseValue": "${user_src}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4730",
+          "caseValue": "${group}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4731",
+          "caseValue": "${group}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4732",
+          "caseValue": "${user_src}",
+          "isRegex": false
+        }
+      ]
+    },
+    {
+      "type": "switch_case",
+      "name": "secondary-object-id-according-to-reference-id",
+      "sourceKey": "reference_id",
+      "destinationKey": "additionalInfo.secondaryObjectId",
+      "destinationDefaultValue": null,
+      "cases": [
+        {
+          "caseKey": "4733",
+          "caseValue": "${group}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4728",
+          "caseValue": "${group}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4756",
+          "caseValue": "${group}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4757",
+          "caseValue": "${group}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4717",
+          "caseValue": "${accesses}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4729",
+          "caseValue": "${group}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4732",
+          "caseValue": "${group}",
+          "isRegex": false
+        }
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-event-source-id-to-event-id",
+      "sourceKey": "event_source_id",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "eventId"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-reference-id-to-data-source",
+      "sourceKey": "reference_id",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "dataSource"
+      ]
+    }
+  ]
+}
