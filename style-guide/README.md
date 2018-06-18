@@ -24,11 +24,11 @@ You can then define an array of objects containing titles and selectors to use i
 ```
 
 Finally, you will need to use the component itself, and pass in `scrollTo`.
-You also need to wrap everything in `.spec-container.scroll-box`.
+You also need to wrap everything in `.style-guide-content .scroll-box`.
 
 ```hbs
-  <div class="spec-container scroll-box">
-    {{spec-toc toc=toc scrollTo=(route-action 'scrollTo')}}
+  <div class="scroll-box">
+    {{spec-toc toc=toc scrollTo=(action 'controllerScrollTo')}}
 ```
 
 ## Prerequisites
@@ -76,4 +76,3 @@ Specify what it takes to deploy your app.
 * Development Browser Extensions
   * [ember inspector for chrome](https://chrome.google.com/webstore/detail/ember-inspector/bmdblncegkenkacieihfhpjfppoconhi)
   * [ember inspector for firefox](https://addons.mozilla.org/en-US/firefox/addon/ember-inspector/)
-

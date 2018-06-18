@@ -32,6 +32,10 @@ export default Controller.extend({
   ],
 
   actions: {
+    controllerScrollTo(selector, offset) {
+      this.send('scrollTo', selector, offset);
+    },
+
     toggleSelectedRow(item, index, e, table) {
       table.set('selectedIndex', index);
     },

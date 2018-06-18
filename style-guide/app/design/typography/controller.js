@@ -18,5 +18,11 @@ export default Controller.extend({
       selector: '#weight',
       title: 'Weight'
     }
-  ]
+  ],
+
+  actions: {
+    controllerScrollTo(selector, offset) {
+      this.send('scrollTo', selector, offset);
+    }
+  }
 });

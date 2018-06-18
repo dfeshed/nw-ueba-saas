@@ -44,8 +44,7 @@
   {{#rsa-application-modal
     label="Error"
     style='error'
-    eventId='fatalError'
-    modalDidClose='clearFatalErrorQueue'}}
+    eventId='fatalError'}}
     <div class='modal-content'>
       {{#each fatalErrors.queue as |error|}}
         <p>{{error}}</p>

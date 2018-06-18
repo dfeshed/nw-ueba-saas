@@ -30,5 +30,12 @@ export default Controller.extend({
       selector: '#position-as-popover',
       title: 'Position as a Popover'
     }
-  ]
+  ],
+
+  actions: {
+    controllerScrollTo(selector, offset) {
+      this.send('scrollTo', selector, offset);
+    }
+  }
+
 });

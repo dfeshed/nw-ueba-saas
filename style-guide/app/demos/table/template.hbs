@@ -4,7 +4,7 @@
 
 <hbox>
   <fill block class="scroll-box">
-  {{spec-toc toc=toc scrollTo=(route-action 'scrollTo')}}
+  {{spec-toc toc=toc scrollTo=(action 'controllerScrollTo')}}
 
   {{#spec-category id="basic-table" title="Basic Table"}}
     {{#spec-member title="Bare Bones"}}

@@ -24,13 +24,12 @@ export default Route.extend({
   },
 
   actions: {
-    clearFatalErrorQueue() {
-      this.get('fatalErrors').clearQueue();
-    },
     scrollTo(selector, offset = -185) {
-      $('.spec-container.scroll-box').animate({
+      $('.style-guide-content .scroll-box').animate({
         scrollTop: $(selector).offset().top + offset
       }, 600);
     }
   }
+
+
 });

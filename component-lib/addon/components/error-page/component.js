@@ -5,7 +5,7 @@ export default Component.extend({
   layout,
   classNames: ['error-page'],
   /**
-   * Back is a route-action passed in from the application route that just calls history.back()
+   * Back is passed in from the application route that just calls history.back()
    * @public
    */
   back: undefined,
