@@ -4,14 +4,17 @@ import moduleForAcceptance from '../helpers/module-for-acceptance';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { selectorToExist } from 'ember-wait-for-test-helper/wait-for';
 import $ from 'jquery';
-import requests from 'streaming-data/services/data-access/requests';
 import sinon from 'sinon';
-
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import { lookup } from 'ember-dependency-lookup';
 const deleteButton = '.host-table__toolbar-buttons .delete-host-button button';
 const popUpCont = '.rsa-application-modal-content';
 
 moduleForAcceptance('Acceptance | basic', {
-  resolver: engineResolverFor('endpoint')
+  resolver: engineResolverFor('endpoint'),
+  beforeEach() {
+    initialize(this.application);
+  }
 });
 
 test('visiting /investigate-hosts', function(assert) {
@@ -44,7 +47,10 @@ test('visiting /investigate-hosts', function(assert) {
 
 test('visiting /investigate-hosts shows server down message', function(assert) {
 
-  sinon.stub(requests, 'ping').returns(RSVP.reject('Error'));
+  const request = lookup('service:request');
+  sinon.stub(request, 'ping', () => {
+    return new RSVP.Promise((resolve, reject) => reject());
+  });
 
   visit('/investigate-hosts');
 

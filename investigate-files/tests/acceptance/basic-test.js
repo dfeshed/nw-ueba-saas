@@ -36,7 +36,7 @@ test('visiting /investigate-files', function(assert) {
 
 });
 
-test('raghs visiting /investigate-files shows server down message', function(assert) {
+test('visiting /investigate-files shows server down message', function(assert) {
   const request = lookup('service:request');
   sinon.stub(request, 'ping', () => {
     return new rsvp.Promise((resolve, reject) => reject());

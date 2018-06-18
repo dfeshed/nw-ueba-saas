@@ -1,7 +1,8 @@
-import { promiseRequest } from 'streaming-data/services/data-access/requests';
+import { lookup } from 'ember-dependency-lookup';
 
 const getAllSchedules = () => {
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'get',
     modelName: 'schedule',
     query: {
@@ -11,7 +12,8 @@ const getAllSchedules = () => {
 };
 
 const updateSchedule = (data) => {
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'update',
     modelName: 'schedule',
     query: { data }

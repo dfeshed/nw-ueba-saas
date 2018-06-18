@@ -1,8 +1,8 @@
+import { lookup } from 'ember-dependency-lookup';
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 import { initializeHostPage, getAllSchemas } from 'investigate-hosts/actions/data-creators/host';
 import { userLeftListPage } from 'investigate-hosts/actions/ui-state-creators';
-import { ping } from 'streaming-data/services/data-access/requests';
 import { run } from '@ember/runloop';
 
 const HELP_ID_MAPPING = {
@@ -48,7 +48,8 @@ export default Route.extend({
   },
 
   model(params) {
-    return ping('endpoint-server-ping')
+    const request = lookup('service:request');
+    return request.ping('endpoint-server-ping')
       .then(() => {
         const redux = this.get('redux');
         const { machineId, tabName = 'OVERVIEW' } = params;
