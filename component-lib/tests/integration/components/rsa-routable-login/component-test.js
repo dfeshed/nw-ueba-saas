@@ -4,7 +4,8 @@ import Service from '@ember/service';
 import { later } from '@ember/runloop';
 import hbs from 'htmlbars-inline-precompile';
 import { setupRenderingTest } from 'ember-qunit';
-import { findAll, render, settled } from '@ember/test-helpers';
+import { findAll, render } from '@ember/test-helpers';
+import { waitForRaf } from '../../../helpers/wait-for-raf';
 
 module('Integration | Component | rsa-routable-login', function(hooks) {
   setupRenderingTest(hooks);
@@ -50,7 +51,7 @@ module('Integration | Component | rsa-routable-login', function(hooks) {
     assert.equal(findAll('.eula-content').length, 1);
     assert.equal(document.querySelector('[test-id=btnAcceptEula] button').disabled, true);
 
-    await settled();
+    await waitForRaf();
     assert.equal(document.querySelector('[test-id=btnAcceptEula] button').disabled, false);
   });
 
@@ -71,7 +72,7 @@ module('Integration | Component | rsa-routable-login', function(hooks) {
     assert.equal(findAll('.eula-content').length, 1);
     assert.equal(document.querySelector('[test-id=btnAcceptEula] button').disabled, true);
 
-    await settled();
+    await waitForRaf();
     assert.equal(document.querySelector('[test-id=btnAcceptEula] button').disabled, true);
   });
 
