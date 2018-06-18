@@ -1,4 +1,4 @@
-import { promiseRequest, streamRequest } from 'streaming-data/services/data-access/requests';
+import { lookup } from 'ember-dependency-lookup';
 
 // NOOP function to replace Ember.K
 const NOOP = () => {};
@@ -12,7 +12,8 @@ const NOOP = () => {};
  * @returns {Promise}
  */
 const getAllSnapShots = (data) => {
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'getAllSnapShots',
     modelName: 'endpoint',
     query: { data }
@@ -28,7 +29,8 @@ const getAllSnapShots = (data) => {
  * @returns {Promise}
  */
 const getHostDetails = (data) => {
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'getHostDetails',
     modelName: 'endpoint',
     query: { data }
@@ -44,7 +46,8 @@ const getHostDetails = (data) => {
  * @returns {Promise}
  */
 const getFileContextData = (data) => {
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'getFileContextList',
     modelName: 'endpoint',
     query: { data }
@@ -60,7 +63,8 @@ const getFileContextData = (data) => {
    * @returns {Promise}
    */
 const exportFileContext = (data) => {
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'exportFileContext',
     modelName: 'endpoint',
     query: { data }
@@ -77,7 +81,8 @@ const getFileSearchResults = (filterObj, { onResponse = NOOP, onInit = NOOP, onE
     field: 'machineAgentId',
     value: filterObj.agentId
   }];
-  return streamRequest({
+  const request = lookup('service:request');
+  return request.streamRequest({
     method: 'fileContextSearch',
     modelName: 'endpoint',
     query: { filter },
@@ -90,7 +95,8 @@ const getFileSearchResults = (filterObj, { onResponse = NOOP, onInit = NOOP, onE
 };
 
 const policyDetails = (data) => {
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'getPolicyDetails',
     modelName: 'endpoint',
     query: { data }

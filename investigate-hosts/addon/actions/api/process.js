@@ -1,8 +1,9 @@
-import { promiseRequest } from 'streaming-data/services/data-access/requests';
+import { lookup } from 'ember-dependency-lookup';
 
 // Get processes based on agentId and scanTime. query = { agentId, scanTime }
 const getProcessTree = (query) => {
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'getProcessTree',
     modelName: 'endpoint',
     query: {
@@ -14,7 +15,8 @@ const getProcessTree = (query) => {
 // Get processes based on sorted order. query = { agentId, scanTime }
 const getProcessList = (query, sort) => {
   query.sort = sort;
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'getProcessList',
     modelName: 'endpoint',
     query: {
@@ -25,7 +27,8 @@ const getProcessList = (query, sort) => {
 
 // Get individual process details based on query{ agentId, scanTime, pid: processId }
 const getProcess = (query) => {
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'getProcess',
     modelName: 'endpoint',
     query: {
@@ -36,7 +39,8 @@ const getProcess = (query) => {
 
 // Get process context for a particular processId
 const getProcessFileContext = (processId) => {
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'getHostFileContext',
     modelName: 'endpoint',
     query: { data: processId }

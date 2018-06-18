@@ -1,4 +1,4 @@
-import { promiseRequest, streamRequest } from 'streaming-data/services/data-access/requests';
+import { lookup } from 'ember-dependency-lookup';
 import { addFilter } from 'investigate-hosts/actions/utils/query-util';
 
 // NOOP function to replace Ember.K
@@ -13,7 +13,8 @@ const NOOP = () => { };
  * @returns {Promise}
  */
 const getAllServices = () => {
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'findAll',
     modelName: 'investigate-service',
     query: {}
@@ -28,7 +29,8 @@ const getAllServices = () => {
  * @returns {Promise}
  */
 const getAllFilters = () => {
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'getAllFilters',
     modelName: 'endpoint',
     query: {}
@@ -49,7 +51,8 @@ const getPageOfMachines = (pageNumber, sort, expressionList) => {
   };
 
   query = addFilter(query, expressionList);
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'machines',
     modelName: 'endpoint',
     query: {
@@ -58,24 +61,26 @@ const getPageOfMachines = (pageNumber, sort, expressionList) => {
   });
 };
 
-  /**
-   * Executes a websocket fetch call for all machines and returns a Promise.
-   *
-   * @method downloadMachine
-   * @public
-   * @param expressionList {Object} for selected criteria
-   * @param columns {Array} only visible filters in the UI
-   * @param sort The sorting information ({ id, isDescending }) for the result set
-   * @param fields {Array} list of visible columns in machine table
-   * @returns {Promise}
-   */
+/**
+ * Executes a websocket fetch call for all machines and returns a Promise.
+ *
+ * @method downloadMachine
+ * @public
+ * @param expressionList {Object} for selected criteria
+ * @param columns {Array} only visible filters in the UI
+ * @param sort The sorting information ({ id, isDescending }) for the result set
+ * @param fields {Array} list of visible columns in machine table
+ * @returns {Promise}
+ */
 const downloadMachine = (expressionList = [], columns, sort, fields) => {
   const data = { sort, fields };
   if (expressionList.length) {
     data.criteria = { expressionList, 'predicateType': 'AND' };
   }
 
-  return promiseRequest({
+  const request = lookup('service:request');
+
+  return request.promiseRequest({
     method: 'export',
     modelName: 'endpoint',
     query: { data }
@@ -100,7 +105,9 @@ const createCustomSearch = (filter, expressionList, filterTypeParameter) => {
     data.criteria = { expressionList, 'predicateType': 'AND' };
   }
 
-  return promiseRequest({
+  const request = lookup('service:request');
+
+  return request.promiseRequest({
     method: 'saveFilter',
     modelName: 'endpoint',
     query: { data }
@@ -108,47 +115,50 @@ const createCustomSearch = (filter, expressionList, filterTypeParameter) => {
 };
 
 
-  /**
-   * Executes a websocket call to get all the schemas
-   *
-   * @method getAllSchemas
-   * @public
-   * @returns {Promise}
-   */
+/**
+ * Executes a websocket call to get all the schemas
+ *
+ * @method getAllSchemas
+ * @public
+ * @returns {Promise}
+ */
 const getAllSchemas = () => {
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'machine-schema',
     modelName: 'endpoint',
     query: {}
   });
 };
 
-  /**
-   * Executes a websocket call to start the request scan for selected hosts
-   *
-   * @method startScanRequest
-   * @param data {Object} of agentIds
-   * @public
-   * @returns {Promise}
-   */
+/**
+ * Executes a websocket call to start the request scan for selected hosts
+ *
+ * @method startScanRequest
+ * @param data {Object} of agentIds
+ * @public
+ * @returns {Promise}
+ */
 const startScanRequest = (agentIds) => {
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'commandScan',
     modelName: 'agent',
     query: { data: { agentIds, scanCommandType: 'QUICK_SCAN' } }
   });
 };
 
-  /**
-   * Executes a websocket call to cancel the request scan for selected hosts
-   *
-   * @method stopScanRequest
-   * @param agentIds {Object} of agentIds
-   * @public
-   * @returns {Promise}
-   */
+/**
+ * Executes a websocket call to cancel the request scan for selected hosts
+ *
+ * @method stopScanRequest
+ * @param agentIds {Object} of agentIds
+ * @public
+ * @returns {Promise}
+ */
 const stopScanRequest = (agentIds) => {
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'stopScan',
     modelName: 'agent',
     query: { data: { agentIds, scanCommandType: 'CANCEL_SCAN' } }
@@ -156,22 +166,24 @@ const stopScanRequest = (agentIds) => {
 };
 
 const deleteHosts = (agentIds) => {
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'deleteHosts',
     modelName: 'agent',
     query: { data: { machineAgentIds: agentIds } }
   });
 };
 
-  /**
-   * Executes a websocket call to notify the agent scan status
-   *
-   * @method notifyAgentStatus
-   * @public
-   * @returns {Promise}
-   */
+/**
+ * Executes a websocket call to notify the agent scan status
+ *
+ * @method notifyAgentStatus
+ * @public
+ * @returns {Promise}
+ */
 const notifyAgentStatus = ({ onResponse = NOOP, onError = NOOP, onInit = NOOP, onCompleted = NOOP }) => {
-  return streamRequest({
+  const request = lookup('service:request');
+  return request.streamRequest({
     method: 'notify',
     modelName: 'agent',
     query: {},
@@ -192,14 +204,16 @@ const notifyAgentStatus = ({ onResponse = NOOP, onError = NOOP, onInit = NOOP, o
  * @returns {Promise}
  */
 const deleteSearch = (id) => {
-  return promiseRequest({
+  const request = lookup('service:request');
+  return request.promiseRequest({
     method: 'removeSearch',
     modelName: 'search',
     query: { data: { id } }
   });
 };
 const getContext = (query, handlers) => {
-  return streamRequest({
+  const request = lookup('service:request');
+  return request.streamRequest({
     method: 'stream',
     modelName: 'context-service',
     query,
