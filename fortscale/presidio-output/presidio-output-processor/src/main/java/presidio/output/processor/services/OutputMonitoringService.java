@@ -1,5 +1,6 @@
 package presidio.output.processor.services;
 
+import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeRange;
 import org.springframework.beans.factory.annotation.Autowired;
 import presidio.ade.sdk.common.AdeManagerSdk;
@@ -10,6 +11,7 @@ import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;
+import presidio.output.processor.services.user.UserScoreServiceImpl;
 
 import java.time.Instant;
 import java.util.Collections;
@@ -22,6 +24,8 @@ import java.util.stream.Collectors;
  * Created by efratn on 16/01/2018.
  */
 public class OutputMonitoringService {
+
+    private static final Logger logger = Logger.getLogger(OutputMonitoringService.class);
 
     private static final String NUM_ANOMALY_EVENTS_METRIC_NAME = "number_of_anomaly_events";
     private final String NUMBER_OF_ALERTS_METRIC_NAME = "number_of_alerts_created";
@@ -149,15 +153,17 @@ public class OutputMonitoringService {
             smartsIndicatorsNum += featureIndicatorCountHourlyValues.stream().mapToInt(Number::intValue).sum();
         }
         reportNumericMetric(ADE_INDICATORS_COUNT_DAILY_METRIC_NAME, smartsIndicatorsNum, timeRange.getStart());
+        logger.info("{} was successfully reported with value {}", ADE_INDICATORS_COUNT_DAILY_METRIC_NAME, smartsIndicatorsNum);
     }
 
-    private void reportDailyMetric(TimeRange timeRange, String metricNamePrefix, String metricName, String value) {
-        List<MetricDocument> alertCountHourlyMetrics = metricPersistencyService.getMetricsByNamesAndTime(Collections.singleton(metricNamePrefix + metricName), timeRange);
-        List<Number> alertCountHourlyValues = alertCountHourlyMetrics.stream().
+    private void reportDailyMetric(TimeRange timeRange, String metricNamePrefix, String hourlyMetricName, String dailyMetricName) {
+        List<MetricDocument> hourlyMetrics = metricPersistencyService.getMetricsByNamesAndTime(Collections.singleton(metricNamePrefix + hourlyMetricName), timeRange);
+        List<Number> hourlyValues = hourlyMetrics.stream().
                 map(metricDocument -> metricDocument.getValue().get(MetricEnums.MetricValues.DEFAULT_METRIC_VALUE))
                 .collect(Collectors.toList());
-        int alertCount = alertCountHourlyValues.stream().mapToInt(Number::intValue).sum();
-        reportNumericMetric(value, alertCount, timeRange.getStart());
+        int value = hourlyValues.stream().mapToInt(Number::intValue).sum();
+        reportNumericMetric(dailyMetricName, value, timeRange.getStart());
+        logger.info("{} was successfully reported with value {}", dailyMetricName, value);
     }
 
     private void reportSmartsCountDaily(TimeRange timeRange, String metricName, MetricEnums.MetricValues amountOfScored, String smartsCountLastDayMetricName) {
@@ -167,6 +173,7 @@ public class OutputMonitoringService {
                 .collect(Collectors.toList());
         int sumOfHourlySmartsCount = smartsCountHourlyValues.stream().mapToInt(Number::intValue).sum();
         reportNumericMetric(smartsCountLastDayMetricName, sumOfHourlySmartsCount, timeRange.getStart());
+        logger.info("smart count daily metric was successfully reported with value {}", sumOfHourlySmartsCount);
     }
 
     private void reportActiveUsersDaily(TimeRange timeRange) {
@@ -174,6 +181,7 @@ public class OutputMonitoringService {
         //active user = user with smart (smart score >= 0)
         int distinctSmartUsers = adeManagerSdk.getDistinctSmartUsers(timeRange);
         reportNumericMetric(NUM_ACTIVE_USERS_LAST_DAY_METRIC_NAME, distinctSmartUsers, timeRange.getStart());
+        logger.info("active users daily metric was successfully reported with value {}", distinctSmartUsers);
     }
 
 }
