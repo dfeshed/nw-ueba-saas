@@ -211,7 +211,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
         jsonObject.put(LOGON_TYPE_FIELD_NAME, logonType);
         jsonObject.put(ALIAS_HOST_FIELD_NAME, new JSONArray(aliasHost));
         jsonObject.put(HOST_SRC_FIELD_NAME, hostSource);
-        jsonObject.put(EVENT_TIME_FIELD_NAME, Long.toString(eventTime));
+        jsonObject.put(EVENT_TIME_FIELD_NAME, eventTime);
         jsonObject.put(EVENT_TYPE_FIELD_NAME, eventType);
         jsonObject.put(RESULT_CODE_FIELD_NAME, resultCode);
         jsonObject.put(EVENT_SOURCE_ID_FIELD_NAME, eventId);

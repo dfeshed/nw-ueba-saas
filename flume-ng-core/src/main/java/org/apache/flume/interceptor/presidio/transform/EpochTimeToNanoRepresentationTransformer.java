@@ -51,7 +51,7 @@ public class EpochTimeToNanoRepresentationTransformer extends AbstractJsonObject
                         sourceKey, jsonObject);
             }
         } else if (epochTimeObj instanceof Number) {
-            epochtime = (Double) epochTimeObj;
+            epochtime = ((Number)epochTimeObj).doubleValue();
         } else {
             logger.debug("The value in field {} is of the wrong type {}. The value expected to be epoch time. event: {}",
                     sourceKey, epochTimeObj.getClass(), jsonObject);
