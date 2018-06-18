@@ -46,7 +46,7 @@ then
 # User is not on OS X, must be on Windows
 else
   # Check if nvm-windows has been installed
-  if [ -d "${HOME}/AppData/Roaming/nvm" ]
+  if [ -x "$(command -v nvm)" ]
   then
     success "Detected NVM for Windows"
     # install the required node version and make that version the default
