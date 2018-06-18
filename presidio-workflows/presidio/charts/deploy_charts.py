@@ -3,13 +3,23 @@ import logging
 import os
 import pkg_resources
 from airflow.utils.db import provide_session
+from airflow import configuration
+import re
 
+
+def get_airflow_password():
+    airflow_connection = str(configuration.get('core', 'SQL_ALCHEMY_CONN'))
+    airflow_password_re = "postgresql\+psycopg2:\/\/airflow:(.*?)\@127\.0\.0\.1\/airflow"
+    return str(re.search(airflow_password_re,airflow_connection).group(1))
 
 @provide_session
 def insert_conn(session=None):
     file_path = pkg_resources.resource_filename('presidio',
                                                 'resources/charts/connection/connection.sql')
-    run_sql_file(file_path, session)
+    with open(file_path, 'r') as data_file:
+        sql = data_file.read()
+        sql.format(get_airflow_password)
+        run_sql(session, sql)
 
 
 @provide_session

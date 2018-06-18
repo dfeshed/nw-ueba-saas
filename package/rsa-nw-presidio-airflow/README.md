@@ -14,10 +14,11 @@ yum -y install rsa-nw-presidio-airflow
 
 # Install airflow in a virtualenv
 source /etc/sysconfig/airflow
-pip install --no-index --find-links=$(dirname "$AIRFLOW_PKG_REQ")/../virtualenv virtualenv==15.2.0
-python -m virtualenv $AIRFLOW_VENV
+OWB_ALLOW_NON_FIPS=on python -m pip install --no-index --find-links=$(dirname "$AIRFLOW_PKG_REQ")/../virtualenv virtualenv==15.2.0
+OWB_ALLOW_NON_FIPS=on python -m virtualenv $AIRFLOW_VENV
 source $AIRFLOW_VENV/bin/activate
-pip install --no-index --find-links=$(dirname "$AIRFLOW_PKG_REQ") -r $AIRFLOW_PKG_REQ
+OWB_ALLOW_NON_FIPS=on python -m pip install --no-index --find-links=$(dirname "$AIRFLOW_PKG_REQ") numpy
+OWB_ALLOW_NON_FIPS=on python -m pip install --no-index --find-links=$(dirname "$AIRFLOW_PKG_REQ") -r $AIRFLOW_PKG_REQ
 deactivate
 
 # Start airflow systemd service

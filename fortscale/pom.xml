@@ -681,16 +681,6 @@
         <module>presidio-connector-manager</module>
     </modules>
 
-    <profiles>
-        <profile>
-            <id>rpm</id>
-            <modules>
-                <module>presidio-rpm</module>
-            </modules>
-        </profile>
-    </profiles>
-
-
     <distributionManagement>
         <repository>
             <id>asoc-releases</id>
