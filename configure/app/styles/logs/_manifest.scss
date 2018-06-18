@@ -37,6 +37,9 @@ div.modal-content.add-new-parser-rule {
   .outOfBox-indicator {
     color: text-color(primary);
   }
+  .active .outOfBox-indicator {
+    color: text-color(primary, lighter);
+  }
   .save-reset-rule {
     hbox {
       margin: rsa-whitespace();
@@ -227,6 +230,11 @@ div.modal-content.add-new-parser-rule {
         color: text-color(accentOne, darker);
         font-style: italic;
         font-weight: bold;
+      }
+    }
+    .has-matches {
+      .parser-rule-name {
+        color: text-color(accentFour, dark);
       }
     }
   }

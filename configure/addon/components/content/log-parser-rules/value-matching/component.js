@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { selectedParserRule, ruleFormats } from 'configure/reducers/content/log-parser-rules/selectors';
 import { updateSelectedRule } from 'configure/actions/creators/content/log-parser-rule-creators';
-import computed, { oneWay } from 'ember-computed-decorators';
+import computed from 'ember-computed-decorators';
 
 const stateToComputed = (state) => ({
   rule: selectedParserRule(state),
@@ -21,9 +21,19 @@ const ValueMatching = Component.extend({
     return (format && format.toLowerCase()) || 'regex';
   },
 
-  @oneWay('rule.pattern.regex')
-  regex(regex) {
-    return regex || '';
+  _regex: null,
+
+  @computed('rule')
+  regex: {
+    get(rule) {
+      const regex = rule.pattern.regex || '';
+      this.set('_regex', regex);
+      return regex;
+    },
+    set(value) {
+      this.set('_regex', value);
+      return value;
+    }
   },
 
   @computed('format', 'formatOptions')
@@ -74,6 +84,7 @@ const ValueMatching = Component.extend({
           ...rule,
           pattern
         };
+        this.set('_regex', null);
         this.send('updateSelectedRule', updatedRule);
       }
     }

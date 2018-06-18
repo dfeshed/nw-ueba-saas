@@ -227,3 +227,24 @@ export const highlightedLogs = createSelector(
     return logs;
   }
 );
+
+const _highlightingMatch = /highlight_[capture|literal]+_(.+?)'/g;
+// Returns the rule names that have highlight matches in the sample logs
+export const highlightedRuleNames = createSelector(
+  sampleLogs,
+  parserRules,
+  (sampleLogs, parserRules) => {
+    let match;
+    const matchedRules = [];
+    do {
+      match = _highlightingMatch.exec(sampleLogs);
+      if (match) {
+        const highlightedRule = parserRules.find((rule) => rule.name.replace(/\s/g, '') === match[1]);
+        if (highlightedRule) {
+          matchedRules.push(highlightedRule.name); // push the first group capture in the matched rules array
+        }
+      }
+    } while (match);
+    return _.uniq(matchedRules);
+  }
+);

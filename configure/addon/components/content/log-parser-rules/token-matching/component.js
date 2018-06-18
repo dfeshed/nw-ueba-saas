@@ -4,7 +4,6 @@ import { selectedParserRule } from 'configure/reducers/content/log-parser-rules/
 import { updateSelectedRule } from 'configure/actions/creators/content/log-parser-rule-creators';
 import { next } from '@ember/runloop';
 import computed, { not, empty } from 'ember-computed-decorators';
-import $ from 'jquery';
 
 const stateToComputed = (state) => {
   return {
@@ -48,26 +47,19 @@ const TokenMatching = Component.extend({
 
     editToken(originalToken, tokenIndex, event) {
       const updatedToken = event.target.value;
+      // If the token is only whitespace, replace with the original/previous token
       if (updatedToken.trim() === '') {
-        $(event.target).val(originalToken);
-        return;
-      }
-      if (updatedToken !== originalToken) {
+        event.target.value = originalToken;
+      } else if (updatedToken !== originalToken) {
         const { rule, tokens } = this.getProperties('rule', 'tokens');
-        const updatedRule = {
-          ...rule,
-          literals: tokens.map((token, idx) => idx === tokenIndex ? { value: updatedToken } : token)
-        };
+        const updatedRule = rule.set('literals', tokens.map((token, idx) => idx === tokenIndex ? { value: updatedToken } : token));
         this.send('updateSelectedRule', updatedRule);
       }
     },
 
     deleteToken(tokenToDelete) {
       const { rule, tokens } = this.getProperties('rule', 'tokens');
-      const updatedRule = {
-        ...rule,
-        literals: tokens.filter((token) => token.value !== tokenToDelete.value)
-      };
+      const updatedRule = rule.set('literals', tokens.filter((token) => token.value !== tokenToDelete.value));
       this.send('updateSelectedRule', updatedRule);
     }
   }

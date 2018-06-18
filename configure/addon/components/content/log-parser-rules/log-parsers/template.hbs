@@ -5,7 +5,7 @@
     {{#each logParsers as |logParser index|}}
       <tr>
         <td class='{{if (eq index 0) 'firstItem'}}
-        {{if (eq selectedLogParserIndex index) 'active'}}'{{action "selectLogParser" index}}>
+        {{if (eq selectedLogParserIndex index) 'active'}}'{{action "selectParser" index}}>
           <div>
             {{#if logParser.dirty}}
               {{rsa-icon name="synchronize-3" class="deploy-icon"}} {{or logParser.displayName logParser.name}}
@@ -18,3 +18,20 @@
     {{/each}}
   </table>
 </div>
+{{#if showConfirmationDialog}}
+  {{#rsa-application-modal eventId='confirm-unsaved-changes' label=(t "configure.logsParser.confirmDiscardChanges") style="standard respond-confirmation-dialog"}}
+    <div class='modal-content'>
+      <p>{{t 'configure.logsParser.switchParserUnsavedChanges'}}</p>
+    </div>
+    <footer>
+      <hbox class="modal-footer-buttons">
+        {{#rsa-form-button class='cancel-button' defaultAction='cancel'}}
+          {{t 'forms.cancel'}}
+        {{/rsa-form-button}}
+        {{#rsa-form-button style='primary' class='confirm-button' defaultAction='confirm'}}
+          {{t 'configure.logsParser.buttons.discardChanges'}}
+        {{/rsa-form-button}}
+      </hbox>
+    </footer>
+  {{/rsa-application-modal}}
+{{/if}}

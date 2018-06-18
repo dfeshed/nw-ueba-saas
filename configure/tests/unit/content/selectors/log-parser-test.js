@@ -15,6 +15,7 @@ import {
   sampleLogs,
   isHighlighting,
   highlightedLogs,
+  highlightedRuleNames,
   metas
 } from 'configure/reducers/content/log-parser-rules/selectors';
 
@@ -110,4 +111,13 @@ test('the highlightedLogs selector properly reworks the class names in the highl
   assert.equal(highlightedLogs(state({ ...testState, selectedParserRuleIndex: 1 })), 'This is an <span class=\'highlight-capture is-selected\'>' +
     '<span class=\'highlight-literal is-selected\'>example</span> of highlighting</span> for a test',
     'The class names in the html of the logs get reworked add an is-selected class name if the selected parser rule name is found in the class name');
+});
+
+test('the highlightedRuleNames selector properly returns the list of rule names that have highlight matches', function(assert) {
+  const testState = {
+    sampleLogs: 'This is an <span class=\'highlight_capture_EXAMPLEOne\'><span class=\'highlight_literal_EXAMPLEOne\'>example</span> of highlighting</span> for ' +
+    'a test. Here is another <span class=\'highlight_capture_EXAMPLE2\'><span class=\'highlight_literal_EXAMPLE2\'>example</span> of highlighting</span>.',
+    parserRules: [{ name: 'test' }, { name: 'EXAMPLE One' }, { name: 'rule 3' }, { name: 'EXAMPLE 2' }]
+  };
+  assert.deepEqual(highlightedRuleNames(state(testState)), ['EXAMPLE One', 'EXAMPLE 2'], 'The selector returns an array of the rule names that have highlighting matches');
 });

@@ -561,6 +561,9 @@ export default {
       sampleLogs: 'Below are sample log messages',
       sampleLogsError: 'There was an error highlighting the sample logs below.',
       invalidRegEx: 'Invalid regular expression.',
+      confirmDiscardChanges: 'Confirm Discard Changes',
+      switchParserUnsavedChanges: 'Your parser has unsaved changes. Are you sure you want to discard these changes and switch ' +
+      'to another parser?',
       error: {
         generic: 'An unexpected error has occurred attempting to retrieve this data.'
       },
