@@ -11,7 +11,6 @@ import presidio.monitoring.services.MetricCollectingService;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
@@ -110,10 +109,8 @@ public class OutputMonitoringService {
         metricCollectingService.addMetric(metric);
     }
 
-    public void reportDailyMetrics() {
+    public void reportDailyMetrics(Instant startDate, Instant endDate) {
 
-        Instant endDate = Instant.now();
-        Instant startDate = endDate.minus(Duration.ofHours(24));
         TimeRange timeRange = new TimeRange(startDate, endDate);
 
         reportActiveUsersDaily(timeRange);
@@ -134,17 +131,23 @@ public class OutputMonitoringService {
     private void reportIndicatorsCountDaily(TimeRange timeRange) {
         //get number of scored indicators hourly
         List<MetricDocument> scoreIndicatorCountHourlyMetrics = metricPersistencyService.getMetricsByNamesAndTime(Collections.singleton("score-aggregation.AggregationRecordsCreator"), timeRange);
+
         List<Number> scoreIndicatorCountHourlyValues = scoreIndicatorCountHourlyMetrics.stream().
-                map(metricDocument -> metricDocument.getValue().get(MetricEnums.MetricValues.DEFAULT_METRIC_VALUE))
+                map(metricDocument -> metricDocument.getValue().get(MetricEnums.MetricValues.AMOUNT_OF_NON_ZERO_FEATURE_VALUES))
                 .collect(Collectors.toList());
-        int smartsIndicatorsNum = scoreIndicatorCountHourlyValues.stream().mapToInt(Number::intValue).sum();
+        int smartsIndicatorsNum = 0;
+        if(scoreIndicatorCountHourlyValues != null && ! scoreIndicatorCountHourlyValues.isEmpty()) {
+            smartsIndicatorsNum = scoreIndicatorCountHourlyValues.stream().mapToInt(Number::intValue).sum();
+        }
 
         //get number of feature indicators hourly
-        List<MetricDocument> featureIndicatorCountHourlyMetrics = metricPersistencyService.getMetricsByNamesAndTime(Collections.singleton("feature-aggregation.AggregationRecordsCreator"), timeRange);
+        List<MetricDocument> featureIndicatorCountHourlyMetrics = metricPersistencyService.getMetricsByNamesAndTime(Collections.singleton("feature-aggregation.scoring"), timeRange);
         List<Number> featureIndicatorCountHourlyValues = featureIndicatorCountHourlyMetrics.stream().
-                map(metricDocument -> metricDocument.getValue().get(MetricEnums.MetricValues.DEFAULT_METRIC_VALUE))
+                map(metricDocument -> metricDocument.getValue().get(MetricEnums.MetricValues.AMOUNT_OF_NON_ZERO_SCORE))
                 .collect(Collectors.toList());
-        smartsIndicatorsNum += featureIndicatorCountHourlyValues.stream().mapToInt(Number::intValue).sum();
+        if(featureIndicatorCountHourlyValues != null && ! featureIndicatorCountHourlyValues.isEmpty()) {
+            smartsIndicatorsNum += featureIndicatorCountHourlyValues.stream().mapToInt(Number::intValue).sum();
+        }
         reportNumericMetric(ADE_INDICATORS_COUNT_DAILY_METRIC_NAME, smartsIndicatorsNum, timeRange.getStart());
     }
 

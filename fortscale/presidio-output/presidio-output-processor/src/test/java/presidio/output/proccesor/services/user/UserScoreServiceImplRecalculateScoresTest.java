@@ -23,6 +23,7 @@ import presidio.output.domain.services.users.UserPersistencyServiceImpl;
 import presidio.output.processor.services.user.UserScoreServiceImpl;
 import presidio.output.processor.services.user.UsersAlertData;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -103,7 +104,7 @@ public class UserScoreServiceImplRecalculateScoresTest {
         });
 
 
-        Map<String, UsersAlertData> aggregatedUserScore = userScoreService.calculateUserScores(ALERT_EFFECTIVE_DURATION_IN_DAYS);
+        Map<String, UsersAlertData> aggregatedUserScore = userScoreService.calculateUserScores(ALERT_EFFECTIVE_DURATION_IN_DAYS, Instant.now());
         Assert.assertEquals(2, aggregatedUserScore.size());
         double user1Expected = (ALERT_CONTRIBUTION_CRITICAL + ALERT_CONTRIBUTION_HIGH + ALERT_CONTRIBUTION_LOW) * 1D;
         double user2Expected = (ALERT_CONTRIBUTION_CRITICAL * 2) * 1D;
@@ -163,7 +164,7 @@ public class UserScoreServiceImplRecalculateScoresTest {
         });
 
 
-        Map<String, UsersAlertData> aggregatedUserScore = Whitebox.invokeMethod(userScoreService, "calculateUserScores", ALERT_EFFECTIVE_DURATION_IN_DAYS);
+        Map<String, UsersAlertData> aggregatedUserScore = Whitebox.invokeMethod(userScoreService, "calculateUserScores", ALERT_EFFECTIVE_DURATION_IN_DAYS, Instant.now());
         Assert.assertEquals(3, aggregatedUserScore.size());
 
         Assert.assertEquals(95D, aggregatedUserScore.get("user1").getUserScore(), 0.1);

@@ -41,9 +41,12 @@ public class OutputShellCommands implements CommandMarker {
 
     @CliCommand(value = "recalculate-user-score", help = "run daily calculation for output")
     public int runDaily(
+            @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, mandatory = true, help = "alert with (logical) time greater than specified start time will be processed") final Instant startTime,
+
+            @CliOption(key = {CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME}, mandatory = true, help = "alerts with (logical) time smaller than specified end time will be processed") final Instant endTime
     ) throws Exception {
         Thread.currentThread().setName(DAILY_OUTPUT_PROCESSOR_RUN + Instant.now().toString());
-        return executionService.doUpdateAllUsersData();
+        return executionService.doUpdateAllUsersData(startTime, endTime);
     }
 
     @CliCommand(value = "cleanup", help = "clean application data for specified time range ")

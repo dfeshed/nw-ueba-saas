@@ -11,6 +11,7 @@ import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -90,9 +91,9 @@ public class UserScoreServiceImpl implements UserScoreService {
      * @return map of each userId to an object that contains the new score and number of alerts
      */
     @Override
-    public Map<String, UsersAlertData> calculateUserScores(int alertEffectiveDurationInDays) {
+    public Map<String, UsersAlertData> calculateUserScores(int alertEffectiveDurationInDays, Instant endDate) {
 
-        List<LocalDateTime> days = getListOfLastXdays(alertEffectiveDurationInDays);
+        List<LocalDateTime> days = getListOfLastXdays(alertEffectiveDurationInDays, endDate);
 
         Map<String, UsersAlertData> aggregatedUserScore = new HashMap<>();
         //TODO: also filter by status >
@@ -137,8 +138,9 @@ public class UserScoreServiceImpl implements UserScoreService {
         return aggregatedUserScore;
     }
 
-    private List<LocalDateTime> getListOfLastXdays(int days) {
-        LocalDate endDate = LocalDate.now();
+    private List<LocalDateTime> getListOfLastXdays(int days, Instant endTime) {
+
+        LocalDate endDate = endTime.atZone(ZoneId.systemDefault()).toLocalDate();
         LocalDate startTime = endDate.minusDays(days);
         List<LocalDateTime> dates = new ArrayList<>();
         for (LocalDate d = startTime; !d.isAfter(endDate); d = d.plusDays(1)) {

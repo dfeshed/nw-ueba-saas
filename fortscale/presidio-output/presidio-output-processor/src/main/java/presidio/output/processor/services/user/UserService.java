@@ -2,6 +2,7 @@ package presidio.output.processor.services.user;
 
 import presidio.output.domain.records.users.User;
 
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -30,8 +31,8 @@ public interface UserService {
      *
      * @return
      */
-    boolean updateAllUsersAlertData();
+    boolean updateAllUsersAlertData(Instant endDate);
 
-    void updateUserData();
+    void updateUserData(Instant endDate);
 
 }

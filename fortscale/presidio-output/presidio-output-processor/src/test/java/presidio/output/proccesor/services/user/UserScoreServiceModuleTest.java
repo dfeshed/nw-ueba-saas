@@ -96,7 +96,7 @@ public class UserScoreServiceModuleTest {
         Assert.assertEquals(0, usersPageResult.getContent().get(0).getScore(), 0.00001);
         Assert.assertEquals(null, usersPageResult.getContent().get(0).getSeverity());
 
-        userService.updateAllUsersAlertData();
+        userService.updateAllUsersAlertData(Instant.now());
         userSeverityService.updateSeverities();
 
         usersPageResult = userPersistencyService.find(queryBuilder.build());
@@ -131,7 +131,7 @@ public class UserScoreServiceModuleTest {
         severityToScoreRangeMap.put(UserSeverity.HIGH, new PresidioRange<>(100d, 150d));
         severityToScoreRangeMap.put(UserSeverity.CRITICAL, new PresidioRange<>(150d, 200d));
         userSeveritiesRangeRepository.save(new UserSeveritiesRangeDocument(severityToScoreRangeMap));
-        userService.updateAllUsersAlertData();
+        userService.updateAllUsersAlertData(Instant.now());
         userSeverityService.updateSeverities();
 
         User updatedUser = userPersistencyService.findUserById(userId);
@@ -177,7 +177,7 @@ public class UserScoreServiceModuleTest {
         Assert.assertEquals(0, usersPageResult.getContent().get(0).getScore(), 0.00001);
         Assert.assertEquals(null, usersPageResult.getContent().get(0).getSeverity());
 
-        userService.updateAllUsersAlertData();
+        userService.updateAllUsersAlertData(Instant.now());
         userSeverityService.updateSeverities();
 
         usersPageResult = userPersistencyService.find(queryBuilder.build());
@@ -204,7 +204,7 @@ public class UserScoreServiceModuleTest {
         Page<Alert> alerts = alertPersistencyService.find(new AlertQuery.AlertQueryBuilder().setPageSize(1).setPageNumber(0).build());
         Assert.assertEquals(5050, alerts.getTotalElements());
 
-        userService.updateAllUsersAlertData();
+        userService.updateAllUsersAlertData(Instant.now());
 
         userSeverityService.updateSeverities();
 
@@ -259,7 +259,7 @@ public class UserScoreServiceModuleTest {
 
         System.out.println("Finish Inserting data " + Instant.now().toString());
         long timeBefore = System.currentTimeMillis();
-        userService.updateAllUsersAlertData();
+        userService.updateAllUsersAlertData(Instant.now());
 
         userSeverityService.updateSeverities();
         long timeAfter = System.currentTimeMillis();
