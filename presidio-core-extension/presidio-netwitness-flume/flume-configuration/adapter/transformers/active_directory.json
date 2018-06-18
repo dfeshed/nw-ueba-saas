@@ -14,7 +14,7 @@
             "type": "regex",
             "name": "user-dst-not-contain-machine",
             "sourceKey": "user_dst",
-            "regex": "[^\\\\$]*"
+            "regex": "[^\\$]*"
           },
           {
             "type": "regex",
@@ -59,7 +59,7 @@
           ]
         },
         {
-          "pattern": "(.+\\\\\\\\\\\\\\\\)+(.+)@.+",
+          "pattern": "(.+\\\\)+(.+)@.+",
           "format": "%s",
           "capturingGroupConfigurations": [
             {
@@ -69,7 +69,7 @@
           ]
         },
         {
-          "pattern": "(.+\\\\\\\\\\\\\\\\)+([^@]+)",
+          "pattern": "(.+\\\\)+([^@]+)",
           "format": "%s",
           "capturingGroupConfigurations": [
             {
