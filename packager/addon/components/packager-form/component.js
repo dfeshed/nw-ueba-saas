@@ -178,7 +178,8 @@ const formComponent = Component.extend({
   resetDefaultProperties() {
     this.setProperties({
       testLog: true,
-      selectedProtocol: 'TCP'
+      selectedProtocol: 'TCP',
+      status: 'enabled'
     });
   },
 
@@ -201,7 +202,6 @@ const formComponent = Component.extend({
       },
       onSuccess: () => {
         this.resetErrorProperties();
-        this.resetDefaultProperties();
       }
     };
   },

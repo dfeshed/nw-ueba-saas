@@ -261,6 +261,24 @@ module('Integration | Component | packager-form', function(hooks) {
   });
 
   test('Protocol and TestLog resets to default when reset button is clicked', async function(assert) {
+    assert.expect(3);
+    new ReduxDataHelper(setState)
+      .setData('defaultPackagerConfig', newConfig)
+      .build();
+    this.set('selectedProtocol', 'UDP');
+    this.set('testLog', false);
+    this.set('status', 'disabled');
+    await render(hbs`{{packager-form isLogCollectionEnabled=true selectedProtocol=selectedProtocol testLog=testLog status=status}}`);
+    await click('.reset-button .rsa-form-button');
+    const protocol = this.get('selectedProtocol');
+    const testLog = this.get('testLog');
+    const status = this.get('status');
+    assert.equal(protocol, 'TCP');
+    assert.equal(testLog, true);
+    assert.equal(status, 'enabled');
+  });
+
+  test('Protocol and TestLog should not resets to default when Generate Log Collection button is clicked', async function(assert) {
     assert.expect(2);
     new ReduxDataHelper(setState)
       .setData('defaultPackagerConfig', newConfig)
@@ -268,11 +286,11 @@ module('Integration | Component | packager-form', function(hooks) {
     this.set('selectedProtocol', 'UDP');
     this.set('testLog', false);
     await render(hbs`{{packager-form isLogCollectionEnabled=true selectedProtocol=selectedProtocol testLog=testLog}}`);
-    await click('.reset-button .rsa-form-button');
+    await click('.generate-log-button-js .rsa-form-button');
     const protocol = this.get('selectedProtocol');
     const testLog = this.get('testLog');
-    assert.equal(protocol, 'TCP');
-    assert.equal(testLog, true);
+    assert.equal(protocol, 'UDP');
+    assert.equal(testLog, false);
   });
 
   test('Test log is set false on uncheck of checkbox', async function(assert) {
