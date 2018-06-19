@@ -43,7 +43,9 @@ public class OutputShellCommands implements CommandMarker {
     public int runDaily(
             @CliOption(key = {CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME}, mandatory = true, help = "alert with (logical) time greater than specified start time will be processed") final Instant startTime,
 
-            @CliOption(key = {CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME}, mandatory = true, help = "alerts with (logical) time smaller than specified end time will be processed") final Instant endTime
+            @CliOption(key = {CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME}, mandatory = true, help = "alerts with (logical) time smaller than specified end time will be processed") final Instant endTime,
+
+            @CliOption(key = {CommonStrings.COMMAND_LINE_FIXED_DURATION_FIELD_NAME}, help = "the internal time intervals that the processing will be done by") final Double fixedDuration
     ) throws Exception {
         Thread.currentThread().setName(DAILY_OUTPUT_PROCESSOR_RUN + Instant.now().toString());
         return executionService.doUpdateAllUsersData(startTime, endTime);
