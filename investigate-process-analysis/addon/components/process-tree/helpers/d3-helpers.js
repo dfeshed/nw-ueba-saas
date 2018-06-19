@@ -15,7 +15,7 @@ export const elbow = function(d, boxWidth) {
   return `M${sourceY - boxWidth},${sourceX}
           H${ sourceY + (targetY - sourceY) / 2}
           V${ targetX}
-          H${ targetY + boxWidth + 36}`;
+          H${ targetY + boxWidth + 40}`;
 };
 
 /**

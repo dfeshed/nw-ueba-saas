@@ -55,6 +55,10 @@ let freeIdCounter = 0;
 let hideEvent = null;
 let displayEvent = null;
 
+const COLLAPSE_ICON_SIZE = 16;
+const COUNT_SPACING = 2;
+const SPACING = 5;
+
 const TreeComponent = Component.extend({
 
   zoomed,
@@ -97,23 +101,23 @@ const TreeComponent = Component.extend({
    * @property
    * @public
    */
-  rectWidth: 56,
+  rectWidth: 46,
 
   /**
    * Tree node rectangle height
    * @property
    * @public
    */
-  rectHeight: 56,
+  rectHeight: 46,
 
-  nodeSize: [56, 56],
+  nodeSize: [46, 46],
 
   /**
    * Specify the gap between the two node
    * @property
    * @public
    */
-  nodeSeparation: 2,
+  nodeSeparation: 3.75,
 
   /**
    * Icon to represent the collapse tree node. If you want to add the icon in D3 svg we use font-icon code. Here it's
@@ -259,7 +263,12 @@ const TreeComponent = Component.extend({
       }
       return '';
     };
-    appendIcon({ className: 'text-icon', node: collapseWrapper, dx: (width / 2) + 14, fontSize: '1.25em', text });
+    appendIcon({
+      className: 'text-icon',
+      node: collapseWrapper, dx: (width / 2) + (COLLAPSE_ICON_SIZE / 2) + SPACING,
+      fontSize: COLLAPSE_ICON_SIZE,
+      text
+    });
   },
 
   _onNodeEnter(node, source) {
@@ -326,13 +335,14 @@ const TreeComponent = Component.extend({
       text: (d) => truncateText(d.data.processName)
     });
 
-    appendIcon({ className: 'process-icon', node: nodeEnter, fontSize: '2em', text: '\ue944' });
+    appendIcon({ className: 'process-icon', node: nodeEnter, fontSize: '20px', text: '\ue944' });
 
     appendText({
       className: 'child-count',
       node: nodeEnter,
-      dx: (width / 2) + 26,
-      dy: 0, opacity: 1,
+      dx: (width / 2) + COLLAPSE_ICON_SIZE + SPACING + COUNT_SPACING,
+      dy: 0,
+      opacity: 1,
       text: (d) => d.data.childCount ? d.data.childCount : ''
     });
 
@@ -348,7 +358,7 @@ const TreeComponent = Component.extend({
 
     nodeUpdate.select('circle.process')
       .attr('cursor', 'pointer')
-      .attr('r', '2rem');
+      .attr('r', '1.643rem');
 
     if (ieEdgeDetection()) { // icon is positioned according to the browser
       nodeUpdate.select('text.process-icon')
