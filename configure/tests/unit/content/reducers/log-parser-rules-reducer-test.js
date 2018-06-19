@@ -17,7 +17,8 @@ const initialState = Immutable.from({
   deviceClasses: [],
   deviceClassesStatus: null,
   isTransactionUnderway: false,
-  deletedRules: []
+  deletedRules: [],
+  parserRulesOriginal: [{ name: 'foo' }]
 });
 
 test('With FETCH_DEVICE_TYPES, the start handler updates state', function(assert) {
@@ -357,5 +358,32 @@ test('With FETCH_PARSER_RULES, the success handler updates state', function(asse
     payload: { data: [{ name: 'ciscopix', literals: [{ 'value': 'ad.domain.dst ' }] }] }
   });
   const result = reducer(initialState, action);
+  assert.deepEqual(result, expectedResult);
+});
+
+test('With DISCARD_RULE_CHANGES, the action is successfull', function(assert) {
+  const expectedResult = {
+    ...initialState,
+    parserRules: [{ name: 'foo' }]
+  };
+  const action = makePackAction(LIFECYCLE.SUCCESS, { type: ACTION_TYPES.DISCARD_RULE_CHANGES });
+  const result = reducer(initialState, action);
+  assert.deepEqual(result, expectedResult);
+});
+
+const initialStateDisdard = Immutable.from({
+  selectedParserRuleIndex: 1,
+  parserRules: [{ name: 'foo' }, { name: 'foo2' }],
+  parserRulesOriginal: [{ name: 'foo' }]
+});
+test('With DISCARD_RULE_CHANGES, the action with addidg rule successfull', function(assert) {
+  const expectedResult = {
+    ...initialStateDisdard,
+    deletedRules: [],
+    selectedParserRuleIndex: 0,
+    parserRules: [{ name: 'foo' }]
+  };
+  const action = makePackAction(LIFECYCLE.SUCCESS, { type: ACTION_TYPES.DISCARD_RULE_CHANGES });
+  const result = reducer(initialStateDisdard, action);
   assert.deepEqual(result, expectedResult);
 });

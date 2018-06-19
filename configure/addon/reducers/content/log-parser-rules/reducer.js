@@ -292,6 +292,12 @@ export default reduxActions.handleActions({
   [ACTION_TYPES.UPDATE_SELECTED_PARSER_RULE]: (state, { payload: newRule }) => {
     return state.set('parserRules', state.parserRules.map((rule, index) => index === state.selectedParserRuleIndex ? newRule : rule));
   },
-  [ACTION_TYPES.DISCARD_RULE_CHANGES]: (state) => (state.set('parserRules', state.parserRulesOriginal))
+  [ACTION_TYPES.DISCARD_RULE_CHANGES]: (state) => {
+    return state.merge({
+      parserRules: state.parserRulesOriginal,
+      selectedParserRuleIndex: state.parserRulesOriginal.length <= state.selectedParserRuleIndex ? 0 : state.selectedParserRuleIndex,
+      deletedRules: []
+    });
+  }
 
 }, Immutable.from(initialState));
