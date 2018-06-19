@@ -1,5 +1,6 @@
 package presidio.ade.domain.record.aggregated;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -98,5 +99,10 @@ public class AdeAggregationRecord extends AdeContextualAggregatedRecord {
 
     public void setFeatureValue(Double featureValue) {
         this.featureValue = featureValue;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 }

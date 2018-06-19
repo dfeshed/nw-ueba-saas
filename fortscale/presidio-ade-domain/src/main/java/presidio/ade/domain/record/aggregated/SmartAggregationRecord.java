@@ -1,5 +1,7 @@
 package presidio.ade.domain.record.aggregated;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 /**
  * This is a wrapper POJO for the {@link AdeAggregationRecord} - It contains additional
  * information regarding the aggregation record in context of a specific {@link SmartRecord}.
@@ -86,5 +88,11 @@ public class SmartAggregationRecord {
 
     public void setCorrelationFactor(Double correlationFactor) {
         this.correlationFactor = correlationFactor;
+    }
+
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 }

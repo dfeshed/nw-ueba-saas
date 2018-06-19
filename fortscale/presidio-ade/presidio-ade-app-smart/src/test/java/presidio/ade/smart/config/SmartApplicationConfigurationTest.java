@@ -26,7 +26,7 @@ public class SmartApplicationConfigurationTest extends SmartApplicationConfigura
         // Feature aggregation event conf service (for both Ps and Fs)
         properties.put("presidio.ade.aggregation.record.base.configurations.path", "classpath*:config/asl/aggregation-records/**/*.json");
         // Smart event conf service
-        properties.put("presidio.ade.smart.record.base.configurations.path","classpath*:config/asl/smart-records/*");
+        properties.put("presidio.ade.smart.record.base.configurations.path","classpath*:config/asl/smart-records/smart_records.json");
         // Smart scorer conf service
         properties.put("presidio.ade.scorer.base.configurations.path","classpath*:config/asl/scorers/smart-records/*.json");
         // Model conf service
