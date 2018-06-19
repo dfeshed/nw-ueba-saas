@@ -166,7 +166,8 @@ export default {
       malware: 'Malware Analysis',
       navigate: 'Navigate',
       hosts: 'Hosts',
-      files: 'Files'
+      files: 'Files',
+      users: 'Users'
     }
   },
   queryBuilder: {

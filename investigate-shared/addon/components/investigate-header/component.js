@@ -27,6 +27,10 @@ const TABS = [
     label: 'Files'
   },
   {
+    name: 'investigate.investigate-users',
+    label: 'Users'
+  },
+  {
     isClassic: true,
     url: '/investigation/malware',
     label: 'Malware Analysis'

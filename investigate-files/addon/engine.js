@@ -23,7 +23,8 @@ const Eng = Engine.extend({
     ],
     externalRoutes: [
       'investigate.investigate-events',
-      'investigate.investigate-hosts'
+      'investigate.investigate-hosts',
+      'investigate.investigate-users'
     ]
   }
 });

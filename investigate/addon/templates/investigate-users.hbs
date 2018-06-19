@@ -1,0 +1,6 @@
+{{#investigate-header activeTab='investigate.investigate-users' as |section| }}
+  {{#if section.isMain}}
+    <iframe scrolling="no" src="/presidio/index.html"></iframe>
+    {{outlet}}
+  {{/if}}
+{{/investigate-header}}

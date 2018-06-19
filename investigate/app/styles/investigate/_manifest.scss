@@ -14,3 +14,12 @@
     flex: 1 1 auto;
   }
 }
+
+iframe {
+  margin: 0;
+  padding: 0;
+  border: none;
+  height: calc(100vh - 90px);
+  width: 100%;
+  overflow: hidden;
+}

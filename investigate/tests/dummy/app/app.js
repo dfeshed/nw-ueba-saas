@@ -28,7 +28,8 @@ const App = Application.extend({
         externalRoutes: {
           'investigate.investigate-files': 'investigate.investigate-files',
           'investigate.investigate-events': 'investigate.investigate-events',
-          'investigate.investigate-hosts': 'investigate.investigate-hosts'
+          'investigate.investigate-hosts': 'investigate.investigate-hosts',
+          'investigate.investigate-users': 'investigate.investigate-users'
         }
       }
     },
@@ -49,7 +50,8 @@ const App = Application.extend({
         ],
         externalRoutes: {
           'investigate.investigate-files': 'investigate.investigate-files',
-          'investigate.investigate-hosts': 'investigate.investigate-hosts'
+          'investigate.investigate-hosts': 'investigate.investigate-hosts',
+          'investigate.investigate-users': 'investigate.investigate-users'
         }
       }
     },
@@ -69,7 +71,8 @@ const App = Application.extend({
         ],
         externalRoutes: {
           'investigate.investigate-files': 'investigate.investigate-files',
-          'investigate.investigate-events': 'investigate.investigate-events'
+          'investigate.investigate-events': 'investigate.investigate-events',
+          'investigate.investigate-users': 'investigate.investigate-users'
         }
       }
     },
@@ -88,7 +91,8 @@ const App = Application.extend({
         ],
         externalRoutes: {
           'investigate.investigate-hosts': 'investigate.investigate-hosts',
-          'investigate.investigate-events': 'investigate.investigate-events'
+          'investigate.investigate-events': 'investigate.investigate-events',
+          'investigate.investigate-users': 'investigate.investigate-users'
         }
       }
     },

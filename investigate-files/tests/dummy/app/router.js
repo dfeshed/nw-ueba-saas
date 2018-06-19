@@ -10,6 +10,7 @@ Router.map(function() {
   this.mount('investigate-files');
   this.route('events');
   this.route('hosts');
+  this.route('users');
 });
 
 export default Router;

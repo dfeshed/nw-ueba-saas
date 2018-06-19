@@ -23,7 +23,8 @@ const App = Application.extend({
         ],
         externalRoutes: {
           'investigate.investigate-files': 'files',
-          'investigate.investigate-hosts': 'hosts'
+          'investigate.investigate-hosts': 'hosts',
+          'investigate.investigate-users': 'users'
         }
       }
     }

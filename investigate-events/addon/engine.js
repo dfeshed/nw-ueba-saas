@@ -29,7 +29,8 @@ const Eng = Engine.extend({
     ],
     externalRoutes: [
       'investigate.investigate-files',
-      'investigate.investigate-hosts'
+      'investigate.investigate-hosts',
+      'investigate.investigate-users'
     ]
   }
 });

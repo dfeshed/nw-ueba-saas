@@ -11,6 +11,7 @@ Router.map(function() {
   this.route('events');
   this.route('files');
   this.route('hosts');
+  this.route('users');
 });
 
 export default Router;

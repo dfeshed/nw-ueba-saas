@@ -46,7 +46,7 @@ test('Iteration: verify all options are available in components', function(asser
     andThen(() => {
       assert.deepEqual(find('.ember-power-select-dropdown .ember-power-select-option')
           .map(trimText).get(),
-          ['Navigate', 'Events', 'Event Analysis', 'Hosts', 'Files', 'Malware Analysis'], 'Default Investigation Landing Page');
+          ['Navigate', 'Events', 'Event Analysis', 'Hosts', 'Files', 'Users', 'Malware Analysis'], 'Default Investigation Landing Page');
     });
 
     assert.equal(find('.rsa-application-user-preferences-panel .time-format-radio-group .rsa-form-radio-label.HR24').length, 1);
