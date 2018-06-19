@@ -38,6 +38,12 @@ export const createBasicPill = async function(fromTrigger) {
   await triggerKeyEvent(selectors.valueInput, 'keydown', ENTER_KEY);
 };
 
+const ignoredInitialMessageTypes = [
+  MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW,
+  MESSAGE_TYPES.PILL_ENTERED_FOR_EDIT,
+  MESSAGE_TYPES.PILL_ENTERED_FOR_INSERT_NEW
+];
+
 export const isIgnoredInitialEvent = (event) => {
-  return [MESSAGE_TYPES.PILL_ENTERED].includes(event);
+  return ignoredInitialMessageTypes.includes(event);
 };

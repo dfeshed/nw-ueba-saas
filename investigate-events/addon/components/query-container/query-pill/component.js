@@ -209,7 +209,14 @@ export default Component.extend({
   },
 
   _pillEntered() {
-    this._broadcast(MESSAGE_TYPES.PILL_ENTERED, this._createPillData());
+    const pillData = this._createPillData();
+
+    // If pill has id, then this is an edit, send proper message
+    if (pillData.id) {
+      this._broadcast(MESSAGE_TYPES.PILL_ENTERED_FOR_EDIT, pillData);
+    } else {
+      this._broadcast(MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW, pillData);
+    }
   },
 
   // ************************ META FUNCTIONALITY **************************** //

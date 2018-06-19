@@ -41,8 +41,9 @@ export default Component.extend({
           this._broadcast(type, data);
           this.set('isAddNewPill', false);
           break;
-        case MESSAGE_TYPES.PILL_ENTERED:
-          this._broadcast(MESSAGE_TYPES.PILL_ENTERED);
+        case MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW:
+          // append is actually an insert to the new pill trigger
+          this._broadcast(MESSAGE_TYPES.PILL_ENTERED_FOR_INSERT_NEW);
       }
     }
   },

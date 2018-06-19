@@ -276,7 +276,7 @@ module('Integration | Component | query-pill', function(hooks) {
     new ReduxDataHelper(setState).language().pillsDataEmpty().build();
 
     this.set('handleMessage', (messageType, data, position) => {
-      assert.equal(messageType, MESSAGE_TYPES.PILL_ENTERED, 'Message sent for pill create is not correct');
+      assert.equal(messageType, MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW, 'Message sent for pill create is not correct');
       assert.deepEqual(data.id, undefined, 'Pill data goes not contain an id');
       assert.equal(position, 12, 'Message sent for pill entered contains correct pill position');
 

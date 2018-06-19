@@ -63,7 +63,9 @@ const QueryPills = Component.extend({
       [MESSAGE_TYPES.PILL_CREATED]: (data, position) => this._pillCreated(data, position),
       [MESSAGE_TYPES.PILL_DELETED]: (data) => this._pillDeleted(data),
       [MESSAGE_TYPES.PILL_EDITED]: (data) => this._pillEdited(data),
-      [MESSAGE_TYPES.PILL_ENTERED]: (data, position) => this._pillEntered(data, position)
+      [MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW]: () => this._pillEnteredForAppend(),
+      [MESSAGE_TYPES.PILL_ENTERED_FOR_EDIT]: () => this._pillEnteredForEdit(),
+      [MESSAGE_TYPES.PILL_ENTERED_FOR_INSERT_NEW]: () => this._pillEnteredForInsert()
     });
   },
 
@@ -94,27 +96,28 @@ const QueryPills = Component.extend({
   //                          PRIVATE FUNCTIONS                               //
   // ************************************************************************ //
 
-  /**
-   * Tracks that a pill is currently being created/edited or otherwise open
-   * and focused.
-   *
-   * We can tell if a pill entered...
-   * - is an existing pill being edited if the data in the event has an id
-   * - is the end-of-the-list new pill template if the position
-   *   matches the position given to the end-of-the-list component
-   * - is from an in-between pill trigger if it is neither of the
-   *   two conditions above
-   *
-   * @private
-   */
-  _pillEntered(data, position) {
-    const isEdit = !!(data && data.id);
-    const isEndOfListPillTemplate = this.get('newPillPosition') === position;
-    const isMiddleOfListPillTrigger = !isEndOfListPillTemplate && !isEdit;
+  _pillEnteredForAppend() {
+    this.setProperties({
+      isPillOpen: true,
+      isPillOpenForEdit: false,
+      isPillTriggerOpenForAdd: false
+    });
+  },
 
-    this.set('isPillOpen', true);
-    this.set('isPillOpenForEdit', isEdit);
-    this.set('isPillTriggerOpenForAdd', isMiddleOfListPillTrigger);
+  _pillEnteredForEdit() {
+    this.setProperties({
+      isPillOpen: true,
+      isPillOpenForEdit: true,
+      isPillTriggerOpenForAdd: false
+    });
+  },
+
+  _pillEnteredForInsert() {
+    this.setProperties({
+      isPillOpen: true,
+      isPillOpenForEdit: false,
+      isPillTriggerOpenForAdd: true
+    });
   },
 
   _pillCancelled() {
