@@ -34,10 +34,7 @@ import presidio.output.proccesor.spring.OutputProcessorTestConfiguration;
 import presidio.output.proccesor.spring.TestConfig;
 import presidio.output.processor.services.user.UserService;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.*;
 
 @RunWith(SpringRunner.class)
@@ -238,11 +235,11 @@ public class UserScoreServiceModuleTest {
             user1.setSeverity(null);
             //For each day generate to alerts
             for (LocalDateTime day : dates) {
-                Date alert1StartTime = new Date(Date.from(day.plusHours(3).atZone(ZoneId.systemDefault()).toInstant()).getTime());
-                Date alert1EndTime = new Date(Date.from(day.plusHours(4).atZone(ZoneId.systemDefault()).toInstant()).getTime());
+                Date alert1StartTime = new Date(Date.from(day.plusHours(3).atZone(ZoneOffset.UTC).toInstant()).getTime());
+                Date alert1EndTime = new Date(Date.from(day.plusHours(4).atZone(ZoneOffset.UTC).toInstant()).getTime());
 
-                Date alert2StartTime = Date.from(day.plusHours(5).atZone(ZoneId.systemDefault()).toInstant());
-                Date alert2EndTime = Date.from(day.plusHours(6).atZone(ZoneId.systemDefault()).toInstant());
+                Date alert2StartTime = Date.from(day.plusHours(5).atZone(ZoneOffset.UTC).toInstant());
+                Date alert2EndTime = Date.from(day.plusHours(6).atZone(ZoneOffset.UTC).toInstant());
                 //Alerts per user per day
                 alertsAllUsers.add(new Alert("userId" + i, "smartId", null, "userName" + i, "userName" + i,alert1StartTime, alert1EndTime, 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.CRITICAL, null, 30D));
                 alertsAllUsers.add(new Alert("userId" + i, "smartId", null, "userName" + i, "userName" + i,alert2StartTime, alert2EndTime, 100, 0, AlertEnums.AlertTimeframe.HOURLY, AlertEnums.AlertSeverity.HIGH, null, 25D));

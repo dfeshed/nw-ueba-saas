@@ -23,10 +23,7 @@ import presidio.output.domain.services.users.UserPersistencyServiceImpl;
 import presidio.output.processor.services.user.UserScoreServiceImpl;
 import presidio.output.processor.services.user.UsersAlertData;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.*;
 
 /**
@@ -81,7 +78,7 @@ public class UserScoreServiceImplRecalculateScoresTest {
 
         LocalDateTime weekAgo = LocalDate.now().minusDays(7).atStartOfDay().plusHours(3);
 
-        Date startTimeAWeekAgo = Date.from(weekAgo.atZone(ZoneId.systemDefault()).toInstant());
+        Date startTimeAWeekAgo = Date.from(weekAgo.atZone(ZoneOffset.UTC).toInstant());
 
         mockAlerts = Arrays.asList(
                 new Alert("user1", "smartId", null, null, null,startTimeAWeekAgo, new Date(), 95, 0, null, AlertEnums.AlertSeverity.CRITICAL, null,(double)ALERT_CONTRIBUTION_CRITICAL),
@@ -120,7 +117,7 @@ public class UserScoreServiceImplRecalculateScoresTest {
 
         LocalDateTime weekAgo = LocalDate.now().minusDays(7).atStartOfDay().plusHours(3);
 
-        Date startTimeAWeekAgo = Date.from(weekAgo.atZone(ZoneId.systemDefault()).toInstant());
+        Date startTimeAWeekAgo = Date.from(weekAgo.atZone(ZoneOffset.UTC).toInstant());
         Date oldStartTime = new Date(LocalDate.now().minusDays(ALERT_EFFECTIVE_DURATION_IN_DAYS * 2).toEpochDay());
 
         mockAlertsPage1 = Arrays.asList(
