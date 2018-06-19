@@ -125,7 +125,7 @@ const formComponent = Component.extend({
       if (displayName) {
         return displayName;
       }
-      return this.get('defaultDriverDisplayName');
+      return this.get('defaultDriverDisplayName') || '';
     }
     return null;
   },
@@ -136,7 +136,7 @@ const formComponent = Component.extend({
       if (serviceName) {
         return serviceName;
       }
-      return this.get('defaultDriverServiceName');
+      return this.get('defaultDriverServiceName') || '';
     }
     return null;
   },
@@ -147,7 +147,7 @@ const formComponent = Component.extend({
       if (driverDescription) {
         return driverDescription;
       }
-      return this.get('defaultDriverDescription');
+      return this.get('defaultDriverDescription') || '';
     }
     return null;
   },
