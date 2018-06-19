@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { render, find } from '@ember/test-helpers';
+import { render, find, findAll } from '@ember/test-helpers';
 import { setupRenderingTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
@@ -23,7 +23,7 @@ module('Integration | Component | value matching', function(hooks) {
   });
 
   test('The rule type and matches fields appear as expected', async function(assert) {
-    const rules = [{ name: 'Client Domain', pattern: { format: 'ipv4' } }];
+    const rules = [{ name: 'Client Domain', pattern: { format: 'ipv4', captures: [{ index: '0' }] } }];
     new ReduxDataHelper(setState).parserRules(rules).formatOptions().build();
     await render(hbs`{{content/log-parser-rules/value-matching}}`);
     assert.equal(find('.value-matching .ember-power-select-selected-item').textContent.trim(), 'IPV4 Address', 'The dropdown option does not show the correct value');
@@ -32,7 +32,7 @@ module('Integration | Component | value matching', function(hooks) {
   });
 
   test('Select Regex Pattern', async function(assert) {
-    const rules = [{ name: 'Client Domain', pattern: { format: 'ipv4', regex: '\\s*([\\w_.@-]*)' } }];
+    const rules = [{ name: 'Client Domain', pattern: { format: 'ipv4', regex: '\\s*([\\w_.@-]*)', captures: [{ index: '1' }] } }];
     new ReduxDataHelper(setState).parserRules(rules).formatOptions().build();
     await render(hbs`{{content/log-parser-rules/value-matching}}`);
     clickTrigger('.value-matching');
@@ -44,10 +44,50 @@ module('Integration | Component | value matching', function(hooks) {
   });
 
   test('Editing is disabled if the rule is out of the box', async function(assert) {
-    const rules = [{ name: 'Client Domain', outOfBox: true, pattern: { format: null, regex: '\\s*([\\w_.@-]*)' } }];
+    const rules = [{ name: 'Client Domain', outOfBox: true, pattern: { format: null, regex: '\\s*([\\w_.@-]*)', captures: [{ index: '1' }] } }];
     new ReduxDataHelper(setState).parserRules(rules).formatOptions().build();
     await render(hbs`{{content/log-parser-rules/value-matching}}`);
     assert.equal(find('.value-matching .ember-power-select-trigger').getAttribute('aria-disabled'), 'true');
     assert.equal(find('.ruleRegex textarea').disabled, true);
+  });
+
+  test('Editing is disabled if the user does not have content-server.logparser.manage permissions', async function(assert) {
+    const accessControl = this.owner.lookup('service:accessControl');
+    const rules = [{ name: 'Regex Pattern', pattern: { format: null, regex: 'test', captures: [{ index: '1' }] } }];
+    new ReduxDataHelper(setState).parserRules(rules).formatOptions().build();
+    accessControl.set('roles', ['content-server.logparser.read']);
+    await render(hbs`{{content/log-parser-rules/value-matching}}`);
+    assert.equal(find('.value-matching .ember-power-select-trigger').getAttribute('aria-disabled'), 'true');
+    assert.equal(find('.ruleRegex textarea').disabled, true);
+  });
+
+  test('having no regex value shows an error in the text area', async function(assert) {
+    const translation = this.owner.lookup('service:i18n');
+    const errorMessage = translation.t('configure.logsParser.invalidRegEx');
+    const rules = [{ name: 'Regex Pattern', pattern: { format: null, regex: '   ', captures: [{ index: '1' }] } }];
+    new ReduxDataHelper(setState).parserRules(rules).formatOptions().build();
+    await render(hbs`{{content/log-parser-rules/value-matching}}`);
+    assert.equal(findAll('.rsa-form-textarea.is-error').length, 1, 'The text area should have an error');
+    assert.equal(find('.input-error').textContent.trim(), errorMessage, 'The error message should be displayed');
+  });
+
+  test('entering an invalid regex shows an error in the text area', async function(assert) {
+    const translation = this.owner.lookup('service:i18n');
+    const errorMessage = translation.t('configure.logsParser.invalidRegEx');
+    const rules = [{ name: 'Regex Pattern', pattern: { format: null, regex: '\\', captures: [{ index: '1' }] } }];
+    new ReduxDataHelper(setState).parserRules(rules).formatOptions().build();
+    await render(hbs`{{content/log-parser-rules/value-matching}}`);
+    assert.equal(findAll('.rsa-form-textarea.is-error').length, 1, 'The text area should have an error');
+    assert.equal(find('.input-error').textContent.trim(), errorMessage, 'The error message should be displayed');
+  });
+
+  test('if the meta capture group count is greater than the existing regex capture groups, the text area shows an error', async function(assert) {
+    const translation = this.owner.lookup('service:i18n');
+    const errorMessage = translation.t('configure.logsParser.hasMissingCapturesError');
+    const rules = [{ name: 'Regex Pattern', pattern: { format: null, regex: 'test', captures: [{ index: '1' }] } }];
+    new ReduxDataHelper(setState).parserRules(rules).formatOptions().build();
+    await render(hbs`{{content/log-parser-rules/value-matching}}`);
+    assert.equal(findAll('.rsa-form-textarea.is-error').length, 1, 'The text area should have an error');
+    assert.equal(find('.input-error').textContent.trim(), errorMessage, 'The error message should be displayed');
   });
 });

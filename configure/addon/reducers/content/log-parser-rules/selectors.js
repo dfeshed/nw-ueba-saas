@@ -1,7 +1,12 @@
 import reselect from 'reselect';
 import _ from 'lodash';
+import { hasInvalidCaptures } from 'configure/utils/reconcile-regex-captures';
 
 const { createSelector } = reselect;
+
+const _hasInvalidCaptures = ({ pattern: { regex, captures } }) => {
+  return hasInvalidCaptures(regex, captures);
+};
 
 const _isRuleInvalid = (rule) => {
   let isInvalid = false;
@@ -10,6 +15,8 @@ const _isRuleInvalid = (rule) => {
   } else if (!rule.pattern.captures || !rule.pattern.captures.length) { // A rule must have at least one meta capture
     isInvalid = true;
   } else if (!rule.pattern.format && !rule.pattern.regex) { // If a rule is a regex rule, it must have a regex value
+    isInvalid = true;
+  } else if (!rule.pattern.format && _hasInvalidCaptures(rule)) { // If the rule's meta capture group count is more than the regex contains
     isInvalid = true;
   }
   return isInvalid;

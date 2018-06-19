@@ -2,8 +2,10 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { selectedParserRule, ruleFormats } from 'configure/reducers/content/log-parser-rules/selectors';
 import { updateSelectedRule } from 'configure/actions/creators/content/log-parser-rule-creators';
+import { hasInvalidCaptures } from 'configure/utils/reconcile-regex-captures';
 import computed from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
+import _ from 'lodash';
 
 const stateToComputed = (state) => ({
   rule: selectedParserRule(state),
@@ -64,29 +66,36 @@ const ValueMatching = Component.extend({
     return isInvalid;
   },
 
+  @computed('regex', 'rule.pattern.captures', 'hasInvalidRegex')
+  hasMissingCaptures(regex, captures, hasInvalidRegex) {
+    // if this regex is valid
+    if (!hasInvalidRegex) {
+      // check if the capture configuration is valid
+      return hasInvalidCaptures(regex, captures);
+    }
+  },
+
   actions: {
     handleFormatChange(format) {
       const { rule, regex } = this.getProperties('rule', 'regex');
-      const updates = {
-        format: format.type === 'regex' ? null : format.type,
-        regex: format.type === 'regex' ? regex : null
+      const isRegexRule = format.type === 'regex';
+      // if the format type is not a regex, then find the full capture (index zero), otherwise maintain all captures
+      const captures = isRegexRule ? rule.pattern.captures : [rule.pattern.captures.findBy('index', '0')];
+      const pattern = {
+        ...rule.pattern,
+        format: isRegexRule ? null : format.type,
+        regex: isRegexRule ? regex : null,
+        captures: _.compact(captures)
       };
-      const pattern = { ...rule.pattern, ...updates };
-      const updatedRule = {
-        ...rule,
-        pattern
-      };
+      const updatedRule = rule.set('pattern', pattern);
       this.send('updateSelectedRule', updatedRule);
     },
 
     handleRegexChange() {
-      const { rule, regex, hasInvalidRegex } = this.getProperties('rule', 'regex', 'hasInvalidRegex');
-      if (rule.pattern.regex !== regex && !hasInvalidRegex) {
+      const { rule, regex, hasInvalidRegex, hasMissingCaptures } = this.getProperties('rule', 'regex', 'hasInvalidRegex', 'hasMissingCaptures');
+      if (rule.pattern.regex !== regex && !hasInvalidRegex && !hasMissingCaptures) {
         const pattern = { ...rule.pattern, regex };
-        const updatedRule = {
-          ...rule,
-          pattern
-        };
+        const updatedRule = rule.set('pattern', pattern);
         this.set('_regex', null);
         this.send('updateSelectedRule', updatedRule);
       }

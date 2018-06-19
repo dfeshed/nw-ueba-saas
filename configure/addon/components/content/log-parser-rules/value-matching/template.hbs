@@ -35,13 +35,16 @@
     {{rsa-form-textarea
       label=(t 'configure.logsParser.pattern')
       value=regex
-      isError=hasInvalidRegex
+      isError=(or hasInvalidRegex hasMissingCaptures)
       isInline=true
       isDisabled=(or rule.outOfBox (not accessControl.canManageLogParsers))
       focusOut=(action 'handleRegexChange')
     }}
     {{#if hasInvalidRegex}}
       <span class="input-error">{{t 'configure.logsParser.invalidRegEx'}}</span>
+    {{/if}}
+    {{#if hasMissingCaptures}}
+      <span class="input-error">{{t 'configure.logsParser.hasMissingCapturesError'}}</span>
     {{/if}}
   </div>
 {{/if}}

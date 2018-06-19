@@ -173,6 +173,13 @@ div.modal-content.add-new-parser-rule {
         max-height: 8rem;
         min-width: 21vw;
         max-width: 21vw;
+      },
+      .input-error {
+        display: inline-block;
+        width: 300px;
+        line-height: 1rem;
+        padding-top: rsa-whitespace(least);
+        white-space: normal;
       }
     }
     .parserRuleName {
@@ -222,6 +229,11 @@ div.modal-content.add-new-parser-rule {
     color: text-color(accentOne);
     padding-bottom: rsa-whitespace(less);
     display: inline-block;
+    max-width: 300px;
+    line-height: 1rem;
+    padding-top: rsa-whitespace(least);
+    white-space: normal;
+
   }
   .parser-table-container {
     overflow: auto;
