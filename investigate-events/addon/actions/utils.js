@@ -7,7 +7,7 @@ import { encodeMetaFilterConditions } from 'investigate-shared/actions/api/event
 import { getTimeRangeIdFromRange } from 'investigate-shared/utils/time-range-utils';
 
 const operators = [
-  '!=', '<=', '<', '>=', '>', '=', '!exists', 'exists', 'contains', 'begins', 'ends'
+  '!=', '=', '!exists', 'exists', 'contains', 'begins', 'ends'
 ];
 
 const complexOperators = ['||', '&&', '(', ')', 'length', 'regex'];
