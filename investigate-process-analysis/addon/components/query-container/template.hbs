@@ -2,7 +2,7 @@
 {{time-selector startTime=startTime endTime=endTime onTimeSelection=(action 'setQueryTimeRange')}}
 {{#rsa-form-button
   class='execute-query-button'
-  defaultAction=(route-action 'executeQuery')
+  defaultAction=executeQuery
   style='primary'}}
   Analyze
 {{/rsa-form-button}}

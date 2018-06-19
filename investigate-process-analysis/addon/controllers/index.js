@@ -11,5 +11,10 @@ export default Controller.extend({
     'osType', // metaPanelSize
     'vid', // Process identification
     'hn' // Host name
-  ]
+  ],
+  actions: {
+    controllerExecuteQuery() {
+      this.send('executeQuery');
+    }
+  }
 });
