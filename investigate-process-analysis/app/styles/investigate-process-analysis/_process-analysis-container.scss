@@ -54,6 +54,11 @@
     }
     &.collapse-event-panel {
       width: calc(100vw/2 - 4px);
+      .process-events-details {
+        .events-table-panel {
+          max-width: 63%;
+        }
+      }
     }
   }
 
@@ -67,7 +72,7 @@
       width: calc(100vw - 704px)
     }
     &.collapse-event-panel {
-      width: calc(100vw - (100vw/2))
+      width: calc(100vw - (100vw/2));
     }
   }
 }
@@ -79,12 +84,12 @@
 }
 
 .property-container {
+  overflow-y: auto;
+  height: 90vh;
   .rsa-content-accordion h3 {
     color: text-color(secondary, light);
   }
   .process-property-panel {
-    height: calc(64vh);
-    overflow-y: auto;
     margin: 0 0 0 22px;
   }
 }

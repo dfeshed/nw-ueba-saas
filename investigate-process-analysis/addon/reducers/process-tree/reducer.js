@@ -42,11 +42,8 @@ export default reduxActions.handleActions({
     return state.set('rawData', payload);
   },
   [ACTION_TYPES.SET_SELECTED_EVENTS]: (state, { payload = [] }) => {
-    const stateObj = { eventsData: payload };
-    if (state.filterApplied) {
-      stateObj.eventsFilteredCount = payload.length;
-    } else {
-      stateObj.eventsFilteredCount = payload.length;
+    const stateObj = { eventsData: payload, eventsFilteredCount: payload.length };
+    if (!state.filterApplied) {
       stateObj.eventsCount = payload.length;
     }
     return state.merge(stateObj);

@@ -109,8 +109,9 @@ const ContentFilter = Component.extend({
     },
 
     showSaveFiltersModal() {
-
-      this.toggleProperty('showSaveFilterModal');
+      if (!this.get('showSaveFilterModal')) {
+        this.toggleProperty('showSaveFilterModal');
+      }
       run.next(() => {
         this.get('eventBus').trigger('rsa-application-modal-open-save-search');
       });
