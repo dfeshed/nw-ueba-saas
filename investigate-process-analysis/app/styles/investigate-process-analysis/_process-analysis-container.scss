@@ -1,5 +1,4 @@
 .process-analysis-container {
-  height: 100vh;
   .query-container {
     z-index: 2;
     top: 0;
@@ -8,6 +7,8 @@
       height: 40px;
       white-space: nowrap;
     }
+    width: 100vw;
+    height: 40px;
   }
 
 }
@@ -53,12 +54,6 @@
     }
     &.collapse-event-panel {
       width: calc(100vw/2 - 4px);
-      .filter-panel {
-        max-width: 348px;
-      }
-      .events-table-panel {
-        max-width: calc(100vw/2 - 348px);
-      }
     }
   }
 
@@ -72,9 +67,15 @@
       width: calc(100vw - 704px)
     }
     &.collapse-event-panel {
-      width: calc(100vw - (100vw/2)); 
+      width: calc(100vw - (100vw/2))
     }
   }
+}
+
+
+.ember-tether .panel-content {
+  max-height: 30rem;
+  overflow: unset;
 }
 
 .property-container {

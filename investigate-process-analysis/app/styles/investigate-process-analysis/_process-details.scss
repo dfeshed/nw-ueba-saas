@@ -1,17 +1,4 @@
 .process-events-table {
-  padding-top: 1rem;
-  .panel {
-    height: 100vh;
-  }
-
-  .rsa-data-table-body {
-    .rsa-data-table-body-rows {
-      min-height: 83vh!important;
-    }
-    min-height: 85vh!important;
-    overflow-y: auto;
-  }
-
   .label {
     color: text-color(primary, lighter);
     font-weight: 100;
@@ -19,18 +6,10 @@
     letter-spacing: 0.05rem;
   }
   .events-count {
-    margin: -7px 21px 7px 31px;
+    padding: 10px;
   }
-}
-
-.process-events-details {
-  width: 100%;
-  .filter-panel {
-    height: 90vh;
-    max-width: 348px;
-  }
-  .events-table-panel {
-    max-width: calc(100vw - 853px);
+  .rsa-data-table {
+    height: calc(100vh - 140px);
   }
 }
 
