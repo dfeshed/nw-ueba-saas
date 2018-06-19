@@ -37,8 +37,8 @@ public class PresidioMetricPersistencyServiceImpl implements PresidioMetricPersi
 
     @Override
     public List<MetricDocument> getMetricsByNamesAndTime(Collection<String> names, TimeRange timeRange){
-
-        return metricRepository.findByNameInAndTimestampGreaterThanEqualAndTimestampLessThan(names,timeRange.getStart().toEpochMilli(),timeRange.getEnd().toEpochMilli());
+        //retrieving metrics according to logical (!) time because we want to understand what was the load on the system (and not the amount of processed data)
+        return metricRepository.findByNameInAndLogicalTimeGreaterThanEqualAndLogicalTimeLessThan(names,timeRange.getStart().toEpochMilli(),timeRange.getEnd().toEpochMilli());
     }
 
     @Override

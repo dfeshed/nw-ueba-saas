@@ -1,8 +1,6 @@
 package presidio.output.processor.services.user;
 
-import presidio.output.domain.records.alerts.AlertEnums.*;
-import presidio.output.domain.records.users.User;
-
+import java.time.Instant;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,6 +11,6 @@ public interface UserScoreService {
 
     void clearUserScoreForUsersThatShouldNotHaveScore(Set<String> excludedUsersIds);
 
-    Map<String, UsersAlertData> calculateUserScores(int alertEffectiveDurationInDays);
+    Map<String, UsersAlertData> calculateUserScores(int alertEffectiveDurationInDays, Instant endDate);
 
 }

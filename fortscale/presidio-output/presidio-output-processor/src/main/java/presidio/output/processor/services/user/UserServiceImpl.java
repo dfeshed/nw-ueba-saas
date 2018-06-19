@@ -15,6 +15,7 @@ import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.event.EventPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -136,18 +137,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUserData() {
+    public void updateUserData(Instant endDate) {
         log.debug("Starting Updating all users alert data.");
-        updateAllUsersAlertData();
+        updateAllUsersAlertData(endDate);
         log.debug("finished updating all users alert data.");
         userSeverityService.updateSeverities();
     }
 
     @Override
-    public boolean updateAllUsersAlertData() {
+    public boolean updateAllUsersAlertData(Instant endDate) {
 
         //Get map of users ids to new score and alerts count
-        Map<String, UsersAlertData> aggregatedUserScore = userScoreService.calculateUserScores(alertEffectiveDurationInDays);
+        Map<String, UsersAlertData> aggregatedUserScore = userScoreService.calculateUserScores(alertEffectiveDurationInDays, endDate);
 
         //Get users in batches and update the score only if it changed, and add to changesUsers
         Set<String> usersIDForBatch = new HashSet<>();

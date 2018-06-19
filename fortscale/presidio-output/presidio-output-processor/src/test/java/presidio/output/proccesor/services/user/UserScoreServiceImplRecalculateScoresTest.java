@@ -23,9 +23,7 @@ import presidio.output.domain.services.users.UserPersistencyServiceImpl;
 import presidio.output.processor.services.user.UserScoreServiceImpl;
 import presidio.output.processor.services.user.UsersAlertData;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.*;
 
 /**
@@ -80,7 +78,7 @@ public class UserScoreServiceImplRecalculateScoresTest {
 
         LocalDateTime weekAgo = LocalDate.now().minusDays(7).atStartOfDay().plusHours(3);
 
-        Date startTimeAWeekAgo = Date.from(weekAgo.atZone(ZoneId.systemDefault()).toInstant());
+        Date startTimeAWeekAgo = Date.from(weekAgo.atZone(ZoneOffset.UTC).toInstant());
 
         mockAlerts = Arrays.asList(
                 new Alert("user1", "smartId", null, null, null,startTimeAWeekAgo, new Date(), 95, 0, null, AlertEnums.AlertSeverity.CRITICAL, null,(double)ALERT_CONTRIBUTION_CRITICAL),
@@ -103,7 +101,7 @@ public class UserScoreServiceImplRecalculateScoresTest {
         });
 
 
-        Map<String, UsersAlertData> aggregatedUserScore = userScoreService.calculateUserScores(ALERT_EFFECTIVE_DURATION_IN_DAYS);
+        Map<String, UsersAlertData> aggregatedUserScore = userScoreService.calculateUserScores(ALERT_EFFECTIVE_DURATION_IN_DAYS, Instant.now());
         Assert.assertEquals(2, aggregatedUserScore.size());
         double user1Expected = (ALERT_CONTRIBUTION_CRITICAL + ALERT_CONTRIBUTION_HIGH + ALERT_CONTRIBUTION_LOW) * 1D;
         double user2Expected = (ALERT_CONTRIBUTION_CRITICAL * 2) * 1D;
@@ -119,7 +117,7 @@ public class UserScoreServiceImplRecalculateScoresTest {
 
         LocalDateTime weekAgo = LocalDate.now().minusDays(7).atStartOfDay().plusHours(3);
 
-        Date startTimeAWeekAgo = Date.from(weekAgo.atZone(ZoneId.systemDefault()).toInstant());
+        Date startTimeAWeekAgo = Date.from(weekAgo.atZone(ZoneOffset.UTC).toInstant());
         Date oldStartTime = new Date(LocalDate.now().minusDays(ALERT_EFFECTIVE_DURATION_IN_DAYS * 2).toEpochDay());
 
         mockAlertsPage1 = Arrays.asList(
@@ -163,7 +161,7 @@ public class UserScoreServiceImplRecalculateScoresTest {
         });
 
 
-        Map<String, UsersAlertData> aggregatedUserScore = Whitebox.invokeMethod(userScoreService, "calculateUserScores", ALERT_EFFECTIVE_DURATION_IN_DAYS);
+        Map<String, UsersAlertData> aggregatedUserScore = Whitebox.invokeMethod(userScoreService, "calculateUserScores", ALERT_EFFECTIVE_DURATION_IN_DAYS, Instant.now());
         Assert.assertEquals(3, aggregatedUserScore.size());
 
         Assert.assertEquals(95D, aggregatedUserScore.get("user1").getUserScore(), 0.1);

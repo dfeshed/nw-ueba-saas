@@ -150,7 +150,7 @@ public class MetricsPersistencyServiceTest {
 
     private MetricDocument getMetricDocument(String name, Date timestamp) {
         MetricDocument metricDocument = getMetricDocument(name);
-        metricDocument.setTimestamp(timestamp);
+        metricDocument.setLogicTime(timestamp);
 
         return metricDocument;
     }

@@ -153,10 +153,12 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
         return null;
     }
 
-    public void updateAllUsersData() throws Exception {
-        this.userService.updateUserData();
+    public void updateAllUsersData(Instant startDate, Instant endDate) throws Exception {
+        this.userService.updateUserData(endDate);
+        logger.info("updating users data completed successfully");
 
-        outputMonitoringService.reportDailyMetrics();
+        logger.info("Starting to report daily metrics");
+        outputMonitoringService.reportDailyMetrics(startDate, endDate);
     }
 
 

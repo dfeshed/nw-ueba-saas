@@ -22,6 +22,6 @@ public interface MetricRepository extends ElasticsearchRepository<MetricDocument
      *
      * @return
      */
-    List<MetricDocument> findByNameInAndTimestampGreaterThanEqualAndTimestampLessThan(Collection<String> names, long fromTime, long toTime);
+    List<MetricDocument> findByNameInAndLogicalTimeGreaterThanEqualAndLogicalTimeLessThan(Collection<String> names, long fromTime, long toTime);
     List<MetricDocument> findByNameIn(Collection<String> names);
 }

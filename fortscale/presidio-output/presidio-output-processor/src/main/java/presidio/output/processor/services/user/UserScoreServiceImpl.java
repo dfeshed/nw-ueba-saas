@@ -11,9 +11,7 @@ import presidio.output.domain.records.users.UserQuery;
 import presidio.output.domain.services.alerts.AlertPersistencyService;
 import presidio.output.domain.services.users.UserPersistencyService;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -90,9 +88,9 @@ public class UserScoreServiceImpl implements UserScoreService {
      * @return map of each userId to an object that contains the new score and number of alerts
      */
     @Override
-    public Map<String, UsersAlertData> calculateUserScores(int alertEffectiveDurationInDays) {
+    public Map<String, UsersAlertData> calculateUserScores(int alertEffectiveDurationInDays, Instant endDate) {
 
-        List<LocalDateTime> days = getListOfLastXdays(alertEffectiveDurationInDays);
+        List<LocalDateTime> days = getListOfLastXdays(alertEffectiveDurationInDays, endDate);
 
         Map<String, UsersAlertData> aggregatedUserScore = new HashMap<>();
         //TODO: also filter by status >
@@ -101,9 +99,9 @@ public class UserScoreServiceImpl implements UserScoreService {
             for (LocalDateTime startOfDay : days) {
 
                 log.info("Start Calculate user score for day " + startOfDay + " (Calculation, without persistency");
-                long startTime = Date.from(startOfDay.atZone(ZoneId.systemDefault()).toInstant()).getTime();
+                long startTime = Date.from(startOfDay.atZone(ZoneOffset.UTC).toInstant()).getTime();
                 LocalDateTime endOfDay = startOfDay.plusDays(1).minusSeconds(1);
-                long endTime = Date.from(endOfDay.atZone(ZoneId.systemDefault()).toInstant()).getTime();
+                long endTime = Date.from(endOfDay.atZone(ZoneOffset.UTC).toInstant()).getTime();
 
 
                 AlertQuery.AlertQueryBuilder alertQueryBuilder = new AlertQuery.AlertQueryBuilder()
@@ -137,8 +135,9 @@ public class UserScoreServiceImpl implements UserScoreService {
         return aggregatedUserScore;
     }
 
-    private List<LocalDateTime> getListOfLastXdays(int days) {
-        LocalDate endDate = LocalDate.now();
+    private List<LocalDateTime> getListOfLastXdays(int days, Instant endTime) {
+
+        LocalDate endDate = endTime.atZone(ZoneOffset.UTC).toLocalDate();
         LocalDate startTime = endDate.minusDays(days);
         List<LocalDateTime> dates = new ArrayList<>();
         for (LocalDate d = startTime; !d.isAfter(endDate); d = d.plusDays(1)) {
