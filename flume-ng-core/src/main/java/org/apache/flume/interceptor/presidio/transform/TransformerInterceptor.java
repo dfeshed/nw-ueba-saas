@@ -2,7 +2,7 @@ package org.apache.flume.interceptor.presidio.transform;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.utils.logging.Logger;
-import org.apache.commons.lang3.Validate;
+import fortscale.utils.transform.IJsonObjectTransformer;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
 import org.apache.flume.interceptor.presidio.AbstractPresidioInterceptorBuilder;
