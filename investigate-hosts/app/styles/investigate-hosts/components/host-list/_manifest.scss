@@ -53,6 +53,7 @@ $risk-panel-width: 500px;
 
     .rsa-nav-tab  .label{
       @include rsa-font(header, small);
+      text-transform: capitalize;
       color: text-color(primary, lighter);
       font-size: 0.85rem;
     }

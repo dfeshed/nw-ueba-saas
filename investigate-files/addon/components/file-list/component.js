@@ -20,7 +20,8 @@ const stateToComputed = (state) => ({
   files: state.files.fileList.files, // All visible files
   totalItems: fileCountForDisplay(state),
   sortField: state.files.fileList.sortField, // Currently applied sort on file list
-  isSortDescending: state.files.fileList.isSortDescending
+  isSortDescending: state.files.fileList.isSortDescending,
+  showRiskPanel: state.files.fileList.showRiskPanel
 });
 
 const dispatchToActions = {
@@ -55,8 +56,10 @@ const FileList = Component.extend({
   actions: {
     toggleSelectedRow(item, index, e, table) {
       if (this.get('features.rsaEndpointFusion')) {
+        if (table.get('selectedIndex') === index || !(this.get('showRiskPanel'))) {
+          this.send('toggleRiskPanel', !(this.get('showRiskPanel')));
+        }
         table.set('selectedIndex', index);
-        this.send('toggleRiskPanel', true);
         this.send('fetchFileContext', item.firstFileName);
       }
     }

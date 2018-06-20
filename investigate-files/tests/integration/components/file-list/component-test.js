@@ -377,7 +377,10 @@ module('Integration | Component | file list', function(hooks) {
       </style>
     {{file-list}}`);
     await click(findAll('.rsa-data-table-body-row')[0]);
-    const state = this.owner.lookup('service:redux').getState();
+    let state = this.owner.lookup('service:redux').getState();
     assert.equal(state.files.fileList.showRiskPanel, true, 'risk property panel has appeared.');
+    await click(findAll('.rsa-data-table-body-row')[0]);
+    state = this.owner.lookup('service:redux').getState();
+    assert.equal(state.files.fileList.showRiskPanel, false, 'risk property panel closed after clicking the same row.');
   });
 });

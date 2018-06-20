@@ -25,6 +25,7 @@
     .rsa-nav-tab  .label{
       color: text-color(primary, lighter);
       @include rsa-font(header, small);
+      text-transform: capitalize;
       font-size: 0.85rem;
     }
     .rsa-nav-tab.is-active .label {
