@@ -27,7 +27,8 @@
                 SEVERITY_CRITICAL_COLOR: 'main-critical-severity-color',
                 SEVERITY_HIGH_COLOR: 'main-high-severity-color',
                 SEVERITY_MEDIUM_COLOR: 'main-medium-severity-color',
-                SEVERITY_LOW_COLOR: 'main-low-severity-color'
+                SEVERITY_LOW_COLOR: 'main-low-severity-color',
+                POPUP_BACKGROUND_COLOR: 'main-popup-background-color'
             };
 
 

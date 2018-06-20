@@ -18,9 +18,9 @@
             flex: 0 0 240px;
 
             .alert-name {
-                color: rgb(2, 77, 137);
+                color: var(--main-popup-text-color);
                 .alert-timeframe-tag {
-                    color: #BDBDBD;
+                    color: var(--main-popup-text-color);
                 }
 
             }

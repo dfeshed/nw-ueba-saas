@@ -198,6 +198,11 @@ $clrAlertsFilterLabel: #004f8f;
                                 background-color: $clrGrey20;
                                 color: $clrGrey100;
                             }
+
+                            .sub-item {
+                                color: var(--main-widgets-background-color);
+                            }
+
                         }
                     }
                 }

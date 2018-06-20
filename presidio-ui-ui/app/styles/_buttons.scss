@@ -38,7 +38,7 @@
         box-shadow: 0 3px 7px 0 rgba(0, 0, 0, 0.1);
         height: 25px;
         font-family: 'Open Sans', sans-serif;
-        color: $clrWhite;
+        color: var(--main-widgets-titles-text-color-hover);
         font-size: 14px;
         display: flex;
         flex-flow: row nowrap;
@@ -52,6 +52,7 @@
 
         &:active:not([disabled="disabled"]) {
             background-color: var(--main-widgets-titles-text-color);
+
         }
 
     }

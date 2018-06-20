@@ -22,9 +22,8 @@ fs-user-alert-flow {
     }
 
     .slide-button {
-        color: #0062b3;
+        color: var(--main-widgets-titles-text-color);
         font-size: 26px;
-
         cursor: pointer;
 
         &[disabled] {

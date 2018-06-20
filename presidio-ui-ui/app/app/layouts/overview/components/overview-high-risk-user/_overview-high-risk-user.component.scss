@@ -14,7 +14,7 @@ overview-high-risk-user {
     min-height: 20%;
 
     &:hover {
-        background-color: #dedede;
+        background-color: var(--main-widgets-background-color-hover);
     }
 
     .high-risk-user-row {

@@ -25,7 +25,7 @@ $actionRed: red;
 	border: none;
 
     &.details-table{
-        border: 2px solid #aaa;
+        border: 1px solid #aaa;
     }
 
 	/* Header */
@@ -36,6 +36,7 @@ $actionRed: red;
 			border-left: white;
 			border-right: white;
 			color: var(--main-widgets-titles-text-color);
+
 		}
 	}
 
@@ -106,7 +107,10 @@ $actionRed: red;
         .actions .red {
             color: $actionRed;
         }
-	}
+
+
+
+    }
 
 
     .k-pager-wrap.k-grid-pager.k-widget {
@@ -380,7 +384,7 @@ $actionRed: red;
 
 }
 
-@mixin fs-table-style2($clrForeColor: var(--main-widgets-titles-link-color), $clrBG: var(--main-widgets-background-color), $clrHeaderBG: var(--main-widgets-background-color), $clrHeaderFore: #fff , $clrMasterRowBG: var(--main-widgets-background-color), $clrDetailRowBG: #f1f6fc, $clrPagerColor: var(--main-widgets-background-color), $fontSize: 14px, $headerHeight: 40px) {
+@mixin fs-table-style2($clrForeColor: var(--main-widgets-titles-text-color), $clrBG: var(--main-widgets-background-color), $clrHeaderBG: var(--main-widgets-background-color), $clrHeaderFore: #fff , $clrMasterRowBG: var(--main-widgets-background-color), $clrDetailRowBG: #f1f6fc, $clrPagerColor: var(--main-widgets-background-color), $fontSize: 14px, $headerHeight: 40px) {
 
     .fs-table, fs-table.k-grid {
         font-family: 'Open Sans', sans-serif;
@@ -391,6 +395,7 @@ $actionRed: red;
 
         background-color: $clrBG;
         overflow: auto;
+
 
         .k-grid-header th {
             background-color: var(--main-widgets-background-color);
@@ -422,6 +427,7 @@ $actionRed: red;
             }
             td {
                 background-color: var(--main-widgets-background-color);
+
             }
         }
 
@@ -472,6 +478,10 @@ $actionRed: red;
 
         .k-master-row {
             background-color: $clrMasterRowBG;
+            color: var(--main-widgets-titles-text-color);
+            a {
+                color: var(--main-widgets-titles-link-color);
+            }
         }
 
         .k-grid-pager {

@@ -19,6 +19,15 @@ overview-alert {
 
     &:hover {
         background-color: #dedede;
+
+        .overview-alert{
+            &--info {
+                &--title {
+                    color: var(--main-widgets-titles-text-color-hover);
+                }
+            }
+        }
+
     }
 
     /**
@@ -102,6 +111,8 @@ overview-alert {
                 color: var(--main-widgets-titles-text-color);
                 letter-spacing: 0.5px;
                 line-height: 24px;
+
+
 
             }
 

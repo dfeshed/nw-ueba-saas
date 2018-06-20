@@ -43,7 +43,7 @@ user-indicator-header {
     }
 
     .close-btn {
-        color: #024d89;
+        color: var(--main-widgets-titles-text-color);
         font-family: 'Open Sans', sans-serif;
         font-size: 14px;
         font-weight: 400;
@@ -53,5 +53,6 @@ user-indicator-header {
         margin-left: 45px;
 
         cursor: pointer;
+        stroke: var(--main-widgets-titles-text-color);
     }
 }

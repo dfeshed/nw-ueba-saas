@@ -9,9 +9,9 @@ module Fortscale.shared.components.fsUserTooltip {
 
         class AlertsTooltipController {
 
-            static $inject = ['$scope', '$element'];
+            static $inject = ['$scope', '$element', 'colorThemes'];
 
-            constructor (public $scope:ng.IScope, public $element:JQuery) {
+            constructor (public $scope:ng.IScope, public $element:JQuery,public colorThemes:any) {
 
             }
 
@@ -85,12 +85,16 @@ module Fortscale.shared.components.fsUserTooltip {
              *
              * @private
              */
-            _initSettings ():void {
+            _initSettings (theme:any[]):void {
+
+                let themeConstants = this.colorThemes.constants;
+                let popupBackground = theme[themeConstants.POPUP_BACKGROUND_COLOR];
                 this._tooltipSettings = _.merge(
                     {},
                     this._tooltipSettings,
                     {
                         target: this._getTargetElement(),
+                        background: popupBackground
                     },
                     this._externalTooltipSettings ? this._externalTooltipSettings : {});
             }
@@ -146,7 +150,12 @@ module Fortscale.shared.components.fsUserTooltip {
 
             $onInit ():void {
                 this.tooltipTargetSelector="user-alerts-for-tooltip";
-                this._initSettings();
+                let themeConstants = this.colorThemes.constants;
+                this.colorThemes.getThemseKeysAndValues().then((theme:any)=> {
+
+                    this._initSettings(theme);
+                });
+
             }
 
         }
