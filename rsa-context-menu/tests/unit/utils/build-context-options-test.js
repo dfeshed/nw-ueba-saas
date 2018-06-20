@@ -10,19 +10,25 @@ const selection = {
   'metaValue': '17.127.255.150'
 };
 
+const i18n = {
+  exists: () => true,
+  t: (str) => {
+    return str;
+  }
+};
+
 module('Unit | Utility | build-context-options', function() {
 
   test('test parse result based on data', function(assert) {
-    const result = buildContextOptions(data.data);
+    const result = buildContextOptions(data.data, i18n);
     assert.ok(result);
     assert.equal(result.EventAnalysisPanel['ip.src'].length, 3, 'Should retrun only 3 actions');
     assert.notOk(result.EventAnalysisPanel.test, 'Should not be having any actions');
   });
-
   test('test action should open url in new tab', function(assert) {
     const spy = sinon.spy(windowProxy, 'openInNewTab');
-    const result = buildContextOptions(data.data);
-    const ipActions = result.EventAnalysisPanel['ip.src'].find((action) => action.labelVar === 'applyRefocusSessionSplitsInNewTabLabelNew');
+    const result = buildContextOptions(data.data, i18n);
+    const ipActions = result.EventAnalysisPanel['ip.src'].find((action) => action.label === 'contextmenu.actions.applyRefocusSessionSplitsInNewTabLabelNew');
     ipActions.action([selection]);
     assert.ok(spy.calledOnce);
     spy.restore();
@@ -35,8 +41,8 @@ module('Unit | Utility | build-context-options', function() {
       currentUrl = urlPassed;
       newTab = false;
     });
-    const result = buildContextOptions(data.data);
-    const ipActions = result.EventAnalysisPanel['ip.src'].find((action) => action.labelVar === 'nw-event-value-drillable-contains');
+    const result = buildContextOptions(data.data, i18n);
+    const ipActions = result.EventAnalysisPanel['ip.src'].find((action) => action.label === 'contextmenu.actions.nw-event-value-drillable-contains');
     ipActions.action([selection]);
     assert.equal(currentUrl, 'http://www.google.com/search?q=17.127.255.150');
     assert.notOk(newTab);
