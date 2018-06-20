@@ -38,7 +38,7 @@
       isError=(or hasInvalidRegex hasMissingCaptures)
       isInline=true
       isDisabled=(or rule.outOfBox (not accessControl.canManageLogParsers))
-      focusOut=(action 'handleRegexChange')
+      keyUp=(action 'handleKeyUp')
     }}
     {{#if hasInvalidRegex}}
       <span class="input-error">{{t 'configure.logsParser.invalidRegEx'}}</span>

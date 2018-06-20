@@ -1,12 +1,13 @@
 import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { render, find, findAll } from '@ember/test-helpers';
+import { render, find, findAll, fillIn, triggerKeyEvent, click } from '@ember/test-helpers';
 import { setupRenderingTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
 import { clickTrigger, selectChoose } from '../../../../../helpers/ember-power-select';
+import { patchSocket } from '../../../../../helpers/patch-socket';
 
 let setState;
 
@@ -89,5 +90,43 @@ module('Integration | Component | value matching', function(hooks) {
     await render(hbs`{{content/log-parser-rules/value-matching}}`);
     assert.equal(findAll('.rsa-form-textarea.is-error').length, 1, 'The text area should have an error');
     assert.equal(find('.input-error').textContent.trim(), errorMessage, 'The error message should be displayed');
+  });
+
+  test('keyup event trigger a highlighting call by updating the regex', async function(assert) {
+    const done = assert.async();
+    assert.expect(2);
+    const rules = [{ name: 'Regex Pattern', pattern: { format: null, regex: 't', captures: [{ index: '0' }] } }];
+    new ReduxDataHelper(setState).parserRules(rules).formatOptions().build();
+    await render(hbs`{{content/log-parser-rules/value-matching keyUpDelay=100 }}`);
+    patchSocket((method, modelName) => {
+      assert.equal(method, 'highlight');
+      assert.equal(modelName, 'log-parser-rules');
+      done();
+    });
+    await click('textarea');
+    await fillIn('textarea', 'test');
+    await triggerKeyEvent('textarea', 'keyup', 80);
+  });
+
+  test('Arrow keys do not trigger update of regex and highlighting call', async function(assert) {
+    setState();
+    assert.expect(1);
+    const done = assert.async();
+    const rules = [{ name: 'Regex Pattern', pattern: { format: null, regex: 't', captures: [{ index: '0' }] } }];
+    new ReduxDataHelper(setState).parserRules(rules).formatOptions().build();
+    await render(hbs`{{content/log-parser-rules/value-matching keyUpDelay=100 }}`);
+    await click('textarea');
+    await fillIn('textarea', 'test');
+    patchSocket(() => {
+      assert.ok(true); // this should only hit once
+      done();
+    });
+    await triggerKeyEvent('textarea', 'keyup', 37);
+    await triggerKeyEvent('textarea', 'keyup', 38);
+    await triggerKeyEvent('textarea', 'keyup', 39);
+    await triggerKeyEvent('textarea', 'keyup', 40);
+    setTimeout(async () => {
+      await triggerKeyEvent('textarea', 'keyup', 80);
+    }, 200);
   });
 });
