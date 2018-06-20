@@ -138,6 +138,7 @@ module('Integration | Component | query-pills', function(hooks) {
     this.set('filters', []);
 
     await render(hbs`{{query-container/query-pills isActive=true filters=filters}}`);
+    await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', ESCAPE_KEY);
     await click(PILL_SELECTORS.deletePill);
 
     return settled().then(async () => {
@@ -152,6 +153,25 @@ module('Integration | Component | query-pills', function(hooks) {
         { pillData: { id: '1', meta: 'a', operator: '=', value: 'x' } },
         'The action creator was called with the right arguments'
       );
+    });
+  });
+
+  test('Attempting to delete a pill while a new pill is open will not delete the pill', async function(assert) {
+    new ReduxDataHelper(setState).language().pillsDataPopulated().build();
+    this.set('filters', []);
+
+    await render(hbs`{{query-container/query-pills isActive=true filters=filters}}`);
+    await click(PILL_SELECTORS.deletePill);
+
+    return settled().then(async () => {
+      // Internal (temporary) filters maintained
+      const filters = this.get('filters');
+      // Filters never gets set inside the component, so it remains the empty
+      // array that it is when passed in
+      assert.equal(filters.length, 0, 'No filters');
+
+      // action to store in state called
+      assert.equal(deleteActionSpy.callCount, 0, 'The delete pill action creator was called once');
     });
   });
 

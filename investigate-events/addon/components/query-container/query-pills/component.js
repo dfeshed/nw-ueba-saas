@@ -161,6 +161,16 @@ const QueryPills = Component.extend({
    * @private
    */
   _pillDeleted(pillData) {
+
+    // If pills are open for any reason, treat delete as a no-op
+    // as we do not allow pills to be interactive (including delete)
+    // while pills are open.
+    // Goal here is to keep the query-pill component stupid. It just
+    // says "delete me" and the smart component (this one) says "no".
+    if (this.get('isPillOpen')) {
+      return;
+    }
+
     // LEGACY FILTERS SET TO KEEP NEAR-TERM SEARCH WORKING
     // Take current pills, add new one, mark that they are 'saved'
     const pillsData = this.get('legacyPlainPillsData').filter((pD) => pD.id !== pillData.id);
