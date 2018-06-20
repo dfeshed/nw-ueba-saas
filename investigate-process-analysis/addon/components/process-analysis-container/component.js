@@ -24,7 +24,7 @@ const stateToComputed = (state) => ({
 const WrapperComponent = Component.extend({
   tagName: 'hbox',
   classNames: ['process-analysis-container', 'scrollable-panel-wrapper', 'col-xs-12'],
-  classNameBindings: ['isProcessDetailsVisible:show-process-details']
+  classNameBindings: ['isProcessDetailsVisible:show-process-details:hide-process-details']
 });
 
 export default connect(stateToComputed, dispatchToActions)(WrapperComponent);

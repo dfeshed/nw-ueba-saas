@@ -34,10 +34,6 @@
   width: calc(100vw - 4px);
 }
 
-.process-list-box {
-  border: none;
-}
-
 .show-process-details {
   .process-list-box {
     @include border(1px, solid, primary, dark);
@@ -77,6 +73,11 @@
   }
 }
 
+.hide-process-details {
+  .rsa-nav-tab {
+    border: none;
+  }
+}
 
 .ember-tether .panel-content {
   max-height: 30rem;
