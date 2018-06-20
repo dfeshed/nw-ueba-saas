@@ -299,6 +299,28 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
                 "", hostSource, RESULT_FAILURE, eventType, referenceId);
     }
 
+    @Test
+    public void event_code_4769_option1_test() throws JsonProcessingException {
+        IJsonObjectTransformer transformer = buildAuthenticationWindowsAuditTransformer();
+
+        String referenceId = "4769";
+        String userDst = "CN=BOBBY,OU=Users,DC=Dell";
+        String aliasHost = "DESKTOP-LLHJ389";
+        String hostSource = "a:b";
+        String eventId = "10.25.67.33:50005:91168521";
+        Long eventTime = 1528124556000L;
+        String eventType = "Failure Audit";
+        JSONObject jsonObject = buildAuthWindowAuditJsonObject(referenceId, userDst, "winevent_snare",
+                null, eventTime*1000, "10",
+                String.format("[\"%s\",\"another alias\"]", aliasHost),
+                eventType, "  ", eventId, hostSource);
+
+        JSONObject retJsonObject = transform(transformer, jsonObject);
+
+        assertOnExpectedValues(retJsonObject, eventId, eventTime, "bobby", userDst, userDst,
+                null, JSONObject.NULL, RESULT_FAILURE, eventType, referenceId);
+    }
+
     private void assertOnExpectedValues(JSONObject retJsonObject,
                                         String expectedEventId,
                                         Long expectedDateTime,
@@ -306,7 +328,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
                                         String expectedUsername,
                                         String expectedUserDisplayName,
                                         String expectedSrcMachineId,
-                                        String expectedSrcMachineName,
+                                        Object expectedSrcMachineName,
                                         String expectedResult,
                                         String expectedOperationType,
                                         String expectedDataSource){
@@ -321,5 +343,4 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
         Assert.assertEquals("operation type logic according the accesses field did not work", expectedOperationType, retJsonObject.get(OPERATION_TYPE_FIELD_NAME));
         Assert.assertEquals("wrong data source", expectedDataSource, retJsonObject.get(DATA_SOURCE_FIELD_NAME));
     }
-
 }

@@ -56,7 +56,8 @@ public class RegexCaptorAndFormatter extends AbstractJsonObjectTransformer {
 
     @Override
     public JSONObject transform(JSONObject jsonObject) {
-        if (!jsonObject.has(sourceKey)) return jsonObject;
+        Object sourceObj = jsonObject.opt(sourceKey);
+        if (sourceObj == null || JSONObject.NULL.equals(sourceObj)) return jsonObject;
         String sourceValue = jsonObject.getString(sourceKey);
         Object destinationValue = JSONObject.NULL;
 
