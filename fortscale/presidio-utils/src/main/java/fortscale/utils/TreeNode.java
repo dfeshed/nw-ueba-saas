@@ -1,115 +1,109 @@
 package fortscale.utils;
 
-import java.util.ArrayList;
-import java.util.Iterator;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * This generic will represent Tree data structure
  * Created by idanp on 2/11/2015.
  */
-public class TreeNode<T> implements Iterable<TreeNode<T>> {
+@JsonAutoDetect(
+        creatorVisibility = JsonAutoDetect.Visibility.ANY,
+        fieldVisibility = JsonAutoDetect.Visibility.NONE,
+        getterVisibility = JsonAutoDetect.Visibility.NONE,
+        isGetterVisibility = JsonAutoDetect.Visibility.NONE,
+        setterVisibility = JsonAutoDetect.Visibility.NONE
+)
+public class TreeNode<T> {
 
-	private T data;
-	private TreeNode<T> parent;
-	private ArrayList<TreeNode<T>> childrens;
-
-
-
-
-	//CTO
-	public TreeNode(T data)
-	{
-		this.data = data;
-		this.childrens = new ArrayList<>();
-
-
-	}
-
-	public void setParent(TreeNode<T> parent)
-	{
-		this.parent = parent;
-	}
+    private T data;
+    private TreeNode<T> parent;
+    private List<TreeNode<T>> children;
+    private Tree tree;
 
 
-	public boolean setChaild(TreeNode<T> child)
-	{
-		return this.childrens.add(child);
-	}
+    @JsonCreator
+    public TreeNode(@JsonProperty("data") T data,
+                    @JsonProperty("children") List<TreeNode<T>> children) {
+        this.data = data;
+        this.children = new ArrayList<>();
+        if (children != null) {
+            this.children = children;
+            this.children.forEach(child -> {
+                child.setParent(this);
+            });
+        }
+    }
 
-	public boolean isRoot()
-	{
-		return parent == null;
-	}
+    public boolean isRoot() {
+        return parent == null;
+    }
 
-	/**
-	 * This method based on the equals comparator of the template T - Note that for your use case you need to consider it.
-	 * @param dataToFind
-	 * @return
-	 */
-	public TreeNode<T> peekFromTree(TreeNode<T> dataToFind)
-	{
-		TreeNode<T> result = null;
+    public T getData() {
+        return data;
+    }
 
+    public void setData(T data) {
+        this.data = data;
+    }
 
-		if (dataToFind.getData().equals(this.data))
-			return this;
-		if (this.childrens.size() == 0)
-			return null;
-		for (TreeNode<T> child : this.childrens)
-		{
-			result = child.peekFromTree(dataToFind);
-			if ( result != null)
-				break;
+    public TreeNode<T> getParent() {
+        return parent;
+    }
 
-		}
-		return result;
-	}
+    public void setParent(TreeNode<T> parent) {
+        this.parent = parent;
+    }
 
-	/**
-	 * This method will return the list of leaf of current tree
-	 * @return
-	 */
-	public ArrayList<TreeNode<T>> getListOfLeaf ()
-	{
-		ArrayList<TreeNode<T>> listOfLeaf = new ArrayList<>();
+    public List<TreeNode<T>> getChildren() {
+        return children;
+    }
 
-		if (childrens.size() == 0)
-			listOfLeaf.add(this);
+    public void setChildren(List<TreeNode<T>> children) {
+        this.children = children;
+    }
 
-		for (TreeNode<T> child : childrens)
-		{
-			if (child.getChildrens().size() == 0)
-				listOfLeaf.add(child);
-			else
-				listOfLeaf.addAll(child.getListOfLeaf());
+    public Tree getTree() {
+        return tree;
+    }
+
+    public void setTree(Tree tree) {
+        this.tree = tree;
+    }
 
 
-		}
+    public Stream<TreeNode<T>> getAncestorsStream() {
+        return Stream.concat(
+                Stream.of(parent).filter(Objects::nonNull),
+                Stream.of(parent).filter(Objects::nonNull).flatMap(TreeNode::getAncestorsStream)
+        );
+    }
 
-		return listOfLeaf;
-
-	}
 
 
-	public Iterator<TreeNode<T>> iterator ()
-	{
-		Iterator<TreeNode<T>> iter = this.childrens.iterator();
-		return iter;
+    /**
+     * @return stream of current node and descendants
+     */
+    public Stream<TreeNode<T>> getDescendantStreamIncludingCurrentNode() {
+        return Stream.concat(
+                Stream.of(this),
+                children.stream().flatMap(TreeNode::getDescendantStreamIncludingCurrentNode));
+    }
 
-	}
-
-	public T getData()
-	{
-		return this.data;
-	}
-
-	public TreeNode<T> getParent() {
-		return parent;
-	}
-
-	public ArrayList<TreeNode<T>> getChildrens() {
-		return childrens;
-	}
-
+    /**
+     * @param conditionStopFunc conditionStopFunc
+     * @return stream descendants without current node
+     */
+    public Stream<TreeNode<T>> getDescendantStreamNotIncludingCurrentNode(Function<T, Boolean> conditionStopFunc) {
+        return Stream.concat(
+                children.stream().filter(e -> !conditionStopFunc.apply(e.getData())).flatMap(e -> e.getDescendantStreamNotIncludingCurrentNode(conditionStopFunc)),
+                children.stream().filter(e -> conditionStopFunc.apply(e.getData()))).filter(e -> conditionStopFunc.apply(e.getData()));
+    }
 
 }

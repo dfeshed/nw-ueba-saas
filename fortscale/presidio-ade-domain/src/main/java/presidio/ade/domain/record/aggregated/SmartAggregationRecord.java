@@ -1,5 +1,7 @@
 package presidio.ade.domain.record.aggregated;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 /**
  * This is a wrapper POJO for the {@link AdeAggregationRecord} - It contains additional
  * information regarding the aggregation record in context of a specific {@link SmartRecord}.
@@ -8,6 +10,11 @@ public class SmartAggregationRecord {
     private AdeAggregationRecord aggregationRecord;
     private Double contribution;
     private Double scoreAndWeightProduct;
+    private String fullCorrelationName;
+    private String correlationTreeName;
+    private Double oldScore;
+    private Double correlationFactor;
+
 
     public SmartAggregationRecord(
             AdeAggregationRecord aggregationRecord,
@@ -49,5 +56,43 @@ public class SmartAggregationRecord {
 
     public void setScoreAndWeightProduct(Double scoreAndWeightProduct) {
         this.scoreAndWeightProduct = scoreAndWeightProduct;
+    }
+
+    public String getFullCorrelationName() {
+        return fullCorrelationName;
+    }
+
+    public void setFullCorrelationName(String fullCorrelationName) {
+        this.fullCorrelationName = fullCorrelationName;
+    }
+
+    public String getCorrelationTreeName() {
+        return correlationTreeName;
+    }
+
+    public void setCorrelationTreeName(String correlationTreeName) {
+        this.correlationTreeName = correlationTreeName;
+    }
+
+    public Double getOldScore() {
+        return oldScore;
+    }
+
+    public void setOldScore(Double oldScore) {
+        this.oldScore = oldScore;
+    }
+
+    public Double getCorrelationFactor() {
+        return correlationFactor;
+    }
+
+    public void setCorrelationFactor(Double correlationFactor) {
+        this.correlationFactor = correlationFactor;
+    }
+
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 }
