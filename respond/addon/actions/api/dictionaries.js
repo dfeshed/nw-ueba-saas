@@ -65,32 +65,6 @@ export default {
   },
 
   /**
-   * Currently returns a promise auto-resolved to a (hardcoded) object whose keys are the three different possible
-   * targetQueues, and for each key the array of possible remediation types associated with that target queue.
-   *
-   * It is expected that this method will eventually make a websocket server call
-   * @method getAllRemediationTypes
-   * @public
-   * @return {Promise}
-   */
-  getAllRemediationTypes() {
-    const OPERATIONS = ['QUARANTINE_HOST', 'QUARANTINE_NETORK_DEVICE', 'BLOCK_IP_PORT', 'BLOCK_EXTERNAL_ACCESS_TO_DMZ',
-      'BLOCK_VPN_ACCESS', 'REIMAGE_HOST', 'UPDATE_FIREWALL_POLICY', 'UPDATE_IDS_IPS_POLICY', 'UPDATE_WEB_PROXY_POLICY',
-      'UPDATE_ACCESS_POLICY', 'UPDATE_VPN_POLICY', 'CUSTOM'];
-
-    const GRC = ['MITIGATE_RISK', 'MITIGATE_COMPLIANCE_VIOLATION', 'MITIGATE_VULNERABILITY_THREAT',
-      'UPDATE_CORPORATE_BUSINESS_POLICY', 'NOTIFY_BC_DR_TEAM', 'CUSTOM'];
-
-    const CONTENT_IMPROVEMENT = ['UPDATE_RULES', 'UPDATE_FEEDS', 'CUSTOM'];
-
-    return RSVP.resolve({
-      OPERATIONS,
-      GRC,
-      CONTENT_IMPROVEMENT
-    });
-  },
-
-  /**
    * Currently returns an auto-resolved promise for a set of hardcoded alert type values.
    *
    * It is expected that this method will eventually make a websocket server call
@@ -112,7 +86,7 @@ export default {
    * @returns {Promise}
    */
   getAllAlertSources() {
-    const alertSources = ['ECAT', 'Event Stream Analysis', 'Malware Analysis', 'NetWitness Investigate', 'Reporting Engine', 'Web Threat Detection'];
+    const alertSources = ['Correlation Server', 'ECAT', 'Event Stream Analysis', 'Malware Analysis', 'NetWitness Investigate', 'Reporting Engine', 'User Entity Behavior Analytics', 'Web Threat Detection'];
     return RSVP.resolve(alertSources);
   },
 

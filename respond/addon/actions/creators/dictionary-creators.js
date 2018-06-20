@@ -79,19 +79,6 @@ const getAllRemediationStatusTypes = () => {
 };
 
 /**
- * Action creator for fetching all known remediation types
- * @method getAllRemediationTypes
- * @public
- * @returns {Object}
- */
-const getAllRemediationTypes = () => {
-  return {
-    type: ACTION_TYPES.FETCH_REMEDIATION_TYPES,
-    promise: dictionaries.getAllRemediationTypes()
-  };
-};
-
-/**
  * Action creator for fetching all known alert types
  * @method getAllAlertTypes
  * @public
@@ -148,7 +135,6 @@ export {
   getAllStatusTypes,
   getAllCategories,
   getAllRemediationStatusTypes,
-  getAllRemediationTypes,
   getAllAlertTypes,
   getAllAlertSources,
   getAllAlertNames,

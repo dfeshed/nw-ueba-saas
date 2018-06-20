@@ -47,14 +47,6 @@ export default reduxActions.handleActions({
     )
   ),
 
-  [ACTION_TYPES.FETCH_REMEDIATION_TYPES]: (state, action) => (
-    handle(state, action, {
-      start: (s) => s.set('remediationTypes', null),
-      failure: (s) => s.set('remediationTypes', null),
-      success: (s) => s.set('remediationTypes', action.payload) }
-    )
-  ),
-
   [ACTION_TYPES.FETCH_ALERT_TYPES]: (state, action) => (
     handle(state, action, {
       start: (s) => s.set('alertTypes', []),

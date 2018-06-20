@@ -20,11 +20,6 @@ export const getRemediationStatusTypes = createSelector(
   (dictionariesState) => dictionariesState.remediationStatusTypes
 );
 
-export const getRemediationTypes = createSelector(
-  dictionariesState,
-  (dictionariesState) => dictionariesState.remediationTypes || []
-);
-
 export const getCategoryTags = createSelector(
   dictionariesState,
   (dictionariesState) => dictionariesState.categoryTags

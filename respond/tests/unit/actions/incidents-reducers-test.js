@@ -42,6 +42,7 @@ module('Unit | Utility | Incidents Reducer (non-Explorer)', function() {
     });
     const endState = incidentsReducer(Immutable.from(initState), action);
     assert.deepEqual(endState, expectedEndState);
+    assert.equal(endState.focusedItem === endState.items[1], true, 'The focused item is a reference to the updated obj in items');
   });
 
   test('When FETCH_INCIDENT_SETTINGS succeeds, the state is updated', function(assert) {

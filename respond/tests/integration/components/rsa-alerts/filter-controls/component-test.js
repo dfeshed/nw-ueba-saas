@@ -69,7 +69,7 @@ module('Integration | Component | Respond Alerts Filters', function(hooks) {
     });
     await render(hbs`{{rsa-alerts/filter-controls updateFilter=(action updateFilter)}}`);
     const selector = '.filter-option.alert-source-filter .rsa-form-checkbox-label';
-    assert.equal(findAll(selector).length, 6, 'There should be 6 alert source filter options');
+    assert.equal(findAll(selector).length, 8, 'There should be 8 alert source filter options');
     await click('.filter-option.alert-source-filter .rsa-form-checkbox-label input.rsa-form-checkbox:first-of-type');
   });
 

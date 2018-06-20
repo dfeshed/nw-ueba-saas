@@ -4,8 +4,7 @@ import * as dictionaryCreators from './dictionary-creators';
 import { getAllUsers } from 'respond/selectors/users';
 import {
   getPriorityTypes,
-  getRemediationStatusTypes,
-  getRemediationTypes
+  getRemediationStatusTypes
 } from 'respond/selectors/dictionaries';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
@@ -23,9 +22,6 @@ const initializeTasks = () => {
     }
     if (!getRemediationStatusTypes(state).length) {
       dispatch(dictionaryCreators.getAllRemediationStatusTypes());
-    }
-    if (!getRemediationTypes(state).length) {
-      dispatch(dictionaryCreators.getAllRemediationTypes());
     }
   };
 };

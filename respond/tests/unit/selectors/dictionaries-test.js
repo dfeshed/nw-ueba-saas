@@ -5,7 +5,6 @@ import {
   getStatusTypes,
   getCategoryTags,
   getRemediationStatusTypes,
-  getRemediationTypes,
   getAlertTypes,
   getAlertSources,
   getAlertNames,
@@ -19,7 +18,6 @@ module('Unit | Utility | Dictionary Selectors', function() {
     statusTypes: [],
     categoryTags: [],
     remediationStatusTypes: [],
-    remediationTypes: [],
     alertTypes: [],
     alertSources: [],
     alertNames: [],
@@ -37,7 +35,6 @@ module('Unit | Utility | Dictionary Selectors', function() {
     assert.equal(getStatusTypes(state), dictionaries.statusTypes, 'The returned value from the getStatusTypes selector is as expected');
     assert.equal(getCategoryTags(state), dictionaries.categoryTags, 'The returned value from the getCategoryTags selector is as expected');
     assert.equal(getRemediationStatusTypes(state), dictionaries.remediationStatusTypes, 'The returned value from the getRemediationStatusTypes selector is as expected');
-    assert.equal(getRemediationTypes(state), dictionaries.remediationTypes, 'The returned value from the getRemediationTypes selector is as expected');
     assert.equal(getAlertTypes(state), dictionaries.alertTypes, 'The returned value from the getAlertTypes selector is as expected');
     assert.equal(getAlertSources(state), dictionaries.alertSources, 'The returned value from the getAlertSources selector is as expected');
     assert.equal(getAlertNames(state), dictionaries.alertNames, 'The returned value from the getAlertNames selector is as expected');

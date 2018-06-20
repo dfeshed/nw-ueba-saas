@@ -70,10 +70,13 @@ const incidentsReducers = reduxActions.handleActions({
     return handle(state, action, {
       success: (s) => {
         const { payload: { data: updatedIncident } } = action;
-        return s.merge({
-          items: s.items.map((item) => item.id === updatedIncident.id ? updatedIncident : item),
-          focusedItem: s.focusedItem && s.focusedItem.id === updatedIncident.id ? updatedIncident : s.focusedItem
+        const items = s.items.map((item) => item.id === updatedIncident.id ? updatedIncident : item);
+        const focusedItem = items.findBy('id', updatedIncident.id);
+        const state = s.merge({
+          items,
+          focusedItem
         });
+        return state;
       }
     });
   }
