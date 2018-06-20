@@ -1,23 +1,24 @@
 package presidio.ade.smart.config;
 
-import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
-import fortscale.utils.elasticsearch.config.EmbeddedElasticsearchInitialiser;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 
 import java.util.Properties;
 
-/**
- * Created by YaronDL on 9/4/2017.
- */
 
 @Configuration
-@Import({MongodbTestConfig.class, PresidioMonitoringConfiguration.class, ElasticsearchTestConfig.class})
-public class SmartApplicationConfigurationTest extends SmartApplicationConfiguration{
+@Import({MongodbTestConfig.class, PresidioMonitoringConfiguration.class})
+public class SmartApplicationCorrelationConfigurationTest extends SmartApplicationConfiguration{
+
+    @MockBean
+    private MetricRepository metricRepository;
+
     @Bean
     public static TestPropertiesPlaceholderConfigurer smartApplicationConfigurationTestPropertiesPlaceholderConfigurer() {
         Properties properties = new Properties();
@@ -26,7 +27,7 @@ public class SmartApplicationConfigurationTest extends SmartApplicationConfigura
         // Feature aggregation event conf service (for both Ps and Fs)
         properties.put("presidio.ade.aggregation.record.base.configurations.path", "classpath*:config/asl/aggregation-records/**/*.json");
         // Smart event conf service
-        properties.put("presidio.ade.smart.record.base.configurations.path","classpath*:config/asl/smart-records/smart_records.json");
+        properties.put("presidio.ade.smart.record.base.configurations.path","classpath*:config/asl/smart-records/smart_records_test.json");
         // Smart scorer conf service
         properties.put("presidio.ade.scorer.base.configurations.path","classpath*:config/asl/scorers/smart-records/*.json");
         // Model conf service
@@ -42,10 +43,7 @@ public class SmartApplicationConfigurationTest extends SmartApplicationConfigura
         properties.put("fortscale.model.cache.size", 100);
         properties.put("presidio.ade.model.smart.weights.score.minimal.cluster.score", 0);
 
-        properties.put("enable.metrics.export", true);
-        properties.put("elasticsearch.clustername", EmbeddedElasticsearchInitialiser.EL_TEST_CLUSTER);
-        properties.put("elasticsearch.host", "localhost");
-        properties.put("elasticsearch.port", EmbeddedElasticsearchInitialiser.EL_TEST_PORT);
+        properties.put("enable.metrics.export", false);
         properties.put("monitoring.fixed.rate","60000");
         return new TestPropertiesPlaceholderConfigurer(properties);
     }
