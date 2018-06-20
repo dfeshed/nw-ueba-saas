@@ -1,11 +1,13 @@
 package org.apache.flume.interceptor.presidio.transform;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.apache.flume.interceptor.presidio.regexcaptureandformat.CaptureAndFormatConfiguration;
-import org.apache.flume.interceptor.presidio.regexcaptureandformat.CapturingGroupConfiguration;
-import org.apache.flume.interceptor.presidio.transform.predicate.JsonObjectChainPredicate;
-import org.apache.flume.interceptor.presidio.transform.predicate.JsonObjectKeyExistPredicate;
-import org.apache.flume.interceptor.presidio.transform.predicate.JsonObjectRegexPredicate;
+import fortscale.utils.transform.*;
+import fortscale.utils.transform.predicate.JsonObjectChainPredicate;
+import static fortscale.utils.transform.predicate.JsonObjectChainPredicate.LogicalOperation.AND;
+import fortscale.utils.transform.predicate.JsonObjectKeyExistPredicate;
+import fortscale.utils.transform.predicate.JsonObjectRegexPredicate;
+import fortscale.utils.transform.regexcaptureandformat.CaptureAndFormatConfiguration;
+import fortscale.utils.transform.regexcaptureandformat.CapturingGroupConfiguration;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Assert;
@@ -15,8 +17,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import static org.apache.flume.interceptor.presidio.transform.predicate.JsonObjectChainPredicate.LogicalOperation.AND;
 
 public class ActiveDirectoryWindowsAuditTransformerTest extends TransformerTest{
 
