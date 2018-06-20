@@ -1,6 +1,4 @@
 .usm-group, .usm-policy {
-  height: calc(100vh - 50px);
-
 
   .form {
     padding-right: rsa-whitespace(more);
@@ -9,6 +7,7 @@
   }
 
   .toolbar {
+    flex: none;
     padding-top: rsa-whitespace();
     padding-bottom: rsa-whitespace();
     button {
@@ -22,6 +21,7 @@
   }
 
   .control {
+    flex: none;
     padding-top: rsa-whitespace(more);
     > label {
       width: 45%;
@@ -41,6 +41,13 @@
 
   .apply-policy-optional {
     @include rsa-font(regular , small, true)
+  }
+
+  /* TODO this may be a better option if we decide to keep everything wrapped in a <form>
+  .form > :last-child
+  */
+  .policy {
+    margin-bottom: rsa-whitespace(more);
   }
 
 }
