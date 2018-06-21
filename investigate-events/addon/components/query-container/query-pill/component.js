@@ -5,7 +5,7 @@ import _ from 'lodash';
 
 import * as MESSAGE_TYPES from '../message-types';
 
-const { log } = console;
+const { log } = console;// eslint-disable-line no-unused-vars
 
 const RESET_PROPS = {
   isActive: true,

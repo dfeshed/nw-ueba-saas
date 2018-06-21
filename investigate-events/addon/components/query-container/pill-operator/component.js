@@ -7,7 +7,7 @@ import * as MESSAGE_TYPES from '../message-types';
 import { begins, contains, ends, eq, exists, notEq, notExists } from 'investigate-events/util/possible-operators';
 import { isArrowLeft, isArrowRight, isBackspace, isEnter, isEscape } from 'investigate-events/util/keys';
 
-// const { log } = console;
+const { log } = console;// eslint-disable-line no-unused-vars
 
 const leadingSpaces = /^[\s\uFEFF\xA0]+/;
 

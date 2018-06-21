@@ -1,5 +1,3 @@
-export const DEBUG = 'DEBUG';
-
 // PILL EVENTS
 export const META_ARROW_LEFT_KEY = 'PILL::META_ARROW_LEFT_KEY';
 export const META_ARROW_RIGHT_KEY = 'PILL::META_ARROW_RIGHT_KEY';

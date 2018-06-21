@@ -6,7 +6,7 @@ import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/i
 import * as MESSAGE_TYPES from '../message-types';
 import { isArrowLeft, isArrowRight, isEnter, isEscape } from 'investigate-events/util/keys';
 
-// const { log } = console;
+const { log } = console;// eslint-disable-line no-unused-vars
 
 const leadingSpaces = /^[\s\uFEFF\xA0]+/;
 
@@ -124,10 +124,7 @@ const PillMeta = Component.extend({
     },
     /**
      * This function is called every time a key is pressed, and is invoked
-     * before power-select reacts to the key that was pressed. This is here to
-     * handle one specific case. If the user presses ENTER, selecting an
-     * operator that was already selected. In that case, power-select does
-     * nothing, but we want the focus to move onto the pill value.
+     * before power-select reacts to the key that was pressed.
      * As a side note, we cannot combine `onInput`'s functionality here because
      * this code runs before any down-selection of options happens.
      * @private
@@ -146,6 +143,10 @@ const PillMeta = Component.extend({
         // Let others know ECS was pressed
         this._broadcast(MESSAGE_TYPES.META_ESCAPE_KEY);
       } else if (isEnter(event)) {
+        // If the user presses ENTER, selecting an operator that was already
+        // selected, power-select does nothing. We want the focus to move onto
+        // the pill value. If nothing has been selected, this is an indication
+        // we should execute the query.
         const { selected } = powerSelectAPI;
         const selection = this.get('selection');
         if (selection && selected && selection === selected) {

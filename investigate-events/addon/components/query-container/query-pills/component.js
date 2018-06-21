@@ -11,7 +11,7 @@ import {
   editNextGenPill
 } from 'investigate-events/actions/next-gen-creators';
 
-// const { log } = console;
+const { log } = console;// eslint-disable-line no-unused-vars
 
 const stateToComputed = (state) => ({
   pillsData: enrichedPillsData(state)

@@ -9,7 +9,7 @@
 import Component from '@ember/component';
 import { computed } from '@ember/object';
 
-// const { log } = console;
+const { log } = console;// eslint-disable-line no-unused-vars
 
 export default Component.extend({
   bindClassNames: ['has-selection:select'],
