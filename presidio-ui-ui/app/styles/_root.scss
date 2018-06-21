@@ -45,15 +45,26 @@
 html, body{ height: 100%; }
 :root{
     -webkit-print-color-adjust:exact;
-    --main-widgets-titles-text-color: #FFF;
-    --main-widgets-titles-icon-fill: #FFF;
-    --main-widgets-titles-link-color: #2A9FD8;
-    --main-widgets-background-color: #282828;
-    --filter-list-text-color: #007db8;
-    --main-critical-severity-color: #ec2226;
-    --main-high-severity-color: #ff5724;
-    --main-medium-severity-color: #ffc105;
-    --main-low-severity-color: #8bc34b;
+
+    --main-widgets-titles-text-color: #FAFAFA;
+    --main-widgets-titles-link-color: #03A9F4;
+    --main-widgets-titles-icon-fill: #fff;
+    --main-widgets-background-color: #161616;
+    --main-widgets-background-color-hover: #dedede;
+    --main-widgets-titles-text-color-hover: #03A9F4;
+
+
+    --main-widgets-lines-seperators: #424242;
+
+    --main-popup-background-color: #212121;
+    --main-popup-text-color: #00B9F7;
+
+
+    --main-critical-severity-color: #BE3A34;
+    --main-high-severity-color: #FF6F00;
+    --main-medium-severity-color: #FFC107;
+    --main-low-severity-color: #8BC34A;
+
 
     --second-widgets-background-color: #000;
     --second-widgets-titles-icon-fill: #fff;
@@ -63,6 +74,9 @@ html, body{ height: 100%; }
     --header-bar-background-color: #000;
     --header-bar-text-color: #bdbdbd;
     --header-bar-text-color-highligth: #fff;
+
+
+    --filter-list-text-color: #03A9F4;
 
 
 }

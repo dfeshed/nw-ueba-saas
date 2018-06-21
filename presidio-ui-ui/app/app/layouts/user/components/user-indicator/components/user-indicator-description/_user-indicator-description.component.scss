@@ -16,7 +16,7 @@ user-indicator-description {
         padding-right: 20px;
 
         padding-bottom: 2vh;
-        border-bottom: 1px solid #adcdfa;
+        border-bottom: 1px solid var(--main-widgets-lines-seperators);
 
         position: relative;
     }
@@ -58,7 +58,7 @@ user-indicator-description {
 
         padding-bottom: 2vh;
         padding-left: 20px;
-        border-bottom: 1px solid #adcdfa;
+        border-bottom: 1px solid var(--main-widgets-lines-seperators);
     }
 
 }

@@ -206,7 +206,7 @@ overview-high-risk-user {
 
     &:not(:last-child) {
         .high-risk-user-row {
-            border-bottom: 1px solid #adcdfa;
+            border-bottom: 1px solid var(--main-widgets-lines-seperators);
         }
     }
 }

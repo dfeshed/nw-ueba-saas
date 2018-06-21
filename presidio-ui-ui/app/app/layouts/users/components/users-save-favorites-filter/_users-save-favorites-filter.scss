@@ -63,7 +63,7 @@ users-add-favorites-popup {
 
         .popup-form-container {
             padding: 20px;
-            background-color: white;
+            background-color: var(--main-widgets-background-color-hover);
             box-shadow: 2px 2px 9px rgba(0, 0, 0, 0.5);
             border: 1px solid #676767;
 
@@ -71,10 +71,11 @@ users-add-favorites-popup {
         }
 
         .popup-title {
-            @include font-open-sans($color: #01294A, $font-size: 14px, $font-weight: 700);
+            @include font-open-sans($color: var(--main-widgets-titles-text-color-hover), $font-size: 14px, $font-weight: 700);
             margin-bottom: 10px;
-            background-color: white;
+            background-color: var(--main-widgets-background-color-hover);
             border-bottom-style: none;
+
             padding: 0;
         }
 
@@ -112,7 +113,7 @@ users-add-favorites-popup {
         }
 
         .cancel-button {
-            @include font-open-sans($font-size: 14px, $font-weight: 400, $color: #024D89);
+            @include font-open-sans($font-size: 14px, $font-weight: 400, $color: var(--main-widgets-titles-text-color-hover));
             margin-right: 25px;
             cursor: pointer;
 
@@ -133,7 +134,7 @@ users-add-favorites-popup {
             line-height: 35px;
             width: auto;
 
-            background-color: #016a9c;
+            background-color: var(--main-widgets-titles-text-color-hover);
 
             @include font-open-sans($color: white);
             text-align: center;

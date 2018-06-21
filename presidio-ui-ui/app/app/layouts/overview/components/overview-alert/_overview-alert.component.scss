@@ -33,9 +33,9 @@ overview-alert {
     /**
     * Blue Border Lines
     **/
-    border-bottom: 1px solid #adcdfa;
+    border-bottom: 1px solid var(--main-widgets-lines-seperators);
     &:nth-child(2n-1) {
-        border-right: 1px solid #adcdfa;
+        border-right: 1px solid var(--main-widgets-lines-seperators);
     }
 
     &:nth-child(9), &:nth-child(10) {

@@ -53,7 +53,7 @@
                 overflow: hidden;
                 text-overflow: ellipsis;
                 @include font-roboto-regular();
-                color: $clrGrey80;
+                color: var(--main-widgets-titles-text-color);
 
                 &.bold {
                     font-weight: 700;

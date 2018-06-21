@@ -494,6 +494,8 @@ $actionRed: red;
 
             a {
                 line-height: 28px;
+                border: 1px solid var(--main-widgets-background-color-hover);
+                color: var(--main-widgets-background-color-hover);
             }
 
             span.k-state-selected {
