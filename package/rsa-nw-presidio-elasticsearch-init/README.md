@@ -12,7 +12,6 @@ Presidio elk init requires [Python](https://www.python.org/download/releases/2.7
 yum -y install rsa-nw-presidio-elasticsearch-init
 
 source /etc/sysconfig/airflow
-OWB_ALLOW_NON_FIPS=on python -m virtualenv $AIRFLOW_VENV
 source $AIRFLOW_VENV/bin/activate
 OWB_ALLOW_NON_FIPS=on python /var/lib/netwitness/presidio/elasticsearch/init/init_elasticsearch.py --resources_path /var/lib/netwitness/presidio/elasticsearch/init/data/ --elasticsearch_url http://localhost:9200/
 deactivate
