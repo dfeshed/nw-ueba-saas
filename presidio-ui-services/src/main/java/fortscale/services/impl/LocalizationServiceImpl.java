@@ -25,13 +25,9 @@ public class LocalizationServiceImpl implements LocalizationService, Initializin
     private static final String FORTSCALE_MESSAGES_PREFIX = "messages";
     private static final String FORTSCALE_MESSAGES_SEPERATOR = ".";
     private static final String LOCALIZATION_CONFIG_KEY = "system.locale.settings";
-    private static final String FORTSCALE_MESSAGES_TEMPLATE = FORTSCALE_MESSAGES_PREFIX+FORTSCALE_MESSAGES_SEPERATOR+"%s";
-
-    private static final String UI_MESSAGE_PREFIX = "ui.message.";
 
 
     private CacheHandler<Locale, Map<String,String>> messagesCache;
-    private ApplicationConfigurationService applicationConfigurationService;
 
 
     @Value("${languages.default}")
@@ -43,10 +39,8 @@ public class LocalizationServiceImpl implements LocalizationService, Initializin
     ConfigrationServerClientUtils configrationServerClientUtils;
 
     public LocalizationServiceImpl(CacheHandler<Locale, Map<String, String>> messagesCache,
-                                   ApplicationConfigurationService applicationConfigurationService,
                                    ConfigrationServerClientUtils configrationServerClientUtils) {
         this.messagesCache = messagesCache;
-        this.applicationConfigurationService = applicationConfigurationService;
         this.configrationServerClientUtils = configrationServerClientUtils;
     }
 
@@ -107,6 +101,17 @@ public class LocalizationServiceImpl implements LocalizationService, Initializin
 
     }
 
+    @Override
+    public Map<String,Map<String, String>> getMessagesToAllLanguages(){
+        Map<String, Map<String, String>> all = new HashMap<>();
+        languages.forEach(langId->{
+            Locale locale = Locale.forLanguageTag(langId);
+            all.put(langId,this.messagesCache.get(locale));
+        });
+
+        return all;
+    }
+
     private Map<String, String> loadLang(String langId){
 
 
@@ -116,7 +121,7 @@ public class LocalizationServiceImpl implements LocalizationService, Initializin
             Map<String, String> langMap =
                     p.entrySet().stream()
                             .collect(Collectors.toMap(
-                                    e -> e.getKey().toString().replaceFirst(UI_MESSAGE_PREFIX,""),
+                                    e -> e.getKey().toString(),
                                     e -> e.getValue().toString()
                             ));
 

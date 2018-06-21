@@ -49,4 +49,6 @@ public interface  LocalizationService {
 
 
     String getAlertName(Alert alert);
+
+    Map<String,Map<String, String>> getMessagesToAllLanguages();
 }

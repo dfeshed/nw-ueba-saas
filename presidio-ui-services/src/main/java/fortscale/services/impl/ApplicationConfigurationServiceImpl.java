@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.core.dao.ApplicationConfigurationRepository;
 import fortscale.services.ApplicationConfigurationService;
+import fortscale.services.LocalizationService;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 
@@ -14,12 +16,15 @@ import java.util.*;
 public class ApplicationConfigurationServiceImpl implements ApplicationConfigurationService {
 
 
+    private LocalizationService localizationService;
     private ApplicationConfigurationRepository applicationConfigurationRepository;
     private static Logger logger = Logger.getLogger(ApplicationConfigurationServiceImpl.class);
     private static final ObjectMapper objectMapper= new ObjectMapper();
 
-    public ApplicationConfigurationServiceImpl(ApplicationConfigurationRepository applicationConfigurationRepository) {
+    public ApplicationConfigurationServiceImpl(ApplicationConfigurationRepository applicationConfigurationRepository,
+                                               LocalizationService localizationService) {
         this.applicationConfigurationRepository = applicationConfigurationRepository;
+        this.localizationService = localizationService;
     }
 
     /**
@@ -31,7 +36,39 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
     public List<ApplicationConfiguration> getApplicationConfiguration() {
         List<ApplicationConfiguration> applicationConfigurationList = new ArrayList<>();
         applicationConfigurationList.addAll(applicationConfigurationRepository.findAll());
+        applicationConfigurationList.addAll(getFromLocalization());
+
         return applicationConfigurationList;
+    }
+
+    private Collection<ApplicationConfiguration> getFromLocalization() {
+        Map<String,Map<String, String>>  all = localizationService.getMessagesToAllLanguages();
+        List<ApplicationConfiguration> allMessagesList = new ArrayList();
+
+        if (!CollectionUtils.isEmpty(all)){
+            for (Map.Entry<String,Map<String, String>> lang : all.entrySet()){
+                String langName = lang.getKey();
+                Map<String, String> messages = lang.getValue();
+                if (!CollectionUtils.isEmpty(messages)){
+                    for (Map.Entry<String,String> messageEntry:messages.entrySet()){
+                        String originalKey = messageEntry.getKey();
+                        String newKey = getNewKey(langName, originalKey);
+                        ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
+                        applicationConfiguration.setKey(newKey);
+                        applicationConfiguration.setValue(messageEntry.getValue());
+                        allMessagesList.add(applicationConfiguration);
+
+                    }
+                }
+            }
+        }
+
+        return allMessagesList;
+
+    }
+
+    private String getNewKey(String lang, String originalKey) {
+        return "messages."+lang+"."+originalKey;
     }
 
     @Override
