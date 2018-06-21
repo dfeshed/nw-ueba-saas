@@ -186,7 +186,9 @@ export const isMachineWindows = createSelector(
 export const getPropertyData = createSelector(
   [_policyDetails, _hostDetails],
   (policyDetails, hostDetails) => {
-    if (policyDetails.scheduledScanConfig) {
+    if (policyDetails.scheduledScanConfig &&
+      policyDetails.scheduledScanConfig.recurrentSchedule &&
+      policyDetails.scheduledScanConfig.scanOptions) {
       const { scheduledScanConfig } = policyDetails;
       const { recurrentSchedule, scanOptions } = scheduledScanConfig;
       const { recurrence, startTime, runOnDays, scheduleStartDate } = recurrentSchedule;
