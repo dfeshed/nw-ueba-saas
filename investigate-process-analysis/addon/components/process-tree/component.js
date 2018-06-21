@@ -21,7 +21,6 @@ import zoomed from './helpers/zoomed';
 import {
   isStreaming,
   children,
-  rootProcess,
   selectedProcessPath
 } from 'investigate-process-analysis/reducers/process-tree/selectors';
 
@@ -33,12 +32,12 @@ import {
 
 
 const stateToComputed = (state) => ({
-  rootProcess: rootProcess(state),
   isStreaming: isStreaming(state),
   children: children(state),
   path: selectedProcessPath(state),
   selectedProcessId: state.processAnalysis.processTree.queryInput ? state.processAnalysis.processTree.queryInput.vid : '',
-  isProcessDetailsVisible: state.processAnalysis.processVisuals.isProcessDetailsVisible
+  isProcessDetailsVisible: state.processAnalysis.processVisuals.isProcessDetailsVisible,
+  processName: state.processAnalysis.processTree.queryInput ? state.processAnalysis.processTree.queryInput.pn : ''
 });
 
 const dispatchToActions = {
@@ -73,6 +72,7 @@ const TreeComponent = Component.extend({
 
   isStreaming: false,
 
+  hasEvents: true,
   /**
    * D3 tree minimum zoom
    * @property
@@ -419,7 +419,9 @@ const TreeComponent = Component.extend({
       }
     });
     if (!dataTree.length) {
-      dataTree.push(this.get('rootProcess'));
+      this.set('hasEvents', false);
+    } else {
+      this.set('hasEvents', true);
     }
     return dataTree;
   },

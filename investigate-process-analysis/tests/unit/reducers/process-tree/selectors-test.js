@@ -5,7 +5,6 @@ import {
   hasError,
   isStreaming,
   errorMessage,
-  rootProcess,
   queryInput,
   children,
   selectedProcess,
@@ -17,21 +16,6 @@ import {
 } from 'investigate-process-analysis/reducers/process-tree/selectors';
 
 module('Unit | Selectors | process-tree', function() {
-
-  test('rootProcess returns root', function(assert) {
-    const state = Immutable.from({
-      processAnalysis: {
-        processTree: {
-          queryInput: {
-            pn: 'test'
-          }
-        }
-      }
-    });
-
-    const data = rootProcess(state);
-    assert.equal(data.processName, 'test');
-  });
 
   test('isStreaming', function(assert) {
     let state = Immutable.from({

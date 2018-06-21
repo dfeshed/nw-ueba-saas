@@ -75,23 +75,6 @@ export const children = createSelector(
   }
 );
 
-export const rootProcess = createSelector(
-  [queryInput],
-  (queryInput) => {
-    if (queryInput) {
-      return {
-        processName: queryInput.pn,
-        checksum: queryInput.checksum,
-        agentId: queryInput.aid,
-        processId: queryInput.vid,
-        hidden: false,
-        children: []
-      };
-    }
-    return null;
-  }
-);
-
 export const selectedProcess = createSelector(
   _selectedProcess,
   (selectedProcess) => selectedProcess

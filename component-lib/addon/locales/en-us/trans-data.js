@@ -3113,7 +3113,8 @@ export default {
     filter: {
       title: 'Filters',
       filterReset: 'Reset Filter'
-    }
+    },
+    error: 'No relationship views for the process {{processName}} as there are no "create process" events. Try changing the time range or refer to the Events tab to view timeline of all events for the process'
   },
   // Begin context menu
   contextmenu: {
