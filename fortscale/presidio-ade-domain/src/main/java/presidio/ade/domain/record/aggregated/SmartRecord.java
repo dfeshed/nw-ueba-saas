@@ -4,6 +4,7 @@ import fortscale.domain.feature.score.FeatureScore;
 import fortscale.utils.fixedduration.FixedDurationStrategy;
 import fortscale.utils.mongodb.index.DynamicIndexing;
 import fortscale.utils.time.TimeRange;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -155,11 +156,6 @@ public class SmartRecord extends AdeContextualAggregatedRecord implements AdeSco
 
 	@Override
 	public String toString() {
-		return String.format(
-				"%s{start = %s, end = %s, contextId = %s, featureName = %s, " +
-				"fixedDurationStrategy = %s, smartValue = %.5f, smartScore = %.5f}",
-				getClass().getSimpleName(), getStartInstant().toString(), getEndInstant().toString(),
-				getContextId(), getFeatureName(), getFixedDurationStrategy().toStrategyName(),
-				getSmartValue(), getScore());
+		return ToStringBuilder.reflectionToString(this);
 	}
 }

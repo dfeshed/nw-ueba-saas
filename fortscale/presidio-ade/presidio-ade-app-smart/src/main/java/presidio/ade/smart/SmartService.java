@@ -14,6 +14,7 @@ import presidio.ade.domain.pagination.aggregated.AggregatedDataReader;
 import presidio.ade.domain.record.aggregated.AdeAggregationRecord;
 import presidio.ade.domain.record.aggregated.SmartRecord;
 import presidio.ade.domain.store.smart.SmartDataStore;
+import presidio.ade.smart.correlation.SmartCorrelationService;
 import presidio.monitoring.flush.MetricContainerFlusher;
 
 import java.util.Collection;
@@ -75,6 +76,7 @@ public class SmartService {
 	public void process(String smartRecordConfName, TimeRange timeRange) {
 		logger.info("Smart service process: {}, {}.", smartRecordConfName, timeRange);
 		SmartRecordConf conf = smartRecordConfService.getSmartRecordConf(smartRecordConfName);
+		SmartCorrelationService smartCorrelationService = new SmartCorrelationService(conf);
 		FixedDurationStrategy strategy = conf.getFixedDurationStrategy();
 		Set<AggregatedDataPaginationParam> params = smartRecordConfService.getPaginationParams(smartRecordConfName);
 
@@ -95,6 +97,7 @@ public class SmartService {
 							conf, strategy, partition, aggregationRecordsThreshold);
 					while (iterator.hasNext()) aggregator.updateSmartRecords(iterator.next());
 					Collection<SmartRecord> records = aggregator.getSmartRecords();
+					smartCorrelationService.updateCorrelatedFeatures(records);
 					smartScoringService.score(records,timeRange);
 					smartDataStore.storeSmartRecords(smartRecordConfName, records, storeMetadataProperties);
 				});
