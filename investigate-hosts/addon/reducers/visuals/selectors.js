@@ -1,4 +1,5 @@
 import reselect from 'reselect';
+import { prepareContext } from 'investigate-shared/helpers/prepare-context';
 
 const AUTORUN_TABS = [
   {
@@ -152,45 +153,9 @@ export const getRiskPanelActiveTab = createSelector(
   }
 );
 
-export const getAlertsCount = createSelector(
-  [_context],
-  (context) => {
-    let count = 0;
-    if (context && context[0].Alerts) {
-      count = context[0].Alerts.resultList.length;
-    }
-    return count;
-  }
-);
-
-export const getIncidentsCount = createSelector(
-  [_context],
-  (context) => {
-    let count = 0;
-    if (context && context[0].Incidents) {
-      count = context[0].Incidents.resultList.length;
-    }
-    return count;
-  }
-);
-
 export const getContext = createSelector(
   [_context, getRiskPanelActiveTab],
   (context, riskPanelActiveTab) => {
-    let { resultList, resultMeta } = '';
-    const activeTab = riskPanelActiveTab === 'ALERT' ? 'Alerts' : 'Incidents';
-    if (context && context[0][activeTab]) {
-      resultList = context[0][activeTab].resultList;
-      resultMeta = context[0][activeTab].resultMeta;
-    }
-    if (resultList) {
-      if (activeTab === 'Alerts') {
-        resultList = resultList.map((alert) => {
-          const incident = alert.incidentId;
-          return { ...alert.alert, incident };
-        });
-      }
-    }
-    return { resultList, resultMeta };
+    return prepareContext([context, riskPanelActiveTab]);
   }
 );

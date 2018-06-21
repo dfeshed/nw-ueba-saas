@@ -2,7 +2,8 @@ import { connect } from 'ember-redux';
 import Component from '@ember/component';
 import { setDataSourceTab, setHostPropertyTabView } from 'investigate-hosts/actions/data-creators/details';
 import { toggleRiskPanel } from 'investigate-hosts/actions/data-creators/host';
-import { getDataSourceTab, getContext, getAlertsCount, getIncidentsCount } from 'investigate-hosts/reducers/visuals/selectors';
+import { getDataSourceTab, getContext } from 'investigate-hosts/reducers/visuals/selectors';
+import { getAlertsCount, getIncidentsCount } from 'investigate-shared/selectors/context';
 import { inject as service } from '@ember/service';
 
 import {
@@ -17,7 +18,8 @@ const stateToComputed = (state) => ({
   context: getContext(state),
   alertsCount: getAlertsCount(state),
   incidentsCount: getIncidentsCount(state),
-  showRiskPanel: state.endpoint.visuals.showRiskPanel
+  showRiskPanel: state.endpoint.visuals.showRiskPanel,
+  contextLoadingStatus: state.endpoint.visuals.contextLoadingStatus
 });
 
 const dispatchToActions = {

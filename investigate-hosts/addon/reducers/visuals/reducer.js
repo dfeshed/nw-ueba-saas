@@ -14,7 +14,8 @@ const visualsInitialState = Immutable.from({
   activeSystemInformationTab: 'HOST_ENTRIES',
   lookupData: [{}],
   contextError: null,
-  showRiskPanel: false
+  showRiskPanel: false,
+  contextLoadingStatus: 'wait'
 });
 
 const visuals = handleActions({
@@ -40,10 +41,10 @@ const visuals = handleActions({
 
   [ACTION_TYPES.SET_CONTEXT_DATA]: (state, { payload }) => {
     const lookupData = [].concat(contextDataParser([payload, state.lookupData]));
-    return state.merge({ lookupData });
+    return state.merge({ lookupData, contextLoadingStatus: 'completed' });
   },
 
-  [ACTION_TYPES.CLEAR_PREVIOUS_CONTEXT]: (state) => state.set('lookupData', [{} ]),
+  [ACTION_TYPES.CLEAR_PREVIOUS_CONTEXT]: (state) => state.merge({ lookupData: [{}], contextLoadingStatus: 'wait', contextError: null }),
 
   [ACTION_TYPES.CONTEXT_ERROR]: (state, { payload }) => state.set('contextError', payload),
 

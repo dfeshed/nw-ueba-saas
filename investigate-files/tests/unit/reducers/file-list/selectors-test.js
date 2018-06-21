@@ -8,8 +8,6 @@ import {
   fileCountForDisplay,
   serviceList,
   getDataSourceTab,
-  getAlertsCount,
-  getIncidentsCount,
   getContext
 } from 'investigate-files/reducers/file-list/selectors';
 
@@ -130,7 +128,6 @@ test('getContext returns incidents', function(assert) {
   });
   const result = getContext(state);
   assert.equal(result.resultList.length, 1, '1 incidents are fetched');
-  assert.equal(getIncidentsCount(state), 1, 'Incident count is correct');
 });
 
 test('getContext returns alerts', function(assert) {
@@ -157,6 +154,5 @@ test('getContext returns alerts', function(assert) {
   });
   const result = getContext(state);
   assert.equal(result.resultList.length, 2, '2 Alerts fetched');
-  assert.equal(getAlertsCount(state), 2, 'Alerts count is correct');
 });
 

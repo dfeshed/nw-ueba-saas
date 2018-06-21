@@ -67,7 +67,8 @@ test('should return the initial state', function(assert) {
     activeDataSourceTab: 'ALERT',
     lookupData: [{}],
     showRiskPanel: false,
-    contextError: null
+    contextError: null,
+    contextLoadingStatus: 'wait'
   });
 });
 

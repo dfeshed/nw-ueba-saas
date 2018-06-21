@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { getHostPropertyTab, getContext, getAlertsCount, getIncidentsCount } from 'investigate-hosts/reducers/visuals/selectors';
+import { getHostPropertyTab, getContext } from 'investigate-hosts/reducers/visuals/selectors';
+import { getAlertsCount, getIncidentsCount } from 'investigate-shared/selectors/context';
 import { getPropertyData } from 'investigate-hosts/reducers/details/overview/selectors';
 import { setHostPropertyTabView } from 'investigate-hosts/actions/data-creators/details';
 import { inject as service } from '@ember/service';

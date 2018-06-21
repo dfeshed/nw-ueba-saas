@@ -30,7 +30,12 @@ export default Component.extend({
         }
       });
     }
-    return filtered;
+    return { data: filtered, completed: true };
+  },
+
+  @computed('filteredData')
+  hasfilteredData(filteredData) {
+    return (filteredData && filteredData.data.length);
   },
 
   actions: {

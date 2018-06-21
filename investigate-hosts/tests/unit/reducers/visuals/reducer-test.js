@@ -46,7 +46,8 @@ test('should return the initial state', function(assert) {
     activeSystemInformationTab: 'HOST_ENTRIES',
     contextError: null,
     lookupData: [{}],
-    showRiskPanel: false
+    showRiskPanel: false,
+    contextLoadingStatus: 'wait'
   });
 });
 
@@ -60,7 +61,8 @@ test('The RESET_INPUT_DATA action reset to initial state', function(assert) {
     activeSystemInformationTab: 'HOST_ENTRIES',
     contextError: null,
     lookupData: [{}],
-    showRiskPanel: false
+    showRiskPanel: false,
+    contextLoadingStatus: 'wait'
   });
 
   const expectedEndState = {
@@ -74,7 +76,8 @@ test('The RESET_INPUT_DATA action reset to initial state', function(assert) {
     contextError: null,
     activeSystemInformationTab: 'HOST_ENTRIES',
     lookupData: [{}],
-    showRiskPanel: false
+    showRiskPanel: false,
+    contextLoadingStatus: 'wait'
   };
 
   const result = reducer(previous, { type: ACTION_TYPES.RESET_INPUT_DATA });

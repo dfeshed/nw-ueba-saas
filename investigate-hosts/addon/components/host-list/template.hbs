@@ -36,7 +36,13 @@
             {{/rsa-form-button}}
           </vbox>
         </hbox>
-        {{endpoint/risk-panel activeDataSourceTab=activeDataSourceTab data=context  errorMessage = contextError}}
+        {{#if (eq contextLoadingStatus 'wait')}}
+          <centered>
+            {{rsa-loader size='medium'}}
+          </centered>
+        {{else}}
+          {{endpoint/risk-panel activeDataSourceTab=activeDataSourceTab data=context errorMessage=contextError}}
+        {{/if}}
       </box>
     {{/if}}
   </hbox>

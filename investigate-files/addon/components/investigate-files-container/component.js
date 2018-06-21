@@ -2,7 +2,8 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 
 import { isSchemaLoaded } from 'investigate-files/reducers/schema/selectors';
-import { hasFiles, getContext, getAlertsCount, getIncidentsCount, getDataSourceTab } from 'investigate-files/reducers/file-list/selectors';
+import { hasFiles, getContext, getDataSourceTab } from 'investigate-files/reducers/file-list/selectors';
+import { getAlertsCount, getIncidentsCount } from 'investigate-shared/selectors/context';
 import {
   fetchSchemaInfo,
   resetDownloadId,
@@ -21,7 +22,8 @@ const stateToComputed = (state) => ({
   alertsCount: getAlertsCount(state),
   incidentsCount: getIncidentsCount(state),
   showRiskPanel: state.files.fileList.showRiskPanel,
-  activeDataSourceTab: state.files.fileList.activeDataSourceTab
+  activeDataSourceTab: state.files.fileList.activeDataSourceTab,
+  contextLoadingStatus: state.files.fileList.contextLoadingStatus
 });
 
 const dispatchToActions = {

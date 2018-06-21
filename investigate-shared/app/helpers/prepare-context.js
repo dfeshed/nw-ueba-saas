@@ -1,0 +1,1 @@
+export { default, prepareContext } from 'investigate-shared/helpers/prepare-context';

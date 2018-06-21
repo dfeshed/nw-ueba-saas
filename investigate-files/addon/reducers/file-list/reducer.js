@@ -20,7 +20,8 @@ const fileListState = Immutable.from({
   activeDataSourceTab: 'ALERT',
   lookupData: [{}],
   showRiskPanel: false,
-  contextError: null
+  contextError: null,
+  contextLoadingStatus: 'wait'
 });
 
 const _handleAppendFiles = (action) => {
@@ -85,10 +86,10 @@ const fileListReducer = handleActions({
 
   [ACTION_TYPES.SET_CONTEXT_DATA]: (state, { payload }) => {
     const lookupData = [].concat(contextDataParser([payload, state.lookupData]));
-    return state.merge({ lookupData });
+    return state.merge({ lookupData, contextLoadingStatus: 'completed' });
   },
 
-  [ACTION_TYPES.CLEAR_PREVIOUS_CONTEXT]: (state) => state.set('lookupData', [{} ]),
+  [ACTION_TYPES.CLEAR_PREVIOUS_CONTEXT]: (state) => state.merge({ lookupData: [{}], contextLoadingStatus: 'wait' }),
 
   [ACTION_TYPES.TOGGLE_RISK_PANEL_VISIBILITY]: (state, { payload }) => state.set('showRiskPanel', payload),
 
