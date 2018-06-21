@@ -1,3 +1,4 @@
+import { next } from '@ember/runloop';
 import Component from '@ember/component';
 import computed, { and, empty } from 'ember-computed-decorators';
 import _ from 'lodash';
@@ -56,6 +57,9 @@ export default Component.extend({
   selectedMeta: null,
   selectedOperator: null,
   valueString: null,
+
+  // Whether or not a focusOut event should be processed
+  shouldFocusOut: false,
 
   /**
    * Is this component being used to create a new pill
@@ -157,7 +161,39 @@ export default Component.extend({
   },
 
   focusIn() {
+    // Stop any focus out events because focus has returned
+    this.set('shouldFocusOut', false);
     this._pillEntered();
+  },
+
+  focusOut() {
+    this.set('shouldFocusOut', true);
+
+    // Use next here because as user moves
+    // from meta to operator to value, this
+    // component loses focus for a split second.
+    // But it regains it. Before next function
+    // is called the focusIn above resets
+    // flag indicating focus has been regained
+    // and no focusOut side effects should take
+    // place
+    next(() => {
+
+      // NOTE: this will not send a focus out
+      // event when a pill is created using
+      // the pill template because the pill
+      // template will have been cleared out
+      // and re-entered with the meta trigger
+      // open by the time next is called
+      const {
+        shouldFocusOut,
+        isDestroyed,
+        isDestroying
+      } = this.getProperties('shouldFocusOut', 'isDestroyed', 'isDestroying');
+      if (shouldFocusOut && !isDestroyed && !isDestroying) {
+        this._pillLostFocus();
+      }
+    });
   },
 
   actions: {
@@ -216,6 +252,24 @@ export default Component.extend({
       this._broadcast(MESSAGE_TYPES.PILL_ENTERED_FOR_EDIT, pillData);
     } else {
       this._broadcast(MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW, pillData);
+    }
+  },
+
+  /**
+   * Checks to see if anything should be done when the pill loses focus.
+   * If we have no meta/operator/value then treat this like a pill cancel.
+   *
+   * @private
+   */
+  _pillLostFocus() {
+    const {
+      selectedMeta,
+      selectedOperator,
+      valueString
+    } = this.getProperties('selectedMeta', 'selectedOperator', 'valueString');
+    if (!selectedMeta && !selectedOperator && !valueString) {
+      // treat this like an ESC was keyed
+      this._cancelPillCreation();
     }
   },
 

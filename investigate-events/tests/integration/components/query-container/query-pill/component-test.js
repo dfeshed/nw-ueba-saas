@@ -3,7 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
-import { click, fillIn, find, findAll, focus, render, triggerKeyEvent, waitUntil } from '@ember/test-helpers';
+import { blur, click, fillIn, find, findAll, focus, render, triggerKeyEvent, waitUntil } from '@ember/test-helpers';
 
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
@@ -290,5 +290,80 @@ module('Integration | Component | query-pill', function(hooks) {
         sendMessage=(action handleMessage)
       }}
     `);
+  });
+
+  test('When nothing is chosen and component loses focus the component messages up a pill has cancelled', async function(assert) {
+    const done = assert.async();
+
+    this.set('handleMessage', (messageType, data, position) => {
+      if (isIgnoredInitialEvent(messageType)) {
+        return;
+      }
+
+      assert.equal(messageType, MESSAGE_TYPES.PILL_CANCELLED, 'Message sent for pill cancel is not correct');
+      assert.equal(position, 0, 'Message sent for pill create contains correct pill position');
+
+      done();
+    });
+
+    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    await focus(PILL_SELECTORS.metaTrigger);
+    await blur(PILL_SELECTORS.metaTrigger);
+  });
+
+  test('When something (meta) is chosen and component loses focus the component does not message up', async function(assert) {
+    assert.expect(0);
+    this.set('handleMessage', (messageType) => {
+      if (isIgnoredInitialEvent(messageType)) {
+        return;
+      }
+
+      assert.ok(false, `Should not get here with ${messageType}`);
+    });
+
+    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    // Choose the first meta option
+    selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0); // option A
+    await waitUntil(() => find(PILL_SELECTORS.operatorTrigger));
+    await blur(PILL_SELECTORS.operatorTrigger);
+  });
+
+  test('At no point during pill creation is a cancel thrown up because of focusOut/focusIn timing', async function(assert) {
+    assert.expect(1);
+
+    this.set('handleMessage', (messageType) => {
+      if (isIgnoredInitialEvent(messageType)) {
+        return;
+      }
+
+      assert.notEqual(messageType, MESSAGE_TYPES.PILL_CANCELLED, 'No cancel should be sent');
+    });
+
+    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    await createBasicPill();
   });
 });
