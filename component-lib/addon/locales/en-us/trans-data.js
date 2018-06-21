@@ -3216,7 +3216,9 @@ export default {
       applyPolicy: 'Apply Policy',
       applyPolicyOptional: '(Optional)',
       policy: 'Policy',
-      policyPlaceholder: 'Choose a policy'
+      policyPlaceholder: 'Choose a policy',
+      saveFailure: 'A problem occurred while trying to save the group.',
+      saveSuccess: 'The group has been saved successfully.'
     },
     policies: {
       title: 'Policies'
@@ -3230,7 +3232,6 @@ export default {
         title: 'Scan Schedule',
         save: 'Save',
         enable: 'Enable',
-        saveSuccess: 'Saved successfully',
         startDate: 'Start Date',
         recurrenceInterval: {
           title: 'Recurrence Interval',
@@ -3261,11 +3262,10 @@ export default {
           title: 'Agent CPU Throttling',
           cpuMax: 'CPU Maximum ( % )',
           vmMax: 'Virtual Machine Maximum ( % ) '
-        },
-        error: {
-          generic: 'An unexpected error has occurred.'
         }
-      }
+      },
+      saveFailure: 'A problem occurred while trying to save the policy.',
+      saveSuccess: 'The policy has been saved successfully.'
     }
   },
   // end admin-source-management (a.k.a USM)

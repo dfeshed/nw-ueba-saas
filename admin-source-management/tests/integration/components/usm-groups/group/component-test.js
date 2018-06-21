@@ -8,6 +8,9 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import Immutable from 'seamless-immutable';
 import { clickTrigger, selectChoose } from '../../../../helpers/ember-power-select';
 import { patchReducer } from '../../../../helpers/vnext-patch';
+import { patchFlash } from '../../../../helpers/patch-flash';
+import { throwSocket } from '../../../../helpers/patch-socket';
+import { waitForSockets } from '../../../../helpers/wait-for-sockets';
 import * as groupCreators from 'admin-source-management/actions/data-creators/group-creators';
 import { initialState as _initialState } from 'admin-source-management/reducers/usm/group-reducers';
 import policiesData from '../../../../../tests/data/subscriptions/policy/findAll/data';
@@ -188,7 +191,8 @@ module('Integration | Component | Group', function(hooks) {
   test('Clicking the save button dispatches the saveGroup action creator (SAVE_GROUP)', async function(assert) {
     const actionSpy = sinon.spy(groupCreators, 'saveGroup');
     setState({ ...initialState, group: saveGroupData });
-    await render(hbs`{{usm-groups/group}}`);
+    this.set('transitionToGroups', () => {}); // avoid annoying console error
+    await render(hbs`{{usm-groups/group transitionToGroups=(action transitionToGroups)}}`);
     const el = findAll('.confirm-button:not(.is-disabled) button')[0]; // eslint-disable-line ember-suave/prefer-destructuring
     await click(el);
     return settled().then(() => {
@@ -197,6 +201,46 @@ module('Integration | Component | Group', function(hooks) {
       assert.equal(actionSpy.getCall(0).args[0], saveGroupData);
       actionSpy.restore();
     });
+  });
+
+  test('On failing to save a group, an error flash message is shown', async function(assert) {
+    assert.expect(2);
+    setState({ ...initialState, group: saveGroupData });
+    this.set('transitionToGroups', () => {}); // avoid annoying console error
+    await render(hbs`{{usm-groups/group transitionToGroups=(action transitionToGroups)}}`);
+
+    throwSocket();
+    patchFlash((flash) => {
+      const translation = this.owner.lookup('service:i18n');
+      const expectedMessage = translation.t('adminUsm.group.saveFailure');
+      assert.equal(flash.type, 'error');
+      assert.equal(flash.message.string, expectedMessage);
+    });
+
+    const el = findAll('.confirm-button:not(.is-disabled) button')[0]; // eslint-disable-line ember-suave/prefer-destructuring
+    await click(el);
+  });
+
+  test('On successfully saving a group, a success flash message is shown, and the transitionToGroups action is called', async function(assert) {
+    assert.expect(3);
+    setState({ ...initialState, group: saveGroupData });
+
+    const done = waitForSockets();
+    patchFlash((flash) => {
+      const translation = this.owner.lookup('service:i18n');
+      const expectedMessage = translation.t('adminUsm.group.saveSuccess');
+      assert.equal(flash.type, 'success');
+      assert.equal(flash.message.string, expectedMessage);
+      done();
+    });
+
+    this.set('transitionToGroups', () => {
+      assert.ok('transitionToGroups is called on a successful save');
+    });
+
+    await render(hbs`{{usm-groups/group transitionToGroups=(action transitionToGroups)}}`);
+    const el = findAll('.confirm-button:not(.is-disabled) button')[0]; // eslint-disable-line ember-suave/prefer-destructuring
+    await click(el);
   });
 
 });

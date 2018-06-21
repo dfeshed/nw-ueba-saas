@@ -29,12 +29,12 @@ const dispatchToActions = (dispatch) => ({
   save() {
     const callBackOptions = {
       onSuccess: () => {
-        this.send('success', 'adminUsm.policy.scheduleConfiguration.saveSuccess');
+        this.send('success', 'adminUsm.policy.saveSuccess');
         const transitionToPolicies = this.get('transitionToPolicies');
         transitionToPolicies();
       },
       onFailure: () => {
-        this.send('failure', 'adminUsm.policy.scheduleConfiguration.error.generic');
+        this.send('failure', 'adminUsm.policy.saveFailure');
       }
     };
     dispatch(savePolicy(this.get('policy'), callBackOptions));

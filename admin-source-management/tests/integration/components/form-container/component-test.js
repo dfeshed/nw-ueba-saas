@@ -7,6 +7,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import Immutable from 'seamless-immutable';
 import { patchReducer } from '../../../helpers/vnext-patch';
 import { patchFlash } from '../../../helpers/patch-flash';
+import { throwSocket } from '../../../helpers/patch-socket';
 import { waitForSockets } from '../../../helpers/wait-for-sockets';
 
 const initialState = {
@@ -69,20 +70,41 @@ module('Integration | Component | form-container', function(hooks) {
     assert.equal(findAll('.confirm-button.is-disabled').length, 1, 'The Save button is disabled when there is no policy name');
   });
 
-  test('Clicking the save button calls transitionToPolicies', async function(assert) {
+  test('On failing to save a policy, an error flash message is shown', async function(assert) {
+    assert.expect(2);
+    setState({ ...initialState, policy: policyData });
+    this.set('transitionToPolicies', () => {}); // avoid annoying console error
+    await render(hbs`{{form-container transitionToPolicies=(action transitionToPolicies)}}`);
+
+    throwSocket();
+    patchFlash((flash) => {
+      const translation = this.owner.lookup('service:i18n');
+      const expectedMessage = translation.t('adminUsm.policy.saveFailure');
+      assert.equal(flash.type, 'error');
+      assert.equal(flash.message.string, expectedMessage);
+    });
+
+    const el = findAll('.confirm-button:not(.is-disabled) button')[0]; // eslint-disable-line ember-suave/prefer-destructuring
+    await click(el);
+  });
+
+  test('On successfully saving a policy, a success flash message is shown, and the transitionToPolicies action is called', async function(assert) {
     assert.expect(3);
-    const done = waitForSockets();
     setState({ ...initialState, policy: policyData });
 
+    const done = waitForSockets();
     patchFlash((flash) => {
+      const translation = this.owner.lookup('service:i18n');
+      const expectedMessage = translation.t('adminUsm.policy.saveSuccess');
       assert.equal(flash.type, 'success');
-      assert.equal(flash.message.string, 'Saved successfully');
+      assert.equal(flash.message.string, expectedMessage);
       done();
     });
 
     this.set('transitionToPolicies', () => {
       assert.ok('transition to policy called');
     });
+
     await render(hbs`{{form-container transitionToPolicies=(action transitionToPolicies)}}`);
     const el = findAll('.confirm-button:not(.is-disabled) button')[0]; // eslint-disable-line ember-suave/prefer-destructuring
     await click(el);

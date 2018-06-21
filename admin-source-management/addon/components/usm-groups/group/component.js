@@ -1,5 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
+import Notifications from 'component-lib/mixins/notifications';
 import {
   group,
   osTypes,
@@ -39,10 +40,14 @@ const dispatchToActions = (dispatch) => ({
   save() {
     // if the save is succesful, redirect the user to the groups list route
     const onSuccess = () => {
+      this.send('success', 'adminUsm.group.saveSuccess');
       const transitionToGroups = this.get('transitionToGroups');
       transitionToGroups();
     };
-    dispatch(saveGroup(this.get('group'), { onSuccess }));
+    const onFailure = () => {
+      this.send('failure', 'adminUsm.group.saveFailure');
+    };
+    dispatch(saveGroup(this.get('group'), { onSuccess, onFailure }));
   },
   // cancel changes to the group
   cancel() {
@@ -51,7 +56,7 @@ const dispatchToActions = (dispatch) => ({
   }
 });
 
-const UsmGroup = Component.extend({
+const UsmGroup = Component.extend(Notifications, {
   tagName: 'hbox',
   classNames: ['usm-group', 'scroll-box'],
 
