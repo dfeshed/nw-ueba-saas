@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import { set } from '@ember/object';
 /**
  * Calculates Y-offset for context menu to avoid the it from going out of the screen
  * @public
@@ -30,7 +31,7 @@ export const mergeObjectArray = (srcArray, mergeArray) => {
     if (!existingObj) {
       srcArray.push(mergeObj);
     } else if (mergeObj.subActions) {
-      existingObj.subActions = mergeObjectArray(existingObj.subActions, mergeObj.subActions);
+      set(existingObj, 'subActions', mergeObjectArray(existingObj.subActions, mergeObj.subActions));
     }
   });
   return srcArray;

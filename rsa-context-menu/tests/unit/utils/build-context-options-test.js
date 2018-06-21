@@ -28,7 +28,7 @@ module('Unit | Utility | build-context-options', function() {
   test('test action should open url in new tab', function(assert) {
     const spy = sinon.spy(windowProxy, 'openInNewTab');
     const result = buildContextOptions(data.data, i18n);
-    const ipActions = result.EventAnalysisPanel['ip.src'].find((action) => action.label === 'contextmenu.actions.applyRefocusSessionSplitsInNewTabLabelNew');
+    const ipActions = result.EventAnalysisPanel['ip.src'].find((action) => action.label === 'applyRefocusSessionSplitsInNewTabLabelNew');
     ipActions.action([selection]);
     assert.ok(spy.calledOnce);
     spy.restore();
@@ -42,7 +42,7 @@ module('Unit | Utility | build-context-options', function() {
       newTab = false;
     });
     const result = buildContextOptions(data.data, i18n);
-    const ipActions = result.EventAnalysisPanel['ip.src'].find((action) => action.label === 'contextmenu.actions.nw-event-value-drillable-contains');
+    const ipActions = result.EventAnalysisPanel['ip.src'].find((action) => action.label === 'nw-event-value-drillable-contains');
     ipActions.action([selection]);
     assert.equal(currentUrl, 'http://www.google.com/search?q=17.127.255.150');
     assert.notOk(newTab);

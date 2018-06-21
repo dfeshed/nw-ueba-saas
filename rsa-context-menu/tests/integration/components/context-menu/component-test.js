@@ -6,6 +6,8 @@ import { triggerEvent, find, findAll, settled, render } from '@ember/test-helper
 import { patchFetch } from '../../../helpers/patch-fetch';
 import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 import { Promise } from 'rsvp';
+import { set } from '@ember/object';
+import { run } from '@ember/runloop';
 
 let fetchResolved = false;
 const callback = () => {};
@@ -20,6 +22,12 @@ const e = {
     }
   }
 };
+const contextSelection = {
+  displayValue: '127.0.0.1',
+  metaName: 'ip.src',
+  metaValue: '127.0.0.1',
+  moduleName: 'EventAnalysisPanel'
+};
 
 module('Integration | Component | Context Menu', function(hooks) {
   setupRenderingTest(hooks);
@@ -30,15 +38,6 @@ module('Integration | Component | Context Menu', function(hooks) {
     wormholeDiv.id = wormhole;
     document.querySelector('#ember-testing').appendChild(wormholeDiv);
     document.addEventListener('contextmenu', callback);
-  });
-
-  hooks.afterEach(function() {
-    document.removeEventListener('contextmenu', callback);
-  });
-
-  test('both actions and subactions render with correct label', async function(assert) {
-    assert.expect(33);
-
     patchFetch(() => {
       return new Promise(function(resolve) {
         resolve({
@@ -50,14 +49,16 @@ module('Integration | Component | Context Menu', function(hooks) {
         });
       });
     });
+  });
 
-    this.set('contextSelection', {
-      displayValue: '127.0.0.1',
-      metaName: 'ip.src',
-      metaValue: '127.0.0.1',
-      moduleName: 'EventAnalysisPanel'
-    });
+  hooks.afterEach(function() {
+    document.removeEventListener('contextmenu', callback);
+  });
 
+  test('both actions and subactions render with correct label', async function(assert) {
+    assert.expect(33);
+
+    this.set('contextSelection', contextSelection);
     await render(hbs`{{#rsa-context-menu contextSelection=contextSelection}}{{context-menu}}{{/rsa-context-menu}}`);
 
     triggerEvent('.content-context-menu', 'contextmenu', e);
@@ -118,6 +119,47 @@ module('Integration | Component | Context Menu', function(hooks) {
 
       const applyEqualsSubItems = `${parentSelector}:nth-of-type(7) .context-menu--sub li`;
       assert.equal(findAll(applyEqualsSubItems).length, 0);
+    });
+  });
+
+  test('action label will be localization friendly', async function(assert) {
+    const i18n = this.owner.lookup('service:i18n');
+    const japaneseCopyMeta = 'コピーメタ';
+    const japaneseExternalLookup = 'コメタ';
+    run(i18n, 'addTranslations', 'ja-jp', {
+      'contextmenu.actions.getCopy': japaneseCopyMeta,
+      'contextmenu.groups.externalLookupGroup': japaneseExternalLookup
+    });
+
+    this.set('contextSelection', contextSelection);
+    await render(hbs`{{#rsa-context-menu contextSelection=contextSelection}}{{context-menu}}{{/rsa-context-menu}}`);
+
+    triggerEvent('.content-context-menu', 'contextmenu', e);
+
+    await waitFor(() => fetchResolved === true);
+
+    triggerEvent('.content-context-menu', 'contextmenu', e);
+
+    await settled();
+
+    const selector = '.context-menu';
+    assert.equal(findAll(`${selector} > .context-menu__item`).length, 7);
+    assert.equal(find(`${selector} > .context-menu__item:nth-of-type(1) .context-menu__item__label`).textContent.trim(), 'External Lookup');
+    assert.equal(find(`${selector} > .context-menu__item:nth-of-type(2) .context-menu__item__label`).textContent.trim(), 'Data Science');
+    assert.equal(find(`${selector} > .context-menu__item:nth-of-type(3) .context-menu__item__label`).textContent.trim(), 'Copy');
+
+    run(() => document.querySelector('body').click());
+    set(i18n, 'locale', 'ja-jp');
+
+    await settled();
+
+    triggerEvent('.content-context-menu', 'contextmenu', e);
+
+    return settled().then(() => {
+      assert.equal(findAll(`${selector} > .context-menu__item`).length, 7);
+      assert.equal(find(`${selector} > .context-menu__item:nth-of-type(1) .context-menu__item__label`).textContent.trim(), japaneseExternalLookup);
+      assert.equal(find(`${selector} > .context-menu__item:nth-of-type(2) .context-menu__item__label`).textContent.trim(), 'Data Science');
+      assert.equal(find(`${selector} > .context-menu__item:nth-of-type(3) .context-menu__item__label`).textContent.trim(), japaneseCopyMeta);
     });
   });
 });

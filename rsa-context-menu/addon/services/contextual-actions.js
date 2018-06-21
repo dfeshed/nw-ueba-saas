@@ -1,4 +1,4 @@
-import Service, { inject as service } from '@ember/service';
+import Service from '@ember/service';
 import fetch from 'component-lib/services/fetch';
 import { log } from 'ember-debug';
 import {
@@ -17,14 +17,13 @@ import _ from 'lodash';
 export default Service.extend({
 
   moduleBasedActions: null,
-  i18n: service(),
 
   init() {
     this._super(...arguments);
     fetch('/admin/contextmenu/configuration.json')
     .then((fetched) => fetched.json())
     .then(({ data = [] }) => {
-      this.set('moduleBasedActions', buildContextOptions(data, this.get('i18n')));
+      this.set('moduleBasedActions', buildContextOptions(data));
     }).catch((error) => {
       log('Error fetching actions', error);
     });
