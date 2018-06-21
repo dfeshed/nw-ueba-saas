@@ -36,7 +36,7 @@ export default {
       name: 'openProcess'
     },
     {
-      name: 'openProcessBrowser'
+      name: 'openBrowserProcess'
     },
     {
       name: 'openOSProcess'
