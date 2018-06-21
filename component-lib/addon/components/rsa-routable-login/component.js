@@ -22,6 +22,7 @@ import config from 'ember-get-config';
 import { set } from '@ember/object';
 import RSVP from 'rsvp';
 import { warn } from '@ember/debug';
+import { sanitizeHtml } from 'component-lib/utils/sanitize';
 
 const { Promise } = RSVP;
 
@@ -268,7 +269,8 @@ export default Component.extend({
           this.get('ajax').request('/eula/rsa', {
             dataType: 'html'
           }).then((response) => {
-            this.set('eulaContent', response);
+            const html = sanitizeHtml(response);
+            this.set('eulaContent', html);
 
             return new Promise((resolve) => {
               later(() => {

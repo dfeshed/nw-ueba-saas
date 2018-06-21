@@ -88,4 +88,22 @@ module('Integration | Component | rsa-routable-login', function(hooks) {
     assert.equal(document.querySelector('.login-wrapper').classList.contains('has-error'), true);
   });
 
+  test('eula html will be sanitized before html is rendered', async function(assert) {
+    assert.expect(2);
+
+    this.owner.register('service:ajax', Service.extend({
+      request: () => {
+        return new Promise(function(resolve) {
+          later(() => {
+            resolve('<p><img src="#" onerror=alert(1) />foo</p>');
+          }, 1);
+        });
+      }
+    }));
+
+    await render(hbs `{{rsa-routable-login displayEula=true}}`);
+    assert.equal(findAll('.eula-content').length, 1);
+    assert.equal(document.querySelector('.eula-content').innerHTML.trim(), '<p><img src="#">foo</p>');
+  });
+
 });

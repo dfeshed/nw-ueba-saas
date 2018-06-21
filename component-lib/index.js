@@ -54,6 +54,12 @@ module.exports = {
       'pikaday-time': {
         import: ['pikaday.js', 'css/pikaday.css']
       },
+      'sanitize-html': {
+        vendor: {
+          srcDir: 'dist',
+          include: ['sanitize-html.js']
+        }
+      },
       redux: {
         vendor: [reduxLib]
       },
@@ -189,6 +195,10 @@ module.exports = {
     });
     this.import('vendor/redux-persist-transform-filter.amd.js');
     this.import('vendor/reselect.amd.js');
+
+    // Sanitize Html
+    this.import('vendor/sanitize-html/sanitize-html.js');
+    this.import('vendor/shims/sanitize-shim.js');
   },
 
   init() {
