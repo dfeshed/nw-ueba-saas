@@ -24,13 +24,13 @@
         {
             "title": "Alert Name",
             "field": "name",
-            "template": "<a ui-sref='user.alert-overview({userId: dataItem.entityId, alertId: dataItem.id})' style=\"color: inherit;\"  ng-bind-html=\"dataItem | prettyAlertName\"></a>",
+            "template": "<a ui-sref='user.alert-overview({userId: dataItem.entityId, alertId: dataItem.id})'  ng-bind-html=\"dataItem | prettyAlertName\"></a>",
             "sortable": false
         },
         {
             "title": "Entity Name",
             "field": "entityName",
-            "template": "<a ui-sref='user.baseline({userId: dataItem.entityId})' style=\"color: inherit;\">{{dataItem.entityName}}</a>"
+            "template": "<a ui-sref='user.baseline({userId: dataItem.entityId})' >{{dataItem.entityName}}</a>"
         },
         {
             "title": "Start Time",

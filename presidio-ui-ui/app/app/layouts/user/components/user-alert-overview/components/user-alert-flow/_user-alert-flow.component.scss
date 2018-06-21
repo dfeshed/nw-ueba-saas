@@ -7,7 +7,7 @@ fs-user-alert-flow {
     max-height: calc(35vh - 100px);
 
     .alert-flow-title {
-        color: #01294a;
+        color: var(--main-widgets-titles-text-color);
         font-family: 'Open Sans', sans-serif;
         font-size: 14px;
         font-weight: 700;
@@ -22,9 +22,8 @@ fs-user-alert-flow {
     }
 
     .slide-button {
-        color: #0062b3;
+        color: var(--main-widgets-titles-text-color);
         font-size: 26px;
-
         cursor: pointer;
 
         &[disabled] {
@@ -79,7 +78,7 @@ fs-user-alert-flow {
         width: 48px;
         height: 48px;
         border-radius: 50%;
-        background-color: #35a6da;
+        background-color: #161616;
 
         display: flex;
         flex-flow: column nowrap;
@@ -97,7 +96,7 @@ fs-user-alert-flow {
 
     .slide-separator {
         flex: 1;
-        border-top: 1px solid #024d89;
+        border-top: 1px solid #979797;
         margin: 10px;
 
         cursor: pointer;
@@ -118,7 +117,7 @@ fs-user-alert-flow {
     .slide-date-time {
         font-family: 'Open Sans', sans-serif;
         font-weight: 400;
-        color: #838485;
+        color: var(--main-widgets-titles-text-color);
         font-size: 10px;
     }
 

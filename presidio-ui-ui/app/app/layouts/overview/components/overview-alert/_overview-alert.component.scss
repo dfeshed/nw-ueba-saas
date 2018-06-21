@@ -19,14 +19,23 @@ overview-alert {
 
     &:hover {
         background-color: #dedede;
+
+        .overview-alert{
+            &--info {
+                &--title {
+                    color: var(--main-widgets-titles-text-color-hover);
+                }
+            }
+        }
+
     }
 
     /**
     * Blue Border Lines
     **/
-    border-bottom: 1px solid #adcdfa;
+    border-bottom: 1px solid var(--main-widgets-lines-seperators);
     &:nth-child(2n-1) {
-        border-right: 1px solid #adcdfa;
+        border-right: 1px solid var(--main-widgets-lines-seperators);
     }
 
     &:nth-child(9), &:nth-child(10) {
@@ -98,14 +107,18 @@ overview-alert {
 
             &--title {
                 font-size: 14px;
-                font-weight: 700;
-                color: #666;
+                font-weight: 600;
+                color: var(--main-widgets-titles-text-color);
+                letter-spacing: 0.5px;
+                line-height: 24px;
+
+
 
             }
 
             &--entity-name {
                 display: inline-block;
-                color: #024d89;
+                color: var(--main-widgets-titles-link-color);
                 font-size: 12px;
                 text-decoration: underline;
                 max-width: 90%;
@@ -113,7 +126,9 @@ overview-alert {
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
-                font-weight: 400;
+                font-weight: 600;
+                letter-spacing: 0.43px;
+                line-height: 24px;
 
                 i {
                     font-size: 14px;
@@ -124,7 +139,7 @@ overview-alert {
             }
 
             &--date {
-                color: #838485;
+                color: #BDBDBD;
                 font-size: 11px;
             }
         }
@@ -138,7 +153,7 @@ overview-alert {
             justify-content: center;
             align-items: center;
 
-            color: #024d89;
+            color: var(--main-widgets-titles-text-color);
             font-weight: 400;
 
             &--amount {

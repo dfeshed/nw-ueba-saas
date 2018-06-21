@@ -75,22 +75,25 @@ user-upper-bar {
                     margin-right: 15px;
 
                 }
+                &--text{
+                    padding-right: 10px;
+                }
 
                 svg {
-                    fill: #016a9c;
+                    fill: var(--main-widgets-titles-text-color);
                     display: inline-block;
                 }
 
                 .watch-user-button-instance {
                     position: absolute;
-                    width: 100%;
-                    height: 100%;
+                    width: 66%;
+                    height: 75%;
 
                     display: flex;
                     flex-flow: row nowrap;
                     align-items: center;
                     justify-content: center;
-
+                    border: 1px solid var(--main-widgets-titles-text-color);
                     top: 0;
                     right: 0;
 
@@ -98,7 +101,7 @@ user-upper-bar {
                     border-radius: 3px;
                     box-shadow: 0 3px 7px rgba(0, 0, 0, 0.1);
 
-                    color: #004f8f;
+                    color: var(--main-widgets-titles-text-color);
                     font-family: 'Open Sans', sans-serif;
                     font-size: 14px;
                     font-weight: 400;

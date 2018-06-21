@@ -34,12 +34,12 @@
     }
 
     .alert-view-page-seperator {
-        border-top: 1px solid #adcdfa;
+        border-top: 1px solid var(--main-widgets-titles-text-color);
         margin: 0 20px;
     }
 
     .alert-view-page-sub-headers{
-        color: #01294a;
+        color: var(--main-widgets-titles-text-color);
         font-family: 'Open Sans', sans-serif;
         font-size: 14px;
         font-weight: 700;

@@ -36,9 +36,7 @@
     .filters-body {
         padding: 0 10px;
         height: 100%;
-        border-bottom-style: solid;
-        border-bottom-width: 1px;
-        border-bottom-color: #01294a;
+        border-bottom: 1px solid var(--main-widgets-lines-seperators);
 
 
         display: flex;
@@ -50,9 +48,8 @@
                 flex-grow: 1;
             }
             padding-bottom: 20px;
-            border-bottom-style: solid;
-            border-bottom-width: 1px;
-            border-bottom-color: #adcdfa;
+            border-bottom: 1px solid var(--main-widgets-lines-seperators);
+
             flex-direction: column;
             display: flex;
             max-height: 100px;
@@ -75,9 +72,8 @@
             @media (max-height: 700px){
                 height: 140px;
             }
-            border-bottom-style: solid;
-            border-bottom-width: 1px;
-            border-bottom-color: #adcdfa;
+            border-bottom: 1px solid var(--main-widgets-lines-seperators);
+
             justify-content: center;
 
             .favorites-titles {
@@ -98,12 +94,12 @@
                 }
 
                 overflow-y: auto;
-                background-color: #e5e5e5;
+                background-color: var(--main-widgets-background-color);
 
                 .favorite-row {
 
 
-                    color: #024d89;
+                    color: var(--main-widgets-titles-text-color);
                     font-family: 'Open Sans', sans-serif;
                     font-size: 14px;
                     line-height: 36px;
@@ -111,17 +107,15 @@
 
                     .inner-favorites-row{
                         margin: 0 3px;
-                        border-bottom-style: solid;
-                        border-bottom-width: 1px;
-                        border-bottom-color: #adcdfa;
+                        border-bottom: 1px solid var(--main-widgets-lines-seperators);
                         display: flex;
                         justify-content: space-between;
                     }
 
                     &.active {
                         font-weight: 800;
-                        color: white;
-                        background-color: #016a9c;
+                        color: var(--main-widgets-titles-text-color);
+                        background-color: var(--main-widgets-background-color);
 
                         .favorite-close {
                             visibility: visible;
@@ -129,8 +123,8 @@
 
                     }
                     &:hover {
-                        color: white;
-                        background-color: #016a9c;
+                        color: var(--main-widgets-titles-text-color-hover);
+                        background-color: var(--main-widgets-background-color-hover);
 
                         font-weight: 700;
                         .favorite-close {
@@ -191,8 +185,9 @@
 
         button{
 
-            background-color: #2b98e4;
-            border: none;
+            background-color: var(--main-widgets-background-color);
+            border: 1px solid var(--main-widgets-titles-text-color);
+
             flex: 0 0 130px;
             height: 28px;
             font-size: 12px;

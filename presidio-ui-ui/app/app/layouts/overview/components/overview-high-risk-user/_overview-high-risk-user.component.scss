@@ -14,7 +14,7 @@ overview-high-risk-user {
     min-height: 20%;
 
     &:hover {
-        background-color: #dedede;
+        background-color: var(--main-widgets-background-color-hover);
     }
 
     .high-risk-user-row {
@@ -90,7 +90,7 @@ overview-high-risk-user {
 
             &--item {
 
-                color: #024d89;
+                color: var(--main-widgets-titles-link-color);
                 font-family: 'Open Sans', sans-serif;
                 line-height: 12px;
                 font-size: 14px;
@@ -115,8 +115,9 @@ overview-high-risk-user {
             }
 
             &--name {
-                font-weight: 700;
+                font-weight: 600;
                 margin-top: 10px;
+                letter-spacing: 0.85px;
 
                 &:hover {
                     color: #0284ca;
@@ -205,7 +206,7 @@ overview-high-risk-user {
 
     &:not(:last-child) {
         .high-risk-user-row {
-            border-bottom: 1px solid #adcdfa;
+            border-bottom: 1px solid var(--main-widgets-lines-seperators);
         }
     }
 }

@@ -79,6 +79,7 @@ module Fortscale.layouts.user {
         templateUrl: 'app/layouts/user/components/user-alert-overview/components/user-alert-overview-header/user-alert-overview-header.component.html',
         bindings: {
             alerts: '<alerts',
+            updateFeedbackDelegate: '&'
         }
     };
     angular.module('Fortscale.layouts.user')

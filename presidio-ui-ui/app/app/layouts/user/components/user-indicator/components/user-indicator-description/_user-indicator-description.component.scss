@@ -16,7 +16,7 @@ user-indicator-description {
         padding-right: 20px;
 
         padding-bottom: 2vh;
-        border-bottom: 1px solid #adcdfa;
+        border-bottom: 1px solid var(--main-widgets-lines-seperators);
 
         position: relative;
     }
@@ -31,7 +31,7 @@ user-indicator-description {
 
     .indicator-info-label {
         width: 12em;
-        color: #024d89;
+        color: var(--main-widgets-titles-text-color);;
         font-family: 'Open Sans', sans-serif;
         font-size: 14px;
         font-weight: 700;
@@ -40,7 +40,7 @@ user-indicator-description {
     .indicator-info-value {
         flex: 1 0;
 
-        color: #024d89;
+        color: var(--main-widgets-titles-text-color);
         font-family: 'Open Sans', sans-serif;
         font-size: 14px;
         font-weight: 400;
@@ -58,7 +58,7 @@ user-indicator-description {
 
         padding-bottom: 2vh;
         padding-left: 20px;
-        border-bottom: 1px solid #adcdfa;
+        border-bottom: 1px solid var(--main-widgets-lines-seperators);
     }
 
 }

@@ -38,7 +38,7 @@
         box-shadow: 0 3px 7px 0 rgba(0, 0, 0, 0.1);
         height: 25px;
         font-family: 'Open Sans', sans-serif;
-        color: $clrWhite;
+        color: var(--main-widgets-titles-text-color-hover);
         font-size: 14px;
         display: flex;
         flex-flow: row nowrap;
@@ -46,12 +46,13 @@
         align-items: center;
 
         &:hover:not([disabled="disabled"]) {
-            background-color: lighten($clrButtonRegular, 5%);
+            background-color: var(--main-widgets-titles-text-color);
             font-weight: 800;
         }
 
         &:active:not([disabled="disabled"]) {
-            background-color: darken($clrButtonRegular, 10%);
+            background-color: var(--main-widgets-titles-text-color);
+
         }
 
     }
@@ -81,7 +82,7 @@
             box-shadow: none;
             @include font-roboto-regular();
 
-            color: $clrGrey100;
+            color: var(--main-widgets-titles-link-color);;
             text-decoration: underline;
             text-align: center;
 
@@ -110,7 +111,7 @@
     box-shadow: 0 3px 7px 0 rgba(0, 0, 0, 0.1);
     height: 45px;
 
-    color: #004f8f;
+    color: var(--main-widgets-titles-text-color);
     font-size: 14px;
     font-weight: 400;
     line-height: 21px;

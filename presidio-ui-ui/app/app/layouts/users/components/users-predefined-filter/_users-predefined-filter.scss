@@ -9,19 +9,27 @@
 
 
     &.active {
-        background-color: var(--filter-list-text-color);
+        background-color: var(--main-widgets-background-color-hover);
         fill: #FFFFFF;
 
+        .icon {
+            fill: var(--main-widgets-titles-text-color-hover);
+
+        }
+
+
         .filter-name{
-            color: var(--main-widgets-background-color);
+            color: var(--main-widgets-titles-text-color);
             .items-count{
-                color: var(--main-widgets-background-color);
+                color: var(--main-widgets-title-text-color);
             }
         }
     }
 
     .icon {
         padding-left: 10px;
+        fill: var(--main-widgets-titles-link-color);
+
     }
 
     }

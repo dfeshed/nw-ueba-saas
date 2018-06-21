@@ -19,7 +19,7 @@ overview-alert-severity-by-day {
             justify-content: space-between;
 
             &--title {
-                color: #024d89;
+                color: var(--main-widgets-titles-text-color);
                 font-family: 'Open Sans', sans-serif;
                 font-size: 14px;
                 font-weight: 700;
@@ -75,7 +75,7 @@ overview-alert-severity-by-day {
 
                 &--label {
                     margin-right: 35px;
-                    color: #01294a;
+                    color: var(--main-widgets-titles-text-color);
                     font-family: 'Open Sans', sans-serif;
                     font-size: 12px;
                     font-weight: 400;

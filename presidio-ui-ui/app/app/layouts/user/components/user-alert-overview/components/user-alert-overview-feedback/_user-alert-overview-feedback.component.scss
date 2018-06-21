@@ -1,10 +1,12 @@
 .feedback-component {
     display: flex;
     flex-direction: column;
+    height: 45px;
+    padding: 17px 0 0 20px;
 
 
     .feedback-subtitle{
-        color: #01294A;
+        color: var(--main-widgets-titles-text-color);
         font-size: 14px;
         font-family: 'Open Sans', sans-serif;
         color: rgb(0, 79, 143);
@@ -31,7 +33,7 @@
             position: relative;
 
             span {
-                height: 2.2em;
+                height: 1.2em;
                 position: absolute;
                 display: flex;
                 flex-direction: row;

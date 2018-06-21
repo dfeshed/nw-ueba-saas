@@ -14,6 +14,8 @@ $actionRed: red;
     text-align: right;
 }
 
+
+
 /* Table css */
 .fs-table.k-grid {
 
@@ -22,14 +24,19 @@ $actionRed: red;
 	padding: 1rem;
 	border: none;
 
+    &.details-table{
+        border: 1px solid #aaa;
+    }
+
 	/* Header */
 	.k-grid-header {
 		th {
-			background-color: white;
+            background-color: var(--main-widgets-background-color);
 			border-top: white;
 			border-left: white;
 			border-right: white;
-			color: #888;
+			color: var(--main-widgets-titles-text-color);
+
 		}
 	}
 
@@ -100,7 +107,52 @@ $actionRed: red;
         .actions .red {
             color: $actionRed;
         }
-	}
+
+
+
+    }
+
+
+    .k-pager-wrap.k-grid-pager.k-widget {
+        color: var(--main-widgets-titles-text-color);
+
+        .k-pager-sizes {
+            .k-dropdown {
+                .k-dropdown-wrap {
+                    &.k-state-default {
+                        background-color: var(--main-widgets-background-color);
+                        border-color: var(--main-widgets-titles-text-color);
+                        color: var(--main-widgets-titles-text-color);
+                        background-image: none;
+                    }
+                }
+                .k-input {
+                    color: var(--main-widgets-titles-text-color);
+
+                    font-family: 'Open Sans', sans-serif;
+                    font-size: 12px;
+                    font-weight: 400;
+                    line-height: 21px;
+                }
+            }
+        }
+        .k-pager-numbers{
+            .k-state-selected{
+                background-color: var(--main-widgets-titles-text-color);
+                color: var(--main-widgets-background-color);
+            }
+            .k-pager-wrap{
+                background-color: var(--main-widgets-background-color);
+                color: var(--main-widgets-titles-text-color);
+            }
+
+            li {
+                background-color: var(--main-widgets-background-color);
+                color: var(--main-widgets-titles-text-color);
+            }
+
+        }
+    }
 
 }
 
@@ -155,13 +207,14 @@ $actionRed: red;
             .k-grouping-row {
                 td {
                     border: 1px solid $clrGrey45;
-                    background-color: $clrWhite;
+                    background-color: var(--main-widgets-background-color);
                     @include font-roboto-light();
                     color: $clrGrey90;
                     text-align: left;
                     font-size: $headerFontSize;
                     box-sizing: border-box;
                     height: $alertsTableTdHeight;
+
                 }
             }
 
@@ -171,6 +224,8 @@ $actionRed: red;
                 border-bottom: 1px solid $clrGrey40;
 
             }
+
+
 
             // Header
             thead {
@@ -219,12 +274,10 @@ $actionRed: red;
             }
         }
 
-        .k-pager-wrap.k-grid-pager.k-widget {
-            border: none;
-            padding-top: 10px;
-        }
 
         // DETAILS TABLE (Inner table)
+
+
         .k-hierarchy-cell {
             width: 25px;
         }
@@ -255,7 +308,7 @@ $actionRed: red;
                 border-bottom: 1px solid $clrGrey45;
                 border-top: 1px solid $clrGrey45;
 
-                background-color: $clrWhite;
+                background-color: var(--main-widgets-background-color);
             }
 
             .k-hierarchy-cell {
@@ -331,7 +384,7 @@ $actionRed: red;
 
 }
 
-@mixin fs-table-style2($clrForeColor: #016a9c, $clrBG: var(--main-widgets-background-color), $clrHeaderBG: #4c9ad0, $clrHeaderFore: #fff , $clrMasterRowBG: #fff, $clrDetailRowBG: #f1f6fc, $clrPagerColor: #E6E6E6, $fontSize: 14px, $headerHeight: 40px) {
+@mixin fs-table-style2($clrForeColor: var(--main-widgets-titles-text-color), $clrBG: var(--main-widgets-background-color), $clrHeaderBG: var(--main-widgets-background-color), $clrHeaderFore: #fff , $clrMasterRowBG: var(--main-widgets-background-color), $clrDetailRowBG: #f1f6fc, $clrPagerColor: var(--main-widgets-background-color), $fontSize: 14px, $headerHeight: 40px) {
 
     .fs-table, fs-table.k-grid {
         font-family: 'Open Sans', sans-serif;
@@ -343,8 +396,9 @@ $actionRed: red;
         background-color: $clrBG;
         overflow: auto;
 
+
         .k-grid-header th {
-            background-color: $clrHeaderBG;
+            background-color: var(--main-widgets-background-color);
             background-image: none;
             height: $headerHeight;
             vertical-align: middle;
@@ -370,6 +424,10 @@ $actionRed: red;
                 font-size: $fontSize;
                 color: $clrForeColor;
                 font-weight: 800;
+            }
+            td {
+                background-color: var(--main-widgets-background-color);
+
             }
         }
 
@@ -420,6 +478,10 @@ $actionRed: red;
 
         .k-master-row {
             background-color: $clrMasterRowBG;
+            color: var(--main-widgets-titles-text-color);
+            a {
+                color: var(--main-widgets-titles-link-color);
+            }
         }
 
         .k-grid-pager {
@@ -432,6 +494,8 @@ $actionRed: red;
 
             a {
                 line-height: 28px;
+                border: 1px solid var(--main-widgets-background-color-hover);
+                color: var(--main-widgets-background-color-hover);
             }
 
             span.k-state-selected {
@@ -447,21 +511,21 @@ $actionRed: red;
         }
     }
     .k-detail-row {
-        background-color: $clrDetailRowBG;
+        background-color: var(--main-widgets-background-color);
     }
     .k-detail-cell {
         margin: 0;
         padding: 0;
-        background-color: $clrDetailRowBG;
+        background-color: var(--main-widgets-background-color);
 
         .k-grid-header th {
-            background-color: #ececee;
+            background-color: var(--main-widgets-background-color);
             height: 30px;
             border: none;
 
             a {
                 font-family: 'Open Sans', sans-serif;
-                color: #3a3a3a;
+                color: var(--main-widgets-titles-text-color);
                 font-size: #{$fontSize - 1};
                 font-weight: 400;
                 padding: 0;
@@ -474,7 +538,8 @@ $actionRed: red;
         }
 
         tr {
-            background-color: $clrDetailRowBG;
+
+            background-color: var(--main-widgets-background-color);
 
             td:first-child {
                 padding-left: 75px;

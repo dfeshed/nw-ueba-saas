@@ -67,141 +67,154 @@ module Fortscale.layouts.overview.components.alertsSeverityByDay {
              */
             _alertSeverityByDayChangeHandler (deregister:Function) {
 
-                if (!this.alertsSeverity) {
-                    return;
-                }
+                let themeConstants = this.colorThemes.constants;
+                this.colorThemes.getThemseKeysAndValues().then((theme)=>{
+                    let labelsTextColor = theme[themeConstants.MAIN_WIDGET_TITLES_TEXT_COLOR];
+                    let lowSeverityColor = theme[themeConstants.SEVERITY_LOW_COLOR];
+                    let mediumSeverityColor = theme[themeConstants.SEVERITY_MEDIUM_COLOR];
+                    let highSeverityColor = theme[themeConstants.SEVERITY_HIGH_COLOR];
+                    let criticalSeverityColor = theme[themeConstants.SEVERITY_CRITICAL_COLOR];
 
-                let dataProvider = this._digestAlertsSeverity();
 
-                let smallDeviceWidth:boolean = window.screen.width < 1400;
-                let columnWidth:number  = smallDeviceWidth ? 8 : 12;
+                    if (!this.alertsSeverity) {
+                        return;
+                    }
 
-                let chart = AmCharts.makeChart(this.containerElement[0],
-                    {
-                        "type": "serial",
-                        "categoryField": "category",
-                        "columnWidth": 0.48,
-                        "dataDateFormat": "DD-MM-YYYY",
-                        "autoMargins": false,
-                        "marginBottom": 30,
-                        "marginLeft": 20,
-                        "marginRight": 30,
-                        "marginTop": 40,
-                        "colors": [
-                            "#ec2226",
-                            "#ff5724",
-                            "#ffc105",
-                            "#8bc34b"
-                        ],
-                        "startDuration": 1,
-                        "fontFamily": "'Open Sans', sans-serif",
-                        "categoryAxis": {
-                            "dateFormats": [
+                    let dataProvider = this._digestAlertsSeverity();
+
+                    let smallDeviceWidth:boolean = window.screen.width < 1400;
+                    let columnWidth:number  = smallDeviceWidth ? 8 : 12;
+
+                    let chart = AmCharts.makeChart(this.containerElement[0],
+                        {
+                            "type": "serial",
+                            "categoryField": "category",
+                            "columnWidth": 0.48,
+                            "dataDateFormat": "DD-MM-YYYY",
+                            "autoMargins": false,
+                            "marginBottom": 30,
+                            "marginLeft": 20,
+                            "marginRight": 30,
+                            "marginTop": 40,
+                            "colors": [
+                                criticalSeverityColor,
+                                highSeverityColor,
+                                mediumSeverityColor,
+                                lowSeverityColor
+                            ],
+                            "startDuration": 1,
+                            "fontFamily": "'Open Sans', sans-serif",
+                            "categoryAxis": {
+                                "dateFormats": [
+                                    {
+                                        "period": "fff",
+                                        "format": "JJ:NN:SS"
+                                    },
+                                    {
+                                        "period": "ss",
+                                        "format": "JJ:NN:SS"
+                                    },
+                                    {
+                                        "period": "mm",
+                                        "format": "JJ:NN"
+                                    },
+                                    {
+                                        "period": "hh",
+                                        "format": "JJ:NN"
+                                    },
+                                    {
+                                        "period": "DD",
+                                        "format": "MMM DD"
+                                    },
+                                    {
+                                        "period": "WW",
+                                        "format": "MMM DD"
+                                    },
+                                    {
+                                        "period": "MM",
+                                        "format": "MMM"
+                                    },
+                                    {
+                                        "period": "YYYY",
+                                        "format": "YYYY"
+                                    }
+                                ],
+                                "gridPosition": "start",
+                                "parseDates": true,
+                                "gridColor": "#ffffff",
+                                'titleColor': labelsTextColor,
+                                'color': labelsTextColor
+
+                            },
+                            "graphs": [
                                 {
-                                    "period": "fff",
-                                    "format": "JJ:NN:SS"
+                                    "balloonText": "[[value]] [[title]] alerts on  [[category]]",
+                                    "fillAlphas": 1,
+                                    "id": "CriticalColumn",
+                                    "severity": "critical",
+                                    "title": "Critical",
+                                    "type": "column",
+                                    "valueField": "Critical",
+                                    "showHandOnHover": true,
+                                    "fixedColumnWidth":columnWidth
                                 },
                                 {
-                                    "period": "ss",
-                                    "format": "JJ:NN:SS"
+                                    "balloonText": "[[value]] [[title]] alerts on  [[category]]",
+                                    "fillAlphas": 1,
+                                    "id": "HighColumn",
+                                    "severity": "high",
+                                    "title": "High",
+                                    "type": "column",
+                                    "valueField": "High",
+                                    "showHandOnHover": true,
+                                    "fixedColumnWidth":columnWidth
                                 },
                                 {
-                                    "period": "mm",
-                                    "format": "JJ:NN"
+                                    "balloonText": "[[value]] [[title]] alerts on  [[category]]",
+                                    "fillAlphas": 1,
+                                    "id": "MediumColumn",
+                                    "severity": "medium",
+                                    "title": "Medium",
+                                    "type": "column",
+                                    "valueField": "Medium",
+                                    "showHandOnHover": true,
+                                    "fixedColumnWidth":columnWidth
                                 },
                                 {
-                                    "period": "hh",
-                                    "format": "JJ:NN"
-                                },
-                                {
-                                    "period": "DD",
-                                    "format": "MMM DD"
-                                },
-                                {
-                                    "period": "WW",
-                                    "format": "MMM DD"
-                                },
-                                {
-                                    "period": "MM",
-                                    "format": "MMM"
-                                },
-                                {
-                                    "period": "YYYY",
-                                    "format": "YYYY"
+                                    "balloonText": "[[value]] [[title]] alerts on  [[category]]",
+                                    "fillAlphas": 1,
+                                    "id": "LowColumn",
+                                    "severity": "low",
+                                    "title": "Low",
+                                    "type": "column",
+                                    "valueField": "Low",
+                                    "showHandOnHover": true,
+                                    "fixedColumnWidth":columnWidth
                                 }
                             ],
-                            "gridPosition": "start",
-                            "parseDates": true,
-                            "gridColor": "#ffffff"
-                        },
-                        "graphs": [
-                            {
-                                "balloonText": "[[value]] [[title]] alerts on  [[category]]",
-                                "fillAlphas": 1,
-                                "id": "CriticalColumn",
-                                "severity": "critical",
-                                "title": "Critical",
-                                "type": "column",
-                                "valueField": "Critical",
-                                "showHandOnHover": true,
-                                "fixedColumnWidth":columnWidth
-                            },
-                            {
-                                "balloonText": "[[value]] [[title]] alerts on  [[category]]",
-                                "fillAlphas": 1,
-                                "id": "HighColumn",
-                                "severity": "high",
-                                "title": "High",
-                                "type": "column",
-                                "valueField": "High",
-                                "showHandOnHover": true,
-                                "fixedColumnWidth":columnWidth
-                            },
-                            {
-                                "balloonText": "[[value]] [[title]] alerts on  [[category]]",
-                                "fillAlphas": 1,
-                                "id": "MediumColumn",
-                                "severity": "medium",
-                                "title": "Medium",
-                                "type": "column",
-                                "valueField": "Medium",
-                                "showHandOnHover": true,
-                                "fixedColumnWidth":columnWidth
-                            },
-                            {
-                                "balloonText": "[[value]] [[title]] alerts on  [[category]]",
-                                "fillAlphas": 1,
-                                "id": "LowColumn",
-                                "severity": "low",
-                                "title": "Low",
-                                "type": "column",
-                                "valueField": "Low",
-                                "showHandOnHover": true,
-                                "fixedColumnWidth":columnWidth
-                            }
-                        ],
-                        "guides": [],
-                        "valueAxes": [
-                            {
-                                "id": "ValueAxis-1",
-                                "stackType": "regular",
-                                "title": "",
-                                "labelsEnabled": false,
-                                "axisAlpha": 0
-                            }
-                        ],
-                        "balloon": {},
-                        "dataProvider": dataProvider
-                    }
-                );
+                            "guides": [],
+                            "valueAxes": [
+                                {
+                                    "id": "ValueAxis-1",
+                                    "stackType": "regular",
+                                    "title": "",
+                                    "labelsEnabled": false,
+                                    "axisAlpha": 0
+                                }
+                            ],
+                            "balloon": {},
+                            "dataProvider": dataProvider
+                        }
+                    );
 
-                // Add click handler
-                chart.addListener("clickGraphItem", (chartObj) => {
-                    this.transitionToAlerts(chartObj.item.dataContext.dateRange, chartObj.graph.severity)
+                    // Add click handler
+                    chart.addListener("clickGraphItem", (chartObj) => {
+                        this.transitionToAlerts(chartObj.item.dataContext.dateRange, chartObj.graph.severity)
+                    });
+
+                    // Remove listener (so the chart will only be rendered once)
+                    deregister();
                 });
-
-                // Remove listener (so the chart will only be rendered once)
-                deregister();
 
             }
 
@@ -231,10 +244,11 @@ module Fortscale.layouts.overview.components.alertsSeverityByDay {
                 });
             }
 
-            static $inject = ['$location', 'appConfig', '$scope', 'alertStatsUtils', '$filter'];
+            static $inject = ['$location', 'appConfig', '$scope', 'alertStatsUtils', '$filter','colorThemes'];
 
             constructor (public $location:ng.ILocationService, public appConfig:IAppConfigService,
-                public $scope:ng.IScope, public alertStatsUtils:IAlertStatsUtils, public $filter:ng.IFilterService) {
+                public $scope:ng.IScope, public alertStatsUtils:IAlertStatsUtils, public $filter:ng.IFilterService,
+                         public colorThemes:any) {
             }
         }
 

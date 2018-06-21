@@ -12,7 +12,7 @@ fs-user-alert-overview-header {
     }
 
     .alert-name {
-        color: #01294a;
+        color: var(--main-widgets-titles-text-color);
         font-family: 'Open Sans', sans-serif;
         font-size: 14px;
         font-weight: 400;
@@ -21,7 +21,7 @@ fs-user-alert-overview-header {
     }
 
     .back-btn, .forward-btn {
-        color: #01294a;
+        color: var(--main-widgets-titles-text-color);
         margin: 0 10px;
         cursor: pointer;
 
@@ -36,7 +36,7 @@ fs-user-alert-overview-header {
     }
 
     .pagination-text {
-        color: #01294a;
+        color: var(--main-widgets-titles-text-color);
         font-family: 'Open Sans', sans-serif;
         font-size: 14px;
         font-weight: 400;

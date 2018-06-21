@@ -65,7 +65,8 @@
                                     "position":"right",
                                         "marginRight":40,
                                         "autoMargins":false,
-                                        "textClickEnabled": true
+                                        "textClickEnabled": true,
+                                        "color": "#FFFFFF"
                                 },
                                 "balloon": {
                                     "maxWidth": 400

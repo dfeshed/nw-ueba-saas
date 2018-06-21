@@ -140,7 +140,8 @@
                     align: 'right',
                     verticalAlign: 'top',
                     x: 0,
-                    y: 40
+                    y: 40,
+                    "color": "#FFFFFF"
                 }
             };
         },
