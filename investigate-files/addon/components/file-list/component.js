@@ -56,11 +56,15 @@ const FileList = Component.extend({
   actions: {
     toggleSelectedRow(item, index, e, table) {
       if (this.get('features.rsaEndpointFusion')) {
-        if (table.get('selectedIndex') === index || !(this.get('showRiskPanel'))) {
-          this.send('toggleRiskPanel', !(this.get('showRiskPanel')));
+        const isRiskPanelVisible = this.get('showRiskPanel');
+        const isSameRowClicked = table.get('selectedIndex') === index;
+        if (isSameRowClicked && isRiskPanelVisible) {
+          this.send('toggleRiskPanel', false);
+        } else {
+          this.send('toggleRiskPanel', true);
+          this.send('fetchFileContext', item.firstFileName);
         }
         table.set('selectedIndex', index);
-        this.send('fetchFileContext', item.firstFileName);
       }
     }
   }

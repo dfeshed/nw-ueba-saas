@@ -76,11 +76,15 @@ const HostTable = Component.extend({
           classList.contains('rsa-form-checkbox')) {
           e.stopPropagation();
         } else {
-          if (table.get('selectedIndex') === index || !(this.get('showRiskPanel'))) {
-            this.send('toggleRiskPanel', !(this.get('showRiskPanel')));
+          const isRiskPanelVisible = this.get('showRiskPanel');
+          const isSameRowClicked = table.get('selectedIndex') === index;
+          if (isSameRowClicked && isRiskPanelVisible) {
+            this.send('toggleRiskPanel', false);
+          } else {
+            this.send('toggleRiskPanel', true);
+            this.send('fetchHostContext', item.machine.machineName);
           }
           table.set('selectedIndex', index);
-          this.send('fetchHostContext', item.machine.machineName);
         }
       }
     }
