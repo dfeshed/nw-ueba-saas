@@ -64,7 +64,7 @@ const ValueMatching = Component.extend({
   @computed('regex')
   hasInvalidRegex(regex) {
     let isInvalid = false;
-    if (!regex.trim()) { // an null, undefined, or empty value will return as invalid
+    if (!regex.trim() || regex.length > 255) { // an null, undefined, empty value or longer than 255 will return as invalid
       isInvalid = true;
     } else { // try and copile the regex and catch any errors
       try {

@@ -12,19 +12,20 @@ div.modal-content.add-new-parser-rule {
     padding-bottom: rsa-whitespace();
   }
 }
-
+.rsa-application-modal-content.respond-confirmation-dialog footer.unsaved-changes-footer {
+  height: 44px;
+}
 .parserWrapper {
-
-
   .trMessage {
     height:35vh;
   }
-
-
   width: 100%;
   position: relative;
   color: text-color(neutral);
-
+  .deploy-log-parser button {
+    padding-top: 7px;
+    padding-bottom: 6px;
+  }
   .ember-power-select-clear-btn {
     font-size: 1.25rem;
     font-weight: 200;
@@ -37,9 +38,6 @@ div.modal-content.add-new-parser-rule {
     display: inline-block;
     margin-left: 5px;
     vertical-align: bottom;
-  }
-  .deploy-icon {
-    color: text-color(accentOne, dark);
   }
   .outOfBox-indicator {
     color: text-color(primary);
@@ -92,7 +90,8 @@ div.modal-content.add-new-parser-rule {
     }
     td.token {
       width: 25%;
-      height: 300px;
+      height: 230px;
+      padding-bottom: 40px;
     }
     td.values {
       overflow: auto;
@@ -107,11 +106,12 @@ div.modal-content.add-new-parser-rule {
     display: none;
   }
   .parserContainer  {
+    height: calc(100vh - 90px);
     width: 100%;
     overflow : hidden;
     white-space: nowrap;
     vertical-align: bottom;
-    border-bottom: 1px solid border-color(neutral);
+    border-bottom: 1px solid border-color(primary);
   }
   .border {
     border: 1px solid border-color(neutral);
@@ -138,10 +138,8 @@ div.modal-content.add-new-parser-rule {
     width: 22%;
     .parserTable {
       width: 100%;
-      margin-top: rsa-whitespace();
       td {
         padding: rsa-whitespace(less);
-        padding-left: rsa-whitespace();
         color: text-color(neutral);
         cursor: pointer;
         @include rsa-font(default, small);
@@ -156,11 +154,16 @@ div.modal-content.add-new-parser-rule {
   }
   .leftArea, .rightArea {
     min-width: 300px;
+    .parser-log-name, .parser-rule-name {
+      margin-left: 18px;
+    }
   }
+
   .centerArea {
     width: 55%;
     vertical-align: top;
     position: relative;
+    height: 430px;
     .value-matching {
       label {
         padding-top: rsa-whitespace(less);
@@ -169,11 +172,10 @@ div.modal-content.add-new-parser-rule {
     .ruleRegex {
       margin-top: rsa-whitespace(less);
       textarea {
-        min-height: 8rem;
-        max-height: 8rem;
-        min-width: 21vw;
-        max-width: 21vw;
-      },
+        min-height: 7rem;
+        max-height: 7rem;
+        resize: none;
+      }
       .input-error {
         display: inline-block;
         width: 300px;
@@ -207,6 +209,7 @@ div.modal-content.add-new-parser-rule {
     }
   }
   .tdMessage {
+    height: 100%;
     vertical-align: top;
   }
   .token-matching {
@@ -237,12 +240,23 @@ div.modal-content.add-new-parser-rule {
   }
   .parser-table-container {
     overflow: auto;
-    height: 75vh; 
-    .parserTable td div {
-      overflow: hidden; 
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      max-width: 250px;
+    height: calc(100vh - 205px);
+    .parserTable td {
+      vertical-align: top;
+      div {
+        overflow: hidden; 
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        max-width: 250px;
+        padding-bottom: 2px;
+        padding-top: 2px;
+        position: relative;
+        p.deploy-icon {
+          color: text-color(accentOne, dark);
+          position: absolute;
+          line-height: 15px;
+        }
+      }
     }
   }
   .parser-rules-list {

@@ -72,6 +72,16 @@ module('Integration | Component | value matching', function(hooks) {
     assert.equal(find('.input-error').textContent.trim(), errorMessage, 'The error message should be displayed');
   });
 
+  test('having regex value with more than 255 chars shows an error in the text area', async function(assert) {
+    const translation = this.owner.lookup('service:i18n');
+    const errorMessage = translation.t('configure.logsParser.invalidRegEx');
+    const rules = [{ name: 'Regex Pattern', pattern: { format: null, regex: 'iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii256', captures: [{ index: '1' }] } }];
+    new ReduxDataHelper(setState).parserRules(rules).formatOptions().build();
+    await render(hbs`{{content/log-parser-rules/value-matching}}`);
+    assert.equal(findAll('.rsa-form-textarea.is-error').length, 1, 'The text area should have an error');
+    assert.equal(find('.input-error').textContent.trim(), errorMessage, 'The error message should be displayed');
+  });
+
   test('entering an invalid regex shows an error in the text area', async function(assert) {
     const translation = this.owner.lookup('service:i18n');
     const errorMessage = translation.t('configure.logsParser.invalidRegEx');

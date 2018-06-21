@@ -6,11 +6,9 @@
     padding: rsa-whitespace();
     height: 20px;
     border-bottom: 1px solid border-color(primary);
-
     .rsa-loader {
       float: right;
     }
-
     .error {
       color: text-color(accentFour);
     }
@@ -23,7 +21,8 @@
     font-family: Courier New, Courier, monospace;
     overflow: auto;
     padding: rsa-whitespace();
-    height: 25vh
+    height: calc(100vh - 605px);
+    word-break: break-all;
   }
 
   .highlight-capture {

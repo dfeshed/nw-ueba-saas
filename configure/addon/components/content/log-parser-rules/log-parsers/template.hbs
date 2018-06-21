@@ -4,14 +4,12 @@
   <table class='parserTable'>
     {{#each logParsers as |logParser index|}}
       <tr>
-        <td class='{{if (eq index 0) 'firstItem'}}
-        {{if (eq selectedLogParserIndex index) 'active'}}'{{action "selectParser" index}}>
+        <td class='{{if (eq index 0) 'firstItem'}} {{if (eq selectedLogParserIndex index) 'active'}}'{{action "selectParser" index}}>
           <div>
             {{#if logParser.dirty}}
-              {{rsa-icon name="synchronize-3" class="deploy-icon"}} {{or logParser.displayName logParser.name}}
-            {{else}}
-              &nbsp;&nbsp;&nbsp;&nbsp; {{or logParser.displayName logParser.name}}
+              <p class="deploy-icon">{{rsa-icon name="synchronize-3"}}</p>
             {{/if}}
+            <span class="parser-log-name">{{or logParser.displayName logParser.name}}</span>
           </div>
         </td>
       </tr>
@@ -23,7 +21,7 @@
     <div class='modal-content'>
       <p>{{t 'configure.logsParser.switchParserUnsavedChanges'}}</p>
     </div>
-    <footer>
+    <footer class='unsaved-changes-footer'>
       <hbox class="modal-footer-buttons">
         {{#rsa-form-button class='cancel-button' defaultAction='cancel'}}
           {{t 'forms.cancel'}}

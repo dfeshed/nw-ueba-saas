@@ -139,6 +139,7 @@ const deleteParserRule = () => {
       type: ACTION_TYPES.DELETE_PARSER_RULE
     });
     info('configure.logsParser.modals.deleteRule.info');
+    dispatch(highlightSampleLogs());
   };
 };
 
@@ -216,9 +217,14 @@ const updateSelectedRule = (rule) => {
   };
 };
 
-const discardRuleChanges = () => ({
-  type: ACTION_TYPES.DISCARD_RULE_CHANGES
-});
+const discardRuleChanges = () => {
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.DISCARD_RULE_CHANGES
+    });
+    dispatch(highlightSampleLogs());
+  };
+};
 
 export {
   addLogParser,

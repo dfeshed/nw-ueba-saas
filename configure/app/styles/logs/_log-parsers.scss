@@ -31,6 +31,12 @@ $footerHeight: 40px;
         font-weight: 200;
       }
     }
+    .nameMessage {
+      font-size: 10px;
+      margin-bottom: 5px;
+      line-height: 12px;
+      color: text-color(primary, light);
+    }
   }
   footer {
     height: $footerHeight;
@@ -49,10 +55,7 @@ $footerHeight: 40px;
   }
 }
 
-
-
-
 #modalDestination .add-log-parser-modal {
   width: 400px;
-  height: 550px;
+  height: 600px;
 }

@@ -34,9 +34,7 @@
         <td class="{{if (eq index 0) 'firstItem'}} {{if (eq selectedParserRuleIndex index) 'active'}} {{if (contains parserRule.name invalidRules) 'invalid-rule'}} {{if (contains parserRule.name highlightedRuleNames) 'has-matches'}}" {{action "selectParserRule" index}}>
           <div>
             {{#if parserRule.dirty}}
-              {{rsa-icon name="synchronize-3" class="deploy-icon"}}
-            {{else}}
-              &nbsp;&nbsp;&nbsp;&nbsp;
+              <p class="deploy-icon">{{rsa-icon name="synchronize-3"}}</p>   
             {{/if}}
             <span class="parser-rule-name">{{parserRule.name}}</span>
             {{#if parserRule.outOfBox}}

@@ -595,7 +595,7 @@ export default {
           title: 'Delete Rule',
           confirm: 'Delete rule \'{{ruleName}}\' from this log parser?',
           ok: 'Delete Rule',
-          info: 'This rule will not be permanently deleted until you save.'
+          info: 'This rule is either incomplete or not currently saved, for it to be permanently deleted.'
         },
         deleteParser: {
           title: 'Delete Parser',
@@ -624,7 +624,7 @@ export default {
       },
       addParser: {
         label: 'Add Parser',
-        addNew: 'Add New',
+        addNew: 'Add Parser',
         instruction: 'Use dynamic parser rules to create a new dynamic log parser or add to an existing log parser.',
         selectParser: 'Select Log Parser',
         deviceDisplayName: 'Device Display Name',
@@ -636,8 +636,8 @@ export default {
         new: 'New',
         addParserSuccessful: 'A new parser has been successfully added.',
         addParserFailed: 'A problem occurred while trying to add this new parser.',
-        nameExistsError: 'The name can contain only lower case characters or numbers, it must start with a character, and it must not match an already existing log parser name.',
-        displayNameExistsError: 'This display name already exists for another log parser.'
+        displayNameExistsError: 'This display name already exists for another log parser.',
+        nameExistsError: 'Choose a log parser name that contains 3-30 lowercase, alphanumeric characters. Underscores are also permitted. The name must start with a character, and must not match an already existing log parser name.'
       }
     },
     title: 'Configure',
