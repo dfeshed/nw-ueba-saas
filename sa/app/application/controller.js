@@ -80,6 +80,11 @@ export default Controller.extend({
     }
   },
 
+  // add/set the theme into a cookie for use by integrated apps (e.g., UEBA)
+  _updateThemeCookie(themeName) {
+    document.cookie = `nw-ui-theme=${themeName};Path=/;`;
+  },
+
   _appendLocaleScript(body) {
     const sourceId = 'dynamicLocale';
     const dynamicScript = document.getElementById(sourceId);
@@ -135,6 +140,7 @@ export default Controller.extend({
         activeTheme = themeName;
         this._updateBodyClass(themeName);
         this._fetchStylesheet(themeName);
+        this._updateThemeCookie(themeName);
       }
 
       const locale = this.localeSelection();

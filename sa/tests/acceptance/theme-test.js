@@ -20,7 +20,7 @@ module('Acceptance | theme', function(hooks) {
   });
 
   test('theme will rehydrate from local storage on boot', async function(assert) {
-    assert.expect(9);
+    assert.expect(11);
 
     const done = waitForSockets();
 
@@ -36,6 +36,7 @@ module('Acceptance | theme', function(hooks) {
     assert.equal(lightTheme, 'LIGHT');
     assert.ok(document.querySelector('body').classList.contains('light-theme'));
     assert.notOk(document.querySelector('body').classList.contains('dark-theme'));
+    assert.ok(document.cookie.indexOf('nw-ui-theme=light') > -1, 'The theme (light) appears in the nw-ui-theme cookie');
 
     await login();
 
@@ -46,6 +47,7 @@ module('Acceptance | theme', function(hooks) {
     assert.equal(darkTheme, 'DARK');
     assert.ok(document.querySelector('body').classList.contains('dark-theme'));
     assert.notOk(document.querySelector('body').classList.contains('light-theme'));
+    assert.ok(document.cookie.indexOf('nw-ui-theme=dark') > -1, 'The theme (dark) appears in the nw-ui-theme cookie');
 
     return settled().then(() => done());
   });
