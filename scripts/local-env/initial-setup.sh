@@ -43,6 +43,24 @@ then
   # install the required node version and make that version the default
   nvm install $NODE_VERSION
   nvm alias default $NODE_VERSION
+# User is on Linux
+elif [ "$(uname)" == "Linux" ]
+then
+# Checks for NVM global created in .bash_profile
+  # if its not there, NVM hasn't been installed, so install it
+  if [ -z ${NVM_DIR} ]
+  then
+    info "Detected Linux, Installing NVM"
+    curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.2/install.sh | bash
+    success "NVM installed!"
+  else
+    info "NVM already present on Linux, not installing"
+  fi
+  # source in nvm so it can be used in this script
+  source ~/.nvm/nvm.sh
+  # install the required node version and make that version the default
+  nvm install $NODE_VERSION
+  nvm alias default $NODE_VERSION
 # User is not on OS X, must be on Windows
 else
   # Check if nvm-windows has been installed

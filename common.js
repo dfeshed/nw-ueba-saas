@@ -51,6 +51,10 @@ const isDevelopingAddon = function(projectName) {
     // If already processed...
     if (developedAddons.indexOf(projectName) > -1) {
 
+      if (os.platform() === 'linux') {
+        return true;
+      }
+
       // In order for live recompile/reload of changed code
       // to work on Windows, all the dependant addons must
       // eventually return true. If return false from here

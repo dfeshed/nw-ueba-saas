@@ -3,8 +3,11 @@ function prepareApp {
 
   # At present, the script only supports OS X and Windows
   # If the user is not on Mac, then user must be Windows (CYGWIN*|MINGW32*|MSYS*)
-  if [ "$(uname)" != "Darwin" ]
+
+  if [ "$(uname)" == "Linux" ] || [ "$(uname)" == "Darwin" ]
   then
+    ln -s ../node_modules node_modules
+  else
     info "Setting up windows symbolic links for: $1"
     # Unfortunately on Windows, you need to run on elevalted privileges to create symlinks
     # https://blogs.windows.com/buildingapps/2016/12/02/symlinks-windows-10/
@@ -12,8 +15,6 @@ function prepareApp {
     cmd //c 'mklink /D node_modules ..\node_modules'
     # TO_FIX: ember windows not working because of symbolic links
     # ember windows
-  else
-    ln -s ../node_modules node_modules
   fi
 
   yarn link mock-server --silent
@@ -22,7 +23,7 @@ function prepareApp {
 }
 
 # For MAC users source in nvm. For windows users it is a no-op as nvm-windows is already available in the path
-if [ "$(uname)" == "Darwin" ]
+if [ "$(uname)" == "Darwin" ] || [ "$(uname)" == "Linux" ]
 then
 # source in nvm so it can be used
 . ~/.nvm/nvm.sh
