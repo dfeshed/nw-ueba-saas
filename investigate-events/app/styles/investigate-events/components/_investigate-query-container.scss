@@ -153,9 +153,13 @@
     flex-flow: row wrap;
     justify-content: flex-start;
     margin-bottom: calc(0.25rem + 0.5px);
-    max-height: 12rem;
+    max-height: 10.5rem;
     overflow-x: hidden;
     overflow-y: auto;
+  }
+
+  .new-pill-trigger-container {
+    position:relative;
   }
 
   .new-pill-trigger {
@@ -185,6 +189,7 @@
     margin: calc(#{rsa-whitespace(least)} + 0.5px) rsa-whitespace(least) 0;
     padding: 0 rsa-whitespace(least);
     min-height: rsa-whitespace(more);
+    min-width: 80px;
     line-height: rsa-whitespace(more);
     transition: border-color 0.5s;
     &.is-active {
@@ -198,11 +203,13 @@
       }
     }
   }
+
   .pill-meta,
   .pill-operator,
   .pill-value {
     height: rsa-whitespace(more);
   }
+
   .ember-power-select-typeahead-input,
   .ember-power-select-trigger {
     border: none;
