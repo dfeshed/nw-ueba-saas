@@ -6,6 +6,8 @@
 @import 'rsa-context-menu/manifest';
 /* Import recon styles */
 @import 'recon/manifest';
+/* pulling in context from inside respond */
+@import 'context/manifest';
 
 html, body {
   height: 100%;
@@ -14,6 +16,39 @@ html, body {
 body {
   color: text-color(primary, light);
   margin: 0;
+}
+
+/*
+  Overlays the context panel over the right-side of the app's main outlet.
+  The panel is hidden unless we have some entity to display inside of it.
+*/
+.recon-dummy {
+  &__main {
+
+    &-body {
+      z-index: 1;
+    }
+
+    &-aside {
+      overflow: hidden;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      width: 0;
+      z-index: 500;
+      transition: width 300ms;
+    }
+
+    &.has-entity-info {
+      .recon-dummy__main {
+        &-aside {
+          width: 75%;
+          box-shadow: 0 0 rsa-whitespace() background-color(neutral, dark, nearly-opaque);
+        }
+      }
+    }
+  }
 }
 
 page {

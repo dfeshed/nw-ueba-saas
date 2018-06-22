@@ -8,6 +8,7 @@ const projectName = 'investigate-events';
 const subscriptionPath = path.join(__dirname, 'tests', 'data');
 const recon = require('../recon').mockDestinations;
 const preferences = require('../preferences').mockDestinations;
+const contextMockDirectory = require('../context').mockDestinations;
 
 
 module.exports = EngineAddon.extend({
@@ -39,7 +40,7 @@ module.exports = EngineAddon.extend({
   socketRouteGenerator: require('./config/socketRoutes'),
 
   // local mock endpoints last as any dupes = last one wins
-  mockDestinations: [subscriptionPath, ...recon, preferences],
+  mockDestinations: [subscriptionPath, ...recon, preferences, contextMockDirectory],
 
   // See ../common.js for details on this function
   isDevelopingAddon: isDevelopingAddon(projectName),

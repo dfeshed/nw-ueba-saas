@@ -33,4 +33,17 @@
     linkToFileAction=linkToFileAction
   }}
   {{context-menu}}
+  <article class="recon-dummy__main {{if (and entityId entityType) 'has-entity-info'}}">
+    <section fill class="recon-dummy__main-body">
+      {{outlet}}
+    </section>
+    <aside fit class="recon-dummy__main-aside">
+      {{#if (and entityId entityType)}}
+        {{context-panel entityId=entityId entityType=entityType closePanel=(route-action 'closeContextPanel')}}
+      {{/if}}
+    </aside>
+  </article>
+  <div id='modalDestination'></div>
+  {{context-tooltip clickDataAction=(route-action 'openContextPanel')}}
+  {{context-panel/add-to-list entity=entityToAddToList}}
 </page>

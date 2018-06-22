@@ -78,6 +78,7 @@
       "../investigate-shared",
       "../investigate-process-analysis",
       "../recon",
+      "../context",
       "../preferences"
     ]
   },

@@ -2,6 +2,7 @@
 
 const common = require('../../common');
 const preferencesConfigGen = require('../../preferences').socketRouteGenerator;
+const contextGen = require('../../context').socketRouteGenerator;
 
 let mergedConfig;
 const reconValueConfigGen = function(environment) {
@@ -85,7 +86,7 @@ module.exports = function(environment) {
   if (!environment) {
     return {};
   }
-  const configGenerators = [reconValueConfigGen, preferencesConfigGen];
+  const configGenerators = [reconValueConfigGen, preferencesConfigGen, contextGen];
   mergedConfig = common.mergeSocketConfigs(configGenerators, environment);
   return mergedConfig;
 };

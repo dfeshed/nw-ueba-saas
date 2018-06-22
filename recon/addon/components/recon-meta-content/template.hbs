@@ -6,12 +6,12 @@
   {{#if metaError}}
     {{rsa-panel-message message=(t 'recon.error.generic')}}
   {{else}}
-    {{#if meta}}
+    {{#if metaItems}}
       <hbox class="meta-heading">
         <h2>Event Meta</h2>
       </hbox>
 
-      {{#each meta as |item|}}
+      {{#each metaItems as |item|}}
         {{recon-meta-content-item
           isTextView=isTextView
           item=item

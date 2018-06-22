@@ -42,4 +42,8 @@
   .meta-value {
     @include rsa-font(body, small);
   }
+  .has-context-data {
+    text-decoration: underline;
+    text-decoration-style: dashed;
+  }
 }

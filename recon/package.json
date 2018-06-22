@@ -74,6 +74,7 @@
     "configPath": "tests/dummy/config",
     "paths": [
       "../test-helpers",
+      "../context",
       "../component-lib",
       "../streaming-data",
       "../rsa-context-menu",

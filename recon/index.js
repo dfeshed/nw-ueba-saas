@@ -7,6 +7,7 @@ const projectName = 'recon';
 
 const subscriptionPath = path.join(__dirname, 'tests', 'data');
 const preferencesMocks = require('../preferences').mockDestinations;
+const contextMockDirectory = require('../context').mockDestinations;
 
 module.exports = {
   name: projectName,
@@ -28,5 +29,5 @@ module.exports = {
 
   socketRouteGenerator: require('./config/socketRoutes'),
 
-  mockDestinations: [subscriptionPath, preferencesMocks]
+  mockDestinations: [subscriptionPath, preferencesMocks, contextMockDirectory]
 };

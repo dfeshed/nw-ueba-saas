@@ -24,4 +24,16 @@
   {{/each}}
 </ul>
 {{context-menu}}
-{{outlet}}
+<article class="investigate-dummy__main {{if (and entityId entityType) 'has-entity-info'}}">
+  <section fill class="investigate-dummy__main-body">
+    {{outlet}}
+  </section>
+  <aside fit class="investigate-dummy__main-aside">
+    {{#if (and entityId entityType)}}
+      {{context-panel entityId=entityId entityType=entityType closePanel=(route-action 'closeContextPanel')}}
+    {{/if}}
+  </aside>
+</article>
+<div id='modalDestination'></div>
+{{context-tooltip clickDataAction=(route-action 'openContextPanel')}}
+{{context-panel/add-to-list entity=entityToAddToList}}

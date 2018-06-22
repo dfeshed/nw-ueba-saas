@@ -205,7 +205,7 @@ function buildMetaKeyValuePairs(keys, item, opts) {
       if (value.key === 'event.cat.name' || value.key === 'ec.theme') {
         value.key = 'event.theme';
       }
-      htmlPairs.push(`<span class="key">${value.key} =</span><span class="value" metaname="${originalKey}" metavalue="${value.alias}" title="${value.textAndAlias}">${value.alias}</span>`);
+      htmlPairs.push(`<span class="key">${value.key} =</span><span class="value entity" metaname="${originalKey}" metavalue="${value.alias}" title="${value.textAndAlias}" data-meta-key='${originalKey}' data-entity-id='${value.alias}'>${value.alias}</span>`);
     }
   });
   $pairs.html(htmlPairs.join(' | '));
@@ -291,7 +291,7 @@ function buildDefaultCellContent($content, field, item, opts) {
   const value = item[field];
   const tooltip = formatUtil.tooltip(field, value, opts);
   const text = formatUtil.text(field, value, opts);
-  const htmlWrapper = `<span metaname="${field}" metavalue="${value}">${text}</span>`;
+  const htmlWrapper = `<span class="entity" data-meta-key="${field}" data-entity-id="${value}" metaname="${field}" metavalue="${value}">${text}</span>`;
   $content
     .attr('title', tooltip)
     .html(htmlWrapper);

@@ -8,7 +8,9 @@ import {
 } from 'recon/utils/recon-event-header';
 import { headerErrorMessage } from 'recon/reducers/header/selectors';
 import { metaFormatMap } from 'rsa-context-menu/utils/meta-format-selector';
+import HighlightsEntities from 'context/mixins/highlights-entities';
 import layout from './template';
+import { next } from '@ember/runloop';
 
 const stateToComputed = ({ recon }) => ({
   headerErrorMessage: headerErrorMessage(recon),
@@ -20,13 +22,16 @@ const stateToComputed = ({ recon }) => ({
   metaFormatMap: metaFormatMap(recon.dictionaries.language)
 });
 
-const EventHeaderComponent = Component.extend({
+const EventHeaderComponent = Component.extend(HighlightsEntities, {
   layout,
-  tagName: '',
+  tagName: 'span',
+  entityEndpointId: 'CORE',
+  autoHighlightEntities: true,
 
   @computed('headerItems')
   displayedHeaderItems(headerItems) {
     headerItems = Array.isArray(headerItems) ? headerItems : [];
+    next(this, 'highlightEntities');
     return headerItems.reduce((acc, item) => {
       // Get the sort order(so) from recon displayed header object.
       const so = RECON_DISPLAYED_HEADER[item.id];

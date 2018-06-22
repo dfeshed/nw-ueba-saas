@@ -24,7 +24,7 @@
         {{#rsa-context-menu
           contextSelection=metaValuePair
           contextDetails=contextMenuData}}
-          {{metaValuePair.displayValue}}
+          <span class="entity" data-entity-id={{metaValuePair.metaValue}} data-meta-key={{metaValuePair.metaName}}>{{metaValuePair.displayValue}}</span>
         {{/rsa-context-menu}}
       {{/each}}
     {{else}}

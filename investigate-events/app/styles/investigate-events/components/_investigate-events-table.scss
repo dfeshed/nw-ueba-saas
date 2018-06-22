@@ -211,6 +211,10 @@
           margin-right: rsa-whitespace();
         }
       }
+      .has-context-data {
+        text-decoration: underline;
+        text-decoration-style: dashed;
+      }
     }
   }
 }

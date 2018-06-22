@@ -10,6 +10,7 @@ const investigateFilesMocks = require('../investigate-files').mockDestinations;
 const investigateHostsMocks = require('../investigate-hosts').mockDestinations;
 const investigateProcessAnalysisMocks = require('../investigate-process-analysis').mockDestinations;
 const reconMocks = require('../recon').mockDestinations;
+const contextMockDirectory = require('../context').mockDestinations;
 
 module.exports = EngineAddon.extend({
   name: projectName,
@@ -45,7 +46,8 @@ module.exports = EngineAddon.extend({
     investigateProcessAnalysisMocks,
     ...investigateFilesMocks,
     ...investigateHostsMocks,
-    ...reconMocks
+    ...reconMocks,
+    contextMockDirectory
   ],
 
   // See ../common.js for details on this function

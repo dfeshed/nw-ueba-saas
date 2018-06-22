@@ -1,21 +1,24 @@
 import Component from '@ember/component';
-import { run } from '@ember/runloop';
+import { next, once, schedule } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import { get, observer } from '@ember/object';
 import RowMixin from 'component-lib/components/rsa-data-table/mixins/is-row';
 import computed from 'ember-computed-decorators';
+import HighlightsEntities from 'context/mixins/highlights-entities';
 import columnUtil from './column-util';
 import { select } from 'd3-selection';
 
 // Default column width if none given.
 const DEFAULT_WIDTH = 100;
 
-export default Component.extend(RowMixin, {
+export default Component.extend(RowMixin, HighlightsEntities, {
   classNames: 'rsa-investigate-events-table-row',
 
   dateFormat: service(),
   timeFormat: service(),
   timezone: service(),
+  entityEndpointId: 'CORE',
+  autoHighlightEntities: true,
 
   // Formatting configuration options. Passed to utils that generate cell DOM.
   @computed('table.aliases', 'dateFormat.selected.format', 'timeFormat.selected.format', 'i18n.locale', 'timezone.selected.zoneId')
@@ -54,6 +57,10 @@ export default Component.extend(RowMixin, {
     this._renderCells();
   }),
 
+  _highlightEntities() {
+    next(this, 'highlightEntities');
+  },
+
   /**
    * Triggers a redraw of the cells when either:
    * 1. The data item changes
@@ -61,7 +68,8 @@ export default Component.extend(RowMixin, {
    * @private
    */
   _columnsOrDataDidChange: observer('item', 'table.visibleColumns.[]', function() {
-    run.once(this, this._renderCells);
+    once(this, this._renderCells);
+    once(this, this._highlightEntities);
   }),
 
   /**
@@ -70,12 +78,12 @@ export default Component.extend(RowMixin, {
    * @private
    */
   _columnWidthDidChange: observer('table.visibleColumns.@each.width', function() {
-    run.once(this, this._repaintCellWidths);
+    once(this, this._repaintCellWidths);
   }),
 
   didInsertElement() {
     this._super(...arguments);
-    run.schedule('afterRender', this, this._afterRender);
+    schedule('afterRender', this, this._afterRender);
   },
 
   /**
@@ -133,7 +141,6 @@ export default Component.extend(RowMixin, {
     const $cell = $row.append('div')
       .classed('rsa-data-table-body-cell', true)
       .attr('data-field', field);
-
     columnUtil.applyCellWidth($cell, column, opts);
     columnUtil.buildCellContent($cell, field, item, opts);
   },

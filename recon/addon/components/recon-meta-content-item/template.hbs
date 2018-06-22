@@ -10,7 +10,7 @@
     {{#rsa-context-menu
       contextSelection=contextSelection
       contextDetails=contextMenuData}}
-      {{value}}
+      <span class="entity" data-entity-id={{value}} data-meta-key={{name}}>{{value}}</span>
     {{/rsa-context-menu}}
   {{/if}}
 </hbox>

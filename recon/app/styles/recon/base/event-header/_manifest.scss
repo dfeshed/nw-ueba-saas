@@ -27,6 +27,10 @@
         @include rsa-font(body);
         color: text-color(primary, lightest);
       }
+      .has-context-data {
+        text-decoration: underline;
+        text-decoration-style: dashed;
+      }
     }
 
     .rsa-content-tethered-panel {

@@ -1,6 +1,15 @@
-<page>
-  {{outlet}}
-</page>
+<article class="recon-engine-dummy__main {{if (and entityId entityType) 'has-entity-info'}}">
+  <section fill class="recon-engine-dummy__main-body">
+    {{outlet}}
+  </section>
+  <aside fit class="recon-engine-dummy__main-aside">
+    {{#if (and entityId entityType)}}
+      {{context-panel entityId=entityId entityType=entityType closePanel=(route-action 'closeContextPanel')}}
+    {{/if}}
+  </aside>
+</article>
+{{context-tooltip clickDataAction=(route-action 'openContextPanel')}}
+{{context-panel/add-to-list entity=entityToAddToList}}
 
 <ul class="rsa-flash-messages">
   {{#each flashMessages.queue as |flash|}}
