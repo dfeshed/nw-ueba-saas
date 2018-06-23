@@ -255,3 +255,14 @@ export const highlightedRuleNames = createSelector(
     return _.uniq(matchedRules);
   }
 );
+
+// If the sample logs has highlighting spans but also encoded html entities (e.g, &gt; and &lt;), this selector
+// uses the DOMParser to to parse the string and return the text content. Effectively it removes any unencoded html
+// and decodes already encoded html, effectively returning what the user sees in the html page as text.
+export const sampleLogsAsText = createSelector(
+  sampleLogs,
+  (sampleLogs = '') => {
+    const doc = new DOMParser().parseFromString(sampleLogs, 'text/html');
+    return doc.documentElement.textContent;
+  }
+);

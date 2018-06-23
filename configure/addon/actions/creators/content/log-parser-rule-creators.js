@@ -5,7 +5,7 @@ import Immutable from 'seamless-immutable';
 
 import {
   selectedLogParserName,
-  sampleLogs,
+  sampleLogsAsText,
   validRules,
   parserRules } from 'configure/reducers/content/log-parser-rules/selectors';
 
@@ -194,8 +194,7 @@ const saveParserRule = () => {
 
 const highlightSampleLogs = (logText) => {
   return (dispatch, getState) => {
-    let logs = logText || sampleLogs(getState()) || '';
-    logs = logs.replace(/<[^>]+>/g, '');
+    const logs = logText || sampleLogsAsText(getState());
     const rules = validRules(getState()); // only provide the valid rules to the highlighting call
     dispatch({
       type: ACTION_TYPES.HIGHLIGHT_SAMPLE_LOGS,

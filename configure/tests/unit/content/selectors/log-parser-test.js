@@ -13,6 +13,7 @@ import {
   selectedLogParser,
   selectedLogParserName,
   sampleLogs,
+  sampleLogsAsText,
   isHighlighting,
   highlightedLogs,
   highlightedRuleNames,
@@ -120,4 +121,12 @@ test('the highlightedRuleNames selector properly returns the list of rule names 
     parserRules: [{ name: 'test' }, { name: 'EXAMPLE One' }, { name: 'rule 3' }, { name: 'EXAMPLE 2' }]
   };
   assert.deepEqual(highlightedRuleNames(state(testState)), ['EXAMPLE One', 'EXAMPLE 2'], 'The selector returns an array of the rule names that have highlighting matches');
+});
+
+test('sampleLogsAsText decodes html entities and removes removes real html', function(assert) {
+  const testState = {
+    sampleLogs: '&lt;h1&gt;Does it decode &amp; work?&lt;/h1&gt;This is an <span class=\'highlight_capture_EXAMPLEOne\'>' +
+    '<span class=\'highlight_literal_EXAMPLEOne\'>example</span> of highlighting</span> for a test & stuff.'
+  };
+  assert.equal(sampleLogsAsText(state(testState)), '<h1>Does it decode & work?</h1>This is an example of highlighting for a test & stuff.');
 });
