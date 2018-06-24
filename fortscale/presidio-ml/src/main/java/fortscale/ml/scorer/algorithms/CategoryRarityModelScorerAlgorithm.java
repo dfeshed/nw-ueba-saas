@@ -71,6 +71,7 @@ public class CategoryRarityModelScorerAlgorithm {
             numRareEvents += (i + 1) * buckets.get(i) * commonnessDiscount;
             numDistinctRareFeatures += buckets.get(i) * commonnessDiscount;
         }
+        numRareEvents = Math.min(numRareEvents,totalEvents);
         double commonEventProbability = 1 - numRareEvents / totalEvents;
         double numRareFeaturesDiscount = Math.pow(Math.max(0, (maxNumOfRareFeatures - numDistinctRareFeatures) / maxNumOfRareFeatures), RARITY_SUM_EXPONENT);
         double score = commonEventProbability * numRareFeaturesDiscount * calcCommonnessDiscounting(featureCount);
