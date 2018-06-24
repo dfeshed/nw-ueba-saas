@@ -75,7 +75,7 @@ public class CategoryRarityModelScorerTest {
                 params.getMaxNumOfRareFeatures(),
                 X_WITH_VALUE_HALF_FACTOR,
                 eventModelsCacheService,
-                0.0);
+                params.numRareEventsFactor);
     }
 
     //==================================================================================================================
@@ -265,6 +265,29 @@ public class CategoryRarityModelScorerTest {
     //==================================================================================================================
     // CALCULATE SCORE SIMPLE TESTS (more advanced tests are at the CategoryRarityModelScorerAlgorithmTest)
     //==================================================================================================================
+
+    //test bug fix for negative scores which was caused by the new configuration parameter num-rare-events-factor
+    @Test
+    public void numRareEventsFactorDoesNotCauseNegetiveScoresTest(){
+        CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setMaxRareCount(15).setMaxNumOfRareFeatures(5).setNumRareEventsFactor(1.0);
+        CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
+
+        long count = 4;
+        Map<String, Long> featureValueToCountMap = new HashMap<>();
+        String lastFeature = null;
+        for (long i = 0; i <= count; i++) {
+            lastFeature = String.format("test%d", i);
+            featureValueToCountMap.put(lastFeature, i);
+        }
+
+        CategoricalFeatureValue categoricalFeatureValue = new CategoricalFeatureValue(FixedDurationStrategy.HOURLY);
+
+        calcCategoricalFeatureValue(featureValueToCountMap, categoricalFeatureValue);
+        CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(new CategoryRarityModelBuilderConf(100), categoryRarityMetricsContainer).build(categoricalFeatureValue);
+        double score = scorer.calculateScore(model, Collections.emptyList(), new Feature("feature-with-highest-count", lastFeature));
+        Assert.assertEquals(0.0, score, 0.0);
+    }
+
     @Test
     public void calculateScore_elementaryCheck_test() {
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setMaxRareCount(15).setMaxNumOfRareFeatures(5);
@@ -586,6 +609,8 @@ public class CategoryRarityModelScorerTest {
     }
 
 
+
+
     /**
      * CategoryRarityModelScorer params to ease the testing.
      * The default parameters here are intentionally different from the defaults in the conf itself.
@@ -603,9 +628,15 @@ public class CategoryRarityModelScorerTest {
         Boolean useCertaintyToCalculateScore = true;
         String modelName = "model1";
         List<String> contextFieldNames = new ArrayList<>();
+        double numRareEventsFactor = 0.0;
 
         public CategoryRarityModelScorerParams() {
             contextFieldNames.add("username");
+        }
+
+        public CategoryRarityModelScorerParams setNumRareEventsFactor(double numRareEventsFactor) {
+            this.numRareEventsFactor = numRareEventsFactor;
+            return this;
         }
 
         public String getFeatureName() {
