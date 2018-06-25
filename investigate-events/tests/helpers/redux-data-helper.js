@@ -6,7 +6,19 @@ export const DEFAULT_LANGUAGES = [
   { count: 0, format: 'Text', metaName: 'b', flags: 2, displayName: 'B', formattedName: 'b (B)' },
   { count: 0, format: 'Text', metaName: 'c', flags: 3, displayName: 'C', formattedName: 'c (C)' },
   { count: 0, format: 'Text', metaName: 'c.1', flags: 3, displayName: 'C1', formattedName: 'c.1 (C 1)' },
-  { count: 0, format: 'Text', metaName: 'c.2', flags: 3, displayName: 'C2', formattedName: 'c.2 (C 2)' }
+  { count: 0, format: 'Text', metaName: 'c.2', flags: 3, displayName: 'C2', formattedName: 'c.2 (C 2)' },
+  { count: 0, format: 'Float32', metaName: 'file.entropy', flags: -2147482877, displayName: 'File Entropy', formattedName: 'file.entrophy (File Entrophy)' },
+  { count: 0, format: 'IPv4', metaName: 'alias.ip', flags: -2147482621, displayName: 'IP Aliases', formattedName: 'alias.ip (IP Aliases)' },
+  { count: 0, format: 'IPv6', metaName: 'alias.ipv6', flags: -2147482621, displayName: 'IPv6 Aliases', formattedName: 'alias.ipv6 (IPv6 Aliases)' },
+  { count: 0, format: 'MAC', metaName: 'alias.mac', flags: -2147482621, displayName: 'MAC Aliases', formattedName: 'alias.mac (MAC Aliases)' },
+  { count: 0, format: 'Text', metaName: 'alert', flags: -2147483133, displayName: 'Alerts', formattedName: 'alert (Alerts)' },
+  { count: 0, format: 'TimeT', metaName: 'starttime', flags: -2147482621, displayName: 'Time Start', formattedName: 'starttime (Time Start)' },
+  { count: 0, format: 'UInt8', metaName: 'ip.proto', flags: -2147482541, displayName: 'IP Protocol', formattedName: 'ip.proto (IP Protocol)' },
+  { count: 0, format: 'UInt16', metaName: 'eth.type', flags: -2147482541, displayName: 'Ethernet Protocol', formattedName: 'eth.type (Ethernet Protocol)' },
+  { count: 0, format: 'UInt32', metaName: 'bytes.src', flags: -2147482878, displayName: 'Bytes Sent', formattedName: 'bytes.src (Bytes Sent)' },
+  { count: 0, format: 'UInt64', metaName: 'filename.size', flags: -2147482878, displayName: 'File Size', formattedName: 'filename.size (File Size)' },
+  { count: 0, format: 'Text', metaName: 'referer', flags: -2147482878, displayName: 'Referer', formattedName: 'referer (Referer)' },
+  { count: 0, format: 'UInt64', metaName: 'sessionid', flags: -2147483631, displayName: 'Session ID', formattedName: 'sessionid (Session ID)' }
 ];
 
 const DEFAULT_PILLS_DATA = [{
@@ -19,6 +31,13 @@ const DEFAULT_PILLS_DATA = [{
   operator: '=',
   value: 'y',
   id: '2'
+}];
+
+const INVALID_PILL_DATA = [{
+  meta: 'ip.proto',
+  operator: '=',
+  value: 'boom',
+  id: 1
 }];
 
 const _set = (obj, key, val) => {
@@ -240,4 +259,8 @@ export default class DataHelper {
     return this;
   }
 
+  invalidPillsDataPopulated(pD = INVALID_PILL_DATA) {
+    _set(this.state, 'nextGen.pillsData', pD);
+    return this;
+  }
 }

@@ -1,16 +1,23 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import { patchReducer } from '../../../helpers/vnext-patch';
+import ReduxDataHelper from '../../../helpers/redux-data-helper';
 
 module('Unit | Component | Query Pills', function(hooks) {
   setupTest(hooks, {
     resolver: engineResolverFor('investigate-events')
   });
+  hooks.beforeEach(function() {
+    initialize(this.owner);
+  });
 
   test('Handle pill creation', function(assert) {
+    new ReduxDataHelper((state) => patchReducer(this, state)).language().build();
     const comp = this.owner.lookup('component:query-container/query-pills');
     const pillPosition = 0;
-    const pillObj = { meta: 'foo', operator: '=', value: 'bar' };
+    const pillObj = { meta: 'a', operator: '=', value: 'bar' };
     comp._pillCreated(pillObj, pillPosition);
 
     // Test for addition to 'filters' array

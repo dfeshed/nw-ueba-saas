@@ -205,7 +205,7 @@ const QueryPills = Component.extend({
     // END LEGACY FILTERS SET TO KEEP NEAR-TERM SEARCH WORKING
 
     this._pillsExited();
-    this.send('editNextGenPill', { pillData });
+    this.send('editNextGenPill', { pillData, position });
   }
 
 });

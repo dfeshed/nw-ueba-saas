@@ -30,5 +30,6 @@ export default {
   triggerOperatorPowerSelect,
   triggerValueInput,
   value: '.pill-value',
-  valueInput
+  valueInput,
+  invalidPill: '.is-invalid'
 };

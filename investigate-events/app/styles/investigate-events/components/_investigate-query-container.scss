@@ -196,6 +196,9 @@
       border-color: transparent;
       flex: 1 0 auto;
     }
+    &.is-invalid {
+      border-color: border-color(accentOne);
+    }
     > div.is-expanded {
       flex-grow: 1;
       input {

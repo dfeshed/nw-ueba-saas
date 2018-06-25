@@ -47,6 +47,27 @@ export default handleActions({
     return state.set('pillsData', newPillsData);
   },
 
+  [ACTION_TYPES.VALIDATE_NEXT_GEN_PILL]: (state, { payload }) => {
+    const { validatedPillData } = payload;
+
+    const position = state.pillsData.map((pD) => pD.id).indexOf(validatedPillData.id);
+
+    // Edited pills are effectively NEW pills we slide into the right
+    // spot. We want to give them new IDs.
+    const newPillData = {
+      ...validatedPillData,
+      id: _.uniqueId('nextGenPill_')
+    };
+
+    const newPillsData = Immutable.from([
+      ...state.pillsData.slice(0, position),
+      { ...newPillData },
+      ...state.pillsData.slice(position + 1)
+    ]);
+
+    return state.set('pillsData', newPillsData);
+  },
+
   [ACTION_TYPES.DELETE_NEXT_GEN_PILL]: (state, { payload }) => {
     const { pillData: { id } } = payload;
     const newPills = state.pillsData.filter((pD) => pD.id !== id);

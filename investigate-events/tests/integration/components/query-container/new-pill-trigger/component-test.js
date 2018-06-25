@@ -12,7 +12,6 @@ import * as MESSAGE_TYPES from 'investigate-events/components/query-container/me
 import KEY_MAP from 'investigate-events/util/keys';
 
 const ESCAPE_KEY = KEY_MAP.escape.code;
-
 let setState;
 
 module('Integration | Component | new-pill-trigger', function(hooks) {

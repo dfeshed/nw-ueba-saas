@@ -18,7 +18,9 @@ export const enrichedPillsData = createSelector(
         value: pillData.value,
         operator: possibleOperators.find((possOp) => possOp.displayName === pillData.operator),
         meta: metaKeys.find((mK) => mK.metaName === pillData.meta),
-        id: pillData.id
+        id: pillData.id,
+        isInvalid: pillData.isInvalid,
+        validationError: pillData.validationError
       };
     });
   }

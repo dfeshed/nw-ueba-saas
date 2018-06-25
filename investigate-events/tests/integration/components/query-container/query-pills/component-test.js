@@ -4,13 +4,13 @@ import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { click, findAll, render, settled, triggerKeyEvent } from '@ember/test-helpers';
 import sinon from 'sinon';
-
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import nextGenCreators from 'investigate-events/actions/next-gen-creators';
 import { createBasicPill } from '../pill-util';
 import PILL_SELECTORS from '../pill-selectors';
 import KEY_MAP from 'investigate-events/util/keys';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 const ESCAPE_KEY = KEY_MAP.escape.code;
 
@@ -33,6 +33,7 @@ module('Integration | Component | query-pills', function(hooks) {
     setState = (state) => {
       patchReducer(this, state);
     };
+    initialize(this.owner);
   });
 
   hooks.afterEach(function() {
@@ -244,4 +245,18 @@ module('Integration | Component | query-pills', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.pillTriggerOpenForAdd).length, 1, 'Class for trigger open should be present.');
   });
 
+  test('Creating a pill sets filters, validates the pill and updates if necessary', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .pillsDataEmpty()
+      .build();
+
+    await render(hbs`{{query-container/query-pills filters=filters isActive=true}}`);
+
+    // creates a pill with TimeT format with a text value 'x'
+    // will create an invalid pill once redux updates the store
+    await createBasicPill(false, 'TimeT');
+    // component class updates when store is updated
+    assert.equal(findAll(PILL_SELECTORS.invalidPill).length, 1, 'Class for invalid pill should be present');
+  });
 });

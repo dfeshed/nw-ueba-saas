@@ -136,3 +136,24 @@ test('EDIT_NEXT_GEN_PILL edits last pill provided', function(assert) {
   assert.ok(result.pillsData[1].id !== '2', 'pillsData id has changed');
   assert.equal(result.pillsData[1].foo, 8907, 'pillsData item had its data updated');
 });
+
+//
+// VALIDATE_NEXT_GEN_PILL
+//
+
+test('VALIDATE_NEXT_GEN_PILL adds to the state after  first pill provided', function(assert) {
+  const action = {
+    type: ACTION_TYPES.VALIDATE_NEXT_GEN_PILL,
+    payload: {
+      validatedPillData: {
+        id: '1',
+        foo: 'bar'
+      }
+    }
+  };
+  const result = reducer(stateWithPills, action);
+
+  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
+  assert.ok(result.pillsData[0].id !== '1', 'updated pillsData item has updated ID');
+  assert.equal(result.pillsData[0].foo, 'bar', 'pillsData item had its data updated');
+});

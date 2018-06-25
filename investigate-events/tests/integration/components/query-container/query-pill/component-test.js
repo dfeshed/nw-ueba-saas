@@ -19,7 +19,6 @@ import PILL_SELECTORS from '../pill-selectors';
 const ESCAPE_KEY = KEY_MAP.escape.code;
 
 const trim = (text) => text.replace(/\s+/g, '').trim();
-
 let setState;
 
 module('Integration | Component | query-pill', function(hooks) {
@@ -71,24 +70,25 @@ module('Integration | Component | query-pill', function(hooks) {
     new ReduxDataHelper(setState).language().pillsDataEmpty().build();
     await render(hbs`{{query-container/query-pill isActive=true}}`);
     // Select meta option A
-    await selectChoose(PILL_SELECTORS.meta, PILL_SELECTORS.powerSelectOption, 0);
-    assert.equal(trim(find(PILL_SELECTORS.meta).textContent), 'a');
+    await selectChoose(PILL_SELECTORS.meta, 'alias.ipv6');
+    assert.equal(trim(find(PILL_SELECTORS.meta).textContent), 'alias.ipv6');
     // Verify that operator gets control
     await focus(PILL_SELECTORS.operatorTrigger);
-    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 7);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 4);
     // Click back on meta and verify that 1 down-selected option is visible
     await click(PILL_SELECTORS.meta);
     await focus(PILL_SELECTORS.metaTrigger);
     assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 1);
     // Clear input to show all meta options
     await fillIn(PILL_SELECTORS.metaInput, '');
-    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 5);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 17);
     // Select meta options B
     await selectChoose(PILL_SELECTORS.meta, PILL_SELECTORS.powerSelectOption, 1);
     assert.equal(trim(find(PILL_SELECTORS.meta).textContent), 'b');
   });
 
   test('A pill when supplied with meta, operator, and value will send a message to create', async function(assert) {
+
     const done = assert.async();
     new ReduxDataHelper(setState).language().pillsDataEmpty().build();
 

@@ -1,8 +1,8 @@
 import { module, test } from 'qunit';
 
 import queryUtils from 'investigate-events/actions/utils';
-
-module('Unit | Helper | query utils');
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import { setupTest } from 'ember-qunit';
 
 const params = {
   et: 0,
@@ -14,65 +14,363 @@ const params = {
   st: 3
 };
 
-test('parseQueryParams correctly parses URI', function(assert) {
-  assert.expect(8);
-  const result = queryUtils.parseQueryParams(params);
-  assert.equal(result.endTime, params.et, '"et" was not parsed to "endTime"');
-  assert.equal(result.sessionId, params.eid, '"eid" was not parsed to "sessionId"');
-  assert.equal(result.metaFilter.uri, params.mf, '"mf" was not parsed to "metaFilter.uri"');
-  assert.equal(result.metaFilter.conditions.length, 1, '"mf" was not parsed to "metaFilter.conditions"');
-  assert.equal(result.metaPanelSize, params.mps, '"mps" was not parsed to "metaPanelSize"');
-  assert.equal(result.reconSize, params.rs, '"rs" was not parsed to "reconSize"');
-  assert.equal(result.serviceId, params.sid, '"sid" was not parsed to "serviceId"');
-  assert.equal(result.startTime, params.st, '"st" was not parsed to "startTime"');
-});
+module('Unit | Helper | query utils', function(hooks) {
+  setupTest(hooks);
 
-test('parseQueryParams correctly parses forward slashes and operators in text format conditions', function(assert) {
-  assert.expect(3);
-  const result = queryUtils.parseQueryParams(params);
-  assert.equal(result.metaFilter.conditions[0].meta, 'filename', 'forward slash was not parsed correctly');
-  assert.equal(result.metaFilter.conditions[0].operator, '=', 'forward slash was not parsed correctly');
-  assert.equal(result.metaFilter.conditions[0].value, '<reston=\'virginia.sys>', 'forward slash was not parsed correctly');
-});
+  hooks.beforeEach(function() {
+    initialize(this.owner);
+  });
 
-test('transformTextToFilters returns filter object', function(assert) {
-  assert.expect(2);
-  const freeFormText = 'medium = 1';
-  const result = queryUtils.transformTextToFilters(freeFormText);
 
-  assert.deepEqual(result, { meta: 'medium ', operator: '=', value: ' 1' });
-  assert.equal(result.complexFilter, undefined, 'Complex Filter doesnt exist');
+  test('parseQueryParams correctly parses URI', function(assert) {
+    assert.expect(8);
+    const result = queryUtils.parseQueryParams(params);
+    assert.equal(result.endTime, params.et, '"et" was not parsed to "endTime"');
+    assert.equal(result.sessionId, params.eid, '"eid" was not parsed to "sessionId"');
+    assert.equal(result.metaFilter.uri, params.mf, '"mf" was not parsed to "metaFilter.uri"');
+    assert.equal(result.metaFilter.conditions.length, 1, '"mf" was not parsed to "metaFilter.conditions"');
+    assert.equal(result.metaPanelSize, params.mps, '"mps" was not parsed to "metaPanelSize"');
+    assert.equal(result.reconSize, params.rs, '"rs" was not parsed to "reconSize"');
+    assert.equal(result.serviceId, params.sid, '"sid" was not parsed to "serviceId"');
+    assert.equal(result.startTime, params.st, '"st" was not parsed to "startTime"');
+  });
 
-});
+  test('parseQueryParams correctly parses forward slashes and operators in text format conditions', function(assert) {
+    assert.expect(3);
+    const result = queryUtils.parseQueryParams(params);
+    assert.equal(result.metaFilter.conditions[0].meta, 'filename', 'forward slash was not parsed correctly');
+    assert.equal(result.metaFilter.conditions[0].operator, '=', 'forward slash was not parsed correctly');
+    assert.equal(result.metaFilter.conditions[0].value, '<reston=\'virginia.sys>', 'forward slash was not parsed correctly');
+  });
 
-test('transformTextToFilters returns complex filter object', function(assert) {
-  assert.expect(4);
-  const freeFormText = 'medium = 1 || medium = 32';
-  const result = queryUtils.transformTextToFilters(freeFormText);
+  test('transformTextToFilters returns filter object', function(assert) {
+    assert.expect(2);
+    const freeFormText = 'medium = 1';
+    const result = queryUtils.transformTextToFilters(freeFormText);
 
-  assert.deepEqual(result, { complexFilter: 'medium = 1 || medium = 32' });
-  assert.equal(result.meta, undefined, 'meta doesnt exist');
-  assert.equal(result.operator, undefined, 'operator doesnt exist');
-  assert.equal(result.value, undefined, 'value doesnt exist');
+    assert.deepEqual(result, { meta: 'medium ', operator: '=', value: ' 1' });
+    assert.equal(result.complexFilter, undefined, 'Complex Filter doesnt exist');
 
-});
+  });
 
-test('filterIsPresent return false when filters array and freeFormText are different', function(assert) {
-  assert.expect(1);
-  const freeFormText = 'medium = 1';
-  const filters = [{ meta: 'medium', operator: '=', value: '2' }];
+  test('transformTextToFilters returns complex filter object', function(assert) {
+    assert.expect(4);
+    const freeFormText = 'medium = 1 || medium = 32';
+    const result = queryUtils.transformTextToFilters(freeFormText);
 
-  const result = queryUtils.filterIsPresent(filters, freeFormText);
+    assert.deepEqual(result, { complexFilter: 'medium = 1 || medium = 32' });
+    assert.equal(result.meta, undefined, 'meta doesnt exist');
+    assert.equal(result.operator, undefined, 'operator doesnt exist');
+    assert.equal(result.value, undefined, 'value doesnt exist');
 
-  assert.notOk(result, 'Filter is not present');
-});
+  });
 
-test('filterIsPresent return true when filters array and freeFormText are same', function(assert) {
-  assert.expect(1);
-  const freeFormText = 'medium = 1';
-  const filters = [{ meta: 'medium', operator: '=', value: '1' }];
+  test('filterIsPresent return false when filters array and freeFormText are different', function(assert) {
+    assert.expect(1);
+    const freeFormText = 'medium = 1';
+    const filters = [{ meta: 'medium', operator: '=', value: '2' }];
 
-  const result = queryUtils.filterIsPresent(filters, freeFormText);
+    const result = queryUtils.filterIsPresent(filters, freeFormText);
 
-  assert.ok(result, 'Filter is present');
+    assert.notOk(result, 'Filter is not present');
+  });
+
+  test('filterIsPresent return true when filters array and freeFormText are same', function(assert) {
+    assert.expect(1);
+    const freeFormText = 'medium = 1';
+    const filters = [{ meta: 'medium', operator: '=', value: '1' }];
+
+    const result = queryUtils.filterIsPresent(filters, freeFormText);
+
+    assert.ok(result, 'Filter is present');
+  });
+
+  test('clientSideValidation return error when meta is TimeT and value is not in proper format', function(assert) {
+    assert.expect(2);
+    const pillData = {
+      meta: {
+        format: 'TimeT',
+        metaName: 'starttime',
+        flags: -2147482621,
+        displayName: 'Time Start'
+      },
+      operator: '=',
+      value: 'NotATime'
+    };
+
+    const { isInvalid, validationError } = queryUtils.clientSideValidation(pillData.meta.format, pillData.value);
+
+    assert.ok(isInvalid, 'Filter is invalid');
+    assert.equal(validationError, 'You must enter a valid date.', 'Invalid error message');
+  });
+
+  test('clientSideValidation passes validation when meta is TimeT and value is in proper format', function(assert) {
+    assert.expect(2);
+    const pillData = {
+      meta: {
+        format: 'TimeT',
+        metaName: 'starttime',
+        flags: -2147482621,
+        displayName: 'Time Start'
+      },
+      operator: '=',
+      value: new Date()
+    };
+
+    const { isInvalid, validationError } = queryUtils.clientSideValidation(pillData.meta.format, pillData.value);
+    assert.notOk(isInvalid, 'Filter is valid');
+    assert.equal(validationError, undefined, 'Property should not exit');
+  });
+
+  test('clientSideValidation return error when metaFormat is IPv4 and value is not in proper format', function(assert) {
+    assert.expect(2);
+    const pillData = {
+      meta: {
+        format: 'IPv4',
+        metaName: 'foo',
+        flags: -2147482621,
+        displayName: 'foo'
+      },
+      operator: '=',
+      value: '127.0..1'
+    };
+
+    const { isInvalid, validationError } = queryUtils.clientSideValidation(pillData.meta.format, pillData.value);
+    assert.ok(isInvalid, 'Filter is invalid');
+    assert.equal(validationError, 'You must enter an IPv4 address.', 'Invalid error message');
+  });
+
+  test('clientSideValidation passes when metaFormat is IPv4 and value is in proper format', function(assert) {
+    assert.expect(2);
+    const pillData = {
+      meta: {
+        format: 'IPv4',
+        metaName: 'foo',
+        flags: -2147482621,
+        displayName: 'foo'
+      },
+      operator: '=',
+      value: '127.0.0.1'
+    };
+
+    const { isInvalid, validationError } = queryUtils.clientSideValidation(pillData.meta.format, pillData.value);
+    assert.notOk(isInvalid, 'Filter is valid');
+    assert.equal(validationError, undefined, 'Should not exist');
+  });
+
+  test('clientSideValidation return error when metaFormat is IPv6 and value is not in proper format', function(assert) {
+    assert.expect(2);
+    const pillData = {
+      meta: {
+        format: 'IPv6',
+        metaName: 'foo',
+        flags: -2147482621,
+        displayName: 'foo'
+      },
+      operator: '=',
+      value: '2001:0db8:85a3:0000:0000:8a2e:'
+    };
+
+    const { isInvalid, validationError } = queryUtils.clientSideValidation(pillData.meta.format, pillData.value);
+    assert.ok(isInvalid, 'Filter is invalid');
+    assert.equal(validationError, 'You must enter an IPv6 address.', 'Invalid error message');
+  });
+
+  test('clientSideValidation passes when metaFormat is IPv6 and value is in proper format', function(assert) {
+    assert.expect(2);
+    const pillData = {
+      meta: {
+        format: 'IPv6',
+        metaName: 'foo',
+        flags: -2147482621,
+        displayName: 'foo'
+      },
+      operator: '=',
+      value: '2001:0db8:85a3:0000:0000:8a2e:0370:7334'
+    };
+
+    const { isInvalid, validationError } = queryUtils.clientSideValidation(pillData.meta.format, pillData.value);
+    assert.notOk(isInvalid, 'Filter is valid');
+    assert.equal(validationError, undefined, 'Should not exist');
+  });
+
+  test('clientSideValidation return error when metaFormat is UInt8 and value is not in proper format', function(assert) {
+    assert.expect(2);
+    const pillData = {
+      meta: {
+        format: 'UInt8',
+        metaName: 'foo',
+        flags: -2147482621,
+        displayName: 'foo'
+      },
+      operator: '=',
+      value: 'bar'
+    };
+
+    const { isInvalid, validationError } = queryUtils.clientSideValidation(pillData.meta.format, pillData.value);
+    assert.ok(isInvalid, 'Filter is invalid');
+    assert.equal(validationError, 'You must enter an 8 bit Integer.', 'Invalid error message');
+  });
+
+  test('clientSideValidation passes when metaFormat is UInt8 and value is in proper format', function(assert) {
+    assert.expect(2);
+    const pillData = {
+      meta: {
+        format: 'UInt8',
+        metaName: 'foo',
+        flags: -2147482621,
+        displayName: 'foo'
+      },
+      operator: '=',
+      value: '3'
+    };
+
+    const { isInvalid, validationError } = queryUtils.clientSideValidation(pillData.meta.format, pillData.value);
+    assert.notOk(isInvalid, 'Filter is valid');
+    assert.equal(validationError, undefined, 'Should not exist');
+  });
+
+  test('clientSideValidation return error when metaFormat is UInt16 and value is not in proper format', function(assert) {
+    assert.expect(2);
+    const pillData = {
+      meta: {
+        format: 'UInt16',
+        metaName: 'foo',
+        flags: -2147482621,
+        displayName: 'foo'
+      },
+      operator: '=',
+      value: 'bar'
+    };
+
+    const { isInvalid, validationError } = queryUtils.clientSideValidation(pillData.meta.format, pillData.value);
+    assert.ok(isInvalid, 'Filter is invalid');
+    assert.equal(validationError, 'You must enter a 16 bit Integer.', 'Invalid error message');
+  });
+
+  test('clientSideValidation passes when metaFormat is UInt16 and value is in proper format', function(assert) {
+    assert.expect(2);
+    const pillData = {
+      meta: {
+        format: 'UInt16',
+        metaName: 'foo',
+        flags: -2147482621,
+        displayName: 'foo'
+      },
+      operator: '=',
+      value: '3'
+    };
+
+    const { isInvalid, validationError } = queryUtils.clientSideValidation(pillData.meta.format, pillData.value);
+    assert.notOk(isInvalid, 'Filter is valid');
+    assert.equal(validationError, undefined, 'Should not exist');
+  });
+
+  test('clientSideValidation return error when metaFormat is UInt32 and value is not in proper format', function(assert) {
+    assert.expect(2);
+    const pillData = {
+      meta: {
+        format: 'UInt32',
+        metaName: 'foo',
+        flags: -2147482621,
+        displayName: 'foo'
+      },
+      operator: '=',
+      value: 'bar'
+    };
+
+    const { isInvalid, validationError } = queryUtils.clientSideValidation(pillData.meta.format, pillData.value);
+    assert.ok(isInvalid, 'Filter is invalid');
+    assert.equal(validationError, 'You must enter a 32 bit Integer.', 'Invalid error message');
+  });
+
+  test('clientSideValidation passes when metaFormat is UInt32 and value is in proper format', function(assert) {
+    assert.expect(2);
+    const pillData = {
+      meta: {
+        format: 'UInt32',
+        metaName: 'foo',
+        flags: -2147482621,
+        displayName: 'foo'
+      },
+      operator: '=',
+      value: '3'
+    };
+
+    const { isInvalid, validationError } = queryUtils.clientSideValidation(pillData.meta.format, pillData.value);
+    assert.notOk(isInvalid, 'Filter is valid');
+    assert.equal(validationError, undefined, 'Should not exist');
+  });
+
+  test('clientSideValidation return error when metaFormat is Float32 and value is not in proper format', function(assert) {
+    assert.expect(2);
+    const pillData = {
+      meta: {
+        format: 'Float32',
+        metaName: 'foo',
+        flags: -2147482621,
+        displayName: 'foo'
+      },
+      operator: '=',
+      value: '5'
+    };
+
+    const { isInvalid, validationError } = queryUtils.clientSideValidation(pillData.meta.format, pillData.value);
+    assert.ok(isInvalid, 'Filter is invalid');
+    assert.equal(validationError, 'You must enter a 32 bit Float.', 'Invalid error message');
+  });
+
+  test('clientSideValidation passes when metaFormat is Float32 and value is in proper format', function(assert) {
+    assert.expect(2);
+    const pillData = {
+      meta: {
+        format: 'Float32',
+        metaName: 'foo',
+        flags: -2147482621,
+        displayName: 'foo'
+      },
+      operator: '=',
+      value: '3.3'
+    };
+
+    const { isInvalid, validationError } = queryUtils.clientSideValidation(pillData.meta.format, pillData.value);
+    assert.notOk(isInvalid, 'Filter is valid');
+    assert.equal(validationError, undefined, 'Should not exist');
+  });
+
+  test('clientSideValidation return error when metaFormat is MAC and value is not in proper format', function(assert) {
+    assert.expect(2);
+    const pillData = {
+      meta: {
+        format: 'MAC',
+        metaName: 'foo',
+        flags: -2147482621,
+        displayName: 'foo'
+      },
+      operator: '=',
+      value: '00:50:56:BA:60:1'
+    };
+
+    const { isInvalid, validationError } = queryUtils.clientSideValidation(pillData.meta.format, pillData.value);
+    assert.ok(isInvalid, 'Filter is invalid');
+    assert.equal(validationError, 'You must enter a MAC address.', 'Invalid error message');
+  });
+
+  test('clientSideValidation passes when metaFormat is MAC and value is in proper format', function(assert) {
+    assert.expect(2);
+    const pillData = {
+      meta: {
+        format: 'MAC',
+        metaName: 'foo',
+        flags: -2147482621,
+        displayName: 'foo'
+      },
+      operator: '=',
+      value: '00:50:56:BA:60:18'
+    };
+
+    const { isInvalid, validationError } = queryUtils.clientSideValidation(pillData.meta.format, pillData.value);
+    assert.notOk(isInvalid, 'Filter is valid');
+    assert.equal(validationError, undefined, 'Should not exist');
+  });
 });

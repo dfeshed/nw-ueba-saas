@@ -18,7 +18,7 @@ const RESET_PROPS = {
 };
 
 export default Component.extend({
-  classNameBindings: ['isActive', ':query-pill'],
+  classNameBindings: ['isActive', ':query-pill', 'isInvalid'],
 
   /**
    * The position of this pill relative to other pills.
@@ -60,6 +60,15 @@ export default Component.extend({
 
   // Whether or not a focusOut event should be processed
   shouldFocusOut: false,
+
+  /**
+   * Update the component once validation returns
+   * Is the pill a valid query?
+   * @type {boolean}
+   * @public
+   */
+  @computed('pillData')
+  isInvalid: (pillData) => !!pillData && pillData.isInvalid,
 
   /**
    * Is this component being used to create a new pill
@@ -487,7 +496,6 @@ export default Component.extend({
     const pillData = this._createPillData(data);
 
     this._broadcast(MESSAGE_TYPES.PILL_CREATED, pillData);
-
     // Because this is a "new pill template" pill, when we
     // create a new pill we need to clean this up so another one
     // can be added using the same empty pill. We are effecively
@@ -510,6 +518,7 @@ export default Component.extend({
   _createPillData(value = null) {
     const meta = this.get('selectedMeta.metaName');
     const operator = this.get('selectedOperator.displayName');
+
     const pillData = {
       meta,
       operator
@@ -543,7 +552,6 @@ export default Component.extend({
     const pillData = this._createPillData(data);
 
     this._broadcast(MESSAGE_TYPES.PILL_EDITED, pillData);
-
     // shutting this down, but not concerned with setting
     // data as the data should be refreshed back down through state.
     // Enivitably this pill is going to be replaced with a new one
