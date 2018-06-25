@@ -3,6 +3,9 @@ package presidio.output.domain.records.alerts;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.common.general.Schema;
+import fortscale.utils.elasticsearch.annotations.JoinColumn;
+import fortscale.utils.elasticsearch.annotations.OneToMany;
+import fortscale.utils.elasticsearch.annotations.OneToOne;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringExclude;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -70,7 +73,15 @@ public class Indicator extends AbstractElasticDocument {
 
     @JsonIgnore
     @ToStringExclude
+    @OneToMany
+    @JoinColumn(name = "id", referencedColumnName = "indicatorId")
     private transient List<IndicatorEvent> events;
+
+    @JsonIgnore
+    @ToStringExclude
+    @OneToOne
+    @JoinColumn(name = "alertId", referencedColumnName = "id")
+    private transient Alert alert;
 
     public Indicator() {
         super();
@@ -178,6 +189,14 @@ public class Indicator extends AbstractElasticDocument {
 
     public void setType(AlertEnums.IndicatorTypes type) {
         this.type = type;
+    }
+
+    public Alert getAlert() {
+        return alert;
+    }
+
+    public void setAlert(Alert alert) {
+        this.alert = alert;
     }
 
     @Override

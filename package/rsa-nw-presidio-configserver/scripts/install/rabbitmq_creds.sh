@@ -51,12 +51,12 @@ done
 # encrypt password
 ENC_PASS=$(java -jar "$ENCRYPT_UTIL_APP" encrypt "$PARAM_PASS")
 # modify output forwarder params
-echo "rabbitmq.hostname=$PARAM_HOSTNAME" >> $CONFIGURATION_FILE
-echo "rabbitmq.port=$PARAM_PORT" >> $CONFIGURATION_FILE
-echo "rabbitmq.exchange=$PARAM_EXCHANGE" >> $CONFIGURATION_FILE
-echo "rabbitmq.virtualhost=$PARAM_VIRTUALHOST" >> $CONFIGURATION_FILE
-echo "rabbitmq.password=$ENC_PASS" >> $CONFIGURATION_FILE
-echo "rabbitmq.username=$PARAM_USERNAME" >> $CONFIGURATION_FILE
+echo "spring.rabbitmq.host=$PARAM_HOSTNAME" >> $CONFIGURATION_FILE
+echo "spring.rabbitmq.port=$PARAM_PORT" >> $CONFIGURATION_FILE
+echo "spring.rabbitmq.template.exchange=$PARAM_EXCHANGE" >> $CONFIGURATION_FILE
+echo "spring.rabbitmq.virtual-host=$PARAM_VIRTUALHOST" >> $CONFIGURATION_FILE
+echo "spring.rabbitmq.password={cipher}$ENC_PASS" >> $CONFIGURATION_FILE
+echo "spring.rabbitmq.username=$PARAM_USERNAME" >> $CONFIGURATION_FILE
 
 chown presidio:presidio $CONFIGURATION_FILE
 

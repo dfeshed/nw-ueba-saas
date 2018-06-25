@@ -20,6 +20,8 @@ package fortscale.utils.elasticsearch;
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
+import fortscale.utils.elasticsearch.mapping.AssociationsResolver;
+import fortscale.utils.elasticsearch.mapping.ElasticsearchAssociation;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.get.MultiGetItemResponse;
@@ -35,9 +37,11 @@ import org.springframework.data.elasticsearch.core.AbstractResultMapper;
 import org.springframework.data.elasticsearch.core.DefaultEntityMapper;
 import org.springframework.data.elasticsearch.core.EntityMapper;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
-import org.springframework.data.elasticsearch.core.aggregation.impl.AggregatedPageImpl;
 import org.springframework.data.elasticsearch.core.mapping.ElasticsearchPersistentEntity;
 import org.springframework.data.elasticsearch.core.mapping.ElasticsearchPersistentProperty;
+import org.springframework.data.mapping.Association;
+import org.springframework.data.mapping.PersistentProperty;
+import org.springframework.data.mapping.SimpleAssociationHandler;
 import org.springframework.data.mapping.context.MappingContext;
 
 import java.io.ByteArrayOutputStream;
@@ -58,6 +62,8 @@ import java.util.List;
 public class PresidioResultMapper extends AbstractResultMapper {
 
     private MappingContext<? extends ElasticsearchPersistentEntity<?>, ElasticsearchPersistentProperty> mappingContext;
+
+    private AssociationsResolver resolver;
 
     public PresidioResultMapper() {
         super(new DefaultEntityMapper());
@@ -127,6 +133,13 @@ public class PresidioResultMapper extends AbstractResultMapper {
         return mapEntity(buildJSONFromFields(values), clazz);
     }
 
+    @Override
+    public <T> T mapEntity(String source, Class<T> clazz) {
+        T result = super.mapEntity(source, clazz);
+        result = mapAssociations(result,clazz);
+        return result;
+    }
+
     private String buildJSONFromFields(Collection<SearchHitField> values) {
         JsonFactory nodeFactory = new JsonFactory();
         try {
@@ -159,6 +172,32 @@ public class PresidioResultMapper extends AbstractResultMapper {
             setPersistentEntityId(result, response.getId(), clazz);
         }
         return result;
+    }
+
+
+    public <T> T mapAssociations(T result, Class<T> clazz) {
+
+        if (mappingContext != null && clazz.isAnnotationPresent(Document.class)) {
+
+            ElasticsearchPersistentEntity<?> persistentEntity = mappingContext.getPersistentEntity(clazz);
+
+            persistentEntity.doWithAssociations(new SimpleAssociationHandler() {
+
+                public void doWithAssociation(Association<? extends PersistentProperty<?>> association) {
+
+                    ElasticsearchAssociation esAssociation = (ElasticsearchAssociation) association;
+                    Object obj = resolver.resolveAssociation(result, esAssociation);
+                    persistentEntity.getPropertyAccessor(result).setProperty(association.getInverse(), obj);
+
+                }
+            });
+        }
+
+        return result;
+    }
+
+    public void setResolver(AssociationsResolver resolver) {
+        this.resolver = resolver;
     }
 
     @Override

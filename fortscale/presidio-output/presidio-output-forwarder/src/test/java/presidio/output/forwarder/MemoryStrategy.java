@@ -11,8 +11,8 @@ public class MemoryStrategy implements ForwarderStrategy {
     public static final String MEMORY = "memory";
 
 
-    List<String> allMessages = new ArrayList<String>();
-    List<String> lastBatchMessages = new ArrayList<String>();
+    List<ForwardMassage> allMessages = new ArrayList<>();
+    List<ForwardMassage> lastBatchMessages = new ArrayList<>();
 
     @Override
     public String getName() {
@@ -25,9 +25,9 @@ public class MemoryStrategy implements ForwarderStrategy {
     }
 
     @Override
-    public void forward(Map<String, String> messages, PAYLOAD_TYPE type) throws Exception {
-        allMessages.addAll(messages.values());
-        lastBatchMessages = new ArrayList<>(messages.values());
+    public void forward(List<ForwardMassage> messages, PAYLOAD_TYPE type) throws Exception {
+        allMessages.addAll(messages);
+        lastBatchMessages = new ArrayList<>(messages);
     }
 
     @Override
@@ -36,24 +36,24 @@ public class MemoryStrategy implements ForwarderStrategy {
     }
 
 
-    public List<String> getAllMessages() {
+    public List<ForwardMassage> getAllMessages() {
         return allMessages;
     }
 
-    public void setAllMessages(List<String> allMessages) {
+    public void setAllMessages(List<ForwardMassage> allMessages) {
         this.allMessages = allMessages;
     }
 
-    public List<String> getLastBatchMessages() {
+    public List<ForwardMassage> getLastBatchMessages() {
         return lastBatchMessages;
     }
 
-    public void setLastBatchMessages(List<String> lastBatchMessages) {
+    public void setLastBatchMessages(List<ForwardMassage> lastBatchMessages) {
         this.lastBatchMessages = lastBatchMessages;
     }
 
     public void cleanAll() {
-        allMessages = new ArrayList<String>();
-        lastBatchMessages = new ArrayList<String>();
+        allMessages = new ArrayList<ForwardMassage>();
+        lastBatchMessages = new ArrayList<ForwardMassage>();
     }
 }

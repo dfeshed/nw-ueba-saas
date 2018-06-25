@@ -11,6 +11,7 @@ import presidio.output.forwarder.strategy.ForwarderConfiguration;
 import presidio.output.forwarder.strategy.ForwarderStrategyFactory;
 
 import java.time.Instant;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public class AlertsForwarder extends Forwarder<Alert> {
@@ -38,6 +39,11 @@ public class AlertsForwarder extends Forwarder<Alert> {
     @Override
     String buildPayload(Alert alert) throws Exception {
         return payloadBuilder.buildPayload(alert);
+    }
+
+    @Override
+    Map buildHeader(Alert entity) throws Exception {
+        return null;
     }
 
     @Override

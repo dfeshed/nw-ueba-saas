@@ -1,6 +1,9 @@
 package presidio.output.forwarder.strategy;
 
 
+import presidio.output.forwarder.ForwardMassage;
+
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,12 +26,12 @@ public interface ForwarderStrategy {
     /**
      * Forward the payload to the concrete target
      *
-     * @param payloads map of messages: <id, message> the id of the object, json representation of the object
+     * @param messages list of messages: <id, message> the id of the object, json representation of the object
      * @param type object type
      *
      * @throws Exception if forwarding the payload fail
      */
-    void forward (Map<String,String> payloads, PAYLOAD_TYPE type) throws Exception;
+    void forward (List<ForwardMassage> messages, PAYLOAD_TYPE type) throws Exception;
 
 
     /**
