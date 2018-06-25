@@ -3,13 +3,16 @@ package presidio.output.forwarder;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Iterators;
 import fortscale.utils.logging.Logger;
+import org.apache.commons.collections.ArrayStack;
 import presidio.output.forwarder.strategy.ForwarderStrategy;
 import presidio.output.forwarder.strategy.ForwarderConfiguration;
 import presidio.output.forwarder.strategy.ForwarderStrategyFactory;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
@@ -64,17 +67,18 @@ public abstract class Forwarder<T>{
 
 
     private int forwardBatch(ForwarderStrategy forwarderStrategy, ForwarderStrategy.PAYLOAD_TYPE payloadType, List<T> entities) throws Exception{
-        HashMap<String, String> payloads = new HashMap<>();
+        List<ForwardMassage> messages = new ArrayList<>();
         entities.forEach(entity -> {
                     try {
-                         payloads.put(getId(entity), buildPayload(entity));
+                        ForwardMassage message = new ForwardMassage(getId(entity),buildPayload(entity), buildHeader(entity) );
+                        messages.add(message);
                     } catch (Exception ex) {
                         logger.error("failed to build payload '{}': {}", payloadType, entity);
                         Throwables.propagate(ex);
                     }
                 });
-        forwarderStrategy.forward(payloads, payloadType);
-        return payloads.size();
+        forwarderStrategy.forward(messages, payloadType);
+        return messages.size();
     };
 
     abstract Stream<T> getEntitiesToForward(Instant startDate, Instant endDate);
@@ -82,6 +86,8 @@ public abstract class Forwarder<T>{
     abstract String getId(T entity);
 
     abstract String buildPayload(T entity) throws Exception;
+
+    abstract Map buildHeader(T entity) throws Exception;
 
     abstract ForwarderStrategy.PAYLOAD_TYPE getPayloadType();
 

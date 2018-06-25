@@ -12,6 +12,7 @@ import presidio.output.forwarder.strategy.ForwarderConfiguration;
 import presidio.output.forwarder.strategy.ForwarderStrategyFactory;
 
 import java.time.Instant;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public class UsersForwarder extends Forwarder<User> {
@@ -39,6 +40,11 @@ public class UsersForwarder extends Forwarder<User> {
     @Override
     String buildPayload(User entity) throws Exception {
         return payloadBuilder.buildPayload(entity);
+    }
+
+    @Override
+    Map buildHeader(User entity) {
+        return null;
     }
 
     @Override

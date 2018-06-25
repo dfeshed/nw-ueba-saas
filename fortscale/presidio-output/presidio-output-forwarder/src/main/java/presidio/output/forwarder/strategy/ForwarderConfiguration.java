@@ -6,15 +6,17 @@ public class ForwarderConfiguration {
     }
 
     public boolean isForwardEntity(ForwarderStrategy.PAYLOAD_TYPE entityType) {
-        return true;
+        return ForwarderStrategy.PAYLOAD_TYPE.INDICATOR.equals(entityType);
     }
 
     public String getForwardingStrategy(ForwarderStrategy.PAYLOAD_TYPE entityType) {
-        return "echo";
+        return "rabbitMq";
     }
 
     public int getForwardBulkSize(ForwarderStrategy.PAYLOAD_TYPE entityType){
         return 1;
     }
+
+    public boolean extendEntity(ForwarderStrategy.PAYLOAD_TYPE entityType) {return true;}
 
 }

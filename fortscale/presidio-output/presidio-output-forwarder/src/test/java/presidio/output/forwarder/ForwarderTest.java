@@ -10,6 +10,7 @@ import presidio.output.forwarder.strategy.ForwarderStrategyFactory;
 
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public class ForwarderTest {
@@ -36,6 +37,11 @@ public class ForwarderTest {
         @Override
         String buildPayload(String entity) throws Exception {
             return entity;
+        }
+
+        @Override
+        Map buildHeader(String entity) throws Exception {
+            return null;
         }
 
         @Override
@@ -71,7 +77,7 @@ public class ForwarderTest {
         Forwarder forwarder = new ConcreteForwarder(forwarderConfiguration, forwarderStrategyFactory);
         forwarder.forward(Instant.now(), Instant.now());
         Assert.assertEquals(10, memoryStrategy.allMessages.size());
-        Assert.assertArrayEquals(NUMBERS,memoryStrategy.allMessages.toArray(new String[0]));
+        Assert.assertArrayEquals(NUMBERS,memoryStrategy.allMessages.stream().map(message -> message.getPayload()).toArray());
         Assert.assertEquals(1, memoryStrategy.lastBatchMessages.size());
     }
 
@@ -81,7 +87,7 @@ public class ForwarderTest {
         Forwarder forwarder = new ConcreteForwarder(forwarderConfiguration, forwarderStrategyFactory);
         forwarder.forward(Instant.now(), Instant.now());
         Assert.assertEquals(10, memoryStrategy.allMessages.size());
-        Assert.assertArrayEquals(NUMBERS,memoryStrategy.allMessages.toArray(new String[0]));
+        Assert.assertArrayEquals(NUMBERS,memoryStrategy.allMessages.stream().map(message -> message.getPayload()).toArray());
         Assert.assertEquals(10, memoryStrategy.lastBatchMessages.size());
     }
 
@@ -91,7 +97,7 @@ public class ForwarderTest {
         Forwarder forwarder = new ConcreteForwarder(forwarderConfiguration, forwarderStrategyFactory);
         forwarder.forward(Instant.now(), Instant.now());
         Assert.assertEquals(10, memoryStrategy.allMessages.size());
-        Assert.assertArrayEquals(NUMBERS,memoryStrategy.allMessages.toArray(new String[0]));
+        Assert.assertArrayEquals(NUMBERS,memoryStrategy.allMessages.stream().map(message -> message.getPayload()).toArray());
         Assert.assertEquals(10, memoryStrategy.lastBatchMessages.size());
     }
 

@@ -1,8 +1,10 @@
 package presidio.output.forwarder.strategy.plugins;
 
 import com.google.auto.service.AutoService;
+import presidio.output.forwarder.ForwardMassage;
 import presidio.output.forwarder.strategy.ForwarderStrategy;
 
+import java.util.List;
 import java.util.Map;
 
 @AutoService(ForwarderStrategy.class)
@@ -19,8 +21,8 @@ public class EchoForwarderStrategy implements ForwarderStrategy {
     }
 
     @Override
-    public void forward(Map<String, String>  messages, PAYLOAD_TYPE type) throws Exception {
-        messages.values().forEach(message ->
+    public void forward(List<ForwardMassage> messages, PAYLOAD_TYPE type) throws Exception {
+        messages.forEach(message ->
             System.out.println(String.format("message %s: %s", type, message))
         );
     }
