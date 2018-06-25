@@ -79,7 +79,7 @@ fs-user-alert-flow {
         height: 48px;
         border-radius: 50%;
         background-color: #161616;
-
+        border: 1px solid var(--buttons-borders-color);
         display: flex;
         flex-flow: column nowrap;
         justify-content: center;
@@ -105,7 +105,7 @@ fs-user-alert-flow {
     .slide-description {
         font-family: 'Open Sans', sans-serif;
         font-weight: 400;
-        color: #004f8f;
+        color: var(--main-widgets-titles-text-color);
         font-size: 12px;
 
         width: 60%;

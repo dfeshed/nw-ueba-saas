@@ -72,7 +72,8 @@
 
     .fs-multiselect-dropdown-list {
         box-sizing: border-box !important;
-        background-color: $clrWhite;
+        background-color: var(--buttons-background-color);
+        border: 1px solid var(--buttons-borders-color);
         width: 100%;
         margin-top: 4px;
         box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
@@ -80,7 +81,7 @@
         overflow-y: hidden;
         //margin-left: $labelWidth;
         @include font-roboto-regular();
-        color: $clrGrey80;
+        color: var(--buttons-text-color);
         position: absolute;
         display: none;
 
@@ -127,7 +128,7 @@
                 position: absolute;
                 top: 2px;
                 left: 5px;
-                stroke: #ddd;
+                stroke: var(--buttons-text-color);
             }
 
             .fsicon-looking-glass {
@@ -166,20 +167,20 @@
             margin-left:10px;
         }
         .k-checkbox:checked+label {
-            background-color: var(--main-widgets-background-color-hover);
-            color: var(--main-widgets-titles-text-color-hover);
+            color:  var(--buttons-text-color);
+            background-color: var(--buttons-background-color);
         }
 
         .search {
             width: 100%;
             border: 1px solid #d3d8d9;
             box-sizing: border-box;
-            background-color: #d3d8d9;
+            background-color: var(--buttons-background-color);
             height: 30px;
             @include font-roboto-light();
             padding: 0 20px 0 25px;
             font-size: $basicFontSize;
-            color:  #01294a;
+            color:  var(--buttons-text-color);
 
             &::-webkit-input-placeholder {
                 color: #01294a;
@@ -201,8 +202,8 @@
             line-height: 33px;
 
             font-family: 'Open Sans', sans-serif;
-            color:  var(--main-widgets-titles-text-color-hover);
-            background-color: var(--main-widgets-background-color-hover);
+            color:  var(--buttons-text-color);
+            background-color: var(--buttons-background-color);
             font-size: 14px;/* Approximation due to font substitution */
 
             &:not(:last-child) {
@@ -217,7 +218,7 @@
         justify-content: flex-end;
         align-items: center;
         margin: 10px;
-        background-color: var(--main-widgets-background-color-hover);
+        background-color: var(--buttons-background-color);
         svg {
             display: inline-block;
         }
@@ -252,7 +253,7 @@
             box-shadow: none;
             //@include font-roboto-regular();
             font-family: 'Open Sans', sans-serif;
-            color:  var(--main-widgets-titles-link-color);
+            color:  var(--buttons-text-color);
             font-size: 14px;
             font-weight: 400;
             text-decoration: underline;
