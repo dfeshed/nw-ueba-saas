@@ -15,7 +15,7 @@ fs-indicator-am-geo-location {
         font-size: 15px;
         font-family: 'Open Sans', sans-serif;
         font-weight: 700;
-        color: #666666;
+        color: var(--chart-title-color);
 
         @media (max-height: 800px) {
             font-size: 12px;

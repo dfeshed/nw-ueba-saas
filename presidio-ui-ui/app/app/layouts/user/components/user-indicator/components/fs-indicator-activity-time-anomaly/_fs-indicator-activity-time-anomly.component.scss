@@ -15,7 +15,7 @@ fs-indicator-activity-time-anomaly {
         font-size: 15px;
         font-family: 'Open Sans', sans-serif;
         font-weight: 700;
-        color: #666666;
+        color: var(--chart-title-color);
 
         margin-bottom: 1vh;
 
@@ -54,7 +54,7 @@ fs-indicator-activity-time-anomaly {
         font-size: 12px;
         font-family: 'Open Sans', sans-serif;
         font-weight: 400;
-        color: #666666;
+        color: var(--chart-label-color);
 
     }
 
@@ -67,7 +67,7 @@ fs-indicator-activity-time-anomaly {
         font-size: 12px;
         font-family: 'Open Sans', sans-serif;
         font-weight: 400;
-        color: #666666;
+        color: var(--chart-label-color);
     }
 
     .day-column {

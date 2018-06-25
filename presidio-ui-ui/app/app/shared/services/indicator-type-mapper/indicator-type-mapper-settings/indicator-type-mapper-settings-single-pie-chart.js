@@ -87,7 +87,7 @@
                                 "startAlpha": 1,
                                 "titleField": "category",
                                 "valueField": "value",
-                                "color": "#989191",
+                                "color": "#eee",
                                 "creditsPosition": "bottom-right",
                                 "fontFamily": "Open Sans",
                                 "fontSize": 12,
@@ -96,7 +96,7 @@
                                     {
                                         "id": "Title-1",
                                         "fontFamily": "'Open Sans', sans-serif",
-                                        "color": "#666666",
+                                        "color": "#eee",
                                         "size": 12
                                     }
                                 ]

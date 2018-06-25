@@ -50,10 +50,10 @@
                             "gridPosition": "start",
                             "axisAlpha": 0,
                             "axisThickness": 0,
-                            "gridColor": "#989191",
+                            "gridColor": "#eee",
                             "gridThickness": 0,
                             "title": "Session Source IP",
-                            "titleColor": "#989191",
+                            "titleColor": "#eee",
                             "fontFamily": "'Open Sans', sans-serif"
                         },
                         "colors": [
@@ -82,15 +82,15 @@
                             {
                                 "id": "ValueAxis-1",
                                 "stackType": "regular",
-                                "axisColor": "#BCB5B5",
-                                "gridColor": "#989191",
+                                "axisColor": "#eee",
+                                "gridColor": "#eee",
                                 // "labelFrequency": 2,
                                 // "minHorizontalGap": 10,
                                 // "minVerticalGap": 10,
                                 "showFirstLabel": true,
                                 "showLastLabel": true,
                                 "title": "Time of Day",
-                                "titleColor": "#989191",
+                                "titleColor": "#eee",
                                 precision: 2,
                                 labelFunction: (value) => {
                                     let hours = Math.floor(value);
@@ -104,7 +104,7 @@
                         "balloon": {},
                         "titles": [
                             {
-                                "color": "#989191",
+                                "color": "#eee",
                                 "id": "Title-1",
                                 "size": 15,
                                 "text": "Concurrent Sessions",

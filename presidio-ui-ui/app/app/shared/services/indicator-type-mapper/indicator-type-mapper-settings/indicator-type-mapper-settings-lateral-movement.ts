@@ -117,7 +117,7 @@ import IIndicator = Fortscale.shared.interfaces.IIndicator;
                             "valueAxes": [{
                                 "id": "v1",
                                 "title": "Users",
-                                "titleColor": "#989191",
+                                "titleColor": "#eee",
                                 "position": "left",
                                 "precision": 0,
                                 "tickLength": 1,
