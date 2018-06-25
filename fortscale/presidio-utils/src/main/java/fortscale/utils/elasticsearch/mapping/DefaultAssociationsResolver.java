@@ -2,6 +2,7 @@ package fortscale.utils.elasticsearch.mapping;
 
 import org.mockito.cglib.proxy.Enhancer;
 import org.mockito.cglib.proxy.LazyLoader;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
@@ -48,7 +49,8 @@ public class DefaultAssociationsResolver implements AssociationsResolver {
 
             String fieldName = association.getObverse().getFieldName();
             Object value = association.getInversePersistentEntity().getPropertyAccessor(inversedObject).getProperty(association.getInverseJoinProperty());
-            CriteriaQuery query = new CriteriaQuery(new Criteria(fieldName).is(value));
+            PageRequest page = new PageRequest(0, 1000);
+            CriteriaQuery query = new CriteriaQuery(new Criteria(fieldName).is(value), page);
 
             T obj = (T) elasticsearchOperations.queryForList(query, association.getObversePersistentEntity().getType());
 
