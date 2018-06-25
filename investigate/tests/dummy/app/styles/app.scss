@@ -16,7 +16,7 @@
   Overlays the context panel over the right-side of the app's main outlet.
   The panel is hidden unless we have some entity to display inside of it.
 */
-.recon-dummy {
+.investigate-dummy {
   &__main {
 
     &-body {
@@ -35,7 +35,7 @@
     }
 
     &.has-entity-info {
-      .recon-dummy__main {
+      .investigate-dummy__main {
         &-aside {
           width: 75%;
           box-shadow: 0 0 rsa-whitespace() background-color(neutral, dark, nearly-opaque);

@@ -24,31 +24,29 @@
   The panel is hidden unless we have some entity to display inside of it.
 */
 .investigate-dummy {
-    &__main {
+  &__main {
+    &-body {
+      z-index: 1;
+    }  
+    &-aside {
+      overflow: hidden;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      width: 0;
+      z-index: 500;
+      transition: width 300ms;
+    }
   
-      &-body {
-        z-index: 1;
-      }
-  
-      &-aside {
-        overflow: hidden;
-        position: fixed;
-        top: 0;
-        bottom: 0;
-        right: 0;
-        width: 0;
-        z-index: 500;
-        transition: width 300ms;
-      }
-  
-      &.has-entity-info {
-        .investigate-dummy__main {
-          &-aside {
-            width: 75%;
-            box-shadow: 0 0 rsa-whitespace() background-color(neutral, dark, nearly-opaque);
-          }
+    &.has-entity-info {
+      .investigate-dummy__main {
+        &-aside {
+          width: 75%;
+          box-shadow: 0 0 rsa-whitespace() background-color(neutral, dark, nearly-opaque);
         }
       }
     }
   }
+}
   

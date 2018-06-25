@@ -1,8 +1,8 @@
-<article class="recon-engine-dummy__main {{if (and entityId entityType) 'has-entity-info'}}">
-  <section fill class="recon-engine-dummy__main-body">
+<article class="investigate-dummy__main {{if (and entityId entityType) 'has-entity-info'}}">
+  <section fill class="investigate-dummy__main-body">
     {{outlet}}
   </section>
-  <aside fit class="recon-engine-dummy__main-aside">
+  <aside fit class="investigate-dummy__main-aside">
     {{#if (and entityId entityType)}}
       {{context-panel entityId=entityId entityType=entityType closePanel=(route-action 'closeContextPanel')}}
     {{/if}}
