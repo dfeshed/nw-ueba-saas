@@ -6,3 +6,8 @@
 .rsa-investigate-time-range {
   display: inline;
 }
+
+.timerange-selector-panel {
+  max-height: 20rem;
+  overflow: auto;
+}

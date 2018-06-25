@@ -3,3 +3,8 @@
     margin-right: rsa-whitespace(less);
   }
 }
+
+.service-selector-panel {
+  max-height: 20rem;
+  overflow: auto;
+}
