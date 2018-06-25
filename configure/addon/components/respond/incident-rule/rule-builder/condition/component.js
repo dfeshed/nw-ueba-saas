@@ -4,6 +4,7 @@ import operators from 'configure/utils/rules/operators';
 import { connect } from 'ember-redux';
 import { updateCondition, removeCondition } from 'configure/actions/creators/respond/incident-rule-creators';
 import { getConditionFields } from 'configure/reducers/respond/incident-rules/rule/selectors';
+import { isBlank } from '@ember/utils';
 
 const { text, number, date, category } = operators;
 
@@ -76,12 +77,15 @@ const Condition = Component.extend({
     handleCategoryChange(option) {
       this.send('updateCondition', { value: option.value });
     },
-    handleInputChange(value) {
-      const selectedField = this.get('selectedField');
+    handleInputChange(val) {
+      let value = val;
       // if the condition's field is a number, make sure we cast to the proper numerical value, otherwise the value will
       // remain a string (e.g., "50" instead of 50)
-      const val = selectedField.type === 'numberfield' ? parseFloat(value) : value;
-      this.send('updateCondition', { value: val });
+      if (this.get('selectedField').type === 'numberfield') {
+        // ensure a blank value is treated as null otherwise parseFloat will result in NaN
+        value = isBlank(value) ? null : parseFloat(value);
+      }
+      this.send('updateCondition', { value });
     },
     handleDateChange(value) {
       this.send('updateCondition', { value });
