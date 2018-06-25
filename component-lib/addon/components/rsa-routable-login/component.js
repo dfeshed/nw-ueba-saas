@@ -292,9 +292,11 @@ export default Component.extend({
         const [config] = response.data;
 
         if (config.securityBannerEnabled) {
+          const bannerTitleHtml = sanitizeHtml(config.securityBannerTitle);
+          const bannerTextHtml = sanitizeHtml(config.securityBannerText);
           this.setProperties({
-            securityBannerTitle: config.securityBannerTitle,
-            securityBannerText: config.securityBannerText,
+            securityBannerTitle: bannerTitleHtml,
+            securityBannerText: bannerTextHtml,
             displaySecurityBanner: true
           });
         } else {

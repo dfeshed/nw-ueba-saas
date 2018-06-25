@@ -6,6 +6,8 @@ import hbs from 'htmlbars-inline-precompile';
 import { setupRenderingTest } from 'ember-qunit';
 import { findAll, render } from '@ember/test-helpers';
 import { waitForRaf } from '../../../helpers/wait-for-raf';
+import { waitFor } from 'ember-wait-for-test-helper/wait-for';
+import { securitybanner } from './data';
 
 module('Integration | Component | rsa-routable-login', function(hooks) {
   setupRenderingTest(hooks);
@@ -104,6 +106,52 @@ module('Integration | Component | rsa-routable-login', function(hooks) {
     await render(hbs `{{rsa-routable-login displayEula=true}}`);
     assert.equal(findAll('.eula-content').length, 1);
     assert.equal(document.querySelector('.eula-content').innerHTML.trim(), '<p><img src="#">foo</p>');
+  });
+
+  test('security header title and text will be sanitized before html is rendered', async function(assert) {
+    assert.expect(5);
+
+    let fetchResolved = false;
+    this.owner.register('service:ajax', Service.extend({
+      request: (url) => {
+        assert.equal(url, '/display/security/securitybanner/get');
+        return new Promise(function(resolve) {
+          later(() => {
+            resolve(securitybanner);
+            fetchResolved = true;
+          }, 1);
+        });
+      }
+    }));
+
+    await render(hbs `{{rsa-routable-login displayEula=false displaySecurityBanner=true}}`);
+
+    await waitFor(() => fetchResolved === true);
+
+    assert.equal(findAll('[test-id=securityBannerTitle]').length, 1);
+    assert.equal(document.querySelector('[test-id=securityBannerTitle]').innerHTML.trim(), 'Terms and Conditions <img src=\"a\">');
+
+    assert.equal(findAll('[test-id=securityBannerText]').length, 1);
+    assert.equal(document.querySelector('[test-id=securityBannerText]').innerHTML.trim(), 'banner text example <img src=\"a\">');
+  });
+
+  test('security header title will render login eula title when displayEula truthy and displaySecurityBanner falsy', async function(assert) {
+    assert.expect(2);
+
+    this.owner.register('service:ajax', Service.extend({
+      request: () => {
+        return new Promise(function(resolve) {
+          later(() => {
+            resolve('<p><img src="#" onerror=alert(1) />foo</p>');
+          }, 1);
+        });
+      }
+    }));
+
+    await render(hbs `{{rsa-routable-login displayEula=true}}`);
+
+    assert.equal(findAll('[test-id=securityBannerTitle]').length, 1);
+    assert.equal(document.querySelector('[test-id=securityBannerTitle]').innerHTML.trim(), 'End User License Agreement');
   });
 
 });

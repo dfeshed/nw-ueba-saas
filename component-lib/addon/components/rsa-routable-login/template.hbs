@@ -3,11 +3,11 @@
   <div class="login-wrapper {{if hasError 'has-error'}}">
     <header>
       {{rsa-logo title=(t 'appTitle') displayEula=displayEula legacyRsaLogo=false}}
-        
+
       {{#if displayEula}}
-        <h3>{{t 'login.eula.title'}}</h3>
+        <h3 test-id="securityBannerTitle">{{t 'login.eula.title'}}</h3>
       {{else if displaySecurityBanner}}
-        <h3>{{{securityBannerTitle}}}</h3>
+        <h3 test-id="securityBannerTitle">{{{securityBannerTitle}}}</h3>
       {{/if}}
     </header>
 
@@ -28,7 +28,7 @@
       </form>
     {{else if displaySecurityBanner}}
       <form class="eula" {{action "acceptSecurityBanner" on="submit"}}>
-        <div class="banner-content">
+        <div class="banner-content" test-id="securityBannerText">
           {{{securityBannerText}}}
         </div>
 
