@@ -7,7 +7,10 @@ import {
   numberOfRenderableTextEntries,
   renderedText,
   eventHasPayload,
-  metaHighlightCount
+  metaHighlightCount,
+  canGoToPreviousPage,
+  canGoToNextPage,
+  canGoToLastPage
 } from 'recon/reducers/text/selectors';
 import { augmentedTextData } from '../../../helpers/data/index';
 import { RECON_VIEW_TYPES_BY_NAME } from 'recon/utils/reconstruction-types';
@@ -45,6 +48,115 @@ test('hasTextContent', function(assert) {
   assert.equal(tests.textContentNull, false, 'hasTextContent should return false, when textContent null');
   assert.equal(tests.textContentEmpty, false, 'hasTextContent should return false, when textContent empty');
   assert.equal(tests.hasTextContent, true, 'hasTextContent should return true, when textContent present');
+});
+
+test('canGoToPreviousPage', function(assert) {
+  assert.expect(2);
+  const tests = {
+    onFirstPage: canGoToPreviousPage(Immutable.from({
+      text: {
+        textPageNumber: 1,
+        canPrevious: false,
+        isTextPageLoading: false
+      }
+    })),
+    onRandomPage: canGoToPreviousPage(Immutable.from({
+      text: {
+        textPageNumber: 3,
+        canPrevious: true,
+        isTextPageLoading: false
+      }
+    }))
+  };
+
+  assert.equal(tests.onFirstPage, false, 'canGoToPreviousPage should return false, when we are on the first page');
+  assert.equal(tests.onRandomPage, true, 'canGoToPreviousPage should return true, when we are on a random page');
+});
+
+test('canGoToNextPage', function(assert) {
+  assert.expect(4);
+  const tests = {
+    onFirstPage: canGoToNextPage(Immutable.from({
+      text: {
+        canNext: true,
+        isTextPageLoading: false,
+        textPageNumber: 1,
+        textLastPage: null
+      }
+    })),
+    onRandomPage: canGoToNextPage(Immutable.from({
+      text: {
+        canNext: true,
+        isTextPageLoading: false,
+        textPageNumber: 3,
+        textLastPage: null
+      }
+    })),
+    onLastPage: canGoToNextPage(Immutable.from({
+      text: {
+        canNext: false,
+        isTextPageLoading: false,
+        textPageNumber: 6,
+        textLastPage: 6
+      }
+    })),
+    onRandomPageAfterLastPageSeen: canGoToNextPage(Immutable.from({
+      text: {
+        canNext: true,
+        isTextPageLoading: false,
+        textPageNumber: 2,
+        textLastPage: 6
+      }
+    }))
+  };
+
+  assert.equal(tests.onFirstPage, true, 'canGoToNextPage should return true, when we are on the first page');
+  assert.equal(tests.onRandomPage, true, 'canGoToNextPage should return true, when we are on a random page');
+  assert.equal(tests.onLastPage, false, 'canGoToNextPage should return false, when we are on the last page');
+  assert.equal(tests.onRandomPageAfterLastPageSeen, true, 'canGoToNextPage should return true, when we are on a random page after encountering the last page');
+});
+
+test('canGoToLastPage', function(assert) {
+  assert.expect(4);
+  const tests = {
+    onFirstPage: canGoToLastPage(Immutable.from({
+      text: {
+        canLast: false,
+        isTextPageLoading: false,
+        textPageNumber: 1,
+        textLastPage: null
+      }
+    })),
+    onRandomPage: canGoToLastPage(Immutable.from({
+      text: {
+        canLast: false,
+        isTextPageLoading: false,
+        textPageNumber: 3,
+        textLastPage: null
+      }
+    })),
+    onLastPage: canGoToLastPage(Immutable.from({
+      text: {
+        canLast: false,
+        isTextPageLoading: false,
+        textPageNumber: 6,
+        textLastPage: 6
+      }
+    })),
+    onRandomPageAfterLastPageSeen: canGoToLastPage(Immutable.from({
+      text: {
+        canLast: true,
+        isTextPageLoading: false,
+        textPageNumber: 2,
+        textLastPage: 6
+      }
+    }))
+  };
+
+  assert.equal(tests.onFirstPage, false, 'canGoToLastPage should return false, when we are on the first page and not encountered the last page');
+  assert.equal(tests.onRandomPage, false, 'canGoToLastPage should return false, when we are on a random page and not encountered the last page');
+  assert.equal(tests.onLastPage, false, 'canGoToLastPage should return false, when we are on the last page');
+  assert.equal(tests.onRandomPageAfterLastPageSeen, true, 'canGoToLastPage should return true, when we are on a random page after encountering the last page');
 });
 
 const textContentTests = (selector) => {

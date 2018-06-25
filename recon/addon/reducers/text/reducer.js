@@ -15,6 +15,9 @@ const textInitialState = Immutable.from({
   canPrevious: false,
   canNext: false,
   canLast: false,
+  // This flag will be set to true when the user is navigating between pages and the data hasn't retrieved yet.
+  // As soon as we receive the response (aka TEXT_RECEIVE_PAGE), it is set to false
+  isTextPageLoading: null,
   // If the single message is too large to render
   // this flag will be true and we show a truncated message warning on the UI
   itemTooLarge: false,
@@ -57,7 +60,7 @@ const textReducer = handleActions({
     if (payload.meta && payload.meta.complete) {
       textLastPage = state.textPageNumber;
     }
-    return state.merge({ textContent, textLastPage });
+    return state.merge({ textContent, textLastPage, isTextPageLoading: false });
   },
 
   [ACTION_TYPES.TEXT_UPDATE_CURSOR]: (state, { payload }) => {
@@ -73,7 +76,8 @@ const textReducer = handleActions({
   [ACTION_TYPES.TEXT_CHANGE_PAGE_NUMBER]: (state, { payload }) => {
     return state.merge({
       textContent: [],
-      textPageNumber: payload
+      textPageNumber: payload,
+      isTextPageLoading: true
     });
   },
 

@@ -8,12 +8,17 @@ import {
   textPageNext,
   textPageLast
 } from 'recon/actions/data-creators';
+import {
+  canGoToNextPage,
+  canGoToPreviousPage,
+  canGoToLastPage
+} from 'recon/reducers/text/selectors';
 
-const stateToComputed = ({ recon: { text } }) => ({
+const stateToComputed = ({ recon, recon: { text } }) => ({
   textPageNumber: text.textPageNumber,
-  textPagePrevious: text.canPrevious,
-  textPageNext: text.canNext,
-  textPageLast: text.canLast
+  textPagePrevious: canGoToPreviousPage(recon),
+  textPageNext: canGoToNextPage(recon),
+  textPageLast: canGoToLastPage(recon)
 });
 
 const dispatchToActions = {

@@ -9,6 +9,10 @@ import {
 import { eventType, isEndpointEvent } from 'recon/reducers/meta/selectors';
 
 const _textContent = (recon) => recon.text.textContent;
+const _canNext = (recon) => recon.text.canNext;
+const _canPrevious = (recon) => recon.text.canPrevious;
+const _canLast = (recon) => recon.text.canLast;
+const _isTextPageLoading = (recon) => recon.text.isTextPageLoading;
 const _renderIds = (recon) => recon.text.renderIds;
 const _meta = (recon) => recon.meta.meta;
 
@@ -27,6 +31,21 @@ const _isString = (s) => Object.prototype.toString.call(s) === '[object String]'
 export const hasTextContent = createSelector(
   [_textContent],
   (textContent) => !!textContent && textContent.length > 0
+);
+
+export const canGoToNextPage = createSelector(
+  [_canNext, _isTextPageLoading],
+  (canNext, isTextPageLoading) => canNext && !isTextPageLoading
+);
+
+export const canGoToPreviousPage = createSelector(
+  [_canPrevious, _isTextPageLoading],
+  (canPrevious, isTextPageLoading) => canPrevious && !isTextPageLoading
+);
+
+export const canGoToLastPage = createSelector(
+  [_canLast, _isTextPageLoading],
+  (canLast, isTextPageLoading) => canLast && !isTextPageLoading
 );
 
 export const hasRenderIds = createSelector(
