@@ -6,7 +6,7 @@
         {{#if (or (eq field 'timestamp')(eq field 'created'))}}
           <span class="entry-value">{{parse-timestamp (get entry field) timezone dateFormat timeFormat i18n.locale}}</span>
         {{else if (or (eq field 'incident')(eq field '_id'))}}
-          <span>{{endpoint/risk-panel/respond-link entryId=(get entry field)}}</span>
+          <span>{{endpoint/risk-panel/respond-link entryId=(get entry field) path='incident'}}</span>
         {{else}}
           <span>{{get entry field}}</span>
         {{/if}}

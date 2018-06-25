@@ -10,6 +10,9 @@ const CONTEXT = [{
         risk_score: 70,
         source: 'Event Stream Analysis'
       },
+      '_id': {
+        '$oid': '5afcffbedb7a8b75269a0040'
+      },
       incidentId: 'INC-167'
     }],
     resultMeta: {}
@@ -30,7 +33,7 @@ const CONTEXT = [{
 module('Unit | Helper | prepare context', function() {
   test('check Alert is properly prepared', function(assert) {
     const result = prepareContext([CONTEXT, 'ALERT']);
-    assert.equal(Object.keys(result.resultList[0]).length, 5);
+    assert.equal(Object.keys(result.resultList[0]).length, 6);
   });
 
   test('check Incident is properly prepared', function(assert) {

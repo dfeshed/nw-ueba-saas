@@ -1,0 +1,17 @@
+<h3 {{action 'toggleContent'}}>
+  {{#if isCollapsed}}
+    {{rsa-icon size="small" name="arrow-right-12"}}
+  {{else}}
+    {{rsa-icon size="small" name="arrow-down-12"}}
+  {{/if}}
+  {{entry.name}}
+</h3>
+{{#if entry.alertId}}
+  {{#endpoint/risk-panel/respond-link entryId=entry.alertId path='alert'}}
+    {{rsa-icon name='expand-6'}}
+  {{/endpoint/risk-panel/respond-link}}
+{{/if}}
+{{#liquid-unless isCollapsed use='crossFade'}}
+  {{yield}}
+{{/liquid-unless}}
+

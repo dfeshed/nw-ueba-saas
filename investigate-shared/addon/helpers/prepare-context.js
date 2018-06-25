@@ -11,7 +11,8 @@ export function prepareContext([context, riskPanelActiveTab]) {
     if (activeTab === 'Alerts') {
       resultList = resultList.map((alert) => {
         const incident = alert.incidentId;
-        return { ...alert.alert, incident };
+        const alertId = alert._id.$oid;
+        return { ...alert.alert, incident, alertId };
       });
     }
   }

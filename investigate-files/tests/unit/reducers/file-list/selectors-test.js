@@ -138,10 +138,16 @@ test('getContext returns alerts', function(assert) {
           {
             Alerts: {
               resultList: [{
+                '_id': {
+                  '$oid': '5afcffbedb7a8b75269a0040'
+                },
                 alert: { source: 'Event Stream Analysis 1' },
                 incidentId: 'INC-18409'
               },
               {
+                '_id': {
+                  '$oid': '5afcffbedb7a8b75269a0041'
+                },
                 alert: { source: 'Event Stream Analysis 2' },
                 incidentId: 'INC-18410'
               }]

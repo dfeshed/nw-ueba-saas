@@ -1,4 +1,25 @@
 .risk-properties-panel {
+  .respond-link {
+    i {
+      display: none;
+    }
+  }
+  .risk-properties-panel__content__title:hover {
+    .respond-link {
+      i {
+        color: text-color(neutral);
+        display: inline;
+        float: right;
+        font-size: 0.85rem;
+      }
+    }
+  }
+  .rsa-content-accordion {
+    h3 {
+      display: inline;
+    }
+  }
+
   &__header{
     color: text-color(neutral);
     font-size: 0.85rem;
@@ -14,7 +35,7 @@
     position: relative;
     padding: 0 rsa-whitespace(less);
     &__title {
-      margin-top: rsa-whitespace(least);
+      margin-top: rsa-whitespace();
       h3 {
         color: text-color(secondary);
         font-weight: bold;

@@ -21,9 +21,9 @@
           {{t 'investigateHosts.context.filterMessage' filterCount=filteredData.data.length totalCount=data.resultList.length}}
         </div>
         {{#each filteredData.data as |entry|}}
-          {{#rsa-content-accordion animate=true isCollapsed=true class='risk-properties-panel__content__title' label=entry.name}}
+          {{#endpoint/risk-panel/risk-accordion isCollapsed=true class='risk-properties-panel__content__title' entry=entry}}
             {{endpoint/risk-panel/entry entry=entry type=activeDataSourceTab}}
-          {{/rsa-content-accordion}}
+          {{/endpoint/risk-panel/risk-accordion}}
         {{/each}}
       {{else}}
         {{rsa-panel-message message=(t 'investigateHosts.common.emptyMessage')}}
