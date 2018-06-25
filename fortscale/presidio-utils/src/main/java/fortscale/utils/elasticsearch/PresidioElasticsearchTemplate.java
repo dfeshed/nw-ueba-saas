@@ -15,6 +15,7 @@ package fortscale.utils.elasticsearch;
  * limitations under the License.
  */
 
+import fortscale.utils.elasticsearch.mapping.DefaultAssociationsResolver;
 import fortscale.utils.elasticsearch.services.TemplateExtractor;
 import org.elasticsearch.action.ListenableActionFuture;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest;
@@ -61,32 +62,20 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.ElasticsearchException;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Setting;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.EntityMapper;
-import org.springframework.data.elasticsearch.core.GetResultMapper;
-import org.springframework.data.elasticsearch.core.MultiGetResultMapper;
-import org.springframework.data.elasticsearch.core.ResultsExtractor;
-import org.springframework.data.elasticsearch.core.ResultsMapper;
-import org.springframework.data.elasticsearch.core.SearchResultMapper;
+import org.springframework.data.elasticsearch.core.*;
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchConverter;
 import org.springframework.data.elasticsearch.core.convert.MappingElasticsearchConverter;
 import org.springframework.data.elasticsearch.core.mapping.ElasticsearchPersistentEntity;
-import org.springframework.data.elasticsearch.core.mapping.SimpleElasticsearchMappingContext;
 import org.springframework.data.elasticsearch.core.query.*;
 import org.springframework.data.mapping.PersistentProperty;
 import org.springframework.data.util.CloseableIterator;
 import org.springframework.util.Assert;
 
+import javax.annotation.PostConstruct;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
@@ -117,19 +106,7 @@ public class PresidioElasticsearchTemplate implements ElasticsearchOperations, A
     private TemplateExtractor templateExtractor;
 
     public PresidioElasticsearchTemplate(Client client, TemplateExtractor templateExtractor) {
-        this(client, new MappingElasticsearchConverter(new SimpleElasticsearchMappingContext()), templateExtractor);
-    }
-
-    public PresidioElasticsearchTemplate(Client client, EntityMapper entityMapper, TemplateExtractor templateExtractor) {
-        this(client, new MappingElasticsearchConverter(new SimpleElasticsearchMappingContext()), entityMapper, templateExtractor);
-    }
-
-    public PresidioElasticsearchTemplate(Client client, ElasticsearchConverter elasticsearchConverter, EntityMapper entityMapper, TemplateExtractor templateExtractor) {
-        this(client, elasticsearchConverter, new PresidioResultMapper(elasticsearchConverter.getMappingContext(), entityMapper), templateExtractor);
-    }
-
-    public PresidioElasticsearchTemplate(Client client, ResultsMapper resultsMapper, TemplateExtractor templateExtractor) {
-        this(client, new MappingElasticsearchConverter(new SimpleElasticsearchMappingContext()), resultsMapper, templateExtractor);
+        this(client, new MappingElasticsearchConverter(new PresidioElasticsearchMappingContext()), templateExtractor);
     }
 
     public PresidioElasticsearchTemplate(Client client, ElasticsearchConverter elasticsearchConverter, TemplateExtractor templateExtractor) {
@@ -146,6 +123,11 @@ public class PresidioElasticsearchTemplate implements ElasticsearchOperations, A
         this.elasticsearchConverter = elasticsearchConverter;
         this.resultsMapper = resultsMapper;
         this.templateExtractor = templateExtractor;
+    }
+
+    @PostConstruct
+    private void setAssociationResolver() {
+        ((PresidioResultMapper)resultsMapper).setResolver(new DefaultAssociationsResolver(this));
     }
 
     @Override
