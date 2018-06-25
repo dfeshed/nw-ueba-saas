@@ -3,7 +3,7 @@ svg.graph{
 
   .legend{
     text{
-      fill: #666666;
+      fill: var(--chart-text-color);
     }
   }
 }

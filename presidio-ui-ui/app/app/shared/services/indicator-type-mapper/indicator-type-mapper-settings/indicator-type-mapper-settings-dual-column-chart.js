@@ -165,10 +165,10 @@
                                         "axisAlpha": 0,
                                         "axisColor": "#",
                                         "fontSize": 12,
-                                        "gridColor": "#666666",
+                                        "gridColor": "#eee",
                                         "labelOffset": -1,
                                         "showFirstLabel": false,
-                                        "titleColor": "#666666",
+                                        "titleColor": "#eee",
                                         "fontFamily": "'Open Sans', sans-serif",
                                         "minimum": 0
                                     }
@@ -177,7 +177,7 @@
                                     {
                                         "id": "Title-1",
                                         "fontFamily": "'Open Sans', sans-serif",
-                                        "color": "#666666",
+                                        "color": "#eee",
                                         "size": 12
                                     }
                                 ]
