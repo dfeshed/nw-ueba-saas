@@ -44,8 +44,8 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
     private static final String SRC_MACHINE_NAME_FIELD_NAME = "srcMachineName";
     private static final String RESULT_SUCCESS = "SUCCESS";
     private static final String RESULT_FAILURE = "FAILURE";
-    private static final String INTERACTIVE_LOGON_TYPE = "Interactive";
-    private static final String REMOTE_INTERACTIVE_LOGON_TYPE = "RemoteInteractive";
+    private static final String INTERACTIVE_LOGON_TYPE = "INTERACTIVE";
+    private static final String REMOTE_INTERACTIVE_LOGON_TYPE = "REMOTE_INTERACTIVE";
 
     private IJsonObjectTransformer buildAuthenticationWindowsAuditTransformer(){
         List<IJsonObjectTransformer> transformerChainList = new ArrayList<>();
