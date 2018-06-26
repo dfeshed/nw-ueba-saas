@@ -8,8 +8,8 @@ const trimText = function() {
 moduleForAcceptance('Acceptance | preference panel', {});
 
 test('Iteration: verify all options are available in components', function(assert) {
-  assert.expect(5);
-  visit('/monitor');
+  assert.expect(6);
+  visit('/respond/incidents');
   click('.user-preferences-trigger');
 
   andThen(() => {
@@ -22,7 +22,7 @@ test('Iteration: verify all options are available in components', function(asser
     //       ['English'], 'Language');
     // });
 
-    // // time zone has too many options. Skip it.
+    assert.equal(find('.js-test-time-zone-select .ember-power-select-selected-item').text().trim(), 'Los Angeles (GMT-07:00)');
 
     // // iterate date format options.
     click('.rsa-application-user-preferences-panel .js-test-date-format-select .ember-power-select-trigger');

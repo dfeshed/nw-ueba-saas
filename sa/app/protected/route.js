@@ -111,7 +111,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
         query: {}
       }).then((response) => {
         this.set('accessControl.roles', response.data);
-        resolve();
+        resolve(response);
       }).catch((error) => {
         // eslint-disable-next-line no-console
         console.error('Error loading permissions', error);
@@ -129,7 +129,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
         query: {}
       }).then((response) => {
         this.set('timezone.options', response.data);
-        resolve();
+        resolve(response);
       }).catch((error) => {
         // eslint-disable-next-line no-console
         console.error('Error loading timezones', error);
@@ -152,15 +152,14 @@ export default Route.extend(AuthenticatedRouteMixin, {
           themeType,
           dateFormat,
           timeFormat,
-          timeZone,
           defaultComponentUrl,
           defaultInvestigatePage
         } = response.data;
 
+        // Note: the timeZone preference will be set later in the model() hook because of its dependency on the timezone list
         this.setProperties({
           'dateFormat.selected': dateFormat,
-          'timeFormat.selected': timeFormat,
-          'timezone.selected': timeZone
+          'timeFormat.selected': timeFormat
         });
 
         const updateLocale = bindActionCreators(updateLocaleByKey, redux.dispatch.bind(redux));
@@ -176,7 +175,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
           this.get('investigatePage').setDefaultInvestigatePage(defaultInvestigatePage);
         }
 
-        resolve();
+        resolve(response);
       }).catch((error) => {
         // eslint-disable-next-line no-console
         console.error('Error loading preferences', error);
@@ -220,7 +219,12 @@ export default Route.extend(AuthenticatedRouteMixin, {
       preferencesPromise,
       timezonesPromise,
       permissionsPromise
-    ]).catch(() => {
+    ]).then((responses) => {
+      // set the user preference timezone after timezones have been loaded, since the timezone service depends
+      // on having the full list of timezone options for values to be properly set.
+      const [preferences] = responses;
+      this.set('timezone.selected', preferences.data.timeZone);
+    }).catch(() => {
       // eslint-disable-next-line no-console
       console.error('There was an issue loading your profile. Please try again.');
     });
