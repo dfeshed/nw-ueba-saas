@@ -1,29 +1,24 @@
 import { test, module } from 'qunit';
+
 import reducer from 'investigate-events/reducers/investigate/next-gen/reducer';
 import * as ACTION_TYPES from 'investigate-events/actions/types';
-import Immutable from 'seamless-immutable';
+import ReduxDataHelper from '../../../helpers/redux-data-helper';
 
 module('Unit | Reducers | next-gen');
 
-const stateWithPills = Immutable.from({
-  pillsData: [{
-    id: '1',
-    foo: 'bar'
-  }, {
-    id: '2',
-    foo: 'baz'
-  }]
-});
-
-const emptyState = Immutable.from({
-  pillsData: []
-});
+const stateWithPills = new ReduxDataHelper()
+  .pillsDataPopulated()
+  .build()
+  .investigate
+  .nextGen;
 
 //
 // ADD_NEXT_GEN_PILL
 //
 
 test('ADD_NEXT_GEN_PILL adds pill to empty list', function(assert) {
+  const emptyState = new ReduxDataHelper().pillsDataEmpty().build().investigate.nextGen;
+
   const action = {
     type: ACTION_TYPES.ADD_NEXT_GEN_PILL,
     payload: {
@@ -174,4 +169,57 @@ test('VALIDATE_NEXT_GEN_PILL adds to the state after  first pill provided', func
   assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
   assert.ok(result.pillsData[0].id !== '1', 'updated pillsData item has updated ID');
   assert.equal(result.pillsData[0].foo, 'bar', 'pillsData item had its data updated');
+});
+
+//
+// SELECT_NEXT_GEN_PILLS
+//
+test('SELECT_NEXT_GEN_PILLS selects multiple pills', function(assert) {
+  const action = {
+    type: ACTION_TYPES.SELECT_NEXT_GEN_PILLS,
+    payload: {
+      pillData: [{
+        id: '1',
+        foo: 'bar'
+      }, {
+        id: '2',
+        foo: 8907
+      }]
+    }
+  };
+  const result = reducer(stateWithPills, action);
+
+  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
+  assert.ok(result.pillsData[0].isSelected === true, 'first pill is selected');
+  assert.ok(result.pillsData[1].isSelected === true, 'second pill is selected');
+});
+
+//
+// DESELECT_NEXT_GEN_PILLS
+//
+test('DESELECT_NEXT_GEN_PILLS deselects multiple pills', function(assert) {
+  const stateWithPillsSelected = new ReduxDataHelper()
+    .pillsDataPopulated()
+    .makeSelected(['1', '2'])
+    .build()
+    .investigate
+    .nextGen;
+
+  const action = {
+    type: ACTION_TYPES.DESELECT_NEXT_GEN_PILLS,
+    payload: {
+      pillData: [{
+        id: '1',
+        foo: 'bar'
+      }, {
+        id: '2',
+        foo: 8907
+      }]
+    }
+  };
+  const result = reducer(stateWithPillsSelected, action);
+
+  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
+  assert.ok(result.pillsData[0].isSelected === false, 'first pill is selected');
+  assert.ok(result.pillsData[1].isSelected === false, 'second pill is selected');
 });

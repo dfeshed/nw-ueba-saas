@@ -8,6 +8,16 @@ const _initialState = Immutable.from({
   pillsData: []
 });
 
+const _initialPillState = {
+  id: undefined,
+  meta: undefined,
+  operator: undefined,
+  value: undefined,
+  isSelected: false,
+  isInvalid: false,
+  validationError: undefined
+};
+
 // Takes in state and a new pill, finds the old pill in
 // state and replaces it with a new version
 const _replacePill = (state, pillData) => {
@@ -25,10 +35,28 @@ const _replacePill = (state, pillData) => {
   ]);
 };
 
+const handlePillSelection = (state, payload, isSelected) => {
+  const { pillData } = payload;
+  const selectIds = pillData.map((pD) => pD.id);
+  const newPillsData = state.pillsData.map((pD) => {
+    if (selectIds.includes(pD.id)) {
+      return {
+        ...pD,
+        id: _.uniqueId('nextGenPill_'),
+        isSelected
+      };
+    }
+
+    return pD;
+  });
+  return state.set('pillsData', newPillsData);
+};
+
 export default handleActions({
   [ACTION_TYPES.ADD_NEXT_GEN_PILL]: (state, { payload }) => {
     const { pillData, position } = payload;
     const newPillData = {
+      ..._initialPillState,
       ...pillData,
       id: _.uniqueId('nextGenPill_')
     };
@@ -60,6 +88,14 @@ export default handleActions({
     const deleteIds = pillData.map((pD) => pD.id);
     const newPills = state.pillsData.filter((pD) => !deleteIds.includes(pD.id));
     return state.set('pillsData', newPills);
+  },
+
+  [ACTION_TYPES.SELECT_NEXT_GEN_PILLS]: (state, { payload }) => {
+    return handlePillSelection(state, payload, true);
+  },
+
+  [ACTION_TYPES.DESELECT_NEXT_GEN_PILLS]: (state, { payload }) => {
+    return handlePillSelection(state, payload, false);
   }
 
 }, _initialState);
