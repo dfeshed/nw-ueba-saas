@@ -191,8 +191,10 @@ const TreeComponent = Component.extend({
     parent.call(zoomBehaviour);
 
     this.parent = parent;
-    this.buildChart(rootNode);
-    this.addSelectedClass(selectedProcessId);
+    if (rootNode) {
+      this.buildChart(rootNode);
+      this.addSelectedClass(selectedProcessId);
+    }
   },
 
   /**
@@ -418,11 +420,6 @@ const TreeComponent = Component.extend({
         dataTree.push(hashTable[aData.processId]);
       }
     });
-    if (!dataTree.length) {
-      this.set('hasEvents', false);
-    } else {
-      this.set('hasEvents', true);
-    }
     return dataTree;
   },
 
@@ -452,20 +449,25 @@ const TreeComponent = Component.extend({
         const defaultSelectedProcess = selectedProcess[0] ? selectedProcess[0] : { processId: vid };
 
         this.send('setSelectedProcess', defaultSelectedProcess);
+        if (children && children.length) {
+          const rootNode = this._prepareTreeData(children, selectedProcessId, path); // Only initial load
 
-        const rootNode = this._prepareTreeData(children, selectedProcessId, path); // Only initial load
+          const root = hierarchy(rootNode[0], (d) => {
+            return d.children || [];
+          });
 
-        const root = hierarchy(rootNode[0], (d) => {
-          return d.children || [];
-        });
+          root.x0 = 0;
+          root.y0 = 0;
 
-        root.x0 = 0;
-        root.y0 = 0;
-
-        if (this.isDestroyed) {
-          return;
+          if (this.isDestroyed) {
+            return;
+          }
+          this.set('rootNode', root);
+          this.set('hasEvents', true);
+        } else {
+          this.set('hasEvents', false);
         }
-        this.set('rootNode', root);
+
 
         document.title = this._documentTitle(pn);
         this._initializeChart();
