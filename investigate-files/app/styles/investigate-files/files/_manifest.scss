@@ -134,12 +134,14 @@ page.investigate-files-engine {
     }
     .files-zone {
       width: calc(100vw - #{$risk-panel-width + $filterPanelMinWidth});
+      max-width: calc(100vw - #{$risk-panel-width + $filterPanelMinWidth});
     }
   }
   .files-zone {
     @include rsa-vendor-prefix(transition-property, width);
     @include rsa-vendor-prefix(transition-duration, 0.3s);
     width: calc(100vw - #{$filterPanelMinWidth});
+    max-width: calc(100vw - #{$filterPanelMinWidth});
     min-height: calc(100vh - 135px);
   }
   .files-footer {
