@@ -80,23 +80,41 @@ test('ADD_NEXT_GEN_PILL adds pill to end of list', function(assert) {
 });
 
 //
-// DELETE_NEXT_GEN_PILL
+// DELETE_NEXT_GEN_PILLS
 //
 
-test('DELETE_NEXT_GEN_PILL removes the pill provided', function(assert) {
+test('DELETE_NEXT_GEN_PILLS removes the pill provided', function(assert) {
   const action = {
-    type: ACTION_TYPES.DELETE_NEXT_GEN_PILL,
+    type: ACTION_TYPES.DELETE_NEXT_GEN_PILLS,
     payload: {
-      pillData: {
+      pillData: [{
         id: '1',
         foo: 1234
-      }
+      }]
     }
   };
   const result = reducer(stateWithPills, action);
 
   assert.equal(result.pillsData.length, 1, 'pillsData is the correct length');
   assert.equal(result.pillsData[0].id, 2, 'pillsData item is in the right position');
+});
+
+test('DELETE_NEXT_GEN_PILLS removes multiple pills', function(assert) {
+  const action = {
+    type: ACTION_TYPES.DELETE_NEXT_GEN_PILLS,
+    payload: {
+      pillData: [{
+        id: '1',
+        foo: 1234
+      }, {
+        id: '2',
+        foo: 'baz'
+      }]
+    }
+  };
+  const result = reducer(stateWithPills, action);
+
+  assert.equal(result.pillsData.length, 0, 'pillsData is the correct length');
 });
 
 //

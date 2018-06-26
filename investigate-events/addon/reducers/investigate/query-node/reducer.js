@@ -181,7 +181,7 @@ export default handleActions({
   },
 
   // Deleted a pill, therefore query is dirty
-  [ACTION_TYPES.DELETE_NEXT_GEN_PILL]: (state) => {
+  [ACTION_TYPES.DELETE_NEXT_GEN_PILLS]: (state) => {
     return state.set('isDirty', true);
   },
 

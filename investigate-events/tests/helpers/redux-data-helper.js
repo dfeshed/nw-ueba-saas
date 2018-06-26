@@ -263,4 +263,18 @@ export default class DataHelper {
     _set(this.state, 'nextGen.pillsData', pD);
     return this;
   }
+
+  makeSelected(pillIds = []) {
+    this.state.nextGen.pillsData = this.state.nextGen.pillsData.map((pD) => {
+      if (pillIds.includes(pD.id)) {
+        pD = {
+          ...pD,
+          isSelected: true
+        };
+      }
+
+      return pD;
+    });
+    return this;
+  }
 }

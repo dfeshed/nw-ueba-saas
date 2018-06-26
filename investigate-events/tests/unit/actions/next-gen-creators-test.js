@@ -97,11 +97,42 @@ module('Unit | Actions | NextGen Creators', function(hooks) {
   });
 
   test('deleteNextGenPill action creator returns proper type and payload', function(assert) {
-    const action = nextGenCreators.deleteNextGenPill({
+    const done = assert.async();
+
+    const getState = () => {
+      return new ReduxDataHelper().language().pillsDataPopulated().build();
+    };
+
+    const thunk = nextGenCreators.deleteNextGenPill({
       pillData: 'foo'
     });
 
-    assert.equal(action.type, ACTION_TYPES.DELETE_NEXT_GEN_PILL, 'action has the correct type');
-    assert.equal(action.payload.pillData, 'foo', 'action pillData has the right value');
+    thunk((action) => {
+      assert.equal(action.type, ACTION_TYPES.DELETE_NEXT_GEN_PILLS, 'action has the correct type');
+      assert.deepEqual(action.payload.pillData, ['foo'], 'action pillData has the right value');
+      done();
+    }, getState);
+  });
+
+  test('deleteNextGenPill action creator returns proper type and payload', function(assert) {
+    const done = assert.async();
+
+    const getState = () => {
+      return new ReduxDataHelper()
+        .language()
+        .pillsDataPopulated()
+        .makeSelected(['1', '2'])
+        .build();
+    };
+
+    const thunk = nextGenCreators.deleteNextGenPill({
+      pillData: 'foo'
+    });
+
+    thunk((action) => {
+      assert.equal(action.type, ACTION_TYPES.DELETE_NEXT_GEN_PILLS, 'action has the correct type');
+      assert.equal(action.payload.pillData.length, 2, 'action pillData has the right value');
+      done();
+    }, getState);
   });
 });

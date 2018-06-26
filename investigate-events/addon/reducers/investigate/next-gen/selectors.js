@@ -25,3 +25,10 @@ export const enrichedPillsData = createSelector(
     });
   }
 );
+
+export const selectedPills = createSelector(
+  [_pillsData],
+  (pillsData) => {
+    return pillsData.filter((pD) => pD.isSelected === true);
+  }
+);

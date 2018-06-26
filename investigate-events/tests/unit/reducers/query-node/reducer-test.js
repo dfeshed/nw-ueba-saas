@@ -145,13 +145,13 @@ test('ACTION_TYPES.ADD_NEXT_GEN_PILL sets query to dirty', function(assert) {
   assert.equal(result.isDirty, true, 'isDirty is set correctly');
 });
 
-test('ACTION_TYPES.DELETE_NEXT_GEN_PILL sets query to dirty', function(assert) {
+test('ACTION_TYPES.DELETE_NEXT_GEN_PILLS sets query to dirty', function(assert) {
   const prevState = Immutable.from({
     isDirty: false
   });
 
   const action = {
-    type: ACTION_TYPES.DELETE_NEXT_GEN_PILL,
+    type: ACTION_TYPES.DELETE_NEXT_GEN_PILLS,
     payload: {
       pillData: { id: 1 }
     }
