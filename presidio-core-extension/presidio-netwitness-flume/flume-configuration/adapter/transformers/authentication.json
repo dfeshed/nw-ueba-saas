@@ -271,12 +271,22 @@
       ]
     },
     {
-      "type": "copy_value",
-      "name": "rename-event-type-to-operation-type",
-      "sourceKey": "event_type",
-      "isRemoveSourceKey": true,
-      "destinationKeys": [
-        "operationType"
+      "type": "switch_case",
+      "name": "logon-type-to-operation-type-switch-case",
+      "sourceKey": "logon_type",
+      "destinationKey": "operationType",
+      "destinationDefaultValue": null,
+      "cases": [
+        {
+          "caseKey": "2",
+          "caseValue": "INTERACTIVE",
+          "isRegex": false
+        },
+        {
+          "caseKey": "10",
+          "caseValue": "REMOTE_INTERACTIVE",
+          "isRegex": false
+        }
       ]
     },
     {
