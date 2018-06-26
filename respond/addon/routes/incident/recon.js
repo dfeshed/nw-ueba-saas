@@ -1,6 +1,5 @@
 import Route from 'ember-route';
 import { get } from '@ember/object';
-import { next } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import * as ACTION_TYPES from 'respond/actions/types';
 
@@ -24,20 +23,17 @@ export default Route.extend({
       this.transitionTo('incident');
     }
   },
-  model({ selection }, { params }) {
+  model({ selection, endpointId }, { params }) {
     // eslint-disable-next-line
     const { incident_id } = params['protected.respond.incident'] || params['respond.incident'];
     // eslint-disable-next-line
     this.incidentId = incident_id;
+
     const redux = get(this, 'redux');
-    next(() => {
-      redux.dispatch({
-        type: ACTION_TYPES.SET_INCIDENT_SELECTION,
-        payload: {
-          type: 'event',
-          id: selection
-        }
-      });
+    redux.dispatch({
+      endpointId,
+      selection,
+      type: ACTION_TYPES.ALIASES_AND_LANGUAGE_RETRIEVE_SAGA
     });
   },
   actions: {

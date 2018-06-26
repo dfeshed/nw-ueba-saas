@@ -83,7 +83,8 @@
       "../component-lib",
       "../streaming-data",
       "../recon",
-      "../context"
+      "../context",
+      "../rsa-context-menu"
     ]
   },
   "private": true

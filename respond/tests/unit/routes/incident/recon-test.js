@@ -8,8 +8,23 @@ import { computed } from '@ember/object';
 import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 import { settled } from '@ember/test-helpers';
 import ReconRoute from 'respond/routes/incident/recon';
+import { patchSocket } from '../../../helpers/patch-socket';
 
-let route, redux, transition, hasPermission;
+let redux, transition, hasPermission;
+
+const selection = '123';
+const endpointId = '555d9a6fe4b0d37c827d402e';
+const param = {
+  selection,
+  endpointId
+};
+const options = {
+  params: {
+    'protected.respond.incident': {
+      incident_id: 'INC987'
+    }
+  }
+};
 
 module('Unit | Route | incident.recon', function(hooks) {
   setupTest(hooks);
@@ -18,7 +33,9 @@ module('Unit | Route | incident.recon', function(hooks) {
     transition = null;
     hasPermission = true;
     initialize(this.owner);
-    patchReducer(this, Immutable.from({}));
+  });
+
+  const setupRoute = function() {
     this.owner.register('service:-routing', Service.extend({
       currentRouteName: 'incident'
     }));
@@ -39,16 +56,16 @@ module('Unit | Route | incident.recon', function(hooks) {
         transition = routeName;
       }
     });
-    route = PatchedRoute.create();
-  });
+    return PatchedRoute.create();
+  };
 
   test('should set selected incident with event type and id', async function(assert) {
     assert.expect(1);
 
-    const param = {
-      selection: '123'
-    };
-    const options = {
+    patchReducer(this, Immutable.from({}));
+    const route = setupRoute.call(this);
+
+    const engineOptions = {
       params: {
         'respond.incident': {
           incident_id: 'INC987'
@@ -56,7 +73,7 @@ module('Unit | Route | incident.recon', function(hooks) {
       }
     };
 
-    await route.model(param, options);
+    await route.model(param, engineOptions);
 
     return waitFor(() => {
       const { respond: { incident: { selection } } } = redux.getState();
@@ -71,16 +88,8 @@ module('Unit | Route | incident.recon', function(hooks) {
   test('should set selected incident with event type and id when mounted engine', async function(assert) {
     assert.expect(1);
 
-    const param = {
-      selection: '123'
-    };
-    const options = {
-      params: {
-        'protected.respond.incident': {
-          incident_id: 'INC987'
-        }
-      }
-    };
+    patchReducer(this, Immutable.from({}));
+    const route = setupRoute.call(this);
 
     await route.model(param, options);
 
@@ -94,8 +103,97 @@ module('Unit | Route | incident.recon', function(hooks) {
     });
   });
 
+  test('should fetch languages and aliases then cache them', async function(assert) {
+    assert.expect(8);
+
+    patchReducer(this, Immutable.from({}));
+    const route = setupRoute.call(this);
+
+    patchSocket((method, modelName, query) => {
+      assert.equal(method, 'query');
+      assert.equal(modelName, 'core-meta-key');
+      assert.deepEqual(query, {
+        filter: [{
+          field: 'endpointId',
+          value: endpointId
+        }]
+      });
+    });
+
+    await route.model(param, options);
+
+    await waitFor(() => {
+      const { respond: { recon: { aliases, language } } } = redux.getState();
+      const aliasesAreSetup = aliases && Object.keys(aliases).length === 9;
+      const languagesAreSetup = language && language.length === 94;
+      if (aliasesAreSetup && languagesAreSetup) {
+        assert.ok(true, 'aliases and language were correctly set during the model hook');
+      }
+      return aliasesAreSetup && languagesAreSetup;
+    });
+
+    const { respond: { recon: { aliasesCache, languageCache } } } = redux.getState();
+    assert.equal(Object.keys(aliasesCache[endpointId]).length, 9);
+    assert.equal(languageCache[endpointId].length, 94);
+    assert.equal(aliasesCache[endpointId]['eth.type'][0], '802.3');
+    assert.equal(languageCache[endpointId][0].metaName, 'time');
+  });
+
+  test('should hydrate languages and aliases from cache when available', async function(assert) {
+    assert.expect(1);
+
+    patchReducer(this, Immutable.from({
+      respond: {
+        recon: {
+          aliasesCache: {
+            [endpointId]: {
+              'udp.srcport': {
+                '7': 'echo'
+              },
+              'eth.type': {
+                '0': '802.3'
+              }
+            }
+          },
+          languageCache: {
+            [endpointId]: [{
+              format: 'Text',
+              metaName: 'access.point',
+              flags: -2147482621,
+              displayName: 'Access Point',
+              formattedName: 'access.point (Access Point)'
+            }]
+          }
+        }
+      }
+    }));
+
+    const route = setupRoute.call(this);
+
+    patchSocket((method, modelName) => {
+      if (modelName === 'core-meta-key' || modelName === 'core-meta-alias') {
+        assert.ok(false, 'should not have fetched languages or aliases from the api');
+      }
+    });
+
+    await route.model(param, options);
+
+    return waitFor(() => {
+      const { respond: { recon: { aliases, language } } } = redux.getState();
+      const aliasesHydrated = aliases && Object.keys(aliases).length === 2;
+      const languagesHydrated = language && language.length === 1;
+      if (aliasesHydrated && languagesHydrated) {
+        assert.ok(true, 'aliases and language were correctly hydrated from cache during the model hook');
+      }
+      return aliasesHydrated && languagesHydrated;
+    });
+  });
+
   test('should redirect to incident detail when user does not have recon permission', async function(assert) {
     assert.expect(1);
+
+    patchReducer(this, Immutable.from({}));
+    const route = setupRoute.call(this);
 
     hasPermission = false;
 
@@ -108,6 +206,9 @@ module('Unit | Route | incident.recon', function(hooks) {
 
   test('should not redirect to incident detail when user has recon permission', async function(assert) {
     assert.expect(1);
+
+    patchReducer(this, Immutable.from({}));
+    const route = setupRoute.call(this);
 
     await route.beforeModel();
 
