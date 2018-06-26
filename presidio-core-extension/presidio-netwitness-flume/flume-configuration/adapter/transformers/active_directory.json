@@ -18,9 +18,9 @@
           },
           {
             "type": "regex",
-            "name": "device-type-snare-or-nic",
+            "name": "device-type-nic",
             "sourceKey": "device_type",
-            "regex": "winevent_snare|winevent_nic"
+            "regex": "winevent_nic"
           }
         ]
       },
