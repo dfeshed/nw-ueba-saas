@@ -196,8 +196,13 @@ export const killAllBatching = () => {
 };
 
 // Runs batch cancellation for the batchType provided
+
+// Note: When we change the view from text->packet or file and then come back to text and change the page
+// by clicking on next/previous page on the text view, we want to process the new data for that particular page and
+// not show a blank page.
+// So don't register dataHandlingCancellations or batchHandlingCancellations when BATCH_TYPE is TEXT.
 const _abortBatchingIfRunning = (batchType) => {
-  if (batchCancellations[batchType]) {
+  if (batchType !== BATCH_TYPES.TEXT && batchCancellations[batchType]) {
     batchCancellations[batchType]();
     delete batchCancellations[batchType];
   }
@@ -216,7 +221,7 @@ const _abortBatchingOfOtherTypes = (batchType) => {
 // data either.
 const _abortHandlingIfRunning = (batchType) => {
   _abortBatchingIfRunning(batchType);
-  if (dataHandlingCancellations[batchType]) {
+  if (batchType !== BATCH_TYPES.TEXT && dataHandlingCancellations[batchType]) {
     dataHandlingCancellations[batchType]();
   }
 };
