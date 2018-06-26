@@ -1,4 +1,4 @@
-{{#liquid-bind propertyData use=(if propertyData animation "default") as |hostData|}}
+{{#liquid-bind hostDetails use=(if hostDetails animation "default")}}
   {{#if propertyData }}
     <vbox xs="9" class="host-detail-box scroll-box">
       {{host-detail/overview/summary}}
@@ -22,7 +22,7 @@
           {{#if features.rsaEndpointFusion}}
             {{#if (eq activePropertyTab 'HOST')}}
               {{host-detail/overview/property-panel
-                data=hostData
+                data=propertyData
                 localeNameSpace='investigateHosts.hosts.properties'}}
             {{else}}
               {{endpoint/risk-panel activeDataSourceTab=activePropertyTab data=context errorMessage=contextError}}
@@ -30,7 +30,7 @@
           {{else}}
             {{host-detail/overview/property-panel
               title=(t 'investigateHosts.tabs.hostProperties')
-              data=hostData
+              data=propertyData
               localeNameSpace='investigateHosts.hosts.properties'}}
           {{/if}}
         </box>

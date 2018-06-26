@@ -14,7 +14,8 @@ const stateToComputed = (state) => ({
   context: getContext(state),
   alertsCount: getAlertsCount(state),
   incidentsCount: getIncidentsCount(state),
-  propertyData: getPropertyData(state)
+  propertyData: getPropertyData(state),
+  hostDetails: state.endpoint.overview.hostDetails || []
 });
 
 const dispatchToActions = {
