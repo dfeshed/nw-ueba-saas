@@ -31,7 +31,7 @@ export default Service.extend({
         minServiceVersion = prunedVersion;
         break;
       default:
-        minServiceVersion = (Number(prunedVersion) - .1).toString();
+        minServiceVersion = (Number(prunedVersion) - .1).toFixed(1);
     }
     return minServiceVersion;
   }

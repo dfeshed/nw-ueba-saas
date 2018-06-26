@@ -1,15 +1,16 @@
-import { module, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
 
-module('service:standard-errors', 'Unit | Service | standard-errors', {
-  needs: ['service:i18n']
-}, function() {
+module('Unit | Service | standard-errors', function(hooks) {
+  setupTest(hooks);
+
   test('display returns the static localized message sent to flash', function(assert) {
-    const service = this.subject();
+    const service = this.owner.lookup('service:standard-errors');
 
     assert.expect(2);
 
     service.set('flashMessages.error', (passedToError) => {
-      assert.equal(passedToError, 'Insufficient permissions for the requested data. If you believe you should have access, ask your administrator to provide the necessary permissions. (Error Code 110)');
+      assert.equal(passedToError.string, 'Insufficient permissions for the requested data. If you believe you should have access, ask your administrator to provide the necessary permissions. code: 110 - ACCESS_DENIED');
     });
 
     const displayedMessage = service.display({
@@ -21,16 +22,16 @@ module('service:standard-errors', 'Unit | Service | standard-errors', {
       serverMessage: undefined
     });
 
-    assert.equal(displayedMessage, 'Insufficient permissions for the requested data. If you believe you should have access, ask your administrator to provide the necessary permissions. (Error Code 110)');
+    assert.equal(displayedMessage.string, 'Insufficient permissions for the requested data. If you believe you should have access, ask your administrator to provide the necessary permissions. code: 110 - ACCESS_DENIED');
   });
 
   test('display returns the static localized message sent to flash', function(assert) {
-    const service = this.subject();
+    const service = this.owner.lookup('service:standard-errors');
 
     assert.expect(2);
 
     service.set('flashMessages.error', (passedToError) => {
-      assert.equal(passedToError, 'Server message. (Error Code 11)');
+      assert.equal(passedToError, 'Server message.');
     });
 
     const displayedMessage = service.display({
@@ -42,6 +43,6 @@ module('service:standard-errors', 'Unit | Service | standard-errors', {
       serverMessage: 'Server message.'
     });
 
-    assert.equal(displayedMessage, 'Server message. (Error Code 11)');
+    assert.equal(displayedMessage, 'Server message.');
   });
 });

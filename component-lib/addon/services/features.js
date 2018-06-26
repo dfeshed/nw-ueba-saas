@@ -23,6 +23,11 @@ export default Service.extend({
     }
   },
 
+  hasFeatureFlag(flag) {
+    const normalizedFlag = this._normalizeFlag(flag);
+    return this._flags[normalizedFlag] !== undefined;
+  },
+
   enable(flag) {
     const normalizedFlag = this._normalizeFlag(flag);
     this._flags[normalizedFlag] = true;

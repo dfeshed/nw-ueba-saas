@@ -216,7 +216,11 @@ export default Route.extend(AuthenticatedRouteMixin, {
     this.getEndpointFeatures();
     this.getSourceManagementFeatures();
 
-    return RSVP.all([preferencesPromise, timezonesPromise, permissionsPromise]).catch(() => {
+    return RSVP.all([
+      preferencesPromise,
+      timezonesPromise,
+      permissionsPromise
+    ]).catch(() => {
       // eslint-disable-next-line no-console
       console.error('There was an issue loading your profile. Please try again.');
     });
