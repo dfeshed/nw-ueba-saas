@@ -44,6 +44,8 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
     private static final String SRC_MACHINE_NAME_FIELD_NAME = "srcMachineName";
     private static final String RESULT_SUCCESS = "SUCCESS";
     private static final String RESULT_FAILURE = "FAILURE";
+    private static final String INTERACTIVE_LOGON_TYPE = "INTERACTIVE";
+    private static final String REMOTE_INTERACTIVE_LOGON_TYPE = "REMOTE_INTERACTIVE";
 
     private IJsonObjectTransformer buildAuthenticationWindowsAuditTransformer(){
         List<IJsonObjectTransformer> transformerChainList = new ArrayList<>();
@@ -166,13 +168,13 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
                         Collections.singletonList(DATA_SOURCE_FIELD_NAME));
         transformerChainList.add(ranameReferenceIdToDataSource);
         //rename event_type to operationType
-        CopyValueTransformer ranameEventTypeToOperationType =
-                new CopyValueTransformer(
-                        "rename-event-type-to-operation-type",
-                        EVENT_TYPE_FIELD_NAME,
-                        true,
-                        Collections.singletonList(OPERATION_TYPE_FIELD_NAME));
-        transformerChainList.add(ranameEventTypeToOperationType);
+        List<SwitchCaseTransformer.SwitchCase> logonTypeCases = new ArrayList<>();
+        logonTypeCases.add(new SwitchCaseTransformer.SwitchCase("2",INTERACTIVE_LOGON_TYPE));
+        logonTypeCases.add(new SwitchCaseTransformer.SwitchCase("10",REMOTE_INTERACTIVE_LOGON_TYPE));
+        SwitchCaseTransformer logonTypeSwitchCaseTransformer =
+                new SwitchCaseTransformer("logon-type-to-operation-type-switch-case",LOGON_TYPE_FIELD_NAME,
+                        OPERATION_TYPE_FIELD_NAME, null,logonTypeCases);
+        transformerChainList.add(logonTypeSwitchCaseTransformer);
 
         // copy user_dst to userName,userDisplayName
         CopyValueTransformer copyUserDst =
@@ -274,7 +276,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
         JSONObject retJsonObject = transform(transformer, jsonObject);
 
         assertOnExpectedValues(retJsonObject, eventId, eventTime, "rsmith", userDst, userDst,
-                aliasHost.toLowerCase(), aliasHost, RESULT_SUCCESS, eventType, referenceId);
+                aliasHost.toLowerCase(), aliasHost, RESULT_SUCCESS, INTERACTIVE_LOGON_TYPE, referenceId);
     }
 
     @Test
@@ -296,7 +298,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
         JSONObject retJsonObject = transform(transformer, jsonObject);
 
         assertOnExpectedValues(retJsonObject, eventId, eventTime, "bobby", userDst, userDst,
-                "", hostSource, RESULT_FAILURE, eventType, referenceId);
+                "", hostSource, RESULT_FAILURE, REMOTE_INTERACTIVE_LOGON_TYPE, referenceId);
     }
 
     @Test
@@ -318,7 +320,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
         JSONObject retJsonObject = transform(transformer, jsonObject);
 
         assertOnExpectedValues(retJsonObject, eventId, eventTime, "bobby", userDst, userDst,
-                null, JSONObject.NULL, RESULT_FAILURE, eventType, referenceId);
+                null, JSONObject.NULL, RESULT_FAILURE, REMOTE_INTERACTIVE_LOGON_TYPE, referenceId);
     }
 
     private void assertOnExpectedValues(JSONObject retJsonObject,
