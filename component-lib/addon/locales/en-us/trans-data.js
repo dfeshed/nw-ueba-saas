@@ -1732,7 +1732,7 @@ export default {
       contextHighlights: 'Context Highlights',
       viewOverview: 'View Context',
       actions: 'Actions',
-      investigate: 'Pivot to Investigate',
+      navigate: 'Pivot to Navigate',
       addToList: 'Add/Remove from List',
       virusTotal: 'Virus Total Lookup',
       googleLookup: 'Google Lookup',
