@@ -10,7 +10,7 @@ import re
 def get_airflow_password():
     airflow_connection = str(configuration.get('core', 'SQL_ALCHEMY_CONN'))
     airflow_password_re = "postgresql\+psycopg2:\/\/airflow:(.*?)\@127\.0\.0\.1\/airflow"
-    return str(re.search(airflow_password_re,airflow_connection).group(1))
+    return "\'{0}\'".format(str(re.search(airflow_password_re, airflow_connection).group(1)))
 
 @provide_session
 def insert_conn(session=None):
@@ -18,8 +18,9 @@ def insert_conn(session=None):
                                                 'resources/charts/connection/connection.sql')
     with open(file_path, 'r') as data_file:
         sql = data_file.read()
-        sql.format(get_airflow_password)
-        run_sql(session, sql)
+        airflow_password = get_airflow_password()
+        conn_sql=sql.format(airflow_password)
+        run_sql(session, conn_sql)
 
 
 @provide_session
@@ -61,3 +62,4 @@ def deploy_charts():
     refresh_charts_sequence()
 
 
+insert_conn()
