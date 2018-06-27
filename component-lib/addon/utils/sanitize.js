@@ -157,12 +157,7 @@ export function sanitizeHtml(html, params) {
       'a': [
         'name',
         'href',
-        'nohref',
-        'onfocus',
-        'onblur',
-        'onclick',
-        'onmousedown',
-        'onmouseup'
+        'nohref'
       ],
       'p': [
         'align'

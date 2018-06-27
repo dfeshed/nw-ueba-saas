@@ -40,10 +40,10 @@ module('Unit | Utils | sanitizeHtml', function(hooks) {
     assert.equal(sanitizeHtml(html), expected);
   });
 
-  test('allows anchor tag with name, nohref, href, onfocus, onblur, onclick, onmousedown and onmouseup attributes', async function(assert) {
+  test('allows anchor tag with name, nohref, and href attributes', async function(assert) {
     assert.expect(1);
     const html = '<a href="#" nohref="#" name="x" onfocus=alert(1) onblur=alert(2) onclick=alert(3) onmousedown=alert(4) onmouseup=alert(5)>link</a>';
-    const expected = '<a href="#" nohref="#" name="x" onfocus="alert(1)" onblur="alert(2)" onclick="alert(3)" onmousedown="alert(4)" onmouseup="alert(5)">link</a>';
+    const expected = '<a href="#" nohref="#" name="x">link</a>';
     assert.equal(sanitizeHtml(html), expected);
   });
 
