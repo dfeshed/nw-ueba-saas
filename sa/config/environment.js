@@ -69,6 +69,7 @@ module.exports = function(environment) {
       // Used by the initializer "ready-delay". After animation has been sufficiently tested, either
       // delete the initializer, remove this line, or set value to zero.
       readyDelay: 1250, // 1500,
+      debounceDelay: 1000,
       rootElement: 'body'
     },
     'ember-simple-auth': {
@@ -157,6 +158,7 @@ module.exports = function(environment) {
 
     // @workaround Disable readyDelay to avoid a synchronization issue with automated tests
     ENV.APP.readyDelay = 0;
+    ENV.APP.debounceDelay = 10;
 
     ENV.APP.rootElement = '#ember-testing';
     ENV.APP.autoboot = false;
