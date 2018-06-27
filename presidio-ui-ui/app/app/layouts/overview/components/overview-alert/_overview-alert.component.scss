@@ -18,7 +18,7 @@ overview-alert {
     }
 
     &:hover {
-        background-color: #dedede;
+        background-color: var(--main-widgets-background-color-hover);
 
         .overview-alert{
             &--info {

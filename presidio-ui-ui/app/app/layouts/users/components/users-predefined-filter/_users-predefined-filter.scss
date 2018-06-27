@@ -9,12 +9,9 @@
 
 
     &.active {
-        background-color: var(--main-widgets-background-color-hover);
-        fill: #FFFFFF;
-
+        background-color: var(--buttons-link-color);
         .icon {
-            fill: var(--main-widgets-titles-text-color-hover);
-
+            fill: var(--main-widgets-titles-text-color);
         }
 
 

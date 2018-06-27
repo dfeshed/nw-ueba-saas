@@ -1,7 +1,7 @@
 @mixin label-info-generic($bgColor: $clrBlueMain, $frColor: $clrWhite) {
     .label-info {
         color: $clrWhite;
-        font-family: 'Roboto', sans-serif;
+        font-family: 'Open Sans', sans-serif;
         font-style: normal;
         font-weight: 400;
         font-size: #{$basicFontSize - 2px};

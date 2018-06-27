@@ -402,11 +402,15 @@ $actionRed: red;
             background-image: none;
             height: $headerHeight;
             vertical-align: middle;
+            text-transform: uppercase;
+
             padding: 0 10px;
             margin: 0;
             color: $clrHeaderFore;
             font-family: 'Open Sans', sans-serif;
             font-size: $fontSize;
+            letter-spacing: 0.36px;
+            font-weight: bold;
             a {
                 color: $clrHeaderFore;
                 font-family: 'Open Sans', sans-serif;
@@ -526,8 +530,10 @@ $actionRed: red;
             a {
                 font-family: 'Open Sans', sans-serif;
                 color: var(--main-widgets-titles-text-color);
-                font-size: #{$fontSize - 1};
-                font-weight: 400;
+                font-size: 14px;
+                letter-spacing: 0.36px;
+                font-weight: bold;
+
                 padding: 0;
             }
 
