@@ -105,9 +105,7 @@ $circle-border-color: #D8D8D8;
 
 section {
   &.launchArguments {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    word-wrap: break-word;
   }
 }
 .rsa-fast-force__wait {
