@@ -15,7 +15,7 @@ const stateToComputed = (state) => ({
 });
 
 const PillMeta = Component.extend({
-  classNameBindings: ['isActive', 'isExpanded', ':pill-meta'],
+  classNameBindings: ['isExpanded', ':pill-meta'],
 
   /**
    * Does this component currently have focus?

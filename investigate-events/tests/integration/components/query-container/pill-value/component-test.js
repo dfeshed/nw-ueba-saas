@@ -20,6 +20,17 @@ module('Integration | Component | Pill Value', function(hooks) {
     resolver: engineResolverFor('investigate-events')
   });
 
+  test('indicates it is populated when being used', async function(assert) {
+    await render(hbs`{{query-container/pill-value isActive=true}}`);
+    assert.ok(find(PILL_SELECTORS.populatedItem), 'has populated class applied to it');
+  });
+
+  test('indicates it is populated not being used but when populated with data', async function(assert) {
+    this.set('foo', 'foo');
+    await render(hbs`{{query-container/pill-value isActive=false valueString=foo}}`);
+    assert.ok(find(PILL_SELECTORS.populatedItem), 'has populated class applied to it');
+  });
+
   test('it broadcasts a message when the ARROW_LEFT key pressed', async function(assert) {
     const done = assert.async();
     assert.expect(1);

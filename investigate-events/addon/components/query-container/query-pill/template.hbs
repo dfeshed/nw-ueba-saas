@@ -5,7 +5,6 @@
   selection=(readonly selectedMeta)
   sendMessage=(action 'handleMessage')
 }}
-&nbsp;
 {{query-container/pill-operator
   isActive=(readonly isOperatorActive)
   isExpanded=(readonly shouldOperatorExpand)
@@ -14,13 +13,11 @@
   selection=(readonly selectedOperator)
   sendMessage=(action 'handleMessage')
 }}
-&nbsp;
 {{query-container/pill-value
   isActive=(readonly isValueActive)
   sendMessage=(action 'handleMessage')
   valueString=(readonly valueString)
 }}
-&nbsp;
 {{!-- This won't be true at the moment --}}
 {{#if isDeletable}}
   {{query-container/delete-pill

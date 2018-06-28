@@ -26,7 +26,7 @@ const VALUE = 'value';
 const indices = [NONE, KEY, VALUE];
 
 export default Component.extend({
-  classNameBindings: ['isActive', 'isExpanded', ':pill-operator'],
+  classNameBindings: ['isExpanded', 'isPopulated', ':pill-operator'],
 
   /**
    * Does this component currently have focus?
@@ -59,6 +59,14 @@ export default Component.extend({
    * @public
    */
   sendMessage: () => {},
+
+  // Indicates if something is being rendered by this template
+  // and that it isn't empty. Controls whether padding/spacing is
+  // required
+  @computed('selection', 'isActive')
+  isPopulated(selection, isActive) {
+    return !!selection || isActive;
+  },
 
   @computed('meta')
   options(meta) {

@@ -1,12 +1,13 @@
 import Component from '@ember/component';
+import computed from 'ember-computed-decorators';
+import { next, scheduleOnce } from '@ember/runloop';
 import * as MESSAGE_TYPES from '../message-types';
 import { isArrowLeft, isBackspace, isEnter, isEscape } from 'investigate-events/util/keys';
-import { next, scheduleOnce } from '@ember/runloop';
 
 const { log } = console;// eslint-disable-line no-unused-vars
 
 export default Component.extend({
-  classNameBindings: ['isActive', ':pill-value'],
+  classNameBindings: ['isPopulated', ':pill-value'],
 
   /**
    * Does this component currently have focus?
@@ -26,6 +27,14 @@ export default Component.extend({
    * @public
    */
   valueString: null,
+
+  // Indicates if something is being rendered by this template
+  // and that it isn't empty. Controls whether padding/spacing is
+  // required
+  @computed('valueString', 'isActive')
+  isPopulated(valueString, isActive) {
+    return (!!valueString && valueString.length > 0) || isActive;
+  },
 
   didUpdateAttrs() {
     this._super(...arguments);

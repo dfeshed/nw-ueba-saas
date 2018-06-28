@@ -32,5 +32,6 @@ export default {
   value: '.pill-value',
   valueInput,
   invalidPill: '.is-invalid',
+  populatedItem: '.is-populated',
   queryPill: '.query-pill'
 };

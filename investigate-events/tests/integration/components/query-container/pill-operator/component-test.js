@@ -26,6 +26,17 @@ module('Integration | Component | Pill Operator', function(hooks) {
     resolver: engineResolverFor('investigate-events')
   });
 
+  test('indicates it is populated when being used', async function(assert) {
+    await render(hbs`{{query-container/pill-operator isActive=true}}`);
+    assert.ok(find(PILL_SELECTORS.populatedItem), 'has populated class applied to it');
+  });
+
+  test('indicates it is populated not being used but when populated with data', async function(assert) {
+    this.set('selection', eq);
+    await render(hbs`{{query-container/pill-operator isActive=false selection=selection}}`);
+    assert.ok(find(PILL_SELECTORS.populatedItem), 'has populated class applied to it');
+  });
+
   test('it shows only the value if inactive', async function(assert) {
     // Set a selection just so we have a value to compare against. Otherwise
     // it'd be an empty string.

@@ -189,7 +189,6 @@
     margin: calc(#{rsa-whitespace(least)} + 0.5px) rsa-whitespace(least) 0;
     padding: 0 rsa-whitespace(least);
     min-height: rsa-whitespace(more);
-    min-width: 80px;
     line-height: rsa-whitespace(more);
     transition: border-color 0.5s;
     &.is-active {
@@ -204,6 +203,9 @@
       input {
         width: 100%;
       }
+    }
+    > div.is-populated {
+      margin-left: 4px;
     }
   }
 
@@ -223,8 +225,8 @@
   }
 
   .delete-pill {
-    margin-right: rsa-whitespace(less);
-    margin-left: rsa-whitespace(less);
+    margin-right: 5px;
+    margin-left: 7px;
     margin-top: 1px;
     color: text-color(primary, lighter);
     display: inline-flex;
@@ -240,6 +242,10 @@
   .pill-open {
     .new-pill-trigger {
       display: none;
+    }
+
+    .query-pill {
+      min-width: 80px;
     }
   }
 
