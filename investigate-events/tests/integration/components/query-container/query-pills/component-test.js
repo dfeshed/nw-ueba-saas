@@ -70,6 +70,7 @@ module('Integration | Component | query-pills', function(hooks) {
         { pillData: { meta: 'a', operator: '=', value: 'x' }, position: 0 },
         'The action creator was called with the right arguments'
       );
+      assert.equal(this.$(PILL_SELECTORS.queryPill).prop('title'), 'a = x', 'Expected stringified pill');
     });
   });
 
@@ -258,5 +259,6 @@ module('Integration | Component | query-pills', function(hooks) {
     await createBasicPill(false, 'TimeT');
     // component class updates when store is updated
     assert.equal(findAll(PILL_SELECTORS.invalidPill).length, 1, 'Class for invalid pill should be present');
+    assert.equal(this.$(PILL_SELECTORS.invalidPill).prop('title'), 'You must enter a valid date.', 'Expected title with the error message');
   });
 });

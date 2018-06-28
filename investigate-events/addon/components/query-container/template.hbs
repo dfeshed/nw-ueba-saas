@@ -23,7 +23,7 @@
 {{#rsa-form-button
   class='execute-query-button'
   defaultAction=(route-action 'executeQuery' filters)
-  isDisabled=(not hasRequiredValuesToQuery)
+  isDisabled=(not requiredValuesToQuerySelector)
   style='primary'}}
   Query Events
 {{/rsa-form-button}}

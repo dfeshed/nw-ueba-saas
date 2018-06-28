@@ -31,5 +31,6 @@ export default {
   triggerValueInput,
   value: '.pill-value',
   valueInput,
-  invalidPill: '.is-invalid'
+  invalidPill: '.is-invalid',
+  queryPill: '.query-pill'
 };

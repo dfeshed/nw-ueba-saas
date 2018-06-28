@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { hasRequiredValuesToQuery, guidedHasFocus, freeFormHasFocus } from 'investigate-events/reducers/investigate/query-node/selectors';
+import { canQueryNextGen } from 'investigate-events/reducers/investigate/next-gen/selectors';
 import computed from 'ember-computed-decorators';
 import { setQueryView, setQueryTimeRange, setService } from 'investigate-events/actions/interaction-creators';
 import { run } from '@ember/runloop';
@@ -8,6 +9,14 @@ import { encodeMetaFilterConditions } from 'investigate-shared/actions/api/event
 import { transformTextToFilters, filterIsPresent } from 'investigate-events/actions/utils';
 import EmberObject from '@ember/object';
 import config from 'ember-get-config';
+
+// if feature flag is true -> use the canQueryNextGen selector which
+// checks for any invalid pills apart from the regular service and summary checks
+let requiredValuesToQuerySelector = hasRequiredValuesToQuery;
+if (config.featureFlags.nextGen) {
+  requiredValuesToQuerySelector = canQueryNextGen;
+}
+
 
 const addToArray = (filterObject) => {
   const { filters, meta, operator, value, complexFilter } = filterObject;
@@ -30,7 +39,7 @@ const transformToString = (filters) => {
 };
 
 const stateToComputed = (state) => ({
-  hasRequiredValuesToQuery: hasRequiredValuesToQuery(state),
+  requiredValuesToQuerySelector: requiredValuesToQuerySelector(state),
   guidedHasFocus: guidedHasFocus(state),
   freeFormHasFocus: freeFormHasFocus(state),
   queryView: state.investigate.queryNode.queryView,

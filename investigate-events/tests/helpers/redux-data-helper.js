@@ -38,6 +38,12 @@ const INVALID_PILL_DATA = [{
   operator: '=',
   value: 'boom',
   id: 1
+}, {
+  meta: 'starttime',
+  operator: '=',
+  value: 'boom',
+  isInvalid: true,
+  validationError: 'something not right'
 }];
 
 const _set = (obj, key, val) => {
@@ -270,6 +276,21 @@ export default class DataHelper {
         pD = {
           ...pD,
           isSelected: true
+        };
+      }
+
+      return pD;
+    });
+    return this;
+  }
+
+  markInvalid(pillIds = []) {
+    this.state.nextGen.pillsData = this.state.nextGen.pillsData.map((pD) => {
+      if (pillIds.includes(pD.id)) {
+        pD = {
+          ...pD,
+          isInvalid: true,
+          validationError: 'something is up'
         };
       }
 

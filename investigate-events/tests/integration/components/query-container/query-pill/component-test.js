@@ -21,6 +21,13 @@ const ESCAPE_KEY = KEY_MAP.escape.code;
 const trim = (text) => text.replace(/\s+/g, '').trim();
 let setState;
 
+const setPillData = (component) => {
+  new ReduxDataHelper(setState).language().build();
+  const pills = new ReduxDataHelper().language().pillsDataPopulated().build();
+  const enrichedPills = enrichedPillsData(pills);
+  component.set('pillData', enrichedPills[0]);
+};
+
 module('Integration | Component | query-pill', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-events')
@@ -148,8 +155,7 @@ module('Integration | Component | query-pill', function(hooks) {
   });
 
   test('presents a delete icon when not active and pill created', async function(assert) {
-    this.set('pillData', { id: 1 });
-    new ReduxDataHelper(setState).language().build();
+    setPillData(this);
     await render(hbs`{{query-container/query-pill isActive=false pillData=pillData}}`);
     assert.equal(findAll(PILL_SELECTORS.deletePill).length, 1, 'Delete pill component is present');
   });
@@ -162,8 +168,7 @@ module('Integration | Component | query-pill', function(hooks) {
   });
 
   test('does not present a delete icon when when active', async function(assert) {
-    this.set('pillData', { id: 1 });
-    new ReduxDataHelper(setState).language().build();
+    setPillData(this);
     await render(hbs`{{query-container/query-pill isActive=true pillData=pillData}}`);
     assert.equal(findAll(PILL_SELECTORS.deletePill).length, 0, 'Delete pill component is not present');
   });
@@ -183,10 +188,7 @@ module('Integration | Component | query-pill', function(hooks) {
       done();
     });
 
-    new ReduxDataHelper(setState).language().build();
-    const pills = new ReduxDataHelper().language().pillsDataPopulated().build();
-    const enrichedPills = enrichedPillsData(pills);
-    this.set('pillData', enrichedPills[0]);
+    setPillData(this);
     await render(hbs`
       {{query-container/query-pill
         isActive=false
@@ -225,10 +227,7 @@ module('Integration | Component | query-pill', function(hooks) {
   });
 
   test('prepopulates with data when passed existing pill', async function(assert) {
-    new ReduxDataHelper(setState).language().build();
-    const pills = new ReduxDataHelper().language().pillsDataPopulated().build();
-    const enrichedPills = enrichedPillsData(pills);
-    this.set('pillData', enrichedPills[0]);
+    setPillData(this);
 
     await render(hbs`
       {{query-container/query-pill

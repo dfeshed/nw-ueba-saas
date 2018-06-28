@@ -19,6 +19,7 @@ const RESET_PROPS = {
 
 export default Component.extend({
   classNameBindings: ['isActive', ':query-pill', 'isInvalid'],
+  attributeBindings: ['title'],
 
   /**
    * The position of this pill relative to other pills.
@@ -94,6 +95,31 @@ export default Component.extend({
    */
   @computed('selectedOperator', 'valueString')
   canMetaExpand: (op, vs) => !op && !vs,
+
+
+  /**
+   * Update the component title with error message once validation returns
+   * If a valid pill, return the concatenated string
+   * @public
+   */
+  @computed('pillData', 'stringifiedPill', 'isActive')
+  title: (pillData, stringifiedPill, isActive) => {
+    if (!isActive && pillData) {
+      if (pillData.isInvalid) {
+        return pillData.validationError.string;
+      } else {
+        return stringifiedPill;
+      }
+    }
+  },
+
+  @computed('pillData')
+  stringifiedPill: (pillData) => {
+    if (pillData) {
+      const { meta: { metaName }, operator: { displayName }, value } = pillData;
+      return `${metaName || ''} ${displayName || ''} ${value || ''}`.trim();
+    }
+  },
 
   /**
    * Should the meta field take up 100% of the available pill space?
