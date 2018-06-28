@@ -19,7 +19,7 @@ public class ActiveDirectoryWindowsAuditTransformerTest extends TransformerTest{
 
     private static final String OPERATION_TYPE_FIELD_NAME = "operationType";
     private static final String OBJECT_ID_FIELD_NAME = "objectId";
-    private static final String OPERATION_TYPE_CATEGORIES_FIELD_NAME = "operationTypeCategory";
+    private static final String OPERATION_TYPE_CATEGORIES_FIELD_NAME = "operationTypeCategories";
     private static final String EVENT_CODE_FIELD_NAME = "reference_id";
     private static final String USER_DST_FIELD_NAME = "user_dst";
     private static final String DEVICE_TYPE_FIELD_NAME = "device_type";
@@ -267,7 +267,6 @@ public class ActiveDirectoryWindowsAuditTransformerTest extends TransformerTest{
         IJsonObjectTransformer transformer = buildADWindowsAuditTransformer();
 
         String transformerJsonAsString = mapper.writeValueAsString(transformer);
-
 
         Assert.assertNotNull(transformerJsonAsString);
     }
