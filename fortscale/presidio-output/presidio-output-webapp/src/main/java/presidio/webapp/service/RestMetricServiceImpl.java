@@ -9,8 +9,6 @@ import presidio.webapp.convertors.MetricConverter;
 import presidio.webapp.model.Metric;
 
 import javax.validation.ValidationException;
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;

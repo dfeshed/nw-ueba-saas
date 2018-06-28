@@ -3,12 +3,11 @@ package presidio.monitoring.elastic.services;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeRange;
 import org.springframework.stereotype.Service;
+import presidio.monitoring.elastic.repositories.MetricsAllIndexesRepository;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.records.MetricDocument;
 
-import java.time.Instant;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -17,14 +16,17 @@ public class PresidioMetricPersistencyServiceImpl implements PresidioMetricPersi
     private final Logger logger = Logger.getLogger(PresidioMetricPersistencyServiceImpl.class);
 
     private MetricRepository metricRepository;
+    private MetricsAllIndexesRepository metricsAllIndexesRepository;
 
-    public PresidioMetricPersistencyServiceImpl(MetricRepository metricRepository) {
+    public PresidioMetricPersistencyServiceImpl(MetricRepository metricRepository, MetricsAllIndexesRepository metricsAllIndexesRepository) {
         this.metricRepository = metricRepository;
+        this.metricsAllIndexesRepository = metricsAllIndexesRepository;
     }
 
     public MetricDocument save(MetricDocument metricDocument) {
         logger.debug("Exporting metric to elastic {}", metricDocument);
         return metricRepository.save(metricDocument);
+
     }
 
 
@@ -38,11 +40,7 @@ public class PresidioMetricPersistencyServiceImpl implements PresidioMetricPersi
     @Override
     public List<MetricDocument> getMetricsByNamesAndTime(Collection<String> names, TimeRange timeRange){
         //retrieving metrics according to logical (!) time because we want to understand what was the load on the system (and not the amount of processed data)
-        return metricRepository.findByNameInAndLogicTimeGreaterThanEqualAndLogicTimeLessThan(names,timeRange.getStart().toEpochMilli(),timeRange.getEnd().toEpochMilli());
+        return metricsAllIndexesRepository.findByNameInAndLogicTimeGreaterThanEqualAndLogicTimeLessThan(names,timeRange.getStart().toEpochMilli(),timeRange.getEnd().toEpochMilli());
     }
 
-    @Override
-    public List<MetricDocument> getMetricsByNames(Collection<String> names) {
-        return metricRepository.findByNameIn(names);
-    }
 }

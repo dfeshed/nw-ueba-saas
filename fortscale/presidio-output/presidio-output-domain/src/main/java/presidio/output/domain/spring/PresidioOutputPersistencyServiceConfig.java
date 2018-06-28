@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
+import presidio.monitoring.elastic.repositories.MetricsAllIndexesRepository;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyServiceImpl;
@@ -29,9 +30,12 @@ public class PresidioOutputPersistencyServiceConfig {
         return new UserPersistencyServiceImpl();
     }
 
+    @Autowired
+    private MetricsAllIndexesRepository metricsAllIndexesRepository;
+
     @Bean
     PresidioMetricPersistencyService presidioMetricPersistencyService(){
-        return new PresidioMetricPersistencyServiceImpl(metricRepository);
+        return new PresidioMetricPersistencyServiceImpl(metricRepository, metricsAllIndexesRepository);
     }
 
 }

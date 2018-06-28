@@ -15,7 +15,7 @@ import static presidio.monitoring.records.MetricDocument.TYPE;
 
 @Document(indexName = METRIC_INDEX_NAME, type = TYPE)
 @Template(mappingPath = "elasticsearch/indexes/presidio-monitoring/template.json")
-public final class MetricDocument {
+public class MetricDocument {
 
 
     public static final String METRIC_INDEX_NAME = "<presidio-monitoring-{now/d}>";
