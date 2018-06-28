@@ -45,6 +45,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
     private static final String RESULT_FAILURE = "FAILURE";
     private static final String INTERACTIVE_LOGON_TYPE = "INTERACTIVE";
     private static final String REMOTE_INTERACTIVE_LOGON_TYPE = "REMOTE_INTERACTIVE";
+    private static final String CREDENTIAL_VALIDATION_OPERATION_TYPE = "CREDENTIAL_VALIDATION";
 
     private IJsonObjectTransformer buildAuthenticationWindowsAuditTransformer(){
         List<IJsonObjectTransformer> transformerChainList = new ArrayList<>();
@@ -149,6 +150,26 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
                         resultNormalizationOnResultCodeSwitchCaseTransformer);
         transformerChainList.add(resultNormalizationTransformer);
 
+        //Fill operationType
+        List<SwitchCaseTransformer.SwitchCase> logonTypeCases = new ArrayList<>();
+        logonTypeCases.add(new SwitchCaseTransformer.SwitchCase("2",INTERACTIVE_LOGON_TYPE));
+        logonTypeCases.add(new SwitchCaseTransformer.SwitchCase("10",REMOTE_INTERACTIVE_LOGON_TYPE));
+        SwitchCaseTransformer logonTypeSwitchCaseTransformer =
+                new SwitchCaseTransformer("logon-type-to-operation-type-switch-case",LOGON_TYPE_FIELD_NAME,
+                        OPERATION_TYPE_FIELD_NAME, null,logonTypeCases);
+        SetterTransformer operationTypeFor4776Or4769 =
+                new SetterTransformer(
+                        "4776-or-4769-to-operation-type",
+                        OPERATION_TYPE_FIELD_NAME,
+                        CREDENTIAL_VALIDATION_OPERATION_TYPE);
+
+        IfElseTransformer operationTypeTransformer =
+                new IfElseTransformer("operation-type-transformer",
+                        referenceIdEqual4624Or4625,
+                        logonTypeSwitchCaseTransformer,
+                        operationTypeFor4776Or4769);
+        transformerChainList.add(operationTypeTransformer);
+
         //rename event_source_id to eventId
         CopyValueTransformer ranameEventSourceIdToEventId =
                 new CopyValueTransformer(
@@ -166,14 +187,6 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
                         true,
                         Collections.singletonList(DATA_SOURCE_FIELD_NAME));
         transformerChainList.add(ranameReferenceIdToDataSource);
-        //rename event_type to operationType
-        List<SwitchCaseTransformer.SwitchCase> logonTypeCases = new ArrayList<>();
-        logonTypeCases.add(new SwitchCaseTransformer.SwitchCase("2",INTERACTIVE_LOGON_TYPE));
-        logonTypeCases.add(new SwitchCaseTransformer.SwitchCase("10",REMOTE_INTERACTIVE_LOGON_TYPE));
-        SwitchCaseTransformer logonTypeSwitchCaseTransformer =
-                new SwitchCaseTransformer("logon-type-to-operation-type-switch-case",LOGON_TYPE_FIELD_NAME,
-                        OPERATION_TYPE_FIELD_NAME, null,logonTypeCases);
-        transformerChainList.add(logonTypeSwitchCaseTransformer);
 
         // copy user_dst to userName,userDisplayName
         CopyValueTransformer copyUserDst =
@@ -297,7 +310,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
         JSONObject retJsonObject = transform(transformer, jsonObject);
 
         assertOnExpectedValues(retJsonObject, eventId, eventTime, "bobby", userDst, userDst,
-                "", hostSource, RESULT_FAILURE, REMOTE_INTERACTIVE_LOGON_TYPE, referenceId);
+                "", hostSource, RESULT_FAILURE, CREDENTIAL_VALIDATION_OPERATION_TYPE, referenceId);
     }
 
     @Test
@@ -319,7 +332,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
         JSONObject retJsonObject = transform(transformer, jsonObject);
 
         assertOnExpectedValues(retJsonObject, eventId, eventTime, "bobby", userDst, userDst,
-                null, JSONObject.NULL, RESULT_FAILURE, REMOTE_INTERACTIVE_LOGON_TYPE, referenceId);
+                null, JSONObject.NULL, RESULT_FAILURE, CREDENTIAL_VALIDATION_OPERATION_TYPE, referenceId);
     }
 
     private void assertOnExpectedValues(JSONObject retJsonObject,
