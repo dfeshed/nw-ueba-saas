@@ -60,6 +60,3 @@ def deploy_charts():
     insert_conn()
     insert_charts()
     refresh_charts_sequence()
-
-
-insert_conn()
