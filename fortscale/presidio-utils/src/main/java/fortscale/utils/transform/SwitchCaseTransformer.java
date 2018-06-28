@@ -25,9 +25,7 @@ public class SwitchCaseTransformer extends AbstractJsonObjectTransformer{
     private Object destinationDefaultValue;
     private List<SwitchCase> cases;
     @JsonIgnore
-    private JsonPointer destKeyJsonPointer;
-    @JsonIgnore
-    private String dstKeyToAdd;
+    private SetterTransformer setterTransformer;
 
     @JsonCreator
     public SwitchCaseTransformer(@JsonProperty("name") String name, @JsonProperty("sourceKey") String sourceKey,
@@ -40,11 +38,7 @@ public class SwitchCaseTransformer extends AbstractJsonObjectTransformer{
         this.destinationDefaultValue = destinationDefaultValue;
         this.cases = Validate.notEmpty(cases,"cases should not be empty.");
 
-        int indexOfLastDotOfDestinationKey = destinationKey.lastIndexOf('.');
-        if(indexOfLastDotOfDestinationKey != -1){
-            destKeyJsonPointer = new JsonPointer(destinationKey.substring(0, indexOfLastDotOfDestinationKey));
-            dstKeyToAdd = destinationKey.substring(indexOfLastDotOfDestinationKey+1);
-        }
+        this.setterTransformer = new SetterTransformer("key-value-setter", destinationKey, destinationDefaultValue);
     }
 
     @Override
@@ -62,12 +56,8 @@ public class SwitchCaseTransformer extends AbstractJsonObjectTransformer{
             }
         }
 
-        destinationValue = destinationValue == null ? JSONObject.NULL : destinationValue;
-        if(destKeyJsonPointer == null) {
-            jsonObject.put(destinationKey, destinationValue);
-        } else {
-            destKeyJsonPointer.set(jsonObject, dstKeyToAdd, destinationValue, true);
-        }
+        setterTransformer.setValue(destinationValue);
+        setterTransformer.transform(jsonObject);
 
         return jsonObject;
     }
