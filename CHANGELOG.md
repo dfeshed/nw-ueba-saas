@@ -1,3 +1,26 @@
+# [8.7.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v8.7.0)
+## Features
+* [ASOC-42933](https://bedfordjira.na.rsa.net/browse/ASOC-42933):&emsp;LiveConnect Regression Test - Event Analysis
+* [ASOC-42934](https://bedfordjira.na.rsa.net/browse/ASOC-42934):&emsp;LiveConnect Regression Test - Event Pages
+* [ASOC-51569](https://bedfordjira.na.rsa.net/browse/ASOC-51569):&emsp;Single Pill Creation - Managing Forward/Backward/Backspace
+* [ASOC-51570](https://bedfordjira.na.rsa.net/browse/ASOC-51570):&emsp;Single Pill Creation - ESC
+* [ASOC-52280](https://bedfordjira.na.rsa.net/browse/ASOC-52280):&emsp;Release Notes - HouseStark
+* [ASOC-55331](https://bedfordjira.na.rsa.net/browse/ASOC-55331):&emsp;New UEBA Profile/Meta Group/Column Group
+* [ASOC-55887](https://bedfordjira.na.rsa.net/browse/ASOC-05588700):&emsp;Regression: Contexhub Server
+* [ASOC-55888](https://bedfordjira.na.rsa.net/browse/ASOC-55888):&emsp;Regression: Reporting Engine and Dashboards
+* [ASOC-56314](https://bedfordjira.na.rsa.net/browse/ASOC-56314):&emsp;NRT Qualification - Warehouse (Warehouse Connector stand-alone)
+* [ASOC-56634](https://bedfordjira.na.rsa.net/browse/ASOC-56634):&emsp;NRT Qualification - Investigate-server
+* [ASOC-56635](https://bedfordjira.na.rsa.net/browse/ASOC-56635):&emsp;NRT Qualification - Reporting-engine
+* [ASOC-56636](https://bedfordjira.na.rsa.net/browse/ASOC-56636):&emsp;NRT Qualification - Respond-server
+* [ASOC-56800](https://bedfordjira.na.rsa.net/browse/ASOC-56800):&emsp;Fix automation CI failures for tests owned by Supernova
+* [ASOC-56881](https://bedfordjira.na.rsa.net/browse/ASOC-56881):&emsp;NRT Qualification - ContextHub Service
+* [ASOC-57461](https://bedfordjira.na.rsa.net/browse/ASOC-57461):&emsp;Adding Pills At End of List
+* [ASOC-57566](https://bedfordjira.na.rsa.net/browse/ASOC-57566):&emsp;Add theme name to the cookie
+* [ASOC-57765](https://bedfordjira.na.rsa.net/browse/ASOC-57765):&emsp;Showing UEBA in investigate
+* [ASOC-57767](https://bedfordjira.na.rsa.net/browse/ASOC-57767):&emsp;Spike - Content lookup in Archer using RESTful API
+* [ASOC-58126](https://bedfordjira.na.rsa.net/browse/ASOC-58126):&emsp;Add product name called "Correlation Server"
+
+
 # [8.6.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v8.6.0)
 ## Features
 * [ASOC-41949](https://bedfordjira.na.rsa.net/browse/ASOC-41949):&emsp;Create a new parser to hold rules - UI Only
