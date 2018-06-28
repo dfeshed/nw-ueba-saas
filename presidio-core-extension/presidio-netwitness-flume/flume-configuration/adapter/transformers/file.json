@@ -28,6 +28,28 @@
     },
     {
       "type": "if_else",
+      "name": "obj-type-filter-for-4670",
+      "predicate": {
+        "type": "regex",
+        "name": "reference-id-equal-4670",
+        "sourceKey": "reference_id",
+        "regex": "4670"
+      },
+      "ifTransformer": {
+        "type": "filter",
+        "name": "obj-type-filter",
+        "predicate": {
+          "type": "regex",
+          "name": "obj-type-equal-file",
+          "sourceKey": "obj_type",
+          "regex": "File"
+        },
+        "filterIn": true
+      },
+      "elseTransformer": null
+    },
+    {
+      "type": "if_else",
       "name": "category-filter-for-4663-and-4660",
       "predicate": {
         "type": "regex",
