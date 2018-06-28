@@ -226,6 +226,12 @@ $clrAlertsFilterLabel: #004f8f;
             .k-block, .k-button, .k-draghandle, .k-grid-header, .k-grouping-header, .k-header, .k-pager-wrap, .k-toolbar, .k-treemap-tile, html .km-pane-wrapper .k-header{
                 background-color: var(--main-widgets-background-color);
                 background-image: none;
+
+                .select-range{
+                    .k-header {
+                        background-color: var(--main-widgets-titles-text-color);
+                    }
+                }
             }
         }
     }

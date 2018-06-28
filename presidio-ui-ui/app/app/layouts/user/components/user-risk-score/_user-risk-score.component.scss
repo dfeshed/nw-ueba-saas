@@ -51,8 +51,8 @@ user-risk-score {
     .fs-card-title {
         color: white;
         font-family: 'Open Sans', sans-serif;
-        font-size: 14px;
-        font-weight: 400;
+        font-size: 18px;
+        font-weight: 300;
         border-bottom: 1px solid #fff;
 
         box-shadow: none;
@@ -242,7 +242,7 @@ user-risk-score {
 
         border-bottom: 1px solid var(--main-widgets-lines-seperators);
         &:hover {
-            background-color: var(--second-widgets-titles-text-color);
+            background-color: var(--main-widgets-background-color-hover);
         }
     }
 
@@ -316,9 +316,9 @@ user-risk-score {
         line-height: 15px;
         flex: 1 0;
 
-        &:hover {
-            color: #000;
-        }
+        //&:hover {
+        //    color: #000;
+        //}
     }
 
     .alert-date {

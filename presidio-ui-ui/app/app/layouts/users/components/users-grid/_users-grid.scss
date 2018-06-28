@@ -101,16 +101,17 @@
             align-items: center;
 
             .no-users-internal{
-                color: #024d89;
+                color: var(--main-widgets-titles-text-color);
                 font-family: 'Open Sans', sans-serif;
                 font-size: 14px;
                 font-weight: 400;
-                line-height: 18px;
+                line-height: 50px;
                 font-weight: 700;
             }
 
             .image{
-                background-image: url("../../images/icons/users_general_user_color.png");
+                background-image: url("../../images/icons/users_general_user_color_edited.jpg");
+                border-radius: 50%;
                 width: 75px;
                 height: 75px;
                 border: none;
