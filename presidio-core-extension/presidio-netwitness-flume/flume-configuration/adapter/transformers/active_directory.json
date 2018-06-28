@@ -344,7 +344,7 @@
       "type": "switch_case",
       "name": "operation_type-categories-according-to-operation-type",
       "sourceKey": "operationType",
-      "destinationKey": "operationTypeCategory",
+      "destinationKey": "operationTypeCategories",
       "destinationDefaultValue": null,
       "cases": [
         {
