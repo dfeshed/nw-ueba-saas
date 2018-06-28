@@ -53,7 +53,8 @@ function _wrapCallback(callback) {
         try {
           message.body = JSON.parse(message.body);
         } catch (e) {
-          // do nothing
+          // eslint-disable-next-line no-console
+          console.warn('Failed to parse websocket frame message body:', message.body);
         }
       }
       return callback(message);
@@ -173,6 +174,8 @@ export default EmberObject.extend({
           this.set('isConnecting', false);
           resolve(this);
         }, (e) => {
+          // eslint-disable-next-line no-console
+          console.warn('Web socket connection failure for ', this.url, e);
           this.set('isConnecting', false);
           reject(e);
         });
