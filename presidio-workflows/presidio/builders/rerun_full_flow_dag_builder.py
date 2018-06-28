@@ -15,6 +15,7 @@ from presidio.utils.airflow.operators import spring_boot_jar_operator
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
 
+
 class RerunFullFlowDagBuilder(object):
     """
     The "rerun full flow run" DAG consists of all the actions needed in order to delete all presidio data
@@ -39,7 +40,7 @@ class RerunFullFlowDagBuilder(object):
 
         kill_dags_task_instances_operator = build_kill_dags_task_instances_operator(dag, dag_ids_to_clean)
 
-        clean_mongo_operator = build_mongo_clean_bash_operator(config_reader,dag, is_remove_ca_tables)
+        clean_mongo_operator = build_mongo_clean_bash_operator(config_reader, dag, is_remove_ca_tables)
 
         clean_elastic_operator = build_clean_elastic_operator(dag)
 
@@ -75,8 +76,10 @@ def find_non_subdag_dags(session=None):
 
     qry = session.query(DM)
     qry = qry.filter(DM.is_subdag == False)
-
-    return qry.all()
+    try:
+        return qry.all()
+    except:
+        return None
 
 
 def get_dag_models_by_prefix(dag_id_prefix):
@@ -135,6 +138,7 @@ def stop_kill_dag_run_task_instances(dag_run):
         except OSError as e:
             logging.info("pid: {} does not exist".format(pid))
 
+
 def kill_dags_task_instances(dag_ids):
     for dag_id in dag_ids:
         dag_runs = get_dag_active_dag_runs(dag_id=dag_id)
@@ -170,8 +174,9 @@ def build_pause_dags_operator(cleanup_dag, dag_models):
 def build_clean_logs_operator(cleanup_dag):
     airflow_base_log_folder = str(configuration.get('core', 'BASE_LOG_FOLDER'))
     clean_logs_operator = BashOperator(task_id='clean_logs',
-                                       bash_command="rm -rf {}/full_flow_* && rm -rf {}/logs/scheduler/ ".format(airflow_base_log_folder,airflow_base_log_folder),
-                                       dag=cleanup_dag,retries=5)
+                                       bash_command="rm -rf {}/full_flow_* && rm -rf {}/logs/scheduler/ ".format(
+                                           airflow_base_log_folder, airflow_base_log_folder),
+                                       dag=cleanup_dag, retries=5)
     return clean_logs_operator
 
 
@@ -213,7 +218,7 @@ def clean_elastic_data():
     indexes = es.cat.indices(h="index").encode("utf-8").split("\n")
 
     for index in indexes:
-        if not index.startswith(".") and not index == "": #escape system metrics
+        if not index.startswith(".") and not index == "":  # escape system metrics
             if index.startswith(('presidio-monitoring', 'metricbeat', 'packetbeat')):
                 es.indices.delete(index=index, ignore=[404], request_timeout=360)
             else:
@@ -243,10 +248,11 @@ def build_kill_dags_task_instances_operator(cleanup_dag, dag_ids_to_clean):
     return kill_dags_task_instances_operator
 
 
-def build_mongo_clean_bash_operator(config_reader,cleanup_dag, is_remove_ca_tables):
-    encpass=config_reader.read(conf_key="mongo.db.password")
+def build_mongo_clean_bash_operator(config_reader, cleanup_dag, is_remove_ca_tables):
+    encpass = config_reader.read(conf_key="mongo.db.password")
     # build the mongo clean bash command
-    mongo_clean_bash_command = "MONGO_PASS=$(java -jar /var/lib/netwitness/presidio/install/configserver/EncryptionUtils.jar decrypt {0})".format(encpass) + "&& mongo presidio -u presidio -p $MONGO_PASS --eval \"db.getCollectionNames().forEach(function(t){if (0==t.startsWith('system')) {print('dropping: ' +t); db.getCollection(t).drop();}});\""
+    mongo_clean_bash_command = "MONGO_PASS=$(java -jar /var/lib/netwitness/presidio/install/configserver/EncryptionUtils.jar decrypt {0})".format(
+        encpass) + "&& mongo presidio -u presidio -p $MONGO_PASS --eval \"db.getCollectionNames().forEach(function(t){if (0==t.startsWith('system')) {print('dropping: ' +t); db.getCollection(t).drop();}});\""
     clean_mongo_operator = BashOperator(task_id='clean_mongo',
                                         bash_command=mongo_clean_bash_command,
                                         dag=cleanup_dag)
