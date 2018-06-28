@@ -102,11 +102,6 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
    */
   _setupUserTimeout() {
     if (!testing) {
-      // When the user performs an action, update last session access
-      this.get('userActivity').on('userActive', this, () => {
-        localStorage.setItem('rsa-nw-last-session-access', new Date().getTime());
-      });
-
       // After configured idle timeout period, logout
       this.get('userIdle').on('idleChanged', (isIdle) => {
         if (isIdle && this.get('session.isAuthenticated')) {
