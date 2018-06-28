@@ -21,13 +21,16 @@ const stateToComputed = (state) => ({
 });
 
 const dispatchToActions = (dispatch) => ({
+  // edit the policy using fully qualified field name (e.g., 'policy.name')
   edit(field, value) {
     if (field && value !== undefined) {
       dispatch(editPolicy(field, value));
     }
   },
+  // save changes to the policy
   save() {
     const callBackOptions = {
+      // if the save is succesful, redirect the user to the policies list route
       onSuccess: () => {
         this.send('success', 'adminUsm.policy.saveSuccess');
         const transitionToPolicies = this.get('transitionToPolicies');
@@ -38,6 +41,11 @@ const dispatchToActions = (dispatch) => ({
       }
     };
     dispatch(savePolicy(this.get('policy'), callBackOptions));
+  },
+  // cancel changes to the policy
+  cancel() {
+    const transitionToPolicies = this.get('transitionToPolicies');
+    transitionToPolicies();
   }
 });
 
