@@ -23,12 +23,14 @@ const PillMeta = Component.extend({
    * @public
    */
   isActive: false,
+
   /**
    * Should we automatically display the EPS dropdown?
    * @type {boolean}
    * @public
    */
   isAutoFocused: true,
+
   /**
    * Does this component consume the full width of its parent, or is it sized to
    * match its contents?
@@ -36,18 +38,27 @@ const PillMeta = Component.extend({
    * @public
    */
   isExpanded: true,
+
   /**
    * The option that is currently selected
    * @type {Object}
    * @public
    */
   selection: null,
+
   /**
    * An action to call when sending messages and data to the parent component.
    * @type {function}
    * @public
    */
   sendMessage: () => {},
+
+  /**
+   * Whether or not to send the next focus out event that occurs
+   * @type {boolean}
+   * @public
+   */
+  swallowNextFocusOut: false,
 
   @computed('isActive', 'options')
   isActiveWithOptions: (isActive, options) => isActive && options.length > 0,
@@ -71,7 +82,22 @@ const PillMeta = Component.extend({
     }
   },
 
+  focusOut() {
+    if (this.get('swallowNextFocusOut')) {
+      this.set('swallowNextFocusOut', false);
+      return false;
+    }
+  },
+
   actions: {
+    onOptionMouseDown() {
+      // An option mouse down is the precursor to a click
+      // of a power select option which causes a focus out
+      // of this component. It isn't really a focusOut of this
+      // component because control returns to it, so set
+      // a flag to make sure the next focus out doesn't escape.
+      this.set('swallowNextFocusOut', true);
+    },
     onChange(selection /* powerSelectAPI, event */) {
       this._broadcast(MESSAGE_TYPES.META_SELECTED, selection);
     },

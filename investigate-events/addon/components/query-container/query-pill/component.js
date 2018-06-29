@@ -1,4 +1,4 @@
-import { later } from '@ember/runloop';
+import { next } from '@ember/runloop';
 import Component from '@ember/component';
 import computed, { and, empty } from 'ember-computed-decorators';
 import _ from 'lodash';
@@ -204,28 +204,22 @@ export default Component.extend({
   focusOut() {
     this.set('shouldFocusOut', true);
 
-    // Use later here because as user moves
+    // Use next here because as user moves
     // from meta to operator to value, this
     // component loses focus for a split second.
-    // But it regains it. Before later callback
+    // But it regains it. Before next callback
     // is called the focusIn above resets
     // flag indicating focus has been regained
     // and no focusOut side effects should take
     // place.
-    //
-    // Using later rather than next to accomodate
-    // clicking on power select dropdowns items
-    // which cause a chain reaction of events
-    // that occur in a different order and take
-    // a little bit more time than a next gives us.
-    later(() => {
+    next(() => {
 
       // NOTE: this will not send a focus out
       // event when a pill is created using
       // the pill template because the pill
       // template will have been cleared out
       // and re-entered with the meta trigger
-      // open by the time later is called
+      // open by the time next is called
       const {
         shouldFocusOut,
         isDestroyed,
@@ -234,7 +228,7 @@ export default Component.extend({
       if (shouldFocusOut && !isDestroyed && !isDestroying) {
         this._pillLostFocus();
       }
-    }, 125);
+    });
   },
 
   actions: {

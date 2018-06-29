@@ -12,6 +12,10 @@
     oninput=(action 'onInput')
     onkeydown=(action 'onKeyDown')
     options=options
+    optionsComponent=(
+      component 'query-container/power-select-options'
+      onmousedown=(action 'onOptionMouseDown')
+    )
     preventScroll=true
     selected=selection
     triggerComponent='query-container/resizable-input'
