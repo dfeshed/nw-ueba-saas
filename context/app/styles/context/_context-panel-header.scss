@@ -29,6 +29,7 @@
       vertical-align: top;
     }
     &__lookup {
+      cursor: auto !important;
       max-width: 75%;
       white-space: nowrap;
       text-overflow: ellipsis;
