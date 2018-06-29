@@ -1,5 +1,6 @@
 import { next } from '@ember/runloop';
 import Component from '@ember/component';
+import { inject as service } from '@ember/service';
 import computed, { and, empty } from 'ember-computed-decorators';
 import _ from 'lodash';
 
@@ -20,6 +21,7 @@ const RESET_PROPS = {
 export default Component.extend({
   classNameBindings: ['isActive', ':query-pill', 'isInvalid'],
   attributeBindings: ['title'],
+  i18n: service(),
 
   /**
    * The position of this pill relative to other pills.
@@ -201,7 +203,7 @@ export default Component.extend({
     this._pillEntered();
   },
 
-  focusOut() {
+  focusOut({ originalEvent: focusEvent }) {
     this.set('shouldFocusOut', true);
 
     // Use next here because as user moves
@@ -226,7 +228,7 @@ export default Component.extend({
         isDestroying
       } = this.getProperties('shouldFocusOut', 'isDestroyed', 'isDestroying');
       if (shouldFocusOut && !isDestroyed && !isDestroying) {
-        this._pillLostFocus();
+        this._pillLostFocus(focusEvent);
       }
     });
   },
@@ -293,17 +295,31 @@ export default Component.extend({
   /**
    * Checks to see if anything should be done when the pill loses focus.
    * If we have no meta/operator/value then treat this like a pill cancel.
-   *
+   * @param {Object} focusEvent - A FocusEvent so that we can inspect the
+   * `relatedTarget` property to determine if we've clicked on the Query events
+   * button.
    * @private
    */
-  _pillLostFocus() {
+  _pillLostFocus(focusEvent) {
     const {
       selectedMeta,
       selectedOperator,
       valueString
     } = this.getProperties('selectedMeta', 'selectedOperator', 'valueString');
+    let isSubmit;
+    const el = focusEvent.relatedTarget;
+    if (el) {
+      const queryEvents = this.get('i18n').t('queryBuilder.queryEvents').string;
+      isSubmit = el.textContent.trim() === queryEvents;
+    }
     if (!selectedMeta && !selectedOperator && !valueString) {
-      // treat this like an ESC was keyed
+      // Treat this like an ESC was keyed
+      this._cancelPillCreation();
+    } else if (isSubmit && selectedMeta && selectedOperator && valueString) {
+      // Create pill
+      this._createPill(valueString);
+      // Exit out of pill creation so that the post-pill-creation dropdown is
+      // removed
       this._cancelPillCreation();
     }
   },

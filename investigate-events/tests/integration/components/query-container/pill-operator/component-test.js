@@ -27,13 +27,22 @@ module('Integration | Component | Pill Operator', function(hooks) {
   });
 
   test('indicates it is populated when being used', async function(assert) {
-    await render(hbs`{{query-container/pill-operator isActive=true}}`);
+    await render(hbs`
+      {{query-container/pill-operator
+        isActive=true
+      }}
+    `);
     assert.ok(find(PILL_SELECTORS.populatedItem), 'has populated class applied to it');
   });
 
   test('indicates it is populated not being used but when populated with data', async function(assert) {
     this.set('selection', eq);
-    await render(hbs`{{query-container/pill-operator isActive=false selection=selection}}`);
+    await render(hbs`
+      {{query-container/pill-operator
+        isActive=false
+        selection=selection
+      }}
+    `);
     assert.ok(find(PILL_SELECTORS.populatedItem), 'has populated class applied to it');
   });
 
@@ -41,7 +50,12 @@ module('Integration | Component | Pill Operator', function(hooks) {
     // Set a selection just so we have a value to compare against. Otherwise
     // it'd be an empty string.
     this.set('selection', eq);
-    await render(hbs`{{query-container/pill-operator isActive=false selection=selection}}`);
+    await render(hbs`
+      {{query-container/pill-operator
+        isActive=false
+        selection=selection
+      }}
+    `);
     assert.equal(trim(find(PILL_SELECTORS.operator).textContent), eq.displayName);
   });
 
@@ -50,7 +64,12 @@ module('Integration | Component | Pill Operator', function(hooks) {
   // The workaround is to provide focus to operator after rendering it.
   test('it shows an open Power Select if active', async function(assert) {
     this.set('meta', meta);
-    await render(hbs`{{query-container/pill-operator isActive=true meta=meta}}`);
+    await render(hbs`
+      {{query-container/pill-operator
+        isActive=true
+        meta=meta
+      }}
+    `);
     await focus(PILL_SELECTORS.operatorTrigger);
     const options = findAll(PILL_SELECTORS.powerSelectOption);
     assert.equal(options.length, 7);
@@ -73,7 +92,13 @@ module('Integration | Component | Pill Operator', function(hooks) {
         done();
       }
     });
-    await render(hbs`{{query-container/pill-operator isActive=true meta=meta sendMessage=(action handleMessage)}}`);
+    await render(hbs`
+      {{query-container/pill-operator
+        isActive=true
+        meta=meta
+        sendMessage=(action handleMessage)
+      }}
+    `);
     await selectChoose(PILL_SELECTORS.operatorTrigger, PILL_SELECTORS.powerSelectOption, 0);// option "="
   });
 
@@ -87,8 +112,14 @@ module('Integration | Component | Pill Operator', function(hooks) {
         done();
       }
     });
-    await render(hbs`{{query-container/pill-operator isActive=true meta=meta sendMessage=(action handleMessage)}}`);
-    await triggerKeyEvent(PILL_SELECTORS.operatorInput, 'keydown', ARROW_LEFT);
+    await render(hbs`
+      {{query-container/pill-operator
+        isActive=true
+        meta=meta
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', ARROW_LEFT);
   });
 
   test('it does not broadcasts a message when the ARROW_RIGHT key is pressed and there is no selection', async function(assert) {
@@ -97,8 +128,14 @@ module('Integration | Component | Pill Operator', function(hooks) {
     this.set('handleMessage', () => {
       assert.notOk('message dispatched');
     });
-    await render(hbs`{{query-container/pill-operator isActive=true meta=meta sendMessage=(action handleMessage)}}`);
-    await triggerKeyEvent(PILL_SELECTORS.operatorInput, 'keydown', ARROW_RIGHT);
+    await render(hbs`
+      {{query-container/pill-operator
+        isActive=true
+        meta=meta
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', ARROW_RIGHT);
     return settled();
   });
 
@@ -114,9 +151,16 @@ module('Integration | Component | Pill Operator', function(hooks) {
         done();
       }
     });
-    await render(hbs`{{query-container/pill-operator isActive=true meta=meta selection=selection sendMessage=(action handleMessage)}}`);
+    await render(hbs`
+      {{query-container/pill-operator
+        isActive=true
+        meta=meta
+        selection=selection
+        sendMessage=(action handleMessage)
+      }}
+    `);
     await selectChoose(PILL_SELECTORS.operatorTrigger, PILL_SELECTORS.powerSelectOption, 0);
-    await triggerKeyEvent(PILL_SELECTORS.operatorInput, 'keydown', ARROW_RIGHT);
+    await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', ARROW_RIGHT);
   });
 
   test('it does not broadcasts a message when the BACKSPACE key is pressed mid string', async function(assert) {
@@ -125,9 +169,15 @@ module('Integration | Component | Pill Operator', function(hooks) {
     this.set('handleMessage', () => {
       assert.notOk('message dispatched');
     });
-    await render(hbs`{{query-container/pill-operator isActive=true meta=meta sendMessage=(action handleMessage)}}`);
-    await fillIn(PILL_SELECTORS.operatorInput, 'beg');
-    await triggerKeyEvent(PILL_SELECTORS.operatorInput, 'keydown', BACKSPACE_KEY);
+    await render(hbs`
+      {{query-container/pill-operator
+        isActive=true
+        meta=meta
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await fillIn(PILL_SELECTORS.operatorSelectInput, 'beg');
+    await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', BACKSPACE_KEY);
     return settled();
   });
 
@@ -141,8 +191,14 @@ module('Integration | Component | Pill Operator', function(hooks) {
         done();
       }
     });
-    await render(hbs`{{query-container/pill-operator isActive=true meta=meta sendMessage=(action handleMessage)}}`);
-    await triggerKeyEvent(PILL_SELECTORS.operatorInput, 'keydown', BACKSPACE_KEY);
+    await render(hbs`
+      {{query-container/pill-operator
+        isActive=true
+        meta=meta
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', BACKSPACE_KEY);
   });
 
   test('it broadcasts a message when the ESCAPE key is pressed', async function(assert) {
@@ -153,8 +209,14 @@ module('Integration | Component | Pill Operator', function(hooks) {
       assert.equal(type, MESSAGE_TYPES.OPERATOR_ESCAPE_KEY, 'Wrong message type');
       done();
     });
-    await render(hbs`{{query-container/pill-operator isActive=true meta=meta sendMessage=(action handleMessage)}}`);
-    await triggerKeyEvent(PILL_SELECTORS.operatorInput, 'keydown', ESCAPE_KEY);
+    await render(hbs`
+      {{query-container/pill-operator
+        isActive=true
+        meta=meta
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', ESCAPE_KEY);
   });
 
   test('it removes the selection when the ESCAPE key is pressed', async function(assert) {
@@ -181,7 +243,7 @@ module('Integration | Component | Pill Operator', function(hooks) {
       }}
     `);
     await selectChoose(PILL_SELECTORS.operatorTrigger, PILL_SELECTORS.powerSelectOption, 1);
-    await triggerKeyEvent(PILL_SELECTORS.operatorInput, 'keydown', ESCAPE_KEY);
+    await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', ESCAPE_KEY);
   });
 
   test('it selects an operator if a trailing SPACE is entered and there is one option', async function(assert) {
@@ -194,14 +256,20 @@ module('Integration | Component | Pill Operator', function(hooks) {
         done();
       }
     });
-    await render(hbs`{{query-container/pill-operator isActive=true meta=meta sendMessage=(action handleMessage)}}`);
+    await render(hbs`
+      {{query-container/pill-operator
+        isActive=true
+        meta=meta
+        sendMessage=(action handleMessage)
+      }}
+    `);
     // We go back to old-skool jQuery for this because fillIn() performs a focus
     // event on the input every time you call it which causes the search to
     // clear out. PowerSelect test helper typeInSearch() ends up just calling
     // fillIn(). Also, fillIn() doesn't seem to properly trigger an InputEvent,
     // so the input handler doesn't get a down-selected list of meta options.
-    this.$(PILL_SELECTORS.operatorInput).val('=').trigger('input');
-    this.$(PILL_SELECTORS.operatorInput).val(' ').trigger('input');
+    this.$(PILL_SELECTORS.operatorSelectInput).val('=').trigger('input');
+    this.$(PILL_SELECTORS.operatorSelectInput).val(' ').trigger('input');
   });
 
   test('it does not select an operator if a trailing SPACE is entered and there is more than one option', async function(assert) {
@@ -210,15 +278,26 @@ module('Integration | Component | Pill Operator', function(hooks) {
     this.set('handleMessage', () => {
       assert.notOk('message dispatched');
     });
-    await render(hbs`{{query-container/pill-operator isActive=true meta=meta sendMessage=(action handleMessage)}}`);
-    this.$(PILL_SELECTORS.operatorInput).val('e').trigger('input');
-    this.$(PILL_SELECTORS.operatorInput).val(' ').trigger('input');
+    await render(hbs`
+      {{query-container/pill-operator
+        isActive=true
+        meta=meta
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    this.$(PILL_SELECTORS.operatorSelectInput).val('e').trigger('input');
+    this.$(PILL_SELECTORS.operatorSelectInput).val(' ').trigger('input');
     return settled();
   });
 
   test('it clears out last search if Power Select looses, then gains focus', async function(assert) {
     this.set('meta', meta);
-    await render(hbs`{{query-container/pill-operator isActive=true meta=meta}}`);
+    await render(hbs`
+      {{query-container/pill-operator
+        isActive=true
+        meta=meta
+      }}
+    `);
     await focus(PILL_SELECTORS.operatorTrigger);
     // assert number of options
     assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 7);
@@ -226,7 +305,7 @@ module('Integration | Component | Pill Operator', function(hooks) {
     await typeInSearch('e');
     assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 2); // exists and ends
     // blur and assert no options present
-    await triggerKeyEvent(PILL_SELECTORS.operatorInput, 'keydown', TAB_KEY);
+    await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', TAB_KEY);
     assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 0);
     // focus and assert number of options
     await focus(PILL_SELECTORS.operatorTrigger);
@@ -247,10 +326,36 @@ module('Integration | Component | Pill Operator', function(hooks) {
         done();
       }
     });
-    await render(hbs`{{query-container/pill-operator isActive=true meta=meta sendMessage=(action handleMessage)}}`);
+    await render(hbs`
+      {{query-container/pill-operator
+        isActive=true
+        meta=meta
+        sendMessage=(action handleMessage)
+      }}
+    `);
     // Select an option
     await selectChoose(PILL_SELECTORS.operatorTrigger, PILL_SELECTORS.powerSelectOption, 0);// option "="
     // Reselect the same option
     await selectChoose(PILL_SELECTORS.operatorTrigger, PILL_SELECTORS.powerSelectOption, 0);// option "="
+  });
+
+  test('if operator is selected (not just half entered) and you click away, leave the operator there', async function(assert) {
+    this.set('meta', meta);
+    this.set('handleMessage', (type, data) => {
+      if (type === MESSAGE_TYPES.OPERATOR_SELECTED) {
+        this.set('selection', data);
+      }
+    });
+    await render(hbs`
+      {{query-container/pill-operator
+        isActive=true
+        meta=meta
+        selection=selection
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await selectChoose(PILL_SELECTORS.operatorTrigger, PILL_SELECTORS.powerSelectOption, 0);
+    await blur(PILL_SELECTORS.operatorTrigger);
+    assert.equal(find(PILL_SELECTORS.operatorSelectInput).value, '=');
   });
 });

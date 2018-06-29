@@ -21,13 +21,22 @@ module('Integration | Component | Pill Value', function(hooks) {
   });
 
   test('indicates it is populated when being used', async function(assert) {
-    await render(hbs`{{query-container/pill-value isActive=true}}`);
+    await render(hbs`
+      {{query-container/pill-value
+        isActive=true
+      }}
+    `);
     assert.ok(find(PILL_SELECTORS.populatedItem), 'has populated class applied to it');
   });
 
   test('indicates it is populated not being used but when populated with data', async function(assert) {
     this.set('foo', 'foo');
-    await render(hbs`{{query-container/pill-value isActive=false valueString=foo}}`);
+    await render(hbs`
+      {{query-container/pill-value
+        isActive=false
+        valueString=foo
+      }}
+    `);
     assert.ok(find(PILL_SELECTORS.populatedItem), 'has populated class applied to it');
   });
 
@@ -40,7 +49,12 @@ module('Integration | Component | Pill Value', function(hooks) {
         done();
       }
     });
-    await render(hbs`{{query-container/pill-value isActive=true sendMessage=(action handleMessage)}}`);
+    await render(hbs`
+      {{query-container/pill-value
+        isActive=true
+        sendMessage=(action handleMessage)
+      }}
+    `);
     await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', LEFT_ARROW_KEY);
   });
 
@@ -51,7 +65,12 @@ module('Integration | Component | Pill Value', function(hooks) {
         assert.notOk('message dispatched');
       }
     });
-    await render(hbs`{{query-container/pill-value isActive=true sendMessage=(action handleMessage)}}`);
+    await render(hbs`
+      {{query-container/pill-value
+        isActive=true
+        sendMessage=(action handleMessage)
+      }}
+    `);
     await fillIn(PILL_SELECTORS.valueInput, 'xx');
     await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', BACKSPACE_KEY);
     return settled();
@@ -66,7 +85,12 @@ module('Integration | Component | Pill Value', function(hooks) {
         done();
       }
     });
-    await render(hbs`{{query-container/pill-value isActive=true sendMessage=(action handleMessage)}}`);
+    await render(hbs`
+      {{query-container/pill-value
+        isActive=true
+        sendMessage=(action handleMessage)
+      }}
+    `);
     await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', BACKSPACE_KEY);
   });
 
@@ -75,7 +99,12 @@ module('Integration | Component | Pill Value', function(hooks) {
     this.set('handleMessage', () => {
       assert.notOk('message dispatched');
     });
-    await render(hbs`{{query-container/pill-value isActive=true sendMessage=(action handleMessage)}}`);
+    await render(hbs`
+      {{query-container/pill-value
+        isActive=true
+        sendMessage=(action handleMessage)
+      }}
+    `);
     await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', ENTER_KEY);
     return settled();
   });
@@ -89,7 +118,12 @@ module('Integration | Component | Pill Value', function(hooks) {
         done();
       }
     });
-    await render(hbs`{{query-container/pill-value isActive=true sendMessage=(action handleMessage)}}`);
+    await render(hbs`
+      {{query-container/pill-value
+        isActive=true
+        sendMessage=(action handleMessage)
+      }}
+    `);
     await fillIn(PILL_SELECTORS.valueInput, 'x');
     await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', X_KEY);
     await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', ENTER_KEY);
@@ -104,7 +138,12 @@ module('Integration | Component | Pill Value', function(hooks) {
         done();
       }
     });
-    await render(hbs`{{query-container/pill-value isActive=true sendMessage=(action handleMessage)}}`);
+    await render(hbs`
+      {{query-container/pill-value
+        isActive=true
+        sendMessage=(action handleMessage)
+      }}
+    `);
     await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', ESCAPE_KEY);
   });
 
@@ -117,8 +156,13 @@ module('Integration | Component | Pill Value', function(hooks) {
         done();
       }
     });
-    await render(hbs`{{query-container/pill-value isActive=true sendMessage=(action handleMessage)}}`);
-    fillIn(PILL_SELECTORS.valueInput, 'foo');
+    await render(hbs`
+      {{query-container/pill-value
+        isActive=true
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await fillIn(PILL_SELECTORS.valueInput, 'foo');
     await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', ESCAPE_KEY);
   });
 });

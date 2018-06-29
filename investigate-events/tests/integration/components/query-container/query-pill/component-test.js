@@ -17,6 +17,7 @@ import * as MESSAGE_TYPES from 'investigate-events/components/query-container/me
 import PILL_SELECTORS from '../pill-selectors';
 
 const ESCAPE_KEY = KEY_MAP.escape.code;
+const X_KEY = 88;
 
 const trim = (text) => text.replace(/\s+/g, '').trim();
 let setState;
@@ -364,5 +365,28 @@ module('Integration | Component | query-pill', function(hooks) {
     `);
 
     await createBasicPill();
+  });
+
+  test('If in value and user clicks away, the pill remains in creation state where no data entered is changed or removed', async function(assert) {
+    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+      }}
+    `);
+    // Choose first meta option
+    selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0); // option A
+    await waitUntil(() => find(PILL_SELECTORS.operatorTrigger));
+    // Choose the first operator option
+    selectChoose(PILL_SELECTORS.operatorTrigger, PILL_SELECTORS.powerSelectOption, 0); // option =
+    await waitUntil(() => find(PILL_SELECTORS.valueInput));
+    // Fill in the value, to properly simulate the event we need to fillIn AND
+    // triggerKeyEvent for the "x" character.
+    await fillIn(PILL_SELECTORS.valueInput, 'x');
+    await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', X_KEY); // x
+    await blur(PILL_SELECTORS.valueInput);
+    assert.equal(trim(find(PILL_SELECTORS.queryPill).textContent), 'a=');
+    assert.equal(find(PILL_SELECTORS.valueInput).value, 'x');
   });
 });

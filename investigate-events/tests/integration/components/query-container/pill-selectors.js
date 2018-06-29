@@ -20,7 +20,7 @@ export default {
   newPillTrigger: '.new-pill-trigger',
   newPillTriggerContainer,
   operator: '.pill-operator',
-  operatorInput: '.pill-operator .ember-power-select-trigger input',
+  operatorSelectInput: '.pill-operator .ember-power-select-trigger input',
   operatorTrigger,
   pillOpen: '.pill-open',
   pillOpenForEdit: '.pill-open-for-edit',
