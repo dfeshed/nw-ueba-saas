@@ -73,6 +73,12 @@ const VALIDATORS = {
     },
     i18nString: 'queryBuilder.validationMessages.uint32'
   },
+  UInt64: {
+    isValid(value) {
+      return _isInt(value);
+    },
+    i18nString: 'queryBuilder.validationMessages.uint64'
+  },
   Float32: {
     isValid(value) {
       return _isFloat(value);
@@ -381,8 +387,8 @@ function uriEncodeMetaFilters(filters = []) {
 const clientSideValidation = (format, value) => {
   let validationError;
   const validator = VALIDATORS[format];
-  // if value is not defined, no need to validate
-  if (value && !validator.isValid(value)) {
+  // if value or validator is not defined, move on
+  if (value && validator && !validator.isValid(value)) {
     const i18n = lookup('service:i18n');
     validationError = i18n.t(validator.i18nString);
   }
