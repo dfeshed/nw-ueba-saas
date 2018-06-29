@@ -2,16 +2,18 @@ $footerHeight: 40px;
 
 .configure-engine .log-parsers {
   .log-parser-toolbar {
-    margin: rsa-whitespace(more) 0 rsa-whitespace(least) 0;
-    padding-bottom: rsa-whitespace();
+    margin: rsa-whitespace(more) 0 0 0;
+    padding-bottom: rsa-whitespace(least);
     border-bottom: 1px solid border-color(primary);
-
     .action-control {
-      margin-left: rsa-whitespace(least);
+      padding: rsa-whitespace(less);
       display: inline-block;
-      &:first-of-type {
-        margin-left: rsa-whitespace();
-      }
+    }
+    .delete-log-parser {
+      padding-right: rsa-whitespace(more);
+    }
+    .add-new-log-parser {
+      margin-left: rsa-whitespace(less);
     }
   }
 }

@@ -1,29 +1,10 @@
 <hbox class="action-control add-new-parser-rule">
   {{#rsa-application-modal
     label=(t 'configure.logsParser.modals.addRule.title')
-    eventId='addNewRule'
-    onClose=(action 'handleCloseAddRule')}}
-    <div class='modal-trigger'>
-      {{#rsa-form-button
-        isDisabled=(not accessControl.canManageLogParsers)}}
-        {{t 'configure.logsParser.buttons.addRule'}}
-      {{/rsa-form-button}}
-    </div>
-    <div class='modal-content add-new-parser-rule'>
-      {{rsa-form-input
-        label=(t 'configure.logsParser.modals.addRule.ruleName') 
-        isError=matchesExistingRuleName
-        errorMessage=(t 'configure.logsParser.modals.addRule.matchesExistingRuleName')
-        value=newRuleName
-        placeholder=(t 'configure.logsParser.modals.addRule.pleaseEnterRuleName')
-      }}
-      {{#rsa-form-button 
-        style='primary' 
-        isDisabled=inValidRuleName
-        click=(action 'addNewParserRule' newRuleName)}} 
-        {{t 'configure.logsParser.modals.addRule.title'}}
-      {{/rsa-form-button}}{{ruleName}}
-    </div>
+    eventId='addNewRule'}}
+
+    {{content/log-parser-rules/parser-rules-list/add-log-parser-rule}}
+
   {{/rsa-application-modal}}
 </hbox>
 

@@ -63,5 +63,4 @@ module('Integration | Component | delete-rules', function(hooks) {
       });
     });
   });
-
 });

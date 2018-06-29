@@ -16,6 +16,28 @@ div.modal-content.add-new-parser-rule {
   height: 44px;
 }
 .parserWrapper {
+  .toolTip {
+    position: absolute;
+    border: 1px solid border-color(primary);
+    @include rsa-font(default, small);
+    color: text-color(neutral);
+    padding: rsa-whitespace(less);
+    line-height: 16px;
+    width: 200px;
+    background-color: background-color(primary, darker);
+    white-space: pre-wrap;
+    z-index: 9999;
+    left:170px;
+  }
+  .toolTipMask {
+    position: absolute;
+    height: 25px;
+    width: 70px;
+    top: 76px;
+    left:134px;
+    z-index: 8888;
+
+  }
   .trMessage {
     height:35vh;
   }
@@ -29,15 +51,6 @@ div.modal-content.add-new-parser-rule {
   .ember-power-select-clear-btn {
     font-size: 1.25rem;
     font-weight: 200;
-  }
-  .dotRed {
-    height: 10px;
-    width: 10px;
-    background-color: background-color(accentOne, dark);
-    border-radius: 50%;
-    display: inline-block;
-    margin-left: 5px;
-    vertical-align: bottom;
   }
   .outOfBox-indicator {
     color: text-color(primary);
@@ -135,7 +148,6 @@ div.modal-content.add-new-parser-rule {
 
   .leftArea, .centerArea, .rightArea {
     margin:0;
-    width: 22%;
     .parserTable {
       width: 100%;
       td {
@@ -153,14 +165,13 @@ div.modal-content.add-new-parser-rule {
     }
   }
   .leftArea, .rightArea {
-    min-width: 300px;
+    width: 330px;
     .parser-log-name, .parser-rule-name {
       margin-left: 18px;
     }
   }
 
   .centerArea {
-    width: 55%;
     vertical-align: top;
     position: relative;
     height: 430px;
@@ -191,11 +202,12 @@ div.modal-content.add-new-parser-rule {
       border-top: 1px solid border-color(primary);
       width: 100%;
       div {
-        overflow: hidden; 
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        max-width: 500px;
-        height: 30px;
+        min-height: 30px;
+        width: calc(100vw - 660px);
+        min-width: 600px;
+        word-break: break-word;
+        word-break: break-all;  
+        white-space:normal;
       }
     }
     h1 {

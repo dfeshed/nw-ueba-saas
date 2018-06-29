@@ -5,6 +5,9 @@
     {{t 'configure.logsParser.addParser.addNew'}}
   {{/rsa-form-button}}
 </div>
+{{#if cannotDeleteParser}}
+  <div class='toolTipMask' {{action "toolTip" true}}{{action "toolTip" true on="mouseEnter"}}{{action "toolTip" false on="mouseLeave"}}> </div>
+{{/if}}
 <div class="action-control delete-log-parser">
   {{#rsa-button-with-confirmation
     title=(t 'configure.logsParser.modals.deleteParser.title')
@@ -16,6 +19,9 @@
     {{t 'configure.logsParser.buttons.delete'}}
   {{/rsa-button-with-confirmation}}
 </div>
+{{#if showToolTip}}
+  <div class='toolTip'>{{t 'configure.logsParser.modals.deleteParser.beenDeployed'}}</div>
+{{/if}}
 {{#if (eq activeModalId 'add-log-parser')}}
   {{#rsa-application-modal eventId='add-log-parser' label="Add Dynamic Log Parser" style="standard add-log-parser-modal"}}
     <div class='modal-content'>

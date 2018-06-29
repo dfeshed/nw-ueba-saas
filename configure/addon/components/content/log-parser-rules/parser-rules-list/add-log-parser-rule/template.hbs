@@ -1,0 +1,21 @@
+<div class='modal-trigger'>
+  {{#rsa-form-button
+    isDisabled=(not accessControl.canManageLogParsers)}}
+    {{t 'configure.logsParser.buttons.addRule'}}
+  {{/rsa-form-button}}
+</div>
+<div class='modal-content add-new-parser-rule'>
+  {{rsa-form-input
+    label=(t 'configure.logsParser.modals.addRule.ruleName') 
+    isError=ruleNameError
+    errorMessage=ruleNameErrorMessage
+    value=newRuleName
+    placeholder=(t 'configure.logsParser.modals.addRule.pleaseEnterRuleName')
+  }}
+  {{#rsa-form-button 
+    style='primary' 
+    isDisabled=inValidRuleName
+    click=(action 'addNewParserRule' newRuleName)}} 
+    {{t 'configure.logsParser.modals.addRule.title'}}
+  {{/rsa-form-button}}{{ruleName}}
+</div>

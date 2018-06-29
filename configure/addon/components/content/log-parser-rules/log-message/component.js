@@ -3,6 +3,8 @@ import { debounce } from '@ember/runloop';
 import { htmlSafe } from '@ember/string';
 import { connect } from 'ember-redux';
 import { highlightSampleLogs } from 'configure/actions/creators/content/log-parser-rule-creators';
+import { get } from '@ember/object';
+import { inject as service } from '@ember/service';
 import {
   highlightedLogs,
   isHighlighting,
@@ -24,7 +26,11 @@ const dispatchToActions = {
 const ignoredKeyCodes = [37, 38, 39, 40]; // left-arrow, up-arrow, right-arrow, down-arrow
 
 const SampleLogMessage = Component.extend({
+  flashMessages: service(),
   classNames: ['sample-log-message'],
+  scrollTop: 0,
+  scrollLeft: 0,
+  i18n: service(),
 
   /**
    * Plain text verion of the edited sample logs to be shown when running log highlighting
@@ -67,9 +73,17 @@ const SampleLogMessage = Component.extend({
    * @private
    * @returns {boolean}
    */
-  paste(event) {
-    const text = event.originalEvent.clipboardData.getData('text');
-    document.execCommand('insertText', false, text);
+  onPaste(event) {
+    const existingLogsLength = this.element.querySelector('pre').innerText.length;
+    const clipboardText = event.clipboardData.getData('text/plain');
+    if (existingLogsLength + clipboardText.length > this.get('maxlength')) {
+      get(this, 'flashMessages').warning(this.i18n.t('configure.logsParser.tooManyLogMessages'), {
+        sticky: true
+      });
+      event.preventDefault();
+    } else {
+      document.execCommand('insertText', false, clipboardText);
+    }
     return false;
   },
   /**
@@ -84,6 +98,23 @@ const SampleLogMessage = Component.extend({
     if (!ignoredKeyCodes.includes(key)) {
       debounce(this, this.handleKeyUp, this.get('keyUpDelay'));
     }
+  },
+  willUpdate() {
+    this._super(...arguments);
+    const sampleLogText = this.element.querySelector('.sample-log-text');
+    this.set('scrollLeft', sampleLogText.scrollLeft);
+    this.set('scrollTop', sampleLogText.scrollTop);
+  },
+  didRender() {
+    this._super(...arguments);
+    const sampleLogText = this.element.querySelector('.sample-log-text');
+    sampleLogText.addEventListener('paste', this.onPaste.bind(this));
+    sampleLogText.scrollLeft = this.get('scrollLeft');
+    sampleLogText.scrollTop = this.get('scrollTop');
+  },
+  willDestroyElement() {
+    this._super(...arguments);
+    this.element.querySelector('.sample-log-text').removeEventListener('paste', this.onPaste.bind(this));
   }
 });
 

@@ -563,8 +563,9 @@ export default {
       type: 'Type',
       pattern: 'Pattern',
       values: 'Values',
-      sampleLogs: 'Below are sample log messages',
+      sampleLogs: 'Sample Log Messages (Paste maximum 60K characters)',
       sampleLogsError: 'There was an error highlighting the sample logs below.',
+      tooManyLogMessages: 'Sample log limit exceeded. Only 60K characters can be processed.',
       invalidRegEx: 'Invalid regular expression.',
       hasMissingCapturesError: 'The regular expression has fewer capture groups than the configured meta captures.',
       confirmDiscardChanges: 'Confirm Discard Changes',
@@ -592,20 +593,22 @@ export default {
           ruleName: 'Rule Name',
           pleaseEnterRuleName: 'Please Enter Rule Name',
           matchesExistingRuleName: 'Rule name can not match an existing rule within the same Log Parser.',
+          incorrectRuleName: 'Choose a rule name that contains 1-64 alphanumeric characters.',
           ok: 'Add New Rule'
         },
         deleteRule: {
           title: 'Delete Rule',
           confirm: 'Delete rule \'{{ruleName}}\' from this log parser?',
           ok: 'Delete Rule',
-          info: 'This rule is either incomplete or not currently saved, for it to be permanently deleted.'
+          info: 'If the rule has been previously saved, it will not be permanently deleted until the next save.'
         },
         deleteParser: {
           title: 'Delete Parser',
           confirm: 'Are you sure you want to delete Parser \'{{parserName}}\'?',
           ok: 'Delete Parser',
           success: 'You successfully deleted parser \'{{parserName}}\'',
-          failure: 'There was an unexpected problem deleting \'{{parserName}}\''
+          failure: 'There was an unexpected problem deleting \'{{parserName}}\'',
+          beenDeployed: 'This parser has been deployed and cannot be deleted'
         },
         deployLogParser: {
           title: 'Deploy Parser',

@@ -183,6 +183,9 @@ export default class DataHelper {
 
   parserRulesFormatData(index) {
     this._setBaseState();
+    if (index === 1) {
+      _set(this.state, 'content.logParserRules.logParsers', [{ name: 'builtin', outOfBox: true }]);
+    }
     const parserRules = [{
       'name': 'ipv4',
       'literals': [

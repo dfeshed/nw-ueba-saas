@@ -1,9 +1,10 @@
 import { setupRenderingTest } from 'ember-qunit';
 import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { click, fillIn, find, findAll, render, triggerKeyEvent } from '@ember/test-helpers';
+import { click, fillIn, find, findAll, render, triggerKeyEvent, triggerEvent } from '@ember/test-helpers';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
+import { patchFlash } from '../../../../../helpers/patch-flash';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import Immutable from 'seamless-immutable';
 import { patchSocket, throwSocket } from '../../../../../helpers/patch-socket';
@@ -138,5 +139,28 @@ module('Integration | Component | Configure - Content - Sample Log Message', fun
     setTimeout(async () => {
       await triggerKeyEvent('pre', 'keyup', 80);
     }, 200);
+  });
+
+  test('Paste works', async function(assert) {
+    setState();
+    await render(hbs`{{content/log-parser-rules/log-message keyUpDelay=100 maxlength=20}}`);
+    await fillIn('pre', '');
+    await click('pre');
+    await triggerEvent('pre', 'paste', { clipboardData: { getData: () => '123456789' } });
+    assert.equal(find('pre').textContent.trim(), '123456789', 'Paste OK');
+  });
+
+  test('Paste more than maxlength', async function(assert) {
+    setState();
+    await render(hbs`{{content/log-parser-rules/log-message keyUpDelay=100 maxlength=5}}`);
+    await fillIn('pre', '');
+    await click('pre');
+    patchFlash((flash) => {
+      const translation = this.owner.lookup('service:i18n');
+      const expectedMessage = translation.t('configure.logsParser.tooManyLogMessages');
+      assert.equal(flash.type, 'warning');
+      assert.equal(flash.message.string, expectedMessage);
+    });
+    await triggerEvent('pre', 'paste', { clipboardData: { getData: () => 'asdfghjkl' } });
   });
 });

@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { render, find, click } from '@ember/test-helpers';
+import { render, find, click, triggerEvent } from '@ember/test-helpers';
 import { setupRenderingTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
@@ -70,5 +70,15 @@ module('Integration | Component | Parser Toolbar', function(hooks) {
       assert.equal(flash.message.string, expectedMessage);
     });
     await click('.modal-footer-buttons .is-primary button');
+  });
+
+  test('Test tooltip for disabled delete button', async function(assert) {
+    new ReduxDataHelper(setState).parserRulesWait(false).parserRulesFormatData(1, true).build();
+    await render(hbs`{{content/log-parser-rules/log-parsers/toolbar}}`);
+    assert.ok(find('div.toolTipMask'), 'toolTipMask is not showing');
+    await triggerEvent('div.toolTipMask', 'mouseover');
+    assert.ok(find('div.toolTip'), 'toolTip is not showing');
+    await triggerEvent('div.toolTipMask', 'mouseout');
+    assert.notOk(find('div.toolTip'), 'toolTip is showing');
   });
 });

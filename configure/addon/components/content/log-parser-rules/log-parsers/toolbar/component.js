@@ -26,7 +26,7 @@ const LogParsersToolbar = Component.extend({
   classNames: ['log-parser-toolbar'],
   eventBus: service(),
   accessControl: service(),
-
+  showToolTip: false,
   @computed('selectedLogParser', 'accessControl.canManageLogParsers')
   cannotDeleteParser(selectedLogParser, canManageLogParsers) {
     return !canManageLogParsers || !selectedLogParser || selectedLogParser.outOfBox || selectedLogParser.deployed;
@@ -42,6 +42,9 @@ const LogParsersToolbar = Component.extend({
     closeModal(modalId) {
       this.get('eventBus').trigger(`rsa-application-modal-close-${modalId}`);
       this.set('activeModalId', null);
+    },
+    toolTip(display) {
+      (display && this.get('cannotDeleteParser')) ? this.set('showToolTip', true) : this.set('showToolTip', false);
     }
   }
 });

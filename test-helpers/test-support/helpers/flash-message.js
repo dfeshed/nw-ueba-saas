@@ -3,5 +3,5 @@ import FlashService from 'ember-cli-flash/services/flash-messages';
 
 FlashObject.reopen({ init() {} });
 FlashService.reopen({
-  defaultTypes: ['error', 'success']
+  defaultTypes: ['error', 'success', 'warning']
 });

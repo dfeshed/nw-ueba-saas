@@ -4,12 +4,10 @@ export default {
   message(/* frame */) {
     return {
       code: 0,
-      data: 'May 5 2010 15:55:49 switch : %ACE-4-400000: IDS:1000 IP Option Bad Option List by user admin@test.com ' +
-      '<span class="highlight_capture_SourceIPorIP:Port"><span class="highlight_literal_SourceIPorIP:Port"> from ' +
-      '</span>10.100.229.59</span>to 224.0.0.22 on<span class="highlight_capture_AnyPort"><span class="highlight_literal_AnyPort"> ' +
-      'port </span>12345</span> \\n\\nApr 29 2010 03:15:34 pvg1-ace02: %ACE-3-251008: Health probe failed for server ' +
-      '218.83.175.75:81, connectivity error: server open timeout (no SYN ACK)<span class="highlight_capture_AnyDomain"> ' +
-      '<span class="highlight_literal_AnyDomain"> domain </span>google.com</span> with mac 06-00-00-00-00-00.'
+      data: 'date=2017-08-12 type=traffic subtype=violation user=matt status=deny src=192.168.24.49 dst=192.56.43.56 dstdomain=com sent=0 src_port=4135 dst_port=443 smac=06-02-00-00-00-00 dmac=06-02-00-00-00-01 src_int=internal dst_int=external group=SSO_Guest_Users proto=6 rcvd=583\n\n' +
+      'May 5 2018 15:55:49 switch : %ACE-4-4000: IDS:1000 IP Option Bad Option user: admin@test.com from 10.100.229.59 port 12345.\n\n' +
+      '%IIS-4-440: 2017-08-12 13:53:34 192.170.28.192 - W4S31 url=https://test.domain.edu/exchange GET /exchweb/bin/auth/owalogon.asp 440\n\n' +
+      'Dec 20 13:20:20 instance1 info mod=mail from=matt@rsa.com to=alex@dell.com\n\n'
     };
   }
 };
