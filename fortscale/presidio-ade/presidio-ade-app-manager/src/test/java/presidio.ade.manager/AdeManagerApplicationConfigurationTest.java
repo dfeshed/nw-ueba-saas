@@ -1,5 +1,6 @@
 package presidio.ade.manager;
 
+import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -22,6 +23,8 @@ public class AdeManagerApplicationConfigurationTest extends AdeManagerApplicatio
     private MetricRepository metricRepository;
     @MockBean
     private MetricsAllIndexesRepository metricsAllIndexesRepository;
+    @MockBean
+    private PresidioElasticsearchTemplate elasticsearchTemplate;
 
     @Bean
     public static TestPropertiesPlaceholderConfigurer managerApplicationTestProperties() {

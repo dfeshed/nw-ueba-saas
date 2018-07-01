@@ -1,5 +1,6 @@
 package presidio.ade.processes.shell;
 
+import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -20,6 +21,9 @@ public class AccumulateSmartApplicationConfigurationTest extends AccumulateSmart
     private MetricRepository metricRepository;
     @MockBean
     private MetricsAllIndexesRepository metricsAllIndexesRepository;
+    @MockBean
+    private PresidioElasticsearchTemplate elasticsearchTemplate;
+
     @Bean
     public static TestPropertiesPlaceholderConfigurer accumulateSmartApplicationTestProperties() {
         Properties properties = new Properties();
