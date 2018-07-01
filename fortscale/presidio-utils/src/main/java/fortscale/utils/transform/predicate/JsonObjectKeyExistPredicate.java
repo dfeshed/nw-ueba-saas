@@ -17,17 +17,32 @@ public class JsonObjectKeyExistPredicate extends AbstractJsonObjectPredicate {
     public static final String TYPE = "key_exist";
 
     private String key;
+    private boolean testNull;
 
 
 
     @JsonCreator
-    public JsonObjectKeyExistPredicate(@JsonProperty("name")String name, @JsonProperty("key")String key){
+    public JsonObjectKeyExistPredicate(@JsonProperty("name")String name,
+                                       @JsonProperty("key")String key,
+                                       @JsonProperty("testNull") boolean testNull){
         super(name);
         this.key = notBlank(key, "key cannot be blank, empty or null.");
+        this.testNull = testNull;
+    }
+
+    public JsonObjectKeyExistPredicate(String name, String key){
+        this(name, key, false);
     }
 
     @Override
     public boolean test(JSONObject jsonObject) {
-        return jsonObject.has(key);
+        boolean ret = jsonObject.has(key);
+        if(ret && testNull){
+            if(jsonObject.get(key) == JSONObject.NULL || jsonObject.get(key) == null){
+                ret = false;
+            }
+        }
+
+        return ret;
     }
 }

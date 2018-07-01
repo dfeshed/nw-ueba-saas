@@ -3,6 +3,7 @@ package fortscale.utils.transform;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.Validate;
 import org.json.JSONObject;
@@ -21,10 +22,11 @@ public class JoinTransformer extends AbstractJsonObjectTransformer {
 
 
     private String destinationKey;
-    private List<JoinValue> values;
+    private List<Object> values;
     private String separator;
 
-
+    @JsonIgnore
+    private List<JoinValue> joinValues;
 
     @JsonCreator
     public JoinTransformer(@JsonProperty("name") String name, @JsonProperty("destinationKey") String destinationKey,
@@ -34,16 +36,17 @@ public class JoinTransformer extends AbstractJsonObjectTransformer {
         this.separator = Validate.notNull(separator, "separator cannot be null.");
         Validate.notEmpty(values, "values cannot be empty or null.");
         values.forEach(Validate::notNull);
-        this.values = new ArrayList<>();
+        this.values = values;
+        this.joinValues = new ArrayList<>();
         for(Object value: values){
-            this.values.add(new JoinValue(value));
+            this.joinValues.add(new JoinValue(value));
         }
     }
 
     @Override
     public JSONObject transform(JSONObject jsonObject) {
         StringBuilder builder = null;
-        for(JoinValue joinValue: values){
+        for(JoinValue joinValue: joinValues){
             if(builder == null){
                 builder = new StringBuilder();
             } else {
@@ -60,9 +63,11 @@ public class JoinTransformer extends AbstractJsonObjectTransformer {
         return jsonObject;
     }
 
+
     private static class JoinValue {
         private Object value;
         private JsonPointer jsonPointer;
+
 
         public JoinValue(Object value){
             this.value = value;
