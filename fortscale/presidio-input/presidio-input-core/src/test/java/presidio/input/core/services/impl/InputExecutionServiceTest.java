@@ -3,6 +3,7 @@ package presidio.input.core.services.impl;
 import fortscale.common.general.Schema;
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.domain.core.EventResult;
+import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +19,7 @@ import presidio.ade.domain.store.enriched.EnrichedDataAdeToCollectionNameTransla
 import presidio.input.core.FortscaleInputCoreApplicationTest;
 import presidio.input.core.services.data.AdeDataService;
 import presidio.input.core.spring.InputCoreConfigurationTest;
+import presidio.monitoring.elastic.allindexrepo.MetricsAllIndexesRepository;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.output.domain.records.events.AuthenticationEnrichedEvent;
 import presidio.output.domain.records.events.EnrichedEvent;
@@ -59,6 +61,10 @@ public class InputExecutionServiceTest {
 
     @MockBean
     MetricRepository metricRepository;
+    @MockBean
+    private MetricsAllIndexesRepository metricsAllIndexesRepository;
+    @MockBean
+    private PresidioElasticsearchTemplate elasticsearchTemplate;
 
     @Autowired
     PresidioInputPersistencyService inputPersistencyService;

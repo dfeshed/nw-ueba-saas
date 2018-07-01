@@ -3,8 +3,7 @@ package presidio.monitoring.elastic.allindexrepo;
 import org.apache.commons.collections.CollectionUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.Operator;
-import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import presidio.monitoring.records.MetricDocument;
@@ -22,9 +21,9 @@ public class MetricsAllIndexesRepositoryImpl implements MetricsAllIndexesReposit
 
     private final String MONITORING_ALIAS = "presidio-monitoring-*";
 
-    private PresidioElasticsearchTemplate elasticsearchTemplate;
+    private ElasticsearchOperations elasticsearchTemplate;
 
-    public MetricsAllIndexesRepositoryImpl(PresidioElasticsearchTemplate elasticsearchTemplate) {
+    public MetricsAllIndexesRepositoryImpl(ElasticsearchOperations elasticsearchTemplate) {
         this.elasticsearchTemplate=elasticsearchTemplate;
     }
 

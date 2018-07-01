@@ -4,6 +4,7 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import fortscale.common.general.Schema;
 import fortscale.domain.core.EventResult;
+import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.junit.Assert;
 import org.junit.Before;
@@ -14,6 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.monitoring.elastic.allindexrepo.MetricsAllIndexesRepository;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.output.domain.records.events.FileEnrichedEvent;
 import presidio.output.domain.services.event.EventPersistencyService;
@@ -38,6 +40,10 @@ public class EventPersistencyServiceTest {
     private MongoTemplate mongoTemplate;
     @MockBean
     private MetricRepository metricRepository;
+    @MockBean
+    private MetricsAllIndexesRepository metricsAllIndexesRepository;
+    @MockBean
+    private PresidioElasticsearchTemplate elasticsearchTemplate;
 
     @Before
     public void before() {
