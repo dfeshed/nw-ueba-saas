@@ -6,12 +6,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import presidio.monitoring.elastic.repositories.MetricsAllIndexesRepository;
-import presidio.monitoring.elastic.repositories.MetricsAllIndexesRepositoryImpl;
+import presidio.monitoring.elastic.allindexrepo.MetricsAllIndexesRepositoryConfig;
 import presidio.monitoring.elastic.repositories.MetricRepository;
+import presidio.monitoring.elastic.allindexrepo.MetricsAllIndexesRepository;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyServiceImpl;
 import presidio.monitoring.endPoint.PresidioMetricBucket;
@@ -24,6 +25,7 @@ import presidio.monitoring.services.export.NullMetricsExporter;
 
 @ComponentScan(basePackages = {"presidio.monitoring.aspect"})
 @EnableElasticsearchRepositories(basePackages = "presidio.monitoring.elastic.repositories")
+@Import(MetricsAllIndexesRepositoryConfig.class)
 public class MonitoringConfiguration {
 
     public static final int AWAIT_TERMINATION_SECONDS = 120;

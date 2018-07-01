@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.ade.processes.shell.config.AccumulateSmartConfiguration;
+import presidio.monitoring.elastic.allindexrepo.MetricsAllIndexesRepository;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 
@@ -17,7 +18,8 @@ import java.util.Properties;
 public class AccumulateSmartApplicationConfigurationTest extends AccumulateSmartConfiguration {
     @MockBean
     private MetricRepository metricRepository;
-
+    @MockBean
+    private MetricsAllIndexesRepository metricsAllIndexesRepository;
     @Bean
     public static TestPropertiesPlaceholderConfigurer accumulateSmartApplicationTestProperties() {
         Properties properties = new Properties();

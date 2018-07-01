@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.ade.manager.config.AdeManagerApplicationConfig;
+import presidio.monitoring.elastic.allindexrepo.MetricsAllIndexesRepository;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 
@@ -19,6 +20,8 @@ public class AdeManagerApplicationConfigurationTest extends AdeManagerApplicatio
 
     @MockBean
     private MetricRepository metricRepository;
+    @MockBean
+    private MetricsAllIndexesRepository metricsAllIndexesRepository;
 
     @Bean
     public static TestPropertiesPlaceholderConfigurer managerApplicationTestProperties() {

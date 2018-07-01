@@ -1,4 +1,4 @@
-package presidio.monitoring.elastic.repositories;
+package presidio.monitoring.elastic.allindexrepo;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -22,8 +22,11 @@ public class MetricsAllIndexesRepositoryImpl implements MetricsAllIndexesReposit
 
     private final String MONITORING_ALIAS = "presidio-monitoring-*";
 
-    @Autowired
     private PresidioElasticsearchTemplate elasticsearchTemplate;
+
+    public MetricsAllIndexesRepositoryImpl(PresidioElasticsearchTemplate elasticsearchTemplate) {
+        this.elasticsearchTemplate=elasticsearchTemplate;
+    }
 
     @Override
     public List<MetricDocument> findByNameInAndLogicTimeGreaterThanEqualAndLogicTimeLessThan(Collection<String> names, long fromTime, long toTime) {

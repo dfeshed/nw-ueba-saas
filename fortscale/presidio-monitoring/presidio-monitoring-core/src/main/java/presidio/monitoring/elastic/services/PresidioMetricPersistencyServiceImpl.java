@@ -3,7 +3,7 @@ package presidio.monitoring.elastic.services;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeRange;
 import org.springframework.stereotype.Service;
-import presidio.monitoring.elastic.repositories.MetricsAllIndexesRepository;
+import presidio.monitoring.elastic.allindexrepo.MetricsAllIndexesRepository;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.records.MetricDocument;
 

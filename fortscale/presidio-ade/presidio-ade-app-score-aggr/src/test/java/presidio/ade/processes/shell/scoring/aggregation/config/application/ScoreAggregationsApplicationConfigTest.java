@@ -1,5 +1,6 @@
 package presidio.ade.processes.shell.scoring.aggregation.config.application;
 
+import fortscale.utils.elasticsearch.config.ElasticsearchTestConfig;
 import fortscale.utils.elasticsearch.config.EmbeddedElasticsearchInitialiser;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
@@ -8,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import presidio.monitoring.elastic.repositories.MetricRepository;
+import presidio.monitoring.elastic.allindexrepo.MetricsAllIndexesRepository;
 import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 
 import java.util.Properties;
@@ -16,10 +18,13 @@ import java.util.Properties;
  * Created by barak_schuster on 7/25/17.
  */
 @Configuration
-@Import({MongodbTestConfig.class, PresidioMonitoringConfiguration.class})
+@Import({MongodbTestConfig.class, ElasticsearchTestConfig.class,PresidioMonitoringConfiguration.class})
 public class ScoreAggregationsApplicationConfigTest extends ScoreAggregationsApplicationConfig {
     @MockBean
     private MetricRepository metricRepository;
+    @MockBean
+    private MetricsAllIndexesRepository metricsAllIndexesRepository;
+
 
     @Bean
     public static TestPropertiesPlaceholderConfigurer scoreAggregationsApplicationTestProperties() {

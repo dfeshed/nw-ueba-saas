@@ -6,6 +6,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import presidio.monitoring.elastic.allindexrepo.MetricsAllIndexesRepository;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 
@@ -18,7 +19,8 @@ public class SmartApplicationCorrelationConfigurationTest extends SmartApplicati
 
     @MockBean
     private MetricRepository metricRepository;
-
+    @MockBean
+    private MetricsAllIndexesRepository metricsAllIndexesRepository;
     @Bean
     public static TestPropertiesPlaceholderConfigurer smartApplicationConfigurationTestPropertiesPlaceholderConfigurer() {
         Properties properties = new Properties();
