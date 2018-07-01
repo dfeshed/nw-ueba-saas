@@ -13,6 +13,7 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.ContextConfiguration;
@@ -22,6 +23,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import presidio.monitoring.elastic.allindexrepo.MetricsAllIndexesRepository;
 import presidio.output.domain.records.PresidioRange;
 import presidio.output.domain.records.UserSeveritiesRangeDocument;
 import presidio.output.domain.records.alerts.AlertEnums;
@@ -56,6 +58,7 @@ public class AlertApiControllerModuleTest {
     private static final String UPDATE_ALERT_FEEDBACK_URI = "/alerts/updateFeedback";
 
     private MockMvc alertsApiMVC;
+
 
     @Autowired
     private AlertsApi alertsApi;

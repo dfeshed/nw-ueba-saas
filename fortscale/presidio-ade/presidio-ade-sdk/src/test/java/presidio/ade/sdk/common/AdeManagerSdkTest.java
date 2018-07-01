@@ -1,5 +1,6 @@
 package presidio.ade.sdk.common;
 
+import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.category.ModuleTestCategory;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
@@ -32,6 +33,7 @@ import presidio.ade.sdk.data_generator.MockedEnrichedRecordGeneratorConfig;
 import presidio.ade.test.utils.generators.ScoredEnrichedFileGenerator;
 import presidio.ade.test.utils.generators.ScoredEnrichedFileGeneratorConfig;
 import presidio.data.generators.common.GeneratorException;
+import presidio.monitoring.elastic.allindexrepo.MetricsAllIndexesRepository;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 
@@ -166,7 +168,10 @@ public class AdeManagerSdkTest {
     public static class springConfig {
         @MockBean
         private MetricRepository metricRepository;
-
+        @MockBean
+        private MetricsAllIndexesRepository metricsAllIndexesRepository;
+        @MockBean
+        private PresidioElasticsearchTemplate elasticsearchTemplate;
         @Bean
         public static TestPropertiesPlaceholderConfigurer AdeManagerSdkTestPropertiesConfigurer() {
             Properties properties = new Properties();

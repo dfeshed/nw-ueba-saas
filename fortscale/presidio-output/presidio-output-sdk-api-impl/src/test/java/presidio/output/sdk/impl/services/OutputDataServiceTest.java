@@ -2,6 +2,7 @@ package presidio.output.sdk.impl.services;
 
 import fortscale.common.general.Schema;
 import fortscale.domain.core.EventResult;
+import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
 import fortscale.utils.mongodb.util.ToCollectionNameTranslator;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.junit.Assert;
@@ -13,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import presidio.monitoring.elastic.allindexrepo.MetricsAllIndexesRepository;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.output.domain.records.events.FileEnrichedEvent;
 import presidio.output.sdk.api.OutputDataServiceSDK;
@@ -40,6 +42,10 @@ public class OutputDataServiceTest {
     private ToCollectionNameTranslator<Schema> toCollectionNameTranslator;
     @MockBean
     private MetricRepository metricRepository;
+    @MockBean
+    private MetricsAllIndexesRepository metricsAllIndexesRepository;
+    @MockBean
+    private PresidioElasticsearchTemplate elasticsearchTemplate;
 
     @Before
     public void before() {

@@ -1,5 +1,6 @@
 package presidio.input.core.spring;
 
+import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -7,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
+import presidio.monitoring.elastic.allindexrepo.MetricsAllIndexesRepository;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.spring.PresidioMonitoringConfiguration;
 
@@ -22,6 +24,10 @@ public class InputConfigTest {
 
     @MockBean
     private MetricRepository metricRepository;
+    @MockBean
+    private MetricsAllIndexesRepository metricsAllIndexesRepository;
+    @MockBean
+    private PresidioElasticsearchTemplate elasticsearchTemplate;
 
     @Bean
     public static TestPropertiesPlaceholderConfigurer inputCoreTestConfigurer() {

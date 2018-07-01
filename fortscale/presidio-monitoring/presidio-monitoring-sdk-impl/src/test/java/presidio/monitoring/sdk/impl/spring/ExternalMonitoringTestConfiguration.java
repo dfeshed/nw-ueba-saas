@@ -9,7 +9,8 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import presidio.monitoring.elastic.repositories.MetricsAllIndexesRepository;
+import presidio.monitoring.elastic.allindexrepo.MetricsAllIndexesRepository;
+import presidio.monitoring.elastic.allindexrepo.MetricsAllIndexesRepositoryConfig;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyServiceImpl;
@@ -28,7 +29,7 @@ import presidio.monitoring.services.export.MetricsExporterElasticImpl;
 @Configuration
 @EnableScheduling
 @EnableElasticsearchRepositories(basePackages = "presidio.monitoring.elastic.repositories")
-@Import({ElasticsearchTestConfig.class, TestConfig.class})
+@Import({ElasticsearchTestConfig.class, TestConfig.class,MetricsAllIndexesRepositoryConfig.class})
 public class ExternalMonitoringTestConfiguration {
 
     public static final int AWAIT_TERMINATION_SECONDS = 120;

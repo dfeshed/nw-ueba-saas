@@ -1,4 +1,4 @@
-package presidio.monitoring.elastic.repositories;
+package presidio.monitoring.elastic.allindexrepo;
 
 
 import org.springframework.stereotype.Repository;

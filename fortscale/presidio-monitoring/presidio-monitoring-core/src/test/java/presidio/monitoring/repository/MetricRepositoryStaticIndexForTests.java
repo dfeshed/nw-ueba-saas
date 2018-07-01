@@ -1,4 +1,4 @@
-package presidio.monitoring.elastic.repositories;
+package presidio.monitoring.repository;
 
 
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;

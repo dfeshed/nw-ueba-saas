@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import presidio.monitoring.elastic.repositories.MetricRepository;
-import presidio.monitoring.elastic.repositories.MetricRepositoryStaticIndexForTests;
+import presidio.monitoring.repository.MetricRepositoryStaticIndexForTests;
 import presidio.monitoring.elastic.services.MetricDocumentStaticIndexForTests;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
 import presidio.monitoring.generator.MetricGeneratorService;
@@ -125,11 +125,12 @@ public class MetricPersistencyServiceTest {
         TimeRange timeRange = new TimeRange(Instant.parse("2017-12-03T00:00:00.00Z"),Instant.parse("2017-12-04T00:00:00.00Z"));
 
         List<MetricDocument> results = presidioMetricPersistencyService.getMetricsByNamesAndTime(Arrays.asList(name1,name2),timeRange);
-        Assert.assertEquals(2,results.size());
+        Assert.assertEquals(4,results.size());
 
         boolean name1Found = results.get(0).getName().equals(name1) || results.get(1).getName().equals(name1);
         boolean name2Found = results.get(0).getName().equals(name2) || results.get(1).getName().equals(name2);
-        Assert.assertTrue(name1Found && name2Found && results.get(0).getId()!=results.get(1).getId());
+        Assert.assertTrue(results.stream().filter(x->x.getName().equals(name1)).count()>0);
+        Assert.assertTrue(results.stream().filter(x->x.getName().equals(name2)).count()>0);
     }
 
     @Test

@@ -3,6 +3,7 @@ package presidio.input.core;
 
 import fortscale.common.shell.PresidioExecutionService;
 import fortscale.common.shell.command.PresidioCommands;
+import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
 import fortscale.utils.shell.BootShim;
 import fortscale.utils.shell.BootShimConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
@@ -22,6 +23,7 @@ import presidio.input.core.services.impl.InputExecutionServiceImpl;
 import presidio.input.core.spring.InputCoreConfigurationTest;
 import presidio.monitoring.aspect.MonitoringAspects;
 import presidio.monitoring.aspect.MonitroingAspectSetup;
+import presidio.monitoring.elastic.allindexrepo.MetricsAllIndexesRepository;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.endPoint.PresidioMetricBucket;
 import presidio.monitoring.endPoint.PresidioSystemMetricsFactory;
@@ -48,6 +50,10 @@ public class FortscaleInputCoreApplicationTest {
     private MetricCollectingService metricCollectingService;
     @MockBean
     MetricRepository metricRepository;
+    @MockBean
+    private MetricsAllIndexesRepository metricsAllIndexesRepository;
+    @MockBean
+    private PresidioElasticsearchTemplate elasticsearchTemplate;
 
     @Test
     public void contextLoads() throws Exception {

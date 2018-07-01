@@ -7,7 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
-import presidio.monitoring.elastic.repositories.MetricsAllIndexesRepository;
+import presidio.monitoring.elastic.allindexrepo.MetricsAllIndexesRepository;
+import presidio.monitoring.elastic.allindexrepo.MetricsAllIndexesRepositoryConfig;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyServiceImpl;
@@ -18,8 +19,8 @@ import presidio.monitoring.services.MetricConventionApplyer;
 import presidio.monitoring.services.PresidioMetricConventionApplyer;
 
 @Configuration
-@EnableElasticsearchRepositories(basePackages = "presidio.monitoring.elastic.repositories")
-@Import({ElasticsearchTestConfig.class, TestConfig.class})
+@EnableElasticsearchRepositories(basePackages = {"presidio.monitoring.elastic.repositories","presidio.monitoring.repository"})
+@Import({ElasticsearchTestConfig.class,MetricsAllIndexesRepositoryConfig.class, TestConfig.class})
 public class MetricPersistencyServiceTestConfig {
 
     @Bean
