@@ -1,5 +1,6 @@
 package presidio.ade.modeling.config;
 
+import fortscale.utils.elasticsearch.PresidioElasticsearchTemplate;
 import fortscale.utils.shell.BootShimConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
@@ -24,7 +25,8 @@ public class ModelingServiceConfigurationTest {
 	private MetricRepository metricRepository;
 	@MockBean
 	private MetricsAllIndexesRepository metricsAllIndexesRepository;
-
+    @MockBean
+    private PresidioElasticsearchTemplate elasticsearchTemplate;
 	@Bean
 	public static TestPropertiesPlaceholderConfigurer modelingServiceConfigurationTestPropertiesPlaceholderConfigurer() {
 		Properties properties = new Properties();
