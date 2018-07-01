@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
+import presidio.monitoring.elastic.repositories.MetricsAllIndexesRepository;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyServiceImpl;
@@ -29,14 +30,17 @@ public class MetricPersistencyServiceTestConfig {
     @Autowired
     public MetricRepository metricRepository;
 
+    @Autowired
+    public MetricsAllIndexesRepository metricsAllIndexesRepository;
+
     @Bean
     public MetricConventionApplyer metricConventionApplyer() {
         return new PresidioMetricConventionApplyer(applicationName);
     }
 
     @Bean
-    public PresidioMetricPersistencyService metricExportService() {
-        return new PresidioMetricPersistencyServiceImpl(metricRepository);
+    public PresidioMetricPersistencyService presidioMetricPersistencyService() {
+        return new PresidioMetricPersistencyServiceImpl(metricRepository, metricsAllIndexesRepository);
     }
 
     @Value("${spring.application.name}")

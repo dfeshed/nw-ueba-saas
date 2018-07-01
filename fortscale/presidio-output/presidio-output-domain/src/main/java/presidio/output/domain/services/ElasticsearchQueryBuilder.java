@@ -1,7 +1,6 @@
 package presidio.output.domain.services;
 
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
-import presidio.output.domain.records.alerts.AlertQuery;
 
 /**
  * Created by efratn on 22/08/2017.

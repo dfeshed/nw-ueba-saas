@@ -9,6 +9,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import presidio.monitoring.elastic.repositories.MetricsAllIndexesRepository;
 import presidio.monitoring.elastic.repositories.MetricRepository;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyService;
 import presidio.monitoring.elastic.services.PresidioMetricPersistencyServiceImpl;
@@ -22,7 +23,6 @@ import presidio.monitoring.services.PresidioMetricConventionApplyer;
 import presidio.monitoring.services.export.MetricExportingServiceImpl;
 import presidio.monitoring.services.export.MetricsExporter;
 import presidio.monitoring.services.export.MetricsExporterElasticImpl;
-import presidio.monitoring.services.export.NullMetricsExporter;
 
 
 @Configuration
@@ -39,6 +39,9 @@ public class ExternalMonitoringTestConfiguration {
     @Autowired
     public MetricRepository metricRepository;
 
+    @Autowired
+    private MetricsAllIndexesRepository metricsAllIndexesRepository;
+
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
         return new PropertySourcesPlaceholderConfigurer();
@@ -46,7 +49,7 @@ public class ExternalMonitoringTestConfiguration {
 
     @Bean
     public PresidioMetricPersistencyService metricExportService() {
-        return new PresidioMetricPersistencyServiceImpl(metricRepository);
+        return new PresidioMetricPersistencyServiceImpl(metricRepository, metricsAllIndexesRepository);
     }
 
     public MetricsExporter metricsExporter() {
