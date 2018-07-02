@@ -2,8 +2,8 @@
     <span class="alert-name" ng-bind-html="::$ctrl.currentAlert | prettyAlertName"></span>
     <fs-severity-tag severity="{{::$ctrl.currentAlert.severity}}" score="{{::$ctrl.currentAlert.score}}"></fs-severity-tag>
     <alert-feedback
-        alert-model="::$ctrl.currentAlert"
-        update-feedback-delegate="::$ctrl.updateFeedbackDelegate"
+        alert-model="$ctrl.currentAlert"
+        update-feedback-delegate="$ctrl.updateFeedbackDelegate(alertId,feedbackObject)"
     ></alert-feedback>
     <span class="spacer"></span>
     <div class="alert-overview-pagination">

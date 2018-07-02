@@ -6,6 +6,7 @@ module Fortscale.layouts.user {
         alerts:any[];
         _currentAlertIndex:number = null;
         currentAlert:any;
+        updateFeedbackDelegate:any;
 
         /**
          * Returns the index of the current indicator in the current alert
@@ -58,6 +59,7 @@ module Fortscale.layouts.user {
         }
 
         $onInit () {
+            this._initPopulatedFunctions();
             this.$scope.$watch(() => this.alerts, (alerts) => {
                 if (alerts) {
                     this._currentAlertIndex = null;
@@ -65,6 +67,11 @@ module Fortscale.layouts.user {
                     this.currentAlert = this.alerts[this._currentAlertIndex];
                 }
             })
+        }
+
+        _initPopulatedFunctions (){
+            let userCtrl:any = this.$scope.$parent.userCtrl;
+            this.updateFeedbackDelegate = userCtrl.updateFeedback.bind(userCtrl);
         }
 
         static $inject = ['$scope', '$stateParams', '$state', 'userIndicatorsUtils'];
@@ -78,8 +85,7 @@ module Fortscale.layouts.user {
         controller: UserAlertOverviewHeaderController,
         templateUrl: 'app/layouts/user/components/user-alert-overview/components/user-alert-overview-header/user-alert-overview-header.component.html',
         bindings: {
-            alerts: '<alerts',
-            updateFeedbackDelegate: '&'
+             alerts: '<alerts'
         }
     };
     angular.module('Fortscale.layouts.user')
