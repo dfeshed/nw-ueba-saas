@@ -1021,7 +1021,7 @@ export default {
         Unknown: 'Unknown'
       },
       source: {
-        'Correlation Server': 'Correlation Server',
+        'ESA Correlation': 'ESA Correlation',
         ECAT: 'Endpoint',
         'Event Stream Analysis': 'Event Stream Analysis',
         'Event Streaming Analytics': 'Event Stream Analysis',
