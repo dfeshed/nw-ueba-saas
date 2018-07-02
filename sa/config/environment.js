@@ -69,7 +69,7 @@ module.exports = function(environment) {
       // Used by the initializer "ready-delay". After animation has been sufficiently tested, either
       // delete the initializer, remove this line, or set value to zero.
       readyDelay: 1250, // 1500,
-      debounceDelay: 1200,
+      debounceDelay: 500,
       rootElement: 'body'
     },
     'ember-simple-auth': {
