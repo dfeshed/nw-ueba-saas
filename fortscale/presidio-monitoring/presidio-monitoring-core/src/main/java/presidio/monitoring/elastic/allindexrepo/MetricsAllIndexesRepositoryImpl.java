@@ -46,9 +46,7 @@ public class MetricsAllIndexesRepositoryImpl implements MetricsAllIndexesReposit
         queryBuilder.must(
                 rangeQuery("logicTime")
                         .gte(fromTime)
-                        .lt(toTime)
-                        .includeUpper(true)
-                        .includeLower(true));
+                        .lt(toTime));
 
         if (MapUtils.isNotEmpty(tags)) {
             BoolQueryBuilder tagsQuery = new BoolQueryBuilder();
