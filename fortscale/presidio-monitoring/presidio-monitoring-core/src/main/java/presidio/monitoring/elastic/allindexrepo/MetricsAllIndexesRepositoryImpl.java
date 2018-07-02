@@ -1,6 +1,7 @@
 package presidio.monitoring.elastic.allindexrepo;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.Operator;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
@@ -10,6 +11,7 @@ import presidio.monitoring.records.MetricDocument;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
 import static org.elasticsearch.index.query.QueryBuilders.rangeQuery;
@@ -28,7 +30,7 @@ public class MetricsAllIndexesRepositoryImpl implements MetricsAllIndexesReposit
     }
 
     @Override
-    public List<MetricDocument> findByNameInAndLogicTimeGreaterThanEqualAndLogicTimeLessThan(Collection<String> names, long fromTime, long toTime) {
+    public List<MetricDocument> findByNameAndTime(Collection<String> names, long fromTime, long toTime, Map<String, String> tags) {
         BoolQueryBuilder queryBuilder = new BoolQueryBuilder();
 
         //filter by metric name:
@@ -44,9 +46,15 @@ public class MetricsAllIndexesRepositoryImpl implements MetricsAllIndexesReposit
         queryBuilder.must(
                 rangeQuery("logicTime")
                         .gte(fromTime)
-                        .to(toTime)
-                        .includeUpper(true)
-                        .includeLower(true));
+                        .lt(toTime));
+
+        if (MapUtils.isNotEmpty(tags)) {
+            BoolQueryBuilder tagsQuery = new BoolQueryBuilder();
+            for (Map.Entry<String, String> tag : tags.entrySet()) {
+                tagsQuery.should(matchQuery("tags." + tag.getKey(), tag.getValue()).operator(Operator.OR));
+            }
+            queryBuilder.must(tagsQuery);
+        }
 
         SearchQuery searchQuery = new NativeSearchQueryBuilder()
                 .withQuery(queryBuilder)

@@ -17,7 +17,6 @@ import presidio.webapp.model.Metric;
 import presidio.webapp.spring.RestServiceTestConfig;
 
 import javax.validation.ValidationException;
-import java.time.Instant;
 import java.util.*;
 
 import static org.mockito.Mockito.when;
@@ -42,7 +41,7 @@ public class RestMetricServiceTest {
         MetricDocument metricDocument2 = getMetricDocument("metric-2", 5);
 
         List<MetricDocument> metricDocuments  =Arrays.asList(metricDocument1,metricDocument2);
-        when(presidioMetricPersistencyService.getMetricsByNamesAndTime(Mockito.anyCollectionOf(String.class),Mockito.any(TimeRange.class))).thenReturn(metricDocuments);
+        when(presidioMetricPersistencyService.getMetricsByNamesAndTime(Mockito.anyCollectionOf(String.class),Mockito.any(TimeRange.class), Mockito.any(HashMap.class))).thenReturn(metricDocuments);
 
         List<Metric> metrics = restMetricsService.getMetricsByNamesAndTime(Collections.EMPTY_LIST,new TimeRange());
 
@@ -58,7 +57,7 @@ public class RestMetricServiceTest {
 
 
         List<MetricDocument> metricDocuments  = Collections.emptyList();
-        when(presidioMetricPersistencyService.getMetricsByNamesAndTime(Mockito.anyCollectionOf(String.class),Mockito.any(TimeRange.class))).thenReturn(metricDocuments);
+        when(presidioMetricPersistencyService.getMetricsByNamesAndTime(Mockito.anyCollectionOf(String.class),Mockito.any(TimeRange.class), Mockito.any(HashMap.class))).thenReturn(metricDocuments);
 
         List<Metric> metrics = restMetricsService.getMetricsByNamesAndTime(Collections.EMPTY_LIST,new TimeRange());
 
@@ -75,7 +74,7 @@ public class RestMetricServiceTest {
 
 
         List<MetricDocument> metricDocuments  =Arrays.asList(metricDocument1,metricDocument2);
-        when(presidioMetricPersistencyService.getMetricsByNamesAndTime(Mockito.anyCollectionOf(String.class),Mockito.any(TimeRange.class))).thenReturn(metricDocuments);
+        when(presidioMetricPersistencyService.getMetricsByNamesAndTime(Mockito.anyCollectionOf(String.class),Mockito.any(TimeRange.class), Mockito.any(HashMap.class))).thenReturn(metricDocuments);
 
         List<Metric> metrics = restMetricsService.getMetricsByNamesAndTime(Collections.EMPTY_LIST,new TimeRange());
 
