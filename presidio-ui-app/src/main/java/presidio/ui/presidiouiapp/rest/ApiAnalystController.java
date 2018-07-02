@@ -40,39 +40,8 @@ import java.util.List;
 public class ApiAnalystController extends BaseController{
 
 	public static final String MOCK_ANALYST_USER = "ca-admin";
-//	@Autowired
-//	private MongoUserDetailsService mongoUserDetailsService;
-//	@Autowired
-//	private AnalystService analystService;
-//
-//	@Autowired
-//	private UserService userService;
-//	@Autowired
-//	private ConfigurationService configurationService;
 
-//	@RequestMapping(value="signup", method=RequestMethod.POST)
-//	@ResponseBody
-//	@LogException
-//	public String signup(@RequestParam(required=true) String username,
-//			@RequestParam(required=true) String password,
-//			@RequestParam(required=true) String firstName,
-//			@RequestParam(required=true) String lastName,
-//			Model model){
-//		String ret = "";
-//		if(mongoUserDetailsService.userExists(username)) {
-//			ret = "User already exist.";
-//		} else {
-//			try {
-//				mongoUserDetailsService.create(username, password, username, firstName, lastName);
-//			} catch (Exception e) {
-//				need to log
-//				ret = e.getMessage();
-//			}
-//			
-//		}
-//		
-//		return ret;
-//	}
+
 	
 	@RequestMapping(value="/changePassword", method=RequestMethod.POST)
 	//@LogException
@@ -128,52 +97,7 @@ public class ApiAnalystController extends BaseController{
 	}
 	
 	
-	@RequestMapping(value="/followUser", method=RequestMethod.GET)
-//	@LogException
-	public void followUser(@RequestParam(required=true) String userId,
-			@RequestParam(defaultValue="true") Boolean follow,
-			Model model){
-		AnalystAuth analystAuth = getThisAnalystAuth();
-//		userService.updateSingleUserWatched(userId,follow);
 
-//		if(analystAuth != null) {
-//			analystService.followUser(analystAuth, userId, follow);
-//		}
-	}
 	
-//	@RequestMapping(value="/savedSearch/create", method=RequestMethod.POST)
-//	@LogException
-//	public DataBean<String> createSavedSearch(@RequestParam(required=true) String name,
-//			@RequestParam(required=true) String category,
-//			@RequestParam(required=false) String description,
-//			@RequestParam(required=true) String filter,
-//			Model model){
-//		AnalystAuth analystAuth = getThisAnalystAuth();
-//		if(analystAuth == null) {
-//			return null;
-//		}
-//		String id = analystService.createSavedSearch(analystAuth, name, category, filter, description);
-//
-//		DataBean<String> ret = new DataBean<>();
-//		ret.setData(id);
-//
-//		return ret;
-//	}
-//
-//	@RequestMapping(value="/savedSearch/find", method=RequestMethod.GET)
-//	@LogException
-//	public DataBean<List<AnalystSavedSearch>> findSavedSearch(@RequestParam(required=false) String id,
-//			Model model){
-//		AnalystAuth analystAuth = getThisAnalystAuth();
-//		if(analystAuth == null) {
-//			return null;
-//		}
-//		List<AnalystSavedSearch> analystSavedSearchs = analystService.findSavedSearch(id);
-//
-//		DataBean<List<AnalystSavedSearch>> ret = new DataBean<>();
-//		ret.setData(analystSavedSearchs);
-//		ret.setTotal(analystSavedSearchs.size());
-//
-//		return ret;
-//	}
+
 }

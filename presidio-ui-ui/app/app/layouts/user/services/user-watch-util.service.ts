@@ -14,12 +14,8 @@ module Fortscale.layouts.user {
          * @returns {IPromise<TResult>}
          */
         changeUserWatchState (user, state): ng.IPromise<any> {
-            return this.$http.get(this.CHANGE_USER_WATCH_STATE_PATH, {
-                params: {
-                    follow: state,
-                    userId: user.id
-                }
-            })
+
+            return this.$http.post(`${this.BASE_URL}/user/${state}/followUsers`,  {       userIds: [user.id] }  )
                 .then((res: ng.IHttpPromiseCallbackArg<any>) => {
                     user.followed = state;
                     return user;
