@@ -21,8 +21,8 @@ public class ConfigurationDataPullingService implements ConfigurationProcessingS
     private final String UNSUPPORTED_ERROR_MESSAGE = "Unsupported Error, %s field is not supported.";
     private final String UNSUPPORTED_ERROR_MESSAGE_BAD_VALUE = "Unsupported Error, %s field is missing or has bad value.";
     private final String UNSUPPORTED_ERROR_MESSAGE_MISSING_FIELD = "Unsupported Error, %s field is missing.";
-    private final String MISSING_DATA_ERROR_MESSAGE = "Missing data pulling configuration";
-    private final String MISSING_PROPERTY = "missingProperty";
+    public static final String MISSING_DATA_ERROR_MESSAGE = "Missing data pulling configuration";
+    public static final String MISSING_PROPERTY = "missingProperty";
     private final String SOURCE_FIELD = "source";
 
     @Override

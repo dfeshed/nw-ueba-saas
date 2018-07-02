@@ -2,6 +2,8 @@ package presidio.webapp.model.configuration;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import presidio.manager.api.records.UIIntegrationConfiguration;
 
 import java.util.Objects;
 
@@ -19,6 +21,9 @@ public class SecuredConfiguration {
 
     @JsonProperty("outputForwarding")
     private OutputConfiguration outputForwarding = null;
+
+    @JsonProperty("uiIntegration")
+    private UIIntegrationConfiguration uiIntegration = null;
 
 
     public SecuredConfiguration outputForwarding(OutputConfiguration outputForwarding) {
@@ -73,35 +78,39 @@ public class SecuredConfiguration {
         this.dataPipeline = dataPipeline;
     }
 
+    public UIIntegrationConfiguration getUiIntegration() {
+        return uiIntegration;
+    }
+
+    public void setUiIntegration(UIIntegrationConfiguration uiIntegration) {
+        this.uiIntegration = uiIntegration;
+    }
+
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        SecuredConfiguration securedConfiguration = (SecuredConfiguration) o;
-        return Objects.equals(this.outputForwarding, securedConfiguration.outputForwarding) &&
-                Objects.equals(this.system, securedConfiguration.system) &&
-                Objects.equals(this.dataPipeline, securedConfiguration.dataPipeline);
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SecuredConfiguration that = (SecuredConfiguration) o;
+        return Objects.equals(system, that.system) &&
+                Objects.equals(dataPipeline, that.dataPipeline) &&
+                Objects.equals(outputForwarding, that.outputForwarding) &&
+                Objects.equals(uiIntegration, that.uiIntegration);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(system, dataPipeline, outputForwarding);
+
+        return Objects.hash(system, dataPipeline, outputForwarding, uiIntegration);
     }
 
+
+    /**
+     * @return ToString you know...
+     */
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class SecuredConfiguration {\n");
-        sb.append("    system: ").append(toIndentedString(system)).append("\n");
-        sb.append("    outputForwarding: ").append(toIndentedString(outputForwarding)).append("\n");
-        sb.append("    dataPipeline: ").append(toIndentedString(dataPipeline)).append("\n");
-        sb.append("}");
-        return sb.toString();
+        return ToStringBuilder.reflectionToString(this);
     }
 
     /**

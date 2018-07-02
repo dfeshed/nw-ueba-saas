@@ -26,5 +26,9 @@
         "port": "2"
       }
     }
+  },
+  "uiIntegration":{
+    "brokerId": "1" ,
+    "adminServer": "10.0.0.1"
   }
 }

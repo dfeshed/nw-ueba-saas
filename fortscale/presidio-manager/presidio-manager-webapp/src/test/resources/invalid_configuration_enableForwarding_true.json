@@ -19,5 +19,9 @@
   },
   "dataPulling": {
     "source": "nw://admin:netwitness@10.25.67.33:50005"
+  },
+  "uiIntegration":{
+    "brokerId": "1" ,
+    "adminServer": "10.0.0.1"
   }
 }
