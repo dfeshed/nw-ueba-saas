@@ -3,10 +3,7 @@ package presidio.ui.presidiouiapp.rest;
 import fortscale.domain.analyst.Analyst;
 import fortscale.domain.analyst.AnalystAuth;
 import fortscale.domain.core.EmailAddress;
-import fortscale.services.UserService;
-import fortscale.services.analyst.AnalystService;
 
-import fortscale.services.security.MongoUserDetailsService;
 import fortscale.utils.logging.annotation.HideSensitiveArgumentsFromLog;
 
 import presidio.ui.presidiouiapp.BaseController;
@@ -17,7 +14,6 @@ import presidio.ui.presidiouiapp.fields.NewPassword;
 import presidio.ui.presidiouiapp.fields.Password;
 import presidio.ui.presidiouiapp.fields.Username;
 import org.apache.commons.httpclient.auth.InvalidCredentialsException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -54,7 +50,7 @@ public class ApiAnalystController extends BaseController{
 		if (result.hasErrors()) {
 			throw new Exception(result.toString());
 		}
-//		mongoUserDetailsService.changePassword(username.toString(), password.toString(), newPassword.toString());
+
 	}
 	
 	@RequestMapping(value="/update", method=RequestMethod.POST)
@@ -72,11 +68,7 @@ public class ApiAnalystController extends BaseController{
 //		mongoUserDetailsService.updateUser(analystAuth.getUsername(), username, newPassword, username, firstName, lastName);
 	}
 	
-//	@RequestMapping(value="/updateScoreDistribution", method=RequestMethod.GET)
-//	@LogException
-//	public void updateScoreDistribution(@RequestParam(required=true) String dist, Model model){
-//		configurationService.setScoreDistribution(dist);
-//	}
+
 	
 	@RequestMapping(value="/me/details", method=RequestMethod.GET)
 	@ResponseBody
