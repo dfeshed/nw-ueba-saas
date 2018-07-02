@@ -60,6 +60,7 @@
       {{#power-select
         options=(readonly logParsers)
         selected=cloneFrom
+        searchField="name"
         allowClear=true
         onchange=(action (mut cloneFrom)) as |logParser|}}
         {{logParser.name}}

@@ -563,7 +563,7 @@ export default {
       type: 'Type',
       pattern: 'Pattern',
       values: 'Values',
-      sampleLogs: 'Sample Log Messages (Paste maximum 60K characters)',
+      sampleLogs: 'Sample Log Messages (Test up to 60K characters of log messages)',
       sampleLogsError: 'There was an error highlighting the sample logs below.',
       tooManyLogMessages: 'Sample log limit exceeded. Only 60K characters can be processed.',
       invalidRegEx: 'Invalid regular expression.',

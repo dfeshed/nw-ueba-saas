@@ -78,7 +78,8 @@ const SampleLogMessage = Component.extend({
     const clipboardText = event.clipboardData.getData('text/plain');
     if (existingLogsLength + clipboardText.length > this.get('maxlength')) {
       get(this, 'flashMessages').warning(this.i18n.t('configure.logsParser.tooManyLogMessages'), {
-        sticky: true
+        sticky: false,
+        timeout: 5000
       });
       event.preventDefault();
     } else {

@@ -1,23 +1,26 @@
 <tr style="height: 30px;">
   <td>
-    <h2> {{t 'configure.logsParser.tokens'}} </h2>
-  </td>
-  <td>
-    <h2> {{t 'configure.logsParser.values'}} </h2>
-  </td>
-  <td>
-    <h2>{{t 'configure.logsParser.mapping'}} </h2>
+    <table class="center-rules">
+      <tr>
+        <td class='col-1'>
+          <h2> {{t 'configure.logsParser.tokens'}} </h2>
+        </td>
+        <td class='col-2'>
+          <h2> {{t 'configure.logsParser.values'}} </h2>
+        </td>
+        <td class='col-3'>
+          <h2>{{t 'configure.logsParser.mapping'}} </h2>
+        </td>
+      </tr>
+      <tr>
+        {{content/log-parser-rules/token-matching}}
+        <td class='values'>
+          {{content/log-parser-rules/value-matching}}
+        </td>
+        <td class="meta">
+          {{content/log-parser-rules/meta-captures}}
+        </td>
+      </tr>
+    </table>
   </td>
 </tr>
-<tr>
-
-  {{content/log-parser-rules/token-matching}}
-
-  <td class='values'>
-    {{content/log-parser-rules/value-matching}}
-  </td>
-  <td class="meta">
-    {{content/log-parser-rules/meta-captures}}
-  </td>
-</tr>
-

@@ -93,26 +93,39 @@ div.modal-content.add-new-parser-rule {
   }
   .matchingMapping {
     width: 100%;
+    min-width: 640px;
     td {
       vertical-align: top;
-      padding-left: rsa-whitespace();
-      padding-right: rsa-whitespace();
       white-space: nowrap;
       color: text-color(neutral);
       @include rsa-font(default, small);
+      padding-left: rsa-whitespace();
+      padding-right: rsa-whitespace();
     }
-    td.token {
-      width: 25%;
-      height: 230px;
-      padding-bottom: 40px;
-    }
-    td.values {
-      overflow: auto;
-      width: 40%;
-    }
-    td.meta {
-      overflow: auto;
-      width: 35%;
+    .center-rules {
+      table-layout: fixed;
+      width: 100%;
+      td {
+        padding-left: 0px;
+        padding-right: 0px;
+      }
+      .col-1 {
+        width: 30%;
+      }
+      td.col-2 {
+        width: 45%;
+      }
+      .col-3 {
+        width: 25%;
+      }
+      td.token {
+        height: 230px;
+        padding-bottom: 40px;
+        padding-right: rsa-whitespace(more);
+      }
+      .values {
+        padding-right: rsa-whitespace(more);
+      }
     }
   }
   p.firstLogName, p.firstRuleName {
@@ -204,7 +217,7 @@ div.modal-content.add-new-parser-rule {
       div {
         min-height: 30px;
         width: calc(100vw - 660px);
-        min-width: 600px;
+        min-width: 640px;
         word-break: break-word;
         word-break: break-all;  
         white-space:normal;
@@ -234,10 +247,7 @@ div.modal-content.add-new-parser-rule {
       float: right;
     }
     .rsa-form-input {
-      width: 80%;
-    }
-    li {
-      padding-right: rsa-whitespace(less);
+      width: 84%;
     }
   }
   .token .form-error, .meta .form-error {
