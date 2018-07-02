@@ -32,7 +32,7 @@ const Form = Component.extend({
 
   actions: {
     toggleEnable() {
-      this.send('updatePolicyProperty', 'enabledScheduledScan', !this.get('enabled'));
+      this.send('updatePolicyProperty', 'enabledScheduledScan', !this.get('isEnabled'));
     },
 
     onDateChange(selectedDates, dateString) {

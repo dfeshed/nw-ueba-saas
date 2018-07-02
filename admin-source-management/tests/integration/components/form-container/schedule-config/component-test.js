@@ -63,8 +63,10 @@ module('Integration | Component | form-container/schedule-config', function(hook
     await render(hbs`{{form-container/schedule-config}}`);
     assert.equal(initialState.policy.scheduleConfig.enabledScheduledScan, false, 'scan is disabled');
     await click('.x-toggle-container .x-toggle-btn');
-    const state = redux.getState();
-    assert.equal(state.policy.policy.scheduleConfig.enabledScheduledScan,
-      true, 'scan is enabled by toggling the button');
+    let state = redux.getState();
+    assert.equal(state.policy.policy.scheduleConfig.enabledScheduledScan, true, 'scan is enabled by toggling the button');
+    await click('.x-toggle-container .x-toggle-btn');
+    state = redux.getState();
+    assert.equal(state.policy.policy.scheduleConfig.enabledScheduledScan, false, 'scan is disabled by toggling the button');
   });
 });
