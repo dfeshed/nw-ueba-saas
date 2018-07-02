@@ -12,10 +12,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import presidio.forwarder.manager.service.ConfigurationForwarderService;
 import presidio.manager.airlfow.service.ConfigurationAirflowService;
 import presidio.manager.api.records.PresidioManagerConfiguration;
+import presidio.manager.api.records.UIIntegrationConfiguration;
 import presidio.manager.api.records.ValidationResults;
 import presidio.security.manager.service.ConfigurationSecurityService;
 import presidio.webapp.service.ConfigurationDataPullingService;
 import presidio.webapp.service.ConfigurationManagerService;
+import presidio.webapp.service.UIIntegrationConfigurationService;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,7 +56,8 @@ public class ConfigurationProcessingMngServiceTest {
         forwarderFalseAndWithoutSyslog = setJson("valid_configuration_enableForwarder_false.json");
         dataPullingMissingConfiguration = setJson("invalid_configuration_missing_dataPulling.json");
         dataPullingMissingSourceConfiguration = setJson("invalid_configuration_missing_dataPulling_source.json");
-        configurationManagerService = new ConfigurationManagerService(new ConfigurationAirflowService(null, "workflows", null, null), new ConfigurationSecurityService(null, null, "/tmp/httpdtest.conf", "/tmp/krb5test.conf", false), new ConfigurationForwarderService(), new ConfigurationDataPullingService());
+        configurationManagerService = new ConfigurationManagerService(new ConfigurationAirflowService(null, "workflows", null, null), new ConfigurationSecurityService(null, null, "/tmp/httpdtest.conf", "/tmp/krb5test.conf", false), new ConfigurationForwarderService(), new ConfigurationDataPullingService(), new UIIntegrationConfigurationService()
+        );
     }
 
     @Test
@@ -80,7 +83,7 @@ public class ConfigurationProcessingMngServiceTest {
     public void invalidPresidioConfigurationOnlySystem() {
         PresidioManagerConfiguration presidioManagerConfiguration = configurationManagerService.presidioManagerConfigurationFactory(presidioConfigurationOnlySystem);
         ValidationResults validationResults = configurationManagerService.validateConfiguration(presidioManagerConfiguration);
-        Assert.assertEquals(3, validationResults.getErrorsList().size());
+        Assert.assertEquals(4, validationResults.getErrorsList().size());
     }
 
     @Test
