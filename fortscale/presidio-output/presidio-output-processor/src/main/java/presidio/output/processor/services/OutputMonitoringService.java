@@ -31,7 +31,7 @@ public class OutputMonitoringService {
     private final String INPUT_TOTAL_EVENTS_PROCESSED_METRIC_NAME = "total_events_processed";
     private final String NUMBER_OF_USERS_METRIC_NAME = "number_of_users_created";
     private final String LAST_SMART_TIME_METRIC_NAME = "last_smart_time";
-    private final String OUTPUT_METRIC_NAME_PREFIX = "output-core.";
+    private final String OUTPUT_METRIC_NAME_PREFIX = "output-processor.";
     private final String INPUT_METRIC_NAME_PREFIX = "input-core.";
     public static final String EVENTS_PROCESSED_COUNT_DAILY_METRIC_NAME = "events_processed_count_daily";
     public static final String OUTPUT_INDICATORS_COUNT_DAILY_METRIC_NAME = "alert_indicators_count_daily";
