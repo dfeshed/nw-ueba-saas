@@ -1,3 +1,6 @@
 .rsa-application-content {
   height: calc(100vh - #{$applicationHeaderHeight});
 }
+#wormhole-context-menu {
+  z-index: 1001;
+}
