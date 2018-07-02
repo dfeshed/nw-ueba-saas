@@ -26,7 +26,7 @@ public class RestMetricServiceImpl implements RestMetricsService {
 
     @Override
     public List<Metric> getMetricsByNamesAndTime(Collection<String> names, TimeRange timeRange) {
-        List<MetricDocument> metricDocuments= presidioMetricPersistencyService.getMetricsByNamesAndTime(names,timeRange);
+        List<MetricDocument> metricDocuments= presidioMetricPersistencyService.getMetricsByNamesAndTime(names,timeRange, null);
         if (metricDocuments == null){
             return Collections.emptyList();
         }

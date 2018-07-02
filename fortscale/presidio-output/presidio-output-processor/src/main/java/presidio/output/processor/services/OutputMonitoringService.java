@@ -11,7 +11,6 @@ import presidio.monitoring.sdk.api.services.enums.MetricEnums;
 import presidio.monitoring.services.MetricCollectingService;
 import presidio.output.domain.records.alerts.Alert;
 import presidio.output.domain.records.alerts.AlertEnums;
-import presidio.output.processor.services.user.UserScoreServiceImpl;
 
 import java.time.Instant;
 import java.util.Collections;
@@ -117,7 +116,7 @@ public class OutputMonitoringService {
 
         TimeRange timeRange = new TimeRange(startDate, endDate);
 
-        reportActiveUsersDaily(timeRange);
+//        reportActiveUsersDaily(timeRange);
         reportSmartsCountDaily(timeRange, "smart.scoring", MetricEnums.MetricValues.AMOUNT_OF_SCORED, SMARTS_COUNT_LAST_DAY_METRIC_NAME);
         reportDailyMetric(timeRange, OUTPUT_METRIC_NAME_PREFIX, NUMBER_OF_ALERTS_METRIC_NAME, ALERTS_COUNT_LAST_DAY_METRIC_NAME);
 
@@ -134,7 +133,7 @@ public class OutputMonitoringService {
 
     private void reportIndicatorsCountDaily(TimeRange timeRange) {
         //get number of scored indicators hourly
-        List<MetricDocument> scoreIndicatorCountHourlyMetrics = metricPersistencyService.getMetricsByNamesAndTime(Collections.singleton("score-aggregation.AggregationRecordsCreator"), timeRange);
+        List<MetricDocument> scoreIndicatorCountHourlyMetrics = metricPersistencyService.getMetricsByNamesAndTime(Collections.singleton("score-aggregation.AggregationRecordsCreator"), timeRange, null);
 
         List<Number> scoreIndicatorCountHourlyValues = scoreIndicatorCountHourlyMetrics.stream().
                 map(metricDocument -> metricDocument.getValue().get(MetricEnums.MetricValues.AMOUNT_OF_NON_ZERO_FEATURE_VALUES))
@@ -145,7 +144,7 @@ public class OutputMonitoringService {
         }
 
         //get number of feature indicators hourly
-        List<MetricDocument> featureIndicatorCountHourlyMetrics = metricPersistencyService.getMetricsByNamesAndTime(Collections.singleton("feature-aggregation.scoring"), timeRange);
+        List<MetricDocument> featureIndicatorCountHourlyMetrics = metricPersistencyService.getMetricsByNamesAndTime(Collections.singleton("feature-aggregation.scoring"), timeRange, null);
         List<Number> featureIndicatorCountHourlyValues = featureIndicatorCountHourlyMetrics.stream().
                 map(metricDocument -> metricDocument.getValue().get(MetricEnums.MetricValues.AMOUNT_OF_NON_ZERO_SCORE))
                 .collect(Collectors.toList());
@@ -157,7 +156,7 @@ public class OutputMonitoringService {
     }
 
     private void reportDailyMetric(TimeRange timeRange, String metricNamePrefix, String hourlyMetricName, String dailyMetricName) {
-        List<MetricDocument> hourlyMetrics = metricPersistencyService.getMetricsByNamesAndTime(Collections.singleton(metricNamePrefix + hourlyMetricName), timeRange);
+        List<MetricDocument> hourlyMetrics = metricPersistencyService.getMetricsByNamesAndTime(Collections.singleton(metricNamePrefix + hourlyMetricName), timeRange, null);
         List<Number> hourlyValues = hourlyMetrics.stream().
                 map(metricDocument -> metricDocument.getValue().get(MetricEnums.MetricValues.DEFAULT_METRIC_VALUE))
                 .collect(Collectors.toList());
@@ -167,7 +166,9 @@ public class OutputMonitoringService {
     }
 
     private void reportSmartsCountDaily(TimeRange timeRange, String metricName, MetricEnums.MetricValues amountOfScored, String smartsCountLastDayMetricName) {
-        List<MetricDocument> scoringHourlyMetrics = metricPersistencyService.getMetricsByNamesAndTime(Collections.singleton(metricName), timeRange);
+        Map<String, String> tags = new HashMap<>();
+        tags.put(MetricEnums.MetricTagKeysEnum.SCORER.name(), "smart.userId.hourly.scorer");
+        List<MetricDocument> scoringHourlyMetrics = metricPersistencyService.getMetricsByNamesAndTime(Collections.singleton(metricName), timeRange, tags);
         List<Number> smartsCountHourlyValues = scoringHourlyMetrics.stream().
                 map(metricDocument -> metricDocument.getValue().get(amountOfScored))
                 .collect(Collectors.toList());

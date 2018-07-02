@@ -124,7 +124,7 @@ public class MetricPersistencyServiceTest {
 
         TimeRange timeRange = new TimeRange(Instant.parse("2017-12-03T00:00:00.00Z"),Instant.parse("2017-12-04T00:00:00.00Z"));
 
-        List<MetricDocument> results = presidioMetricPersistencyService.getMetricsByNamesAndTime(Arrays.asList(name1,name2),timeRange);
+        List<MetricDocument> results = presidioMetricPersistencyService.getMetricsByNamesAndTime(Arrays.asList(name1,name2),timeRange, null);
         Assert.assertEquals(4,results.size());
 
         boolean name1Found = results.get(0).getName().equals(name1) || results.get(1).getName().equals(name1);
@@ -155,7 +155,7 @@ public class MetricPersistencyServiceTest {
 
         TimeRange timeRange = new TimeRange(Instant.parse("2017-12-03T00:00:00.00Z"),Instant.parse("2017-12-04T00:00:00.00Z"));
 
-        List<MetricDocument> results = presidioMetricPersistencyService.getMetricsByNamesAndTime(Arrays.asList(name1,name2),timeRange);
+        List<MetricDocument> results = presidioMetricPersistencyService.getMetricsByNamesAndTime(Arrays.asList(name1,name2),timeRange, null);
         Assert.assertEquals(3,results.size());
 
         boolean name1Found = results.get(0).getName().equals(name1) || results.get(1).getName().equals(name1);
