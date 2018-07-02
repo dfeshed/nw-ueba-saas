@@ -1737,7 +1737,7 @@ export default {
       contextHighlights: 'Context Highlights',
       viewOverview: 'View Context',
       actions: 'Actions',
-      navigate: 'Pivot to Navigate',
+      navigate: 'Pivot to Investigate > Navigate',
       addToList: 'Add/Remove from List',
       virusTotal: 'Virus Total Lookup',
       googleLookup: 'Google Lookup',
