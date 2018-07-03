@@ -6,6 +6,7 @@ import fortscale.utils.transform.predicate.JsonObjectKeyExistPredicate;
 import fortscale.utils.transform.predicate.JsonObjectRegexPredicate;
 import fortscale.utils.transform.regexcaptureandformat.CaptureAndFormatConfiguration;
 import fortscale.utils.transform.regexcaptureandformat.CapturingGroupConfiguration;
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Assert;
@@ -48,6 +49,12 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
     private static final String INTERACTIVE_LOGON_TYPE = "INTERACTIVE";
     private static final String REMOTE_INTERACTIVE_LOGON_TYPE = "REMOTE_INTERACTIVE";
     private static final String CREDENTIAL_VALIDATION_OPERATION_TYPE = "CREDENTIAL_VALIDATION";
+
+
+
+    private String wrapWithDollar(String fieldName){
+        return String.format("${%s}", fieldName);
+    }
 
     private IJsonObjectTransformer buildAuthenticationWindowsAuditTransformer(){
         List<IJsonObjectTransformer> transformerChainList = new ArrayList<>();
@@ -142,6 +149,26 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
                 Arrays.asList(userNormalizationFirstPattern, userNormalizationSecondPattern, userNormalizationThirdPattern,
                         userNormalizationFourthPattern, userNormalizationFifthPattern, userNormalizationSixthPattern));
         transformerChainList.add(userIdNormalization);
+
+        //Supporting ANONYMOUS LOGON and SYSTEM users
+        JsonObjectRegexPredicate srcMachineNotBlank = new JsonObjectRegexPredicate("src-machine-not-blank", SRC_MACHINE_ID_FIELD_NAME, "^(?!\\s*$).+");
+        FilterTransformer filterEventForAnonymousOrSystemUsersWithNoMachine =
+                new FilterTransformer("anonymous-or-system-filter", srcMachineNotBlank, true);
+        JoinTransformer createUserIdByJoiningMachineIdAndUserIdTransformer =
+                new JoinTransformer("create-user-id-by-joining-machine-id-and-user-id", USER_ID_FIELD_NAME,
+                        Arrays.asList(wrapWithDollar(USER_ID_FIELD_NAME),wrapWithDollar(SRC_MACHINE_ID_FIELD_NAME)),
+                        "@");
+        JsonObjectChainTransformer anonymousOrSystemUsersChainTransformer =
+                new JsonObjectChainTransformer("anonymous-or-system-chain",
+                        Arrays.asList(filterEventForAnonymousOrSystemUsersWithNoMachine, createUserIdByJoiningMachineIdAndUserIdTransformer));
+        JsonObjectRegexPredicate anonymousOrSystemUsersPredicate =
+                new JsonObjectRegexPredicate("user-equals-anonymous-or-system-predicate", USER_ID_FIELD_NAME, "anonymous logon|system");
+        IfElseTransformer anonymousOrSystemUsersIfElseTransformer =
+                new IfElseTransformer("user-equals-anonymous-or-system-if-else",
+                        anonymousOrSystemUsersPredicate,
+                        anonymousOrSystemUsersChainTransformer);
+        transformerChainList.add(anonymousOrSystemUsersIfElseTransformer);
+
 
         //Normalize the result values
         CaptureAndFormatConfiguration resultFailedPattern = new CaptureAndFormatConfiguration(".*(?i:fail).*", RESULT_FAILURE, null);
@@ -305,6 +332,50 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
 
         assertOnExpectedValues(retJsonObject, eventId, eventTime, "rsmith", userDst, userDst,
                 aliasSource.toLowerCase(), aliasSource, RESULT_SUCCESS, INTERACTIVE_LOGON_TYPE, referenceId);
+    }
+
+    @Test
+    public void event_code_4624_with_anonymous_logon_user_test() throws JsonProcessingException {
+        IJsonObjectTransformer transformer = buildAuthenticationWindowsAuditTransformer();
+
+        String referenceId = "4624";
+        String userDst = "ANONYMOUS LOGON";
+        String aliasHost = "DESKTOP-LLHJ389";
+        String aliasSource = "DESKTOP-ALIAS-SOURCE";
+        String eventId = "10.25.67.33:50005:91168521";
+        Long eventTime = 1528124556000L;
+        String eventType = "Success Audit";
+        JSONObject jsonObject = buildAuthWindowAuditJsonObject(referenceId, userDst, "winevent_snare",
+                null, eventTime*1000, "2",
+                String.format("[\"%s\",\"another alias\"]", aliasHost),
+                eventType, "  ", eventId, null, aliasSource);
+
+        JSONObject retJsonObject = transform(transformer, jsonObject);
+
+        assertOnExpectedValues(retJsonObject, eventId, eventTime, StringUtils.join(Arrays.asList(userDst.toLowerCase(), aliasSource.toLowerCase()), "@"), userDst, userDst,
+                aliasSource.toLowerCase(), aliasSource, RESULT_SUCCESS, INTERACTIVE_LOGON_TYPE, referenceId);
+    }
+
+    @Test
+    public void event_code_4624_with_anonymous_logon_user_and_blank_machine_test() throws JsonProcessingException {
+        IJsonObjectTransformer transformer = buildAuthenticationWindowsAuditTransformer();
+
+        String referenceId = "4624";
+        String userDst = "ANONYMOUS LOGON";
+        String aliasHost = "DESKTOP-LLHJ389";
+        String aliasSource = "a:b";
+        String eventId = "10.25.67.33:50005:91168521";
+        Long eventTime = 1528124556000L;
+        String eventType = "Success Audit";
+        JSONObject jsonObject = buildAuthWindowAuditJsonObject(referenceId, userDst, "winevent_snare",
+                null, eventTime*1000, "2",
+                String.format("[\"%s\",\"another alias\"]", aliasHost),
+                eventType, "  ", eventId, null, aliasSource);
+
+        JSONObject retJsonObject = transform(transformer, jsonObject, true);
+
+        Assert.assertNull("the event should have been filtered. events with anonymous logon user and with empty machine should be filtered out.",
+                retJsonObject);
     }
 
     @Test

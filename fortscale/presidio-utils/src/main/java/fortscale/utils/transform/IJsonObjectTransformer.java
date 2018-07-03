@@ -15,7 +15,8 @@ import org.json.JSONObject;
         @JsonSubTypes.Type(value = IfElseTransformer.class, name = IfElseTransformer.TYPE),
         @JsonSubTypes.Type(value = EpochTimeToNanoRepresentationTransformer.class, name = EpochTimeToNanoRepresentationTransformer.TYPE),
         @JsonSubTypes.Type(value = CopyValueTransformer.class, name = CopyValueTransformer.TYPE),
-        @JsonSubTypes.Type(value = SetterTransformer.class, name = SetterTransformer.TYPE)
+        @JsonSubTypes.Type(value = SetterTransformer.class, name = SetterTransformer.TYPE),
+        @JsonSubTypes.Type(value = JoinTransformer.class, name = JoinTransformer.TYPE)
 })
 public interface IJsonObjectTransformer {
 
