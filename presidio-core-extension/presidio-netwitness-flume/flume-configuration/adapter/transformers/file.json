@@ -296,7 +296,8 @@
       "predicate": {
         "type": "key_exist",
         "name": "event-type-exist",
-        "key": "event_type"
+        "key": "event_type",
+        "testNull": false
       },
       "ifTransformer": {
         "type": "regex_captor_and_formatter",
