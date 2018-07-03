@@ -8,7 +8,6 @@ User=presidio
 Group=presidio
 Type=simple
 ExecStart=/usr/bin/bash -c 'source ${AIRFLOW_VENV}/bin/activate ; airflow scheduler'
-KillMode=process
 Restart=always
 RestartSec=5s
 [Install]
