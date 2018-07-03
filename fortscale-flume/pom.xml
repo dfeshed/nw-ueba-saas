@@ -18,7 +18,6 @@
 
     <properties>
         <mongo.java.driver.version>3.4.2</mongo.java.driver.version>
-        <spring-data-mongodb-version>1.10.6.RELEASE</spring-data-mongodb-version>
         <aws.s3.sdk.version>1.11.269</aws.s3.sdk.version>
         <open.csv.version>4.1</open.csv.version>
     </properties>
@@ -72,7 +71,7 @@
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-mongodb</artifactId>
-            <version>${spring-data-mongodb-version}</version>
+            <version>${spring-data-mongodb.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.mongodb</groupId>
