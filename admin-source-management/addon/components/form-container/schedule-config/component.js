@@ -35,9 +35,9 @@ const Form = Component.extend({
       this.send('updatePolicyProperty', 'enabledScheduledScan', !this.get('isEnabled'));
     },
 
-    onDateChange(selectedDates, dateString) {
-      if (!isEmpty(dateString)) {
-        this.send('updatePolicyProperty', 'scanStartDate', new Date(dateString).getTime());
+    onDateChange(selectedDates) {
+      if (!isEmpty(selectedDates[0])) {
+        this.send('updatePolicyProperty', 'scanStartDate', selectedDates[0].getTime());
       }
     },
     onTimeChange(selectedDates, dateString, flatpikr) {

@@ -72,10 +72,7 @@ export const scanOptions = createSelector(
 export const startDate = createSelector(
   scheduleOptions,
   (scheduleOptions) => {
-    if (scheduleOptions.scanStartDate) {
-      return moment(scheduleOptions.scanStartDate).toISOString();
-    }
-    return 'today';
+    return scheduleOptions.scanStartDate ? scheduleOptions.scanStartDate : moment().startOf('date').toDate().getTime();
   }
 );
 

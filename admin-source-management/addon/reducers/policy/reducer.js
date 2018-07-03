@@ -1,6 +1,7 @@
 import Immutable from 'seamless-immutable';
 import reduxActions from 'redux-actions';
 import { handle } from 'redux-pack';
+import moment from 'moment';
 import * as ACTION_TYPES from 'admin-source-management/actions/types';
 
 const initialState = {
@@ -50,10 +51,13 @@ export default reduxActions.handleActions({
   ),
 
   [ACTION_TYPES.NEW_POLICY]: (state) => {
-    return state.merge({
+    const newState = state.merge({
       policy: { ...initialState.policy },
       policySaveStatus: null
     });
+    const fields = 'policy.scheduleConfig.scheduleOptions.scanStartDate'.split('.');
+    const scanStartDateToday = moment().startOf('date').toDate().getTime();
+    return newState.setIn(fields, scanStartDateToday);
   },
 
   [ACTION_TYPES.EDIT_POLICY]: (state, action) => {

@@ -1,4 +1,6 @@
 import Immutable from 'seamless-immutable';
+import _ from 'lodash';
+import moment from 'moment';
 import { module, test } from 'qunit';
 import { LIFECYCLE } from 'redux-pack';
 import makePackAction from '../../../helpers/make-pack-action';
@@ -69,6 +71,10 @@ test('should return the initial state', function(assert) {
 });
 
 test('on NEW_POLICY, state should be reset to the initial state', function(assert) {
+  // the reducer copies initialState with a policy.scheduleConfig.scheduleOptions.scanStartDate of today
+  const initialStateCopy = _.cloneDeep(initialState);
+  initialStateCopy.policy.scheduleConfig.scheduleOptions.scanStartDate = moment().startOf('date').toDate().getTime();
+
   const modifiedState = {
     ...initialState,
     policy: { id: 'mod_001', name: 'name 001', description: 'desc 001' },
@@ -76,7 +82,7 @@ test('on NEW_POLICY, state should be reset to the initial state', function(asser
   };
   const action = { type: ACTION_TYPES.NEW_POLICY };
   const endState = reducers(Immutable.from(modifiedState), action);
-  assert.deepEqual(endState, initialState);
+  assert.deepEqual(endState, initialStateCopy);
 });
 
 test('on EDIT_POLICY, name & description are properly set', function(assert) {
@@ -127,7 +133,6 @@ test('on UPDATE_POLICY policy is updated', function(assert) {
     policySaveStatus: null // wait, complete, error
   };
   const nameAction = { type: ACTION_TYPES.UPDATE_POLICY_PROPERTY, payload };
-
   const nameEndState = reducers(Immutable.from(initialState), nameAction);
   assert.deepEqual(nameEndState, endState, 'recurrenceIntervalUnit is updated along with recurrenceInterval');
 });

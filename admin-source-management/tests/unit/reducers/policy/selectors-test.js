@@ -90,20 +90,22 @@ test('isPolicyListLoading selector', function(assert) {
 test('startDate', function(assert) {
   assert.expect(2);
   const result = startDate(fullState);
-  assert.deepEqual(result, 'today', 'should return today if start date is empty');
+  const today = moment().startOf('date').toDate().getTime();
+  assert.deepEqual(result, today, 'should return today if start date is empty');
+
   const state2 = {
     policy: {
       policy: {
         scheduleConfig: {
           scheduleOptions: {
-            scanStartDate: '01/10/2018'
+            scanStartDate: moment('01/10/2018', 'MM-DD-YYYY').toDate().getTime()
           }
         }
       }
     }
   };
   const result2 = startDate(state2);
-  assert.deepEqual(result2, moment('01/10/2018').toISOString(), 'should return iso format date');
+  assert.deepEqual(result2, moment('01/10/2018', 'MM-DD-YYYY').toDate().getTime(), 'should return unix millisecond format date');
 });
 
 test('startTime', function(assert) {
