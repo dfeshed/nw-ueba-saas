@@ -4,8 +4,8 @@ package fortscale.utils.transform;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.commons.lang3.Validate;
 import fortscale.utils.transform.predicate.IJsonObjectPredicate;
+import org.apache.commons.lang3.Validate;
 import org.json.JSONObject;
 
 @JsonAutoDetect(
