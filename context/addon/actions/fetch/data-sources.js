@@ -1,7 +1,8 @@
-import { streamRequest } from 'streaming-data/services/data-access/requests';
+import { lookup } from 'ember-dependency-lookup';
 
 function fetchData(query, modelName, requireRequestId, dispatchPage, dispatchError) {
-  streamRequest({
+  const request = lookup('service:request');
+  request.streamRequest({
     method: 'stream',
     modelName,
     query,

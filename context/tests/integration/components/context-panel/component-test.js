@@ -5,6 +5,7 @@ import hbs from 'htmlbars-inline-precompile';
 import Service from '@ember/service';
 import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 import rsvp from 'rsvp';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 const contextStub = Service.extend({
   metas: () => {
@@ -16,6 +17,7 @@ module('Integration | Component | context-panel', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function() {
+    initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
     this.owner.register('service:context', contextStub);
   });
