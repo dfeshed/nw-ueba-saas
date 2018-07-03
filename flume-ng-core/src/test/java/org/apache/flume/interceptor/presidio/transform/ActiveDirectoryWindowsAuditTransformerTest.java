@@ -3,7 +3,6 @@ package org.apache.flume.interceptor.presidio.transform;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import fortscale.utils.transform.*;
 import fortscale.utils.transform.predicate.JsonObjectChainPredicate;
-import static fortscale.utils.transform.predicate.JsonObjectChainPredicate.LogicalOperation.AND;
 import fortscale.utils.transform.predicate.JsonObjectKeyExistPredicate;
 import fortscale.utils.transform.predicate.JsonObjectRegexPredicate;
 import fortscale.utils.transform.regexcaptureandformat.CaptureAndFormatConfiguration;
@@ -17,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import static fortscale.utils.transform.predicate.JsonObjectChainPredicate.LogicalOperation.AND;
 
 public class ActiveDirectoryWindowsAuditTransformerTest extends TransformerTest{
 
@@ -37,7 +38,9 @@ public class ActiveDirectoryWindowsAuditTransformerTest extends TransformerTest{
     private static final String DATE_TIME_FIELD_NAME = "dateTime";
     private static final String USERNAME_FIELD_NAME = "userName";
     private static final String USER_DISPLAY_NAME_FIELD_NAME = "userDisplayName";
-    private static final String SECONDARY_OBJECTID_FIELD_PATH = "additionalInfo.secondaryObjectId";
+    private static final String ADDITIONAL_INFO_FIELD = "additionalInfo";
+    private static final String SECONDARY_OBJECT_ID_FIELD = "secondaryObjectId";
+    private static final String SECONDARY_OBJECTID_FIELD_PATH = ADDITIONAL_INFO_FIELD+"."+SECONDARY_OBJECT_ID_FIELD;
     private static final String USER_SOURCE_FIELD_NAME= "user_src";
     private static final String GROUP_FIELD_NAME = "group";
     private static final String OBJ_NAME_FIELD_NAME = "obj_name";
@@ -394,7 +397,7 @@ public class ActiveDirectoryWindowsAuditTransformerTest extends TransformerTest{
                 retJsonObject.opt(OBJECT_ID_FIELD_NAME));
         Assert.assertEquals("wrong secondary objectId",
                 expectedSecondaryObjectId == null ? JSONObject.NULL : expectedSecondaryObjectId,
-                (new JsonPointer(SECONDARY_OBJECTID_FIELD_PATH)).get(retJsonObject));
+                retJsonObject.getJSONObject(ADDITIONAL_INFO_FIELD).get(SECONDARY_OBJECT_ID_FIELD));
     }
 
     private void assertEqualJsonArrays(JSONObject retJsonObject, String key, JSONArray expectedJSONArray){
