@@ -1,6 +1,7 @@
 package fortscale.utils.transform;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import fortscale.utils.json.JsonPointer;
 import fortscale.utils.transform.predicate.JsonObjectChainPredicate;
 import fortscale.utils.transform.predicate.JsonObjectKeyExistPredicate;
 import fortscale.utils.transform.predicate.JsonObjectRegexPredicate;

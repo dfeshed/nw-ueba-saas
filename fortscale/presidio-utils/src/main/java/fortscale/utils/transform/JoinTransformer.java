@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fortscale.utils.json.IJsonValueExtractor;
+import fortscale.utils.json.JsonValueExtractorFactory;
+import fortscale.utils.json.JsonValueExtractorJoiner;
 import org.apache.commons.lang3.Validate;
 import org.json.JSONObject;
 
@@ -26,7 +29,7 @@ public class JoinTransformer extends AbstractJsonObjectTransformer {
     private String separator;
 
     @JsonIgnore
-    private List<JoinValue> joinValues;
+    private List<IJsonValueExtractor> jsonValueExtractors;
 
     @JsonCreator
     public JoinTransformer(@JsonProperty("name") String name, @JsonProperty("destinationKey") String destinationKey,
@@ -37,53 +40,20 @@ public class JoinTransformer extends AbstractJsonObjectTransformer {
         Validate.notEmpty(values, "values cannot be empty or null.");
         values.forEach(Validate::notNull);
         this.values = values;
-        this.joinValues = new ArrayList<>();
+        this.jsonValueExtractors = new ArrayList<>();
+        JsonValueExtractorFactory factory = new JsonValueExtractorFactory();
         for(Object value: values){
-            this.joinValues.add(new JoinValue(value));
+            IJsonValueExtractor extractor = factory.create(value);
+            this.jsonValueExtractors.add(extractor);
         }
     }
 
     @Override
     public JSONObject transform(JSONObject jsonObject) {
-        StringBuilder builder = null;
-        for(JoinValue joinValue: joinValues){
-            if(builder == null){
-                builder = new StringBuilder();
-            } else {
-                builder.append(separator);
-            }
-            Object val = joinValue.getValue(jsonObject);
-            if(val == null){
-                return jsonObject;
-            }
-            builder.append(joinValue.getValue(jsonObject).toString());
+        String joinedValues = JsonValueExtractorJoiner.joining(separator, jsonObject, jsonValueExtractors);
+        if(joinedValues != null) {
+            jsonObject.put(destinationKey, joinedValues);
         }
-
-        jsonObject.put(destinationKey, builder.toString());
         return jsonObject;
-    }
-
-
-    private static class JoinValue {
-        private Object value;
-        private JsonPointer jsonPointer;
-
-
-        public JoinValue(Object value){
-            this.value = value;
-
-            if(value != null && value instanceof String && ((String)value).startsWith("${") && ((String)value).endsWith("}")) {
-                String pointerPath = ((String)value).substring(2, ((String)value).length() - 1);
-                jsonPointer = new JsonPointer(pointerPath);
-            }
-        }
-
-        public Object getValue(JSONObject jsonObject) {
-            if(jsonPointer == null){
-                return value;
-            } else {
-                return jsonPointer.get(jsonObject);
-            }
-        }
     }
 }

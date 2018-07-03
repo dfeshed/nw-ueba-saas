@@ -1,4 +1,4 @@
-package fortscale.utils.transform;
+package fortscale.utils.json;
 
 import org.apache.commons.lang3.Validate;
 import org.json.JSONArray;
@@ -12,6 +12,7 @@ public class JsonPointer {
     private List<IJsonPointerElement> pointerElements = new ArrayList<>();
 
     public JsonPointer(String path){
+        Validate.notBlank(path);
         for(String key: path.split("\\.")){
             if(key.endsWith("]")){
                 Validate.isTrue(key.contains("["));

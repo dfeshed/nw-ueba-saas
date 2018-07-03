@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fortscale.utils.json.IJsonValueExtractor;
+import fortscale.utils.json.JsonValueExtractorFactory;
 import org.apache.commons.lang3.Validate;
 import org.json.JSONObject;
 
@@ -68,12 +70,13 @@ public class SwitchCaseTransformer extends AbstractJsonObjectTransformer{
             setterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
     public static class SwitchCase{
         private String caseKey;
+        // this is member of the class only for serialization and deserialization.
         private Object caseValue;
         private Boolean isRegex;
         @JsonIgnore
         private Pattern pattern;
         @JsonIgnore
-        private JsonPointer jsonPointer;
+        private IJsonValueExtractor jsonValueExtractor;
 
 
 
@@ -86,10 +89,9 @@ public class SwitchCaseTransformer extends AbstractJsonObjectTransformer{
                           @JsonProperty("isRegex") Boolean isRegex){
             this.caseKey = Validate.notBlank(caseKey, "caseKey cannot be blank, empty or null.");
             this.caseValue = caseValue;
-            if(caseValue != null && caseValue instanceof String && ((String)caseValue).startsWith("${") && ((String)caseValue).endsWith("}")) {
-                String pointerPath = ((String)caseValue).substring(2, ((String)caseValue).length() - 1);
-                jsonPointer = new JsonPointer(pointerPath);
-            }
+
+            jsonValueExtractor = (new JsonValueExtractorFactory()).create(caseValue);
+
             this.isRegex = isRegex == null ? false : isRegex;
             if(this.isRegex){
                 pattern = Pattern.compile(caseKey);
@@ -97,11 +99,7 @@ public class SwitchCaseTransformer extends AbstractJsonObjectTransformer{
         }
 
         public Object getCaseValue(JSONObject jsonObject) {
-            if(jsonPointer != null){
-                return jsonPointer.get(jsonObject);
-            } else {
-                return caseValue;
-            }
+            return jsonValueExtractor.getValue(jsonObject);
         }
 
         public boolean isRegex() {
@@ -115,5 +113,12 @@ public class SwitchCaseTransformer extends AbstractJsonObjectTransformer{
                 return caseKey.equals(val);
             }
         }
+
+        @Override
+        public String toString(){
+            return "caseKey: " + caseKey + " caseValue: " + caseValue + " isRegex: " + isRegex;
+        }
     }
+
+
 }
