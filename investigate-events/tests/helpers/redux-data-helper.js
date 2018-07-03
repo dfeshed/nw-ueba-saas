@@ -22,28 +22,36 @@ export const DEFAULT_LANGUAGES = [
 ];
 
 const DEFAULT_PILLS_DATA = [{
+  id: '1',
   meta: 'a',
   operator: '=',
   value: 'x',
-  id: '1'
+  isInvalid: false,
+  isSelected: false
 }, {
+  id: '2',
   meta: 'b',
   operator: '=',
   value: 'y',
-  id: '2'
+  isInvalid: false,
+  isSelected: false
 }];
 
 const INVALID_PILL_DATA = [{
+  id: 1,
   meta: 'ip.proto',
   operator: '=',
   value: 'boom',
-  id: 1
+  isInvalid: false,
+  isSelected: false
 }, {
+  id: 2,
   meta: 'starttime',
   operator: '=',
   value: 'boom',
   isInvalid: true,
-  validationError: 'something not right'
+  validationError: 'something not right',
+  isSelected: false
 }];
 
 const _set = (obj, key, val) => {
@@ -291,6 +299,20 @@ export default class DataHelper {
           ...pD,
           isInvalid: true,
           validationError: 'something is up'
+        };
+      }
+
+      return pD;
+    });
+    return this;
+  }
+
+  markSelected(pillIds = []) {
+    this.state.nextGen.pillsData = this.state.nextGen.pillsData.map((pD) => {
+      if (pillIds.includes(pD.id)) {
+        pD = {
+          ...pD,
+          isSelected: true
         };
       }
 

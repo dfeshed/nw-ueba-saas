@@ -17,6 +17,8 @@ const ESCAPE_KEY = KEY_MAP.escape.code;
 let setState;
 const newActionSpy = sinon.spy(nextGenCreators, 'addNextGenPill');
 const deleteActionSpy = sinon.spy(nextGenCreators, 'deleteNextGenPill');
+const selectActionSpy = sinon.spy(nextGenCreators, 'selectNextGenPills');
+const deselectActionSpy = sinon.spy(nextGenCreators, 'deselectNextGenPills');
 
 const allPillsAreClosed = (assert) => {
   assert.equal(findAll(PILL_SELECTORS.pillOpen).length, 0, 'Class for pill open should not be present.');
@@ -39,11 +41,15 @@ module('Integration | Component | query-pills', function(hooks) {
   hooks.afterEach(function() {
     newActionSpy.reset();
     deleteActionSpy.reset();
+    selectActionSpy.reset();
+    deselectActionSpy.reset();
   });
 
   hooks.after(function() {
     newActionSpy.restore();
     deleteActionSpy.restore();
+    selectActionSpy.restore();
+    deselectActionSpy.restore();
   });
 
   test('Upon initialization, one active pill is created', async function(assert) {
@@ -152,7 +158,7 @@ module('Integration | Component | query-pills', function(hooks) {
       assert.equal(deleteActionSpy.callCount, 1, 'The delete pill action creator was called once');
       assert.deepEqual(
         deleteActionSpy.args[0][0],
-        { pillData: { id: '1', meta: 'a', operator: '=', value: 'x' } },
+        { pillData: { id: '1', meta: 'a', operator: '=', value: 'x', isSelected: false } },
         'The action creator was called with the right arguments'
       );
     });
@@ -260,5 +266,45 @@ module('Integration | Component | query-pills', function(hooks) {
     // component class updates when store is updated
     assert.equal(findAll(PILL_SELECTORS.invalidPill).length, 1, 'Class for invalid pill should be present');
     assert.equal(this.$(PILL_SELECTORS.invalidPill).prop('title'), 'You must enter a valid date.', 'Expected title with the error message');
+  });
+
+  test('Clicking an inactive pill sends it to state to be selected', async function(assert) {
+    new ReduxDataHelper(setState).language().pillsDataPopulated().build();
+    this.set('filters', []);
+
+    await render(hbs`{{query-container/query-pills isActive=true filters=filters}}`);
+    await click(PILL_SELECTORS.meta);
+
+    return settled().then(async () => {
+      // action to store in state called
+      assert.equal(selectActionSpy.callCount, 1, 'The select pill action creator was called once');
+      assert.deepEqual(
+        selectActionSpy.args[0][0],
+        { pillData: [ { id: '1', meta: 'a', operator: '=', value: 'x', isSelected: false } ] },
+        'The action creator was called with the right arguments'
+      );
+    });
+  });
+
+  test('Clicking an inactive pill that is selected sends it to state to be deselected', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .pillsDataPopulated()
+      .markSelected(['1'])
+      .build();
+    this.set('filters', []);
+
+    await render(hbs`{{query-container/query-pills isActive=true filters=filters}}`);
+    await click(PILL_SELECTORS.meta);
+
+    return settled().then(async () => {
+      // action to store in state called
+      assert.equal(deselectActionSpy.callCount, 1, 'The deselect pill action creator was called once');
+      assert.deepEqual(
+        deselectActionSpy.args[0][0],
+        { pillData: [ { id: '1', meta: 'a', operator: '=', value: 'x', isSelected: true } ] },
+        'The action creator was called with the right arguments'
+      );
+    });
   });
 });

@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import * as MESSAGE_TYPES from '../message-types';
 
 export default Component.extend({
-  tagName: '',
+  tagName: 'span',
 
   /**
    * An action to call when sending messages and data to the parent component.
@@ -11,13 +11,10 @@ export default Component.extend({
    */
   sendMessage: () => {},
 
-  actions: {
-    /**
-     * Sends message to parent to delete the pill this is attached to
-     * @private
-     */
-    deletePill() {
-      this.get('sendMessage')(MESSAGE_TYPES.PILL_DELETED);
-    }
+  // Send PILL DELETED action up, but trap the click
+  // event
+  click() {
+    this.get('sendMessage')(MESSAGE_TYPES.PILL_DELETED);
+    return false;
   }
 });

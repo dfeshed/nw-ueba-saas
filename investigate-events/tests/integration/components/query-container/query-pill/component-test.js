@@ -22,11 +22,15 @@ const X_KEY = 88;
 const trim = (text) => text.replace(/\s+/g, '').trim();
 let setState;
 
-const setPillData = (component) => {
-  new ReduxDataHelper(setState).language().build();
-  const pills = new ReduxDataHelper().language().pillsDataPopulated().build();
-  const enrichedPills = enrichedPillsData(pills);
-  component.set('pillData', enrichedPills[0]);
+const _getEnrichedPill = () => {
+  const pillState = new ReduxDataHelper(setState).pillsDataPopulated().language().build();
+  const [ enrichedPill ] = enrichedPillsData(pillState);
+  return enrichedPill;
+};
+
+const _setPillData = (component) => {
+  const enrichedPill = _getEnrichedPill();
+  component.set('pillData', enrichedPill);
 };
 
 module('Integration | Component | query-pill', function(hooks) {
@@ -38,6 +42,22 @@ module('Integration | Component | query-pill', function(hooks) {
     setState = (state) => {
       patchReducer(this, state);
     };
+  });
+
+  test('contains proper class when invalid', async function(assert) {
+    let enrichedPill = _getEnrichedPill();
+    enrichedPill = enrichedPill.set('isInvalid', true);
+    this.set('pillData', enrichedPill);
+    await render(hbs`{{query-container/query-pill isActive=true pillData=pillData}}`);
+    assert.equal(findAll(PILL_SELECTORS.invalidPill).length, 1);
+  });
+
+  test('contains proper class when selected', async function(assert) {
+    let enrichedPill = _getEnrichedPill();
+    enrichedPill = enrichedPill.set('isSelected', true);
+    this.set('pillData', enrichedPill);
+    await render(hbs`{{query-container/query-pill isActive=true pillData=pillData}}`);
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 1);
   });
 
   test('it activates pill-meta if active upon initialization', async function(assert) {
@@ -156,7 +176,7 @@ module('Integration | Component | query-pill', function(hooks) {
   });
 
   test('presents a delete icon when not active and pill created', async function(assert) {
-    setPillData(this);
+    _setPillData(this);
     await render(hbs`{{query-container/query-pill isActive=false pillData=pillData}}`);
     assert.equal(findAll(PILL_SELECTORS.deletePill).length, 1, 'Delete pill component is present');
   });
@@ -169,7 +189,7 @@ module('Integration | Component | query-pill', function(hooks) {
   });
 
   test('does not present a delete icon when when active', async function(assert) {
-    setPillData(this);
+    _setPillData(this);
     await render(hbs`{{query-container/query-pill isActive=true pillData=pillData}}`);
     assert.equal(findAll(PILL_SELECTORS.deletePill).length, 0, 'Delete pill component is not present');
   });
@@ -183,13 +203,16 @@ module('Integration | Component | query-pill', function(hooks) {
       }
 
       assert.equal(messageType, MESSAGE_TYPES.PILL_DELETED, 'Message sent for pill delete is not correct');
-      assert.deepEqual(data, { id: '1', meta: 'a', operator: '=', value: 'x' }, 'Message sent for pill create contains correct pill data');
+      assert.deepEqual(data,
+        { id: '1', meta: 'a', operator: '=', value: 'x', isSelected: false },
+        'Message sent for pill create contains correct pill data'
+      );
       assert.equal(position, 0, 'Message sent for pill create contains correct pill position');
 
       done();
     });
 
-    setPillData(this);
+    _setPillData(this);
     await render(hbs`
       {{query-container/query-pill
         isActive=false
@@ -228,7 +251,7 @@ module('Integration | Component | query-pill', function(hooks) {
   });
 
   test('prepopulates with data when passed existing pill', async function(assert) {
-    setPillData(this);
+    _setPillData(this);
 
     await render(hbs`
       {{query-container/query-pill
@@ -388,5 +411,104 @@ module('Integration | Component | query-pill', function(hooks) {
     await blur(PILL_SELECTORS.valueInput);
     assert.equal(trim(find(PILL_SELECTORS.queryPill).textContent), 'a=');
     assert.equal(find(PILL_SELECTORS.valueInput).value, 'x');
+  });
+
+  test('If pill is active and single clicked, it will not message up', async function(assert) {
+    assert.expect(0);
+    this.set('handleMessage', (messageType) => {
+      if (isIgnoredInitialEvent(messageType)) {
+        return;
+      }
+
+      assert.ok(false, `Should not get here with ${messageType}`);
+    });
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    // click the pill
+    await click(PILL_SELECTORS.queryPill);
+  });
+
+  test('If pill is not active and single clicked, it will message up', async function(assert) {
+    assert.expect(2);
+    this.set('handleMessage', (messageType, data) => {
+      if (isIgnoredInitialEvent(messageType)) {
+        return;
+      }
+
+      assert.ok(messageType === MESSAGE_TYPES.PILL_SELECTED, 'Should be selected');
+      assert.ok(data.isSelected === false, 'isSelected should be false because it is not selected');
+    });
+    this.set('pillData', _getEnrichedPill());
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=false
+        position=0
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    // Choose the first meta optio
+    await click(PILL_SELECTORS.queryPill);
+  });
+
+  test('If selected pill is clicked, it will message up desleected', async function(assert) {
+    assert.expect(2);
+    this.set('handleMessage', (messageType, data) => {
+      if (isIgnoredInitialEvent(messageType)) {
+        return;
+      }
+
+      assert.ok(messageType === MESSAGE_TYPES.PILL_DESELECTED, 'Should be deselected');
+      assert.ok(data.isSelected === true, 'isSelected should be true because it is selected');
+    });
+    let pillData = _getEnrichedPill();
+    pillData = pillData.set('isSelected', true);
+    this.set('pillData', pillData);
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=false
+        position=0
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    // Choose the first meta optio
+    await click(PILL_SELECTORS.queryPill);
+  });
+
+  test('If pill is not selected or active, and meta is clicked, pill will message up with selected', async function(assert) {
+    assert.expect(2);
+    this.set('handleMessage', (messageType, data) => {
+      if (isIgnoredInitialEvent(messageType)) {
+        return;
+      }
+
+      assert.ok(messageType === MESSAGE_TYPES.PILL_SELECTED, 'Should be selected');
+      assert.ok(data.isSelected === false, 'isSelected should be false because it is not selected');
+    });
+    this.set('pillData', _getEnrichedPill());
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=false
+        position=0
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    // Choose the first meta optio
+    await click(PILL_SELECTORS.meta);
   });
 });

@@ -23,12 +23,9 @@ export const enrichedPillsData = createSelector(
   (metaKeys, pillsData) => {
     return pillsData.map((pillData) => {
       return {
-        value: pillData.value,
+        ...pillData,
         operator: possibleOperators.find((possOp) => possOp.displayName === pillData.operator),
-        meta: metaKeys.find((mK) => mK.metaName === pillData.meta),
-        id: pillData.id,
-        isInvalid: pillData.isInvalid,
-        validationError: pillData.validationError
+        meta: metaKeys.find((mK) => mK.metaName === pillData.meta)
       };
     });
   }
@@ -40,6 +37,7 @@ export const canQueryNextGen = createSelector(
   [_hasInvalidPill, hasRequiredValuesToQuery],
   (hasInvalidPill, hasRequiredValuesToQuery) => hasRequiredValuesToQuery && !hasInvalidPill
 );
+
 export const selectedPills = createSelector(
   [_pillsData],
   (pillsData) => {

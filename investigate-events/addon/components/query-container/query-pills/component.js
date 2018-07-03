@@ -8,7 +8,9 @@ import { enrichedPillsData } from 'investigate-events/reducers/investigate/next-
 import {
   addNextGenPill,
   deleteNextGenPill,
-  editNextGenPill
+  editNextGenPill,
+  selectNextGenPills,
+  deselectNextGenPills
 } from 'investigate-events/actions/next-gen-creators';
 
 const { log } = console;// eslint-disable-line no-unused-vars
@@ -20,7 +22,9 @@ const stateToComputed = (state) => ({
 const dispatchToActions = {
   addNextGenPill,
   deleteNextGenPill,
-  editNextGenPill
+  editNextGenPill,
+  selectNextGenPills,
+  deselectNextGenPills
 };
 
 const QueryPills = Component.extend({
@@ -65,7 +69,10 @@ const QueryPills = Component.extend({
       [MESSAGE_TYPES.PILL_EDITED]: (data) => this._pillEdited(data),
       [MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW]: () => this._pillEnteredForAppend(),
       [MESSAGE_TYPES.PILL_ENTERED_FOR_EDIT]: () => this._pillEnteredForEdit(),
-      [MESSAGE_TYPES.PILL_ENTERED_FOR_INSERT_NEW]: () => this._pillEnteredForInsert()
+      [MESSAGE_TYPES.PILL_ENTERED_FOR_INSERT_NEW]: () => this._pillEnteredForInsert(),
+      [MESSAGE_TYPES.PILL_SELECTED]: (data) => this._pillsSelected([data]),
+      [MESSAGE_TYPES.PILL_DESELECTED]: (data) => this._pillsDeselected([data])
+
     });
   },
 
@@ -206,8 +213,15 @@ const QueryPills = Component.extend({
 
     this._pillsExited();
     this.send('editNextGenPill', { pillData, position });
-  }
+  },
 
+  _pillsSelected(pillData) {
+    this.send('selectNextGenPills', { pillData });
+  },
+
+  _pillsDeselected(pillData) {
+    this.send('deselectNextGenPills', { pillData });
+  }
 });
 
 export default connect(stateToComputed, dispatchToActions)(QueryPills);

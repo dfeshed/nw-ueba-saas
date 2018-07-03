@@ -198,6 +198,10 @@
     &.is-invalid {
       border-color: border-color(accentOne);
     }
+    &.is-selected {
+      background-color: background-color(secondary);
+      border-color: border-color(secondary);
+    }
     > div.is-expanded {
       flex-grow: 1;
       input {

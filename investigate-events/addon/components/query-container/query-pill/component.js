@@ -1,4 +1,4 @@
-import { next } from '@ember/runloop';
+import { next, throttle } from '@ember/runloop';
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 import computed, { and, empty } from 'ember-computed-decorators';
@@ -6,7 +6,7 @@ import _ from 'lodash';
 
 import * as MESSAGE_TYPES from '../message-types';
 
-const { log } = console;// eslint-disable-line no-unused-vars
+const { log } = console; // eslint-disable-line no-unused-vars
 
 const RESET_PROPS = {
   isActive: true,
@@ -19,7 +19,7 @@ const RESET_PROPS = {
 };
 
 export default Component.extend({
-  classNameBindings: ['isActive', ':query-pill', 'isInvalid'],
+  classNameBindings: [':query-pill', 'isActive', 'isInvalid', 'isSelected'],
   attributeBindings: ['title'],
   i18n: service(),
 
@@ -72,6 +72,14 @@ export default Component.extend({
    */
   @computed('pillData')
   isInvalid: (pillData) => !!pillData && pillData.isInvalid,
+
+  /**
+   * Whether or not this pill is selected
+   * @type {boolean}
+   * @public
+   */
+  @computed('pillData')
+  isSelected: (pillData) => !!pillData && pillData.isSelected,
 
   /**
    * Is this component being used to create a new pill
@@ -203,6 +211,14 @@ export default Component.extend({
     this._pillEntered();
   },
 
+  click() {
+    // If not active, and clicking pill, then process
+    // this as a selection event
+    if (!this.get('isActive')) {
+      this._throttledPillSelected();
+    }
+  },
+
   focusOut({ originalEvent: focusEvent }) {
     this.set('shouldFocusOut', true);
 
@@ -292,6 +308,22 @@ export default Component.extend({
     }
   },
 
+  // Pill selected events multiply because of event bubbling.
+  // Rather than inspect events for targets, just throttle the
+  // pill selection so multiple messages are not sent
+  _throttledPillSelected() {
+    throttle(this, this._pillSelected, 100);
+  },
+
+  _pillSelected() {
+    const pillData = this._createPillData();
+    if (pillData.isSelected) {
+      this._broadcast(MESSAGE_TYPES.PILL_DESELECTED, pillData);
+    } else {
+      this._broadcast(MESSAGE_TYPES.PILL_SELECTED, pillData);
+    }
+  },
+
   /**
    * Checks to see if anything should be done when the pill loses focus.
    * If we have no meta/operator/value then treat this like a pill cancel.
@@ -349,16 +381,23 @@ export default Component.extend({
   },
 
   /**
-   * Handles meta being clicked.
+   * Handles meta being clicked. If the pill is active,
+   * then treat as activation of meta. If the pill isn't
+   * active, then treat is a pill selection.
+   *
    * @private
    */
   _metaClicked() {
-    this.setProperties({
-      isMetaActive: true,
-      isOperatorActive: false,
-      isValueActive: false,
-      isActive: true
-    });
+    if (this.get('isActive')) {
+      this.setProperties({
+        isMetaActive: true,
+        isOperatorActive: false,
+        isValueActive: false,
+        isActive: true
+      });
+    } else {
+      this._throttledPillSelected();
+    }
   },
 
   /**
@@ -420,17 +459,24 @@ export default Component.extend({
   },
 
   /**
-   * Handles operator being clicked.
+   * Handles operator being clicked. If the pill is active,
+   * then treat as activation of operator. If the pill isn't
+   * active, then treat is a pill selection.
+   *
    * @private
    */
   _operatorClicked() {
-    // save operator and move focus to value if the operator accepts values
-    this.setProperties({
-      isMetaActive: false,
-      isOperatorActive: true,
-      isValueActive: false,
-      isActive: true
-    });
+    if (this.get('isActive')) {
+      // save operator and move focus to value if the operator accepts values
+      this.setProperties({
+        isMetaActive: false,
+        isOperatorActive: true,
+        isValueActive: false,
+        isActive: true
+      });
+    } else {
+      this._throttledPillSelected();
+    }
   },
 
   /**
@@ -570,6 +616,7 @@ export default Component.extend({
     if (this.get('isExistingPill')) {
       pillData.id = this.get('pillData.id');
       pillData.value = this.get('pillData.value');
+      pillData.isSelected = this.get('pillData.isSelected');
     } else {
       pillData.value = value;
     }
