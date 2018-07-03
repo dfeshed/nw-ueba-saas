@@ -232,11 +232,50 @@
     },
     {
       "type": "if_else",
+      "name": "user-equals-anonymous-or-system-if-else",
+      "predicate": {
+        "type": "regex",
+        "name": "user-equals-anonymous-or-system-predicate",
+        "sourceKey": "userId",
+        "regex": "anonymous logon|system"
+      },
+      "ifTransformer": {
+        "type": "chain",
+        "name": "anonymous-or-system-chain",
+        "transformerList": [
+          {
+            "type": "filter",
+            "name": "anonymous-or-system-filter",
+            "predicate": {
+              "type": "regex",
+              "name": "src-machine-not-blank",
+              "sourceKey": "srcMachineId",
+              "regex": "^(?!\\s*$).+"
+            },
+            "filterIn": true
+          },
+          {
+            "type": "join",
+            "name": "create-user-id-by-joining-machine-id-and-user-id",
+            "destinationKey": "userId",
+            "values": [
+              "${userId}",
+              "${srcMachineId}"
+            ],
+            "separator": "@"
+          }
+        ]
+      },
+      "elseTransformer": null
+    },
+    {
+      "type": "if_else",
       "name": "result-normalization",
       "predicate": {
         "type": "key_exist",
         "name": "event-type-exist",
-        "key": "event_type"
+        "key": "event_type",
+        "testNull": false
       },
       "ifTransformer": {
         "type": "regex_captor_and_formatter",
