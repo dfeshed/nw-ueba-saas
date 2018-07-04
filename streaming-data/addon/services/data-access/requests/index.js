@@ -375,8 +375,13 @@ const ping = (modelName) => {
   const url = _findPingUrl(modelName);
   return new RSVP.Promise((resolve, reject) => {
     $.ajax({ url, cache: false })
-      .done(() => {
-        resolve();
+      .done((response) => {
+        // If socket url mapping not configured in nignx, then nginx is serving the html file. So need to reject
+        if (Object.prototype.toString.call(response) === '[object String]' && response.indexOf('!DOCTYPE html') > 0) {
+          reject();
+        } else {
+          resolve();
+        }
       })
       .fail(() => {
         reject();
