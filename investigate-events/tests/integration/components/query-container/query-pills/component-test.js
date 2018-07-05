@@ -307,4 +307,26 @@ module('Integration | Component | query-pills', function(hooks) {
       );
     });
   });
+
+  test('Deleting a pill removes selected class from other pills', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .pillsDataPopulated()
+      .markSelected(['2'])
+      .build();
+
+    this.set('filters', []);
+
+    await render(hbs`{{query-container/query-pills filters=filters isActive=true}}`);
+
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 1, 'One selected pill.');
+    assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Should be two pills plus template.');
+
+    await focus(PILL_SELECTORS.triggerMetaPowerSelect);
+    await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', ESCAPE_KEY);
+    await click(PILL_SELECTORS.deletePill);
+
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'Pill no longer selected');
+    assert.equal(findAll(PILL_SELECTORS.queryPill).length, 2, 'Should be one pill plus template.');
+  });
 });

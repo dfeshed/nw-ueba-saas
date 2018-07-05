@@ -2,6 +2,13 @@ import * as ACTION_TYPES from './types';
 import { clientSideValidation, getMetaFormat } from './utils';
 import { selectedPills } from 'investigate-events/reducers/investigate/next-gen/selectors';
 
+const _deselectAllNextGenPills = () => {
+  return (dispatch, getState) => {
+    const pillData = selectedPills(getState());
+    dispatch(deselectNextGenPills({ pillData }));
+  };
+};
+
 const _validateNextGenPill = (pillData, position) => {
   return (dispatch, getState) => {
     // client side validation first
@@ -57,18 +64,23 @@ export const editNextGenPill = ({ pillData, position }) => {
 };
 
 export const deleteNextGenPill = ({ pillData }) => {
-  return (dispatch, getState) => {
-    let pillsToDelete = [pillData];
-    const selectedPilz = selectedPills(getState());
-    // If deleting and there are selected pills
-    // then we are deleting all the selected pills
-    if (selectedPilz.length > 0) {
-      pillsToDelete = selectedPilz;
-    }
+  return (dispatch) => {
+    dispatch(_deselectAllNextGenPills());
     dispatch({
       type: ACTION_TYPES.DELETE_NEXT_GEN_PILLS,
       payload: {
-        pillData: pillsToDelete
+        pillData: [pillData]
+      }
+    });
+  };
+};
+
+export const deleteSelectedNextGenPills = () => {
+  return (dispatch, getState) => {
+    dispatch({
+      type: ACTION_TYPES.DELETE_NEXT_GEN_PILLS,
+      payload: {
+        pillData: selectedPills(getState())
       }
     });
   };

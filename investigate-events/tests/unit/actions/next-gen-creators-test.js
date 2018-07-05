@@ -96,73 +96,68 @@ module('Unit | Actions | NextGen Creators', function(hooks) {
     thunk(myDispatch);
   });
 
-  test('deleteNextGenPill action creator returns proper type and payload', function(assert) {
-    const done = assert.async();
+  test('deleteNextGenPill action creator returns proper types/payloads', function(assert) {
+    const done = assert.async(2);
+    const state = new ReduxDataHelper()
+      .language()
+      .pillsDataPopulated()
+      .makeSelected(['1', '2'])
+      .build();
 
-    const getState = () => {
-      return new ReduxDataHelper().language().pillsDataPopulated().build();
+    const secondDispatch = (action) => {
+      assert.equal(action.type, ACTION_TYPES.DESELECT_NEXT_GEN_PILLS, 'action has the correct type');
+      assert.deepEqual(action.payload.pillData, state.investigate.nextGen.pillsData, 'action pillData has the right value');
+      done();
     };
 
-    const thunk = nextGenCreators.deleteNextGenPill({
+    const firstDispatch = (action) => {
+      // if is function, is _deselectAllNextGenPills thunk
+      if (typeof action === 'function') {
+        const thunk2 = action;
+        const getState = () => state;
+        thunk2(secondDispatch, getState);
+      } else {
+        assert.equal(action.type, ACTION_TYPES.DELETE_NEXT_GEN_PILLS, 'action has the correct type');
+        assert.deepEqual(action.payload.pillData, ['foo'], 'action pillData has the right value');
+        done();
+      }
+    };
+
+    const thunk1 = nextGenCreators.deleteNextGenPill({
       pillData: 'foo'
     });
 
-    thunk((action) => {
-      assert.equal(action.type, ACTION_TYPES.DELETE_NEXT_GEN_PILLS, 'action has the correct type');
-      assert.deepEqual(action.payload.pillData, ['foo'], 'action pillData has the right value');
-      done();
-    }, getState);
+    thunk1(firstDispatch);
   });
 
-  test('deleteNextGenPill action creator returns proper type and payload', function(assert) {
-    const done = assert.async();
+  test('deselectNextGenPills action creator returns proper type and payload', function(assert) {
+    const { pillsData } = new ReduxDataHelper()
+      .pillsDataPopulated()
+      .build()
+      .investigate
+      .nextGen;
 
-    const getState = () => {
-      return new ReduxDataHelper()
-        .language()
-        .pillsDataPopulated()
-        .makeSelected(['1', '2'])
-        .build();
-    };
-
-    const thunk = nextGenCreators.deleteNextGenPill({
-      pillData: 'foo'
+    const action = nextGenCreators.deselectNextGenPills({
+      pillData: pillsData
     });
 
-    thunk((action) => {
-      assert.equal(action.type, ACTION_TYPES.DELETE_NEXT_GEN_PILLS, 'action has the correct type');
-      assert.equal(action.payload.pillData.length, 2, 'action pillData has the right value');
-      done();
-    }, getState);
-  });
-});
-
-test('deselectNextGenPills action creator returns proper type and payload', function(assert) {
-  const { pillsData } = new ReduxDataHelper()
-    .pillsDataPopulated()
-    .build()
-    .investigate
-    .nextGen;
-
-  const action = nextGenCreators.deselectNextGenPills({
-    pillData: pillsData
+    assert.equal(action.type, ACTION_TYPES.DESELECT_NEXT_GEN_PILLS, 'action has the correct type');
+    assert.deepEqual(action.payload.pillData, pillsData, 'action pillData has the right value');
   });
 
-  assert.equal(action.type, ACTION_TYPES.DESELECT_NEXT_GEN_PILLS, 'action has the correct type');
-  assert.deepEqual(action.payload.pillData, pillsData, 'action pillData has the right value');
-});
+  test('selectNextGenPills action creator returns proper type and payload', function(assert) {
+    const { pillsData } = new ReduxDataHelper()
+      .pillsDataPopulated()
+      .build()
+      .investigate
+      .nextGen;
 
-test('selectNextGenPills action creator returns proper type and payload', function(assert) {
-  const { pillsData } = new ReduxDataHelper()
-    .pillsDataPopulated()
-    .build()
-    .investigate
-    .nextGen;
+    const action = nextGenCreators.selectNextGenPills({
+      pillData: pillsData
+    });
 
-  const action = nextGenCreators.selectNextGenPills({
-    pillData: pillsData
+    assert.equal(action.type, ACTION_TYPES.SELECT_NEXT_GEN_PILLS, 'action has the correct type');
+    assert.deepEqual(action.payload.pillData, pillsData, 'action pillData has the right value');
   });
 
-  assert.equal(action.type, ACTION_TYPES.SELECT_NEXT_GEN_PILLS, 'action has the correct type');
-  assert.deepEqual(action.payload.pillData, pillsData, 'action pillData has the right value');
 });
