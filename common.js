@@ -161,8 +161,10 @@ const mergeSocketConfigs = function(configGenerators, environment) {
             if (!previous[modelName][method]) {
               previous[modelName][method] = methods[method];
             } else {
-              /* eslint-disable no-console */
-              console.log('Ignoring duplicate socket config for', modelName, method);
+              if (process.env.DEBUG) {
+                /* eslint-disable no-console */
+                console.log('Ignoring duplicate socket config for', modelName, method);
+              }
             }
           });
         }
