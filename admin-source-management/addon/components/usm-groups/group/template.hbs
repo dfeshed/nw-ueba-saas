@@ -77,6 +77,8 @@
       {{/power-select-multiple}}
     </label>
   </hbox>
+  {{!-- ASOC-58987 - hide OS Description for 11.2 --}}
+  {{#if false}}
   <hbox class="control">
     <label class="rsa-form-label power-select">
       <div class="label-text">
@@ -92,6 +94,7 @@
       {{/power-select-multiple}}
     </label>
   </hbox>
+  {{/if}}
 
   <label class="control-label">{{t 'adminUsm.group.applyPolicy'}}
     <span class="apply-policy-optional">{{t 'adminUsm.group.applyPolicyOptional'}}</span>

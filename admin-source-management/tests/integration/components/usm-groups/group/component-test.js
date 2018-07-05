@@ -1,4 +1,4 @@
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { blur, click, findAll, focus, render, settled } from '@ember/test-helpers';
@@ -159,7 +159,8 @@ module('Integration | Component | Group', function(hooks) {
     });
   });
 
-  test('Changing the OS Description select control dispatches the editGroup action creator (EDIT_GROUP)', async function(assert) {
+  // ASOC-58987 - hide OS Description for 11.2
+  skip('Changing the OS Description select control dispatches the editGroup action creator (EDIT_GROUP)', async function(assert) {
     const actionSpy = sinon.spy(groupCreators, 'editGroup');
     // pre-select an osType so the osDescription select has options available
     setState({ ...initialState, group: { ...initialState.group, osTypes: ['Windows'] } });
@@ -171,6 +172,12 @@ module('Integration | Component | Group', function(hooks) {
       assert.ok(actionSpy.calledWith('group.osDescriptions', ['Windows Vista']));
       actionSpy.restore();
     });
+  });
+  // ASOC-58987 - hide OS Description for 11.2
+  test('OS Description should NOT render for 11.2', async function(assert) {
+    setState({ ...initialState });
+    await render(hbs`{{usm-groups/group}}`);
+    assert.equal(findAll('.control .os-description .ember-power-select-trigger').length, 0, 'OS Description should NOT appear in the DOM');
   });
 
   test('Changing the Policy select control dispatches the editGroup action creator (EDIT_GROUP)', async function(assert) {
