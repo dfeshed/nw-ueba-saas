@@ -7,9 +7,7 @@ import { encodeMetaFilterConditions } from 'investigate-shared/actions/api/event
 import { getTimeRangeIdFromRange } from 'investigate-shared/utils/time-range-utils';
 import { lookup } from 'ember-dependency-lookup';
 
-const operators = [
-  '!=', '=', '!exists', 'exists', 'contains', 'begins', 'ends'
-];
+const operators = ['!exists', 'exists', 'contains', 'begins', 'ends', '!=', '='];
 const _isFloat = (value) => {
   return value.includes('.') && (value - value === 0);
 };
@@ -252,17 +250,18 @@ function parseQueryParams(params) {
   };
 }
 
-
 /**
- * Parses a given URI string component that represents 0, 1 or more meta conditions for a Core query.
- * Assumes the URI is of the following syntax: `key1 operator1 value1/key2 operator1 value2/../keyN operatorN valueN`, where each `key#` string is
- * a meta key identifier (e.g., `ip.src`, not a display name), each operator is a logical operator (e.g. =, !=, <), and each `value#` string is a meta value (raw, not alias).
- * Assumes `key#` strings do not need URI decoding (they're just alphanumerics, plus dots maybe), but `value#` strings
- * and operators will need URI decoding.
- * If any duplicate conditions are found, the duplicates are discarded; i.e., only 1 instance of the condition is
- * returned. This is done because the duplicate conditions don't have any net effect on the filter.
+ * Parses a given URI string component that represents 0, 1 or more meta
+ * conditions for a Core query. Assumes the URI is of the following syntax:
+ * `key1 operator1 value1/key2 operator1 value2/../keyN operatorN valueN`,
+ * where each `key#` string is a meta key identifier (e.g., `ip.src`, not a
+ * display name), each operator is a logical operator (e.g. =, !=, ends), and
+ * each `value#` string is a meta value (raw, not alias). Assumes `key#` strings
+ * do not need URI decoding (they're just alphanumerics, plus dots maybe), but
+ * `value#` strings and operators will need URI decoding.
  * @param {string} uri
- * @returns {object[]} Array of condition objects. Each array item is an object with properties `key` & `value`, where:
+ * @returns {object[]} Array of condition objects. Each array item is an object
+ * with properties `key` & `value`, where:
  * (i) `key` is a meta key identifier (e.g., "ip.src", not a display name); and
  * (ii) value` is a meta key value (raw, not alias).
  * @private
@@ -273,24 +272,11 @@ function _parseMetaFilterUri(uri) {
     // an empty string in it, which is not what we want.  So we check for '' and return [] explicitly here.
     return [];
   }
-
-  // look for a set of double quotes
-  // replace found forward slashes with a temp placeholder because forward slashes are used to split the uri
-  const matches = uri.match(/'([.]*)'/g);
-
-  if (matches) {
-    matches.forEach((match) => {
-      uri = uri.replace(match, match.replace(/\//g, '__slash_place_holder__'));
-    });
-  }
-
   return uri.split('/')
     .filter((segment) => !!segment)
     .map((queryString) => {
-      // replace slash placeholders with forward slash now that uri has already been split
-      queryString = queryString.replace(/__slash_place_holder__/g, '/');
-
       const decodedQuery = decodeURIComponent(queryString);
+
       const hasComplexItem = complexOperators.some((operator) => decodedQuery.includes(operator));
       if (hasComplexItem) {
         return {
@@ -298,18 +284,7 @@ function _parseMetaFilterUri(uri) {
         };
       }
 
-      const operator = operators.find((option) => {
-        if (decodedQuery.includes('!exists')) {
-          return option === '!exists';
-        } else if (decodedQuery.includes('<=')) {
-          return option === '<=';
-        } else if (decodedQuery.includes('>=')) {
-          return option === '>=';
-        } else {
-          return decodedQuery.includes(option);
-        }
-      });
-
+      const operator = operators.find((option) => decodedQuery.includes(option));
       const chunks = decodedQuery.split(operator);
 
       if (chunks.length > 2) {

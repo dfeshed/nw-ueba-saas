@@ -96,7 +96,7 @@ module('Integration | Component | new-pill-trigger', function(hooks) {
       }
 
       assert.equal(messageType, MESSAGE_TYPES.PILL_CREATED, 'Wrong message type');
-      assert.deepEqual(data, { meta: 'a', operator: '=', value: 'x' }, 'Message sent for pill create contains correct pill data');
+      assert.deepEqual(data, { meta: 'a', operator: '=', value: '\'x\'' }, 'Message sent for pill create contains correct pill data');
       assert.equal(position, 5, 'Wrong position number');
     });
     await render(hbs`

@@ -25,14 +25,14 @@ const DEFAULT_PILLS_DATA = [{
   id: '1',
   meta: 'a',
   operator: '=',
-  value: 'x',
+  value: '\'x\'',
   isInvalid: false,
   isSelected: false
 }, {
   id: '2',
   meta: 'b',
   operator: '=',
-  value: 'y',
+  value: '\'y\'',
   isInvalid: false,
   isSelected: false
 }];
@@ -41,14 +41,14 @@ const INVALID_PILL_DATA = [{
   id: 1,
   meta: 'ip.proto',
   operator: '=',
-  value: 'boom',
+  value: '\'boom\'',
   isInvalid: false,
   isSelected: false
 }, {
   id: 2,
   meta: 'starttime',
   operator: '=',
-  value: 'boom',
+  value: '\'boom\'',
   isInvalid: true,
   validationError: 'something not right',
   isSelected: false

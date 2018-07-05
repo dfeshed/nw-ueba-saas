@@ -126,7 +126,7 @@ module('Integration | Component | query-pill', function(hooks) {
       }
 
       assert.equal(messageType, MESSAGE_TYPES.PILL_CREATED, 'Message sent for pill create is not correct');
-      assert.deepEqual(data, { meta: 'a', operator: '=', value: 'x' }, 'Message sent for pill create contains correct pill data');
+      assert.deepEqual(data, { meta: 'a', operator: '=', value: '\'x\'' }, 'Message sent for pill create contains correct pill data');
       assert.equal(position, 0, 'Message sent for pill create contains correct pill position');
 
       done();
@@ -204,7 +204,7 @@ module('Integration | Component | query-pill', function(hooks) {
 
       assert.equal(messageType, MESSAGE_TYPES.PILL_DELETED, 'Message sent for pill delete is not correct');
       assert.deepEqual(data,
-        { id: '1', meta: 'a', operator: '=', value: 'x', isSelected: false },
+        { id: '1', meta: 'a', operator: '=', value: '\'x\'', isSelected: false },
         'Message sent for pill create contains correct pill data'
       );
       assert.equal(position, 0, 'Message sent for pill create contains correct pill position');
@@ -262,7 +262,7 @@ module('Integration | Component | query-pill', function(hooks) {
 
     assert.equal(trim(find(PILL_SELECTORS.meta).textContent), 'a');
     assert.equal(trim(find(PILL_SELECTORS.operator).textContent), '=');
-    assert.equal(trim(find(PILL_SELECTORS.value).textContent), 'x');
+    assert.equal(trim(find(PILL_SELECTORS.value).textContent), '\'x\'');
   });
 
   test('A pill clears out and is available to create more pills', async function(assert) {

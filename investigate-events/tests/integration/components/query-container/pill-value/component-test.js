@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
-import { fillIn, find, render, settled, triggerKeyEvent } from '@ember/test-helpers';
+import { find, render, settled, triggerKeyEvent } from '@ember/test-helpers';
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
 import KEY_MAP from 'investigate-events/util/keys';
 import PILL_SELECTORS from '../pill-selectors';
@@ -11,7 +11,6 @@ const BACKSPACE_KEY = KEY_MAP.backspace.code;
 const ENTER_KEY = KEY_MAP.enter.code;
 const ESCAPE_KEY = KEY_MAP.escape.code;
 const LEFT_ARROW_KEY = KEY_MAP.arrowLeft.code;
-const X_KEY = 88;
 
 // const { log } = console;
 
@@ -30,11 +29,10 @@ module('Integration | Component | Pill Value', function(hooks) {
   });
 
   test('indicates it is populated not being used but when populated with data', async function(assert) {
-    this.set('foo', 'foo');
     await render(hbs`
       {{query-container/pill-value
         isActive=false
-        valueString=foo
+        valueString='\\'foo\\''
       }}
     `);
     assert.ok(find(PILL_SELECTORS.populatedItem), 'has populated class applied to it');
@@ -69,9 +67,9 @@ module('Integration | Component | Pill Value', function(hooks) {
       {{query-container/pill-value
         isActive=true
         sendMessage=(action handleMessage)
+        valueString='\\'xx\\''
       }}
     `);
-    await fillIn(PILL_SELECTORS.valueInput, 'xx');
     await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', BACKSPACE_KEY);
     return settled();
   });
@@ -114,7 +112,7 @@ module('Integration | Component | Pill Value', function(hooks) {
     assert.expect(1);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.VALUE_ENTER_KEY) {
-        assert.equal(data, 'x', 'Wrong input string');
+        assert.equal(data, '\'x\'', 'Wrong input string');
         done();
       }
     });
@@ -122,10 +120,9 @@ module('Integration | Component | Pill Value', function(hooks) {
       {{query-container/pill-value
         isActive=true
         sendMessage=(action handleMessage)
+        valueString='\\'x\\''
       }}
     `);
-    await fillIn(PILL_SELECTORS.valueInput, 'x');
-    await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', X_KEY);
     await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', ENTER_KEY);
   });
 
@@ -160,9 +157,47 @@ module('Integration | Component | Pill Value', function(hooks) {
       {{query-container/pill-value
         isActive=true
         sendMessage=(action handleMessage)
+        valueString='\\'foo\\''
       }}
     `);
-    await fillIn(PILL_SELECTORS.valueInput, 'foo');
     await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', ESCAPE_KEY);
+  });
+
+  test('Does not add quotes to a string if there are already single quotes', async function(assert) {
+    const done = assert.async();
+    this.set('handleMessage', async (type, data) => {
+      if (type === MESSAGE_TYPES.VALUE_ENTER_KEY) {
+        this.set('valueString', data);
+        assert.equal(data, '\'foo\'');
+        done();
+      }
+    });
+    await render(hbs`
+      {{query-container/pill-value
+        isActive=true
+        sendMessage=(action handleMessage)
+        valueString='\\'foo\\''
+      }}
+    `);
+    await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', ENTER_KEY);
+  });
+
+  test('replace double quotes with single quotes', async function(assert) {
+    const done = assert.async();
+    this.set('handleMessage', async (type, data) => {
+      if (type === MESSAGE_TYPES.VALUE_ENTER_KEY) {
+        this.set('valueString', data);
+        assert.equal(data, '\'foo\'');
+        done();
+      }
+    });
+    await render(hbs`
+      {{query-container/pill-value
+        isActive=true
+        sendMessage=(action handleMessage)
+        valueString='"foo"'
+      }}
+    `);
+    await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', ENTER_KEY);
   });
 });

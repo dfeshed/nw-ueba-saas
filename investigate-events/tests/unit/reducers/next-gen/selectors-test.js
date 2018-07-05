@@ -15,7 +15,7 @@ test('enrichedPillsData is false when status is not error', function(assert) {
   assert.equal(pD.length, 2, 'returns correct number of pill data');
   assert.equal(pD[0].meta.metaName, 'a', 'transforms meta correctly');
   assert.equal(pD[0].operator.displayName, '=', 'transforms operator correctly');
-  assert.equal(pD[0].value, 'x', 'transforms value correctly');
+  assert.equal(pD[0].value, '\'x\'', 'transforms value correctly');
 });
 
 test('selectedPills returns only those pills that are selected', function(assert) {
@@ -28,7 +28,7 @@ test('selectedPills returns only those pills that are selected', function(assert
   assert.equal(pD.length, 1, 'returns correct number of pill data');
   assert.equal(pD[0].meta, 'a', 'transforms meta correctly');
   assert.equal(pD[0].operator, '=', 'transforms operator correctly');
-  assert.equal(pD[0].value, 'x', 'transforms value correctly');
+  assert.equal(pD[0].value, '\'x\'', 'transforms value correctly');
 });
 
 test('canQueryNextGen is true when a service, summary, time-range, isDirty and NO invalid pill is present', function(assert) {

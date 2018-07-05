@@ -73,10 +73,10 @@ module('Integration | Component | query-pills', function(hooks) {
       assert.equal(newActionSpy.callCount, 1, 'The add pill action creator was called once');
       assert.deepEqual(
         newActionSpy.args[0][0],
-        { pillData: { meta: 'a', operator: '=', value: 'x' }, position: 0 },
+        { pillData: { meta: 'a', operator: '=', value: '\'x\'' }, position: 0 },
         'The action creator was called with the right arguments'
       );
-      assert.equal(this.$(PILL_SELECTORS.queryPill).prop('title'), 'a = x', 'Expected stringified pill');
+      assert.equal(this.$(PILL_SELECTORS.queryPill).prop('title'), 'a = \'x\'', 'Expected stringified pill');
     });
   });
 
@@ -136,7 +136,7 @@ module('Integration | Component | query-pills', function(hooks) {
     assert.equal(newActionSpy.callCount, 1, 'The add pill action creator was called once');
     assert.deepEqual(
       newActionSpy.args[0][0],
-      { pillData: { meta: 'a', operator: '=', value: 'x' }, position: 0 },
+      { pillData: { meta: 'a', operator: '=', value: '\'x\'' }, position: 0 },
       'The action creator was called with the right arguments including the proper position'
     );
   });
@@ -158,7 +158,7 @@ module('Integration | Component | query-pills', function(hooks) {
       assert.equal(deleteActionSpy.callCount, 1, 'The delete pill action creator was called once');
       assert.deepEqual(
         deleteActionSpy.args[0][0],
-        { pillData: { id: '1', meta: 'a', operator: '=', value: 'x', isSelected: false } },
+        { pillData: { id: '1', meta: 'a', operator: '=', value: '\'x\'', isSelected: false } },
         'The action creator was called with the right arguments'
       );
     });
@@ -280,7 +280,7 @@ module('Integration | Component | query-pills', function(hooks) {
       assert.equal(selectActionSpy.callCount, 1, 'The select pill action creator was called once');
       assert.deepEqual(
         selectActionSpy.args[0][0],
-        { pillData: [ { id: '1', meta: 'a', operator: '=', value: 'x', isSelected: false } ] },
+        { pillData: [ { id: '1', meta: 'a', operator: '=', value: '\'x\'', isSelected: false } ] },
         'The action creator was called with the right arguments'
       );
     });
@@ -302,7 +302,7 @@ module('Integration | Component | query-pills', function(hooks) {
       assert.equal(deselectActionSpy.callCount, 1, 'The deselect pill action creator was called once');
       assert.deepEqual(
         deselectActionSpy.args[0][0],
-        { pillData: [ { id: '1', meta: 'a', operator: '=', value: 'x', isSelected: true } ] },
+        { pillData: [ { id: '1', meta: 'a', operator: '=', value: '\'x\'', isSelected: true } ] },
         'The action creator was called with the right arguments'
       );
     });
