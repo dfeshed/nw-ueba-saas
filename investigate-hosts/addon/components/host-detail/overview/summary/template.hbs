@@ -1,13 +1,13 @@
 
 {{#rsa-content-accordion
-  animate=true
+  animate=animate
   class='host-content__title'
   label=(t 'investigateHosts.hosts.summary.body.ipAddresses'
   count=networkInterfacesCount)}}
   {{host-detail/overview/summary/ip-addresses}}
 {{/rsa-content-accordion}}
 {{#rsa-content-accordion
-  animate=true
+  animate=animate
   class='host-content__title'
   label=(t 'investigateHosts.hosts.summary.body.loggedUsers'
   count=loggedInUsersCount)}}
@@ -15,7 +15,7 @@
 {{/rsa-content-accordion}}
 {{#unless isMachineLinux}}
   {{#rsa-content-accordion
-    animate=true
+    animate=animate
     class='host-content__title'
     label=(t 'investigateHosts.hosts.summary.body.securityConfig')}}
     <box xs='12'>

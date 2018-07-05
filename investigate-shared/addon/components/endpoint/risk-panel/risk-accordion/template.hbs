@@ -11,7 +11,13 @@
     {{rsa-icon name='expand-6'}}
   {{/endpoint/risk-panel/respond-link}}
 {{/if}}
-{{#liquid-unless isCollapsed use='crossFade'}}
+
+{{#if animate}}
   {{yield}}
-{{/liquid-unless}}
+{{else}}
+  {{#liquid-unless isCollapsed use='crossFade'}}
+    {{yield}}
+  {{/liquid-unless}}
+{{/if}}
+
 

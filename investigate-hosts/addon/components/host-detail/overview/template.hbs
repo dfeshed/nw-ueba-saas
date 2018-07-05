@@ -1,5 +1,5 @@
 {{#liquid-bind hostDetails use=(if hostDetails animation "default")}}
-  {{#if propertyData }}
+  {{#if hostDetails }}
     <vbox xs="9" class="host-detail-box scroll-box">
       {{host-detail/overview/summary}}
     </vbox>
