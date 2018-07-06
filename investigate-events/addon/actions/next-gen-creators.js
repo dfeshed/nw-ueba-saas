@@ -4,13 +4,6 @@ import { selectedPills } from 'investigate-events/reducers/investigate/next-gen/
 import validateQueryFragment from './fetch/query-validation';
 
 
-const _deselectAllNextGenPills = () => {
-  return (dispatch, getState) => {
-    const pillData = selectedPills(getState());
-    dispatch(deselectNextGenPills({ pillData }));
-  };
-};
-
 const _validateNextGenPill = (pillData, position) => {
   return (dispatch, getState) => {
     // client side validation first
@@ -85,13 +78,13 @@ export const editNextGenPill = ({ pillData, position }) => {
 
 export const deleteNextGenPill = ({ pillData }) => {
   return (dispatch) => {
-    dispatch(_deselectAllNextGenPills());
     dispatch({
       type: ACTION_TYPES.DELETE_NEXT_GEN_PILLS,
       payload: {
         pillData: [pillData]
       }
     });
+    dispatch(deselectAllNextGenPills());
   };
 };
 
@@ -103,6 +96,15 @@ export const deleteSelectedNextGenPills = () => {
         pillData: selectedPills(getState())
       }
     });
+  };
+};
+
+export const deselectAllNextGenPills = () => {
+  return (dispatch, getState) => {
+    const pillData = selectedPills(getState());
+    if (pillData.length > 0) {
+      dispatch(deselectNextGenPills({ pillData }));
+    }
   };
 };
 

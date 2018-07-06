@@ -10,7 +10,8 @@ import {
   deleteNextGenPill,
   editNextGenPill,
   selectNextGenPills,
-  deselectNextGenPills
+  deselectNextGenPills,
+  deselectAllNextGenPills
 } from 'investigate-events/actions/next-gen-creators';
 
 const { log } = console;// eslint-disable-line no-unused-vars
@@ -24,7 +25,8 @@ const dispatchToActions = {
   deleteNextGenPill,
   editNextGenPill,
   selectNextGenPills,
-  deselectNextGenPills
+  deselectNextGenPills,
+  deselectAllNextGenPills
 };
 
 const QueryPills = Component.extend({
@@ -35,6 +37,11 @@ const QueryPills = Component.extend({
     'isPillOpenForEdit:pill-open-for-edit',
     'isPillTriggerOpenForAdd:pill-trigger-open-for-add'
   ],
+
+  // Used to hold onto new pill triggers that should be open
+  // but have been re-rendered because id of closest pill has
+  // been updated
+  startTriggeredPosition: undefined,
 
   // Is a pill rendered by this component open for any reason?
   isPillOpen: false,
@@ -69,7 +76,7 @@ const QueryPills = Component.extend({
       [MESSAGE_TYPES.PILL_EDITED]: (data) => this._pillEdited(data),
       [MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW]: () => this._pillEnteredForAppend(),
       [MESSAGE_TYPES.PILL_ENTERED_FOR_EDIT]: () => this._pillEnteredForEdit(),
-      [MESSAGE_TYPES.PILL_ENTERED_FOR_INSERT_NEW]: () => this._pillEnteredForInsert(),
+      [MESSAGE_TYPES.PILL_ENTERED_FOR_INSERT_NEW]: (pillData, position) => this._pillEnteredForInsert(position),
       [MESSAGE_TYPES.PILL_SELECTED]: (data) => this._pillsSelected([data]),
       [MESSAGE_TYPES.PILL_DESELECTED]: (data) => this._pillsDeselected([data])
 
@@ -109,6 +116,7 @@ const QueryPills = Component.extend({
       isPillOpenForEdit: false,
       isPillTriggerOpenForAdd: false
     });
+    this._pillEntered();
   },
 
   _pillEnteredForEdit() {
@@ -117,14 +125,17 @@ const QueryPills = Component.extend({
       isPillOpenForEdit: true,
       isPillTriggerOpenForAdd: false
     });
+    this._pillEntered();
   },
 
-  _pillEnteredForInsert() {
+  _pillEnteredForInsert(position) {
+    this.set('startTriggeredPosition', position);
     this.setProperties({
       isPillOpen: true,
       isPillOpenForEdit: false,
       isPillTriggerOpenForAdd: true
     });
+    this._pillEntered();
   },
 
   _pillCancelled() {
@@ -137,9 +148,18 @@ const QueryPills = Component.extend({
    * @private
    */
   _pillsExited() {
+    this.set('startTriggeredPosition', undefined);
     this.set('isPillOpen', false);
     this.set('isPillOpenForEdit', false);
     this.set('isPillTriggerOpenForAdd', false);
+  },
+
+  /**
+   * Manages side effects to entering a pill for edit/add
+   * @private
+   */
+  _pillEntered() {
+    this.send('deselectAllNextGenPills');
   },
 
   /**
@@ -168,7 +188,6 @@ const QueryPills = Component.extend({
    * @private
    */
   _pillDeleted(pillData) {
-
     // If pills are open for any reason, treat delete as a no-op
     // as we do not allow pills to be interactive (including delete)
     // while pills are open.
@@ -177,6 +196,7 @@ const QueryPills = Component.extend({
     if (this.get('isPillOpen')) {
       return;
     }
+
 
     // LEGACY FILTERS SET TO KEEP NEAR-TERM SEARCH WORKING
     // Take current pills, add new one, mark that they are 'saved'

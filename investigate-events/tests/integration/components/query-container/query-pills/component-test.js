@@ -308,21 +308,18 @@ module('Integration | Component | query-pills', function(hooks) {
     new ReduxDataHelper(setState)
       .language()
       .pillsDataPopulated()
-      .markSelected(['1'])
       .build();
     this.set('filters', []);
 
     await render(hbs`{{query-container/query-pills isActive=true filters=filters}}`);
-    await click(PILL_SELECTORS.meta);
+    await click(PILL_SELECTORS.meta); // make it selected
+    await click(PILL_SELECTORS.meta); // make it deselected
 
     return settled().then(async () => {
       // action to store in state called
       assert.equal(deselectActionSpy.callCount, 1, 'The deselect pill action creator was called once');
-      assert.deepEqual(
-        deselectActionSpy.args[0][0],
-        { pillData: [ { id: '1', meta: 'a', operator: '=', value: '\'x\'', isSelected: true } ] },
-        'The action creator was called with the right arguments'
-      );
+      const [ [ calledWith ] ] = deselectActionSpy.args;
+      assert.equal(calledWith.pillData[0].isSelected, true, 'shows as being selected as is being sent to be deselected');
     });
   });
 
@@ -330,14 +327,16 @@ module('Integration | Component | query-pills', function(hooks) {
     new ReduxDataHelper(setState)
       .language()
       .pillsDataPopulated()
-      .markSelected(['2'])
       .build();
 
     this.set('filters', []);
 
     await render(hbs`{{query-container/query-pills filters=filters isActive=true}}`);
+    const metas = findAll(PILL_SELECTORS.meta);
+    await click(`#${metas[0].id}`); // make it selected
+    await click(`#${metas[1].id}`); // make it selected
 
-    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 1, 'One selected pill.');
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 2, 'Two selecteded pills.');
     assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Should be two pills plus template.');
 
     await focus(PILL_SELECTORS.triggerMetaPowerSelect);
@@ -346,5 +345,27 @@ module('Integration | Component | query-pills', function(hooks) {
 
     assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'Pill no longer selected');
     assert.equal(findAll(PILL_SELECTORS.queryPill).length, 2, 'Should be one pill plus template.');
+  });
+
+  test('Clicking new pill trigger will deselect other pills and open new pill trigger', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .pillsDataPopulated()
+      .build();
+
+    this.set('filters', []);
+
+    await render(hbs`{{query-container/query-pills filters=filters isActive=true}}`);
+    const metas = findAll(PILL_SELECTORS.meta);
+    await click(`#${metas[0].id}`); // make it selected
+    await click(`#${metas[1].id}`); // make it selected
+
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 2, 'Two selecteded pills.');
+    assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Should be two pills plus template.');
+
+    await click(PILL_SELECTORS.newPillTrigger);
+
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'Pill no longer selected');
+    assert.equal(findAll(PILL_SELECTORS.queryPill).length, 4, 'Should be two pills plus template plus triggered pill.');
   });
 });

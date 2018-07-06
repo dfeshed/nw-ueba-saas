@@ -139,6 +139,25 @@ module('Unit | Actions | NextGen Creators', function(hooks) {
     assert.deepEqual(action.payload.pillData, pillsData, 'action pillData has the right value');
   });
 
+  test('deselectAllNextGenPills action creator returns proper type and payload', function(assert) {
+    const done = assert.async();
+
+    const getState = () => {
+      return new ReduxDataHelper().pillsDataPopulated().makeSelected(['1', '2']).build();
+    };
+    const { pillsData } = getState().investigate.nextGen;
+
+    const thunk = nextGenCreators.deselectAllNextGenPills();
+
+    const dispatch = (action) => {
+      assert.equal(action.type, ACTION_TYPES.DESELECT_NEXT_GEN_PILLS, 'action has the correct type');
+      assert.deepEqual(action.payload.pillData, pillsData, 'action pillData has the right value');
+      done();
+    };
+
+    thunk(dispatch, getState);
+  });
+
   test('selectNextGenPills action creator returns proper type and payload', function(assert) {
     const { pillsData } = new ReduxDataHelper()
       .pillsDataPopulated()

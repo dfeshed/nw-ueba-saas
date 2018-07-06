@@ -37,6 +37,18 @@ module('Integration | Component | new-pill-trigger', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.metaTrigger).length, 1);
   });
 
+  test('shows new pill entry when trigger position and new pill position match', async function(assert) {
+    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    await render(hbs`{{query-container/new-pill-trigger startTriggeredPosition=56 newPillPosition=56}}`);
+    assert.equal(findAll(PILL_SELECTORS.metaTrigger).length, 1);
+  });
+
+  test('does not show new pill entry when trigger position and new pill position do not match', async function(assert) {
+    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    await render(hbs`{{query-container/new-pill-trigger startTriggeredPosition=57 newPillPosition=56}}`);
+    assert.equal(findAll(PILL_SELECTORS.metaTrigger).length, 0);
+  });
+
   test('ESC key returns user to trigger', async function(assert) {
     new ReduxDataHelper(setState).language().pillsDataEmpty().build();
     await render(hbs`{{query-container/new-pill-trigger}}`);

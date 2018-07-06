@@ -26,6 +26,16 @@ export default Component.extend({
    */
   sendMessage: () => {},
 
+  init() {
+    this._super(...arguments);
+
+    // If this trigger should be open as soon as it renders,
+    // then set it as such
+    if (this.get('startTriggeredPosition') === this.get('newPillPosition')) {
+      this.set('isAddNewPill', true);
+    }
+  },
+
   actions: {
     triggerNewPill() {
       this.set('isAddNewPill', true);
