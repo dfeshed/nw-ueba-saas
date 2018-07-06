@@ -4,7 +4,7 @@ import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 import EmberObject from '@ember/object';
 import { warn } from 'ember-debug';
-import { contextHelpIds } from 'context/config/help-ids';
+import { contextHelpIds } from 'context/utils/help-ids';
 import { isEmpty } from '@ember/utils';
 
 export default Component.extend({
@@ -16,7 +16,6 @@ export default Component.extend({
   isError: false,
   errorMessage: null,
   isDisabled: false,
-  helpId: contextHelpIds.AddToListHelpIds,
 
   init() {
     this._super(...arguments);
@@ -50,6 +49,7 @@ export default Component.extend({
         this._entity = value;
         this._getAllList(value);
       }
+      this.set('helpId', contextHelpIds().AddToListHelpIds);
       return this._entity;
     }
   },

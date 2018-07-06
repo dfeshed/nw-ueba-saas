@@ -3,7 +3,7 @@ import Component from '@ember/component';
 import layout from './template';
 import computed from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
-import { contextHelpIds } from 'context/config/help-ids';
+import { contextHelpIds } from 'context/utils/help-ids';
 import { restoreDefault } from 'context/actions/context-creators';
 
 const stateToComputed = ({ context: { context: { lookupKey, errorMessage }, tabs: { activeTabName } } }) => ({
@@ -18,7 +18,6 @@ const dispatchToActions = {
 const HeaderComponent = Component.extend({
   layout,
   contextualHelp: service(),
-  helpId: contextHelpIds.InvestigateHelpIds,
   classNames: 'rsa-context-panel__header',
 
   @computed('activeTabName')
@@ -34,7 +33,8 @@ const HeaderComponent = Component.extend({
       this.send('restoreDefault');
     },
     goToHelp() {
-      this.get('contextualHelp').goToHelp(this.helpId.moduleId, this.helpId.topicId);
+      const { panelHelpId } = contextHelpIds();
+      this.get('contextualHelp').goToHelp(panelHelpId.moduleId, panelHelpId.topicId);
     }
   }
 });
