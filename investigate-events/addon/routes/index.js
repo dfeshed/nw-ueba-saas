@@ -47,6 +47,7 @@ export default Route.extend({
   activate() {
     this.set('contextualHelp.module', this.get('contextualHelp.investigateModule'));
     this.set('contextualHelp.topic', this.get('contextualHelp.invEventAnalysis'));
+    this.set('contextualHelp.topic', this.get('contextualHelp.invEventPreferences'));
     // Scheduler for retrieving latest summaryData.
     // Helps in cases where the service hasn't been re-selected or the page has not been refreshed
     // in a long time.

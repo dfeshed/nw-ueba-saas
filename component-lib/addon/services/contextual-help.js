@@ -10,6 +10,7 @@ export default Service.extend({
 
   investigateModule: 'investigation',
   invEventAnalysis: 'invEventAnalysis',
+  invEventPreferences: 'investigateEventPreferences',
   invFileAnalysis: 'invFileAnalysis',
   invPacketAnalysis: 'invPacketAnalysis',
   invTextAnalysis: 'invTextAnalysis',
