@@ -11,6 +11,8 @@ import { createBasicPill } from '../pill-util';
 import PILL_SELECTORS from '../pill-selectors';
 import KEY_MAP from 'investigate-events/util/keys';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import { throwSocket } from '../../../../helpers/patch-socket';
+import { invalidServerResponseText } from '../../../../unit/actions/data';
 
 const ESCAPE_KEY = KEY_MAP.escape.code;
 
@@ -252,7 +254,7 @@ module('Integration | Component | query-pills', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.pillTriggerOpenForAdd).length, 1, 'Class for trigger open should be present.');
   });
 
-  test('Creating a pill sets filters, validates the pill and updates if necessary', async function(assert) {
+  test('Creating a pill sets filters, validates the pill(clientSide) and updates if necessary', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .pillsDataEmpty()
@@ -266,6 +268,22 @@ module('Integration | Component | query-pills', function(hooks) {
     // component class updates when store is updated
     assert.equal(findAll(PILL_SELECTORS.invalidPill).length, 1, 'Class for invalid pill should be present');
     assert.equal(this.$(PILL_SELECTORS.invalidPill).prop('title'), 'You must enter a valid date.', 'Expected title with the error message');
+  });
+
+  test('Creating a pill sets filters, validates the pill (serverSide) and updates if necessary', async function(assert) {
+    const done = throwSocket({ methodToThrow: 'query', modelNameToThrow: 'core-query-validate', message: invalidServerResponseText });
+    new ReduxDataHelper(setState)
+      .language()
+      .pillsDataEmpty()
+      .build();
+
+    await render(hbs`{{query-container/query-pills filters=filters isActive=true}}`);
+
+    await createBasicPill(false, 'Text');
+    // component class updates when store is updated
+    assert.equal(findAll(PILL_SELECTORS.invalidPill).length, 1, 'Class for invalid pill should be present');
+    assert.equal(this.$(PILL_SELECTORS.invalidPill).prop('title'), 'Invalid server response', 'Expected title with the error message');
+    done();
   });
 
   test('Clicking an inactive pill sends it to state to be selected', async function(assert) {

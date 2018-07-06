@@ -85,7 +85,7 @@ module('Unit | Helper | query utils', function(hooks) {
     assert.ok(result, 'Filter is present');
   });
 
-  test('clientSideValidation return error when meta is TimeT and value is not in proper format', function(assert) {
+  test('clientSideParseAndValidate return error when meta is TimeT and value is not in proper format', async function(assert) {
     assert.expect(2);
     const pillData = {
       meta: {
@@ -98,14 +98,16 @@ module('Unit | Helper | query utils', function(hooks) {
       value: 'NotATime'
     };
 
-    const { isInvalid, validationError } = queryUtils.clientSideValidation(pillData.meta.format, pillData.value);
+    queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
+    .catch((error) => {
+      assert.ok(error.meta, 'Filter is invalid');
+      assert.equal(error.meta, 'You must enter a valid date.', 'Invalid error message');
+    });
 
-    assert.ok(isInvalid, 'Filter is invalid');
-    assert.equal(validationError, 'You must enter a valid date.', 'Invalid error message');
   });
 
-  test('clientSideValidation passes validation when meta is TimeT and value is in proper format', function(assert) {
-    assert.expect(2);
+  test('clientSideParseAndValidate passes validation when meta is TimeT and value is in proper format', function(assert) {
+    assert.expect(1);
     const pillData = {
       meta: {
         format: 'TimeT',
@@ -117,12 +119,12 @@ module('Unit | Helper | query utils', function(hooks) {
       value: new Date()
     };
 
-    const { isInvalid, validationError } = queryUtils.clientSideValidation(pillData.meta.format, pillData.value);
-    assert.notOk(isInvalid, 'Filter is valid');
-    assert.equal(validationError, undefined, 'Property should not exit');
+    queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
+    .then(() => assert.ok('Filter is valid'));
+
   });
 
-  test('clientSideValidation return error when metaFormat is IPv4 and value is not in proper format', function(assert) {
+  test('clientSideParseAndValidate return error when metaFormat is IPv4 and value is not in proper format', function(assert) {
     assert.expect(2);
     const pillData = {
       meta: {
@@ -135,13 +137,16 @@ module('Unit | Helper | query utils', function(hooks) {
       value: '127.0..1'
     };
 
-    const { isInvalid, validationError } = queryUtils.clientSideValidation(pillData.meta.format, pillData.value);
-    assert.ok(isInvalid, 'Filter is invalid');
-    assert.equal(validationError, 'You must enter an IPv4 address.', 'Invalid error message');
+    queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
+    .catch((error) => {
+      assert.ok(error.meta, 'Filter is invalid');
+      assert.equal(error.meta, 'You must enter an IPv4 address.', 'Invalid error message');
+    });
+
   });
 
-  test('clientSideValidation passes when metaFormat is IPv4 and value is in proper format', function(assert) {
-    assert.expect(2);
+  test('clientSideParseAndValidate passes when metaFormat is IPv4 and value is in proper format', function(assert) {
+    assert.expect(1);
     const pillData = {
       meta: {
         format: 'IPv4',
@@ -153,12 +158,11 @@ module('Unit | Helper | query utils', function(hooks) {
       value: '127.0.0.1'
     };
 
-    const { isInvalid, validationError } = queryUtils.clientSideValidation(pillData.meta.format, pillData.value);
-    assert.notOk(isInvalid, 'Filter is valid');
-    assert.equal(validationError, undefined, 'Should not exist');
+    queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
+    .then(() => assert.ok('Filter is valid'));
   });
 
-  test('clientSideValidation return error when metaFormat is IPv6 and value is not in proper format', function(assert) {
+  test('clientSideParseAndValidate return error when metaFormat is IPv6 and value is not in proper format', function(assert) {
     assert.expect(2);
     const pillData = {
       meta: {
@@ -171,13 +175,16 @@ module('Unit | Helper | query utils', function(hooks) {
       value: '2001:0db8:85a3:0000:0000:8a2e:'
     };
 
-    const { isInvalid, validationError } = queryUtils.clientSideValidation(pillData.meta.format, pillData.value);
-    assert.ok(isInvalid, 'Filter is invalid');
-    assert.equal(validationError, 'You must enter an IPv6 address.', 'Invalid error message');
+    queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
+    .catch((error) => {
+      assert.ok(error.meta, 'Filter is invalid');
+      assert.equal(error.meta, 'You must enter an IPv6 address.', 'Invalid error message');
+    });
+
   });
 
-  test('clientSideValidation passes when metaFormat is IPv6 and value is in proper format', function(assert) {
-    assert.expect(2);
+  test('clientSideParseAndValidate passes when metaFormat is IPv6 and value is in proper format', function(assert) {
+    assert.expect(1);
     const pillData = {
       meta: {
         format: 'IPv6',
@@ -189,12 +196,12 @@ module('Unit | Helper | query utils', function(hooks) {
       value: '2001:0db8:85a3:0000:0000:8a2e:0370:7334'
     };
 
-    const { isInvalid, validationError } = queryUtils.clientSideValidation(pillData.meta.format, pillData.value);
-    assert.notOk(isInvalid, 'Filter is valid');
-    assert.equal(validationError, undefined, 'Should not exist');
+    queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
+    .then(() => assert.ok('Filter is valid'));
+
   });
 
-  test('clientSideValidation return error when metaFormat is UInt8 and value is not in proper format', function(assert) {
+  test('clientSideParseAndValidate return error when metaFormat is UInt8 and value is not in proper format', function(assert) {
     assert.expect(2);
     const pillData = {
       meta: {
@@ -207,13 +214,16 @@ module('Unit | Helper | query utils', function(hooks) {
       value: 'bar'
     };
 
-    const { isInvalid, validationError } = queryUtils.clientSideValidation(pillData.meta.format, pillData.value);
-    assert.ok(isInvalid, 'Filter is invalid');
-    assert.equal(validationError, 'You must enter an 8 bit Integer.', 'Invalid error message');
+    queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
+    .catch((error) => {
+      assert.ok(error.meta, 'Filter is invalid');
+      assert.equal(error.meta, 'You must enter an 8 bit Integer.', 'Invalid error message');
+    });
+
   });
 
-  test('clientSideValidation passes when metaFormat is UInt8 and value is in proper format', function(assert) {
-    assert.expect(2);
+  test('clientSideParseAndValidate passes when metaFormat is UInt8 and value is in proper format', function(assert) {
+    assert.expect(1);
     const pillData = {
       meta: {
         format: 'UInt8',
@@ -225,12 +235,12 @@ module('Unit | Helper | query utils', function(hooks) {
       value: '3'
     };
 
-    const { isInvalid, validationError } = queryUtils.clientSideValidation(pillData.meta.format, pillData.value);
-    assert.notOk(isInvalid, 'Filter is valid');
-    assert.equal(validationError, undefined, 'Should not exist');
+    queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
+    .then(() => assert.ok('Filter is valid'));
+
   });
 
-  test('clientSideValidation return error when metaFormat is UInt16 and value is not in proper format', function(assert) {
+  test('clientSideParseAndValidate return error when metaFormat is UInt16 and value is not in proper format', function(assert) {
     assert.expect(2);
     const pillData = {
       meta: {
@@ -243,13 +253,16 @@ module('Unit | Helper | query utils', function(hooks) {
       value: 'bar'
     };
 
-    const { isInvalid, validationError } = queryUtils.clientSideValidation(pillData.meta.format, pillData.value);
-    assert.ok(isInvalid, 'Filter is invalid');
-    assert.equal(validationError, 'You must enter a 16 bit Integer.', 'Invalid error message');
+    queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
+    .catch((error) => {
+      assert.ok(error.meta, 'Filter is invalid');
+      assert.equal(error.meta, 'You must enter a 16 bit Integer.', 'Invalid error message');
+    });
+
   });
 
-  test('clientSideValidation passes when metaFormat is UInt16 and value is in proper format', function(assert) {
-    assert.expect(2);
+  test('clientSideParseAndValidate passes when metaFormat is UInt16 and value is in proper format', function(assert) {
+    assert.expect(1);
     const pillData = {
       meta: {
         format: 'UInt16',
@@ -261,12 +274,12 @@ module('Unit | Helper | query utils', function(hooks) {
       value: '3'
     };
 
-    const { isInvalid, validationError } = queryUtils.clientSideValidation(pillData.meta.format, pillData.value);
-    assert.notOk(isInvalid, 'Filter is valid');
-    assert.equal(validationError, undefined, 'Should not exist');
+    queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
+    .then(() => assert.ok('Filter is valid'));
+
   });
 
-  test('clientSideValidation return error when metaFormat is UInt32 and value is not in proper format', function(assert) {
+  test('clientSideParseAndValidate return error when metaFormat is UInt32 and value is not in proper format', function(assert) {
     assert.expect(2);
     const pillData = {
       meta: {
@@ -279,13 +292,16 @@ module('Unit | Helper | query utils', function(hooks) {
       value: 'bar'
     };
 
-    const { isInvalid, validationError } = queryUtils.clientSideValidation(pillData.meta.format, pillData.value);
-    assert.ok(isInvalid, 'Filter is invalid');
-    assert.equal(validationError, 'You must enter a 32 bit Integer.', 'Invalid error message');
+    queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
+    .catch((error) => {
+      assert.ok(error.meta, 'Filter is invalid');
+      assert.equal(error.meta, 'You must enter a 32 bit Integer.', 'Invalid error message');
+    });
+
   });
 
-  test('clientSideValidation passes when metaFormat is UInt32 and value is in proper format', function(assert) {
-    assert.expect(2);
+  test('clientSideParseAndValidate passes when metaFormat is UInt32 and value is in proper format', function(assert) {
+    assert.expect(1);
     const pillData = {
       meta: {
         format: 'UInt32',
@@ -297,12 +313,12 @@ module('Unit | Helper | query utils', function(hooks) {
       value: '3'
     };
 
-    const { isInvalid, validationError } = queryUtils.clientSideValidation(pillData.meta.format, pillData.value);
-    assert.notOk(isInvalid, 'Filter is valid');
-    assert.equal(validationError, undefined, 'Should not exist');
+    queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
+    .then(() => assert.ok('Filter is valid'));
+
   });
 
-  test('clientSideValidation return error when metaFormat is Float32 and value is not in proper format', function(assert) {
+  test('clientSideParseAndValidate return error when metaFormat is Float32 and value is not in proper format', function(assert) {
     assert.expect(2);
     const pillData = {
       meta: {
@@ -315,13 +331,16 @@ module('Unit | Helper | query utils', function(hooks) {
       value: '5'
     };
 
-    const { isInvalid, validationError } = queryUtils.clientSideValidation(pillData.meta.format, pillData.value);
-    assert.ok(isInvalid, 'Filter is invalid');
-    assert.equal(validationError, 'You must enter a 32 bit Float.', 'Invalid error message');
+    queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
+    .catch((error) => {
+      assert.ok(error.meta, 'Filter is invalid');
+      assert.equal(error.meta, 'You must enter a 32 bit Float.', 'Invalid error message');
+    });
+
   });
 
-  test('clientSideValidation passes when metaFormat is Float32 and value is in proper format', function(assert) {
-    assert.expect(2);
+  test('clientSideParseAndValidate passes when metaFormat is Float32 and value is in proper format', function(assert) {
+    assert.expect(1);
     const pillData = {
       meta: {
         format: 'Float32',
@@ -333,12 +352,12 @@ module('Unit | Helper | query utils', function(hooks) {
       value: '3.3'
     };
 
-    const { isInvalid, validationError } = queryUtils.clientSideValidation(pillData.meta.format, pillData.value);
-    assert.notOk(isInvalid, 'Filter is valid');
-    assert.equal(validationError, undefined, 'Should not exist');
+    queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
+    .then(() => assert.ok('Filter is valid'));
+
   });
 
-  test('clientSideValidation return error when metaFormat is MAC and value is not in proper format', function(assert) {
+  test('clientSideParseAndValidate return error when metaFormat is MAC and value is not in proper format', function(assert) {
     assert.expect(2);
     const pillData = {
       meta: {
@@ -351,13 +370,16 @@ module('Unit | Helper | query utils', function(hooks) {
       value: '00:50:56:BA:60:1'
     };
 
-    const { isInvalid, validationError } = queryUtils.clientSideValidation(pillData.meta.format, pillData.value);
-    assert.ok(isInvalid, 'Filter is invalid');
-    assert.equal(validationError, 'You must enter a MAC address.', 'Invalid error message');
+    queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
+    .catch((error) => {
+      assert.ok(error.meta, 'Filter is invalid');
+      assert.equal(error.meta, 'You must enter a MAC address.', 'Invalid error message');
+    });
+
   });
 
-  test('clientSideValidation passes when metaFormat is MAC and value is in proper format', function(assert) {
-    assert.expect(2);
+  test('clientSideParseAndValidate passes when metaFormat is MAC and value is in proper format', function(assert) {
+    assert.expect(1);
     const pillData = {
       meta: {
         format: 'MAC',
@@ -369,8 +391,8 @@ module('Unit | Helper | query utils', function(hooks) {
       value: '00:50:56:BA:60:18'
     };
 
-    const { isInvalid, validationError } = queryUtils.clientSideValidation(pillData.meta.format, pillData.value);
-    assert.notOk(isInvalid, 'Filter is valid');
-    assert.equal(validationError, undefined, 'Should not exist');
+    queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
+    .then(() => assert.ok('Filter is valid'));
+
   });
 });

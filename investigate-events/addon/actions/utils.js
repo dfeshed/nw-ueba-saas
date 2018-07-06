@@ -359,15 +359,19 @@ function uriEncodeMetaFilters(filters = []) {
   return encodedFilters || undefined;
 }
 
-const clientSideValidation = (format, value) => {
-  let validationError;
-  const validator = VALIDATORS[format];
-  // if value or validator is not defined, move on
-  if (value && validator && !validator.isValid(value)) {
-    const i18n = lookup('service:i18n');
-    validationError = i18n.t(validator.i18nString);
-  }
-  return { isInvalid: !!validationError, validationError };
+const clientSideParseAndValidate = (format, value) => {
+  return new RSVP.Promise((resolve, reject) => {
+    let validationError;
+    const validator = VALIDATORS[format];
+    // if validator object is not found, move on
+    if (validator && !validator.isValid(value)) {
+      const i18n = lookup('service:i18n');
+      validationError = i18n.t(validator.i18nString);
+      reject({ meta: validationError });
+    } else {
+      resolve();
+    }
+  });
 };
 
 const getMetaFormat = (meta, languages) => {
@@ -382,6 +386,6 @@ export {
   uriEncodeMetaFilters,
   transformTextToFilters,
   filterIsPresent,
-  clientSideValidation,
+  clientSideParseAndValidate,
   getMetaFormat
 };

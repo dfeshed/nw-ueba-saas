@@ -3,6 +3,8 @@ import { test, module } from 'qunit';
 import reducer from 'investigate-events/reducers/investigate/next-gen/reducer';
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
+import makePackAction from '../../../helpers/make-pack-action';
+import { LIFECYCLE } from 'redux-pack';
 
 module('Unit | Reducers | next-gen');
 
@@ -153,22 +155,65 @@ test('EDIT_NEXT_GEN_PILL edits last pill provided', function(assert) {
 //
 // VALIDATE_NEXT_GEN_PILL
 //
+test('VALIDATE_NEXT_GEN_PILL reducer updates state when validation fails', function(assert) {
 
-test('VALIDATE_NEXT_GEN_PILL adds to the state after  first pill provided', function(assert) {
-  const action = {
+  const failureAction = makePackAction(LIFECYCLE.FAILURE, {
     type: ACTION_TYPES.VALIDATE_NEXT_GEN_PILL,
     payload: {
-      validatedPillData: {
-        id: '1',
-        foo: 'bar'
-      }
+      meta: 'Error in validation'
+    },
+    meta: {
+      position: 1
     }
-  };
-  const result = reducer(stateWithPills, action);
+  });
+  const result = reducer(stateWithPills, failureAction);
 
   assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
-  assert.ok(result.pillsData[0].id !== '1', 'updated pillsData item has updated ID');
-  assert.equal(result.pillsData[0].foo, 'bar', 'pillsData item had its data updated');
+  assert.ok(result.pillsData[1].id !== '2', 'updated pillsData item has updated ID');
+  assert.equal(result.pillsData[1].validationError, 'Error in validation', 'pillsData item had its data updated with error');
+  assert.ok(result.pillsData[1].isInvalid, 'pill is invalid');
+  assert.notOk(result.serverSideValidationInProcess, 'validation is complete');
+});
+
+test('VALIDATE_NEXT_GEN_PILL reducer updates state when validation starts', function(assert) {
+
+  const startAction = makePackAction(LIFECYCLE.START, {
+    type: ACTION_TYPES.VALIDATE_NEXT_GEN_PILL,
+    meta: {
+      position: 1,
+      isServerSide: true
+    }
+  });
+  const result = reducer(stateWithPills, startAction);
+
+  assert.ok(result.serverSideValidationInProcess, 'validation is in process');
+});
+
+test('VALIDATE_NEXT_GEN_PILL reducer updates state when validation starts and serverSide flag is not sent', function(assert) {
+  // if isServerSide flag is not sent, can be safely assumed that clientSide called the reducer
+  // So no need to flip the serverSideValidationInProcess flag
+  const startAction = makePackAction(LIFECYCLE.START, {
+    type: ACTION_TYPES.VALIDATE_NEXT_GEN_PILL,
+    meta: {
+      position: 1
+    }
+  });
+  const result = reducer(stateWithPills, startAction);
+
+  assert.notOk(result.serverSideValidationInProcess, 'client side validation');
+});
+
+test('VALIDATE_NEXT_GEN_PILL reducer updates state when validation succeeds', function(assert) {
+
+  const startAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.VALIDATE_NEXT_GEN_PILL,
+    meta: {
+      position: 1
+    }
+  });
+  const result = reducer(stateWithPills, startAction);
+
+  assert.notOk(result.serverSideValidationInProcess, 'Flag is switched back to false after the request is completed');
 });
 
 //

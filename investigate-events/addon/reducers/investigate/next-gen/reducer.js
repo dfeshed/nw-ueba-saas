@@ -1,11 +1,13 @@
 import Immutable from 'seamless-immutable';
 import { handleActions } from 'redux-actions';
 import _ from 'lodash';
+import { handle } from 'redux-pack';
 
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 
 const _initialState = Immutable.from({
-  pillsData: []
+  pillsData: [],
+  serverSideValidationInProcess: false
 });
 
 const _initialPillState = {
@@ -52,6 +54,12 @@ const handlePillSelection = (state, payload, isSelected) => {
   return state.set('pillsData', newPillsData);
 };
 
+const _handlePillUpdate = (state, payload) => {
+  const { pillData } = payload;
+  const newPillsData = _replacePill(state, pillData);
+  return state.set('pillsData', newPillsData);
+};
+
 export default handleActions({
   [ACTION_TYPES.ADD_NEXT_GEN_PILL]: (state, { payload }) => {
     const { pillData, position } = payload;
@@ -72,16 +80,28 @@ export default handleActions({
   },
 
   [ACTION_TYPES.EDIT_NEXT_GEN_PILL]: (state, { payload }) => {
-    const { pillData } = payload;
-    const newPillsData = _replacePill(state, pillData);
-    return state.set('pillsData', newPillsData);
+    return _handlePillUpdate(state, payload);
   },
 
-  [ACTION_TYPES.VALIDATE_NEXT_GEN_PILL]: (state, { payload }) => {
-    const { validatedPillData } = payload;
-    const newPillsData = _replacePill(state, validatedPillData);
-    return state.set('pillsData', newPillsData);
+  [ACTION_TYPES.VALIDATE_NEXT_GEN_PILL]: (state, action) => {
+    return handle(state, action, {
+      start: (s) => s.set('serverSideValidationInProcess', !!action.meta.isServerSide),
+      failure: (s) => {
+        const { meta: { position } } = action;
+        const { pillsData } = s;
+        const currentPill = pillsData[position];
+        const validatedPill = {
+          ...currentPill,
+          isInvalid: !!action.payload.meta,
+          validationError: action.payload.meta
+        };
+        const newPillsData = _replacePill(s, validatedPill);
+        return s.merge({ pillsData: newPillsData, serverSideValidationInProcess: false });
+      },
+      success: (s) => s.set('serverSideValidationInProcess', false)
+    });
   },
+
 
   [ACTION_TYPES.DELETE_NEXT_GEN_PILLS]: (state, { payload }) => {
     const { pillData } = payload;

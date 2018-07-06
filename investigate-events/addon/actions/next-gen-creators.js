@@ -1,6 +1,8 @@
 import * as ACTION_TYPES from './types';
-import { clientSideValidation, getMetaFormat } from './utils';
+import { clientSideParseAndValidate, getMetaFormat } from './utils';
 import { selectedPills } from 'investigate-events/reducers/investigate/next-gen/selectors';
+import validateQueryFragment from './fetch/query-validation';
+
 
 const _deselectAllNextGenPills = () => {
   return (dispatch, getState) => {
@@ -12,29 +14,47 @@ const _deselectAllNextGenPills = () => {
 const _validateNextGenPill = (pillData, position) => {
   return (dispatch, getState) => {
     // client side validation first
-    // if that fails, no server side validation - send edit action
-    // if client side passes, send for server side validation - send response for editing the pill
+    // if that fails, no server side validation
+    // if client side passes, send for server side validation
     const { meta, value } = pillData;
-    const { investigate, investigate: { dictionaries: { language } } } = getState();
-    const metaFormat = getMetaFormat(meta, language);
-    const { isInvalid, validationError } = clientSideValidation(metaFormat, value);
-    if (isInvalid) {
-      // Need to extract the id for the pill that's already been
-      // added to the state.
-      // Will update the pill with the validation error
-      const { pillsData } = investigate.nextGen;
-      const currentPill = pillsData[position];
-      const validatedPillData = {
-        ...pillData,
-        id: currentPill.id,
-        isInvalid,
-        validationError
-      };
+    // if there is no value, no need to validate.
+    // The only pills that can be created without value are exists/!exits,
+    // and they have relevant operators logic behind displaying them.
+    if (value) {
+      const { investigate: { dictionaries: { language } } } = getState();
+      const metaFormat = getMetaFormat(meta, language);
       dispatch({
         type: ACTION_TYPES.VALIDATE_NEXT_GEN_PILL,
-        payload: { validatedPillData }
+        promise: clientSideParseAndValidate(metaFormat, value),
+        meta: {
+          position, /*  position is needed to update pill in reducer  */
+          onSuccess() {
+            dispatch(_serverSideValidation(pillData, position));
+          }
+        }
       });
     }
+  };
+};
+
+export const _serverSideValidation = (pillData, position) => {
+  return (dispatch, getState) => {
+    const { meta, operator, value } = pillData;
+    // extract stringified pill data
+    const stringifiedPill = `${meta || ''} ${operator || ''} ${value || ''}`.trim();
+    const investigateState = getState().investigate;
+
+    // encode the string and pull out the service id
+    const encodedPill = encodeURIComponent(stringifiedPill);
+    const { serviceId } = investigateState.queryNode;
+    dispatch({
+      type: ACTION_TYPES.VALIDATE_NEXT_GEN_PILL,
+      promise: validateQueryFragment(serviceId, encodedPill),
+      meta: {
+        position, /*  position is needed to update pill in reducer  */
+        isServerSide: true /*  sets a flag isPillBeingValidated while the req is being processed  */
+      }
+    });
   };
 };
 
