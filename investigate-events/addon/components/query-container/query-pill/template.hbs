@@ -8,17 +8,17 @@
 {{query-container/pill-operator
   isActive=(readonly isOperatorActive)
   isExpanded=(readonly shouldOperatorExpand)
-  isOperatorCursorLeft=(readonly isOperatorCursorLeft)
+  isFocusAtBeginning=(readonly isOperatorFocusedAtBeginning)
   meta=(readonly selectedMeta)
   selection=(readonly selectedOperator)
   sendMessage=(action 'handleMessage')
 }}
 {{query-container/pill-value
   isActive=(readonly isValueActive)
+  isFocusAtBeginning=(readonly isValueFocusedAtBeginning)
   sendMessage=(action 'handleMessage')
   valueString=(readonly valueString)
 }}
-{{!-- This won't be true at the moment --}}
 {{#if isDeletable}}
   {{query-container/delete-pill
     sendMessage=(action 'handleMessage')

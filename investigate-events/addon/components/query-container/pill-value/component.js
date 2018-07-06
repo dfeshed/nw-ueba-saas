@@ -46,12 +46,22 @@ export default Component.extend({
    * @public
    */
   isActive: false,
+
+  /**
+   * Should we position the cursor at the beginning of the string when focusing
+   * on this component?
+   * @type {boolean}
+   * @public
+   */
+  isFocusAtBeginning: false,
+
   /**
    * An action to call when sending messages and data to the parent component.
    * @type {function}
    * @public
    */
   sendMessage: () => {},
+
   /**
    * The value to display.
    * @type {string}
@@ -68,7 +78,7 @@ export default Component.extend({
    */
   @computed('valueString')
   valueDisplay(valueString) {
-    let ret = null;
+    let ret = valueString;
     if (typeof(valueString) === 'string') {
       const match = valueString.match(properlySingleQuoted);
       if (match) {
@@ -92,6 +102,14 @@ export default Component.extend({
       // We schedule this after render to give time for the input to
       // be rendered before trying to focus on it.
       scheduleOnce('afterRender', this, '_focusOnInput');
+    }
+  },
+
+  click() {
+    // If this component is not active and the user clicks on it, dispatch an
+    // action so that the parent can coordinate the activation of this component.
+    if (!this.get('isActive')) {
+      this._broadcast(MESSAGE_TYPES.VALUE_CLICKED);
     }
   },
 
@@ -142,7 +160,10 @@ export default Component.extend({
     const input = this.element.querySelector('input');
     if (input) {
       input.focus();
-      input.setSelectionRange(0, 0);
+      if (this.get('isFocusAtBeginning')) {
+        input.setSelectionRange(0, 0);
+        this.set('isFocusAtBeginning', false);
+      }
     }
   },
 

@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
-import { find, render, settled, triggerKeyEvent } from '@ember/test-helpers';
+import { blur, click, fillIn, find, render, settled, triggerKeyEvent } from '@ember/test-helpers';
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
 import KEY_MAP from 'investigate-events/util/keys';
 import PILL_SELECTORS from '../pill-selectors';
@@ -36,6 +36,33 @@ module('Integration | Component | Pill Value', function(hooks) {
       }}
     `);
     assert.ok(find(PILL_SELECTORS.populatedItem), 'has populated class applied to it');
+  });
+
+  test('it broadcasts a CLICKED event when clicked upon and is inactive', async function(assert) {
+    const done = assert.async(1);
+    this.set('handleMessage', (type) => {
+      if (type === MESSAGE_TYPES.VALUE_CLICKED) {
+        assert.ok('message dispatched');
+        // Should only hit this once
+        done();
+      }
+    });
+    await render(hbs`
+      {{query-container/pill-value
+        isActive=false
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await click(PILL_SELECTORS.value);
+
+    // Again, this time "active"
+    await render(hbs`
+      {{query-container/pill-value
+        isActive=true
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await click(PILL_SELECTORS.value);
   });
 
   test('it broadcasts a message when the ARROW_LEFT key pressed', async function(assert) {
@@ -199,5 +226,25 @@ module('Integration | Component | Pill Value', function(hooks) {
       }}
     `);
     await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', ENTER_KEY);
+  });
+
+  test('does not add quotes if simply loosing focus', async function(assert) {
+    const done = assert.async(1);
+    this.set('handleMessage', async (type, data) => {
+      if (type === MESSAGE_TYPES.VALUE_SET) {
+        this.set('valueString', data);
+        assert.equal(data, 'foo');
+        done();
+      }
+    });
+    await render(hbs`
+      {{query-container/pill-value
+        isActive=true
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await focus(PILL_SELECTORS.valueInput);
+    await fillIn(PILL_SELECTORS.valueInput, 'foo');
+    await blur(PILL_SELECTORS.valueInput);
   });
 });

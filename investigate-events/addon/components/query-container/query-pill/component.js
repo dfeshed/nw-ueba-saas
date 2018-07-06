@@ -55,8 +55,9 @@ export default Component.extend({
   isMetaActive: false,
   isMetaAutoFocused: true,
   isOperatorActive: false,
-  isOperatorCursorLeft: false,
+  isOperatorFocusedAtBeginning: false,
   isValueActive: false,
+  isValueFocusedAtBeginning: false,
   selectedMeta: null,
   selectedOperator: null,
   valueString: null,
@@ -170,6 +171,7 @@ export default Component.extend({
       [MESSAGE_TYPES.VALUE_ARROW_LEFT_KEY]: (data) => this._valueArrowLeft(data),
       [MESSAGE_TYPES.VALUE_ARROW_RIGHT_KEY]: (data) => this._rightArrowKeyPressed(data),
       [MESSAGE_TYPES.VALUE_BACKSPACE_KEY]: () => this._valueBackspace(),
+      [MESSAGE_TYPES.VALUE_CLICKED]: () => this._valueClicked(),
       [MESSAGE_TYPES.VALUE_ENTER_KEY]: (data) => {
         if (this.get('isExistingPill')) {
           this._editPill(data);
@@ -375,7 +377,7 @@ export default Component.extend({
     this.setProperties({
       isMetaActive: false,
       isOperatorActive: true,
-      isOperatorCursorLeft: true,
+      isOperatorFocusedAtBeginning: true,
       isValueActive: false
     });
   },
@@ -438,7 +440,8 @@ export default Component.extend({
     this.setProperties({
       isMetaActive: false,
       isOperatorActive: false,
-      isValueActive: true
+      isValueActive: true,
+      isValueFocusedAtBeginning: true
     });
   },
 
@@ -508,11 +511,10 @@ export default Component.extend({
    */
   _valueArrowLeft(data) {
     this.setProperties({
-      valueString: data,
       isMetaActive: false,
       isOperatorActive: true,
-      isOperatorCursorLeft: false,
-      isValueActive: false
+      isValueActive: false,
+      valueString: data
     });
   },
 
@@ -524,12 +526,24 @@ export default Component.extend({
    */
   _valueBackspace() {
     this.setProperties({
-      valueString: null,
       isMetaActive: false,
       isOperatorActive: true,
-      isOperatorCursorLeft: false,
-      isValueActive: false
+      isValueActive: false,
+      valueString: null
     });
+  },
+
+  _valueClicked() {
+    if (this.get('isActive')) {
+      this.setProperties({
+        isMetaActive: false,
+        isOperatorActive: false,
+        isValueActive: true,
+        isActive: true
+      });
+    } else {
+      this._throttledPillSelected();
+    }
   },
 
   /**

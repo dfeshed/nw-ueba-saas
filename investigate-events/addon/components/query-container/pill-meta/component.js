@@ -90,14 +90,6 @@ const PillMeta = Component.extend({
   },
 
   actions: {
-    onOptionMouseDown() {
-      // An option mouse down is the precursor to a click
-      // of a power select option which causes a focus out
-      // of this component. It isn't really a focusOut of this
-      // component because control returns to it, so set
-      // a flag to make sure the next focus out doesn't escape.
-      this.set('swallowNextFocusOut', true);
-    },
     onChange(selection /* powerSelectAPI, event */) {
       this._broadcast(MESSAGE_TYPES.META_SELECTED, selection);
     },
@@ -190,6 +182,14 @@ const PillMeta = Component.extend({
         // Move to the left of this pill
         next(this, () => this._broadcast(MESSAGE_TYPES.META_ARROW_LEFT_KEY));
       }
+    },
+    onOptionMouseDown() {
+      // An option mouse down is the precursor to a click
+      // of a power select option which causes a focus out
+      // of this component. It isn't really a focusOut of this
+      // component because control returns to it, so set
+      // a flag to make sure the next focus out doesn't escape.
+      this.set('swallowNextFocusOut', true);
     }
   },
 

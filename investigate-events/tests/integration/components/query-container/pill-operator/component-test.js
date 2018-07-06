@@ -11,11 +11,12 @@ import PILL_SELECTORS from '../pill-selectors';
 
 // const { log } = console;
 
-const TAB_KEY = KEY_MAP.tab.code;
 const ARROW_LEFT = KEY_MAP.arrowLeft.code;
 const ARROW_RIGHT = KEY_MAP.arrowRight.code;
-const ESCAPE_KEY = KEY_MAP.escape.code;
 const BACKSPACE_KEY = KEY_MAP.backspace.code;
+const ENTER_KEY = KEY_MAP.enter.code;
+const ESCAPE_KEY = KEY_MAP.escape.code;
+const TAB_KEY = KEY_MAP.tab.code;
 
 const trim = (text) => text.replace(/\s+/g, '').trim();
 const meta = { count: 0, format: 'Text', metaName: 'a', flags: 1, displayName: 'A' };
@@ -313,16 +314,12 @@ module('Integration | Component | Pill Operator', function(hooks) {
   });
 
   test('it allows you to reselect an operator after it was previously selected', async function(assert) {
-    const done = assert.async();
-    let iterations = 0;
-    assert.expect(2);
+    const done = assert.async(4);
+    assert.expect(4);
     this.set('meta', meta);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.OPERATOR_SELECTED) {
         assert.deepEqual(data, eq, 'Wrong message data');
-        iterations++;
-      }
-      if (iterations === 2) {
         done();
       }
     });
@@ -333,9 +330,17 @@ module('Integration | Component | Pill Operator', function(hooks) {
         sendMessage=(action handleMessage)
       }}
     `);
-    // Select an option
+    // Select via keyboard an option
+    await focus(PILL_SELECTORS.operatorTrigger);
+    await fillIn(PILL_SELECTORS.operatorSelectInput, '=');
+    await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', ENTER_KEY);
+    // Reselect via keyboard the same option
+    await focus(PILL_SELECTORS.operatorTrigger);
+    await fillIn(PILL_SELECTORS.operatorSelectInput, '=');
+    await triggerKeyEvent(PILL_SELECTORS.operatorSelectInput, 'keydown', ENTER_KEY);
+    // Select via mouse an option
     await selectChoose(PILL_SELECTORS.operatorTrigger, PILL_SELECTORS.powerSelectOption, 0);// option "="
-    // Reselect the same option
+    // Reselect via mouse the same option
     await selectChoose(PILL_SELECTORS.operatorTrigger, PILL_SELECTORS.powerSelectOption, 0);// option "="
   });
 

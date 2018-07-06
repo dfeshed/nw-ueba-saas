@@ -41,6 +41,9 @@ export default Component.extend({
    * @public
    */
   isExpanded: true,
+
+  isFocusAtBeginning: false,
+
   /**
    * A meta object. Used to determin which operators to display.
    * @type {Object}
@@ -186,6 +189,19 @@ export default Component.extend({
           next(this, () => this._broadcast(MESSAGE_TYPES.OPERATOR_ARROW_RIGHT_KEY));
         }
       }
+    },
+
+    onOptionMouseDown(e) {
+      const { textContent } = e.target;
+      const trimmedText = textContent ? textContent.trim() : '';
+      const selection = this.get('selection');
+      const displayName = selection ? selection.displayName : null;
+      if (trimmedText === displayName) {
+        // Re-broadcast selected value if the user clicks on a previously
+        // selected option because power-select will not call the `onchange`
+        // method.
+        this._broadcast(MESSAGE_TYPES.OPERATOR_SELECTED, selection);
+      }
     }
   },
 
@@ -206,11 +222,11 @@ export default Component.extend({
     const trigger = this.element.querySelector('.pill-operator input');
     if (trigger) {
       trigger.focus();
-      if (this.get('isOperatorCursorLeft')) {
+      if (this.get('isFocusAtBeginning')) {
         // Set the cursor position on the next run loop.
         next(this, () => {
           trigger.setSelectionRange(0, 0);
-          this.set('isOperatorCursorLeft', false);
+          this.set('isFocusAtBeginning', false);
         });
       }
     }
