@@ -16,7 +16,7 @@ module('Integration | Component | delete-pill', function(hooks) {
     assert.expect(1);
 
     this.set('sendMessage', (messageType) => {
-      assert.equal(messageType, MESSAGE_TYPES.PILL_DELETED, 'the correct message type is sent when delete is clicked');
+      assert.equal(messageType, MESSAGE_TYPES.DELETE_CLICKED, 'the correct message type is sent when delete is clicked');
     });
 
     await render(hbs`{{query-container/delete-pill sendMessage=sendMessage}}`);

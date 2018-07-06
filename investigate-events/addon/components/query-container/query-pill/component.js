@@ -166,7 +166,7 @@ export default Component.extend({
       [MESSAGE_TYPES.OPERATOR_CLICKED]: () => this._operatorClicked(),
       [MESSAGE_TYPES.OPERATOR_ESCAPE_KEY]: () => this._cancelPillCreation(),
       [MESSAGE_TYPES.OPERATOR_SELECTED]: (data) => this._operatorSelected(data),
-      [MESSAGE_TYPES.PILL_DELETED]: (data) => this._deletePill(data),
+      [MESSAGE_TYPES.DELETE_CLICKED]: (data) => this._deletePill(data),
       [MESSAGE_TYPES.VALUE_ARROW_LEFT_KEY]: (data) => this._valueArrowLeft(data),
       [MESSAGE_TYPES.VALUE_ARROW_RIGHT_KEY]: (data) => this._rightArrowKeyPressed(data),
       [MESSAGE_TYPES.VALUE_BACKSPACE_KEY]: () => this._valueBackspace(),

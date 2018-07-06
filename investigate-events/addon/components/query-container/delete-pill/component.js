@@ -14,7 +14,7 @@ export default Component.extend({
   // Send PILL DELETED action up, but trap the click
   // event
   click() {
-    this.get('sendMessage')(MESSAGE_TYPES.PILL_DELETED);
+    this.get('sendMessage')(MESSAGE_TYPES.DELETE_CLICKED);
     return false;
   }
 });
