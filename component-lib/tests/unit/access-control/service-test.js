@@ -269,3 +269,15 @@ test('hasConfigAccess is set when required roles are included', function(assert)
   assert.equal(service.get('hasConfigAccess'), true);
   assert.equal(service.get('hasLiveFeedsAccess'), true);
 });
+
+test('hasUEBAAccess is set when required roles are included', function(assert) {
+  const service = this.subject();
+  service.set('authorities', []);
+  assert.equal(service.get('hasUEBAAccess'), false);
+  service.set('authorities', ['Analyst']);
+  assert.equal(service.get('hasUEBAAccess'), false);
+  service.set('authorities', ['Administrators']);
+  assert.equal(service.get('hasUEBAAccess'), true);
+  service.set('authorities', ['UEBA_Analysts']);
+  assert.equal(service.get('hasUEBAAccess'), true);
+});

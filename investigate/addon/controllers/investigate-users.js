@@ -1,4 +1,5 @@
 import Controller from '@ember/controller';
+import { later } from '@ember/runloop';
 
 export default Controller.extend({
 
@@ -10,10 +11,12 @@ export default Controller.extend({
     // iframe's location.href to see if it's being redirected to the internal-error page. If so, we set the hasUEBAError
     // to true, and in the template show the marketing image.
     handleOnLoad() {
-      const locationReference = document.getElementById('ueba-iframe').contentWindow.location.href;
-      if (locationReference.indexOf('internal-error') >= 0) {
-        this.set('hasUEBAError', true);
-      }
+      later(this, () => {
+        const locationReference = document.getElementById('ueba-iframe').contentWindow.location.href;
+        if (locationReference.indexOf('internal-error') >= 0) {
+          this.set('hasUEBAError', true);
+        }
+      }, 200);
     }
   }
 });

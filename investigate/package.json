@@ -58,6 +58,7 @@
     "ember-lodash-shim": "2.0.5",
     "ember-cli-normalizr-shim": "^1.0.0",
     "ember-resolver": "^4.0.0",
+    "ember-sinon": "0.6.0",
     "ember-source": "3.0.0",
     "ember-symbol-observable": "1.0.1",
     "eslint-plugin-ember-suave": "^1.0.0",

@@ -4,6 +4,7 @@ import Service from '@ember/service';
 
 export default Service.extend({
   roles: config.roles || [],
+  authorities: config.authorities || [], // jwt decoded netwitness user "roles" (as opposed to permissions)
   // static permissions
   hasMonitorAccess: true,
 
@@ -206,6 +207,11 @@ export default Service.extend({
   },
 
   // End Admin Permissions
+
+  @computed('authorities.[]')
+  hasUEBAAccess(authorities) {
+    return authorities.includes('Administrators') || authorities.includes('UEBA_Analysts');
+  },
 
   @computed('hasInvestigateAccess', 'hasInvestigateEmberAccess', 'hasInvestigateClassicAccess')
   investigateUrl: (hasInvestigateAccess, hasInvestigateEmberAccess, hasInvestigateClassicAccess) => {

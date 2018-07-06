@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
 import layout from './template';
+import { inject as service } from '@ember/service';
 
 // Investigate TABS, order is important
 const TABS = [
@@ -41,18 +42,22 @@ export default Component.extend({
   classNames: ['rsa-investigate js-test-investigate-root'],
   tagName: 'article',
   layout,
+  accessControl: service(),
 
   activeTab: 'investigate.investigate-events',
   iconBar: { isIconBar: true },
   main: { isMain: true },
 
-  @computed('activeTab')
-  tabs(activeTab) {
-    return TABS.map((t) => {
-      return {
-        ...t,
-        isActive: t.name === activeTab
-      };
-    });
+  @computed('activeTab', 'accessControl.hasUEBAAccess')
+  tabs(activeTab, hasUEBAAccess) {
+    let tabs = TABS.map((t) => ({
+      ...t,
+      isActive: t.name === activeTab
+    }));
+    if (!hasUEBAAccess) {
+      // remove the Users tab is the user does not have UEBA access
+      tabs = tabs.filter((tab) => tab.name !== 'investigate.investigate-users');
+    }
+    return tabs;
   }
 });

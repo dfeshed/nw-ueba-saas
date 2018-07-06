@@ -12,6 +12,7 @@ import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-rout
 import { updateLocaleByKey } from 'sa/actions/creators/preferences';
 import * as ACTION_TYPES from 'sa/actions/types';
 import config from '../config/environment';
+import { jwt_decode as jwtDecode } from 'ember-cli-jwt-decode';
 import $ from 'jquery';
 
 const contextAddToListModalId = 'addToList';
@@ -184,6 +185,21 @@ export default Route.extend(AuthenticatedRouteMixin, {
     });
   },
 
+  // Resolves the user's roles/authorities from the token
+  getRoles() {
+    const authConfig = config['ember-simple-auth'];
+
+    if (authConfig) {
+      const tokenKey = authConfig.accessTokenKey;
+      const token = localStorage.getItem(tokenKey);
+
+      if (token) {
+        const decodedToken = jwtDecode(token);
+        return decodedToken.authorities;
+      }
+    }
+  },
+
   afterModel(models, transition) {
     this._super(...arguments);
 
@@ -210,6 +226,12 @@ export default Route.extend(AuthenticatedRouteMixin, {
     const permissionsPromise = this.getPermissions();
     const timezonesPromise = this.getTimezones();
     const preferencesPromise = this.getPreferences();
+
+    // Resolve the user's roles/authorities from the JWT token and update accessControl
+    // These are used only for UEBA permission handling, since for the iframed UEBA app
+    // no real permissions exist, only user roles.
+    const roles = this.getRoles();
+    this.set('accessControl.authorities', roles);
 
     // Set feature flags
     this.getEndpointFeatures();
