@@ -225,12 +225,24 @@ module Fortscale.layouts.user {
                     },
                     username:{
                         field: 'username',
-                        template: '{{dataItem.username}}',
+                        template: '<fs-grid-link text="{{dataItem.username}}" url="{{dataItem.username_link}}"></fs-grid-link>',
                         sortable: false
                     },
                     full_name: {
                         field: 'full_name',
                         template: '{{dataItem.username}}',
+                        sortable: false
+                    },
+                    user: {
+                        field: 'user',
+
+                        template: '<fs-grid-link text="{{dataItem.user}}" url="{{dataItem.user_link}}"></fs-grid-link>',
+                        sortable: false
+                    }
+                    ,
+                    computer: {
+                        field: 'computer',
+                        template: '<fs-grid-link text="{{dataItem.computer}}" url="{{dataItem.computer_link}}"></fs-grid-link>',
                         sortable: false
                     }
                 }
@@ -293,4 +305,3 @@ module Fortscale.layouts.user {
 }
 
 
-// evidences/22960e66-eff9-4f7d-a2b1-b3a2eaa1d4e6/events?page=1&size=10&sort_direction=DESC&sort_field=session_score

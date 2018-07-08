@@ -22,6 +22,7 @@ public class DataEntityFieldConfig {
     private List<String> valueList;
 	private String shownForSpecificEntity;
     private String[] jsonPath;
+    private String linkedValueFieldName;
 
     public static final String IS_LOGICAL_ONLY = "is_logical_only";
     public static final String IS_TOKENIZED = "is_tokenized";
@@ -190,5 +191,14 @@ public class DataEntityFieldConfig {
 
     public void setJsonPath(String[] jsonPath) {
         this.jsonPath = jsonPath;
+    }
+
+
+    public String getLinkedValueFieldName() {
+        return linkedValueFieldName;
+    }
+
+    public void setLinkedValueFieldName(String linkedValueFieldName) {
+        this.linkedValueFieldName = linkedValueFieldName;
     }
 }

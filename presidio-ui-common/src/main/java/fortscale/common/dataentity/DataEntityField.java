@@ -15,6 +15,13 @@ public class DataEntityField implements Comparable<DataEntityField> {
     private String[] jsonPath;
 
     /**
+     * Some fields can link to investigate, but need to use the value of the original field
+     * For example - normalized user name field, need to be linked to field "original user name" so the link to investigate will contain
+     * the original value and not the normalized value
+     */
+    private String linkedValueFieldName;
+
+    /**
      * for fields with close list of values, displayed in a select input
      */
     private List<String> valueList;
@@ -203,4 +210,11 @@ public class DataEntityField implements Comparable<DataEntityField> {
         return this.rank - o.rank;
     }
 
+    public String getLinkedValueFieldName() {
+        return linkedValueFieldName;
+    }
+
+    public void setLinkedValueFieldName(String linkedValueFieldName) {
+        this.linkedValueFieldName = linkedValueFieldName;
+    }
 }

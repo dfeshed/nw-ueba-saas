@@ -15,6 +15,7 @@
         'Fortscale.shared.components.fsSvgIcon',
         'Fortscale.shared.components.fsNanobar',
         'Fortscale.shared.components.fsTags',
+        'Fortscale.shared.components.fsGridLink',
 
         // Controls
         'Fortscale.shared.components.fsDatePicker',
