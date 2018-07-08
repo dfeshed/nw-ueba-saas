@@ -62,7 +62,7 @@
         <asm-commons.version>5.0.3</asm-commons.version>
         <commons-codec.version>1.9</commons-codec.version>
         <slf4j.version>1.7.25</slf4j.version>
-        <jackson.version>2.9.0</jackson.version>
+        <jackson.version>2.9.6</jackson.version>
 
         <!-- maven plugins versions -->
         <maven-download-plugin.version>1.1.0</maven-download-plugin.version>
