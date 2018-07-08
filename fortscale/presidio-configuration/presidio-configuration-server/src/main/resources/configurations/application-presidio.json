@@ -17,5 +17,9 @@
   },
   "dataPulling": {
     "source": "test"
+  },
+  "uiIntegration":{
+    "brokerId": "broker-uuid",
+    "adminServer": "admin-server-url"
   }
 }
