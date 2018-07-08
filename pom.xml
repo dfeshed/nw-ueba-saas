@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.13.RELEASE</version>
+        <version>1.5.14.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 	<groupId>presidio.ui</groupId>
@@ -36,9 +36,9 @@
         <org.springframework-version>4.3.8.RELEASE</org.springframework-version>
         <fongo.version>2.1.0</fongo.version>
         <quartz.version>2.2.1</quartz.version>
-        <jackson.version>2.9.0</jackson.version>
-        <jackson.dataformat.version>2.9.0</jackson.dataformat.version>
-        <jackson.datatype.version>2.9.0</jackson.datatype.version>
+        <jackson.version>2.9.6</jackson.version>
+        <jackson.dataformat.version>2.9.6</jackson.dataformat.version>
+        <jackson.datatype.version>2.9.6</jackson.datatype.version>
         <test.exclude>nothingToExlude</test.exclude>
         <test.include>**/*Test.java</test.include>
         <test.groups></test.groups>
