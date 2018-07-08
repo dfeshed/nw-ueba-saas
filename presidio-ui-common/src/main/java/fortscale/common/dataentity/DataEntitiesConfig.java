@@ -527,7 +527,12 @@ public class DataEntitiesConfig  implements EmbeddedValueResolverAware,Initializ
 
 				field.setShownForSpecificEntity(shownForSpecificEntity);
 
-
+                String linkedValueFieldName = fieldConfig.getLinkedValueFieldName();
+                if (linkedValueFieldName == null){
+                    linkedValueFieldName = getExtendableValue(entityId, "field", fieldId, "linked_value_field_name");
+                    fieldConfig.setLinkedValueFieldName(linkedValueFieldName);
+                }
+                field.setLinkedValueFieldName(fieldConfig.getLinkedValueFieldName());
 
 
                 Boolean isSearchable = fieldConfig.isSearchable();

@@ -14,6 +14,7 @@ import fortscale.domain.historical.data.SupportingInformationSingleKey;
 import fortscale.domain.historical.data.SupportingInformationTimestampKey;
 import fortscale.presidio.output.client.api.AlertsPresidioOutputClient;
 import fortscale.services.EvidencesService;
+import fortscale.services.NwInvestigateHelper;
 import fortscale.services.UserService;
 import fortscale.services.presidio.core.converters.IndicatorConverter;
 import fortscale.temp.EvidenceMockBuilder;
@@ -32,6 +33,11 @@ import presidio.output.client.client.ApiClient;
 import presidio.output.client.client.ApiException;
 import presidio.output.client.model.*;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.*;
 import java.util.List;
 import java.util.TreeMap;
@@ -46,8 +52,10 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 
 	public static final int DEFAULT_EVENT_PAGE_SIZE = 50;
 	public static final int DEFAULT_EVENT_PAGE_NUMBER = 0;
-	final String TAG_ANOMALY_TYPE_FIELD_NAME = "tag";
-	final String TAG_DATA_ENTITY ="active_directory";
+	public static final String LINK_POSTFIX_FOR_UI = "_link";
+	public NwInvestigateHelper nwInvestigateHelper;
+//	final String TAG_ANOMALY_TYPE_FIELD_NAME = "tag";
+//	final String TAG_DATA_ENTITY ="active_directory";
 
 	private static Logger logger = Logger.getLogger(UserServiceImpl.class);
 
@@ -75,11 +83,18 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 	 */
 	private NavigableMap<Integer,Severity> scoreToSeverity = new TreeMap<>();
 
-	public EvidencesServiceImpl(DataEntitiesConfig dataEntitiesConfig, UserService userService, IndicatorConverter indicatorConverter, AlertsPresidioOutputClient remoteAlertClientService) {
+	public EvidencesServiceImpl(
+			DataEntitiesConfig dataEntitiesConfig,
+			UserService userService,
+			IndicatorConverter indicatorConverter,
+			AlertsPresidioOutputClient remoteAlertClientService,
+			NwInvestigateHelper  nwInvestigateHelper
+	) {
 		this.dataEntitiesConfig = dataEntitiesConfig;
 		this.userService = userService;
 		this.indicatorConverter = indicatorConverter;
 		this.remoteAlertClientService = remoteAlertClientService;
+		this.nwInvestigateHelper = nwInvestigateHelper;
 	}
 
 	@Override
@@ -263,9 +278,11 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 			Evidence indicator = findById(evidenceId);
 			DataEntity dataEntity = dataEntitiesConfig.getAllLeafeEntities().get(indicator.getDataEntitiesIds().get(0));
 			EventsWrapper eventsWrapper = remoteAlertClientService.getConterollerApi().getIndicatorEventsByAlert(evidenceId,"0",eventQuery);
+			LocalDateTime startEvidenceTime = LocalDateTime.ofEpochSecond(indicator.getStartDate()/1000,0,ZoneOffset.UTC);
+
 
 			for (Map<String, Object> event:eventsWrapper.getEvents()){
-				Map<String, Object> fieldsToAppned = convertEventFields(dataEntity, event);
+				Map<String, Object> fieldsToAppned = convertEventFields(dataEntity, event,startEvidenceTime);
 				event.putAll(fieldsToAppned);
 			}
 
@@ -287,19 +304,55 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 	 * @param event
 	 * @return
 	 */
-	private Map<String,Object> convertEventFields(DataEntity dataEntity, Map<String, Object> event) {
+	private Map<String,Object> convertEventFields(
+			DataEntity dataEntity,
+			Map<String, Object> event,
+			LocalDateTime evidenceStartTime) {
 
 		Map<String,Object> additionalFields = new HashedMap();
+		LocalDateTime evidenceStartOfDay = evidenceStartTime.truncatedTo(ChronoUnit.DAYS);
+		LocalDateTime evidenceEndOfDay = evidenceStartOfDay.plusDays(1);
 
 		for (DataEntityField dataEntityField : dataEntity.getFields()){
 			String uiKey = dataEntityField.getId();
 			Object value = convertFieldValue(event, dataEntityField);
 
 			if (value!=null){
-				event.put(uiKey,value);
+				additionalFields.put(uiKey,value);
+
 			}
 		}
+
+		//After all key values was mapped, add links
+		for (DataEntityField dataEntityField : dataEntity.getFields()){
+			if (StringUtils.isNotBlank(dataEntityField.getLinkedValueFieldName())){
+				String uiKey = dataEntityField.getId();
+				Object unnormalizedValue = getFromAnyMap(dataEntityField.getLinkedValueFieldName(),event, additionalFields);
+				String link = "";
+				if (unnormalizedValue!=null){
+
+					link = nwInvestigateHelper.getLinkToInvestigate(unnormalizedValue,evidenceStartOfDay,evidenceEndOfDay);
+				}
+
+				additionalFields.put(uiKey+ LINK_POSTFIX_FOR_UI,link);
+
+
+			}
+		}
+
+
 		return additionalFields;
+	}
+
+	private Object getFromAnyMap(String key,Map<String,Object>... maps){
+		for (Map<String,Object> map: maps){
+			Object response = map.get(key);
+			if (response != null) {
+				return response;
+			}
+		}
+		//No map found
+		return null;
 	}
 
 	/**

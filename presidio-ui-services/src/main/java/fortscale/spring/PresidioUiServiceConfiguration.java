@@ -17,6 +17,7 @@ import fortscale.services.presidio.core.converters.UserConverterHelper;
 
 import fortscale.utils.configurations.ConfigrationServerClientUtils;
 
+import fortscale.utils.configurations.ConfigrationServerClientUtilsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
@@ -26,6 +27,7 @@ import presidio.utils.spring.PresidioUiUtilsConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 @Configuration
 
@@ -42,14 +44,11 @@ public class PresidioUiServiceConfiguration {
     String themesProfile;
 
 
-
     @Bean
     LocalizationService localizationService(){
         MemoryBasedCache memoryBasedCache = new MemoryBasedCache(1000,3600,String.class);
         return new LocalizationServiceImpl(memoryBasedCache, configrationServerClientUtils);
     }
-
-
 
 
     @Bean
@@ -70,10 +69,14 @@ public class PresidioUiServiceConfiguration {
     }
 
     @Bean
-    EvidencesService evidencesService(){
+    EvidencesService evidencesService() throws Exception {
+        Properties properties = configrationServerClientUtils.readConfigurationAsProperties("application-presidio",null);
 
+        String adminServerHostName = properties.getProperty("uiIntegration.adminServer");
+        String brokerEndPointId = properties.getProperty("uiIntegration.brokerId");
+        NwInvestigateHelper investigateHelper = new NwInvestigateHelperImpl(adminServerHostName, brokerEndPointId);
         IndicatorConverter indicatorConverter = new IndicatorConverter();
-        return new EvidencesServiceImpl(dataEntitiesConfig,userService(),indicatorConverter,remoteAlertClientService) ;
+        return new EvidencesServiceImpl(dataEntitiesConfig,userService(),indicatorConverter,remoteAlertClientService,investigateHelper) ;
 
     }
 

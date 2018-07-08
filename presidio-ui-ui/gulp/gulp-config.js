@@ -499,6 +499,7 @@ config.srcIndexAppScripts = _.map([
     'app/shared/components/fs-multiselect/fs-multiselect.directive.js',
     'app/shared/components/fs-multiselect-autocomplete/fs-multiselect-autocomplete.directive.js',
     'app/shared/components/fs-severity-tag/fs-severity-tag.component.ts',
+    'app/shared/components/fs-grid-link/fs-grid-link.component.ts',
     'app/shared/components/fs-percentage-circle/fs-percentage-circle.component.ts',
 
     'app/shared/components/fs-nanobar/fs-nanobar.directive.ts',
