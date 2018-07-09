@@ -14,6 +14,8 @@ const params = {
   st: 3
 };
 
+const ipv6Addresses = ['2001:0db8:85a3:0000:0000:8a2e:0370:7334', '2001:20::', '::ffff:0.0.0.0', '100::', 'fe80::', '::1', '2002::', '2001:db8::', '::ffff:0:255.255.255.255'];
+
 module('Unit | Helper | query utils', function(hooks) {
   setupTest(hooks);
 
@@ -184,7 +186,7 @@ module('Unit | Helper | query utils', function(hooks) {
   });
 
   test('clientSideParseAndValidate passes when metaFormat is IPv6 and value is in proper format', function(assert) {
-    assert.expect(1);
+    assert.expect(ipv6Addresses.length);
     const pillData = {
       meta: {
         format: 'IPv6',
@@ -192,12 +194,13 @@ module('Unit | Helper | query utils', function(hooks) {
         flags: -2147482621,
         displayName: 'foo'
       },
-      operator: '=',
-      value: '2001:0db8:85a3:0000:0000:8a2e:0370:7334'
+      operator: '='
     };
 
-    queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
+    ipv6Addresses.forEach((value) => {
+      queryUtils.clientSideParseAndValidate(pillData.meta.format, value)
     .then(() => assert.ok('Filter is valid'));
+    });
 
   });
 
