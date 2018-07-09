@@ -1,12 +1,14 @@
 package presidio.monitoring.elastic.allindexrepo;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.collections.MapUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.Operator;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
+import org.springframework.data.util.CloseableIterator;
 import presidio.monitoring.records.MetricDocument;
 
 import java.util.Collection;
@@ -61,7 +63,11 @@ public class MetricsAllIndexesRepositoryImpl implements MetricsAllIndexesReposit
                 .withIndices(MONITORING_ALIAS)
                 .build();
 
-        List<MetricDocument> metricDocuments = elasticsearchTemplate.queryForList(searchQuery, MetricDocument.class);
+        List<MetricDocument> metricDocuments;
+        try (CloseableIterator<MetricDocument> iterator = elasticsearchTemplate.stream(searchQuery, MetricDocument.class)) {
+            metricDocuments = IteratorUtils.toList(iterator);
+        }
+
         return metricDocuments;
     }
 }
