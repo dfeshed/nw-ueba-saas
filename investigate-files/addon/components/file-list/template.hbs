@@ -4,9 +4,17 @@
   columnsConfig=updatedColumns
   onRowClick=(action 'toggleSelectedRow')}}
   {{#file-list/header enableColumnFilter=true translateTitles=true enableColumnSelector=true as |column|}}
-    <span class='js-move-handle'>
-      {{t column.title}}
-    </span>
+     {{#if (eq column.dataType "checkbox")}}
+       <label class="rsa-form-checkbox-label {{concat 'column-selection-' column.field}} {{if isAllSelected 'checked'}}">
+          {{rsa-form-checkbox
+            checked=isALlSelected
+            change=(action 'toggleAllSelection')}}
+        </label>
+     {{else}}
+      <span class='js-move-handle'>
+        {{t column.title}}
+      </span>
+     {{/if}}
     {{! COLUMN SORT }}
     {{#unless column.disableSort}}
       {{file-list/sort-button sortField=sortField column=column isSortDescending=isSortDescending sortBy=(action 'sortBy')}}

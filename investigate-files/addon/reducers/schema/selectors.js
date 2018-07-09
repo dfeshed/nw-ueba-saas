@@ -29,6 +29,7 @@ const SUPPORTED_SORT_TYPES = [
   'fileStatus'
 ];
 
+
 const schema = (state) => state.files.schema.schema || Immutable.from([]);
 const _preferences = (state) => state.preferences.preferences;
 

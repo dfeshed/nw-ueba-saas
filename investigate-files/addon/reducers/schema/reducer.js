@@ -9,7 +9,6 @@ const schemaInitialState = Immutable.from({
   schemaLoading: true
 });
 
-
 const schemaReducer = handleActions({
   [ACTION_TYPES.SCHEMA_RETRIEVE]: (state, action) => {
     return handle(state, action, {

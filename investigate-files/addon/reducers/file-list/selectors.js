@@ -22,6 +22,7 @@ const _totalItems = (state) => state.files.fileList.totalItems;
 const _serviceList = (state) => state.files.fileList.listOfServices;
 const _context = (state) => state.files.fileList.lookupData;
 const _activeDataSourceTab = (state) => state.files.fileList.activeDataSourceTab || 'ALERT';
+const _selectedFileList = (state) => state.files.fileList.selectedFileList || [];
 
 export const fileCount = createSelector(
   files,
@@ -79,5 +80,25 @@ export const getContext = createSelector(
   [_context, _activeDataSourceTab],
   (context, riskPanelActiveTab) => {
     return prepareContext([context, riskPanelActiveTab]);
+  }
+);
+export const isAllSelected = createSelector(
+  [files, _selectedFileList],
+  (files, selectedFileList) => {
+    if (selectedFileList && selectedFileList.length) {
+      return files.length === selectedFileList.length;
+    }
+    return false;
+  }
+);
+export const processedFileList = createSelector(
+  [files, _selectedFileList],
+  (files, selectedFileList) => {
+    return files.map((file) => {
+      return {
+        ...file,
+        checked: selectedFileList.some((item) => item.id === file.id)
+      };
+    });
   }
 );

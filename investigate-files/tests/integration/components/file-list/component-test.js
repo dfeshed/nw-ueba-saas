@@ -32,7 +32,9 @@ const dataItems = [
       'timeStamp': '2016-09-14T09:43:27.000Z',
       'thumbprint': '4a14668158d79df2ac08a5ee77588e5c6a6d2c8f',
       'signer': 'ABC'
-    }
+    },
+    'id': '1',
+    'checksumsha256': 'abc'
   },
   {
     'firstFileName': 'vmwgfx.ko',
@@ -42,7 +44,9 @@ const dataItems = [
       'thumbprint': '4a14668158d79df2ac08a5ee77588e5c6a6d2c8f',
       'features': ['signed', 'valid'],
       'signer': 'XYZ'
-    }
+    },
+    'id': '2',
+    'checksumsha256': 'def'
   }
 
 ];
@@ -100,7 +104,10 @@ module('Integration | Component | file list', function(hooks) {
   });
 
   test('table still loading', async function(assert) {
-    new ReduxDataHelper(initState).areFilesLoading('sorting').build();
+    new ReduxDataHelper(initState)
+    .files(dataItems)
+    .schema(config)
+    .areFilesLoading('sorting').build();
     await render(hbs`{{file-list}}`);
     return settled().then(() => {
       assert.equal(find('.rsa-loader').classList.contains('is-larger'), true, 'Rsa loader displayed');
@@ -131,7 +138,7 @@ module('Integration | Component | file list', function(hooks) {
       .preferences({ filePreference })
       .build();
     await render(hbs`{{file-list}}`);
-    assert.equal(findAll('.rsa-data-table-header-cell').length, 3, 'Returned the number of columns of the datatable');
+    assert.equal(findAll('.rsa-data-table-header-cell').length, 4, 'Returned the number of columns of the datatable');
     assert.equal(findAll('.rsa-data-table-header .js-move-handle').length, 3, '3 movable columns present');
     assert.equal(findAll('.rsa-data-table-header-row .rsa-icon').length, 3, '3 sortable columns present');
   });
@@ -149,9 +156,7 @@ module('Integration | Component | file list', function(hooks) {
         }
       </style>
     {{file-list}}`);
-    assert.equal(findAll('.rsa-data-table-body-cell').length,
-      dataItems.length * 3,
-      'Returned the number of cells in data-table body');
+    assert.equal(findAll('.rsa-data-table-body-cell').length, 8, 'Returned the number of cells in data-table body');
   });
 
   test('Check that no results message rendered if no data items', async function(assert) {
@@ -167,6 +172,7 @@ module('Integration | Component | file list', function(hooks) {
     assert.expect(1);
     new ReduxDataHelper(initState)
       .schema(config)
+      .files(dataItems)
       .loadMoreStatus('stopped')
       .build();
     await render(hbs`<style>
@@ -213,8 +219,8 @@ module('Integration | Component | file list', function(hooks) {
       </style>
       {{file-list}}`);
     return settled().then(() => {
-      assert.equal(findAll('.rsa-data-table-body-cell')[0].textContent.trim(), 'unsigned', 'Testing of signature when it is not signed');
-      assert.equal(findAll('.rsa-data-table-body-cell')[1].textContent.trim(), 'signed,valid', 'Testing of signature when it is signed');
+      assert.equal(findAll('.rsa-data-table-body-cell')[1].textContent.trim(), 'unsigned', 'Testing of signature when it is not signed');
+      assert.equal(findAll('.rsa-data-table-body-cell')[3].textContent.trim(), 'signed,valid', 'Testing of signature when it is signed');
     });
   });
 
@@ -382,5 +388,27 @@ module('Integration | Component | file list', function(hooks) {
     await click(findAll('.rsa-data-table-body-row')[0]);
     state = this.owner.lookup('service:redux').getState();
     assert.equal(state.files.fileList.showRiskPanel, false, 'risk property panel closed after clicking the same row.');
+  });
+  test('on select all rows checkbox ', async function(assert) {
+    new ReduxDataHelper(initState)
+      .files(dataItems)
+      .schema(config)
+      .showRiskPanel(false)
+      .preferences({ filePreference })
+      .build();
+
+    await render(hbs`
+      <style>
+        box, section {
+          min-height: 1000px
+        }
+      </style>
+    {{file-list}}`);
+    await click(findAll('.rsa-form-checkbox')[0]);
+    let state = this.owner.lookup('service:redux').getState();
+    assert.equal(state.files.fileList.selectedFileList.length, 2, 'All files selected');
+    await click(findAll('.rsa-form-checkbox')[1]);
+    state = this.owner.lookup('service:redux').getState();
+    assert.equal(state.files.fileList.selectedFileList.length, 1, 'One file selected');
   });
 });

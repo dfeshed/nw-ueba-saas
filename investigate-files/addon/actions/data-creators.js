@@ -361,6 +361,12 @@ const fetchFileContext = (fileName) => {
 
 const toggleRiskPanel = (visibility) => ({ type: ACTION_TYPES.TOGGLE_RISK_PANEL_VISIBILITY, payload: visibility });
 
+const toggleFileSelection = (selectedFile) => ({ type: ACTION_TYPES.TOGGLE_SELECTED_FILE, payload: selectedFile });
+
+const selectAllFiles = () => ({ type: ACTION_TYPES.SELECT_ALL_FILES });
+
+const deSelectAllFiles = () => ({ type: ACTION_TYPES.DESELECT_ALL_FILES });
+
 export {
   addSystemFilter,
   removeFilter,
@@ -383,5 +389,8 @@ export {
   initializeFilesPreferences,
   setDataSourceTab,
   fetchFileContext,
-  toggleRiskPanel
+  toggleRiskPanel,
+  toggleFileSelection,
+  selectAllFiles,
+  deSelectAllFiles
 };

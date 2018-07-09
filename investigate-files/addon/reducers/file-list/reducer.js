@@ -21,7 +21,8 @@ const fileListState = Immutable.from({
   lookupData: [{}],
   showRiskPanel: false,
   contextError: null,
-  contextLoadingStatus: 'wait'
+  contextLoadingStatus: 'wait',
+  selectedFileList: []
 });
 
 const _handleAppendFiles = (action) => {
@@ -39,6 +40,19 @@ const _handleAppendFiles = (action) => {
   };
 };
 
+const _toggleSelectedFile = (state, payload) => {
+  const { selectedFileList } = state;
+  const { id, checksumSha256 } = payload;
+  let selected = [];
+  // Previously selected file
+  if (selectedFileList.some((file) => file.id === id)) {
+    selected = selectedFileList.filter((file) => file.id !== id);
+  } else {
+    selected = [...selectedFileList, { id, checksumSha256 }];
+  }
+  return state.set('selectedFileList', selected);
+
+};
 const fileListReducer = handleActions({
   [ACTION_TYPES.FETCH_NEXT_FILES]: (state, action) => {
     return handle(state, action, {
@@ -93,8 +107,13 @@ const fileListReducer = handleActions({
 
   [ACTION_TYPES.TOGGLE_RISK_PANEL_VISIBILITY]: (state, { payload }) => state.set('showRiskPanel', payload),
 
-  [ACTION_TYPES.CONTEXT_ERROR]: (state, { payload }) => state.set('contextError', payload)
+  [ACTION_TYPES.CONTEXT_ERROR]: (state, { payload }) => state.set('contextError', payload),
 
+  [ACTION_TYPES.TOGGLE_SELECTED_FILE]: (state, { payload }) => _toggleSelectedFile(state, payload),
+
+  [ACTION_TYPES.SELECT_ALL_FILES]: (state) => state.set('selectedFileList', state.files.map((file) => ({ id: file.id, checksumSha256: file.checksumSha256 }))),
+
+  [ACTION_TYPES.DESELECT_ALL_FILES]: (state) => state.set('selectedFileList', [])
 }, fileListState);
 
 export default fileListReducer;

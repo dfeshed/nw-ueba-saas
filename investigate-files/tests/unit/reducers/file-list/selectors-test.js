@@ -8,7 +8,9 @@ import {
   fileCountForDisplay,
   serviceList,
   getDataSourceTab,
-  getContext
+  getContext,
+  processedFileList,
+  isAllSelected
 } from 'investigate-files/reducers/file-list/selectors';
 
 module('Unit | selectors | file-list');
@@ -161,4 +163,36 @@ test('getContext returns alerts', function(assert) {
   const result = getContext(state);
   assert.equal(result.resultList.length, 2, '2 Alerts fetched');
 });
+test('processedFileList test', function(assert) {
+  const state = Immutable.from({
+    files: {
+      fileList: {
+        files: [ { id: 1 }, { id: 2 } ]
+      }
+    }
+  });
+  const result = processedFileList(state);
+  assert.equal(result.length, 2, '2 items expected');
+});
+test('isAllSelected test', function(assert) {
+  const state1 = Immutable.from({
+    files: {
+      fileList: {
+        files: [ { id: 1 }, { id: 2 } ]
+      }
+    }
+  });
 
+  const state2 = Immutable.from({
+    files: {
+      fileList: {
+        files: [ { id: 1 }, { id: 2 } ],
+        selectedFileList: [ { id: 1 }, { id: 2 } ]
+      }
+    }
+  });
+  const result1 = isAllSelected(state1);
+  const result2 = isAllSelected(state2);
+  assert.equal(result1, false, 'isAllSelected should be false');
+  assert.equal(result2, true, 'isAllSelected should be false');
+});
