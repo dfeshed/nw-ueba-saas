@@ -121,6 +121,29 @@
                     return value.toString();
                 }
             },
+            "array": {
+                id: "ARRAY",
+                name: "Array",
+                operators: ["equals", "notEquals", "contains", "in", "startsWith", "endsWith"],
+                parser: function (value) {
+                    if (value === undefined || value === null) {
+                        return value;
+                    }
+
+                    if (typeof(value) === "string") {
+                        return value;
+                    }
+
+                    if (Object(value) === value) {
+                        if (angular.isArray(value)) {
+                            return value;
+                        }
+                        return JSON.parse(value);
+                    }
+
+                    return value.toString();
+                }
+            },
             "capitalize": {
                 id: "CAPITALIZE",
                 name: "Capitalize",

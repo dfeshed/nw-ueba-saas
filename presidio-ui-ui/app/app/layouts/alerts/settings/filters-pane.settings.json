@@ -26,10 +26,6 @@
                 "value": "No feedback"
             },
             {
-                "id": "approved",
-                "value": "Actual risk"
-            },
-            {
                 "id": "rejected",
                 "value": "Not a risk"
             }

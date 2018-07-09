@@ -36,8 +36,8 @@ $clrAlertsFilterLabel: #004f8f;
 
             font-family: 'Open Sans', sans-serif;
             color: var(--main-widgets-titles-text-color);
-            font-size: 14px;
-            font-weight: 400;
+            font-size: 18px;
+            font-weight: 300;
 
             padding: 16px;
 
@@ -46,6 +46,7 @@ $clrAlertsFilterLabel: #004f8f;
                 height: $alertsFilterFilterIconSize;
                 fill: var(--main-widgets-titles-icon-fill);
                 display: inline;
+                padding-right: 10px;
             }
 
         }
