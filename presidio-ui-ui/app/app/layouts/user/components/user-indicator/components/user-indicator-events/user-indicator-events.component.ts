@@ -233,16 +233,44 @@ module Fortscale.layouts.user {
                         template: '{{dataItem.username}}',
                         sortable: false
                     },
+                    user_sid: {
+                        field: 'user_sid',
+
+                        template: '<fs-grid-link text="{{dataItem.user_sid}}" url="{{dataItem.user_sid_link}}"></fs-grid-link>',
+                        sortable: false
+                    },
+                    computer: {
+                        field: 'computer',
+                        template: '<fs-grid-link text="{{dataItem.computer}}" url="{{dataItem.computer_link}}"></fs-grid-link>',
+                        sortable: false
+                    },
+                    src_device_id: {
+                        field: 'src_device_id',
+                        template: '<fs-grid-link text="{{dataItem.src_device_id}}" url="{{dataItem.src_device_id_link}}"></fs-grid-link>',
+                        sortable: false
+                    },
                     user: {
                         field: 'user',
 
                         template: '<fs-grid-link text="{{dataItem.user}}" url="{{dataItem.user_link}}"></fs-grid-link>',
                         sortable: false
-                    }
-                    ,
-                    computer: {
-                        field: 'computer',
-                        template: '<fs-grid-link text="{{dataItem.computer}}" url="{{dataItem.computer_link}}"></fs-grid-link>',
+                    },
+                    source_folder_path: {
+                        field: 'source_folder_path',
+
+                        template: '<fs-grid-link text="{{dataItem.source_folder_path}}" url="{{dataItem.source_folder_path_link}}"></fs-grid-link>',
+                        sortable: false
+                    },
+                    file_name: {
+                        field: 'file_name',
+
+                        template: '<fs-grid-link text="{{dataItem.file_name}}" url="{{dataItem.file_name_link}}"></fs-grid-link>',
+                        sortable: false
+                    },
+                    object_dn: {
+                        field: 'object_dn',
+
+                        template: '<fs-grid-link text="{{dataItem.object_dn}}" url="{{dataItem.object_dn_link}}"></fs-grid-link>',
                         sortable: false
                     }
                 }

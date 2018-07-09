@@ -398,6 +398,11 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 								value = WordUtils.capitalize((String)value);
 							}
 							break;
+						case ARRAY:
+							if (value instanceof Collection){
+								value = StringUtils.join((Collection)value,", ");
+							}
+							break;
 					}
 
 				}
