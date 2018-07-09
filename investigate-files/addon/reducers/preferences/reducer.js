@@ -11,7 +11,8 @@ const DEFAULT_FILE_PREFERENCES = {
       'signature.features',
       'size',
       'checksumSha256',
-      'entropy'
+      'entropy',
+      'fileStatus'
     ],
     sortField: '{ "sortField": "firstSeenTime", "isSortDescending": false }'
   }

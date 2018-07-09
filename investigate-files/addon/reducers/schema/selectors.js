@@ -25,7 +25,8 @@ const SUPPORTED_SORT_TYPES = [
   'format',
   'signature.features',
   'entropy',
-  'pe.resources.company'
+  'pe.resources.company',
+  'fileStatus'
 ];
 
 const schema = (state) => state.files.schema.schema || Immutable.from([]);

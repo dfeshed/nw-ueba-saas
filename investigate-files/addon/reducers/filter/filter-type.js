@@ -84,6 +84,15 @@ const FILTER_TYPES = [
     'isDefault': false,
     'filterType': 'alphaNumericChars',
     'invalidError': 'invalidCharsAlphaNumericOnly'
+  },
+  {
+    'propertyName': 'fileStatus',
+    'label': 'investigateFiles.fields.fileStatus',
+    'filterControl': 'content-filter/text-filter',
+    'selected': false,
+    'panelId': 'fileStatus',
+    'isDefault': false,
+    'invalidError': 'invalidCharsAlphaNumericOnly'
   }
 ];
 

@@ -29,7 +29,8 @@ test('should return the initial state', function(assert) {
           'signature.features',
           'size',
           'checksumSha256',
-          'entropy'
+          'entropy',
+          'fileStatus'
         ],
         sortField: '{ "sortField": "firstSeenTime", "isSortDescending": false }'
       }

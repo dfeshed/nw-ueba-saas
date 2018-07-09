@@ -2004,7 +2004,8 @@ export default {
       format: 'Format',
       sectionNames: 'Section Names',
       importedLibraries: 'Imported Libraries',
-      size: 'Size'
+      size: 'Size',
+      fileStatus: 'File Status'
     },
     sort: {
       fileNameDescending: 'Filename (descending)',
@@ -2014,7 +2015,9 @@ export default {
       formatAscending: 'Format (ascending)',
       formatDescending: 'Format (descending)',
       signatureAscending: 'Signature (ascending)',
-      signatureDescending: 'Signature (descending)'
+      signatureDescending: 'Signature (descending)',
+      fileStatusAscending: 'File Status (ascending)',
+      fileStatusDescending: 'File Status (descending)'
     }
   },
   investigateHosts: {
