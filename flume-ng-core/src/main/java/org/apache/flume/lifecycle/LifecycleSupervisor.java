@@ -111,6 +111,10 @@ public class LifecycleSupervisor implements LifecycleAware {
                 entry.getValue().status.desiredState = LifecycleState.STOP;
                 entry.getKey().stop();
             }
+            if(LifecycleState.ERROR.equals(entry.getKey().getLifecycleState())){
+                logger.info("current state {}. Changing to ERROR.", lifecycleState);
+                lifecycleState = LifecycleState.ERROR;
+            }
         }
 
         /* If we've failed, preserve the error state. */
@@ -119,7 +123,7 @@ public class LifecycleSupervisor implements LifecycleAware {
         }
         supervisedProcesses.clear();
         monitorFutures.clear();
-        logger.debug("Lifecycle supervisor stopped");
+        logger.info("Lifecycle supervisor stopped");
         if (totalSinkedEvents != 0) {
             logger.info("{} events were sinked in total.", totalSinkedEvents);
         }
