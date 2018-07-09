@@ -1,0 +1,11 @@
+{{#if hasBlock}}
+  {{yield
+    (hash
+      left=(component 'rsa-page-layout.zone' closeAction=(action 'close' 'left') zone='left-zone')
+      center=(component 'rsa-page-layout.zone' zone='center-zone' hasHeader=false)
+      right=(component 'rsa-page-layout.zone' closeAction=(action 'close' 'right') zone='right-zone')
+      open=(action 'open')
+      close=(action 'close')
+    )
+  }}
+{{/if}}

@@ -1,0 +1,7 @@
+{{#if hasBlock}}
+  {{#if hasHeader}}
+    {{yield (hash header=(component 'rsa-page-layout.rsa-header-with-close' closeAction=closeAction))}}
+  {{else}}
+    {{yield}}
+  {{/if}}
+{{/if}}

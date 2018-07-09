@@ -58,6 +58,7 @@ Router.map(function() {
       this.route('memorySize');
       this.route('tetheredPanels');
       this.route('contextMenu');
+      this.route('pageLayout');
     });
 
     this.route('form', function() {
