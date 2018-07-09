@@ -1,0 +1,26 @@
+{{#rsa-form-button isDisabled=hasNoSelection isIconOnly=showOnlyIcons class='file-status-button'}}
+  {{rsa-icon name='pencil-write-2' style='lined' title=(t 'investigateShared.endpoint.fileActions.editFileStatus')}}
+  {{#unless showOnlyIcons}}
+    {{t 'investigateShared.endpoint.fileActions.editFileStatus'}}
+  {{/unless}}
+{{/rsa-form-button}}
+
+{{endpoint/pivot-to-investigate
+  item=item
+  metaName=metaName
+  serviceList=serviceList
+  showOnlyIcons=showOnlyIcons
+  getAllServices=getAllServices
+  disabled=pivotInvestigateDisabled}}
+
+{{#rsa-form-button isIconOnly=true  title=(t 'investigateShared.endpoint.fileActions.watch') withDropdown=true isDisabled=true class='watch-button'}}
+  {{rsa-icon name='binoculars'}}
+{{/rsa-form-button}}
+
+{{#rsa-form-button isIconOnly=true isDisabled=true class='download-button'}}
+  {{rsa-icon name='download-2' title=(t 'investigateShared.endpoint.fileActions.download')}}
+{{/rsa-form-button}}
+
+{{#rsa-form-button isIconOnly=true isDisabled=true class='more-button'}}
+  {{rsa-icon name='navigation-show-more-1' title=(t 'investigateShared.endpoint.fileActions.more')}}
+{{/rsa-form-button}}

@@ -42,7 +42,7 @@ test('Investigate files container elements', function(assert) {
 
 test('Investigate files container, when files are available', function(assert) {
   const { files: { schema: { schema } } } = files;
-  new ReduxDataHelper(setState).schema(schema).fileCount(3).build();
+  new ReduxDataHelper(setState).schema(schema).fileCount(3).setSelectedFileList([]).build();
 
   this.render(hbs`{{investigate-files-container}}`);
 

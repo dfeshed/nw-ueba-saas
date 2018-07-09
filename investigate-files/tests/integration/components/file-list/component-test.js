@@ -249,28 +249,6 @@ module('Integration | Component | file list', function(hooks) {
     });
   });
 
-  test('Filename field has pivot to navigate icon', async function(assert) {
-    new ReduxDataHelper(initState)
-      .files([{ 'firstFileName': 'vmwgfx.ko' }])
-      .schema([{
-        name: 'firstFileName',
-        description: 'Filename',
-        dataType: 'STRING'
-      }])
-      .build();
-    await render(hbs`
-      <style>
-        box, section {
-          min-height: 1000px
-        }
-      </style>
-      {{file-list}}`);
-
-    return settled().then(() => {
-      assert.equal(findAll('.rsa-data-table-body-cell .pivot-to-investigate').length, 2, 'Pivot is present');
-    });
-  });
-
   // Yet to handle timezone
   skip('Date field displayed correctly', function(assert) {
     new ReduxDataHelper(initState)
@@ -323,6 +301,7 @@ module('Integration | Component | file list', function(hooks) {
       .files(dataItems)
       .schema(config)
       .loadMoreStatus('stopped')
+      .setSelectedFileList([])
       .build();
     await render(hbs`
       <style>
@@ -331,12 +310,12 @@ module('Integration | Component | file list', function(hooks) {
         }
       </style>
       {{file-list}}`);
-    assert.equal(findAll('.rsa-data-table-body-cell hbox')[0].textContent.trim(), 'systemd-journald.service', 'check filename');
-    findAll('.rsa-data-table-header-cell .column-sort')[0].click();
+    assert.equal(findAll('.rsa-data-table-body-cell')[1].textContent.trim(), 'systemd-journald.service', 'check filename');
+    findAll('.rsa-data-table-header-cell .column-sort')[1].click();
     return waitFor(() => {
       return findAll('.rsa-data-table-body-row').length === 11;
     }).then(() => {
-      assert.equal(findAll('.rsa-data-table-body-cell hbox')[0].textContent.trim(), 'xt_conntrack.ko', 'After sort filename is different');
+      assert.equal(findAll('.rsa-data-table-body-cell')[1].textContent.trim(), 'xt_conntrack.ko', 'After sort filename is different');
     });
   });
 

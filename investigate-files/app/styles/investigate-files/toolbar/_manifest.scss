@@ -1,7 +1,7 @@
 .rsa-files-toolbar {
 
   color: text-color(primary, lightest);
-  padding: rsa-whitespace();
+  padding: 1.5rem;
 
   .selection-count {
     padding-right: rsa-whitespace();
@@ -14,6 +14,19 @@
     color: text-color(primary, lighter);
     margin-right: rsa-whitespace(least);
     cursor: pointer;
+  }
+
+  .toolbar-actions {
+    position: absolute;
+    right:0;
+    .divider {
+      @include border-left(1px, solid, primary);
+      height: 2rem;
+      margin: .1rem .25rem .25rem;
+    }
+    .export-button{
+      padding-right: 20px;
+    }
   }
 
   &.more-filters-active {
@@ -50,11 +63,6 @@
   .rsa-power-select-label {
     vertical-align: middle;
     padding-right: 10px;
-  }
-
-
-  .export-button {
-    float: right;
   }
 
   .export-files-iframe {

@@ -1,7 +1,10 @@
-{{rsa-icon
-  name='expand-6'
-  title=(t 'investigateHosts.pivotToInvestigate.iconTitle')
-  click=(action 'toggleServiceSelection')}}
+{{#rsa-form-button isDisabled=disabled isIconOnly=showOnlyIcons class='pivot-to-investigate-button'
+                   click=(action 'toggleServiceSelection')}}
+  {{rsa-icon name='expand-6' title='Pivot to Investigate'}}
+  {{#unless showOnlyIcons}}
+    {{t 'investigateShared.endpoint.fileActions.pivotToInvestigate'}}
+  {{/unless}}
+{{/rsa-form-button}}
 
 {{#if showServiceModal}}
   {{#rsa-application-modal

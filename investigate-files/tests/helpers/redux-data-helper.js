@@ -124,4 +124,8 @@ export default class DataHelper {
     _set(this.state, 'files.fileList.showRiskPanel', flag);
     return this;
   }
+  setSelectedFileList(list) {
+    _set(this.state, 'files.fileList.selectedFileList', list);
+    return this;
+  }
 }

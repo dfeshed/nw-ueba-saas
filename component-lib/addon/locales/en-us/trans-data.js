@@ -2985,6 +2985,13 @@ export default {
           },
           resultCount: '(First {{count}} Results)'
         }
+      },
+      fileActions: {
+        editFileStatus: 'Edit File Status',
+        pivotToInvestigate: 'Pivot to Investigate',
+        watch: 'Watch',
+        download: 'Download',
+        more: 'More'
       }
     }
   },

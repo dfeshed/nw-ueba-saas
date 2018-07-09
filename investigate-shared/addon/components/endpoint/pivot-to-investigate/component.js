@@ -4,8 +4,7 @@ import moment from 'moment';
 import { next } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import { get } from '@ember/object';
-import { connect } from 'ember-redux';
-import { getAllServices } from 'investigate-files/actions/data-creators';
+import layout from './template';
 import { serializeQueryParams } from 'investigate-shared/utils/query-utils';
 
 const INVESTIGATE_META_MAPPING = {
@@ -14,14 +13,10 @@ const INVESTIGATE_META_MAPPING = {
   'firstFileName': 'filename'
 };
 
-const dispatchToActions = {
-  getAllServices
-};
+export default Component.extend({
+  layout,
 
-
-const PivotToInvestigate = Component.extend({
-
-  classNames: 'pivot-to-investigate',
+  classNames: 'actionbar-pivot-to-investigate',
 
   eventBus: service(),
 
@@ -33,12 +28,16 @@ const PivotToInvestigate = Component.extend({
 
   item: null,
 
+  getAllServices: null,
+
   timeRange: {
     value: 2,
     unit: 'days'
   },
 
   selectedService: null,
+
+  showOnlyIcons: false,
 
   @computed('selectedService')
   isDisabled(selectedService) {
@@ -129,7 +128,9 @@ const PivotToInvestigate = Component.extend({
 
     toggleServiceSelection() {
       this.set('showServiceModal', true);
-      this.send('getAllServices');
+      if (this.get('getAllServices')) {
+        this.getAllServices();
+      }
       next(() => {
         this.get('eventBus').trigger('rsa-application-modal-open-service-modal');
       });
@@ -152,5 +153,3 @@ const PivotToInvestigate = Component.extend({
     }
   }
 });
-
-export default connect(null, dispatchToActions)(PivotToInvestigate);
