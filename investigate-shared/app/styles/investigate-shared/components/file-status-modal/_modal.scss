@@ -1,0 +1,79 @@
+$modalHeaderHeight: 52px;
+$footerHeight: 43px;
+
+.rsa-application-modal.file-status-modal footer {
+  display: none;
+}
+
+.rsa-application-modal-content.file-status-modal {
+  width: 35%;
+  height: 660px;
+
+  .modal-content {
+    width: 100%;
+    height: calc(100% - (#{$modalHeaderHeight + $footerHeight}));
+    top: 0;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+    overflow-y: auto;
+
+    p {
+      @include rsa-font(paragraph);
+      padding: rsa-whitespace();
+    }
+    .rsa-data-table {
+      width: 100%;
+      height:100%;
+    }
+
+    .radio-controls, .comment-box {
+      padding: 0 rsa-whitespace() 0 rsa-whitespace();
+      font-weight: 400;
+      font-size: 1rem;
+      line-height: 2rem;
+    }
+
+    .comment-box .rsa-form-textarea {
+      textarea {
+        min-height: 5rem;
+      }
+    }
+
+    .black-list-options {
+      height: auto;
+      padding-left: rsa-whitespace(more);
+      .ember-power-select-trigger {
+        width: 30%;
+      }
+
+      box {
+        padding: 0 rsa-whitespace() rsa-whitespace() rsa-whitespace();
+        font-weight: 400;
+        font-size: 1rem;
+        line-height: 2rem;
+      }
+
+    }
+
+  }
+
+  footer {
+    height: $footerHeight;
+    box-sizing: border-box;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: rsa-whitespace(less);
+    background-color: background-color(primary, dark, nearly-transparent);
+
+    .modal-footer-buttons {
+      justify-content: flex-end;
+      .rsa-form-button-wrapper {
+        margin: 0 0 0 rsa-whitespace();
+      }
+    }
+  }
+}
+
+

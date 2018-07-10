@@ -53,7 +53,7 @@ const contextData = {
 test('should return the initial state', function(assert) {
   const result = reducer(undefined, {});
   assert.deepEqual(result, {
-    files: [],
+    fileData: {},
     areFilesLoading: 'wait',
     loadMoreStatus: 'stopped',
     pageNumber: -1,
@@ -83,11 +83,11 @@ test('The RESET_DOWNLOAD_ID action reset the export link', function(assert) {
 
 test('RESET_FILES action reset files and page number', function(assert) {
   const previous = Immutable.from({
-    files: [{ firstFileName: 'test.dll' }],
+    fileData: { a: { firstFileName: 'test.dll' } },
     pageNumber: 0
   });
   const result = reducer(previous, { type: ACTION_TYPES.RESET_FILES });
-  assert.equal(result.files.length, 0);
+  assert.equal(Object.values(result.fileData).length, 0);
   assert.equal(result.pageNumber, -1);
 });
 
@@ -133,7 +133,7 @@ test('The DOWNLOAD_FILE_AS_CSV action will set the download id to state', functi
 
 test('FETCH_NEXT_FILES failure will set ', function(assert) {
   const previous = Immutable.from({
-    files: FILE_LIST,
+    fileData: FILE_LIST,
     loadMoreStatus: null
   });
   const errorAction = makePackAction(LIFECYCLE.FAILURE, {
@@ -145,7 +145,7 @@ test('FETCH_NEXT_FILES failure will set ', function(assert) {
 
 test('The FETCH_NEXT_FILES will append the paged response to state', function(assert) {
   const previous = Immutable.from({
-    files: FILE_LIST,
+    fileData: FILE_LIST,
     loadMoreStatus: null
   });
   const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_NEXT_FILES });
@@ -160,12 +160,12 @@ test('The FETCH_NEXT_FILES will append the paged response to state', function(as
   const newEndState = reducer(previous, successAction);
 
   assert.equal(newEndState.loadMoreStatus, 'completed');
-  assert.equal(newEndState.files.length, 4);
+  assert.equal(Object.values(newEndState.fileData).length, 4);
 });
 
 test('The FETCH_NEXT_FILES sets load more state properly', function(assert) {
   const previous = Immutable.from({
-    files: FILE_LIST,
+    fileData: FILE_LIST,
     loadMoreStatus: null
   });
   const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_NEXT_FILES });
@@ -180,7 +180,7 @@ test('The FETCH_NEXT_FILES sets load more state properly', function(assert) {
   const newEndState = reducer(previous, successAction);
 
   assert.equal(newEndState.loadMoreStatus, 'stopped', 'load more status is stopped');
-  assert.equal(newEndState.files.length, 4);
+  assert.equal(Object.values(newEndState.fileData).length, 4);
 
   const successAction1 = makePackAction(LIFECYCLE.SUCCESS, {
     type: ACTION_TYPES.FETCH_NEXT_FILES,
@@ -193,7 +193,7 @@ test('The FETCH_NEXT_FILES sets load more state properly', function(assert) {
 
 test('The FETCH_NEXT_FILES sets load more state properly when totalItems > 1000', function(assert) {
   const previous = Immutable.from({
-    files: FILE_LIST,
+    fileData: FILE_LIST,
     loadMoreStatus: null
   });
   const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_NEXT_FILES });
@@ -208,7 +208,7 @@ test('The FETCH_NEXT_FILES sets load more state properly when totalItems > 1000'
   const newEndState = reducer(previous, successAction);
 
   assert.equal(newEndState.loadMoreStatus, 'stopped', 'load more status is stopped');
-  assert.equal(newEndState.files.length, 4);
+  assert.equal(Object.values(newEndState.fileData).length, 4);
 
   const successAction1 = makePackAction(LIFECYCLE.SUCCESS, {
     type: ACTION_TYPES.FETCH_NEXT_FILES,
@@ -286,28 +286,32 @@ test('toggling selected file in filelist ', function(assert) {
 });
 test('SELECT ALL FILES in filelist ', function(assert) {
   const previous = Immutable.from({
-    files: [{
-      id: 1,
-      checksumSha256: 'ABC'
-    },
-    {
-      id: 2,
-      checksumSha256: 'EFG'
-    }]
+    fileData: {
+      1: {
+        id: 1,
+        checksumSha256: 'ABC'
+      },
+      2: {
+        id: 2,
+        checksumSha256: 'EFG'
+      }
+    }
   });
   const newEndState = reducer(previous, { type: ACTION_TYPES.SELECT_ALL_FILES });
   assert.deepEqual(newEndState.selectedFileList.length, 2, 'state for selected all file list updated.');
 });
 test('DESELECT ALL FILES in filelist ', function(assert) {
   const previous = Immutable.from({
-    files: [{
-      id: 1,
-      checksumSha256: 'ABC'
-    },
-    {
-      id: 2,
-      checksumSha256: 'EFG'
-    }]
+    fileData: {
+      1: {
+        id: 1,
+        checksumSha256: 'ABC'
+      },
+      2: {
+        id: 2,
+        checksumSha256: 'EFG'
+      }
+    }
   });
   const newEndState = reducer(previous, { type: ACTION_TYPES.DESELECT_ALL_FILES });
   assert.deepEqual(newEndState.selectedFileList.length, 0, 'state for Deselected all file list updated.');

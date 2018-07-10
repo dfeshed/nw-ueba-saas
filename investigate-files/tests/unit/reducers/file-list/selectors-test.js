@@ -21,20 +21,20 @@ const STATE = Immutable.from({
     },
     fileList: {
       totalItems: 3,
-      files: [
-        {
+      fileData: {
+        a: {
           'firstFileName': 'xt_conntrack.ko',
           'format': 'ELF'
         },
-        {
+        ab: {
           'firstFileName': 'svchost.dll',
           'format': 'PE'
         },
-        {
+        ca: {
           'firstFileName': 'explorer.dll',
           'format': 'PE'
         }
-      ],
+      },
       downloadId: 123,
       listOfServices: []
     }
@@ -59,6 +59,10 @@ test('hasFiles', function(assert) {
 test('fileCountForDisplay', function(assert) {
   const result = fileCountForDisplay(STATE);
   assert.equal(result, 3, 'expected 3 files');
+  const fileData = {};
+  for (let i = 0; i < 5000; i++) {
+    fileData[i] = {};
+  }
   const newDisplay = fileCountForDisplay(Immutable.from({
     files: {
       filter: {
@@ -76,7 +80,7 @@ test('fileCountForDisplay', function(assert) {
       },
       fileList: {
         totalItems: '1000',
-        files: [...Array(2000)]
+        fileData
       }
     }
   }));
@@ -167,7 +171,7 @@ test('processedFileList test', function(assert) {
   const state = Immutable.from({
     files: {
       fileList: {
-        files: [ { id: 1 }, { id: 2 } ]
+        fileData: { 1: { id: 1 }, 2: { id: 2 } }
       }
     }
   });
@@ -186,7 +190,7 @@ test('isAllSelected test', function(assert) {
   const state2 = Immutable.from({
     files: {
       fileList: {
-        files: [ { id: 1 }, { id: 2 } ],
+        fileData: { 1: { id: 1 }, 2: { id: 2 } },
         selectedFileList: [ { id: 1 }, { id: 2 } ]
       }
     }

@@ -24,8 +24,8 @@ const filePreference = {
   sortField: '{ "sortField": "firstSeenTime", "isSortDescending": false }'
 };
 
-const dataItems = [
-  {
+const dataItems = {
+  abc: {
     'firstFileName': 'systemd-journald.service',
     'firstSeenTime': '2015-09-15T13:21:10.000Z',
     'signature': {
@@ -36,7 +36,7 @@ const dataItems = [
     'id': '1',
     'checksumsha256': 'abc'
   },
-  {
+  def: {
     'firstFileName': 'vmwgfx.ko',
     'firstSeenTime': '2015-08-17T03:21:10.000Z',
     'signature': {
@@ -48,8 +48,8 @@ const dataItems = [
     'id': '2',
     'checksumsha256': 'def'
   }
+};
 
-];
 
 const config = [
   {
@@ -161,7 +161,7 @@ module('Integration | Component | file list', function(hooks) {
 
   test('Check that no results message rendered if no data items', async function(assert) {
     new ReduxDataHelper(initState)
-      .files([])
+      .files({})
       .schema(config)
       .build();
     await render(hbs`{{file-list}}`);
@@ -186,22 +186,23 @@ module('Integration | Component | file list', function(hooks) {
 
   test('Signature field displayed correctly', async function(assert) {
     new ReduxDataHelper(initState)
-      .files([
-        {
+      .files({
+        a: {
           'signature': {
             'timeStamp': '2016-09-14T09:43:27.000Z',
             'thumbprint': '4a14668158d79df2ac08a5ee77588e5c6a6d2c8f',
             'signer': 'ABC'
           }
         },
-        {
+        b: {
           'signature': {
             'timeStamp': '2016-10-14T07:43:39.000Z',
             'thumbprint': '4a14668158d79df2ac08a5ee77588e5c6a6d2c8f',
             'features': ['signed', 'valid'],
             'signer': 'XYZ'
           }
-        }])
+        }
+      })
       .schema([{
         name: 'signature.features',
         dataType: 'STRING',
@@ -226,7 +227,7 @@ module('Integration | Component | file list', function(hooks) {
 
   test('Size field displayed correctly', async function(assert) {
     new ReduxDataHelper(initState)
-      .files([{ size: 8061 }])
+      .files({ a: { size: 8061 } })
       .schema([{
         'name': 'size',
         'dataType': 'LONG'
@@ -252,7 +253,7 @@ module('Integration | Component | file list', function(hooks) {
   // Yet to handle timezone
   skip('Date field displayed correctly', function(assert) {
     new ReduxDataHelper(initState)
-      .files([{ firstSeenTime: 1517978621000 }])
+      .files({ a: { firstSeenTime: 1517978621000 } })
       .schema([{
         name: 'firstSeenTime',
         description: 'First seen time',

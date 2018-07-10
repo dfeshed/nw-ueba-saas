@@ -56,8 +56,12 @@ export default class DataHelper {
   }
 
   fileCount(count) {
-    const array = new Array(count);
-    _set(this.state, 'files.fileList.files', array);
+
+    const data = {};
+    for (let i = 0; i < count; i++) {
+      data[i] = {};
+    }
+    _set(this.state, 'files.fileList.fileData', data);
     return this;
   }
 
@@ -87,7 +91,7 @@ export default class DataHelper {
   }
 
   files(files) {
-    _set(this.state, 'files.fileList.files', files);
+    _set(this.state, 'files.fileList.fileData', files);
     return this;
   }
 

@@ -4,21 +4,42 @@ import computed from 'ember-computed-decorators';
 
 export default Component.extend({
   layout,
+
+  tagName: 'hbox',
+
   classNames: ['file-actionbar'],
+
   showOnlyIcons: false,
+
   serviceList: null,
+
   item: null,
+
   metaName: null,
+
   getAllServices: null,
+
   selectedFileCount: null,
 
+  showFileStatusModal: false,
+
   @computed('selectedFileCount')
-  hasNoSelection(selectedFileCount) {
-    return !(selectedFileCount > 0);
+  hasNoSelection(selectedFilesList) {
+    return !(selectedFilesList > 0);
   },
 
   @computed('selectedFileCount')
-  pivotInvestigateDisabled(selectedFileCount) {
-    return !(selectedFileCount === 1);
+  pivotInvestigateDisabled(selectedFilesList) {
+    return !(selectedFilesList === 1);
+  },
+
+  actions: {
+    showEditFileStatusModal() {
+      this.set('showFileStatusModal', true);
+    },
+
+    onClose() {
+      this.set('showFileStatusModal', false);
+    }
   }
 });

@@ -16,7 +16,7 @@ const DATASOURCE_TABS = [
 ];
 
 // Contains all the expression saved + newly added expression from the UI
-const files = (state) => state.files.fileList.files;
+const files = (state) => state.files.fileList.fileData ? Object.values(state.files.fileList.fileData) : [];
 const _fileExportLinkId = (state) => state.files.fileList.downloadId;
 const _totalItems = (state) => state.files.fileList.totalItems;
 const _serviceList = (state) => state.files.fileList.listOfServices;
@@ -101,4 +101,9 @@ export const processedFileList = createSelector(
       };
     });
   }
+);
+
+export const checksums = createSelector(
+  _selectedFileList,
+  (selectedFileList) => selectedFileList.map((file) => file.checksumSha256)
 );

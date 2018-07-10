@@ -15,6 +15,8 @@ import { next } from '@ember/runloop';
 import { Schema, File } from './fetch';
 import { lookup } from 'ember-dependency-lookup';
 
+import { setFileStatus, getFileStatusHistory } from 'investigate-shared/actions/api/file/file-status';
+
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
 const _handleError = (response, type) => {
@@ -367,6 +369,34 @@ const selectAllFiles = () => ({ type: ACTION_TYPES.SELECT_ALL_FILES });
 
 const deSelectAllFiles = () => ({ type: ACTION_TYPES.DESELECT_ALL_FILES });
 
+const saveFileStatus = (checksums, data, callbacks = callbacksDefault) => {
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.SAVE_FILE_STATUS,
+      promise: setFileStatus({ ...data, checksums }),
+      meta: {
+        onSuccess: (response) => {
+          callbacks.onSuccess(response);
+        },
+        onFailure: (response) => {
+          callbacks.onFailure(response);
+        }
+      }
+    });
+  };
+};
+
+const getFileStatusChangeHistory = (checksum, requestLatestHistory) => ({
+  type: ACTION_TYPES.GET_FILE_STATUS_HISTORY,
+  promise: getFileStatusHistory(checksum, requestLatestHistory),
+  meta: {
+    onFailure: (response) => {
+      _handleError(ACTION_TYPES.GET_FILE_STATUS_HISTORY, response);
+    }
+  }
+});
+
+
 export {
   addSystemFilter,
   removeFilter,
@@ -392,5 +422,7 @@ export {
   toggleRiskPanel,
   toggleFileSelection,
   selectAllFiles,
-  deSelectAllFiles
+  deSelectAllFiles,
+  saveFileStatus,
+  getFileStatusChangeHistory
 };

@@ -1,9 +1,4 @@
-{{#rsa-form-button isDisabled=hasNoSelection isIconOnly=showOnlyIcons class='file-status-button'}}
-  {{rsa-icon name='pencil-write-2' style='lined' title=(t 'investigateShared.endpoint.fileActions.editFileStatus')}}
-  {{#unless showOnlyIcons}}
-    {{t 'investigateShared.endpoint.fileActions.editFileStatus'}}
-  {{/unless}}
-{{/rsa-form-button}}
+{{endpoint/edit-file-status isDisabled=hasNoSelection isIconOnly=showOnlyIcons onSaveFileStatus=onSaveFileStatus}}
 
 {{endpoint/pivot-to-investigate
   item=item

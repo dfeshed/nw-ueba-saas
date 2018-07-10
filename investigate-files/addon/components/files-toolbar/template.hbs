@@ -5,6 +5,7 @@
   {{files-toolbar/export-button}}
   <div class="divider"/>
   {{endpoint/file-actionbar
+    onSaveFileStatus = (action 'saveFileStatus' checksums)
     serviceList=serviceList
     metaName='checksumSha256'
     item=item

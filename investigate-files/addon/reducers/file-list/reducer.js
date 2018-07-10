@@ -1,12 +1,12 @@
 import { handleActions } from 'redux-actions';
 import { handle } from 'redux-pack';
 import Immutable from 'seamless-immutable';
-
+import { normalize } from 'normalizr';
 import * as ACTION_TYPES from 'investigate-files/actions/types';
 import { contextDataParser } from 'investigate-shared/helpers/context-parser';
+import { fileListSchema } from './schema';
 
 const fileListState = Immutable.from({
-  files: [],
   areFilesLoading: 'wait',
   loadMoreStatus: 'stopped',
   pageNumber: -1,
@@ -22,16 +22,18 @@ const fileListState = Immutable.from({
   showRiskPanel: false,
   contextError: null,
   contextLoadingStatus: 'wait',
-  selectedFileList: []
+  selectedFileList: [],
+  fileData: {}
 });
 
 const _handleAppendFiles = (action) => {
   return (state) => {
     const { payload: { data } } = action;
-    const { files } = state;
-
+    const { fileData } = state;
+    const normalizedData = normalize(action.payload.data.items, [fileListSchema]);
+    const { file } = normalizedData.entities;
     return state.merge({
-      files: [...files, ...data.items],
+      fileData: { ...fileData, ...file },
       totalItems: data.totalItems,
       pageNumber: data.pageNumber,
       loadMoreStatus: data.hasNext || data.totalItems >= 1000 ? 'stopped' : 'completed',
@@ -80,7 +82,7 @@ const fileListReducer = handleActions({
   }),
 
   [ACTION_TYPES.RESET_FILES]: (state) => state.merge({
-    files: [],
+    fileData: {},
     pageNumber: -1,
     totalItems: 0,
     areFilesLoading: 'sorting'
@@ -89,6 +91,23 @@ const fileListReducer = handleActions({
   [ACTION_TYPES.GET_LIST_OF_SERVICES]: (state, action) => {
     return handle(state, action, {
       success: (s) => s.set('listOfServices', action.payload.data)
+    });
+  },
+
+  [ACTION_TYPES.SAVE_FILE_STATUS]: (state, action) => {
+    return handle(state, action, {
+      success: (s, action) => {
+        const { fileData } = s;
+        const { payload: { request: { data } } } = action;
+        const { checksums, fileStatus } = data;
+        let newData;
+        for (let i = 0; i < checksums.length; i++) {
+          const file = fileData[checksums[i]];
+          newData = { ...file, fileStatus };
+          s = s.setIn(['fileData', `${checksums[i]}`], newData);
+        }
+        return s;
+      }
     });
   },
 
@@ -111,7 +130,7 @@ const fileListReducer = handleActions({
 
   [ACTION_TYPES.TOGGLE_SELECTED_FILE]: (state, { payload }) => _toggleSelectedFile(state, payload),
 
-  [ACTION_TYPES.SELECT_ALL_FILES]: (state) => state.set('selectedFileList', state.files.map((file) => ({ id: file.id, checksumSha256: file.checksumSha256 }))),
+  [ACTION_TYPES.SELECT_ALL_FILES]: (state) => state.set('selectedFileList', Object.values(state.fileData).map((file) => ({ id: file.id, checksumSha256: file.checksumSha256 }))),
 
   [ACTION_TYPES.DESELECT_ALL_FILES]: (state) => state.set('selectedFileList', [])
 }, fileListState);

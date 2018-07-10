@@ -2018,6 +2018,32 @@ export default {
       signatureDescending: 'Signature (descending)',
       fileStatusAscending: 'File Status (ascending)',
       fileStatusDescending: 'File Status (descending)'
+    },
+    editFileStatus: {
+      successMessage: 'File status updated successfully',
+      title: 'Edit File Status',
+      label: 'Content around assigning a file status and/or Greylist or Blacklist a file to block the file.Content changing the status of the certificate or automatic file status by changing file status and applying it to all files signed by it.',
+      warning: 'Some warning: Automatic file status should be applied if you are fully sure of the certificate signed by it.',
+      fileStatusTitle: 'File Status',
+      fileStatusOptions: {
+        neutral: 'Neutral',
+        whitelist: 'Whitelist',
+        graylist: 'Graylist',
+        blacklist: 'Blacklist',
+        knowngood: 'Known Good'
+      },
+      fileCategoryTitle: 'File Category',
+      remediationActionTitle: 'Remediation Action',
+      remediationActionOptions: {
+        blockFile: 'Block File',
+        blockQuarantineFile: 'Block and Quarantine File'
+      },
+      certificateStatusTitle: 'Certificate Status',
+      commentTitle: 'Comments',
+      saveBtn: 'Save',
+      cancelBtn: 'Cancel',
+      blacklistCertificate: 'Blacklist Certificate',
+      blacklistAllFiles: 'Blacklist all files signed by this certificate'
     }
   },
   investigateHosts: {

@@ -1,15 +1,17 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { fileCountForDisplay, serviceList } from 'investigate-files/reducers/file-list/selectors';
+import { fileCountForDisplay, serviceList, checksums } from 'investigate-files/reducers/file-list/selectors';
 import {
   exportFileAsCSV,
-  getAllServices
+  getAllServices,
+  saveFileStatus
 } from 'investigate-files/actions/data-creators';
 
 const stateToComputed = (state) => ({
   // Total number of files in search result
   totalItems: fileCountForDisplay(state),
   downloadId: state.files.fileList.downloadId,
+  checksums: checksums(state),
   selectedFileCount: state.files.fileList.selectedFileList.length,
   serviceList: serviceList(state),
   item: state.files.fileList.selectedFileList[0]
@@ -17,7 +19,8 @@ const stateToComputed = (state) => ({
 
 const dispatchToActions = {
   exportFileAsCSV,
-  getAllServices
+  getAllServices,
+  saveFileStatus
 };
 /**
  * Toolbar that provides search filtering.
