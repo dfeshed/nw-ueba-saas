@@ -405,4 +405,28 @@ module('Integration | Component | query-pills', function(hooks) {
       assert.equal(openNextGenPillForEditSpy.callCount, 1, 'The openNextGenPillForEditSpy pill action creator was called once');
     });
   });
+
+  test('Opening a pill for edit will deselect other pills', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .pillsDataPopulated()
+      .build();
+
+    this.set('filters', []);
+
+    await render(hbs`{{query-container/query-pills filters=filters isActive=true}}`);
+    const metas = findAll(PILL_SELECTORS.meta);
+    await click(`#${metas[0].id}`); // make it selected
+    await click(`#${metas[1].id}`); // make it selected
+
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 2, 'Two selecteded pills.');
+    assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Should be two pills plus template.');
+
+    doubleClick(PILL_SELECTORS.queryPill);
+
+    return settled().then(async () => {
+      assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'Pills no longer selected');
+    });
+  });
+
 });
