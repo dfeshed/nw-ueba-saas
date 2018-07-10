@@ -1,0 +1,375 @@
+{
+  "type": "chain",
+  "name": "file-windows-audit-transformer",
+  "transformerList": [
+    {
+      "type": "filter",
+      "name": "device-type-and-user-dst-filter",
+      "predicate": {
+        "type": "chain",
+        "name": "device-type-and-user-dst-predicate",
+        "operation": "AND",
+        "predicateList": [
+          {
+            "type": "regex",
+            "name": "user-dst-not-contain-machine",
+            "sourceKey": "user_dst",
+            "regex": "[^\\$]*"
+          },
+          {
+            "type": "regex",
+            "name": "device-type-snare-or-nic",
+            "sourceKey": "device_type",
+            "regex": "winevent_snare|winevent_nic"
+          }
+        ]
+      },
+      "filterIn": true
+    },
+    {
+      "type": "if_else",
+      "name": "obj-type-filter-for-4670",
+      "predicate": {
+        "type": "regex",
+        "name": "reference-id-equal-4670",
+        "sourceKey": "reference_id",
+        "regex": "4670"
+      },
+      "ifTransformer": {
+        "type": "filter",
+        "name": "obj-type-filter",
+        "predicate": {
+          "type": "regex",
+          "name": "obj-type-equal-file",
+          "sourceKey": "obj_type",
+          "regex": "File"
+        },
+        "filterIn": true
+      },
+      "elseTransformer": null
+    },
+    {
+      "type": "if_else",
+      "name": "category-filter-for-4663-and-4660",
+      "predicate": {
+        "type": "regex",
+        "name": "reference-id-equal-4663-or-4660",
+        "sourceKey": "reference_id",
+        "regex": "4663|4660"
+      },
+      "ifTransformer": {
+        "type": "filter",
+        "name": "category-filter",
+        "predicate": {
+          "type": "regex",
+          "name": "category-equal-file-system",
+          "sourceKey": "category",
+          "regex": "File System"
+        },
+        "filterIn": true
+      },
+      "elseTransformer": null
+    },
+    {
+      "type": "if_else",
+      "name": "accesses-filter-for-4663",
+      "predicate": {
+        "type": "regex",
+        "name": "reference-id-equal-4663",
+        "sourceKey": "reference_id",
+        "regex": "4663"
+      },
+      "ifTransformer": {
+        "type": "filter",
+        "name": "accesses-filter",
+        "predicate": {
+          "type": "regex",
+          "name": "accesses-equal-delete",
+          "sourceKey": "accesses",
+          "regex": "DELETE|DeleteChild"
+        },
+        "filterIn": false
+      },
+      "elseTransformer": null
+    },
+    {
+      "type": "regex_captor_and_formatter",
+      "name": "user-id-normalization",
+      "sourceKey": "user_dst",
+      "destinationKey": "userId",
+      "captureAndFormatConfigurations": [
+        {
+          "pattern": "CN=([^,]+)",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 1,
+              "caseFormat": "LOWER"
+            }
+          ]
+        },
+        {
+          "pattern": "CN=([^,]+),.+",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 1,
+              "caseFormat": "LOWER"
+            }
+          ]
+        },
+        {
+          "pattern": "(.+\\\\)+(.+)@.+",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 2,
+              "caseFormat": "LOWER"
+            }
+          ]
+        },
+        {
+          "pattern": "(.+\\\\)+([^@]+)",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 2,
+              "caseFormat": "LOWER"
+            }
+          ]
+        },
+        {
+          "pattern": "(.+)@.+",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 1,
+              "caseFormat": "LOWER"
+            }
+          ]
+        },
+        {
+          "pattern": ".+",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 0,
+              "caseFormat": "LOWER"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "switch_case",
+      "name": "src-file-path-switch-case",
+      "sourceKey": "reference_id",
+      "destinationKey": "srcFilePath",
+      "destinationDefaultValue": null,
+      "cases": [
+        {
+          "caseKey": "4663",
+          "caseValue": "${obj_name}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4670",
+          "caseValue": "${obj_name}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "5145",
+          "caseValue": "${filename}",
+          "isRegex": false
+        }
+      ]
+    },
+    {
+      "type": "if_else",
+      "name": "src-file-path-contains-empty-value-filter",
+      "predicate": {
+        "type": "regex",
+        "name": "src-file-path-contains-empty-value",
+        "sourceKey": "srcFilePath",
+        "regex": "-|<none>"
+      },
+      "ifTransformer": {
+        "type": "filter_field",
+        "name": "src-file-path-filter",
+        "keyToFilter": "srcFilePath"
+      },
+      "elseTransformer": null
+    },
+    {
+      "type": "switch_case",
+      "name": "is-src-drive-shared-switch-case",
+      "sourceKey": "srcFilePath",
+      "destinationKey": "isSrcDriveShared",
+      "destinationDefaultValue": false,
+      "cases": [
+        {
+          "caseKey": "^[\\\\]+.*$",
+          "caseValue": true,
+          "isRegex": true
+        }
+      ]
+    },
+    {
+      "type": "switch_case",
+      "name": "operation_type-according-to-event-code",
+      "sourceKey": "reference_id",
+      "destinationKey": "operationType",
+      "destinationDefaultValue": null,
+      "cases": [
+        {
+          "caseKey": "4660",
+          "caseValue": "FILE_DELETED",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4670",
+          "caseValue": "FILE_PERMISSION_CHANGED",
+          "isRegex": false
+        },
+        {
+          "caseKey": "5145",
+          "caseValue": "FILE_OPENED",
+          "isRegex": false
+        }
+      ]
+    },
+    {
+      "type": "switch_case",
+      "name": "operation_type-according-to-accesses",
+      "sourceKey": "accesses",
+      "destinationKey": "operationType",
+      "destinationDefaultValue": null,
+      "cases": [
+        {
+          "caseKey": ".*WriteData \\(or AddFile\\).*",
+          "caseValue": "FILE_CREATED",
+          "isRegex": true
+        },
+        {
+          "caseKey": ".*ReadData \\(or ListDirectory\\).*",
+          "caseValue": "FILE_OPENED",
+          "isRegex": true
+        },
+        {
+          "caseKey": ".*AppendData \\(or AddSubdirectory or CreatePipeInstance\\).*",
+          "caseValue": "FILE_MODIFIED",
+          "isRegex": true
+        },
+        {
+          "caseKey": ".*WRITE_DAC.*",
+          "caseValue": "FILE_WRITE_DAC_PERMISSION_CHANGED",
+          "isRegex": true
+        },
+        {
+          "caseKey": ".*WRITE_OWNER.*",
+          "caseValue": "FILE_WRITE_OWNER_PERMISSION_CHANGED",
+          "isRegex": true
+        }
+      ]
+    },
+    {
+      "type": "if_else",
+      "name": "file_to_folder_operation_type",
+      "predicate": {
+        "type": "regex",
+        "name": "is_src_file_path_folder",
+        "sourceKey": "srcFilePath",
+        "regex": "^(.*[\\\\\\\\])*[^\\\\.]*$"
+      },
+      "ifTransformer": {
+        "type": "find_and_replace",
+        "name": "file_to_folder_replacement_operation_type",
+        "key": "operationType",
+        "regex": "^FILE_",
+        "replacement": "FOLDER_"
+      },
+      "elseTransformer": null
+    },
+    {
+      "type": "if_else",
+      "name": "result-normalization",
+      "predicate": {
+        "type": "key_exist",
+        "name": "event-type-exist",
+        "key": "event_type",
+        "testNull": false
+      },
+      "ifTransformer": {
+        "type": "regex_captor_and_formatter",
+        "name": "result-normalization-on-event-type",
+        "sourceKey": "event_type",
+        "destinationKey": "result",
+        "captureAndFormatConfigurations": [
+          {
+            "pattern": ".*(?i:fail).*",
+            "format": "FAILURE",
+            "capturingGroupConfigurations": null
+          },
+          {
+            "pattern": ".*(?i:succ).*",
+            "format": "SUCCESS",
+            "capturingGroupConfigurations": null
+          }
+        ]
+      },
+      "elseTransformer": {
+        "type": "switch_case",
+        "name": "result-normalization-on-result-code",
+        "sourceKey": "result_code",
+        "destinationKey": "result",
+        "destinationDefaultValue": null,
+        "cases": [
+          {
+            "caseKey": "0x0",
+            "caseValue": "SUCCESS",
+            "isRegex": false
+          },
+          {
+            "caseKey": "0x.*",
+            "caseValue": "FAILURE",
+            "isRegex": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-event-source-id-to-event-id",
+      "sourceKey": "event_source_id",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "eventId"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-reference-id-to-data-source",
+      "sourceKey": "reference_id",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "dataSource"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "copy-user-dst",
+      "sourceKey": "user_dst",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "userName",
+        "userDisplayName"
+      ]
+    },
+    {
+      "type": "epoch",
+      "name": "date-time-millis-to-nano-representation",
+      "sourceKey": "event_time",
+      "destinationKey": "dateTime"
+    }
+  ]
+}
