@@ -42,7 +42,7 @@ public class EventDrivenSourceRunner extends SourceRunner {
     ChannelProcessor cp = source.getChannelProcessor();
     cp.initialize();
     source.start();
-    lifecycleState = LifecycleState.START;
+    lifecycleState = source.getLifecycleState();
   }
 
   @Override
@@ -51,7 +51,7 @@ public class EventDrivenSourceRunner extends SourceRunner {
     source.stop();
     ChannelProcessor cp = source.getChannelProcessor();
     cp.close();
-    lifecycleState = LifecycleState.STOP;
+    lifecycleState = source.getLifecycleState();
   }
 
   @Override

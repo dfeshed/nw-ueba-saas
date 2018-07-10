@@ -192,12 +192,24 @@ public class SinkRunner implements LifecycleAware {
             sinkRunner.lifecycleState = LifecycleState.STOP;
             shouldStop.set(true);
             SinkRunner.lifecycleSupervisor.stop();
-            new Thread("App-exit") {
-                @Override
-                public void run() {
-                    System.exit(0);
-                }
-            }.start();
+            if(LifecycleState.ERROR.equals(SinkRunner.lifecycleSupervisor.getLifecycleState())){
+                logger.info("going to exit. current state is ERROR");
+                new Thread("App-exit") {
+                    @Override
+                    public void run() {
+                        System.exit(1);
+                    }
+                }.start();
+            } else {
+                logger.info("going to exit. current state is not ERROR.");
+                new Thread("App-exit") {
+                    @Override
+                    public void run() {
+                        System.exit(0);
+                    }
+                }.start();
+            }
+
         }
 
         public void setSinkRunner(SinkRunner sinkRunner) {

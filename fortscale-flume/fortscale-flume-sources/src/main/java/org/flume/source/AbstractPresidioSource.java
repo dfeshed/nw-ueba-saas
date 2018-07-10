@@ -86,11 +86,16 @@ public abstract class AbstractPresidioSource extends AbstractEventDrivenSource i
 
         logger.info("{} is stopping...", getName());
         try {
-
             if (isBatch) {
+                LifecycleState state = getLifecycleState();
+                logger.info("current state: {}. Going to stop source {}", state, getName());
                 doStop();
-                setLifecycleState(LifecycleState.DONE);
-                logger.info("Source {} is done. Starting source-is-done flow", getName());
+                if(!LifecycleState.ERROR.equals(state)) {
+                    setLifecycleState(LifecycleState.DONE);
+                    logger.info("current state: {} Source: {}", getLifecycleState(), getName());
+                } else {
+                    logger.info("current state: {} Source: {}", getLifecycleState(), getName());
+                }
             }
         } catch (Exception e) {
             logger.error("Failed to stop {}", this, e);
