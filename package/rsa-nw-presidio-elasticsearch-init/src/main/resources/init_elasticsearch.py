@@ -11,14 +11,12 @@ import string
 import multiprocessing
 import subprocess
 
-
 MACHINE_URL = 'http://localhost:9200/'
 URL_KIBANA = MACHINE_URL + '.kibana/'
 URL_KIBANA_PATTERNS = URL_KIBANA + 'index-pattern/'
 URL_KIBANA_DASHBOARDS = URL_KIBANA + 'dashboard/'
 URL_KIBANA_SEARCHES = URL_KIBANA + 'search/'
 URL_KIBANA_VISUALIZATIONS = URL_KIBANA + 'visualization/'
-URL_KIBANA_DEFAULT = URL_KIBANA + 'config/5.4.0'
 INDEX_PATTERN = '/patterns'
 DASHBOARDS = '/dashboards'
 SEARCHES = '/searches'
@@ -77,12 +75,13 @@ def set_alias(indexJson):
 
 
 def create_default_pattern(file):
+    url_kibana_default = URL_KIBANA + 'config/' + get_elasticsearch_version()
     try:
         with open(file) as json_data:
             data = json.load(json_data)
-            put_request(URL_KIBANA_DEFAULT, json.dumps(data))
+            put_request(url_kibana_default, json.dumps(data))
     except Exception as e:
-        logging.error("failed to send file=%s to elastic search url=%s", file, URL_KIBANA_DEFAULT)
+        logging.error("failed to send file=%s to elastic search url=%s", file, url_kibana_default)
         raise e
 
 
@@ -97,7 +96,7 @@ def set_mapping(indexJson, name):
             put_request(url, data)
             logging.info("Set index %s mappings", name)
     except Exception as e:
-        logging.error("failed to send file=%s to elastic search url=%s", indexJson, url)
+        logging.error("failed to send file=%s to elastic search url=%s", indexJson)
         raise e
 
 
@@ -155,7 +154,7 @@ def create_kibana_pattern_from_mapping(name, mapping):
              "analyzed": False, "doc_values": False, "searchable": False, "aggregatable": False}
     fields = [SOURCE, ID, INDEX, SCORE, TYPE]
     for property in mapping:
-        if (type(property) is dict):
+        if type(property) is dict:
             for property in mapping:
                 enter_field_to_list(fields, fields_from_property(property, mapping[property]))
         else:
@@ -259,12 +258,15 @@ def init_elasticsearch(path):
 
 
 def update_visualization_by_num_of_cores(path):
-    with open(path,'r') as file:
+    with open(path, 'r') as file:
         filedata = file.read()
-    filedata=filedata.replace("${host.amount_of_cores}",str(multiprocessing.cpu_count()))
-    with open(path,'w') as file:
+    filedata = filedata.replace("${host.amount_of_cores}", str(multiprocessing.cpu_count()))
+    with open(path, 'w') as file:
         file.write(filedata)
 
+
+def get_elasticsearch_version():
+    return str(json.loads(requests.get(MACHINE_URL, headers=HEADERS).content)['version']['number'])
 
 
 def main(path, elasticsearch_url):
@@ -284,7 +286,8 @@ parser = argparse.ArgumentParser(description='init elasticseatch and kibana')
 parser.add_argument('--resources_path', type=str, required=True,
                     help='path of resources files for elasticsearch and kibana')
 parser.add_argument('--elasticsearch_url', type=str,
-                    default="http://localhost:9200",help="network address of elasticsearch to be updated with indexes and schema")
+                    default="http://localhost:9200",
+                    help="network address of elasticsearch to be updated with indexes and schema")
 args = parser.parse_args()
 
 main(args.resources_path, args.elasticsearch_url)

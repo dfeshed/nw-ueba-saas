@@ -116,7 +116,7 @@
         <rpm-maven-plugin.version>2.1.5</rpm-maven-plugin.version>
         <org.aspectj-version>1.8.7</org.aspectj-version>
         <spring-cloud-task-starter.version>1.1.0.M1</spring-cloud-task-starter.version>
-        <elasticsearch.version>5.4.0</elasticsearch.version>
+        <elasticsearch.version>5.6.9</elasticsearch.version>
         <spring-data-elasticsearch.version>2.1.4.RELEASE</spring-data-elasticsearch.version>
         <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
         <license-maven-plugin.version>1.14</license-maven-plugin.version>
