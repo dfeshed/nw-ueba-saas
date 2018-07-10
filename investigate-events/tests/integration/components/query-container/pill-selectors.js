@@ -31,6 +31,7 @@ export default {
   triggerValueInput,
   value: '.pill-value',
   valueInput,
+  activePill: '.query-pills .is-active',
   invalidPill: '.is-invalid',
   selectedPill: '.is-selected',
   populatedItem: '.is-populated',

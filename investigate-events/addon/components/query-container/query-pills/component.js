@@ -11,7 +11,8 @@ import {
   editNextGenPill,
   selectNextGenPills,
   deselectNextGenPills,
-  deselectAllNextGenPills
+  deselectAllNextGenPills,
+  openNextGenPillForEdit
 } from 'investigate-events/actions/next-gen-creators';
 
 const { log } = console;// eslint-disable-line no-unused-vars
@@ -26,7 +27,8 @@ const dispatchToActions = {
   editNextGenPill,
   selectNextGenPills,
   deselectNextGenPills,
-  deselectAllNextGenPills
+  deselectAllNextGenPills,
+  openNextGenPillForEdit
 };
 
 const QueryPills = Component.extend({
@@ -77,6 +79,7 @@ const QueryPills = Component.extend({
       [MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW]: () => this._pillEnteredForAppend(),
       [MESSAGE_TYPES.PILL_ENTERED_FOR_EDIT]: () => this._pillEnteredForEdit(),
       [MESSAGE_TYPES.PILL_ENTERED_FOR_INSERT_NEW]: (pillData, position) => this._pillEnteredForInsert(position),
+      [MESSAGE_TYPES.PILL_OPEN_FOR_EDIT]: (pillData) => this._pillOpenForEdit(pillData),
       [MESSAGE_TYPES.PILL_SELECTED]: (data) => this._pillsSelected([data]),
       [MESSAGE_TYPES.PILL_DESELECTED]: (data) => this._pillsDeselected([data])
 
@@ -205,6 +208,16 @@ const QueryPills = Component.extend({
     // END LEGACY FILTERS SET TO KEEP NEAR-TERM SEARCH WORKING
 
     this.send('deleteNextGenPill', { pillData });
+  },
+
+
+  /**
+   * Updates pill in state so it can be opened for editing
+   * @param {*} pillData The data for the pill
+   * @private
+   */
+  _pillOpenForEdit(pillData) {
+    this.send('openNextGenPillForEdit', { pillData });
   },
 
   /**

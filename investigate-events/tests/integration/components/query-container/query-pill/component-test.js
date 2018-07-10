@@ -8,9 +8,10 @@ import { blur, click, fillIn, find, findAll, focus, render, triggerKeyEvent, wai
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import { enrichedPillsData } from 'investigate-events/reducers/investigate/next-gen/selectors';
-import { createBasicPill, isIgnoredInitialEvent } from '../pill-util';
+import { createBasicPill, isIgnoredInitialEvent, doubleClick } from '../pill-util';
 import KEY_MAP from 'investigate-events/util/keys';
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
+
 
 // const { log } = console;
 
@@ -456,7 +457,6 @@ module('Integration | Component | query-pill', function(hooks) {
       }}
     `);
 
-    // Choose the first meta optio
     await click(PILL_SELECTORS.queryPill);
   });
 
@@ -483,7 +483,6 @@ module('Integration | Component | query-pill', function(hooks) {
       }}
     `);
 
-    // Choose the first meta optio
     await click(PILL_SELECTORS.queryPill);
   });
 
@@ -508,7 +507,86 @@ module('Integration | Component | query-pill', function(hooks) {
       }}
     `);
 
-    // Choose the first meta optio
     await click(PILL_SELECTORS.meta);
   });
+
+  test('Clicks are throttled', async function(assert) {
+    const done = assert.async();
+    assert.expect(1);
+    this.set('handleMessage', (messageType) => {
+      if (isIgnoredInitialEvent(messageType)) {
+        return;
+      }
+
+      assert.ok(messageType === MESSAGE_TYPES.PILL_SELECTED, 'Should be selected');
+      done();
+    });
+    this.set('pillData', _getEnrichedPill());
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=false
+        position=0
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    // DO NOT `await` these, we want two fast clicks
+    // so that only one handleMessage is called
+    click(PILL_SELECTORS.queryPill);
+    click(PILL_SELECTORS.queryPill);
+    // DO NOT `await` these
+  });
+
+  test('double clicks are throttled', async function(assert) {
+    const done = assert.async();
+    assert.expect(1);
+    this.set('handleMessage', (messageType) => {
+      if (isIgnoredInitialEvent(messageType)) {
+        return;
+      }
+
+      assert.ok(messageType === MESSAGE_TYPES.PILL_OPEN_FOR_EDIT, 'Should be opened for edit');
+      done();
+    });
+    this.set('pillData', _getEnrichedPill());
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=false
+        position=0
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    doubleClick(PILL_SELECTORS.queryPill);
+    doubleClick(PILL_SELECTORS.queryPill);
+  });
+
+  test('double clicks sends appropriate event', async function(assert) {
+    const done = assert.async();
+    this.set('handleMessage', (messageType) => {
+      if (isIgnoredInitialEvent(messageType)) {
+        return;
+      }
+
+      assert.ok(messageType === MESSAGE_TYPES.PILL_OPEN_FOR_EDIT, 'Should be opened for edit');
+      done();
+    });
+    this.set('pillData', _getEnrichedPill());
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=false
+        position=0
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    doubleClick(PILL_SELECTORS.queryPill);
+  });
+
 });

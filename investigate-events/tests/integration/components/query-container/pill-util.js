@@ -77,3 +77,23 @@ const ignoredInitialMessageTypes = [
 export const isIgnoredInitialEvent = (event) => {
   return ignoredInitialMessageTypes.includes(event);
 };
+
+/*
+ * Latest ember-test-helpers has a doubleClick, remove this
+ * when that is introduced.
+ *
+ * Note: this is not an async function
+ */
+export const doubleClick = (selector) => {
+  const element = document.querySelector(selector);
+  const opts = { view: window, bubbles: true, cancelable: true };
+
+  element.dispatchEvent(new MouseEvent('mousedown', opts));
+  element.dispatchEvent(new MouseEvent('focus', opts));
+  element.dispatchEvent(new MouseEvent('mouseup', opts));
+  element.dispatchEvent(new MouseEvent('click', opts));
+  element.dispatchEvent(new MouseEvent('mousedown', opts));
+  element.dispatchEvent(new MouseEvent('mouseup', opts));
+  element.dispatchEvent(new MouseEvent('click', opts));
+  element.dispatchEvent(new MouseEvent('dblclick', opts));
+};

@@ -121,3 +121,15 @@ export const selectNextGenPills = ({ pillData }) => ({
     pillData
   }
 });
+
+export const openNextGenPillForEdit = ({ pillData }) => {
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.OPEN_NEXT_GEN_PILL_FOR_EDIT,
+      payload: {
+        pillData
+      }
+    });
+    dispatch(deselectAllNextGenPills());
+  };
+};

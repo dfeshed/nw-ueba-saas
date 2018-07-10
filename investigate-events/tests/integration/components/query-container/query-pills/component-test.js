@@ -4,13 +4,14 @@ import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { click, findAll, render, settled, triggerKeyEvent } from '@ember/test-helpers';
 import sinon from 'sinon';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import nextGenCreators from 'investigate-events/actions/next-gen-creators';
-import { createBasicPill } from '../pill-util';
+import { createBasicPill, doubleClick } from '../pill-util';
 import PILL_SELECTORS from '../pill-selectors';
 import KEY_MAP from 'investigate-events/util/keys';
-import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { throwSocket } from '../../../../helpers/patch-socket';
 import { invalidServerResponseText } from '../../../../unit/actions/data';
 
@@ -21,6 +22,7 @@ const newActionSpy = sinon.spy(nextGenCreators, 'addNextGenPill');
 const deleteActionSpy = sinon.spy(nextGenCreators, 'deleteNextGenPill');
 const selectActionSpy = sinon.spy(nextGenCreators, 'selectNextGenPills');
 const deselectActionSpy = sinon.spy(nextGenCreators, 'deselectNextGenPills');
+const openNextGenPillForEditSpy = sinon.spy(nextGenCreators, 'openNextGenPillForEdit');
 
 const allPillsAreClosed = (assert) => {
   assert.equal(findAll(PILL_SELECTORS.pillOpen).length, 0, 'Class for pill open should not be present.');
@@ -45,6 +47,7 @@ module('Integration | Component | query-pills', function(hooks) {
     deleteActionSpy.reset();
     selectActionSpy.reset();
     deselectActionSpy.reset();
+    openNextGenPillForEditSpy.reset();
   });
 
   hooks.after(function() {
@@ -52,6 +55,7 @@ module('Integration | Component | query-pills', function(hooks) {
     deleteActionSpy.restore();
     selectActionSpy.restore();
     deselectActionSpy.restore();
+    openNextGenPillForEditSpy.restore();
   });
 
   test('Upon initialization, one active pill is created', async function(assert) {
@@ -367,5 +371,38 @@ module('Integration | Component | query-pills', function(hooks) {
 
     assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'Pill no longer selected');
     assert.equal(findAll(PILL_SELECTORS.queryPill).length, 4, 'Should be two pills plus template plus triggered pill.');
+  });
+
+  test('If a pill is being edited, it is active', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .pillsDataPopulated()
+      .markEditing(['1'])
+      .build();
+
+    this.set('filters', []);
+
+    await render(hbs`{{query-container/query-pills filters=filters isActive=true}}`);
+
+    assert.equal(findAll(PILL_SELECTORS.activePill).length, 2, 'Two active pills, one is the end of line template.');
+  });
+
+  test('If a pill is doubled clicked, a message will be sent to  mark it for editing', async function(assert) {
+    assert.expect(1);
+    new ReduxDataHelper(setState)
+      .language()
+      .pillsDataPopulated()
+      .build();
+
+    this.set('filters', []);
+
+    await render(hbs`{{query-container/query-pills filters=filters isActive=true}}`);
+
+    doubleClick(PILL_SELECTORS.queryPill);
+
+    return settled().then(async () => {
+      // action to store in state called
+      assert.equal(openNextGenPillForEditSpy.callCount, 1, 'The openNextGenPillForEditSpy pill action creator was called once');
+    });
   });
 });

@@ -1,4 +1,4 @@
-import { next, throttle } from '@ember/runloop';
+import { next, throttle, later } from '@ember/runloop';
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 import computed, { and, empty } from 'ember-computed-decorators';
@@ -64,6 +64,10 @@ export default Component.extend({
 
   // Whether or not a focusOut event should be processed
   shouldFocusOut: false,
+
+  // Tracks whether a double click has fired to single click
+  // events can be stopped
+  doubleClickFired: false,
 
   /**
    * Update the component once validation returns
@@ -221,6 +225,17 @@ export default Component.extend({
     }
   },
 
+  doubleClick() {
+    // set flag to prevent previous single-clicks from executing
+    this.set('doubleClickFired', true);
+
+    // If not active, and double clicking pill, then process
+    // this as a desire to open for edit
+    if (!this.get('isActive')) {
+      this._throttledPillOpenForEdit();
+    }
+  },
+
   focusOut({ originalEvent: focusEvent }) {
     this.set('shouldFocusOut', true);
 
@@ -314,16 +329,45 @@ export default Component.extend({
   // Rather than inspect events for targets, just throttle the
   // pill selection so multiple messages are not sent
   _throttledPillSelected() {
-    throttle(this, this._pillSelected, 100);
+    // Using 400 as 500 is the default timing for double-click.
+    // keeping clear of that
+    throttle(this, this._pillSelected, 400);
   },
 
   _pillSelected() {
+    // Waiting 175 milliseconds in order to give
+    // a double click a chance to occur. If we do not
+    // delay execution here, double clicks will execute
+    // click processing twice.
+    later(() => {
+      if (!this.get('doubleClickFired')) {
+        const pillData = this._createPillData();
+        if (pillData.isSelected) {
+          this._broadcast(MESSAGE_TYPES.PILL_DESELECTED, pillData);
+        } else {
+          this._broadcast(MESSAGE_TYPES.PILL_SELECTED, pillData);
+        }
+      } else {
+        // if double click had been fired, reset flag, however
+        // decent chance component no longer exists, so make
+        // that check
+        if (!this.isDestroyed || !this.isDestroying) {
+          this.set('doubleClickFired', false);
+        }
+      }
+    }, 175);
+  },
+
+  // Double clicks on this component or child components can multiply.
+  // Rather than inspect events for targets, just throttle the
+  // double click so multiple messages are not sent
+  _throttledPillOpenForEdit() {
+    throttle(this, this._pillOpenForEdit, 100);
+  },
+
+  _pillOpenForEdit() {
     const pillData = this._createPillData();
-    if (pillData.isSelected) {
-      this._broadcast(MESSAGE_TYPES.PILL_DESELECTED, pillData);
-    } else {
-      this._broadcast(MESSAGE_TYPES.PILL_SELECTED, pillData);
-    }
+    this._broadcast(MESSAGE_TYPES.PILL_OPEN_FOR_EDIT, pillData);
   },
 
   /**

@@ -208,4 +208,40 @@ module('Unit | Actions | NextGen Creators', function(hooks) {
       done();
     });
   });
+
+  test('openNextGenPillForEdit dispatches the proper events', function(assert) {
+    assert.expect(4);
+    const done = assert.async();
+    const state = new ReduxDataHelper()
+      .language()
+      .pillsDataPopulated()
+      .makeSelected(['1', '2'])
+      .build();
+
+    const secondDispatch = (action) => {
+      assert.equal(action.type, ACTION_TYPES.DESELECT_NEXT_GEN_PILLS, 'action has the correct type');
+      assert.deepEqual(action.payload.pillData, state.investigate.nextGen.pillsData, 'action pillData has the right value');
+      done();
+    };
+
+    const firstDispatch = (action) => {
+      if (typeof action === 'function') {
+        action(secondDispatch, () => state);
+      } else {
+        assert.equal(action.type, ACTION_TYPES.OPEN_NEXT_GEN_PILL_FOR_EDIT, 'action has the correct type');
+        assert.deepEqual(action.payload.pillData, { meta: 'ip.proto', operator: '=', value: 'boom' }, 'action pillData has the right value');
+      }
+    };
+
+    const thunk = nextGenCreators.openNextGenPillForEdit({
+      pillData: {
+        meta: 'ip.proto',
+        operator: '=',
+        value: 'boom'
+      },
+      position: 0
+    });
+    thunk(firstDispatch);
+  });
+
 });

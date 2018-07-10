@@ -15,6 +15,7 @@ const _initialPillState = {
   meta: undefined,
   operator: undefined,
   value: undefined,
+  isEditing: false,
   isSelected: false,
   isInvalid: false,
   validationError: undefined
@@ -54,8 +55,7 @@ const handlePillSelection = (state, payload, isSelected) => {
   return state.set('pillsData', newPillsData);
 };
 
-const _handlePillUpdate = (state, payload) => {
-  const { pillData } = payload;
+const _handlePillUpdate = (state, pillData) => {
   const newPillsData = _replacePill(state, pillData);
   return state.set('pillsData', newPillsData);
 };
@@ -80,7 +80,7 @@ export default handleActions({
   },
 
   [ACTION_TYPES.EDIT_NEXT_GEN_PILL]: (state, { payload }) => {
-    return _handlePillUpdate(state, payload);
+    return _handlePillUpdate(state, payload.pillData);
   },
 
   [ACTION_TYPES.VALIDATE_NEXT_GEN_PILL]: (state, action) => {
@@ -102,7 +102,6 @@ export default handleActions({
     });
   },
 
-
   [ACTION_TYPES.DELETE_NEXT_GEN_PILLS]: (state, { payload }) => {
     const { pillData } = payload;
     const deleteIds = pillData.map((pD) => pD.id);
@@ -116,6 +115,16 @@ export default handleActions({
 
   [ACTION_TYPES.DESELECT_NEXT_GEN_PILLS]: (state, { payload }) => {
     return handlePillSelection(state, payload, false);
+  },
+
+  [ACTION_TYPES.OPEN_NEXT_GEN_PILL_FOR_EDIT]: (state, { payload }) => {
+    const newPillData = {
+      ...payload.pillData,
+      isSelected: false,
+      isEditing: true
+    };
+    return _handlePillUpdate(state, newPillData);
   }
+
 
 }, _initialState);

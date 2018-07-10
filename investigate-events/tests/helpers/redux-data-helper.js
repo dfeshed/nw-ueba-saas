@@ -26,6 +26,7 @@ const DEFAULT_PILLS_DATA = [{
   meta: 'a',
   operator: '=',
   value: '\'x\'',
+  isEditing: false,
   isInvalid: false,
   isSelected: false
 }, {
@@ -33,6 +34,7 @@ const DEFAULT_PILLS_DATA = [{
   meta: 'b',
   operator: '=',
   value: '\'y\'',
+  isEditing: false,
   isInvalid: false,
   isSelected: false
 }];
@@ -42,6 +44,7 @@ const INVALID_PILL_DATA = [{
   meta: 'ip.proto',
   operator: '=',
   value: '\'boom\'',
+  isEditing: false,
   isInvalid: false,
   isSelected: false
 }, {
@@ -49,6 +52,7 @@ const INVALID_PILL_DATA = [{
   meta: 'starttime',
   operator: '=',
   value: '\'boom\'',
+  isEditing: false,
   isInvalid: true,
   validationError: 'something not right',
   isSelected: false
@@ -313,6 +317,20 @@ export default class DataHelper {
         pD = {
           ...pD,
           isSelected: true
+        };
+      }
+
+      return pD;
+    });
+    return this;
+  }
+
+  markEditing(pillIds = []) {
+    this.state.nextGen.pillsData = this.state.nextGen.pillsData.map((pD) => {
+      if (pillIds.includes(pD.id)) {
+        pD = {
+          ...pD,
+          isEditing: true
         };
       }
 

@@ -268,3 +268,28 @@ test('DESELECT_NEXT_GEN_PILLS deselects multiple pills', function(assert) {
   assert.ok(result.pillsData[0].isSelected === false, 'first pill is selected');
   assert.ok(result.pillsData[1].isSelected === false, 'second pill is selected');
 });
+
+//
+// OPEN NEXT GEN PILL FOR EDIT
+//
+test('OPEN_NEXT_GEN_PILL_FOR_EDIT marks pill for editing', function(assert) {
+  const state = new ReduxDataHelper()
+    .pillsDataPopulated()
+    .build()
+    .investigate
+    .nextGen;
+
+  const action = {
+    type: ACTION_TYPES.OPEN_NEXT_GEN_PILL_FOR_EDIT,
+    payload: {
+      pillData: {
+        id: '1',
+        foo: 'bar'
+      }
+    }
+  };
+  const result = reducer(state, action);
+
+  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
+  assert.ok(result.pillsData[0].isEditing === true, 'first pill is selected');
+});
