@@ -50,6 +50,7 @@ public class NetwitnessEventsStream extends AbstractNetwitnessEventsStream {
         private Instant endTime;
         private String query;
         private String timeField;
+        private String timeFieldMetaKey;
 
 
         public EventsStreamIterator(Schema schema, Instant startTime, Instant endTime, List<String> sources, Map<String, String> configurations ) {
@@ -59,6 +60,7 @@ public class NetwitnessEventsStream extends AbstractNetwitnessEventsStream {
                 this.query = configurations.get(QUERY);
                 this.timeField = configurations.get(TIME_FIELD);
                 this.stream = initializeStream(sources);
+                this.timeFieldMetaKey = timeField.replace('.','_');
             } catch (Exception ex) {
                 logger.error("start streaming failed", ex);
                 throw new RuntimeException("start streaming failed", ex);
@@ -92,7 +94,7 @@ public class NetwitnessEventsStream extends AbstractNetwitnessEventsStream {
             try {
                 event = stream.poll(10, TimeUnit.SECONDS);
 
-                if (event != null && endOfBatch(event)) {
+                if (endOfBatch(event)) {
                     event = null;
 
                 }
@@ -178,13 +180,15 @@ public class NetwitnessEventsStream extends AbstractNetwitnessEventsStream {
         }
 
         /**
-         * Decide when we've had enough?
+         * Decide when we've had enough
          */
-        private boolean endOfBatch(Map<String, Object> next) {
-            Object recordTime = next.get(timeField);
+        private boolean endOfBatch(Map<String, Object> event) {
+            if (event != null) {
+                Object recordTime = event.get(timeFieldMetaKey);
 
-            if (recordTime instanceof Long) {
-                return endTime == recordTime || endTime.isBefore(Instant.ofEpochMilli((long) recordTime));
+                if (recordTime instanceof Long) {
+                    return endTime.toEpochMilli() <= (long) recordTime;
+                }
             }
 
             return false;
