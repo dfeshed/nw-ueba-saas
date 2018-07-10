@@ -7,7 +7,7 @@ import { encodeMetaFilterConditions } from 'investigate-shared/actions/api/event
 import { getTimeRangeIdFromRange } from 'investigate-shared/utils/time-range-utils';
 import { lookup } from 'ember-dependency-lookup';
 
-const operators = ['!exists', 'exists', 'contains', 'begins', 'ends', '!=', '='];
+const operators = ['!exists', 'exists', 'contains', 'begins', 'ends', '<=', '>=', '!=', '='];
 const _isFloat = (value) => {
   return value.includes('.') && (value - value === 0);
 };
