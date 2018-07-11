@@ -1,4 +1,4 @@
-import { module, test } from 'qunit';
+import { module, skip, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
@@ -16,6 +16,8 @@ import * as MESSAGE_TYPES from 'investigate-events/components/query-container/me
 
 import PILL_SELECTORS from '../pill-selectors';
 
+const ARROW_LEFT_KEY = KEY_MAP.arrowLeft.code;
+// const ARROW_RIGHT_KEY = KEY_MAP.arrowRight.code;
 const ENTER_KEY = KEY_MAP.enter.code;
 const ESCAPE_KEY = KEY_MAP.escape.code;
 const X_KEY = 88;
@@ -657,5 +659,23 @@ module('Integration | Component | query-pill', function(hooks) {
     await selectChoose(PILL_SELECTORS.operator, '=');
     await fillIn(PILL_SELECTORS.valueInput, '"foo"');// double quotes
     await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', ENTER_KEY);
+  });
+
+  skip('cursor positioning', async function(assert) {
+    _setPillData(this);
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        pillData=pillData
+      }}
+    `);
+    await click(PILL_SELECTORS.value);
+    assert.equal(find(PILL_SELECTORS.valueInput).selectionStart, 3, 'not at end of value'); // 'a'|
+    await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', ARROW_LEFT_KEY);
+    await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', ARROW_LEFT_KEY);
+    await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', ARROW_LEFT_KEY);
+    // TODO: The following assert fails because the cursor does not seem to move
+    // to the left. Need to figure out how to make the cursor move.
+    assert.equal(find(PILL_SELECTORS.valueInput).selectionStart, 0, 'not at beginning of value'); // |'a'
   });
 });

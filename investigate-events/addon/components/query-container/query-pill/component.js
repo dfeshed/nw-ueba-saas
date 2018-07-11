@@ -485,6 +485,7 @@ export default Component.extend({
     this.setProperties({
       isMetaActive: true,
       isOperatorActive: false,
+      isOperatorFocusedAtBeginning: false,
       isValueActive: false
     });
   },
@@ -498,6 +499,7 @@ export default Component.extend({
     this.setProperties({
       isMetaActive: false,
       isOperatorActive: false,
+      isOperatorFocusedAtBeginning: false,
       isValueActive: true,
       isValueFocusedAtBeginning: true
     });
@@ -515,6 +517,7 @@ export default Component.extend({
       selectedOperator: null,
       isMetaActive: true,
       isOperatorActive: false,
+      isOperatorFocusedAtBeginning: false,
       isValueActive: false
     });
   },
@@ -572,6 +575,7 @@ export default Component.extend({
       isMetaActive: false,
       isOperatorActive: true,
       isValueActive: false,
+      isValueFocusedAtBeginning: false,
       valueString: data
     });
   },
@@ -587,6 +591,7 @@ export default Component.extend({
       isMetaActive: false,
       isOperatorActive: true,
       isValueActive: false,
+      isValueFocusedAtBeginning: false,
       valueString: null
     });
   },
