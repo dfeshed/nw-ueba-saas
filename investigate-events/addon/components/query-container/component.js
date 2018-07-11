@@ -52,6 +52,8 @@ const QueryContainer = Component.extend({
   tagName: 'nav',
   classNameBindings: ['queryView'],
 
+  filters: [],
+
   // should replace the computed with a selector once filters are in state
   @computed('filters.[]')
   freeFormText(filters) {
