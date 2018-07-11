@@ -217,6 +217,13 @@ const QueryPills = Component.extend({
    * @private
    */
   _pillOpenForEdit(pillData) {
+    // If pills are open for any reason, treat attempt to edit
+    // as a no-op as we do not allow pills to be interactive
+    // while pills are open.
+    if (this.get('isPillOpen')) {
+      return;
+    }
+
     this.send('openNextGenPillForEdit', { pillData });
   },
 

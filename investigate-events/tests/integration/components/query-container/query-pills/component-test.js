@@ -9,7 +9,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import nextGenCreators from 'investigate-events/actions/next-gen-creators';
-import { createBasicPill, doubleClick } from '../pill-util';
+import { createBasicPill, doubleClick, elementIsVisible, leaveNewPillTemplate } from '../pill-util';
 import PILL_SELECTORS from '../pill-selectors';
 import KEY_MAP from 'investigate-events/util/keys';
 import { throwSocket } from '../../../../helpers/patch-socket';
@@ -152,7 +152,7 @@ module('Integration | Component | query-pills', function(hooks) {
     this.set('filters', []);
 
     await render(hbs`{{query-container/query-pills isActive=true filters=filters}}`);
-    await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', ESCAPE_KEY);
+    await leaveNewPillTemplate();
     await click(PILL_SELECTORS.deletePill);
 
     return settled().then(async () => {
@@ -189,6 +189,18 @@ module('Integration | Component | query-pills', function(hooks) {
     });
   });
 
+  test('Attempting to edit a pill while a new pill is open will not open the pill for edit', async function(assert) {
+    new ReduxDataHelper(setState).language().pillsDataPopulated().build();
+    this.set('filters', []);
+
+    await render(hbs`{{query-container/query-pills isActive=true filters=filters}}`);
+    doubleClick(PILL_SELECTORS.queryPill, true);
+
+    return settled().then(async () => {
+      assert.equal(openNextGenPillForEditSpy.callCount, 0, 'The openNextGenPillForEditSpy pill action not called at all');
+    });
+  });
+
   test('Creating a pill leaves no classes indicating pills are open', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
@@ -214,10 +226,7 @@ module('Integration | Component | query-pills', function(hooks) {
     this.set('filters', []);
 
     await render(hbs`{{query-container/query-pills filters=filters isActive=true}}`);
-    await click(PILL_SELECTORS.newPillTrigger);
-    await focus(PILL_SELECTORS.triggerMetaPowerSelect);
-    await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', ESCAPE_KEY);
-
+    await leaveNewPillTemplate();
     allPillsAreClosed(assert);
   });
 
@@ -247,8 +256,7 @@ module('Integration | Component | query-pills', function(hooks) {
     await render(hbs`{{query-container/query-pills filters=filters isActive=true}}`);
 
     // escape out of template first
-    await focus(PILL_SELECTORS.metaPowerSelect);
-    await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', ESCAPE_KEY);
+    await leaveNewPillTemplate();
 
     await click(PILL_SELECTORS.newPillTrigger);
     await focus(PILL_SELECTORS.triggerMetaPowerSelect);
@@ -398,7 +406,11 @@ module('Integration | Component | query-pills', function(hooks) {
 
     await render(hbs`{{query-container/query-pills filters=filters isActive=true}}`);
 
-    doubleClick(PILL_SELECTORS.queryPill);
+    await leaveNewPillTemplate();
+
+    // pass flag to skip extra events because they fire when they
+    // shouldn't as dispatchEvent is sync
+    doubleClick(PILL_SELECTORS.queryPill, true);
 
     return settled().then(async () => {
       // action to store in state called
@@ -426,6 +438,60 @@ module('Integration | Component | query-pills', function(hooks) {
 
     return settled().then(async () => {
       assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'Pills no longer selected');
+    });
+  });
+
+  test('Attempting to delete a pill while a pill is being edited will not work', async function(assert) {
+    new ReduxDataHelper(setState).language().pillsDataPopulated().build();
+    this.set('filters', []);
+    await render(hbs`{{query-container/query-pills isActive=true filters=filters}}`);
+    doubleClick(PILL_SELECTORS.queryPill);
+    await click(PILL_SELECTORS.deletePill);
+    assert.equal(deleteActionSpy.callCount, 0, 'The delete pill action creator wasn\'t called');
+  });
+
+  test('While a pill is being edited you cannot edit another pill', async function(assert) {
+    new ReduxDataHelper(setState).language().pillsDataPopulated().build();
+    this.set('filters', []);
+    await render(hbs`{{query-container/query-pills isActive=true filters=filters}}`);
+
+    assert.equal(findAll(PILL_SELECTORS.activePill).length, 1, 'One active pill, at the end of line template.');
+
+    await leaveNewPillTemplate();
+
+    const pills = findAll(PILL_SELECTORS.meta);
+    doubleClick(`#${pills[0].id}`, true); // open pill for edit
+    assert.equal(openNextGenPillForEditSpy.callCount, 1, 'The openNextGenPillForEditSpy pill action creator was called once');
+    assert.equal(findAll(PILL_SELECTORS.activePill).length, 2, 'Now two active pills');
+
+    doubleClick(`#${pills[1].id}`); // attempt to open another pill for edit
+    assert.equal(openNextGenPillForEditSpy.callCount, 1, 'The openNextGenPillForEditSpy pill action still just called once');
+    assert.equal(findAll(PILL_SELECTORS.activePill).length, 2, 'Still two active pills');
+  });
+
+  test('While a pill is being edited you cannot click to add a pill using trigger or template', async function(assert) {
+    new ReduxDataHelper(setState).language().pillsDataPopulated().build();
+    this.set('filters', []);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true filters=filters}}
+      </div>
+    `);
+
+    assert.equal(findAll(PILL_SELECTORS.activePill).length, 1, 'One active pill, at the end of line template.');
+    await leaveNewPillTemplate();
+    const pills = findAll(PILL_SELECTORS.queryPill);
+    doubleClick(`#${pills[0].id}`); // open pill for edit
+
+    return settled().then(async () => {
+      const triggers = findAll(PILL_SELECTORS.newPillTrigger);
+      assert.equal(triggers.length, 2, 'Two triggers...');
+      assert.equal(elementIsVisible(triggers[0]), false, '...but first is not visible...');
+      assert.equal(elementIsVisible(triggers[1]), false, '...and neither is 2nd...');
+
+      const template = findAll(PILL_SELECTORS.newPillTemplate);
+      assert.equal(template.length, 1, 'One template...');
+      assert.equal(elementIsVisible(template[0]), false, '...but not visible');
     });
   });
 

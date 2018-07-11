@@ -1,11 +1,13 @@
-import { fillIn, find, waitUntil, triggerKeyEvent } from '@ember/test-helpers';
+import { click, fillIn, find, focus, triggerKeyEvent, waitUntil } from '@ember/test-helpers';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
 import PILL_SELECTORS from './pill-selectors';
+import KEY_MAP from 'investigate-events/util/keys';
 
 const ENTER_KEY = 13;
 const X_KEY = 88;
+const ESCAPE_KEY = KEY_MAP.escape.code;
 
 const ALL_META_OPTIONS = [
   { format: 'Float32', metaName: 'file.entropy', count: 4, flags: -2147482877, displayName: 'File Entropy', indexedBy: 'value', expensiveCount: 0 }, // IndexedByValue
@@ -84,16 +86,30 @@ export const isIgnoredInitialEvent = (event) => {
  *
  * Note: this is not an async function
  */
-export const doubleClick = (selector) => {
+export const doubleClick = (selector, skipExtraEvents) => {
   const element = document.querySelector(selector);
   const opts = { view: window, bubbles: true, cancelable: true };
 
-  element.dispatchEvent(new MouseEvent('mousedown', opts));
-  element.dispatchEvent(new MouseEvent('focus', opts));
-  element.dispatchEvent(new MouseEvent('mouseup', opts));
-  element.dispatchEvent(new MouseEvent('click', opts));
-  element.dispatchEvent(new MouseEvent('mousedown', opts));
-  element.dispatchEvent(new MouseEvent('mouseup', opts));
-  element.dispatchEvent(new MouseEvent('click', opts));
+  if (!skipExtraEvents) {
+    element.dispatchEvent(new MouseEvent('mousedown', opts));
+    element.dispatchEvent(new MouseEvent('focus', opts));
+    element.dispatchEvent(new MouseEvent('mouseup', opts));
+    element.dispatchEvent(new MouseEvent('click', opts));
+    element.dispatchEvent(new MouseEvent('mousedown', opts));
+    element.dispatchEvent(new MouseEvent('mouseup', opts));
+    element.dispatchEvent(new MouseEvent('click', opts));
+  }
+
   element.dispatchEvent(new MouseEvent('dblclick', opts));
+};
+
+export const elementIsVisible = (el) => {
+  const style = window.getComputedStyle(el);
+  return style.display !== 'none';
+};
+
+export const leaveNewPillTemplate = async () => {
+  await click(PILL_SELECTORS.newPillTrigger);
+  await focus(PILL_SELECTORS.triggerMetaPowerSelect);
+  await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', ESCAPE_KEY);
 };

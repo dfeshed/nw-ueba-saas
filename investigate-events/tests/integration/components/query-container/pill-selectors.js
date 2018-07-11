@@ -16,7 +16,7 @@ export default {
   metaInput: '.pill-meta input',
   metaSelectInput: '.pill-meta .ember-power-select-trigger input',
   metaTrigger,
-  newPillTemplate: 'new-pill-template',
+  newPillTemplate: '.new-pill-template',
   newPillTrigger: '.new-pill-trigger',
   newPillTriggerContainer,
   operator: '.pill-operator',
