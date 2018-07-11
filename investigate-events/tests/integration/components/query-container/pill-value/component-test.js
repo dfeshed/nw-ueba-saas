@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import hbs from 'htmlbars-inline-precompile';
-import { blur, click, fillIn, find, render, settled, triggerKeyEvent } from '@ember/test-helpers';
+import { click, find, render, settled, triggerKeyEvent } from '@ember/test-helpers';
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
 import KEY_MAP from 'investigate-events/util/keys';
 import PILL_SELECTORS from '../pill-selectors';
@@ -188,63 +188,5 @@ module('Integration | Component | Pill Value', function(hooks) {
       }}
     `);
     await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', ESCAPE_KEY);
-  });
-
-  test('Does not add quotes to a string if there are already single quotes', async function(assert) {
-    const done = assert.async();
-    this.set('handleMessage', async (type, data) => {
-      if (type === MESSAGE_TYPES.VALUE_ENTER_KEY) {
-        this.set('valueString', data);
-        assert.equal(data, '\'foo\'');
-        done();
-      }
-    });
-    await render(hbs`
-      {{query-container/pill-value
-        isActive=true
-        sendMessage=(action handleMessage)
-        valueString='\\'foo\\''
-      }}
-    `);
-    await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', ENTER_KEY);
-  });
-
-  test('replace double quotes with single quotes', async function(assert) {
-    const done = assert.async();
-    this.set('handleMessage', async (type, data) => {
-      if (type === MESSAGE_TYPES.VALUE_ENTER_KEY) {
-        this.set('valueString', data);
-        assert.equal(data, '\'foo\'');
-        done();
-      }
-    });
-    await render(hbs`
-      {{query-container/pill-value
-        isActive=true
-        sendMessage=(action handleMessage)
-        valueString='"foo"'
-      }}
-    `);
-    await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', ENTER_KEY);
-  });
-
-  test('does not add quotes if simply loosing focus', async function(assert) {
-    const done = assert.async(1);
-    this.set('handleMessage', async (type, data) => {
-      if (type === MESSAGE_TYPES.VALUE_SET) {
-        this.set('valueString', data);
-        assert.equal(data, 'foo');
-        done();
-      }
-    });
-    await render(hbs`
-      {{query-container/pill-value
-        isActive=true
-        sendMessage=(action handleMessage)
-      }}
-    `);
-    await focus(PILL_SELECTORS.valueInput);
-    await fillIn(PILL_SELECTORS.valueInput, 'foo');
-    await blur(PILL_SELECTORS.valueInput);
   });
 });

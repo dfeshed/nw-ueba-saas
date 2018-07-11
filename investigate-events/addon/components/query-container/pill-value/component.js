@@ -4,38 +4,9 @@ import { next, scheduleOnce } from '@ember/runloop';
 import * as MESSAGE_TYPES from '../message-types';
 import { isArrowLeft, isBackspace, isEnter, isEscape } from 'investigate-events/util/keys';
 import { htmlSafe } from '@ember/string';
+import { properlyQuoted } from 'investigate-events/util/quote';
 
 const { log } = console;// eslint-disable-line no-unused-vars
-
-const properlySingleQuoted = /^'(.*)'$/;
-const improperlyQuoted = /^('|")(.*)('|")$/;
-const escapeQuotes = (value) => value.replace("'", "\\'");
-const quote = (value) => {
-  let ret;
-
-  // If surrounded by single quotes, quick exit
-  if (properlySingleQuoted.test(value)) {
-    return value;
-  }
-
-  // Test if we have an improperly quoted string
-  const match = value.match(improperlyQuoted);
-  if (match) {
-    const [ fullVal, beginningQuote, val, endingQuote ] = match;
-    if (beginningQuote === endingQuote && endingQuote === '"') {
-      // Change double quotes to single quotes
-      ret = `'${escapeQuotes(val)}'`;
-    } else {
-      // Mixed quotes
-      ret = `'${escapeQuotes(fullVal)}'`;
-    }
-  } else {
-    // no match, must be bare string so quote it
-    ret = `'${escapeQuotes(value)}'`;
-  }
-
-  return ret;
-};
 
 export default Component.extend({
   classNameBindings: ['isPopulated', ':pill-value'],
@@ -80,7 +51,7 @@ export default Component.extend({
   valueDisplay(valueString) {
     let ret = valueString;
     if (typeof(valueString) === 'string') {
-      const match = valueString.match(properlySingleQuoted);
+      const match = valueString.match(properlyQuoted);
       if (match) {
         ret = htmlSafe(`<span class="quote-highlight">'</span>${match[1]}<span class="quote-highlight">'</span>`);
       }
@@ -134,7 +105,7 @@ export default Component.extend({
       if (isBackspace(event) && input.length === 0) {
         next(this, () => this._broadcast(MESSAGE_TYPES.VALUE_BACKSPACE_KEY));
       } else if (isEnter(event) && !this._isInputEmpty(input)) {
-        this._broadcast(MESSAGE_TYPES.VALUE_ENTER_KEY, quote(input));
+        this._broadcast(MESSAGE_TYPES.VALUE_ENTER_KEY, input);
       } else if (isEscape(event)) {
         this._broadcast(MESSAGE_TYPES.VALUE_ESCAPE_KEY);
       } else if (isArrowLeft(event) && event.target.selectionStart === 0) {
@@ -170,7 +141,7 @@ export default Component.extend({
   _isInputEmpty: (input) => {
     const trimmedInput = input.trim();
     const isEmpty = trimmedInput.length === 0;
-    const hasEmptyQuotes = trimmedInput.match(/^['"]\s*['"]$|^['"]$/);
+    const hasEmptyQuotes = trimmedInput.match(/^['"]\s*['"]$/);
     return isEmpty || (hasEmptyQuotes && hasEmptyQuotes.length > 0);
   }
 });

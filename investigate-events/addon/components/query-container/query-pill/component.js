@@ -5,6 +5,7 @@ import computed, { and, empty } from 'ember-computed-decorators';
 import _ from 'lodash';
 
 import * as MESSAGE_TYPES from '../message-types';
+import quote from 'investigate-events/util/quote';
 
 const { log } = console; // eslint-disable-line no-unused-vars
 
@@ -662,11 +663,11 @@ export default Component.extend({
    * @private
    */
   _createPillData(value = null) {
-    const meta = this.get('selectedMeta.metaName');
+    const meta = this.get('selectedMeta');
     const operator = this.get('selectedOperator.displayName');
 
     const pillData = {
-      meta,
+      meta: meta ? meta.metaName : null,
       operator
     };
 
@@ -676,7 +677,12 @@ export default Component.extend({
       pillData.value = this.get('pillData.value');
       pillData.isSelected = this.get('pillData.isSelected');
     } else {
-      pillData.value = value;
+      // Check what type of meta this is. If it's a string value, add quotes
+      if (meta && meta.format === 'Text' && value) {
+        pillData.value = quote(value);
+      } else {
+        pillData.value = value;
+      }
     }
 
     return pillData;

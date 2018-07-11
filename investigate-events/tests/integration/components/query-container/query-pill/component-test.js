@@ -12,11 +12,11 @@ import { createBasicPill, isIgnoredInitialEvent, doubleClick } from '../pill-uti
 import KEY_MAP from 'investigate-events/util/keys';
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
 
-
 // const { log } = console;
 
 import PILL_SELECTORS from '../pill-selectors';
 
+const ENTER_KEY = KEY_MAP.enter.code;
 const ESCAPE_KEY = KEY_MAP.escape.code;
 const X_KEY = 88;
 
@@ -117,7 +117,6 @@ module('Integration | Component | query-pill', function(hooks) {
   });
 
   test('A pill when supplied with meta, operator, and value will send a message to create', async function(assert) {
-
     const done = assert.async();
     new ReduxDataHelper(setState).language().pillsDataEmpty().build();
 
@@ -589,4 +588,74 @@ module('Integration | Component | query-pill', function(hooks) {
     doubleClick(PILL_SELECTORS.queryPill);
   });
 
+  test('it quotes pill value when meta is type "Text"', async function(assert) {
+    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    this.set('handleMessage', (messageType, data) => {
+      if (messageType === MESSAGE_TYPES.PILL_CREATED) {
+        assert.equal(data.value, '\'foo\'', 'value not single quoted');
+      }
+    });
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    // Select meta option A which is of type Text
+    await selectChoose(PILL_SELECTORS.meta, 'a (A)');
+    await selectChoose(PILL_SELECTORS.operator, '=');
+    await fillIn(PILL_SELECTORS.valueInput, 'foo');// missing wrapping quotes
+    await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', ENTER_KEY);
+  });
+
+  test('it does not quote the pill value when meta is type "UInt"', async function(assert) {
+    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    this.set('handleMessage', (messageType, data) => {
+      if (messageType === MESSAGE_TYPES.PILL_CREATED) {
+        assert.equal(data.value, '80', 'value was quoted');
+      }
+    });
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    // Select meta option sessionid which is of type UInt64
+    await selectChoose(PILL_SELECTORS.meta, 'sessionid');
+    await selectChoose(PILL_SELECTORS.operator, '=');
+    await fillIn(PILL_SELECTORS.valueInput, '80');
+    await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', ENTER_KEY);
+  });
+
+  test('Does not add quotes to a string if there are already single quotes', async function(assert) {
+    this.set('pillData', _getEnrichedPill());
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        pillData=pillData
+      }}
+    `);
+    assert.equal(trim(find(PILL_SELECTORS.value).textContent), '\'x\'');
+  });
+
+  test('replace double quotes with single quotes', async function(assert) {
+    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    this.set('handleMessage', (messageType, data) => {
+      if (messageType === MESSAGE_TYPES.PILL_CREATED) {
+        assert.equal(data.value, '\'foo\'', 'value not quoted properly');
+      }
+    });
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    // Select meta option A which is of type Text
+    await selectChoose(PILL_SELECTORS.meta, 'a (A)');
+    await selectChoose(PILL_SELECTORS.operator, '=');
+    await fillIn(PILL_SELECTORS.valueInput, '"foo"');// double quotes
+    await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', ENTER_KEY);
+  });
 });
