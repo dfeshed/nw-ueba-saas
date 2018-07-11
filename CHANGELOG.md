@@ -1,3 +1,17 @@
+# [8.8.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v8.8.0)
+## Features
+* [ASOC-42514](https://bedfordjira.na.rsa.net/browse/ASOC-42514):&emsp;Context Enrichment in Event Analysis - Recon Summary header
+* [ASOC-42515](https://bedfordjira.na.rsa.net/browse/ASOC-42515):&emsp;Context Enrichment in Event Analysis page
+* [ASOC-42761](https://bedfordjira.na.rsa.net/browse/ASOC-42761):&emsp;Context Enrichment in Event Analysis - Meta Panel
+* [ASOC-51002](https://bedfordjira.na.rsa.net/browse/ASOC-51002):&emsp;Context Hub - Remove admin server dependency
+* [ASOC-51147](https://bedfordjira.na.rsa.net/browse/ASOC-51147):&emsp;Fetch and store language & alias data for recon panel
+* [ASOC-55121](https://bedfordjira.na.rsa.net/browse/ASOC-55121):&emsp;Single Pill Validation - Client-Side Validation
+* [ASOC-55122](https://bedfordjira.na.rsa.net/browse/ASOC-55122):&emsp;Single Pill Validation - Validation UX
+* [ASOC-57462](https://bedfordjira.na.rsa.net/browse/ASOC-57462):&emsp;Adding Pills In Between Pills
+* [ASOC-57769](https://bedfordjira.na.rsa.net/browse/ASOC-57769):&emsp;Archer integration library - Support content lookup in Archer
+* [ASOC-57770](https://bedfordjira.na.rsa.net/browse/ASOC-57770):&emsp;Archer integration library - Support Cross-Reference field in Archer
+
+
 # [8.7.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v8.7.0)
 ## Features
 * [ASOC-42933](https://bedfordjira.na.rsa.net/browse/ASOC-42933):&emsp;LiveConnect Regression Test - Event Analysis
