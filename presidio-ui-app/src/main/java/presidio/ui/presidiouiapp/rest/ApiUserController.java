@@ -509,8 +509,12 @@ public class ApiUserController extends BaseController {
 			userRestFilter.setSize(Integer.MAX_VALUE);
 		}
 
-		int usersUpdated = userWithAlertService.followUsersByFilter(userRestFilter, watch);
-
+		int usersUpdated;
+		if (userRestFilter.getUserIds() !=null && userRestFilter.getUserIds().size()==1){//Update single user
+			usersUpdated = userService.updateSingleUserWatched(userRestFilter.getUserIds().get(0),watch);
+		} else { //Update fy filer
+			usersUpdated = userWithAlertService.followUsersByFilter(userRestFilter, watch);
+		}
 		return ResponseEntity.status(HttpStatus.OK).body(new UsersCount(usersUpdated));
 	}
 
