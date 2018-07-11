@@ -116,7 +116,7 @@ public class OutputMonitoringService {
 
         TimeRange timeRange = new TimeRange(startDate, endDate);
 
-//        reportActiveUsersDaily(timeRange);
+        reportActiveUsersDaily(timeRange);
         reportSmartsCountDaily(timeRange, "smart.scoring", MetricEnums.MetricValues.AMOUNT_OF_SCORED, SMARTS_COUNT_LAST_DAY_METRIC_NAME);
         reportDailyMetric(timeRange, OUTPUT_METRIC_NAME_PREFIX, NUMBER_OF_ALERTS_METRIC_NAME, ALERTS_COUNT_LAST_DAY_METRIC_NAME);
 
