@@ -66,7 +66,7 @@ public class FlumeAdapterExecutionService implements PresidioExecutionService {
         try {
             String newFilePath = configureNewFlumeExecution(schema, startDate, endDate);
             runFlumeExecution(schema, startDate, endDate, newFilePath);
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error("Presidio Adapter run failed (with params: schema:{}, startDate:{}, endDate:{}, fixedDuration:{}).", schema, startDate, endDate, fixedDuration, e);
             throw e;
         }
@@ -75,7 +75,6 @@ public class FlumeAdapterExecutionService implements PresidioExecutionService {
     private void runFlumeExecution(Schema schema, Instant startDate, Instant endDate, String newFilePath) {
         String jobName = flumeConfigurationUtil.createJobName(schema, startDate, endDate);
         runAdapterInstance(schema, jobName, newFilePath);
-        logger.info("Adapter for schema[{}] with conf file[{}] is now running.", schema, newFilePath);
     }
 
     private String configureNewFlumeExecution(Schema schema, Instant startDate, Instant endDate) throws IOException {
@@ -105,8 +104,13 @@ public class FlumeAdapterExecutionService implements PresidioExecutionService {
                 confFlag, confFlagValue,
                 confFileFlag,
                 confFileFlagValue);
-
-        processExecutor.executeProcess(jobName, args, flumeConfigurationUtil.getFlumeHome());
+        logger.info("Adapter for schema[{}] with conf file[{}] is now running.", schema, newFilePath);
+        int errorCode = processExecutor.executeProcess(jobName, args, flumeConfigurationUtil.getFlumeHome());
+        if(errorCode != 0){
+            throw new RuntimeException(
+                    String.format("adapter run failed on schema[%s] with conf file[%s]. process returned the following error code %s",
+                            schema, newFilePath, errorCode));
+        }
     }
 
 
