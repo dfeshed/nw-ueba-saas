@@ -14,12 +14,6 @@
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <!--RPM VERSION-->
-        <presidio.core.version>2.0.0-SNAPSHOT</presidio.core.version>
-        <rpm.version.major>1</rpm.version.major>
-        <rpm.version.minor>0</rpm.version.minor>
-        <rpm.version.build>0</rpm.version.build>
-        <rpm.version>${rpm.version.major}.${rpm.version.minor}</rpm.version>
 
         <!-- NOTE: ALL dependencies' versions should be here -->
         <rpm-maven-plugin.version>2.1.5</rpm-maven-plugin.version>
@@ -29,7 +23,6 @@
 
     <modules>
         <module>presidio-netwitness-flume</module>
-        <module>presidio-netwitness-monitoring</module>
     </modules>
 
     <distributionManagement>
@@ -55,16 +48,6 @@
             <url>http://repo1.rsa.lab.emc.com:8081/artifactory/repo1-local</url>
         </pluginRepository>
     </pluginRepositories>
-
-
-    <profiles>
-        <profile>
-            <id>rpm</id>
-            <modules>
-                <module>presidio-netwitness-rpm</module>
-            </modules>
-        </profile>
-    </profiles>
 
     <repositories>
         <repository>

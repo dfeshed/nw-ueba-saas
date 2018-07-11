@@ -1,0 +1,382 @@
+{
+  "type": "chain",
+  "name": "auth-windows-audit-transformer",
+  "transformerList": [
+    {
+      "type": "filter",
+      "name": "device-type-and-user-dst-filter",
+      "predicate": {
+        "type": "chain",
+        "name": "device-type-and-user-dst-predicate",
+        "operation": "AND",
+        "predicateList": [
+          {
+            "type": "regex",
+            "name": "user-dst-not-contain-machine",
+            "sourceKey": "user_dst",
+            "regex": "[^\\$]*"
+          },
+          {
+            "type": "regex",
+            "name": "device-type-snare-or-nic",
+            "sourceKey": "device_type",
+            "regex": "winevent_snare|winevent_nic"
+          }
+        ]
+      },
+      "filterIn": true
+    },
+    {
+      "type": "if_else",
+      "name": "service-name-filter-for-4769",
+      "predicate": {
+        "type": "regex",
+        "name": "reference-id-equal-4769",
+        "sourceKey": "reference_id",
+        "regex": "4769"
+      },
+      "ifTransformer": {
+        "type": "filter",
+        "name": "service-name-filter",
+        "predicate": {
+          "type": "regex",
+          "name": "service-name-equal-krbtgt",
+          "sourceKey": "service_name",
+          "regex": "krbtgt"
+        },
+        "filterIn": false
+      },
+      "elseTransformer": null
+    },
+    {
+      "type": "if_else",
+      "name": "logon-type-filter-for-4624-or-4625",
+      "predicate": {
+        "type": "regex",
+        "name": "reference-id-equal-4624-or-4625",
+        "sourceKey": "reference_id",
+        "regex": "4624|4625"
+      },
+      "ifTransformer": {
+        "type": "filter",
+        "name": "logon-type-filter",
+        "predicate": {
+          "type": "regex",
+          "name": "logon-type-equal-0-or-10",
+          "sourceKey": "logon_type",
+          "regex": "2|10"
+        },
+        "filterIn": true
+      },
+      "elseTransformer": null
+    },
+    {
+      "type": "epoch",
+      "name": "date-time-millis-to-nano-representation",
+      "sourceKey": "event_time",
+      "destinationKey": "dateTime"
+    },
+    {
+      "type": "if_else",
+      "name": "src-machine-name-transformer",
+      "predicate": {
+        "type": "regex",
+        "name": "device-type-equal-snare",
+        "sourceKey": "device_type",
+        "regex": "winevent_snare"
+      },
+      "ifTransformer": {
+        "type": "copy_value",
+        "name": "copy-alias-src-for-device-type-snare",
+        "sourceKey": "alias_src",
+        "isRemoveSourceKey": true,
+        "destinationKeys": [
+          "srcMachineName"
+        ]
+      },
+      "elseTransformer": {
+        "type": "switch_case",
+        "name": "src-machine-name-switch-case-for-device-type-nic",
+        "sourceKey": "reference_id",
+        "destinationKey": "srcMachineName",
+        "destinationDefaultValue": null,
+        "cases": [
+          {
+            "caseKey": "4624",
+            "caseValue": "${alias_host[0]}",
+            "isRegex": false
+          },
+          {
+            "caseKey": "4625",
+            "caseValue": "${alias_host[0]}",
+            "isRegex": false
+          },
+          {
+            "caseKey": "4776",
+            "caseValue": "${host_src}",
+            "isRegex": false
+          }
+        ]
+      }
+    },
+    {
+      "type": "regex_captor_and_formatter",
+      "name": "src-machine-id-normalization",
+      "sourceKey": "srcMachineName",
+      "destinationKey": "srcMachineId",
+      "captureAndFormatConfigurations": [
+        {
+          "pattern": "-",
+          "format": "",
+          "capturingGroupConfigurations": null
+        },
+        {
+          "pattern": ".*:.*",
+          "format": "",
+          "capturingGroupConfigurations": null
+        },
+        {
+          "pattern": ".*\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}.*",
+          "format": "",
+          "capturingGroupConfigurations": null
+        },
+        {
+          "pattern": "(\\\\\\\\)?([^\\.]+)\\..+",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 2,
+              "caseFormat": "LOWER"
+            }
+          ]
+        },
+        {
+          "pattern": "(\\\\\\\\)?(.+)",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 2,
+              "caseFormat": "LOWER"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "regex_captor_and_formatter",
+      "name": "user-id-normalization",
+      "sourceKey": "user_dst",
+      "destinationKey": "userId",
+      "captureAndFormatConfigurations": [
+        {
+          "pattern": "CN=([^,]+)",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 1,
+              "caseFormat": "LOWER"
+            }
+          ]
+        },
+        {
+          "pattern": "CN=([^,]+),.+",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 1,
+              "caseFormat": "LOWER"
+            }
+          ]
+        },
+        {
+          "pattern": "(.+\\\\)+(.+)@.+",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 2,
+              "caseFormat": "LOWER"
+            }
+          ]
+        },
+        {
+          "pattern": "(.+\\\\)+([^@]+)",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 2,
+              "caseFormat": "LOWER"
+            }
+          ]
+        },
+        {
+          "pattern": "(.+)@.+",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 1,
+              "caseFormat": "LOWER"
+            }
+          ]
+        },
+        {
+          "pattern": ".+",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 0,
+              "caseFormat": "LOWER"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "if_else",
+      "name": "user-equals-anonymous-or-system-if-else",
+      "predicate": {
+        "type": "regex",
+        "name": "user-equals-anonymous-or-system-predicate",
+        "sourceKey": "userId",
+        "regex": "anonymous logon|system"
+      },
+      "ifTransformer": {
+        "type": "chain",
+        "name": "anonymous-or-system-chain",
+        "transformerList": [
+          {
+            "type": "filter",
+            "name": "anonymous-or-system-filter",
+            "predicate": {
+              "type": "regex",
+              "name": "src-machine-not-blank",
+              "sourceKey": "srcMachineId",
+              "regex": "^(?!\\s*$).+"
+            },
+            "filterIn": true
+          },
+          {
+            "type": "join",
+            "name": "create-user-id-by-joining-machine-id-and-user-id",
+            "destinationKey": "userId",
+            "values": [
+              "${userId}",
+              "${srcMachineId}"
+            ],
+            "separator": "@"
+          }
+        ]
+      },
+      "elseTransformer": null
+    },
+    {
+      "type": "if_else",
+      "name": "result-normalization",
+      "predicate": {
+        "type": "key_exist",
+        "name": "event-type-exist",
+        "key": "event_type",
+        "testNull": false
+      },
+      "ifTransformer": {
+        "type": "regex_captor_and_formatter",
+        "name": "result-normalization-on-event-type",
+        "sourceKey": "event_type",
+        "destinationKey": "result",
+        "captureAndFormatConfigurations": [
+          {
+            "pattern": ".*(?i:fail).*",
+            "format": "FAILURE",
+            "capturingGroupConfigurations": null
+          },
+          {
+            "pattern": ".*(?i:succ).*",
+            "format": "SUCCESS",
+            "capturingGroupConfigurations": null
+          }
+        ]
+      },
+      "elseTransformer": {
+        "type": "switch_case",
+        "name": "result-normalization-on-result-code",
+        "sourceKey": "result_code",
+        "destinationKey": "result",
+        "destinationDefaultValue": null,
+        "cases": [
+          {
+            "caseKey": "0x0",
+            "caseValue": "SUCCESS",
+            "isRegex": false
+          },
+          {
+            "caseKey": "0x.*",
+            "caseValue": "FAILURE",
+            "isRegex": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "if_else",
+      "name": "operation-type-transformer",
+      "predicate": {
+        "type": "regex",
+        "name": "reference-id-equal-4624-or-4625",
+        "sourceKey": "reference_id",
+        "regex": "4624|4625"
+      },
+      "ifTransformer": {
+        "type": "switch_case",
+        "name": "logon-type-to-operation-type-switch-case",
+        "sourceKey": "logon_type",
+        "destinationKey": "operationType",
+        "destinationDefaultValue": null,
+        "cases": [
+          {
+            "caseKey": "2",
+            "caseValue": "INTERACTIVE",
+            "isRegex": false
+          },
+          {
+            "caseKey": "10",
+            "caseValue": "REMOTE_INTERACTIVE",
+            "isRegex": false
+          }
+        ]
+      },
+      "elseTransformer": {
+        "type": "set_value",
+        "name": "4776-or-4769-to-operation-type",
+        "key": "operationType",
+        "value": "CREDENTIAL_VALIDATION"
+      }
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-event-source-id-to-event-id",
+      "sourceKey": "event_source_id",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "eventId"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-reference-id-to-data-source",
+      "sourceKey": "reference_id",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "dataSource"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "copy-user-dst",
+      "sourceKey": "user_dst",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "userName",
+        "userDisplayName"
+      ]
+    }
+  ]
+}

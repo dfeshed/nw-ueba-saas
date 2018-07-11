@@ -7,6 +7,7 @@ import com.rsa.asoc.streams.RecordStreams;
 import com.rsa.asoc.streams.source.netwitness.NwParameter;
 import com.rsa.asoc.streams.source.netwitness.NwPosition;
 import fortscale.common.general.Schema;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,8 @@ public class NetwitnessEventsStream extends AbstractNetwitnessEventsStream {
 
     protected static final String QUERY = "query";
     protected static final String TIME_FIELD = "timeField";
+    protected static final String CONNECTION_TIMEOUT = "connectionTimeout";
+    protected static final String SOCKET_TIMEOUT = "socketTimeout";
 
     private NetwitnessEventsSources nwSources;
 
@@ -50,15 +53,20 @@ public class NetwitnessEventsStream extends AbstractNetwitnessEventsStream {
         private Instant endTime;
         private String query;
         private String timeField;
-
-
+        private String timeFieldMetaKey;
+        private String connectionTimeout;
+        private String socketTimeout;
+      
         public EventsStreamIterator(Schema schema, Instant startTime, Instant endTime, List<String> sources, Map<String, String> configurations ) {
             try {
                 this.startTime = startTime;
                 this.endTime = endTime;
                 this.query = configurations.get(QUERY);
                 this.timeField = configurations.get(TIME_FIELD);
+                this.connectionTimeout = configurations.get(CONNECTION_TIMEOUT);
+                this.socketTimeout = configurations.get(SOCKET_TIMEOUT);
                 this.stream = initializeStream(sources);
+                this.timeFieldMetaKey = timeField.replace('.','_');
             } catch (Exception ex) {
                 logger.error("start streaming failed", ex);
                 throw new RuntimeException("start streaming failed", ex);
@@ -92,7 +100,7 @@ public class NetwitnessEventsStream extends AbstractNetwitnessEventsStream {
             try {
                 event = stream.poll(10, TimeUnit.SECONDS);
 
-                if (event != null && endOfBatch(event)) {
+                if (endOfBatch(event)) {
                     event = null;
 
                 }
@@ -113,6 +121,15 @@ public class NetwitnessEventsStream extends AbstractNetwitnessEventsStream {
 
                 uriBuilder.addParameter(NwParameter.Mechanism.name(), "query");
                 uriBuilder.addParameter(NwParameter.TimeMeta.name(), timeField);
+
+                // timeout parameters
+                if (StringUtils.isNotEmpty(connectionTimeout)){
+                    uriBuilder.addParameter(NwParameter.ConnectionTimeout.name(), connectionTimeout);
+                }
+
+                if (StringUtils.isNotEmpty(socketTimeout)){
+                    uriBuilder.addParameter(NwParameter.SocketTimeout.name(), socketTimeout);
+                }
 
                 // end streaming parameter
                 long collectionDurationInMinutes = TimeUnit.MINUTES.convert(Duration.between(startTime, endTime).get(ChronoUnit.SECONDS), TimeUnit.SECONDS);
@@ -178,13 +195,15 @@ public class NetwitnessEventsStream extends AbstractNetwitnessEventsStream {
         }
 
         /**
-         * Decide when we've had enough?
+         * Decide when we've had enough
          */
-        private boolean endOfBatch(Map<String, Object> next) {
-            Object recordTime = next.get(timeField);
+        private boolean endOfBatch(Map<String, Object> event) {
+            if (event != null) {
+                Object recordTime = event.get(timeFieldMetaKey);
 
-            if (recordTime instanceof Long) {
-                return endTime == recordTime || endTime.isBefore(Instant.ofEpochMilli((long) recordTime));
+                if (recordTime instanceof Long) {
+                    return endTime.toEpochMilli() <= (long) recordTime;
+                }
             }
 
             return false;
