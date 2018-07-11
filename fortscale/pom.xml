@@ -131,6 +131,7 @@
         <commons-io.version>2.4</commons-io.version>
         <presidio-data-generators.version>2.0.0-SNAPSHOT</presidio-data-generators.version>
         <auto-service.version>1.0-rc3</auto-service.version>
+        <spring-context-support.version>${spring.version}</spring-context-support.version>
     </properties>
 
     <dependencyManagement>
@@ -261,6 +262,10 @@
                     <exclusion>
                         <artifactId>cglib</artifactId>
                         <groupId>cglib</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-context-support</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -472,6 +477,11 @@
                 <groupId>com.google.auto.service</groupId>
                 <artifactId>auto-service</artifactId>
                 <version>${auto-service.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context-support</artifactId>
+                <version>4.3.18.RELEASE</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
