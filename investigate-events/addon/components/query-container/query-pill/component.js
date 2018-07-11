@@ -20,7 +20,7 @@ const RESET_PROPS = {
 };
 
 export default Component.extend({
-  classNameBindings: [':query-pill', 'isActive', 'isInvalid', 'isSelected'],
+  classNameBindings: [':query-pill', 'isActive', 'isInvalid', 'isSelected', 'isExpensive'],
   attributeBindings: ['title'],
   i18n: service(),
 
@@ -69,6 +69,19 @@ export default Component.extend({
   // Tracks whether a double click has fired to single click
   // events can be stopped
   doubleClickFired: false,
+
+  /**
+   *
+   * Is the pill with an expensive operator?
+   * @type {boolean}
+   * @public
+   */
+  @computed('pillData', 'isActive')
+  isExpensive: (pillData, isActive) => {
+    if (pillData && pillData.operator && !isActive) {
+      return pillData.operator.isExpensive;
+    }
+  },
 
   /**
    * Update the component once validation returns

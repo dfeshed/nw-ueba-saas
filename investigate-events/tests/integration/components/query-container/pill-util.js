@@ -46,7 +46,7 @@ const pillTriggerSelectors = {
   valueInput: PILL_SELECTORS.triggerValueInput
 };
 
-export const createBasicPill = async function(fromTrigger, format) {
+export const createBasicPill = async function(fromTrigger, format, operator) {
   const selectors = fromTrigger ? pillTriggerSelectors : pillSelectors;
 
   if (format) {
@@ -59,8 +59,12 @@ export const createBasicPill = async function(fromTrigger, format) {
   }
   await waitUntil(() => find(selectors.operatorPowerSelect));
 
-  // Choose the first operator option
-  selectChoose(selectors.operatorPowerSelect, '='); // option =
+  if (operator) {
+    selectChoose(selectors.operatorPowerSelect, operator);
+  } else {
+    // Choose the first operator option
+    selectChoose(selectors.operatorPowerSelect, '='); // option =
+  }
   await waitUntil(() => find(selectors.valueInput));
 
   // Fill in the value, to properly simulate the event we need to fillIn AND

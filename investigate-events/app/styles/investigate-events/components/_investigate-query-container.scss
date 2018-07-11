@@ -1,3 +1,12 @@
+.rsa-icon.expensive-indicator {
+  display: inline-flex;
+  align-self: center;
+  margin-right: rsa-whitespace(less);
+  color: transparent;
+  &.is-expensive {
+    color: text-color(primary, lightest);
+  }
+}
 .rsa-investigate-query-container {
   display: flex;
   flex-flow: row wrap;

@@ -1,3 +1,11 @@
+{{#if isExpensive}}
+  {{rsa-icon
+    name='stopwatch'
+    style='lined'
+    class='is-expensive expensive-indicator'
+    title=(t 'queryBuilder.expensive')
+  }}
+{{/if}}
 {{query-container/pill-meta
   isActive=(readonly isMetaActive)
   isExpanded=(readonly shouldMetaExpand)

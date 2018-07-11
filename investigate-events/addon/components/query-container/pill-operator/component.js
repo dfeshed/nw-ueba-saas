@@ -1,29 +1,14 @@
 import Component from '@ember/component';
 import { next, scheduleOnce } from '@ember/runloop';
-import { isEmpty } from '@ember/utils';
 import computed from 'ember-computed-decorators';
 
 import * as MESSAGE_TYPES from '../message-types';
-import { begins, contains, ends, eq, exists, notEq, notExists } from 'investigate-events/util/possible-operators';
+import { relevantOperators } from 'investigate-events/util/possible-operators';
 import { isArrowLeft, isArrowRight, isBackspace, isEnter, isEscape } from 'investigate-events/util/keys';
 
 const { log } = console;// eslint-disable-line no-unused-vars
 
 const leadingSpaces = /^[\s\uFEFF\xA0]+/;
-
-const makeOperatorExpensive = (obj) => ({ ...obj, isExpensive: true });
-
-const operatorsForMetaIndexedByKey = [exists, notExists, makeOperatorExpensive(eq), makeOperatorExpensive(notEq)];
-const operatorsForMetaIndexedByKeyWithTextFormat = [exists, notExists, makeOperatorExpensive(eq), makeOperatorExpensive(notEq), makeOperatorExpensive(begins), ends, contains];
-const operatorsForMetaIndexedByValue = [exists, notExists, eq, notEq ];
-const operatorsForMetaIndexedByValueWithTextFormat = [exists, notExists, eq, notEq, begins, ends, contains];
-const operatorsForSessionId = [exists, notExists, eq, notEq];
-const defaultOperators = [eq, notEq, exists, notExists, contains, begins, ends];
-
-const NONE = 'none';
-const KEY = 'key';
-const VALUE = 'value';
-const indices = [NONE, KEY, VALUE];
 
 export default Component.extend({
   classNameBindings: ['isExpanded', 'isPopulated', ':pill-operator'],
@@ -73,28 +58,7 @@ export default Component.extend({
 
   @computed('meta')
   options(meta) {
-    let options = [];
-    if (!isEmpty(meta)) {
-      const { format, flags = 1, metaName } = meta;
-      const index = flags & '0xF' - 1;
-      const indexedBy = indices[index];
-      if (indexedBy === KEY) {
-        options = (format === 'Text') ?
-          operatorsForMetaIndexedByKeyWithTextFormat :
-          operatorsForMetaIndexedByKey;
-      } else if (indexedBy === VALUE) {
-        options = (format === 'Text') ?
-          operatorsForMetaIndexedByValueWithTextFormat :
-          operatorsForMetaIndexedByValue;
-      } else if (metaName === 'sessionid') {
-        // sessionid is a special case in the sense that it is the only
-        // non-indexed key that has these 4 options because it's a primary key.
-        options = operatorsForSessionId;
-      } else {
-        options = defaultOperators;
-      }
-    }
-    return options;
+    return relevantOperators(meta);
   },
 
   didUpdateAttrs() {

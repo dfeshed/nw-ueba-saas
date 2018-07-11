@@ -4,7 +4,7 @@ import { hasRequiredValuesToQuery } from 'investigate-events/reducers/investigat
 import {
   metaKeySuggestionsForQueryBuilder
 } from 'investigate-events/reducers/investigate/dictionaries/selectors';
-import { all as possibleOperators } from 'investigate-events/util/possible-operators';
+import { relevantOperators } from 'investigate-events/util/possible-operators';
 
 const _pillsData = (state) => state.investigate.nextGen.pillsData;
 
@@ -22,10 +22,12 @@ export const enrichedPillsData = createSelector(
   [metaKeySuggestionsForQueryBuilder, _pillsData],
   (metaKeys, pillsData) => {
     return pillsData.map((pillData) => {
+      const meta = metaKeys.find((mK) => mK.metaName === pillData.meta);
+      const operator = relevantOperators(meta, pillData.operator).find((possOp) => possOp.displayName === pillData.operator);
       return {
         ...pillData,
-        operator: possibleOperators.find((possOp) => possOp.displayName === pillData.operator),
-        meta: metaKeys.find((mK) => mK.metaName === pillData.meta)
+        operator,
+        meta
       };
     });
   }

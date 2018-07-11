@@ -35,5 +35,7 @@ export default {
   invalidPill: '.is-invalid',
   selectedPill: '.is-selected',
   populatedItem: '.is-populated',
-  queryPill: '.query-pill'
+  queryPill: '.query-pill',
+  expensivePill: '.query-pill.is-expensive',
+  expensiveIndicator: '.rsa-icon-stopwatch-lined.is-expensive'
 };
