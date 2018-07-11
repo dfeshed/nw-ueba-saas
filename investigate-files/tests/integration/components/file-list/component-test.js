@@ -220,8 +220,8 @@ module('Integration | Component | file list', function(hooks) {
       </style>
       {{file-list}}`);
     return settled().then(() => {
-      assert.equal(findAll('.rsa-data-table-body-cell')[1].textContent.trim(), 'unsigned', 'Testing of signature when it is not signed');
-      assert.equal(findAll('.rsa-data-table-body-cell')[3].textContent.trim(), 'signed,valid', 'Testing of signature when it is signed');
+      assert.equal(findAll('.rsa-data-table-body-cell')[2].textContent.trim(), 'unsigned', 'Testing of signature when it is not signed');
+      assert.equal(findAll('.rsa-data-table-body-cell')[5].textContent.trim(), 'signed,valid', 'Testing of signature when it is signed');
     });
   });
 
@@ -338,7 +338,7 @@ module('Integration | Component | file list', function(hooks) {
 
     return settled().then(() => {
       assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 3, 'initial visible column count is 3');
-      findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label')[0].click();
+      findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label')[1].click();
       return waitFor(() => {
         return findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label.checked').length === 2;
       }).then(() => {

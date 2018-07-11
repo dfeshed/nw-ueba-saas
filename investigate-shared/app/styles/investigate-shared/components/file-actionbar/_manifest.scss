@@ -1,12 +1,12 @@
 .file-actionbar {
   .file-status-button {
-    padding: 0 10px 0 20px;
-    .rsa-icon {
-      padding-right: rsa-whitespace(less);
-    }
+    padding: 0 rsa-whitespace(less) 0 rsa-whitespace();
   }
 
   .rsa-form-button-wrapper.is-icon-only {
-    padding-left: 20px;
+    padding-left: rsa-whitespace();
+    .rsa-icon-binoculars-filled {
+      padding-right: rsa-whitespace(less);
+    }
   }
 }

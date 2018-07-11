@@ -53,7 +53,7 @@ const FileList = Component.extend({
 
   features: service(),
 
-  CHECKBOX_COLUMN: [
+  FIXED_COLUMNS: [
     {
       dataType: 'checkbox',
       width: 22,
@@ -62,12 +62,21 @@ const FileList = Component.extend({
       visible: true,
       disableSort: true,
       headerComponentClass: 'rsa-form-checkbox'
+    },
+    {
+      dataType: 'string',
+      width: 200,
+      visible: true,
+      field: 'firstFileName',
+      searchable: true,
+      title: 'investigateFiles.fields.firstFileName'
     }
   ],
 
   @computed('columnConfig')
   updatedColumns(columns) {
-    return this._sortList(columns);
+    const UPDATED_COLUMNS = columns.filter((column) => column.field !== 'firstFileName');
+    return this._sortList(UPDATED_COLUMNS);
   },
 
   _sortList(columnList) {
@@ -75,7 +84,7 @@ const FileList = Component.extend({
     const sortList = _.sortBy(columnList, [(column) => {
       return i18n.t(column.title).toString();
     }]);
-    return this.CHECKBOX_COLUMN.concat(sortList);
+    return this.FIXED_COLUMNS.concat(sortList);
   },
 
   actions: {
