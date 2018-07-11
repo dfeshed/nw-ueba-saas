@@ -18,7 +18,7 @@ const _initialState = Immutable.from({
   serviceId: undefined,
   sessionId: undefined,
   startTime: 0,
-  queryView: 'guided',
+  queryView: 'nextGen',
   toggledOnceFlag: false
 });
 

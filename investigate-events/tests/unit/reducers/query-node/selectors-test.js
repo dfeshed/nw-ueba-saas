@@ -2,13 +2,12 @@ import { module, test } from 'qunit';
 import {
   hasMetaFilters,
   hasRequiredValuesToQuery,
-  queryParams,
   selectedTimeRange,
   selectedTimeRangeId,
   selectedTimeRangeName,
   useDatabaseTime,
-  guidedHasFocus,
-  freeFormHasFocus
+  freeFormHasFocus,
+  nextGenHasFocus
 } from 'investigate-events/reducers/investigate/query-node/selectors';
 
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
@@ -28,30 +27,6 @@ test('determine presence of meta filters', function(assert) {
   const hasFilters = hasMetaFilters(state);
 
   assert.ok(hasFilters, 'meta filter conditions are present');
-});
-
-test('queryParams object has required properties with correct values', function(assert) {
-  assert.expect(5);
-
-  const mf = { uri: '', conditions: [] };
-  const state = {
-    investigate: {
-      queryNode: {
-        endTime: 1,
-        eventMetas: ['a', 'b'],
-        metaFilter: mf,
-        serviceId: 'sd1',
-        startTime: 2
-      }
-    }
-  };
-  const qp = queryParams(state);
-
-  assert.equal(Object.keys(qp).length, 4, 'has 4 properties');
-  assert.equal(qp.endTime, 1, 'endTime is present and has correct value');
-  assert.deepEqual(qp.metaFilter, mf, 'metaFilter is present and has correct value');
-  assert.equal(qp.serviceId, 'sd1', 'serviceId is present and has correct value');
-  assert.equal(qp.startTime, 2, 'startTime is present and has correct value');
 });
 
 test('use default time range if not set', function(assert) {
@@ -271,18 +246,6 @@ test('has required inputs to query', function(assert) {
   assert.ok(hasRequiredValuesToQuery(state), 'Missing some required state to query');
 });
 
-test('check guidedHasFocus', function(assert) {
-  const state = {
-    investigate: {
-      queryNode: {
-        queryView: 'guided',
-        toggledOnceFlag: true
-      }
-    }
-  };
-  assert.equal(guidedHasFocus(state), true, 'Should have focus');
-});
-
 test('check freeFormHasFocus', function(assert) {
   const state = {
     investigate: {
@@ -293,4 +256,16 @@ test('check freeFormHasFocus', function(assert) {
     }
   };
   assert.equal(freeFormHasFocus(state), true, 'Should have focus');
+});
+
+test('check nextGenHasFocus', function(assert) {
+  const state = {
+    investigate: {
+      queryNode: {
+        queryView: 'nextGen',
+        toggledOnceFlag: true
+      }
+    }
+  };
+  assert.equal(nextGenHasFocus(state), true, 'Should have focus');
 });

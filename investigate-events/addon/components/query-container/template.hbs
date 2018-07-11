@@ -4,19 +4,42 @@
 
 <div class='query-bar-selection'>
   <div class='query-bar-options'>
-    {{query-filters filters=filters executeQuery=(route-action 'executeQuery')}}
-    {{!-- filters - to transform them to text in free-form --}}
-    {{query-container/free-form filters=filters freeFormText=freeFormText addFilters=(action 'addFilters') executeQuery=(route-action 'executeQuery')}}
-    {{query-container/query-pills filters=filters executeQuery=(route-action 'executeQuery')}}
+
+    {{#if nextGenHasFocus}}
+      {{query-container/query-pills
+        filters=filters
+        executeQuery=(route-action 'executeQuery')}}
+    {{/if}}
+
+    {{#if freeFormHasFocus}}
+      {{query-container/free-form
+        filters=filters
+        freeFormText=freeFormText
+        addFilters=(action 'addFilters')
+        executeQuery=(route-action 'executeQuery')}}
+    {{/if}}
+
   </div>
   <div class='query-bar-select-actions'>
-    <a class='guided-link' title={{t 'investigate.guided.linkTitle'}} href='#' {{action 'changeView' 'guided'}}>{{t 'investigate.guided.textLabel'}}</a>
+
+    <a class='nextGen-link'
+      title={{t 'investigate.nextGen.linkTitle'}}
+      href='#'
+      {{action 'changeView' 'nextGen'}}
+    >
+      {{t 'investigate.nextGen.textLabel'}}
+    </a>
+
     <div class='divider'></div>
-    <a class='freeForm-link' title={{t 'investigate.freeForm.linkTitle'}} href='#' {{action 'changeView' 'freeForm'}}>{{t 'investigate.freeForm.textLabel'}}</a>
-    {{#if showNextGenFeature}}
-      <div class='divider'></div>
-      <a class='nextGen-link' title={{t 'investigate.nextGen.linkTitle'}} href='#' {{action 'changeView' 'nextGen'}}>{{t 'investigate.nextGen.textLabel'}}</a>
-    {{/if}}
+
+    <a class='freeForm-link'
+      title={{t 'investigate.freeForm.linkTitle'}}
+      href='#'
+      {{action 'changeView' 'freeForm'}}
+    >
+      {{t 'investigate.freeForm.textLabel'}}
+    </a>
+
   </div>
 </div>
 

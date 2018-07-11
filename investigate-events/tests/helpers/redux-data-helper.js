@@ -162,7 +162,7 @@ export default class DataHelper {
     _set(this.state, 'queryNode.metaFilter', { conditions: [] });
     _set(this.state, 'queryNode.previouslySelectedTimeRanges', {});
     _set(this.state, 'queryNode.serviceId', '1');
-    _set(this.state, 'queryNode.queryView', 'guided');
+    _set(this.state, 'queryNode.queryView', 'nextGen');
     if (flag) {
       _set(this.state, 'queryNode.isDirty', true);
       _set(this.state, 'services.serviceData', [{ id: '1' }]);
@@ -228,34 +228,6 @@ export default class DataHelper {
       _set(this.state, 'services.serviceData', [{ id, displayName: id, name: id, version: '11.1.0.0' }]);
       _set(this.state, 'services.summaryData', { startTime: 0 });
       _set(this.state, 'services.isServicesRetrieveError', false);
-    }
-    return this;
-  }
-
-  setQueryFiltersMeta(withConditions) {
-    const nowSeconds = parseInt(+(new Date()) / 1000, 10);
-    _set(this.state, 'queryNode.previouslySelectedTimeRanges', {});
-    _set(this.state, 'queryNode.serviceId', '1');
-    _set(this.state, 'queryNode.isDirty', true);
-    _set(this.state, 'queryNode.startTime', nowSeconds);
-    _set(this.state, 'queryNode.endTime', nowSeconds);
-    if (withConditions) {
-      _set(this.state, 'queryNode.metaFilter', { conditions: [
-        { key: 'foo',
-          operator: '=',
-          value: 'bar'
-        },
-        { key: 'foo',
-          operator: '=',
-          value: 'bar'
-        },
-        { key: 'foo',
-          operator: '=',
-          value: 'bar'
-        }]
-      });
-    } else {
-      _set(this.state, 'queryNode.metaFilter', { conditions: [] });
     }
     return this;
   }

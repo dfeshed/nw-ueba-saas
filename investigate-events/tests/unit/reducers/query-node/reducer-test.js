@@ -94,7 +94,7 @@ test('SET_PREFERENCES when payload does not have queryTimeFormat and no current 
 
 test('SET_QUERY_VIEW reducer sets the correct mode provided', function(assert) {
   const prevState = Immutable.from({
-    queryView: 'guided',
+    queryView: 'nextGen',
     toggledOnceFlag: false
   });
   const action = {

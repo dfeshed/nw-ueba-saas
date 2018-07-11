@@ -18,8 +18,5 @@ module.exports = {
 
     // otherwise return the flagValue
     return flagValue;
-  },
-  nextGen(environment, flagValue = true) {
-    return flagValue;
   }
 };

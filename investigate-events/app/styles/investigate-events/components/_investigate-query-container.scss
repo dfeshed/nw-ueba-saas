@@ -48,6 +48,7 @@
     white-space: nowrap;
   }
 
+  // TODO What is this?
   .delete {
     position: absolute;
     top: 0;
@@ -63,6 +64,8 @@
     }
   }
 
+  // TODO, this belongs with service selector which
+  // is in investigate-shared
   .disclaimer {
     color:text-color(accentThree);
   }
@@ -77,23 +80,12 @@
     display: inline;
   }
 
-  &.guided {
-    a.guided-link {
-        color: text-color(primary, light);
-        pointer-events: none;
-    }
-    .rsa-investigate-free-form-query-bar, .query-pills {
-      display: none;
-    }
-
-  }
-
   &.freeForm {
     a.freeForm-link {
       color: text-color(primary, light);
       pointer-events: none;
     }
-    .rsa-query-meta, .query-pills {
+    .query-pills {
       display: none;
     }
   }
@@ -103,7 +95,7 @@
       color: text-color(primary, light);
       pointer-events: none;
     }
-    .rsa-query-meta, .rsa-investigate-free-form-query-bar {
+    .rsa-investigate-free-form-query-bar {
       display: none;
     }
   }

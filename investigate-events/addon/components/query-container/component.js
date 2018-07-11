@@ -1,22 +1,14 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { hasRequiredValuesToQuery, guidedHasFocus, freeFormHasFocus } from 'investigate-events/reducers/investigate/query-node/selectors';
-import { canQueryNextGen } from 'investigate-events/reducers/investigate/next-gen/selectors';
-import computed from 'ember-computed-decorators';
-import { setQueryView, setQueryTimeRange, setService } from 'investigate-events/actions/interaction-creators';
 import { run } from '@ember/runloop';
+import computed from 'ember-computed-decorators';
+import EmberObject from '@ember/object';
+
+import { freeFormHasFocus, nextGenHasFocus } from 'investigate-events/reducers/investigate/query-node/selectors';
+import { canQueryNextGen } from 'investigate-events/reducers/investigate/next-gen/selectors';
+import { setQueryView, setQueryTimeRange, setService } from 'investigate-events/actions/interaction-creators';
 import { encodeMetaFilterConditions } from 'investigate-shared/actions/api/events/utils';
 import { transformTextToFilters, filterIsPresent } from 'investigate-events/actions/utils';
-import EmberObject from '@ember/object';
-import config from 'ember-get-config';
-
-// if feature flag is true -> use the canQueryNextGen selector which
-// checks for any invalid pills apart from the regular service and summary checks
-let requiredValuesToQuerySelector = hasRequiredValuesToQuery;
-if (config.featureFlags.nextGen) {
-  requiredValuesToQuerySelector = canQueryNextGen;
-}
-
 
 const addToArray = (filterObject) => {
   const { filters, meta, operator, value, complexFilter } = filterObject;
@@ -39,9 +31,9 @@ const transformToString = (filters) => {
 };
 
 const stateToComputed = (state) => ({
-  requiredValuesToQuerySelector: requiredValuesToQuerySelector(state),
-  guidedHasFocus: guidedHasFocus(state),
+  requiredValuesToQuerySelector: canQueryNextGen(state),
   freeFormHasFocus: freeFormHasFocus(state),
+  nextGenHasFocus: nextGenHasFocus(state),
   queryView: state.investigate.queryNode.queryView,
   startTime: state.investigate.queryNode.startTime,
   endTime: state.investigate.queryNode.endTime,
@@ -59,7 +51,6 @@ const QueryContainer = Component.extend({
   classNames: ['rsa-investigate-query-container', 'rsa-button-group'],
   tagName: 'nav',
   classNameBindings: ['queryView'],
-  showNextGenFeature: config.featureFlags.nextGen,
 
   // should replace the computed with a selector once filters are in state
   @computed('filters.[]')
@@ -70,9 +61,10 @@ const QueryContainer = Component.extend({
   },
 
   actions: {
+
     changeView(view) {
       const filters = this.get('filters');
-      // This is needed when you try and edit a filter in guided mode
+      // This is needed when you try and edit a filter in nextGen mode
       // freeFormText is not re-computed as filters ( mis-managed by query-filters ) array is not mutated, instead is being reset
       // A hack to forcefully set freeFormText in that scenario
       if (view === 'freeForm' && filters && !filterIsPresent(filters, this.get('freeFormText'))) {
@@ -80,22 +72,29 @@ const QueryContainer = Component.extend({
       }
       this.send('setQueryView', view);
       run.next(() => {
-        if (this.get('guidedHasFocus')) {
-          this.$('.rsa-query-meta input').focus();
-        } else if (this.get('freeFormHasFocus')) {
+        if (this.get('freeFormHasFocus')) {
           this.$('.rsa-investigate-free-form-query-bar input').focus();
+        } else if (this.get('nextGenHasFocus')) {
+          this.$('.new-pill-template .pill-meta input').focus();
         }
       });
     },
+
     addFilters(str) {
       const filtersList = this.get('filters');
       // check if the filter is already present
       if (!filterIsPresent(filtersList, str)) {
         const filter = transformTextToFilters(str.trim());
+
         // In case there is a addition
-        // 1. empty the array - this makes it easier for us to add, instead of finding out what we're missing and adding that specific filter
-        // 2. convert freeFormText into one single pill - can be either a complex or a regular filter
-        // 3. add an empty editActive filter, so that a brand new filter is ready to be created in guided mode
+        // 1. empty the array - this makes it easier for us to add,
+        //   instead of finding out what we're missing and adding that
+        //   specific filter
+        // 2. convert freeFormText into one single pill - can be either
+        //   a complex or a regular filter
+        // 3. add an empty editActive filter, so that a brand new filter
+        //   is ready to be created in nextGen mode
+
         filtersList.removeObjects(filtersList);
         if (filter.complexFilter) {
           addToArray({ filters: filtersList, complexFilter: filter.complexFilter });

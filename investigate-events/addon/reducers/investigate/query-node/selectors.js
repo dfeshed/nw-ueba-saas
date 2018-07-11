@@ -23,13 +23,6 @@ export const hasMetaFilters = createSelector(
   (metaFilters) => metaFilters.conditions.length > 0
 );
 
-export const queryParams = createSelector(
-  [_serviceId, _startTime, _endTime, _metaFilter],
-  (serviceId, startTime, endTime, metaFilter) => {
-    return { serviceId, startTime, endTime, metaFilter };
-  }
-);
-
 export const selectedTimeRangeId = createSelector(
   [_serviceId, _previouslySelectedTimeRanges],
   (serviceId, previouslySelectedTimeRanges) => {
@@ -68,14 +61,14 @@ export const canFetchEvents = createSelector(
   (serviceId, startTime, endTime) => !!(serviceId && startTime && endTime)
 );
 
-export const guidedHasFocus = createSelector(
-  [_queryView, _toggledOnceFlag],
-  (queryView, toggledOnceFlag) => queryView === 'guided' && toggledOnceFlag
-);
-
 export const freeFormHasFocus = createSelector(
   [_queryView, _toggledOnceFlag],
   (queryView, toggledOnceFlag) => queryView === 'freeForm' && toggledOnceFlag
+);
+
+export const nextGenHasFocus = createSelector(
+  [_queryView, _toggledOnceFlag],
+  (queryView, toggledOnceFlag) => queryView === 'nextGen' && toggledOnceFlag
 );
 
 /**
