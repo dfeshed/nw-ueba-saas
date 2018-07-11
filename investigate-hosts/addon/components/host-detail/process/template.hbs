@@ -20,13 +20,22 @@
 {{else}}
   {{#unless isProcessDataEmpty}}
     <vbox xs="6" class="process-content-box panel-shadow">
-      {{host-detail/process/summary-items config=summaryConfig data=process}}
-      <box class="process-content-box__accordion-content">
-        {{#rsa-content-accordion class='accordion-content-title' label=(t 'investigateHosts.process.dll.title')}}
-          <div class="process-dll-note">{{loadedDLLNote}}</div>
-          {{host-detail/process/process-dll-list}}
-        {{/rsa-content-accordion}}
-      </box>
+      <div class='process-content-box-wrapper'>
+        {{host-detail/process/summary-items config=summaryConfig data=process}}
+        <box class="process-content-box__accordion-content">
+          {{#rsa-content-accordion class='accordion-content-title' label=(t 'investigateHosts.process.dll.title')}}
+            <div class="process-dll-note">{{loadedDLLNote}}</div>
+            {{host-detail/process/process-dll-list}}
+          {{/rsa-content-accordion}}
+        </box>
+        {{#if isMachineWindows}}
+          <box class="process-content-box__accordion-content">
+            {{#rsa-content-accordion class='accordion-content-title' label=(t 'investigateHosts.process.imageHooks.title')}}
+              {{host-detail/process/process-image-hooks}}
+            {{/rsa-content-accordion}}
+          </box>
+        {{/if}}
+      </div>
     </vbox>
     <vbox xs="3" class="process-property-box">
       {{host-detail/utils/file-property-panel

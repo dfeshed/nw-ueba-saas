@@ -11,6 +11,7 @@ const _selectedTab = (state) => state.endpoint.explore.selectedTab;
 const _processDetailsLoading = (state) => state.endpoint.process.processDetailsLoading;
 const _isProcessTreeLoading = (state) => state.endpoint.process.isProcessTreeLoading;
 const _hostDetails = (state) => state.endpoint.overview.hostDetails || {};
+const _selectedProcessId = (state) => state.endpoint.process.selectedProcessId;
 
 const _getTree = (selectedTab, tabName, data) => {
   if (selectedTab && selectedTab.tabName === tabName) {
@@ -91,6 +92,7 @@ const _getProcessList = createSelector(
   }
 );
 
+/* Processes data for loaded libraries also removes floating code from the list */
 export const enrichedDllData = createSelector(
   [_dllData],
   (dllData) => {
@@ -104,7 +106,7 @@ export const enrichedDllData = createSelector(
           }
           return dll;
         }
-      });
+      }).filter((item) => item);
       return newDallData;
     }
     return [];
@@ -156,3 +158,51 @@ export const isJazzAgent = createSelector(
       return (agentVersion && agentVersion.startsWith('11.2')) && (agentMode === 'userModeOnly');
     }
   });
+
+/*
+  Fetches all the dllList items that have hooks.
+  Then filters out the relevent hooks based on PID and then
+  process each hook into the required format.
+  input : dllList, selected process Id
+  output : [{
+              dllFileName,
+              type,
+              hookFileName,
+              symbol
+  },..]
+*/
+export const imageHooksData = createSelector(
+    [_dllData, _selectedProcessId],
+    (dllData, selectedProcessId) => {
+      if (dllData && dllData.length > 0) {
+        const [{ machineOsType }] = dllData;
+        const dllsThatHaveHooks = dllData.filter((dll) => {
+          const { hooks } = dll[machineOsType];
+          return hooks && hooks.length;
+        });
+        const imageHooks = dllsThatHaveHooks.map((item) => {
+          const { fileName: dllFileName } = item;
+          const filteredHooks = item[machineOsType].hooks.filter((hookObj) => {
+            return hookObj.process.pid === selectedProcessId;
+          });
+
+          return filteredHooks.map((hookObj) => {
+            const { type, hookLocation: { fileName: hookFileName, symbol } } = hookObj;
+            return {
+              dllFileName,
+              type,
+              hookFileName,
+              symbol
+            };
+          });
+        });
+
+        let consolidatedHooks = [];
+        imageHooks.forEach((item) => {
+          consolidatedHooks = [...consolidatedHooks, ...item];
+        });
+        return consolidatedHooks;
+      }
+      return [];
+    }
+  );

@@ -52,7 +52,9 @@ const processReducer = handleActions({
       start: (s) => s.set('dllList', null),
       success: (s) => s.set('dllList', action.payload.data)
     });
-  }
+  },
+
+  [ACTION_TYPES.SET_SELECTED_PROCESS_ID]: (state, action) => state.set('selectedProcessId', action.payload)
 
 }, initialState);
 

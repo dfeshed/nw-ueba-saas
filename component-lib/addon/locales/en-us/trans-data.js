@@ -2198,6 +2198,16 @@ export default {
           windows: 'Note: Displays libraries that are not signed by Microsoft',
           mac: 'Note: Displays libraries that are not signed by Apple.'
         }
+      },
+      imageHooks: {
+        type: 'Type',
+        dllFileName: 'DLL Name',
+        hookFileName: 'Hooked dll',
+        symbol: 'Symbol',
+        title: 'Image Hooks',
+        message: {
+          noResultsMessage: 'No Image Hooks information were found'
+        }
       }
     },
     tabs: {

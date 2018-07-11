@@ -9,6 +9,7 @@ import {
 import computed from 'ember-computed-decorators';
 import { toggleProcessView } from 'investigate-hosts/actions/data-creators/process';
 import { getColumnsConfig } from 'investigate-hosts/reducers/details/selectors';
+import { isMachineWindows } from 'investigate-hosts/reducers/details/overview/selectors';
 import summaryItems from './summary-item-config';
 
 const stateToComputed = (state) => ({
@@ -17,7 +18,8 @@ const stateToComputed = (state) => ({
   isNavigatedFromExplore: isNavigatedFromExplore(state),
   summaryConfig: getColumnsConfig(state, summaryItems),
   isProcessLoading: isProcessLoading(state),
-  isProcessDataEmpty: noProcessData(state)
+  isProcessDataEmpty: noProcessData(state),
+  isMachineWindows: isMachineWindows(state)
 });
 
 const dispatchToActions = {

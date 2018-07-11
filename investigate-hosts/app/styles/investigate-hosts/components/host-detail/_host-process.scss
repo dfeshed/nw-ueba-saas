@@ -44,8 +44,13 @@
   position: relative;
   border-top: 0;
   border-right: 0;
-  padding: rsa-whitespace() rsa-whitespace(more);
   overflow-y: auto;
+  .process-content-box-wrapper{
+    padding: rsa-whitespace() rsa-whitespace(more);
+    height: 100%;
+    overflow-y: auto;
+    max-height: 674px;
+  }
 
   &.panel-shadow {
     width: 51px;
@@ -69,12 +74,21 @@
     }
   }
   &__accordion-content {
+    display: block;
+    flex: initial;
     .rsa-data-table {
       background-color: $host-details-table-row-color;
       min-height: 130px;
       height: auto;
       .rsa-data-table-body-row {
         cursor: default !important;
+        width: fit-content;
+        left: 0;
+        padding-left: 0.5rem;
+        &:hover {
+          left: 0;
+          padding-left: 1rem;
+        }
       }
     }
     .accordion-content-title {

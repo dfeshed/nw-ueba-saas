@@ -1800,3 +1800,1427 @@ export const exploreData = [
     ]
   }
 ];
+
+export const dllListData = [
+  {
+    id: '5b335ffbb24959156220f9c4',
+    machineOsType: 'windows',
+    machineName: 'REMDBGDRV',
+    machineAgentId: 'D4259B02-1EDB-53CE-56C0-8A03110C4D88',
+    agentVersion: '11.2.0.0',
+    scanStartTime: 1530093476248,
+    checksumSha256: '2ab21ad49d358757b2176237a23f274d53a552cfd2266a5e43cbc25c8c10800b',
+    path: 'C:\\Program Files\\VMware\\VMware Tools\\',
+    pathH8: 0,
+    fileName: 'gmodule-2.0.dll',
+    timeCreated: 1489717596000,
+    timeModified: 1489717596000,
+    timeAccessed: 1496406783268,
+    attributes: [
+      'archive'
+    ],
+    mode: 0,
+    sameDirectoryFileCounts: {
+      nonExe: 10,
+      exe: 35,
+      subFolder: 7,
+      exeSameCompany: 5,
+      hiddenFiles: 0
+    },
+    fileFeatures: [
+      'found'
+    ],
+    directoryFeatures: [
+      'programFiles',
+      'installer'
+    ],
+    userModeFeatures: [
+      'loaded',
+      'image'
+    ],
+    windows: {
+      dlls: [
+        {
+          pid: 1392,
+          imageBase: 2097152,
+          createTime: 1530092987886,
+          eprocess: '0xFFFFFA801A64D4E0',
+          imageSize: 36864
+        },
+        {
+          pid: 1840,
+          imageBase: 1048576,
+          createTime: 1530093143515,
+          eprocess: '0xFFFFFA8019123060',
+          imageSize: 36864
+        }
+      ],
+      hooks: [
+        {
+          type: 'inline',
+          features: [
+            'userMode',
+            'trampoline'
+          ],
+          jumpCount: 2,
+          jumpTo: '0x60000254',
+          process: {
+            pid: 1392,
+            fileName: 'vmtoolsd.exe',
+            createUtcTime: '2018-04-20T05:05:49.420Z'
+          },
+          hookLocation: {
+            checksumSha256: 'cfcd25162159229be6b5f8e9759a444bdb5e6aa5f9ccd23e2a75f2f1afa2caf3',
+            path: 'C:\\Winodws\\System32',
+            fileName: 'gobject-2.0.dll',
+            section: '.text',
+            sectionBase: 268566528,
+            imageBase: '0x10000000',
+            imageSize: 409600,
+            address: '0x10024455',
+            symbol: 'GenerateObject',
+            symbolOffset: 3
+          },
+          inlinePatch: {
+            originalBytes: '8bff558bec83e4f8',
+            originalAsm: [
+              '8bff            mov     edi,edi',
+              '55              push    ebp',
+              '8bec            mov     ebp,esp',
+              '83e4f8          and     esp,0FFFFFFF8h'
+            ],
+            currentBytes: '8bffe98986cdff',
+            currentAsm: [
+              '8bff            mov     edi,edi',
+              'e98986cdff      jmp     7473f000'
+            ]
+          }
+        },
+        {
+          type: 'inline',
+          features: [
+            'userMode',
+            'trampoline'
+          ],
+          jumpCount: 2,
+          jumpTo: '0x60000254',
+          process: {
+            pid: 1392,
+            fileName: 'vmtoolsd.exe',
+            createUtcTime: '2018-04-20T05:05:49.420Z'
+          },
+          hookLocation: {
+            checksumSha256: 'cfcd25162159229be6b5f8e9759a444bdb5e6aa5f9ccd23e2a75f2f1afa2caf3',
+            path: 'C:\\Winodws\\System32',
+            fileName: 'gobject-2.0.dll',
+            section: '.text',
+            sectionBase: 268566528,
+            imageBase: '0x10000000',
+            imageSize: 409600,
+            address: '0x10024455',
+            symbol: 'DeleteObject',
+            symbolOffset: 3
+          },
+          inlinePatch: {
+            originalBytes: '8bff558bec83e4f8',
+            originalAsm: [
+              '8bff            mov     edi,edi',
+              '55              push    ebp',
+              '8bec            mov     ebp,esp',
+              '83e4f8          and     esp,0FFFFFFF8h'
+            ],
+            currentBytes: '8bffe98986cdff',
+            currentAsm: [
+              '8bff            mov     edi,edi',
+              'e98986cdff      jmp     7473f000'
+            ]
+          }
+        },
+        {
+          type: 'inline',
+          features: [
+            'userMode',
+            'trampoline'
+          ],
+          jumpCount: 2,
+          jumpTo: '0x60000254',
+          process: {
+            pid: 1840,
+            fileName: 'vmtoolsd.exe',
+            createUtcTime: '2018-04-20T05:05:49.420Z'
+          },
+          hookLocation: {
+            checksumSha256: 'cfcd25162159229be6b5f8e9759a444bdb5e6aa5f9ccd23e2a75f2f1afa2caf3',
+            path: 'C:\\Winodws\\System32',
+            fileName: 'gobject-2.0.dll',
+            section: '.text',
+            sectionBase: 268566528,
+            imageBase: '0x10000000',
+            imageSize: 409600,
+            address: '0x10024455',
+            symbol: 'GenerateObject',
+            symbolOffset: 3
+          },
+          inlinePatch: {
+            originalBytes: '8bff558bec83e4f8',
+            originalAsm: [
+              '8bff            mov     edi,edi',
+              '55              push    ebp',
+              '8bec            mov     ebp,esp',
+              '83e4f8          and     esp,0FFFFFFF8h'
+            ],
+            currentBytes: '8bffe98986cdff',
+            currentAsm: [
+              '8bff            mov     edi,edi',
+              'e98986cdff      jmp     7473f000'
+            ]
+          }
+        },
+        {
+          type: 'inline',
+          features: [
+            'userMode',
+            'trampoline'
+          ],
+          jumpCount: 2,
+          jumpTo: '0x60000254',
+          process: {
+            pid: 1840,
+            fileName: 'vmtoolsd.exe',
+            createUtcTime: '2018-04-20T05:05:49.420Z'
+          },
+          hookLocation: {
+            checksumSha256: 'cfcd25162159229be6b5f8e9759a444bdb5e6aa5f9ccd23e2a75f2f1afa2caf3',
+            path: 'C:\\Winodws\\System32',
+            fileName: 'gobject-2.0.dll',
+            section: '.text',
+            sectionBase: 268566528,
+            imageBase: '0x10000000',
+            imageSize: 409600,
+            address: '0x10024455',
+            symbol: 'DeleteObject',
+            symbolOffset: 3
+          },
+          inlinePatch: {
+            originalBytes: '8bff558bec83e4f8',
+            originalAsm: [
+              '8bff            mov     edi,edi',
+              '55              push    ebp',
+              '8bec            mov     ebp,esp',
+              '83e4f8          and     esp,0FFFFFFF8h'
+            ],
+            currentBytes: '8bffe98986cdff',
+            currentAsm: [
+              '8bff            mov     edi,edi',
+              'e98986cdff      jmp     7473f000'
+            ]
+          }
+        }
+      ]
+    },
+    fileProperties: {
+      id: '2ab21ad49d358757b2176237a23f274d53a552cfd2266a5e43cbc25c8c10800b',
+      firstFileName: 'gmodule-2.0.dll',
+      firstSeenTime: 1530093476248,
+      machineOsType: 'windows',
+      signature: {
+        timeStamp: 1489762597000,
+        thumbprint: 'cef16150c61b0a1cee14a7c5d4cff80f645a6ab7',
+        features: [
+          'signed',
+          'valid'
+        ],
+        signer: 'VMware, Inc.'
+      },
+      size: 33256,
+      checksumMd5: 'c9b55e67cf0cda8cf350d8e96abd881d',
+      checksumSha1: '716ef8d08840bbadee7f77cde95c56fcf02aba35',
+      checksumSha256: '2ab21ad49d358757b2176237a23f274d53a552cfd2266a5e43cbc25c8c10800b',
+      pe: {
+        timeStamp: 1471639874000,
+        imageSize: 36864,
+        numberOfExportedFunctions: 8,
+        numberOfNamesExported: 8,
+        numberOfExecuteWriteSections: 0,
+        features: [
+          'dll',
+          'pe64',
+          'versionInfoPresent',
+          'resourceDirectoryPresent',
+          'relocationDirectoryPresent',
+          'debugDirectoryPresent',
+          'richSignaturePresent',
+          'relocationDirectoryPresent',
+          'companyNameContainsText',
+          'fileDescriptionContainsText',
+          'fileVersionContainsText',
+          'internalNameContainsText',
+          'legalCopyrightContainsText',
+          'originalFilenameContainsText',
+          'productNameContainsText',
+          'productVersionContainsText',
+          'standardVersionMetaPresent'
+        ],
+        resources: {
+          originalFileName: 'libgmodule-2.0-0.dll',
+          company: 'The GLib developer community',
+          description: 'GModule'
+        },
+        sectionNames: [
+          '.text',
+          '.rdata',
+          '.data',
+          '.pdata',
+          '.rsrc',
+          '.reloc'
+        ],
+        importedLibraries: [
+          'glib-2.0.dll',
+          'KERNEL32.dll',
+          'MSVCR90.dll'
+        ]
+      },
+      entropy: 6.810589938365437,
+      format: 'pe'
+    }
+  },
+  {
+    id: '5b335ffbb24959156220f9d1',
+    machineOsType: 'windows',
+    machineName: 'REMDBGDRV',
+    machineAgentId: 'D4259B02-1EDB-53CE-56C0-8A03110C4D88',
+    agentVersion: '11.2.0.0',
+    scanStartTime: 1530093476248,
+    checksumSha256: 'b4316a7e8c9139e18e079f94539bced78086c8dce1f90f52712f248cd5bdf03e',
+    path: 'C:\\Program Files\\VMware\\VMware Tools\\plugins\\vmsvc\\',
+    pathH8: 0,
+    fileName: 'diskWiper.dll',
+    timeCreated: 1489717882000,
+    timeModified: 1489717882000,
+    timeAccessed: 1496406783408,
+    attributes: [
+      'archive'
+    ],
+    mode: 0,
+    sameDirectoryFileCounts: {
+      nonExe: 0,
+      exe: 13,
+      subFolder: 0,
+      exeSameCompany: 13,
+      hiddenFiles: 0
+    },
+    fileFeatures: [
+      'found'
+    ],
+    directoryFeatures: [
+      'programFiles',
+      'installer'
+    ],
+    userModeFeatures: [
+      'loaded',
+      'image'
+    ],
+    windows: {
+      dlls: [
+        {
+          pid: 1392,
+          imageBase: 8791675043840,
+          createTime: 1530092987886,
+          eprocess: '0xFFFFFA801A64D4E0',
+          imageSize: 32768
+        }
+      ]
+    },
+    fileProperties: {
+      id: 'b4316a7e8c9139e18e079f94539bced78086c8dce1f90f52712f248cd5bdf03e',
+      firstFileName: 'diskWiper.dll',
+      firstSeenTime: 1530093476248,
+      machineOsType: 'windows',
+      signature: {
+        timeStamp: 1489762881000,
+        thumbprint: 'cef16150c61b0a1cee14a7c5d4cff80f645a6ab7',
+        features: [
+          'signed',
+          'valid'
+        ],
+        signer: 'VMware, Inc.'
+      },
+      size: 30184,
+      checksumMd5: '19b4420f501c13fad92f619bb45539b6',
+      checksumSha1: 'ebfeb4a707b80036aba6bda6003d84739c893d79',
+      checksumSha256: 'b4316a7e8c9139e18e079f94539bced78086c8dce1f90f52712f248cd5bdf03e',
+      pe: {
+        timeStamp: 1489760469000,
+        imageSize: 32768,
+        numberOfExportedFunctions: 1,
+        numberOfNamesExported: 1,
+        numberOfExecuteWriteSections: 0,
+        features: [
+          'dll',
+          'pe64',
+          'versionInfoPresent',
+          'resourceDirectoryPresent',
+          'relocationDirectoryPresent',
+          'debugDirectoryPresent',
+          'richSignaturePresent',
+          'relocationDirectoryPresent',
+          'companyNameContainsText',
+          'fileDescriptionContainsText',
+          'fileVersionContainsText',
+          'internalNameContainsText',
+          'legalCopyrightContainsText',
+          'originalFilenameContainsText',
+          'productNameContainsText',
+          'productVersionContainsText',
+          'standardVersionMetaPresent'
+        ],
+        resources: {
+          originalFileName: 'diskWiper.dll',
+          company: 'VMware, Inc.',
+          description: 'VMware Tools diskWiper plugin'
+        },
+        sectionNames: [
+          '.text',
+          '.rdata',
+          '.data',
+          '.pdata',
+          '.rsrc',
+          '.reloc'
+        ],
+        importedLibraries: [
+          'MSVCR90.dll',
+          'glib-2.0.dll',
+          'vmtools.dll',
+          'gobject-2.0.dll',
+          'KERNEL32.dll'
+        ]
+      },
+      entropy: 6.762114502528325,
+      format: 'pe'
+    }
+  },
+  {
+    id: '5b335ffbb24959156220f9d2',
+    machineOsType: 'windows',
+    machineName: 'REMDBGDRV',
+    machineAgentId: 'D4259B02-1EDB-53CE-56C0-8A03110C4D88',
+    agentVersion: '11.2.0.0',
+    scanStartTime: 1530093476248,
+    checksumSha256: 'cd32794801d132aee751cee52c1623b86caa26c0505b1108aab83061737a6a0e',
+    path: 'C:\\Program Files\\VMware\\VMware Tools\\',
+    pathH8: 0,
+    fileName: 'deployPkg.dll',
+    timeCreated: 1489717580000,
+    timeModified: 1489717580000,
+    timeAccessed: 1496406783237,
+    attributes: [
+      'archive'
+    ],
+    mode: 0,
+    sameDirectoryFileCounts: {
+      nonExe: 10,
+      exe: 35,
+      subFolder: 7,
+      exeSameCompany: 15,
+      hiddenFiles: 0
+    },
+    fileFeatures: [
+      'found'
+    ],
+    directoryFeatures: [
+      'programFiles',
+      'installer'
+    ],
+    userModeFeatures: [
+      'loaded',
+      'image'
+    ],
+    windows: {
+      dlls: [
+        {
+          pid: 1392,
+          imageBase: 8791675174912,
+          createTime: 1530092987886,
+          eprocess: '0xFFFFFA801A64D4E0',
+          imageSize: 1429504
+        }
+      ]
+    },
+    fileProperties: {
+      id: 'cd32794801d132aee751cee52c1623b86caa26c0505b1108aab83061737a6a0e',
+      firstFileName: 'deployPkg.dll',
+      firstSeenTime: 1530093476248,
+      machineOsType: 'windows',
+      signature: {
+        timeStamp: 1483553746000,
+        thumbprint: 'cef16150c61b0a1cee14a7c5d4cff80f645a6ab7',
+        features: [
+          'signed',
+          'valid'
+        ],
+        signer: 'VMware, Inc.'
+      },
+      size: 1402696,
+      checksumMd5: '49e18d16b51863b5a2bcd945df16ef51',
+      checksumSha1: '646b13d9418dabdf98a2f4ab3efa3bfae6c66dd8',
+      checksumSha256: 'cd32794801d132aee751cee52c1623b86caa26c0505b1108aab83061737a6a0e',
+      pe: {
+        timeStamp: 1483553399000,
+        imageSize: 1429504,
+        numberOfExportedFunctions: 338,
+        numberOfNamesExported: 338,
+        numberOfExecuteWriteSections: 0,
+        features: [
+          'dll',
+          'pe64',
+          'versionInfoPresent',
+          'resourceDirectoryPresent',
+          'relocationDirectoryPresent',
+          'debugDirectoryPresent',
+          'tlsDirectoryPresent',
+          'richSignaturePresent',
+          'relocationDirectoryPresent',
+          'companyNameContainsText',
+          'fileDescriptionContainsText',
+          'fileVersionContainsText',
+          'internalNameContainsText',
+          'legalCopyrightContainsText',
+          'originalFilenameContainsText',
+          'productNameContainsText',
+          'productVersionContainsText',
+          'standardVersionMetaPresent'
+        ],
+        resources: {
+          originalFileName: 'deployPkg.dll',
+          company: 'VMware, Inc.',
+          description: 'VMware Deployment Package Library'
+        },
+        sectionNames: [
+          '.text',
+          '.rdata',
+          '.data',
+          '.pdata',
+          '.tls',
+          '.rsrc',
+          '.reloc'
+        ],
+        importedLibraries: [
+          'ADVAPI32.dll',
+          'WS2_32.dll',
+          'SHELL32.dll',
+          'MSVCP90.dll',
+          'MSVCR90.dll',
+          'KERNEL32.dll',
+          'USER32.dll',
+          'VERSION.dll'
+        ]
+      },
+      entropy: 6.2075991890620985,
+      format: 'pe'
+    }
+  },
+  {
+    id: '5b335ffbb24959156220f9d3',
+    machineOsType: 'windows',
+    machineName: 'REMDBGDRV',
+    machineAgentId: 'D4259B02-1EDB-53CE-56C0-8A03110C4D88',
+    agentVersion: '11.2.0.0',
+    scanStartTime: 1530093476248,
+    checksumSha256: '60a8ddc0bdfe7ef1ea9a90622794b2208c5cd1982a1351b0d4a75e407588ecb4',
+    path: 'C:\\Program Files\\VMware\\VMware Tools\\plugins\\vmsvc\\',
+    pathH8: 0,
+    fileName: 'deployPkgPlugin.dll',
+    timeCreated: 1489717866000,
+    timeModified: 1489717866000,
+    timeAccessed: 1496406783393,
+    attributes: [
+      'archive'
+    ],
+    mode: 0,
+    sameDirectoryFileCounts: {
+      nonExe: 0,
+      exe: 13,
+      subFolder: 0,
+      exeSameCompany: 13,
+      hiddenFiles: 0
+    },
+    fileFeatures: [
+      'found'
+    ],
+    directoryFeatures: [
+      'programFiles',
+      'installer'
+    ],
+    userModeFeatures: [
+      'loaded',
+      'image'
+    ],
+    windows: {
+      dlls: [
+        {
+          pid: 1392,
+          imageBase: 8791676616704,
+          createTime: 1530092987886,
+          eprocess: '0xFFFFFA801A64D4E0',
+          imageSize: 32768
+        }
+      ]
+    },
+    fileProperties: {
+      id: '60a8ddc0bdfe7ef1ea9a90622794b2208c5cd1982a1351b0d4a75e407588ecb4',
+      firstFileName: 'deployPkgPlugin.dll',
+      firstSeenTime: 1530093476248,
+      machineOsType: 'windows',
+      signature: {
+        timeStamp: 1489762866000,
+        thumbprint: 'cef16150c61b0a1cee14a7c5d4cff80f645a6ab7',
+        features: [
+          'signed',
+          'valid'
+        ],
+        signer: 'VMware, Inc.'
+      },
+      size: 29672,
+      checksumMd5: '9ad5afe6f74cd447e03d897057dc977e',
+      checksumSha1: 'ba373f9cf7492180c13c0484b34092cda2e1ad1c',
+      checksumSha256: '60a8ddc0bdfe7ef1ea9a90622794b2208c5cd1982a1351b0d4a75e407588ecb4',
+      pe: {
+        timeStamp: 1489760457000,
+        imageSize: 32768,
+        numberOfExportedFunctions: 1,
+        numberOfNamesExported: 1,
+        numberOfExecuteWriteSections: 0,
+        features: [
+          'dll',
+          'pe64',
+          'versionInfoPresent',
+          'resourceDirectoryPresent',
+          'relocationDirectoryPresent',
+          'debugDirectoryPresent',
+          'richSignaturePresent',
+          'relocationDirectoryPresent',
+          'companyNameContainsText',
+          'fileDescriptionContainsText',
+          'fileVersionContainsText',
+          'internalNameContainsText',
+          'legalCopyrightContainsText',
+          'originalFilenameContainsText',
+          'productNameContainsText',
+          'productVersionContainsText',
+          'standardVersionMetaPresent'
+        ],
+        resources: {
+          originalFileName: 'deployPkgPlugin.dll',
+          company: 'VMware, Inc.',
+          description: 'VMware Tools DeployPkg plugin'
+        },
+        sectionNames: [
+          '.text',
+          '.rdata',
+          '.data',
+          '.pdata',
+          '.rsrc',
+          '.reloc'
+        ],
+        importedLibraries: [
+          'MSVCR90.dll',
+          'glib-2.0.dll',
+          'vmtools.dll',
+          'deployPkg.dll',
+          'KERNEL32.dll'
+        ]
+      },
+      entropy: 6.760358063354543,
+      format: 'pe'
+    }
+  },
+  {
+    id: '5b335ffbb24959156220f9d4',
+    machineOsType: 'windows',
+    machineName: 'REMDBGDRV',
+    machineAgentId: 'D4259B02-1EDB-53CE-56C0-8A03110C4D88',
+    agentVersion: '11.2.0.0',
+    scanStartTime: 1530093476248,
+    checksumSha256: '95807c5704972d29c56d7c6812aaabcbfd8976478b503ed462f7f2424a1d9296',
+    path: 'C:\\Program Files\\VMware\\VMware Tools\\plugins\\vmsvc\\',
+    pathH8: 0,
+    fileName: 'bitMapper.dll',
+    timeCreated: 1489717860000,
+    timeModified: 1489717860000,
+    timeAccessed: 1496406783393,
+    attributes: [
+      'archive'
+    ],
+    mode: 0,
+    sameDirectoryFileCounts: {
+      nonExe: 0,
+      exe: 13,
+      subFolder: 0,
+      exeSameCompany: 13,
+      hiddenFiles: 0
+    },
+    fileFeatures: [
+      'found'
+    ],
+    directoryFeatures: [
+      'programFiles',
+      'installer'
+    ],
+    userModeFeatures: [
+      'loaded',
+      'image'
+    ],
+    windows: {
+      dlls: [
+        {
+          pid: 1392,
+          imageBase: 8791676682240,
+          createTime: 1530092987886,
+          eprocess: '0xFFFFFA801A64D4E0',
+          imageSize: 40960
+        }
+      ]
+    },
+    fileProperties: {
+      id: '95807c5704972d29c56d7c6812aaabcbfd8976478b503ed462f7f2424a1d9296',
+      firstFileName: 'bitMapper.dll',
+      firstSeenTime: 1530093476248,
+      machineOsType: 'windows',
+      signature: {
+        timeStamp: 1489762860000,
+        thumbprint: 'cef16150c61b0a1cee14a7c5d4cff80f645a6ab7',
+        features: [
+          'signed',
+          'valid'
+        ],
+        signer: 'VMware, Inc.'
+      },
+      size: 36840,
+      checksumMd5: '4f8ef0363ec1d6ec5b3c932c00e4b149',
+      checksumSha1: '9990c480745b3cce4eae98b6ff2f7e295d6e3ac7',
+      checksumSha256: '95807c5704972d29c56d7c6812aaabcbfd8976478b503ed462f7f2424a1d9296',
+      pe: {
+        timeStamp: 1489760466000,
+        imageSize: 40960,
+        numberOfExportedFunctions: 1,
+        numberOfNamesExported: 1,
+        numberOfExecuteWriteSections: 0,
+        features: [
+          'dll',
+          'pe64',
+          'versionInfoPresent',
+          'resourceDirectoryPresent',
+          'relocationDirectoryPresent',
+          'debugDirectoryPresent',
+          'richSignaturePresent',
+          'relocationDirectoryPresent',
+          'companyNameContainsText',
+          'fileDescriptionContainsText',
+          'fileVersionContainsText',
+          'internalNameContainsText',
+          'legalCopyrightContainsText',
+          'originalFilenameContainsText',
+          'productNameContainsText',
+          'productVersionContainsText',
+          'standardVersionMetaPresent'
+        ],
+        resources: {
+          originalFileName: 'bitMapper.dll',
+          company: 'VMware, Inc.',
+          description: 'VMware Tools bitMapper plugin'
+        },
+        sectionNames: [
+          '.text',
+          '.rdata',
+          '.data',
+          '.pdata',
+          '.rsrc',
+          '.reloc'
+        ],
+        importedLibraries: [
+          'MSVCR90.dll',
+          'glib-2.0.dll',
+          'vmtools.dll',
+          'KERNEL32.dll'
+        ]
+      },
+      entropy: 6.660540710302009,
+      format: 'pe'
+    }
+  },
+  {
+    id: '5b335ffbb24959156220f9d5',
+    machineOsType: 'windows',
+    machineName: 'REMDBGDRV',
+    machineAgentId: 'D4259B02-1EDB-53CE-56C0-8A03110C4D88',
+    agentVersion: '11.2.0.0',
+    scanStartTime: 1530093476248,
+    checksumSha256: '0c97756baa5f37e854b189011f4222a1ba10e35b5e3ede4a705ee1d6524e27ac',
+    path: 'C:\\Program Files\\VMware\\VMware Tools\\plugins\\vmsvc\\',
+    pathH8: 0,
+    fileName: 'autoUpgrade.dll',
+    timeCreated: 1489717856000,
+    timeModified: 1489717856000,
+    timeAccessed: 1496406783393,
+    attributes: [
+      'archive'
+    ],
+    mode: 0,
+    sameDirectoryFileCounts: {
+      nonExe: 0,
+      exe: 13,
+      subFolder: 0,
+      exeSameCompany: 13,
+      hiddenFiles: 0
+    },
+    fileFeatures: [
+      'found'
+    ],
+    directoryFeatures: [
+      'programFiles',
+      'installer'
+    ],
+    userModeFeatures: [
+      'loaded',
+      'image'
+    ],
+    windows: {
+      dlls: [
+        {
+          pid: 1392,
+          imageBase: 8791676747776,
+          createTime: 1530092987886,
+          eprocess: '0xFFFFFA801A64D4E0',
+          imageSize: 36864
+        }
+      ]
+    },
+    fileProperties: {
+      id: '0c97756baa5f37e854b189011f4222a1ba10e35b5e3ede4a705ee1d6524e27ac',
+      firstFileName: 'autoUpgrade.dll',
+      firstSeenTime: 1530093476248,
+      machineOsType: 'windows',
+      signature: {
+        timeStamp: 1489762855000,
+        thumbprint: 'cef16150c61b0a1cee14a7c5d4cff80f645a6ab7',
+        features: [
+          'signed',
+          'valid'
+        ],
+        signer: 'VMware, Inc.'
+      },
+      size: 32232,
+      checksumMd5: 'a1677a70233aa34f26e1ad780d24f8d4',
+      checksumSha1: 'e5831b704f8cbc0135bc2d6e86c6acf937712bde',
+      checksumSha256: '0c97756baa5f37e854b189011f4222a1ba10e35b5e3ede4a705ee1d6524e27ac',
+      pe: {
+        timeStamp: 1489760455000,
+        imageSize: 36864,
+        numberOfExportedFunctions: 1,
+        numberOfNamesExported: 1,
+        numberOfExecuteWriteSections: 0,
+        features: [
+          'dll',
+          'pe64',
+          'versionInfoPresent',
+          'resourceDirectoryPresent',
+          'relocationDirectoryPresent',
+          'debugDirectoryPresent',
+          'richSignaturePresent',
+          'relocationDirectoryPresent',
+          'companyNameContainsText',
+          'fileDescriptionContainsText',
+          'fileVersionContainsText',
+          'internalNameContainsText',
+          'legalCopyrightContainsText',
+          'originalFilenameContainsText',
+          'productNameContainsText',
+          'productVersionContainsText',
+          'standardVersionMetaPresent'
+        ],
+        resources: {
+          originalFileName: 'autoUpgrade.dll',
+          company: 'VMware, Inc.',
+          description: 'VMware Tools AutoUpgrade plugin'
+        },
+        sectionNames: [
+          '.text',
+          '.rdata',
+          '.data',
+          '.pdata',
+          '.rsrc',
+          '.reloc'
+        ],
+        importedLibraries: [
+          'MSVCR90.dll',
+          'glib-2.0.dll',
+          'vmtools.dll',
+          'WTSAPI32.dll',
+          'USER32.dll',
+          'ADVAPI32.dll',
+          'KERNEL32.dll'
+        ]
+      },
+      entropy: 6.702875507953402,
+      format: 'pe'
+    }
+  },
+  {
+    id: '5b335ffbb24959156220f9d6',
+    machineOsType: 'windows',
+    machineName: 'REMDBGDRV',
+    machineAgentId: 'D4259B02-1EDB-53CE-56C0-8A03110C4D88',
+    agentVersion: '11.2.0.0',
+    scanStartTime: 1530093476248,
+    checksumSha256: '84a5a562ed9a8427dc231ae609a4c0418634d169d30b20e9f0df9970608b862c',
+    path: 'C:\\Program Files\\VMware\\VMware Tools\\plugins\\vmsvc\\',
+    pathH8: 0,
+    fileName: 'autoLogon.dll',
+    timeCreated: 1489717850000,
+    timeModified: 1489717850000,
+    timeAccessed: 1496406783393,
+    attributes: [
+      'archive'
+    ],
+    mode: 0,
+    sameDirectoryFileCounts: {
+      nonExe: 0,
+      exe: 13,
+      subFolder: 0,
+      exeSameCompany: 13,
+      hiddenFiles: 0
+    },
+    fileFeatures: [
+      'found'
+    ],
+    directoryFeatures: [
+      'programFiles',
+      'installer'
+    ],
+    userModeFeatures: [
+      'loaded',
+      'image'
+    ],
+    windows: {
+      dlls: [
+        {
+          pid: 1392,
+          imageBase: 8791676813312,
+          createTime: 1530092987886,
+          eprocess: '0xFFFFFA801A64D4E0',
+          imageSize: 49152
+        }
+      ],
+      hooks: [
+        {
+          type: 'inline',
+          features: [
+            'userMode',
+            'trampoline'
+          ],
+          jumpCount: 2,
+          jumpTo: '0x60000254',
+          process: {
+            pid: 1392,
+            fileName: 'vmtoolsd.exe',
+            createUtcTime: '2018-04-20T05:05:49.420Z'
+          },
+          hookLocation: {
+            checksumSha256: 'cfcd25162159229be6b5f8e9759a444bdb5e6aa5f9ccd23e2a75f2f1afa2caf3',
+            path: 'C:\\Winodws\\System32',
+            fileName: 'kernel32.dll',
+            section: '.text',
+            sectionBase: 268566528,
+            imageBase: '0x10000000',
+            imageSize: 409600,
+            address: '0x10024455',
+            symbol: 'CreateFileA',
+            symbolOffset: 343
+          },
+          inlinePatch: {
+            originalBytes: '8bff558bec83e4f8',
+            originalAsm: [
+              '8bff            mov     edi,edi',
+              '55              push    ebp',
+              '8bec            mov     ebp,esp',
+              '83e4f8          and     esp,0FFFFFFF8h'
+            ],
+            currentBytes: '8bffe98986cdff',
+            currentAsm: [
+              '8bff            mov     edi,edi',
+              'e98986cdff      jmp     7473f000'
+            ]
+          }
+        },
+        {
+          type: 'inline',
+          features: [
+            'userMode',
+            'trampoline'
+          ],
+          jumpCount: 2,
+          jumpTo: '0x60000254',
+          process: {
+            pid: 1392,
+            fileName: 'vmtoolsd.exe',
+            createUtcTime: '2018-04-20T05:05:49.420Z'
+          },
+          hookLocation: {
+            checksumSha256: 'cfcd25162159229be6b5f8e9759a444bdb5e6aa5f9ccd23e2a75f2f1afa2caf3',
+            path: 'C:\\Winodws\\System32',
+            fileName: 'Kernel32.dll',
+            section: '.text',
+            sectionBase: 268566528,
+            imageBase: '0x10000000',
+            imageSize: 409600,
+            address: '0x10024455',
+            symbol: 'ReadFile',
+            symbolOffset: 3
+          },
+          inlinePatch: {
+            originalBytes: '8bff558bec83e4f8',
+            originalAsm: [
+              '8bff            mov     edi,edi',
+              '55              push    ebp',
+              '8bec            mov     ebp,esp',
+              '83e4f8          and     esp,0FFFFFFF8h'
+            ],
+            currentBytes: '8bffe98986cdff',
+            currentAsm: [
+              '8bff            mov     edi,edi',
+              'e98986cdff      jmp     7473f000'
+            ]
+          }
+        },
+        {
+          type: 'inline',
+          features: [
+            'userMode',
+            'trampoline'
+          ],
+          jumpCount: 2,
+          jumpTo: '0x60000254',
+          process: {
+            pid: 1392,
+            fileName: 'vmtoolsd.exe',
+            createUtcTime: '2018-04-20T05:05:49.420Z'
+          },
+          hookLocation: {
+            checksumSha256: 'cfcd25162159229be6b5f8e9759a444bdb5e6aa5f9ccd23e2a75f2f1afa2caf3',
+            path: 'C:\\Winodws\\System32',
+            fileName: 'ntdll.dll',
+            section: '.text',
+            sectionBase: 268566528,
+            imageBase: '0x10000000',
+            imageSize: 409600,
+            address: '0x10024455',
+            symbol: 'NtConnect',
+            symbolOffset: 3
+          },
+          inlinePatch: {
+            originalBytes: '8bff558bec83e4f8',
+            originalAsm: [
+              '8bff            mov     edi,edi',
+              '55              push    ebp',
+              '8bec            mov     ebp,esp',
+              '83e4f8          and     esp,0FFFFFFF8h'
+            ],
+            currentBytes: '8bffe98986cdff',
+            currentAsm: [
+              '8bff            mov     edi,edi',
+              'e98986cdff      jmp     7473f000'
+            ]
+          }
+        },
+        {
+          type: 'inline',
+          features: [
+            'userMode',
+            'trampoline'
+          ],
+          jumpCount: 2,
+          jumpTo: '0x60000254',
+          process: {
+            pid: 1840,
+            fileName: 'vmtoolsd.exe',
+            createUtcTime: '2018-04-20T05:05:49.420Z'
+          },
+          hookLocation: {
+            checksumSha256: 'cfcd25162159229be6b5f8e9759a444bdb5e6aa5f9ccd23e2a75f2f1afa2caf3',
+            path: 'C:\\Winodws\\System32',
+            fileName: 'Kernel32.dll',
+            section: '.text',
+            sectionBase: 268566528,
+            imageBase: '0x10000000',
+            imageSize: 409600,
+            address: '0x10024455',
+            symbol: 'CreateFileA',
+            symbolOffset: 3
+          },
+          inlinePatch: {
+            originalBytes: '8bff558bec83e4f8',
+            originalAsm: [
+              '8bff            mov     edi,edi',
+              '55              push    ebp',
+              '8bec            mov     ebp,esp',
+              '83e4f8          and     esp,0FFFFFFF8h'
+            ],
+            currentBytes: '8bffe98986cdff',
+            currentAsm: [
+              '8bff            mov     edi,edi',
+              'e98986cdff      jmp     7473f000'
+            ]
+          }
+        },
+        {
+          type: 'inline',
+          features: [
+            'userMode',
+            'trampoline'
+          ],
+          jumpCount: 2,
+          jumpTo: '0x60000254',
+          process: {
+            pid: 1840,
+            fileName: 'vmtoolsd.exe',
+            createUtcTime: '2018-04-20T05:05:49.420Z'
+          },
+          hookLocation: {
+            checksumSha256: 'cfcd25162159229be6b5f8e9759a444bdb5e6aa5f9ccd23e2a75f2f1afa2caf3',
+            path: 'C:\\Winodws\\System32',
+            fileName: 'ntdll',
+            section: '.text',
+            sectionBase: 268566528,
+            imageBase: '0x10000000',
+            imageSize: 409600,
+            address: '0x10024455',
+            symbol: 'NtConnect',
+            symbolOffset: 3
+          },
+          inlinePatch: {
+            originalBytes: '8bff558bec83e4f8',
+            originalAsm: [
+              '8bff            mov     edi,edi',
+              '55              push    ebp',
+              '8bec            mov     ebp,esp',
+              '83e4f8          and     esp,0FFFFFFF8h'
+            ],
+            currentBytes: '8bffe98986cdff',
+            currentAsm: [
+              '8bff            mov     edi,edi',
+              'e98986cdff      jmp     7473f000'
+            ]
+          }
+        }
+      ]
+    },
+    fileProperties: {
+      id: '84a5a562ed9a8427dc231ae609a4c0418634d169d30b20e9f0df9970608b862c',
+      firstFileName: 'autoLogon.dll',
+      firstSeenTime: 1530093476248,
+      machineOsType: 'windows',
+      signature: {
+        timeStamp: 1489762850000,
+        thumbprint: 'cef16150c61b0a1cee14a7c5d4cff80f645a6ab7',
+        features: [
+          'signed',
+          'valid'
+        ],
+        signer: 'VMware, Inc.'
+      },
+      size: 49128,
+      checksumMd5: 'eb6d78ad50f82286442ab1931617037e',
+      checksumSha1: '7518cddbeef19e6a22ed720ca08b1f19bb6466b6',
+      checksumSha256: '84a5a562ed9a8427dc231ae609a4c0418634d169d30b20e9f0df9970608b862c',
+      pe: {
+        timeStamp: 1489760465000,
+        imageSize: 49152,
+        numberOfExportedFunctions: 1,
+        numberOfNamesExported: 1,
+        numberOfExecuteWriteSections: 0,
+        features: [
+          'dll',
+          'pe64',
+          'versionInfoPresent',
+          'resourceDirectoryPresent',
+          'relocationDirectoryPresent',
+          'debugDirectoryPresent',
+          'richSignaturePresent',
+          'relocationDirectoryPresent',
+          'companyNameContainsText',
+          'fileDescriptionContainsText',
+          'fileVersionContainsText',
+          'internalNameContainsText',
+          'legalCopyrightContainsText',
+          'originalFilenameContainsText',
+          'productNameContainsText',
+          'productVersionContainsText',
+          'standardVersionMetaPresent'
+        ],
+        resources: {
+          originalFileName: 'autoLogon.dll',
+          company: 'VMware, Inc.',
+          description: 'VMware Tools Autologon plugin'
+        },
+        sectionNames: [
+          '.text',
+          '.rdata',
+          '.data',
+          '.pdata',
+          '.rsrc',
+          '.reloc'
+        ],
+        importedLibraries: [
+          'MSVCR90.dll',
+          'glib-2.0.dll',
+          'vmtools.dll',
+          'ADVAPI32.dll',
+          'MSVCP90.dll',
+          'KERNEL32.dll'
+        ]
+      },
+      entropy: 6.437949207289836,
+      format: 'pe'
+    }
+  },
+  {
+    id: '5b335ffbb24959156220f9dd',
+    machineOsType: 'windows',
+    machineName: 'REMDBGDRV',
+    machineAgentId: 'D4259B02-1EDB-53CE-56C0-8A03110C4D88',
+    agentVersion: '11.2.0.0',
+    scanStartTime: 1530093476248,
+    checksumSha256: 'ad77da2ba4a72628bdee26cf831ccf472472682dcd3c838263f6bff0186beea8',
+    path: 'C:\\Program Files\\VMware\\VMware Tools\\',
+    pathH8: 0,
+    fileName: 'iconv.dll',
+    timeCreated: 1489717598000,
+    timeModified: 1489717598000,
+    timeAccessed: 1496406783283,
+    attributes: [
+      'archive'
+    ],
+    mode: 0,
+    sameDirectoryFileCounts: {
+      nonExe: 10,
+      exe: 35,
+      subFolder: 7,
+      exeSameCompany: 2,
+      hiddenFiles: 0
+    },
+    fileFeatures: [
+      'found'
+    ],
+    directoryFeatures: [
+      'programFiles',
+      'installer'
+    ],
+    userModeFeatures: [
+      'loaded',
+      'image'
+    ],
+    windows: {
+      dlls: [
+        {
+          pid: 1392,
+          imageBase: 8791683760128,
+          createTime: 1530092987886,
+          eprocess: '0xFFFFFA801A64D4E0',
+          imageSize: 958464
+        },
+        {
+          pid: 1840,
+          imageBase: 8791683760128,
+          createTime: 1530093143515,
+          eprocess: '0xFFFFFA8019123060',
+          imageSize: 958464
+        }
+      ]
+    },
+    fileProperties: {
+      id: 'ad77da2ba4a72628bdee26cf831ccf472472682dcd3c838263f6bff0186beea8',
+      firstFileName: 'iconv.dll',
+      firstSeenTime: 1530093476248,
+      machineOsType: 'windows',
+      signature: {
+        timeStamp: 1489762598000,
+        thumbprint: 'cef16150c61b0a1cee14a7c5d4cff80f645a6ab7',
+        features: [
+          'signed',
+          'valid'
+        ],
+        signer: 'VMware, Inc.'
+      },
+      size: 958440,
+      checksumMd5: '5d4b6d930f901c3e837aabae6df917f5',
+      checksumSha1: '23c1b84c9319b04b4c1d674d9b9adc59cc99299e',
+      checksumSha256: 'ad77da2ba4a72628bdee26cf831ccf472472682dcd3c838263f6bff0186beea8',
+      pe: {
+        timeStamp: 1467857299000,
+        imageSize: 958464,
+        numberOfExportedFunctions: 9,
+        numberOfNamesExported: 9,
+        numberOfExecuteWriteSections: 0,
+        features: [
+          'dll',
+          'pe64',
+          'versionInfoPresent',
+          'resourceDirectoryPresent',
+          'relocationDirectoryPresent',
+          'debugDirectoryPresent',
+          'richSignaturePresent',
+          'relocationDirectoryPresent',
+          'companyNameContainsText',
+          'fileDescriptionContainsText',
+          'fileVersionContainsText',
+          'internalNameContainsText',
+          'legalCopyrightContainsText',
+          'originalFilenameContainsText',
+          'productNameContainsText',
+          'productVersionContainsText',
+          'standardVersionMetaPresent'
+        ],
+        resources: {
+          originalFileName: 'iconv.dll',
+          company: 'Free Software Foundation',
+          description: 'LGPLed libiconv for Windows XP 64 and Vista 64'
+        },
+        sectionNames: [
+          '.text',
+          '.rdata',
+          '.data',
+          '.pdata',
+          '.rsrc',
+          '.reloc'
+        ],
+        importedLibraries: [
+          'KERNEL32.dll',
+          'MSVCR90.dll'
+        ]
+      },
+      entropy: 7.331881333893831,
+      format: 'pe'
+    }
+  },
+  {
+    id: '5b335ffbb24959156220f9de',
+    machineOsType: 'windows',
+    machineName: 'REMDBGDRV',
+    machineAgentId: 'D4259B02-1EDB-53CE-56C0-8A03110C4D88',
+    agentVersion: '11.2.0.0',
+    scanStartTime: 1530093476248,
+    checksumSha256: '6900bab78df69487bb4aac747237ffdc09f523cd240bddf39d9979ea1700a6de',
+    path: 'C:\\Program Files\\VMware\\VMware Tools\\',
+    pathH8: 0,
+    fileName: 'intl.dll',
+    timeCreated: 1489717606000,
+    timeModified: 1489717606000,
+    timeAccessed: 1496406783283,
+    attributes: [
+      'archive'
+    ],
+    mode: 0,
+    sameDirectoryFileCounts: {
+      nonExe: 10,
+      exe: 35,
+      subFolder: 7,
+      exeSameCompany: 2,
+      hiddenFiles: 0
+    },
+    fileFeatures: [
+      'found'
+    ],
+    directoryFeatures: [
+      'programFiles',
+      'installer'
+    ],
+    userModeFeatures: [
+      'loaded',
+      'image'
+    ],
+    windows: {
+      dlls: [
+        {
+          pid: 1392,
+          imageBase: 8791684743168,
+          createTime: 1530092987886,
+          eprocess: '0xFFFFFA801A64D4E0',
+          imageSize: 122880
+        },
+        {
+          pid: 1840,
+          imageBase: 8791684743168,
+          createTime: 1530093143515,
+          eprocess: '0xFFFFFA8019123060',
+          imageSize: 122880
+        }
+      ]
+    },
+    fileProperties: {
+      id: '6900bab78df69487bb4aac747237ffdc09f523cd240bddf39d9979ea1700a6de',
+      firstFileName: 'intl.dll',
+      firstSeenTime: 1530093476248,
+      machineOsType: 'windows',
+      signature: {
+        timeStamp: 1489762605000,
+        thumbprint: 'cef16150c61b0a1cee14a7c5d4cff80f645a6ab7',
+        features: [
+          'signed',
+          'valid'
+        ],
+        signer: 'VMware, Inc.'
+      },
+      size: 122856,
+      checksumMd5: '7f75a18a9e1280a1810e5ad1c99f4880',
+      checksumSha1: '14c18bb0aab53660862192a0192a454516330e5d',
+      checksumSha256: '6900bab78df69487bb4aac747237ffdc09f523cd240bddf39d9979ea1700a6de',
+      pe: {
+        timeStamp: 1392752301000,
+        imageSize: 122880,
+        numberOfExportedFunctions: 27,
+        numberOfNamesExported: 27,
+        numberOfExecuteWriteSections: 0,
+        features: [
+          'dll',
+          'pe64',
+          'versionInfoPresent',
+          'resourceDirectoryPresent',
+          'relocationDirectoryPresent',
+          'debugDirectoryPresent',
+          'richSignaturePresent',
+          'relocationDirectoryPresent',
+          'companyNameContainsText',
+          'fileDescriptionContainsText',
+          'fileVersionContainsText',
+          'internalNameContainsText',
+          'legalCopyrightContainsText',
+          'originalFilenameContainsText',
+          'productNameContainsText',
+          'productVersionContainsText',
+          'standardVersionMetaPresent'
+        ],
+        resources: {
+          originalFileName: 'intl.dll',
+          company: 'Free Software Foundation',
+          description: 'LGPLed libintl for Windows NT/2000/XP and Windows 95/98/ME'
+        },
+        sectionNames: [
+          '.text',
+          '.rdata',
+          '.data',
+          '.pdata',
+          '.idata',
+          '.rsrc',
+          '.reloc'
+        ],
+        importedLibraries: [
+          'iconv.dll',
+          'KERNEL32.dll',
+          'MSVCR90.dll'
+        ]
+      },
+      entropy: 5.274486249921894,
+      format: 'pe'
+    }
+  }
+];

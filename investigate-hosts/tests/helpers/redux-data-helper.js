@@ -132,6 +132,10 @@ export default class DataHelper {
     _set(this.state, 'process.dllList', dllData);
     return this;
   }
+  selectedProcessId(processId) {
+    _set(this.state, 'process.selectedProcessId', processId);
+    return this;
+  }
   host(host) {
     _set(this.state, 'overview.hostDetails', host);
     return this;

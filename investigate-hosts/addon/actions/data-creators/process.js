@@ -96,15 +96,18 @@ const getProcessDetails = (processId) => {
 const _getProcessFileContext = (processId) => {
   return (dispatch, getState) => {
     const { agentId, scanTime } = getState().endpoint.detailsInput;
+    dispatch(_setSelectedProcessId(processId));
     dispatch({
       type: ACTION_TYPES.GET_PROCESS_FILE_CONTEXT,
-      promise: Process.getProcessFileContext({ agentId, scanTime, pid: processId, categories: [ 'LOADED_LIBRARIES' ] }),
+      promise: Process.getProcessFileContext({ agentId, scanTime, pid: processId, categories: [ 'LOADED_LIBRARIES', 'HOOKS' ] }),
       meta: {
         onFailure: (response) => handleError(ACTION_TYPES.GET_PROCESS_FILE_CONTEXT, response)
       }
     });
   };
 };
+
+const _setSelectedProcessId = (processId) => ({ type: ACTION_TYPES.SET_SELECTED_PROCESS_ID, payload: processId });
 
 export {
   sortBy,
