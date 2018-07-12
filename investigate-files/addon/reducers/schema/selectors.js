@@ -6,16 +6,16 @@ import Immutable from 'seamless-immutable';
  * @public
  */
 const COLUMN_WIDTH = {
-  'firstFileName': 200,
-  'firstSeenTime': 170,
-  'size': 75,
-  'format': 100,
-  'signature.features': 130,
-  'entropy': 150,
-  'pe.resources.company': 150,
-  'checksumMd5': 275,
-  'checksumSha1': 275,
-  'checksumSha256': 450
+  'firstFileName': '10vw',
+  'firstSeenTime': '7vw',
+  'size': '3vw',
+  'format': '10vw',
+  'signature.features': '8vw',
+  'entropy': '5vw',
+  'pe.resources.company': '6vw',
+  'checksumMd5': '15vw',
+  'checksumSha1': '15vw',
+  'checksumSha256': '18vw'
 };
 
 const SUPPORTED_SORT_TYPES = [
@@ -58,7 +58,7 @@ export const columns = createSelector(
         searchable,
         values,
         title: `investigateFiles.fields.${field}`,
-        width: COLUMN_WIDTH[field],
+        width: COLUMN_WIDTH[field] || '4vw',
         disableSort
       };
 

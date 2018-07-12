@@ -1,5 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
+import { next } from '@ember/runloop';
 import {
   fileCountForDisplay,
   serviceList,
@@ -9,12 +10,10 @@ import {
 import { columns } from 'investigate-files/reducers/schema/selectors';
 import computed from 'ember-computed-decorators';
 import _ from 'lodash';
-import { inject as service } from '@ember/service';
 import {
   sortBy,
   getPageOfFiles,
   fetchFileContext,
-  toggleRiskPanel,
   toggleFileSelection,
   selectAllFiles,
   deSelectAllFiles
@@ -29,7 +28,6 @@ const stateToComputed = (state) => ({
   totalItems: fileCountForDisplay(state),
   sortField: state.files.fileList.sortField, // Currently applied sort on file list
   isSortDescending: state.files.fileList.isSortDescending,
-  showRiskPanel: state.files.fileList.showRiskPanel,
   isAllSelected: isAllSelected(state)
 });
 
@@ -37,7 +35,6 @@ const dispatchToActions = {
   sortBy,
   getPageOfFiles,
   fetchFileContext,
-  toggleRiskPanel,
   toggleFileSelection,
   selectAllFiles,
   deSelectAllFiles
@@ -51,12 +48,10 @@ const FileList = Component.extend({
 
   tagName: '',
 
-  features: service(),
-
   FIXED_COLUMNS: [
     {
       dataType: 'checkbox',
-      width: 22,
+      width: 20,
       class: 'rsa-form-row-checkbox',
       componentClass: 'rsa-form-checkbox',
       visible: true,
@@ -89,29 +84,31 @@ const FileList = Component.extend({
 
   actions: {
     toggleSelectedRow(item, index, e, table) {
-      if (this.get('features.rsaEndpointFusion')) {
-        const { target: { classList } } = e;
-        if (classList.contains('rsa-icon-expand-6-filled') ||
+      const { target: { classList } } = e;
+      if (classList.contains('rsa-icon-expand-6-filled') ||
           classList.contains('rsa-form-checkbox-label') ||
           classList.contains('rsa-form-checkbox')) {
-          e.stopPropagation();
+        e.stopPropagation();
+      } else {
+        const isSameRowClicked = table.get('selectedIndex') === index;
+        const openRiskPanel = this.get('openRiskPanel');
+        table.set('selectedIndex', index);
+
+        if (!isSameRowClicked && openRiskPanel) {
+          this.send('fetchFileContext', item.firstFileName);
+          next(() => {
+            this.openRiskPanel();
+          });
         } else {
-          const isRiskPanelVisible = this.get('showRiskPanel');
-          const isSameRowClicked = table.get('selectedIndex') === index;
-          if (isSameRowClicked && isRiskPanelVisible) {
-            this.send('toggleRiskPanel', false);
-          } else {
-            this.send('toggleRiskPanel', true);
-            this.send('fetchFileContext', item.firstFileName);
-          }
-          table.set('selectedIndex', index);
+          this.closeRiskPanel();
+          table.set('selectedIndex', null);
         }
       }
-
     },
     toggleItemSelection(item) {
       this.send('toggleFileSelection', item);
     },
+
     toggleAllSelection() {
       if (!this.get('isAllSelected')) {
         this.send('selectAllFiles');

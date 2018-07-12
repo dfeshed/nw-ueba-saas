@@ -13,14 +13,14 @@ export default Component.extend({
     open(side) {
       if (side === 'left') {
         this.set('showLeftZone', true);
-      } else {
+      } else if (side === 'right') {
         this.set('showRightZone', true);
       }
     },
     close(side) {
       if (side === 'left') {
         this.set('showLeftZone', false);
-      } else {
+      } else if (side === 'right') {
         this.set('showRightZone', false);
       }
     }

@@ -21,7 +21,6 @@ const stateToComputed = (state) => ({
   contextError: state.files.fileList.contextError,
   alertsCount: getAlertsCount(state),
   incidentsCount: getIncidentsCount(state),
-  showRiskPanel: state.files.fileList.showRiskPanel,
   activeDataSourceTab: state.files.fileList.activeDataSourceTab,
   contextLoadingStatus: state.files.fileList.contextLoadingStatus
 });

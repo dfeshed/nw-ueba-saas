@@ -19,6 +19,14 @@
       display: inline;
     }
   }
+  .header-button {
+    .close-zone {
+      position: absolute;
+      right: 0;
+      font-size: 0.5rem;
+      padding: rsa-whitespace(less);
+    }
+  }
 
   &__header{
     color: text-color(neutral);

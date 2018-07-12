@@ -361,8 +361,6 @@ const fetchFileContext = (fileName) => {
 };
 
 
-const toggleRiskPanel = (visibility) => ({ type: ACTION_TYPES.TOGGLE_RISK_PANEL_VISIBILITY, payload: visibility });
-
 const toggleFileSelection = (selectedFile) => ({ type: ACTION_TYPES.TOGGLE_SELECTED_FILE, payload: selectedFile });
 
 const selectAllFiles = () => ({ type: ACTION_TYPES.SELECT_ALL_FILES });
@@ -419,7 +417,6 @@ export {
   initializeFilesPreferences,
   setDataSourceTab,
   fetchFileContext,
-  toggleRiskPanel,
   toggleFileSelection,
   selectAllFiles,
   deSelectAllFiles,

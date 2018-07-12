@@ -66,7 +66,6 @@ test('should return the initial state', function(assert) {
     listOfServices: null,
     activeDataSourceTab: 'ALERT',
     lookupData: [{}],
-    showRiskPanel: false,
     contextError: null,
     contextLoadingStatus: 'wait',
     selectedFileList: []
@@ -269,14 +268,6 @@ test('contextError state when context server is not reachable', function(assert)
   assert.deepEqual(newEndState.contextError, 'context.error.timeout', 'contextError state has been changed to true.');
 });
 
-test('toggling risk panel visibility in file list page', function(assert) {
-  const previous = Immutable.from({
-    showRiskPanel: false
-  });
-  const newEndState = reducer(previous, { type: ACTION_TYPES.TOGGLE_RISK_PANEL_VISIBILITY, payload: true });
-  assert.deepEqual(newEndState.showRiskPanel, true, 'state for risk panel visibility is turned on.');
-});
-
 test('toggling selected file in filelist ', function(assert) {
   const previous = Immutable.from({
     selectedFileList: []
@@ -284,6 +275,7 @@ test('toggling selected file in filelist ', function(assert) {
   const newEndState = reducer(previous, { type: ACTION_TYPES.TOGGLE_SELECTED_FILE, payload: { id: 1, checksumSha256: 'abc' } });
   assert.deepEqual(newEndState.selectedFileList.length, 1, 'state for selected file list updating.');
 });
+
 test('SELECT ALL FILES in filelist ', function(assert) {
   const previous = Immutable.from({
     fileData: {

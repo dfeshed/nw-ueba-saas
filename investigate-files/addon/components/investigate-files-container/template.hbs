@@ -1,13 +1,15 @@
 {{content-filter}}
-<hbox class="file-list-items {{if showRiskPanel 'show-risk-panel' ''}}">
-  <box class="filter-zone">
+{{#rsa-page-layout showRightZone=false as |layout|}}
+
+  {{#layout.left}}
     <h2>{{t 'investigateFiles.filter.filters'}}</h2>
     <box class="favourite-filters">
       {{system-filters}}
       {{custom-filters}}
     </box>
-  </box>
-  <box class="files-zone">
+  {{/layout.left}}
+
+  {{#layout.center}}
     <section class="rsa-files-toolbar flexi-fit">
       {{files-toolbar}}
     </section>
@@ -18,44 +20,42 @@
         </centered>
       {{else}}
         {{#if isSchemaLoaded}}
-          {{file-list}}
+          {{file-list openRiskPanel=(action layout.open 'right') closeRiskPanel=(action layout.close 'right')}}
         {{/if}}
       {{/if}}
     </box>
     <box class="files-footer">
       {{file-pager}}
     </box>
-  </box>
-  {{#if features.rsaEndpointFusion}}
-    <box class="risk-property-zone">
-      <hbox fit>
-        <vbox>
-          {{#title-bar tabs=dataSourceTabs defaultAction=(action 'setDataSourceTab') as |tab|}}
-            {{#if (eq tab.name 'ALERT')}}
-              <div class="label">{{t tab.label count=alertsCount}}</div>
-            {{else if (eq tab.name 'INCIDENT')}}
-              <div class="label">{{t tab.label count=incidentsCount}}</div>
-            {{else}}
-              <div class="label">{{t tab.label}}</div>
-            {{/if}}
-          {{/title-bar}}
-        </vbox>
-        <vbox class="risk-zone-close-button">
-          {{#rsa-form-button class='header-button' isIconOnly=true click=(action 'closeRiskPanel') }}
-            {{rsa-icon class='close-icon' name='close' title=(t 'investigateHosts.context.button.close')}}
-          {{/rsa-form-button}}
-        </vbox>
-      </hbox>
-      {{#if (eq contextLoadingStatus 'wait')}}
-        <centered>
-          {{rsa-loader size='medium'}}
-        </centered>
-      {{else}}
-        {{endpoint/risk-panel activeDataSourceTab=activeDataSourceTab data=context errorMessage=contextError}}
-      {{/if}}
-    </box>
-  {{/if}}
-</hbox>
+  {{/layout.center}}
+
+  {{#layout.right as |rightPanel|}}
+
+    {{#rightPanel.header}}
+      {{#title-bar tabs=dataSourceTabs defaultAction=(action 'setDataSourceTab') as |tab|}}
+        {{#if (eq tab.name 'ALERT')}}
+          <div class="label">{{t tab.label count=alertsCount}}</div>
+        {{else if (eq tab.name 'INCIDENT')}}
+          <div class="label">{{t tab.label count=incidentsCount}}</div>
+        {{else}}
+          <div class="label">{{t tab.label}}</div>
+        {{/if}}
+      {{/title-bar}}
+      {{#rsa-form-button class='close-zone' isIconOnly=true click=(action layout.close) }}
+        {{rsa-icon class='close-icon' name='close' title=(t 'investigateHosts.context.button.close')}}
+      {{/rsa-form-button}}
+    {{/rightPanel.header}}
+
+    {{#if (eq contextLoadingStatus 'wait')}}
+      <centered>
+        {{rsa-loader size='medium'}}
+      </centered>
+    {{else}}
+      {{endpoint/risk-panel activeDataSourceTab=activeDataSourceTab data=context errorMessage=contextError}}
+    {{/if}}
+  {{/layout.right}}
+{{/rsa-page-layout}}
+
 
 
 

@@ -19,7 +19,6 @@ const fileListState = Immutable.from({
   listOfServices: null,
   activeDataSourceTab: 'ALERT',
   lookupData: [{}],
-  showRiskPanel: false,
   contextError: null,
   contextLoadingStatus: 'wait',
   selectedFileList: [],
@@ -123,8 +122,6 @@ const fileListReducer = handleActions({
   },
 
   [ACTION_TYPES.CLEAR_PREVIOUS_CONTEXT]: (state) => state.merge({ lookupData: [{}], contextLoadingStatus: 'wait' }),
-
-  [ACTION_TYPES.TOGGLE_RISK_PANEL_VISIBILITY]: (state, { payload }) => state.set('showRiskPanel', payload),
 
   [ACTION_TYPES.CONTEXT_ERROR]: (state, { payload }) => state.set('contextError', payload),
 

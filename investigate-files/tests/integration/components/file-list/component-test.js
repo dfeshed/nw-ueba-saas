@@ -348,10 +348,14 @@ module('Integration | Component | file list', function(hooks) {
   });
 
   test('on row click, risk panel opens up', async function(assert) {
+    assert.expect(1);
+    this.set('openRiskPanel', function() {
+      assert.ok(true);
+    });
+
     new ReduxDataHelper(initState)
       .files(dataItems)
       .schema(config)
-      .showRiskPanel(false)
       .preferences({ filePreference })
       .build();
 
@@ -361,19 +365,13 @@ module('Integration | Component | file list', function(hooks) {
           min-height: 1000px
         }
       </style>
-    {{file-list}}`);
+    {{file-list openRiskPanel=(action openRiskPanel)}}`);
     await click(findAll('.rsa-data-table-body-row')[0]);
-    let state = this.owner.lookup('service:redux').getState();
-    assert.equal(state.files.fileList.showRiskPanel, true, 'risk property panel has appeared.');
-    await click(findAll('.rsa-data-table-body-row')[0]);
-    state = this.owner.lookup('service:redux').getState();
-    assert.equal(state.files.fileList.showRiskPanel, false, 'risk property panel closed after clicking the same row.');
   });
   test('on select all rows checkbox ', async function(assert) {
     new ReduxDataHelper(initState)
       .files(dataItems)
       .schema(config)
-      .showRiskPanel(false)
       .preferences({ filePreference })
       .build();
 
