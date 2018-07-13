@@ -24,6 +24,7 @@ test('should return the initial state', function(assert) {
       filePreference: {
         visibleColumns: [
           'firstFileName',
+          'reputationStatus',
           'firstSeenTime',
           'machineOsType',
           'signature.features',

@@ -6,6 +6,7 @@ const DEFAULT_FILE_PREFERENCES = {
   filePreference: {
     visibleColumns: [
       'firstFileName',
+      'reputationStatus',
       'firstSeenTime',
       'machineOsType',
       'signature.features',

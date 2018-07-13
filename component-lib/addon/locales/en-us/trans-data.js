@@ -1946,6 +1946,7 @@ export default {
       checksumSha1: 'SHA1',
       checksumSha256: 'SHA256',
       machineOsType: 'Operating System',
+      reputationStatus: 'Reputation',
       elf: {
         classType: 'ELF.Class Type',
         data: 'ELF.Data',
@@ -2167,7 +2168,8 @@ export default {
         fileProperties: {
           entropy: 'Entropy',
           size: 'Size',
-          format: 'Format'
+          format: 'Format',
+          reputationStatus: 'Reputation'
         }
       }
     },
@@ -2184,6 +2186,7 @@ export default {
       signature: 'Signature',
       path: 'Path',
       launchArguments: 'Launch Arguments',
+      reputationStatus: 'Reputation',
       message: {
         noResultsMessage: 'No process information were found'
       },

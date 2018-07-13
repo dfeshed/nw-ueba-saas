@@ -4,6 +4,10 @@ const defaultColumns = [
   {
     field: 'fileName',
     title: 'Filename'
+  },
+  {
+    field: 'fileProperties.reputationStatus',
+    title: 'Reputation'
   }
 ];
 let columnsConfig = {

@@ -10,6 +10,10 @@ const defaultColumns = [
     title: 'FILENAME'
   },
   {
+    field: 'fileProperties.reputationStatus',
+    title: 'Reputation'
+  },
+  {
     field: 'machineCount',
     title: 'MACHINE COUNT'
   },

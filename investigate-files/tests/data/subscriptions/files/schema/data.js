@@ -275,6 +275,13 @@ export default {
       'searchable': true,
       'defaultProjection': false,
       'wrapperType': 'NUMBER'
+    },
+    {
+      'name': 'reputationStatus',
+      'dataType': 'STRING',
+      'searchable': true,
+      'defaultProjection': true,
+      'wrapperType': 'STRING'
     }
   ]
 };

@@ -1,5 +1,13 @@
 export default [
   {
+    sectionName: 'File.Status',
+    fields: [
+      {
+        field: 'fileProperties.reputationStatus'
+      }
+    ]
+  },
+  {
     sectionName: 'File.General',
     fields: [
       {

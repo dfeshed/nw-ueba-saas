@@ -61,6 +61,12 @@ const defaultColumns = [
     'width': 150
   },
   {
+    'field': 'fileProperties.reputationStatus',
+    'title': 'Reputation',
+    'label': 'investigateHosts.files.fields.reputationStatus',
+    'width': 100
+  },
+  {
     'field': 'fileProperties.entropy',
     'title': 'Entropy',
     'label': 'investigateHosts.files.fields.entropy',

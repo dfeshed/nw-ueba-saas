@@ -47,7 +47,8 @@ module.exports = {
         'checksumSha1': 'b91de355f748ea4eb7328ed47d0f4d17d25c6b8a',
         'checksumSha256': 'b504d6ec4f75533d863a5a60af635fb5fc50fa60e1c2b9ec452bced9c0cacb33',
         'entropy': 5.197017123035716,
-        'format': 'script'
+        'format': 'script',
+        'reputationStatus': 'Known'
       }
     },
     {
@@ -91,7 +92,8 @@ module.exports = {
         'checksumSha256': 'a565da7cb9d42a77f300b3eaeeddf73fab4293e442737fe453373ddc2fedf2be',
         'elf': { 'classType': 0, 'data': 0, 'entryPoint': 0, 'features': ['arch64', 'lkm'], 'type': 1 },
         'entropy': 3.5172264322543323,
-        'format': 'elf'
+        'format': 'elf',
+        'reputationStatus': 'Unknown'
       }
     },
     {
@@ -134,7 +136,8 @@ module.exports = {
         'checksumSha1': 'bb74d291a2f40d6d9f2effb3c618d52267f4cfbb',
         'checksumSha256': '29772d95b2488a5a7715a96270f827fbf2b2e1e0a627ae041a54a6faddd2686c',
         'entropy': 4.682791635812802,
-        'format': 'script'
+        'format': 'script',
+        'reputationStatus': 'Suspicious'
       }
     },
     {
@@ -178,7 +181,8 @@ module.exports = {
         'checksumSha256': 'b11c3d093d413fe7c9afd7252668e91f0b8e64065613e50ce20fc42ea2398b0a',
         'elf': { 'classType': 0, 'data': 0, 'entryPoint': 0, 'features': ['arch64', 'lkm'], 'type': 1 },
         'entropy': 3.8188263802458438,
-        'format': 'elf'
+        'format': 'elf',
+        'reputationStatus': 'Malicious'
       }
     },
     {

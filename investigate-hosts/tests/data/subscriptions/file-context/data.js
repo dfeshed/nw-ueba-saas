@@ -15081,6 +15081,7 @@ const data = [
       'checksumMd5': 'ad78f5a713e5a913288ec155733f82e9',
       'checksumSha1': '93aafdf31462cab7b9c41edbcab238d663d39ba7',
       'checksumSha256': '2d870a8bb193fb55bebffccd2ff8202487c4cf94524c92c6589f75a9bb6b33cc',
+      'reputationStatus': 'Suspicious',
       'elf': {
         'classType': 0,
         'data': 0,
@@ -21376,6 +21377,7 @@ const data = [
       'checksumMd5': 'dcdf86f6367a357931f5984c566cfaae',
       'checksumSha1': 'c1e0626238a8c0c4afce6224064f81e2dc0ed155',
       'checksumSha256': '81e4e3487e70d8211bcddd5d70b705e9f9875c053f8e04ad4a2f49f68b002147',
+      'reputationStatus': 'Malicious',
       'elf': {
         'classType': 0,
         'data': 0,
@@ -23878,6 +23880,7 @@ const data = [
     'fileProperties': {
       'id': '4040cf29a55fd8eaa7ef2a40f8508988b10bacedc49e589aa1d1eb2cd7f02eed',
       'firstFileName': 'vmware-user-suid-wrapper',
+      'reputationStatus': 'Unknown',
       'machineOsType': 'linux',
       'size': 10224,
       'checksumMd5': 'e2f3995d9218f16df453e0c6043f07c3',

@@ -28,9 +28,13 @@ const defaultSummaryConfig = [
     field: 'path'
   },
   {
+    label: 'investigateHosts.process.reputationStatus',
+    field: 'fileProperties.reputationStatus'
+  },
+  {
     label: 'investigateHosts.process.launchArguments',
     field: 'process.launchArguments',
-    cssClass: 'col-xs-12 col-md-12'
+    cssClass: 'col-xs-8 col-md-8'
   }
 ];
 

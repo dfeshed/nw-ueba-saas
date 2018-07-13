@@ -6,6 +6,10 @@ const defaultColumns = [
     title: 'Filename'
   },
   {
+    field: 'fileProperties.reputationStatus',
+    title: 'Reputation'
+  },
+  {
     field: 'signature',
     title: 'Signature',
     format: 'SIGNATURE',

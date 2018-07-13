@@ -42,6 +42,7 @@ module.exports = {
     'checksumSha256': '55cfc724e6f489bbddd145ad74846ff2a499869264a139377539523db95db082',
     'elf': { 'classType': 0, 'data': 0, 'entryPoint': 21556, 'features': ['arch64', 'so'], 'type': 3 },
     'entropy': 6.147272208934346,
-    'format': 'elf'
+    'format': 'elf',
+    'reputationStatus': 'Unknown'
   }
 };
