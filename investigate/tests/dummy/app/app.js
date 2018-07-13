@@ -23,7 +23,8 @@ const App = Application.extend({
           'flashMessages',
           'eventBus',
           'router',
-          'app-version'
+          'app-version',
+          'investigatePage'
         ],
         externalRoutes: {
           'investigate.investigate-files': 'investigate.investigate-files',

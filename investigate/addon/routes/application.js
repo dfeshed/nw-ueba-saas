@@ -34,7 +34,9 @@ export default Route.extend({
         if (selectedPage.isClassic) {
           window.location.href = selectedPage.route;
         } else {
-          this.transitionTo(selectedPage.route);
+          const paths = selectedPage.route.split('.'); // ["protected", "investigate", "investigate-hosts"]
+          const path = paths.pop();
+          this.transitionTo(path);
         }
       } else {
         this.transitionTo('investigate-events');

@@ -104,7 +104,8 @@ const App = Application.extend({
           'eventBus',
           'app-version',
           'router',
-          'features'
+          'features',
+          'investigatePage'
         ],
         externalRoutes: {
           'investigate.investigate-files': 'protected.investigate.investigate-files',
