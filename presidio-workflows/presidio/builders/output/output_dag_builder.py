@@ -1,4 +1,3 @@
-import logging
 from datetime import timedelta
 
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
@@ -52,7 +51,7 @@ class OutputDagBuilder(PresidioDagBuilder):
         :rtype: airflow.models.DAG
         """
 
-        logging.debug("populating the output dag, dag_id=%s ", output_dag.dag_id)
+        self.log.debug("populating the output dag, dag_id=%s ", output_dag.dag_id)
 
         # This operator validates that output run in intervals that are no less than hourly intervals and that the dag
         # start only after the defined gap.

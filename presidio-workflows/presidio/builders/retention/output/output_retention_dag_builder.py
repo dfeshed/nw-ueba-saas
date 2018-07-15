@@ -1,4 +1,3 @@
-import logging
 from datetime import timedelta
 
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
@@ -35,7 +34,7 @@ class OutputRetentionDagBuilder(PresidioDagBuilder):
         :rtype: airflow.models.DAG
         """
 
-        logging.debug("populating the retention dag, dag_id=%s ", output_retention_dag.dag_id)
+        self.log.debug("populating the retention dag, dag_id=%s ", output_retention_dag.dag_id)
 
         jar_operator = FixedDurationJarOperator(
             task_id='retention_output',

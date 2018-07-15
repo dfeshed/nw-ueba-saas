@@ -1,5 +1,3 @@
-import logging
-
 from airflow.utils.decorators import apply_defaults
 
 from presidio.utils.airflow.context_wrapper import ContextWrapper
@@ -54,7 +52,7 @@ class FixedDurationJarOperator(SpringBootJarOperator):
             # e.g: execution_date = datetime(2014, 11, 28, 13, 50, 0)
             # interval = timedelta(minutes=5)
             # fixed_duration = timedelta(days=1)
-            logging.error(
+            self.log.error(
                 'Create short_circuit_operator in order to skip the task.')
             raise InvalidExecutionDateError(execution_date, self.fixed_duration_strategy)
 
@@ -80,7 +78,7 @@ class FixedDurationJarOperator(SpringBootJarOperator):
 
         if not is_execution_date_valid(execution_date, fixed_duration_strategy,
                                        interval):
-            logging.error(
+            self.log.error(
                 'Create short_circuit_operator in order to skip the task.')
             raise InvalidExecutionDateError(execution_date, fixed_duration_strategy)
 

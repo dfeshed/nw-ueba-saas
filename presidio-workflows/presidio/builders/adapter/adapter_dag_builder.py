@@ -1,5 +1,3 @@
-import logging
-
 from datetime import timedelta
 
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
@@ -40,7 +38,7 @@ class AdapterDagBuilder(PresidioDagBuilder):
         :rtype: airflow.models.DAG
         """
 
-        logging.debug("populating the adapter dag, dag_id=%s ", adapter_dag.dag_id)
+        self.log.debug("populating the adapter dag, dag_id=%s ", adapter_dag.dag_id)
 
         # Iterate all configured data sources
         for data_source in self.data_sources:

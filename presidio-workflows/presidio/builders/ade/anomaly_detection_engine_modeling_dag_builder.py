@@ -1,7 +1,3 @@
-import logging
-
-
-
 from presidio.builders.ade.model.aggr_model_dag_builder import AggrModelDagBuilder
 from presidio.builders.ade.model.raw_model_dag_builder import RawModelDagBuilder
 from presidio.builders.ade.model.smart_model_dag_builder import SmartModelDagBuilder
@@ -40,7 +36,7 @@ class AnomalyDetectionEngineModelingDagBuilder(PresidioDagBuilder):
         :return: The given ADE MODELING DAG, after it has been populated
         :rtype: airflow.models.DAG
         """
-        logging.info("populating the ade modeling dag, dag_id=%s for data sources: %s and hourly smarts: %s",
+        self.log.info("populating the ade modeling dag, dag_id=%s for data sources: %s and hourly smarts: %s",
                      anomaly_detection_engine_modeling_dag.dag_id, self.data_sources, self.hourly_smart_events_confs)
 
         task_sensor_service = TaskSensorService()

@@ -1,4 +1,3 @@
-import logging
 from datetime import timedelta
 
 from presidio.builders.ade.anomaly_detection_engine_scoring_dag_builder import AnomalyDetectionEngineScoringDagBuilder
@@ -34,7 +33,7 @@ class PresidioCoreDagBuilder(PresidioDagBuilder):
         :rtype: airflow.models.DAG
         """
 
-        logging.debug("populating the presidio core dag, dag_id=%s ", presidio_core_dag.dag_id)
+        self.log.debug("populating the presidio core dag, dag_id=%s ", presidio_core_dag.dag_id)
 
         task_sensor_service = TaskSensorService()
 
@@ -58,7 +57,7 @@ class PresidioCoreDagBuilder(PresidioDagBuilder):
     def _push_forwarding(self, output_sub_dag_operator, presidio_core_dag):
         default_args = presidio_core_dag.default_args
         enable_output_forwarder = default_args.get("enable_output_forwarder")
-        logging.debug("enable_output_forwarder=%s ", enable_output_forwarder)
+        self.log.debug("enable_output_forwarder=%s ", enable_output_forwarder)
         if enable_output_forwarder == 'true':
             push_forwarding_task = PushForwarderTaskBuilder().build(presidio_core_dag)
             output_sub_dag_operator >> push_forwarding_task

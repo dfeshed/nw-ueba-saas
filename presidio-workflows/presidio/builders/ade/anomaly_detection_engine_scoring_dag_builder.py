@@ -1,5 +1,4 @@
 from datetime import timedelta
-import logging
 
 from presidio.builders.ade.aggregation.aggregations_dag_builder import AggregationsDagBuilder
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
@@ -49,7 +48,7 @@ class AnomalyDetectionEngineScoringDagBuilder(PresidioDagBuilder):
         :rtype: airflow.models.DAG
         """
 
-        logging.info("populating the ade scoring dag, dag_id=%s for data sources: %s and hourly smarts: %s",
+        self.log.info("populating the ade scoring dag, dag_id=%s for data sources: %s and hourly smarts: %s",
                      anomaly_detection_engine_scoring_dag.dag_id, self.data_sources, self.hourly_smart_events_confs)
         hourly_aggregations_sub_dag_operator_list = []
 

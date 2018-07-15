@@ -1,5 +1,3 @@
-import logging
-
 from airflow.models import DagRun
 from airflow.operators.sensors import BaseSensorOperator
 from airflow.utils.db import provide_session
@@ -46,7 +44,7 @@ class RootDagGapSensorOperator(BaseSensorOperator):
         execution_date = context['execution_date']
         execution_date_lt = execution_date - self._execution_delta
 
-        logging.info(
+        self.log.info(
             'Poking for all dag instances of'
             '{self._root_external_dag_id} with time lt'
             'execution_date_lt ... '.format(**locals()))
