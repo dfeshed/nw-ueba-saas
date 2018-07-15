@@ -7,7 +7,7 @@ EnvironmentFile=/etc/sysconfig/airflow
 User=presidio
 Group=presidio
 Type=simple
-ExecStart=/usr/bin/bash -c 'source ${AIRFLOW_VENV}/bin/activate ; airflow scheduler'
+ExecStart=/usr/bin/bash -c 'source ${AIRFLOW_VENV}/bin/activate ; airflow scheduler -n ${SCHEDULER_RUNS}'
 Restart=always
 RestartSec=5s
 [Install]
