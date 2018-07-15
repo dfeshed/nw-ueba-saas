@@ -132,11 +132,13 @@ def stop_kill_dag_run_task_instances(dag_run):
     task_instances = dag_run.get_task_instances(state=State.RUNNING)
     for task_instance in task_instances:
         pid = task_instance.pid
-        logging.info("killing pid {}".format(pid))
-        try:
-            os.kill(int(pid), signal.SIGTERM)
-        except OSError as e:
-            logging.info("pid: {} does not exist".format(pid))
+        logging.info("killing pid {} task {} execution_date {} dagId {}".format(pid, task_instance.task_id,
+                                                                                task_instance.execution_date,
+                                                                                task_instance.dag_id))
+    try:
+        os.kill(int(pid), signal.SIGTERM)
+    except OSError as e:
+        logging.info("pid: {} does not exist".format(pid))
 
 
 def kill_dags_task_instances(dag_ids):
@@ -144,6 +146,7 @@ def kill_dags_task_instances(dag_ids):
         dag_runs = get_dag_active_dag_runs(dag_id=dag_id)
         for dag_run in dag_runs:
             stop_kill_dag_run_task_instances(dag_run=dag_run)
+
 
 
 @provide_session
