@@ -1,10 +1,10 @@
 from abc import ABCMeta, abstractmethod
-import logging
 
+from airflow.utils.log.logging_mixin import LoggingMixin
 from presidio.utils.airflow.dag.dag_factory import DagFactories
 
 
-class AbstractDagFactory:
+class AbstractDagFactory(LoggingMixin):
     __metaclass__ = ABCMeta
 
     def __init__(self):
@@ -16,14 +16,14 @@ class AbstractDagFactory:
         self.validate(dags)
         for dag in dags:
             dag_builder = dag_params.get('dag_builder')
-            self.generate_dag_tasks(dag, dag_builder=dag_builder)
+            self.generate_dag_tasks(dag, dag_builder=dag_builder, self.log)
             name_space = dag_params.get('name_space')
-            self.register_dag(dag=dag, name_space=name_space)
+            self.register_dag(dag=dag, name_space=name_space, logger=self.log)
 
         return dags
 
     @staticmethod
-    def register_dag(dag, name_space):
+    def register_dag(dag, name_space, logger):
         """
         :param name_space: the global scope which the DAG would be assigned in to. notice: should be the globals() 
         method from the file that airflow scheduler scans (at the dag directory) 
@@ -32,7 +32,7 @@ class AbstractDagFactory:
          once DAG is registered -> it can be scheduled and executed  
         """
         dag_id = dag.dag_id
-        logging.debug("registering dag_id=%s", dag_id)
+        logger.debug("registering dag_id=%s", dag_id)
         name_space[dag_id] = dag
 
 
@@ -59,11 +59,11 @@ class AbstractDagFactory:
         pass
 
     @staticmethod
-    def generate_dag_tasks(dag, dag_builder):
+    def generate_dag_tasks(dag, dag_builder, logger):
         """
         add task to given dag
         :param dag_builder: a service that adds tasks to a given dag
         :param dag: the airflow dag, containing scheduling params etc.
         """
-        logging.debug("building dag_id=%s tasks", dag.dag_id)
+        logger.debug("building dag_id=%s tasks", dag.dag_id)
         dag_builder.build(dag)

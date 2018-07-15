@@ -1,5 +1,3 @@
-import logging
-
 import dateutil.parser
 from airflow import DAG
 
@@ -18,12 +16,12 @@ class PresidioDagFactory(AbstractDagFactory):
         """
         configuration_reader = dag_params.get('conf_reader')
         dags_configs = configuration_reader.read(conf_key='dags.dags_configs')
-        logging.debug("creating dynamic dags")
-        created_dags = self.create_dags(dags_configs=dags_configs)
+        self.log.debug("creating dynamic dags")
+        created_dags = self.create_dags(dags_configs=dags_configs, logger=self.log)
         return created_dags
 
     @staticmethod
-    def create_dags(dags_configs):
+    def create_dags(dags_configs, logger):
         """
         iterates over dags configurations and initiates dags for them
         """
@@ -54,7 +52,7 @@ class PresidioDagFactory(AbstractDagFactory):
                 new_dag = DAG(dag_id=new_dag_id, start_date=start_date, schedule_interval=interval, default_args=args,
                               end_date=end_date, full_filepath=full_filepath, description=description,
                               template_searchpath=template_searchpath, params=params, dagrun_timeout=dagrun_timeout)
-                logging.debug("dag_id=%s successful initiated", new_dag_id)
+                logger.debug("dag_id=%s successful initiated", new_dag_id)
                 dags.append(new_dag)
 
         return dags
