@@ -70,11 +70,8 @@ public class PresidioUiServiceConfiguration {
 
     @Bean
     EvidencesService evidencesService() throws Exception {
-        Properties properties = configrationServerClientUtils.readConfigurationAsProperties("application-presidio",null);
 
-        String adminServerHostName = properties.getProperty("uiIntegration.adminServer");
-        String brokerEndPointId = properties.getProperty("uiIntegration.brokerId");
-        NwInvestigateHelper investigateHelper = new NwInvestigateHelperImpl(adminServerHostName, brokerEndPointId);
+        NwInvestigateHelper investigateHelper = new NwInvestigateHelperImpl(configrationServerClientUtils);
         IndicatorConverter indicatorConverter = new IndicatorConverter();
         return new EvidencesServiceImpl(dataEntitiesConfig,userService(),indicatorConverter,remoteAlertClientService,investigateHelper) ;
 
