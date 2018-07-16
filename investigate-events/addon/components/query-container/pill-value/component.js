@@ -53,7 +53,11 @@ export default Component.extend({
     if (typeof(valueString) === 'string') {
       const match = valueString.match(properlyQuoted);
       if (match) {
-        ret = htmlSafe(`<span class="quote-highlight">'</span>${match[1]}<span class="quote-highlight">'</span>`);
+        ret = htmlSafe(`
+          <span class="quote-highlight">'</span>
+          ${match[1]}
+          <span class="quote-highlight">'</span>
+        `);
       }
     }
     return ret;
@@ -67,14 +71,23 @@ export default Component.extend({
     return (!!valueString && valueString.length > 0) || isActive;
   },
 
-  didUpdateAttrs() {
-    this._super(...arguments);
-    if (this.get('isActive')) {
-      // We schedule this after render to give time for the input to
-      // be rendered before trying to focus on it.
-      scheduleOnce('afterRender', this, '_focusOnInput');
-    }
-  },
+  didUpdateAttrs: (function() {
+    // Keep track of "active" state so that we run the focus code ONLY
+    // if moving from inactive to active.
+    let _isActive = false;
+    return function() {
+      this._super(...arguments);
+      const isActive = this.get('isActive');
+      if (isActive !== _isActive) {
+        if (isActive) {
+          // We schedule this after render to give time for the input to
+          // be rendered before trying to focus on it.
+          scheduleOnce('afterRender', this, '_focusOnInput');
+        }
+        _isActive = isActive;
+      }
+    };
+  })(),
 
   click() {
     // If this component is not active and the user clicks on it, dispatch an

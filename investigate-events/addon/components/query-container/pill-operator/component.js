@@ -19,6 +19,7 @@ export default Component.extend({
    * @public
    */
   isActive: false,
+
   /**
    * Does this component consume the full width of its parent, or is it sized to
    * match its contents?
@@ -27,6 +28,12 @@ export default Component.extend({
    */
   isExpanded: true,
 
+  /**
+   * Should we position the cursor at the beginning of the string when focusing
+   * on this component?
+   * @type {boolean}
+   * @public
+   */
   isFocusAtBeginning: false,
 
   /**
@@ -35,12 +42,14 @@ export default Component.extend({
    * @public
    */
   meta: null,
+
   /**
    * The option that is currently selected
    * @type {Object}
    * @public
    */
   selection: null,
+
   /**
    * An action to call when sending messages and data to the parent component.
    * @type {function}
