@@ -31,7 +31,7 @@ class AggregationsOperator(FixedDurationJarOperator):
         :type task_id: string
         """
 
-        print('agg operator init kwargs=', kwargs)
+        self.log.debug('agg operator init kwargs=%s', str(kwargs))
 
         self.fixed_duration_strategy = fixed_duration_strategy
         self.data_source = data_source
@@ -45,8 +45,8 @@ class AggregationsOperator(FixedDurationJarOperator):
             'schema': self.data_source,
         }
 
-        print('agg operator. commad=', command)
-        print('agg operator. kwargs=', kwargs)
+        self.log.debug('agg operator. commad=%s', command)
+        self.log.debug('agg operator. kwargs=%s', str(kwargs))
         super(AggregationsOperator, self).__init__(
             task_id=self.task_id,
             fixed_duration_strategy=self.fixed_duration_strategy,
