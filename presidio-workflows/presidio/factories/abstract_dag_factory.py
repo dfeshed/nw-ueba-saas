@@ -16,7 +16,7 @@ class AbstractDagFactory(LoggingMixin):
         self.validate(dags)
         for dag in dags:
             dag_builder = dag_params.get('dag_builder')
-            self.generate_dag_tasks(dag, dag_builder=dag_builder, self.log)
+            self.generate_dag_tasks(dag, dag_builder=dag_builder, logger=self.log)
             name_space = dag_params.get('name_space')
             self.register_dag(dag=dag, name_space=name_space, logger=self.log)
 
