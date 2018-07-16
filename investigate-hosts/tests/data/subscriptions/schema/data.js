@@ -251,7 +251,7 @@ export default {
       'wrapperType': 'STRING'
     },
     {
-      'name': 'groups',
+      'name': 'groupPolicy.groups.name',
       'description': '',
       'searchable': true,
       'defaultProjection': false,

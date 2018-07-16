@@ -69,23 +69,21 @@ const HostTable = Component.extend({
       this.send('handleRowSelection', entity);
     },
     toggleSelectedRow(item, index, e, table) {
-      if (this.get('features.rsaEndpointFusion')) {
-        const { target: { classList } } = e;
-        if (classList.contains('rsa-icon-expand-6-filled') ||
-          classList.contains('rsa-form-checkbox-label') ||
-          classList.contains('rsa-form-checkbox')) {
-          e.stopPropagation();
+      const { target: { classList } } = e;
+      if (classList.contains('rsa-icon-expand-6-filled') ||
+        classList.contains('rsa-form-checkbox-label') ||
+        classList.contains('rsa-form-checkbox')) {
+        e.stopPropagation();
+      } else {
+        const isRiskPanelVisible = this.get('showRiskPanel');
+        const isSameRowClicked = table.get('selectedIndex') === index;
+        if (isSameRowClicked && isRiskPanelVisible) {
+          this.send('toggleRiskPanel', false);
         } else {
-          const isRiskPanelVisible = this.get('showRiskPanel');
-          const isSameRowClicked = table.get('selectedIndex') === index;
-          if (isSameRowClicked && isRiskPanelVisible) {
-            this.send('toggleRiskPanel', false);
-          } else {
-            this.send('toggleRiskPanel', true);
-            this.send('fetchHostContext', item.machine.machineName);
-          }
-          table.set('selectedIndex', index);
+          this.send('toggleRiskPanel', true);
+          this.send('fetchHostContext', item.machine.machineName);
         }
+        table.set('selectedIndex', index);
       }
     }
   }

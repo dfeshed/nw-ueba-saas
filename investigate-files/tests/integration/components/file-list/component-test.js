@@ -4,16 +4,12 @@ import { find, findAll, render, settled, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import { waitFor } from 'ember-wait-for-test-helper/wait-for';
-import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import Immutable from 'seamless-immutable';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { revertPatch } from '../../../helpers/patch-reducer';
 import { patchReducer } from '../../../helpers/vnext-patch';
-import Service from '@ember/service';
 
-const featuresService = Service.extend({});
-
-let initState, saFeatures;
+let initState;
 
 const filePreference = {
   visibleColumns: [
@@ -92,10 +88,6 @@ module('Integration | Component | file list', function(hooks) {
     this.timezone = this.owner.lookup('service:timezone');
     this.set('dateFormat.selected', 'MM/dd/yyyy', 'MM/dd/yyyy');
     this.set('timeFormat.selected', 'HR24', 'HR24');
-    this.owner.register('service:features', featuresService);
-    saFeatures = this.owner.lookup('service:features');
-    saFeatures.rsaEndpointFusion = true;
-    initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
   });
 

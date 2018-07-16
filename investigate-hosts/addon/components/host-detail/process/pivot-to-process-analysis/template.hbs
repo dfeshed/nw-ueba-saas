@@ -1,31 +1,27 @@
-{{#if features.rsaEndpointFusion}}
-  {{#if disabledContextMenu}}
-    {{yield}}
-  {{else}}
-    {{#rsa-context-menu contextItems=contextItems contextSelection=contextSelection}}
-      {{yield}}
-    {{/rsa-context-menu}}
-  {{/if}}
-
-  {{#if showServiceModal}}
-    {{#endpoint/core-services-modal
-      onClose=(action 'onModalClose')
-      modalTitle=(t 'investigateHosts.pivotToInvestigate.title')
-      serviceList=serviceList as |selectedService isDisabled|}}
-
-      {{#rsa-form-button defaultAction='onCancel'}}
-        {{t 'forms.cancel'}}
-      {{/rsa-form-button}}
-
-      {{#rsa-form-button
-        isDisabled=isDisabled
-        style='primary'
-        click=(action 'navigateToProcessAnalysis' selectedService.id)}}
-        Process Analysis
-      {{/rsa-form-button}}
-
-    {{/endpoint/core-services-modal}}
-  {{/if}}
-{{else}}
+{{#if disabledContextMenu}}
   {{yield}}
+{{else}}
+  {{#rsa-context-menu contextItems=contextItems contextSelection=contextSelection}}
+    {{yield}}
+  {{/rsa-context-menu}}
+{{/if}}
+
+{{#if showServiceModal}}
+  {{#endpoint/core-services-modal
+    onClose=(action 'onModalClose')
+    modalTitle=(t 'investigateHosts.pivotToInvestigate.title')
+    serviceList=serviceList as |selectedService isDisabled|}}
+
+    {{#rsa-form-button defaultAction='onCancel'}}
+      {{t 'forms.cancel'}}
+    {{/rsa-form-button}}
+
+    {{#rsa-form-button
+      isDisabled=isDisabled
+      style='primary'
+      click=(action 'navigateToProcessAnalysis' selectedService.id)}}
+      Process Analysis
+    {{/rsa-form-button}}
+
+  {{/endpoint/core-services-modal}}
 {{/if}}

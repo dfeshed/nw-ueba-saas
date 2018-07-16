@@ -52,24 +52,6 @@ export default Route.extend(AuthenticatedRouteMixin, {
 
   iframedIntoClassic: false,
 
-  getEndpointFeatures() {
-    const request = get(this, 'request');
-    return new RSVP.Promise((resolve, reject) => {
-      request.promiseRequest({
-        method: 'getSupportedFeatures',
-        modelName: 'endpointFeatures',
-        query: {}
-      }).then((response) => {
-        this.get('features').setFeatureFlags(response.data);
-        resolve();
-      }).catch((error) => {
-        // eslint-disable-next-line no-console
-        console.error('Error loading endpoint feature flags', error);
-        reject();
-      });
-    });
-  },
-
   // source management (a.k.a. USM)
   getSourceManagementFeatures() {
     const request = get(this, 'request');
@@ -234,7 +216,6 @@ export default Route.extend(AuthenticatedRouteMixin, {
     this.set('accessControl.authorities', roles);
 
     // Set feature flags
-    this.getEndpointFeatures();
     this.getSourceManagementFeatures();
 
     return RSVP.all([

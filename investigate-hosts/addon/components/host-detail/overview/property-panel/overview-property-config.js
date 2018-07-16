@@ -1,7 +1,6 @@
 export default [
   {
     sectionName: 'Groups',
-    isFusionFeature: true,
     fields: [
       {
         field: 'groupPolicy.groups',
@@ -11,7 +10,6 @@ export default [
   },
   {
     sectionName: 'Scan Schedule',
-    isFusionFeature: true,
     prefix: 'scheduleConfig',
     fields: [
       {

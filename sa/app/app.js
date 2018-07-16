@@ -147,8 +147,7 @@ const App = Application.extend({
           'timezone',
           'i18n',
           'flashMessages',
-          'eventBus',
-          'features'
+          'eventBus'
         ],
         externalRoutes: {
           'investigate.investigate-events': 'protected.investigate.investigate-events',
@@ -168,8 +167,7 @@ const App = Application.extend({
           'timezone',
           'i18n',
           'flashMessages',
-          'eventBus',
-          'features'
+          'eventBus'
         ],
         externalRoutes: {
           'investigate.investigate-files': 'protected.investigate.investigate-files',
@@ -190,8 +188,7 @@ const App = Application.extend({
           'i18n',
           'flashMessages',
           'eventBus',
-          'router',
-          'features'
+          'router'
         ]
       }
     }

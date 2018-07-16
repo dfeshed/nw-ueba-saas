@@ -4,16 +4,13 @@ import hbs from 'htmlbars-inline-precompile';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import { find, findAll, render, click, waitUntil, settled } from '@ember/test-helpers';
 import engineResolver from 'ember-engines/test-support/engine-resolver-for';
-import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import Immutable from 'seamless-immutable';
 import { lookupData } from '../../../../integration/components/state/visual.lookupData';
 import { linux } from '../../../../integration/components/state/overview.hostdetails';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
-import Service from '@ember/service';
 import policyData from '../../../../data/subscriptions/policy/data';
 
-let initState, saFeatures;
-const featuresService = Service.extend({});
+let initState;
 
 module('Integration | Component | host-detail/overwiew', function(hooks) {
   setupRenderingTest(hooks, {
@@ -23,10 +20,6 @@ module('Integration | Component | host-detail/overwiew', function(hooks) {
     initState = (state) => {
       patchReducer(this, Immutable.from(state));
     };
-    this.owner.register('service:features', featuresService);
-    saFeatures = this.owner.lookup('service:features');
-    saFeatures.rsaEndpointFusion = true;
-    initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
   });
 

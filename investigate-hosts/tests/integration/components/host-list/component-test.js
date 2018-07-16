@@ -5,13 +5,13 @@ import hbs from 'htmlbars-inline-precompile';
 import hostListState from '../state/host.machines';
 import endpoint from '../state/schema';
 import { patchReducer } from '../../../helpers/vnext-patch';
-import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import Immutable from 'seamless-immutable';
 
 import engineResolver from 'ember-engines/test-support/engine-resolver-for';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 
-let initState, saFeatures;
+let initState;
+
 module('Integration | Component | host-list', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolver('investigate-hosts')
@@ -20,9 +20,6 @@ module('Integration | Component | host-list', function(hooks) {
     initState = (state) => {
       patchReducer(this, Immutable.from(state));
     };
-    saFeatures = this.owner.lookup('service:features');
-    saFeatures.rsaEndpointFusion = true;
-    initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
   });
 

@@ -1,16 +1,14 @@
 <div class="server-input-group">
-  {{#if features.rsaEndpointFusion}}
-    <div class="field">
-      {{#x-toggle
-        showLabels=true
-        onLabel=(t 'packager.fullAgent')
-        value=isFullAgentEnabled
-        onToggle=(action 'enableFullAgent') as |fullAgent|}}
-          {{fullAgent.switch}}
-          {{fullAgent.onLabel value=(not isFullAgentEnabled)}}
-      {{/x-toggle}}
-    </div>
-  {{/if}}
+  <div class="field">
+    {{#x-toggle
+      showLabels=true
+      onLabel=(t 'packager.fullAgent')
+      value=isFullAgentEnabled
+      onToggle=(action 'enableFullAgent') as |fullAgent|}}
+        {{fullAgent.switch}}
+        {{fullAgent.onLabel value=(not isFullAgentEnabled)}}
+    {{/x-toggle}}
+  </div>
   <div class="field">
     <hbox xs="12">
       <div class="col-xs-5 host-ip-js">

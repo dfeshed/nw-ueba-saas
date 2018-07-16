@@ -16,34 +16,32 @@
     <box class="table-zone">
       {{host-list/host-table}}
     </box>
-    {{#if features.rsaEndpointFusion}}
-      <box class="risk-property-zone">
-        <hbox fit>
-          <vbox>
-            {{#host-detail/utils/host-title-bar tabs=dataSourceTabs defaultAction=(action 'setDataSourceTab') as |tab|}}
-              {{#if (eq tab.name 'ALERT')}}
-                <div class="label">{{t tab.label count=alertsCount}}</div>
-              {{else if (eq tab.name 'INCIDENT')}}
-                <div class="label">{{t tab.label count=incidentsCount}}</div>
-              {{else}}
-                <div class="label">{{t tab.label}}</div>
-              {{/if}}
-            {{/host-detail/utils/host-title-bar}}
-          </vbox>
-          <vbox class="risk-zone-close-button">
-            {{#rsa-form-button class='header-button' isIconOnly=true click=(action 'closeRiskPanel') }}
-              {{rsa-icon class='close-icon' name='close' title=(t 'investigateHosts.context.button.close')}}
-            {{/rsa-form-button}}
-          </vbox>
-        </hbox>
-        {{#if (eq contextLoadingStatus 'wait')}}
-          <centered>
-            {{rsa-loader size='medium'}}
-          </centered>
-        {{else}}
-          {{endpoint/risk-panel activeDataSourceTab=activeDataSourceTab data=context errorMessage=contextError}}
-        {{/if}}
-      </box>
-    {{/if}}
+    <box class="risk-property-zone">
+      <hbox fit>
+        <vbox>
+          {{#host-detail/utils/host-title-bar tabs=dataSourceTabs defaultAction=(action 'setDataSourceTab') as |tab|}}
+            {{#if (eq tab.name 'ALERT')}}
+              <div class="label">{{t tab.label count=alertsCount}}</div>
+            {{else if (eq tab.name 'INCIDENT')}}
+              <div class="label">{{t tab.label count=incidentsCount}}</div>
+            {{else}}
+              <div class="label">{{t tab.label}}</div>
+            {{/if}}
+          {{/host-detail/utils/host-title-bar}}
+        </vbox>
+        <vbox class="risk-zone-close-button">
+          {{#rsa-form-button class='header-button' isIconOnly=true click=(action 'closeRiskPanel') }}
+            {{rsa-icon class='close-icon' name='close' title=(t 'investigateHosts.context.button.close')}}
+          {{/rsa-form-button}}
+        </vbox>
+      </hbox>
+      {{#if (eq contextLoadingStatus 'wait')}}
+        <centered>
+          {{rsa-loader size='medium'}}
+        </centered>
+      {{else}}
+        {{endpoint/risk-panel activeDataSourceTab=activeDataSourceTab data=context errorMessage=contextError}}
+      {{/if}}
+    </box>
   </hbox>
 {{/if}}

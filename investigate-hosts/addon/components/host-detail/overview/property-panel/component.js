@@ -16,15 +16,7 @@ export default PropertyPanel.extend({
 
   features: service(),
 
-  @computed('config', 'features.rsaEndpointFusion')
-  enabledConfig(config, rsaEndpointFusion) {
-    if (rsaEndpointFusion) {
-      return config;
-    }
-    return config.filter((conf) => !conf.isFusionFeature);
-  },
-
-  @computed('data', 'enabledConfig')
+  @computed('data', 'config')
   properties(data, config) {
     assert('Cannot instantiate Summary panel without configuration.', config);
     config = this.updateConfig(data, config);
