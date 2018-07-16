@@ -18,8 +18,7 @@ const _initialState = Immutable.from({
   serviceId: undefined,
   sessionId: undefined,
   startTime: 0,
-  queryView: 'nextGen',
-  toggledOnceFlag: false
+  queryView: 'nextGen'
 });
 
 const _cloneQueryParams = (state) => {
@@ -109,10 +108,7 @@ export default handleActions({
   },
 
   [ACTION_TYPES.SET_QUERY_VIEW]: (state, { payload }) => {
-    return state.merge({
-      queryView: payload.queryView,
-      toggledOnceFlag: payload.toggledOnceFlag
-    });
+    return state.set('queryView', payload.queryView);
   },
 
   [ACTION_TYPES.SERVICE_SELECTED]: (state, { payload }) => {

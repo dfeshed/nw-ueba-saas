@@ -46,3 +46,16 @@ export const selectedPills = createSelector(
     return pillsData.filter((pD) => pD.isSelected === true);
   }
 );
+
+// A hopefully temporary shim to help facilitate moving everything to Redux
+export const pillsToFilters = createSelector(
+  [_pillsData],
+  (pillsData) => {
+    return pillsData.map((pillData) => ({
+      meta: pillData.meta,
+      operator: pillData.operator,
+      value: pillData.value,
+      complexFilterText: pillData.complexFilterText
+    }));
+  }
+);

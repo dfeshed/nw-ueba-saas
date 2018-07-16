@@ -1,15 +1,16 @@
 import { module, test } from 'qunit';
-import nextGenCreators from 'investigate-events/actions/next-gen-creators';
-import ACTION_TYPES from 'investigate-events/actions/types';
-import ReduxDataHelper from '../../helpers/redux-data-helper';
+import { bindActionCreators } from 'redux';
+import { settled } from '@ember/test-helpers';
 import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
-import { settled } from '@ember/test-helpers';
+import ReduxDataHelper from '../../helpers/redux-data-helper';
 import { throwSocket } from '../../helpers/patch-socket';
 import { patchReducer } from '../../helpers/vnext-patch';
 import { invalidServerResponse } from './data';
-import { bindActionCreators } from 'redux';
+import nextGenCreators from 'investigate-events/actions/next-gen-creators';
+import ACTION_TYPES from 'investigate-events/actions/types';
+
 
 module('Unit | Actions | NextGen Creators', function(hooks) {
   setupTest(hooks);
@@ -242,6 +243,18 @@ module('Unit | Actions | NextGen Creators', function(hooks) {
       position: 0
     });
     thunk(firstDispatch);
+  });
+
+  test('addFreeFormFilter action creator returns proper type and payload', function(assert) {
+    const action = nextGenCreators.addFreeFormFilter('medium = 50');
+    assert.equal(action.type, ACTION_TYPES.REPLACE_ALL_NEXT_GEN_PILLS, 'action has the correct type');
+    assert.deepEqual(action.payload.pillData, [
+      {
+        complexFilterText: undefined,
+        meta: 'medium',
+        operator: '=',
+        value: '50'
+      }], 'action pillData has the right value');
   });
 
 });

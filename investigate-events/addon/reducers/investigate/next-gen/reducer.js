@@ -15,6 +15,8 @@ const _initialPillState = {
   meta: undefined,
   operator: undefined,
   value: undefined,
+  complexFilterText: undefined,
+
   isEditing: false,
   isSelected: false,
   isInvalid: false,
@@ -60,7 +62,27 @@ const _handlePillUpdate = (state, pillData) => {
   return state.set('pillsData', newPillsData);
 };
 
+const _replaceAllPills = (state, pillData) => {
+  const newPills = pillData.map((pD) => {
+    return {
+      ..._initialPillState,
+      ...pD,
+      id: _.uniqueId('nextGenPill_')
+    };
+  });
+  return state.set('pillsData', newPills);
+};
+
 export default handleActions({
+
+  [ACTION_TYPES.INITIALIZE_INVESTIGATE]: (state, { payload, hardReset }) => {
+    if (hardReset) {
+      return state.set('pillsData', []);
+    }
+
+    return _replaceAllPills(state, payload.metaFilter.conditions);
+  },
+
   [ACTION_TYPES.ADD_NEXT_GEN_PILL]: (state, { payload }) => {
     const { pillData, position } = payload;
     const newPillData = {
@@ -124,7 +146,10 @@ export default handleActions({
       isEditing: true
     };
     return _handlePillUpdate(state, newPillData);
-  }
+  },
 
+  [ACTION_TYPES.REPLACE_ALL_NEXT_GEN_PILLS]: (state, { payload }) => {
+    return _replaceAllPills(state, payload.pillData);
+  }
 
 }, _initialState);

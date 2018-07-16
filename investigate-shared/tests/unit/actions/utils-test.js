@@ -26,9 +26,9 @@ const filters = [{
 }];
 
 const complexConditions = [{
-  complexFilter: 'foo=\'bar\'||foo=baz'
+  complexFilterText: 'foo=\'bar\'||foo=baz'
 }, {
-  complexFilter: 'bar=\'foo\'||baz=foo'
+  complexFilterText: 'bar=\'foo\'||baz=foo'
 }];
 
 const params = {
@@ -58,7 +58,7 @@ test('encodeMetaFilterConditions correctly encodes complex filters', function(as
   assert.expect(1);
   const result = encodeMetaFilterConditions(complexConditions);
 
-  assert.equal(result, '(foo=\'bar\'||foo=baz) && (bar=\'foo\'||baz=foo)');
+  assert.equal(result, 'foo=\'bar\'||foo=baz && bar=\'foo\'||baz=foo');
 });
 
 test('encodeMetaFilterConditions returns values which exist', function(assert) {
@@ -86,7 +86,7 @@ test('encodeMetaFilterConditions returns relevant string based on valid objects'
     },
     {},
     {
-      complexFilter: 'medium = 1 || medium = 32'
+      complexFilterText: 'medium = 1 || medium = 32'
     },
     {
       meta: 'foo',
@@ -96,7 +96,7 @@ test('encodeMetaFilterConditions returns relevant string based on valid objects'
   ];
   const result = encodeMetaFilterConditions(filters);
 
-  assert.equal(result, 'foo = bar && (medium = 1 || medium = 32) && foo  exists');
+  assert.equal(result, 'foo = bar && medium = 1 || medium = 32 && foo  exists');
 });
 
 test('_isValidQueryFilter returns true for a valid filter attribute', function(assert) {
@@ -109,7 +109,7 @@ test('_isValidQueryFilter returns true for a valid filter attribute', function(a
 
 test('_isValidQueryFilter returns true for a valid complex filter', function(assert) {
   assert.expect(1);
-  const filters = { complexFilter: 'medium = 1 || medium =32' };
+  const filters = { complexFilterText: 'medium = 1 || medium =32' };
   const result = _isValidQueryFilter(filters);
 
   assert.ok(result, 'Expected Filter');

@@ -3,7 +3,8 @@ import { module, test } from 'qunit';
 import {
   enrichedPillsData,
   selectedPills,
-  canQueryNextGen
+  canQueryNextGen,
+  pillsToFilters
 } from 'investigate-events/reducers/investigate/next-gen/selectors';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 
@@ -53,3 +54,16 @@ test('canQueryNextGen is false when a service, summary, time-range, isDirty exis
   const canQuery = canQueryNextGen(state);
   assert.notOk(canQuery, 'Selector returns false if service, summary, time-range, isDirty exists but an invalid pill is present');
 });
+
+test('pillsToFilters properly converts pills to filter data', function(assert) {
+  const state = new ReduxDataHelper()
+    .language()
+    .pillsDataPopulated()
+    .build();
+
+  const filters = pillsToFilters(state);
+  assert.equal(filters.length, 2, 'have right number of filters');
+  assert.equal(Object.keys(filters[0]).length, 4, 'have right number of properties');
+  assert.equal(filters[0].meta, 'a');
+});
+

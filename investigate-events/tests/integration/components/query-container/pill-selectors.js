@@ -11,7 +11,9 @@ const triggerValueInput = `${newPillTriggerContainer} ${valueInput}`;
 
 export default {
   allPills: '.query-pills',
+  complexPill: '.complex-pill',
   deletePill: '.delete-pill',
+  freeFormInput: '.rsa-investigate-free-form-query-bar input',
   meta: '.pill-meta',
   metaInput: '.pill-meta input',
   metaSelectInput: '.pill-meta .ember-power-select-trigger input',

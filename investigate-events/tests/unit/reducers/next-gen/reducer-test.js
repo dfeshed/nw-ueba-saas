@@ -293,3 +293,83 @@ test('OPEN_NEXT_GEN_PILL_FOR_EDIT marks pill for editing', function(assert) {
   assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
   assert.ok(result.pillsData[0].isEditing === true, 'first pill is selected');
 });
+
+//
+// INITIALIZE_INVESTIGATE
+//
+test('INITIALIZE_INVESTIGATE clears out all pills on hard reset', function(assert) {
+  const state = new ReduxDataHelper()
+    .pillsDataPopulated()
+    .build()
+    .investigate
+    .nextGen;
+
+  const action = {
+    type: ACTION_TYPES.INITIALIZE_INVESTIGATE,
+    payload: {},
+    hardReset: true
+  };
+  const result = reducer(state, action);
+
+  assert.equal(result.pillsData.length, 0, 'pillsData is the correct length');
+});
+
+test('INITIALIZE_INVESTIGATE replaces all pills with new set of pills', function(assert) {
+  const { pillsData } = new ReduxDataHelper()
+    .pillsDataPopulated()
+    .build()
+    .investigate
+    .nextGen;
+
+  const emptyState = new ReduxDataHelper()
+    .pillsDataEmpty()
+    .build()
+    .investigate
+    .nextGen;
+
+  const action = {
+    type: ACTION_TYPES.INITIALIZE_INVESTIGATE,
+    payload: {
+      metaFilter: {
+        conditions: pillsData
+      }
+    },
+    hardReset: false
+  };
+
+  // start with empty state...
+  const result = reducer(emptyState, action);
+
+  // should end up with two pills
+  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
+});
+
+//
+// REPLACE_ALL_NEXT_GEN_PILLS
+//
+test('REPLACE_ALL_NEXT_GEN_PILLS replaces all pills', function(assert) {
+  const state = new ReduxDataHelper()
+    .pillsDataPopulated()
+    .build()
+    .investigate
+    .nextGen;
+
+  const pillIds = state.pillsData.map((pD) => pD.id);
+
+  // pass same pills in, make sure ids change
+  const action = {
+    type: ACTION_TYPES.REPLACE_ALL_NEXT_GEN_PILLS,
+    payload: {
+      pillData: state.pillsData
+    }
+  };
+
+  // start with empty state...
+  const result = reducer(state, action);
+
+  const newPillIds = result.pillsData.map((pD) => pD.id);
+
+  // should end up with two pills
+  assert.ok(pillIds[0] !== newPillIds[0], 'ids have changed');
+  assert.ok(pillIds[1] !== newPillIds[1], 'ids have changed');
+});

@@ -14,14 +14,9 @@ const _queryTimeFormat = (state) => state.investigate.queryNode.queryTimeFormat;
 const _serviceId = (state) => state.investigate.queryNode.serviceId;
 const _startTime = (state) => state.investigate.queryNode.startTime;
 const _queryView = (state) => state.investigate.queryNode.queryView;
-const _toggledOnceFlag = (state) => state.investigate.queryNode.toggledOnceFlag;
 
 
 // SELECTOR FUNCTIONS
-export const hasMetaFilters = createSelector(
-  [_metaFilter],
-  (metaFilters) => metaFilters.conditions.length > 0
-);
 
 export const selectedTimeRangeId = createSelector(
   [_serviceId, _previouslySelectedTimeRanges],
@@ -61,14 +56,14 @@ export const canFetchEvents = createSelector(
   (serviceId, startTime, endTime) => !!(serviceId && startTime && endTime)
 );
 
-export const freeFormHasFocus = createSelector(
-  [_queryView, _toggledOnceFlag],
-  (queryView, toggledOnceFlag) => queryView === 'freeForm' && toggledOnceFlag
+export const isOnFreeForm = createSelector(
+  [_queryView],
+  (queryView) => queryView === 'freeForm'
 );
 
-export const nextGenHasFocus = createSelector(
-  [_queryView, _toggledOnceFlag],
-  (queryView, toggledOnceFlag) => queryView === 'nextGen' && toggledOnceFlag
+export const isOnNextGen = createSelector(
+  [_queryView],
+  (queryView) => queryView === 'nextGen'
 );
 
 /**

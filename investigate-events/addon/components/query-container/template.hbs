@@ -5,17 +5,13 @@
 <div class='query-bar-selection'>
   <div class='query-bar-options'>
 
-    {{#if nextGenHasFocus}}
+    {{#if isOnNextGen}}
       {{query-container/query-pills
-        filters=filters
         executeQuery=(route-action 'executeQuery')}}
     {{/if}}
 
-    {{#if freeFormHasFocus}}
+    {{#if isOnFreeForm}}
       {{query-container/free-form
-        filters=filters
-        freeFormText=freeFormText
-        addFilters=(action 'addFilters')
         executeQuery=(route-action 'executeQuery')}}
     {{/if}}
 

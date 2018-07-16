@@ -5,12 +5,16 @@
     startTriggeredPosition=startTriggeredPosition
   }}
 
-  {{query-container/query-pill
-    pillData=(readonly pillData)
-    sendMessage=(action 'handleMessage')
-    position=index
-    isActive=pillData.isEditing
-  }}
+  {{#if pillData.complexFilterText}}
+    <span class='complex-pill' style='padding-top:13px; padding-left:5px'>## {{pillData.complexFilterText}} ##</span>
+  {{else}}
+    {{query-container/query-pill
+      pillData=(readonly pillData)
+      sendMessage=(action 'handleMessage')
+      position=index
+      isActive=pillData.isEditing
+    }}
+  {{/if}}
 {{/each}}
 
 {{query-container/query-pill

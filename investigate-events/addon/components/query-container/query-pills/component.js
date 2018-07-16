@@ -57,18 +57,6 @@ const QueryPills = Component.extend({
   @computed('pillsData')
   newPillPosition: (pillsData) => pillsData.length,
 
-  @computed('pillsData')
-  legacyPlainPillsData(pillsData) {
-    return pillsData.asMutable().map((pillData) => {
-      return {
-        meta: pillData.meta.metaName,
-        operator: pillData.operator.displayName,
-        value: pillData.value,
-        id: pillData.id
-      };
-    });
-  },
-
   init() {
     this._super(arguments);
     this.set('_messageHandlerMap', {
@@ -82,7 +70,6 @@ const QueryPills = Component.extend({
       [MESSAGE_TYPES.PILL_OPEN_FOR_EDIT]: (pillData) => this._pillOpenForEdit(pillData),
       [MESSAGE_TYPES.PILL_SELECTED]: (data) => this._pillsSelected([data]),
       [MESSAGE_TYPES.PILL_DESELECTED]: (data) => this._pillsDeselected([data])
-
     });
   },
 
@@ -172,15 +159,6 @@ const QueryPills = Component.extend({
    * @private
    */
   _pillCreated(pillData, position) {
-    // LEGACY FILTERS SET TO KEEP NEAR-TERM SEARCH WORKING
-    // Take current pills, add new one, mark that they are 'saved'
-    const pillsData = [ ...this.get('legacyPlainPillsData'), pillData ]
-      .map((d) => {
-        return { ...d, saved: true };
-      });
-    this.set('filters', pillsData);
-    // END LEGACY FILTERS SET TO KEEP NEAR-TERM SEARCH WORKING
-
     this._pillsExited();
     this.send('addNextGenPill', { pillData, position });
   },
@@ -199,13 +177,6 @@ const QueryPills = Component.extend({
     if (this.get('isPillOpen')) {
       return;
     }
-
-
-    // LEGACY FILTERS SET TO KEEP NEAR-TERM SEARCH WORKING
-    // Take current pills, add new one, mark that they are 'saved'
-    const pillsData = this.get('legacyPlainPillsData').filter((pD) => pD.id !== pillData.id);
-    this.set('filters', pillsData);
-    // END LEGACY FILTERS SET TO KEEP NEAR-TERM SEARCH WORKING
 
     this.send('deleteNextGenPill', { pillData });
   },
@@ -239,18 +210,8 @@ const QueryPills = Component.extend({
    * @private
    */
   _pillEdited(pillData) {
-    // LEGACY FILTERS SET TO KEEP NEAR-TERM SEARCH WORKING
-    // Take current pills, add new one, mark that they are 'saved'
-    const pillsData = this.get('legacyPlainPillsData');
+    const pillsData = this.get('pillsData');
     const position = pillsData.map((pD) => pD.id).indexOf(pillData.id);
-    const newPillsData = [
-      ...pillsData.slice(0, position),
-      { ...pillData },
-      ...pillsData.slice(position + 1)
-    ];
-    this.set('filters', newPillsData);
-    // END LEGACY FILTERS SET TO KEEP NEAR-TERM SEARCH WORKING
-
     this._pillsExited();
     this.send('editNextGenPill', { pillData, position });
   },

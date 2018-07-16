@@ -2,6 +2,7 @@ import * as ACTION_TYPES from './types';
 import { clientSideParseAndValidate, getMetaFormat } from './utils';
 import { selectedPills } from 'investigate-events/reducers/investigate/next-gen/selectors';
 import validateQueryFragment from './fetch/query-validation';
+import { transformTextToPillData } from 'investigate-events/actions/utils';
 
 
 const _validateNextGenPill = (pillData, position) => {
@@ -131,5 +132,15 @@ export const openNextGenPillForEdit = ({ pillData }) => {
       }
     });
     dispatch(deselectAllNextGenPills());
+  };
+};
+
+export const addFreeFormFilter = (freeFormText) => {
+  const pillData = transformTextToPillData(freeFormText.trim());
+  return {
+    type: ACTION_TYPES.REPLACE_ALL_NEXT_GEN_PILLS,
+    payload: {
+      pillData: [pillData]
+    }
   };
 };

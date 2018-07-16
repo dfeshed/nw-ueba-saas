@@ -94,20 +94,17 @@ test('SET_PREFERENCES when payload does not have queryTimeFormat and no current 
 
 test('SET_QUERY_VIEW reducer sets the correct mode provided', function(assert) {
   const prevState = Immutable.from({
-    queryView: 'nextGen',
-    toggledOnceFlag: false
+    queryView: 'nextGen'
   });
   const action = {
     type: ACTION_TYPES.SET_QUERY_VIEW,
     payload: {
-      queryView: 'freeForm',
-      toggledOnceFlag: true
+      queryView: 'freeForm'
     }
   };
   const result = reducer(prevState, action);
 
   assert.equal(result.queryView, 'freeForm');
-  assert.equal(result.toggledOnceFlag, true);
 });
 
 test('INITIALIZE_INVESTIGATE reducer sets the correct view from localStorage', function(assert) {

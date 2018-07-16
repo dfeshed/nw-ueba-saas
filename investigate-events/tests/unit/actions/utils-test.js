@@ -23,7 +23,6 @@ module('Unit | Helper | query utils', function(hooks) {
     initialize(this.owner);
   });
 
-
   test('parseQueryParams correctly parses URI', function(assert) {
     assert.expect(8);
     const result = queryUtils.parseQueryParams(params);
@@ -43,28 +42,6 @@ module('Unit | Helper | query utils', function(hooks) {
     assert.equal(result.metaFilter.conditions[0].meta, 'filename', 'forward slash was not parsed correctly');
     assert.equal(result.metaFilter.conditions[0].operator, '=', 'forward slash was not parsed correctly');
     assert.equal(result.metaFilter.conditions[0].value, '<reston=\'virginia.sys>', 'forward slash was not parsed correctly');
-  });
-
-  test('transformTextToFilters returns filter object', function(assert) {
-    assert.expect(2);
-    const freeFormText = 'medium = 1';
-    const result = queryUtils.transformTextToFilters(freeFormText);
-
-    assert.deepEqual(result, { meta: 'medium ', operator: '=', value: ' 1' });
-    assert.equal(result.complexFilter, undefined, 'Complex Filter doesnt exist');
-
-  });
-
-  test('transformTextToFilters returns complex filter object', function(assert) {
-    assert.expect(4);
-    const freeFormText = 'medium = 1 || medium = 32';
-    const result = queryUtils.transformTextToFilters(freeFormText);
-
-    assert.deepEqual(result, { complexFilter: 'medium = 1 || medium = 32' });
-    assert.equal(result.meta, undefined, 'meta doesnt exist');
-    assert.equal(result.operator, undefined, 'operator doesnt exist');
-    assert.equal(result.value, undefined, 'value doesnt exist');
-
   });
 
   test('filterIsPresent return false when filters array and freeFormText are different', function(assert) {
@@ -101,11 +78,10 @@ module('Unit | Helper | query utils', function(hooks) {
     };
 
     queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
-    .catch((error) => {
-      assert.ok(error.meta, 'Filter is invalid');
-      assert.equal(error.meta, 'You must enter a valid date.', 'Invalid error message');
-    });
-
+      .catch((error) => {
+        assert.ok(error.meta, 'Filter is invalid');
+        assert.equal(error.meta, 'You must enter a valid date.', 'Invalid error message');
+      });
   });
 
   test('clientSideParseAndValidate passes validation when meta is TimeT and value is in proper format', function(assert) {
@@ -122,8 +98,7 @@ module('Unit | Helper | query utils', function(hooks) {
     };
 
     queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
-    .then(() => assert.ok('Filter is valid'));
-
+      .then(() => assert.ok('Filter is valid'));
   });
 
   test('clientSideParseAndValidate return error when metaFormat is IPv4 and value is not in proper format', function(assert) {
@@ -140,11 +115,10 @@ module('Unit | Helper | query utils', function(hooks) {
     };
 
     queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
-    .catch((error) => {
-      assert.ok(error.meta, 'Filter is invalid');
-      assert.equal(error.meta, 'You must enter an IPv4 address.', 'Invalid error message');
-    });
-
+      .catch((error) => {
+        assert.ok(error.meta, 'Filter is invalid');
+        assert.equal(error.meta, 'You must enter an IPv4 address.', 'Invalid error message');
+      });
   });
 
   test('clientSideParseAndValidate passes when metaFormat is IPv4 and value is in proper format', function(assert) {
@@ -161,7 +135,7 @@ module('Unit | Helper | query utils', function(hooks) {
     };
 
     queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
-    .then(() => assert.ok('Filter is valid'));
+      .then(() => assert.ok('Filter is valid'));
   });
 
   test('clientSideParseAndValidate return error when metaFormat is IPv6 and value is not in proper format', function(assert) {
@@ -178,11 +152,10 @@ module('Unit | Helper | query utils', function(hooks) {
     };
 
     queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
-    .catch((error) => {
-      assert.ok(error.meta, 'Filter is invalid');
-      assert.equal(error.meta, 'You must enter an IPv6 address.', 'Invalid error message');
-    });
-
+      .catch((error) => {
+        assert.ok(error.meta, 'Filter is invalid');
+        assert.equal(error.meta, 'You must enter an IPv6 address.', 'Invalid error message');
+      });
   });
 
   test('clientSideParseAndValidate passes when metaFormat is IPv6 and value is in proper format', function(assert) {
@@ -198,10 +171,10 @@ module('Unit | Helper | query utils', function(hooks) {
     };
 
     ipv6Addresses.forEach((value) => {
-      queryUtils.clientSideParseAndValidate(pillData.meta.format, value)
-    .then(() => assert.ok('Filter is valid'));
+      queryUtils
+        .clientSideParseAndValidate(pillData.meta.format, value)
+        .then(() => assert.ok('Filter is valid'));
     });
-
   });
 
   test('clientSideParseAndValidate return error when metaFormat is UInt8 and value is not in proper format', function(assert) {
@@ -218,11 +191,10 @@ module('Unit | Helper | query utils', function(hooks) {
     };
 
     queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
-    .catch((error) => {
-      assert.ok(error.meta, 'Filter is invalid');
-      assert.equal(error.meta, 'You must enter an 8 bit Integer.', 'Invalid error message');
-    });
-
+      .catch((error) => {
+        assert.ok(error.meta, 'Filter is invalid');
+        assert.equal(error.meta, 'You must enter an 8 bit Integer.', 'Invalid error message');
+      });
   });
 
   test('clientSideParseAndValidate passes when metaFormat is UInt8 and value is in proper format', function(assert) {
@@ -239,8 +211,7 @@ module('Unit | Helper | query utils', function(hooks) {
     };
 
     queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
-    .then(() => assert.ok('Filter is valid'));
-
+      .then(() => assert.ok('Filter is valid'));
   });
 
   test('clientSideParseAndValidate return error when metaFormat is UInt16 and value is not in proper format', function(assert) {
@@ -257,11 +228,10 @@ module('Unit | Helper | query utils', function(hooks) {
     };
 
     queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
-    .catch((error) => {
-      assert.ok(error.meta, 'Filter is invalid');
-      assert.equal(error.meta, 'You must enter a 16 bit Integer.', 'Invalid error message');
-    });
-
+      .catch((error) => {
+        assert.ok(error.meta, 'Filter is invalid');
+        assert.equal(error.meta, 'You must enter a 16 bit Integer.', 'Invalid error message');
+      });
   });
 
   test('clientSideParseAndValidate passes when metaFormat is UInt16 and value is in proper format', function(assert) {
@@ -278,8 +248,7 @@ module('Unit | Helper | query utils', function(hooks) {
     };
 
     queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
-    .then(() => assert.ok('Filter is valid'));
-
+      .then(() => assert.ok('Filter is valid'));
   });
 
   test('clientSideParseAndValidate return error when metaFormat is UInt32 and value is not in proper format', function(assert) {
@@ -296,11 +265,10 @@ module('Unit | Helper | query utils', function(hooks) {
     };
 
     queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
-    .catch((error) => {
-      assert.ok(error.meta, 'Filter is invalid');
-      assert.equal(error.meta, 'You must enter a 32 bit Integer.', 'Invalid error message');
-    });
-
+      .catch((error) => {
+        assert.ok(error.meta, 'Filter is invalid');
+        assert.equal(error.meta, 'You must enter a 32 bit Integer.', 'Invalid error message');
+      });
   });
 
   test('clientSideParseAndValidate passes when metaFormat is UInt32 and value is in proper format', function(assert) {
@@ -317,8 +285,7 @@ module('Unit | Helper | query utils', function(hooks) {
     };
 
     queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
-    .then(() => assert.ok('Filter is valid'));
-
+      .then(() => assert.ok('Filter is valid'));
   });
 
   test('clientSideParseAndValidate return error when metaFormat is Float32 and value is not in proper format', function(assert) {
@@ -335,11 +302,10 @@ module('Unit | Helper | query utils', function(hooks) {
     };
 
     queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
-    .catch((error) => {
-      assert.ok(error.meta, 'Filter is invalid');
-      assert.equal(error.meta, 'You must enter a 32 bit Float.', 'Invalid error message');
-    });
-
+      .catch((error) => {
+        assert.ok(error.meta, 'Filter is invalid');
+        assert.equal(error.meta, 'You must enter a 32 bit Float.', 'Invalid error message');
+      });
   });
 
   test('clientSideParseAndValidate passes when metaFormat is Float32 and value is in proper format', function(assert) {
@@ -356,8 +322,7 @@ module('Unit | Helper | query utils', function(hooks) {
     };
 
     queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
-    .then(() => assert.ok('Filter is valid'));
-
+      .then(() => assert.ok('Filter is valid'));
   });
 
   test('clientSideParseAndValidate return error when metaFormat is MAC and value is not in proper format', function(assert) {
@@ -374,11 +339,10 @@ module('Unit | Helper | query utils', function(hooks) {
     };
 
     queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
-    .catch((error) => {
-      assert.ok(error.meta, 'Filter is invalid');
-      assert.equal(error.meta, 'You must enter a MAC address.', 'Invalid error message');
-    });
-
+      .catch((error) => {
+        assert.ok(error.meta, 'Filter is invalid');
+        assert.equal(error.meta, 'You must enter a MAC address.', 'Invalid error message');
+      });
   });
 
   test('clientSideParseAndValidate passes when metaFormat is MAC and value is in proper format', function(assert) {
@@ -395,7 +359,69 @@ module('Unit | Helper | query utils', function(hooks) {
     };
 
     queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
-    .then(() => assert.ok('Filter is valid'));
+      .then(() => assert.ok('Filter is valid'));
+  });
 
+  test('transformTextToPillData returns pill data object', function(assert) {
+    assert.expect(1);
+    const freeFormText = 'medium = 1';
+    const result = queryUtils.transformTextToPillData(freeFormText);
+
+    assert.deepEqual(
+      result,
+      { meta: 'medium', operator: '=', value: '1', complexFilterText: undefined }
+    );
+  });
+
+  test('transformTextToPillData returns complex filter object', function(assert) {
+    assert.expect(1);
+    const freeFormText = 'medium = 1 || medium = 32';
+    const result = queryUtils.transformTextToPillData(freeFormText);
+
+    assert.deepEqual(result, {
+      complexFilterText: '(medium = 1 || medium = 32)',
+      meta: undefined,
+      operator: undefined,
+      value: undefined
+    });
+  });
+
+  test('transformTextToPillData returns complex filter object', function(assert) {
+    assert.expect(1);
+    const freeFormText = 'user.dst = \'1=2\'';
+    const result = queryUtils.transformTextToPillData(freeFormText);
+
+    assert.deepEqual(result, {
+      complexFilterText: undefined,
+      meta: 'user.dst',
+      operator: '=',
+      value: '\'1=2\''
+    });
+  });
+
+  test('transformTextToPillData treats lack of operator as a complex query', function(assert) {
+    assert.expect(1);
+    const freeFormText = 'medium';
+    const result = queryUtils.transformTextToPillData(freeFormText);
+
+    assert.deepEqual(result, {
+      complexFilterText: 'medium',
+      meta: undefined,
+      operator: undefined,
+      value: undefined
+    });
+  });
+
+  test('transformTextToPillData handles when just meta and operator', function(assert) {
+    assert.expect(1);
+    const freeFormText = 'medium exists';
+    const result = queryUtils.transformTextToPillData(freeFormText);
+
+    assert.deepEqual(result, {
+      complexFilterText: undefined,
+      meta: 'medium',
+      operator: 'exists',
+      value: undefined
+    });
   });
 });

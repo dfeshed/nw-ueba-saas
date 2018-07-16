@@ -276,57 +276,60 @@ function _parseMetaFilterUri(uri) {
     .filter((segment) => !!segment)
     .map((queryString) => {
       const decodedQuery = decodeURIComponent(queryString);
-
-      const hasComplexItem = complexOperators.some((operator) => decodedQuery.includes(operator));
-      if (hasComplexItem) {
-        return {
-          complexFilter: decodedQuery
-        };
-      }
-
-      const operator = operators.find((option) => decodedQuery.includes(option));
-      const chunks = decodedQuery.split(operator);
-
-      if (chunks.length > 2) {
-        const [ meta, ...value ] = chunks;
-        return {
-          meta,
-          operator,
-          value: value.join(operator)
-        };
-      } else {
-        const [ meta, value ] = chunks;
-        return { meta, operator, value };
-      }
+      return transformTextToPillData(decodedQuery);
     });
 }
 
-function transformTextToFilters(freeFormText) {
+function transformTextToPillData(queryText) {
 
-  const hasComplexItem = complexOperators.some((operator) => freeFormText.includes(operator));
+  const hasComplexItem = complexOperators.some((operator) => queryText.includes(operator));
   if (hasComplexItem) {
+
+    // if there is already a bracket added, do not add another
+    if (!(queryText.startsWith('(') && queryText.endsWith(')'))) {
+      queryText = `(${queryText})`;
+    }
+
     return {
-      complexFilter: freeFormText
+      meta: undefined,
+      operator: undefined,
+      value: undefined,
+      complexFilterText: queryText
     };
   }
 
   const operator = operators.find((option) => {
-    return freeFormText.includes(option);
+    return queryText.includes(option);
   });
 
-  const chunks = freeFormText.split(operator);
+  if (!operator) {
+    return {
+      meta: undefined,
+      operator: undefined,
+      value: undefined,
+      complexFilterText: queryText
+    };
+  }
+
+  const chunks = queryText.split(operator);
+
   if (chunks.length > 2) {
     const [ meta, ...value ] = chunks;
     return {
-      meta,
-      operator,
-      value: value.join(operator)
+      meta: meta.trim(),
+      operator: operator.trim(),
+      value: value.join(operator).trim(),
+      complexFilterText: undefined
     };
   } else {
     const [ meta, value ] = chunks;
-    return { meta, operator, value };
+    return {
+      meta: meta.trim(),
+      operator: operator.trim(),
+      value: (value.trim() === '') ? undefined : value.trim(), // empty means not there
+      complexFilterText: undefined
+    };
   }
-
 }
 
 function filterIsPresent(filters, freeFormText) {
@@ -346,8 +349,8 @@ function uriEncodeMetaFilters(filters = []) {
     .map((d) => {
       let ret;
 
-      if (d.complexFilter) {
-        ret = d.complexFilter;
+      if (d.complexFilterText) {
+        ret = d.complexFilterText;
       } else {
         ret = `${(d.meta) ? d.meta.trim() : ''} ${(d.operator) ? d.operator.trim() : ''} ${(d.value) ? d.value.trim() : ''}`;
       }
@@ -384,7 +387,7 @@ export {
   executeMetaValuesRequest,
   parseQueryParams,
   uriEncodeMetaFilters,
-  transformTextToFilters,
+  transformTextToPillData,
   filterIsPresent,
   clientSideParseAndValidate,
   getMetaFormat

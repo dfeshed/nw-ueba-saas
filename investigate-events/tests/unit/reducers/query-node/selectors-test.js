@@ -1,33 +1,17 @@
 import { module, test } from 'qunit';
 import {
-  hasMetaFilters,
   hasRequiredValuesToQuery,
   selectedTimeRange,
   selectedTimeRangeId,
   selectedTimeRangeName,
   useDatabaseTime,
-  freeFormHasFocus,
-  nextGenHasFocus
+  isOnFreeForm,
+  isOnNextGen
 } from 'investigate-events/reducers/investigate/query-node/selectors';
 
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
 
 module('Unit | Selectors | queryNode');
-
-test('determine presence of meta filters', function(assert) {
-  const state = {
-    investigate: {
-      queryNode: {
-        metaFilter: {
-          conditions: ['a', 'b']
-        }
-      }
-    }
-  };
-  const hasFilters = hasMetaFilters(state);
-
-  assert.ok(hasFilters, 'meta filter conditions are present');
-});
 
 test('use default time range if not set', function(assert) {
   const state = {
@@ -246,26 +230,24 @@ test('has required inputs to query', function(assert) {
   assert.ok(hasRequiredValuesToQuery(state), 'Missing some required state to query');
 });
 
-test('check freeFormHasFocus', function(assert) {
+test('check isOnFreeForm', function(assert) {
   const state = {
     investigate: {
       queryNode: {
-        queryView: 'freeForm',
-        toggledOnceFlag: true
+        queryView: 'freeForm'
       }
     }
   };
-  assert.equal(freeFormHasFocus(state), true, 'Should have focus');
+  assert.equal(isOnFreeForm(state), true, 'Should have focus');
 });
 
-test('check nextGenHasFocus', function(assert) {
+test('check isOnNextGen', function(assert) {
   const state = {
     investigate: {
       queryNode: {
-        queryView: 'nextGen',
-        toggledOnceFlag: true
+        queryView: 'nextGen'
       }
     }
   };
-  assert.equal(nextGenHasFocus(state), true, 'Should have focus');
+  assert.equal(isOnNextGen(state), true, 'Should have focus');
 });

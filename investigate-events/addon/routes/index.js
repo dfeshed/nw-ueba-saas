@@ -39,7 +39,7 @@ export default Route.extend({
     sid: { refreshModel: true }, // serviceId
     st: { refreshModel: true },  // startTime
     et: { refreshModel: true },  // endTime
-    mf: { refreshModel: true },  // metaFilters
+    mf: { refreshModel: true },  // pillData
     mps: { replace: true },      // metaPanelSize
     rs: { replace: true }        // reconSize
   },
@@ -71,22 +71,20 @@ export default Route.extend({
   },
 
   actions: {
-    executeQuery(metaFilters, externalLink = false) {
-      metaFilters = metaFilters.filterBy('saved', true);
+    executeQuery(pillData, externalLink = false) {
       const redux = this.get('redux');
-      // Save the metaFilters to state
+      // Mark query as clean since we're submitting the query
+      redux.dispatch(dirtyQueryToggle(false));
+
       const { data, queryNode } = redux.getState().investigate;
       const qp = {
         et: queryNode.endTime,
-        mf: uriEncodeMetaFilters(metaFilters),
+        mf: uriEncodeMetaFilters(pillData),
         mps: data.metaPanelSize,
         rs: data.reconSize,
         sid: queryNode.serviceId,
         st: queryNode.startTime
       };
-
-      // Mark query as clean since we're submitting the query
-      redux.dispatch(dirtyQueryToggle(false));
 
       if (externalLink) {
         if (qp.mf) {

@@ -143,11 +143,16 @@ export const streamingRequest = (modelName, query = {}, handlers = {}, streamOpt
   });
 };
 
-// In order to avoid empty condition objects contributing to an extra `&&` being appended to the string
-// we filter out objects which have none of the attributes - meta, operator, value or complexFilter defined
-// If none of the values are present - do not bother proceeding to map and encode them
+// In order to avoid empty condition objects contributing to
+// an extra `&&` being appended to the string we filter out
+// objects which have none of the attributes - meta, operator,
+// value or complexFilterText defined. If none of the values
+// are present - do not bother proceeding to map and encode them
 export const _isValidQueryFilter = (condition) => {
-  return !!condition.meta || !!condition.operator || !!condition.value || !!condition.complexFilter;
+  return !!condition.meta ||
+    !!condition.operator ||
+    !!condition.value ||
+    !!condition.complexFilterText;
 };
 
 /**
@@ -164,15 +169,10 @@ export const encodeMetaFilterConditions = (conditions = []) => {
   return conditions
     .filter((condition) => _isValidQueryFilter(condition))
     .map((condition) => {
-      const { meta, value, operator, complexFilter } = condition;
+      const { meta, value, operator, complexFilterText } = condition;
 
-      if (complexFilter) {
-        // if there is already a bracket added, do not add another
-        if (complexFilter.startsWith('(') && complexFilter.endsWith(')')) {
-          return complexFilter;
-        } else {
-          return `(${complexFilter})`;
-        }
+      if (complexFilterText) {
+        return complexFilterText;
       } else {
         return `${(meta) ? meta.trim() : ''} ${(operator) ? operator.trim() : ''} ${(value) ? value.trim() : ''}`;
       }

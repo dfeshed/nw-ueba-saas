@@ -28,7 +28,8 @@ const DEFAULT_PILLS_DATA = [{
   value: '\'x\'',
   isEditing: false,
   isInvalid: false,
-  isSelected: false
+  isSelected: false,
+  complexFilterText: undefined
 }, {
   id: '2',
   meta: 'b',
@@ -36,7 +37,19 @@ const DEFAULT_PILLS_DATA = [{
   value: '\'y\'',
   isEditing: false,
   isInvalid: false,
-  isSelected: false
+  isSelected: false,
+  complexFilterText: undefined
+}];
+
+const COMPLEX_PILL_DATA = [{
+  id: '1',
+  meta: undefined,
+  operator: undefined,
+  value: undefined,
+  isEditing: false,
+  isInvalid: false,
+  isSelected: false,
+  complexFilterText: 'foo = bar'
 }];
 
 const INVALID_PILL_DATA = [{
@@ -46,7 +59,8 @@ const INVALID_PILL_DATA = [{
   value: '\'boom\'',
   isEditing: false,
   isInvalid: false,
-  isSelected: false
+  isSelected: false,
+  complexFilterText: undefined
 }, {
   id: 2,
   meta: 'starttime',
@@ -55,7 +69,8 @@ const INVALID_PILL_DATA = [{
   isEditing: false,
   isInvalid: true,
   validationError: 'something not right',
-  isSelected: false
+  isSelected: false,
+  complexFilterText: undefined
 }];
 
 const _set = (obj, key, val) => {
@@ -245,6 +260,11 @@ export default class DataHelper {
   }
 
   pillsDataPopulated(pD = DEFAULT_PILLS_DATA) {
+    _set(this.state, 'nextGen.pillsData', pD);
+    return this;
+  }
+
+  pillsDataComplex(pD = COMPLEX_PILL_DATA) {
     _set(this.state, 'nextGen.pillsData', pD);
     return this;
   }

@@ -108,15 +108,12 @@ export const setReconClosed = () => ({
   }
 });
 
-export const setQueryView = (view) => {
-  return {
-    type: ACTION_TYPES.SET_QUERY_VIEW,
-    payload: {
-      queryView: view,
-      toggledOnceFlag: true
-    }
-  };
-};
+export const setQueryView = (queryView) => ({
+  type: ACTION_TYPES.SET_QUERY_VIEW,
+  payload: {
+    queryView
+  }
+});
 
 export const setColumnGroup = (selectedGroup) => {
   return (dispatch, getState) => {
