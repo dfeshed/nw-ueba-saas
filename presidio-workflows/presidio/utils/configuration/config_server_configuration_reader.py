@@ -1,5 +1,3 @@
-import logging
-
 import os
 import requests
 from requests import ConnectionError
@@ -40,11 +38,11 @@ class ConfigServerConfigurationReader(AbstractConfigurationReader):
         request_path = "%s-%s.%s" % (self.app_name,self.profile, OUTPUT_FORMAT)
 
         config_server_address = str(os.sep).join((self.config_server, request_path))
-        logging.debug("connecting to config server address: %s",config_server_address)
+        self.log.debug("connecting to config server address: %s",config_server_address)
         try:
             config_server_properties = requests.get(config_server_address, auth=self.auth).json()
         except ConnectionError as e:
-            logging.error(("failed to connect to config server=%s" % config_server_address), e)
+            self.log.error(("failed to connect to config server=%s" % config_server_address), e)
             raise e
 
         return config_server_properties
@@ -70,7 +68,7 @@ class ConfigServerConfigurationReader(AbstractConfigurationReader):
         setter to be used in unit test in order to prevent config server usage 
         :param properties: 
         """
-        logging.debug("config reader properties are set manually. you must be in testing it...")
+        self.log.debug("config reader properties are set manually. you must be in testing it...")
         self.properties = properties
 
 

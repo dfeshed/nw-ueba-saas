@@ -1,13 +1,15 @@
 import json
-import logging
 from abc import ABCMeta, abstractmethod
 from datetime import timedelta
+
+from airflow.utils.log.logging_mixin import LoggingMixin
+
 
 from presidio.utils.airflow.configuration.configuration_exceptions import InvalidDefaultValueException, \
     DefaultConfFileNotValidException
 
 
-class AbstractConfigurationReader:
+class AbstractConfigurationReader(LoggingMixin):
     """
         abstract configuration reader (store agnostic)
     """
@@ -32,7 +34,7 @@ class AbstractConfigurationReader:
             if default_value_file_path is not None:
                 retrieved_value = self.read_default_value_from_file(
                     default_value_file_path=default_value_file_path).get(conf_key)
-            logging.debug("retrieved value for conf_key=%s is None, retrieving default value instead. default value=%s",
+            self.log.debug("retrieved value for conf_key=%s is None, retrieving default value instead. default value=%s",
                           conf_key, str(retrieved_value))
         return retrieved_value
 

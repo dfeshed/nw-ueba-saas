@@ -1,8 +1,8 @@
 from abc import ABCMeta, abstractmethod
 
-import logging
 from datetime import timedelta
 
+from airflow.utils.log.logging_mixin import LoggingMixin
 from airflow import DAG
 from airflow.operators.subdag_operator import SubDagOperator
 from airflow.operators.python_operator import ShortCircuitOperator
@@ -14,7 +14,7 @@ RETRY_ARGS_CONF_KEY = "subdag_retry_args"
 DAGS_CONF_KEY = "dags"
 
 
-class PresidioDagBuilder(object):
+class PresidioDagBuilder(LoggingMixin):
     conf_reader = ConfigServerConfigurationReaderSingleton().config_reader
 
     presidio_command = 'run'
@@ -99,7 +99,7 @@ class PresidioDagBuilder(object):
                 conf_key=self.get_retry_args_task_instance_conf_key_prefix(task_id))
         if not retry_args:
             # read default subdag retry args
-            logging.debug((
+            self.log.debug((
                 "did not found task retry configuration for operator=%s. settling for default configuration" % (
                     self.__class__.__name__)))
             retry_args = PresidioDagBuilder.conf_reader.read(

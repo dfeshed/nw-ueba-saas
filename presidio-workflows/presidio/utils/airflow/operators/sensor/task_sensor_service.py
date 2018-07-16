@@ -1,7 +1,6 @@
-import logging
-
 from datetime import timedelta
 
+from airflow.utils.log.logging_mixin import LoggingMixin
 from airflow.models import BaseOperator
 from airflow.operators.sensors import BaseSensorOperator
 from airflow.operators.python_operator import ShortCircuitOperator
@@ -9,7 +8,7 @@ from airflow.operators.python_operator import ShortCircuitOperator
 from task_gap_sensor_operator import TaskGapSensorOperator
 
 
-class TaskSensorService(object):
+class TaskSensorService(LoggingMixin):
 
 
     '''
@@ -72,14 +71,14 @@ class TaskSensorService(object):
         :return: 
         '''
         self._add_short_circuit_to_task_list(task, short_circuit_operator)
-        logging.info(
+        self.log.info(
             '{short_circuit_operator.task_id} set downstream the task '
             '{task.task_id}'.format(**locals()))
         short_circuit_operator.set_downstream(task)
 
         task_sensor_list = self._get_task_sensor_list(task)
         if task_sensor_list is not None:
-            logging.info(
+            self.log.info(
                 '{short_circuit_operator.task_id} set downstream the sensors: '
                 '{task_sensor_list}'.format(**locals()))
             short_circuit_operator.set_downstream(task_sensor_list)
@@ -114,12 +113,12 @@ class TaskSensorService(object):
         task_short_circuit_list = self._get_task_short_circuit_list(task)
         if task_short_circuit_list is not None:
             sensor.set_upstream(task_short_circuit_list)
-            logging.info(
+            self.log.info(
                 'wire sensor '
                 '{sensor.task_id} to task_short_circuit_list:'
                 '{task_short_circuit_list}'.format(**locals()))
         else:
-            logging.info(
+            self.log.info(
                 'no task_short_circuit_list to wire sensor'
                 '{sensor.task_id} to.'.format(**locals()))
 

@@ -1,4 +1,3 @@
-import logging
 from datetime import timedelta
 
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
@@ -60,7 +59,7 @@ class RetentionDagBuilder(PresidioDagBuilder):
         :rtype: airflow.models.DAG
         """
 
-        logging.debug("populating the retention dag, dag_id=%s ", retention_dag.dag_id)
+        self.log.debug("populating the retention dag, dag_id=%s ", retention_dag.dag_id)
 
         input_retention_short_circuit_operator = self._create_infinite_retry_short_circuit_operator(
             task_id='input_retention_short_circuit',

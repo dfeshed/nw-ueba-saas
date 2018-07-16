@@ -1,7 +1,6 @@
-import logging
-
 from datetime import timedelta
 
+from airflow.utils.log.logging_mixin import LoggingMixin
 from presidio.builders.presidio_dag_builder import PresidioDagBuilder
 from presidio.operators.fixed_duration_jar_operator import FixedDurationJarOperator
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
@@ -10,7 +9,7 @@ from presidio.utils.configuration.config_server_configuration_reader_singleton i
 FORWARDER_JVM_ARGS_CONFIG_PATH = 'components.output_forwarder.jvm_args'
 
 
-class PushForwarderTaskBuilder(object):
+class PushForwarderTaskBuilder(LoggingMixin):
 
     conf_reader = ConfigServerConfigurationReaderSingleton().config_reader
 
@@ -29,7 +28,7 @@ class PushForwarderTaskBuilder(object):
         :rtype: FixedDurationJarOperator
         """
 
-        logging.debug("creating the forwarder task")
+        self.log.debug("creating the forwarder task")
 
         # Create jar operator
         data_forwarding_operator = FixedDurationJarOperator(
