@@ -37,8 +37,8 @@ class RawModelFeatureAggregationBucketsOperator(FixedDurationJarOperator):
             'schema': self.data_source,
         }
 
-        print('agg operator. commad=', command)
-        print('agg operator. kwargs=', kwargs)
+        self.log.debug('agg operator. commad=%s', command)
+        self.log.debug('agg operator. kwargs=%s', str(kwargs))
         super(RawModelFeatureAggregationBucketsOperator, self).__init__(
             task_id=self.task_id,
             fixed_duration_strategy=self.fixed_duration_strategy,

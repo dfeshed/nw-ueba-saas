@@ -36,8 +36,8 @@ class AggrModelAccumulateAggregationsOperator(FixedDurationJarOperator):
             'feature_bucket_strategy': feature_bucket_strategy.total_seconds(),
         }
 
-        print('agg operator. commad=', command)
-        print('agg operator. kwargs=', kwargs)
+        self.log.debug('agg operator. commad=%s', command)
+        self.log.debug('agg operator. kwargs=%s', str(kwargs))
         super(AggrModelAccumulateAggregationsOperator, self).__init__(
             task_id=self.task_id,
             fixed_duration_strategy=fixed_duration_strategy,
