@@ -157,29 +157,11 @@ def cleanRemoteRepository(
         String userPassword = env.RSA_BUILD_CREDENTIALS_PSW,
         String version = env.VERSION) {
 
-    String pullRequestNumber = repositoryNameToPullRequestNumber[repositoryName]
+    String pullRequestNumber = repositoryNameToPullRequestNumberMap[repositoryName]
     String branchName = buildBranchName(version)
-
-    // Close the pull request in the remote repository.
-    sh """\
-        curl -d '{"state": "closed"}'\
-        -X PATCH ${rsaAsocGitHubApiUrl}${repositoryName}/pulls/${pullRequestNumber}\
-        -u ${userName}:${userPassword}\
-    """
-
-    // Delete the tag of the new version in the remote repository.
-    sh """\
-        curl -d '{}'\
-        -X DELETE ${rsaAsocGitHubApiUrl}${repositoryName}/git/refs/tags/${branchName}\
-        -u ${userName}:${userPassword}\
-    """
-
-    // Delete the branch of the new version in the remote repository.
-    sh """\
-        curl -d '{}'\
-        -X DELETE ${rsaAsocGitHubApiUrl}${repositoryName}/git/refs/heads/${branchName}\
-        -u ${userName}:${userPassword}\
-    """
+    closeAsocPullRequest(repositoryName, pullRequestNumber, userName, userPassword)
+    deleteAsocTag(repositoryName, branchName, userName, userPassword)
+    deleteAsocBranch(repositoryName, branchName, userName, userPassword)
 }
 
 static def buildBranchName(String version) {
@@ -272,11 +254,34 @@ def createAsocReviewRequest(
 }
 
 def mergeAsocPullRequest(String repositoryName, String number, String userName, String userPassword) {
-    // No inputs required in the data option.
     // The default merge method is "merge" (as opposed to "squash" or "rebase").
     sh """\
         curl -d '{}'\
         -X PUT ${rsaAsocGitHubApiUrl}${repositoryName}/pulls/${number}/merge\
+        -u ${userName}:${userPassword}\
+    """
+}
+
+def closeAsocPullRequest(String repositoryName, String number, String userName, String userPassword) {
+    sh """\
+        curl -d '{"state": "closed"}'\
+        -X PATCH ${rsaAsocGitHubApiUrl}${repositoryName}/pulls/${number}\
+        -u ${userName}:${userPassword}\
+    """
+}
+
+def deleteAsocTag(String repositoryName, String tagName, String userName, String userPassword) {
+    sh """\
+        curl -d '{}'\
+        -X DELETE ${rsaAsocGitHubApiUrl}${repositoryName}/git/refs/tags/${tagName}\
+        -u ${userName}:${userPassword}\
+    """
+}
+
+def deleteAsocBranch(String repositoryName, String branchName, String userName, String userPassword) {
+    sh """\
+        curl -d '{}'\
+        -X DELETE ${rsaAsocGitHubApiUrl}${repositoryName}/git/refs/heads/${branchName}\
         -u ${userName}:${userPassword}\
     """
 }
