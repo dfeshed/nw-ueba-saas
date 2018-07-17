@@ -4,7 +4,7 @@
       {{#rsa-nav-tab align='left' isActive=tab.isActive}}
         {{#if tab.isActive}}
           {{#if (eq tab.name 'investigate.investigate-events')}}
-            {{#link-to "index" (query-params eventId=undefined endpointId=undefined sid=undefined st=undefined et=undefined eid=undefined mf=undefined mps=undefined rs=undefined)}}
+            {{#link-to (query-params sid=undefined st=undefined et=undefined eid=undefined mf=undefined mps=undefined rs=undefined)}}
               {{tab.label}}
             {{/link-to}}
           {{else if (eq tab.name 'investigate.investigate-hosts')}}
