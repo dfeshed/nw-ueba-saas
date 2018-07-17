@@ -140,6 +140,14 @@ def kill_zombie_sub_dag_task_instances():
         dag_id = "{}.{}".format(running_sub_dag_task_instance.dag_id, running_sub_dag_task_instance.task_id)
         execution_date = running_sub_dag_task_instance.execution_date
         dag_run = find_dag_runs(first=True, dag_id=dag_id, execution_date=execution_date)
+
+        if dag_run is None:
+            msg = "Could not find the DAG run of dag_id {} and execution_date {}, " \
+                  "even though the state of the sub-DAG task instance is {}." \
+                .format(dag_id, execution_date, State.RUNNING)
+            logging.info(msg)
+            return
+
         has_unfinished_task_instances = False
         task_instance_dates = []
 
