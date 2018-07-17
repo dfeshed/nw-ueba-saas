@@ -74,6 +74,46 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>com.coderplus.maven.plugins</groupId>
+                <artifactId>copy-rename-maven-plugin</artifactId>
+                <version>1.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-active_directory</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <sourceFile>flume-configuration/adapter/active_directory.properties</sourceFile>
+                            <destinationFile>target/flume-configuration/adapter/active_directory.prod.properties</destinationFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-file</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <sourceFile>flume-configuration/adapter/file.properties</sourceFile>
+                            <destinationFile>target/flume-configuration/adapter/file.prod.properties</destinationFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-authentication</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <sourceFile>flume-configuration/adapter/authentication.properties</sourceFile>
+                            <destinationFile>target/flume-configuration/adapter/authentication.prod.properties</destinationFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
