@@ -1,14 +1,14 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import computed from 'ember-computed-decorators';
 import { throttle } from '@ember/runloop';
 
 import { dirtyQueryToggle } from 'investigate-events/actions/query-validation-creators';
 import { hasRequiredValuesToQuery } from 'investigate-events/reducers/investigate/query-node/selectors';
+import { freeFormText } from 'investigate-events/reducers/investigate/next-gen/selectors';
 import { addFreeFormFilter } from 'investigate-events/actions/next-gen-creators';
-import { encodeMetaFilterConditions } from 'investigate-shared/actions/api/events/utils';
 
 const stateToComputed = (state) => ({
+  freeFormText: freeFormText(state),
   hasRequiredValuesToQuery: hasRequiredValuesToQuery(state)
 });
 
@@ -21,14 +21,6 @@ const freeForm = Component.extend({
   classNames: ['rsa-investigate-free-form-query-bar'],
 
   initialFreeFormText: null,
-
-  // should replace the computed with a selector once filters are in state
-  @computed('filters.[]')
-  freeFormText(filters) {
-    if (filters) {
-      return encodeMetaFilterConditions(filters).trim();
-    }
-  },
 
   init() {
     this._super(...arguments);

@@ -1,5 +1,7 @@
 import reselect from 'reselect';
 const { createSelector } = reselect;
+
+import { encodeMetaFilterConditions } from 'investigate-shared/actions/api/events/utils';
 import { hasRequiredValuesToQuery } from 'investigate-events/reducers/investigate/query-node/selectors';
 import {
   metaKeySuggestionsForQueryBuilder
@@ -44,5 +46,12 @@ export const selectedPills = createSelector(
   [_pillsData],
   (pillsData) => {
     return pillsData.filter((pD) => pD.isSelected === true);
+  }
+);
+
+export const freeFormText = createSelector(
+  [_pillsData],
+  (pillsData) => {
+    return encodeMetaFilterConditions(pillsData).trim();
   }
 );

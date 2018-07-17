@@ -3,7 +3,8 @@ import { module, test } from 'qunit';
 import {
   enrichedPillsData,
   selectedPills,
-  canQueryNextGen
+  canQueryNextGen,
+  freeFormText
 } from 'investigate-events/reducers/investigate/next-gen/selectors';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 
@@ -54,3 +55,12 @@ test('canQueryNextGen is false when a service, summary, time-range, isDirty exis
   assert.notOk(canQuery, 'Selector returns false if service, summary, time-range, isDirty exists but an invalid pill is present');
 });
 
+test('freeFormText is set properly', function(assert) {
+  const state = new ReduxDataHelper()
+    .language()
+    .pillsDataPopulated()
+    .build();
+
+  const text = freeFormText(state);
+  assert.equal(text, 'a = \'x\' && b = \'y\'', 'freeFormText is set properly');
+});

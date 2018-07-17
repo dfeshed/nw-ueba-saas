@@ -80,26 +80,6 @@
     display: inline;
   }
 
-  &.freeForm {
-    a.freeForm-link {
-      color: text-color(primary, light);
-      pointer-events: none;
-    }
-    .query-pills {
-      display: none;
-    }
-  }
-
-  &.nextGen {
-    a.nextGen-link {
-      color: text-color(primary, light);
-      pointer-events: none;
-    }
-    .rsa-investigate-free-form-query-bar {
-      display: none;
-    }
-  }
-
   .query-bar-selection {
     margin-right: rsa-whitespace(less);
     display: flex;
@@ -129,6 +109,26 @@
         @include border-left(1px, solid, primary);
         height: 1rem;
         margin: rsa-whitespace(least) rsa-whitespace(less) 0 rsa-whitespace(less);
+      }
+    }
+
+    &.freeForm {
+      a.freeForm-link {
+        color: text-color(primary, light);
+        pointer-events: none;
+      }
+      .query-pills {
+        display: none;
+      }
+    }
+
+    &.nextGen {
+      a.nextGen-link {
+        color: text-color(primary, light);
+        pointer-events: none;
+      }
+      .rsa-investigate-free-form-query-bar {
+        display: none;
       }
     }
   }

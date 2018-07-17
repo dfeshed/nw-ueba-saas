@@ -2,41 +2,6 @@
 
 {{time-selector startTime=startTime endTime=endTime onTimeSelection=(action 'setQueryTimeRange')}}
 
-<div class='query-bar-selection'>
-  <div class='query-bar-options'>
-
-    {{#if isOnNextGen}}
-      {{query-container/query-pills
-        executeQuery=(route-action 'executeQuery')}}
-    {{/if}}
-
-    {{#if isOnFreeForm}}
-      {{query-container/free-form
-        executeQuery=(route-action 'executeQuery')}}
-    {{/if}}
-
-  </div>
-  <div class='query-bar-select-actions'>
-
-    <a class='nextGen-link'
-      title={{t 'investigate.nextGen.linkTitle'}}
-      href='#'
-      {{action 'changeView' 'nextGen'}}
-    >
-      {{t 'investigate.nextGen.textLabel'}}
-    </a>
-
-    <div class='divider'></div>
-
-    <a class='freeForm-link'
-      title={{t 'investigate.freeForm.linkTitle'}}
-      href='#'
-      {{action 'changeView' 'freeForm'}}
-    >
-      {{t 'investigate.freeForm.textLabel'}}
-    </a>
-
-  </div>
-</div>
+{{query-container/query-bar executeQuery=(route-action 'executeQuery')}}
 
 {{query-container/query-button executeQuery=(route-action 'executeQuery')}}

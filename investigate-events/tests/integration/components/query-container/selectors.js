@@ -7,12 +7,13 @@ export default {
   queryButton: '.execute-query-button',
 
   // Free Form Selectors
-  freeFormQueryBar: '.rsa-investigate-query-container.freeForm',
+  freeFormQueryBar: '.query-bar-selection.freeForm',
+  freeFormBarContainer: '.rsa-investigate-free-form-query-bar',
   freeFormQueryBarFocusedInput: '.rsa-investigate-free-form-query-bar input:focus',
   freeFormQueryBarInput: '.rsa-investigate-free-form-query-bar input',
 
   // Next Gen Selectors
-  nextGenQueryBar: '.rsa-investigate-query-container.nextGen',
+  nextGenQueryBar: '.query-bar-selection.nextGen',
   nextGenQueryBarFocusedInput: '.new-pill-template .pill-meta.is-expanded'
 };
 
