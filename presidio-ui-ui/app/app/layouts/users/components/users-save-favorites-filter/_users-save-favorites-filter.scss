@@ -116,7 +116,7 @@ users-add-favorites-popup {
             @include font-open-sans($font-size: 14px, $font-weight: 400, $color: var(--main-widgets-titles-text-color-hover));
             margin-right: 25px;
             cursor: pointer;
-
+            text-decoration: underline;
             &:hover {
                 //color: #022f53;
                 font-weight: 700;
@@ -133,8 +133,8 @@ users-add-favorites-popup {
             height: 35px;
             line-height: 35px;
             width: auto;
-
-            background-color: var(--main-widgets-titles-text-color-hover);
+            border: 1px solid var(--buttons-borders-color);
+            background-color: var(--buttons-background-color);
 
             @include font-open-sans($color: white);
             text-align: center;
@@ -144,12 +144,12 @@ users-add-favorites-popup {
             cursor: pointer;
 
             &:hover {
-                background-color: #0260a0;
+                background-color: var(--buttons-hover-background-color);
             }
 
             &[disabled] {
-                opacity: 0.2;
-                cursor: not-allowed;
+                //opacity: 0.2;
+                //cursor: not-allowed;
             }
 
         }

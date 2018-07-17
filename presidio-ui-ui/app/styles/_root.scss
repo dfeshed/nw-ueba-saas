@@ -48,10 +48,10 @@ html, body{ height: 100%; }
 
     --main-widgets-titles-text-color: #FAFAFA;
     --main-widgets-titles-link-color: #03A9F4;
-    --main-widgets-titles-icon-fill: #fff;
+    --main-widgets-titles-icon-fill: #FAFAFA;
     --main-widgets-background-color: #161616;
     --main-widgets-background-color-hover: #212121;
-    --main-widgets-titles-text-color-hover: #03A9F4;
+    --main-widgets-titles-text-color-hover: #dedede;
 
 
     --main-widgets-lines-seperators: #424242;
@@ -80,11 +80,15 @@ html, body{ height: 100%; }
     --buttons-background-color: #161616;
     --buttons-borders-color: #FAFAFA;
 
+    --buttons-hover-background-color: #161616;
+    --buttons-disabled-background-color: #161616;
+    --buttons-disabled-text-color: #FAFAFA;
 
     --chart-axis-color: #eee;
     --chart-text-color: #eee;
     --chart-title-color: #eee;
     --chart-label-color: #eee;
+
 
 
 
