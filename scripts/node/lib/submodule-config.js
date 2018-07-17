@@ -20,7 +20,8 @@ const ALL_SUBMODULES = [
   'test-helpers',
   'ember-route-action-helper',
   'investigate-process-analysis',
-  'rsa-context-menu'
+  'rsa-context-menu',
+  'rsa-data-filters'
 ];
 
 // A configuration that lists each submodule with
@@ -43,7 +44,8 @@ const saModuleDependants = {
     'context',
     'preferences',
     'investigate-process-analysis',
-    'rsa-context-menu'
+    'rsa-context-menu',
+    'rsa-data-filters'
   ],
   docs: [], // lol
   'mock-server': [
@@ -119,7 +121,12 @@ const saModuleDependants = {
     'style-guide'
   ],
   'test-helpers': [],
-  'ember-route-action-helper': []
+  'ember-route-action-helper': [],
+  'rsa-data-filters': [
+    'sa',
+    'investigate-hosts',
+    'investigate-files'
+  ]
 };
 
 module.exports = {

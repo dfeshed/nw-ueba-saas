@@ -52,6 +52,7 @@ yarn link
 
 prepareApp component-lib
 prepareApp rsa-context-menu
+prepareApp rsa-data-filters
 prepareApp streaming-data
 prepareApp packager
 prepareApp recon
