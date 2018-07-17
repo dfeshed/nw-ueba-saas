@@ -38,15 +38,16 @@ export default handleActions({
 
   [ACTION_TYPES.INITIALIZE_INVESTIGATE]: (state, { payload }) => {
     let isReconOpen = false;
-    if (payload.sessionId && !Number.isNaN(payload.sessionId)) {
+    const { queryParams } = payload;
+    if (queryParams.sessionId && !Number.isNaN(queryParams.sessionId)) {
       isReconOpen = true;
     }
     return state.merge({
       isReconOpen,
-      metaPanelSize: payload.metaPanelSize || META_PANEL_SIZES.DEFAULT,
+      metaPanelSize: queryParams.metaPanelSize || META_PANEL_SIZES.DEFAULT,
       // TODO: reconSize should have a default value from prefs being set above.
       // need to refactor this.
-      reconSize: payload.reconSize || RECON_PANEL_SIZES.MAX
+      reconSize: queryParams.reconSize || RECON_PANEL_SIZES.MAX
     });
   },
 

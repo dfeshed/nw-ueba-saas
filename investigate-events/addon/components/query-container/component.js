@@ -3,12 +3,9 @@ import { connect } from 'ember-redux';
 import { run } from '@ember/runloop';
 
 import { isOnFreeForm, isOnNextGen } from 'investigate-events/reducers/investigate/query-node/selectors';
-import { canQueryNextGen, pillsToFilters } from 'investigate-events/reducers/investigate/next-gen/selectors';
 import { setQueryView, setQueryTimeRange, setService } from 'investigate-events/actions/interaction-creators';
 
 const stateToComputed = (state) => ({
-  filters: pillsToFilters(state),
-  requiredValuesToQuerySelector: canQueryNextGen(state),
   isOnFreeForm: isOnFreeForm(state),
   isOnNextGen: isOnNextGen(state),
   queryView: state.investigate.queryNode.queryView,

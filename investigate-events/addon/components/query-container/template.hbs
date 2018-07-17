@@ -39,10 +39,4 @@
   </div>
 </div>
 
-{{#rsa-form-button
-  class='execute-query-button'
-  defaultAction=(route-action 'executeQuery' filters)
-  isDisabled=(not requiredValuesToQuerySelector)
-  style='primary'}}
-  {{t 'queryBuilder.queryEvents'}}
-{{/rsa-form-button}}
+{{query-container/query-button executeQuery=(route-action 'executeQuery')}}

@@ -116,8 +116,10 @@ test('INITIALIZE_INVESTIGATE reducer sets the correct view from localStorage', f
   const action = {
     type: ACTION_TYPES.INITIALIZE_INVESTIGATE,
     payload: {
-      metaFilter: {},
-      selectedTimeRangeId: 'ALL_DATA'
+      queryParams: {
+        metaFilter: {},
+        selectedTimeRangeId: 'ALL_DATA'
+      }
     }
   };
   const result = reducer(prevState, action);

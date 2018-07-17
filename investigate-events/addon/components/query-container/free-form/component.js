@@ -5,13 +5,11 @@ import { throttle } from '@ember/runloop';
 
 import { dirtyQueryToggle } from 'investigate-events/actions/query-validation-creators';
 import { hasRequiredValuesToQuery } from 'investigate-events/reducers/investigate/query-node/selectors';
-import { pillsToFilters } from 'investigate-events/reducers/investigate/next-gen/selectors';
 import { addFreeFormFilter } from 'investigate-events/actions/next-gen-creators';
 import { encodeMetaFilterConditions } from 'investigate-shared/actions/api/events/utils';
 
 const stateToComputed = (state) => ({
-  hasRequiredValuesToQuery: hasRequiredValuesToQuery(state),
-  filters: pillsToFilters(state)
+  hasRequiredValuesToQuery: hasRequiredValuesToQuery(state)
 });
 
 const dispatchToActions = {
@@ -64,7 +62,7 @@ const freeForm = Component.extend({
         if (e.keyCode === 13) {
           e.target.blur();
           this.throttledFocusOut(e);
-          this.executeQuery(this.get('filters'));
+          this.executeQuery();
         }
       }
     },

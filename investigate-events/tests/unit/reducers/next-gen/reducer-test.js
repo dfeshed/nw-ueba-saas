@@ -306,8 +306,9 @@ test('INITIALIZE_INVESTIGATE clears out all pills on hard reset', function(asser
 
   const action = {
     type: ACTION_TYPES.INITIALIZE_INVESTIGATE,
-    payload: {},
-    hardReset: true
+    payload: {
+      hardReset: true
+    }
   };
   const result = reducer(state, action);
 
@@ -330,11 +331,13 @@ test('INITIALIZE_INVESTIGATE replaces all pills with new set of pills', function
   const action = {
     type: ACTION_TYPES.INITIALIZE_INVESTIGATE,
     payload: {
-      metaFilter: {
-        conditions: pillsData
-      }
-    },
-    hardReset: false
+      queryParams: {
+        metaFilter: {
+          conditions: pillsData
+        }
+      },
+      hardReset: false
+    }
   };
 
   // start with empty state...

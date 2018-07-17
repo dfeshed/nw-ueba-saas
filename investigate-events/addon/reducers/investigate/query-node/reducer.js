@@ -55,13 +55,9 @@ export default handleActions({
     return state.merge(reducerState);
   },
 
-  [ACTION_TYPES.INITIALIZE_TESTS]: (state, { payload }) => {
-    return _initialState.merge(payload.queryNode, { deep: true });
-  },
-
-  [ACTION_TYPES.INITIALIZE_INVESTIGATE]: (state, { payload, hardReset }) => {
+  [ACTION_TYPES.INITIALIZE_INVESTIGATE]: (state, { payload }) => {
     const localStorageObj = JSON.parse(localStorage.getItem('reduxPersist:investigate'));
-    if (hardReset) {
+    if (payload.hardReset) {
       // Check if the previously selected serviceId and timeRange are persisted in localStorage
       if (!localStorageObj) {
         return _initialState;
@@ -81,19 +77,20 @@ export default handleActions({
       if (localStorageObj) {
         previousView = localStorageObj.queryNode.queryView;
       }
-      const hasIncommingQueryParams = !!(payload.endTime && payload.serviceId && payload.startTime);
+      const { queryParams } = payload;
+      const hasIncommingQueryParams = !!(queryParams.endTime && queryParams.serviceId && queryParams.startTime);
       const { previouslySelectedTimeRanges } = state;
       const newRange = {};
-      newRange[payload.serviceId] = payload.selectedTimeRangeId;
+      newRange[queryParams.serviceId] = queryParams.selectedTimeRangeId;
       return state.merge({
-        endTime: payload.endTime && parseInt(payload.endTime, 10) || 0,
+        endTime: queryParams.endTime && parseInt(queryParams.endTime, 10) || 0,
         eventMetas: undefined,
         hasIncommingQueryParams,
-        metaFilter: payload.metaFilter,
-        serviceId: payload.serviceId,
+        metaFilter: queryParams.metaFilter,
+        serviceId: queryParams.serviceId,
         previouslySelectedTimeRanges: previouslySelectedTimeRanges.merge(newRange),
-        sessionId: payload.sessionId && parseInt(payload.sessionId, 10) || undefined,
-        startTime: payload.startTime && parseInt(payload.startTime, 10) || 0,
+        sessionId: queryParams.sessionId && parseInt(queryParams.sessionId, 10) || undefined,
+        startTime: queryParams.startTime && parseInt(queryParams.startTime, 10) || 0,
         queryView: previousView ? previousView : state.queryView
       }, { deep: true });
     }

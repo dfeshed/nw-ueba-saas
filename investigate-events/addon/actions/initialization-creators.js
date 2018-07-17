@@ -129,8 +129,10 @@ export const initializeInvestigate = (params, hardReset = false) => {
     // Initialize state from query params
     dispatch({
       type: ACTION_TYPES.INITIALIZE_INVESTIGATE,
-      payload: parseQueryParams(params),
-      hardReset
+      payload: {
+        queryParams: parseQueryParams(params),
+        hardReset
+      }
     });
     dispatch(_getColumnGroups());
     // Get all the things

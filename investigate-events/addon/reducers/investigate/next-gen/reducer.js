@@ -75,12 +75,12 @@ const _replaceAllPills = (state, pillData) => {
 
 export default handleActions({
 
-  [ACTION_TYPES.INITIALIZE_INVESTIGATE]: (state, { payload, hardReset }) => {
-    if (hardReset) {
+  [ACTION_TYPES.INITIALIZE_INVESTIGATE]: (state, { payload }) => {
+    if (payload.hardReset) {
       return state.set('pillsData', []);
     }
 
-    return _replaceAllPills(state, payload.metaFilter.conditions);
+    return _replaceAllPills(state, payload.queryParams.metaFilter.conditions);
   },
 
   [ACTION_TYPES.ADD_NEXT_GEN_PILL]: (state, { payload }) => {

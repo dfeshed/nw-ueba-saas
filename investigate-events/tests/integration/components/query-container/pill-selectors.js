@@ -10,7 +10,10 @@ const triggerOperatorPowerSelect = `${newPillTriggerContainer} ${operatorTrigger
 const triggerValueInput = `${newPillTriggerContainer} ${valueInput}`;
 
 export default {
+  queryPill: '.query-pill',
   allPills: '.query-pills',
+  queryButton: '.execute-query-button',
+  queryButtonDisabled: '.execute-query-button.is-disabled',
   complexPill: '.complex-pill',
   deletePill: '.delete-pill',
   freeFormInput: '.rsa-investigate-free-form-query-bar input',
@@ -37,7 +40,6 @@ export default {
   invalidPill: '.is-invalid',
   selectedPill: '.is-selected',
   populatedItem: '.is-populated',
-  queryPill: '.query-pill',
   expensivePill: '.query-pill.is-expensive',
   expensiveIndicator: '.rsa-icon-stopwatch-lined.is-expensive'
 };

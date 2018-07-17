@@ -71,12 +71,15 @@ export default Route.extend({
   },
 
   actions: {
-    executeQuery(pillData, externalLink = false) {
+    executeQuery(notUsingThisSoRemoveIt, externalLink = false) {
       const redux = this.get('redux');
+      const investigateState = redux.getState().investigate;
+      const pillData = investigateState.nextGen.pillsData;
+      const { data, queryNode } = investigateState;
+
       // Mark query as clean since we're submitting the query
       redux.dispatch(dirtyQueryToggle(false));
 
-      const { data, queryNode } = redux.getState().investigate;
       const qp = {
         et: queryNode.endTime,
         mf: uriEncodeMetaFilters(pillData),

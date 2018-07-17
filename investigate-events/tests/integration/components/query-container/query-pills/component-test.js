@@ -443,20 +443,14 @@ module('Integration | Component | query-pills', function(hooks) {
     });
   });
 
-  // TODO, move this to query-pill test
-  test('Creating an expensive pill displays stopwatch icon on the pill', async function(assert) {
+  test('An expensive pill displays as expensive', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .pillsDataEmpty()
       .build();
-
     await render(hbs`{{query-container/query-pills isActive=true}}`);
-
     await createBasicPill(false, 'Text', 'contains');
-
     assert.equal(findAll(PILL_SELECTORS.expensivePill).length, 1, 'Class for expensive pill should be present');
-    assert.equal(findAll(PILL_SELECTORS.expensiveIndicator).length, 1, 'Class for expensive icon should be present');
-    assert.equal(this.$(PILL_SELECTORS.expensiveIndicator).prop('title'), 'Performing this operation might take more time.', 'Expected title');
   });
 
   test('complex pills will be rendered', async function(assert) {

@@ -16,9 +16,6 @@ const _initialState = Immutable.from({
 });
 
 export default handleActions({
-  [ACTION_TYPES.INITIALIZE_TESTS]: (state, { payload }) => {
-    return _initialState.merge(payload.services);
-  },
 
   [ACTION_TYPES.SERVICES_RETRIEVE]: (state, action) => {
     return handle(state, action, {
@@ -51,13 +48,13 @@ export default handleActions({
     return state.set('summaryData', payload);
   },
 
-  [ACTION_TYPES.INITIALIZE_INVESTIGATE]: (state, { hardReset }) => {
-    // hardReset is true when
+  [ACTION_TYPES.INITIALIZE_INVESTIGATE]: (state, { payload }) => {
+    // payload.hardReset is true when
     // 1) Loading the Event Analysis page for the first time
     // 2) Clicking on Event Analysis page from the results page /investigate/events/?et=foo..
     // Clear out serviceData when hardReset is true, this forces to dispatch and sets the state properly
     // on the service and timeRange selectors.
-    if (hardReset) {
+    if (payload.hardReset) {
       return state.merge({ ...state, serviceData: undefined });
     }
     return state.merge(...state);

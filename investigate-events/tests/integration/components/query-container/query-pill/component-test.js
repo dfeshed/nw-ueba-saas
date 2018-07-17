@@ -47,6 +47,16 @@ module('Integration | Component | query-pill', function(hooks) {
     };
   });
 
+  test('contains proper class when expensive', async function(assert) {
+    let enrichedPill = _getEnrichedPill();
+    enrichedPill = enrichedPill.setIn(['operator', 'isExpensive'], true);
+    this.set('pillData', enrichedPill);
+    await render(hbs`{{query-container/query-pill isActive=false pillData=pillData}}`);
+    assert.equal(findAll(PILL_SELECTORS.expensivePill).length, 1, 'Class for expensive pill should be present');
+    assert.equal(findAll(PILL_SELECTORS.expensiveIndicator).length, 1, 'Class for expensive icon should be present');
+    assert.equal(this.$(PILL_SELECTORS.expensiveIndicator).prop('title'), 'Performing this operation might take more time.', 'Expected title');
+  });
+
   test('contains proper class when invalid', async function(assert) {
     let enrichedPill = _getEnrichedPill();
     enrichedPill = enrichedPill.set('isInvalid', true);
