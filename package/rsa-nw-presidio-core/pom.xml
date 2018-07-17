@@ -149,6 +149,22 @@
                             </resources>
                         </configuration>
                     </execution>
+                    <execution>
+                        <!--add airflow config to package-->
+                        <id>copy airflow config</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/dependencies/airflow-config</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>../../presidio-workflows/presidio/config/</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <!-- create RPM -->
@@ -240,6 +256,17 @@
                             <sources>
                                 <source>
                                     <location>${project.build.directory}/dependencies/airflow-dags</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directoryIncluded>false</directoryIncluded>
+                            <directory>${presidio-app.directory}/airflow/config</directory>
+                            <username>${presidio.username}</username>
+                            <groupname>${presidio.groupname}</groupname>
+                            <sources>
+                                <source>
+                                    <location>${project.build.directory}/dependencies/airflow-config</location>
                                 </source>
                             </sources>
                         </mapping>
