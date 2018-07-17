@@ -8,7 +8,6 @@ test('should display schedule page content with application header', function(as
   andThen(() => {
     assert.equal(find('.rsa-application-header:visible').length, 1);
     assert.equal(find('.rsa-nav-tab-group:visible').length, 1);
-    assert.equal(find('.hosts-scan-configure-container').length, 1);
   });
 });
 
@@ -17,6 +16,5 @@ test('should hide the application header', function(assert) {
   andThen(() => {
     assert.equal(find('.rsa-application-header:visible').length, 0);
     assert.equal(find('.rsa-nav-tab-group:visible').length, 0);
-    assert.equal(find('.hosts-scan-configure-container').length, 1);
   });
 });

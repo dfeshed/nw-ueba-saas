@@ -90,7 +90,6 @@
       "../packager",
       "../context",
       "../preferences",
-      "../hosts-scan-configure",
       "../investigate-shared",
       "../rsa-context-menu",
       "../admin",

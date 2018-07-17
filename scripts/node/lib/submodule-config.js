@@ -19,7 +19,6 @@ const ALL_SUBMODULES = [
   'preferences',
   'test-helpers',
   'ember-route-action-helper',
-  'hosts-scan-configure',
   'investigate-process-analysis',
   'rsa-context-menu'
 ];
@@ -43,7 +42,6 @@ const saModuleDependants = {
     'admin-source-management',
     'context',
     'preferences',
-    'hosts-scan-configure',
     'investigate-process-analysis',
     'rsa-context-menu'
   ],
@@ -62,7 +60,6 @@ const saModuleDependants = {
     'admin',
     'admin-source-management',
     'context',
-    'hosts-scan-configure',
     'investigate-process-analysis',
     'rsa-context-menu'
   ],
@@ -103,7 +100,6 @@ const saModuleDependants = {
     'sa',
     'style-guide',
     'context',
-    'hosts-scan-configure',
     'investigate-process-analysis'
   ],
   'style-guide': [], // style-guide is an end state app, nothing depends on it
@@ -123,8 +119,7 @@ const saModuleDependants = {
     'style-guide'
   ],
   'test-helpers': [],
-  'ember-route-action-helper': [],
-  'hosts-scan-configure': ['sa', 'configure']
+  'ember-route-action-helper': []
 };
 
 module.exports = {

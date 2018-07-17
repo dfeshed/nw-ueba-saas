@@ -53,7 +53,6 @@ yarn link
 prepareApp component-lib
 prepareApp rsa-context-menu
 prepareApp streaming-data
-prepareApp hosts-scan-configure
 prepareApp packager
 prepareApp recon
 prepareApp style-guide

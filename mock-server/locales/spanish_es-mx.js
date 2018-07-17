@@ -2660,46 +2660,6 @@ define('sa/locales/es-mx/translations', ['exports'], function (exports) {
       iconTitle: 'Cambiar a Navegar o Análisis de eventos'
     }
   },
-  hostsScanConfigure: {
-    title: 'Programa de escaneo',
-    save: 'Guardar',
-    enable: 'Habilitar',
-    saveSuccess: 'Se guardó correctamente',
-    startDate: 'Fecha de inicio',
-    recurrenceInterval: {
-      title: 'Intervalo de recurrencia',
-      options: {
-        daily: 'Diariamente',
-        weekly: 'Semanalmente',
-        monthly: 'Mensualmente'
-      },
-      every: 'Cada',
-      on: 'El',
-      intervalText: {
-        DAYS: 'día(s)',
-        WEEKS: 'semana(s)',
-        MONTHS: 'meses'
-      },
-      week: {
-        monday: 'M',
-        tuesday: 'T',
-        wednesday: 'W',
-        thursday: 'T',
-        friday: 'F',
-        saturday: 'S',
-        sunday: 'S'
-      }
-    },
-    startTime: 'Hora de inicio',
-    cpuThrottling: {
-      title: 'Regulación de CPU de agente',
-      cpuMax: 'Máximo de CPU (%)',
-      vmMax: 'Máximo de máquinas virtuales (%) '
-    },
-    error: {
-      generic: 'Se produjo un error inesperado al intentar recuperar estos datos.'
-    }
-  },
   contextmenu: {
     actions: {
       copyMetaAction: 'copiar meta'

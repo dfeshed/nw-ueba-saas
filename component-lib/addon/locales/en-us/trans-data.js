@@ -2953,46 +2953,6 @@ export default {
       iconTitle: 'Pivot to Navigate or Event Analysis'
     }
   },
-  hostsScanConfigure: {
-    title: 'Scan Schedule',
-    save: 'Save',
-    enable: 'Enable',
-    saveSuccess: 'Saved successfully',
-    startDate: 'Start Date',
-    recurrenceInterval: {
-      title: 'Recurrence Interval',
-      options: {
-        daily: 'Daily',
-        weekly: 'Weekly',
-        monthly: 'Monthly'
-      },
-      every: 'Every',
-      on: 'On',
-      intervalText: {
-        DAYS: 'day(s)',
-        WEEKS: 'week(s)',
-        MONTHS: 'month(s)'
-      },
-      week: {
-        MONDAY: 'M',
-        TUESDAY: 'T',
-        WEDNESDAY: 'W',
-        THURSDAY: 'T',
-        FRIDAY: 'F',
-        SATURDAY: 'S',
-        SUNDAY: 'S'
-      }
-    },
-    startTime: 'Start Time',
-    cpuThrottling: {
-      title: 'Agent CPU Throttling',
-      cpuMax: 'CPU Maximum ( % )',
-      vmMax: 'Virtual Machine Maximum ( % ) '
-    },
-    error: {
-      generic: 'An unexpected error has occurred attempting to retrieve this data.'
-    }
-  },
   investigateShared: {
     endpoint: {
       renderingGraph: 'Rendering graph...',

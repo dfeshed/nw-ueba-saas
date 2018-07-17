@@ -1,7 +1,6 @@
 /* eslint-env node */
 
 const common = require('../../common');
-const hostsScanConfiguration = require('../../hosts-scan-configure').socketRouteGenerator;
 const configureConfigGen = function(environment) {
 
   // As new microservices need to be used in this Configure engine, we'll need to adjust the socketUrl handling,
@@ -137,8 +136,7 @@ const configureConfigGen = function(environment) {
 
 // order matters, first config in wins if there are matching configs
 const configGenerators = [
-  configureConfigGen,
-  hostsScanConfiguration
+  configureConfigGen
 ];
 
 let socketConfig = null;

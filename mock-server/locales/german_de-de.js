@@ -2660,46 +2660,6 @@ define('sa/locales/de-de/translations', ['exports'], function (exports) {
       iconTitle: 'Zu Navigation wechseln oder Ereignisanalyse'
     }
   },
-  hostsScanConfigure: {
-    title: 'Scanplanung',
-    save: 'Speichern',
-    enable: 'Aktivieren',
-    saveSuccess: 'Erfolgreich gespeichert',
-    startDate: 'Startdatum',
-    recurrenceInterval: {
-      title: 'Wiederholungsintervall',
-      options: {
-        daily: 'Täglich',
-        weekly: 'Wöchentlich',
-        monthly: 'Monatlich'
-      },
-      every: 'Alle',
-      on: 'Am',
-      intervalText: {
-        DAYS: 'Tag(e)',
-        WEEKS: 'Woche(n)',
-        MONTHS: 'Monat(e)'
-      },
-      week: {
-        monday: 'n',
-        tuesday: 'T',
-        wednesday: 'W',
-        thursday: 'T',
-        friday: 'D',
-        saturday: 'S',
-        sunday: 'S'
-      }
-    },
-    startTime: 'Startzeit',
-    cpuThrottling: {
-      title: 'CPU-Drosselung für Agent',
-      cpuMax: 'Maximalleistung CPU (%)',
-      vmMax: 'Maximalleistung virtuelle Maschine (%) '
-    },
-    error: {
-      generic: 'Beim Versuch, diese Daten abzurufen, ist ein unerwarteter Fehler aufgetreten.'
-    }
-  },
   contextmenu: {
     actions: {
       copyMetaAction: 'kopiere Meta'

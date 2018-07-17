@@ -81,8 +81,7 @@
       "../test-helpers",
       "../component-lib",
       "../streaming-data",
-      "../context",
-      "../hosts-scan-configure"
+      "../context"
     ]
   },
   "private": true

@@ -28,7 +28,6 @@ nukeNode mock-server
 nukeNode component-lib
 nukeNode streaming-data
 nukeNode packager
-nukeNode hosts-scan-configure
 nukeNode recon
 nukeNode style-guide
 nukeNode investigate-shared

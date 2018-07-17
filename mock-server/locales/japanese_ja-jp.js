@@ -2660,46 +2660,6 @@ define('sa/locales/ja-jp/translations', ['exports'], function (exports) {
       iconTitle: 'ナビゲートまたはイベント分析に移行'
     }
   },
-  hostsScanConfigure: {
-    title: 'スキャン スケジュール',
-    save: '保存',
-    enable: '有効化',
-    saveSuccess: '正常に保存されました。',
-    startDate: '開始日',
-    recurrenceInterval: {
-      title: '繰り返し間隔',
-      options: {
-        daily: '日単位',
-        weekly: '週単位',
-        monthly: '月単位'
-      },
-      every: '間隔',
-      on: '日時：',
-      intervalText: {
-        DAYS: '日',
-        WEEKS: '週',
-        MONTHS: 'ヶ月間'
-      },
-      week: {
-        monday: '月',
-        tuesday: '火',
-        wednesday: '水',
-        thursday: '木',
-        friday: '金',
-        saturday: '土',
-        sunday: '日'
-      }
-    },
-    startTime: '‬開始時刻',
-    cpuThrottling: {
-      title: 'エージェントCPUスロットル',
-      cpuMax: 'CPUの最大値（%）',
-      vmMax: '仮想マシンの最大値（%） '
-    },
-    error: {
-      generic: 'このデータを取得しようとしたときに、予期しないエラーが発生しました。'
-    }
-  },
   contextmenu: {
     actions: {
       copyMetaAction: 'コピーメタ'
