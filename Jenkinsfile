@@ -128,6 +128,7 @@ def promoteProjectVersion(
             setProjectVersion(version, false, pomFile)
             properties.each { property -> setProjectPropertyVersion(property, version, true, false, pomFile) }
             testProject(pomFile)
+            deployArtifacts(pomFile)
         }
 
         String message = "Promote project to version ${version}."
@@ -143,10 +144,7 @@ def promoteProjectVersion(
 
         createAsocReviewRequest(reviewersAsString, repositoryName, pullRequestNumber, userName, userPassword)
         mergeAsocPullRequest(repositoryName, pullRequestNumber, userName, userPassword)
-
-        pomFileToPropertiesMap.each { pomFile, properties ->
-            deployArtifacts(pomFile)
-        }
+        deleteAsocBranch(repositoryName, branchName, userName, userPassword)
     }
 }
 
