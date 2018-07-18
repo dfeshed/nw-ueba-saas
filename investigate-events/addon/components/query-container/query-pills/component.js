@@ -55,6 +55,35 @@ const QueryPills = Component.extend({
   isPillTriggerOpenForAdd: false,
 
   @computed('pillsData')
+  hasSelected: (pillsData) => pillsData.isAny('isSelected'),
+
+  @computed('pillsData', 'hasSelected')
+  contextItems(pillsData, hasSelected) {
+    if (hasSelected) {
+      return [
+        {
+          label: 'Task 1',
+          action() {
+            // plug in executeQuery fn
+          }
+        },
+        {
+          label: 'Task 2',
+          action() {
+            // plug in executeQuery fn
+          }
+        },
+        {
+          label: 'Task 3',
+          action() {
+            // plug in executeQuery fn
+          }
+        }
+      ];
+    }
+  },
+
+  @computed('pillsData')
   newPillPosition: (pillsData) => pillsData.length,
 
   init() {

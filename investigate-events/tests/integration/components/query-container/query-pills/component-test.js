@@ -1,8 +1,8 @@
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { click, findAll, render, settled, triggerKeyEvent } from '@ember/test-helpers';
+import { click, findAll, triggerEvent, render, settled, triggerKeyEvent } from '@ember/test-helpers';
 import sinon from 'sinon';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
@@ -29,6 +29,19 @@ const allPillsAreClosed = (assert) => {
   assert.equal(findAll(PILL_SELECTORS.pillOpenForEdit).length, 0, 'Class for pills open for edit.');
   assert.equal(findAll(PILL_SELECTORS.pillTriggerOpenForAdd).length, 0, 'Class for trigger open should not be present.');
 };
+
+const e = {
+  clientX: 100,
+  clientY: 100,
+  view: {
+    window: {
+      innerWidth: 100,
+      innerHeight: 100
+    }
+  }
+};
+
+const wormhole = 'wormhole-context-menu';
 
 module('Integration | Component | query-pills', function(hooks) {
   setupRenderingTest(hooks, {
@@ -460,5 +473,84 @@ module('Integration | Component | query-pills', function(hooks) {
       .build();
     await render(hbs`{{query-container/query-pills isActive=true}}`);
     assert.equal(findAll(PILL_SELECTORS.complexPill).length, 1, 'A complex pill should be present');
+  });
+
+  test('Right clicking on a selected pill should trigger contextMenu event AND not trigger the same when not selected', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .pillsDataPopulated()
+      .build();
+
+    assert.expect(2);
+    const done = assert.async();
+    let count = 0;
+
+    document.addEventListener('contextmenu', () => {
+      assert.ok('called when right clicked on a selected pill');
+      count++;
+    });
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    const metas = findAll(PILL_SELECTORS.meta);
+    await click(`#${metas[0].id}`); // make the 1st pill selected
+
+    triggerEvent(PILL_SELECTORS.selectedPill, 'contextmenu', e);
+
+    return settled().then(() => {
+      // right click on a un-selected pill( the 2nd one), should not trigger contextMenu event
+      triggerEvent(PILL_SELECTORS.expensivePill, 'contextmenu', e);
+      assert.equal(count, 1, 'called once');
+      done();
+    });
+  });
+
+  // --- Not Working ---
+  // Can see that it goes inside ember-context-menu/mixins -
+  // triggers activate - https://github.com/cbroeren/ember-context-menu/blob/40f1ccb8cf1dbb77589721b1f506e05b323adc54/addon/mixins/context-menu.js#L20
+
+  // After which the event can be tracked down inside the service where
+  // it sets the isActive flag , ember-context-menu/service - https://github.com/cbroeren/ember-context-menu/blob/40f1ccb8cf1dbb77589721b1f506e05b323adc54/addon/services/context-menu.js#L46
+
+  // But the component, ember-context-menu/components/context-menu is never rendered.
+  // Can see that the template, ember-context-menu/templates/context-menu needs isActive,
+  // which it should get. But it is never called.
+  skip('Right clicking on a selected pill will open a context menu with options  ---- not Working', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .pillsDataPopulated()
+      .build();
+
+    const done = assert.async();
+    const wormholeDiv = document.createElement('div');
+    wormholeDiv.id = wormhole;
+    document.querySelector('#ember-testing').appendChild(wormholeDiv);
+    document.addEventListener('contextmenu', () => {});
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+    const metas = findAll(PILL_SELECTORS.meta);
+    await click(`#${metas[0].id}`); // make it selected
+
+
+    triggerEvent(PILL_SELECTORS.selectedPill, 'contextmenu', e);
+
+    // triggerEvent(PILL_SELECTORS.selectedPill, 'contextmenu', e);
+
+    return settled().then(() => {
+      const selector = '.context-menu';
+      const items = findAll(`${selector} > .context-menu__item`);
+      assert.equal(items.length, 3);
+      assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Number of pills present');
+      assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 1, 'One selecteded pill.');
+      done();
+    });
   });
 });

@@ -197,6 +197,48 @@ module('Unit | Helper | query utils', function(hooks) {
       });
   });
 
+  test('clientSideParseAndValidate return error when metaFormat is UInt8 and value is a decimal', function(assert) {
+    assert.expect(2);
+    const pillData = {
+      meta: {
+        format: 'UInt8',
+        metaName: 'foo',
+        flags: -2147482621,
+        displayName: 'foo'
+      },
+      operator: '=',
+      value: '2.5'
+    };
+
+    queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
+    .catch((error) => {
+      assert.ok(error.meta, 'Filter is invalid');
+      assert.equal(error.meta, 'You must enter an 8 bit Integer.', 'Invalid error message');
+    });
+
+  });
+
+  test('clientSideParseAndValidate return error when metaFormat is UInt8 and value is negative', function(assert) {
+    assert.expect(2);
+    const pillData = {
+      meta: {
+        format: 'UInt8',
+        metaName: 'foo',
+        flags: -2147482621,
+        displayName: 'foo'
+      },
+      operator: '=',
+      value: '-23'
+    };
+
+    queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
+    .catch((error) => {
+      assert.ok(error.meta, 'Filter is invalid');
+      assert.equal(error.meta, 'You must enter an 8 bit Integer.', 'Invalid error message');
+    });
+
+  });
+
   test('clientSideParseAndValidate passes when metaFormat is UInt8 and value is in proper format', function(assert) {
     assert.expect(1);
     const pillData = {
