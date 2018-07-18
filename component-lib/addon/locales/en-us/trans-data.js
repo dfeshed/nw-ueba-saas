@@ -2045,6 +2045,10 @@ export default {
       cancelBtn: 'Cancel',
       blacklistCertificate: 'Blacklist Certificate',
       blacklistAllFiles: 'Blacklist all files signed by this certificate'
+    },
+    tabs: {
+      riskProperties: 'Risk Properties',
+      fileDetails: 'File Details'
     }
   },
   investigateHosts: {
@@ -2957,6 +2961,11 @@ export default {
     endpoint: {
       renderingGraph: 'Rendering graph...',
       errorTitle: 'Query Error',
+      fileDetailsPanel: {
+        statusHistory: 'Status History ({{count}})',
+        properties: 'Properties',
+        comment: 'COMMENTS'
+      },
       riskPanel: {
         timeUnit: {
           allData: 'ALL DATA',

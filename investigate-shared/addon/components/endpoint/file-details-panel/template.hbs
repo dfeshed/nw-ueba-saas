@@ -1,0 +1,7 @@
+<box class="risk-properties-panel__content">
+    {{#if errorMessage}}
+      {{rsa-panel-message message=(t errorMessage)}}
+    {{else if (eq activeDataSourceTab 'FILE_DETAILS')}}
+      {{endpoint/file-details-panel/file-detail-accordion data=data}}
+    {{/if}}
+</box>

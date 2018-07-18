@@ -360,7 +360,6 @@ const fetchFileContext = (fileName) => {
   };
 };
 
-
 const toggleFileSelection = (selectedFile) => ({ type: ACTION_TYPES.TOGGLE_SELECTED_FILE, payload: selectedFile });
 
 const selectAllFiles = () => ({ type: ACTION_TYPES.SELECT_ALL_FILES });

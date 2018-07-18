@@ -64,7 +64,7 @@ test('should return the initial state', function(assert) {
     downloadStatus: 'completed',
     downloadId: null,
     listOfServices: null,
-    activeDataSourceTab: 'ALERT',
+    activeDataSourceTab: 'RISK_PROPERTIES',
     lookupData: [{}],
     contextError: null,
     contextLoadingStatus: 'wait',
@@ -307,4 +307,16 @@ test('DESELECT ALL FILES in filelist ', function(assert) {
   });
   const newEndState = reducer(previous, { type: ACTION_TYPES.DESELECT_ALL_FILES });
   assert.deepEqual(newEndState.selectedFileList.length, 0, 'state for Deselected all file list updated.');
+});
+test('The GET_FILE_STATUS_HISTORY update to state', function(assert) {
+  const previous = Immutable.from({
+    downloadId: null,
+    downloadStatus: 'completed'
+  });
+  const successAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.GET_FILE_STATUS_HISTORY,
+    payload: { data: [ { id: 111 } ] }
+  });
+  const newEndState = reducer(previous, successAction);
+  assert.equal(newEndState.selectedFileStatusHistory.length, 1);
 });

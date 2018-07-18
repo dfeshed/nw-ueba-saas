@@ -339,7 +339,7 @@ module('Integration | Component | file list', function(hooks) {
     });
   });
 
-  test('on row click, risk panel opens up', async function(assert) {
+  test('on row click, file details panel opens up', async function(assert) {
     assert.expect(1);
     this.set('openRiskPanel', function() {
       assert.ok(true);

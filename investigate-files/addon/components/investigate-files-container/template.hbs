@@ -31,28 +31,15 @@
 
   {{#layout.right as |rightPanel|}}
 
-    {{#rightPanel.header}}
+    {{#rightPanel.header class="investigate-file-tab"}}
       {{#title-bar tabs=dataSourceTabs defaultAction=(action 'setDataSourceTab') as |tab|}}
-        {{#if (eq tab.name 'ALERT')}}
-          <div class="label">{{t tab.label count=alertsCount}}</div>
-        {{else if (eq tab.name 'INCIDENT')}}
-          <div class="label">{{t tab.label count=incidentsCount}}</div>
-        {{else}}
-          <div class="label">{{t tab.label}}</div>
-        {{/if}}
+        <div class="label">{{t tab.label}}</div>
       {{/title-bar}}
       {{#rsa-form-button class='close-zone' isIconOnly=true click=(action layout.close 'right') }}
         {{rsa-icon class='close-icon' name='close' title=(t 'investigateHosts.context.button.close')}}
       {{/rsa-form-button}}
     {{/rightPanel.header}}
-
-    {{#if (eq contextLoadingStatus 'wait')}}
-      <centered>
-        {{rsa-loader size='medium'}}
-      </centered>
-    {{else}}
-      {{endpoint/risk-panel activeDataSourceTab=activeDataSourceTab data=context errorMessage=contextError}}
-    {{/if}}
+    {{endpoint/file-details-panel activeDataSourceTab=activeDataSourceTab data=context errorMessage=false}}
   {{/layout.right}}
 {{/rsa-page-layout}}
 

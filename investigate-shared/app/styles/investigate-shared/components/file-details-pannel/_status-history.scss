@@ -1,0 +1,26 @@
+.status-history {
+  color: text-color(primary, light);
+  padding-left: 23px;
+  padding-bottom: rsa-whitespace();
+  &__item {
+    border-bottom: 1px solid #757575;
+    padding-bottom: rsa-whitespace();
+    padding-top: rsa-whitespace();
+    line-height: 1.25rem;
+  }
+  &__comments-label {
+    font-size: 9.8px;
+    line-height: 9.8px;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: text-color(primary);
+    padding-top: rsa-whitespace();
+  }
+  &__by {
+    color: text-color(primary);
+  }
+  &__more {
+    color: text-color(secondary);
+  }
+
+}

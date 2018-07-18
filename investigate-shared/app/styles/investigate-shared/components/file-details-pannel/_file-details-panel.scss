@@ -1,0 +1,11 @@
+.file-details-panel {
+  height: 77vh;
+  overflow-y: scroll;
+  &__accordian {
+    &__item h3{
+      text-transform: uppercase;
+      color: text-color(secondary);
+      font-weight: bold;
+    }
+  }
+}

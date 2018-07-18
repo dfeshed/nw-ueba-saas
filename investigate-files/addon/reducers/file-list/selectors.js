@@ -6,12 +6,12 @@ const SUPPORTED_SERVICES = [ 'broker', 'concentrator', 'decoder', 'log-decoder',
 
 const DATASOURCE_TABS = [
   {
-    label: 'investigateHosts.tabs.alerts',
-    name: 'ALERT'
+    label: 'investigateFiles.tabs.riskProperties',
+    name: 'RISK_PROPERTIES'
   },
   {
-    label: 'investigateHosts.tabs.incidents',
-    name: 'INCIDENT'
+    label: 'investigateFiles.tabs.fileDetails',
+    name: 'FILE_DETAILS'
   }
 ];
 
@@ -21,8 +21,9 @@ const _fileExportLinkId = (state) => state.files.fileList.downloadId;
 const _totalItems = (state) => state.files.fileList.totalItems;
 const _serviceList = (state) => state.files.fileList.listOfServices;
 const _context = (state) => state.files.fileList.lookupData;
-const _activeDataSourceTab = (state) => state.files.fileList.activeDataSourceTab || 'ALERT';
+const _activeDataSourceTab = (state) => state.files.fileList.activeDataSourceTab || 'RISK_PROPERTIES';
 const _selectedFileList = (state) => state.files.fileList.selectedFileList || [];
+const _selectedFileStatusHistory = (state) => state.files.fileList.selectedFileStatusHistory || [];
 
 export const fileCount = createSelector(
   files,
@@ -106,4 +107,9 @@ export const processedFileList = createSelector(
 export const checksums = createSelector(
   _selectedFileList,
   (selectedFileList) => selectedFileList.map((file) => file.checksumSha256)
+);
+
+export const selectedFileStatusHistory = createSelector(
+    _selectedFileStatusHistory,
+    (selectedFileStatusHistory) => selectedFileStatusHistory
 );

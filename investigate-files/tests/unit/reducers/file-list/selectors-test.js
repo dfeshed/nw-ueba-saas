@@ -10,7 +10,8 @@ import {
   getDataSourceTab,
   getContext,
   processedFileList,
-  isAllSelected
+  isAllSelected,
+  selectedFileStatusHistory
 } from 'investigate-files/reducers/file-list/selectors';
 
 module('Unit | selectors | file-list');
@@ -111,11 +112,11 @@ test('getDataSourceTab', function(assert) {
   const state = Immutable.from({
     files: {
       fileList: {
-        activeDataSourceTab: 'INCIDENT'
+        activeDataSourceTab: 'RISK_PROPERTIES'
       }
     }
   });
-  const result = getDataSourceTab(state).findBy('name', 'INCIDENT');
+  const result = getDataSourceTab(state).findBy('name', 'RISK_PROPERTIES');
   assert.equal(result.selected, true, 'Incidents Tab should be selected');
 });
 
@@ -199,4 +200,15 @@ test('isAllSelected test', function(assert) {
   const result2 = isAllSelected(state2);
   assert.equal(result1, false, 'isAllSelected should be false');
   assert.equal(result2, true, 'isAllSelected should be false');
+});
+test('selectedFileStatusHistory test', function(assert) {
+  const state = Immutable.from({
+    files: {
+      fileList: {
+        selectedFileStatusHistory: [ { id: 1 }, { id: 2 } ]
+      }
+    }
+  });
+  const result = selectedFileStatusHistory(state);
+  assert.equal(result.length, 2, '2 items expected');
 });

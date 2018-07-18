@@ -16,6 +16,7 @@ import {
   getPageOfFiles,
   fetchFileContext,
   toggleFileSelection,
+  getFileStatusChangeHistory,
   selectAllFiles,
   deSelectAllFiles,
   getAllServices,
@@ -41,6 +42,7 @@ const dispatchToActions = {
   getPageOfFiles,
   fetchFileContext,
   toggleFileSelection,
+  getFileStatusChangeHistory,
   selectAllFiles,
   deSelectAllFiles,
   getAllServices,
@@ -100,9 +102,9 @@ const FileList = Component.extend({
         const isSameRowClicked = table.get('selectedIndex') === index;
         const openRiskPanel = this.get('openRiskPanel');
         table.set('selectedIndex', index);
-
         if (!isSameRowClicked && openRiskPanel) {
           this.send('fetchFileContext', item.firstFileName);
+          this.send('getFileStatusChangeHistory', item.checksumSha256, 0);
           next(() => {
             this.openRiskPanel();
           });

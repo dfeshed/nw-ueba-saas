@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 
 import { isSchemaLoaded } from 'investigate-files/reducers/schema/selectors';
-import { hasFiles, getContext, getDataSourceTab } from 'investigate-files/reducers/file-list/selectors';
+import { hasFiles, getDataSourceTab, selectedFileStatusHistory } from 'investigate-files/reducers/file-list/selectors';
 import { getAlertsCount, getIncidentsCount } from 'investigate-shared/selectors/context';
 import {
   fetchSchemaInfo,
@@ -17,7 +17,7 @@ const stateToComputed = (state) => ({
   areFilesLoading: state.files.fileList.areFilesLoading,
   hasFiles: hasFiles(state),
   dataSourceTabs: getDataSourceTab(state),
-  context: getContext(state),
+  context: selectedFileStatusHistory(state),
   contextError: state.files.fileList.contextError,
   alertsCount: getAlertsCount(state),
   incidentsCount: getIncidentsCount(state),

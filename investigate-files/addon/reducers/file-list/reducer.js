@@ -17,7 +17,7 @@ const fileListState = Immutable.from({
   downloadStatus: 'completed',
   downloadId: null,
   listOfServices: null,
-  activeDataSourceTab: 'ALERT',
+  activeDataSourceTab: 'RISK_PROPERTIES',
   lookupData: [{}],
   contextError: null,
   contextLoadingStatus: 'wait',
@@ -44,14 +44,15 @@ const _handleAppendFiles = (action) => {
 const _toggleSelectedFile = (state, payload) => {
   const { selectedFileList } = state;
   const { id, checksumSha256 } = payload;
-  let selected = [];
+  let selectedList = [];
   // Previously selected file
+
   if (selectedFileList.some((file) => file.id === id)) {
-    selected = selectedFileList.filter((file) => file.id !== id);
+    selectedList = selectedFileList.filter((file) => file.id !== id);
   } else {
-    selected = [...selectedFileList, { id, checksumSha256 }];
+    selectedList = [...selectedFileList, { id, checksumSha256 }];
   }
-  return state.set('selectedFileList', selected);
+  return state.merge({ 'selectedFileList': selectedList });
 
 };
 const fileListReducer = handleActions({
@@ -74,6 +75,11 @@ const fileListReducer = handleActions({
     });
   },
 
+  [ACTION_TYPES.GET_FILE_STATUS_HISTORY]: (state, action) => {
+    return handle(state, action, {
+      success: (s) => s.set('selectedFileStatusHistory', action.payload.data)
+    });
+  },
   [ACTION_TYPES.SET_SORT_BY]: (state, { payload: { sortField, isSortDescending } }) => state.merge({
     sortField,
     areFilesLoading: 'sorting',
