@@ -8,6 +8,7 @@ import { run } from '@ember/runloop';
 const HELP_ID_MAPPING = {
   'OVERVIEW': 'contextualHelp.invHostsOverview',
   'PROCESS': 'contextualHelp.invHostsProcess',
+  'ANOMALIES': 'contextualHelp.invHostsAnomalies',
   'AUTORUNS': 'contextualHelp.invHostsAutoruns',
   'FILES': 'contextualHelp.invHostsFiles',
   'DRIVERS': 'contextualHelp.invHostsDrivers',

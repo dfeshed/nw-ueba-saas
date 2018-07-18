@@ -1,5 +1,6 @@
 import reselect from 'reselect';
 import { prepareContext } from 'investigate-shared/helpers/prepare-context';
+import { isMachineWindows } from 'investigate-hosts/reducers/details/overview/selectors';
 
 const AUTORUN_TABS = [
   {
@@ -16,6 +17,14 @@ const AUTORUN_TABS = [
     label: 'investigateHosts.tabs.tasks',
     name: 'TASKS',
     componentClass: 'host-detail/autoruns/tasks'
+  }
+];
+
+const ANOMALIES_TABS = [
+  {
+    label: 'investigateHosts.tabs.hooks',
+    name: 'HOOKS',
+    componentClass: 'host-detail/anomalies/hooks'
   }
 ];
 
@@ -87,10 +96,12 @@ const HOST_DETAILS_TABS = [
 const { createSelector } = reselect;
 const _activeHostDetailTab = (state) => state.endpoint.visuals.activeHostDetailTab || 'OVERVIEW';
 const _activeAutorunTab = (state) => state.endpoint.visuals.activeAutorunTab || 'AUTORUNS';
+const _activeAnomaliesTab = (state) => state.endpoint.visuals.activeAnomaliesTab || 'HOOKS';
 const _activeHostPropertyTab = (state) => state.endpoint.visuals.activeHostPropertyTab || 'HOST';
 const _activeDataSourceTab = (state) => state.endpoint.visuals.activeDataSourceTab || 'ALERT';
 const _context = (state) => state.endpoint.visuals.lookupData;
 const _agentId = (state) => state.endpoint.detailsInput.agentId;
+const _isWindowsFlag = (state) => isMachineWindows(state);
 
 export const hasMachineId = createSelector(
   _agentId,
@@ -114,10 +125,34 @@ export const selectedAutorunTab = createSelector(
   }
 );
 
+export const getAnomaliesTabs = createSelector(
+  [_activeAnomaliesTab],
+  (activeAnomaliesTab) => {
+    return ANOMALIES_TABS.map((tab) => ({ ...tab, selected: tab.name === activeAnomaliesTab }));
+  }
+);
+
+export const selectedAnomaliesTab = createSelector(
+  [_activeAnomaliesTab],
+  (activeAnomaliesTab) => {
+    return ANOMALIES_TABS.find((tab) => tab.name === activeAnomaliesTab);
+  }
+);
+
 export const getHostDetailTabs = createSelector(
-  [_activeHostDetailTab],
-  (activeHostDetailTab) => {
-    return HOST_DETAILS_TABS.map((tab) => ({ ...tab, selected: tab.name === activeHostDetailTab }));
+  [_activeHostDetailTab, _isWindowsFlag],
+  (activeHostDetailTab, isWindowsFlag) => {
+    const HOST_DETAILS_TABS_CLONE = [...HOST_DETAILS_TABS];
+
+    if (isWindowsFlag) {
+      const anomaliesTab = {
+        label: 'investigateHosts.tabs.anomalies',
+        name: 'ANOMALIES',
+        componentClass: 'host-detail/anomalies'
+      };
+      HOST_DETAILS_TABS_CLONE.splice(6, 0, anomaliesTab);
+    }
+    return HOST_DETAILS_TABS_CLONE.map((tab) => ({ ...tab, selected: tab.name === activeHostDetailTab }));
   }
 );
 

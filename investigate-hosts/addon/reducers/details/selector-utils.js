@@ -20,10 +20,22 @@ export const getValues = (selectedTab, tabName, data, sortConfig) => {
   return [];
 };
 
+/*
+  gets the default or selected row related properties based on the data set passed.
+*/
 export const getProperties = (rowId, list, data) => {
+  const isDataAnArray = Array.isArray(data);
+
   if (rowId) {
+    if (isDataAnArray) {
+      const filteredRow = data.filter((item) => item.id === rowId);
+      return filteredRow[0];
+    }
     return data[rowId];
   } else if (list) {
+    if (isDataAnArray) {
+      return data[0];
+    }
     return list[0];
   }
 };

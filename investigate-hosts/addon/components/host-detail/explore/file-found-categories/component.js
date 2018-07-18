@@ -30,19 +30,30 @@ const FileFound = Component.extend({
     }
     return ranAs;
   },
+
   actions: {
     navigateToTab(category) {
       let tabName = CATEGORY_NAME[category.string.toLowerCase()];
       let secondaryTab = null;
-      const childTabs = ['AUTORUNS', 'SERVICES', 'TASKS'];
+
+      const childTabs = {
+        AUTORUNS: ['AUTORUNS', 'SERVICES', 'TASKS'],
+        ANOMALIES: ['HOOKS']
+      };
+      const childTabsKeys = Object.keys(childTabs);
+
       const scanTime = this.get('scanTime');
       const checksum = this.get('file').checksumSha256;
       const option = { tabName, checksum };
       this.send('setSelectedTabData', option);
-      if (childTabs.some((t) => (t === tabName))) {
-        secondaryTab = tabName;
-        tabName = 'AUTORUNS';
-      }
+
+      childTabsKeys.forEach((childTabsKey) => {
+        if (childTabs[childTabsKey].some((t) => (t === tabName))) {
+          secondaryTab = tabName;
+          tabName = childTabsKey;
+        }
+      });
+
       this.send('loadDetailsWithExploreInput', scanTime, tabName, secondaryTab);
     }
   }

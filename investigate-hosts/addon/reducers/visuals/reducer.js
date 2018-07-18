@@ -5,6 +5,7 @@ import { contextDataParser } from 'investigate-shared/helpers/context-parser';
 
 const visualsInitialState = Immutable.from({
   activeAutorunTab: 'AUTORUNS',
+  activeAnomaliesTab: 'HOOKS',
   activeHostDetailTab: 'OVERVIEW',
   activeHostPropertyTab: 'HOST',
   activeDataSourceTab: 'ALERT',
@@ -24,6 +25,8 @@ const visuals = handleActions({
   [ACTION_TYPES.TOGGLE_PROCESS_VIEW]: (state) => state.set('isTreeView', !state.isTreeView),
 
   [ACTION_TYPES.CHANGE_AUTORUNS_TAB]: (state, { payload: { tabName } }) => state.set('activeAutorunTab', tabName),
+
+  [ACTION_TYPES.CHANGE_ANOMALIES_TAB]: (state, { payload: { tabName } }) => state.set('activeAnomaliesTab', tabName),
 
   [ACTION_TYPES.CHANGE_DETAIL_TAB]: (state, { payload: { tabName } }) => {
     return state.set('activeHostDetailTab', tabName);

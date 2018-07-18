@@ -9,7 +9,8 @@ const dataInitialState = Immutable.from({
     services: null,
     tasks: null,
     libraries: null,
-    drivers: null
+    drivers: null,
+    hooks: null
   }
 });
 

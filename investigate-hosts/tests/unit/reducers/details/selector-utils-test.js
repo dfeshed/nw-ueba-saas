@@ -74,3 +74,39 @@ test('should return the property', function(assert) {
   const newResult = getProperties(null, list, null);
   assert.equal(newResult.id, 1);
 });
+
+test('should return the property based on dataSet type', function(assert) {
+  const dataSetArray = [
+    {
+      fileName: 'abc',
+      id: 1,
+      checksumSha256: '1'
+    },
+    {
+      fileName: 'xyz',
+      id: 10,
+      checksumSha256: '10'
+    },
+    {
+      fileName: 'xyz1',
+      id: 3,
+      checksumSha256: '3'
+    },
+    {
+      fileName: 'xy',
+      id: 5,
+      checksumSha256: '5'
+    }
+  ];
+  const result = getProperties(5, dataSet, dataSetArray);
+  assert.equal(result.id, 5);
+  const sortConfig = {
+    autoruns: {
+      field: 'id',
+      isDescending: false
+    }
+  };
+  const list = getValues(undefined, 'AUTORUNS', dataSet, sortConfig);
+  const newResult = getProperties(null, list, dataSetArray);
+  assert.equal(newResult.id, 1);
+});

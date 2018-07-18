@@ -5,7 +5,8 @@ const CATEGORIES = {
   SERVICES: 'investigateHosts.hosts.ranas.categories.Service',
   TASKS: 'investigateHosts.hosts.ranas.categories.Task',
   DRIVERS: 'investigateHosts.hosts.ranas.categories.Driver',
-  THREADS: 'investigateHosts.hosts.ranas.categories.Thread'
+  THREADS: 'investigateHosts.hosts.ranas.categories.Thread',
+  HOOKS: 'investigateHosts.hosts.ranas.categories.Hooks'
 
 };
 const CATEGORY_NAME = {
@@ -14,7 +15,8 @@ const CATEGORY_NAME = {
   autorun: 'AUTORUNS',
   service: 'SERVICES',
   task: 'TASKS',
-  driver: 'DRIVERS'
+  driver: 'DRIVERS',
+  hooks: 'HOOKS'
 };
 
 export {

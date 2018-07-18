@@ -1,0 +1,4 @@
+{{host-detail/utils/host-title-bar tabs=anomaliesTabs defaultAction=(action 'setAnomaliesTabView')}}
+{{#component selectedAnomaliesTab.componentClass as |compConfig| }}
+  {{host-detail/utils/simple-detail-display detailDisplayInputs=compConfig}}
+{{/component}}

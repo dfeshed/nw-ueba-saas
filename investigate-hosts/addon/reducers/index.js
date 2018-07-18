@@ -7,6 +7,7 @@ import detailsInput from './details/reducer';
 import hostFiles from './details/files/reducer';
 import overview from './details/overview/reducer';
 import autoruns from './details/autorun/reducer';
+import anomalies from './details/anomalies/reducer';
 import drivers from './details/drivers/reducer';
 import libraries from './details/libraries/reducer';
 import schema from './schema/reducer';
@@ -24,6 +25,7 @@ export default combineReducers({
     hostFiles,
     overview,
     autoruns,
+    anomalies,
     drivers,
     libraries,
     schema,

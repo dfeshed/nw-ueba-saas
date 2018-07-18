@@ -277,4 +277,9 @@ export default class DataHelper {
     _set(this.state, 'overview.policyDetails', data);
     return this;
   }
+
+  anomalies(data) {
+    _set(this.state, 'anomalies', data);
+    return this;
+  }
 }

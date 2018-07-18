@@ -2174,7 +2174,21 @@ export default {
           size: 'Size',
           format: 'Format',
           reputationStatus: 'Reputation'
-        }
+        },
+        inlinePatch: {
+          currentAsm: 'Current Assembly',
+          originalAsm: 'Original Assembly'
+        },
+        hookLocation: {
+          address: 'Hooked Address',
+          symbolOffset: 'Symbol Offset',
+          section: 'Section',
+          fileName: 'Hooked Dll',
+          symbol: 'Symbol'
+        },
+        jumpTo: 'Jump To Address',
+        jumpCount: 'Jump Count',
+        hookedProcess: 'Process Context'
       }
     },
     process: {
@@ -2217,6 +2231,19 @@ export default {
         }
       }
     },
+    anomalies: {
+      imageHooks: {
+        type: 'Type',
+        dllFileName: 'DLL Name',
+        hookedProcess: 'Hooked Process',
+        hookedSymbol: 'Hooked Symbol',
+        signature: 'Signature',
+        title: 'Image Hooks',
+        message: {
+          noResultsMessage: 'No Image Hooks information were found'
+        }
+      }
+    },
     tabs: {
       overview: 'Overview',
       process: 'Process',
@@ -2236,7 +2263,9 @@ export default {
       windowsPatches: 'Windows Patches',
       hostProperties: 'Host Properties',
       alerts: 'Alerts ({{count}})',
-      incidents: 'Incidents ({{count}})'
+      incidents: 'Incidents ({{count}})',
+      anomalies: 'Anomalies',
+      hooks: 'Image Hooks'
     },
     context: {
       score: 'Score',
@@ -2335,7 +2364,8 @@ export default {
           Service: 'Service',
           Task: 'Task',
           Driver: 'Driver',
-          Thread: 'Thread'
+          Thread: 'Thread',
+          Hooks: 'Hooks'
         }
       },
       explore: {
@@ -2357,6 +2387,9 @@ export default {
           autoruns: 'autoruns',
           services: 'services',
           tasks: 'tasks'
+        },
+        anomalies: {
+          hooks: 'image hooks'
         },
         files: 'files',
         drivers: 'drivers',
@@ -2730,6 +2763,9 @@ export default {
           autorun: 'Autorun Properties',
           services: 'Service Properties',
           tasks: 'Task Properties'
+        },
+        anomalies: {
+          hooks: 'Image Hooks'
         },
         files: 'File Properties',
         drivers: 'Driver Properties',

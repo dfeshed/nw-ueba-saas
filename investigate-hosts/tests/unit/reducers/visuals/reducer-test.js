@@ -37,6 +37,7 @@ test('should return the initial state', function(assert) {
   const result = reducer(undefined, {});
   assert.deepEqual(result, {
     activeAutorunTab: 'AUTORUNS',
+    activeAnomaliesTab: 'HOOKS',
     activeHostDetailTab: 'OVERVIEW',
     activeHostPropertyTab: 'HOST',
     activeDataSourceTab: 'ALERT',
@@ -54,6 +55,7 @@ test('should return the initial state', function(assert) {
 test('The RESET_INPUT_DATA action reset to initial state', function(assert) {
   const previous = Immutable.from({
     activeAutorunTab: 'AUTORUNS',
+    activeAnomaliesTab: 'HOOKS',
     activeHostDetailTab: 'FILES',
     isTreeView: true,
     showDeleteHostsModal: false,
@@ -67,6 +69,7 @@ test('The RESET_INPUT_DATA action reset to initial state', function(assert) {
 
   const expectedEndState = {
     activeAutorunTab: 'AUTORUNS',
+    activeAnomaliesTab: 'HOOKS',
     activeHostDetailTab: 'OVERVIEW',
     activeHostPropertyTab: 'HOST',
     activeDataSourceTab: 'ALERT',

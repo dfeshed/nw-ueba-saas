@@ -7,6 +7,7 @@ import {
   getFileContextServices,
   getFileContextTasks
 } from './autoruns';
+import { getFileContextHooks } from './anomalies';
 import { getFileContextDrivers } from './drivers';
 import { getProcessAndLib } from './libraries';
 import { getHostFiles } from './files';
@@ -83,9 +84,14 @@ const _getHostDetails = (forceRefresh) => {
 
 const _fetchDataForSelectedTab = () => {
   return (dispatch, getState) => {
-    const { endpoint: { drivers, autoruns, libraries, hostFiles, process, visuals } } = getState();
-    const { activeHostDetailTab, activeAutorunTab } = visuals;
+    const { endpoint: { drivers, autoruns, libraries, hostFiles, process, visuals, anomalies } } = getState();
+    const { activeHostDetailTab, activeAutorunTab, activeAnomaliesTab } = visuals;
     switch (activeHostDetailTab) {
+      case 'ANOMALIES':
+        if ((activeAnomaliesTab === 'HOOKS') && (!anomalies.hooks)) {
+          dispatch(getFileContextHooks());
+        }
+        break;
       case 'PROCESS':
         if (!process.processList) {
           dispatch(getAllProcess());
@@ -168,6 +174,13 @@ const setAutorunsTabView = (tabName) => {
   };
 };
 
+const setAnomaliesTabView = (tabName) => {
+  return (dispatch) => {
+    dispatch({ type: ACTION_TYPES.CHANGE_ANOMALIES_TAB, payload: { tabName } });
+    dispatch(_fetchDataForSelectedTab());
+  };
+};
+
 const changeDetailTab = (tabName) => {
   return (dispatch) => {
     dispatch({ type: ACTION_TYPES.CHANGE_DETAIL_TAB, payload: { tabName } });
@@ -183,7 +196,11 @@ const loadDetailsWithExploreInput = (scanTime, tabName, secondaryTab) => {
       dispatch(toggleProcessView());
     }
     if (secondaryTab) {
-      dispatch(setAutorunsTabView(secondaryTab));
+      if (tabName === 'AUTORUNS') {
+        dispatch(setAutorunsTabView(secondaryTab));
+      } else {
+        dispatch(setAnomaliesTabView(secondaryTab));
+      }
     } else {
       dispatch(_getHostDetails(true));
     }
@@ -209,12 +226,15 @@ const initializeAgentDetails = (input, loadSnapshot) => {
 
 const setHostDetailsDataTableSortConfig = (sortConfig) => {
   return (dispatch, getState) => {
-    const { endpoint: { visuals: { activeAutorunTab, activeHostDetailTab } } } = getState();
+    const { endpoint: { visuals: { activeAutorunTab, activeAnomaliesTab, activeHostDetailTab } } } = getState();
+
+    const subtabMapping = { 'AUTORUNS': activeAutorunTab, 'ANOMALIES': activeAnomaliesTab };
+
     dispatch({
       type: ACTION_TYPES.HOST_DETAILS_DATATABLE_SORT_CONFIG,
       payload: {
         ...sortConfig,
-        tabName: activeHostDetailTab !== 'AUTORUNS' ? activeHostDetailTab : activeAutorunTab
+        tabName: subtabMapping[activeHostDetailTab] ? subtabMapping[activeHostDetailTab] : activeHostDetailTab
       }
     });
   };
@@ -231,5 +251,6 @@ export {
   exportFileContext,
   loadDetailsWithExploreInput,
   setAutorunsTabView,
+  setAnomaliesTabView,
   setHostDetailsDataTableSortConfig
 };

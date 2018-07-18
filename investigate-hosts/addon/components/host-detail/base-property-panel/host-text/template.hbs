@@ -8,6 +8,10 @@
   {{rsa-content-hex value=value}}
 {{else if (eq format 'SIGNATURE')}}
   {{signature-text value}}
+{{else if (eq format 'LIST')}}
+  {{#each value as |item|}}
+    <p>{{item}}</p>
+  {{/each}}
 {{else}}
   {{value}}
 {{/if}}

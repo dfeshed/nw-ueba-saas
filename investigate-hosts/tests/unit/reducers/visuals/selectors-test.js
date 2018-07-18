@@ -43,6 +43,13 @@ test('getHostDetailTabs', function(assert) {
     endpoint: {
       visuals: {
         activeHostDetailTab: 'FILES'
+      },
+      overview: {
+        hostDetails: {
+          machine: {
+            machineOsType: 'windows'
+          }
+        }
       }
     }
   });
@@ -110,18 +117,6 @@ test('getDataSourceTab', function(assert) {
   assert.equal(result.selected, true, 'Incidents Tab should be selected');
 });
 
-test('getSelectedDetailTab', function(assert) {
-  const state = Immutable.from({
-    endpoint: {
-      visuals: {
-        activeHostDetailTab: 'FILES'
-      }
-    }
-  });
-  const result = getHostDetailTabs(state).findBy('name', 'FILES');
-  assert.equal(result.selected, true, 'FILES Tab should be selected');
-});
-
 test('getContext returns incidents', function(assert) {
   // If agentId is present, activeHostPropertyTab will be used
   const state = Immutable.from({
@@ -181,6 +176,13 @@ test('selectedTabComponent', function(assert) {
     endpoint: {
       visuals: {
         activeHostDetailTab: 'DRIVERS'
+      },
+      overview: {
+        hostDetails: {
+          machine: {
+            machineOsType: 'windows'
+          }
+        }
       }
     }
   });
