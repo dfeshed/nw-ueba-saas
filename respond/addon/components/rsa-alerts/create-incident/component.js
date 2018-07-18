@@ -83,7 +83,7 @@ const CreateIncident = Component.extend(Notifications, {
 
   actions: {
     handleCancel() {
-      this.sendAction('close');
+      this.close();
     }
   }
 });

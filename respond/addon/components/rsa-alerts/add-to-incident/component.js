@@ -105,7 +105,7 @@ const AddToIncident = Component.extend(Notifications, {
      * @private
      */
     handleCancel() {
-      this.sendAction('finish');
+      this.finish();
     },
     /**
      * Handler for finalizing the Add Alerts to Incidents transaction and submitting the information to the server
@@ -119,7 +119,7 @@ const AddToIncident = Component.extend(Notifications, {
       this.send('addtoIncident', alertIds, selectedIncident.id, {
         // Close the modal and show success notification to the user, if the add-to-incident call has succeeded
         onSuccess: () => {
-          this.sendAction('finish');
+          this.finish();
           this.send('success', 'respond.incidents.actions.actionMessages.addAlertToIncidentSucceeded', { incidentId: selectedIncident.id });
           this.set('isAddAlertsInProgress', false);
         },

@@ -105,13 +105,11 @@ module('Integration | Component | Respond Alerts Add to Incident', function(hook
   });
 
   test('Clicking on a the Apply button shows a success flash message when the request is successful', async function(assert) {
-    assert.expect(4);
-
+    assert.expect(5);
     patchSocket((method, modelName) => {
       assert.equal(method, 'updateRecord');
       assert.equal(modelName, 'alerts-associated');
     });
-
     patchFlash((flash) => {
       const translation = this.owner.lookup('service:i18n');
       const expectedMessage = translation.t('respond.incidents.actions.actionMessages.addAlertToIncidentSucceeded', {
@@ -125,7 +123,10 @@ module('Integration | Component | Respond Alerts Add to Incident', function(hook
       incidentSearchResults: exampleIncidentSearchResults,
       selectedIncident: exampleIncidentSearchResults[0]
     });
-    await render(hbs`{{rsa-alerts/add-to-incident}}`);
+    this.set('handleFinish', () => {
+      assert.ok(true);
+    });
+    await render(hbs`{{rsa-alerts/add-to-incident finish=handleFinish}}`);
     await click('.apply button');
     return settled();
   });
