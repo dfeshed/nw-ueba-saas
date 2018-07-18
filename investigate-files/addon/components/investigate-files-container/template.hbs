@@ -41,7 +41,7 @@
           <div class="label">{{t tab.label}}</div>
         {{/if}}
       {{/title-bar}}
-      {{#rsa-form-button class='close-zone' isIconOnly=true click=(action layout.close) }}
+      {{#rsa-form-button class='close-zone' isIconOnly=true click=(action layout.close 'right') }}
         {{rsa-icon class='close-icon' name='close' title=(t 'investigateHosts.context.button.close')}}
       {{/rsa-form-button}}
     {{/rightPanel.header}}
