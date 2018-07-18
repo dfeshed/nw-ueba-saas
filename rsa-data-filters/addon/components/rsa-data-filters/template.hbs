@@ -1,0 +1,5 @@
+{{#each updatedConfig as |config|}}
+  <div class='filter-controls'>
+    {{component config.component onChange=(action 'onChange') filterOptions=config.filterOptions}}
+  </div>
+{{/each}}

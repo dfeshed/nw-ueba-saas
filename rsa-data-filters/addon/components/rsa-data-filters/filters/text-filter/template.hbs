@@ -1,0 +1,13 @@
+<h2 class='filter-text'>{{t options.label}}</h2>
+<hbox>
+  {{#power-select
+    tagName='div'
+    class='operators'
+    options=options.operators
+    selected=filterValue.selectedOperator
+    searchEnabled=false
+    onchange=(action 'changeOperator') as |option|}}
+    {{option.label}}
+  {{/power-select}}
+  {{rsa-form-input focusOut=(action 'onInputFocusOut') value=filterValue.value class='file-name-input' placeholder='Enter Value'}}
+</hbox>
