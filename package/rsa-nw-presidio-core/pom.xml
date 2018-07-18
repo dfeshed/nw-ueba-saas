@@ -133,38 +133,6 @@
                             </resources>
                         </configuration>
                     </execution>
-                    <execution>
-                        <!--add airflow dags to package-->
-                        <id>copy airflow dags</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/dependencies/airflow-dags</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>../../presidio-workflows/presidio/dags/</directory>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <!--add airflow config to package-->
-                        <id>copy airflow config</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/dependencies/airflow-config</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>../../presidio-workflows/presidio/config/</directory>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
                 </executions>
             </plugin>
             <!-- create RPM -->
@@ -255,7 +223,7 @@
                             <groupname>${presidio.groupname}</groupname>
                             <sources>
                                 <source>
-                                    <location>${project.build.directory}/dependencies/airflow-dags</location>
+                                    <location>../../presidio-workflows/presidio/dags</location>
                                 </source>
                             </sources>
                         </mapping>
@@ -266,7 +234,7 @@
                             <groupname>${presidio.groupname}</groupname>
                             <sources>
                                 <source>
-                                    <location>${project.build.directory}/dependencies/airflow-config</location>
+                                    <location>../../presidio-workflows/presidio/config</location>
                                 </source>
                             </sources>
                         </mapping>
