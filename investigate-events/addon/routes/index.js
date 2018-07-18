@@ -71,7 +71,7 @@ export default Route.extend({
   },
 
   actions: {
-    executeQuery(notUsingThisSoRemoveIt, externalLink = false) {
+    executeQuery() {
       const redux = this.get('redux');
       const investigateState = redux.getState().investigate;
       const pillData = investigateState.nextGen.pillsData;
@@ -81,6 +81,7 @@ export default Route.extend({
       redux.dispatch(dirtyQueryToggle(false));
 
       const qp = {
+        eid: undefined,
         et: queryNode.endTime,
         mf: uriEncodeMetaFilters(pillData),
         mps: data.metaPanelSize,
@@ -89,19 +90,8 @@ export default Route.extend({
         st: queryNode.startTime
       };
 
-      if (externalLink) {
-        if (qp.mf) {
-          qp.mf = encodeURIComponent(qp.mf);
-        }
-        const query = serializeQueryParams(qp);
-        const { location } = window;
-        const path = `${location.origin}${location.pathname}?${query}`;
-        window.open(path, '_blank');
-      } else {
-        qp.eid = undefined;
-        this.send('reconClose');
-        this.transitionTo({ queryParams: qp });
-      }
+      this.send('reconClose');
+      this.transitionTo({ queryParams: qp });
     },
 
     reconLinkToFile(file) {
@@ -148,7 +138,6 @@ export default Route.extend({
         }
       });
     },
-
 
     /**
      * Updates state in order to reveal the Context Panel UI and feed it the

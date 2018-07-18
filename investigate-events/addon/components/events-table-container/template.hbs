@@ -1,11 +1,14 @@
 {{#if hasColumnGroups}}
-  {{events-table-container/header-container}}
+  {{events-table-container/header-container
+    toggleReconSize=toggleReconSize
+    toggleSlaveFullScreen=toggleSlaveFullScreen
+  }}
   <section class="rsa-investigate-events-table__body">
     {{progress-bar
       percent=percent
       enabled=(is-equal status 'streaming')
     }}
-    {{events-table-container/events-table}}
+    {{events-table-container/events-table selectEvent=selectEvent}}
   </section>
 
   <footer class="scroll-message">

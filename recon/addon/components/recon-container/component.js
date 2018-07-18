@@ -75,15 +75,11 @@ const ReconContainer = Component.extend({
     return i18n.t(`recon.fatalError.${code}`, { eventId });
   },
 
-  // Temporary observer hacks while only doing redux half-way
-  // If container participated in redux, then it would simply
-  // bind to the same isReconExpanded and act directly, without
-  // any need to pass expand/shrink/close actions into recon
   isReconExpandedChanged: observer('isReconExpanded', function() {
     if (this.get('isReconExpanded')) {
-      this.sendAction('expandAction');
+      this.get('expandAction')();
     } else {
-      this.sendAction('shrinkAction');
+      this.get('shrinkAction')();
     }
   }),
 

@@ -8,7 +8,6 @@ import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 import EventColumnGroups from '../../../data/subscriptions/investigate-columns/data';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
-import Helper from '@ember/component/helper';
 import { later } from '@ember/runloop';
 import RSVP from 'rsvp';
 
@@ -41,10 +40,8 @@ moduleForComponent('events-table-container', 'Integration | Component | events t
   beforeEach() {
     initialize({ '__container__': this.container });
     this.registry.injection('component', 'i18n', 'service:i18n');
-    // Mock the route action 'toggleReconSize' on the click of expand/shrink toggle button on events page
-    this.container.registry.registrations['helper:route-action'] = Helper.helper((arg) => {
-      return this.routeActions[arg];
-    });
+    // Mock the route action 'toggleReconSize' on the click of
+    // expand/shrink toggle button on events page
     this.routeActions = {
       toggleReconSize(arg) {
         return RSVP.resolve({ arg });

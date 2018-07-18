@@ -21,6 +21,8 @@ const dispatchToActions = {
 const EventsTable = Component.extend({
   classNames: 'rsa-investigate-events-table__header',
   tagName: 'hbox',
+  toggleReconSize: () => {},
+  toggleSlaveFullScreen: () => {},
 
   @computed('columnGroups', 'i18n.locale')
   localizedColumnGroups(columnGroups) {

@@ -12,8 +12,9 @@ The recon addon can be used by defining just one component in your template:
   total=state.recon.total
   isExpanded=state.recon.isExpanded
   closeAction=closeAction
-  expandAction=(route-action 'reconExpand')
-  shrinkAction=(route-action 'reconShrink')
+  expandAction=expandAction
+  linkToFileAction=reconLinkToFile
+  shrinkAction=shrinkAction
   language=state.dictionaries.language
   aliases=state.dictionaries.aliases
 }}
@@ -30,6 +31,7 @@ The recon addon can be used by defining just one component in your template:
 * `isExpanded`, `boolean`, whether or not the recon panel is currently 'expanded'
 * `closeAction`, `Action`, an action to execute when recon wants to close itself
 * `expandAction`, `Action`, an action to execute when recon wants to expand itself
+* `linkToFileAction`, `Action`, an action to execute when recon wants to invoke a link to another event query
 * `shrinkAction`, `Action`, an action to execute when recon wants to shrink itself
 * `language`
 * `aliases`

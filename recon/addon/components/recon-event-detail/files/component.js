@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import Component from '@ember/component';
 import computed, { alias } from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
@@ -113,10 +112,7 @@ const FileReconComponent = Component.extend(ReconPager, ReconPanelHelp, {
     },
 
     openLinkedFile(file) {
-      const callback = this.get('linkToFileAction');
-      if ($.isFunction(callback)) {
-        callback(file);
-      }
+      this.get('linkToFileAction')(file);
     }
   }
 

@@ -6,7 +6,7 @@
   {{/rsa-panel-message}}
 {{else}}
   <header class="rsa-investigate-query__header">
-    {{query-container}}
+    {{query-container executeQuery=executeQuery}}
 
     {{#if showFutureFeatures}}
       {{!-- For now, hide the timeline until we've performed a search --}}
@@ -34,11 +34,19 @@
         <section class="rsa-investigate-query__body-master">
           {{#if showFutureFeatures}}
             <aside class="rsa-investigate-query__body-master-aside">
-              {{meta-view}}
+              {{meta-view
+                metaGroupKeyToggle=metaGroupKeyToggle
+                metaPanelSize=metaPanelSize
+                navDrill=navDrill
+              }}
             </aside>
           {{/if}}
           <section class="rsa-investigate-query__body-master-main">
-            {{events-table-container}}
+            {{events-table-container
+              selectEvent=selectEvent
+              toggleReconSize=toggleReconSize
+              toggleSlaveFullScreen=toggleSlaveFullScreen
+            }}
           </section>
         </section>
         <vbox class="rsa-investigate-query__body-slave">
@@ -54,9 +62,9 @@
               size=(readonly reconSize)
               total=(readonly totalCount)
               closeAction=reconClose
-              expandAction=(route-action 'reconSize' reconPanelSizes.MAX)
-              linkToFileAction=(route-action 'reconLinkToFile')
-              shrinkAction=(route-action 'reconSize' reconPanelSizes.MIN)
+              expandAction=reconExpand
+              linkToFileAction=reconLinkToFile
+              shrinkAction=reconShrink
             }}
           {{/if}}
         </vbox>

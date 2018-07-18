@@ -20,6 +20,9 @@ const MetaViewComponent = Component.extend({
   classNameBindings: ['_sizeClass'],
 
   metaPanelSizes: META_PANEL_SIZES,
+  metaGroupKeyToggle: () => {},
+  metaPanelSize: () => {},
+  navDrill: () => {},
 
   /**
    * Duration (in millisec) of delay between opening of component & revealing
@@ -98,6 +101,20 @@ const MetaViewComponent = Component.extend({
     if (this._unhideTimer) {
       run.cancel(this._unhideTimer);
       this._unhideTimer = null;
+    }
+  },
+
+  actions: {
+    drillInOnValue() {
+      const query = this.get('query');
+      this.get('navDrill')(query);
+    },
+    resizePanel(size) {
+      this.get('metaPanelSize')(size);
+    },
+    toggleMetaGroup() {
+      const query = this.get('query');
+      this.get('metaGroupKeyToggle')(query);
     }
   }
 });

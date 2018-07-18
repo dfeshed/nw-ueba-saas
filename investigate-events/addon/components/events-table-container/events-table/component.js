@@ -34,6 +34,7 @@ const EventsTableContextMenu = RsaContextMenu.extend({
 
   metaName: null,
   metaValue: null,
+  selectEvent: () => {},
 
   @computed('metaName', 'metaValue', 'endpointId')
   contextSelection: (metaName, metaValue) => ({ metaName, metaValue }),
@@ -64,6 +65,12 @@ const EventsTableContextMenu = RsaContextMenu.extend({
         this.get('contextMenuService').deactivate();
       }
     } // do not call super so that the browser right-click event is preserved
+  },
+
+  actions: {
+    onRowClick(event) {
+      this.get('selectEvent')(event);
+    }
   }
 });
 

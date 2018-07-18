@@ -18,6 +18,7 @@ const stateToComputed = (state) => ({
   isDataEmpty: isDataEmpty(state),
   shouldShowStatus: shouldShowStatus(state)
 });
+
 const TimelineComponent = Component.extend({
   classNames: 'rsa-investigate-timeline',
   classNameBindings: ['status', 'isExpanded'],
@@ -103,6 +104,10 @@ const TimelineComponent = Component.extend({
   xScaleFn: (zone) => (zone === 'UTC') ? scaleUtc : scaleTime,
 
   actions: {
+    retryDataFetch() {
+      // TODO - not implemented yet
+      // this.get('eventTimelineGet')(queryNode, true);
+    },
     toggleContent() {
       this.toggleProperty('isExpanded');
     }
