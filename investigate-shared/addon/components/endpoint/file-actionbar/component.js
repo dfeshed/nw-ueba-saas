@@ -21,8 +21,6 @@ export default Component.extend({
 
   selectedFileCount: null,
 
-  showFileStatusModal: false,
-
   @computed('selectedFileCount')
   hasNoSelection(selectedFilesList) {
     return !(selectedFilesList > 0);
@@ -31,15 +29,6 @@ export default Component.extend({
   @computed('selectedFileCount')
   pivotInvestigateDisabled(selectedFilesList) {
     return !(selectedFilesList === 1);
-  },
-
-  actions: {
-    showEditFileStatusModal() {
-      this.set('showFileStatusModal', true);
-    },
-
-    onClose() {
-      this.set('showFileStatusModal', false);
-    }
   }
+
 });

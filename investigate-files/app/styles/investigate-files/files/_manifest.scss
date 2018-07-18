@@ -162,6 +162,9 @@ page.investigate-files-engine {
 
   .file-list, .rsa-data-table {
     height: 100%;
+    .rsa-data-table-body-row .rsa-form-checkbox{
+      position: inherit;
+    }
   }
   .rsa-data-table-header {
     border-bottom: 1px solid border-color(primary, dark);

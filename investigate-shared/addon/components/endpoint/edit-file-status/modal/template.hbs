@@ -1,0 +1,77 @@
+{{#rsa-application-modal
+  style='standard file-status-modal'
+  eventId='file-status'
+  onClose=closeModal
+  autoOpen=true
+  label=(t 'investigateFiles.editFileStatus.title')}}
+  <div class="modal-content">
+    <box class='info-text'>
+      <p>{{t 'investigateFiles.editFileStatus.label'}}</p>
+    </box>
+    <box class='warning-text'>
+      <p>{{t 'investigateFiles.editFileStatus.warning'}}</p>
+    </box>
+    <box class='radio-controls rsa-form-radio-group' fit>
+      <h4 class='rsa-form-radio-group-label'>{{t 'investigateFiles.editFileStatus.fileStatusTitle'}}</h4>
+      {{#each radioButtons as |radio|}}
+        <label class='rsa-form-radio-label file-status-radio {{if (eq radio.value data.fileStatus) 'checked'}}'>
+          {{radio-button
+            radioClass='status-type'
+            value=radio.value
+            groupValue=data.fileStatus}}
+          {{t radio.label}}
+        </label>
+      {{/each}}
+    </box>
+
+    {{#if (eq data.fileStatus 'Blacklist')}}
+      <div class="black-list-options">
+        <box>
+          {{#power-select
+            searchEnabled=false
+            triggerClass="inline"
+            options=fileCategories
+            onchange=(action 'setFileCategory')
+            selected=data.fileCategory as |option|}}
+            {{option}}
+          {{/power-select}}
+        </box>
+        <box>
+          <h4>
+            {{t 'investigateFiles.editFileStatus.remediationActionTitle'}}
+          </h4>
+          <label class="rsa-form-checkbox-label {{if blockFile 'checked'}} file-status-checkbox">
+            {{rsa-form-checkbox checked=blockFile}}
+            {{t 'investigateFiles.editFileStatus.remediationActionOptions.blockFile'}}
+          </label>
+          <label class="rsa-form-checkbox-label {{if blockQuarantineFile 'checked'}} file-status-checkbox">
+            {{rsa-form-checkbox checked=blockQuarantineFile}}
+            {{t 'investigateFiles.editFileStatus.remediationActionOptions.blockQuarantineFile'}}
+          </label>
+        </box>
+      </div>
+    {{/if}}
+
+    <box class="comment-box">
+      {{rsa-form-textarea
+        label=(t 'investigateFiles.editFileStatus.commentTitle')
+        value=data.comment
+        maxLength=8000
+      }}
+    </box>
+    {{#each flashMessages.queue as |flash|}}
+      {{flash-message flash=flash}}
+    {{/each}}
+  </div>
+  <footer>
+    <hbox class="modal-footer-buttons">
+      {{#rsa-form-button class='close-edit-modal' defaultAction=(action 'onCancel')}}
+        {{t 'investigateFiles.editFileStatus.cancelBtn'}}
+      {{/rsa-form-button}}
+      {{#rsa-form-button style='primary' class='save-file-status' defaultAction=(action 'saveFileStatus')}}
+        {{t 'investigateFiles.editFileStatus.saveBtn'}}
+      {{/rsa-form-button}}
+    </hbox>
+  </footer>
+{{/rsa-application-modal}}
+

@@ -1,0 +1,23 @@
+{{#endpoint/core-services-modal
+  onClose=closeModal
+  modalTitle=(t 'investigateHosts.pivotToInvestigate.title')
+  serviceList=serviceList as |selectedService isDisabled|}}
+
+  {{#rsa-form-button defaultAction='onCancel'}}
+    {{t 'forms.cancel'}}
+  {{/rsa-form-button}}
+
+  {{#rsa-form-button
+    isDisabled=isDisabled
+    style='primary'
+    click=(action 'pivotToInvestigateNavigate' selectedService.id)}}
+    {{t 'investigateHosts.pivotToInvestigate.buttonText'}}
+  {{/rsa-form-button}}
+
+  {{#rsa-form-button
+    isDisabled=isDisabled
+    style='primary'
+    click=(action 'pivotToInvestigateEventAnalysis' selectedService.id)}}
+    {{t 'investigateHosts.pivotToInvestigate.buttonText2'}}
+  {{/rsa-form-button}}
+{{/endpoint/core-services-modal}}

@@ -5,7 +5,8 @@ import {
   fileCountForDisplay,
   serviceList,
   isAllSelected,
-  processedFileList
+  processedFileList,
+  checksums
 } from 'investigate-files/reducers/file-list/selectors';
 import { columns } from 'investigate-files/reducers/schema/selectors';
 import computed from 'ember-computed-decorators';
@@ -16,7 +17,9 @@ import {
   fetchFileContext,
   toggleFileSelection,
   selectAllFiles,
-  deSelectAllFiles
+  deSelectAllFiles,
+  getAllServices,
+  saveFileStatus
 } from 'investigate-files/actions/data-creators';
 
 const stateToComputed = (state) => ({
@@ -28,7 +31,9 @@ const stateToComputed = (state) => ({
   totalItems: fileCountForDisplay(state),
   sortField: state.files.fileList.sortField, // Currently applied sort on file list
   isSortDescending: state.files.fileList.isSortDescending,
-  isAllSelected: isAllSelected(state)
+  isAllSelected: isAllSelected(state),
+  selections: state.files.fileList.selectedFileList,
+  checksums: checksums(state)
 });
 
 const dispatchToActions = {
@@ -37,7 +42,9 @@ const dispatchToActions = {
   fetchFileContext,
   toggleFileSelection,
   selectAllFiles,
-  deSelectAllFiles
+  deSelectAllFiles,
+  getAllServices,
+  saveFileStatus
 };
 
 /**
@@ -82,14 +89,14 @@ const FileList = Component.extend({
     return this.FIXED_COLUMNS.concat(sortList);
   },
 
+  init() {
+    this._super(arguments);
+    this.send('getAllServices');
+  },
   actions: {
     toggleSelectedRow(item, index, e, table) {
       const { target: { classList } } = e;
-      if (classList.contains('rsa-icon-expand-6-filled') ||
-          classList.contains('rsa-form-checkbox-label') ||
-          classList.contains('rsa-form-checkbox')) {
-        e.stopPropagation();
-      } else {
+      if (!(classList.contains('rsa-form-checkbox-label') || classList.contains('rsa-form-checkbox'))) {
         const isSameRowClicked = table.get('selectedIndex') === index;
         const openRiskPanel = this.get('openRiskPanel');
         table.set('selectedIndex', index);

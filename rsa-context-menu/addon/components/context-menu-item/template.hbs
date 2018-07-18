@@ -1,5 +1,10 @@
 <span class="context-menu__item__label">
-  {{localizedLabel}}
+  {{#if item.icon}}
+    {{rsa-icon name=item.icon}}
+    <span>{{localizedLabel}}</span>
+  {{else}}
+    {{localizedLabel}}
+  {{/if}}
 </span>
 {{#if item.subActions}}
   {{#unless isDisabled}}

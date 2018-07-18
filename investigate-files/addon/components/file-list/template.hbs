@@ -26,6 +26,13 @@
     </centered>
   {{else}}
     {{#rsa-data-table/body
+      rowComponentClass=(
+        component 'endpoint/file-custom-row'
+        serviceList=serviceList
+        selections=selections
+        toggleFileSelection=(action 'toggleFileSelection')
+        onSaveFileStatus = (action 'saveFileStatus' checksums)
+      )
       noResultsMessage=(t 'investigateFiles.message.noResultsMessage')
       as |item index column|}}
       {{#if column.componentClass}}
@@ -63,5 +70,4 @@
       {{rsa-data-table/load-more status=loadMoreStatus click=(action 'getPageOfFiles')}}
   {{/if}}
 {{/rsa-data-table}}
-
 

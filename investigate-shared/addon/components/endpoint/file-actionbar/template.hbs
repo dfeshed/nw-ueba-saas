@@ -1,4 +1,4 @@
-{{endpoint/edit-file-status isDisabled=hasNoSelection isIconOnly=showOnlyIcons onSaveFileStatus=onSaveFileStatus}}
+{{endpoint/edit-file-status isDisabled=hasNoSelection showOnlyIcons=showOnlyIcons onSaveFileStatus=onSaveFileStatus}}
 
 {{endpoint/pivot-to-investigate
   item=item
@@ -8,7 +8,12 @@
   getAllServices=getAllServices
   disabled=pivotInvestigateDisabled}}
 
-{{#rsa-form-button isIconOnly=true  title=(t 'investigateShared.endpoint.fileActions.watch') withDropdown=true isDisabled=true class='watch-button'}}
+{{#rsa-form-button
+  isIconOnly=true
+  title=(t 'investigateShared.endpoint.fileActions.watch')
+  withDropdown=true
+  isDisabled=true
+  class='watch-button'}}
   {{rsa-icon name='binoculars'}}
 {{/rsa-form-button}}
 
