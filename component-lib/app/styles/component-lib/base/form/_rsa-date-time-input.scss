@@ -1,0 +1,74 @@
+$datePickerFontSize: 0.5rem;
+$datePickerInputWidth: $datePickerFontSize + 0.1rem;
+$datePickerSpacing: $datePickerFontSize * 0.1;
+
+.rsa-date-time-input {
+  height: 100%;
+  padding: $datePickerFontSize * 0.5;
+  border: 1px solid border-color(primary);
+  font-size: 0; // remove whitespace between inline-block elements
+
+  &.has-error {
+    border-color: border-color(accentOne, darker);
+  }
+
+  .date-time-separator {
+    font-size: $datePickerFontSize;
+  }
+  input {
+    font-size: $datePickerFontSize;
+    height: 100%;
+    &::selection {
+      color: white;
+      background: background-color(secondary, lighter)
+    }
+    &.has-error {
+      border-bottom: 1px solid border-color(accentOne, darker);
+    }
+  }
+
+  .date, .month, .hour, .minute, .second, .year{
+    cursor: pointer;
+    display: inline-block;
+    width: $datePickerInputWidth;
+    input {
+      cursor: pointer;
+      width: $datePickerInputWidth;
+    }
+  }
+  .year {
+    width: $datePickerInputWidth * 2;
+    input {
+      width: $datePickerInputWidth * 2;
+    }
+  }
+  .hour {
+    padding-left: calc(#{$datePickerFontSize} * .30);
+  }
+  .am-pm {
+    display: inline-block;
+    width: $datePickerInputWidth;
+    cursor: pointer;
+    font-size: $datePickerFontSize;
+    margin-left: $datePickerSpacing;
+    input {
+      cursor: pointer;
+      font-size: calc(#{$datePickerFontSize} * 0.75);
+      padding: 0;
+      width: $datePickerInputWidth;
+    }
+    &:hover, &.has-focus {
+      input {
+        background-color: background-color(secondary);
+        color: white;
+      }
+    }
+  }
+  .rsa-icon.date-time-picker-icon {
+    font-size: $datePickerFontSize;
+    margin-left: $datePickerSpacing * 4;
+  }
+  &.has-error .rsa-icon.date-time-picker-icon {
+    color: text-color(accentOne, darkest);
+  }
+}

@@ -1,0 +1,57 @@
+{{#each dateFormatValues as |format|}}
+  {{#if (eq format 'mm')}}
+    {{rsa-date-time-input/input
+      type="month"
+      value=dateParts.month
+      onChange=(action 'handleChange' 'month')
+    }}
+  {{/if}}
+  {{#if (eq format 'dd')}}
+    {{rsa-date-time-input/input
+      type="date"
+      value=dateParts.date
+      onChange=(action 'handleChange' 'date')
+    }}
+  {{/if}}
+  {{#if (eq format 'yyyy')}}
+    {{rsa-date-time-input/input
+      type="year"
+      value=dateParts.year
+      onChange=(action 'handleChange' 'year')
+    }}
+  {{/if}}
+  {{#if (not (eq format dateFormatValues.lastObject))}}
+    <span class="date-time-separator">{{dateSeparatorCharacter}}</span>
+  {{/if}}
+{{/each}}
+
+{{#if includeTime}}
+  {{rsa-date-time-input/input
+    type="hour"
+    value=dateParts.hour
+    use12HourClock=use12HourClock
+    onChange=(action 'handleChange' 'hour')
+  }}
+  <span class="date-time-separator">{{timeSeparatorCharacter}}</span>
+  {{rsa-date-time-input/input
+    type="minute"
+    value=dateParts.minute
+    onChange=(action 'handleChange' 'minute')
+  }}
+  {{#if includeSeconds}}
+    <span class="date-time-separator">{{timeSeparatorCharacter}}</span>
+    {{rsa-date-time-input/input
+      type="second"
+      value=dateParts.second
+      onChange=(action 'handleChange' 'second')
+    }}
+  {{/if}}
+  {{#if use12HourClock}}
+    {{rsa-date-time-input/am-pm
+      timezone=timezone
+      timestamp=timestamp
+      onChange=(action 'handleChange' 'amPm')
+    }}
+  {{/if}}
+{{/if}}
+{{rsa-icon name="calendar-2" style='lined' class='date-time-picker-icon'}}

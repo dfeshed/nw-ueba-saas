@@ -114,6 +114,32 @@ export default {
       changePassword: 'Change Password'
     }
   },
+  dateTime: {
+    start: 'Start Date/Time',
+    end: 'End Date/Time',
+    range: 'Range',
+    years: 'years',
+    months: 'months',
+    days: 'days',
+    hours: 'hours',
+    minutes: 'minutes',
+    seconds: 'seconds',
+    duration: 'Calculated duration',
+    isValid: 'The current date/time range is valid',
+    yearIsEmpty: 'There is no year value.',
+    monthIsEmpty: 'There is no month value.',
+    dateIsEmpty: 'There is no day value.',
+    hourIsEmpty: 'There is no hour value.',
+    minuteIsEmpty: 'There is no minutes value.',
+    secondIsEmpty: 'There is no seconds value.',
+    monthOutOfBounds: 'The month value is not valid.',
+    dateOutOfBounds: 'The day value is not valid.',
+    hourOutOfBounds: 'The hour value is not in the valid range (0-23).',
+    hourOutOfBounds12Hour: 'The hour value is not in the valid range (1-12).',
+    minuteOutOfBounds: 'The minute value is not in the valid range (0-59).',
+    secondOutOfBounds: 'The seconds value is not in the valid range (0-59).',
+    endBeforeStart: 'The end date/time occurs before the start date/time.'
+  },
   userPreferences: {
     preferences: 'User Preferences',
     personalize: 'Personalize your experience',

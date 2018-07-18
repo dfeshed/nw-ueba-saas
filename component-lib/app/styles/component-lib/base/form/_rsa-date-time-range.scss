@@ -1,0 +1,33 @@
+$datePickerFontSize: 0.5rem;
+$datePickerSpacing: $datePickerFontSize * 0.1;
+.rsa-date-time-range {
+  border: 1px solid border-color(primary);
+  padding-right: rsa-whitespace(less);
+  white-space: nowrap;
+  font-size: 0; // remove whitespace between inline-block elements
+  &.has-errors {
+    border-color: border-color(accentOne, darker);
+    .rsa-icon {
+      color: text-color(accentOne, darker);
+    }
+  }
+  .start-date-time, .end-date-time {
+    display: inline-block;
+  }
+  .rsa-date-time-input {
+    display: inline-block;
+    padding-right: 0;
+    border: none;
+    .rsa-icon {
+      display: none;
+    }
+  }
+  .time-range-separator {
+    font-size: $datePickerFontSize;
+    margin: 0 $datePickerSpacing;
+  }
+  .rsa-icon {
+    font-size: $datePickerFontSize;
+    margin-left: $datePickerSpacing * 4;
+  }
+}

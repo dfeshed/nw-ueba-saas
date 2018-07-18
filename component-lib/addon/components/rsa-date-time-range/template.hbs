@@ -1,0 +1,30 @@
+<div class="start-date-time">
+  {{rsa-date-time-input
+    timestamp=(readonly startTimestamp)
+    timezone=timezone
+    use12HourClock=use12HourClock
+    dateFormat=dateFormat
+    includeTime=includeTime
+    includeSeconds=includeSeconds
+    dateSeparatorCharacter=dateSeparatorCharacter
+    timeSeparatorCharacter=timeSeparatorCharacter
+    onChange=(action 'onChangeStart')
+    onError=(action 'onStartError')
+  }}
+</div>
+<span class="time-range-separator">{{rangeSeparatorCharacter}}</span>
+<div class="end-date-time">
+  {{rsa-date-time-input
+    timestamp=(readonly endTimestamp)
+    timezone=timezone
+    use12HourClock=use12HourClock
+    dateFormat=dateFormat
+    includeTime=includeTime
+    includeSeconds=includeSeconds
+    dateSeparatorCharacter=dateSeparatorCharacter
+    timeSeparatorCharacter=timeSeparatorCharacter
+    onChange=(action 'onChangeEnd')
+    onError=(action 'onEndError')
+  }}
+</div>
+<span title="{{errorMessages}}">{{rsa-icon name="calendar-2" style='lined' class='date-time-picker-icon'}}</span>
