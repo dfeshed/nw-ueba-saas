@@ -121,6 +121,7 @@ public class NetwitnessEventsStream extends AbstractNetwitnessEventsStream {
 
                 uriBuilder.addParameter(NwParameter.Mechanism.name(), "query");
                 uriBuilder.addParameter(NwParameter.TimeMeta.name(), timeField);
+                uriBuilder.addParameter(NwParameter.SkipQueryValidation.name(),Boolean.TRUE.toString());
 
                 // timeout parameters
                 if (StringUtils.isNotEmpty(connectionTimeout)){
