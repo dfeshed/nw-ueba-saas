@@ -18,4 +18,4 @@ WHERE  operator != ''SubDagOperator''
                                     AND task_id NOT LIKE ''%circuit%''
                                     AND dag_id LIKE ''full_flow%'')
 GROUP  BY task_id
-ORDER  BY avg_duration DESC ', false, true, true, 600, '{"logical_hours_back":"720"}', false, 8, '2017-10-31 14:24:03.74253');
+ORDER  BY avg_duration DESC ', false, true, false, 600, '{"logical_hours_back":"720"}', false, 8, '2017-10-31 14:24:03.74253');

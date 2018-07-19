@@ -13,4 +13,4 @@ WHERE  operator != ''SubDagOperator''
                              WHERE  operator != ''SubDagOperator''
                                     AND state = ''success''
                                     AND task_id LIKE ''%sensor%''
-                                    AND dag_id LIKE ''full_flow%'') ', false, true, true, 600, '{"logical_hours_back":"25"}', true, 4, '2017-10-31 14:30:01.993905');
+                                    AND dag_id LIKE ''full_flow%'') ', false, true, false, 600, '{"logical_hours_back":"25"}', true, 4, '2017-10-31 14:30:01.993905');

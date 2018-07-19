@@ -9,4 +9,4 @@ WHERE  dag_id LIKE ''full_flow%''
                                      AS from_date
                               FROM   task_instance
                               WHERE  dag_id LIKE ''full_flow%''
-                                     AND try_number > 1) ', false, true, true, 600, '{"logical_hours_back":"720"}', true, 5, '2017-12-20 10:03:36.547683');
+                                     AND try_number > 1) ', false, true, false, 600, '{"logical_hours_back":"720"}', true, 5, '2017-12-20 10:03:36.547683');
