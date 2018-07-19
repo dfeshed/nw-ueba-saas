@@ -1,19 +1,21 @@
 import logging
-import os
-import signal
+from copy import copy
+
+from airflow import configuration
 from airflow.bin import cli
 from airflow.models import DagRun, DAG, DagModel
 from airflow.operators.bash_operator import BashOperator
 from airflow.operators.python_operator import PythonOperator
+from airflow.utils import helpers
 from airflow.utils.db import provide_session
 from airflow.utils.state import State
-from airflow import configuration
-from copy import copy
 from elasticsearch import Elasticsearch
-from presidio.utils.airflow.operators import spring_boot_jar_operator
 
+from presidio.utils.airflow.operators import spring_boot_jar_operator
 from presidio.utils.configuration.config_server_configuration_reader_singleton import \
     ConfigServerConfigurationReaderSingleton
+
+TASK_KILL_TIMEOUT = 60
 
 
 class RerunFullFlowDagBuilder(object):
@@ -135,10 +137,10 @@ def stop_kill_dag_run_task_instances(dag_run):
         logging.info("killing pid {} task {} execution_date {} dagId {}".format(pid, task_instance.task_id,
                                                                                 task_instance.execution_date,
                                                                                 task_instance.dag_id))
-    try:
-        os.kill(int(pid), signal.SIGTERM)
-    except OSError as e:
-        logging.info("pid: {} does not exist".format(pid))
+        try:
+            helpers.kill_process_tree(logger=logging.getLogger(), pid=pid, timeout=TASK_KILL_TIMEOUT)
+        except Exception as e:
+            logging.exception("failed to kill pid: {} ".format(pid))
 
 
 def kill_dags_task_instances(dag_ids):
