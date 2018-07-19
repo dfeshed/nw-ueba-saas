@@ -3,6 +3,56 @@
   "name": "active-directory-windows-audit-transformer",
   "transformerList": [
     {
+      "type": "if_else",
+      "name": "username-extract-if-transformer",
+      "predicate": {
+        "type": "regex",
+        "name": "device-type-equal-snare",
+        "sourceKey": "device_type",
+        "regex": "winevent_snare"
+      },
+      "ifTransformer": {
+        "type": "copy_value",
+        "name": "copy-user-dst",
+        "sourceKey": "user_dst",
+        "isRemoveSourceKey": true,
+        "destinationKeys": [
+          "userName",
+          "userDisplayName"
+        ]
+      },
+      "elseTransformer": {
+        "type": "if_else",
+        "name": "username-extract-for-nic-device-type-if-transformer",
+        "predicate": {
+          "type": "regex",
+          "name": "reference-id-equal-4740",
+          "sourceKey": "reference_id",
+          "regex": "4740"
+        },
+        "ifTransformer": {
+          "type": "copy_value",
+          "name": "copy-user-src",
+          "sourceKey": "user_src",
+          "isRemoveSourceKey": true,
+          "destinationKeys": [
+            "userName",
+            "userDisplayName"
+          ]
+        },
+        "elseTransformer": {
+          "type": "copy_value",
+          "name": "copy-user-dst",
+          "sourceKey": "user_dst",
+          "isRemoveSourceKey": true,
+          "destinationKeys": [
+            "userName",
+            "userDisplayName"
+          ]
+        }
+      }
+    },
+    {
       "type": "filter",
       "name": "device-type-and-user-dst-filter",
       "predicate": {
@@ -13,7 +63,7 @@
           {
             "type": "regex",
             "name": "user-dst-not-contain-machine",
-            "sourceKey": "user_dst",
+            "sourceKey": "userName",
             "regex": "[^\\$]*"
           },
           {
@@ -35,7 +85,7 @@
     {
       "type": "regex_captor_and_formatter",
       "name": "user-id-normalization",
-      "sourceKey": "user_dst",
+      "sourceKey": "userName",
       "destinationKey": "userId",
       "captureAndFormatConfigurations": [
         {
@@ -98,16 +148,6 @@
             }
           ]
         }
-      ]
-    },
-    {
-      "type": "copy_value",
-      "name": "copy-user-dst",
-      "sourceKey": "user_dst",
-      "isRemoveSourceKey": true,
-      "destinationKeys": [
-        "userName",
-        "userDisplayName"
       ]
     },
     {
@@ -588,11 +628,6 @@
         {
           "caseKey": "4755",
           "caseValue": "${group}",
-          "isRegex": false
-        },
-        {
-          "caseKey": "4740",
-          "caseValue": "${user_src}",
           "isRegex": false
         },
         {
