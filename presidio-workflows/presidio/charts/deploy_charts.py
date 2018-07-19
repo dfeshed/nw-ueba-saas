@@ -52,8 +52,8 @@ def run_sql(session, sql):
     try:
         session.execute(sql)
     except Exception as e:
-        logging.error("got error while executing sql ")
-        logging.exception(e)
+        logging.debug("got error while executing sql ")
+        # logging.debug(e)
 
 
 def deploy_charts():
