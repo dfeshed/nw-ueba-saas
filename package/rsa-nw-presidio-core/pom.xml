@@ -133,22 +133,6 @@
                             </resources>
                         </configuration>
                     </execution>
-                    <execution>
-                        <!--add airflow dags to package-->
-                        <id>copy airflow dags</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/dependencies/airflow-dags</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>../../presidio-workflows/presidio/dags/</directory>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
                 </executions>
             </plugin>
             <!-- create RPM -->
@@ -239,7 +223,18 @@
                             <groupname>${presidio.groupname}</groupname>
                             <sources>
                                 <source>
-                                    <location>${project.build.directory}/dependencies/airflow-dags</location>
+                                    <location>../../presidio-workflows/presidio/dags</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directoryIncluded>false</directoryIncluded>
+                            <directory>${presidio-app.directory}/airflow/config</directory>
+                            <username>${presidio.username}</username>
+                            <groupname>${presidio.groupname}</groupname>
+                            <sources>
+                                <source>
+                                    <location>../../presidio-workflows/presidio/config</location>
                                 </source>
                             </sources>
                         </mapping>
