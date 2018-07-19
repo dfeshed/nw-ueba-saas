@@ -4,7 +4,8 @@ import {
   enrichedPillsData,
   selectedPills,
   canQueryNextGen,
-  freeFormText
+  freeFormText,
+  hasInvalidSelectedPill
 } from 'investigate-events/reducers/investigate/next-gen/selectors';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 
@@ -54,6 +55,32 @@ test('canQueryNextGen is false when a service, summary, time-range, isDirty exis
   const canQuery = canQueryNextGen(state);
   assert.notOk(canQuery, 'Selector returns false if service, summary, time-range, isDirty exists but an invalid pill is present');
 });
+
+test('hasInvalidSelectedPill is false when no invalid pill is selected', function(assert) {
+  const state = new ReduxDataHelper()
+    .language()
+    .pillsDataPopulated()
+    .hasRequiredValuesToQuery(true)
+    .makeSelected(['1'])
+    .build();
+
+  const hasInvalid = hasInvalidSelectedPill(state);
+  assert.notOk(hasInvalid, 'Selector returns false if no invalid pill is selected');
+});
+
+test('hasInvalidSelectedPill is true when invalid pill is selected', function(assert) {
+  const state = new ReduxDataHelper()
+    .language()
+    .pillsDataPopulated()
+    .hasRequiredValuesToQuery(true)
+    .makeSelected(['1'])
+    .markInvalid(['1'])
+    .build();
+
+  const hasInvalid = hasInvalidSelectedPill(state);
+  assert.ok(hasInvalid, 'Selector returns true if  invalid pill is selected');
+});
+
 
 test('freeFormText is set properly', function(assert) {
   const state = new ReduxDataHelper()

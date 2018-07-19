@@ -481,10 +481,9 @@ module('Integration | Component | query-pills', function(hooks) {
       .pillsDataPopulated()
       .build();
 
-    assert.expect(2);
+    assert.expect(4);
     const done = assert.async();
     let count = 0;
-
     document.addEventListener('contextmenu', () => {
       assert.ok('called when right clicked on a selected pill');
       count++;
@@ -504,7 +503,8 @@ module('Integration | Component | query-pills', function(hooks) {
     return settled().then(() => {
       // right click on a un-selected pill( the 2nd one), should not trigger contextMenu event
       triggerEvent(PILL_SELECTORS.expensivePill, 'contextmenu', e);
-      assert.equal(count, 1, 'called once');
+      assert.equal(this.$('.content-context-menu').length, 1, 'one menu');
+      assert.equal(count, 1, 'Should be called once');
       done();
     });
   });

@@ -1,10 +1,10 @@
-import Component from '@ember/component';
 import * as MESSAGE_TYPES from '../message-types';
 import { warn } from '@ember/debug';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
+import RsaContextMenu from 'rsa-context-menu/components/rsa-context-menu/component';
 
-import { enrichedPillsData } from 'investigate-events/reducers/investigate/next-gen/selectors';
+import { enrichedPillsData, hasInvalidSelectedPill } from 'investigate-events/reducers/investigate/next-gen/selectors';
 import {
   addNextGenPill,
   deleteNextGenPill,
@@ -18,7 +18,8 @@ import {
 const { log } = console;// eslint-disable-line no-unused-vars
 
 const stateToComputed = (state) => ({
-  pillsData: enrichedPillsData(state)
+  pillsData: enrichedPillsData(state),
+  hasInvalidSelectedPill: hasInvalidSelectedPill(state)
 });
 
 const dispatchToActions = {
@@ -31,7 +32,30 @@ const dispatchToActions = {
   openNextGenPillForEdit
 };
 
-const QueryPills = Component.extend({
+const contextItemsArray = (hasInvalidSelectedPill) => {
+  return [{
+    label: 'Task 1',
+    disabled: hasInvalidSelectedPill,
+    action() {
+      // executeQuery in same tab
+    }
+  },
+  {
+    label: 'Task 2',
+    disabled: hasInvalidSelectedPill,
+    action() {
+      // executeQuery in a new tab
+    }
+  },
+  {
+    label: 'Task 3',
+    action() {
+      // delete selected pills
+    }
+  }];
+};
+
+const QueryPills = RsaContextMenu.extend({
   classNames: ['query-pills'],
 
   classNameBindings: [
@@ -39,6 +63,22 @@ const QueryPills = Component.extend({
     'isPillOpenForEdit:pill-open-for-edit',
     'isPillTriggerOpenForAdd:pill-trigger-open-for-add'
   ],
+
+  contextMenu({ target }) {
+    const currentClass = target.classList.contains('is-selected');
+    const parentClass = target.parentElement.classList.contains('is-selected');
+    if (currentClass || parentClass) {
+      const hasInvalidSelectedPill = this.get('hasInvalidSelectedPill');
+      this.setProperties({
+        contextItems: contextItemsArray(hasInvalidSelectedPill)
+      });
+      this._super(...arguments);
+    } else {
+      if (this.get('contextMenuService').deactivate) {
+        this.get('contextMenuService').deactivate();
+      }
+    } // do not call super so that the browser right-click event is preserved
+  },
 
   // Used to hold onto new pill triggers that should be open
   // but have been re-rendered because id of closest pill has
@@ -53,35 +93,6 @@ const QueryPills = Component.extend({
 
   // Is a pill trigger open for add?
   isPillTriggerOpenForAdd: false,
-
-  @computed('pillsData')
-  hasSelected: (pillsData) => pillsData.isAny('isSelected'),
-
-  @computed('pillsData', 'hasSelected')
-  contextItems(pillsData, hasSelected) {
-    if (hasSelected) {
-      return [
-        {
-          label: 'Task 1',
-          action() {
-            // plug in executeQuery fn
-          }
-        },
-        {
-          label: 'Task 2',
-          action() {
-            // plug in executeQuery fn
-          }
-        },
-        {
-          label: 'Task 3',
-          action() {
-            // plug in executeQuery fn
-          }
-        }
-      ];
-    }
-  },
 
   @computed('pillsData')
   newPillPosition: (pillsData) => pillsData.length,

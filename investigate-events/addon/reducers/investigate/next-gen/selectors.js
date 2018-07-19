@@ -49,6 +49,11 @@ export const selectedPills = createSelector(
   }
 );
 
+export const hasInvalidSelectedPill = createSelector(
+  [selectedPills],
+  (selectedPills) => selectedPills.isAny('isInvalid')
+);
+
 export const freeFormText = createSelector(
   [_pillsData],
   (pillsData) => {

@@ -219,11 +219,6 @@ export default Component.extend({
     }
   },
 
-  // The context menu should only appear for pill that has been selected
-  contextMenu() {
-    return this.get('isSelected');
-  },
-
   keyUp() {
     // Stop propogation of event so that things like the events
     // data table don't react to arrow keys being pressed.
