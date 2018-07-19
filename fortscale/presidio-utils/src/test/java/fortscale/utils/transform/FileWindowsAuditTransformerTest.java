@@ -293,7 +293,7 @@ public class FileWindowsAuditTransformerTest extends TransformerTest{
 
         JSONObject retJsonObject = transform(transformer, jsonObject, true);
 
-        Assert.assertNull("the event should have been filtered due to unknown device type", retJsonObject);
+        Assert.assertNull("the event should have been filtered due to user_dst which is a machine", retJsonObject);
     }
 
     @Test
