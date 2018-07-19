@@ -46,8 +46,30 @@ public class ActiveDirectoryWindowsAuditTransformerTest extends TransformerTest{
     private IJsonObjectTransformer buildADWindowsAuditTransformer() {
         List<IJsonObjectTransformer> transformerChainList = new ArrayList<>();
 
+        // Copying the username and display name.
+        // The value of the username is then used for filtering usernames that end with $
+        JsonObjectRegexPredicate deviceTypeEqualSnare = new JsonObjectRegexPredicate("device-type-equal-snare", DEVICE_TYPE_FIELD_NAME, "winevent_snare");
+        JsonObjectRegexPredicate referenceIdEqual4740 = new JsonObjectRegexPredicate("reference-id-equal-4740", EVENT_CODE_FIELD_NAME, "4740");
+        CopyValueTransformer copyUserDst =
+                new CopyValueTransformer(
+                        "copy-user-dst",
+                        USER_DST_FIELD_NAME,
+                        true,
+                        Arrays.asList(USERNAME_FIELD_NAME, USER_DISPLAY_NAME_FIELD_NAME));
+        CopyValueTransformer copyUserSrc =
+                new CopyValueTransformer(
+                        "copy-user-src",
+                        USER_SOURCE_FIELD_NAME,
+                        true,
+                        Arrays.asList(USERNAME_FIELD_NAME, USER_DISPLAY_NAME_FIELD_NAME));
+        IfElseTransformer usernameExtractFromEventWithNicDeviceTypeIfElseTransformer =
+                new IfElseTransformer("username-extract-for-nic-device-type-if-transformer",referenceIdEqual4740, copyUserSrc, copyUserDst);
+        IfElseTransformer usernameExtractIfElseTransformer =
+                new IfElseTransformer("username-extract-if-transformer",deviceTypeEqualSnare, copyUserDst, usernameExtractFromEventWithNicDeviceTypeIfElseTransformer);
+        transformerChainList.add(usernameExtractIfElseTransformer);
+
         // Filtering events according to the device type and user name
-        JsonObjectRegexPredicate userDstNotContainMachine = new JsonObjectRegexPredicate("user-dst-not-contain-machine", USER_DST_FIELD_NAME, "[^\\$]*");
+        JsonObjectRegexPredicate userDstNotContainMachine = new JsonObjectRegexPredicate("user-dst-not-contain-machine", USERNAME_FIELD_NAME, "[^\\$]*");
         JsonObjectRegexPredicate deviceTypeSnareOrNic = new JsonObjectRegexPredicate("device-type-snare-or-nic", DEVICE_TYPE_FIELD_NAME, "winevent_snare|winevent_nic");
         JsonObjectChainPredicate deviceTypeAndUserDstPredicate = new JsonObjectChainPredicate("device-type-and-user-dst-predicate",AND,
                 Arrays.asList(userDstNotContainMachine, deviceTypeSnareOrNic));
@@ -72,19 +94,10 @@ public class ActiveDirectoryWindowsAuditTransformerTest extends TransformerTest{
                 Arrays.asList(new CapturingGroupConfiguration(1, "LOWER")));
         CaptureAndFormatConfiguration userNormalizationSixthPattern = new CaptureAndFormatConfiguration(".+", "%s",
                 Arrays.asList(new CapturingGroupConfiguration(0, "LOWER")));
-        RegexCaptorAndFormatter userIdNormalization = new RegexCaptorAndFormatter("user-id-normalization", USER_DST_FIELD_NAME, USER_ID_FIELD_NAME,
+        RegexCaptorAndFormatter userIdNormalization = new RegexCaptorAndFormatter("user-id-normalization", USERNAME_FIELD_NAME, USER_ID_FIELD_NAME,
                 Arrays.asList(userNormalizationFirstPattern, userNormalizationSecondPattern, userNormalizationThirdPattern,
                         userNormalizationFourthPattern, userNormalizationFifthPattern, userNormalizationSixthPattern));
         transformerChainList.add(userIdNormalization);
-
-        // copy user_dst to userName,userDisplayName
-        CopyValueTransformer copyUserDst =
-                new CopyValueTransformer(
-                        "copy-user-dst",
-                        USER_DST_FIELD_NAME,
-                        true,
-                        Arrays.asList(USERNAME_FIELD_NAME, USER_DISPLAY_NAME_FIELD_NAME));
-        transformerChainList.add(copyUserDst);
 
         //Normalize the result values
         CaptureAndFormatConfiguration resultFailedPattern = new CaptureAndFormatConfiguration(".*(?i:fail).*", RESULT_FAILURE, null);
@@ -193,7 +206,6 @@ public class ActiveDirectoryWindowsAuditTransformerTest extends TransformerTest{
         objectIdAccordingToReferenceIdCases.add(new SwitchCaseTransformer.SwitchCase("4734", String.format("${%s}", GROUP_FIELD_NAME)));
         objectIdAccordingToReferenceIdCases.add(new SwitchCaseTransformer.SwitchCase("4735", String.format("${%s}", GROUP_FIELD_NAME)));
         objectIdAccordingToReferenceIdCases.add(new SwitchCaseTransformer.SwitchCase("4755", String.format("${%s}", GROUP_FIELD_NAME)));
-        objectIdAccordingToReferenceIdCases.add(new SwitchCaseTransformer.SwitchCase("4740", String.format("${%s}", USER_SOURCE_FIELD_NAME)));
         objectIdAccordingToReferenceIdCases.add(new SwitchCaseTransformer.SwitchCase("5136", String.format("${%s}", OBJ_NAME_FIELD_NAME)));
         objectIdAccordingToReferenceIdCases.add(new SwitchCaseTransformer.SwitchCase("4764", String.format("${%s}", GROUP_FIELD_NAME)));
         objectIdAccordingToReferenceIdCases.add(new SwitchCaseTransformer.SwitchCase("4670", String.format("${%s}", OBJ_NAME_FIELD_NAME)));
@@ -273,6 +285,40 @@ public class ActiveDirectoryWindowsAuditTransformerTest extends TransformerTest{
     }
 
     @Test
+    public void filter_user_src_test() throws JsonProcessingException {
+        IJsonObjectTransformer transformer = buildADWindowsAuditTransformer();
+
+        String referenceId = "4740";
+        String userSrc = "rsmith$@montereytechgroup.com";
+        String eventId = "10.25.67.33:50005:91168521";
+        Long eventTime = 1528124556000L;
+        String eventType = "Success Audit";
+        JSONObject jsonObject = buildADWindowAuditJsonObject(referenceId, "some value", "winevent_nic",
+                eventTime*1000, eventType, "  ", eventId, userSrc, null, "just some obj name", "");
+
+        JSONObject retJsonObject = transform(transformer, jsonObject, true);
+
+        Assert.assertNull("the event should have been filtered due to user_dst which is a machine", retJsonObject);
+    }
+
+    @Test
+    public void filter_user_dst_test() throws JsonProcessingException {
+        IJsonObjectTransformer transformer = buildADWindowsAuditTransformer();
+
+        String referenceId = "4739";
+        String userDst = "rsmith$@montereytechgroup.com";
+        String eventId = "10.25.67.33:50005:91168521";
+        Long eventTime = 1528124556000L;
+        String eventType = "Success Audit";
+        JSONObject jsonObject = buildADWindowAuditJsonObject(referenceId, userDst, "winevent_snare",
+                eventTime*1000, eventType, "  ", eventId, "just some user source name", null, "just some obj name", "");
+
+        JSONObject retJsonObject = transform(transformer, jsonObject, true);
+
+        Assert.assertNull("the event should have been filtered due to user_dst which is a machine", retJsonObject);
+    }
+
+    @Test
     public void event_code_4741_option1_test() throws JsonProcessingException {
         IJsonObjectTransformer transformer = buildADWindowsAuditTransformer();
 
@@ -290,6 +336,46 @@ public class ActiveDirectoryWindowsAuditTransformerTest extends TransformerTest{
         assertOnExpectedValues(retJsonObject, eventId, eventTime, "rsmith", userDst, userDst,
                 RESULT_SUCCESS, "COMPUTER_ACCOUNT_CREATED", referenceId,
                 "[\"COMPUTER_MANAGEMENT\"]", userSource, null);
+    }
+
+    @Test
+    public void event_code_4740_option1_test() throws JsonProcessingException {
+        IJsonObjectTransformer transformer = buildADWindowsAuditTransformer();
+
+        String referenceId = "4740";
+        String userDst = "user dst value";
+        String eventId = "10.25.67.33:50005:91168521";
+        Long eventTime = 1528124556000L;
+        String eventType = "Success Audit";
+        String userSource = "rsmith@montereytechgroup.com";
+        JSONObject jsonObject = buildADWindowAuditJsonObject(referenceId, userDst, "winevent_nic",
+                eventTime*1000, eventType, "  ", eventId, userSource, null, "just some obj name", "");
+
+        JSONObject retJsonObject = transform(transformer, jsonObject);
+
+        assertOnExpectedValues(retJsonObject, eventId, eventTime, "rsmith", userSource, userSource,
+                RESULT_SUCCESS, "USER_ACCOUNT_LOCKED", referenceId,
+                null, null, null);
+    }
+
+    @Test
+    public void event_code_4740_option2_test() throws JsonProcessingException {
+        IJsonObjectTransformer transformer = buildADWindowsAuditTransformer();
+
+        String referenceId = "4740";
+        String userSource = "user src value";
+        String eventId = "10.25.67.33:50005:91168521";
+        Long eventTime = 1528124556000L;
+        String eventType = "Success Audit";
+        String userDst = "rsmith@montereytechgroup.com";
+        JSONObject jsonObject = buildADWindowAuditJsonObject(referenceId, userDst, "winevent_snare",
+                eventTime*1000, eventType, "  ", eventId, userSource, null, "just some obj name", "");
+
+        JSONObject retJsonObject = transform(transformer, jsonObject);
+
+        assertOnExpectedValues(retJsonObject, eventId, eventTime, "rsmith", userDst, userDst,
+                RESULT_SUCCESS, "USER_ACCOUNT_LOCKED", referenceId,
+                null, null, null);
     }
 
     @Test
@@ -386,7 +472,7 @@ public class ActiveDirectoryWindowsAuditTransformerTest extends TransformerTest{
         Assert.assertEquals("result normalization did not work", expectedResult, retJsonObject.get(RESULT_FIELD_NAME));
         Assert.assertEquals("operation type logic according the accesses field did not work", expectedOperationType, retJsonObject.get(OPERATION_TYPE_FIELD_NAME));
         Assert.assertEquals("wrong data source", expectedDataSource, retJsonObject.get(DATA_SOURCE_FIELD_NAME));
-        assertEqualJsonArrays(retJsonObject, OPERATION_TYPE_CATEGORIES_FIELD_NAME, new JSONArray(expectedOperationTypeCategories));
+        assertEqualJsonArrays(retJsonObject, OPERATION_TYPE_CATEGORIES_FIELD_NAME, (expectedOperationTypeCategories == null? null : new JSONArray(expectedOperationTypeCategories)));
         Assert.assertEquals("wrong objectId",
                 expectedObjectId == null? JSONObject.NULL : expectedObjectId,
                 retJsonObject.opt(OBJECT_ID_FIELD_NAME));
@@ -397,30 +483,34 @@ public class ActiveDirectoryWindowsAuditTransformerTest extends TransformerTest{
 
     private void assertEqualJsonArrays(JSONObject retJsonObject, String key, JSONArray expectedJSONArray){
         Object actualObj = retJsonObject.get(key);
-        Assert.assertTrue(String.format("The %s expected to contain json array. expected: %s actual: %s",key, expectedJSONArray, actualObj),
-                actualObj instanceof JSONArray || actualObj instanceof List);
-        JSONArray actualJsonArray;
-        if(actualObj instanceof JSONArray) {
-            actualJsonArray = (JSONArray) actualObj;
-        } else {
-            actualJsonArray = new JSONArray((Collection)actualObj);
-        }
-        Assert.assertEquals(
-                String.format("The expected json array and the actual json array contain different amount of elements. actual: %s expected: %s",
-                        actualJsonArray, expectedJSONArray),
-                actualJsonArray.length(), expectedJSONArray.length());
-        for (int i = 0; i < actualJsonArray.length(); i++){
-            boolean found = false;
-            for (int j = 0; j < expectedJSONArray.length(); j++){
-                if(expectedJSONArray.get(j).equals(actualJsonArray.get(i))){
-                    found = true;
-                    break;
-                }
+        if(expectedJSONArray == null){
+            Assert.assertTrue(String.format("The %s is not expected to be in the event. actual: %s",key, actualObj),(actualObj == null || actualObj == JSONObject.NULL));
+        }else {
+            Assert.assertTrue(String.format("The %s expected to contain json array. expected: %s actual: %s", key, expectedJSONArray, actualObj),
+                    actualObj instanceof JSONArray || actualObj instanceof List);
+            JSONArray actualJsonArray;
+            if (actualObj instanceof JSONArray) {
+                actualJsonArray = (JSONArray) actualObj;
+            } else {
+                actualJsonArray = new JSONArray((Collection) actualObj);
             }
-            Assert.assertTrue(
-                    String.format("The expected json array and the actual json array are not equals. actual: %s expected: %s",
+            Assert.assertEquals(
+                    String.format("The expected json array and the actual json array contain different amount of elements. actual: %s expected: %s",
                             actualJsonArray, expectedJSONArray),
-                    found);
+                    actualJsonArray.length(), expectedJSONArray.length());
+            for (int i = 0; i < actualJsonArray.length(); i++) {
+                boolean found = false;
+                for (int j = 0; j < expectedJSONArray.length(); j++) {
+                    if (expectedJSONArray.get(j).equals(actualJsonArray.get(i))) {
+                        found = true;
+                        break;
+                    }
+                }
+                Assert.assertTrue(
+                        String.format("The expected json array and the actual json array are not equals. actual: %s expected: %s",
+                                actualJsonArray, expectedJSONArray),
+                        found);
+            }
         }
     }
 }
