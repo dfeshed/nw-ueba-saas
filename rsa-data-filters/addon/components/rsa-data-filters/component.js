@@ -34,14 +34,14 @@ export default Component.extend({
       if (filterValue) {
         switch (type) {
           case 'text':
-            appliedFilters.push(filterValue);
+            appliedFilters.push({ ...filterValue, name });
             break;
           case 'list':
           case 'dropdown':
             appliedFilters.push({ name, operator: 'IN', value: filterValue });
             break;
           case 'number':
-            appliedFilters.push(filterValue);
+            appliedFilters.push({ ...filterValue, name });
             break;
           case 'range':
             appliedFilters.push({ name, operator: 'BETWEEN', value: filterValue });
@@ -63,14 +63,13 @@ export default Component.extend({
       const appliedFilter = this.get('appliedFilters');
       const onFilterChange = this.get('onFilterChange');
       const isApplied = appliedFilter.findBy('name', filter.name);
-
       if (isApplied) {
         const rejected = appliedFilter.rejectBy('name', filter.name);
         rejected.push(filter);
-        this.set('appliedFilter', rejected);
+        this.set('appliedFilters', rejected);
       } else {
         appliedFilter.push(filter);
-        this.set('appliedFilter', appliedFilter);
+        this.set('appliedFilters', appliedFilter);
       }
 
       if (onFilterChange) {

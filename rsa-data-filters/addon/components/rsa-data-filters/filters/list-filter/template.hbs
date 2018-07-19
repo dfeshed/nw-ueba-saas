@@ -1,0 +1,9 @@
+<h2 class='filter-text'>{{options.label}}</h2>
+{{#each filterValue as |option|}}
+  <label class="rsa-form-checkbox-label {{if option.selected 'checked'}} list-filter-option">
+    {{rsa-form-checkbox
+      checked=option.selected
+      change=(action 'toggleSelected' option)}}
+    {{option.label}}
+  </label>
+{{/each}}
