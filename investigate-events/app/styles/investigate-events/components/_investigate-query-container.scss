@@ -2,12 +2,13 @@
   @include border(1px, solid, primary, lighter);
   border-radius: rsa-whitespace(least);
   display: flex;
-  flex: 0 0 auto;
-  margin: calc(#{rsa-whitespace(least)} + 0.5px) rsa-whitespace(least) 0;
+  flex: 0 1 auto;
+  margin: 0 4px 4px 0;
   padding: 0 rsa-whitespace(least);
   min-height: rsa-whitespace(more);
   line-height: rsa-whitespace(more);
   transition: border-color 0.5s;
+  min-width: 0;
 }
 
 .rsa-icon.expensive-indicator {
@@ -21,21 +22,15 @@
 }
 .rsa-investigate-query-container {
   display: flex;
-  flex-flow: row wrap;
-  justify-content: flex-start;
-  flex-wrap: nowrap;
 
   &__service-selector,
   &__time-selector {
-    margin-right: rsa-whitespace(less);
-    display: flex;
-    flex: 0 0 auto;
     height: 40px;
+    margin-right: rsa-whitespace(less);
+    flex: 0;
   }
 
   .execute-query-button {
-    display: flex;
-    flex: 0 0 auto;
     .rsa-form-button {
       padding-top: calc(#{rsa-whitespace(less)} + #{rsa-whitespace(least)});
       padding-bottom: calc(#{rsa-whitespace(less)} + #{rsa-whitespace(least)});
@@ -93,10 +88,8 @@
   }
 
   .query-bar-selection {
+    flex: 1 1 auto;
     margin-right: rsa-whitespace(less);
-    display: flex;
-    flex-direction: column;
-    flex: 1 1 100%;
     min-width: 350px;
     a {
       text-decoration: none;
@@ -107,6 +100,7 @@
       @include border(1px, solid, primary, lighter);
       min-height: 40px;
       box-sizing: border-box;
+      padding: 4px 0 0 4px;
     }
 
     .query-bar-select-actions {
@@ -147,16 +141,15 @@
 
   .rsa-investigate-free-form-query-bar {
     min-width: 100%;
+    position: relative;
+    top: -2px;
+    left: -2px;
     .rsa-form-label {
       display: none;
     }
     input {
       border-bottom: none;
-      @include rsa-font(body, small);
-      margin-top: 2.5px;
-      margin-bottom: 2px;
       @include rsa-input-placeholder(text-color(primary));
-      padding: rsa-whitespace(less) 8.5px rsa-whitespace(less) 8.5px;
     }
   }
 
@@ -164,27 +157,22 @@
   .query-pills {
     display: flex;
     flex-flow: row wrap;
-    justify-content: flex-start;
-    margin-bottom: calc(0.25rem + 0.5px);
     max-height: 10.5rem;
     overflow-x: hidden;
     overflow-y: auto;
   }
 
   .new-pill-trigger-container {
-    position:relative;
+    flex: 0 0 auto;
   }
 
   .new-pill-trigger {
     @include rsa-layer(controls);
     background-color: opacity-value(transparent);
     border-radius: rsa-whitespace(most);
-    display: flex;
-    flex: 0 0 auto;
     position: absolute;
-    float: left;
-    margin-left: -.93rem;
-    margin-top: .45rem;
+    margin-left: -1.13rem;
+    margin-top: .15rem;
     width: 1.85rem;
     height: 1.85rem;
 
@@ -196,10 +184,10 @@
 
   .query-pill {
     @include pillAppearance();
-
     &.is-active {
       border-color: transparent;
-      flex: 1 0 auto;
+      flex: 100;
+      min-width: 80px;
     }
     &.is-invalid {
       border-color: border-color(accentOne);
@@ -209,7 +197,7 @@
       border-color: border-color(secondary);
     }
     > div.is-expanded {
-      flex-grow: 1;
+      flex-grow: 100;
       input {
         width: 100%;
       }
@@ -226,6 +214,15 @@
   .pill-operator,
   .pill-value {
     height: rsa-whitespace(more);
+  }
+  .pill-value {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1 1 auto;
+    input {
+      width: 100%;
+    }
   }
 
   .ember-power-select-typeahead-input,
@@ -255,10 +252,6 @@
   .pill-open {
     .new-pill-trigger {
       display: none;
-    }
-
-    .query-pill {
-      min-width: 80px;
     }
   }
 
