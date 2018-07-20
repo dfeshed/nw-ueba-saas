@@ -4,7 +4,7 @@ import { connect } from 'ember-redux';
 import { canQueryNextGen } from 'investigate-events/reducers/investigate/next-gen/selectors';
 
 const stateToComputed = (state) => ({
-  requiredValuesToQuerySelector: canQueryNextGen(state)
+  requiredValuesToQuery: canQueryNextGen(state)
 });
 
 const QueryButton = Component.extend({

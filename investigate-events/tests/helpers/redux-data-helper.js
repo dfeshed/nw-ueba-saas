@@ -179,11 +179,9 @@ export default class DataHelper {
     _set(this.state, 'queryNode.serviceId', '1');
     _set(this.state, 'queryNode.queryView', 'nextGen');
     if (flag) {
-      _set(this.state, 'queryNode.isDirty', true);
       _set(this.state, 'services.serviceData', [{ id: '1' }]);
       _set(this.state, 'services.summaryData', { startTime: 1506537600 });
     } else {
-      _set(this.state, 'queryNode.isDirty', false);
       _set(this.state, 'services.serviceData', undefined);
       _set(this.state, 'services.summaryData', undefined);
     }

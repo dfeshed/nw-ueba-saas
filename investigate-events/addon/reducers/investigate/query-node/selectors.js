@@ -1,12 +1,14 @@
 import reselect from 'reselect';
+
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
 import { selectedService, hasSummaryData } from 'investigate-events/reducers/investigate/services/selectors';
+import { createQueryHash } from 'investigate-events/util/query-hash';
+
 const { createSelector } = reselect;
 
 // ACCESSOR FUNCTIONS
 const _endTime = (state) => state.investigate.queryNode.endTime;
 const _eventMetas = (state) => state.investigate.queryNode.eventMetas;
-const _isDirty = (state) => state.investigate.queryNode.isDirty;
 const _metaFilter = (state) => state.investigate.queryNode.metaFilter;
 const _previouslySelectedTimeRanges = (state) => state.investigate.queryNode.previouslySelectedTimeRanges;
 const _previousQueryParams = (state) => state.investigate.queryNode.previousQueryParams;
@@ -15,8 +17,17 @@ const _serviceId = (state) => state.investigate.queryNode.serviceId;
 const _startTime = (state) => state.investigate.queryNode.startTime;
 const _queryView = (state) => state.investigate.queryNode.queryView;
 
+const _currentQueryHash = (state) => state.investigate.nextGen.currentQueryHash;
+const _pillsData = (state) => state.investigate.nextGen.pillsData;
 
 // SELECTOR FUNCTIONS
+const _isDirty = createSelector(
+  [_currentQueryHash, _serviceId, _startTime, _endTime, _pillsData],
+  (currentQueryHash, serviceId, startTime, endTime, pills) => {
+    const queryHash = createQueryHash(serviceId, startTime, endTime, pills);
+    return currentQueryHash !== queryHash;
+  }
+);
 
 export const selectedTimeRangeId = createSelector(
   [_serviceId, _previouslySelectedTimeRanges],

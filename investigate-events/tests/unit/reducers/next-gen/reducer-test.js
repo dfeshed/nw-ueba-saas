@@ -347,6 +347,43 @@ test('INITIALIZE_INVESTIGATE replaces all pills with new set of pills', function
   assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
 });
 
+test('INITIALIZE_INVESTIGATE sets a proper query hash', function(assert) {
+  const { pillsData } = new ReduxDataHelper()
+    .pillsDataPopulated()
+    .build()
+    .investigate
+    .nextGen;
+
+  const emptyState = new ReduxDataHelper()
+    .pillsDataEmpty()
+    .build()
+    .investigate
+    .nextGen;
+
+  const action = {
+    type: ACTION_TYPES.INITIALIZE_INVESTIGATE,
+    payload: {
+      queryParams: {
+        serviceId: '1',
+        startTime: 'early',
+        endTime: 'late',
+        metaFilter: {
+          conditions: pillsData
+        }
+      },
+      hardReset: false
+    }
+  };
+
+  const result = reducer(emptyState, action);
+
+  assert.equal(
+    result.currentQueryHash,
+    '1-early-late-a-=-\'x\'-undefined-b-=-\'y\'-undefined',
+    'pillsData is the correct length'
+  );
+});
+
 //
 // REPLACE_ALL_NEXT_GEN_PILLS
 //

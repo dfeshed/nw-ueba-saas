@@ -8,7 +8,6 @@ import {
   setReconOpen,
   setReconPanelSize
 } from 'investigate-events/actions/interaction-creators';
-import { dirtyQueryToggle } from 'investigate-events/actions/query-validation-creators';
 import { uriEncodeMetaFilters } from 'investigate-events/actions/utils';
 import { serializeQueryParams } from 'investigate-shared/utils/query-utils';
 import {
@@ -62,8 +61,8 @@ export default Route.extend({
   },
 
   model(params) {
-    /* If all the key values of 'params' are 'undefined',
-       then hardReset is set to true and initial state is set. */
+    // If all the key values of 'params' are 'undefined',
+    // then hardReset is set to true and initial state is set.
     const uniqParamValues = Object.values(params).uniq();
     const hardReset = uniqParamValues.length === 1 && uniqParamValues[0] === undefined;
 
@@ -76,9 +75,6 @@ export default Route.extend({
       const investigateState = redux.getState().investigate;
       const pillData = investigateState.nextGen.pillsData;
       const { data, queryNode } = investigateState;
-
-      // Mark query as clean since we're submitting the query
-      redux.dispatch(dirtyQueryToggle(false));
 
       const qp = {
         eid: undefined,

@@ -4,10 +4,12 @@ import _ from 'lodash';
 import { handle } from 'redux-pack';
 
 import * as ACTION_TYPES from 'investigate-events/actions/types';
+import { createQueryHash } from 'investigate-events/util/query-hash';
 
 const _initialState = Immutable.from({
   pillsData: [],
-  serverSideValidationInProcess: false
+  serverSideValidationInProcess: false,
+  currentQueryHash: undefined
 });
 
 const _initialPillState = {
@@ -76,11 +78,25 @@ const _replaceAllPills = (state, pillData) => {
 export default handleActions({
 
   [ACTION_TYPES.INITIALIZE_INVESTIGATE]: (state, { payload }) => {
+
     if (payload.hardReset) {
-      return state.set('pillsData', []);
+      return state.merge({
+        pillsData: [],
+        currentQueryHash: undefined
+      });
     }
 
-    return _replaceAllPills(state, payload.queryParams.metaFilter.conditions);
+    const { queryParams } = payload;
+    const newHash = createQueryHash(
+      queryParams.serviceId,
+      queryParams.startTime,
+      queryParams.endTime,
+      queryParams.metaFilter.conditions
+    );
+
+    state = state.set('currentQueryHash', newHash);
+
+    return _replaceAllPills(state, queryParams.metaFilter.conditions);
   },
 
   [ACTION_TYPES.ADD_NEXT_GEN_PILL]: (state, { payload }) => {

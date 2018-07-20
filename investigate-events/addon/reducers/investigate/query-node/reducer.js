@@ -7,12 +7,18 @@ const _initialState = Immutable.from({
   endTime: 0,
   eventMetas: undefined,
   hasIncommingQueryParams: false,
-  isDirty: false,
   metaFilter: {
     uri: undefined,
     conditions: []
   },
   previouslySelectedTimeRanges: {},
+
+  // we save off the old query params for the previously executed
+  // query so that we can use them for API calls after the user
+  // changes data (like the service) in the UI but hasn't executed
+  // the query. If you change the service, for instance, but do not
+  // execute the query, and then click to open Recon, we need to use
+  // the previous service, not the changed one.
   previousQueryParams: undefined,
   queryTimeFormat: undefined,
   serviceId: undefined,
@@ -22,7 +28,22 @@ const _initialState = Immutable.from({
 });
 
 const _cloneQueryParams = (state) => {
-  const { endTime, eventMetas, metaFilter, serviceId, startTime } = state;
+  const {
+    endTime,
+    eventMetas,
+    serviceId,
+    startTime
+  } = state;
+
+  let { metaFilter } = state;
+
+  if (!metaFilter) {
+    metaFilter = {
+      uri: undefined,
+      conditions: []
+    };
+  }
+
   const _eventMetas = eventMetas ? JSON.parse(JSON.stringify(eventMetas)) : undefined;
   return {
     endTime,
@@ -63,11 +84,13 @@ export default handleActions({
         return _initialState;
       } else {
         // pre-populate Event Analysis with previously chosen serviceId and timeRange
+        const previousQueryParams = _cloneQueryParams(localStorageObj.queryNode);
         return state.merge({
           ..._initialState,
           serviceId: localStorageObj.queryNode.serviceId,
           previouslySelectedTimeRanges: localStorageObj.queryNode.previouslySelectedTimeRanges,
-          queryView: localStorageObj.queryNode.queryView
+          queryView: localStorageObj.queryNode.queryView,
+          previousQueryParams
         });
       }
 
@@ -91,7 +114,8 @@ export default handleActions({
         previouslySelectedTimeRanges: previouslySelectedTimeRanges.merge(newRange),
         sessionId: queryParams.sessionId && parseInt(queryParams.sessionId, 10) || undefined,
         startTime: queryParams.startTime && parseInt(queryParams.startTime, 10) || 0,
-        queryView: previousView ? previousView : state.queryView
+        queryView: previousView ? previousView : state.queryView,
+        previousQueryParams: _cloneQueryParams(queryParams)
       }, { deep: true });
     }
   },
@@ -109,23 +133,7 @@ export default handleActions({
   },
 
   [ACTION_TYPES.SERVICE_SELECTED]: (state, { payload }) => {
-    // Even though we highlight the query button when a query is dirty, we don't
-    // prevent a user from interacting with the UI in a way that could make API
-    // calls with incorrect parameters. So, we save off relevent query params
-    // when the service is changed so we can use those for API calls. We clear
-    // those out when the query is marked as clean. See MARK_QUERY_DIRTY.
-    // We do `state.previousQueryParams || _cloneQueryParams(state)` to handle
-    // the situation where a user selects multiple services in a row. We want to
-    // save off the old params only for the first change.
-    return state.merge({
-      isDirty: true,
-      previousQueryParams: state.previousQueryParams || _cloneQueryParams(state),
-      serviceId: payload
-    });
-  },
-
-  [ACTION_TYPES.SET_QUERY_PARAMS_FOR_TESTS]: (state, { payload }) => {
-    return state.merge(payload);
+    return state.set('serviceId', payload);
   },
 
   [ACTION_TYPES.SET_QUERY_TIME_RANGE]: (state, { payload }) => {
@@ -134,7 +142,6 @@ export default handleActions({
     newRange[serviceId] = payload.selectedTimeRangeId;
     return state.merge({
       endTime: payload.endTime,
-      isDirty: true,
       startTime: payload.startTime,
       previouslySelectedTimeRanges: previouslySelectedTimeRanges.merge(newRange)
     });
@@ -146,41 +153,6 @@ export default handleActions({
 
   [ACTION_TYPES.SET_EVENTS_PAGE]: (state) => {
     return state.merge({ atLeastOneQueryIssued: true });
-  },
-
-  /**
-   * Marks a query as clean or dirty depending on the Boolean payload. If a
-   * query is clean, we remove "dirty" properties.
-   * @public
-   */
-  [ACTION_TYPES.MARK_QUERY_DIRTY]: (state, { payload }) => {
-    // If a query is not "dirty", remove saved query params
-    return state.merge({
-      isDirty: payload,
-      previousQueryParams: payload ? state.previousQueryParams : undefined
-    });
-  },
-
-  // TODO
-  // isDirty should be a selector that
-  // combines the current query with the
-  // one currently loaded. That'll take
-  // some work to get right, for now,
-  // ham-fisting this.
-
-  // Added a pill, therefore query is dirty
-  [ACTION_TYPES.ADD_NEXT_GEN_PILL]: (state) => {
-    return state.set('isDirty', true);
-  },
-
-  // Deleted a pill, therefore query is dirty
-  [ACTION_TYPES.DELETE_NEXT_GEN_PILLS]: (state) => {
-    return state.set('isDirty', true);
-  },
-
-  // Edited a pill, therefore query is dirty
-  [ACTION_TYPES.EDIT_NEXT_GEN_PILL]: (state) => {
-    return state.set('isDirty', true);
   }
 
 }, _initialState);

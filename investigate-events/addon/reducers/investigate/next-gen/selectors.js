@@ -1,12 +1,11 @@
 import reselect from 'reselect';
-const { createSelector } = reselect;
 
 import { encodeMetaFilterConditions } from 'investigate-shared/actions/api/events/utils';
 import { hasRequiredValuesToQuery } from 'investigate-events/reducers/investigate/query-node/selectors';
-import {
-  metaKeySuggestionsForQueryBuilder
-} from 'investigate-events/reducers/investigate/dictionaries/selectors';
+import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import { relevantOperators } from 'investigate-events/util/possible-operators';
+
+const { createSelector } = reselect;
 
 const _pillsData = (state) => state.investigate.nextGen.pillsData;
 
@@ -35,8 +34,8 @@ export const enrichedPillsData = createSelector(
   }
 );
 
-// checks if there is a service selected, has summary data, timerange and isDirty
-// along with if pillsData has any invalid pill
+// If we have the required values to query and none of the pills are
+// invalid, then we can query next gen
 export const canQueryNextGen = createSelector(
   [_hasInvalidPill, hasRequiredValuesToQuery],
   (hasInvalidPill, hasRequiredValuesToQuery) => hasRequiredValuesToQuery && !hasInvalidPill

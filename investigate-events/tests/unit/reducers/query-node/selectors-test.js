@@ -171,6 +171,10 @@ test('need services to query', function(assert) {
       services: {
         serviceData: null,
         summaryData: { startTime: 1 }
+      },
+      nextGen: {
+        currentQueryHash: 'kajsdlkajldsk',
+        pillsData: []
       }
     }
   };
@@ -188,6 +192,10 @@ test('need summary data to query', function(assert) {
       services: {
         serviceData: [{ id: '1', displayName: 'svs1', name: 'SVS1', version: '11.1.0.0' }],
         summaryData: null
+      },
+      nextGen: {
+        currentQueryHash: 'kajsdlkajldsk',
+        pillsData: []
       }
     }
   };
@@ -205,17 +213,67 @@ test('aggregation was not performed, so we cannot query', function(assert) {
       services: {
         serviceData: [{ id: '1', displayName: 'svs1', name: 'SVS1', version: '11.1.0.0' }],
         summaryData: { startTime: 0 }
+      },
+      nextGen: {
+        currentQueryHash: 'kajsdlkajldsk',
+        pillsData: []
       }
     }
   };
   assert.notOk(hasRequiredValuesToQuery(state), 'summaryData.startTime was not "0"');
 });
 
+test('is not dirty so cannot query', function(assert) {
+  const state = {
+    investigate: {
+      queryNode: {
+        metaFilter: { conditions: [] },
+        previouslySelectedTimeRanges: {},
+        // serviceId can be undefined because we select a default service
+        serviceId: '1',
+        startTime: '1'
+      },
+      services: {
+        serviceData: [{ id: '1', displayName: 'svs1', name: 'SVS1', version: '11.1.0.0' }],
+        summaryData: { startTime: 1 }
+      },
+      nextGen: {
+        currentQueryHash: '1-1-undefined-a-b-c-undefined',
+        pillsData: [{ meta: 'a', operator: 'b', value: 'c', complexPillText: undefined }]
+      }
+    }
+  };
+  assert.notOk(hasRequiredValuesToQuery(state), 'Missing some required state to query');
+});
+
+test('is dirty so can query', function(assert) {
+  const state = {
+    investigate: {
+      queryNode: {
+        metaFilter: { conditions: [] },
+        previouslySelectedTimeRanges: {},
+        // serviceId can be undefined because we select a default service
+        serviceId: '1',
+        startTime: '1'
+      },
+      services: {
+        serviceData: [{ id: '1', displayName: 'svs1', name: 'SVS1', version: '11.1.0.0' }],
+        summaryData: { startTime: 1 }
+      },
+      nextGen: {
+        // note service is 2
+        currentQueryHash: '2-1-undefined-a-b-c-undefined',
+        pillsData: [{ meta: 'a', operator: 'b', value: 'c', complexPillText: undefined }]
+      }
+    }
+  };
+  assert.ok(hasRequiredValuesToQuery(state), 'Missing some required state to query');
+});
+
 test('has required inputs to query', function(assert) {
   const state = {
     investigate: {
       queryNode: {
-        isDirty: true,
         metaFilter: { conditions: [] },
         previouslySelectedTimeRanges: {},
         // serviceId can be undefined because we select a default service
@@ -224,6 +282,10 @@ test('has required inputs to query', function(assert) {
       services: {
         serviceData: [{ id: '1', displayName: 'svs1', name: 'SVS1', version: '11.1.0.0' }],
         summaryData: { startTime: 1 }
+      },
+      nextGen: {
+        currentQueryHash: '`kajsdlkajldsk',
+        pillsData: []
       }
     }
   };

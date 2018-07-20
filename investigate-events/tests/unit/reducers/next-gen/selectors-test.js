@@ -33,7 +33,7 @@ test('selectedPills returns only those pills that are selected', function(assert
   assert.equal(pD[0].value, '\'x\'', 'transforms value correctly');
 });
 
-test('canQueryNextGen is true when a service, summary, time-range, isDirty and NO invalid pill is present', function(assert) {
+test('canQueryNextGen is true when a query is ready to execute and NO invalid pill is present', function(assert) {
   const state = new ReduxDataHelper()
     .language()
     .pillsDataPopulated()
@@ -41,10 +41,10 @@ test('canQueryNextGen is true when a service, summary, time-range, isDirty and N
     .build();
 
   const canQuery = canQueryNextGen(state);
-  assert.ok(canQuery, 'Selector returns true if service, summary, time-range, isDirty and NO invalid pill is present');
+  assert.ok(canQuery, 'Selector returns true if a query is ready to execute and NO invalid pill is present');
 });
 
-test('canQueryNextGen is false when a service, summary, time-range, isDirty exists but an invalid pill is present', function(assert) {
+test('canQueryNextGen is false when query is ready to execute, but an invalid pill is present', function(assert) {
   const state = new ReduxDataHelper()
     .language()
     .pillsDataPopulated()
@@ -53,7 +53,7 @@ test('canQueryNextGen is false when a service, summary, time-range, isDirty exis
     .build();
 
   const canQuery = canQueryNextGen(state);
-  assert.notOk(canQuery, 'Selector returns false if service, summary, time-range, isDirty exists but an invalid pill is present');
+  assert.notOk(canQuery, 'Selector returns false if query is ready to execute, but an invalid pill is present');
 });
 
 test('hasInvalidSelectedPill is false when no invalid pill is selected', function(assert) {
