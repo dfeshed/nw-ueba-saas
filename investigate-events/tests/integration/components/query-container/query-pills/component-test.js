@@ -390,7 +390,11 @@ module('Integration | Component | query-pills', function(hooks) {
       .pillsDataPopulated()
       .build();
 
-    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
     const metas = findAll(PILL_SELECTORS.meta);
     await click(`#${metas[0].id}`); // make it selected
     await click(`#${metas[1].id}`); // make it selected
@@ -398,6 +402,7 @@ module('Integration | Component | query-pills', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 2, 'Two selecteded pills.');
     assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Should be two pills plus template.');
 
+    await leaveNewPillTemplate();
     doubleClick(PILL_SELECTORS.queryPill);
 
     return settled().then(async () => {

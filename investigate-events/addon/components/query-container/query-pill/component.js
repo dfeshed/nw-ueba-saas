@@ -252,7 +252,6 @@ export default Component.extend({
 
   focusOut({ originalEvent: focusEvent }) {
     this.set('shouldFocusOut', true);
-
     // Use next here because as user moves
     // from meta to operator to value, this
     // component loses focus for a split second.
@@ -331,10 +330,9 @@ export default Component.extend({
   _pillEntered() {
     const pillData = this._createPillData();
 
-    // If pill has id, then this is an edit, send proper message
-    if (pillData.id) {
-      this._broadcast(MESSAGE_TYPES.PILL_ENTERED_FOR_EDIT, pillData);
-    } else {
+    // If pill doesn't have id, then this is the new pill template
+    // So send proper message
+    if (!pillData.id) {
       this._broadcast(MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW, pillData);
     }
   },

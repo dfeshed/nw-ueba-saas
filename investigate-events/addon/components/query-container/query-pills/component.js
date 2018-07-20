@@ -105,7 +105,6 @@ const QueryPills = RsaContextMenu.extend({
       [MESSAGE_TYPES.PILL_DELETED]: (data) => this._pillDeleted(data),
       [MESSAGE_TYPES.PILL_EDITED]: (data) => this._pillEdited(data),
       [MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW]: () => this._pillEnteredForAppend(),
-      [MESSAGE_TYPES.PILL_ENTERED_FOR_EDIT]: () => this._pillEnteredForEdit(),
       [MESSAGE_TYPES.PILL_ENTERED_FOR_INSERT_NEW]: (pillData, position) => this._pillEnteredForInsert(position),
       [MESSAGE_TYPES.PILL_OPEN_FOR_EDIT]: (pillData) => this._pillOpenForEdit(pillData),
       [MESSAGE_TYPES.PILL_SELECTED]: (data) => this._pillsSelected([data]),
@@ -236,6 +235,7 @@ const QueryPills = RsaContextMenu.extend({
     }
 
     this.send('openNextGenPillForEdit', { pillData });
+    this._pillEnteredForEdit();
   },
 
   /**
