@@ -1,0 +1,46 @@
+<h2 class='filter-text'>{{options.label}}</h2>
+<hbox>
+  {{#power-select
+    tagName='div'
+    class='operators'
+    options=options.operators
+    selected=filterValue.selectedOperator
+    searchEnabled=false
+    onchange=(action 'changeOperator') as |option|}}
+    {{option.label}}
+  {{/power-select}}
+
+  {{#if isOperatorBetween}}
+    {{rsa-form-input
+      type='number'
+      focusOut=(action 'onInputFocusOut')
+      value=filterValue.value.[0]
+      class='number-input start'
+      placeholder='Enter Value'}}
+    {{rsa-form-input
+      type='number'
+      focusOut=(action 'onInputFocusOut')
+      value=filterValue.value.[1]
+      class='number-input end'
+      placeholder='Enter Value'}}
+  {{else}}
+    {{rsa-form-input
+      type='number'
+      focusOut=(action 'onInputFocusOut')
+      value=filterValue.value.[0]
+      class='number-input'
+      placeholder='Enter Value'}}
+  {{/if}}
+
+  {{#if hasUnits}}
+    {{#power-select
+      tagName='div'
+      class='units'
+      options=options.units
+      selected=filterValue.selectedUnit
+      searchEnabled=false
+      onchange=(action 'chageUnit') as |option|}}
+      {{option.label}}
+    {{/power-select}}
+  {{/if}}
+</hbox>
