@@ -70,6 +70,7 @@ export default Component.extend({
         { name: 'Button With Confirmation', link: 'button-with-confirmation' },
         { name: 'Checkboxes', link: 'checkboxes' },
         { name: 'Date/Time', link: 'datetime' },
+        { name: 'Date/Time Range', link: 'date-time-range' },
         { name: 'Errors', link: 'errors' },
         { name: 'Radios', link: 'radios' },
         { name: 'Selects', link: 'selects' },

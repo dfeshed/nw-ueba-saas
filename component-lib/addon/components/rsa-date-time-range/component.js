@@ -288,6 +288,10 @@ export default Component.extend({
       if (!this.get('hasErrors')) {
         const { onChange, endTimestamp } = this.getProperties('onChange', 'endTimestamp');
         onChange(start, endTimestamp);
+      } else {
+        // invoke onError since this may be a date range error (end before start)
+        const { onError, errors } = this.getProperties('onError', 'errors');
+        onError(errors);
       }
     },
     onChangeEnd(end) {
@@ -298,6 +302,10 @@ export default Component.extend({
       if (!this.get('hasErrors')) {
         const { onChange, startTimestamp } = this.getProperties('onChange', 'startTimestamp');
         onChange(startTimestamp, end);
+      } else {
+        // invoke onError since this may be a date range error (end before start)
+        const { onError, errors } = this.getProperties('onError', 'errors');
+        onError(errors);
       }
     },
     onStartError(errors) {

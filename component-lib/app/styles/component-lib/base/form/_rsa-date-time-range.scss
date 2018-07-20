@@ -1,4 +1,4 @@
-$datePickerFontSize: 0.5rem;
+$datePickerFontSize: 1rem;
 $datePickerSpacing: $datePickerFontSize * 0.1;
 .rsa-date-time-range {
   border: 1px solid border-color(primary);
@@ -14,9 +14,11 @@ $datePickerSpacing: $datePickerFontSize * 0.1;
   .start-date-time, .end-date-time {
     display: inline-block;
   }
+  .end-date-time .rsa-date-time-input {
+    padding-right: 0;
+  }
   .rsa-date-time-input {
     display: inline-block;
-    padding-right: 0;
     border: none;
     .rsa-icon {
       display: none;
@@ -26,7 +28,8 @@ $datePickerSpacing: $datePickerFontSize * 0.1;
     font-size: $datePickerFontSize;
     margin: 0 $datePickerSpacing;
   }
-  .rsa-icon {
+  > .rsa-icon {
+    display: none; // can be displayed again in the future when adding calendar picker functionality
     font-size: $datePickerFontSize;
     margin-left: $datePickerSpacing * 4;
   }

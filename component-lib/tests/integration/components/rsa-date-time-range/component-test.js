@@ -118,4 +118,19 @@ module('Integration - Component - rsa-date-time-range', function(hooks) {
     const component = find(selectors.component);
     assert.equal(component.classList.contains('has-errors'), false, 'There should not be an error class since this is a valid date/time');
   });
+
+  test('if the end date is before the start date, the onError function is called', async function(assert) {
+    assert.expect(2);
+    this.set('handleChange', () => {
+      assert.notOk(true, 'the onChange action should not be called');
+    });
+    this.set('handleError', () => {
+      assert.ok(true);
+    });
+    await render(hbs`{{rsa-date-time-range timezone=tz onChange=handleChange onError=handleError}}`);
+    await fillIn(selectors.startYearInput, '2200');
+    await triggerEvent(selectors.startYearInput, 'blur');
+    const component = find(selectors.component);
+    assert.equal(component.classList.contains('has-errors'), true, 'There should be an error class since this is a valid range');
+  });
 });

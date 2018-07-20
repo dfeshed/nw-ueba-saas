@@ -1,0 +1,164 @@
+<hbox fit>
+  {{spec-masthead model=model}}
+</hbox>
+
+<hbox>
+  <fill block class="scroll-box">
+  {{#spec-category title="Date Time Range"}}
+    {{#spec-member title="Basic Usage"
+      subtitle="Without any attributes, the rsa-date-time-range will render the start and end dates/times as the current date/time. It will show the date/time from the UTC timezone using the 24 HR clock."}}
+      <div>
+        {{rsa-date-time-range
+          start=(readonly start)
+          end=(readonly end)
+          timezone=timezone
+          use12HourClock=use12HourClock
+          dateFormat=dateFormat
+          includeSeconds=includeSeconds
+          onChange=(action 'handleRangeChange')
+          onError=(action 'handleRangeError')
+        }}
+      </div>
+      <div class="sandbox">
+        <h2>Test/Configuration Controls</h2>
+        <div class="timestamps">
+          {{rsa-form-input
+            label='Start (unix timestamp in ms)'
+            value=(readonly start)
+            placeholder='Enter a start timestamp (in ms)'
+            focusOut=(action 'handleTimestampChange' 'start')
+          }}
+          {{rsa-form-input
+            label='End (unix timestamp in ms)'
+            value=(readonly end)
+            placeholder='Enter a end timestamp (in ms)'
+            focusOut=(action 'handleTimestampChange' 'end')
+          }}
+        </div>
+        <div class="timezone">
+          <h3>Timezone:</h3>
+          <label class="rsa-form-radio-label {{if (eq 'UTC' timezone) 'checked'}}">
+            {{radio-button
+              value="UTC"
+              groupValue=timezone
+              changed="handleTimezoneChange"
+            }} UTC
+          </label>
+          <label class="rsa-form-radio-label {{if (eq 'America/Los_Angeles' timezone) 'checked'}}">
+            {{radio-button
+              value="America/Los_Angeles"
+              groupValue=timezone
+              changed="handleTimezoneChange"
+            }} America/Los_Angeles
+          </label>
+        </div>
+        <label class="rsa-form-checkbox-label {{if use12HourClock 'checked'}}">
+          {{rsa-form-checkbox
+            checked=use12HourClock
+            change=(action 'toggleUse12HourClock')
+          }}
+          Use 12 Hour Clock
+        </label>
+        <label class="rsa-form-checkbox-label {{if includeSeconds 'checked'}}">
+          {{rsa-form-checkbox
+            checked=includeSeconds
+            change=(action 'toggleIncludeSeconds')
+          }}
+          Include Seconds
+        </label>
+        <div class="date-format">
+          <h3>Date Format:</h3>
+          <label class="rsa-form-radio-label {{if (eq 'MM/DD/YYYY' dateFormat) 'checked'}}">
+            {{radio-button
+              value="MM/DD/YYYY"
+              groupValue=dateFormat
+              changed="handleDateFormatChanged"}}
+            mm/dd/yyyy
+          </label>
+          <label class="rsa-form-radio-label {{if (eq 'DD/MM/YYYY' dateFormat) 'checked'}}">
+            {{radio-button
+              value="DD/MM/YYYY"
+              groupValue=dateFormat
+              changed="handleDateFormatChanged"}}
+            dd/mm/yyyy
+          </label>
+          <label class="rsa-form-radio-label {{if (eq 'YYYY/MM/DD' dateFormat) 'checked'}}">
+            {{radio-button
+              value="YYYY/MM/DD"
+              groupValue=dateFormat
+              changed="handleDateFormatChanged"}}
+            yyyy/mm/dd
+          </label>
+        </div>
+        <div class="validity-indicator {{if isValid 'valid' 'not-valid'}}">
+          {{#if isValid}}
+            {{rsa-icon size='small' name='check-2'}} This date/time range is valid.
+          {{else}}
+            {{rsa-icon size='small' name='delete-1'}} This date/time range is NOT valid.
+          {{/if}}
+        </div>
+        <style>
+          .sandbox h2 {
+            text-decoration: underline;
+            font-weight: bold;
+          }
+          .sandbox {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px dotted white;
+          }
+          .timestamps label {
+            display: inline-block;
+          }
+          .validity-indicator {
+            margin-left: 20px;
+            display: inline-block;
+          }
+          .validity-indicator .rsa-icon {
+            color: green;
+            position: relative;
+            top: 8px;
+            font-size: 3rem;
+          }
+          .validity-indicator.not-valid .rsa-icon {
+            color: red;
+          }
+          .rsa-date-time-range {
+            max-width: 345px;
+          }
+          .rsa-form-input {
+            margin-top: 20px;
+            width: 200px;
+          }
+          .rsa-form-checkbox-label {
+            margin-top: 20px;
+            display: block
+          }
+          .date-format, .timezone {
+            margin-top: 20px;
+          }
+          .date-format label, .timezone label {
+            font-style: italic;
+            width: auto;
+          }
+          .date-format h3, .timezone h3 {
+            display: inline-block;
+          }
+        </style>
+      </div>
+      {{!-- BEGIN-SNIPPET datetimerange1
+        {{rsa-date-time-range
+          start=193874400000
+          end=323413200000
+          use12HourClock=false
+          dateFormat="MM/DD/YYYY"
+          includeSeconds=true
+          onChange=(action 'handleRangeChange')
+          onError=(action 'handleRangeError')
+        }}
+      END-SNIPPET --}}
+      {{code-snippet name="datetimerange1.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+</fill>
+</hbox>

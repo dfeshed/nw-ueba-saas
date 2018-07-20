@@ -31,7 +31,7 @@ export default Component.extend(ContextualHelp, {
     const config = getOwner(this).resolveRegistration('config:environment');
     const authConfig = config['ember-simple-auth'];
 
-    if (authConfig) {
+    if (authConfig && authConfig.accessTokenKey) {
       const tokenKey = authConfig.accessTokenKey;
       const token = localStorage.getItem(tokenKey);
 

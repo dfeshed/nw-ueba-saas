@@ -1,4 +1,4 @@
-$datePickerFontSize: 0.5rem;
+$datePickerFontSize: 1rem;
 $datePickerInputWidth: $datePickerFontSize + 0.1rem;
 $datePickerSpacing: $datePickerFontSize * 0.1;
 
@@ -14,6 +14,7 @@ $datePickerSpacing: $datePickerFontSize * 0.1;
 
   .date-time-separator {
     font-size: $datePickerFontSize;
+    padding: 0 $datePickerSpacing;
   }
   input {
     font-size: $datePickerFontSize;
@@ -37,9 +38,9 @@ $datePickerSpacing: $datePickerFontSize * 0.1;
     }
   }
   .year {
-    width: $datePickerInputWidth * 2;
+    width: $datePickerInputWidth * 2.1;
     input {
-      width: $datePickerInputWidth * 2;
+      width: $datePickerInputWidth * 2.1;
     }
   }
   .hour {
