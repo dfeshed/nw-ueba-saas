@@ -141,7 +141,7 @@ module('Integration | Component | query-bar', function(hooks) {
 
     assert.equal(findAll(PILL_SELECTORS.queryPill).length, 1, 'The template is the only query pill present');
     assert.equal(findAll(PILL_SELECTORS.complexPill).length, 1, 'there is a complex pill');
-    assert.equal(findAll(PILL_SELECTORS.complexPill)[0].textContent.replace(/\s/g, ''), '##(adslkjalksdj&&asdasdsad)##', 'pill text is correct');
+    assert.equal(findAll(PILL_SELECTORS.complexPill)[0].textContent.replace(/\s/g, ''), '(adslkjalksdj&&asdasdsad)', 'pill text is correct');
   });
 
 });

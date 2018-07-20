@@ -1,3 +1,15 @@
+@mixin pillAppearance() {
+  @include border(1px, solid, primary, lighter);
+  border-radius: rsa-whitespace(least);
+  display: flex;
+  flex: 0 0 auto;
+  margin: calc(#{rsa-whitespace(least)} + 0.5px) rsa-whitespace(least) 0;
+  padding: 0 rsa-whitespace(least);
+  min-height: rsa-whitespace(more);
+  line-height: rsa-whitespace(more);
+  transition: border-color 0.5s;
+}
+
 .rsa-icon.expensive-indicator {
   display: inline-flex;
   align-self: center;
@@ -183,15 +195,8 @@
   }
 
   .query-pill {
-    @include border(1px, solid, primary, lighter);
-    border-radius: rsa-whitespace(least);
-    display: flex;
-    flex: 0 0 auto;
-    margin: calc(#{rsa-whitespace(least)} + 0.5px) rsa-whitespace(least) 0;
-    padding: 0 rsa-whitespace(least);
-    min-height: rsa-whitespace(more);
-    line-height: rsa-whitespace(more);
-    transition: border-color 0.5s;
+    @include pillAppearance();
+
     &.is-active {
       border-color: transparent;
       flex: 1 0 auto;
@@ -264,6 +269,11 @@
     }
   }
 
+}
+
+.complex-pill {
+  @include pillAppearance();
+  background-color: background-color(primary, dark);
 }
 
 // Leftmost trigger shouldn't go over as far

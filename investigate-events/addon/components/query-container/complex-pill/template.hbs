@@ -1,0 +1,7 @@
+{{pillData.complexFilterText}}
+
+{{#if isDeletable}}
+  {{query-container/delete-pill
+    sendMessage=(action 'handleMessage')
+  }}
+{{/if}}
