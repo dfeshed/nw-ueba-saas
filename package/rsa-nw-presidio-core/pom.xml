@@ -253,6 +253,7 @@
                     </mappings>
                     <requires>
                         <require>java &gt; 1.8</require>
+                        <require>java-1.8.0-openjdk-devel &gt; 1.8</require>
                     </requires>
                     <description>
                         Presidio(UEBA) batch applications and the matching workflow python packages
