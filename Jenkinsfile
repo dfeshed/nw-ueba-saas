@@ -6,20 +6,24 @@ pipeline {
         label 'el7 && java8'
     }
     environment {
-        // The credentials associated with the RSA build user.
+        // The credentials (name + password) associated with the RSA build user.
         RSA_BUILD_CREDENTIALS = credentials('673a74be-2f99-4e9c-9e0c-a4ebc30f9086')
-        String[] REVIEWERS = REVIEWERS.replaceAll('\\s', '').split(',')
-        REVIEWERS_AS_STRING = toJsonArrayAsString(REVIEWERS)
     }
     stages {
-        stage('Clean Workspace') {
+        stage('Version Promotion Pipeline Initialization') {
             steps {
                 cleanWs()
-            }
-        }
-        stage('Configure Git User Details') {
-            steps {
                 configGlobalRsaUserNameAndEmail("${env.RSA_BUILD_CREDENTIALS_USR}")
+
+                script {
+                    String[] arrayOfReviewers = env.REVIEWERS.replaceAll("\\s", "").split(",")
+                    env.REVIEWERS = "["
+
+                    for (int i = 0; i < arrayOfReviewers.length; ++i) {
+                        env.REVIEWERS += "\"${arrayOfReviewers[i]}\""
+                        env.REVIEWERS += i == arrayOfReviewers.length - 1 ? "]" : ", "
+                    }
+                }
             }
         }
         stage('Presidio Test Utils Version Promotion') {
@@ -116,7 +120,7 @@ def promoteProjectVersion(
         String userName = env.RSA_BUILD_CREDENTIALS_USR,
         String userPassword = env.RSA_BUILD_CREDENTIALS_PSW,
         String version = env.VERSION,
-        String reviewersAsString = env.REVIEWERS_AS_STRING) {
+        String reviewers = env.REVIEWERS) {
 
     cloneAsocRepository(userName, userPassword, repositoryName)
 
@@ -141,7 +145,7 @@ def promoteProjectVersion(
         pullRequestNumber = pullRequestNumber.substring(10, pullRequestNumber.indexOf(","))
         repositoryNameToPullRequestNumberMap[repositoryName] = pullRequestNumber
 
-        createAsocReviewRequest(reviewersAsString, repositoryName, pullRequestNumber, userName, userPassword)
+        createAsocReviewRequest(reviewers, repositoryName, pullRequestNumber, userName, userPassword)
         mergeAsocPullRequest(repositoryName, pullRequestNumber, userName, userPassword)
         deleteAsocBranch(repositoryName, branchName, userName, userPassword)
     }
@@ -239,10 +243,10 @@ def createAsocPullRequest(
 }
 
 def createAsocReviewRequest(
-        String reviewersAsString, String repositoryName, String number, String userName, String userPassword) {
+        String reviewers, String repositoryName, String number, String userName, String userPassword) {
 
     sh """\
-        curl -d '{"reviewers": ${reviewersAsString}}'\
+        curl -d '{"reviewers": ${reviewers}}'\
         -X POST ${rsaAsocGitHubApiUrl}${repositoryName}/pulls/${number}/requested_reviewers\
         -u ${userName}:${userPassword}\
     """
@@ -279,18 +283,4 @@ def deleteAsocBranch(String repositoryName, String branchName, String userName, 
         -X DELETE ${rsaAsocGitHubApiUrl}${repositoryName}/git/refs/heads/${branchName}\
         -u ${userName}:${userPassword}\
     """
-}
-
-/******************
- * JSON Utilities *
- ******************/
-static def toJsonArrayAsString(String[] array) {
-    String jsonArrayAsString = "["
-
-    for (int i = 0; i < array.length; ++i) {
-        jsonArrayAsString += "\"${array[i]}\""
-        jsonArrayAsString += i == array.length - 1 ? "]" : ", "
-    }
-
-    return jsonArrayAsString
 }
