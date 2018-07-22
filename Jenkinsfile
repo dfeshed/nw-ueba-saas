@@ -127,8 +127,7 @@ def promoteProjectVersion(
         pomFileToPropertiesMap.each { pomFile, properties ->
             setProjectVersion(version, false, pomFile)
             properties.each { property -> setProjectPropertyVersion(property, version, true, false, pomFile) }
-            testProject(pomFile)
-            deployArtifacts(pomFile)
+            cleanInstallAndDeployProject(true, true, pomFile)
         }
 
         String message = "Promote project to version ${version}."
@@ -220,12 +219,10 @@ def setProjectPropertyVersion(
     """
 }
 
-def testProject(String pomFile) {
-    sh "mvn test -f ${pomFile}"
-}
-
-def deployArtifacts(String pomFile) {
-    sh "mvn deploy -f ${pomFile}"
+def cleanInstallAndDeployProject(boolean batchMode, boolean updateSnapshots, String pomFile) {
+    String batchModeOption = batchMode ? "-B" : ""
+    String updateSnapshotsOption = updateSnapshots ? "-U" : ""
+    sh "mvn clean install deploy ${batchModeOption} ${updateSnapshotsOption} -f ${pomFile}"
 }
 
 /******************
@@ -235,7 +232,7 @@ def createAsocPullRequest(
         String title, String head, String base, String repositoryName, String userName, String userPassword) {
 
     sh(returnStdout: true, script: """\
-        curl -d '{"title": "${title}", "head": "${head}", "base": "${base}"}'\
+        curl -d '{"title": "${title}", "head": "refs/heads/${head}", "base": "refs/heads/${base}"}'\
         -X POST ${rsaAsocGitHubApiUrl}${repositoryName}/pulls\
         -u ${userName}:${userPassword}\
     """).trim()
