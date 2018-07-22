@@ -62,11 +62,6 @@ class RerunFullFlowDagBuilder(object):
         clean_adapter_operator >> clean_dags_from_db_operator
         clean_dags_from_db_operator >> clean_logs_operator
 
-        if is_remove_ca_tables:
-            clean_collector_operator = build_clean_collector_operator(dag)
-            kill_dags_task_instances_operator >> clean_collector_operator
-            clean_collector_operator >> clean_dags_from_db_operator
-
         logging.debug("Finished creating dag - %s", dag.dag_id)
 
         return dag
@@ -186,36 +181,14 @@ def build_clean_logs_operator(cleanup_dag):
 
 
 def build_clean_adapter_operator(cleanup_dag, is_remove_ca_tables):
-    adapter_clean_bash_command = "rm -f /opt/flume/conf/adapter/file_*" \
-                                 " && rm -f /opt/flume/conf/adapter/authentication_*" \
-                                 " && rm -f /opt/flume/conf/adapter/active_directory_*"
+    adapter_clean_bash_command = "rm -f /var/lib/netwitness/presidio/flume/conf/adapter/file_*" \
+                                 " && rm -f /var/lib/netwitness/presidio/flume/conf/adapter/authentication_*" \
+                                 " && rm -f /var/lib/netwitness/presidio/flume/conf/adapter/active_directory_*"
 
     clean_adapter_operator = BashOperator(task_id='clean_adapter',
                                           bash_command=adapter_clean_bash_command,
                                           dag=cleanup_dag)
     return clean_adapter_operator
-
-
-def build_clean_collector_operator(cleanup_dag):
-    collector_stop_service_command = "sudo systemctl stop presidio-collector %s"
-
-    collector_clean_bash_command = "&& rm -rf /opt/flume/data/collector/*" \
-                                   " && rm -rf /data/presidio/3p/flume/checkpoint/collector/file/*" \
-                                   " && rm -rf /data/presidio/3p/flume/checkpoint/collector/authentication/*" \
-                                   " && rm -rf /data/presidio/3p/flume/checkpoint/collector/active_directory/*" \
-                                   " && rm -rf /data/presidio/3p/flume/checkpoint/collector/default/*" \
-                                   " && rm -rf /data/presidio/3p/flume/data/collector/file/*" \
-                                   " && rm -rf /data/presidio/3p/flume/data/collector/authentication/*" \
-                                   " && rm -rf /data/presidio/3p/flume/data/collector/active_directory/*" \
-                                   " && rm -rf /data/presidio/3p/flume/data/collector/default/*" \
-                                   " && rm -rf $PRESIDIO_HOME/flume/counters/source %s"
-
-    collector_start_service_command = "&& sudo systemctl start presidio-collector"
-
-    clean_collector_operator = BashOperator(task_id='clean_collector',
-                                            bash_command=collector_stop_service_command % collector_clean_bash_command % collector_start_service_command,
-                                            dag=cleanup_dag)
-    return clean_collector_operator
 
 
 def clean_elastic_data():
