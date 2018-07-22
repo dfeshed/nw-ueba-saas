@@ -25,6 +25,7 @@ import presidio.ade.domain.store.AdeDataStoreCleanupParams;
 import java.lang.reflect.Field;
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -181,7 +182,7 @@ public class EnrichedDataStoreImplMongo implements StoreManagerAwareEnrichedData
 
         return mongoTemplate
                 .aggregate(aggregation, collectionName, ContextIdToNumOfItems.class)
-                .getMappedResults();
+                .getMappedResults().stream().filter(contextIdToNumOfItems -> contextIdToNumOfItems.getContextId() != null).collect(Collectors.toList());
     }
 
     /**
