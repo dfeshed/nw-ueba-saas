@@ -101,7 +101,7 @@ module('Unit | Actions | NextGen Creators', function(hooks) {
 
     const secondDispatch = (action) => {
       assert.equal(action.type, ACTION_TYPES.DESELECT_NEXT_GEN_PILLS, 'action has the correct type');
-      assert.deepEqual(action.payload.pillData, state.investigate.nextGen.pillsData, 'action pillData has the right value');
+      assert.deepEqual(action.payload.pillData, state.investigate.queryNode.pillsData, 'action pillData has the right value');
       done();
     };
 
@@ -130,7 +130,7 @@ module('Unit | Actions | NextGen Creators', function(hooks) {
       .pillsDataPopulated()
       .build()
       .investigate
-      .nextGen;
+      .queryNode;
 
     const action = nextGenCreators.deselectNextGenPills({
       pillData: pillsData
@@ -146,7 +146,7 @@ module('Unit | Actions | NextGen Creators', function(hooks) {
     const getState = () => {
       return new ReduxDataHelper().pillsDataPopulated().makeSelected(['1', '2']).build();
     };
-    const { pillsData } = getState().investigate.nextGen;
+    const { pillsData } = getState().investigate.queryNode;
 
     const thunk = nextGenCreators.deselectAllNextGenPills();
 
@@ -164,7 +164,7 @@ module('Unit | Actions | NextGen Creators', function(hooks) {
       .pillsDataPopulated()
       .build()
       .investigate
-      .nextGen;
+      .queryNode;
 
     const action = nextGenCreators.selectNextGenPills({
       pillData: pillsData
@@ -202,7 +202,7 @@ module('Unit | Actions | NextGen Creators', function(hooks) {
     }, position);
 
     return settled().then(() => {
-      const { investigate: { nextGen: { pillsData } } } = redux.getState();
+      const { investigate: { queryNode: { pillsData } } } = redux.getState();
       const currentPill = pillsData[position];
       assert.ok(currentPill.isInvalid, 'Expected error flag');
       assert.equal(currentPill.validationError.message, 'expecting <comma-separated list of numeric ranges, values, or value aliases> or <comma-separated list of keys> here: \'242424242424242424242424\'', 'Excpected server validation error');
@@ -221,7 +221,7 @@ module('Unit | Actions | NextGen Creators', function(hooks) {
 
     const secondDispatch = (action) => {
       assert.equal(action.type, ACTION_TYPES.DESELECT_NEXT_GEN_PILLS, 'action has the correct type');
-      assert.deepEqual(action.payload.pillData, state.investigate.nextGen.pillsData, 'action pillData has the right value');
+      assert.deepEqual(action.payload.pillData, state.investigate.queryNode.pillsData, 'action pillData has the right value');
       done();
     };
 
@@ -256,5 +256,17 @@ module('Unit | Actions | NextGen Creators', function(hooks) {
         value: '50'
       }], 'action pillData has the right value');
   });
+
+  test('updatedFreeFormText action creator returns proper type and payload', function(assert) {
+    const action = nextGenCreators.updatedFreeFormText('medium = 50');
+    assert.equal(action.type, ACTION_TYPES.UPDATE_FREE_FORM_TEXT, 'action has the correct type');
+    assert.deepEqual(action.payload.pillData, {
+      complexFilterText: undefined,
+      meta: 'medium',
+      operator: '=',
+      value: '50'
+    }, 'action pillData has the right value');
+  });
+
 
 });

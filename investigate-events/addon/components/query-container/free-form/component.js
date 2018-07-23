@@ -1,10 +1,9 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { throttle } from '@ember/runloop';
+import { throttle, debounce } from '@ember/runloop';
 
-import { hasRequiredValuesToQuery } from 'investigate-events/reducers/investigate/query-node/selectors';
-import { freeFormText } from 'investigate-events/reducers/investigate/next-gen/selectors';
-import { addFreeFormFilter } from 'investigate-events/actions/next-gen-creators';
+import { hasRequiredValuesToQuery, freeFormText } from 'investigate-events/reducers/investigate/query-node/selectors';
+import { addFreeFormFilter, updatedFreeFormText } from 'investigate-events/actions/next-gen-creators';
 
 const stateToComputed = (state) => ({
   freeFormText: freeFormText(state),
@@ -12,7 +11,8 @@ const stateToComputed = (state) => ({
 });
 
 const dispatchToActions = {
-  addFreeFormFilter
+  addFreeFormFilter,
+  updatedFreeFormText
 };
 
 const freeForm = Component.extend({
@@ -28,12 +28,11 @@ const freeForm = Component.extend({
   throttledFocusOut(e) {
     // Don't let multiple focus out calls through,
     // they would be identical
-    this.set('event', e);
-    throttle(this, this.onFocusOut, 250);
+    throttle(this, this.onFocusOut, { event: e }, 250);
   },
 
-  onFocusOut() {
-    const text = this.get('event').target.value;
+  onFocusOut({ event }) {
+    const text = event.target.value;
     // Don't do anything if there is nothing in the box
     if (text.length > 0) {
 
@@ -45,15 +44,24 @@ const freeForm = Component.extend({
     }
   },
 
+  debouncedKeyUp({ event }) {
+    // Update text in state because if it is different
+    // than the text already in state, need to treat query
+    // as dirty
+    this.send('updatedFreeFormText', event.target.value);
+  },
+
   actions: {
     keyDown(e) {
-      if (this.get('hasRequiredValuesToQuery')) {
-        if (e.keyCode === 13) {
-          e.target.blur();
-          this.throttledFocusOut(e);
-          this.executeQuery();
-        }
+      if (e.keyCode === 13 && this.get('hasRequiredValuesToQuery')) {
+        e.target.blur();
+        this.throttledFocusOut(e);
+        this.executeQuery();
       }
+    },
+
+    keyUp(e) {
+      debounce(this, this.debouncedKeyUp, { event: e }, 100);
     },
 
     focusOut(e) {

@@ -12,8 +12,10 @@ import PILL_SELECTORS from '../pill-selectors';
 import nextGenCreators from 'investigate-events/actions/next-gen-creators';
 
 const addFreeFormFilterSpy = sinon.spy(nextGenCreators, 'addFreeFormFilter');
+const updatedFreeFormTextSpy = sinon.spy(nextGenCreators, 'updatedFreeFormText');
 
 const ENTER_KEY = KEY_MAP.enter.code;
+const X_KEY = 88;
 
 let setState;
 
@@ -30,10 +32,12 @@ module('Integration | Component | free-form', function(hooks) {
 
   hooks.afterEach(function() {
     addFreeFormFilterSpy.reset();
+    updatedFreeFormTextSpy.reset();
   });
 
   hooks.after(function() {
     addFreeFormFilterSpy.restore();
+    updatedFreeFormTextSpy.restore();
   });
 
   test('it triggers execute query action when user enters text and presses enter', async function(assert) {
@@ -108,6 +112,32 @@ module('Integration | Component | free-form', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.freeFormInput, 'keydown', ENTER_KEY);
 
     assert.equal(addFreeFormFilterSpy.callCount, 0, 'The add pill action creator was not called');
+  });
+
+  test('it sends out an action to update the free for string', async function(assert) {
+    assert.expect(2);
+
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .hasRequiredValuesToQuery(true)
+      .build();
+
+    this.set('executeQuery', () => {});
+
+    await render(hbs`{{query-container/free-form executeQuery=(action executeQuery)}}`);
+
+    await click(PILL_SELECTORS.freeFormInput);
+    // await triggerKeyEvent(PILL_SELECTORS.freeFormInput, 'keydown', X_KEY);
+
+    await fillIn(PILL_SELECTORS.freeFormInput, 'm');
+    await triggerKeyEvent(PILL_SELECTORS.freeFormInput, 'keyup', X_KEY);
+
+    assert.equal(updatedFreeFormTextSpy.callCount, 1, 'The add pill action creator was called once');
+    assert.deepEqual(
+      updatedFreeFormTextSpy.args[0][0],
+      'm',
+      'The action creator was called with the right arguments'
+    );
   });
 
 });

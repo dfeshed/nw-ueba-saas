@@ -73,7 +73,7 @@ export default Route.extend({
     executeQuery() {
       const redux = this.get('redux');
       const investigateState = redux.getState().investigate;
-      const pillData = investigateState.nextGen.pillsData;
+      const pillData = investigateState.queryNode.pillsData;
       const { data, queryNode } = investigateState;
 
       const qp = {

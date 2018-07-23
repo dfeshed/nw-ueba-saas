@@ -7,7 +7,6 @@ import eventTimeline from './event-timeline/reducer';
 import meta from './meta/reducer';
 import queryNode from './query-node/reducer';
 import services from './services/reducer';
-import nextGen from './next-gen/reducer';
 
 export default combineReducers({
   data,
@@ -17,6 +16,5 @@ export default combineReducers({
   eventTimeline,
   meta,
   queryNode,
-  services,
-  nextGen
+  services
 });

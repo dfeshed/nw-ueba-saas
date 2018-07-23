@@ -178,6 +178,7 @@ export default class DataHelper {
     _set(this.state, 'queryNode.previouslySelectedTimeRanges', {});
     _set(this.state, 'queryNode.serviceId', '1');
     _set(this.state, 'queryNode.queryView', 'nextGen');
+    _set(this.state, 'queryNode.pillsData', []);
     if (flag) {
       _set(this.state, 'services.serviceData', [{ id: '1' }]);
       _set(this.state, 'services.summaryData', { startTime: 1506537600 });
@@ -253,27 +254,32 @@ export default class DataHelper {
   // NEXT GEN
 
   pillsDataEmpty() {
-    _set(this.state, 'nextGen.pillsData', []);
+    _set(this.state, 'queryNode.pillsData', []);
     return this;
   }
 
   pillsDataPopulated(pD = DEFAULT_PILLS_DATA) {
-    _set(this.state, 'nextGen.pillsData', pD);
+    _set(this.state, 'queryNode.pillsData', pD);
     return this;
   }
 
   pillsDataComplex(pD = COMPLEX_PILL_DATA) {
-    _set(this.state, 'nextGen.pillsData', pD);
+    _set(this.state, 'queryNode.pillsData', pD);
     return this;
   }
 
   invalidPillsDataPopulated(pD = INVALID_PILL_DATA) {
-    _set(this.state, 'nextGen.pillsData', pD);
+    _set(this.state, 'queryNode.pillsData', pD);
+    return this;
+  }
+
+  updatedFreeFormTextPill(text = 'foo') {
+    _set(this.state, 'queryNode.updatedFreeFormTextPill', text);
     return this;
   }
 
   makeSelected(pillIds = []) {
-    this.state.nextGen.pillsData = this.state.nextGen.pillsData.map((pD) => {
+    this.state.queryNode.pillsData = this.state.queryNode.pillsData.map((pD) => {
       if (pillIds.includes(pD.id)) {
         pD = {
           ...pD,
@@ -287,7 +293,7 @@ export default class DataHelper {
   }
 
   markInvalid(pillIds = []) {
-    this.state.nextGen.pillsData = this.state.nextGen.pillsData.map((pD) => {
+    this.state.queryNode.pillsData = this.state.queryNode.pillsData.map((pD) => {
       if (pillIds.includes(pD.id)) {
         pD = {
           ...pD,
@@ -302,7 +308,7 @@ export default class DataHelper {
   }
 
   markSelected(pillIds = []) {
-    this.state.nextGen.pillsData = this.state.nextGen.pillsData.map((pD) => {
+    this.state.queryNode.pillsData = this.state.queryNode.pillsData.map((pD) => {
       if (pillIds.includes(pD.id)) {
         pD = {
           ...pD,
@@ -316,7 +322,7 @@ export default class DataHelper {
   }
 
   markEditing(pillIds = []) {
-    this.state.nextGen.pillsData = this.state.nextGen.pillsData.map((pD) => {
+    this.state.queryNode.pillsData = this.state.queryNode.pillsData.map((pD) => {
       if (pillIds.includes(pD.id)) {
         pD = {
           ...pD,

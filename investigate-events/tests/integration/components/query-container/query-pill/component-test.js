@@ -7,7 +7,7 @@ import { blur, click, fillIn, find, findAll, focus, render, triggerKeyEvent, wai
 
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
-import { enrichedPillsData } from 'investigate-events/reducers/investigate/next-gen/selectors';
+import { enrichedPillsData } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { createBasicPill, isIgnoredInitialEvent, doubleClick } from '../pill-util';
 import KEY_MAP from 'investigate-events/util/keys';
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';

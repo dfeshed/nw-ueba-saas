@@ -1,9 +1,8 @@
 import * as ACTION_TYPES from './types';
 import { clientSideParseAndValidate, getMetaFormat } from './utils';
-import { selectedPills } from 'investigate-events/reducers/investigate/next-gen/selectors';
+import { selectedPills } from 'investigate-events/reducers/investigate/query-node/selectors';
 import validateQueryFragment from './fetch/query-validation';
 import { transformTextToPillData } from 'investigate-events/actions/utils';
-
 
 const _validateNextGenPill = (pillData, position) => {
   return (dispatch, getState) => {
@@ -141,6 +140,17 @@ export const addFreeFormFilter = (freeFormText) => {
     type: ACTION_TYPES.REPLACE_ALL_NEXT_GEN_PILLS,
     payload: {
       pillData: [pillData]
+    }
+  };
+};
+
+// Transform the text to what it would look like in pill form
+export const updatedFreeFormText = (freeFormText) => {
+  const pillData = transformTextToPillData(freeFormText.trim());
+  return {
+    type: ACTION_TYPES.UPDATE_FREE_FORM_TEXT,
+    payload: {
+      pillData
     }
   };
 };

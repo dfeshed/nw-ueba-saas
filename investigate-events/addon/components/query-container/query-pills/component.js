@@ -4,7 +4,7 @@ import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import RsaContextMenu from 'rsa-context-menu/components/rsa-context-menu/component';
 
-import { enrichedPillsData, hasInvalidSelectedPill } from 'investigate-events/reducers/investigate/next-gen/selectors';
+import { enrichedPillsData, hasInvalidSelectedPill } from 'investigate-events/reducers/investigate/query-node/selectors';
 import {
   addNextGenPill,
   deleteNextGenPill,

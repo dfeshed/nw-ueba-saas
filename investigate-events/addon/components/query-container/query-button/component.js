@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 
-import { canQueryNextGen } from 'investigate-events/reducers/investigate/next-gen/selectors';
+import { canQueryNextGen } from 'investigate-events/reducers/investigate/query-node/selectors';
 
 const stateToComputed = (state) => ({
   requiredValuesToQuery: canQueryNextGen(state)

@@ -1,4 +1,5 @@
 import { module, test } from 'qunit';
+
 import {
   hasRequiredValuesToQuery,
   selectedTimeRange,
@@ -6,9 +7,14 @@ import {
   selectedTimeRangeName,
   useDatabaseTime,
   isOnFreeForm,
-  isOnNextGen
+  isOnNextGen,
+  enrichedPillsData,
+  selectedPills,
+  canQueryNextGen,
+  freeFormText,
+  hasInvalidSelectedPill
 } from 'investigate-events/reducers/investigate/query-node/selectors';
-
+import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
 
 module('Unit | Selectors | queryNode');
@@ -166,15 +172,13 @@ test('need services to query', function(assert) {
       queryNode: {
         serviceId: '1',
         metaFilter: { conditions: [] },
-        previouslySelectedTimeRanges: {}
+        previouslySelectedTimeRanges: {},
+        currentQueryHash: 'kajsdlkajldsk',
+        pillsData: []
       },
       services: {
         serviceData: null,
         summaryData: { startTime: 1 }
-      },
-      nextGen: {
-        currentQueryHash: 'kajsdlkajldsk',
-        pillsData: []
       }
     }
   };
@@ -187,15 +191,13 @@ test('need summary data to query', function(assert) {
       queryNode: {
         serviceId: '1',
         metaFilter: { conditions: [] },
-        previouslySelectedTimeRanges: {}
+        previouslySelectedTimeRanges: {},
+        currentQueryHash: 'kajsdlkajldsk',
+        pillsData: []
       },
       services: {
         serviceData: [{ id: '1', displayName: 'svs1', name: 'SVS1', version: '11.1.0.0' }],
         summaryData: null
-      },
-      nextGen: {
-        currentQueryHash: 'kajsdlkajldsk',
-        pillsData: []
       }
     }
   };
@@ -208,15 +210,13 @@ test('aggregation was not performed, so we cannot query', function(assert) {
       queryNode: {
         serviceId: '1',
         metaFilter: { conditions: [] },
-        previouslySelectedTimeRanges: {}
+        previouslySelectedTimeRanges: {},
+        currentQueryHash: 'kajsdlkajldsk',
+        pillsData: []
       },
       services: {
         serviceData: [{ id: '1', displayName: 'svs1', name: 'SVS1', version: '11.1.0.0' }],
         summaryData: { startTime: 0 }
-      },
-      nextGen: {
-        currentQueryHash: 'kajsdlkajldsk',
-        pillsData: []
       }
     }
   };
@@ -231,22 +231,20 @@ test('is not dirty so cannot query', function(assert) {
         previouslySelectedTimeRanges: {},
         // serviceId can be undefined because we select a default service
         serviceId: '1',
-        startTime: '1'
+        startTime: '1',
+        currentQueryHash: '1-1-undefined-a-b-c-undefined',
+        pillsData: [{ meta: 'a', operator: 'b', value: 'c', complexPillText: undefined }]
       },
       services: {
         serviceData: [{ id: '1', displayName: 'svs1', name: 'SVS1', version: '11.1.0.0' }],
         summaryData: { startTime: 1 }
-      },
-      nextGen: {
-        currentQueryHash: '1-1-undefined-a-b-c-undefined',
-        pillsData: [{ meta: 'a', operator: 'b', value: 'c', complexPillText: undefined }]
       }
     }
   };
-  assert.notOk(hasRequiredValuesToQuery(state), 'Missing some required state to query');
+  assert.notOk(hasRequiredValuesToQuery(state), 'query has not been updated so cannot query');
 });
 
-test('is dirty so can query', function(assert) {
+test('is dirty due to pills so can query', function(assert) {
   const state = {
     investigate: {
       queryNode: {
@@ -254,20 +252,68 @@ test('is dirty so can query', function(assert) {
         previouslySelectedTimeRanges: {},
         // serviceId can be undefined because we select a default service
         serviceId: '1',
-        startTime: '1'
+        startTime: '1',
+        // note service is 2
+        currentQueryHash: '2-1-undefined-a-b-c-undefined',
+        pillsData: [{ meta: 'a', operator: 'b', value: 'c', complexPillText: undefined }]
       },
       services: {
         serviceData: [{ id: '1', displayName: 'svs1', name: 'SVS1', version: '11.1.0.0' }],
         summaryData: { startTime: 1 }
-      },
-      nextGen: {
-        // note service is 2
-        currentQueryHash: '2-1-undefined-a-b-c-undefined',
-        pillsData: [{ meta: 'a', operator: 'b', value: 'c', complexPillText: undefined }]
       }
     }
   };
-  assert.ok(hasRequiredValuesToQuery(state), 'Missing some required state to query');
+  assert.ok(hasRequiredValuesToQuery(state), 'can query due to pills being updated');
+});
+
+test('is dirty due to updated free form text', function(assert) {
+  const state = {
+    investigate: {
+      queryNode: {
+        metaFilter: { conditions: [] },
+        previouslySelectedTimeRanges: {},
+        // serviceId can be undefined because we select a default service
+        serviceId: '1',
+        startTime: '1',
+        // note hash is the same as data
+        currentQueryHash: '1-1-undefined-a-b-c-undefined',
+        pillsData: [{ meta: 'a', operator: 'b', value: 'c', complexPillText: undefined }],
+        updatedFreeFormTextPill: {
+          meta: undefined, operator: undefined, value: undefined, complexPillText: 'boom'
+        }
+      },
+      services: {
+        serviceData: [{ id: '1', displayName: 'svs1', name: 'SVS1', version: '11.1.0.0' }],
+        summaryData: { startTime: 1 }
+      }
+    }
+  };
+  assert.ok(hasRequiredValuesToQuery(state), 'can query because free form updated');
+});
+
+test('is not dirty even with free form updated', function(assert) {
+  const state = {
+    investigate: {
+      queryNode: {
+        metaFilter: { conditions: [] },
+        previouslySelectedTimeRanges: {},
+        // serviceId can be undefined because we select a default service
+        serviceId: '1',
+        startTime: '1',
+        // note hash is the same as data
+        currentQueryHash: '1-1-undefined-a-=-b-undefined',
+        pillsData: [{ meta: 'a', operator: '=', value: 'b', complexPillText: undefined }],
+        updatedFreeFormTextPill: {
+          meta: 'a', operator: '=', value: 'b', complexPillText: undefined
+        }
+      },
+      services: {
+        serviceData: [{ id: '1', displayName: 'svs1', name: 'SVS1', version: '11.1.0.0' }],
+        summaryData: { startTime: 1 }
+      }
+    }
+  };
+  assert.notOk(hasRequiredValuesToQuery(state), 'cannot query because free form updated equals pill data');
 });
 
 test('has required inputs to query', function(assert) {
@@ -277,15 +323,13 @@ test('has required inputs to query', function(assert) {
         metaFilter: { conditions: [] },
         previouslySelectedTimeRanges: {},
         // serviceId can be undefined because we select a default service
-        serviceId: undefined
+        serviceId: undefined,
+        currentQueryHash: '`kajsdlkajldsk',
+        pillsData: []
       },
       services: {
         serviceData: [{ id: '1', displayName: 'svs1', name: 'SVS1', version: '11.1.0.0' }],
         summaryData: { startTime: 1 }
-      },
-      nextGen: {
-        currentQueryHash: '`kajsdlkajldsk',
-        pillsData: []
       }
     }
   };
@@ -312,4 +356,84 @@ test('check isOnNextGen', function(assert) {
     }
   };
   assert.equal(isOnNextGen(state), true, 'Should have focus');
+});
+
+test('enrichedPillsData is false when status is not error', function(assert) {
+  const state = new ReduxDataHelper().language().pillsDataPopulated().build();
+  const pD = enrichedPillsData(state);
+  assert.equal(pD.length, 2, 'returns correct number of pill data');
+  assert.equal(pD[0].meta.metaName, 'a', 'transforms meta correctly');
+  assert.equal(pD[0].operator.displayName, '=', 'transforms operator correctly');
+  assert.equal(pD[0].value, '\'x\'', 'transforms value correctly');
+});
+
+test('selectedPills returns only those pills that are selected', function(assert) {
+  const state = new ReduxDataHelper()
+    .language()
+    .pillsDataPopulated()
+    .makeSelected(['1'])
+    .build();
+  const pD = selectedPills(state);
+  assert.equal(pD.length, 1, 'returns correct number of pill data');
+  assert.equal(pD[0].meta, 'a', 'transforms meta correctly');
+  assert.equal(pD[0].operator, '=', 'transforms operator correctly');
+  assert.equal(pD[0].value, '\'x\'', 'transforms value correctly');
+});
+
+test('canQueryNextGen is true when a query is ready to execute and NO invalid pill is present', function(assert) {
+  const state = new ReduxDataHelper()
+    .language()
+    .pillsDataPopulated()
+    .hasRequiredValuesToQuery(true)
+    .build();
+
+  const canQuery = canQueryNextGen(state);
+  assert.ok(canQuery, 'Selector returns true if a query is ready to execute and NO invalid pill is present');
+});
+
+test('canQueryNextGen is false when query is ready to execute, but an invalid pill is present', function(assert) {
+  const state = new ReduxDataHelper()
+    .language()
+    .hasRequiredValuesToQuery(true)
+    .pillsDataPopulated()
+    .markInvalid(['1'])
+    .build();
+
+  const canQuery = canQueryNextGen(state);
+  assert.notOk(canQuery, 'Selector returns false if query is ready to execute, but an invalid pill is present');
+});
+
+test('hasInvalidSelectedPill is false when no invalid pill is selected', function(assert) {
+  const state = new ReduxDataHelper()
+    .language()
+    .hasRequiredValuesToQuery(true)
+    .pillsDataPopulated()
+    .makeSelected(['1'])
+    .build();
+
+  const hasInvalid = hasInvalidSelectedPill(state);
+  assert.notOk(hasInvalid, 'Selector returns false if no invalid pill is selected');
+});
+
+test('hasInvalidSelectedPill is true when invalid pill is selected', function(assert) {
+  const state = new ReduxDataHelper()
+    .language()
+    .hasRequiredValuesToQuery(true)
+    .pillsDataPopulated()
+    .makeSelected(['1'])
+    .markInvalid(['1'])
+    .build();
+
+  const hasInvalid = hasInvalidSelectedPill(state);
+  assert.ok(hasInvalid, 'Selector returns true if  invalid pill is selected');
+});
+
+test('freeFormText is set properly', function(assert) {
+  const state = new ReduxDataHelper()
+    .language()
+    .pillsDataPopulated()
+    .build();
+
+  const text = freeFormText(state);
+  assert.equal(text, 'a = \'x\' && b = \'y\'', 'freeFormText is set properly');
 });
