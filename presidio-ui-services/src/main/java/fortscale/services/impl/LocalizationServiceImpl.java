@@ -93,7 +93,7 @@ public class LocalizationServiceImpl implements LocalizationService, Initializin
     @Override
     public void afterPropertiesSet() throws Exception {
         Map<String, String> localizationConfig = new HashMap();
-        DEFAULT_LOCALE = Locale.forLanguageTag(defaultLocaleString);
+        DEFAULT_LOCALE = getLocaleFromString(defaultLocaleString);
 
         localizationConfig.put(LOCALIZATION_CONFIG_KEY, DEFAULT_LOCALE.getLanguage());
         languages.forEach(langId -> this.loadLang(langId));
@@ -105,11 +105,28 @@ public class LocalizationServiceImpl implements LocalizationService, Initializin
     public Map<String,Map<String, String>> getMessagesToAllLanguages(){
         Map<String, Map<String, String>> all = new HashMap<>();
         languages.forEach(langId->{
-            Locale locale = Locale.forLanguageTag(langId);
+            Locale locale = getLocaleFromString(langId);
             all.put(langId,this.messagesCache.get(locale));
         });
 
         return all;
+    }
+
+
+    private Locale getLocaleFromString(String localeText){
+        String langOnly=null;
+        String region = null;
+        if (localeText.contains("_")){
+            langOnly = localeText.split("_")[0];
+            region = localeText.split("_")[1];
+
+        }else {
+            langOnly = localeText;
+
+        }
+        return new Locale.Builder().setLanguage(langOnly).setRegion(region).build();
+
+
     }
 
     private Map<String, String> loadLang(String langId){
@@ -125,7 +142,7 @@ public class LocalizationServiceImpl implements LocalizationService, Initializin
                                     e -> e.getValue().toString()
                             ));
 
-            this.messagesCache.put(Locale.forLanguageTag(langId),langMap);
+            this.messagesCache.put(getLocaleFromString(langId),langMap);
 
             return langMap;
         } catch (Exception e) {
