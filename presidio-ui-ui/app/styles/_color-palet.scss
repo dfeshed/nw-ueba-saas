@@ -25,7 +25,7 @@ $clrWhite: #FFFFFF;
 $clrButtonRegular: var(--main-widgets-titles-text-color);;
 $clrButtonHover: #8bc6f7;
 $clrButtonPressed: #4388d1;
-$clrButtonDisabled: #cbcbcb;
+$clrButtonDisabled: var(--buttons-disabled-background-color);
 
 $clrIKBlueMain: var(--header-bar-background-color);
 
