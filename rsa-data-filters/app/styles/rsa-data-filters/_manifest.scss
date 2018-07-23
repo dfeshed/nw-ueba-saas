@@ -1,0 +1,46 @@
+.filter-controls {
+  padding-top: rsa-whitespace();
+  h2 {
+    @include rsa-font(header, small);
+    padding: rsa-whitespace() 0 rsa-whitespace(less) 0;
+    color: text-color(primary, light);
+  }
+  .file-name-input, .number-input {
+    padding-left: rsa-whitespace(more);
+    input {
+      padding: 0.17em;
+      width: 80px;
+    }
+  }
+  .text-filter-content {
+    height: auto;
+  }
+
+  .list-filter-option {
+    padding-top: rsa-whitespace(less);
+  }
+  .number-filter {
+    .operators {
+      .ember-power-select-trigger {
+        width: 100px;
+      }
+    }
+    .units {
+      padding-left: rsa-whitespace(more);
+      .ember-power-select-trigger {
+        width: 100px;
+      }
+    }
+  }
+
+  /**Hide the arrow buttons for number type */
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+  }
+  input[type=number] {
+    -moz-appearance: textfield;
+  }
+
+
+}
