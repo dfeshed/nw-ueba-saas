@@ -72,7 +72,7 @@
     },
     {
       "type": "if_else",
-      "name": "accesses-filter-for-4663",
+      "name": "operation-type-if-else-transformer",
       "predicate": {
         "type": "regex",
         "name": "reference-id-equal-4663",
@@ -80,17 +80,91 @@
         "regex": "4663"
       },
       "ifTransformer": {
-        "type": "filter",
-        "name": "accesses-filter",
-        "predicate": {
-          "type": "regex",
-          "name": "accesses-equal-delete",
-          "sourceKey": "accesses",
-          "regex": "DELETE|DeleteChild"
-        },
-        "filterIn": false
+        "type": "chain",
+        "name": "operation-type-for-4663-chain",
+        "transformerList": [
+          {
+            "type": "filter",
+            "name": "accesses-filter",
+            "predicate": {
+              "type": "regex",
+              "name": "accesses-equal-delete",
+              "sourceKey": "accesses",
+              "regex": "DELETE|DeleteChild"
+            },
+            "filterIn": false
+          },
+          {
+            "type": "switch_case",
+            "name": "operation_type-according-to-accesses",
+            "sourceKey": "accesses",
+            "destinationKey": "operationType",
+            "destinationDefaultValue": null,
+            "cases": [
+              {
+                "caseKey": ".*WriteData \\(or AddFile\\).*",
+                "caseValue": "FILE_CREATED",
+                "isRegex": true
+              },
+              {
+                "caseKey": ".*ReadData \\(or ListDirectory\\).*",
+                "caseValue": "FILE_OPENED",
+                "isRegex": true
+              },
+              {
+                "caseKey": ".*AppendData \\(or AddSubdirectory or CreatePipeInstance\\).*",
+                "caseValue": "FILE_MODIFIED",
+                "isRegex": true
+              },
+              {
+                "caseKey": ".*WRITE_DAC.*",
+                "caseValue": "FILE_WRITE_DAC_PERMISSION_CHANGED",
+                "isRegex": true
+              },
+              {
+                "caseKey": ".*WRITE_OWNER.*",
+                "caseValue": "FILE_WRITE_OWNER_PERMISSION_CHANGED",
+                "isRegex": true
+              }
+            ]
+          },
+          {
+            "type": "filter",
+            "name": "operation-type-not-null-4663-filter",
+            "predicate": {
+              "type": "key_exist",
+              "name": "operation-type-not-null-4663",
+              "key": "operationType",
+              "testNull": true
+            },
+            "filterIn": true
+          }
+        ]
       },
-      "elseTransformer": null
+      "elseTransformer": {
+        "type": "switch_case",
+        "name": "operation_type-according-to-event-code",
+        "sourceKey": "reference_id",
+        "destinationKey": "operationType",
+        "destinationDefaultValue": null,
+        "cases": [
+          {
+            "caseKey": "4660",
+            "caseValue": "FILE_DELETED",
+            "isRegex": false
+          },
+          {
+            "caseKey": "4670",
+            "caseValue": "FILE_PERMISSION_CHANGED",
+            "isRegex": false
+          },
+          {
+            "caseKey": "5145",
+            "caseValue": "FILE_OPENED",
+            "isRegex": false
+          }
+        ]
+      }
     },
     {
       "type": "regex_captor_and_formatter",
@@ -210,64 +284,6 @@
         {
           "caseKey": "^[\\\\]+.*$",
           "caseValue": true,
-          "isRegex": true
-        }
-      ]
-    },
-    {
-      "type": "switch_case",
-      "name": "operation_type-according-to-event-code",
-      "sourceKey": "reference_id",
-      "destinationKey": "operationType",
-      "destinationDefaultValue": null,
-      "cases": [
-        {
-          "caseKey": "4660",
-          "caseValue": "FILE_DELETED",
-          "isRegex": false
-        },
-        {
-          "caseKey": "4670",
-          "caseValue": "FILE_PERMISSION_CHANGED",
-          "isRegex": false
-        },
-        {
-          "caseKey": "5145",
-          "caseValue": "FILE_OPENED",
-          "isRegex": false
-        }
-      ]
-    },
-    {
-      "type": "switch_case",
-      "name": "operation_type-according-to-accesses",
-      "sourceKey": "accesses",
-      "destinationKey": "operationType",
-      "destinationDefaultValue": null,
-      "cases": [
-        {
-          "caseKey": ".*WriteData \\(or AddFile\\).*",
-          "caseValue": "FILE_CREATED",
-          "isRegex": true
-        },
-        {
-          "caseKey": ".*ReadData \\(or ListDirectory\\).*",
-          "caseValue": "FILE_OPENED",
-          "isRegex": true
-        },
-        {
-          "caseKey": ".*AppendData \\(or AddSubdirectory or CreatePipeInstance\\).*",
-          "caseValue": "FILE_MODIFIED",
-          "isRegex": true
-        },
-        {
-          "caseKey": ".*WRITE_DAC.*",
-          "caseValue": "FILE_WRITE_DAC_PERMISSION_CHANGED",
-          "isRegex": true
-        },
-        {
-          "caseKey": ".*WRITE_OWNER.*",
-          "caseValue": "FILE_WRITE_OWNER_PERMISSION_CHANGED",
           "isRegex": true
         }
       ]
