@@ -228,12 +228,10 @@
         .fs-button {
             &.fs-button-regular {
                 &.ok{
-                    border: 1px var(--buttons-borders-color) solid;
                     .check-mark-icon {
                         vertical-align: sub;
                         stroke: white;
                         fill: white;
-                        display: none;
                     }
                 }
                 &:not([disabled="disabled"]) {
