@@ -255,12 +255,8 @@ public class Alert extends AbstractElasticDocument {
             return 0;
         }
 
-        // save events
-        List<IndicatorEvent> events = new ArrayList<IndicatorEvent>();
-        indicators.stream()
-                .filter(indicator -> indicator.getEvents() != null)
-                .forEach(indicator -> events.addAll(indicator.getEvents()));
-        return events.size();
+        int events = indicators.stream().mapToInt(Indicator::getEventsNum).sum();
+        return events;
     }
 
     public String getVendorUserId() {

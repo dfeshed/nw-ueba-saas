@@ -118,8 +118,8 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
 
             }
             storeAlerts(alerts);
-            alerts.clear();
             outputMonitoringService.reportTotalAnomalyEvents(alerts, startDate);
+            alerts.clear();
         }
 
         storeUsers(users); //Get the generated users with the new elasticsearch ID
