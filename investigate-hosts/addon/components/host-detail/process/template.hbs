@@ -34,6 +34,11 @@
               {{host-detail/process/process-image-hooks}}
             {{/rsa-content-accordion}}
           </box>
+          <box class="process-content-box__accordion-content">
+            {{#rsa-content-accordion class='accordion-content-title' label=(t 'investigateHosts.process.suspiciousThreads.title')}}
+              {{host-detail/process/process-suspicious-threads}}
+            {{/rsa-content-accordion}}
+          </box>
         {{/if}}
       </div>
     </vbox>

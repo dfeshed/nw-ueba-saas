@@ -130,5 +130,5 @@ test('Should not apply rsa-loader if process tree is not loading', function(asse
 
 test('Check that no results message rendered if there is no process information', function(assert) {
   this.render(hbs`{{#host-detail/process/process-list as |item index column|}}{{/host-detail/process/process-list}}`);
-  assert.equal(this.$('.rsa-data-table-body').text().trim(), 'No process information were found', 'No process information message rendered');
+  assert.equal(this.$('.rsa-data-table-body').text().trim(), 'No process information was found.', 'No process information message rendered');
 });

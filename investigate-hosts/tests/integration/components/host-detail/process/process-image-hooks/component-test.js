@@ -41,14 +41,15 @@ module('Integration | Component | endpoint host-detail/process/process-image-hoo
     assert.equal(findAll('.process-image-hooks-list .rsa-data-table-body-row').length, 5, 'All the matched image hooks are rendered');
   });
 
-  test('4 columns rendered in the Image hooks table', async function(assert) {
+  test('5 columns rendered in the Image hooks table', async function(assert) {
     new ReduxDataHelper(initState).dllList(dllListData).selectedProcessId(1392).build();
     await render(hbs`{{host-detail/process/process-image-hooks}}`);
 
-    assert.equal(findAll('.process-image-hooks-list .rsa-data-table-header-row > div').length, 4, '4 column rendered');
+    assert.equal(findAll('.process-image-hooks-list .rsa-data-table-header-row > div').length, 5, '5 column rendered');
     assert.equal(find('.process-image-hooks-list .rsa-data-table-header-row > div:nth-child(1)').textContent.trim(), 'Type', 'Header text in first column, Type');
-    assert.equal(find('.process-image-hooks-list .rsa-data-table-header-row > div:nth-child(2)').textContent.trim(), 'DLL Name', 'Header text in second column, DLL Name');
-    assert.equal(find('.process-image-hooks-list .rsa-data-table-header-row > div:nth-child(3)').textContent.trim(), 'Hooked dll', 'Header text in third column, Hooked dll');
-    assert.equal(find('.process-image-hooks-list .rsa-data-table-header-row > div:nth-child(4)').textContent.trim(), 'Symbol', 'Header text in forth column, Symbol');
+    assert.equal(find('.process-image-hooks-list .rsa-data-table-header-row > div:nth-child(2)').textContent.trim(), 'Signature', 'Header text in second column, Signature');
+    assert.equal(find('.process-image-hooks-list .rsa-data-table-header-row > div:nth-child(3)').textContent.trim(), 'DLL Name', 'Header text in second column, DLL Name');
+    assert.equal(find('.process-image-hooks-list .rsa-data-table-header-row > div:nth-child(4)').textContent.trim(), 'Hooked dll', 'Header text in third column, Hooked dll');
+    assert.equal(find('.process-image-hooks-list .rsa-data-table-header-row > div:nth-child(5)').textContent.trim(), 'Symbol', 'Header text in forth column, Symbol');
   });
 });

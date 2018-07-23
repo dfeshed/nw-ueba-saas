@@ -2365,6 +2365,50 @@ export const dllListData = [
       'image'
     ],
     windows: {
+      threads: [
+        {
+          processName: 'explorer.exe',
+          processTime: 1531914845262,
+          eprocess: '0xFFFFFA801B002B30',
+          pid: 1392,
+          ethread: '0xFFFFFA801B002B30',
+          tid: 2164,
+          teb: '0x7FFFFF6E000',
+          startAddress: '0xB5F1069',
+          state: [
+            'floating'
+          ],
+          behaviorKey: '2916233153359241904'
+        },
+        {
+          processName: 'explorer.exe',
+          processTime: 1531914845262,
+          eprocess: '0xFFFFFA801B002B30',
+          pid: 2167,
+          ethread: '0xFFFFFA801B002B30',
+          tid: 2167,
+          teb: '0x7FFFFF6E000',
+          startAddress: '0xB5F1069',
+          state: [
+            'floating'
+          ],
+          behaviorKey: '2916233153359241904'
+        },
+        {
+          processName: 'explorer.exe',
+          processTime: 1531914845262,
+          eprocess: '0xFFFFFA801B002B30',
+          pid: 1392,
+          ethread: '0xFFFFFA801B002B30',
+          tid: 2164,
+          teb: '0x7FFFFF4C000',
+          startAddress: '0x8811069',
+          state: [
+            'floating'
+          ],
+          behaviorKey: '2916233153359241904'
+        }
+      ],
       dlls: [
         {
           pid: 1392,

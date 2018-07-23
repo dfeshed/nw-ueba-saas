@@ -159,12 +159,21 @@ export const isJazzAgent = createSelector(
     }
   });
 
+const _consolidatedObjs = (listToConsolidate) => {
+  let consolidatedList = [];
+  listToConsolidate.forEach((item) => {
+    consolidatedList = [...consolidatedList, ...item];
+  });
+  return consolidatedList;
+};
+
 /*
   Fetches all the dllList items that have hooks.
   Then filters out the relevent hooks based on PID and then
   process each hook into the required format.
   input : dllList, selected process Id
   output : [{
+              signature,
               dllFileName,
               type,
               hookFileName,
@@ -174,14 +183,15 @@ export const isJazzAgent = createSelector(
 export const imageHooksData = createSelector(
     [_dllData, _selectedProcessId],
     (dllData, selectedProcessId) => {
-      if (dllData && dllData.length > 0) {
+      if (dllData && dllData.length) {
         const [{ machineOsType }] = dllData;
         const dllsThatHaveHooks = dllData.filter((dll) => {
           const { hooks } = dll[machineOsType];
           return hooks && hooks.length;
         });
         const imageHooks = dllsThatHaveHooks.map((item) => {
-          const { fileName: dllFileName } = item;
+          const { fileName: dllFileName, fileProperties } = item;
+          const signature = (fileProperties && fileProperties.signature) ? fileProperties.signature.features : [];
           const filteredHooks = item[machineOsType].hooks.filter((hookObj) => {
             return hookObj.process.pid === selectedProcessId;
           });
@@ -189,6 +199,7 @@ export const imageHooksData = createSelector(
           return filteredHooks.map((hookObj) => {
             const { type, hookLocation: { fileName: hookFileName, symbol } } = hookObj;
             return {
+              signature,
               dllFileName,
               type,
               hookFileName,
@@ -197,12 +208,55 @@ export const imageHooksData = createSelector(
           });
         });
 
-        let consolidatedHooks = [];
-        imageHooks.forEach((item) => {
-          consolidatedHooks = [...consolidatedHooks, ...item];
-        });
-        return consolidatedHooks;
+        return _consolidatedObjs(imageHooks);
       }
       return [];
     }
   );
+
+/*
+  Fetches all the dllList items that have threads.
+  Then filters out the relevent threads based on PID and then
+  process each threads into the required format.
+  input : dllList, selected process Id
+  output : [{
+              signature,
+              dllFileName,
+              startAddress,
+              tid,
+              teb
+  },..]
+*/
+export const suspiciousThreadsData = createSelector(
+  [_dllData, _selectedProcessId],
+  (dllData, selectedProcessId) => {
+
+    if (dllData && dllData.length) {
+      const [{ machineOsType }] = dllData;
+      const dllsThatHaveThreads = dllData.filter((dll) => {
+        const { threads } = dll[machineOsType];
+        return threads && threads.length;
+      });
+      const suspiciousThreads = dllsThatHaveThreads.map((item) => {
+        const { fileName: dllFileName, fileProperties } = item;
+        const signature = (fileProperties && fileProperties.signature) ? fileProperties.signature.features : [];
+        const filteredThread = item[machineOsType].threads.filter((threadObj) => {
+          return threadObj.pid === selectedProcessId;
+        });
+
+        return filteredThread.map((threadObj) => {
+          const { startAddress, tid, teb } = threadObj;
+          return {
+            signature,
+            dllFileName,
+            startAddress,
+            tid,
+            teb
+          };
+        });
+      });
+
+      return _consolidatedObjs(suspiciousThreads);
+    }
+    return [];
+  });

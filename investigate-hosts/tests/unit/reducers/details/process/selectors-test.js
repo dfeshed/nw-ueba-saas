@@ -18,7 +18,8 @@ import {
   processList,
   isProcessLoading,
   isJazzAgent,
-  imageHooksData
+  imageHooksData,
+  suspiciousThreadsData
 } from 'investigate-hosts/reducers/details/process/selectors';
 
 test('getProcessData', function(assert) {
@@ -413,30 +414,50 @@ test('imageHooksData returns revelent processId data', function(assert) {
     {
       'dllFileName': 'gmodule-2.0.dll',
       'hookFileName': 'gobject-2.0.dll',
+      'signature': [
+        'signed',
+        'valid'
+      ],
       'symbol': 'GenerateObject',
       'type': 'inline'
     },
     {
       'dllFileName': 'gmodule-2.0.dll',
       'hookFileName': 'gobject-2.0.dll',
+      'signature': [
+        'signed',
+        'valid'
+      ],
       'symbol': 'DeleteObject',
       'type': 'inline'
     },
     {
       'dllFileName': 'autoLogon.dll',
       'hookFileName': 'kernel32.dll',
+      'signature': [
+        'signed',
+        'valid'
+      ],
       'symbol': 'CreateFileA',
       'type': 'inline'
     },
     {
       'dllFileName': 'autoLogon.dll',
       'hookFileName': 'Kernel32.dll',
+      'signature': [
+        'signed',
+        'valid'
+      ],
       'symbol': 'ReadFile',
       'type': 'inline'
     },
     {
       'dllFileName': 'autoLogon.dll',
       'hookFileName': 'ntdll.dll',
+      'signature': [
+        'signed',
+        'valid'
+      ],
       'symbol': 'NtConnect',
       'type': 'inline'
     }
@@ -696,6 +717,304 @@ test('imageHooksData returns empty array as no revelent hooks present', function
 
 test('imageHooksData returns [] if dllList is empty', function(assert) {
   const result = imageHooksData(Immutable.from({
+    endpoint: {
+      process: {
+        selectedProcessId: 1392,
+        dllList: []
+      }
+    }
+  }));
+
+  assert.deepEqual(result, [], 'Rreturns [] if dllList is empty');
+});
+
+test('suspiciousThreadsData returns revelent processId data', function(assert) {
+  const result = suspiciousThreadsData(Immutable.from({
+    endpoint: {
+      process: {
+        selectedProcessId: 1392,
+        dllList: dllListData
+      }
+    }
+  }));
+
+  const expectedResult = [
+    {
+      'dllFileName': 'gmodule-2.0.dll',
+      'signature': [
+        'signed',
+        'valid'
+      ],
+      'startAddress': '0xB5F1069',
+      'teb': '0x7FFFFF6E000',
+      'tid': 2164
+    },
+    {
+      'dllFileName': 'gmodule-2.0.dll',
+      'signature': [
+        'signed',
+        'valid'
+      ],
+      'startAddress': '0x8811069',
+      'teb': '0x7FFFFF4C000',
+      'tid': 2164
+    }
+  ];
+
+  assert.deepEqual(result, expectedResult, 'Returns revelent Suspicious Thread data.');
+});
+
+test('suspiciousThreadsData returns empty array as no revelent hooks present', function(assert) {
+  const result = suspiciousThreadsData(Immutable.from({
+    endpoint: {
+      process: {
+        selectedProcessId: 1392,
+        dllList: [{
+          id: '5b335ffbb24959156220f9d1',
+          machineOsType: 'windows',
+          machineName: 'REMDBGDRV',
+          machineAgentId: 'D4259B02-1EDB-53CE-56C0-8A03110C4D88',
+          agentVersion: '11.2.0.0',
+          scanStartTime: 1530093476248,
+          checksumSha256: 'b4316a7e8c9139e18e079f94539bced78086c8dce1f90f52712f248cd5bdf03e',
+          path: 'C:\\Program Files\\VMware\\VMware Tools\\plugins\\vmsvc\\',
+          pathH8: 0,
+          fileName: 'diskWiper.dll',
+          timeCreated: 1489717882000,
+          timeModified: 1489717882000,
+          timeAccessed: 1496406783408,
+          attributes: [
+            'archive'
+          ],
+          mode: 0,
+          sameDirectoryFileCounts: {
+            nonExe: 0,
+            exe: 13,
+            subFolder: 0,
+            exeSameCompany: 13,
+            hiddenFiles: 0
+          },
+          fileFeatures: [
+            'found'
+          ],
+          directoryFeatures: [
+            'programFiles',
+            'installer'
+          ],
+          userModeFeatures: [
+            'loaded',
+            'image'
+          ],
+          windows: {
+            dlls: [
+              {
+                pid: 1392,
+                imageBase: 8791675043840,
+                createTime: 1530092987886,
+                eprocess: '0xFFFFFA801A64D4E0',
+                imageSize: 32768
+              }
+            ]
+          },
+          fileProperties: {
+            id: 'b4316a7e8c9139e18e079f94539bced78086c8dce1f90f52712f248cd5bdf03e',
+            firstFileName: 'diskWiper.dll',
+            firstSeenTime: 1530093476248,
+            machineOsType: 'windows',
+            signature: {
+              timeStamp: 1489762881000,
+              thumbprint: 'cef16150c61b0a1cee14a7c5d4cff80f645a6ab7',
+              features: [
+                'signed',
+                'valid'
+              ],
+              signer: 'VMware, Inc.'
+            },
+            size: 30184,
+            checksumMd5: '19b4420f501c13fad92f619bb45539b6',
+            checksumSha1: 'ebfeb4a707b80036aba6bda6003d84739c893d79',
+            checksumSha256: 'b4316a7e8c9139e18e079f94539bced78086c8dce1f90f52712f248cd5bdf03e',
+            pe: {
+              timeStamp: 1489760469000,
+              imageSize: 32768,
+              numberOfExportedFunctions: 1,
+              numberOfNamesExported: 1,
+              numberOfExecuteWriteSections: 0,
+              features: [
+                'dll',
+                'pe64',
+                'versionInfoPresent',
+                'resourceDirectoryPresent',
+                'relocationDirectoryPresent',
+                'debugDirectoryPresent',
+                'richSignaturePresent',
+                'relocationDirectoryPresent',
+                'companyNameContainsText',
+                'fileDescriptionContainsText',
+                'fileVersionContainsText',
+                'internalNameContainsText',
+                'legalCopyrightContainsText',
+                'originalFilenameContainsText',
+                'productNameContainsText',
+                'productVersionContainsText',
+                'standardVersionMetaPresent'
+              ],
+              resources: {
+                originalFileName: 'diskWiper.dll',
+                company: 'VMware, Inc.',
+                description: 'VMware Tools diskWiper plugin'
+              },
+              sectionNames: [
+                '.text',
+                '.rdata',
+                '.data',
+                '.pdata',
+                '.rsrc',
+                '.reloc'
+              ],
+              importedLibraries: [
+                'MSVCR90.dll',
+                'glib-2.0.dll',
+                'vmtools.dll',
+                'gobject-2.0.dll',
+                'KERNEL32.dll'
+              ]
+            },
+            entropy: 6.762114502528325,
+            format: 'pe'
+          }
+        },
+        {
+          id: '5b335ffbb24959156220f9d2',
+          machineOsType: 'windows',
+          machineName: 'REMDBGDRV',
+          machineAgentId: 'D4259B02-1EDB-53CE-56C0-8A03110C4D88',
+          agentVersion: '11.2.0.0',
+          scanStartTime: 1530093476248,
+          checksumSha256: 'cd32794801d132aee751cee52c1623b86caa26c0505b1108aab83061737a6a0e',
+          path: 'C:\\Program Files\\VMware\\VMware Tools\\',
+          pathH8: 0,
+          fileName: 'deployPkg.dll',
+          timeCreated: 1489717580000,
+          timeModified: 1489717580000,
+          timeAccessed: 1496406783237,
+          attributes: [
+            'archive'
+          ],
+          mode: 0,
+          sameDirectoryFileCounts: {
+            nonExe: 10,
+            exe: 35,
+            subFolder: 7,
+            exeSameCompany: 15,
+            hiddenFiles: 0
+          },
+          fileFeatures: [
+            'found'
+          ],
+          directoryFeatures: [
+            'programFiles',
+            'installer'
+          ],
+          userModeFeatures: [
+            'loaded',
+            'image'
+          ],
+          windows: {
+            dlls: [
+              {
+                pid: 1392,
+                imageBase: 8791675174912,
+                createTime: 1530092987886,
+                eprocess: '0xFFFFFA801A64D4E0',
+                imageSize: 1429504
+              }
+            ]
+          },
+          fileProperties: {
+            id: 'cd32794801d132aee751cee52c1623b86caa26c0505b1108aab83061737a6a0e',
+            firstFileName: 'deployPkg.dll',
+            firstSeenTime: 1530093476248,
+            machineOsType: 'windows',
+            signature: {
+              timeStamp: 1483553746000,
+              thumbprint: 'cef16150c61b0a1cee14a7c5d4cff80f645a6ab7',
+              features: [
+                'signed',
+                'valid'
+              ],
+              signer: 'VMware, Inc.'
+            },
+            size: 1402696,
+            checksumMd5: '49e18d16b51863b5a2bcd945df16ef51',
+            checksumSha1: '646b13d9418dabdf98a2f4ab3efa3bfae6c66dd8',
+            checksumSha256: 'cd32794801d132aee751cee52c1623b86caa26c0505b1108aab83061737a6a0e',
+            pe: {
+              timeStamp: 1483553399000,
+              imageSize: 1429504,
+              numberOfExportedFunctions: 338,
+              numberOfNamesExported: 338,
+              numberOfExecuteWriteSections: 0,
+              features: [
+                'dll',
+                'pe64',
+                'versionInfoPresent',
+                'resourceDirectoryPresent',
+                'relocationDirectoryPresent',
+                'debugDirectoryPresent',
+                'tlsDirectoryPresent',
+                'richSignaturePresent',
+                'relocationDirectoryPresent',
+                'companyNameContainsText',
+                'fileDescriptionContainsText',
+                'fileVersionContainsText',
+                'internalNameContainsText',
+                'legalCopyrightContainsText',
+                'originalFilenameContainsText',
+                'productNameContainsText',
+                'productVersionContainsText',
+                'standardVersionMetaPresent'
+              ],
+              resources: {
+                originalFileName: 'deployPkg.dll',
+                company: 'VMware, Inc.',
+                description: 'VMware Deployment Package Library'
+              },
+              sectionNames: [
+                '.text',
+                '.rdata',
+                '.data',
+                '.pdata',
+                '.tls',
+                '.rsrc',
+                '.reloc'
+              ],
+              importedLibraries: [
+                'ADVAPI32.dll',
+                'WS2_32.dll',
+                'SHELL32.dll',
+                'MSVCP90.dll',
+                'MSVCR90.dll',
+                'KERNEL32.dll',
+                'USER32.dll',
+                'VERSION.dll'
+              ]
+            },
+            entropy: 6.2075991890620985,
+            format: 'pe'
+          }
+        }]
+      }
+    }
+  }));
+
+  const expectedResult = [];
+
+  assert.deepEqual(result, expectedResult, 'No Relevent Suspicious Threads Data present so empty array returned');
+});
+
+test('suspiciousThreadsData returns [] if dllList is empty', function(assert) {
+  const result = suspiciousThreadsData(Immutable.from({
     endpoint: {
       process: {
         selectedProcessId: 1392,

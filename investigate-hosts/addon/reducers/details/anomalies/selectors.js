@@ -48,7 +48,7 @@ export const imageHooksData = createSelector(
 
     if (hooksObject) {
       const hooksDataSource = Object.values(hooksObject);
-      if (hooksDataSource && hooksDataSource.length > 0) {
+      if (hooksDataSource && hooksDataSource.length) {
         const imageHooks = _getImageHooksObjs(hooksDataSource);
         const sortedValue = getValues(selectedTab, 'HOOKS', imageHooks, sortConfig);
         return sortedValue;

@@ -107,7 +107,7 @@ test('Should not apply rsa-loader if process tree loading is complete', function
 test('Check that no results message rendered if there is no process information', function(assert) {
   new ReduxDataHelper(setState).machineOSType('windows').build();
   this.render(hbs`{{host-detail/process/process-tree}}`);
-  assert.equal(this.$('.rsa-data-table-body').text().trim(), 'No process information were found', 'No process information message rendered');
+  assert.equal(this.$('.rsa-data-table-body').text().trim(), 'No process information was found.', 'No process information message rendered');
 });
 
 test('Renders number of process-names, its leaf nodes & non-leaf nodes', function(assert) {

@@ -68,6 +68,6 @@ test('test when there is loaded library information', function(assert) {
 test('test when there is no loaded library information', function(assert) {
   this.render(hbs`{{host-detail/process/process-dll-list}}`);
   return wait().then(() => {
-    assert.equal(this.$('.process-dll-list .rsa-data-table-body').text().trim(), 'No loaded library information were found', 'Shows no results message');
+    assert.equal(this.$('.process-dll-list .rsa-data-table-body').text().trim(), 'No loaded library information was found', 'Shows no results message');
   });
 });

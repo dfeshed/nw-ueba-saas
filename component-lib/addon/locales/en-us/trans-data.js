@@ -2232,28 +2232,40 @@ export default {
       launchArguments: 'Launch Arguments',
       reputationStatus: 'Reputation',
       message: {
-        noResultsMessage: 'No process information were found'
+        noResultsMessage: 'No process information was found.'
       },
       dll: {
         dllName: 'DLL Name',
         filePath: 'File Path',
         title: 'Loaded Libraries',
         message: {
-          noResultsMessage: 'No loaded library information were found'
+          noResultsMessage: 'No loaded library information was found'
         },
         note: {
           windows: 'Note: Displays libraries that are not signed by Microsoft',
           mac: 'Note: Displays libraries that are not signed by Apple.'
         }
       },
+      suspiciousThreads: {
+        signature: 'Signature',
+        tid: 'Thread ID',
+        dllFileName: 'DLL Name',
+        teb: 'Thread Environment Block',
+        startAddress: 'Start Address',
+        title: 'Suspicious Threads',
+        message: {
+          noResultsMessage: 'No Suspicious Thread information was found.'
+        }
+      },
       imageHooks: {
+        signature: 'Signature',
         type: 'Type',
         dllFileName: 'DLL Name',
         hookFileName: 'Hooked dll',
         symbol: 'Symbol',
         title: 'Image Hooks',
         message: {
-          noResultsMessage: 'No Image Hooks information were found'
+          noResultsMessage: 'No Image Hooks information was found.'
         }
       }
     },
