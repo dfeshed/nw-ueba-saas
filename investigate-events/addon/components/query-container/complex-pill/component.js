@@ -1,11 +1,16 @@
 import Component from '@ember/component';
+import { later } from '@ember/runloop';
 import computed from 'ember-computed-decorators';
+import { inject as service } from '@ember/service';
 
 import * as MESSAGE_TYPES from '../message-types';
 
 export default Component.extend({
   classNames: ['complex-pill'],
+  classNameBindings: ['isActive', 'isSelected'],
   tagName: 'span',
+  attributeBindings: ['title'],
+  i18n: service(),
 
   pillData: undefined,
 
@@ -20,19 +25,76 @@ export default Component.extend({
   // when editing later
   isActive: false,
 
+  // Whether or not a double click has fired
+  doubleClickFired: false,
+
   /**
-   * Is this pill able to be deleted?
+   * Whether or not this pill is selected
    * @type {boolean}
    * @public
    */
-  @computed('isActive')
-  isDeletable: (isActive) => !isActive,
+  @computed('pillData')
+  isSelected: (pillData) => !!pillData && pillData.isSelected,
+
+  @computed('pillData')
+  title(pillData) {
+    const notEditable = this.get('i18n').t('queryBuilder.notEditable').string;
+    return `${notEditable}\n${pillData.complexFilterText}`;
+  },
 
   init() {
     this._super(arguments);
     this.set('_messageHandlerMap', {
       [MESSAGE_TYPES.DELETE_CLICKED]: (data) => this._deletePill(data)
     });
+  },
+
+  click() {
+    // If not active, and clicking pill, then process
+    // this as a selection event
+    if (!this.get('isActive')) {
+      this._pillSelected();
+    }
+  },
+
+  doubleClick() {
+    // set flag to prevent previous single-clicks from executing
+    this.set('doubleClickFired', true);
+
+    // If not active, and double clicking pill, then process
+    // this as a desire to open for edit
+    if (!this.get('isActive')) {
+      this._pillOpenForEdit();
+    }
+  },
+
+  _pillOpenForEdit() {
+    const pillData = this.get('pillData');
+    this._broadcast(MESSAGE_TYPES.PILL_OPEN_FOR_EDIT, pillData);
+  },
+
+  _pillSelected() {
+    // Waiting 175 milliseconds in order to give
+    // a double click a chance to occur. If we do not
+    // delay execution here, double clicks will execute
+    // click processing twice.
+    later(() => {
+      if (!this.get('doubleClickFired')) {
+        const pillData = this.get('pillData');
+        if (pillData.isSelected) {
+          this._broadcast(MESSAGE_TYPES.PILL_DESELECTED, pillData);
+        } else {
+          this._broadcast(MESSAGE_TYPES.PILL_SELECTED, pillData);
+        }
+      } else {
+        // if double click had been fired, reset flag, however
+        // decent chance component no longer exists, so make
+        // that check
+        if (!this.isDestroyed || !this.isDestroying) {
+          this.set('doubleClickFired', false);
+        }
+      }
+    }, 175);
   },
 
   actions: {

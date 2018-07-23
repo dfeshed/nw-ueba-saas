@@ -267,6 +267,26 @@
 .complex-pill {
   @include pillAppearance();
   background-color: background-color(primary, dark);
+
+  &.is-selected {
+    background-color: background-color(secondary);
+    border-color: border-color(secondary);
+  }
+
+  &.is-active {
+    border-color: transparent;
+    padding: 0;
+    font-size: inherit;
+    line-height: inherit;
+    flex: 100;
+    min-width: 80px;
+
+    input {
+      border-bottom: none;
+      padding: 0;
+      padding-left: 5px;
+    }
+  }
 }
 
 // Leftmost trigger shouldn't go over as far

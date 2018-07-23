@@ -1,6 +1,11 @@
-{{pillData.complexFilterText}}
+{{#if isActive}}
+  {{rsa-form-input
+    value=(readonly pillData.complexFilterText)
+    spellcheck=false
+  }}
+{{else}}
+  {{pillData.complexFilterText}}
 
-{{#if isDeletable}}
   {{query-container/delete-pill
     sendMessage=(action 'handleMessage')
   }}

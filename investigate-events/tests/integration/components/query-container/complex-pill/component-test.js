@@ -2,10 +2,12 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { click, find, render } from '@ember/test-helpers';
+import { click, find, findAll, render } from '@ember/test-helpers';
 
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
 import PILL_SELECTORS from '../pill-selectors';
+import { doubleClick } from '../pill-util';
+
 
 module('Integration | Component | complex-pill', function(hooks) {
   setupRenderingTest(hooks, {
@@ -13,7 +15,6 @@ module('Integration | Component | complex-pill', function(hooks) {
   });
 
   test('it renders', async function(assert) {
-    // const done = assert.async();
     assert.expect(1);
 
     this.set('handleMessage', () => {});
@@ -56,5 +57,161 @@ module('Integration | Component | complex-pill', function(hooks) {
     `);
 
     await click(PILL_SELECTORS.deletePill);
+  });
+
+  test('it renders as input when active/editable', async function(assert) {
+    assert.expect(1);
+
+    this.set('handleMessage', () => {});
+    this.set('pillData', { complexFilterText: 'FOOOOOOOO' });
+    await render(hbs`
+      {{query-container/complex-pill
+        position=0
+        isActive=true
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    assert.equal(find(PILL_SELECTORS.complexPillInput).value, 'FOOOOOOOO', 'input has value');
+  });
+
+  test('has proper class when active/editable', async function(assert) {
+    assert.expect(1);
+
+    this.set('handleMessage', () => {});
+    this.set('pillData', { complexFilterText: 'FOOOOOOOO' });
+    await render(hbs`
+      {{query-container/complex-pill
+        position=0
+        isActive=true
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    assert.equal(findAll(PILL_SELECTORS.complexPillActive).length, 1, 'proper class present');
+  });
+
+  test('has proper class when pill is selected', async function(assert) {
+    assert.expect(1);
+
+    this.set('handleMessage', () => {});
+    this.set('pillData', {
+      complexFilterText: 'FOOOOOOOO',
+      isSelected: true
+    });
+    await render(hbs`
+      {{query-container/complex-pill
+        position=0
+        isActive=false
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 1, 'proper class present');
+  });
+
+  test('sends message to be selected when clicked', async function(assert) {
+    assert.expect(3);
+
+    this.set('handleMessage', (messageType, pillData, position) => {
+      assert.equal(messageType, MESSAGE_TYPES.PILL_SELECTED, 'Message sent for pill delete is not correct');
+      assert.deepEqual(pillData,
+        { complexFilterText: 'FOOOOOOOO', isSelected: false },
+        'Message sent for pill create contains correct pill data'
+      );
+      assert.equal(position, 0, 'Message sent for pill create contains correct pill position');
+    });
+
+    this.set('pillData', {
+      complexFilterText: 'FOOOOOOOO',
+      isSelected: false
+    });
+
+    await render(hbs`
+      {{query-container/complex-pill
+        position=0
+        isActive=false
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    await click(PILL_SELECTORS.complexPill);
+  });
+
+  test('sends message to be deselected when selected and clicked', async function(assert) {
+    assert.expect(3);
+
+    this.set('handleMessage', (messageType, pillData, position) => {
+      assert.equal(messageType, MESSAGE_TYPES.PILL_DESELECTED, 'Message sent for pill delete is not correct');
+      assert.deepEqual(pillData,
+        { complexFilterText: 'FOOOOOOOO', isSelected: true },
+        'Message sent for pill create contains correct pill data'
+      );
+      assert.equal(position, 0, 'Message sent for pill create contains correct pill position');
+    });
+
+    this.set('pillData', {
+      complexFilterText: 'FOOOOOOOO',
+      isSelected: true
+    });
+
+    await render(hbs`
+      {{query-container/complex-pill
+        position=0
+        isActive=false
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    await click(PILL_SELECTORS.complexPill);
+  });
+
+  test('if active click does not send a message', async function(assert) {
+    assert.expect(0);
+
+    this.set('handleMessage', () => {
+      assert.ok(false, 'should not get in here');
+    });
+
+    this.set('pillData', { complexFilterText: 'FOOOOOOOO' });
+
+    await render(hbs`
+      {{query-container/complex-pill
+        position=0
+        isActive=true
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    await click(PILL_SELECTORS.complexPill);
+  });
+
+  test('double clicks sends appropriate event', async function(assert) {
+    const done = assert.async();
+    const pillData = { complexFilterText: 'FOOOOOOOO' };
+    this.set('handleMessage', (messageType, pD, position) => {
+      assert.ok(messageType === MESSAGE_TYPES.PILL_OPEN_FOR_EDIT, 'Should be opened for edit');
+      assert.ok(pillData === pD, 'should send out pill data');
+      assert.ok(position === 0, 'should send out pill data');
+      done();
+    });
+    this.set('pillData', pillData);
+
+    await render(hbs`
+      {{query-container/complex-pill
+        isActive=false
+        position=0
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    doubleClick(PILL_SELECTORS.complexPill, true);
   });
 });

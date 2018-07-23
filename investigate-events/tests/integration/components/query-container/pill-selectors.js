@@ -15,6 +15,8 @@ export default {
   queryButton: '.execute-query-button',
   queryButtonDisabled: '.execute-query-button.is-disabled',
   complexPill: '.complex-pill',
+  complexPillInput: '.complex-pill input',
+  complexPillActive: '.complex-pill.is-active',
   deletePill: '.delete-pill',
   freeFormInput: '.rsa-investigate-free-form-query-bar input',
   meta: '.pill-meta',
