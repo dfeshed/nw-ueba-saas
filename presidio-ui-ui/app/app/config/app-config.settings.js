@@ -588,7 +588,7 @@
                 id: 'system.locale.settings',
                 displayName: 'Locale',
                 type: 'string',
-                value: 'en'
+                value: 'en_US'
             });
         /**
          * END OF Locale configuration

@@ -51,6 +51,13 @@ public class CookieBearerTokenExtractor extends BearerTokenExtractor {
         return new TokenBearerWrapper(tokenValue,origin);
     }
 
+    @Override
+    protected String extractHeaderToken(HttpServletRequest request) {
+
+//        return super.extractHeaderToken(request);
+        return request.getHeader("access_token");
+    }
+
     /**
      * Try to extract the token from the cookie
      * @param request
