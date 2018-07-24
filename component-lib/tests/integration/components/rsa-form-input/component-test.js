@@ -115,3 +115,8 @@ test('it does show the error message if isError is true', function(assert) {
   this.render(hbs `{{rsa-form-input isError=true errorMessage='There was an error'}}`);
   assert.equal(this.$('.input-error').length, 1, 'The error message is present');
 });
+
+test('it takes focus when autofocus is true', async function(assert) {
+  this.render(hbs `{{rsa-form-input value='foo' autofocus=true}}`);
+  assert.equal(this.$('input[autofocus]').length, 1, 'expect component to be focused');
+});

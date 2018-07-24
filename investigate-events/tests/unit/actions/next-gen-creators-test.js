@@ -289,5 +289,10 @@ module('Unit | Actions | NextGen Creators', function(hooks) {
     thunk(dispatch, getState);
   });
 
+  test('resetNextGenPill action creator returns proper type and payload', function(assert) {
+    const action = nextGenCreators.resetNextGenPill('foo');
+    assert.equal(action.type, ACTION_TYPES.RESET_NEXT_GEN_PILL, 'action has the correct type');
+    assert.deepEqual(action.payload.pillData, 'foo', 'action pillData has the right value');
+  });
 
 });

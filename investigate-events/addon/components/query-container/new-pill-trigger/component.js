@@ -47,7 +47,7 @@ export default Component.extend({
           this._broadcast(type, data);
           this.set('isAddNewPill', false);
           break;
-        case MESSAGE_TYPES.PILL_CANCELLED:
+        case MESSAGE_TYPES.PILL_ADD_CANCELLED:
           this._broadcast(type, data);
           this.set('isAddNewPill', false);
           break;

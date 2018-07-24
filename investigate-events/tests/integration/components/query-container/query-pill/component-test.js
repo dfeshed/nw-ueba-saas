@@ -34,6 +34,7 @@ const _getEnrichedPill = () => {
 const _setPillData = (component) => {
   const enrichedPill = _getEnrichedPill();
   component.set('pillData', enrichedPill);
+  return enrichedPill;
 };
 
 module('Integration | Component | query-pill', function(hooks) {
@@ -243,7 +244,7 @@ module('Integration | Component | query-pill', function(hooks) {
         return;
       }
 
-      assert.equal(messageType, MESSAGE_TYPES.PILL_CANCELLED, 'Message sent for pill cancel is not correct');
+      assert.equal(messageType, MESSAGE_TYPES.PILL_ADD_CANCELLED, 'Message sent for pill cancel is not correct');
       assert.equal(position, 0, 'Message sent for pill create contains correct pill position');
 
       done();
@@ -335,7 +336,7 @@ module('Integration | Component | query-pill', function(hooks) {
         return;
       }
 
-      assert.equal(messageType, MESSAGE_TYPES.PILL_CANCELLED, 'Message sent for pill cancel is not correct');
+      assert.equal(messageType, MESSAGE_TYPES.PILL_ADD_CANCELLED, 'Message sent for pill cancel is not correct');
       assert.equal(position, 0, 'Message sent for pill create contains correct pill position');
 
       done();
@@ -387,7 +388,7 @@ module('Integration | Component | query-pill', function(hooks) {
         return;
       }
 
-      assert.notEqual(messageType, MESSAGE_TYPES.PILL_CANCELLED, 'No cancel should be sent');
+      assert.notEqual(messageType, MESSAGE_TYPES.PILL_ADD_CANCELLED, 'No cancel should be sent');
     });
 
     new ReduxDataHelper(setState).language().pillsDataEmpty().build();
@@ -669,6 +670,35 @@ module('Integration | Component | query-pill', function(hooks) {
     await selectChoose(PILL_SELECTORS.operator, '=');
     await fillIn(PILL_SELECTORS.valueInput, '"foo"');// double quotes
     await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', ENTER_KEY);
+  });
+
+  test('edited pill will send message up when user indicates they would like to escape', async function(assert) {
+    assert.expect(3);
+
+    const pillData = _setPillData(this);
+
+    this.set('handleMessage', (messageType, data, position) => {
+      if (isIgnoredInitialEvent(messageType)) {
+        return;
+      }
+
+      assert.equal(messageType, MESSAGE_TYPES.PILL_EDIT_CANCELLED, 'Message sent for pill cancel is not correct');
+      assert.equal(position, 0, 'Message sent for pill create contains correct pill position');
+      assert.equal(data, pillData, 'Message sent for pill create contains correct pill data');
+    });
+
+    new ReduxDataHelper(setState).language().build();
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    await focus(PILL_SELECTORS.metaTrigger);
+    await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', ESCAPE_KEY);
   });
 
   skip('cursor positioning', async function(assert) {

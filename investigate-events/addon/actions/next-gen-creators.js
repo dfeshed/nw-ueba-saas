@@ -165,3 +165,10 @@ export const updatedFreeFormText = (freeFormText) => {
     });
   };
 };
+
+export const resetNextGenPill = (pillData) => ({
+  type: ACTION_TYPES.RESET_NEXT_GEN_PILL,
+  payload: {
+    pillData
+  }
+});

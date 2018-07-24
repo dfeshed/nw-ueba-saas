@@ -8,11 +8,12 @@ import { enrichedPillsData, hasInvalidSelectedPill } from 'investigate-events/re
 import {
   addNextGenPill,
   deleteNextGenPill,
-  editNextGenPill,
-  selectNextGenPills,
-  deselectNextGenPills,
   deselectAllNextGenPills,
-  openNextGenPillForEdit
+  deselectNextGenPills,
+  editNextGenPill,
+  openNextGenPillForEdit,
+  resetNextGenPill,
+  selectNextGenPills
 } from 'investigate-events/actions/next-gen-creators';
 
 const { log } = console;// eslint-disable-line no-unused-vars
@@ -29,7 +30,8 @@ const dispatchToActions = {
   selectNextGenPills,
   deselectNextGenPills,
   deselectAllNextGenPills,
-  openNextGenPillForEdit
+  openNextGenPillForEdit,
+  resetNextGenPill
 };
 
 const contextItemsArray = (hasInvalidSelectedPill) => {
@@ -100,9 +102,10 @@ const QueryPills = RsaContextMenu.extend({
   init() {
     this._super(arguments);
     this.set('_messageHandlerMap', {
-      [MESSAGE_TYPES.PILL_CANCELLED]: (data, position) => this._pillCancelled(data, position),
+      [MESSAGE_TYPES.PILL_ADD_CANCELLED]: (data, position) => this._pillAddCancelled(data, position),
       [MESSAGE_TYPES.PILL_CREATED]: (data, position) => this._pillCreated(data, position),
       [MESSAGE_TYPES.PILL_DELETED]: (data) => this._pillDeleted(data),
+      [MESSAGE_TYPES.PILL_EDIT_CANCELLED]: (data) => this._pillEditCancelled(data),
       [MESSAGE_TYPES.PILL_EDITED]: (data) => this._pillEdited(data),
       [MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW]: () => this._pillEnteredForAppend(),
       [MESSAGE_TYPES.PILL_ENTERED_FOR_INSERT_NEW]: (pillData, position) => this._pillEnteredForInsert(position),
@@ -167,7 +170,7 @@ const QueryPills = RsaContextMenu.extend({
     this._pillEntered();
   },
 
-  _pillCancelled() {
+  _pillAddCancelled() {
     this._pillsExited();
   },
 
@@ -262,6 +265,11 @@ const QueryPills = RsaContextMenu.extend({
 
   _pillsDeselected(pillData) {
     this.send('deselectNextGenPills', { pillData });
+  },
+
+  _pillEditCancelled(data) {
+    this._pillsExited();
+    this.send('resetNextGenPill', data);
   }
 });
 

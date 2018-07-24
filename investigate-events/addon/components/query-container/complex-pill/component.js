@@ -4,6 +4,7 @@ import computed from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
 
 import * as MESSAGE_TYPES from '../message-types';
+import { isEscape } from 'investigate-events/util/keys';
 
 export default Component.extend({
   classNames: ['complex-pill'],
@@ -68,6 +69,15 @@ export default Component.extend({
     }
   },
 
+  keyDown(event) {
+    // if the key pressed is an escape, then bubble that out and
+    // escape further processing
+    if (isEscape(event)) {
+      // Let others know ECS was pressed
+      this._cancelPillEdit();
+    }
+  },
+
   _pillOpenForEdit() {
     const pillData = this.get('pillData');
     this._broadcast(MESSAGE_TYPES.PILL_OPEN_FOR_EDIT, pillData);
@@ -95,6 +105,12 @@ export default Component.extend({
         }
       }
     }, 175);
+  },
+
+  _cancelPillEdit() {
+    const pD = this.get('pillData');
+    // Inform container that this pill component is cancelling out of editing
+    this._broadcast(MESSAGE_TYPES.PILL_EDIT_CANCELLED, pD);
   },
 
   actions: {

@@ -177,13 +177,13 @@ export default Component.extend({
       [MESSAGE_TYPES.META_ARROW_LEFT_KEY]: () => this._metaArrowLeft(),
       [MESSAGE_TYPES.META_ARROW_RIGHT_KEY]: () => this._metaArrowRight(),
       [MESSAGE_TYPES.META_CLICKED]: () => this._metaClicked(),
-      [MESSAGE_TYPES.META_ESCAPE_KEY]: () => this._cancelPillCreation(),
+      [MESSAGE_TYPES.META_ESCAPE_KEY]: () => this._cancelPill(),
       [MESSAGE_TYPES.META_SELECTED]: (data) => this._metaSelected(data),
       [MESSAGE_TYPES.OPERATOR_ARROW_LEFT_KEY]: () => this._operatorArrowLeft(),
       [MESSAGE_TYPES.OPERATOR_ARROW_RIGHT_KEY]: () => this._operatorArrowRight(),
       [MESSAGE_TYPES.OPERATOR_BACKSPACE_KEY]: () => this._operatorBackspace(),
       [MESSAGE_TYPES.OPERATOR_CLICKED]: () => this._operatorClicked(),
-      [MESSAGE_TYPES.OPERATOR_ESCAPE_KEY]: () => this._cancelPillCreation(),
+      [MESSAGE_TYPES.OPERATOR_ESCAPE_KEY]: () => this._cancelPill(),
       [MESSAGE_TYPES.OPERATOR_SELECTED]: (data) => this._operatorSelected(data),
       [MESSAGE_TYPES.DELETE_CLICKED]: (data) => this._deletePill(data),
       [MESSAGE_TYPES.VALUE_ARROW_LEFT_KEY]: (data) => this._valueArrowLeft(data),
@@ -197,7 +197,7 @@ export default Component.extend({
           this._createPill(data);
         }
       },
-      [MESSAGE_TYPES.VALUE_ESCAPE_KEY]: () => this._cancelPillCreation(),
+      [MESSAGE_TYPES.VALUE_ESCAPE_KEY]: () => this._cancelPill(),
       [MESSAGE_TYPES.VALUE_SET]: (data) => this._valueSet(data)
     });
 
@@ -626,6 +626,16 @@ export default Component.extend({
     }
   },
 
+  // Figures out whether or not we are cancelling an
+  // edit or an add
+  _cancelPill() {
+    if (this.get('isExistingPill')) {
+      this._cancelPillEdit();
+    } else {
+      this._cancelPillCreation();
+    }
+  },
+
   // ************************ PILL FUNCTIONALITY **************************** //
   /**
    * Cancel pill creation. If this pill has `pillData`, then we were editing an
@@ -647,7 +657,13 @@ export default Component.extend({
       });
     }
     // Inform container that this pill component is cancelling out of creation
-    this._broadcast(MESSAGE_TYPES.PILL_CANCELLED, pD);
+    this._broadcast(MESSAGE_TYPES.PILL_ADD_CANCELLED, pD);
+  },
+
+  _cancelPillEdit() {
+    const pD = this.get('pillData');
+    // Inform container that this pill component is cancelling out of editing
+    this._broadcast(MESSAGE_TYPES.PILL_EDIT_CANCELLED, pD);
   },
 
   /**

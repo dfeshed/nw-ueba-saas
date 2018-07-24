@@ -23,6 +23,7 @@ const deleteActionSpy = sinon.spy(nextGenCreators, 'deleteNextGenPill');
 const selectActionSpy = sinon.spy(nextGenCreators, 'selectNextGenPills');
 const deselectActionSpy = sinon.spy(nextGenCreators, 'deselectNextGenPills');
 const openNextGenPillForEditSpy = sinon.spy(nextGenCreators, 'openNextGenPillForEdit');
+const resetNextGenPillSpy = sinon.spy(nextGenCreators, 'resetNextGenPill');
 
 const allPillsAreClosed = (assert) => {
   assert.equal(findAll(PILL_SELECTORS.pillOpen).length, 0, 'Class for pill open should not be present.');
@@ -61,6 +62,7 @@ module('Integration | Component | query-pills', function(hooks) {
     selectActionSpy.reset();
     deselectActionSpy.reset();
     openNextGenPillForEditSpy.reset();
+    resetNextGenPillSpy.reset();
   });
 
   hooks.after(function() {
@@ -69,6 +71,7 @@ module('Integration | Component | query-pills', function(hooks) {
     selectActionSpy.restore();
     deselectActionSpy.restore();
     openNextGenPillForEditSpy.restore();
+    resetNextGenPillSpy.restore();
   });
 
   test('Upon initialization, one active pill is created', async function(assert) {
@@ -362,6 +365,26 @@ module('Integration | Component | query-pills', function(hooks) {
 
     assert.equal(findAll(PILL_SELECTORS.activePill).length, 2, 'Two active pills, one is the end of line template.');
   });
+
+  test('clicking escape inside an editing pill will message out', async function(assert) {
+    const { pillsData } = new ReduxDataHelper(setState)
+      .language()
+      .pillsDataPopulated()
+      .markEditing(['1'])
+      .build()
+      .investigate
+      .queryNode;
+
+    await render(hbs`{{query-container/query-pills isActive=true}}`);
+
+    await focus(PILL_SELECTORS.triggerMetaPowerSelect);
+    await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', ESCAPE_KEY);
+
+    assert.equal(resetNextGenPillSpy.callCount, 1, 'The reset pill action creator was called once');
+    const [ [ calledWith ] ] = resetNextGenPillSpy.args;
+    assert.deepEqual(calledWith.id, pillsData[0].id, 'shows as being selected as is being sent to be deselected');
+  });
+
 
   test('If a pill is doubled clicked, a message will be sent to  mark it for editing', async function(assert) {
     assert.expect(1);

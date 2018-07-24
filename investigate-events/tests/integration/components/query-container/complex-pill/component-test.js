@@ -2,11 +2,14 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { click, find, findAll, render } from '@ember/test-helpers';
+import { click, find, findAll, render, triggerKeyEvent } from '@ember/test-helpers';
 
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
 import PILL_SELECTORS from '../pill-selectors';
 import { doubleClick } from '../pill-util';
+import KEY_MAP from 'investigate-events/util/keys';
+
+const ESCAPE_KEY = KEY_MAP.escape.code;
 
 
 module('Integration | Component | complex-pill', function(hooks) {
@@ -213,5 +216,42 @@ module('Integration | Component | complex-pill', function(hooks) {
     `);
 
     doubleClick(PILL_SELECTORS.complexPill, true);
+  });
+
+  test('when active focus is placed in input', async function(assert) {
+    const pillData = { complexFilterText: 'FOOOOOOOO' };
+    this.set('handleMessage', () => {});
+    this.set('pillData', pillData);
+
+    await render(hbs`
+      {{query-container/complex-pill
+        isActive=true
+        position=0
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    assert.equal(findAll('input[autofocus]').length, 1, 'input has focus');
+  });
+
+  test('it broadcasts a message when the ESCAPE key is pressed', async function(assert) {
+    assert.expect(3);
+    const pillData = { complexFilterText: 'FOOOOOOOO' };
+    this.set('pillData', pillData);
+    this.set('handleMessage', (messageType, pD, position) => {
+      assert.ok(messageType === MESSAGE_TYPES.PILL_EDIT_CANCELLED, 'Edit should be cancelled');
+      assert.ok(pillData === pD, 'should send out pill data');
+      assert.ok(position === 0, 'should send out position');
+    });
+    await render(hbs`
+      {{query-container/complex-pill
+        isActive=true
+        position=0
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+    await triggerKeyEvent(PILL_SELECTORS.complexPillInput, 'keydown', ESCAPE_KEY);
   });
 });

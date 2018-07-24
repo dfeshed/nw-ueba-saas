@@ -84,7 +84,7 @@ module('Integration | Component | new-pill-trigger', function(hooks) {
         return;
       }
 
-      assert.equal(messageType, MESSAGE_TYPES.PILL_CANCELLED, 'Wrong message type');
+      assert.equal(messageType, MESSAGE_TYPES.PILL_ADD_CANCELLED, 'Wrong message type');
       assert.deepEqual(data, null, 'Cancel does not include pill data');
       assert.equal(position, 5, 'Wrong position number');
     });

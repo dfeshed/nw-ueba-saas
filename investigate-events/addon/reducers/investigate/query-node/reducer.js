@@ -322,7 +322,27 @@ export default handleActions({
 
   [ACTION_TYPES.UPDATE_FREE_FORM_TEXT]: (state, { payload }) => {
     return state.set('updatedFreeFormTextPill', payload.pillData);
-  }
+  },
 
+  [ACTION_TYPES.RESET_NEXT_GEN_PILL]: (state, { payload }) => {
+    const { id } = payload.pillData;
+    // Reset the id of the pill and then
+    // reset all the flags back to initial state
+    const newPillsData = state.pillsData.map((pD) => {
+      if (id === pD.id) {
+        return {
+          ...pD,
+          id: _.uniqueId('nextGenPill_'),
+          isEditing: false,
+          isSelected: false,
+          isInvalid: false,
+          validationError: undefined
+        };
+      }
+
+      return pD;
+    });
+    return state.set('pillsData', newPillsData);
+  }
 
 }, _initialState);

@@ -566,3 +566,29 @@ test('INITIALIZE_INVESTIGATE clears free for text pill state', function(assert) 
     'text pill data cleared out'
   );
 });
+
+test('RESET_NEXT_GEN_PILL resets the pill', function(assert) {
+  const state = new ReduxDataHelper()
+    .pillsDataPopulated()
+    .markEditing(['1'])
+    .build()
+    .investigate
+    .queryNode;
+
+  const action = {
+    type: ACTION_TYPES.RESET_NEXT_GEN_PILL,
+    payload: {
+      pillData: {
+        id: '1',
+        foo: 'bar'
+      }
+    }
+  };
+  const result = reducer(state, action);
+
+  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
+  const [ firstPill ] = result.pillsData;
+
+  assert.ok(firstPill.id !== state.pillsData[0].id, 'id should have changed');
+  assert.ok(firstPill.isEditing !== state.pillsData[0].isEditing, 'should no longer be editng');
+});

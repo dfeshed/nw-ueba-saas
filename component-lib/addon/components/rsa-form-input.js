@@ -29,6 +29,7 @@ export default Component.extend({
   type: 'text',
   value: null,
   spellcheck: true,
+  autofocus: false,
 
   resolvedDisabled: or('isDisabled', 'isReadOnly')
 });
