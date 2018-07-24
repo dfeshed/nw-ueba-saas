@@ -90,13 +90,48 @@ public class FileWindowsAuditTransformerTest extends TransformerTest{
                 new IfElseTransformer("category-filter-for-4663-and-4660",referenceIdEqual4660Or4663, categoryFilter);
         transformerChainList.add(categoryFilterFor4663And4660);
 
+        //operation type logic:
+
+        // 4663 operation type logic:
+        List<IJsonObjectTransformer> operationTypeFor4663ChainList = new ArrayList<>();
+
         // for 4663: Filtering events according to accesses field (filtering out delete operations)
         JsonObjectRegexPredicate accessesEqualDelete = new JsonObjectRegexPredicate("accesses-equal-delete", ACCESSES_FIELD_NAME, "DELETE|DeleteChild");
         FilterTransformer accessesFilter = new FilterTransformer("accesses-filter", accessesEqualDelete, false);
-        JsonObjectRegexPredicate referenceIdEqual4663 = new JsonObjectRegexPredicate("reference-id-equal-4663", EVENT_CODE_FIELD_NAME, "4663");
-        IfElseTransformer accessesFilterFor4663 =
-                new IfElseTransformer("accesses-filter-for-4663",referenceIdEqual4663, accessesFilter);
-        transformerChainList.add(accessesFilterFor4663);
+        operationTypeFor4663ChainList.add(accessesFilter);
+        // For 4663: Filling the operation type
+        List<SwitchCaseTransformer.SwitchCase> accessesCases = new ArrayList<>();
+        for(int i = 0; i < CASES.size(); i++){
+            accessesCases.add(new SwitchCaseTransformer.SwitchCase(containedRegex(CASES.get(i)),CASES_VALUES.get(i), true));
+        }
+        SwitchCaseTransformer operationTypeAccordingToAccessesSwitchCaseTransformer =
+                new SwitchCaseTransformer("operation_type-according-to-accesses",ACCESSES_FIELD_NAME,
+                        OPERATION_TYPE_FIELD_NAME, null,accessesCases);
+        operationTypeFor4663ChainList.add(operationTypeAccordingToAccessesSwitchCaseTransformer);
+        // for 4663: Filtering events with no operation type
+        JsonObjectKeyExistPredicate operationTypeNotNull = new JsonObjectKeyExistPredicate("operation-type-not-null-4663", OPERATION_TYPE_FIELD_NAME, true);
+        FilterTransformer operationTypeNotNullFilter = new FilterTransformer("operation-type-not-null-4663-filter", operationTypeNotNull, true);
+        operationTypeFor4663ChainList.add(operationTypeNotNullFilter);
+        JsonObjectChainTransformer operationTypeFor4663ChainTransformer = new JsonObjectChainTransformer("operation-type-for-4663-chain", operationTypeFor4663ChainList);
+
+        //For 4660, 4670 and 5145: Filling the operation type
+        List<SwitchCaseTransformer.SwitchCase> operationTypeAccordingToEventCodeCases = new ArrayList<>();
+        operationTypeAccordingToEventCodeCases.add(new SwitchCaseTransformer.SwitchCase("4660", "FILE_DELETED"));
+        operationTypeAccordingToEventCodeCases.add(new SwitchCaseTransformer.SwitchCase("4670", "FILE_PERMISSION_CHANGED"));
+        operationTypeAccordingToEventCodeCases.add(new SwitchCaseTransformer.SwitchCase("5145", FILE_OPENED));
+        SwitchCaseTransformer operationTypeAccordingToEventCodeSwitchCaseTransformer =
+                new SwitchCaseTransformer("operation_type-according-to-event-code",EVENT_CODE_FIELD_NAME,
+                        OPERATION_TYPE_FIELD_NAME, null,operationTypeAccordingToEventCodeCases);
+
+        //if else transformer between 4663 and (4660, 4670, 5145)
+        JsonObjectRegexPredicate referenceIdEqual4663 =
+                new JsonObjectRegexPredicate("reference-id-equal-4663", EVENT_CODE_FIELD_NAME, "4663");
+        IfElseTransformer operationTypeIfElseTransformer =
+                new IfElseTransformer("operation-type-if-else-transformer",
+                        referenceIdEqual4663,
+                        operationTypeFor4663ChainTransformer,
+                        operationTypeAccordingToEventCodeSwitchCaseTransformer);
+        transformerChainList.add(operationTypeIfElseTransformer);
 
         // Normalize the userId values
         CaptureAndFormatConfiguration userNormalizationFirstPattern = new CaptureAndFormatConfiguration("CN=([^,]+)", "%s",
@@ -143,26 +178,6 @@ public class FileWindowsAuditTransformerTest extends TransformerTest{
                 new SwitchCaseTransformer("is-src-drive-shared-switch-case",SRC_FILE_PATH_FIELD_NAME,
                         IS_SRC_DRIVE_SHARED_FIELD_NAME, false,isSrcDriveSharedCases);
         transformerChainList.add(isSrcDriveSharedSwitchCaseTransformer);
-
-        //For 4660, 4670 and 5145: Filling the operation type
-        List<SwitchCaseTransformer.SwitchCase> operationTypeAccordingToEventCodeCases = new ArrayList<>();
-        operationTypeAccordingToEventCodeCases.add(new SwitchCaseTransformer.SwitchCase("4660", "FILE_DELETED"));
-        operationTypeAccordingToEventCodeCases.add(new SwitchCaseTransformer.SwitchCase("4670", "FILE_PERMISSION_CHANGED"));
-        operationTypeAccordingToEventCodeCases.add(new SwitchCaseTransformer.SwitchCase("5145", FILE_OPENED));
-        SwitchCaseTransformer operationTypeAccordingToEventCodeSwitchCaseTransformer =
-                new SwitchCaseTransformer("operation_type-according-to-event-code",EVENT_CODE_FIELD_NAME,
-                        OPERATION_TYPE_FIELD_NAME, null,operationTypeAccordingToEventCodeCases);
-        transformerChainList.add(operationTypeAccordingToEventCodeSwitchCaseTransformer);
-
-        // For 4663: Filling the operation type
-        List<SwitchCaseTransformer.SwitchCase> accessesCases = new ArrayList<>();
-        for(int i = 0; i < CASES.size(); i++){
-            accessesCases.add(new SwitchCaseTransformer.SwitchCase(containedRegex(CASES.get(i)),CASES_VALUES.get(i), true));
-        }
-        SwitchCaseTransformer operationTypeAccordingToAccessesSwitchCaseTransformer =
-                new SwitchCaseTransformer("operation_type-according-to-accesses",ACCESSES_FIELD_NAME,
-                        OPERATION_TYPE_FIELD_NAME, null,accessesCases);
-        transformerChainList.add(operationTypeAccordingToAccessesSwitchCaseTransformer);
 
         //Fixing the operation type from file operation to folder operation according to the file path suffix
         JsonObjectRegexPredicate isSrcFilePathFolder = new JsonObjectRegexPredicate("is_src_file_path_folder", SRC_FILE_PATH_FIELD_NAME, "^(.*[\\\\\\\\])*[^\\\\.]*$");
@@ -305,11 +320,11 @@ public class FileWindowsAuditTransformerTest extends TransformerTest{
 
         JSONObject retJsonObject = transform(transformer, jsonObject, true);
 
-        Assert.assertNull("the event should have been filtered due to unknown device type", retJsonObject);
+        Assert.assertNull("the event should have been filtered due to category not equal to File System", retJsonObject);
     }
 
     @Test
-    public void filter_accesses_test() throws JsonProcessingException {
+    public void filter_accesses_test1() throws JsonProcessingException {
         IJsonObjectTransformer transformer = buildFileWindowsAuditTransformer();
 
         JSONObject jsonObject = buildFileWindowAuditJsonObject("4663", "testUser", "winevent_snare", "File System","DeleteChild",
@@ -318,7 +333,20 @@ public class FileWindowsAuditTransformerTest extends TransformerTest{
 
         JSONObject retJsonObject = transform(transformer, jsonObject, true);
 
-        Assert.assertNull("the event should have been filtered due to unknown device type", retJsonObject);
+        Assert.assertNull("the event should have been filtered due to accesses = READ_CONTROL", retJsonObject);
+    }
+
+    @Test
+    public void filter_accesses_test2() throws JsonProcessingException {
+        IJsonObjectTransformer transformer = buildFileWindowsAuditTransformer();
+
+        JSONObject jsonObject = buildFileWindowAuditJsonObject("4663", "testUser", "winevent_snare", "File System","DeleteChild",
+                1528124556000L, "\\Device\\HarddiskVolume28\\testing.file", null, "Success Audit", "  ", "10.25.67.33:50005:91168521",
+                null, "File");
+
+        JSONObject retJsonObject = transform(transformer, jsonObject, true);
+
+        Assert.assertNull("the event should have been filtered due to accesses = DeleteChild", retJsonObject);
     }
 
     @Test
@@ -370,7 +398,7 @@ public class FileWindowsAuditTransformerTest extends TransformerTest{
         String referenceId = "4663";
         Long eventTime = 1528124556L;
         JSONObject jsonObject = buildFileWindowAuditJsonObject(referenceId, userDst, "winevent_snare",
-                "File System","AppendData (or AddSubdirectory or CreatePipeInstance)",
+                "File System","AppendData (or AddSubdirectory or CreatePipeInstance) & READ_CONTROL",
                 eventTime*1000, objName,
                 null, "Success Audit", "0x1", eventSourceId, null, "File");
 
@@ -436,7 +464,7 @@ public class FileWindowsAuditTransformerTest extends TransformerTest{
 
         JSONObject retJsonObject = transform(transformer, jsonObject);
 
-        assertOnExpectedValues(retJsonObject, userDst.toLowerCase(), objName, false, "FOLDER_OPENED", RESULT_FAILURE,
+        assertOnExpectedValues(retJsonObject, userDst.toLowerCase(), objName, false, "FOLDER_PERMISSION_CHANGED", RESULT_FAILURE,
                 eventSourceId, referenceId, userDst, userDst, eventTime);
     }
 }
