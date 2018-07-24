@@ -114,6 +114,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <!-- Delete resources folder -->
             <plugin>
                 <artifactId>maven-clean-plugin</artifactId>
                 <configuration>
@@ -145,7 +146,7 @@
                             <overwrite>true</overwrite>
                             <resources>
                                 <resource>
-                                    <directory>../presidio-ui-ui/dist</directory>
+                                    <directory>../presidio-ui-ui/target/dist</directory>
                                     <includes>
                                         <include>**</include>
                                     </includes>
