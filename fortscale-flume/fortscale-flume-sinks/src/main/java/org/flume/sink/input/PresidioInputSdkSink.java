@@ -21,6 +21,7 @@ import presidio.sdk.api.validation.InvalidInputDocument;
 import presidio.sdk.api.validation.ValidationResults;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -150,6 +151,10 @@ public class PresidioInputSdkSink<T extends AbstractAuditableDocument> extends A
         monitoringService.reportFailedEventMetric("UNKNOWN_ERROR_EVENTS", number);
     }
 
+    @Override
+    protected Instant getLogicalHour(T event) {
+        return event.getDateTime().truncatedTo(ChronoUnit.HOURS);
+    }
 
     @Override
     protected int saveEvents(List<T> records) {
