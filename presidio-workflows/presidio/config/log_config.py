@@ -91,7 +91,7 @@ LOGGING_CONFIG = {
         'presidio.operators': {
             'handlers': ['console'],
             'level': LOG_LEVEL,
-            'propagate': True,
+            'propagate': False,
         },
         'presidio.utils.airflow.operators.sensor.root_dag_gap_sensor_operator': {
             'handlers': ['console'],
