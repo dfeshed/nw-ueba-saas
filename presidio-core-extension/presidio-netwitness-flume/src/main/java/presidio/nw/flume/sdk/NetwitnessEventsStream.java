@@ -4,6 +4,7 @@ import com.rsa.asoc.streams.RecordSourcePosition;
 import com.rsa.asoc.streams.RecordStream;
 import com.rsa.asoc.streams.RecordStreamException;
 import com.rsa.asoc.streams.RecordStreams;
+import com.rsa.asoc.streams.policy.RecordStreamPolicyParameter;
 import com.rsa.asoc.streams.source.netwitness.NwParameter;
 import com.rsa.asoc.streams.source.netwitness.NwPosition;
 import fortscale.common.general.Schema;
@@ -28,6 +29,9 @@ public class NetwitnessEventsStream extends AbstractNetwitnessEventsStream {
     protected static final String TIME_FIELD = "timeField";
     protected static final String CONNECTION_TIMEOUT = "connectionTimeout";
     protected static final String SOCKET_TIMEOUT = "socketTimeout";
+    protected static final String FAILURE_RETRY_INTERVAL = "failureRetryInterval";
+
+    private static final String DEFAULT_FAILURE_RETRY_INTERVAL = "60000";
 
     private NetwitnessEventsSources nwSources;
 
@@ -56,6 +60,7 @@ public class NetwitnessEventsStream extends AbstractNetwitnessEventsStream {
         private String timeFieldMetaKey;
         private String connectionTimeout;
         private String socketTimeout;
+        private String failureRetryInterval;
       
         public EventsStreamIterator(Schema schema, Instant startTime, Instant endTime, List<String> sources, Map<String, String> configurations ) {
             try {
@@ -65,8 +70,9 @@ public class NetwitnessEventsStream extends AbstractNetwitnessEventsStream {
                 this.timeField = configurations.get(TIME_FIELD);
                 this.connectionTimeout = configurations.get(CONNECTION_TIMEOUT);
                 this.socketTimeout = configurations.get(SOCKET_TIMEOUT);
-                this.stream = initializeStream(sources);
                 this.timeFieldMetaKey = timeField.replace('.','_');
+                this.failureRetryInterval = configurations.getOrDefault(FAILURE_RETRY_INTERVAL, DEFAULT_FAILURE_RETRY_INTERVAL);
+                this.stream = initializeStream(sources);
             } catch (Exception ex) {
                 logger.error("start streaming failed", ex);
                 throw new RuntimeException("start streaming failed", ex);
@@ -158,6 +164,7 @@ public class NetwitnessEventsStream extends AbstractNetwitnessEventsStream {
                 // Construct a new stream
                 RecordStream stream = RecordStreams.streamBuilder(UEBA)
                         .positionTracking(startOfBatch(startTime.getEpochSecond()))
+                        .setParameter(RecordStreamPolicyParameter.FailureRetryInterval, Integer.valueOf(failureRetryInterval))
                         .build();
 
                 logger.debug("adding sources to stream{}", sources);
