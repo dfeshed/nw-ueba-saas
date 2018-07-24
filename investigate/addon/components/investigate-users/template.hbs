@@ -5,6 +5,9 @@
         <img test-id="uebaUnavailable" class="ueba-unavailable" src="/assets/images/ueba-unavailable.png">
       </a>
     {{else}}
+      {{#unless iframeVisible}}
+        {{ueba-loader}}
+      {{/unless}}
       {{ueba-iframe iframeVisible=iframeVisible testId="uebaIframe" handleOnLoad=(action "iframeLoad")}}
     {{/if}}
     {{outlet}}

@@ -20,6 +20,30 @@
   width: 100%;
   height: 100%;
 }
+.ueba-loading__main {
+  background-color: background-color(neutral, dark);
+  height: 100vh;
+  width: 100vw;
+}
+.ueba-loading__inner {
+  height: 420px;
+  display: flex;
+  flex: 1 1 auto;
+}
+.ueba-container {
+  flex: 1 1 auto;
+}
+.ueba-loader {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+}
 iframe {
   margin: 0;
   padding: 0;

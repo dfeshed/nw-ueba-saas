@@ -8,6 +8,7 @@ import { scheduleOnce } from '@ember/runloop';
 
 const imgSelector = '[test-id=uebaUnavailable]';
 const iframeSelector = '[test-id=uebaIframe]';
+const loaderSelector = '[test-id=uebaLoader]';
 
 module('Integration | Component | Investigate Users', function(hooks) {
   setupRenderingTest(hooks, {
@@ -19,7 +20,7 @@ module('Integration | Component | Investigate Users', function(hooks) {
   });
 
   test('displays ueba unavailable when iframe redirects to internal error', async function(assert) {
-    assert.expect(5);
+    assert.expect(7);
 
     this.owner.register(
       'template:components/ueba-iframe',
@@ -29,17 +30,19 @@ module('Integration | Component | Investigate Users', function(hooks) {
     await render(hbs`{{investigate-users}}`);
 
     assert.equal(findAll(imgSelector).length, 0);
+    assert.equal(findAll(loaderSelector).length, 1);
     assert.equal(findAll(iframeSelector).length, 1);
     assert.equal(find(iframeSelector).getAttribute('style'), 'display: none');
 
     await waitUntil(() => find(imgSelector));
 
     assert.equal(findAll(imgSelector).length, 1);
+    assert.equal(findAll(loaderSelector).length, 0);
     assert.equal(findAll(iframeSelector).length, 0);
   });
 
   test('does not display ueba unavailable when iframe onload retry is exhausted', async function(assert) {
-    assert.expect(6);
+    assert.expect(8);
 
     this.owner.register(
       'template:components/ueba-iframe',
@@ -49,12 +52,14 @@ module('Integration | Component | Investigate Users', function(hooks) {
     await render(hbs`{{investigate-users}}`);
 
     assert.equal(findAll(imgSelector).length, 0);
+    assert.equal(findAll(loaderSelector).length, 1);
     assert.equal(findAll(iframeSelector).length, 1);
     assert.equal(find(iframeSelector).getAttribute('style'), 'display: none');
 
     await waitUntil(() => find(iframeSelector).getAttribute('style') !== 'display: none', { timeout: 2000 });
 
     assert.equal(findAll(imgSelector).length, 0);
+    assert.equal(findAll(loaderSelector).length, 0);
     assert.equal(findAll(iframeSelector).length, 1);
     assert.equal(find(iframeSelector).getAttribute('style'), 'display: block');
   });
