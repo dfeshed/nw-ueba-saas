@@ -3,6 +3,7 @@ import { clientSideParseAndValidate, getMetaFormat } from './utils';
 import { selectedPills } from 'investigate-events/reducers/investigate/query-node/selectors';
 import validateQueryFragment from './fetch/query-validation';
 import { transformTextToPillData } from 'investigate-events/actions/utils';
+import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 
 const _validateNextGenPill = (pillData, position) => {
   return (dispatch, getState) => {
@@ -135,22 +136,32 @@ export const openNextGenPillForEdit = ({ pillData }) => {
 };
 
 export const addFreeFormFilter = (freeFormText) => {
-  const pillData = transformTextToPillData(freeFormText.trim());
-  return {
-    type: ACTION_TYPES.REPLACE_ALL_NEXT_GEN_PILLS,
-    payload: {
-      pillData: [pillData]
-    }
+  return (dispatch, getState) => {
+    const pillData = transformTextToPillData(
+      freeFormText.trim(),
+      metaKeySuggestionsForQueryBuilder(getState())
+    );
+    dispatch({
+      type: ACTION_TYPES.REPLACE_ALL_NEXT_GEN_PILLS,
+      payload: {
+        pillData: [pillData]
+      }
+    });
   };
 };
 
 // Transform the text to what it would look like in pill form
 export const updatedFreeFormText = (freeFormText) => {
-  const pillData = transformTextToPillData(freeFormText.trim());
-  return {
-    type: ACTION_TYPES.UPDATE_FREE_FORM_TEXT,
-    payload: {
-      pillData
-    }
+  return (dispatch, getState) => {
+    const pillData = transformTextToPillData(
+      freeFormText.trim(),
+      metaKeySuggestionsForQueryBuilder(getState())
+    );
+    dispatch({
+      type: ACTION_TYPES.UPDATE_FREE_FORM_TEXT,
+      payload: {
+        pillData
+      }
+    });
   };
 };

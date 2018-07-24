@@ -3,9 +3,12 @@ import { get, getProperties } from '@ember/object';
 import { isBlank } from '@ember/utils';
 import { run } from '@ember/runloop';
 import RSVP from 'rsvp';
+import { lookup } from 'ember-dependency-lookup';
+
 import { encodeMetaFilterConditions } from 'investigate-shared/actions/api/events/utils';
 import { getTimeRangeIdFromRange } from 'investigate-shared/utils/time-range-utils';
-import { lookup } from 'ember-dependency-lookup';
+import { relevantOperators } from 'investigate-events/util/possible-operators';
+
 
 const operators = ['!exists', 'exists', 'contains', 'begins', 'ends', '<=', '>=', '!=', '='];
 const _isFloat = (value) => {
@@ -234,13 +237,13 @@ function executeMetaValuesRequest(request, inputs, values) {
  * @return {object}
  * @public
  */
-function parseQueryParams(params) {
+function parseQueryParams(params, availableMeta) {
   return {
     endTime: params.et,
     sessionId: params.eid,
     metaFilter: {
       uri: params.mf,
-      conditions: _parseMetaFilterUri(params.mf)
+      conditions: _parseMetaFilterUri(params.mf, availableMeta)
     },
     metaPanelSize: params.mps,
     reconSize: params.rs,
@@ -266,7 +269,7 @@ function parseQueryParams(params) {
  * (ii) value` is a meta key value (raw, not alias).
  * @private
  */
-function _parseMetaFilterUri(uri) {
+function _parseMetaFilterUri(uri, availableMeta) {
   if (isBlank(uri)) {
     // When uri is empty, return empty array. Alas, ''.split() returns a non-empty array; it's a 1-item array with
     // an empty string in it, which is not what we want.  So we check for '' and return [] explicitly here.
@@ -276,60 +279,95 @@ function _parseMetaFilterUri(uri) {
     .filter((segment) => !!segment)
     .map((queryString) => {
       const decodedQuery = decodeURIComponent(queryString);
-      return transformTextToPillData(decodedQuery);
+      return transformTextToPillData(decodedQuery, availableMeta);
     });
 }
 
-function transformTextToPillData(queryText) {
+const _createComplexFilterText = (complexFilterText) => ({
+  meta: undefined,
+  operator: undefined,
+  value: undefined,
+  complexFilterText
+});
 
+function transformTextToPillData(queryText, availableMeta) {
+
+  // 1. Check if the text contains characters
+  // that immediately make the query complex
   const hasComplexItem = complexOperators.some((operator) => queryText.includes(operator));
   if (hasComplexItem) {
-
-    // if there is already a bracket added, do not add another
     if (!(queryText.startsWith('(') && queryText.endsWith(')'))) {
       queryText = `(${queryText})`;
     }
 
-    return {
-      meta: undefined,
-      operator: undefined,
-      value: undefined,
-      complexFilterText: queryText
-    };
+    return _createComplexFilterText(queryText);
   }
 
+  // 2. Then check to see if there IS an operator,
+  // no operator = complex
   const operator = operators.find((option) => {
     return queryText.includes(option);
   });
 
   if (!operator) {
-    return {
-      meta: undefined,
-      operator: undefined,
-      value: undefined,
-      complexFilterText: queryText
-    };
+    return _createComplexFilterText(queryText);
   }
 
-  const chunks = queryText.split(operator);
+  // eliminate empty chunks
+  const chunks = queryText.split(operator).filter((s) => s !== '');
 
+  let [ meta ] = chunks;
+  meta = meta.trim();
+
+  if (availableMeta && availableMeta.length > 0) {
+    // 3. Check that the meta is a real meta,
+    // if we do not recognize the meta, complex
+    const metaConfig = availableMeta.find((m) => m.metaName === meta);
+    if (!metaConfig) {
+      return _createComplexFilterText(queryText);
+    }
+
+    // 4. Check that the operator applies to the meta,
+    // if the operator isn't valid for the meta, complex
+    const possibleOperators = relevantOperators(metaConfig);
+    const operatorConfig = possibleOperators.find((o) => o.displayName === operator);
+    if (!operatorConfig) {
+      return _createComplexFilterText(queryText);
+    }
+
+    // 5. If the operator requires value and doesn't have one,
+    // then complex
+    // chunks are split by operator, so "medium = 1" would be
+    // two chunks
+    if (chunks.length < 2 && operatorConfig.hasValue) {
+      return _createComplexFilterText(queryText);
+    }
+
+    // 6. if the operator does not have a value but a value is
+    // include, then complex
+    if (chunks.length >= 2 && !operatorConfig.hasValue) {
+      return _createComplexFilterText(queryText);
+    }
+  }
+
+  // NOT COMPLEX!
+
+  let value;
   if (chunks.length > 2) {
-    const [ meta, ...value ] = chunks;
-    return {
-      meta: meta.trim(),
-      operator: operator.trim(),
-      value: value.join(operator).trim(),
-      complexFilterText: undefined
-    };
+    [ , ...value ] = chunks;
+    value = value.join(operator).trim();
   } else {
-    const [ meta, value ] = chunks;
-    return {
-      meta: meta.trim(),
-      operator: operator.trim(),
-      value: (value.trim() === '') ? undefined : value.trim(), // empty means not there
-      complexFilterText: undefined
-    };
+    [ , value ] = chunks;
+    // empty means it isn't there
+    value = (!value || value.trim() === '') ? undefined : value.trim();
   }
+
+  return {
+    meta,
+    operator: operator.trim(),
+    value,
+    complexFilterText: undefined
+  };
 }
 
 function filterIsPresent(filters, freeFormText) {

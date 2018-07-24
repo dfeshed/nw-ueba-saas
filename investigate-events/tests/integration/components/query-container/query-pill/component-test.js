@@ -122,7 +122,7 @@ module('Integration | Component | query-pill', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 1);
     // Clear input to show all meta options
     await fillIn(PILL_SELECTORS.metaInput, '');
-    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 17);
+    assert.equal(findAll(PILL_SELECTORS.powerSelectOption).length, 20);
     // Select meta options B
     await selectChoose(PILL_SELECTORS.meta, PILL_SELECTORS.powerSelectOption, 1);
     assert.equal(trim(find(PILL_SELECTORS.meta).textContent), 'b');

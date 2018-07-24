@@ -246,26 +246,47 @@ module('Unit | Actions | NextGen Creators', function(hooks) {
   });
 
   test('addFreeFormFilter action creator returns proper type and payload', function(assert) {
-    const action = nextGenCreators.addFreeFormFilter('medium = 50');
-    assert.equal(action.type, ACTION_TYPES.REPLACE_ALL_NEXT_GEN_PILLS, 'action has the correct type');
-    assert.deepEqual(action.payload.pillData, [
-      {
+    assert.expect(2);
+    const thunk = nextGenCreators.addFreeFormFilter('medium = 50');
+
+    const getState = () => {
+      return new ReduxDataHelper().language().build();
+    };
+
+    const dispatch = (action) => {
+      assert.equal(action.type, ACTION_TYPES.REPLACE_ALL_NEXT_GEN_PILLS, 'action has the correct type');
+      assert.deepEqual(action.payload.pillData, [
+        {
+          complexFilterText: undefined,
+          meta: 'medium',
+          operator: '=',
+          value: '50'
+        }
+      ], 'action pillData has the right value');
+    };
+
+    thunk(dispatch, getState);
+  });
+
+  test('updatedFreeFormText action creator returns proper type and payload', function(assert) {
+    assert.expect(2);
+    const thunk = nextGenCreators.updatedFreeFormText('medium = 50');
+
+    const getState = () => {
+      return new ReduxDataHelper().language().build();
+    };
+
+    const dispatch = (action) => {
+      assert.equal(action.type, ACTION_TYPES.UPDATE_FREE_FORM_TEXT, 'action has the correct type');
+      assert.deepEqual(action.payload.pillData, {
         complexFilterText: undefined,
         meta: 'medium',
         operator: '=',
         value: '50'
-      }], 'action pillData has the right value');
-  });
+      }, 'action pillData has the right value');
+    };
 
-  test('updatedFreeFormText action creator returns proper type and payload', function(assert) {
-    const action = nextGenCreators.updatedFreeFormText('medium = 50');
-    assert.equal(action.type, ACTION_TYPES.UPDATE_FREE_FORM_TEXT, 'action has the correct type');
-    assert.deepEqual(action.payload.pillData, {
-      complexFilterText: undefined,
-      meta: 'medium',
-      operator: '=',
-      value: '50'
-    }, 'action pillData has the right value');
+    thunk(dispatch, getState);
   });
 
 
