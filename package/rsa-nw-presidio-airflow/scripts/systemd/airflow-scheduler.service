@@ -7,7 +7,7 @@ EnvironmentFile=/etc/sysconfig/airflow
 User=presidio
 Group=presidio
 Type=simple
-ExecStart=/usr/bin/bash -c 'source ${AIRFLOW_VENV}/bin/activate ; JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:/bin/java::") ; airflow scheduler'
+ExecStart=/usr/bin/bash -c 'source ${AIRFLOW_VENV}/bin/activate ; airflow scheduler'
 Restart=always
 RestartSec=5s
 [Install]
