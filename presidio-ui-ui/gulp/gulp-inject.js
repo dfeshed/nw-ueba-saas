@@ -43,7 +43,7 @@ function _injectToFile (targetStream, cssVendorStream, cssMainStream, scriptVend
 
     return targetStream
         .pipe(inject(series(cssVendorStream, cssMainStream, scriptVendorStream, scriptMainStream), {
-            ignorePath: 'dist',
+            ignorePath: 'target/dist',
             addRootSlash: false
         }))
         .pipe(gulp.dest(gulpConfig.distDir));
