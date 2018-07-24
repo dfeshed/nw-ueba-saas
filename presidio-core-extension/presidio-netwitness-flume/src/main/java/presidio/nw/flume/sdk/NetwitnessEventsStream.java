@@ -114,7 +114,7 @@ public class NetwitnessEventsStream extends AbstractNetwitnessEventsStream {
 
         private URI initializeSource(String source) {
 
-            logger.info("adding source {}", source);
+            logger.debug("adding source {}", source);
 
             try {
                 URIBuilder uriBuilder = new URIBuilder(source);
@@ -153,14 +153,14 @@ public class NetwitnessEventsStream extends AbstractNetwitnessEventsStream {
         private RecordStream initializeStream(List<String> sources) throws Exception{
 
             try {
-                logger.info("about to initializing stream for source {}", sources);
-                // Construct a new stream
+                logger.debug("about to initializing stream for source {}", sources);
 
+                // Construct a new stream
                 RecordStream stream = RecordStreams.streamBuilder(UEBA)
                         .positionTracking(startOfBatch(startTime.getEpochSecond()))
                         .build();
 
-                logger.info("adding sources to stream{}", sources);
+                logger.debug("adding sources to stream{}", sources);
 
                 // Apply source configuration and add them
                 sources.stream().map(this::initializeSource).forEach(stream::addSource);
