@@ -5,7 +5,7 @@ const mockPort = process.env.MOCK_PORT || 9999;
 const mockServerUrl = `http://localhost:${mockPort}`;
 
 module.exports = function(environment/* , appConfig */) {
-  return {
+  const ENV = {
     modulePrefix: 'investigate',
     mockServerUrl,
     mockPort,
@@ -13,7 +13,8 @@ module.exports = function(environment/* , appConfig */) {
     APP: {
       // Here you can pass flags/options to your application instance
       // when it is created
-      readyDelay: 0 // 1500,
+      readyDelay: 0,
+      uebaTimeout: 100
     },
     moment: {
       includeLocales: ['en', 'ja'],
@@ -23,4 +24,10 @@ module.exports = function(environment/* , appConfig */) {
       defaultLocale: 'en'
     }
   };
+
+  if (environment === 'test') {
+    ENV.APP.uebaTimeout = 1;
+  }
+
+  return ENV;
 };

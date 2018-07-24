@@ -70,6 +70,7 @@ module.exports = function(environment) {
       // delete the initializer, remove this line, or set value to zero.
       readyDelay: 1250, // 1500,
       debounceDelay: 500,
+      uebaTimeout: 100,
       rootElement: 'body'
     },
     'ember-simple-auth': {
@@ -159,6 +160,7 @@ module.exports = function(environment) {
     // @workaround Disable readyDelay to avoid a synchronization issue with automated tests
     ENV.APP.readyDelay = 0;
     ENV.APP.debounceDelay = 10;
+    ENV.APP.uebaTimeout = 1;
 
     ENV.APP.rootElement = '#ember-testing';
     ENV.APP.autoboot = false;

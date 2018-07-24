@@ -1,12 +1,1 @@
-{{#investigate-header activeTab='investigate.investigate-users' as |section| }}
-  {{#if section.isMain}}
-    {{#if hasUEBAError}}
-      <a href="https://www.rsa.com/en-us/products/threat-detection-response/ueba" target="_blank" >
-        <img class="ueba-unavailable" src="/assets/images/ueba-unavailable.png">
-      </a>
-    {{else}}
-      <iframe id="ueba-iframe" scrolling="no" src="/presidio/index.html" onload={{action 'handleOnLoad'}}></iframe>
-    {{/if}}
-    {{outlet}}
-  {{/if}}
-{{/investigate-header}}
+{{investigate-users outlet=outlet}}
