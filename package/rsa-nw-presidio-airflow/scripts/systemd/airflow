@@ -8,5 +8,4 @@ AIRFLOW_PKG_REQ=/var/lib/netwitness/presidio/pypackages/airflow/requirements.txt
 FLUME_HOME=/var/lib/netwitness/presidio/flume/
 OWB_ALLOW_NON_FIPS=on
 SCHEDULER_RUNS=35
-JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:/bin/java::")
 
