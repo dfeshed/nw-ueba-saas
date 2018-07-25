@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import layout from './template';
 import { assign } from '@ember/polyfills';
 import computed from 'ember-computed-decorators';
-
+import { isEmpty } from '@ember/utils';
 export default Component.extend({
 
   layout,
@@ -19,7 +19,7 @@ export default Component.extend({
     ],
     filterValue: {
       operator: 'IN',
-      value: null
+      value: []
     }
   },
 
@@ -27,8 +27,9 @@ export default Component.extend({
   filterValue(options) {
     const { filterValue: { operator, value }, operators } = options;
     const selectedOperator = operators.findBy('type', operator);
-    this.set('_tempValue', { value, operator: selectedOperator.type }); // Set the default values to temp
-    return { selectedOperator, value };
+    const val = value.join('||');
+    this.set('_tempValue', { value: val, operator: selectedOperator.type }); // Set the default values to temp
+    return { selectedOperator, value: val };
   },
 
   init() {
@@ -41,7 +42,11 @@ export default Component.extend({
   _onFilterChange() {
     const { _tempValue: { value, operator }, options: { name }, onChange } = this.getProperties('_tempValue', 'options', 'onChange');
     if (onChange) {
-      onChange({ name, operator, value });
+      let val = [];
+      if (!isEmpty(value)) {
+        val = value.split('||');
+      }
+      onChange({ name, operator, value: val });
     }
   },
 

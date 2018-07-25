@@ -23,11 +23,11 @@ export default Component.extend({
 
   @computed('options')
   filterValue(options) {
-    const { filterValue: { value } } = options;
+    const { filterValue } = options;
     let { min: start, max: end } = options;
-    if (value && value.length) {
-      start = value[0];
-      end = value[1];
+    if (filterValue && filterValue.length) {
+      start = filterValue[0];
+      end = filterValue[1];
     }
     return [start, end];
   },

@@ -30,7 +30,7 @@ module('Integration | Component | rsa-data-filters', function(hooks) {
 
   test('it should call the onFilterChange with newly added and pre loaded filter', async function(assert) {
     assert.expect(4);
-    this.set('config', [{ type: 'text', name: 'status' }, { type: 'text', name: 'size', filterValue: { operator: 'LIKE', value: 'test' } }]);
+    this.set('config', [{ type: 'text', name: 'status' }, { type: 'text', name: 'size', filterValue: { operator: 'LIKE', value: ['test'] } }]);
     this.set('onFilterChange', (filters) => {
       assert.equal(filters.length, 2);
       assert.equal(filters[0].operator, 'LIKE');
@@ -45,7 +45,7 @@ module('Integration | Component | rsa-data-filters', function(hooks) {
 
   test('it should call the onFilterChange with newly added and pre loaded filter', async function(assert) {
     assert.expect(6);
-    this.set('config', [{ type: 'list', name: 'status', listOptions: [{ name: 'one', label: 'ONE' }] }, { type: 'text', name: 'size', filterValue: { operator: 'LIKE', value: 'test' } }]);
+    this.set('config', [{ type: 'list', name: 'status', listOptions: [{ name: 'one', label: 'ONE' }] }, { type: 'text', name: 'size', filterValue: { operator: 'LIKE', value: ['test'] } }]);
     this.set('onFilterChange', (filters) => {
       assert.equal(filters.length, 2);
       assert.equal(filters[0].operator, 'LIKE');
@@ -61,7 +61,7 @@ module('Integration | Component | rsa-data-filters', function(hooks) {
 
   test('it should call the onFilterChange with newly added and pre loaded filter', async function(assert) {
     assert.expect(7);
-    this.set('config', [{ type: 'list', name: 'status', filterValue: ['one', 'two'], listOptions: [{ name: 'one', label: 'ONE' }, { name: 'two', label: 'Two' }] }, { type: 'text', name: 'size', filterValue: { operator: 'LIKE', value: 'test' } }]);
+    this.set('config', [{ type: 'list', name: 'status', filterValue: ['one', 'two'], listOptions: [{ name: 'one', label: 'ONE' }, { name: 'two', label: 'Two' }] }, { type: 'text', name: 'size', filterValue: { operator: 'LIKE', value: ['test'] } }]);
     this.set('onFilterChange', (filters) => {
       assert.equal(filters.length, 2);
       assert.equal(filters[1].name, 'status');
@@ -75,5 +75,33 @@ module('Integration | Component | rsa-data-filters', function(hooks) {
     assert.equal(find('.text-filter .file-name-input input').value.trim(), 'test', 'Expected to set the correct value to text field');
     await click('.list-filter .list-filter-option');
   });
+
+  test('it should show Save filter button and clicking on save will call the callback', async function(assert) {
+    assert.expect(2);
+    this.set('config', [{ type: 'list', name: 'status', filterValue: ['one', 'two'], listOptions: [{ name: 'one', label: 'ONE' }, { name: 'two', label: 'Two' }] }, { type: 'text', name: 'size', filterValue: { operator: 'LIKE', value: ['test'] } }]);
+    this.set('onSave', (filters) => {
+      assert.equal(filters.length, 2);
+    });
+
+    this.set('showSaveFilterButton', true);
+    await render(hbs`{{rsa-data-filters showSaveFilterButton=showSaveFilterButton onSave=(action onSave) config=config}}`);
+    assert.equal(findAll('.save-filter-button').length, 1, 'Expected render save button');
+    click('.save-filter-button button');
+  });
+
+  test('it should show Save filter button and clicking on save will call the callback', async function(assert) {
+    assert.expect(3);
+    this.set('config', [{ type: 'list', name: 'status', filterValue: ['one', 'two'], listOptions: [{ name: 'one', label: 'ONE' }, { name: 'two', label: 'Two' }] }, { type: 'text', name: 'size', filterValue: { operator: 'LIKE', value: ['test'] } }]);
+    this.set('onFilterChange', (filters) => {
+      assert.equal(filters.length, 2);
+    });
+
+    this.set('showSaveFilterButton', false);
+    await render(hbs`{{rsa-data-filters onFilterChange=(action onFilterChange) config=config}}`);
+    assert.equal(findAll('.save-filter-button').length, 0);
+    assert.equal(findAll('.reset-filter-button').length, 1, 'Expected render reset button');
+    click('.reset-filter-button button');
+  });
+
 
 });

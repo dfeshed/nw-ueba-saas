@@ -1,5 +1,17 @@
-{{#each updatedConfig as |config|}}
-  <div class='filter-controls'>
-    {{component config.component onChange=(action 'onChange') filterOptions=config.filterOptions}}
-  </div>
-{{/each}}
+<box class="contet-body">
+  {{#each updatedConfig as |config|}}
+    <div class='filter-controls'>
+      {{component config.component onChange=(action 'onChange') filterOptions=config.filterOptions}}
+    </div>
+  {{/each}}
+</box>
+<hbox class='filters-footer'>
+  {{#rsa-form-button class='reset-filter-button' defaultAction=(action 'resetFilters')}}
+    Reset
+  {{/rsa-form-button}}
+  {{#if showSaveFilterButton}}
+    {{#rsa-form-button class='save-filter-button' defaultAction=(action 'saveFilters')}}
+      Save
+    {{/rsa-form-button}}
+  {{/if}}
+</hbox>

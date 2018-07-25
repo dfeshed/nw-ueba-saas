@@ -18,6 +18,10 @@ export default Component.extend({
 
   appliedFilters: [],
 
+  clearFormOnReset: false,
+
+  showSaveFilterButton: false,
+
   @computed('config')
   updatedConfig(config) {
     const updated = config.map((conf) => {
@@ -49,6 +53,7 @@ export default Component.extend({
         }
       }
     });
+    this.set('oldState', appliedFilters);
     this.set('appliedFilters', appliedFilters);
   },
 
@@ -74,6 +79,20 @@ export default Component.extend({
 
       if (onFilterChange) {
         onFilterChange(this.get('appliedFilters'));
+      }
+    },
+    saveFilters() {
+      const onSave = this.get('onSave');
+      if (onSave) {
+        onSave(this.get('appliedFilters'));
+      }
+    },
+    resetFilters() {
+      if (!this.get('clearFormOnReset')) {
+        const onFilterChange = this.get('onFilterChange');
+        if (onFilterChange) {
+          onFilterChange(this.get('oldState'));
+        }
       }
     }
   }

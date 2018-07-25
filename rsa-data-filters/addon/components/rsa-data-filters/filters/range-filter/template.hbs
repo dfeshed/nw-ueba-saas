@@ -1,7 +1,6 @@
 <h2 class='filter-text'>{{options.label}}</h2>
-{{log filterValue}}
 {{range-slider
-  step=1
+  step=options.step
   start=filterValue
   min=options.min
   max=options.max

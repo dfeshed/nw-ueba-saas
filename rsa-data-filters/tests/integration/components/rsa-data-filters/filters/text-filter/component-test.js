@@ -16,7 +16,7 @@ module('Integration | Component | rsa-data-filters/filters/text-filter', functio
   });
 
   test('it should set the proper value to filter control', async function(assert) {
-    this.set('options', { filterValue: { operator: 'IN', value: 'malware.exe' } });
+    this.set('options', { filterValue: { operator: 'IN', value: ['malware.exe'] } });
     await render(hbs`{{rsa-data-filters/filters/text-filter filterOptions=options}}`);
     assert.equal(document.querySelector('.ember-power-select-selected-item').textContent.trim(), 'Equals');
     assert.equal(document.querySelector('.file-name-input input').value, 'malware.exe');
