@@ -57,11 +57,11 @@ public class SystemConfiguration {
     }
 
     /**
-     * The domain user’s password
+     * The domain user's password
      *
      * @return password
      **/
-    @ApiModelProperty(example = "password", value = "The domain user’s password")
+    @ApiModelProperty(example = "password", value = "The domain user's password")
     public String getPassword() {
         return password;
     }

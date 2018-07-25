@@ -13,10 +13,6 @@
         <version>2.0.0-SNAPSHOT</version>
     </parent>
     <version>2.0.0-SNAPSHOT</version>
-    <properties>
-        <tomcat.web.scope>compile</tomcat.web.scope>
-        <exec-maven-plugin>1.2.1</exec-maven-plugin>
-    </properties>
 
     <dependencies>
         <dependency>
@@ -137,37 +133,6 @@
         </dependency>
     </dependencies>
 
-    <profiles>
-        <profile>
-            <id>Windows</id>
-            <activation>
-                <os>
-                    <family>Windows</family>
-                </os>
-            </activation>
-            <properties>
-                <script.extension>.bat</script.extension>
-            </properties>
-        </profile>
-        <profile>
-            <id>unix</id>
-            <activation>
-                <os>
-                    <family>unix</family>
-                </os>
-            </activation>
-            <properties>
-                <script.extension>.sh</script.extension>
-            </properties>
-        </profile>
-        <!--<profile>-->
-            <!--<id>bootwar</id>-->
-            <!--<properties>-->
-                <!--<tomcat.web.scope>compile</tomcat.web.scope>-->
-            <!--</properties>-->
-        <!--</profile>-->
-    </profiles>
-
     <build>
         <finalName>presidio-manager</finalName>
         <plugins>
@@ -205,11 +170,11 @@
                                 <version>${project.version}</version>
                                 <description>Fortscale Presidio is a plug-in that can be natively embedded by security
                                     infrastructure solutions to deliver the visibility and risk-based analysis they need
-                                    to make better, smarter security decisions. Leveraging the engine from Fortscale’s
+                                    to make better, smarter security decisions. Leveraging the engine from Fortscale's
                                     award-winning user and entity behavioral analytics (UEBA) platform, Presidio enables
                                     SIEM, EDR/EPP, DLP, CASB, IAM and other security infrastructure vendors to quickly
                                     and simply incorporate real-time, risk-based intelligence on the activity of users
-                                    and entities within the customer’s environment to enhance their own analysis and
+                                    and entities within the customer's environment to enhance their own analysis and
                                     security enforcement.
                                     [ Configuration sequence diagram
                                     ](https://www.draw.io/?state=%7B%22ids%22:%5B%220By8FcYQOrmVpVzNJQ2NuNkV0T1k%22%5D,%22action%22:%22open%22,%22userId%22:%22100443953654893261199%22%7D#G0By8FcYQOrmVpVzNJQ2NuNkV0T1k)
@@ -221,7 +186,6 @@
                             </info>
 
                             <host>presidio-domain</host>
-                            <basePath></basePath>
                             <swaggerDirectory>${basedir}/target/extra-resources/swagger</swaggerDirectory>
                             <swaggerFileName>presidio-manager-swagger</swaggerFileName>
                             <outputFormats>yaml</outputFormats>
@@ -278,39 +242,39 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>${exec-maven-plugin}</version>
+                <groupId>org.codehaus.groovy.maven</groupId>
+                <artifactId>gmaven-plugin</artifactId>
                 <executions>
                     <execution>
                         <id>compile-client</id>
                         <phase>install</phase>
                         <goals>
-                            <goal>exec</goal>
+                            <goal>execute</goal>
                         </goals>
                         <configuration>
-                            <environmentVariables>
-                                <key>MAVEN_HOME</key>
-                                <value>${env.M2_HOME}</value>
-                            </environmentVariables>
-                            <executable>${basedir}/compile-client${script.extension}</executable>
+                            <source>
+                                pathname = String.format("%s/../../resources/groovy/utils/Maven.groovy", project.basedir)
+                                command = String.format("%s clean install -f %s/target/generated-sources/swagger", project.properties.get('maven.command'), project.basedir)
+                                new GroovyShell().parse(new File(pathname)).with {
+                                    executeMavenCommand(command, project.properties.get('java.home'), project.properties.get('maven.home'))
+                                }
+                            </source>
                         </configuration>
                     </execution>
                     <execution>
                         <id>deploy-client</id>
                         <phase>deploy</phase>
                         <goals>
-                            <goal>exec</goal>
+                            <goal>execute</goal>
                         </goals>
                         <configuration>
-                            <environmentVariables>
-                                <key>MAVEN_HOME</key>
-                                <value>${env.M2_HOME}</value>
-                            </environmentVariables>
-                            <executable>${basedir}/deploy-client${script.extension}</executable>
-                            <arguments>
-                                <argument>${project.version}</argument>
-                            </arguments>
+                            <source>
+                                pathname = String.format("%s/../../resources/groovy/utils/Maven.groovy", project.basedir)
+                                command = String.format("%s deploy:deploy-file -f %s/target/generated-sources/swagger -DpomFile=pom.xml -Dfile=target/presidio-manager-generated-client-%s.jar -DrepositoryId=asoc-snapshots -Durl=https://repo1.rsa.lab.emc.com:8443/artifactory/asoc-snapshots", project.properties.get('maven.command'), project.basedir, project.version)
+                                new GroovyShell().parse(new File(pathname)).with {
+                                    executeMavenCommand(command, project.properties.get('java.home'), project.properties.get('maven.home'))
+                                }
+                            </source>
                         </configuration>
                     </execution>
                 </executions>

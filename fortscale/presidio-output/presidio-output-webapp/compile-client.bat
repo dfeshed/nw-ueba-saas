@@ -1,1 +1,0 @@
-mvn clean install -DskipTests -f target/generated-sources/swagger
