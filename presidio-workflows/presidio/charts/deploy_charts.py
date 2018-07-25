@@ -48,7 +48,7 @@ def run_sql_file(file_path, session):
 
 
 def run_sql(session, sql):
-    logging.info("executing sql %s ", sql)
+    logging.debug("executing sql %s ", sql)
     try:
         session.execute(sql)
     except Exception as e:
