@@ -69,13 +69,13 @@ test('it renders action bar delete button', function(assert) {
 test('it renders action bar export to csv button', function(assert) {
   this.render(hbs`{{host-list/host-table/action-bar}}`);
   assert.equal(this.$('.host-table__toolbar-buttons div:nth-child(3) button').text().trim(), 'Export to CSV', 'action bar export to csv button label');
-  assert.equal(this.$('.host-table__toolbar  div:nth-child(3)s > .is-disabled').length, 0, 'action bar export to csv button is enabled');
+  assert.equal(this.$('.host-table__toolbar  div:nth-child(2)s > .is-disabled').length, 0, 'action bar export to csv button is enabled');
 });
 
-test('it renders action bar pivot to endpoint button', function(assert) {
+test('it renders action bar delete button', function(assert) {
   this.render(hbs`{{host-list/host-table/action-bar}}`);
-  assert.equal(this.$('.host-table__toolbar-buttons div:nth-child(4) button').text().trim(), 'Pivot to Endpoint Thick Client', 'action bar pivot to endpoint button label');
-  assert.equal(this.$('.host-table__toolbar  div:nth-child(4) > .is-disabled').length, 0, 'action bar pivot to endpoint button is enabled');
+  assert.equal(this.$('.host-table__toolbar-buttons div:nth-child(4) button').text().trim(), 'Delete', 'action bar delete button label');
+  assert.equal(this.$('.host-table__toolbar  div:nth-child(4) > .is-disabled').length, 1, 'action bar delete button is disabled');
 });
 
 test('it renders action bar start button when some hosts are selected', function(assert) {

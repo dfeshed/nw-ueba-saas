@@ -20,12 +20,6 @@
       modalTitle=(t 'investigateHosts.hosts.initiateScan.modal.modalTitle' name=hostName)
       command='START_SCAN'}}
   </div>
-  <div class="action-button ecatUI">
-    {{#rsa-form-button
-      click=(action 'openInAction')}}
-      {{t 'investigateHosts.hosts.moreActions.openIn'}}
-    {{/rsa-form-button}}
-  </div>
   <div class="action-button">
     {{#if isJsonExportCompleted}}
       <span title="{{t 'investigateHosts.hosts.button.exportTooltip'}}">

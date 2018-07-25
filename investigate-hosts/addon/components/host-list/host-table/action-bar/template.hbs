@@ -9,10 +9,6 @@
 
   {{host-list/host-table/action-bar/export-button}}
 
-  {{#rsa-form-button isDisabled=noHostsSelected defaultAction=(action 'openThickClient')}}
-    {{t 'investigateHosts.hosts.moreActions.openIn'}}
-  {{/rsa-form-button}}
-
   {{#rsa-button-with-confirmation
     isDisabled=noHostsSelected
     class='delete-host-button'

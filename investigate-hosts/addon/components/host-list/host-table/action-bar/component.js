@@ -1,7 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { inject as service } from '@ember/service';
-import _ from 'lodash';
 import {
   noHostsSelected,
   hostCountForDisplay,
@@ -42,28 +41,6 @@ const ActionBar = Component.extend({
         onFailure: ({ meta: message }) => this.get('flashMessage').showErrorMessage(message.message)
       };
       this.send('deleteHosts', callBackOptions);
-    },
-    /**
-     * Opens the selected machines in the thick client
-     * @param keyword
-     * @param machines
-     * @public
-     */
-    openThickClient() {
-      const selectedHostList = this.get('selectedHostList'); // [{id, version}]
-      const selectedHostIds = _.map(selectedHostList, 'id');
-      const i18n = this.get('i18n');
-      let url = 'ecatui:///machines/';
-
-      if (selectedHostList.length <= 0) {
-        this.get('flashMessage').showErrorMessage(i18n.t('investigateHosts.hosts.moreActions.openInErrorMessage'));
-        return;
-      } else if (selectedHostList.some((host) => !host.version.startsWith('4.4'))) {
-        this.get('flashMessage').showErrorMessage(i18n.t('investigateHosts.hosts.moreActions.notAnEcatAgent'));
-        return;
-      }
-      url += selectedHostIds.join(':');
-      window.location = url;
     }
   }
 });

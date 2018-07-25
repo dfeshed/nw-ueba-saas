@@ -7,10 +7,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 import $ from 'jquery';
-import sinon from 'sinon';
 import wait from 'ember-test-helpers/wait';
-import { patchFlash } from '../../../../../helpers/patch-flash';
-import { getOwner } from '@ember/application';
 import { patchSocket } from '../../../../../helpers/patch-socket';
 
 import {
@@ -90,47 +87,6 @@ test('with scan time earlier than snapshot time, snapshot transitions down', fun
   });
 });
 
-test('it opens 4.4 agent into thick client', function(assert) {
-  const actionSpy = sinon.spy(window, 'open');
-  const host = {
-    id: 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
-    'machine': {
-      'machineAgentId': 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
-      'agentVersion': '4.4'
-    }
-  };
-  new ReduxDataHelper(setState)
-    .host(host)
-    .build();
-  this.render(hbs `{{host-detail/header/actionbar}}`);
-  this.$('.ecatUI .rsa-form-button-wrapper').trigger('click');
-  assert.ok(actionSpy.calledOnce);
-  assert.equal(actionSpy.args[0][0], 'ecatui:///machines/FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B');
-  actionSpy.restore();
-});
-
-test('Flash message when trying to open non 4.4 agent in thick client', function(assert) {
-  const host = {
-    id: 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
-    'machine': {
-      'machineAgentId': 'FE22A4B3-31B8-4E6B-86D3-BF02B8366C3B',
-      'agentVersion': '11.1'
-    }
-  };
-  new ReduxDataHelper(setState)
-    .host(host)
-    .build();
-
-  patchFlash((flash) => {
-    const translation = getOwner(this).lookup('service:i18n');
-    const expectedMsg = translation.t('investigateHosts.hosts.moreActions.notAnEcatAgent');
-    assert.equal(flash.type, 'error');
-    assert.equal(flash.message.string, expectedMsg);
-  });
-  this.render(hbs `{{host-detail/header/actionbar}}`);
-  this.$('.ecatUI .rsa-form-button-wrapper').trigger('click');
-});
-
 test('test for start scan button', function(assert) {
   this.render(hbs `{{host-detail/header/actionbar}}`);
   assert.equal($('.host-start-scan-button').length, 1, 'scan-command renders giving the start scan button');
@@ -158,7 +114,7 @@ test('test for Export to JSON', function(assert) {
       });
   });
   return wait().then(() => {
-    this.$('.host-action-buttons .action-button:nth-child(3) .rsa-form-button-wrapper').trigger('click');
+    this.$('.host-action-buttons .action-button:nth-child(2) .rsa-form-button-wrapper').trigger('click');
   });
 });
 
@@ -167,7 +123,7 @@ test('test for Export to JSON disabled', function(assert) {
     .snapShot([])
     .build();
   this.render(hbs `{{host-detail/header/actionbar}}`);
-  assert.equal($('.host-action-buttons .action-button:nth-child(3) .rsa-form-button-wrapper').hasClass('is-disabled'), true, 'Export to JSON disabled when no snapshots available');
+  assert.equal($('.host-action-buttons .action-button:nth-child(2) .rsa-form-button-wrapper').hasClass('is-disabled'), true, 'Export to JSON disabled when no snapshots available');
 });
 
 test('test when Export to JSON is in download status', function(assert) {
@@ -175,8 +131,8 @@ test('test when Export to JSON is in download status', function(assert) {
     .isJsonExportCompleted(false)
     .build();
   this.render(hbs `{{host-detail/header/actionbar}}`);
-  assert.equal($('.host-action-buttons .action-button:nth-child(3) .rsa-form-button-wrapper').hasClass('is-disabled'), true, 'Export to JSON disabled when in downloading state');
-  assert.equal($('.host-action-buttons .action-button:nth-child(3) .rsa-form-button-wrapper').text().trim(), 'Downloading', 'Export to JSON is in downloading state and button is disabled');
+  assert.equal($('.host-action-buttons .action-button:nth-child(2) .rsa-form-button-wrapper').hasClass('is-disabled'), true, 'Export to JSON disabled when in downloading state');
+  assert.equal($('.host-action-buttons .action-button:nth-child(2) .rsa-form-button-wrapper').text().trim(), 'Downloading', 'Export to JSON is in downloading state and button is disabled');
 });
 
 test('when JSON export is completed', function(assert) {
@@ -184,5 +140,5 @@ test('when JSON export is completed', function(assert) {
     .snapShot(snapShot)
     .build();
   this.render(hbs `{{host-detail/header/actionbar}}`);
-  assert.equal($('.host-action-buttons .action-button:nth-child(3) .rsa-form-button-wrapper').text().trim(), 'Export to JSON', 'In initial state and when previous export is completed, button is active');
+  assert.equal($('.host-action-buttons .action-button:nth-child(2) .rsa-form-button-wrapper').text().trim(), 'Export to JSON', 'In initial state and when previous export is completed, button is active');
 });
