@@ -1,7 +1,8 @@
 import Component from '@ember/component';
 import { later } from '@ember/runloop';
 import { Promise } from 'rsvp';
-import getOwner from 'ember-owner/get';
+import { getOwner } from '@ember/application';
+import { get, computed } from '@ember/object';
 
 const retry = function(isFinished, timeout) {
   let attempts = 0;
@@ -69,5 +70,14 @@ export default Component.extend({
         setProperty('hasUEBAError');
       });
     }
-  }
+  },
+  iframeUrl: computed('ueba', function() {
+    const ueba = get(this, 'ueba');
+    const baseUrl = '/presidio/index.html';
+    const deepUrl = () => {
+      const uebaUrl = ueba && ueba.replace('#', '').replace(baseUrl, '');
+      return `${baseUrl}#/${uebaUrl}`.replace('//', '/');
+    };
+    return ueba ? deepUrl() : baseUrl;
+  })
 });

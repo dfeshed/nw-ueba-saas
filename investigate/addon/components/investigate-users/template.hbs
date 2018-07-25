@@ -8,7 +8,7 @@
       {{#unless iframeVisible}}
         {{ueba-loader}}
       {{/unless}}
-      {{ueba-iframe iframeVisible=iframeVisible testId="uebaIframe" handleOnLoad=(action "iframeLoad")}}
+      {{ueba-iframe iframeUrl=iframeUrl iframeVisible=iframeVisible testId="uebaIframe" handleOnLoad=(action "iframeLoad")}}
     {{/if}}
     {{outlet}}
   {{/if}}
