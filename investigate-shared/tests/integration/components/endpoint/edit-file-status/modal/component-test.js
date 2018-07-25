@@ -20,16 +20,16 @@ module('Integration | Component | endpoint/edit-file-status/modal', function(hoo
     this.set('showFileStatusModal', true);
     await render(hbs`{{endpoint/edit-file-status/modal showFileStatusModal=showFileStatusModal}}`);
     assert.equal(findAll('.file-status-radio').length, 5, 'Four file status values have been rendered');
-    assert.equal(findAll('.file-status-radio')[0].textContent.trim(), 'Neutral', 'first file status');
+    assert.equal(findAll('.file-status-radio')[0].textContent.trim(), 'Blacklist', 'first file status');
   });
 
   test('toggle blacklist additional options', async function(assert) {
     this.set('showFileStatusModal', true);
     await render(hbs`{{endpoint/edit-file-status/modal showFileStatusModal=showFileStatusModal}}`);
-    assert.equal(findAll('.file-status-radio')[4].textContent.trim(), 'Blacklist', 'blacklist file status');
-    assert.equal(findAll('.black-list-options').length, 0, 'blacklist option are not rendered');
-    await click('.file-status-radio:last-child .status-type');
-    assert.equal(findAll('.black-list-options').length, 1, 'blacklist option have been rendered');
+    assert.equal(findAll('.file-status-radio')[0].textContent.trim(), 'Blacklist', 'blacklist file status');
+    assert.equal(findAll('.black-list-options').length, 0, 'blacklist options are not rendered');
+    await click(document.querySelectorAll('.file-status-modal .file-status-radio input.status-type')[0]);
+    assert.equal(findAll('.black-list-options').length, 1, 'blacklist options have been rendered');
   });
 
   test('on click of save button calls the onSaveFileStatus method', async function(assert) {

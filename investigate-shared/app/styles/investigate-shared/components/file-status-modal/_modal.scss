@@ -1,14 +1,13 @@
 $modalHeaderHeight: 52px;
 $footerHeight: 43px;
+$modalWidth: 500px;
 
 .rsa-application-modal.file-status-modal footer {
   display: none;
 }
 
 .rsa-application-modal-content.file-status-modal {
-  width: 35%;
-  height: 660px;
-
+  width: $modalWidth;
   .modal-content {
     width: 100%;
     height: calc(100% - (#{$modalHeaderHeight + $footerHeight}));
@@ -17,7 +16,7 @@ $footerHeight: 43px;
     position: relative;
     overflow: hidden;
     overflow-y: auto;
-
+    padding: rsa-whitespace();
     p {
       @include rsa-font(paragraph);
       padding: rsa-whitespace();
@@ -26,29 +25,34 @@ $footerHeight: 43px;
       width: 100%;
       height:100%;
     }
-
+    .comment-box {
+      margin-top: rsa-whitespace(less);
+    }
     .radio-controls, .comment-box {
-      padding: 0 rsa-whitespace() 0 rsa-whitespace();
       font-weight: 400;
       font-size: 1rem;
       line-height: 2rem;
     }
-
+    .file-status-radio, .remediation-action-radio, .blacklist-category-title {
+      height: 14px;
+      margin-bottom: rsa-whitespace(less);
+    }
     .comment-box .rsa-form-textarea {
       textarea {
-        min-height: 5rem;
+        min-height: 6rem;
+        resize: none;
+        margin-top: rsa-whitespace(less);
       }
     }
-
     .black-list-options {
       height: auto;
-      padding-left: rsa-whitespace(more);
+      padding-left: rsa-whitespace();
       .ember-power-select-trigger {
         width: 30%;
       }
 
       box {
-        padding: 0 rsa-whitespace() rsa-whitespace() rsa-whitespace();
+        padding: 0 rsa-whitespace() rsa-whitespace(less) rsa-whitespace(less);
         font-weight: 400;
         font-size: 1rem;
         line-height: 2rem;
@@ -61,19 +65,14 @@ $footerHeight: 43px;
   footer {
     height: $footerHeight;
     box-sizing: border-box;
-    position: absolute;
+    position: relative;
     bottom: 0;
     width: 100%;
-    padding: rsa-whitespace(less);
-    background-color: background-color(primary, dark, nearly-transparent);
-
     .modal-footer-buttons {
       justify-content: flex-end;
-      .rsa-form-button-wrapper {
-        margin: 0 0 0 rsa-whitespace();
+      .rsa-form-button-wrapper:last-child{
+        margin: 0 rsa-whitespace() 0 rsa-whitespace(less);
       }
     }
   }
 }
-
-

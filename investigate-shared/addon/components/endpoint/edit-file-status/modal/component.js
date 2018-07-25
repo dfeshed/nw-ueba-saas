@@ -8,17 +8,14 @@ export default Component.extend({
   data: {
     fileStatus: 'Neutral',
     fileCategory: 'Apt',
-    comment: ''
+    comment: '',
+    remediationAction: ''
   },
 
   radioButtons: [
     {
-      label: 'investigateFiles.editFileStatus.fileStatusOptions.neutral',
-      value: 'Neutral'
-    },
-    {
-      label: 'investigateFiles.editFileStatus.fileStatusOptions.whitelist',
-      value: 'Whitelist'
+      label: 'investigateFiles.editFileStatus.fileStatusOptions.blacklist',
+      value: 'Blacklist'
     },
     {
       label: 'investigateFiles.editFileStatus.fileStatusOptions.graylist',
@@ -29,13 +26,29 @@ export default Component.extend({
       value: 'KnownGood'
     },
     {
-      label: 'investigateFiles.editFileStatus.fileStatusOptions.blacklist',
-      value: 'Blacklist'
+      label: 'investigateFiles.editFileStatus.fileStatusOptions.whitelist',
+      value: 'Whitelist'
+    },
+    {
+      label: 'investigateFiles.editFileStatus.fileStatusOptions.neutral',
+      value: 'Neutral'
     }
   ],
 
+  remediationRadioButtons: [
+    {
+      label: 'investigateFiles.editFileStatus.remediationActionOptions.blockFile',
+      value: 'blockFile'
+    },
+    {
+      label: 'investigateFiles.editFileStatus.remediationActionOptions.blockQuarantineFile',
+      value: 'blockQuarantineFile'
+    }
+  ],
+
+
   fileCategories: [
-    'Apt',
+    'APT',
     'AttackerTool',
     'GenericMalware',
     'Ransom',

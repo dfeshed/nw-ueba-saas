@@ -2049,9 +2049,8 @@ export default {
     editFileStatus: {
       successMessage: 'File status updated successfully',
       title: 'Edit File Status',
-      label: 'Content around assigning a file status and/or Greylist or Blacklist a file to block the file.Content changing the status of the certificate or automatic file status by changing file status and applying it to all files signed by it.',
-      warning: 'Some warning: Automatic file status should be applied if you are fully sure of the certificate signed by it.',
-      fileStatusTitle: 'File Status',
+      blacklistCategory: 'Category',
+      fileStatusTitle: 'Status',
       fileStatusOptions: {
         neutral: 'Neutral',
         whitelist: 'Whitelist',
@@ -2060,13 +2059,13 @@ export default {
         knowngood: 'Known Good'
       },
       fileCategoryTitle: 'File Category',
-      remediationActionTitle: 'Remediation Action',
+      remediationActionTitle: 'Remediate',
       remediationActionOptions: {
         blockFile: 'Block File',
         blockQuarantineFile: 'Block and Quarantine File'
       },
       certificateStatusTitle: 'Certificate Status',
-      commentTitle: 'Comments',
+      commentTitle: 'Comments*',
       saveBtn: 'Save',
       cancelBtn: 'Cancel',
       blacklistCertificate: 'Blacklist Certificate',

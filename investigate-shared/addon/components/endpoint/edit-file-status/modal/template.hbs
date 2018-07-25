@@ -5,14 +5,8 @@
   autoOpen=true
   label=(t 'investigateFiles.editFileStatus.title')}}
   <div class="modal-content">
-    <box class='info-text'>
-      <p>{{t 'investigateFiles.editFileStatus.label'}}</p>
-    </box>
-    <box class='warning-text'>
-      <p>{{t 'investigateFiles.editFileStatus.warning'}}</p>
-    </box>
     <box class='radio-controls rsa-form-radio-group' fit>
-      <h4 class='rsa-form-radio-group-label'>{{t 'investigateFiles.editFileStatus.fileStatusTitle'}}</h4>
+      <h4 class='rsa-form-radio-group-label file-status-title'>{{t 'investigateFiles.editFileStatus.fileStatusTitle'}}</h4>
       {{#each radioButtons as |radio|}}
         <label class='rsa-form-radio-label file-status-radio {{if (eq radio.value data.fileStatus) 'checked'}}'>
           {{radio-button
@@ -21,36 +15,37 @@
             groupValue=data.fileStatus}}
           {{t radio.label}}
         </label>
+        {{#if (eq radio.value 'Blacklist')}}
+          {{#if (eq data.fileStatus 'Blacklist')}}
+            <div class="black-list-options">
+              <box>
+                <h4 class='rsa-form-radio-group-label blacklist-category-title'>{{t 'investigateFiles.editFileStatus.blacklistCategory'}}</h4>
+                {{#power-select
+                  searchEnabled=false
+                  triggerClass="inline"
+                  options=fileCategories
+                  onchange=(action 'setFileCategory')
+                  selected=data.fileCategory as |option|}}
+                  {{option}}
+                {{/power-select}}
+              </box>
+              <box class='radio-controls rsa-form-radio-group' fit>
+                <h4 class='rsa-form-radio-group-label remediation-action-title'>{{t 'investigateFiles.editFileStatus.remediationActionTitle'}}</h4>
+                {{#each remediationRadioButtons as |remediationRadio|}}
+                  <label class='rsa-form-radio-label remediation-action-radio {{if (eq remediationRadio.value data.remediationAction) 'checked'}}'>
+                    {{radio-button
+                      radioClass='status-type'
+                      value=remediationRadio.value
+                      groupValue=data.remediationAction}}
+                    {{t remediationRadio.label}}
+                  </label>
+                {{/each}}
+              </box>
+            </div>
+          {{/if}}
+        {{/if}}
       {{/each}}
     </box>
-
-    {{#if (eq data.fileStatus 'Blacklist')}}
-      <div class="black-list-options">
-        <box>
-          {{#power-select
-            searchEnabled=false
-            triggerClass="inline"
-            options=fileCategories
-            onchange=(action 'setFileCategory')
-            selected=data.fileCategory as |option|}}
-            {{option}}
-          {{/power-select}}
-        </box>
-        <box>
-          <h4>
-            {{t 'investigateFiles.editFileStatus.remediationActionTitle'}}
-          </h4>
-          <label class="rsa-form-checkbox-label {{if blockFile 'checked'}} file-status-checkbox">
-            {{rsa-form-checkbox checked=blockFile}}
-            {{t 'investigateFiles.editFileStatus.remediationActionOptions.blockFile'}}
-          </label>
-          <label class="rsa-form-checkbox-label {{if blockQuarantineFile 'checked'}} file-status-checkbox">
-            {{rsa-form-checkbox checked=blockQuarantineFile}}
-            {{t 'investigateFiles.editFileStatus.remediationActionOptions.blockQuarantineFile'}}
-          </label>
-        </box>
-      </div>
-    {{/if}}
 
     <box class="comment-box">
       {{rsa-form-textarea
@@ -74,4 +69,3 @@
     </hbox>
   </footer>
 {{/rsa-application-modal}}
-
