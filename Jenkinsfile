@@ -27,6 +27,7 @@ pipeline {
             }
         }
         stage('Presidio Test Utils Version Promotion') {
+            when { equals expected: true, actual: env.PROMOTE_PRESIDIO_TEST_UTILS }
             steps {
                 promoteProjectVersion("presidio-test-utils", [
                         "pom.xml": []
@@ -39,6 +40,7 @@ pipeline {
             }
         }
         stage('Presidio Core Version Promotion') {
+            when { equals expected: true, actual: env.PROMOTE_PRESIDIO_CORE }
             steps {
                 promoteProjectVersion("presidio-core", [
                         "fortscale/pom.xml": ["presidio.test.utils"],
@@ -52,6 +54,7 @@ pipeline {
             }
         }
         stage('Presidio Flume Version Promotion') {
+            when { equals expected: true, actual: env.PROMOTE_PRESIDIO_FLUME }
             steps {
                 promoteProjectVersion("presidio-flume", [
                         "pom.xml"        : ["presidio.test.utils", "presidio.core.version"],
@@ -65,6 +68,7 @@ pipeline {
             }
         }
         stage('Presidio Netwitness Version Promotion') {
+            when { equals expected: true, actual: env.PROMOTE_PRESIDIO_NETWITNESS }
             steps {
                 promoteProjectVersion("presidio-netwitness", [
                         "presidio-core-extension/pom.xml": ["flume.version"],
@@ -78,6 +82,7 @@ pipeline {
             }
         }
         stage('Presidio UI Version Promotion') {
+            when { equals expected: true, actual: env.PROMOTE_PRESIDIO_UI }
             steps {
                 promoteProjectVersion("presidio-ui", [
                         "pom.xml"        : ["presidio.core.version"],
@@ -91,6 +96,7 @@ pipeline {
             }
         }
         stage('Presidio Integration Test Version Promotion') {
+            when { equals expected: true, actual: env.PROMOTE_PRESIDIO_INTEGRATION_TEST }
             steps {
                 promoteProjectVersion("presidio-integration-test", [
                         "pom.xml": ["presidio.test.utils", "presidio.core.version", "flume.version"]
