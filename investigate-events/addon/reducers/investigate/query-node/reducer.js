@@ -188,28 +188,16 @@ export default handleActions({
       const newRange = {};
       newRange[queryParams.serviceId] = queryParams.selectedTimeRangeId;
 
-      const newHash = createQueryHash(
-        queryParams.serviceId,
-        queryParams.startTime,
-        queryParams.endTime,
-        queryParams.metaFilter.conditions
-      );
-
-      state = _replaceAllPills(state, queryParams.metaFilter.conditions);
-
       return state.merge({
         endTime: queryParams.endTime && parseInt(queryParams.endTime, 10) || 0,
         eventMetas: undefined,
         hasIncommingQueryParams,
-        metaFilter: queryParams.metaFilter,
         serviceId: queryParams.serviceId,
         previouslySelectedTimeRanges: previouslySelectedTimeRanges.merge(newRange),
         sessionId: queryParams.sessionId && parseInt(queryParams.sessionId, 10) || undefined,
         startTime: queryParams.startTime && parseInt(queryParams.startTime, 10) || 0,
         queryView: previousView ? previousView : state.queryView,
-        previousQueryParams: _cloneQueryParams(queryParams),
-        updatedFreeFormTextPill: undefined,
-        currentQueryHash: newHash
+        updatedFreeFormTextPill: undefined
       }, { deep: true });
     }
   },
@@ -250,6 +238,25 @@ export default handleActions({
   },
 
   // START NEXT GEN
+
+  [ACTION_TYPES.INITIALIZE_QUERYING]: (state, { payload }) => {
+    const { queryParams } = payload;
+
+    state = _replaceAllPills(state, queryParams.metaFilter.conditions);
+
+    const newHash = createQueryHash(
+      queryParams.serviceId,
+      queryParams.startTime,
+      queryParams.endTime,
+      queryParams.metaFilter.conditions
+    );
+
+    return state.merge({
+      metaFilter: queryParams.metaFilter,
+      previousQueryParams: _cloneQueryParams(queryParams),
+      currentQueryHash: newHash
+    }, { deep: true });
+  },
 
   [ACTION_TYPES.ADD_NEXT_GEN_PILL]: (state, { payload }) => {
     const { pillData, position } = payload;

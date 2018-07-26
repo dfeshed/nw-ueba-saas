@@ -414,77 +414,6 @@ test('INITIALIZE_INVESTIGATE clears out all pills on hard reset', function(asser
   assert.equal(result.pillsData.length, 0, 'pillsData is the correct length');
 });
 
-test('INITIALIZE_INVESTIGATE replaces all pills with new set of pills', function(assert) {
-  const { pillsData } = new ReduxDataHelper()
-    .pillsDataPopulated()
-    .build()
-    .investigate
-    .queryNode;
-
-  const emptyState = new ReduxDataHelper()
-    .hasRequiredValuesToQuery()
-    .pillsDataEmpty()
-    .build()
-    .investigate
-    .queryNode;
-
-  const action = {
-    type: ACTION_TYPES.INITIALIZE_INVESTIGATE,
-    payload: {
-      queryParams: {
-        metaFilter: {
-          conditions: pillsData
-        }
-      },
-      hardReset: false
-    }
-  };
-
-  // start with empty state...
-  const result = reducer(emptyState, action);
-
-  // should end up with two pills
-  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
-});
-
-test('INITIALIZE_INVESTIGATE sets a proper query hash', function(assert) {
-  const { pillsData } = new ReduxDataHelper()
-    .pillsDataPopulated()
-    .build()
-    .investigate
-    .queryNode;
-
-  const emptyState = new ReduxDataHelper()
-    .hasRequiredValuesToQuery()
-    .pillsDataEmpty()
-    .build()
-    .investigate
-    .queryNode;
-
-  const action = {
-    type: ACTION_TYPES.INITIALIZE_INVESTIGATE,
-    payload: {
-      queryParams: {
-        serviceId: '1',
-        startTime: 'early',
-        endTime: 'late',
-        metaFilter: {
-          conditions: pillsData
-        }
-      },
-      hardReset: false
-    }
-  };
-
-  const result = reducer(emptyState, action);
-
-  assert.equal(
-    result.currentQueryHash,
-    '1-early-late-a-=-\'x\'-undefined-b-=-\'y\'-undefined',
-    'pillsData is the correct length'
-  );
-});
-
 test('REPLACE_ALL_NEXT_GEN_PILLS replaces all pills', function(assert) {
   const state = new ReduxDataHelper()
     .pillsDataPopulated()
@@ -591,4 +520,74 @@ test('RESET_NEXT_GEN_PILL resets the pill', function(assert) {
 
   assert.ok(firstPill.id !== state.pillsData[0].id, 'id should have changed');
   assert.ok(firstPill.isEditing !== state.pillsData[0].isEditing, 'should no longer be editng');
+});
+
+
+test('INITIALIZE_QUERYING replaces all pills with new set of pills', function(assert) {
+  const { pillsData } = new ReduxDataHelper()
+    .pillsDataPopulated()
+    .build()
+    .investigate
+    .queryNode;
+
+  const emptyState = new ReduxDataHelper()
+    .hasRequiredValuesToQuery()
+    .pillsDataEmpty()
+    .build()
+    .investigate
+    .queryNode;
+
+  const action = {
+    type: ACTION_TYPES.INITIALIZE_QUERYING,
+    payload: {
+      queryParams: {
+        metaFilter: {
+          conditions: pillsData
+        }
+      }
+    }
+  };
+
+  // start with empty state...
+  const result = reducer(emptyState, action);
+
+  // should end up with two pills
+  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
+});
+
+test('INITIALIZE_QUERYING sets a proper query hash', function(assert) {
+  const { pillsData } = new ReduxDataHelper()
+    .pillsDataPopulated()
+    .build()
+    .investigate
+    .queryNode;
+
+  const emptyState = new ReduxDataHelper()
+    .hasRequiredValuesToQuery()
+    .pillsDataEmpty()
+    .build()
+    .investigate
+    .queryNode;
+
+  const action = {
+    type: ACTION_TYPES.INITIALIZE_QUERYING,
+    payload: {
+      queryParams: {
+        serviceId: '1',
+        startTime: 'early',
+        endTime: 'late',
+        metaFilter: {
+          conditions: pillsData
+        }
+      }
+    }
+  };
+
+  const result = reducer(emptyState, action);
+
+  assert.equal(
+    result.currentQueryHash,
+    '1-early-late-a-=-\'x\'-undefined-b-=-\'y\'-undefined',
+    'pillsData is the correct length'
+  );
 });
