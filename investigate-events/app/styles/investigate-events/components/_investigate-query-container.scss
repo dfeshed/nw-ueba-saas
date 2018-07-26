@@ -9,6 +9,14 @@
     color: text-color(primary, light);
   }
 }
+
+.focus-holder {
+  input {
+    opacity: 0;
+    width: 0;
+  }
+}
+
 @mixin pillAppearance() {
   @include border(1px, solid, primary, lighter);
   border-radius: rsa-whitespace(least);
@@ -218,12 +226,6 @@
     }
     .quote-highlight {
       color: text-color(primary);
-    }
-    .focus-holder {
-      input {
-        opacity: 0;
-        width: 0;
-      }
     }
   }
 

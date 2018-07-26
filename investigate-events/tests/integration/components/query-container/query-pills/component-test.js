@@ -643,4 +643,63 @@ module('Integration | Component | query-pills', function(hooks) {
       assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
     });
   });
+
+  test('Pressing Delete key once a complex pill is selected will delete it', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .pillsDataComplex()
+      .build();
+
+    assert.expect(5);
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
+
+    await click(PILL_SELECTORS.complexPill); // make the complex pill selected
+
+    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'Focus holder should be present now');
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', DELETE_KEY);
+
+    return settled().then(() => {
+      assert.equal(findAll(PILL_SELECTORS.complexPill).length, 0, 'Should be no complex pill');
+      assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'Should be no pill selected.');
+      assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
+    });
+  });
+
+  test('Pressing backspace key once a complex pill is selected will delete it', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .pillsDataComplex()
+      .build();
+
+    assert.expect(5);
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
+
+    await click(PILL_SELECTORS.complexPill); // make the complex pill selected
+
+    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'Focus holder should be present now');
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', BACKSPACE_KEY);
+
+    return settled().then(() => {
+      assert.equal(findAll(PILL_SELECTORS.complexPill).length, 0, 'Should be no complex pill');
+      assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'Should be no pill selected.');
+      assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
+    });
+  });
+
 });

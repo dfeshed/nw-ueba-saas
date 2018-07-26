@@ -46,7 +46,8 @@ export default Component.extend({
   init() {
     this._super(arguments);
     this.set('_messageHandlerMap', {
-      [MESSAGE_TYPES.DELETE_CLICKED]: (data) => this._deletePill(data)
+      [MESSAGE_TYPES.DELETE_CLICKED]: (data) => this._deletePill(data),
+      [MESSAGE_TYPES.SELECTED_FOCUS_DELETE_PRESSED]: () => this._selectedFocusDeletePressed()
     });
   },
 
@@ -139,6 +140,16 @@ export default Component.extend({
    */
   _deletePill() {
     this._broadcast(MESSAGE_TYPES.PILL_DELETED, this.get('pillData'));
+  },
+
+  /**
+   * Handles events propagating from focus-holder
+   * This will be called only when a pill is selected and
+   * user presses either delete or backspace
+   * @private
+   */
+  _selectedFocusDeletePressed() {
+    this.get('sendMessage')(MESSAGE_TYPES.DELETE_PRESSED_ON_SELECTED_PILL);
   },
 
     /**

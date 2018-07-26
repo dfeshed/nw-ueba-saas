@@ -10,6 +10,8 @@ import { doubleClick } from '../pill-util';
 import KEY_MAP from 'investigate-events/util/keys';
 
 const ESCAPE_KEY = KEY_MAP.escape.code;
+const DELETE_KEY = KEY_MAP.delete.code;
+const BACKSPACE_KEY = KEY_MAP.backspace.code;
 
 
 module('Integration | Component | complex-pill', function(hooks) {
@@ -253,5 +255,51 @@ module('Integration | Component | complex-pill', function(hooks) {
       }}
     `);
     await triggerKeyEvent(PILL_SELECTORS.complexPillInput, 'keydown', ESCAPE_KEY);
+  });
+
+  test('sends message up when selected and delete is pressed', async function(assert) {
+    assert.expect(2);
+
+    this.set('handleMessage', (messageType) => {
+      assert.ok(messageType === MESSAGE_TYPES.DELETE_PRESSED_ON_SELECTED_PILL, 'should send out correct action');
+    });
+    this.set('pillData', {
+      complexFilterText: 'FOOOOOOOO',
+      isSelected: true
+    });
+    await render(hbs`
+      {{query-container/complex-pill
+        position=0
+        isActive=false
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 1, 'proper class present');
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', DELETE_KEY);
+  });
+
+  test('sends message up when selected and backspace is pressed', async function(assert) {
+    assert.expect(2);
+
+    this.set('handleMessage', (messageType) => {
+      assert.ok(messageType === MESSAGE_TYPES.DELETE_PRESSED_ON_SELECTED_PILL, 'should send out correct action');
+    });
+    this.set('pillData', {
+      complexFilterText: 'FOOOOOOOO',
+      isSelected: true
+    });
+    await render(hbs`
+      {{query-container/complex-pill
+        position=0
+        isActive=false
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 1, 'proper class present');
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', BACKSPACE_KEY);
   });
 });

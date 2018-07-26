@@ -11,3 +11,8 @@
     sendMessage=(action 'handleMessage')
   }}
 {{/if}}
+{{#if isSelected}}
+  {{query-container/focus-holder
+    sendMessage=(action 'handleMessage')
+  }}
+{{/if}}
