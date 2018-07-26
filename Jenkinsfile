@@ -30,7 +30,11 @@ pipeline {
             when { equals expected: true, actual: env.PROMOTE_PRESIDIO_TEST_UTILS }
             steps {
                 promoteProjectVersion("presidio-test-utils", [
-                        "pom.xml": []
+                        new MavenExecution(
+                                pomFile: "pom.xml",
+                                properties: [],
+                                command: "mvn clean install deploy -B -U -f pom.xml"
+                        )
                 ])
             }
             post {
@@ -43,8 +47,16 @@ pipeline {
             when { equals expected: true, actual: env.PROMOTE_PRESIDIO_CORE }
             steps {
                 promoteProjectVersion("presidio-core", [
-                        "fortscale/pom.xml": ["presidio.test.utils"],
-                        "package/pom.xml"  : []
+                        new MavenExecution(
+                                pomFile: "fortscale/pom.xml",
+                                properties: ["presidio.test.utils"],
+                                command: "mvn clean install deploy -B -U -f fortscale/pom.xml"
+                        ),
+                        new MavenExecution(
+                                pomFile: "package/pom.xml",
+                                properties: [],
+                                command: null
+                        )
                 ])
             }
             post {
@@ -57,8 +69,16 @@ pipeline {
             when { equals expected: true, actual: env.PROMOTE_PRESIDIO_FLUME }
             steps {
                 promoteProjectVersion("presidio-flume", [
-                        "pom.xml"        : ["presidio.test.utils", "presidio.core.version"],
-                        "package/pom.xml": []
+                        new MavenExecution(
+                                pomFile: "pom.xml",
+                                properties: ["presidio.test.utils", "presidio.core.version"],
+                                command: "mvn clean install deploy -B -U -f pom.xml"
+                        ),
+                        new MavenExecution(
+                                pomFile: "package/pom.xml",
+                                properties: [],
+                                command: null
+                        )
                 ])
             }
             post {
@@ -71,8 +91,16 @@ pipeline {
             when { equals expected: true, actual: env.PROMOTE_PRESIDIO_NETWITNESS }
             steps {
                 promoteProjectVersion("presidio-netwitness", [
-                        "presidio-core-extension/pom.xml": ["flume.version"],
-                        "package/pom.xml"                : []
+                        new MavenExecution(
+                                pomFile: "presidio-core-extension/pom.xml",
+                                properties: ["flume.version"],
+                                command: "mvn clean install deploy -B -U -f presidio-core-extension/pom.xml"
+                        ),
+                        new MavenExecution(
+                                pomFile: "package/pom.xml",
+                                properties: [],
+                                command: null
+                        )
                 ])
             }
             post {
@@ -85,8 +113,23 @@ pipeline {
             when { equals expected: true, actual: env.PROMOTE_PRESIDIO_UI }
             steps {
                 promoteProjectVersion("presidio-ui", [
-                        "pom.xml"        : ["presidio.core.version"],
-                        "package/pom.xml": []
+                        new MavenExecution(
+                                pomFile: "pom.xml",
+                                properties: ["presidio.core.version"],
+                                command: """
+                                    export SASS_BINARY_PATH=/mnt/libhq-SA/tools/node-sass/v4.9.0/linux-x64-46_binding.node &&
+                                    export HTTP_PROXY=http://emc-proxy1:82 &&
+                                    export HTTPS_PROXY=http://emc-proxy1:82 &&
+                                    export NODE_TLS_REJECT_UNAUTHORIZED=0 &&
+                                    export NO_PROXY="localhost,127.0.0.1,.emc.com" &&
+                                    mvn clean install deploy -B -U -f pom.xml
+                                """
+                        ),
+                        new MavenExecution(
+                                pomFile: "package/pom.xml",
+                                properties: [],
+                                command: null
+                        )
                 ])
             }
             post {
@@ -99,7 +142,11 @@ pipeline {
             when { equals expected: true, actual: env.PROMOTE_PRESIDIO_INTEGRATION_TEST }
             steps {
                 promoteProjectVersion("presidio-integration-test", [
-                        "pom.xml": ["presidio.test.utils", "presidio.core.version", "flume.version"]
+                        new MavenExecution(
+                                pomFile: "pom.xml",
+                                properties: ["presidio.test.utils", "presidio.core.version", "flume.version"],
+                                command: "mvn clean install -B -U -DskipTests -f pom.xml"
+                        )
                 ])
             }
             post {
@@ -121,7 +168,7 @@ pipeline {
  ****************************/
 def promoteProjectVersion(
         String repositoryName,
-        Map<String, List<String>> pomFileToPropertiesMap,
+        List<MavenExecution> mavenExecutions,
         // Parameters with default values.
         String userName = env.RSA_BUILD_CREDENTIALS_USR,
         String userPassword = env.RSA_BUILD_CREDENTIALS_PSW,
@@ -134,10 +181,19 @@ def promoteProjectVersion(
         String branchName = buildBranchName(version)
         checkoutNewBranch(branchName)
 
-        pomFileToPropertiesMap.each { pomFile, properties ->
-            setProjectVersion(version, false, pomFile)
-            properties.each { property -> setProjectPropertyVersion(property, version, true, false, pomFile) }
-            cleanInstallAndDeployProject(true, true, pomFile)
+        mavenExecutions.each { mavenExecution ->
+            // Promote the version of the project.
+            setProjectVersion(version, false, mavenExecution.pomFile)
+
+            // Promote the version of the project's properties.
+            mavenExecution.properties.each { property ->
+                setProjectPropertyVersion(property, version, true, false, mavenExecution.pomFile)
+            }
+
+            // Execute the Maven command.
+            if (mavenExecution.command != null) {
+                sh mavenExecution.command
+            }
         }
 
         String message = "Promote project to version ${version}."
@@ -173,6 +229,12 @@ def cleanRemoteRepository(
 
 static def buildBranchName(String version) {
     "v${version}"
+}
+
+class MavenExecution {
+    String pomFile
+    List<String> properties
+    String command
 }
 
 /*****************
@@ -227,12 +289,6 @@ def setProjectPropertyVersion(
         -DallowSnapshots=${allowSnapshots} -DgenerateBackupPoms=${generateBackupPoms}\
         -f ${pomFile}\
     """
-}
-
-def cleanInstallAndDeployProject(boolean batchMode, boolean updateSnapshots, String pomFile) {
-    String batchModeOption = batchMode ? "-B" : ""
-    String updateSnapshotsOption = updateSnapshots ? "-U" : ""
-    sh "mvn clean install deploy ${batchModeOption} ${updateSnapshotsOption} -f ${pomFile}"
 }
 
 /******************
