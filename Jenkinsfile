@@ -27,7 +27,7 @@ pipeline {
             }
         }
         stage('Presidio Test Utils Version Promotion') {
-            when { expression { return env.PROMOTE_PRESIDIO_TEST_UTILS == true } }
+            when { expression { return env.PROMOTE_PRESIDIO_TEST_UTILS == 'true' } }
             steps {
                 promoteProjectVersion("presidio-test-utils", [
                         new MavenExecution(
@@ -44,7 +44,7 @@ pipeline {
             }
         }
         stage('Presidio Core Version Promotion') {
-            when { expression { return env.PROMOTE_PRESIDIO_CORE == true } }
+            when { expression { return env.PROMOTE_PRESIDIO_CORE == 'true' } }
             steps {
                 promoteProjectVersion("presidio-core", [
                         new MavenExecution(
@@ -66,7 +66,7 @@ pipeline {
             }
         }
         stage('Presidio Flume Version Promotion') {
-            when { expression { return env.PROMOTE_PRESIDIO_FLUME == true } }
+            when { expression { return env.PROMOTE_PRESIDIO_FLUME == 'true' } }
             steps {
                 promoteProjectVersion("presidio-flume", [
                         new MavenExecution(
@@ -88,7 +88,7 @@ pipeline {
             }
         }
         stage('Presidio Netwitness Version Promotion') {
-            when { expression { return env.PROMOTE_PRESIDIO_NETWITNESS == true } }
+            when { expression { return env.PROMOTE_PRESIDIO_NETWITNESS == 'true' } }
             steps {
                 promoteProjectVersion("presidio-netwitness", [
                         new MavenExecution(
@@ -110,7 +110,7 @@ pipeline {
             }
         }
         stage('Presidio UI Version Promotion') {
-            when { expression { return env.PROMOTE_PRESIDIO_UI == true } }
+            when { expression { return env.PROMOTE_PRESIDIO_UI == 'true' } }
             steps {
                 promoteProjectVersion("presidio-ui", [
                         new MavenExecution(
@@ -139,7 +139,7 @@ pipeline {
             }
         }
         stage('Presidio Integration Test Version Promotion') {
-            when { expression { return env.PROMOTE_PRESIDIO_INTEGRATION_TEST == true } }
+            when { expression { return env.PROMOTE_PRESIDIO_INTEGRATION_TEST == 'true' } }
             steps {
                 promoteProjectVersion("presidio-integration-test", [
                         new MavenExecution(
