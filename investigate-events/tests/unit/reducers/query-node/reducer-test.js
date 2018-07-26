@@ -350,7 +350,7 @@ test('SELECT_NEXT_GEN_PILLS selects multiple pills', function(assert) {
 test('DESELECT_NEXT_GEN_PILLS deselects multiple pills', function(assert) {
   const stateWithPillsSelected = new ReduxDataHelper()
     .pillsDataPopulated()
-    .makeSelected(['1', '2'])
+    .markSelected(['1', '2'])
     .build()
     .investigate
     .queryNode;

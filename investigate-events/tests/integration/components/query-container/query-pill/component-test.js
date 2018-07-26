@@ -21,6 +21,8 @@ const ARROW_LEFT_KEY = KEY_MAP.arrowLeft.code;
 const ENTER_KEY = KEY_MAP.enter.code;
 const ESCAPE_KEY = KEY_MAP.escape.code;
 const X_KEY = 88;
+const DELETE_KEY = KEY_MAP.delete.code;
+const BACKSPACE_KEY = KEY_MAP.backspace.code;
 
 const trim = (text) => text.replace(/\s+/g, '').trim();
 let setState;
@@ -72,6 +74,21 @@ module('Integration | Component | query-pill', function(hooks) {
     this.set('pillData', enrichedPill);
     await render(hbs`{{query-container/query-pill isActive=true pillData=pillData}}`);
     assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 1);
+  });
+
+  test('contains a focus holder when selected', async function(assert) {
+    let enrichedPill = _getEnrichedPill();
+    enrichedPill = enrichedPill.set('isSelected', true);
+    this.set('pillData', enrichedPill);
+    await render(hbs`{{query-container/query-pill isActive=true pillData=pillData}}`);
+    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1);
+  });
+
+  test('does not contain focus holder when not selected', async function(assert) {
+    const enrichedPill = _getEnrichedPill();
+    this.set('pillData', enrichedPill);
+    await render(hbs`{{query-container/query-pill isActive=true pillData=pillData}}`);
+    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0);
   });
 
   test('it activates pill-meta if active upon initialization', async function(assert) {
@@ -717,5 +734,69 @@ module('Integration | Component | query-pill', function(hooks) {
     // TODO: The following assert fails because the cursor does not seem to move
     // to the left. Need to figure out how to make the cursor move.
     assert.equal(find(PILL_SELECTORS.valueInput).selectionStart, 0, 'not at beginning of value'); // |'a'
+  });
+
+  test('selected pill sends up a message when delete is pressed', async function(assert) {
+    assert.expect(1);
+
+    const pillState = new ReduxDataHelper(setState)
+    .pillsDataPopulated()
+    .language()
+    .markSelected(['1'])
+    .build();
+
+    const [ enrichedPill ] = enrichedPillsData(pillState);
+    this.set('pillData', enrichedPill);
+
+    this.set('handleMessage', (messageType) => {
+      if (isIgnoredInitialEvent(messageType)) {
+        return;
+      }
+
+      assert.equal(messageType, MESSAGE_TYPES.DELETE_PRESSED_ON_SELECTED_PILL, 'Message sent for pill delete');
+    });
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=false
+        position=0
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', DELETE_KEY);
+  });
+
+  test('selected pill sends up a message when backspace is pressed', async function(assert) {
+    assert.expect(1);
+
+    const pillState = new ReduxDataHelper(setState)
+    .pillsDataPopulated()
+    .language()
+    .markSelected(['1'])
+    .build();
+
+    const [ enrichedPill ] = enrichedPillsData(pillState);
+    this.set('pillData', enrichedPill);
+
+    this.set('handleMessage', (messageType) => {
+      if (isIgnoredInitialEvent(messageType)) {
+        return;
+      }
+
+      assert.equal(messageType, MESSAGE_TYPES.DELETE_PRESSED_ON_SELECTED_PILL, 'Message sent for pill delete');
+    });
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=false
+        position=0
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', BACKSPACE_KEY);
   });
 });

@@ -43,5 +43,6 @@ export default {
   selectedPill: '.is-selected',
   populatedItem: '.is-populated',
   expensivePill: '.query-pill.is-expensive',
-  expensiveIndicator: '.rsa-icon-stopwatch-lined.is-expensive'
+  expensiveIndicator: '.rsa-icon-stopwatch-lined.is-expensive',
+  focusHolderInput: '.focus-holder input'
 };

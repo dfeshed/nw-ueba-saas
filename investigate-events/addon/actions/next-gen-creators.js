@@ -91,12 +91,15 @@ export const deleteNextGenPill = ({ pillData }) => {
 
 export const deleteSelectedNextGenPills = () => {
   return (dispatch, getState) => {
-    dispatch({
-      type: ACTION_TYPES.DELETE_NEXT_GEN_PILLS,
-      payload: {
-        pillData: selectedPills(getState())
-      }
-    });
+    const pillData = selectedPills(getState());
+    if (pillData.length > 0) {
+      dispatch({
+        type: ACTION_TYPES.DELETE_NEXT_GEN_PILLS,
+        payload: {
+          pillData: selectedPills(getState())
+        }
+      });
+    }
   };
 };
 

@@ -13,7 +13,8 @@ const keyMap = {
   enter: { code: 13, key: 'Enter' },
   escape: { code: 27, key: 'Escape' },
   space: { code: 32, key: ' ' },
-  tab: { code: 9, key: 'Tab' }
+  tab: { code: 9, key: 'Tab' },
+  delete: { code: 46, key: 'Delete' }
 };
 
 /**

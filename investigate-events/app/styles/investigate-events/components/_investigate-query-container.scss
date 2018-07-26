@@ -1,3 +1,14 @@
+.context-menu__item {
+  color: text-color(neutral);
+}
+
+.context-menu__item.context-menu__item--disabled {
+  color: text-color(primary, light);
+  &:hover {
+    background-color: transparent;
+    color: text-color(primary, light);
+  }
+}
 @mixin pillAppearance() {
   @include border(1px, solid, primary, lighter);
   border-radius: rsa-whitespace(least);
@@ -207,6 +218,12 @@
     }
     .quote-highlight {
       color: text-color(primary);
+    }
+    .focus-holder {
+      input {
+        opacity: 0;
+        width: 0;
+      }
     }
   }
 

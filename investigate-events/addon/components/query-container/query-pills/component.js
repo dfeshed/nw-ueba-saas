@@ -8,6 +8,7 @@ import { enrichedPillsData, hasInvalidSelectedPill } from 'investigate-events/re
 import {
   addNextGenPill,
   deleteNextGenPill,
+  deleteSelectedNextGenPills,
   deselectAllNextGenPills,
   deselectNextGenPills,
   editNextGenPill,
@@ -26,35 +27,13 @@ const stateToComputed = (state) => ({
 const dispatchToActions = {
   addNextGenPill,
   deleteNextGenPill,
+  deleteSelectedNextGenPills,
   editNextGenPill,
   selectNextGenPills,
   deselectNextGenPills,
   deselectAllNextGenPills,
   openNextGenPillForEdit,
   resetNextGenPill
-};
-
-const contextItemsArray = (hasInvalidSelectedPill) => {
-  return [{
-    label: 'Task 1',
-    disabled: hasInvalidSelectedPill,
-    action() {
-      // executeQuery in same tab
-    }
-  },
-  {
-    label: 'Task 2',
-    disabled: hasInvalidSelectedPill,
-    action() {
-      // executeQuery in a new tab
-    }
-  },
-  {
-    label: 'Task 3',
-    action() {
-      // delete selected pills
-    }
-  }];
 };
 
 const QueryPills = RsaContextMenu.extend({
@@ -70,9 +49,8 @@ const QueryPills = RsaContextMenu.extend({
     const currentClass = target.classList.contains('is-selected');
     const parentClass = target.parentElement.classList.contains('is-selected');
     if (currentClass || parentClass) {
-      const hasInvalidSelectedPill = this.get('hasInvalidSelectedPill');
       this.setProperties({
-        contextItems: contextItemsArray(hasInvalidSelectedPill)
+        contextItems: this.get('contextItems')
       });
       this._super(...arguments);
     } else {
@@ -99,12 +77,42 @@ const QueryPills = RsaContextMenu.extend({
   @computed('pillsData')
   newPillPosition: (pillsData) => pillsData.length,
 
+  @computed
+  contextItems() {
+    const _this = this;
+    return [{
+      label: 'Execute Query in same tab',
+      disabled() {
+        return _this.get('hasInvalidSelectedPill');
+      },
+      action() {
+        // executeQuery in same tab
+      }
+    },
+    {
+      label: 'Execute Query in a new tab',
+      disabled() {
+        return _this.get('hasInvalidSelectedPill');
+      },
+      action() {
+        // executeQuery in a new tab
+      }
+    },
+    {
+      label: 'Delete Selected Pills',
+      action() {
+        _this.send('deleteSelectedNextGenPills');
+      }
+    }];
+  },
+
   init() {
     this._super(arguments);
     this.set('_messageHandlerMap', {
       [MESSAGE_TYPES.PILL_ADD_CANCELLED]: (data, position) => this._pillAddCancelled(data, position),
       [MESSAGE_TYPES.PILL_CREATED]: (data, position) => this._pillCreated(data, position),
       [MESSAGE_TYPES.PILL_DELETED]: (data) => this._pillDeleted(data),
+      [MESSAGE_TYPES.DELETE_PRESSED_ON_SELECTED_PILL]: () => this._deletePressedOnSelectedPill(),
       [MESSAGE_TYPES.PILL_EDIT_CANCELLED]: (data) => this._pillEditCancelled(data),
       [MESSAGE_TYPES.PILL_EDITED]: (data) => this._pillEdited(data),
       [MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW]: () => this._pillEnteredForAppend(),
@@ -223,6 +231,9 @@ const QueryPills = RsaContextMenu.extend({
     this.send('deleteNextGenPill', { pillData });
   },
 
+  _deletePressedOnSelectedPill() {
+    this.send('deleteSelectedNextGenPills');
+  },
 
   /**
    * Updates pill in state so it can be opened for editing

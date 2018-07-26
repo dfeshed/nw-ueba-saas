@@ -371,7 +371,7 @@ test('selectedPills returns only those pills that are selected', function(assert
   const state = new ReduxDataHelper()
     .language()
     .pillsDataPopulated()
-    .makeSelected(['1'])
+    .markSelected(['1'])
     .build();
   const pD = selectedPills(state);
   assert.equal(pD.length, 1, 'returns correct number of pill data');
@@ -408,7 +408,7 @@ test('hasInvalidSelectedPill is false when no invalid pill is selected', functio
     .language()
     .hasRequiredValuesToQuery(true)
     .pillsDataPopulated()
-    .makeSelected(['1'])
+    .markSelected(['1'])
     .build();
 
   const hasInvalid = hasInvalidSelectedPill(state);
@@ -420,7 +420,7 @@ test('hasInvalidSelectedPill is true when invalid pill is selected', function(as
     .language()
     .hasRequiredValuesToQuery(true)
     .pillsDataPopulated()
-    .makeSelected(['1'])
+    .markSelected(['1'])
     .markInvalid(['1'])
     .build();
 

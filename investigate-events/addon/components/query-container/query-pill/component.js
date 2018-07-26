@@ -186,6 +186,7 @@ export default Component.extend({
       [MESSAGE_TYPES.OPERATOR_ESCAPE_KEY]: () => this._cancelPill(),
       [MESSAGE_TYPES.OPERATOR_SELECTED]: (data) => this._operatorSelected(data),
       [MESSAGE_TYPES.DELETE_CLICKED]: (data) => this._deletePill(data),
+      [MESSAGE_TYPES.SELECTED_FOCUS_DELETE_PRESSED]: () => this._selectedFocusDeletePressed(),
       [MESSAGE_TYPES.VALUE_ARROW_LEFT_KEY]: (data) => this._valueArrowLeft(data),
       [MESSAGE_TYPES.VALUE_ARROW_RIGHT_KEY]: (data) => this._rightArrowKeyPressed(data),
       [MESSAGE_TYPES.VALUE_BACKSPACE_KEY]: () => this._valueBackspace(),
@@ -749,6 +750,16 @@ export default Component.extend({
       isValueActive: false,
       isActive: false
     });
+  },
+
+  /**
+   * Handles events propagating from focus-holder
+   * This will be called only when a pill is selected and
+   * user presses either delete or backspace
+   * @private
+   */
+  _selectedFocusDeletePressed() {
+    this.get('sendMessage')(MESSAGE_TYPES.DELETE_PRESSED_ON_SELECTED_PILL);
   },
 
   // ************************ TODO FUNCTIONALITY **************************** //

@@ -96,7 +96,7 @@ module('Unit | Actions | NextGen Creators', function(hooks) {
     const state = new ReduxDataHelper()
       .language()
       .pillsDataPopulated()
-      .makeSelected(['1', '2'])
+      .markSelected(['1', '2'])
       .build();
 
     const secondDispatch = (action) => {
@@ -144,7 +144,7 @@ module('Unit | Actions | NextGen Creators', function(hooks) {
     const done = assert.async();
 
     const getState = () => {
-      return new ReduxDataHelper().pillsDataPopulated().makeSelected(['1', '2']).build();
+      return new ReduxDataHelper().pillsDataPopulated().markSelected(['1', '2']).build();
     };
     const { pillsData } = getState().investigate.queryNode;
 
@@ -216,7 +216,7 @@ module('Unit | Actions | NextGen Creators', function(hooks) {
     const state = new ReduxDataHelper()
       .language()
       .pillsDataPopulated()
-      .makeSelected(['1', '2'])
+      .markSelected(['1', '2'])
       .build();
 
     const secondDispatch = (action) => {

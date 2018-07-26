@@ -281,20 +281,6 @@ export default class DataHelper {
     return this;
   }
 
-  makeSelected(pillIds = []) {
-    this.state.queryNode.pillsData = this.state.queryNode.pillsData.map((pD) => {
-      if (pillIds.includes(pD.id)) {
-        pD = {
-          ...pD,
-          isSelected: true
-        };
-      }
-
-      return pD;
-    });
-    return this;
-  }
-
   markInvalid(pillIds = []) {
     this.state.queryNode.pillsData = this.state.queryNode.pillsData.map((pD) => {
       if (pillIds.includes(pD.id)) {

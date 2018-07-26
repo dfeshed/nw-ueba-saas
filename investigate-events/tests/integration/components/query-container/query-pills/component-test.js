@@ -16,6 +16,8 @@ import { throwSocket } from '../../../../helpers/patch-socket';
 import { invalidServerResponseText } from '../../../../unit/actions/data';
 
 const ESCAPE_KEY = KEY_MAP.escape.code;
+const DELETE_KEY = KEY_MAP.delete.code;
+const BACKSPACE_KEY = KEY_MAP.backspace.code;
 
 let setState;
 const newActionSpy = sinon.spy(nextGenCreators, 'addNextGenPill');
@@ -579,6 +581,66 @@ module('Integration | Component | query-pills', function(hooks) {
       assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Number of pills present');
       assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 1, 'One selecteded pill.');
       done();
+    });
+  });
+
+  test('Pressing Delete key once a pill is selected will delete it', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .pillsDataPopulated()
+      .build();
+
+    assert.expect(5);
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
+
+    const metas = findAll(PILL_SELECTORS.meta);
+    await click(`#${metas[0].id}`); // make the 1st pill selected
+
+    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'Focus holder should be present now');
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', DELETE_KEY);
+
+    return settled().then(() => {
+      assert.equal(findAll(PILL_SELECTORS.queryPill).length, 2, 'Should be one pill plus template.');
+      assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'Should be no pill selected.');
+      assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
+    });
+  });
+
+  test('Pressing Backspace key once a pill is selected will delete it', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .pillsDataPopulated()
+      .build();
+
+    assert.expect(5);
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
+
+    const metas = findAll(PILL_SELECTORS.meta);
+    await click(`#${metas[0].id}`); // make the 1st pill selected
+
+    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'Focus holder should be present now');
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', BACKSPACE_KEY);
+
+    return settled().then(() => {
+      assert.equal(findAll(PILL_SELECTORS.queryPill).length, 2, 'Should be one pill plus template.');
+      assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'Should be no pill selected.');
+      assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
     });
   });
 });
