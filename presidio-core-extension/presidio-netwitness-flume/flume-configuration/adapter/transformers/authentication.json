@@ -374,7 +374,15 @@
       "sourceKey": "user_dst",
       "isRemoveSourceKey": true,
       "destinationKeys": [
-        "userName",
+        "userName"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "copy-user-id",
+      "sourceKey": "userId",
+      "isRemoveSourceKey": false,
+      "destinationKeys": [
         "userDisplayName"
       ]
     }
