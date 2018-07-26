@@ -449,18 +449,13 @@ export default {
     filter: 'Filter',
     guided: {
       linkTitle: 'Guided Mode',
-      textLabel: 'Guided Mode'
+      textLabel: 'Guided Mode',
+      deletePill: 'Delete this filter'
     },
     freeForm: {
       linkTitle: 'Free-Form Mode',
       placeholder: 'Enter multiple complex statements consisting of a Meta Key, Operator, and Value (optional)',
       textLabel: 'Free-Form Mode'
-    },
-    nextGen: {
-      linkTitle: 'Next Gen Mode',
-      placeholder: 'Next Gen Query Bar',
-      textLabel: 'Next Gen Mode',
-      deletePill: 'Delete this filter'
     },
     size: {
       bytes: 'bytes',

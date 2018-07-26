@@ -5,7 +5,7 @@ import validateQueryFragment from './fetch/query-validation';
 import { transformTextToPillData } from 'investigate-events/actions/utils';
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 
-const _validateNextGenPill = (pillData, position) => {
+const _validateGuidedPill = (pillData, position) => {
   return (dispatch, getState) => {
     // client side validation first
     // if that fails, no server side validation
@@ -18,7 +18,7 @@ const _validateNextGenPill = (pillData, position) => {
       const { investigate: { dictionaries: { language } } } = getState();
       const metaFormat = getMetaFormat(meta, language);
       dispatch({
-        type: ACTION_TYPES.VALIDATE_NEXT_GEN_PILL,
+        type: ACTION_TYPES.VALIDATE_GUIDED_PILL,
         promise: clientSideParseAndValidate(metaFormat, value),
         meta: {
           position, /*  position is needed to update pill in reducer  */
@@ -42,7 +42,7 @@ export const _serverSideValidation = (pillData, position) => {
     const encodedPill = encodeURIComponent(stringifiedPill);
     const { serviceId } = investigateState.queryNode;
     dispatch({
-      type: ACTION_TYPES.VALIDATE_NEXT_GEN_PILL,
+      type: ACTION_TYPES.VALIDATE_GUIDED_PILL,
       promise: validateQueryFragment(serviceId, encodedPill),
       meta: {
         position, /*  position is needed to update pill in reducer  */
@@ -52,49 +52,49 @@ export const _serverSideValidation = (pillData, position) => {
   };
 };
 
-export const addNextGenPill = ({ pillData, position }) => {
+export const addGuidedPill = ({ pillData, position }) => {
   return (dispatch) => {
     dispatch({
-      type: ACTION_TYPES.ADD_NEXT_GEN_PILL,
+      type: ACTION_TYPES.ADD_GUIDED_PILL,
       payload: {
         pillData,
         position
       }
     });
-    dispatch(_validateNextGenPill(pillData, position));
+    dispatch(_validateGuidedPill(pillData, position));
   };
 };
 
-export const editNextGenPill = ({ pillData, position }) => {
+export const editGuidedPill = ({ pillData, position }) => {
   return (dispatch) => {
     dispatch({
-      type: ACTION_TYPES.EDIT_NEXT_GEN_PILL,
+      type: ACTION_TYPES.EDIT_GUIDED_PILL,
       payload: {
         pillData
       }
     });
-    dispatch(_validateNextGenPill(pillData, position));
+    dispatch(_validateGuidedPill(pillData, position));
   };
 };
 
-export const deleteNextGenPill = ({ pillData }) => {
+export const deleteGuidedPill = ({ pillData }) => {
   return (dispatch) => {
     dispatch({
-      type: ACTION_TYPES.DELETE_NEXT_GEN_PILLS,
+      type: ACTION_TYPES.DELETE_GUIDED_PILLS,
       payload: {
         pillData: [pillData]
       }
     });
-    dispatch(deselectAllNextGenPills());
+    dispatch(deselectAllGuidedPills());
   };
 };
 
-export const deleteSelectedNextGenPills = () => {
+export const deleteSelectedGuidedPills = () => {
   return (dispatch, getState) => {
     const pillData = selectedPills(getState());
     if (pillData.length > 0) {
       dispatch({
-        type: ACTION_TYPES.DELETE_NEXT_GEN_PILLS,
+        type: ACTION_TYPES.DELETE_GUIDED_PILLS,
         payload: {
           pillData: selectedPills(getState())
         }
@@ -103,38 +103,38 @@ export const deleteSelectedNextGenPills = () => {
   };
 };
 
-export const deselectAllNextGenPills = () => {
+export const deselectAllGuidedPills = () => {
   return (dispatch, getState) => {
     const pillData = selectedPills(getState());
     if (pillData.length > 0) {
-      dispatch(deselectNextGenPills({ pillData }));
+      dispatch(deselectGuidedPills({ pillData }));
     }
   };
 };
 
-export const deselectNextGenPills = ({ pillData }) => ({
-  type: ACTION_TYPES.DESELECT_NEXT_GEN_PILLS,
+export const deselectGuidedPills = ({ pillData }) => ({
+  type: ACTION_TYPES.DESELECT_GUIDED_PILLS,
   payload: {
     pillData
   }
 });
 
-export const selectNextGenPills = ({ pillData }) => ({
-  type: ACTION_TYPES.SELECT_NEXT_GEN_PILLS,
+export const selectGuidedPills = ({ pillData }) => ({
+  type: ACTION_TYPES.SELECT_GUIDED_PILLS,
   payload: {
     pillData
   }
 });
 
-export const openNextGenPillForEdit = ({ pillData }) => {
+export const openGuidedPillForEdit = ({ pillData }) => {
   return (dispatch) => {
     dispatch({
-      type: ACTION_TYPES.OPEN_NEXT_GEN_PILL_FOR_EDIT,
+      type: ACTION_TYPES.OPEN_GUIDED_PILL_FOR_EDIT,
       payload: {
         pillData
       }
     });
-    dispatch(deselectAllNextGenPills());
+    dispatch(deselectAllGuidedPills());
   };
 };
 
@@ -145,7 +145,7 @@ export const addFreeFormFilter = (freeFormText) => {
       metaKeySuggestionsForQueryBuilder(getState())
     );
     dispatch({
-      type: ACTION_TYPES.REPLACE_ALL_NEXT_GEN_PILLS,
+      type: ACTION_TYPES.REPLACE_ALL_GUIDED_PILLS,
       payload: {
         pillData: [pillData]
       }
@@ -169,8 +169,8 @@ export const updatedFreeFormText = (freeFormText) => {
   };
 };
 
-export const resetNextGenPill = (pillData) => ({
-  type: ACTION_TYPES.RESET_NEXT_GEN_PILL,
+export const resetGuidedPill = (pillData) => ({
+  type: ACTION_TYPES.RESET_GUIDED_PILL,
   payload: {
     pillData
   }

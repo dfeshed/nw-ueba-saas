@@ -3,7 +3,7 @@ import { connect } from 'ember-redux';
 import { run } from '@ember/runloop';
 
 import { setQueryView } from 'investigate-events/actions/interaction-creators';
-import { isOnFreeForm, isOnNextGen } from 'investigate-events/reducers/investigate/query-node/selectors';
+import { isOnFreeForm, isOnGuided } from 'investigate-events/reducers/investigate/query-node/selectors';
 
 const dispatchToActions = {
   setQueryView
@@ -11,7 +11,7 @@ const dispatchToActions = {
 
 const stateToComputed = (state) => ({
   isOnFreeForm: isOnFreeForm(state),
-  isOnNextGen: isOnNextGen(state),
+  isOnGuided: isOnGuided(state),
   queryView: state.investigate.queryNode.queryView
 });
 
@@ -25,7 +25,7 @@ const QueryBar = Component.extend({
       run.next(() => {
         if (this.get('isOnFreeForm')) {
           this.$('.rsa-investigate-free-form-query-bar input').focus();
-        } else if (this.get('isOnNextGen')) {
+        } else if (this.get('isOnGuided')) {
           this.$('.new-pill-template .pill-meta input').focus();
         }
       });

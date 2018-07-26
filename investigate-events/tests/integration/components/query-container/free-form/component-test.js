@@ -9,10 +9,10 @@ import { patchReducer } from '../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import KEY_MAP from 'investigate-events/util/keys';
 import PILL_SELECTORS from '../pill-selectors';
-import nextGenCreators from 'investigate-events/actions/next-gen-creators';
+import guidedCreators from 'investigate-events/actions/guided-creators';
 
-const addFreeFormFilterSpy = sinon.spy(nextGenCreators, 'addFreeFormFilter');
-const updatedFreeFormTextSpy = sinon.spy(nextGenCreators, 'updatedFreeFormText');
+const addFreeFormFilterSpy = sinon.spy(guidedCreators, 'addFreeFormFilter');
+const updatedFreeFormTextSpy = sinon.spy(guidedCreators, 'updatedFreeFormText');
 
 const ENTER_KEY = KEY_MAP.enter.code;
 const X_KEY = 88;

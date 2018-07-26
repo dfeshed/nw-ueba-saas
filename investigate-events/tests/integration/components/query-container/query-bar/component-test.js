@@ -25,7 +25,7 @@ module('Integration | Component | query-bar', function(hooks) {
     initialize(this.owner);
   });
 
-  test('it displays the correct number of query bar links and starts on next gen mode', async function(assert) {
+  test('it displays the correct number of query bar links and starts on guided mode', async function(assert) {
     new ReduxDataHelper(setState)
       .hasRequiredValuesToQuery(true)
       .build();
@@ -37,7 +37,7 @@ module('Integration | Component | query-bar', function(hooks) {
     `);
 
     assert.equal(findAll(SELECTORS.queryFormatToggleLinks).length, 2, 'Expected 2 query bars');
-    assert.equal(findAll(SELECTORS.nextGenQueryBar).length, 1, 'Expected to see Next Gen Query Bar');
+    assert.equal(findAll(SELECTORS.guidedQueryBar).length, 1, 'Expected to see Guided Query Bar');
   });
 
   test('Can toggle between views', async function(assert) {
@@ -60,10 +60,10 @@ module('Integration | Component | query-bar', function(hooks) {
         'Enter multiple complex statements consisting of a Meta Key, Operator, and Value (optional)',
         'Expected a placeholder');
 
-      await click(SELECTORS.queryFormatNextGenToggle);
+      await click(SELECTORS.queryFormatGuidedToggle);
       return settled().then(() => {
-        assert.ok(find(SELECTORS.nextGenQueryBar), 'Expected to see Next Gen Query Bar');
-        assert.ok(find(SELECTORS.nextGenQueryBarFocusedInput), 'Expected focus on next gen');
+        assert.ok(find(SELECTORS.guidedQueryBar), 'Expected to see Guided Query Bar');
+        assert.ok(find(SELECTORS.guidedQueryBarFocusedInput), 'Expected focus on guided');
       });
     });
   });
@@ -110,7 +110,7 @@ module('Integration | Component | query-bar', function(hooks) {
     await fillIn(PILL_SELECTORS.freeFormInput, 'a = 1');
     await blur(PILL_SELECTORS.freeFormBarContainer);
 
-    await click(SELECTORS.queryFormatNextGenToggle);
+    await click(SELECTORS.queryFormatGuidedToggle);
 
     assert.equal(findAll(PILL_SELECTORS.queryPill).length, 2, 'The created pill and the template are two pills present');
     assert.equal(findAll(PILL_SELECTORS.complexPill).length, 0, 'that is not a complex pill');
@@ -137,7 +137,7 @@ module('Integration | Component | query-bar', function(hooks) {
     await fillIn(PILL_SELECTORS.freeFormInput, '( adslkjalksdj && asdasdsad)');
     await blur(PILL_SELECTORS.freeFormBarContainer);
 
-    await click(SELECTORS.queryFormatNextGenToggle);
+    await click(SELECTORS.queryFormatGuidedToggle);
 
     assert.equal(findAll(PILL_SELECTORS.queryPill).length, 1, 'The template is the only query pill present');
     assert.equal(findAll(PILL_SELECTORS.complexPill).length, 1, 'there is a complex pill');

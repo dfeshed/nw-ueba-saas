@@ -1,6 +1,6 @@
 <div class='query-bar-options'>
 
-  {{#if isOnNextGen}}
+  {{#if isOnGuided}}
     {{query-container/query-pills executeQuery=executeQuery}}
   {{/if}}
 
@@ -11,12 +11,12 @@
 </div>
 <div class='query-bar-select-actions'>
 
-  <a class='nextGen-link'
-    title={{t 'investigate.nextGen.linkTitle'}}
+  <a class='guided-link'
+    title={{t 'investigate.guided.linkTitle'}}
     href='#'
-    {{action 'changeView' 'nextGen'}}
+    {{action 'changeView' 'guided'}}
   >
-    {{t 'investigate.nextGen.textLabel'}}
+    {{t 'investigate.guided.textLabel'}}
   </a>
 
   <div class='divider'></div>

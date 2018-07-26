@@ -3,7 +3,7 @@ import { connect } from 'ember-redux';
 import { throttle, debounce } from '@ember/runloop';
 
 import { hasRequiredValuesToQuery, freeFormText } from 'investigate-events/reducers/investigate/query-node/selectors';
-import { addFreeFormFilter, updatedFreeFormText } from 'investigate-events/actions/next-gen-creators';
+import { addFreeFormFilter, updatedFreeFormText } from 'investigate-events/actions/guided-creators';
 
 const stateToComputed = (state) => ({
   freeFormText: freeFormText(state),

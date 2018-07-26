@@ -8,17 +8,17 @@ import ReduxDataHelper from '../../helpers/redux-data-helper';
 import { throwSocket } from '../../helpers/patch-socket';
 import { patchReducer } from '../../helpers/vnext-patch';
 import { invalidServerResponse } from './data';
-import nextGenCreators from 'investigate-events/actions/next-gen-creators';
+import guidedCreators from 'investigate-events/actions/guided-creators';
 import ACTION_TYPES from 'investigate-events/actions/types';
 
 
-module('Unit | Actions | NextGen Creators', function(hooks) {
+module('Unit | Actions | Guided Creators', function(hooks) {
   setupTest(hooks);
   hooks.beforeEach(function() {
     initialize(this.owner);
   });
 
-  test('addNextGenPill action creator returns proper type and payload', function(assert) {
+  test('addGuidedPill action creator returns proper type and payload', function(assert) {
     assert.expect(5);
     const done = assert.async();
     const getState = () => {
@@ -29,14 +29,14 @@ module('Unit | Actions | NextGen Creators', function(hooks) {
       if (typeof action === 'function') {
         action(validateDispatch, getState);
       } else {
-        assert.equal(action.type, ACTION_TYPES.ADD_NEXT_GEN_PILL, 'action has the correct type');
+        assert.equal(action.type, ACTION_TYPES.ADD_GUIDED_PILL, 'action has the correct type');
         assert.deepEqual(action.payload.pillData, { meta: 'ip.proto', operator: '=', value: 'boom' }, 'action pillData has the right value');
         assert.equal(action.payload.position, 0, 'action position has the right value');
       }
     };
 
     const validateDispatch = (action) => {
-      assert.equal(action.type, ACTION_TYPES.VALIDATE_NEXT_GEN_PILL, 'action has the correct type - validate');
+      assert.equal(action.type, ACTION_TYPES.VALIDATE_GUIDED_PILL, 'action has the correct type - validate');
       action.promise.catch((error) => {
         assert.equal(error.meta, 'You must enter an 8 bit Integer.', 'Expected validaiton error');
         done();
@@ -44,7 +44,7 @@ module('Unit | Actions | NextGen Creators', function(hooks) {
     };
 
     // this thunk will shoot out 2 actions - one to add and one to validate
-    const thunk = nextGenCreators.addNextGenPill({
+    const thunk = guidedCreators.addGuidedPill({
       pillData: {
         meta: 'ip.proto',
         operator: '=',
@@ -55,7 +55,7 @@ module('Unit | Actions | NextGen Creators', function(hooks) {
     thunk(myDispatch);
   });
 
-  test('editNextGenPill action creator returns proper type and payload', function(assert) {
+  test('editGuidedPill action creator returns proper type and payload', function(assert) {
     assert.expect(4);
     const done = assert.async();
     const getState = () => {
@@ -66,13 +66,13 @@ module('Unit | Actions | NextGen Creators', function(hooks) {
       if (typeof action === 'function') {
         action(validateDispatch, getState);
       } else {
-        assert.equal(action.type, ACTION_TYPES.EDIT_NEXT_GEN_PILL, 'action has the correct type');
+        assert.equal(action.type, ACTION_TYPES.EDIT_GUIDED_PILL, 'action has the correct type');
         assert.deepEqual(action.payload.pillData, { meta: 'ip.proto', operator: '=', value: 'boom' }, 'action pillData has the right value');
       }
     };
 
     const validateDispatch = (action) => {
-      assert.equal(action.type, ACTION_TYPES.VALIDATE_NEXT_GEN_PILL, 'action has the correct type - validate');
+      assert.equal(action.type, ACTION_TYPES.VALIDATE_GUIDED_PILL, 'action has the correct type - validate');
       action.promise.catch((error) => {
         assert.equal(error.meta, 'You must enter an 8 bit Integer.', 'Expected validaiton error');
         done();
@@ -80,7 +80,7 @@ module('Unit | Actions | NextGen Creators', function(hooks) {
     };
 
     // this thunk will shoot out 2 actions - one to edit and one to validate
-    const thunk = nextGenCreators.editNextGenPill({
+    const thunk = guidedCreators.editGuidedPill({
       pillData: {
         meta: 'ip.proto',
         operator: '=',
@@ -91,7 +91,7 @@ module('Unit | Actions | NextGen Creators', function(hooks) {
     thunk(myDispatch);
   });
 
-  test('deleteNextGenPill action creator returns proper types/payloads', function(assert) {
+  test('deleteGuidedPill action creator returns proper types/payloads', function(assert) {
     const done = assert.async(2);
     const state = new ReduxDataHelper()
       .language()
@@ -100,47 +100,47 @@ module('Unit | Actions | NextGen Creators', function(hooks) {
       .build();
 
     const secondDispatch = (action) => {
-      assert.equal(action.type, ACTION_TYPES.DESELECT_NEXT_GEN_PILLS, 'action has the correct type');
+      assert.equal(action.type, ACTION_TYPES.DESELECT_GUIDED_PILLS, 'action has the correct type');
       assert.deepEqual(action.payload.pillData, state.investigate.queryNode.pillsData, 'action pillData has the right value');
       done();
     };
 
     const firstDispatch = (action) => {
-      // if is function, is _deselectAllNextGenPills thunk
+      // if is function, is _deselectAllGuidedPills thunk
       if (typeof action === 'function') {
         const thunk2 = action;
         const getState = () => state;
         thunk2(secondDispatch, getState);
       } else {
-        assert.equal(action.type, ACTION_TYPES.DELETE_NEXT_GEN_PILLS, 'action has the correct type');
+        assert.equal(action.type, ACTION_TYPES.DELETE_GUIDED_PILLS, 'action has the correct type');
         assert.deepEqual(action.payload.pillData, ['foo'], 'action pillData has the right value');
         done();
       }
     };
 
-    const thunk1 = nextGenCreators.deleteNextGenPill({
+    const thunk1 = guidedCreators.deleteGuidedPill({
       pillData: 'foo'
     });
 
     thunk1(firstDispatch);
   });
 
-  test('deselectNextGenPills action creator returns proper type and payload', function(assert) {
+  test('deselectGuidedPills action creator returns proper type and payload', function(assert) {
     const { pillsData } = new ReduxDataHelper()
       .pillsDataPopulated()
       .build()
       .investigate
       .queryNode;
 
-    const action = nextGenCreators.deselectNextGenPills({
+    const action = guidedCreators.deselectGuidedPills({
       pillData: pillsData
     });
 
-    assert.equal(action.type, ACTION_TYPES.DESELECT_NEXT_GEN_PILLS, 'action has the correct type');
+    assert.equal(action.type, ACTION_TYPES.DESELECT_GUIDED_PILLS, 'action has the correct type');
     assert.deepEqual(action.payload.pillData, pillsData, 'action pillData has the right value');
   });
 
-  test('deselectAllNextGenPills action creator returns proper type and payload', function(assert) {
+  test('deselectAllGuidedPills action creator returns proper type and payload', function(assert) {
     const done = assert.async();
 
     const getState = () => {
@@ -148,10 +148,10 @@ module('Unit | Actions | NextGen Creators', function(hooks) {
     };
     const { pillsData } = getState().investigate.queryNode;
 
-    const thunk = nextGenCreators.deselectAllNextGenPills();
+    const thunk = guidedCreators.deselectAllGuidedPills();
 
     const dispatch = (action) => {
-      assert.equal(action.type, ACTION_TYPES.DESELECT_NEXT_GEN_PILLS, 'action has the correct type');
+      assert.equal(action.type, ACTION_TYPES.DESELECT_GUIDED_PILLS, 'action has the correct type');
       assert.deepEqual(action.payload.pillData, pillsData, 'action pillData has the right value');
       done();
     };
@@ -159,18 +159,18 @@ module('Unit | Actions | NextGen Creators', function(hooks) {
     thunk(dispatch, getState);
   });
 
-  test('selectNextGenPills action creator returns proper type and payload', function(assert) {
+  test('selectGuidedPills action creator returns proper type and payload', function(assert) {
     const { pillsData } = new ReduxDataHelper()
       .pillsDataPopulated()
       .build()
       .investigate
       .queryNode;
 
-    const action = nextGenCreators.selectNextGenPills({
+    const action = guidedCreators.selectGuidedPills({
       pillData: pillsData
     });
 
-    assert.equal(action.type, ACTION_TYPES.SELECT_NEXT_GEN_PILLS, 'action has the correct type');
+    assert.equal(action.type, ACTION_TYPES.SELECT_GUIDED_PILLS, 'action has the correct type');
     assert.deepEqual(action.payload.pillData, pillsData, 'action pillData has the right value');
   });
 
@@ -191,7 +191,7 @@ module('Unit | Actions | NextGen Creators', function(hooks) {
     new ReduxDataHelper((state) => patchReducer(this, state)).language().hasSummaryData(true, 1).pillsDataPopulated(mockedPillsData).build();
 
     const redux = this.owner.lookup('service:redux');
-    const init = bindActionCreators(nextGenCreators._serverSideValidation, redux.dispatch.bind(redux));
+    const init = bindActionCreators(guidedCreators._serverSideValidation, redux.dispatch.bind(redux));
 
     const position = 0;
     init({
@@ -210,7 +210,7 @@ module('Unit | Actions | NextGen Creators', function(hooks) {
     });
   });
 
-  test('openNextGenPillForEdit dispatches the proper events', function(assert) {
+  test('openGuidedPillForEdit dispatches the proper events', function(assert) {
     assert.expect(4);
     const done = assert.async();
     const state = new ReduxDataHelper()
@@ -220,7 +220,7 @@ module('Unit | Actions | NextGen Creators', function(hooks) {
       .build();
 
     const secondDispatch = (action) => {
-      assert.equal(action.type, ACTION_TYPES.DESELECT_NEXT_GEN_PILLS, 'action has the correct type');
+      assert.equal(action.type, ACTION_TYPES.DESELECT_GUIDED_PILLS, 'action has the correct type');
       assert.deepEqual(action.payload.pillData, state.investigate.queryNode.pillsData, 'action pillData has the right value');
       done();
     };
@@ -229,12 +229,12 @@ module('Unit | Actions | NextGen Creators', function(hooks) {
       if (typeof action === 'function') {
         action(secondDispatch, () => state);
       } else {
-        assert.equal(action.type, ACTION_TYPES.OPEN_NEXT_GEN_PILL_FOR_EDIT, 'action has the correct type');
+        assert.equal(action.type, ACTION_TYPES.OPEN_GUIDED_PILL_FOR_EDIT, 'action has the correct type');
         assert.deepEqual(action.payload.pillData, { meta: 'ip.proto', operator: '=', value: 'boom' }, 'action pillData has the right value');
       }
     };
 
-    const thunk = nextGenCreators.openNextGenPillForEdit({
+    const thunk = guidedCreators.openGuidedPillForEdit({
       pillData: {
         meta: 'ip.proto',
         operator: '=',
@@ -247,14 +247,14 @@ module('Unit | Actions | NextGen Creators', function(hooks) {
 
   test('addFreeFormFilter action creator returns proper type and payload', function(assert) {
     assert.expect(2);
-    const thunk = nextGenCreators.addFreeFormFilter('medium = 50');
+    const thunk = guidedCreators.addFreeFormFilter('medium = 50');
 
     const getState = () => {
       return new ReduxDataHelper().language().build();
     };
 
     const dispatch = (action) => {
-      assert.equal(action.type, ACTION_TYPES.REPLACE_ALL_NEXT_GEN_PILLS, 'action has the correct type');
+      assert.equal(action.type, ACTION_TYPES.REPLACE_ALL_GUIDED_PILLS, 'action has the correct type');
       assert.deepEqual(action.payload.pillData, [
         {
           complexFilterText: undefined,
@@ -270,7 +270,7 @@ module('Unit | Actions | NextGen Creators', function(hooks) {
 
   test('updatedFreeFormText action creator returns proper type and payload', function(assert) {
     assert.expect(2);
-    const thunk = nextGenCreators.updatedFreeFormText('medium = 50');
+    const thunk = guidedCreators.updatedFreeFormText('medium = 50');
 
     const getState = () => {
       return new ReduxDataHelper().language().build();
@@ -289,9 +289,9 @@ module('Unit | Actions | NextGen Creators', function(hooks) {
     thunk(dispatch, getState);
   });
 
-  test('resetNextGenPill action creator returns proper type and payload', function(assert) {
-    const action = nextGenCreators.resetNextGenPill('foo');
-    assert.equal(action.type, ACTION_TYPES.RESET_NEXT_GEN_PILL, 'action has the correct type');
+  test('resetGuidedPill action creator returns proper type and payload', function(assert) {
+    const action = guidedCreators.resetGuidedPill('foo');
+    assert.equal(action.type, ACTION_TYPES.RESET_GUIDED_PILL, 'action has the correct type');
     assert.deepEqual(action.payload.pillData, 'foo', 'action pillData has the right value');
   });
 

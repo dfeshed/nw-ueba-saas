@@ -6,16 +6,16 @@ import RsaContextMenu from 'rsa-context-menu/components/rsa-context-menu/compone
 
 import { enrichedPillsData, hasInvalidSelectedPill } from 'investigate-events/reducers/investigate/query-node/selectors';
 import {
-  addNextGenPill,
-  deleteNextGenPill,
-  deleteSelectedNextGenPills,
-  deselectAllNextGenPills,
-  deselectNextGenPills,
-  editNextGenPill,
-  openNextGenPillForEdit,
-  resetNextGenPill,
-  selectNextGenPills
-} from 'investigate-events/actions/next-gen-creators';
+  addGuidedPill,
+  deleteGuidedPill,
+  deleteSelectedGuidedPills,
+  deselectAllGuidedPills,
+  deselectGuidedPills,
+  editGuidedPill,
+  openGuidedPillForEdit,
+  resetGuidedPill,
+  selectGuidedPills
+} from 'investigate-events/actions/guided-creators';
 
 const { log } = console;// eslint-disable-line no-unused-vars
 
@@ -25,15 +25,15 @@ const stateToComputed = (state) => ({
 });
 
 const dispatchToActions = {
-  addNextGenPill,
-  deleteNextGenPill,
-  deleteSelectedNextGenPills,
-  editNextGenPill,
-  selectNextGenPills,
-  deselectNextGenPills,
-  deselectAllNextGenPills,
-  openNextGenPillForEdit,
-  resetNextGenPill
+  addGuidedPill,
+  deleteGuidedPill,
+  deleteSelectedGuidedPills,
+  editGuidedPill,
+  selectGuidedPills,
+  deselectGuidedPills,
+  deselectAllGuidedPills,
+  openGuidedPillForEdit,
+  resetGuidedPill
 };
 
 const QueryPills = RsaContextMenu.extend({
@@ -101,7 +101,7 @@ const QueryPills = RsaContextMenu.extend({
     {
       label: 'Delete Selected Pills',
       action() {
-        _this.send('deleteSelectedNextGenPills');
+        _this.send('deleteSelectedGuidedPills');
       }
     }];
   },
@@ -199,7 +199,7 @@ const QueryPills = RsaContextMenu.extend({
    * @private
    */
   _pillEntered() {
-    this.send('deselectAllNextGenPills');
+    this.send('deselectAllGuidedPills');
   },
 
   /**
@@ -210,7 +210,7 @@ const QueryPills = RsaContextMenu.extend({
    */
   _pillCreated(pillData, position) {
     this._pillsExited();
-    this.send('addNextGenPill', { pillData, position });
+    this.send('addGuidedPill', { pillData, position });
   },
 
   /**
@@ -228,11 +228,11 @@ const QueryPills = RsaContextMenu.extend({
       return;
     }
 
-    this.send('deleteNextGenPill', { pillData });
+    this.send('deleteGuidedPill', { pillData });
   },
 
   _deletePressedOnSelectedPill() {
-    this.send('deleteSelectedNextGenPills');
+    this.send('deleteSelectedGuidedPills');
   },
 
   /**
@@ -248,7 +248,7 @@ const QueryPills = RsaContextMenu.extend({
       return;
     }
 
-    this.send('openNextGenPillForEdit', { pillData });
+    this.send('openGuidedPillForEdit', { pillData });
     this._pillEnteredForEdit();
   },
 
@@ -267,20 +267,20 @@ const QueryPills = RsaContextMenu.extend({
     const pillsData = this.get('pillsData');
     const position = pillsData.map((pD) => pD.id).indexOf(pillData.id);
     this._pillsExited();
-    this.send('editNextGenPill', { pillData, position });
+    this.send('editGuidedPill', { pillData, position });
   },
 
   _pillsSelected(pillData) {
-    this.send('selectNextGenPills', { pillData });
+    this.send('selectGuidedPills', { pillData });
   },
 
   _pillsDeselected(pillData) {
-    this.send('deselectNextGenPills', { pillData });
+    this.send('deselectGuidedPills', { pillData });
   },
 
   _pillEditCancelled(data) {
     this._pillsExited();
-    this.send('resetNextGenPill', data);
+    this.send('resetGuidedPill', data);
   }
 });
 

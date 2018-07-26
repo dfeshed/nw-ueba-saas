@@ -6,6 +6,8 @@ import { handle } from 'redux-pack';
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 import { createQueryHash } from 'investigate-events/util/query-hash';
 
+const ID_PREFIX = 'guidedPill_';
+
 const _initialState = Immutable.from({
   atLeastOneQueryIssued: false,
   endTime: 0,
@@ -28,9 +30,9 @@ const _initialState = Immutable.from({
   serviceId: undefined,
   sessionId: undefined,
   startTime: 0,
-  queryView: 'nextGen',
+  queryView: 'guided',
 
-  // NEXT GEN, keeping separated until chance to clean up reducer
+  // GUIDED, keeping separated until chance to clean up reducer
 
   // Stores all data for pills
   pillsData: [],
@@ -93,7 +95,7 @@ const _replacePill = (state, pillData) => {
 
   const newPillData = {
     ...pillData,
-    id: _.uniqueId('nextGenPill_')
+    id: _.uniqueId(ID_PREFIX)
   };
 
   return Immutable.from([
@@ -110,7 +112,7 @@ const handlePillSelection = (state, payload, isSelected) => {
     if (selectIds.includes(pD.id)) {
       return {
         ...pD,
-        id: _.uniqueId('nextGenPill_'),
+        id: _.uniqueId(ID_PREFIX),
         isSelected
       };
     }
@@ -130,7 +132,7 @@ const _replaceAllPills = (state, pillData) => {
     return {
       ..._initialPillState,
       ...pD,
-      id: _.uniqueId('nextGenPill_')
+      id: _.uniqueId(ID_PREFIX)
     };
   });
   return state.set('pillsData', newPills);
@@ -237,7 +239,7 @@ export default handleActions({
     return state.merge({ atLeastOneQueryIssued: true });
   },
 
-  // START NEXT GEN
+  // START GUIDED
 
   [ACTION_TYPES.INITIALIZE_QUERYING]: (state, { payload }) => {
     const { queryParams } = payload;
@@ -258,12 +260,12 @@ export default handleActions({
     }, { deep: true });
   },
 
-  [ACTION_TYPES.ADD_NEXT_GEN_PILL]: (state, { payload }) => {
+  [ACTION_TYPES.ADD_GUIDED_PILL]: (state, { payload }) => {
     const { pillData, position } = payload;
     const newPillData = {
       ..._initialPillState,
       ...pillData,
-      id: _.uniqueId('nextGenPill_')
+      id: _.uniqueId(ID_PREFIX)
     };
     if (state.pillsData.length === 0) {
       return state.set('pillsData', Immutable.from([ newPillData ]));
@@ -276,11 +278,11 @@ export default handleActions({
     ]));
   },
 
-  [ACTION_TYPES.EDIT_NEXT_GEN_PILL]: (state, { payload }) => {
+  [ACTION_TYPES.EDIT_GUIDED_PILL]: (state, { payload }) => {
     return _handlePillUpdate(state, payload.pillData);
   },
 
-  [ACTION_TYPES.VALIDATE_NEXT_GEN_PILL]: (state, action) => {
+  [ACTION_TYPES.VALIDATE_GUIDED_PILL]: (state, action) => {
     return handle(state, action, {
       start: (s) => s.set('serverSideValidationInProcess', !!action.meta.isServerSide),
       failure: (s) => {
@@ -299,22 +301,22 @@ export default handleActions({
     });
   },
 
-  [ACTION_TYPES.DELETE_NEXT_GEN_PILLS]: (state, { payload }) => {
+  [ACTION_TYPES.DELETE_GUIDED_PILLS]: (state, { payload }) => {
     const { pillData } = payload;
     const deleteIds = pillData.map((pD) => pD.id);
     const newPills = state.pillsData.filter((pD) => !deleteIds.includes(pD.id));
     return state.set('pillsData', newPills);
   },
 
-  [ACTION_TYPES.SELECT_NEXT_GEN_PILLS]: (state, { payload }) => {
+  [ACTION_TYPES.SELECT_GUIDED_PILLS]: (state, { payload }) => {
     return handlePillSelection(state, payload, true);
   },
 
-  [ACTION_TYPES.DESELECT_NEXT_GEN_PILLS]: (state, { payload }) => {
+  [ACTION_TYPES.DESELECT_GUIDED_PILLS]: (state, { payload }) => {
     return handlePillSelection(state, payload, false);
   },
 
-  [ACTION_TYPES.OPEN_NEXT_GEN_PILL_FOR_EDIT]: (state, { payload }) => {
+  [ACTION_TYPES.OPEN_GUIDED_PILL_FOR_EDIT]: (state, { payload }) => {
     const newPillData = {
       ...payload.pillData,
       isSelected: false,
@@ -323,7 +325,7 @@ export default handleActions({
     return _handlePillUpdate(state, newPillData);
   },
 
-  [ACTION_TYPES.REPLACE_ALL_NEXT_GEN_PILLS]: (state, { payload }) => {
+  [ACTION_TYPES.REPLACE_ALL_GUIDED_PILLS]: (state, { payload }) => {
     return _replaceAllPills(state, payload.pillData);
   },
 
@@ -331,7 +333,7 @@ export default handleActions({
     return state.set('updatedFreeFormTextPill', payload.pillData);
   },
 
-  [ACTION_TYPES.RESET_NEXT_GEN_PILL]: (state, { payload }) => {
+  [ACTION_TYPES.RESET_GUIDED_PILL]: (state, { payload }) => {
     const { id } = payload.pillData;
     // Reset the id of the pill and then
     // reset all the flags back to initial state
@@ -339,7 +341,7 @@ export default handleActions({
       if (id === pD.id) {
         return {
           ...pD,
-          id: _.uniqueId('nextGenPill_'),
+          id: _.uniqueId(ID_PREFIX),
           isEditing: false,
           isSelected: false,
           isInvalid: false,

@@ -98,7 +98,7 @@ test('SET_PREFERENCES when payload does not have queryTimeFormat and no current 
 
 test('SET_QUERY_VIEW reducer sets the correct mode provided', function(assert) {
   const prevState = Immutable.from({
-    queryView: 'nextGen'
+    queryView: 'guided'
   });
   const action = {
     type: ACTION_TYPES.SET_QUERY_VIEW,
@@ -140,11 +140,11 @@ const stateWithPills = new ReduxDataHelper()
   .investigate
   .queryNode;
 
-test('ADD_NEXT_GEN_PILL adds pill to empty list', function(assert) {
+test('ADD_GUIDED_PILL adds pill to empty list', function(assert) {
   const emptyState = new ReduxDataHelper().pillsDataEmpty().build().investigate.queryNode;
 
   const action = {
-    type: ACTION_TYPES.ADD_NEXT_GEN_PILL,
+    type: ACTION_TYPES.ADD_GUIDED_PILL,
     payload: {
       pillData: { foo: 1234 },
       position: 0
@@ -156,9 +156,9 @@ test('ADD_NEXT_GEN_PILL adds pill to empty list', function(assert) {
   assert.equal(result.pillsData[0].foo, 1234, 'pillsData item is in the right position');
 });
 
-test('ADD_NEXT_GEN_PILL adds pill to beginning of list', function(assert) {
+test('ADD_GUIDED_PILL adds pill to beginning of list', function(assert) {
   const action = {
-    type: ACTION_TYPES.ADD_NEXT_GEN_PILL,
+    type: ACTION_TYPES.ADD_GUIDED_PILL,
     payload: {
       pillData: { foo: 1234 },
       position: 0
@@ -170,9 +170,9 @@ test('ADD_NEXT_GEN_PILL adds pill to beginning of list', function(assert) {
   assert.equal(result.pillsData[0].foo, 1234, 'pillsData item is in the right position');
 });
 
-test('ADD_NEXT_GEN_PILL adds pill to the middle of a list', function(assert) {
+test('ADD_GUIDED_PILL adds pill to the middle of a list', function(assert) {
   const action = {
-    type: ACTION_TYPES.ADD_NEXT_GEN_PILL,
+    type: ACTION_TYPES.ADD_GUIDED_PILL,
     payload: {
       pillData: { foo: 1234 },
       position: 1
@@ -184,9 +184,9 @@ test('ADD_NEXT_GEN_PILL adds pill to the middle of a list', function(assert) {
   assert.equal(result.pillsData[1].foo, 1234, 'pillsData item is in the right position');
 });
 
-test('ADD_NEXT_GEN_PILL adds pill to end of list', function(assert) {
+test('ADD_GUIDED_PILL adds pill to end of list', function(assert) {
   const action = {
-    type: ACTION_TYPES.ADD_NEXT_GEN_PILL,
+    type: ACTION_TYPES.ADD_GUIDED_PILL,
     payload: {
       pillData: { foo: 1234 },
       position: 2
@@ -198,9 +198,9 @@ test('ADD_NEXT_GEN_PILL adds pill to end of list', function(assert) {
   assert.equal(result.pillsData[2].foo, 1234, 'pillsData item is in the right position');
 });
 
-test('DELETE_NEXT_GEN_PILLS removes the pill provided', function(assert) {
+test('DELETE_GUIDED_PILLS removes the pill provided', function(assert) {
   const action = {
-    type: ACTION_TYPES.DELETE_NEXT_GEN_PILLS,
+    type: ACTION_TYPES.DELETE_GUIDED_PILLS,
     payload: {
       pillData: [{
         id: '1',
@@ -214,9 +214,9 @@ test('DELETE_NEXT_GEN_PILLS removes the pill provided', function(assert) {
   assert.equal(result.pillsData[0].id, 2, 'pillsData item is in the right position');
 });
 
-test('DELETE_NEXT_GEN_PILLS removes multiple pills', function(assert) {
+test('DELETE_GUIDED_PILLS removes multiple pills', function(assert) {
   const action = {
-    type: ACTION_TYPES.DELETE_NEXT_GEN_PILLS,
+    type: ACTION_TYPES.DELETE_GUIDED_PILLS,
     payload: {
       pillData: [{
         id: '1',
@@ -232,9 +232,9 @@ test('DELETE_NEXT_GEN_PILLS removes multiple pills', function(assert) {
   assert.equal(result.pillsData.length, 0, 'pillsData is the correct length');
 });
 
-test('EDIT_NEXT_GEN_PILL edits first pill provided', function(assert) {
+test('EDIT_GUIDED_PILL edits first pill provided', function(assert) {
   const action = {
-    type: ACTION_TYPES.EDIT_NEXT_GEN_PILL,
+    type: ACTION_TYPES.EDIT_GUIDED_PILL,
     payload: {
       pillData: {
         id: '1',
@@ -249,9 +249,9 @@ test('EDIT_NEXT_GEN_PILL edits first pill provided', function(assert) {
   assert.equal(result.pillsData[0].foo, 1234, 'pillsData item had its data updated');
 });
 
-test('EDIT_NEXT_GEN_PILL edits last pill provided', function(assert) {
+test('EDIT_GUIDED_PILL edits last pill provided', function(assert) {
   const action = {
-    type: ACTION_TYPES.EDIT_NEXT_GEN_PILL,
+    type: ACTION_TYPES.EDIT_GUIDED_PILL,
     payload: {
       pillData: {
         id: '2',
@@ -266,10 +266,10 @@ test('EDIT_NEXT_GEN_PILL edits last pill provided', function(assert) {
   assert.equal(result.pillsData[1].foo, 8907, 'pillsData item had its data updated');
 });
 
-test('VALIDATE_NEXT_GEN_PILL reducer updates state when validation fails', function(assert) {
+test('VALIDATE_GUIDED_PILL reducer updates state when validation fails', function(assert) {
 
   const failureAction = makePackAction(LIFECYCLE.FAILURE, {
-    type: ACTION_TYPES.VALIDATE_NEXT_GEN_PILL,
+    type: ACTION_TYPES.VALIDATE_GUIDED_PILL,
     payload: {
       meta: 'Error in validation'
     },
@@ -286,10 +286,10 @@ test('VALIDATE_NEXT_GEN_PILL reducer updates state when validation fails', funct
   assert.notOk(result.serverSideValidationInProcess, 'validation is complete');
 });
 
-test('VALIDATE_NEXT_GEN_PILL reducer updates state when validation starts', function(assert) {
+test('VALIDATE_GUIDED_PILL reducer updates state when validation starts', function(assert) {
 
   const startAction = makePackAction(LIFECYCLE.START, {
-    type: ACTION_TYPES.VALIDATE_NEXT_GEN_PILL,
+    type: ACTION_TYPES.VALIDATE_GUIDED_PILL,
     meta: {
       position: 1,
       isServerSide: true
@@ -300,11 +300,11 @@ test('VALIDATE_NEXT_GEN_PILL reducer updates state when validation starts', func
   assert.ok(result.serverSideValidationInProcess, 'validation is in process');
 });
 
-test('VALIDATE_NEXT_GEN_PILL reducer updates state when validation starts and serverSide flag is not sent', function(assert) {
+test('VALIDATE_GUIDED_PILL reducer updates state when validation starts and serverSide flag is not sent', function(assert) {
   // if isServerSide flag is not sent, can be safely assumed that clientSide called the reducer
   // So no need to flip the serverSideValidationInProcess flag
   const startAction = makePackAction(LIFECYCLE.START, {
-    type: ACTION_TYPES.VALIDATE_NEXT_GEN_PILL,
+    type: ACTION_TYPES.VALIDATE_GUIDED_PILL,
     meta: {
       position: 1
     }
@@ -314,10 +314,10 @@ test('VALIDATE_NEXT_GEN_PILL reducer updates state when validation starts and se
   assert.notOk(result.serverSideValidationInProcess, 'client side validation');
 });
 
-test('VALIDATE_NEXT_GEN_PILL reducer updates state when validation succeeds', function(assert) {
+test('VALIDATE_GUIDED_PILL reducer updates state when validation succeeds', function(assert) {
 
   const startAction = makePackAction(LIFECYCLE.SUCCESS, {
-    type: ACTION_TYPES.VALIDATE_NEXT_GEN_PILL,
+    type: ACTION_TYPES.VALIDATE_GUIDED_PILL,
     meta: {
       position: 1
     }
@@ -327,9 +327,9 @@ test('VALIDATE_NEXT_GEN_PILL reducer updates state when validation succeeds', fu
   assert.notOk(result.serverSideValidationInProcess, 'Flag is switched back to false after the request is completed');
 });
 
-test('SELECT_NEXT_GEN_PILLS selects multiple pills', function(assert) {
+test('SELECT_GUIDED_PILLS selects multiple pills', function(assert) {
   const action = {
-    type: ACTION_TYPES.SELECT_NEXT_GEN_PILLS,
+    type: ACTION_TYPES.SELECT_GUIDED_PILLS,
     payload: {
       pillData: [{
         id: '1',
@@ -347,7 +347,7 @@ test('SELECT_NEXT_GEN_PILLS selects multiple pills', function(assert) {
   assert.ok(result.pillsData[1].isSelected === true, 'second pill is selected');
 });
 
-test('DESELECT_NEXT_GEN_PILLS deselects multiple pills', function(assert) {
+test('DESELECT_GUIDED_PILLS deselects multiple pills', function(assert) {
   const stateWithPillsSelected = new ReduxDataHelper()
     .pillsDataPopulated()
     .markSelected(['1', '2'])
@@ -356,7 +356,7 @@ test('DESELECT_NEXT_GEN_PILLS deselects multiple pills', function(assert) {
     .queryNode;
 
   const action = {
-    type: ACTION_TYPES.DESELECT_NEXT_GEN_PILLS,
+    type: ACTION_TYPES.DESELECT_GUIDED_PILLS,
     payload: {
       pillData: [{
         id: '1',
@@ -374,7 +374,7 @@ test('DESELECT_NEXT_GEN_PILLS deselects multiple pills', function(assert) {
   assert.ok(result.pillsData[1].isSelected === false, 'second pill is selected');
 });
 
-test('OPEN_NEXT_GEN_PILL_FOR_EDIT marks pill for editing', function(assert) {
+test('OPEN_GUIDED_PILL_FOR_EDIT marks pill for editing', function(assert) {
   const state = new ReduxDataHelper()
     .pillsDataPopulated()
     .build()
@@ -382,7 +382,7 @@ test('OPEN_NEXT_GEN_PILL_FOR_EDIT marks pill for editing', function(assert) {
     .queryNode;
 
   const action = {
-    type: ACTION_TYPES.OPEN_NEXT_GEN_PILL_FOR_EDIT,
+    type: ACTION_TYPES.OPEN_GUIDED_PILL_FOR_EDIT,
     payload: {
       pillData: {
         id: '1',
@@ -414,7 +414,7 @@ test('INITIALIZE_INVESTIGATE clears out all pills on hard reset', function(asser
   assert.equal(result.pillsData.length, 0, 'pillsData is the correct length');
 });
 
-test('REPLACE_ALL_NEXT_GEN_PILLS replaces all pills', function(assert) {
+test('REPLACE_ALL_GUIDED_PILLS replaces all pills', function(assert) {
   const state = new ReduxDataHelper()
     .pillsDataPopulated()
     .build()
@@ -425,7 +425,7 @@ test('REPLACE_ALL_NEXT_GEN_PILLS replaces all pills', function(assert) {
 
   // pass same pills in, make sure ids change
   const action = {
-    type: ACTION_TYPES.REPLACE_ALL_NEXT_GEN_PILLS,
+    type: ACTION_TYPES.REPLACE_ALL_GUIDED_PILLS,
     payload: {
       pillData: state.pillsData
     }
@@ -496,7 +496,7 @@ test('INITIALIZE_INVESTIGATE clears free for text pill state', function(assert) 
   );
 });
 
-test('RESET_NEXT_GEN_PILL resets the pill', function(assert) {
+test('RESET_GUIDED_PILL resets the pill', function(assert) {
   const state = new ReduxDataHelper()
     .pillsDataPopulated()
     .markEditing(['1'])
@@ -505,7 +505,7 @@ test('RESET_NEXT_GEN_PILL resets the pill', function(assert) {
     .queryNode;
 
   const action = {
-    type: ACTION_TYPES.RESET_NEXT_GEN_PILL,
+    type: ACTION_TYPES.RESET_GUIDED_PILL,
     payload: {
       pillData: {
         id: '1',

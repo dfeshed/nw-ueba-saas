@@ -180,7 +180,7 @@ export default class DataHelper {
     _set(this.state, 'queryNode.metaFilter', { conditions: [] });
     _set(this.state, 'queryNode.previouslySelectedTimeRanges', {});
     _set(this.state, 'queryNode.serviceId', '1');
-    _set(this.state, 'queryNode.queryView', 'nextGen');
+    _set(this.state, 'queryNode.queryView', 'guided');
     _set(this.state, 'queryNode.pillsData', []);
     if (flag) {
       _set(this.state, 'services.serviceData', [{ id: '1' }]);
@@ -254,7 +254,7 @@ export default class DataHelper {
     return this;
   }
 
-  // NEXT GEN
+  // GUIDED
 
   pillsDataEmpty() {
     _set(this.state, 'queryNode.pillsData', []);

@@ -7,10 +7,10 @@ import {
   selectedTimeRangeName,
   useDatabaseTime,
   isOnFreeForm,
-  isOnNextGen,
+  isOnGuided,
   enrichedPillsData,
   selectedPills,
-  canQueryNextGen,
+  canQueryGuided,
   freeFormText,
   hasInvalidSelectedPill
 } from 'investigate-events/reducers/investigate/query-node/selectors';
@@ -347,15 +347,15 @@ test('check isOnFreeForm', function(assert) {
   assert.equal(isOnFreeForm(state), true, 'Should have focus');
 });
 
-test('check isOnNextGen', function(assert) {
+test('check isOnGuided', function(assert) {
   const state = {
     investigate: {
       queryNode: {
-        queryView: 'nextGen'
+        queryView: 'guided'
       }
     }
   };
-  assert.equal(isOnNextGen(state), true, 'Should have focus');
+  assert.equal(isOnGuided(state), true, 'Should have focus');
 });
 
 test('enrichedPillsData is false when status is not error', function(assert) {
@@ -380,18 +380,18 @@ test('selectedPills returns only those pills that are selected', function(assert
   assert.equal(pD[0].value, '\'x\'', 'transforms value correctly');
 });
 
-test('canQueryNextGen is true when a query is ready to execute and NO invalid pill is present', function(assert) {
+test('canQueryGuided is true when a query is ready to execute and NO invalid pill is present', function(assert) {
   const state = new ReduxDataHelper()
     .language()
     .pillsDataPopulated()
     .hasRequiredValuesToQuery(true)
     .build();
 
-  const canQuery = canQueryNextGen(state);
+  const canQuery = canQueryGuided(state);
   assert.ok(canQuery, 'Selector returns true if a query is ready to execute and NO invalid pill is present');
 });
 
-test('canQueryNextGen is false when query is ready to execute, but an invalid pill is present', function(assert) {
+test('canQueryGuided is false when query is ready to execute, but an invalid pill is present', function(assert) {
   const state = new ReduxDataHelper()
     .language()
     .hasRequiredValuesToQuery(true)
@@ -399,7 +399,7 @@ test('canQueryNextGen is false when query is ready to execute, but an invalid pi
     .markInvalid(['1'])
     .build();
 
-  const canQuery = canQueryNextGen(state);
+  const canQuery = canQueryGuided(state);
   assert.notOk(canQuery, 'Selector returns false if query is ready to execute, but an invalid pill is present');
 });
 

@@ -8,7 +8,7 @@ import { initialize } from 'ember-dependency-lookup/instance-initializers/depend
 
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
-import nextGenCreators from 'investigate-events/actions/next-gen-creators';
+import guidedCreators from 'investigate-events/actions/guided-creators';
 import { createBasicPill, doubleClick, elementIsVisible, leaveNewPillTemplate } from '../pill-util';
 import PILL_SELECTORS from '../pill-selectors';
 import KEY_MAP from 'investigate-events/util/keys';
@@ -20,12 +20,12 @@ const DELETE_KEY = KEY_MAP.delete.code;
 const BACKSPACE_KEY = KEY_MAP.backspace.code;
 
 let setState;
-const newActionSpy = sinon.spy(nextGenCreators, 'addNextGenPill');
-const deleteActionSpy = sinon.spy(nextGenCreators, 'deleteNextGenPill');
-const selectActionSpy = sinon.spy(nextGenCreators, 'selectNextGenPills');
-const deselectActionSpy = sinon.spy(nextGenCreators, 'deselectNextGenPills');
-const openNextGenPillForEditSpy = sinon.spy(nextGenCreators, 'openNextGenPillForEdit');
-const resetNextGenPillSpy = sinon.spy(nextGenCreators, 'resetNextGenPill');
+const newActionSpy = sinon.spy(guidedCreators, 'addGuidedPill');
+const deleteActionSpy = sinon.spy(guidedCreators, 'deleteGuidedPill');
+const selectActionSpy = sinon.spy(guidedCreators, 'selectGuidedPills');
+const deselectActionSpy = sinon.spy(guidedCreators, 'deselectGuidedPills');
+const openGuidedPillForEditSpy = sinon.spy(guidedCreators, 'openGuidedPillForEdit');
+const resetGuidedPillSpy = sinon.spy(guidedCreators, 'resetGuidedPill');
 
 const allPillsAreClosed = (assert) => {
   assert.equal(findAll(PILL_SELECTORS.pillOpen).length, 0, 'Class for pill open should not be present.');
@@ -63,8 +63,8 @@ module('Integration | Component | query-pills', function(hooks) {
     deleteActionSpy.reset();
     selectActionSpy.reset();
     deselectActionSpy.reset();
-    openNextGenPillForEditSpy.reset();
-    resetNextGenPillSpy.reset();
+    openGuidedPillForEditSpy.reset();
+    resetGuidedPillSpy.reset();
   });
 
   hooks.after(function() {
@@ -72,8 +72,8 @@ module('Integration | Component | query-pills', function(hooks) {
     deleteActionSpy.restore();
     selectActionSpy.restore();
     deselectActionSpy.restore();
-    openNextGenPillForEditSpy.restore();
-    resetNextGenPillSpy.restore();
+    openGuidedPillForEditSpy.restore();
+    resetGuidedPillSpy.restore();
   });
 
   test('Upon initialization, one active pill is created', async function(assert) {
@@ -186,7 +186,7 @@ module('Integration | Component | query-pills', function(hooks) {
     doubleClick(PILL_SELECTORS.queryPill, true);
 
     return settled().then(async () => {
-      assert.equal(openNextGenPillForEditSpy.callCount, 0, 'The openNextGenPillForEditSpy pill action not called at all');
+      assert.equal(openGuidedPillForEditSpy.callCount, 0, 'The openGuidedPillForEditSpy pill action not called at all');
     });
   });
 
@@ -382,8 +382,8 @@ module('Integration | Component | query-pills', function(hooks) {
     await focus(PILL_SELECTORS.triggerMetaPowerSelect);
     await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', ESCAPE_KEY);
 
-    assert.equal(resetNextGenPillSpy.callCount, 1, 'The reset pill action creator was called once');
-    const [ [ calledWith ] ] = resetNextGenPillSpy.args;
+    assert.equal(resetGuidedPillSpy.callCount, 1, 'The reset pill action creator was called once');
+    const [ [ calledWith ] ] = resetGuidedPillSpy.args;
     assert.deepEqual(calledWith.id, pillsData[0].id, 'shows as being selected as is being sent to be deselected');
   });
 
@@ -405,7 +405,7 @@ module('Integration | Component | query-pills', function(hooks) {
 
     return settled().then(async () => {
       // action to store in state called
-      assert.equal(openNextGenPillForEditSpy.callCount, 1, 'The openNextGenPillForEditSpy pill action creator was called once');
+      assert.equal(openGuidedPillForEditSpy.callCount, 1, 'The openGuidedPillForEditSpy pill action creator was called once');
     });
   });
 
@@ -453,11 +453,11 @@ module('Integration | Component | query-pills', function(hooks) {
 
     const pills = findAll(PILL_SELECTORS.meta);
     doubleClick(`#${pills[0].id}`, true); // open pill for edit
-    assert.equal(openNextGenPillForEditSpy.callCount, 1, 'The openNextGenPillForEditSpy pill action creator was called once');
+    assert.equal(openGuidedPillForEditSpy.callCount, 1, 'The openGuidedPillForEditSpy pill action creator was called once');
     assert.equal(findAll(PILL_SELECTORS.activePill).length, 2, 'Now two active pills');
 
     doubleClick(`#${pills[1].id}`); // attempt to open another pill for edit
-    assert.equal(openNextGenPillForEditSpy.callCount, 1, 'The openNextGenPillForEditSpy pill action still just called once');
+    assert.equal(openGuidedPillForEditSpy.callCount, 1, 'The openGuidedPillForEditSpy pill action still just called once');
     assert.equal(findAll(PILL_SELECTORS.activePill).length, 2, 'Still two active pills');
   });
 

@@ -93,9 +93,9 @@ export const isOnFreeForm = createSelector(
   (queryView) => queryView === 'freeForm'
 );
 
-export const isOnNextGen = createSelector(
+export const isOnGuided = createSelector(
   [_queryView],
-  (queryView) => queryView === 'nextGen'
+  (queryView) => queryView === 'guided'
 );
 
 /**
@@ -141,8 +141,8 @@ export const enrichedPillsData = createSelector(
 );
 
 // If we have the required values to query and none of the pills are
-// invalid, then we can query next gen
-export const canQueryNextGen = createSelector(
+// invalid, then we can query guided
+export const canQueryGuided = createSelector(
   [_hasInvalidPill, hasRequiredValuesToQuery],
   (hasInvalidPill, hasRequiredValuesToQuery) => hasRequiredValuesToQuery && !hasInvalidPill
 );
