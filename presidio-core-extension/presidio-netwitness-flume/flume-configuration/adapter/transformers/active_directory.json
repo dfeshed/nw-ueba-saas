@@ -17,8 +17,7 @@
         "sourceKey": "user_dst",
         "isRemoveSourceKey": true,
         "destinationKeys": [
-          "userName",
-          "userDisplayName"
+          "userName"
         ]
       },
       "elseTransformer": {
@@ -36,8 +35,7 @@
           "sourceKey": "user_src",
           "isRemoveSourceKey": true,
           "destinationKeys": [
-            "userName",
-            "userDisplayName"
+            "userName"
           ]
         },
         "elseTransformer": {
@@ -46,8 +44,7 @@
           "sourceKey": "user_dst",
           "isRemoveSourceKey": true,
           "destinationKeys": [
-            "userName",
-            "userDisplayName"
+            "userName"
           ]
         }
       }
@@ -148,6 +145,15 @@
             }
           ]
         }
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "copy-user-id",
+      "sourceKey": "userId",
+      "isRemoveSourceKey": false,
+      "destinationKeys": [
+        "userDisplayName"
       ]
     },
     {
