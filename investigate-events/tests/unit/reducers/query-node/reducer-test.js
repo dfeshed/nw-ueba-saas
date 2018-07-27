@@ -540,11 +540,7 @@ test('INITIALIZE_QUERYING replaces all pills with new set of pills', function(as
   const action = {
     type: ACTION_TYPES.INITIALIZE_QUERYING,
     payload: {
-      queryParams: {
-        metaFilter: {
-          conditions: pillsData
-        }
-      }
+      pillsData
     }
   };
 
@@ -563,7 +559,9 @@ test('INITIALIZE_QUERYING sets a proper query hash', function(assert) {
     .queryNode;
 
   const emptyState = new ReduxDataHelper()
-    .hasRequiredValuesToQuery()
+    .serviceId('1')
+    .startTime('early')
+    .endTime('late')
     .pillsDataEmpty()
     .build()
     .investigate
@@ -572,14 +570,7 @@ test('INITIALIZE_QUERYING sets a proper query hash', function(assert) {
   const action = {
     type: ACTION_TYPES.INITIALIZE_QUERYING,
     payload: {
-      queryParams: {
-        serviceId: '1',
-        startTime: 'early',
-        endTime: 'late',
-        metaFilter: {
-          conditions: pillsData
-        }
-      }
+      pillsData
     }
   };
 

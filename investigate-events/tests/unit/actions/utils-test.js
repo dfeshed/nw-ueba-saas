@@ -24,25 +24,36 @@ module('Unit | Helper | query utils', function(hooks) {
     initialize(this.owner);
   });
 
-  test('parseQueryParams correctly parses URI', function(assert) {
-    assert.expect(8);
-    const result = queryUtils.parseQueryParams(params, DEFAULT_LANGUAGES);
+  test('parseBasicQueryParams correctly parses URI', function(assert) {
+    assert.expect(6);
+    const result = queryUtils.parseBasicQueryParams(params, DEFAULT_LANGUAGES);
     assert.equal(result.endTime, params.et, '"et" was not parsed to "endTime"');
     assert.equal(result.sessionId, params.eid, '"eid" was not parsed to "sessionId"');
-    assert.equal(result.metaFilter.uri, params.mf, '"mf" was not parsed to "metaFilter.uri"');
-    assert.equal(result.metaFilter.conditions.length, 1, '"mf" was not parsed to "metaFilter.conditions"');
     assert.equal(result.metaPanelSize, params.mps, '"mps" was not parsed to "metaPanelSize"');
     assert.equal(result.reconSize, params.rs, '"rs" was not parsed to "reconSize"');
     assert.equal(result.serviceId, params.sid, '"sid" was not parsed to "serviceId"');
     assert.equal(result.startTime, params.st, '"st" was not parsed to "startTime"');
   });
 
-  test('parseQueryParams correctly parses forward slashes and operators in text format conditions', function(assert) {
+
+  test('parsePillDataFromUri correctly parses forward slashes and operators in text format conditions', function(assert) {
     assert.expect(3);
-    const result = queryUtils.parseQueryParams(params, DEFAULT_LANGUAGES);
-    assert.equal(result.metaFilter.conditions[0].meta, 'filename', 'forward slash was not parsed correctly');
-    assert.equal(result.metaFilter.conditions[0].operator, '=', 'forward slash was not parsed correctly');
-    assert.equal(result.metaFilter.conditions[0].value, '<reston=\'virginia.sys>', 'forward slash was not parsed correctly');
+    const result = queryUtils.parsePillDataFromUri(params.mf, DEFAULT_LANGUAGES);
+    assert.equal(result[0].meta, 'filename', 'forward slash was not parsed correctly');
+    assert.equal(result[0].operator, '=', 'forward slash was not parsed correctly');
+    assert.equal(result[0].value, '<reston=\'virginia.sys>', 'forward slash was not parsed correctly');
+  });
+
+  test('parsePillDataFromUri correctly parses multiple params', function(assert) {
+    assert.expect(7);
+    const result = queryUtils.parsePillDataFromUri('filename%3D<reston%3D\'virginia.sys>/medium%3Dfoo', DEFAULT_LANGUAGES);
+    assert.equal(result.length, 2, 'two pills came out');
+    assert.equal(result[0].meta, 'filename', 'forward slash was not parsed correctly');
+    assert.equal(result[0].operator, '=', 'forward slash was not parsed correctly');
+    assert.equal(result[0].value, '<reston=\'virginia.sys>', 'forward slash was not parsed correctly');
+    assert.equal(result[1].meta, 'medium', 'forward slash was not parsed correctly');
+    assert.equal(result[1].operator, '=', 'forward slash was not parsed correctly');
+    assert.equal(result[1].value, 'foo', 'forward slash was not parsed correctly');
   });
 
   test('filterIsPresent return false when filters array and freeFormText are different', function(assert) {

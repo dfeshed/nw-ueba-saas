@@ -231,20 +231,15 @@ function executeMetaValuesRequest(request, inputs, values) {
 
 /**
  * Parses a URL query param object.
- * The `metaFilter` piece is further parsed into an list of individual filter
- * conditions (@see _parseMetaFilterUri).
+ *
  * @param {object} params Query param object.
  * @return {object}
  * @public
  */
-function parseQueryParams(params, availableMeta) {
+function parseBasicQueryParams(params) {
   return {
     endTime: params.et,
     sessionId: params.eid,
-    metaFilter: {
-      uri: params.mf,
-      conditions: _parseMetaFilterUri(params.mf, availableMeta)
-    },
     metaPanelSize: params.mps,
     reconSize: params.rs,
     serviceId: params.sid,
@@ -262,6 +257,7 @@ function parseQueryParams(params, availableMeta) {
  * each `value#` string is a meta value (raw, not alias). Assumes `key#` strings
  * do not need URI decoding (they're just alphanumerics, plus dots maybe), but
  * `value#` strings and operators will need URI decoding.
+ *
  * @param {string} uri
  * @returns {object[]} Array of condition objects. Each array item is an object
  * with properties `key` & `value`, where:
@@ -269,7 +265,7 @@ function parseQueryParams(params, availableMeta) {
  * (ii) value` is a meta key value (raw, not alias).
  * @private
  */
-function _parseMetaFilterUri(uri, availableMeta) {
+function parsePillDataFromUri(uri, availableMeta) {
   if (isBlank(uri)) {
     // When uri is empty, return empty array. Alas, ''.split() returns a non-empty array; it's a 1-item array with
     // an empty string in it, which is not what we want.  So we check for '' and return [] explicitly here.
@@ -423,7 +419,8 @@ const getMetaFormat = (meta, languages) => {
 export {
   buildMetaValueStreamInputs,
   executeMetaValuesRequest,
-  parseQueryParams,
+  parseBasicQueryParams,
+  parsePillDataFromUri,
   uriEncodeMetaFilters,
   transformTextToPillData,
   filterIsPresent,

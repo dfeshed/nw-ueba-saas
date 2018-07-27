@@ -14,7 +14,6 @@ const _initialState = Immutable.from({
   eventMetas: undefined,
   hasIncommingQueryParams: false,
   metaFilter: {
-    uri: undefined,
     conditions: []
   },
   previouslySelectedTimeRanges: {},
@@ -69,20 +68,17 @@ const _cloneQueryParams = (state) => {
     startTime
   } = state;
 
-  let { metaFilter } = state;
+  let { pillsData } = state;
 
-  if (!metaFilter) {
-    metaFilter = {
-      uri: undefined,
-      conditions: []
-    };
+  if (!pillsData) {
+    pillsData = [];
   }
 
   const _eventMetas = eventMetas ? JSON.parse(JSON.stringify(eventMetas)) : undefined;
   return {
     endTime,
     eventMetas: _eventMetas,
-    metaFilter: JSON.parse(JSON.stringify(metaFilter)),
+    metaFilter: JSON.parse(JSON.stringify(pillsData)),
     serviceId,
     startTime
   };
@@ -168,7 +164,10 @@ export default handleActions({
         return _initialState;
       } else {
         // pre-populate Event Analysis with previously chosen serviceId and timeRange
-        const previousQueryParams = _cloneQueryParams(localStorageObj.queryNode);
+        const previousQueryParams = _cloneQueryParams({
+          ...localStorageObj.queryNode,
+          pillsData: localStorageObj.queryNode.pillsData || localStorageObj.queryNode.metaFilter
+        });
         return state.merge({
           ..._initialState,
           serviceId: localStorageObj.queryNode.serviceId,
@@ -242,20 +241,32 @@ export default handleActions({
   // START GUIDED
 
   [ACTION_TYPES.INITIALIZE_QUERYING]: (state, { payload }) => {
-    const { queryParams } = payload;
+    const { pillsData } = payload;
 
-    state = _replaceAllPills(state, queryParams.metaFilter.conditions);
+    state = _replaceAllPills(state, pillsData);
+
+    const { serviceId, startTime, endTime } = state;
 
     const newHash = createQueryHash(
-      queryParams.serviceId,
-      queryParams.startTime,
-      queryParams.endTime,
-      queryParams.metaFilter.conditions
+      serviceId,
+      startTime,
+      endTime,
+      pillsData
     );
 
+    const previousQueryParams = _cloneQueryParams({
+      serviceId,
+      startTime,
+      endTime,
+      eventMetas: state.eventMetas,
+      pillsData
+    });
+
     return state.merge({
-      metaFilter: queryParams.metaFilter,
-      previousQueryParams: _cloneQueryParams(queryParams),
+      metaFilter: {
+        conditions: pillsData
+      },
+      previousQueryParams,
       currentQueryHash: newHash
     }, { deep: true });
   },

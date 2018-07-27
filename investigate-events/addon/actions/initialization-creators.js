@@ -2,7 +2,7 @@ import RSVP from 'rsvp';
 import { lookup } from 'ember-dependency-lookup';
 
 import { fetchAliases, fetchLanguage } from './fetch/dictionaries';
-import { parseQueryParams } from 'investigate-events/actions/utils';
+import { parseBasicQueryParams, parsePillDataFromUri } from 'investigate-events/actions/utils';
 import { fetchColumnGroups } from './fetch/column-groups';
 import {
   fetchInvestigateData,
@@ -127,7 +127,7 @@ const _intializeQuerying = (hardReset, params, dispatch, getState) => {
     dispatch({
       type: ACTION_TYPES.INITIALIZE_QUERYING,
       payload: {
-        queryParams: parseQueryParams(params, metaKeySuggestionsForQueryBuilder(getState()))
+        pillsData: parsePillDataFromUri(params.mf, metaKeySuggestionsForQueryBuilder(getState()))
       }
     });
   }
@@ -167,7 +167,7 @@ const _handleInitializationError = (dispatch) => {
  */
 export const initializeInvestigate = (params, hardReset = false) => {
   return (dispatch, getState) => {
-    const parsedQueryParams = parseQueryParams(params);
+    const parsedQueryParams = parseBasicQueryParams(params);
 
     // 1) Initialize state from query params
     dispatch({

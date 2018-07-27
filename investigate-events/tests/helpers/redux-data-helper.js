@@ -115,6 +115,21 @@ export default class DataHelper {
     return state.asMutable();
   }
 
+  serviceId(id = '123') {
+    _set(this.state, 'queryNode.serviceId', id);
+    return this;
+  }
+
+  startTime(time = 'early') {
+    _set(this.state, 'queryNode.startTime', time);
+    return this;
+  }
+
+  endTime(time = 'late') {
+    _set(this.state, 'queryNode.endTime', time);
+    return this;
+  }
+
   // event-count
   eventCount(count) {
     _set(this.state, 'eventCount.data', count);
