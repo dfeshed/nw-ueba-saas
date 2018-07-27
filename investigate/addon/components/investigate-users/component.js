@@ -16,7 +16,7 @@ const retry = function(isFinished, timeout) {
       Promise.resolve(isFinished()).then((finished) => {
         if (finished) {
           reject();
-        } else if (attempts > 10) {
+        } else if (attempts > 5) {
           resolve();
         } else {
           loop();
