@@ -36,7 +36,7 @@ module('Unit | Helper | query utils', function(hooks) {
   });
 
 
-  test('parsePillDataFromUri correctly parses forward slashes and operators in text format conditions', function(assert) {
+  test('parsePillDataFromUri correctly parses forward slashes and operators into pills', function(assert) {
     assert.expect(3);
     const result = queryUtils.parsePillDataFromUri(params.mf, DEFAULT_LANGUAGES);
     assert.equal(result[0].meta, 'filename', 'forward slash was not parsed correctly');

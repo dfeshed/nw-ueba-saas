@@ -94,10 +94,10 @@ const KeyValueComponent = Component.extend({
   // function. That dynamically generated function will avoid looping; instead it will use a closure to do a hash lookup.
   _getMetaValueTester() {
     const groupKeyName = this.get('groupKey.name');
-    const conditions = this.get('query.metaFilter.conditions');
-    const conditionsForThisKey = (conditions || []).filterBy('key', groupKeyName);
-    const selectedValuesForThisKey = conditionsForThisKey.reduce((hash, condition) => {
-      hash[condition.value] = true;
+    const metaFilters = this.get('query.metaFilter');
+    const metaFiltersForThisKey = (metaFilters || []).filterBy('key', groupKeyName);
+    const selectedValuesForThisKey = metaFiltersForThisKey.reduce((hash, filter) => {
+      hash[filter.value] = true;
       return hash;
     }, {});
     return function(value) {

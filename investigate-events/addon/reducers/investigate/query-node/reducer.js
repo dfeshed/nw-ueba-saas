@@ -13,9 +13,7 @@ const _initialState = Immutable.from({
   endTime: 0,
   eventMetas: undefined,
   hasIncommingQueryParams: false,
-  metaFilter: {
-    conditions: []
-  },
+  metaFilter: [],
   previouslySelectedTimeRanges: {},
 
   // we save off the old query params for the previously executed
@@ -263,9 +261,7 @@ export default handleActions({
     });
 
     return state.merge({
-      metaFilter: {
-        conditions: pillsData
-      },
+      metaFilter: pillsData,
       previousQueryParams,
       currentQueryHash: newHash
     }, { deep: true });

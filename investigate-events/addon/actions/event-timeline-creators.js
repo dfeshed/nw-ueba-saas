@@ -13,7 +13,7 @@ export default function getEventTimeline() {
     const { language } = state.dictionaries;
     dispatch({
       type: ACTION_TYPES.GET_EVENT_TIMELINE,
-      promise: fetchTimeline(serviceId, startTime, endTime, metaFilter.conditions, language),
+      promise: fetchTimeline(serviceId, startTime, endTime, metaFilter, language),
       meta: {
         onFailure(response) {
           handleInvestigateErrorCode(response, 'GET_EVENT_TIMELINE');

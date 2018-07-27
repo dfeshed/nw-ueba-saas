@@ -14,7 +14,7 @@ export default function getEventCount() {
     const { threshold } = state.eventCount;
     dispatch({
       type: ACTION_TYPES.GET_EVENT_COUNT,
-      promise: fetchCount(serviceId, startTime, endTime, metaFilter.conditions, language, threshold),
+      promise: fetchCount(serviceId, startTime, endTime, metaFilter, language, threshold),
       meta: {
         onFailure(response) {
           handleInvestigateErrorCode(response, 'GET_EVENT_COUNT');

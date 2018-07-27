@@ -192,7 +192,7 @@ export default class DataHelper {
   }
 
   hasRequiredValuesToQuery(flag) {
-    _set(this.state, 'queryNode.metaFilter', { conditions: [] });
+    _set(this.state, 'queryNode.metaFilter', []);
     _set(this.state, 'queryNode.previouslySelectedTimeRanges', {});
     _set(this.state, 'queryNode.serviceId', '1');
     _set(this.state, 'queryNode.queryView', 'guided');

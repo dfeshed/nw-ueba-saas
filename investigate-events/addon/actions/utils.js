@@ -1,5 +1,5 @@
 import { assert } from '@ember/debug';
-import { get, getProperties } from '@ember/object';
+import { getProperties } from '@ember/object';
 import { isBlank } from '@ember/utils';
 import { run } from '@ember/runloop';
 import RSVP from 'rsvp';
@@ -170,7 +170,7 @@ function _makeServerInputsForQuery(query, language) {
     filter: [
       { field: 'endpointId', value: serviceId },
       { field: 'timeRange', range: { from: startTime, to: endTime } },
-      { field: 'query', value: encodeMetaFilterConditions(get(metaFilter || {}, 'conditions'), language) }
+      { field: 'query', value: encodeMetaFilterConditions(metaFilter || [], language) }
     ]
   };
 }
@@ -249,8 +249,8 @@ function parseBasicQueryParams(params) {
 }
 
 /**
- * Parses a given URI string component that represents 0, 1 or more meta
- * conditions for a Core query. Assumes the URI is of the following syntax:
+ * Parses a given URI string component that represents 0, 1 or more metaFilters
+ * for a Core query. Assumes the URI is of the following syntax:
  * `key1 operator1 value1/key2 operator1 value2/../keyN operatorN valueN`,
  * where each `key#` string is a meta key identifier (e.g., `ip.src`, not a
  * display name), each operator is a logical operator (e.g. =, !=, ends), and
@@ -372,9 +372,11 @@ function filterIsPresent(filters, freeFormText) {
 }
 
 /**
- * Encodes a given list of meta conditions into a URI string component that can be used for routing.
+ * Encodes a given list of metaFilters into a URI string component
+ * that can be used for routing.
  * The reverse of `parseMetaFilterUri()`.
- * @param {object[]} conditions The array of meta conditions. For structure, @see return value of parseMetaFilterUri.
+ * @param {object[]} filters The array of meta filters.
+ *   For structure, @see return value of parseMetaFilterUri.
  * @returns {string}
  * @private
  */

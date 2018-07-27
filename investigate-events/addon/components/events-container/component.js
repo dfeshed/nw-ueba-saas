@@ -34,7 +34,7 @@ const QueryContainerComponent = Component.extend({
   reconPanelSizes: RECON_PANEL_SIZES,
   showFutureFeatures: config.featureFlags.future,
 
-  @computed('queryNode.startTime', 'queryNode.endTime', 'queryNode.metaFilter.conditions', 'queryNode.serviceId')
+  @computed('queryNode.startTime', 'queryNode.endTime', 'queryNode.metaFilter', 'queryNode.serviceId')
   queryInputs(startTime, endTime, queryConditions, endpointId) {
     return {
       startTime,

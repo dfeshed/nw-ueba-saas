@@ -171,7 +171,7 @@ test('need services to query', function(assert) {
     investigate: {
       queryNode: {
         serviceId: '1',
-        metaFilter: { conditions: [] },
+        metaFilter: [],
         previouslySelectedTimeRanges: {},
         currentQueryHash: 'kajsdlkajldsk',
         pillsData: []
@@ -190,7 +190,7 @@ test('need summary data to query', function(assert) {
     investigate: {
       queryNode: {
         serviceId: '1',
-        metaFilter: { conditions: [] },
+        metaFilter: [],
         previouslySelectedTimeRanges: {},
         currentQueryHash: 'kajsdlkajldsk',
         pillsData: []
@@ -209,7 +209,7 @@ test('aggregation was not performed, so we cannot query', function(assert) {
     investigate: {
       queryNode: {
         serviceId: '1',
-        metaFilter: { conditions: [] },
+        metaFilter: [],
         previouslySelectedTimeRanges: {},
         currentQueryHash: 'kajsdlkajldsk',
         pillsData: []
@@ -227,7 +227,7 @@ test('is not dirty so cannot query', function(assert) {
   const state = {
     investigate: {
       queryNode: {
-        metaFilter: { conditions: [] },
+        metaFilter: [],
         previouslySelectedTimeRanges: {},
         // serviceId can be undefined because we select a default service
         serviceId: '1',
@@ -248,7 +248,7 @@ test('is dirty due to pills so can query', function(assert) {
   const state = {
     investigate: {
       queryNode: {
-        metaFilter: { conditions: [] },
+        metaFilter: [],
         previouslySelectedTimeRanges: {},
         // serviceId can be undefined because we select a default service
         serviceId: '1',
@@ -270,7 +270,7 @@ test('is dirty due to updated free form text', function(assert) {
   const state = {
     investigate: {
       queryNode: {
-        metaFilter: { conditions: [] },
+        metaFilter: [],
         previouslySelectedTimeRanges: {},
         // serviceId can be undefined because we select a default service
         serviceId: '1',
@@ -295,7 +295,7 @@ test('is not dirty even with free form updated', function(assert) {
   const state = {
     investigate: {
       queryNode: {
-        metaFilter: { conditions: [] },
+        metaFilter: [],
         previouslySelectedTimeRanges: {},
         // serviceId can be undefined because we select a default service
         serviceId: '1',
@@ -320,7 +320,7 @@ test('has required inputs to query', function(assert) {
   const state = {
     investigate: {
       queryNode: {
-        metaFilter: { conditions: [] },
+        metaFilter: [],
         previouslySelectedTimeRanges: {},
         // serviceId can be undefined because we select a default service
         serviceId: undefined,

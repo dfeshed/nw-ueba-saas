@@ -122,9 +122,7 @@ test('INITIALIZE_INVESTIGATE reducer sets the correct view from localStorage', f
     type: ACTION_TYPES.INITIALIZE_INVESTIGATE,
     payload: {
       queryParams: {
-        metaFilter: {
-          conditions: []
-        },
+        metaFilter: [],
         selectedTimeRangeId: 'ALL_DATA'
       }
     }
@@ -479,9 +477,7 @@ test('INITIALIZE_INVESTIGATE clears free for text pill state', function(assert) 
         serviceId: '1',
         startTime: 'early',
         endTime: 'late',
-        metaFilter: {
-          conditions: []
-        }
+        metaFilter: []
       },
       hardReset: false
     }

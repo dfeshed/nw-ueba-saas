@@ -27,16 +27,14 @@ const state = Immutable.from({
       serviceId: 'sd1',
       startTime,
       endTime,
-      metaFilter: {
-        conditions: [
-          {
-            queryString: 'foo=foo-value',
-            isKeyValuePair: true,
-            key: 'foo',
-            value: 'foo-value'
-          }
-        ]
-      }
+      metaFilter: [
+        {
+          queryString: 'foo=foo-value',
+          isKeyValuePair: true,
+          key: 'foo',
+          value: 'foo-value'
+        }
+      ]
     }
   }
 });

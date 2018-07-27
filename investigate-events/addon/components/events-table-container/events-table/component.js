@@ -16,7 +16,7 @@ const stateToComputed = (state) => ({
   endpointId: state.investigate.queryNode.serviceId,
   startTime: state.investigate.queryNode.startTime,
   endTime: state.investigate.queryNode.endTime,
-  queryConditions: state.investigate.queryNode.metaFilter.conditions,
+  queryConditions: state.investigate.queryNode.metaFilter,
   metaFormatMap: metaFormatMap(state.investigate.dictionaries.language)
 });
 

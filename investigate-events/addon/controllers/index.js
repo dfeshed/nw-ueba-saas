@@ -7,7 +7,7 @@ export default Controller.extend({
     'st',  // startTime
     'et',  // endTime
     'eid', // sessionId
-    'mf',  // metaFilters
+    'mf',  // pillData
     'mps', // metaPanelSize
     'rs'   // reconSize
   ],
