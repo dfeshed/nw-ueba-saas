@@ -220,14 +220,23 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
                         Collections.singletonList(DATA_SOURCE_FIELD_NAME));
         transformerChainList.add(ranameReferenceIdToDataSource);
 
-        // copy user_dst to userName,userDisplayName
+        // copy user_dst to userName
         CopyValueTransformer copyUserDst =
                 new CopyValueTransformer(
                         "copy-user-dst",
                         USER_DST_FIELD_NAME,
                         true,
-                        Arrays.asList(USERNAME_FIELD_NAME, USER_DISPLAY_NAME_FIELD_NAME));
+                        Arrays.asList(USERNAME_FIELD_NAME));
         transformerChainList.add(copyUserDst);
+
+        // copy userId to userDisplayName
+        CopyValueTransformer copyUserId =
+                new CopyValueTransformer(
+                        "copy-user-id",
+                        USER_ID_FIELD_NAME,
+                        false,
+                        Arrays.asList(USER_DISPLAY_NAME_FIELD_NAME));
+        transformerChainList.add(copyUserId);
 
         //The Auth Windows Audit Transformer that chain all the transformers together.
         JsonObjectChainTransformer authWindowsAuditTransformer =
@@ -321,7 +330,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
 
         JSONObject retJsonObject = transform(transformer, jsonObject);
 
-        assertOnExpectedValues(retJsonObject, eventId, eventTime, "rsmith", userDst, userDst,
+        assertOnExpectedValues(retJsonObject, eventId, eventTime, "rsmith", userDst, "rsmith",
                 aliasHost.toLowerCase(), aliasHost, RESULT_SUCCESS, INTERACTIVE_LOGON_TYPE, referenceId);
     }
 
@@ -342,8 +351,8 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
                 eventType, "  ", eventId, null, aliasSource);
 
         JSONObject retJsonObject = transform(transformer, jsonObject);
-
-        assertOnExpectedValues(retJsonObject, eventId, eventTime, StringUtils.join(Arrays.asList(userDst.toLowerCase(), aliasHost.toLowerCase()), "@"), userDst, userDst,
+        String userId = StringUtils.join(Arrays.asList(userDst.toLowerCase(), aliasHost.toLowerCase()), "@");
+        assertOnExpectedValues(retJsonObject, eventId, eventTime, userId, userDst, userId,
                 aliasHost.toLowerCase(), aliasHost, RESULT_SUCCESS, INTERACTIVE_LOGON_TYPE, referenceId);
     }
 
@@ -387,7 +396,8 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
 
         JSONObject retJsonObject = transform(transformer, jsonObject);
 
-        assertOnExpectedValues(retJsonObject, eventId, eventTime, "bobby", userDst, userDst,
+        String userId = "bobby";
+        assertOnExpectedValues(retJsonObject, eventId, eventTime, userId, userDst, userId,
                 "", hostSource, RESULT_FAILURE, CREDENTIAL_VALIDATION_OPERATION_TYPE, referenceId);
     }
 
@@ -410,7 +420,8 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
 
         JSONObject retJsonObject = transform(transformer, jsonObject);
 
-        assertOnExpectedValues(retJsonObject, eventId, eventTime, "bobby", userDst, userDst,
+        String userId = "bobby";
+        assertOnExpectedValues(retJsonObject, eventId, eventTime, userId, userDst, userId,
                 "", hostSource, RESULT_FAILURE, CREDENTIAL_VALIDATION_OPERATION_TYPE, referenceId);
     }
 
@@ -432,7 +443,8 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
 
         JSONObject retJsonObject = transform(transformer, jsonObject);
 
-        assertOnExpectedValues(retJsonObject, eventId, eventTime, "bobby", userDst, userDst,
+        String userId = "bobby";
+        assertOnExpectedValues(retJsonObject, eventId, eventTime, userId, userDst, userId,
                 null, JSONObject.NULL, RESULT_FAILURE, CREDENTIAL_VALIDATION_OPERATION_TYPE, referenceId);
     }
 

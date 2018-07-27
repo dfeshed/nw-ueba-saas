@@ -46,7 +46,7 @@ public class ActiveDirectoryWindowsAuditTransformerTest extends TransformerTest{
     private IJsonObjectTransformer buildADWindowsAuditTransformer() {
         List<IJsonObjectTransformer> transformerChainList = new ArrayList<>();
 
-        // Copying the username and display name.
+        // Copying the username.
         // The value of the username is then used for filtering usernames that end with $
         JsonObjectRegexPredicate deviceTypeEqualSnare = new JsonObjectRegexPredicate("device-type-equal-snare", DEVICE_TYPE_FIELD_NAME, "winevent_snare");
         JsonObjectRegexPredicate referenceIdEqual4740 = new JsonObjectRegexPredicate("reference-id-equal-4740", EVENT_CODE_FIELD_NAME, "4740");
@@ -55,13 +55,13 @@ public class ActiveDirectoryWindowsAuditTransformerTest extends TransformerTest{
                         "copy-user-dst",
                         USER_DST_FIELD_NAME,
                         true,
-                        Arrays.asList(USERNAME_FIELD_NAME, USER_DISPLAY_NAME_FIELD_NAME));
+                        Arrays.asList(USERNAME_FIELD_NAME));
         CopyValueTransformer copyUserSrc =
                 new CopyValueTransformer(
                         "copy-user-src",
                         USER_SOURCE_FIELD_NAME,
                         true,
-                        Arrays.asList(USERNAME_FIELD_NAME, USER_DISPLAY_NAME_FIELD_NAME));
+                        Arrays.asList(USERNAME_FIELD_NAME));
         IfElseTransformer usernameExtractFromEventWithNicDeviceTypeIfElseTransformer =
                 new IfElseTransformer("username-extract-for-nic-device-type-if-transformer",referenceIdEqual4740, copyUserSrc, copyUserDst);
         IfElseTransformer usernameExtractIfElseTransformer =
@@ -98,6 +98,15 @@ public class ActiveDirectoryWindowsAuditTransformerTest extends TransformerTest{
                 Arrays.asList(userNormalizationFirstPattern, userNormalizationSecondPattern, userNormalizationThirdPattern,
                         userNormalizationFourthPattern, userNormalizationFifthPattern, userNormalizationSixthPattern));
         transformerChainList.add(userIdNormalization);
+
+        //Copy userId to userDisplayName
+        CopyValueTransformer copyUserId =
+                new CopyValueTransformer(
+                        "copy-user-id",
+                        USER_ID_FIELD_NAME,
+                        false,
+                        Arrays.asList(USER_DISPLAY_NAME_FIELD_NAME));
+        transformerChainList.add(copyUserId);
 
         //Normalize the result values
         CaptureAndFormatConfiguration resultFailedPattern = new CaptureAndFormatConfiguration(".*(?i:fail).*", RESULT_FAILURE, null);
@@ -333,7 +342,8 @@ public class ActiveDirectoryWindowsAuditTransformerTest extends TransformerTest{
 
         JSONObject retJsonObject = transform(transformer, jsonObject);
 
-        assertOnExpectedValues(retJsonObject, eventId, eventTime, "rsmith", userDst, userDst,
+        String userId = "rsmith";
+        assertOnExpectedValues(retJsonObject, eventId, eventTime, userId, userDst, userId,
                 RESULT_SUCCESS, "COMPUTER_ACCOUNT_CREATED", referenceId,
                 "[\"COMPUTER_MANAGEMENT\"]", userSource, null);
     }
@@ -353,7 +363,8 @@ public class ActiveDirectoryWindowsAuditTransformerTest extends TransformerTest{
 
         JSONObject retJsonObject = transform(transformer, jsonObject);
 
-        assertOnExpectedValues(retJsonObject, eventId, eventTime, "rsmith", userSource, userSource,
+        String userId = "rsmith";
+        assertOnExpectedValues(retJsonObject, eventId, eventTime, userId, userSource, userId,
                 RESULT_SUCCESS, "USER_ACCOUNT_LOCKED", referenceId,
                 null, null, null);
     }
@@ -373,7 +384,8 @@ public class ActiveDirectoryWindowsAuditTransformerTest extends TransformerTest{
 
         JSONObject retJsonObject = transform(transformer, jsonObject);
 
-        assertOnExpectedValues(retJsonObject, eventId, eventTime, "rsmith", userDst, userDst,
+        String userId = "rsmith";
+        assertOnExpectedValues(retJsonObject, eventId, eventTime, userId, userDst, userId,
                 RESULT_SUCCESS, "USER_ACCOUNT_LOCKED", referenceId,
                 null, null, null);
     }
@@ -392,7 +404,8 @@ public class ActiveDirectoryWindowsAuditTransformerTest extends TransformerTest{
 
         JSONObject retJsonObject = transform(transformer, jsonObject);
 
-        assertOnExpectedValues(retJsonObject, eventId, eventTime, "rsmith", userDst, userDst,
+        String userId = "rsmith";
+        assertOnExpectedValues(retJsonObject, eventId, eventTime, userId, userDst, userId,
                 RESULT_SUCCESS, "DOMAIN_POLICY_CHANGED", referenceId,
                 "[\"DOMAIN_MANAGEMENT\"]", null, null);
     }
@@ -414,7 +427,8 @@ public class ActiveDirectoryWindowsAuditTransformerTest extends TransformerTest{
 
         JSONObject retJsonObject = transform(transformer, jsonObject);
 
-        assertOnExpectedValues(retJsonObject, eventId, eventTime, "bobby", userDst, userDst,
+        String userId = "bobby";
+        assertOnExpectedValues(retJsonObject, eventId, eventTime, userId, userDst, userId,
                 RESULT_SUCCESS, "MEMBER_REMOVED_FROM_SECURITY_ENABLED_LOCAL_GROUP", referenceId,
                 "[\"GROUP_MEMBERSHIP_REMOVE_OPERATION\"]", userSource, group);
     }
