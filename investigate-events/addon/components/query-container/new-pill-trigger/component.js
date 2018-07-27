@@ -20,6 +20,14 @@ export default Component.extend({
   newPillPosition: null,
 
   /**
+   * List of meta provided from above and simply
+   * passed through to meta component
+   * @type {Object}
+   * @public
+   */
+  metaOptions: null,
+
+  /**
    * An action to call when sending messages and data to the parent component.
    * @type {function}
    * @public

@@ -10,6 +10,11 @@ import { createBasicPill, isIgnoredInitialEvent } from '../pill-util';
 import PILL_SELECTORS from '../pill-selectors';
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
 import KEY_MAP from 'investigate-events/util/keys';
+import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
+
+const META_OPTIONS = metaKeySuggestionsForQueryBuilder(
+  new ReduxDataHelper(setState).language().pillsDataEmpty().build()
+);
 
 const ESCAPE_KEY = KEY_MAP.escape.code;
 let setState;
@@ -31,27 +36,47 @@ module('Integration | Component | new-pill-trigger', function(hooks) {
   });
 
   test('shows new pill entry when trigger is triggered', async function(assert) {
-    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
-    await render(hbs`{{query-container/new-pill-trigger}}`);
+    this.set('metaOptions', META_OPTIONS);
+    await render(hbs`
+      {{query-container/new-pill-trigger
+        metaOptions=metaOptions
+      }}
+    `);
     await click(PILL_SELECTORS.newPillTrigger);
     assert.equal(findAll(PILL_SELECTORS.metaTrigger).length, 1);
   });
 
   test('shows new pill entry when trigger position and new pill position match', async function(assert) {
-    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
-    await render(hbs`{{query-container/new-pill-trigger startTriggeredPosition=56 newPillPosition=56}}`);
+    this.set('metaOptions', META_OPTIONS);
+    await render(hbs`
+      {{query-container/new-pill-trigger
+        startTriggeredPosition=56
+        newPillPosition=56
+        metaOptions=metaOptions
+      }}
+    `);
     assert.equal(findAll(PILL_SELECTORS.metaTrigger).length, 1);
   });
 
   test('does not show new pill entry when trigger position and new pill position do not match', async function(assert) {
-    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
-    await render(hbs`{{query-container/new-pill-trigger startTriggeredPosition=57 newPillPosition=56}}`);
+    this.set('metaOptions', META_OPTIONS);
+    await render(hbs`
+      {{query-container/new-pill-trigger
+        startTriggeredPosition=57
+        newPillPosition=56
+        metaOptions=metaOptions
+      }}
+    `);
     assert.equal(findAll(PILL_SELECTORS.metaTrigger).length, 0);
   });
 
   test('ESC key returns user to trigger', async function(assert) {
-    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
-    await render(hbs`{{query-container/new-pill-trigger}}`);
+    this.set('metaOptions', META_OPTIONS);
+    await render(hbs`
+      {{query-container/new-pill-trigger
+        metaOptions=metaOptions
+      }}
+    `);
     await click(PILL_SELECTORS.newPillTrigger);
     assert.equal(findAll(PILL_SELECTORS.metaTrigger).length, 1);
     await focus(PILL_SELECTORS.metaTrigger);
@@ -60,7 +85,7 @@ module('Integration | Component | new-pill-trigger', function(hooks) {
   });
 
   test('Entering the new pill broadcasts a message', async function(assert) {
-    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    this.set('metaOptions', META_OPTIONS);
     assert.expect(3);
     this.set('handleMessage', (messageType, data, position) => {
       assert.equal(messageType, MESSAGE_TYPES.PILL_ENTERED_FOR_INSERT_NEW, 'Wrong message type');
@@ -71,13 +96,15 @@ module('Integration | Component | new-pill-trigger', function(hooks) {
     await render(hbs`
       {{query-container/new-pill-trigger
         newPillPosition=5
-        sendMessage=(action handleMessage)}}
+        sendMessage=(action handleMessage)
+        metaOptions=metaOptions
+      }}
     `);
     await click(PILL_SELECTORS.newPillTrigger);
   });
 
   test('ESC broadcasts a cancel message', async function(assert) {
-    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    this.set('metaOptions', META_OPTIONS);
     assert.expect(3);
     this.set('handleMessage', (messageType, data, position) => {
       if (isIgnoredInitialEvent(messageType)) {
@@ -92,7 +119,9 @@ module('Integration | Component | new-pill-trigger', function(hooks) {
     await render(hbs`
       {{query-container/new-pill-trigger
         newPillPosition=5
-        sendMessage=(action handleMessage)}}
+        sendMessage=(action handleMessage)
+        metaOptions=metaOptions
+      }}
     `);
     await click(PILL_SELECTORS.newPillTrigger);
     await focus(PILL_SELECTORS.metaTrigger);
@@ -100,7 +129,7 @@ module('Integration | Component | new-pill-trigger', function(hooks) {
   });
 
   test('it broadcasts a message when a pill is created', async function(assert) {
-    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    this.set('metaOptions', META_OPTIONS);
     assert.expect(3);
     this.set('handleMessage', (messageType, data, position) => {
       if (isIgnoredInitialEvent(messageType)) {
@@ -114,7 +143,9 @@ module('Integration | Component | new-pill-trigger', function(hooks) {
     await render(hbs`
       {{query-container/new-pill-trigger
         newPillPosition=5
-        sendMessage=(action handleMessage)}}
+        sendMessage=(action handleMessage)
+        metaOptions=metaOptions
+      }}
     `);
     await click(PILL_SELECTORS.newPillTrigger);
     await createBasicPill();

@@ -16,12 +16,14 @@ import {
   resetGuidedPill,
   selectGuidedPills
 } from 'investigate-events/actions/guided-creators';
+import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 
 const { log } = console;// eslint-disable-line no-unused-vars
 
 const stateToComputed = (state) => ({
   pillsData: enrichedPillsData(state),
-  hasInvalidSelectedPill: hasInvalidSelectedPill(state)
+  hasInvalidSelectedPill: hasInvalidSelectedPill(state),
+  metaOptions: metaKeySuggestionsForQueryBuilder(state)
 });
 
 const dispatchToActions = {

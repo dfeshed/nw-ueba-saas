@@ -6,13 +6,16 @@
     title=(t 'queryBuilder.expensive')
   }}
 {{/if}}
+
 {{query-container/pill-meta
+  metaOptions=metaOptions
   isActive=(readonly isMetaActive)
   isExpanded=(readonly shouldMetaExpand)
   isAutoFocused=(readonly isMetaAutoFocused)
   selection=(readonly selectedMeta)
   sendMessage=(action 'handleMessage')
 }}
+
 {{query-container/pill-operator
   isActive=(readonly isOperatorActive)
   isExpanded=(readonly shouldOperatorExpand)
@@ -21,12 +24,14 @@
   selection=(readonly selectedOperator)
   sendMessage=(action 'handleMessage')
 }}
+
 {{query-container/pill-value
   isActive=(readonly isValueActive)
   isFocusAtBeginning=(readonly isValueFocusedAtBeginning)
   sendMessage=(action 'handleMessage')
   valueString=(readonly valueString)
 }}
+
 {{#if isDeletable}}
   {{query-container/delete-pill
     sendMessage=(action 'handleMessage')

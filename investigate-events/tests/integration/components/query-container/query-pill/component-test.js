@@ -11,6 +11,11 @@ import { enrichedPillsData } from 'investigate-events/reducers/investigate/query
 import { createBasicPill, isIgnoredInitialEvent, doubleClick } from '../pill-util';
 import KEY_MAP from 'investigate-events/util/keys';
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
+import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
+
+const META_OPTIONS = metaKeySuggestionsForQueryBuilder(
+  new ReduxDataHelper(setState).language().pillsDataEmpty().build()
+);
 
 // const { log } = console;
 
@@ -27,14 +32,15 @@ const BACKSPACE_KEY = KEY_MAP.backspace.code;
 const trim = (text) => text.replace(/\s+/g, '').trim();
 let setState;
 
-const _getEnrichedPill = () => {
+const _getEnrichedPill = (component) => {
+  component.set('metaOptions', META_OPTIONS);
   const pillState = new ReduxDataHelper(setState).pillsDataPopulated().language().build();
   const [ enrichedPill ] = enrichedPillsData(pillState);
   return enrichedPill;
 };
 
 const _setPillData = (component) => {
-  const enrichedPill = _getEnrichedPill();
+  const enrichedPill = _getEnrichedPill(component);
   component.set('pillData', enrichedPill);
   return enrichedPill;
 };
@@ -51,63 +57,108 @@ module('Integration | Component | query-pill', function(hooks) {
   });
 
   test('contains proper class when expensive', async function(assert) {
-    let enrichedPill = _getEnrichedPill();
+    let enrichedPill = _getEnrichedPill(this);
     enrichedPill = enrichedPill.setIn(['operator', 'isExpensive'], true);
     this.set('pillData', enrichedPill);
-    await render(hbs`{{query-container/query-pill isActive=false pillData=pillData}}`);
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=false
+        pillData=pillData
+        metaOptions=metaOptions
+      }}
+    `);
     assert.equal(findAll(PILL_SELECTORS.expensivePill).length, 1, 'Class for expensive pill should be present');
     assert.equal(findAll(PILL_SELECTORS.expensiveIndicator).length, 1, 'Class for expensive icon should be present');
     assert.equal(this.$(PILL_SELECTORS.expensiveIndicator).prop('title'), 'Performing this operation might take more time.', 'Expected title');
   });
 
   test('contains proper class when invalid', async function(assert) {
-    let enrichedPill = _getEnrichedPill();
+    let enrichedPill = _getEnrichedPill(this);
     enrichedPill = enrichedPill.set('isInvalid', true);
     this.set('pillData', enrichedPill);
-    await render(hbs`{{query-container/query-pill isActive=true pillData=pillData}}`);
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        pillData=pillData
+        metaOptions=metaOptions
+      }}
+    `);
     assert.equal(findAll(PILL_SELECTORS.invalidPill).length, 1);
   });
 
   test('contains proper class when selected', async function(assert) {
-    let enrichedPill = _getEnrichedPill();
+    let enrichedPill = _getEnrichedPill(this);
     enrichedPill = enrichedPill.set('isSelected', true);
     this.set('pillData', enrichedPill);
-    await render(hbs`{{query-container/query-pill isActive=true pillData=pillData}}`);
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        pillData=pillData
+        metaOptions=metaOptions
+      }}
+    `);
     assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 1);
   });
 
   test('contains a focus holder when selected', async function(assert) {
-    let enrichedPill = _getEnrichedPill();
+    let enrichedPill = _getEnrichedPill(this);
     enrichedPill = enrichedPill.set('isSelected', true);
     this.set('pillData', enrichedPill);
-    await render(hbs`{{query-container/query-pill isActive=true pillData=pillData}}`);
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        pillData=pillData
+        metaOptions=metaOptions
+      }}
+    `);
     assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1);
   });
 
   test('does not contain focus holder when not selected', async function(assert) {
-    const enrichedPill = _getEnrichedPill();
+    const enrichedPill = _getEnrichedPill(this);
     this.set('pillData', enrichedPill);
-    await render(hbs`{{query-container/query-pill isActive=true pillData=pillData}}`);
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        pillData=pillData
+        metaOptions=metaOptions
+      }}
+    `);
     assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0);
   });
 
   test('it activates pill-meta if active upon initialization', async function(assert) {
-    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
-    await render(hbs`{{query-container/query-pill isActive=true}}`);
+    this.set('metaOptions', META_OPTIONS);
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        metaOptions=metaOptions
+      }}
+    `);
     assert.equal(findAll(PILL_SELECTORS.metaTrigger).length, 1);
   });
 
   test('it allows you to select a meta value', async function(assert) {
-    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
-    await render(hbs`{{query-container/query-pill isActive=true}}`);
+    this.set('metaOptions', META_OPTIONS);
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        metaOptions=metaOptions
+      }}
+    `);
     selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0);// option a
     await waitUntil(() => !find(PILL_SELECTORS.metaTrigger));
     assert.equal(trim(find(PILL_SELECTORS.meta).textContent), 'a');
   });
 
   test('it allows you to select an operator after a meta value was selected', async function(assert) {
-    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
-    await render(hbs`{{query-container/query-pill isActive=true}}`);
+    this.set('metaOptions', META_OPTIONS);
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        metaOptions=metaOptions
+      }}
+    `);
     selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0);// option A
     await waitUntil(() => find(PILL_SELECTORS.operatorTrigger));
     selectChoose(PILL_SELECTORS.operatorTrigger, PILL_SELECTORS.powerSelectOption, 0);// option =
@@ -116,8 +167,13 @@ module('Integration | Component | query-pill', function(hooks) {
   });
 
   test('it sets pill-value active after selecting an operator', async function(assert) {
-    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
-    await render(hbs`{{query-container/query-pill isActive=true}}`);
+    this.set('metaOptions', META_OPTIONS);
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        metaOptions=metaOptions
+      }}
+    `);
     selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0);// option A
     await waitUntil(() => find(PILL_SELECTORS.operatorTrigger));
     selectChoose(PILL_SELECTORS.operatorTrigger, PILL_SELECTORS.powerSelectOption, 0);// option =
@@ -126,8 +182,13 @@ module('Integration | Component | query-pill', function(hooks) {
   });
 
   test('it allows you to edit the meta after it was selected', async function(assert) {
-    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
-    await render(hbs`{{query-container/query-pill isActive=true}}`);
+    this.set('metaOptions', META_OPTIONS);
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        metaOptions=metaOptions
+      }}
+    `);
     // Select meta option A
     await selectChoose(PILL_SELECTORS.meta, 'alias.ipv6');
     assert.equal(trim(find(PILL_SELECTORS.meta).textContent), 'alias.ipv6');
@@ -148,7 +209,7 @@ module('Integration | Component | query-pill', function(hooks) {
 
   test('A pill when supplied with meta, operator, and value will send a message to create', async function(assert) {
     const done = assert.async();
-    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    this.set('metaOptions', META_OPTIONS);
 
     this.set('handleMessage', (messageType, data, position) => {
       if (isIgnoredInitialEvent(messageType)) {
@@ -167,6 +228,7 @@ module('Integration | Component | query-pill', function(hooks) {
         position=0
         isActive=true
         sendMessage=(action handleMessage)
+        metaOptions=metaOptions
       }}
     `);
 
@@ -175,7 +237,7 @@ module('Integration | Component | query-pill', function(hooks) {
 
   test('A pill when supplied with meta and operator that does not accept a value will send a message to create', async function(assert) {
     const done = assert.async();
-    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    this.set('metaOptions', META_OPTIONS);
 
     this.set('handleMessage', (messageType, data, position) => {
       if (isIgnoredInitialEvent(messageType)) {
@@ -194,6 +256,7 @@ module('Integration | Component | query-pill', function(hooks) {
         isActive=true
         position=0
         sendMessage=(action handleMessage)
+        metaOptions=metaOptions
       }}
     `);
 
@@ -213,14 +276,25 @@ module('Integration | Component | query-pill', function(hooks) {
 
   test('does not present a delete icon when not a created pill', async function(assert) {
     this.set('pillData', null);
-    new ReduxDataHelper(setState).language().build();
-    await render(hbs`{{query-container/query-pill isActive=false pillData=pillData}}`);
+    this.set('metaOptions', META_OPTIONS);
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=false
+        pillData=pillData
+        metaOptions=metaOptions
+      }}
+    `);
     assert.equal(findAll(PILL_SELECTORS.deletePill).length, 0, 'Delete pill component is not present');
   });
 
   test('does not present a delete icon when when active', async function(assert) {
     _setPillData(this);
-    await render(hbs`{{query-container/query-pill isActive=true pillData=pillData}}`);
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true pillData=pillData
+        metaOptions=metaOptions
+      }}
+    `);
     assert.equal(findAll(PILL_SELECTORS.deletePill).length, 0, 'Delete pill component is not present');
   });
 
@@ -249,7 +323,9 @@ module('Integration | Component | query-pill', function(hooks) {
         pillData=pillData
         position=0
         sendMessage=(action handleMessage)
-    }}`);
+        metaOptions=metaOptions
+      }}
+    `);
     await click(PILL_SELECTORS.deletePill);
   });
 
@@ -267,12 +343,13 @@ module('Integration | Component | query-pill', function(hooks) {
       done();
     });
 
-    new ReduxDataHelper(setState).language().build();
+    this.set('metaOptions', META_OPTIONS);
     await render(hbs`
       {{query-container/query-pill
         isActive=true
         position=0
         sendMessage=(action handleMessage)
+        metaOptions=metaOptions
       }}
     `);
 
@@ -287,6 +364,7 @@ module('Integration | Component | query-pill', function(hooks) {
       {{query-container/query-pill
         isActive=false
         pillData=pillData
+        metaOptions=metaOptions
       }}
     `);
 
@@ -299,7 +377,7 @@ module('Integration | Component | query-pill', function(hooks) {
     const done = assert.async(2);
     assert.expect(3);
 
-    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    this.set('metaOptions', META_OPTIONS);
 
     this.set('handleMessage', (messageType) => {
       if (isIgnoredInitialEvent(messageType)) {
@@ -316,6 +394,7 @@ module('Integration | Component | query-pill', function(hooks) {
         position=0
         isActive=true
         sendMessage=(action handleMessage)
+        metaOptions=metaOptions
       }}
     `);
 
@@ -326,7 +405,7 @@ module('Integration | Component | query-pill', function(hooks) {
 
   test('A pill when focused will send ENTERED event', async function(assert) {
     const done = assert.async();
-    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    this.set('metaOptions', META_OPTIONS);
 
     this.set('handleMessage', (messageType, data, position) => {
       assert.equal(messageType, MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW, 'Message sent for pill create is not correct');
@@ -341,6 +420,7 @@ module('Integration | Component | query-pill', function(hooks) {
         isActive=true
         position=12
         sendMessage=(action handleMessage)
+        metaOptions=metaOptions
       }}
     `);
   });
@@ -359,12 +439,13 @@ module('Integration | Component | query-pill', function(hooks) {
       done();
     });
 
-    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    this.set('metaOptions', META_OPTIONS);
     await render(hbs`
       {{query-container/query-pill
         isActive=true
         position=0
         sendMessage=(action handleMessage)
+        metaOptions=metaOptions
       }}
     `);
 
@@ -382,12 +463,13 @@ module('Integration | Component | query-pill', function(hooks) {
       assert.ok(false, `Should not get here with ${messageType}`);
     });
 
-    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    this.set('metaOptions', META_OPTIONS);
     await render(hbs`
       {{query-container/query-pill
         isActive=true
         position=0
         sendMessage=(action handleMessage)
+        metaOptions=metaOptions
       }}
     `);
 
@@ -408,12 +490,13 @@ module('Integration | Component | query-pill', function(hooks) {
       assert.notEqual(messageType, MESSAGE_TYPES.PILL_ADD_CANCELLED, 'No cancel should be sent');
     });
 
-    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    this.set('metaOptions', META_OPTIONS);
     await render(hbs`
       {{query-container/query-pill
         isActive=true
         position=0
         sendMessage=(action handleMessage)
+        metaOptions=metaOptions
       }}
     `);
 
@@ -421,11 +504,12 @@ module('Integration | Component | query-pill', function(hooks) {
   });
 
   test('If in value and user clicks away, the pill remains in creation state where no data entered is changed or removed', async function(assert) {
-    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    this.set('metaOptions', META_OPTIONS);
     await render(hbs`
       {{query-container/query-pill
         isActive=true
         position=0
+        metaOptions=metaOptions
       }}
     `);
     // Choose first meta option
@@ -452,12 +536,14 @@ module('Integration | Component | query-pill', function(hooks) {
 
       assert.ok(false, `Should not get here with ${messageType}`);
     });
+    this.set('metaOptions', META_OPTIONS);
 
     await render(hbs`
       {{query-container/query-pill
         isActive=true
         position=0
         sendMessage=(action handleMessage)
+        metaOptions=metaOptions
       }}
     `);
 
@@ -475,7 +561,7 @@ module('Integration | Component | query-pill', function(hooks) {
       assert.ok(messageType === MESSAGE_TYPES.PILL_SELECTED, 'Should be selected');
       assert.ok(data.isSelected === false, 'isSelected should be false because it is not selected');
     });
-    this.set('pillData', _getEnrichedPill());
+    this.set('pillData', _getEnrichedPill(this));
 
     await render(hbs`
       {{query-container/query-pill
@@ -483,6 +569,7 @@ module('Integration | Component | query-pill', function(hooks) {
         position=0
         pillData=pillData
         sendMessage=(action handleMessage)
+        metaOptions=metaOptions
       }}
     `);
 
@@ -499,7 +586,7 @@ module('Integration | Component | query-pill', function(hooks) {
       assert.ok(messageType === MESSAGE_TYPES.PILL_DESELECTED, 'Should be deselected');
       assert.ok(data.isSelected === true, 'isSelected should be true because it is selected');
     });
-    let pillData = _getEnrichedPill();
+    let pillData = _getEnrichedPill(this);
     pillData = pillData.set('isSelected', true);
     this.set('pillData', pillData);
 
@@ -509,6 +596,7 @@ module('Integration | Component | query-pill', function(hooks) {
         position=0
         pillData=pillData
         sendMessage=(action handleMessage)
+        metaOptions=metaOptions
       }}
     `);
 
@@ -525,7 +613,7 @@ module('Integration | Component | query-pill', function(hooks) {
       assert.ok(messageType === MESSAGE_TYPES.PILL_SELECTED, 'Should be selected');
       assert.ok(data.isSelected === false, 'isSelected should be false because it is not selected');
     });
-    this.set('pillData', _getEnrichedPill());
+    this.set('pillData', _getEnrichedPill(this));
 
     await render(hbs`
       {{query-container/query-pill
@@ -533,6 +621,7 @@ module('Integration | Component | query-pill', function(hooks) {
         position=0
         pillData=pillData
         sendMessage=(action handleMessage)
+        metaOptions=metaOptions
       }}
     `);
 
@@ -550,7 +639,7 @@ module('Integration | Component | query-pill', function(hooks) {
       assert.ok(messageType === MESSAGE_TYPES.PILL_SELECTED, 'Should be selected');
       done();
     });
-    this.set('pillData', _getEnrichedPill());
+    this.set('pillData', _getEnrichedPill(this));
 
     await render(hbs`
       {{query-container/query-pill
@@ -558,6 +647,7 @@ module('Integration | Component | query-pill', function(hooks) {
         position=0
         pillData=pillData
         sendMessage=(action handleMessage)
+        metaOptions=metaOptions
       }}
     `);
 
@@ -579,7 +669,7 @@ module('Integration | Component | query-pill', function(hooks) {
       assert.ok(messageType === MESSAGE_TYPES.PILL_OPEN_FOR_EDIT, 'Should be opened for edit');
       done();
     });
-    this.set('pillData', _getEnrichedPill());
+    this.set('pillData', _getEnrichedPill(this));
 
     await render(hbs`
       {{query-container/query-pill
@@ -587,6 +677,7 @@ module('Integration | Component | query-pill', function(hooks) {
         position=0
         pillData=pillData
         sendMessage=(action handleMessage)
+        metaOptions=metaOptions
       }}
     `);
 
@@ -604,7 +695,7 @@ module('Integration | Component | query-pill', function(hooks) {
       assert.ok(messageType === MESSAGE_TYPES.PILL_OPEN_FOR_EDIT, 'Should be opened for edit');
       done();
     });
-    this.set('pillData', _getEnrichedPill());
+    this.set('pillData', _getEnrichedPill(this));
 
     await render(hbs`
       {{query-container/query-pill
@@ -612,6 +703,7 @@ module('Integration | Component | query-pill', function(hooks) {
         position=0
         pillData=pillData
         sendMessage=(action handleMessage)
+        metaOptions=metaOptions
       }}
     `);
 
@@ -619,7 +711,7 @@ module('Integration | Component | query-pill', function(hooks) {
   });
 
   test('it quotes pill value when meta is type "Text"', async function(assert) {
-    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    this.set('metaOptions', META_OPTIONS);
     this.set('handleMessage', (messageType, data) => {
       if (messageType === MESSAGE_TYPES.PILL_CREATED) {
         assert.equal(data.value, '\'foo\'', 'value not single quoted');
@@ -629,6 +721,7 @@ module('Integration | Component | query-pill', function(hooks) {
       {{query-container/query-pill
         isActive=true
         sendMessage=(action handleMessage)
+        metaOptions=metaOptions
       }}
     `);
     // Select meta option A which is of type Text
@@ -639,7 +732,7 @@ module('Integration | Component | query-pill', function(hooks) {
   });
 
   test('it does not quote the pill value when meta is type "UInt"', async function(assert) {
-    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    this.set('metaOptions', META_OPTIONS);
     this.set('handleMessage', (messageType, data) => {
       if (messageType === MESSAGE_TYPES.PILL_CREATED) {
         assert.equal(data.value, '80', 'value was quoted');
@@ -649,6 +742,7 @@ module('Integration | Component | query-pill', function(hooks) {
       {{query-container/query-pill
         isActive=true
         sendMessage=(action handleMessage)
+        metaOptions=metaOptions
       }}
     `);
     // Select meta option sessionid which is of type UInt64
@@ -659,18 +753,19 @@ module('Integration | Component | query-pill', function(hooks) {
   });
 
   test('Does not add quotes to a string if there are already single quotes', async function(assert) {
-    this.set('pillData', _getEnrichedPill());
+    this.set('pillData', _getEnrichedPill(this));
     await render(hbs`
       {{query-container/query-pill
         isActive=true
         pillData=pillData
+        metaOptions=metaOptions
       }}
     `);
     assert.equal(trim(find(PILL_SELECTORS.value).textContent), '\'x\'');
   });
 
   test('replace double quotes with single quotes', async function(assert) {
-    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    this.set('metaOptions', META_OPTIONS);
     this.set('handleMessage', (messageType, data) => {
       if (messageType === MESSAGE_TYPES.PILL_CREATED) {
         assert.equal(data.value, '\'foo\'', 'value not quoted properly');
@@ -680,6 +775,7 @@ module('Integration | Component | query-pill', function(hooks) {
       {{query-container/query-pill
         isActive=true
         sendMessage=(action handleMessage)
+        metaOptions=metaOptions
       }}
     `);
     // Select meta option A which is of type Text
@@ -704,13 +800,13 @@ module('Integration | Component | query-pill', function(hooks) {
       assert.equal(data, pillData, 'Message sent for pill create contains correct pill data');
     });
 
-    new ReduxDataHelper(setState).language().build();
     await render(hbs`
       {{query-container/query-pill
         isActive=true
         position=0
         pillData=pillData
         sendMessage=(action handleMessage)
+        metaOptions=metaOptions
       }}
     `);
 
@@ -724,6 +820,7 @@ module('Integration | Component | query-pill', function(hooks) {
       {{query-container/query-pill
         isActive=true
         pillData=pillData
+        metaOptions=metaOptions
       }}
     `);
     await click(PILL_SELECTORS.value);
@@ -740,10 +837,10 @@ module('Integration | Component | query-pill', function(hooks) {
     assert.expect(1);
 
     const pillState = new ReduxDataHelper(setState)
-    .pillsDataPopulated()
-    .language()
-    .markSelected(['1'])
-    .build();
+      .pillsDataPopulated()
+      .language()
+      .markSelected(['1'])
+      .build();
 
     const [ enrichedPill ] = enrichedPillsData(pillState);
     this.set('pillData', enrichedPill);
@@ -772,10 +869,10 @@ module('Integration | Component | query-pill', function(hooks) {
     assert.expect(1);
 
     const pillState = new ReduxDataHelper(setState)
-    .pillsDataPopulated()
-    .language()
-    .markSelected(['1'])
-    .build();
+      .pillsDataPopulated()
+      .language()
+      .markSelected(['1'])
+      .build();
 
     const [ enrichedPill ] = enrichedPillsData(pillState);
     this.set('pillData', enrichedPill);

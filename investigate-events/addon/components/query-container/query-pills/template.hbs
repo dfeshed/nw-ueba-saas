@@ -1,5 +1,6 @@
 {{#each pillsData key="id" as | pillData index |}}
   {{query-container/new-pill-trigger
+    metaOptions=metaOptions
     sendMessage=(action 'handleMessage')
     newPillPosition=index
     startTriggeredPosition=startTriggeredPosition
@@ -14,6 +15,7 @@
     }}
   {{else}}
     {{query-container/query-pill
+      metaOptions=metaOptions
       pillData=(readonly pillData)
       sendMessage=(action 'handleMessage')
       position=index
@@ -24,6 +26,7 @@
 {{/each}}
 
 {{query-container/query-pill
+  metaOptions=metaOptions
   classNames='new-pill-template'
   sendMessage=(action 'handleMessage')
   position=newPillPosition

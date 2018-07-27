@@ -5,11 +5,16 @@ import hbs from 'htmlbars-inline-precompile';
 import { selectChoose, typeInSearch } from 'ember-power-select/test-support/helpers';
 import { blur, fillIn, find, findAll, focus, render, settled, triggerKeyEvent } from '@ember/test-helpers';
 
+import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import ReduxDataHelper, { DEFAULT_LANGUAGES } from '../../../../helpers/redux-data-helper';
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
 import KEY_MAP from 'investigate-events/util/keys';
 import PILL_SELECTORS from '../pill-selectors';
+
+const META_OPTIONS = metaKeySuggestionsForQueryBuilder(
+  new ReduxDataHelper(setState).language().pillsDataEmpty().build()
+);
 
 // const { log } = console;
 
@@ -36,10 +41,12 @@ module('Integration | Component | Pill Meta', function(hooks) {
     // Set a selection just so we have a value to compare against. Otherwise
     // it'd be an empty string.
     this.set('selection', DEFAULT_LANGUAGES[0]);
+    this.set('metaOptions', []);
     await render(hbs`
       {{query-container/pill-meta
         isActive=false
         selection=selection
+        metaOptions=metaOptions
       }}
     `);
     assert.equal(trim(find(PILL_SELECTORS.meta).textContent), 'a');
@@ -49,20 +56,23 @@ module('Integration | Component | Pill Meta', function(hooks) {
     // Set a selection just so we have a value to compare against. Otherwise
     // it'd be an empty string.
     this.set('selection', DEFAULT_LANGUAGES[0]);
+    this.set('metaOptions', []);
     await render(hbs`
       {{query-container/pill-meta
         isActive=true
         selection=selection
+        metaOptions=metaOptions
       }}
     `);
     assert.equal(trim(find(PILL_SELECTORS.meta).textContent), 'a');
   });
 
   test('it shows a Power Select if active and has options', async function(assert) {
-    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    this.set('metaOptions', META_OPTIONS);
     await render(hbs`
       {{query-container/pill-meta
         isActive=true
+        metaOptions=metaOptions
       }}
     `);
     assert.equal(findAll(PILL_SELECTORS.metaTrigger).length, 1);
@@ -71,7 +81,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
   test('it broadcasts a message when a Power Select option is choosen', async function(assert) {
     const done = assert.async();
     assert.expect(1);
-    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    this.set('metaOptions', META_OPTIONS);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.META_SELECTED) {
         assert.deepEqual(data, DEFAULT_LANGUAGES[1], 'Wrong message data');
@@ -82,6 +92,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
       {{query-container/pill-meta
         isActive=true
         sendMessage=(action handleMessage)
+        metaOptions=metaOptions
       }}
     `);
     await selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 1);// option b
@@ -89,7 +100,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
 
   test('it does not broadcasts a message when the ARROW_RIGHT key is pressed and there is no selection', async function(assert) {
     assert.expect(0);
-    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    this.set('metaOptions', META_OPTIONS);
     this.set('handleMessage', () => {
       assert.notOk('message dispatched');
     });
@@ -97,6 +108,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
       {{query-container/pill-meta
         isActive=true
         sendMessage=(action handleMessage)
+        metaOptions=metaOptions
       }}
     `);
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ARROW_RIGHT);
@@ -106,7 +118,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
   test('it broadcasts a message when the ARROW_RIGHT key is pressed and there is a selection', async function(assert) {
     const done = assert.async();
     assert.expect(1);
-    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    this.set('metaOptions', META_OPTIONS);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.META_SELECTED) {
         this.set('selection', data);
@@ -120,6 +132,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
         isActive=true
         selection=selection
         sendMessage=(action handleMessage)
+        metaOptions=metaOptions
       }}
     `);
     await selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 1);
@@ -129,7 +142,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
   test('it broadcasts a message when the ESCAPE key is pressed', async function(assert) {
     const done = assert.async();
     assert.expect(1);
-    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    this.set('metaOptions', META_OPTIONS);
     this.set('handleMessage', (type) => {
       if (type === MESSAGE_TYPES.META_ESCAPE_KEY) {
         assert.ok('message dispatched');
@@ -140,6 +153,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
       {{query-container/pill-meta
         isActive=true
         sendMessage=(action handleMessage)
+        metaOptions=metaOptions
       }}
     `);
     await triggerKeyEvent(PILL_SELECTORS.metaSelectInput, 'keydown', ESCAPE_KEY);
@@ -149,7 +163,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
     const done = assert.async();
     let iteration = 1;
     assert.expect(1);
-    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    this.set('metaOptions', META_OPTIONS);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.META_SELECTED) {
         this.set('selection', data);
@@ -165,6 +179,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
         isActive=true
         selection=selection
         sendMessage=(action handleMessage)
+        metaOptions=metaOptions
       }}
     `);
     await selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 1);
@@ -174,7 +189,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
   test('it selects meta if a trailing SPACE is entered and there is one option', async function(assert) {
     const done = assert.async();
     assert.expect(1);
-    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    this.set('metaOptions', META_OPTIONS);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.META_SELECTED) {
         assert.deepEqual(data, DEFAULT_LANGUAGES[1], 'Wrong message data');
@@ -185,6 +200,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
       {{query-container/pill-meta
         isActive=true
         sendMessage=(action handleMessage)
+        metaOptions=metaOptions
       }}
     `);
     await fillIn('input', 'b ');
@@ -192,7 +208,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
 
   test('it does not selects meta if a trailing SPACE is entered and there is more than one option', async function(assert) {
     assert.expect(0);
-    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    this.set('metaOptions', META_OPTIONS);
     this.set('handleMessage', () => {
       assert.notOk('message dispatched');
     });
@@ -200,6 +216,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
       {{query-container/pill-meta
         isActive=true
         sendMessage=(action handleMessage)
+        metaOptions=metaOptions
       }}
     `);
     await fillIn('input', 'c. ');// Will match 2 items (c.a and c.b)
@@ -209,7 +226,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
   test('it selects meta if a trailing SPACE is entered and there is an exact match', async function(assert) {
     const done = assert.async();
     assert.expect(1);
-    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    this.set('metaOptions', META_OPTIONS);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.META_SELECTED) {
         assert.deepEqual(data, DEFAULT_LANGUAGES[2], 'Wrong message data');
@@ -220,16 +237,18 @@ module('Integration | Component | Pill Meta', function(hooks) {
       {{query-container/pill-meta
         isActive=true
         sendMessage=(action handleMessage)
+        metaOptions=metaOptions
       }}
     `);
     await fillIn('input', 'c ');
   });
 
   test('it clears out last search if Power Select looses, then gains focus', async function(assert) {
-    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    this.set('metaOptions', META_OPTIONS);
     await render(hbs`
       {{query-container/pill-meta
         isActive=true
+        metaOptions=metaOptions
       }}
     `);
     await focus(PILL_SELECTORS.metaTrigger);
@@ -248,7 +267,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
   });
 
   test('if meta is selected (not just half entered) and you click away, leave the meta there', async function(assert) {
-    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    this.set('metaOptions', META_OPTIONS);
     this.set('handleMessage', (type, data) => {
       if (type === MESSAGE_TYPES.META_SELECTED) {
         this.set('selection', data);
@@ -259,6 +278,7 @@ module('Integration | Component | Pill Meta', function(hooks) {
         isActive=true
         selection=selection
         sendMessage=(action handleMessage)
+        metaOptions=metaOptions
       }}
     `);
     await selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 1);

@@ -1,8 +1,6 @@
 import Component from '@ember/component';
 import { next, scheduleOnce } from '@ember/runloop';
 import computed from 'ember-computed-decorators';
-import { connect } from 'ember-redux';
-import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 import * as MESSAGE_TYPES from '../message-types';
 import { isArrowLeft, isArrowRight, isEnter, isEscape } from 'investigate-events/util/keys';
 
@@ -10,11 +8,7 @@ const { log } = console;// eslint-disable-line no-unused-vars
 
 const leadingSpaces = /^[\s\uFEFF\xA0]+/;
 
-const stateToComputed = (state) => ({
-  options: metaKeySuggestionsForQueryBuilder(state)
-});
-
-const PillMeta = Component.extend({
+export default Component.extend({
   classNameBindings: ['isExpanded', ':pill-meta'],
 
   /**
@@ -47,6 +41,13 @@ const PillMeta = Component.extend({
   selection: null,
 
   /**
+   * List of meta for selection
+   * @type {Object}
+   * @public
+   */
+  metaOptions: null,
+
+  /**
    * An action to call when sending messages and data to the parent component.
    * @type {function}
    * @public
@@ -60,8 +61,8 @@ const PillMeta = Component.extend({
    */
   swallowNextFocusOut: false,
 
-  @computed('isActive', 'options')
-  isActiveWithOptions: (isActive, options) => isActive && options.length > 0,
+  @computed('isActive', 'metaOptions')
+  isActiveWithOptions: (isActive, metaOptions) => isActive && metaOptions.length > 0,
 
   didUpdateAttrs() {
     this._super(...arguments);
@@ -97,14 +98,14 @@ const PillMeta = Component.extend({
       const selection = this.get('selection');
       if (powerSelectAPI.lastSearchedText && !selection) {
         // If we gain focus and `lastSearchText` exists, power-select will use
-        // that to down-select the list of options. This can happen if the user
+        // that to down-select the list of metaOptions. This can happen if the user
         // enters some text, focuses away, then comes back. What they previously
-        // types will effect the list of options.
+        // types will effect the list of metaOptions.
         powerSelectAPI.actions.search('');
       } else if (selection) {
-        // Check to see if the selected option is valid for the power-select
+        // Check to see if the selected metaOption is valid for the power-select
         // options and select it if it is; otherwise clear it out.
-        const option = this.get('options').find((d) => d.metaName === selection.metaName);
+        const option = this.get('metaOptions').find((d) => d.metaName === selection.metaName);
         if (option) {
           powerSelectAPI.actions.search(option.metaName);
         } else {
@@ -239,5 +240,3 @@ const PillMeta = Component.extend({
     return _metaName.indexOf(_input) & _displayName.indexOf(_input);
   }
 });
-
-export default connect(stateToComputed)(PillMeta);
