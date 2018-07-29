@@ -77,47 +77,28 @@
       "destinationKey": "dateTime"
     },
     {
-      "type": "if_else",
-      "name": "src-machine-name-transformer",
-      "predicate": {
-        "type": "regex",
-        "name": "device-type-equal-snare",
-        "sourceKey": "device_type",
-        "regex": "winevent_snare"
-      },
-      "ifTransformer": {
-        "type": "copy_value",
-        "name": "copy-alias-src-for-device-type-snare",
-        "sourceKey": "alias_src",
-        "isRemoveSourceKey": true,
-        "destinationKeys": [
-          "srcMachineName"
-        ]
-      },
-      "elseTransformer": {
-        "type": "switch_case",
-        "name": "src-machine-name-switch-case-for-device-type-nic",
-        "sourceKey": "reference_id",
-        "destinationKey": "srcMachineName",
-        "destinationDefaultValue": null,
-        "cases": [
-          {
-            "caseKey": "4624",
-            "caseValue": "${alias_host[0]}",
-            "isRegex": false
-          },
-          {
-            "caseKey": "4625",
-            "caseValue": "${alias_host[0]}",
-            "isRegex": false
-          },
-          {
-            "caseKey": "4776",
-            "caseValue": "${host_src}",
-            "isRegex": false
-          }
-        ]
-      }
+      "type": "switch_case",
+      "name": "src-machine-name-switch-case",
+      "sourceKey": "reference_id",
+      "destinationKey": "srcMachineName",
+      "destinationDefaultValue": null,
+      "cases": [
+        {
+          "caseKey": "4624",
+          "caseValue": "${alias_host[0]}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4625",
+          "caseValue": "${alias_host[0]}",
+          "isRegex": false
+        },
+        {
+          "caseKey": "4776",
+          "caseValue": "${host_src}",
+          "isRegex": false
+        }
+      ]
     },
     {
       "type": "regex_captor_and_formatter",
