@@ -9,7 +9,7 @@ class AirflowLogCleanupDagBuilder(MaintenanceDagBuilder):
     DEFAULT_MAX_LOG_AGE_IN_DAYS = 3
     ENABLE_DELETE = True
     DEFAULT_MAX_LOG_SIZE_IN_BYTES = 131072
-    DEFAULT_NUM_OF_LOG_ENTRIES_TO_KEEP = 100
+    DEFAULT_NUM_OF_LOG_ENTRIES_TO_KEEP = 300
     ENABLE_TRIMMING = True
 
     def __init__(self):
