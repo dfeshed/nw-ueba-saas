@@ -23,6 +23,11 @@
                 url:BASE_URL + '/messages/'+defaultLang //Use for real messages from server (/api/messages/lang)
                 //url:'/assets/messages/messages-copy.json' //Use for mock messages from messages-copy.properties
             }).then(function (response) {
+                if (response.data && response.data.data){
+                    console.log("INFO - Localization strings count: "+_.size(response.data.data));
+                } else {
+                    console.log("ERROR - Localization response data: {}", JSON.stringify(response));
+                }
                 return response.data.data;
             },function () {
                 return options.key;

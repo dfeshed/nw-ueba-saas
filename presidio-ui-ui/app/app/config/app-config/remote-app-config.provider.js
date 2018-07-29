@@ -38,6 +38,15 @@
             function initRemoteAppConfig () {
                 return $http.get(remoteConfigApi._getUrl())
                     .then(function (res) {
+                        if (res.data && res.data.data){
+                            if (res.data.data.length>100) {
+                                console.log("INFO - Number of Remote Configuration items: " + res.data.data.length);
+                            } else {
+                                console.warn("WARNING - Number of Remote Configuration items: " + res.data.data.length+" Please check if localization missing");
+                            }
+                        } else {
+                            console.error("Remote configuration has no results")
+                        }
                         remoteConfigList = res.data.data;
                     })
                     .catch(function (err) {

@@ -6,10 +6,12 @@ import fortscale.services.ApplicationConfigurationService;
 import fortscale.services.LocalizationService;
 import fortscale.services.cache.CacheHandler;
 import fortscale.utils.configurations.ConfigrationServerClientUtils;
+import fortscale.utils.logging.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -25,6 +27,7 @@ public class LocalizationServiceImpl implements LocalizationService, Initializin
     private static final String FORTSCALE_MESSAGES_PREFIX = "messages";
     private static final String FORTSCALE_MESSAGES_SEPERATOR = ".";
     private static final String LOCALIZATION_CONFIG_KEY = "system.locale.settings";
+    private Logger logger = Logger.getLogger(this.getClass());
 
 
     private CacheHandler<Locale, Map<String,String>> messagesCache;
@@ -106,7 +109,18 @@ public class LocalizationServiceImpl implements LocalizationService, Initializin
         Map<String, Map<String, String>> all = new HashMap<>();
         languages.forEach(langId->{
             Locale locale = getLocaleFromString(langId);
-            all.put(langId,this.messagesCache.get(locale));
+
+            Map<String, String> localeSettings = this.messagesCache.get(locale);
+            //If not in cache - reload
+            if (CollectionUtils.isEmpty(localeSettings)){
+                loadLang(langId);
+                localeSettings = this.messagesCache.get(locale);
+            }
+            //If still not in cache - report error and continue
+            if (CollectionUtils.isEmpty(localeSettings)) {
+                logger.error("Cannot load language {}",langId);
+            }
+            all.put(langId,localeSettings);
         });
 
         return all;

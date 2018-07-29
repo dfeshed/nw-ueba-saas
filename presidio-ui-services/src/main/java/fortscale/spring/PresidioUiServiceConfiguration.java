@@ -46,7 +46,7 @@ public class PresidioUiServiceConfiguration {
 
     @Bean
     LocalizationService localizationService(){
-        MemoryBasedCache memoryBasedCache = new MemoryBasedCache(0,3600,String.class);
+        MemoryBasedCache memoryBasedCache = new MemoryBasedCache(0,0,String.class);
         return new LocalizationServiceImpl(memoryBasedCache, configrationServerClientUtils);
     }
 
