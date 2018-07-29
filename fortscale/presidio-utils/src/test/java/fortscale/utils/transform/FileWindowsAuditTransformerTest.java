@@ -226,14 +226,23 @@ public class FileWindowsAuditTransformerTest extends TransformerTest{
                         Collections.singletonList(DATA_SOURCE_FIELD_NAME));
         transformerChainList.add(ranameReferenceIdToDataSource);
 
-        // copy user_dst to userName,userDisplayName
+        // copy user_dst to userName
         CopyValueTransformer copyUserDst =
                 new CopyValueTransformer(
                         "copy-user-dst",
                         USER_DST_FIELD_NAME,
                         true,
-                        Arrays.asList(USERNAME_FIELD_NAME, USER_DISPLAY_NAME_FIELD_NAME));
+                        Arrays.asList(USERNAME_FIELD_NAME));
         transformerChainList.add(copyUserDst);
+
+        // copy userId to userDisplayName
+        CopyValueTransformer copyUserId =
+                new CopyValueTransformer(
+                        "copy-user-id",
+                        USER_ID_FIELD_NAME,
+                        false,
+                        Arrays.asList(USER_DISPLAY_NAME_FIELD_NAME));
+        transformerChainList.add(copyUserId);
 
         //Convert time field from EPOCH millis to EPOCH seconds
         EpochTimeToNanoRepresentationTransformer dateTimeMillisToSeconds =
@@ -404,8 +413,9 @@ public class FileWindowsAuditTransformerTest extends TransformerTest{
 
         JSONObject retJsonObject = transform(transformer, jsonObject);
 
-        assertOnExpectedValues(retJsonObject, userDst.toLowerCase(), objName, true, FILE_MODIFIED, RESULT_SUCCESS,
-                eventSourceId, referenceId, userDst, userDst, eventTime);
+        String userId = userDst.toLowerCase();
+        assertOnExpectedValues(retJsonObject, userId, objName, true, FILE_MODIFIED, RESULT_SUCCESS,
+                eventSourceId, referenceId, userDst, userId, eventTime);
     }
 
     @Test
@@ -423,8 +433,9 @@ public class FileWindowsAuditTransformerTest extends TransformerTest{
 
         JSONObject retJsonObject = transform(transformer, jsonObject);
 
-        assertOnExpectedValues(retJsonObject, userDst.toLowerCase(), null, null, FILE_OPENED, RESULT_FAILURE,
-                eventSourceId, referenceId, userDst, userDst, eventTime);
+        String userId = userDst.toLowerCase();
+        assertOnExpectedValues(retJsonObject, userId, null, null, FILE_OPENED, RESULT_FAILURE,
+                eventSourceId, referenceId, userDst, userId, eventTime);
     }
 
     @Test
@@ -443,9 +454,10 @@ public class FileWindowsAuditTransformerTest extends TransformerTest{
 
         JSONObject retJsonObject = transform(transformer, jsonObject);
 
-        assertOnExpectedValues(retJsonObject, userDst.toLowerCase(), objName, false,
+        String userId = userDst.toLowerCase();
+        assertOnExpectedValues(retJsonObject, userId, objName, false,
                 "FOLDER_OPENED", RESULT_FAILURE,
-                eventSourceId, referenceId, userDst, userDst, eventTime);
+                eventSourceId, referenceId, userDst, userId, eventTime);
     }
 
     @Test
@@ -464,7 +476,8 @@ public class FileWindowsAuditTransformerTest extends TransformerTest{
 
         JSONObject retJsonObject = transform(transformer, jsonObject);
 
-        assertOnExpectedValues(retJsonObject, userDst.toLowerCase(), objName, false, "FOLDER_PERMISSION_CHANGED", RESULT_FAILURE,
-                eventSourceId, referenceId, userDst, userDst, eventTime);
+        String userId = userDst.toLowerCase();
+        assertOnExpectedValues(retJsonObject, userId, objName, false, "FOLDER_PERMISSION_CHANGED", RESULT_FAILURE,
+                eventSourceId, referenceId, userDst, userId, eventTime);
     }
 }
