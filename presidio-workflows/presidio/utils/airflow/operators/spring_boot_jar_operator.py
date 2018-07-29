@@ -4,6 +4,7 @@ from tempfile import gettempdir, NamedTemporaryFile
 import os
 import functools
 
+from airflow import LoggingMixin
 from airflow.exceptions import AirflowException
 from airflow.operators.bash_operator import BashOperator
 from airflow.utils.decorators import apply_defaults
