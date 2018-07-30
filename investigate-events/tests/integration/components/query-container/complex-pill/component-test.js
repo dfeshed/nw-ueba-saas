@@ -12,6 +12,7 @@ import KEY_MAP from 'investigate-events/util/keys';
 const ESCAPE_KEY = KEY_MAP.escape.code;
 const DELETE_KEY = KEY_MAP.delete.code;
 const BACKSPACE_KEY = KEY_MAP.backspace.code;
+const ENTER_KEY = KEY_MAP.enter.code;
 
 
 module('Integration | Component | complex-pill', function(hooks) {
@@ -301,5 +302,29 @@ module('Integration | Component | complex-pill', function(hooks) {
 
     assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 1, 'proper class present');
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', BACKSPACE_KEY);
+  });
+
+  test('sends message up when selected and enter is pressed', async function(assert) {
+    assert.expect(3);
+
+    const pillData = { complexFilterText: 'FOOOOOOOO', isSelected: true };
+    this.set('pillData', pillData);
+
+    this.set('handleMessage', (messageType, data) => {
+      assert.ok(messageType === MESSAGE_TYPES.ENTER_PRESSED_ON_SELECTED_PILL, 'should send out correct action');
+      assert.ok(data === pillData, 'should send out pill data');
+    });
+
+    await render(hbs`
+      {{query-container/complex-pill
+        position=0
+        isActive=false
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 1, 'proper class present');
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ENTER_KEY);
   });
 });

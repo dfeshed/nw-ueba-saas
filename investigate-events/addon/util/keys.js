@@ -41,6 +41,7 @@ const matchesEnter = _.partial(matches, keyMap.enter);
 const matchesEscape = _.partial(matches, keyMap.escape);
 const matchesSpace = _.partial(matches, keyMap.space);
 const matchesTab = _.partial(matches, keyMap.tab);
+const matchesDelete = _.partial(matches, keyMap.delete);
 
 /**
  * Is the event from a down arrow keyboard event?
@@ -84,6 +85,13 @@ export const isBackspace = (event) => matchesBackspace(event.keyCode);
  * @public
  */
 export const isEnter = (event) => matchesEnter(event.keyCode);
+/**
+ * Is the event from an delete keyboard event?
+ * @param {Object} event A KeyboardEvent.
+ * @return A Boolean value.
+ * @public
+ */
+export const isDelete = (event) => matchesDelete(event.keyCode);
 /**
  * Is the event from an escape keyboard event?
  * @param {Object} event A KeyboardEvent.

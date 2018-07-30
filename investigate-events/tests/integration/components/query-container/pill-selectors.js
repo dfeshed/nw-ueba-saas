@@ -38,11 +38,12 @@ export default {
   triggerValueInput,
   value: '.pill-value',
   valueInput,
-  activePill: '.query-pills .is-active',
+  activePills: '.query-pills .is-active',
   invalidPill: '.is-invalid',
   selectedPill: '.is-selected',
   populatedItem: '.is-populated',
   expensivePill: '.query-pill.is-expensive',
   expensiveIndicator: '.rsa-icon-stopwatch-lined.is-expensive',
-  focusHolderInput: '.focus-holder input'
+  focusHolderInput: '.focus-holder input',
+  activeQueryPill: '.query-pill.is-active'
 };

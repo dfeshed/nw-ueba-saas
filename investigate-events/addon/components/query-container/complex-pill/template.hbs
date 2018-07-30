@@ -10,9 +10,9 @@
   {{query-container/delete-pill
     sendMessage=(action 'handleMessage')
   }}
-{{/if}}
-{{#if isSelected}}
-  {{query-container/focus-holder
-    sendMessage=(action 'handleMessage')
-  }}
+  {{#if isSelected}}
+    {{query-container/focus-holder
+      sendMessage=(action 'handleMessage')
+    }}
+  {{/if}}
 {{/if}}

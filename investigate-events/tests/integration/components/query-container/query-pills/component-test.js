@@ -400,7 +400,7 @@ module('Integration | Component | query-pills', function(hooks) {
 
     await render(hbs`{{query-container/query-pills isActive=true}}`);
 
-    assert.equal(findAll(PILL_SELECTORS.activePill).length, 2, 'Two active pills, one is the end of line template.');
+    assert.equal(findAll(PILL_SELECTORS.activePills).length, 2, 'Two active pills, one is the end of line template.');
   });
 
   test('clicking escape inside an editing pill will message out', async function(assert) {
@@ -495,18 +495,18 @@ module('Integration | Component | query-pills', function(hooks) {
 
     await render(hbs`{{query-container/query-pills isActive=true}}`);
 
-    assert.equal(findAll(PILL_SELECTORS.activePill).length, 1, 'One active pill, at the end of line template.');
+    assert.equal(findAll(PILL_SELECTORS.activePills).length, 1, 'One active pill, at the end of line template.');
 
     await leaveNewPillTemplate();
 
     const pills = findAll(PILL_SELECTORS.meta);
     doubleClick(`#${pills[0].id}`, true); // open pill for edit
     assert.equal(openGuidedPillForEditSpy.callCount, 1, 'The openGuidedPillForEditSpy pill action creator was called once');
-    assert.equal(findAll(PILL_SELECTORS.activePill).length, 2, 'Now two active pills');
+    assert.equal(findAll(PILL_SELECTORS.activePills).length, 2, 'Now two active pills');
 
     doubleClick(`#${pills[1].id}`); // attempt to open another pill for edit
     assert.equal(openGuidedPillForEditSpy.callCount, 1, 'The openGuidedPillForEditSpy pill action still just called once');
-    assert.equal(findAll(PILL_SELECTORS.activePill).length, 2, 'Still two active pills');
+    assert.equal(findAll(PILL_SELECTORS.activePills).length, 2, 'Still two active pills');
   });
 
   test('While a pill is being edited you cannot click to add a pill using trigger or template', async function(assert) {
@@ -522,7 +522,7 @@ module('Integration | Component | query-pills', function(hooks) {
       </div>
     `);
 
-    assert.equal(findAll(PILL_SELECTORS.activePill).length, 1, 'One active pill, at the end of line template.');
+    assert.equal(findAll(PILL_SELECTORS.activePills).length, 1, 'One active pill, at the end of line template.');
     await leaveNewPillTemplate();
     const pills = findAll(PILL_SELECTORS.queryPill);
     doubleClick(`#${pills[0].id}`); // open pill for edit
@@ -827,4 +827,65 @@ module('Integration | Component | query-pills', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', ENTER_KEY);
   });
 
+  test('Pressing ENTER key once a pill is selected will open it for edit', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    assert.expect(5);
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
+
+    const metas = findAll(PILL_SELECTORS.meta);
+    await click(`#${metas[0].id}`); // make the 1st pill selected
+
+    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'Focus holder should be present now');
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ENTER_KEY);
+
+    return settled().then(() => {
+      assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
+      assert.equal(findAll(PILL_SELECTORS.activeQueryPill).length, 2, '1 active pill and 1 new pill trigger(active)should be present');
+      assert.equal(findAll(PILL_SELECTORS.pillOpenForEdit).length, 1, 'should have 1 pill open for editing');
+    });
+  });
+
+  test('Pressing ENTER key once a complex pill is selected will open it for edit', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataComplex()
+      .build();
+
+    assert.expect(6);
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
+
+    await click(PILL_SELECTORS.complexPill); // make the complex pill selected
+
+    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'Focus holder should be present now');
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ENTER_KEY);
+
+    return settled().then(() => {
+      assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'Should be no pill selected.');
+      assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
+      assert.equal(findAll(PILL_SELECTORS.complexPillActive).length, 1, 'active complex pill should be present');
+      assert.equal(findAll(PILL_SELECTORS.complexPillInput).length, 1, 'complex pill input should be present');
+    });
+  });
 });

@@ -896,4 +896,37 @@ module('Integration | Component | query-pill', function(hooks) {
 
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', BACKSPACE_KEY);
   });
+
+  test('selected pill sends up a message when enter is pressed', async function(assert) {
+    assert.expect(2);
+
+    const pillState = new ReduxDataHelper(setState)
+    .pillsDataPopulated()
+    .language()
+    .markSelected(['1'])
+    .build();
+
+    const [ enrichedPill ] = enrichedPillsData(pillState);
+    this.set('pillData', enrichedPill);
+
+    this.set('handleMessage', (messageType, data) => {
+      if (isIgnoredInitialEvent(messageType)) {
+        return;
+      }
+
+      assert.equal(messageType, MESSAGE_TYPES.ENTER_PRESSED_ON_SELECTED_PILL, 'Message sent to open pill for edit');
+      assert.deepEqual(data, { meta: 'a', operator: '=', value: '\'x\'', id: '1', isSelected: true }, 'Message sent contains correct pill data');
+    });
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=false
+        position=0
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ENTER_KEY);
+  });
 });

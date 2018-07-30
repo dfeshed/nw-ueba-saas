@@ -47,7 +47,8 @@ export default Component.extend({
     this._super(arguments);
     this.set('_messageHandlerMap', {
       [MESSAGE_TYPES.DELETE_CLICKED]: (data) => this._deletePill(data),
-      [MESSAGE_TYPES.SELECTED_FOCUS_DELETE_PRESSED]: () => this._selectedFocusDeletePressed()
+      [MESSAGE_TYPES.SELECTED_FOCUS_DELETE_PRESSED]: () => this._selectedFocusDeletePressed(),
+      [MESSAGE_TYPES.SELECTED_FOCUS_ENTER_PRESSED]: () => this._selectedFocusEnterPressed()
     });
   },
 
@@ -152,6 +153,12 @@ export default Component.extend({
     this.get('sendMessage')(MESSAGE_TYPES.DELETE_PRESSED_ON_SELECTED_PILL);
   },
 
+  _selectedFocusEnterPressed() {
+    if (!this.get('isActive')) {
+      const pillData = this.get('pillData');
+      this._broadcast(MESSAGE_TYPES.ENTER_PRESSED_ON_SELECTED_PILL, pillData);
+    }
+  },
     /**
    * Sends messages to the parent container.
    * @param {string} type The event type from `event-types`

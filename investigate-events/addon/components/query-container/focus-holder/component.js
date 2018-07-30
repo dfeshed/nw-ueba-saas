@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 
 import * as MESSAGE_TYPES from '../message-types';
-import KEY_MAP from 'investigate-events/util/keys';
+import { isBackspace, isDelete, isEnter } from 'investigate-events/util/keys';
 
 export default Component.extend({
   classNames: ['focus-holder'],
@@ -19,8 +19,10 @@ export default Component.extend({
   },
 
   keyDown(e) {
-    if (e.keyCode === KEY_MAP.delete.code || e.keyCode === KEY_MAP.backspace.code) {
+    if (isBackspace(e) || isDelete(e)) {
       this.get('sendMessage')(MESSAGE_TYPES.SELECTED_FOCUS_DELETE_PRESSED);
+    } else if (isEnter(e)) {
+      this.get('sendMessage')(MESSAGE_TYPES.SELECTED_FOCUS_ENTER_PRESSED);
     }
     return false;
   },

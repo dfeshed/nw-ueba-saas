@@ -8,7 +8,8 @@ import * as MESSAGE_TYPES from '../message-types';
 import {
   canQueryGuided,
   enrichedPillsData,
-  hasInvalidSelectedPill
+  hasInvalidSelectedPill,
+  selectedPills
 } from 'investigate-events/reducers/investigate/query-node/selectors';
 import {
   addGuidedPill,
@@ -29,7 +30,8 @@ const stateToComputed = (state) => ({
   canQueryGuided: canQueryGuided(state),
   pillsData: enrichedPillsData(state),
   hasInvalidSelectedPill: hasInvalidSelectedPill(state),
-  metaOptions: metaKeySuggestionsForQueryBuilder(state)
+  metaOptions: metaKeySuggestionsForQueryBuilder(state),
+  selectedPills: selectedPills(state)
 });
 
 const dispatchToActions = {
@@ -124,6 +126,7 @@ const QueryPills = RsaContextMenu.extend({
       [MESSAGE_TYPES.PILL_CREATED]: (data, position) => this._pillCreated(data, position),
       [MESSAGE_TYPES.PILL_DELETED]: (data) => this._pillDeleted(data),
       [MESSAGE_TYPES.DELETE_PRESSED_ON_SELECTED_PILL]: () => this._deletePressedOnSelectedPill(),
+      [MESSAGE_TYPES.ENTER_PRESSED_ON_SELECTED_PILL]: (pillData) => this._enterPressedOnSelectedPill(pillData),
       [MESSAGE_TYPES.PILL_EDIT_CANCELLED]: (data) => this._pillEditCancelled(data),
       [MESSAGE_TYPES.PILL_EDITED]: (data) => this._pillEdited(data),
       [MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW]: () => this._pillEnteredForAppend(),
@@ -243,8 +246,26 @@ const QueryPills = RsaContextMenu.extend({
     this.send('deleteGuidedPill', { pillData });
   },
 
+  /**
+   * Deletes all selected pills on keypress
+   * @private
+   */
   _deletePressedOnSelectedPill() {
     this.send('deleteSelectedGuidedPills');
+  },
+
+  /**
+   * Opens up the pill for edit on keypress
+   * @private
+   * Selecting & hitting enter can also trigger this
+   * action. So we need to make sure there is just
+   * one pill selected
+   */
+  _enterPressedOnSelectedPill(pillData) {
+    const sP = this.get('selectedPills');
+    if (sP.length === 1) {
+      this._pillOpenForEdit(pillData);
+    }
   },
 
   /**

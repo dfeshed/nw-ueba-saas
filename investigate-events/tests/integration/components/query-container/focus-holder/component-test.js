@@ -10,6 +10,7 @@ import KEY_MAP from 'investigate-events/util/keys';
 
 const DELETE_KEY = KEY_MAP.delete.code;
 const BACKSPACE = KEY_MAP.backspace.code;
+const ENTER = KEY_MAP.enter.code;
 const X_KEY = 88;
 
 module('Integration | Component | focus-holder', function(hooks) {
@@ -49,5 +50,16 @@ module('Integration | Component | focus-holder', function(hooks) {
     await render(hbs`{{query-container/focus-holder sendMessage=sendMessage}}`);
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', X_KEY);
 
+  });
+
+  test('it sends a message when enter is pressed', async function(assert) {
+    assert.expect(1);
+
+    this.set('sendMessage', (messageType) => {
+      assert.equal(messageType, MESSAGE_TYPES.SELECTED_FOCUS_ENTER_PRESSED, 'the correct message type is sent when enter is pressed');
+    });
+
+    await render(hbs`{{query-container/focus-holder sendMessage=sendMessage}}`);
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ENTER);
   });
 });
