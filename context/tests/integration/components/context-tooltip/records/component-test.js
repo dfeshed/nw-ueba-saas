@@ -68,4 +68,17 @@ module('Integration | Component | context tooltip records', function(hooks) {
     assert.notOk(archerAttributesFound, 'Expected not to find Criticality & Asset Risk Attributes for USER');
 
   });
+
+  test('it only renders reputation for FILE_HASH', async function(assert) {
+    assert.expect(1);
+
+    const reputation = 'reputation';
+
+    this.setProperties({
+      model: { type: 'FILE_HASH', id: '3f066dd1f1da052248aed5abc4a0c6a1' }
+    });
+    await render(hbs`{{context-tooltip/records model=model}}`);
+    assert.ok(findAll('.rsa-context-tooltip-records__record .text')[4].textContent.indexOf(reputation), 'Expected to find Reputataion Attribute for File_HASH');
+
+  });
 });

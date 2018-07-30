@@ -17,7 +17,8 @@ const entityRecords = function() {
     { name: 'Users', count: String(randInt()), lastUpdated },
     { name: 'IOC', count: String(randInt()), lastUpdated },
     { name: 'Modules', count: String(randInt()), lastUpdated },
-    { name: 'Machines', count: null, severity: 'HIGH', lastUpdated }
+    { name: 'Machines', count: null, severity: 'HIGH', lastUpdated },
+    { name: 'ReputationServer', count: null, status: 'Malicious', lastUpdated }
   ];
   // overshoot length to improve chances of including all array items
   const size = randInt(1, all.length + 1);

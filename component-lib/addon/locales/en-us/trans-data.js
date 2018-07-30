@@ -1779,7 +1779,8 @@ export default {
         'LiveConnect-File': 'LiveConnect',
         'LiveConnect-Domain': 'LiveConnect',
         criticality: 'Criticality',
-        riskRating: 'Asset Risk'
+        riskRating: 'Asset Risk',
+        ReputationServer: 'Reputation'
       }
     }
   },

@@ -46,7 +46,7 @@ const entityTypeToRecordNamesMap = {
   IP: ['Incidents', 'Alerts', 'LIST', 'Machines', 'LiveConnect-Ip', 'Archer'],
   HOST: ['Incidents', 'Alerts', 'LIST', 'Machines', 'Archer'],
   MAC_ADDRESS: ['Incidents', 'Alerts', 'LIST', 'Machines', 'Archer'],
-  FILE_HASH: ['Incidents', 'Alerts', 'LIST', 'LiveConnect-File'],
+  FILE_HASH: ['Incidents', 'Alerts', 'LIST', 'LiveConnect-File', 'ReputationServer'],
   DOMAIN: ['Incidents', 'Alerts', 'LIST', 'LiveConnect-Domain']
 };
 
@@ -123,6 +123,8 @@ const ContextTooltipRecords = Component.extend({
             // For Archer data source calling _populateArcherAttributes to populate Criticality & Risk Rating attributes
             // which will displayed in UI
             this._populateArcherAttributes(finalModelSummary, record);
+          } else if (name === 'ReputationServer') {
+            this._populateReputationStatus(finalModelSummary, record);
           } else {
             // For Other data sources display count or severity
             record.attr = record.severity ? record.severity : record.count;
@@ -136,6 +138,8 @@ const ContextTooltipRecords = Component.extend({
           const dataType = recordNameToDataTypeMap[name] || recordNameToDataTypeMap.DEFAULT;
           if (name === 'Archer') {
             this._populateArcherAttributes(finalModelSummary, null);
+          } else if (name === 'ReputationServer') {
+            this._populateReputationStatus(finalModelSummary, null);
           } else {
             finalModelSummary.push({
               name,
@@ -145,6 +149,14 @@ const ContextTooltipRecords = Component.extend({
         }
       });
     return finalModelSummary;
+  },
+
+
+  _populateReputationStatus(finalModelSummary, record) {
+    finalModelSummary.push({
+      name: 'ReputationServer',
+      attr: record && record.status ? record.status : '-'
+    });
   },
 
   /*
