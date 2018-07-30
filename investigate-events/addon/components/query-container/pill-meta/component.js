@@ -8,6 +8,13 @@ const { log } = console;// eslint-disable-line no-unused-vars
 
 const leadingSpaces = /^[\s\uFEFF\xA0]+/;
 
+const dropFocus = () => {
+  const el = document.querySelector('.pill-meta input');
+  if (el && el === document.activeElement) {
+    el.blur();
+  }
+};
+
 export default Component.extend({
   classNameBindings: ['isExpanded', ':pill-meta'],
 
@@ -126,7 +133,7 @@ export default Component.extend({
      */
     onInput(input, powerSelectAPI /* event */) {
       const isSpace = input.slice(-1) === ' ';
-      const { options, results } = powerSelectAPI;
+      const { results } = powerSelectAPI;
       if (isSpace && results.length === 1) {
         this._broadcast(MESSAGE_TYPES.META_SELECTED, results[0]);
       } else if (isSpace && results.length > 1) {
@@ -138,7 +145,7 @@ export default Component.extend({
         this.set('selection', null);
         // Set the power-select highlight on the next runloop so that the
         // power-select has time to render the full list of options.
-        next(this, () => powerSelectAPI.actions.highlight(options[0]));
+        next(this, () => powerSelectAPI.actions.highlight(null));
       }
     },
     /**
@@ -155,10 +162,7 @@ export default Component.extend({
         // Close dropdown
         powerSelectAPI.actions.close();
         // If we have focus, drop it like it's hot, drop it like it's hot.
-        const el = document.querySelector('.pill-meta input');
-        if (el && el === document.activeElement) {
-          el.blur();
-        }
+        dropFocus();
         // Let others know ECS was pressed
         this._broadcast(MESSAGE_TYPES.META_ESCAPE_KEY);
       } else if (isEnter(event)) {
@@ -170,6 +174,17 @@ export default Component.extend({
         const selection = this.get('selection');
         if (selection && selected && selection === selected) {
           this._broadcast(MESSAGE_TYPES.META_SELECTED, selection);
+        } else {
+          next(this, () => {
+            // We need to run this check in the next runloop so EPS has time to
+            // react to the ENTER press in the first place. For example, to
+            // make a selection.
+            const selection = this.get('selection');
+            if (selection === null) {
+              this._broadcast(MESSAGE_TYPES.META_ENTER_KEY);
+              dropFocus();
+            }
+          });
         }
       } else if (isArrowRight(event)) {
         const { selected } = powerSelectAPI;
@@ -222,6 +237,17 @@ export default Component.extend({
    * @private
    */
   _hasExactMatch: (text, metas = []) => metas.find((m) => m.metaName === text),
+
+  /**
+   * Function that power-select uses to determine which item in the list of
+   * options to highlight.
+   * @param {Object} powerSelectAPI The power select public API
+   * @private
+   */
+  _highlighter(powerSelectAPI) {
+    const { options, results } = powerSelectAPI;
+    return options.length !== results.length ? results[0] : null;
+  },
 
   /**
    * Function that power-select uses to make an autosuggest match. This function

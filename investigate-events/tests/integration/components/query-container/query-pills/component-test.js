@@ -15,6 +15,7 @@ import KEY_MAP from 'investigate-events/util/keys';
 import { throwSocket } from '../../../../helpers/patch-socket';
 import { invalidServerResponseText } from '../../../../unit/actions/data';
 
+const ENTER_KEY = KEY_MAP.enter.code;
 const ESCAPE_KEY = KEY_MAP.escape.code;
 const DELETE_KEY = KEY_MAP.delete.code;
 const BACKSPACE_KEY = KEY_MAP.backspace.code;
@@ -82,7 +83,11 @@ module('Integration | Component | query-pills', function(hooks) {
   });
 
   test('Creating a pill sends action for redux state update', async function(assert) {
-    new ReduxDataHelper(setState).language().pillsDataEmpty().build();
+    new ReduxDataHelper(setState)
+      .language()
+      .hasRequiredValuesToQuery(false)
+      .pillsDataEmpty()
+      .build();
 
     await render(hbs`{{query-container/query-pills isActive=true}}`);
     await createBasicPill();
@@ -102,6 +107,7 @@ module('Integration | Component | query-pills', function(hooks) {
   test('newPillPosition is set correctly', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
+      .canQueryGuided()
       .pillsDataPopulated()
       .build();
 
@@ -121,6 +127,7 @@ module('Integration | Component | query-pills', function(hooks) {
   test('new pill triggers render appropriately', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
+      .canQueryGuided()
       .pillsDataPopulated()
       .build();
 
@@ -134,6 +141,7 @@ module('Integration | Component | query-pills', function(hooks) {
   test('Creating a pill with the new pill trigger sends action for redux state update', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
+      .canQueryGuided()
       .pillsDataPopulated()
       .build();
 
@@ -151,7 +159,11 @@ module('Integration | Component | query-pills', function(hooks) {
   });
 
   test('Deleting a pill sends action for redux state update', async function(assert) {
-    new ReduxDataHelper(setState).language().pillsDataPopulated().build();
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
 
     await render(hbs`{{query-container/query-pills isActive=true }}`);
     await leaveNewPillTemplate();
@@ -169,7 +181,11 @@ module('Integration | Component | query-pills', function(hooks) {
   });
 
   test('Attempting to delete a pill while a new pill is open will not delete the pill', async function(assert) {
-    new ReduxDataHelper(setState).language().pillsDataPopulated().build();
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
 
     await render(hbs`{{query-container/query-pills isActive=true}}`);
     await click(PILL_SELECTORS.deletePill);
@@ -181,7 +197,12 @@ module('Integration | Component | query-pills', function(hooks) {
   });
 
   test('Attempting to edit a pill while a new pill is open will not open the pill for edit', async function(assert) {
-    new ReduxDataHelper(setState).language().pillsDataPopulated().build();
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
     await render(hbs`{{query-container/query-pills isActive=true}}`);
     doubleClick(PILL_SELECTORS.queryPill, true);
 
@@ -193,6 +214,7 @@ module('Integration | Component | query-pills', function(hooks) {
   test('Creating a pill leaves no classes indicating pills are open', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
+      .canQueryGuided()
       .pillsDataPopulated()
       .build();
 
@@ -207,6 +229,7 @@ module('Integration | Component | query-pills', function(hooks) {
   test('Cancelling out of pill creation leaves no classes indicating pills are open', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
+      .canQueryGuided()
       .pillsDataPopulated()
       .build();
 
@@ -218,6 +241,7 @@ module('Integration | Component | query-pills', function(hooks) {
   test('Beginning creation of a pill template adds specific classes to container', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
+      .canQueryGuided()
       .pillsDataPopulated()
       .build();
 
@@ -231,6 +255,7 @@ module('Integration | Component | query-pills', function(hooks) {
   test('Beginning creation of a pill from trigger adds appropriate classes', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
+      .canQueryGuided()
       .pillsDataPopulated()
       .build();
 
@@ -250,6 +275,7 @@ module('Integration | Component | query-pills', function(hooks) {
   test('Creating a pill validates the pill(clientSide) and updates if necessary', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
+      .canQueryGuided()
       .pillsDataEmpty()
       .build();
 
@@ -267,6 +293,7 @@ module('Integration | Component | query-pills', function(hooks) {
     const done = throwSocket({ methodToThrow: 'query', modelNameToThrow: 'core-query-validate', message: invalidServerResponseText });
     new ReduxDataHelper(setState)
       .language()
+      .canQueryGuided()
       .pillsDataEmpty()
       .build();
 
@@ -280,7 +307,11 @@ module('Integration | Component | query-pills', function(hooks) {
   });
 
   test('Clicking an inactive pill sends it to state to be selected', async function(assert) {
-    new ReduxDataHelper(setState).language().pillsDataPopulated().build();
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
 
     await render(hbs`{{query-container/query-pills isActive=true}}`);
     await click(PILL_SELECTORS.meta);
@@ -299,6 +330,7 @@ module('Integration | Component | query-pills', function(hooks) {
   test('Clicking an inactive pill that is selected sends it to state to be deselected', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
+      .canQueryGuided()
       .pillsDataPopulated()
       .build();
 
@@ -317,6 +349,7 @@ module('Integration | Component | query-pills', function(hooks) {
   test('Deleting a pill removes selected class from other pills', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
+      .canQueryGuided()
       .pillsDataPopulated()
       .build();
 
@@ -339,6 +372,7 @@ module('Integration | Component | query-pills', function(hooks) {
   test('Clicking new pill trigger will deselect other pills and open new pill trigger', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
+      .canQueryGuided()
       .pillsDataPopulated()
       .build();
 
@@ -359,6 +393,7 @@ module('Integration | Component | query-pills', function(hooks) {
   test('If a pill is being edited, it is active', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
+      .canQueryGuided()
       .pillsDataPopulated()
       .markEditing(['1'])
       .build();
@@ -371,6 +406,7 @@ module('Integration | Component | query-pills', function(hooks) {
   test('clicking escape inside an editing pill will message out', async function(assert) {
     const { pillsData } = new ReduxDataHelper(setState)
       .language()
+      .canQueryGuided()
       .pillsDataPopulated()
       .markEditing(['1'])
       .build()
@@ -392,6 +428,7 @@ module('Integration | Component | query-pills', function(hooks) {
     assert.expect(1);
     new ReduxDataHelper(setState)
       .language()
+      .canQueryGuided()
       .pillsDataPopulated()
       .build();
 
@@ -412,6 +449,7 @@ module('Integration | Component | query-pills', function(hooks) {
   test('Opening a pill for edit will deselect other pills', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
+      .canQueryGuided()
       .pillsDataPopulated()
       .build();
 
@@ -436,7 +474,12 @@ module('Integration | Component | query-pills', function(hooks) {
   });
 
   test('Attempting to delete a pill while a pill is being edited will not work', async function(assert) {
-    new ReduxDataHelper(setState).language().pillsDataPopulated().build();
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
     await render(hbs`{{query-container/query-pills isActive=true}}`);
     doubleClick(PILL_SELECTORS.queryPill);
     await click(PILL_SELECTORS.deletePill);
@@ -444,7 +487,12 @@ module('Integration | Component | query-pills', function(hooks) {
   });
 
   test('While a pill is being edited you cannot edit another pill', async function(assert) {
-    new ReduxDataHelper(setState).language().pillsDataPopulated().build();
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
     await render(hbs`{{query-container/query-pills isActive=true}}`);
 
     assert.equal(findAll(PILL_SELECTORS.activePill).length, 1, 'One active pill, at the end of line template.');
@@ -462,7 +510,12 @@ module('Integration | Component | query-pills', function(hooks) {
   });
 
   test('While a pill is being edited you cannot click to add a pill using trigger or template', async function(assert) {
-    new ReduxDataHelper(setState).language().pillsDataPopulated().build();
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
     await render(hbs`
       <div class='rsa-investigate-query-container'>
         {{query-container/query-pills isActive=true}}
@@ -489,8 +542,10 @@ module('Integration | Component | query-pills', function(hooks) {
   test('An expensive pill displays as expensive', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
+      .canQueryGuided()
       .pillsDataEmpty()
       .build();
+
     await render(hbs`{{query-container/query-pills isActive=true}}`);
     await createBasicPill(false, 'Text', 'contains');
     assert.equal(findAll(PILL_SELECTORS.expensivePill).length, 1, 'Class for expensive pill should be present');
@@ -499,8 +554,10 @@ module('Integration | Component | query-pills', function(hooks) {
   test('complex pills will be rendered', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
+      .canQueryGuided()
       .pillsDataComplex()
       .build();
+
     await render(hbs`{{query-container/query-pills isActive=true}}`);
     assert.equal(findAll(PILL_SELECTORS.complexPill).length, 1, 'A complex pill should be present');
   });
@@ -508,6 +565,7 @@ module('Integration | Component | query-pills', function(hooks) {
   test('Right clicking on a selected pill should trigger contextMenu event AND not trigger the same when not selected', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
+      .canQueryGuided()
       .pillsDataPopulated()
       .build();
 
@@ -552,6 +610,7 @@ module('Integration | Component | query-pills', function(hooks) {
   skip('Right clicking on a selected pill will open a context menu with options  ---- not Working', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
+      .canQueryGuided()
       .pillsDataPopulated()
       .build();
 
@@ -587,6 +646,7 @@ module('Integration | Component | query-pills', function(hooks) {
   test('Pressing Delete key once a pill is selected will delete it', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
+      .canQueryGuided()
       .pillsDataPopulated()
       .build();
 
@@ -617,6 +677,7 @@ module('Integration | Component | query-pills', function(hooks) {
   test('Pressing Backspace key once a pill is selected will delete it', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
+      .canQueryGuided()
       .pillsDataPopulated()
       .build();
 
@@ -647,6 +708,7 @@ module('Integration | Component | query-pills', function(hooks) {
   test('Pressing Delete key once a complex pill is selected will delete it', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
+      .canQueryGuided()
       .pillsDataComplex()
       .build();
 
@@ -676,6 +738,7 @@ module('Integration | Component | query-pills', function(hooks) {
   test('Pressing backspace key once a complex pill is selected will delete it', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
+      .canQueryGuided()
       .pillsDataComplex()
       .build();
 
@@ -700,6 +763,68 @@ module('Integration | Component | query-pills', function(hooks) {
       assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'Should be no pill selected.');
       assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
     });
+  });
+
+  test('Pressing ENTER when there are no pills will submit a query', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataEmpty()
+      .build();
+
+    assert.expect(0);
+    const done = assert.async(1);
+
+    this.set('executeQuery', () => {
+      done();
+    });
+
+    await render(hbs`
+      {{query-container/query-pills executeQuery=executeQuery}}
+    `);
+
+    await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', ENTER_KEY);
+  });
+
+  test('Pressing ENTER when there are pills will submit a query', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    assert.expect(0);
+    const done = assert.async(1);
+
+    this.set('executeQuery', () => {
+      done();
+    });
+
+    await render(hbs`
+      {{query-container/query-pills executeQuery=executeQuery}}
+    `);
+
+    await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', ENTER_KEY);
+  });
+
+  test('Pressing ENTER when there are invalid pills will NOT submit a query', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .invalidPillsDataPopulated()
+      .build();
+
+    assert.expect(0);
+
+    this.set('executeQuery', () => {
+      assert.ok(false);
+    });
+
+    await render(hbs`
+      {{query-container/query-pills executeQuery=executeQuery}}
+    `);
+
+    await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', ENTER_KEY);
   });
 
 });

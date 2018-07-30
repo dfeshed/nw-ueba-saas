@@ -1,10 +1,15 @@
-import * as MESSAGE_TYPES from '../message-types';
 import { warn } from '@ember/debug';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
-import RsaContextMenu from 'rsa-context-menu/components/rsa-context-menu/component';
 
-import { enrichedPillsData, hasInvalidSelectedPill } from 'investigate-events/reducers/investigate/query-node/selectors';
+import RsaContextMenu from 'rsa-context-menu/components/rsa-context-menu/component';
+import * as MESSAGE_TYPES from '../message-types';
+
+import {
+  canQueryGuided,
+  enrichedPillsData,
+  hasInvalidSelectedPill
+} from 'investigate-events/reducers/investigate/query-node/selectors';
 import {
   addGuidedPill,
   deleteGuidedPill,
@@ -21,6 +26,7 @@ import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/i
 const { log } = console;// eslint-disable-line no-unused-vars
 
 const stateToComputed = (state) => ({
+  canQueryGuided: canQueryGuided(state),
   pillsData: enrichedPillsData(state),
   hasInvalidSelectedPill: hasInvalidSelectedPill(state),
   metaOptions: metaKeySuggestionsForQueryBuilder(state)
@@ -76,6 +82,9 @@ const QueryPills = RsaContextMenu.extend({
   // Is a pill trigger open for add?
   isPillTriggerOpenForAdd: false,
 
+  // Action to execute when submitting a query
+  executeQuery: () => {},
+
   @computed('pillsData')
   newPillPosition: (pillsData) => pillsData.length,
 
@@ -119,6 +128,7 @@ const QueryPills = RsaContextMenu.extend({
       [MESSAGE_TYPES.PILL_EDITED]: (data) => this._pillEdited(data),
       [MESSAGE_TYPES.PILL_ENTERED_FOR_APPEND_NEW]: () => this._pillEnteredForAppend(),
       [MESSAGE_TYPES.PILL_ENTERED_FOR_INSERT_NEW]: (pillData, position) => this._pillEnteredForInsert(position),
+      [MESSAGE_TYPES.PILL_INTENT_TO_QUERY]: () => this._submitQuery(),
       [MESSAGE_TYPES.PILL_OPEN_FOR_EDIT]: (pillData) => this._pillOpenForEdit(pillData),
       [MESSAGE_TYPES.PILL_SELECTED]: (data) => this._pillsSelected([data]),
       [MESSAGE_TYPES.PILL_DESELECTED]: (data) => this._pillsDeselected([data])
@@ -252,6 +262,12 @@ const QueryPills = RsaContextMenu.extend({
 
     this.send('openGuidedPillForEdit', { pillData });
     this._pillEnteredForEdit();
+  },
+
+  _submitQuery() {
+    if (this.get('canQueryGuided')) {
+      this.get('executeQuery')();
+    }
   },
 
   /**

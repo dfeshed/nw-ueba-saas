@@ -191,6 +191,15 @@ export default class DataHelper {
     return this;
   }
 
+  canQueryGuided(flag = true) {
+    this.hasRequiredValuesToQuery(flag);
+    if (!flag) {
+      // Add an invalid pill
+      _set(this.state, 'queryNode.pillsData', INVALID_PILL_DATA);
+    }
+    return this;
+  }
+
   hasRequiredValuesToQuery(flag) {
     _set(this.state, 'queryNode.metaFilter', []);
     _set(this.state, 'queryNode.previouslySelectedTimeRanges', {});

@@ -185,6 +185,7 @@ export default Component.extend({
       [MESSAGE_TYPES.META_ARROW_LEFT_KEY]: () => this._metaArrowLeft(),
       [MESSAGE_TYPES.META_ARROW_RIGHT_KEY]: () => this._metaArrowRight(),
       [MESSAGE_TYPES.META_CLICKED]: () => this._metaClicked(),
+      [MESSAGE_TYPES.META_ENTER_KEY]: () => this._checkToSubmitQuery(),
       [MESSAGE_TYPES.META_ESCAPE_KEY]: () => this._cancelPill(),
       [MESSAGE_TYPES.META_SELECTED]: (data) => this._metaSelected(data),
       [MESSAGE_TYPES.OPERATOR_ARROW_LEFT_KEY]: () => this._operatorArrowLeft(),
@@ -673,6 +674,25 @@ export default Component.extend({
     const pD = this.get('pillData');
     // Inform container that this pill component is cancelling out of editing
     this._broadcast(MESSAGE_TYPES.PILL_EDIT_CANCELLED, pD);
+  },
+
+  /**
+   * This checks to see if the user pressed ENTER when no meta, operator, and
+   * value have been set yet. This is to support submitting a query. It doesn't
+   * actually submit the query. It informs the parent that it wants to query.
+   * The parent will make the final decision if all conditions are met to allow
+   * a query to be performed.
+   * @private
+   */
+  _checkToSubmitQuery() {
+    const {
+      selectedMeta,
+      selectedOperator,
+      valueString
+     } = this.getProperties('selectedMeta', 'selectedOperator', 'valueString');
+    if (selectedMeta === null && selectedOperator === null && valueString === null) {
+      this._broadcast(MESSAGE_TYPES.PILL_INTENT_TO_QUERY);
+    }
   },
 
   /**
