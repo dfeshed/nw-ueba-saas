@@ -18,11 +18,13 @@ import {
  * @public
  */
 export default function(queryNode, language, limit, batch, handlers, startSessionId = null) {
+  // conditions is legacy
+  const filters = queryNode.metaFilter.conditions || queryNode.metaFilter;
   const query = {
     filter: [
       serviceIdFilter(queryNode.serviceId),
       timeRangeFilter(queryNode.startTime, queryNode.endTime),
-      conditionsFilter(encodeMetaFilterConditions(queryNode.metaFilter.conditions, language))
+      conditionsFilter(encodeMetaFilterConditions(filters, language))
     ],
     stream: { limit, batch }
   };
