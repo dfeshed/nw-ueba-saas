@@ -16,10 +16,12 @@
     {{#if isTextView}}
       {{#if (or isLogEvent isEndpointEvent)}}
         <hbox justify="start">
-          {{recon-event-actionbar/export-logs}}
           {{#if isEndpointEvent}}
             {{recon-event-actionbar/pivot-endpoint}}
             {{recon-event-actionbar/pivot-to-process-analysis}}
+            {{recon-event-actionbar/pivot-to-host-details}}
+          {{else}}
+            {{recon-event-actionbar/export-logs}}
           {{/if}}
         </hbox>
       {{else}}

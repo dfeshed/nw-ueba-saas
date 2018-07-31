@@ -273,6 +273,7 @@ export default {
       pivotToEndpoint: 'Pivot to Endpoint Thick Client',
       pivotToProcessAnalysis: 'Process Analysis',
       pivotToProcessAnalysisTitle: 'Process relationship and event view of source process',
+      pivotToHostOverview: 'Pivot to Host Overview',
       pivotToEndpointTitle: 'Applicable for hosts with 4.x Endpoint agents installed, please install the Netwitness Endpoint Thick Client.',
       downloadJson: 'Download JSON',
       downloadLog: 'Download Log',
@@ -332,7 +333,6 @@ export default {
       generic: 'An unexpected error has occurred attempting to retrieve this data.',
       missingRecon: 'This event (id = {{id}}) was not saved or has been rolled out of storage. No content to display.',
       noTextContentData: 'No text data was generated during content reconstruction. This could mean that the event data was corrupt or invalid. Check the other reconstruction views.',
-      noRawDataEndpoint: 'No text data was generated during content reconstruction. This could mean that the event data was corrupt/invalid, or that an administrator has disabled the transmission of raw endpoint events in the Endpoint server configuration. Check the other reconstruction views.',
       permissionError: 'Insufficient permissions for the requested data. If you believe you should have access, ask your administrator to provide the necessary permissions.'
     },
     fatalError: {

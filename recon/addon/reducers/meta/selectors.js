@@ -128,6 +128,13 @@ export const processAnalysisQueryString = createSelector(
   }
 );
 
+export const agentId = createSelector(
+    _eventMeta,
+    (eventMeta) => {
+      return getMetaValue('agent.id', eventMeta);
+    }
+);
+
 export const isProcessAnalysisDisabled = createSelector(
   _eventMeta,
   (eventMeta) => {

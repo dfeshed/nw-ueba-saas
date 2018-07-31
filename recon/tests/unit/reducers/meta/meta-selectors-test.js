@@ -9,7 +9,8 @@ import {
   eventType,
   eventTypeFromMetaArray,
   processAnalysisQueryString,
-  isProcessAnalysisDisabled
+  isProcessAnalysisDisabled,
+  agentId
 } from 'recon/reducers/meta/selectors';
 
 module('Unit | selector | meta');
@@ -263,4 +264,12 @@ test('isProcessAnalysisDisabled test', function(assert) {
   };
   const result = isProcessAnalysisDisabled(Immutable.from(data));
   assert.equal(result, false, 'should return valid boolean value for isProcessAnalysisDesabled');
+});
+
+test('agentId test', function(assert) {
+  const data = {
+    recon: { meta: { meta: [['agent.id', 'abc'] ] } }
+  };
+  const result = agentId(Immutable.from(data));
+  assert.equal(result, 'abc', 'Agent id is returned');
 });

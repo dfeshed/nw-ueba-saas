@@ -20,12 +20,12 @@
     }
   }
 
-  .pivot-to-endpoint {
-    margin: 0 0 0 rsa-whitespace()
-  }
+  .pivot-to-endpoint,
+  .pivot-to-host-details,
   .pivot-to-process-analysis {
-    margin: 0 0 0 rsa-whitespace()
+    margin-right: rsa-whitespace();
   }
+
   .export-packet-button,
   .export-logs-button,
   .export-files-button {

@@ -61,7 +61,7 @@ const TextReconComponent = Component.extend(ReconPagerMixin, StickyHeaderMixin, 
   @computed('isEndpointEvent')
   noResultsMessage(isEndpointEvent) {
     const i18n = this.get('i18n');
-    return isEndpointEvent ? i18n.t('recon.error.noRawDataEndpoint') : i18n.t('recon.error.noTextContentData');
+    return !isEndpointEvent ? i18n.t('recon.error.noTextContentData') : '';
   },
 
   @alias('contextualHelp.invTextAnalysis') topic: null,
