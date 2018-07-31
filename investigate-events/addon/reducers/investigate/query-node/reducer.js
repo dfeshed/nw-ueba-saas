@@ -286,7 +286,11 @@ export default handleActions({
   },
 
   [ACTION_TYPES.EDIT_GUIDED_PILL]: (state, { payload }) => {
-    return _handlePillUpdate(state, payload.pillData);
+    const newPillData = {
+      ...payload.pillData,
+      isEditing: false
+    };
+    return _handlePillUpdate(state, newPillData);
   },
 
   [ACTION_TYPES.VALIDATE_GUIDED_PILL]: (state, action) => {

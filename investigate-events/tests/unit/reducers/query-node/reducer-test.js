@@ -240,10 +240,19 @@ test('EDIT_GUIDED_PILL edits first pill provided', function(assert) {
       }
     }
   };
-  const result = reducer(stateWithPills, action);
+
+  const stateWithEditingPill = new ReduxDataHelper()
+    .pillsDataPopulated()
+    .markEditing(['1'])
+    .build()
+    .investigate
+    .queryNode;
+
+  const result = reducer(stateWithEditingPill, action);
 
   assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
   assert.ok(result.pillsData[0].id !== '1', 'updated pillsData item has updated ID');
+  assert.ok(result.pillsData[0].isEditing === false, 'not editing');
   assert.equal(result.pillsData[0].foo, 1234, 'pillsData item had its data updated');
 });
 
