@@ -314,6 +314,9 @@ module('Integration | Component | query-pills', function(hooks) {
       .build();
 
     await render(hbs`{{query-container/query-pills isActive=true}}`);
+
+    await leaveNewPillTemplate();
+
     await click(PILL_SELECTORS.meta);
 
     return settled().then(async () => {
@@ -335,6 +338,9 @@ module('Integration | Component | query-pills', function(hooks) {
       .build();
 
     await render(hbs`{{query-container/query-pills isActive=true}}`);
+
+    await leaveNewPillTemplate();
+
     await click(PILL_SELECTORS.meta); // make it selected
     await click(PILL_SELECTORS.meta); // make it deselected
 
@@ -354,6 +360,9 @@ module('Integration | Component | query-pills', function(hooks) {
       .build();
 
     await render(hbs`{{query-container/query-pills isActive=true}}`);
+
+    await leaveNewPillTemplate();
+
     const metas = findAll(PILL_SELECTORS.meta);
     await click(`#${metas[0].id}`); // make it selected
     await click(`#${metas[1].id}`); // make it selected
@@ -377,6 +386,9 @@ module('Integration | Component | query-pills', function(hooks) {
       .build();
 
     await render(hbs`{{query-container/query-pills isActive=true}}`);
+
+    await leaveNewPillTemplate();
+
     const metas = findAll(PILL_SELECTORS.meta);
     await click(`#${metas[0].id}`); // make it selected
     await click(`#${metas[1].id}`); // make it selected
@@ -458,6 +470,9 @@ module('Integration | Component | query-pills', function(hooks) {
         {{query-container/query-pills isActive=true}}
       </div>
     `);
+
+    await leaveNewPillTemplate();
+
     const metas = findAll(PILL_SELECTORS.meta);
     await click(`#${metas[0].id}`); // make it selected
     await click(`#${metas[1].id}`); // make it selected
@@ -481,6 +496,9 @@ module('Integration | Component | query-pills', function(hooks) {
       .build();
 
     await render(hbs`{{query-container/query-pills isActive=true}}`);
+
+    await leaveNewPillTemplate();
+
     doubleClick(PILL_SELECTORS.queryPill);
     await click(PILL_SELECTORS.deletePill);
     assert.equal(deleteActionSpy.callCount, 0, 'The delete pill action creator wasn\'t called');
@@ -583,6 +601,8 @@ module('Integration | Component | query-pills', function(hooks) {
       </div>
     `);
 
+    await leaveNewPillTemplate();
+
     const metas = findAll(PILL_SELECTORS.meta);
     await click(`#${metas[0].id}`); // make the 1st pill selected
 
@@ -625,13 +645,13 @@ module('Integration | Component | query-pills', function(hooks) {
         {{query-container/query-pills isActive=true}}
       </div>
     `);
+
+    await leaveNewPillTemplate();
+
     const metas = findAll(PILL_SELECTORS.meta);
     await click(`#${metas[0].id}`); // make it selected
 
-
     triggerEvent(PILL_SELECTORS.selectedPill, 'contextmenu', e);
-
-    // triggerEvent(PILL_SELECTORS.selectedPill, 'contextmenu', e);
 
     return settled().then(() => {
       const selector = '.context-menu';
@@ -657,6 +677,8 @@ module('Integration | Component | query-pills', function(hooks) {
         {{query-container/query-pills isActive=true}}
       </div>
     `);
+
+    await leaveNewPillTemplate();
 
     assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
 
@@ -689,6 +711,8 @@ module('Integration | Component | query-pills', function(hooks) {
       </div>
     `);
 
+    await leaveNewPillTemplate();
+
     assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
 
     const metas = findAll(PILL_SELECTORS.meta);
@@ -720,6 +744,8 @@ module('Integration | Component | query-pills', function(hooks) {
       </div>
     `);
 
+    await leaveNewPillTemplate();
+
     assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
 
     await click(PILL_SELECTORS.complexPill); // make the complex pill selected
@@ -749,6 +775,8 @@ module('Integration | Component | query-pills', function(hooks) {
         {{query-container/query-pills isActive=true}}
       </div>
     `);
+
+    await leaveNewPillTemplate();
 
     assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
 
@@ -842,6 +870,8 @@ module('Integration | Component | query-pills', function(hooks) {
       </div>
     `);
 
+    await leaveNewPillTemplate();
+
     assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
 
     const metas = findAll(PILL_SELECTORS.meta);
@@ -873,6 +903,8 @@ module('Integration | Component | query-pills', function(hooks) {
       </div>
     `);
 
+    await leaveNewPillTemplate();
+
     assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
 
     await click(PILL_SELECTORS.complexPill); // make the complex pill selected
@@ -888,4 +920,26 @@ module('Integration | Component | query-pills', function(hooks) {
       assert.equal(findAll(PILL_SELECTORS.complexPillInput).length, 1, 'complex pill input should be present');
     });
   });
+
+  test('while a pill is being edited, you cannot select another pill', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await leaveNewPillTemplate();
+    const pills = findAll(PILL_SELECTORS.queryPill);
+    doubleClick(`#${pills[0].id}`); // open pill for edit
+    await click(`#${pills[1].id}`); // attempt to select another pill
+
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'Should be no selected pills.');
+  });
+
 });

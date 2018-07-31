@@ -310,10 +310,22 @@ const QueryPills = RsaContextMenu.extend({
   },
 
   _pillsSelected(pillData) {
+    // If pills are open for any reason, do not allow
+    // a pill to be selected
+    if (this.get('isPillOpen')) {
+      return;
+    }
+
     this.send('selectGuidedPills', { pillData });
   },
 
   _pillsDeselected(pillData) {
+    // If pills are open for any reason, do not allow
+    // a pill to be deselected
+    if (this.get('isPillOpen')) {
+      return;
+    }
+
     this.send('deselectGuidedPills', { pillData });
   },
 
