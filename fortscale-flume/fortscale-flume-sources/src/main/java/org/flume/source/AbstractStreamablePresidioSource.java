@@ -7,6 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.base.Stopwatch;
 import fortscale.common.general.Schema;
 import fortscale.domain.core.AbstractDocument;
+import org.apache.flume.ChannelFullException;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
 import org.apache.flume.FlumeException;
@@ -24,6 +25,8 @@ import static org.apache.flume.CommonStrings.START_DATE;
 
 
 public abstract class AbstractStreamablePresidioSource extends AbstractPresidioSource {
+
+    private static final int WAIT_FOR_CHANNEL = 3 * 1000 * 60;
 
     private static Logger logger = LoggerFactory.getLogger(AbstractStreamablePresidioSource.class);
 
@@ -127,11 +130,10 @@ public abstract class AbstractStreamablePresidioSource extends AbstractPresidioS
             eventAsString = mapper.writeValueAsString(event);
             final Event flumeEvent = JsonEventBuilder.withBody(eventAsString, Charset.defaultCharset());
             logger.trace("{} has finished processing event {}. Sending event to channel", getName(), flumeEvent);
-            getChannelProcessor().processEvent(flumeEvent); // Store the Event into this Source's associated Channel(s)
+            sendEvent(flumeEvent); // Store the Event into this Source's associated Channel(s)
         } catch (JsonProcessingException e) {
             failureReason = "CANNOT_SERIALIZE_EVENT";
         }
-
         if (failureReason == null) {
             flumePresidioExternalMonitoringService.reportSuccessEventMetric(1);
         } else {
@@ -139,6 +141,26 @@ public abstract class AbstractStreamablePresidioSource extends AbstractPresidioS
             flumePresidioExternalMonitoringService.reportFailedEventMetric(failureReason, 1);
         }
 
+    }
+
+    private void sendEvent(Event flumeEvent) {
+        while (true) {
+            try {
+                getChannelProcessor().processEvent(flumeEvent);
+                break;
+            } catch (ChannelFullException ex) {
+                logger.error(String.format("The channel is full, wait {} ms. and retry again. exception: {}", WAIT_FOR_CHANNEL, ex));
+                waitBeforeRetry();
+            }
+        }
+    }
+
+    private void waitBeforeRetry() {
+        try {
+            Thread.sleep(WAIT_FOR_CHANNEL);
+        } catch (InterruptedException iex) {
+
+        }
     }
 
 }
