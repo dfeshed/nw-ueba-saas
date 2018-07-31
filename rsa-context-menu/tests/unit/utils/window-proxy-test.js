@@ -1,4 +1,4 @@
-import windowProxy from 'rsa-context-menu/utils/window-proxy';
+import windowProxy from 'component-lib/utils/window-proxy';
 import { module, test } from 'qunit';
 import sinon from 'sinon';
 

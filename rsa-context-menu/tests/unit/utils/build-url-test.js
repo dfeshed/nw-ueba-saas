@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import sinon from 'sinon';
-import windowProxy from 'rsa-context-menu/utils/window-proxy';
-import { buildInvestigateUrl, buildHostsUrl, buildEventAnalysisUrl } from 'rsa-context-menu/utils/build-url';
+import windowProxy from 'component-lib/utils/window-proxy';
+import { buildInvestigateUrl, buildHostsUrl, buildEventAnalysisUrl } from 'component-lib/utils/build-url';
 
 const selection = {
   'moduleName': 'EventAnalysisPanel',

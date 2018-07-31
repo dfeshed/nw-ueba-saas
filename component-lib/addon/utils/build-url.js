@@ -1,5 +1,5 @@
 import moment from 'moment';
-import windowProxy from 'rsa-context-menu/utils/window-proxy';
+import windowProxy from 'component-lib/utils/window-proxy';
 import _ from 'lodash';
 
 const _prepareMetaFormatMap = (language) => {
