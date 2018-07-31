@@ -20,7 +20,8 @@ import {
   editGuidedPill,
   openGuidedPillForEdit,
   resetGuidedPill,
-  selectGuidedPills
+  selectGuidedPills,
+  selectAllPillsTowardsDirection
 } from 'investigate-events/actions/guided-creators';
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 
@@ -43,7 +44,8 @@ const dispatchToActions = {
   deselectGuidedPills,
   deselectAllGuidedPills,
   openGuidedPillForEdit,
-  resetGuidedPill
+  resetGuidedPill,
+  selectAllPillsTowardsDirection
 };
 
 const QueryPills = RsaContextMenu.extend({
@@ -134,7 +136,9 @@ const QueryPills = RsaContextMenu.extend({
       [MESSAGE_TYPES.PILL_INTENT_TO_QUERY]: () => this._submitQuery(),
       [MESSAGE_TYPES.PILL_OPEN_FOR_EDIT]: (pillData) => this._pillOpenForEdit(pillData),
       [MESSAGE_TYPES.PILL_SELECTED]: (data) => this._pillsSelected([data]),
-      [MESSAGE_TYPES.PILL_DESELECTED]: (data) => this._pillsDeselected([data])
+      [MESSAGE_TYPES.PILL_DESELECTED]: (data) => this._pillsDeselected([data]),
+      [MESSAGE_TYPES.SELECT_ALL_PILLS_TO_RIGHT]: (position) => this._pillsSelectAllToRight(position),
+      [MESSAGE_TYPES.SELECT_ALL_PILLS_TO_LEFT]: (position) => this._pillsSelectAllToLeft(position)
     });
   },
 
@@ -254,6 +258,13 @@ const QueryPills = RsaContextMenu.extend({
     this.send('deleteSelectedGuidedPills');
   },
 
+  _pillsSelectAllToRight(position) {
+    this.send('selectAllPillsTowardsDirection', position, 'right');
+  },
+
+  _pillsSelectAllToLeft(position) {
+    this.send('selectAllPillsTowardsDirection', position, 'left');
+  },
   /**
    * Opens up the pill for edit on keypress
    * @private

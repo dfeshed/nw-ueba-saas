@@ -418,6 +418,16 @@ const getMetaFormat = (meta, languages) => {
   return metaObject.format;
 };
 
+const selectPillsFromPosition = (pills, position, direction) => {
+  let newPills = [];
+  if (direction === 'right') {
+    newPills = pills.filter((pill) => pills.indexOf(pill) > position);
+  } else if (direction === 'left') {
+    newPills = pills.filter((pill) => pills.indexOf(pill) < position);
+  }
+  return newPills;
+};
+
 export {
   buildMetaValueStreamInputs,
   executeMetaValuesRequest,
@@ -427,5 +437,6 @@ export {
   transformTextToPillData,
   filterIsPresent,
   clientSideParseAndValidate,
-  getMetaFormat
+  getMetaFormat,
+  selectPillsFromPosition
 };

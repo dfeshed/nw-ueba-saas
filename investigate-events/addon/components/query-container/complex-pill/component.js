@@ -48,7 +48,9 @@ export default Component.extend({
     this.set('_messageHandlerMap', {
       [MESSAGE_TYPES.DELETE_CLICKED]: (data) => this._deletePill(data),
       [MESSAGE_TYPES.SELECTED_FOCUS_DELETE_PRESSED]: () => this._selectedFocusDeletePressed(),
-      [MESSAGE_TYPES.SELECTED_FOCUS_ENTER_PRESSED]: () => this._selectedFocusEnterPressed()
+      [MESSAGE_TYPES.SELECTED_FOCUS_ENTER_PRESSED]: () => this._selectedFocusEnterPressed(),
+      [MESSAGE_TYPES.SELECTED_FOCUS_SHIFT_DOWN_RIGHT_ARROW_PRESSED]: () => this._selectedFocusShiftDownRightArrowPressed(),
+      [MESSAGE_TYPES.SELECTED_FOCUS_SHIFT_UP_LEFT_ARROW_PRESSED]: () => this._selectedFocusShiftUpLeftArrowPressed()
     });
   },
 
@@ -159,6 +161,19 @@ export default Component.extend({
       this._broadcast(MESSAGE_TYPES.ENTER_PRESSED_ON_SELECTED_PILL, pillData);
     }
   },
+
+  _selectedFocusShiftDownRightArrowPressed() {
+    if (!this.get('isActive')) {
+      this.get('sendMessage')(MESSAGE_TYPES.SELECT_ALL_PILLS_TO_RIGHT, this.get('position'));
+    }
+  },
+
+  _selectedFocusShiftUpLeftArrowPressed() {
+    if (!this.get('isActive')) {
+      this.get('sendMessage')(MESSAGE_TYPES.SELECT_ALL_PILLS_TO_LEFT, this.get('position'));
+    }
+  },
+
     /**
    * Sends messages to the parent container.
    * @param {string} type The event type from `event-types`

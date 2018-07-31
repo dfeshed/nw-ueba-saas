@@ -19,6 +19,9 @@ const ENTER_KEY = KEY_MAP.enter.code;
 const ESCAPE_KEY = KEY_MAP.escape.code;
 const DELETE_KEY = KEY_MAP.delete.code;
 const BACKSPACE_KEY = KEY_MAP.backspace.code;
+const ARROW_LEFT_KEY = KEY_MAP.arrowLeft.code;
+const ARROW_RIGHT_KEY = KEY_MAP.arrowRight.code;
+const modifiers = { shiftKey: true };
 
 let setState;
 const newActionSpy = sinon.spy(guidedCreators, 'addGuidedPill');
@@ -27,6 +30,7 @@ const selectActionSpy = sinon.spy(guidedCreators, 'selectGuidedPills');
 const deselectActionSpy = sinon.spy(guidedCreators, 'deselectGuidedPills');
 const openGuidedPillForEditSpy = sinon.spy(guidedCreators, 'openGuidedPillForEdit');
 const resetGuidedPillSpy = sinon.spy(guidedCreators, 'resetGuidedPill');
+const selectAllPillsTowardsDirection = sinon.spy(guidedCreators, 'selectAllPillsTowardsDirection');
 
 const allPillsAreClosed = (assert) => {
   assert.equal(findAll(PILL_SELECTORS.pillOpen).length, 0, 'Class for pill open should not be present.');
@@ -66,6 +70,7 @@ module('Integration | Component | query-pills', function(hooks) {
     deselectActionSpy.reset();
     openGuidedPillForEditSpy.reset();
     resetGuidedPillSpy.reset();
+    selectAllPillsTowardsDirection.reset();
   });
 
   hooks.after(function() {
@@ -75,6 +80,7 @@ module('Integration | Component | query-pills', function(hooks) {
     deselectActionSpy.restore();
     openGuidedPillForEditSpy.restore();
     resetGuidedPillSpy.restore();
+    selectAllPillsTowardsDirection.restore();
   });
 
   test('Upon initialization, one active pill is created', async function(assert) {
@@ -942,4 +948,70 @@ module('Integration | Component | query-pills', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'Should be no selected pills.');
   });
 
+  test('Pressing Shift and Right arrow key once a pill is selected will select all pills to the right', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    assert.expect(7);
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+    await leaveNewPillTemplate();
+
+    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
+
+    const metas = findAll(PILL_SELECTORS.meta);
+    await click(`#${metas[0].id}`); // make the 1st pill selected
+
+    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'Focus holder should be present now');
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 1, 'Should be 1 pill selected.');
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_RIGHT_KEY, modifiers);
+
+    return settled().then(() => {
+      assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 2, 'Should be 2 pills selected.');
+      assert.equal(selectAllPillsTowardsDirection.callCount, 1, 'The select all pills to its right action creator was called once');
+      assert.equal(selectAllPillsTowardsDirection.args[0][0], 0, 'The action creator was called with the right arguments');
+      assert.equal(selectAllPillsTowardsDirection.args[0][1], 'right', 'The action creator was called with the right direction arg');
+    });
+  });
+
+  test('Pressing Shift and Left arrow key once a pill is selected will select all pills to the Left', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    assert.expect(7);
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+    await leaveNewPillTemplate();
+
+    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
+
+    const metas = findAll(PILL_SELECTORS.meta);
+    await click(`#${metas[1].id}`); // make the 2nd pill selected
+    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'Focus holder should be present now');
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 1, 'Should be 1 pill selected.');
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_LEFT_KEY, modifiers);
+
+    return settled().then(() => {
+      assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 2, 'Should be 2 pills selected.');
+      assert.equal(selectAllPillsTowardsDirection.callCount, 1, 'The select all pills to its left action creator was called once');
+      assert.equal(selectAllPillsTowardsDirection.args[0][0], 1, 'The action creator was called with the right arguments');
+      assert.equal(selectAllPillsTowardsDirection.args[0][1], 'left', 'The action creator was called with the right direction arg');
+    });
+  });
 });

@@ -535,4 +535,62 @@ module('Unit | Helper | query utils', function(hooks) {
       value: '\'1=2\''
     });
   });
+
+  test('selectPillsFromPosition returns an array with pills selected in right direction', function(assert) {
+    assert.expect(2);
+    const pills = [{
+      a: 'foo'
+    }, {
+      a: 'bar'
+    }, {
+      a: 'baz'
+    }, {
+      a: 'bang'
+    }, {
+      a: 'boom'
+    }];
+    const selectedPills = queryUtils.selectPillsFromPosition(pills, 1, 'right');
+
+    assert.equal(selectedPills.length, 3, 'Should output all objects from that position to its right');
+    // Although it should return all objects to its right including itself, but because that
+    // pill is already selected, we do not need it to be included in the selected pills array
+    assert.deepEqual(selectedPills, [
+      {
+        a: 'baz'
+      }, {
+        a: 'bang'
+      }, {
+        a: 'boom'
+      }
+    ]);
+  });
+
+  test('selectPillsFromPosition returns an array with pills selected in left direction', function(assert) {
+    assert.expect(2);
+    const pills = [{
+      a: 'foo'
+    }, {
+      a: 'bar'
+    }, {
+      a: 'baz'
+    }, {
+      a: 'bang'
+    }, {
+      a: 'boom'
+    }];
+    const selectedPills = queryUtils.selectPillsFromPosition(pills, 3, 'left');
+
+    assert.equal(selectedPills.length, 3, 'Should output all objects from that position to its left');
+    // Although it should return all objects to its right including itself, but because that
+    // pill is already selected, we do not need it to be included in the selected pills array
+    assert.deepEqual(selectedPills, [
+      {
+        a: 'foo'
+      }, {
+        a: 'bar'
+      }, {
+        a: 'baz'
+      }
+    ]);
+  });
 });

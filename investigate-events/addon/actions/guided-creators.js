@@ -2,7 +2,7 @@ import * as ACTION_TYPES from './types';
 import { clientSideParseAndValidate, getMetaFormat } from './utils';
 import { selectedPills } from 'investigate-events/reducers/investigate/query-node/selectors';
 import validateQueryFragment from './fetch/query-validation';
-import { transformTextToPillData } from 'investigate-events/actions/utils';
+import { transformTextToPillData, selectPillsFromPosition } from 'investigate-events/actions/utils';
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 
 const _validateGuidedPill = (pillData, position) => {
@@ -125,6 +125,14 @@ export const selectGuidedPills = ({ pillData }) => ({
     pillData
   }
 });
+
+export const selectAllPillsTowardsDirection = (position, direction) => {
+  return (dispatch, getState) => {
+    const { investigate: { queryNode: { pillsData } } } = getState();
+    const pillsToBeSelected = selectPillsFromPosition(pillsData, position, direction);
+    dispatch(selectGuidedPills({ pillData: pillsToBeSelected }));
+  };
+};
 
 export const openGuidedPillForEdit = ({ pillData }) => {
   return (dispatch) => {

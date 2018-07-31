@@ -295,4 +295,75 @@ module('Unit | Actions | Guided Creators', function(hooks) {
     assert.deepEqual(action.payload.pillData, 'foo', 'action pillData has the right value');
   });
 
+  test('selectAllPillsTowardsDirection dispatches the proper events', function(assert) {
+    assert.expect(2);
+    const done = assert.async();
+
+    const position = 0;
+    const direction = 'right';
+    const getState = () => {
+      return new ReduxDataHelper()
+      .language()
+      .pillsDataPopulated()
+      .markSelected(['1'])
+      .build();
+    };
+
+    const myDispatch = (action) => {
+      assert.equal(action.type, ACTION_TYPES.SELECT_GUIDED_PILLS, 'action has the correct type');
+      assert.deepEqual(action.payload.pillData,
+        [{
+          id: '2',
+          meta: 'b',
+          operator: '=',
+          value: '\'y\'',
+          isSelected: false,
+          isEditing: false,
+          isInvalid: false,
+          complexFilterText: undefined
+        }],
+        'action pillData will contain the pills that will need to be selected');
+      done();
+    };
+
+    const thunk = guidedCreators.selectAllPillsTowardsDirection(position, direction);
+    thunk(myDispatch, getState);
+  });
+
+  test('selectAllPillsTowardsDirection dispatches the proper events', function(assert) {
+    assert.expect(2);
+    const done = assert.async();
+
+    const position = 1;
+    const direction = 'left';
+
+    const getState = () => {
+      return new ReduxDataHelper()
+      .language()
+      .pillsDataPopulated()
+      .markSelected(['2'])
+      .build();
+    };
+
+    const myDispatch = (action) => {
+      assert.equal(action.type, ACTION_TYPES.SELECT_GUIDED_PILLS, 'action has the correct type');
+      assert.deepEqual(action.payload.pillData,
+        [{
+          id: '1',
+          meta: 'a',
+          operator: '=',
+          value: '\'x\'',
+          isSelected: false,
+          isEditing: false,
+          isInvalid: false,
+          complexFilterText: undefined
+        }],
+        'action pillData will contain the pills that will need to be selected');
+      done();
+    };
+
+    const thunk = guidedCreators.selectAllPillsTowardsDirection(position, direction);
+    thunk(myDispatch, getState);
+  });
+
 });

@@ -22,12 +22,15 @@ const META_OPTIONS = metaKeySuggestionsForQueryBuilder(
 import PILL_SELECTORS from '../pill-selectors';
 
 const ARROW_LEFT_KEY = KEY_MAP.arrowLeft.code;
-// const ARROW_RIGHT_KEY = KEY_MAP.arrowRight.code;
+const ARROW_RIGHT_KEY = KEY_MAP.arrowRight.code;
+const ARROW_DOWN_KEY = KEY_MAP.arrowDown.code;
+const ARROW_UP_KEY = KEY_MAP.arrowUp.code;
 const ENTER_KEY = KEY_MAP.enter.code;
 const ESCAPE_KEY = KEY_MAP.escape.code;
 const X_KEY = 88;
 const DELETE_KEY = KEY_MAP.delete.code;
 const BACKSPACE_KEY = KEY_MAP.backspace.code;
+const modifiers = { shiftKey: true };
 
 const trim = (text) => text.replace(/\s+/g, '').trim();
 let setState;
@@ -928,5 +931,137 @@ module('Integration | Component | query-pill', function(hooks) {
     `);
 
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ENTER_KEY);
+  });
+
+  test('selected pill sends up a message when shift and Up Arrow is pressed', async function(assert) {
+    assert.expect(2);
+
+    const pillState = new ReduxDataHelper(setState)
+    .pillsDataPopulated()
+    .language()
+    .markSelected(['1'])
+    .build();
+
+    const [ enrichedPill ] = enrichedPillsData(pillState);
+    this.set('pillData', enrichedPill);
+
+    this.set('handleMessage', (messageType, position) => {
+      if (isIgnoredInitialEvent(messageType)) {
+        return;
+      }
+
+      assert.equal(messageType, MESSAGE_TYPES.SELECT_ALL_PILLS_TO_LEFT, 'Message sent to select all pills to the left');
+      assert.equal(position, 0, 'Message sent contains correct pill position');
+    });
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=false
+        position=0
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_UP_KEY, modifiers);
+  });
+
+  test('selected pill sends up a message when shift and Left Arrow is pressed', async function(assert) {
+    assert.expect(2);
+
+    const pillState = new ReduxDataHelper(setState)
+    .pillsDataPopulated()
+    .language()
+    .markSelected(['1'])
+    .build();
+
+    const [ enrichedPill ] = enrichedPillsData(pillState);
+    this.set('pillData', enrichedPill);
+
+    this.set('handleMessage', (messageType, position) => {
+      if (isIgnoredInitialEvent(messageType)) {
+        return;
+      }
+
+      assert.equal(messageType, MESSAGE_TYPES.SELECT_ALL_PILLS_TO_LEFT, 'Message sent to select all pills to the left');
+      assert.equal(position, 0, 'Message sent contains correct pill position');
+    });
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=false
+        position=0
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_LEFT_KEY, modifiers);
+  });
+
+  test('selected pill sends up a message when shift and Down Arrow is pressed', async function(assert) {
+    assert.expect(2);
+
+    const pillState = new ReduxDataHelper(setState)
+    .pillsDataPopulated()
+    .language()
+    .markSelected(['1'])
+    .build();
+
+    const [ enrichedPill ] = enrichedPillsData(pillState);
+    this.set('pillData', enrichedPill);
+
+    this.set('handleMessage', (messageType, position) => {
+      if (isIgnoredInitialEvent(messageType)) {
+        return;
+      }
+
+      assert.equal(messageType, MESSAGE_TYPES.SELECT_ALL_PILLS_TO_RIGHT, 'Message sent to select all pills to the right');
+      assert.equal(position, 0, 'Message sent contains correct pill position');
+    });
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=false
+        position=0
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_DOWN_KEY, modifiers);
+  });
+
+  test('selected pill sends up a message when shift and Right Arrow is pressed', async function(assert) {
+    assert.expect(2);
+
+    const pillState = new ReduxDataHelper(setState)
+    .pillsDataPopulated()
+    .language()
+    .markSelected(['1'])
+    .build();
+
+    const [ enrichedPill ] = enrichedPillsData(pillState);
+    this.set('pillData', enrichedPill);
+
+    this.set('handleMessage', (messageType, position) => {
+      if (isIgnoredInitialEvent(messageType)) {
+        return;
+      }
+
+      assert.equal(messageType, MESSAGE_TYPES.SELECT_ALL_PILLS_TO_RIGHT, 'Message sent to select all pills to the right');
+      assert.equal(position, 0, 'Message sent contains correct pill position');
+    });
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=false
+        position=0
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_RIGHT_KEY, modifiers);
   });
 });
