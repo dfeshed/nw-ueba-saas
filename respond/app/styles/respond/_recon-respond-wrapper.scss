@@ -36,6 +36,14 @@
         align-items: flex-end;
       }
 
+      .event-recon-contextual-help {
+        padding-right: .7rem;
+      }
+
+      .event-recon-contextual-help:hover {
+        cursor: pointer;
+      }
+
       .recon-container__header-close-icon {
         padding-right: 1rem;
       }

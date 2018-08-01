@@ -1,10 +1,11 @@
 import { module, test } from 'qunit';
 import Component from '@ember/component';
+import ContextualHelp from 'component-lib/services/contextual-help';
 import * as ACTION_TYPES from 'respond/actions/types';
 import Immutable from 'seamless-immutable';
 import hbs from 'htmlbars-inline-precompile';
 import { setupRenderingTest } from 'ember-qunit';
-import { find, findAll, render, settled } from '@ember/test-helpers';
+import { click, find, findAll, render, settled } from '@ember/test-helpers';
 import { patchReducer } from '../../../helpers/vnext-patch';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 
@@ -80,5 +81,23 @@ module('Integration | Component | ReconWrapper', function(hooks) {
       assert.equal(findAll(selector).length, 0);
       assert.equal(findAll('.fake').length, 1);
     });
+  });
+
+  test('onclick the help button will open contextual help for investigate events', async function(assert) {
+    assert.expect(2);
+
+    patchReducer(this, Immutable.from({}));
+
+    this.owner.register('service:contextualHelp', ContextualHelp.extend({
+      goToHelp(module, topic) {
+        assert.equal(module, 'investigation');
+        assert.equal(topic, 'invEventAnalysis');
+      }
+    }));
+
+    await render(hbs`{{recon-respond-wrapper endpointId=endpointId eventId=eventId reconClose=(action close)}}`);
+    await click('[test-id=eventReconContextualHelp]');
+
+    await settled();
   });
 });
