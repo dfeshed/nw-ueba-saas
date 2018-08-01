@@ -271,7 +271,8 @@
                         <configuration>
                             <source>
                                 pathname = String.format("%s/../../resources/groovy/utils/Maven.groovy", project.basedir)
-                                command = String.format("%s deploy:deploy-file -f %s/target/generated-sources/swagger -DpomFile=pom.xml -Dfile=target/presidio-manager-generated-client-%s.jar -DrepositoryId=asoc-snapshots -Durl=https://repo1.rsa.lab.emc.com:8443/artifactory/asoc-snapshots", project.properties.get('maven.command'), project.basedir, project.version)
+                                repositoryId = project.version.endsWith("SNAPSHOT") ? "asoc-snapshots" : "asoc-releases"
+                                command = String.format("%s deploy:deploy-file -f %s/target/generated-sources/swagger -DpomFile=pom.xml -Dfile=target/presidio-manager-generated-client-%s.jar -DrepositoryId=%s -Durl=https://repo1.rsa.lab.emc.com:8443/artifactory/%s", project.properties.get('maven.command'), project.basedir, project.version, repositoryId, repositoryId)
                                 new GroovyShell().parse(new File(pathname)).with {
                                     executeMavenCommand(command, project.properties.get('java.home'), project.properties.get('maven.home'))
                                 }
