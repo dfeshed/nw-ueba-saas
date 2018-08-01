@@ -2,7 +2,7 @@ import { module, test, skip } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { click, findAll, triggerEvent, render, settled, triggerKeyEvent } from '@ember/test-helpers';
+import { click, fillIn, findAll, triggerEvent, render, settled, triggerKeyEvent } from '@ember/test-helpers';
 import sinon from 'sinon';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
@@ -26,11 +26,18 @@ const modifiers = { shiftKey: true };
 let setState;
 const newActionSpy = sinon.spy(guidedCreators, 'addGuidedPill');
 const deleteActionSpy = sinon.spy(guidedCreators, 'deleteGuidedPill');
+const editGuidedPillSpy = sinon.spy(guidedCreators, 'editGuidedPill');
 const selectActionSpy = sinon.spy(guidedCreators, 'selectGuidedPills');
 const deselectActionSpy = sinon.spy(guidedCreators, 'deselectGuidedPills');
 const openGuidedPillForEditSpy = sinon.spy(guidedCreators, 'openGuidedPillForEdit');
 const resetGuidedPillSpy = sinon.spy(guidedCreators, 'resetGuidedPill');
 const selectAllPillsTowardsDirection = sinon.spy(guidedCreators, 'selectAllPillsTowardsDirection');
+
+const spys = [
+  newActionSpy, deleteActionSpy, editGuidedPillSpy, selectActionSpy,
+  deselectActionSpy, openGuidedPillForEditSpy, resetGuidedPillSpy,
+  selectAllPillsTowardsDirection
+];
 
 const allPillsAreClosed = (assert) => {
   assert.equal(findAll(PILL_SELECTORS.pillOpen).length, 0, 'Class for pill open should not be present.');
@@ -64,23 +71,11 @@ module('Integration | Component | query-pills', function(hooks) {
   });
 
   hooks.afterEach(function() {
-    newActionSpy.reset();
-    deleteActionSpy.reset();
-    selectActionSpy.reset();
-    deselectActionSpy.reset();
-    openGuidedPillForEditSpy.reset();
-    resetGuidedPillSpy.reset();
-    selectAllPillsTowardsDirection.reset();
+    spys.forEach((s) => s.reset());
   });
 
   hooks.after(function() {
-    newActionSpy.restore();
-    deleteActionSpy.restore();
-    selectActionSpy.restore();
-    deselectActionSpy.restore();
-    openGuidedPillForEditSpy.restore();
-    resetGuidedPillSpy.restore();
-    selectAllPillsTowardsDirection.restore();
+    spys.forEach((s) => s.restore());
   });
 
   test('Upon initialization, one active pill is created', async function(assert) {
@@ -1014,4 +1009,35 @@ module('Integration | Component | query-pills', function(hooks) {
       assert.equal(selectAllPillsTowardsDirection.args[0][1], 'left', 'The action creator was called with the right direction arg');
     });
   });
+
+  test('Editing a complex pill sends a message to edit the pill', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataComplex()
+      .build();
+
+    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await leaveNewPillTemplate();
+
+    let pills = findAll(PILL_SELECTORS.complexPill);
+    doubleClick(`#${pills[0].id}`); // open pill for edit
+
+    // new ID, get them again
+    pills = findAll(PILL_SELECTORS.complexPill);
+    const inputId = `#${pills[0].id} input`;
+    const newValue = 'jdsal;jdlaskjdlkas';
+    await fillIn(inputId, newValue);
+    await triggerKeyEvent(PILL_SELECTORS.complexPillInput, 'keydown', ENTER_KEY);
+
+    // action to store in state called
+    assert.equal(editGuidedPillSpy.callCount, 1, 'The edit pill action creator was called once');
+    const [ [ calledWith ] ] = editGuidedPillSpy.args;
+    assert.equal(
+      calledWith.pillData.complexFilterText,
+      newValue,
+      'The edit pill action creator was with the right text'
+    );
+  });
+
 });

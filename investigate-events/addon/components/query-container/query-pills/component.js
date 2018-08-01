@@ -303,12 +303,6 @@ const QueryPills = RsaContextMenu.extend({
   },
 
   /**
-   *
-   * TODO: WHEN EDIT IS INTRODUCED, ALL OF THIS FUNCTION
-   * NEEDS TESTING. ALSO NEED TO TEST THAT ENTERING A PILL
-   * FOR EDIT SENDS AN ENTERED EVENT UP TO THIS COMPONENT
-   * AND TRIGGERS ADDITION OF THE RIGHT CLASSES
-   *
    * Edit pill in state
    * @param {*} pillData The data for the pill
    * @private

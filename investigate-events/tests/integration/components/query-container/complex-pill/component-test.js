@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { click, find, findAll, render, triggerKeyEvent } from '@ember/test-helpers';
+import { click, fillIn, find, findAll, render, triggerKeyEvent } from '@ember/test-helpers';
 
 import * as MESSAGE_TYPES from 'investigate-events/components/query-container/message-types';
 import PILL_SELECTORS from '../pill-selectors';
@@ -263,7 +263,7 @@ module('Integration | Component | complex-pill', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.complexPillInput, 'keydown', ESCAPE_KEY);
   });
 
-  test('sends message up when selected and delete is pressed', async function(assert) {
+  test('sends DELETE_PRESSED_ON_SELECTED_PILL message up when selected and delete is pressed', async function(assert) {
     assert.expect(2);
 
     this.set('handleMessage', (messageType) => {
@@ -286,7 +286,7 @@ module('Integration | Component | complex-pill', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', DELETE_KEY);
   });
 
-  test('sends message up when selected and backspace is pressed', async function(assert) {
+  test('sends ENTER_PRESSED_ON_SELECTED_PILL message up when selected and backspace is pressed', async function(assert) {
     assert.expect(2);
 
     this.set('handleMessage', (messageType) => {
@@ -309,7 +309,7 @@ module('Integration | Component | complex-pill', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', BACKSPACE_KEY);
   });
 
-  test('sends message up when selected and enter is pressed', async function(assert) {
+  test('sends ENTER_PRESSED_ON_SELECTED_PILL message up when not active and enter is pressed', async function(assert) {
     assert.expect(3);
 
     const pillData = { complexFilterText: 'FOOOOOOOO', isSelected: true };
@@ -333,7 +333,7 @@ module('Integration | Component | complex-pill', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ENTER_KEY);
   });
 
-  test('sends message up when selected and shift and up arrow is pressed', async function(assert) {
+  test('sends SELECT_ALL_PILLS_TO_LEFT message up when selected and shift and up arrow is pressed', async function(assert) {
     assert.expect(3);
 
     const pillData = { complexFilterText: 'FOOOOOOOO', isSelected: true };
@@ -357,7 +357,7 @@ module('Integration | Component | complex-pill', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_UP_KEY, modifiers);
   });
 
-  test('sends message up when selected and shift and left arrow is pressed', async function(assert) {
+  test('sends SELECT_ALL_PILLS_TO_LEFT message up when selected and shift and left arrow is pressed', async function(assert) {
     assert.expect(3);
 
     const pillData = { complexFilterText: 'FOOOOOOOO', isSelected: true };
@@ -381,7 +381,7 @@ module('Integration | Component | complex-pill', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_LEFT_KEY, modifiers);
   });
 
-  test('sends message up when selected and shift and down arrow is pressed', async function(assert) {
+  test('sends SELECT_ALL_PILLS_TO_RIGHT message up when selected and shift and down arrow is pressed', async function(assert) {
     assert.expect(3);
 
     const pillData = { complexFilterText: 'FOOOOOOOO', isSelected: true };
@@ -405,7 +405,7 @@ module('Integration | Component | complex-pill', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_DOWN_KEY, modifiers);
   });
 
-  test('sends message up when selected and shift and right arrow is pressed', async function(assert) {
+  test('sends SELECT_ALL_PILLS_TO_RIGHT message up when selected and shift and right arrow is pressed', async function(assert) {
     assert.expect(3);
 
     const pillData = { complexFilterText: 'FOOOOOOOO', isSelected: true };
@@ -428,4 +428,54 @@ module('Integration | Component | complex-pill', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 1, 'proper class present');
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_RIGHT_KEY, modifiers);
   });
+
+  test('sends PILL_EDITED message up when pill active and enter is pressed on populated box', async function(assert) {
+    assert.expect(2);
+
+    const pillData = { complexFilterText: 'FOOOOOOOO', isEditing: true };
+    this.set('pillData', pillData);
+
+    this.set('handleMessage', (messageType, data) => {
+      assert.ok(messageType === MESSAGE_TYPES.PILL_EDITED, 'should send out correct action');
+      assert.ok(data.complexFilterText == pillData.complexFilterText, 'should send out pill data');
+    });
+
+    await render(hbs`
+      {{query-container/complex-pill
+        position=0
+        isActive=true
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    await triggerKeyEvent(PILL_SELECTORS.complexPillInput, 'keydown', ENTER_KEY);
+  });
+
+  test('does not send PILL_EDITED message up when enter pressed with no text', async function(assert) {
+    assert.expect(0);
+
+    const pillData = { complexFilterText: 'F', isEditing: true };
+    this.set('pillData', pillData);
+
+    this.set('handleMessage', () => {
+      assert.notOk(true, 'should not get here');
+    });
+
+    await render(hbs`
+      {{query-container/complex-pill
+        position=0
+        isActive=true
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    // remove the 1 character
+    await fillIn(PILL_SELECTORS.complexPillInput, '');
+
+    // submit for edit
+    await triggerKeyEvent(PILL_SELECTORS.complexPillInput, 'keydown', ENTER_KEY);
+  });
+
 });

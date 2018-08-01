@@ -4,7 +4,7 @@ import computed from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
 
 import * as MESSAGE_TYPES from '../message-types';
-import { isEscape } from 'investigate-events/util/keys';
+import { isEscape, isEnter } from 'investigate-events/util/keys';
 
 export default Component.extend({
   classNames: ['complex-pill'],
@@ -73,15 +73,6 @@ export default Component.extend({
     }
   },
 
-  keyDown(event) {
-    // if the key pressed is an escape, then bubble that out and
-    // escape further processing
-    if (isEscape(event)) {
-      // Let others know ECS was pressed
-      this._cancelPillEdit();
-    }
-  },
-
   _pillOpenForEdit() {
     const pillData = this.get('pillData');
     this._broadcast(MESSAGE_TYPES.PILL_OPEN_FOR_EDIT, pillData);
@@ -134,7 +125,24 @@ export default Component.extend({
         // to the query-pills component.
         this._broadcast(type, data);
       }
+    },
+
+    onKeyDown(event) {
+      if (isEnter(event) && event.target.value.trim().length > 0) {
+        this._editPill(event.target.value);
+      } else if (isEscape(event)) {
+        this._cancelPillEdit();
+      }
     }
+  },
+
+  _editPill(data) {
+    const pillData = this.get('pillData');
+    const newPillData = {
+      ...pillData,
+      complexFilterText: data
+    };
+    this._broadcast(MESSAGE_TYPES.PILL_EDITED, newPillData);
   },
 
   /**
@@ -174,7 +182,7 @@ export default Component.extend({
     }
   },
 
-    /**
+  /**
    * Sends messages to the parent container.
    * @param {string} type The event type from `event-types`
    * @param {Object} data The event data
