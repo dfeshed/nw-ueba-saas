@@ -465,8 +465,7 @@ export default Component.extend({
       this.setProperties({
         isMetaActive: true,
         isOperatorActive: false,
-        isValueActive: false,
-        isActive: true
+        isValueActive: false
       });
     }
   },
@@ -546,8 +545,7 @@ export default Component.extend({
       this.setProperties({
         isMetaActive: false,
         isOperatorActive: true,
-        isValueActive: false,
-        isActive: true
+        isValueActive: false
       });
     }
   },
@@ -563,8 +561,7 @@ export default Component.extend({
       selectedOperator,
       isMetaActive: false,
       isOperatorActive: false,
-      isValueActive: selectedOperator.hasValue,
-      isActive: selectedOperator.hasValue
+      isValueActive: selectedOperator.hasValue
     });
     if (!selectedOperator.hasValue) {
       // an operator that does not accept a value was selected,
@@ -610,8 +607,7 @@ export default Component.extend({
       this.setProperties({
         isMetaActive: false,
         isOperatorActive: false,
-        isValueActive: true,
-        isActive: true
+        isValueActive: true
       });
     }
   },
@@ -774,8 +770,7 @@ export default Component.extend({
     this.setProperties({
       isMetaActive: false,
       isOperatorActive: false,
-      isValueActive: false,
-      isActive: false
+      isValueActive: false
     });
   },
 

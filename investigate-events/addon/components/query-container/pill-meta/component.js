@@ -180,7 +180,8 @@ export default Component.extend({
             // react to the ENTER press in the first place. For example, to
             // make a selection.
             const selection = this.get('selection');
-            if (selection === null) {
+            const { value } = event.target;
+            if (selection === null && !value) {
               this._broadcast(MESSAGE_TYPES.META_ENTER_KEY);
               dropFocus();
             }
