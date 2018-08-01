@@ -6,7 +6,9 @@
     keyDown=(action 'onKeyDown')
   }}
 {{else}}
-  {{pillData.complexFilterText}}
+  <span class='text-wrapper'>
+    {{pillData.complexFilterText}}
+  </span>
 
   {{query-container/delete-pill
     sendMessage=(action 'handleMessage')

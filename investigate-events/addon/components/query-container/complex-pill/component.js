@@ -9,7 +9,7 @@ import { isEscape, isEnter } from 'investigate-events/util/keys';
 export default Component.extend({
   classNames: ['complex-pill'],
   classNameBindings: ['isActive', 'isSelected'],
-  tagName: 'span',
+  tagName: 'div',
   attributeBindings: ['title'],
   i18n: service(),
 
@@ -39,8 +39,7 @@ export default Component.extend({
 
   @computed('pillData')
   title(pillData) {
-    const notEditable = this.get('i18n').t('queryBuilder.notEditable').string;
-    return `${notEditable}\n${pillData.complexFilterText}`;
+    return pillData.complexFilterText;
   },
 
   init() {

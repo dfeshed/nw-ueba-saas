@@ -143,7 +143,6 @@ define('sa/locales/es-mx/translations', ['exports'], function (exports) {
     querySelected: 'Consultar con filtros seleccionados',
     querySelectedNewTab: 'Consultar con filtros seleccionados en una pestaña nueva',
     expensive: 'La ejecución de esta operación podría tardar más tiempo.',
-    notEditable: 'Los filtros de consultas complejas no son editables.',
     validationMessages: {
       time: 'Debe introducir una fecha válida.',
       text: 'Se deben agregar comillas (") a las cadenas',

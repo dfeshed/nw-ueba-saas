@@ -287,6 +287,12 @@
   @include pillAppearance();
   background-color: background-color(primary, dark);
 
+  .text-wrapper {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
   &.is-selected {
     background-color: background-color(secondary);
     border-color: border-color(secondary);
@@ -299,6 +305,10 @@
     line-height: inherit;
     flex: 100;
     min-width: 80px;
+
+    label {
+      width: 100%;
+    }
 
     input {
       border-bottom: none;

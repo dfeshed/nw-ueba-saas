@@ -143,7 +143,6 @@ define('sa/locales/de-de/translations', ['exports'], function (exports) {
     querySelected: 'Abfrage mit ausgewählten Filtern durchführen',
     querySelectedNewTab: 'Abfrage mit ausgewählten Filtern auf neuer Registerkarte durchführen',
     expensive: 'Dieser Vorgang kann länger dauern.',
-    notEditable: 'Komplexe Abfragefilter können nicht bearbeitet werden.',
     validationMessages: {
       time: 'Sie müssen ein gültiges Datum eingeben.',
       text: 'Zeichenfolgen müssen in Anführungszeichen (") gesetzt werden.',

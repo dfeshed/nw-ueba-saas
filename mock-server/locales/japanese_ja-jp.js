@@ -143,7 +143,6 @@ define('sa/locales/ja-jp/translations', ['exports'], function (exports) {
     querySelected: '選択したフィルターでクエリを実行',
     querySelectedNewTab: '新しいタブで、選択したフィルターでクエリを実行',
     expensive: 'この操作の実行には時間がかかる場合があります。',
-    notEditable: '複雑なクエリ フィルターは編集できません。',
     validationMessages: {
       time: '有効な日付を入力する必要があります。',
       text: '文字列は「"」で囲む必要があります',
