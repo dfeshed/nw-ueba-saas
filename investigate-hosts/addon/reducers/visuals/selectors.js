@@ -25,6 +25,11 @@ const ANOMALIES_TABS = [
     label: 'investigateHosts.tabs.hooks',
     name: 'HOOKS',
     componentClass: 'host-detail/anomalies/hooks'
+  },
+  {
+    label: 'investigateHosts.tabs.threads',
+    name: 'THREADS',
+    componentClass: 'host-detail/anomalies/threads'
   }
 ];
 

@@ -27,9 +27,35 @@ const getFileContextHooks = () => {
   };
 };
 
+/**
+ * Action creator for fetching all suspicious threads given host id and scan time
+ * @method getFileContextThreads
+ * @public
+ * @returns {Object}
+ */
+const getFileContextThreads = () => {
+  return (dispatch, getState) => {
+    // Get selected agentId and scan time from the state
+    const { endpoint: { detailsInput: { agentId, scanTime } } } = getState();
+    const data = {
+      agentId,
+      scanTime,
+      categories: ['THREADS']
+    };
+    dispatch({
+      type: ACTION_TYPES.FETCH_FILE_CONTEXT_THREADS,
+      promise: HostDetails.getFileContextData(data),
+      meta: {
+        onFailure: (response) => handleError(ACTION_TYPES.FETCH_FILE_CONTEXT_THREADS, response)
+      }
+    });
+  };
+};
+
 const setSelectedRow = ({ id }) => ({ type: ACTION_TYPES.SET_ANOMALIES_SELECTED_ROW, payload: { id } });
 
 export {
   getFileContextHooks,
+  getFileContextThreads,
   setSelectedRow
 };

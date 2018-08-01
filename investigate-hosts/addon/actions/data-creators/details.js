@@ -7,7 +7,7 @@ import {
   getFileContextServices,
   getFileContextTasks
 } from './autoruns';
-import { getFileContextHooks } from './anomalies';
+import { getFileContextHooks, getFileContextThreads } from './anomalies';
 import { getFileContextDrivers } from './drivers';
 import { getProcessAndLib } from './libraries';
 import { getHostFiles } from './files';
@@ -90,6 +90,8 @@ const _fetchDataForSelectedTab = () => {
       case 'ANOMALIES':
         if ((activeAnomaliesTab === 'HOOKS') && (!anomalies.hooks)) {
           dispatch(getFileContextHooks());
+        } else if ((activeAnomaliesTab === 'THREADS') && (!anomalies.threads)) {
+          dispatch(getFileContextThreads());
         }
         break;
       case 'PROCESS':

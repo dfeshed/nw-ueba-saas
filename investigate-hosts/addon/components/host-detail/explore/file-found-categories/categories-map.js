@@ -16,7 +16,8 @@ const CATEGORY_NAME = {
   service: 'SERVICES',
   task: 'TASKS',
   driver: 'DRIVERS',
-  hooks: 'HOOKS'
+  hooks: 'HOOKS',
+  thread: 'THREADS'
 };
 
 export {

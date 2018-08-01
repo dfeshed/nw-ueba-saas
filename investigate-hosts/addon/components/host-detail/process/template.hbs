@@ -23,19 +23,19 @@
       <div class='process-content-box-wrapper'>
         {{host-detail/process/summary-items config=summaryConfig data=process}}
         <box class="process-content-box__accordion-content">
-          {{#rsa-content-accordion class='accordion-content-title' label=(t 'investigateHosts.process.dll.title')}}
+          {{#rsa-content-accordion isCollapsed=true class='accordion-content-title' label=(t 'investigateHosts.process.dll.title')}}
             <div class="process-dll-note">{{loadedDLLNote}}</div>
             {{host-detail/process/process-dll-list}}
           {{/rsa-content-accordion}}
         </box>
         {{#if isMachineWindows}}
           <box class="process-content-box__accordion-content">
-            {{#rsa-content-accordion class='accordion-content-title' label=(t 'investigateHosts.process.imageHooks.title')}}
+            {{#rsa-content-accordion isCollapsed=true class='accordion-content-title' label=(t 'investigateHosts.process.imageHooks.title')}}
               {{host-detail/process/process-image-hooks}}
             {{/rsa-content-accordion}}
           </box>
           <box class="process-content-box__accordion-content">
-            {{#rsa-content-accordion class='accordion-content-title' label=(t 'investigateHosts.process.suspiciousThreads.title')}}
+            {{#rsa-content-accordion isCollapsed=true class='accordion-content-title' label=(t 'investigateHosts.process.suspiciousThreads.title')}}
               {{host-detail/process/process-suspicious-threads}}
             {{/rsa-content-accordion}}
           </box>

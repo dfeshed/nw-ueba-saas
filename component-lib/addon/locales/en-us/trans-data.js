@@ -2119,6 +2119,13 @@ export default {
         pid: 'PID',
         eprocess: 'EPROCESS',
         path: 'Full Path',
+        processName: 'Process Name',
+        processTime: 'Process Time',
+        ethread: 'ETHREAD',
+        tid: 'Thread ID',
+        teb: 'Thread Environment Block',
+        startAddress: 'Start Address',
+        behaviorKey: 'Behavior Key',
         sameDirectoryFileCounts: {
           nonExe: '# Non-Executables',
           exe: '# Executables',
@@ -2273,7 +2280,18 @@ export default {
         signature: 'Signature',
         title: 'Image Hooks',
         message: {
-          noResultsMessage: 'No Image Hooks information were found'
+          noResultsMessage: 'No Image Hooks information was found'
+        }
+      },
+      suspiciousThreads: {
+        signature: 'Signature',
+        tid: 'Thread ID',
+        dllFileName: 'DLL Name',
+        teb: 'Thread Environment Block',
+        startAddress: 'Start Address',
+        process: 'Process',
+        message: {
+          noResultsMessage: 'No Suspicious Threads information was found'
         }
       }
     },
@@ -2298,7 +2316,8 @@ export default {
       alerts: 'Alerts ({{count}})',
       incidents: 'Incidents ({{count}})',
       anomalies: 'Anomalies',
-      hooks: 'Image Hooks'
+      hooks: 'Image Hooks',
+      threads: 'Suspicious Threads'
     },
     context: {
       score: 'Score',
@@ -2422,7 +2441,8 @@ export default {
           tasks: 'tasks'
         },
         anomalies: {
-          hooks: 'image hooks'
+          hooks: 'image hooks',
+          threads: 'suspicious threads'
         },
         files: 'files',
         drivers: 'drivers',
@@ -2798,7 +2818,8 @@ export default {
           tasks: 'Task Properties'
         },
         anomalies: {
-          hooks: 'Image Hooks'
+          hooks: 'Image Hooks',
+          threads: 'Suspicious Threads'
         },
         files: 'File Properties',
         drivers: 'Driver Properties',

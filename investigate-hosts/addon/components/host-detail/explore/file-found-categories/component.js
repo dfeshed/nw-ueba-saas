@@ -38,7 +38,7 @@ const FileFound = Component.extend({
 
       const childTabs = {
         AUTORUNS: ['AUTORUNS', 'SERVICES', 'TASKS'],
-        ANOMALIES: ['HOOKS']
+        ANOMALIES: ['HOOKS', 'THREADS']
       };
       const childTabsKeys = Object.keys(childTabs);
 

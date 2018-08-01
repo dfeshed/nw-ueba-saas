@@ -11,7 +11,9 @@ module('Unit | Reducers | Anomalies');
 
 const initialState = {
   hooks: null,
+  threads: null,
   hooksLoadingStatus: null,
+  threadsLoadingStatus: null,
   selectedRowId: null
 };
 
@@ -77,4 +79,20 @@ test('The HOST_DETAILS_DATATABLE_SORT_CONFIG resets the selected row id', functi
   });
   const result = reducer(previous, { type: ACTION_TYPES.HOST_DETAILS_DATATABLE_SORT_CONFIG });
   assert.equal(result.selectedRowId, null);
+});
+
+test('The FETCH_FILE_CONTEXT_THREADS sets the host details information', function(assert) {
+  const previous = Immutable.from({ threads: null, threadsLoadingStatus: 'completed' });
+
+  const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_FILE_CONTEXT_THREADS });
+  const startEndState = reducer(previous, startAction);
+  assert.deepEqual(startEndState.threadsLoadingStatus, 'wait');
+
+  const action = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.FETCH_FILE_CONTEXT_THREADS,
+    payload: { data: hooksData }
+  });
+
+  const endState = reducer(previous, action);
+  assert.deepEqual(_.values(endState.threads).length, 5);
 });

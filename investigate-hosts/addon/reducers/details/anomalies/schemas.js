@@ -10,21 +10,42 @@ import { addId, commonNormalizerStrategy } from 'investigate-hosts/reducers/deta
 const fileContextStrategy = (input) => {
   const { machineOsType, id } = input;
   const context = input[machineOsType];
-  const { hooks } = context;
+  const {
+    hooks = [],
+    threads = []
+  } = context;
+
   addId(hooks, id, 'hooks_');
-  return { ...input, hooks };
+  addId(threads, id, 'threads_');
+
+  return {
+    ...input,
+    hooks,
+    threads
+  };
 };
 
 
 const hook = new schema.Entity('hooks', {}, { processStrategy: commonNormalizerStrategy });
+const thread = new schema.Entity('threads', {}, { processStrategy: commonNormalizerStrategy });
 
-const fileContext = new schema.Entity('fileContext',
+const fileContextHooks = new schema.Entity('fileContext',
   {
     hooks: [hook]
   },
   { idAttribute: 'checksumSha256', processStrategy: fileContextStrategy });
 
-// List of file context
-const fileContextHooksSchema = [fileContext];
+const fileContextThreads = new schema.Entity('fileContext',
+  {
+    threads: [thread]
+  },
+  { idAttribute: 'checksumSha256', processStrategy: fileContextStrategy });
 
-export { fileContextHooksSchema };
+// List of file context
+const fileContextHooksSchema = [fileContextHooks];
+const fileContextThreadsSchema = [fileContextThreads];
+
+export {
+  fileContextHooksSchema,
+  fileContextThreadsSchema
+};

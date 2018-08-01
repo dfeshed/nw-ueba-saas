@@ -74,6 +74,7 @@
     }
   }
   &__accordion-content {
+    margin-bottom: rsa-whitespace(more);
     display: block;
     flex: initial;
     .rsa-data-table {
@@ -95,6 +96,7 @@
       h3 {
         color: text-color(secondary);
         font-weight: bold;
+        padding-left: 0px;
       }
     }
   }
@@ -103,6 +105,7 @@
 .header-data {
   background-color: background-color(primary, darkest, transparent);
   padding: rsa-whitespace(less) 0;
+  margin-bottom: rsa-whitespace();
   .tool-tip-value {
     padding: rsa-whitespace();
     width: 200px;

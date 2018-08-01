@@ -2,12 +2,18 @@ import * as ACTION_TYPES from 'investigate-hosts/actions/types';
 import reduxActions from 'redux-actions';
 import { handle } from 'redux-pack';
 import Immutable from 'seamless-immutable';
-import { fileContextHooksSchema } from './schemas';
+import {
+  fileContextHooksSchema,
+  fileContextThreadsSchema
+} from './schemas';
 import { normalize } from 'normalizr';
+
 
 const initialState = Immutable.from({
   hooks: null,
+  threads: null,
   hooksLoadingStatus: null,
+  threadsLoadingStatus: null,
   selectedRowId: null
 });
 
@@ -26,10 +32,26 @@ const anomalies = reduxActions.handleActions({
       start: (s) => s.set('hooksLoadingStatus', 'wait'),
       success: (s) => {
         const normalizedData = normalize(action.payload.data, fileContextHooksSchema);
-        const { hooks } = normalizedData.entities;
+        const { hooks = {} } = normalizedData.entities;
         return s.merge({
           hooks,
           hooksLoadingStatus: 'completed',
+          selectedRowId: null
+        });
+      }
+    });
+  },
+
+  [ACTION_TYPES.FETCH_FILE_CONTEXT_THREADS]: (state, action) => {
+    return handle(state, action, {
+      start: (s) => s.set('threadsLoadingStatus', 'wait'),
+      success: (s) => {
+        const normalizedData = normalize(action.payload.data, fileContextThreadsSchema);
+        const { threads = {} } = normalizedData.entities;
+
+        return s.merge({
+          threads,
+          threadsLoadingStatus: 'completed',
           selectedRowId: null
         });
       }

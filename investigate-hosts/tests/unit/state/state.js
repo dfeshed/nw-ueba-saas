@@ -1648,6 +1648,34 @@ export const hooksData = [
             ]
           }
         }
+      ],
+      threads: [
+        {
+          behaviorKey: '2916233153359241904',
+          eprocess: '0xFFFFFA801B002B30',
+          ethread: '0xFFFFFA801B002B30',
+          fileId: '5b4f3474b249594c81984396',
+          pid: 2164,
+          processName: 'explorer.exe',
+          processTime: 1531914845262,
+          startAddress: '0xB5F1069',
+          state: ['floating'],
+          teb: '0x7FFFFF6E000',
+          tid: 2164
+        },
+        {
+          behaviorKey: '2916233153359241904',
+          eprocess: '0xFFFFFA801B002B30',
+          ethread: '0xFFFFFA801B002B30',
+          fileId: '5b4f3474b249594c81984396',
+          pid: 2164,
+          processName: 'explorer.exe',
+          processTime: 1531914845262,
+          startAddress: '0x8811069',
+          state: ['floating'],
+          teb: '0x7FFFFF4C000',
+          tid: 2164
+        }
       ]
     }
   },
@@ -2007,6 +2035,47 @@ export const hooksData = [
               'e96b3cfeff       ; JMP 0x7fefd22f000'
             ]
           }
+        }
+      ],
+      threads: [
+        {
+          behaviorKey: '2916233153359241904',
+          eprocess: '0xFFFFFA801B002B30',
+          ethread: '0xFFFFFA801B002B30',
+          fileId: '5b4f3474b249594c81984396',
+          pid: 3164,
+          processName: 'iexplorer.exe',
+          processTime: 1531914845262,
+          startAddress: '0xB5F1069',
+          state: ['floating'],
+          teb: '0x7FFFFF6E007',
+          tid: 2164
+        },
+        {
+          behaviorKey: '2916233153359241904',
+          eprocess: '0xFFFFFA801B002B30',
+          ethread: '0xFFFFFA801B002B30',
+          fileId: '5b4f3474b249594c81984396',
+          pid: 7164,
+          processName: 'xplorer.exe',
+          processTime: 1531914845262,
+          startAddress: '0x8811069',
+          state: ['floating'],
+          teb: '0x7FFFFF4C008',
+          tid: 2164
+        },
+        {
+          behaviorKey: '2916233153359241904',
+          eprocess: '0xFFFFFA801B002B30',
+          ethread: '0xFFFFFA801B002B30',
+          fileId: '5b4f3474b249594c81984396',
+          pid: 7164,
+          processName: 'xprer.exe',
+          processTime: 1531914845262,
+          startAddress: '0x8811069',
+          state: ['floating'],
+          teb: '0x7FFFFF4C008',
+          tid: 2164
         }
       ]
     },
