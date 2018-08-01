@@ -211,38 +211,20 @@ module('Unit | Actions | Guided Creators', function(hooks) {
   });
 
   test('openGuidedPillForEdit dispatches the proper events', function(assert) {
-    assert.expect(4);
-    const done = assert.async();
-    const state = new ReduxDataHelper()
+    const { pillsData } = new ReduxDataHelper()
       .language()
       .pillsDataPopulated()
-      .markSelected(['1', '2'])
-      .build();
+      .markEditing(['1'])
+      .build()
+      .investigate
+      .queryNode;
 
-    const secondDispatch = (action) => {
-      assert.equal(action.type, ACTION_TYPES.DESELECT_GUIDED_PILLS, 'action has the correct type');
-      assert.deepEqual(action.payload.pillData, state.investigate.queryNode.pillsData, 'action pillData has the right value');
-      done();
-    };
-
-    const firstDispatch = (action) => {
-      if (typeof action === 'function') {
-        action(secondDispatch, () => state);
-      } else {
-        assert.equal(action.type, ACTION_TYPES.OPEN_GUIDED_PILL_FOR_EDIT, 'action has the correct type');
-        assert.deepEqual(action.payload.pillData, { meta: 'ip.proto', operator: '=', value: 'boom' }, 'action pillData has the right value');
-      }
-    };
-
-    const thunk = guidedCreators.openGuidedPillForEdit({
-      pillData: {
-        meta: 'ip.proto',
-        operator: '=',
-        value: 'boom'
-      },
-      position: 0
+    const action = guidedCreators.openGuidedPillForEdit({
+      pillData: pillsData
     });
-    thunk(firstDispatch);
+
+    assert.equal(action.type, ACTION_TYPES.OPEN_GUIDED_PILL_FOR_EDIT, 'action has the correct type');
+    assert.deepEqual(action.payload.pillData, pillsData, 'action pillData has the right value');
   });
 
   test('addFreeFormFilter action creator returns proper type and payload', function(assert) {

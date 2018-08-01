@@ -17,8 +17,6 @@ const META_OPTIONS = metaKeySuggestionsForQueryBuilder(
   new ReduxDataHelper(setState).language().pillsDataEmpty().build()
 );
 
-// const { log } = console;
-
 import PILL_SELECTORS from '../pill-selectors';
 
 const ARROW_LEFT_KEY = KEY_MAP.arrowLeft.code;
@@ -661,33 +659,6 @@ module('Integration | Component | query-pill', function(hooks) {
     // DO NOT `await` these
   });
 
-  test('double clicks are throttled', async function(assert) {
-    const done = assert.async();
-    assert.expect(1);
-    this.set('handleMessage', (messageType) => {
-      if (isIgnoredInitialEvent(messageType)) {
-        return;
-      }
-
-      assert.ok(messageType === MESSAGE_TYPES.PILL_OPEN_FOR_EDIT, 'Should be opened for edit');
-      done();
-    });
-    this.set('pillData', _getEnrichedPill(this));
-
-    await render(hbs`
-      {{query-container/query-pill
-        isActive=false
-        position=0
-        pillData=pillData
-        sendMessage=(action handleMessage)
-        metaOptions=metaOptions
-      }}
-    `);
-
-    doubleClick(PILL_SELECTORS.queryPill);
-    doubleClick(PILL_SELECTORS.queryPill);
-  });
-
   test('double clicks sends appropriate event', async function(assert) {
     const done = assert.async();
     this.set('handleMessage', (messageType) => {
@@ -764,7 +735,7 @@ module('Integration | Component | query-pill', function(hooks) {
         metaOptions=metaOptions
       }}
     `);
-    assert.equal(trim(find(PILL_SELECTORS.value).textContent), '\'x\'');
+    assert.equal(trim(find(PILL_SELECTORS.valueInput).value), '\'x\'');
   });
 
   test('replace double quotes with single quotes', async function(assert) {
@@ -813,7 +784,7 @@ module('Integration | Component | query-pill', function(hooks) {
       }}
     `);
 
-    await focus(PILL_SELECTORS.metaTrigger);
+    await click(PILL_SELECTORS.meta);
     await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', ESCAPE_KEY);
   });
 

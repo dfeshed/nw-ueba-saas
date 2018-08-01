@@ -226,9 +226,19 @@ export default Component.extend({
 
   didInsertElement() {
     this._super(...arguments);
-    // When we create this instance, if it's active, set meta as active
+    // When we create this instance, if it's active, set something active
     if (this.get('isActive')) {
-      this.set('isMetaActive', true);
+      const pD = this.get('pillData');
+      if (pD && pD.operator && pD.operator.hasValue) {
+        // operator should have a value, so focus on value
+        this.set('isValueActive', true);
+      } else if (pD && pD.operator && !pD.operator.hasValue) {
+        // operator is valueless (like "exists"), so focus on operator
+        this.set('isOperatorActive', true);
+      } else {
+        // default to focusing on meta
+        this.set('isMetaActive', true);
+      }
     }
   },
 
@@ -259,7 +269,7 @@ export default Component.extend({
     // If not active, and double clicking pill, then process
     // this as a desire to open for edit
     if (!this.get('isActive')) {
-      this._throttledPillOpenForEdit();
+      this._pillOpenForEdit();
     }
   },
 
@@ -354,9 +364,8 @@ export default Component.extend({
   // Rather than inspect events for targets, just throttle the
   // pill selection so multiple messages are not sent
   _throttledPillSelected() {
-    // Using 400 as 500 is the default timing for double-click.
-    // keeping clear of that
-    throttle(this, this._pillSelected, 400);
+    // Using 500 since it's the default timing for double-click.
+    throttle(this, this._pillSelected, 500);
   },
 
   _pillSelected() {
@@ -380,14 +389,7 @@ export default Component.extend({
           this.set('doubleClickFired', false);
         }
       }
-    }, 175);
-  },
-
-  // Double clicks on this component or child components can multiply.
-  // Rather than inspect events for targets, just throttle the
-  // double click so multiple messages are not sent
-  _throttledPillOpenForEdit() {
-    throttle(this, this._pillOpenForEdit, 100);
+    }, 300);
   },
 
   _pillOpenForEdit() {
@@ -466,8 +468,6 @@ export default Component.extend({
         isValueActive: false,
         isActive: true
       });
-    } else {
-      this._throttledPillSelected();
     }
   },
 
@@ -549,8 +549,6 @@ export default Component.extend({
         isValueActive: false,
         isActive: true
       });
-    } else {
-      this._throttledPillSelected();
     }
   },
 
@@ -615,8 +613,6 @@ export default Component.extend({
         isValueActive: true,
         isActive: true
       });
-    } else {
-      this._throttledPillSelected();
     }
   },
 

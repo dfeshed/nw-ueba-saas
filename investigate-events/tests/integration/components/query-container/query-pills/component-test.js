@@ -433,7 +433,7 @@ module('Integration | Component | query-pills', function(hooks) {
 
     await render(hbs`{{query-container/query-pills isActive=true}}`);
 
-    await focus(PILL_SELECTORS.triggerMetaPowerSelect);
+    await click(PILL_SELECTORS.meta);
     await triggerKeyEvent(PILL_SELECTORS.metaTrigger, 'keydown', ESCAPE_KEY);
 
     assert.equal(resetGuidedPillSpy.callCount, 1, 'The reset pill action creator was called once');

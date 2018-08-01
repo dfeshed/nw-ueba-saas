@@ -134,17 +134,12 @@ export const selectAllPillsTowardsDirection = (position, direction) => {
   };
 };
 
-export const openGuidedPillForEdit = ({ pillData }) => {
-  return (dispatch) => {
-    dispatch({
-      type: ACTION_TYPES.OPEN_GUIDED_PILL_FOR_EDIT,
-      payload: {
-        pillData
-      }
-    });
-    dispatch(deselectAllGuidedPills());
-  };
-};
+export const openGuidedPillForEdit = ({ pillData }) => ({
+  type: ACTION_TYPES.OPEN_GUIDED_PILL_FOR_EDIT,
+  payload: {
+    pillData
+  }
+});
 
 export const addFreeFormFilter = (freeFormText) => {
   return (dispatch, getState) => {
