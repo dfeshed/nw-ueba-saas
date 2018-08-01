@@ -6,12 +6,12 @@
     <parent>
         <groupId>presidio.ui</groupId>
         <artifactId>presidio-ui-output-client</artifactId>
-        <version>2.0.12-SNAPSHOT</version>
+        <version>2.0.14</version>
     </parent>
 
     <name>presidio-ui-output-client-api</name>
     <artifactId>presidio-ui-output-client-api</artifactId>
-    <version>2.0.12-SNAPSHOT</version>
+    <version>2.0.14</version>
 
 
     <dependencies>
