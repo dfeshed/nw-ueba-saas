@@ -1040,4 +1040,31 @@ module('Integration | Component | query-pills', function(hooks) {
     );
   });
 
+  test('Pressing escape once you have selected a pill should de-select all pills', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    assert.expect(2);
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+    await leaveNewPillTemplate();
+    const metas = findAll(PILL_SELECTORS.meta);
+    await click(`#${metas[0].id}`);
+    await click(`#${metas[1].id}`);
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 2, 'Should be 2 pills selected.');
+
+    // Clicking ESC while focus is anywhere in the browser will deselect all pills
+    await triggerKeyEvent(window, 'keydown', ESCAPE_KEY);
+
+    return settled().then(() => {
+      assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'Should be 2 pills selected.');
+    });
+  });
 });

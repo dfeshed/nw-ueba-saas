@@ -4,6 +4,7 @@ import computed from 'ember-computed-decorators';
 
 import RsaContextMenu from 'rsa-context-menu/components/rsa-context-menu/component';
 import * as MESSAGE_TYPES from '../message-types';
+import { isEscape } from 'investigate-events/util/keys';
 
 import {
   canQueryGuided,
@@ -140,6 +141,19 @@ const QueryPills = RsaContextMenu.extend({
       [MESSAGE_TYPES.SELECT_ALL_PILLS_TO_RIGHT]: (position) => this._pillsSelectAllToRight(position),
       [MESSAGE_TYPES.SELECT_ALL_PILLS_TO_LEFT]: (position) => this._pillsSelectAllToLeft(position)
     });
+  },
+
+  didInsertElement() {
+    this._super(...arguments);
+    const _boundEscapeListener = this._escapeListener.bind(this);
+    // saving the event handler fn so that it can be removed later
+    this.set('_boundEscapeListener', _boundEscapeListener);
+    window.addEventListener('keydown', _boundEscapeListener);
+  },
+
+  willDestroyElement() {
+    this._super(...arguments);
+    window.removeEventListener('keydown', this.get('_boundEscapeListener'));
   },
 
   actions: {
@@ -337,6 +351,12 @@ const QueryPills = RsaContextMenu.extend({
   _pillEditCancelled(data) {
     this._pillsExited();
     this.send('resetGuidedPill', data);
+  },
+
+  _escapeListener(e) {
+    if (isEscape(e) && this.get('selectedPills').length > 0) {
+      this.send('deselectAllGuidedPills');
+    }
   }
 });
 
