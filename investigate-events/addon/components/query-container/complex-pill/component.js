@@ -78,7 +78,7 @@ export default Component.extend({
   },
 
   _pillSelected() {
-    // Waiting 175 milliseconds in order to give
+    // Waiting 300 milliseconds in order to give
     // a double click a chance to occur. If we do not
     // delay execution here, double clicks will execute
     // click processing twice.
@@ -98,7 +98,7 @@ export default Component.extend({
           this.set('doubleClickFired', false);
         }
       }
-    }, 175);
+    }, 300);
   },
 
   _cancelPillEdit() {
