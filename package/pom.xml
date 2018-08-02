@@ -45,7 +45,7 @@
         <dependency>
             <groupId>presidio.ui</groupId>
             <artifactId>presidio-ui-app</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
