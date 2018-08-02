@@ -499,7 +499,7 @@ module('Unit | Helper | query utils', function(hooks) {
     });
   });
 
-  test('transformTextToPillData handles when just meta and operator', function(assert) {
+  test('7. transformTextToPillData handles when just meta and operator', function(assert) {
     assert.expect(1);
     const freeFormText = 'medium exists';
     const result = queryUtils.transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
@@ -512,7 +512,7 @@ module('Unit | Helper | query utils', function(hooks) {
     });
   });
 
-  test('transformTextToPillData returns pill data object', function(assert) {
+  test('8. transformTextToPillData returns pill data object', function(assert) {
     assert.expect(1);
     const freeFormText = 'medium = 1';
     const result = queryUtils.transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
@@ -523,7 +523,7 @@ module('Unit | Helper | query utils', function(hooks) {
     );
   });
 
-  test('transformTextToPillData returns populated pill object even if operator embedded in value', function(assert) {
+  test('9. transformTextToPillData returns populated pill object even if operator embedded in value', function(assert) {
     assert.expect(1);
     const freeFormText = 'user.dst = \'1=2\'';
     const result = queryUtils.transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
@@ -533,6 +533,19 @@ module('Unit | Helper | query utils', function(hooks) {
       meta: 'user.dst',
       operator: '=',
       value: '\'1=2\''
+    });
+  });
+
+  test('10. transformTextToPillData handles surrounding white space', function(assert) {
+    assert.expect(1);
+    const freeFormText = 'medium exists ';
+    const result = queryUtils.transformTextToPillData(freeFormText, DEFAULT_LANGUAGES);
+
+    assert.deepEqual(result, {
+      complexFilterText: undefined,
+      meta: 'medium',
+      operator: 'exists',
+      value: undefined
     });
   });
 

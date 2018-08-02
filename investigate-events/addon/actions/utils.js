@@ -288,6 +288,9 @@ const _createComplexFilterText = (complexFilterText) => ({
 
 function transformTextToPillData(queryText, availableMeta) {
 
+  // Nuke any surrounding white space
+  queryText = queryText.trim();
+
   // 1. Check if the text contains characters
   // that immediately make the query complex
   const hasComplexItem = complexOperators.some((operator) => queryText.includes(operator));
