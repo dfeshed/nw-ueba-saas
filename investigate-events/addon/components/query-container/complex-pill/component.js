@@ -53,6 +53,13 @@ export default Component.extend({
     });
   },
 
+  didInsertElement() {
+    this._super(arguments);
+    if (this.get('isActive')) {
+      this.element.querySelector('input').focus();
+    }
+  },
+
   click() {
     // If not active, and clicking pill, then process
     // this as a selection event

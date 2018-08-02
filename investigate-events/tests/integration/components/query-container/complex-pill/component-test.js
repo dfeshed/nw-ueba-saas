@@ -240,7 +240,7 @@ module('Integration | Component | complex-pill', function(hooks) {
       }}
     `);
 
-    assert.equal(findAll('input[autofocus]').length, 1, 'input has focus');
+    assert.equal(findAll(PILL_SELECTORS.complexPillInputFocus).length, 1, 'input has focus');
   });
 
   test('it broadcasts a message when the ESCAPE key is pressed', async function(assert) {
