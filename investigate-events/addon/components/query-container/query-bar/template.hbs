@@ -1,11 +1,11 @@
 <div class='query-bar-options'>
 
   {{#if isOnGuided}}
-    {{query-container/query-pills executeQuery=executeQuery}}
+    {{query-container/query-pills executeQuery=executeQuery takeFocus=(unbound takeFocus)}}
   {{/if}}
 
   {{#if isOnFreeForm}}
-    {{query-container/free-form executeQuery=executeQuery}}
+    {{query-container/free-form executeQuery=executeQuery takeFocus=(unbound takeFocus)}}
   {{/if}}
 
 </div>

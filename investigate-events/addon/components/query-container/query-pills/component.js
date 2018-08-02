@@ -58,20 +58,12 @@ const QueryPills = RsaContextMenu.extend({
     'isPillTriggerOpenForAdd:pill-trigger-open-for-add'
   ],
 
-  contextMenu({ target }) {
-    const currentClass = target.classList.contains('is-selected');
-    const parentClass = target.parentElement.classList.contains('is-selected');
-    if (currentClass || parentClass) {
-      this.setProperties({
-        contextItems: this.get('contextItems')
-      });
-      this._super(...arguments);
-    } else {
-      if (this.get('contextMenuService').deactivate) {
-        this.get('contextMenuService').deactivate();
-      }
-    } // do not call super so that the browser right-click event is preserved
-  },
+  // whether or not this component's children should take
+  // focus if they are so inclined.
+  takeFocus: true,
+
+  // Action to execute when submitting a query
+  executeQuery: () => {},
 
   // Used to hold onto new pill triggers that should be open
   // but have been re-rendered because id of closest pill has
@@ -87,8 +79,20 @@ const QueryPills = RsaContextMenu.extend({
   // Is a pill trigger open for add?
   isPillTriggerOpenForAdd: false,
 
-  // Action to execute when submitting a query
-  executeQuery: () => {},
+  contextMenu({ target }) {
+    const currentClass = target.classList.contains('is-selected');
+    const parentClass = target.parentElement.classList.contains('is-selected');
+    if (currentClass || parentClass) {
+      this.setProperties({
+        contextItems: this.get('contextItems')
+      });
+      this._super(...arguments);
+    } else {
+      if (this.get('contextMenuService').deactivate) {
+        this.get('contextMenuService').deactivate();
+      }
+    } // do not call super so that the browser right-click event is preserved
+  },
 
   @computed('pillsData')
   newPillPosition: (pillsData) => pillsData.length,

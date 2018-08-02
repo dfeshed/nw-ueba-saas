@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { throttle, debounce } from '@ember/runloop';
+import { throttle, debounce, scheduleOnce } from '@ember/runloop';
 
 import { hasRequiredValuesToQuery, freeFormText } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { addFreeFormFilter, updatedFreeFormText } from 'investigate-events/actions/guided-creators';
@@ -23,6 +23,13 @@ const freeForm = Component.extend({
   init() {
     this._super(...arguments);
     this.set('initialFreeFormText', this.get('freeFormText'));
+    if (this.get('takeFocus')) {
+      // Schedule after render so that thing that needs
+      // focus is actually there
+      scheduleOnce('afterRender', this, () => {
+        this.element.querySelector('input').focus();
+      });
+    }
   },
 
   throttledFocusOut(e) {

@@ -144,4 +144,66 @@ module('Integration | Component | query-bar', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.complexPill)[0].textContent.replace(/\s/g, ''), '(adslkjalksdj&&asdasdsad)', 'pill text is correct');
   });
 
+  test('Initial render of query pills will not have focus', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .pillsDataEmpty(true)
+      .hasRequiredValuesToQuery(true)
+      .build();
+
+    this.set('executeQuery', () => {});
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-bar executeQuery=executeQuery}}
+      </div>
+    `);
+
+    assert.equal(findAll(PILL_SELECTORS.metaInput).length, 1, 'pill meta is displayed');
+    assert.equal(findAll(PILL_SELECTORS.metaInputFocused).length, 0, 'But it is not focused');
+  });
+
+  test('After toggling from free form to guided, meta will have focus', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .pillsDataEmpty(true)
+      .hasRequiredValuesToQuery(true)
+      .queryView('freeForm')
+      .build();
+
+    this.set('executeQuery', () => {});
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-bar executeQuery=executeQuery}}
+      </div>
+    `);
+
+    await click(SELECTORS.queryFormatGuidedToggle);
+
+    assert.equal(findAll(PILL_SELECTORS.metaInput).length, 1, 'pill meta is displayed');
+    assert.equal(findAll(PILL_SELECTORS.metaInputFocused).length, 1, 'And it is focused');
+  });
+
+  test('After toggling from guided to free form, free form will have focus', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .pillsDataEmpty(true)
+      .hasRequiredValuesToQuery(true)
+      .build();
+
+    this.set('executeQuery', () => {});
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-bar executeQuery=executeQuery}}
+      </div>
+    `);
+
+    await click(SELECTORS.queryFormatFreeFormToggle);
+    await click(PILL_SELECTORS.freeFormInput);
+
+    assert.equal(findAll(PILL_SELECTORS.freeFormInputFocus).length, 1, 'free form is focused');
+  });
+
 });

@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { click, fillIn, render, triggerKeyEvent } from '@ember/test-helpers';
+import { click, fillIn, findAll, render, triggerKeyEvent } from '@ember/test-helpers';
 import sinon from 'sinon';
 
 import { patchReducer } from '../../../../helpers/vnext-patch';
@@ -139,5 +139,44 @@ module('Integration | Component | free-form', function(hooks) {
       'The action creator was called with the right arguments'
     );
   });
+
+  test('should not have focus when set to not have focus', async function(assert) {
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .hasRequiredValuesToQuery(true)
+      .build();
+
+    this.set('executeQuery', () => {});
+    this.set('takeFocus', true);
+
+    await render(hbs`
+      {{query-container/free-form
+        executeQuery=(action executeQuery)
+        takeFocus=false
+      }}
+    `);
+
+    assert.equal(findAll(PILL_SELECTORS.freeFormInputFocus).length, 0, 'Should not have focus');
+  });
+
+  test('should have focus when set to have focus', async function(assert) {
+    new ReduxDataHelper(setState)
+      .pillsDataEmpty()
+      .hasRequiredValuesToQuery(true)
+      .build();
+
+    this.set('executeQuery', () => {});
+    this.set('takeFocus', true);
+
+    await render(hbs`
+      {{query-container/free-form
+        executeQuery=(action executeQuery)
+        takeFocus=true
+      }}
+    `);
+
+    assert.equal(findAll(PILL_SELECTORS.freeFormInputFocus).length, 1, 'Should have focus');
+  });
+
 
 });
