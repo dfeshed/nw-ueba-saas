@@ -268,6 +268,23 @@ module('Unit | Helper | query utils', function(hooks) {
       .then(() => assert.ok('Filter is valid'));
   });
 
+  test('clientSideParseAndValidate passes when metaFormat is UInt8 and value is 0', function(assert) {
+    assert.expect(1);
+    const pillData = {
+      meta: {
+        format: 'UInt8',
+        metaName: 'foo',
+        flags: -2147482621,
+        displayName: 'foo'
+      },
+      operator: '=',
+      value: '0'
+    };
+
+    queryUtils.clientSideParseAndValidate(pillData.meta.format, pillData.value)
+      .then(() => assert.ok('Filter is valid'));
+  });
+
   test('clientSideParseAndValidate return error when metaFormat is UInt16 and value is not in proper format', function(assert) {
     assert.expect(2);
     const pillData = {

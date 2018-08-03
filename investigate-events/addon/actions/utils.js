@@ -24,7 +24,7 @@ const _isIPv6 = (value) => {
 };
 
 const _isInt = (value) => {
-  return /^[1-9]\d*$/.test(value);
+  return /^[0-9]\d*$/.test(value);
 };
 
 const _isMac = (value) => {
