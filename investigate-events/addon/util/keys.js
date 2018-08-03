@@ -14,7 +14,8 @@ const keyMap = {
   escape: { code: 27, key: 'Escape' },
   space: { code: 32, key: ' ' },
   tab: { code: 9, key: 'Tab' },
-  delete: { code: 46, key: 'Delete' }
+  delete: { code: 46, key: 'Delete' },
+  shift: { code: 16, key: 'Shift' }
 };
 
 /**
@@ -42,6 +43,7 @@ const matchesEscape = _.partial(matches, keyMap.escape);
 const matchesSpace = _.partial(matches, keyMap.space);
 const matchesTab = _.partial(matches, keyMap.tab);
 const matchesDelete = _.partial(matches, keyMap.delete);
+const matchesShift = _.partial(matches, keyMap.shift);
 
 /**
  * Is the event from a down arrow keyboard event?
@@ -99,6 +101,13 @@ export const isDelete = (event) => matchesDelete(event.keyCode);
  * @public
  */
 export const isEscape = (event) => matchesEscape(event.keyCode);
+/**
+ * Is the event from a shift keyboard event?
+ * @param {Object} event A KeyboardEvent.
+ * @return A Boolean value.
+ * @public
+ */
+export const isShift = (event) => matchesShift(event.keyCode);
 /**
  * Is the event from a space keyboard event?
  * @param {Object} event A KeyboardEvent.

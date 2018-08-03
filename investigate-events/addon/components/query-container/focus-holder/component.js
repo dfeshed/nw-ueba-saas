@@ -1,8 +1,8 @@
 import Component from '@ember/component';
-import { debounce } from '@ember/runloop';
+import { throttle } from '@ember/runloop';
 
 import * as MESSAGE_TYPES from '../message-types';
-import { isBackspace, isDelete, isEnter, isArrowDown, isArrowUp, isArrowRight, isArrowLeft } from 'investigate-events/util/keys';
+import { isBackspace, isDelete, isEnter, isArrowDown, isArrowUp, isArrowRight, isArrowLeft, isShift } from 'investigate-events/util/keys';
 
 export default Component.extend({
   classNames: ['focus-holder'],
@@ -19,7 +19,7 @@ export default Component.extend({
     this.$('input').focus();
   },
 
-  debounceKeyDown({ e }) {
+  throttleKeyDown({ e }) {
     const evtobj = window.event ? event : e;
     if (isBackspace(evtobj) || isDelete(evtobj)) {
       this.get('sendMessage')(MESSAGE_TYPES.SELECTED_FOCUS_DELETE_PRESSED);
@@ -34,7 +34,11 @@ export default Component.extend({
   },
 
   keyDown(e) {
-    debounce(this, this.debounceKeyDown, { e }, 1000);
+    if (isShift(e)) {
+      return false;
+    } else {
+      throttle(this, this.throttleKeyDown, { e }, 1000);
+    }
   },
 
   // No need to bubble up these events
