@@ -1967,7 +1967,7 @@ export default {
       checksumSha1: 'SHA1',
       checksumSha256: 'SHA256',
       machineOsType: 'Operating System',
-      reputationStatus: 'Reputation',
+      reputationStatus: 'Reputation Status',
       elf: {
         classType: 'ELF.Class Type',
         data: 'ELF.Data',
@@ -2199,7 +2199,7 @@ export default {
           entropy: 'Entropy',
           size: 'Size',
           format: 'Format',
-          reputationStatus: 'Reputation'
+          reputationStatus: 'Reputation Status'
         },
         inlinePatch: {
           currentAsm: 'Current Assembly',
@@ -2230,7 +2230,7 @@ export default {
       signature: 'Signature',
       path: 'Path',
       launchArguments: 'Launch Arguments',
-      reputationStatus: 'Reputation',
+      reputationStatus: 'Reputation Status',
       message: {
         noResultsMessage: 'No process information was found.'
       },

@@ -62,7 +62,7 @@ const defaultColumns = [
   },
   {
     'field': 'fileProperties.reputationStatus',
-    'title': 'Reputation',
+    'title': 'Reputation Status',
     'label': 'investigateHosts.files.fields.reputationStatus',
     'width': 100
   },
