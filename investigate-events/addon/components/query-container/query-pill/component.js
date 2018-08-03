@@ -194,7 +194,7 @@ export default Component.extend({
       [MESSAGE_TYPES.OPERATOR_CLICKED]: () => this._operatorClicked(),
       [MESSAGE_TYPES.OPERATOR_ESCAPE_KEY]: () => this._cancelPill(),
       [MESSAGE_TYPES.OPERATOR_SELECTED]: (data) => this._operatorSelected(data),
-      [MESSAGE_TYPES.DELETE_CLICKED]: (data) => this._deletePill(data),
+      [MESSAGE_TYPES.DELETE_CLICKED]: () => this._deletePill(),
       [MESSAGE_TYPES.SELECTED_FOCUS_DELETE_PRESSED]: () => this._selectedFocusDeletePressed(),
       [MESSAGE_TYPES.SELECTED_FOCUS_ENTER_PRESSED]: () => this._selectedFocusEnterPressed(),
       [MESSAGE_TYPES.SELECTED_FOCUS_SHIFT_DOWN_RIGHT_ARROW_PRESSED]: () => this._selectedFocusShiftDownRightArrowPressed(),
@@ -369,13 +369,12 @@ export default Component.extend({
   },
 
   _pillSelected() {
-    // Waiting 175 milliseconds in order to give
-    // a double click a chance to occur. If we do not
-    // delay execution here, double clicks will execute
+    // Waiting 300 milliseconds in order to give a double click a chance to
+    // occur. If we do not delay execution here, double clicks will execute
     // click processing twice.
     later(() => {
       if (!this.get('doubleClickFired')) {
-        const pillData = this._createPillData();
+        const pillData = this._createPillData(this.get('valueString'));
         if (pillData.isSelected) {
           this._broadcast(MESSAGE_TYPES.PILL_DESELECTED, pillData);
         } else {
@@ -393,7 +392,7 @@ export default Component.extend({
   },
 
   _pillOpenForEdit() {
-    const pillData = this._createPillData();
+    const pillData = this._createPillData(this.get('valueString'));
     this._broadcast(MESSAGE_TYPES.PILL_OPEN_FOR_EDIT, pillData);
   },
 
@@ -564,9 +563,13 @@ export default Component.extend({
       isValueActive: selectedOperator.hasValue
     });
     if (!selectedOperator.hasValue) {
-      // an operator that does not accept a value was selected,
-      // so create the pill
-      this._createPill();
+      // An operator that doesn't accept a value was selected,
+      // so either create or edit the pill
+      if (this.get('isExistingPill')) {
+        this._editPill();
+      } else {
+        this._createPill();
+      }
     }
   },
 
@@ -730,15 +733,13 @@ export default Component.extend({
     // If is an existing pill, add id to object
     if (this.get('isExistingPill')) {
       pillData.id = this.get('pillData.id');
-      pillData.value = this.get('pillData.value');
       pillData.isSelected = this.get('pillData.isSelected');
+    }
+    // Check what type of meta this is. If it's a string value, add quotes
+    if (meta && meta.format === 'Text' && value) {
+      pillData.value = quote(value);
     } else {
-      // Check what type of meta this is. If it's a string value, add quotes
-      if (meta && meta.format === 'Text' && value) {
-        pillData.value = quote(value);
-      } else {
-        pillData.value = value;
-      }
+      pillData.value = value;
     }
 
     return pillData;
@@ -749,7 +750,7 @@ export default Component.extend({
    * @private
    */
   _deletePill() {
-    this._broadcast(MESSAGE_TYPES.PILL_DELETED, this._createPillData());
+    this._broadcast(MESSAGE_TYPES.PILL_DELETED, this._createPillData(this.get('valueString')));
   },
 
   /**
@@ -763,7 +764,7 @@ export default Component.extend({
     this._broadcast(MESSAGE_TYPES.PILL_EDITED, pillData);
     // shutting this down, but not concerned with setting
     // data as the data should be refreshed back down through state.
-    // Enivitably this pill is going to be replaced with a new one
+    // Inevitably this pill is going to be replaced with a new one
     // because an edited pill is a replacement of the previous pill.
     // We are just making everything inactive in case that takes a
     // few millis.
@@ -792,7 +793,7 @@ export default Component.extend({
    */
   _selectedFocusEnterPressed() {
     if (!this.get('isActive')) {
-      const pillData = this._createPillData();
+      const pillData = this._createPillData(this.get('valueString'));
       this._broadcast(MESSAGE_TYPES.ENTER_PRESSED_ON_SELECTED_PILL, pillData);
     }
   },

@@ -1035,4 +1035,40 @@ module('Integration | Component | query-pill', function(hooks) {
 
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_RIGHT_KEY, modifiers);
   });
+
+  test('An edited pill, when supplied with meta and operator that does not accept a value, will send a message to create', async function(assert) {
+    const done = assert.async();
+    const pillState = new ReduxDataHelper(setState)
+      .pillsDataPopulated()
+      .language()
+      .build();
+    const [ enrichedPill ] = enrichedPillsData(pillState);
+
+    this.set('pillData', enrichedPill);
+    this.set('metaOptions', META_OPTIONS);
+    this.set('handleMessage', (messageType, data, position) => {
+      assert.equal(messageType, MESSAGE_TYPES.PILL_EDITED, 'Message sent for pill create is not correct');
+      assert.deepEqual(data, { id: '1', isSelected: false, meta: 'a', operator: 'exists', value: null }, 'Message sent for pill create contains correct pill data');
+      assert.equal(position, 0, 'Message sent for pill create contains correct pill position');
+      done();
+    });
+
+    await render(hbs`
+      {{query-container/query-pill
+        isActive=true
+        position=0
+        sendMessage=(action handleMessage)
+        metaOptions=metaOptions
+        pillData=pillData
+      }}
+    `);
+    // Double click to enter edit mode
+    await doubleClick(PILL_SELECTORS.queryPill);
+    // Click on operator
+    await click(PILL_SELECTORS.operator);
+    // Delete selected option to bring up full list
+    await fillIn(PILL_SELECTORS.operatorSelectInput, '');
+    // Choose the third operator option which does not require a value
+    selectChoose(PILL_SELECTORS.operatorTrigger, PILL_SELECTORS.powerSelectOption, 2); // option exists
+  });
 });
