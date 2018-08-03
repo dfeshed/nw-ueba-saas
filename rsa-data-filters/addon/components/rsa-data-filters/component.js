@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import layout from './template';
 import computed from 'ember-computed-decorators';
+import _ from 'lodash';
 
 /**
  * Component for rendering the filter controls and emits the filter objects based and applied filters
@@ -18,9 +19,13 @@ export default Component.extend({
 
   appliedFilters: [],
 
+  updatedFilters: [],
+
   clearFormOnReset: false,
 
   showSaveFilterButton: false,
+
+  isReset: false,
 
   @computed('config')
   updatedConfig(config) {
@@ -32,66 +37,76 @@ export default Component.extend({
   },
 
   _setPreAppliedFilterValues(config) {
-    const appliedFilters = [];
+    const preLoadedFilters = [];
     config.forEach((conf) => {
       const { filterValue, type, name } = conf;
       if (filterValue) {
         switch (type) {
           case 'text':
-            appliedFilters.push({ ...filterValue, name });
+            preLoadedFilters.push({ ...filterValue, name });
             break;
           case 'list':
           case 'dropdown':
-            appliedFilters.push({ name, operator: 'IN', value: filterValue });
+            preLoadedFilters.push({ name, operator: 'IN', value: filterValue });
             break;
           case 'number':
-            appliedFilters.push({ ...filterValue, name });
+            preLoadedFilters.push({ ...filterValue, name });
             break;
           case 'range':
-            appliedFilters.push({ name, operator: 'BETWEEN', value: filterValue });
+            preLoadedFilters.push({ name, operator: 'BETWEEN', value: filterValue });
             break;
         }
       }
     });
-    this.set('oldState', appliedFilters);
-    this.set('appliedFilters', appliedFilters);
+    return preLoadedFilters;
   },
 
   init() {
     this._super(arguments);
-    this._setPreAppliedFilterValues(this.get('config'));
+    const preLoadedFilters = this._setPreAppliedFilterValues(this.get('config'));
+    this.set('preLoadedFilters', preLoadedFilters);
+    this.set('updatedFilters', preLoadedFilters);
   },
 
 
   actions: {
+
     onChange(filter) {
-      const appliedFilter = this.get('appliedFilters');
+      let newFilters = _.cloneDeep(this.get('updatedFilters'));
       const onFilterChange = this.get('onFilterChange');
-      const isApplied = appliedFilter.findBy('name', filter.name);
+      const isApplied = newFilters.findBy('name', filter.name);
+
+      this.set('isReset', false);
+      // If preload filters (in case of save filters) or filter is modified then remove the filter from the list
+      // And insert the modified filter to the list
       if (isApplied) {
-        const rejected = appliedFilter.rejectBy('name', filter.name);
-        rejected.push(filter);
-        this.set('appliedFilters', rejected);
+        newFilters = newFilters.rejectBy('name', filter.name);
+        newFilters.push(filter);
+        this.set('updatedFilters', newFilters);
       } else {
-        appliedFilter.push(filter);
-        this.set('appliedFilters', appliedFilter);
+        newFilters.push(filter);
       }
 
       if (onFilterChange) {
-        onFilterChange(this.get('appliedFilters'));
+        onFilterChange(newFilters);
       }
+
+      this.set('updatedFilters', newFilters);
     },
+
     saveFilters() {
       const onSave = this.get('onSave');
       if (onSave) {
-        onSave(this.get('appliedFilters'));
+        onSave(this.get('updatedFilters'));
       }
     },
+
     resetFilters() {
       if (!this.get('clearFormOnReset')) {
         const onFilterChange = this.get('onFilterChange');
         if (onFilterChange) {
-          onFilterChange(this.get('oldState'));
+          this.set('isReset', true);
+          onFilterChange(this.get('preLoadedFilters'));
         }
       }
     }

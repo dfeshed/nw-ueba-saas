@@ -1,15 +1,14 @@
 import Component from '@ember/component';
 import layout from './template';
 import { assign } from '@ember/polyfills';
-import computed from 'ember-computed-decorators';
 import { isEmpty } from '@ember/utils';
+import { computed } from '@ember/object';
+
 export default Component.extend({
 
   layout,
 
   classNames: ['text-filter'],
-
-  _tempValue: {},
 
   defaults: {
     maxLength: 256,
@@ -23,42 +22,55 @@ export default Component.extend({
     }
   },
 
-  @computed('options')
-  filterValue(options) {
-    const { filterValue: { operator, value }, operators } = options;
-    const selectedOperator = operators.findBy('type', operator);
-    const val = value.join('||');
-    this.set('_tempValue', { value: val, operator: selectedOperator.type }); // Set the default values to temp
-    return { selectedOperator, value: val };
-  },
+  filterValue: computed('options', {
+
+    get() {
+      const { filterValue: { operator, value }, operators } = this.get('options');
+      const selectedOperator = operators.findBy('type', operator);
+      const val = value.join('||');
+      return { operator: selectedOperator, value: val };
+    },
+
+    set(key, value) {
+      return value;
+    }
+  }),
 
   init() {
     this._super(arguments);
     const options = assign({}, this.get('defaults'), this.get('filterOptions'));
+    const { filterValue } = options;
+    this.set('value', filterValue);
     this.set('options', options);
+  },
 
+  didReceiveAttrs() {
+    const isReset = this.get('isReset');
+    if (isReset) {
+      this.notifyPropertyChange('filterValue');
+    }
   },
 
   _onFilterChange() {
-    const { _tempValue: { value, operator }, options: { name }, onChange } = this.getProperties('_tempValue', 'options', 'onChange');
+    const { filterValue: { value, operator: { type } }, options: { name }, onChange } = this.getProperties('filterValue', 'options', 'onChange');
     if (onChange) {
       let val = [];
       if (!isEmpty(value)) {
         val = value.split('||');
       }
-      onChange({ name, operator, value: val });
+      onChange({ name, operator: type, value: val });
     }
   },
 
   actions: {
     onInputFocusOut(e) {
       const { value } = e.target;
-      this.set('_tempValue.value', value);
+      this.set('filterValue.value', value);
       this._onFilterChange();
     },
 
     changeOperator(option) {
-      this.set('_tempValue.operator', option.type);
+      this.set('filterValue.operator', option);
       this._onFilterChange();
     }
   }

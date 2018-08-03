@@ -1,9 +1,10 @@
 .filter-controls {
-  padding-top: rsa-whitespace();
+  padding-bottom: rsa-whitespace(more);
   h2 {
     @include rsa-font(header, small);
-    padding: rsa-whitespace() 0 rsa-whitespace(less) 0;
+    padding: 0 0 rsa-whitespace(less) 0;
     color: text-color(primary, light);
+    letter-spacing: 1px;
   }
   .file-name-input, .number-input {
     padding-left: rsa-whitespace();
@@ -51,6 +52,7 @@
     }
   }
 
+
   /**Hide the arrow buttons for number type */
   input[type=number]::-webkit-inner-spin-button,
   input[type=number]::-webkit-outer-spin-button {
@@ -63,7 +65,6 @@
 
 .filters-footer {
   @include border-top(1px, solid, primary, dark, opaque);
-  position: absolute;
   bottom: 0;
   width: 100%;
   padding: rsa-whitespace(less);
@@ -74,4 +75,11 @@
   button {
     width: 100%;
   }
+}
+
+.content-body {
+  height: calc(100vh - 140px);
+  overflow: auto;
+  overflow-x: hidden;
+  padding: rsa-whitespace();
 }

@@ -10,6 +10,10 @@ export default Component.extend({
       label: 'File Name'
     },
     {
+      type: 'range',
+      label: 'Size'
+    },
+    {
       type: 'list',
       label: 'File Status',
       listOptions: [

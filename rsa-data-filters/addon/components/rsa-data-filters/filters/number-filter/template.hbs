@@ -4,7 +4,7 @@
     tagName='div'
     class='operators'
     options=options.operators
-    selected=filterValue.selectedOperator
+    selected=filterValue.operator
     searchEnabled=false
     onchange=(action 'changeOperator') as |option|}}
     {{option.label}}
@@ -37,7 +37,7 @@
       tagName='div'
       class='units'
       options=options.units
-      selected=filterValue.selectedUnit
+      selected=filterValue.unit
       searchEnabled=false
       onchange=(action 'chageUnit') as |option|}}
       {{option.label}}

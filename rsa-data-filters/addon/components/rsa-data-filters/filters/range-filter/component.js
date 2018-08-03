@@ -1,7 +1,8 @@
 import Component from '@ember/component';
 import layout from './template';
-import computed from 'ember-computed-decorators';
 import { assign } from '@ember/polyfills';
+import computed from 'ember-computed-decorators';
+
 
 export default Component.extend({
   layout,
@@ -22,21 +23,38 @@ export default Component.extend({
   },
 
   @computed('options')
-  filterValue(options) {
-    const { filterValue } = options;
-    let { min: start, max: end } = options;
-    if (filterValue && filterValue.length) {
-      start = filterValue[0];
-      end = filterValue[1];
+  filterValue: {
+    get() {
+      const options = this.get('options');
+      const { filterValue } = options;
+
+      let { min: start, max: end } = options;
+      if (filterValue && filterValue.length) {
+        start = filterValue[0];
+        end = filterValue[1];
+      }
+      return [start, end];
+    },
+
+    set(key, value) {
+      return value;
     }
-    return [start, end];
+
   },
 
   init() {
     this._super(arguments);
     const options = assign({}, this.get('defaults'), this.get('filterOptions'));
     this.set('options', options);
+  },
 
+
+  didReceiveAttrs() {
+    this._super(...arguments);
+    const isReset = this.get('isReset');
+    if (isReset) {
+      this.notifyPropertyChange('filterValue');
+    }
   },
 
   actions: {

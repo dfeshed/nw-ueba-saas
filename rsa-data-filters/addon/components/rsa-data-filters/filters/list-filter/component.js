@@ -1,21 +1,36 @@
 import Component from '@ember/component';
 import layout from './template';
-import computed from 'ember-computed-decorators';
-import { set } from '@ember/object';
+import { set, computed } from '@ember/object';
 
 export default Component.extend({
   layout,
 
   classNames: ['list-filter'],
 
-  @computed('filterOptions')
-  filterValue(options) {
-    const { filterValue, listOptions } = options;
-    return listOptions.map((opt) => {
-      const selected = filterValue && filterValue.includes(opt.name);
-      return { ...opt, selected };
-    });
+  oldValue: [],
+
+  filterValue: computed('filterOptions', {
+    get() {
+      const { filterValue, listOptions } = this.get('filterOptions');
+      return listOptions.map((opt) => {
+        const selected = filterValue && filterValue.includes(opt.name);
+        return { ...opt, selected };
+      });
+    },
+
+    set(key, value) {
+      return value;
+    }
+  }),
+
+  didReceiveAttrs() {
+    this._super(...arguments);
+    const isReset = this.get('isReset');
+    if (isReset) {
+      this.notifyPropertyChange('filterValue');
+    }
   },
+
 
   actions: {
     toggleSelected(option) {

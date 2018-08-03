@@ -22,23 +22,29 @@ export default Component.extend({
     }
   },
 
-  _tempValue: {},
+  oldValue: {
+    operator: 'EQUAL',
+    value: []
+  },
 
   @computed('options')
-  filterValue(options) {
-    const { filterValue: { operator, value, unit }, operators, units } = options;
-    const selectedOperator = operators.findBy('type', operator);
-    let selectedUnit = null;
+  filterValue: {
+    get() {
+      const { filterValue: { operator, value, unit }, operators, units } = this.get('options');
+      const selectedOperator = operators.findBy('type', operator);
+      let selectedUnit = null;
 
-    if (units && units.length) {
-      selectedUnit = unit ? units.findBy('type', unit) : units[0];
-      this.set('_tempValue', { value, operator: selectedOperator.type, unit: selectedUnit.type });
-    } else {
-      this.set('_tempValue', { value, operator: selectedOperator.type });
+      if (units && units.length) {
+        selectedUnit = unit ? units.findBy('type', unit) : units[0];
+      }
+      // Set the default values to temp
+      return { operator: selectedOperator, value: [ ...value ], unit: selectedUnit };
+    },
+
+    set(key, value) {
+      return value;
     }
 
-     // Set the default values to temp
-    return { selectedOperator, value, selectedUnit };
   },
 
   @computed('options.units')
@@ -46,9 +52,9 @@ export default Component.extend({
     return units && units.length;
   },
 
-  @computed('_tempValue.operator')
+  @computed('filterValue.operator')
   isOperatorBetween(operator) {
-    return 'BETWEEN' === operator;
+    return 'BETWEEN' === operator.type;
   },
 
   init() {
@@ -57,11 +63,20 @@ export default Component.extend({
     this.set('options', options);
   },
 
+
+  didReceiveAttrs() {
+    this._super(...arguments);
+    const isReset = this.get('isReset');
+    if (isReset) {
+      this.notifyPropertyChange('filterValue');
+    }
+  },
+
   _onFilterChange() {
-    const onChange = this.get('onChange');
-    const filterValue = this.get('_tempValue');
+    const { onChange, filterValue, options: { name } } = this.getProperties('onChange', 'filterValue', 'options');
+    const { operator, value, unit } = filterValue;
     if (onChange) {
-      onChange(filterValue);
+      onChange({ operator: operator.type, value, unit: unit.type, name });
     }
   },
   actions: {
@@ -70,22 +85,21 @@ export default Component.extend({
       if (isOperatorBetween) {
         const start = this.element.querySelector('.number-input.start input').value;
         const end = this.element.querySelector('.number-input.end input').value;
-        this.set('_tempValue.value', [start, end]);
+        this.set('filterValue.value', [start, end]);
       } else {
-        this.set('_tempValue.value', [e.target.value]);
+        this.set('filterValue.value', [e.target.value]);
       }
 
       this._onFilterChange();
     },
 
     changeOperator(option) {
-      this.set('_tempValue.operator', option.type);
-
+      this.set('filterValue.operator', option);
       this._onFilterChange();
     },
 
     chageUnit(option) {
-      this.set('_tempValue.unit', option.type);
+      this.set('filterValue.unit', option);
       this._onFilterChange();
     }
   }
