@@ -2119,12 +2119,11 @@ export default {
         eprocess: 'EPROCESS',
         path: 'Full Path',
         processName: 'Process Name',
-        processTime: 'Process Time',
+        processTime: 'Process Creation Time',
         ethread: 'ETHREAD',
         tid: 'Thread ID',
         teb: 'Thread Environment Block',
         startAddress: 'Start Address',
-        behaviorKey: 'Behavior Key',
         sameDirectoryFileCounts: {
           nonExe: '# Non-Executables',
           exe: '# Executables',

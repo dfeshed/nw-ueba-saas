@@ -7,7 +7,8 @@ export default {
           field: 'processName'
         },
         {
-          field: 'processTime'
+          field: 'processTime',
+          format: 'DATE'
         },
         {
           field: 'eprocess'
@@ -28,13 +29,7 @@ export default {
           field: 'startAddress'
         },
         {
-          field: 'behaviorKey'
-        },
-        {
           field: 'state'
-        },
-        {
-          field: 'fileId'
         }
       ]
     }
