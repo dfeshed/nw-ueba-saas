@@ -1,17 +1,13 @@
-{{content-filter}}
 {{#rsa-page-layout showRightZone=false as |layout|}}
 
-  {{#layout.left}}
-    <h2>{{t 'investigateFiles.filter.filters'}}</h2>
-    <box class="favourite-filters">
-      {{system-filters}}
-      {{custom-filters}}
-    </box>
+  {{#layout.left as |leftPanel|}}
+    {{leftPanel.header iconName='filter-2' title=(t 'investigateFiles.filter.filter')}}
+    {{filters-wrapper}}
   {{/layout.left}}
 
   {{#layout.center}}
     <section class="rsa-files-toolbar flexi-fit">
-      {{files-toolbar}}
+      {{files-toolbar openFilterPanel=(action layout.open 'left')}}
     </section>
     <box class="files-body">
       {{#if (eq areFilesLoading 'wait')}}
@@ -30,7 +26,6 @@
   {{/layout.center}}
 
   {{#layout.right as |rightPanel|}}
-
     {{#rightPanel.header class="investigate-file-tab"}}
       {{#title-bar tabs=dataSourceTabs defaultAction=(action 'setDataSourceTab') as |tab|}}
         <div class="label">{{t tab.label}}</div>

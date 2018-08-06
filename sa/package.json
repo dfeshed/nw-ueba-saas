@@ -92,6 +92,7 @@
       "../preferences",
       "../investigate-shared",
       "../rsa-context-menu",
+      "../rsa-data-filters",
       "../admin",
       "../admin-source-management"
     ]

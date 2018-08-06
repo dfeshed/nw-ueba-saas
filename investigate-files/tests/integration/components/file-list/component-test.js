@@ -8,6 +8,7 @@ import Immutable from 'seamless-immutable';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { revertPatch } from '../../../helpers/patch-reducer';
 import { patchReducer } from '../../../helpers/vnext-patch';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 let initState;
 
@@ -88,6 +89,7 @@ module('Integration | Component | file list', function(hooks) {
     this.timezone = this.owner.lookup('service:timezone');
     this.set('dateFormat.selected', 'MM/dd/yyyy', 'MM/dd/yyyy');
     this.set('timeFormat.selected', 'HR24', 'HR24');
+    initialize(this.owner);
     this.owner.inject('component', 'i18n', 'service:i18n');
   });
 

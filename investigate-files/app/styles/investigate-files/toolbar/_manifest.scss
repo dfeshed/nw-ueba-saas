@@ -1,7 +1,14 @@
+.rsa-investigate-files {
+  .show-left-zone {
+    .title-header {
+      display: none;
+    }
+  }
+}
 .rsa-files-toolbar {
-
+  height: 30px;
   color: text-color(primary, lightest);
-  padding: rsa-whitespace();
+  padding: rsa-whitespace(less);
 
   .selection-count {
     padding-right: rsa-whitespace();
@@ -17,8 +24,6 @@
   }
 
   .toolbar-actions {
-    position: absolute;
-    right:0;
     .divider {
       @include border-left(1px, solid, primary);
       height: 2rem;
@@ -26,6 +31,7 @@
     }
     .export-button{
       padding-right: rsa-whitespace();
+      padding-left: rsa-whitespace(less);
     }
   }
 
@@ -73,10 +79,39 @@
   .title-header {
     @include rsa-font(header, larger);
     display: inline-block;
-    line-height: 2rem;
+    line-height: 0.5rem;
     color: text-color(primary, lightest);
+  }
+}
+
+.filter-list {
+
+  .filter-list__item-label {
+    width: 150px;
+    display: inline-block;
+    line-height: 2rem;
+  }
+
+  li {
+    padding: rsa-whitespace(least) 0 0 rsa-whitespace(less);
+    width: 200px;
+  }
+
+  .is-hovering .delete-filter {
+    display: inline-block;
+    .rsa-icon-bin-1-filled {
+      font-size: 100%;
+      top: -2px;
+    }
+  }
+
+  .delete-filter {
+    position: absolute;
+    right: 0.5rem;
+    display: none;
+    .rsa-icon-bin-1-filled {
+      font-size: 1.25rem;
+    }
   }
 
 }
-
-

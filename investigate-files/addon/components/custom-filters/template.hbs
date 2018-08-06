@@ -1,9 +1,0 @@
-{{#each filesFilters as |filter|}}
-  {{custom-filters/custom-filter-list
-    reset=isFilterReset
-    filter=filter
-    activeFilter=activeFilter
-    deleteFilter=(action 'deleteSelectedFilter' filter.id)
-    isSystemFilter=isSystemFilter
-    applyCustomFilter=(action 'applyCustomFilter')}}
-{{/each}}

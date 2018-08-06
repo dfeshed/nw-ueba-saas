@@ -1,7 +1,6 @@
 import Component from '@ember/component';
 import layout from './template';
 import computed from 'ember-computed-decorators';
-import _ from 'lodash';
 
 /**
  * Component for rendering the filter controls and emits the filter objects based and applied filters
@@ -61,18 +60,18 @@ export default Component.extend({
     return preLoadedFilters;
   },
 
-  init() {
+  didReceiveAttrs() {
     this._super(arguments);
     const preLoadedFilters = this._setPreAppliedFilterValues(this.get('config'));
     this.set('preLoadedFilters', preLoadedFilters);
-    this.set('updatedFilters', preLoadedFilters);
+    this.set('updatedFilters', [...preLoadedFilters]);
   },
 
 
   actions: {
 
     onChange(filter) {
-      let newFilters = _.cloneDeep(this.get('updatedFilters'));
+      let newFilters = this.get('updatedFilters');
       const onFilterChange = this.get('onFilterChange');
       const isApplied = newFilters.findBy('name', filter.name);
 
@@ -104,9 +103,11 @@ export default Component.extend({
     resetFilters() {
       if (!this.get('clearFormOnReset')) {
         const onFilterChange = this.get('onFilterChange');
+        const preLoadedFilters = this.get('preLoadedFilters');
         if (onFilterChange) {
           this.set('isReset', true);
-          onFilterChange(this.get('preLoadedFilters'));
+          this.set('updatedFilters', [...preLoadedFilters]);
+          onFilterChange(preLoadedFilters);
         }
       }
     }

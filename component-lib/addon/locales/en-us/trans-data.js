@@ -1919,7 +1919,7 @@ export default {
     },
     footer: '{{count}} of {{total}} {{label}}',
     filter: {
-      filter: 'Filter',
+      filter: 'Filters',
       filters: 'Saved Filters',
       newFilter: 'New Filter',
       windows: 'WINDOWS',
@@ -1956,6 +1956,13 @@ export default {
           successMessage: 'Query deleted successfully.',
           confirmMessage: 'Are you sure you want to delete the selected query?'
         }
+      },
+      fileType: {
+        pe: 'Windows',
+        linux: 'Linux',
+        macho: 'Mac',
+        scripts: 'Scripts',
+        unknown: 'Unknown'
       }
     },
     fields: {

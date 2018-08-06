@@ -120,21 +120,6 @@ const initializeFilesPreferences = () => {
 
 
 /**
- * An action creator for dispatches a set of actions for updating file filter criteria and re-running fetch of the
- * files using that new criteria
- * @public
- * @method updateFilter
- * @param filters list of expressions
- * @returns {function(*)}
- */
-const updateFilter = (expression) => {
-  return (dispatch) => {
-    dispatch({ type: ACTION_TYPES.UPDATE_FILE_FILTER, payload: expression });
-    dispatch(_getFirstPageOfFiles());
-  };
-};
-
-/**
  * An action creator for getting the saved filter information
  * @returns {function(*)}
  * @public
@@ -165,7 +150,6 @@ const deleteFilter = (id, callbacks = callbacksDefault) => {
           const debugResponse = JSON.stringify(response);
           debug(`onSuccess: ${ACTION_TYPES.DELETE_FILTER} ${debugResponse}`);
           callbacks.onSuccess(response);
-          dispatch(resetFilters());
         },
         onFailure: (response) => {
           _handleError(ACTION_TYPES.DELETE_FILTER, response);
@@ -176,52 +160,6 @@ const deleteFilter = (id, callbacks = callbacksDefault) => {
   };
 };
 
-/**
- * Action creator for adding the expression to the expression list.
- * @param expression
- * @returns {function(*)}
- * @public
- */
-const addFilter = (expression) => ({ type: ACTION_TYPES.ADD_FILE_FILTER, payload: expression });
-
-/**
- * An action creator for removing the expression from the list of expression and also dispatch the action to re-fresh the file list
- * @param name
- * @returns {function(*)}
- * @public
- */
-const removeFilter = (name) => {
-  return (dispatch) => {
-    dispatch({ type: ACTION_TYPES.REMOVE_FILE_FILTER, payload: name });
-    dispatch(_getFirstPageOfFiles());
-  };
-};
-
-/**
- * An action creator for resting the file filters.
- * @public
- * @returns {function(*)}
- */
-const resetFilters = () => {
-  return (dispatch) => {
-    dispatch({ type: ACTION_TYPES.RESET_FILE_FILTERS });
-    dispatch(_getFirstPageOfFiles());
-  };
-};
-
-
-/**
- * Action creator for adding the system filters (mac, linux and windows)
- * @param expression
- * @returns {function(*)}
- * @public
- */
-const addSystemFilter = (expressions) => {
-  return (dispatch) => {
-    dispatch({ type: ACTION_TYPES.SET_EXPRESSION_LIST, payload: expressions });
-    dispatch(_getFirstPageOfFiles());
-  };
-};
 
 /**
  * Action creator for exporting files.
@@ -249,15 +187,6 @@ const _getVisibleColumnNames = (getState) => {
   const { preferences: { filePreference } } = getState().preferences;
   return filePreference.visibleColumns;
 };
-
-
-/**
- * Action creator for setting the currently active filter.
- * @param filter
- * @returns {function(*)}
- * @public
- */
-const setActiveFilter = (filter) => ({ type: ACTION_TYPES.SET_ACTIVE_FILTER, payload: filter });
 
 
 const _setPreferences = (getState) => {
@@ -303,7 +232,7 @@ const resetDownloadId = () => ({ type: ACTION_TYPES.RESET_DOWNLOAD_ID });
 const createCustomSearch = (filter, schemas, filterType, callbacks = callbacksDefault) => {
   return (dispatch) => {
     dispatch({
-      type: ACTION_TYPES.UPDATE_FILTER_LIST,
+      type: ACTION_TYPES.SAVE_FILTER,
       promise: File.createCustomSearch(filter, schemas, filterType),
       meta: {
         onSuccess: (response) => {
@@ -318,14 +247,6 @@ const createCustomSearch = (filter, schemas, filterType, callbacks = callbacksDe
   };
 };
 
-const setFilesFilter = (filterId) => {
-  return (dispatch) => {
-    dispatch({ type: ACTION_TYPES.SET_APPLIED_FILES_FILTER, payload: filterId });
-    dispatch(getFilter());
-  };
-};
-
-const setSystemFilterFlag = (systemFilterFlag) => ({ type: ACTION_TYPES.SET_SYSTEM_FILTER_FLAG, payload: systemFilterFlag });
 
 const getAllServices = () => ({
   type: ACTION_TYPES.GET_LIST_OF_SERVICES,
@@ -394,25 +315,33 @@ const getFileStatusChangeHistory = (checksum, requestLatestHistory) => ({
 });
 
 
+// Filters
+
+const applyFilters = (expressions) => {
+  return (dispatch) => {
+    dispatch({ type: ACTION_TYPES.APPLY_FILTER, payload: expressions });
+    dispatch(_getFirstPageOfFiles());
+  };
+};
+
+const applySavedFilters = (filter) => {
+  return (dispatch) => {
+    dispatch({ type: ACTION_TYPES.SET_SAVED_FILTER, payload: filter });
+    dispatch(applyFilters(filter.criteria.expressionList));
+  };
+};
+
 export {
-  addSystemFilter,
-  removeFilter,
-  addFilter,
   getFilter,
   deleteFilter,
-  updateFilter,
-  resetFilters,
   getPageOfFiles,
   sortBy,
   fetchSchemaInfo,
-  setActiveFilter,
   exportFileAsCSV,
   updateColumnVisibility,
   resetDownloadId,
   createCustomSearch,
-  setFilesFilter,
   getAllServices,
-  setSystemFilterFlag,
   initializeFilesPreferences,
   setDataSourceTab,
   fetchFileContext,
@@ -420,5 +349,7 @@ export {
   selectAllFiles,
   deSelectAllFiles,
   saveFileStatus,
-  getFileStatusChangeHistory
+  getFileStatusChangeHistory,
+  applyFilters,
+  applySavedFilters
 };

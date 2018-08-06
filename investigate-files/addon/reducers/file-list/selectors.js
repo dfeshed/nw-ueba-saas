@@ -1,5 +1,4 @@
 import { createSelector } from 'reselect';
-import { isValidExpression } from 'investigate-files/reducers/filter/selectors';
 import { prepareContext } from 'investigate-shared/helpers/prepare-context';
 
 const SUPPORTED_SERVICES = [ 'broker', 'concentrator', 'decoder', 'log-decoder', 'archiver' ];
@@ -50,11 +49,11 @@ export const fileExportLink = createSelector(
 );
 
 export const fileCountForDisplay = createSelector(
-  [ _totalItems, isValidExpression],
-  (totalItems, isValidExpression) => {
+  [ _totalItems],
+  (totalItems) => {
     // For performance reasons api returns 1000 as totalItems when filter is applied, even if result is more than 1000
     // Make sure we append '+' to indicate user more files are present
-    if (isValidExpression && totalItems >= 1000) {
+    if (totalItems >= 1000) {
       return `${totalItems}+`;
     }
     return `${totalItems}`;

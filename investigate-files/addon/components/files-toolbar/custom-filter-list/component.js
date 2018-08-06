@@ -2,6 +2,7 @@ import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
 
 export default Component.extend({
+
   tagName: 'li',
 
   classNames: ['filter-list__item'],
@@ -11,6 +12,8 @@ export default Component.extend({
   filter: null,
 
   activeFilter: null,
+
+  applyCustomFilter: null,
 
   @computed('filter', 'activeFilter', 'reset', 'isSystemFilter')
   isActive: (filter, activeFilter, reset, isSystemFilter) => filter.id === activeFilter && !reset && !isSystemFilter,

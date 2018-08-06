@@ -79,7 +79,8 @@
       "../component-lib",
       "../streaming-data",
       "../preferences",
-      "../investigate-shared"
+      "../investigate-shared",
+      "../rsa-data-filters"
     ]
   },
   "private": true

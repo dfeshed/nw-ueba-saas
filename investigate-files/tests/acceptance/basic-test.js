@@ -28,11 +28,6 @@ test('visiting /investigate-files', function(assert) {
   andThen(() => {
     assert.equal(currentURL(), '/investigate-files');
   });
-  /* Test delete flow */
-  waitFor(selectorToExist('.rsa-investigate-files'));
-  andThen(() => {
-    assert.equal($('.filter-list__item').length, 3, 'Displaying all default filters');
-  });
 
 });
 

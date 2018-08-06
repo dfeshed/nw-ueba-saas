@@ -1,7 +1,27 @@
 <h2 class="title-header">
-  {{t 'investigateFiles.title'}} <span class="count">({{totalItems}})</span>
+  {{#rsa-form-button class='close-zone' isIconOnly=true click=openFilterPanel }}
+    {{rsa-icon name='filter-2'}}
+  {{/rsa-form-button}}
 </h2>
 <hbox class="toolbar-actions">
+
+  {{#rsa-content-tethered-panel-trigger triggerEvent="click" panel='panel11'}}
+    {{#rsa-form-button allowToggleActive=true withDropdown=true}}
+      Saved Filters
+    {{/rsa-form-button}}
+  {{/rsa-content-tethered-panel-trigger}}
+  {{#rsa-content-tethered-panel isPopover=true displayCloseButton=false position='bottom-right' panelId='panel11'}}
+    <ul class='filter-list'>
+      {{#each filesFilters as |filter|}}
+        {{files-toolbar/custom-filter-list
+          filter=filter
+          activeFilter=activeFilter
+          applyCustomFilter=(action 'applyCustomFilter')
+          deleteFilter=(action 'deleteSelectedFilter' filter.id)}}
+      {{/each}}
+    </ul>
+  {{/rsa-content-tethered-panel}}
+
   {{files-toolbar/export-button}}
   <div class="divider"/>
   {{endpoint/file-actionbar

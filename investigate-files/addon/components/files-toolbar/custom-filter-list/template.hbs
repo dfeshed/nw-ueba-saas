@@ -1,7 +1,7 @@
+<span class="filter-list__item-label ellipsis" title="{{filter.name}}" {{action applyCustomFilter filter on='click'}}>
+  {{filter.name}}
+</span>
 {{#unless filter.systemFilter}}
-  <span class="filter-list__item-label ellipsis" title="{{filter.name}}" {{action applyCustomFilter filter on='click'}}>
-    {{filter.name}}
-  </span>
   {{#rsa-button-with-confirmation
     style='danger'
     class='delete-filter'

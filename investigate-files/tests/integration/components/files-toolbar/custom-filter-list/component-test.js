@@ -5,7 +5,7 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import customFilterData from '../../../state/custom-filter-data';
 import { render, find, findAll, triggerEvent } from '@ember/test-helpers';
 
-module('custom-filters/custom-filter-list', 'Integration | Component | custom filters/custom filter list', function(hooks) {
+module('files-toolbar/custom-filter-list', 'Integration | Component | custom filters/custom filter list', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-files')
   });
@@ -14,7 +14,7 @@ module('custom-filters/custom-filter-list', 'Integration | Component | custom fi
     assert.expect(3);
     this.set('filter', customFilterData.fileFilters.data[0]);
     this.set('applyCustomFilter', () => {});
-    await render(hbs`{{custom-filters/custom-filter-list filter=filter applyCustomFilter=applyCustomFilter}}`);
+    await render(hbs`{{files-toolbar/custom-filter-list filter=filter applyCustomFilter=applyCustomFilter}}`);
 
     assert.equal(findAll('.filter-list__item-label').length, 1, 'Length of filter list item rendered');
     assert.equal(find('.filter-list__item-label').textContent.trim(), 'entropy_less_than_3', 'Text of the filter list item');
@@ -27,7 +27,7 @@ module('custom-filters/custom-filter-list', 'Integration | Component | custom fi
     this.set('reset', false);
     this.set('isSystemFilter', false);
     this.set('applyCustomFilter', 'applyCustomFilter');
-    await render(hbs`{{custom-filters/custom-filter-list filter=filter activeFilter=activeFilter reset=reset isSystemFilter=isSystemFilter applyCustomFilter=applyCustomFilter}}`);
+    await render(hbs`{{files-toolbar/custom-filter-list filter=filter activeFilter=activeFilter reset=reset isSystemFilter=isSystemFilter applyCustomFilter=applyCustomFilter}}`);
 
     assert.equal(document.querySelector('.filter-list__item').classList.contains('is-active'), true, 'Computed property calculated correctly upon setting custom-filter list-item');
   });
@@ -38,7 +38,7 @@ module('custom-filters/custom-filter-list', 'Integration | Component | custom fi
     this.set('reset', true);
     this.set('isSystemFilter', false);
     this.set('applyCustomFilter', 'applyCustomFilter');
-    await render(hbs`{{custom-filters/custom-filter-list filter=filter activeFilter=activeFilter reset=reset isSystemFilter=isSystemFilter applyCustomFilter=applyCustomFilter}}`);
+    await render(hbs`{{files-toolbar/custom-filter-list filter=filter activeFilter=activeFilter reset=reset isSystemFilter=isSystemFilter applyCustomFilter=applyCustomFilter}}`);
 
     assert.equal(document.querySelector('.filter-list__item').classList.contains('is-active'), false, 'Computed property calculated correctly upon resetting custom-filter list-item');
   });
@@ -49,7 +49,7 @@ module('custom-filters/custom-filter-list', 'Integration | Component | custom fi
     this.set('reset', false);
     this.set('isSystemFilter', false);
     this.set('applyCustomFilter', 'applyCustomFilter');
-    await render(hbs`{{custom-filters/custom-filter-list filter=filter activeFilter=activeFilter reset=reset isSystemFilter=isSystemFilter applyCustomFilter=applyCustomFilter}}`);
+    await render(hbs`{{files-toolbar/custom-filter-list filter=filter activeFilter=activeFilter reset=reset isSystemFilter=isSystemFilter applyCustomFilter=applyCustomFilter}}`);
     assert.equal(document.querySelector('.filter-list__item').classList.contains('is-active'), false, 'Computed property calculated correctly when active filter and passed filter id are different');
   });
 
@@ -59,7 +59,7 @@ module('custom-filters/custom-filter-list', 'Integration | Component | custom fi
     this.set('reset', false);
     this.set('isSystemFilter', true);
     this.set('applyCustomFilter', 'applyCustomFilter');
-    await render(hbs`{{custom-filters/custom-filter-list filter=filter activeFilter=activeFilter reset=reset isSystemFilter=isSystemFilter applyCustomFilter=applyCustomFilter}}`);
+    await render(hbs`{{files-toolbar/custom-filter-list filter=filter activeFilter=activeFilter reset=reset isSystemFilter=isSystemFilter applyCustomFilter=applyCustomFilter}}`);
 
     assert.equal(document.querySelector('.filter-list__item').classList.contains('is-active'), false, 'Computed property calculated correctly when system filter boolean is set for custom filter');
   });
@@ -68,7 +68,7 @@ module('custom-filters/custom-filter-list', 'Integration | Component | custom fi
     assert.expect(2);
     this.set('filter', customFilterData.fileFilters.data[0]);
     this.set('applyCustomFilter', 'applyCustomFilter');
-    await render(hbs`{{custom-filters/custom-filter-list filter=filter applyCustomFilter=applyCustomFilter}}`);
+    await render(hbs`{{files-toolbar/custom-filter-list filter=filter applyCustomFilter=applyCustomFilter}}`);
 
     await triggerEvent('.filter-list__item-label', 'mouseover');
     assert.equal(document.querySelector('.filter-list__item').classList.contains('is-hovering'), true, 'Mouse entered/hovered on custom filter');

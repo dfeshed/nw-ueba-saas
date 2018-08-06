@@ -26,7 +26,7 @@ module('Integration | Component | rsa-page-layout', function(hooks) {
       {{/rsa-page-layout}}
     `);
 
-    assert.equal(find('.right-zone .rsa-header .title').textContent, 'Title', 'Default Title is displayed');
+    assert.equal(find('.right-zone .rsa-header .title').textContent.trim(), 'Title', 'Default Title is displayed');
     assert.equal(findAll('hbox.rsa-page-layout.show-right-zone .right-zone').length, 1, 'right panel is visible by default');
 
     await click('.right-zone .close-zone .rsa-icon-close-filled');
@@ -52,7 +52,7 @@ module('Integration | Component | rsa-page-layout', function(hooks) {
       {{/rsa-page-layout}}
     `);
 
-    assert.equal(find('.left-zone .rsa-header .title').textContent, 'Filters', 'Custom Title is displayed');
+    assert.equal(find('.left-zone .rsa-header .title').textContent.trim(), 'Filters', 'Custom Title is displayed');
     assert.equal(findAll('hbox.rsa-page-layout.show-left-zone .left-zone').length, 1, 'left panel is visible by default');
     assert.equal(findAll('hbox.rsa-page-layout.show-right-zone .right-zone').length, 0, 'right panel is not set');
 

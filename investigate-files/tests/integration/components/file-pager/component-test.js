@@ -32,7 +32,7 @@ test('Footer without filter applied file list is > 1000', function(assert) {
     .build();
   this.render(hbs`{{file-pager}}`);
   return wait().then(() => {
-    assert.equal(this.$('.file-info').text().trim(), '11 of 2000', 'total number of files displayed');
+    assert.equal(this.$('.file-info').text().trim(), '11 of 2000+', 'total number of files displayed');
   });
 });
 

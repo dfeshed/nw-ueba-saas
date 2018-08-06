@@ -3,6 +3,7 @@
     @include rsa-font(header, large);
     color: text-color(primary, light);
     padding: rsa-whitespace();
+    letter-spacing: 1px;
   }
   .close-zone {
     position: absolute;
@@ -10,5 +11,6 @@
     font-size: 0.5rem;
     padding: rsa-whitespace(less);
   }
+
   @include border-bottom(1px, solid, primary, lightest, nearly-transparent);
 }
