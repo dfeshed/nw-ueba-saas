@@ -87,6 +87,15 @@ export default Component.extend({
    */
   end: null,
 
+  didUpdateAttrs() {
+    this._super(...arguments);
+    // When the attributes of the component is changed (like start, end) clear out any previously set error state.
+    this.setProperties({
+      startErrors: [],
+      endErrors: []
+    });
+  },
+
   /**
    * The starting date/time unix timestamp (in ms) that accounts for adjustment when includeSeconds is false. If
    * includeSeconds is false, we convert the initial start timestamp's seconds value down to 0.
