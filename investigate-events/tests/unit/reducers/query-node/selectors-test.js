@@ -12,7 +12,8 @@ import {
   selectedPills,
   canQueryGuided,
   freeFormText,
-  hasInvalidSelectedPill
+  hasInvalidSelectedPill,
+  pillBeingEdited
 } from 'investigate-events/reducers/investigate/query-node/selectors';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
@@ -437,3 +438,27 @@ test('freeFormText is set properly', function(assert) {
   const text = freeFormText(state);
   assert.equal(text, 'a = \'x\' && b = \'y\'', 'freeFormText is set properly');
 });
+
+test('pillBeingEdited returns pill being edited ', function(assert) {
+  const state = new ReduxDataHelper()
+    .language()
+    .hasRequiredValuesToQuery(true)
+    .pillsDataPopulated()
+    .markEditing(['1'])
+    .build();
+
+  const pBE = pillBeingEdited(state);
+  assert.deepEqual(pBE, state.investigate.queryNode.pillsData[0], 'Selector returns pill that is being edited');
+});
+
+test('pillBeingEdited is undefined when no pills being edited', function(assert) {
+  const state = new ReduxDataHelper()
+    .language()
+    .hasRequiredValuesToQuery(true)
+    .pillsDataPopulated()
+    .build();
+
+  const pBE = pillBeingEdited(state);
+  assert.deepEqual(pBE, undefined, 'Selector returns pill that is being edited');
+});
+

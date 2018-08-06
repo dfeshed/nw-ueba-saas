@@ -98,7 +98,8 @@ test('SET_PREFERENCES when payload does not have queryTimeFormat and no current 
 
 test('SET_QUERY_VIEW reducer sets the correct mode provided', function(assert) {
   const prevState = Immutable.from({
-    queryView: 'guided'
+    queryView: 'guided',
+    pillsData: []
   });
   const action = {
     type: ACTION_TYPES.SET_QUERY_VIEW,
@@ -109,6 +110,33 @@ test('SET_QUERY_VIEW reducer sets the correct mode provided', function(assert) {
   const result = reducer(prevState, action);
 
   assert.equal(result.queryView, 'freeForm');
+});
+
+test('SET_QUERY_VIEW reducer makes it so any pills being edited are no longer being edited', function(assert) {
+  const { pillsData } = new ReduxDataHelper()
+    .pillsDataPopulated()
+    .markEditing(['1'])
+    .build()
+    .investigate
+    .queryNode;
+
+  // is being edited...
+  assert.equal(pillsData[0].isEditing, true);
+
+  const prevState = Immutable.from({
+    queryView: 'guided',
+    pillsData
+  });
+  const action = {
+    type: ACTION_TYPES.SET_QUERY_VIEW,
+    payload: {
+      queryView: 'freeForm'
+    }
+  };
+  const result = reducer(prevState, action);
+
+  // ...but not now
+  assert.equal(result.pillsData[0].isEditing, false);
 });
 
 test('INITIALIZE_INVESTIGATE reducer sets the correct view from localStorage', function(assert) {

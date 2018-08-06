@@ -158,3 +158,15 @@ export const hasInvalidSelectedPill = createSelector(
   [selectedPills],
   (selectedPills) => selectedPills.isAny('isInvalid')
 );
+
+export const pillBeingEdited = createSelector(
+  [_pillsData],
+  (pillsData) => {
+    const pillsBeingEdited = pillsData.filter((pD) => pD.isEditing === true);
+
+    // If there is one, return it, can only edit one at a time
+    if (pillsBeingEdited.length > 0) {
+      return pillsBeingEdited[0];
+    }
+  }
+);

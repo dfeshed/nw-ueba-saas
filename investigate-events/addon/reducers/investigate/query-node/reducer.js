@@ -5,6 +5,7 @@ import { handle } from 'redux-pack';
 
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 import { createQueryHash } from 'investigate-events/util/query-hash';
+import { pillBeingEdited } from './selectors';
 
 const ID_PREFIX = 'guidedPill_';
 
@@ -210,6 +211,16 @@ export default handleActions({
   },
 
   [ACTION_TYPES.SET_QUERY_VIEW]: (state, { payload }) => {
+    const _pillBeingEdited = pillBeingEdited({ investigate: { queryNode: state } });
+
+    // Switching view, exit editing of any pill
+    if (_pillBeingEdited) {
+      const newPillData = {
+        ..._pillBeingEdited,
+        isEditing: false
+      };
+      state = _handlePillUpdate(state, newPillData);
+    }
     return state.set('queryView', payload.queryView);
   },
 
