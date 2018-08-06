@@ -86,6 +86,17 @@ const investigateConfigGen = function(env) {
         subscriptionDestination: '/user/queue/investigate/column/groups/get',
         requestDestination: '/ws/investigate/column/groups/get'
       }
+    },
+    'query-hashes': {
+      socketUrl,
+      find: {
+        subscriptionDestination: '/user/queue/investigate/predicate/get',
+        requestDestination: '/ws/investigate/predicate/get'
+      },
+      persist: {
+        subscriptionDestination: '/user/queue/investigate/predicate/save',
+        requestDestination: '/ws/investigate/predicate/save'
+      }
     }
   };
 };
