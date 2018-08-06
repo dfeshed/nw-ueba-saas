@@ -3,7 +3,7 @@ import { connect } from 'ember-redux';
 import {
   groups,
   isGroupsLoading
-} from 'admin-source-management/selectors/groups-selectors';
+} from 'admin-source-management/reducers/usm/groups-selectors';
 // import groupsCreators from 'admin-source-management/actions/creators/groups-creators';
 import columns from './columns';
 

@@ -10,7 +10,7 @@ const initialState = {
 
 export default reduxActions.handleActions({
 
-  [ACTION_TYPES.FETCH_GROUPS]: (state, action) => (
+  [ACTION_TYPES.FETCH_POLICY_LIST]: (state, action) => (
     handle(state, action, {
       start: (state) => {
         return state.merge({
@@ -31,3 +31,4 @@ export default reduxActions.handleActions({
   )
 
 }, Immutable.from(initialState));
+

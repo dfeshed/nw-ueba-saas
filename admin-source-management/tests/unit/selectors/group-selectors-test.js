@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import Immutable from 'seamless-immutable';
-import cloneDeep from 'lodash';
+import _ from 'lodash';
 import {
   group,
   osTypes,
@@ -11,7 +11,7 @@ import {
   selectedPolicy,
   isGroupLoading,
   hasMissingRequiredData
-} from 'admin-source-management/selectors/group-selectors';
+} from 'admin-source-management/reducers/usm/group-selectors';
 import { initialState as _initialState } from 'admin-source-management/reducers/usm/group-reducers';
 import policiesData from '../../../tests/data/subscriptions/policy/findAll/data';
 
@@ -43,19 +43,19 @@ const saveGroupData = {
 module('Unit | Selectors | Group Selectors', function() {
 
   test('group selector', function(assert) {
-    const state = cloneDeep(fullState).value();
+    const state = _.cloneDeep(fullState);
     state.usm.group.group = { ...saveGroupData };
     assert.deepEqual(group(Immutable.from(state)), saveGroupData, 'The returned value from the group selector is as expected');
   });
 
   test('osTypes selector', function(assert) {
-    const state = cloneDeep(fullState).value();
+    const state = _.cloneDeep(fullState);
     const osTypesData = [...state.usm.group.osTypes];
     assert.deepEqual(osTypes(Immutable.from(state)), osTypesData, 'The returned value from the osTypes selector is as expected');
   });
 
   test('selectedOsTypes selector', function(assert) {
-    const state = cloneDeep(fullState).value();
+    const state = _.cloneDeep(fullState);
     // osTypes holds osType ID's only so use the first 2 ID's
     state.usm.group.group = { ...saveGroupData, osTypes: ['Windows', 'Mac'] };
     // the selector looks up osType objects by ID, so use the first 2 objects
@@ -64,7 +64,7 @@ module('Unit | Selectors | Group Selectors', function() {
   });
 
   test('osDescriptions selector', function(assert) {
-    const state = cloneDeep(fullState).value();
+    const state = _.cloneDeep(fullState);
     // osTypes holds osType ID's only so use the first 2 ID's
     state.usm.group.group = { ...saveGroupData, osTypes: ['Windows', 'Mac'] };
     // the selector looks up available osDescription objects for the selected osTypes,
@@ -74,7 +74,7 @@ module('Unit | Selectors | Group Selectors', function() {
   });
 
   test('selectedOsDescriptions selector', function(assert) {
-    const state = cloneDeep(fullState).value();
+    const state = _.cloneDeep(fullState);
     state.usm.group.group = {
       ...saveGroupData,
       // osTypes holds osType ID's only so use the first 2 ID's
@@ -95,13 +95,13 @@ module('Unit | Selectors | Group Selectors', function() {
   });
 
   test('policies selector', function(assert) {
-    const state = cloneDeep(fullState).value();
+    const state = _.cloneDeep(fullState);
     state.usm.group.policies = [...policiesData];
     assert.deepEqual(policies(Immutable.from(state)), policiesData, 'The returned value from the policies selector is as expected');
   });
 
   test('selectedPolicy selector', function(assert) {
-    const state = cloneDeep(fullState).value();
+    const state = _.cloneDeep(fullState);
     // policy holds map of { 'type': 'policyID' }
     state.usm.group.group = { ...saveGroupData, policy: { edrPolicy: 'policy_001' } };
     state.usm.group.policies = [...policiesData];
@@ -111,15 +111,15 @@ module('Unit | Selectors | Group Selectors', function() {
   });
 
   test('isGroupLoading selector', function(assert) {
-    const state = cloneDeep(fullState).value();
-    state.usm.group.groupSaveStatus = 'wait';
-    assert.equal(isGroupLoading(Immutable.from(state)), true, 'isGroupLoading should return true when groupSaveStatus is wait');
+    const state = _.cloneDeep(fullState);
+    state.usm.group.groupStatus = 'wait';
+    assert.equal(isGroupLoading(Immutable.from(state)), true, 'isGroupLoading should return true when groupStatus is wait');
 
-    state.usm.group.groupSaveStatus = 'complete';
-    assert.equal(isGroupLoading(Immutable.from(state)), false, 'isGroupLoading should return false when groupSaveStatus is complete');
+    state.usm.group.groupStatus = 'complete';
+    assert.equal(isGroupLoading(Immutable.from(state)), false, 'isGroupLoading should return false when groupStatus is complete');
 
-    // reset groupSaveStatus
-    state.usm.group.groupSaveStatus = null;
+    // reset groupStatus
+    state.usm.group.groupStatus = null;
 
     state.usm.group.initGroupFetchPoliciesStatus = 'wait';
     assert.equal(isGroupLoading(Immutable.from(state)), true, 'isGroupLoading should return true when initGroupFetchPoliciesStatus is wait');
@@ -129,7 +129,7 @@ module('Unit | Selectors | Group Selectors', function() {
   });
 
   test('hasMissingRequiredData selector', function(assert) {
-    const state = cloneDeep(fullState).value();
+    const state = _.cloneDeep(fullState);
     state.usm.group.group = { ...saveGroupData, name: null };
     assert.equal(hasMissingRequiredData(Immutable.from(state)), true, 'hasMissingRequiredData should return true when name is null');
 

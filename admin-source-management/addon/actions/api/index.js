@@ -1,7 +1,7 @@
 import groupsAPI from './groups-api';
-import policy from './policy';
+import policyAPI from './policy-api';
 
 export {
   groupsAPI,
-  policy
+  policyAPI
 };

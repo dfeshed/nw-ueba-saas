@@ -1,16 +1,16 @@
 import { module, test } from 'qunit';
 import Immutable from 'seamless-immutable';
-import cloneDeep from 'lodash';
+import _ from 'lodash';
 import {
   groups,
   isGroupsLoading
-} from 'admin-source-management/selectors/groups-selectors';
+} from 'admin-source-management/reducers/usm/groups-selectors';
 
 const fullState = {
   usm: {
     groups: {
-      groups: [],
-      groupsStatus: null // wait, complete, error
+      items: [],
+      itemsStatus: null // wait, complete, error
     }
   }
 };
@@ -30,17 +30,17 @@ const fetchGroupsData = [
 module('Unit | Selectors | Groups Selectors', function() {
 
   test('groups selector', function(assert) {
-    const state = cloneDeep(fullState).value();
-    state.usm.groups.groups = fetchGroupsData;
+    const state = _.cloneDeep(fullState);
+    state.usm.groups.items = fetchGroupsData;
     assert.deepEqual(groups(Immutable.from(state)), fetchGroupsData, 'The returned value from the groups selector is as expected');
   });
 
   test('isGroupsLoading selector', function(assert) {
-    const state = cloneDeep(fullState).value();
-    state.usm.groups.groupsStatus = 'wait';
+    const state = _.cloneDeep(fullState);
+    state.usm.groups.itemsStatus = 'wait';
     assert.equal(isGroupsLoading(Immutable.from(state)), true, 'isGroupsLoading should return true when status is wait');
 
-    state.usm.groups.groupsStatus = 'complete';
+    state.usm.groups.itemsStatus = 'complete';
     assert.equal(isGroupsLoading(Immutable.from(state)), false, 'isGroupsLoading should return false when status is completed');
   });
 

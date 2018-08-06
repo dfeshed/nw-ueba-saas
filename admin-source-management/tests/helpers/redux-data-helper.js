@@ -36,12 +36,12 @@ export default class DataHelper {
   }
 
   policy(config) {
-    _set(this.state, 'policy', config);
+    _set(this.state, 'usm.policy', config);
     return this;
   }
 
   fetchPolicyStatus(status) {
-    _set(this.state, 'policy.policyStatus', status);
+    _set(this.state, 'usm.policy.itemsStatus', status);
     return this;
   }
 

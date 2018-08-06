@@ -1,1 +1,0 @@
-export { default } from 'admin-source-management/components/form-container/schedule-config/scan-options/component';

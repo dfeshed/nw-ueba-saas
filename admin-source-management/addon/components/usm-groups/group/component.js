@@ -11,11 +11,11 @@ import {
   selectedPolicy,
   isGroupLoading,
   hasMissingRequiredData
-} from 'admin-source-management/selectors/group-selectors';
+} from 'admin-source-management/reducers/usm/group-selectors';
 import {
   editGroup,
   saveGroup
-} from 'admin-source-management/actions/data-creators/group-creators';
+} from 'admin-source-management/actions/creators/group-creators';
 
 const stateToComputed = (state) => ({
   group: group(state),

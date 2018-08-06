@@ -1,0 +1,21 @@
+<hbox class="main-zone">
+  <vbox class="filter-zone">
+    Filters...
+  </vbox>
+  <vbox class="items-zone">
+    <box fit class="toolbar-zone">
+      {{#link-to 'policy-create'}}
+        {{#rsa-form-button}}
+          {{rsa-icon name='add-1' style='lined'}}
+          {{t 'adminUsm.button.addNew'}}
+        {{/rsa-form-button}}
+      {{/link-to}}
+    </box>
+    <box class="items-main">
+      {{table-listing items=policies columnsConfig=columns}}
+    </box>
+  </vbox>
+  <vbox class="inspector-zone">
+    Details...
+  </vbox>
+</hbox>

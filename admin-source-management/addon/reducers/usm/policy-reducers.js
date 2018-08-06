@@ -1,0 +1,66 @@
+import Immutable from 'seamless-immutable';
+import reduxActions from 'redux-actions';
+import { handle } from 'redux-pack';
+import moment from 'moment';
+import * as ACTION_TYPES from 'admin-source-management/actions/types';
+
+const initialState = {
+  policy: {
+    name: '',
+    description: '',
+    scheduleConfig: {
+      enabledScheduledScan: false,
+      scheduleOptions: {
+        scanStartDate: null,
+        scanStartTime: '10:00',
+        recurrenceInterval: 5,
+        recurrenceIntervalUnit: 'DAYS',
+        runOnDaysOfWeek: []
+      },
+      scanOptions: {
+        cpuMaximum: 75,
+        cpuMaximumOnVirtualMachine: 85
+      }
+    }
+  },
+  policyStatus: null // wait, complete, error
+};
+
+export default reduxActions.handleActions({
+
+  [ACTION_TYPES.NEW_POLICY]: (state) => {
+    const newState = state.merge({
+      policy: { ...initialState.policy },
+      policyStatus: null
+    });
+    const fields = 'policy.scheduleConfig.scheduleOptions.scanStartDate'.split('.');
+    const scanStartDateToday = moment().startOf('date').toDate().getTime();
+    return newState.setIn(fields, scanStartDateToday);
+  },
+
+  [ACTION_TYPES.EDIT_POLICY]: (state, action) => {
+    const { field, value } = action.payload;
+    const fields = field.split('.');
+    return state.setIn(fields, value);
+  },
+
+  [ACTION_TYPES.UPDATE_POLICY_PROPERTY]: (state, action) => state.merge({ policy: action.payload }, { deep: true }),
+
+  [ACTION_TYPES.SAVE_POLICY]: (state, action) => (
+    handle(state, action, {
+      start: (state) => {
+        return state.set('policyStatus', 'wait');
+      },
+      failure: (state) => {
+        return state.set('policyStatus', 'error');
+      },
+      success: (state) => {
+        return state.merge({
+          policy: action.payload.data,
+          policyStatus: 'complete'
+        });
+      }
+    })
+  )
+
+}, Immutable.from(initialState));

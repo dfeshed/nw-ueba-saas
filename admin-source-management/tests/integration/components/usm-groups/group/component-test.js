@@ -11,7 +11,7 @@ import { patchReducer } from '../../../../helpers/vnext-patch';
 import { patchFlash } from '../../../../helpers/patch-flash';
 import { throwSocket } from '../../../../helpers/patch-socket';
 import { waitForSockets } from '../../../../helpers/wait-for-sockets';
-import * as groupCreators from 'admin-source-management/actions/data-creators/group-creators';
+import * as groupCreators from 'admin-source-management/actions/creators/group-creators';
 import { initialState as _initialState } from 'admin-source-management/reducers/usm/group-reducers';
 import policiesData from '../../../../../tests/data/subscriptions/policy/findAll/data';
 
@@ -74,8 +74,8 @@ module('Integration | Component | Group', function(hooks) {
     assert.equal(findAll('.loading-overlay .rsa-loader').length, 1, 'A loading spinner appears in the dom');
   });
 
-  test('A loading spinner is displayed if the groupSaveStatus property is "wait"', async function(assert) {
-    setState({ ...initialState, groupSaveStatus: 'wait' });
+  test('A loading spinner is displayed if the groupStatus property is "wait"', async function(assert) {
+    setState({ ...initialState, groupStatus: 'wait' });
     await render(hbs`{{usm-groups/group}}`);
     assert.equal(findAll('.loading-overlay .rsa-loader').length, 1, 'A loading spinner appears in the dom');
   });

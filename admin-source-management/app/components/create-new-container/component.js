@@ -1,1 +1,0 @@
-export { default } from 'admin-source-management/components/create-new-container/component';

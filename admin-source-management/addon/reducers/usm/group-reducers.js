@@ -61,7 +61,7 @@ export const initialState = {
   policies: [],
 
   initGroupFetchPoliciesStatus: null, // wait, complete, error
-  groupSaveStatus: null // wait, complete, error
+  groupStatus: null // wait, complete, error
 };
 
 export default reduxActions.handleActions({
@@ -86,7 +86,7 @@ export default reduxActions.handleActions({
   [ACTION_TYPES.NEW_GROUP]: (state /* , action */) => {
     return state.merge({
       group: { ...initialState.group },
-      groupSaveStatus: null,
+      groupStatus: null,
       initGroupFetchPoliciesStatus: null
     });
   },
@@ -102,15 +102,15 @@ export default reduxActions.handleActions({
   [ACTION_TYPES.SAVE_GROUP]: (state, action) => (
     handle(state, action, {
       start: (state) => {
-        return state.set('groupSaveStatus', 'wait');
+        return state.set('groupStatus', 'wait');
       },
       failure: (state) => {
-        return state.set('groupSaveStatus', 'error');
+        return state.set('groupStatus', 'error');
       },
       success: (state) => {
         return state.merge({
           group: action.payload.data,
-          groupSaveStatus: 'complete'
+          groupStatus: 'complete'
         });
       }
     })
