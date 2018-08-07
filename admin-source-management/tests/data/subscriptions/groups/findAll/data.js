@@ -7,6 +7,13 @@ export default [
     'createdOn': 1523655354337,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655354337,
+    'policies': [
+      {
+        'id': 'policy_01',
+        'name': 'Policy 01',
+        'type': 'EndPointScan'
+      }
+    ],
     'osTypes': [],
     'osDescriptions': [],
     'ipRangeStart': null,
@@ -20,6 +27,18 @@ export default [
     'createdOn': 1523655368173,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655368173,
+    'policies': [
+      {
+        'id': 'policy_02',
+        'name': 'Policy 02',
+        'type': 'EndPointScan'
+      },
+      {
+        'id': 'policy_03',
+        'name': 'Policy 03',
+        'type': 'EndPointWindows'
+      }
+    ],
     'osTypes': [],
     'osDescriptions': [],
     'ipRangeStart': null,
@@ -34,6 +53,7 @@ export default [
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655354337,
     'osTypes': [],
+    'policies': [],
     'osDescriptions': [],
     'ipRangeStart': null,
     'ipRangeEnd': null

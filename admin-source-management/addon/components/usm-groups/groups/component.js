@@ -4,7 +4,7 @@ import {
   groups,
   isGroupsLoading
 } from 'admin-source-management/reducers/usm/groups-selectors';
-// import groupsCreators from 'admin-source-management/actions/creators/groups-creators';
+import creators from 'admin-source-management/actions/creators/groups-creators';
 import columns from './columns';
 
 const stateToComputed = (state) => ({
@@ -21,10 +21,10 @@ const dispatchToActions = () => {
   };
 };
 
-const UsmGroups = Component.extend({
-  tagName: 'vbox',
-  classNames: ['usm-groups', 'flexi-fit'],
-  columns
+const UsmGroupsExplorer = Component.extend({
+  classNames: ['usm-groups-explorer'],
+  columns,
+  creators
 });
 
-export default connect(stateToComputed, dispatchToActions)(UsmGroups);
+export default connect(stateToComputed, dispatchToActions)(UsmGroupsExplorer);

@@ -1,5 +1,6 @@
 <h2 class="header">{{rsa-icon name='filter-2'}}{{t 'rsaExplorer.filters.label'}}</h2>
 <section class="body">
+  {{#if hasTimeFilter}}
   <section class="filter-option created-filter">
     <hbox class="time-range-label">
       <h2>{{ t 'rsaExplorer.filters.timeRange'}}</h2>
@@ -35,6 +36,7 @@
       {{/if}}
     {{/liquid-bind}}
   </section>
+  {{/if}}
   {{yield (hash filterControls=(component filterControlsComponent updateFilter=updateFilter))}}
 </section>
 <footer>

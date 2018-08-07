@@ -7,7 +7,16 @@ import reducers from 'admin-source-management/reducers/usm/groups-reducers';
 
 const initialState = {
   items: [],
-  itemsStatus: null // wait, complete, error
+  itemsStatus: null,
+  itemsSelected: [],
+  isFilterPanelOpen: true,
+  isSelectAll: false,
+  itemsTotal: null,
+  itemsFilters: null,
+  focusedItem: null,
+  isTransactionUnderway: false,
+  sortField: 'name',
+  isSortDescending: true
 };
 
 const fetchGroupsData = [

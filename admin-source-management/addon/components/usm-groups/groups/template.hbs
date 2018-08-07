@@ -1,26 +1,39 @@
-<hbox class="main-zone">
+{{#rsa-explorer
+  columns=columns
+  reduxSpace='usm.groups'
+  creators=creators as |explorer|}}
 
-  <vbox class="filter-zone">
-    Filters...
-  </vbox>
+  {{#explorer.toolbar toolbarControlsComponent='usm-groups/groups/toolbar' as |toolbar|}}
+    {{toolbar.toolbarControls}}
+  {{/explorer.toolbar}}
 
-  <vbox class="items-zone">
-    <box fit class="toolbar-zone">
-      {{#link-to 'group-create'}}
-        {{#rsa-form-button}}
-          {{rsa-icon name='add-1' style='lined'}}
-          {{t 'adminUsm.button.addNew'}}
-        {{/rsa-form-button}}
-      {{/link-to}}
-    </box>
-    <box class="items-main">
-        {{table-listing items=groups columnsConfig=columns}}
+  {{#explorer.filters filterControlsComponent='usm-groups/groups/filters' hasTimeFilter=false as |filters|}}
+    {{filters.filterControls}}
+  {{/explorer.filters}}
 
-    </box>
-  </vbox>
+  {{#explorer.table as |row|}}
+    {{#row.cell as |item index column|}}
+      {{#if (eq column.dataType 'checkbox') }}
+        <label class="rsa-form-checkbox-label {{if (contains item.id explorer.instance.itemsSelected) 'checked'}}">
+          {{rsa-form-checkbox checked=(contains item.id explorer.instance.itemsSelected) change=(action explorer.select item)}}
+        </label>
+      {{else if (eq column.field "polices")}}
+        {{#each item.policies as |policy index|}}
+          {{#if (not-eq index 0)}},  {{/if}}{{policy.name}}
+        {{/each}}
+      {{else if (eq column.field "sourceTypes")}}
+        {{#each item.policies as |policy index|}}
+          {{#if (not-eq index 0)}},  {{/if}}{{policy.type}}
+        {{/each}}
+      {{else}}
+        {{get item column.field}}
+      {{/if}}
+    {{/row.cell}}
+  {{/explorer.table}}
 
-  <vbox class="inspector-zone">
-    Details...
-  </vbox>
+ {{#explorer.inspector
+    inspectorHeaderComponent='usm-groups/groups/inspector/header'
+    inspectorContentComponent='usm-groups/groups/inspector' as |inspector|}}
+  {{/explorer.inspector}}
 
-</hbox>
+{{/rsa-explorer}}

@@ -34,6 +34,8 @@ export default Component.extend({
 
   hasCustomDate: false,
 
+  hasTimeFilter: true,
+
   /**
    * The start date (as unix timestamp) on a custom date range.
    * Note: Dates/Times are assumed to be in UTC, and are therefore converted to local date/time

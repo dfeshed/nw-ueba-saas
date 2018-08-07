@@ -3311,11 +3311,21 @@ export default {
     title: 'Unified Sources', // USM
     button: {
       addNew: 'Add New',
+      createNew: 'Create New',
       save: 'Save and Publish',
       cancel: 'Cancel'
     },
     groups: {
-      title: 'Groups'
+      title: 'Groups',
+      list: {
+        select: 'Select',
+        name: 'Group Name',
+        polices: 'Policies Applied',
+        sourceTypes: 'Source Types Applied',
+        description: 'Group Description',
+        lastUpdated: 'Last Updated',
+        noResultsMessage: 'No matching Tasks were found'
+      }
     },
     group: {
       identify: 'Identify',
