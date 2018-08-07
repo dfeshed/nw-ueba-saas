@@ -28,9 +28,6 @@ export default Component.extend({
   // @see components/meta
   clickValueAction: undefined,
 
-  // @see components/meta
-  contextLookupAction: undefined,
-
   emptyMetaGroup: {
     name: 'Meta keys with no values',
     isOpen: false

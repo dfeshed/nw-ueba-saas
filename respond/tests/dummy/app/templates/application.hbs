@@ -21,10 +21,10 @@
   </section>
   <aside fit class="respond-engine-dummy__main-aside">
     {{#if (and entityId entityType)}}
-      {{context-panel entityId=entityId entityType=entityType closePanel=(route-action 'closeContextPanel')}}
+      {{context-panel entityId=entityId entityType=entityType closePanel=(action 'closeContextPanel')}}
     {{/if}}
   </aside>
 </article>
 <div id='modalDestination'></div>
-{{context-tooltip clickDataAction=(route-action 'openContextPanel')}}
+{{context-tooltip clickDataAction=(action 'openContextPanel') addToListAction=(action 'openContextAddToList')}}
 {{context-panel/add-to-list entity=entityToAddToList}}

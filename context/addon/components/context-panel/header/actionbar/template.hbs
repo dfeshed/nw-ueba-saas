@@ -1,7 +1,7 @@
 <hbox class="rsa-context-panel-header__tab">
   {{#each headerButtons as | componentName | }}
     {{#if (eq componentName 'add-to-list')}}
-      {{#rsa-form-button defaultAction=(route-action "openContextAddToList" (hash type=meta id=lookupKey)) }}
+      {{#rsa-form-button defaultAction=(action "openContextAddToList" (hash type=meta id=lookupKey)) current=this}}
         {{t 'context.addToList.title'}}
       {{/rsa-form-button}}
     {{else if (eq componentName 'endpoint')}}

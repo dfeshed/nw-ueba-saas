@@ -7,6 +7,8 @@ import { warn } from 'ember-debug';
 import { contextHelpIds } from 'context/utils/help-ids';
 import { isEmpty } from '@ember/utils';
 
+const contextAddToListModalId = 'addToList';
+
 export default Component.extend({
   layout,
   classNames: 'rsa-context-tree-table',
@@ -19,14 +21,19 @@ export default Component.extend({
 
   init() {
     this._super(...arguments);
-    this.get('eventBus').on('rsa-application-modal-did-close', () => {
+    this.get('eventBus').on(`rsa-application-modal-close-${contextAddToListModalId}`, () => {
       this.set('createList', true);
-      this.set('entity', null);
+      this.set('entity', undefined);
+    });
+    this.get('eventBus').on(`rsa-application-modal-open-${contextAddToListModalId}`, (entity) => {
+      this.set('createList', true);
+      this.set('entity', entity);
     });
   },
 
   willDestroyElement() {
-    this.get('eventBus').off('rsa-application-modal-did-close');
+    this.get('eventBus').off(`rsa-application-modal-close-${contextAddToListModalId}`);
+    this.get('eventBus').off(`rsa-application-modal-open-${contextAddToListModalId}`);
   },
     /**
    * The type and id of the entity which is to be added to a list.

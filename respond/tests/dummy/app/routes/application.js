@@ -3,14 +3,11 @@ import { getOwner } from '@ember/application';
 import { inject as service } from '@ember/service';
 import config from 'dummy/config/environment';
 
-const contextAddToListModalId = 'addToList';
-
 export default Route.extend({
   classNames: ['test123'],
   dateFormat: service(),
   timeFormat: service(),
   timezone: service(),
-  eventBus: service(),
 
   model() {
 
@@ -47,37 +44,6 @@ export default Route.extend({
       // model hook returning promise, then ensures
       // log in occurs before engine loads
       return auth.authenticate('local', 'changeMe');
-    }
-  },
-
-  actions: {
-    openContextPanel(entity) {
-      const { type, id } = entity || {};
-      this.get('controller').setProperties({
-        entityId: id,
-        entityType: type
-      });
-    },
-
-    closeContextPanel() {
-      this.get('controller').setProperties({
-        entityId: undefined,
-        entityType: undefined
-      });
-    },
-
-    openContextAddToList(entity) {
-      const { type, id } = entity || {};
-      const eventName = (type && id) ?
-        `rsa-application-modal-open-${contextAddToListModalId}` :
-        `rsa-application-modal-close-${contextAddToListModalId}`;
-      this.get('controller').set('entityToAddToList', entity);
-      this.get('eventBus').trigger(eventName);
-    },
-
-    closeContextAddToList() {
-      this.get('eventBus').trigger(`rsa-application-modal-close-${contextAddToListModalId}`);
-      this.get('controller').set('entityToAddToList', undefined);
     }
   }
 });

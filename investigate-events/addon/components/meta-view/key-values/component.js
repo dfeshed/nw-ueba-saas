@@ -116,9 +116,8 @@ const KeyValueComponent = Component.extend({
     const {
       'groupKey.name': groupKeyName,
       clickValueAction,
-      contextLookupAction,
       resolvedData: data
-    } = this.getProperties('groupKey.name', 'clickValueAction', 'contextLookupAction', 'resolvedData');
+    } = this.getProperties('groupKey.name', 'clickValueAction', 'resolvedData');
 
     // Request a function that will test whether a given (raw) meta value is already selected in the current query.
     // We'll use this function to mark some values as selected & disable their clicks.
@@ -152,7 +151,7 @@ const KeyValueComponent = Component.extend({
       });
 
     // If the meta key corresponds to a known entity, enable context lookup on that meta value:
-    // that is, wire up the `contextLookupAction` to some DOM event on the meta value DOM.
+    // that is, wire up the to some DOM event on the meta value DOM.
     // The UX design for the DOM interaction is still in progress; for now, wire it up to right-mouse click.
     const entityType = entityTypeByMeta(groupKeyName) || {};
     const { name: entityTypeName } = entityType;
@@ -160,8 +159,7 @@ const KeyValueComponent = Component.extend({
     if (entityTypeName) {
       $enter
         .classed('is-context-lookup-enabled', true)
-        .on('contextmenu', (d) => {
-          this.send('safeCallback', contextLookupAction, entityTypeName, d.value);
+        .on('contextmenu', () => {
           // prevent browser from showing native RMC menu
           event.preventDefault();
           // prevent browser from doing native text "highlighting"

@@ -4,11 +4,11 @@
   </section>
   <aside fit class="investigate-dummy__main-aside">
     {{#if (and entityId entityType)}}
-      {{context-panel entityId=entityId entityType=entityType closePanel=(route-action 'closeContextPanel')}}
+      {{context-panel entityId=entityId entityType=entityType closePanel=(action 'closeContextPanel')}}
     {{/if}}
   </aside>
 </article>
-{{context-tooltip clickDataAction=(route-action 'openContextPanel')}}
+{{context-tooltip clickDataAction=(action 'openContextPanel') addToListAction=(action 'openContextAddToList')}}
 {{context-panel/add-to-list entity=entityToAddToList}}
 
 <ul class="rsa-flash-messages">

@@ -4,6 +4,9 @@ import layout from './template';
 import computed from 'ember-computed-decorators';
 import { pivotToInvestigateUrl } from 'context/util/context-data-modifier';
 import { isEmpty } from '@ember/utils';
+import { inject as service } from '@ember/service';
+
+const contextAddToListModalId = 'addToList';
 
 /**
  * @private
@@ -21,6 +24,7 @@ const stateToComputed = ({ context: { context: { lookupKey, meta, entitiesMetas 
 const ActionbarComponent = Component.extend({
   layout,
   classNames: 'rsa-context-panel__header',
+  eventBus: service(),
 
   /*
    * @private
@@ -33,6 +37,20 @@ const ActionbarComponent = Component.extend({
       return '';
     }
     return pivotToInvestigateUrl(meta, lookupKey, entitiesMetas[meta]);
+  },
+
+  actions: {
+    openContextAddToList(entity) {
+      const { type, id } = entity || {};
+      const eventName = (type && id) ?
+        `rsa-application-modal-open-${contextAddToListModalId}` :
+        `rsa-application-modal-close-${contextAddToListModalId}`;
+      this.get('eventBus').trigger(eventName, entity);
+    },
+
+    closeContextAddToList() {
+      this.get('eventBus').trigger(`rsa-application-modal-close-${contextAddToListModalId}`);
+    }
   }
 });
 

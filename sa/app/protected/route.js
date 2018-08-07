@@ -15,8 +15,6 @@ import config from '../config/environment';
 import { jwt_decode as jwtDecode } from 'ember-cli-jwt-decode';
 import $ from 'jquery';
 
-const contextAddToListModalId = 'addToList';
-
 /**
  * Add AuthenticatedRouteMixin to ensure the routes extending from this
  * route are not accessible for unauthenticated users. Without authentication,
@@ -231,39 +229,6 @@ export default Route.extend(AuthenticatedRouteMixin, {
       // eslint-disable-next-line no-console
       console.error('There was an issue loading your profile. Please try again.');
     });
-  },
-
-  actions: {
-    openContextPanel(entity) {
-      const { type, id } = entity || {};
-      this.get('controller').setProperties({
-        entityId: id,
-        entityType: type
-      });
-    },
-
-    closeContextPanel() {
-      this.get('controller').setProperties({
-        entityId: undefined,
-        entityType: undefined
-      });
-    },
-
-    // Actions to open & close the Context addon's
-    // "Add To List" application dialog.
-    openContextAddToList(entity) {
-      const { type, id } = entity || {};
-      const eventName = (type && id) ?
-        `rsa-application-modal-open-${contextAddToListModalId}` :
-        `rsa-application-modal-close-${contextAddToListModalId}`;
-      this.get('controller').set('entityToAddToList', entity);
-      this.get('eventBus').trigger(eventName);
-    },
-
-    closeContextAddToList() {
-      this.get('eventBus').trigger(`rsa-application-modal-close-${contextAddToListModalId}`);
-      this.get('controller').set('entityToAddToList', undefined);
-    }
   },
 
   _checkAccessAndTransition(key, transitionName) {

@@ -1,29 +1,21 @@
 import Controller from '@ember/controller';
-import { debug } from '@ember/debug';
 import { inject as service } from '@ember/service';
 
 const contextAddToListModalId = 'addToList';
 
 export default Controller.extend({
-  eventId: '12345678',
-  index: 5,
-  total: 107,
   eventBus: service(),
-  linkToFileAction(file) {
-    // Dummy handler, for troubleshooting
-    debug(`linkToFileAction invoked with file: ${file}`);
-  },
   actions: {
     openContextPanel(entity) {
       const { type, id } = entity || {};
-      this.get('controller').setProperties({
+      this.setProperties({
         entityId: id,
         entityType: type
       });
     },
 
     closeContextPanel() {
-      this.get('controller').setProperties({
+      this.setProperties({
         entityId: undefined,
         entityType: undefined
       });
@@ -34,13 +26,13 @@ export default Controller.extend({
       const eventName = (type && id) ?
         `rsa-application-modal-open-${contextAddToListModalId}` :
         `rsa-application-modal-close-${contextAddToListModalId}`;
-      this.get('controller').set('entityToAddToList', entity);
+      this.set('entityToAddToList', entity);
       this.get('eventBus').trigger(eventName);
     },
 
     closeContextAddToList() {
       this.get('eventBus').trigger(`rsa-application-modal-close-${contextAddToListModalId}`);
-      this.get('controller').set('entityToAddToList', undefined);
+      this.set('entityToAddToList', undefined);
     }
   }
 });
