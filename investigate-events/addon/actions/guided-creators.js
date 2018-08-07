@@ -2,6 +2,8 @@ import * as ACTION_TYPES from './types';
 import { clientSideParseAndValidate, getMetaFormat } from './utils';
 import { selectedPills } from 'investigate-events/reducers/investigate/query-node/selectors';
 import validateQueryFragment from './fetch/query-validation';
+import { getParamsForHashes, getHashForParams } from './fetch/query-hashes';
+
 import { transformTextToPillData, selectPillsFromPosition } from 'investigate-events/actions/utils';
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 
@@ -178,3 +180,30 @@ export const resetGuidedPill = (pillData) => ({
     pillData
   }
 });
+
+// Needs to persist hashes and send request
+// to retrieve them
+export const handleIncomingQueryHashes = (hashes) => ({
+  type: ACTION_TYPES.RETRIEVE_QUERY_PARAMS_FOR_HASHES,
+  promise: getParamsForHashes(hashes),
+  meta: {
+    // send hashes along with meta
+    // so they can be persisted too
+    hashes
+  }
+});
+
+// Send request to get hash for a given
+// set of parameters
+export const retrieveHashForQueryParams = () => {
+  return (dispatch, getState) => {
+    const { investigate } = getState();
+    dispatch({
+      type: ACTION_TYPES.RETRIEVE_HASH_FOR_QUERY_PARAMS,
+      promise: getHashForParams(
+        investigate.queryNode.pillsData,
+        investigate.dictionaries.language
+      )
+    });
+  };
+};
