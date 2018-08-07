@@ -113,7 +113,7 @@ module('Unit | Actions | Guided Creators', function(hooks) {
         thunk2(secondDispatch, getState);
       } else {
         assert.equal(action.type, ACTION_TYPES.DELETE_GUIDED_PILLS, 'action has the correct type');
-        assert.deepEqual(action.payload.pillData, ['foo'], 'action pillData has the right value');
+        assert.deepEqual(action.payload.pillData, 'foo', 'action pillData has the right value');
         done();
       }
     };

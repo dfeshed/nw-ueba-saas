@@ -84,7 +84,7 @@ export const deleteGuidedPill = ({ pillData }) => {
     dispatch({
       type: ACTION_TYPES.DELETE_GUIDED_PILLS,
       payload: {
-        pillData: [pillData]
+        pillData
       }
     });
     dispatch(deselectAllGuidedPills());

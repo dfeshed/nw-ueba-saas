@@ -10,7 +10,8 @@ import {
   canQueryGuided,
   enrichedPillsData,
   hasInvalidSelectedPill,
-  selectedPills
+  selectedPills,
+  deselectedPills
 } from 'investigate-events/reducers/investigate/query-node/selectors';
 import {
   addGuidedPill,
@@ -30,6 +31,7 @@ const { log } = console;// eslint-disable-line no-unused-vars
 
 const stateToComputed = (state) => ({
   canQueryGuided: canQueryGuided(state),
+  deselectedPills: deselectedPills(state),
   pillsData: enrichedPillsData(state),
   hasInvalidSelectedPill: hasInvalidSelectedPill(state),
   metaOptions: metaKeySuggestionsForQueryBuilder(state),
@@ -106,7 +108,10 @@ const QueryPills = RsaContextMenu.extend({
         return _this.get('hasInvalidSelectedPill');
       },
       action() {
-        // executeQuery in same tab
+        // Delete all selected pills first
+        // submit query with remaining selected pills
+        _this.send('deleteGuidedPill', { pillData: _this.get('deselectedPills') });
+        _this._submitQuery();
       }
     },
     {
@@ -265,7 +270,7 @@ const QueryPills = RsaContextMenu.extend({
       return;
     }
 
-    this.send('deleteGuidedPill', { pillData });
+    this.send('deleteGuidedPill', { pillData: [pillData] });
   },
 
   /**

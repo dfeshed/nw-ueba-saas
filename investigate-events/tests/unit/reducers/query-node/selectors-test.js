@@ -10,6 +10,7 @@ import {
   isOnGuided,
   enrichedPillsData,
   selectedPills,
+  deselectedPills,
   canQueryGuided,
   freeFormText,
   hasInvalidSelectedPill,
@@ -379,6 +380,21 @@ test('selectedPills returns only those pills that are selected', function(assert
   assert.equal(pD[0].meta, 'a', 'transforms meta correctly');
   assert.equal(pD[0].operator, '=', 'transforms operator correctly');
   assert.equal(pD[0].value, '\'x\'', 'transforms value correctly');
+  assert.equal(pD[0].id, 1, 'transforms id correctly');
+});
+
+test('deselectedPills returns only those pills that are not selected', function(assert) {
+  const state = new ReduxDataHelper()
+    .language()
+    .pillsDataPopulated()
+    .markSelected(['1'])
+    .build();
+  const pD = deselectedPills(state);
+  assert.equal(pD.length, 1, 'returns correct number of pill data');
+  assert.equal(pD[0].meta, 'b', 'transforms meta correctly');
+  assert.equal(pD[0].operator, '=', 'transforms operator correctly');
+  assert.equal(pD[0].value, '\'y\'', 'transforms value correctly');
+  assert.equal(pD[0].id, 2, 'transforms id correctly');
 });
 
 test('canQueryGuided is true when a query is ready to execute and NO invalid pill is present', function(assert) {

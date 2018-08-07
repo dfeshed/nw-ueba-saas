@@ -154,6 +154,13 @@ export const selectedPills = createSelector(
   }
 );
 
+export const deselectedPills = createSelector(
+  [_pillsData],
+  (pillsData) => {
+    return pillsData.filter((pD) => pD.isSelected === false);
+  }
+);
+
 export const hasInvalidSelectedPill = createSelector(
   [selectedPills],
   (selectedPills) => selectedPills.isAny('isInvalid')

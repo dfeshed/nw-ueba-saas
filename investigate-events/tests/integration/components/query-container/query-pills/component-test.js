@@ -175,7 +175,7 @@ module('Integration | Component | query-pills', function(hooks) {
       assert.equal(deleteActionSpy.callCount, 1, 'The delete pill action creator was called once');
       assert.deepEqual(
         deleteActionSpy.args[0][0],
-        { pillData: { id: '1', meta: 'a', operator: '=', value: '\'x\'', isSelected: false } },
+        { pillData: [{ id: '1', meta: 'a', operator: '=', value: '\'x\'', isSelected: false }] },
         'The action creator was called with the right arguments'
       );
     });
