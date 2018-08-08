@@ -8,6 +8,7 @@ import {
   useDatabaseTime,
   isOnFreeForm,
   isOnGuided,
+  isPillBeingEdited,
   enrichedPillsData,
   selectedPills,
   deselectedPills,
@@ -478,3 +479,20 @@ test('pillBeingEdited is undefined when no pills being edited', function(assert)
   assert.deepEqual(pBE, undefined, 'Selector returns pill that is being edited');
 });
 
+test('determine if a pill is being edited', function(assert) {
+  // Test truthy case
+  const truthyState = new ReduxDataHelper()
+    .language()
+    .pillsDataPopulated()
+    .markEditing(['1'])
+    .build();
+  assert.ok(isPillBeingEdited(truthyState), 'pill is properly identified as being edited');
+
+  // test falsy case
+  const falsyState = new ReduxDataHelper()
+    .language()
+    .pillsDataPopulated()
+    .markEditing([])
+    .build();
+  assert.notOk(isPillBeingEdited(falsyState), 'pill is properly identified as being edited');
+});

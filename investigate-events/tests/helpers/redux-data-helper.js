@@ -335,16 +335,10 @@ export default class DataHelper {
   }
 
   markEditing(pillIds = []) {
-    this.state.queryNode.pillsData = this.state.queryNode.pillsData.map((pD) => {
-      if (pillIds.includes(pD.id)) {
-        pD = {
-          ...pD,
-          isEditing: true
-        };
-      }
-
-      return pD;
-    });
+    this.state.queryNode.pillsData = this.state.queryNode.pillsData.map((pD) => ({
+      ...pD,
+      isEditing: pillIds.includes(pD.id)
+    }));
     return this;
   }
 }

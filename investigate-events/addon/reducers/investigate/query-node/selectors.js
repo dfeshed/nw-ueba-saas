@@ -42,9 +42,20 @@ const _isFreeFormTextUpdated = createSelector(
   }
 );
 
+export const isPillBeingEdited = createSelector(
+  [_pillsData],
+  (pills) => pills.some((d) => d.isEditing)
+);
+
 const _isDirty = createSelector(
-  [_currentQueryHash, _serviceId, _startTime, _endTime, _pillsData, _isFreeFormTextUpdated],
-  (currentQueryHash, serviceId, startTime, endTime, pills, isFreeFormTextUpdated) => {
+  [_currentQueryHash, _serviceId, _startTime, _endTime, _pillsData, _isFreeFormTextUpdated, isPillBeingEdited],
+  (currentQueryHash, serviceId, startTime, endTime, pills, isFreeFormTextUpdated, isPillBeingEdited) => {
+    // We check to see if a pill is being edited because the _pillData is
+    // updated when entering edit mode, causing this selector to re-evaluate.
+    if (isPillBeingEdited) {
+      // Ignore dirty state while in the process of editing.
+      return false;
+    }
     const queryHash = createQueryHash(serviceId, startTime, endTime, pills);
     return (currentQueryHash !== queryHash) || isFreeFormTextUpdated;
   }

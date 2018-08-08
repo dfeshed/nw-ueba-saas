@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import { next, scheduleOnce } from '@ember/runloop';
+import { cancel, later, next, scheduleOnce } from '@ember/runloop';
 import computed from 'ember-computed-decorators';
 
 import * as MESSAGE_TYPES from '../message-types';
@@ -89,6 +89,17 @@ export default Component.extend({
 
   actions: {
     onChange(selection /* powerSelectAPI, event */) {
+      const timer = this.get('operationSelectedTimer');
+      if (timer) {
+        // When editing a pill and selecting a new operator, the `onKeyDown()`
+        // function is called before this function, which causes the previously
+        // selected operator to be re-selected. To stop this, we put the
+        // OPERATOR_SELECTED dispatching into a `later` runloop and save off the
+        // timer info. If the user actually changed the operator, we'll land
+        // here, see if we have an outstanding timer, and cancel it if we do.
+        // This will prevent the users' operator selection from being reversed.
+        cancel(timer);
+      }
       this._broadcast(MESSAGE_TYPES.OPERATOR_SELECTED, selection);
     },
     onFocus(powerSelectAPI /* event */) {
@@ -135,12 +146,9 @@ export default Component.extend({
     },
     /**
      * This function is called every time a key is pressed, and is invoked
-     * before power-select reacts to the key that was pressed. This is here to
-     * handle one specific case. If the user presses ENTER, selecting an
-     * operator that was already selected. In that case, power-select does
-     * nothing, but we want the focus to move onto the pill value.
-     * As a side note, we cannot combine `onInput`'s functionality here because
-     * this code runs before any down-selection of options happens.
+     * before power-select reacts to the key that was pressed. As a side note,
+     * we cannot combine `onInput`'s functionality here because this code runs
+     * before any down-selection of options happens.
      * @private
      */
     onKeyDown(powerSelectAPI, event) {
@@ -150,7 +158,13 @@ export default Component.extend({
         const { selected } = powerSelectAPI;
         const selection = this.get('selection');
         if (selection && selected && selection === selected) {
-          this._broadcast(MESSAGE_TYPES.OPERATOR_SELECTED, selection);
+          // This is called before the change event. We need to delay
+          // performing this action to see if a change event occures. If it
+          // does, we should ignore this event. See `onChange()`.
+          this.set('operationSelectedTimer', later(this, this._broadcast, {
+            type: MESSAGE_TYPES.OPERATOR_SELECTED,
+            data: selection
+          }, 100));
         }
       } else if (isBackspace(event) && event.target.value === '') {
         next(this, () => this._broadcast(MESSAGE_TYPES.OPERATOR_BACKSPACE_KEY));
