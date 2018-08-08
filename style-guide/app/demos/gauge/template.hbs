@@ -1,0 +1,113 @@
+<hbox fit>
+  {{spec-masthead model=model}}
+</hbox>
+
+<hbox>
+  <fill block class="scroll-box">
+  {{#spec-category}}
+    {{#spec-member title="Default style"}}
+      <div style="width:25%">
+        {{rsa-gauge value=value}}
+      </div>
+      {{!-- BEGIN-SNIPPET rsa-gauge
+      <div style="width:25%">
+        {{rsa-gauge value=value}}
+      </div>
+      END-SNIPPET --}}
+      {{code-snippet name="rsa-gauge.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Passing a percentage string to value"}}
+      <div style="width:25%">
+        {{rsa-gauge value="42%"}}
+      </div>
+      {{!-- BEGIN-SNIPPET rsa-gauge-percentage-string
+      <div style="width:25%">
+        {{rsa-gauge value="42%"}}
+      </div>
+      END-SNIPPET --}}
+      {{code-snippet name="rsa-gauge-percentage-string.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="With label"}}
+      <div style="width:25%">
+        {{rsa-gauge value=value label="CPU"}}
+      </div>
+      {{!-- BEGIN-SNIPPET rsa-gauge-with-label
+      <div style="width:25%">
+        {{rsa-gauge value=value label="CPU"}}
+      </div>
+      END-SNIPPET --}}
+      {{code-snippet name="rsa-gauge-with-label.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Custom display text"}}
+      <div style="width:25%">
+        {{rsa-gauge value=value display=display}}
+      </div>
+      {{!-- BEGIN-SNIPPET rsa-gauge-custom-display
+      <div style="width:25%">
+        {{rsa-gauge value=value display=display}}
+      </div>
+      END-SNIPPET --}}
+      {{code-snippet name="rsa-gauge-custom-display.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="No value"}}
+      <div style="width:25%">
+        {{rsa-gauge value=value showValue=false}}
+      </div>
+      {{!-- BEGIN-SNIPPET rsa-gauge-no-value
+      <div style="width:25%">
+        {{rsa-gauge value=value showValue=false}}
+      </div>
+      END-SNIPPET --}}
+      {{code-snippet name="rsa-gauge-no-value.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="No animation"}}
+      <div style="width:25%">
+        {{rsa-gauge value=value animate=false}}
+      </div>
+      {{!-- BEGIN-SNIPPET rsa-gauge-no-animate
+      <div style="width:25%">
+        {{rsa-gauge value=value animate=false}}
+      </div>
+      END-SNIPPET --}}
+      {{code-snippet name="rsa-gauge-no-animate.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Custom number of ticks"}}
+      <div style="width:25%">
+        {{rsa-gauge value=value numTicks=10}}
+      </div>
+      {{!-- BEGIN-SNIPPET rsa-gauge-num-ticks
+      <div style="width:25%">
+        {{rsa-gauge value=value numTicks=10}}
+      </div>
+      END-SNIPPET --}}
+      {{code-snippet name="rsa-gauge-num-ticks.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Custom start/end angle"}}
+      <p>
+        <a href="https://github.com/d3/d3-shape/blob/master/README.md#arc_startAngle">https://github.com/d3/d3-shape/blob/master/README.md#arc_startAngle</a>
+      </p>
+      <blockquote cite=https://github.com/d3/d3-shape/blob/master/README.md#arc_startAngle>
+        The angle is specified in radians, with 0 at -y (12 o’clock) and positive angles proceeding clockwise. If |endAngle - startAngle| ≥ τ, a complete circle or annulus is generated rather than a sector.
+      </blockquote>
+      <div style="width:25%">
+        <!--(-π/2) and (π/2) respectively-->
+        {{rsa-gauge value=value arcStartAngle=-1.5707963267948966 arcEndAngle=1.5707963267948966}}
+      </div>
+      {{!-- BEGIN-SNIPPET rsa-gauge-custom-angle
+      <div style="width:25%">
+        <!--(-π/2) and (π/2) respectively-->
+        {{rsa-gauge value=value arcStartAngle=-1.5707963267948966 arcEndAngle=1.5707963267948966}}
+      </div>
+      END-SNIPPET --}}
+      {{code-snippet name="rsa-gauge-custom-angle.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+</fill>
+</hbox>

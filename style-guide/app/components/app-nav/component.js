@@ -87,6 +87,7 @@ export default Component.extend({
         { name: 'Data Table', link: 'table' },
         { name: 'Icons', link: 'icons' },
         { name: 'Loader', link: 'loader' },
+        { name: 'Gauge', link: 'gauge' },
         { name: 'RSA Logo', link: 'logo' }
       ]
     },

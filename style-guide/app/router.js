@@ -21,6 +21,7 @@ Router.map(function() {
     this.route('icons');
     this.route('loader');
     this.route('routableLogin');
+    this.route('gauge');
 
     this.route('app', function() {
       this.route('header');
