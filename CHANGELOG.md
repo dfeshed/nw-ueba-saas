@@ -1,3 +1,15 @@
+# [9.0.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v9.0.0)
+## Features
+* [ASOC-55115](https://bedfordjira.na.rsa.net/browse/ASOC-55115):&emsp;Pill Edit - ESC
+* [ASOC-55779](https://bedfordjira.na.rsa.net/browse/ASOC-55779):&emsp;UI can support filtering on UEBA alerts
+* [ASOC-58474](https://bedfordjira.na.rsa.net/browse/ASOC-58474):&emsp;Inter-Pill Keyboard Interaction - Delete Pill(s)
+* [ASOC-58475](https://bedfordjira.na.rsa.net/browse/ASOC-58475):&emsp;Inter-Pill Keyboard Interaction - Edit Pill
+* [ASOC-59228](https://bedfordjira.na.rsa.net/browse/ASOC-59228):&emsp;Address/Eliminate "NextGen" Name in Codebase
+* [ASOC-59230](https://bedfordjira.na.rsa.net/browse/ASOC-59230):&emsp;Connect to Free-Form
+* [ASOC-59757](https://bedfordjira.na.rsa.net/browse/ASOC-59757):&emsp;UX - Search Options Wording
+* [ASOC-59886](https://bedfordjira.na.rsa.net/browse/ASOC-59886):&emsp;Editing Complex Pill
+
+
 # [8.8.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v8.8.0)
 ## Features
 * [ASOC-42514](https://bedfordjira.na.rsa.net/browse/ASOC-42514):&emsp;Context Enrichment in Event Analysis - Recon Summary header
