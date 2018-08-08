@@ -1,6 +1,7 @@
 import { warn } from '@ember/debug';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
+import { inject as service } from '@ember/service';
 
 import RsaContextMenu from 'rsa-context-menu/components/rsa-context-menu/component';
 import * as MESSAGE_TYPES from '../message-types';
@@ -60,6 +61,8 @@ const QueryPills = RsaContextMenu.extend({
     'isPillTriggerOpenForAdd:pill-trigger-open-for-add'
   ],
 
+  i18n: service(),
+
   // whether or not this component's children should take
   // focus if they are so inclined.
   takeFocus: true,
@@ -102,8 +105,9 @@ const QueryPills = RsaContextMenu.extend({
   @computed
   contextItems() {
     const _this = this;
+    const i18n = this.get('i18n');
     return [{
-      label: 'Execute Query in same tab',
+      label: i18n.t('queryBuilder.querySelected'),
       disabled() {
         return _this.get('hasInvalidSelectedPill');
       },
@@ -115,16 +119,21 @@ const QueryPills = RsaContextMenu.extend({
       }
     },
     {
-      label: 'Execute Query in a new tab',
+      label: i18n.t('queryBuilder.querySelectedNewTab'),
       disabled() {
         return _this.get('hasInvalidSelectedPill');
       },
       action() {
-        // executeQuery in a new tab
+        // Do not want to check canQueryGuided because user might
+        // want to execute the same query in new tab
+        _this.get('executeQuery')(true);
+        // deselect all the pills. Can't trigger this first, as
+        // route action picks up selected pills from state to executeQ
+        _this.send('deselectAllGuidedPills');
       }
     },
     {
-      label: 'Delete Selected Pills',
+      label: i18n.t('queryBuilder.delete'),
       action() {
         _this.send('deleteSelectedGuidedPills');
       }

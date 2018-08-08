@@ -1,4 +1,4 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
@@ -31,12 +31,13 @@ const selectActionSpy = sinon.spy(guidedCreators, 'selectGuidedPills');
 const deselectActionSpy = sinon.spy(guidedCreators, 'deselectGuidedPills');
 const openGuidedPillForEditSpy = sinon.spy(guidedCreators, 'openGuidedPillForEdit');
 const resetGuidedPillSpy = sinon.spy(guidedCreators, 'resetGuidedPill');
-const selectAllPillsTowardsDirection = sinon.spy(guidedCreators, 'selectAllPillsTowardsDirection');
+const selectAllPillsTowardsDirectionSpy = sinon.spy(guidedCreators, 'selectAllPillsTowardsDirection');
+const deleteSelectedGuidedPillsSpy = sinon.spy(guidedCreators, 'deleteSelectedGuidedPills');
 
 const spys = [
   newActionSpy, deleteActionSpy, editGuidedPillSpy, selectActionSpy,
   deselectActionSpy, openGuidedPillForEditSpy, resetGuidedPillSpy,
-  selectAllPillsTowardsDirection
+  selectAllPillsTowardsDirectionSpy, deleteSelectedGuidedPillsSpy
 ];
 
 const allPillsAreClosed = (assert) => {
@@ -55,8 +56,9 @@ const e = {
     }
   }
 };
-
 const wormhole = 'wormhole-context-menu';
+const callback = () => {};
+let eventListenerFlag = false;
 
 module('Integration | Component | query-pills', function(hooks) {
   setupRenderingTest(hooks, {
@@ -72,6 +74,13 @@ module('Integration | Component | query-pills', function(hooks) {
 
   hooks.afterEach(function() {
     spys.forEach((s) => s.reset());
+    const wormholeElement = document.querySelector('#wormhole-context-menu');
+    if (wormholeElement) {
+      document.querySelector('#ember-testing').removeChild(wormholeElement);
+    }
+    if (eventListenerFlag) {
+      document.removeEventListener('contextmenu', callback);
+    }
   });
 
   hooks.after(function() {
@@ -618,32 +627,23 @@ module('Integration | Component | query-pills', function(hooks) {
     });
   });
 
-  // --- Not Working ---
-  // Can see that it goes inside ember-context-menu/mixins -
-  // triggers activate - https://github.com/cbroeren/ember-context-menu/blob/40f1ccb8cf1dbb77589721b1f506e05b323adc54/addon/mixins/context-menu.js#L20
-
-  // After which the event can be tracked down inside the service where
-  // it sets the isActive flag , ember-context-menu/service - https://github.com/cbroeren/ember-context-menu/blob/40f1ccb8cf1dbb77589721b1f506e05b323adc54/addon/services/context-menu.js#L46
-
-  // But the component, ember-context-menu/components/context-menu is never rendered.
-  // Can see that the template, ember-context-menu/templates/context-menu needs isActive,
-  // which it should get. But it is never called.
-  skip('Right clicking on a selected pill will open a context menu with options  ---- not Working', async function(assert) {
+  test('Right clicking on a selected pill will open a context menu with 3 options', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
       .pillsDataPopulated()
       .build();
 
-    const done = assert.async();
     const wormholeDiv = document.createElement('div');
     wormholeDiv.id = wormhole;
     document.querySelector('#ember-testing').appendChild(wormholeDiv);
-    document.addEventListener('contextmenu', () => {});
+    document.addEventListener('contextmenu', callback);
+    eventListenerFlag = true;
 
     await render(hbs`
       <div class='rsa-investigate-query-container'>
         {{query-container/query-pills isActive=true}}
+        {{context-menu}}
       </div>
     `);
 
@@ -652,7 +652,11 @@ module('Integration | Component | query-pills', function(hooks) {
     const metas = findAll(PILL_SELECTORS.meta);
     await click(`#${metas[0].id}`); // make it selected
 
-    triggerEvent(PILL_SELECTORS.selectedPill, 'contextmenu', e);
+    this.$(PILL_SELECTORS.selectedPill).trigger({
+      type: 'contextmenu',
+      clientX: 100,
+      clientY: 100
+    });
 
     return settled().then(() => {
       const selector = '.context-menu';
@@ -660,7 +664,6 @@ module('Integration | Component | query-pills', function(hooks) {
       assert.equal(items.length, 3);
       assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Number of pills present');
       assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 1, 'One selecteded pill.');
-      done();
     });
   });
 
@@ -971,9 +974,9 @@ module('Integration | Component | query-pills', function(hooks) {
 
     return settled().then(() => {
       assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 2, 'Should be 2 pills selected.');
-      assert.equal(selectAllPillsTowardsDirection.callCount, 1, 'The select all pills to its right action creator was called once');
-      assert.equal(selectAllPillsTowardsDirection.args[0][0], 0, 'The action creator was called with the right arguments');
-      assert.equal(selectAllPillsTowardsDirection.args[0][1], 'right', 'The action creator was called with the right direction arg');
+      assert.equal(selectAllPillsTowardsDirectionSpy.callCount, 1, 'The select all pills to its right action creator was called once');
+      assert.equal(selectAllPillsTowardsDirectionSpy.args[0][0], 0, 'The action creator was called with the right arguments');
+      assert.equal(selectAllPillsTowardsDirectionSpy.args[0][1], 'right', 'The action creator was called with the right direction arg');
     });
   });
 
@@ -1004,9 +1007,9 @@ module('Integration | Component | query-pills', function(hooks) {
 
     return settled().then(() => {
       assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 2, 'Should be 2 pills selected.');
-      assert.equal(selectAllPillsTowardsDirection.callCount, 1, 'The select all pills to its left action creator was called once');
-      assert.equal(selectAllPillsTowardsDirection.args[0][0], 1, 'The action creator was called with the right arguments');
-      assert.equal(selectAllPillsTowardsDirection.args[0][1], 'left', 'The action creator was called with the right direction arg');
+      assert.equal(selectAllPillsTowardsDirectionSpy.callCount, 1, 'The select all pills to its left action creator was called once');
+      assert.equal(selectAllPillsTowardsDirectionSpy.args[0][0], 1, 'The action creator was called with the right arguments');
+      assert.equal(selectAllPillsTowardsDirectionSpy.args[0][1], 'left', 'The action creator was called with the right direction arg');
     });
   });
 
@@ -1065,6 +1068,144 @@ module('Integration | Component | query-pills', function(hooks) {
 
     return settled().then(() => {
       assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'Should be 2 pills selected.');
+    });
+  });
+
+  test('Right clicking on a selected pill and choosing execute query same tab should remove deselected pills', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    const done = assert.async();
+    const wormholeDiv = document.createElement('div');
+    wormholeDiv.id = wormhole;
+    document.querySelector('#ember-testing').appendChild(wormholeDiv);
+
+    this.set('executeQuery', () => {
+      done();
+    });
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true executeQuery=executeQuery}}
+        {{context-menu}}
+      </div>
+    `);
+
+    await leaveNewPillTemplate();
+
+    const metas = findAll(PILL_SELECTORS.meta);
+    await click(`#${metas[0].id}`); // make it selected
+
+    this.$(PILL_SELECTORS.selectedPill).trigger({
+      type: 'contextmenu',
+      clientX: 100,
+      clientY: 100
+    });
+
+    return settled().then(async () => {
+      const selector = '.context-menu';
+      const items = findAll(`${selector} > .context-menu__item`);
+      await click(`#${items[0].id}`); // execute query in same tab option
+      return settled().then(() => {
+        assert.equal(deleteActionSpy.callCount, 1, 'The delete pill action creator was called once');
+        assert.deepEqual(
+        deleteActionSpy.args[0][0],
+          { pillData: [{ id: '2', meta: 'b', operator: '=', value: '\'y\'', isSelected: false,
+            complexFilterText: undefined, isEditing: false, isInvalid: false }] },
+          'The action creator was called with the right arguments'
+        );
+        assert.equal(findAll(PILL_SELECTORS.queryPill).length, 2, 'Number of pills present');
+        assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'zero selected pills');
+      });
+    });
+  });
+
+  test('Right clicking on a selected pill and choosing execute query new tab option should deselect all pills', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    const wormholeDiv = document.createElement('div');
+    wormholeDiv.id = wormhole;
+    document.querySelector('#ember-testing').appendChild(wormholeDiv);
+
+    this.set('executeQuery', () => {
+      assert.ok(true);
+    });
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+        {{context-menu}}
+      </div>
+    `);
+
+    await leaveNewPillTemplate();
+
+    const metas = findAll(PILL_SELECTORS.meta);
+    await click(`#${metas[0].id}`); // make it selected
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 1, 'One selected pill');
+    assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Number of pills present');
+
+    this.$(PILL_SELECTORS.selectedPill).trigger({
+      type: 'contextmenu',
+      clientX: 100,
+      clientY: 100
+    });
+
+    return settled().then(async () => {
+      const selector = '.context-menu';
+      const items = findAll(`${selector} > .context-menu__item`);
+      await click(`#${items[1].id}`); // execute query in new tab option
+      assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Number of pills present'); // should have the same numner of pills present
+      assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'zero selected pills'); // but no selected pill
+    });
+  });
+
+  test('Right clicking on a selected pill and choosing the delete selected pills option should remove selected pills', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    const wormholeDiv = document.createElement('div');
+    wormholeDiv.id = wormhole;
+    document.querySelector('#ember-testing').appendChild(wormholeDiv);
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+        {{context-menu}}
+      </div>
+    `);
+
+    await leaveNewPillTemplate();
+
+    const metas = findAll(PILL_SELECTORS.meta);
+    await click(`#${metas[0].id}`); // make it selected
+
+    this.$(PILL_SELECTORS.selectedPill).trigger({
+      type: 'contextmenu',
+      clientX: 100,
+      clientY: 100
+    });
+    assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Number of pills present before deletion');
+
+    return settled().then(async () => {
+      const selector = '.context-menu';
+      const items = findAll(`${selector} > .context-menu__item`);
+      await click(`#${items[2].id}`); // delete option
+      return settled().then(() => {
+        assert.equal(deleteSelectedGuidedPillsSpy.callCount, 1, 'The delete selected pill action creator was called once');
+        assert.equal(findAll(PILL_SELECTORS.queryPill).length, 2, 'Number of pills present');
+        assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'zero selected pills');
+      });
     });
   });
 });

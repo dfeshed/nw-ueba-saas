@@ -70,7 +70,7 @@ export default Route.extend({
   },
 
   actions: {
-    executeQuery() {
+    executeQuery(externalLink) {
       const redux = this.get('redux');
       const investigateState = redux.getState().investigate;
       const pillData = investigateState.queryNode.pillsData;
@@ -86,8 +86,21 @@ export default Route.extend({
         st: queryNode.startTime
       };
 
-      this.send('reconClose');
-      this.transitionTo({ queryParams: qp });
+      if (externalLink) {
+        const selectedPills = pillData.filter((pill) => pill.isSelected);
+        if (selectedPills.length > 0) { // if no selected pills in state, exit
+          const pillString = uriEncodeMetaFilters(selectedPills);
+          qp.mf = encodeURIComponent(pillString);
+          delete qp.eid; // delete unnecessary param, do not want recon to open
+          const query = serializeQueryParams(qp);
+          const { location } = window;
+          const path = `${location.origin}${location.pathname}?${query}`;
+          window.open(path, '_blank');
+        }
+      } else {
+        this.send('reconClose');
+        this.transitionTo({ queryParams: qp });
+      }
     },
 
     reconLinkToFile(file) {

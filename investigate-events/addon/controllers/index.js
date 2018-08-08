@@ -13,8 +13,8 @@ export default Controller.extend({
   ],
 
   actions: {
-    controllerExecuteQuery() {
-      this.send('executeQuery');
+    controllerExecuteQuery(externalLink) {
+      this.send('executeQuery', externalLink);
     },
     controllerMetaGroupKeyToggle(/* query */) {
       // TODO - Not implemented yet
