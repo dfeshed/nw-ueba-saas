@@ -35,6 +35,7 @@ export default Route.extend({
    * @public
    */
   queryParams: {
+    pdhash: { refreshModel: true }, // pill data hash
     sid: { refreshModel: true }, // serviceId
     st: { refreshModel: true },  // startTime
     et: { refreshModel: true },  // endTime

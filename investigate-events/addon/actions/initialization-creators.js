@@ -114,23 +114,21 @@ const _getColumnGroups = () => {
  *
  * @private
  */
-const _intializeQuerying = (hardReset, params, dispatch, getState) => {
-  if (!hardReset) {
-    // intialize pills, this cannot happen until
-    // we have all the dictionaries in place as
-    // the pill building/parsing validates those
-    // pills against actual meta
-    //
-    // TODO: for now parsing query params a 2nd time,
-    // on initialization, need to organize initialization
-    // a bit better so it is less crazy
-    dispatch({
-      type: ACTION_TYPES.INITIALIZE_QUERYING,
-      payload: {
-        pillsData: parsePillDataFromUri(params.mf, metaKeySuggestionsForQueryBuilder(getState()))
-      }
-    });
-  }
+const _intializeQuerying = (hardReset, parsedQueryParams) => {
+  return (dispatch, getState) => {
+    if (!hardReset) {
+      // intialize pills, this cannot happen until
+      // we have all the dictionaries in place as
+      // the pill building/parsing validates those
+      // pills against actual meta
+      dispatch({
+        type: ACTION_TYPES.INITIALIZE_QUERYING,
+        payload: {
+          pillsData: parsePillDataFromUri(parsedQueryParams.pillData, metaKeySuggestionsForQueryBuilder(getState()))
+        }
+      });
+    }
+  };
 };
 
 const _handleInitializationError = (dispatch) => {
@@ -165,11 +163,11 @@ const _handleInitializationError = (dispatch) => {
  * @return {function} A Redux thunk
  * @public
  */
-export const initializeInvestigate = (params, hardReset = false) => {
+export const initializeInvestigate = (queryParams, hardReset = false) => {
   return (dispatch, getState) => {
-    const parsedQueryParams = parseBasicQueryParams(params);
+    const parsedQueryParams = parseBasicQueryParams(queryParams);
 
-    // 1) Initialize state from query params
+    // 1) Initialize state from parsedQueryParams
     dispatch({
       type: ACTION_TYPES.INITIALIZE_INVESTIGATE,
       payload: {
@@ -193,7 +191,7 @@ export const initializeInvestigate = (params, hardReset = false) => {
     ];
 
     // Get promise for initializing dictionaries for the service
-    const dictionariesPromise = _initializeDictionaries(dispatch, getState, params, hardReset);
+    const dictionariesPromise = _initializeDictionaries(dispatch, getState);
 
     const hasService = !!parsedQueryParams.serviceId;
     let initialization;
@@ -216,12 +214,12 @@ export const initializeInvestigate = (params, hardReset = false) => {
       // 6) do any work to initialize state now that all the reference
       //    data is in place, this is synchronous so do not need to
       //    hold up future stuff with promises
-      _intializeQuerying(hardReset, params, dispatch, getState);
+      dispatch(_intializeQuerying(hardReset, parsedQueryParams));
 
       // 7) If we have the minimum required values for querying
       //    (service id, start time and end time) then kick off the query.
-      const { sid, st, et } = params;
-      if (sid && st && et) {
+      const { serviceId, startTime, endTime } = parsedQueryParams;
+      if (serviceId && startTime && endTime) {
         dispatch(fetchInvestigateData());
       }
     }).catch(_handleInitializationError(dispatch));

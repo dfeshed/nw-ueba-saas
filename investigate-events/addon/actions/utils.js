@@ -238,6 +238,8 @@ function executeMetaValuesRequest(request, inputs, values) {
  */
 function parseBasicQueryParams(params) {
   return {
+    pillData: params.mf,
+    pillDataHashes: params.pdhash,
     endTime: params.et,
     sessionId: params.eid,
     metaPanelSize: params.mps,
