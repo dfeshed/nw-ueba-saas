@@ -1,4 +1,5 @@
 const DEFAULT_TIME_RANGE_ID = 'LAST_24_HOURS';
+const CUSTOM_TIME_RANGE_ID = 'CUSTOM';
 const ALL_DATA = 'ALL_DATA';
 const DATABASE_TIME = 'DB';
 const RANGES = [
@@ -16,7 +17,8 @@ const RANGES = [
   { id: 'LAST_7_DAYS', name: 'Last 7 Days', value: 7, unit: 'days' },
   { id: 'LAST_14_DAYS', name: 'Last 14 Days', value: 14, unit: 'days' },
   { id: 'LAST_30_DAYS', name: 'Last 30 Days', value: 1, unit: 'months' },
-  { id: 'ALL_DATA', name: 'All Data', value: 0, unit: 'all' }
+  { id: 'ALL_DATA', name: 'All Data', value: 0, unit: 'all' },
+  { id: 'CUSTOM', name: 'Custom', value: 0, unit: 'custom', hidden: true }
 ];
 
 const getById = (id) => RANGES.find((d) => d.id === id);
@@ -29,6 +31,7 @@ const getNameById = (id) => {
 export default {
   DATABASE_TIME,
   DEFAULT_TIME_RANGE_ID,
+  CUSTOM_TIME_RANGE_ID,
   ALL_DATA,
   RANGES,
   getById,

@@ -18,6 +18,7 @@ const _previousQueryParams = (state) => state.investigate.queryNode.previousQuer
 const _queryTimeFormat = (state) => state.investigate.queryNode.queryTimeFormat;
 const _serviceId = (state) => state.investigate.queryNode.serviceId;
 const _startTime = (state) => state.investigate.queryNode.startTime;
+const _isTimeRangeInvalid = (state) => state.investigate.queryNode.timeRangeInvalid;
 const _queryView = (state) => state.investigate.queryNode.queryView;
 const _currentQueryHash = (state) => state.investigate.queryNode.currentQueryHash;
 const _pillsData = (state) => state.investigate.queryNode.pillsData;
@@ -79,7 +80,9 @@ export const selectedTimeRangeName = createSelector(
 
 export const selectedTimeRange = createSelector(
   [selectedTimeRangeId],
-  (id) => TIME_RANGES.getById(id)
+  (id) => {
+    return TIME_RANGES.getById(id);
+  }
 );
 
 export const useDatabaseTime = createSelector(
@@ -88,9 +91,9 @@ export const useDatabaseTime = createSelector(
 );
 
 export const hasRequiredValuesToQuery = createSelector(
-  [selectedService, hasSummaryData, selectedTimeRange, _isDirty],
-  (selectedService, hasSummaryData, selectedTimeRange, isDirty) => {
-    return !!(selectedService && selectedService.id && hasSummaryData && selectedTimeRange && isDirty);
+  [selectedService, hasSummaryData, selectedTimeRange, _isTimeRangeInvalid, _isDirty],
+  (selectedService, hasSummaryData, selectedTimeRange, isTimeRangeInvalid, isDirty) => {
+    return !!(selectedService && selectedService.id && hasSummaryData && selectedTimeRange && !isTimeRangeInvalid && isDirty);
   }
 );
 

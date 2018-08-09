@@ -3,7 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-import { findAll, render } from '@ember/test-helpers';
+import { find, findAll, render } from '@ember/test-helpers';
 
 import { patchReducer } from '../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
@@ -31,4 +31,16 @@ module('Integration | Component | query-container', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.queryButton).length, 1, 'button should be present');
   });
 
+  test('TimeRange should be updated when start/endTime in state is updated', async function(assert) {
+    const startTimeinSec = 193885209; // Sun Feb 22 1976 20:00:09
+    const endTimeinSec = 1519347609; // Thu Feb 22 2018 20:00:09
+    new ReduxDataHelper(setState)
+      .hasRequiredValuesToQuery(true)
+      .startTime(startTimeinSec)
+      .endTime(endTimeinSec)
+      .build();
+
+    await render(hbs`{{query-container}}`);
+    assert.equal(find('.rsa-date-time-range').getAttribute('title').trim(), 'Calculated duration: 42 years 59 seconds');
+  });
 });

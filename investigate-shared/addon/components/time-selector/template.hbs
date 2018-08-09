@@ -1,28 +1,36 @@
+{{rsa-date-time-range
+  start=(readonly _startTimeMilli)
+  end=(readonly _endTimeMilli)
+  includeSeconds=false
+  onChange=(action 'setCustomTimeRange')
+  onError=(action 'timeRangeError')
+}}
 {{#rsa-content-tethered-panel-trigger
   panel=panelId
   triggerEvent='click'
 }}
   {{#rsa-form-button
     allowToggleActive=true
+    isStandard=(not timeRangeInvalid)
     title=selectedTimeRangeName
     class='time-selector'
     withDropdown=true
   }}
-    {{rsa-icon style='lined' name='clock-2'}}
-    {{time-range startTime=startTime endTime=endTime}}
   {{/rsa-form-button}}
 {{/rsa-content-tethered-panel-trigger}}
 {{#rsa-content-tethered-panel
   displayCloseButton=false
   isPopover=true
   panelId=panelId
-  position='bottom-right'
+  position='bottom-left'
   panelClass="timerange-selector-panel"
   as |hideTooltip|
 }}
   <ul class="rsa-dropdown-action-list" {{action hideTooltip}}>
     {{#each timeRanges as |range|}}
-      <li {{action onTimeSelection range}}>{{range.name}}</li>
+      {{#unless range.hidden}}
+        <li {{action 'onEntireTimeRangeSelection' range}}>{{range.name}}</li>
+      {{/unless}}
     {{/each}}
   </ul>
 {{/rsa-content-tethered-panel}}

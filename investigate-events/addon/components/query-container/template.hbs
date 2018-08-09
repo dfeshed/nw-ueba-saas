@@ -1,6 +1,13 @@
 {{service-selector services=services serviceId=serviceId onServiceSelection=(action 'setService')}}
 
-{{time-selector startTime=startTime endTime=endTime onTimeSelection=(action 'setQueryTimeRange')}}
+{{time-selector
+  startTime=startTime
+  endTime=endTime
+  timeRangeInvalid=timeRangeInvalid
+  onEntireTimeRangeSelection=(action 'setQueryTimeRange')
+  onIndividualTimeUnitChange=(action 'setCustomTimeRange')
+  onTimeRangeError=(action 'setTimeRangeError')
+}}
 
 {{query-container/query-bar executeQuery=executeQuery}}
 

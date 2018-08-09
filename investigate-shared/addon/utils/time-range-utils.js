@@ -26,7 +26,7 @@ export const getTimeRangeIdFromRange = (startTime, endTime) => {
   }
   const getMatchingRange = (unit, value) => TIME_RANGES.RANGES.find((d) => (d.unit === unit && d.value === value));
   const range = getMatchingRange(unit, value);
-  return range ? range.id : TIME_RANGES.DEFAULT_TIME_RANGE_ID;
+  return range ? range.id : TIME_RANGES.CUSTOM_TIME_RANGE_ID;
 };
 
 /**

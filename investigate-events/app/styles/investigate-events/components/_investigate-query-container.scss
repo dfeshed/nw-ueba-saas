@@ -49,6 +49,26 @@
     flex: 0 0 auto;
   }
 
+  .time-range-invalid {
+    .rsa-form-button {
+      &:not(.is-standard) {
+        border-left-width: 0px;
+        border-color: border-color(accentOne, darker);
+      }
+    }
+  }
+
+  &__time-selector {
+    display: flex;
+    .rsa-date-time-range {
+      border-right-width: 0px;
+      padding-top: rsa-whitespace(least);
+    }
+    .rsa-form-button {
+      border-left-width: 0px;
+    }
+  }
+
   .execute-query-button {
     .rsa-form-button {
       padding-top: calc(#{rsa-whitespace(less)} + #{rsa-whitespace(least)});

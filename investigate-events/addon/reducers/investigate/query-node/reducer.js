@@ -6,12 +6,14 @@ import { handle } from 'redux-pack';
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 import { createQueryHash } from 'investigate-events/util/query-hash';
 import { pillBeingEdited } from './selectors';
+import TIME_RANGES from 'investigate-shared/constants/time-ranges';
 
 const ID_PREFIX = 'guidedPill_';
 
 const _initialState = Immutable.from({
   atLeastOneQueryIssued: false,
   endTime: 0,
+  timeRangeInvalid: undefined,
   eventMetas: undefined,
   hasIncommingQueryParams: false,
   metaFilter: [],
@@ -157,6 +159,9 @@ export default handleActions({
 
   [ACTION_TYPES.INITIALIZE_INVESTIGATE]: (state, { payload }) => {
     const localStorageObj = JSON.parse(localStorage.getItem('reduxPersist:investigate'));
+    // payload.hardReset will true when
+    // 1) Loading the Event Analysis page for the first time
+    // 2) Clicking on Event Analysis tab from the results page causing it to reset to previously chosen options
     if (payload.hardReset) {
       // Check if the previously selected serviceId and timeRange are persisted in localStorage
       if (!localStorageObj) {
@@ -167,9 +172,21 @@ export default handleActions({
           ...localStorageObj.queryNode,
           pillsData: localStorageObj.queryNode.pillsData || localStorageObj.queryNode.metaFilter
         });
+
+        let endTime, startTime;
+        // For non-custom time ranges, we can extract start and endTime just from the timeRangeId.
+        // However, for custom timeRange it is not possible as the start and endTime can be arbitrary.
+        // If the previouslySelectedTimeRanges was a CUSTOM ID, pull the endTime and startTime from state.
+        if (localStorageObj.queryNode.previouslySelectedTimeRanges[localStorageObj.queryNode.serviceId] === TIME_RANGES.CUSTOM_TIME_RANGE_ID) {
+          endTime = state.endTime;
+          startTime = state.startTime;
+        }
+
         return state.merge({
           ..._initialState,
           serviceId: localStorageObj.queryNode.serviceId,
+          endTime: endTime || 0,
+          startTime: startTime || 0,
           previouslySelectedTimeRanges: localStorageObj.queryNode.previouslySelectedTimeRanges,
           queryView: localStorageObj.queryNode.queryView,
           previousQueryParams
@@ -235,6 +252,17 @@ export default handleActions({
     return state.merge({
       endTime: payload.endTime,
       startTime: payload.startTime,
+      timeRangeInvalid: false,
+      previouslySelectedTimeRanges: previouslySelectedTimeRanges.merge(newRange)
+    });
+  },
+
+  [ACTION_TYPES.SET_TIME_RANGE_ERROR]: (state, { payload }) => {
+    const { previouslySelectedTimeRanges, serviceId } = state;
+    const newRange = {};
+    newRange[serviceId] = payload.selectedTimeRangeId;
+    return state.merge({
+      timeRangeInvalid: true,
       previouslySelectedTimeRanges: previouslySelectedTimeRanges.merge(newRange)
     });
   },

@@ -8,6 +8,7 @@ import {
   getCurrentPreferences,
   getDefaultPreferences
 } from 'investigate-events/reducers/investigate/data-selectors';
+import TIME_RANGES from 'investigate-shared/constants/time-ranges';
 import { lookup } from 'ember-dependency-lookup';
 
 export const setMetaPanelSize = (size) => {
@@ -39,39 +40,76 @@ export const setReconPanelSize = (size) => {
  * @public
  */
 export const setQueryTimeRange = ({ id, value, unit }) => {
-  return (dispatch, getState) => {
-    const state = getState();
-    // Get the database start/end times. If they are 0, then use browser time
-    // For startTime, set time to 1970 if DB time was 0.
-    const dbEndTime = getDbEndTime(state) || moment().unix();
-    const dbStartTime = getDbStartTime(state) || moment(0).unix();
-    let endTime, startTime;
-
-    if (useDatabaseTime(state)) {
-      endTime = moment(dbEndTime * 1000).endOf('minute');
-    } else {
-      endTime = moment().endOf('minute');
-    }
-
-    if (value) {
-      startTime = moment(endTime).subtract(value, unit).add(1, 'minutes').startOf('minute');
-      // if the precision is in months - for last 30 days, momentjs takes last 30 days 23 hrs.
-      // So adding 23 hrs to startTime to negate the effect.
-      if (unit == 'months') {
-        startTime = startTime.add(23, 'hours');
+  // There is a scheduler that polls for summary data every minute that will update the state and
+  // re-calculate the start and end times if there is a change from the previous summaryData.
+  // However, if the timeRanges id is custom we don't want to update the start/end time as this
+  // specific start/end time is manually picked by the user.
+  if (id !== TIME_RANGES.CUSTOM_TIME_RANGE_ID) {
+    return (dispatch, getState) => {
+      const state = getState();
+      // Get the database start/end times. If they are 0, then use browser time
+      // For startTime, set time to 1970 if DB time was 0.
+      const dbEndTime = getDbEndTime(state) || moment().unix();
+      const dbStartTime = getDbStartTime(state) || moment(0).unix();
+      let endTime, startTime;
+      if (useDatabaseTime(state)) {
+        endTime = moment(dbEndTime * 1000).endOf('minute');
+      } else {
+        endTime = moment().endOf('minute');
       }
-    } else {
-      startTime = moment(dbStartTime * 1000).startOf('minute');
-    }
 
-    dispatch({
-      type: ACTION_TYPES.SET_QUERY_TIME_RANGE,
-      payload: {
-        startTime: startTime.unix(),
-        endTime: endTime.unix(),
-        selectedTimeRangeId: id
+      if (value) {
+        startTime = moment(endTime).subtract(value, unit).add(1, 'minutes').startOf('minute');
+        // if the precision is in months - for last 30 days, momentjs takes last 30 days 23 hrs 59 mins 59 secs.
+        // So adding a day to startTime to negate the effect.
+        if (unit == 'months') {
+          startTime = startTime.add(1, 'day');
+        }
+      } else {
+        startTime = moment(dbStartTime * 1000).startOf('minute');
       }
-    });
+      dispatch({
+        type: ACTION_TYPES.SET_QUERY_TIME_RANGE,
+        payload: {
+          startTime: startTime.unix(),
+          endTime: endTime.unix(),
+          selectedTimeRangeId: id
+        }
+      });
+    };
+  }
+};
+
+/**
+ * Takes a custom start and end times in ms. This will only be called when the user changes the start/end time manually on the individual time/date input units in the timeRange component.
+ * @param {number} start
+ * @param {number} end
+ * @public
+ */
+export const setCustomTimeRange = (start, end) => {
+  return {
+    type: ACTION_TYPES.SET_QUERY_TIME_RANGE,
+    payload: {
+      startTime: start / 1000,
+      endTime: end / 1000,
+      selectedTimeRangeId: TIME_RANGES.CUSTOM_TIME_RANGE_ID
+    }
+  };
+};
+
+/**
+ * setTimeRangeError will be called when there is an error in the time-range component.
+ * Errors can be date errors (out of bounds), range errors (start time greater than end time) etc.
+ * Error state can only be achieved when the user manually sets an incorrect date/time unit.
+ * So dispatch CUSTOM ID when we detect an error.
+ * @public
+ */
+export const setTimeRangeError = () => {
+  return {
+    type: ACTION_TYPES.SET_TIME_RANGE_ERROR,
+    payload: {
+      selectedTimeRangeId: TIME_RANGES.CUSTOM_TIME_RANGE_ID
+    }
   };
 };
 

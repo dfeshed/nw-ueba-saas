@@ -182,7 +182,7 @@ const DateTimeFilter = Component.extend(FilterMixin, {
   },
 
   actions: {
-    onTimeSelection(option) {
+    onEntireTimeRangeSelection(option) {
       set(option, 'selected', !option.selected);
       if (option.id === 'Custom') {
         this.set('showListOptions', false);

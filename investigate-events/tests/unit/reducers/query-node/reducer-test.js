@@ -6,6 +6,8 @@ import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import reducer from 'investigate-events/reducers/investigate/query-node/reducer';
 import makePackAction from '../../../helpers/make-pack-action';
 import { LIFECYCLE } from 'redux-pack';
+import TIME_RANGES from 'investigate-shared/constants/time-ranges';
+
 
 module('Unit | Reducers | query-node | Investigate');
 
@@ -110,6 +112,24 @@ test('SET_QUERY_VIEW reducer sets the correct mode provided', function(assert) {
   const result = reducer(prevState, action);
 
   assert.equal(result.queryView, 'freeForm');
+});
+
+test('SET_TIME_RANGE_ERROR reducer sets the time range to invalid', function(assert) {
+  const prevState = Immutable.from({
+    previouslySelectedTimeRanges: { 2: 'LAST_24_HOURS' },
+    timeRangeInvalid: false
+  });
+  const action = {
+    type: ACTION_TYPES.SET_TIME_RANGE_ERROR,
+    payload: {
+      queryParams: {
+        selectedTimeRangeId: TIME_RANGES.CUSTOM_TIME_RANGE_ID
+      }
+    }
+  };
+  const result = reducer(prevState, action);
+
+  assert.equal(result.timeRangeInvalid, true);
 });
 
 test('SET_QUERY_VIEW reducer makes it so any pills being edited are no longer being edited', function(assert) {
