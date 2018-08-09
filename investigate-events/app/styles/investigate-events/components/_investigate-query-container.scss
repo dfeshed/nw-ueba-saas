@@ -10,10 +10,18 @@
   }
 }
 
+// We do not want to show this input element on the page.
+// Is in dom just to listen for keystrokes.
+// Giving 'width: 0' did not work for safari, as it
+// needs some width in order to listen for keystrokes.
+// Thus, adding position and left property to move it
+// off the page
 .focus-holder {
   input {
     opacity: 0;
-    width: 0;
+    width: 1px;
+    position: absolute;
+    left: -9999px;
   }
 }
 
