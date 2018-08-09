@@ -9,7 +9,16 @@ module('Unit | Reducers | Policies Reducers');
 
 const initialState = {
   items: [],
-  itemsStatus: null
+  itemsStatus: null,
+  itemsSelected: [],
+  isFilterPanelOpen: true,
+  isSelectAll: false,
+  itemsTotal: null,
+  itemsFilters: null,
+  focusedItem: null,
+  isTransactionUnderway: false,
+  sortField: 'name',
+  isSortDescending: true
 };
 
 const policyData = {

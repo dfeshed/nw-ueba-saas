@@ -3350,7 +3350,20 @@ export default {
       saveSuccess: 'The group has been saved successfully.'
     },
     policies: {
-      title: 'Policies'
+      title: 'Policies',
+      list: {
+        select: 'Select',
+        name: 'Policy Name',
+        enabled: 'Enabled',
+        startDate: 'Start Date',
+        description: 'Policy Description',
+        interval: 'Interval',
+        intervalUnit: 'Interval Unit',
+        onDays: 'On Days',
+        startTime: 'Start Time',
+        cpuMax: 'CPU Maximum (%)',
+        vmMax: 'Virtual Machine Maximum (%)'
+      }
     },
     policy: {
       name: 'Policy Name',

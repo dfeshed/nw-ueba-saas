@@ -6,6 +6,6 @@ export default Route.extend({
   redux: inject(),
   model() {
     const redux = this.get('redux');
-    redux.dispatch(policiesCreators.fetchPolicyList());
+    redux.dispatch(policiesCreators.getPolicies());
   }
 });

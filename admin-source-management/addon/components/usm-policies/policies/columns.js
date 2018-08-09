@@ -1,54 +1,63 @@
 export default [
   {
+    title: 'adminUsm.groups.list.select',
+    class: 'rsa-form-row-checkbox',
+    width: '40px',
+    dataType: 'checkbox',
+    componentClass: 'rsa-form-checkbox',
+    visible: true,
+    disableSort: true
+  },
+  {
     field: 'name',
-    title: 'Name',
+    title: 'adminUsm.policies.list.name',
     width: '10%'
   },
   {
     field: 'description',
-    title: 'Description',
+    title: 'adminUsm.policies.list.description',
     width: '10%'
   },
   {
     field: 'scheduleConfig.enabledScheduledScan',
-    title: 'Enabled',
+    title: 'adminUsm.policies.list.enabled',
     width: '5%'
   },
   {
     field: 'scheduleConfig.scheduleOptions.scanStartDate',
-    title: 'Start Date',
+    title: 'adminUsm.policies.list.startDate',
     width: '10%',
     dataType: 'DATE'
   },
   {
     field: 'scheduleConfig.scheduleOptions.recurrenceInterval',
-    title: 'Interval',
+    title: 'adminUsm.policies.list.interval',
     width: '5%'
   },
   {
     field: 'scheduleConfig.scheduleOptions.recurrenceIntervalUnit',
-    title: 'Interval Unit',
+    title: 'adminUsm.policies.list.intervalUnit',
     width: '10%'
   },
   {
     field: 'scheduleConfig.scheduleOptions.runOnDaysOfWeek',
-    title: 'On Days',
+    title: 'adminUsm.policies.list.onDays',
     width: '10%'
   },
   {
     field: 'scheduleConfig.scheduleOptions.scanStartTime',
-    title: 'Start Time',
+    title: 'adminUsm.policies.list.startTime',
     width: '5%',
     dataType: 'TIME'
   },
   {
     field: 'scheduleConfig.scanOptions.cpuMaximum',
-    title: 'CPU Maximum ( % )',
+    title: 'adminUsm.policies.list.cpuMax',
     width: '10%'
   },
   {
     field: 'scheduleConfig.scanOptions.cpuMaximumOnVirtualMachine',
-    title: 'Virtual Machine Maximum ( % )',
+    title: 'adminUsm.policies.list.vmMax',
     width: '10%'
   }
 ];

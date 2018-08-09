@@ -1,21 +1,39 @@
-<hbox class="main-zone">
-  <vbox class="filter-zone">
-    Filters...
-  </vbox>
-  <vbox class="items-zone">
-    <box fit class="toolbar-zone">
-      {{#link-to 'policy-create'}}
-        {{#rsa-form-button}}
-          {{rsa-icon name='add-1' style='lined'}}
-          {{t 'adminUsm.button.addNew'}}
-        {{/rsa-form-button}}
-      {{/link-to}}
-    </box>
-    <box class="items-main">
-      {{table-listing items=policies columnsConfig=columns}}
-    </box>
-  </vbox>
-  <vbox class="inspector-zone">
-    Details...
-  </vbox>
-</hbox>
+{{#rsa-explorer
+  columns=columns
+  reduxSpace='usm.policies'
+  creators=creators as |explorer|}}
+
+  {{#explorer.toolbar toolbarControlsComponent='usm-policies/policies/toolbar' as |toolbar|}}
+    {{toolbar.toolbarControls}}
+  {{/explorer.toolbar}}
+
+  {{#explorer.filters filterControlsComponent='usm-policies/policies/filters' hasTimeFilter=false as |filters|}}
+    {{filters.filterControls}}
+  {{/explorer.filters}}
+
+  {{#explorer.table as |row|}}
+    {{#row.cell as |item index column|}}
+      {{#if (eq column.dataType 'checkbox') }}
+        <label class="rsa-form-checkbox-label {{if (contains item.id explorer.instance.itemsSelected) 'checked'}}">
+          {{rsa-form-checkbox checked=(contains item.id explorer.instance.itemsSelected) change=(action explorer.select item)}}
+        </label>
+      {{else if (eq column.field "polices")}}
+        {{#each item.policies as |policy index|}}
+          {{#if (not-eq index 0)}},  {{/if}}{{policy.name}}
+        {{/each}}
+      {{else if (eq column.field "sourceTypes")}}
+        {{#each item.policies as |policy index|}}
+          {{#if (not-eq index 0)}},  {{/if}}{{policy.type}}
+        {{/each}}
+      {{else}}
+        {{get item column.field}}
+      {{/if}}
+    {{/row.cell}}
+  {{/explorer.table}}
+
+ {{#explorer.inspector
+    inspectorHeaderComponent='usm-policies/policies/inspector/header'
+    inspectorContentComponent='usm-policies/policies/inspector' as |inspector|}}
+  {{/explorer.inspector}}
+
+{{/rsa-explorer}}
