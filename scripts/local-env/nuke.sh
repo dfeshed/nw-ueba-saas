@@ -47,6 +47,7 @@ nukeNode broccoli-theme
 nukeNode investigate-process-analysis
 nukeNode rsa-context-menu
 nukeNode rsa-data-filters
+nukeNode direct-access
 nukeNode sa
 
 red "                               ________________

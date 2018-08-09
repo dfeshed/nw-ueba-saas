@@ -1,0 +1,52 @@
+<div class="border-panel top-margin">
+  <vbox>
+    {{#each selectedOperation.params as |param|}}
+      <div class="bottom-margin">
+        {{tree-view-operation-parameter param=param paramUpdateAction=(action 'updateParams')}}
+      </div>
+    {{/each}}
+    <div class="bottom-margin">
+      {{#if pendingCustomParameter}}
+        <div class="border-panel">
+          <div class="bottom-margin">
+            <label class="rsa-form-label power-select">
+              <div class="label-text">
+                Custom Operation Type
+              </div>
+
+              {{#power-select
+                placeholder="Type"
+                options=operationTypes
+                selected=pendingCustomParameter.type
+                searchPlaceholder="Type to filter types"
+                onchange=(action 'selectCustomParamType') as |option|}}
+                {{option}}
+              {{/power-select}}
+            </label>
+          </div>
+          
+          <div class="bottom-margin">
+            {{rsa-form-input label="Custom Parameter Name" placeholder="Paramater Name" value=pendingCustomParameter.name focusOut=(action 'updateDisplayName')}}
+          </div>
+
+          <hbox class="bottom-margin flex-space-between">
+            {{#rsa-form-button defaultAction=(action 'pushAndClearParam' pendingCustomParameter) style='primary'}}Add{{/rsa-form-button}}
+            {{#rsa-form-button defaultAction=(action 'cancelCustomParameter')}}Cancel{{/rsa-form-button}}
+          </hbox>
+        </div>
+      {{else}}
+        <a {{action 'newCustomParam'}}><span class="small-header">{{rsa-icon name='add-1'}} Custom Parameter</span></a>
+      {{/if}}
+    </div>
+    <hbox class="bottom-margin flex-space-between">
+      {{#rsa-form-button defaultAction=(action 'sendOperation' operationMessageObject) style='primary'}}Send{{/rsa-form-button}}
+      {{#rsa-form-button defaultAction=(action 'deselectOperation')}}Cancel{{/rsa-form-button}}
+    </hbox>
+    {{#if operationHelp}}
+      <h1 class="small-header">Help for "{{selectedOperation.name}}"</h1>
+      <div class="scroll-box border-panel help-box bottom-margin padding">
+        <p>{{{operationHelp}}}</p>
+      </div>
+    {{/if}}
+  </vbox>
+</div>

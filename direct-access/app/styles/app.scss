@@ -1,0 +1,334 @@
+@charset "UTF-8";
+
+/* Imports all styles from component-lib addon. */
+@import 'component-lib/manifest';
+
+a {
+  cursor: pointer;
+  .small-header:hover,
+  .small-header.hover {
+    color: text-color(neutral);
+  }
+  text-decoration-line: none;
+}
+
+.active {
+  color: text-color(secondary);
+}
+
+.bold {
+  @include rsa-font(bold);
+}
+
+.bottom-padding {
+  padding-bottom: rsa-whitespace();
+}
+
+.border-line-left {
+  border-left: 1px solid rgb(66, 66, 66);
+}
+
+.border-line-right {
+  border-right: 1px solid rgb(66, 66, 66);
+}
+
+.border-line-top {
+  border-top: 1px solid rgb(66, 66, 66);
+}
+
+.border-panel {
+  border: 1px solid text-color(primary, light);
+  margin-top: rsa-whitespace();
+  padding: rsa-whitespace() rsa-whitespace() 0px rsa-whitespace();
+}
+
+.bottom-margin {
+  margin-bottom: rsa-whitespace();
+}
+
+.blue-hover:hover,
+.blue-hover.hover {
+  color: text-color(neutral);
+}
+
+.build-warning {
+  color: text-color(accentFour);
+}
+
+.centered {
+  text-align: center;
+}
+
+.close-button {
+  margin-left: rsa-whitespace();
+}
+
+.description {
+  @include rsa-font(paragraph);
+  @include rsa-font(light);
+}
+
+.description-nonexistent {
+  color: text-color(primary);
+}
+
+.direct-access-header {
+  height: $applicationHeaderHeight;
+
+  .rsa-logo {
+    float: left;
+  
+    &__svg {
+      position: relative;
+      width: calc(#{$applicationHeaderHeight} - #{rsa-whitespace(least)} - #{rsa-whitespace(least)});
+      height: $applicationHeaderHeight;
+      padding: 0 rsa-whitespace(least);
+      margin: 0 auto;
+      background-image: linear-gradient(180deg, #BE3A34, #81312F);
+  
+      .rsa-logo__letter {
+        fill: rgba(255,255,255, 1);
+      }
+  
+    }
+  }
+}
+
+.directory-item {
+  padding-top: rsa-whitespace(less);
+  padding-bottom: rsa-whitespace(less);
+
+  a:hover,
+  a.hover {
+    color: text-color(secondary);
+  }
+
+  a.error-text-hover:hover,
+  a.error-text-hover.hover {
+    color: text-color(accentOne, darker);
+  }
+
+  .dotted-line {
+    border-bottom: 1px dotted text-color(primary, dark);
+    margin: 0 rsa-whitespace(less) 0 rsa-whitespace(less);
+  }
+}
+
+.error-text {
+  color: text-color(accentOne);
+}
+
+.flex-space-between {
+  justify-content: space-between;
+}
+
+.flipped {
+  i {
+    transform: scale(-1, 1);
+  }
+}
+
+.header-content {
+  height: 100%;
+  padding: 0 rsa-whitespace() 0 rsa-whitespace();
+  @include rsa-font(header, small);
+}
+
+.help-box {
+  br {
+    line-height: 150%;
+  }
+}
+
+hr {
+  border-width: 0.5px;
+}
+
+.large {
+  @include rsa-font(default, large);
+}
+
+.larger {
+  @include rsa-font(default, larger);
+  margin-bottom: rsa-whitespace();
+}
+
+.log-controls .rsa-form-input,
+.log-controls .rsa-form-checkbox-label,
+.log-control-label {
+  margin-left: 10px;
+}
+
+.log-controls > hbox,
+.log-controls > vbox {
+  padding-left: 15px;
+}
+
+.log-container {
+  word-break: break-all;
+  @include rsa-font(default, small);
+  line-height: 1.3rem;
+}
+
+.log-warning {
+  color: text-color(accentFour, light);
+}
+
+.log-failure {
+  color: text-color(accentOne, light);
+}
+
+.log-level-default {
+  color: text-color(primary, light);
+}
+
+.log-module {
+  color: text-color(accentTwo, lighter);
+}
+
+.max-height {
+  height: 100%;
+}
+
+.nav-button {
+  margin-right: rsa-whitespace();
+}
+
+.nav-item {
+  @include rsa-font(navigation);
+  padding: 10px;
+}
+
+.nav-item:hover,
+.nav-item.hover {
+  background-color: text-color(primary, darker);
+  cursor: pointer;
+}
+
+.nav-item i {
+  margin-right: 8px;
+  margin-left: 3px;
+}
+
+.navigation-sidebar-inner {
+  width: 175px;
+}
+
+.navigation-sidebar-outer {
+  width: 40px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  transition: width .1s ease-in-out;
+  position: absolute;
+  @include rsa-layer();
+  background-color: text-color(primary, darkest);
+}
+
+.navigation-sidebar-outer:hover,
+.navigation-sidebar-outer.hover {
+  width: 175px;
+}
+
+.outside-of-navigation {
+  margin-left: 40px;
+}
+
+.order-1 {
+  order: 1;
+}
+
+.order-2 {
+  order: 2;
+}
+
+.padding {
+  padding: rsa-whitespace();
+}
+
+.padding-more {
+  padding: rsa-whitespace(more);
+}
+
+.param-optional-switch {
+  margin-left: rsa-whitespace();
+}
+
+div.response-panel {
+  @include rsa-font(default, small);
+  margin-top: rsa-whitespace();
+  font-family: monospace;
+  padding-top: 0;
+  padding-left: 0;
+}
+
+.rsa-chart {
+  height: 90%;
+  width: 100%;
+}
+
+.rsa-content-tethered-panel-trigger {
+  width: 100%;
+}
+
+.rsa-form-radio-group .rsa-form-radio-label {
+  margin-right: 0;
+}
+
+screen {
+  color: text-color(neutral);
+}
+
+screen > hbox {
+  width: 100%;
+}
+
+.small-header {
+  @include rsa-font(header, small);
+  color: text-color(primary, light);
+}
+
+table {
+  width: 100%;
+}
+
+.thin-horizontal-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.thin-horizontal-scroll::-webkit-scrollbar {
+  height: 2px;
+}
+
+.title-block {
+  padding: rsa-whitespace(more);
+}
+
+.less-top-margin {
+  margin-top: rsa-whitespace(less);
+}
+
+.top-margin {
+  margin-top: rsa-whitespace();
+}
+
+.tree-path-nav {
+  cursor: pointer;
+}
+
+.tree-path-nav:hover,
+.tree-path-nav.hover {
+  color: text-color(secondary);
+}
+
+/* Scrollbar CSS */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: text-color(primary, lightest)
+}
+::-webkit-scrollbar-corner {
+  display: none;
+}

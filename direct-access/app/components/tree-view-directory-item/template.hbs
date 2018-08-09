@@ -1,0 +1,35 @@
+{{#if isStatOrConfigNode}}
+  <hbox class="directory-item" align="center" nowrap>
+
+    <box fit>
+      <a {{action 'selectNode' node}} class="large{{if requiresRestart ' error-text-hover'}}">
+        {{#if node.display}}
+          <span title={{node.name}}>{{node.display}}</span>
+        {{else}}
+          {{node.name}}
+        {{/if}}
+      </a>
+    </box>
+    
+    <box fill class="dotted-line"></box>
+
+    <box fit>
+      {{tree-view-value node=node}}
+    </box>
+
+  </hbox>
+{{else}}
+  <hbox class="directory-item" align="center" nowrap>
+
+    <box fit>
+      <a {{action 'changeDirectory' node.path}} class="large">
+        {{#if node.display}}
+          <span title={{node.name}}>{{node.display}}</span>
+        {{else}}
+          {{node.name}}/
+        {{/if}}
+      </a>
+    </box>
+
+  </hbox>
+{{/if}}

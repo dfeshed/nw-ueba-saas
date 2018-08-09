@@ -1,0 +1,18 @@
+{{#if noLogs}}
+  {{#if logsLoading}}
+    <centered align="center" class="max-height">
+      {{rsa-loader size='largest'}}
+    </centered>
+  {{else}}
+    <centered>
+      <div class="description-nonexistent">No logs found matching query</div>
+    </centered>
+  {{/if}}
+{{else}}
+  {{#if logsLoading}}<div>{{rsa-loader}}</div>{{/if}}
+    {{#each logs key="id" as |log|}}
+      <div>
+        {{log-item log=log}}
+      </div>
+    {{/each}}
+{{/if}}

@@ -1,0 +1,36 @@
+<hbox>
+  <vbox xs="10">
+    <span class="larger">
+      {{#if selectedNode.display}}
+        {{selectedNode.display}}
+      {{else}}
+        {{selectedNode.name}}
+      {{/if}}
+    </span>
+    {{#if liveSelectedNode.value}}
+      <div class="thin-horizontal-scroll">
+        <p class="top-margin large">{{tree-view-value node=liveSelectedNode}}</p>
+      </div>
+      {{#if selectedNodeRequiresRestart}}
+        <p class="top-margin error-text bold">Config change requires restart</p>
+      {{/if}}
+    {{/if}}
+    {{#if selectedIsConfigNode}}
+      <div class="border-panel">
+        <box fill class="bottom-padding">
+          {{rsa-form-input value=configValue placeholder="New value" isSuccess=configSetSuccess isError=configSetError errorMessage=configSetResult}}
+        </box>
+        <box fit class="bottom-padding">
+          {{#rsa-form-button style='primary' defaultAction=(action 'setConfigValue' configValue)}}Set{{/rsa-form-button}}
+        </box>
+      </div>
+    {{/if}}
+    {{#if selectedNode.description}}
+      <p class="top-margin description">{{selectedNode.description}}</p>
+    {{/if}}
+  </vbox>
+  <vbox xs="2">
+    <a {{action 'deselectStat'}} class="blue-hover">{{rsa-icon name="close" size="large"}}</a>
+  </vbox>
+</hbox>
+

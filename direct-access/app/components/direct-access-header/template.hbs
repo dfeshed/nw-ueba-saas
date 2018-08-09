@@ -1,0 +1,14 @@
+{{rsa-logo animated=false}}
+
+<hbox align="center" justify="end" class="header-content">
+  <box fit class="{{if isDevelopmentBuild 'build-warning'}}">
+    {{#if isDevelopmentBuild}}
+      <box fit xs="visible" sm="hidden" title="Development Build">
+        <p>{{rsa-icon name="report-problem-triangle" size="larger"}}</p>
+      </box>
+    {{/if}}
+    <box fit xs="hidden" sm="visible">
+      <p>{{#if isDevelopmentBuild}}{{rsa-icon name="report-problem-triangle"}} Development Build | {{/if}}Device: {{deviceInfo.module}} v{{deviceInfo.version}} | Host: {{deviceInfo.hostname}}</p>
+    </box>
+  </box>
+</hbox>

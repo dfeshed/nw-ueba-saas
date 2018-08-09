@@ -1,0 +1,124 @@
+<vbox fit>
+  <div class='rsa-form-radio-group'>
+    <h4 class='rsa-form-radio-group-label'>Selection Type</h4>
+    <label class="rsa-form-radio-label {{if (eq 'id' selectionType) 'checked'}}">
+      {{radio-button
+        value="id"
+        groupValue=selectionType
+        changed="typeChanged"}}
+        ID
+    </label>
+  
+    <label class="rsa-form-radio-label {{if (eq 'time' selectionType) 'checked'}}">
+      {{radio-button
+        value="time"
+        groupValue=selectionType
+        changed="typeChanged"}}
+        Time
+    </label>
+  </div>
+</vbox>
+
+<hbox fit>
+  {{#if isId}}
+    {{#if latest}}
+      <vbox fit>
+        {{rsa-form-input label='Count' value=count focusOut=(action 'updateParams')}}
+        <label class="rsa-form-checkbox-label less-top-margin {{if latest 'checked'}}">
+          {{rsa-form-checkbox
+          checked=latest
+          change=(action 'toggleLatest')}}
+          Show Latest
+        </label>
+      </vbox>
+    {{else}}
+      <vbox fit>
+        {{rsa-form-input label='id1' value=id1 focusOut=(action 'updateParams') isDisabled=latest}}
+        <label class="rsa-form-checkbox-label less-top-margin {{if latest 'checked'}}">
+          {{rsa-form-checkbox
+          checked=latest
+          change=(action 'toggleLatest')}}
+          Show Latest
+        </label>
+      </vbox>
+      <vbox fit>
+        {{rsa-form-input label='id2' value=id2 focusOut=(action 'updateParams')}}
+      </vbox>
+    {{/if}}
+  {{else if isTime}}
+    {{rsa-form-datetime
+      label='time1'
+      dateFormat=dateFormat
+      locale="en"
+      value=time1Local
+      onChange=(action 'setTime1')
+    }}
+    {{rsa-form-datetime
+      label='time2'
+      dateFormat=dateFormat
+      locale="en"
+      value=time2Local
+      onChange=(action 'setTime2')
+    }}
+  {{/if}}
+</hbox>
+
+<vbox fit>
+  {{rsa-form-input label=(if regexMode 'Regex' 'Match') value=filter focusOut=(action 'updateParams')}}
+  <div class="less-top-margin">
+    <label class="rsa-form-checkbox-label {{if regexMode 'checked'}}">
+      {{rsa-form-checkbox
+      checked=regexMode
+      change=(action 'toggleRegexMode')}}
+      Use Regex
+    </label>
+  </div>
+</vbox>
+
+<vbox fit>
+  <div>
+    <p class="small-header log-control-label">Log Levels</p>
+  </div>
+  <hbox class="top-margin">
+    <div>
+      <label class="rsa-form-checkbox-label {{if debug 'checked'}}">
+        {{rsa-form-checkbox
+        checked=debug
+        change=(action 'toggleDebug')}}
+        Debug
+      </label>
+    </div>
+    <div>
+      <label class="rsa-form-checkbox-label {{if info 'checked'}}">
+        {{rsa-form-checkbox
+        checked=info
+        change=(action 'toggleInfo')}}
+        Info
+      </label>
+    </div>
+    <div>
+      <label class="rsa-form-checkbox-label {{if audit 'checked'}}">
+        {{rsa-form-checkbox
+        checked=audit
+        change=(action 'toggleAudit')}}
+        Audit
+      </label>
+    </div>
+    <div>
+      <label class="rsa-form-checkbox-label {{if warning 'checked'}}">
+        {{rsa-form-checkbox
+        checked=warning
+        change=(action 'toggleWarning')}}
+        Warning
+      </label>
+    </div>
+    <div>
+      <label class="rsa-form-checkbox-label {{if failure 'checked'}}">
+        {{rsa-form-checkbox
+        checked=failure
+        change=(action 'toggleFailure')}}
+        Failure
+      </label>
+    </div>
+  </hbox>
+</vbox>

@@ -1,0 +1,7 @@
+{{#if isSizeValue}}
+  {{direct-access-memsize size=node.value}}
+{{else if hasValue}}
+  {{node.value}}
+{{else}}
+  No value
+{{/if}}

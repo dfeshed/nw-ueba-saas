@@ -1,0 +1,31 @@
+{{#if hasOperations}}
+  <label class="rsa-form-label power-select">
+    <div class="label-text">
+      Operations
+    </div>
+
+    {{#power-select
+      placeholder="Select operation"
+      options=filteredOperationNames
+      selected=selectedOperation.name
+      searchPlaceholder="Type to filter operations"
+      onchange=(action 'selectOperation') as |option|}}
+      {{option}}
+    {{/power-select}}
+  </label>
+
+  {{#if selectedOperation}}
+    {{tree-view-operation-panel}}
+  {{/if}}
+
+  {{#if pendingOperation}}
+    <div class="small-header top-margin">Response</div>
+    <br>
+    {{rsa-loader size='medium'}}
+  {{else if operationResponse}}
+    <div class="small-header top-margin">Response</div>
+    <div class="scroll-box response-panel padding">
+      <pre>{{response}}</pre>
+    </div>
+  {{/if}}
+{{/if}}

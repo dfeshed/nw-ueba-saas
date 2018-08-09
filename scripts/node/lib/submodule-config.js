@@ -21,7 +21,8 @@ const ALL_SUBMODULES = [
   'ember-route-action-helper',
   'investigate-process-analysis',
   'rsa-context-menu',
-  'rsa-data-filters'
+  'rsa-data-filters',
+  'direct-access'
 ];
 
 // A configuration that lists each submodule with
@@ -45,7 +46,8 @@ const saModuleDependants = {
     'preferences',
     'investigate-process-analysis',
     'rsa-context-menu',
-    'rsa-data-filters'
+    'rsa-data-filters',
+    'direct-access'
   ],
   docs: [], // lol
   'mock-server': [
@@ -126,7 +128,9 @@ const saModuleDependants = {
     'sa',
     'investigate-hosts',
     'investigate-files'
-  ]
+  ],
+  'hosts-scan-configure': ['sa', 'configure'],
+  'direct-access': []
 };
 
 module.exports = {

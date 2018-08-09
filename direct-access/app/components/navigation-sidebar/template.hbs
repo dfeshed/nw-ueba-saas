@@ -1,0 +1,34 @@
+{{!--
+BEFORE EDITING THIS FILE
+If you add an item which is longer than the rest, remove the longest item,
+or otherwise make a change which would affect the width, make sure to change
+the following classes in app.scss: .navigation-sidebar-inner, .navigation-sidebar-outer,
+.navigation-sidebar-outer:hover.
+
+Absolute pixel values are defined there because simple CSS transitions do not allow
+transitioning to or from a width of auto. The inner class defines the expanded width,
+and the outer class defines the collapsed width.
+--}}
+
+<div class="navigation-sidebar-inner">
+  {{#link-to "index"}}<div class="nav-item"><span>{{rsa-icon name="home-1" style="lined"}}</span> Dashboard</div>{{/link-to}}
+  {{#link-to "tree"}}<div class="nav-item"><span class="flipped">{{rsa-icon name="flowchart" style="lined"}}</span> Tree View</div>{{/link-to}}
+  {{#link-to "logs"}}<div class="nav-item"><span>{{rsa-icon name="copy-1" style="lined"}}</span> Logs</div>{{/link-to}}
+  <hr>
+  <a href="{{restPagesRoot}}/sys/caupload" target="_blank"><div class="nav-item"><span>{{rsa-icon name="upload-2" style="lined"}}</span> CA Upload</div></a>
+  <a href="{{restPagesRoot}}/sys/trustpeer" target="_blank"><div class="nav-item"><span>{{rsa-icon name="account-group-5" style="lined"}}</span> Trusted Peer</div></a>
+  <a href="{{restPagesRoot}}/storedproc/upload" target="_blank"><div class="nav-item"><span>{{rsa-icon name="cloud-upload" style="lined"}}</span> Feed Upload</div></a>
+  <a href="{{restPagesRoot}}/sdk/app/packetdrops" target="_blank"><div class="nav-item"><span>{{rsa-icon name="move-down" style="lined"}}</span> Packet Drops</div></a>
+  <a href="{{restPagesRoot}}/sdk/app/reports" target="_blank"><div class="nav-item"><span>{{rsa-icon name="notepad-2" style="lined"}}</span> Reports</div></a>
+  <a href="{{restPagesRoot}}/sdk/app/sessions" target="_blank"><div class="nav-item"><span>{{rsa-icon name="settings-1" style="lined"}}</span> Sessions</div></a>
+  <a href="{{restPagesRoot}}/sdk/app/stats" target="_blank"><div class="nav-item"><span>{{rsa-icon name="graph-line-2" style="lined"}}</span> Stats</div></a>
+  <a href="{{restPagesRoot}}/sdk/content" target="_blank"><div class="nav-item"><span>{{rsa-icon name="pencil-write-2" style="lined"}}</span> Content</div></a>
+  <a href="{{restPagesRoot}}/sdk/packets" target="_blank"><div class="nav-item"><span>{{rsa-icon name="server-network-5" style="lined"}}</span> Packets</div></a>
+  <a href="{{restPagesRoot}}/logs/download" target="_blank"><div class="nav-item"><span>{{rsa-icon name="download-2" style="lined"}}</span> Log Download</div></a>
+  {{#if isDecoder}}
+    <a href="{{restPagesRoot}}/decoder/agg" target="_blank"><div class="nav-item"><span>{{rsa-icon name="add-circle-1" style="lined"}}</span> Aggregation</div></a>
+    <a href="{{restPagesRoot}}/decoder/import" target="_blank"><div class="nav-item"><span>{{rsa-icon name="network" style="lined"}}</span> Packet Import</div></a>
+    <a href="{{restPagesRoot}}/decoder/parsers/upload" target="_blank"><div class="nav-item"><span>{{rsa-icon name="network-connecting" style="lined"}}</span> Parser Upload</div></a>
+    <a href="{{restPagesRoot}}/decoder/sslkeys" target="_blank"><div class="nav-item"><span>{{rsa-icon name="upload-2" style="lined"}}</span> SSL Key Upload</div></a>
+  {{/if}}
+</div>

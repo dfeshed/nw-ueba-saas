@@ -1,0 +1,8 @@
+{{#if isNotRoot}}
+  <div class="directory-item"><a {{action 'changeDirectory' pathParent}} class="large">{{rsa-icon name='arrow-previous'}}</a></div>
+{{/if}}
+<vbox>
+  {{#each currentDirectoryContents as |item|}}
+    {{tree-view-directory-item node=item}}
+  {{/each}}
+</vbox>

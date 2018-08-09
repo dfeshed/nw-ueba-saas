@@ -50,6 +50,13 @@ cd $scriptDir/../mock-server
 yarn
 yarn link
 
+# da-mock-server is also just Yarn install
+info "Running install for direct access mock server"
+cd ../direct-access/da-mock-server
+yarn
+# prepareApp expects to be only one folder level deep when it starts
+cd ..
+
 prepareApp component-lib
 prepareApp rsa-context-menu
 prepareApp rsa-data-filters
@@ -72,6 +79,7 @@ prepareApp test-helpers
 prepareApp ember-route-action-helper
 prepareApp broccoli-theme
 prepareApp investigate-process-analysis
+prepareApp direct-access
 prepareApp sa
 
 cd $CWD

@@ -1,0 +1,25 @@
+<hbox fit class="title-block flex-space-between">
+  <box fit>
+    <h2 class="larger">Path: {{tree-path-nav path=treePath}}</h2>
+    <p class="description">{{description}}</p>
+  </box>
+  <vbox fit align-self="end">
+    {{#rsa-form-button defaultAction=(action 'changeDirectory' '/')}}Go to root{{/rsa-form-button}}
+  </vbox>
+</hbox>
+<hbox class="border-line-top">
+  <vbox xs="6">
+    <fill block class="scroll-box padding-more">
+      {{tree-view-directory-contents}}
+    </fill>
+  </vbox>
+  <vbox xs="6" class="border-line-left">
+    <fill block class="scroll-box padding-more">
+      {{#if selectedNode}}
+        {{tree-stat-config-view}}
+      {{else}}
+        {{tree-view-operations}}
+      {{/if}}
+    </fill>
+  </vbox>
+</hbox>
