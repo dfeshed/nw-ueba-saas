@@ -524,7 +524,9 @@ module('Integration | Component | query-pill', function(hooks) {
     await fillIn(PILL_SELECTORS.valueInput, 'x');
     await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', X_KEY); // x
     await blur(PILL_SELECTORS.valueInput);
-    assert.equal(trim(find(PILL_SELECTORS.queryPill).textContent), 'a=');
+    // The textContent of the pill will include the "x" because of the
+    // transparent <span> used for resizing of the pill.
+    assert.equal(trim(find(PILL_SELECTORS.queryPill).textContent), 'a=x');
     assert.equal(find(PILL_SELECTORS.valueInput).value, 'x');
   });
 

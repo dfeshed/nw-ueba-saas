@@ -205,7 +205,7 @@
     @include pillAppearance();
     &.is-active {
       border-color: transparent;
-      flex: 100;
+      flex: 1 1 auto;
       min-width: 80px;
     }
     &.is-invalid {
@@ -230,17 +230,40 @@
   }
 
   .pill-meta,
-  .pill-operator,
-  .pill-value {
+  .pill-operator {
     height: rsa-whitespace(more);
+    min-width: 0.5rem;
+    flex: 0 0 auto;
   }
   .pill-value {
+    height: rsa-whitespace(more);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     flex: 1 1 auto;
+    position: relative;
+    .shadow {
+      visibility: hidden;
+    }
     input {
       width: 100%;
+      position: absolute;
+      top: 4px;
+      left: 0;
+    }
+  }
+
+  // Styles to support resizable input for power-selects
+  .ember-power-select-trigger {
+    position: relative;
+    .shadow-text {
+      visibility: hidden;
+      padding-left: 1px;// helps prevent subpixel difference between span and input
+    }
+    input {
+      position: absolute;
+      top: 0;
+      left: 0;
     }
   }
 

@@ -1,8 +1,13 @@
 {{#if isActive}}
+  {{!--
+    This span's contents mirrors what's in the <input>. This allows this
+    component to resize smoothly as the user types stuff into the <input>
+   --}}
+  <span class="shadow">{{valueString}}</span>
   {{input
     key-down='onKeyDown'
     type='text'
-    value=(readonly valueString)
+    value=valueString
   }}
 {{else}}
   {{valueDisplay}}
