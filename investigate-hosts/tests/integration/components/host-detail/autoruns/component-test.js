@@ -64,7 +64,7 @@ test('it renders data and property panel for services', function(assert) {
     assert.equal(firstRowPathText, '/usr/lib/systemd/system', 'first row path text ');
 
     // props checks
-    const propPanelItemWithText = this.$('.host-property-panel .host-text:contains("/usr/lib/systemd/system")');
+    const propPanelItemWithText = this.$('.host-property-panel .tooltip-text:contains("/usr/lib/systemd/system")');
     assert.equal(propPanelItemWithText.length, 1, 'number of rows of data');
   });
 });

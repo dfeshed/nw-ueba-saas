@@ -1,11 +1,5 @@
 $panel-width: 200px;
 
-.tool-tip-value {
-  padding: rsa-whitespace();
-  width: $panel-width;
-  word-wrap: break-word
-}
-
 .divider {
   @include border-top(1px, solid, primary);
   @include border-bottom(0, solid, primary);

@@ -166,7 +166,7 @@ test('Property panel is rendered', function(assert) {
   this.render(hbs`{{host-detail/files}}`);
 
   return wait().then(() => {
-    const propPanelItemWithText = this.$('.host-property-panel .host-text:contains("systemd-journald.service")');
+    const propPanelItemWithText = this.$('.host-property-panel .tooltip-text:contains("systemd-journald.service")');
     assert.equal(this.$('.header-section__title').text().trim(), 'File Properties', 'Panel title displayed');
     assert.equal(propPanelItemWithText.length, 1, 'First property is File name');
   });

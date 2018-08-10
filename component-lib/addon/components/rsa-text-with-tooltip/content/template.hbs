@@ -4,9 +4,7 @@
   {{/if}}
 {{else if (eq format 'SIZE')}}
   {{rsa-content-memsize size=text}}
-{{else if (eq format 'SIGNATURE')}}
-  {{signature-text text}}
 {{else}}
   {{text}}
 {{/if}}
-{{endpoint/copy-content text=text}}
+{{rsa-text-with-tooltip/copy-content text=text}}

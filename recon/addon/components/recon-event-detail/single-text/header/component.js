@@ -13,7 +13,6 @@ const SingleTextHeaderComponent = Component.extend({
   layout,
 
   isLog: false,
-  isEndpoint: false,
   isSticky: false,
   side: null,
 

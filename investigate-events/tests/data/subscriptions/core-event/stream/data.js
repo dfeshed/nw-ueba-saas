@@ -16,20 +16,39 @@ const randInt = function(min, max) {
   return parseInt(min + (max - min) * Math.random(), 10);
 };
 
-const factory = function(i) {
+const logAndNetworkMetas = [
+  [ 'service', faker.random.arrayElement(SERVICES) ],
+  [ 'size', randInt(15, 2000) ],
+  [ 'ip.proto', faker.random.arrayElement(IP_PROTOS) ],
+  [ 'ip.src', faker.internet.ip() ],
+  [ 'tcp.srcport', faker.random.arrayElement(TCP_SRC_PORTS) ],
+  [ 'ip.dst', faker.internet.ip() ],
+  [ 'tcp.dstport', faker.random.arrayElement(TCP_DST_PORTS) ],
+  [ 'medium', faker.random.arrayElement([1, 32]) ]
+];
+
+const endpointMetas = [
+  [ 'ip.proto', faker.random.arrayElement(IP_PROTOS) ],
+  [ 'medium', faker.random.number({ min: 2, max: 31 }) ],
+  [ 'ip.src', faker.internet.ip() ],
+  [ 'ip.dst', faker.internet.ip() ],
+  [ 'param.dst', faker.internet.userAgent() ],
+  [ 'nwe.callback_id', randInt(15, 2000) ]
+];
+
+const logAndNetworkFactory = function(i) {
   return {
     sessionId: i,
     time: oneDayAgo + i,
-    metas: [
-      [ 'service', faker.random.arrayElement(SERVICES) ],
-      [ 'medium', faker.random.arrayElement([1, 32]) ],
-      [ 'size', randInt(15, 2000) ],
-      [ 'ip.proto', faker.random.arrayElement(IP_PROTOS) ],
-      [ 'ip.src', faker.internet.ip() ],
-      [ 'tcp.srcport', faker.random.arrayElement(TCP_SRC_PORTS) ],
-      [ 'ip.dst', faker.internet.ip() ],
-      [ 'tcp.dstport', faker.random.arrayElement(TCP_DST_PORTS) ]
-    ]
+    metas: logAndNetworkMetas
+  };
+};
+
+const endpointFactory = function(i) {
+  return {
+    sessionId: i,
+    time: oneDayAgo + i,
+    metas: endpointMetas
   };
 };
 
@@ -40,8 +59,12 @@ export default function() {
 
   eventList = [];
 
-  for (let i = 0; i < NUMBER_OF_EVENTS; i++) {
-    eventList.push(factory(i));
+  for (let i = 1; i < NUMBER_OF_EVENTS; i++) {
+    if (i % 3 == 0) {
+      eventList.push(endpointFactory(i));
+    } else {
+      eventList.push(logAndNetworkFactory(i));
+    }
   }
 
   return eventList;

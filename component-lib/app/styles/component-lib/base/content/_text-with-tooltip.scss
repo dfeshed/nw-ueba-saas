@@ -1,4 +1,17 @@
-.host-text {
+$panel-width: 200px;
+
+.tool-tip-value {
+  @include rsa-font(body);
+  padding: rsa-whitespace();
+  width: $panel-width;
+  line-height: 1.25rem;
+  word-wrap: break-word;
+  .copy-icon {
+    float: right;
+  }
+}
+
+.tooltip-text {
   @include rsa-font(body);
   color: text-color(primary, lightest);
   line-height: 1.25rem;

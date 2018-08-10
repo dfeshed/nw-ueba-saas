@@ -5,8 +5,10 @@ import HighlightsEntities from 'context/mixins/highlights-entities';
 import {
   eventHasPayload,
   metaHighlightCount,
-  hasTextContent
+  hasTextContent,
+  renderedText
 } from 'recon/reducers/text/selectors';
+import { isEndpointEvent } from 'recon/reducers/meta/selectors';
 import {
   hasPackets
 } from 'recon/reducers/packets/selectors';
@@ -18,6 +20,8 @@ import { metaFormatMap } from 'rsa-context-menu/utils/meta-format-selector';
 const stateToComputed = ({ recon, recon: { meta, text, data, dictionaries } }) => ({
   eventHasPayload: eventHasPayload(recon),
   isTextView: isTextView(recon),
+  isEndpointEvent: isEndpointEvent(recon),
+  renderedText: renderedText(recon),
   hasTextContent: hasTextContent(recon),
   hasPackets: hasPackets(recon),
   meta: meta.meta,

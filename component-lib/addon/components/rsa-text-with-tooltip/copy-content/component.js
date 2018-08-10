@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import CopyToClipboard from './copy-to-clipboard';
+import CopyToClipboard from '../../../mixins/copy-to-clipboard';
 import layout from './template';
 
 export default Component.extend(CopyToClipboard, {

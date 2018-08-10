@@ -34,7 +34,7 @@
         </vbox>
         <vbox xs='2'>
           {{#rsa-content-definition class='host-action' label=(t 'investigateHosts.hosts.summary.body.user.groups')}}
-            {{host-detail/base-property-panel/host-text value=user.groups}}
+            {{rsa-text-with-tooltip value=user.groups}}
           {{/rsa-content-definition}}
         </vbox>
       {{else if isMachineLinux}}

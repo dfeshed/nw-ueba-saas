@@ -4,7 +4,6 @@ import computed, { alias, bool } from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { highlightMeta } from 'recon/actions/interaction-creators';
 
-
 const dispatchToActions = {
   highlightMeta
 };
@@ -139,6 +138,34 @@ const MetaContentItem = Component.extend({
       ...queryInputs,
       language
     };
+  },
+
+  /**
+   * whether to display CopyClipBoard tooltip for the meta value.
+   * @param {boolean} isEndpointEvent Endpoint event flag.
+   * @param {boolean} hasTextContent has Text Content available
+   * @return {boolean}
+   * @public
+   */
+  @computed('isEndpointEvent', 'hasTextContent')
+  showCopyClipBoard(isEndpointEvent, hasTextContent) {
+    return isEndpointEvent && hasTextContent;
+  },
+
+  /**
+   * Return text content value for lengthy endpoint event meta
+   * @param renderedText text content to be displayed in tooltip
+   * @returns {string}
+   * @public
+   */
+  @computed('renderedText')
+  lengthyMeta(renderedText) {
+    if (renderedText.length > 0) {
+      const [ metaKey, metaValue ] = renderedText[0].text.split('=');
+      if (metaKey === 'param.dst') {
+        return metaValue;
+      }
+    }
   },
 
   actions: {

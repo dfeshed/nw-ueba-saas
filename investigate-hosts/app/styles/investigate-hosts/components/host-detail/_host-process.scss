@@ -136,14 +136,3 @@
     }
   }
 }
-
-.tool-tip-value {
-  @include rsa-font(body);
-  padding: rsa-whitespace();
-  width: 200px;
-  line-height: 1.25rem;
-  word-wrap: break-word;
-  .copy-icon {
-    float: right;
-  }
-}

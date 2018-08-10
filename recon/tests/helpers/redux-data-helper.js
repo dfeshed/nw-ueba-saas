@@ -160,4 +160,5 @@ export default class DataHelper {
     _set(this.state, 'text.canLast', canLast);
     return this;
   }
+
 }

@@ -1,0 +1,15 @@
+{{#if hasBlock}}
+  {{yield}}
+{{else}}
+  {{value}}
+{{/if}}
+{{#if showToolTip}}
+  {{#rsa-content-tethered-panel
+    anchorWidth=100
+    displayCloseButton=false
+    style="highlighted"
+    position=tipPosition
+    panelId=panelId}}
+    {{rsa-text-with-tooltip/content format=format text=value}}
+  {{/rsa-content-tethered-panel}}
+{{/if}}

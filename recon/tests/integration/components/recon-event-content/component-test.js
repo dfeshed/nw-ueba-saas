@@ -64,6 +64,18 @@ test('log events redirect to text view', function(assert) {
   });
 });
 
+test('endpoint events redirect to empty view', function(assert) {
+  new DataHelper(this.get('redux'))
+    .initializeData({ eventId: 2, endpointId: 2, meta: [['nwe.callback_id', 'foo']] });
+
+  this.render(hbs`{{recon-event-content accessControl=accessControl}}`);
+  return wait().then(() => {
+    assert.equal(this.$('.recon-event-detail-text').length, 0, 'Not On the Text View');
+    assert.equal(this.$('.recon-event-detail-packets').length, 0, 'Not on the Packet View');
+    assert.equal(this.$('.recon-event-detail-files').length, 0, 'Not on the File View');
+  });
+});
+
 test('displays correct error when missing permissionss', function(assert) {
   this.set('accessControl.hasReconAccess', false);
 

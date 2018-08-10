@@ -27,7 +27,6 @@ export default Component.extend(SelectionTooltip, {
   encDecStrBase64: null,
   encDecStrUrl: null,
   isLog: false,
-  isEndpoint: false,
   isSticky: false,
   metaToHighlight: null,
   packet: null,
