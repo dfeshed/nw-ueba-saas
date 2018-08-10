@@ -8,6 +8,7 @@ import {
   fetchSchemaInfo,
   resetDownloadId,
   setDataSourceTab,
+  setAlertTab,
   toggleRiskPanel
 } from 'investigate-files/actions/data-creators';
 import { inject as service } from '@ember/service';
@@ -22,6 +23,7 @@ const stateToComputed = (state) => ({
   alertsCount: getAlertsCount(state),
   incidentsCount: getIncidentsCount(state),
   activeDataSourceTab: state.files.fileList.activeDataSourceTab,
+  activeAlertTab: state.files.fileList.activeAlertTab,
   contextLoadingStatus: state.files.fileList.contextLoadingStatus
 });
 
@@ -29,6 +31,7 @@ const dispatchToActions = {
   fetchSchemaInfo,
   resetDownloadId,
   setDataSourceTab,
+  setAlertTab,
   toggleRiskPanel
 };
 

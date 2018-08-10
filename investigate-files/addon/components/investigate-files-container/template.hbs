@@ -34,7 +34,11 @@
         {{rsa-icon class='close-icon' name='close' title=(t 'investigateHosts.context.button.close')}}
       {{/rsa-form-button}}
     {{/rightPanel.header}}
-    {{endpoint/file-details-panel activeDataSourceTab=activeDataSourceTab data=context errorMessage=false}}
+    {{#if (eq activeDataSourceTab 'RISK_PROPERTIES')}}
+      {{endpoint/risk-properties defaultAction=(action 'setAlertTab') activeAlertTab=activeAlertTab}}
+    {{else}}
+      {{endpoint/file-details-panel activeDataSourceTab=activeDataSourceTab data=context errorMessage=false}}
+    {{/if}}
   {{/layout.right}}
 {{/rsa-page-layout}}
 

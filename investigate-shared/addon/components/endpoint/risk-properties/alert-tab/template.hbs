@@ -1,0 +1,7 @@
+{{#each tabs as |tab|}}
+  {{#rsa-nav-tab align='center' isActive=tab.selected click=(action 'activate' tab.name)}}
+    {{#if hasBlock}}
+      {{yield tab}}
+    {{/if}}
+  {{/rsa-nav-tab}}
+{{/each}}

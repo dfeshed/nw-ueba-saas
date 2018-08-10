@@ -1,0 +1,29 @@
+.risk-properties {
+  margin: rsa-whitespace();
+
+  .alert-heading {
+    @include rsa-font(header, small, bold);
+    color: text-color(neutral);
+    font-size: 12px;
+  }
+  .alert-count {
+    margin: rsa-whitespace();
+    font-size: 36px;
+    color: text-color(neutral);
+    font-weight: 700;
+    text-align: center;
+  }
+  .tab-text {
+    font-size: 11px;
+    display: inline-block;
+    vertical-align: middle;
+    padding-bottom: rsa-whitespace(less);
+  }
+
+  .rsa-nav-tab.is-center-aligned-primary {
+    padding-bottom: rsa-whitespace(least);
+    .label {
+      text-transform: none;
+    }
+  }
+}

@@ -3061,6 +3061,15 @@ export default {
         properties: 'Properties',
         comment: 'COMMENTS'
       },
+      riskProperties: {
+        alerts: {
+          heading: 'Alerts({{count}})',
+          critical: 'Critical',
+          high: 'High',
+          medium: 'Medium',
+          low: 'Low'
+        }
+      },
       riskPanel: {
         timeUnit: {
           allData: 'ALL DATA',

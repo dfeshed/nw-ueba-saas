@@ -1,0 +1,22 @@
+.color-indicator {
+  &.red {
+    circle {
+      fill: text-color(accentOne);
+    }
+  }
+  &.orange {
+    circle {
+      fill: text-color(accentThree);
+    }
+  }
+  &.yellow {
+    circle {
+      fill: text-color(accentFour);
+    }
+  }
+  &.green {
+    circle {
+      fill: text-color(accentTwo);
+    }
+  }
+}
