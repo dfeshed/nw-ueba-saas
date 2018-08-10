@@ -37,6 +37,18 @@ export default Component.extend({
         }
       ],
       label: 'Size'
+    },
+    {
+      type: 'dropdown',
+      label: 'Signature',
+      multiSelect: true,
+      listOptions: [
+        { name: '1', label: 'One' },
+        { name: '2', label: 'Two' },
+        { name: '3', label: 'Three' },
+        { name: '4', label: 'Four' },
+        { name: '5', label: 'Five' }
+      ]
     }
   ],
 

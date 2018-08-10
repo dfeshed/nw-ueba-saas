@@ -7,8 +7,6 @@ export default Component.extend({
 
   classNames: ['list-filter'],
 
-  oldValue: [],
-
   filterValue: computed('filterOptions', {
     get() {
       const { filterValue, listOptions } = this.get('filterOptions');

@@ -1,0 +1,20 @@
+<h2 class='filter-text'>{{filterOptions.label}}</h2>
+{{#if isMultiSelect}}
+  {{#power-select-multiple
+    class='dropdown-option'
+    options=options.listOptions
+    searchEnabled=options.searchEnabled
+    selected=filterValue
+    onchange=(action 'changeOption') as |option| }}
+    {{t option.label}}
+  {{/power-select-multiple}}
+{{else}}
+  {{#power-select
+    class='dropdown-option'
+    searchEnabled=options.searchEnabled
+    options=options.listOptions
+    selected=filterValue
+    onchange=(action 'changeOption') as |option| }}
+    {{t option.label}}
+  {{/power-select}}
+{{/if}}
