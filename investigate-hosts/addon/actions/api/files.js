@@ -9,7 +9,7 @@ const getHostFiles = (pageNumber, agentId, scanTime, checksumSha256, key, descen
       data: {
         pageNumber,
         criteria: { agentId, scanTime, checksumSha256 },
-        sort: [{ key, descending }]
+        sort: { keys: [key], descending }
       }
     }
   });

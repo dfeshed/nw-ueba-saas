@@ -91,12 +91,10 @@ test('check sortyBy action is called', function(assert) {
           'scanTime': null
         },
         'pageNumber': 0,
-        'sort': [
-          {
-            'descending': true,
-            'key': 'fileName'
-          }
-        ]
+        'sort': {
+          'descending': true,
+          'keys': ['fileName']
+        }
       }
     });
   });
@@ -121,12 +119,10 @@ test('load more calls getHostFiles', function(assert) {
           'scanTime': null
         },
         'pageNumber': NaN,
-        'sort': [
-          {
-            'descending': undefined,
-            'key': undefined
-          }
-        ]
+        'sort': {
+          'descending': undefined,
+          'keys': [undefined]
+        }
       }
     });
   });

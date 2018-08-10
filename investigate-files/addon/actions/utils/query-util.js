@@ -1,8 +1,8 @@
 const addSortBy = (query, key, descending = false) => {
   if (!query.sort) {
-    query.sort = [];
+    query.sort = {};
   }
-  query.sort.push({ key, descending });
+  query.sort = { keys: [key], descending };
   return query;
 };
 /**

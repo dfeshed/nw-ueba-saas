@@ -103,7 +103,7 @@ test('Check that sort action is performed & correct values are passed', function
         'scanTime': 1234567890,
         'sort': {
           'descending': true,
-          'key': 'name'
+          'keys': ['name']
         }
       }
     });

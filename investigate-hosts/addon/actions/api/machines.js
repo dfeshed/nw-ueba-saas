@@ -43,11 +43,11 @@ const getAllFilters = () => {
  * @returns Promise that will resolve with the server response.
  * @public
  */
-const getPageOfMachines = (pageNumber, sort, expressionList) => {
+const getPageOfMachines = (pageNumber, [{ key, descending } = {}], expressionList) => {
   let query = {
     pageNumber: pageNumber + 1,
     pageSize: 100,
-    sort
+    sort: { keys: [key], descending }
   };
 
   query = addFilter(query, expressionList);
@@ -72,8 +72,8 @@ const getPageOfMachines = (pageNumber, sort, expressionList) => {
  * @param fields {Array} list of visible columns in machine table
  * @returns {Promise}
  */
-const downloadMachine = (expressionList = [], columns, sort, fields) => {
-  const data = { sort, fields };
+const downloadMachine = (expressionList = [], columns, [{ key, descending }], fields) => {
+  const data = { sort: { keys: [key], descending }, fields };
   if (expressionList.length) {
     data.criteria = { expressionList, 'predicateType': 'AND' };
   }
