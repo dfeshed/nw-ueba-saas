@@ -40,11 +40,11 @@
         "name": "service-name-filter",
         "predicate": {
           "type": "regex",
-          "name": "service-name-equal-krbtgt",
+          "name": "service-name-ends-with-dollar",
           "sourceKey": "service_name",
-          "regex": "krbtgt"
+          "regex": ".*\\$"
         },
-        "filterIn": false
+        "filterIn": true
       },
       "elseTransformer": null
     },
