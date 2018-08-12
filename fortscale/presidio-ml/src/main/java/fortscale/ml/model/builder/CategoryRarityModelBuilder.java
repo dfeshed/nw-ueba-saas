@@ -8,10 +8,7 @@ import fortscale.utils.data.Pair;
 import org.springframework.util.Assert;
 
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CategoryRarityModelBuilder implements IModelBuilder {
@@ -22,11 +19,13 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
     private int entriesToSaveInModel;
     private long partitionsResolutionInSeconds;
     private CategoryRarityModelBuilderMetricsContainer categoryRarityModelBuilderMetricsContainer;
+    private List<String> filter;
 
     public CategoryRarityModelBuilder(CategoryRarityModelBuilderConf config, CategoryRarityModelBuilderMetricsContainer categoryRarityModelBuilderMetricsContainer) {
         numOfBuckets = config.getNumOfBuckets();
         entriesToSaveInModel = config.getEntriesToSaveInModel();
         partitionsResolutionInSeconds = config.getPartitionsResolutionInSeconds();
+        filter = config.getFilter();
         this.categoryRarityModelBuilderMetricsContainer = categoryRarityModelBuilderMetricsContainer;
     }
 
@@ -70,12 +69,16 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
         Map<String, Set<Long>> nameToPartitionsSet = new HashMap<>();
         for (Pair<String, Long> entry : sequenceReducedData.keySet()) {
             String name = entry.getKey();
-            Set<Long> partitionsSet = nameToPartitionsSet.get(name);
-            if (partitionsSet == null) {
-                partitionsSet = new HashSet<>();
+
+            //filter features - "N/A" features
+            if(!filter.contains(name)) {
+                Set<Long> partitionsSet = nameToPartitionsSet.get(name);
+                if (partitionsSet == null) {
+                    partitionsSet = new HashSet<>();
+                }
+                partitionsSet.add(entry.getValue());
+                nameToPartitionsSet.put(name, partitionsSet);
             }
-            partitionsSet.add(entry.getValue());
-            nameToPartitionsSet.put(name, partitionsSet);
         }
 
         Map<Long, Set<Long>> occurrencesToPartitionSet = new HashMap<>();
