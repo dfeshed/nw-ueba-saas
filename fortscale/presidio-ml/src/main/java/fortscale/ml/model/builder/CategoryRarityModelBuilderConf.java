@@ -7,18 +7,23 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.util.Assert;
 
+import java.util.Collections;
+import java.util.List;
+
 @JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 public class CategoryRarityModelBuilderConf implements IModelBuilderConf {
 	public static final String CATEGORY_RARITY_MODEL_BUILDER = "category_rarity_model_builder";
 	public static final int DEFAULT_ENTRIES_TO_SAVE_IN_MODEL = 100;
 	public static final int DEFAULT_PARTITIONS_RESOLUTION_IN_SECONDS = 86400;
+	public static final List<String> DEFAULT_FILTER = Collections.EMPTY_LIST;
 
 	private int numOfBuckets;
 	@JsonProperty("entriesToSaveInModel")
 	private int entriesToSaveInModel = DEFAULT_ENTRIES_TO_SAVE_IN_MODEL;
 	@JsonProperty("partitionsResolutionInSeconds")
 	private long partitionsResolutionInSeconds = DEFAULT_PARTITIONS_RESOLUTION_IN_SECONDS;
-
+	@JsonProperty("filter")
+	List<String> filter = DEFAULT_FILTER;
 	@JsonCreator
 	public CategoryRarityModelBuilderConf(@JsonProperty("numOfBuckets") int numOfBuckets) {
 		setNumOfBuckets(numOfBuckets);
@@ -55,5 +60,13 @@ public class CategoryRarityModelBuilderConf implements IModelBuilderConf {
 
 	public long getPartitionsResolutionInSeconds() {
 		return partitionsResolutionInSeconds;
+	}
+
+	public List<String> getFilter() {
+		return filter;
+	}
+
+	public void setFilter(List<String> filter) {
+		this.filter = filter;
 	}
 }

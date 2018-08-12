@@ -38,7 +38,8 @@
         "type" : "category_rarity_model_builder",
         "numOfBuckets" : 30,
         "entriesToSaveInModel" : 100000,
-        "partitionsResolutionInSeconds": 86400
+        "partitionsResolutionInSeconds": 86400,
+        "filter": ["N/A"]
       }
     },
     {
@@ -78,7 +79,8 @@
         "type" : "category_rarity_model_builder",
         "numOfBuckets" : 30,
         "entriesToSaveInModel" : 100000,
-        "partitionsResolutionInSeconds": 86400
+        "partitionsResolutionInSeconds": 86400,
+        "filter": ["N/A"]
       }
     },
     {
