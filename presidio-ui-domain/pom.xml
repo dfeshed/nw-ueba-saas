@@ -4,12 +4,12 @@
 	<parent>
 		<groupId>presidio.ui</groupId>
 		<artifactId>presidio-ui</artifactId>
-		<version>2.0.14</version>
+		<version>2.0.16-SNAPSHOT</version>
 	</parent>
 
 	<name>presidio-ui-domain</name>
 	<artifactId>presidio-ui-domain</artifactId>
-	<version>2.0.14</version>
+	<version>2.0.16-SNAPSHOT</version>
 
 
 	<properties>
