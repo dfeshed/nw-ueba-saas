@@ -67,9 +67,9 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
         FilterTransformer deviceTypeAndUserDstFilter = new FilterTransformer("device-type-and-user-dst-filter", deviceTypeAndUserDstPredicate, true);
         transformerChainList.add(deviceTypeAndUserDstFilter);
 
-        // for 4769: Filtering out events with service name equals to 'krbtgt'
-        JsonObjectRegexPredicate serviceNameEqualKrbtgt = new JsonObjectRegexPredicate("service-name-equal-krbtgt", SERVICE_NAME_FIELD_NAME, "krbtgt");
-        FilterTransformer serviceNameFilter = new FilterTransformer("service-name-filter", serviceNameEqualKrbtgt, false);
+        // for 4769: Filtering in only events with service name which end with $. meaning that it is machine and not a service.
+        JsonObjectRegexPredicate serviceNameEndsWithDollar = new JsonObjectRegexPredicate("service-name-ends-with-dollar", SERVICE_NAME_FIELD_NAME, ".*\\$");
+        FilterTransformer serviceNameFilter = new FilterTransformer("service-name-filter", serviceNameEndsWithDollar, true);
         JsonObjectRegexPredicate referenceIdEqual4769 = new JsonObjectRegexPredicate("reference-id-equal-4769", EVENT_CODE_FIELD_NAME, "4769");
         IfElseTransformer serviceNameFilterFor4769 =
                 new IfElseTransformer("service-name-filter-for-4769",referenceIdEqual4769, serviceNameFilter);
@@ -437,7 +437,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
         Long eventTime = 1528124556000L;
         String eventType = "Failure Audit";
         JSONObject jsonObject = buildAuthWindowAuditJsonObject(referenceId, userDst, "winevent_nic",
-                null, eventTime*1000, "10",
+                "someMachine$", eventTime*1000, "10",
                 String.format("[\"%s\",\"another alias\"]", aliasHost),
                 eventType, "  ", eventId, hostSource, null);
 
