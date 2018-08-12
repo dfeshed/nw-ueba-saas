@@ -70,14 +70,10 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
         for (Pair<String, Long> entry : sequenceReducedData.keySet()) {
             String name = entry.getKey();
 
-            //filter features - "N/A" features
+            //filter features (e.g: "N/A" features)
             if(!filter.contains(name)) {
-                Set<Long> partitionsSet = nameToPartitionsSet.get(name);
-                if (partitionsSet == null) {
-                    partitionsSet = new HashSet<>();
-                }
+                Set<Long> partitionsSet = nameToPartitionsSet.computeIfAbsent(name, k -> new HashSet<>());
                 partitionsSet.add(entry.getValue());
-                nameToPartitionsSet.put(name, partitionsSet);
             }
         }
 
