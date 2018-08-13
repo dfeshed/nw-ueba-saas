@@ -5,6 +5,7 @@ export default [
     'description': 'Zebra 001 of group group_001',
     'createdBy': 'local',
     'createdOn': 1523655354337,
+    'dirty': false,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655354337,
     'policies': [
@@ -25,6 +26,7 @@ export default [
     'description': 'Awesome! 012 of group group_012',
     'createdBy': 'local',
     'createdOn': 1523655368173,
+    'dirty': true,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655368173,
     'policies': [
@@ -50,6 +52,7 @@ export default [
     'description': 'Yabba Dabba Doo! 002 of group group_002',
     'createdBy': 'local',
     'createdOn': 1523655354337,
+    'dirty': false,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655354337,
     'osTypes': [],
@@ -65,8 +68,21 @@ export default [
     'description': 'Basketball 011 of group group_011',
     'createdBy': 'local',
     'createdOn': 1523655368173,
+    'dirty': false,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655368173,
+    'policies': [
+      {
+        'id': 'policy_02',
+        'name': 'Policy 02',
+        'type': 'EndPointScan'
+      },
+      {
+        'id': 'policy_03',
+        'name': 'Policy 03',
+        'type': 'EndPointWindows'
+      }
+    ],
     'osTypes': [],
     'osDescriptions': [],
     'ipRangeStart': null,
@@ -78,6 +94,7 @@ export default [
     'description': 'Xylaphone 003 of group group_003',
     'createdBy': 'local',
     'createdOn': 1523655354337,
+    'dirty': true,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655354337,
     'osTypes': [],
@@ -91,8 +108,21 @@ export default [
     'description': 'Cat Woman 010 of group group_010',
     'createdBy': 'local',
     'createdOn': 1523655368173,
+    'dirty': true,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655368173,
+    'policies': [
+      {
+        'id': 'policy_02',
+        'name': 'Policy 02',
+        'type': 'EndPointScan'
+      },
+      {
+        'id': 'policy_03',
+        'name': 'Policy 03',
+        'type': 'EndPointWindows'
+      }
+    ],
     'osTypes': [],
     'osDescriptions': [],
     'ipRangeStart': null,
@@ -105,6 +135,7 @@ export default [
     'description': 'Wonder Woman 004 of group group_004',
     'createdBy': 'local',
     'createdOn': 1523655354337,
+    'dirty': false,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655354337,
     'osTypes': [],
@@ -118,6 +149,7 @@ export default [
     'description': 'Dog Food 009 of group group_009',
     'createdBy': 'local',
     'createdOn': 1523655368173,
+    'dirty': false,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655368173,
     'osTypes': [],
@@ -131,6 +163,7 @@ export default [
     'description': 'Volleyball 005 of group group_005',
     'createdBy': 'local',
     'createdOn': 1523655354337,
+    'dirty': false,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655354337,
     'osTypes': [],
@@ -145,6 +178,7 @@ export default [
     'description': 'Excellent! 008 of group group_008',
     'createdBy': 'local',
     'createdOn': 1523655368173,
+    'dirty': false,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655368173,
     'osTypes': [],
@@ -158,6 +192,7 @@ export default [
     'description': 'Umm... 006 of group group_006',
     'createdBy': 'local',
     'createdOn': 1523655354337,
+    'dirty': false,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655354337,
     'osTypes': [],
@@ -171,6 +206,7 @@ export default [
     'description': 'Football 007 of group group_007',
     'createdBy': 'local',
     'createdOn': 1523655368173,
+    'dirty': false,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655368173,
     'osTypes': [],
@@ -185,6 +221,7 @@ export default [
     'description': 'Tom n Jerry 013 of group group_013',
     'createdBy': 'local',
     'createdOn': 1523655354337,
+    'dirty': false,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655354337,
     'osTypes': [],
@@ -198,6 +235,7 @@ export default [
     'description': 'Garfield 014 of group group_014',
     'createdBy': 'local',
     'createdOn': 1523655368173,
+    'dirty': true,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655368173,
     'osTypes': [],

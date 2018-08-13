@@ -3,10 +3,9 @@ import Immutable from 'seamless-immutable';
 import _ from 'lodash';
 
 import {
-  isPolicyListLoading
+  isPoliciesLoading,
+  focusedPolicy
 } from 'admin-source-management/reducers/usm/policies-selectors';
-
-module('Unit | Selectors | Policies Selectors');
 
 const fullState = {
   usm: {
@@ -17,11 +16,24 @@ const fullState = {
   }
 };
 
-test('isPolicyListLoading selector', function(assert) {
+module('Unit | Selectors | Policies Selectors');
+
+test('isPoliciesLoading selector', function(assert) {
   const state = _.cloneDeep(fullState);
   state.usm.policies.itemsStatus = 'wait';
-  assert.equal(isPolicyListLoading(Immutable.from(state)), true, 'isPolicyListLoading should return true when status is wait');
+  assert.equal(isPoliciesLoading(Immutable.from(state)), true, 'isPoliciesLoading should return true when status is wait');
 
   state.usm.policies.itemsStatus = 'complete';
-  assert.equal(isPolicyListLoading(Immutable.from(state)), false, 'isPolicyListLoading should return false when status is completed');
+  assert.equal(isPoliciesLoading(Immutable.from(state)), false, 'isPoliciesLoading should return false when status is completed');
+});
+
+test('focusedPolicy selector', function(assert) {
+  const focusedItemData = {
+    id: 'id_001',
+    name: 'focusedItemData 011',
+    description: 'focusedItemData 011 of state.usm.policies'
+  };
+  const state = _.cloneDeep(fullState);
+  state.usm.policies.focusedItem = { ...focusedItemData };
+  assert.deepEqual(focusedPolicy(Immutable.from(state)), focusedItemData, 'The returned value from the focusedPolicy selector is as expected');
 });

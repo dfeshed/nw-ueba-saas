@@ -5,11 +5,8 @@ import { lookup } from 'ember-dependency-lookup';
  * Fetches all groups.
  * @public
  */
-function fetchGroups(filters, sort) {
+function fetchGroups(/* filters, sort */) {
   const request = lookup('service:request');
-  // keep the lint processor happy for the moment
-  filters;
-  sort;
   // const query = buildExplorerQuery(filters, sort, 'name');
   return request.promiseRequest({
     modelName: 'groups',

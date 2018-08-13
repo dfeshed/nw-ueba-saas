@@ -12,6 +12,11 @@ module('Integration | Component | RSA Explorer Inspector', function(hooks) {
     assert.equal(this.$('.back a').length, 0, 'There is NO back link');
   });
 
+  test('Setting the hasInspectorToolbar hides the selection', async function(assert) {
+    await render(hbs`{{rsa-explorer/explorer-inspector hasInspectorToolbar=false}}`);
+    assert.notOk(find('.inspector-toolbar'), 'Inspector toolbar is not showing');
+  });
+
   test('it creates a back-to-route link', async function(assert) {
     await render(hbs`{{rsa-explorer/explorer-inspector backToRouteText='Back to before' backToRouteName='before' }}`);
     assert.equal(this.$('.rsa-explorer-inspector').length, 1, 'The explorer-inspector component should be found in the DOM');

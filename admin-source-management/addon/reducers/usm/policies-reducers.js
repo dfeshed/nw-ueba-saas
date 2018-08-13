@@ -7,6 +7,8 @@ import explorerInitialState from 'component-lib/utils/rsa-explorer/explorer-redu
 import explorerReducers from 'component-lib/utils/rsa-explorer/explorer-reducer-fns';
 
 const localStorageKey = 'rsa::nw::usm::policies';
+
+
 // Load local storage values and incorporate into initial state
 const initialState = load(explorerInitialState, localStorageKey);
 
@@ -35,7 +37,6 @@ export default reduxActions.handleActions({
 
   [ACTION_TYPES.POLICIES_TOGGLE_FILTER_PANEL]: persistState(explorerReducers.toggleFilterPanel),
   [ACTION_TYPES.POLICIES_UPDATE_FILTERS]: persistState(explorerReducers.updateFilter),
-  // [ACTION_TYPES.POLICIES_TOGGLE_CUSTOM_DATE_RESTRICTION]: persistState(explorerReducers.toggleCustomDateRestriction),
   [ACTION_TYPES.POLICIES_RESET_FILTERS]: persistState(explorerReducers.resetFilters),
   [ACTION_TYPES.POLICIES_TOGGLE_FOCUS]: explorerReducers.toggleFocusItem,
   [ACTION_TYPES.POLICIES_TOGGLE_SELECTED]: explorerReducers.toggleSelectItem,
@@ -43,7 +44,7 @@ export default reduxActions.handleActions({
   [ACTION_TYPES.POLICIES_TOGGLE_SELECT_ALL]: explorerReducers.toggleSelectAll,
   [ACTION_TYPES.POLICIES_SORT_BY]: persistState(explorerReducers.sortBy),
 
-  [ACTION_TYPES.FETCH_POLICY_LIST]: (state, action) => (
+  [ACTION_TYPES.FETCH_POLICIES]: (state, action) => (
     handle(state, action, {
       start: (state) => {
         return state.merge({

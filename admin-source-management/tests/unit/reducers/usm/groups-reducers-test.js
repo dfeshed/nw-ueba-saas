@@ -31,35 +31,33 @@ const fetchGroupsData = [
   }
 ];
 
-module('Unit | Reducers | Groups Reducers', function() {
+module('Unit | Reducers | Groups Reducers');
 
-  test('should return the initial state', function(assert) {
-    const endState = reducers(undefined, {});
-    assert.deepEqual(endState, initialState);
+test('should return the initial state', function(assert) {
+  const endState = reducers(undefined, {});
+  assert.deepEqual(endState, initialState);
+});
+
+test('on FETCH_GROUPS start, itemsStatus is properly set', function(assert) {
+  const expectedEndState = {
+    ...initialState,
+    itemsStatus: 'wait'
+  };
+  const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_GROUPS });
+  const endState = reducers(Immutable.from(initialState), action);
+  assert.deepEqual(endState, expectedEndState, 'itemsStatus is wait');
+});
+
+test('on FETCH_GROUPS success, groups & itemsStatus are properly set', function(assert) {
+  const expectedEndState = {
+    ...initialState,
+    items: fetchGroupsData,
+    itemsStatus: 'complete'
+  };
+  const action = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.FETCH_GROUPS,
+    payload: { data: fetchGroupsData }
   });
-
-  test('on FETCH_GROUPS start, itemsStatus is properly set', function(assert) {
-    const expectedEndState = {
-      ...initialState,
-      itemsStatus: 'wait'
-    };
-    const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_GROUPS });
-    const endState = reducers(Immutable.from(initialState), action);
-    assert.deepEqual(endState, expectedEndState, 'itemsStatus is wait');
-  });
-
-  test('on FETCH_GROUPS success, groups & itemsStatus are properly set', function(assert) {
-    const expectedEndState = {
-      ...initialState,
-      items: fetchGroupsData,
-      itemsStatus: 'complete'
-    };
-    const action = makePackAction(LIFECYCLE.SUCCESS, {
-      type: ACTION_TYPES.FETCH_GROUPS,
-      payload: { data: fetchGroupsData }
-    });
-    const endState = reducers(Immutable.from(initialState), action);
-    assert.deepEqual(endState, expectedEndState, 'groups populated & itemsStatus is complete');
-  });
-
+  const endState = reducers(Immutable.from(initialState), action);
+  assert.deepEqual(endState, expectedEndState, 'groups populated & itemsStatus is complete');
 });

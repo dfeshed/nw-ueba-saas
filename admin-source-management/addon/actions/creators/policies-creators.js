@@ -2,7 +2,7 @@ import * as ACTION_TYPES from 'admin-source-management/actions/types';
 import policyAPI from 'admin-source-management/actions/api/policy-api';
 
 const getPolicies = () => ({
-  type: ACTION_TYPES.FETCH_POLICY_LIST,
+  type: ACTION_TYPES.FETCH_POLICIES,
   promise: policyAPI.fetchPolicy()
 });
 

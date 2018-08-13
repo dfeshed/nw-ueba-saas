@@ -4,6 +4,7 @@ export default [
     type: 'edrPolicy',
     name: 'EMC 001',
     description: 'EMC 001 of policy policy_001',
+    'dirty': true,
     scheduleConfig: {
       enabledScheduledScan: true,
       scheduleOptions: {
@@ -24,6 +25,7 @@ export default [
     type: 'edrPolicy',
     name: 'EMC Reston! 012',
     description: 'EMC Reston 012 of policy policy_012',
+    'dirty': false,
     scheduleConfig: {
       enabledScheduledScan: true,
       scheduleOptions: {
@@ -44,6 +46,7 @@ export default [
     type: 'edrPolicy',
     name: 'EMC Bangalore! 013',
     description: 'EMC Bangalore 013 of policy policy_013',
+    'dirty': true,
     scheduleConfig: {
       enabledScheduledScan: true,
       scheduleOptions: {
@@ -64,6 +67,7 @@ export default [
     type: 'edrPolicy',
     name: 'EMC Reston! 014',
     description: 'EMC Reston 014 of policy policy_014',
+    'dirty': false,
     scheduleConfig: {
       enabledScheduledScan: true,
       scheduleOptions: {

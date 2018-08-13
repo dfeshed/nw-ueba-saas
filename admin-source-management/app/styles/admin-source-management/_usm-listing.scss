@@ -1,11 +1,33 @@
 .admin-usm-engine {
+
   .usm-groups, .usm-policies {
-    height: 100vh;
-    overflow: hidden;
-  }
+    height: 100%;
+    overflow: auto;
+
+    .publish-icon {
+      color: text-color(accentThree, dark);
+      position: absolute;
+      line-height: 24px;
+      margin-left: 0px;
+      margin-right: 0px;
+    }
   
-  .main-zone {
-    overflow: hidden;
-    flex-wrap: nowrap;
+    .group-name, .policy-name {
+      margin-left: 15px;
+    }
+  
+    .usm-groups-toolbar, .usm-policies-toolbar {
+      .action-control {
+        padding: rsa-whitespace(least);
+        display: inline-block;
+      }
+      .groups-create-new, .policies-create-new {
+        padding-right: rsa-whitespace(more);
+      }
+    }
+  
+    .usm-groups-inspector, .usm-policies-inspector {
+      height: 100%;
+    }
   }
 }

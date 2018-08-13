@@ -1,10 +1,27 @@
-<div class="action-control create-new-policy">
-  {{#link-to 'policy-create'}}
-    {{#rsa-form-button}}
-      {{rsa-icon name='add-1' style='lined'}}
-      {{t 'adminUsm.button.createNew'}}
+<hbox>
+  <div class="action-control policies-create-new">
+    {{#link-to 'policy-create'}}
+      {{#rsa-form-button}}
+        {{rsa-icon name='add-1' style='lined'}}{{t 'adminUsm.button.createNew'}}
+      {{/rsa-form-button}}
+    {{/link-to}}
+  </div>
+  <div class="action-control polices-delete">
+    {{#rsa-form-button
+      isDisabled=true}}
+      {{t 'adminUsm.button.delete'}}
     {{/rsa-form-button}}
-  {{/link-to}}
-</div>
-
-
+  </div>
+  <div class="action-control policies-apply-groups">
+    {{#rsa-form-button
+      isDisabled=true}}
+      {{t 'adminUsm.button.applyGroups'}}
+    {{/rsa-form-button}}
+  </div>
+  <div class="action-control policies-publish">
+    {{#rsa-form-button
+      isDisabled=true}}
+      {{rsa-icon name="synchronize-3"}}{{t 'adminUsm.button.publish'}}
+    {{/rsa-form-button}}
+  </div>
+</hbox>

@@ -1,4 +1,4 @@
-{{#rsa-explorer
+{{#rsa-explorer class="usm-policies"
   columns=columns
   reduxSpace='usm.policies'
   creators=creators as |explorer|}}
@@ -17,14 +17,21 @@
         <label class="rsa-form-checkbox-label {{if (contains item.id explorer.instance.itemsSelected) 'checked'}}">
           {{rsa-form-checkbox checked=(contains item.id explorer.instance.itemsSelected) change=(action explorer.select item)}}
         </label>
-      {{else if (eq column.field "polices")}}
+      {{else if (eq column.field "name")}}
+        {{#if item.dirty}}
+          <p class="publish-icon">{{rsa-icon name="synchronize-3" tooltip="foo"}}</p>   
+        {{/if}}
+        <span class="policy-name">{{get item column.field}}</span>
+      {{!-- {{else if (eq column.field "polices")}}
         {{#each item.policies as |policy index|}}
           {{#if (not-eq index 0)}},  {{/if}}{{policy.name}}
         {{/each}}
       {{else if (eq column.field "sourceTypes")}}
         {{#each item.policies as |policy index|}}
           {{#if (not-eq index 0)}},  {{/if}}{{policy.type}}
-        {{/each}}
+        {{/each}} --}}
+      {{else if (eq column.field "numSources")}}
+        <p> ---- </p>
       {{else}}
         {{get item column.field}}
       {{/if}}
@@ -33,7 +40,10 @@
 
  {{#explorer.inspector
     inspectorHeaderComponent='usm-policies/policies/inspector/header'
-    inspectorContentComponent='usm-policies/policies/inspector' as |inspector|}}
+    inspectorContentComponent='usm-policies/policies/inspector'
+    hasInspectorToolbar=false as |inspector|}}
+    {{inspector.inspectorHeader}}
+    {{inspector.inspectorContent}}
   {{/explorer.inspector}}
 
 {{/rsa-explorer}}

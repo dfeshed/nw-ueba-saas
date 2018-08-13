@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 
+// placeholder for future actions
 const dispatchToActions = () => {
 };
 

@@ -1,10 +1,28 @@
-<div class="action-control create-new-group">
-  {{#link-to 'group-create'}}
-    {{#rsa-form-button}}
-      {{rsa-icon name='add-1' style='lined'}}
-      {{t 'adminUsm.button.createNew'}}
+<hbox>
+  <div class="action-control groups-create-new">
+    {{#link-to 'group-create'}}
+      {{#rsa-form-button}}
+        {{rsa-icon name='add-1' style='lined'}}{{t 'adminUsm.button.createNew'}}
+      {{/rsa-form-button}}
+    {{/link-to}}
+  </div>
+  <div class="action-control groups-delete">
+    {{#rsa-form-button
+      isDisabled=true}}
+      {{t 'adminUsm.button.delete'}}
     {{/rsa-form-button}}
-  {{/link-to}}
-</div>
-
+  </div>
+  <div class="action-control groups-apply-policies">
+    {{#rsa-form-button
+      isDisabled=true}}
+      {{t 'adminUsm.button.applyPolicies'}}
+    {{/rsa-form-button}}
+  </div>
+  <div class="action-control groups-publish">
+    {{#rsa-form-button
+      isDisabled=true}}
+      {{rsa-icon name="synchronize-3"}}{{t 'adminUsm.button.publish'}}
+    {{/rsa-form-button}}
+  </div>
+</hbox>
 

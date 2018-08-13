@@ -28,25 +28,25 @@ const policyData = {
 };
 
 
-test('on FETCH_POLICY_LIST start, policy is reset and itemsStatus is properly set', function(assert) {
+test('on FETCH_POLICIES start, policy is reset and itemsStatus is properly set', function(assert) {
   const expectedEndState = {
     ...initialState,
     itemsStatus: 'wait',
     items: []
   };
-  const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_POLICY_LIST });
+  const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_POLICIES });
   const endState = reducers(Immutable.from(initialState), action);
   assert.deepEqual(endState, expectedEndState, 'policy is set and itemsStatus is wait');
 });
 
-test('on FETCH_POLICY_LIST success, policy & itemsStatus are properly set', function(assert) {
+test('on FETCH_POLICIES success, policy & itemsStatus are properly set', function(assert) {
   const expectedEndState = {
     ...initialState,
     items: policyData,
     itemsStatus: 'complete'
   };
   const action = makePackAction(LIFECYCLE.SUCCESS, {
-    type: ACTION_TYPES.FETCH_POLICY_LIST,
+    type: ACTION_TYPES.FETCH_POLICIES,
     payload: { data: policyData }
   });
   const endState = reducers(Immutable.from(initialState), action);

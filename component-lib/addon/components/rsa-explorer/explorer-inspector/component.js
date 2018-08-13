@@ -16,6 +16,7 @@ export default Component.extend({
   info: null,
   infoStatus: null,
   viewMode: 'overview',
+  hasInspectorToolbar: true,
 
   /**
    * Configurable name of the Ember route which will be navigated to when the user clicks this component's Back btn.

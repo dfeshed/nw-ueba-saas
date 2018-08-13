@@ -1,15 +1,18 @@
+// import buildExplorerQuery from './util/explorer-build-query';
 import { lookup } from 'ember-dependency-lookup';
 
 /**
  * Fetches all policies.
  * @public
  */
-function fetchPolicy() {
+function fetchPolicy(/* filters, sort */) {
   const request = lookup('service:request');
+  // const query = buildExplorerQuery(filters, sort, 'name');
   return request.promiseRequest({
     modelName: 'policy',
     method: 'findAll',
     query: {}
+    // query: query.toJSON()
   });
 }
 

@@ -1,10 +1,10 @@
 import Immutable from 'seamless-immutable';
-import * as ACTION_TYPES from 'admin-source-management/actions/types';
 import reduxActions from 'redux-actions';
+import { handle } from 'redux-pack';
+import * as ACTION_TYPES from 'admin-source-management/actions/types';
 import { load, persist } from './util/local-storage';
 import explorerInitialState from 'component-lib/utils/rsa-explorer/explorer-reducer-initial-state';
 import explorerReducers from 'component-lib/utils/rsa-explorer/explorer-reducer-fns';
-import { handle } from 'redux-pack';
 
 const localStorageKey = 'rsa::nw::usm::groups';
 

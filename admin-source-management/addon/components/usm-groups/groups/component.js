@@ -1,14 +1,12 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import {
-  groups,
   isGroupsLoading
 } from 'admin-source-management/reducers/usm/groups-selectors';
 import creators from 'admin-source-management/actions/creators/groups-creators';
 import columns from './columns';
 
 const stateToComputed = (state) => ({
-  groups: groups(state),
   isGroupsLoading: isGroupsLoading(state)
 });
 
@@ -22,7 +20,7 @@ const dispatchToActions = () => {
 };
 
 const UsmGroupsExplorer = Component.extend({
-  classNames: ['usm-groups-explorer'],
+  classNames: ['usm-groups'],
   columns,
   creators
 });

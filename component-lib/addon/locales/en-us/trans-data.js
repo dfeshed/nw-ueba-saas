@@ -3352,19 +3352,33 @@ export default {
     button: {
       addNew: 'Add New',
       createNew: 'Create New',
+      delete: 'Delete',
+      publish: 'Publish',
+      applyGroups: 'Apply To Groups',
+      applyPolicies: 'Apply Policy(ies)',
       save: 'Save and Publish',
+      saveAndPublish: 'Save and Publish',
       cancel: 'Cancel'
     },
     groups: {
       title: 'Groups',
       list: {
         select: 'Select',
+        dirty: '',
         name: 'Group Name',
         polices: 'Policies Applied',
         sourceTypes: 'Source Types Applied',
         description: 'Group Description',
+        numSources: 'No. Sources',
         lastUpdated: 'Last Updated',
-        noResultsMessage: 'No matching Tasks were found'
+        noResultsMessage: 'No matching Groups were found'
+      },
+      filter: {
+        sourceType: 'Source Type',
+        groupType: 'Group Type',
+        appliedPolices: 'Applied Policies'
+      },
+      detail: {
       }
     },
     group: {
@@ -3393,16 +3407,19 @@ export default {
       title: 'Policies',
       list: {
         select: 'Select',
+        dirty: '',
         name: 'Policy Name',
-        enabled: 'Enabled',
-        startDate: 'Start Date',
+        sourceType: 'Source Type',
+        groups: 'Applied to Groups',
         description: 'Policy Description',
-        interval: 'Interval',
-        intervalUnit: 'Interval Unit',
-        onDays: 'On Days',
-        startTime: 'Start Time',
-        cpuMax: 'CPU Maximum (%)',
-        vmMax: 'Virtual Machine Maximum (%)'
+        numSources: 'No. Sources'
+      },
+      filter: {
+        sourceType: 'Source Type',
+        appliedGroups: 'Applied To Groups',
+        policyParameters: 'Policy Parameters'
+      },
+      detail: {
       }
     },
     policy: {

@@ -21,6 +21,13 @@ module('Integration | Component | RSA Explorer Filters', function(hooks) {
     assert.equal(findAll('input.flatpickr-input').length, 0, 'When hasCustomDate is false, no date picker inputs appear');
   });
 
+  test('Setting the hasTimeFilter hides the time selections', async function(assert) {
+    await render(hbs`{{rsa-explorer/explorer-filters hasTimeFilter=false}}`);
+    assert.equal(findAll('.explorer-filters').length, 1, 'The Explorer Filters component should be found in the DOM');
+    assert.notOk(find('.time-range-label'), 'Time range label is not showing');
+    assert.notOk(find('.filter-option.created-filter'), 'Created Filter is not showing');
+  });
+
   test('Setting the timeframeFilter appropriately selects the time range from the dropdown', async function(assert) {
     this.set('timerange', { name: 'LAST_HOUR' });
     await render(hbs`{{rsa-explorer/explorer-filters timeframeFilter=timerange}}`);
