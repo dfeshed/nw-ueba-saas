@@ -4,20 +4,48 @@
   fitToWidth=true
   items=items
   selectedIndex=selectedIndex
-  columnsConfig=columns
+  columnsConfig=extendedColumns
   language=language
   aliases=aliases
   onRowClick=(action 'onRowClick')
   loadLogsAction=(action 'eventsLogsGet')
   scrollToInitialSelectedIndex=true
 }}
-  {{#rsa-data-table/header translateTitles=false enableColumnSelector=true as |column|}}
+
+  {{#rsa-data-table/header
+    translateTitles=false
+    enableColumnSelector=true as |column|}}
     {{#with (meta-key-alias column.field language) as |names|}}
-      <h2 class="title" title="{{if column.title column.title names.bothNames}}">
-        <span class="js-move-handle">{{if column.title column.title names.displayName}}</span>
-      </h2>
+      {{#if (eq column.field 'checkbox')}}
+        <div>
+          <label class="rsa-form-checkbox-label {{if allEventsSelected 'checked'}}">
+            {{rsa-form-checkbox
+              checked=allEventsSelected
+              change=(action 'toggleSelectAllEvents')
+            }}
+          </label>
+        </div>
+      {{else}}
+        <h2 class="title" title="{{if column.title column.title names.bothNames}}">
+          <span class="js-move-handle">{{if column.title column.title names.displayName}}</span>
+        </h2>
+      {{/if}}
     {{/with}}
   {{/rsa-data-table/header}}
-  {{events-table-container/body-container buffer=5 rowComponentClass="events-table-container/row-container" noResultsMessage=(t 'investigate.empty.description')}}
-  {{rsa-data-table/load-more status=status clickAction=(action 'eventsGetMore')}}
+
+  {{events-table-container/body-container
+    buffer=5
+    selectedItems=selectedEventIds
+    allItemsSelected=allEventsSelected
+    selectedItemKey='sessionId'
+    checkboxChange=(action 'toggleEventSelection')
+    rowComponentClass="events-table-container/row-container"
+    noResultsMessage=(t 'investigate.empty.description')
+  }}
+
+  {{rsa-data-table/load-more
+    status=status
+    clickAction=(action 'eventsGetMore')
+  }}
+
 {{/rsa-data-table}}

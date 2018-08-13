@@ -20,7 +20,7 @@ const assertForInvestigateColumnAndColumnSelector = (waitFor, assert, headerCoun
     assert.equal($('.rsa-data-table-header-cell').length, headerCount * (isNotEmptyRow ? 1 : 2), `Should show columns for ${selectedOption}.`);
     assert.equal($('.ember-power-select-selected-item').text().trim(), selectedOption, `Selected column group should be ${selectedOption}.`);
     $('.rsa-icon-cog-filled').trigger('click');
-    return waitFor('.rsa-form-checkbox-label', { count }).then(() => {
+    return waitFor('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label', { count }).then(() => {
       assert.equal($('li .rsa-form-checkbox-label').length, count, `Should show all columns for column selector for ${selectedOption}.`);
     });
   });
@@ -88,27 +88,27 @@ test('it provides option for search filter', function(assert) {
 
 test('it should show columns for Event Analysis', function(assert) {
   renderDefaultEventTable(assert, this);
-  return assertForInvestigateColumnAndColumnSelector(waitFor, assert, 15, 41, 'Email Analysis');
+  return assertForInvestigateColumnAndColumnSelector(waitFor, assert, 16, 41, 'Email Analysis');
 });
 
 test('it should show columns for Malware Analysis', function(assert) {
   renderDefaultEventTable(assert, this);
-  return assertForInvestigateColumnAndColumnSelector(waitFor, assert, 15, 27, 'Malware Analysis');
+  return assertForInvestigateColumnAndColumnSelector(waitFor, assert, 16, 27, 'Malware Analysis');
 });
 
 test('it should show columns for Threat Analysis', function(assert) {
   renderDefaultEventTable(assert, this);
-  return assertForInvestigateColumnAndColumnSelector(waitFor, assert, 15, 57, 'Threat Analysis');
+  return assertForInvestigateColumnAndColumnSelector(waitFor, assert, 16, 57, 'Threat Analysis');
 });
 
 test('it should show columns for Web Analysis', function(assert) {
   renderDefaultEventTable(assert, this);
-  return assertForInvestigateColumnAndColumnSelector(waitFor, assert, 15, 53, 'Web Analysis');
+  return assertForInvestigateColumnAndColumnSelector(waitFor, assert, 16, 53, 'Web Analysis');
 });
 
 test('it should show columns for Endpoint Analysis', function(assert) {
   renderDefaultEventTable(assert, this);
-  return assertForInvestigateColumnAndColumnSelector(waitFor, assert, 15, 32, 'Endpoint Analysis');
+  return assertForInvestigateColumnAndColumnSelector(waitFor, assert, 16, 32, 'Endpoint Analysis');
 });
 
 test('persisted column group is preselected in the drop down', function(assert) {

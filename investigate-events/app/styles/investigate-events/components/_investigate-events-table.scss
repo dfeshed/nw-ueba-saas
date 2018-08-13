@@ -145,6 +145,25 @@
     &-body-row {
       cursor: default;
       border-top: 0px;
+
+      .checkbox-wrapper {
+        position: relative;
+        width: 16px;
+        height: 18px;
+
+        .rsa-form-checkbox-label {
+          position: absolute;
+          left: rsa-whitespace();
+          top: rsa-whitespace(less);
+          width: 16px;
+          height: 18px;
+          @include rsa-layer(controls);
+
+          &::before {
+            right: 0;
+          }
+        }
+      }
     }
 
     &-body-cell {

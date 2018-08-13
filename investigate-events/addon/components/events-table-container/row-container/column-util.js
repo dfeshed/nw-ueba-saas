@@ -59,6 +59,8 @@ function buildCellContent($cell, field, item, opts) {
     .classed('content', true);
 
   switch (field) {
+    case 'checkbox':
+      break;
     case 'custom.meta-summary':
       buildMetaSummaryContent($content, item, opts);
       break;

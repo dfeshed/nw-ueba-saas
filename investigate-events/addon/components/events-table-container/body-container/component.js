@@ -16,6 +16,8 @@ const stateToComputed = (state) => ({
 });
 
 const EventsTableBody = DataTableBody.extend({
+  insertCheckbox: true,
+
   // Responds to a change in the viewport by fetching log data for any visible log records that need it.
   // Debounces fetch call, because scrolling may fire this handler at rapid rates.
   _visibleItemsDidChange: observer('_visibleItems', function() {

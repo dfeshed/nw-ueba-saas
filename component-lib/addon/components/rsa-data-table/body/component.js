@@ -11,6 +11,9 @@ export default Component.extend(HasTableParent, DomIsReady, SizeBindings, Scroll
   layout,
   tagName: 'section',
   classNames: 'rsa-data-table-body',
+  insertCheckbox: false,
+  selectedItems: [],
+  allItemsSelected: false,
 
   /**
    * Name of the Ember.Component class to be used for rendering each row.

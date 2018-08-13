@@ -3,6 +3,7 @@ import { fetchLog } from './fetch/logs';
 import * as ACTION_TYPES from './types';
 import { getActiveQueryNode } from 'investigate-events/reducers/investigate/query-node/selectors';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
+import _ from 'lodash';
 
 // Common functions.
 const commonHandlers = function(dispatch) {
@@ -76,6 +77,42 @@ export const eventsGetFirst = () => {
       ...commonHandlers(dispatch)
     };
     fetchStreamingEvents(queryNode, language, streamLimit, streamBatch, handlers);
+  };
+};
+
+export const toggleSelectAllEvents = () => ({
+  type: ACTION_TYPES.TOGGLE_SELECT_ALL_EVENTS
+});
+
+export const toggleEventSelection = ({ sessionId }) => {
+  return (dispatch, getState) => {
+    const state = getState().investigate.eventResults;
+    const { allEventsSelected, selectedEventIds, data } = state;
+
+    if (allEventsSelected) {
+      // if all events already selected and one event is toggled
+      // toggle allEventsSelected and also select all event ids minus the one just toggled
+      dispatch(toggleSelectAllEvents());
+      dispatch({
+        type: ACTION_TYPES.SELECT_EVENTS,
+        payload: _.without(data.map((d) => d.sessionId), sessionId)
+      });
+    } else {
+      if (selectedEventIds.includes(sessionId)) {
+        // otherwise, if the event is already selected, deselect it
+        dispatch({ type: ACTION_TYPES.DESELECT_EVENT, payload: sessionId });
+      } else {
+        if (selectedEventIds.length === (getState().investigate.eventCount.data - 1)) {
+          // if the event is not already selected, but it's the last unselected event
+          // toggle allEventsSelected
+          dispatch(toggleSelectAllEvents());
+        } else {
+          // lastly, if the toggled event is not already selected, and is not the last unselected event
+          // select the event
+          dispatch({ type: ACTION_TYPES.SELECT_EVENTS, payload: [sessionId] });
+        }
+      }
+    }
   };
 };
 

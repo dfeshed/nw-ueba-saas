@@ -4,10 +4,17 @@ import { connect } from 'ember-redux';
 import { getColumns } from 'investigate-events/reducers/investigate/data-selectors';
 import { selectedIndex } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { metaFormatMap } from 'rsa-context-menu/utils/meta-format-selector';
-import { eventsGetMore, eventsLogsGet } from 'investigate-events/actions/events-creators';
+import {
+  eventsGetMore,
+  eventsLogsGet,
+  toggleSelectAllEvents,
+  toggleEventSelection
+ } from 'investigate-events/actions/events-creators';
 
 const stateToComputed = (state) => ({
   status: state.investigate.eventResults.status,
+  allEventsSelected: state.investigate.eventResults.allEventsSelected,
+  selectedEventIds: state.investigate.eventResults.selectedEventIds,
   selectedIndex: selectedIndex(state),
   items: state.investigate.eventResults.data,
   aliases: state.investigate.dictionaries.aliases,
@@ -22,7 +29,9 @@ const stateToComputed = (state) => ({
 
 const dispatchToActions = {
   eventsGetMore,
-  eventsLogsGet
+  eventsLogsGet,
+  toggleSelectAllEvents,
+  toggleEventSelection
 };
 
 /*
@@ -48,6 +57,21 @@ const EventsTableContextMenu = RsaContextMenu.extend({
     language
   }),
 
+  @computed('columns', 'allItemsChecked')
+  extendedColumns: (columns) => {
+    return [{
+      title: '',
+      class: 'rsa-form-row-checkbox',
+      width: 18,
+      field: 'checkbox',
+      dataType: 'checkbox',
+      componentClass: 'rsa-form-checkbox',
+      visible: true,
+      disableSort: true,
+      headerComponentClass: 'rsa-form-checkbox'
+    }].concat(columns);
+  },
+
   contextMenu({ target: { attributes } }) {
     const metaName = attributes.getNamedItem('metaname');
     const metaValue = attributes.getNamedItem('metavalue');
@@ -68,9 +92,12 @@ const EventsTableContextMenu = RsaContextMenu.extend({
   },
 
   actions: {
-    onRowClick(event) {
-      this.get('selectEvent')(event);
+    onRowClick(event, index, browserEvent) {
+      if (!browserEvent.target.className.includes('rsa-form-checkbox')) {
+        this.get('selectEvent')(event);
+      }
     }
+
   }
 });
 

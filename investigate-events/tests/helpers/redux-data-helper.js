@@ -171,6 +171,16 @@ export default class DataHelper {
     return this;
   }
 
+  allEventsSelected(val) {
+    _set(this.state, 'eventResults.allEventsSelected', val);
+    return this;
+  }
+
+  withSelectedEventIds() {
+    _set(this.state, 'eventResults.selectedEventIds', ['bar']);
+    return this;
+  }
+
   eventCountStatus(status) {
     _set(this.state, 'eventCount.status', status);
     return this;

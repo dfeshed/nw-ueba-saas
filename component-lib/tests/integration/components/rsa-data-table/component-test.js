@@ -477,3 +477,25 @@ test('it scrolls table to top when scrollToInitialSelectedIndex is provided.', f
   const [ { scrollTop } ] = this.$('.rsa-data-table-body');
   assert.equal(scrollTop, rowHeight * index, 'seventh item is scrollTop\'d the correct number of pixels such that it is at the top of the table');
 });
+
+test('it renders a checkbox', function(assert) {
+  let called = false;
+  this.setProperties({
+    items: [{ id: 1, foo: 'foo' }],
+    columnsConfig: [{ field: 'foo' }],
+    selectedItems: [],
+    checkboxChange: () => {
+      called = true;
+    }
+  });
+
+  this.render(hbs`
+    {{#rsa-data-table items=items columnsConfig=columnsConfig}}
+      {{rsa-data-table/body insertCheckbox=true selectedItemKey="id" selectedItems=selectedItems checkboxChange=checkboxChange}}
+    {{/rsa-data-table}}
+  `);
+
+  assert.equal(this.$('.rsa-data-table-body-rows .checkbox-wrapper .rsa-form-checkbox-label').length, 1, 'data-table checkbox found');
+  this.$('.rsa-data-table-body-rows .checkbox-wrapper .rsa-form-checkbox-label').click();
+  assert.equal(called, true, 'checkboxChange called');
+});

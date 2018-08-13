@@ -126,6 +126,12 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     &.has-focus:hover,
     &.is-selected:hover {
       border-top: 1px solid transparent;
+
+      .rsa-form-checkbox-label {
+        &::before {
+          color: text-color(primary, lightest);
+        }
+      }
     }
 
     &:hover,

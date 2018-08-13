@@ -1,5 +1,6 @@
 import Immutable from 'seamless-immutable';
 import { handleActions } from 'redux-actions';
+import _ from 'lodash';
 
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 
@@ -13,7 +14,9 @@ const _initialState = Immutable.from({
   streamGoal: 100,
   streamBatch: 50,
   metaKeyStates: [],
-  message: undefined
+  message: undefined,
+  allEventsSelected: false,
+  selectedEventIds: []
 });
 // * `data` is an array of objects with the following properties
 // {
@@ -26,6 +29,22 @@ const _initialState = Immutable.from({
 // }
 
 export default handleActions({
+
+  [ACTION_TYPES.TOGGLE_SELECT_ALL_EVENTS]: (state) => {
+    return state.merge({
+      allEventsSelected: !state.allEventsSelected,
+      selectedEventIds: []
+    });
+  },
+
+  [ACTION_TYPES.SELECT_EVENTS]: (state, { payload }) => {
+    return state.set('selectedEventIds', state.selectedEventIds.concat(payload));
+  },
+
+  [ACTION_TYPES.DESELECT_EVENT]: (state, { payload }) => {
+    return state.set('selectedEventIds', _.without(state.selectedEventIds, payload));
+  },
+
   [ACTION_TYPES.SET_ANCHOR]: (state, { payload }) => state.set('anchor', payload),
 
   [ACTION_TYPES.SET_GOAL]: (state, { payload }) => state.set('goal', payload),
