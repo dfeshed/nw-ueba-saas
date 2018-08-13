@@ -2,17 +2,19 @@ import reselect from 'reselect';
 import { getProperties, getValues } from 'investigate-hosts/reducers/details/selector-utils';
 
 const { createSelector } = reselect;
-const _hooksLoadingStatus = (state) => state.endpoint.anomalies.hooksLoadingStatus;
+const _imageHooksLoadingStatus = (state) => state.endpoint.anomalies.imageHooksLoadingStatus;
 const _threadsLoadingStatus = (state) => state.endpoint.anomalies.threadsLoadingStatus;
-const _hooksObject = (state) => state.endpoint.anomalies.hooks;
+const _kernelHooksLoadingStatus = (state) => state.endpoint.anomalies.kernelHooksLoadingStatus;
+const _imageHooksObject = (state) => state.endpoint.anomalies.imageHooks;
 const _threadsObject = (state) => state.endpoint.anomalies.threads;
+const _kernelHooksObject = (state) => state.endpoint.anomalies.kernelHooks;
 const _selectedRowId = (state) => state.endpoint.anomalies.selectedRowId;
 const _selectedTab = (state) => state.endpoint.explore.selectedTab;
 const _sortConfig = (state) => state.endpoint.datatable.sortConfig;
 
-export const isHooksDataLoading = createSelector(
-  _hooksLoadingStatus,
-  (hooksLoadingStatus) => (hooksLoadingStatus === 'wait')
+export const isImageHooksDataLoading = createSelector(
+  _imageHooksLoadingStatus,
+  (imageHooksLoadingStatus) => (imageHooksLoadingStatus === 'wait')
 );
 
 export const isThreadsDataLoading = createSelector(
@@ -20,9 +22,14 @@ export const isThreadsDataLoading = createSelector(
   (threadsLoadingStatus) => (threadsLoadingStatus === 'wait')
 );
 
-export const hooks = createSelector(
-  [ _hooksObject, _selectedTab, _sortConfig ],
-  (hooksObject, selectedTab, sortConfig) => getValues(selectedTab, 'HOOKS', hooksObject, sortConfig)
+export const isKernelHooksDataLoading = createSelector(
+  _kernelHooksLoadingStatus,
+  (kernelHooksLoadingStatus) => (kernelHooksLoadingStatus === 'wait')
+);
+
+export const imageHooks = createSelector(
+  [ _imageHooksObject, _selectedTab, _sortConfig ],
+  (imageHooksObject, selectedTab, sortConfig) => getValues(selectedTab, 'IMAGEHOOKS', imageHooksObject, sortConfig)
 );
 
 export const threads = createSelector(
@@ -30,25 +37,52 @@ export const threads = createSelector(
   (threadsObject, selectedTab, sortConfig) => getValues(selectedTab, 'THREADS', threadsObject, sortConfig)
 );
 
-const _getSignature = (fileProperties) => {
-  return fileProperties && fileProperties.signature ? fileProperties.signature.features : [];
+export const kernelHooks = createSelector(
+  [ _kernelHooksObject, _selectedTab, _sortConfig ],
+  (kernelHooksObject, selectedTab, sortConfig) => getValues(selectedTab, 'KERNELHOOKS', kernelHooksObject, sortConfig)
+);
+
+
+const _getKernelHooksObjs = (hooksDataSource) => {
+  return hooksDataSource.map((item) => {
+    const { fileName: dllFileName, hookLocation: { fileName: hookedFileName } } = item;
+    return {
+      ...item,
+      dllFileName,
+      hookedFileName
+    };
+  });
 };
+
+/* Formats each Kernel hook with the required data and creates an object
+and returns an array of all the objects after sorting according to the sorting config */
+export const kernelHooksData = createSelector(
+  [ _kernelHooksObject, _selectedTab, _sortConfig ],
+  (kernelHooksObject, selectedTab, sortConfig) => {
+
+    if (kernelHooksObject) {
+      const kernelHooksDataSource = Object.values(kernelHooksObject);
+      if (kernelHooksDataSource && kernelHooksDataSource.length) {
+        const kernelHooks = _getKernelHooksObjs(kernelHooksDataSource);
+        const sortedValue = getValues(selectedTab, 'KERNELHOOKS', kernelHooks, sortConfig);
+        return sortedValue;
+      }
+    }
+    return [];
+  }
+);
 
 const _getImageHooksObjs = (hooksDataSource) => {
   return hooksDataSource.map((item) => {
 
     const { fileName: dllFileName,
-            fileProperties,
-            type,
             hookLocation: { fileName: hookedFileName, symbol },
             process: { fileName, pid }
           } = item;
-    const signature = _getSignature(fileProperties);
+
     return {
       ...item,
       dllFileName,
-      signature,
-      type,
       hookedProcess: `${fileName} : ${pid}`,
       symbol: `${hookedFileName}!${symbol}`
     };
@@ -58,11 +92,11 @@ const _getImageHooksObjs = (hooksDataSource) => {
 /* Formats each hook with the required data and creates an object
 and returns an array of all the objects after sorting according to the sorting config */
 export const imageHooksData = createSelector(
-  [ _hooksObject, _selectedTab, _sortConfig ],
-  (hooksObject, selectedTab, sortConfig) => {
+  [ _imageHooksObject, _selectedTab, _sortConfig ],
+  (imageHooksObject, selectedTab, sortConfig) => {
 
-    if (hooksObject) {
-      const hooksDataSource = Object.values(hooksObject);
+    if (imageHooksObject) {
+      const hooksDataSource = Object.values(imageHooksObject);
       if (hooksDataSource && hooksDataSource.length) {
         const imageHooks = _getImageHooksObjs(hooksDataSource);
         const sortedValue = getValues(selectedTab, 'HOOKS', imageHooks, sortConfig);
@@ -75,12 +109,10 @@ export const imageHooksData = createSelector(
 
 const _getSuspiciousThreadsObjs = (threadsDataSource) => {
   return threadsDataSource.map((item) => {
+    const { processName, pid } = item;
 
-    const { fileProperties, processName, pid } = item;
-    const signature = _getSignature(fileProperties);
     return {
       ...item,
-      signature,
       process: `${processName}:${pid}`
 
     };
@@ -105,6 +137,8 @@ export const suspiciousThreadsData = createSelector(
   }
 );
 
-export const selectedHooksFileProperties = createSelector([ _selectedRowId, hooks, imageHooksData], getProperties);
+export const selectedImageHooksFileProperties = createSelector([ _selectedRowId, imageHooks, imageHooksData], getProperties);
+
+export const selectedKernelHooksFileProperties = createSelector([ _selectedRowId, kernelHooks, kernelHooksData], getProperties);
 
 export const selectedThreadsFileProperties = createSelector([ _selectedRowId, threads, suspiciousThreadsData], getProperties);

@@ -1,30 +1,39 @@
 import { test, module } from 'qunit';
 
 import {
-  fileContextHooksSchema,
+  fileContextImageHooksSchema,
+  fileContextKernelHooksSchema,
   fileContextThreadsSchema
 } from 'investigate-hosts/reducers/details/anomalies/schemas';
 
 import { normalize } from 'normalizr';
-import { hooksData } from '../../../state/state';
+import { anomaliesData } from '../../../state/state';
 
 module('Unit | Reducers | Anomalies');
 
-test('Test for fileContextHooksSchema', function(assert) {
-  const { entities: { hooks } } = normalize(hooksData, fileContextHooksSchema);
+test('Test for fileContextImageHooksSchema', function(assert) {
+  const { entities: { imageHooks } } = normalize(anomaliesData, fileContextImageHooksSchema);
 
-  const hookObjsKeys = Object.keys(hooks);
+  const hookObjsKeys = Object.keys(imageHooks);
 
   assert.equal(hookObjsKeys.length, 7);
-  assert.notEqual(hooks[hookObjsKeys[0]].hooks, undefined);
+  assert.notEqual(imageHooks[hookObjsKeys[0]].hookLocation, undefined);
 });
 
 test('Test for fileContextThreadsSchema', function(assert) {
-  const { entities: { threads } } = normalize(hooksData, fileContextThreadsSchema);
+  const { entities: { threads } } = normalize(anomaliesData, fileContextThreadsSchema);
 
   const threadObjsKeys = Object.keys(threads);
 
   assert.equal(threadObjsKeys.length, 5);
-  assert.notEqual(threads[threadObjsKeys[0]].threads, undefined);
+  assert.notEqual(threads[threadObjsKeys[0]].tid, undefined);
 });
 
+test('Test for fileContextKernelHooksSchema', function(assert) {
+  const { entities: { kernelHooks } } = normalize(anomaliesData, fileContextKernelHooksSchema);
+
+  const hookObjsKeys = Object.keys(kernelHooks);
+
+  assert.equal(hookObjsKeys.length, 6);
+  assert.notEqual(kernelHooks[hookObjsKeys[0]].hookLocation, undefined);
+});

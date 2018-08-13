@@ -2222,7 +2222,10 @@ export default {
           symbolOffset: 'Symbol Offset',
           section: 'Section',
           fileName: 'Hooked Dll',
-          symbol: 'Symbol'
+          symbol: 'Symbol',
+          checksumSha256: 'ChecksumSha256',
+          objectName: 'Object Name',
+          path: 'Path'
         },
         jumpTo: 'Jump To Address',
         jumpCount: 'Jump Count',
@@ -2303,6 +2306,16 @@ export default {
         message: {
           noResultsMessage: 'No Suspicious Threads information was found'
         }
+      },
+      kernelHooks: {
+        type: 'Type',
+        dllFileName: 'DLL Name',
+        hookedFileName: 'Hooked FileName',
+        signature: 'Signature',
+        title: 'Kernel Hooks',
+        message: {
+          noResultsMessage: 'No Kernel Hooks information was found'
+        }
       }
     },
     tabs: {
@@ -2327,7 +2340,8 @@ export default {
       incidents: 'Incidents ({{count}})',
       anomalies: 'Anomalies',
       hooks: 'Image Hooks',
-      threads: 'Suspicious Threads'
+      threads: 'Suspicious Threads',
+      kernelHooks: 'Kernel Hooks'
     },
     context: {
       score: 'Score',
@@ -2427,7 +2441,8 @@ export default {
           Task: 'Task',
           Driver: 'Driver',
           Thread: 'Thread',
-          Hooks: 'Hooks'
+          imageHooks: 'Image Hooks',
+          kernelHooks: 'Kernel Hooks'
         }
       },
       explore: {
@@ -2452,7 +2467,8 @@ export default {
         },
         anomalies: {
           hooks: 'image hooks',
-          threads: 'suspicious threads'
+          threads: 'suspicious threads',
+          kernelHooks: 'kernel hooks'
         },
         files: 'files',
         drivers: 'drivers',
@@ -2829,7 +2845,8 @@ export default {
         },
         anomalies: {
           hooks: 'Image Hooks',
-          threads: 'Suspicious Threads'
+          threads: 'Suspicious Threads',
+          kernelHooks: 'Kernel Hooks'
         },
         files: 'File Properties',
         drivers: 'Driver Properties',

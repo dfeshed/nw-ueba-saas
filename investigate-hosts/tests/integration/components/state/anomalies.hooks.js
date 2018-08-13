@@ -1,7 +1,7 @@
 export default {
-  hooks: {
-    hooks_1: {
-      id: 'hooks_1',
+  imageHooks: {
+    imageHooks_1: {
+      id: 'imageHooks_1',
       machineOsType: 'windows',
       machineName: 'WIN-BKA6OVQGQI0',
       machineAgentId: '3B1C9364-F6D1-6E1F-0552-B0F85F72AA70',
@@ -23,7 +23,7 @@ export default {
         'hookInline'
       ],
       windows: {
-        hooks: [
+        imageHooks: [
           {
             type: 'inline',
             features: [
@@ -60,12 +60,12 @@ export default {
                 'e9bbd8fcff       ; JMP 0x7fefd23f000'
               ]
             },
-            id: 'hooks_1',
+            id: 'imageHooks_1',
             fileId: '5b3f348cb249594f465125f2'
           }
         ]
       },
-      hooks: [
+      imageHooks: [
         {
           type: 'inline',
           features: [
@@ -102,7 +102,7 @@ export default {
               'e9bbd8fcff       ; JMP 0x7fefd23f000'
             ]
           },
-          id: 'hooks_1',
+          id: 'imageHooks_1',
           fileId: '5b3f348cb249594f465125f2'
         }
       ],
@@ -143,8 +143,8 @@ export default {
       },
       fileId: '5b3f348cb249594f465125f2'
     },
-    hooks_3: {
-      id: 'hooks_3',
+    imageHooks_3: {
+      id: 'imageHooks_3',
       machineOsType: 'windows',
       machineName: 'WIN-BKA6OVQGQI0',
       machineAgentId: '3B1C9364-F6D1-6E1F-0552-B0F85F72AA70',
@@ -192,7 +192,7 @@ export default {
             imageSize: 172032
           }
         ],
-        hooks: [
+        imageHooks: [
           {
             type: 'inline',
             features: [
@@ -228,7 +228,7 @@ export default {
                 'e97fcffbff       ; JMP 0x7fefd21f000'
               ]
             },
-            id: 'hooks_3',
+            id: 'imageHooks_3',
             fileId: '5b3f348cb249594f4651281b'
           }
         ]
@@ -288,7 +288,7 @@ export default {
         entropy: 6.189471250232795,
         format: 'pe'
       },
-      hooks: [
+      imageHooks: [
         {
           type: 'inline',
           features: [
@@ -324,7 +324,7 @@ export default {
               'e97fcffbff       ; JMP 0x7fefd21f000'
             ]
           },
-          id: 'hooks_3',
+          id: 'imageHooks_3',
           fileId: '5b3f348cb249594f4651281b'
         }
       ],
@@ -367,8 +367,8 @@ export default {
         'unsigned'
       ]
     },
-    hooks_4: {
-      id: 'hooks_4',
+    imageHooks_4: {
+      id: 'imageHooks_4',
       machineOsType: 'windows',
       machineName: 'WIN-BKA6OVQGQI0',
       machineAgentId: '3B1C9364-F6D1-6E1F-0552-B0F85F72AA70',
@@ -403,7 +403,7 @@ export default {
             imageSize: 192512
           }
         ],
-        hooks: [
+        imageHooks: [
           {
             type: 'inline',
             features: [
@@ -442,7 +442,7 @@ export default {
                 'e96b3cfeff       ; JMP 0x7fefd22f000'
               ]
             },
-            id: 'hooks_4',
+            id: 'imageHooks_4',
             fileId: '5b3f348cb249594f4651281c'
           }
         ]
@@ -519,7 +519,7 @@ export default {
         entropy: 0,
         format: 'pe'
       },
-      hooks: [
+      imageHooks: [
         {
           type: 'inline',
           features: [
@@ -558,7 +558,7 @@ export default {
               'e96b3cfeff       ; JMP 0x7fefd22f000'
             ]
           },
-          id: 'hooks_4',
+          id: 'imageHooks_4',
           fileId: '5b3f348cb249594f4651281c'
         }
       ],
@@ -605,6 +605,6 @@ export default {
       ]
     }
   },
-  hooksLoadingStatus: 'completed',
+  imageHooksLoadingStatus: 'completed',
   selectedRowId: null
 };

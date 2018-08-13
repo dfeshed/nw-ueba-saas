@@ -7,7 +7,11 @@ import {
   getFileContextServices,
   getFileContextTasks
 } from './autoruns';
-import { getFileContextHooks, getFileContextThreads } from './anomalies';
+import {
+  getFileContextHooks,
+  getFileContextThreads,
+  getFileContextKernelHooks
+} from './anomalies';
 import { getFileContextDrivers } from './drivers';
 import { getProcessAndLib } from './libraries';
 import { getHostFiles } from './files';
@@ -88,10 +92,12 @@ const _fetchDataForSelectedTab = () => {
     const { activeHostDetailTab, activeAutorunTab, activeAnomaliesTab } = visuals;
     switch (activeHostDetailTab) {
       case 'ANOMALIES':
-        if ((activeAnomaliesTab === 'HOOKS') && (!anomalies.hooks)) {
+        if ((activeAnomaliesTab === 'IMAGEHOOKS') && (!anomalies.imageHooks)) {
           dispatch(getFileContextHooks());
         } else if ((activeAnomaliesTab === 'THREADS') && (!anomalies.threads)) {
           dispatch(getFileContextThreads());
+        } else if ((activeAnomaliesTab === 'KERNELHOOKS') && (!anomalies.kernelHooks)) {
+          dispatch(getFileContextKernelHooks());
         }
         break;
       case 'PROCESS':

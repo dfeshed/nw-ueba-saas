@@ -1559,7 +1559,7 @@ export const autorunsData = [
   }
 ];
 
-export const hooksData = [
+export const anomaliesData = [
   {
     'id': '5b3f348cb249594f465125f2',
     'machineOsType': 'windows',
@@ -1583,7 +1583,7 @@ export const hooksData = [
       'hookInline'
     ],
     'windows': {
-      hooks: [
+      imageHooks: [
         {
           type: 'iat',
           features: [
@@ -1676,6 +1676,59 @@ export const hooksData = [
           teb: '0x7FFFFF4C000',
           tid: 2164
         }
+      ],
+      kernelHooks: [
+        {
+          type: 'basicObjectPointer',
+          jumpCount: 1,
+          jumpTo: '0x87437150',
+          hookLocation: {
+            checksumSha256: '27bc61f72a2c9c60dc0af8c0c760ef237d1dcfde15548db32634139ac7a4ea07',
+            path: 'C:\\Windows\\System32\\',
+            fileName: 'ntkrnlpa.exe',
+            imageBase: '0x8752A000',
+            imageSize: 45056,
+            address: '0x849AFE20',
+            objectName: '\\Driver\\vdrvroot',
+            objectFunction: 'DRIVER_EXTENSION!AddDevice'
+          },
+          id: 'kernelHooks_3',
+          fileId: '5b6bd2c1b249590f3f6e09ad'
+        },
+        {
+          type: 'majorFunction',
+          jumpCount: 1,
+          jumpTo: '0x8741F328',
+          hookLocation: {
+            checksumSha256: '27bc61f72a2c9c60dc0af8c0c760ef237d1dcfde15548db32634139ac7a4ea07',
+            path: 'C:\\Windows\\System32\\',
+            fileName: 'ntkrnlpa.exe',
+            imageBase: '0x8752A000',
+            imageSize: 45056,
+            address: '0x849AFE20',
+            objectName: '\\Driver\\vdrvroot',
+            objectFunction: 'IRP_MJ_CREATE'
+          },
+          id: 'kernelHooks_4',
+          fileId: '5b6bd2c1b249590f3f6e09ad'
+        },
+        {
+          type: 'majorFunction',
+          jumpCount: 1,
+          jumpTo: '0x8741F328',
+          hookLocation: {
+            checksumSha256: '27bc61f72a2c9c60dc0af8c0c760ef237d1dcfde15548db32634139ac7a4ea07',
+            path: 'C:\\Windows\\System32\\',
+            fileName: 'ntkrnlpa.exe',
+            imageBase: '0x8752A000',
+            imageSize: 45056,
+            address: '0x849AFE20',
+            objectName: '\\Driver\\vdrvroot',
+            objectFunction: 'IRP_MJ_CREATE_NAMED_PIPE'
+          },
+          id: 'kernelHooks_5',
+          fileId: '5b6bd2c1b249590f3f6e09ad'
+        }
       ]
     }
   },
@@ -1702,7 +1755,7 @@ export const hooksData = [
       'hookInline'
     ],
     'windows': {
-      'hooks': [
+      'imageHooks': [
         {
           'type': 'inline',
           'features': [
@@ -1793,7 +1846,7 @@ export const hooksData = [
           'imageSize': 172032
         }
       ],
-      'hooks': [
+      'imageHooks': [
         {
           'type': 'inline',
           'features': [
@@ -1996,7 +2049,7 @@ export const hooksData = [
           'imageSize': 192512
         }
       ],
-      'hooks': [
+      'imageHooks': [
         {
           'type': 'inline',
           'features': [
@@ -2076,6 +2129,59 @@ export const hooksData = [
           state: ['floating'],
           teb: '0x7FFFFF4C008',
           tid: 2164
+        }
+      ],
+      kernelHooks: [
+        {
+          type: 'majorFunction',
+          jumpCount: 1,
+          jumpTo: '0x8741F328',
+          hookLocation: {
+            checksumSha256: '27bc61f72a2c9c60dc0af8c0c760ef237d1dcfde15548db32634139ac7a4ea07',
+            path: 'C:\\Windows\\System32\\',
+            fileName: 'ntkrnlpa.exe',
+            imageBase: '0x8752A000',
+            imageSize: 45056,
+            address: '0x849AFE20',
+            objectName: '\\Driver\\vdrvroot',
+            objectFunction: 'IRP_MJ_CLOSE'
+          },
+          id: 'kernelHooks_6',
+          fileId: '5b6bd2c1b249590f3f6e09ad'
+        },
+        {
+          type: 'majorFunction',
+          jumpCount: 1,
+          jumpTo: '0x8741F328',
+          hookLocation: {
+            checksumSha256: '27bc61f72a2c9c60dc0af8c0c760ef237d1dcfde15548db32634139ac7a4ea07',
+            path: 'C:\\Windows\\System32\\',
+            fileName: 'ntkrnlpa.exe',
+            imageBase: '0x8752A000',
+            imageSize: 45056,
+            address: '0x849AFE20',
+            objectName: '\\Driver\\vdrvroot',
+            objectFunction: 'IRP_MJ_SET_VOLUME_INFORMATION'
+          },
+          id: 'kernelHooks_15',
+          fileId: '5b6bd2c1b249590f3f6e09ad'
+        },
+        {
+          type: 'majorFunction',
+          jumpCount: 1,
+          jumpTo: '0x8741F328',
+          hookLocation: {
+            checksumSha256: '27bc61f72a2c9c60dc0af8c0c760ef237d1dcfde15548db32634139ac7a4ea07',
+            path: 'C:\\Windows\\System32\\',
+            fileName: 'ntkrnlpa.exe',
+            imageBase: '0x8752A000',
+            imageSize: 45056,
+            address: '0x849AFE20',
+            objectName: '\\Driver\\vdrvroot',
+            objectFunction: 'IRP_MJ_DIRECTORY_CONTROL'
+          },
+          id: 'kernelHooks_16',
+          fileId: '5b6bd2c1b249590f3f6e09ad'
         }
       ]
     },
@@ -2494,7 +2600,7 @@ export const dllListData = [
           imageSize: 36864
         }
       ],
-      hooks: [
+      imageHooks: [
         {
           type: 'inline',
           features: [
@@ -3350,7 +3456,7 @@ export const dllListData = [
           imageSize: 49152
         }
       ],
-      hooks: [
+      imageHooks: [
         {
           type: 'inline',
           features: [

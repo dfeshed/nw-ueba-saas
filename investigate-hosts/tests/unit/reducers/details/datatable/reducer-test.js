@@ -12,7 +12,8 @@ const initialState = Immutable.from({
     tasks: null,
     libraries: null,
     drivers: null,
-    hooks: null,
+    imageHooks: null,
+    kernelHooks: null,
     threads: null
   }
 });

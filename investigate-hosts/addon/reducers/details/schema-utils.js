@@ -76,9 +76,22 @@ const addId = (data, fileId, key) => {
  * @returns object
  * @public
  */
+
 const commonNormalizerStrategy = (input, parent) => {
   const signature = _getSignature(parent);
-  return { ...parent, ...input, signature };
+  const parentClone = { ...parent };
+  const { machineOsType } = parentClone;
+  const machineOsContent = Object.keys(parentClone[machineOsType]);
+
+  // Removing the os based objects and arrays created from the os based object's content from the clone.
+  delete parentClone[machineOsType];
+  if (machineOsContent.length) {
+    machineOsContent.forEach((item) => {
+      delete parentClone[item];
+    });
+  }
+
+  return { ...parentClone, ...input, signature };
 };
 export {
   addId,

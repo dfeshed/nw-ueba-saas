@@ -99,7 +99,7 @@ const _getProcessFileContext = (processId) => {
     dispatch(_setSelectedProcessId(processId));
     dispatch({
       type: ACTION_TYPES.GET_PROCESS_FILE_CONTEXT,
-      promise: Process.getProcessFileContext({ agentId, scanTime, pid: processId, categories: [ 'LOADED_LIBRARIES', 'HOOKS' ] }),
+      promise: Process.getProcessFileContext({ agentId, scanTime, pid: processId, categories: [ 'LOADED_LIBRARIES', 'IMAGE_HOOKS' ] }),
       meta: {
         onFailure: (response) => handleError(ACTION_TYPES.GET_PROCESS_FILE_CONTEXT, response)
       }

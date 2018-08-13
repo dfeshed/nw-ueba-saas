@@ -5,7 +5,7 @@ import { contextDataParser } from 'investigate-shared/helpers/context-parser';
 
 const visualsInitialState = Immutable.from({
   activeAutorunTab: 'AUTORUNS',
-  activeAnomaliesTab: 'HOOKS',
+  activeAnomaliesTab: 'IMAGEHOOKS',
   activeHostDetailTab: 'OVERVIEW',
   activeHostPropertyTab: 'HOST',
   activeDataSourceTab: 'ALERT',

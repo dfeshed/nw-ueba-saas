@@ -4,16 +4,18 @@ import reducer from 'investigate-hosts/reducers/details/anomalies/reducer';
 import * as ACTION_TYPES from 'investigate-hosts/actions/types';
 import { LIFECYCLE } from 'redux-pack';
 import makePackAction from '../../../../helpers/make-pack-action';
-import { hooksData } from '../../../state/state';
+import { anomaliesData } from '../../../state/state';
 import _ from 'lodash';
 
 module('Unit | Reducers | Anomalies');
 
 const initialState = {
-  hooks: null,
+  imageHooks: null,
   threads: null,
-  hooksLoadingStatus: null,
+  kernelHooks: null,
+  imageHooksLoadingStatus: null,
   threadsLoadingStatus: null,
+  kernelHooksLoadingStatus: null,
   selectedRowId: null
 };
 
@@ -26,13 +28,14 @@ test('should return the initial state', function(assert) {
 
 test('The RESET_HOST_DETAILS will reset the state', function(assert) {
   const previous = Immutable.from({
-    hooks: { hooks_1: {
-      id: 'hooks_4',
-      machineOsType: 'windows',
-      machineName: 'WIN-BKA6OVQGQI0',
-      machineAgentId: '3B1C9364-F6D1-6E1F-0552-B0F85F72AA70',
-      windows: { hooks: [{ type: 'inline' }] }
-    }
+    imageHooks: {
+      imageHooks_1: {
+        id: 'imageHooks_4',
+        machineOsType: 'windows',
+        machineName: 'WIN-BKA6OVQGQI0',
+        machineAgentId: '3B1C9364-F6D1-6E1F-0552-B0F85F72AA70',
+        windows: { hooks: [{ type: 'inline' }] }
+      }
     }
   });
   const result = reducer(previous, { type: ACTION_TYPES.RESET_HOST_DETAILS });
@@ -49,20 +52,20 @@ test('The SET_ANOMALIES_SELECTED_ROW will reset the state', function(assert) {
   assert.equal(result.selectedRowId, 123, 'Expected to match the selected id 123');
 });
 
-test('The FETCH_FILE_CONTEXT_HOOKS sets the host details information', function(assert) {
-  const previous = Immutable.from({ hooks: null, hooksLoadingStatus: 'completed' });
+test('The FETCH_FILE_CONTEXT_IMAGE_HOOKS sets the host details information', function(assert) {
+  const previous = Immutable.from({ imageHooks: null, imageHooksLoadingStatus: 'completed' });
 
-  const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_FILE_CONTEXT_HOOKS });
+  const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_FILE_CONTEXT_IMAGE_HOOKS });
   const startEndState = reducer(previous, startAction);
-  assert.deepEqual(startEndState.hooksLoadingStatus, 'wait');
+  assert.deepEqual(startEndState.imageHooksLoadingStatus, 'wait');
 
   const action = makePackAction(LIFECYCLE.SUCCESS, {
-    type: ACTION_TYPES.FETCH_FILE_CONTEXT_HOOKS,
-    payload: { data: hooksData }
+    type: ACTION_TYPES.FETCH_FILE_CONTEXT_IMAGE_HOOKS,
+    payload: { data: anomaliesData }
   });
 
   const endState = reducer(previous, action);
-  assert.deepEqual(_.values(endState.hooks).length, 7);
+  assert.deepEqual(_.values(endState.imageHooks).length, 7);
 });
 
 test('The CHANGE_ANOMALIES_TAB resets the selected row id', function(assert) {
@@ -90,9 +93,25 @@ test('The FETCH_FILE_CONTEXT_THREADS sets the host details information', functio
 
   const action = makePackAction(LIFECYCLE.SUCCESS, {
     type: ACTION_TYPES.FETCH_FILE_CONTEXT_THREADS,
-    payload: { data: hooksData }
+    payload: { data: anomaliesData }
   });
 
   const endState = reducer(previous, action);
   assert.deepEqual(_.values(endState.threads).length, 5);
+});
+
+test('The FETCH_FILE_CONTEXT_KERNEL_HOOKS sets the host details information', function(assert) {
+  const previous = Immutable.from({ kernelHooks: null, kernelHooksLoadingStatus: 'completed' });
+
+  const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_FILE_CONTEXT_KERNEL_HOOKS });
+  const startEndState = reducer(previous, startAction);
+  assert.deepEqual(startEndState.kernelHooksLoadingStatus, 'wait');
+
+  const action = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.FETCH_FILE_CONTEXT_KERNEL_HOOKS,
+    payload: { data: anomaliesData }
+  });
+
+  const endState = reducer(previous, action);
+  assert.deepEqual(_.values(endState.kernelHooks).length, 6);
 });

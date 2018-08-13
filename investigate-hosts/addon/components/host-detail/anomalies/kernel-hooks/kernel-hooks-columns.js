@@ -1,30 +1,25 @@
-// Anomalies > Hooks table header configuration
+// Anomalies > kernel Hooks table header configuration
 
 export default {
   windows: [{
     field: 'type',
     title: 'type',
-    width: '15%'
+    width: '20%'
   },
   {
     field: 'dllFileName',
     title: 'dllFileName',
-    width: '15%'
-  },
-  {
-    field: 'hookedProcess',
-    title: 'hookedProcess',
-    width: '20%'
+    width: '25%'
   },
   {
     field: 'signature',
     title: 'signature',
     format: 'SIGNATURE',
-    width: '20%'
+    width: '25%'
   },
   {
-    field: 'symbol',
-    title: 'hookedSymbol',
+    field: 'hookedFileName',
+    title: 'hookedFileName',
     width: '25%'
   }]
 };

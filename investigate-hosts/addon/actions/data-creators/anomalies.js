@@ -15,13 +15,13 @@ const getFileContextHooks = () => {
     const data = {
       agentId,
       scanTime,
-      categories: ['HOOKS']
+      categories: ['IMAGE_HOOKS']
     };
     dispatch({
-      type: ACTION_TYPES.FETCH_FILE_CONTEXT_HOOKS,
+      type: ACTION_TYPES.FETCH_FILE_CONTEXT_IMAGE_HOOKS,
       promise: HostDetails.getFileContextData(data),
       meta: {
-        onFailure: (response) => handleError(ACTION_TYPES.FETCH_FILE_CONTEXT_HOOKS, response)
+        onFailure: (response) => handleError(ACTION_TYPES.FETCH_FILE_CONTEXT_IMAGE_HOOKS, response)
       }
     });
   };
@@ -52,10 +52,37 @@ const getFileContextThreads = () => {
   };
 };
 
+
+/**
+ * Action creator for fetching all Kernel Hooks given host id and scan time
+ * @method getFileContextKernelHooks
+ * @public
+ * @returns {Object}
+ */
+const getFileContextKernelHooks = () => {
+  return (dispatch, getState) => {
+    // Get selected agentId and scan time from the state
+    const { endpoint: { detailsInput: { agentId, scanTime } } } = getState();
+    const data = {
+      agentId,
+      scanTime,
+      categories: ['KERNEL_HOOKS']
+    };
+    dispatch({
+      type: ACTION_TYPES.FETCH_FILE_CONTEXT_KERNEL_HOOKS,
+      promise: HostDetails.getFileContextData(data),
+      meta: {
+        onFailure: (response) => handleError(ACTION_TYPES.FETCH_FILE_CONTEXT_KERNEL_HOOKS, response)
+      }
+    });
+  };
+};
+
 const setSelectedRow = ({ id }) => ({ type: ACTION_TYPES.SET_ANOMALIES_SELECTED_ROW, payload: { id } });
 
 export {
   getFileContextHooks,
   getFileContextThreads,
+  getFileContextKernelHooks,
   setSelectedRow
 };

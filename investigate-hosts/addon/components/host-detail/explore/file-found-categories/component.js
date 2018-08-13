@@ -33,12 +33,13 @@ const FileFound = Component.extend({
 
   actions: {
     navigateToTab(category) {
-      let tabName = CATEGORY_NAME[category.string.toLowerCase()];
+      // Removing blank spaces from the string and mapping against category name.
+      let tabName = CATEGORY_NAME[category.string.toLowerCase().replace(/\s/g, '')];
       let secondaryTab = null;
 
       const childTabs = {
         AUTORUNS: ['AUTORUNS', 'SERVICES', 'TASKS'],
-        ANOMALIES: ['HOOKS', 'THREADS']
+        ANOMALIES: ['IMAGEHOOKS', 'THREADS', 'KERNELHOOKS']
       };
       const childTabsKeys = Object.keys(childTabs);
 

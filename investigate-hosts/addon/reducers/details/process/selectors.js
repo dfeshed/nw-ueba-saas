@@ -168,8 +168,8 @@ const _consolidatedObjs = (listToConsolidate) => {
 };
 
 /*
-  Fetches all the dllList items that have hooks.
-  Then filters out the relevent hooks based on PID and then
+  Fetches all the dllList items that have imageHooks.
+  Then filters out the relevent imageHooks based on PID and then
   process each hook into the required format.
   input : dllList, selected process Id
   output : [{
@@ -186,13 +186,13 @@ export const imageHooksData = createSelector(
       if (dllData && dllData.length) {
         const [{ machineOsType }] = dllData;
         const dllsThatHaveHooks = dllData.filter((dll) => {
-          const { hooks } = dll[machineOsType];
-          return hooks && hooks.length;
+          const { imageHooks } = dll[machineOsType];
+          return imageHooks && imageHooks.length;
         });
-        const imageHooks = dllsThatHaveHooks.map((item) => {
+        const filteredImageHooks = dllsThatHaveHooks.map((item) => {
           const { fileName: dllFileName, fileProperties } = item;
           const signature = (fileProperties && fileProperties.signature) ? fileProperties.signature.features : [];
-          const filteredHooks = item[machineOsType].hooks.filter((hookObj) => {
+          const filteredHooks = item[machineOsType].imageHooks.filter((hookObj) => {
             return hookObj.process.pid === selectedProcessId;
           });
 
@@ -208,7 +208,7 @@ export const imageHooksData = createSelector(
           });
         });
 
-        return _consolidatedObjs(imageHooks);
+        return _consolidatedObjs(filteredImageHooks);
       }
       return [];
     }

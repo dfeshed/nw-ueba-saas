@@ -6,7 +6,8 @@ const CATEGORIES = {
   TASKS: 'investigateHosts.hosts.ranas.categories.Task',
   DRIVERS: 'investigateHosts.hosts.ranas.categories.Driver',
   THREADS: 'investigateHosts.hosts.ranas.categories.Thread',
-  HOOKS: 'investigateHosts.hosts.ranas.categories.Hooks'
+  IMAGE_HOOKS: 'investigateHosts.hosts.ranas.categories.imageHooks',
+  KERNEL_HOOKS: 'investigateHosts.hosts.ranas.categories.kernelHooks'
 
 };
 const CATEGORY_NAME = {
@@ -16,7 +17,8 @@ const CATEGORY_NAME = {
   service: 'SERVICES',
   task: 'TASKS',
   driver: 'DRIVERS',
-  hooks: 'HOOKS',
+  imagehooks: 'IMAGEHOOKS',
+  kernelhooks: 'KERNELHOOKS',
   thread: 'THREADS'
 };
 

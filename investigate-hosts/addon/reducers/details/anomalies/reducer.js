@@ -3,17 +3,20 @@ import reduxActions from 'redux-actions';
 import { handle } from 'redux-pack';
 import Immutable from 'seamless-immutable';
 import {
-  fileContextHooksSchema,
-  fileContextThreadsSchema
+  fileContextImageHooksSchema,
+  fileContextThreadsSchema,
+  fileContextKernelHooksSchema
 } from './schemas';
 import { normalize } from 'normalizr';
 
 
 const initialState = Immutable.from({
-  hooks: null,
+  imageHooks: null,
   threads: null,
-  hooksLoadingStatus: null,
+  kernelHooks: null,
+  imageHooksLoadingStatus: null,
   threadsLoadingStatus: null,
+  kernelHooksLoadingStatus: null,
   selectedRowId: null
 });
 
@@ -27,15 +30,16 @@ const anomalies = reduxActions.handleActions({
 
   [ACTION_TYPES.SET_ANOMALIES_SELECTED_ROW]: (state, { payload: { id } }) => state.set('selectedRowId', id),
 
-  [ACTION_TYPES.FETCH_FILE_CONTEXT_HOOKS]: (state, action) => {
+  [ACTION_TYPES.FETCH_FILE_CONTEXT_IMAGE_HOOKS]: (state, action) => {
     return handle(state, action, {
-      start: (s) => s.set('hooksLoadingStatus', 'wait'),
+      start: (s) => s.set('imageHooksLoadingStatus', 'wait'),
       success: (s) => {
-        const normalizedData = normalize(action.payload.data, fileContextHooksSchema);
-        const { hooks = {} } = normalizedData.entities;
+        const normalizedData = normalize(action.payload.data, fileContextImageHooksSchema);
+        const { imageHooks = {} } = normalizedData.entities;
+
         return s.merge({
-          hooks,
-          hooksLoadingStatus: 'completed',
+          imageHooks,
+          imageHooksLoadingStatus: 'completed',
           selectedRowId: null
         });
       }
@@ -52,6 +56,22 @@ const anomalies = reduxActions.handleActions({
         return s.merge({
           threads,
           threadsLoadingStatus: 'completed',
+          selectedRowId: null
+        });
+      }
+    });
+  },
+
+  [ACTION_TYPES.FETCH_FILE_CONTEXT_KERNEL_HOOKS]: (state, action) => {
+    return handle(state, action, {
+      start: (s) => s.merge({ kernelHooksLoadingStatus: 'wait', kernelHooks: {} }),
+      success: (s) => {
+        const normalizedData = normalize(action.payload.data, fileContextKernelHooksSchema);
+        const { kernelHooks } = normalizedData.entities;
+
+        return s.merge({
+          kernelHooks,
+          kernelHooksLoadingStatus: 'completed',
           selectedRowId: null
         });
       }

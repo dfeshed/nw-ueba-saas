@@ -12,6 +12,19 @@ test('should add unique id to all the object', function(assert) {
 test('should modify the signature property and add', function(assert) {
   const parent = {
     name: 'xyz',
+    machineOsType: 'linux',
+    linux: {
+      'drivers': [
+        {
+          'numberOfInstances': 0,
+          'loadState': 'Live'
+        },
+        {
+          'numberOfInstances': 0,
+          'loadState': 'Live'
+        }
+      ]
+    },
     fileProperties: {
       signature: {
         features: 'xyz'
@@ -23,8 +36,10 @@ test('should modify the signature property and add', function(assert) {
     path: 'c/test',
     size: '1024'
   };
+
   const data = commonNormalizerStrategy(child, parent);
   assert.deepEqual(data, {
+    'machineOsType': 'linux',
     'fileProperties': {
       'signature': {
         'features': 'xyz'
@@ -38,7 +53,20 @@ test('should modify the signature property and add', function(assert) {
 
   const parent1 = {
     name: 'xyz',
+    machineOsType: 'linux',
     fileProperties: {
+    },
+    linux: {
+      'drivers': [
+        {
+          'numberOfInstances': 0,
+          'loadState': 'Live'
+        },
+        {
+          'numberOfInstances': 0,
+          'loadState': 'Live'
+        }
+      ]
     }
   };
   const child1 = {
@@ -46,8 +74,11 @@ test('should modify the signature property and add', function(assert) {
     path: 'c/test',
     size: '1024'
   };
+
   const newData = commonNormalizerStrategy(child1, parent1);
+
   assert.deepEqual(newData, {
+    'machineOsType': 'linux',
     'fileProperties': {},
     'name': 'abc',
     'path': 'c/test',

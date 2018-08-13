@@ -11,27 +11,31 @@ const fileContextStrategy = (input) => {
   const { machineOsType, id } = input;
   const context = input[machineOsType];
   const {
-    hooks = [],
-    threads = []
+    imageHooks = [],
+    threads = [],
+    kernelHooks = []
   } = context;
 
-  addId(hooks, id, 'hooks_');
+  addId(imageHooks, id, 'imageHooks_');
   addId(threads, id, 'threads_');
+  addId(kernelHooks, id, 'kernelHooks_');
 
   return {
     ...input,
-    hooks,
-    threads
+    imageHooks,
+    threads,
+    kernelHooks
   };
 };
 
 
-const hook = new schema.Entity('hooks', {}, { processStrategy: commonNormalizerStrategy });
+const imageHook = new schema.Entity('imageHooks', {}, { processStrategy: commonNormalizerStrategy });
 const thread = new schema.Entity('threads', {}, { processStrategy: commonNormalizerStrategy });
+const kernelHook = new schema.Entity('kernelHooks', {}, { processStrategy: commonNormalizerStrategy });
 
-const fileContextHooks = new schema.Entity('fileContext',
+const fileContextImageHooks = new schema.Entity('fileContext',
   {
-    hooks: [hook]
+    imageHooks: [imageHook]
   },
   { idAttribute: 'checksumSha256', processStrategy: fileContextStrategy });
 
@@ -41,11 +45,19 @@ const fileContextThreads = new schema.Entity('fileContext',
   },
   { idAttribute: 'checksumSha256', processStrategy: fileContextStrategy });
 
+const fileContextKernelHook = new schema.Entity('fileContext',
+  {
+    kernelHooks: [kernelHook]
+  },
+  { idAttribute: 'checksumSha256', processStrategy: fileContextStrategy });
+
 // List of file context
-const fileContextHooksSchema = [fileContextHooks];
+const fileContextImageHooksSchema = [fileContextImageHooks];
 const fileContextThreadsSchema = [fileContextThreads];
+const fileContextKernelHooksSchema = [fileContextKernelHook];
 
 export {
-  fileContextHooksSchema,
-  fileContextThreadsSchema
+  fileContextImageHooksSchema,
+  fileContextThreadsSchema,
+  fileContextKernelHooksSchema
 };
