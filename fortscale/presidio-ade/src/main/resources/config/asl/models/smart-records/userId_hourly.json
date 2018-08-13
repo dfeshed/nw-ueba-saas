@@ -11,8 +11,7 @@
       },
       "builder": {
         "type": "weights_model_builder",
-        "smartRecordConfName": "userId_hourly",
-        "zeroWeightFeatures":["userAccountUnlockedScoreUserIdActiveDirectoryHourly", "userAccountLockedScoreUserIdActiveDirectoryHourly"]
+        "smartRecordConfName": "userId_hourly"
       }
     },
     {

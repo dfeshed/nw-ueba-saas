@@ -8,14 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
 import java.util.Properties;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration
 public class ModelConfServiceTest {
 	@Configuration
 	@Import(ModelConfServiceConfig.class)
@@ -32,7 +30,7 @@ public class ModelConfServiceTest {
 	private ModelConfService modelConfService;
 
 	@Test
-	public void shouldDeserializeJsonFile() throws Exception {
+	public void shouldDeserializeJsonFile() {
 		List<ModelConf> modelConfs = modelConfService.getModelConfs();
 		Assert.assertNotNull(modelConfs);
 		Assert.assertEquals(2, modelConfs.size());

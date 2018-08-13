@@ -356,9 +356,7 @@ public class WeightsModelBuilderAlgorithmTest {
     @Test
     public void shouldReturnClusterSpecsPrototypeWhenEmptyModelBuilderData() {
         List<ClusterConf> clusterConfsPrototype = createClusterConfs(createClusterConf("F1"));
-
-        List<ClusterConf> clusterConfs = builderAlgorithm.createWeightsClusterConfs(clusterConfsPrototype, Collections.emptyList(), 0, 100, null, weightModelBuilderMetricsContainer);
-
+        List<ClusterConf> clusterConfs = builderAlgorithm.createWeightsClusterConfs(clusterConfsPrototype, Collections.emptyList(), 0, 100, weightModelBuilderMetricsContainer);
         Assert.assertEquals(clusterConfsPrototype, clusterConfs);
     }
 
@@ -368,13 +366,16 @@ public class WeightsModelBuilderAlgorithmTest {
         // (all the other tests test the inner functions, but no one guarantees they are
         // called in the right order. This test tests exactly that)
         SmartWeightModelTestUtils.TestData testData = new SmartWeightModelTestUtils.TestData();
+        WeightsModelBuilderAlgorithm builderAlgorithm = new WeightsModelBuilderAlgorithm(AggregatedFeatureReliability::new, new ClustersContributionsSimulator(createSmartWeightsScorerAlgorithm()));
 
-        WeightsModelBuilderAlgorithm builderAlgorithm = new WeightsModelBuilderAlgorithm(
-                AggregatedFeatureReliability::new,
-                new ClustersContributionsSimulator(createSmartWeightsScorerAlgorithm())
-        );
-        List<ClusterConf> clusterConfs = builderAlgorithm.createWeightsClusterConfs(testData.clusterConfs, testData.smartAggregatedRecordDataContainers, 100, 100, Collections.singletonList("F6"), weightModelBuilderMetricsContainer);
+        for (ClusterConf clusterConf : testData.clusterConfs) {
+            if (clusterConf.getAggregationRecordNames().stream().anyMatch(aggregationRecordName -> aggregationRecordName.equals("F6"))) {
+                clusterConf.setWeight(0.0);
+                break;
+            }
+        }
 
+        List<ClusterConf> clusterConfs = builderAlgorithm.createWeightsClusterConfs(testData.clusterConfs, testData.smartAggregatedRecordDataContainers, 100, 100, weightModelBuilderMetricsContainer);
         Assert.assertEquals(0.0256554137983594, clusterConfs.get(0).getWeight(), 0.00000001);
         Assert.assertEquals(0.0256554137983594, clusterConfs.get(1).getWeight(), 0.00000001);
         Assert.assertEquals(0.032731683358239394, clusterConfs.get(2).getWeight(), 0.00000001);

@@ -45,7 +45,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Created by barak_schuster on 9/4/17.
+ * @author Barak Schuster.
+ * @author Lior Govrin.
  */
 @Category(ModuleTestCategory.class)
 @ContextConfiguration
@@ -121,9 +122,9 @@ public class ModelingServiceApplicationContinuousModelsTest {
             Assert.assertTrue(String.format("model=%s is expected to have segment prior", modelConfName), modelWithSegmentPrior.isPresent());
         });
 
-        List<ModelConf> continousMaxModelConfs = modelConfs.stream().filter(x->(x.getModelBuilderConf() instanceof ContinuousMaxHistogramModelBuilderConf)).collect(Collectors.toList());
-        Assert.assertTrue("conf must have at least 1 continousMaxModelConfs model", continousMaxModelConfs.size() > 0);
-        continousMaxModelConfs.forEach(modelConf -> {
+        List<ModelConf> continuousMaxModelConfs = modelConfs.stream().filter(x -> (x.getModelBuilderConf() instanceof ContinuousMaxHistogramModelBuilderConf)).collect(Collectors.toList());
+        Assert.assertTrue("conf must have at least 1 continuousMaxModelConfs model", continuousMaxModelConfs.size() > 0);
+        continuousMaxModelConfs.forEach(modelConf -> {
             Collection<ModelDAO> modelDaos = modelStore.getAllContextsModelDaosWithLatestEndTimeLte(modelConf, Instant.now());
             Assert.assertTrue(modelDaos.size() > 0);
             modelDaos.forEach(modelDAO -> {
@@ -140,7 +141,7 @@ public class ModelingServiceApplicationContinuousModelsTest {
      */
     @Test
     public void builderResolutionTest(){
-        Collection<AslConfigurationPaths> modelConfigurationPathsCollection = Arrays.asList(
+        Collection<AslConfigurationPaths> modelConfigurationPathsCollection = Collections.singletonList(
                 new AslConfigurationPaths(featureAggrRecordsGroupName, featureAggrRecordsBaseConfigurationPath));
 
         ModelConfServiceBuilder modelConfServiceBuilder = new ModelConfServiceBuilder(modelConfigurationPathsCollection,aslResourceFactory);
@@ -161,7 +162,7 @@ public class ModelingServiceApplicationContinuousModelsTest {
             String strategyName = aggregatedFeatureEventConf.getBucketConf().getStrategyName();
             FixedDurationStrategy fixedDurationStrategy = FixedDurationStrategy.fromStrategyName(strategyName);
 
-            Assert.assertTrue(((ContinuousMaxHistogramModelBuilderConf)modelConf.getModelBuilderConf()).getPartitionsResolutionInSeconds() % fixedDurationStrategy.toDuration().getSeconds() == 0 );
+            Assert.assertEquals(0, ((ContinuousMaxHistogramModelBuilderConf)modelConf.getModelBuilderConf()).getPartitionsResolutionInSeconds() % fixedDurationStrategy.toDuration().getSeconds());
             Assert.assertTrue(((ContinuousMaxHistogramModelBuilderConf)modelConf.getModelBuilderConf()).getPartitionsResolutionInSeconds() > 0);
         });
     }
@@ -184,12 +185,12 @@ public class ModelingServiceApplicationContinuousModelsTest {
     @Import({MongodbTestConfig.class, BootShimConfig.class, ModelingServiceConfiguration.class})
     public static class springConfig {
         @Bean
-        public static TestPropertiesPlaceholderConfigurer continousModelingServiceConfigurationTestPropertiesPlaceholderConfigurer() {
+        public static TestPropertiesPlaceholderConfigurer continuousModelingServiceConfigurationTestPropertiesPlaceholderConfigurer() {
             Properties properties = new Properties();
             // Feature bucket conf service
             properties.put("presidio.ade.modeling.feature.bucket.confs.base.path", "classpath*:config/asl/feature-buckets/**/*.json");
             // Feature aggregation event conf service
-            properties.put("presidio.ade.modeling.feature.aggregation.event.confs.base.path", "classpath*:config/asl/aggregation-records/feature-aggregation-records/*");
+            properties.put("presidio.ade.modeling.feature.aggregation.event.confs.base.path", "classpath*:config/asl/aggregation-records/**/*.json");
             // Smart event conf service
             properties.put("presidio.ade.smart.record.base.configurations.path", "classpath*:config/asl/smart-records/*");
             // Model conf service
