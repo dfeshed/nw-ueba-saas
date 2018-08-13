@@ -1,0 +1,95 @@
+<hbox fit>
+  {{spec-masthead model=model}}
+</hbox>
+
+<hbox>
+  <fill block class="scroll-box">
+
+    {{#spec-category title="Size"}}
+      {{#spec-member title="Smaller"}}
+        <div>
+          {{rsa-risk-score score=75 size='smaller'}}
+        </div>
+        {{!-- BEGIN-SNIPPET riskscore1
+        {{rsa-risk-score score=33 size='small'}}
+        END-SNIPPET --}}
+        {{code-snippet name="riskscore1.hbs"}}
+      {{/spec-member}}
+
+      {{#spec-member title="Small"}}
+        <div>
+          {{rsa-risk-score score=75 size='small'}}
+        </div>
+        {{!-- BEGIN-SNIPPET riskscore2
+        {{rsa-risk-score score=33 size='small'}}
+        END-SNIPPET --}}
+        {{code-snippet name="riskscore2.hbs"}}
+      {{/spec-member}}
+
+
+      {{#spec-member title="Large"}}
+        <div>
+          {{rsa-risk-score score=75 size='large'}}
+        </div>
+        {{!-- BEGIN-SNIPPET riskscore3
+        {{rsa-risk-score score=75 size='large'}}
+        END-SNIPPET --}}
+        {{code-snippet name="riskscore3.hbs"}}
+      {{/spec-member}}
+    {{/spec-category}}
+
+    {{#spec-category title="Styles"}}
+      {{#spec-member title="Low (Score<=29)"}}
+        <div>
+          {{rsa-risk-score score=10 size='small'}}
+        </div>
+        {{!-- BEGIN-SNIPPET riskscore4
+        {{rsa-risk-score score=10 size='small'}}
+        END-SNIPPET --}}
+        {{code-snippet name="riskscore4.hbs"}}
+      {{/spec-member}}
+
+      {{#spec-member title="Medium (Score 30 to 59)"}}
+        <div>
+          {{rsa-risk-score score=45 size='small'}}
+        </div>
+        {{!-- BEGIN-SNIPPET riskscore5
+        {{rsa-risk-score score=45 size='small'}}
+        END-SNIPPET --}}
+        {{code-snippet name="riskscore5.hbs"}}
+      {{/spec-member}}
+
+      {{#spec-member title="High (Score 60 to 99)"}}
+        <div>
+          {{rsa-risk-score score=75 size='small'}}
+        </div>
+        {{!-- BEGIN-SNIPPET riskscore6
+        {{rsa-risk-score score=75 size='small'}}
+        END-SNIPPET --}}
+        {{code-snippet name="riskscore6.hbs"}}
+      {{/spec-member}}
+
+      {{#spec-member title="Danger (Score>99)"}}
+        <div>
+          {{rsa-risk-score score=100 size='small'}}
+        </div>
+        {{!-- BEGIN-SNIPPET riskscore7
+        {{rsa-risk-score score=100 size='small'}}
+        END-SNIPPET --}}
+        {{code-snippet name="riskscore7.hbs"}}
+      {{/spec-member}}
+    {{/spec-category}}
+
+    {{#spec-category title='Radius'}}
+      {{#spec-member title='Provide Custom Radius'}}
+        <div>
+          {{rsa-risk-score score=75 radius=40 size='large'}}
+        </div>
+        {{!-- BEGIN-SNIPPET riskscore8
+        {{rsa-risk-score score=75 radius=40 size='large'}}
+        END-SNIPPET --}}
+        {{code-snippet name="riskscore8.hbs"}}
+      {{/spec-member}}
+    {{/spec-category}}
+  </fill>
+</hbox>

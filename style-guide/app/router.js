@@ -60,6 +60,7 @@ Router.map(function() {
       this.route('tetheredPanels');
       this.route('contextMenu');
       this.route('pageLayout');
+      this.route('riskScore');
     });
 
     this.route('form', function() {

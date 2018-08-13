@@ -1,0 +1,47 @@
+.rsa-risk-score {
+    circle {
+      stroke: $contentBadgeScoreLabelColor;
+      stroke-width: 2;
+      fill: transparent;
+    }
+    text {
+      @include rsa-font(bold);
+      fill: $contentBadgeScoreLabelColor;
+      text-anchor: middle;
+    }
+  &.is-danger {
+    circle {
+      stroke: text-color(accentOne);
+      fill: text-color(accentOne);
+    }
+  }
+  &.is-high {
+    circle {
+      stroke: text-color(accentThree);
+    }
+  }
+  &.is-medium {
+    circle {
+      stroke: text-color(accentFour);
+    }
+  }
+  &.is-low {
+    circle {
+      stroke: text-color(accentTwo);
+    }
+  }
+
+  &.is-smaller,
+  &.is-small {
+    text {
+      font-size: .75rem;
+    }
+  }
+
+  &.is-large {
+    text {
+      font-size: 1.5rem;
+      font-weight: 500;
+    }
+  }
+}
