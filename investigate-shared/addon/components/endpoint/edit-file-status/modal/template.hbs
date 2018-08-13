@@ -17,31 +17,12 @@
         </label>
         {{#if (eq radio.value 'Blacklist')}}
           {{#if (eq data.fileStatus 'Blacklist')}}
-            <div class="black-list-options">
-              <box>
-                <h4 class='rsa-form-radio-group-label blacklist-category-title'>{{t 'investigateFiles.editFileStatus.blacklistCategory'}}</h4>
-                {{#power-select
-                  searchEnabled=false
-                  triggerClass="inline"
-                  options=fileCategories
-                  onchange=(action 'setFileCategory')
-                  selected=data.fileCategory as |option|}}
-                  {{option}}
-                {{/power-select}}
-              </box>
-              <box class='radio-controls rsa-form-radio-group' fit>
-                <h4 class='rsa-form-radio-group-label remediation-action-title'>{{t 'investigateFiles.editFileStatus.remediationActionTitle'}}</h4>
-                {{#each remediationRadioButtons as |remediationRadio|}}
-                  <label class='rsa-form-radio-label remediation-action-radio {{if (eq remediationRadio.value data.remediationAction) 'checked'}}'>
-                    {{radio-button
-                      radioClass='status-type'
-                      value=remediationRadio.value
-                      groupValue=data.remediationAction}}
-                    {{t remediationRadio.label}}
-                  </label>
-                {{/each}}
-              </box>
-            </div>
+            {{endpoint/edit-file-status/modal/file-remediation data=data item=item}}
+          {{/if}}
+        {{/if}}
+        {{#if (eq radio.value 'Graylist')}}
+          {{#if (eq data.fileStatus 'Graylist')}}
+            {{endpoint/edit-file-status/modal/file-remediation data=data item=item}}
           {{/if}}
         {{/if}}
       {{/each}}

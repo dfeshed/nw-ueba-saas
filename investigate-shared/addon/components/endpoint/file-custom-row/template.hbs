@@ -19,5 +19,5 @@
 {{/if}}
 
 {{#if showFileStatusModal}}
-  {{endpoint/edit-file-status/modal onSaveFileStatus=onSaveFileStatus closeModal=(action 'onCloseEditFileStatus')}}
+  {{endpoint/edit-file-status/modal onSaveFileStatus=onSaveFileStatus item=item closeModal=(action 'onCloseEditFileStatus')}}
 {{/if}}

@@ -18,8 +18,7 @@ $modalWidth: 500px;
     overflow-y: auto;
     padding: rsa-whitespace();
     p {
-      @include rsa-font(paragraph);
-      padding: rsa-whitespace();
+      @include rsa-font(body, small);
     }
     .rsa-data-table {
       width: 100%;
@@ -50,14 +49,33 @@ $modalWidth: 500px;
       .ember-power-select-trigger {
         width: 30%;
       }
-
+      p.remediation-action-note {
+        line-height: 1.2rem;
+        padding: rsa-whitespace(least) 0 rsa-whitespace(less) 0;
+        color: text-color(primary, light)
+      }
       box {
-        padding: 0 rsa-whitespace() rsa-whitespace(less) rsa-whitespace(less);
+        padding: 0 rsa-whitespace() rsa-whitespace() rsa-whitespace(less);
         font-weight: 400;
         font-size: 1rem;
-        line-height: 2rem;
+        line-height: 1rem;
       }
-
+      .remediation-action-title {
+        height: 10px;
+      }
+      .remediation-action-checkbox {
+        height: 14px;
+        padding-bottom: 7px;
+      }
+      .remediation-alert {
+        color:text-color(accentFour);
+        font-size: 14px;
+        height: 14px;
+        padding-bottom: rsa-whitespace(less);
+      }
+      .remediation-action-radio .rsa-icon-information-circle-lined {
+        padding-left: rsa-whitespace(less);
+      }
     }
 
   }

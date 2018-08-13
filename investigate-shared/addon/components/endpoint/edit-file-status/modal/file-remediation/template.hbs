@@ -1,0 +1,43 @@
+<div class="black-list-options">
+  <box>
+    <h4 class='rsa-form-radio-group-label blacklist-category-title'>{{t
+      'investigateFiles.editFileStatus.blacklistCategory'}}</h4>
+    {{#power-select
+      searchEnabled=false
+      triggerClass="inline"
+      options=fileCategories
+      onchange=(action 'setFileCategory')
+      selected=data.fileCategory as |option|}}
+      {{option}}
+    {{/power-select}}
+  </box>
+  <box class='radio-controls rsa-form-radio-group' fit>
+    <h4 class='rsa-form-radio-group-label remediation-action-title'>{{t
+      'investigateFiles.editFileStatus.remediationActionTitle'}}</h4>
+    <p class='remediation-action-note'>{{t 'investigateFiles.editFileStatus.remediationActionNote'}}</p>
+    {{#if errorDecorator.remediationAlert}}
+      <span class='remediation-alert'>
+        {{rsa-icon class='rsa-icon-report-problem-triangle-filled'}}
+        {{errorDecorator.remediationAlert}}
+      </span>
+    {{/if}}
+    {{#each remediationRadioButtons as |remediationRadio index|}}
+      <label class='rsa-form-radio-label remediation-action-radio {{if errorDecorator.disableBlocking 'disabled'}} {{if
+        (eq remediationRadio.value data.remediationAction) 'checked'}}'>
+        {{radio-button
+          radioClass='status-type'
+          value=remediationRadio.value
+          groupValue=data.remediationAction}}
+        {{t remediationRadio.label}}
+        {{#if (eq index 1) }}
+          {{#rsa-content-tethered-panel-trigger panel='panel5'}}
+            {{rsa-icon class='rsa-icon-information-circle-lined'}}
+          {{/rsa-content-tethered-panel-trigger}}
+          {{#rsa-content-tethered-panel style="highlighted" displayCloseButton=false position='top' panelId='panel5'}}
+            <header>TBD</header>
+          {{/rsa-content-tethered-panel}}
+        {{/if}}
+      </label>
+    {{/each}}
+  </box>
+</div>

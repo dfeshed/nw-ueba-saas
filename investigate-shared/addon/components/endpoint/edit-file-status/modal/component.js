@@ -35,27 +35,13 @@ export default Component.extend({
     }
   ],
 
-  remediationRadioButtons: [
-    {
-      label: 'investigateFiles.editFileStatus.remediationActionOptions.blockFile',
-      value: 'blockFile'
-    },
-    {
-      label: 'investigateFiles.editFileStatus.remediationActionOptions.blockQuarantineFile',
-      value: 'blockQuarantineFile'
-    }
-  ],
-
-
-  fileCategories: [
-    'APT',
-    'AttackerTool',
-    'GenericMalware',
-    'Ransom',
-    'Unidentified'
-  ],
-
   _closeModal() {
+    this.set('data', {
+      fileStatus: 'Neutral',
+      fileCategory: 'Apt',
+      comment: '',
+      remediationAction: ''
+    });
     const closeModal = this.get('closeModal');
     if (closeModal) {
       closeModal();
@@ -75,10 +61,6 @@ export default Component.extend({
 
     onCancel() {
       this._closeModal();
-    },
-
-    setFileCategory(category) {
-      this.set('data.fileCategory', category);
     }
   }
 });

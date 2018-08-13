@@ -47,7 +47,7 @@ export default Component.extend({
   _buildFilter() {
     const { metaName, metaValue, item } = this.getProperties('metaName', 'metaValue', 'item');
     const investigateMeta = INVESTIGATE_META_MAPPING[metaName];
-    const value = metaValue || get(item, metaName); // if metaValue not passed get the value from item
+    const value = metaValue || get(item[0], metaName); // if metaValue not passed get the value from item
     // If list meta then add || in query
     if (Array.isArray(investigateMeta)) {
       const query = investigateMeta.map((meta) => {
