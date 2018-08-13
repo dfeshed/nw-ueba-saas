@@ -21,6 +21,7 @@ const COLUMN_WIDTH = {
 const SUPPORTED_SORT_TYPES = [
   'firstFileName',
   'firstSeenTime',
+  'reputationStatus',
   'size',
   'format',
   'signature.features',

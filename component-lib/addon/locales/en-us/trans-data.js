@@ -1963,6 +1963,15 @@ export default {
         macho: 'Mac',
         scripts: 'Scripts',
         unknown: 'Unknown'
+      },
+      reputationStatus: {
+        INVALID: 'INVALID',
+        UNKNOWN: 'UNKNOWN',
+        KNOWN: 'KNOWN',
+        SUSPICIOUS: 'SUSPICIOUS',
+        MALICIOUS: 'MALICIOUS',
+        KNOWN_GOOD: 'KNOWN GOOD',
+        Submitted: 'Submitted'
       }
     },
     fields: {

@@ -48,7 +48,7 @@ test('windows specific columns are rendered', function(assert) {
 
   return wait().then(() => {
     assert.equal(this.$('.rsa-data-table-header-row').find('.rsa-data-table-header-cell').length, 7, '7 columns rendered for windows');
-    assert.equal(this.$('.rsa-data-table-header-row').find('.rsa-icon').length, 4, '4 sortable columns, others have sort disabled');
+    assert.equal(this.$('.rsa-data-table-header-row').find('.rsa-icon').length, 3, '3 sortable columns, others have sort disabled');
   });
 });
 
@@ -59,7 +59,7 @@ test('mac specific columns are rendered', function(assert) {
 
   return wait().then(() => {
     assert.equal(this.$('.rsa-data-table-header-row').find('.rsa-data-table-header-cell').length, 7, '7 columns rendered for windows');
-    assert.equal(this.$('.rsa-data-table-header-row').find('.rsa-icon').length, 4, '4 sortable columns, others have sort disabled');
+    assert.equal(this.$('.rsa-data-table-header-row').find('.rsa-icon').length, 3, '3 sortable columns, others have sort disabled');
   });
 });
 
@@ -70,7 +70,7 @@ test('linux specific columns are rendered', function(assert) {
 
   return wait().then(() => {
     assert.equal(this.$('.rsa-data-table-header-row').find('.rsa-data-table-header-cell').length, 7, '7 columns rendered for windows');
-    assert.equal(this.$('.rsa-data-table-header-row').find('.rsa-icon').length, 3, '3 sortable columns, others have sort disabled');
+    assert.equal(this.$('.rsa-data-table-header-row').find('.rsa-icon').length, 2, '2 sortable columns, others have sort disabled');
   });
 });
 
