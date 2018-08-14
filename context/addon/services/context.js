@@ -335,14 +335,15 @@ export default Service.extend({
 
       // Parse out the records for that entity.
       const { type, data } = summaryData[id];
-      const records = data.map(({ name, count, severity, url, criticality, riskRating, lastUpdated }) => ({
+      const records = data.map(({ name, count, severity, url, criticality, riskRating, lastUpdated, reputation }) => ({
         name,
         count: Number(count),
         severity,
         url,
         criticality,
         riskRating,
-        lastUpdated: Number(lastUpdated)
+        lastUpdated: Number(lastUpdated),
+        reputation
       }));
 
       // Update the entity's cached data records, but leave status unchanged.

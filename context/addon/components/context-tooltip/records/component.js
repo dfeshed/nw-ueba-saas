@@ -155,7 +155,7 @@ const ContextTooltipRecords = Component.extend({
   _populateReputationStatus(finalModelSummary, record) {
     finalModelSummary.push({
       name: 'ReputationServer',
-      attr: record && record.status ? record.status : '-'
+      attr: record && record.reputation ? record.reputation : '-'
     });
   },
 
