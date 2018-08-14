@@ -45,10 +45,11 @@ export const kernelHooks = createSelector(
 
 const _getKernelHooksObjs = (hooksDataSource) => {
   return hooksDataSource.map((item) => {
-    const { fileName: dllFileName, hookLocation: { fileName: hookedFileName } } = item;
+    const { fileName: driverFileName, hookLocation: { fileName: hookedFileName, objectFunction } } = item;
     return {
       ...item,
-      dllFileName,
+      objectFunction,
+      driverFileName,
       hookedFileName
     };
   });
@@ -99,7 +100,7 @@ export const imageHooksData = createSelector(
       const hooksDataSource = Object.values(imageHooksObject);
       if (hooksDataSource && hooksDataSource.length) {
         const imageHooks = _getImageHooksObjs(hooksDataSource);
-        const sortedValue = getValues(selectedTab, 'HOOKS', imageHooks, sortConfig);
+        const sortedValue = getValues(selectedTab, 'IMAGEHOOKS', imageHooks, sortConfig);
         return sortedValue;
       }
     }

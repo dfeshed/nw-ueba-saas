@@ -22,10 +22,19 @@ export default {
           field: 'hookLocation.objectName'
         },
         {
+          field: 'hookLocation.objectFunction'
+        },
+        {
           field: 'jumpCount'
         },
         {
           field: 'jumpTo'
+        },
+        {
+          field: 'hookLocation.imageSize'
+        },
+        {
+          field: 'hookLocation.imageBase'
         }
       ]
     }

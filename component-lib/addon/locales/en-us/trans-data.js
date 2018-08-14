@@ -2230,11 +2230,14 @@ export default {
           address: 'Hooked Address',
           symbolOffset: 'Symbol Offset',
           section: 'Section',
-          fileName: 'Hooked Dll',
+          fileName: 'Hooked FileName',
           symbol: 'Symbol',
           checksumSha256: 'ChecksumSha256',
           objectName: 'Object Name',
-          path: 'Path'
+          path: 'Path',
+          imageBase: 'Image Base',
+          imageSize: 'Image Size',
+          objectFunction: 'Object Function'
         },
         jumpTo: 'Jump To Address',
         jumpCount: 'Jump Count',
@@ -2318,10 +2321,11 @@ export default {
       },
       kernelHooks: {
         type: 'Type',
-        dllFileName: 'DLL Name',
+        driverFileName: 'Driver Name',
         hookedFileName: 'Hooked FileName',
         signature: 'Signature',
         title: 'Kernel Hooks',
+        objectFunction: 'Object Function',
         message: {
           noResultsMessage: 'No Kernel Hooks information was found'
         }

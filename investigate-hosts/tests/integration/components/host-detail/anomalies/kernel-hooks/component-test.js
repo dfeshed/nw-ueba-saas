@@ -12,7 +12,7 @@ import anomaliesKernelHooks from '../../../state/anomalies.kernelHooks';
 
 let initState;
 
-module('Integration | Component | Anomalies/Hooks', function(hooks) {
+module('Integration | Component | Anomalies/kernel-hooks', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('investigate-hosts')
   });
@@ -32,7 +32,7 @@ module('Integration | Component | Anomalies/Hooks', function(hooks) {
   test('Kernel Hooks content loaded', async function(assert) {
     new ReduxDataHelper(initState).anomalies(anomaliesKernelHooks).build();
     await render(hbs`{{host-detail/anomalies}}`);
-    await click('.rsa-nav-tab:nth-child(3)');
+    await click('.rsa-nav-tab:nth-child(2)');
 
     assert.equal(findAll('.simple-detail-display-wrapper').length, 1, 'Kernel Hooks content loaded');
     assert.equal(findAll('.rsa-data-table-body-rows .rsa-data-table-body-row').length, 3, 'Kernel Hooks data loaded');
@@ -41,11 +41,12 @@ module('Integration | Component | Anomalies/Hooks', function(hooks) {
   test('Kernel Hooks column names', async function(assert) {
     new ReduxDataHelper(initState).anomalies(anomaliesKernelHooks).build();
     await render(hbs`{{host-detail/anomalies}}`);
-    await click('.rsa-nav-tab:nth-child(3)');
+    await click('.rsa-nav-tab:nth-child(2)');
 
     assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(1)').textContent.trim(), 'Type', 'Column 1 is Type');
-    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(2)').textContent.trim(), 'DLL Name', 'Column 2 is DLL Name');
+    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(2)').textContent.trim(), 'Driver Name', 'Column 2 is Driver Name');
     assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(3)').textContent.trim(), 'Signature', 'Column 3 is Signature');
-    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(4)').textContent.trim(), 'Hooked FileName', 'Column 4 is Hooked FileName');
+    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(4)').textContent.trim(), 'Object Function', 'Column 4 is Object Function');
+    assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(5)').textContent.trim(), 'Hooked FileName', 'Column 5 is Hooked FileName');
   });
 });

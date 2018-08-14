@@ -32,7 +32,8 @@ const anomalies = reduxActions.handleActions({
 
   [ACTION_TYPES.FETCH_FILE_CONTEXT_IMAGE_HOOKS]: (state, action) => {
     return handle(state, action, {
-      start: (s) => s.set('imageHooksLoadingStatus', 'wait'),
+      start: (s) => s.merge({ imageHooksLoadingStatus: 'wait', imageHooks: {} }),
+      failure: (s) => s.merge({ imageHooksLoadingStatus: 'rejected' }),
       success: (s) => {
         const normalizedData = normalize(action.payload.data, fileContextImageHooksSchema);
         const { imageHooks = {} } = normalizedData.entities;
@@ -48,7 +49,8 @@ const anomalies = reduxActions.handleActions({
 
   [ACTION_TYPES.FETCH_FILE_CONTEXT_THREADS]: (state, action) => {
     return handle(state, action, {
-      start: (s) => s.set('threadsLoadingStatus', 'wait'),
+      start: (s) => s.merge({ threadsLoadingStatus: 'wait', threads: {} }),
+      failure: (s) => s.merge({ threadsLoadingStatus: 'rejected' }),
       success: (s) => {
         const normalizedData = normalize(action.payload.data, fileContextThreadsSchema);
         const { threads = {} } = normalizedData.entities;
@@ -65,6 +67,7 @@ const anomalies = reduxActions.handleActions({
   [ACTION_TYPES.FETCH_FILE_CONTEXT_KERNEL_HOOKS]: (state, action) => {
     return handle(state, action, {
       start: (s) => s.merge({ kernelHooksLoadingStatus: 'wait', kernelHooks: {} }),
+      failure: (s) => s.merge({ kernelHooksLoadingStatus: 'rejected' }),
       success: (s) => {
         const normalizedData = normalize(action.payload.data, fileContextKernelHooksSchema);
         const { kernelHooks } = normalizedData.entities;

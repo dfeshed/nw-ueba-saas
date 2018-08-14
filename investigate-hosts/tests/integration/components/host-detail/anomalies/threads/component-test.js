@@ -32,7 +32,7 @@ module('Integration | Component | Anomalies/Threads', function(hooks) {
   test('Threads content loaded', async function(assert) {
     new ReduxDataHelper(initState).anomalies(anomaliesThreads).build();
     await render(hbs`{{host-detail/anomalies}}`);
-    await click('.rsa-nav-tab:nth-child(2)');
+    await click('.rsa-nav-tab:nth-child(3)');
 
     assert.equal(findAll('.simple-detail-display-wrapper').length, 1, 'Threads content loaded');
     assert.equal(findAll('.rsa-data-table-body-rows .rsa-data-table-body-row').length, 2, 'Threads data loaded');
@@ -41,7 +41,7 @@ module('Integration | Component | Anomalies/Threads', function(hooks) {
   test('Threads column names', async function(assert) {
     new ReduxDataHelper(initState).anomalies(anomaliesThreads).build();
     await render(hbs`{{host-detail/anomalies}}`);
-    await click('.rsa-nav-tab:nth-child(2)');
+    await click('.rsa-nav-tab:nth-child(3)');
 
     assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(1)').textContent.trim(), 'Start Address', 'Column 1 is Start Address');
     assert.equal(find('.rsa-data-table-header-row .rsa-data-table-header-cell:nth-child(2)').textContent.trim(), 'DLL Name', 'Column 2 is DLL Name');

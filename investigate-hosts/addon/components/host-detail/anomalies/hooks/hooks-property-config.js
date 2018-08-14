@@ -37,6 +37,12 @@ export default {
         {
           field: 'inlinePatch.currentAsm',
           format: 'LIST'
+        },
+        {
+          field: 'hookLocation.imageSize'
+        },
+        {
+          field: 'hookLocation.imageBase'
         }
       ]
     }
