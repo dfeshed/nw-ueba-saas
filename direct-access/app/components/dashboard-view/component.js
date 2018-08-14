@@ -23,6 +23,7 @@ const dashboardView = Component.extend({
   metaRate: ['/database/stats/meta.rate'],
   metaRateFunction: (stats) => {
     return {
+      // 5500 was used as the default max value from the thick client
       value: Math.min(Math.max(stats['/database/stats/meta.rate'], 5500), 0),
       display: `${(stats['/database/stats/meta.rate'] / 1000).toFixed(1)}K`
     };

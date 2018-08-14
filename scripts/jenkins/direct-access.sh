@@ -76,8 +76,9 @@ function buildDirectAccess {
     #if [[ "$EXTENT" == "FULL" || "$EXTENT" == "RPM" ]]
     #then
       rm -rf /mnt/libhq-SA/SAStyle/direct-access/*
-      # hosted here: https://libhq-ro.rsa.lab.emc.com/SA/SAStyle/direct-access/
-      mkdir -p /mnt/libhq-SA/SAStyle/direct-access && cp -r dist/* /mnt/libhq-SA/SAStyle/direct-access/
+      version="$(grep -Po '(?<="version": ")[^"]*' package.json)"
+      # tarball lives here: https://libhq-ro.rsa.lab.emc.com/SA/SAStyle/direct-access/direct-access-$version.tar.gz
+      mkdir -p /mnt/libhq-SA/SAStyle/direct-access && tar -czvf /mnt/libhq-SA/SAStyle/direct-access/direct-access-$version.tar.gz dist/*
       success "Hosted direct-access app has been updated"
     #fi
   fi

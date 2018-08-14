@@ -24,6 +24,11 @@ module.exports = function(defaults) {
     },
     'ember-cli-babel': {
       includePolyfill: true
+    },
+    fingerprint: {
+      // Disabling fingerprinting allows the core team to much more
+      // easily include our build assets
+      enabled: false
     }
   });
 
