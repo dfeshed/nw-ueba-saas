@@ -89,21 +89,21 @@ export const isWeeklyInterval = createSelector(
   (intervalUnit) => intervalUnit === 'WEEKS'
 );
 
-const runOnDays = createSelector(
+const runOnDaysOfWeek = createSelector(
   scheduleOptions,
   (schedule) => schedule.runOnDaysOfWeek || []
 );
 
 export const weekOptions = createSelector(
-  intervalType, runOnDays,
-  (intervalType, runOnDays) => {
+  intervalType, runOnDaysOfWeek,
+  (intervalType, runOnDaysOfWeek) => {
     if (intervalType === 'WEEKS') {
       const config = weeks.map((week) => {
         const label = `adminUsm.policy.scheduleConfiguration.recurrenceInterval.week.${week}`;
         return {
           label,
           week,
-          isActive: runOnDays.includes(week)
+          isActive: runOnDaysOfWeek.includes(week)
         };
       });
       return config;

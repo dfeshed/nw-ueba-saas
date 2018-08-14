@@ -2753,7 +2753,7 @@ export default {
         scheduleConfig: {
           enabled: 'Enabled',
           scanInterval: 'Recurrence',
-          startTime: 'Start Time',
+          runAtTime: 'Start Time',
           scheduleStartDate: 'Start Date',
           scanOptions: {
             cpuMax: 'CPU Max',
@@ -3460,7 +3460,7 @@ export default {
             SUNDAY: 'S'
           }
         },
-        startTime: 'Start Time',
+        runAtTime: 'Start Time',
         cpuThrottling: {
           title: 'Agent CPU Throttling',
           cpuMax: 'CPU Maximum ( % )',

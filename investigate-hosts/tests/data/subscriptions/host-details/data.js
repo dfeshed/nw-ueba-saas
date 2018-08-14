@@ -226,8 +226,8 @@ module.exports = {
         'interval': 1,
         'unit': 'WEEKS'
       },
-      'startTime': '22/01/2018',
-      'runOnDays': [
+      'runAtTime': '22/01/2018',
+      'runOnDaysOfWeek': [
         1,
         2
       ],

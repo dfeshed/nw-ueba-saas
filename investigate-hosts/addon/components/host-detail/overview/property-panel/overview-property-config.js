@@ -21,8 +21,8 @@ export default [
         labelKey: 'scheduleConfig.scanInterval'
       },
       {
-        field: 'scheduleConfig.startTime',
-        labelKey: 'scheduleConfig.startTime'
+        field: 'scheduleConfig.runAtTime',
+        labelKey: 'scheduleConfig.runAtTime'
       },
       {
         field: 'scheduleConfig.scheduleStartDate',

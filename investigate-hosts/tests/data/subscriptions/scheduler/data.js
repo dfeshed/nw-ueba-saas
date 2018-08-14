@@ -12,8 +12,8 @@ module.exports = {
     'schedule': {
       'recurrenceIntervalUnit': 'DAYS',
       'recurrenceInterval': 1,
-      'runOnDays': [1],
-      'startTime': '2017-08-29T10:23:49.452Z',
+      'runOnDaysOfWeek': [1],
+      'runAtTime': '2017-08-29T10:23:49.452Z',
       'timeZone': 'UTC'
     }
   }

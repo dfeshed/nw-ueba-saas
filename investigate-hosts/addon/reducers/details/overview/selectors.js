@@ -191,20 +191,20 @@ export const getPropertyData = createSelector(
       policyDetails.scheduledScanConfig.scanOptions) {
       const { scheduledScanConfig } = policyDetails;
       const { recurrentSchedule, scanOptions } = scheduledScanConfig;
-      const { recurrence, startTime, runOnDays, scheduleStartDate } = recurrentSchedule;
+      const { recurrence, runAtTime, runOnDaysOfWeek, scheduleStartDate } = recurrentSchedule;
       const { unit, interval } = recurrence;
       let scanInterval = '';
       if (unit === 'DAYS') {
         scanInterval = (interval === 1 ? 'Every Day' : `Every ${interval} Days`);
       } else {
         const week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-        const weekDay = week[runOnDays[0] + 1];
+        const weekDay = week[runOnDaysOfWeek[0] + 1];
         scanInterval = `Every ${interval} week(s) on ${weekDay}`;
       }
       const scheduleConfig = {
         enabled: policyDetails.scheduledScanConfig.enabled,
         scanInterval,
-        startTime,
+        runAtTime,
         scheduleStartDate,
         scanOptions
       };
@@ -215,7 +215,7 @@ export const getPropertyData = createSelector(
       const scheduleConfig = {
         enabled: '',
         scanInterval: '',
-        startTime: '',
+        runAtTime: '',
         scheduleStartDate: '',
         scanOptions: ''
       };

@@ -6,8 +6,8 @@ export default {
         'interval': 1,
         'unit': 'WEEKS'
       },
-      'startTime': 'start-time',
-      'runOnDays': [
+      'runAtTime': 'start-time',
+      'runOnDaysOfWeek': [
         1,
         2
       ],
