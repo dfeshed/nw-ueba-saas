@@ -23,8 +23,8 @@
     <br>
     {{rsa-loader size='medium'}}
   {{else if operationResponse}}
-    <div class="small-header top-margin">Response</div>
-    <div class="scroll-box response-panel padding">
+    <div class="small-header top-margin">Response (Click text to select)</div>
+    <div class="scroll-box response-panel padding" {{action "selectResponseText"}}>
       <pre>{{response}}</pre>
     </div>
   {{/if}}

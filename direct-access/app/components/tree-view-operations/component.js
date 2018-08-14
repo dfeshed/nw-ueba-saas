@@ -31,7 +31,26 @@ const treeViewOperations = Component.extend({
   },
 
   @computed('filteredOperationNames')
-  hasOperations: (filteredOperationNames) => filteredOperationNames.length > 0
+  hasOperations: (filteredOperationNames) => filteredOperationNames.length > 0,
+
+  actions: {
+    selectResponseText() {
+      const [ text ] = this.$('.response-panel');
+      let range, selection;
+
+      if (document.body.createTextRange) {
+        range = document.body.createTextRange();
+        range.moveToElementText(text);
+        range.select();
+      } else if (window.getSelection) {
+        selection = window.getSelection();
+        range = document.createRange();
+        range.selectNodeContents(text);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+    }
+  }
 });
 
 export default connect(stateToComputed, dispatchToActions)(treeViewOperations);
