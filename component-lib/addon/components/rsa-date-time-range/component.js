@@ -10,7 +10,7 @@ export default Component.extend({
 
   classNames: ['rsa-date-time-range'],
   classNameBindings: ['hasErrors'],
-  attributeBindings: ['title'],
+  attributeBindings: ['title', 'startTimestamp', 'endTimestamp'],
 
   /**
    * The timezone (e.g., America/Los_Angeles) to use in converting the timestamp to a human readable date relative
