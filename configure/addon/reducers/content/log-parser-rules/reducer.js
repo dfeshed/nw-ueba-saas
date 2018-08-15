@@ -44,9 +44,11 @@ export default reduxActions.handleActions({
       failure: (state) => state.set('sampleLogsStatus', 'error'),
       success: (state) => {
         const { payload: { data = [] } } = action;
+        const requestSampleLogs = action.payload.request ? action.payload.request.logs.logs[0] : baselineSampleLog;
         return state.merge(
           {
-            sampleLogs: data.length ? data : baselineSampleLog,
+            // if no data from api, set sampleLogs state to what ever is in the request or baselineSampleLog
+            sampleLogs: data.length ? data : requestSampleLogs,
             sampleLogsStatus: 'completed'
           }
         );
@@ -90,10 +92,10 @@ export default reduxActions.handleActions({
     handle(state, action, {
       start: (state) => {
         return state.merge({
+          parserRulesStatus: 'wait',
           parserRules: [],
           parserRulesOriginal: [],
-          selectedParserRuleIndex: 0,
-          parserRulesStatus: 'wait'
+          selectedParserRuleIndex: 0
         });
       },
       failure: (state) => {
@@ -121,7 +123,12 @@ export default reduxActions.handleActions({
   },
 
   [ACTION_TYPES.SELECT_LOG_PARSER]: (state, { payload }) => {
-    return state.set('selectedLogParserIndex', payload);
+    return state.merge(
+      {
+        selectedLogParserIndex: payload,
+        sampleLogsStatus: 'wait'
+      }
+    );
   },
 
   [ACTION_TYPES.DELETE_PARSER_RULE]: (state) => {

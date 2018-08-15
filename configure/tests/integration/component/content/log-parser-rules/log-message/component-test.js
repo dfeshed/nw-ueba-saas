@@ -144,23 +144,23 @@ module('Integration | Component | Configure - Content - Sample Log Message', fun
   test('Paste works', async function(assert) {
     setState();
     await render(hbs`{{content/log-parser-rules/log-message keyUpDelay=100 maxlength=20}}`);
-    await fillIn('pre', '');
-    await click('pre');
-    await triggerEvent('pre', 'paste', { clipboardData: { getData: () => '123456789' } });
-    assert.equal(find('pre').textContent.trim(), '123456789', 'Paste OK');
+    await fillIn('.sample-log-text', '');
+    await click('.sample-log-text');
+    await triggerEvent('.sample-log-text', 'paste', { clipboardData: { getData: () => '123456789' } });
+    await assert.equal(find('pre').textContent.trim(), '123456789', 'Paste OK');
   });
 
   test('Paste more than maxlength', async function(assert) {
     setState();
     await render(hbs`{{content/log-parser-rules/log-message keyUpDelay=100 maxlength=5}}`);
-    await fillIn('pre', '');
-    await click('pre');
+    await fillIn('.sample-log-text', '');
+    await click('.sample-log-text');
     patchFlash((flash) => {
       const translation = this.owner.lookup('service:i18n');
       const expectedMessage = translation.t('configure.logsParser.tooManyLogMessages');
       assert.equal(flash.type, 'warning');
       assert.equal(flash.message.string, expectedMessage);
     });
-    await triggerEvent('pre', 'paste', { clipboardData: { getData: () => 'asdfghjkl' } });
+    await triggerEvent('.sample-log-text', 'paste', { clipboardData: { getData: () => 'asdfghjkl' } });
   });
 });

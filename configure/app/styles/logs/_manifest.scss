@@ -122,6 +122,9 @@ div.modal-content.add-new-parser-rule {
         height: 230px;
         padding-bottom: 40px;
         padding-right: rsa-whitespace(more);
+        ul {
+          height: 230px;
+        }
       }
       .values {
         padding-right: rsa-whitespace(more);

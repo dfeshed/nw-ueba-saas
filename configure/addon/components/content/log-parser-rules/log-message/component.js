@@ -31,6 +31,7 @@ const SampleLogMessage = Component.extend({
   scrollTop: 0,
   scrollLeft: 0,
   i18n: service(),
+  pasteHandler: null,
 
   /**
    * Plain text verion of the edited sample logs to be shown when running log highlighting
@@ -76,16 +77,15 @@ const SampleLogMessage = Component.extend({
   onPaste(event) {
     const existingLogsLength = this.element.querySelector('pre').innerText.length;
     const clipboardText = event.clipboardData.getData('text/plain');
+    event.preventDefault();
     if (existingLogsLength + clipboardText.length > this.get('maxlength')) {
       get(this, 'flashMessages').warning(this.i18n.t('configure.logsParser.tooManyLogMessages'), {
         sticky: false,
         timeout: 5000
       });
-      event.preventDefault();
     } else {
       document.execCommand('insertText', false, clipboardText);
     }
-    return false;
   },
   /**
    * Handle the key up event, ignoring the arrow keys so that cursor navigation in the contentedible element does not
@@ -109,13 +109,21 @@ const SampleLogMessage = Component.extend({
   didRender() {
     this._super(...arguments);
     const sampleLogText = this.element.querySelector('.sample-log-text');
-    sampleLogText.addEventListener('paste', this.onPaste.bind(this));
+    let pasteHandler = this.get('pasteHandler');
+    if (!pasteHandler) {
+      pasteHandler = this.onPaste.bind(this);
+      this.set('pasteHandler', pasteHandler);
+    }
+
+    sampleLogText.addEventListener('paste', pasteHandler);
+
     sampleLogText.scrollLeft = this.get('scrollLeft');
     sampleLogText.scrollTop = this.get('scrollTop');
   },
   willDestroyElement() {
     this._super(...arguments);
-    this.element.querySelector('.sample-log-text').removeEventListener('paste', this.onPaste.bind(this));
+    const pasteHandler = this.get('pasteHandler');
+    this.element.querySelector('.sample-log-text').removeEventListener('paste', pasteHandler);
   }
 });
 
