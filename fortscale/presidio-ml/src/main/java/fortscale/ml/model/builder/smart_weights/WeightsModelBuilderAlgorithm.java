@@ -20,7 +20,7 @@ public class WeightsModelBuilderAlgorithm {
     private static final Logger logger = Logger.getLogger(WeightsModelBuilderAlgorithm.class);
 
     public static final double MAX_ALLOWED_WEIGHT_DEFAULT = 0.1;
-    public static final double MIN_ALLOWED_WEIGHT_DEFAULT = 0.01;
+    public static final double MIN_ALLOWED_WEIGHT_DEFAULT = MAX_ALLOWED_WEIGHT_DEFAULT * 0.1;
     private static final double PENALTY_LOG_BASE_DEFAULT = 5;
     private static final double SIMULATION_WEIGHT_DECAY_FACTOR_DEFAULT = 0.8;
     private BiFunction<List<SmartAggregatedRecordDataContainer>, Integer, AggregatedFeatureReliability> aggregatedFeatureReliabilityFactory;

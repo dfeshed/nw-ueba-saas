@@ -7,21 +7,26 @@ import fortscale.smart.record.conf.ClusterConf;
 import java.time.Instant;
 import java.util.*;
 
+import static fortscale.ml.model.builder.smart_weights.WeightsModelBuilderAlgorithm.MIN_ALLOWED_WEIGHT_DEFAULT;
+
 /**
- * Created by barak_schuster on 31/08/2017.
+ * @author Barak Schuster.
+ * @author Lior Govrin.
  */
 public class SmartWeightModelTestUtils {
 
     public static ClusterConf createClusterConf(String... featureName) {
-        return new ClusterConf(Arrays.asList(featureName), 0.01);
+        return new ClusterConf(Arrays.asList(featureName), MIN_ALLOWED_WEIGHT_DEFAULT);
     }
 
     public static ClusterConf createClusterConf(double weight, String... featureName) {
         return new ClusterConf(Arrays.asList(featureName), weight);
     }
+
     public static List<ClusterConf> createClusterConfs(ClusterConf ...clusterConfs) {
         return Lists.newArrayList(clusterConfs);
     }
+
     public static class TestData {
         public List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainers;
         public List<ClusterConf> clusterConfs;
@@ -56,6 +61,4 @@ public class SmartWeightModelTestUtils {
             clusterConfs = createClusterConfs(c1, c2, c3, c4, c5, c6, c7);
         }
     }
-
-
 }
