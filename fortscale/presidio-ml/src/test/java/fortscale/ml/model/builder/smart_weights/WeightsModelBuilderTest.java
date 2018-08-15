@@ -1,6 +1,5 @@
 package fortscale.ml.model.builder.smart_weights;
 
-
 import fortscale.ml.model.SmartWeightsModel;
 import fortscale.ml.model.metrics.WeightModelBuilderMetricsContainer;
 import fortscale.ml.model.retriever.smart_data.SmartWeightsModelBuilderData;
@@ -16,9 +15,9 @@ import org.mockito.Mockito;
 import java.util.Collections;
 import java.util.List;
 
-
 /**
- * Created by barak_schuster on 31/08/2017.
+ * @author Barak Schuster.
+ * @author Lior Govrin.
  */
 public class WeightsModelBuilderTest {
 
@@ -48,7 +47,7 @@ public class WeightsModelBuilderTest {
         SmartRecordConf entityEventConf = Mockito.mock(SmartRecordConf.class);
         Mockito.when(entityEventConf.getClusterConfs()).thenReturn(clusterConfs);
         Mockito.when(smartRecordConfService.getSmartRecordConf(Mockito.eq(smartRecordConfName))).thenReturn(entityEventConf);
-        return new WeightsModelBuilderConf(smartRecordConfName, null, null);
+        return new WeightsModelBuilderConf(smartRecordConfName, null);
     }
 
     private WeightsModelBuilder createModelBuilder() {
@@ -74,7 +73,7 @@ public class WeightsModelBuilderTest {
         String entityEventConfName = "smartRecordConfName";
         Mockito.when(smartRecordConfService.getSmartRecordConf(Mockito.eq(entityEventConfName))).thenReturn(null);
 
-        new WeightsModelBuilder(new WeightsModelBuilderConf(entityEventConfName, null, Collections.emptyList()), modelBuilderAlgorithm,smartRecordConfService, weightModelBuilderMetricsContainer);
+        new WeightsModelBuilder(new WeightsModelBuilderConf(entityEventConfName, null), modelBuilderAlgorithm, smartRecordConfService, weightModelBuilderMetricsContainer);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -91,7 +90,7 @@ public class WeightsModelBuilderTest {
                 Mockito.eq(this.clusterConfs),
                 Mockito.eq(modelBuilderData.getSmartAggregatedRecordDataContainers()),
                 Mockito.eq(modelBuilderData.getNumOfContexts()),
-                Mockito.anyInt(), Mockito.anyList(),
+                Mockito.anyInt(),
                 Mockito.eq(weightModelBuilderMetricsContainer)
         )).thenReturn(clusterConfs);
 
@@ -99,5 +98,4 @@ public class WeightsModelBuilderTest {
 
         Assert.assertEquals(clusterConfs, model.getClusterConfs());
     }
-
 }

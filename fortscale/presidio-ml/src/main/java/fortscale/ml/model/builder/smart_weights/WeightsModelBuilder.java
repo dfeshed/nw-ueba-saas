@@ -10,8 +10,6 @@ import fortscale.smart.record.conf.SmartRecordConfService;
 import fortscale.utils.logging.Logger;
 import org.springframework.util.Assert;
 
-import java.util.List;
-
 /**
  * Full documentation can be found here: https://fortscale.atlassian.net/wiki/pages/viewpage.action?pageId=75071492
  */
@@ -20,7 +18,6 @@ public class WeightsModelBuilder implements IModelBuilder {
 
     private int numOfSimulations;
     private SmartRecordConf smartRecordConf;
-    private List<String> zeroWeightFeatures;
     private WeightsModelBuilderAlgorithm algorithm;
     private WeightModelBuilderMetricsContainer weightModelBuilderMetricsContainer;
 
@@ -33,7 +30,6 @@ public class WeightsModelBuilder implements IModelBuilder {
         Assert.notNull(entityEventConf, String.format("did not found smartConf for name=%s", smartRecordConfName));
         this.numOfSimulations = conf.getNumOfSimulations();
         this.smartRecordConf = entityEventConf;
-        this.zeroWeightFeatures = conf.getZeroWeightFeatures();
         this.algorithm = algorithm;
         this.weightModelBuilderMetricsContainer = weightModelBuilderMetricsContainer;
     }
@@ -48,13 +44,15 @@ public class WeightsModelBuilder implements IModelBuilder {
                 smartWeightsModelBuilderData.getSmartAggregatedRecordDataContainers(),
                 smartWeightsModelBuilderData.getNumOfContexts(),
                 numOfSimulations,
-                zeroWeightFeatures,
                 weightModelBuilderMetricsContainer
         )).setNumOfPartitions(numOfPartitions);
     }
 
     protected SmartWeightsModelBuilderData castModelBuilderData(Object modelBuilderData) {
-        Assert.isInstanceOf(SmartWeightsModelBuilderData.class, modelBuilderData, String.format("model builder data type is=%s, should be=%s", modelBuilderData.getClass().getSimpleName(), SmartWeightsModelBuilderData.class.getSimpleName()));
+        Assert.isInstanceOf(SmartWeightsModelBuilderData.class, modelBuilderData, String.format(
+                "model builder data type is=%s, should be=%s",
+                modelBuilderData.getClass().getSimpleName(), SmartWeightsModelBuilderData.class.getSimpleName()
+        ));
         return (SmartWeightsModelBuilderData) modelBuilderData;
     }
 }

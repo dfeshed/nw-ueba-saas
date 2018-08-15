@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
 public class WeightsModelBuilderAlgorithm {
     private static final Logger logger = Logger.getLogger(WeightsModelBuilderAlgorithm.class);
 
-    static final double MAX_ALLOWED_WEIGHT_DEFAULT = 0.1;
-    private static final double MIN_ALLOWED_WEIGHT_DEFAULT = MAX_ALLOWED_WEIGHT_DEFAULT*0.1;
+    public static final double MAX_ALLOWED_WEIGHT_DEFAULT = 0.1;
+    public static final double MIN_ALLOWED_WEIGHT_DEFAULT = MAX_ALLOWED_WEIGHT_DEFAULT * 0.1;
     private static final double PENALTY_LOG_BASE_DEFAULT = 5;
     private static final double SIMULATION_WEIGHT_DECAY_FACTOR_DEFAULT = 0.8;
     private BiFunction<List<SmartAggregatedRecordDataContainer>, Integer, AggregatedFeatureReliability> aggregatedFeatureReliabilityFactory;
@@ -68,32 +68,25 @@ public class WeightsModelBuilderAlgorithm {
                                                        List<SmartAggregatedRecordDataContainer> smartAggregatedRecordDataContainers,
                                                        int numOfContexts,
                                                        int numOfSimulations,
-                                                       List<String> zeroWeightFeatures,
                                                        WeightModelBuilderMetricsContainer weightModelBuilderMetricsContainer) {
-        if(smartAggregatedRecordDataContainers.isEmpty())
-        {
+        if (smartAggregatedRecordDataContainers.isEmpty()) {
             logger.warn("building model from empty data");
             return clusterConfsPrototype;
         }
-        // first give a penalty to every feature based on how reliable it is (it shouldn't be too noisy)
-        List<ClusterConf> clusterConfs = calculateClusterConfsViaReliability(smartAggregatedRecordDataContainers, clusterConfsPrototype, numOfContexts);
-        // set zero weight to cluster which contains feature that should get zero weight.
-        if(zeroWeightFeatures != null && !zeroWeightFeatures.isEmpty()){
-            for(ClusterConf clusterConf: clusterConfs){
-                for(String aggregationRecordName: clusterConf.getAggregationRecordNames()){
-                    if(zeroWeightFeatures.contains(aggregationRecordName)){
-                        clusterConf.setWeight(0.0);
-                        break;
-                    }
-                }
-            }
-        }
-        // then, after setting the initial guess, perform many simulations in order to make the initial guess better
-        List<ClusterConf> zeroWeightFeaturesClusterConfs = clusterConfs.stream().filter(clusterConf -> clusterConf.getWeight()==0).collect(Collectors.toList());
-        clusterConfs = clusterConfs.stream().filter(clusterConf -> clusterConf.getWeight()>0).collect(Collectors.toList());
-        clusterConfs = calculateClusterConfsViaSimulations(smartAggregatedRecordDataContainers, clusterConfs, numOfSimulations);
-        clusterConfs.addAll(zeroWeightFeaturesClusterConfs);
 
+        // Filter out cluster confs with weight less than the minimum threshold.
+        List<ClusterConf> clusterConfsWithLowWeights = clusterConfsPrototype.stream()
+                .filter(clusterConf -> clusterConf.getWeight() < minAllowedWeight)
+                .collect(Collectors.toList());
+        List<ClusterConf> clusterConfs = clusterConfsPrototype.stream()
+                .filter(clusterConf -> clusterConf.getWeight() >= minAllowedWeight)
+                .collect(Collectors.toList());
+        // Give a penalty to every feature based on how reliable it is (it shouldn't be too noisy).
+        clusterConfs = calculateClusterConfsViaReliability(smartAggregatedRecordDataContainers, clusterConfs, numOfContexts);
+        // After setting the initial guess, perform many simulations in order to make the initial guess better.
+        clusterConfs = calculateClusterConfsViaSimulations(smartAggregatedRecordDataContainers, clusterConfs, numOfSimulations);
+        // Add back the cluster confs with low weights.
+        clusterConfs.addAll(clusterConfsWithLowWeights);
         weightModelBuilderMetricsContainer.updateMetric(clusterConfs);
         return clusterConfs;
     }

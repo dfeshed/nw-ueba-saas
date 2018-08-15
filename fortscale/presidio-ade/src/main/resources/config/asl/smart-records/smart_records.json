@@ -9,6 +9,20 @@
       },
       "fixedDurationStrategy": "fixed_duration_hourly",
       "includeAllAggregationRecords": true,
+      "clusterConfs": [
+        {
+          "aggregationRecordNames": [
+            "userAccountLockedScoreUserIdActiveDirectoryHourly"
+          ],
+          "weight": 0.0
+        },
+        {
+          "aggregationRecordNames": [
+            "userAccountUnlockedScoreUserIdActiveDirectoryHourly"
+          ],
+          "weight": 0.0
+        }
+      ],
       "excludedAggregationRecords": [
         "numberOfDistinctSrcMachineIdUserIdAuthenticationHourly",
         "numberOfDistinctDstMachineIdUserIdAuthenticationHourly",

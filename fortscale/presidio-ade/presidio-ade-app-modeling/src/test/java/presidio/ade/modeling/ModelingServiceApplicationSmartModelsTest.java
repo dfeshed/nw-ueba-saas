@@ -1,23 +1,19 @@
 package presidio.ade.modeling;
 
 import com.google.common.collect.Lists;
-import fortscale.aggregation.configuration.AslConfigurationPaths;
-import fortscale.aggregation.configuration.AslResourceFactory;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
-import fortscale.ml.model.*;
-import fortscale.ml.model.builder.smart_weights.WeightsModelBuilderConf;
+import fortscale.ml.model.SmartWeightsModel;
 import fortscale.ml.model.store.ModelDAO;
-import fortscale.ml.model.store.ModelStore;
 import fortscale.smart.record.conf.ClusterConf;
 import fortscale.smart.record.conf.SmartRecordConfService;
+import fortscale.utils.data.Pair;
 import fortscale.utils.shell.BootShim;
 import fortscale.utils.shell.BootShimConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.store.record.StoreMetadataProperties;
 import fortscale.utils.test.category.ModuleTestCategory;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
-import fortscale.utils.data.Pair;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,8 +49,11 @@ import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static fortscale.ml.model.builder.smart_weights.WeightsModelBuilderAlgorithm.MIN_ALLOWED_WEIGHT_DEFAULT;
+
 /**
- * Created by barak_schuster on 9/4/17.
+ * @author Barak Schuster.
+ * @author Lior Govrin.
  */
 @Category(ModuleTestCategory.class)
 @ContextConfiguration
@@ -66,17 +65,11 @@ public class ModelingServiceApplicationSmartModelsTest {
     @Autowired
     protected MongoTemplate mongoTemplate;
     @Autowired
-    private ModelStore modelStore;
-    @Autowired
     private SmartAccumulationDataStore smartAccumulationDataStore;
-    @Autowired
-    private ModelingService modelingService;
     @Autowired
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
     @Autowired
     private SmartRecordConfService smartRecordConfService;
-    @Autowired
-    private AslResourceFactory aslResourceFactory;
     @Value("${presidio.ade.modeling.smart.records.base.configuration.path}")
     private String smartRecordsBaseConfigurationPath;
     @Value("${presidio.ade.modeling.feature.aggregation.records.group.name}")
@@ -99,8 +92,6 @@ public class ModelingServiceApplicationSmartModelsTest {
      * <p>
      * Expected result:
      * Descending avg weight between groups.
-     *
-     * @throws GeneratorException
      */
     @Test
     public void simpleWeightModelWithDescendingScoreTest() throws GeneratorException {
@@ -138,8 +129,6 @@ public class ModelingServiceApplicationSmartModelsTest {
      * <p>
      * Expected result:
      * Descending avg weight between groups.
-     *
-     * @throws GeneratorException
      */
     @Test
     public void weightModelWithDescendingScoreAndSameProbabilityTest() throws GeneratorException {
@@ -169,8 +158,6 @@ public class ModelingServiceApplicationSmartModelsTest {
      * <p>
      * Expected result:
      * Descending avg weight between groups.
-     *
-     * @throws GeneratorException
      */
     @Test
     public void weightModelWithSameScoreAndDescendingProbabilityTest() throws GeneratorException {
@@ -201,8 +188,6 @@ public class ModelingServiceApplicationSmartModelsTest {
      * <p>
      * results:
      * weight of second group features should be lower than weight of first group.
-     *
-     * @throws GeneratorException
      */
     @Test
     public void weightModelWithSameFeatureForSmartsIDayAndDescendingScoreTest() throws GeneratorException {
@@ -212,7 +197,7 @@ public class ModelingServiceApplicationSmartModelsTest {
         int probability = 100;
         int numOfSmarts = 10;
 
-        List<AggregatedFeatureEventConf> features = getAggregatedFeatureWithoutZeroWeightFeatures();
+        List<AggregatedFeatureEventConf> features = getIncludedAggregatedFeatureEventConfs();
         List<List<AggregatedFeatureEventConf>> featureGroups = Lists.partition(features, groupSize);
 
         int contextIdPatternIndex = 0;
@@ -251,13 +236,12 @@ public class ModelingServiceApplicationSmartModelsTest {
      * @param generatorContextIdPattern generatorContextIdPattern
      * @param daysBackFrom              daysBackFrom
      * @param daysBackTo                daysBackTo
-     * @throws GeneratorException
      */
     public List<String> GenerateAccumulatedSmartsWithFeaturesGroup(List<AggregatedFeatureEventConf> group, Double score, int probability, int numOfSmarts, String generatorContextIdPattern, int daysBackFrom, int daysBackTo) throws GeneratorException {
         LinkedHashMap<List<AggregatedFeatureEventConf>, Pair<Double, Integer>> featuresGroupToScoreAndProbabilityMap = new LinkedHashMap<>();
         featuresGroupToScoreAndProbabilityMap.put(group, new Pair<>(score, probability));
         GenerateAccumulatedSmarts(featuresGroupToScoreAndProbabilityMap, numOfSmarts, generatorContextIdPattern, daysBackFrom, daysBackTo);
-        return group.stream().map(features -> features.getName()).collect(Collectors.toList());
+        return group.stream().map(AggregatedFeatureEventConf::getName).collect(Collectors.toList());
     }
 
 
@@ -273,11 +257,11 @@ public class ModelingServiceApplicationSmartModelsTest {
         List<ClusterConf> clusterConfs = ((SmartWeightsModel) weightModel.get(0).getModel()).getClusterConfs();
 
         for (List<AggregatedFeatureEventConf> aggregatedFeatureEventConf : featuresGroupToScoreAndProbabilityMap.keySet()) {
-            List<String> features = aggregatedFeatureEventConf.stream().map(feature -> feature.getName()).collect(Collectors.toList());
+            List<String> features = aggregatedFeatureEventConf.stream().map(AggregatedFeatureEventConf::getName).collect(Collectors.toList());
 
             //suppose that each cluster contains 1 feature
             List<ClusterConf> filteredClusterConf = clusterConfs.stream().filter(clusterConf -> features.contains(clusterConf.getAggregationRecordNames().get(0))).collect(Collectors.toList());
-            Double avgFeaturesWeight = filteredClusterConf.stream().mapToDouble(conf -> conf.getWeight()).average().getAsDouble();
+            Double avgFeaturesWeight = filteredClusterConf.stream().mapToDouble(ClusterConf::getWeight).average().getAsDouble();
 
             Assert.assertTrue(oneBeforeCurrentAvgWeight < avgFeaturesWeight);
             oneBeforeCurrentAvgWeight = avgFeaturesWeight;
@@ -302,10 +286,10 @@ public class ModelingServiceApplicationSmartModelsTest {
         List<ClusterConf> secondClusterConfGroup = clusterConfs.stream().filter(clusterConf -> lowScoreFeaturesForRestDays.contains(clusterConf.getAggregationRecordNames().get(0))).collect(Collectors.toList());
 
         Double firstGroupWeight = firstClusterConfGroup.get(0).getWeight();
-        firstClusterConfGroup.forEach(conf -> Assert.assertTrue(conf.getWeight().equals(firstGroupWeight)));
+        firstClusterConfGroup.forEach(conf -> Assert.assertEquals(conf.getWeight(), firstGroupWeight));
 
         Double secondGroupWeight = secondClusterConfGroup.get(0).getWeight();
-        secondClusterConfGroup.forEach(conf -> Assert.assertTrue(conf.getWeight().equals(secondGroupWeight)));
+        secondClusterConfGroup.forEach(conf -> Assert.assertEquals(conf.getWeight(), secondGroupWeight));
 
         Assert.assertTrue(firstGroupWeight > secondGroupWeight);
     }
@@ -315,7 +299,6 @@ public class ModelingServiceApplicationSmartModelsTest {
      * Generate AccumulatedSmarts with context generator, time generator and featuresGroupToScore map.
      *
      * @param featuresGroupToScoreAndProbabilityMap List<List<featureConf>, pair<score, probability>>
-     * @throws GeneratorException
      */
     public void GenerateAccumulatedSmarts(LinkedHashMap<List<AggregatedFeatureEventConf>, Pair<Double, Integer>> featuresGroupToScoreAndProbabilityMap, int numOfSmarts, String generatorContextIdPattern, int daysBackFrom, int daysBackTo) throws GeneratorException {
         IStringGenerator contextIdGenerator = new StringRegexCyclicValuesGenerator(generatorContextIdPattern);
@@ -334,7 +317,7 @@ public class ModelingServiceApplicationSmartModelsTest {
      * @return features group to score and probability map
      */
     public LinkedHashMap<List<AggregatedFeatureEventConf>, Pair<Double, Integer>> createFeaturesGroup(int numOfGroups, Double score, int scoreInterval, int probability, int probabilityInterval) {
-        List<AggregatedFeatureEventConf> features = getAggregatedFeatureWithoutZeroWeightFeatures();
+        List<AggregatedFeatureEventConf> features = getIncludedAggregatedFeatureEventConfs();
         int groupSize = features.size()/numOfGroups;
         List<List<AggregatedFeatureEventConf>> featureGroups = Lists.partition(features, groupSize);
         LinkedHashMap<List<AggregatedFeatureEventConf>, Pair<Double, Integer>> featuresGroupToScoreAndProbabilityMap = new LinkedHashMap<>();
@@ -347,64 +330,20 @@ public class ModelingServiceApplicationSmartModelsTest {
         return featuresGroupToScoreAndProbabilityMap;
     }
 
-
     /**
-     * Create features group
+     * Filter out aggregation records with weights less than the minimum threshold and excluded aggregation records.
      *
-     * @param groupSize   group size
-     * @param firstScore
-     * @param secondScore
-     * @param probability
-     * @return
+     * @return only included aggregated feature event confs.
      */
-    public LinkedHashMap<List<AggregatedFeatureEventConf>, Pair<Double, Integer>> createFeaturesGroupPairs(int groupSize, Double firstScore, Double secondScore, int probability) {
-        List<AggregatedFeatureEventConf> features = getAggregatedFeatureWithoutZeroWeightFeatures();
-        List<List<AggregatedFeatureEventConf>> featureGroups = Lists.partition(features, groupSize);
-        LinkedHashMap<List<AggregatedFeatureEventConf>, Pair<Double, Integer>> featuresGroupToScoreAndProbabilityMap = new LinkedHashMap<>();
-
-        Iterator<List<AggregatedFeatureEventConf>> iterator = featureGroups.iterator();
-        if (iterator.hasNext()) {
-            List<AggregatedFeatureEventConf> firstGroup = iterator.next();
-
-            while (iterator.hasNext()) {
-                List<AggregatedFeatureEventConf> secondGroup = iterator.next();
-
-                featuresGroupToScoreAndProbabilityMap.put(firstGroup, new Pair<>(firstScore, probability));
-                featuresGroupToScoreAndProbabilityMap.put(secondGroup, new Pair<>(secondScore, probability));
-
-                firstGroup = secondGroup;
-
-            }
-        }
-        return featuresGroupToScoreAndProbabilityMap;
-    }
-
-
-    /**
-     * Filter zeroWeightFeatures
-     *
-     * @return aggregatedFeature list without zeroWeightFeatures
-     */
-    private List<AggregatedFeatureEventConf> getAggregatedFeatureWithoutZeroWeightFeatures() {
-        Collection<AslConfigurationPaths> modelConfigurationPathsCollection = Arrays.asList(
-                new AslConfigurationPaths(groupName, smartRecordsBaseConfigurationPath));
-        ModelConfServiceBuilder modelConfServiceBuilder = new ModelConfServiceBuilder(modelConfigurationPathsCollection, aslResourceFactory);
-
-        ModelConfService modelConfService = modelConfServiceBuilder.buildModelConfService(groupName);
-        List<ModelConf> modelConfs = modelConfService.getModelConfs();
-
-        List<String> zeroWeightFeatures = new ArrayList<>();
-
-        List<ModelConf> filteredWeightsModel = modelConfs.stream().filter(modelConf -> modelConf.getModelBuilderConf() instanceof WeightsModelBuilderConf).collect(Collectors.toList());
-
-        for (ModelConf modelConf : filteredWeightsModel) {
-            zeroWeightFeatures.addAll(((WeightsModelBuilderConf) modelConf.getModelBuilderConf()).getZeroWeightFeatures());
-        }
-
-        List<AggregatedFeatureEventConf> aggregatedFeatureEventConfList = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList();
+    private List<AggregatedFeatureEventConf> getIncludedAggregatedFeatureEventConfs() {
+        Set<String> aggregationRecordNamesWithLowWeights = smartRecordConfService.getSmartRecordConf("userId_hourly").getClusterConfs().stream()
+                .filter(clusterConf -> clusterConf.getWeight() < MIN_ALLOWED_WEIGHT_DEFAULT)
+                .map(ClusterConf::getAggregationRecordNames)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toSet());
         List<String> excludedAggregationRecords = smartRecordConfService.getSmartRecordConf("userId_hourly").getExcludedAggregationRecords();
-        return aggregatedFeatureEventConfList.stream()
-                .filter(aggregatedFeatureEventConf -> !zeroWeightFeatures.contains(aggregatedFeatureEventConf.getName()))
+        return aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList().stream()
+                .filter(aggregatedFeatureEventConf -> !aggregationRecordNamesWithLowWeights.contains(aggregatedFeatureEventConf.getName()))
                 .filter(aggregatedFeatureEventConf -> !excludedAggregationRecords.contains(aggregatedFeatureEventConf.getName()))
                 .collect(Collectors.toList());
     }
@@ -429,7 +368,7 @@ public class ModelingServiceApplicationSmartModelsTest {
     @Import({MongodbTestConfig.class, BootShimConfig.class, ModelingServiceConfiguration.class, SmartAccumulationDataStoreConfig.class})
     public static class ModelingServiceApplicationSmartModelsTestConfig {
         @Bean
-        public static TestPropertiesPlaceholderConfigurer continousModelingServiceConfigurationTestPropertiesPlaceholderConfigurer() {
+        public static TestPropertiesPlaceholderConfigurer continuousModelingServiceConfigurationTestPropertiesPlaceholderConfigurer() {
             Properties properties = new Properties();
             // Feature bucket conf service
             properties.put("presidio.ade.modeling.feature.bucket.confs.base.path", "classpath*:config/asl/feature-buckets/**/*.json");

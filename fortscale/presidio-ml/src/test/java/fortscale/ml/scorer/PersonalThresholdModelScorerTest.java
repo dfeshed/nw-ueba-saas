@@ -17,9 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import presidio.ade.domain.record.AdeRecordReader;
 
 import java.time.Instant;
@@ -30,7 +28,6 @@ import static org.mockito.Mockito.when;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class)
 public class PersonalThresholdModelScorerTest {
 
     @Configuration
@@ -142,7 +139,7 @@ public class PersonalThresholdModelScorerTest {
     private FeatureScore calculateScore(String featureScoreName,
                                         FeatureScore baseScore,
                                         PersonalThresholdModel personalThresholdModel,
-                                        Model baseScorerModel) throws Exception {
+                                        Model baseScorerModel) {
         return calculateScore(featureScoreName,
                 baseScore,
                 personalThresholdModel,
@@ -154,7 +151,7 @@ public class PersonalThresholdModelScorerTest {
                                         FeatureScore baseScore,
                                         PersonalThresholdModel personalThresholdModel,
                                         Model baseScorerModel,
-                                        double maxRatioFromUniformThreshold) throws Exception {
+                                        double maxRatioFromUniformThreshold) {
         AdeRecordReader adeRecordReader = new TestAdeRecord().setContext("context value").getAdeRecordReader();
         scorerFactoryService.register(baseScorerConf.getFactoryName(), factoryConfig -> baseScorer);
         Mockito.when(baseScorer.calculateScore(adeRecordReader)).thenReturn(baseScore);
@@ -178,7 +175,7 @@ public class PersonalThresholdModelScorerTest {
     }
 
     @Test
-    public void shouldDelegateToBaseScorerUsingCalibrationInModel() throws Exception {
+    public void shouldDelegateToBaseScorerUsingCalibrationInModel() {
         PersonalThresholdModel personalThresholdModel = new PersonalThresholdModel(100, 1000, 0.9);
         String featureScoreName = "calibrated score";
         Model baseScorerModel = () -> 10;
@@ -195,7 +192,7 @@ public class PersonalThresholdModelScorerTest {
     }
 
     @Test
-    public void shouldDelegateToBaseScorerUsingZeroCalibrationIfModelIsNull() throws Exception {
+    public void shouldDelegateToBaseScorerUsingZeroCalibrationIfModelIsNull() {
         String featureScoreName = "calibrated score";
         double score = 0.95;
         FeatureScore baseScore = new FeatureScore("base score", score);
