@@ -5,9 +5,9 @@
     <parent>
         <groupId>presidio.ui</groupId>
         <artifactId>presidio-ui</artifactId>
-        <version>2.0.16-SNAPSHOT</version>
+        <version>2.0.16</version>
     </parent>
-    <version>2.0.16-SNAPSHOT</version>
+    <version>2.0.16</version>
 
     <artifactId>presidio-ui-app</artifactId>
 
