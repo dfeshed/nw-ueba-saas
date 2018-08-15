@@ -1970,8 +1970,7 @@ export default {
         KNOWN: 'KNOWN',
         SUSPICIOUS: 'SUSPICIOUS',
         MALICIOUS: 'MALICIOUS',
-        KNOWN_GOOD: 'KNOWN GOOD',
-        Submitted: 'Submitted'
+        KNOWN_GOOD: 'KNOWN GOOD'
       }
     },
     fields: {
