@@ -2,6 +2,6 @@
   {{yield item.label item.value}}
 {{else}}
   {{#rsa-content-definition label=(t item.label) value=item.value}}
-    {{host-detail/base-property-panel/property-value value=item.value format=item.format}}
+    {{host-detail/base-property-panel/property-value property=item }}
   {{/rsa-content-definition}}
 {{/if}}
