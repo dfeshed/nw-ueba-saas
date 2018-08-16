@@ -228,14 +228,17 @@ export const highlightedLogs = createSelector(
     let logs = sampleLogs;
     const normalizedRuleName = selectedRuleName.replace(/\s/g, '');
     if (normalizedRuleName) {
+      // single match, the rule name is at the end othe css class name ending by a ' character
       logs = sampleLogs.replace(new RegExp(`_${normalizedRuleName}'`, 'g'), '_is-selected\'');
+      // overlap match, many rule names are in the css class separated by space
+      logs = logs.replace(new RegExp(`_${normalizedRuleName} `, 'g'), '_is-selected ');
     }
     logs = logs.replace(/highlight_literal_/g, 'highlight-literal ').replace(/highlight_capture_/g, 'highlight-capture ');
     return logs;
   }
 );
 
-const _highlightingMatch = /highlight_[capture|literal]+_(.+?)'/g;
+const _highlightingMatch = /highlight_[capture|literal|captureoverlap|literaloverlap]+_(.+?)[ ']/g;
 // Returns the rule names that have highlight matches in the sample logs
 export const highlightedRuleNames = createSelector(
   sampleLogs,

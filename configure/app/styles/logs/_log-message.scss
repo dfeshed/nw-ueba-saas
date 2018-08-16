@@ -25,16 +25,6 @@
     min-width: 640px;
   }
 
-  .highlight-capture {
-    font-weight: bold;
-    background-color: #FFA000;
-    color: black; // always shows as black for non-"is-selected" hightlight text (regardless of theme)
-    &.is-selected {
-      color: white; // always show as white text regardless of theme
-      background-color: #01579B;
-    }
-  }
-
   .highlight-literal {
     font-weight: bold;
     background-color: #FFD54F;
@@ -43,5 +33,23 @@
       background-color: #03A9F4;
       color: white; // always show as white text regardless of theme
     }
+  }
+
+  .highlight-capture, .overlap {
+    font-weight: bold;
+    background-color: #FFA000;
+    color: black; // always shows as black for non-"is-selected" hightlight text (regardless of theme)
+    &.is-selected {
+      color: white; // always show as white text regardless of theme
+      background-color: #01579B;
+    }
+  }
+  span.highlight_captureoverlap_is-selected {
+    color: white;
+    background-color: #01579B;
+  }
+  span.highlight_literaloverlap_is-selected {
+    background-color: #03A9F4;
+    color: white;
   }
 }
