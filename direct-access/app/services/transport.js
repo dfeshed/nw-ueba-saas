@@ -3,6 +3,7 @@ import { Promise } from 'rsvp';
 import Channel from './transport/channel';
 import * as FLAGS from './transport/nw-flags';
 import parseFlags from './transport/parse-flags';
+import ENV from 'direct-access/config/environment';
 
 export default Service.extend({
 
@@ -10,7 +11,7 @@ export default Service.extend({
    * @private
    * Controls where transport will establish a connection.
    */
-  url: 'ws://localhost:50104/sdk/app/ws',
+  url: null,
 
   /**
    * @private
@@ -48,6 +49,22 @@ export default Service.extend({
    * Stores an array of messages queued for sending before the WS is fully connected.
    */
   messageQueue: [],
+
+  /**
+   * @private
+   * Sets up service variables
+   */
+  init() {
+    // Set the websocket URL based on whether or not this is a production build
+    if (ENV.environment === 'production') {
+      this.set('url', `ws://${window.location.host}/sdk/app/ws`);
+    } else {
+      // By default on a development build, set this to localhost.
+      // If you're developing and want to test the UI on a different endpoint,
+      // change this string.
+      this.set('url', 'ws://localhost:50104/sdk/app/ws');
+    }
+  },
 
   /**
    * @public

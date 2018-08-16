@@ -61,26 +61,26 @@ function buildDirectAccess {
     runEmberTestDirectAccessMockServer direct-access $4
 
     # 'ember build' when running full build
-    #if [[ "$EXTENT" == "FULL" || "$EXTENT" == "RPM" ]]
-    #then
+    if [[ "$EXTENT" == "FULL" || "$EXTENT" == "RPM" ]]
+    then
       # do not build apps that do not need `ember build`` run
-      #if [ "$2" = true ]
-      #then
+      if [ "$2" = true ]
+      then
         runEmberBuild direct-access
-      #fi
-    #fi
+      fi
+    fi
 
     success "direct-access is good!"
 
     #### Deploy direct-access to host if running full build
-    #if [[ "$EXTENT" == "FULL" || "$EXTENT" == "RPM" ]]
-    #then
+    if [[ "$EXTENT" == "FULL" || "$EXTENT" == "RPM" ]]
+    then
       rm -rf /mnt/libhq-SA/SAStyle/direct-access/*
       version="$(grep -Po '(?<="version": ")[^"]*' package.json)"
       # tarball lives here: https://libhq-ro.rsa.lab.emc.com/SA/SAStyle/direct-access/direct-access-$version.tar.gz
       mkdir -p /mnt/libhq-SA/SAStyle/direct-access && tar -czvf /mnt/libhq-SA/SAStyle/direct-access/direct-access-$version.tar.gz dist/*
       success "Hosted direct-access app has been updated"
-    #fi
+    fi
   fi
 
   cd $CWD

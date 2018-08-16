@@ -47,7 +47,7 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-    ENV.rootURL = '/SA/SAStyle/direct-access/';
+    ENV.rootURL = '/sdk/app/ws/';
   }
 
   return ENV;

@@ -7,7 +7,7 @@ const stateToComputed = (state) => ({
 });
 
 const navigationSidebar = Component.extend({
-  restPagesRoot: 'http://localhost:50104',
+  host: window.location.host,
 
   tagName: 'vbox',
   classNames: ['navigation-sidebar-outer', 'border-line-right', 'border-line-top', 'flexi-fit', 'max-height']
