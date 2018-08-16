@@ -31,8 +31,10 @@
     }
   }
 
-  &.is-smaller,
   &.is-small {
+    circle {
+      stroke-width: 1;
+    }
     text {
       font-size: .75rem;
     }

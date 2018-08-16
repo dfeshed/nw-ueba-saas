@@ -3,13 +3,11 @@ import layout from './template';
 import computed from 'ember-computed';
 
 const CIRCLE_RADIUS = {
-  smaller: 10,
   small: 13,
   large: 25
 };
 
 const CIRCLE_SIZE_CLASS = {
-  smaller: 'is-smaller',
   small: 'is-small',
   large: 'is-large'
 };

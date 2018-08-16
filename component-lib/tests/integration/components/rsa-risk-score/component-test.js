@@ -11,10 +11,10 @@ module('Integration | Component | rsa-risk-score', function(hooks) {
     assert.equal(this.$('.rsa-risk-score').length, 1);
   });
 
-  test('it sets the low circle stroke and class when size is smaller', async function(assert) {
-    await render(hbs`{{rsa-risk-score score=10 size='smaller' }}`);
+  test('it sets the low circle stroke and class when size is small', async function(assert) {
+    await render(hbs`{{rsa-risk-score score=10 size='small' }}`);
     assert.equal(this.element.textContent.trim(), 10);
-    assert.equal(this.$('.is-smaller').length, 1);
+    assert.equal(this.$('.is-small').length, 1);
     assert.equal(this.$('.is-low').length, 1);
   });
 
