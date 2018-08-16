@@ -235,6 +235,9 @@
       border-color: transparent;
       flex: 1 1 auto;
       min-width: 80px;
+      .pill-value {
+        text-overflow: clip;
+      }
     }
     &.is-invalid {
       border-color: border-color(accentOne);
@@ -374,4 +377,9 @@
   .new-pill-trigger {
     margin-left: -.73rem;
   }
+}
+
+// This hides the x icon that can appear in <input> fields in IE 11
+input::-ms-clear {
+  display: none;
 }
