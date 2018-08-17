@@ -107,7 +107,7 @@ const getAllAlertSources = () => {
 /**
  * Action creator for fetching all unique alert rule names
  * @public
- * @method getAlertRuleNames
+ * @method getAllAlertNames
  * @returns {Object}
  */
 const getAllAlertNames = () => ({

@@ -2,9 +2,7 @@ import Component from '@ember/component';
 import { gt } from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
 import { connect } from 'ember-redux';
-import {
-  hasSelectedAlertsBelongingToIncidents
-} from 'respond/selectors/alerts';
+import { hasSelectedAlertsBelongingToIncidents } from 'respond/selectors/alerts';
 import { clearSearchIncidentsResults } from 'respond/actions/creators/add-alerts-to-incident-creators';
 import { next } from '@ember/runloop';
 
@@ -87,11 +85,11 @@ const AlertControls = Component.extend({
     deleteAlerts() {
       const { itemsSelected, confirm, i18n, deleteConfirmationDialogId } =
         this.getProperties('itemsSelected', 'confirm', 'i18n', 'deleteConfirmationDialogId');
+      const deleteWarning = i18n.t('respond.alerts.actions.actionMessages.deleteWarning');
       const deleteItems = this._delete(itemsSelected);
-
       confirm(deleteConfirmationDialogId, {
         count: itemsSelected.length,
-        warning: i18n.t('respond.alerts.actions.actionMessages.deleteWarning')
+        warning: deleteWarning
       }, deleteItems);
     }
   }

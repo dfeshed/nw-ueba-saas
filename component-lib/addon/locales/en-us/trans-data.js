@@ -999,8 +999,7 @@ export default {
       },
       actions: {
         actionMessages: {
-          deleteWarning: 'Warning: You are about to delete one or more alerts that may be associated with incidents. ' +
-          'Be aware that any associated incidents will be updated or deleted accordingly.'
+          deleteWarning: 'Deleting an incident will: Remove it from any incidents it is part of. Delete the incident if all the alerts in that incident are delete. Reset the Alert Names filter if all the alerts of that name are deleted'
         }
       },
       list: {

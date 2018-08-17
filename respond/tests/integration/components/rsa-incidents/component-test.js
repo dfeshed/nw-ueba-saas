@@ -1,6 +1,6 @@
 import { setupRenderingTest } from 'ember-qunit';
 import { module, test } from 'qunit';
-import { click, findAll, find, render } from '@ember/test-helpers';
+import { settled, waitUntil, click, findAll, find, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import waitForReduxStateChange from '../../../helpers/redux-async-helpers';
@@ -48,17 +48,21 @@ module('Integration | Component | Respond Incidents', function(hooks) {
   };
 
   test('The rsa-incidents component renders to the DOM', async function(assert) {
+    const done = assert.async();
     setState();
     await render(hbs`{{rsa-incidents}}`);
     assert.equal(findAll('.rsa-incidents').length, 1, 'The rsa-incidents component should be found in the DOM');
+    await settled().then(() => done());
   });
 
   test('The returned incidents appear as rows in the table', async function(assert) {
+    const done = assert.async();
     await render(hbs`{{rsa-incidents}}`);
     setState();
     const getItems = waitForReduxStateChange(redux, 'respond.incidents.items');
     await getItems;
     assert.ok(findAll('.rsa-data-table-body-row').length >= 1, 'At least one row of incidents appears in the data table');
+    await settled().then(() => done());
   });
 
   test('The component shows an error message if there is an error fetching alerts', async function(assert) {
@@ -67,10 +71,11 @@ module('Integration | Component | Respond Incidents', function(hooks) {
     const errorMessage = i18n.t('rsaExplorer.fetchError');
     await render(hbs`{{rsa-incidents}}`);
     assert.equal(find(selectors.explorerTableErrorMessage).textContent.trim(), errorMessage, 'An error message is displayed if the fetch of tasks fails');
-    done();
+    await settled().then(() => done());
   });
 
   test('Clicking the filter button toggles the filter panel', async function(assert) {
+    const done = assert.async();
     setState();
     await render(hbs`{{rsa-incidents}}`);
     assert.equal(findAll(`${selectors.explorer}.show-filters`).length, 1, 'The filter panel is showing');
@@ -78,9 +83,11 @@ module('Integration | Component | Respond Incidents', function(hooks) {
     assert.equal(findAll(`${selectors.explorer}.show-filters`).length, 0, 'The filter panel is not showing');
     await click(selectors.filterPanelToggleButton);
     assert.equal(this.$(`${selectors.explorer}.show-filters`).length, 1, 'The filter panel is showing');
+    await settled().then(() => done());
   });
 
   test('Clicking on a row focuses it and shows the inspector', async function(assert) {
+    const done = assert.async();
     await render(hbs`{{rsa-incidents}}`);
     setState();
     const getItems = waitForReduxStateChange(redux, 'respond.incidents.items');
@@ -92,9 +99,11 @@ module('Integration | Component | Respond Incidents', function(hooks) {
     assert.equal(findAll(`${selectors.explorer}.show-inspector`).length, 1, 'The inspector panel is showing');
     await click(selectors.closeInspectorButton);
     assert.equal(this.$(`${selectors.explorer}.show-inspector`).length, 0, 'After clicking the close inspector button the inspector panel is not showing');
+    await settled().then(() => done());
   });
 
   test('Clicking on the custom date switch changes to a custom date range control, and clicking again switches back', async function(assert) {
+    const done = assert.async();
     setState();
     await render(hbs`{{rsa-incidents}}`);
     assert.equal(findAll(selectors.customDateInput).length, 0, 'There are no custom date range input fields');
@@ -102,9 +111,11 @@ module('Integration | Component | Respond Incidents', function(hooks) {
     assert.equal(findAll(selectors.customDateInput).length, 2, 'There are two custom date range input fields');
     await click(selectors.customDateToggle);
     assert.equal(findAll(selectors.customDateInput).length, 0, 'There are no custom date range input fields');
+    await settled().then(() => done());
   });
 
   test('Selecting and deselecting a filter refelects the selection/deselection in the UI', async function(assert) {
+    const done = assert.async();
     await render(hbs`{{rsa-incidents}}`);
     setState();
     const loadPriorityTypes = waitForReduxStateChange(redux, 'respond.dictionaries.priorityTypes');
@@ -115,9 +126,11 @@ module('Integration | Component | Respond Incidents', function(hooks) {
     assert.equal(find(`${selectors.priorityFilters} .rsa-form-checkbox-label:first-of-type`).classList.contains('checked'), true, 'The filter is selected');
     await click(`${selectors.priorityFilters} .rsa-form-checkbox-label:first-of-type`);
     assert.equal(find(`${selectors.priorityFilters} .rsa-form-checkbox-label:first-of-type`).classList.contains('checked'), false, 'The filter is not selected');
+    await settled().then(() => done());
   });
 
   test('The reset filters button returns the filters to the original state', async function(assert) {
+    const done = assert.async();
     await render(hbs`{{rsa-incidents}}`);
     setState();
     const loadPriorityTypes = waitForReduxStateChange(redux, 'respond.dictionaries.priorityTypes');
@@ -127,9 +140,11 @@ module('Integration | Component | Respond Incidents', function(hooks) {
     assert.equal(find(`${selectors.priorityFilters} .rsa-form-checkbox-label:first-of-type`).classList.contains('checked'), true, 'The filter is selected');
     await click(selectors.resetFiltersButton);
     assert.equal(find(`${selectors.priorityFilters} .rsa-form-checkbox-label:first-of-type`).classList.contains('checked'), false, 'The filter is not selected');
+    await settled().then(() => done());
   });
 
   test('Clicking on select-all in header selects all the rows', async function(assert) {
+    const done = assert.async();
     await render(hbs`{{rsa-incidents}}`);
     setState();
     const getItems = waitForReduxStateChange(redux, 'respond.incidents.items');
@@ -140,17 +155,19 @@ module('Integration | Component | Respond Incidents', function(hooks) {
     await click(`${selectors.selectAllCheckbox} input`);
     assert.equal(findAll(`${selectors.selectAllCheckbox}.checked`).length, 1, 'The select all checkbox is checked');
     assert.equal(findAll(`${selectors.tableRow} ${selectors.tableCell}:first-of-type .rsa-form-checkbox.checked`).length, this.$(selectors.tableRow).length, 'All of the rows are selected');
+    await settled().then(() => done());
   });
 
   test('Clicking on the delete button deletes the item after confirming via dialog', async function(assert) {
     assert.expect(3);
+    let flashSuccess = false;
     const done = assert.async();
     const noResultsMessage = i18n.t('rsaExplorer.noResults');
     patchFlash((flash) => {
       const expectedMessage = i18n.t('rsaExplorer.flash.updateSuccess');
       assert.equal(flash.type, 'success');
       assert.equal(flash.message.string, expectedMessage);
-      done();
+      flashSuccess = true;
     });
     await render(hbs`{{rsa-incidents}}`);
     setState();
@@ -161,11 +178,16 @@ module('Integration | Component | Respond Incidents', function(hooks) {
     await click(selectors.deleteButton);
     await click(selectors.confirmationOkButton);
     await onDelete;
+    await waitUntil(() => flashSuccess === true, { timeout: 8000 });
     assert.equal(find(selectors.noResultsMessage).textContent.trim(), noResultsMessage, 'There are no more results and the no results message displays');
+    await settled().then(() => done());
   });
 
   test('Clicking on a table header cell toggles the sort', async function(assert) {
     assert.expect(4);
+    let socketSuccessOne = false;
+    let socketSuccessTwo = false;
+    const done = assert.async();
     await render(hbs`{{rsa-incidents}}`);
     setState();
     // Wait until the incidents are added
@@ -176,18 +198,25 @@ module('Integration | Component | Respond Incidents', function(hooks) {
     patchSocket((method, modelName, query) => {
       assert.equal(query.sort[0].field, 'created');
       assert.equal(query.sort[0].descending, false);
+      socketSuccessOne = true;
     }, 'stream', 'incidents');
     await click(selectors.createdColumnSortButton);
 
-    // Clicking again, and the sort is not descending (ascending)
-    patchSocket((method, modelName, query) => {
-      assert.equal(query.sort[0].field, 'created');
-      assert.equal(query.sort[0].descending, true);
-    }, 'stream', 'incidents');
+    await waitUntil(() => socketSuccessOne === true).then(() => {
+      // Clicking again, and the sort is not descending (ascending)
+      patchSocket((method, modelName, query) => {
+        assert.equal(query.sort[0].field, 'created');
+        assert.equal(query.sort[0].descending, true);
+        socketSuccessTwo = true;
+      }, 'stream', 'incidents');
+    });
     await click(selectors.createdColumnSortButton);
+    await waitUntil(() => socketSuccessOne === true && socketSuccessTwo === true);
+    await settled().then(() => done());
   });
 
   test('Clicking on a row checkbox toggles the row selection', async function(assert) {
+    const done = assert.async();
     await render(hbs`{{rsa-incidents}}`);
     setState();
     const getItems = waitForReduxStateChange(redux, 'respond.incidents.items');
@@ -197,6 +226,7 @@ module('Integration | Component | Respond Incidents', function(hooks) {
     assert.equal(find(selectors.firstRowSelectCheckbox).classList.contains('checked'), true, 'The first row is selected/checked');
     await click(selectors.firstRowSelectCheckbox);
     assert.equal(find(selectors.firstRowSelectCheckbox).classList.contains('checked'), false, 'The first row is not selected/checked');
+    await settled().then(() => done());
   });
 });
 

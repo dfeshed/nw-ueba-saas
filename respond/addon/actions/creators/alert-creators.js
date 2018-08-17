@@ -44,7 +44,6 @@ const initializeAlerts = () => {
 const getItems = () => {
   return (dispatch, getState) => {
     const { itemsFilters, sortField, isSortDescending, stopItemsStream } = getState().respond.alerts;
-
     // Fetch the total incident count for the current query
     dispatch({
       type: ACTION_TYPES.FETCH_ALERTS_TOTAL_COUNT,
@@ -88,20 +87,21 @@ const getOriginalAlert = (entityId) => ({
 /**
  * Action creator for deleting one or more alerts
  * @public
- * @param entityId
+ * @param entityIds
  * @param callbacks
  * @returns {{type, promise, meta: {onSuccess: (function(*=)), onFailure: (function(*=))}}}
  */
-const deleteItem = (entityId, callbacks = callbacksDefault) => {
-  return (dispatch) => {
-    const reloadItems = entityId.length >= 500; // deletions of more than 500 items should trigger subsequent refresh/reload
-
+const deleteItem = (entityIds, callbacks = callbacksDefault) => {
+  return (dispatch, getState) => {
+    const reloadItems = entityIds.length >= 500; // deletions of more than 500 items should trigger subsequent refresh/reload
+    const { itemsFilters } = getState().respond.alerts;
     dispatch({
       type: ACTION_TYPES.DELETE_ALERT,
-      promise: alerts.delete(entityId),
+      promise: alerts.delete(entityIds),
       meta: {
         onSuccess: (response) => {
           callbacks.onSuccess(response);
+          dispatch(updateAlertNames(itemsFilters));
           if (reloadItems) {
             dispatch(getItems());
           }
@@ -114,13 +114,47 @@ const deleteItem = (entityId, callbacks = callbacksDefault) => {
   };
 };
 
+const filterAlertNames = (validNames, itemsFilters) => {
+  let validFilters = [];
+  if (!!validNames && !!itemsFilters && itemsFilters['alert.name']) {
+    validNames = validNames.filter((name) => name !== null && typeof(name) !== 'undefined');
+    validFilters = itemsFilters['alert.name'].filter((item) => validNames.indexOf(item) >= 0);
+  }
+  return validFilters;
+};
+
+const updateAlertNames = (itemsFilters) => {
+  return (dispatch) => {
+    dispatch({
+      ...dictionaryCreators.getAllAlertNames(),
+      meta: {
+        onSuccess: (response) => {
+          const validFilters = filterAlertNames(response.data, itemsFilters);
+          const reload = itemsFilters['alert.name'].length > 0 && validFilters.length == 0;
+          dispatch(updateFilterOnDeleteAlerts({ 'alert.name': validFilters }, reload));
+        }
+      }
+    });
+  };
+};
+
+const updateFilterOnDeleteAlerts = (filters, reload) => {
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.UPDATE_ALERT_FILTERS,
+      payload: filters
+    });
+    if (reload) {
+      dispatch(getItems());
+    }
+  };
+};
 
 const resetFilters = () => {
   return (dispatch) => {
     dispatch({
       type: ACTION_TYPES.RESET_ALERT_FILTERS
     });
-
     dispatch(getItems());
   };
 };
@@ -139,7 +173,6 @@ const updateFilter = (filters) => {
       type: ACTION_TYPES.UPDATE_ALERT_FILTERS,
       payload: filters
     });
-
     dispatch(getItems());
   };
 };
@@ -271,5 +304,7 @@ export {
   initializeAlert,
   getAlert,
   getAlertEvents,
-  resizeAlertInspector
+  resizeAlertInspector,
+  updateAlertNames,
+  filterAlertNames
 };
