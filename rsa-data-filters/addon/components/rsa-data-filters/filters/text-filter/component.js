@@ -22,6 +22,10 @@ export default Component.extend({
     }
   },
 
+  isError: false,
+
+  errorMessage: '',
+
   filterValue: computed('options', {
 
     get() {
@@ -42,6 +46,9 @@ export default Component.extend({
     const { filterValue } = options;
     this.set('value', filterValue);
     this.set('options', options);
+    if (this.get('validations') === undefined) {
+      this.validations = {};
+    }
   },
 
   didReceiveAttrs() {
@@ -49,6 +56,26 @@ export default Component.extend({
     if (isReset) {
       this.notifyPropertyChange('filterValue');
     }
+  },
+
+  _validate() {
+    let property;
+    const value = this.get('filterValue.value');
+    const validations = this.get('options.validations');
+    for (property in validations) {
+      const validatorObject = validations[property];
+      if (validatorObject.constructor === Object) {
+        const { validator, message } = validatorObject;
+        const isInvalid = validator(value);
+        if (isInvalid) {
+          return {
+            isValid: false,
+            message
+          };
+        }
+      }
+    }
+    return { isValid: true };
   },
 
   _onFilterChange() {
@@ -66,7 +93,14 @@ export default Component.extend({
     onInputFocusOut(e) {
       const { value } = e.target;
       this.set('filterValue.value', value);
-      this._onFilterChange();
+      const { isValid, message } = this._validate();
+      if (isValid) {
+        this.set('isError', false);
+        this._onFilterChange();
+      } else {
+        this.set('isError', true);
+        this.set('errorMessage', message);
+      }
     },
 
     changeOperator(option) {

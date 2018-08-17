@@ -71,6 +71,7 @@ export const filters = createSelector(
             break;
           case 'list':
           case 'range':
+          case 'dropdown':
             filterValue = propertyValues.mapBy('value');
             break;
           case 'number': {

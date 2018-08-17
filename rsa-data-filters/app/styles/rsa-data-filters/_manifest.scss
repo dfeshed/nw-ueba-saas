@@ -14,7 +14,7 @@
   }
 
   .file-name-input {
-    width: calc(100% - 80px);
+    width: calc(100% - 90px);
     .operators {
       .ember-power-select-trigger {
         width: 70px;
@@ -23,11 +23,14 @@
   }
 
   .number-input {
-    width: 85px;
+    width: 80px;
   }
 
   .text-filter-content {
     height: auto;
+    .operators {
+      width: 90px;
+    }
   }
 
   .list-filter-option {
@@ -37,7 +40,7 @@
   .number-filter {
     .operators {
       .ember-power-select-trigger {
-        width: 100px;
+        width: 95px;
       }
     }
     .units {

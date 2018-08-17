@@ -9,5 +9,10 @@
     onchange=(action 'changeOperator') as |option|}}
     {{option.label}}
   {{/power-select}}
-  {{rsa-form-input focusOut=(action 'onInputFocusOut') value=filterValue.value class='file-name-input' placeholder='Enter Value'}}
+  {{rsa-form-input
+    focusOut=(action 'onInputFocusOut')
+    value=filterValue.value class='file-name-input'
+    isError=isError
+    errorMessage=(t errorMessage)
+    placeholder='Enter Value'}}
 </hbox>

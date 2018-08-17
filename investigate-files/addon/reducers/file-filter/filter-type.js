@@ -7,7 +7,21 @@ const FILTER_TYPES = [
   {
     'name': 'firstFileName',
     'label': 'investigateFiles.fields.firstFileName',
-    'type': 'text'
+    'type': 'text',
+    'validations': {
+      length: {
+        validator: (value) => {
+          return value.length > 256;
+        },
+        message: 'investigateFiles.filter.invalidFilterInputLength'
+      },
+      format: {
+        validator: (value) => {
+          return !(/^([!-~])*$/.test(value));
+        },
+        message: 'investigateFiles.filter.invalidCharacters'
+      }
+    }
   },
   {
     name: 'reputationStatus',
@@ -54,6 +68,19 @@ const FILTER_TYPES = [
     type: 'list'
   },
   {
+    'name': 'signature.features',
+    'label': 'investigateFiles.fields.signature.features',
+    'listOptions': [
+      { name: 'file.unsigned', label: 'investigateFiles.filter.signature.unsigned' },
+      { name: 'signature.valid', label: 'investigateFiles.filter.signature.valid' },
+      { name: 'signature.invalid', label: 'investigateFiles.filter.signature.invalid' },
+      { name: 'signature.catalog', label: 'investigateFiles.filter.signature.catalog' },
+      { name: 'signature.microsoft', label: 'investigateFiles.filter.signature.signer.microsoft' },
+      { name: 'signature.apple', label: 'investigateFiles.filter.signature.signer.apple' }
+    ],
+    type: 'dropdown'
+  },
+  {
     'name': 'pe.resources.company',
     'label': 'investigateFiles.fields.companyName',
     'type': 'text'
@@ -61,12 +88,28 @@ const FILTER_TYPES = [
   {
     'name': 'checksumMd5',
     'label': 'investigateFiles.fields.checksumMd5',
-    'type': 'text'
+    'type': 'text',
+    'validations': {
+      format: {
+        validator: (value) => {
+          return !/^[A-Za-z0-9]*$/.test(value);
+        },
+        message: 'investigateFiles.filter.invalidCharsAlphaNumericOnly'
+      }
+    }
   },
   {
     'name': 'checksumSha256',
     'label': 'investigateFiles.fields.checksumSha256',
-    'type': 'text'
+    'type': 'text',
+    'validations': {
+      format: {
+        validator: (value) => {
+          return !/^[A-Za-z0-9]*$/.test(value);
+        },
+        message: 'investigateFiles.filter.invalidCharsAlphaNumericOnly'
+      }
+    }
   }
 ];
 

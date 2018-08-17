@@ -8,7 +8,7 @@ const initialState = Immutable.from({
   hostList: null,
 
   // Applied column sort on host list table
-  hostColumnSort: [],
+  hostColumnSort: [{ key: 'machine.scanStartTime', descending: true }],
 
   selectedHostList: [],
 

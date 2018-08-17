@@ -1957,6 +1957,16 @@ export default {
           confirmMessage: 'Are you sure you want to delete the selected query?'
         }
       },
+      signature: {
+        unsigned: 'Unsigned',
+        valid: 'Valid Signature',
+        invalid: 'Invalid Signature',
+        catalog: 'Catalog',
+        signer: {
+          microsoft: 'Signed By Microsoft',
+          apple: 'Signed By Apple'
+        }
+      },
       fileType: {
         pe: 'Windows',
         linux: 'Linux',
