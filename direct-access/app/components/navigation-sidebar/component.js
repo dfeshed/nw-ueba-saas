@@ -1,9 +1,10 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { isDecoder } from 'direct-access/reducers/selectors';
+import { isDecoder, isConcentrator } from 'direct-access/reducers/selectors';
 
 const stateToComputed = (state) => ({
-  isDecoder: isDecoder(state)
+  isDecoder: isDecoder(state),
+  isConcentrator: isConcentrator(state)
 });
 
 const navigationSidebar = Component.extend({

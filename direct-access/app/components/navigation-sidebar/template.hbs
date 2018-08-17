@@ -31,4 +31,7 @@ and the outer class defines the collapsed width.
     <a href="http://{{host}}/decoder/parsers/upload" target="_blank"><div class="nav-item"><span>{{rsa-icon name="network-connecting" style="lined"}}</span> Parser Upload</div></a>
     <a href="http://{{host}}/decoder/sslkeys" target="_blank"><div class="nav-item"><span>{{rsa-icon name="upload-2" style="lined"}}</span> SSL Key Upload</div></a>
   {{/if}}
+  {{#if isConcentrator}}
+    <a href="{{restPagesRoot}}/concentrator/agg" target="_blank"><div class="nav-item"><span>{{rsa-icon name="add-circle-1" style="lined"}}</span> Aggregation</div></a>
+  {{/if}}
 </div>

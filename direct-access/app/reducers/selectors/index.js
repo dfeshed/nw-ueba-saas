@@ -175,6 +175,13 @@ const isDecoder = createSelector(
   }
 );
 
+const isConcentrator = createSelector(
+  [ _module ],
+  (mod) => {
+    return mod ? mod === 'concentrator' : false;
+  }
+);
+
 export {
   currentDirectoryContents,
   isNotRoot,
@@ -190,5 +197,6 @@ export {
   selectedIsStatNode,
   selectedNodeRequiresRestart,
   isDevelopmentBuild,
-  isDecoder
+  isDecoder,
+  isConcentrator
 };
