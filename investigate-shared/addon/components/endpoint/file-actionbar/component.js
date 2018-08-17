@@ -29,6 +29,14 @@ export default Component.extend({
   @computed('selectedFileCount')
   pivotInvestigateDisabled(selectedFilesList) {
     return !(selectedFilesList === 1);
+  },
+
+  @computed('item')
+  statusData(selectedFileList) {
+    if (selectedFileList && selectedFileList.length === 1) {
+      return selectedFileList[0].fileStatusData;
+    }
+    return {};
   }
 
 });

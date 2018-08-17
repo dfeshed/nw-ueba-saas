@@ -2079,15 +2079,15 @@ export default {
         knowngood: 'Known Good'
       },
       fileCategoryTitle: 'File Category',
-      remediationActionTitle: 'Remediation',
+      remediationActionTitle: 'Remediate',
       remediationActionNote: 'Note: Applies to hosts where blocking is enabled and terminates all <br> processes running with this file hash.',
       remediationActionAlert: {
         isSigned: 'Files signed by RSA and Microsoft cannot be blocked.',
         sizeExceeds: 'Files exceeding 100 MB cannot be blocked.'
       },
       remediationActionOptions: {
-        blockFile: 'Block File',
-        blockQuarantineFile: 'Block and Quarantine File'
+        blockFile: 'Block',
+        blockQuarantineFile: 'Block and Quarantine'
       },
       certificateStatusTitle: 'Certificate Status',
       commentTitle: 'Comments*',

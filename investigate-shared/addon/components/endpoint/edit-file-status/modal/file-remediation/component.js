@@ -8,12 +8,12 @@ export default Component.extend({
   remediationRadioButtons: [
     {
       label: 'investigateFiles.editFileStatus.remediationActionOptions.blockFile',
-      value: 'blockFile',
+      value: 'Block',
       selected: true
     },
     {
       label: 'investigateFiles.editFileStatus.remediationActionOptions.blockQuarantineFile',
-      value: 'blockQuarantineFile',
+      value: 'BlockAndQuarantine',
       selected: false
     }
   ],

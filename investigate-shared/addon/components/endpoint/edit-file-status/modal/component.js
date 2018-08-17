@@ -6,10 +6,10 @@ export default Component.extend({
   layout,
 
   data: {
-    fileStatus: 'Neutral',
-    fileCategory: 'Apt',
+    fileStatus: null,
+    fileCategory: null,
     comment: '',
-    remediationAction: ''
+    remediationAction: null
   },
 
   radioButtons: [
@@ -36,12 +36,6 @@ export default Component.extend({
   ],
 
   _closeModal() {
-    this.set('data', {
-      fileStatus: 'Neutral',
-      fileCategory: 'Apt',
-      comment: '',
-      remediationAction: ''
-    });
     const closeModal = this.get('closeModal');
     if (closeModal) {
       closeModal();

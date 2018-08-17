@@ -109,7 +109,7 @@ const fileListReducer = handleActions({
         let newData;
         for (let i = 0; i < checksums.length; i++) {
           const file = fileData[checksums[i]];
-          newData = { ...file, fileStatus };
+          newData = { ...file, fileStatus, fileStatusData: data };
           s = s.setIn(['fileData', `${checksums[i]}`], newData);
         }
         return s;

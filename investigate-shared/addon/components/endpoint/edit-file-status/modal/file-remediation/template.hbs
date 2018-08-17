@@ -26,6 +26,7 @@
         (eq remediationRadio.value data.remediationAction) 'checked'}}'>
         {{radio-button
           radioClass='status-type'
+          disabled=errorDecorator.disableBlocking
           value=remediationRadio.value
           groupValue=data.remediationAction}}
         {{t remediationRadio.label}}

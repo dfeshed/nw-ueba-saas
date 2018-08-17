@@ -46,14 +46,6 @@ const filesConfigGen = function(environment) {
       deleteFilter: {
         subscriptionDestination: '/user/queue/endpoint/filter/remove',
         requestDestination: '/ws/endpoint/filter/remove'
-      },
-      setFileStatus: {
-        subscriptionDestination: '/user/queue/endpoint/file/status/set',
-        requestDestination: '/ws/endpoint/file/status/set'
-      },
-      getFileStatusHistory: {
-        subscriptionDestination: '/user/queue/endpoint/file/status/get-history',
-        requestDestination: '/ws/endpoint/file/status/get-history'
       }
     },
     'context-service': {
@@ -63,6 +55,14 @@ const filesConfigGen = function(environment) {
         subscriptionDestination: '/user/queue/contexthub/context/lookup',
         requestDestination: '/ws/contexthub/context/lookup',
         cancelDestination: '/ws/contexthub/context/cancel'
+      },
+      setFileStatus: {
+        subscriptionDestination: '/user/queue/contexthub/file/status/set',
+        requestDestination: '/ws/contexthub/file/status/set'
+      },
+      getFileStatusHistory: {
+        subscriptionDestination: '/user/queue/contexthub/file/status/get-history',
+        requestDestination: '/ws/contexthub/file/status/get-history'
       }
     }
   };

@@ -10,7 +10,7 @@ const setFileStatus = (data) => {
   const request = lookup('service:request');
   return request.promiseRequest({
     method: 'setFileStatus',
-    modelName: 'files',
+    modelName: 'context-service',
     query: {
       data
     }
@@ -28,7 +28,7 @@ const getFileStatusHistory = (checksum, requestLatestHistory) => {
   const request = lookup('service:request');
   return request.promiseRequest({
     method: 'getFileStatusHistory',
-    modelName: 'files',
+    modelName: 'context-service',
     query: {
       data: {
         checksum,
