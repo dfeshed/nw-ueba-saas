@@ -14,6 +14,7 @@ import schema from './schema/reducer';
 import filter from './filters/reducer';
 import preferences from './preferences/reducer';
 import datatable from './details/datatable/reducer';
+import endpointServer from './endpoint-server/reducer';
 
 export default combineReducers({
   endpoint: combineReducers({
@@ -32,5 +33,6 @@ export default combineReducers({
     filter,
     datatable
   }),
-  preferences
+  preferences,
+  endpointServer
 });

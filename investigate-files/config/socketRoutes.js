@@ -9,6 +9,7 @@ const filesConfigGen = function(environment) {
 
   const socketUrl = common.determineSocketUrl(environment, '/endpoint/socket');
   const contextSocketUrl = common.determineSocketUrl(environment, '/contexthub/socket');
+  const investigateSocketUrl = common.determineSocketUrl(environment, '/investigate/socket');
 
   return {
     'endpoint-server-ping': {
@@ -63,6 +64,13 @@ const filesConfigGen = function(environment) {
       getFileStatusHistory: {
         subscriptionDestination: '/user/queue/contexthub/file/status/get-history',
         requestDestination: '/ws/contexthub/file/status/get-history'
+      }
+    },
+    'endpoint-server': {
+      socketUrl: investigateSocketUrl,
+      findAll: {
+        subscriptionDestination: '/user/queue/investigate/endpointservers',
+        requestDestination: '/ws/investigate/endpointservers'
       }
     }
   };

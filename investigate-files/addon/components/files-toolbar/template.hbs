@@ -4,7 +4,7 @@
   {{/rsa-form-button}}
 </h2>
 <hbox class="toolbar-actions">
-
+  {{service-selector services=servers serviceId=serverId}}   
   {{#rsa-content-tethered-panel-trigger triggerEvent="click" panel='panel11'}}
     {{#rsa-form-button allowToggleActive=true withDropdown=true}}
       Saved Filters

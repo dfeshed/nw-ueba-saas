@@ -8,6 +8,7 @@ import {
   deleteFilter,
   applySavedFilters
 } from 'investigate-files/actions/data-creators';
+import { setEndpointServer, getEndpointServers } from 'investigate-files/actions/endpoint-server-creators';
 
 const stateToComputed = (state) => ({
   // Total number of files in search result
@@ -17,8 +18,8 @@ const stateToComputed = (state) => ({
   selectedFileCount: state.files.fileList.selectedFileList.length,
   serviceList: serviceList(state),
   item: state.files.fileList.selectedFileList,
-  filesFilters: state.files.filter.savedFilterList
-
+  filesFilters: state.files.filter.savedFilterList,
+  servers: state.endpointServer
 });
 
 const dispatchToActions = {
@@ -26,7 +27,9 @@ const dispatchToActions = {
   getAllServices,
   saveFileStatus,
   deleteFilter,
-  applySavedFilters
+  applySavedFilters,
+  setEndpointServer,
+  getEndpointServers
 };
 /**
  * Toolbar that provides search filtering.
@@ -34,6 +37,11 @@ const dispatchToActions = {
  */
 const ToolBar = Component.extend({
   tagName: 'hbox',
+
+  init() {
+    this._super(arguments);
+    this.send('getEndpointServers');
+  },
 
   actions: {
 
