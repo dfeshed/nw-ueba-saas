@@ -6,10 +6,15 @@ const camelize = (str) => {
   });
 };
 
+const shorten = (str) => {
+  return str && str.replace(/-(.*)/, '');
+};
+
 const normalizeLocale = (locale) => {
   return {
     ...locale,
-    displayLabel: camelize(locale.label)
+    displayLabel: camelize(locale.label),
+    langCode: shorten(locale.key)
   };
 };
 

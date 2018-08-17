@@ -159,6 +159,7 @@ test('Changing the scoring range low dispatches the updateRule creator', functio
 });
 
 test('Changing the categories selection dispatches the updateRule creator', function(assert) {
+  assert.expect(1);
   const actionSpy = sinon.spy(incidentRuleCreators, 'updateRule');
   setState({ ...initialState });
   this.render(hbs`{{respond/incident-rule/grouping-options }}`);
@@ -169,6 +170,7 @@ test('Changing the categories selection dispatches the updateRule creator', func
 });
 
 test('Changing the assignee selection dispatches the updateRule creator', function(assert) {
+  assert.expect(1);
   const actionSpy = sinon.spy(incidentRuleCreators, 'updateRule');
   setState({ ...initialState });
   this.render(hbs`{{respond/incident-rule/grouping-options }}`);
@@ -179,6 +181,7 @@ test('Changing the assignee selection dispatches the updateRule creator', functi
 });
 
 test('Clicking the high score radio button dispatches the updateRule creator', function(assert) {
+  assert.expect(1);
   const actionSpy = sinon.spy(incidentRuleCreators, 'updateRule');
   setState({ ...initialState });
   this.render(hbs`{{respond/incident-rule/grouping-options }}`);
@@ -190,6 +193,7 @@ test('Clicking the high score radio button dispatches the updateRule creator', f
 });
 
 test('Clicking the count score radio button dispatches the updateRule creator', function(assert) {
+  assert.expect(1);
   const actionSpy = sinon.spy(incidentRuleCreators, 'updateRule');
   setState({ ...initialState });
   this.render(hbs`{{respond/incident-rule/grouping-options }}`);

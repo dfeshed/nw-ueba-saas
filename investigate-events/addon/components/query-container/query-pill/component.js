@@ -273,7 +273,7 @@ export default Component.extend({
     }
   },
 
-  focusOut({ originalEvent: focusEvent }) {
+  focusOut(e) {
     this.set('shouldFocusOut', true);
     // Use next here because as user moves
     // from meta to operator to value, this
@@ -297,7 +297,7 @@ export default Component.extend({
         isDestroying
       } = this.getProperties('shouldFocusOut', 'isDestroyed', 'isDestroying');
       if (shouldFocusOut && !isDestroyed && !isDestroying) {
-        this._pillLostFocus(focusEvent);
+        this._pillLostFocus(e);
       }
     });
   },

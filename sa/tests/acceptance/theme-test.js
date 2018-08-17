@@ -39,8 +39,8 @@ module('Acceptance | theme', function(hooks) {
     assert.ok(document.cookie.indexOf('nw-ui-theme=light') > -1, 'The theme (light) appears in the nw-ui-theme cookie');
 
     await login();
-
     await settled();
+
     await waitFor(() => document.querySelector('body').classList.contains('dark-theme'));
 
     const darkTheme = redux.getState().global.preferences.theme;
@@ -49,6 +49,6 @@ module('Acceptance | theme', function(hooks) {
     assert.notOk(document.querySelector('body').classList.contains('light-theme'));
     assert.ok(document.cookie.indexOf('nw-ui-theme=dark') > -1, 'The theme (dark) appears in the nw-ui-theme cookie');
 
-    return settled().then(() => done());
+    await settled().then(() => done());
   });
 });

@@ -19,6 +19,7 @@ module('Unit | Selectors | Global | Preferences', function() {
     assert.deepEqual(result, {
       id: 'en_US',
       key: 'en-us',
+      langCode: 'en',
       label: 'english',
       displayLabel: 'English'
     });
@@ -49,12 +50,14 @@ module('Unit | Selectors | Global | Preferences', function() {
       {
         id: 'en_US',
         key: 'en-us',
+        langCode: 'en',
         label: 'english',
         displayLabel: 'English'
       },
       {
         id: 'de_DE',
         key: 'de-de',
+        langCode: 'de',
         label: 'german',
         fileName: 'german_de-de.js',
         displayLabel: 'German'
@@ -78,6 +81,7 @@ module('Unit | Selectors | Global | Preferences', function() {
     assert.deepEqual(result, {
       id: 'en_US',
       key: 'en-us',
+      langCode: 'en',
       label: '',
       displayLabel: ''
     });
@@ -97,6 +101,7 @@ module('Unit | Selectors | Global | Preferences', function() {
     assert.deepEqual(result, {
       id: 'en_US',
       key: 'en-us',
+      langCode: 'en',
       label: null,
       displayLabel: null
     });
@@ -115,6 +120,7 @@ module('Unit | Selectors | Global | Preferences', function() {
     assert.deepEqual(result, {
       id: 'en_US',
       key: 'en-us',
+      langCode: 'en',
       displayLabel: undefined
     });
 
@@ -133,6 +139,7 @@ module('Unit | Selectors | Global | Preferences', function() {
     assert.deepEqual(result, {
       id: 'en_US',
       key: 'en-us',
+      langCode: 'en',
       label: 'x',
       displayLabel: 'X'
     });

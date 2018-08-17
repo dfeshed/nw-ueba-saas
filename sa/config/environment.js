@@ -81,9 +81,7 @@ module.exports = function(environment) {
       /* Local storage key that holds the OAuth access token returned by the Security Server */
       accessTokenKey: 'rsa-oauth2-jwt-access-token',
       /* Local storage key that holds the OAuth refresh token returned by the Security Server */
-      refreshTokenKey: 'rsa-oauth2-jwt-refresh-token',
-      routeAfterAuthentication: 'protected',
-      routeIfAlreadyAuthenticated: 'protected'
+      refreshTokenKey: 'rsa-oauth2-jwt-refresh-token'
     },
     'ember-load': {
       loadingIndicatorClass: 'rsa-application-loading'

@@ -86,7 +86,7 @@ const ContextTooltipRecords = Component.extend({
   init() {
     this._super(...arguments);
     const { model } = this;
-    this.send('getSummaryData', model);
+    this.sendAction('getSummaryData', model);
   },
 
   /**

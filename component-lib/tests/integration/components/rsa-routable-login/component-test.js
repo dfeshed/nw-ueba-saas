@@ -4,7 +4,7 @@ import Service from '@ember/service';
 import { later } from '@ember/runloop';
 import hbs from 'htmlbars-inline-precompile';
 import { setupRenderingTest } from 'ember-qunit';
-import { findAll, render } from '@ember/test-helpers';
+import { findAll, render, waitUntil } from '@ember/test-helpers';
 import { waitForRaf } from '../../../helpers/wait-for-raf';
 import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 import { securitybanner } from './data';
@@ -49,12 +49,14 @@ module('Integration | Component | rsa-routable-login', function(hooks) {
       }
     }));
 
+    const selector = '[test-id=btnAcceptEula] button';
     await render(hbs `{{rsa-routable-login displayEula=true}}`);
     assert.equal(findAll('.eula-content').length, 1);
-    assert.equal(document.querySelector('[test-id=btnAcceptEula] button').disabled, true);
+    assert.equal(document.querySelector(selector).disabled, true);
 
     await waitForRaf();
-    assert.equal(document.querySelector('[test-id=btnAcceptEula] button').disabled, false);
+    await waitUntil(() => document.querySelector(selector).disabled !== true, { timeout: 2000 });
+    assert.equal(document.querySelector(selector).disabled, false);
   });
 
   test('eula button disabled when eulaContent not available (even after xhr fail)', async function(assert) {

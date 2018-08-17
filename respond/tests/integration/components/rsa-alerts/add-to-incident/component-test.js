@@ -106,6 +106,8 @@ module('Integration | Component | Respond Alerts Add to Incident', function(hook
 
   test('Clicking on a the Apply button shows a success flash message when the request is successful', async function(assert) {
     assert.expect(5);
+    const done = assert.async();
+
     patchSocket((method, modelName) => {
       assert.equal(method, 'updateRecord');
       assert.equal(modelName, 'alerts-associated');
@@ -117,6 +119,7 @@ module('Integration | Component | Respond Alerts Add to Incident', function(hook
       });
       assert.equal(flash.type, 'success');
       assert.equal(flash.message.string, expectedMessage);
+      done();
     });
     setState({
       ...initialState,
@@ -128,7 +131,6 @@ module('Integration | Component | Respond Alerts Add to Incident', function(hook
     });
     await render(hbs`{{rsa-alerts/add-to-incident finish=handleFinish}}`);
     await click('.apply button');
-    return settled();
   });
 
   test('Clicking on a the Apply button shows a failure flash message when the request fails', async function(assert) {

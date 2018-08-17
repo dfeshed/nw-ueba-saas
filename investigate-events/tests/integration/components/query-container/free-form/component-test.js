@@ -147,7 +147,6 @@ module('Integration | Component | free-form', function(hooks) {
       .build();
 
     this.set('executeQuery', () => {});
-    this.set('takeFocus', true);
 
     await render(hbs`
       {{query-container/free-form
@@ -166,7 +165,6 @@ module('Integration | Component | free-form', function(hooks) {
       .build();
 
     this.set('executeQuery', () => {});
-    this.set('takeFocus', true);
 
     await render(hbs`
       {{query-container/free-form

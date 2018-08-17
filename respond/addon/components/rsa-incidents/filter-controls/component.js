@@ -23,6 +23,7 @@ import {
 import { getEnabledUsers } from 'respond/selectors/users';
 
 const stateToComputed = (state) => {
+  const enabledUsers = [].concat(getEnabledUsers(state));
   return {
     priorityFilters: getPriorityFilters(state),
     statusFilters: getStatusFilters(state),
@@ -35,7 +36,7 @@ const stateToComputed = (state) => {
     statusTypes: getStatusTypes(state),
     categoryFilters: getCategoryFilters(state),
     categoryTags: getTopLevelCategoryNames(state),
-    users: getEnabledUsers(state),
+    users: enabledUsers,
     isSendToArcherAvailable: isSendToArcherAvailable(state)
   };
 };

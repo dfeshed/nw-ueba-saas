@@ -3,6 +3,7 @@ import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import $ from 'jquery';
 import { patchSocket } from '../../../../../helpers/patch-socket';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 import wait from 'ember-test-helpers/wait';
 
@@ -19,6 +20,7 @@ moduleForComponent('host-list/content-filter/text-filter', 'Integration | Compon
   integration: true,
   resolver: engineResolverFor('investigate-hosts'),
   beforeEach() {
+    initialize(this);
     this.registry.injection('component', 'i18n', 'service:i18n');
     this.inject.service('redux');
   }
@@ -109,7 +111,6 @@ test('Text-filter updating filter', function(assert) {
   this.set('config', { ...filterConfig, expression });
   this.render(hbs`{{host-list/content-filter/text-filter config=config}}`);
   this.$('.filter-trigger-button').trigger('click');
-
   patchSocket((method, model, query) => {
     assert.equal(method, 'machines');
     assert.deepEqual(query.data.criteria.expressionList, [{

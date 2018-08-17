@@ -2,11 +2,13 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { patchSocket } from '../../../../../helpers/patch-socket';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 moduleForComponent('host-detail/explore/file-found-categories', 'Integration | Component | host detail explore file found categories', {
   integration: true,
   resolver: engineResolverFor('investigate-hosts'),
   beforeEach() {
+    initialize(this);
     this.inject.service('redux');
     this.registry.injection('component', 'i18n', 'service:i18n');
   }

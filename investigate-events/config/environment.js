@@ -7,7 +7,7 @@ const mockPort = process.env.MOCK_PORT || 9999;
 const mockServerUrl = `http://localhost:${mockPort}`;
 
 module.exports = function(environment/* , appConfig */) {
-  return {
+  let ENV = {
     mockServerUrl,
     mockPort,
     modulePrefix: 'investigate-events',
@@ -24,4 +24,13 @@ module.exports = function(environment/* , appConfig */) {
       includeTimezone: 'all'
     }
   };
+
+  if (environment === 'test') {
+    // Testem prefers this...
+    ENV.locationType = 'none';
+    ENV.APP.rootElement = '#ember-testing';
+    ENV.APP.autoboot = false;
+  }
+
+  return ENV;
 };

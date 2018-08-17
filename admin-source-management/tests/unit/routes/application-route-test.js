@@ -1,7 +1,12 @@
 import { module, test } from 'qunit';
+import Service from '@ember/service';
 import { setupTest } from 'ember-qunit';
-import sinon from 'sinon';
+import { computed } from '@ember/object';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import ApplicationRoute from 'admin-source-management/routes/application';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
+
+let transitionToExternal, hasPermission;
 
 module('Unit | Route | application', function(hooks) {
   setupTest(hooks, {
@@ -9,45 +14,55 @@ module('Unit | Route | application', function(hooks) {
   });
 
   hooks.beforeEach(function() {
-    this.owner.inject('route', 'service:accessControl', 'service:features');
+    hasPermission = true;
+    transitionToExternal = null;
+    initialize(this.owner);
   });
 
-  // hooks.afterEach(function() {
-  // });
+  const setupRoute = function() {
+    this.owner.register('service:-routing', Service.extend({
+      currentRouteName: 'application'
+    }));
+    const accessControl = Service.extend({
+      hasAdminViewUnifiedSourcesAccess: computed(function() {
+        return hasPermission;
+      })
+    }).create();
+    const features = this.owner.lookup('service:features');
+    const PatchedRoute = ApplicationRoute.extend({
+      accessControl: computed(function() {
+        return accessControl;
+      }),
+      features: computed(function() {
+        return features;
+      }),
+      transitionToExternal(routeName) {
+        transitionToExternal = routeName;
+      }
+    });
+    return PatchedRoute.create();
+  };
 
-  test('rsa.usm feature flag is false by default, so it should transitionToExternal protected route', function(assert) {
+  test('rsa.usm feature flag is false by default, so it should transitionToExternal protected route', async function(assert) {
+    const route = setupRoute.call(this);
+
     // 'rsa.usm' feature flag should be false by default
     const isRsaUsmEnabled = this.owner.lookup('service:features').isEnabled('rsa.usm');
     assert.equal(isRsaUsmEnabled, false, 'rsa.usm feature flag is false by default');
 
-    // the viewUnifiedSources permission is already set to true by environment.js roles
-    const hasViewUnifiedSources = this.owner.lookup('service:accessControl').get('hasAdminViewUnifiedSourcesAccess');
-    assert.equal(hasViewUnifiedSources, true, 'viewUnifiedSources permission is true by default');
+    await route.beforeModel();
 
-    // router should transitionToExternal to 'protected' if either of the above are false
-    const routeSpy = sinon.spy();
-    const route = this.owner.lookup('route:application');
-    route.set('router.currentRouteName', 'application');
-    route.transitionToExternal = routeSpy;
-    route.beforeModel();
-    assert.ok(routeSpy.calledOnce, 'transitionToExternal was called once');
-    assert.ok(routeSpy.calledWith('protected'), 'transitionToExternal was called with protected');
+    assert.equal(transitionToExternal, 'protected', 'transitionToExternal was called with protected');
   });
 
-  test('setting rsa.usm feature flag to true should prevent transitionToExternal protected route', function(assert) {
+  test('setting rsa.usm feature flag to true should prevent transitionToExternal protected route', async function(assert) {
+    const route = setupRoute.call(this);
+
     // need to set feature flag to true since it is false by default, and is set externally by a parent app...
     this.owner.lookup('service:features').setFeatureFlags({ 'rsa.usm': true });
 
-    // the viewUnifiedSources permission is already set to true by environment.js roles
-    const hasViewUnifiedSources = this.owner.lookup('service:accessControl').get('hasAdminViewUnifiedSourcesAccess');
-    assert.equal(hasViewUnifiedSources, true, 'viewUnifiedSources permission is true by default');
+    await route.beforeModel();
 
-    // router should NOT transitionToExternal to 'protected' since both of the above are true
-    const routeSpy = sinon.spy();
-    const route = this.owner.lookup('route:application');
-    route.set('router.currentRouteName', 'application');
-    route.transitionToExternal = routeSpy;
-    route.beforeModel();
-    assert.ok(routeSpy.notCalled, 'transitionToExternal was NOT called');
+    assert.equal(transitionToExternal, null, 'transitionToExternal was NOT called');
   });
 });

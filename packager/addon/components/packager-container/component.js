@@ -48,8 +48,8 @@ const Container = Component.extend({
 
   init() {
     this._super(...arguments);
-    this.send('getConfig');
-    this.send('getDevices');
+    this.sendAction('getConfig');
+    this.sendAction('getDevices');
   }
 
 });

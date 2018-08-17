@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
+import { inject as service } from '@ember/service';
 import { connect } from 'ember-redux';
 import { later } from '@ember/runloop';
 import { RECON_PANEL_SIZES } from 'investigate-events/constants/panelSizes';
@@ -21,6 +22,7 @@ const dispatchToActions = {
 const EventsTable = Component.extend({
   classNames: 'rsa-investigate-events-table__header',
   tagName: 'hbox',
+  i18n: service(),
   toggleReconSize: () => {},
   toggleSlaveFullScreen: () => {},
 

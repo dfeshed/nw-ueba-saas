@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { render, find, click, triggerEvent } from '@ember/test-helpers';
+import { render, find, click, settled, triggerEvent } from '@ember/test-helpers';
 import { setupRenderingTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
@@ -33,6 +33,7 @@ module('Integration | Component | Parser Toolbar', function(hooks) {
 
   test('Delete confirmation, query payload, and flash message', async function(assert) {
     assert.expect(7);
+    const done = assert.async();
     const translation = this.owner.lookup('service:i18n');
     new ReduxDataHelper(setState).parserRulesWait(false).parserRulesFormatData(0, true).build();
     await render(hbs`{{content/log-parser-rules/log-parsers/toolbar}}`);
@@ -53,8 +54,10 @@ module('Integration | Component | Parser Toolbar', function(hooks) {
       const expectedMessage = translation.t('configure.logsParser.modals.deleteParser.success', { parserName: 'builtin' });
       assert.equal(flash.type, 'success');
       assert.equal(flash.message.string, expectedMessage);
+      done();
     });
     await click('.modal-footer-buttons .is-primary button');
+    await settled();
   });
 
   test('Delete shows an error flash message if the operation fails', async function(assert) {

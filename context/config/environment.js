@@ -3,8 +3,8 @@
 
 const contextMetas = require('./contextMetas');
 
-module.exports = function(/* environment, appConfig */) {
-  return {
+module.exports = function(environment) {
+  let ENV = {
     flashMessageDefaults: {
       timeout: 5000,
       iconSize: 'larger',
@@ -21,6 +21,17 @@ module.exports = function(/* environment, appConfig */) {
       defaultFallback: true,
       includedLocales: ['en-us']
     },
+    APP: {
+    },
     contextMetas
   };
+
+  if (environment === 'test') {
+    // Testem prefers this...
+    ENV.locationType = 'none';
+    ENV.APP.rootElement = '#ember-testing';
+    ENV.APP.autoboot = false;
+  }
+
+  return ENV;
 };

@@ -6,11 +6,12 @@ import { setupTest } from 'ember-qunit';
 
 module('Unit | Utility | Incidents API', function(hooks) {
   setupTest(hooks);
+
   hooks.beforeEach(function() {
     initialize(this.owner);
   });
 
-  test('it creates the proper query for the getAlerts API method', function(assert) {
+  test('it creates the proper query for the getAlerts API method', async function(assert) {
     assert.expect(3);
     patchSocket((method, modelName, query) => {
       assert.equal(method, 'stream');
@@ -30,7 +31,7 @@ module('Unit | Utility | Incidents API', function(hooks) {
     Incidents.getRelatedAlerts('IP', '1.1.1.1', 'ALL_TIME', {});
   });
 
-  test('it creates the proper query for the delete API method', function(assert) {
+  test('it creates the proper query for the delete API method', async function(assert) {
     assert.expect(3);
     patchSocket((method, modelName, query) => {
       assert.equal(method, 'deleteRecord');
@@ -50,7 +51,7 @@ module('Unit | Utility | Incidents API', function(hooks) {
     Incidents.delete('INC-123');
   });
 
-  test('it creates the proper request payload for the updateIncident API method', function(assert) {
+  test('it creates the proper request payload for the updateIncident API method', async function(assert) {
     assert.expect(3);
     patchSocket((method, modelName, query) => {
       assert.equal(method, 'updateRecord');
@@ -63,7 +64,7 @@ module('Unit | Utility | Incidents API', function(hooks) {
     Incidents.updateIncident(['INC-123', 'INC-321'], 'priority', 'MEDIUM');
   });
 
-  test('it creates the proper request payload for the getIncidentSettings API method', function(assert) {
+  test('it creates the proper request payload for the getIncidentSettings API method', async function(assert) {
     assert.expect(3);
     patchSocket((method, modelName, query) => {
       assert.equal(method, 'findAll');

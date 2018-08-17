@@ -43,6 +43,7 @@ nukeNode context
 nukeNode preferences
 nukeNode test-helpers
 nukeNode ember-route-action-helper
+nukeNode ember-cli-document-title
 nukeNode broccoli-theme
 nukeNode investigate-process-analysis
 nukeNode rsa-context-menu

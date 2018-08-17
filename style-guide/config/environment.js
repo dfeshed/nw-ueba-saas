@@ -91,6 +91,7 @@ module.exports = function(environment) {
     // @workaround Disable readyDelay to avoid a synchronization issue with automated tests
     ENV.APP.readyDelay = 0;
     ENV.APP.rootElement = '#ember-testing';
+    ENV.APP.autoboot = false;
   }
 
   if (environment === 'production') {

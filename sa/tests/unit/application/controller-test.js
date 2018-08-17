@@ -194,12 +194,12 @@ module('Unit | Controller | application', function(hooks) {
     redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'es_MX', key: 'es-mx', label: 'spanish', fileName: 'spanish_es-mx.js' } });
 
     return settled().then(async () => {
-      assert.equal(get(moment, 'locale'), 'es-mx');
+      assert.equal(get(moment, 'locale'), 'es');
 
       redux.dispatch({ type: ACTION_TYPES.UPDATE_PREFERENCES_LOCALE, locale: { id: 'en_US', key: 'en-us', label: 'english' } });
 
       return settled().then(async () => {
-        assert.equal(get(moment, 'locale'), 'en-us');
+        assert.equal(get(moment, 'locale'), 'en');
       });
     }).finally(async () => {
       document.body.removeChild(dynamicScripts()[0]);

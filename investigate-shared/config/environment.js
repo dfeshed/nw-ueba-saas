@@ -23,6 +23,8 @@ module.exports = function(environment/* , appConfig */) {
       defaultLocale: 'en-us',
       defaultFallback: true,
       includedLocales: ['en-us']
+    },
+    APP: {
     }
   };
 
@@ -30,6 +32,12 @@ module.exports = function(environment/* , appConfig */) {
     ENV['ember-tether'] = {
       bodyElementId: 'ember-testing'
     };
+
+    // Testem prefers this...
+    ENV.locationType = 'none';
+    ENV.APP.rootElement = '#ember-testing';
+    ENV.APP.autoboot = false;
   }
+
   return ENV;
 };

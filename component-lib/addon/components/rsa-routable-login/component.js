@@ -278,6 +278,9 @@ export default Component.extend({
               });
             }).then(() => {
               window.requestAnimationFrame(() => window.requestAnimationFrame(() => {
+                if (this.get('isDestroying') || this.get('isDestroyed')) {
+                  return;
+                }
                 set(this, 'eulaContentDelay', true);
               }));
             });

@@ -8,6 +8,7 @@ import { throwSocket, patchSocket } from '../../../helpers/patch-socket';
 import { patchFlash } from '../../../helpers/patch-flash';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { initializeIncidents } from 'respond/actions/creators/incidents-creators';
+import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 
 let i18n, redux, setState;
 
@@ -22,7 +23,6 @@ module('Integration | Component | Respond Incidents', function(hooks) {
     this.owner.inject('component', 'i18n', 'service:i18n');
     setState = () => {
       redux = this.owner.lookup('service:redux');
-      // initialize all of the required data into redux app state
       redux.dispatch(initializeIncidents());
     };
     i18n = this.owner.lookup('service:i18n');
@@ -59,8 +59,7 @@ module('Integration | Component | Respond Incidents', function(hooks) {
     const done = assert.async();
     await render(hbs`{{rsa-incidents}}`);
     setState();
-    const getItems = waitForReduxStateChange(redux, 'respond.incidents.items');
-    await getItems;
+    await waitForReduxStateChange(redux, 'respond.incidents.items');
     assert.ok(findAll('.rsa-data-table-body-row').length >= 1, 'At least one row of incidents appears in the data table');
     await settled().then(() => done());
   });
@@ -90,8 +89,7 @@ module('Integration | Component | Respond Incidents', function(hooks) {
     const done = assert.async();
     await render(hbs`{{rsa-incidents}}`);
     setState();
-    const getItems = waitForReduxStateChange(redux, 'respond.incidents.items');
-    await getItems;
+    await waitForReduxStateChange(redux, 'respond.incidents.items');
     // check to make sure we see the tasks appear in the data table
     assert.ok(this.$(selectors.tableRow).length >= 1, 'At least one row of alerts appears in the data table');
     assert.equal(findAll(`${selectors.explorer}.show-inspector`).length, 0, 'The inspector panel is not showing');
@@ -104,12 +102,28 @@ module('Integration | Component | Respond Incidents', function(hooks) {
 
   test('Clicking on the custom date switch changes to a custom date range control, and clicking again switches back', async function(assert) {
     const done = assert.async();
+    assert.expect(3);
+
+    const dateInputReady = (expected) => {
+      return () => {
+        const dateInput = findAll(selectors.customDateInput);
+        return dateInput.length === expected;
+      };
+    };
+
     setState();
+    await waitForReduxStateChange(redux, 'respond.incidents.items');
+
     await render(hbs`{{rsa-incidents}}`);
+    await waitFor(dateInputReady(0));
     assert.equal(findAll(selectors.customDateInput).length, 0, 'There are no custom date range input fields');
+
     await click(selectors.customDateToggle);
+    await waitFor(dateInputReady(2));
     assert.equal(findAll(selectors.customDateInput).length, 2, 'There are two custom date range input fields');
+
     await click(selectors.customDateToggle);
+    await waitFor(dateInputReady(0));
     assert.equal(findAll(selectors.customDateInput).length, 0, 'There are no custom date range input fields');
     await settled().then(() => done());
   });

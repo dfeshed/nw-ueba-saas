@@ -77,15 +77,13 @@ module('Integration | Component | Editable Field', function(hooks) {
   });
 
   test('The field reverts to non-editing mode if a blur occurs but not changes have been made', async function(assert) {
+    assert.expect(1);
     await render(hbs`{{respond-common/editable-field value='Julius Caesar'}}`);
     await click('.editable-field .editable-field__value');
-    return settled().then(() => {
-      this.$('.editable-field input').blur();
-      return settled();
-    })
-    .then(() => {
-      assert.equal(findAll('.editable-field input').length, 0, 'The editable field component does not have an input (b/c it is no longer in edit mode');
-    });
+    await settled();
+    await blur('.editable-field input');
+    await settled();
+    assert.equal(findAll('.editable-field input').length, 0, 'The editable field component does not have an input (b/c it is no longer in edit mode');
   });
 
   test('The field does not revert to non-editing mode if a blur occurs but changes have been made', async function(assert) {

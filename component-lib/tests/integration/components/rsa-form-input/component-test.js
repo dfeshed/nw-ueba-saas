@@ -90,8 +90,10 @@ test('it is disabled when isReadOnly', function(assert) {
 
 test('it calls closure action focusIn', function(assert) {
   assert.expect(1);
+  const done = assert.async();
   this.on('focus', () => {
     assert.ok(true);
+    done();
   });
   this.render(hbs `{{rsa-form-input focusIn=(action 'focus')}}`);
   this.$('input').focus();
@@ -99,8 +101,10 @@ test('it calls closure action focusIn', function(assert) {
 
 test('it calls closure action focusOut', function(assert) {
   assert.expect(1);
+  const done = assert.async();
   this.on('blur', () => {
     assert.ok(true);
+    done();
   });
   this.render(hbs `{{rsa-form-input focusOut=(action 'blur')}}`);
   this.$('input').blur();

@@ -5,7 +5,7 @@ const mockPort = process.env.MOCK_PORT || 9999;
 const mockServerUrl = `http://localhost:${mockPort}`;
 
 module.exports = function(environment/* , appConfig */) {
-  return {
+  let ENV = {
     modulePrefix: 'admin-source-management',
     mockServerUrl,
     mockPort,
@@ -23,6 +23,17 @@ module.exports = function(environment/* , appConfig */) {
       defaultLocale: 'en-us',
       defaultFallback: true,
       includedLocales: ['en-us']
+    },
+    APP: {
     }
   };
+
+  if (environment === 'test') {
+    // Testem prefers this...
+    ENV.locationType = 'none';
+    ENV.APP.rootElement = '#ember-testing';
+    ENV.APP.autoboot = false;
+  }
+
+  return ENV;
 };

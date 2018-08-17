@@ -98,16 +98,16 @@ export default Controller.extend({
     document.body.appendChild(script);
   },
 
-  _addDynamicLocale(key, fileName) {
+  _addDynamicLocale(key, langCode, fileName) {
     if (!fileName) {
       this.set('i18n.locale', key);
-      get(this, 'moment').changeLocale(key);
+      get(this, 'moment').changeLocale(langCode);
     } else {
       const scriptUrl = `/locales/${fileName}`;
       fetch(scriptUrl).then((fetched) => fetched.text()).then((body) => {
         this._appendLocaleScript(body);
         this.set('i18n.locale', key);
-        get(this, 'moment').changeLocale(key);
+        get(this, 'moment').changeLocale(langCode);
       }).catch(() => {
         const translationService = get(this, 'i18n');
         const flashMessages = get(this, 'flashMessages');
@@ -144,10 +144,10 @@ export default Controller.extend({
       }
 
       const locale = this.localeSelection();
-      const { id, key, fileName } = locale;
+      const { id, key, langCode, fileName } = locale;
       if (id !== activeLocaleId) {
         activeLocaleId = id;
-        this._addDynamicLocale(key, fileName);
+        this._addDynamicLocale(key, langCode, fileName);
       }
     });
   }

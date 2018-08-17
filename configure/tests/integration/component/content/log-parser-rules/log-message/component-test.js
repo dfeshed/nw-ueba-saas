@@ -115,7 +115,6 @@ module('Integration | Component | Configure - Content - Sample Log Message', fun
     setState();
     await render(hbs`{{content/log-parser-rules/log-message keyUpDelay=100 }}`);
     await click('pre');
-    await fillIn('pre', 'test');
     throwSocket();
     await triggerKeyEvent('pre', 'keyup', 65);
     assert.equal(findAll('aside .error').length, 1, 'The error message is found');

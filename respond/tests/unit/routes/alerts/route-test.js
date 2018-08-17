@@ -1,48 +1,113 @@
-import { moduleFor, test } from 'ember-qunit';
-import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
+import { module, test } from 'qunit';
+import Service from '@ember/service';
+import { setupTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
-import * as alertCreators from 'respond/actions/creators/alert-creators';
-import sinon from 'sinon';
+import { computed } from '@ember/object';
+import { settled } from '@ember/test-helpers';
+import { waitFor } from 'ember-wait-for-test-helper/wait-for';
+import AlertsRoute from 'respond/routes/alerts';
+import Immutable from 'seamless-immutable';
+import { patchReducer } from '../../../helpers/vnext-patch';
 
-moduleFor('route:alerts', 'Unit | Route | alerts', {
-  integration: true,
-  resolver: engineResolverFor('respond'),
-  beforeEach() {
-    this.inject.service('accessControl');
-    initialize(this);
-  }
-});
+let redux, transition, hasPermission;
 
-test('it resolves the proper title token for the route', function(assert) {
-  const route = this.subject();
-  assert.ok(route);
-  assert.equal(route.titleToken(), 'Alerts');
-});
+module('Unit | Route | incidents', function(hooks) {
+  setupTest(hooks);
 
-test('it transitions to "index" if the expected access control role is not set', function(assert) {
-  const spy = sinon.spy();
-  const route = this.subject({ transitionTo: spy });
+  hooks.beforeEach(function() {
+    transition = null;
+    hasPermission = true;
+    initialize(this.owner);
+  });
 
-  route.set('accessControl.roles', []);
-  route.beforeModel();
-  assert.equal(spy.calledWith('index'), true);
-});
+  const setupRoute = function() {
+    this.owner.register('service:-routing', Service.extend({
+      currentRouteName: 'alerts'
+    }));
+    const accessControl = Service.extend({
+      hasRespondAlertsAccess: computed(function() {
+        return hasPermission;
+      })
+    }).create();
+    const contextualHelp = this.owner.lookup('service:contextualHelp');
+    const i18n = this.owner.lookup('service:i18n');
+    redux = this.owner.lookup('service:redux');
+    const PatchedRoute = AlertsRoute.extend({
+      i18n: computed(function() {
+        return i18n;
+      }),
+      contextualHelp: computed(function() {
+        return contextualHelp;
+      }),
+      accessControl: computed(function() {
+        return accessControl;
+      }),
+      redux: computed(function() {
+        return redux;
+      }),
+      transitionTo(routeName) {
+        transition = routeName;
+      }
+    });
+    return PatchedRoute.create();
+  };
 
-test('the contextual-help "topic" are set on activation and unset on deactivation of the route', function(assert) {
-  const route = this.subject();
-  assert.equal(route.get('contextualHelp.topic'), null, 'The contextual-help topic is null by default');
+  test('it resolves the proper title token for the route', async function(assert) {
+    assert.expect(1);
+    const route = setupRoute.call(this);
+    assert.equal(route.titleToken(), 'Alerts');
+  });
 
-  route.activate();
-  assert.equal(route.get('contextualHelp.topic'), route.get('contextualHelp.respAlrtListVw'), 'The contextual-help topic is updated on activation');
+  test('it transitions to "index" if the user does not have access', async function(assert) {
+    assert.expect(1);
+    const route = setupRoute.call(this);
+    hasPermission = false;
 
-  route.deactivate();
-  assert.equal(route.get('contextualHelp.topic'), null, 'The contextual-help topic is reverted to null on deactivate');
-});
+    await route.beforeModel();
+    await settled();
+    assert.equal(transition, 'index');
+  });
 
-test('ensure the expected action creator is called', function(assert) {
-  const initializeAlerts = sinon.spy(alertCreators, 'initializeAlerts');
-  const route = this.subject();
-  route.model();
-  assert.equal(initializeAlerts.calledOnce, true, 'initializeAlerts is called once');
-  initializeAlerts.restore();
+  test('does not transition to "index" if the user has access', async function(assert) {
+    assert.expect(1);
+    const route = setupRoute.call(this);
+    hasPermission = true;
+
+    await route.beforeModel();
+    await settled();
+    assert.equal(transition, null);
+  });
+
+  test('the contextual-help "topic" are set on activation and unset on deactivation of the route', async function(assert) {
+    assert.expect(3);
+
+    const route = setupRoute.call(this);
+    assert.equal(route.get('contextualHelp.topic'), null, 'The contextual-help topic is null by default');
+
+    route.activate();
+    assert.equal(route.get('contextualHelp.topic'), route.get('contextualHelp.respAlrtListVw'), 'The contextual-help topic is updated on activation');
+
+    route.deactivate();
+    assert.equal(route.get('contextualHelp.topic'), null, 'The contextual-help topic is reverted to null on deactivate');
+  });
+
+  test('ensure the expected action creator is called', async function(assert) {
+    assert.expect(1);
+
+    patchReducer(this, Immutable.from({}));
+    const route = setupRoute.call(this);
+    await route.model();
+
+    await waitFor(() => {
+      const { respond: { dictionaries: { alertNames } } } = redux.getState();
+      const alertNamesHydrated = alertNames && alertNames.length > 0;
+      if (alertNamesHydrated) {
+        assert.ok(true, 'alertNames are set meaning the action creator was called');
+      }
+      return alertNamesHydrated;
+    });
+
+    await settled();
+  });
+
 });

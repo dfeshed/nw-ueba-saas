@@ -1,7 +1,8 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { find, findAll, render, fillIn, blur, click } from '@ember/test-helpers';
+import { find, findAll, render, fillIn, blur, click, settled } from '@ember/test-helpers';
+import { waitForRedux } from '../../../../helpers/wait-for-redux';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import Immutable from 'seamless-immutable';
@@ -54,13 +55,19 @@ module('Integration | Component | host-list/content-filter', function(hooks) {
 
   test('host-list content-filter renders default filters', async function(assert) {
     assert.expect(1);
+    const done = assert.async();
+
     // set height to get all lazy rendered items on the page
     await render(hbs`{{host-list/content-filter}}`);
     assert.equal(findAll('.content-filter .text-filter').length, 0, 'As there are no default filters');
+
+    return settled().then(() => done());
   });
 
   test('host-list content-filter renders filters', async function(assert) {
     assert.expect(1);
+    const done = assert.async();
+
     new ReduxDataHelper(initState)
     .updateFilterExpressionList(testExpressionList.expressionList)
     .updateFilterSchems(endpoint.schema)
@@ -68,9 +75,14 @@ module('Integration | Component | host-list/content-filter', function(hooks) {
     .build();
     await render(hbs`{{host-list/content-filter}}`);
     assert.equal(findAll('.content-filter .text-filter').length, 2, 'Two text filters rendered');
+
+    return settled().then(() => done());
   });
 
   test('host-list content-filter renders text filter with empty validation', async function(assert) {
+    assert.expect(1);
+    const done = assert.async();
+
     assert.expect(1);
     new ReduxDataHelper(initState)
     .updateFilterExpressionList(testExpressionList.expressionList)
@@ -84,9 +96,14 @@ module('Integration | Component | host-list/content-filter', function(hooks) {
     await click('.text-filter__content .rsa-form-button');
     const textIndex = find('.input-error').textContent.indexOf('Invalid');
     assert.notEqual(textIndex, -1, 'Update text filter with empty value validated');
+
+    return settled().then(() => done());
   });
 
   test('host-list content-filter renders text filter with 257 char validation', async function(assert) {
+    assert.expect(1);
+    const done = assert.async();
+
     new ReduxDataHelper(initState)
     .updateFilterExpressionList(testExpressionList.expressionList)
     .updateFilterSchems(endpoint.schema)
@@ -102,9 +119,14 @@ module('Integration | Component | host-list/content-filter', function(hooks) {
     await click('.text-filter__content .rsa-form-button');
     const textIndex = find('.input-error').textContent.indexOf('Please enter a valid Agent ID');
     assert.notEqual(textIndex, -1, 'Update text filter with 257 text value validated');
+
+    return settled().then(() => done());
   });
 
   test('host-list content-filter renders date time filters', async function(assert) {
+    assert.expect(1);
+    const done = assert.async();
+
     new ReduxDataHelper(initState)
     .updateFilterExpressionList(testExpressionList.expressionList)
     .updateFilterSchems(endpoint.schema)
@@ -112,9 +134,14 @@ module('Integration | Component | host-list/content-filter', function(hooks) {
     .build();
     await render(hbs`{{host-list/content-filter}}`);
     assert.equal(findAll('.content-filter .datetime-filter').length, 1, 'Datetime filter rendered');
+
+    return settled().then(() => done());
   });
 
   test('host-list content-filter selecting a filter', async function(assert) {
+    assert.expect(1);
+    const done = assert.async();
+
     new ReduxDataHelper(initState)
     .updateFilterExpressionList(testExpressionList.expressionList)
     .updateFilterSchems(endpoint.schema)
@@ -124,10 +151,14 @@ module('Integration | Component | host-list/content-filter', function(hooks) {
     await click('.filter-add-more .filter-trigger-button');
     await click('.filter-options li:nth-child(3) .ember-checkbox');
     assert.equal(findAll('.filter-trigger-button').length, 5, 'Added a filter');
+
+    return settled().then(() => done());
   });
 
   test('host-list content-filter search a filter', async function(assert) {
     assert.expect(1);
+    const done = assert.async();
+
     new ReduxDataHelper(initState)
     .updateFilterExpressionList(testExpressionList.expressionList)
     .updateFilterSchems(endpoint.schema)
@@ -138,10 +169,14 @@ module('Integration | Component | host-list/content-filter', function(hooks) {
     await fillIn('.column-chooser-input .ember-text-field', 'Agent');
     await blur('.column-chooser-input .ember-text-field');
     assert.equal(findAll('.filter-options li').length, 2, 'Filter search validated');
+
+    return settled().then(() => done());
   });
 
   test('host-list text filter update test', async function(assert) {
     assert.expect(1);
+    const done = assert.async();
+
     new ReduxDataHelper(initState)
     .updateFilterExpressionList(testExpressionList.expressionList)
     .updateFilterSchems(endpoint.schema)
@@ -154,12 +189,17 @@ module('Integration | Component | host-list/content-filter', function(hooks) {
     await click('.text-filter__content .rsa-form-button');
     const textIndex = find('.text-filter:nth-of-type(2) .filter-trigger-button').innerText.indexOf('C1C6F9');
     assert.notEqual(textIndex, -1, 'Update text filter with value tested');
+
+    await waitForRedux('endpoint.machines.hostFetchStatus', 'completed');
+    return settled().then(() => done());
   });
 
   // -------------- List filter tests  -----------------------
 
   test('host-list List filter render test', async function(assert) {
     assert.expect(2);
+    const done = assert.async();
+
     // test data setting
     testExpressionList.expressionList.push({
       propertyName: 'machine.machineOsType',
@@ -174,11 +214,14 @@ module('Integration | Component | host-list/content-filter', function(hooks) {
     assert.equal(findAll('.list-filter-lists').length, 0);
     await click('.list-filter .filter-trigger-button');
     assert.equal(findAll('.list-filter-lists').length, 1, 'List filter rendered successful');
-  });
 
+    return settled().then(() => done());
+  });
 
   test('host-list List filter selecting list items test', async function(assert) {
     assert.expect(1);
+    const done = assert.async();
+
     // test data setting
     testExpressionList.expressionList.push({
       propertyName: 'machine.machineOsType',
@@ -196,5 +239,8 @@ module('Integration | Component | host-list/content-filter', function(hooks) {
     await click('.footer .rsa-form-button');
     const textIndex = find('.list-filter .filter-trigger-button').innerText.indexOf('windows');
     assert.notEqual(textIndex, -1, 'List filter list item selected');
+
+    await waitForRedux('endpoint.machines.hostFetchStatus', 'completed');
+    return settled().then(() => done());
   });
 });

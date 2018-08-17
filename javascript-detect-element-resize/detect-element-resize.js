@@ -25,8 +25,11 @@
 		})();
 
 		function resetTriggers(element) {
-			var triggers = element.__resizeTriggers__,
-				expand = triggers.firstElementChild,
+			var triggers = element.__resizeTriggers__;
+			if (triggers.innerHTML === undefined) {
+				return;
+			}
+			var expand = triggers.firstElementChild,
 				contract = triggers.lastElementChild,
 				expandChild = expand.firstElementChild;
 			contract.scrollLeft = contract.scrollWidth;

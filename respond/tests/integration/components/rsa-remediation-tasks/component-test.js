@@ -8,6 +8,7 @@ import { throwSocket, patchSocket } from '../../../helpers/patch-socket';
 import { patchFlash } from '../../../helpers/patch-flash';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { initializeTasks } from 'respond/actions/creators/remediation-task-creators';
+import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 
 let i18n, redux, setState;
 
@@ -21,7 +22,6 @@ module('Integration | Component | Respond Remediation Tasks', function(hooks) {
     this.owner.inject('component', 'i18n', 'service:i18n');
     setState = () => {
       redux = this.owner.lookup('service:redux');
-      // initialize all of the required data into redux app state
       redux.dispatch(initializeTasks());
     };
     i18n = this.owner.lookup('service:i18n');
@@ -89,8 +89,7 @@ module('Integration | Component | Respond Remediation Tasks', function(hooks) {
     const done = assert.async();
     await render(hbs`{{rsa-remediation-tasks}}`);
     setState();
-    const getItems = waitForReduxStateChange(redux, 'respond.remediationTasks.items');
-    await getItems;
+    await waitForReduxStateChange(redux, 'respond.remediationTasks.items');
     // check to make sure we see the tasks appear in the data table
     assert.ok(this.$(selectors.tableRow).length >= 1, 'At least one row of alerts appears in the data table');
     assert.equal(findAll(`${selectors.explorer}.show-inspector`).length, 0, 'The inspector panel is not showing');
@@ -103,12 +102,27 @@ module('Integration | Component | Respond Remediation Tasks', function(hooks) {
 
   test('Clicking on the custom date switch changes to a custom date range control, and clicking again switches back', async function(assert) {
     const done = assert.async();
+    assert.expect(3);
+
+    const dateInputReady = (expected) => {
+      return () => {
+        const dateInput = findAll(selectors.customDateInput);
+        return dateInput.length === expected;
+      };
+    };
+
     setState();
+
     await render(hbs`{{rsa-remediation-tasks}}`);
+    await waitFor(dateInputReady(0));
     assert.equal(findAll(selectors.customDateInput).length, 0, 'There are no custom date range input fields');
+
     await click(selectors.customDateToggle);
+    await waitFor(dateInputReady(2));
     assert.equal(findAll(selectors.customDateInput).length, 2, 'There are two custom date range input fields');
+
     await click(selectors.customDateToggle);
+    await waitFor(dateInputReady(0));
     assert.equal(findAll(selectors.customDateInput).length, 0, 'There are no custom date range input fields');
     await settled().then(() => done());
   });
@@ -146,8 +160,7 @@ module('Integration | Component | Respond Remediation Tasks', function(hooks) {
     const done = assert.async();
     await render(hbs`{{rsa-remediation-tasks}}`);
     setState();
-    const getItems = waitForReduxStateChange(redux, 'respond.remediationTasks.items');
-    await getItems;
+    await waitForReduxStateChange(redux, 'respond.remediationTasks.items');
     assert.ok(findAll(selectors.tableRow).length >= 1, 'At least one row of alerts appears in the data table');
     assert.equal(findAll(`${selectors.selectAllCheckbox}.checked`).length, 0, 'The select all checkbox is NOT checked');
     assert.equal(findAll(`${selectors.tableRow} ${selectors.tableCell}:first-of-type .rsa-form-checkbox.checked`).length, 0, 'There are no selected rows');
@@ -170,8 +183,7 @@ module('Integration | Component | Respond Remediation Tasks', function(hooks) {
     });
     await render(hbs`{{rsa-remediation-tasks}}`);
     setState();
-    const getItems = waitForReduxStateChange(redux, 'respond.remediationTasks.items');
-    await getItems;
+    await waitForReduxStateChange(redux, 'respond.remediationTasks.items');
     const onDelete = waitForReduxStateChange(redux, 'respond.remediationTasks.items');
     await click(`${selectors.selectAllCheckbox} input`);
     await click(selectors.deleteButton);
@@ -190,8 +202,7 @@ module('Integration | Component | Respond Remediation Tasks', function(hooks) {
     await render(hbs`{{rsa-remediation-tasks}}`);
     setState();
     // Wait until the incidents are added
-    const getItems = waitForReduxStateChange(redux, 'respond.remediationTasks.items');
-    await getItems;
+    await waitForReduxStateChange(redux, 'respond.remediationTasks.items');
 
     // Clicking once, and the sort is descending
     patchSocket((method, modelName, query) => {
@@ -218,8 +229,7 @@ module('Integration | Component | Respond Remediation Tasks', function(hooks) {
     const done = assert.async();
     await render(hbs`{{rsa-remediation-tasks}}`);
     setState();
-    const getItems = waitForReduxStateChange(redux, 'respond.remediationTasks.items');
-    await getItems;
+    await waitForReduxStateChange(redux, 'respond.remediationTasks.items');
     assert.equal(find(selectors.firstRowSelectCheckbox).classList.contains('checked'), false, 'The first row is not selected/checked');
     await click(selectors.firstRowSelectCheckbox);
     assert.equal(find(selectors.firstRowSelectCheckbox).classList.contains('checked'), true, 'The first row is selected/checked');

@@ -36,7 +36,12 @@ export default Component.extend({
   didInsertElement() {
     schedule('afterRender', () => {
       this.$('.modal-close').on('click', () => {
-        next(() => this.closeModal());
+        next(() => {
+          if (this.isDestroyed || this.isDestroying) {
+            return;
+          }
+          this.closeModal();
+        });
       });
       if (this.get('autoOpen')) {
         this.openModal();
@@ -62,31 +67,37 @@ export default Component.extend({
   updateModal(truth) {
     next(() => {
       if (truth) {
-        this.get('eventBus').trigger('rsa-application-modal-did-open');
         $('#modalDestination').addClass('active');
+      } else {
+        $('#modalDestination').removeClass('active');
+      }
+
+      if (this.isDestroyed || this.isDestroying) {
+        return;
+      }
+
+      if (truth) {
+        this.get('eventBus').trigger('rsa-application-modal-did-open');
         this.sendAction('modalDidOpen');
       } else {
         this.get('eventBus').trigger('rsa-application-modal-did-close');
-        $('#modalDestination').removeClass('active');
         this.sendAction('modalDidClose');
       }
 
-      if (!this.get('isDestroyed') && !this.get('isDestroying')) {
-        this.set('isOpen', truth);
-      }
+      this.set('isOpen', truth);
     });
   },
 
   openModal() {
     const isOpen = true;
-    next(this, function() {
+    next(() => {
       this.updateModal(isOpen);
     });
   },
 
   closeModal() {
     const isOpen = false;
-    next(this, function() {
+    next(() => {
       this.updateModal(isOpen);
     });
     if (this.get('onClose')) {

@@ -12,12 +12,14 @@ const stateToComputed = (state) => {
     }
   } = state;
 
+  const mutableUsers = [].concat(users.allUsers);
+
   return {
     idFilter: itemsFilters.id,
     priorityFilters: itemsFilters.priority || [],
     statusFilters: itemsFilters.status || [],
     createdByFilters: itemsFilters.createdBy || [],
-    users: users.allUsers,
+    users: mutableUsers,
     priorityTypes,
     remediationStatusTypes
   };

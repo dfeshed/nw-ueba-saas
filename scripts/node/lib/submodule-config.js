@@ -19,6 +19,7 @@ const ALL_SUBMODULES = [
   'preferences',
   'test-helpers',
   'ember-route-action-helper',
+  'ember-cli-document-title',
   'investigate-process-analysis',
   'rsa-context-menu',
   'rsa-data-filters',
@@ -129,6 +130,7 @@ const saModuleDependants = {
     'investigate-hosts',
     'investigate-files'
   ],
+  'ember-cli-document-title': [],
   'hosts-scan-configure': ['sa', 'configure'],
   'direct-access': []
 };

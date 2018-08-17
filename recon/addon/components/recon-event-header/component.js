@@ -32,7 +32,7 @@ const EventHeaderComponent = Component.extend(HighlightsEntities, {
   displayedHeaderItems(headerItems) {
     headerItems = Array.isArray(headerItems) ? headerItems : [];
     next(this, 'highlightEntities');
-    return headerItems.reduce((acc, item) => {
+    return [].concat(headerItems.reduce((acc, item) => {
       // Get the sort order(so) from recon displayed header object.
       const so = RECON_DISPLAYED_HEADER[item.id];
       if (!isEmpty(item.value) && !isNaN(so) && item.name) {
@@ -46,7 +46,7 @@ const EventHeaderComponent = Component.extend(HighlightsEntities, {
         });
       }
       return acc;
-    }, []).sortBy('so');
+    }, [])).sortBy('so');
   }
 });
 

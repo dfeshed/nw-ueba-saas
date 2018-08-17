@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import Service from '@ember/service';
 import { setupTest } from 'ember-qunit';
-import { settled } from '@ember/test-helpers';
+import { waitUntil, settled } from '@ember/test-helpers';
 import { throwSocket } from '../../helpers/patch-socket';
 import { patchReducer } from '../../helpers/vnext-patch';
 import { initializeRecon } from 'recon/actions/data-creators';
@@ -100,9 +100,14 @@ module('Unit | Actions | initializeRecon', function(hooks) {
       endpointId: 'b103f57c-ed1a-4862-aa53-e30687f130b3'
     });
 
+    await waitUntil(() => {
+      const state = redux.getState();
+      return state.recon.data.contentLoading === false;
+    }, { timeout: 10000 });
+
     const { recon } = redux.getState();
     assert.equal(recon.data.apiFatalErrorCode, 3);
 
-    return settled().then(() => done());
+    await settled().then(() => done());
   });
 });

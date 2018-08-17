@@ -3,6 +3,7 @@ import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import $ from 'jquery';
 import { patchSocket } from '../../../../../helpers/patch-socket';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 import wait from 'ember-test-helpers/wait';
 
@@ -10,6 +11,7 @@ moduleForComponent('host-list/content-filter/datetime-filter', 'Integration | Co
   integration: true,
   resolver: engineResolverFor('investigate-hosts'),
   beforeEach() {
+    initialize(this);
     this.registry.injection('component', 'i18n', 'service:i18n');
     this.inject.service('timezone');
     this.inject.service('redux');

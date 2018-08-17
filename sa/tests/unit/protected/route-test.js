@@ -1,4 +1,5 @@
 import { module, test } from 'qunit';
+import Service from '@ember/service';
 import { setupTest } from 'ember-qunit';
 import { Promise } from 'rsvp';
 import { next } from '@ember/runloop';
@@ -38,8 +39,11 @@ module('Unit | Route | protected', function(hooks) {
 
   test('should fetch Source Management (USM) feature flags and store in features service & sessionStorage', async function(assert) {
     const features = this.owner.lookup('service:features');
+
+    this.owner.register('service:-routing', Service.extend({
+      currentRouteName: 'protected'
+    }));
     const route = this.owner.lookup('route:protected');
-    route.set('router.currentRouteName', 'protected');
 
     // disabled by default
     let isRsaUsmEnabled = features.isEnabled('rsa.usm');

@@ -8,6 +8,7 @@ import { throwSocket, patchSocket } from '../../../helpers/patch-socket';
 import { patchFlash } from '../../../helpers/patch-flash';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { initializeAlerts } from 'respond/actions/creators/alert-creators';
+import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 
 let i18n, redux, setState;
 
@@ -22,7 +23,6 @@ module('Integration | Component | Respond Alerts', function(hooks) {
     this.owner.inject('component', 'i18n', 'service:i18n');
     redux = this.owner.lookup('service:redux');
     setState = () => {
-      // initialize all of the required data into redux app state
       redux.dispatch(initializeAlerts());
     };
     i18n = this.owner.lookup('service:i18n');
@@ -90,8 +90,7 @@ module('Integration | Component | Respond Alerts', function(hooks) {
     const done = assert.async();
     await render(hbs`{{rsa-alerts}}`);
     setState();
-    const getItems = waitForReduxStateChange(redux, 'respond.alerts.items');
-    await getItems;
+    await waitForReduxStateChange(redux, 'respond.alerts.items');
     // check to make sure we see the tasks appear in the data table
     assert.ok(this.$(selectors.tableRow).length >= 1, 'At least one row of alerts appears in the data table');
     assert.equal(findAll(`${selectors.explorer}.show-inspector`).length, 0, 'The inspector panel is not showing');
@@ -103,13 +102,28 @@ module('Integration | Component | Respond Alerts', function(hooks) {
   });
 
   test('Clicking on the custom date switch changes to a custom date range control, and clicking again switches back', async function(assert) {
+    assert.expect(3);
     const done = assert.async();
+
+    const dateInputReady = (expected) => {
+      return () => {
+        const dateInput = findAll(selectors.customDateInput);
+        return dateInput.length === expected;
+      };
+    };
     setState();
+    await waitForReduxStateChange(redux, 'respond.alerts.items');
+
     await render(hbs`{{rsa-alerts}}`);
+    await waitFor(dateInputReady(0));
     assert.equal(findAll(selectors.customDateInput).length, 0, 'There are no custom date range input fields');
+
     await click(selectors.customDateToggle);
+    await waitFor(dateInputReady(2));
     assert.equal(findAll(selectors.customDateInput).length, 2, 'There are two custom date range input fields');
+
     await click(selectors.customDateToggle);
+    await waitFor(dateInputReady(0));
     assert.equal(findAll(selectors.customDateInput).length, 0, 'There are no custom date range input fields');
     await settled().then(() => done());
   });
@@ -118,6 +132,7 @@ module('Integration | Component | Respond Alerts', function(hooks) {
     const done = assert.async();
     await render(hbs`{{rsa-alerts}}`);
     setState();
+    await waitForReduxStateChange(redux, 'respond.alerts.items');
     assert.equal(find(`${selectors.alertTypeFilters} .rsa-form-checkbox-label:first-of-type`).classList.contains('checked'), false, 'The filter is not selected');
     await click(`${selectors.alertTypeFilters} .rsa-form-checkbox-label:first-of-type`);
     assert.equal(find(`${selectors.alertTypeFilters} .rsa-form-checkbox-label:first-of-type`).classList.contains('checked'), true, 'The filter is selected');
@@ -130,6 +145,8 @@ module('Integration | Component | Respond Alerts', function(hooks) {
     const done = assert.async();
     await render(hbs`{{rsa-alerts}}`);
     setState();
+    await waitForReduxStateChange(redux, 'respond.alerts.items');
+    await render(hbs`{{rsa-alerts}}`);
     assert.equal(find(`${selectors.alertTypeFilters} .rsa-form-checkbox-label:first-of-type`).classList.contains('checked'), false, '1. The filter is not selected');
     await click(`${selectors.alertTypeFilters} .rsa-form-checkbox-label:first-of-type`);
     assert.equal(find(`${selectors.alertTypeFilters} .rsa-form-checkbox-label:first-of-type`).classList.contains('checked'), true, '2. The filter is selected');
@@ -142,8 +159,7 @@ module('Integration | Component | Respond Alerts', function(hooks) {
     const done = assert.async();
     await render(hbs`{{rsa-alerts}}`);
     setState();
-    const getItems = waitForReduxStateChange(redux, 'respond.alerts.items');
-    await getItems;
+    await waitForReduxStateChange(redux, 'respond.alerts.items');
     assert.ok(findAll(selectors.tableRow).length >= 1, 'At least one row of alerts appears in the data table');
     assert.equal(findAll(`${selectors.selectAllCheckbox}.checked`).length, 0, 'The select all checkbox is NOT checked');
     assert.equal(findAll(`${selectors.tableRow} ${selectors.tableCell}:first-of-type .rsa-form-checkbox.checked`).length, 0, 'There are no selected rows');
@@ -166,8 +182,7 @@ module('Integration | Component | Respond Alerts', function(hooks) {
     });
     await render(hbs`{{rsa-alerts}}`);
     setState();
-    const getItems = waitForReduxStateChange(redux, 'respond.alerts.items');
-    await getItems;
+    await waitForReduxStateChange(redux, 'respond.alerts.items');
     const onDelete = waitForReduxStateChange(redux, 'respond.alerts.items');
     await click(`${selectors.selectAllCheckbox} input`);
     await click(selectors.deleteButton);

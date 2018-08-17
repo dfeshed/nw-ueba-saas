@@ -8,7 +8,6 @@ import Immutable from 'seamless-immutable';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import { patchFlash } from '../../../../helpers/patch-flash';
 import { throwSocket } from '../../../../helpers/patch-socket';
-import { waitForSockets } from '../../../../helpers/wait-for-sockets';
 
 const initialState = {
   policy: {
@@ -90,7 +89,7 @@ module('Integration | Component | usm-policies/policy', function(hooks) {
     assert.expect(3);
     setState({ ...initialState, policy: policyData });
 
-    const done = waitForSockets();
+    const done = assert.async();
     patchFlash((flash) => {
       const translation = this.owner.lookup('service:i18n');
       const expectedMessage = translation.t('adminUsm.policy.saveSuccess');

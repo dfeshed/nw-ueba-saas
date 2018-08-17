@@ -94,6 +94,8 @@ module('Integration | Component | Incident Inspector Header', function(hooks) {
 
   test('Clicking the Send To Archer button calls the send-to-archer endpoint with the incident ID and shows a success flash message', async function(assert) {
     assert.expect(5);
+    const done = assert.async();
+
     patchSocket((method, modelName, query) => {
       assert.equal(method, 'sendToArcher');
       assert.equal(modelName, 'incidents');
@@ -101,12 +103,14 @@ module('Integration | Component | Incident Inspector Header', function(hooks) {
         incidentId: 'INC-1234'
       });
     });
+
     patchFlash((flash) => {
       const translation = this.owner.lookup('service:i18n');
       // Note: the archerIncidentId is mocked in the mock server data
       const expectedMessage = translation.t('respond.incidents.actions.actionMessages.sendToArcherSuccess', { incidentId: 'INC-1234', archerIncidentId: '12321349' });
       assert.equal(flash.type, 'success');
       assert.equal(flash.message.string, expectedMessage);
+      done();
     });
     this.set('info', {
       id: 'INC-1234',
@@ -120,12 +124,14 @@ module('Integration | Component | Incident Inspector Header', function(hooks) {
   const _testEscalationFailureMessages = function(errorCode, i18nKeyLeaf) {
     return async function(assert) {
       assert.expect(2);
+      const done = assert.async();
       throwSocket({ message: { code: errorCode } });
       patchFlash((flash) => {
         const translation = this.owner.lookup('service:i18n');
         const expectedMessage = translation.t(`respond.incidents.actions.actionMessages.${i18nKeyLeaf}`, { incidentId: 'INC-1234' });
         assert.equal(flash.type, 'error');
         assert.equal(flash.message.string, expectedMessage);
+        done();
       });
       this.set('info', {
         id: 'INC-1234',

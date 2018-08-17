@@ -2,6 +2,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger } from '../../../../helpers/ember-power-select';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import {
   getAllUsers,
   getAllPriorityTypes,
@@ -11,7 +12,7 @@ import RSVP from 'rsvp';
 import $ from 'jquery';
 import wait from 'ember-test-helpers/wait';
 
-let initialize;
+let setup;
 
 moduleForComponent('rsa-remediation-tasks/filter-controls', 'Integration | Component | Respond Remediation Tasks Filters', {
   integration: true,
@@ -22,9 +23,10 @@ moduleForComponent('rsa-remediation-tasks/filter-controls', 'Integration | Compo
     // inject and handle redux
     this.inject.service('redux');
     const redux = this.get('redux');
+    initialize(this);
 
     // initialize all of the required data into redux app state
-    initialize = RSVP.allSettled([
+    setup = RSVP.allSettled([
       redux.dispatch(getAllUsers()),
       redux.dispatch(getAllPriorityTypes()),
       redux.dispatch(getAllRemediationStatusTypes())
@@ -45,7 +47,7 @@ function selectFirstOption() {
 
 test('The Remediation Tasks Filters component renders to the DOM', function(assert) {
   assert.expect(1);
-  return initialize.then(() => {
+  return setup.then(() => {
     this.on('updateFilter', function() {});
     this.render(hbs`{{rsa-remediation-tasks/filter-controls updateFilter=(action 'updateFilter')}}`);
     assert.ok(this.$('.filter-option').length >= 1, 'The Remediation Tasks Filters component should be found in the DOM');
@@ -54,7 +56,7 @@ test('The Remediation Tasks Filters component renders to the DOM', function(asse
 
 test('All of the statuses appear as checkboxes, and clicking one dispatches an action', function(assert) {
   assert.expect(2);
-  return initialize.then(() => {
+  return setup.then(() => {
     this.on('updateFilter', function() {
       assert.ok(true);
     });
@@ -68,7 +70,7 @@ test('All of the statuses appear as checkboxes, and clicking one dispatches an a
 
 test('All of the priorities appear as checkboxes, and clicking one dispatches an action', function(assert) {
   assert.expect(2);
-  return initialize.then(() => {
+  return setup.then(() => {
     this.on('updateFilter', function() {
       assert.ok(true);
     });
@@ -82,7 +84,7 @@ test('All of the priorities appear as checkboxes, and clicking one dispatches an
 
 test('All of the createdBy users appear in the dropdown, and selecting one calls dispatch', function(assert) {
   assert.expect(3);
-  return initialize.then(() => {
+  return setup.then(() => {
     this.on('updateFilter', function() {
       assert.ok(true);
     });
@@ -102,14 +104,14 @@ test('All of the createdBy users appear in the dropdown, and selecting one calls
 
 
 test('The task id filter field is rendered to the DOM', function(assert) {
-  return initialize.then(() => {
+  return setup.then(() => {
     this.render(hbs`{{rsa-remediation-tasks/filter-controls}}`);
     assert.equal(this.$('.filter-option.id-filter input').length, 1, 'The ID filter input appears in the DOM');
   });
 });
 
 test('If the task id filter does not match the REM-# format, an error message is shown and no update is made', function(assert) {
-  return initialize.then(() => {
+  return setup.then(() => {
     this.on('updateFilter', function() {
       assert.ok(false);
     });
@@ -125,7 +127,7 @@ test('If the task id filter does not match the REM-# format, an error message is
 
 test('If the task id filter is provided a valid input, the updateFilter function is called', function(assert) {
   assert.expect(2);
-  return initialize.then(() => {
+  return setup.then(() => {
     this.on('updateFilter', function() {
       assert.ok(true);
     });

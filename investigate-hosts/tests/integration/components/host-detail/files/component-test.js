@@ -5,6 +5,7 @@ import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import { patchSocket } from '../../../../helpers/patch-socket';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { applyPatch, revertPatch } from '../../../../helpers/patch-reducer';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 import hostFiles from '../../state/host.files';
 
@@ -14,6 +15,7 @@ moduleForComponent('host-detail/files', 'Integration | Component | endpoint host
   integration: true,
   resolver: engineResolverFor('investigate-hosts'),
   beforeEach() {
+    initialize(this);
     this.registry.injection('component', 'i18n', 'service:i18n');
     setState = (state) => {
       applyPatch(state);

@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { render, find, findAll } from '@ember/test-helpers';
+import { render, find, findAll, settled } from '@ember/test-helpers';
 import { setupRenderingTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
@@ -28,6 +28,7 @@ module('Integration | Component | value mapping', function(hooks) {
     await render(hbs`{{content/log-parser-rules/meta-captures}}`);
     assert.equal(findAll('li .ember-power-select-selected-item').length, 1, 'There is only one capture/meta selection dropdown');
     assert.equal(find('li .ember-power-select-selected-item').textContent.trim(), 'domain.dst', 'The appropriate option is selected in dropdown');
+    await settled();
   });
 
   test('Changing the dropdown selection updates the value in the selected rule state', async function(assert) {
@@ -37,6 +38,7 @@ module('Integration | Component | value mapping', function(hooks) {
     clickTrigger('.meta-captures .firstItem');
     selectChoose('.meta-captures .firstItem', 'domain.src');
     assert.equal(find('li .ember-power-select-selected-item').textContent.trim(), 'domain.src', 'The appropriate option is selected in dropdown');
+    await settled();
   });
 
   test('Editing is disabled if the rule is out of the box', async function(assert) {

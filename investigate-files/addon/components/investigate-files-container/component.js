@@ -1,5 +1,6 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
+import { next } from '@ember/runloop';
 
 import { isSchemaLoaded } from 'investigate-files/reducers/schema/selectors';
 import { hasFiles, getDataSourceTab, selectedFileStatusHistory } from 'investigate-files/reducers/file-list/selectors';
@@ -52,9 +53,11 @@ const Files = Component.extend({
 
   init() {
     this._super(...arguments);
-    if (!this.get('hasFiles')) {
-      this.send('fetchSchemaInfo');
-    }
+    next(() => {
+      if (!this.get('hasFiles') && !this.get('isDestroyed') && !this.get('isDestroying')) {
+        this.send('fetchSchemaInfo');
+      }
+    });
   },
 
   actions: {

@@ -4,7 +4,6 @@ import { inject as service } from '@ember/service';
 export default Route.extend({
   accessControl: service(),
   features: service(),
-  router: service(),
 
   beforeModel() {
     const hasUsmAccess = this.get('accessControl.hasAdminViewUnifiedSourcesAccess');

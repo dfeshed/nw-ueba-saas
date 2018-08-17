@@ -8,7 +8,7 @@ const mockPort = process.env.MOCK_PORT || 9999;
 const socketUrl = `http://localhost:${mockPort}/socket`;
 const socketUrlPingFail = `http://localhost:${mockPort}/socket/fail`;
 
-module.exports = function(/* environment, appConfig */) {
+module.exports = function(environment) {
   const ENV = {
     // Used for tests run right out of streaming-data addon
     socketRoutes: {
@@ -114,7 +114,17 @@ module.exports = function(/* environment, appConfig */) {
           requestDestination: '/test/request/paged-stream/_2'
         }
       }
+    },
+    APP: {
     }
   };
+
+  if (environment === 'test') {
+    // Testem prefers this...
+    ENV.locationType = 'none';
+    ENV.APP.rootElement = '#ember-testing';
+    ENV.APP.autoboot = false;
+  }
+
   return ENV;
 };

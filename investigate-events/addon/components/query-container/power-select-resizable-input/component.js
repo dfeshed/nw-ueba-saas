@@ -1,35 +1,40 @@
 /**
  * This component was copied from:
  * https://github.com/cibernox/ember-power-select-typeahead/blob/master/addon/components/power-select-typeahead/trigger.js
- * I added stuff to dynamically resize the input based upon the characters
- * typed in the input. If this isn't sufficient, take a look at
+ * I added stuff to dynamically resize the input based upon the number of
+ * characters typed in the input. If this isn't sufficient, take a look at
  * https://github.com/cibernox/ember-text-measurer.
  * @public
  */
 import Component from '@ember/component';
 import { computed } from '@ember/object';
 
+const { log } = console;// eslint-disable-line no-unused-vars
+
 export default Component.extend({
   bindClassNames: ['has-selection:select'],
   tagName: '',
   value: '',
+  text: '',
 
   /**
-   * The value for <input>. This is also used by the shadow span to resize this
-   * component as the user types.
+   * Value for input's "size" attribute
    * @private
    */
-  text: computed('select.selected', 'extra.labelPath', {
-    get() {
-      const typedInText = this.get('_typedInText');
-      const selectedText = this.getSelectedAsText();
-      return typedInText || selectedText;
-    },
-    set(_, v) {
-      this.set('_typedInText', v);
-      return v;
-    }
-  }),
+  size: computed('text', function() {
+    let _size = 0;
+    return {
+      get() {
+        const selectedTextLength = this.text.length || 1;
+        return _size > 0 ? _size : selectedTextLength;
+      },
+      set(key, value) {
+        const val = value > 0 ? value : 1;
+        _size = val;
+        return val;
+      }
+    };
+  }()),
 
   /**
    * Lifecycle Hook
@@ -54,6 +59,10 @@ export default Component.extend({
         input.value = newText;
       }
       this.set('text', newText);
+    }
+
+    if (oldSelect.selected !== newSelect.selected) {
+      this.set('text', this.getSelectedAsText());
     }
   },
 
@@ -88,7 +97,7 @@ export default Component.extend({
      * @private
      */
     handleInput(e) {
-      this.set('text', e.target.value);
+      this.set('size', e.target.value.length || 1);
       const oninput = this.get('onInput');
       if (oninput) {
         oninput(e);
@@ -102,6 +111,7 @@ export default Component.extend({
      * @private
      */
     handleFocus(e) {
+      this.set('size', 0);
       const onfocus = this.get('onFocus');
       if (onfocus && onfocus(e) === false) {
         return false;
@@ -116,6 +126,7 @@ export default Component.extend({
      * @private
      */
     handleBlur(e) {
+      this.set('size', this.get('text').length);
       const onblur = this.get('onBlur');
       if (onblur && onblur(e) === false) {
         return false;

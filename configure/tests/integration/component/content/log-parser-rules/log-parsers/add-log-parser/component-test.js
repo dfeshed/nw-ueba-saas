@@ -1,7 +1,7 @@
 import { setupRenderingTest } from 'ember-qunit';
 import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { click, fillIn, find, findAll, render } from '@ember/test-helpers';
+import { click, fillIn, find, findAll, render, settled } from '@ember/test-helpers';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { patchReducer } from '../../../../../../helpers/vnext-patch';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
@@ -119,6 +119,7 @@ module('Integration | Component | Configure - Content - Add Log Parser', functio
 
   test('On successfully adding a parser, the socket call is as expected, a success flash message is shown, and the onLogParserAdded action is called', async function(assert) {
     assert.expect(12);
+    const done = assert.async();
     this.set('onLogParserAdded', () => {
       assert.ok(true, 'The onLogParserAdded is called on a successful add');
     });
@@ -142,8 +143,10 @@ module('Integration | Component | Configure - Content - Add Log Parser', functio
       const expectedMessage = translation.t('configure.logsParser.addParser.addParserSuccessful');
       assert.equal(flash.type, 'success');
       assert.equal(flash.message.string, expectedMessage);
+      done();
     });
     await click(`${selectors.addParserButton} button`);
+    await settled();
   });
 
   test('Changing the selected log parser after filling in the form should update all the fields using the selected parser info and disable them', async function(assert) {

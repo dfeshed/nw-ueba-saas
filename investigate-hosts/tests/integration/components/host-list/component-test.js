@@ -6,6 +6,7 @@ import hostListState from '../state/host.machines';
 import endpoint from '../state/schema';
 import { patchReducer } from '../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 import engineResolver from 'ember-engines/test-support/engine-resolver-for';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
@@ -17,10 +18,11 @@ module('Integration | Component | host-list', function(hooks) {
     resolver: engineResolver('investigate-hosts')
   });
   hooks.beforeEach(function() {
+    initialize(this.owner);
+    this.owner.inject('component', 'i18n', 'service:i18n');
     initState = (state) => {
       patchReducer(this, Immutable.from(state));
     };
-    this.owner.inject('component', 'i18n', 'service:i18n');
   });
 
   test('risk panel is not rendered on select icon click', async function(assert) {

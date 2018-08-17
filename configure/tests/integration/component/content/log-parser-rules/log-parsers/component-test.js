@@ -1,12 +1,12 @@
 import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { render, find, click, settled } from '@ember/test-helpers';
+import { render, find, click } from '@ember/test-helpers';
 import { setupRenderingTest } from 'ember-qunit';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
-
+import { waitForRedux } from '../../../../../helpers/wait-for-redux';
 
 let setState;
 
@@ -53,12 +53,12 @@ module('Integration | Component | log parsers', function(hooks) {
   // });
 
   test('Select a log parser', async function(assert) {
+    assert.expect(1);
     new ReduxDataHelper(setState).parserRulesWait(false).parserRulesFormatData(0, true).build();
     await render(hbs`{{content/log-parser-rules/log-parsers}}`);
     await click('.log-parsers .firstItem');
-    return settled().then(() => {
-      assert.ok(find('.log-parsers .active'), 'The log parser was not selected');
-    });
+    await waitForRedux('configure.content.logParserRules.sampleLogsStatus', 'completed');
+    assert.ok(find('.log-parsers .active'), 'The log parser was not selected');
   });
 
 });

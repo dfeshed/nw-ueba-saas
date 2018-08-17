@@ -30,6 +30,10 @@ module.exports = function(environment/* , appConfig */) {
     ENV['ember-tether'] = {
       bodyElementId: 'ember-testing'
     };
+
+    ENV.locationType = 'none';
+    ENV.APP.rootElement = '#ember-testing';
+    ENV.APP.autoboot = false;
   }
   return ENV;
 };

@@ -27,6 +27,10 @@ module.exports = function(environment/* , appConfig */) {
 
   if (environment === 'test') {
     ENV.APP.uebaTimeout = 1;
+    // Testem prefers this...
+    ENV.locationType = 'none';
+    ENV.APP.rootElement = '#ember-testing';
+    ENV.APP.autoboot = false;
   }
 
   return ENV;

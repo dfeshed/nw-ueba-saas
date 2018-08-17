@@ -2,6 +2,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import * as RemediationTaskCreators from 'respond/actions/creators/remediation-task-creators';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import sinon from 'sinon';
 
 let dispatchSpy, redux;
@@ -10,6 +11,7 @@ moduleForComponent('rsa-remediation-tasks/new-task', 'Integration | Component | 
   integration: true,
   resolver: engineResolverFor('respond'),
   beforeEach() {
+    initialize(this);
     this.registry.injection('component', 'i18n', 'service:i18n');
 
     this.inject.service('redux');

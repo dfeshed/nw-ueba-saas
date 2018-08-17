@@ -10,7 +10,6 @@ import { clickTrigger, selectChoose } from '../../../../helpers/ember-power-sele
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import { patchFlash } from '../../../../helpers/patch-flash';
 import { throwSocket } from '../../../../helpers/patch-socket';
-import { waitForSockets } from '../../../../helpers/wait-for-sockets';
 import * as groupCreators from 'admin-source-management/actions/creators/group-creators';
 import { initialState as _initialState } from 'admin-source-management/reducers/usm/group-reducers';
 import policiesData from '../../../../../tests/data/subscriptions/policy/findAll/data';
@@ -232,7 +231,7 @@ module('Integration | Component | Group', function(hooks) {
     assert.expect(3);
     setState({ ...initialState, group: saveGroupData });
 
-    const done = waitForSockets();
+    const done = assert.async();
     patchFlash((flash) => {
       const translation = this.owner.lookup('service:i18n');
       const expectedMessage = translation.t('adminUsm.group.saveSuccess');

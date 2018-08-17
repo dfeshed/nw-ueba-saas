@@ -2,13 +2,9 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolver from 'ember-engines/test-support/engine-resolver-for';
 import { applyPatch, revertPatch } from '../../../../../helpers/patch-reducer';
-import startApp from '../../../../../helpers/start-app';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { waitFor } from 'ember-wait-for-test-helper/wait-for';
-
-const application = startApp();
-initialize(application);
 
 let setState;
 
@@ -16,11 +12,12 @@ moduleForComponent('host-detail/header/titlebar', 'Integration | Component | Tit
   integration: true,
   resolver: engineResolver('investigate-hosts'),
   beforeEach() {
+    initialize(this);
+    this.registry.injection('component', 'i18n', 'service:i18n');
     setState = (state) => {
       applyPatch(state);
       this.inject.service('redux');
     };
-    this.registry.injection('component', 'i18n', 'service:i18n');
   },
   afterEach() {
     revertPatch();

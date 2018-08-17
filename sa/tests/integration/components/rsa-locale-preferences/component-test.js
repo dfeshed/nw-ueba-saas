@@ -116,7 +116,7 @@ module('Integration | Component | rsa-locale-preferences', function(hooks) {
     const moment = this.owner.lookup('service:moment');
 
     this.set('go', () => {
-      moment.changeLocale('ja-jp');
+      moment.changeLocale('ja');
     });
 
     await render(hbs`{{test-clazz go=(action go)}}`);

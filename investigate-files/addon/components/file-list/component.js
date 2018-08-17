@@ -93,7 +93,11 @@ const FileList = Component.extend({
 
   init() {
     this._super(arguments);
-    this.send('getAllServices');
+    next(() => {
+      if (!this.get('isDestroyed') && !this.get('isDestroying')) {
+        this.send('getAllServices');
+      }
+    });
   },
   actions: {
     toggleSelectedRow(item, index, e, table) {

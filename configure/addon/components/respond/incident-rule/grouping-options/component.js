@@ -32,17 +32,19 @@ import { connect } from 'ember-redux';
 import { inject } from '@ember/service';
 
 const stateToComputed = (state) => {
+  const selectedCategories = [].concat(getSelectedCategories(state));
+  const selectedGroupByFields = [].concat(getSelectedGroupByFields(state));
   return {
+    selectedCategories,
+    selectedGroupByFields,
     visited: getVisited(state),
     fields: getGroupByFields(state),
     incidentCreationOptions: getIncidentCreationOptions(state),
     incidentScoringOptions: getIncidentScoringOptions(state),
-    selectedGroupByFields: getSelectedGroupByFields(state),
     hasInvalidGroupByFields: hasInvalidGroupByFields(state),
     timeWindowUnit: getTimeWindowUnit(state),
     timeWindowValue: getTimeWindowValue(state),
     groupedCategories: getGroupedCategories(state),
-    selectedCategories: getSelectedCategories(state),
     assigneeOptions: getAssigneeOptions(state),
     selectedAssignee: getSelectedAssignee(state),
     hasInvalidTimeValue: hasInvalidTimeValue(state),

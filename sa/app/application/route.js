@@ -4,7 +4,7 @@ import ApplicationRouteMixin from 'ember-simple-auth/mixins/application-route-mi
 import csrfToken from 'component-lib/mixins/csrf-token';
 import Route from '@ember/routing/route';
 import * as ACTION_TYPES from 'sa/actions/types';
-import { get } from '@ember/object';
+import { get, computed } from '@ember/object';
 import { Promise } from 'rsvp';
 import { inject as service } from '@ember/service';
 import fetch from 'component-lib/services/fetch';
@@ -25,6 +25,14 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
   title() {
     return this.get('i18n').t('appTitle');
   },
+
+  routeAfterAuthentication: computed(function() {
+    return 'protected';
+  }),
+
+  routeIfAlreadyAuthenticated: computed(function() {
+    return 'protected';
+  }),
 
   beforeModel(transition) {
     if (

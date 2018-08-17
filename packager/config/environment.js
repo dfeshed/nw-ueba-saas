@@ -1,8 +1,8 @@
 /* eslint-env node */
 'use strict';
 
-module.exports = function(/* environment, appConfig */) {
-  return {
+module.exports = function(environment) {
+  let ENV = {
     moment: {
       includeLocales: true,
       includeTimezone: 'all'
@@ -11,6 +11,17 @@ module.exports = function(/* environment, appConfig */) {
       defaultLocale: 'en-us',
       defaultFallback: true,
       includedLocales: ['en-us']
+    },
+    APP: {
     }
   };
+
+  if (environment === 'test') {
+    // Testem prefers this...
+    ENV.locationType = 'none';
+    ENV.APP.rootElement = '#ember-testing';
+    ENV.APP.autoboot = false;
+  }
+
+  return ENV;
 };

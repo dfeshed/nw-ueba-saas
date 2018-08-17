@@ -6,7 +6,7 @@ import processData from '../../../../../integration/components/state/process-dat
 import { applyPatch, revertPatch } from '../../../../../helpers/patch-reducer';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchSocket } from '../../../../../helpers/patch-socket';
-
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 let setState;
 
@@ -14,6 +14,7 @@ moduleForComponent('host-detail/process/process-list', 'Integration | Component 
   integration: true,
   resolver: engineResolver('investigate-hosts'),
   beforeEach() {
+    initialize(this);
     setState = (state) => {
       applyPatch(state);
       this.inject.service('redux');

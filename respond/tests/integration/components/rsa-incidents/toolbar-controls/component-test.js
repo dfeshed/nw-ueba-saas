@@ -11,8 +11,9 @@ import RSVP from 'rsvp';
 import $ from 'jquery';
 import wait from 'ember-test-helpers/wait';
 import { getAssigneeOptions } from 'respond/selectors/users';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
-let initialize;
+let setup;
 
 moduleForComponent('rsa-incidents/toolbar-controls', 'Integration | Component | Respond Incidents Toolbar Controls', {
   integration: true,
@@ -24,8 +25,10 @@ moduleForComponent('rsa-incidents/toolbar-controls', 'Integration | Component | 
     this.inject.service('redux');
     const redux = this.get('redux');
 
-    // initialize all of the required data into redux app state
-    initialize = RSVP.allSettled([
+    initialize(this);
+
+    // setup all of the required data into redux app state
+    setup = RSVP.allSettled([
       redux.dispatch(getAllEnabledUsers()),
       redux.dispatch(getAllPriorityTypes()),
       redux.dispatch(getAllStatusTypes())
@@ -45,7 +48,7 @@ function selectFirstOption() {
 
 test('The Incidents Toolbar component renders to the DOM', function(assert) {
   assert.expect(1);
-  return initialize.then(() => {
+  return setup.then(() => {
     this.on('updateItem', function() {});
     this.render(hbs`{{rsa-incidents/toolbar-controls updateItem=(action 'updateItem')}}`);
     assert.equal(this.$('.action-control').length, 4, 'The Incidents Toolbar component should be found in the DOM with 4 buttons/controls');
@@ -54,7 +57,7 @@ test('The Incidents Toolbar component renders to the DOM', function(assert) {
 
 test('The Incidents Toolbar buttons are disabled when no itemsSelected exist ', function(assert) {
   assert.expect(1);
-  return initialize.then(() => {
+  return setup.then(() => {
     this.set('itemsSelected', []);
     this.render(hbs`{{rsa-incidents/toolbar-controls itemsSelected=itemsSelected}}`);
     assert.equal(this.$('.action-control .rsa-form-button-wrapper.is-disabled').length, 4,
@@ -64,7 +67,7 @@ test('The Incidents Toolbar buttons are disabled when no itemsSelected exist ', 
 
 test('The Incidents Toolbar buttons are enabled when at least one itemsSelected object exist ', function(assert) {
   assert.expect(1);
-  return initialize.then(() => {
+  return setup.then(() => {
     this.set('itemsSelected', [{ id: 'test' }]);
     this.render(hbs`{{rsa-incidents/toolbar-controls itemsSelected=itemsSelected}}`);
     assert.equal(this.$('.action-control .rsa-form-button-wrapper:not(.is-disabled)').length, 4,
@@ -74,7 +77,7 @@ test('The Incidents Toolbar buttons are enabled when at least one itemsSelected 
 
 test('All of the statuses appear in the dropdown button, and clicking one dispatches an action', function(assert) {
   assert.expect(2);
-  return initialize.then(() => {
+  return setup.then(() => {
     const redux = this.get('redux');
     const { respond: { dictionaries: { statusTypes } } } = redux.getState();
     this.set('statusTypes', statusTypes);
@@ -97,7 +100,7 @@ test('All of the statuses appear in the dropdown button, and clicking one dispat
 
 test('All of the priorities appear in the dropdown button, and clicking one dispatches an action', function(assert) {
   assert.expect(2);
-  return initialize.then(() => {
+  return setup.then(() => {
     const redux = this.get('redux');
     const { respond: { dictionaries: { priorityTypes } } } = redux.getState();
     this.set('priorityTypes', priorityTypes);
@@ -120,7 +123,7 @@ test('All of the priorities appear in the dropdown button, and clicking one disp
 
 test('All of the assignee options appear in the dropdown button, and clicking one dispatches an action', function(assert) {
   assert.expect(3);
-  return initialize.then(() => {
+  return setup.then(() => {
     const redux = this.get('redux');
     const state = redux.getState();
     this.set('users', getAssigneeOptions(state));

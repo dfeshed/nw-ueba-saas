@@ -4,6 +4,7 @@ import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import waitForReduxStateChange from '../../../../helpers/redux-async-helpers';
 import { getAlerts, getSelectedAlerts } from 'respond/selectors/alerts';
 import { getItems, toggleItemSelected } from 'respond/actions/creators/alert-creators';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import wait from 'ember-test-helpers/wait';
 import $ from 'jquery';
 
@@ -19,6 +20,7 @@ moduleForComponent('rsa-alerts/toolbar-controls', 'Integration | Component | Res
     this.registry.injection('component', 'i18n', 'service:i18n');
     this.inject.service('redux');
     redux = this.get('redux');
+    initialize(this);
   }
 });
 

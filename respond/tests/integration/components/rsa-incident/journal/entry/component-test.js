@@ -39,6 +39,7 @@ moduleForComponent('rsa-incident/journal/entry', 'Integration | Component | Jour
   resolver: engineResolverFor('respond'),
   beforeEach() {
     this.registry.injection('component', 'i18n', 'service:i18n');
+    initialize(this);
 
     this.inject.service('redux');
     redux = this.get('redux');
@@ -49,8 +50,6 @@ moduleForComponent('rsa-incident/journal/entry', 'Integration | Component | Jour
     init = RSVP.allSettled([
       redux.dispatch(getAllMilestoneTypes())
     ]);
-
-    initialize(this);
   },
   afterEach() {
     dispatchSpy.restore();

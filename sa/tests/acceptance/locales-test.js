@@ -6,7 +6,7 @@ import { setupLoginTest, login } from '../helpers/setup-login';
 import { waitForRedux } from '../helpers/wait-for-redux';
 import { waitForSockets } from '../helpers/wait-for-sockets';
 import { patchFetch } from 'sa/tests/helpers/patch-fetch';
-import { visit, currentURL, settled } from '@ember/test-helpers';
+import { visit, currentURL, settled, waitUntil } from '@ember/test-helpers';
 import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 
 const english = { id: 'en_US', key: 'en-us', label: 'english' };
@@ -39,6 +39,8 @@ module('Acceptance | locales', function(hooks) {
 
     assert.equal(currentURL(), '/login');
 
+    await settled();
+
     const i18n = this.owner.lookup('service:i18n');
     assert.equal(get(i18n, 'locale'), 'en-us');
 
@@ -49,10 +51,13 @@ module('Acceptance | locales', function(hooks) {
 
     await login();
 
+    await waitUntil(() => currentURL() === '/respond/incidents', { timeout: 5000 });
     assert.equal(currentURL(), '/respond/incidents');
+
+    await waitUntil(() => get(i18n, 'locale') === 'en-us', { timeout: 5000 });
     assert.equal(get(i18n, 'locale'), 'en-us');
 
-    return settled().then(() => done());
+    await settled().then(() => done());
   });
 
   test('users locale preference will update i18n locale after successful login', async function(assert) {
@@ -67,6 +72,8 @@ module('Acceptance | locales', function(hooks) {
 
     assert.equal(currentURL(), '/login');
 
+    await settled();
+
     const i18n = this.owner.lookup('service:i18n');
     assert.equal(get(i18n, 'locale'), 'es-mx');
 
@@ -77,10 +84,13 @@ module('Acceptance | locales', function(hooks) {
 
     await login();
 
+    await waitUntil(() => currentURL() === '/respond/incidents', { timeout: 5000 });
     assert.equal(currentURL(), '/respond/incidents');
+
+    await waitUntil(() => get(i18n, 'locale') === 'en-us', { timeout: 5000 });
     assert.equal(get(i18n, 'locale'), 'en-us');
 
-    return settled().then(() => done());
+    await settled().then(() => done());
   });
 
   test('application title will update when i18n locale changed', async function(assert) {
@@ -97,7 +107,10 @@ module('Acceptance | locales', function(hooks) {
 
     await login();
 
+    await waitUntil(() => currentURL() === '/respond/incidents', { timeout: 5000 });
     assert.equal(currentURL(), '/respond/incidents');
+
+    await waitUntil(() => get(headData, 'title').toString() === 'Incidents - Respond - NetWitness Platform', { timeout: 5000 });
     assert.equal(get(headData, 'title').toString(), 'Incidents - Respond - NetWitness Platform');
 
     patchFetch(() => {
@@ -117,8 +130,9 @@ module('Acceptance | locales', function(hooks) {
     clickTrigger(powerSelect);
     selectChoose(`${powerSelect} .ember-power-select-trigger`, 'Japanese');
 
+    await waitUntil(() => get(headData, 'title').toString() === 'Incidents - JA_Respond - NetWitness Platform', { timeout: 5000 });
     assert.equal(get(headData, 'title').toString(), 'Incidents - JA_Respond - NetWitness Platform');
 
-    return settled().then(() => done());
+    await settled().then(() => done());
   });
 });

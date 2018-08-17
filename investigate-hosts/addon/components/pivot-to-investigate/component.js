@@ -1,6 +1,5 @@
 import Component from '@ember/component';
 import computed from 'ember-computed-decorators';
-import { next } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import { get } from '@ember/object';
 import { connect } from 'ember-redux';
@@ -29,8 +28,6 @@ const PivotToInvestigate = Component.extend({
   tagName: 'span',
 
   classNames: 'pivot-to-investigate',
-
-  eventBus: service(),
 
   timezone: service(),
 
@@ -130,18 +127,14 @@ const PivotToInvestigate = Component.extend({
   },
 
   _closeModal() {
-    this.get('eventBus').trigger('rsa-application-modal-close-service-modal');
     this.set('showServiceModal', false);
   },
 
   actions: {
 
     toggleServiceSelection() {
-      this.set('showServiceModal', true);
       this.send('getAllServices');
-      next(() => {
-        this.get('eventBus').trigger('rsa-application-modal-open-service-modal');
-      });
+      this.set('showServiceModal', true);
     },
 
     onCancel() {
@@ -162,4 +155,4 @@ const PivotToInvestigate = Component.extend({
   }
 });
 
-export default connect(null, dispatchToActions)(PivotToInvestigate);
+export default connect(undefined, dispatchToActions)(PivotToInvestigate);

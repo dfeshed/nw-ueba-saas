@@ -77,6 +77,7 @@ prepareApp context
 prepareApp preferences
 prepareApp test-helpers
 prepareApp ember-route-action-helper
+prepareApp ember-cli-document-title
 prepareApp broccoli-theme
 prepareApp investigate-process-analysis
 prepareApp direct-access

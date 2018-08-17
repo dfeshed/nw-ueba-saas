@@ -223,6 +223,7 @@ buildEmberApp investigate-shared false true true
 buildEmberApp preferences false true true
 buildEmberApp test-helpers false false false
 buildEmberApp ember-route-action-helper false false false
+buildEmberApp ember-cli-document-title false false false
 buildEmberApp style-guide true false false
 buildEmberApp investigate-events false true true
 buildEmberApp investigate-hosts false true true
