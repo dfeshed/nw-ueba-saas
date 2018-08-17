@@ -56,6 +56,11 @@ export default Component.extend({
 
   diameter: computed('axis', function() {
     return 2 * this.get('axis');
+  }),
+
+  textSize: computed('score', function() {
+    const riskScore = this.get('score');
+    return (riskScore > 99) ? '48%' : '50%';
   })
 });
 
