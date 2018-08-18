@@ -4,6 +4,7 @@ import fileList from './file-list/reducer';
 import filter from './file-filter/reducer';
 import preferences from './preferences/reducer';
 import endpointServer from './endpoint-server/reducer';
+import endpointQuery from './endpoint-query/reducer';
 
 export default combineReducers({
   files: combineReducers({
@@ -12,5 +13,6 @@ export default combineReducers({
     filter
   }),
   preferences,
-  endpointServer
+  endpointServer,
+  endpointQuery
 });

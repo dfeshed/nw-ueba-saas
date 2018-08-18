@@ -5,7 +5,7 @@
 {{else}}
   <section class="filters panel-control-group" fit>
     {{host-list/content-filter}}
-    {{service-selector services=servers serviceId=serverId}}
+    {{service-selector services=servers serviceId=serverId onServiceSelection=(action 'setEndpointServer')}}
   </section>
   <hbox class="host-list-items {{if showRiskPanel 'show-risk-panel' ''}}">
     <box class="filter-zone">

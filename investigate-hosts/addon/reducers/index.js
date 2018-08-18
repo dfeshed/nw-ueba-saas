@@ -15,6 +15,7 @@ import filter from './filters/reducer';
 import preferences from './preferences/reducer';
 import datatable from './details/datatable/reducer';
 import endpointServer from './endpoint-server/reducer';
+import endpointQuery from './endpoint-query/reducer';
 
 export default combineReducers({
   endpoint: combineReducers({
@@ -34,5 +35,6 @@ export default combineReducers({
     datatable
   }),
   preferences,
-  endpointServer
+  endpointServer,
+  endpointQuery
 });

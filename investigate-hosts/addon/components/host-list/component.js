@@ -10,7 +10,7 @@ import {
   resetFilters
 } from 'investigate-hosts/actions/data-creators/filter';
 
-import { setEndpointServer, getEndpointServers } from 'investigate-hosts/actions/data-creators/endpoint-server';
+import { setEndpointServer } from 'investigate-hosts/actions/data-creators/endpoint-server';
 
 const stateToComputed = (state) => ({
   schemaLoading: state.endpoint.schema.schemaLoading,
@@ -22,7 +22,8 @@ const stateToComputed = (state) => ({
   incidentsCount: getIncidentsCount(state),
   showRiskPanel: state.endpoint.visuals.showRiskPanel,
   contextLoadingStatus: state.endpoint.visuals.contextLoadingStatus,
-  servers: state.endpointServer
+  servers: state.endpointServer,
+  serverId: state.endpointQuery.serverId
 });
 
 const dispatchToActions = {
@@ -30,7 +31,6 @@ const dispatchToActions = {
   setDataSourceTab,
   setHostPropertyTabView,
   toggleRiskPanel,
-  getEndpointServers,
   setEndpointServer
 };
 const Container = Component.extend({
@@ -40,11 +40,6 @@ const Container = Component.extend({
   classNames: 'host-list show-more-filter main-zone',
 
   features: service(),
-
-  init() {
-    this._super(arguments);
-    this.send('getEndpointServers');
-  },
 
   actions: {
     closeRiskPanel() {

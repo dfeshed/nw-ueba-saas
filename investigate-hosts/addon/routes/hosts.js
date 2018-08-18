@@ -4,6 +4,7 @@ import { inject as service } from '@ember/service';
 import { initializeHostPage, getAllSchemas } from 'investigate-hosts/actions/data-creators/host';
 import { userLeftListPage } from 'investigate-hosts/actions/ui-state-creators';
 import { run } from '@ember/runloop';
+import { getEndpointServers } from 'investigate-hosts/actions/data-creators/endpoint-server';
 
 const HELP_ID_MAPPING = {
   'OVERVIEW': 'contextualHelp.invHostsOverview',
@@ -49,10 +50,13 @@ export default Route.extend({
   },
 
   model(params) {
+    const redux = this.get('redux');
+    run.next(() => {
+      redux.dispatch(getEndpointServers());
+    });
     const request = lookup('service:request');
     return request.ping('endpoint-server-ping')
       .then(() => {
-        const redux = this.get('redux');
         const { machineId, tabName = 'OVERVIEW' } = params;
         if (machineId) {
           this.set('contextualHelp.topic', this.get(HELP_ID_MAPPING[tabName]));
