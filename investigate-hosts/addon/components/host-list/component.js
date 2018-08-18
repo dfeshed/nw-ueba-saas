@@ -43,7 +43,7 @@ const Container = Component.extend({
 
   actions: {
     closeRiskPanel() {
-      this.send('toggleRiskPanel', false);
+      this.sendAction('toggleRiskPanel', false);
     }
   }
 

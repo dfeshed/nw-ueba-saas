@@ -105,18 +105,6 @@ test('it should toggle the tree view to list view', function(assert) {
 
 test('it should toggle the list view to tree view', function(assert) {
   assert.expect(5);
-  new ReduxDataHelper(setState)
-    .agentId(1)
-    .scanTime(123456789)
-    .processList(processList)
-    .processTree(processTree)
-    .processDetails(processDetails)
-    .isTreeView(false)
-    .build();
-  // set height to get all lazy rendered items on the page
-  this.render(hbs`
-    {{host-detail/process}}
-  `);
 
   patchSocket((method, modelName, query) => {
     assert.equal(method, 'getProcess');
@@ -130,6 +118,21 @@ test('it should toggle the list view to tree view', function(assert) {
         }
       });
   });
+
+  new ReduxDataHelper(setState)
+    .agentId(1)
+    .scanTime(123456789)
+    .processList(processList)
+    .processTree(processTree)
+    .processDetails(processDetails)
+    .isTreeView(false)
+    .build();
+
+  // set height to get all lazy rendered items on the page
+  this.render(hbs`
+    {{host-detail/process}}
+  `);
+
   return wait().then(() => {
     assert.equal(this.$('.toggle-icon').length, 1, 'toggle icon');
     this.$('.toggle-icon .rsa-icon').click();

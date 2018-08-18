@@ -41,7 +41,7 @@ const ToolBar = Component.extend({
   actions: {
 
     applyCustomFilter(filter) {
-      this.send('applySavedFilters', filter);
+      this.sendAction('applySavedFilters', filter);
     },
 
     deleteSelectedFilter(id) {
@@ -55,4 +55,5 @@ const ToolBar = Component.extend({
     }
   }
 });
+
 export default connect(stateToComputed, dispatchToActions)(ToolBar);

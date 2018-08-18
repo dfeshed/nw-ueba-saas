@@ -6,7 +6,7 @@
 
   <hbox class="content">
     <box fill class="p source">
-      <span>{{t (concat 'respond.alert.source.' group.indicator.alert.source)}}</span>
+      {{rsa-alerts-table/ueba-link alert=group.indicator.alert storyPointId=group.indicator.id}}
     </box>
     <box fit nowrap align="end" class="p time">
       {{rsa-content-datetime

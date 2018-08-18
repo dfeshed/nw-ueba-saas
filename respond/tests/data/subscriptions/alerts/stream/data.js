@@ -63,6 +63,7 @@ export default [
       'groupby_source_ip': '10.64.188.48',
       'groupby_source_username': '',
       'groupby_detector_ip': '',
+      'type': ['Network'],
       'events': [
         {
           'referer': 'curl/7.24.0',
@@ -241,6 +242,7 @@ export default [
       'groupby_source_ip': '',
       'groupby_source_username': '',
       'groupby_detector_ip': '127.0.0.1',
+      'type': ['Network'],
       'events': [
         {
           'event_byte_size': 119,
@@ -339,6 +341,129 @@ export default [
         }
       ],
       'timestamp': 1483657152000
+    }
+  },
+  {
+    'id': '586ecfc0ecd25950034e1318',
+    'errorMessage': null,
+    'incidentCreated': null,
+    'incidentId': null,
+    'originalAlert': null,
+    'originalHeaders': null,
+    'originalRawAlert': null,
+    'partOfIncident': false,
+    'receivedTime': 1532658252079,
+    'status': 'NORMALIZED',
+    'timestamp': 1532297340000,
+    'alert': {
+      'id': '1486f9ac-974d-4be6-8641-1b0826097854',
+      'entity_id': '1c86c083-d82d-47f4-8930-187473ddad13',
+      'classification': 'abnormal_ad_changes',
+      'classifier_id': '3af8801b-0979-4066-b906-6330eaca2337',
+      'classifier_score': 97.41587325223246,
+      'classifier_severity': 'HIGH',
+      'end_date': '2018-07-22T22:09:00.000+0000',
+      'entity_name': 'ad_qa_1_9',
+      'groupby_analysis_file': '',
+      'groupby_analysis_service': '',
+      'groupby_analysis_session': '',
+      'groupby_c2domain': '',
+      'groupby_data_hash': '',
+      'groupby_destination_country': '',
+      'groupby_destination_ip': '',
+      'groupby_destination_port': '',
+      'groupby_detector_ip': '',
+      'groupby_device_type': '',
+      'groupby_domain': '',
+      'groupby_domain_dst': '',
+      'groupby_domain_src': '',
+      'groupby_filename': '',
+      'groupby_host_dst': '',
+      'groupby_host_src': '',
+      'groupby_source_country': '',
+      'groupby_source_ip': '',
+      'groupby_source_username': '',
+      'groupby_type': 'User Entity',
+      'groupby_user_dst': '',
+      'groupby_user_src': '',
+      'groupby_username': '',
+      'name': 'abnormal_object_change_operation',
+      'numEvents': 2,
+      'risk_score': 4.0,
+      'severity': 4,
+      'signature_id': 'UEBAIOC',
+      'source': 'User Entity Behavior Analytics',
+      'start_date': '2018-07-22T22:09:00.000+0000',
+      'timestamp': 1532297340000,
+      'type': ['User Entity'],
+      'events': [
+        {
+          'createdDate': '2018-07-27T02:23:28.229+0000',
+          'eventTime': '2018-07-22T22:09:00.000+0000',
+          'features': {
+            'additionalInfo': {},
+            'dataSource': '4741',
+            'eventDate': {
+              'epochSecond': 1532297340,
+              'nano': 0
+            },
+            'eventId': 'EV-828-ad_qa_1_9',
+            'id': '5b5a81388402c7548eacfacd',
+            'isUserAdmin': false,
+            'objectId': 'Test5',
+            'operationType': 'COMPUTER_ACCOUNT_CREATED',
+            'operationTypeCategories': [
+              'COMPUTER_MANAGEMENT',
+              'OBJECT_MANAGEMENT'
+            ],
+            'result': 'SUCCESS',
+            'userDisplayName': 'ad_qa_1_9',
+            'userId': 'ad_qa_1_9',
+            'userName': 'ad_qa_1_9'
+          },
+          'id': 'c05972b1-db65-4786-bf86-d4f1541aa161',
+          'indicatorId': '1486f9ac-974d-4be6-8641-1b0826097854',
+          'schema': 'ACTIVE_DIRECTORY',
+          'scores': {
+            'operationType': 4.0
+          },
+          'updatedBy': 'hourlyOutputProcessorRun2018-07-22T22:00:00Z',
+          'updatedDate': '2018-07-27T02:23:28.229+0000'
+        },
+        {
+          'createdDate': '2018-07-27T02:23:28.229+0000',
+          'eventTime': '2018-07-22T22:42:00.000+0000',
+          'features': {
+            'additionalInfo': {},
+            'dataSource': '4741',
+            'eventDate': {
+              'epochSecond': 1532299320,
+              'nano': 0
+            },
+            'eventId': 'EV-861-ad_qa_1_9',
+            'id': '5b5a81388402c7548eacfaf0',
+            'isUserAdmin': false,
+            'objectId': 'Test3',
+            'operationType': 'COMPUTER_ACCOUNT_CREATED',
+            'operationTypeCategories': [
+              'COMPUTER_MANAGEMENT',
+              'OBJECT_MANAGEMENT'
+            ],
+            'result': 'SUCCESS',
+            'userDisplayName': 'ad_qa_1_9',
+            'userId': 'ad_qa_1_9',
+            'userName': 'ad_qa_1_9'
+          },
+          'id': '44732bcc-b9e8-4b2d-badb-e8747c98db46',
+          'indicatorId': '1486f9ac-974d-4be6-8641-1b0826097854',
+          'schema': 'ACTIVE_DIRECTORY',
+          'scores': {
+            'operationType': 4.0
+          },
+          'updatedBy': 'hourlyOutputProcessorRun2018-07-22T22:00:00Z',
+          'updatedDate': '2018-07-27T02:23:28.229+0000'
+        }
+      ]
     }
   }
 ];

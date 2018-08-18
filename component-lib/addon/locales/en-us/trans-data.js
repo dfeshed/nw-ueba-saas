@@ -826,6 +826,10 @@ export default {
     select: 'Select',
     close: 'Close',
     empty: '(empty)',
+    ueba: {
+      label: 'User Entity Behavior Analytics',
+      error: 'User Entity Behavior Analytics is unavailable at this time. Please try again later.'
+    },
     investigation: {
       eventAnalysis: 'Event Analysis'
     },

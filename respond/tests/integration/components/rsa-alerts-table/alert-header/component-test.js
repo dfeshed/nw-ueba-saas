@@ -3,6 +3,7 @@ import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import wait from 'ember-test-helpers/wait';
 import StoryPoint from 'respond/utils/storypoint/storypoint';
+import { waitFor } from 'ember-wait-for-test-helper/wait-for';
 
 moduleForComponent('rsa-alerts-table/alert-header', 'Integration | Component | rsa alerts table alert header', {
   integration: true,
@@ -119,4 +120,20 @@ test('it omits the events tab if there are no events', function(assert) {
       const $tabs = this.$('.tab');
       assert.notOk($tabs.length, 'Expected to find zero tabs');
     });
+});
+
+test('events tab will render ueba link component for alerts', function(assert) {
+  assert.expect(1);
+
+  group.set('enrichments', []);
+  this.setProperties({
+    group,
+    index
+  });
+
+  this.render(hbs`{{rsa-alerts-table/alert-header group=group index=index}}`);
+
+  return waitFor(() => this.$('.rsa-alerts-table-alert-header').length === 1).then(() => {
+    assert.equal(this.$('[test-id=respondUebaLink]').length, 1);
+  });
 });

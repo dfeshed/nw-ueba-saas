@@ -50,6 +50,10 @@ $alertsTableDotSize: 5px;
     @include rsa-font(body, small);
   }
 
+  .respond-ueba-link span a {
+    color: text-color(secondary, light);
+  }
+
   .content {
     margin-left: $alertsTableConnectorOuterWidth;
   }

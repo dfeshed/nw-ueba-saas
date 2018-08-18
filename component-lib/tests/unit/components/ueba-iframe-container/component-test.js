@@ -1,17 +1,17 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { set, get } from '@ember/object';
-import InvestigateUsers from 'investigate/components/investigate-users/component';
+import UebaIframeContainer from 'component-lib/components/ueba-iframe-container/component';
 
 const testingContainer = '#ember-testing';
-const componentName = 'component:investigate-users';
+const componentName = 'component:ueba-iframe-container';
 const ueba = 'user/689d0bb1-a5e4-4af0-8d2c-98aa02a8ac9b/alert/fefe1f9e-2cf9-491d-bfc3-c37f61dcc4d9';
 
 module('Unit | Component | investigate-users', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function() {
-    this.owner.register(componentName, InvestigateUsers);
+    this.owner.register(componentName, UebaIframeContainer);
   });
 
   test('iframeUrl shows deep link when ueba value present and default url when ueba undefined', async function(assert) {

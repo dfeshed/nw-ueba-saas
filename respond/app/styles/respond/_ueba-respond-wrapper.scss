@@ -1,0 +1,107 @@
+.ueba-standalone-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+  border-color: border-color(primary, dark);
+  background-color: background-color(primary, darkest);
+
+  .ueba-container__main {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    position: absolute;
+
+    .ueba-container__main__inner {
+      flex: 1 1 auto;
+    }
+
+    .ueba-container__header {
+      z-index: 2;
+      right: 0;
+      font-size: 1.5rem;
+      font-weight: 100;
+      font-style: normal;
+      padding: 1rem;
+      @include border-left(1px, solid, primary, lightest, nearly-transparent);
+      @include border-bottom(1px, solid, secondary);
+      background-color: background-color(primary, darker);
+    }
+
+    .ueba-container__header__inner {
+      padding-top: .5rem;
+
+      .ueba-container__header-icons {
+        padding-left: 1rem;
+        align-items: flex-end;
+      }
+
+      .event-ueba-contextual-help {
+        padding-right: .7rem;
+      }
+
+      .event-ueba-contextual-help:hover {
+        cursor: pointer;
+      }
+
+      .ueba-container__header-close-icon {
+        padding-right: 1rem;
+      }
+    }
+
+    .ueba-container__header__inner .ueba-container__header-close {
+      margin-top: 0;
+      margin-right: -1rem;
+      cursor: pointer;
+    }
+
+    .ueba-container {
+      z-index: 2;
+    }
+  }
+
+  .ueba-event-wrapper {
+    @include border-top(1px, solid, secondary);
+    flex: 1 1 auto;
+  }
+
+  .ueba-container, .ueba-iframe, .ueba-error {
+    height: 100vh;
+    flex: 1 1 auto;
+    background-color: background-color(primary, darkest);
+    margin-left: 1px;
+    overflow: hidden;
+  }
+
+  .ueba-error {
+    z-index: 1;
+  }
+
+  .ueba-loading__main {
+    margin-left: 1px;
+    background-color: background-color(neutral, dark);
+    height: 100vh;
+    width: 100%;
+  }
+
+  .ueba-loader {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+  }
+
+  iframe {
+    margin: 0;
+    padding: 0;
+    border: none;
+    height: calc(100vh - 90px);
+    width: 100%;
+    overflow: hidden;
+  }
+}
