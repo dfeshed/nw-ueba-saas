@@ -50,7 +50,7 @@
     "ember-radio-button": "1.1.1",
     "ember-redux-actions": "0.3.0",
     "ember-route-action-helper": "file:../ember-route-action-helper",
-    "ember-simple-auth": "1.6.0",
+    "ember-simple-auth": "1.1.0",
     "ember-sortable": "1.9.1",
     "ember-spaniel": "^0.4.0",
     "ember-tether": "0.4.1",
