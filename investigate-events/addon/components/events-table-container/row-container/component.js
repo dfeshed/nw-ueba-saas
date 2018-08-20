@@ -21,6 +21,12 @@ export default Component.extend(RowMixin, HighlightsEntities, {
   autoHighlightEntities: true,
 
   // Formatting configuration options. Passed to utils that generate cell DOM.
+  @computed('parentView.parentView.selectedItems', 'parentView.parentView.allItemsSelected', 'item.sessionId', 'parentView.parentView.selectedItems.length')
+  isChecked(selectedItems, allItemsSelected, sessionId) {
+    return allItemsSelected || (selectedItems && selectedItems.includes(sessionId));
+  },
+
+  // Formatting configuration options. Passed to utils that generate cell DOM.
   @computed('table.aliases', 'dateFormat.selected.format', 'timeFormat.selected.format', 'i18n.locale', 'timezone.selected.zoneId')
   _opts(aliases, dateFormat, timeFormat, locale, timeZone) {
     const i18n = get(this, 'i18n');
@@ -54,6 +60,10 @@ export default Component.extend(RowMixin, HighlightsEntities, {
    * @private
    */
   _datetimeDidChange: observer('i18n.locale', 'timezone.selected', 'dateFormat.selected.format', 'timeFormat.selected.format', function() {
+    this._renderCells();
+  }),
+
+  _selectionsDidChange: observer('isChecked', function() {
     this._renderCells();
   }),
 
@@ -137,7 +147,11 @@ export default Component.extend(RowMixin, HighlightsEntities, {
     const field = get(column, 'field');
     const _opts = this.get('_opts');
     const isEndpoint = item.metas && item.metas.some((d) => d[0] === 'nwe.callback_id');
-    const opts = Object.assign(_opts, { isEndpoint });
+
+    const opts = Object.assign(_opts, { isEndpoint }, {
+      isChecked: this.get('isChecked')
+    });
+
     const $cell = $row.append('div')
       .classed('rsa-data-table-body-cell', true)
       .attr('data-field', field);

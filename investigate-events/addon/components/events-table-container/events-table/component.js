@@ -93,7 +93,12 @@ const EventsTableContextMenu = RsaContextMenu.extend({
 
   actions: {
     onRowClick(event, index, browserEvent) {
-      if (!browserEvent.target.className.includes('rsa-form-checkbox')) {
+      const checkboxClicked = browserEvent.target.className.includes('rsa-form-checkbox');
+      const isCheckboxField = browserEvent.target.dataset.field === 'checkbox';
+
+      if (checkboxClicked || isCheckboxField) {
+        this.send('toggleEventSelection', event);
+      } else {
         this.get('selectEvent')(event);
       }
     }

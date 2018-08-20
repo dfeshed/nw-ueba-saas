@@ -146,21 +146,28 @@
       cursor: default;
       border-top: 0px;
 
-      .checkbox-wrapper {
-        position: relative;
-        width: 16px;
-        height: 18px;
+      .rsa-data-table-body-cell[data-field="checkbox"] {
+        &:hover {
+          cursor: pointer;
 
-        .rsa-form-checkbox-label {
-          position: absolute;
-          left: rsa-whitespace();
-          top: rsa-whitespace(less);
-          width: 16px;
-          height: 18px;
-          @include rsa-layer(controls);
+          .rsa-form-checkbox-label {
+            &::before {
+              color: text-color(secondary);
+            }
+          }
+        }
+      }
 
-          &::before {
-            right: 0;
+      &.is-selected {
+        .rsa-data-table-body-cell[data-field="checkbox"] {
+          &:hover {
+            cursor: pointer;
+
+            .rsa-form-checkbox-label {
+              &::before {
+                color: text-color(neutral, base);
+              }
+            }
           }
         }
       }
@@ -190,7 +197,6 @@
           color: text-color(neutral, base, translucent);
         }
       }
-
 
       &[data-field="custom.meta-summary"] {
         position: relative;

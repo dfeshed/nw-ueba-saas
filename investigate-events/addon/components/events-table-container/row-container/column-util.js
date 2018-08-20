@@ -60,6 +60,7 @@ function buildCellContent($cell, field, item, opts) {
 
   switch (field) {
     case 'checkbox':
+      buildCheckbox($content, item, opts);
       break;
     case 'custom.meta-summary':
       buildMetaSummaryContent($content, item, opts);
@@ -236,6 +237,11 @@ function buildMetaKeyAndValue(metaKey, item, opts) {
     .attr('title', value.textAndAlias)
     .text(value.alias);
   return pair;
+}
+
+function buildCheckbox($content, item, opts) {
+  const elClass = opts.isChecked ? 'rsa-form-checkbox-label checked' : 'rsa-form-checkbox-label';
+  $content.append('div').append('label').attr('class', elClass);
 }
 
 /**

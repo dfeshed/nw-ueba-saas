@@ -10,20 +10,9 @@
       relativeIndex=0
       relativeIndexOffset=0
       clickAction=(action "rowClick" target=table)
+      allItemsSelected=allItemsSelected
+      selectedItems=selectedItems
       as |firstRowItem firstRowIndex column|}}
-      {{#with (get items.firstObject selectedItemKey) as |itemKey|}}
-        {{#if (and insertCheckbox itemKey (gte selectedItems.length 0))}}
-
-          <div class="checkbox-wrapper">
-            <label class="rsa-form-checkbox-label {{if (or allItemsSelected (contains itemKey selectedItems)) 'checked'}}">
-              {{rsa-form-checkbox
-                checked=(or allItemsSelected (contains itemKey selectedItems))
-                change=(action checkboxChange items.firstObject)
-              }}
-            </label>
-          </div>
-        {{/if}}
-      {{/with}}
       {{yield firstRowItem firstRowIndex column}}
     {{/component}}
   {{else}}
@@ -39,19 +28,9 @@
       relativeIndex=index
       relativeIndexOffset=_firstBufferedIndex
       clickAction=(action "rowClick" target=table)
+      allItemsSelected=allItemsSelected
+      selectedItems=selectedItems
       as |rowItem rowIndex column|}}
-
-      {{#if (and insertCheckbox (get item selectedItemKey) (gte selectedItems.length 0))}}
-        <div class="checkbox-wrapper">
-          <label class="rsa-form-checkbox-label {{if (or allItemsSelected (contains (get item selectedItemKey) selectedItems)) 'checked'}}">
-            {{rsa-form-checkbox
-              checked=(or allItemsSelected (contains (get item selectedItemKey) selectedItems))
-              change=(action checkboxChange item)
-            }}
-          </label>
-        </div>
-      {{/if}}
-
       {{yield rowItem rowIndex column}}
     {{/component}}
 
