@@ -34,6 +34,7 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
     private final OutputMonitoringService outputMonitoringService;
     private final int smartThresholdScoreForCreatingAlert;
     private final int smartPageSize;
+    private final int alertPageSize;
     private final long retentionEnrichedEventsDays;
     private final long retentionOutputDataDays;
 
@@ -47,12 +48,13 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                                       UserService userService,
                                       EventPersistencyService eventPersistencyService,
                                       OutputMonitoringService outputMonitoringService,
-                                      int smartThresholdScoreForCreatingAlert, int smartPageSize, long retentionEnrichedEventsDays, long retentionOutputDataDays) {
+                                      int smartThresholdScoreForCreatingAlert, int smartPageSize, int alertPageSize, long retentionEnrichedEventsDays, long retentionOutputDataDays) {
         this.adeManagerSdk = adeManagerSdk;
         this.alertService = alertService;
         this.userService = userService;
         this.eventPersistencyService = eventPersistencyService;
         this.smartPageSize = smartPageSize;
+        this.alertPageSize = alertPageSize;
         this.smartThresholdScoreForCreatingAlert = smartThresholdScoreForCreatingAlert;
         this.retentionEnrichedEventsDays = retentionEnrichedEventsDays;
         this.retentionOutputDataDays = retentionOutputDataDays;
@@ -116,10 +118,12 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
                     users.add(userEntity);
                 }
 
+                if (alerts.size() >= alertPageSize) {
+                    flushAlerts(startDate, alerts);
+                }
+
             }
-            storeAlerts(alerts);
-            outputMonitoringService.reportTotalAnomalyEvents(alerts, startDate);
-            alerts.clear();
+            flushAlerts(startDate, alerts);
         }
 
         storeUsers(users); //Get the generated users with the new elasticsearch ID
@@ -130,6 +134,12 @@ public class OutputExecutionServiceImpl implements OutputExecutionService {
             outputMonitoringService.reportLastSmartTimeProcessed(smarts.get(smarts.size() - 1).getStartInstant().toEpochMilli(), startDate);
         }
         logger.info("output process application completed for start date {}:{}, end date {}:{}.", CommonStrings.COMMAND_LINE_START_DATE_FIELD_NAME, startDate, CommonStrings.COMMAND_LINE_END_DATE_FIELD_NAME, endDate);
+    }
+
+    private void flushAlerts(Instant startDate, List<Alert> alerts) {
+        storeAlerts(alerts);
+        outputMonitoringService.reportTotalAnomalyEvents(alerts, startDate);
+        alerts.clear();
     }
 
     private User getSingleUserEntityById(String userId) {

@@ -19,6 +19,7 @@ public class TestConfig {
         properties.put("severity.mid", 80);
         properties.put("smart.threshold.score", 0);
         properties.put("smart.page.size", 50);
+        properties.put("alert.page.size", 10);
         properties.put("elasticsearch.clustername", EmbeddedElasticsearchInitialiser.EL_TEST_CLUSTER);
         properties.put("elasticsearch.host", "localhost");
         properties.put("elasticsearch.port", EmbeddedElasticsearchInitialiser.EL_TEST_PORT);

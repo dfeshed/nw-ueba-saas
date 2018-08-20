@@ -84,6 +84,10 @@ public class OutputProcessorTestConfiguration {
     @Value("${smart.page.size}")
     private int smartPageSize;
 
+
+    @Value("${alert.page.size}")
+    private int alertPageSize;
+
     @Value("${output.enriched.events.retention.in.days}")
     private long retentionEnrichedEventsDays;
 
@@ -95,6 +99,6 @@ public class OutputProcessorTestConfiguration {
 
     @Bean
     public OutputExecutionService outputProcessService() {
-        return new OutputExecutionServiceImpl(adeManagerSdk, alertService, userService, eventPersistencyService, outputMonitoringService, smartThreshold, smartPageSize, retentionEnrichedEventsDays, retentionOutputDataDays);
+        return new OutputExecutionServiceImpl(adeManagerSdk, alertService, userService, eventPersistencyService, outputMonitoringService, smartThreshold, smartPageSize, alertPageSize, retentionEnrichedEventsDays, retentionOutputDataDays);
     }
 }
