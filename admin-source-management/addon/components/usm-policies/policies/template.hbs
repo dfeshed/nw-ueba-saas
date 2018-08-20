@@ -13,15 +13,16 @@
 
   {{#explorer.table as |row|}}
     {{#row.cell as |item index column|}}
+      <span class={{concat 'usm-policy-column-' column.field}}>
       {{#if (eq column.dataType 'checkbox') }}
         <label class="rsa-form-checkbox-label {{if (contains item.id explorer.instance.itemsSelected) 'checked'}}">
           {{rsa-form-checkbox checked=(contains item.id explorer.instance.itemsSelected) change=(action explorer.select item)}}
         </label>
       {{else if (eq column.field "name")}}
         {{#if item.dirty}}
-          <p class="publish-icon">{{rsa-icon name="synchronize-3" tooltip="foo"}}</p>   
+          <p class="publish-icon">{{rsa-icon name="synchronize-3"}}</p>   
         {{/if}}
-        <span class="policy-name">{{get item column.field}}</span>
+          {{get item column.field}}
       {{!-- {{else if (eq column.field "polices")}}
         {{#each item.policies as |policy index|}}
           {{#if (not-eq index 0)}},  {{/if}}{{policy.name}}
@@ -31,10 +32,11 @@
           {{#if (not-eq index 0)}},  {{/if}}{{policy.type}}
         {{/each}} --}}
       {{else if (eq column.field "numSources")}}
-        <p> ---- </p>
+          <span>----</span>
       {{else}}
         {{get item column.field}}
       {{/if}}
+      </span>
     {{/row.cell}}
   {{/explorer.table}}
 

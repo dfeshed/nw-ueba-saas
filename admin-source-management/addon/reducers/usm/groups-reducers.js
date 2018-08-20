@@ -35,13 +35,6 @@ const persistState = (callback) => {
 
 export default reduxActions.handleActions({
 
-  // [ACTION_TYPES.FETCH_GROUPS_TOTAL_COUNT]: explorerReducers.fetchItemCount,
-  // [ACTION_TYPES.FETCH_GROUPS_STARTED]: explorerReducers.fetchItemsStreamStarted,
-  // [ACTION_TYPES.FETCH_GROUPS_STREAM_INITIALIZED]: explorerReducers.fetchItemsStreamInitialized,
-  // [ACTION_TYPES.FETCH_GROUPS_RETRIEVE_BATCH]: explorerReducers.fetchItemsStreamBatchRetrieved,
-  // [ACTION_TYPES.FETCH_GROUPS_COMPLETED]: explorerReducers.fetchItemsStreamCompleted,
-  // [ACTION_TYPES.FETCH_GROUPS_ERROR]: explorerReducers.fetchItemsStreamError,
-  // [ACTION_TYPES.GROUPS_DELETE_GROUP]: explorerReducers.deleteItem,
   [ACTION_TYPES.GROUPS_TOGGLE_FILTER_PANEL]: persistState(explorerReducers.toggleFilterPanel),
   [ACTION_TYPES.GROUPS_UPDATE_FILTERS]: persistState(explorerReducers.updateFilter),
   [ACTION_TYPES.GROUPS_RESET_FILTERS]: persistState(explorerReducers.resetFilters),
@@ -56,6 +49,7 @@ export default reduxActions.handleActions({
       start: (state) => {
         return state.merge({
           items: [],
+          itemsTotal: null,
           itemsStatus: 'wait'
         });
       },
@@ -65,8 +59,42 @@ export default reduxActions.handleActions({
       success: (state) => {
         return state.merge({
           items: action.payload.data,
+          // itemsTotal: action.payload.meta.total,
+          itemsTotal: 1,
           itemsStatus: 'complete'
         });
+      }
+    })
+  ),
+
+  [ACTION_TYPES.DELETE_GROUPS]: (state, action) => (
+    handle(state, action, {
+      start: (state) => state.set('isTransactionUnderway', true),
+      failure: (state) => state.set('isTransactionUnderway', false),
+      success: (state) => {
+        return state.merge(
+          {
+            isTransactionUnderway: false,
+            itemsSelected: [],
+            isSelectAll: false
+          }
+        );
+      }
+    })
+  ),
+
+  [ACTION_TYPES.PUBLISH_GROUPS]: (state, action) => (
+    handle(state, action, {
+      start: (state) => state.set('isTransactionUnderway', true),
+      failure: (state) => state.set('isTransactionUnderway', false),
+      success: (state) => {
+        return state.merge(
+          {
+            isTransactionUnderway: false,
+            itemsSelected: [],
+            isSelectAll: false
+          }
+        );
       }
     })
   )

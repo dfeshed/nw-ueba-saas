@@ -19,17 +19,22 @@ const initialState = {
   isSortDescending: true
 };
 
-const fetchGroupsData = [
-  {
-    'id': 'group_001',
-    'name': 'Zebra 001',
-    'description': 'Zebra 001 of group group_001',
-    'createdBy': 'local',
-    'createdOn': 1523655354337,
-    'lastModifiedBy': 'local',
-    'lastModifiedOn': 1523655354337
+const fetchGroupsPayload = {
+  data: [
+    {
+      'id': 'group_001',
+      'name': 'Zebra 001',
+      'description': 'Zebra 001 of group group_001',
+      'createdBy': 'local',
+      'createdOn': 1523655354337,
+      'lastModifiedBy': 'local',
+      'lastModifiedOn': 1523655354337
+    }
+  ],
+  meta: {
+    total: 1
   }
-];
+};
 
 module('Unit | Reducers | Groups Reducers');
 
@@ -51,12 +56,13 @@ test('on FETCH_GROUPS start, itemsStatus is properly set', function(assert) {
 test('on FETCH_GROUPS success, groups & itemsStatus are properly set', function(assert) {
   const expectedEndState = {
     ...initialState,
-    items: fetchGroupsData,
+    items: fetchGroupsPayload.data,
+    itemsTotal: 1,
     itemsStatus: 'complete'
   };
   const action = makePackAction(LIFECYCLE.SUCCESS, {
     type: ACTION_TYPES.FETCH_GROUPS,
-    payload: { data: fetchGroupsData }
+    payload: fetchGroupsPayload
   });
   const endState = reducers(Immutable.from(initialState), action);
   assert.deepEqual(endState, expectedEndState, 'groups populated & itemsStatus is complete');

@@ -12,7 +12,7 @@
       margin-right: 0px;
     }
   
-    .group-name, .policy-name {
+    .usm-groups-column-name, .usm-policy-column-name {
       margin-left: 15px;
     }
   
@@ -21,7 +21,7 @@
         padding: rsa-whitespace(least);
         display: inline-block;
       }
-      .groups-create-new, .policies-create-new {
+      .groups-create-new-button, .policies-create-new-button {
         padding-right: rsa-whitespace(more);
       }
     }

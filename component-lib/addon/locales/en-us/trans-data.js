@@ -3395,6 +3395,22 @@ export default {
         appliedPolices: 'Applied Policies'
       },
       detail: {
+      },
+      modals: {
+        deleteGroups: {
+          title: 'Delete Group(s)',
+          confirm: 'Are you sure you want to delete the \'{{numItems}}\' selected group(s)?    Note: This will result in the immediate publish of the deleted group(s).',
+          ok: 'Delete Group(s)',
+          success: 'Successfully deleted \'{{numItems}}\' group(s)',
+          failure: 'There was an unexpected problem deleting the group(s)'
+        },
+        publishGroups: {
+          title: 'Publish Group(s)',
+          confirm: 'Are you sure you want to publish the \'{{numItems}}\' selected group(s)?',
+          ok: 'Publish Group(s)',
+          success: 'Successfully published \'{{numItems}}\' group(s)',
+          failure: 'There was an unexpected problem publishing the group(s)'
+        }
       }
     },
     group: {

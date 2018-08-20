@@ -13,6 +13,14 @@ const adminUsmConfigGen = function(environment) {
         subscriptionDestination: '/user/queue/usm/groups',
         requestDestination: '/ws/usm/groups'
       },
+      remove: {
+        subscriptionDestination: '/user/queue/usm/groups/remove',
+        requestDestination: '/ws/usm/groups/remove'
+      },
+      publish: {
+        subscriptionDestination: '/user/queue/usm/groups/publish',
+        requestDestination: '/ws/usm/groups/publish'
+      },
       updateRecord: {
         subscriptionDestination: '/user/queue/usm/group/set',
         requestDestination: '/ws/usm/group/set'

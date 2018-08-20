@@ -1,28 +1,38 @@
 <hbox>
-  <div class="action-control groups-create-new">
+  <div class="action-control groups-create-new-button">
     {{#link-to 'group-create'}}
       {{#rsa-form-button}}
-        {{rsa-icon name='add-1' style='lined'}}{{t 'adminUsm.button.createNew'}}
+        {{rsa-icon size='small' name='add-1' style='lined'}}{{t 'adminUsm.button.createNew'}}
       {{/rsa-form-button}}
     {{/link-to}}
   </div>
-  <div class="action-control groups-delete">
-    {{#rsa-form-button
-      isDisabled=true}}
+  <div class="action-control groups-delete-button">
+    {{#rsa-button-with-confirmation
+      title=(t 'adminUsm.groups.modals.deleteGroups.title')
+      confirmationMessage=(t 'adminUsm.groups.modals.deleteGroups.confirm' numItems=_selectedItems.length)
+      confirmButtonLabel=(t 'adminUsm.groups.modals.deleteGroups.ok')
+      isDisabled=(not canDelete)
+      cancelButtonLabel=(t 'adminUsm.button.cancel')
+      onConfirm=(action 'handleDeleteGroups' _selectedItems)}}
       {{t 'adminUsm.button.delete'}}
-    {{/rsa-form-button}}
+    {{/rsa-button-with-confirmation}}
   </div>
-  <div class="action-control groups-apply-policies">
+  <div class="action-control groups-apply-policies-button">
     {{#rsa-form-button
-      isDisabled=true}}
+      isDisabled=(not false)}}
       {{t 'adminUsm.button.applyPolicies'}}
     {{/rsa-form-button}}
   </div>
-  <div class="action-control groups-publish">
-    {{#rsa-form-button
-      isDisabled=true}}
+  <div class="action-control groups-publish-button">
+    {{#rsa-button-with-confirmation 
+      title=(t 'adminUsm.groups.modals.publishGroups.title')
+      confirmationMessage=(t 'adminUsm.groups.modals.publishGroups.confirm' numItems=_selectedItems.length)
+      confirmButtonLabel=(t 'adminUsm.groups.modals.publishGroups.ok')
+      isDisabled=(not false)
+      cancelButtonLabel=(t 'adminUsm.button.cancel')
+      onConfirm=(action 'handlePublishGroups' _selectedItems)}}
       {{rsa-icon name="synchronize-3"}}{{t 'adminUsm.button.publish'}}
-    {{/rsa-form-button}}
+    {{/rsa-button-with-confirmation}}
   </div>
 </hbox>
 

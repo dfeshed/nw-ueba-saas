@@ -1,16 +1,16 @@
 import * as ACTION_TYPES from 'admin-source-management/actions/types';
 import groupsAPI from 'admin-source-management/actions/api/groups-api';
+import { handleError } from './utils-creators';
 
-// const callbacksDefault = { onSuccess() {}, onFailure() {} };
-
+const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
 const initializeGroups = () => {
   return (dispatch) => {
-    dispatch(getItems());
+    dispatch(getGroups());
   };
 };
 
-const getItems = () => {
+const getGroups = () => {
   return (dispatch, getState) => {
     const { itemsFilters, sortField, isSortDescending } = getState().usm.groups;
 
@@ -22,68 +22,43 @@ const getItems = () => {
   };
 };
 
+const deleteGroups = (selectedItems, callbacks = callbacksDefault) => {
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.DELETE_GROUPS,
+      promise: groupsAPI.deleteGroups(selectedItems),
+      meta: {
+        onSuccess: (response) => {
+          callbacks.onSuccess(response);
+          dispatch(getGroups());
+        },
+        onFailure: (response) => {
+          handleError(ACTION_TYPES.DELETE_GROUPS, response);
+          callbacks.onFailure(response);
+        }
+      }
+    });
+  };
+};
 
-// /**
-//  * Action creator that dispatches a set of actions for fetching incidents (with or without filters) and sorted by one field.
-//  * @method getItems
-//  * @public
-//  * @returns {function(*, *)}
-//  */
-// const getItems = () => {
-//   return (dispatch, getState) => {
-//     const { itemsFilters, sortField, isSortDescending, stopItemsStream } = getState().respond.incidents;
-
-//     // Fetch the total incident count for the current query
-//     dispatch({
-//       type: ACTION_TYPES.FETCH_INCIDENTS_TOTAL_COUNT,
-//       promise: Incidents.getIncidentsCount(itemsFilters, { sortField, isSortDescending })
-//     });
-
-//     dispatch({ type: ACTION_TYPES.FETCH_INCIDENTS_STARTED });
-//     // If we already have an incidents stream running, stop it. This prevents a previously started stream
-//     // from continuing to deliver results at the same time as the new stream.
-//     if (stopItemsStream) {
-//       stopItemsStream();
-//     }
-
-//     Incidents.getIncidents(
-//       itemsFilters,
-//       { sortField, isSortDescending },
-//       {
-//         onInit: (stopStreamFn) => {
-//           dispatch({ type: ACTION_TYPES.FETCH_INCIDENTS_STREAM_INITIALIZED, payload: stopStreamFn });
-//         },
-//         onCompleted: () => dispatch({ type: ACTION_TYPES.FETCH_INCIDENTS_COMPLETED }),
-//         onResponse: (payload) => dispatch({ type: ACTION_TYPES.FETCH_INCIDENTS_RETRIEVE_BATCH, payload }),
-//         onError: () => {
-//           dispatch({ type: ACTION_TYPES.FETCH_INCIDENTS_ERROR });
-//         }
-//       }
-//     );
-//   };
-// };
-
-// const deleteItem = (entityId, callbacks = callbacksDefault) => {
-//   return (dispatch) => {
-//     const reloadItems = entityId.length >= 500; // deletions of more than 500 items should trigger subsequent refresh/reload
-
-//     dispatch({
-//       type: ACTION_TYPES.GROUPS_DELETE_GROUP,
-//       promise: Incidents.delete(entityId),
-//       meta: {
-//         onSuccess: (response) => {
-//           callbacks.onSuccess(response);
-//           if (reloadItems) {
-//             dispatch(getItems());
-//           }
-//         },
-//         onFailure: (response) => {
-//           callbacks.onFailure(response);
-//         }
-//       }
-//     });
-//   };
-// };
+const publishGroups = (selectedItems, callbacks = callbacksDefault) => {
+  return (dispatch) => {
+    dispatch({
+      type: ACTION_TYPES.DELETE_GROUPS,
+      promise: groupsAPI.deleteGroups(selectedItems),
+      meta: {
+        onSuccess: (response) => {
+          callbacks.onSuccess(response);
+          dispatch(getGroups());
+        },
+        onFailure: (response) => {
+          handleError(ACTION_TYPES.DELETE_GROUPS, response);
+          callbacks.onFailure(response);
+        }
+      }
+    });
+  };
+};
 
 const resetFilters = () => {
   return (dispatch) => {
@@ -91,7 +66,7 @@ const resetFilters = () => {
       type: ACTION_TYPES.GROUPS_RESET_FILTERS
     });
 
-    dispatch(getItems());
+    dispatch(getGroups());
   };
 };
 
@@ -110,7 +85,7 @@ const updateFilter = (filters) => {
       payload: filters
     });
 
-    dispatch(getItems());
+    dispatch(getGroups());
   };
 };
 
@@ -132,7 +107,7 @@ const sortBy = (sortField, isSortDescending) => {
       }
     });
 
-    dispatch(getItems());
+    dispatch(getGroups());
   };
 };
 
@@ -145,8 +120,9 @@ const toggleSelectAll = () => ({ type: ACTION_TYPES.GROUPS_TOGGLE_SELECT_ALL });
 
 export {
   initializeGroups,
-  getItems,
-  // deleteItem,
+  getGroups,
+  deleteGroups,
+  publishGroups,
   resetFilters,
   updateFilter,
   sortBy,

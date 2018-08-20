@@ -2,14 +2,14 @@ import reselect from 'reselect';
 
 const { createSelector } = reselect;
 
-const groupsState = (state) => state.usm.groups;
+const _groupsState = (state) => state.usm.groups;
 
 export const isGroupsLoading = createSelector(
-  groupsState,
-  (groupsState) => groupsState.itemsStatus === 'wait'
+  _groupsState,
+  (_groupsState) => _groupsState.itemsStatus === 'wait'
 );
 
 export const focusedGroup = createSelector(
-  groupsState,
-  (groupsState) => groupsState.focusedItem
+  _groupsState,
+  (_groupsState) => _groupsState.focusedItem
 );
