@@ -130,6 +130,12 @@ export default class DataHelper {
     return this;
   }
 
+  endpointText(setTo) {
+    _set(this.state, 'text.textContent', setTo);
+    _set(this.state, 'text.renderIds', '1');
+    return this;
+  }
+
   // Packets
 
   packetPageSize(setTo) {

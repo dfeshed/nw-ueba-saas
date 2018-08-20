@@ -33,6 +33,7 @@ const endpointMetas = [
   [ 'ip.src', faker.internet.ip() ],
   [ 'ip.dst', faker.internet.ip() ],
   [ 'param.dst', faker.internet.userAgent() ],
+  [ 'param.src', faker.internet.userAgent() ],
   [ 'nwe.callback_id', randInt(15, 2000) ]
 ];
 

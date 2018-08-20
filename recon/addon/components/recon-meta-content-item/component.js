@@ -60,6 +60,18 @@ const MetaContentItem = Component.extend({
   value: null,
 
   /**
+   * translated meta name with
+   * all dots replaced with underscores
+   * ex. param.dst to param_dst
+   * @type {string}
+   * @public
+   */
+  @computed('name')
+  translatedName(name) {
+    return name.replace(/\./g, '_');
+  },
+
+  /**
    * Determines if the meta should be highlighted and selected
    * @param {boolean} isTextView If text view or not, so we can deselect on other views
    * @param {object} metaToHighlight The meta to highlighted, passed down in, grabbed from redux
@@ -141,31 +153,20 @@ const MetaContentItem = Component.extend({
   },
 
   /**
-   * whether to display CopyClipBoard tooltip for the meta value.
+   * whether to display tooltip for lengthy meta value.
    * @param {boolean} isEndpointEvent Endpoint event flag.
    * @param {boolean} hasTextContent has Text Content available
+   * @param {array} lengthyMetaKeys array of all lengthy meta keys
+   * @param {string} name meta key name
    * @return {boolean}
    * @public
    */
-  @computed('isEndpointEvent', 'hasTextContent')
-  showCopyClipBoard(isEndpointEvent, hasTextContent) {
-    return isEndpointEvent && hasTextContent;
-  },
-
-  /**
-   * Return text content value for lengthy endpoint event meta
-   * @param renderedText text content to be displayed in tooltip
-   * @returns {string}
-   * @public
-   */
-  @computed('renderedText')
-  lengthyMeta(renderedText) {
-    if (renderedText.length > 0) {
-      const [ metaKey, metaValue ] = renderedText[0].text.split('=');
-      if (metaKey === 'param.dst') {
-        return metaValue;
-      }
+  @computed('isEndpointEvent', 'hasTextContent', 'lengthyMetaKeys', 'name')
+  showTextWithTooltip(isEndpointEvent, hasTextContent, lengthyMetaKeys, name) {
+    if (isEndpointEvent && hasTextContent && lengthyMetaKeys.length) {
+      return lengthyMetaKeys.indexOf(name) > -1;
     }
+    return false;
   },
 
   actions: {

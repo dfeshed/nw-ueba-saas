@@ -6,12 +6,8 @@
     {{rsa-content-datetime
       displayMilliseconds=false
       timestamp=value}}
-  {{else if (eq name 'param.dst')}}
-    {{#if showCopyClipBoard}}
-      {{rsa-text-with-tooltip value=lengthyMeta tipPosition='left'}}
-    {{else}}
-      {{value}}
-    {{/if}}
+  {{else if showTextWithTooltip}}
+    {{rsa-text-with-tooltip value=(get lengthyMetas translatedName) tipPosition='left'}}
   {{else}}
     {{#rsa-context-menu
       contextSelection=contextSelection

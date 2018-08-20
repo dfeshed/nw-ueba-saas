@@ -1,43 +1,66 @@
-import wait from 'ember-test-helpers/wait';
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-
-import { applyPatch, revertPatch } from '../../../helpers/patch-reducer';
+import { find, findAll, render, triggerEvent } from '@ember/test-helpers';
+import { patchReducer } from '../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 let setState;
-moduleForComponent('recon-meta-content', 'Integration | Component | recon meta content', {
-  integration: true,
-  beforeEach() {
-    setState = (state) => {
-      applyPatch(state);
-      this.inject.service('redux');
-    };
-  },
-  afterEach() {
-    revertPatch();
-  }
-});
+module('Integration | Component | recon-meta-content', function(hooks) {
+  setupRenderingTest(hooks);
 
-test('several meta items render correctly', function(assert) {
-  new ReduxDataHelper(setState).meta([
+  hooks.beforeEach(function() {
+    setState = (state) => patchReducer(this, state);
+    initialize(this.owner);
+  });
+
+
+  test('several meta items render correctly', async function(assert) {
+    new ReduxDataHelper(setState).meta([
     [ 'size', 62750 ],
     [ 'payload', 56460 ],
     [ 'medium', 1 ],
     [ 'eth.src', '70:56:81:9A:94:DD' ],
     [ 'eth.dst', '10:0D:7F:75:C4:C8' ]
-  ]).build();
+    ]).build();
 
-  this.render(hbs`{{recon-meta-content}}`);
-  return wait().then(() => {
-    assert.equal(this.$('.recon-meta-content-item').length, 5);
+    await render(hbs`{{recon-meta-content}}`);
+
+    assert.equal(findAll('.recon-meta-content-item').length, 5);
   });
-});
 
-test('zero meta items render correctly', function(assert) {
-  new ReduxDataHelper(setState).meta([]).build();
-  this.render(hbs`{{recon-meta-content}}`);
-  return wait().then(() => {
-    assert.equal(this.$('.recon-meta-content-item').length, 0);
+  test('zero meta items render correctly', async function(assert) {
+    new ReduxDataHelper(setState).meta([]).build();
+
+    await render(hbs`{{recon-meta-content}}`);
+
+    assert.equal(findAll('.recon-meta-content-item').length, 0);
+
+  });
+
+  test('show tooltip for endpoint event lengthy meta', async function(assert) {
+    const endpointData = [{
+      'charset': 'UTF-8',
+      'contentDecoded': true,
+      'firstPacketId': 1,
+      'firstPacketTime': 1485792552870,
+      'text': 'param.dst=test-value test-value test-value test-value test-value 0000000'
+    }];
+
+    new ReduxDataHelper(setState).meta([
+    [ 'param.dst', 'test-value test-value' ],
+    [ 'nwe.callback_id', 'foo' ]
+    ])
+    .endpointText(endpointData)
+    .build();
+
+    await render(hbs`{{recon-meta-content}}`);
+    document.querySelector('.tooltip-text').setAttribute('style', 'width:100px');
+    await triggerEvent('.tooltip-text', 'mouseover');
+    assert.equal(findAll('.ember-tether').length, 1, 'Tool tip is rendered');
+    assert.equal(find('.ember-tether .tool-tip-value').textContent.trim(), 'test-value test-value test-value test-value test-value 0000000');
+    await triggerEvent('.tooltip-text', 'mouseout');
+    assert.equal(findAll('.ember-tether .tool-tip-value').length, 0, 'Tool tip is hidden');
   });
 });

@@ -40,6 +40,8 @@ const MetaContentComponent = Component.extend(HighlightsEntities, {
   classNameBindings: [':recon-meta-content'],
   entityEndpointId: 'CORE',
 
+  lengthyMetas: undefined,
+
   /**
    * This computed is call to ensure highlightEntities is being called after all meta loaded.
    * @private
@@ -50,6 +52,39 @@ const MetaContentComponent = Component.extend(HighlightsEntities, {
       next(this, 'highlightEntities');
     }
     return meta;
+  },
+
+  /**
+   * create array of lengthy meta keys and set lengthyMetas object with metakey and metavalue
+   * as key/value pairs for endpoint events with meta containing lengthy values.
+   * @private
+  */
+  @computed('isEndpointEvent', 'hasTextContent', 'renderedText')
+  lengthyMetaKeys(isEndpointEvent, hasTextContent, renderedText) {
+    const lengthyMetaKeys = [];
+    const lengthyMetas = {};
+    if (isEndpointEvent && hasTextContent && renderedText.length) {
+      renderedText.forEach((textContent) => {
+        const textData = textContent.text;
+
+        // Split text into meta key and meta value with first occurence of '='
+        const splitIndex = textData.indexOf('=');
+        const metaKey = textData.substring(0, splitIndex);
+        const metaValue = textData.substring(splitIndex + 1);
+        lengthyMetaKeys.push(metaKey);
+
+        // Object containing key/value pairs of metakey/metaValue
+        const lengthyMeta = {};
+
+        // replace all dots with underscores for meta key
+        const translatedMetaKey = metaKey.replace(/\./g, '_');
+        lengthyMeta[translatedMetaKey] = metaValue;
+
+        Object.assign(lengthyMetas, lengthyMeta);
+      });
+      this.set('lengthyMetas', lengthyMetas);
+    }
+    return lengthyMetaKeys;
   }
 });
 

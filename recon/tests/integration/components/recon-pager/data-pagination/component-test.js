@@ -6,6 +6,7 @@ import { selectChoose, clickTrigger } from 'ember-power-select/test-support/help
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 import $ from 'jquery';
 import wait from 'ember-test-helpers/wait';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 let setState;
 
@@ -19,6 +20,7 @@ const setupState = (packetCountValue) => {
 moduleForComponent('data-pagination', 'Integration | Component | Packet Pagination', {
   integration: true,
   beforeEach() {
+    initialize(this);
     setState = (state) => {
       applyPatch(state);
       this.inject.service('redux');
