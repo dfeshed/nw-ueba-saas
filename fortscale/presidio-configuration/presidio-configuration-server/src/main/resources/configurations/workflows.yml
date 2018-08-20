@@ -99,8 +99,8 @@ dags:
       jvm_args:
         jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-modeling.jar
         main_class: presidio.ade.modeling.ModelingServiceApplication
-        xmx: 2048
-        xms: 2048
+        xmx: 4096
+        xms: 4096
         extra_jvm: -XX:+UseG1GC -XX:G1RSetUpdatingPauseTimePercent=5
     AdeManagerOperator:
       jvm_args:
