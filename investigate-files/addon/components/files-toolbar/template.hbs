@@ -4,24 +4,39 @@
   {{/rsa-form-button}}
 </h2>
 <hbox class="toolbar-actions">
-  {{service-selector services=servers serviceId=serverId onServiceSelection=(action 'setEndpointServer')}}   
+  {{service-selector services=servers serviceId=serverId onServiceSelection=(action 'setEndpointServer')}}
   {{#rsa-content-tethered-panel-trigger triggerEvent="click" panel='panel11'}}
     {{#rsa-form-button allowToggleActive=true withDropdown=true}}
       Saved Filters
     {{/rsa-form-button}}
   {{/rsa-content-tethered-panel-trigger}}
-  {{#rsa-content-tethered-panel isPopover=true displayCloseButton=false position='bottom-right' panelId='panel11'}}
+  {{#rsa-content-tethered-panel
+    classPrefix='ember-filter-tether'
+    isPopover=true displayCloseButton=false
+    position='bottom-right'
+    panelId='panel11'}}
     <ul class='filter-list'>
-      {{#each filesFilters as |filter|}}
-        {{files-toolbar/custom-filter-list
-          filter=filter
-          activeFilter=activeFilter
-          applyCustomFilter=(action 'applyCustomFilter')
-          deleteFilter=(action 'deleteSelectedFilter' filter.id)}}
+      {{files-toolbar/custom-filter-list
+        selectedFilterId=selectedFilterId
+        filter=allFiles
+        applyCustomFilter=(action 'applyCustomFilter')
+        deleteFilter=(action 'deleteSelectedFilter' opt.id)}}
+      {{#each savedFilters as |filter|}}
+        <li class='filter-group'>
+          <h3 class='filter-group-name'>{{filter.groupName}}</h3>
+          {{#each filter.options as |opt|}}
+            <ul class='filter-option'>
+              {{files-toolbar/custom-filter-list
+                selectedFilterId=selectedFilterId
+                filter=opt
+                applyCustomFilter=(action 'applyCustomFilter')
+                deleteFilter=(action 'deleteSelectedFilter' opt.id)}}
+            </ul>
+          {{/each}}
+        </li>
       {{/each}}
     </ul>
   {{/rsa-content-tethered-panel}}
-
   {{files-toolbar/export-button}}
   <div class="divider"/>
   {{endpoint/file-actionbar

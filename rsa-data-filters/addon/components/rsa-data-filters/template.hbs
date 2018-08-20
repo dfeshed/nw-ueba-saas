@@ -10,7 +10,7 @@
     Reset
   {{/rsa-form-button}}
   {{#if showSaveFilterButton}}
-    {{#rsa-form-button class='save-filter-button' defaultAction=(action 'saveFilters')}}
+    {{#rsa-form-button class='save-filter-button' isDisabled=disableSaveFilterButton defaultAction=(action 'saveFilters')}}
       Save
     {{/rsa-form-button}}
   {{/if}}

@@ -24,6 +24,8 @@ export default Component.extend({
 
   showSaveFilterButton: false,
 
+  disableSaveFilterButton: false,
+
   isReset: false,
 
   @computed('config')

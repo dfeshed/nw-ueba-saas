@@ -97,21 +97,22 @@
     width: 200px;
   }
 
-  .is-hovering .delete-filter {
-    display: inline-block;
-    .rsa-icon-bin-1-filled {
-      font-size: 100%;
-      top: -2px;
+  .filter-list__item {
+    cursor: pointer;
+    &.is-active {
+      color: text-color(secondary);
+      transition: color 0.5s ease;
+    }
+    &.is-hovering {
+      color: text-color(secondary);
+      transition: color 0.5s ease;
     }
   }
 
-  .delete-filter {
-    position: absolute;
-    right: 0.5rem;
-    display: none;
-    .rsa-icon-bin-1-filled {
-      font-size: 1.25rem;
-    }
+  .filter-group-name {
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: default;
+    pointer-events: none;
   }
-
 }

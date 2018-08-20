@@ -51,7 +51,7 @@ const filterReducer = handleActions({
         if (index !== -1) {
           list = state.savedFilterList.set(index, data);
         }
-        return s.set('savedFilterList', list);
+        return s.merge({ 'savedFilterList': list, selectedFilter: data });
       }
     });
   },

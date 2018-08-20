@@ -23,45 +23,45 @@ module('files-toolbar/custom-filter-list', 'Integration | Component | custom fil
 
   test('Computed property upon setting custom-filter list-item', async function(assert) {
     this.set('filter', customFilterData.fileFilters.data[0]);
-    this.set('activeFilter', '5a6830ec3f11d6700d9ca761');
+    this.set('selectedFilterId', '5a6830ec3f11d6700d9ca761');
     this.set('reset', false);
     this.set('isSystemFilter', false);
     this.set('applyCustomFilter', 'applyCustomFilter');
-    await render(hbs`{{files-toolbar/custom-filter-list filter=filter activeFilter=activeFilter reset=reset isSystemFilter=isSystemFilter applyCustomFilter=applyCustomFilter}}`);
+    await render(hbs`{{files-toolbar/custom-filter-list filter=filter selectedFilterId=selectedFilterId reset=reset isSystemFilter=isSystemFilter applyCustomFilter=applyCustomFilter}}`);
 
     assert.equal(document.querySelector('.filter-list__item').classList.contains('is-active'), true, 'Computed property calculated correctly upon setting custom-filter list-item');
   });
 
   test('Computed property upon resetting system-filter list-item', async function(assert) {
     this.set('filter', customFilterData.fileFilters.data[0]);
-    this.set('activeFilter', '5a6830ec3f11d6700d9ca761');
+    this.set('selectedFilterId', '5a6830ec3f11d6700d9ca761');
     this.set('reset', true);
     this.set('isSystemFilter', false);
     this.set('applyCustomFilter', 'applyCustomFilter');
-    await render(hbs`{{files-toolbar/custom-filter-list filter=filter activeFilter=activeFilter reset=reset isSystemFilter=isSystemFilter applyCustomFilter=applyCustomFilter}}`);
+    await render(hbs`{{files-toolbar/custom-filter-list filter=filter selectedFilterId=selectedFilterId reset=reset isSystemFilter=isSystemFilter applyCustomFilter=applyCustomFilter}}`);
 
-    assert.equal(document.querySelector('.filter-list__item').classList.contains('is-active'), false, 'Computed property calculated correctly upon resetting custom-filter list-item');
+    assert.equal(document.querySelector('.filter-list__item').classList.contains('is-active'), true, 'Computed property calculated correctly upon resetting custom-filter list-item');
   });
 
   test('Computed property when custom-filter id & active filter id is different', async function(assert) {
     this.set('filter', customFilterData.fileFilters.data[0]);
-    this.set('activeFilter', '5a6830ec3f11d6700d9ca762');
+    this.set('selectedFilterId', '5a6830ec3f11d6700d9ca762');
     this.set('reset', false);
     this.set('isSystemFilter', false);
     this.set('applyCustomFilter', 'applyCustomFilter');
-    await render(hbs`{{files-toolbar/custom-filter-list filter=filter activeFilter=activeFilter reset=reset isSystemFilter=isSystemFilter applyCustomFilter=applyCustomFilter}}`);
+    await render(hbs`{{files-toolbar/custom-filter-list filter=filter selectedFilterId=selectedFilterId reset=reset isSystemFilter=isSystemFilter applyCustomFilter=applyCustomFilter}}`);
     assert.equal(document.querySelector('.filter-list__item').classList.contains('is-active'), false, 'Computed property calculated correctly when active filter and passed filter id are different');
   });
 
   test('Computed property when system filter boolean is set for custom filter', async function(assert) {
     this.set('filter', customFilterData.fileFilters.data[0]);
-    this.set('activeFilter', '5a6830ec3f11d6700d9ca761');
+    this.set('selectedFilterId', '5a6830ec3f11d6700d9ca761');
     this.set('reset', false);
     this.set('isSystemFilter', true);
     this.set('applyCustomFilter', 'applyCustomFilter');
-    await render(hbs`{{files-toolbar/custom-filter-list filter=filter activeFilter=activeFilter reset=reset isSystemFilter=isSystemFilter applyCustomFilter=applyCustomFilter}}`);
+    await render(hbs`{{files-toolbar/custom-filter-list filter=filter selectedFilterId=selectedFilterId  applyCustomFilter=applyCustomFilter}}`);
 
-    assert.equal(document.querySelector('.filter-list__item').classList.contains('is-active'), false, 'Computed property calculated correctly when system filter boolean is set for custom filter');
+    assert.equal(document.querySelector('.filter-list__item').classList.contains('is-active'), true, 'Computed property calculated correctly when system filter boolean is set for custom filter');
   });
 
   test('Mouse hover on custom filter', async function(assert) {

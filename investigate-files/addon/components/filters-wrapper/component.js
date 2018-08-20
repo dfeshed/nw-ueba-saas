@@ -1,6 +1,6 @@
 import { connect } from 'ember-redux';
 import Component from '@ember/component';
-import { filters } from 'investigate-files/reducers/file-filter/selectors';
+import { filters, isSystemFilter, selectedFilterId, savedFilter } from 'investigate-files/reducers/file-filter/selectors';
 import { applyFilters, createCustomSearch } from 'investigate-files/actions/data-creators';
 import computed from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
@@ -9,7 +9,9 @@ import { run } from '@ember/runloop';
 
 const stateToComputed = (state) => ({
   allFilters: filters(state),
-  selectedFilter: state.files.filter.selectedFilter
+  isSystemFilter: isSystemFilter(state),
+  selectedFilterId: selectedFilterId(state),
+  savedFilter: savedFilter(state)
 });
 
 const dispatchToActions = {
@@ -29,6 +31,7 @@ const parseFilters = (filters) => {
       if (name === 'size') {
         propertyValues = convertToBytes(unit, propertyValues);
       }
+
       return {
         restrictionType: operator,
         propertyValues,
@@ -75,11 +78,18 @@ const ContentFilter = Component.extend({
 
   flashMessage: service(),
 
+  selectedFilter: null,
+
   @computed('saveFilterName')
   isNameInvalid(name) {
     if (name) {
       return /^\s*$/.test(name) || !idRegex.test(name);
     }
+  },
+
+  @computed('isSystemFilter', 'selectedFilterId')
+  disableSave(isSystemFilter, selectedFilterId) {
+    return isSystemFilter && selectedFilterId !== 1;
   },
 
   @computed('isNameInvalid', 'isNameEmpty')
@@ -105,10 +115,9 @@ const ContentFilter = Component.extend({
 
     showSaveFilter(filters) {
       const expressionList = parseFilters(filters);
-      const { name, id } = this.get('selectedFilter') || {};
+      const { name, id } = this.get('savedFilter') || {};
       this.set('expressionList', expressionList);
-
-      if (id) {
+      if (id && id !== 1) {
         const filter = {
           name,
           id
@@ -154,7 +163,6 @@ const ContentFilter = Component.extend({
       }
       this.set('saveFilterName', '');
     }
-
   }
 });
 

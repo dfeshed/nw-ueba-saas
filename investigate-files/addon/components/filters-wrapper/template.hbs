@@ -1,4 +1,9 @@
-{{rsa-data-filters config=allFilters showSaveFilterButton=true onSave=(action 'showSaveFilter') onFilterChange=(action 'filterChanged')}}
+{{rsa-data-filters
+  config=allFilters
+  disableSaveFilterButton=disableSave
+  showSaveFilterButton=true
+  onSave=(action 'showSaveFilter')
+  onFilterChange=(action 'filterChanged')}}
 
 {{#if showSaveFilter}}
   {{#rsa-application-modal eventId='save-search' label=(t decorator.label)}}

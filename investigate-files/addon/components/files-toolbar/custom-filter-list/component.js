@@ -11,12 +11,12 @@ export default Component.extend({
 
   filter: null,
 
-  activeFilter: null,
+  selectedFilterId: null,
 
   applyCustomFilter: null,
 
-  @computed('filter', 'activeFilter', 'reset', 'isSystemFilter')
-  isActive: (filter, activeFilter, reset, isSystemFilter) => filter.id === activeFilter && !reset && !isSystemFilter,
+  @computed('filter', 'selectedFilterId')
+  isActive: (filter, selectedFilterId) => filter.id === selectedFilterId,
 
   mouseEnter() {
     this.set('isHovering', true);

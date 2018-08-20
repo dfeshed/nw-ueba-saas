@@ -5,7 +5,7 @@ import { FILTER_TYPES } from './filter-type';
 
 
 // Contains all the expression saved + newly added expression from the UI
-const savedFilter = (state) => state.files.filter.selectedFilter;
+export const savedFilter = (state) => state.files.filter.selectedFilter;
 
 /**
  * Converts entered value and unit to bytes
@@ -48,6 +48,19 @@ export const expressionList = createSelector(
   }
 );
 
+export const isSystemFilter = createSelector(
+  savedFilter,
+  (savedFilter) => {
+    return savedFilter && savedFilter.systemFilter;
+  }
+);
+
+export const selectedFilterId = createSelector(
+  savedFilter,
+  (savedFilter) => {
+    return savedFilter && savedFilter.id;
+  }
+);
 /**
  * Filters only searchable columns from list of all available filter control configuration. Also it set's the saved
  * expression to the filter configuration if any. For newly added filter setting showFilterOnInsert flag to `true`.

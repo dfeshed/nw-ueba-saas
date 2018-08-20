@@ -2,3 +2,12 @@
 @import "pager/manifest";
 @import "toolbar/manifest";
 @import "content-filter/manifest";
+
+.ember-tether.ember-tether-element {
+  z-index: 400 !important;
+}
+.filter-list {
+  max-height: 300px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
