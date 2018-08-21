@@ -13,7 +13,7 @@ export default Component.extend({
 
   serviceList: null,
 
-  item: null,
+  itemList: null,
 
   metaName: null,
 
@@ -31,7 +31,7 @@ export default Component.extend({
     return !(selectedFilesList === 1);
   },
 
-  @computed('item')
+  @computed('itemList')
   statusData(selectedFileList) {
     if (selectedFileList && selectedFileList.length === 1) {
       return selectedFileList[0].fileStatusData;

@@ -11,7 +11,7 @@ export default Component.extend({
 
   serviceList: null,
 
-  item: null,
+  itemList: null,
 
   getAllServices: null,
 

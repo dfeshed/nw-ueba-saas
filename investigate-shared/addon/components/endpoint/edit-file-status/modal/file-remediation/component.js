@@ -37,11 +37,11 @@ export default Component.extend({
     return size > 104857600;
   },
 
-  @computed('item')
-  errorDecorator(item) {
-    const signer = item.mapBy('signature.signer');
+  @computed('itemList')
+  errorDecorator(itemList) {
+    const signer = itemList.mapBy('signature.signer');
     const isSigned = signer.some(this._isKnownSigner);
-    const size = item.mapBy('size');
+    const size = itemList.mapBy('size');
     const sizeExceeds = size.some(this._isSizeExceeded);
     let message;
     if (isSigned) {

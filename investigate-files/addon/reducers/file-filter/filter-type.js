@@ -24,6 +24,17 @@ const FILTER_TYPES = [
     }
   },
   {
+    name: 'fileStatus',
+    label: 'investigateFiles.fields.fileStatus',
+    type: 'list',
+    listOptions: [
+      { name: 'Blacklist', label: 'investigateFiles.editFileStatus.fileStatusOptions.blacklist' },
+      { name: 'Graylist', label: 'investigateFiles.editFileStatus.fileStatusOptions.graylist' },
+      { name: 'Whitelist', label: 'investigateFiles.editFileStatus.fileStatusOptions.whitelist' },
+      { name: 'KnownGood', label: 'investigateFiles.editFileStatus.fileStatusOptions.knowngood' }
+    ]
+  },
+  {
     name: 'reputationStatus',
     label: 'investigateFiles.fields.reputationStatus',
     type: 'list',

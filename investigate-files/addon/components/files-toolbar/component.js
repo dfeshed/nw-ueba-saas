@@ -19,7 +19,7 @@ const stateToComputed = (state) => ({
   checksums: checksums(state),
   selectedFileCount: state.files.fileList.selectedFileList.length,
   serviceList: serviceList(state),
-  item: state.files.fileList.selectedFileList,
+  itemList: state.files.fileList.selectedFileList,
   filesFilters: state.files.filter.savedFilterList,
   servers: state.endpointServer,
   serverId: state.endpointQuery.serverId,

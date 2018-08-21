@@ -33,7 +33,7 @@ export default Component.extend({
 
   serviceList: null,
 
-  item: null,
+  itemList: null,
 
   investigateText: null,
 
@@ -45,9 +45,9 @@ export default Component.extend({
   onClose: null,
 
   _buildFilter() {
-    const { metaName, metaValue, item } = this.getProperties('metaName', 'metaValue', 'item');
+    const { metaName, metaValue, itemList } = this.getProperties('metaName', 'metaValue', 'itemList');
     const investigateMeta = INVESTIGATE_META_MAPPING[metaName];
-    const value = metaValue || get(item[0], metaName); // if metaValue not passed get the value from item
+    const value = metaValue || get(itemList[0], metaName); // if metaValue not passed get the value from itemList
     // If list meta then add || in query
     if (Array.isArray(investigateMeta)) {
       const query = investigateMeta.map((meta) => {

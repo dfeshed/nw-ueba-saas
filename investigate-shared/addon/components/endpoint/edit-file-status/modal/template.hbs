@@ -17,12 +17,12 @@
         </label>
         {{#if (eq radio.value 'Blacklist')}}
           {{#if (eq data.fileStatus 'Blacklist')}}
-            {{endpoint/edit-file-status/modal/file-remediation data=data item=item}}
+            {{endpoint/edit-file-status/modal/file-remediation data=data itemList=itemList}}
           {{/if}}
         {{/if}}
         {{#if (eq radio.value 'Graylist')}}
           {{#if (eq data.fileStatus 'Graylist')}}
-            {{endpoint/edit-file-status/modal/file-remediation data=data item=item}}
+            {{endpoint/edit-file-status/modal/file-remediation data=data itemList=itemList}}
           {{/if}}
         {{/if}}
       {{/each}}
