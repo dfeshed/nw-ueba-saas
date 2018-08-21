@@ -4,7 +4,7 @@ import { fetchEndpointServers } from 'investigate-files/actions/fetch/server';
 
 export const setEndpointServer = (server) => {
   return (dispatch, getState) => {
-    const { serverId } = getState().investigate.queryNode;
+    const { serverId } = getState().endpointQuery;
     if (serverId !== server.id) {
       dispatch({
         type: ACTION_TYPES.ENDPOINT_SERVER_SELECTED,
