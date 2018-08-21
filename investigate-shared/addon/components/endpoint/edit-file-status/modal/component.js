@@ -7,7 +7,7 @@ export default Component.extend({
 
   data: {
     fileStatus: null,
-    fileCategory: null,
+    category: null,
     comment: '',
     remediationAction: null
   },

@@ -57,7 +57,7 @@ export default Component.extend({
 
   actions: {
     setFileCategory(category) {
-      this.set('data.fileCategory', category);
+      this.set('data.category', category);
     }
   }
 });
