@@ -125,6 +125,7 @@ module('Unit | Actions | Guided Creators', function(hooks) {
     thunk1(firstDispatch);
   });
 
+
   test('deselectGuidedPills action creator returns proper type and payload', function(assert) {
     const { pillsData } = new ReduxDataHelper()
       .pillsDataPopulated()
@@ -277,7 +278,7 @@ module('Unit | Actions | Guided Creators', function(hooks) {
     assert.deepEqual(action.payload.pillData, 'foo', 'action pillData has the right value');
   });
 
-  test('selectAllPillsTowardsDirection dispatches the proper events', function(assert) {
+  test('selectAllPillsTowardsDirection -> right dispatches the proper events', function(assert) {
     assert.expect(2);
     const done = assert.async();
 
@@ -301,6 +302,7 @@ module('Unit | Actions | Guided Creators', function(hooks) {
           value: '\'y\'',
           isSelected: false,
           isEditing: false,
+          isFocused: false,
           isInvalid: false,
           complexFilterText: undefined
         }],
@@ -312,7 +314,7 @@ module('Unit | Actions | Guided Creators', function(hooks) {
     thunk(myDispatch, getState);
   });
 
-  test('selectAllPillsTowardsDirection dispatches the proper events', function(assert) {
+  test('selectAllPillsTowardsDirection -> left dispatches the proper events', function(assert) {
     assert.expect(2);
     const done = assert.async();
 
@@ -337,6 +339,7 @@ module('Unit | Actions | Guided Creators', function(hooks) {
           value: '\'x\'',
           isSelected: false,
           isEditing: false,
+          isFocused: false,
           isInvalid: false,
           complexFilterText: undefined
         }],

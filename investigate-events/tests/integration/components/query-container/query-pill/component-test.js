@@ -319,7 +319,7 @@ module('Integration | Component | query-pill', function(hooks) {
 
       assert.equal(messageType, MESSAGE_TYPES.PILL_DELETED, 'Message sent for pill delete is not correct');
       assert.deepEqual(data,
-        { id: '1', meta: 'a', operator: '=', value: '\'x\'', isSelected: false },
+        { id: '1', meta: 'a', operator: '=', value: '\'x\'', isSelected: false, isFocused: false },
         'Message sent for pill create contains correct pill data'
       );
       assert.equal(position, 0, 'Message sent for pill create contains correct pill position');
@@ -906,7 +906,7 @@ module('Integration | Component | query-pill', function(hooks) {
       }
 
       assert.equal(messageType, MESSAGE_TYPES.ENTER_PRESSED_ON_SELECTED_PILL, 'Message sent to open pill for edit');
-      assert.deepEqual(data, { meta: 'a', operator: '=', value: '\'x\'', id: '1', isSelected: true }, 'Message sent contains correct pill data');
+      assert.deepEqual(data, { meta: 'a', operator: '=', value: '\'x\'', id: '1', isSelected: true, isFocused: false }, 'Message sent contains correct pill data');
     });
 
     await render(hbs`
@@ -1066,7 +1066,7 @@ module('Integration | Component | query-pill', function(hooks) {
     this.set('metaOptions', META_OPTIONS);
     this.set('handleMessage', (messageType, data, position) => {
       assert.equal(messageType, MESSAGE_TYPES.PILL_EDITED, 'Message sent for pill create is not correct');
-      assert.deepEqual(data, { id: '1', isSelected: false, meta: 'a', operator: 'exists', value: null }, 'Message sent for pill create contains correct pill data');
+      assert.deepEqual(data, { id: '1', isSelected: false, isFocused: false, meta: 'a', operator: 'exists', value: null }, 'Message sent for pill create contains correct pill data');
       assert.equal(position, 0, 'Message sent for pill create contains correct pill position');
       done();
     });

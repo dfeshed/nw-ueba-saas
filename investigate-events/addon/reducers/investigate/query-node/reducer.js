@@ -5,7 +5,7 @@ import { handle } from 'redux-pack';
 
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 import { createQueryHash } from 'investigate-events/util/query-hash';
-import { pillBeingEdited } from './selectors';
+import { pillBeingEdited, focusedPill } from './selectors';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
 
 const ID_PREFIX = 'guidedPill_';
@@ -55,6 +55,7 @@ const _initialPillState = {
   value: undefined,
   complexFilterText: undefined,
 
+  isFocused: false,
   isEditing: false,
   isSelected: false,
   isInvalid: false,
@@ -102,8 +103,8 @@ const _replacePill = (state, pillData) => {
   ]);
 };
 
-const handlePillSelection = (state, payload, isSelected) => {
-  const { pillData } = payload;
+const handlePillSelection = (state, pillData, isSelected) => {
+
   const selectIds = pillData.map((pD) => pD.id);
   const newPillsData = state.pillsData.map((pD) => {
     if (selectIds.includes(pD.id)) {
@@ -115,6 +116,80 @@ const handlePillSelection = (state, payload, isSelected) => {
     }
 
     return pD;
+  });
+  return state.set('pillsData', newPillsData);
+};
+
+const _shouldRemoveFocus = (selectedOrDeselectedPills, focusedPillData) => {
+  // Pills only have a focus side-effect if there is one pill being
+  // selected or deselected, because when multiple pills are being
+  // selected/deselected we do not touch any focus state
+  if (selectedOrDeselectedPills.length === 1) {
+    const [pill] = selectedOrDeselectedPills;
+
+    // If there isn't currently a focused pill, we do not need to
+    // worry about cleaning up current focus
+    if (focusedPillData) {
+
+      // If the focused pill IS the pill being acted upon
+      // there is no focus side effect.
+      const isFocusedPillSameAsSelectedDeselectedPill = focusedPillData.id !== pill.id;
+
+      return isFocusedPillSameAsSelectedDeselectedPill;
+    }
+  }
+  return false;
+};
+
+const _handlePillFocus = (state, selectedOrDeselectedPills, shouldIgnoreFocus = false) => {
+
+  // if shouldIgnoreFocus is passed in explicitly, due to multiple
+  // selected/deselected pills, no need to handle focus
+  if (shouldIgnoreFocus) {
+    return state;
+  } else {
+    const focusedPillData = focusedPill({ investigate: { queryNode: state } });
+    let newState = state;
+
+    // If existing focus state needs to change based on select/deselect,
+    // then remove old focus
+    if (_shouldRemoveFocus(selectedOrDeselectedPills, focusedPillData)) {
+      newState = _removeFocus(state);
+    }
+
+    // Continue adding focus to a pill if the array contains just 1 pill
+    if (selectedOrDeselectedPills.length === 1) {
+      const [needsFocusPill] = selectedOrDeselectedPills;
+      newState = _addFocus(newState, needsFocusPill);
+    }
+    return newState;
+  }
+};
+
+const _removeFocus = (state) => {
+  const { pillsData } = state;
+  const newPillsData = pillsData.map((pill) => {
+    if (pill.isFocused) {
+      return {
+        ...pill,
+        isFocused: false
+      };
+    }
+    return pill;
+  });
+  return state.set('pillsData', newPillsData);
+};
+
+const _addFocus = (state, needsFocusPill) => {
+  const { pillsData } = state;
+  const newPillsData = pillsData.map((pill) => {
+    if (pill.id === needsFocusPill.id) {
+      return {
+        ...pill,
+        isFocused: true
+      };
+    }
+    return pill;
   });
   return state.set('pillsData', newPillsData);
 };
@@ -307,10 +382,11 @@ export default handleActions({
   },
 
   [ACTION_TYPES.ADD_GUIDED_PILL]: (state, { payload }) => {
-    const { pillData, position } = payload;
+    const { pillData, position, shouldAddFocusToNewPill } = payload;
     const newPillData = {
       ..._initialPillState,
       ...pillData,
+      isFocused: shouldAddFocusToNewPill,
       id: _.uniqueId(ID_PREFIX)
     };
     if (state.pillsData.length === 0) {
@@ -358,18 +434,33 @@ export default handleActions({
     return state.set('pillsData', newPills);
   },
 
+  [ACTION_TYPES.REMOVE_FOCUS_GUIDED_PILL]: (state, { payload }) => {
+    const { pillData } = payload;
+    const newPill = {
+      ...pillData,
+      isFocused: false
+    };
+    const newPillsData = _replacePill(state, newPill);
+    return state.set('pillsData', newPillsData);
+  },
+
   [ACTION_TYPES.SELECT_GUIDED_PILLS]: (state, { payload }) => {
-    return handlePillSelection(state, payload, true);
+    const { pillData, shouldIgnoreFocus } = payload;
+    const handledFocusPillState = _handlePillFocus(state, pillData, shouldIgnoreFocus);
+    return handlePillSelection(handledFocusPillState, pillData, true);
   },
 
   [ACTION_TYPES.DESELECT_GUIDED_PILLS]: (state, { payload }) => {
-    return handlePillSelection(state, payload, false);
+    const { pillData, shouldIgnoreFocus } = payload;
+    const handledFocusPillState = _handlePillFocus(state, pillData, shouldIgnoreFocus);
+    return handlePillSelection(handledFocusPillState, pillData, false);
   },
 
   [ACTION_TYPES.OPEN_GUIDED_PILL_FOR_EDIT]: (state, { payload }) => {
     const newPillData = {
       ...payload.pillData,
       isSelected: false,
+      isFocused: false,
       isEditing: true
     };
     return _handlePillUpdate(state, newPillData);
@@ -386,13 +477,15 @@ export default handleActions({
   [ACTION_TYPES.RESET_GUIDED_PILL]: (state, { payload }) => {
     const { id } = payload.pillData;
     // Reset the id of the pill and then
-    // reset all the flags back to initial state
+    // reset all the flags back to initial state, except isFocused flag.
+    // The edit cancelled pill should regain focus
     const newPillsData = state.pillsData.map((pD) => {
       if (id === pD.id) {
         return {
           ...pD,
           id: _.uniqueId(ID_PREFIX),
           isEditing: false,
+          isFocused: true,
           isSelected: false,
           isInvalid: false,
           validationError: undefined

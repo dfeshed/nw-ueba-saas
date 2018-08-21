@@ -48,5 +48,6 @@ export default {
   expensivePill: '.query-pill.is-expensive',
   expensiveIndicator: '.rsa-icon-stopwatch-lined.is-expensive',
   focusHolderInput: '.focus-holder input',
-  activeQueryPill: '.query-pill.is-active'
+  activeQueryPill: '.query-pill.is-active',
+  focusedPill: '.query-pill.is-focused'
 };

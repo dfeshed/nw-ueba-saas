@@ -168,6 +168,11 @@ export const selectedPills = createSelector(
   }
 );
 
+export const focusedPill = createSelector(
+  [_pillsData],
+  (pillsData) => pillsData.find((pD) => pD.isFocused)
+);
+
 export const deselectedPills = createSelector(
   [_pillsData],
   (pillsData) => {

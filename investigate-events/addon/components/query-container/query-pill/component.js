@@ -1,7 +1,7 @@
 import { next, throttle, later } from '@ember/runloop';
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
-import computed, { and, empty } from 'ember-computed-decorators';
+import computed, { and, empty, alias } from 'ember-computed-decorators';
 import _ from 'lodash';
 
 import * as MESSAGE_TYPES from '../message-types';
@@ -20,7 +20,7 @@ const RESET_PROPS = {
 };
 
 export default Component.extend({
-  classNameBindings: [':query-pill', 'isActive', 'isInvalid', 'isSelected', 'isExpensive'],
+  classNameBindings: [':query-pill', 'isActive', 'isInvalid', 'isSelected', 'isExpensive', 'isFocused'],
   attributeBindings: ['title'],
   i18n: service(),
 
@@ -92,21 +92,30 @@ export default Component.extend({
   },
 
   /**
+   *
+   * Does the pill have focus?
+   * @public
+   */
+  @alias('pillData.isFocused')
+  isFocused: false,
+
+
+  /**
    * Update the component once validation returns
    * Is the pill a valid query?
    * @type {boolean}
    * @public
    */
-  @computed('pillData')
-  isInvalid: (pillData) => !!pillData && pillData.isInvalid,
+  @alias('pillData.isInvalid')
+  isInvalid: false,
 
   /**
    * Whether or not this pill is selected
    * @type {boolean}
    * @public
    */
-  @computed('pillData')
-  isSelected: (pillData) => !!pillData && pillData.isSelected,
+  @alias('pillData.isSelected')
+  isSelected: false,
 
   /**
    * Is this component being used to create a new pill
@@ -734,6 +743,7 @@ export default Component.extend({
     if (this.get('isExistingPill')) {
       pillData.id = this.get('pillData.id');
       pillData.isSelected = this.get('pillData.isSelected');
+      pillData.isFocused = this.get('pillData.isFocused');
     }
     // Check what type of meta this is. If it's a string value, add quotes
     if (meta && meta.format === 'Text' && value) {

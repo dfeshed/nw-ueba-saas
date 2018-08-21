@@ -1,11 +1,12 @@
 import * as ACTION_TYPES from './types';
 import { clientSideParseAndValidate, getMetaFormat } from './utils';
-import { selectedPills } from 'investigate-events/reducers/investigate/query-node/selectors';
+import { selectedPills, focusedPill } from 'investigate-events/reducers/investigate/query-node/selectors';
 import validateQueryFragment from './fetch/query-validation';
 import { getParamsForHashes, getHashForParams } from './fetch/query-hashes';
 
 import { transformTextToPillData, selectPillsFromPosition } from 'investigate-events/actions/utils';
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
+
 
 const _validateGuidedPill = (pillData, position) => {
   return (dispatch, getState) => {
@@ -54,13 +55,14 @@ export const _serverSideValidation = (pillData, position) => {
   };
 };
 
-export const addGuidedPill = ({ pillData, position }) => {
+export const addGuidedPill = ({ pillData, position, shouldAddFocusToNewPill }) => {
   return (dispatch) => {
     dispatch({
       type: ACTION_TYPES.ADD_GUIDED_PILL,
       payload: {
         pillData,
-        position
+        position,
+        shouldAddFocusToNewPill
       }
     });
     dispatch(_validateGuidedPill(pillData, position));
@@ -105,26 +107,40 @@ export const deleteSelectedGuidedPills = () => {
   };
 };
 
-export const deselectAllGuidedPills = () => {
+export const removeGuidedPillFocus = () => {
   return (dispatch, getState) => {
-    const pillData = selectedPills(getState());
-    if (pillData.length > 0) {
-      dispatch(deselectGuidedPills({ pillData }));
+    const pillData = focusedPill(getState());
+    if (pillData) {
+      dispatch({
+        type: ACTION_TYPES.REMOVE_FOCUS_GUIDED_PILL,
+        payload: { pillData }
+      });
     }
   };
 };
 
-export const deselectGuidedPills = ({ pillData }) => ({
+export const deselectAllGuidedPills = () => {
+  return (dispatch, getState) => {
+    const pillData = selectedPills(getState());
+    if (pillData.length > 0) {
+      dispatch(deselectGuidedPills({ pillData }, true));
+    }
+  };
+};
+
+export const deselectGuidedPills = ({ pillData }, shouldIgnoreFocus = false) => ({
   type: ACTION_TYPES.DESELECT_GUIDED_PILLS,
   payload: {
-    pillData
+    pillData,
+    shouldIgnoreFocus
   }
 });
 
-export const selectGuidedPills = ({ pillData }) => ({
+export const selectGuidedPills = ({ pillData }, shouldIgnoreFocus = false) => ({
   type: ACTION_TYPES.SELECT_GUIDED_PILLS,
   payload: {
-    pillData
+    pillData,
+    shouldIgnoreFocus
   }
 });
 
@@ -132,7 +148,7 @@ export const selectAllPillsTowardsDirection = (position, direction) => {
   return (dispatch, getState) => {
     const { investigate: { queryNode: { pillsData } } } = getState();
     const pillsToBeSelected = selectPillsFromPosition(pillsData, position, direction);
-    dispatch(selectGuidedPills({ pillData: pillsToBeSelected }));
+    dispatch(selectGuidedPills({ pillData: pillsToBeSelected }, true));
   };
 };
 

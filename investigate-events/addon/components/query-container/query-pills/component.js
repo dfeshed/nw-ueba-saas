@@ -22,6 +22,7 @@ import {
   deselectGuidedPills,
   editGuidedPill,
   openGuidedPillForEdit,
+  removeGuidedPillFocus,
   resetGuidedPill,
   selectGuidedPills,
   selectAllPillsTowardsDirection
@@ -48,12 +49,13 @@ const dispatchToActions = {
   deselectGuidedPills,
   deselectAllGuidedPills,
   openGuidedPillForEdit,
+  removeGuidedPillFocus,
   resetGuidedPill,
   selectAllPillsTowardsDirection
 };
 
 const QueryPills = RsaContextMenu.extend({
-  classNames: ['query-pills'],
+  tagName: null,
 
   classNameBindings: [
     'isPillOpen:pill-open',
@@ -194,6 +196,10 @@ const QueryPills = RsaContextMenu.extend({
           { id: 'query-pills' }
         );
       }
+    },
+
+    clickOutside() {
+      this.send('removeGuidedPillFocus');
     }
   },
 
@@ -260,8 +266,13 @@ const QueryPills = RsaContextMenu.extend({
    * @private
    */
   _pillCreated(pillData, position) {
+    let shouldAddFocusToNewPill = false;
+    // if true, it means a pill is being created in the middle of pills
+    if (this.get('isPillTriggerOpenForAdd')) {
+      shouldAddFocusToNewPill = true;
+    }
     this._pillsExited();
-    this.send('addGuidedPill', { pillData, position });
+    this.send('addGuidedPill', { pillData, position, shouldAddFocusToNewPill });
   },
 
   /**

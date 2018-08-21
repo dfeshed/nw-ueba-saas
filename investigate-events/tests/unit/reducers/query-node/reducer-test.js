@@ -402,6 +402,49 @@ test('SELECT_GUIDED_PILLS selects multiple pills', function(assert) {
   assert.ok(result.pillsData[1].isSelected === true, 'second pill is selected');
 });
 
+test('SELECT_GUIDED_PILLS selects pills and adds focus if needed', function(assert) {
+  const action = {
+    type: ACTION_TYPES.SELECT_GUIDED_PILLS,
+    payload: {
+      pillData: [{
+        id: '1',
+        foo: 'bar'
+      }]
+    }
+  };
+  const result = reducer(stateWithPills, action);
+
+  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
+  assert.ok(result.pillsData[0].isSelected === true, 'first pill is selected');
+  assert.ok(result.pillsData[0].isFocused === true, 'first pill is also focused');
+});
+
+test('SELECT_GUIDED_PILLS will switch focus from any other pill if needed', function(assert) {
+  const stateWithPillsFocused = new ReduxDataHelper()
+    .pillsDataPopulated()
+    .markFocused(['1'])
+    .build()
+    .investigate
+    .queryNode;
+
+  const action = {
+    type: ACTION_TYPES.SELECT_GUIDED_PILLS,
+    payload: {
+      pillData: [{
+        id: '2',
+        foo: 'bar'
+      }]
+    }
+  };
+  const result = reducer(stateWithPillsFocused, action);
+
+  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
+  // Now, first pill will no longer have focus
+  assert.ok(result.pillsData[0].isFocused === false, 'first pill does not have focus now');
+  // Second pill should now have focus
+  assert.ok(result.pillsData[1].isFocused === true, 'second pill is now focused');
+});
+
 test('DESELECT_GUIDED_PILLS deselects multiple pills', function(assert) {
   const stateWithPillsSelected = new ReduxDataHelper()
     .pillsDataPopulated()
@@ -429,6 +472,48 @@ test('DESELECT_GUIDED_PILLS deselects multiple pills', function(assert) {
   assert.ok(result.pillsData[1].isSelected === false, 'second pill is selected');
 });
 
+test('DESELECT_GUIDED_PILLS selects pills and adds focus if needed', function(assert) {
+  const action = {
+    type: ACTION_TYPES.DESELECT_GUIDED_PILLS,
+    payload: {
+      pillData: [{
+        id: '1',
+        foo: 'bar'
+      }]
+    }
+  };
+  const result = reducer(stateWithPills, action);
+
+  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
+  assert.ok(result.pillsData[0].isFocused === true, 'first pill is also focused');
+});
+
+test('DESELECT_GUIDED_PILLS will switch focus from any other pill if needed', function(assert) {
+  const stateWithPillsFocused = new ReduxDataHelper()
+    .pillsDataPopulated()
+    .markFocused(['1'])
+    .build()
+    .investigate
+    .queryNode;
+
+  const action = {
+    type: ACTION_TYPES.DESELECT_GUIDED_PILLS,
+    payload: {
+      pillData: [{
+        id: '2',
+        foo: 'bar'
+      }]
+    }
+  };
+  const result = reducer(stateWithPillsFocused, action);
+
+  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
+  // Now, first pill will no longer have focus
+  assert.ok(result.pillsData[0].isFocused === false, 'first pill does not have focus now');
+  // Second pill should now have focus
+  assert.ok(result.pillsData[1].isFocused === true, 'second pill is now focused');
+});
+
 test('OPEN_GUIDED_PILL_FOR_EDIT marks pill for editing', function(assert) {
   const state = new ReduxDataHelper()
     .pillsDataPopulated()
@@ -449,6 +534,29 @@ test('OPEN_GUIDED_PILL_FOR_EDIT marks pill for editing', function(assert) {
 
   assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
   assert.ok(result.pillsData[0].isEditing === true, 'first pill is selected');
+});
+
+test('OPEN_GUIDED_PILL_FOR_EDIT removes focus from that pill', function(assert) {
+  const state = new ReduxDataHelper()
+    .pillsDataPopulated()
+    .markFocused(['1'])
+    .build()
+    .investigate
+    .queryNode;
+
+  const action = {
+    type: ACTION_TYPES.OPEN_GUIDED_PILL_FOR_EDIT,
+    payload: {
+      pillData: {
+        id: '1',
+        foo: 'bar'
+      }
+    }
+  };
+  const result = reducer(state, action);
+
+  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
+  assert.ok(result.pillsData[0].isFocused === false, 'Removes focus from the pill');
 });
 
 test('INITIALIZE_INVESTIGATE clears out all pills on hard reset', function(assert) {
@@ -573,6 +681,32 @@ test('RESET_GUIDED_PILL resets the pill', function(assert) {
 
   assert.ok(firstPill.id !== state.pillsData[0].id, 'id should have changed');
   assert.ok(firstPill.isEditing !== state.pillsData[0].isEditing, 'should no longer be editng');
+});
+
+test('RESET_GUIDED_PILL resets the pill, and always adds focus to it', function(assert) {
+  const state = new ReduxDataHelper()
+    .pillsDataPopulated()
+    .markEditing(['1'])
+    .build()
+    .investigate
+    .queryNode;
+
+  const action = {
+    type: ACTION_TYPES.RESET_GUIDED_PILL,
+    payload: {
+      pillData: {
+        id: '1',
+        foo: 'bar'
+      }
+    }
+  };
+  const result = reducer(state, action);
+
+  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
+  const [ firstPill ] = result.pillsData;
+
+  assert.ok(firstPill.id !== state.pillsData[0].id, 'id should have changed');
+  assert.ok(firstPill.isFocused === true, 'should have focus');
 });
 
 

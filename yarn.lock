@@ -3830,12 +3830,13 @@ ember-cli@3.1.4:
     watch-detector "^0.1.0"
     yam "^0.0.24"
 
-ember-click-outside@0.1.6:
-  version "0.1.6"
-  resolved "https://registry.npmjs.org/ember-click-outside/-/ember-click-outside-0.1.6.tgz#b56f14277351cccd84edaa78bcd399d71393871a"
+ember-click-outside@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/ember-click-outside/-/ember-click-outside-1.0.0.tgz#068f910a9c93ee9ffda419925c92e23fd9c25ba3"
   dependencies:
-    ember-cli-babel "^5.1.7"
-    ember-cli-htmlbars "^1.0.10"
+    ember-cli-babel "^6.6.0"
+    ember-cli-htmlbars "^2.0.1"
+    ember-native-dom-helpers "^0.5.10"
 
 ember-code-snippet@^1.9.0:
   version "1.9.0"
@@ -4089,7 +4090,7 @@ ember-moment@7.7.0:
     ember-getowner-polyfill "^2.0.1"
     ember-macro-helpers "^0.17.0"
 
-ember-native-dom-helpers@^0.5.4:
+ember-native-dom-helpers@^0.5.10, ember-native-dom-helpers@^0.5.4:
   version "0.5.10"
   resolved "https://registry.npmjs.org/ember-native-dom-helpers/-/ember-native-dom-helpers-0.5.10.tgz#9c7172e4ddfa5dd86830c46a936e2f8eca3e5896"
   dependencies:

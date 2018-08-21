@@ -30,6 +30,7 @@ const DEFAULT_PILLS_DATA = [{
   operator: '=',
   value: '\'x\'',
   isEditing: false,
+  isFocused: false,
   isInvalid: false,
   isSelected: false,
   complexFilterText: undefined
@@ -39,6 +40,7 @@ const DEFAULT_PILLS_DATA = [{
   operator: '=',
   value: '\'y\'',
   isEditing: false,
+  isFocused: false,
   isInvalid: false,
   isSelected: false,
   complexFilterText: undefined
@@ -56,21 +58,23 @@ const COMPLEX_PILL_DATA = [{
 }];
 
 const INVALID_PILL_DATA = [{
-  id: 1,
+  id: '1',
   meta: 'ip.proto',
   operator: '=',
   value: '\'boom\'',
   isEditing: false,
   isInvalid: false,
   isSelected: false,
+  isFocused: false,
   complexFilterText: undefined
 }, {
-  id: 2,
+  id: '2',
   meta: 'starttime',
   operator: '=',
   value: '\'boom\'',
   isEditing: false,
   isInvalid: true,
+  isFocused: false,
   validationError: 'something not right',
   isSelected: false,
   complexFilterText: undefined
@@ -349,6 +353,20 @@ export default class DataHelper {
       ...pD,
       isEditing: pillIds.includes(pD.id)
     }));
+    return this;
+  }
+
+  markFocused(pillIds = []) {
+    this.state.queryNode.pillsData = this.state.queryNode.pillsData.map((pD) => {
+      if (pillIds.includes(pD.id)) {
+        pD = {
+          ...pD,
+          isFocused: true
+        };
+      }
+
+      return pD;
+    });
     return this;
   }
 }

@@ -246,6 +246,9 @@
       background-color: background-color(secondary);
       border-color: border-color(secondary);
     }
+    &.is-focused {
+      border-color: border-color(accentTwo);
+    }
     > div.is-expanded {
       flex-grow: 100;
       input {
