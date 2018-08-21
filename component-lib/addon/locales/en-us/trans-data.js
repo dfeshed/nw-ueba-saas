@@ -2341,6 +2341,18 @@ export default {
         message: {
           noResultsMessage: 'No Kernel Hooks information was found'
         }
+      },
+      registryDiscrepancies: {
+        hive: 'Hive',
+        reason: 'Reason',
+        registryPath: 'Registry Path',
+        rawType: 'Raw Type',
+        rawData: 'Raw Data',
+        apiType: 'Api Type',
+        apiData: 'Api Data',
+        message: {
+          noResultsMessage: 'No Registry Discrepancy information was found'
+        }
       }
     },
     tabs: {
@@ -2366,7 +2378,8 @@ export default {
       anomalies: 'Anomalies',
       hooks: 'Image Hooks',
       threads: 'Suspicious Threads',
-      kernelHooks: 'Kernel Hooks'
+      kernelHooks: 'Kernel Hooks',
+      registryDiscrepancies: 'Registry Discrepancies'
     },
     context: {
       score: 'Score',
@@ -2493,7 +2506,8 @@ export default {
         anomalies: {
           hooks: 'image hooks',
           threads: 'suspicious threads',
-          kernelHooks: 'kernel hooks'
+          kernelHooks: 'kernel hooks',
+          registryDiscrepancies: 'Registry Discrepancies'
         },
         files: 'files',
         drivers: 'drivers',

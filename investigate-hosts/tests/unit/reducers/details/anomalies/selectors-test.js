@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { anomaliesData } from '../../../state/state';
+import { anomaliesData, registryDiscrepanciesData } from '../../../state/state';
 import {
   fileContextImageHooksSchema,
   fileContextKernelHooksSchema,
@@ -19,7 +19,8 @@ import {
   threads,
   isThreadsDataLoading,
   suspiciousThreadsData,
-  selectedThreadsFileProperties
+  selectedThreadsFileProperties,
+  registryDiscrepancies
 } from 'investigate-hosts/reducers/details/anomalies/selectors';
 
 module('Unit | Selectors | anomalies');
@@ -550,4 +551,34 @@ test('selectedKernelHooksFileProperties returns the selected file for properties
   }));
 
   assert.equal(result.fileId, '5b3f348cb249594f465125f2');
+});
+
+test('registryDiscrepancies returns the processed registry discrepancies', function(assert) {
+  const result = registryDiscrepancies(Immutable.from({
+    endpoint: {
+      overview: {
+        hostDetails: {
+          machine: { ...registryDiscrepanciesData }
+        }
+      },
+      explore: {
+        selectedTab: null
+      },
+      datatable: {
+        sortConfig: {
+          autoruns: null,
+          services: null,
+          tasks: null,
+          libraries: null,
+          drivers: null,
+          kernelHooks: {
+            isDescending: false,
+            field: 'dllFileName'
+          }
+        }
+      }
+    }
+  }));
+
+  assert.equal(result.length, 5);
 });

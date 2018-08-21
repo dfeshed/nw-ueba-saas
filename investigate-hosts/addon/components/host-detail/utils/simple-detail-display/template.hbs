@@ -1,4 +1,4 @@
-<box xs='9'>
+<box class="{{datatableWidth}}">
   {{host-detail/utils/datatable
     status=detailDisplayInputs.status
     items=detailDisplayInputs.tableItems
@@ -11,10 +11,12 @@
     customSort=detailDisplayInputs.customSort
     getPagedItems=detailDisplayInputs.getPagedItems}}
 </box>
-<box xs='3'>
-  {{host-detail/utils/file-property-panel
-    title=detailDisplayInputs.propertyPanelTitle
-    localeNameSpace=detailDisplayInputs.localeNameSpace
-    config=detailDisplayInputs.propertyConfig
-    data=detailDisplayInputs.propertyData}}
-</box>
+{{#if detailDisplayInputs.propertyConfig}}
+  <box xs='3'>
+    {{host-detail/utils/file-property-panel
+      title=detailDisplayInputs.propertyPanelTitle
+      localeNameSpace=detailDisplayInputs.localeNameSpace
+      config=detailDisplayInputs.propertyConfig
+      data=detailDisplayInputs.propertyData}}
+  </box>
+{{/if}}

@@ -12,7 +12,8 @@ const dataInitialState = Immutable.from({
     drivers: null,
     imageHooks: null,
     kernelHooks: null,
-    threads: null
+    threads: null,
+    registryDiscrepancy: null
   }
 });
 

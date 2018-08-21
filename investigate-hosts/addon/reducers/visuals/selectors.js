@@ -35,6 +35,11 @@ const ANOMALIES_TABS = [
     label: 'investigateHosts.tabs.threads',
     name: 'THREADS',
     componentClass: 'host-detail/anomalies/threads'
+  },
+  {
+    label: 'investigateHosts.tabs.registryDiscrepancies',
+    name: 'REGISTRYDISCREPANCY',
+    componentClass: 'host-detail/anomalies/registry-discrepancies'
   }
 ];
 
@@ -106,7 +111,7 @@ const HOST_DETAILS_TABS = [
 const { createSelector } = reselect;
 const _activeHostDetailTab = (state) => state.endpoint.visuals.activeHostDetailTab || 'OVERVIEW';
 const _activeAutorunTab = (state) => state.endpoint.visuals.activeAutorunTab || 'AUTORUNS';
-const _activeAnomaliesTab = (state) => state.endpoint.visuals.activeAnomaliesTab || 'HOOKS';
+const _activeAnomaliesTab = (state) => state.endpoint.visuals.activeAnomaliesTab || 'IMAGEHOOKS';
 const _activeHostPropertyTab = (state) => state.endpoint.visuals.activeHostPropertyTab || 'HOST';
 const _activeDataSourceTab = (state) => state.endpoint.visuals.activeDataSourceTab || 'ALERT';
 const _context = (state) => state.endpoint.visuals.lookupData;

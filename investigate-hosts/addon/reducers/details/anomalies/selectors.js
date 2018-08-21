@@ -6,6 +6,7 @@ const _imageHooksLoadingStatus = (state) => state.endpoint.anomalies.imageHooksL
 const _threadsLoadingStatus = (state) => state.endpoint.anomalies.threadsLoadingStatus;
 const _kernelHooksLoadingStatus = (state) => state.endpoint.anomalies.kernelHooksLoadingStatus;
 const _imageHooksObject = (state) => state.endpoint.anomalies.imageHooks;
+const _registryDiscrepanciesData = (state) => state.endpoint.overview.hostDetails.machine.registryDiscrepancies;
 const _threadsObject = (state) => state.endpoint.anomalies.threads;
 const _kernelHooksObject = (state) => state.endpoint.anomalies.kernelHooks;
 const _selectedRowId = (state) => state.endpoint.anomalies.selectedRowId;
@@ -42,6 +43,26 @@ export const kernelHooks = createSelector(
   (kernelHooksObject, selectedTab, sortConfig) => getValues(selectedTab, 'KERNELHOOKS', kernelHooksObject, sortConfig)
 );
 
+const _getRegistryDiscrepanciesData = (registryDiscrepanciesData) => {
+  return registryDiscrepanciesData.map((item) => {
+    const { dataMismatch = {} } = item;
+    return {
+      ...item,
+      ...dataMismatch
+    };
+  });
+};
+
+export const registryDiscrepancies = createSelector(
+  [ _registryDiscrepanciesData, _selectedTab, _sortConfig ],
+  (registryDiscrepanciesData, selectedTab, sortConfig) => {
+    if (registryDiscrepanciesData && registryDiscrepanciesData.length) {
+      const registryDiscrepanciesProcessedData = _getRegistryDiscrepanciesData(registryDiscrepanciesData);
+      return getValues(selectedTab, 'REGISTRYDISCREPANCY', registryDiscrepanciesProcessedData, sortConfig);
+    }
+    return [];
+  }
+);
 
 const _getKernelHooksObjs = (hooksDataSource) => {
   return hooksDataSource.map((item) => {

@@ -41,7 +41,9 @@ const HostDetailsDataTable = Component.extend({
 
     toggleSelectedRow(item, index, e, table) {
       table.set('selectedIndex', index);
-      this.sendAction('selectRowAction', item);
+      if (this.get('selectRowAction')) {
+        this.sendAction('selectRowAction', item);
+      }
     }
   }
 });
