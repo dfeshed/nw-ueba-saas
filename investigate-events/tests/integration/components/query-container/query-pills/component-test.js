@@ -33,12 +33,11 @@ const openGuidedPillForEditSpy = sinon.spy(guidedCreators, 'openGuidedPillForEdi
 const resetGuidedPillSpy = sinon.spy(guidedCreators, 'resetGuidedPill');
 const selectAllPillsTowardsDirectionSpy = sinon.spy(guidedCreators, 'selectAllPillsTowardsDirection');
 const deleteSelectedGuidedPillsSpy = sinon.spy(guidedCreators, 'deleteSelectedGuidedPills');
-const removeGuidedPillFocusSpy = sinon.spy(guidedCreators, 'removeGuidedPillFocus');
 
 const spys = [
   newActionSpy, deleteActionSpy, editGuidedPillSpy, selectActionSpy,
   deselectActionSpy, openGuidedPillForEditSpy, resetGuidedPillSpy,
-  selectAllPillsTowardsDirectionSpy, deleteSelectedGuidedPillsSpy, removeGuidedPillFocusSpy
+  selectAllPillsTowardsDirectionSpy, deleteSelectedGuidedPillsSpy
 ];
 
 const allPillsAreClosed = (assert) => {
@@ -171,7 +170,7 @@ module('Integration | Component | query-pills', function(hooks) {
   });
 
   test('Creating a focused pill and clicking outside the query-pills component should remove focus', async function(assert) {
-    assert.expect(5);
+    assert.expect(4);
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -180,8 +179,7 @@ module('Integration | Component | query-pills', function(hooks) {
 
     this.set('didClick', () => {
       assert.ok('fired once');
-      return settled().then(() => {  // the action is triggered immediately. So need to wait before asserting
-        assert.equal(removeGuidedPillFocusSpy.callCount, 1, 'action creator to remove focus was called once');
+      return settled().then(() => {
         assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'should have no focused pill');
       });
     });
@@ -1309,7 +1307,6 @@ module('Integration | Component | query-pills', function(hooks) {
       .language()
       .canQueryGuided()
       .pillsDataPopulated()
-      .markFocused(['1'])
       .build();
     const done = assert.async();
     await render(hbs`
@@ -1319,19 +1316,123 @@ module('Integration | Component | query-pills', function(hooks) {
     `);
 
     await leaveNewPillTemplate();
+    let metas = findAll(PILL_SELECTORS.meta);
+    await click(`#${metas[0].id}`); // select the first pill
 
     assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'should have 1 focused pill');
     const pillText = find(PILL_SELECTORS.focusedPill).title;
     assert.equal(pillText, 'a = \'x\'', 'Focused expected on the first pill');
 
-    const metas = findAll(PILL_SELECTORS.meta);
-    await click(`#${metas[1].id}`); // click on the second pill
+    metas = findAll(PILL_SELECTORS.meta);
+    await click(`#${metas[1].id}`); // select the second pill
 
     return settled().then(async () => {
       assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'should still have 1 focused pill');
       const pillText = find(PILL_SELECTORS.focusedPill).title;
       assert.equal(pillText, 'b = \'y\'', 'Focused expected on the first pill');
       done();
+    });
+  });
+
+  test('If a pill is opened for edit and submitted, it should get focus', async function(assert) {
+    assert.expect(2);
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await leaveNewPillTemplate();
+
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'there should be no focused pill');
+
+    // pass flag to skip extra events because they fire when they
+    // shouldn't as dispatchEvent is sync
+    doubleClick(PILL_SELECTORS.queryPill, true);
+
+    return settled().then(async () => {
+      await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', ENTER_KEY);
+      assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'should have 1 focused pill');
+    });
+  });
+
+  test('If a pill is opened for edit and escaped, it should get focus', async function(assert) {
+    assert.expect(2);
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await leaveNewPillTemplate();
+
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'there should be no focused pill');
+
+    // pass flag to skip extra events because they fire when they
+    // shouldn't as dispatchEvent is sync
+    doubleClick(PILL_SELECTORS.queryPill, true);
+
+    return settled().then(async () => {
+      await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', ESCAPE_KEY);
+      assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'should have 1 focused pill');
+    });
+  });
+
+  test('Clicking anywhere on the new pill trigger or the new pill template should remove focus from any pill', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await leaveNewPillTemplate();
+
+    const metas = findAll(PILL_SELECTORS.meta);
+    await click(`#${metas[0].id}`); // add focus to the first pill
+
+
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'there should be 1 focused pill');
+    await click(PILL_SELECTORS.newPillTrigger);
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'should have no focused pill');
+  });
+
+  test('Deleting a pill removes focus from any pill that has it', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`{{query-container/query-pills isActive=true }}`);
+    await leaveNewPillTemplate();
+
+    const metas = findAll(PILL_SELECTORS.meta);
+    await click(`#${metas[1].id}`); // add focus to the second pill
+
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'should have 1 focused pill');
+
+    await click(PILL_SELECTORS.deletePill); // delete the first pill
+
+    return settled().then(async () => {
+      assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'should have no focused pill');
     });
   });
 });

@@ -403,7 +403,8 @@ export default handleActions({
   [ACTION_TYPES.EDIT_GUIDED_PILL]: (state, { payload }) => {
     const newPillData = {
       ...payload.pillData,
-      isEditing: false
+      isEditing: false,
+      isFocused: true
     };
     return _handlePillUpdate(state, newPillData);
   },
@@ -428,9 +429,10 @@ export default handleActions({
   },
 
   [ACTION_TYPES.DELETE_GUIDED_PILLS]: (state, { payload }) => {
+    const focusRemovedState = _removeFocus(state);
     const { pillData } = payload;
     const deleteIds = pillData.map((pD) => pD.id);
-    const newPills = state.pillsData.filter((pD) => !deleteIds.includes(pD.id));
+    const newPills = focusRemovedState.pillsData.filter((pD) => !deleteIds.includes(pD.id));
     return state.set('pillsData', newPills);
   },
 

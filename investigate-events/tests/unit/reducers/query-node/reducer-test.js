@@ -278,6 +278,30 @@ test('DELETE_GUIDED_PILLS removes multiple pills', function(assert) {
   assert.equal(result.pillsData.length, 0, 'pillsData is the correct length');
 });
 
+test('DELETE_GUIDED_PILLS removes the pill provided and removes focus from any other pill that has it', function(assert) {
+  const stateWithFocusedPill = new ReduxDataHelper()
+    .pillsDataPopulated()
+    .markFocused(['1'])
+    .build()
+    .investigate
+    .queryNode;
+
+  const action = {
+    type: ACTION_TYPES.DELETE_GUIDED_PILLS,
+    payload: {
+      pillData: [{
+        id: '2',
+        foo: 1234
+      }]
+    }
+  };
+  const result = reducer(stateWithFocusedPill, action);
+
+  assert.equal(result.pillsData.length, 1, 'pillsData is the correct length');
+  assert.equal(result.pillsData[0].id, 1, 'pillsData still has an item');
+  assert.ok(result.pillsData[0].isFocused === false, 'The pill that had focus no longer has it');
+});
+
 test('EDIT_GUIDED_PILL edits first pill provided', function(assert) {
   const action = {
     type: ACTION_TYPES.EDIT_GUIDED_PILL,
@@ -319,6 +343,23 @@ test('EDIT_GUIDED_PILL edits last pill provided', function(assert) {
   assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
   assert.ok(result.pillsData[1].id !== '2', 'pillsData id has changed');
   assert.equal(result.pillsData[1].foo, 8907, 'pillsData item had its data updated');
+});
+
+test('EDIT_GUIDED_PILL adds focus to the edited pill', function(assert) {
+  const action = {
+    type: ACTION_TYPES.EDIT_GUIDED_PILL,
+    payload: {
+      pillData: {
+        id: '2',
+        foo: 2498
+      }
+    }
+  };
+  const result = reducer(stateWithPills, action);
+
+  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
+  assert.ok(result.pillsData[1].id !== '2', 'pillsData id has changed');
+  assert.ok(result.pillsData[1].isFocused == true, 'pill received focus');
 });
 
 test('VALIDATE_GUIDED_PILL reducer updates state when validation fails', function(assert) {

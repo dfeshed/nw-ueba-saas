@@ -253,9 +253,12 @@ const QueryPills = RsaContextMenu.extend({
 
   /**
    * Manages side effects to entering a pill for edit/add
+   * If entering a pill for edit or add, focus should be removed from whatever pill has it
+   * And no pill should be selected
    * @private
    */
   _pillEntered() {
+    this.send('removeGuidedPillFocus');
     this.send('deselectAllGuidedPills');
   },
 
