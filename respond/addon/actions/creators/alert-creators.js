@@ -101,8 +101,9 @@ const deleteItem = (entityIds, callbacks = callbacksDefault) => {
       meta: {
         onSuccess: (response) => {
           callbacks.onSuccess(response);
-          dispatch(updateAlertNames(itemsFilters));
-          if (reloadItems) {
+          if (itemsFilters['alert.name']) {
+            dispatch(updateAlertNames(itemsFilters));
+          } else if (reloadItems) {
             dispatch(getItems());
           }
         },
@@ -116,7 +117,7 @@ const deleteItem = (entityIds, callbacks = callbacksDefault) => {
 
 const filterAlertNames = (validNames, itemsFilters) => {
   let validFilters = [];
-  if (!!validNames && !!itemsFilters && itemsFilters['alert.name']) {
+  if (validNames) {
     validNames = validNames.filter((name) => name !== null && typeof(name) !== 'undefined');
     validFilters = itemsFilters['alert.name'].filter((item) => validNames.indexOf(item) >= 0);
   }
@@ -130,23 +131,10 @@ const updateAlertNames = (itemsFilters) => {
       meta: {
         onSuccess: (response) => {
           const validFilters = filterAlertNames(response.data, itemsFilters);
-          const reload = itemsFilters['alert.name'].length > 0 && validFilters.length == 0;
-          dispatch(updateFilterOnDeleteAlerts({ 'alert.name': validFilters }, reload));
+          dispatch(updateFilter({ 'alert.name': validFilters }));
         }
       }
     });
-  };
-};
-
-const updateFilterOnDeleteAlerts = (filters, reload) => {
-  return (dispatch) => {
-    dispatch({
-      type: ACTION_TYPES.UPDATE_ALERT_FILTERS,
-      payload: filters
-    });
-    if (reload) {
-      dispatch(getItems());
-    }
   };
 };
 
