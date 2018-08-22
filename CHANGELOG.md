@@ -1,3 +1,32 @@
+# [9.1.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v9.1.0)
+## Features
+* [ASOC-51573](https://bedfordjira.na.rsa.net/browse/ASOC-51573):&emsp;Single Pill Creation - Coming From Classic
+* [ASOC-54120](https://bedfordjira.na.rsa.net/browse/ASOC-54120):&emsp;Remove seconds from time selector
+* [ASOC-55116](https://bedfordjira.na.rsa.net/browse/ASOC-55116):&emsp;Pill Edit - Submit Edit
+* [ASOC-55117](https://bedfordjira.na.rsa.net/browse/ASOC-55117):&emsp;Pill Edit - UX Consideration
+* [ASOC-58472](https://bedfordjira.na.rsa.net/browse/ASOC-58472):&emsp;Inter-Pill Keyboard Interaction - Pill Selection
+* [ASOC-58821](https://bedfordjira.na.rsa.net/browse/ASOC-58821):&emsp;Analyst can view & query File Reputation Results for the File in the Files UI
+* [ASOC-58822](https://bedfordjira.na.rsa.net/browse/ASOC-58822):&emsp;Filter File Hashes that are sent for analysis to RL
+* [ASOC-58905](https://bedfordjira.na.rsa.net/browse/ASOC-58905):&emsp;Change Correlation server to ESA Correlation
+* [ASOC-58964](https://bedfordjira.na.rsa.net/browse/ASOC-58964):&emsp;Query With Selected Filters
+* [ASOC-58965](https://bedfordjira.na.rsa.net/browse/ASOC-58965):&emsp;Query With Selected Filters in new Tab
+* [ASOC-59085](https://bedfordjira.na.rsa.net/browse/ASOC-59085):&emsp;Single Pill Creation - Enter Key Submission
+* [ASOC-59111](https://bedfordjira.na.rsa.net/browse/ASOC-59111):&emsp;Able to view reputation status of filehash in flagging(hover over)
+* [ASOC-59122](https://bedfordjira.na.rsa.net/browse/ASOC-59122):&emsp;Context Hub APIs to accepts a batch of file hashes and update ES
+* [ASOC-59206](https://bedfordjira.na.rsa.net/browse/ASOC-59206):&emsp;Notification of change in RL Status of file and Update ES DB
+* [ASOC-59224](https://bedfordjira.na.rsa.net/browse/ASOC-59224):&emsp;Upgrade to ember-cli & ember v3.3
+* [ASOC-59665](https://bedfordjira.na.rsa.net/browse/ASOC-59665):&emsp;Integrate UEBA Alert View in Incident Details
+* [ASOC-59799](https://bedfordjira.na.rsa.net/browse/ASOC-59799):&emsp;Event Selection - Single Selection
+* [ASOC-59907](https://bedfordjira.na.rsa.net/browse/ASOC-59907):&emsp;Remove Text Analysis for Event type of Endpoint
+* [ASOC-59909](https://bedfordjira.na.rsa.net/browse/ASOC-59909):&emsp;Display Lengthy Meta in Event Analysis for Endpoint
+* [ASOC-60229](https://bedfordjira.na.rsa.net/browse/ASOC-60229):&emsp;Telemetry - Archer
+* [ASOC-60255](https://bedfordjira.na.rsa.net/browse/ASOC-60255):&emsp;Risk score server should be available
+* [ASOC-60397](https://bedfordjira.na.rsa.net/browse/ASOC-60397):&emsp;Risk score badge component for UI
+* [ASOC-60398](https://bedfordjira.na.rsa.net/browse/ASOC-60398):&emsp;Alert tab component for UI
+* [ASOC-61135](https://bedfordjira.na.rsa.net/browse/ASOC-61135):&emsp;XSS vulnerablity for Context panel on navigate
+* [ASOC-61560](https://bedfordjira.na.rsa.net/browse/ASOC-61560):&emsp;Allow the analyst to view UEBA information from incident detail
+
+
 # [9.0.0](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/v9.0.0)
 ## Features
 * [ASOC-55115](https://bedfordjira.na.rsa.net/browse/ASOC-55115):&emsp;Pill Edit - ESC
