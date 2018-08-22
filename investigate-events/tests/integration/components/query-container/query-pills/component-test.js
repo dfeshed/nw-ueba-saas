@@ -682,6 +682,21 @@ module('Integration | Component | query-pills', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.complexPill).length, 1, 'A complex pill should be present');
   });
 
+  test('clicking a complex pill should give it focus', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataComplex()
+      .build();
+
+    await render(hbs`{{query-container/query-pills isActive=true}}`);
+    await leaveNewPillTemplate();
+    assert.equal(findAll(PILL_SELECTORS.complexPill).length, 1, 'A complex pill should be present');
+    await click(PILL_SELECTORS.complexPill);
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'A complex pill should be focused');
+
+  });
+
   test('Right clicking on a selected pill should trigger contextMenu event AND not trigger the same when not selected', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
@@ -1432,6 +1447,116 @@ module('Integration | Component | query-pills', function(hooks) {
     await click(PILL_SELECTORS.deletePill); // delete the first pill
 
     return settled().then(async () => {
+      assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'should have no focused pill');
+    });
+  });
+
+  test('Pressing escape when you have a focused pill should remove focus', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+    await leaveNewPillTemplate();
+    const metas = findAll(PILL_SELECTORS.meta);
+    await click(`#${metas[0].id}`);
+    await click(`#${metas[1].id}`);
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Should be just 1 pill focused');
+
+    // Clicking ESC while focus is anywhere in the browser will deselect all pills
+    await triggerKeyEvent(window, 'keydown', ESCAPE_KEY);
+
+    return settled().then(() => {
+      assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'Should be no pill focused');
+    });
+  });
+
+  test('ComplexPill - Pressing escape when you have a focused pill should remove focus', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataComplex()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+    await leaveNewPillTemplate();
+    await click(PILL_SELECTORS.complexPill);
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Should be just 1 pill focused');
+
+    // Clicking ESC while focus is anywhere in the browser will deselect all pills
+    await triggerKeyEvent(window, 'keydown', ESCAPE_KEY);
+
+    return settled().then(() => {
+      assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'Should be no pill focused');
+    });
+  });
+
+  test('ComplexPill - Pressing escape from an edit should leave focus on that pill, pressing it again should remove focus', async function(assert) {
+    assert.expect(3);
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataComplex()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await leaveNewPillTemplate();
+
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'there should be no focused pill');
+
+    // pass flag to skip extra events because they fire when they
+    // shouldn't as dispatchEvent is sync
+    doubleClick(PILL_SELECTORS.complexPill, true);
+
+    return settled().then(async () => {
+      await triggerKeyEvent(PILL_SELECTORS.complexPillInput, 'keydown', ESCAPE_KEY);
+      assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'should have 1 focused pill');
+      await triggerKeyEvent(PILL_SELECTORS.complexPill, 'keydown', ESCAPE_KEY);
+      assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'should have no focused pill');
+    });
+  });
+
+  test('Pressing escape from an edit should leave focus on that pill, pressing it again should remove focus', async function(assert) {
+    assert.expect(3);
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await leaveNewPillTemplate();
+
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'there should be no focused pill');
+
+    // pass flag to skip extra events because they fire when they
+    // shouldn't as dispatchEvent is sync
+    doubleClick(PILL_SELECTORS.queryPill, true);
+
+    return settled().then(async () => {
+      await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', ESCAPE_KEY);
+      assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'should have 1 focused pill');
+      await triggerKeyEvent(PILL_SELECTORS.queryPill, 'keydown', ESCAPE_KEY);
       assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'should have no focused pill');
     });
   });

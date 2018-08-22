@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { later } from '@ember/runloop';
-import computed from 'ember-computed-decorators';
+import computed, { alias } from 'ember-computed-decorators';
 import { inject as service } from '@ember/service';
 
 import * as MESSAGE_TYPES from '../message-types';
@@ -8,7 +8,7 @@ import { isEscape, isEnter } from 'investigate-events/util/keys';
 
 export default Component.extend({
   classNames: ['complex-pill'],
-  classNameBindings: ['isActive', 'isSelected'],
+  classNameBindings: ['isActive', 'isSelected', 'isFocused'],
   tagName: 'div',
   attributeBindings: ['title'],
   i18n: service(),
@@ -28,6 +28,14 @@ export default Component.extend({
 
   // Whether or not a double click has fired
   doubleClickFired: false,
+
+  /**
+   *
+   * Does the pill have focus?
+   * @public
+   */
+  @alias('pillData.isFocused')
+  isFocused: false,
 
   /**
    * Whether or not this pill is selected

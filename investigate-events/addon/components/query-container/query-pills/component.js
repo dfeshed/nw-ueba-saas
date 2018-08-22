@@ -86,6 +86,9 @@ const QueryPills = RsaContextMenu.extend({
   // Is a pill trigger open for add?
   isPillTriggerOpenForAdd: false,
 
+  // Was a pill escaped in the middle of an edit?
+  isPillEditCancelled: false,
+
   contextMenu({ target }) {
     const currentClass = target.classList.contains('is-selected');
     const parentClass = target.parentElement.classList.contains('is-selected');
@@ -129,8 +132,9 @@ const QueryPills = RsaContextMenu.extend({
         // Do not want to check canQueryGuided because user might
         // want to execute the same query in new tab
         _this.get('executeQuery')(true);
-        // deselect all the pills. Can't trigger this first, as
+        // deselect all the pills and remove focus. Can't trigger this first, as
         // route action picks up selected pills from state to executeQ
+        _this.send('removeGuidedPillFocus');
         _this.send('deselectAllGuidedPills');
       }
     },
@@ -382,12 +386,26 @@ const QueryPills = RsaContextMenu.extend({
 
   _pillEditCancelled(data) {
     this._pillsExited();
+
+    // Set this flag to true as we'd want the global
+    // window escape listener to ignore this event
+    // and still retain focus
+    this.set('isPillEditCancelled', true);
     this.send('resetGuidedPill', data);
   },
 
+  // If escape is pressed, deselect all pills
+  // and remove focus from any pill
   _escapeListener(e) {
-    if (isEscape(e) && this.get('selectedPills').length > 0) {
+    if (isEscape(e)) {
       this.send('deselectAllGuidedPills');
+      if (!this.get('isPillEditCancelled')) {
+        this.send('removeGuidedPillFocus');
+      } else {
+        // Toggle this flag again so the consecutive escape can
+        // remove focus
+        this.set('isPillEditCancelled', false);
+      }
     }
   }
 });

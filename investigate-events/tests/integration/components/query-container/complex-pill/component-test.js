@@ -124,6 +124,26 @@ module('Integration | Component | complex-pill', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 1, 'proper class present');
   });
 
+  test('has proper class when pill is focused', async function(assert) {
+    assert.expect(1);
+
+    this.set('handleMessage', () => {});
+    this.set('pillData', {
+      complexFilterText: 'FOOOOOOOO',
+      isFocused: true
+    });
+    await render(hbs`
+      {{query-container/complex-pill
+        position=0
+        isActive=false
+        pillData=pillData
+        sendMessage=(action handleMessage)
+      }}
+    `);
+
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'proper class present');
+  });
+
   test('sends message to be selected when clicked', async function(assert) {
     assert.expect(3);
 

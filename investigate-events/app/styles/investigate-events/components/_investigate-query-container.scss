@@ -370,6 +370,10 @@
     border-color: border-color(secondary);
   }
 
+  &.is-focused {
+    border-color: border-color(accentTwo);
+  }
+
   &.is-active {
     border-color: transparent;
     padding: 0;
