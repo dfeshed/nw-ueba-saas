@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
 import { fileCountForDisplay, serviceList, checksums } from 'investigate-files/reducers/file-list/selectors';
-import { selectedFilterId } from 'investigate-files/reducers/file-filter/selectors';
+import { selectedFilterId, savedFilter } from 'investigate-files/reducers/file-filter/selectors';
 import {
   exportFileAsCSV,
   getAllServices,
@@ -23,7 +23,8 @@ const stateToComputed = (state) => ({
   filesFilters: state.files.filter.savedFilterList,
   servers: state.endpointServer,
   serverId: state.endpointQuery.serverId,
-  selectedFilterId: selectedFilterId(state)
+  selectedFilterId: selectedFilterId(state),
+  savedFilter: savedFilter(state)
 });
 
 const dispatchToActions = {
@@ -48,6 +49,11 @@ const ToolBar = Component.extend({
     criteria: {
       expressionList: []
     }
+  },
+
+  @computed('savedFilter')
+  filterLabel(savedFilter) {
+    return savedFilter ? savedFilter.name : 'All Files';
   },
 
   @computed('filesFilters')

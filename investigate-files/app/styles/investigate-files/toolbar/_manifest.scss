@@ -85,7 +85,7 @@
 }
 
 .filter-list {
-
+  padding-left: 2px;
   .filter-list__item-label {
     width: 150px;
     display: inline-block;
@@ -93,19 +93,20 @@
   }
 
   li {
-    padding: rsa-whitespace(least) 0 0 rsa-whitespace(less);
     width: 200px;
   }
 
   .filter-list__item {
     cursor: pointer;
+    padding: 0.25rem 0 0 1rem;
     &.is-active {
-      color: text-color(secondary);
+      color: text-color(primary, lightest);
       transition: color 0.5s ease;
+      background-color: background-color(secondary, dark);
     }
     &.is-hovering {
-      color: text-color(secondary);
       transition: color 0.5s ease;
+      background-color: background-color(secondary, darker);
     }
   }
 
@@ -114,5 +115,12 @@
     font-size: 1rem;
     cursor: default;
     pointer-events: none;
+    padding: 0.5rem;
+  }
+}
+
+.delete-filter {
+  i {
+    color: text-color(primary, lightest);
   }
 }

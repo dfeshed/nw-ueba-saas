@@ -7,7 +7,7 @@
   {{service-selector services=servers serviceId=serverId onServiceSelection=(action 'setEndpointServer')}}
   {{#rsa-content-tethered-panel-trigger triggerEvent="click" panel='panel11'}}
     {{#rsa-form-button allowToggleActive=true withDropdown=true}}
-      Saved Filters
+      {{filterLabel}}
     {{/rsa-form-button}}
   {{/rsa-content-tethered-panel-trigger}}
   {{#rsa-content-tethered-panel
