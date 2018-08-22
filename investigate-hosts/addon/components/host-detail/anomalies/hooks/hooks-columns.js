@@ -4,12 +4,17 @@ export default {
   windows: [{
     field: 'type',
     title: 'type',
-    width: '15%'
+    width: '10%'
   },
   {
     field: 'dllFileName',
     title: 'dllFileName',
     width: '15%'
+  },
+  {
+    field: 'fileProperties.reputationStatus',
+    title: 'reputationStatus',
+    width: '10%'
   },
   {
     field: 'hookedProcess',
@@ -20,11 +25,11 @@ export default {
     field: 'signature',
     title: 'signature',
     format: 'SIGNATURE',
-    width: '20%'
+    width: '15%'
   },
   {
     field: 'symbol',
     title: 'hookedSymbol',
-    width: '25%'
+    width: '24%'
   }]
 };

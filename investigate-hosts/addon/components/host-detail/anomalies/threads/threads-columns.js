@@ -12,6 +12,11 @@ export default {
     width: '15%'
   },
   {
+    field: 'fileProperties.reputationStatus',
+    title: 'reputationStatus',
+    width: '10%'
+  },
+  {
     field: 'process',
     title: 'process',
     width: '20%'
@@ -20,12 +25,12 @@ export default {
     field: 'signature',
     title: 'signature',
     format: 'SIGNATURE',
-    width: '15%'
+    width: '10%'
   },
   {
     field: 'tid',
     title: 'tid',
-    width: '10%'
+    width: '5%'
   },
   {
     field: 'teb',

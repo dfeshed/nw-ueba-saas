@@ -2312,6 +2312,7 @@ export default {
       imageHooks: {
         type: 'Type',
         dllFileName: 'DLL Name',
+        reputationStatus: 'Reputation Status',
         hookedProcess: 'Hooked Process',
         hookedSymbol: 'Hooked Symbol',
         signature: 'Signature',
@@ -2324,6 +2325,7 @@ export default {
         signature: 'Signature',
         tid: 'Thread ID',
         dllFileName: 'DLL Name',
+        reputationStatus: 'Reputation Status',
         teb: 'Thread Environment Block',
         startAddress: 'Start Address',
         process: 'Process',
@@ -2335,6 +2337,7 @@ export default {
         type: 'Type',
         driverFileName: 'Driver Name',
         hookedFileName: 'Hooked FileName',
+        reputationStatus: 'Reputation Status',
         signature: 'Signature',
         title: 'Kernel Hooks',
         objectFunction: 'Object Function',
