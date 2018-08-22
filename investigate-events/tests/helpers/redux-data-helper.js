@@ -369,4 +369,9 @@ export default class DataHelper {
     });
     return this;
   }
+
+  isQueryRunning(flag = true) {
+    _set(this.state, 'queryNode.isQueryRunning', flag);
+    return this;
+  }
 }

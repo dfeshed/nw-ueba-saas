@@ -226,6 +226,15 @@ export const initializeInvestigate = (queryParams, hardReset = false) => {
   };
 };
 
+/**
+ * Is the query in the process of executing.
+ * @param {boolean} flag
+ * @public
+ */
+export const queryIsRunning = (flag) => ({
+  type: ACTION_TYPES.QUERY_IS_RUNNING,
+  payload: flag
+});
 
 /**
  * Retrieves the list of services (aka endpoints). This list shouldn't really

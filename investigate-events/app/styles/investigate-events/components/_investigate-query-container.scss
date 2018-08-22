@@ -78,6 +78,9 @@
   }
 
   .execute-query-button {
+    position: relative;
+    height: 40px;
+    min-width: 117px;
     .rsa-form-button {
       padding-top: calc(#{rsa-whitespace(less)} + #{rsa-whitespace(least)});
       padding-bottom: calc(#{rsa-whitespace(less)} + #{rsa-whitespace(least)});
@@ -94,6 +97,14 @@
           background-color: inherit !important;
         }
       }
+    }
+    .rsa-loader {
+      margin: 0;
+      padding-top: 9px;
+      width: 100%;
+      box-sizing: border-box;
+      height: 40px;
+      @include border(1px, solid, primary);
     }
   }
 

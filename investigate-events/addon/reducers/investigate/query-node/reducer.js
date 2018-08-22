@@ -39,6 +39,11 @@ const _initialState = Immutable.from({
 
   // Tracks whether or not server side validation is under way
   serverSideValidationInProcess: false,
+  serverSideValidationFailed: false,
+
+  // Is a query in progress. This possibly includes server
+  // validation if that is taking a long time to return
+  isQueryRunning: false,
 
   // Stores a hash of query inputs for the last executed query
   currentQueryHash: undefined,
@@ -350,6 +355,10 @@ export default handleActions({
     return state.merge({ atLeastOneQueryIssued: true });
   },
 
+  [ACTION_TYPES.QUERY_IS_RUNNING]: (state, { payload }) => {
+    return state.merge({ isQueryRunning: payload });
+  },
+
   // START GUIDED
 
   [ACTION_TYPES.INITIALIZE_QUERYING]: (state, { payload }) => {
@@ -411,7 +420,11 @@ export default handleActions({
 
   [ACTION_TYPES.VALIDATE_GUIDED_PILL]: (state, action) => {
     return handle(state, action, {
-      start: (s) => s.set('serverSideValidationInProcess', !!action.meta.isServerSide),
+      start: (s) => s.merge({
+        serverSideValidationInProcess: !!action.meta.isServerSide,
+        serverSideValidationFailed: false
+      }),
+      // TODO: Handle server side failed validation so we can prevent querying.
       failure: (s) => {
         const { meta: { position } } = action;
         const { pillsData } = s;
@@ -422,7 +435,11 @@ export default handleActions({
           validationError: action.payload.meta
         };
         const newPillsData = _replacePill(s, validatedPill);
-        return s.merge({ pillsData: newPillsData, serverSideValidationInProcess: false });
+        return s.merge({
+          pillsData: newPillsData,
+          serverSideValidationInProcess: false,
+          serverSideValidationFailed: true
+        });
       },
       success: (s) => s.set('serverSideValidationInProcess', false)
     });

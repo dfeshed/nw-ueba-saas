@@ -14,6 +14,7 @@ const commonHandlers = function(dispatch) {
         type: ACTION_TYPES.SET_EVENTS_PAGE_ERROR,
         payload: { status: 'error', reason: errorCode, message: serverMessage }
       });
+      dispatch({ type: ACTION_TYPES.QUERY_IS_RUNNING, payload: false });
     },
     onCompleted() {
       dispatch({
@@ -26,6 +27,7 @@ const commonHandlers = function(dispatch) {
         type: ACTION_TYPES.SET_EVENTS_PAGE_STATUS,
         payload: 'stopped'
       });
+      dispatch({ type: ACTION_TYPES.QUERY_IS_RUNNING, payload: false });
     }
   };
 };
@@ -72,6 +74,7 @@ export const eventsGetFirst = () => {
             this.stopStreaming();
           }
           dispatch({ type: ACTION_TYPES.SET_EVENTS_PAGE, payload });
+          dispatch({ type: ACTION_TYPES.QUERY_IS_RUNNING, payload: false });
         }
       },
       ...commonHandlers(dispatch)
@@ -147,6 +150,7 @@ export const eventsGetMore = () => {
             this.stopStreaming();
           }
           dispatch({ type: ACTION_TYPES.SET_EVENTS_PAGE, payload });
+          dispatch({ type: ACTION_TYPES.QUERY_IS_RUNNING, payload: false });
         }
       },
       ...commonHandlers(dispatch)

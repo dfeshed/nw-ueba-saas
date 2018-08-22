@@ -1,6 +1,7 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-import { initializeInvestigate } from 'investigate-events/actions/initialization-creators';
+import { later } from '@ember/runloop';
+import { initializeInvestigate, queryIsRunning } from 'investigate-events/actions/initialization-creators';
 import { updateSummaryData } from 'investigate-events/actions/data-creators';
 import {
   setMetaPanelSize,
@@ -76,6 +77,20 @@ export default Route.extend({
       const investigateState = redux.getState().investigate;
       const pillData = investigateState.queryNode.pillsData;
       const { data, queryNode } = investigateState;
+      const { serverSideValidationInProcess, serverSideValidationFailed } = queryNode;
+
+      // We've started the querying process. Notify the UI.
+      this.get('redux').dispatch(queryIsRunning(true));
+
+      // If we're in the middle of validating the pill, let's defer processing
+      // the request to execute the query.
+      if (serverSideValidationInProcess) {
+        later(this, this.send, 'executeQuery', externalLink, 50);
+        return;
+      } else if (serverSideValidationFailed) {
+        this.get('redux').dispatch(queryIsRunning(false));
+        return;
+      }
 
       const qp = {
         eid: undefined,

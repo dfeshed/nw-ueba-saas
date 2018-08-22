@@ -1,6 +1,12 @@
-{{#rsa-form-button
-  class='execute-query-button'
-  isDisabled=(not requiredValuesToQuery)
-  style='primary'}}
-  {{t 'queryBuilder.queryEvents'}}
-{{/rsa-form-button}}
+{{#if isQueryRunning}}
+  <div class="execute-query-button">
+    {{rsa-loader size="small"}}
+  </div>
+{{else}}
+  {{#rsa-form-button
+    class='execute-query-button'
+    isDisabled=(not requiredValuesToQuery)
+    style='primary'}}
+    {{t 'queryBuilder.queryEvents'}}
+  {{/rsa-form-button}}
+{{/if}}

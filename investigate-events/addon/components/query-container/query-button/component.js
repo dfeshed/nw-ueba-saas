@@ -4,7 +4,8 @@ import { connect } from 'ember-redux';
 import { canQueryGuided } from 'investigate-events/reducers/investigate/query-node/selectors';
 
 const stateToComputed = (state) => ({
-  requiredValuesToQuery: canQueryGuided(state)
+  requiredValuesToQuery: canQueryGuided(state),
+  isQueryRunning: state.investigate.queryNode.isQueryRunning
 });
 
 const QueryButton = Component.extend({

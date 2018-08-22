@@ -49,5 +49,6 @@ export default {
   expensiveIndicator: '.rsa-icon-stopwatch-lined.is-expensive',
   focusHolderInput: '.focus-holder input',
   activeQueryPill: '.query-pill.is-active',
-  focusedPill: '.query-pill.is-focused'
+  focusedPill: '.query-pill.is-focused',
+  loadingQueryButton: '.execute-query-button .rsa-loader'
 };
