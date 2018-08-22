@@ -1,7 +1,7 @@
 {{#rsa-text-with-tooltip format=property.format value=property.value tipPosition='left'}}
   {{#if (eq property.format 'DATE')}}
     {{#if property.value}}
-      {{rsa-content-datetime timestamp=value}}
+      {{rsa-content-datetime timestamp=property.value}}
     {{/if}}
   {{else if (eq property.format 'SIZE')}}
     {{rsa-content-memsize size=property.value}}
