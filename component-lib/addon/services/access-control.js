@@ -127,10 +127,17 @@ export default Service.extend({
 
   // End respond access permissions
 
+ // Begin Endpoint permissions
+
   @computed('roles.[]')
   hasInvestigateHostsAccess(roles) {
     // this permission is same for both hosts and files
     return this._hasPermission(roles, 'endpoint-server.machine.read');
+  },
+
+  @computed('roles.[]')
+  endpointCanManageFiles(roles) {
+    return this._hasPermission(roles, 'endpoint-server.machine.manage');
   },
 
   // Begin Configure Permissions

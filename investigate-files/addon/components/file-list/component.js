@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { next } from '@ember/runloop';
+import { inject as service } from '@ember/service';
 import {
   fileCountForDisplay,
   serviceList,
@@ -22,6 +23,8 @@ import {
   getAllServices,
   saveFileStatus
 } from 'investigate-files/actions/data-creators';
+
+import { failure } from 'investigate-shared/utils/flash-messages';
 
 const stateToComputed = (state) => ({
   serviceList: serviceList(state),
@@ -56,6 +59,8 @@ const dispatchToActions = {
 const FileList = Component.extend({
 
   tagName: '',
+
+  accessControl: service(),
 
   FIXED_COLUMNS: [
     {
@@ -147,8 +152,12 @@ const FileList = Component.extend({
     },
 
     showEditFileStatus(item) {
-      this.set('rowItem', item);
-      this.set('showFileStatusModal', true);
+      if (this.get('accessControl.endpointCanManageFiles')) {
+        this.set('rowItem', item);
+        this.set('showFileStatusModal', true);
+      } else {
+        failure('investigateFiles.noManagePermissions');
+      }
     },
 
     showServiceList(item) {

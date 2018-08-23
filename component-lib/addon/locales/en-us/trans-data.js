@@ -1906,6 +1906,7 @@ export default {
   investigateFiles: {
     title: 'Files',
     deleteTitle: 'Confirm Delete',
+    noManagePermissions: 'You do not have permissions to make edits to file(s) status',
     button: {
       exportToCSV: 'Export to CSV',
       downloading: 'Downloading',
