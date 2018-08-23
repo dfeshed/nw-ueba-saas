@@ -51,7 +51,7 @@ $contextTooltipDatumPadding: 0px;
   .disabled {
     opacity: 0.5;
     pointer-events: none;
-    display: inline-block;
+    display: inline-flex;
   }
   .action {
     @include rsa-font(body, small);
