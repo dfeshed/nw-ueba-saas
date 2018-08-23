@@ -50,4 +50,39 @@
     margin-bottom: rsa-whitespace(more);
   }
 
+  .all-settings {
+    .label {
+      @include rsa-font(default, larger);
+      padding-top: rsa-whitespace(more);
+      padding-bottom: rsa-whitespace(more);
+      letter-spacing: .05rem;
+    }
+    .heading {
+      @include rsa-font(default, large);
+    }
+    .available-settings {
+      margin-right: rsa-whitespace(most);
+      .rsa-icon {
+        float: right;
+        margin-right: rsa-whitespace(most);
+        margin-left: rsa-whitespace();
+      }
+      .is-greyed-out {
+        color: text-color(primary);
+        pointer-events: none;
+      }
+    }
+    .available-settings .title {
+      @include rsa-font();
+      padding: rsa-whitespace() rsa-whitespace() 0 0;
+    }
+    .selected-settings .scan-options {
+      @include rsa-font(light,small);
+      text-transform: uppercase;
+      padding: rsa-whitespace() rsa-whitespace() 0 0;
+      .rsa-icon {
+        margin-right: rsa-whitespace();
+      }
+    }
+  }
 }

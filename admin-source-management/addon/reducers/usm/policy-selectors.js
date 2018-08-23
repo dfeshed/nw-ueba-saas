@@ -2,6 +2,7 @@ import reselect from 'reselect';
 import { isBlank } from '@ember/utils';
 import _ from 'lodash';
 import moment from 'moment';
+import { RADIO_BUTTONS_CONFIG, SCAN_SCHEDULE_CONFIG } from 'admin-source-management/utils/settings';
 
 const { createSelector } = reselect;
 
@@ -14,24 +15,28 @@ const COUNTER = {
   'WEEKS': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
 };
 
-const RADIO_BUTTONS_CONFIG = {
-  name: 'recurrence',
-  label: 'adminUsm.policy.scheduleConfiguration.recurrenceInterval.title',
-  type: 'radioGroup',
-  items: [
-    {
-      name: 'DAYS',
-      label: 'adminUsm.policy.scheduleConfiguration.recurrenceInterval.options.daily'
-    },
-    {
-      name: 'WEEKS',
-      label: 'adminUsm.policy.scheduleConfiguration.recurrenceInterval.options.weekly'
-    }
-  ]
-};
-
-const scheduleConfig = (state) => state.usm.policy.policy.scheduleConfig || {};
+export const scheduleConfig = (state) => state.usm.policy.policy.scheduleConfig || {};
 export const radioButtonConfig = () => RADIO_BUTTONS_CONFIG;
+export const scanScheduleConfig = () => SCAN_SCHEDULE_CONFIG;
+
+
+const availableSettings = (state) => state.usm.policy.availableSettings || {};
+
+const selectedSettings = (state) => state.usm.policy.selectedSettings || {};
+
+export const enabledAvailableSettings = createSelector(
+  availableSettings,
+  (availableSettings) => {
+    return availableSettings.filter((el) => el.isEnabled);
+  }
+);
+
+export const sortedSelectedSettings = createSelector(
+  selectedSettings,
+  (selectedSettings) => {
+    return _.sortBy(selectedSettings, 'index');
+  }
+);
 
 export const isPolicyLoading = createSelector(
   policyState,

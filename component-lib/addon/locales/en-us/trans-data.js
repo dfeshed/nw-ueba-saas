@@ -3477,11 +3477,21 @@ export default {
       namePlaceholder: 'Enter a unique policy name',
       description: 'Policy Description',
       descPlaceholder: 'Enter a description',
+      availableSettings: 'Available Settings',
+      selectedSettings: 'Selected Settings',
+      scanSchedule: 'Scan Schedule',
       scheduleConfiguration: {
+        scanType: {
+          title: 'Scheduled or Manual Scan',
+          options: {
+            manual: 'Manual',
+            scheduled: 'Scheduled'
+          }
+        },
         title: 'Scan Schedule',
         save: 'Save',
         enable: 'Enable',
-        startDate: 'Start Date',
+        effectiveDate: 'Effective Date',
         recurrenceInterval: {
           title: 'Recurrence Interval',
           options: {

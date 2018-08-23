@@ -14,6 +14,7 @@ const initialState = {
     name: '',
     description: '',
     scheduleConfig: {
+      scanType: 'SCHEDULED',
       enabledScheduledScan: false,
       scheduleOptions: {
         scanStartDate: null,
@@ -28,7 +29,12 @@ const initialState = {
       }
     }
   },
-  policyStatus: null // wait, complete, error
+  policyStatus: null, // wait, complete, error
+  availableSettings: [
+    { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
+    { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: true, callback: 'usm-policies/policy/schedule-config/effective-date' }
+  ],
+  selectedSettings: []
 };
 
 const policyData = Immutable.from({
@@ -111,5 +117,27 @@ module('Integration | Component | usm-policies/policy', function(hooks) {
     setState({ ...initialState, policyStatus: 'wait' });
     await render(hbs`{{usm-policies/policy}}`);
     assert.equal(findAll('.loading-overlay .rsa-loader').length, 1, 'A loading spinner appears');
+  });
+
+  test('All the components in the available settings is rendered on the UI', async function(assert) {
+    setState({ ...initialState });
+    await render(hbs`{{usm-policies/policy}}`);
+    assert.equal(findAll('.available-settings .available-setting').length, 2, 'All available settings rendered on the UI');
+  });
+
+  test('Effective date component should be greyed out by default', async function(assert) {
+    setState({ ...initialState });
+    await render(hbs`{{usm-policies/policy}}`);
+    assert.equal(findAll('.available-settings .effectiveDate')[0].classList.contains('is-greyed-out'), true, 'Effective date component should be greyed out by default');
+  });
+
+  test('No available settings should be rendered when isEnabled flag is true', async function(assert) {
+    const newAvailableSettings = [
+      { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
+      { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: false, isGreyedOut: true, callback: 'usm-policies/policy/schedule-config/effective-date' }
+    ];
+    setState({ ...initialState, availableSettings: newAvailableSettings });
+    await render(hbs`{{usm-policies/policy}}`);
+    assert.equal(findAll('.available-settings .available-setting').length, 0, 'No available settings should be rendered when isEnabled flag is true');
   });
 });

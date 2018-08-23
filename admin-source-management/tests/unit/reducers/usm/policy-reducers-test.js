@@ -14,6 +14,7 @@ const initialState = {
     name: '',
     description: '',
     scheduleConfig: {
+      scanType: 'SCHEDULED',
       enabledScheduledScan: false,
       scheduleOptions: {
         scanStartDate: null,
@@ -28,7 +29,12 @@ const initialState = {
       }
     }
   },
-  policyStatus: null // wait, complete, error
+  policyStatus: null,
+  availableSettings: [
+    { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
+    { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/effective-date' }
+  ],
+  selectedSettings: []
 };
 
 const policyData = {
@@ -76,30 +82,10 @@ test('on UPDATE_POLICY policy is updated', function(assert) {
     }
   };
 
-  const endState = {
-    policy: {
-      name: '',
-      description: '',
-      scheduleConfig: {
-        enabledScheduledScan: false,
-        scheduleOptions: {
-          scanStartDate: null,
-          scanStartTime: '10:00',
-          recurrenceInterval: 5,
-          recurrenceIntervalUnit: 'WEEKS',
-          runOnDaysOfWeek: []
-        },
-        scanOptions: {
-          cpuMaximum: 75,
-          cpuMaximumOnVirtualMachine: 85
-        }
-      }
-    },
-    policyStatus: null // wait, complete, error
-  };
+  const endState = 'WEEKS';
   const nameAction = { type: ACTION_TYPES.UPDATE_POLICY_PROPERTY, payload };
   const nameEndState = reducers(Immutable.from(initialState), nameAction);
-  assert.deepEqual(nameEndState, endState, 'recurrenceIntervalUnit is updated along with recurrenceInterval');
+  assert.deepEqual(nameEndState.policy.scheduleConfig.scheduleOptions.recurrenceIntervalUnit, endState, 'recurrenceIntervalUnit is updated along with recurrenceInterval');
 });
 
 test('on SAVE_POLICY start, groupStatus is properly set', function(assert) {
@@ -124,4 +110,106 @@ test('on SAVE_POLICY success, policy & policyStatus are properly set', function(
   });
   const endState = reducers(Immutable.from(initialState), action);
   assert.deepEqual(endState, expectedEndState, 'policy populated & policyStatus is complete');
+});
+
+test('TOGGLE_SCAN_TYPE sets the scan type correctly', function(assert) {
+  const payload = 'SCHEDULED';
+
+  const endState = 'SCHEDULED';
+  const nameAction = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
+  const nameEndState = reducers(Immutable.from(initialState), nameAction);
+  assert.deepEqual(nameEndState.policy.scheduleConfig.scanType, endState, 'scan type updated to SCHEDULED correctly');
+});
+
+test('when MANUAL, TOGGLE_SCAN_TYPE clears out schedule and scan options', function(assert) {
+  const payload = 'MANUAL';
+
+  const endState = {
+    scheduleOptions: null,
+    scanOptions: null
+  };
+  const nameAction = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
+  const nameEndState = reducers(Immutable.from(initialState), nameAction);
+  assert.deepEqual(nameEndState.policy.scheduleConfig.scheduleOptions, endState.scheduleOptions, 'schedule options cleared out correctly');
+  assert.deepEqual(nameEndState.policy.scheduleConfig.scanOptions, endState.scanOptions, 'scan options cleared out correctly');
+});
+
+test('when MANUAL, TOGGLE_SCAN_TYPE greys out the effective date component in the available settings', function(assert) {
+  const payload = 'MANUAL';
+
+  const endState = {
+    availableSettings: [
+      { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
+      { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: true, callback: 'usm-policies/policy/schedule-config/effective-date' }
+    ]
+  };
+  const nameAction = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
+  const nameEndState = reducers(Immutable.from(initialState), nameAction);
+  assert.deepEqual(nameEndState.availableSettings[1].isGreyedOut, endState.availableSettings[1].isGreyedOut, 'Effective date component is greyed out correctly');
+});
+
+test('when SCHEDULED, TOGGLE_SCAN_TYPE lights up the effective date component in available settings', function(assert) {
+  const payload = 'SCHEDULED';
+
+  const endState = {
+    availableSettings: [
+      { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
+      { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/effective-date' }
+    ]
+  };
+  const nameAction = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
+  const nameEndState = reducers(Immutable.from(initialState), nameAction);
+  assert.deepEqual(nameEndState.availableSettings[1].isGreyedOut, endState.availableSettings[1].isGreyedOut, 'Effective date component is greyed out correctly');
+});
+
+test('ADD_TO_SELECTED_SETTINGS adds an entry to the selectedSettings array', function(assert) {
+  const payload = 'schedOrManScan';
+  const endState = {
+    availableSettings: [
+      { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
+      { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: true, callback: 'usm-policies/policy/schedule-config/effective-date' }
+    ],
+    selectedSettings: [
+      { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' }
+    ]
+  };
+  const nameAction = { type: ACTION_TYPES.ADD_TO_SELECTED_SETTINGS, payload };
+  const nameEndState = reducers(Immutable.from(initialState), nameAction);
+  assert.deepEqual(nameEndState.selectedSettings, endState.selectedSettings, 'Entry added to Selected settings from Available Settings');
+  assert.deepEqual(nameEndState.availableSettings[0].isEnabled, endState.availableSettings[0].isEnabled, 'isEnabled flag is changed toggled in availableSettings when it is added to selectedSettings');
+});
+
+test('ADD_TO_SELECTED_SETTINGS adds an entry to the selectedSettings array and changes the isGreyed flag based on the scanType', function(assert) {
+  const payload = 'schedOrManScan';
+  const initialStateCopy = _.cloneDeep(initialState);
+  initialStateCopy.policy.scheduleConfig.scanType = 'SCHEDULED';
+  initialStateCopy.availableSettings = [
+    { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
+    { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: true, callback: 'usm-policies/policy/schedule-config/effective-date' }
+  ];
+
+  const endState = {
+    availableSettings: [
+      { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
+      { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/effective-date' }
+    ],
+    selectedSettings: [
+      { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' }
+    ]
+  };
+  const nameAction = { type: ACTION_TYPES.ADD_TO_SELECTED_SETTINGS, payload };
+  const nameEndState = reducers(Immutable.from(initialStateCopy), nameAction);
+  assert.deepEqual(nameEndState.availableSettings[1].isGreyedOut, endState.availableSettings[1].isGreyedOut, 'isGreyed flag is toggled correctly in availableSettings when it is added to selectedSettings');
+});
+
+test('REMOVE_FROM_SELECTED_SETTINGS removes an entry from the selectedSettings array', function(assert) {
+  const payload = 'schedOrManScan';
+  const initialStateCopy = _.cloneDeep(initialState);
+
+  initialStateCopy.selectedSettings = [
+    { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' }
+  ];
+  const nameAction = { type: ACTION_TYPES.REMOVE_FROM_SELECTED_SETTINGS, payload };
+  const nameEndState = reducers(Immutable.from(initialStateCopy), nameAction);
+  assert.deepEqual(nameEndState.selectedSettings.length, 0, 'THe entry has been successfully removed from the selectedSettings array');
 });

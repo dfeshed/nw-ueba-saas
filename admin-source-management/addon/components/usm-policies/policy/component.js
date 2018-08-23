@@ -5,61 +5,69 @@ import Notifications from 'component-lib/mixins/notifications';
 import {
   isPolicyLoading,
   hasMissingRequiredData,
-  currentPolicy
+  currentPolicy,
+  enabledAvailableSettings,
+  sortedSelectedSettings
 } from 'admin-source-management/reducers/usm/policy-selectors';
 
 import {
   savePolicy,
-  editPolicy
+  editPolicy,
+  addToSelectedSettings
 } from 'admin-source-management/actions/creators/policy-creators';
 
 
 const stateToComputed = (state) => ({
   policy: currentPolicy(state),
   isPolicyLoading: isPolicyLoading(state),
-  hasMissingRequiredData: hasMissingRequiredData(state)
+  hasMissingRequiredData: hasMissingRequiredData(state),
+  enabledAvailableSettings: enabledAvailableSettings(state),
+  sortedSelectedSettings: sortedSelectedSettings(state)
 });
 
-const dispatchToActions = (dispatch) => ({
-  // edit the policy using fully qualified field name (e.g., 'policy.name')
-  edit(field, value) {
-    if (field && value !== undefined) {
-      dispatch(editPolicy(field, value));
-    }
-  },
-  // save changes to the policy
-  save() {
-    const callBackOptions = {
-      // if the save is succesful, redirect the user to the policies list route
-      onSuccess: () => {
-        this.send('success', 'adminUsm.policy.saveSuccess');
-        const transitionToPolicies = this.get('transitionToPolicies');
-        transitionToPolicies();
-      },
-      onFailure: () => {
-        this.send('failure', 'adminUsm.policy.saveFailure');
-      }
-    };
-    dispatch(savePolicy(this.get('policy'), callBackOptions));
-  },
-  // cancel changes to the policy
-  cancel() {
-    const transitionToPolicies = this.get('transitionToPolicies');
-    transitionToPolicies();
-  }
-});
+const dispatchToActions = {
+  addToSelectedSettings,
+  editPolicy,
+  savePolicy
+};
 
 const UsmPolicy = Component.extend(Notifications, {
   tagName: 'hbox',
 
   classNames: ['usm-policy', 'scroll-box'],
 
+  edit(field, value) {
+    if (field && value !== undefined) {
+      this.send('editPolicy', field, value);
+    }
+  },
+
   actions: {
     handleNameChange(value) {
-      this.send('edit', 'policy.name', value);
+      this.edit('policy.name', value);
     },
     handleDescriptionChange(value) {
-      this.send('edit', 'policy.description', value);
+      this.edit('policy.description', value);
+    },
+    // save changes to the policy
+    save() {
+      const callBackOptions = {
+        // if the save is succesful, redirect the user to the policies list route
+        onSuccess: () => {
+          this.send('success', 'adminUsm.policy.saveSuccess');
+          const transitionToPolicies = this.get('transitionToPolicies');
+          transitionToPolicies();
+        },
+        onFailure: () => {
+          this.send('failure', 'adminUsm.policy.saveFailure');
+        }
+      };
+      this.send('savePolicy', this.get('policy'), callBackOptions);
+    },
+    // cancel changes to the policy
+    cancel() {
+      const transitionToPolicies = this.get('transitionToPolicies');
+      transitionToPolicies();
     }
   }
 });

@@ -1,4 +1,6 @@
 @import "recurrence-interval";
+@import "scan-schedule";
+@import "effective-date";
 
 .schedule-config {
   min-height: 80vh;
@@ -14,6 +16,7 @@
 
   .text {
     color: text-color(primary, light);
+    line-height: 2rem;
     @include rsa-font(header, small);
   }
 

@@ -10,7 +10,9 @@ import {
   weekOptions,
   startDate,
   startTime,
-  runIntervalConfig
+  runIntervalConfig,
+  enabledAvailableSettings,
+  sortedSelectedSettings
 } from 'admin-source-management/reducers/usm/policy-selectors';
 
 module('Unit | Selectors | Policy Selectors');
@@ -22,6 +24,7 @@ const fullState = {
         name: '',
         description: '',
         scheduleConfig: {
+          scanType: 'SCHEDULED',
           enabledScheduledScan: false,
           scheduleOptions: {
             scanStartDate: null,
@@ -36,7 +39,12 @@ const fullState = {
           }
         }
       },
-      policyStatus: null // wait, complete, error
+      policyStatus: null, // wait, complete, error
+      availableSettings: [
+        { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
+        { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: true, callback: 'usm-policies/policy/schedule-config/effective-date' }
+      ],
+      selectedSettings: []
     }
   }
 };
@@ -141,6 +149,39 @@ test('weekOptions', function(assert) {
     'label': 'adminUsm.policy.scheduleConfiguration.recurrenceInterval.week.SUNDAY'
   };
   assert.deepEqual(result[0], expected, 'should add label and isActive');
+});
+
+test('enabledAvailableSettings only renders settings with isEnabled set', function(assert) {
+  assert.expect(1);
+  const state = {
+    usm: {
+      policy: {
+        availableSettings: [
+          { index: 0, id: 'schedOrManScan', isEnabled: true },
+          { index: 1, id: 'effectiveDate', isEnabled: false }
+        ]
+      }
+    }
+  };
+  const result = enabledAvailableSettings(state);
+  assert.deepEqual(result.length, 1, 'availableSettingToRender should not render when isEnabled is false');
+});
+
+test('sortedSelectedSettings renders settings in the order of index', function(assert) {
+  assert.expect(1);
+  const state = {
+    usm: {
+      policy: {
+        selectedSettings: [
+          { index: 3, id: 'schedOrManScan' },
+          { index: 1, id: 'effectiveDate' },
+          { index: 2, id: 'cpuFrequency' }
+        ]
+      }
+    }
+  };
+  const result = sortedSelectedSettings(state);
+  assert.deepEqual(result[0].index, 1, 'selectedSettingToRender correctly sorted settings based on the index');
 });
 
 test('runIntervalConfig', function(assert) {

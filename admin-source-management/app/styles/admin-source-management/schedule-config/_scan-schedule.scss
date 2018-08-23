@@ -1,0 +1,21 @@
+.scan-schedule {
+  .text {
+    padding: rsa-whitespace() rsa-whitespace() 0 0;
+    text-align: right;
+  }
+  .rsa-form-radio-label {
+    line-height: 1.75rem;
+  }
+  .rsa-form-radio-group-label {
+    @include rsa-font(default,small);
+    padding: rsa-whitespace() rsa-whitespace() 0 0;
+    .rsa-icon {
+      float: right;
+      margin-right: rsa-whitespace(more);
+      margin-left: rsa-whitespace(more);
+    }
+  }
+  .radio-buttons {
+    padding-top: 0px;
+  }
+}
