@@ -34,7 +34,7 @@ export default Component.extend({
   @computed('itemList')
   statusData(selectedFileList) {
     if (selectedFileList && selectedFileList.length === 1) {
-      return selectedFileList[0].fileStatusData;
+      return selectedFileList[0].fileStatusData || {};
     }
     return {};
   }

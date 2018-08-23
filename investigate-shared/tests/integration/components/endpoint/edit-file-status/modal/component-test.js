@@ -47,7 +47,8 @@ module('Integration | Component | endpoint/edit-file-status/modal', function(hoo
     this.set('onSaveFileStatus', function() {
       assert.equal(arguments.length, 2, 'onSaveFileStatus called with two arguments');
     });
-    await render(hbs`{{endpoint/edit-file-status/modal onSaveFileStatus=onSaveFileStatus itemList=itemList}}`);
+    this.set('data', { comment: 'Test' });
+    await render(hbs`{{endpoint/edit-file-status/modal data=data onSaveFileStatus=onSaveFileStatus itemList=itemList}}`);
     await click(document.querySelector('.save-file-status button'));
   });
 

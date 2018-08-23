@@ -35,16 +35,13 @@
         maxLength=8000
       }}
     </box>
-    {{#each flashMessages.queue as |flash|}}
-      {{flash-message flash=flash}}
-    {{/each}}
   </div>
   <footer>
     <hbox class="modal-footer-buttons">
       {{#rsa-form-button class='close-edit-modal' defaultAction=(action 'onCancel')}}
         {{t 'investigateFiles.editFileStatus.cancelBtn'}}
       {{/rsa-form-button}}
-      {{#rsa-form-button style='primary' class='save-file-status' defaultAction=(action 'saveFileStatus')}}
+      {{#rsa-form-button style='primary' isDisabled=isSaveButtonDisabled class='save-file-status' defaultAction=(action 'saveFileStatus')}}
         {{t 'investigateFiles.editFileStatus.saveBtn'}}
       {{/rsa-form-button}}
     </hbox>

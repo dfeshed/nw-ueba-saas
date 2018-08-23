@@ -1,6 +1,8 @@
 import Component from '@ember/component';
 import layout from './template';
 import { success } from 'investigate-shared/utils/flash-messages';
+import { isEmpty } from '@ember/utils';
+import computed from 'ember-computed-decorators';
 
 export default Component.extend({
   layout,
@@ -39,7 +41,13 @@ export default Component.extend({
     const closeModal = this.get('closeModal');
     if (closeModal) {
       closeModal();
+      this.set('data', {});
     }
+  },
+
+  @computed('data.comment')
+  isSaveButtonDisabled(comment) {
+    return isEmpty(comment);
   },
 
   actions: {
