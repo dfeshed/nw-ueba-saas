@@ -37,7 +37,8 @@ const stateToComputed = (state) => ({
   isSortDescending: state.files.fileList.isSortDescending,
   isAllSelected: isAllSelected(state),
   selections: state.files.fileList.selectedFileList,
-  checksums: checksums(state)
+  checksums: checksums(state),
+  itemList: state.files.fileList.selectedFileList
 });
 
 const dispatchToActions = {
@@ -92,6 +93,14 @@ const FileList = Component.extend({
   updatedColumns(columns) {
     const UPDATED_COLUMNS = columns.filter((column) => column.field !== 'firstFileName');
     return this._sortList(UPDATED_COLUMNS);
+  },
+
+  @computed('itemList')
+  statusData(selectedFileList) {
+    if (selectedFileList && selectedFileList.length === 1) {
+      return selectedFileList[0].fileStatusData || {};
+    }
+    return {};
   },
 
   _sortList(columnList) {
