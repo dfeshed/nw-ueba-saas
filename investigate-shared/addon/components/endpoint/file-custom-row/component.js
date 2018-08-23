@@ -28,16 +28,14 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
           return (cntx.get('selections').length > 1);
         },
         action() {
-          cntx.set('showServiceModal', true);
+          cntx.pivotToInvestigate(cntx.get('item'));
         }
       },
       {
         label: 'Edit File Status',
         icon: 'pencil-write-2',
         action() {
-          if (!cntx.get('isDestroyed') && !cntx.get('isDestroying')) {
-            cntx.set('showFileStatusModal', true);
-          }
+          cntx.editFileStatus(cntx.get('item'));
         }
       },
       {

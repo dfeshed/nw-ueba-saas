@@ -77,6 +77,12 @@ const FileList = Component.extend({
     }
   ],
 
+  showServiceModal: false,
+
+  showFileStatusModal: false,
+
+  rowItem: null,
+
   @computed('columnConfig')
   updatedColumns(columns) {
     const UPDATED_COLUMNS = columns.filter((column) => column.field !== 'firstFileName');
@@ -99,6 +105,16 @@ const FileList = Component.extend({
       }
     });
   },
+
+  isAlreadySelected(selections, item) {
+    let selected = false;
+    if (selections && selections.length) {
+      selected = selections.findBy('checksumSha256', item.checksumSha256);
+    }
+    return selected;
+  },
+
+
   actions: {
     toggleSelectedRow(item, index, e, table) {
       const { target: { classList } } = e;
@@ -127,6 +143,31 @@ const FileList = Component.extend({
         this.send('selectAllFiles');
       } else {
         this.send('deSelectAllFiles');
+      }
+    },
+
+    showEditFileStatus(item) {
+      this.set('rowItem', item);
+      this.set('showFileStatusModal', true);
+    },
+
+    showServiceList(item) {
+
+      this.set('rowItem', item);
+      this.set('showServiceModal', true);
+    },
+
+    onCloseServiceModal() {
+      this.set('showServiceModal', false);
+    },
+
+    onCloseEditFileStatus() {
+      this.set('showFileStatusModal', false);
+    },
+
+    beforeContextMenuShow(item) {
+      if (!this.isAlreadySelected(this.get('selections'), item)) {
+        this.send('toggleFileSelection', item);
       }
     }
   }
