@@ -58,6 +58,9 @@ export default Component.extend({
           success('investigateFiles.editFileStatus.successMessage');
         }
       };
+      if (this.get('data').fileStatus !== 'Blacklist' || 'Graylist') {
+        this.set('data.remediationAction', null);
+      }
       this.onSaveFileStatus(this.get('data'), callback);
     },
 
