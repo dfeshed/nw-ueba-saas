@@ -101,11 +101,7 @@ const deleteItem = (entityIds, callbacks = callbacksDefault) => {
       meta: {
         onSuccess: (response) => {
           callbacks.onSuccess(response);
-          if (itemsFilters['alert.name']) {
-            dispatch(updateAlertNames(itemsFilters));
-          } else if (reloadItems) {
-            dispatch(getItems());
-          }
+          dispatch(updateAlertNames(itemsFilters, reloadItems));
         },
         onFailure: (response) => {
           callbacks.onFailure(response);
@@ -124,14 +120,18 @@ const filterAlertNames = (validNames, itemsFilters) => {
   return validFilters;
 };
 
-const updateAlertNames = (itemsFilters) => {
+const updateAlertNames = (itemsFilters, reloadItems) => {
   return (dispatch) => {
     dispatch({
       ...dictionaryCreators.getAllAlertNames(),
       meta: {
         onSuccess: (response) => {
-          const validFilters = filterAlertNames(response.data, itemsFilters);
-          dispatch(updateFilter({ 'alert.name': validFilters }));
+          if (itemsFilters['alert.name']) {
+            const validFilters = filterAlertNames(response.data, itemsFilters);
+            dispatch(updateFilter({ 'alert.name': validFilters }));
+          } else if (reloadItems) {
+            dispatch(getItems());
+          }
         }
       }
     });

@@ -1,5 +1,6 @@
-import { click, findAll, render } from '@ember/test-helpers';
+import { waitUntil, click, findAll, render } from '@ember/test-helpers';
 import { module, test } from 'qunit';
+import { run } from '@ember/runloop';
 import { setupRenderingTest } from 'ember-qunit';
 import Immutable from 'seamless-immutable';
 import hbs from 'htmlbars-inline-precompile';
@@ -11,6 +12,8 @@ import {
 import RSVP from 'rsvp';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { patchReducer } from '../../../../helpers/vnext-patch';
+import { findElement } from '../../../../helpers/find-element';
+import { alertFilterData } from './data';
 
 let setState;
 
@@ -113,5 +116,87 @@ module('Integration | Component | Respond Alerts Filters', function(hooks) {
     // lazy rendering of the list means we cannot assert that the full set of alert names are present
     assert.ok(findAll(selector).length >= 1, 'There should be at least one alert name filter options');
     await click('.filter-option.alert-name-filter .rsa-form-checkbox-label input.rsa-form-checkbox:first-of-type');
+  });
+
+  test('delete and uncheck the filter after all alerts are removed', async function(assert) {
+    patchReducer(this, Immutable.from(alertFilterData));
+    const redux = this.owner.lookup('service:redux');
+
+    await render(hbs`{{rsa-alerts}}`);
+
+    const selector = '.alert-name-filter .rsa-form-checkbox-label';
+
+    await waitUntil(() => findElement(selector, 'Toran Alert').length === 1, { timeout: 5000 });
+    assert.equal(findAll(selector).length, 3, 'There should be 3 alert type filter options to start');
+    assert.equal(findElement(selector, 'Nehal alert').length, 1);
+    assert.equal(findElement(selector, 'test').length, 1);
+    assert.equal(findElement(selector, 'Toran Alert').length, 1);
+
+    const bodySelector = '.rsa-data-table-body-cell';
+    const rowSelector = '.rsa-explorer-table .rsa-data-table-body-row';
+    const nameSelector = `${rowSelector}:nth-of-type(4) ${bodySelector}:nth-of-type(4) .alert-name`;
+    const labelSelector = `${rowSelector}:nth-of-type(4) ${bodySelector}:first-of-type .rsa-form-checkbox-label`;
+    const inputSelector = `${labelSelector} input`;
+    await waitUntil(() => findAll(rowSelector).length === 4, { timeout: 5000 });
+    assert.equal(document.querySelector(nameSelector).textContent.trim(), 'Toran Alert', 'Alert Element selected to delete should have the AlertName `Toran Alert`');
+
+    await click(inputSelector);
+
+    const request = this.owner.lookup('service:request');
+
+    let deleteItemFired = false;
+    const { promiseRequest, streamRequest } = request;
+    request.promiseRequest = function({ method, modelName }) {
+      if (method === 'findAll' && modelName === 'alert-names') {
+        return new RSVP.Promise((resolve) => {
+          deleteItemFired = true;
+          run(null, resolve, { data: [ 'Nehal alert', 'test' ] });
+        });
+      }
+      return promiseRequest.apply(this, arguments);
+    };
+
+    let getItemsFired = false;
+    request.streamRequest = function({ method, modelName }) {
+      if (method === 'stream' && modelName === 'alerts') {
+        return new RSVP.Promise((resolve) => {
+          getItemsFired = true;
+          run(null, resolve, { data: [] });
+        });
+      }
+      return streamRequest.apply(this, arguments);
+    };
+
+    await click('.rsa-alerts-toolbar-controls .is-danger button');
+
+    const confirmOKButtonSelector = '.modal-footer-buttons .rsa-form-button';
+    assert.equal(document.querySelectorAll('#modalDestination').length, 1);
+    assert.equal(document.querySelector('#modalDestination').classList.contains('active'), true, 'the modal was not present for delete');
+    assert.equal(findAll(confirmOKButtonSelector)[3].innerHTML.trim(), 'OK', 'OK button is clicked');
+
+    await click(findAll(confirmOKButtonSelector)[3]);
+
+    await waitUntil(() => {
+      const { respond: { dictionaries: { alertNames } } } = redux.getState();
+      return alertNames && alertNames.length === 2;
+    });
+
+    await waitUntil(() => deleteItemFired === true).then(() => {
+      // unpatch the promiseRequest
+      request.promiseRequest = promiseRequest;
+    });
+
+    await waitUntil(() => getItemsFired === true).then(() => {
+      // unpatch the streamRequest
+      request.streamRequest = streamRequest;
+    });
+
+    await waitUntil(() => findElement(selector, 'Toran Alert').length === 0, { timeout: 5000 });
+    assert.equal(findAll(selector).length, 2, 'There should be 2 alert type filter options left');
+    assert.equal(findElement(selector, 'Nehal alert').length, 1);
+    assert.equal(findElement(selector, 'test').length, 1);
+
+    assert.equal(document.querySelectorAll('#modalDestination').length, 1);
+    assert.equal(document.querySelector('#modalDestination').classList.contains('active'), false, 'the modal is now inactive');
   });
 });

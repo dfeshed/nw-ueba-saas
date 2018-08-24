@@ -1,4 +1,5 @@
 export default {
+  delay: 1,
   subscriptionDestination: '/user/queue/alerts/delete',
   requestDestination: '/ws/respond/alerts/delete',
   message(frame) {

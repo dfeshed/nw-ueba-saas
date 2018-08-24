@@ -60,15 +60,33 @@ const dispatchToActions = function(dispatch) {
   return {
     getItems: () => dispatch(creators.getItems()),
     updateItem: (entityId, fieldName, value, revert = () => {}) => dispatch(creators.updateItem(entityId, fieldName, value, {
-      onSuccess: () => (this.send('success', 'rsaExplorer.flash.updateSuccess')),
+      onSuccess: () => {
+        if (this.get('isDestroying') || this.get('isDestroyed')) {
+          return;
+        }
+        this.send('success', 'rsaExplorer.flash.updateSuccess');
+      },
       onFailure: () => {
+        if (this.get('isDestroying') || this.get('isDestroyed')) {
+          return;
+        }
         revert();
         this.send('failure', 'rsaExplorer.flash.updateFailure');
       }
     })),
     deleteItem: (entityId) => dispatch(creators.deleteItem(entityId, {
-      onSuccess: () => (this.send('success', 'rsaExplorer.flash.updateSuccess')),
-      onFailure: () => (this.send('failure', 'rsaExplorer.flash.updateFailure'))
+      onSuccess: () => {
+        if (this.get('isDestroying') || this.get('isDestroyed')) {
+          return;
+        }
+        this.send('success', 'rsaExplorer.flash.updateSuccess');
+      },
+      onFailure: () => {
+        if (this.get('isDestroying') || this.get('isDestroyed')) {
+          return;
+        }
+        this.send('failure', 'rsaExplorer.flash.updateFailure');
+      }
     })),
     toggleFilterPanel: () => dispatch(creators.toggleFilterPanel()),
     updateFilter: (change) => dispatch(creators.updateFilter(change)),
