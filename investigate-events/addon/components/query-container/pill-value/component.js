@@ -4,7 +4,7 @@ import { next, scheduleOnce } from '@ember/runloop';
 import * as MESSAGE_TYPES from '../message-types';
 import { isArrowLeft, isBackspace, isEnter, isEscape } from 'investigate-events/util/keys';
 import { htmlSafe } from '@ember/string';
-import { properlyQuoted } from 'investigate-events/util/quote';
+import { escapeBackslash, escapeSingleQuotes, properlyQuoted, stripOuterSingleQuotes } from 'investigate-events/util/quote';
 
 const { log } = console;// eslint-disable-line no-unused-vars
 
@@ -109,7 +109,8 @@ export default Component.extend({
       if (isBackspace(event) && input.length === 0) {
         next(this, () => this._broadcast(MESSAGE_TYPES.VALUE_BACKSPACE_KEY));
       } else if (isEnter(event) && !this._isInputEmpty(input)) {
-        this._broadcast(MESSAGE_TYPES.VALUE_ENTER_KEY, input);
+        const s = escapeSingleQuotes(escapeBackslash(stripOuterSingleQuotes(input)));
+        this._broadcast(MESSAGE_TYPES.VALUE_ENTER_KEY, s);
       } else if (isEscape(event)) {
         this._broadcast(MESSAGE_TYPES.VALUE_ESCAPE_KEY);
       } else if (isArrowLeft(event) && event.target.selectionStart === 0) {
