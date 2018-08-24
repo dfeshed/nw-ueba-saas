@@ -208,4 +208,23 @@ module('Integration | Component | Pill Value', function(hooks) {
     `);
     await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', ESCAPE_KEY);
   });
+
+  test('it trims input before broadcasting a message', async function(assert) {
+    const done = assert.async();
+    assert.expect(1);
+    this.set('handleMessage', (type, data) => {
+      if (type === MESSAGE_TYPES.VALUE_ENTER_KEY) {
+        assert.equal(data, 'x', 'Wrong input string');
+        done();
+      }
+    });
+    await render(hbs`
+      {{query-container/pill-value
+        isActive=true
+        sendMessage=(action handleMessage)
+        valueString='  x  '
+      }}
+    `);
+    await triggerKeyEvent(PILL_SELECTORS.valueInput, 'keydown', ENTER_KEY);
+  });
 });

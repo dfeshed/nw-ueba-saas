@@ -109,8 +109,9 @@ export default Component.extend({
       if (isBackspace(event) && input.length === 0) {
         next(this, () => this._broadcast(MESSAGE_TYPES.VALUE_BACKSPACE_KEY));
       } else if (isEnter(event) && !this._isInputEmpty(input)) {
-        const s = escapeSingleQuotes(escapeBackslash(stripOuterSingleQuotes(input)));
-        this._broadcast(MESSAGE_TYPES.VALUE_ENTER_KEY, s);
+        const trimmedInput = input.trim();
+        const value = escapeSingleQuotes(escapeBackslash(stripOuterSingleQuotes(trimmedInput)));
+        this._broadcast(MESSAGE_TYPES.VALUE_ENTER_KEY, value);
       } else if (isEscape(event)) {
         this._broadcast(MESSAGE_TYPES.VALUE_ESCAPE_KEY);
       } else if (isArrowLeft(event) && event.target.selectionStart === 0) {
