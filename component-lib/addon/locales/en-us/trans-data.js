@@ -1997,6 +1997,7 @@ export default {
       checksumSha256: 'SHA256',
       machineOsType: 'Operating System',
       reputationStatus: 'Reputation Status',
+      machineCount: 'Machine Count',
       elf: {
         classType: 'ELF.Class Type',
         data: 'ELF.Data',

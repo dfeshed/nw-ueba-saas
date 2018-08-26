@@ -11,6 +11,7 @@ const filesConfigGen = function(environment) {
   const contextSocketUrl = common.determineSocketUrl(environment, '/contexthub/socket');
   const investigateSocketUrl = common.determineSocketUrl(environment, '/investigate/socket');
 
+
   return {
     'endpoint-server-ping': {
       socketUrl
@@ -20,6 +21,13 @@ const filesConfigGen = function(environment) {
       findAll: {
         subscriptionDestination: '/user/queue/endpoint/investigate/servers',
         requestDestination: '/ws/endpoint/investigate/servers'
+      }
+    },
+    'core-event-count-distinct': {
+      socketUrl: investigateSocketUrl,
+      stream: {
+        subscriptionDestination: '/user/queue/investigate/events/countdistinct',
+        requestDestination: '/ws/investigate/events/countdistinct'
       }
     },
     'files': {

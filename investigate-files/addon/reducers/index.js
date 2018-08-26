@@ -5,6 +5,7 @@ import filter from './file-filter/reducer';
 import preferences from './preferences/reducer';
 import endpointServer from './endpoint-server/reducer';
 import endpointQuery from './endpoint-query/reducer';
+import investigateQuery from './investigate-query/reducer';
 
 export default combineReducers({
   files: combineReducers({
@@ -14,5 +15,6 @@ export default combineReducers({
   }),
   preferences,
   endpointServer,
-  endpointQuery
+  endpointQuery,
+  investigateQuery
 });

@@ -69,7 +69,8 @@ test('should return the initial state', function(assert) {
     lookupData: [{}],
     contextError: null,
     contextLoadingStatus: 'wait',
-    selectedFileList: []
+    selectedFileList: [],
+    agentCountMapping: {}
   });
 });
 

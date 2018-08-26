@@ -1,6 +1,7 @@
 {{#rsa-data-table
   lazy=true
   items=files
+  agentCountMapping=agentCountMapping
   columnsConfig=updatedColumns
   onRowClick=(action 'toggleSelectedRow')}}
   {{#file-list/header enableColumnFilter=true translateTitles=true enableColumnSelector=true as |column|}}
@@ -25,7 +26,7 @@
       {{rsa-loader size='larger'}}
     </centered>
   {{else}}
-    {{#rsa-data-table/body
+    {{#file-list/body
       rowComponentClass=(
         component 'endpoint/file-custom-row'
         serviceList=serviceList
@@ -47,6 +48,8 @@
         {{#rsa-data-table/body-cell column=column}}
           {{#if (eq column.field 'size')}}
             {{rsa-content-memsize size=(get item column.field)}}
+          {{else if (eq column.field 'machineCount')}}
+            {{file-list/machine-count item=item machineCountMapping=agentCountMapping}}
           {{else if (eq column.field 'pe.imageSize')}}
             {{rsa-content-memsize size=(get item column.field)}}
           {{else if (eq column.field 'signature.features')}}
@@ -68,7 +71,7 @@
           {{/if}}
         {{/rsa-data-table/body-cell}}
       {{/if}}
-    {{/rsa-data-table/body}}
+    {{/file-list/body}}
       {{rsa-data-table/load-more status=loadMoreStatus click=(action 'getPageOfFiles')}}
   {{/if}}
 {{/rsa-data-table}}

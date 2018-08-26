@@ -113,6 +113,11 @@ const initializeFilesPreferences = () => {
           });
         }
       }
+      // Bellow code is temp, will be removed once server side preference is implemented
+      const json = localStorage.getItem('investigatePreference');
+      const storedState = json ? JSON.parse(json) : null;
+      // *****/
+      dispatch({ type: ACTION_TYPES.SET_QUERY_INPUT, payload: storedState || {} });
       dispatch(getFilter());
     });
   };
@@ -333,6 +338,10 @@ const applySavedFilters = (filter) => {
   };
 };
 
+
+const fetchMachineCount = (checksums) => ({ type: ACTION_TYPES.GET_AGENTS_COUNT_SAGA, payload: checksums });
+
+
 export {
   getFilter,
   deleteFilter,
@@ -354,5 +363,6 @@ export {
   saveFileStatus,
   getFileStatusChangeHistory,
   applyFilters,
-  applySavedFilters
+  applySavedFilters,
+  fetchMachineCount
 };

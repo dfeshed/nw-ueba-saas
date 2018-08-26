@@ -209,6 +209,12 @@ page.investigate-files-engine {
 
     }
   }
+  .machine-count, .machine-count * {
+    overflow: initial;
+  }
+  .machine-count {
+    padding-left: rsa-whitespace(more);
+  }
 
 }
 

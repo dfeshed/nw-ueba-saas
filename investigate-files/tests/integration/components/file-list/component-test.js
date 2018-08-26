@@ -132,9 +132,9 @@ module('Integration | Component | file list', function(hooks) {
       .preferences({ filePreference })
       .build();
     await render(hbs`{{file-list}}`);
-    assert.equal(findAll('.rsa-data-table-header-cell').length, 4, 'Returned the number of columns of the datatable');
-    assert.equal(findAll('.rsa-data-table-header .js-move-handle').length, 3, '3 movable columns present');
-    assert.equal(findAll('.rsa-data-table-header-row .rsa-icon').length, 3, '3 sortable columns present');
+    assert.equal(findAll('.rsa-data-table-header-cell').length, 5, 'Returned the number of columns of the datatable');
+    assert.equal(findAll('.rsa-data-table-header .js-move-handle').length, 4, '4 movable columns present');
+    assert.equal(findAll('.rsa-data-table-header-row .rsa-icon').length, 4, '4 sortable columns present');
   });
 
   test('Should return the number of cells in datatable body', async function(assert) {
@@ -150,7 +150,7 @@ module('Integration | Component | file list', function(hooks) {
         }
       </style>
     {{file-list}}`);
-    assert.equal(findAll('.rsa-data-table-body-cell').length, 8, 'Returned the number of cells in data-table body');
+    assert.equal(findAll('.rsa-data-table-body-cell').length, 10, 'Returned the number of cells in data-table body');
   });
 
   test('Check that no results message rendered if no data items', async function(assert) {
@@ -214,8 +214,8 @@ module('Integration | Component | file list', function(hooks) {
       </style>
       {{file-list}}`);
     return settled().then(() => {
-      assert.equal(findAll('.rsa-data-table-body-cell')[2].textContent.trim(), 'unsigned', 'Testing of signature when it is not signed');
-      assert.equal(findAll('.rsa-data-table-body-cell')[5].textContent.trim(), 'signed,valid', 'Testing of signature when it is signed');
+      assert.equal(findAll('.rsa-data-table-body-cell')[3].textContent.trim(), 'unsigned', 'Testing of signature when it is not signed');
+      assert.equal(findAll('.rsa-data-table-body-cell')[7].textContent.trim(), 'signed,valid', 'Testing of signature when it is signed');
     });
   });
 
@@ -331,12 +331,12 @@ module('Integration | Component | file list', function(hooks) {
     find('.rsa-icon-cog-filled').click();
 
     return settled().then(() => {
-      assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 3, 'initial visible column count is 3');
+      assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 4, 'initial visible column count is 3');
       findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label')[1].click();
       return waitFor(() => {
-        return findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label.checked').length === 2;
+        return findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox-label.checked').length === 4;
       }).then(() => {
-        assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 2, 'visible column is 2');
+        assert.equal(findAll('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 4, 'visible column is 2');
       });
     });
   });

@@ -23,7 +23,8 @@ const fileListState = Immutable.from({
   contextError: null,
   contextLoadingStatus: 'wait',
   selectedFileList: [],
-  fileData: {}
+  fileData: {},
+  agentCountMapping: {}
 });
 
 const _handleAppendFiles = (action) => {
@@ -118,6 +119,8 @@ const fileListReducer = handleActions({
   },
 
   [ACTION_TYPES.INCREMENT_PAGE_NUMBER]: (state) => state.set('pageNumber', state.pageNumber + 1),
+
+  [ACTION_TYPES.SET_AGENT_COUNT]: (state, { payload }) => state.set('agentCountMapping', { ...state.agentCountMapping, ...payload }),
 
   [ACTION_TYPES.RESET_DOWNLOAD_ID]: (state) => state.set('downloadId', null),
 

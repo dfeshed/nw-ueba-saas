@@ -38,7 +38,8 @@ const stateToComputed = (state) => ({
   isAllSelected: isAllSelected(state),
   selections: state.files.fileList.selectedFileList,
   checksums: checksums(state),
-  itemList: state.files.fileList.selectedFileList
+  itemList: state.files.fileList.selectedFileList,
+  agentCountMapping: state.files.fileList.agentCountMapping
 });
 
 const dispatchToActions = {
@@ -80,6 +81,14 @@ const FileList = Component.extend({
       field: 'firstFileName',
       searchable: true,
       title: 'investigateFiles.fields.firstFileName'
+    },
+    {
+      dataType: 'string',
+      width: 100,
+      visible: true,
+      field: 'machineCount',
+      searchable: false,
+      title: 'investigateFiles.fields.machineCount'
     }
   ],
 
