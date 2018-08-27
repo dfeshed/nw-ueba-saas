@@ -298,7 +298,7 @@ test('DELETE_GUIDED_PILLS removes the pill provided and removes focus from any o
   const result = reducer(stateWithFocusedPill, action);
 
   assert.equal(result.pillsData.length, 1, 'pillsData is the correct length');
-  assert.equal(result.pillsData[0].id, 1, 'pillsData still has an item');
+  assert.ok(result.pillsData[0].id !== result.pillsData.id, 'pill would now have an updated id');
   assert.ok(result.pillsData[0].isFocused === false, 'The pill that had focus no longer has it');
 });
 
@@ -433,7 +433,8 @@ test('SELECT_GUIDED_PILLS selects multiple pills', function(assert) {
       }, {
         id: '2',
         foo: 8907
-      }]
+      }],
+      shouldIgnoreFocus: true
     }
   };
   const result = reducer(stateWithPills, action);
@@ -503,7 +504,8 @@ test('DESELECT_GUIDED_PILLS deselects multiple pills', function(assert) {
       }, {
         id: '2',
         foo: 8907
-      }]
+      }],
+      shouldIgnoreFocus: true
     }
   };
   const result = reducer(stateWithPillsSelected, action);

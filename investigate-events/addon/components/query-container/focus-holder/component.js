@@ -22,7 +22,7 @@ export default Component.extend({
   throttleKeyDown({ e }) {
     const evtobj = window.event ? event : e;
     if (isBackspace(evtobj) || isDelete(evtobj)) {
-      this.get('sendMessage')(MESSAGE_TYPES.SELECTED_FOCUS_DELETE_PRESSED);
+      this.get('sendMessage')(MESSAGE_TYPES.FOCUSED_PILL_DELETE_PRESSED);
     } else if (isEnter(evtobj)) {
       this.get('sendMessage')(MESSAGE_TYPES.SELECTED_FOCUS_ENTER_PRESSED);
     } else if ((isArrowDown(evtobj) || isArrowRight(evtobj)) && evtobj.shiftKey) {

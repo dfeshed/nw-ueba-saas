@@ -54,7 +54,7 @@ export default Component.extend({
     this._super(arguments);
     this.set('_messageHandlerMap', {
       [MESSAGE_TYPES.DELETE_CLICKED]: (data) => this._deletePill(data),
-      [MESSAGE_TYPES.SELECTED_FOCUS_DELETE_PRESSED]: () => this._selectedFocusDeletePressed(),
+      [MESSAGE_TYPES.FOCUSED_PILL_DELETE_PRESSED]: () => this._focusedPillDeletePressed(),
       [MESSAGE_TYPES.SELECTED_FOCUS_ENTER_PRESSED]: () => this._selectedFocusEnterPressed(),
       [MESSAGE_TYPES.SELECTED_FOCUS_SHIFT_DOWN_RIGHT_ARROW_PRESSED]: () => this._selectedFocusShiftDownRightArrowPressed(),
       [MESSAGE_TYPES.SELECTED_FOCUS_SHIFT_UP_LEFT_ARROW_PRESSED]: () => this._selectedFocusShiftUpLeftArrowPressed()
@@ -173,8 +173,8 @@ export default Component.extend({
    * user presses either delete or backspace
    * @private
    */
-  _selectedFocusDeletePressed() {
-    this.get('sendMessage')(MESSAGE_TYPES.DELETE_PRESSED_ON_SELECTED_PILL);
+  _focusedPillDeletePressed() {
+    this._broadcast(MESSAGE_TYPES.DELETE_PRESSED_ON_FOCUSED_PILL, this.get('pillData'));
   },
 
   _selectedFocusEnterPressed() {

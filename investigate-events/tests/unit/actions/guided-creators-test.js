@@ -125,6 +125,82 @@ module('Unit | Actions | Guided Creators', function(hooks) {
     thunk1(firstDispatch);
   });
 
+  test('deleteSelectedGuidedPills action creator returns proper types/payloads when a focused pill is passed in which is not selected', function(assert) {
+    const done = assert.async(2);
+    const state = new ReduxDataHelper()
+      .language()
+      .pillsDataPopulated()
+      .markFocused(['1'])
+      .build();
+
+    // beacuse there is no pill selected, deselectAllGuidedPills will not be triggered
+    const secondDispatch = (action) => {
+      if (typeof action === 'function') {
+        done();
+      } else {
+        assert.equal(action.type, ACTION_TYPES.DELETE_GUIDED_PILLS, 'action has the correct type');
+        assert.deepEqual(action.payload.pillData, [{ pillData: 'foo' } ], 'action pillData has the right value');
+        done();
+      }
+    };
+
+    const firstDispatch = (action) => {
+      const thunk2 = action;
+      const getState = () => state;
+      thunk2(secondDispatch, getState);
+    };
+
+    const thunk1 = guidedCreators.deleteSelectedGuidedPills({
+      pillData: 'foo'
+    });
+
+    thunk1(firstDispatch);
+  });
+
+  test('deleteSelectedGuidedPills action creator returns proper types/payloads when a focused pill is passed in which is also selected', function(assert) {
+    const done = assert.async(2);
+    assert.expect(4);
+    const state = new ReduxDataHelper()
+      .language()
+      .pillsDataPopulated()
+      .markSelected(['1', '2'])
+      .markFocused(['1'])
+      .build();
+
+    // There should be still one pill present which is selected
+    // DeselectAll should catch that pill after focused pill is deleted
+    const thirdDispatch = (action) => {
+      assert.equal(action.type, ACTION_TYPES.DESELECT_GUIDED_PILLS, 'action has the correct type');
+      assert.deepEqual(action.payload.pillData, state.investigate.queryNode.pillsData, 'action pillData has the right value');
+      done();
+    };
+
+    // beacuse there is no pill selected, deselectAllGuidedPills will not be triggered
+    const secondDispatch = (action) => {
+      if (typeof action === 'function') {
+        const thunk3 = action;
+        const getState = () => state;
+        thunk3(thirdDispatch, getState);
+      } else {
+        assert.equal(action.type, ACTION_TYPES.DELETE_GUIDED_PILLS, 'action has the correct type');
+        assert.deepEqual(action.payload.pillData, [{ pillData: 'foo' } ], 'action pillData has the right value');
+        done();
+      }
+    };
+
+    const firstDispatch = (action) => {
+      const thunk2 = action;
+      const getState = () => state;
+      thunk2(secondDispatch, getState);
+    };
+
+    const thunk1 = guidedCreators.deleteSelectedGuidedPills({
+      pillData: 'foo'
+    });
+
+    thunk1(firstDispatch);
+  });
+
 
   test('deselectGuidedPills action creator returns proper type and payload', function(assert) {
     const { pillsData } = new ReduxDataHelper()

@@ -204,7 +204,7 @@ export default Component.extend({
       [MESSAGE_TYPES.OPERATOR_ESCAPE_KEY]: () => this._cancelPill(),
       [MESSAGE_TYPES.OPERATOR_SELECTED]: (data) => this._operatorSelected(data),
       [MESSAGE_TYPES.DELETE_CLICKED]: () => this._deletePill(),
-      [MESSAGE_TYPES.SELECTED_FOCUS_DELETE_PRESSED]: () => this._selectedFocusDeletePressed(),
+      [MESSAGE_TYPES.FOCUSED_PILL_DELETE_PRESSED]: () => this._focusedDeletePressed(),
       [MESSAGE_TYPES.SELECTED_FOCUS_ENTER_PRESSED]: () => this._selectedFocusEnterPressed(),
       [MESSAGE_TYPES.SELECTED_FOCUS_SHIFT_DOWN_RIGHT_ARROW_PRESSED]: () => this._selectedFocusShiftDownRightArrowPressed(),
       [MESSAGE_TYPES.SELECTED_FOCUS_SHIFT_UP_LEFT_ARROW_PRESSED]: () => this._selectedFocusShiftUpLeftArrowPressed(),
@@ -787,12 +787,12 @@ export default Component.extend({
 
   /**
    * Handles events propagating from focus-holder
-   * This will be called only when a pill is selected and
-   * user presses either delete or backspace
+   * This will be called only when a pill is focused and
+   * user either presses delete or backspace
    * @private
    */
-  _selectedFocusDeletePressed() {
-    this.get('sendMessage')(MESSAGE_TYPES.DELETE_PRESSED_ON_SELECTED_PILL);
+  _focusedDeletePressed() {
+    this._broadcast(MESSAGE_TYPES.DELETE_PRESSED_ON_FOCUSED_PILL, this._createPillData(this.get('valueString')));
   },
 
   /**

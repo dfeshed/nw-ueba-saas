@@ -146,12 +146,12 @@ const _shouldRemoveFocus = (selectedOrDeselectedPills, focusedPillData) => {
   return false;
 };
 
-const _handlePillFocus = (state, selectedOrDeselectedPills, shouldIgnoreFocus = false) => {
+const _handlePillFocus = (state, selectedOrDeselectedPills, shouldIgnoreFocus = false, isSelected) => {
 
   // if shouldIgnoreFocus is passed in explicitly, due to multiple
   // selected/deselected pills, no need to handle focus
   if (shouldIgnoreFocus) {
-    return state;
+    return handlePillSelection(state, selectedOrDeselectedPills, isSelected);
   } else {
     const focusedPillData = focusedPill({ investigate: { queryNode: state } });
     let newState = state;
@@ -165,7 +165,7 @@ const _handlePillFocus = (state, selectedOrDeselectedPills, shouldIgnoreFocus = 
     // Continue adding focus to a pill if the array contains just 1 pill
     if (selectedOrDeselectedPills.length === 1) {
       const [needsFocusPill] = selectedOrDeselectedPills;
-      newState = _addFocus(newState, needsFocusPill);
+      newState = _addFocus(newState, needsFocusPill, isSelected);
     }
     return newState;
   }
@@ -177,6 +177,7 @@ const _removeFocus = (state) => {
     if (pill.isFocused) {
       return {
         ...pill,
+        id: _.uniqueId(ID_PREFIX),
         isFocused: false
       };
     }
@@ -185,18 +186,28 @@ const _removeFocus = (state) => {
   return state.set('pillsData', newPillsData);
 };
 
-const _addFocus = (state, needsFocusPill) => {
+const _addFocus = (state, needsFocusPill, isSelected) => {
   const { pillsData } = state;
   const newPillsData = pillsData.map((pill) => {
     if (pill.id === needsFocusPill.id) {
       return {
         ...pill,
-        isFocused: true
+        id: _.uniqueId(ID_PREFIX),
+        isFocused: true,
+        isSelected
       };
     }
     return pill;
   });
   return state.set('pillsData', newPillsData);
+};
+
+const _deletePills = (state, pillsToBeDeleted) => {
+  // get id'd for pills that need to be deleted
+  const deleteIds = pillsToBeDeleted.map((pD) => pD.id);
+  // remove those pill ids from state
+  const newPills = state.pillsData.filter((pD) => !deleteIds.includes(pD.id));
+  return state.set('pillsData', newPills);
 };
 
 const _handlePillUpdate = (state, pillData) => {
@@ -446,11 +457,9 @@ export default handleActions({
   },
 
   [ACTION_TYPES.DELETE_GUIDED_PILLS]: (state, { payload }) => {
-    const focusRemovedState = _removeFocus(state);
     const { pillData } = payload;
-    const deleteIds = pillData.map((pD) => pD.id);
-    const newPills = focusRemovedState.pillsData.filter((pD) => !deleteIds.includes(pD.id));
-    return state.set('pillsData', newPills);
+    const deletedPillsState = _deletePills(state, pillData);
+    return _removeFocus(deletedPillsState);
   },
 
   [ACTION_TYPES.REMOVE_FOCUS_GUIDED_PILL]: (state, { payload }) => {
@@ -465,14 +474,12 @@ export default handleActions({
 
   [ACTION_TYPES.SELECT_GUIDED_PILLS]: (state, { payload }) => {
     const { pillData, shouldIgnoreFocus } = payload;
-    const handledFocusPillState = _handlePillFocus(state, pillData, shouldIgnoreFocus);
-    return handlePillSelection(handledFocusPillState, pillData, true);
+    return _handlePillFocus(state, pillData, shouldIgnoreFocus, true);
   },
 
   [ACTION_TYPES.DESELECT_GUIDED_PILLS]: (state, { payload }) => {
     const { pillData, shouldIgnoreFocus } = payload;
-    const handledFocusPillState = _handlePillFocus(state, pillData, shouldIgnoreFocus);
-    return handlePillSelection(handledFocusPillState, pillData, false);
+    return _handlePillFocus(state, pillData, shouldIgnoreFocus, false);
   },
 
   [ACTION_TYPES.OPEN_GUIDED_PILL_FOR_EDIT]: (state, { payload }) => {

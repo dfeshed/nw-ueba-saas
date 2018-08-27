@@ -774,7 +774,7 @@ module('Integration | Component | query-pills', function(hooks) {
     });
   });
 
-  test('Pressing Delete key once a pill is selected will delete it', async function(assert) {
+  test('Pressing Delete key once a pill is focused will delete it', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -794,7 +794,7 @@ module('Integration | Component | query-pills', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
 
     const metas = findAll(PILL_SELECTORS.meta);
-    await click(`#${metas[0].id}`); // make the 1st pill selected
+    await click(`#${metas[0].id}`); // make the 1st pill focused and selected
 
     assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'Focus holder should be present now');
 
@@ -802,12 +802,12 @@ module('Integration | Component | query-pills', function(hooks) {
 
     return settled().then(() => {
       assert.equal(findAll(PILL_SELECTORS.queryPill).length, 2, 'Should be one pill plus template.');
-      assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'Should be no pill selected.');
+      assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'Focused pill should be deleted.');
       assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
     });
   });
 
-  test('Pressing Backspace key once a pill is selected will delete it', async function(assert) {
+  test('Pressing Backspace key once a pill is focused will delete it', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -827,7 +827,7 @@ module('Integration | Component | query-pills', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
 
     const metas = findAll(PILL_SELECTORS.meta);
-    await click(`#${metas[0].id}`); // make the 1st pill selected
+    await click(`#${metas[0].id}`); // make the 1st pill focused and selected
 
     assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'Focus holder should be present now');
 
@@ -835,12 +835,12 @@ module('Integration | Component | query-pills', function(hooks) {
 
     return settled().then(() => {
       assert.equal(findAll(PILL_SELECTORS.queryPill).length, 2, 'Should be one pill plus template.');
-      assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'Should be no pill selected.');
+      assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'Focused pill should be deleted.');
       assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
     });
   });
 
-  test('Pressing Delete key once a complex pill is selected will delete it', async function(assert) {
+  test('Pressing Delete key once a complex pill is focused will delete it', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -859,7 +859,7 @@ module('Integration | Component | query-pills', function(hooks) {
 
     assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
 
-    await click(PILL_SELECTORS.complexPill); // make the complex pill selected
+    await click(PILL_SELECTORS.complexPill); // make the complex pill focused and selected
 
     assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'Focus holder should be present now');
 
@@ -867,12 +867,12 @@ module('Integration | Component | query-pills', function(hooks) {
 
     return settled().then(() => {
       assert.equal(findAll(PILL_SELECTORS.complexPill).length, 0, 'Should be no complex pill');
-      assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'Should be no pill selected.');
+      assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'Focused pill should be deleted.');
       assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
     });
   });
 
-  test('Pressing backspace key once a complex pill is selected will delete it', async function(assert) {
+  test('Pressing backspace key once a complex pill is focused will delete it', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -891,7 +891,7 @@ module('Integration | Component | query-pills', function(hooks) {
 
     assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
 
-    await click(PILL_SELECTORS.complexPill); // make the complex pill selected
+    await click(PILL_SELECTORS.complexPill); // make the complex pill focused and selected
 
     assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'Focus holder should be present now');
 
@@ -899,8 +899,94 @@ module('Integration | Component | query-pills', function(hooks) {
 
     return settled().then(() => {
       assert.equal(findAll(PILL_SELECTORS.complexPill).length, 0, 'Should be no complex pill');
-      assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'Should be no pill selected.');
+      assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'Focused pill should be deleted.');
       assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
+    });
+  });
+
+  test('Pressing Delete key on a focused pill which is not selected, will delete only that pill', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    assert.expect(6);
+    const done = assert.async();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await leaveNewPillTemplate();
+
+    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
+
+    let metas = findAll(PILL_SELECTORS.meta);
+    // select and add focus on the first pill, which is a = x
+    await click(`#${metas[0].id}`);
+
+    metas = findAll(PILL_SELECTORS.meta);
+    // select and add focus on the second pill
+    await click(`#${metas[1].id}`);
+
+    metas = findAll(PILL_SELECTORS.meta);
+    // click on the first pill again to remove selection, but keep it focused
+    await click(`#${metas[0].id}`);
+
+    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'Focus holder should be present now');
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', DELETE_KEY);
+
+    return settled().then(() => {
+      assert.equal(findAll(PILL_SELECTORS.queryPill).length, 2, 'Should be one pill plus template.');
+      assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'Focused pill should be deleted.');
+      assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
+      const pillText = find(PILL_SELECTORS.queryPill).title;
+      assert.equal(pillText, 'b = \'y\'', 'Pill that was selected, but not focused, is still there');
+      done();
+    });
+  });
+
+  test('Pressing delete key on a focused and selected pill will delete that pill and the rest of the selected pills', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    assert.expect(5);
+    const done = assert.async();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await leaveNewPillTemplate();
+
+    assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
+
+    let metas = findAll(PILL_SELECTORS.meta);
+    // select and add focus on the first pill, which is a = x
+    await click(`#${metas[0].id}`);
+
+    metas = findAll(PILL_SELECTORS.meta);
+    // select and add focus on the second pill
+    await click(`#${metas[1].id}`);
+
+    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 2, 'Should be 2 selected pills');
+
+    await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', DELETE_KEY);
+
+    return settled().then(() => {
+      assert.equal(findAll(PILL_SELECTORS.queryPill).length, 1, 'Should be just the template.');
+      assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'No selected pill should be present.');
+      assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'No focused pill should be present');
+      done();
     });
   });
 
@@ -1053,7 +1139,7 @@ module('Integration | Component | query-pills', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 0, 'Should be no selected pills.');
   });
 
-  test('Pressing Shift and Right arrow key once a pill is selected will select all pills to the right', async function(assert) {
+  test('Pressing Shift and Right arrow key once a pill is focused will select all pills to the right', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -1072,10 +1158,10 @@ module('Integration | Component | query-pills', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
 
     const metas = findAll(PILL_SELECTORS.meta);
-    await click(`#${metas[0].id}`); // make the 1st pill selected
+    await click(`#${metas[0].id}`); // make the 1st pill focused and selected
 
     assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'Focus holder should be present now');
-    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 1, 'Should be 1 pill selected.');
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Should be 1 pill focused.');
 
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_RIGHT_KEY, modifiers);
 
@@ -1087,7 +1173,7 @@ module('Integration | Component | query-pills', function(hooks) {
     });
   });
 
-  test('Pressing Shift and Left arrow key once a pill is selected will select all pills to the Left', async function(assert) {
+  test('Pressing Shift and Left arrow key once a pill is focused will select all pills to the Left', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -1106,9 +1192,9 @@ module('Integration | Component | query-pills', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
 
     const metas = findAll(PILL_SELECTORS.meta);
-    await click(`#${metas[1].id}`); // make the 2nd pill selected
+    await click(`#${metas[1].id}`); // make the 2nd pill focused and selected
     assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'Focus holder should be present now');
-    assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 1, 'Should be 1 pill selected.');
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Should be 1 pill focused.');
 
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_LEFT_KEY, modifiers);
 

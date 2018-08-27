@@ -12,7 +12,7 @@
   {{query-container/delete-pill
     sendMessage=(action 'handleMessage')
   }}
-  {{#if isSelected}}
+  {{#if isFocused}}
     {{query-container/focus-holder
       sendMessage=(action 'handleMessage')
     }}

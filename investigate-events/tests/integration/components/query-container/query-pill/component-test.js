@@ -108,7 +108,7 @@ module('Integration | Component | query-pill', function(hooks) {
 
   test('contains a focus holder when selected', async function(assert) {
     let enrichedPill = _getEnrichedPill(this);
-    enrichedPill = enrichedPill.set('isSelected', true);
+    enrichedPill = enrichedPill.set('isFocused', true);
     this.set('pillData', enrichedPill);
     await render(hbs`
       {{query-container/query-pill
@@ -824,24 +824,25 @@ module('Integration | Component | query-pill', function(hooks) {
     assert.equal(find(PILL_SELECTORS.valueInput).selectionStart, 0, 'not at beginning of value'); // |'a'
   });
 
-  test('selected pill sends up a message when delete is pressed', async function(assert) {
-    assert.expect(1);
+  test('focused pill sends up a message when delete is pressed', async function(assert) {
+    assert.expect(2);
 
     const pillState = new ReduxDataHelper(setState)
       .pillsDataPopulated()
       .language()
-      .markSelected(['1'])
+      .markFocused(['1'])
       .build();
 
     const [ enrichedPill ] = enrichedPillsData(pillState);
     this.set('pillData', enrichedPill);
 
-    this.set('handleMessage', (messageType) => {
+    this.set('handleMessage', (messageType, data) => {
       if (isIgnoredInitialEvent(messageType)) {
         return;
       }
 
-      assert.equal(messageType, MESSAGE_TYPES.DELETE_PRESSED_ON_SELECTED_PILL, 'Message sent for pill delete');
+      assert.equal(messageType, MESSAGE_TYPES.DELETE_PRESSED_ON_FOCUSED_PILL, 'Message sent for pill delete');
+      assert.deepEqual(data, { meta: 'a', operator: '=', value: '\'x\'', id: '1', isSelected: false, isFocused: true }, 'Message sent contains correct pill data');
     });
 
     await render(hbs`
@@ -856,24 +857,25 @@ module('Integration | Component | query-pill', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', DELETE_KEY);
   });
 
-  test('selected pill sends up a message when backspace is pressed', async function(assert) {
-    assert.expect(1);
+  test('focused pill sends up a message when backspace is pressed', async function(assert) {
+    assert.expect(2);
 
     const pillState = new ReduxDataHelper(setState)
       .pillsDataPopulated()
       .language()
-      .markSelected(['1'])
+      .markFocused(['1'])
       .build();
 
     const [ enrichedPill ] = enrichedPillsData(pillState);
     this.set('pillData', enrichedPill);
 
-    this.set('handleMessage', (messageType) => {
+    this.set('handleMessage', (messageType, data) => {
       if (isIgnoredInitialEvent(messageType)) {
         return;
       }
 
-      assert.equal(messageType, MESSAGE_TYPES.DELETE_PRESSED_ON_SELECTED_PILL, 'Message sent for pill delete');
+      assert.equal(messageType, MESSAGE_TYPES.DELETE_PRESSED_ON_FOCUSED_PILL, 'Message sent for pill delete');
+      assert.deepEqual(data, { meta: 'a', operator: '=', value: '\'x\'', id: '1', isSelected: false, isFocused: true }, 'Message sent contains correct pill data');
     });
 
     await render(hbs`
@@ -888,13 +890,13 @@ module('Integration | Component | query-pill', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', BACKSPACE_KEY);
   });
 
-  test('selected pill sends up a message when enter is pressed', async function(assert) {
+  test('focused pill sends up a message when enter is pressed', async function(assert) {
     assert.expect(2);
 
     const pillState = new ReduxDataHelper(setState)
     .pillsDataPopulated()
     .language()
-    .markSelected(['1'])
+    .markFocused(['1'])
     .build();
 
     const [ enrichedPill ] = enrichedPillsData(pillState);
@@ -906,7 +908,7 @@ module('Integration | Component | query-pill', function(hooks) {
       }
 
       assert.equal(messageType, MESSAGE_TYPES.ENTER_PRESSED_ON_SELECTED_PILL, 'Message sent to open pill for edit');
-      assert.deepEqual(data, { meta: 'a', operator: '=', value: '\'x\'', id: '1', isSelected: true, isFocused: false }, 'Message sent contains correct pill data');
+      assert.deepEqual(data, { meta: 'a', operator: '=', value: '\'x\'', id: '1', isSelected: false, isFocused: true }, 'Message sent contains correct pill data');
     });
 
     await render(hbs`
@@ -921,13 +923,13 @@ module('Integration | Component | query-pill', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ENTER_KEY);
   });
 
-  test('selected pill sends up a message when shift and Up Arrow is pressed', async function(assert) {
+  test('focused pill sends up a message when shift and Up Arrow is pressed', async function(assert) {
     assert.expect(2);
 
     const pillState = new ReduxDataHelper(setState)
     .pillsDataPopulated()
     .language()
-    .markSelected(['1'])
+    .markFocused(['1'])
     .build();
 
     const [ enrichedPill ] = enrichedPillsData(pillState);
@@ -954,13 +956,13 @@ module('Integration | Component | query-pill', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_UP_KEY, modifiers);
   });
 
-  test('selected pill sends up a message when shift and Left Arrow is pressed', async function(assert) {
+  test('focused pill sends up a message when shift and Left Arrow is pressed', async function(assert) {
     assert.expect(2);
 
     const pillState = new ReduxDataHelper(setState)
     .pillsDataPopulated()
     .language()
-    .markSelected(['1'])
+    .markFocused(['1'])
     .build();
 
     const [ enrichedPill ] = enrichedPillsData(pillState);
@@ -987,13 +989,13 @@ module('Integration | Component | query-pill', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_LEFT_KEY, modifiers);
   });
 
-  test('selected pill sends up a message when shift and Down Arrow is pressed', async function(assert) {
+  test('focused pill sends up a message when shift and Down Arrow is pressed', async function(assert) {
     assert.expect(2);
 
     const pillState = new ReduxDataHelper(setState)
     .pillsDataPopulated()
     .language()
-    .markSelected(['1'])
+    .markFocused(['1'])
     .build();
 
     const [ enrichedPill ] = enrichedPillsData(pillState);
@@ -1020,13 +1022,13 @@ module('Integration | Component | query-pill', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.focusHolderInput, 'keydown', ARROW_DOWN_KEY, modifiers);
   });
 
-  test('selected pill sends up a message when shift and Right Arrow is pressed', async function(assert) {
+  test('focused pill sends up a message when shift and Right Arrow is pressed', async function(assert) {
     assert.expect(2);
 
     const pillState = new ReduxDataHelper(setState)
     .pillsDataPopulated()
     .language()
-    .markSelected(['1'])
+    .markFocused(['1'])
     .build();
 
     const [ enrichedPill ] = enrichedPillsData(pillState);

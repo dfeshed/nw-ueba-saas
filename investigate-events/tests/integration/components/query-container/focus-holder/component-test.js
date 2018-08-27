@@ -26,7 +26,7 @@ module('Integration | Component | focus-holder', function(hooks) {
     assert.expect(1);
 
     this.set('sendMessage', (messageType) => {
-      assert.equal(messageType, MESSAGE_TYPES.SELECTED_FOCUS_DELETE_PRESSED, 'the correct message type is sent when delete is pressed');
+      assert.equal(messageType, MESSAGE_TYPES.FOCUSED_PILL_DELETE_PRESSED, 'the correct message type is sent when delete is pressed');
     });
 
     await render(hbs`{{query-container/focus-holder sendMessage=sendMessage}}`);
@@ -37,7 +37,7 @@ module('Integration | Component | focus-holder', function(hooks) {
     assert.expect(1);
 
     this.set('sendMessage', (messageType) => {
-      assert.equal(messageType, MESSAGE_TYPES.SELECTED_FOCUS_DELETE_PRESSED, 'the correct message type is sent when Backspace is pressed');
+      assert.equal(messageType, MESSAGE_TYPES.FOCUSED_PILL_DELETE_PRESSED, 'the correct message type is sent when Backspace is pressed');
     });
 
     await render(hbs`{{query-container/focus-holder sendMessage=sendMessage}}`);

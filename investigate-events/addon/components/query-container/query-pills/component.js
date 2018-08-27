@@ -152,7 +152,7 @@ const QueryPills = RsaContextMenu.extend({
       [MESSAGE_TYPES.PILL_ADD_CANCELLED]: (data, position) => this._pillAddCancelled(data, position),
       [MESSAGE_TYPES.PILL_CREATED]: (data, position) => this._pillCreated(data, position),
       [MESSAGE_TYPES.PILL_DELETED]: (data) => this._pillDeleted(data),
-      [MESSAGE_TYPES.DELETE_PRESSED_ON_SELECTED_PILL]: () => this._deletePressedOnSelectedPill(),
+      [MESSAGE_TYPES.DELETE_PRESSED_ON_FOCUSED_PILL]: (data) => this._deletePressedOnFocusedPill(data),
       [MESSAGE_TYPES.ENTER_PRESSED_ON_SELECTED_PILL]: (pillData) => this._enterPressedOnSelectedPill(pillData),
       [MESSAGE_TYPES.PILL_EDIT_CANCELLED]: (data) => this._pillEditCancelled(data),
       [MESSAGE_TYPES.PILL_EDITED]: (data) => this._pillEdited(data),
@@ -301,11 +301,11 @@ const QueryPills = RsaContextMenu.extend({
   },
 
   /**
-   * Deletes all selected pills on keypress
+   * Sends out delete action through a focused pill
    * @private
    */
-  _deletePressedOnSelectedPill() {
-    this.send('deleteSelectedGuidedPills');
+  _deletePressedOnFocusedPill(pillData) {
+    this.send('deleteSelectedGuidedPills', pillData);
   },
 
   _pillsSelectAllToRight(position) {

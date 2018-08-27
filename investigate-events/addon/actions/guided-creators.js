@@ -93,16 +93,26 @@ export const deleteGuidedPill = ({ pillData }) => {
   };
 };
 
-export const deleteSelectedGuidedPills = () => {
+// can come from right-click action
+// can come from delete pressed on focused pill
+export const deleteSelectedGuidedPills = (pillData) => {
+  // keyPress delete
   return (dispatch, getState) => {
-    const pillData = selectedPills(getState());
-    if (pillData.length > 0) {
-      dispatch({
-        type: ACTION_TYPES.DELETE_GUIDED_PILLS,
-        payload: {
-          pillData: selectedPills(getState())
-        }
-      });
+
+    // if no pill is sent, it's a right click action - delete all selected
+    // or if a focused pill is passed that is also selected - delete all selected
+    if (!pillData || (pillData && pillData.isSelected)) {
+      const selectedPD = selectedPills(getState());
+      if (selectedPD.length > 0) {
+        dispatch({
+          type: ACTION_TYPES.DELETE_GUIDED_PILLS,
+          payload: {
+            pillData: selectedPD
+          }
+        });
+      }
+    } else {
+      dispatch(deleteGuidedPill({ pillData: [pillData] }));
     }
   };
 };
