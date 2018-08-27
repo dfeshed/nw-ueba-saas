@@ -1,0 +1,18 @@
+{{#if step.prevStepId}}
+  {{#rsa-form-button
+    class='prev-button'
+    defaultAction='transitionToPrevStep'
+  }}
+    Previous
+  {{/rsa-form-button}}
+{{/if}}
+
+{{#if step.nextStepId}}
+  {{#rsa-form-button
+    class='next-button'
+    style='primary'
+    defaultAction='transitionToNextStep'
+  }}
+    Next
+  {{/rsa-form-button}}
+{{/if}}

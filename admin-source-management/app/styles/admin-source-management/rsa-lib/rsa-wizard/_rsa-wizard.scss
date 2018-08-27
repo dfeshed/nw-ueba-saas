@@ -1,0 +1,108 @@
+.rsa-wizard-container {
+  /* border: 2px solid red; */ /* debug */
+
+  .rsa-wizard-left-container {
+    min-width: 250px;
+    max-width: 350px;
+    /* border: 2px solid green; */ /* debug */
+    border-right: 1px solid border-color(secondary);
+
+    div {
+      border-bottom: 1px solid border-color(primary,light);
+      padding-top: rsa-whitespace();
+      padding-bottom: rsa-whitespace();
+      padding-left: rsa-whitespace();
+      background-color: background-color(primary,darkest);
+      color: text-color(primary,light);
+    }
+
+    ul {
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      background-color: background-color(primary,darkest);
+      list-style-type: none;
+    }
+
+    li a {
+      display: block;
+      position: relative;
+      border-bottom: 1px solid border-color(primary,light);
+      padding-top: rsa-whitespace();
+      padding-right: rsa-whitespace(more);
+      padding-bottom: rsa-whitespace();
+      padding-left: rsa-whitespace(more);
+      background-color: background-color(primary,darkest);
+      color: text-color(primary,light);
+      text-decoration: none;
+      /* TODO make steps clickable once we figure out validation
+      cursor: pointer;
+      */
+    } 
+
+    li a.active {
+      margin-top: -2px;
+      margin-right: -1px;
+      border-top: 1px solid border-color(secondary);
+      border-bottom: 1px solid border-color(secondary);
+      color: text-color(secondary);
+    }
+
+    /* TODO make steps clickable once we figure out validation
+    li a:hover:not(.active) {
+      background-color: background-color(primary,darker);
+    }
+    */
+
+    li i {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      margin-top: auto;
+      margin-right: rsa-whitespace(less);
+      margin-bottom: auto;
+    }
+  }
+
+  .rsa-wizard-right-container {
+    /* border: 2px solid blue; */ /* debug */
+    overflow: hidden;
+    padding-top: rsa-whitespace();
+    padding-left: rsa-whitespace();
+  }
+
+  .rsa-wizard-step-container {
+    /* border: 2px dashed red; */ /* debug */
+    overflow: hidden;
+    /* padding-bottom: rsa-whitespace(most); */
+  }
+
+   /* 
+    currently the consumer's step component/s must...
+    - be a <hbox class="scroll-box rsa-wizard-step"> or <vbox class="scroll-box rsa-wizard-step">
+    - set a max-height of (100vh - (top nav height/s + toolbar min-height from below))
+        ex. max-height: calc(100vh - 187px);
+    
+    "scroll-box" style adds correct scrolling for the step
+    "rsa-wizard-step" style adds correct default padding
+    */
+  .rsa-wizard-step {
+    padding-top: rsa-whitespace();
+    padding-right: rsa-whitespace(more);
+    padding-bottom: rsa-whitespace(most);
+    padding-left: rsa-whitespace();
+  }
+
+  .rsa-wizard-toolbar-container {
+    /* border: 2px dashed green; */ /* debug */
+    min-height: 49px;
+    overflow: hidden;
+    border-top: 1px solid border-color(primary,light);
+    padding-top: rsa-whitespace();
+    padding-left: rsa-whitespace();
+  }
+
+}

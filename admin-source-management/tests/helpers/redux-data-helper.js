@@ -1,4 +1,6 @@
 import Immutable from 'seamless-immutable';
+import _ from 'lodash';
+import { initialState as policyWizInitialState } from 'admin-source-management/reducers/usm/policy-wizard-reducers';
 
 const _set = (obj, key, val) => {
   if (obj[key]) {
@@ -31,7 +33,9 @@ export default class DataHelper {
   // in case it needs to be used/checked
   build() {
     const state = Immutable.from(this.state);
-    this.setState(state);
+    if (this.setState) {
+      this.setState(state);
+    }
     return state.asMutable();
   }
 
@@ -45,5 +49,29 @@ export default class DataHelper {
     return this;
   }
 
+  policyWiz() {
+    _set(this.state, 'usm.policyWizard', _.cloneDeep(policyWizInitialState));
+    return this;
+  }
+
+  policyWizSourceType(type) {
+    _set(this.state, 'usm.policyWizard.policy.type', type);
+    return this;
+  }
+
+  policyWizName(name) {
+    _set(this.state, 'usm.policyWizard.policy.name', name);
+    return this;
+  }
+
+  policyWizDescription(description) {
+    _set(this.state, 'usm.policyWizard.policy.description', description);
+    return this;
+  }
+
+  policyWizVisited(visitedFieldsArray) {
+    _set(this.state, 'usm.policyWizard.visited', visitedFieldsArray);
+    return this;
+  }
 
 }

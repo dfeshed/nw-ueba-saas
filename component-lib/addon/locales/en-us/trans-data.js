@@ -3526,9 +3526,42 @@ export default {
       },
       saveFailure: 'A problem occurred while trying to save the policy.',
       saveSuccess: 'The policy has been saved successfully.'
+    },
+    policyWizard: {
+      // identify-policy-step
+      identifyPolicy: 'Identify Policy',
+      sourceType: 'Source Type',
+      sourceTypePlaceholder: 'Choose a Source Type',
+      edrSourceType: 'Endpoint Scan',
+      fileLogSourceType: 'Endpoint File Collection Logs',
+      windowsLogSourceType: 'Endpoint Windows Collection Logs',
+      name: 'Policy Name',
+      namePlaceholder: 'Enter a unique policy name',
+      nameRequired: 'Policy name is required',
+      description: 'Policy Description',
+      descPlaceholder: 'Enter a description',
+      // define-policy-step
+      definePolicy: 'Define Policy',
+      // apply-to-group-step
+      applyToGroup: 'Apply to Group',
+      // review-policy-step
+      reviewPolicy: 'Review',
+      // common toolbar
+      previous: 'Previous',
+      next: 'Next',
+      publishPolicy: 'Publish Policy',
+      saveAndClose: 'Save and Close',
+      cancel: 'Cancel'
     }
   },
   // end admin-source-management (a.k.a USM)
+  rsaWizard: {
+    tests: {
+      testStep1Label: 'Test Step 1',
+      testStep2Label: 'Test Step 2',
+      testStep3Label: 'Test Step 3'
+    }
+  },
   rsaExplorer: {
     timeframeOptions: {
       LAST_5_MINUTES: 'Last 5 Minutes',

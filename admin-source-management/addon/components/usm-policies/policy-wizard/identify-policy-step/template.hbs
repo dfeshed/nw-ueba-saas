@@ -1,0 +1,41 @@
+<hbox class="control source-type">
+  <label class="rsa-form-label power-select">
+    <div class="label-text">
+      {{t 'adminUsm.policyWizard.sourceType'}}
+    </div>
+    {{#power-select
+      class='source-type'
+      placeholder=(t 'adminUsm.policyWizard.sourceTypePlaceholder')
+      options=sourceTypes
+      selected=selectedSourceType
+      searchField='label'
+      onchange=(action 'handleSourceTypeChange') as |option|
+    }}
+      {{t option.label}}
+    {{/power-select}}
+  </label>
+</hbox>
+
+<hbox class="control">
+  {{rsa-form-input
+    class='policy-name'
+    label=(t 'adminUsm.policyWizard.name')
+    placeholder=(t 'adminUsm.policyWizard.namePlaceholder')
+    value=(readonly policy.name)
+    maxLength=256
+    isError=(and nameValidator.isError nameValidator.isVisited)
+    errorMessage=(t nameValidator.errorMessage)
+    focusOut=(action 'handleNameChange' value='target.value')
+    }}
+</hbox>
+
+<hbox class="control">
+  {{rsa-form-textarea
+    class='policy-description'
+    label=(t 'adminUsm.policyWizard.description')
+    placeholder=(t 'adminUsm.policyWizard.descPlaceholder')
+    value=(readonly policy.description)
+    maxLength=8000
+    focusOut=(action 'handleDescriptionChange' value='target.value')
+  }}
+</hbox>

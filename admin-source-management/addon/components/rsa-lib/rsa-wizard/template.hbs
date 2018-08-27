@@ -1,0 +1,38 @@
+{{!-- wizard left side steps nav --}}
+<vbox fit class="rsa-wizard-left-container">
+  {{!-- TODO pass in title text as params OR define a new component in config?  --}}
+  <div>TODO pass in title text as params OR define a new component in config?</div>
+  {{!-- TODO maybe extract into a separate component if validation gets crazy? --}}
+  <ul>
+    {{#each steps as |step|}}
+      <li>
+        <a
+          class="{{if (eq currentStepId step.id) 'active'}}"
+          {{!-- TODO make steps clickable once we figure out validations --}}
+          {{!-- onclick={{action 'transitionToStep' step.id}} --}}
+        >
+          {{t step.title}}
+          {{#unless (eq currentStepId step.id)}}
+            {{rsa-icon name='arrow-right-12' style='lined'}}
+          {{/unless}}
+        </a>
+      </li>
+    {{/each}}
+  </ul>
+</vbox>
+
+{{!-- wizard right side step & toolbar container --}}
+<vbox class="rsa-wizard-right-container">
+  {{#each steps as |step|}}
+    {{#if (eq currentStepId step.id)}}
+      {{!-- wizard current step container --}}
+      <vbox fit class="rsa-wizard-step-container">
+        {{component step.stepComponent step=step}}
+      </vbox>
+      {{!-- wizard current step toolbar container --}}
+      <vbox class="rsa-wizard-toolbar-container">
+        {{component step.toolbarComponent step=step transitionToStep=(action 'transitionToStep')}}
+      </vbox>
+    {{/if}}
+  {{/each}}
+</vbox>
