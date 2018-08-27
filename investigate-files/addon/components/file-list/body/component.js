@@ -17,7 +17,7 @@ const FilesTableBody = DataTableBody.extend({
   }),
 
   _fetchMachineCount() {
-    if (!this.get('isDestroyed') && !this.get('isDestroying')) {
+    if (this.get('isDestroyed') || this.get('isDestroying')) {
       return;
     }
     const first = this.get('items.firstObject');
