@@ -140,6 +140,10 @@ export default Component.extend({
       if (this.get('isFocusAtBeginning')) {
         input.setSelectionRange(0, 0);
         this.set('isFocusAtBeginning', false);
+      } else {
+        // IE 11 hack - set to end of string
+        const len = (input && input.value) ? input.value.length : 0;
+        input.setSelectionRange(len, len);
       }
     }
   },
