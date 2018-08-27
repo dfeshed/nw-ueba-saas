@@ -125,19 +125,29 @@ module('Integration | Component | usm-policies/policy', function(hooks) {
     assert.equal(findAll('.available-settings .available-setting').length, 2, 'All available settings rendered on the UI');
   });
 
+  test('All the components in the selected settings is rendered on the UI ', async function(assert) {
+    const newSelectedSettings = [
+      { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
+      { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: false, isGreyedOut: true, callback: 'usm-policies/policy/schedule-config/effective-date' }
+    ];
+    setState({ ...initialState, selectedSettings: newSelectedSettings });
+    await render(hbs`{{usm-policies/policy}}`);
+    assert.equal(findAll('.selected-settings .selected-setting').length, 2, 'All selected settings rendered on the UI');
+  });
+
   test('Effective date component should be greyed out by default', async function(assert) {
     setState({ ...initialState });
     await render(hbs`{{usm-policies/policy}}`);
     assert.equal(findAll('.available-settings .effectiveDate')[0].classList.contains('is-greyed-out'), true, 'Effective date component should be greyed out by default');
   });
 
-  test('No available settings should be rendered when isEnabled flag is true', async function(assert) {
+  test('No available settings should be rendered when isEnabled flag is false', async function(assert) {
     const newAvailableSettings = [
       { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
       { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: false, isGreyedOut: true, callback: 'usm-policies/policy/schedule-config/effective-date' }
     ];
     setState({ ...initialState, availableSettings: newAvailableSettings });
     await render(hbs`{{usm-policies/policy}}`);
-    assert.equal(findAll('.available-settings .available-setting').length, 0, 'No available settings should be rendered when isEnabled flag is true');
+    assert.equal(findAll('.available-settings .available-setting').length, 0, 'No available settings should be rendered when isEnabled flag is false');
   });
 });

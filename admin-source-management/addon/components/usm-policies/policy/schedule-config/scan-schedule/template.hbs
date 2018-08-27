@@ -4,7 +4,7 @@
     {{#each scanScheduleConfig.items as |item|}}
       <label class="rsa-form-radio-label {{if (eq item.name scheduleConfig.scanType) 'checked'}}">
         {{radio-button
-          radioClass='scan-schedule'
+          radioClass='scan-type'
           value=item.name
           changed=(action 'updatePolicyProperty' 'scanType' item.name)
           groupValue=(readonly scheduleConfig.scanType)}}

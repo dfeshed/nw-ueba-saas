@@ -74,7 +74,7 @@ export default Component.extend({
   @computed('convertedTimeFormat', 'convertedDateFormat', 'enableTime')
   convertedFullFormat: (timeFormat, dateFormat, enableTime) => {
     if (!enableTime) {
-      return dateFormat;
+      return `${dateFormat}`;
     }
     return `${dateFormat} ${timeFormat}`;
   },
