@@ -9,12 +9,14 @@ import makePackAction from '../../helpers/make-pack-action';
 module('Unit | Reducers | Packager');
 
 const initialState = Immutable.from({
-  defaultPackagerConfig: {},
+  defaultPackagerConfig: { packageConfig: {} },
   error: null,
   loading: false,
   downloadLink: null,
   updating: false,
-  initialState: {},
+  initialState: {
+    packageConfig: {}
+  },
   devices: {}
 });
 

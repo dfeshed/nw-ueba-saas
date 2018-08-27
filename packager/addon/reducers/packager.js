@@ -5,13 +5,15 @@ import * as ACTION_TYPES from 'packager/actions/types';
 import Immutable from 'seamless-immutable';
 
 const initialState = Immutable.from({
-  defaultPackagerConfig: {},
+  defaultPackagerConfig: { packageConfig: {} },
   error: null,
   loading: false,
   downloadLink: null,
   updating: false,
   devices: {},
-  initialState: {}
+  initialState: {
+    packageConfig: {}
+  }
 });
 
 const packagerReducer = handleActions({
