@@ -40,6 +40,25 @@ module('Integration | Component | RSA Explorer', function(hooks) {
     assert.equal(findAll('.rsa-explorer').length, 1, 'The Explorer component should be found in the DOM');
   });
 
+  test('Delete confirm dialog when rendered has warning title with an array of warnings', async function(assert) {
+    this.set('columns', []);
+    this.set('confirmationData', { count: 1, warningTitle: 'Title', warnings: ['Warning1'] });
+    this.set('creators', creators);
+    await render(hbs`{{rsa-explorer columns=columns confirmationData=confirmationData reduxSpace='componentLib.explorer' creators=creators}}`);
+    const warningTitle = findAll('.rsa-explorer [test-id=test-warning-title]').length;
+    const warnings = findAll('.rsa-explorer [test-id=test-warnings]').length;
+    assert.ok(warningTitle == 1 && warnings == 1, 'Warning title with an array of warnings present');
+  });
+
+  test('Delete confirm dialog when rendered has a single warning', async function(assert) {
+    this.set('columns', []);
+    this.set('confirmationData', { count: 1, warning: ['Warning'] });
+    this.set('creators', creators);
+    await render(hbs`{{rsa-explorer columns=columns confirmationData=confirmationData reduxSpace='componentLib.explorer' creators=creators}}`);
+    const warning = findAll('.rsa-explorer [test-id=test-warning]').length;
+    assert.ok(warning == 1, 'Only one warning present');
+  });
+
   test('The yielded toolbar component renders to the DOM with block content', async function(assert) {
     this.set('columns', []);
     this.set('creators', creators);

@@ -104,8 +104,20 @@
 {{/rsa-application-modal}}
 {{#rsa-application-modal eventId='delete-entities' label=(t "rsaExplorer.confirmation.deleteTitle") style="standard explorer-confirmation-dialog"}}
   <div class='modal-content rsa-explorer-bulk-delete-confirm'>
+    {{#if confirmationData.warningTitle}}
+      <p test-id='test-warning-title'>{{confirmationData.warningTitle}}</p>
+    {{/if}}
+    {{#if confirmationData.warnings}}
+      <span test-id='test-warnings' class="text">
+        <ul class="rsa-disc">
+           {{#each confirmationData.warnings as |warning|}}
+             <li>{{warning}}</li>
+           {{/each}}
+        </ul>
+     </span>
+    {{/if}}
     {{#if confirmationData.warning}}
-      <p>{{confirmationData.warning}}</p>
+      <p test-id='test-warning'>{{confirmationData.warning}}</p>
     {{/if}}
     <p>{{t 'rsaExplorer.confirmation.deleteConfirmation' count=confirmationData.count}}</p>
   </div>

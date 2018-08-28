@@ -118,7 +118,7 @@ module('Integration | Component | Respond Alerts Filters', function(hooks) {
     await click('.filter-option.alert-name-filter .rsa-form-checkbox-label input.rsa-form-checkbox:first-of-type');
   });
 
-  test('delete and uncheck the filter after all alerts are removed', async function(assert) {
+  test('Delete and uncheck the filter after all alerts are removed', async function(assert) {
     patchReducer(this, Immutable.from(alertFilterData));
     const redux = this.owner.lookup('service:redux');
 
@@ -173,7 +173,7 @@ module('Integration | Component | Respond Alerts Filters', function(hooks) {
     assert.equal(document.querySelectorAll('#modalDestination').length, 1);
     assert.equal(document.querySelector('#modalDestination').classList.contains('active'), true, 'the modal was not present for delete');
     assert.equal(findAll(confirmOKButtonSelector)[3].innerHTML.trim(), 'OK', 'OK button is clicked');
-
+    assert.ok(findAll('[test-id=test-warning-title]').length == 1 && findAll('[test-id=test-warnings]').length == 1, 'Confirm modal has warnings');
     await click(findAll(confirmOKButtonSelector)[3]);
 
     await waitUntil(() => {

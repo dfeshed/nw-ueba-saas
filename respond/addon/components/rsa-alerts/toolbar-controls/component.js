@@ -85,11 +85,17 @@ const AlertControls = Component.extend({
     deleteAlerts() {
       const { itemsSelected, confirm, i18n, deleteConfirmationDialogId } =
         this.getProperties('itemsSelected', 'confirm', 'i18n', 'deleteConfirmationDialogId');
-      const deleteWarning = i18n.t('respond.alerts.actions.actionMessages.deleteWarning');
+      const deleteWarningTitle = i18n.t('respond.alerts.actions.actionMessages.deleteWarningTitle');
+      const deleteWarnings = [
+        i18n.t('respond.alerts.actions.actionMessages.removeFromIncidentWarning'),
+        i18n.t('respond.alerts.actions.actionMessages.deleteIncidentWarning'),
+        i18n.t('respond.alerts.actions.actionMessages.resetAlertNameFiltersWarning')
+      ];
       const deleteItems = this._delete(itemsSelected);
       confirm(deleteConfirmationDialogId, {
         count: itemsSelected.length,
-        warning: deleteWarning
+        warningTitle: deleteWarningTitle,
+        warnings: deleteWarnings
       }, deleteItems);
     }
   }
