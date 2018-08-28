@@ -6,6 +6,7 @@ import eventResults from './event-results/reducer';
 import eventTimeline from './event-timeline/reducer';
 import meta from './meta/reducer';
 import queryNode from './query-node/reducer';
+import queryStats from './query-stats/reducer';
 import services from './services/reducer';
 
 export default combineReducers({
@@ -16,5 +17,6 @@ export default combineReducers({
   eventTimeline,
   meta,
   queryNode,
+  queryStats,
   services
 });

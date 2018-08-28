@@ -2,7 +2,9 @@ function sendBatches({
   requestBody,
   dataArray,
   sendMessage,
-  delayBetweenBatches = 100
+  delayBetweenBatches = 100,
+  setupFrames = [],
+  metaPostProcessing = null
 }) {
   const stream = requestBody.stream || {};
   const page = requestBody.page || {};
@@ -10,6 +12,7 @@ function sendBatches({
 
   const batch = stream.batch || 10;
   const pageSize = page.size || stream.limit || 100;
+
   let pageStart = page.index || 0;
   let pageEnd = pageStart + pageSize;
 
@@ -29,23 +32,35 @@ function sendBatches({
     if (i + batch > pageEnd) {
       batchSize = pageEnd - i;
     }
-    batches.push(dataArray.slice(i, i + batchSize));
+
+    batches.push({
+      data: dataArray.slice(i, i + batchSize),
+      meta: {
+        percent: 100
+      }
+    });
   }
 
+  const allFrames = setupFrames.concat(batches);
   const delay = process.env.RESPONSE_DELAY;
-  for (let i = 0; i < batches.length; i++) {
+  for (let i = 0; i < allFrames.length; i++) {
     setTimeout(function(index) {
       return function() {
-        const dataToSend = {
-          data: batches[index]
+        const { data, meta } = allFrames[index];
+
+        let message = {
+          data,
+          meta: {
+            ...meta,
+            complete: delay && delay > 1 ? (index + 1) === allFrames.length : true
+          }
         };
 
-        const complete = delay && delay > 1 ? (index + 1) === batches.length : true;
-        dataToSend.meta = {
-          complete
-        };
+        if (metaPostProcessing && message) {
+          message = metaPostProcessing(message, index);
+        }
 
-        sendMessage(dataToSend);
+        sendMessage(message);
       };
     }(i), i * delayBetweenBatches);
   }

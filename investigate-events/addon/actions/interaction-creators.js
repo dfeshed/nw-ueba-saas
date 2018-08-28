@@ -164,3 +164,11 @@ export const setColumnGroup = (selectedGroup) => {
     prefService.setPreferences('investigate-events-preferences', null, getCurrentPreferences(getState()), getDefaultPreferences(getState()));
   };
 };
+
+/**
+ * Toggles visibility of the query console
+ * @public
+ */
+export const toggleQueryConsole = () => {
+  return { type: ACTION_TYPES.TOGGLE_QUERY_CONSOLE };
+};
