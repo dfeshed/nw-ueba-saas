@@ -10,7 +10,7 @@ const initialState = {
     name: '',
     description: '',
     scheduleConfig: {
-      scanType: 'SCHEDULED',
+      scanType: 'MANUAL',
       enabledScheduledScan: false,
       scheduleOptions: {
         scanStartDate: null,
@@ -140,6 +140,15 @@ export default reduxActions.handleActions({
     return state.merge({
       availableSettings: newAvailableSettings,
       selectedSettings: selectedSettings.filter((el) => el.id !== id)
+    });
+  },
+
+  [ACTION_TYPES.RESET_SCAN_SCHEDULE_TO_DEFAULTS]: (state) => {
+    // when scan schedule is removed from selected settings, all it's child components
+    // (effective date, recurrence interval, processor usage) should be removed.
+    // so reset the state to defaults
+    return state.merge({
+      ...initialState
     });
   },
 

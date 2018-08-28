@@ -14,7 +14,7 @@ const initialState = {
     name: '',
     description: '',
     scheduleConfig: {
-      scanType: 'SCHEDULED',
+      scanType: 'MANUAL',
       enabledScheduledScan: false,
       scheduleOptions: {
         scanStartDate: null,
@@ -150,4 +150,20 @@ module('Integration | Component | usm-policies/policy', function(hooks) {
     await render(hbs`{{usm-policies/policy}}`);
     assert.equal(findAll('.available-settings .available-setting').length, 0, 'No available settings should be rendered when isEnabled flag is false');
   });
+
+  test('No other selected settings should be rendered when scanScheduleId is not in the selected settings ', async function(assert) {
+    const newSelectedSettings = [
+      { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
+      { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/effective-date' }
+    ];
+    setState({ ...initialState, selectedSettings: newSelectedSettings });
+    await render(hbs`{{usm-policies/policy}}`);
+    assert.equal(findAll('.selected-settings .selected-setting').length, 2, 'All selected settings rendered on the UI');
+    // simulate a click on the minus icon next to scan schedule.
+    // this triggers RESET_SCAN_SCHEDULE_TO_DEFAULTS reducer and clears out all selected settings
+    const minusIcon = document.querySelector('.scan-schedule span .rsa-icon');
+    await click(minusIcon);
+    assert.equal(findAll('.selected-settings .selected-setting').length, 0, 'No other selected settings are rendered when scanSchedule is not rendered');
+  });
+
 });

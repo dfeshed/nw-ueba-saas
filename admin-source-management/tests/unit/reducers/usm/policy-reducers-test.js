@@ -14,7 +14,7 @@ const initialState = {
     name: '',
     description: '',
     scheduleConfig: {
-      scanType: 'SCHEDULED',
+      scanType: 'MANUAL',
       enabledScheduledScan: false,
       scheduleOptions: {
         scanStartDate: null,
@@ -32,7 +32,7 @@ const initialState = {
   policyStatus: null,
   availableSettings: [
     { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
-    { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/effective-date' }
+    { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: true, callback: 'usm-policies/policy/schedule-config/effective-date' }
   ],
   selectedSettings: []
 };
@@ -42,6 +42,9 @@ const policyData = {
   'name': 'Zebra 001',
   'description': 'Zebra 001 of policy policy_001'
 };
+
+const scanScheduleId = 'schedOrManScan';
+const effectiveDateId = 'effectiveDate';
 
 test('on NEW_POLICY, state should be reset to the initial state', function(assert) {
   // the reducer copies initialState with a policy.scheduleConfig.scheduleOptions.scanStartDate of today
@@ -203,13 +206,27 @@ test('ADD_TO_SELECTED_SETTINGS adds an entry to the selectedSettings array and c
 });
 
 test('REMOVE_FROM_SELECTED_SETTINGS removes an entry from the selectedSettings array', function(assert) {
-  const payload = 'schedOrManScan';
+  const payload = effectiveDateId;
   const initialStateCopy = _.cloneDeep(initialState);
 
   initialStateCopy.selectedSettings = [
-    { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' }
+    { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: true, callback: 'usm-policies/policy/schedule-config/effective-date' }
   ];
   const nameAction = { type: ACTION_TYPES.REMOVE_FROM_SELECTED_SETTINGS, payload };
   const nameEndState = reducers(Immutable.from(initialStateCopy), nameAction);
-  assert.deepEqual(nameEndState.selectedSettings.length, 0, 'THe entry has been successfully removed from the selectedSettings array');
+  assert.deepEqual(nameEndState.selectedSettings.length, 0, 'The entry has been successfully removed from the selectedSettings array');
+});
+
+test('RESET_SCAN_SCHEDULE_TO_DEFAULTS resets state to initial state when id is scanScheduleId', function(assert) {
+  const payload = scanScheduleId;
+  const initialStateCopy = _.cloneDeep(initialState);
+
+  initialStateCopy.selectedSettings = [
+    { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
+    { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: true, callback: 'usm-policies/policy/schedule-config/effective-date' }
+  ];
+  const nameAction = { type: ACTION_TYPES.RESET_SCAN_SCHEDULE_TO_DEFAULTS, payload };
+  const nameEndState = reducers(Immutable.from(initialStateCopy), nameAction);
+  assert.deepEqual(nameEndState.selectedSettings.length, 0, 'All other entries in selected settings are cleared out when id is scanScheduleId');
+  assert.deepEqual(nameEndState, initialState, 'RESET_SCAN_SCHEDULE_TO_DEFAULTS should reset the state to the initial state');
 });

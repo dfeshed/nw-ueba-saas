@@ -1,6 +1,7 @@
 import * as ACTION_TYPES from 'admin-source-management/actions/types';
 import policyAPI from 'admin-source-management/actions/api/policy-api';
 
+const scanScheduleId = 'schedOrManScan';
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
 const initializePolicy = (policyId) => {
@@ -37,10 +38,20 @@ const addToSelectedSettings = (id) => {
  * @public
  */
 const removeFromSelectedSettings = (id) => {
-  return {
-    type: ACTION_TYPES.REMOVE_FROM_SELECTED_SETTINGS,
-    payload: id
-  };
+  // if the main id like scanScheduleId gets removed, we don't want any of it's child components
+  // like (effective date, recurrence interval, processor usage) be displayed in selected settings.
+  // so reset the state to defaults to clear out everything in selected settings.
+  switch (id) {
+    case scanScheduleId:
+      return {
+        type: ACTION_TYPES.RESET_SCAN_SCHEDULE_TO_DEFAULTS
+      };
+    default:
+      return {
+        type: ACTION_TYPES.REMOVE_FROM_SELECTED_SETTINGS,
+        payload: id
+      };
+  }
 };
 
 /**

@@ -40,7 +40,7 @@ module('Integration | Component | usm-policies/policy/schedule-config/scan-sched
 
   test('It triggers the update policy action creator when the radio button is clicked', async function(assert) {
     await render(hbs`{{usm-policies/policy/schedule-config/scan-schedule}}`);
-    const radioBtn = document.querySelector('.scan-schedule .rsa-form-radio-label:nth-of-type(1) input');
+    const radioBtn = document.querySelector('.scan-schedule .rsa-form-radio-label:nth-of-type(2) input');
     await click(radioBtn);
     assert.equal(updatePolicyPropertySpy.callCount, 1, 'Update policy property action creator was called once');
   });

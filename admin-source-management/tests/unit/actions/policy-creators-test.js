@@ -23,6 +23,12 @@ module('Unit | Actions | policy creators', function(hooks) {
     assert.deepEqual(action.payload, 'id2', 'payload has the correct id');
   });
 
+  test('removeFromSelectedSettings ac returns proper type when id is schedOrManScan', function(assert) {
+    const scanScheduleId = 'schedOrManScan';
+    const action = policyCreators.removeFromSelectedSettings(scanScheduleId);
+    assert.equal(action.type, ACTION_TYPES.RESET_SCAN_SCHEDULE_TO_DEFAULTS, 'action has the correct type');
+  });
+
   test('updatePolicyProperty action creator returns proper type and payload when key is scanType', function(assert) {
     const action = policyCreators.updatePolicyProperty('scanType', 'foo');
     assert.equal(action.type, ACTION_TYPES.TOGGLE_SCAN_TYPE, 'action has the correct type');
