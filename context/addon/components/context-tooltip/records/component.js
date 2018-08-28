@@ -6,6 +6,7 @@ import safeCallback from 'component-lib/utils/safe-callback';
 import { connect } from 'ember-redux';
 import { updateActiveTab } from 'context/actions/context-creators';
 import { getSummaryData } from 'context/actions/model-summary';
+import { run } from '@ember/runloop';
 
 const stateToComputed = ({ context: { hover: { modelSummary } } }) => ({
   modelSummary
@@ -86,7 +87,11 @@ const ContextTooltipRecords = Component.extend({
   init() {
     this._super(...arguments);
     const { model } = this;
-    this.sendAction('getSummaryData', model);
+
+    run.schedule('render', () => {
+      this.send('getSummaryData', model);
+    });
+
   },
 
   /**

@@ -91,6 +91,7 @@ $contextTooltipDatumPadding: 0px;
       color: text-color(primary, lightest);
       text-overflow: ellipsis;
       overflow: hidden;
+      font-size: 0.9rem;
     }
     &.Machines .value,
     &.LiveConnect .value,
@@ -98,6 +99,9 @@ $contextTooltipDatumPadding: 0px;
     &.riskRating .value {
       font-size: 90%;
       line-height: 1.75rem;
+    }
+    &.ReputationServer {
+      width: 90px;
     }
     .text {
       @include rsa-font(base, smaller, uppercase);
