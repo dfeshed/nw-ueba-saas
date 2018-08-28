@@ -205,7 +205,7 @@ export default Component.extend({
       [MESSAGE_TYPES.OPERATOR_SELECTED]: (data) => this._operatorSelected(data),
       [MESSAGE_TYPES.DELETE_CLICKED]: () => this._deletePill(),
       [MESSAGE_TYPES.FOCUSED_PILL_DELETE_PRESSED]: () => this._focusedDeletePressed(),
-      [MESSAGE_TYPES.SELECTED_FOCUS_ENTER_PRESSED]: () => this._selectedFocusEnterPressed(),
+      [MESSAGE_TYPES.FOCUSED_PILL_ENTER_PRESSED]: () => this._focusedEnterPressed(),
       [MESSAGE_TYPES.SELECTED_FOCUS_SHIFT_DOWN_RIGHT_ARROW_PRESSED]: () => this._selectedFocusShiftDownRightArrowPressed(),
       [MESSAGE_TYPES.SELECTED_FOCUS_SHIFT_UP_LEFT_ARROW_PRESSED]: () => this._selectedFocusShiftUpLeftArrowPressed(),
       [MESSAGE_TYPES.VALUE_ARROW_LEFT_KEY]: (data) => this._valueArrowLeft(data),
@@ -801,10 +801,10 @@ export default Component.extend({
    * user presses enter for editing
    * @private
    */
-  _selectedFocusEnterPressed() {
+  _focusedEnterPressed() {
     if (!this.get('isActive')) {
       const pillData = this._createPillData(this.get('valueString'));
-      this._broadcast(MESSAGE_TYPES.ENTER_PRESSED_ON_SELECTED_PILL, pillData);
+      this._broadcast(MESSAGE_TYPES.ENTER_PRESSED_ON_FOCUSED_PILL, pillData);
     }
   },
 

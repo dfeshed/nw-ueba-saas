@@ -1052,7 +1052,7 @@ module('Integration | Component | query-pills', function(hooks) {
     await triggerKeyEvent(PILL_SELECTORS.metaInput, 'keydown', ENTER_KEY);
   });
 
-  test('Pressing ENTER key once a pill is selected will open it for edit', async function(assert) {
+  test('Pressing ENTER key once a pill is focused will open it for edit', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -1071,8 +1071,10 @@ module('Integration | Component | query-pills', function(hooks) {
 
     assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
 
-    const metas = findAll(PILL_SELECTORS.meta);
-    await click(`#${metas[0].id}`); // make the 1st pill selected
+    let metas = findAll(PILL_SELECTORS.meta);
+    await click(`#${metas[0].id}`); // make the 1st pill selected/focused
+    metas = findAll(PILL_SELECTORS.meta);
+    await click(`#${metas[0].id}`); // click again to keep focus but deselect
 
     assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'Focus holder should be present now');
 
@@ -1085,7 +1087,7 @@ module('Integration | Component | query-pills', function(hooks) {
     });
   });
 
-  test('Pressing ENTER key once a complex pill is selected will open it for edit', async function(assert) {
+  test('Pressing ENTER key once a complex pill is focused will open it for edit', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
@@ -1105,6 +1107,7 @@ module('Integration | Component | query-pills', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
 
     await click(PILL_SELECTORS.complexPill); // make the complex pill selected
+    await click(PILL_SELECTORS.complexPill); // click again to keep focus but deselect
 
     assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 1, 'Focus holder should be present now');
 
@@ -1115,6 +1118,34 @@ module('Integration | Component | query-pills', function(hooks) {
       assert.equal(findAll(PILL_SELECTORS.focusHolderInput).length, 0, 'No focus holder should be present');
       assert.equal(findAll(PILL_SELECTORS.complexPillActive).length, 1, 'active complex pill should be present');
       assert.equal(findAll(PILL_SELECTORS.complexPillInput).length, 1, 'complex pill input should be present');
+    });
+  });
+
+  test('Pressing ENTER when no pill is focused, but selected, will not open any pill for edit', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      <div class='outside'></div>
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await leaveNewPillTemplate();
+
+    const metas = findAll(PILL_SELECTORS.meta);
+    await click(`#${metas[0].id}`); // make the 1st pill selected/focused
+    await click(`#${metas[1].id}`); // make the second pill selected/focused
+
+    await click('.outside'); // removing focus from the last pill
+
+    await triggerKeyEvent(PILL_SELECTORS.selectedPill, 'keydown', ENTER_KEY);
+    return settled().then(() => {
+      assert.equal(findAll(PILL_SELECTORS.selectedPill).length, 2, 'Should be still 2 pills selected, enter will not open them for edit');
     });
   });
 

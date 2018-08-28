@@ -54,8 +54,8 @@ export default Component.extend({
     this._super(arguments);
     this.set('_messageHandlerMap', {
       [MESSAGE_TYPES.DELETE_CLICKED]: (data) => this._deletePill(data),
-      [MESSAGE_TYPES.FOCUSED_PILL_DELETE_PRESSED]: () => this._focusedPillDeletePressed(),
-      [MESSAGE_TYPES.SELECTED_FOCUS_ENTER_PRESSED]: () => this._selectedFocusEnterPressed(),
+      [MESSAGE_TYPES.FOCUSED_PILL_DELETE_PRESSED]: () => this._focusedDeletePressed(),
+      [MESSAGE_TYPES.FOCUSED_PILL_ENTER_PRESSED]: () => this._focusedEnterPressed(),
       [MESSAGE_TYPES.SELECTED_FOCUS_SHIFT_DOWN_RIGHT_ARROW_PRESSED]: () => this._selectedFocusShiftDownRightArrowPressed(),
       [MESSAGE_TYPES.SELECTED_FOCUS_SHIFT_UP_LEFT_ARROW_PRESSED]: () => this._selectedFocusShiftUpLeftArrowPressed()
     });
@@ -173,14 +173,14 @@ export default Component.extend({
    * user presses either delete or backspace
    * @private
    */
-  _focusedPillDeletePressed() {
+  _focusedDeletePressed() {
     this._broadcast(MESSAGE_TYPES.DELETE_PRESSED_ON_FOCUSED_PILL, this.get('pillData'));
   },
 
-  _selectedFocusEnterPressed() {
+  _focusedEnterPressed() {
     if (!this.get('isActive')) {
       const pillData = this.get('pillData');
-      this._broadcast(MESSAGE_TYPES.ENTER_PRESSED_ON_SELECTED_PILL, pillData);
+      this._broadcast(MESSAGE_TYPES.ENTER_PRESSED_ON_FOCUSED_PILL, pillData);
     }
   },
 

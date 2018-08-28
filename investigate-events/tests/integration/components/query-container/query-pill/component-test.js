@@ -907,7 +907,7 @@ module('Integration | Component | query-pill', function(hooks) {
         return;
       }
 
-      assert.equal(messageType, MESSAGE_TYPES.ENTER_PRESSED_ON_SELECTED_PILL, 'Message sent to open pill for edit');
+      assert.equal(messageType, MESSAGE_TYPES.ENTER_PRESSED_ON_FOCUSED_PILL, 'Message sent to open pill for edit');
       assert.deepEqual(data, { meta: 'a', operator: '=', value: '\'x\'', id: '1', isSelected: false, isFocused: true }, 'Message sent contains correct pill data');
     });
 

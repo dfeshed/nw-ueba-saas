@@ -60,7 +60,7 @@ module('Integration | Component | focus-holder', function(hooks) {
     assert.expect(1);
 
     this.set('sendMessage', (messageType) => {
-      assert.equal(messageType, MESSAGE_TYPES.SELECTED_FOCUS_ENTER_PRESSED, 'the correct message type is sent when Enter is pressed');
+      assert.equal(messageType, MESSAGE_TYPES.FOCUSED_PILL_ENTER_PRESSED, 'the correct message type is sent when Enter is pressed');
     });
 
     await render(hbs`{{query-container/focus-holder sendMessage=sendMessage}}`);

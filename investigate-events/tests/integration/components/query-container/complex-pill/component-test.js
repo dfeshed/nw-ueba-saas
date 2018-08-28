@@ -332,7 +332,7 @@ module('Integration | Component | complex-pill', function(hooks) {
     this.set('pillData', pillData);
 
     this.set('handleMessage', (messageType, data) => {
-      assert.ok(messageType === MESSAGE_TYPES.ENTER_PRESSED_ON_SELECTED_PILL, 'should send out correct action');
+      assert.ok(messageType === MESSAGE_TYPES.ENTER_PRESSED_ON_FOCUSED_PILL, 'should send out correct action');
       assert.ok(data === pillData, 'should send out pill data');
     });
 
