@@ -47,7 +47,6 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
     private static final String SRC_MACHINE_NAME_FIELD_NAME = "srcMachineName";
     private static final String DST_MACHINE_NAME_FIELD_NAME = "dstMachineName";
 
-    private static final String IP_SRC_FIELD_NAME = "ip_src";
     private static final String RESULT_SUCCESS = "SUCCESS";
     private static final String RESULT_FAILURE = "FAILURE";
     private static final String INTERACTIVE_LOGON_TYPE = "INTERACTIVE";
@@ -97,7 +96,6 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
         srcMachineNameCases.add(new SwitchCaseTransformer.SwitchCase("4624",String.format("${%s[0]}", ALIAS_HOST_FIELD_NAME)));
         srcMachineNameCases.add(new SwitchCaseTransformer.SwitchCase("4625",String.format("${%s[0]}", ALIAS_HOST_FIELD_NAME)));
         srcMachineNameCases.add(new SwitchCaseTransformer.SwitchCase("4776",String.format("${%s}", HOST_SRC_FIELD_NAME)));
-        srcMachineNameCases.add(new SwitchCaseTransformer.SwitchCase("4648",String.format("${%s}", IP_SRC_FIELD_NAME)));
         SwitchCaseTransformer srcMachineNameSwitchCaseTransformer =
                 new SwitchCaseTransformer("src-machine-name-switch-case",
                         EVENT_CODE_FIELD_NAME,
