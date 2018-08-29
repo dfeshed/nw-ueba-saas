@@ -1984,12 +1984,12 @@ export default {
         unknown: 'Unknown'
       },
       reputationStatus: {
-        INVALID: 'INVALID',
-        UNKNOWN: 'UNKNOWN',
-        KNOWN: 'KNOWN',
-        SUSPICIOUS: 'SUSPICIOUS',
-        MALICIOUS: 'MALICIOUS',
-        KNOWN_GOOD: 'KNOWN GOOD'
+        Invalid: 'Invalid',
+        Unknown: 'Unknown',
+        Known: 'Known',
+        Suspicious: 'Suspicious',
+        Malicious: 'Malicious',
+        Known_Good: 'Known Good'
       }
     },
     fields: {

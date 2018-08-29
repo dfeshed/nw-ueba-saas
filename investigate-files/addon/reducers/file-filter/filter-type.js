@@ -39,12 +39,12 @@ const FILTER_TYPES = [
     label: 'investigateFiles.fields.reputationStatus',
     type: 'list',
     listOptions: [
-      { name: 'MALICIOUS', label: 'investigateFiles.filter.reputationStatus.MALICIOUS' },
-      { name: 'SUSPICIOUS', label: 'investigateFiles.filter.reputationStatus.SUSPICIOUS' },
-      { name: 'UNKNOWN', label: 'investigateFiles.filter.reputationStatus.UNKNOWN' },
-      { name: 'KNOWN', label: 'investigateFiles.filter.reputationStatus.KNOWN' },
-      { name: 'KNOWN_GOOD', label: 'investigateFiles.filter.reputationStatus.KNOWN_GOOD' },
-      { name: 'INVALID', label: 'investigateFiles.filter.reputationStatus.INVALID' }
+      { name: 'Malicious', label: 'investigateFiles.filter.reputationStatus.Malicious' },
+      { name: 'Suspicious', label: 'investigateFiles.filter.reputationStatus.Suspicious' },
+      { name: 'Unknown', label: 'investigateFiles.filter.reputationStatus.Unknown' },
+      { name: 'Known', label: 'investigateFiles.filter.reputationStatus.Known' },
+      { name: 'Known Good', label: 'investigateFiles.filter.reputationStatus.Known_Good' },
+      { name: 'Invalid', label: 'investigateFiles.filter.reputationStatus.Invalid' }
     ]
   },
   {
