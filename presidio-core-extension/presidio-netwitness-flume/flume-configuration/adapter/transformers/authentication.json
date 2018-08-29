@@ -97,11 +97,6 @@
           "caseKey": "4776",
           "caseValue": "${host_src}",
           "isRegex": false
-        },
-        {
-          "caseKey": "4648",
-          "caseValue": "${ip_src}",
-          "isRegex": false
         }
       ]
     },
