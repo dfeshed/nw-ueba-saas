@@ -74,7 +74,7 @@ module('Integration | Component | focus-holder', function(hooks) {
     };
 
     this.set('sendMessage', (messageType) => {
-      assert.equal(messageType, MESSAGE_TYPES.SELECTED_FOCUS_SHIFT_UP_LEFT_ARROW_PRESSED, 'the correct message type is sent when shit and Up arrow is pressed');
+      assert.equal(messageType, MESSAGE_TYPES.FOCUSED_PILL_SHIFT_UP_LEFT_ARROW_PRESSED, 'the correct message type is sent when shit and Up arrow is pressed');
     });
 
     await render(hbs`{{query-container/focus-holder sendMessage=sendMessage}}`);
@@ -88,7 +88,7 @@ module('Integration | Component | focus-holder', function(hooks) {
     };
 
     this.set('sendMessage', (messageType) => {
-      assert.equal(messageType, MESSAGE_TYPES.SELECTED_FOCUS_SHIFT_UP_LEFT_ARROW_PRESSED, 'the correct message type is sent when shift and left arrow is pressed');
+      assert.equal(messageType, MESSAGE_TYPES.FOCUSED_PILL_SHIFT_UP_LEFT_ARROW_PRESSED, 'the correct message type is sent when shift and left arrow is pressed');
     });
 
     await render(hbs`{{query-container/focus-holder sendMessage=sendMessage}}`);
@@ -102,7 +102,7 @@ module('Integration | Component | focus-holder', function(hooks) {
     };
 
     this.set('sendMessage', (messageType) => {
-      assert.equal(messageType, MESSAGE_TYPES.SELECTED_FOCUS_SHIFT_DOWN_RIGHT_ARROW_PRESSED, 'the correct message type is sent when shift and right arrow is pressed');
+      assert.equal(messageType, MESSAGE_TYPES.FOCUSED_PILL_SHIFT_DOWN_RIGHT_ARROW_PRESSED, 'the correct message type is sent when shift and right arrow is pressed');
     });
 
     await render(hbs`{{query-container/focus-holder sendMessage=sendMessage}}`);
@@ -116,7 +116,7 @@ module('Integration | Component | focus-holder', function(hooks) {
     };
 
     this.set('sendMessage', (messageType) => {
-      assert.equal(messageType, MESSAGE_TYPES.SELECTED_FOCUS_SHIFT_DOWN_RIGHT_ARROW_PRESSED, 'the correct message type is sent when shift and down is pressed');
+      assert.equal(messageType, MESSAGE_TYPES.FOCUSED_PILL_SHIFT_DOWN_RIGHT_ARROW_PRESSED, 'the correct message type is sent when shift and down is pressed');
     });
 
     await render(hbs`{{query-container/focus-holder sendMessage=sendMessage}}`);

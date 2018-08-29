@@ -566,7 +566,7 @@ module('Unit | Helper | query utils', function(hooks) {
     });
   });
 
-  test('selectPillsFromPosition returns an array with pills selected in right direction', function(assert) {
+  test('selectPillsFromPosition returns an array with pills selected in right direction, including itself', function(assert) {
     assert.expect(2);
     const pills = [{
       a: 'foo'
@@ -581,11 +581,11 @@ module('Unit | Helper | query utils', function(hooks) {
     }];
     const selectedPills = queryUtils.selectPillsFromPosition(pills, 1, 'right');
 
-    assert.equal(selectedPills.length, 3, 'Should output all objects from that position to its right');
-    // Although it should return all objects to its right including itself, but because that
-    // pill is already selected, we do not need it to be included in the selected pills array
+    assert.equal(selectedPills.length, 4, 'Should output all objects from that position to its right');
     assert.deepEqual(selectedPills, [
       {
+        a: 'bar'
+      }, {
         a: 'baz'
       }, {
         a: 'bang'
@@ -595,7 +595,7 @@ module('Unit | Helper | query utils', function(hooks) {
     ]);
   });
 
-  test('selectPillsFromPosition returns an array with pills selected in left direction', function(assert) {
+  test('selectPillsFromPosition returns an array with pills selected in left direction, including itself', function(assert) {
     assert.expect(2);
     const pills = [{
       a: 'foo'
@@ -610,9 +610,7 @@ module('Unit | Helper | query utils', function(hooks) {
     }];
     const selectedPills = queryUtils.selectPillsFromPosition(pills, 3, 'left');
 
-    assert.equal(selectedPills.length, 3, 'Should output all objects from that position to its left');
-    // Although it should return all objects to its right including itself, but because that
-    // pill is already selected, we do not need it to be included in the selected pills array
+    assert.equal(selectedPills.length, 4, 'Should output all objects from that position to its left');
     assert.deepEqual(selectedPills, [
       {
         a: 'foo'
@@ -620,6 +618,8 @@ module('Unit | Helper | query utils', function(hooks) {
         a: 'bar'
       }, {
         a: 'baz'
+      }, {
+        a: 'bang'
       }
     ]);
   });

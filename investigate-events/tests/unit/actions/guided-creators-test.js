@@ -367,22 +367,11 @@ module('Unit | Actions | Guided Creators', function(hooks) {
         .markSelected(['1'])
         .build();
     };
+    const { investigate: { queryNode: { pillsData } } } = getState();
 
     const myDispatch = (action) => {
       assert.equal(action.type, ACTION_TYPES.SELECT_GUIDED_PILLS, 'action has the correct type');
-      assert.deepEqual(action.payload.pillData,
-        [{
-          id: '2',
-          meta: 'b',
-          operator: '=',
-          value: '\'y\'',
-          isSelected: false,
-          isEditing: false,
-          isFocused: false,
-          isInvalid: false,
-          complexFilterText: undefined
-        }],
-        'action pillData will contain the pills that will need to be selected');
+      assert.deepEqual(action.payload.pillData, pillsData, 'action pillData will contain the pills that will need to be selected');
       done();
     };
 
@@ -405,21 +394,11 @@ module('Unit | Actions | Guided Creators', function(hooks) {
         .build();
     };
 
+    const { investigate: { queryNode: { pillsData } } } = getState();
+
     const myDispatch = (action) => {
       assert.equal(action.type, ACTION_TYPES.SELECT_GUIDED_PILLS, 'action has the correct type');
-      assert.deepEqual(action.payload.pillData,
-        [{
-          id: '1',
-          meta: 'a',
-          operator: '=',
-          value: '\'x\'',
-          isSelected: false,
-          isEditing: false,
-          isFocused: false,
-          isInvalid: false,
-          complexFilterText: undefined
-        }],
-        'action pillData will contain the pills that will need to be selected');
+      assert.deepEqual(action.payload.pillData, pillsData, 'action pillData will contain the pills that will need to be selected');
       done();
     };
 
