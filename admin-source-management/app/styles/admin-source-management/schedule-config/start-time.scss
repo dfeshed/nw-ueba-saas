@@ -1,0 +1,22 @@
+.start-time {
+  padding: rsa-whitespace() rsa-whitespace() 0 0;
+  .rsa-form-label {
+    @include rsa-font(default,small);
+  }
+  .title {
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: text-color(primary, light);
+    @include rsa-font(default,small);
+    .remove-setting {
+      float: right;
+      margin-right: rsa-whitespace(more);
+      margin-left: rsa-whitespace(more);
+    }
+  }
+  .schedule-time {
+    .datetime-picker-icon {
+      top: rsa-whitespace();
+    }
+  }
+}

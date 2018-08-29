@@ -27,14 +27,14 @@ const initialState = {
   },
   policyStatus: null, // wait, complete, error
   availableSettings: [
-    { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
-    { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: true, callback: 'usm-policies/policy/schedule-config/effective-date' }
+    { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
+    { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', callback: 'usm-policies/policy/schedule-config/effective-date' },
+    { index: 2, id: 'startTime', label: 'Start Time', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', callback: 'usm-policies/policy/schedule-config/start-time' }
   ],
   selectedSettings: []
 };
 
-// TODO Do not hard code the id when there are more items in the availableSettings.
-const effectiveDateId = 'effectiveDate';
+const scanScheduleId = 'schedOrManScan';
 
 export default reduxActions.handleActions({
 
@@ -61,7 +61,8 @@ export default reduxActions.handleActions({
 
     if (payload === 'SCHEDULED') {
       const newAvailableSettings = availableSettings.map((el) => {
-        if (el.id === effectiveDateId) {
+        // if any of the objects in the array is the child of scanSchedule they should be lit up
+        if (el.parentId === scanScheduleId) {
           return {
             ...el,
             isGreyedOut: false
@@ -76,7 +77,8 @@ export default reduxActions.handleActions({
       return newState.setIn(scanType, payload);
     } else { // 'MANUAL'
       const newAvailableSettings = availableSettings.map((el) => {
-        if (el.id === effectiveDateId) {
+        // if any of the objects in the array is the child of scanSchedule they should be greyed out
+        if (el.parentId === scanScheduleId) {
           return {
             ...el,
             isGreyedOut: true,
@@ -88,7 +90,7 @@ export default reduxActions.handleActions({
       const newState = state.merge({
         policy: { ...initialState.policy },
         availableSettings: newAvailableSettings,
-        selectedSettings: selectedSettings.filter((el) => el.id !== effectiveDateId)
+        selectedSettings: selectedSettings.filter((el) => el.parentId !== scanScheduleId)
       });
       const scheduleOptions = 'policy.scheduleConfig.scheduleOptions'.split('.');
       const scanOptions = 'policy.scheduleConfig.scanOptions'.split('.');

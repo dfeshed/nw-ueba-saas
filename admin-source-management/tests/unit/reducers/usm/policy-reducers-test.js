@@ -31,8 +31,9 @@ const initialState = {
   },
   policyStatus: null,
   availableSettings: [
-    { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
-    { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: true, callback: 'usm-policies/policy/schedule-config/effective-date' }
+    { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
+    { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', callback: 'usm-policies/policy/schedule-config/effective-date' },
+    { index: 2, id: 'startTime', label: 'Start Time', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', callback: 'usm-policies/policy/schedule-config/start-time' }
   ],
   selectedSettings: []
 };
@@ -151,6 +152,22 @@ test('when MANUAL, TOGGLE_SCAN_TYPE greys out the effective date component in th
   assert.deepEqual(nameEndState.availableSettings[1].isGreyedOut, endState.availableSettings[1].isGreyedOut, 'Effective date component is greyed out correctly');
 });
 
+test('when MANUAL, TOGGLE_SCAN_TYPE greys out the start-time component in the available settings', function(assert) {
+  const payload = 'MANUAL';
+
+  const nameAction = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
+  const nameEndState = reducers(Immutable.from(initialState), nameAction);
+  assert.equal(nameEndState.availableSettings[2].isGreyedOut, true, 'start-time component is greyed out correctly when MANUAL is selected');
+});
+
+test('when SCHEDULED, TOGGLE_SCAN_TYPE lights up the start-time component in the available settings', function(assert) {
+  const payload = 'SCHEDULED';
+
+  const nameAction = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
+  const nameEndState = reducers(Immutable.from(initialState), nameAction);
+  assert.equal(nameEndState.availableSettings[2].isGreyedOut, false, 'start-time component lights up correctly when SCHEDULED is selected');
+});
+
 test('when SCHEDULED, TOGGLE_SCAN_TYPE lights up the effective date component in available settings', function(assert) {
   const payload = 'SCHEDULED';
 
@@ -178,7 +195,7 @@ test('ADD_TO_SELECTED_SETTINGS adds an entry to the selectedSettings array', fun
   };
   const nameAction = { type: ACTION_TYPES.ADD_TO_SELECTED_SETTINGS, payload };
   const nameEndState = reducers(Immutable.from(initialState), nameAction);
-  assert.deepEqual(nameEndState.selectedSettings, endState.selectedSettings, 'Entry added to Selected settings from Available Settings');
+  assert.deepEqual(nameEndState.selectedSettings.length, endState.selectedSettings.length, 'Entry added to Selected settings from Available Settings');
   assert.deepEqual(nameEndState.availableSettings[0].isEnabled, endState.availableSettings[0].isEnabled, 'isEnabled flag is changed toggled in availableSettings when it is added to selectedSettings');
 });
 
