@@ -26,6 +26,7 @@ module('Integration | Component | query-container', function(hooks) {
   test('it renders', async function(assert) {
     new ReduxDataHelper(setState)
       .hasRequiredValuesToQuery(true)
+      .queryStats()
       .build();
     await render(hbs`{{query-container}}`);
     assert.equal(findAll(PILL_SELECTORS.queryButton).length, 1, 'button should be present');
@@ -36,6 +37,7 @@ module('Integration | Component | query-container', function(hooks) {
     const endTimeinSec = 1519347609; // Thu Feb 22 2018 20:00:09
     new ReduxDataHelper(setState)
       .hasRequiredValuesToQuery(true)
+      .queryStats()
       .startTime(startTimeinSec)
       .endTime(endTimeinSec)
       .build();

@@ -374,4 +374,44 @@ export default class DataHelper {
     _set(this.state, 'queryNode.isQueryRunning', flag);
     return this;
   }
+
+  queryStats() {
+    _set(this.state, 'queryStats', {
+      isConsoleOpen: false,
+      description: 'foo',
+      percent: 0,
+      errors: [],
+      warnings: [],
+      devices: []
+    });
+    return this;
+  }
+
+  queryStatsHasWarning() {
+    _set(this.state, 'queryStats', {
+      description: 'error',
+      warnings: ['warning']
+    });
+    return this;
+  }
+
+  queryStatsHasError() {
+    _set(this.state, 'queryStats', {
+      description: 'error',
+      percent: 100,
+      errors: ['error']
+    });
+    return this;
+  }
+
+  queryStatsIsEmpty() {
+    _set(this.state.queryStats, 'description', null);
+    return this;
+  }
+
+  queryStatsIsOpen() {
+    _set(this.state.queryStats, 'isConsoleOpen', true);
+    return this;
+  }
+
 }

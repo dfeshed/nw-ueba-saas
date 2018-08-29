@@ -41,18 +41,23 @@ function sendBatches({
     });
   }
 
+  // const allFrames = batches;
   const allFrames = setupFrames.concat(batches);
   const delay = process.env.RESPONSE_DELAY;
   for (let i = 0; i < allFrames.length; i++) {
     setTimeout(function(index) {
       return function() {
         const { data, meta } = allFrames[index];
+        let complete = false;
+        if (data.length > 0) {
+          complete = delay && delay > 1 ? (index + 1) === allFrames.length : true;
+        }
 
         let message = {
           data,
           meta: {
             ...meta,
-            complete: delay && delay > 1 ? (index + 1) === allFrames.length : true
+            complete
           }
         };
 

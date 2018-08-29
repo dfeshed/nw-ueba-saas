@@ -6,17 +6,17 @@ import reducer from 'investigate-events/reducers/investigate/query-stats/reducer
 
 module('Unit | Reducers | query-stats | Investigate');
 
-test('TOGGLE_QUERY_CONSOLE reducer toggles consoleIsOpen', function(assert) {
+test('TOGGLE_QUERY_CONSOLE reducer toggles isConsoleOpen', function(assert) {
   const prevState = Immutable.from({
-    consoleIsOpen: false
+    isConsoleOpen: false
   });
   const action = {
     type: ACTION_TYPES.TOGGLE_QUERY_CONSOLE
   };
   const result = reducer(prevState, action);
-  assert.equal(result.consoleIsOpen, true);
+  assert.equal(result.isConsoleOpen, true);
   const nextResult = reducer(result, action);
-  assert.equal(nextResult.consoleIsOpen, false);
+  assert.equal(nextResult.isConsoleOpen, false);
 });
 
 test('QUERY_STATS reducer updates stats', function(assert) {
@@ -32,11 +32,11 @@ test('QUERY_STATS reducer updates stats', function(assert) {
     payload: {
       description: 'foo',
       percent: 50,
-      error: 'error',
+      fatal: 'error',
       serviceId: 'bar',
-      warning: 'warning',
+      error: 'warning',
       devices: [{
-        id: 'baz'
+        serviceId: 'baz'
       }]
     }
   };
@@ -51,7 +51,7 @@ test('QUERY_STATS reducer updates stats', function(assert) {
   assert.equal(result.warnings[0].serviceId, 'bar');
   assert.equal(result.warnings[0].warning, 'warning');
   assert.equal(result.devices.length, 1);
-  assert.equal(result.devices[0].id, 'baz');
+  assert.equal(result.devices[0].serviceId, 'baz');
 
   const nextResult = reducer(result, action);
   assert.equal(nextResult.errors.length, 2);
@@ -68,7 +68,7 @@ test('QUERY_STATS reducer updates stats', function(assert) {
 
 test('INITIALIZE_QUERYING reducer clears state', function(assert) {
   const prevState = Immutable.from({
-    consoleIsOpen: true,
+    isConsoleOpen: true,
     description: 'foo',
     percent: 100,
     warnings: ['foo'],
@@ -80,7 +80,7 @@ test('INITIALIZE_QUERYING reducer clears state', function(assert) {
   };
   const result = reducer(prevState, action);
 
-  assert.equal(result.consoleIsOpen, false);
+  assert.equal(result.isConsoleOpen, false);
   assert.equal(result.description, null);
   assert.equal(result.percent, 0);
   assert.equal(result.errors.length, 0);

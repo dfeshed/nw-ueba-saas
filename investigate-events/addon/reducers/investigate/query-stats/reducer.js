@@ -3,7 +3,7 @@ import { handleActions } from 'redux-actions';
 import * as ACTION_TYPES from 'investigate-events/actions/types';
 
 const _initialState = Immutable.from({
-  consoleIsOpen: false,
+  isConsoleOpen: false,
   description: null,
   percent: 0,
   errors: [],
@@ -18,7 +18,7 @@ export default handleActions({
 
   [ACTION_TYPES.TOGGLE_QUERY_CONSOLE]: (state) => {
     return state.merge({
-      consoleIsOpen: !state.consoleIsOpen
+      isConsoleOpen: !state.isConsoleOpen
     });
   },
 
@@ -29,17 +29,17 @@ export default handleActions({
       devices: payload.devices
     };
 
-    if (payload.error) {
+    if (payload.fatal) {
       updatedState.errors = [{
         serviceId: payload.serviceId,
-        error: payload.error
+        error: payload.fatal
       }, ...state.errors];
     }
 
-    if (payload.warning) {
+    if (payload.error) {
       updatedState.warnings = [{
         serviceId: payload.serviceId,
-        warning: payload.warning
+        warning: payload.error
       }, ...state.warnings];
     }
 

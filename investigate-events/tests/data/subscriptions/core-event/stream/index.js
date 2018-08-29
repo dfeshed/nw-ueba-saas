@@ -61,7 +61,7 @@ export default {
     //   data: [],
     //   meta: {
     //     completed: false,
-    //     error: 'Syntax Error'
+    //     fatal: 'Syntax Error'
     //   }
     // }];
 
@@ -130,7 +130,7 @@ export default {
     //     description: 'Scanning index pages',
     //     percent: 66,
     //     serviceId: 'foo',
-    //     warning: 'some error message about foo'
+    //     error: 'some error message about foo'
     //   }
     // }, {
     //   data: [],

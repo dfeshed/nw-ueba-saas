@@ -10,6 +10,7 @@ import {
 } from 'investigate-events/reducers/investigate/data-selectors';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
 import { lookup } from 'ember-dependency-lookup';
+import { isConsoleEmpty } from 'investigate-events/reducers/investigate/query-stats/selectors';
 
 export const setMetaPanelSize = (size) => {
   if (size) {
@@ -170,5 +171,9 @@ export const setColumnGroup = (selectedGroup) => {
  * @public
  */
 export const toggleQueryConsole = () => {
-  return { type: ACTION_TYPES.TOGGLE_QUERY_CONSOLE };
+  return (dispatch, getState) => {
+    if (!isConsoleEmpty(getState())) {
+      dispatch({ type: ACTION_TYPES.TOGGLE_QUERY_CONSOLE });
+    }
+  };
 };

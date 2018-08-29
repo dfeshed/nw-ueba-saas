@@ -34,6 +34,7 @@ module('Integration | Component | events-container', function(hooks) {
   test('it does not render error block if no error', async function(assert) {
     new ReduxDataHelper(setState)
       .isServicesRetrieveError(false)
+      .queryStats()
       .isEventResultsError(false)
       .atLeastOneQueryIssued(false) // dont want to render result table
       .hasIncommingQueryParams(false) // dont want to render result table

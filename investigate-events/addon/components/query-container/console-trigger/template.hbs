@@ -1,0 +1,17 @@
+{{#if (or hasError hasWarning)}}
+  {{rsa-icon
+    style='filled'
+    title=description
+    name='report-problem-triangle'
+    size='large'
+    click=(action 'toggleQueryConsole')
+  }}
+{{else}}
+  {{rsa-icon
+    style='lined'
+    title=description
+    name='information-circle'
+    size='large'
+    click=(action 'toggleQueryConsole')
+  }}
+{{/if}}

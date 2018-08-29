@@ -27,6 +27,7 @@ module('Integration | Component | query-bar', function(hooks) {
 
   test('it displays the correct number of query bar links and starts on guided mode', async function(assert) {
     new ReduxDataHelper(setState)
+      .queryStats()
       .hasRequiredValuesToQuery(true)
       .build();
 
@@ -43,6 +44,7 @@ module('Integration | Component | query-bar', function(hooks) {
   test('Can toggle between views', async function(assert) {
     // const done = assert.async();
     new ReduxDataHelper(setState)
+      .queryStats()
       .hasRequiredValuesToQuery(true)
       .build();
     this.set('executeQuery', () => {});
@@ -71,6 +73,7 @@ module('Integration | Component | query-bar', function(hooks) {
   test('Toggling from pills to free form copies pill text in', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
+      .queryStats()
       .pillsDataEmpty(true)
       .hasRequiredValuesToQuery(true)
       .build();
@@ -94,6 +97,7 @@ module('Integration | Component | query-bar', function(hooks) {
     new ReduxDataHelper(setState)
       .language()
       .pillsDataEmpty(true)
+      .queryStats()
       .hasRequiredValuesToQuery(true)
       .queryView('freeForm')
       .build();
@@ -121,6 +125,7 @@ module('Integration | Component | query-bar', function(hooks) {
     new ReduxDataHelper(setState)
       .language()
       .pillsDataEmpty(true)
+      .queryStats()
       .hasRequiredValuesToQuery(true)
       .queryView('freeForm')
       .build();
@@ -147,6 +152,7 @@ module('Integration | Component | query-bar', function(hooks) {
   test('Initial render of query pills will not have focus', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
+      .queryStats()
       .pillsDataEmpty(true)
       .hasRequiredValuesToQuery(true)
       .build();
@@ -166,6 +172,7 @@ module('Integration | Component | query-bar', function(hooks) {
   test('After toggling from free form to guided, meta will have focus', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
+      .queryStats()
       .pillsDataEmpty(true)
       .hasRequiredValuesToQuery(true)
       .queryView('freeForm')
@@ -188,6 +195,7 @@ module('Integration | Component | query-bar', function(hooks) {
   test('After toggling from guided to free form, free form will have focus', async function(assert) {
     new ReduxDataHelper(setState)
       .language()
+      .queryStats()
       .pillsDataEmpty(true)
       .hasRequiredValuesToQuery(true)
       .build();

@@ -155,10 +155,44 @@
       margin: rsa-whitespace(least) rsa-whitespace(less);
     }
     .query-bar-options {
+      position: relative;
       @include border(1px, solid, primary, lighter);
       min-height: 40px;
       box-sizing: border-box;
       padding: 4px 0 0 4px;
+
+      .console-trigger {
+        position: absolute;
+        top: rsa-whitespace(less);
+        right: rsa-whitespace(less);
+        color: text-color(primary, lightest);
+        cursor: pointer;
+
+        &.is-disabled {
+          color: text-color(primary);
+          cursor: default;
+        }
+
+        &.is-open {
+          color: text-color(secondary);
+        }
+
+        &.has-warning {
+          color: text-color(accentThree);
+        }
+
+        &.has-error {
+          color: text-color(accentOne);
+        }
+
+        &:hover:not(.is-disabled) {
+          color: text-color(secondary, lighter);
+        }
+
+        &:active:not(.is-disabled) {
+          color: text-color(secondary);
+        }
+      }
     }
 
     .query-bar-select-actions {
