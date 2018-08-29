@@ -3,6 +3,7 @@ import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { isEmpty } from '@ember/utils';
 import Component from '@ember/component';
+import { next } from '@ember/runloop';
 
 import {
   getConfig,
@@ -48,8 +49,12 @@ const Container = Component.extend({
 
   init() {
     this._super(...arguments);
-    this.sendAction('getConfig');
-    this.sendAction('getDevices');
+    next(() => {
+      if (!this.get('isDestroyed') && !this.get('isDestroying')) {
+        this.send('getConfig');
+        this.send('getDevices');
+      }
+    });
   }
 
 });
