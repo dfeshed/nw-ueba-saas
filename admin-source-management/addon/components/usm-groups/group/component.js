@@ -83,10 +83,11 @@ const UsmGroup = Component.extend(Notifications, {
       this.send('edit', 'group.osDescriptions', value.map((osDescription) => osDescription.id));
     },
     handlePolicyChange(value) {
-      // power-select passes the whole object, we want a map of { 'type': 'policyID' }
-      const policyMap = {};
-      policyMap[value.type] = value.id; // ex. { 'edrPolicy': 'id_abc123' }
-      this.send('edit', 'group.policy', policyMap);
+      const assignedPolicies = {};
+      const entity = {};
+      entity.referenceId = value.id;
+      assignedPolicies[value.policyType] = entity;
+      this.send('edit', 'group.assignedPolicies', assignedPolicies);
     }
   }
 });

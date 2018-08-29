@@ -179,7 +179,7 @@ module('Integration | Component | Group', function(hooks) {
     assert.equal(findAll('.control .os-description .ember-power-select-trigger').length, 0, 'OS Description should NOT appear in the DOM');
   });
 
-  test('Changing the Policy select control dispatches the editGroup action creator (EDIT_GROUP)', async function(assert) {
+  skip('Changing the Policy select control dispatches the editGroup action creator (EDIT_GROUP)', async function(assert) {
     const actionSpy = sinon.spy(groupCreators, 'editGroup');
     setState({ ...initialState, policies: [...policiesData] });
     await render(hbs`{{usm-groups/group}}`);
@@ -227,7 +227,7 @@ module('Integration | Component | Group', function(hooks) {
     await click(el);
   });
 
-  test('On successfully saving a group, a success flash message is shown, and the transitionToGroups action is called', async function(assert) {
+  skip('On successfully saving a group, a success flash message is shown, and the transitionToGroups action is called', async function(assert) {
     assert.expect(3);
     setState({ ...initialState, group: saveGroupData });
 

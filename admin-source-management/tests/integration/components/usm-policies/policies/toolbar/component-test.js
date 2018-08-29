@@ -10,16 +10,15 @@ import { patchSocket, throwSocket } from '../../../../../helpers/patch-socket';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
 const selectors = {
-  componentClass: '.usm-groups-toolbar',
-  createNewButton: '.usm-groups-toolbar .groups-create-new-button',
-  deleteButton: '.usm-groups-toolbar .groups-delete-button',
-  applyPoliciesButton: '.usm-groups-toolbar .groups-apply-policies-button',
-  publishButton: '.usm-groups-toolbar .groups-publish-button'
+  componentClass: '.usm-policies-toolbar',
+  createNewButton: '.usm-policies-toolbar .policies-create-new-button',
+  deleteButton: '.usm-policies-toolbar .policies-delete-button',
+  publishButton: '.usm-policies-toolbar .policies-publish-button'
 };
 
 let setState;
 
-module('Integration | Component | USM Groups Toolbar', function(hooks) {
+module('Integration | Component | USM Policies Toolbar', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('admin-source-management')
   });
@@ -34,58 +33,77 @@ module('Integration | Component | USM Groups Toolbar', function(hooks) {
   });
 
   test('The components appears in the DOM', async function(assert) {
-    assert.expect(9);
+    assert.expect(7);
     new ReduxDataHelper(setState)
       .build();
-    await render(hbs`{{usm-groups/groups/toolbar}}`);
+    await render(hbs`{{usm-policies/policies/toolbar}}`);
     assert.equal(findAll(selectors.componentClass).length, 1, 'The Toolbar component appears in the DOM');
-    assert.equal(findAll(selectors.createNewButton).length, 1, 'Create New groups button is showing');
-    assert.equal(findAll(selectors.deleteButton).length, 1, 'Delete groups button is showing');
-    assert.equal(findAll(selectors.applyPoliciesButton).length, 1, 'Apply Policies groups button is showing');
-    assert.equal(findAll(selectors.publishButton).length, 1, 'Publish groups button is showing');
+    assert.equal(findAll(selectors.createNewButton).length, 1, 'Create New policy button is showing');
+    assert.equal(findAll(selectors.deleteButton).length, 1, 'Delete policies button is showing');
+    assert.equal(findAll(selectors.publishButton).length, 1, 'Publish policies button is showing');
 
     assert.equal(findAll(`${selectors.createNewButton} .rsa-form-button-wrapper:not(.is-disabled)`).length, 1, 'The Create New button is enabled');
     assert.equal(findAll(`${selectors.deleteButton} .rsa-form-button-wrapper.is-disabled`).length, 1, 'The Delete button is disabled');
-    assert.equal(findAll(`${selectors.applyPoliciesButton} .rsa-form-button-wrapper.is-disabled`).length, 1, 'The Apply Policies button is disabled');
     assert.equal(findAll(`${selectors.publishButton} .rsa-form-button-wrapper.is-disabled`).length, 1, 'The Publish button is disabled');
   });
 
   test('Button state when no items are selected', async function(assert) {
-    assert.expect(4);
+    assert.expect(3);
     new ReduxDataHelper(setState)
-      .getGroups()
+      .getPolicies()
       .build();
-    await render(hbs`{{usm-groups/groups/toolbar}}`);
+    await render(hbs`{{usm-policies/policies/toolbar}}`);
     assert.equal(findAll(`${selectors.createNewButton} .rsa-form-button-wrapper:not(.is-disabled)`).length, 1, 'The Create New button is enabled');
     assert.equal(findAll(`${selectors.deleteButton} .rsa-form-button-wrapper.is-disabled`).length, 1, 'The Delete button is disabled');
-    assert.equal(findAll(`${selectors.applyPoliciesButton} .rsa-form-button-wrapper.is-disabled`).length, 1, 'The Apply Policies button is disabled');
     assert.equal(findAll(`${selectors.publishButton} .rsa-form-button-wrapper.is-disabled`).length, 1, 'The Publish button is disabled');
   });
 
   test('Button state when non-dirty publish items are selected', async function(assert) {
-    assert.expect(4);
+    assert.expect(3);
     new ReduxDataHelper(setState)
-      .getGroups()
-      .selectedGroups(['group_001'])
+      .getPolicies()
+      .selectedPolicies(['policy_002'])
       .build();
-    await render(hbs`{{usm-groups/groups/toolbar}}`);
+    await render(hbs`{{usm-policies/policies/toolbar}}`);
     assert.equal(findAll(`${selectors.createNewButton} .rsa-form-button-wrapper:not(.is-disabled)`).length, 1, 'The Create New button is enabled');
     assert.equal(findAll(`${selectors.deleteButton} .rsa-form-button-wrapper:not(.is-disabled)`).length, 1, 'The Delete button is enabled');
-    assert.equal(findAll(`${selectors.applyPoliciesButton} .rsa-form-button-wrapper.is-disabled`).length, 1, 'The Apply Policies button is disabled');
     assert.equal(findAll(`${selectors.publishButton} .rsa-form-button-wrapper.is-disabled`).length, 1, 'The Publish button is disabled');
   });
 
   test('Button state when dirty publish items are selected', async function(assert) {
-    assert.expect(4);
+    assert.expect(3);
     new ReduxDataHelper(setState)
-      .getGroups()
-      .selectedGroups(['group_001', 'group_002'])
+      .getPolicies()
+      .selectedPolicies(['policy_001'])
       .build();
-    await render(hbs`{{usm-groups/groups/toolbar}}`);
+    await render(hbs`{{usm-policies/policies/toolbar}}`);
     assert.equal(findAll(`${selectors.createNewButton} .rsa-form-button-wrapper:not(.is-disabled)`).length, 1, 'The Create New button is enabled');
     assert.equal(findAll(`${selectors.deleteButton} .rsa-form-button-wrapper:not(.is-disabled)`).length, 1, 'The Delete button is enabled');
-    assert.equal(findAll(`${selectors.applyPoliciesButton} .rsa-form-button-wrapper.is-disabled`).length, 1, 'The Apply Policies button is disabled');
     assert.equal(findAll(`${selectors.publishButton} .rsa-form-button-wrapper:not(.is-disabled)`).length, 1, 'The Publish button is enabled');
+  });
+
+  test('Button state when default policy is selected with others', async function(assert) {
+    assert.expect(3);
+    new ReduxDataHelper(setState)
+      .getPolicies()
+      .selectedPolicies(['__default_edr_policy', 'policy_001', 'policy_002'])
+      .build();
+    await render(hbs`{{usm-policies/policies/toolbar}}`);
+    assert.equal(findAll(`${selectors.createNewButton} .rsa-form-button-wrapper:not(.is-disabled)`).length, 1, 'The Create New button is enabled');
+    assert.equal(findAll(`${selectors.deleteButton} .rsa-form-button-wrapper:not(.is-disabled)`).length, 1, 'The Delete button is enabled');
+    assert.equal(findAll(`${selectors.publishButton} .rsa-form-button-wrapper:not(.is-disabled)`).length, 1, 'The Publish button is enabled');
+  });
+
+  test('Button state when only default policy is selected', async function(assert) {
+    assert.expect(3);
+    new ReduxDataHelper(setState)
+      .getPolicies()
+      .selectedPolicies(['__default_edr_policy'])
+      .build();
+    await render(hbs`{{usm-policies/policies/toolbar}}`);
+    assert.equal(findAll(`${selectors.createNewButton} .rsa-form-button-wrapper:not(.is-disabled)`).length, 1, 'The Create New button is enabled');
+    assert.equal(findAll(`${selectors.deleteButton} .rsa-form-button-wrapper.is-disabled`).length, 1, 'The Delete button is disabled');
+    assert.equal(findAll(`${selectors.publishButton} .rsa-form-button-wrapper.is-disabled`).length, 1, 'The Publish button is disabled');
   });
 
   test('Delete confirmation and flash message', async function(assert) {
@@ -93,25 +111,25 @@ module('Integration | Component | USM Groups Toolbar', function(hooks) {
     assert.expect(8);
     const translation = this.owner.lookup('service:i18n');
     new ReduxDataHelper(setState)
-      .getGroups()
-      .selectedGroups(['group_001', 'group_003'])
+      .getPolicies()
+      .selectedPolicies(['policy_001', 'policy_003'])
       .build();
-    await render(hbs`{{usm-groups/groups usm-groups/groups/toolbar}}`);
+    await render(hbs`{{usm-policies/policies usm-policies/policies/toolbar}}`);
     assert.equal(findAll(`${selectors.deleteButton} .rsa-form-button-wrapper:not(.is-disabled)`).length, 1, 'The Delete button is enabled');
     await click(`${selectors.deleteButton} button`);
-    const expectedMessage = translation.t('adminUsm.groups.modals.deleteGroups.confirm', { numItems: '2' });
+    const expectedMessage = translation.t('adminUsm.policies.modals.deletePolicies.confirm', { numItems: '2' });
     assert.ok(find('.confirmation-modal'), 'Modal Confirmation is not showing');
     assert.equal(find('.confirmation-modal .modal-content p').textContent.trim(), expectedMessage, 'Confirm message is incorrect');
     patchSocket((method, modelName, query) => {
       assert.equal(method, 'remove');
-      assert.equal(modelName, 'groups');
+      assert.equal(modelName, 'policy');
       assert.deepEqual(query, {
-        data: ['group_001', 'group_003']
+        data: ['policy_001', 'policy_003']
       });
     });
     patchFlash((flash) => {
       const translation = this.owner.lookup('service:i18n');
-      const expectedMessage = translation.t('adminUsm.groups.modals.deleteGroups.success', { numItems: '2' });
+      const expectedMessage = translation.t('adminUsm.policies.modals.deletePolicies.success', { numItems: '2' });
       assert.equal(flash.type, 'success');
       assert.equal(flash.message.string, expectedMessage);
       done();
@@ -124,15 +142,15 @@ module('Integration | Component | USM Groups Toolbar', function(hooks) {
     assert.expect(3);
     const translation = this.owner.lookup('service:i18n');
     new ReduxDataHelper(setState)
-      .getGroups()
-      .selectedGroups(['group_001', 'group_003'])
+      .getPolicies()
+      .selectedPolicies(['policy_001', 'policy_003'])
       .build();
-    await render(hbs`{{usm-groups/groups usm-groups/groups/toolbar}}`);
+    await render(hbs`{{usm-policies/policies usm-policies/policies/toolbar}}`);
     assert.equal(findAll(`${selectors.deleteButton} .rsa-form-button-wrapper:not(.is-disabled)`).length, 1, 'The Delete button is enabled');
     await click(`${selectors.deleteButton} button`);
     throwSocket();
     patchFlash((flash) => {
-      const expectedMessage = translation.t('adminUsm.groups.modals.deleteGroups.failure');
+      const expectedMessage = translation.t('adminUsm.policies.modals.deletePolicies.failure');
       assert.equal(flash.type, 'error');
       assert.equal(flash.message.string, expectedMessage);
       done();
@@ -145,25 +163,25 @@ module('Integration | Component | USM Groups Toolbar', function(hooks) {
     assert.expect(8);
     const translation = this.owner.lookup('service:i18n');
     new ReduxDataHelper(setState)
-      .getGroups()
-      .selectedGroups(['group_001', 'group_002'])
+      .getPolicies()
+      .selectedPolicies(['policy_001', 'policy_002'])
       .build();
-    await render(hbs`{{usm-groups/groups usm-groups/groups/toolbar}}`);
+    await render(hbs`{{usm-policies/policies usm-policies/policies/toolbar}}`);
     assert.equal(findAll(`${selectors.deleteButton} .rsa-form-button-wrapper:not(.is-disabled)`).length, 1, 'The Publish button is enabled');
     await click(`${selectors.publishButton} button`);
-    const expectedMessage = translation.t('adminUsm.groups.modals.publishGroups.confirm', { numItems: '2' });
+    const expectedMessage = translation.t('adminUsm.policies.modals.publishPolicies.confirm', { numItems: '2' });
     assert.ok(find('.confirmation-modal'), 'Modal Confirmation is not showing');
     assert.equal(find('.confirmation-modal .modal-content p').textContent.trim(), expectedMessage, 'Confirm message is incorrect');
     patchSocket((method, modelName, query) => {
       assert.equal(method, 'publish');
-      assert.equal(modelName, 'groups');
+      assert.equal(modelName, 'policy');
       assert.deepEqual(query, {
-        data: ['group_002']
+        data: ['policy_001']
       });
     });
     patchFlash((flash) => {
       const translation = this.owner.lookup('service:i18n');
-      const expectedMessage = translation.t('adminUsm.groups.modals.publishGroups.success', { numItems: '2' });
+      const expectedMessage = translation.t('adminUsm.policies.modals.publishPolicies.success', { numItems: '2' });
       assert.equal(flash.type, 'success');
       assert.equal(flash.message.string, expectedMessage);
       done();
@@ -176,15 +194,15 @@ module('Integration | Component | USM Groups Toolbar', function(hooks) {
     assert.expect(3);
     const translation = this.owner.lookup('service:i18n');
     new ReduxDataHelper(setState)
-      .getGroups()
-      .selectedGroups(['group_001', 'group_002'])
+      .getPolicies()
+      .selectedPolicies(['policy_001', 'policy_002'])
       .build();
-    await render(hbs`{{usm-groups/groups usm-groups/groups/toolbar}}`);
+    await render(hbs`{{usm-policies/policies usm-policies/policies/toolbar}}`);
     assert.equal(findAll(`${selectors.publishButton} .rsa-form-button-wrapper:not(.is-disabled)`).length, 1, 'The Publish button is enabled');
     await click(`${selectors.publishButton} button`);
     throwSocket();
     patchFlash((flash) => {
-      const expectedMessage = translation.t('adminUsm.groups.modals.publishGroups.failure');
+      const expectedMessage = translation.t('adminUsm.policies.modals.publishPolicies.failure');
       assert.equal(flash.type, 'error');
       assert.equal(flash.message.string, expectedMessage);
       done();

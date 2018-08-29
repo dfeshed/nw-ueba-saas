@@ -5,7 +5,7 @@ import { lookup } from 'ember-dependency-lookup';
  * Fetches all policies.
  * @public
  */
-function fetchPolicy(/* filters, sort */) {
+function fetchPolicies(/* filters, sort */) {
   const request = lookup('service:request');
   // const query = buildExplorerQuery(filters, sort, 'name');
   return request.promiseRequest({
@@ -13,6 +13,36 @@ function fetchPolicy(/* filters, sort */) {
     method: 'findAll',
     query: {}
     // query: query.toJSON()
+  });
+}
+
+/**
+ * Deletes one or more polices from list of policy IDs.
+ * The server API is the same for both...
+ * @param {*} ids
+ * @public
+ */
+function deletePolicies(ids) {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    modelName: 'policy',
+    method: 'remove',
+    query: { data: ids }
+  });
+}
+
+/**
+ * Publishes one or more polices from list of policy IDs.
+ * The server API is the same for both...
+ * @param {*} ids
+ * @public
+ */
+function publishPolicies(ids) {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    modelName: 'policy',
+    method: 'publish',
+    query: { data: ids }
   });
 }
 
@@ -34,6 +64,8 @@ function savePolicy(policy) {
 }
 
 export default {
-  fetchPolicy,
+  deletePolicies,
+  fetchPolicies,
+  publishPolicies,
   savePolicy
 };

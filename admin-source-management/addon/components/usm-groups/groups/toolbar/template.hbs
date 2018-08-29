@@ -9,28 +9,28 @@
   <div class="action-control groups-delete-button">
     {{#rsa-button-with-confirmation
       title=(t 'adminUsm.groups.modals.deleteGroups.title')
-      confirmationMessage=(t 'adminUsm.groups.modals.deleteGroups.confirm' numItems=_selectedItems.length)
+      confirmationMessage=(t 'adminUsm.groups.modals.deleteGroups.confirm' numItems=selectedDeleteItems.length)
       confirmButtonLabel=(t 'adminUsm.groups.modals.deleteGroups.ok')
-      isDisabled=(not canDelete)
+      isDisabled=(not hasSelectedDeleteItems)
       cancelButtonLabel=(t 'adminUsm.button.cancel')
-      onConfirm=(action 'handleDeleteGroups' _selectedItems)}}
+      onConfirm=(action 'handleDeleteGroups')}}
       {{t 'adminUsm.button.delete'}}
     {{/rsa-button-with-confirmation}}
   </div>
   <div class="action-control groups-apply-policies-button">
     {{#rsa-form-button
-      isDisabled=(not false)}}
+      isDisabled=(not hasSelectedApplyPoliciesItems)}}
       {{t 'adminUsm.button.applyPolicies'}}
     {{/rsa-form-button}}
   </div>
   <div class="action-control groups-publish-button">
     {{#rsa-button-with-confirmation 
       title=(t 'adminUsm.groups.modals.publishGroups.title')
-      confirmationMessage=(t 'adminUsm.groups.modals.publishGroups.confirm' numItems=_selectedItems.length)
+      confirmationMessage=(t 'adminUsm.groups.modals.publishGroups.confirm' numItems=selectedPublishItems.length)
       confirmButtonLabel=(t 'adminUsm.groups.modals.publishGroups.ok')
-      isDisabled=(not false)
+      isDisabled=(not hasSelectedPublishItems)
       cancelButtonLabel=(t 'adminUsm.button.cancel')
-      onConfirm=(action 'handlePublishGroups' _selectedItems)}}
+      onConfirm=(action 'handlePublishGroups')}}
       {{rsa-icon name="synchronize-3"}}{{t 'adminUsm.button.publish'}}
     {{/rsa-button-with-confirmation}}
   </div>

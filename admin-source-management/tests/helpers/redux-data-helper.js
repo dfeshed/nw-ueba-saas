@@ -1,6 +1,10 @@
 import Immutable from 'seamless-immutable';
 import _ from 'lodash';
 import { initialState as policyWizInitialState } from 'admin-source-management/reducers/usm/policy-wizard-reducers';
+import {
+  groups,
+  policies
+} from '../data/data';
 
 const _set = (obj, key, val) => {
   if (obj[key]) {
@@ -71,6 +75,36 @@ export default class DataHelper {
 
   policyWizVisited(visitedFieldsArray) {
     _set(this.state, 'usm.policyWizard.visited', visitedFieldsArray);
+    return this;
+  }
+
+  getGroups() {
+    _set(this.state, 'usm.groups.items', groups);
+    return this;
+  }
+
+  groups(config) {
+    _set(this.state, 'usm.groups.items', config);
+    return this;
+  }
+
+  selectedGroups(config) {
+    _set(this.state, 'usm.groups.itemsSelected', config);
+    return this;
+  }
+
+  getPolicies() {
+    _set(this.state, 'usm.policies.items', policies);
+    return this;
+  }
+
+  policies(config) {
+    _set(this.state, 'usm.policies.items', config);
+    return this;
+  }
+
+  selectedPolicies(config) {
+    _set(this.state, 'usm.policies.itemsSelected', config);
     return this;
   }
 

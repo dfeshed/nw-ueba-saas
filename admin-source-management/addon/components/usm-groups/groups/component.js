@@ -10,19 +10,10 @@ const stateToComputed = (state) => ({
   isGroupsLoading: isGroupsLoading(state)
 });
 
-// const dispatchToActions = (dispatch) => {
-const dispatchToActions = () => {
-  return {
-    // someAction() {
-    //   dispatch(groupsCreators.someAction());
-    // }
-  };
-};
-
-const UsmGroupsExplorer = Component.extend({
+const UsmGroups = Component.extend({
   classNames: ['usm-groups'],
   columns,
   creators
 });
 
-export default connect(stateToComputed, dispatchToActions)(UsmGroupsExplorer);
+export default connect(stateToComputed)(UsmGroups);

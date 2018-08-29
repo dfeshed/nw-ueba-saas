@@ -4,7 +4,7 @@ export default {
   message(/* frame */) {
     return {
       code: 0,
-      data: 'publish-works'
+      data: 'publish-groups-works'
     };
   }
 };

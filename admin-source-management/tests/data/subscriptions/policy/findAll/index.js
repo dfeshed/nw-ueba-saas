@@ -7,7 +7,7 @@ export default {
     return {
       data,
       'meta': {
-        'total': 12
+        'total': 5
       }
     };
   }

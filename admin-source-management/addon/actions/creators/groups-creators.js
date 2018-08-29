@@ -1,6 +1,10 @@
 import * as ACTION_TYPES from 'admin-source-management/actions/types';
 import groupsAPI from 'admin-source-management/actions/api/groups-api';
 import { handleError } from './utils-creators';
+import {
+  selectedDeleteItems,
+  selectedPublishItems
+} from 'admin-source-management/reducers/usm/groups-selectors';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
@@ -22,11 +26,12 @@ const getGroups = () => {
   };
 };
 
-const deleteGroups = (selectedItems, callbacks = callbacksDefault) => {
-  return (dispatch) => {
+const deleteGroups = (callbacks = callbacksDefault) => {
+  return (dispatch, getState) => {
+    const items = selectedDeleteItems(getState());
     dispatch({
       type: ACTION_TYPES.DELETE_GROUPS,
-      promise: groupsAPI.deleteGroups(selectedItems),
+      promise: groupsAPI.deleteGroups(items),
       meta: {
         onSuccess: (response) => {
           callbacks.onSuccess(response);
@@ -41,18 +46,19 @@ const deleteGroups = (selectedItems, callbacks = callbacksDefault) => {
   };
 };
 
-const publishGroups = (selectedItems, callbacks = callbacksDefault) => {
-  return (dispatch) => {
+const publishGroups = (callbacks = callbacksDefault) => {
+  return (dispatch, getState) => {
+    const items = selectedPublishItems(getState());
     dispatch({
-      type: ACTION_TYPES.DELETE_GROUPS,
-      promise: groupsAPI.deleteGroups(selectedItems),
+      type: ACTION_TYPES.PUBLISH_GROUPS,
+      promise: groupsAPI.publishGroups(items),
       meta: {
         onSuccess: (response) => {
           callbacks.onSuccess(response);
           dispatch(getGroups());
         },
         onFailure: (response) => {
-          handleError(ACTION_TYPES.DELETE_GROUPS, response);
+          handleError(ACTION_TYPES.PUBLISH_GROUPS, response);
           callbacks.onFailure(response);
         }
       }

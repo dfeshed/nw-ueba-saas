@@ -103,15 +103,17 @@ export const selectedPolicy = createSelector(
   group, policies,
   (group, policies) => {
     let selected = null;
-    if (!group.policy) {
-      return selected;
-    }
-    for (let p = 0; p < policies.length; p++) {
-      const policy = policies[p];
-      const groupPolicyId = group.policy[policy.type];
-      if (policy.id === groupPolicyId) {
-        selected = policy;
-        break;
+    if (group.assignedPolicies) {
+      for (let p = 0; p < policies.length; p++) {
+        const policy = policies[p];
+        if (group.assignedPolicies.hasOwnProperty(policy.policyType) &&
+            group.assignedPolicies[policy.policyType]) {
+          const groupPolicyId = group.assignedPolicies[policy.policyType].referenceId;
+          if (policy.id === groupPolicyId) {
+            selected = policy;
+            break;
+          }
+        }
       }
     }
     return selected;

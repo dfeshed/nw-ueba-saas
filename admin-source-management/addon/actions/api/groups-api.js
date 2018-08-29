@@ -27,7 +27,7 @@ function deleteGroups(ids) {
   return request.promiseRequest({
     modelName: 'groups',
     method: 'remove',
-    query: { data: { groupIds: ids } }
+    query: { data: ids }
   });
 }
 
@@ -42,7 +42,7 @@ function publishGroups(ids) {
   return request.promiseRequest({
     modelName: 'groups',
     method: 'publish',
-    query: { data: { groupIds: ids } }
+    query: { data: ids }
   });
 }
 

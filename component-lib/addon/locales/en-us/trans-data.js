@@ -3423,17 +3423,17 @@ export default {
       modals: {
         deleteGroups: {
           title: 'Delete Group(s)',
-          confirm: 'Are you sure you want to delete the \'{{numItems}}\' selected group(s)?    Note: This will result in the immediate publish of the deleted group(s).',
+          confirm: 'Are you sure you want to delete the {{numItems}} selected Group(s)?    Note: This will result in the immediate publish of the deleted Group(s).',
           ok: 'Delete Group(s)',
-          success: 'Successfully deleted \'{{numItems}}\' group(s)',
-          failure: 'There was an unexpected problem deleting the group(s)'
+          success: 'Successfully deleted selected Group(s)',
+          failure: 'There was an unexpected problem deleting the Group(s)'
         },
         publishGroups: {
           title: 'Publish Group(s)',
-          confirm: 'Are you sure you want to publish the \'{{numItems}}\' selected group(s)?',
+          confirm: 'Are you sure you want to publish the selected Group(s)?',
           ok: 'Publish Group(s)',
-          success: 'Successfully published \'{{numItems}}\' group(s)',
-          failure: 'There was an unexpected problem publishing the group(s)'
+          success: 'Successfully published selected Group(s)',
+          failure: 'There was an unexpected problem publishing the Group(s)'
         }
       }
     },
@@ -3476,6 +3476,22 @@ export default {
         policyParameters: 'Policy Parameters'
       },
       detail: {
+      },
+      modals: {
+        deletePolicies: {
+          title: 'Delete Policy(ies)',
+          confirm: 'Are you sure you want to delete the {{numItems}} selected Policy(ies)?    Note: This will result in the immediate publish of the deleted Policy(ies).',
+          ok: 'Delete Policy(ies)',
+          success: 'Successfully deleted selected Policy(ies)',
+          failure: 'There was an unexpected problem deleting selected Policy(ies)'
+        },
+        publishPolicies: {
+          title: 'Publish Policy(ies)',
+          confirm: 'Are you sure you want to publish the selected Policy(ies)?',
+          ok: 'Publish Policy(ies)',
+          success: 'Successfully published selected Policy(ies)',
+          failure: 'There was an unexpected problem publishing the Policy(ies)'
+        }
       }
     },
     policy: {

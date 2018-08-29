@@ -4,6 +4,7 @@ import { LIFECYCLE } from 'redux-pack';
 import makePackAction from '../../../helpers/make-pack-action';
 import * as ACTION_TYPES from 'admin-source-management/actions/types';
 import reducers from 'admin-source-management/reducers/usm/groups-reducers';
+module('Unit | Reducers | Groups Reducers');
 
 const initialState = {
   items: [],
@@ -25,10 +26,7 @@ const fetchGroupsPayload = {
       'id': 'group_001',
       'name': 'Zebra 001',
       'description': 'Zebra 001 of group group_001',
-      'createdBy': 'local',
-      'createdOn': 1523655354337,
-      'lastModifiedBy': 'local',
-      'lastModifiedOn': 1523655354337
+      'dirty': false
     }
   ],
   meta: {
@@ -36,21 +34,20 @@ const fetchGroupsPayload = {
   }
 };
 
-module('Unit | Reducers | Groups Reducers');
-
 test('should return the initial state', function(assert) {
   const endState = reducers(undefined, {});
   assert.deepEqual(endState, initialState);
 });
 
-test('on FETCH_GROUPS start, itemsStatus is properly set', function(assert) {
+test('on FETCH_GROUPS start, group is reset and itemsStatus is properly set', function(assert) {
   const expectedEndState = {
     ...initialState,
-    itemsStatus: 'wait'
+    itemsStatus: 'wait',
+    items: []
   };
   const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.FETCH_GROUPS });
   const endState = reducers(Immutable.from(initialState), action);
-  assert.deepEqual(endState, expectedEndState, 'itemsStatus is wait');
+  assert.deepEqual(endState, expectedEndState, 'group is set and itemsStatus is wait');
 });
 
 test('on FETCH_GROUPS success, groups & itemsStatus are properly set', function(assert) {

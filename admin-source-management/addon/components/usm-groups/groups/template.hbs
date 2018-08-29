@@ -24,13 +24,13 @@
           {{/if}}
           {{get item column.field}}
         {{else if (eq column.field "polices")}}
-          {{#each item.policies as |policy index|}}
-            {{#if (not-eq index 0)}},  {{/if}}{{policy.name}}
-          {{/each}}
+          {{#each-in item.assignedPolicies as |policy details|}}
+            {{ details.name }}
+          {{/each-in}}
         {{else if (eq column.field "sourceTypes")}}
-          {{#each item.policies as |policy index|}}
-            {{#if (not-eq index 0)}},  {{/if}}{{policy.type}}
-          {{/each}}
+          {{#each-in item.assignedPolicies as |policy|}}
+            {{ policy }}
+          {{/each-in}}
         {{else if (eq column.field "numSources")}}
           <span>----</span>
         {{else}}

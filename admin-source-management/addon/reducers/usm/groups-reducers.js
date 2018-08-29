@@ -50,6 +50,9 @@ export default reduxActions.handleActions({
         return state.merge({
           items: [],
           itemsTotal: null,
+          itemsSelected: [],
+          focusedItem: null,
+          isSelectAll: false,
           itemsStatus: 'wait'
         });
       },
@@ -59,8 +62,7 @@ export default reduxActions.handleActions({
       success: (state) => {
         return state.merge({
           items: action.payload.data,
-          // itemsTotal: action.payload.meta.total,
-          itemsTotal: 1,
+          itemsTotal: action.payload.meta.total,
           itemsStatus: 'complete'
         });
       }
@@ -76,6 +78,7 @@ export default reduxActions.handleActions({
           {
             isTransactionUnderway: false,
             itemsSelected: [],
+            focusedItem: null,
             isSelectAll: false
           }
         );
@@ -92,6 +95,7 @@ export default reduxActions.handleActions({
           {
             isTransactionUnderway: false,
             itemsSelected: [],
+            focusedItem: null,
             isSelectAll: false
           }
         );

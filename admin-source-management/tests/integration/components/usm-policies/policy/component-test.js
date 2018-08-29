@@ -1,4 +1,4 @@
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { click, findAll, render } from '@ember/test-helpers';
@@ -91,7 +91,7 @@ module('Integration | Component | usm-policies/policy', function(hooks) {
     await click(el);
   });
 
-  test('On successfully saving a policy, a success flash message is shown, and the transitionToPolicies action is called', async function(assert) {
+  skip('On successfully saving a policy, a success flash message is shown, and the transitionToPolicies action is called', async function(assert) {
     assert.expect(3);
     setState({ ...initialState, policy: policyData });
 

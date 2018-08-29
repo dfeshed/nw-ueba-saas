@@ -13,24 +13,24 @@
 
   {{#explorer.table as |row|}}
     {{#row.cell as |item index column|}}
-      <span class={{concat 'usm-policy-column-' column.field}}>
+      <span class="{{concat 'usm-policy-column-' column.field}} {{if item.defaultPolicy 'usm-default-policy-row'}}">
       {{#if (eq column.dataType 'checkbox') }}
-        <label class="rsa-form-checkbox-label {{if (contains item.id explorer.instance.itemsSelected) 'checked'}}">
-          {{rsa-form-checkbox checked=(contains item.id explorer.instance.itemsSelected) change=(action explorer.select item)}}
-        </label>
+        {{#if (not item.defaultPolicy) }}
+          <label class="rsa-form-checkbox-label {{if (contains item.id explorer.instance.itemsSelected) 'checked'}}">
+            {{rsa-form-checkbox checked=(contains item.id explorer.instance.itemsSelected) change=(action explorer.select item)}}
+          </label>
+        {{/if}}
+      {{else if (eq column.field "sourceType")}}
+        {{item.type}}
       {{else if (eq column.field "name")}}
         {{#if item.dirty}}
           <p class="publish-icon">{{rsa-icon name="synchronize-3"}}</p>   
         {{/if}}
           {{get item column.field}}
-      {{!-- {{else if (eq column.field "polices")}}
-        {{#each item.policies as |policy index|}}
-          {{#if (not-eq index 0)}},  {{/if}}{{policy.name}}
+      {{else if (eq column.field "groups")}}
+        {{#each item.associatedGroups as |group index|}}
+          {{#if (not-eq index 0)}},  {{/if}}{{group.name}}
         {{/each}}
-      {{else if (eq column.field "sourceTypes")}}
-        {{#each item.policies as |policy index|}}
-          {{#if (not-eq index 0)}},  {{/if}}{{policy.type}}
-        {{/each}} --}}
       {{else if (eq column.field "numSources")}}
           <span>----</span>
       {{else}}

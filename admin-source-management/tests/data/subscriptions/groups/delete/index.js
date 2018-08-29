@@ -4,7 +4,7 @@ export default {
   message(/* frame */) {
     return {
       code: 0,
-      data: 'delete-works'
+      data: 'delete-groups-works'
     };
   }
 };

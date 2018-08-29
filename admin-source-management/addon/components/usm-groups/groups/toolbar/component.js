@@ -1,8 +1,14 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { isPresent } from '@ember/utils';
-import computed, { notEmpty } from 'ember-computed-decorators';
 import { success, failure } from 'admin-source-management/utils/flash-messages';
+
+import {
+  hasSelectedApplyPoliciesItems,
+  hasSelectedDeleteItems,
+  selectedDeleteItems,
+  hasSelectedPublishItems,
+  selectedPublishItems
+} from 'admin-source-management/reducers/usm/groups-selectors';
 
 import {
   deleteGroups,
@@ -10,8 +16,11 @@ import {
 } from 'admin-source-management/actions/creators/groups-creators';
 
 const stateToComputed = (state) => ({
-  _items: state.usm.groups.items,
-  _selectedItems: state.usm.groups.itemsSelected
+  hasSelectedApplyPoliciesItems: hasSelectedApplyPoliciesItems(state),
+  hasSelectedDeleteItems: hasSelectedDeleteItems(state),
+  selectedDeleteItems: selectedDeleteItems(state),
+  hasSelectedPublishItems: hasSelectedPublishItems(state),
+  selectedPublishItems: selectedPublishItems(state)
 });
 
 const dispatchToActions = {
@@ -22,43 +31,30 @@ const dispatchToActions = {
 const UsmGroupsToolbar = Component.extend({
   classNames: ['usm-groups-toolbar'],
 
-  @notEmpty('_selectedItems')
-  canDelete: true,
-
-  @notEmpty('_selectedItems')
-  canApplyPolicies: true,
-
-  @computed('_selectedItems', '_items')
-  canPublish(selectedItems, items) {
-    if (isPresent(selectedItems) && isPresent(items)) {
-      return (selectedItems.filter((selected) => items.findBy('id', selected).dirty));
-    }
-  },
-
   actions: {
 
-    handleDeleteGroups(selectedItems) {
+    handleDeleteGroups() {
       const callbackOptions = {
         onSuccess: () => {
-          success('adminUsm.groups.modals.deleteGroups.success', { numItems: selectedItems.length });
+          success('adminUsm.groups.modals.deleteGroups.success');
         },
         onFailure: () => {
           failure('adminUsm.groups.modals.deleteGroups.failure');
         }
       };
-      this.send('deleteGroups', selectedItems, callbackOptions);
+      this.send('deleteGroups', callbackOptions);
     },
 
-    handlePublishGroups(selectedItems) {
+    handlePublishGroups() {
       const callbackOptions = {
         onSuccess: () => {
-          success('adminUsm.groups.modals.publishGroups.success', { numItems: selectedItems.length });
+          success('adminUsm.groups.modals.publishGroups.success');
         },
         onFailure: () => {
           failure('adminUsm.groups.modals.publishGroups.failure');
         }
       };
-      this.send('publishGroups', selectedItems, callbackOptions);
+      this.send('publishGroups', callbackOptions);
     }
   }
 });

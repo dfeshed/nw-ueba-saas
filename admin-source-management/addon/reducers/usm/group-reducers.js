@@ -11,13 +11,14 @@ export const initialState = {
     description: null,
     createdBy: null,
     createdOn: null,
+    dirty: false,
     lastModifiedBy: null,
     lastModifiedOn: null,
+    assignedPolicies: {},
     osTypes: [], // ID's only
     osDescriptions: [], // ID's only
     ipRangeStart: null,
-    ipRangeEnd: null,
-    policy: null // map of { 'type': 'policyID' }  ( ex. { 'edrPolicy': 'id_abc123' } )
+    ipRangeEnd: null
   },
 
   // the osType objects & osDescriptions objects to fill the selects/dropdowns

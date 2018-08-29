@@ -25,7 +25,7 @@ const initializeGroup = (groupId) => {
 const initGroupFetchPolicies = () => {
   return {
     type: ACTION_TYPES.INIT_GROUP_FETCH_POLICIES,
-    promise: policyAPI.fetchPolicy()
+    promise: policyAPI.fetchPolicies()
   };
 };
 

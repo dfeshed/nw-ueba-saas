@@ -8,20 +8,19 @@ export default [
     'dirty': false,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655354337,
-    'policies': [
-      {
-        'id': 'policy_01',
-        'name': 'Policy 01',
-        'type': 'EndPointScan'
+    'assignedPolicies': {
+      'edrPolicy': {
+        'referenceId': 'policy_001',
+        'name': 'My Edr Policy'
       }
-    ],
+    },
     'osTypes': [],
     'osDescriptions': [],
     'ipRangeStart': null,
     'ipRangeEnd': null
   },
   {
-    'id': 'group_012',
+    id: 'group_002',
     'name': 'Awesome! 012',
     'description': 'Awesome! 012 of group group_012',
     'createdBy': 'local',
@@ -29,60 +28,7 @@ export default [
     'dirty': true,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655368173,
-    'policies': [
-      {
-        'id': 'policy_02',
-        'name': 'Policy 02',
-        'type': 'EndPointScan'
-      },
-      {
-        'id': 'policy_03',
-        'name': 'Policy 03',
-        'type': 'EndPointWindows'
-      }
-    ],
-    'osTypes': [],
-    'osDescriptions': [],
-    'ipRangeStart': null,
-    'ipRangeEnd': null
-  },
-  {
-    'id': 'group_002',
-    'name': 'Yabba Dabba Doo! 002',
-    'description': 'Yabba Dabba Doo! 002 of group group_002',
-    'createdBy': 'local',
-    'createdOn': 1523655354337,
-    'dirty': false,
-    'lastModifiedBy': 'local',
-    'lastModifiedOn': 1523655354337,
-    'osTypes': [],
-    'policies': [],
-    'osDescriptions': [],
-    'ipRangeStart': null,
-    'ipRangeEnd': null
-  },
-  //
-  {
-    'id': 'group_011',
-    'name': 'Basketball 011',
-    'description': 'Basketball 011 of group group_011',
-    'createdBy': 'local',
-    'createdOn': 1523655368173,
-    'dirty': false,
-    'lastModifiedBy': 'local',
-    'lastModifiedOn': 1523655368173,
-    'policies': [
-      {
-        'id': 'policy_02',
-        'name': 'Policy 02',
-        'type': 'EndPointScan'
-      },
-      {
-        'id': 'policy_03',
-        'name': 'Policy 03',
-        'type': 'EndPointWindows'
-      }
-    ],
+    'assignedPolicies': {},
     'osTypes': [],
     'osDescriptions': [],
     'ipRangeStart': null,
@@ -97,38 +43,12 @@ export default [
     'dirty': true,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655354337,
+    'assignedPolicies': {},
     'osTypes': [],
     'osDescriptions': [],
     'ipRangeStart': null,
     'ipRangeEnd': null
   },
-  {
-    'id': 'group_010',
-    'name': 'Cat Woman 010',
-    'description': 'Cat Woman 010 of group group_010',
-    'createdBy': 'local',
-    'createdOn': 1523655368173,
-    'dirty': true,
-    'lastModifiedBy': 'local',
-    'lastModifiedOn': 1523655368173,
-    'policies': [
-      {
-        'id': 'policy_02',
-        'name': 'Policy 02',
-        'type': 'EndPointScan'
-      },
-      {
-        'id': 'policy_03',
-        'name': 'Policy 03',
-        'type': 'EndPointWindows'
-      }
-    ],
-    'osTypes': [],
-    'osDescriptions': [],
-    'ipRangeStart': null,
-    'ipRangeEnd': null
-  },
-  //
   {
     'id': 'group_004',
     'name': 'Wonder Woman 004',
@@ -138,20 +58,7 @@ export default [
     'dirty': false,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655354337,
-    'osTypes': [],
-    'osDescriptions': [],
-    'ipRangeStart': null,
-    'ipRangeEnd': null
-  },
-  {
-    'id': 'group_009',
-    'name': 'Dog Food 009',
-    'description': 'Dog Food 009 of group group_009',
-    'createdBy': 'local',
-    'createdOn': 1523655368173,
-    'dirty': false,
-    'lastModifiedBy': 'local',
-    'lastModifiedOn': 1523655368173,
+    'assignedPolicies': {},
     'osTypes': [],
     'osDescriptions': [],
     'ipRangeStart': null,
@@ -166,21 +73,7 @@ export default [
     'dirty': false,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655354337,
-    'osTypes': [],
-    'osDescriptions': [],
-    'ipRangeStart': null,
-    'ipRangeEnd': null
-  },
-  //
-  {
-    'id': 'group_008',
-    'name': 'Excellent! 008',
-    'description': 'Excellent! 008 of group group_008',
-    'createdBy': 'local',
-    'createdOn': 1523655368173,
-    'dirty': false,
-    'lastModifiedBy': 'local',
-    'lastModifiedOn': 1523655368173,
+    'assignedPolicies': {},
     'osTypes': [],
     'osDescriptions': [],
     'ipRangeStart': null,
@@ -195,6 +88,7 @@ export default [
     'dirty': false,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655354337,
+    'assignedPolicies': {},
     'osTypes': [],
     'osDescriptions': [],
     'ipRangeStart': null,
@@ -209,12 +103,97 @@ export default [
     'dirty': false,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655368173,
+    'assignedPolicies': {},
     'osTypes': [],
     'osDescriptions': [],
     'ipRangeStart': null,
     'ipRangeEnd': null
   },
-  //
+  {
+    'id': 'group_008',
+    'name': 'Excellent! 008',
+    'description': 'Excellent! 008 of group group_008',
+    'createdBy': 'local',
+    'createdOn': 1523655368173,
+    'dirty': false,
+    'lastModifiedBy': 'local',
+    'lastModifiedOn': 1523655368173,
+    'assignedPolicies': {},
+    'osTypes': [],
+    'osDescriptions': [],
+    'ipRangeStart': null,
+    'ipRangeEnd': null
+  },
+  {
+    'id': 'group_009',
+    'name': 'Dog Food 009',
+    'description': 'Dog Food 009 of group group_009',
+    'createdBy': 'local',
+    'createdOn': 1523655368173,
+    'dirty': false,
+    'lastModifiedBy': 'local',
+    'lastModifiedOn': 1523655368173,
+    'assignedPolicies': {},
+    'osTypes': [],
+    'osDescriptions': [],
+    'ipRangeStart': null,
+    'ipRangeEnd': null
+  },
+  {
+    'id': 'group_010',
+    'name': 'Cat Woman 010',
+    'description': 'Cat Woman 010 of group group_010',
+    'createdBy': 'local',
+    'createdOn': 1523655368173,
+    'dirty': true,
+    'lastModifiedBy': 'local',
+    'lastModifiedOn': 1523655368173,
+    'assignedPolicies': {},
+    'osTypes': [],
+    'osDescriptions': [],
+    'ipRangeStart': null,
+    'ipRangeEnd': null
+  },
+  {
+    'id': 'group_011',
+    'name': 'Basketball 011',
+    'description': 'Basketball 011 of group group_011',
+    'createdBy': 'local',
+    'createdOn': 1523655368173,
+    'dirty': false,
+    'lastModifiedBy': 'local',
+    'lastModifiedOn': 1523655368173,
+    'assignedPolicies': {
+      'edrPolicy': {
+        'referenceId': 'policy_002',
+        'name': 'policy_02'
+      }
+    },
+    'osTypes': [],
+    'osDescriptions': [],
+    'ipRangeStart': null,
+    'ipRangeEnd': null
+  },
+  {
+    'id': 'group_012',
+    'name': 'Yabba Dabba Doo! 002',
+    'description': 'Yabba Dabba Doo! 002 of group group_002',
+    'createdBy': 'local',
+    'createdOn': 1523655354337,
+    'dirty': false,
+    'lastModifiedBy': 'local',
+    'lastModifiedOn': 1523655354337,
+    'osTypes': [],
+    'assignedPolicies': {
+      'edrPolicy': {
+        'referenceId': 'policy_001',
+        'name': 'EDR Policy 001'
+      }
+    },
+    'osDescriptions': [],
+    'ipRangeStart': null,
+    'ipRangeEnd': null
+  },
   {
     'id': 'group_013',
     'name': 'Tom n Jerry 013',
@@ -224,6 +203,7 @@ export default [
     'dirty': false,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655354337,
+    'assignedPolicies': {},
     'osTypes': [],
     'osDescriptions': [],
     'ipRangeStart': null,
@@ -238,6 +218,7 @@ export default [
     'dirty': true,
     'lastModifiedBy': 'local',
     'lastModifiedOn': 1523655368173,
+    'assignedPolicies': {},
     'osTypes': [],
     'osDescriptions': [],
     'ipRangeStart': null,

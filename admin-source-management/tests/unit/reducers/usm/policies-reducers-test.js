@@ -21,12 +21,25 @@ const initialState = {
   isSortDescending: true
 };
 
-const policyData = {
-  'id': 'policy_001',
-  'name': 'Zebra 001',
-  'description': 'Zebra 001 of policy policy_001'
+const fetchPoliciesPayload = {
+  data: [
+    {
+      'id': 'policy_001',
+      'name': 'Zebra 001',
+      'description': 'Zebra 001 of policy policy_001',
+      'dirty': false
+    }
+  ],
+  meta: {
+    total: 1
+  }
 };
 
+
+test('should return the initial state', function(assert) {
+  const endState = reducers(undefined, {});
+  assert.deepEqual(endState, initialState);
+});
 
 test('on FETCH_POLICIES start, policy is reset and itemsStatus is properly set', function(assert) {
   const expectedEndState = {
@@ -42,18 +55,14 @@ test('on FETCH_POLICIES start, policy is reset and itemsStatus is properly set',
 test('on FETCH_POLICIES success, policy & itemsStatus are properly set', function(assert) {
   const expectedEndState = {
     ...initialState,
-    items: policyData,
+    items: fetchPoliciesPayload.data,
+    itemsTotal: 1,
     itemsStatus: 'complete'
   };
   const action = makePackAction(LIFECYCLE.SUCCESS, {
     type: ACTION_TYPES.FETCH_POLICIES,
-    payload: { data: policyData }
+    payload: fetchPoliciesPayload
   });
   const endState = reducers(Immutable.from(initialState), action);
   assert.deepEqual(endState, expectedEndState, 'policy list populated & itemsStatus is complete');
-});
-
-test('should return the initial state', function(assert) {
-  const endState = reducers(undefined, {});
-  assert.deepEqual(endState, initialState);
 });
