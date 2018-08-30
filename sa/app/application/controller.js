@@ -150,5 +150,11 @@ export default Controller.extend({
         this._addDynamicLocale(key, langCode, fileName);
       }
     });
+  },
+
+  actions: {
+    controllerLogout() {
+      this.send('logout');
+    }
   }
 });

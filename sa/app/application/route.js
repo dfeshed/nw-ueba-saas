@@ -62,9 +62,6 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
   },
 
   actions: {
-    back() {
-      history.back();
-    },
     clearFatalErrorQueue() {
       this.get('fatalErrors').clearQueue();
     },
