@@ -96,6 +96,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
         List<SwitchCaseTransformer.SwitchCase> srcMachineNameCases = new ArrayList<>();
         srcMachineNameCases.add(new SwitchCaseTransformer.SwitchCase("4624",String.format("${%s[0]}", ALIAS_HOST_FIELD_NAME)));
         srcMachineNameCases.add(new SwitchCaseTransformer.SwitchCase("4625",String.format("${%s[0]}", ALIAS_HOST_FIELD_NAME)));
+        srcMachineNameCases.add(new SwitchCaseTransformer.SwitchCase("4648",String.format("${%s[0]}", ALIAS_HOST_FIELD_NAME)));
         srcMachineNameCases.add(new SwitchCaseTransformer.SwitchCase("4776",String.format("${%s}", HOST_SRC_FIELD_NAME)));
         SwitchCaseTransformer srcMachineNameSwitchCaseTransformer =
                 new SwitchCaseTransformer("src-machine-name-switch-case",
@@ -465,7 +466,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
         String userId = "bobby";
         String expectedDstMachine = dstMachine.toLowerCase();
         assertOnExpectedValues(retJsonObject, eventId, eventTime, userId, userDst, userId,
-                null, null, RESULT_FAILURE, CREDENTIAL_VALIDATION_OPERATION_TYPE,
+                aliasHost.toLowerCase(), aliasHost, RESULT_FAILURE, CREDENTIAL_VALIDATION_OPERATION_TYPE,
                 referenceId,expectedDstMachine,dstMachine);
     }
 
