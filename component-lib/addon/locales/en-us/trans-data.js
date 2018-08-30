@@ -3550,6 +3550,32 @@ export default {
       saveFailure: 'A problem occurred while trying to save the policy.',
       saveSuccess: 'The policy has been saved successfully.'
     },
+    groupWizard: {
+      // identify-group-step
+      identifyGroup: 'Identify Group',
+      sourceType: 'Source Type',
+      sourceTypePlaceholder: 'Choose a Source Type',
+      edrSourceType: 'Endpoint Scan',
+      fileLogSourceType: 'Endpoint File Collection Logs',
+      windowsLogSourceType: 'Endpoint Windows Collection Logs',
+      name: 'Group Name',
+      namePlaceholder: 'Enter a unique group name',
+      nameRequired: 'Group name is required',
+      description: 'Group Description',
+      descPlaceholder: 'Enter a description',
+      // define-group-step
+      defineGroup: 'Define Group',
+      // apply-policy-step
+      applyPolicy: 'Apply Policy(ies)',
+      // review-group-step
+      reviewGroup: 'Review',
+      // common toolbar
+      previous: 'Previous',
+      next: 'Next',
+      publishGroup: 'Publish Group',
+      saveAndClose: 'Save and Close',
+      cancel: 'Cancel'
+    },
     policyWizard: {
       // identify-policy-step
       identifyPolicy: 'Identify Policy',

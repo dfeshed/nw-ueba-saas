@@ -1,6 +1,7 @@
 import Immutable from 'seamless-immutable';
 import _ from 'lodash';
 import { initialState as policyWizInitialState } from 'admin-source-management/reducers/usm/policy-wizard-reducers';
+import { initialState as groupWizInitialState } from 'admin-source-management/reducers/usm/group-wizard-reducers';
 import {
   groups,
   policies
@@ -75,6 +76,36 @@ export default class DataHelper {
 
   policyWizVisited(visitedFieldsArray) {
     _set(this.state, 'usm.policyWizard.visited', visitedFieldsArray);
+    return this;
+  }
+
+  group(config) {
+    _set(this.state, 'usm.group', config);
+    return this;
+  }
+
+  fetchGroupStatus(status) {
+    _set(this.state, 'usm.group.itemsStatus', status);
+    return this;
+  }
+
+  groupWiz() {
+    _set(this.state, 'usm.groupWizard', _.cloneDeep(groupWizInitialState));
+    return this;
+  }
+
+  groupWizName(name) {
+    _set(this.state, 'usm.groupWizard.group.name', name);
+    return this;
+  }
+
+  groupWizDescription(description) {
+    _set(this.state, 'usm.groupWizard.group.description', description);
+    return this;
+  }
+
+  groupWizVisited(visitedFieldsArray) {
+    _set(this.state, 'usm.groupWizard.visited', visitedFieldsArray);
     return this;
   }
 

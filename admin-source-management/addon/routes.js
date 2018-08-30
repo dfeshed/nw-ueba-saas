@@ -6,4 +6,5 @@ export default buildRoutes(function() {
   this.route('policies');
   this.route('policy-create', { path: 'policy/create' });
   this.route('policy-wizard', { path: 'policy/wizard' });
+  this.route('group-wizard', { path: 'group/wizard' });
 });

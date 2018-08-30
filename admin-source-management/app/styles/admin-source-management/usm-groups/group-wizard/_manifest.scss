@@ -1,0 +1,10 @@
+/*
+what goes into wizard step max-height you ask...
+- 3 levels of nav:  40px + 49px + 49px = 138px
+- plus the toolbar min-height: 138px + 49px = 187px
+*/
+$wizardStepMaxHeight: 187px;
+
+@import "group-wizard";
+@import "group-toolbar";
+@import "identify-group-step";

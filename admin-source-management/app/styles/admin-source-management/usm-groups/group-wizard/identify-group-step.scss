@@ -1,0 +1,17 @@
+.usm-group-wizard {
+  
+  .identify-group-step {
+    max-height: calc(100vh - #{$wizardStepMaxHeight});
+
+    .control {
+      flex: none;
+      padding-bottom: rsa-whitespace(more);
+      > label {
+        width: 45%;
+        margin-bottom: rsa-whitespace(least);
+      }
+    }
+    
+  }
+  
+}
