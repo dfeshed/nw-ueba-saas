@@ -1,4 +1,4 @@
-.start-time {
+.vm-max {
   padding: rsa-whitespace(more) rsa-whitespace() 0 0;
   .rsa-form-label {
     @include rsa-font(default,small);
@@ -14,9 +14,7 @@
       margin-left: rsa-whitespace(more);
     }
   }
-  .schedule-time {
-    .datetime-picker-icon {
-      top: rsa-whitespace();
-    }
+  .noUi-horizontal {
+    max-width: 80%;
   }
 }

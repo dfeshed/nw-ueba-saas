@@ -31,8 +31,12 @@ const initialState = {
   },
   policyStatus: null, // wait, complete, error
   availableSettings: [
-    { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
-    { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: true, callback: 'usm-policies/policy/schedule-config/effective-date' }
+    { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
+    { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', callback: 'usm-policies/policy/schedule-config/effective-date' },
+    { index: 2, id: 'recurrenceInterval', label: 'Scan Frequency', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', callback: 'usm-policies/policy/schedule-config/recurrence-interval' },
+    { index: 3, id: 'startTime', label: 'Start Time', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', callback: 'usm-policies/policy/schedule-config/start-time' },
+    { index: 4, id: 'cpuMax', label: 'CPU Maximum', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', callback: 'usm-policies/policy/schedule-config/cpu-max' },
+    { index: 5, id: 'vmMax', label: 'Virtual Machine Maximum', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', callback: 'usm-policies/policy/schedule-config/vm-max' }
   ],
   selectedSettings: []
 };
@@ -122,7 +126,7 @@ module('Integration | Component | usm-policies/policy', function(hooks) {
   test('All the components in the available settings is rendered on the UI', async function(assert) {
     setState({ ...initialState });
     await render(hbs`{{usm-policies/policy}}`);
-    assert.equal(findAll('.available-settings .available-setting').length, 2, 'All available settings rendered on the UI');
+    assert.equal(findAll('.available-settings .available-setting').length, 6, 'All available settings rendered on the UI');
   });
 
   test('All the components in the selected settings is rendered on the UI ', async function(assert) {
@@ -139,6 +143,30 @@ module('Integration | Component | usm-policies/policy', function(hooks) {
     setState({ ...initialState });
     await render(hbs`{{usm-policies/policy}}`);
     assert.equal(findAll('.available-settings .effectiveDate')[0].classList.contains('is-greyed-out'), true, 'Effective date component should be greyed out by default');
+  });
+
+  test('Scan frequency component greyed out by default', async function(assert) {
+    setState({ ...initialState });
+    await render(hbs`{{usm-policies/policy}}`);
+    assert.equal(findAll('.available-settings .recurrenceInterval')[0].classList.contains('is-greyed-out'), true, 'Scan frequency component should be greyed out by default');
+  });
+
+  test('Start Time component greyed out by default', async function(assert) {
+    setState({ ...initialState });
+    await render(hbs`{{usm-policies/policy}}`);
+    assert.equal(findAll('.available-settings .startTime')[0].classList.contains('is-greyed-out'), true, 'Start Time component should be greyed out by default');
+  });
+
+  test('CPU Maximum component greyed out by default', async function(assert) {
+    setState({ ...initialState });
+    await render(hbs`{{usm-policies/policy}}`);
+    assert.equal(findAll('.available-settings .cpuMax')[0].classList.contains('is-greyed-out'), true, 'CPU Maximum component should be greyed out by default');
+  });
+
+  test('Virtual Machine Maximum component greyed out by default', async function(assert) {
+    setState({ ...initialState });
+    await render(hbs`{{usm-policies/policy}}`);
+    assert.equal(findAll('.available-settings .vmMax')[0].classList.contains('is-greyed-out'), true, 'Virtual Machine Maximum component should be greyed out by default');
   });
 
   test('No available settings should be rendered when isEnabled flag is false', async function(assert) {

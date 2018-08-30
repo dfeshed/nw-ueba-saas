@@ -33,7 +33,10 @@ const initialState = {
   availableSettings: [
     { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, parentId: null, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
     { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', callback: 'usm-policies/policy/schedule-config/effective-date' },
-    { index: 2, id: 'startTime', label: 'Start Time', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', callback: 'usm-policies/policy/schedule-config/start-time' }
+    { index: 2, id: 'recurrenceInterval', label: 'Scan Frequency', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', callback: 'usm-policies/policy/schedule-config/recurrence-interval' },
+    { index: 3, id: 'startTime', label: 'Start Time', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', callback: 'usm-policies/policy/schedule-config/start-time' },
+    { index: 4, id: 'cpuMax', label: 'CPU Maximum', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', callback: 'usm-policies/policy/schedule-config/cpu-max' },
+    { index: 5, id: 'vmMax', label: 'Virtual Machine Maximum', isEnabled: true, isGreyedOut: true, parentId: 'schedOrManScan', callback: 'usm-policies/policy/schedule-config/vm-max' }
   ],
   selectedSettings: []
 };
@@ -166,6 +169,54 @@ test('when SCHEDULED, TOGGLE_SCAN_TYPE lights up the start-time component in the
   const nameAction = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
   const nameEndState = reducers(Immutable.from(initialState), nameAction);
   assert.equal(nameEndState.availableSettings[2].isGreyedOut, false, 'start-time component lights up correctly when SCHEDULED is selected');
+});
+
+test('when MANUAL, TOGGLE_SCAN_TYPE greys out the scan frequency component in the available settings', function(assert) {
+  const payload = 'MANUAL';
+
+  const nameAction = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
+  const nameEndState = reducers(Immutable.from(initialState), nameAction);
+  assert.equal(nameEndState.availableSettings[2].isGreyedOut, true, 'scan frequency component is greyed out correctly when MANUAL is selected');
+});
+
+test('when SCHEDULED, TOGGLE_SCAN_TYPE lights up the scan frequency component in the available settings', function(assert) {
+  const payload = 'SCHEDULED';
+
+  const nameAction = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
+  const nameEndState = reducers(Immutable.from(initialState), nameAction);
+  assert.equal(nameEndState.availableSettings[2].isGreyedOut, false, 'scan frequency component lights up correctly when SCHEDULED is selected');
+});
+
+test('when MANUAL, TOGGLE_SCAN_TYPE greys out the cpu maximum component in the available settings', function(assert) {
+  const payload = 'MANUAL';
+
+  const nameAction = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
+  const nameEndState = reducers(Immutable.from(initialState), nameAction);
+  assert.equal(nameEndState.availableSettings[2].isGreyedOut, true, 'cpu maximum component is greyed out correctly when MANUAL is selected');
+});
+
+test('when SCHEDULED, TOGGLE_SCAN_TYPE lights up the cpu maximum component in the available settings', function(assert) {
+  const payload = 'SCHEDULED';
+
+  const nameAction = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
+  const nameEndState = reducers(Immutable.from(initialState), nameAction);
+  assert.equal(nameEndState.availableSettings[2].isGreyedOut, false, 'cpu maximum component lights up correctly when SCHEDULED is selected');
+});
+
+test('when MANUAL, TOGGLE_SCAN_TYPE greys out the virtual machine maximum component in the available settings', function(assert) {
+  const payload = 'MANUAL';
+
+  const nameAction = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
+  const nameEndState = reducers(Immutable.from(initialState), nameAction);
+  assert.equal(nameEndState.availableSettings[2].isGreyedOut, true, 'virtual machine maximum component is greyed out correctly when MANUAL is selected');
+});
+
+test('when SCHEDULED, TOGGLE_SCAN_TYPE lights up the virtual machine maximum component in the available settings', function(assert) {
+  const payload = 'SCHEDULED';
+
+  const nameAction = { type: ACTION_TYPES.TOGGLE_SCAN_TYPE, payload };
+  const nameEndState = reducers(Immutable.from(initialState), nameAction);
+  assert.equal(nameEndState.availableSettings[2].isGreyedOut, false, 'virtual machine maximum component lights up correctly when SCHEDULED is selected');
 });
 
 test('when SCHEDULED, TOGGLE_SCAN_TYPE lights up the effective date component in available settings', function(assert) {

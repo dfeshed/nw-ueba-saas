@@ -2,6 +2,8 @@
 @import "scan-schedule";
 @import "effective-date";
 @import "start-time";
+@import "cpu-max";
+@import "vm-max";
 
 .schedule-config {
   min-height: 80vh;

@@ -3503,6 +3503,8 @@ export default {
       availableSettings: 'Available Settings',
       selectedSettings: 'Selected Settings',
       scanSchedule: 'Scan Schedule',
+      recurrenceInterval: 'Recurrence Interval',
+      maximumProcessorUsage: 'Maximum Processor Usage',
       scheduleConfiguration: {
         scanType: {
           title: 'Scheduled or Manual Scan',
@@ -3517,14 +3519,14 @@ export default {
         effectiveDate: 'Effective Date',
         startTime: 'Start Time',
         recurrenceInterval: {
-          title: 'Recurrence Interval',
+          title: 'Scan Frequency',
           options: {
-            daily: 'Daily',
-            weekly: 'Weekly',
-            monthly: 'Monthly'
+            daily: 'Days',
+            weekly: 'Weeks',
+            monthly: 'Months'
           },
-          every: 'Every',
-          on: 'On',
+          every: 'Scan every',
+          on: 'on',
           intervalText: {
             DAYS: 'day(s)',
             WEEKS: 'week(s)',
