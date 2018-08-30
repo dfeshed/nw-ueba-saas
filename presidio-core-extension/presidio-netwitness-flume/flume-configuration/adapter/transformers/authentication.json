@@ -94,6 +94,11 @@
           "isRegex": false
         },
         {
+          "caseKey": "4648",
+          "caseValue": "${alias_host[0]}",
+          "isRegex": false
+        },
+        {
           "caseKey": "4776",
           "caseValue": "${host_src}",
           "isRegex": false
