@@ -41,6 +41,8 @@ public class FileEventsGenerator extends AbstractEventGenerator {
 
     private void setFieldDefaultGenerators() throws GeneratorException {
         userGenerator = new RandomUserGenerator();
+        User user = userGenerator.getNext();
+        eventIdGenerator = new EntityEventIDFixedPrefixGenerator(user.getUsername());
         dataSourceGenerator = new FixedDataSourceGenerator(new String[] {"File System"});
         fileOperationGenerator = new FileOperationGenerator();
         machineEntityGenerator = new QuestADMachineGenerator();
@@ -52,7 +54,7 @@ public class FileEventsGenerator extends AbstractEventGenerator {
         User user = getUserGenerator().getNext();
         String username = user.getUsername();
         Instant time = getTimeGenerator().getNext();
-        String eventId = new EntityEventIDFixedPrefixGenerator(username).getNext();
+        String eventId = getEventIdGenerator().getNext();
         FileOperation fileOperation = getFileOperationGenerator().getNext();
         FileSystemEntity fileSystem = new FileSystemEntityGenerator(username).getNext();
         String dataSource = getDataSourceGenerator().getNext();
