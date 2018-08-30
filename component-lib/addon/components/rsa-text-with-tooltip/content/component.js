@@ -6,5 +6,7 @@ export default Component.extend({
 
   classNames: ['tool-tip-value'],
 
-  text: null
+  text: null,
+
+  showNote: false
 });

@@ -1,7 +1,5 @@
 {{#if isEndpointEvent}}
-  {{!--
-    if event is endpoint event then don't display anything
-  --}}
+  {{rsa-panel-message message=(t 'recon.error.endpointMessage')}}
 {{else if hasRenderIds}}
   {{#if stickyContent}}
     <div class="recon-packet-stuck-header">

@@ -332,7 +332,8 @@ export default {
       generic: 'An unexpected error has occurred attempting to retrieve this data.',
       missingRecon: 'This event (id = {{id}}) was not saved or has been rolled out of storage. No content to display.',
       noTextContentData: 'No text data was generated during content reconstruction. This could mean that the event data was corrupt or invalid. Check the other reconstruction views.',
-      permissionError: 'Insufficient permissions for the requested data. If you believe you should have access, ask your administrator to provide the necessary permissions.'
+      permissionError: 'Insufficient permissions for the requested data. If you believe you should have access, ask your administrator to provide the necessary permissions.',
+      endpointMessage: 'Text data is not generated for endpoint events. However, endpoint metadata is available in the Event Meta panel.'
     },
     fatalError: {
       115: 'Session is unavailable for viewing.',
@@ -3637,5 +3638,9 @@ export default {
     footer: 'Showing {{count}} out of {{total}} items',
     selectionCount: '{{selectionCount}} selected',
     fetchError: 'An error has occurred. The server may be offline or inaccessible.'
+  },
+  rsaTooltip: {
+    note: 'Note:',
+    labelMessage: 'Only the initial 255 characters of the value are indexed as part of this meta, and will be included in any indexed search.'
   }
 };

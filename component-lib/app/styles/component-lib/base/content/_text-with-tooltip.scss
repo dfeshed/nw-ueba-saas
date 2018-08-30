@@ -9,6 +9,14 @@ $panel-width: 200px;
   .copy-icon {
     float: right;
   }
+  .tool-tip-note {
+    @include border-top(1px, solid, neutral, base, somewhat-opaque);
+    padding-top: rsa-whitespace(less);
+    display: flex;
+    .rsa-icon {
+      padding-right: rsa-whitespace(least);
+    }
+  }
 }
 
 .tooltip-text {
