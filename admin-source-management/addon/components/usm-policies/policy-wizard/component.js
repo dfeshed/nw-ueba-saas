@@ -3,7 +3,8 @@ import { connect } from 'ember-redux';
 
 import {
   policy,
-  steps
+  steps,
+  isPolicyLoading
 } from 'admin-source-management/reducers/usm/policy-wizard-selectors';
 
 // import {
@@ -12,7 +13,8 @@ import {
 
 const stateToComputed = (state) => ({
   policy: policy(state),
-  steps: steps(state)
+  steps: steps(state),
+  isPolicyLoading: isPolicyLoading(state)
 });
 
 const dispatchToActions = (/* dispatch */) => ({
@@ -21,6 +23,9 @@ const dispatchToActions = (/* dispatch */) => ({
 const UsmPolicyWizard = Component.extend({
   tagName: 'hbox',
   classNames: ['usm-policy-wizard'],
+
+  // closure action expected to be passed in
+  transitionToPolicies: null,
 
   actions: {
   }

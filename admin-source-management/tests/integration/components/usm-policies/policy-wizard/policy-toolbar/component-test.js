@@ -1,21 +1,23 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { click, findAll, render } from '@ember/test-helpers';
-// import sinon from 'sinon';
+import { click, findAll, render, settled } from '@ember/test-helpers';
+import sinon from 'sinon';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
-// import policyWizardCreators from 'admin-source-management/actions/creators/policy-wizard-creators';
+import { patchFlash } from '../../../../../helpers/patch-flash';
+import { throwSocket } from '../../../../../helpers/patch-socket';
+import policyWizardCreators from 'admin-source-management/actions/creators/policy-wizard-creators';
 
 let setState;
 
-// const editPolicySpy = sinon.spy(policyWizardCreators, 'editPolicy');
+const savePolicySpy = sinon.spy(policyWizardCreators, 'savePolicy');
 
-// const spys = [
-//   editPolicySpy
-// ];
+const spys = [
+  savePolicySpy
+];
 
 
 module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', function(hooks) {
@@ -31,13 +33,13 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
     this.owner.inject('component', 'i18n', 'service:i18n');
   });
 
-  // hooks.afterEach(function() {
-  //   spys.forEach((s) => s.reset());
-  // });
+  hooks.afterEach(function() {
+    spys.forEach((s) => s.reset());
+  });
 
-  // hooks.after(function() {
-  //   spys.forEach((s) => s.restore());
-  // });
+  hooks.after(function() {
+    spys.forEach((s) => s.restore());
+  });
 
   test('The component appears in the DOM', async function(assert) {
     const state = new ReduxDataHelper(setState).policyWiz().build();
@@ -72,17 +74,23 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
   });
 
   test('Toolbar actions for Identify Policy step with valid data', async function(assert) {
-    assert.expect(1);
+    assert.expect(4);
     const state = new ReduxDataHelper(setState)
       .policyWiz()
       .policyWizName('test name')
       .build();
     this.set('step', state.usm.policyWizard.steps[0]);
     this.set('transitionToStep', () => {});
-    await render(hbs`{{usm-policies/policy-wizard/policy-toolbar step=step transitionToStep=(action transitionToStep)}}`);
+    this.set('transitionToClose', () => {});
+    await render(hbs`{{usm-policies/policy-wizard/policy-toolbar
+      step=step
+      transitionToStep=(action transitionToStep)
+      transitionToClose=(action transitionToClose)}}`
+    );
 
     // skip prev-button & publish-button since they aren't rendered
 
+    // clicking the next-button should call transitionToStep() with the correct stepId
     // update transitionToStep for next-button
     this.set('transitionToStep', (stepId) => {
       assert.equal(stepId, this.get('step').nextStepId, `transitionToStep(${stepId}) was called with the correct stepId by Next`);
@@ -90,9 +98,71 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
     const nextBtnEl = findAll('.next-button:not(.is-disabled) button')[0]; // eslint-disable-line ember-suave/prefer-destructuring
     await click(nextBtnEl);
 
-    // skip save-button & cancel-button since they don't do anything yet
-    // assert.equal(findAll('.save-button:not(.is-disabled)').length, 1, 'The Save button appears in the DOM and is enabled');
-    // assert.equal(findAll('.cancel-button:not(.is-disabled)').length, 1, 'The Cancel button appears in the DOM and is enabled');
+    // clicking the save-button should dispatch the savePolicy action
+    const saveBtnEl = findAll('.save-button:not(.is-disabled) button')[0]; // eslint-disable-line ember-suave/prefer-destructuring
+    await click(saveBtnEl);
+    settled().then(() => {
+      assert.ok(savePolicySpy.calledOnce, 'The savePolicy action was called once by Save');
+      // only checking first arg as second arg will be a Function that lives in the Component
+      assert.equal(savePolicySpy.getCall(0).args[0], state.usm.policyWizard.policy);
+    });
+
+    // clicking the cancel-button should call transitionToClose()
+    // update transitionToClose for cancel-button
+    this.set('transitionToClose', () => {
+      assert.ok('transitionToClose() was properly triggered');
+    });
+    const cancelBtnEl = findAll('.cancel-button:not(.is-disabled) button')[0]; // eslint-disable-line ember-suave/prefer-destructuring
+    await click(cancelBtnEl);
+  });
+
+  test('On failing to save a policy, an error flash message is shown', async function(assert) {
+    assert.expect(2);
+    const state = new ReduxDataHelper(setState)
+      .policyWiz()
+      .policyWizName('test name')
+      .build();
+    this.set('step', state.usm.policyWizard.steps[0]);
+    await render(hbs`{{usm-policies/policy-wizard/policy-toolbar step=step}}`);
+
+    throwSocket();
+    patchFlash((flash) => {
+      const translation = this.owner.lookup('service:i18n');
+      const expectedMessage = translation.t('adminUsm.policyWizard.saveFailure');
+      assert.equal(flash.type, 'error');
+      assert.equal(flash.message.string, expectedMessage);
+    });
+
+    const saveBtnEl = findAll('.save-button:not(.is-disabled) button')[0]; // eslint-disable-line ember-suave/prefer-destructuring
+    await click(saveBtnEl);
+  });
+
+  test('On successfully saving a policy, a success flash message is shown, and the transitionToClose action is called', async function(assert) {
+    assert.expect(3);
+    const state = new ReduxDataHelper(setState)
+      .policyWiz()
+      .policyWizName('test name')
+      .build();
+    this.set('step', state.usm.policyWizard.steps[0]);
+    this.set('transitionToClose', () => {
+      assert.ok('transitionToClose() was properly triggered');
+    });
+    await render(hbs`{{usm-policies/policy-wizard/policy-toolbar
+      step=step
+      transitionToClose=(action transitionToClose)}}`
+    );
+
+    const done = assert.async();
+    patchFlash((flash) => {
+      const translation = this.owner.lookup('service:i18n');
+      const expectedMessage = translation.t('adminUsm.policyWizard.saveSuccess');
+      assert.equal(flash.type, 'success');
+      assert.equal(flash.message.string, expectedMessage);
+      done();
+    });
+
+    const saveBtnEl = findAll('.save-button:not(.is-disabled) button')[0]; // eslint-disable-line ember-suave/prefer-destructuring
+    await click(saveBtnEl);
   });
 
 });

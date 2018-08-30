@@ -43,7 +43,7 @@ export const selectedSourceType = createSelector(
     let selected = null;
     for (let s = 0; s < sourceTypes.length; s++) {
       const sourceType = sourceTypes[s];
-      if (policy.type === sourceType.type) {
+      if (policy.policyType === sourceType.policyType) {
         selected = sourceType;
         break;
       }
@@ -102,4 +102,9 @@ export const isWizardValid = createSelector(
     return isIdentifyPolicyStepValid && isDefinePolicyStepvalid &&
       isApplyToGroupStepvalid && isReviewPolicyStepvalid;
   }
+);
+
+export const isPolicyLoading = createSelector(
+  policyWizardState,
+  (policyWizardState) => policyWizardState.policyStatus === 'wait'
 );

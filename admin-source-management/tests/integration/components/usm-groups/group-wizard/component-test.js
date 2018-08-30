@@ -24,7 +24,8 @@ module('Integration | Component | usm-groups/group-wizard', function(hooks) {
 
   test('The component appears in the DOM', async function(assert) {
     new ReduxDataHelper(setState).build();
-    await render(hbs`{{usm-groups/group-wizard}}`);
+    this.set('transitionToGroups', () => {});
+    await render(hbs`{{usm-groups/group-wizard transitionToGroups=(action transitionToGroups)}}`);
     assert.equal(findAll('.usm-group-wizard').length, 1, 'The component appears in the DOM');
   });
 });

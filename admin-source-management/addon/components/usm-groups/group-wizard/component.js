@@ -22,6 +22,9 @@ const UsmGroupWizard = Component.extend({
   tagName: 'hbox',
   classNames: ['usm-group-wizard'],
 
+  // closure action expected to be passed in
+  transitionToGroups: null,
+
   actions: {
   }
 });

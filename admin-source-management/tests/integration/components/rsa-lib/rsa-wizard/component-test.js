@@ -50,14 +50,38 @@ module('Integration | Component | rsa-lib/rsa-wizard', function(hooks) {
   test('The component appears in the DOM', async function(assert) {
     this.set('steps', steps);
     this.set('currentStepId', 'testStep1');
-    await render(hbs`{{rsa-lib/rsa-wizard steps=steps currentStepId=currentStepId}}`);
+    this.set('transitionToClose', () => {});
+    await render(hbs`{{rsa-lib/rsa-wizard
+      steps=steps
+      currentStepId=currentStepId
+      transitionToClose=(action transitionToClose)}}`
+    );
     assert.equal(findAll('.rsa-wizard-container').length, 1, 'The component appears in the DOM');
+  });
+
+  test('A loading spinner is displayed if the isWizardLoading property is true', async function(assert) {
+    this.set('steps', steps);
+    this.set('currentStepId', 'testStep1');
+    this.set('transitionToClose', () => {});
+    this.set('isWizardLoading', true);
+    await render(hbs`{{rsa-lib/rsa-wizard
+      steps=steps
+      currentStepId=currentStepId
+      transitionToClose=(action transitionToClose)
+      isWizardLoading=isWizardLoading}}`
+    );
+    assert.equal(findAll('.rsa-wizard-container .rsa-wizard-loading-overlay .rsa-loader').length, 1, 'A loading spinner appears in the dom');
   });
 
   test('The list of step names should be rendered', async function(assert) {
     this.set('steps', steps);
     this.set('currentStepId', 'testStep1');
-    await render(hbs`{{rsa-lib/rsa-wizard steps=steps currentStepId=currentStepId}}`);
+    this.set('transitionToClose', () => {});
+    await render(hbs`{{rsa-lib/rsa-wizard
+      steps=steps
+      currentStepId=currentStepId
+      transitionToClose=(action transitionToClose)}}`
+    );
 
     // the list exists
     assert.equal(findAll('.rsa-wizard-container .rsa-wizard-left-container ul').length, 1, 'List of step names is rendered');
@@ -77,14 +101,24 @@ module('Integration | Component | rsa-lib/rsa-wizard', function(hooks) {
   test('The correct initial step should be rendered', async function(assert) {
     this.set('steps', steps);
     this.set('currentStepId', 'testStep2');
-    await render(hbs`{{rsa-lib/rsa-wizard steps=steps currentStepId=currentStepId}}`);
+    this.set('transitionToClose', () => {});
+    await render(hbs`{{rsa-lib/rsa-wizard
+      steps=steps
+      currentStepId=currentStepId
+      transitionToClose=(action transitionToClose)}}`
+    );
     assert.equal(findAll('.rsa-wizard-container .testStep2').length, 1, 'Test Step 2 is rendered');
   });
 
   test('The correct step should be rendered when changing currentStepId', async function(assert) {
     this.set('steps', steps);
     this.set('currentStepId', 'testStep2');
-    await render(hbs`{{rsa-lib/rsa-wizard steps=steps currentStepId=currentStepId}}`);
+    this.set('transitionToClose', () => {});
+    await render(hbs`{{rsa-lib/rsa-wizard
+      steps=steps
+      currentStepId=currentStepId
+      transitionToClose=(action transitionToClose)}}`
+    );
 
     // initial step
     assert.equal(findAll('.rsa-wizard-container .testStep2').length, 1, 'Test Step 2 is rendered');
@@ -97,14 +131,24 @@ module('Integration | Component | rsa-lib/rsa-wizard', function(hooks) {
   test('The bottom button toolbar should be rendered', async function(assert) {
     this.set('steps', steps);
     this.set('currentStepId', 'testStep1');
-    await render(hbs`{{rsa-lib/rsa-wizard steps=steps currentStepId=currentStepId}}`);
+    this.set('transitionToClose', () => {});
+    await render(hbs`{{rsa-lib/rsa-wizard
+      steps=steps
+      currentStepId=currentStepId
+      transitionToClose=(action transitionToClose)}}`
+    );
     assert.equal(findAll('.rsa-wizard-container .test-toolbar').length, 1, 'Test Toolbar is rendered');
   });
 
   test('The correct step should be rendered by triggering the transitionToStep action with Next/Previous buttons', async function(assert) {
     this.set('steps', steps);
     this.set('currentStepId', 'testStep1');
-    await render(hbs`{{rsa-lib/rsa-wizard steps=steps currentStepId=currentStepId}}`);
+    this.set('transitionToClose', () => {});
+    await render(hbs`{{rsa-lib/rsa-wizard
+      steps=steps
+      currentStepId=currentStepId
+      transitionToClose=(action transitionToClose)}}`
+    );
 
     // clicking Step 1's Next button should render Step 2
     const step1NextBtn = findAll('.rsa-wizard-container .test-toolbar .next-button button')[0]; // eslint-disable-line ember-suave/prefer-destructuring
@@ -125,6 +169,22 @@ module('Integration | Component | rsa-lib/rsa-wizard', function(hooks) {
     const step2PrevBtn = findAll('.rsa-wizard-container .test-toolbar .prev-button button')[0]; // eslint-disable-line ember-suave/prefer-destructuring
     await click(step2PrevBtn);
     assert.equal(findAll('.rsa-wizard-container .testStep1').length, 1, 'Test Step 1 is rendered');
+  });
+
+  test('The transitionToClose() closure action should be properly set and triggered', async function(assert) {
+    assert.expect(1);
+    this.set('steps', steps);
+    this.set('currentStepId', 'testStep1');
+    this.set('transitionToClose', () => {
+      assert.ok('transitionToClose() was properly triggered');
+    });
+    await render(hbs`{{rsa-lib/rsa-wizard
+      steps=steps
+      currentStepId=currentStepId
+      transitionToClose=(action transitionToClose)}}`
+    );
+    const cancelBtn = findAll('.rsa-wizard-container .test-toolbar .cancel-button button')[0]; // eslint-disable-line ember-suave/prefer-destructuring
+    await click(cancelBtn);
   });
 
 });

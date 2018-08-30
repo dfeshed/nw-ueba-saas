@@ -44,11 +44,13 @@ export default class DataHelper {
     return state.asMutable();
   }
 
+  /* TODO is this deprecated? Should this be deleted when policy wizard is done ??? */
   policy(config) {
     _set(this.state, 'usm.policy', config);
     return this;
   }
 
+  /* TODO is this deprecated? Should this be deleted when policy wizard is done ??? */
   fetchPolicyStatus(status) {
     _set(this.state, 'usm.policy.itemsStatus', status);
     return this;
@@ -60,7 +62,7 @@ export default class DataHelper {
   }
 
   policyWizSourceType(type) {
-    _set(this.state, 'usm.policyWizard.policy.type', type);
+    _set(this.state, 'usm.policyWizard.policy.policyType', type);
     return this;
   }
 
@@ -79,11 +81,18 @@ export default class DataHelper {
     return this;
   }
 
+  policyWizPolicyStatus(status) {
+    _set(this.state, 'usm.policyWizard.policyStatus', status);
+    return this;
+  }
+
+  /* TODO is this deprecated? Should this be deleted when group wizard is done ??? */
   group(config) {
     _set(this.state, 'usm.group', config);
     return this;
   }
 
+  /* TODO is this deprecated? Should this be deleted when group wizard is done ??? */
   fetchGroupStatus(status) {
     _set(this.state, 'usm.group.itemsStatus', status);
     return this;

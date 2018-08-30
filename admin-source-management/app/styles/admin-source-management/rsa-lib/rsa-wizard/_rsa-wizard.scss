@@ -105,4 +105,13 @@
     padding-left: rsa-whitespace();
   }
 
+  .rsa-wizard-loading-overlay {
+    @include rsa-fill-abs();
+    z-index: 2;
+    background-color: background-color(neutral,dark,translucent);
+    centered {
+      height: 100%;
+    }
+  }
+
 }

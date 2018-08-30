@@ -24,7 +24,8 @@ module('Integration | Component | usm-policies/policy-wizard', function(hooks) {
 
   test('The component appears in the DOM', async function(assert) {
     new ReduxDataHelper(setState).build();
-    await render(hbs`{{usm-policies/policy-wizard}}`);
+    this.set('transitionToPolicies', () => {});
+    await render(hbs`{{usm-policies/policy-wizard transitionToPolicies=(action transitionToPolicies)}}`);
     assert.equal(findAll('.usm-policy-wizard').length, 1, 'The component appears in the DOM');
   });
 

@@ -5,9 +5,11 @@ const TestToolbar = Component.extend({
   classNames: ['test-toolbar'],
 
   // step object required to be passed in
-  step: undefined,
+  step: null,
   // closure action required to be passed in
-  transitionToStep: undefined,
+  transitionToStep: null,
+  // closure action expected to be passed in
+  transitionToClose: null,
 
   actions: {
     transitionToPrevStep() {
@@ -15,6 +17,9 @@ const TestToolbar = Component.extend({
     },
     transitionToNextStep() {
       this.get('transitionToStep')(this.get('step').nextStepId);
+    },
+    cancel() {
+      this.get('transitionToClose')();
     }
   }
 

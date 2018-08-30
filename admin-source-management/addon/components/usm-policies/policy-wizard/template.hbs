@@ -1,1 +1,6 @@
-{{rsa-lib/rsa-wizard steps=steps currentStepId='identifyPolicyStep'}}
+{{rsa-lib/rsa-wizard
+  steps=steps
+  currentStepId='identifyPolicyStep'
+  transitionToClose=(action transitionToPolicies)
+  isWizardLoading=isPolicyLoading
+}}

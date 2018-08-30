@@ -3600,7 +3600,10 @@ export default {
       next: 'Next',
       publishPolicy: 'Publish Policy',
       saveAndClose: 'Save and Close',
-      cancel: 'Cancel'
+      cancel: 'Cancel',
+      // flash messages
+      saveFailure: 'A problem occurred while trying to save the policy.',
+      saveSuccess: 'The policy has been saved successfully.'
     },
     policyTypes: {
       edrPolicy: 'EndPointScan',

@@ -1,6 +1,6 @@
 import Immutable from 'seamless-immutable';
 import reduxActions from 'redux-actions';
-// import { handle } from 'redux-pack';
+import { handle } from 'redux-pack';
 import _ from 'lodash';
 // import moment from 'moment';
 import * as ACTION_TYPES from 'admin-source-management/actions/types';
@@ -8,7 +8,7 @@ import * as ACTION_TYPES from 'admin-source-management/actions/types';
 export const initialState = {
   // the policy object to be created/updated/saved
   policy: {
-    type: 'edrPolicy',
+    policyType: 'edrPolicy',
     name: '',
     description: '',
     scheduleConfig: {
@@ -67,9 +67,9 @@ export const initialState = {
 
   // the policy sourceType objects to fill the select/dropdown
   sourceTypes: [
-    { id: 'edrPolicy', type: 'edrPolicy', name: 'EndpointScan', label: 'adminUsm.policyWizard.edrSourceType' }
-    // { id: 'fileLogPolicy', type: 'fileLogPolicy', name: 'EndpointFile', label: 'adminUsm.policyWizard.fileLogSourceType' },
-    // { id: 'windowsLogPolicy', type: 'windowsLogPolicy', name: 'EndpointWL', label: 'adminUsm.policyWizard.windowsLogSourceType' }
+    { id: 'edrPolicy', policyType: 'edrPolicy', name: 'EndpointScan', label: 'adminUsm.policyWizard.edrSourceType' }
+    // { id: 'fileLogPolicy', policyType: 'fileLogPolicy', name: 'EndpointFile', label: 'adminUsm.policyWizard.fileLogSourceType' },
+    // { id: 'windowsLogPolicy', policyType: 'windowsLogPolicy', name: 'EndpointWL', label: 'adminUsm.policyWizard.windowsLogSourceType' }
   ],
 
   policyStatus: null, // wait, complete, error
@@ -80,11 +80,37 @@ export const initialState = {
 
 export default reduxActions.handleActions({
 
+  [ACTION_TYPES.NEW_POLICY]: (state /* , action */) => {
+    return state.merge({
+      policy: { ...initialState.policy },
+      policyStatus: null,
+      visited: []
+      // TODO do we need defaults for anything like scanStartDate?
+    });
+  },
+
   [ACTION_TYPES.EDIT_POLICY]: (state, action) => {
     const { field, value } = action.payload;
     const fields = field.split('.');
     // Edit the value in the policy, and keep track of the field as having been visited
     return state.setIn(fields, value).set('visited', _.uniq([...state.visited, field]));
-  }
+  },
+
+  [ACTION_TYPES.SAVE_POLICY]: (state, action) => (
+    handle(state, action, {
+      start: (state) => {
+        return state.set('policyStatus', 'wait');
+      },
+      failure: (state) => {
+        return state.set('policyStatus', 'error');
+      },
+      success: (state) => {
+        return state.merge({
+          policy: action.payload.data,
+          policyStatus: 'complete'
+        });
+      }
+    })
+  )
 
 }, Immutable.from(initialState));

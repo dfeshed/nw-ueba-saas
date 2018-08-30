@@ -9,11 +9,12 @@ import {
   selectedSourceType,
   nameValidator,
   steps,
-  isIdentifyPolicyStepValid
+  isIdentifyPolicyStepValid,
   // TODO when implemented isDefinePolicyStepvalid,
   // TODO when implemented isApplyToGroupStepvalid,
   // TODO when implemented isReviewPolicyStepvalid,
-  // TODO when implemented isWizardValid
+  // TODO when implemented isWizardValid,
+  isPolicyLoading
 } from 'admin-source-management/reducers/usm/policy-wizard-selectors';
 
 module('Unit | Selectors | Policy Wizard Selectors', function() {
@@ -46,7 +47,7 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
     const sourceTypesExpected = _.cloneDeep(fullState.usm.policyWizard.sourceTypes);
     const sourceTypesSelected = sourceTypes(Immutable.from(fullState));
     assert.deepEqual(sourceTypesSelected, sourceTypesExpected, 'The returned value from the sourceTypes selector is as expected');
-    assert.deepEqual(sourceTypesSelected[0].type, type0Expected, `sourceTypes[0].type is ${type0Expected}`);
+    assert.deepEqual(sourceTypesSelected[0].policyType, type0Expected, `sourceTypes[0].policyType is ${type0Expected}`);
   });
 
   test('selectedSourceType selector', function(assert) {
@@ -140,6 +141,26 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
     isIdentifyPolicyStepValidExpected = true;
     isIdentifyPolicyStepValidSelected = isIdentifyPolicyStepValid(Immutable.from(fullState));
     assert.deepEqual(isIdentifyPolicyStepValidSelected, isIdentifyPolicyStepValidExpected, 'The returned value from the isIdentifyPolicyStepValid selector is as expected');
+  });
+
+  test('isPolicyLoading selector', function(assert) {
+    let policyStatusExpected = 'wait';
+    let fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPolicyStatus(policyStatusExpected)
+      .build();
+    let isPolicyLoadingExpected = true;
+    let isPolicyLoadingSelected = isPolicyLoading(Immutable.from(fullState));
+    assert.deepEqual(isPolicyLoadingSelected, isPolicyLoadingExpected, 'isPolicyLoading is true when policyStatus is wait');
+
+    policyStatusExpected = 'complete';
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPolicyStatus(policyStatusExpected)
+      .build();
+    isPolicyLoadingExpected = false;
+    isPolicyLoadingSelected = isPolicyLoading(Immutable.from(fullState));
+    assert.deepEqual(isPolicyLoadingSelected, isPolicyLoadingExpected, 'isPolicyLoading is false when policyStatus is complete');
   });
 
 });

@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
+import Notifications from 'component-lib/mixins/notifications';
 
 import {
   policy,
@@ -11,9 +12,9 @@ import {
   isWizardValid
 } from 'admin-source-management/reducers/usm/policy-wizard-selectors';
 
-// import {
-//   editPolicy
-// } from 'admin-source-management/actions/creators/policy-wizard-creators';
+import {
+  savePolicy
+} from 'admin-source-management/actions/creators/policy-wizard-creators';
 
 const stateToComputed = (state) => ({
   policy: policy(state),
@@ -24,17 +25,20 @@ const stateToComputed = (state) => ({
   isWizardValid: isWizardValid(state)
 });
 
-const dispatchToActions = (/* dispatch */) => ({
-});
+const dispatchToActions = {
+  savePolicy
+};
 
-const PolicyWizardToolbar = Component.extend({
+const PolicyWizardToolbar = Component.extend(Notifications, {
   tagName: 'hbox',
   classNames: ['policy-wizard-toolbar'],
 
   // step object required to be passed in
-  step: undefined,
+  step: null,
   // closure action required to be passed in
-  transitionToStep: undefined,
+  transitionToStep: null,
+  // closure action expected to be passed in
+  transitionToClose: null,
 
   @computed('step', 'isIdentifyPolicyStepValid', 'isDefinePolicyStepvalid', 'isApplyToGroupStepvalid', 'isReviewPolicyStepvalid')
   isStepValid(step, isIdentifyPolicyStepValid, isDefinePolicyStepvalid, isApplyToGroupStepvalid, isReviewPolicyStepvalid) {
@@ -57,14 +61,26 @@ const PolicyWizardToolbar = Component.extend({
     transitionToNextStep() {
       this.get('transitionToStep')(this.get('step').nextStepId);
     },
+
     publish() {
       // console.log('PolicyWizardToolbar.publish()');
     },
+
     save() {
-      // console.log('PolicyWizardToolbar.save()');
+      const saveCallbacks = {
+        onSuccess: () => {
+          this.send('success', 'adminUsm.policyWizard.saveSuccess');
+          this.get('transitionToClose')();
+        },
+        onFailure: () => {
+          this.send('failure', 'adminUsm.policyWizard.saveFailure');
+        }
+      };
+      this.send('savePolicy', this.get('policy'), saveCallbacks);
     },
+
     cancel() {
-      // console.log('PolicyWizardToolbar.cancel()');
+      this.get('transitionToClose')();
     }
   }
 

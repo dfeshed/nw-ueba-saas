@@ -1,13 +1,13 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-// import { initializePolicy } from 'admin-source-management/actions/creators/policy-wizard-creators';
+import { initializePolicy } from 'admin-source-management/actions/creators/policy-wizard-creators';
 
 export default Route.extend({
   redux: service(),
 
   model() {
-    // const redux = this.get('redux');
-    // redux.dispatch(initializePolicy());
+    const redux = this.get('redux');
+    redux.dispatch(initializePolicy());
   },
 
   actions: {

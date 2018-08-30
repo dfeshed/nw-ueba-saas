@@ -31,8 +31,17 @@
       </vbox>
       {{!-- wizard current step toolbar container --}}
       <vbox class="rsa-wizard-toolbar-container">
-        {{component step.toolbarComponent step=step transitionToStep=(action 'transitionToStep')}}
+        {{component step.toolbarComponent step=step transitionToStep=(action 'transitionToStep') transitionToClose=(action transitionToClose)}}
       </vbox>
     {{/if}}
   {{/each}}
 </vbox>
+
+{{!-- Overlay to prevent interactions while loading --}}
+{{#if isWizardLoading}}
+  <div class="rsa-wizard-loading-overlay">
+    <centered>
+      {{rsa-loader size="large"}}
+    </centered>
+  </div>
+{{/if}}
