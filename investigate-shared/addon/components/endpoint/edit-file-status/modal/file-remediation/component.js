@@ -19,10 +19,10 @@ export default Component.extend({
   ],
 
   fileCategories: [
-    'APT',
+    'Apt',
     'AttackerTool',
     'GenericMalware',
-    'Ransom',
+    'Ransomware',
     'Unidentified'
   ],
 

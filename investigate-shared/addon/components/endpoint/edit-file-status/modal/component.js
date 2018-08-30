@@ -4,6 +4,8 @@ import { success } from 'investigate-shared/utils/flash-messages';
 import { isEmpty } from '@ember/utils';
 import computed from 'ember-computed-decorators';
 
+const STATUS_WITH_REMEDIATION = ['Blacklist', 'Graylist'];
+
 export default Component.extend({
   layout,
 
@@ -58,7 +60,7 @@ export default Component.extend({
           success('investigateFiles.editFileStatus.successMessage');
         }
       };
-      if (this.get('data').fileStatus !== 'Blacklist' || 'Graylist') {
+      if (!STATUS_WITH_REMEDIATION.includes(this.get('data').fileStatus)) {
         this.set('data.remediationAction', null);
       }
       this.onSaveFileStatus(this.get('data'), callback);
