@@ -366,6 +366,41 @@
       "destinationKeys": [
         "userDisplayName"
       ]
+    },
+    {
+      "type": "if_else",
+      "name": "convert-src-machine-to-dst-machine-if-remote-interactive",
+      "predicate": {
+        "type": "regex",
+        "name": "convert-src-machine-to-dst-machine-if-remote-interactive-predicate",
+        "sourceKey": "operationType",
+        "regex": "REMOTE_INTERACTIVE"
+      },
+      "ifTransformer": {
+        "type": "chain",
+        "name": "convert-src-machine-to-dst-machine-if-remote-interactive-transformer",
+        "transformerList": [
+          {
+            "type": "copy_value",
+            "name": "move-src-machine-id-to-dst-machine-id-if-remote-interactive",
+            "sourceKey": "srcMachineId",
+            "destinationKeys": [
+              "dstMachineId"
+            ],
+            "isRemoveSourceKey": true
+          },
+          {
+            "type": "copy_value",
+            "name": "move-src-machine-name-to-dst-machine-name-if-remote-interactive",
+            "sourceKey": "srcMachineName",
+            "destinationKeys": [
+              "dstMachineName"
+            ],
+            "isRemoveSourceKey": true
+          }
+        ]
+      },
+      "elseTransformer": null
     }
   ]
 }
