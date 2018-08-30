@@ -3405,8 +3405,8 @@ export default {
       title: 'Groups',
       list: {
         select: 'Select',
-        dirty: '',
         name: 'Group Name',
+        published: 'Publication Status',
         polices: 'Policies Applied',
         sourceTypes: 'Source Types Applied',
         description: 'Group Description',
@@ -3464,8 +3464,8 @@ export default {
       title: 'Policies',
       list: {
         select: 'Select',
-        dirty: '',
         name: 'Policy Name',
+        published: 'Publication Status',
         sourceType: 'Source Type',
         groups: 'Applied to Groups',
         description: 'Policy Description',
@@ -3601,6 +3601,15 @@ export default {
       publishPolicy: 'Publish Policy',
       saveAndClose: 'Save and Close',
       cancel: 'Cancel'
+    },
+    policyTypes: {
+      edrPolicy: 'EndPointScan',
+      windowsLogPolicy: 'EndPointWindowsLogs'
+    },
+    publishStatus: {
+      unpublished: 'UnPublished',
+      unpublishedEdits: 'UnPublished Edits',
+      published: 'Published'
     }
   },
   // end admin-source-management (a.k.a USM)

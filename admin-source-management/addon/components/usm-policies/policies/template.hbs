@@ -21,12 +21,19 @@
           </label>
         {{/if}}
       {{else if (eq column.field "sourceType")}}
-        {{item.type}}
+        {{t (concat 'adminUsm.policyTypes.' item.policyType)}}
       {{else if (eq column.field "name")}}
-        {{#if item.dirty}}
-          <p class="publish-icon">{{rsa-icon name="synchronize-3"}}</p>   
-        {{/if}}
           {{get item column.field}}
+        {{else if (eq column.field "published")}}
+          {{#if (eq item.lastPublishedOn 0)}}
+            <p class="status-unpublished">{{t 'adminUsm.publishStatus.unpublished'}}</p>
+          {{else}}
+            {{#if item.dirty}}
+              <p class="status-unpublished-edits">{{t 'adminUsm.publishStatus.unpublishedEdits'}}</p> 
+            {{else}}
+              {{t 'adminUsm.publishStatus.published'}}
+            {{/if}}
+          {{/if}}
       {{else if (eq column.field "groups")}}
         {{#each item.associatedGroups as |group index|}}
           {{#if (not-eq index 0)}},  {{/if}}{{group.name}}

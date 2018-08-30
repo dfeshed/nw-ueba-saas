@@ -6,17 +6,6 @@
       {{/rsa-form-button}}
     {{/link-to}}
   </div>
-  <div class="action-control policies-delete-button">
-    {{#rsa-button-with-confirmation
-      title=(t 'adminUsm.policies.modals.deletePolicies.title')
-      confirmationMessage=(t 'adminUsm.policies.modals.deletePolicies.confirm' numItems=selectedDeleteItems.length)
-      confirmButtonLabel=(t 'adminUsm.policies.modals.deletePolicies.ok')
-      isDisabled=(not hasSelectedDeleteItems)
-      cancelButtonLabel=(t 'adminUsm.button.cancel')
-      onConfirm=(action 'handleDeletePolicies')}}
-      {{t 'adminUsm.button.delete'}}
-    {{/rsa-button-with-confirmation}}
-  </div>
   <div class="action-control policies-publish-button">
     {{#rsa-button-with-confirmation 
       title=(t 'adminUsm.policies.modals.publishPolicies.title')
@@ -26,6 +15,17 @@
       cancelButtonLabel=(t 'adminUsm.button.cancel')
       onConfirm=(action 'handlePublishPolicies')}}
       {{rsa-icon name="synchronize-3"}}{{t 'adminUsm.button.publish'}}
+    {{/rsa-button-with-confirmation}}
+  </div>
+  <div class="action-control policies-delete-button">
+    {{#rsa-button-with-confirmation
+      title=(t 'adminUsm.policies.modals.deletePolicies.title')
+      confirmationMessage=(t 'adminUsm.policies.modals.deletePolicies.confirm' numItems=selectedDeleteItems.length)
+      confirmButtonLabel=(t 'adminUsm.policies.modals.deletePolicies.ok')
+      isDisabled=(not hasSelectedDeleteItems)
+      cancelButtonLabel=(t 'adminUsm.button.cancel')
+      onConfirm=(action 'handleDeletePolicies')}}
+      {{t 'adminUsm.button.delete'}}
     {{/rsa-button-with-confirmation}}
   </div>
 </hbox>

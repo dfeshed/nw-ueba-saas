@@ -19,17 +19,24 @@
             {{rsa-form-checkbox checked=(contains item.id explorer.instance.itemsSelected) change=(action explorer.select item)}}
           </label>
         {{else if (eq column.field "name")}}
-          {{#if item.dirty}}
-            <p class="publish-icon">{{rsa-icon name="synchronize-3"}}</p>   
-          {{/if}}
           {{get item column.field}}
+        {{else if (eq column.field "published")}}
+          {{#if (eq item.lastPublishedOn 0)}}
+            <p class="status-unpublished">{{t 'adminUsm.publishStatus.unpublished'}}</p>
+          {{else}}
+            {{#if item.dirty}}
+              <p class="status-unpublished-edits">{{t 'adminUsm.publishStatus.unpublishedEdits'}}</p> 
+            {{else}}
+              {{t 'adminUsm.publishStatus.published'}}
+            {{/if}}
+          {{/if}}
         {{else if (eq column.field "polices")}}
           {{#each-in item.assignedPolicies as |policy details|}}
             {{ details.name }}
           {{/each-in}}
         {{else if (eq column.field "sourceTypes")}}
           {{#each-in item.assignedPolicies as |policy|}}
-            {{ policy }}
+            {{t (concat 'adminUsm.policyTypes.' policy)}}
           {{/each-in}}
         {{else if (eq column.field "numSources")}}
           <span>----</span>

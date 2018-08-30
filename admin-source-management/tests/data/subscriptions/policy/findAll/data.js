@@ -6,6 +6,8 @@ export default [
     description: 'Default EDR Policy __default_edr_policy',
     dirty: false,
     defaultPolicy: true,
+    lastPublishedCopy: null,
+    lastPublishedOn: 0,
     associatedGroups: [],
     scheduleConfig: {
       enabledScheduledScan: true,
@@ -29,6 +31,8 @@ export default [
     description: 'EMC 001 of policy policy_001',
     dirty: true,
     defaultPolicy: false,
+    lastPublishedCopy: null,
+    lastPublishedOn: 1527489158739,
     associatedGroups: [
       {
         referenceId: '5b7d886500319b5520f4b67d',
@@ -61,6 +65,8 @@ export default [
     description: 'EMC Reston 012 of policy policy_012',
     dirty: false,
     defaultPolicy: false,
+    lastPublishedCopy: null,
+    lastPublishedOn: 0,
     associatedGroups: [],
     scheduleConfig: {
       enabledScheduledScan: true,
@@ -84,6 +90,8 @@ export default [
     description: 'EMC Bangalore 013 of policy policy_013',
     dirty: true,
     defaultPolicy: false,
+    lastPublishedCopy: null,
+    lastPublishedOn: 1527489158739,
     associatedGroups: [],
     scheduleConfig: {
       enabledScheduledScan: true,
@@ -107,6 +115,8 @@ export default [
     description: 'EMC Reston 014 of policy policy_014',
     dirty: false,
     defaultPolicy: false,
+    lastPublishedCopy: null,
+    lastPublishedOn: 1527489158739,
     associatedGroups: [],
     scheduleConfig: {
       enabledScheduledScan: true,

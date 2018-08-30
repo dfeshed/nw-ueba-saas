@@ -11,14 +11,21 @@ export default [
   {
     field: 'name',
     title: 'adminUsm.groups.list.name',
-    width: '20%',
+    width: '15%',
     dataType: 'text',
+    visible: true
+  },
+  {
+    field: 'published',
+    title: 'adminUsm.groups.list.published',
+    width: '15%',
+    dataType: 'icon',
     visible: true
   },
   {
     field: 'sourceTypes',
     title: 'adminUsm.groups.list.sourceTypes',
-    width: '20%',
+    width: '15%',
     dataType: 'text',
     visible: true
   },
@@ -32,7 +39,7 @@ export default [
   {
     field: 'description',
     title: 'adminUsm.groups.list.description',
-    width: '24%',
+    width: '20%',
     dataType: 'text',
     visible: true
   },

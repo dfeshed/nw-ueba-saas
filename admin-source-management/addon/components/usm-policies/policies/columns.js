@@ -18,8 +18,15 @@ export default [
   {
     field: 'name',
     title: 'adminUsm.policies.list.name',
-    width: '20%',
+    width: '15%',
     dataType: 'text',
+    visible: true
+  },
+  {
+    field: 'published',
+    title: 'adminUsm.policies.list.published',
+    width: '15%',
+    dataType: 'icon',
     visible: true
   },
   {
@@ -32,7 +39,7 @@ export default [
   {
     field: 'description',
     title: 'adminUsm.policies.list.description',
-    width: '30%',
+    width: '20%',
     dataType: 'text',
     visible: true
   },
