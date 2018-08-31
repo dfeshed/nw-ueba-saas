@@ -238,4 +238,28 @@ export default class DataHelper {
     _set(this.state, 'content.logParserRules.selectedParserRuleIndex', index);
     return this;
   }
+
+  certificatesItems(items) {
+    this._setBaseState();
+    _set(this.state, 'endpoint.certificates.certificatesList', items);
+    return this;
+  }
+
+  certificatesLoadingStatus(status) {
+    this._setBaseState();
+    _set(this.state, 'endpoint.certificates.certificatesLoadingStatus', status);
+    return this;
+  }
+
+  loadMoreStatus(status) {
+    this._setBaseState();
+    _set(this.state, 'endpoint.certificates.loadMoreStatus', status);
+    return this;
+  }
+
+  totalCertificates(items) {
+    this._setBaseState();
+    _set(this.state, 'endpoint.certificates.totalItems', items);
+    return this;
+  }
 }

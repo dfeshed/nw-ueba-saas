@@ -1,0 +1,22 @@
+{{#rsa-page-layout showRightZone=false as |layout|}}
+  {{#layout.left as |leftPanel|}}
+    {{leftPanel.header iconName='filter-2' title=(t 'investigateFiles.filter.filter')}}
+    {{filters-wrapper}}
+  {{/layout.left}}
+
+  {{#layout.center}}
+    <section class="certificates-action-bar">
+      <h2 class="title-header">
+        {{#rsa-form-button class='close-zone' isIconOnly=true click=(action layout.open 'left')}}
+          {{rsa-icon name='filter-2'}}
+        {{/rsa-form-button}}
+      </h2>
+    </section>
+    <box class="certificates-body">
+      {{endpoint/certificates-data-table}}
+    </box>
+    <box class="certificates-footer">
+      {{endpoint/certificates-pager}}
+    </box>
+  {{/layout.center}}
+{{/rsa-page-layout}}

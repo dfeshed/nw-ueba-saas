@@ -3,6 +3,7 @@ $navbarHeight: 49px;
 @import "mixins";
 @import "respond/manifest";
 @import "../logs/manifest";
+@import 'endpoint/manifest';
 
 .configure-engine {
   /* Common background for all sub-routes. */

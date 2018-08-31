@@ -813,6 +813,22 @@ export default {
         updateSuccess: 'You successfully updated the Respond notification settings',
         updateFailure: 'There was a problem updating the Respond notification settings'
       }
+    },
+    endpoint: {
+      certificates: {
+        columns: {
+          friendlyName: 'Friendly Name',
+          subject: 'Subject',
+          subjectKey: 'Subject Key',
+          serial: 'Serial',
+          issuer: 'Issuer',
+          authorityKey: 'Authority Key',
+          thumbprint: 'Thumb Print',
+          notValidBeforeUtcDate: 'Not Valid Before UtcDate',
+          notValidAfterUtcDate: 'Not Valid After UtcDate'
+        },
+        footer: '{{count}} of {{total}} {{label}}'
+      }
     }
   },
   respond: {

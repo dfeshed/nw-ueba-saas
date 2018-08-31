@@ -7,6 +7,7 @@ const configureConfigGen = function(environment) {
   // but currently the only microservice in use is "respond"
   const socketUrl = common.determineSocketUrl(environment, '/respond/socket');
   const socketUrlLogs = common.determineSocketUrl(environment, '/content/socket');
+  const socketUrlEndpoint = common.determineSocketUrl(environment, '/endpoint/socket');
 
   return {
     'log-parser-rules': {
@@ -129,6 +130,13 @@ const configureConfigGen = function(environment) {
       updateRecord: {
         subscriptionDestination: '/user/queue/notifications/update',
         requestDestination: '/ws/respond/notifications/update'
+      }
+    },
+    'endpoint-certificates': {
+      socketUrl: socketUrlEndpoint,
+      getCertificates: {
+        subscriptionDestination: '/user/queue/endpoint/certificate/search',
+        requestDestination: '/ws/endpoint/certificate/search'
       }
     }
   };
