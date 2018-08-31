@@ -37,4 +37,9 @@ $zoneBorderColor: border-color(primary, darker, nearly-transparent);
       visibility: hidden;
     }
   }
+  .certificates-body {
+    .rsa-data-table {
+      height: 100vh;
+    }
+  }
 }
