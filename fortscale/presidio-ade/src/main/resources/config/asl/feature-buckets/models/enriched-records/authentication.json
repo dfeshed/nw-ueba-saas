@@ -70,7 +70,7 @@
       ]
     },
     {
-      "name": "dstMachineNameRegexClusterHistogramUserIdInteractiveRemoteAuthenticationDaily",
+      "name": "dstMachineNameRegexClusterHistogramUserIdAuthenticationDaily",
       "contextFieldNames": [
         "userId"
       ],
@@ -88,15 +88,12 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_histogram_func"
-          },
-          "filter": {
-            "jsonPath": "[?('INTERACTIVE_REMOTE' in @['operationTypeCategories'])]"
           }
         }
       ]
     },
     {
-      "name": "userIdHistogramDstMachineIdInteractiveRemoteAuthenticationDaily",
+      "name": "userIdHistogramDstMachineIdAuthenticationDaily",
       "contextFieldNames": [
         "dstMachineId"
       ],
@@ -114,9 +111,6 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_histogram_func"
-          },
-          "filter": {
-            "jsonPath": "[?('INTERACTIVE_REMOTE' in @['operationTypeCategories'])]"
           }
         }
       ]
