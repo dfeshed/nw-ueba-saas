@@ -262,4 +262,14 @@
 			<url>http://repo1.rsa.lab.emc.com:8081/artifactory/asoc-build-repo</url>
 		</pluginRepository>
 	</pluginRepositories>
+	<repositories>
+		<repository>
+			<id>spring-release</id>
+			<url>https://repo1.rsa.lab.emc.com:8443/artifactory/spring-release</url>
+		</repository>
+		<repository>
+			<id>repo1-cache</id>
+			<url>https://repo1.rsa.lab.emc.com:8443/artifactory/repo1-cache</url>
+		</repository>
+	</repositories>
 </project>
