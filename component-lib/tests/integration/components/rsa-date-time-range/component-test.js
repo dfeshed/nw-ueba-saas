@@ -92,7 +92,7 @@ module('Integration - Component - rsa-date-time-range', function(hooks) {
     verifyDateTime(assert, ['02', '22', '1976', '17', '00', '09'], 'end');
     const component = find(selectors.component);
     assert.equal(component.classList.contains('has-errors'), true, 'There should be an error class');
-    assert.equal(component.getAttribute('title').trim(), 'Start Date/Time: The month value is not valid.', 'The title attribute' +
+    assert.equal(component.getAttribute('title').trim(), 'Start Date/Time: The month value is not valid', 'The title attribute' +
       'should show the error message');
   });
 

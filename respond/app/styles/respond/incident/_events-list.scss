@@ -1,0 +1,43 @@
+.events-list {
+  position: absolute;
+  pointer-events: all;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  &__table-view {
+    @include rsa-fill-abs();
+
+    &-header {
+      padding: rsa-whitespace();
+    }
+
+    &-body {
+      position: relative;
+    }
+  }
+
+  &__scroller {
+    display: block;
+    height: 100vh;
+    overflow: auto;
+    position: relative;
+
+    .events-list-table {
+      width: 100%;
+      margin-top: -10px;
+      margin-bottom: 30px;
+      border-spacing: 10px;
+      border-collapse: separate;
+    }
+  }
+
+  .event-fetch-loader {
+    padding-left: 10px;
+
+    & .rsa-loader__text {
+      display: none;
+    }
+  }
+}

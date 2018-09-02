@@ -44,7 +44,7 @@ module('Integration | Component | Time Selector', function(hooks) {
 
     await render(hbs`{{time-selector startTime=startTime endTime=endTime}}`);
 
-    assert.equal(find('.rsa-date-time-range').getAttribute('title').trim(), 'Range: The end date/time occurs before the start date/time.', 'TimeRange rendered with an error.');
+    assert.equal(find('.rsa-date-time-range').getAttribute('title').trim(), 'Range: The end date/time occurs before the start date/time', 'TimeRange rendered with an error.');
   });
 
   test('it renders an error class with a red border when there is an error', async function(assert) {

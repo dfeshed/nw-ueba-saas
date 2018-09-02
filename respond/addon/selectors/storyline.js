@@ -301,3 +301,13 @@ export const selectedStoryEventCountExpected = createSelector(
     }
   }
 );
+
+export const storylineEventsStatus = createSelector(
+  storylineState,
+  (storylineState) => storylineState.storylineEventsStatus
+);
+
+export const expandedStorylineEventId = createSelector(
+  storylineState,
+  (storylineState) => storylineState.expandedStorylineEventId
+);

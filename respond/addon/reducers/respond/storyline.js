@@ -27,10 +27,25 @@ const initialState = {
   storylineEventsBufferMax: 50,
 
   // status of the current request for storyline events, if any; either 'streaming', 'paused', 'complete' or 'error'
-  storylineEventsStatus: null
+  storylineEventsStatus: null,
+
+  // event id to track the expanded event detail view
+  expandedStorylineEventId: null
 };
 
 const storyline = reduxActions.handleActions({
+  [ACTION_TYPES.EXPAND_STORYLINE_EVENT]: (state, { id }) => {
+    if (state.expandedStorylineEventId === id) {
+      return {
+        ...state,
+        expandedStorylineEventId: null
+      };
+    }
+    return {
+      ...state,
+      expandedStorylineEventId: id
+    };
+  },
 
   [ACTION_TYPES.INITIALIZE_INCIDENT]: (state, { payload }) => {
     return {

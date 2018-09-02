@@ -1332,6 +1332,23 @@ export default {
         seconds: 'second(s)'
       }
     },
+    eventsList: {
+      showAllEvents: 'show all events',
+      generic: {
+        time: 'EVENT TIME',
+        type: 'EVENT TYPE',
+        detectorIP: 'DETECTOR IP',
+        fileName: 'FILE NAME',
+        fileHash: 'FILE HASH',
+        tableIP: 'IP',
+        tablePORT: 'PORT',
+        tableHOST: 'HOST',
+        tableMAC: 'MAC',
+        tableUSER: 'USER',
+        sourceLabel: 'Source',
+        targetLabel: 'Target'
+      }
+    },
     eventsTable: {
       time: 'Time',
       type: 'Type',

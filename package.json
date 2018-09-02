@@ -10,6 +10,7 @@
     "@html-next/flexi-default-styles": "2.0.1",
     "@html-next/flexi-dsl": "2.0.1",
     "@html-next/flexi-layouts": "2.0.1",
+    "@html-next/vertical-collection": "^1.0.0-beta.12",
     "@mind-trace/stompjs": "2.3.5",
     "babel-eslint": "^7.1.1",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
