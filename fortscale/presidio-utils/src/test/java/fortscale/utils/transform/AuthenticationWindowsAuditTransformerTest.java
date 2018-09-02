@@ -118,48 +118,38 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
                         dstMachineNameCases);
         transformerChainList.add(dstMachineNameSwitchCaseTransformer);
 
-        // Normalize the srcMachineId values
-        CaptureAndFormatConfiguration srcMachineIdNormalizationZeroPattern =
+        //Create capture and format list for source machines and destination machines
+        CaptureAndFormatConfiguration machineIdNormalizationZeroPattern =
                 new CaptureAndFormatConfiguration("-", "", null);
-        CaptureAndFormatConfiguration srcMachineIdNormalizationFirstPattern =
+        CaptureAndFormatConfiguration machineIdNormalizationFirstPattern =
                     new CaptureAndFormatConfiguration(".*:.*", "", null);
-        CaptureAndFormatConfiguration srcMachineIdNormalizationSecondPattern =
+        CaptureAndFormatConfiguration machineIdNormalizationSecondPattern =
                 new CaptureAndFormatConfiguration(".*\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}.*", "",null);
-        CaptureAndFormatConfiguration srcMachineIdNormalizationThirdPattern =
+        CaptureAndFormatConfiguration machineIdNormalizationThirdPattern =
                 new CaptureAndFormatConfiguration("(\\\\\\\\)?([^\\.]+)\\..+", "%s",
                         Arrays.asList(new CapturingGroupConfiguration(2, "LOWER")));
-        CaptureAndFormatConfiguration srcMachineIdNormalizationFourthPattern =
+        CaptureAndFormatConfiguration machineIdNormalizationFourthPattern =
                 new CaptureAndFormatConfiguration("(\\\\\\\\)?(.+)", "%s",
                 Arrays.asList(new CapturingGroupConfiguration(2, "LOWER")));
+
+        List<CaptureAndFormatConfiguration> srcAndDstMachineCaptureAndFormatConfigurationList = Arrays.asList(machineIdNormalizationZeroPattern, machineIdNormalizationFirstPattern,
+                machineIdNormalizationSecondPattern,
+                machineIdNormalizationThirdPattern, machineIdNormalizationFourthPattern);
+
+        // Normalize the srcMachineId values
         RegexCaptorAndFormatter srcMachineIdNormalization =
                 new RegexCaptorAndFormatter("src-machine-id-normalization",
                         SRC_MACHINE_NAME_FIELD_NAME,
                         SRC_MACHINE_ID_FIELD_NAME,
-                Arrays.asList(srcMachineIdNormalizationZeroPattern, srcMachineIdNormalizationFirstPattern,
-                        srcMachineIdNormalizationSecondPattern,
-                        srcMachineIdNormalizationThirdPattern, srcMachineIdNormalizationFourthPattern));
+                        srcAndDstMachineCaptureAndFormatConfigurationList);
         transformerChainList.add(srcMachineIdNormalization);
 
         // Normalize the dstMachineId values
-        CaptureAndFormatConfiguration dstMachineIdNormalizationZeroPattern =
-                new CaptureAndFormatConfiguration("-", "", null);
-        CaptureAndFormatConfiguration dstMachineIdNormalizationFirstPattern =
-                new CaptureAndFormatConfiguration(".*:.*", "", null);
-        CaptureAndFormatConfiguration dstMachineIdNormalizationSecondPattern =
-                new CaptureAndFormatConfiguration(".*\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}.*", "",null);
-        CaptureAndFormatConfiguration dstMachineIdNormalizationThirdPattern =
-                new CaptureAndFormatConfiguration("(\\\\\\\\)?([^\\.]+)\\..+", "%s",
-                        Arrays.asList(new CapturingGroupConfiguration(2, "LOWER")));
-        CaptureAndFormatConfiguration dstMachineIdNormalizationFourthPattern =
-                new CaptureAndFormatConfiguration("(\\\\\\\\)?(.+)", "%s",
-                        Arrays.asList(new CapturingGroupConfiguration(2, "LOWER")));
         RegexCaptorAndFormatter dstMachineIdNormalization =
                 new RegexCaptorAndFormatter("dst-machine-id-normalization",
                         DST_MACHINE_NAME_FIELD_NAME,
                         DST_MACHINE_ID_FIELD_NAME,
-                        Arrays.asList(dstMachineIdNormalizationZeroPattern, dstMachineIdNormalizationFirstPattern,
-                                dstMachineIdNormalizationSecondPattern,
-                                dstMachineIdNormalizationThirdPattern, dstMachineIdNormalizationFourthPattern));
+                        srcAndDstMachineCaptureAndFormatConfigurationList);
         transformerChainList.add(dstMachineIdNormalization);
 
 
