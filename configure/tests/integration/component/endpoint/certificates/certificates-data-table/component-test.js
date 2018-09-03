@@ -100,4 +100,12 @@ module('Integration | Component | certificates-data-table', function(hooks) {
     assert.equal(findAll('.rsa-data-table-load-more .rsa-form-button-wrapper').length, 0, 'Load more button disappears when all certificates are loaded.');
   });
 
+  test('no result message for no certificated', async function(assert) {
+    new ReduxDataHelper(setState)
+      .certificatesItems([])
+      .build();
+    await render(hbs`{{endpoint/certificates-data-table}}`);
+    assert.equal(findAll('.rsa-data-table-body .rsa-panel-message .message')[0].textContent.trim(), 'No certificates were found.', 'No certificate results message is displayed.');
+  });
+
 });

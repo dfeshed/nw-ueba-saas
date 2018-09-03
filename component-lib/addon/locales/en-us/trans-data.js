@@ -827,6 +827,7 @@ export default {
           notValidBeforeUtcDate: 'Not Valid Before UtcDate',
           notValidAfterUtcDate: 'Not Valid After UtcDate'
         },
+        noResultsMessage: 'No certificates were found.',
         footer: '{{count}} of {{total}} {{label}}'
       }
     }

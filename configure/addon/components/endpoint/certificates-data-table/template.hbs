@@ -8,7 +8,7 @@
       {{rsa-loader size='larger'}}
     </centered>
   {{else}}
-    {{#rsa-data-table/body as |item index column|}}
+    {{#rsa-data-table/body noResultsMessage=(t 'configure.endpoint.certificates.noResultsMessage') as |item index column|}}
       {{#rsa-data-table/body-cell index=index item=item column=column}}
         {{get item column.field}}
       {{/rsa-data-table/body-cell}}
