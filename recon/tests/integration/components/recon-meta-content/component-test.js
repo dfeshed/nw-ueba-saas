@@ -60,7 +60,7 @@ module('Integration | Component | recon-meta-content', function(hooks) {
     await triggerEvent('.tooltip-text', 'mouseover');
     assert.equal(findAll('.ember-tether').length, 1, 'Tool tip is rendered');
     assert.ok(find('.ember-tether .tool-tip-value').textContent.indexOf('test-value') > 0);
-    assert.equal(find('.ember-tether .tool-tip-value .tool-tip-note').textContent.trim(), 'Note:Only the initial 255 characters of the value are indexed as part of this meta, and will be included in any indexed search.');
+    assert.ok(find('.ember-tether .tool-tip-value .tool-tip-note').textContent.indexOf('Note') > 0);
     await triggerEvent('.tooltip-text', 'mouseout');
     assert.equal(findAll('.ember-tether .tool-tip-value').length, 0, 'Tool tip is hidden');
   });

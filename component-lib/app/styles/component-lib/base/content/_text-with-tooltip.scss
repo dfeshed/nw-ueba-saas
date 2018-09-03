@@ -15,6 +15,11 @@ $panel-width: 200px;
     display: flex;
     .rsa-icon {
       padding-right: rsa-whitespace(least);
+      padding-top: 0.1rem;
+    }
+    span {
+      @include rsa-font(bold);
+      display: contents;
     }
   }
 }

@@ -3714,7 +3714,7 @@ export default {
     fetchError: 'An error has occurred. The server may be offline or inaccessible.'
   },
   rsaTooltip: {
-    note: 'Note:',
+    note: 'Note: ',
     labelMessage: 'Only the initial 255 characters of the value are indexed as part of this meta, and will be included in any indexed search.'
   }
 };
