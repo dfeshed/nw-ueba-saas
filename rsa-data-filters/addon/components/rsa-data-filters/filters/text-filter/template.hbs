@@ -10,6 +10,7 @@
     {{option.label}}
   {{/power-select}}
   {{rsa-form-input
+    onEnter=(action 'onEnter')
     focusOut=(action 'onInputFocusOut')
     value=filterValue.value class='file-name-input'
     isError=isError

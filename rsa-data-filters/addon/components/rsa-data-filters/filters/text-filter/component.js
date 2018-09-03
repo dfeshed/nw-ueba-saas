@@ -89,18 +89,26 @@ export default Component.extend({
     }
   },
 
+  _handeFilterChanged() {
+    const { isValid, message } = this._validate();
+    if (isValid) {
+      this.set('isError', false);
+      this._onFilterChange();
+    } else {
+      this.set('isError', true);
+      this.set('errorMessage', message);
+    }
+  },
+
   actions: {
+    onEnter(value) {
+      this.set('filterValue.value', value);
+      this._handeFilterChanged();
+    },
     onInputFocusOut(e) {
       const { value } = e.target;
       this.set('filterValue.value', value);
-      const { isValid, message } = this._validate();
-      if (isValid) {
-        this.set('isError', false);
-        this._onFilterChange();
-      } else {
-        this.set('isError', true);
-        this.set('errorMessage', message);
-      }
+      this._handeFilterChanged();
     },
 
     changeOperator(option) {

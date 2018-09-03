@@ -79,18 +79,26 @@ export default Component.extend({
       onChange({ operator: operator.type, value, unit: unit.type, name });
     }
   },
-  actions: {
-    onInputFocusOut(e) {
-      const isOperatorBetween = this.get('isOperatorBetween');
-      if (isOperatorBetween) {
-        const start = this.element.querySelector('.number-input.start input').value;
-        const end = this.element.querySelector('.number-input.end input').value;
-        this.set('filterValue.value', [start, end]);
-      } else {
-        this.set('filterValue.value', [e.target.value]);
-      }
 
-      this._onFilterChange();
+  _handleFilterChange(value) {
+    const isOperatorBetween = this.get('isOperatorBetween');
+    if (isOperatorBetween) {
+      const start = this.element.querySelector('.number-input.start input').value;
+      const end = this.element.querySelector('.number-input.end input').value;
+      this.set('filterValue.value', [start, end]);
+    } else {
+      this.set('filterValue.value', [value]);
+    }
+
+    this._onFilterChange();
+  },
+
+  actions: {
+    onEnter(value) {
+      this._handleFilterChange(value);
+    },
+    onInputFocusOut(e) {
+      this._handleFilterChange([e.target.value]);
     },
 
     changeOperator(option) {

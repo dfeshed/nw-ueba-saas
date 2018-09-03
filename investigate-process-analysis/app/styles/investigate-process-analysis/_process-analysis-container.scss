@@ -47,12 +47,17 @@
     }
     &.expand {
       width: calc(100vw - 504px);
+      .process-events-details {
+        .events-table-panel {
+          max-width: calc((100vw - 504px) - 374px);
+        }
+      }
     }
     &.collapse-event-panel {
       width: calc(100vw/2 - 4px);
       .process-events-details {
         .events-table-panel {
-          max-width: 63%;
+          max-width: calc(100vw/2 - 374px);
         }
       }
     }

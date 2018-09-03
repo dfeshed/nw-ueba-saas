@@ -134,7 +134,7 @@ module('Integration | Component | file list', function(hooks) {
     await render(hbs`{{file-list}}`);
     assert.equal(findAll('.rsa-data-table-header-cell').length, 5, 'Returned the number of columns of the datatable');
     assert.equal(findAll('.rsa-data-table-header .js-move-handle').length, 4, '4 movable columns present');
-    assert.equal(findAll('.rsa-data-table-header-row .rsa-icon').length, 4, '4 sortable columns present');
+    assert.equal(findAll('.rsa-data-table-header-row .rsa-icon').length, 3, '3 sortable columns present');
   });
 
   test('Should return the number of cells in datatable body', async function(assert) {

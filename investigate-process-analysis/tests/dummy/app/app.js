@@ -20,8 +20,7 @@ const App = Application.extend({
           'i18n',
           'flashMessages',
           'eventBus',
-          'router',
-          'features'
+          'router'
         ]
       }
     }

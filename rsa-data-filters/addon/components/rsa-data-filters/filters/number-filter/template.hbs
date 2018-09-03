@@ -13,23 +13,23 @@
   {{#if isOperatorBetween}}
     {{rsa-form-input
       type='number'
+      onEnter=(action 'onEnter')
       focusOut=(action 'onInputFocusOut')
       value=filterValue.value.[0]
-      class='number-input start'
-      placeholder='Enter Value'}}
+      class='number-input start'}}
     {{rsa-form-input
       type='number'
+      onEnter=(action 'onEnter')
       focusOut=(action 'onInputFocusOut')
       value=filterValue.value.[1]
-      class='number-input end'
-      placeholder='Enter Value'}}
+      class='number-input end'}}
   {{else}}
     {{rsa-form-input
       type='number'
+      onEnter=(action 'onEnter')
       focusOut=(action 'onInputFocusOut')
       value=filterValue.value.[0]
-      class='number-input'
-      placeholder='Enter Value'}}
+      class='number-input'}}
   {{/if}}
 
   {{#if hasUnits}}

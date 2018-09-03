@@ -88,6 +88,7 @@ const FileList = Component.extend({
       visible: true,
       field: 'machineCount',
       searchable: false,
+      disableSort: true,
       title: 'investigateFiles.fields.machineCount'
     }
   ],

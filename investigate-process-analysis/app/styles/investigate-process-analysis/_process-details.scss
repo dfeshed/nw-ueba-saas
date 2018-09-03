@@ -13,6 +13,9 @@
   }
 }
 .process-events-details {
+  .events-table-panel {
+    transition: max-width .3s;
+  }
   .filter-panel {
     max-width: 365px;
   }

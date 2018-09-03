@@ -20,8 +20,7 @@ const Eng = Engine.extend({
       'i18n',
       'flashMessages',
       'eventBus',
-      'router',
-      'features'
+      'router'
     ]
   }
 });
