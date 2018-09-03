@@ -4,11 +4,12 @@ module fortscale.shared.components.fsHeaderBar {
     import IStateManagementService = Fortscale.shared.services.stateManagementService.IStateManagementService;
 
     class FsHeaderBarController {
-        static $inject = ['$element', '$scope', 'userUtils', '$state', 'auth','stateManagementService','FORTSCALE_BRAND_UI'];
+        static $inject = ['$element', '$scope', 'userUtils', '$state', 'auth','stateManagementService','FORTSCALE_BRAND_UI','$location'];
 
         constructor (public $element:JQuery, public $scope:ng.IScope, public userUtils:any,
             public $state:IStateService, public auth: any,
-                     public stateManagementService:IStateManagementService, public FORTSCALE_BRAND_UI:boolean) {
+                     public stateManagementService:IStateManagementService, public FORTSCALE_BRAND_UI:boolean,
+                     public $location:ng.ILocationService) {
 
             // Defined in constructor so the 'this' will be bound to the instance
             this.goToUserProfile = (updateObj:any) => {
@@ -18,12 +19,16 @@ module fortscale.shared.components.fsHeaderBar {
                 this.$state.go('user.baseline', {userId: updateObj.value});
             };
 
+
+            this.iframeMode = $location.search().iframeMode == "true";
+
         }
 
         userControlSettings:any;
         userControlResource:any;
         searchBoxElement:JQuery;
         aboutBullets:any[];
+        iframeMode:boolean;
 
         private _initSettingsMenu () {
             let el:any = this.$element.find('.fs-header-bar-component--icons-container--settings-menu');
