@@ -44,7 +44,14 @@ const _STATUS = {
 
 const setPostAuthRedirect = () => {
   if (!testing && !isEmpty(window.location.search)) {
-    localStorage.setItem('rsa-post-auth-redirect', window.location.search.substring(6));
+    const redirectionURL = window.location.search.substring(6);
+    /* redirectionURL is constrained to start with '/' which implies internal redirection always and no external redirection.
+    External redirections will never start with '/' */
+    if (redirectionURL.startsWith('/')) {
+      localStorage.setItem('rsa-post-auth-redirect', redirectionURL);
+    } else {
+      localStorage.setItem('rsa-post-auth-redirect', '');
+    }
   }
 };
 
