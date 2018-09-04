@@ -359,34 +359,52 @@
       }
     },
     {
-      "type": "if_else",
+      "type": "switch_case_predicat",
       "name": "operation-type-transformer",
-      "predicate": {
-        "type": "regex",
-        "name": "reference-id-equal-4624-or-4625",
-        "sourceKey": "reference_id",
-        "regex": "4624|4625"
-      },
-      "ifTransformer": {
-        "type": "switch_case",
-        "name": "logon-type-to-operation-type-switch-case",
-        "sourceKey": "logon_type",
-        "destinationKey": "operationType",
-        "destinationDefaultValue": null,
-        "cases": [
-          {
-            "caseKey": "2",
-            "caseValue": "INTERACTIVE",
-            "isRegex": false
+      "switchCasePairs": [
+        {
+          "predicate": {
+            "type": "regex",
+            "name": "reference-id-equal-4624-or-4625",
+            "sourceKey": "reference_id",
+            "regex": "4624|4625"
           },
-          {
-            "caseKey": "10",
-            "caseValue": "REMOTE_INTERACTIVE",
-            "isRegex": false
+          "transformer": {
+            "type": "switch_case",
+            "name": "logon-type-to-operation-type-switch-case",
+            "sourceKey": "logon_type",
+            "destinationKey": "operationType",
+            "destinationDefaultValue": null,
+            "cases": [
+              {
+                "caseKey": "2",
+                "caseValue": "INTERACTIVE",
+                "isRegex": false
+              },
+              {
+                "caseKey": "10",
+                "caseValue": "REMOTE_INTERACTIVE",
+                "isRegex": false
+              }
+            ]
           }
-        ]
-      },
-      "elseTransformer": {
+        },
+        {
+          "predicate": {
+            "type": "regex",
+            "name": "reference-id-equal-4648",
+            "sourceKey": "reference_id",
+            "regex": "4648"
+          },
+          "transformer": {
+            "type": "set_value",
+            "name": "4776-or-4769-to-operation-type",
+            "key": "operationType",
+            "value": "EXPLICIT_CREDENTIALS_LOGON"
+          }
+        }
+      ],
+      "defaultTransformer": {
         "type": "set_value",
         "name": "4776-or-4769-to-operation-type",
         "key": "operationType",
@@ -428,41 +446,6 @@
       "destinationKeys": [
         "userDisplayName"
       ]
-    },
-    {
-      "type": "if_else",
-      "name": "convert-src-machine-to-dst-machine-if-remote-interactive",
-      "predicate": {
-        "type": "regex",
-        "name": "convert-src-machine-to-dst-machine-if-remote-interactive-predicate",
-        "sourceKey": "operationType",
-        "regex": "REMOTE_INTERACTIVE"
-      },
-      "ifTransformer": {
-        "type": "chain",
-        "name": "convert-src-machine-to-dst-machine-if-remote-interactive-transformer",
-        "transformerList": [
-          {
-            "type": "copy_value",
-            "name": "move-src-machine-id-to-dst-machine-id-if-remote-interactive",
-            "sourceKey": "srcMachineId",
-            "destinationKeys": [
-              "dstMachineId"
-            ],
-            "isRemoveSourceKey": true
-          },
-          {
-            "type": "copy_value",
-            "name": "move-src-machine-name-to-dst-machine-name-if-remote-interactive",
-            "sourceKey": "srcMachineName",
-            "destinationKeys": [
-              "dstMachineName"
-            ],
-            "isRemoveSourceKey": true
-          }
-        ]
-      },
-      "elseTransformer": null
     }
   ]
 }
