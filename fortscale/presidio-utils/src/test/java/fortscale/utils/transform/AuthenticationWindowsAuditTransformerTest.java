@@ -127,9 +127,12 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest {
                 new CaptureAndFormatConfiguration("(\\\\\\\\)?(.+)", "%s",
                         Collections.singletonList(new CapturingGroupConfiguration(2, "LOWER")));
 
-        List<CaptureAndFormatConfiguration> srcAndDstMachineCaptureAndFormatConfigurationList = Arrays.asList(machineIdNormalizationZeroPattern, machineIdNormalizationFirstPattern,
+        List<CaptureAndFormatConfiguration> srcAndDstMachineCaptureAndFormatConfigurationList = Arrays.asList(
+                machineIdNormalizationZeroPattern,
+                machineIdNormalizationFirstPattern,
                 machineIdNormalizationSecondPattern,
-                machineIdNormalizationThirdPattern, machineIdNormalizationFourthPattern);
+                machineIdNormalizationThirdPattern,
+                machineIdNormalizationFourthPattern);
 
         // Normalize the srcMachineId values
         RegexCaptorAndFormatter srcMachineIdNormalization =
@@ -306,7 +309,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest {
             String eventId,
             String hostSource,
             String aliasSource,
-            String dstMachine) {
+            String hostDestination) {
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(EVENT_CODE_FIELD_NAME, eventCode);
@@ -316,7 +319,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest {
         jsonObject.put(LOGON_TYPE_FIELD_NAME, logonType);
         jsonObject.put(ALIAS_HOST_FIELD_NAME, new JSONArray(aliasHost));
         jsonObject.put(HOST_SRC_FIELD_NAME, hostSource);
-        jsonObject.put(HOST_DST_FIELD_NAME, dstMachine);
+        jsonObject.put(HOST_DST_FIELD_NAME, hostDestination);
         jsonObject.put(EVENT_TIME_FIELD_NAME, eventTime);
         jsonObject.put(EVENT_TYPE_FIELD_NAME, eventType);
         jsonObject.put(RESULT_CODE_FIELD_NAME, resultCode);
@@ -537,8 +540,8 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest {
         JSONObject transformed = transform(transformer, original);
         Assert.assertEquals("desktop-abc123", transformed.getString(SRC_MACHINE_ID_FIELD_NAME));
         Assert.assertEquals("DESKTOP-ABC123", transformed.getString(SRC_MACHINE_NAME_FIELD_NAME));
-        Assert.assertFalse(transformed.has(DST_MACHINE_ID_FIELD_NAME));
-        Assert.assertFalse(transformed.has(DST_MACHINE_NAME_FIELD_NAME));
+        Assert.assertTrue(!transformed.has(DST_MACHINE_ID_FIELD_NAME) || transformed.isNull(DST_MACHINE_ID_FIELD_NAME));
+        Assert.assertTrue(!transformed.has(DST_MACHINE_NAME_FIELD_NAME) || transformed.isNull(DST_MACHINE_NAME_FIELD_NAME));
 
         // Logon type = 10.
         aliasHost = "LAPTOP-XYZ42";
@@ -548,8 +551,8 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest {
                 "Success Audit", "0x0", "10.25.67.33:50005:91168521", "a:b", "MY-ALIAS-SOURCE", null);
 
         transformed = transform(transformer, original);
-        Assert.assertFalse(transformed.has(SRC_MACHINE_ID_FIELD_NAME));
-        Assert.assertFalse(transformed.has(SRC_MACHINE_NAME_FIELD_NAME));
+        Assert.assertTrue(!transformed.has(SRC_MACHINE_ID_FIELD_NAME) || transformed.isNull(SRC_MACHINE_ID_FIELD_NAME));
+        Assert.assertTrue(!transformed.has(SRC_MACHINE_NAME_FIELD_NAME) || transformed.isNull(SRC_MACHINE_NAME_FIELD_NAME));
         Assert.assertEquals("laptop-xyz42", transformed.getString(DST_MACHINE_ID_FIELD_NAME));
         Assert.assertEquals("LAPTOP-XYZ42", transformed.getString(DST_MACHINE_NAME_FIELD_NAME));
     }
