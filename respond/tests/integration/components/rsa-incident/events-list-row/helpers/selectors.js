@@ -1,4 +1,4 @@
-const generic = {
+export const generic = {
   eventTimeLabel: '[test-id=eventTimeLabel]',
   eventTimeValue: '[test-id=eventTimeValue]',
   eventTypeLabel: '[test-id=eventTypeLabel]',
@@ -28,11 +28,9 @@ const generic = {
   eventTargetUserValue: '[test-id=eventTargetUserValue]'
 };
 
-const selectors = {
+export const selectors = {
   row: '[test-id=eventsListRow]',
   genericRow: '[test-id=genericEventRow]',
   genericMain: '[test-id=genericEventMain]',
   genericDetail: '[test-id=genericEventDetail]'
 };
-
-export { selectors, generic };

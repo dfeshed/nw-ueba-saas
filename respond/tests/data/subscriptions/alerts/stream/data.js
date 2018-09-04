@@ -1,141 +1,213 @@
 export default [
   {
-    'id': '586ecf95ecd25950034e1312',
-    'receivedTime': 1483657109643,
-    'status': 'GROUPED_IN_INCIDENT',
-    'errorMessage': null,
-    'originalHeaders': {
-      'severity': 9,
-      'device_version': '11.0.0000',
-      'device_product': 'Event Stream Analysis',
-      'signature_id': 'Suspected C&C',
-      'model_name': 'C2-Log',
-      'name': 'P2P software as detected by an Intrusion detection device',
-      'device_vendor': 'RSA',
-      'version': '1',
-      'timestamp': 1483610607482
-    },
-    'originalRawAlert': null,
-    'originalAlert': null,
-    'incidentId': 'INC-18',
-    'partOfIncident': true,
-    'incidentCreated': 1483657112176,
-    'timestamp': 1483610607482,
     'alert': {
-      'severity': 90,
-      'groupby_type': '',
+      'destination_country': [],
+      'groupby_analysis_file': '',
+      'groupby_analysis_service': 'ssl over non-standard port',
+      'groupby_analysis_session': 'ratio medium transmitted',
+      'groupby_c2domain': '',
+      'groupby_data_hash': '',
+      'groupby_destination_country': '',
+      'groupby_destination_ip': '10.4.61.44',
+      'groupby_destination_port': '5671',
+      'groupby_detector_ip': '',
+      'groupby_device_type': '',
+      'groupby_domain': '',
+      'groupby_domain_dst': '',
+      'groupby_domain_src': '',
+      'groupby_filename': '',
+      'groupby_host_dst': '',
+      'groupby_host_src': '',
+      'groupby_source_country': '',
+      'groupby_source_ip': '10.4.61.97',
+      'groupby_source_username': '',
+      'groupby_type': 'Network',
+      'groupby_user_dst': '',
+      'groupby_user_src': '',
+      'groupby_username': '',
+      'host_summary': '10.4.61.97:34443 to 10.4.61.44:5671',
+      'name': 'test',
+      'numEvents': 1,
       'related_links': [
         {
           'type': 'investigate_session',
-          'url': '/investigation/10.101.217.47:50005/navigate/query/'
-        },
-        {
-          'type': 'investigate_device_ip',
-          'url': '/investigation/10.101.217.47:50005/navigate/query/device.ip%3D%2Fdate%2F2017-01-05T22%3A48%3A29.642Z%2F2017-01-05T23%3A08%3A29.642Z'
+          'url': '/investigation/10.4.61.36:56005/navigate/query/sessionid%3D217947'
         },
         {
           'type': 'investigate_src_ip',
-          'url': '/investigation/10.101.217.47:50005/navigate/query/ip.src%3D%2Fdate%2F2017-01-05T22%3A48%3A29.642Z%2F2017-01-05T23%3A08%3A29.642Z'
+          'url': '/investigation/10.4.61.36:56005/navigate/query/ip.src%3D10.4.61.97%2Fdate%2F2018-08-16T13%3A31%3A28.000Z%2F2018-08-16T13%3A51%3A28.000Z'
         },
         {
           'type': 'investigate_dst_ip',
-          'url': '/investigation/10.101.217.47:50005/navigate/query/ip.dst%3D%2Fdate%2F2017-01-05T22%3A48%3A29.642Z%2F2017-01-05T23%3A08%3A29.642Z'
-        },
-        {
-          'type': 'investigate_destination_domain',
-          'url': '/investigation/10.101.217.47:50005/navigate/query/alias.host%3D%22g00gle.com%22%2Fdate%2F2017-01-05T22%3A48%3A29.642Z%2F2017-01-05T23%3A08%3A29.642Z'
+          'url': '/investigation/10.4.61.36:56005/navigate/query/ip.dst%3D10.4.61.44%2Fdate%2F2018-08-16T13%3A31%3A28.000Z%2F2018-08-16T13%3A51%3A28.000Z'
         }
       ],
-      'host_summary': '-,',
-      'user_summary': [],
-      'risk_score': 90,
-      'groupby_domain': 'g00gle.com',
+      'risk_score': 90.0,
+      'severity': 90.0,
+      'signature_id': null,
       'source': 'Event Stream Analysis',
-      'groupby_destination_port': '',
-      'groupby_source_country': '',
-      'groupby_destination_country': '',
-      'signature_id': 'Suspected C&C',
-      'groupby_filename': '',
-      'groupby_data_hash': '',
-      'groupby_destination_ip': '3.3.3.3',
-      'name': 'P2P software as detected by an Intrusion detection device',
-      'numEvents': 1,
-      'groupby_source_ip': '10.64.188.48',
-      'groupby_source_username': '',
-      'groupby_detector_ip': '',
-      'type': ['Network'],
-      'timestamp': 1483610607482
-    }
+      'source_country': [],
+      'timestamp': 1534426952000,
+      'type': [
+        'Network'
+      ],
+      'user_summary': [
+        ''
+      ]
+    },
+    'errorMessage': null,
+    'id': '5b757f480a32bd36c7609e96',
+    'incidentCreated': 1535379508093,
+    'incidentId': 'INC-249',
+    'originalAlert': null,
+    'originalHeaders': null,
+    'originalRawAlert': null,
+    'partOfIncident': true,
+    'receivedTime': 1534426952476,
+    'status': 'GROUPED_IN_INCIDENT',
+    'timestamp': 1334426952000
   },
   {
-    'id': '586ecfc0ecd25950034e1314',
-    'receivedTime': 1483657152517,
-    'status': 'NORMALIZED',
-    'errorMessage': null,
-    'originalHeaders': {
-      'severity': 8,
-      'device_version': '11.0.FIXME',
-      'device_product': 'Event Stream Analysis',
-      'signature_id': 'Suspected UBA VPN',
-      'model_name': 'UbaCisco',
-      'name': 'Suspected UBA VPN',
-      'device_vendor': 'RSA',
-      'version': 0,
-      'timestamp': 1483657152000
-    },
-    'originalRawAlert': null,
-    'originalAlert': null,
-    'incidentId': null,
-    'partOfIncident': false,
-    'incidentCreated': null,
-    'timestamp': 1483657152000,
     'alert': {
-      'severity': 80,
-      'groupby_type': '',
+      'destination_country': [],
+      'groupby_analysis_file': '',
+      'groupby_analysis_service': 'ssl over non-standard port',
+      'groupby_analysis_session': 'ratio medium transmitted',
+      'groupby_c2domain': '',
+      'groupby_data_hash': '',
+      'groupby_destination_country': '',
+      'groupby_destination_ip': '10.4.61.44',
+      'groupby_destination_port': '5671',
+      'groupby_detector_ip': '',
+      'groupby_device_type': '',
+      'groupby_domain': '',
+      'groupby_domain_dst': '',
+      'groupby_domain_src': '',
+      'groupby_filename': '',
+      'groupby_host_dst': '',
+      'groupby_host_src': '',
+      'groupby_source_country': '',
+      'groupby_source_ip': '10.4.61.97',
+      'groupby_source_username': '',
+      'groupby_type': 'Network',
+      'groupby_user_dst': '',
+      'groupby_user_src': '',
+      'groupby_username': '',
+      'host_summary': '10.4.61.97:36749 to 10.4.61.44:5671',
+      'name': 'test',
+      'numEvents': 1,
       'related_links': [
         {
           'type': 'investigate_session',
-          'url': '/investigation/10.101.217.47:50005/navigate/query/sessionid%3D198775'
-        },
-        {
-          'type': 'investigate_device_ip',
-          'url': '/investigation/10.101.217.47:50005/navigate/query/device.ip%3D127.0.0.1%2Fdate%2F2017-01-05T22%3A49%3A12.515Z%2F2017-01-05T23%3A09%3A12.515Z'
+          'url': '/investigation/10.4.61.36:56005/navigate/query/sessionid%3D217948'
         },
         {
           'type': 'investigate_src_ip',
-          'url': '/investigation/10.101.217.47:50005/navigate/query/ip.src%3D%2Fdate%2F2017-01-05T22%3A49%3A12.515Z%2F2017-01-05T23%3A09%3A12.515Z'
+          'url': '/investigation/10.4.61.36:56005/navigate/query/ip.src%3D10.4.61.97%2Fdate%2F2018-08-16T13%3A31%3A29.000Z%2F2018-08-16T13%3A51%3A29.000Z'
         },
         {
           'type': 'investigate_dst_ip',
-          'url': '/investigation/10.101.217.47:50005/navigate/query/ip.dst%3D%2Fdate%2F2017-01-05T22%3A49%3A12.515Z%2F2017-01-05T23%3A09%3A12.515Z'
+          'url': '/investigation/10.4.61.36:56005/navigate/query/ip.dst%3D10.4.61.44%2Fdate%2F2018-08-16T13%3A31%3A29.000Z%2F2018-08-16T13%3A51%3A29.000Z'
+        }
+      ],
+      'risk_score': 90.0,
+      'severity': 90.0,
+      'signature_id': null,
+      'source': 'Event Stream Analysis',
+      'source_country': [],
+      'timestamp': 1534426952000,
+      'type': [
+        'Network'
+      ],
+      'user_summary': [
+        ''
+      ]
+    },
+    'errorMessage': null,
+    'id': '5b757f480a32bd36c7609e97',
+    'incidentCreated': 1535379508093,
+    'incidentId': 'INC-249',
+    'originalAlert': null,
+    'originalHeaders': null,
+    'originalRawAlert': null,
+    'partOfIncident': true,
+    'receivedTime': 1534426952478,
+    'status': 'GROUPED_IN_INCIDENT',
+    'timestamp': 1334426952000
+  },
+  {
+    'alert': {
+      'destination_country': [],
+      'groupby_agent_id': '',
+      'groupby_analysis_file': '',
+      'groupby_analysis_service': '',
+      'groupby_analysis_session': '',
+      'groupby_c2domain': '',
+      'groupby_data_hash': '',
+      'groupby_destination_country': '',
+      'groupby_destination_ip': '',
+      'groupby_destination_port': '',
+      'groupby_detector_ip': '',
+      'groupby_device_type': 'winevent_snare',
+      'groupby_domain': '09:50:16',
+      'groupby_domain_dst': '',
+      'groupby_domain_src': '',
+      'groupby_file_sha_256': '',
+      'groupby_filename': '',
+      'groupby_host_dst': '',
+      'groupby_host_name': '09:50:16',
+      'groupby_host_src': '',
+      'groupby_os': '',
+      'groupby_source_country': '',
+      'groupby_source_ip': '10.40.14.66',
+      'groupby_source_username': '',
+      'groupby_type': 'Log',
+      'groupby_user_dst': 'azkaislam',
+      'groupby_user_src': '',
+      'groupby_username': '',
+      'host_summary': [
+        '10.40.14.66'
+      ],
+      'name': 'Logon',
+      'numEvents': 1,
+      'related_links': [
+        {
+          'type': 'investigate_session',
+          'url': '/investigation/10.4.61.36:56005/navigate/query/sessionid%3D395871'
+        },
+        {
+          'type': 'investigate_src_ip',
+          'url': '/investigation/10.4.61.36:56005/navigate/query/ip.src%3D10.40.14.66%2Fdate%2F2018-09-01T02%3A19%3A00.000Z%2F2018-09-01T02%3A39%3A00.000Z'
         },
         {
           'type': 'investigate_destination_domain',
-          'url': '/investigation/10.101.217.47:50005/navigate/query/alias.host%3D%22g00gle.com%22%2Fdate%2F2017-01-05T22%3A49%3A12.515Z%2F2017-01-05T23%3A09%3A12.515Z'
+          'url': '/investigation/10.4.61.36:56005/navigate/query/alias.host%3D"09%3A50%3A16"%2Fdate%2F2018-09-01T02%3A19%3A00.000Z%2F2018-09-01T02%3A39%3A00.000Z'
         }
       ],
-      'host_summary': 'Firewall-,',
-      'user_summary': [
-        'Jake'
-      ],
-      'risk_score': 80,
-      'groupby_domain': 'g00gle.com',
+      'risk_score': 90.0,
+      'severity': 90.0,
+      'signature_id': null,
       'source': 'Event Stream Analysis',
-      'groupby_destination_port': '',
-      'groupby_source_country': '',
-      'groupby_destination_country': '',
-      'signature_id': 'Suspected UBA VPN',
-      'groupby_filename': '',
-      'groupby_data_hash': '',
-      'groupby_destination_ip': '',
-      'name': 'Suspected UBA VPN',
-      'numEvents': 1,
-      'groupby_source_ip': '',
-      'groupby_source_username': '',
-      'groupby_detector_ip': '127.0.0.1',
-      'type': ['Network'],
-      'timestamp': 1483657152000
-    }
+      'source_country': [],
+      'timestamp': 1535768957000,
+      'type': [
+        'Log'
+      ],
+      'user_summary': [
+        'azkaislam'
+      ]
+    },
+    'errorMessage': null,
+    'id': '5b89f97d0a32bd26fdf4507d',
+    'incidentCreated': 1535379508093,
+    'incidentId': 'INC-249',
+    'originalAlert': null,
+    'originalHeaders': null,
+    'originalRawAlert': null,
+    'partOfIncident': true,
+    'receivedTime': 1535768957648,
+    'status': 'GROUPED_IN_INCIDENT',
+    'timestamp': 1335768957000
   },
   {
     'id': '586ecfc0ecd25950034e1318',
@@ -191,5 +263,258 @@ export default [
       'timestamp': 1532297340000,
       'type': ['User Entity']
     }
+  },
+  {
+    'alert': {
+      'destination_country': [],
+      'groupby_agent_id': 'C593263F-E2AB-9168-EFA4-C683E066A035',
+      'groupby_analysis_file': '',
+      'groupby_analysis_service': '',
+      'groupby_analysis_session': '',
+      'groupby_c2domain': '',
+      'groupby_data_hash': '',
+      'groupby_destination_country': '',
+      'groupby_destination_ip': '',
+      'groupby_destination_port': '',
+      'groupby_detector_ip': '',
+      'groupby_device_type': 'nwendpoint',
+      'groupby_domain': 'INENMENONS4L2C',
+      'groupby_domain_dst': '',
+      'groupby_domain_src': '',
+      'groupby_file_sha_256': '',
+      'groupby_filename': '',
+      'groupby_host_dst': '',
+      'groupby_host_name': '',
+      'groupby_host_src': '',
+      'groupby_os': '',
+      'groupby_source_country': '',
+      'groupby_source_ip': '',
+      'groupby_source_username': 'CORP\\menons4',
+      'groupby_type': 'Log',
+      'groupby_user_dst': '',
+      'groupby_user_src': 'CORP\\menons4',
+      'groupby_username': '',
+      'host_summary': [
+        '-nwendpoint'
+      ],
+      'name': 'Unsigned Open Process and Runs Command Shell',
+      'numEvents': 8,
+      'related_links': [
+        {
+          'type': 'investigate_session',
+          'url': '/investigation/10.63.0.117:56005/navigate/query/sessionid%3D857775%7C%7Csessionid%3D857776%7C%7Csessionid%3D857777%7C%7Csessionid%3D857778%7C%7Csessionid%3D857779%7C%7Csessionid%3D857780%7C%7Csessionid%3D857782%7C%7Csessionid%3D857783'
+        },
+        {
+          'type': 'investigate_destination_domain',
+          'url': '/investigation/10.63.0.117:56005/navigate/query/alias.host%3D"INENMENONS4L2C"%2Fdate%2F2018-06-08T03%3A30%3A12.000Z%2F2018-06-08T03%3A50%3A12.000Z'
+        }
+      ],
+      'risk_score': 50,
+      'severity': 50,
+      'signature_id': 'Manual',
+      'source': 'NetWitness Investigate',
+      'source_country': [],
+      'timestamp': 1528431673932,
+      'type': [
+        'Log'
+      ],
+      'user_summary': [
+        'CORP\\menons4'
+      ]
+    },
+    'errorMessage': null,
+    'id': '5b8554be0a32bd353ad3a167',
+    'incidentCreated': 1535569262762,
+    'incidentId': 'INC-94980',
+    'originalAlert': null,
+    'originalHeaders': null,
+    'originalRawAlert': null,
+    'partOfIncident': true,
+    'receivedTime': 1535464638419,
+    'status': 'GROUPED_IN_INCIDENT',
+    'timestamp': 1528431673932
+  },
+  {
+    'alert': {
+      'destination_country': [
+        'United States'
+      ],
+      'groupby_agent_id': '',
+      'groupby_analysis_file': '',
+      'groupby_analysis_service': '',
+      'groupby_analysis_session': '',
+      'groupby_c2domain': '',
+      'groupby_data_hash': '',
+      'groupby_destination_country': 'United States',
+      'groupby_destination_ip': '129.6.15.28',
+      'groupby_destination_port': '123',
+      'groupby_detector_ip': '',
+      'groupby_device_type': '',
+      'groupby_domain': '',
+      'groupby_domain_dst': 'nist.gov',
+      'groupby_domain_src': '',
+      'groupby_file_sha_256': '',
+      'groupby_filename': '',
+      'groupby_host_dst': '',
+      'groupby_host_name': '',
+      'groupby_host_src': '',
+      'groupby_os': '',
+      'groupby_source_country': '',
+      'groupby_source_ip': '192.168.100.185',
+      'groupby_source_username': '',
+      'groupby_type': 'Network',
+      'groupby_user_dst': '',
+      'groupby_user_src': '',
+      'groupby_username': '',
+      'host_summary': '192.168.100.185:123 to 129.6.15.28:123',
+      'name': 'country_dst',
+      'numEvents': 3,
+      'risk_score': 70.0,
+      'severity': 70.0,
+      'signature_id': 'RULE_1_20140529211814',
+      'source': 'Reporting Engine',
+      'source_country': [],
+      'timestamp': 1407929290000,
+      'type': [
+        'Network'
+      ],
+      'user_summary': [
+        ''
+      ]
+    },
+    'errorMessage': null,
+    'id': '5b841c880a32bd5a68baeaf3',
+    'incidentCreated': 1535384713034,
+    'incidentId': 'INC-94966',
+    'originalAlert': null,
+    'originalHeaders': null,
+    'originalRawAlert': null,
+    'partOfIncident': true,
+    'receivedTime': 1535384712550,
+    'status': 'GROUPED_IN_INCIDENT',
+    'timestamp': 1407929290000
+  },
+  {
+    'alert': {
+      'groupby_agent_id': '',
+      'groupby_analysis_file': '',
+      'groupby_analysis_service': '',
+      'groupby_analysis_session': '',
+      'groupby_c2domain': '',
+      'groupby_data_hash': '',
+      'groupby_destination_country': '',
+      'groupby_destination_ip': '',
+      'groupby_destination_port': '',
+      'groupby_detector_ip': '',
+      'groupby_device_type': '',
+      'groupby_domain': '',
+      'groupby_domain_dst': '',
+      'groupby_domain_src': '',
+      'groupby_file_sha_256': '',
+      'groupby_filename': '',
+      'groupby_host_dst': '',
+      'groupby_host_name': '',
+      'groupby_host_src': '',
+      'groupby_os': '',
+      'groupby_source_country': '',
+      'groupby_source_ip': '',
+      'groupby_source_username': '',
+      'groupby_type': 'Web Threat Detection Incident',
+      'groupby_user_dst': '',
+      'groupby_user_src': '',
+      'groupby_username': '',
+      'host_summary': [],
+      'name': 'incident1',
+      'numEvents': 1,
+      'related_links': [
+        {
+          'type': 'Open in WTD (external)'
+        }
+      ],
+      'risk_score': 10,
+      'severity': 10,
+      'signature_id': null,
+      'source': 'Web Threat Detection',
+      'timestamp': 1424914173385,
+      'type': [
+        'Web Threat Detection Incident'
+      ],
+      'user_summary': []
+    },
+    'errorMessage': null,
+    'id': '5b7f08240a32bd5a68baea89',
+    'incidentCreated': 1535039446679,
+    'incidentId': 'INC-33',
+    'originalAlert': null,
+    'originalHeaders': null,
+    'originalRawAlert': null,
+    'partOfIncident': true,
+    'receivedTime': 1535051812504,
+    'status': 'GROUPED_IN_INCIDENT',
+    'timestamp': 1424914173385
+  },
+  {
+    'alert': {
+      'groupby_agent_id': '',
+      'groupby_analysis_file': '',
+      'groupby_analysis_service': '',
+      'groupby_analysis_session': '',
+      'groupby_c2domain': '',
+      'groupby_data_hash': 'de9f2c7f d25e1b3a fad3e85a 0bd17d9b 100db4b3',
+      'groupby_destination_country': '',
+      'groupby_destination_ip': '',
+      'groupby_destination_port': '',
+      'groupby_detector_ip': '22.90.206.71',
+      'groupby_device_type': '',
+      'groupby_domain': '',
+      'groupby_domain_dst': '',
+      'groupby_domain_src': '',
+      'groupby_file_sha_256': '',
+      'groupby_filename': 'EhStorShell.dll',
+      'groupby_host_dst': '',
+      'groupby_host_name': '',
+      'groupby_host_src': '',
+      'groupby_os': '',
+      'groupby_source_country': '',
+      'groupby_source_ip': '',
+      'groupby_source_username': '',
+      'groupby_type': 'Instant IOC',
+      'groupby_user_dst': '',
+      'groupby_user_src': '',
+      'groupby_username': '',
+      'host_summary': [
+        'it_laptop4.eng.matrix.com'
+      ],
+      'name': 'ecat example',
+      'numEvents': 1,
+      'related_links': [
+        {
+          'type': 'investigate_ecat',
+          'url': 'ecatui://26C5C21F-4DA8-3A00-437C-AB7444987430'
+        }
+      ],
+      'risk_score': 10,
+      'severity': 10,
+      'signature_id': 'ModuleIOC',
+      'source': 'ECAT',
+      'timestamp': 1353069839000,
+      'type': [
+        'Instant IOC'
+      ],
+      'user_summary': [
+        ''
+      ]
+    },
+    'errorMessage': null,
+    'id': '5b7f06c10a32bd5a68baea84',
+    'incidentCreated': 1535397013408,
+    'incidentId': 'INC-94975',
+    'originalAlert': null,
+    'originalHeaders': null,
+    'originalRawAlert': null,
+    'partOfIncident': true,
+    'receivedTime': 1535051457068,
+    'status': 'GROUPED_IN_INCIDENT',
+    'timestamp': 1353069839000
   }
 ];

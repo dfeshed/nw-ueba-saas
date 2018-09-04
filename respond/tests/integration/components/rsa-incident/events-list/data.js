@@ -1,4 +1,5 @@
 export const reEventId = '5b841c880a32bd5a68baeaf3:0';
+export const networkEventId = '5b757f480a32bd36c7609e96:0';
 
 const storyLineEvents = {
   respond: {
@@ -12,6 +13,219 @@ const storyLineEvents = {
     storyline: {
       id: 'INC-108',
       storyline: [
+        {
+          alert: {
+            destination_country: [],
+            groupby_analysis_file: '',
+            groupby_analysis_service: 'ssl over non-standard port',
+            groupby_analysis_session: 'ratio medium transmitted',
+            groupby_c2domain: '',
+            groupby_data_hash: '',
+            groupby_destination_country: '',
+            groupby_destination_ip: '10.4.61.44',
+            groupby_destination_port: '5671',
+            groupby_detector_ip: '',
+            groupby_device_type: '',
+            groupby_domain: '',
+            groupby_domain_dst: '',
+            groupby_domain_src: '',
+            groupby_filename: '',
+            groupby_host_dst: '',
+            groupby_host_src: '',
+            groupby_source_country: '',
+            groupby_source_ip: '10.4.61.97',
+            groupby_source_username: '',
+            groupby_type: 'Network',
+            groupby_user_dst: '',
+            groupby_user_src: '',
+            groupby_username: '',
+            host_summary: '10.4.61.97:34443 to 10.4.61.44:5671',
+            name: 'test',
+            numEvents: 1,
+            related_links: [
+              {
+                type: 'investigate_session',
+                url: '/investigation/10.4.61.36:56005/navigate/query/sessionid%3D217947'
+              },
+              {
+                type: 'investigate_src_ip',
+                url: '/investigation/10.4.61.36:56005/navigate/query/ip.src%3D10.4.61.97%2Fdate%2F2018-08-16T13%3A31%3A28.000Z%2F2018-08-16T13%3A51%3A28.000Z'
+              },
+              {
+                type: 'investigate_dst_ip',
+                url: '/investigation/10.4.61.36:56005/navigate/query/ip.dst%3D10.4.61.44%2Fdate%2F2018-08-16T13%3A31%3A28.000Z%2F2018-08-16T13%3A51%3A28.000Z'
+              }
+            ],
+            risk_score: 90,
+            severity: 90,
+            signature_id: null,
+            source: 'Event Stream Analysis',
+            source_country: [],
+            timestamp: 1534426952000,
+            type: [
+              'Network'
+            ],
+            user_summary: [
+              ''
+            ]
+          },
+          errorMessage: null,
+          id: '5b757f480a32bd36c7609e96',
+          incidentCreated: 1535379508093,
+          incidentId: 'INC-249',
+          originalAlert: null,
+          originalHeaders: null,
+          originalRawAlert: null,
+          partOfIncident: true,
+          receivedTime: 1534426952476,
+          status: 'GROUPED_IN_INCIDENT',
+          timestamp: 1334426952000,
+          storylineId: 'INC-108'
+        },
+        {
+          alert: {
+            destination_country: [],
+            groupby_analysis_file: '',
+            groupby_analysis_service: 'ssl over non-standard port',
+            groupby_analysis_session: 'ratio medium transmitted',
+            groupby_c2domain: '',
+            groupby_data_hash: '',
+            groupby_destination_country: '',
+            groupby_destination_ip: '10.4.61.44',
+            groupby_destination_port: '5671',
+            groupby_detector_ip: '',
+            groupby_device_type: '',
+            groupby_domain: '',
+            groupby_domain_dst: '',
+            groupby_domain_src: '',
+            groupby_filename: '',
+            groupby_host_dst: '',
+            groupby_host_src: '',
+            groupby_source_country: '',
+            groupby_source_ip: '10.4.61.97',
+            groupby_source_username: '',
+            groupby_type: 'Network',
+            groupby_user_dst: '',
+            groupby_user_src: '',
+            groupby_username: '',
+            host_summary: '10.4.61.97:36749 to 10.4.61.44:5671',
+            name: 'test',
+            numEvents: 1,
+            related_links: [
+              {
+                type: 'investigate_session',
+                url: '/investigation/10.4.61.36:56005/navigate/query/sessionid%3D217948'
+              },
+              {
+                type: 'investigate_src_ip',
+                url: '/investigation/10.4.61.36:56005/navigate/query/ip.src%3D10.4.61.97%2Fdate%2F2018-08-16T13%3A31%3A29.000Z%2F2018-08-16T13%3A51%3A29.000Z'
+              },
+              {
+                type: 'investigate_dst_ip',
+                url: '/investigation/10.4.61.36:56005/navigate/query/ip.dst%3D10.4.61.44%2Fdate%2F2018-08-16T13%3A31%3A29.000Z%2F2018-08-16T13%3A51%3A29.000Z'
+              }
+            ],
+            risk_score: 90,
+            severity: 90,
+            signature_id: null,
+            source: 'Event Stream Analysis',
+            source_country: [],
+            timestamp: 1534426952000,
+            type: [
+              'Network'
+            ],
+            user_summary: [
+              ''
+            ]
+          },
+          errorMessage: null,
+          id: '5b757f480a32bd36c7609e97',
+          incidentCreated: 1535379508093,
+          incidentId: 'INC-249',
+          originalAlert: null,
+          originalHeaders: null,
+          originalRawAlert: null,
+          partOfIncident: true,
+          receivedTime: 1534426952478,
+          status: 'GROUPED_IN_INCIDENT',
+          timestamp: 1334426952000,
+          storylineId: 'INC-108'
+        },
+        {
+          alert: {
+            destination_country: [],
+            groupby_agent_id: '',
+            groupby_analysis_file: '',
+            groupby_analysis_service: '',
+            groupby_analysis_session: '',
+            groupby_c2domain: '',
+            groupby_data_hash: '',
+            groupby_destination_country: '',
+            groupby_destination_ip: '',
+            groupby_destination_port: '',
+            groupby_detector_ip: '',
+            groupby_device_type: 'winevent_snare',
+            groupby_domain: '09:50:16',
+            groupby_domain_dst: '',
+            groupby_domain_src: '',
+            groupby_file_sha_256: '',
+            groupby_filename: '',
+            groupby_host_dst: '',
+            groupby_host_name: '09:50:16',
+            groupby_host_src: '',
+            groupby_os: '',
+            groupby_source_country: '',
+            groupby_source_ip: '10.40.14.66',
+            groupby_source_username: '',
+            groupby_type: 'Log',
+            groupby_user_dst: 'azkaislam',
+            groupby_user_src: '',
+            groupby_username: '',
+            host_summary: [
+              '10.40.14.66'
+            ],
+            name: 'Logon',
+            numEvents: 1,
+            related_links: [
+              {
+                type: 'investigate_session',
+                url: '/investigation/10.4.61.36:56005/navigate/query/sessionid%3D395871'
+              },
+              {
+                type: 'investigate_src_ip',
+                url: '/investigation/10.4.61.36:56005/navigate/query/ip.src%3D10.40.14.66%2Fdate%2F2018-09-01T02%3A19%3A00.000Z%2F2018-09-01T02%3A39%3A00.000Z'
+              },
+              {
+                type: 'investigate_destination_domain',
+                url: '/investigation/10.4.61.36:56005/navigate/query/alias.host%3D"09%3A50%3A16"%2Fdate%2F2018-09-01T02%3A19%3A00.000Z%2F2018-09-01T02%3A39%3A00.000Z'
+              }
+            ],
+            risk_score: 90,
+            severity: 90,
+            signature_id: null,
+            source: 'Event Stream Analysis',
+            source_country: [],
+            timestamp: 1535768957000,
+            type: [
+              'Log'
+            ],
+            user_summary: [
+              'azkaislam'
+            ]
+          },
+          errorMessage: null,
+          id: '5b89f97d0a32bd26fdf4507d',
+          incidentCreated: 1535379508093,
+          incidentId: 'INC-249',
+          originalAlert: null,
+          originalHeaders: null,
+          originalRawAlert: null,
+          partOfIncident: true,
+          receivedTime: 1535768957648,
+          status: 'GROUPED_IN_INCIDENT',
+          timestamp: 1335768957000,
+          storylineId: 'INC-108'
+        },
         {
           id: '586ecfc0ecd25950034e1318',
           errorMessage: null,
@@ -331,6 +545,337 @@ const storyLineEvents = {
       storylineStatus: 'completed',
       stopStorylineStream: null,
       storylineEvents: [
+        {
+          indicatorId: '5b757f480a32bd36c7609e96',
+          events: [
+            {
+              analysis_file: '',
+              analysis_service: 'ssl over non-standard port',
+              analysis_session: 'ratio medium transmitted',
+              data: [
+                {
+                  filename: '',
+                  hash: '',
+                  size: 4175
+                }
+              ],
+              description: '',
+              destination: {
+                device: {
+                  asset_type: '',
+                  business_unit: '',
+                  compliance_rating: '',
+                  criticality: '',
+                  facility: '',
+                  geolocation: {
+                    city: '',
+                    country: '',
+                    domain: '',
+                    latitude: null,
+                    longitude: null,
+                    organization: ''
+                  },
+                  ip_address: '10.4.61.44',
+                  mac_address: '00:50:56:33:18:15',
+                  netbios_name: '',
+                  port: 5671
+                },
+                user: {
+                  ad_domain: '',
+                  ad_username: '',
+                  email_address: '',
+                  username: ''
+                }
+              },
+              detected_by: '',
+              detector: {
+                device_class: '',
+                ip_address: '',
+                product_name: ''
+              },
+              domain: '',
+              domain_dst: '',
+              domain_src: '',
+              enrichment: '',
+              event_source: '10.4.61.33:56005',
+              event_source_id: '150',
+              file: '',
+              from: '10.4.61.97:36749',
+              host_dst: '',
+              host_src: '',
+              related_links: [
+                {
+                  type: 'investigate_original_event',
+                  url: '/investigation/host/10.4.61.36:56005/navigate/event/AUTO/217948'
+                }
+              ],
+              size: 4175,
+              source: {
+                device: {
+                  asset_type: '',
+                  business_unit: '',
+                  compliance_rating: '',
+                  criticality: '',
+                  facility: '',
+                  geolocation: {
+                    city: '',
+                    country: '',
+                    domain: '',
+                    latitude: null,
+                    longitude: null,
+                    organization: ''
+                  },
+                  ip_address: '10.4.61.97',
+                  mac_address: '00:50:56:33:18:18',
+                  netbios_name: '',
+                  port: 36749
+                },
+                user: {
+                  ad_domain: '',
+                  ad_username: '',
+                  email_address: '',
+                  username: ''
+                }
+              },
+              timestamp: 1534426889000,
+              to: '10.4.61.44:5671',
+              type: 'Network',
+              user: '',
+              user_dst: '',
+              user_src: '',
+              username: '',
+              indicatorId: '5b757f480a32bd36c7609e96',
+              id: networkEventId
+            }
+          ]
+        },
+        {
+          indicatorId: '5b757f480a32bd36c7609e97',
+          events: [
+            {
+              analysis_file: '',
+              analysis_service: 'ssl over non-standard port',
+              analysis_session: 'ratio medium transmitted',
+              data: [
+                {
+                  filename: '',
+                  hash: '',
+                  size: 4175
+                }
+              ],
+              description: '',
+              destination: {
+                device: {
+                  asset_type: '',
+                  business_unit: '',
+                  compliance_rating: '',
+                  criticality: '',
+                  facility: '',
+                  geolocation: {
+                    city: '',
+                    country: '',
+                    domain: '',
+                    latitude: null,
+                    longitude: null,
+                    organization: ''
+                  },
+                  ip_address: '10.4.61.44',
+                  mac_address: '00:50:56:33:18:15',
+                  netbios_name: '',
+                  port: 5671
+                },
+                user: {
+                  ad_domain: '',
+                  ad_username: '',
+                  email_address: '',
+                  username: ''
+                }
+              },
+              detected_by: '',
+              detector: {
+                device_class: '',
+                ip_address: '',
+                product_name: ''
+              },
+              domain: '',
+              domain_dst: '',
+              domain_src: '',
+              enrichment: '',
+              event_source: '10.4.61.33:56005',
+              event_source_id: '150',
+              file: '',
+              from: '10.4.61.97:36749',
+              host_dst: '',
+              host_src: '',
+              related_links: [
+                {
+                  type: 'investigate_original_event',
+                  url: '/investigation/host/10.4.61.36:56005/navigate/event/AUTO/217948'
+                }
+              ],
+              size: 4175,
+              source: {
+                device: {
+                  asset_type: '',
+                  business_unit: '',
+                  compliance_rating: '',
+                  criticality: '',
+                  facility: '',
+                  geolocation: {
+                    city: '',
+                    country: '',
+                    domain: '',
+                    latitude: null,
+                    longitude: null,
+                    organization: ''
+                  },
+                  ip_address: '10.4.61.97',
+                  mac_address: '00:50:56:33:18:18',
+                  netbios_name: '',
+                  port: 36749
+                },
+                user: {
+                  ad_domain: '',
+                  ad_username: '',
+                  email_address: '',
+                  username: ''
+                }
+              },
+              timestamp: 1534426889000,
+              to: '10.4.61.44:5671',
+              type: 'Network',
+              user: '',
+              user_dst: '',
+              user_src: '',
+              username: '',
+              indicatorId: '5b757f480a32bd36c7609e97',
+              id: '5b757f480a32bd36c7609e97:0'
+            }
+          ]
+        },
+        {
+          indicatorId: '5b89f97d0a32bd26fdf4507d',
+          events: [
+            {
+              action: '',
+              agent_id: '',
+              analysis_file: '',
+              analysis_service: '',
+              analysis_session: '',
+              category: 'Logon/Logoff',
+              data: [
+                {
+                  filename: '',
+                  hash: '',
+                  size: 641
+                }
+              ],
+              description: 'Successful',
+              destination: {
+                device: {
+                  asset_type: '',
+                  business_unit: '',
+                  compliance_rating: '',
+                  criticality: '',
+                  facility: '',
+                  geolocation: {
+                    city: '',
+                    country: '',
+                    domain: '',
+                    latitude: null,
+                    longitude: null,
+                    organization: ''
+                  },
+                  ip_address: '',
+                  mac_address: '',
+                  netbios_name: '',
+                  port: ''
+                },
+                user: {
+                  ad_domain: '',
+                  ad_username: '',
+                  email_address: '',
+                  username: 'azkaislam'
+                }
+              },
+              destination_parameter: '',
+              detected_by: 'Windows Hosts-winevent_snare',
+              detector: {
+                device_class: 'Windows Hosts',
+                ip_address: '',
+                product_name: 'winevent_snare'
+              },
+              device_type: 'winevent_snare',
+              domain: '09:50:16',
+              domain_dst: '',
+              domain_src: '',
+              enrichment: '',
+              event_source: '10.4.61.28:56003',
+              event_source_id: '154',
+              file: '',
+              file_SHA256: '',
+              from: '10.40.14.66',
+              host_dst: '',
+              host_src: '',
+              hostname: '09:50:16',
+              operating_system: '',
+              related_links: [
+                {
+                  type: 'investigate_original_event',
+                  url: '/investigation/host/10.4.61.36:56005/navigate/event/AUTO/395871'
+                },
+                {
+                  type: 'investigate_destination_domain',
+                  url: '/investigation/10.4.61.36:56005/navigate/query/alias.host%3D"09%3A50%3A16"%2Fdate%2F2018-09-01T02%3A19%3A00.000Z%2F2018-09-01T02%3A29%3A00.000Z'
+                }
+              ],
+              size: 641,
+              source: {
+                device: {
+                  asset_type: '',
+                  business_unit: '',
+                  compliance_rating: '',
+                  criticality: '',
+                  facility: '',
+                  geolocation: {
+                    city: '',
+                    country: '',
+                    domain: '',
+                    latitude: null,
+                    longitude: null,
+                    organization: ''
+                  },
+                  ip_address: '10.40.14.66',
+                  mac_address: '',
+                  netbios_name: '',
+                  port: ''
+                },
+                user: {
+                  ad_domain: '',
+                  ad_username: '',
+                  email_address: '',
+                  username: ''
+                }
+              },
+              source_filename: '',
+              source_hash: '',
+              source_parameter: '',
+              source_user_account: '',
+              target_filename: '',
+              target_hash: '',
+              timestamp: 1535768940000,
+              to: '',
+              type: 'Log',
+              user: 'azkaislam',
+              user_account: '',
+              user_dst: 'azkaislam',
+              user_src: '',
+              username: '',
+              indicatorId: '5b89f97d0a32bd26fdf4507d',
+              id: '5b89f97d0a32bd26fdf4507d:0'
+            }
+          ]
+        },
         {
           indicatorId: '586ecfc0ecd25950034e1318',
           events: [

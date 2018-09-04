@@ -58,7 +58,7 @@ module('Unit | Mixin | Alerts Selectors', function() {
   });
 
   test('hasSelectedAlertsBelongingToIncidents() is true when at least of the selected alerts has partOfIncident === true', function(assert) {
-    const alertIdForAlertAssociatedWithIncident = '586ecf95ecd25950034e1312';
+    const alertIdForAlertAssociatedWithIncident = '5b757f480a32bd36c7609e96';
 
     const state = {
       respond: {
