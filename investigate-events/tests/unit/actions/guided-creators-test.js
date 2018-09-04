@@ -406,30 +406,4 @@ module('Unit | Actions | Guided Creators', function(hooks) {
     thunk(myDispatch, getState);
   });
 
-  test('handleIncomingQueryHashes action creator returns proper type and payload', function(assert) {
-    const action = guidedCreators.handleIncomingQueryHashes(['foo']);
-    assert.equal(action.type, ACTION_TYPES.RETRIEVE_QUERY_PARAMS_FOR_HASHES, 'action has the correct type');
-    assert.deepEqual(action.meta.hashes, ['foo'], 'action hashes has the right value');
-  });
-
-  test('retrieveHashForQueryParams dispatches the proper events', function(assert) {
-    assert.expect(1);
-    const done = assert.async();
-
-    const getState = () => {
-      return new ReduxDataHelper()
-        .language()
-        .pillsDataPopulated()
-        .build();
-    };
-
-    const myDispatch = (action) => {
-      assert.equal(action.type, ACTION_TYPES.RETRIEVE_HASH_FOR_QUERY_PARAMS, 'action has the correct type');
-      done();
-    };
-
-    const thunk = guidedCreators.retrieveHashForQueryParams();
-    thunk(myDispatch, getState);
-  });
-
 });

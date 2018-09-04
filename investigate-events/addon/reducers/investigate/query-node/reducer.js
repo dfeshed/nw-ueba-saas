@@ -50,7 +50,13 @@ const _initialState = Immutable.from({
 
   // stores updates to free form text that haven't
   // yet been converted into pill form (pillsData)
-  updatedFreeFormTextPill: undefined
+  updatedFreeFormTextPill: undefined,
+
+  // pill data being used for a query gets saved server side
+  // as a series of ids so that URLs do not grow unbounded
+  // and get unexpectedly truncated. This array tracks
+  // the pillDataHashes for the current query
+  pillDataHashes: undefined
 });
 
 const _initialPillState = {
@@ -305,7 +311,8 @@ export default handleActions({
         sessionId: queryParams.sessionId && parseInt(queryParams.sessionId, 10) || undefined,
         startTime: queryParams.startTime && parseInt(queryParams.startTime, 10) || 0,
         queryView: previousView ? previousView : state.queryView,
-        updatedFreeFormTextPill: undefined
+        updatedFreeFormTextPill: undefined,
+        pillDataHashes: queryParams.pillDataHashes
       }, { deep: true });
     }
   },
@@ -372,12 +379,8 @@ export default handleActions({
 
   // START GUIDED
 
-  [ACTION_TYPES.INITIALIZE_QUERYING]: (state, { payload }) => {
-    const { pillsData } = payload;
-
-    state = _replaceAllPills(state, pillsData);
-
-    const { serviceId, startTime, endTime } = state;
+  [ACTION_TYPES.INITIALIZE_QUERYING]: (state) => {
+    const { serviceId, startTime, endTime, pillsData } = state;
 
     const newHash = createQueryHash(
       serviceId,
@@ -521,6 +524,20 @@ export default handleActions({
       return pD;
     });
     return state.set('pillsData', newPillsData);
+  },
+
+  [ACTION_TYPES.RETRIEVE_HASH_FOR_QUERY_PARAMS]: (state, action) => {
+    return handle(state, action, {
+      // For now, not dealing with error state for this as
+      // this is all URL stuff. Failure logged in creator.
+      failure: (s) => s,
+      success: (s) => {
+        // Yank the ids out of the hash config, we have
+        // no use for the rest of the data in there
+        const hashIds = action.payload.data.map((hashConfig) => hashConfig.id);
+        return s.set('pillDataHashes', hashIds);
+      }
+    });
   }
 
 }, _initialState);

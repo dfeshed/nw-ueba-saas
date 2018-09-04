@@ -2,16 +2,15 @@ import RSVP from 'rsvp';
 import { lookup } from 'ember-dependency-lookup';
 
 import { fetchAliases, fetchLanguage } from './fetch/dictionaries';
-import { parseBasicQueryParams, parsePillDataFromUri } from 'investigate-events/actions/utils';
+import { getParamsForHashes, getHashForParams } from './fetch/query-hashes';
+import { parseBasicQueryParams, parsePillDataFromUri, transformTextToPillData } from 'investigate-events/actions/utils';
 import { fetchColumnGroups } from './fetch/column-groups';
-import {
-  fetchInvestigateData,
-  getServiceSummary
-} from './data-creators';
+import { fetchInvestigateData, getServiceSummary } from './data-creators';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
 import { fetchServices } from 'investigate-shared/actions/api/services';
 import { handleInvestigateErrorCode } from 'component-lib/utils/error-codes';
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
+
 import * as ACTION_TYPES from './types';
 
 const noop = () => {};
@@ -110,25 +109,18 @@ const _getColumnGroups = () => {
 };
 
 /**
- * Initialize state required for proper querying
+ * Once querying is ready, trigger event that
+ * sets up state to get ready for actual query
+ * execution
  *
  * @private
  */
-const _intializeQuerying = (hardReset, parsedQueryParams) => {
-  return (dispatch, getState) => {
-    if (!hardReset) {
-      // intialize pills, this cannot happen until
-      // we have all the dictionaries in place as
-      // the pill building/parsing validates those
-      // pills against actual meta
-      dispatch({
-        type: ACTION_TYPES.INITIALIZE_QUERYING,
-        payload: {
-          pillsData: parsePillDataFromUri(parsedQueryParams.pillData, metaKeySuggestionsForQueryBuilder(getState()))
-        }
-      });
-    }
-  };
+const _intializeQuerying = (hardReset) => {
+  if (!hardReset) {
+    return {
+      type: ACTION_TYPES.INITIALIZE_QUERYING
+    };
+  }
 };
 
 const _handleInitializationError = (dispatch) => {
@@ -154,18 +146,104 @@ const _handleInitializationError = (dispatch) => {
   };
 };
 
+const _handleParamsInURL = ({ pillData, pillDataHashes }, hashNavigateCallback) => {
+  return (dispatch, getState) => {
+    const hasHashInURL = pillDataHashes !== undefined;
+
+    if (!hasHashInURL) {
+      const hasPillDataInURL = pillData !== undefined;
+
+      // If no hash but also no pill data, we are cool, do nothing
+      if (hasPillDataInURL) {
+
+        // Go ahead and take params pill data and insert into
+        // state, we can use that immediately
+        dispatch({
+          type: ACTION_TYPES.REPLACE_ALL_GUIDED_PILLS,
+          payload: {
+            pillData: parsePillDataFromUri(pillData, metaKeySuggestionsForQueryBuilder(getState()))
+          }
+        });
+
+        // If we have pill data, we need to create/fetch a hash
+        // for that pill data and execute a navigation callback
+        // so the route can be updated. This is async as it is
+        // not critical to immediate downstream activity
+        const { investigate } = getState();
+        dispatch({
+          type: ACTION_TYPES.RETRIEVE_HASH_FOR_QUERY_PARAMS,
+          promise: getHashForParams(
+            investigate.queryNode.pillsData,
+            investigate.dictionaries.language
+          ),
+          meta: {
+            onSuccess({ data }) {
+              // For now, only dealing with a single hash
+              const hash = data[0].id;
+
+              // pass the new hash to the navigation callback
+              // so that it can be included in the URL
+              hashNavigateCallback(hash);
+            },
+            onFailure(response) {
+              handleInvestigateErrorCode(response, 'RETRIEVE_HASH_FOR_QUERY_PARAMS');
+            }
+          }
+        });
+      }
+    }
+  };
+};
+
+const _handleHashInURL = ({ pillDataHashes }, dispatch, getState) => {
+  const hasHashInURL = pillDataHashes !== undefined;
+
+  if (hasHashInURL) {
+
+    // TODO, check for hashes being equal?
+
+    return getParamsForHashes(pillDataHashes)
+      .then(({ data: paramsObjectArray }) => {
+
+        // pull the actual param values out of
+        // the returned params objects
+        const paramsArray = paramsObjectArray.map((pO) => pO.query);
+        const metaKeys = metaKeySuggestionsForQueryBuilder(getState());
+
+        // Transform server param strings into pill data objects
+        // and dispatch those to state
+        const newPillData = paramsArray.map((singleParams) => {
+          return transformTextToPillData(singleParams, metaKeys);
+        });
+
+        dispatch({
+          type: ACTION_TYPES.REPLACE_ALL_GUIDED_PILLS,
+          payload: {
+            pillData: newPillData
+          }
+        });
+      }).catch((err) => {
+        handleInvestigateErrorCode(err, 'getParamsForHashes');
+      });
+  }
+};
+
+
 /**
  * Kick off a series of events to initialize Investigate Events.
  *
  * @param {*} queryParams - Query params
+ * @param {function} hashNavigateCallback - A callback to use if
+ *   hash processing needs to update the URL hash
  * @param {boolean} hardReset - Whether or not we are starting
  *   from scratch or if we should use any state already there
  * @return {function} A Redux thunk
  * @public
  */
-export const initializeInvestigate = (queryParams, hardReset = false) => {
-  return (dispatch, getState) => {
+export const initializeInvestigate = function(queryParams, hashNavigateCallback, hardReset = false) {
+  return async function(dispatch, getState) {
     const parsedQueryParams = parseBasicQueryParams(queryParams);
+    const errorHandler = _handleInitializationError(dispatch);
 
     // 1) Initialize state from parsedQueryParams
     dispatch({
@@ -185,44 +263,48 @@ export const initializeInvestigate = (queryParams, hardReset = false) => {
     // 4) Get all the services available to the user. We have
     //    to get services before we can do anything else. So
     //    all other requests have to wait until it comes back.
-    let initializationPromises = [
+    const initializationPromises = [
       _initializePreferences(dispatch, getState),
       _initializeServices(dispatch, getState)
     ];
 
-    // Get promise for initializing dictionaries for the service
-    const dictionariesPromise = _initializeDictionaries(dispatch, getState);
-
     const hasService = !!parsedQueryParams.serviceId;
-    let initialization;
     if (hasService) {
       // If we have a service then...
-      // 5) Get all the dictionaries for the chosen service simuntaneously,
-      //    do not wait
-      initializationPromises = [...initializationPromises, dictionariesPromise];
-      initialization = RSVP.all(initializationPromises);
+      // 5) Include getting the dictionaries with other requests,
+      //    and kick them all off
+      initializationPromises.push(_initializeDictionaries(dispatch, getState));
+      await RSVP.all(initializationPromises).catch(errorHandler);
     } else {
       // If we do not have a service then...
       // 5) Get all the dictionaries after we have fetched services and
       //    automatically chosen the first service as the active service
-      initialization = RSVP.all(initializationPromises).then(dictionariesPromise);
+      await RSVP.all(initializationPromises);
+      await _initializeDictionaries(dispatch, getState).catch(errorHandler);
     }
 
-    // After all of the above is done, we can set up the query
-    // and then execute it.
-    return initialization.then(() => {
-      // 6) do any work to initialize state now that all the reference
-      //    data is in place, this is synchronous so do not need to
-      //    hold up future stuff with promises
-      dispatch(_intializeQuerying(hardReset, parsedQueryParams));
+    // 6) Perform all the checks to see if we need to retrieve hash
+    //    params, and if we do, wait for that retrieval to finish.
+    //    This must be done after the previous promises because
+    //    fetching/creating pills relies on languages being in place
+    const fetchPillDataPromise = _handleHashInURL(parsedQueryParams, dispatch, getState);
+    if (fetchPillDataPromise) {
+      await fetchPillDataPromise.catch(errorHandler);
+    }
 
-      // 7) If we have the minimum required values for querying
-      //    (service id, start time and end time) then kick off the query.
-      const { serviceId, startTime, endTime } = parsedQueryParams;
-      if (serviceId && startTime && endTime) {
-        dispatch(fetchInvestigateData());
-      }
-    }).catch(_handleInitializationError(dispatch));
+    // 7) If there was no hash in the URL, do checking to see if we
+    //    need to create one and update the URL with a new hash.
+    dispatch(_handleParamsInURL(parsedQueryParams, hashNavigateCallback));
+
+    // 8) Initialize the querying state so we can get going
+    dispatch(_intializeQuerying(hardReset));
+
+    // 9) If we have the minimum required values for querying
+    //    (service id, start time and end time) then kick off the query.
+    const { serviceId, startTime, endTime } = parsedQueryParams;
+    if (serviceId && startTime && endTime) {
+      dispatch(fetchInvestigateData());
+    }
   };
 };
 
@@ -298,7 +380,7 @@ export const getDictionaries = (resolve = noop, reject = noop) => {
     } else {
       const { aliasesCache, languageCache } = getState().investigate.dictionaries;
 
-      const languagePromise = new RSVP.Promise((resolve, reject) => {
+      const languagePromise = new RSVP.Promise((resolveLang, rejectLang) => {
         if (!languageCache[serviceId]) {
           dispatch({
             type: ACTION_TYPES.LANGUAGE_RETRIEVE,
@@ -306,10 +388,10 @@ export const getDictionaries = (resolve = noop, reject = noop) => {
             meta: {
               onFailure(response) {
                 handleInvestigateErrorCode(response, 'FETCH_LANGUAGE');
-                reject(response);
+                rejectLang(response);
               },
               onFinish() {
-                resolve();
+                resolveLang();
               }
             }
           });
@@ -318,11 +400,11 @@ export const getDictionaries = (resolve = noop, reject = noop) => {
             type: ACTION_TYPES.LANGUAGE_GET_FROM_CACHE,
             payload: serviceId
           });
-          resolve();
+          resolveLang();
         }
       });
 
-      const aliasesPromise = new RSVP.Promise((resolve, reject) => {
+      const aliasesPromise = new RSVP.Promise((resolveAliases, rejectAliases) => {
         if (!aliasesCache[serviceId]) {
           dispatch({
             type: ACTION_TYPES.ALIASES_RETRIEVE,
@@ -330,16 +412,16 @@ export const getDictionaries = (resolve = noop, reject = noop) => {
             meta: {
               onFailure(response) {
                 handleInvestigateErrorCode(response, 'FETCH_ALIASES');
-                reject(response);
+                rejectAliases(response);
               },
               onFinish() {
-                resolve();
+                resolveAliases();
               }
             }
           });
         } else {
           dispatch({ type: ACTION_TYPES.ALIASES_GET_FROM_CACHE, payload: serviceId });
-          resolve();
+          resolveAliases();
         }
       });
 

@@ -752,56 +752,18 @@ test('RESET_GUIDED_PILL resets the pill, and always adds focus to it', function(
   assert.ok(firstPill.isFocused === true, 'should have focus');
 });
 
-
-test('INITIALIZE_QUERYING replaces all pills with new set of pills', function(assert) {
-  const { pillsData } = new ReduxDataHelper()
-    .pillsDataPopulated()
-    .build()
-    .investigate
-    .queryNode;
-
-  const emptyState = new ReduxDataHelper()
-    .hasRequiredValuesToQuery()
-    .pillsDataEmpty()
-    .build()
-    .investigate
-    .queryNode;
-
-  const action = {
-    type: ACTION_TYPES.INITIALIZE_QUERYING,
-    payload: {
-      pillsData
-    }
-  };
-
-  // start with empty state...
-  const result = reducer(emptyState, action);
-
-  // should end up with two pills
-  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
-});
-
 test('INITIALIZE_QUERYING sets a proper query hash', function(assert) {
-  const { pillsData } = new ReduxDataHelper()
-    .pillsDataPopulated()
-    .build()
-    .investigate
-    .queryNode;
-
   const emptyState = new ReduxDataHelper()
     .serviceId('1')
     .startTime('early')
     .endTime('late')
-    .pillsDataEmpty()
+    .pillsDataPopulated()
     .build()
     .investigate
     .queryNode;
 
   const action = {
-    type: ACTION_TYPES.INITIALIZE_QUERYING,
-    payload: {
-      pillsData
-    }
+    type: ACTION_TYPES.INITIALIZE_QUERYING
   };
 
   const result = reducer(emptyState, action);
@@ -811,4 +773,17 @@ test('INITIALIZE_QUERYING sets a proper query hash', function(assert) {
     '1-early-late-a-=-\'x\'-undefined-b-=-\'y\'-undefined',
     'pillsData is the correct length'
   );
+});
+
+test('RETRIEVE_HASH_FOR_QUERY_PARAMS reducer stores hashes', function(assert) {
+  const successAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.RETRIEVE_HASH_FOR_QUERY_PARAMS,
+    payload: {
+      data: [{ id: 'foo' }]
+    }
+  });
+  const result = reducer(stateWithPills, successAction);
+
+  assert.equal(result.pillDataHashes.length, 1, 'pillDataHashes is the correct length');
+  assert.equal(result.pillDataHashes[0], 'foo', 'pillDataHashes is the correct value');
 });

@@ -237,9 +237,16 @@ function executeMetaValuesRequest(request, inputs, values) {
  * @public
  */
 function parseBasicQueryParams(params) {
+
+  // hashes are comma-separated if there are many
+  let pillDataHashes;
+  if (params.pdhash) {
+    pillDataHashes = params.pdhash.split(',');
+  }
+
   return {
     pillData: params.mf,
-    pillDataHashes: params.pdhash,
+    pillDataHashes,
     endTime: params.et,
     sessionId: params.eid,
     metaPanelSize: params.mps,

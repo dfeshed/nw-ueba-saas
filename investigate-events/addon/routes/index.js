@@ -1,6 +1,6 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-import { later } from '@ember/runloop';
+import { later, run } from '@ember/runloop';
 import { initializeInvestigate, queryIsRunning } from 'investigate-events/actions/initialization-creators';
 import { updateSummaryData } from 'investigate-events/actions/data-creators';
 import {
@@ -19,6 +19,18 @@ import {
 const SUMMARY_CALL_INTERVAL = 60000;
 let timerId;
 
+// Have to straight up remove dnr by hand
+// or else route gets re-evalulated,
+// refreshModel be damned
+const removeDnr = () => {
+  // run.next because ACTUAL URL update happens
+  // after all hooks process
+  run.next(function() {
+    const newUrl = window.location.href.replace(/dnr=1&/g, '');
+    window.history.replaceState({}, document.title, newUrl);
+  });
+};
+
 export default Route.extend({
   contextualHelp: service(),
   redux: service(),
@@ -36,7 +48,15 @@ export default Route.extend({
    * @public
    */
   queryParams: {
-    pdhash: { refreshModel: true }, // pill data hash
+    // pill data hash, if pdhash is wiped out
+    // then we are reverting to using params
+    // so need to re-run
+    // TODO: at least for now
+    pdhash: { refreshModel: true },
+
+    // do not reload, when set, model
+    // hook is exited
+    dnr: { refreshModel: false, replace: true },
     sid: { refreshModel: true }, // serviceId
     st: { refreshModel: true },  // startTime
     et: { refreshModel: true },  // endTime
@@ -63,12 +83,36 @@ export default Route.extend({
   },
 
   model(params) {
+    // If DNR set, then do NOT want
+    // to reload model, but want to
+    // remove DNR so a refresh will
+    // actually do something
+    if (params.dnr === '1') {
+      removeDnr();
+      return;
+    }
+
     // If all the key values of 'params' are 'undefined',
     // then hardReset is set to true and initial state is set.
     const uniqParamValues = Object.values(params).uniq();
     const hardReset = uniqParamValues.length === 1 && uniqParamValues[0] === undefined;
 
-    this.get('redux').dispatch(initializeInvestigate(params, hardReset));
+    this.get('redux').dispatch(initializeInvestigate(params, this.replacePillHash.bind(this), hardReset));
+  },
+
+  // removes any pill data in the URL and
+  // inserts a pill hash, and does not
+  // leave the URL with pill data in history
+  replacePillHash(newHash) {
+    this.replaceWith(
+      {
+        queryParams: {
+          pdhash: newHash,
+          mf: undefined,
+          dnr: 1
+        }
+      }
+    );
   },
 
   actions: {
@@ -99,7 +143,9 @@ export default Route.extend({
         mps: data.metaPanelSize,
         rs: data.reconSize,
         sid: queryNode.serviceId,
-        st: queryNode.startTime
+        st: queryNode.startTime,
+        pdhash: undefined,
+        dnr: 0
       };
 
       if (externalLink) {

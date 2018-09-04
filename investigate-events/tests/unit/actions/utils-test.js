@@ -12,7 +12,8 @@ const params = {
   mps: 'default',
   rs: 'max',
   sid: 2,
-  st: 3
+  st: 3,
+  pdhash: 'foo,bar,baz'
 };
 
 const ipv6Addresses = ['2001:0db8:85a3:0000:0000:8a2e:0370:7334', '2001:20::', '::ffff:0.0.0.0', '100::', 'fe80::', '::1', '2002::', '2001:db8::', '::ffff:0:255.255.255.255'];
@@ -25,7 +26,7 @@ module('Unit | Helper | query utils', function(hooks) {
   });
 
   test('parseBasicQueryParams correctly parses URI', function(assert) {
-    assert.expect(6);
+    assert.expect(7);
     const result = queryUtils.parseBasicQueryParams(params, DEFAULT_LANGUAGES);
     assert.equal(result.endTime, params.et, '"et" was not parsed to "endTime"');
     assert.equal(result.sessionId, params.eid, '"eid" was not parsed to "sessionId"');
@@ -33,6 +34,12 @@ module('Unit | Helper | query utils', function(hooks) {
     assert.equal(result.reconSize, params.rs, '"rs" was not parsed to "reconSize"');
     assert.equal(result.serviceId, params.sid, '"sid" was not parsed to "serviceId"');
     assert.equal(result.startTime, params.st, '"st" was not parsed to "startTime"');
+    assert.deepEqual(result.pillDataHashes, ['foo', 'bar', 'baz'], '"pdhash" was not parsed to proper hashes');
+  });
+
+  test('parseBasicQueryParams leaves hashes undefined if there are none', function(assert) {
+    const result = queryUtils.parseBasicQueryParams({ rs: 'max' }, DEFAULT_LANGUAGES);
+    assert.equal(result.pillDataHashes, undefined, '"pdhash" was not parsed to proper hashes');
   });
 
 

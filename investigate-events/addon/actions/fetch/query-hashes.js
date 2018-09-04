@@ -13,7 +13,7 @@ const getParamsForHashes = (hashes) => {
     modelName: MODEL_NAME,
     method: 'find',
     query: {
-      hashes
+      predicateIds: hashes
     }
   });
 };
@@ -22,14 +22,14 @@ const getParamsForHashes = (hashes) => {
 // to get a hash
 const getHashForParams = (pillData, language) => {
   const request = lookup('service:request');
-
   const pillDataAsString = encodeMetaFilterConditions(pillData, language);
-
   return request.promiseRequest({
     modelName: MODEL_NAME,
     method: 'persist',
     query: {
-      paramString: pillDataAsString
+      predicateRequests: [{
+        query: pillDataAsString
+      }]
     }
   });
 };

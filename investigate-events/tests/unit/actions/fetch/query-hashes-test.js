@@ -6,7 +6,7 @@ import { getParamsForHashes, getHashForParams } from 'investigate-events/actions
 import { patchSocket } from '../../../helpers/patch-socket';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 
-module('Unit | Utility | query-hashes API', function(hooks) {
+module('Unit | API | query-hashes', function(hooks) {
   setupTest(hooks);
   hooks.beforeEach(function() {
     initialize(this.owner);
@@ -19,7 +19,7 @@ module('Unit | Utility | query-hashes API', function(hooks) {
     patchSocket((method, modelName, query) => {
       assert.equal(modelName, 'query-hashes');
       assert.equal(method, 'find');
-      assert.deepEqual(query, { hashes });
+      assert.deepEqual(query, { predicateIds: hashes });
       done();
     });
     getParamsForHashes(hashes);
@@ -38,7 +38,11 @@ module('Unit | Utility | query-hashes API', function(hooks) {
       assert.equal(modelName, 'query-hashes');
       assert.equal(method, 'persist');
       assert.deepEqual(query, {
-        paramString: "a = 'x' && b = 'y'"
+        predicateRequests: [
+          {
+            query: "a = 'x' && b = 'y'"
+          }
+        ]
       });
       done();
     });

@@ -90,12 +90,12 @@ const investigateConfigGen = function(env) {
     'query-hashes': {
       socketUrl,
       find: {
-        subscriptionDestination: '/user/queue/investigate/predicate/get',
-        requestDestination: '/ws/investigate/predicate/get'
+        subscriptionDestination: '/user/queue/investigate/predicate/get-by-id',
+        requestDestination: '/ws/investigate/predicate/get-by-id'
       },
       persist: {
-        subscriptionDestination: '/user/queue/investigate/predicate/save',
-        requestDestination: '/ws/investigate/predicate/save'
+        subscriptionDestination: '/user/queue/investigate/predicate/get-by-query',
+        requestDestination: '/ws/investigate/predicate/get-by-query'
       }
     }
   };
