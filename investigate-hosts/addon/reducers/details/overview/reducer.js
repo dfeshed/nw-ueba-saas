@@ -34,7 +34,9 @@ const hostDetails = reduxActions.handleActions({
     });
   },
 
-  [ACTION_TYPES.ARRANGE_SECURITY_CONFIGURATIONS]: (state, { payload }) => state.set('arrangeSecurityConfigsBy', payload.arrangeBy)
+  [ACTION_TYPES.ARRANGE_SECURITY_CONFIGURATIONS]: (state, { payload }) => state.set('arrangeSecurityConfigsBy', payload.arrangeBy),
+
+  [ACTION_TYPES.USER_LEFT_HOST_LIST_PAGE]: (state) => state.set('downloadId', null)
 
 }, initialState);
 
