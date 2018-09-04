@@ -47,7 +47,7 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-    ENV.rootURL = '/sdk/app/ws/';
+    ENV.rootURL = '/';
   }
 
   return ENV;

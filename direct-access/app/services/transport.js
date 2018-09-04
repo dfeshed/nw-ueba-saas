@@ -56,13 +56,14 @@ export default Service.extend({
    */
   init() {
     // Set the websocket URL based on whether or not this is a production build
+    const wsScheme = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     if (ENV.environment === 'production') {
-      this.set('url', `ws://${window.location.host}/sdk/app/ws`);
+      this.set('url', `${wsScheme}//${window.location.host}/connections/ws`);
     } else {
       // By default on a development build, set this to localhost.
       // If you're developing and want to test the UI on a different endpoint,
       // change this string.
-      this.set('url', 'ws://localhost:50104/sdk/app/ws');
+      this.set('url', `${wsScheme}//localhost:50102/connections/ws`);
     }
   },
 
