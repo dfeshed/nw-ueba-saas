@@ -170,35 +170,57 @@ module('Integration | Component | query-pills', function(hooks) {
   });
 
   test('Creating a focused pill and clicking outside the query-pills component should remove focus', async function(assert) {
-    assert.expect(4);
+    assert.expect(2);
     new ReduxDataHelper(setState)
       .language()
       .canQueryGuided()
       .pillsDataPopulated()
       .build();
 
-    this.set('didClick', () => {
-      assert.ok('fired once');
-      return settled().then(() => {
-        assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'should have no focused pill');
-      });
-    });
-
     await render(hbs`
-      <div class='outside'></div>
-      {{#click-outside action=(action didClick)}}
-        {{query-container/query-pills isActive=true}}
-      {{/click-outside}}
+      <div class='rsa-investigate-query-container'>
+        {{#rsa-application-content}}
+          <div class='outside'>
+            {{query-container/query-pills isActive=true}}
+          </div>
+        {{/rsa-application-content}}
+      </div>
     `);
-    await click(PILL_SELECTORS.newPillTrigger);
-    await createBasicPill(true);
-
-    // action to store in state called
-    assert.equal(newActionSpy.callCount, 1, 'The add pill action creator was called once');
-    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'should have 1 focused pill');
-
+    await leaveNewPillTemplate();
+    const metas = findAll(PILL_SELECTORS.meta);
+    await click(`#${metas[0].id}`);
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Should be 1 pill focused');
 
     await click('.outside');
+
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'Should be no pill focused');
+  });
+
+  test('Creating a focused pill and clicking on the query-pill should not remove focus from it', async function(assert) {
+    assert.expect(2);
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{#rsa-application-content}}
+          <div class='outside'>
+            {{query-container/query-pills isActive=true}}
+          </div>
+        {{/rsa-application-content}}
+      </div>
+    `);
+    await leaveNewPillTemplate();
+    const metas = findAll(PILL_SELECTORS.meta);
+    await click(`#${metas[0].id}`);
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Should be 1 pill focused');
+
+    await click(PILL_SELECTORS.queryPill);
+
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'Should be 1 pill focused');
   });
 
   test('Creating a pill with the new pill trigger sends action for redux state update', async function(assert) {

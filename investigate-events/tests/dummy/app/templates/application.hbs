@@ -26,7 +26,9 @@
 {{context-menu}}
 <article class="investigate-dummy__main {{if (and entityId entityType) 'has-entity-info'}}">
   <section fill class="investigate-dummy__main-body">
-    {{outlet}}
+    {{#rsa-application-content}}
+      {{outlet}}
+    {{/rsa-application-content}}
   </section>
   <aside fit class="investigate-dummy__main-aside">
     {{#if (and entityId entityType)}}

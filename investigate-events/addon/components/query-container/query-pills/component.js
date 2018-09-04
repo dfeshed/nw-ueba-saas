@@ -57,6 +57,8 @@ const dispatchToActions = {
 const QueryPills = RsaContextMenu.extend({
   tagName: null,
 
+  classNames: ['query-pills'],
+
   classNameBindings: [
     'isPillOpen:pill-open',
     'isPillOpenForEdit:pill-open-for-edit',
@@ -64,6 +66,8 @@ const QueryPills = RsaContextMenu.extend({
   ],
 
   i18n: service(),
+
+  eventBus: service(),
 
   // whether or not this component's children should take
   // focus if they are so inclined.
@@ -173,11 +177,25 @@ const QueryPills = RsaContextMenu.extend({
     // saving the event handler fn so that it can be removed later
     this.set('_boundEscapeListener', _boundEscapeListener);
     window.addEventListener('keydown', _boundEscapeListener);
+    this.get('eventBus').on('rsa-application-click', this, 'clickOutside');
   },
 
   willDestroyElement() {
     this._super(...arguments);
     window.removeEventListener('keydown', this.get('_boundEscapeListener'));
+    this.get('eventBus').off('rsa-application-click', this, 'clickOutside');
+  },
+
+  clickOutside(element) {
+    const { parentElement } = element;
+    if (parentElement) {
+      const parentClickedClass = parentElement.className;
+      const classNameIsString = (typeof parentClickedClass === 'string');
+      const includesQueryPillClass = parentClickedClass && classNameIsString && parentClickedClass.includes('query-pill');
+      if (!includesQueryPillClass) {
+        this.send('removeGuidedPillFocus');
+      }
+    }
   },
 
   actions: {
@@ -200,10 +218,6 @@ const QueryPills = RsaContextMenu.extend({
           { id: 'query-pills' }
         );
       }
-    },
-
-    clickOutside() {
-      this.send('removeGuidedPillFocus');
     }
   },
 

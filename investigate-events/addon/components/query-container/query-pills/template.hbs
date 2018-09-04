@@ -1,36 +1,35 @@
-{{#click-outside class='query-pills click-outside' action=(action 'clickOutside')}}
-  {{#each pillsData key="id" as | pillData index |}}
-    {{query-container/new-pill-trigger
-      metaOptions=metaOptions
-      sendMessage=(action 'handleMessage')
-      newPillPosition=index
-      startTriggeredPosition=startTriggeredPosition
-    }}
-
-    {{#if pillData.complexFilterText}}
-      {{query-container/complex-pill
-        pillData=(readonly pillData)
-        sendMessage=(action 'handleMessage')
-        position=index
-        isActive=pillData.isEditing
-      }}
-    {{else}}
-      {{query-container/query-pill
-        metaOptions=metaOptions
-        pillData=(readonly pillData)
-        sendMessage=(action 'handleMessage')
-        position=index
-        isActive=pillData.isEditing
-      }}
-    {{/if}}
-
-  {{/each}}
-
-  {{query-container/query-pill
-    isMetaAutoFocused=takeFocus
+{{#each pillsData key="id" as | pillData index |}}
+  {{query-container/new-pill-trigger
     metaOptions=metaOptions
-    classNames='new-pill-template'
     sendMessage=(action 'handleMessage')
-    position=newPillPosition
+    newPillPosition=index
+    startTriggeredPosition=startTriggeredPosition
   }}
-{{/click-outside}}
+
+  {{#if pillData.complexFilterText}}
+    {{query-container/complex-pill
+      pillData=(readonly pillData)
+      sendMessage=(action 'handleMessage')
+      position=index
+      isActive=pillData.isEditing
+    }}
+  {{else}}
+    {{query-container/query-pill
+      metaOptions=metaOptions
+      pillData=(readonly pillData)
+      sendMessage=(action 'handleMessage')
+      position=index
+      isActive=pillData.isEditing
+    }}
+  {{/if}}
+
+{{/each}}
+
+{{query-container/query-pill
+  isMetaAutoFocused=takeFocus
+  metaOptions=metaOptions
+  classNames='new-pill-template'
+  sendMessage=(action 'handleMessage')
+  position=newPillPosition
+}}
+

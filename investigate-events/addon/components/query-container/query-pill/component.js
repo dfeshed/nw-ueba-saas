@@ -417,8 +417,9 @@ export default Component.extend({
     const {
       selectedMeta,
       selectedOperator,
-      valueString
-    } = this.getProperties('selectedMeta', 'selectedOperator', 'valueString');
+      valueString,
+      isExistingPill
+    } = this.getProperties('selectedMeta', 'selectedOperator', 'valueString', 'isExistingPill');
     let isSubmit;
     const el = focusEvent.relatedTarget;
     if (el) {
@@ -428,8 +429,8 @@ export default Component.extend({
     if (!selectedMeta && !selectedOperator && !valueString) {
       // Treat this like an ESC was keyed
       this._cancelPillCreation();
-    } else if (isSubmit && selectedMeta && selectedOperator && valueString) {
-      // Create pill
+    } else if (isSubmit && !isExistingPill && selectedMeta && selectedOperator && valueString) {
+      // If it's not an existing pill, create new pill
       this._createPill(valueString);
       // Exit out of pill creation so that the post-pill-creation dropdown is
       // removed
