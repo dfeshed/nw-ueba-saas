@@ -19,9 +19,7 @@ import java.util.List;
 
 import static fortscale.utils.transform.predicate.JsonObjectChainPredicate.LogicalOperation.AND;
 
-
-public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
-
+public class AuthenticationWindowsAuditTransformerTest extends TransformerTest {
     private static final String OPERATION_TYPE_FIELD_NAME = "operationType";
     private static final String SERVICE_NAME_FIELD_NAME = "service_name";
     private static final String LOGON_TYPE_FIELD_NAME = "logon_type";
@@ -53,19 +51,17 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
     private static final String REMOTE_INTERACTIVE_LOGON_TYPE = "REMOTE_INTERACTIVE";
     private static final String CREDENTIAL_VALIDATION_OPERATION_TYPE = "CREDENTIAL_VALIDATION";
 
-
-
-    private String wrapWithDollar(String fieldName){
+    private String wrapWithDollar(String fieldName) {
         return String.format("${%s}", fieldName);
     }
 
-    private IJsonObjectTransformer buildAuthenticationWindowsAuditTransformer(){
+    private IJsonObjectTransformer buildAuthenticationWindowsAuditTransformer() {
         List<IJsonObjectTransformer> transformerChainList = new ArrayList<>();
 
         // Filtering events according to the device type and user name
         JsonObjectRegexPredicate userDstNotContainMachine = new JsonObjectRegexPredicate("user-dst-not-contain-machine", USER_DST_FIELD_NAME, "[^\\$]*");
         JsonObjectRegexPredicate deviceTypeSnareOrNic = new JsonObjectRegexPredicate("device-type-snare-or-nic", DEVICE_TYPE_FIELD_NAME, "winevent_snare|winevent_nic");
-        JsonObjectChainPredicate deviceTypeAndUserDstPredicate = new JsonObjectChainPredicate("device-type-and-user-dst-predicate",AND,
+        JsonObjectChainPredicate deviceTypeAndUserDstPredicate = new JsonObjectChainPredicate("device-type-and-user-dst-predicate", AND,
                 Arrays.asList(userDstNotContainMachine, deviceTypeSnareOrNic));
         FilterTransformer deviceTypeAndUserDstFilter = new FilterTransformer("device-type-and-user-dst-filter", deviceTypeAndUserDstPredicate, true);
         transformerChainList.add(deviceTypeAndUserDstFilter);
@@ -75,15 +71,15 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
         FilterTransformer serviceNameFilter = new FilterTransformer("service-name-filter", serviceNameEndsWithDollar, true);
         JsonObjectRegexPredicate referenceIdEqual4769 = new JsonObjectRegexPredicate("reference-id-equal-4769", EVENT_CODE_FIELD_NAME, "4769");
         IfElseTransformer serviceNameFilterFor4769 =
-                new IfElseTransformer("service-name-filter-for-4769",referenceIdEqual4769, serviceNameFilter);
+                new IfElseTransformer("service-name-filter-for-4769", referenceIdEqual4769, serviceNameFilter);
         transformerChainList.add(serviceNameFilterFor4769);
 
         //for 4624 and 4625: Filtering in events with logon type equals to 2 or 10 ###
         JsonObjectRegexPredicate logonTypeEqual2Or10 = new JsonObjectRegexPredicate("logon-type-equal-0-or-10", LOGON_TYPE_FIELD_NAME, "2|10");
         FilterTransformer logonTypeFilter = new FilterTransformer("logon-type-filter", logonTypeEqual2Or10, true);
-        JsonObjectRegexPredicate referenceIdEqual4624Or4625= new JsonObjectRegexPredicate("reference-id-equal-4624-or-4625", EVENT_CODE_FIELD_NAME, "4624|4625");
+        JsonObjectRegexPredicate referenceIdEqual4624Or4625 = new JsonObjectRegexPredicate("reference-id-equal-4624-or-4625", EVENT_CODE_FIELD_NAME, "4624|4625");
         IfElseTransformer logonTypeFilterFor4624Or4625 =
-                new IfElseTransformer("logon-type-filter-for-4624-or-4625",referenceIdEqual4624Or4625, logonTypeFilter);
+                new IfElseTransformer("logon-type-filter-for-4624-or-4625", referenceIdEqual4624Or4625, logonTypeFilter);
         transformerChainList.add(logonTypeFilterFor4624Or4625);
 
         //Convert time field from EPOCH millis to EPOCH seconds
@@ -93,10 +89,10 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
 
         //Filling the srcMachineName. The value is taken from different fields depends on the reference_id value
         List<SwitchCaseTransformer.SwitchCase> srcMachineNameCases = new ArrayList<>();
-        srcMachineNameCases.add(new SwitchCaseTransformer.SwitchCase("4624",String.format("${%s[0]}", ALIAS_HOST_FIELD_NAME)));
-        srcMachineNameCases.add(new SwitchCaseTransformer.SwitchCase("4625",String.format("${%s[0]}", ALIAS_HOST_FIELD_NAME)));
-        srcMachineNameCases.add(new SwitchCaseTransformer.SwitchCase("4648",String.format("${%s[0]}", ALIAS_HOST_FIELD_NAME)));
-        srcMachineNameCases.add(new SwitchCaseTransformer.SwitchCase("4776",String.format("${%s}", HOST_SRC_FIELD_NAME)));
+        srcMachineNameCases.add(new SwitchCaseTransformer.SwitchCase("4624", String.format("${%s[0]}", ALIAS_HOST_FIELD_NAME)));
+        srcMachineNameCases.add(new SwitchCaseTransformer.SwitchCase("4625", String.format("${%s[0]}", ALIAS_HOST_FIELD_NAME)));
+        srcMachineNameCases.add(new SwitchCaseTransformer.SwitchCase("4648", String.format("${%s[0]}", ALIAS_HOST_FIELD_NAME)));
+        srcMachineNameCases.add(new SwitchCaseTransformer.SwitchCase("4776", String.format("${%s}", HOST_SRC_FIELD_NAME)));
         SwitchCaseTransformer srcMachineNameSwitchCaseTransformer =
                 new SwitchCaseTransformer("src-machine-name-switch-case",
                         EVENT_CODE_FIELD_NAME,
@@ -107,7 +103,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
 
         //Filling the dstMachineName. The value is taken from different fields depends on the reference_id value
         List<SwitchCaseTransformer.SwitchCase> dstMachineNameCases = new ArrayList<>();
-        dstMachineNameCases.add(new SwitchCaseTransformer.SwitchCase("4648",String.format("${%s}", HOST_DST_FIELD_NAME)));
+        dstMachineNameCases.add(new SwitchCaseTransformer.SwitchCase("4648", String.format("${%s}", HOST_DST_FIELD_NAME)));
 
         SwitchCaseTransformer dstMachineNameSwitchCaseTransformer =
                 new SwitchCaseTransformer("dst-machine-name-switch-case",
@@ -121,15 +117,15 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
         CaptureAndFormatConfiguration machineIdNormalizationZeroPattern =
                 new CaptureAndFormatConfiguration("-", "", null);
         CaptureAndFormatConfiguration machineIdNormalizationFirstPattern =
-                    new CaptureAndFormatConfiguration(".*:.*", "", null);
+                new CaptureAndFormatConfiguration(".*:.*", "", null);
         CaptureAndFormatConfiguration machineIdNormalizationSecondPattern =
-                new CaptureAndFormatConfiguration(".*\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}.*", "",null);
+                new CaptureAndFormatConfiguration(".*\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}.*", "", null);
         CaptureAndFormatConfiguration machineIdNormalizationThirdPattern =
                 new CaptureAndFormatConfiguration("(\\\\\\\\)?([^\\.]+)\\..+", "%s",
-                        Arrays.asList(new CapturingGroupConfiguration(2, "LOWER")));
+                        Collections.singletonList(new CapturingGroupConfiguration(2, "LOWER")));
         CaptureAndFormatConfiguration machineIdNormalizationFourthPattern =
                 new CaptureAndFormatConfiguration("(\\\\\\\\)?(.+)", "%s",
-                Arrays.asList(new CapturingGroupConfiguration(2, "LOWER")));
+                        Collections.singletonList(new CapturingGroupConfiguration(2, "LOWER")));
 
         List<CaptureAndFormatConfiguration> srcAndDstMachineCaptureAndFormatConfigurationList = Arrays.asList(machineIdNormalizationZeroPattern, machineIdNormalizationFirstPattern,
                 machineIdNormalizationSecondPattern,
@@ -150,7 +146,6 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
                         DST_MACHINE_ID_FIELD_NAME,
                         srcAndDstMachineCaptureAndFormatConfigurationList);
         transformerChainList.add(dstMachineIdNormalization);
-
 
         // Normalize the userId values
         CaptureAndFormatConfiguration userNormalizationFirstPattern = new CaptureAndFormatConfiguration("CN=([^,]+)", "%s",
@@ -176,7 +171,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
                 new FilterTransformer("anonymous-or-system-filter", srcMachineNotBlank, true);
         JoinTransformer createUserIdByJoiningMachineIdAndUserIdTransformer =
                 new JoinTransformer("create-user-id-by-joining-machine-id-and-user-id", USER_ID_FIELD_NAME,
-                        Arrays.asList(wrapWithDollar(USER_ID_FIELD_NAME),wrapWithDollar(SRC_MACHINE_ID_FIELD_NAME)),
+                        Arrays.asList(wrapWithDollar(USER_ID_FIELD_NAME), wrapWithDollar(SRC_MACHINE_ID_FIELD_NAME)),
                         "@");
         JsonObjectChainTransformer anonymousOrSystemUsersChainTransformer =
                 new JsonObjectChainTransformer("anonymous-or-system-chain",
@@ -189,7 +184,6 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
                         anonymousOrSystemUsersChainTransformer);
         transformerChainList.add(anonymousOrSystemUsersIfElseTransformer);
 
-
         //Normalize the result values
         CaptureAndFormatConfiguration resultFailedPattern = new CaptureAndFormatConfiguration(".*(?i:fail).*", RESULT_FAILURE, null);
         CaptureAndFormatConfiguration resultSuccessPattern = new CaptureAndFormatConfiguration(".*(?i:succ).*", RESULT_SUCCESS, null);
@@ -200,8 +194,8 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
         resultNormalizationOnResultCodeCases.add(new SwitchCaseTransformer.SwitchCase("0x0", RESULT_SUCCESS));
         resultNormalizationOnResultCodeCases.add(new SwitchCaseTransformer.SwitchCase("0x.*", RESULT_FAILURE, true));
         SwitchCaseTransformer resultNormalizationOnResultCodeSwitchCaseTransformer =
-                new SwitchCaseTransformer("result-normalization-on-result-code",RESULT_CODE_FIELD_NAME,
-                        RESULT_FIELD_NAME, null,resultNormalizationOnResultCodeCases);
+                new SwitchCaseTransformer("result-normalization-on-result-code", RESULT_CODE_FIELD_NAME,
+                        RESULT_FIELD_NAME, null, resultNormalizationOnResultCodeCases);
         JsonObjectKeyExistPredicate eventTypeKeyExist = new JsonObjectKeyExistPredicate("event-type-exist", EVENT_TYPE_FIELD_NAME);
         IfElseTransformer resultNormalizationTransformer =
                 new IfElseTransformer(
@@ -213,11 +207,11 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
 
         //Fill operationType
         List<SwitchCaseTransformer.SwitchCase> logonTypeCases = new ArrayList<>();
-        logonTypeCases.add(new SwitchCaseTransformer.SwitchCase("2",INTERACTIVE_LOGON_TYPE));
-        logonTypeCases.add(new SwitchCaseTransformer.SwitchCase("10",REMOTE_INTERACTIVE_LOGON_TYPE));
+        logonTypeCases.add(new SwitchCaseTransformer.SwitchCase("2", INTERACTIVE_LOGON_TYPE));
+        logonTypeCases.add(new SwitchCaseTransformer.SwitchCase("10", REMOTE_INTERACTIVE_LOGON_TYPE));
         SwitchCaseTransformer logonTypeSwitchCaseTransformer =
-                new SwitchCaseTransformer("logon-type-to-operation-type-switch-case",LOGON_TYPE_FIELD_NAME,
-                        OPERATION_TYPE_FIELD_NAME, null,logonTypeCases);
+                new SwitchCaseTransformer("logon-type-to-operation-type-switch-case", LOGON_TYPE_FIELD_NAME,
+                        OPERATION_TYPE_FIELD_NAME, null, logonTypeCases);
         SetterTransformer operationTypeFor4776Or4769 =
                 new SetterTransformer(
                         "4776-or-4769-to-operation-type",
@@ -312,7 +306,8 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
             String eventId,
             String hostSource,
             String aliasSource,
-            String dstMachine){
+            String dstMachine) {
+
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(EVENT_CODE_FIELD_NAME, eventCode);
         jsonObject.put(USER_DST_FIELD_NAME, userDst);
@@ -327,9 +322,6 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
         jsonObject.put(RESULT_CODE_FIELD_NAME, resultCode);
         jsonObject.put(EVENT_SOURCE_ID_FIELD_NAME, eventId);
         jsonObject.put(ALIAS_SRC_FIELD_NAME, aliasSource);
-
-
-
         return jsonObject;
     }
 
@@ -381,14 +373,14 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
         Long eventTime = 1528124556000L;
         String eventType = "Success Audit";
         JSONObject jsonObject = buildAuthWindowAuditJsonObject(referenceId, userDst, "winevent_snare",
-                null, eventTime*1000, "2",
+                null, eventTime * 1000, "2",
                 String.format("[\"%s\",\"another alias\"]", aliasHost),
                 eventType, "  ", eventId, null, aliasSource, null);
 
         JSONObject retJsonObject = transform(transformer, jsonObject);
 
         assertOnExpectedValues(retJsonObject, eventId, eventTime, "rsmith", userDst, "rsmith",
-                aliasHost.toLowerCase(), aliasHost, RESULT_SUCCESS, INTERACTIVE_LOGON_TYPE, referenceId, null,null);
+                aliasHost.toLowerCase(), aliasHost, RESULT_SUCCESS, INTERACTIVE_LOGON_TYPE, referenceId, null, null);
     }
 
     @Test
@@ -403,14 +395,14 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
         Long eventTime = 1528124556000L;
         String eventType = "Success Audit";
         JSONObject jsonObject = buildAuthWindowAuditJsonObject(referenceId, userDst, "winevent_snare",
-                null, eventTime*1000, "2",
+                null, eventTime * 1000, "2",
                 String.format("[\"%s\",\"another alias\"]", aliasHost),
                 eventType, "  ", eventId, null, aliasSource, null);
 
         JSONObject retJsonObject = transform(transformer, jsonObject);
         String userId = StringUtils.join(Arrays.asList(userDst.toLowerCase(), aliasHost.toLowerCase()), "@");
         assertOnExpectedValues(retJsonObject, eventId, eventTime, userId, userDst, userId,
-                aliasHost.toLowerCase(), aliasHost, RESULT_SUCCESS, INTERACTIVE_LOGON_TYPE, referenceId, null,null);
+                aliasHost.toLowerCase(), aliasHost, RESULT_SUCCESS, INTERACTIVE_LOGON_TYPE, referenceId, null, null);
     }
 
     @Test
@@ -425,7 +417,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
         Long eventTime = 1528124556000L;
         String eventType = "Success Audit";
         JSONObject jsonObject = buildAuthWindowAuditJsonObject(referenceId, userDst, "winevent_snare",
-                null, eventTime*1000, "2",
+                null, eventTime * 1000, "2",
                 String.format("[\"%s\",\"another alias\"]", aliasHost),
                 eventType, "  ", eventId, null, aliasSource, null);
 
@@ -447,7 +439,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
         Long eventTime = 1528124556000L;
         String eventType = "Failure Audit";
         JSONObject jsonObject = buildAuthWindowAuditJsonObject(referenceId, userDst, "winevent_nic",
-                null, eventTime*1000, "10",
+                null, eventTime * 1000, "10",
                 String.format("[\"%s\",\"another alias\"]", aliasHost),
                 eventType, "  ", eventId, hostSource, null, null);
 
@@ -455,7 +447,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
 
         String userId = "bobby";
         assertOnExpectedValues(retJsonObject, eventId, eventTime, userId, userDst, userId,
-                "", hostSource, RESULT_FAILURE, CREDENTIAL_VALIDATION_OPERATION_TYPE, referenceId, null,null);
+                "", hostSource, RESULT_FAILURE, CREDENTIAL_VALIDATION_OPERATION_TYPE, referenceId, null, null);
     }
 
     @Test
@@ -471,9 +463,9 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
         Long eventTime = 1528124556000L;
         String eventType = "Failure Audit";
         JSONObject jsonObject = buildAuthWindowAuditJsonObject(referenceId, userDst, "winevent_nic",
-                null, eventTime*1000, "10",
+                null, eventTime * 1000, "10",
                 String.format("[\"%s\",\"another alias\"]", aliasHost),
-                eventType, "  ", eventId, hostSource, null,dstMachine);
+                eventType, "  ", eventId, hostSource, null, dstMachine);
 
         JSONObject retJsonObject = transform(transformer, jsonObject);
 
@@ -481,7 +473,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
         String expectedDstMachine = dstMachine.toLowerCase();
         assertOnExpectedValues(retJsonObject, eventId, eventTime, userId, userDst, userId,
                 aliasHost.toLowerCase(), aliasHost, RESULT_FAILURE, CREDENTIAL_VALIDATION_OPERATION_TYPE,
-                referenceId,expectedDstMachine,dstMachine);
+                referenceId, expectedDstMachine, dstMachine);
     }
 
     @Test
@@ -497,7 +489,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
         Long eventTime = 1528124556000L;
         String eventType = "Failure Audit";
         JSONObject jsonObject = buildAuthWindowAuditJsonObject(referenceId, userDst, "winevent_snare",
-                null, eventTime*1000, "10",
+                null, eventTime * 1000, "10",
                 String.format("[\"%s\",\"another alias\"]", aliasHost),
                 eventType, "  ", eventId, hostSource, aliasSrc, null);
 
@@ -505,7 +497,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
 
         String userId = "bobby";
         assertOnExpectedValues(retJsonObject, eventId, eventTime, userId, userDst, userId,
-                "", hostSource, RESULT_FAILURE, CREDENTIAL_VALIDATION_OPERATION_TYPE, referenceId, null,null);
+                "", hostSource, RESULT_FAILURE, CREDENTIAL_VALIDATION_OPERATION_TYPE, referenceId, null, null);
     }
 
     @Test
@@ -520,7 +512,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
         Long eventTime = 1528124556000L;
         String eventType = "Failure Audit";
         JSONObject jsonObject = buildAuthWindowAuditJsonObject(referenceId, userDst, "winevent_nic",
-                "someMachine$", eventTime*1000, "10",
+                "someMachine$", eventTime * 1000, "10",
                 String.format("[\"%s\",\"another alias\"]", aliasHost),
                 eventType, "  ", eventId, hostSource, null, null);
 
@@ -528,7 +520,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
 
         String userId = "bobby";
         assertOnExpectedValues(retJsonObject, eventId, eventTime, userId, userDst, userId,
-                null, JSONObject.NULL, RESULT_FAILURE, CREDENTIAL_VALIDATION_OPERATION_TYPE, referenceId, null,null);
+                null, JSONObject.NULL, RESULT_FAILURE, CREDENTIAL_VALIDATION_OPERATION_TYPE, referenceId, null, null);
     }
 
     @Test
@@ -540,7 +532,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
         JSONObject original = buildAuthWindowAuditJsonObject(
                 "4624", "CN=BOBBY,OU=Users,DC=Dell", "winevent_nic", "someMachine$", 1528124556000L * 1000, "2",
                 String.format("[\"%s\",\"MY-ALIAS-HOST\"]", aliasHost),
-                "Success Audit", "0x0", "10.25.67.33:50005:91168521", "a:b", "MY-ALIAS-SOURCE");
+                "Success Audit", "0x0", "10.25.67.33:50005:91168521", "a:b", "MY-ALIAS-SOURCE", null);
 
         JSONObject transformed = transform(transformer, original);
         Assert.assertEquals("desktop-abc123", transformed.getString(SRC_MACHINE_ID_FIELD_NAME));
@@ -553,7 +545,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
         original = buildAuthWindowAuditJsonObject(
                 "4624", "CN=BOBBY,OU=Users,DC=Dell", "winevent_nic", "someMachine$", 1528124556000L * 1000, "10",
                 String.format("[\"%s\",\"MY-ALIAS-HOST\"]", aliasHost),
-                "Success Audit", "0x0", "10.25.67.33:50005:91168521", "a:b", "MY-ALIAS-SOURCE");
+                "Success Audit", "0x0", "10.25.67.33:50005:91168521", "a:b", "MY-ALIAS-SOURCE", null);
 
         transformed = transform(transformer, original);
         Assert.assertFalse(transformed.has(SRC_MACHINE_ID_FIELD_NAME));
@@ -574,20 +566,19 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
                                         String expectedOperationType,
                                         String expectedDataSource,
                                         String expectedDstMachineId,
-                                        String expectedDstMachineName){
+                                        String expectedDstMachineName) {
+
         Assert.assertEquals("wrong event id", expectedEventId, retJsonObject.get(EVENT_ID_FIELD_NAME));
         Assert.assertEquals("wrong dateTime", new Double(expectedDateTime), retJsonObject.get(DATE_TIME_FIELD_NAME));
         Assert.assertEquals("username normalization did not work", expectedUserId, retJsonObject.get(USER_ID_FIELD_NAME));
         Assert.assertEquals("wrong username", expectedUsername, retJsonObject.get(USERNAME_FIELD_NAME));
         Assert.assertEquals("wrong userDisplayName", expectedUserDisplayName, retJsonObject.get(USER_DISPLAY_NAME_FIELD_NAME));
         Assert.assertEquals("source machine id is not as expected", expectedSrcMachineId, retJsonObject.opt(SRC_MACHINE_ID_FIELD_NAME));
-        Assert.assertEquals("source machine name is not as expected", expectedSrcMachineName, retJsonObject.optString(SRC_MACHINE_NAME_FIELD_NAME,null));
+        Assert.assertEquals("source machine name is not as expected", expectedSrcMachineName, retJsonObject.optString(SRC_MACHINE_NAME_FIELD_NAME, null));
         Assert.assertEquals("result normalization did not work", expectedResult, retJsonObject.get(RESULT_FIELD_NAME));
         Assert.assertEquals("operation type logic according the accesses field did not work", expectedOperationType, retJsonObject.get(OPERATION_TYPE_FIELD_NAME));
         Assert.assertEquals("wrong data source", expectedDataSource, retJsonObject.get(DATA_SOURCE_FIELD_NAME));
-        Assert.assertEquals("destination machine name is not as expected",expectedDstMachineName,retJsonObject.optString(DST_MACHINE_NAME_FIELD_NAME,null));
+        Assert.assertEquals("destination machine name is not as expected", expectedDstMachineName, retJsonObject.optString(DST_MACHINE_NAME_FIELD_NAME, null));
         Assert.assertEquals("destination machine id is not as expected", expectedDstMachineId, retJsonObject.opt(DST_MACHINE_ID_FIELD_NAME));
-
-
     }
 }
