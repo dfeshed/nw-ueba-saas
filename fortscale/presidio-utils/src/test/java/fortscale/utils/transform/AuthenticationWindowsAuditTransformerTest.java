@@ -44,6 +44,8 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
     private static final String HOST_SRC_FIELD_NAME = "host_src";
     private static final String SRC_MACHINE_ID_FIELD_NAME = "srcMachineId";
     private static final String SRC_MACHINE_NAME_FIELD_NAME = "srcMachineName";
+    private static final String DST_MACHINE_ID_FIELD_NAME = "dstMachineId";
+    private static final String DST_MACHINE_NAME_FIELD_NAME = "dstMachineName";
     private static final String RESULT_SUCCESS = "SUCCESS";
     private static final String RESULT_FAILURE = "FAILURE";
     private static final String INTERACTIVE_LOGON_TYPE = "INTERACTIVE";
@@ -237,6 +239,34 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
                         false,
                         Arrays.asList(USER_DISPLAY_NAME_FIELD_NAME));
         transformerChainList.add(copyUserId);
+
+        // For remote interactive authentications, convert the source machine to destination machine.
+        IfElseTransformer convertSrcMachineToDstMachineIfRemoteInteractive = new IfElseTransformer(
+                "convert-src-machine-to-dst-machine-if-remote-interactive",
+                new JsonObjectRegexPredicate(
+                        "convert-src-machine-to-dst-machine-if-remote-interactive-predicate",
+                        OPERATION_TYPE_FIELD_NAME,
+                        REMOTE_INTERACTIVE_LOGON_TYPE
+                ),
+                new JsonObjectChainTransformer(
+                        "convert-src-machine-to-dst-machine-if-remote-interactive-transformer",
+                        Arrays.asList(
+                                new CopyValueTransformer(
+                                        "move-src-machine-id-to-dst-machine-id-if-remote-interactive",
+                                        SRC_MACHINE_ID_FIELD_NAME,
+                                        true,
+                                        Collections.singletonList(DST_MACHINE_ID_FIELD_NAME)
+                                ),
+                                new CopyValueTransformer(
+                                        "move-src-machine-name-to-dst-machine-name-if-remote-interactive",
+                                        SRC_MACHINE_NAME_FIELD_NAME,
+                                        true,
+                                        Collections.singletonList(DST_MACHINE_NAME_FIELD_NAME)
+                                )
+                        )
+                )
+        );
+        transformerChainList.add(convertSrcMachineToDstMachineIfRemoteInteractive);
 
         //The Auth Windows Audit Transformer that chain all the transformers together.
         JsonObjectChainTransformer authWindowsAuditTransformer =
@@ -446,6 +476,37 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
         String userId = "bobby";
         assertOnExpectedValues(retJsonObject, eventId, eventTime, userId, userDst, userId,
                 null, JSONObject.NULL, RESULT_FAILURE, CREDENTIAL_VALIDATION_OPERATION_TYPE, referenceId);
+    }
+
+    @Test
+    public void convert_src_machine_to_dst_machine_if_remote_interactive() throws JsonProcessingException {
+        IJsonObjectTransformer transformer = buildAuthenticationWindowsAuditTransformer();
+
+        // Logon type = 2.
+        String aliasHost = "DESKTOP-ABC123";
+        JSONObject original = buildAuthWindowAuditJsonObject(
+                "4624", "CN=BOBBY,OU=Users,DC=Dell", "winevent_nic", "someMachine$", 1528124556000L * 1000, "2",
+                String.format("[\"%s\",\"MY-ALIAS-HOST\"]", aliasHost),
+                "Success Audit", "0x0", "10.25.67.33:50005:91168521", "a:b", "MY-ALIAS-SOURCE");
+
+        JSONObject transformed = transform(transformer, original);
+        Assert.assertEquals("desktop-abc123", transformed.getString(SRC_MACHINE_ID_FIELD_NAME));
+        Assert.assertEquals("DESKTOP-ABC123", transformed.getString(SRC_MACHINE_NAME_FIELD_NAME));
+        Assert.assertFalse(transformed.has(DST_MACHINE_ID_FIELD_NAME));
+        Assert.assertFalse(transformed.has(DST_MACHINE_NAME_FIELD_NAME));
+
+        // Logon type = 10.
+        aliasHost = "LAPTOP-XYZ42";
+        original = buildAuthWindowAuditJsonObject(
+                "4624", "CN=BOBBY,OU=Users,DC=Dell", "winevent_nic", "someMachine$", 1528124556000L * 1000, "10",
+                String.format("[\"%s\",\"MY-ALIAS-HOST\"]", aliasHost),
+                "Success Audit", "0x0", "10.25.67.33:50005:91168521", "a:b", "MY-ALIAS-SOURCE");
+
+        transformed = transform(transformer, original);
+        Assert.assertFalse(transformed.has(SRC_MACHINE_ID_FIELD_NAME));
+        Assert.assertFalse(transformed.has(SRC_MACHINE_NAME_FIELD_NAME));
+        Assert.assertEquals("laptop-xyz42", transformed.getString(DST_MACHINE_ID_FIELD_NAME));
+        Assert.assertEquals("LAPTOP-XYZ42", transformed.getString(DST_MACHINE_NAME_FIELD_NAME));
     }
 
     private void assertOnExpectedValues(JSONObject retJsonObject,
