@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { click, find, findAll, render } from '@ember/test-helpers';
+import { waitUntil, click, find, findAll, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
@@ -94,6 +94,7 @@ module('Integration | Component | events-list', function(hooks) {
 
     await click(selectors.clearButton);
 
+    await waitUntil(() => findAll(selectors.row).length > 10);
     assert.ok(findAll(selectors.row).length > 10);
     assert.equal(findAll(selectors.clear).length, 0);
   });

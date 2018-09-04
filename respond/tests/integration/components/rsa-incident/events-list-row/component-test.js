@@ -16,7 +16,7 @@ module('Integration | Component | events-list-row', function(hooks) {
 
   hooks.beforeEach(function() {
     patchReducer(this, Immutable.from(storyLineEvents));
-    this.set('expanded', false);
+    this.set('expandedId', null);
     this.set('expand', () => {
     });
   });
@@ -28,7 +28,7 @@ module('Integration | Component | events-list-row', function(hooks) {
 
     this.set('item', item);
 
-    await render(hbs`{{rsa-incident/events-list-row item=item expanded=expanded expand=(action expand)}}`);
+    await render(hbs`{{rsa-incident/events-list-row item=item expandedId=expandedId expand=(action expand)}}`);
 
     assert.equal(findAll(selectors.row).length, 1);
     assert.equal(findAll(selectors.genericRow).length, 1);
