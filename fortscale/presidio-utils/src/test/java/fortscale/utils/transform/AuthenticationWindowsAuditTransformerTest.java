@@ -107,15 +107,15 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
         CaptureAndFormatConfiguration srcMachineIdNormalizationZeroPattern =
                 new CaptureAndFormatConfiguration("-", "", null);
         CaptureAndFormatConfiguration srcMachineIdNormalizationFirstPattern =
-                    new CaptureAndFormatConfiguration(".*:.*", "", null);
+                new CaptureAndFormatConfiguration(".*:.*", "", null);
         CaptureAndFormatConfiguration srcMachineIdNormalizationSecondPattern =
                 new CaptureAndFormatConfiguration(".*\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}.*", "",null);
         CaptureAndFormatConfiguration srcMachineIdNormalizationThirdPattern =
                 new CaptureAndFormatConfiguration("(\\\\\\\\)?([^\\.]+)\\..+", "%s",
-                        Arrays.asList(new CapturingGroupConfiguration(2, "LOWER")));
+                        Collections.singletonList(new CapturingGroupConfiguration(2, "LOWER")));
         CaptureAndFormatConfiguration srcMachineIdNormalizationFourthPattern =
                 new CaptureAndFormatConfiguration("(\\\\\\\\)?(.+)", "%s",
-                Arrays.asList(new CapturingGroupConfiguration(2, "LOWER")));
+                        Collections.singletonList(new CapturingGroupConfiguration(2, "LOWER")));
         RegexCaptorAndFormatter srcMachineIdNormalization =
                 new RegexCaptorAndFormatter("src-machine-id-normalization",
                         SRC_MACHINE_NAME_FIELD_NAME,
@@ -127,17 +127,17 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
 
         // Normalize the userId values
         CaptureAndFormatConfiguration userNormalizationFirstPattern = new CaptureAndFormatConfiguration("CN=([^,]+)", "%s",
-                Arrays.asList(new CapturingGroupConfiguration(1, "LOWER")));
+                Collections.singletonList(new CapturingGroupConfiguration(1, "LOWER")));
         CaptureAndFormatConfiguration userNormalizationSecondPattern = new CaptureAndFormatConfiguration("CN=([^,]+),.+", "%s",
-                Arrays.asList(new CapturingGroupConfiguration(1, "LOWER")));
+                Collections.singletonList(new CapturingGroupConfiguration(1, "LOWER")));
         CaptureAndFormatConfiguration userNormalizationThirdPattern = new CaptureAndFormatConfiguration("(.+\\\\)+(.+)@.+", "%s",
-                Arrays.asList(new CapturingGroupConfiguration(2, "LOWER")));
+                Collections.singletonList(new CapturingGroupConfiguration(2, "LOWER")));
         CaptureAndFormatConfiguration userNormalizationFourthPattern = new CaptureAndFormatConfiguration("(.+\\\\)+([^@]+)", "%s",
-                Arrays.asList(new CapturingGroupConfiguration(2, "LOWER")));
+                Collections.singletonList(new CapturingGroupConfiguration(2, "LOWER")));
         CaptureAndFormatConfiguration userNormalizationFifthPattern = new CaptureAndFormatConfiguration("(.+)@.+", "%s",
-                Arrays.asList(new CapturingGroupConfiguration(1, "LOWER")));
+                Collections.singletonList(new CapturingGroupConfiguration(1, "LOWER")));
         CaptureAndFormatConfiguration userNormalizationSixthPattern = new CaptureAndFormatConfiguration(".+", "%s",
-                Arrays.asList(new CapturingGroupConfiguration(0, "LOWER")));
+                Collections.singletonList(new CapturingGroupConfiguration(0, "LOWER")));
         RegexCaptorAndFormatter userIdNormalization = new RegexCaptorAndFormatter("user-id-normalization", USER_DST_FIELD_NAME, USER_ID_FIELD_NAME,
                 Arrays.asList(userNormalizationFirstPattern, userNormalizationSecondPattern, userNormalizationThirdPattern,
                         userNormalizationFourthPattern, userNormalizationFifthPattern, userNormalizationSixthPattern));
@@ -205,22 +205,22 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
         transformerChainList.add(operationTypeTransformer);
 
         //rename event_source_id to eventId
-        CopyValueTransformer ranameEventSourceIdToEventId =
+        CopyValueTransformer renameEventSourceIdToEventId =
                 new CopyValueTransformer(
                         "rename-event-source-id-to-event-id",
                         EVENT_SOURCE_ID_FIELD_NAME,
                         true,
                         Collections.singletonList(EVENT_ID_FIELD_NAME));
-        transformerChainList.add(ranameEventSourceIdToEventId);
+        transformerChainList.add(renameEventSourceIdToEventId);
 
         //rename reference_id to dataSource
-        CopyValueTransformer ranameReferenceIdToDataSource =
+        CopyValueTransformer renameReferenceIdToDataSource =
                 new CopyValueTransformer(
                         "rename-reference-id-to-data-source",
                         EVENT_CODE_FIELD_NAME,
                         true,
                         Collections.singletonList(DATA_SOURCE_FIELD_NAME));
-        transformerChainList.add(ranameReferenceIdToDataSource);
+        transformerChainList.add(renameReferenceIdToDataSource);
 
         // copy user_dst to userName
         CopyValueTransformer copyUserDst =
@@ -228,7 +228,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
                         "copy-user-dst",
                         USER_DST_FIELD_NAME,
                         true,
-                        Arrays.asList(USERNAME_FIELD_NAME));
+                        Collections.singletonList(USERNAME_FIELD_NAME));
         transformerChainList.add(copyUserDst);
 
         // copy userId to userDisplayName
@@ -237,7 +237,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
                         "copy-user-id",
                         USER_ID_FIELD_NAME,
                         false,
-                        Arrays.asList(USER_DISPLAY_NAME_FIELD_NAME));
+                        Collections.singletonList(USER_DISPLAY_NAME_FIELD_NAME));
         transformerChainList.add(copyUserId);
 
         // For remote interactive authentications, convert the source machine to destination machine.
@@ -269,10 +269,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
         transformerChainList.add(convertSrcMachineToDstMachineIfRemoteInteractive);
 
         //The Auth Windows Audit Transformer that chain all the transformers together.
-        JsonObjectChainTransformer authWindowsAuditTransformer =
-                new JsonObjectChainTransformer("auth-windows-audit-transformer", transformerChainList);
-
-        return authWindowsAuditTransformer;
+        return new JsonObjectChainTransformer("auth-windows-audit-transformer", transformerChainList);
     }
 
     private JSONObject buildAuthWindowAuditJsonObject(
@@ -307,7 +304,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
     }
 
     @Test
-    public void deserialize_auth_trasformer_test() throws JsonProcessingException {
+    public void deserialize_auth_transformer_test() throws JsonProcessingException {
         IJsonObjectTransformer transformer = buildAuthenticationWindowsAuditTransformer();
 
         String transformerJsonAsString = mapper.writeValueAsString(transformer);
