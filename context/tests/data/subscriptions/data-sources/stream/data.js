@@ -10,7 +10,8 @@ export default [{
   'maxStorageSize': -1,
   'maxCacheMemorySize': -1,
   'contentVersion': 13,
-  'contentLastModifiedTime': 1488906967222
+  'contentLastModifiedTime': 1488906967222,
+  'dataSourceConnectionId': '5b82f6eeb3e9d75d78a9183h'
 }, {
   'id': '58be7d121969557cbbdbfc5sdf',
   'name': 'Liveconnect-ds',
@@ -23,7 +24,8 @@ export default [{
   'maxStorageSize': -1,
   'maxCacheMemorySize': -1,
   'contentVersion': 13,
-  'contentLastModifiedTime': 1488906967222
+  'contentLastModifiedTime': 1488906967222,
+  'dataSourceConnectionId': '5b82f6eeb3e9d75d78a9183f'
 }, {
   'id': '58be7d121969557cbbdbfc5sdf',
   'name': 'Liveconnect-ds',
@@ -36,7 +38,8 @@ export default [{
   'maxStorageSize': -1,
   'maxCacheMemorySize': -1,
   'contentVersion': 13,
-  'contentLastModifiedTime': 1488906967222
+  'contentLastModifiedTime': 1488906967222,
+  'dataSourceConnectionId': '5b82f6eeb3e9d75d78a9183f'
 }, {
   'id': '58be7d121969557cbbdbfc5sdf',
   'name': 'Liveconnect-ds',
@@ -49,8 +52,10 @@ export default [{
   'maxStorageSize': -1,
   'maxCacheMemorySize': -1,
   'contentVersion': 13,
-  'contentLastModifiedTime': 1488906967222
-}, {
+  'contentLastModifiedTime': 1488906967222,
+  'dataSourceConnectionId': '5b82f6eeb3e9d75d78a9183f'
+},
+{
   'id': '58be7d121969557cbbdbfc57',
   'name': '58be7d121969557cbbdbfc55_Incidents_datasource',
   'enabled': true,
@@ -368,7 +373,7 @@ export default [{
     'expireAfterSeconds': 604800
   }],
   'dataSourceGroup': 'Incidents',
-  'dataSourceConnectionId': '58be7d121969557cbbdbfc55',
+  'dataSourceConnectionId': '5b890b2e65d35255ca40e806',
   'dataSourceDisplayName': '58be7d121969557cbbdbfc55_Incidents_datasource',
   'tags': [],
   'queryResponseCachePolicy': {
@@ -795,7 +800,7 @@ export default [{
     'expireAfterSeconds': 604800
   }],
   'dataSourceGroup': 'Alerts',
-  'dataSourceConnectionId': '58be7d121969557cbbdbfc55',
+  'dataSourceConnectionId': '5b890b2e65d35255ca40e806',
   'dataSourceDisplayName': '58be7d121969557cbbdbfc55_Alerts_datasource',
   'tags': [],
   'queryResponseCachePolicy': {

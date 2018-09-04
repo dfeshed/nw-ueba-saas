@@ -52,6 +52,15 @@ module.exports = function(environment) {
         cancelDestination: '/ws/contexthub/context/cancel'
       }
     },
+    'data-connections':{
+      socketUrl,
+      stream: {
+        defaultStreamLimit: 100000,
+        subscriptionDestination: '/user/queue/contexthub/context/data-connections',
+        requestDestination: '/ws/contexthub/context/data-connections',
+        cancelDestination: '/ws/contexthub/context/cancel'
+      }
+    },
     'related-entity': {
       socketUrl,
       stream: {

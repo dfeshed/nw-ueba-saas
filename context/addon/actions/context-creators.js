@@ -52,6 +52,17 @@ const findDataSource = (dataSources, meta) => {
     details: updateDataSourceDetails(tab, dataSources)
   }));
 };
+
+const findConfiguredDatasource = (dsMeta, dataConnections) => {
+  dsMeta.forEach((data) => {
+    dataConnections.forEach((connection) => {
+      if (data.dataSourceConnectionId == connection.id) {
+        data.enabled = connection.enabled ? data.enabled : false;
+      }
+    });
+  });
+  return dsMeta;
+};
 /**
  * This method will be called from initializeContextPanel for pulling data sources details.
  * @private
@@ -60,24 +71,43 @@ const _getDataSources = (meta) => {
   return (dispatch) => {
     fetchData(
       {},
-      'data-sources',
+      'data-connections',
       false,
-      ({ data }) => {
-        const dataSources = data.map((v) => {
-          if (v.enabled) {
-            return v.dataSourceGroup;
-          }
-        }).filter((v, i, a) => a.indexOf(v) === i);
-        if (dataSources.length === 0) {
-          dispatch({
-            type: ACTION_TYPES.CONTEXT_ERROR,
-            payload: 'context.error.noDataSource'
-          });
-        } else {
-          dispatch({
-            type: ACTION_TYPES.GET_ALL_DATA_SOURCES,
-            payload: findDataSource(dataSources, meta)
-          });
+      (response) => {
+        const dataConnections = response.data;
+        if (dataConnections.length) {
+          fetchData(
+            {},
+            'data-sources',
+            false,
+            ({ data }) => {
+              const configuredData = findConfiguredDatasource(data, dataConnections);
+              const dataSources = configuredData.map((v) => {
+                if (v.enabled) {
+                  return v.dataSourceGroup;
+                }
+              }).filter((v, i, a) => a.indexOf(v) === i);
+              if (dataSources.length === 0) {
+                dispatch({
+                  type: ACTION_TYPES.CONTEXT_ERROR,
+                  payload: 'context.error.noDataSource'
+                });
+              } else {
+                dispatch({
+                  type: ACTION_TYPES.GET_ALL_DATA_SOURCES,
+                  payload: findDataSource(dataSources, meta)
+                });
+              }
+            },
+            ({ meta }) => {
+              const error = (meta && meta.message) ? meta.message : 'context.error';
+              dispatch({
+                type: ACTION_TYPES.CONTEXT_ERROR,
+                payload: `context.error.${error}`
+              });
+            }
+          );
+
         }
       },
       ({ meta }) => {
