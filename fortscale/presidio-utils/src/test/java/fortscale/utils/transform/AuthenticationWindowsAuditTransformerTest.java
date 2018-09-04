@@ -1,6 +1,8 @@
 package fortscale.utils.transform;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import fortscale.utils.data.Pair;
+import fortscale.utils.transform.predicate.IJsonObjectPredicate;
 import fortscale.utils.transform.predicate.JsonObjectChainPredicate;
 import fortscale.utils.transform.predicate.JsonObjectKeyExistPredicate;
 import fortscale.utils.transform.predicate.JsonObjectRegexPredicate;
@@ -53,6 +55,9 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
     private static final String INTERACTIVE_LOGON_TYPE = "INTERACTIVE";
     private static final String REMOTE_INTERACTIVE_LOGON_TYPE = "REMOTE_INTERACTIVE";
     private static final String CREDENTIAL_VALIDATION_OPERATION_TYPE = "CREDENTIAL_VALIDATION";
+    private static final String EXPLICIT_CREDENTIALS_LOGON = "EXPLICIT_CREDENTIALS_LOGON";
+
+
 
 
 
@@ -225,11 +230,24 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
                         OPERATION_TYPE_FIELD_NAME,
                         CREDENTIAL_VALIDATION_OPERATION_TYPE);
 
-        IfElseTransformer operationTypeTransformer =
-                new IfElseTransformer("operation-type-transformer",
-                        referenceIdEqual4624Or4625,
-                        logonTypeSwitchCaseTransformer,
-                        operationTypeFor4776Or4769);
+        SetterTransformer operationTypeFor4648 =
+                new SetterTransformer(
+                        "4776-or-4769-to-operation-type",
+                        OPERATION_TYPE_FIELD_NAME,
+                        EXPLICIT_CREDENTIALS_LOGON);
+
+//        IfElseTransformer operationTypeTransformer =
+//                new IfElseTransformer("operation-type-transformer",
+//                        referenceIdEqual4624Or4625,
+//                        logonTypeSwitchCaseTransformer,
+//                        operationTypeFor4776Or4769);
+        JsonObjectRegexPredicate referenceIdEqual4648= new JsonObjectRegexPredicate("reference-id-equal-4648", EVENT_CODE_FIELD_NAME, "4648");
+
+        List<SwitchCasePredicatesTransformer.SwitchCasePredicatesTransformerPair> predicatesIfThenList = new ArrayList<>();
+        predicatesIfThenList.add(new SwitchCasePredicatesTransformer.SwitchCasePredicatesTransformerPair(referenceIdEqual4624Or4625,logonTypeSwitchCaseTransformer));
+        predicatesIfThenList.add(new SwitchCasePredicatesTransformer.SwitchCasePredicatesTransformerPair(referenceIdEqual4648,operationTypeFor4648));
+        SwitchCasePredicatesTransformer operationTypeTransformer = new SwitchCasePredicatesTransformer(
+              "operation-type-transformer",  predicatesIfThenList,operationTypeFor4776Or4769 );
         transformerChainList.add(operationTypeTransformer);
 
         //rename event_source_id to eventId
@@ -456,7 +474,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest{
         String userId = "bobby";
         String expectedDstMachine = dstMachine.toLowerCase();
         assertOnExpectedValues(retJsonObject, eventId, eventTime, userId, userDst, userId,
-                aliasHost.toLowerCase(), aliasHost, RESULT_FAILURE, CREDENTIAL_VALIDATION_OPERATION_TYPE,
+                aliasHost.toLowerCase(), aliasHost, RESULT_FAILURE,EXPLICIT_CREDENTIALS_LOGON ,
                 referenceId,expectedDstMachine,dstMachine);
     }
 
