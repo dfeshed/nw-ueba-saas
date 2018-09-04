@@ -98,7 +98,7 @@ export default Component.extend({
       this._handleFilterChange(value);
     },
     onInputFocusOut(e) {
-      this._handleFilterChange([e.target.value]);
+      this._handleFilterChange(e.target.value);
     },
 
     changeOperator(option) {

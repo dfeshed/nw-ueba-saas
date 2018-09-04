@@ -48,6 +48,16 @@ const FILTER_TYPES = [
     ]
   },
   {
+    'name': 'machineOsType',
+    'label': 'investigateFiles.filter.osType',
+    'listOptions': [
+      { name: 'windows', label: 'investigateFiles.filter.fileType.pe' },
+      { name: 'linux', label: 'investigateFiles.filter.fileType.linux' },
+      { name: 'mac', label: 'investigateFiles.filter.fileType.macho' }
+    ],
+    type: 'list'
+  },
+  {
     'name': 'size',
     'label': 'investigateFiles.fields.size',
     'type': 'number',

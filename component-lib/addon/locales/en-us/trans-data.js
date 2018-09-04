@@ -1976,6 +1976,7 @@ export default {
       invalidCharacters: 'Can contain alphanumeric or special characters.',
       invalidCharsAlphabetOnly: 'Numbers and special characters are not allowed',
       invalidCharsAlphaNumericOnly: 'Special characters are not allowed',
+      osType: 'Operating System',
       restrictionType: {
         moreThan: 'Greater than',
         lessThan: 'Less than',

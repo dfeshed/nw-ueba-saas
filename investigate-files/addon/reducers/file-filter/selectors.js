@@ -18,9 +18,8 @@ const convertFromBytes = (bytes) => {
   const GB = Math.pow(1024, 3);
   const MB = Math.pow(1024, 2);
   const KB = 1024;
-  const values = bytes.map((item) => {
-    const { value } = item;
-    if (item.value >= GB) {
+  const values = bytes.map((value) => {
+    if (value >= GB) {
       val = (value / GB).toFixed(1);
       unit = 'GB';
     } else if (value >= MB) {

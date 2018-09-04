@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import computed from 'ember-computed-decorators';
+import { inject as service } from '@ember/service';
 import { fileCountForDisplay, serviceList, checksums } from 'investigate-files/reducers/file-list/selectors';
 import { selectedFilterId, savedFilter } from 'investigate-files/reducers/file-filter/selectors';
 import {
@@ -10,6 +11,7 @@ import {
   deleteFilter,
   applySavedFilters
 } from 'investigate-files/actions/data-creators';
+
 import { setEndpointServer } from 'investigate-files/actions/endpoint-server-creators';
 
 const stateToComputed = (state) => ({
@@ -41,6 +43,8 @@ const dispatchToActions = {
  */
 const ToolBar = Component.extend({
   tagName: 'hbox',
+
+  flashMessage: service(),
 
   allFiles: {
     id: 1,
