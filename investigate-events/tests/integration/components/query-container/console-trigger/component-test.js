@@ -3,7 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import hbs from 'htmlbars-inline-precompile';
-import { findAll, render } from '@ember/test-helpers';
+import { findAll, render, triggerKeyEvent, click } from '@ember/test-helpers';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 
@@ -58,6 +58,62 @@ module('Integration | Component | Console Trigger', function(hooks) {
     await render(hbs`
       {{query-container/console-trigger}}
     `);
+    assert.equal(findAll('.console-trigger.is-open').length, 1);
+  });
+
+  test('it closes the console when pressing ESC', async function(assert) {
+    new ReduxDataHelper(setState).queryStats().queryStatsIsOpen().build();
+    await render(hbs`
+      {{query-container/console-trigger}}
+    `);
+
+    await triggerKeyEvent(window, 'keydown', 27);
+    assert.equal(findAll('.console-trigger.is-open').length, 0);
+  });
+
+  test('it opens when the trigger is clicked', async function(assert) {
+    new ReduxDataHelper(setState).queryStats().build();
+    await render(hbs`
+      {{query-container/console-trigger}}
+    `);
+
+    await click('.console-trigger i');
+    assert.equal(findAll('.console-trigger.is-open').length, 1);
+  });
+
+  test('it closes when the trigger is clicked', async function(assert) {
+    new ReduxDataHelper(setState).queryStats().queryStatsIsOpen().build();
+    await render(hbs`
+      {{query-container/console-trigger}}
+    `);
+
+    await click('.console-trigger i');
+    assert.equal(findAll('.console-trigger.is-open').length, 0);
+  });
+
+  test('it closes when the document is clicked', async function(assert) {
+    new ReduxDataHelper(setState).queryStats().queryStatsIsOpen().build();
+    await render(hbs`
+      <div class="test"></div>
+      {{query-container/console-trigger}}
+    `);
+
+    await click('.test');
+    assert.equal(findAll('.console-trigger.is-open').length, 0);
+  });
+
+  test('it does not close when the console panel is clicked', async function(assert) {
+    new ReduxDataHelper(setState).queryStats().queryStatsIsOpen().build();
+    await render(hbs`
+      <div class="query-bar-selection">
+        <div class="console-panel">
+          <h1>Test</h1>
+          {{query-container/console-trigger}}
+        </div>
+      </div>
+    `);
+
+    await click('.console-panel h1');
     assert.equal(findAll('.console-trigger.is-open').length, 1);
   });
 

@@ -214,4 +214,31 @@ module('Integration | Component | query-bar', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.freeFormInputFocus).length, 1, 'free form is focused');
   });
 
+  test('renders the correct dom hasWarning', async function(assert) {
+    new ReduxDataHelper(setState).queryStats().queryStatsHasWarning().build();
+    this.set('executeQuery', () => {});
+    await render(hbs`
+      {{query-container/query-bar executeQuery=executeQuery}}
+    `);
+    assert.equal(findAll('.query-bar-selection.console-has-warning').length, 1);
+  });
+
+  test('renders the correct dom hasError', async function(assert) {
+    new ReduxDataHelper(setState).queryStats().queryStatsHasError().build();
+    this.set('executeQuery', () => {});
+    await render(hbs`
+      {{query-container/query-bar executeQuery=executeQuery}}
+    `);
+    assert.equal(findAll('.query-bar-selection.console-has-error').length, 1);
+  });
+
+  test('renders the correct dom isOpen', async function(assert) {
+    new ReduxDataHelper(setState).pillsDataPopulated().queryStats().queryStatsIsOpen().build();
+    this.set('executeQuery', () => {});
+    await render(hbs`
+      {{query-container/query-bar executeQuery=executeQuery}}
+    `);
+    assert.equal(findAll('.query-bar-selection.is-console-open').length, 1);
+  });
+
 });

@@ -29,6 +29,8 @@ module('Integration | Component | query-container', function(hooks) {
       .queryStats()
       .build();
     await render(hbs`{{query-container}}`);
+    assert.ok(find('.console-trigger'));
+
     assert.equal(findAll(PILL_SELECTORS.queryButton).length, 1, 'button should be present');
   });
 

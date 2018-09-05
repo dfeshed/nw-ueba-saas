@@ -546,6 +546,11 @@ export default {
         rejected: 'No log data.'
       }
     },
+    queryStats: {
+      header: "Queried <strong class='service'>{{service}}</strong> for events that occurred between <strong class='start-date'>{{startDate}}</strong> and <strong class='end-date'>{{endDate}}</strong>",
+      progress: 'Progress:',
+      complete: 'Complete'
+    },
     generic: {
       loading: 'Loading data...',
       rejected: 'No data was loaded.',

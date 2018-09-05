@@ -389,7 +389,7 @@ export default class DataHelper {
 
   queryStatsHasWarning() {
     _set(this.state, 'queryStats', {
-      description: 'error',
+      description: 'warning',
       warnings: ['warning']
     });
     return this;

@@ -1,0 +1,20 @@
+<div class="console-content">
+  <h3>
+    {{t 'investigate.queryStats.header'
+      service=selectedService.displayName
+      startDate=formattedStartDate
+      endDate=formattedEndDate
+    }}
+  </h3>
+
+  {{#if filters}}
+    <code>{{filters}}</code>
+  {{/if}}
+
+  {{#if description}}
+    <div class="progress">
+      <span class="label">{{t 'investigate.queryStats.progress'}}</span>
+      <span class="value">{{description}}</span>
+    </div>
+  {{/if}}
+</div>
