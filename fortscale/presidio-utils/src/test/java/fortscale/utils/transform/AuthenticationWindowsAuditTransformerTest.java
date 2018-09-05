@@ -226,7 +226,7 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest {
 
         SetterTransformer operationTypeFor4648 =
                 new SetterTransformer(
-                        "4776-or-4769-to-operation-type",
+                        "explicit-credentials-logon-operation-type",
                         OPERATION_TYPE_FIELD_NAME,
                         EXPLICIT_CREDENTIALS_LOGON);
 
