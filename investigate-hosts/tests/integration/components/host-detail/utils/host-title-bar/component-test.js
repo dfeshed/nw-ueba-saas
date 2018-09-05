@@ -65,7 +65,7 @@ test('Should match the tabs length in host-title-bar with the object length', fu
 test('Should apply appropriate style to the tab for which selected property is set', function(assert) {
   this.set('hostTabs', HOST_DETAILS_TABS);
   this.render(hbs`{{host-detail/utils/host-title-bar tabs=hostTabs}}`);
-  assert.equal(this.$('.rsa-nav-tab.is-active').find('div.label').text(), 'Process', 'Applied appropriate class to the tab for which selected property is set');
+  assert.equal(this.$('.rsa-nav-tab.is-active').find('div.label').text(), 'Processes', 'Applied appropriate class to the tab for which selected property is set');
 });
 
 test('Should check that length of inactive tabs is correct', function(assert) {

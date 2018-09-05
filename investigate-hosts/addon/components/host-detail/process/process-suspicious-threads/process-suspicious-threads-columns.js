@@ -4,26 +4,27 @@ export default {
   windows: [{
     field: 'signature',
     title: 'investigateHosts.process.suspiciousThreads.signature',
-    width: 20
+    format: 'SIGNATURE',
+    width: '19%'
   },
   {
     field: 'dllFileName',
     title: 'investigateHosts.process.suspiciousThreads.dllFileName',
-    width: 20
+    width: '19%'
   },
   {
     field: 'startAddress',
     title: 'investigateHosts.process.suspiciousThreads.startAddress',
-    width: 20
+    width: '19%'
   },
   {
     field: 'tid',
     title: 'investigateHosts.process.suspiciousThreads.tid',
-    width: 10
+    width: '10%'
   },
   {
     field: 'teb',
     title: 'investigateHosts.process.suspiciousThreads.teb',
-    width: 25
+    width: '24%'
   }]
 };

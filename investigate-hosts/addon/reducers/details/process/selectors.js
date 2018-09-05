@@ -191,7 +191,7 @@ export const imageHooksData = createSelector(
         });
         const filteredImageHooks = dllsThatHaveHooks.map((item) => {
           const { fileName: dllFileName, fileProperties } = item;
-          const signature = (fileProperties && fileProperties.signature) ? fileProperties.signature.features : [];
+          const signature = (fileProperties && fileProperties.signature) ? fileProperties.signature.features : ['unsigned'];
           const filteredHooks = item[machineOsType].imageHooks.filter((hookObj) => {
             return hookObj.process.pid === selectedProcessId;
           });
@@ -239,7 +239,7 @@ export const suspiciousThreadsData = createSelector(
       });
       const suspiciousThreads = dllsThatHaveThreads.map((item) => {
         const { fileName: dllFileName, fileProperties } = item;
-        const signature = (fileProperties && fileProperties.signature) ? fileProperties.signature.features : [];
+        const signature = (fileProperties && fileProperties.signature) ? fileProperties.signature.features : ['unsigned'];
         const filteredThread = item[machineOsType].threads.filter((threadObj) => {
           return threadObj.pid === selectedProcessId;
         });

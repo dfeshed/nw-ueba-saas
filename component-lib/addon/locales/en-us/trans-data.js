@@ -2408,7 +2408,7 @@ export default {
     },
     tabs: {
       overview: 'Overview',
-      process: 'Process',
+      process: 'Processes',
       autoruns: 'Autoruns',
       files: 'Files',
       drivers: 'Drivers',
@@ -2934,9 +2934,9 @@ export default {
           tasks: 'Task Properties'
         },
         anomalies: {
-          hooks: 'Image Hooks',
-          threads: 'Suspicious Threads',
-          kernelHooks: 'Kernel Hooks'
+          hooks: 'Image Hook Properties',
+          threads: 'Suspicious Thread Properties',
+          kernelHooks: 'Kernel Hook Properties'
         },
         files: 'File Properties',
         drivers: 'Driver Properties',

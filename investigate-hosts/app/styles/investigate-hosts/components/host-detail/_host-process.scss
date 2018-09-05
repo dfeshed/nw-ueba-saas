@@ -47,9 +47,10 @@
   overflow-y: auto;
   .process-content-box-wrapper{
     padding: rsa-whitespace() rsa-whitespace(more);
-    height: 100%;
-    overflow-y: auto;
-    max-height: 674px;
+    position: absolute;
+    .value hbox{
+      max-width: 80%
+    }
   }
 
   &.panel-shadow {
@@ -86,6 +87,7 @@
         width: fit-content;
         left: 0;
         padding-left: 0.5rem;
+        min-width: 100%;
         &:hover {
           left: 0;
           padding-left: 1rem;
