@@ -369,7 +369,7 @@
       },
       "ifTransformer": {
         "type": "set_value",
-        "name": "4776-or-4769-to-operation-type",
+        "name": "explicit-credentials-logon-operation-type",
         "key": "operationType",
         "value": "EXPLICIT_CREDENTIALS_LOGON"
       },
