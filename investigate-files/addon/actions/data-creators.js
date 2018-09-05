@@ -190,7 +190,7 @@ const exportFileAsCSV = () => {
 
 const _getVisibleColumnNames = (getState) => {
   const { preferences: { filePreference } } = getState().preferences;
-  return filePreference.visibleColumns;
+  return ['firstFileName', ...filePreference.visibleColumns];
 };
 
 
