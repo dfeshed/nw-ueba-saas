@@ -34,6 +34,7 @@ nukeNode investigate-shared
 nukeNode investigate-events
 nukeNode investigate-hosts
 nukeNode investigate-files
+nukeNode entity-details
 nukeNode investigate
 nukeNode respond
 nukeNode configure
