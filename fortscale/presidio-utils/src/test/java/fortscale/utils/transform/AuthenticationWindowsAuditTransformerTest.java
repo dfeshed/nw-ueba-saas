@@ -50,6 +50,9 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest {
     private static final String INTERACTIVE_LOGON_TYPE = "INTERACTIVE";
     private static final String REMOTE_INTERACTIVE_LOGON_TYPE = "REMOTE_INTERACTIVE";
     private static final String CREDENTIAL_VALIDATION_OPERATION_TYPE = "CREDENTIAL_VALIDATION";
+    private static final String EXPLICIT_CREDENTIALS_LOGON = "EXPLICIT_CREDENTIALS_LOGON";
+
+
 
     private String wrapWithDollar(String fieldName) {
         return String.format("${%s}", fieldName);
@@ -221,11 +224,24 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest {
                         OPERATION_TYPE_FIELD_NAME,
                         CREDENTIAL_VALIDATION_OPERATION_TYPE);
 
-        IfElseTransformer operationTypeTransformer =
-                new IfElseTransformer("operation-type-transformer",
+        SetterTransformer operationTypeFor4648 =
+                new SetterTransformer(
+                        "explicit-credentials-logon-operation-type",
+                        OPERATION_TYPE_FIELD_NAME,
+                        EXPLICIT_CREDENTIALS_LOGON);
+
+        JsonObjectRegexPredicate referenceIdEqual4648= new JsonObjectRegexPredicate("reference-id-equal-4648", EVENT_CODE_FIELD_NAME, "4648");
+        IfElseTransformer operationTypeTransformerInternal =
+                new IfElseTransformer("operation-type-transformer-internal",
                         referenceIdEqual4624Or4625,
                         logonTypeSwitchCaseTransformer,
                         operationTypeFor4776Or4769);
+
+        IfElseTransformer operationTypeTransformer =
+                new IfElseTransformer("operation-type-transformer", referenceIdEqual4648,
+                        operationTypeFor4648, operationTypeTransformerInternal);
+
+
         transformerChainList.add(operationTypeTransformer);
 
         //rename event_source_id to eventId
@@ -475,8 +491,10 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest {
         String userId = "bobby";
         String expectedDstMachine = dstMachine.toLowerCase();
         assertOnExpectedValues(retJsonObject, eventId, eventTime, userId, userDst, userId,
-                aliasHost.toLowerCase(), aliasHost, RESULT_FAILURE, CREDENTIAL_VALIDATION_OPERATION_TYPE,
-                referenceId, expectedDstMachine, dstMachine);
+
+        aliasHost.toLowerCase(), aliasHost, RESULT_FAILURE,EXPLICIT_CREDENTIALS_LOGON ,
+        referenceId,expectedDstMachine,dstMachine);
+
     }
 
     @Test
