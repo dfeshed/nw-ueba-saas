@@ -250,7 +250,9 @@ export default Component.extend(DomWatcher, EKMixin, {
                     allColumns.addObject(column);
                   } else {
                     // When unselecting columns we make sure that at least one colum remains visible
-                    const visibleColumnsLength = allColumns.filterBy('visible', true).length;
+                    const visibleColumnsLength = allColumns.filterBy('visible', true).filter((c) => {
+                      return c.field != 'checkbox';
+                    }).length;
                     if (visibleColumnsLength === 1) {
                       column.set('selected', true);
                       return value;

@@ -311,6 +311,41 @@ test('Column selector displays available columns', function(assert) {
   });
 });
 
+test('Column selection forces at least one column to remain visible', function(assert) {
+  const mockColumnsConfig = [
+    { field: 'checkbox', dataType: 'checkbox', visible: true },
+    { id: 'a', field: 'fieldA', visible: true, class: 'column-a' }
+  ];
+
+  this.setProperties({
+    items: mockItems,
+    columnsConfig: mockColumnsConfig
+  });
+
+  this.render(hbs`
+    {{#rsa-data-table lazy=true items=items columnsConfig=columnsConfig}}
+      {{#rsa-data-table/header enableColumnSelector=true as |column|}}
+        <span class="js-header-cell-{{column.class}}"/>
+      {{/rsa-data-table/header}}
+      {{#rsa-data-table/body as |item index column|}}
+        {{#rsa-data-table/body-cell item=item index=index column=column~}}
+          {{get item column.field}}
+        {{~/rsa-data-table/body-cell}}
+      {{/rsa-data-table/body}}
+    {{/rsa-data-table}}
+  `);
+  this.get('eventBus').trigger('rsa-content-tethered-panel-display-columnSelectorpanel');
+
+  return wait().then(() => {
+    assert.equal(this.$('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 1);
+    this.$('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked input:last').click();
+
+    return wait().then(() => {
+      assert.equal(this.$('.rsa-data-table-column-selector-panel .rsa-form-checkbox.checked').length, 1);
+    });
+  });
+});
+
 test('Column selection affects visible columns on screen', function(assert) {
   const mockColumnsConfig = [
     { id: 'a', field: 'fieldA', visible: true, class: 'column-a' },
