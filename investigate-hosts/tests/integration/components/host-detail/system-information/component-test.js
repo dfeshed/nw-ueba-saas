@@ -19,7 +19,7 @@ const linuxTabColumns = {
 const windowsTabColumns = {
   hostFileEntries: ['IP ADDRESS', 'DNS NAME'],
   networkShares: ['NAME', 'DESCRIPTION', 'PATH', 'PERMISSIONS', 'TYPE', 'MAX USERS', 'CURRENT USERS'],
-  securityProducts: ['DISPLAY NAME', 'COMPANYNAME', 'INSTANCE', 'FEATURES', 'TYPE', 'VERSION'],
+  securityProducts: ['DISPLAY NAME', 'INSTANCE', 'FEATURES', 'TYPE', 'VERSION'],
   windowsPatches: ['PATCHES']
 };
 

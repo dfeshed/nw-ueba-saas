@@ -114,11 +114,6 @@ const COLUMNS = {
         width: '20%'
       },
       {
-        field: 'companyName',
-        title: 'investigateHosts.systemInformation.securityProducts.companyName',
-        width: '20%'
-      },
-      {
         field: 'instance',
         title: 'investigateHosts.systemInformation.securityProducts.instance',
         width: '20%'
