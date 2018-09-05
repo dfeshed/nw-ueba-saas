@@ -1,8 +1,7 @@
 package fortscale.ml.model.retriever;
 
 import fortscale.aggregation.feature.bucket.*;
-import fortscale.common.feature.AggrFeatureValue;
-import fortscale.common.feature.Feature;
+import fortscale.common.feature.*;
 import fortscale.ml.model.AggregatedFeatureValuesData;
 import fortscale.ml.model.ModelBuilderData;
 import fortscale.ml.model.ModelBuilderData.NoDataReason;
@@ -15,8 +14,6 @@ import java.time.Instant;
 import java.util.*;
 import java.util.Map.Entry;
 
-import static fortscale.aggregation.feature.functions.AggrFeatureFeatureToMaxMapFunc.FEATURE_GROUP_SEPARATOR_KEY;
-import static fortscale.aggregation.feature.functions.AggrFeatureFeatureToMaxMapFunc.FEATURE_SEPARATOR_KEY;
 
 /**
  * @author Lior Govrin
@@ -53,12 +50,12 @@ public class EpochtimeToHighestDoubleMapRetriever extends AbstractDataRetriever 
             Feature aggregatedFeature = featureBucket.getAggregatedFeatures().get(featureName);
 
             if (aggregatedFeature != null) {
-                AggrFeatureValue aggrFeatureValue = (AggrFeatureValue)aggregatedFeature.getValue();
-                Map<String, Double> epochtimeToHighestDoubleMap = (Map<String, Double>)aggrFeatureValue.getValue();
+                MultiKeyHistogram multiKeyHistogram = (MultiKeyHistogram)aggregatedFeature.getValue();
+                Map<MultiKeyFeature, Double> epochtimeToHighestDoubleMap = multiKeyHistogram.getHistogram();
                 Date dataTime = Date.from(featureBucket.getStartTime());
 
                 for (IDataRetrieverFunction function : functions) {
-                    epochtimeToHighestDoubleMap = (Map<String, Double>)function.execute(
+                    epochtimeToHighestDoubleMap = (Map<MultiKeyFeature, Double>)function.execute(
                             epochtimeToHighestDoubleMap, dataTime, endTime);
                 }
 
@@ -93,10 +90,10 @@ public class EpochtimeToHighestDoubleMapRetriever extends AbstractDataRetriever 
     }
 
     private void updateInstantToHighestDoubleMap(
-            Map<String, Double> epochtimeToHighestDoubleMap,
+            Map<MultiKeyFeature, Double> epochtimeToHighestDoubleMap,
             TreeMap<Instant, Double> instantToHighestDoubleMap) {
 
-        for (Entry<String, Double> entry : epochtimeToHighestDoubleMap.entrySet()) {
+        for (Entry<MultiKeyFeature, Double>  entry : epochtimeToHighestDoubleMap.entrySet()) {
             long epochtime = convertKeyToEpochtime(entry.getKey());
             epochtime = (epochtime / epochtimeResolutionInSeconds) * epochtimeResolutionInSeconds;
             Instant instant = Instant.ofEpochSecond(epochtime);
@@ -111,19 +108,19 @@ public class EpochtimeToHighestDoubleMapRetriever extends AbstractDataRetriever 
         }
     }
 
-    private long convertKeyToEpochtime(String key) {
-        if (key.split(FEATURE_GROUP_SEPARATOR_KEY).length != 1) {
+    private long convertKeyToEpochtime(MultiKeyFeature key) {
+        Map<String, FeatureValue> featureNameToValue = key.getFeatureNameToValue();
+        if (featureNameToValue.size() != 1) {
             String s = String.format("%s supports only keys containing 1 feature.", getClass().getSimpleName());
             throw new IllegalArgumentException(s);
         }
 
-        String[] featureNameAndValue = key.split(FEATURE_SEPARATOR_KEY);
-
-        if (featureNameAndValue.length != 2) {
+        if(featureNameToValue.values().stream().findFirst().isPresent()){
+            return Long.parseLong(featureNameToValue.values().stream().findFirst().get().toString());
+        }
+        else{
             String s = String.format("Invalid key: %s.", key);
             throw new IllegalArgumentException(s);
         }
-
-        return Long.parseLong(featureNameAndValue[1]);
     }
 }

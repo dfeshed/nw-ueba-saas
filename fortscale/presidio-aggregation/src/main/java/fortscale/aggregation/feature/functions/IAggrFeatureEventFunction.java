@@ -21,7 +21,7 @@ import java.util.Map;
     @JsonSubTypes.Type(value = AggrFeatureSumFunc.class, name = AggrFeatureSumFunc.AGGR_FEATURE_FUNCTION_TYPE),
     @JsonSubTypes.Type(value = AggrFeatureEventHistogramKeyValueFunc.class, name = AggrFeatureEventHistogramKeyValueFunc.AGGR_FEATURE_FUNCTION_TYPE),
     @JsonSubTypes.Type(value = AggrFeatureEventNumberOfNewOccurrencesFunc.class, name = AggrFeatureEventNumberOfNewOccurrencesFunc.AGGR_FEATURE_FUNCTION_TYPE),
-    @JsonSubTypes.Type(value = AggrFeatureEventMapValuesMaxSumFunc.class, name = AggrFeatureEventMapValuesMaxSumFunc.AGGR_FEATURE_FUNCTION_TYPE)
+    @JsonSubTypes.Type(value = AggrFeatureEventMultiKeyValuesMaxSumFunc.class, name = AggrFeatureEventMultiKeyValuesMaxSumFunc.AGGR_FEATURE_FUNCTION_TYPE)
 })
 public interface IAggrFeatureEventFunction {
     /**

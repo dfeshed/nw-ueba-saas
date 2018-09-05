@@ -18,7 +18,7 @@
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_feature_to_max_map_func"
+            "type": "aggr_feature_multi_keys_to_max_func"
           }
         }
       ]
@@ -44,7 +44,7 @@
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_feature_to_max_map_func"
+            "type": "aggr_feature_multi_keys_to_max_func"
           }
         }
       ]
@@ -70,7 +70,7 @@
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_feature_to_max_map_func"
+            "type": "aggr_feature_multi_keys_to_max_func"
           }
         }
       ]
@@ -93,7 +93,7 @@
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_feature_to_max_map_func"
+            "type": "aggr_feature_multi_keys_to_max_func"
           }
         }
       ]
@@ -116,7 +116,7 @@
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_feature_to_max_map_func"
+            "type": "aggr_feature_multi_keys_to_max_func"
           }
         }
       ]
@@ -139,7 +139,7 @@
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_feature_to_max_map_func"
+            "type": "aggr_feature_multi_keys_to_max_func"
           }
         }
       ]
@@ -162,7 +162,7 @@
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_feature_to_max_map_func"
+            "type": "aggr_feature_multi_keys_to_max_func"
           }
         }
       ]
@@ -185,7 +185,7 @@
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_feature_to_max_map_func"
+            "type": "aggr_feature_multi_keys_to_max_func"
           }
         }
       ]
@@ -208,7 +208,7 @@
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_feature_to_max_map_func"
+            "type": "aggr_feature_multi_keys_to_max_func"
           }
         }
       ]
@@ -231,7 +231,7 @@
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_feature_to_max_map_func"
+            "type": "aggr_feature_multi_keys_to_max_func"
           }
         }
       ]
@@ -254,7 +254,7 @@
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_feature_to_max_map_func"
+            "type": "aggr_feature_multi_keys_to_max_func"
           }
         }
       ]
@@ -277,7 +277,7 @@
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_feature_to_max_map_func"
+            "type": "aggr_feature_multi_keys_to_max_func"
           }
         }
       ]

@@ -3,8 +3,8 @@ package fortscale.aggregation.feature.bucket;
 
 import fortscale.aggregation.feature.bucket.metrics.FeatureBucketAggregatorMetricsContainer;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
-import fortscale.common.feature.AggrFeatureValue;
-import fortscale.common.feature.Feature;
+import fortscale.aggregation.feature.functions.AggrFeatureFeatureToMaxRelatedFuncTestUtils;
+import fortscale.common.feature.*;
 import fortscale.utils.recordreader.RecordReaderFactory;
 import fortscale.utils.recordreader.RecordReaderFactoryService;
 import fortscale.utils.recordreader.transformation.Transformation;
@@ -145,9 +145,9 @@ public class FeatureBucketsServiceTest {
                         if (!expectedFeature.getName().equals(feature.getName())) {
                             assertTrue(false);
                         } else {
-                            AggrFeatureValue aggrFeatureValue = (AggrFeatureValue) feature.getValue();
-                            AggrFeatureValue expectedAggrFeatureValue = (AggrFeatureValue) expectedFeature.getValue();
-                            if (!aggrFeatureValue.equals(expectedAggrFeatureValue)) {
+                            MultiKeyHistogram multiKeyHistogram = (MultiKeyHistogram) feature.getValue();
+                            MultiKeyHistogram expectedAggrFeatureValue = (MultiKeyHistogram) expectedFeature.getValue();
+                            if (!isEqual(multiKeyHistogram,expectedAggrFeatureValue)) {
                                 assertTrue(false);
                             }
                         }
@@ -172,10 +172,8 @@ public class FeatureBucketsServiceTest {
         featureBucket1.setBucketId(BUCKET_ID1);
         Map<String, Feature> aggregatedFeatures = new HashMap<>();
         long total = 1;
-        Map<String, Double> aggrResult = new HashMap<>();
-        aggrResult.put("", 80.0);
-        AggrFeatureValue aggrFeatureValue = new AggrFeatureValue(aggrResult, total);
-        Feature feature = new Feature("highest_date_time_score", aggrFeatureValue);
+        MultiKeyHistogram multiKeyHistogram = createMultiKeyHistogram(new HashMap<>(), 80.0, total);
+        Feature feature = new Feature("highest_date_time_score", multiKeyHistogram);
         aggregatedFeatures.put("highest_date_time_score", feature);
         featureBucket1.setAggregatedFeatures(aggregatedFeatures);
 
@@ -184,10 +182,8 @@ public class FeatureBucketsServiceTest {
         featureBucket2.setBucketId(BUCKET_ID2);
         aggregatedFeatures = new HashMap<>();
         total = 2;
-        aggrResult = new HashMap<>();
-        aggrResult.put("", 70.0);
-        aggrFeatureValue = new AggrFeatureValue(aggrResult, total);
-        feature = new Feature("highest_date_time_score", aggrFeatureValue);
+        multiKeyHistogram =createMultiKeyHistogram(new HashMap<>(), 70.0, total);
+        feature = new Feature("highest_date_time_score", multiKeyHistogram);
         aggregatedFeatures.put("highest_date_time_score", feature);
         featureBucket2.setAggregatedFeatures(aggregatedFeatures);
 
@@ -195,6 +191,29 @@ public class FeatureBucketsServiceTest {
         featureBuckets.put(BUCKET_ID1, featureBucket1);
         featureBuckets.put(BUCKET_ID2, featureBucket2);
         return featureBuckets;
+    }
+
+    private MultiKeyHistogram createMultiKeyHistogram(Map<String, FeatureValue> featureNameToValue, double count, long total){
+        MultiKeyFeature multiKeyFeature = new MultiKeyFeature(featureNameToValue);
+        Map<MultiKeyFeature, Double> histogram = new HashMap<>();
+        histogram.put(multiKeyFeature, count);
+        return new MultiKeyHistogram(histogram, total);
+    }
+
+
+    public boolean isEqual(MultiKeyHistogram m1, MultiKeyHistogram m2) {
+        if (!m1.getTotal().equals(m2.getTotal()) ||
+                m1.getHistogram().size() != m1.getHistogram().size()) {
+            return false;
+        }
+
+        for (Map.Entry<MultiKeyFeature, Double> m1Entry : m1.getHistogram().entrySet()) {
+            if (!m2.getHistogram().get(m1Entry.getKey()).equals(m1Entry.getValue())) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 
