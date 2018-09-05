@@ -9,7 +9,6 @@ import org.json.JSONObject;
         @JsonSubTypes.Type(value = JsonObjectChainTransformer.class, name = JsonObjectChainTransformer.TYPE),
         @JsonSubTypes.Type(value = RegexCaptorAndFormatter.class, name = RegexCaptorAndFormatter.TYPE),
         @JsonSubTypes.Type(value = SwitchCaseTransformer.class, name = SwitchCaseTransformer.TYPE),
-        @JsonSubTypes.Type(value = SwitchCasePredicatesTransformer.class, name = SwitchCasePredicatesTransformer.TYPE),
         @JsonSubTypes.Type(value = FilterTransformer.class, name = FilterTransformer.TYPE),
         @JsonSubTypes.Type(value = FilterKeyTransformer.class, name = FilterKeyTransformer.TYPE),
         @JsonSubTypes.Type(value = FindAndReplaceTransformer.class, name = FindAndReplaceTransformer.TYPE),

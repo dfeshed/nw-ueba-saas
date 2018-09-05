@@ -1,8 +1,6 @@
 package fortscale.utils.transform;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import fortscale.utils.data.Pair;
-import fortscale.utils.transform.predicate.IJsonObjectPredicate;
 import fortscale.utils.transform.predicate.JsonObjectChainPredicate;
 import fortscale.utils.transform.predicate.JsonObjectKeyExistPredicate;
 import fortscale.utils.transform.predicate.JsonObjectRegexPredicate;
@@ -232,18 +230,18 @@ public class AuthenticationWindowsAuditTransformerTest extends TransformerTest {
                         OPERATION_TYPE_FIELD_NAME,
                         EXPLICIT_CREDENTIALS_LOGON);
 
-//        IfElseTransformer operationTypeTransformer =
-//                new IfElseTransformer("operation-type-transformer",
-//                        referenceIdEqual4624Or4625,
-//                        logonTypeSwitchCaseTransformer,
-//                        operationTypeFor4776Or4769);
         JsonObjectRegexPredicate referenceIdEqual4648= new JsonObjectRegexPredicate("reference-id-equal-4648", EVENT_CODE_FIELD_NAME, "4648");
+        IfElseTransformer operationTypeTransformerInternal =
+                new IfElseTransformer("operation-type-transformer-internal",
+                        referenceIdEqual4624Or4625,
+                        logonTypeSwitchCaseTransformer,
+                        operationTypeFor4776Or4769);
 
-        List<SwitchCasePredicatesTransformer.SwitchCasePredicatesTransformerPair> predicatesIfThenList = new ArrayList<>();
-        predicatesIfThenList.add(new SwitchCasePredicatesTransformer.SwitchCasePredicatesTransformerPair(referenceIdEqual4624Or4625,logonTypeSwitchCaseTransformer));
-        predicatesIfThenList.add(new SwitchCasePredicatesTransformer.SwitchCasePredicatesTransformerPair(referenceIdEqual4648,operationTypeFor4648));
-        SwitchCasePredicatesTransformer operationTypeTransformer = new SwitchCasePredicatesTransformer(
-              "operation-type-transformer",  predicatesIfThenList,operationTypeFor4776Or4769 );
+        IfElseTransformer operationTypeTransformer =
+                new IfElseTransformer("operation-type-transformer", referenceIdEqual4648,
+                        operationTypeFor4648, operationTypeTransformerInternal);
+
+
         transformerChainList.add(operationTypeTransformer);
 
         //rename event_source_id to eventId
