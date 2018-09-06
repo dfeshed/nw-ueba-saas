@@ -1,0 +1,43 @@
+@charset "UTF-8";
+
+/* pulling in component-lib from inside respond */
+@import 'component-lib/manifest';
+
+// Beautification of dummy app splash page for Engine dummy app -- purely cosmetic with no effect on application code
+body.engine-dummy {
+  color: text-color(primary, light);
+
+  .rsa-logo {
+    .rsa-logo__title {
+      color: text-color(accentTwo);
+      text-align: center;
+      font-size: 25px;
+    }
+  }
+
+  a:-webkit-any-link {
+    text-decoration: none;
+  }
+}
+
+body > .ember-view {
+  height: 100%;
+}
+
+.engine {
+  height: 100%;
+}
+
+.rsa-investigate-query-container {
+  &__time-selector {
+    margin-right: rsa-whitespace(less);
+  }
+}
+.rsa-investigate-time-range {
+  display: inline;
+}
+
+.timerange-selector-panel {
+  max-height: 20rem;
+  overflow: auto;
+}

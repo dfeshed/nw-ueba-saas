@@ -35,6 +35,7 @@ nukeNode investigate-events
 nukeNode investigate-hosts
 nukeNode investigate-files
 nukeNode entity-details
+nukeNode investigate-users
 nukeNode investigate
 nukeNode respond
 nukeNode configure

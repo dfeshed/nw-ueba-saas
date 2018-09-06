@@ -68,6 +68,7 @@ prepareApp investigate-shared
 prepareApp investigate-events
 prepareApp investigate-hosts
 prepareApp investigate-files
+prepareApp investigate-users
 prepareApp investigate
 prepareApp entity-details
 prepareApp respond
