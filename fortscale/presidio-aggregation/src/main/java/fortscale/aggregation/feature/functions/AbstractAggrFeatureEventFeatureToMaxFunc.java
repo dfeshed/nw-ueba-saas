@@ -13,7 +13,7 @@ import java.util.Map;
 
 /**
  * Aggregate one or more buckets containing a feature containing a mapping from features group to max value.
- * Such a mapping (of type MultiKeyHistogram) is created by AggrFeatureMultiKeyToMaxMapFunc.
+ * Such a mapping (of type MultiKeyHistogram) is created by AggrFeatureMultiKeyToMaxFunc.
  * If configured to aggregate more than one bucket, first the buckets' mappings will be aggregated into one mapping
  * such that every features group will be mapped to the maximal value among all the values of the instances of this
  * features group among the buckets' mappings.

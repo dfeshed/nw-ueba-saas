@@ -15,10 +15,10 @@ import java.util.Set;
 
 /**
  * Aggregate one or more buckets containing a feature containing a mapping from features group to max value.
- * Such a mapping (of type Map<String, Double>) is created by AggrFeatureFeatureToMaxMapFunc.
+ * Such a mapping (of type MultiKeyHistogram) is created by AggrFeatureMultiKeyToMaxFunc.
  * First {@link AbstractAggrFeatureEventFeatureToMaxFunc} is used in order to aggregate multiple buckets
  * (refer to its documentation to learn more).
- * Then, all of the values are summed up in order to create a new aggregated feature.
+ * Then, all of the values or filtered values by keys are summed up in order to create a new aggregated feature.
  * <p>
  * Example:
  * Suppose a user accesses several machines many times, and each machine access gets some score.
@@ -64,6 +64,7 @@ public class AggrFeatureEventMultiKeyValuesMaxSumFunc extends AbstractAggrFeatur
             sum = histogram.values().stream().mapToDouble(Double::doubleValue).sum();
             total = aggrFeatureValue.getTotal();
         } else {
+            //sum all max values of histogram, whose contain one of the keys (e.g: operationType=FILE_OPENED)
             for (Map.Entry<MultiKeyFeature, Double> multiKeyRecordEntry : histogram.entrySet()) {
                 for (MultiKeyFeature key : keys) {
                     if (multiKeyRecordEntry.getKey().contains(key.getFeatureNameToValue())) {
