@@ -51,6 +51,33 @@
           }
         }
       ]
+    },
+    {
+      "name": "source_path_to_highest_score_dlpfile_hourly",
+      "contextFieldNames": [
+        "context.userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.dlpfile.source_path"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "srcpath_and_srcmachine_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.sourcePath",
+              "context.srcMachineId"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
     }
   ]
 }
