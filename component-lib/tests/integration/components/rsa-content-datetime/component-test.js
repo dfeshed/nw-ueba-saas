@@ -1,85 +1,105 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { find, findAll, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import { setupRenderingTest } from 'ember-qunit';
 
-moduleForComponent('/rsa-content-datetime', 'Integration | Component | rsa-content-datetime', {
-  integration: true,
-  beforeEach() {
-    initialize(this);
-  }
-});
+module('Integration | Component | rsa-content-datetime', function(hooks) {
+  setupRenderingTest(hooks);
 
-const timeFormat = {
-  selected: {
-    format: 'hh:mma'
-  }
-};
+  hooks.beforeEach(function() {
+    initialize(this.owner);
+  });
 
-const dateFormat = {
-  selected: {
-    format: 'MM/DD/YYYY'
-  }
-};
+  const timeFormat = {
+    selected: {
+      format: 'hh:mma'
+    }
+  };
 
-const timezone = {
-  selected: 'America/New_York'
-};
+  const dateFormat = {
+    selected: {
+      format: 'MM/DD/YYYY'
+    }
+  };
 
-const i18n = {
-  locale: 'en'
-};
+  const timezone = {
+    selected: 'America/New_York'
+  };
 
-test('it includes the proper classes', function(assert) {
-  this.set('timeFormat', timeFormat);
-  this.set('dateFormat', dateFormat);
-  this.set('timezone', timezone);
-  this.set('timestamp', 1464108661196);
-  this.set('i18n', i18n);
-  this.render(hbs `{{rsa-content-datetime timestamp=timestamp}}`);
-  const contentCount = this.$().find('.rsa-content-datetime').length;
-  assert.equal(contentCount, 1);
-});
+  const i18n = {
+    locale: 'en'
+  };
 
-test('it renders the date and time', function(assert) {
-  this.set('timeFormat', timeFormat);
-  this.set('dateFormat', dateFormat);
-  this.set('timezone', timezone);
-  this.set('timestamp', 1464108661196);
-  this.set('i18n', i18n);
-  this.render(hbs `{{rsa-content-datetime timestamp=timestamp i18n=i18n timeFormat=timeFormat dateFormat=dateFormat timezone=timezone}}`);
-  const content = this.$().find('.rsa-content-datetime').text().trim();
-  assert.equal(content, '05/24/2016 12:51pm');
-});
+  test('it includes the proper classes', async function(assert) {
+    this.set('timeFormat', timeFormat);
+    this.set('dateFormat', dateFormat);
+    this.set('timezone', timezone);
+    this.set('timestamp', 1464108661196);
+    this.set('i18n', i18n);
+    await render(hbs `{{rsa-content-datetime timestamp=timestamp}}`);
+    const contentCount = findAll('.rsa-content-datetime').length;
+    assert.equal(contentCount, 1);
+  });
 
-test('it renders the time only', function(assert) {
-  this.set('timeFormat', timeFormat);
-  this.set('dateFormat', dateFormat);
-  this.set('timezone', timezone);
-  this.set('timestamp', 1464108661196);
-  this.set('i18n', i18n);
-  this.render(hbs `{{rsa-content-datetime timestamp=timestamp i18n=i18n timeFormat=timeFormat dateFormat=dateFormat timezone=timezone displayDate=false}}`);
-  const content = this.$().find('.rsa-content-datetime').text().trim();
-  assert.equal(content, '12:51pm');
-});
+  test('it renders the date and time', async function(assert) {
+    this.set('timeFormat', timeFormat);
+    this.set('dateFormat', dateFormat);
+    this.set('timezone', timezone);
+    this.set('timestamp', 1464108661196);
+    this.set('i18n', i18n);
+    await render(hbs `{{rsa-content-datetime timestamp=timestamp i18n=i18n timeFormat=timeFormat dateFormat=dateFormat timezone=timezone}}`);
+    const content = find('.rsa-content-datetime').textContent.trim();
+    const title = find('.rsa-content-datetime .datetime').getAttribute('title');
+    assert.equal(content, '05/24/2016 12:51pm');
+    assert.equal(title, '05/24/2016 12:51pm');
+  });
 
-test('it renders the date only', function(assert) {
-  this.set('timeFormat', timeFormat);
-  this.set('dateFormat', dateFormat);
-  this.set('timezone', timezone);
-  this.set('timestamp', 1464108661196);
-  this.set('i18n', i18n);
-  this.render(hbs `{{rsa-content-datetime timestamp=timestamp i18n=i18n timeFormat=timeFormat dateFormat=dateFormat timezone=timezone displayTime=false}}`);
-  const content = this.$().find('.rsa-content-datetime').text().trim();
-  assert.equal(content, '05/24/2016');
-});
+  test('it renders the time only', async function(assert) {
+    this.set('timeFormat', timeFormat);
+    this.set('dateFormat', dateFormat);
+    this.set('timezone', timezone);
+    this.set('timestamp', 1464108661196);
+    this.set('i18n', i18n);
+    await render(hbs `{{rsa-content-datetime timestamp=timestamp i18n=i18n timeFormat=timeFormat dateFormat=dateFormat timezone=timezone displayDate=false}}`);
+    const content = find('.rsa-content-datetime').textContent.trim();
+    assert.equal(content, '12:51pm');
+  });
 
-test('it as time ago', function(assert) {
-  this.set('timeFormat', timeFormat);
-  this.set('dateFormat', dateFormat);
-  this.set('timezone', timezone);
-  this.set('timestamp', 1464108661196);
-  this.set('i18n', i18n);
-  this.render(hbs `{{rsa-content-datetime timestamp=timestamp i18n=i18n timeFormat=timeFormat dateFormat=dateFormat timezone=timezone asTimeAgo=true}}`);
-  const content = this.$().find('.rsa-content-datetime').text().trim();
-  assert.ok(content.indexOf('ago') > -1);
+  test('it renders the date only', async function(assert) {
+    this.set('timeFormat', timeFormat);
+    this.set('dateFormat', dateFormat);
+    this.set('timezone', timezone);
+    this.set('timestamp', 1464108661196);
+    this.set('i18n', i18n);
+    await render(hbs `{{rsa-content-datetime timestamp=timestamp i18n=i18n timeFormat=timeFormat dateFormat=dateFormat timezone=timezone displayTime=false}}`);
+    const content = find('.rsa-content-datetime').textContent.trim();
+    assert.equal(content, '05/24/2016');
+  });
+
+  test('it as time ago', async function(assert) {
+    this.set('timeFormat', timeFormat);
+    this.set('dateFormat', dateFormat);
+    this.set('timezone', timezone);
+    this.set('timestamp', 1464108661196);
+    this.set('i18n', i18n);
+    await render(hbs `{{rsa-content-datetime timestamp=timestamp i18n=i18n timeFormat=timeFormat dateFormat=dateFormat timezone=timezone asTimeAgo=true}}`);
+    const content = find('.rsa-content-datetime').textContent.trim();
+    const title = find('.rsa-content-datetime .time-ago').getAttribute('title');
+    assert.ok(content.indexOf('ago') > -1);
+    assert.ok(title.indexOf('ago') > -1);
+  });
+
+  test('it renders the date and time including withTimeAgo', async function(assert) {
+    this.set('timeFormat', timeFormat);
+    this.set('dateFormat', dateFormat);
+    this.set('timestamp', new Date().getTime() - new Date(60000));
+    this.set('i18n', i18n);
+    await render(hbs `{{rsa-content-datetime withTimeAgo=true timestamp=timestamp i18n=i18n timeFormat=timeFormat dateFormat=dateFormat timezone=timezone}}`);
+    const content = find('.rsa-content-datetime').textContent.trim();
+    const title = find('.rsa-content-datetime .time-ago').getAttribute('title');
+    assert.ok(content.indexOf('ago') > -1);
+    assert.ok(title.indexOf('ago') > -1);
+  });
+
 });
