@@ -22,7 +22,9 @@ const freeForm = Component.extend({
 
   init() {
     this._super(...arguments);
-    this.set('initialFreeFormText', this.get('freeFormText'));
+    scheduleOnce('afterRender', this, () => {
+      this.set('initialFreeFormText', this.get('freeFormText'));
+    });
     if (this.get('takeFocus')) {
       // Schedule after render so that thing that needs
       // focus is actually there

@@ -241,4 +241,24 @@ module('Integration | Component | query-bar', function(hooks) {
     assert.equal(findAll('.query-bar-selection.is-console-open').length, 1);
   });
 
+  test('Creating separate pills in Guided and toggling back and forth from FF, separate pills will be retained', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-bar executeQuery=executeQuery}}
+      </div>
+    `);
+
+    assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Should be 2 pills plus template.');
+    await click(SELECTORS.queryFormatFreeFormToggle);
+    await click(SELECTORS.queryFormatGuidedToggle);
+    assert.equal(findAll(PILL_SELECTORS.queryPill).length, 3, 'Should be 2 pills plus template.');
+
+  });
+
 });

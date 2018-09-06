@@ -2,7 +2,7 @@ import Immutable from 'seamless-immutable';
 import CONFIG from 'investigate-events/reducers/investigate/config';
 
 export const DEFAULT_LANGUAGES = [
-  { count: 0, format: 'Text', metaName: 'a', flags: 1, displayName: 'A', formattedName: 'a (A)' },
+  { count: 0, format: 'Text', metaName: 'a', flags: 2, displayName: 'A', formattedName: 'a (A)' },
   { count: 0, format: 'Text', metaName: 'b', flags: 2, displayName: 'B', formattedName: 'b (B)' },
   { count: 0, format: 'Text', metaName: 'c', flags: 3, displayName: 'C', formattedName: 'c (C)' },
   { count: 0, format: 'Text', metaName: 'c.1', flags: 3, displayName: 'C1', formattedName: 'c.1 (C 1)' },

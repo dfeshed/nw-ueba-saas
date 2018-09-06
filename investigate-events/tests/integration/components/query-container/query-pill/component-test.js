@@ -169,7 +169,7 @@ module('Integration | Component | query-pill', function(hooks) {
     `);
     selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0);// option A
     await waitUntil(() => find(PILL_SELECTORS.operatorTrigger));
-    selectChoose(PILL_SELECTORS.operatorTrigger, PILL_SELECTORS.powerSelectOption, 0);// option =
+    selectChoose(PILL_SELECTORS.operatorTrigger, '=');// option =
     await waitUntil(() => find(PILL_SELECTORS.operator));
     assert.equal(trim(find(PILL_SELECTORS.operator).textContent), '=');
   });
@@ -185,7 +185,7 @@ module('Integration | Component | query-pill', function(hooks) {
     `);
     selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0);// option A
     await waitUntil(() => find(PILL_SELECTORS.operatorTrigger));
-    selectChoose(PILL_SELECTORS.operatorTrigger, PILL_SELECTORS.powerSelectOption, 0);// option =
+    selectChoose(PILL_SELECTORS.operatorTrigger, '=');// option =
     await waitUntil(() => find(PILL_SELECTORS.operator));
     assert.equal(findAll(PILL_SELECTORS.valueInput).length, 1, 'Missing value input field');
   });
@@ -276,7 +276,7 @@ module('Integration | Component | query-pill', function(hooks) {
     await waitUntil(() => find(PILL_SELECTORS.operatorTrigger));
 
     // Choose the third operator option which does not require a value
-    selectChoose(PILL_SELECTORS.operatorTrigger, PILL_SELECTORS.powerSelectOption, 2); // option exists
+    selectChoose(PILL_SELECTORS.operatorTrigger, 'exists'); // option exists
   });
 
   test('presents a delete icon when not active and pill created', async function(assert) {
@@ -529,7 +529,7 @@ module('Integration | Component | query-pill', function(hooks) {
     selectChoose(PILL_SELECTORS.metaTrigger, PILL_SELECTORS.powerSelectOption, 0); // option A
     await waitUntil(() => find(PILL_SELECTORS.operatorTrigger));
     // Choose the first operator option
-    selectChoose(PILL_SELECTORS.operatorTrigger, PILL_SELECTORS.powerSelectOption, 0); // option =
+    selectChoose(PILL_SELECTORS.operatorTrigger, '='); // option =
     await waitUntil(() => find(PILL_SELECTORS.valueInput));
     // Fill in the value, to properly simulate the event we need to fillIn AND
     // triggerKeyEvent for the "x" character.
