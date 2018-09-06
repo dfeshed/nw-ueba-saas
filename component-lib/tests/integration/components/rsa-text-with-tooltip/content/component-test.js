@@ -29,4 +29,18 @@ module('Integration | Component | rsa-text-with-tooltip/content', function(hooks
     assert.equal(find('.tool-tip-value .units').textContent.trim(), 'KB');
   });
 
+  test('it renders the content-note when showNote is set true', async function(assert) {
+    this.set('showNote', true);
+    await render(hbs`{{rsa-text-with-tooltip/content showNote=showNote text='test-value'}}`);
+    assert.ok(find('.tool-tip-value .tool-tip-note').textContent.indexOf('Note') > 0);
+  });
+
+  test('it do not renders the tooltip when showNote is set false', async function(assert) {
+    this.set('value', 'test-value');
+    this.set('showNote', false);
+    await render(hbs`{{rsa-text-with-tooltip/content text=value showNote=showNote}}`);
+    assert.equal(findAll('.tool-tip-value').length, 1, 'Expected to show text');
+    assert.equal(findAll('.tool-tip-note').length, 0, 'Expected not to show note tooltip');
+  });
+
 });

@@ -7,7 +7,6 @@ module('Integration | Component | rsa-text-with-tooltip/content-note', function(
   setupRenderingTest(hooks);
 
   test('it renders', async function(assert) {
-    this.set('showNote', 'true');
 
     await render(hbs`{{rsa-text-with-tooltip/content-note}}`);
 
