@@ -21,24 +21,14 @@
         {{errorDecorator.remediationAlert}}
       </span>
     {{/if}}
-    {{#each remediationRadioButtons as |remediationRadio index|}}
-      <label class='rsa-form-radio-label remediation-action-radio {{if errorDecorator.disableBlocking 'disabled'}} {{if
-        (eq remediationRadio.value data.remediationAction) 'checked'}}'>
-        {{radio-button
-          radioClass='status-type'
-          disabled=errorDecorator.disableBlocking
-          value=remediationRadio.value
-          groupValue=data.remediationAction}}
-        {{t remediationRadio.label}}
-        {{#if (eq index 1) }}
-          {{#rsa-content-tethered-panel-trigger panel='panel5'}}
-            {{rsa-icon class='rsa-icon-information-circle-lined'}}
-          {{/rsa-content-tethered-panel-trigger}}
-          {{#rsa-content-tethered-panel style="highlighted" displayCloseButton=false position='top' panelId='panel5'}}
-            <header>TBD</header>
-          {{/rsa-content-tethered-panel}}
-        {{/if}}
-      </label>
-    {{/each}}
+
+    <label class="rsa-form-checkbox-label remediation-action-checkbox {{if errorDecorator.disableBlocking 'disabled'}} {{if isChecked 'checked'}}">
+      {{rsa-form-checkbox
+        checked=isChecked
+        disabled=errorDecorator.disableBlocking
+        change=(action "toggleBlocking")}}
+      {{t 'investigateFiles.editFileStatus.remediationActionOptions.blockFile'}}
+    </label>
+
   </box>
 </div>

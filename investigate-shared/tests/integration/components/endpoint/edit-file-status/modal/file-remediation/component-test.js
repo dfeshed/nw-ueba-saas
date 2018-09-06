@@ -21,7 +21,7 @@ module('Integration | Component | endpoint/edit-file-status/modal', function(hoo
     await render(hbs`{{endpoint/edit-file-status/modal showFileStatusModal=showFileStatusModal itemList=itemList}}`);
     await click(document.querySelectorAll('.rsa-form-radio-label.file-status-radio')[0]);
     assert.equal(document.querySelectorAll('#modalDestination .rsa-form-radio-label.file-status-radio.checked').length, 1, 'Blacklist option is selected');
-    assert.equal(document.querySelectorAll('.black-list-options .rsa-form-radio-label')[0].classList.contains('disabled'), true, 'Blocking disabled for signed files');
+    assert.equal(document.querySelectorAll('.black-list-options .remediation-action-checkbox')[0].classList.contains('disabled'), true, 'Blocking disabled for signed files');
   });
 
   test('Blocking files disabled for files with size more than 100MB', async function(assert) {
@@ -34,7 +34,7 @@ module('Integration | Component | endpoint/edit-file-status/modal', function(hoo
     await render(hbs`{{endpoint/edit-file-status/modal showFileStatusModal=showFileStatusModal itemList=itemList}}`);
     await click(document.querySelectorAll('.rsa-form-radio-label.file-status-radio')[0]);
     assert.equal(document.querySelectorAll('#modalDestination .rsa-form-radio-label.file-status-radio.checked').length, 1, 'Blacklist option is selected');
-    assert.equal(document.querySelectorAll('.black-list-options .rsa-form-radio-label')[0].classList.contains('disabled'), true, 'Blocking disabled for files with size greater than 100 MB.');
+    assert.equal(document.querySelectorAll('.black-list-options .remediation-action-checkbox')[0].classList.contains('disabled'), true, 'Blocking disabled for files with size greater than 100 MB.');
   });
 
   test('Blocking files enabled for signed and files with size more than 100MB', async function(assert) {
@@ -47,6 +47,6 @@ module('Integration | Component | endpoint/edit-file-status/modal', function(hoo
     await render(hbs`{{endpoint/edit-file-status/modal showFileStatusModal=showFileStatusModal itemList=itemList}}`);
     await click(document.querySelectorAll('.rsa-form-radio-label.file-status-radio')[0]);
     assert.equal(document.querySelectorAll('#modalDestination .rsa-form-radio-label.file-status-radio.checked').length, 1, 'Blacklist option is selected');
-    assert.equal(document.querySelectorAll('.black-list-options .rsa-form-radio-label')[0].classList.contains('disabled'), false, 'Blocking files enabled.');
+    assert.equal(document.querySelectorAll('.black-list-options .remediation-action-checkbox')[0].classList.contains('disabled'), false, 'Blocking files enabled.');
   });
 });

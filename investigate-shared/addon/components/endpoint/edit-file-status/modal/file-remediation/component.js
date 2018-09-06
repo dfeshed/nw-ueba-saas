@@ -55,9 +55,22 @@ export default Component.extend({
     };
   },
 
+  @computed('data.remediationAction')
+  isChecked(remediationAction) {
+    return remediationAction === 'Block';
+  },
+
   actions: {
     setFileCategory(category) {
       this.set('data.category', category);
+    },
+
+    toggleBlocking() {
+      if (this.get('data.remediationAction')) {
+        this.set('data.remediationAction', null);
+      } else {
+        this.set('data.remediationAction', 'Block');
+      }
     }
   }
 });
