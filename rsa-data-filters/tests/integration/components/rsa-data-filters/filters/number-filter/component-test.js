@@ -8,7 +8,11 @@ module('Integration | Component | rsa-data-filters/filters/number-filter', funct
   setupRenderingTest(hooks);
 
   test('it renders', async function(assert) {
-    this.set('filterOptions', { name: 'size', units: [{ type: 'MB', label: 'Mega Bytes' }, { type: 'bytes', label: 'Bytes' }] });
+    this.set('filterOptions', {
+      filterOnBlur: true,
+      name: 'size',
+      units: [{ type: 'MB', label: 'Mega Bytes' }, { type: 'bytes', label: 'Bytes' }]
+    });
     await render(hbs`{{rsa-data-filters/filters/number-filter filterOptions=filterOptions}}`);
     assert.equal(findAll('.number-filter').length, 1);
     assert.equal(findAll('.operators').length, 1, 'It renders operators');
@@ -17,7 +21,7 @@ module('Integration | Component | rsa-data-filters/filters/number-filter', funct
   });
 
   test('it renders two text boxes if between operator selected', async function(assert) {
-    this.set('filterOptions', { name: 'size', units: [{ type: 'MB', label: 'Mega Bytes' }, { type: 'bytes', label: 'Bytes' }] });
+    this.set('filterOptions', { filterOnBlur: true, name: 'size', units: [{ type: 'MB', label: 'Mega Bytes' }, { type: 'bytes', label: 'Bytes' }] });
     await render(hbs`{{rsa-data-filters/filters/number-filter filterOptions=filterOptions}}`);
     assert.equal(findAll('.operators').length, 1, 'It renders operators');
     clickTrigger('.number-filter .operators');
@@ -29,6 +33,7 @@ module('Integration | Component | rsa-data-filters/filters/number-filter', funct
   test('it sets the pre applied filter values', async function(assert) {
     this.set('filterOptions', {
       name: 'size',
+      filterOnBlur: true,
       units: [{ type: 'MB', label: 'Mega Bytes' }, { type: 'bytes', label: 'Bytes' }],
       filterValue: { unit: 'MB', value: [10, 20], operator: 'BETWEEN' }
     });
@@ -47,6 +52,7 @@ module('Integration | Component | rsa-data-filters/filters/number-filter', funct
     });
     this.set('filterOptions', {
       name: 'size',
+      filterOnBlur: true,
       units: [{ type: 'MB', label: 'Mega Bytes' }, { type: 'bytes', label: 'Bytes' }],
       filterValue: { unit: 'MB', value: [10, 20], operator: 'BETWEEN' }
     });

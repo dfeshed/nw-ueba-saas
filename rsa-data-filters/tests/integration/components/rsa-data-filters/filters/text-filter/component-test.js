@@ -8,7 +8,7 @@ module('Integration | Component | rsa-data-filters/filters/text-filter', functio
   setupRenderingTest(hooks);
 
   test('it renders the text filter', async function(assert) {
-    this.set('options', { name: 'fileName' });
+    this.set('options', { name: 'fileName', filterOnBlur: true });
     await render(hbs`{{rsa-data-filters/filters/text-filter filterOptions=options}}`);
     assert.equal(findAll('.text-filter').length, 1, 'expecting to render text filter container');
     assert.equal(findAll('.text-filter .operators').length, 1, 'expecting to render operator type dropdown');
@@ -16,7 +16,7 @@ module('Integration | Component | rsa-data-filters/filters/text-filter', functio
   });
 
   test('it should set the proper value to filter control', async function(assert) {
-    this.set('options', { filterValue: { operator: 'IN', value: ['malware.exe'] } });
+    this.set('options', { filterValue: { operator: 'IN', value: ['malware.exe'] }, filterOnBlur: true });
     await render(hbs`{{rsa-data-filters/filters/text-filter filterOptions=options}}`);
     assert.equal(document.querySelector('.ember-power-select-selected-item').textContent.trim(), 'Equals');
     assert.equal(document.querySelector('.file-name-input input').value, 'malware.exe');
@@ -27,7 +27,7 @@ module('Integration | Component | rsa-data-filters/filters/text-filter', functio
     this.set('onQueryChange', (filterValue) => {
       assert.equal(filterValue.operator, 'LIKE');
     });
-    this.set('options', { name: 'fileName' });
+    this.set('options', { name: 'fileName', filterOnBlur: true });
     await render(hbs`{{rsa-data-filters/filters/text-filter filterOptions=options onChange=(action onQueryChange)}}`);
     clickTrigger('.text-filter .operators');
     assert.equal(document.querySelectorAll('.ember-power-select-dropdown').length, 1, 'Dropdown is rendered');
@@ -40,7 +40,7 @@ module('Integration | Component | rsa-data-filters/filters/text-filter', functio
       assert.equal(filterValue.value, 'malware.exe');
       assert.equal(filterValue.operator, 'IN');
     });
-    this.set('options', { name: 'fileName' });
+    this.set('options', { name: 'fileName', filterOnBlur: true });
     await render(hbs`{{rsa-data-filters/filters/text-filter filterOptions=options onChange=(action onQueryChange)}}`);
     await fillIn('.file-name-input  input', 'malware.exe');
     await blur('.file-name-input  input');

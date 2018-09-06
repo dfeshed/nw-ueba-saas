@@ -1,7 +1,6 @@
 import Component from '@ember/component';
 import layout from './template';
 import computed from 'ember-computed-decorators';
-const NOT_SUPPORTED_OS = ['linux', 'mac'];
 
 export default Component.extend({
   layout,
@@ -22,12 +21,9 @@ export default Component.extend({
 
   selectedFileCount: null,
 
-  @computed('itemList')
-  isEditStatusButtonDisabled(selectedFilesList) {
-    if (selectedFilesList.length > 0) {
-      return selectedFilesList.some((item) => NOT_SUPPORTED_OS.includes(item.machineOSType));
-    }
-    return true;
+  @computed('selectedFileCount')
+  isEditStatusButtonDisabled(selectedFileCount) {
+    return !selectedFileCount > 0;
   },
 
   @computed('selectedFileCount')

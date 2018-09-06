@@ -45,14 +45,14 @@ const _handleAppendFiles = (action) => {
 
 const _toggleSelectedFile = (state, payload) => {
   const { selectedFileList } = state;
-  const { id, checksumSha256, signature, size, machineOSType } = payload;
+  const { id, checksumSha256, signature, size } = payload;
   let selectedList = [];
   // Previously selected file
 
   if (selectedFileList.some((file) => file.id === id)) {
     selectedList = selectedFileList.filter((file) => file.id !== id);
   } else {
-    selectedList = [...selectedFileList, { id, checksumSha256, signature, size, machineOSType }];
+    selectedList = [...selectedFileList, { id, checksumSha256, signature, size }];
   }
   return state.merge({ 'selectedFileList': selectedList });
 

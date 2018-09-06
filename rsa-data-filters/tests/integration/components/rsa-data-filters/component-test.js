@@ -16,7 +16,7 @@ module('Integration | Component | rsa-data-filters', function(hooks) {
 
   test('it should call the onFilterChange after changing the filter', async function(assert) {
     assert.expect(3);
-    this.set('config', [{ type: 'text', name: 'filterName' }]);
+    this.set('config', [{ type: 'text', name: 'filterName', filterOnBlur: true }]);
     this.set('onFilterChange', (filters) => {
       assert.equal(filters.length, 1);
     });
@@ -30,7 +30,10 @@ module('Integration | Component | rsa-data-filters', function(hooks) {
 
   test('it should call the onFilterChange with newly added and pre loaded filter', async function(assert) {
     assert.expect(4);
-    this.set('config', [{ type: 'text', name: 'status' }, { type: 'text', name: 'size', filterValue: { operator: 'LIKE', value: ['test'] } }]);
+    this.set('config', [
+      { type: 'text', name: 'status', filterOnBlur: true },
+      { type: 'text', name: 'size', filterOnBlur: true, filterValue: { operator: 'LIKE', value: ['test'] } }
+    ]);
     this.set('onFilterChange', (filters) => {
       assert.equal(filters.length, 2);
       assert.equal(filters[0].operator, 'LIKE');
@@ -45,7 +48,10 @@ module('Integration | Component | rsa-data-filters', function(hooks) {
 
   test('it should call the onFilterChange with newly added and pre loaded filter', async function(assert) {
     assert.expect(6);
-    this.set('config', [{ type: 'list', name: 'status', listOptions: [{ name: 'one', label: 'ONE' }] }, { type: 'text', name: 'size', filterValue: { operator: 'LIKE', value: ['test'] } }]);
+    this.set('config', [
+      { type: 'list', name: 'status', listOptions: [{ name: 'one', label: 'ONE' }] },
+      { type: 'text', name: 'size', filterOnBlur: true, filterValue: { operator: 'LIKE', value: ['test'] } }
+    ]);
     this.set('onFilterChange', (filters) => {
       assert.equal(filters.length, 2);
       assert.equal(filters[0].operator, 'LIKE');
@@ -61,7 +67,7 @@ module('Integration | Component | rsa-data-filters', function(hooks) {
 
   test('it should call the onFilterChange with newly added and pre loaded filter', async function(assert) {
     assert.expect(7);
-    this.set('config', [{ type: 'list', name: 'status', filterValue: ['one', 'two'], listOptions: [{ name: 'one', label: 'ONE' }, { name: 'two', label: 'Two' }] }, { type: 'text', name: 'size', filterValue: { operator: 'LIKE', value: ['test'] } }]);
+    this.set('config', [{ type: 'list', name: 'status', filterValue: ['one', 'two'], listOptions: [{ name: 'one', label: 'ONE' }, { name: 'two', label: 'Two' }] }, { type: 'text', filterOnBlur: true, name: 'size', filterValue: { operator: 'LIKE', value: ['test'] } }]);
     this.set('onFilterChange', (filters) => {
       assert.equal(filters.length, 2);
       assert.equal(filters[1].name, 'status');
@@ -78,7 +84,7 @@ module('Integration | Component | rsa-data-filters', function(hooks) {
 
   test('it should show Save filter button and clicking on save will call the callback', async function(assert) {
     assert.expect(2);
-    this.set('config', [{ type: 'list', name: 'status', filterValue: ['one', 'two'], listOptions: [{ name: 'one', label: 'ONE' }, { name: 'two', label: 'Two' }] }, { type: 'text', name: 'size', filterValue: { operator: 'LIKE', value: ['test'] } }]);
+    this.set('config', [{ type: 'list', name: 'status', filterValue: ['one', 'two'], listOptions: [{ name: 'one', label: 'ONE' }, { name: 'two', label: 'Two' }] }, { type: 'text', filterOnBlur: true, name: 'size', filterValue: { operator: 'LIKE', value: ['test'] } }]);
     this.set('onSave', (filters) => {
       assert.equal(filters.length, 2);
     });
@@ -91,7 +97,7 @@ module('Integration | Component | rsa-data-filters', function(hooks) {
 
   test('it reset action is executed', async function(assert) {
     assert.expect(3);
-    this.set('config', [{ type: 'list', name: 'status', filterValue: ['one', 'two'], listOptions: [{ name: 'one', label: 'ONE' }, { name: 'two', label: 'Two' }] }, { type: 'text', name: 'size', filterValue: { operator: 'LIKE', value: ['test'] } }]);
+    this.set('config', [{ type: 'list', name: 'status', filterValue: ['one', 'two'], listOptions: [{ name: 'one', label: 'ONE' }, { name: 'two', label: 'Two' }] }, { type: 'text', filterOnBlur: true, name: 'size', filterValue: { operator: 'LIKE', value: ['test'] } }]);
     this.set('onFilterChange', (filters) => {
       assert.equal(filters.length, 2);
     });

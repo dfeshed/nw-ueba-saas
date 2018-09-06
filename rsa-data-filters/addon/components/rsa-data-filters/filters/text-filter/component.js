@@ -12,6 +12,7 @@ export default Component.extend({
 
   defaults: {
     maxLength: 256,
+    filterOnBlur: false,
     operators: [
       { type: 'IN', label: 'Equals' },
       { type: 'LIKE', label: 'Contains' }
@@ -106,9 +107,11 @@ export default Component.extend({
       this._handeFilterChanged();
     },
     onInputFocusOut(e) {
-      const { value } = e.target;
-      this.set('filterValue.value', value);
-      this._handeFilterChanged();
+      if (this.get('options.filterOnBlur')) {
+        const { value } = e.target;
+        this.set('filterValue.value', value);
+        this._handeFilterChanged();
+      }
     },
 
     changeOperator(option) {

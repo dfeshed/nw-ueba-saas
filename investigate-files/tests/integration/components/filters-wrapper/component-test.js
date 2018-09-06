@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import { render, findAll, click, fillIn, blur } from '@ember/test-helpers';
+import { render, findAll, click, fillIn, blur, triggerKeyEvent } from '@ember/test-helpers';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import { patchSocket } from '../../../helpers/patch-socket';
 
@@ -37,14 +37,16 @@ module('filters-wrapper', 'Integration | Component | Filter Wrapper', function(h
     await render(hbs`{{filters-wrapper showSaveFilterButton=showSaveFilterButton}}`);
     await fillIn('.file-name-input  input', 'malware.exe');
     await blur('.file-name-input  input');
+    await triggerKeyEvent('.file-name-input  input', 'keyup', 13);
   });
 
-  test('apply filter getting called', async function(assert) {
+  test('save filter is getting called', async function(assert) {
     assert.expect(2);
     this.set('showSaveFilterButton', true);
     await render(hbs`{{filters-wrapper showSaveFilterButton=showSaveFilterButton}}`);
     await fillIn('.file-name-input  input', 'malware.exe');
     await blur('.file-name-input  input');
+    await triggerKeyEvent('.file-name-input  input', 'keyup', 13);
     patchSocket((method, modelName, query) => {
       assert.equal(query.data.criteria.expressionList['0'].propertyName, 'firstFileName');
       assert.equal(method, 'saveFilter');
@@ -52,7 +54,6 @@ module('filters-wrapper', 'Integration | Component | Filter Wrapper', function(h
     await click(document.querySelector('.save-filter-button button'));
     await fillIn('.custom-filter-name  input', 'test');
     await blur('.custom-filter-name  input');
-
     await click(document.querySelector('.save-filter button'));
 
   });

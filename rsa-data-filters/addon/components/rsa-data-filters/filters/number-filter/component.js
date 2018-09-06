@@ -10,6 +10,7 @@ export default Component.extend({
   classNames: ['number-filter'],
 
   defaults: {
+    filterOnBlur: false,
     operators: [
       { label: 'Equals', type: 'EQUAL' },
       { label: 'Greater Than', type: 'GREATER_THAN' },
@@ -98,7 +99,9 @@ export default Component.extend({
       this._handleFilterChange(value);
     },
     onInputFocusOut(e) {
-      this._handleFilterChange(e.target.value);
+      if (this.get('options.filterOnBlur')) {
+        this._handleFilterChange(e.target.value);
+      }
     },
 
     changeOperator(option) {
