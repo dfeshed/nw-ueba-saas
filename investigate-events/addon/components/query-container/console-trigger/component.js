@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { toggleQueryConsole } from 'investigate-events/actions/interaction-creators';
+import computed from 'ember-computed-decorators';
 
 import {
   isConsoleEmpty,
@@ -28,6 +29,19 @@ const ConsoleTrigger = Component.extend({
     'hasError',
     'hasWarning'
   ],
+
+  @computed('description', 'isDisabled', 'isOpen', 'i18n')
+  label: (description, isDisabled, isOpen, i18n) => {
+    let label;
+    if (isDisabled) {
+      label = i18n.t('investigate.queryStats.disabledLabel');
+    } else if (!isOpen) {
+      label = i18n.t('investigate.queryStats.closedLabel');
+    } else {
+      label = description;
+    }
+    return label;
+  },
 
   didInsertElement() {
     this._super(...arguments);

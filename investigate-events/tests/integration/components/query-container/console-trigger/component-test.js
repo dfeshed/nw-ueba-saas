@@ -3,7 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 import hbs from 'htmlbars-inline-precompile';
-import { findAll, render, triggerKeyEvent, click } from '@ember/test-helpers';
+import { find, findAll, render, triggerKeyEvent, click } from '@ember/test-helpers';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import ReduxDataHelper from '../../../../helpers/redux-data-helper';
 
@@ -15,6 +15,8 @@ module('Integration | Component | Console Trigger', function(hooks) {
   });
 
   hooks.beforeEach(function() {
+    this.owner.inject('component', 'i18n', 'service:i18n');
+
     setState = (state) => {
       patchReducer(this, state);
     };
@@ -26,7 +28,7 @@ module('Integration | Component | Console Trigger', function(hooks) {
     await render(hbs`
       {{query-container/console-trigger}}
     `);
-    assert.equal(findAll('.console-trigger .rsa-icon-information-circle-lined').length, 1);
+    assert.equal(findAll('.console-trigger .rsa-icon-notepad-2-lined').length, 1);
   });
 
   test('renders the correct dom hasWarning', async function(assert) {
@@ -115,6 +117,33 @@ module('Integration | Component | Console Trigger', function(hooks) {
 
     await click('.console-panel h1');
     assert.equal(findAll('.console-trigger.is-open').length, 1);
+  });
+
+  test('renders the correct title when disabled', async function(assert) {
+    new ReduxDataHelper(setState).queryStats().queryStatsIsEmpty().build();
+    await render(hbs`
+      {{query-container/console-trigger}}
+    `);
+
+    assert.equal(find('.console-trigger i').getAttribute('title'), 'The query console will become available once a query is initiated.');
+  });
+
+  test('renders the correct title when closed', async function(assert) {
+    new ReduxDataHelper(setState).queryStats().build();
+    await render(hbs`
+      {{query-container/console-trigger}}
+    `);
+
+    assert.equal(find('.console-trigger i').getAttribute('title'), 'Click to open or close the query console.');
+  });
+
+  test('renders the correct title when open', async function(assert) {
+    new ReduxDataHelper(setState).queryStats().queryStatsIsOpen().build();
+    await render(hbs`
+      {{query-container/console-trigger}}
+    `);
+
+    assert.equal(find('.console-trigger i').getAttribute('title'), 'foo', 'Trigger title equals the query stats description when the console is open');
   });
 
 });

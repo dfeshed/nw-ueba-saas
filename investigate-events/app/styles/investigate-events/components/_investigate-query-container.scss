@@ -251,7 +251,7 @@
 
       .console-trigger {
         position: absolute;
-        top: rsa-whitespace(less);
+        top: calc(#{rsa-whitespace(less)} + 1px);
         right: rsa-whitespace(less);
         color: text-color(primary, lightest);
         cursor: pointer;

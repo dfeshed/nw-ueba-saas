@@ -549,7 +549,9 @@ export default {
     queryStats: {
       header: "Queried <strong class='service'>{{service}}</strong> for events that occurred between <strong class='start-date'>{{startDate}}</strong> and <strong class='end-date'>{{endDate}}</strong>",
       progress: 'Progress:',
-      complete: 'Complete'
+      complete: 'Complete',
+      closedLabel: 'Click to open or close the query console.',
+      disabledLabel: 'The query console will become available once a query is initiated.'
     },
     generic: {
       loading: 'Loading data...',
