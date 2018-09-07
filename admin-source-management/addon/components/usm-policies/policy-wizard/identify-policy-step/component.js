@@ -40,10 +40,10 @@ const IdentifyPolicyStep = Component.extend({
       this.edit('policy.type', value.type);
     },
     handleNameChange(value) {
-      this.edit('policy.name', value);
+      this.edit('policy.name', value.trim());
     },
     handleDescriptionChange(value) {
-      this.edit('policy.description', value);
+      this.edit('policy.description', value.trim());
     }
   }
 });

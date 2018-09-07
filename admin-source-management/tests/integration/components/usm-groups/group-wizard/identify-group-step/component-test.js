@@ -60,7 +60,7 @@ module('Integration | Component | usm-groups/group-wizard/identify-group-step', 
     const nameEl = findAll('.control .group-name input')[0]; // eslint-disable-line ember-suave/prefer-destructuring
     assert.equal(nameEl.value, testName, `Group Name is ${testName}`);
     const descEl = findAll('.control .group-description textarea')[0]; // eslint-disable-line ember-suave/prefer-destructuring
-    assert.equal(descEl.value, testDesc, `Group Name is ${testDesc}`);
+    assert.equal(descEl.value, testDesc, `Group Description is ${testDesc}`);
   });
 
   test('Typing in the group name control dispatches the editgroup action creator', async function(assert) {
@@ -68,12 +68,13 @@ module('Integration | Component | usm-groups/group-wizard/identify-group-step', 
     await render(hbs`{{usm-groups/group-wizard/identify-group-step}}`);
     const el = findAll('.control .group-name input')[0]; // eslint-disable-line ember-suave/prefer-destructuring
     await focus(el);
-    const testName = el.value = 'test name';
+    const testName = el.value = ' test name ';
+    const expectedTestName = 'test name';
     // await triggerKeyEvent(el, 'keyup', 'e'); // might go back to this with debounce
     await blur(el);
     return settled().then(() => {
       assert.ok(editGroupSpy.calledOnce, 'The editGroup action was called once');
-      assert.ok(editGroupSpy.calledWith('group.name', testName), `The editGroup action was called with ${testName}`);
+      assert.ok(editGroupSpy.calledWith('group.name', expectedTestName), `The editGroup action was called with trimmed "${testName}"`);
     });
   });
 
@@ -82,11 +83,12 @@ module('Integration | Component | usm-groups/group-wizard/identify-group-step', 
     await render(hbs`{{usm-groups/group-wizard/identify-group-step}}`);
     const el = findAll('.control .group-description textarea')[0]; // eslint-disable-line ember-suave/prefer-destructuring
     await focus(el);
-    const testDesc = el.value = 'test description';
+    const testDesc = el.value = ' test description  ';
+    const expectedTestDesc = 'test description';
     await blur(el);
     return settled().then(() => {
       assert.ok(editGroupSpy.calledOnce, 'The editGroup action was called once');
-      assert.ok(editGroupSpy.calledWith('group.description', testDesc), `The editGroup action was called with ${testDesc}`);
+      assert.ok(editGroupSpy.calledWith('group.description', expectedTestDesc), `The editGroup action was called with trimmed "${testDesc}"`);
     });
   });
 

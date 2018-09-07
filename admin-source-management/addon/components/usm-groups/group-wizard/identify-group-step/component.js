@@ -30,12 +30,12 @@ const IdentifyGroupStep = Component.extend(Notifications, {
   actions: {
     handleNameChange(value) {
       if (value !== undefined) {
-        this.send('editGroup', 'group.name', value);
+        this.send('editGroup', 'group.name', value.trim());
       }
     },
     handleDescriptionChange(value) {
       if (value !== undefined) {
-        this.send('editGroup', 'group.description', value);
+        this.send('editGroup', 'group.description', value.trim());
       }
     }
   }

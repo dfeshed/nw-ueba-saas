@@ -68,7 +68,7 @@ module('Integration | Component | usm-policies/policy-wizard/identify-policy-ste
     const nameEl = findAll('.control .policy-name input')[0]; // eslint-disable-line ember-suave/prefer-destructuring
     assert.equal(nameEl.value, testName, `Policy Name is ${testName}`);
     const descEl = findAll('.control .policy-description textarea')[0]; // eslint-disable-line ember-suave/prefer-destructuring
-    assert.equal(descEl.value, testDesc, `Policy Name is ${testDesc}`);
+    assert.equal(descEl.value, testDesc, `Policy Description is ${testDesc}`);
   });
 
   test('Typing in the policy name control dispatches the editPolicy action creator', async function(assert) {
@@ -76,12 +76,13 @@ module('Integration | Component | usm-policies/policy-wizard/identify-policy-ste
     await render(hbs`{{usm-policies/policy-wizard/identify-policy-step}}`);
     const el = findAll('.control .policy-name input')[0]; // eslint-disable-line ember-suave/prefer-destructuring
     await focus(el);
-    const testName = el.value = 'test name';
+    const testName = el.value = '   test name   ';
+    const expectedTestName = 'test name';
     // await triggerKeyEvent(el, 'keyup', 'e'); // might go back to this with debounce
     await blur(el);
     return settled().then(() => {
       assert.ok(editPolicySpy.calledOnce, 'The editPolicy action was called once');
-      assert.ok(editPolicySpy.calledWith('policy.name', testName), `The editPolicy action was called with ${testName}`);
+      assert.ok(editPolicySpy.calledWith('policy.name', expectedTestName), `The editPolicy action was called with trimmed "${testName}"`);
     });
   });
 
@@ -90,12 +91,13 @@ module('Integration | Component | usm-policies/policy-wizard/identify-policy-ste
     await render(hbs`{{usm-policies/policy-wizard/identify-policy-step}}`);
     const el = findAll('.control .policy-description textarea')[0]; // eslint-disable-line ember-suave/prefer-destructuring
     await focus(el);
-    const testDesc = el.value = 'test description';
+    const testDesc = el.value = '   test description    ';
+    const expectedTestDesc = 'test description';
     // await triggerKeyEvent(el, 'keyup', 'e'); // might go back to this with debounce
     await blur(el);
     return settled().then(() => {
       assert.ok(editPolicySpy.calledOnce, 'The editPolicy action was called once');
-      assert.ok(editPolicySpy.calledWith('policy.description', testDesc), `The editPolicy action was called with ${testDesc}`);
+      assert.ok(editPolicySpy.calledWith('policy.description', expectedTestDesc), `The editPolicy action was called with trimmed "${testDesc}"`);
     });
   });
 
