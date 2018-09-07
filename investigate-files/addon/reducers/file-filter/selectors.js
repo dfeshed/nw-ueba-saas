@@ -89,7 +89,7 @@ export const filters = createSelector(
           case 'number': {
             const values = convertFromBytes(propertyValues.mapBy('value'));
             const value = values.mapBy('value');
-            const unit = values.mapBy('unit');
+            const [unit] = values.mapBy('unit');
             filterValue = { value, unit, operator: restrictionType };
             break;
           }
