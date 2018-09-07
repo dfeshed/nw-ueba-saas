@@ -71,7 +71,9 @@ test('should return the initial state', function(assert) {
     contextLoadingStatus: 'wait',
     selectedFileList: [],
     agentCountMapping: {},
-    fileStatusData: {}
+    fileStatusData: {},
+    hostNameList: [],
+    fetchHostNameListError: false
   });
 });
 
@@ -348,4 +350,37 @@ test('The GET_FILE_STATUS update to state default state', function(assert) {
   });
   const newEndState = reducer(previous, successAction);
   assert.deepEqual(newEndState.fileStatusData, {});
+});
+
+test('Fetch the data from context server', function(assert) {
+  const previous = Immutable.from({
+    lookupData: [{}]
+  });
+  const newEndState = reducer(previous, { type: ACTION_TYPES.SET_CONTEXT_DATA, payload: contextData.data });
+  assert.equal(newEndState.lookupData.length, 1);
+});
+
+
+test('Fetch host name error is set to true', function(assert) {
+  const previous = Immutable.from({
+    fetchHostNameListError: false
+  });
+  const newEndState = reducer(previous, { type: ACTION_TYPES.FETCH_HOST_NAME_LIST_ERROR });
+  assert.equal(newEndState.fetchHostNameListError, true);
+});
+
+test('Fetch host name error is set to false', function(assert) {
+  const previous = Immutable.from({
+    fetchHostNameListError: true
+  });
+  const newEndState = reducer(previous, { type: ACTION_TYPES.INIT_FETCH_HOST_NAME_LIST });
+  assert.equal(newEndState.fetchHostNameListError, false);
+});
+
+test('Fetch host name error is set to false', function(assert) {
+  const previous = Immutable.from({
+    hostNameList: []
+  });
+  const newEndState = reducer(previous, { type: ACTION_TYPES.SET_HOST_NAME_LIST, payload: new Array(10) });
+  assert.equal(newEndState.hostNameList.length, 10);
 });

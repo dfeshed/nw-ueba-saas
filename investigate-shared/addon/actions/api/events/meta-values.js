@@ -18,11 +18,12 @@ import {
  * @return {object} RSVP Promise
  * @public
  */
-export default function(queryNode, language, limit, batch, handlers, startSessionId = null) {
-  // conditions is legacy
+export default function(queryNode, metaName, size, language, limit, batch, handlers, startSessionId = 1) {
   const filters = queryNode.metaFilter.conditions || queryNode.metaFilter;
   const query = {
     filter: [
+      { field: 'metaName', value: `${metaName}` },
+      { field: 'valuesCount', value: size },
       serviceIdFilter(queryNode.serviceId),
       timeRangeFilter(queryNode.startTime, queryNode.endTime),
       conditionsFilter(encodeMetaFilterConditions(filters, language))
@@ -33,9 +34,8 @@ export default function(queryNode, language, limit, batch, handlers, startSessio
   metaFilterInput.value = addSessionIdFilter(metaFilterInput.value, startSessionId);
 
   return streamingRequest(
-    'core-event',
+    'core-meta-value',
     query,
     handlers
   );
 }
-

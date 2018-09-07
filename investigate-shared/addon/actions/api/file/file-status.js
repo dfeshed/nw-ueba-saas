@@ -44,30 +44,7 @@ const getFileStatus = (selections) => {
   });
 };
 
-
-/**
- * Getting the status history for the selected file
- * @param checksum
- * @param requestLatestHistory
- * @returns {*}
- * @public
- */
-const getFileStatusHistory = (checksum, requestLatestHistory) => {
-  const request = lookup('service:request');
-  return request.promiseRequest({
-    method: 'getFileStatusHistory',
-    modelName: 'context-service',
-    query: {
-      data: {
-        checksum,
-        requestLatestHistory
-      }
-    }
-  });
-};
-
 export {
   setFileStatus,
-  getFileStatusHistory,
   getFileStatus
 };

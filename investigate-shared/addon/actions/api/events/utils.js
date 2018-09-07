@@ -179,3 +179,22 @@ export const encodeMetaFilterConditions = (conditions = []) => {
     })
     .join(' && ');
 };
+
+
+/**
+ * Prepends a query string that will filter results based on a starting
+ * sessionId
+ * @param {string} filter - A string of filter conditions
+ * @param {number} startSessionId
+ * @private
+ */
+export const addSessionIdFilter = (filter, startSessionId) => {
+  const out = [];
+  if (startSessionId) {
+    out.push(`(sessionid > ${startSessionId})`);
+  }
+  if (filter) {
+    out.push(filter);
+  }
+  return out.join(' && ');
+};

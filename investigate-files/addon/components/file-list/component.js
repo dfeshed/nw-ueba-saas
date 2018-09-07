@@ -17,12 +17,12 @@ import {
   getPageOfFiles,
   fetchFileContext,
   toggleFileSelection,
-  getFileStatusChangeHistory,
   selectAllFiles,
   deSelectAllFiles,
   getAllServices,
   saveFileStatus,
-  getSavedFileStatus
+  getSavedFileStatus,
+  fetchHostNameList
 } from 'investigate-files/actions/data-creators';
 
 import { failure } from 'investigate-shared/utils/flash-messages';
@@ -48,12 +48,12 @@ const dispatchToActions = {
   getPageOfFiles,
   fetchFileContext,
   toggleFileSelection,
-  getFileStatusChangeHistory,
   selectAllFiles,
   deSelectAllFiles,
   getAllServices,
   saveFileStatus,
-  getSavedFileStatus
+  getSavedFileStatus,
+  fetchHostNameList
 };
 
 /**
@@ -147,7 +147,7 @@ const FileList = Component.extend({
         table.set('selectedIndex', index);
         if (!isSameRowClicked && openRiskPanel) {
           this.send('fetchFileContext', item.firstFileName);
-          this.send('getFileStatusChangeHistory', item.checksumSha256, 0);
+          this.send('fetchHostNameList', item.checksumSha256);
           next(() => {
             this.openRiskPanel();
           });

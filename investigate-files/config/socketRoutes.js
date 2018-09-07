@@ -30,6 +30,14 @@ const filesConfigGen = function(environment) {
         requestDestination: '/ws/investigate/events/countdistinct'
       }
     },
+    'core-meta-value': {
+      socketUrl: investigateSocketUrl,
+      stream: {
+        subscriptionDestination: '/user/queue/investigate/meta/values',
+        requestDestination: '/ws/investigate/meta/values/stream',
+        cancelDestination: '/ws/investigate/cancel'
+      }
+    },
     'files': {
       socketUrl,
       'schema': {
@@ -68,10 +76,6 @@ const filesConfigGen = function(environment) {
       setFileStatus: {
         subscriptionDestination: '/user/queue/contexthub/file/status/set',
         requestDestination: '/ws/contexthub/file/status/set'
-      },
-      getFileStatusHistory: {
-        subscriptionDestination: '/user/queue/contexthub/file/status/get-history',
-        requestDestination: '/ws/contexthub/file/status/get-history'
       },
       getFileStatus: {
         subscriptionDestination: '/user/queue/contexthub/context/data-source/find',

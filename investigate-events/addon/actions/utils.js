@@ -5,7 +5,7 @@ import { run } from '@ember/runloop';
 import RSVP from 'rsvp';
 import { lookup } from 'ember-dependency-lookup';
 
-import { encodeMetaFilterConditions } from 'investigate-shared/actions/api/events/utils';
+import { encodeMetaFilterConditions, addSessionIdFilter } from 'investigate-shared/actions/api/events/utils';
 import { getTimeRangeIdFromRange } from 'investigate-shared/utils/time-range-utils';
 import { relevantOperators } from 'investigate-events/util/possible-operators';
 
@@ -95,25 +95,6 @@ const VALIDATORS = {
 };
 
 const complexOperators = ['||', '&&', '(', ')', 'length', 'regex'];
-/**
- * Adds a session id filter to a given Core query filter. Appends a condition
- * for session id, but only if a session id is given.
- * @param {string} filter - A Core filter condition (typically for meta keys
- * other than 'sessionid')
- * @param {string} [startSessionId] - Lower bound (exclusive) for session IDs
- * @return {string} A sessionId filter
- * @private
- */
-function _addSessionIdFilter(filter, startSessionId) {
-  const out = [];
-  if (startSessionId) {
-    out.push(`(sessionid > ${startSessionId})`);
-  }
-  if (filter) {
-    out.push(filter);
-  }
-  return out.join(' && ');
-}
 
 /**
  * Creates (but does not start) a stream to fetch a given number of events.
@@ -130,7 +111,7 @@ function _buildEventStreamInputs(query, language, limit, batch = 1, startSession
   const inputs = _makeServerInputsForQuery(query, language);
   inputs.stream = { limit, batch };
   const metaFilterInput = inputs.filter.findBy('field', 'query');
-  metaFilterInput.value = _addSessionIdFilter(metaFilterInput.value, startSessionId);
+  metaFilterInput.value = addSessionIdFilter(metaFilterInput.value, startSessionId);
   return inputs;
 }
 

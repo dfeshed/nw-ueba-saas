@@ -14,8 +14,9 @@ import * as ACTION_TYPES from './types';
 import { next } from '@ember/runloop';
 import { Schema, File } from './fetch';
 import { lookup } from 'ember-dependency-lookup';
+import fetchMetaValue from 'investigate-shared/actions/api/events/meta-values';
 
-import { setFileStatus, getFileStatusHistory, getFileStatus } from 'investigate-shared/actions/api/file/file-status';
+import { setFileStatus, getFileStatus } from 'investigate-shared/actions/api/file/file-status';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
@@ -316,17 +317,6 @@ const getSavedFileStatus = (selections) => ({
   promise: getFileStatus(selections)
 });
 
-
-const getFileStatusChangeHistory = (checksum, requestLatestHistory) => ({
-  type: ACTION_TYPES.GET_FILE_STATUS_HISTORY,
-  promise: getFileStatusHistory(checksum, requestLatestHistory),
-  meta: {
-    onFailure: (response) => {
-      _handleError(ACTION_TYPES.GET_FILE_STATUS_HISTORY, response);
-    }
-  }
-});
-
 // Filters
 
 const applyFilters = (expressions) => {
@@ -344,6 +334,67 @@ const applySavedFilters = (filter) => {
 };
 
 const fetchMachineCount = (checksums) => ({ type: ACTION_TYPES.GET_AGENTS_COUNT_SAGA, payload: checksums });
+
+const _getMetaValues = (dispatch, { queryNode, metaName, checksum, size = 1, onComplete }) => {
+  const query = { ...queryNode };
+  query.metaFilter = {
+    conditions: [
+      {
+        meta: 'device.type',
+        operator: '=',
+        value: '\'nwendpoint\''
+      },
+
+      { value: `(checksum = \'${checksum}\')` }
+    ]
+  };
+
+  const handlers = {
+    onInit() {
+      dispatch({ type: ACTION_TYPES.INIT_FETCH_HOST_NAME_LIST });
+    },
+    onError(dispatch) {
+      dispatch({ type: ACTION_TYPES.FETCH_HOST_NAME_LIST_ERROR });
+    },
+    onResponse(response) {
+      if (response) {
+        const { data: _payload, meta } = response || {};
+        const payload = Array.isArray(_payload) ? _payload : [];
+        const description = meta ? meta.description : null;
+        const percent = meta ? meta.percent : 0;
+        if (description === 'Queued' || (description === 'Executing' || percent < 100 && payload.length === 0)) {
+          return;
+        } else {
+          if (response.data && response.data.length) {
+            onComplete(response.data);
+          }
+        }
+      }
+    }
+  };
+  fetchMetaValue(query, metaName, size, null, 1000, 10, handlers, 1);
+};
+
+
+const fetchHostNameList = (checksum) => {
+  return (dispatch, getState) => {
+    const queryNode = getState().investigateQuery;
+
+    // Get the size for mata value
+    const { fileList: { agentCountMapping } } = getState().files;
+    const size = agentCountMapping && agentCountMapping[checksum] ? agentCountMapping[checksum] : 20;
+    const input = {
+      queryNode,
+      checksum,
+      size,
+      metaName: 'alias.host',
+      onComplete: (data) => {
+        dispatch({ type: ACTION_TYPES.SET_HOST_NAME_LIST, payload: data });
+      }
+    };
+    _getMetaValues(dispatch, input);
+  };
+};
 
 
 export {
@@ -365,9 +416,9 @@ export {
   selectAllFiles,
   deSelectAllFiles,
   saveFileStatus,
-  getFileStatusChangeHistory,
   applyFilters,
   applySavedFilters,
   fetchMachineCount,
-  getSavedFileStatus
+  getSavedFileStatus,
+  fetchHostNameList
 };

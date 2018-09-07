@@ -25,7 +25,9 @@ const fileListState = Immutable.from({
   selectedFileList: [],
   fileData: {},
   agentCountMapping: {},
-  fileStatusData: {}
+  fileStatusData: {},
+  hostNameList: [],
+  fetchHostNameListError: false
 });
 
 const _handleAppendFiles = (action) => {
@@ -149,6 +151,12 @@ const fileListReducer = handleActions({
   [ACTION_TYPES.CLEAR_PREVIOUS_CONTEXT]: (state) => state.merge({ lookupData: [{}], contextLoadingStatus: 'wait' }),
 
   [ACTION_TYPES.CONTEXT_ERROR]: (state, { payload }) => state.set('contextError', payload),
+
+  [ACTION_TYPES.FETCH_HOST_NAME_LIST_ERROR]: (state) => state.set('fetchHostNameListError', true),
+
+  [ACTION_TYPES.INIT_FETCH_HOST_NAME_LIST]: (state) => state.set('fetchHostNameListError', false),
+
+  [ACTION_TYPES.SET_HOST_NAME_LIST]: (state, { payload }) => state.set('hostNameList', payload),
 
   [ACTION_TYPES.TOGGLE_SELECTED_FILE]: (state, { payload }) => _toggleSelectedFile(state, payload),
 
