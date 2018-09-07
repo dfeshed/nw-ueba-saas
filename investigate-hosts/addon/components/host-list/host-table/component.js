@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import { getHostTableColumns } from 'investigate-hosts/reducers/schema/selectors';
-import { getNextMachines, setHostColumnSort, fetchHostContext, toggleRiskPanel } from 'investigate-hosts/actions/data-creators/host';
+import { getNextMachines, setHostColumnSort, fetchHostContext } from 'investigate-hosts/actions/data-creators/host';
 import {
   processedHostList,
   serviceList,
@@ -9,7 +9,6 @@ import {
 } from 'investigate-hosts/reducers/hosts/selectors';
 import computed from 'ember-computed-decorators';
 import _ from 'lodash';
-import { inject as service } from '@ember/service';
 
 import {
   toggleMachineSelected,
@@ -23,8 +22,7 @@ const stateToComputed = (state) => ({
   columns: getHostTableColumns(state),
   hostTotal: hostCountForDisplay(state), // Total number of hosts in search result
   hostFetchStatus: state.endpoint.machines.hostFetchStatus,
-  loadMoreHostStatus: state.endpoint.machines.loadMoreHostStatus,
-  showRiskPanel: state.endpoint.visuals.showRiskPanel
+  loadMoreHostStatus: state.endpoint.machines.loadMoreHostStatus
 });
 
 const dispatchToActions = {
@@ -33,8 +31,7 @@ const dispatchToActions = {
   toggleIconVisibility,
   setSelectedHost,
   setHostColumnSort,
-  fetchHostContext,
-  toggleRiskPanel
+  fetchHostContext
 };
 
 const HostTable = Component.extend({
@@ -42,8 +39,6 @@ const HostTable = Component.extend({
   tagName: 'box',
 
   classNames: 'machine-zone',
-
-  features: service(),
 
   @computed('columns')
   updatedColumns(columns) {
@@ -69,22 +64,7 @@ const HostTable = Component.extend({
       this.send('handleRowSelection', entity);
     },
     toggleSelectedRow(item, index, e, table) {
-      const { target: { classList } } = e;
-      if (classList.contains('rsa-icon-expand-6-filled') ||
-        classList.contains('rsa-form-checkbox-label') ||
-        classList.contains('rsa-form-checkbox')) {
-        e.stopPropagation();
-      } else {
-        const isRiskPanelVisible = this.get('showRiskPanel');
-        const isSameRowClicked = table.get('selectedIndex') === index;
-        if (isSameRowClicked && isRiskPanelVisible) {
-          this.send('toggleRiskPanel', false);
-        } else {
-          this.send('toggleRiskPanel', true);
-          this.send('fetchHostContext', item.machine.machineName);
-        }
-        table.set('selectedIndex', index);
-      }
+      table.set('selectedIndex', index);
     }
   }
 });

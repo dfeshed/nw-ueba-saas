@@ -2,7 +2,6 @@
 @import "service-modal";
 
 $filter-panel-width: 250px;
-$risk-panel-width: 500px;
 
 .host-container {
    max-height: calc(100vw - 50px);
@@ -42,58 +41,7 @@ $risk-panel-width: 500px;
     }
   }
 
-  .risk-property-zone {
-    min-width: 0;
-    max-width: 0;
-    padding: 0;
-    overflow: hidden;
-    opacity: opacity-value(transparent);
-    @include rsa-vendor-prefix(transition-property, max-width, min-width, padding, opacity);
-    @include rsa-vendor-prefix(transition-duration, 0.3s, 0.3s, 0.3s, 0.1s);
-
-    .rsa-nav-tab  .label{
-      @include rsa-font(header, small);
-      text-transform: capitalize;
-      color: text-color(primary, lighter);
-      font-size: 0.85rem;
-    }
-    .rsa-nav-tab.is-active .label{
-      color: text-color(secondary, light);
-    }
-    .rsa-nav-tab.is-left-aligned-primary {
-      cursor: pointer;
-      margin: 0 rsa-whitespace() 0;
-      padding: rsa-whitespace(less) 0;
-      border-bottom-width: 3px;
-    }
-
-    .risk-zone-close-button {
-      width: 16px;
-      max-width: 16px;
-      margin-right: 20px;
-      .close-icon {
-        font-size: 10px;
-      }
-    }
-  }
-  .show-risk-panel {
-    .risk-property-zone {
-      @include border-left(1px, solid, primary, dark);
-      min-width: $risk-panel-width;
-      max-width: $risk-panel-width;
-      padding: 0;
-      overflow: auto;
-      overflow-x: hidden;
-      opacity: opacity-value(opaque);
-    }
-    .machine-zone {
-      height: 100vh;
-      width: calc(100vw - #{$risk-panel-width + $filter-panel-width});
-    }
-  }
   .machine-zone {
-    @include rsa-vendor-prefix(transition-property, width);
-    @include rsa-vendor-prefix(transition-duration, 0.3s);
     min-height: calc(100vh - 135px);
     width: calc(100vw - #{$filter-panel-width});
     height: 100vh;

@@ -1,26 +1,13 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { getHostPropertyTab, getContext } from 'investigate-hosts/reducers/visuals/selectors';
-import { getAlertsCount, getIncidentsCount } from 'investigate-shared/selectors/context';
 import { getPropertyData } from 'investigate-hosts/reducers/details/overview/selectors';
-import { setHostPropertyTabView } from 'investigate-hosts/actions/data-creators/details';
 import { inject as service } from '@ember/service';
 
 const stateToComputed = (state) => ({
   animation: state.endpoint.detailsInput.animation,
-  activePropertyTab: state.endpoint.visuals.activeHostPropertyTab,
-  contextError: state.endpoint.visuals.contextError,
-  hostPropertyTabs: getHostPropertyTab(state),
-  context: getContext(state),
-  alertsCount: getAlertsCount(state),
-  incidentsCount: getIncidentsCount(state),
   propertyData: getPropertyData(state),
   hostDetails: state.endpoint.overview.hostDetails || []
 });
-
-const dispatchToActions = {
-  setHostPropertyTabView
-};
 
 const HostOverview = Component.extend({
 
@@ -42,4 +29,4 @@ const HostOverview = Component.extend({
   }
 });
 
-export default connect(stateToComputed, dispatchToActions)(HostOverview);
+export default connect(stateToComputed)(HostOverview);

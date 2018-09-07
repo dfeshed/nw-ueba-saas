@@ -2423,9 +2423,6 @@ export default {
       explore: 'Explore',
       securityProducts: 'Security Products',
       windowsPatches: 'Windows Patches',
-      hostProperties: 'Host Properties',
-      alerts: 'Alerts ({{count}})',
-      incidents: 'Incidents ({{count}})',
       anomalies: 'Anomalies',
       hooks: 'Image Hooks',
       threads: 'Suspicious Threads',
@@ -2450,9 +2447,6 @@ export default {
       error: {
         'context.service.timeout': 'Context Hub server is not running or is inaccessible. Check with your Administrator to resolve this issue.',
         'context.error': 'Context service is not reachable. Check your service connectivity.'
-      },
-      button: {
-        close: 'Close Risk Panel'
       },
       filterMessage: 'Filtered {{filterCount}} out of {{totalCount}}'
     },
@@ -2824,6 +2818,7 @@ export default {
       },
 
       properties: {
+        title: 'Host Properties',
         filter: 'Type to filter list',
         checkbox: 'Show properties with values only',
         groups: 'Groups',
