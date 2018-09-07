@@ -249,6 +249,27 @@
         }
       }
 
+      .copy-trigger {
+        position: absolute;
+        top: calc(#{rsa-whitespace(less)} + 1px);
+        right: calc(2rem + #{rsa-whitespace(less)});
+        color: text-color(primary, lightest);
+        cursor: pointer;
+
+        &.is-disabled {
+          color: text-color(primary);
+          cursor: default;
+        }
+
+        &:hover:not(.is-disabled) {
+          color: text-color(secondary, lighter);
+        }
+
+        &:active:not(.is-disabled) {
+          color: text-color(secondary);
+        }
+      }
+
       .console-trigger {
         position: absolute;
         top: calc(#{rsa-whitespace(less)} + 1px);

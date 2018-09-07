@@ -8,7 +8,10 @@
     {{query-container/free-form executeQuery=executeQuery takeFocus=(unbound takeFocus)}}
   {{/if}}
 
+  {{!-- TODO: add additional disabled states and uncomment --}}
+  {{!-- {{query-container/copy-trigger}} --}}
   {{query-container/console-trigger}}
+
   {{#if isConsoleOpen}}
     {{query-container/console-panel}}
   {{/if}}

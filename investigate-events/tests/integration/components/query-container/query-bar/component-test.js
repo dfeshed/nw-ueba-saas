@@ -216,6 +216,15 @@ module('Integration | Component | query-bar', function(hooks) {
     assert.equal(findAll(PILL_SELECTORS.freeFormInputFocus).length, 1, 'free form is focused');
   });
 
+  // TODO: add additional disabled states and uncomment
+  // test('renders copy trigger', async function(assert) {
+  //   this.set('executeQuery', () => {});
+  //   await render(hbs`
+  //     {{query-container/query-bar executeQuery=executeQuery}}
+  //   `);
+  //   assert.equal(findAll('.query-bar-selection .copy-trigger').length, 1);
+  // });
+
   test('renders the correct dom hasWarning', async function(assert) {
     new ReduxDataHelper(setState).queryStats().queryStatsHasWarning().build();
     this.set('executeQuery', () => {});

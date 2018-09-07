@@ -6,9 +6,7 @@ import { selectedService } from 'investigate-events/reducers/investigate/service
 import { inject as service } from '@ember/service';
 import computed from 'ember-computed-decorators';
 
-import {
-  encodeMetaFilterConditions
-} from 'investigate-shared/actions/api/events/utils';
+import { encodeMetaFilterConditions } from 'investigate-shared/actions/api/events/utils';
 
 const stateToComputed = (state) => ({
   filters: encodeMetaFilterConditions(state.investigate.queryNode.pillsData),

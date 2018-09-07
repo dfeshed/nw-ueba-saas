@@ -552,7 +552,9 @@ export default {
       progress: 'Progress:',
       complete: 'Complete',
       closedLabel: 'Click to open or close the query console.',
-      disabledLabel: 'The query console will become available once a query is initiated.'
+      disabledLabel: 'The query console will become available once a query is initiated.',
+      copy: 'Click to copy query filters:',
+      disabledCopy: 'Click to copy will become available when filters are present.'
     },
     generic: {
       loading: 'Loading data...',

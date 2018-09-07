@@ -18,7 +18,6 @@ module('Integration | Component | query-container', function(hooks) {
 
   hooks.beforeEach(function() {
     this.owner.inject('component', 'i18n', 'service:i18n');
-
     setState = (state) => {
       patchReducer(this, state);
     };
