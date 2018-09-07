@@ -4,7 +4,7 @@
     class='prev-button'
     defaultAction='transitionToPrevStep'
   }}
-    {{t 'adminUsm.policyWizard.previous'}}
+    {{t 'adminUsm.groupWizard.previous'}}
   {{/rsa-form-button}}
 {{/if}}
 
@@ -16,7 +16,7 @@
     defaultAction='transitionToNextStep'
     isDisabled=(not isStepValid)
   }}
-    {{t 'adminUsm.policyWizard.next'}}
+    {{t 'adminUsm.groupWizard.next'}}
   {{/rsa-form-button}}
 {{/if}}
 
@@ -28,7 +28,7 @@
     defaultAction='publish'
     isDisabled=(not isWizardValid)
   }}
-    {{t 'adminUsm.policyWizard.publishPolicy'}}
+    {{t 'adminUsm.groupWizard.publishGroup'}}
   {{/rsa-form-button}}
 {{/unless}}
 
@@ -38,7 +38,7 @@
   defaultAction='save'
   isDisabled=(not isStepValid)
 }}
-  {{t 'adminUsm.policyWizard.saveAndClose'}}
+  {{t 'adminUsm.groupWizard.saveAndClose'}}
 {{/rsa-form-button}}
 
 {{!-- cancel is always visible & enabled --}}
@@ -46,5 +46,5 @@
   class='cancel-button'
   defaultAction='cancel'
 }}
-  {{t 'adminUsm.policyWizard.cancel'}}
+  {{t 'adminUsm.groupWizard.cancel'}}
 {{/rsa-form-button}}

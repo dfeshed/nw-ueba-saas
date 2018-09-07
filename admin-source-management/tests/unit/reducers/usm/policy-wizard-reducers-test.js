@@ -41,8 +41,10 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
       type: ACTION_TYPES.EDIT_POLICY,
       payload: { field: 'policy.name', value: nameExpected }
     };
-    const nameEndState = reducers(Immutable.from(_.cloneDeep(policyWizInitialState)), nameAction);
-    assert.deepEqual(nameEndState, nameExpectedEndState, `policy name is ${nameExpected}`);
+    const nameEndState1 = reducers(Immutable.from(_.cloneDeep(policyWizInitialState)), nameAction);
+    assert.deepEqual(nameEndState1, nameExpectedEndState, `policy name is ${nameExpected}`);
+    const nameEndState2 = reducers(Immutable.from(_.cloneDeep(policyWizInitialState)), nameAction);
+    assert.deepEqual(nameEndState2, nameExpectedEndState, `policy name is ${nameExpected} visited state contains no duplicates`);
 
     // edit description test
     const descExpected = 'test description';
@@ -55,8 +57,10 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
       type: ACTION_TYPES.EDIT_POLICY,
       payload: { field: 'policy.description', value: descExpected }
     };
-    const descEndState = reducers(Immutable.from(_.cloneDeep(policyWizInitialState)), descAction);
-    assert.deepEqual(descEndState, descExpectedEndState, `policy desc is ${descExpected}`);
+    const descEndState1 = reducers(Immutable.from(_.cloneDeep(policyWizInitialState)), descAction);
+    assert.deepEqual(descEndState1, descExpectedEndState, `policy desc is ${descExpected}`);
+    const descEndState2 = reducers(Immutable.from(_.cloneDeep(policyWizInitialState)), descAction);
+    assert.deepEqual(descEndState2, descExpectedEndState, `policy desc is ${descExpected} visited state contains no duplicates`);
   });
 
   test('on SAVE_POLICY start, policyStatus is properly set', function(assert) {

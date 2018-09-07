@@ -7,7 +7,7 @@ export default [
     dirty: false,
     defaultPolicy: true,
     lastPublishedCopy: null,
-    lastPublishedOn: 0,
+    lastPublishedOn: 1527489158739,
     associatedGroups: [],
     scheduleConfig: {
       enabledScheduledScan: true,

@@ -1,6 +1,7 @@
 import Immutable from 'seamless-immutable';
 import reduxActions from 'redux-actions';
 import { handle } from 'redux-pack';
+import _ from 'lodash';
 import * as ACTION_TYPES from 'admin-source-management/actions/types';
 
 export const initialState = {
@@ -12,8 +13,7 @@ export const initialState = {
     createdBy: null,
     createdOn: null,
     lastModifiedBy: null,
-    lastModifiedOn: null,
-    group: null // map of { 'type': 'groupID' }  ( ex. { 'edrGroup': 'id_abc123' } )
+    lastModifiedOn: null
   },
 
   // the policies objects to fill the group select/dropdown
@@ -86,16 +86,17 @@ export default reduxActions.handleActions({
     return state.merge({
       group: { ...initialState.group },
       groupStatus: null,
+      visited: [],
       initGroupFetchPoliciesStatus: null
     });
   },
 
   [ACTION_TYPES.EDIT_GROUP]: (state, action) => {
-    const { field, value } = action.payload; // const { payload: { field, value } } = action;
+    const { field, value } = action.payload;
     const fields = field.split('.');
     // Edit the value in the group, and keep track of the field as having been visited by the user.
     // Visited fields will show error/validation messages
-    return state.setIn(fields, value).set('visited', [...state.visited, field]);
+    return state.setIn(fields, value).set('visited', _.uniq([...state.visited, field]));
   },
 
   [ACTION_TYPES.SAVE_GROUP]: (state, action) => (

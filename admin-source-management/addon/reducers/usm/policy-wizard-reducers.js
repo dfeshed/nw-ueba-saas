@@ -93,6 +93,7 @@ export default reduxActions.handleActions({
     const { field, value } = action.payload;
     const fields = field.split('.');
     // Edit the value in the policy, and keep track of the field as having been visited
+    // Visited fields will show error/validation messages
     return state.setIn(fields, value).set('visited', _.uniq([...state.visited, field]));
   },
 

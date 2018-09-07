@@ -8,6 +8,7 @@ import {
   sourceTypes,
   selectedSourceType,
   nameValidator,
+  descriptionValidator,
   steps,
   isIdentifyPolicyStepValid,
   // TODO when implemented isDefinePolicyStepvalid,
@@ -63,7 +64,7 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
   });
 
   test('nameValidator selector', function(assert) {
-    // error & not visited
+    // isBlank & not visited
     let nameExpected = '';
     let visitedExpected = [];
     let fullState = new ReduxDataHelper()
@@ -73,13 +74,13 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
       .build();
     let nameValidatorExpected = {
       isError: true,
-      errorMessage: 'adminUsm.policyWizard.nameRequired',
-      isVisited: false
+      showError: false,
+      errorMessage: ''
     };
     let nameValidatorSelected = nameValidator(Immutable.from(fullState));
-    assert.deepEqual(nameValidatorSelected, nameValidatorExpected, 'The returned value from the nameValidator selector is as expected');
+    assert.deepEqual(nameValidatorSelected, nameValidatorExpected, 'The (isBlank & not visited) returned value from the nameValidator selector is as expected');
 
-    // error & visited
+    // isBlank & visited
     nameExpected = '';
     visitedExpected = ['policy.name'];
     fullState = new ReduxDataHelper()
@@ -89,11 +90,11 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
       .build();
     nameValidatorExpected = {
       isError: true,
-      errorMessage: 'adminUsm.policyWizard.nameRequired',
-      isVisited: true
+      showError: true,
+      errorMessage: 'adminUsm.policyWizard.nameRequired'
     };
     nameValidatorSelected = nameValidator(Immutable.from(fullState));
-    assert.deepEqual(nameValidatorSelected, nameValidatorExpected, 'The returned value from the nameValidator selector is as expected');
+    assert.deepEqual(nameValidatorSelected, nameValidatorExpected, 'The (isBlank & visited) returned value from the nameValidator selector is as expected');
 
     // no error & visited
     nameExpected = 'test name';
@@ -105,11 +106,93 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
       .build();
     nameValidatorExpected = {
       isError: false,
-      errorMessage: 'adminUsm.policyWizard.nameRequired',
-      isVisited: true
+      showError: false,
+      errorMessage: ''
     };
     nameValidatorSelected = nameValidator(Immutable.from(fullState));
-    assert.deepEqual(nameValidatorSelected, nameValidatorExpected, 'The returned value from the nameValidator selector is as expected');
+    assert.deepEqual(nameValidatorSelected, nameValidatorExpected, 'The (no error & visited) returned value from the nameValidator selector is as expected');
+
+    // exceedsLength
+    for (let index = 0; index < 10; index++) {
+      nameExpected += 'the-name-is-greater-than-256-';
+    }
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizName(nameExpected)
+      .build();
+    nameValidatorExpected = {
+      isError: true,
+      showError: true,
+      errorMessage: 'adminUsm.policyWizard.nameExceedsMaxLength'
+    };
+    nameValidatorSelected = nameValidator(Immutable.from(fullState));
+    assert.deepEqual(nameValidatorSelected, nameValidatorExpected, 'The (nameExceedsMaxLength) returned value from the nameValidator selector is as expected');
+  });
+
+  test('descriptionValidator selector', function(assert) {
+    // isBlank & not visited
+    let descExpected = '';
+    let visitedExpected = [];
+    let fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizDescription(descExpected)
+      .policyWizVisited(visitedExpected)
+      .build();
+    let descriptionValidatorExpected = {
+      isError: false,
+      showError: false,
+      errorMessage: ''
+    };
+    let descValidatorSelected = descriptionValidator(Immutable.from(fullState));
+    assert.deepEqual(descValidatorSelected, descriptionValidatorExpected, 'The (isBlank & not visited) returned value from the descriptionValidator selector is as expected');
+
+    // isBlank & visited
+    descExpected = '';
+    visitedExpected = ['policy.description'];
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizDescription(descExpected)
+      .policyWizVisited(visitedExpected)
+      .build();
+    descriptionValidatorExpected = {
+      isError: false,
+      showError: false,
+      errorMessage: ''
+    };
+    descValidatorSelected = descriptionValidator(Immutable.from(fullState));
+    assert.deepEqual(descValidatorSelected, descriptionValidatorExpected, 'The (isBlank & visited) returned value from the descriptionValidator selector is as expected');
+
+    // no error & visited
+    descExpected = 'test description';
+    visitedExpected = ['policy.description'];
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizDescription(descExpected)
+      .policyWizVisited(visitedExpected)
+      .build();
+    descriptionValidatorExpected = {
+      isError: false,
+      showError: false,
+      errorMessage: ''
+    };
+    descValidatorSelected = descriptionValidator(Immutable.from(fullState));
+    assert.deepEqual(descValidatorSelected, descriptionValidatorExpected, 'The (no error & visited) returned value from the descriptionValidator selector is as expected');
+
+    // descriptionExceedsMaxLength & visited
+    for (let index = 0; index < 220; index++) {
+      descExpected += 'the-description-is-greater-than-8000-';
+    }
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizDescription(descExpected)
+      .build();
+    descriptionValidatorExpected = {
+      isError: true,
+      showError: true,
+      errorMessage: 'adminUsm.policyWizard.descriptionExceedsMaxLength'
+    };
+    descValidatorSelected = descriptionValidator(Immutable.from(fullState));
+    assert.deepEqual(descValidatorSelected, descriptionValidatorExpected, 'The (descriptionExceedsMaxLength & visited) returned value from the descriptionValidator selector is as expected');
   });
 
   test('steps selector', function(assert) {
@@ -124,9 +207,11 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
   test('isIdentifyPolicyStepValid selector', function(assert) {
     // invalid
     let nameExpected = '';
+    let visitedExpected = ['policy.name'];
     let fullState = new ReduxDataHelper()
       .policyWiz()
       .policyWizName(nameExpected)
+      .policyWizVisited(visitedExpected)
       .build();
     let isIdentifyPolicyStepValidExpected = false;
     let isIdentifyPolicyStepValidSelected = isIdentifyPolicyStepValid(Immutable.from(fullState));
@@ -134,9 +219,11 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
 
     // valid
     nameExpected = 'test name';
+    visitedExpected = ['policy.name'];
     fullState = new ReduxDataHelper()
       .policyWiz()
       .policyWizName(nameExpected)
+      .policyWizVisited(visitedExpected)
       .build();
     isIdentifyPolicyStepValidExpected = true;
     isIdentifyPolicyStepValidSelected = isIdentifyPolicyStepValid(Immutable.from(fullState));

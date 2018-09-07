@@ -70,7 +70,7 @@ module('Integration | Component | usm-groups/group-wizard/group-toolbar', functi
     this.set('transitionToStep', (stepId) => {
       assert.equal(stepId, this.get('step').nextStepId, `transitionToStep(${stepId}) was called with the correct stepId by Next`);
     });
-    const nextBtnEl = findAll('.next-button:not(.is-disabled) button')[0]; // eslint-disable-line ember-suave/prefer-destructuring
+    const [nextBtnEl] = findAll('.next-button:not(.is-disabled) button');
     await click(nextBtnEl);
 
   });

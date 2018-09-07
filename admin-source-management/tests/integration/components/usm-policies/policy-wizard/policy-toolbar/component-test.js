@@ -95,11 +95,11 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
     this.set('transitionToStep', (stepId) => {
       assert.equal(stepId, this.get('step').nextStepId, `transitionToStep(${stepId}) was called with the correct stepId by Next`);
     });
-    const nextBtnEl = findAll('.next-button:not(.is-disabled) button')[0]; // eslint-disable-line ember-suave/prefer-destructuring
+    const [nextBtnEl] = findAll('.next-button:not(.is-disabled) button');
     await click(nextBtnEl);
 
     // clicking the save-button should dispatch the savePolicy action
-    const saveBtnEl = findAll('.save-button:not(.is-disabled) button')[0]; // eslint-disable-line ember-suave/prefer-destructuring
+    const [saveBtnEl] = findAll('.save-button:not(.is-disabled) button');
     await click(saveBtnEl);
     settled().then(() => {
       assert.ok(savePolicySpy.calledOnce, 'The savePolicy action was called once by Save');
@@ -112,7 +112,7 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
     this.set('transitionToClose', () => {
       assert.ok('transitionToClose() was properly triggered');
     });
-    const cancelBtnEl = findAll('.cancel-button:not(.is-disabled) button')[0]; // eslint-disable-line ember-suave/prefer-destructuring
+    const [cancelBtnEl] = findAll('.cancel-button:not(.is-disabled) button');
     await click(cancelBtnEl);
   });
 
@@ -133,7 +133,7 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
       assert.equal(flash.message.string, expectedMessage);
     });
 
-    const saveBtnEl = findAll('.save-button:not(.is-disabled) button')[0]; // eslint-disable-line ember-suave/prefer-destructuring
+    const [saveBtnEl] = findAll('.save-button:not(.is-disabled) button');
     await click(saveBtnEl);
   });
 
@@ -161,7 +161,7 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
       done();
     });
 
-    const saveBtnEl = findAll('.save-button:not(.is-disabled) button')[0]; // eslint-disable-line ember-suave/prefer-destructuring
+    const [saveBtnEl] = findAll('.save-button:not(.is-disabled) button');
     await click(saveBtnEl);
   });
 

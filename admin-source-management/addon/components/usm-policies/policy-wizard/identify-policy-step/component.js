@@ -5,7 +5,8 @@ import {
   policy,
   sourceTypes,
   selectedSourceType,
-  nameValidator
+  nameValidator,
+  descriptionValidator
 } from 'admin-source-management/reducers/usm/policy-wizard-selectors';
 
 import {
@@ -16,7 +17,8 @@ const stateToComputed = (state) => ({
   policy: policy(state),
   sourceTypes: sourceTypes(state),
   selectedSourceType: selectedSourceType(state),
-  nameValidator: nameValidator(state)
+  nameValidator: nameValidator(state),
+  descriptionValidator: descriptionValidator(state)
 });
 
 const dispatchToActions = {

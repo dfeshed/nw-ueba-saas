@@ -94,7 +94,7 @@ module('Integration | Component | rsa-lib/rsa-wizard', function(hooks) {
     assert.equal(actives.length, 1, 'One step is active');
 
     // the correct step should be active
-    const active = actives[0]; // eslint-disable-line ember-suave/prefer-destructuring
+    const [active] = actives;
     assert.equal(active.innerText, 'Test Step 1', 'Test Step 1 is active');
   });
 
@@ -151,22 +151,22 @@ module('Integration | Component | rsa-lib/rsa-wizard', function(hooks) {
     );
 
     // clicking Step 1's Next button should render Step 2
-    const step1NextBtn = findAll('.rsa-wizard-container .test-toolbar .next-button button')[0]; // eslint-disable-line ember-suave/prefer-destructuring
+    const [step1NextBtn] = findAll('.rsa-wizard-container .test-toolbar .next-button button');
     await click(step1NextBtn);
     assert.equal(findAll('.rsa-wizard-container .testStep2').length, 1, 'Test Step 2 is rendered');
 
     // clicking Step 2's Next button should render Step 3
-    const step2NextBtn = findAll('.rsa-wizard-container .test-toolbar .next-button button')[0]; // eslint-disable-line ember-suave/prefer-destructuring
+    const [step2NextBtn] = findAll('.rsa-wizard-container .test-toolbar .next-button button');
     await click(step2NextBtn);
     assert.equal(findAll('.rsa-wizard-container .testStep3').length, 1, 'Test Step 3 is rendered');
 
     // clicking Step 3's Previous button should render Step 2
-    const step3PrevBtn = findAll('.rsa-wizard-container .test-toolbar .prev-button button')[0]; // eslint-disable-line ember-suave/prefer-destructuring
+    const [step3PrevBtn] = findAll('.rsa-wizard-container .test-toolbar .prev-button button');
     await click(step3PrevBtn);
     assert.equal(findAll('.rsa-wizard-container .testStep2').length, 1, 'Test Step 2 is rendered');
 
     // clicking Step 2's Previous button should render Step 1
-    const step2PrevBtn = findAll('.rsa-wizard-container .test-toolbar .prev-button button')[0]; // eslint-disable-line ember-suave/prefer-destructuring
+    const [step2PrevBtn] = findAll('.rsa-wizard-container .test-toolbar .prev-button button');
     await click(step2PrevBtn);
     assert.equal(findAll('.rsa-wizard-container .testStep1').length, 1, 'Test Step 1 is rendered');
   });
@@ -183,7 +183,7 @@ module('Integration | Component | rsa-lib/rsa-wizard', function(hooks) {
       currentStepId=currentStepId
       transitionToClose=(action transitionToClose)}}`
     );
-    const cancelBtn = findAll('.rsa-wizard-container .test-toolbar .cancel-button button')[0]; // eslint-disable-line ember-suave/prefer-destructuring
+    const [cancelBtn] = findAll('.rsa-wizard-container .test-toolbar .cancel-button button');
     await click(cancelBtn);
   });
 

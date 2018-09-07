@@ -3,7 +3,8 @@ import { connect } from 'ember-redux';
 
 import {
   group,
-  steps
+  steps,
+  isGroupLoading
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 
 // import {
@@ -12,7 +13,8 @@ import {
 
 const stateToComputed = (state) => ({
   group: group(state),
-  steps: steps(state)
+  steps: steps(state),
+  isGroupLoading: isGroupLoading(state)
 });
 
 const dispatchToActions = (/* dispatch */) => ({

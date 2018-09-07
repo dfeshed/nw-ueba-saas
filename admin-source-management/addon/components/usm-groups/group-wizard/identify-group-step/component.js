@@ -3,9 +3,8 @@ import { connect } from 'ember-redux';
 import Notifications from 'component-lib/mixins/notifications';
 import {
   group,
-  isGroupLoading,
-  hasMissingRequiredData,
-  nameValidator
+  nameValidator,
+  descriptionValidator
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 
 import {
@@ -14,9 +13,8 @@ import {
 
 const stateToComputed = (state) => ({
   group: group(state),
-  isGroupLoading: isGroupLoading(state),
-  hasMissingRequiredData: hasMissingRequiredData(state),
-  nameValidator: nameValidator(state)
+  nameValidator: nameValidator(state),
+  descriptionValidator: descriptionValidator(state)
 });
 
 const dispatchToActions = {
@@ -25,7 +23,7 @@ const dispatchToActions = {
 
 const IdentifyGroupStep = Component.extend(Notifications, {
   tagName: 'hbox',
-  classNames: ['identify-group-step', 'scroll-box'],
+  classNames: ['identify-group-step', 'scroll-box', 'rsa-wizard-step'],
 
   actions: {
     handleNameChange(value) {

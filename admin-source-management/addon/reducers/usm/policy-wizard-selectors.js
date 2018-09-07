@@ -1,9 +1,18 @@
 import reselect from 'reselect';
-import { isBlank } from '@ember/utils';
+import { isBlank, isPresent } from '@ember/utils';
+import { exceedsLength } from './util/selector-helpers';
 
 const { createSelector } = reselect;
 
 const policyWizardState = (state) => state.usm.policyWizard;
+
+const isExistingName = (name) => {
+  if (isPresent(name)) {
+    // This will be added when backend api is in master. Separate PR
+    // return isPresent(policySummaries) && !!policySummaries.findBy('name', name);
+    return false;
+  }
+};
 
 /**
  * the policy object to be created/updated/saved
@@ -14,6 +23,10 @@ export const policy = createSelector(
   (policyWizardState) => policyWizardState.policy
 );
 
+export const isPolicyLoading = createSelector(
+  policyWizardState,
+  (policyWizardState) => policyWizardState.policyStatus === 'wait'
+);
 /**
  * form fields visited by the user
  * @public
@@ -54,16 +67,59 @@ export const selectedSourceType = createSelector(
 
 /**
  * returns a name validator object with values set for
- * - isError, errorMessage, isVisited
+ * - isError, errorMessage
  * @public
  */
 export const nameValidator = createSelector(
   policy, visited,
   (policy, visited) => {
+    let error = false;
+    let enableMessage = false;
+    let message = '';
+    if (isBlank(policy.name)) {
+      error = true;
+      // only blank value requires visited
+      if (visited.includes('policy.name')) {
+        enableMessage = true;
+        message = 'adminUsm.policyWizard.nameRequired';
+      }
+    } else if (exceedsLength(policy.name, 256)) {
+      error = true;
+      enableMessage = true;
+      message = 'adminUsm.policyWizard.nameExceedsMaxLength';
+    } else if (isExistingName(policy.name)) {
+      error = true;
+      enableMessage = true;
+      message = 'adminUsm.policyWizard.nameExists';
+    }
     return {
-      isError: isBlank(policy.name),
-      errorMessage: 'adminUsm.policyWizard.nameRequired',
-      isVisited: visited.indexOf('policy.name') > -1
+      isError: error,
+      showError: enableMessage,
+      errorMessage: message
+    };
+  }
+);
+
+/**
+ * returns a description validator object with values set for
+ * - isError, errorMessage
+ * @public
+ */
+export const descriptionValidator = createSelector(
+  policy,
+  (policy) => {
+    let error = false;
+    let enableMessage = false;
+    let message = '';
+    if (exceedsLength(policy.description, 8000)) {
+      error = true;
+      enableMessage = true;
+      message = 'adminUsm.policyWizard.descriptionExceedsMaxLength';
+    }
+    return {
+      isError: error,
+      showError: enableMessage,
+      errorMessage: message
     };
   }
 );
@@ -102,9 +158,4 @@ export const isWizardValid = createSelector(
     return isIdentifyPolicyStepValid && isDefinePolicyStepvalid &&
       isApplyToGroupStepvalid && isReviewPolicyStepvalid;
   }
-);
-
-export const isPolicyLoading = createSelector(
-  policyWizardState,
-  (policyWizardState) => policyWizardState.policyStatus === 'wait'
 );

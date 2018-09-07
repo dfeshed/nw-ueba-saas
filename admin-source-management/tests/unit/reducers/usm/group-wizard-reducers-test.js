@@ -26,8 +26,10 @@ module('Unit | Reducers | group Wizard Reducers', function() {
       type: ACTION_TYPES.EDIT_GROUP,
       payload: { field: 'group.name', value: nameExpected }
     };
-    const nameEndState = reducers(Immutable.from(_.cloneDeep(groupWizInitialState)), nameAction);
-    assert.deepEqual(nameEndState, nameExpectedEndState, `group name is ${nameExpected}`);
+    const nameEndState1 = reducers(Immutable.from(_.cloneDeep(groupWizInitialState)), nameAction);
+    assert.deepEqual(nameEndState1, nameExpectedEndState, `group name is ${nameExpected}`);
+    const nameEndState2 = reducers(Immutable.from(_.cloneDeep(groupWizInitialState)), nameAction);
+    assert.deepEqual(nameEndState2, nameExpectedEndState, `group name is ${nameExpected} visited state contains no duplicates`);
 
     // edit description test
     const descExpected = 'test description';
@@ -40,8 +42,10 @@ module('Unit | Reducers | group Wizard Reducers', function() {
       type: ACTION_TYPES.EDIT_GROUP,
       payload: { field: 'group.description', value: descExpected }
     };
-    const descEndState = reducers(Immutable.from(_.cloneDeep(groupWizInitialState)), descAction);
-    assert.deepEqual(descEndState, descExpectedEndState, `group desc is ${descExpected}`);
+    const descEndState1 = reducers(Immutable.from(_.cloneDeep(groupWizInitialState)), descAction);
+    assert.deepEqual(descEndState1, descExpectedEndState, `group desc is ${descExpected}`);
+    const descEndState2 = reducers(Immutable.from(_.cloneDeep(groupWizInitialState)), descAction);
+    assert.deepEqual(descEndState2, descExpectedEndState, `group desc is ${descExpected} visited state contains no duplicates`);
   });
 
 });

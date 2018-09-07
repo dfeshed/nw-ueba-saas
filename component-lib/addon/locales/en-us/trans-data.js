@@ -3601,8 +3601,11 @@ export default {
       name: 'Group Name',
       namePlaceholder: 'Enter a unique group name',
       nameRequired: 'Group name is required',
+      nameExists: 'Group name already exists',
+      nameExceedsMaxLength: 'Group name is limited to 256 characters',
       description: 'Group Description',
       descPlaceholder: 'Enter a description',
+      descriptionExceedsMaxLength: 'Group description is limited to 8000 characters',
       // define-group-step
       defineGroup: 'Define Group',
       // apply-policy-step
@@ -3627,8 +3630,11 @@ export default {
       name: 'Policy Name',
       namePlaceholder: 'Enter a unique policy name',
       nameRequired: 'Policy name is required',
+      nameExists: 'Policy name already exists',
+      nameExceedsMaxLength: 'Policy name is limited to 256 characters',
       description: 'Policy Description',
       descPlaceholder: 'Enter a description',
+      descriptionExceedsMaxLength: 'Policy description is limited to 8000 characters',
       // define-policy-step
       definePolicy: 'Define Policy',
       // apply-to-group-step

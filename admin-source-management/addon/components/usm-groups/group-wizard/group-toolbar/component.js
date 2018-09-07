@@ -9,9 +9,7 @@ import {
   isDefineGroupStepvalid,
   isApplyPolicyStepvalid,
   isReviewGroupStepvalid,
-  isWizardValid,
-  isGroupLoading,
-  hasMissingRequiredData
+  isWizardValid
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 
 import {
@@ -24,9 +22,7 @@ const stateToComputed = (state) => ({
   isDefineGroupStepvalid: isDefineGroupStepvalid(state),
   isApplyPolicyStepvalid: isApplyPolicyStepvalid(state),
   isReviewGroupStepvalid: isReviewGroupStepvalid(state),
-  isWizardValid: isWizardValid(state),
-  isGroupLoading: isGroupLoading(state),
-  hasMissingRequiredData: hasMissingRequiredData(state)
+  isWizardValid: isWizardValid(state)
 });
 
 const dispatchToActions = {
@@ -66,6 +62,7 @@ const GroupWizardToolbar = Component.extend(Notifications, {
     save() {
       const onSuccess = () => {
         this.send('success', 'adminUsm.group.saveSuccess');
+        this.get('transitionToClose')();
       };
       const onFailure = () => {
         this.send('failure', 'adminUsm.group.saveFailure');
@@ -74,8 +71,7 @@ const GroupWizardToolbar = Component.extend(Notifications, {
     },
     // cancel changes to the group
     cancel() {
-      const transitionToGroups = this.get('transitionToGroups');
-      transitionToGroups();
+      this.get('transitionToClose')();
     }
   }
 
