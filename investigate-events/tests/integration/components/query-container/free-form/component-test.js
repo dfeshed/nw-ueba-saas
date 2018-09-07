@@ -42,7 +42,7 @@ module('Integration | Component | free-form', function(hooks) {
 
   test('it triggers execute query action when user enters text and presses enter', async function(assert) {
     assert.expect(3);
-    new ReduxDataHelper(setState).pillsDataEmpty().hasRequiredValuesToQuery(true).build();
+    new ReduxDataHelper(setState).language().pillsDataEmpty().hasRequiredValuesToQuery(true).build();
 
     this.set('executeQuery', () => {
       assert.ok(true, 'Should execute query');

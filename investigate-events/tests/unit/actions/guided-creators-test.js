@@ -304,9 +304,41 @@ module('Unit | Actions | Guided Creators', function(hooks) {
     assert.deepEqual(action.payload.pillData, pillsData, 'action pillData has the right value');
   });
 
-  test('addFreeFormFilter action creator returns proper type and payload', function(assert) {
-    assert.expect(2);
+  test('addFreeFormFilter action creator returns proper type and payload, and validates if pill is not complex', function(assert) {
+    assert.expect(3);
     const thunk = guidedCreators.addFreeFormFilter('medium = 50');
+
+    const getState = () => {
+      return new ReduxDataHelper().language().build();
+    };
+
+    const dispatch = (action) => {
+      if (typeof action === 'function') {
+        const thunk3 = action;
+        thunk3(secondDispatch, getState);
+      } else {
+        assert.equal(action.type, ACTION_TYPES.REPLACE_ALL_GUIDED_PILLS, 'action has the correct type');
+        assert.deepEqual(action.payload.pillData, [
+          {
+            complexFilterText: undefined,
+            meta: 'medium',
+            operator: '=',
+            value: '50'
+          }
+        ], 'action pillData has the right value');
+      }
+    };
+    const secondDispatch = (action) => {
+      assert.equal(action.type, ACTION_TYPES.VALIDATE_GUIDED_PILL, 'action has the correct type - validate');
+    };
+
+    thunk(dispatch, getState);
+  });
+
+  test('addFreeFormFilter action creator returns proper type and payload, and does not validate if the pill is complex', function(assert) {
+    assert.expect(2);
+    const thunk = guidedCreators.addFreeFormFilter('medium = 50 && service = 443');
+    const done = assert.async();
 
     const getState = () => {
       return new ReduxDataHelper().language().build();
@@ -316,12 +348,13 @@ module('Unit | Actions | Guided Creators', function(hooks) {
       assert.equal(action.type, ACTION_TYPES.REPLACE_ALL_GUIDED_PILLS, 'action has the correct type');
       assert.deepEqual(action.payload.pillData, [
         {
-          complexFilterText: undefined,
-          meta: 'medium',
-          operator: '=',
-          value: '50'
+          complexFilterText: '(medium = 50 && service = 443)',
+          meta: undefined,
+          operator: undefined,
+          value: undefined
         }
-      ], 'action pillData has the right value');
+      ], 'action pillData has the right value and is a complex pill');
+      done();
     };
 
     thunk(dispatch, getState);

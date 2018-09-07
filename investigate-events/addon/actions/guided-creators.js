@@ -181,6 +181,9 @@ export const addFreeFormFilter = (freeFormText) => {
         pillData: [pillData]
       }
     });
+    if (!pillData.complexFilterText) {
+      dispatch(_validateGuidedPill(pillData, 0));
+    }
   };
 };
 

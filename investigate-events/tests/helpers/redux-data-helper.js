@@ -7,7 +7,7 @@ export const DEFAULT_LANGUAGES = [
   { count: 0, format: 'Text', metaName: 'c', flags: 3, displayName: 'C', formattedName: 'c (C)' },
   { count: 0, format: 'Text', metaName: 'c.1', flags: 3, displayName: 'C1', formattedName: 'c.1 (C 1)' },
   { count: 0, format: 'Text', metaName: 'c.2', flags: 3, displayName: 'C2', formattedName: 'c.2 (C 2)' },
-  { count: 0, format: 'Text', metaName: 'medium', flags: 3, displayName: 'Medium', formattedName: 'medium (Medium)' },
+  { count: 0, format: 'UInt8', metaName: 'medium', flags: -2147482541, displayName: 'Medium', formattedName: 'medium (Medium)' },
   { count: 0, format: 'Text', metaName: 'filename', flags: 3, displayName: 'File Name', formattedName: 'filename (File Name)' },
   { count: 0, format: 'Text', metaName: 'user.dst', flags: 3, displayName: 'User DST', formattedName: 'user.dst (User DST)' },
   { count: 0, format: 'Float32', metaName: 'file.entropy', flags: -2147482877, displayName: 'File Entropy', formattedName: 'file.entrophy (File Entrophy)' },

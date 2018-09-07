@@ -272,4 +272,26 @@ module('Integration | Component | query-bar', function(hooks) {
 
   });
 
+  test('Creating one filter in FreeForm, toggling to Guided will validate that pill if its not a complex pill', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .build();
+    await render(hbs`
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-bar executeQuery=executeQuery}}
+      </div>
+    `);
+
+    await click(SELECTORS.queryFormatFreeFormToggle);
+    await click(PILL_SELECTORS.freeFormInput);
+    await fillIn(PILL_SELECTORS.freeFormInput, 'medium = we');
+
+    await click(SELECTORS.queryFormatGuidedToggle);
+
+
+    assert.equal(findAll(PILL_SELECTORS.invalidPill).length, 1, 'Pill should get validated and expect an invalid pill');
+
+  });
+
 });
