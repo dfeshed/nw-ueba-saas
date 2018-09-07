@@ -24,6 +24,10 @@ export default Component.extend({
     showEditFileStatusModal() {
       if (this.get('accessControl.endpointCanManageFiles')) {
         this.set('showFileStatusModal', true);
+        const selections = this.get('itemList');
+        if (selections && selections.length === 1) {
+          this.getSavedFileStatus(selections);
+        }
       } else {
         failure('investigateFiles.noManagePermissions');
       }

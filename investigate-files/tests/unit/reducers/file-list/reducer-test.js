@@ -70,7 +70,8 @@ test('should return the initial state', function(assert) {
     contextError: null,
     contextLoadingStatus: 'wait',
     selectedFileList: [],
-    agentCountMapping: {}
+    agentCountMapping: {},
+    fileStatusData: {}
   });
 });
 
@@ -272,10 +273,12 @@ test('contextError state when context server is not reachable', function(assert)
 
 test('toggling selected file in filelist ', function(assert) {
   const previous = Immutable.from({
-    selectedFileList: []
+    selectedFileList: [],
+    fileStatusData: { status: 'Blacklsit' }
   });
   const newEndState = reducer(previous, { type: ACTION_TYPES.TOGGLE_SELECTED_FILE, payload: { id: 1, checksumSha256: 'abc' } });
   assert.deepEqual(newEndState.selectedFileList.length, 1, 'state for selected file list updating.');
+  assert.deepEqual(newEndState.fileStatusData, {});
 });
 
 test('SELECT ALL FILES in filelist ', function(assert) {
@@ -321,4 +324,28 @@ test('The GET_FILE_STATUS_HISTORY update to state', function(assert) {
   });
   const newEndState = reducer(previous, successAction);
   assert.equal(newEndState.selectedFileStatusHistory.length, 1);
+});
+
+test('The GET_FILE_STATUS update to state when valid response', function(assert) {
+  const previous = Immutable.from({
+    fileStatusData: {}
+  });
+  const successAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.GET_FILE_STATUS,
+    payload: { data: [ { resultList: [ { data: { status: 'Blacklist' } }] } ] }
+  });
+  const newEndState = reducer(previous, successAction);
+  assert.equal(newEndState.fileStatusData.status, 'Blacklist');
+});
+
+test('The GET_FILE_STATUS update to state default state', function(assert) {
+  const previous = Immutable.from({
+    fileStatusData: {}
+  });
+  const successAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.GET_FILE_STATUS,
+    payload: { data: [ { resultList: [] } ] }
+  });
+  const newEndState = reducer(previous, successAction);
+  assert.deepEqual(newEndState.fileStatusData, {});
 });

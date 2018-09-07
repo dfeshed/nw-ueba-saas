@@ -41,9 +41,11 @@
   <div class="divider"/>
   {{endpoint/file-actionbar
     onSaveFileStatus = (action 'saveFileStatus' checksums)
+    getSavedFileStatus = (action 'getSavedFileStatus')
     serviceList=serviceList
     metaName='checksumSha256'
     itemList=itemList
+    fileStatusData=data
     selectedFileCount=selectedFileCount
     getAllServices=(action 'getAllServices')}}
 </hbox>

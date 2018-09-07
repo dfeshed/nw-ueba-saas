@@ -43,7 +43,6 @@ export default Component.extend({
     const closeModal = this.get('closeModal');
     if (closeModal) {
       closeModal();
-      this.set('data', {});
     }
   },
 

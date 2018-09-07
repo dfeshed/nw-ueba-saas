@@ -4,5 +4,5 @@
   defaultAction=(action 'showEditFileStatusModal')}}
 
 {{#if showFileStatusModal}}
-  {{endpoint/edit-file-status/modal onSaveFileStatus=onSaveFileStatus itemList=itemList data=data closeModal=(action 'closeModal')}}
+  {{endpoint/edit-file-status/modal onSaveFileStatus=onSaveFileStatus itemList=itemList data=fileStatusData closeModal=(action 'closeModal')}}
 {{/if}}

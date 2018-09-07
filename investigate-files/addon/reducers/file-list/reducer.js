@@ -24,7 +24,8 @@ const fileListState = Immutable.from({
   contextLoadingStatus: 'wait',
   selectedFileList: [],
   fileData: {},
-  agentCountMapping: {}
+  agentCountMapping: {},
+  fileStatusData: {}
 });
 
 const _handleAppendFiles = (action) => {
@@ -54,7 +55,7 @@ const _toggleSelectedFile = (state, payload) => {
   } else {
     selectedList = [...selectedFileList, { id, checksumSha256, signature, size }];
   }
-  return state.merge({ 'selectedFileList': selectedList });
+  return state.merge({ 'selectedFileList': selectedList, 'fileStatusData': {} });
 
 };
 const fileListReducer = handleActions({
@@ -98,6 +99,18 @@ const fileListReducer = handleActions({
   [ACTION_TYPES.GET_LIST_OF_SERVICES]: (state, action) => {
     return handle(state, action, {
       success: (s) => s.set('listOfServices', action.payload.data)
+    });
+  },
+
+  [ACTION_TYPES.GET_FILE_STATUS]: (state, action) => {
+    return handle(state, action, {
+      success: (s) => {
+        const [payLoadData] = action.payload.data;
+        if (payLoadData && payLoadData.resultList.length) {
+          return s.set('fileStatusData', payLoadData.resultList[0].data);
+        }
+        return s;
+      }
     });
   },
 

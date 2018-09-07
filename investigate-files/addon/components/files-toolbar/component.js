@@ -9,7 +9,8 @@ import {
   getAllServices,
   saveFileStatus,
   deleteFilter,
-  applySavedFilters
+  applySavedFilters,
+  getSavedFileStatus
 } from 'investigate-files/actions/data-creators';
 
 import { setEndpointServer } from 'investigate-files/actions/endpoint-server-creators';
@@ -26,7 +27,8 @@ const stateToComputed = (state) => ({
   servers: state.endpointServer,
   serverId: state.endpointQuery.serverId,
   selectedFilterId: selectedFilterId(state),
-  savedFilter: savedFilter(state)
+  savedFilter: savedFilter(state),
+  fileStatusData: state.files.fileList.fileStatusData
 });
 
 const dispatchToActions = {
@@ -35,7 +37,8 @@ const dispatchToActions = {
   saveFileStatus,
   deleteFilter,
   applySavedFilters,
-  setEndpointServer
+  setEndpointServer,
+  getSavedFileStatus
 };
 /**
  * Toolbar that provides search filtering.
@@ -58,6 +61,11 @@ const ToolBar = Component.extend({
   @computed('savedFilter')
   filterLabel(savedFilter) {
     return savedFilter ? savedFilter.name : 'All Files';
+  },
+
+  @computed('fileStatusData')
+  data(fileStatusData) {
+    return fileStatusData ? fileStatusData.asMutable() : {};
   },
 
   @computed('filesFilters')

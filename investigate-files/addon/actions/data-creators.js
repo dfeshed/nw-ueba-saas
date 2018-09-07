@@ -15,7 +15,7 @@ import { next } from '@ember/runloop';
 import { Schema, File } from './fetch';
 import { lookup } from 'ember-dependency-lookup';
 
-import { setFileStatus, getFileStatusHistory } from 'investigate-shared/actions/api/file/file-status';
+import { setFileStatus, getFileStatusHistory, getFileStatus } from 'investigate-shared/actions/api/file/file-status';
 
 const callbacksDefault = { onSuccess() {}, onFailure() {} };
 
@@ -311,6 +311,12 @@ const saveFileStatus = (checksums, data, callbacks = callbacksDefault) => {
   };
 };
 
+const getSavedFileStatus = (selections) => ({
+  type: ACTION_TYPES.GET_FILE_STATUS,
+  promise: getFileStatus(selections)
+});
+
+
 const getFileStatusChangeHistory = (checksum, requestLatestHistory) => ({
   type: ACTION_TYPES.GET_FILE_STATUS_HISTORY,
   promise: getFileStatusHistory(checksum, requestLatestHistory),
@@ -320,7 +326,6 @@ const getFileStatusChangeHistory = (checksum, requestLatestHistory) => ({
     }
   }
 });
-
 
 // Filters
 
@@ -337,7 +342,6 @@ const applySavedFilters = (filter) => {
     dispatch(applyFilters(filter.criteria.expressionList));
   };
 };
-
 
 const fetchMachineCount = (checksums) => ({ type: ACTION_TYPES.GET_AGENTS_COUNT_SAGA, payload: checksums });
 
@@ -364,5 +368,6 @@ export {
   getFileStatusChangeHistory,
   applyFilters,
   applySavedFilters,
-  fetchMachineCount
+  fetchMachineCount,
+  getSavedFileStatus
 };

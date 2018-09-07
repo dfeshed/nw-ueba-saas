@@ -72,6 +72,10 @@ const filesConfigGen = function(environment) {
       getFileStatusHistory: {
         subscriptionDestination: '/user/queue/contexthub/file/status/get-history',
         requestDestination: '/ws/contexthub/file/status/get-history'
+      },
+      getFileStatus: {
+        subscriptionDestination: '/user/queue/contexthub/context/data-source/find',
+        requestDestination: '/ws/contexthub/context/data-source/find'
       }
     },
     'endpoint-server': {

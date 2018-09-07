@@ -21,7 +21,8 @@ import {
   selectAllFiles,
   deSelectAllFiles,
   getAllServices,
-  saveFileStatus
+  saveFileStatus,
+  getSavedFileStatus
 } from 'investigate-files/actions/data-creators';
 
 import { failure } from 'investigate-shared/utils/flash-messages';
@@ -38,8 +39,8 @@ const stateToComputed = (state) => ({
   isAllSelected: isAllSelected(state),
   selections: state.files.fileList.selectedFileList,
   checksums: checksums(state),
-  itemList: state.files.fileList.selectedFileList,
-  agentCountMapping: state.files.fileList.agentCountMapping
+  agentCountMapping: state.files.fileList.agentCountMapping,
+  fileStatusData: state.files.fileList.fileStatusData
 });
 
 const dispatchToActions = {
@@ -51,7 +52,8 @@ const dispatchToActions = {
   selectAllFiles,
   deSelectAllFiles,
   getAllServices,
-  saveFileStatus
+  saveFileStatus,
+  getSavedFileStatus
 };
 
 /**
@@ -105,12 +107,9 @@ const FileList = Component.extend({
     return this._sortList(UPDATED_COLUMNS);
   },
 
-  @computed('itemList')
-  statusData(selectedFileList) {
-    if (selectedFileList && selectedFileList.length === 1) {
-      return selectedFileList[0].fileStatusData || {};
-    }
-    return {};
+  @computed('fileStatusData')
+  data(fileStatusData) {
+    return fileStatusData ? fileStatusData.asMutable() : {};
   },
 
   _sortList(columnList) {
@@ -196,6 +195,10 @@ const FileList = Component.extend({
     beforeContextMenuShow(item) {
       if (!this.isAlreadySelected(this.get('selections'), item)) {
         this.send('toggleFileSelection', item);
+      }
+      const selections = this.get('selections');
+      if (selections && selections.length === 1) {
+        this.send('getSavedFileStatus', selections);
       }
     }
   }

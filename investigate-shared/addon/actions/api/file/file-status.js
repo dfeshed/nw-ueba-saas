@@ -18,6 +18,34 @@ const setFileStatus = (data) => {
 };
 
 /**
+ * Saving the file status to mongo
+ * @param data
+ * @returns {*}
+ * @public
+ */
+const getFileStatus = (selections) => {
+  const request = lookup('service:request');
+  const data = {
+    'filter': [
+      { 'field': 'dataSourceType',
+        'value': 'FileStatus'
+      },
+      {
+        'field': 'id',
+        'values': selections.mapBy('id')
+      }
+    ]
+  };
+  return request.promiseRequest({
+    method: 'getFileStatus',
+    modelName: 'context-service',
+    streamOptions: { requireRequestId: true },
+    query: data
+  });
+};
+
+
+/**
  * Getting the status history for the selected file
  * @param checksum
  * @param requestLatestHistory
@@ -40,5 +68,6 @@ const getFileStatusHistory = (checksum, requestLatestHistory) => {
 
 export {
   setFileStatus,
-  getFileStatusHistory
+  getFileStatusHistory,
+  getFileStatus
 };
