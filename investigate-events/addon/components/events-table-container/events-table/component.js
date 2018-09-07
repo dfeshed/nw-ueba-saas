@@ -2,7 +2,7 @@ import RsaContextMenu from 'rsa-context-menu/components/rsa-context-menu/compone
 import computed from 'ember-computed-decorators';
 import { connect } from 'ember-redux';
 import { getColumns } from 'investigate-events/reducers/investigate/data-selectors';
-import { selectedIndex } from 'investigate-events/reducers/investigate/event-results/selectors';
+import { selectedIndex, getNextPayloadSize } from 'investigate-events/reducers/investigate/event-results/selectors';
 import { metaFormatMap } from 'rsa-context-menu/utils/meta-format-selector';
 import {
   eventsGetMore,
@@ -18,6 +18,7 @@ const stateToComputed = (state) => ({
   selectedIndex: selectedIndex(state),
   items: state.investigate.eventResults.data,
   aliases: state.investigate.dictionaries.aliases,
+  nextPayloadSize: getNextPayloadSize(state),
   language: state.investigate.dictionaries.language,
   columns: getColumns(state),
   endpointId: state.investigate.queryNode.serviceId,

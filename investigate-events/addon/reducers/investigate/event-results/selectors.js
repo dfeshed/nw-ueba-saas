@@ -6,6 +6,8 @@ const { createSelector } = reselect;
 const _anchor = (state) => state.investigate.eventResults.anchor;
 const _goal = (state) => state.investigate.eventResults.goal;
 const _resultsData = (state) => state.investigate.eventResults.data;
+const _data = (state) => state.investigate.eventCount.data;
+const _streamGoal = (state) => state.investigate.eventResults.streamGoal;
 const _status = (state) => state.investigate.eventResults.status;
 const _sessionId = (state) => state.investigate.queryNode.sessionId;
 const _errorMessage = (state) => state.investigate.eventResults.message;
@@ -76,6 +78,24 @@ export const selectedIndex = createSelector(
 export const showScrollMessage = createSelector(
   [selectedIndex, _sessionId],
   (selectedIndex, sessionId) => sessionId && selectedIndex < 0
+);
+
+export const getNextPayloadSize = createSelector(
+  [_goal, _data, _streamGoal, _status],
+  (goal, data, streamGoal, status) => {
+    let nextPayloadSize = 0;
+    if (status === 'stopped') {
+      const nextPageCount = data - goal;
+      if (nextPageCount > 0) {
+        if (nextPageCount < streamGoal) {
+          nextPayloadSize = nextPageCount;
+        } else {
+          nextPayloadSize = streamGoal;
+        }
+      }
+    }
+    return nextPayloadSize;
+  }
 );
 
 /**

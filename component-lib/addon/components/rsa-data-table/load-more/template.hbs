@@ -4,6 +4,10 @@
   {{#if (is-equal status 'streaming')}}
     {{rsa-loader size="small" label=(t 'investigate.loading')}}
   {{else if (is-equal status 'stopped')}}
-    {{#rsa-form-button defaultAction=clickAction}}{{t 'investigate.loadMore'}}{{/rsa-form-button}}
+    {{#if (is-equal nextPayloadSize undefined)}}
+      {{#rsa-form-button defaultAction=clickAction}}{{t 'investigate.loadMore'}}{{/rsa-form-button}}
+    {{else if nextPayloadSize }}
+      {{#rsa-form-button defaultAction=clickAction}}{{t 'investigate.showNextXEvents' count=nextPayloadSize}}{{/rsa-form-button}}
+    {{/if}}
   {{/if}}
 {{/if}}

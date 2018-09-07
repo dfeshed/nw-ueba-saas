@@ -443,6 +443,7 @@ export default {
     title: 'Investigate',
     loading: 'Loading',
     loadMore: 'Load More',
+    showNextXEvents: 'Show next {{count}} events',
     tryAgain: 'Try Again',
     service: 'Service',
     timeRange: 'Time Range',
