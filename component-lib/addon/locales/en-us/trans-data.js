@@ -1972,6 +1972,13 @@ export default {
       serviceDownDescription: 'The Endpoint Server is not running or is inaccessible. Check with your administrator to resolve this issue.'
     },
     footer: '{{count}} of {{total}} {{label}}',
+    fileStatus: {
+      Blacklist: 'Blacklisted',
+      Graylist: 'Graylisted',
+      Whitelist: 'Whitelisted',
+      KnownGood: 'Known Good',
+      Neutral: 'Neutral'
+    },
     filter: {
       filter: 'Filters',
       filters: 'Saved Filters',
