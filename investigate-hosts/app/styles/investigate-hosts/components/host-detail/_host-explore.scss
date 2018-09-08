@@ -19,12 +19,11 @@ $result-text-color: text-color(primary, light);
   }
   &__content {
     @include border(1px, solid, primary, dark);
-    top: rsa-whitespace(less);
+    top: 3px;
+    position: relative;
     height: $search-result-content-height;
     width: 100%;
     background-color: $background-color;
-    position: absolute;
-    margin-top: rsa-whitespace(more);
     z-index: 300;
     overflow: auto;
     .rsa-content-accordion .content {
