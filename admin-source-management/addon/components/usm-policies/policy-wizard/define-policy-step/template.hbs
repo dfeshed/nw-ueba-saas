@@ -1,1 +1,28 @@
-define-policy-step
+<hbox class="all-settings">
+  <vbox xs="5" class="available-settings">
+    <div class="control">
+      <div class="label">{{t 'adminUsm.policy.availableSettings'}}</div>
+      <div class="heading">{{t 'adminUsm.policy.scanSchedule'}}</div>
+      {{#each enabledAvailableSettings as |enabledAvailableSetting|}}
+        <div class="title available-setting {{enabledAvailableSetting.id}}
+          {{if enabledAvailableSetting.isGreyedOut 'is-greyed-out' 'not-greyed-out'}}">
+          {{enabledAvailableSetting.label}}
+          <span {{action 'addToSelectedSettings' enabledAvailableSetting.id}}>
+            {{rsa-icon name="add-circle-1" style="lined"}}
+          </span>
+        </div>
+      {{/each}}
+    </div>
+  </vbox>
+  <vbox xs="4" class="selected-settings">
+    <div class="control">
+      <div class="label">{{t 'adminUsm.policy.selectedSettings'}}</div>
+      <div class="heading">{{t 'adminUsm.policy.scanSchedule'}}</div>
+      {{#each sortedSelectedSettings as |sortedSelectedSetting|}}
+        <div class="selected-setting">
+          {{component sortedSelectedSetting.callback}}
+        </div>
+      {{/each}}
+    </div>
+  </vbox>
+</hbox>

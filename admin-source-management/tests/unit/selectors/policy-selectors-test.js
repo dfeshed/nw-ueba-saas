@@ -1,7 +1,12 @@
-import { module, test } from 'qunit';
+import { module, /* test, */ skip } from 'qunit';
 import Immutable from 'seamless-immutable';
 import _ from 'lodash';
 import moment from 'moment';
+
+// ****************************************************************************
+// skipping all tests as the create policy component is being replaced...
+// we'll delete this once the new policy wizard is finished and is fully tested
+// ****************************************************************************
 
 import {
   isPolicyLoading,
@@ -55,7 +60,7 @@ const policyData = {
   'description': 'Policy Description'
 };
 
-test('isPolicyLoading selector', function(assert) {
+skip('isPolicyLoading selector', function(assert) {
   const state = _.cloneDeep(fullState);
   state.usm.policy.policyStatus = 'wait';
   assert.equal(isPolicyLoading(Immutable.from(state)), true, 'isPolicyLoading should return true when status is wait');
@@ -64,7 +69,7 @@ test('isPolicyLoading selector', function(assert) {
   assert.equal(isPolicyLoading(Immutable.from(state)), false, 'isPolicyLoading should return false when status is complete');
 });
 
-test('hasMissingRequiredData selector', function(assert) {
+skip('hasMissingRequiredData selector', function(assert) {
   const state = _.cloneDeep(fullState);
   state.usm.policy.policy = { ...policyData, name: null };
   assert.equal(hasMissingRequiredData(Immutable.from(state)), true, 'hasMissingRequiredData should return true when name is null');
@@ -79,13 +84,13 @@ test('hasMissingRequiredData selector', function(assert) {
   assert.equal(hasMissingRequiredData(Immutable.from(state)), false, 'hasMissingRequiredData should return false when populated');
 });
 
-test('currentPolicy selector', function(assert) {
+skip('currentPolicy selector', function(assert) {
   const state = _.cloneDeep(fullState);
   state.usm.policy.policy = { ...policyData };
   assert.deepEqual(currentPolicy(Immutable.from(state)), policyData, 'The returned value from the policy selector is as expected');
 });
 
-test('startDate', function(assert) {
+skip('startDate', function(assert) {
   assert.expect(2);
   const result = startDate(fullState);
   const today = moment().startOf('date').toDate().getTime();
@@ -108,7 +113,7 @@ test('startDate', function(assert) {
   assert.deepEqual(result2, moment('01/10/2018', 'MM-DD-YYYY').toDate().getTime(), 'should return unix millisecond format date');
 });
 
-test('startTime', function(assert) {
+skip('startTime', function(assert) {
   const state = {
     usm: {
       policy: {
@@ -126,7 +131,7 @@ test('startTime', function(assert) {
   assert.deepEqual(result2, '10:45', 'should return time');
 });
 
-test('weekOptions', function(assert) {
+skip('weekOptions', function(assert) {
   assert.expect(1);
   const state = {
     usm: {
@@ -151,7 +156,7 @@ test('weekOptions', function(assert) {
   assert.deepEqual(result[0], expected, 'should add label and isActive');
 });
 
-test('enabledAvailableSettings only renders settings with isEnabled set', function(assert) {
+skip('enabledAvailableSettings only renders settings with isEnabled set', function(assert) {
   assert.expect(1);
   const state = {
     usm: {
@@ -167,7 +172,7 @@ test('enabledAvailableSettings only renders settings with isEnabled set', functi
   assert.deepEqual(result.length, 1, 'availableSettingToRender should not render when isEnabled is false');
 });
 
-test('sortedSelectedSettings renders settings in the order of index', function(assert) {
+skip('sortedSelectedSettings renders settings in the order of index', function(assert) {
   assert.expect(1);
   const state = {
     usm: {
@@ -184,7 +189,7 @@ test('sortedSelectedSettings renders settings in the order of index', function(a
   assert.deepEqual(result[0].index, 1, 'selectedSettingToRender correctly sorted settings based on the index');
 });
 
-test('runIntervalConfig', function(assert) {
+skip('runIntervalConfig', function(assert) {
   assert.expect(1);
   const state = {
     usm: {

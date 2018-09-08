@@ -2,11 +2,11 @@ import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import {
   startTime
-} from 'admin-source-management/reducers/usm/policy-selectors';
+} from 'admin-source-management/reducers/usm/policy-wizard-selectors';
 import {
   updatePolicyProperty,
   removeFromSelectedSettings
-} from 'admin-source-management/actions/creators/policy-creators';
+} from 'admin-source-management/actions/creators/policy-wizard-creators';
 
 import { isEmpty } from '@ember/utils';
 

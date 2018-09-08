@@ -3,8 +3,8 @@ import { connect } from 'ember-redux';
 import {
   updatePolicyProperty,
   removeFromSelectedSettings
-} from 'admin-source-management/actions/creators/policy-creators';
-import { scanOptions } from 'admin-source-management/reducers/usm/policy-selectors';
+} from 'admin-source-management/actions/creators/policy-wizard-creators';
+import { scanOptions } from 'admin-source-management/reducers/usm/policy-wizard-selectors';
 
 const stateToComputed = (state) => ({
   scanOptions: scanOptions(state)

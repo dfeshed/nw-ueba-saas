@@ -1,12 +1,20 @@
 import { module, test } from 'qunit';
 import Immutable from 'seamless-immutable';
 import _ from 'lodash';
+import moment from 'moment';
 import ReduxDataHelper from '../../helpers/redux-data-helper';
 import {
   policy,
   visited,
   sourceTypes,
   selectedSourceType,
+  enabledAvailableSettings,
+  sortedSelectedSettings,
+  scanOptions,
+  startDate,
+  startTime,
+  weekOptions,
+  runIntervalConfig,
   nameValidator,
   descriptionValidator,
   steps,
@@ -61,6 +69,169 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
     const sourceTypeExpected = _.cloneDeep(fullState.usm.policyWizard.sourceTypes[0]);
     const sourceTypeSelected = selectedSourceType(Immutable.from(fullState));
     assert.deepEqual(sourceTypeSelected, sourceTypeExpected, 'The returned value from the selectedSourceType selector is as expected');
+  });
+
+  test('enabledAvailableSettings only renders settings with isEnabled set', function(assert) {
+    assert.expect(1);
+    const state = {
+      usm: {
+        policyWizard: {
+          availableSettings: [
+            { index: 0, id: 'schedOrManScan', isEnabled: true },
+            { index: 1, id: 'effectiveDate', isEnabled: false }
+          ]
+        }
+      }
+    };
+    const result = enabledAvailableSettings(state);
+    assert.deepEqual(result.length, 1, 'availableSettingToRender should not render when isEnabled is false');
+  });
+
+  test('sortedSelectedSettings renders settings in the order of index', function(assert) {
+    assert.expect(1);
+    const state = {
+      usm: {
+        policyWizard: {
+          selectedSettings: [
+            { index: 3, id: 'schedOrManScan' },
+            { index: 1, id: 'effectiveDate' },
+            { index: 2, id: 'cpuFrequency' }
+          ]
+        }
+      }
+    };
+    const result = sortedSelectedSettings(state);
+    assert.deepEqual(result[0].index, 1, 'selectedSettingToRender correctly sorted settings based on the index');
+  });
+
+  test('scanOptions', function(assert) {
+    const stateNoScanOptions = {
+      usm: {
+        policyWizard: {
+          policy: {
+            scheduleConfig: {
+              // scanOptions: {
+              //  cpuMaximum: 75,
+              //  cpuMaximumOnVirtualMachine: 85
+              // }
+            }
+          }
+        }
+      }
+    };
+    const result1 = scanOptions(stateNoScanOptions);
+    const expected1 = { cpuMaximum: '80', cpuMaximumOnVirtualMachine: '90' };
+    assert.deepEqual(result1, expected1, 'scanOptions correctly returns a default if state is not set');
+
+    const stateScanOptions = {
+      usm: {
+        policyWizard: {
+          policy: {
+            scheduleConfig: {
+              scanOptions: {
+                cpuMaximum: 75,
+                cpuMaximumOnVirtualMachine: 85
+              }
+            }
+          }
+        }
+      }
+    };
+    const result2 = scanOptions(stateScanOptions);
+    const expected2 = { cpuMaximum: 75, cpuMaximumOnVirtualMachine: 85 };
+    assert.deepEqual(result2, expected2, 'scanOptions correctly returns options object for cpuMaximum & cpuMaximumOnVirtualMachine');
+  });
+
+  test('startDate', function(assert) {
+    assert.expect(2);
+    const fullState = new ReduxDataHelper().policyWiz().build();
+    const result = startDate(fullState);
+    const today = moment().startOf('date').toISOString(true);
+    assert.deepEqual(result, today, 'should return today as an ISO 8601 Date String if start date is empty');
+
+    const startDateString = '2018-01-10';
+    const state2 = {
+      usm: {
+        policyWizard: {
+          policy: {
+            scheduleConfig: {
+              scheduleOptions: {
+                scanStartDate: startDateString
+              }
+            }
+          }
+        }
+      }
+    };
+    const result2 = startDate(state2);
+    const expected2 = moment(startDateString, 'YYYY-MM-DD').toISOString();
+    assert.deepEqual(result2, expected2, 'should return an ISO 8601 Date String');
+  });
+
+  test('startTime', function(assert) {
+    const state = {
+      usm: {
+        policyWizard: {
+          policy: {
+            scheduleConfig: {
+              scheduleOptions: {
+                scanStartTime: '10:45'
+              }
+            }
+          }
+        }
+      }
+    };
+    const result2 = startTime(state);
+    assert.deepEqual(result2, '10:45', 'should return time');
+  });
+
+  test('weekOptions', function(assert) {
+    assert.expect(1);
+    const state = {
+      usm: {
+        policyWizard: {
+          policy: {
+            scheduleConfig: {
+              scheduleOptions: {
+                recurrenceIntervalUnit: 'WEEKS',
+                runOnDaysOfWeek: ['SUNDAY']
+              }
+            }
+          }
+        }
+      }
+    };
+    const result = weekOptions(state);
+    const expected = {
+      'week': 'SUNDAY',
+      'isActive': true,
+      'label': 'adminUsm.policy.scheduleConfiguration.recurrenceInterval.week.SUNDAY'
+    };
+    assert.deepEqual(result[0], expected, 'should add label and isActive');
+  });
+
+  test('runIntervalConfig', function(assert) {
+    assert.expect(1);
+    const state = {
+      usm: {
+        policyWizard: {
+          policy: {
+            scheduleConfig: {
+              scheduleOptions: {
+                recurrenceIntervalUnit: 'WEEKS'
+              }
+            }
+          }
+        }
+      }
+    };
+    const result = runIntervalConfig(state);
+    const expected = {
+      'options': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
+      'runLabel': 'adminUsm.policy.scheduleConfiguration.recurrenceInterval.intervalText.WEEKS'
+    };
+    assert.deepEqual(result, expected, 'should return the processed run interval configuration');
   });
 
   test('nameValidator selector', function(assert) {

@@ -6,11 +6,11 @@ import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
 import { clickTrigger } from '../../../../../../helpers/ember-power-select';
 import { patchPowerSelect, restorePowerSelect } from '../../../../../../helpers/patch-power-select';
-
-import policyCreators from 'admin-source-management/actions/creators/policy-creators';
 import sinon from 'sinon';
+import policyWizardCreators from 'admin-source-management/actions/creators/policy-wizard-creators';
 
-let removeFromSelectedSettingsSpy, updatePolicyPropertySpy;
+let updatePolicyPropertySpy;
+const spys = [];
 
 module('Integration | Component | usm-policies/policy/schedule-config/recurrence-interval', function(hooks) {
   setupRenderingTest(hooks, {
@@ -18,19 +18,16 @@ module('Integration | Component | usm-policies/policy/schedule-config/recurrence
   });
 
   hooks.before(function() {
-    removeFromSelectedSettingsSpy = sinon.spy(policyCreators, 'removeFromSelectedSettings');
-    updatePolicyPropertySpy = sinon.spy(policyCreators, 'updatePolicyProperty');
+    spys.push(updatePolicyPropertySpy = sinon.spy(policyWizardCreators, 'updatePolicyProperty'));
   });
 
   hooks.afterEach(function() {
     restorePowerSelect();
-    removeFromSelectedSettingsSpy.reset();
-    updatePolicyPropertySpy.reset();
+    spys.forEach((s) => s.reset());
   });
 
   hooks.after(function() {
-    removeFromSelectedSettingsSpy.restore();
-    updatePolicyPropertySpy.restore();
+    spys.forEach((s) => s.restore());
   });
 
   test('should render recurrence interval fields', async function(assert) {

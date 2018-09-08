@@ -1,13 +1,13 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
-import { updatePolicyProperty, removeFromSelectedSettings } from 'admin-source-management/actions/creators/policy-creators';
+import { updatePolicyProperty, removeFromSelectedSettings } from 'admin-source-management/actions/creators/policy-wizard-creators';
 import {
   scheduleOptions,
   runIntervalConfig,
   weekOptions,
   isWeeklyInterval,
   radioButtonConfig
-} from 'admin-source-management/reducers/usm/policy-selectors';
+} from 'admin-source-management/reducers/usm/policy-wizard-selectors';
 
 const stateToComputed = (state) => ({
   schedule: scheduleOptions(state),

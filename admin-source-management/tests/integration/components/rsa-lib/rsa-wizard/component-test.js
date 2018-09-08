@@ -49,11 +49,11 @@ module('Integration | Component | rsa-lib/rsa-wizard', function(hooks) {
 
   test('The component appears in the DOM', async function(assert) {
     this.set('steps', steps);
-    this.set('currentStepId', 'testStep1');
+    this.set('initialStepId', 'testStep1');
     this.set('transitionToClose', () => {});
     await render(hbs`{{rsa-lib/rsa-wizard
       steps=steps
-      currentStepId=currentStepId
+      initialStepId=initialStepId
       transitionToClose=(action transitionToClose)}}`
     );
     assert.equal(findAll('.rsa-wizard-container').length, 1, 'The component appears in the DOM');
@@ -61,12 +61,12 @@ module('Integration | Component | rsa-lib/rsa-wizard', function(hooks) {
 
   test('A loading spinner is displayed if the isWizardLoading property is true', async function(assert) {
     this.set('steps', steps);
-    this.set('currentStepId', 'testStep1');
+    this.set('initialStepId', 'testStep1');
     this.set('transitionToClose', () => {});
     this.set('isWizardLoading', true);
     await render(hbs`{{rsa-lib/rsa-wizard
       steps=steps
-      currentStepId=currentStepId
+      initialStepId=initialStepId
       transitionToClose=(action transitionToClose)
       isWizardLoading=isWizardLoading}}`
     );
@@ -75,11 +75,11 @@ module('Integration | Component | rsa-lib/rsa-wizard', function(hooks) {
 
   test('The list of step names should be rendered', async function(assert) {
     this.set('steps', steps);
-    this.set('currentStepId', 'testStep1');
+    this.set('initialStepId', 'testStep1');
     this.set('transitionToClose', () => {});
     await render(hbs`{{rsa-lib/rsa-wizard
       steps=steps
-      currentStepId=currentStepId
+      initialStepId=initialStepId
       transitionToClose=(action transitionToClose)}}`
     );
 
@@ -100,22 +100,26 @@ module('Integration | Component | rsa-lib/rsa-wizard', function(hooks) {
 
   test('The correct initial step should be rendered', async function(assert) {
     this.set('steps', steps);
-    this.set('currentStepId', 'testStep2');
+    this.set('initialStepId', 'testStep2');
     this.set('transitionToClose', () => {});
     await render(hbs`{{rsa-lib/rsa-wizard
       steps=steps
-      currentStepId=currentStepId
+      initialStepId=initialStepId
       transitionToClose=(action transitionToClose)}}`
     );
     assert.equal(findAll('.rsa-wizard-container .testStep2').length, 1, 'Test Step 2 is rendered');
   });
 
+  // TODO probably delete this test as it probably doesn't make sense anymore
+  //      since we probably don't ever want to change currentStepId from outside the component
   test('The correct step should be rendered when changing currentStepId', async function(assert) {
     this.set('steps', steps);
+    this.set('initialStepId', 'testStep2');
     this.set('currentStepId', 'testStep2');
     this.set('transitionToClose', () => {});
     await render(hbs`{{rsa-lib/rsa-wizard
       steps=steps
+      initialStepId=initialStepId
       currentStepId=currentStepId
       transitionToClose=(action transitionToClose)}}`
     );
@@ -130,11 +134,11 @@ module('Integration | Component | rsa-lib/rsa-wizard', function(hooks) {
 
   test('The bottom button toolbar should be rendered', async function(assert) {
     this.set('steps', steps);
-    this.set('currentStepId', 'testStep1');
+    this.set('initialStepId', 'testStep1');
     this.set('transitionToClose', () => {});
     await render(hbs`{{rsa-lib/rsa-wizard
       steps=steps
-      currentStepId=currentStepId
+      initialStepId=initialStepId
       transitionToClose=(action transitionToClose)}}`
     );
     assert.equal(findAll('.rsa-wizard-container .test-toolbar').length, 1, 'Test Toolbar is rendered');
@@ -142,11 +146,11 @@ module('Integration | Component | rsa-lib/rsa-wizard', function(hooks) {
 
   test('The correct step should be rendered by triggering the transitionToStep action with Next/Previous buttons', async function(assert) {
     this.set('steps', steps);
-    this.set('currentStepId', 'testStep1');
+    this.set('initialStepId', 'testStep1');
     this.set('transitionToClose', () => {});
     await render(hbs`{{rsa-lib/rsa-wizard
       steps=steps
-      currentStepId=currentStepId
+      initialStepId=initialStepId
       transitionToClose=(action transitionToClose)}}`
     );
 
@@ -174,13 +178,13 @@ module('Integration | Component | rsa-lib/rsa-wizard', function(hooks) {
   test('The transitionToClose() closure action should be properly set and triggered', async function(assert) {
     assert.expect(1);
     this.set('steps', steps);
-    this.set('currentStepId', 'testStep1');
+    this.set('initialStepId', 'testStep1');
     this.set('transitionToClose', () => {
       assert.ok('transitionToClose() was properly triggered');
     });
     await render(hbs`{{rsa-lib/rsa-wizard
       steps=steps
-      currentStepId=currentStepId
+      initialStepId=initialStepId
       transitionToClose=(action transitionToClose)}}`
     );
     const [cancelBtn] = findAll('.rsa-wizard-container .test-toolbar .cancel-button button');

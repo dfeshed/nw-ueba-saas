@@ -6,12 +6,19 @@ const RsaWizard = Component.extend({
 
   // step objects expected to be passed in
   steps: [],
-  // current step ID initially expected to be passed in
+  // initial step ID expected to be passed in
+  initialStepId: '',
+  // current/active step ID managed internally
   currentStepId: '',
   // closure action expected to be passed in
   transitionToClose: null,
   // boolean expected to be passed in
   isWizardLoading: false,
+
+  init() {
+    this._super(...arguments);
+    this.set('currentStepId', this.get('initialStepId'));
+  },
 
   actions: {
     transitionToStep(stepId) {

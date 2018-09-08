@@ -69,11 +69,15 @@ const PolicyWizardToolbar = Component.extend(Notifications, {
     save() {
       const saveCallbacks = {
         onSuccess: () => {
-          this.send('success', 'adminUsm.policyWizard.saveSuccess');
-          this.get('transitionToClose')();
+          if (!this.isDestroyed) {
+            this.send('success', 'adminUsm.policyWizard.saveSuccess');
+            this.get('transitionToClose')();
+          }
         },
         onFailure: () => {
-          this.send('failure', 'adminUsm.policyWizard.saveFailure');
+          if (!this.isDestroyed) {
+            this.send('failure', 'adminUsm.policyWizard.saveFailure');
+          }
         }
       };
       this.send('savePolicy', this.get('policy'), saveCallbacks);

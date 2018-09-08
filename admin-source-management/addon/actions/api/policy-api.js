@@ -1,5 +1,6 @@
 // import buildExplorerQuery from './util/explorer-build-query';
 import { lookup } from 'ember-dependency-lookup';
+import { flattenObject } from 'admin-source-management/utils/object-util';
 
 /**
  * Fetches all policies.
@@ -58,7 +59,7 @@ function savePolicy(policy) {
     modelName: 'policy',
     method: 'saveRecord',
     query: {
-      data: policy
+      data: flattenObject(policy)
     }
   });
 }

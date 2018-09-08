@@ -9,18 +9,16 @@ import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
 import { patchReducer } from '../../../../../helpers/vnext-patch';
 import policyWizardCreators from 'admin-source-management/actions/creators/policy-wizard-creators';
 
-let setState;
-
-const editPolicySpy = sinon.spy(policyWizardCreators, 'editPolicy');
-
-const spys = [
-  editPolicySpy
-];
-
+let setState, editPolicySpy;
+const spys = [];
 
 module('Integration | Component | usm-policies/policy-wizard/identify-policy-step', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('admin-source-management')
+  });
+
+  hooks.before(function() {
+    spys.push(editPolicySpy = sinon.spy(policyWizardCreators, 'editPolicy'));
   });
 
   hooks.beforeEach(function() {

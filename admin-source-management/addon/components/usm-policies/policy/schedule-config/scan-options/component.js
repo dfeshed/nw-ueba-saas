@@ -28,4 +28,3 @@ const ScanOptions = Component.extend({
 });
 
 export default connect(stateToComputed, dispatchToActions)(ScanOptions);
-

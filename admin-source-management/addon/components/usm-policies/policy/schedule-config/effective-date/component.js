@@ -1,12 +1,13 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
+import moment from 'moment';
 import {
   startDate
-} from 'admin-source-management/reducers/usm/policy-selectors';
+} from 'admin-source-management/reducers/usm/policy-wizard-selectors';
 import {
   updatePolicyProperty,
   removeFromSelectedSettings
-} from 'admin-source-management/actions/creators/policy-creators';
+} from 'admin-source-management/actions/creators/policy-wizard-creators';
 
 import { isEmpty } from '@ember/utils';
 
@@ -27,7 +28,7 @@ const EffectiveDate = Component.extend({
   actions: {
     onDateChange(selectedDates) {
       if (!isEmpty(selectedDates[0])) {
-        this.send('updatePolicyProperty', 'scanStartDate', selectedDates[0].getTime());
+        this.send('updatePolicyProperty', 'scanStartDate', moment(selectedDates[0]).format('YYYY-MM-DD'));
       }
     }
   }

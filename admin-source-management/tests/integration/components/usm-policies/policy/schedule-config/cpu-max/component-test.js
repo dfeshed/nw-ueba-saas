@@ -3,12 +3,11 @@ import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { render, findAll, click } from '@ember/test-helpers';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-
-import policyCreators from 'admin-source-management/actions/creators/policy-creators';
 import sinon from 'sinon';
+import policyWizardCreators from 'admin-source-management/actions/creators/policy-wizard-creators';
 
 let removeFromSelectedSettingsSpy, updatePolicyPropertySpy;
-
+const spys = [];
 
 module('Integration | Component | usm-policies/policy/schedule-config/cpu-max', function(hooks) {
   setupRenderingTest(hooks, {
@@ -16,18 +15,16 @@ module('Integration | Component | usm-policies/policy/schedule-config/cpu-max', 
   });
 
   hooks.before(function() {
-    removeFromSelectedSettingsSpy = sinon.spy(policyCreators, 'removeFromSelectedSettings');
-    updatePolicyPropertySpy = sinon.spy(policyCreators, 'updatePolicyProperty');
+    spys.push(removeFromSelectedSettingsSpy = sinon.spy(policyWizardCreators, 'removeFromSelectedSettings'));
+    spys.push(updatePolicyPropertySpy = sinon.spy(policyWizardCreators, 'updatePolicyProperty'));
   });
 
   hooks.afterEach(function() {
-    removeFromSelectedSettingsSpy.reset();
-    updatePolicyPropertySpy.reset();
+    spys.forEach((s) => s.reset());
   });
 
   hooks.after(function() {
-    removeFromSelectedSettingsSpy.restore();
-    updatePolicyPropertySpy.restore();
+    spys.forEach((s) => s.restore());
   });
 
   test('should render the cpu max component', async function(assert) {

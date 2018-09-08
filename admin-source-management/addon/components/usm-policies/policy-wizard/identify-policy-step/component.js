@@ -29,6 +29,9 @@ const IdentifyPolicyStep = Component.extend({
   tagName: 'vbox',
   classNames: ['identify-policy-step', 'scroll-box', 'rsa-wizard-step'],
 
+  // step object required to be passed in
+  // step: null, // the wizard passes this in but we're not using it (yet anyway) - uncomment if/when needed
+
   // edit the policy using fully qualified field name (e.g., 'policy.name')
   edit(field, value) {
     if (field && value !== undefined) {

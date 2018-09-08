@@ -125,4 +125,3 @@ export const runIntervalConfig = createSelector(
     return { runLabel, options };
   }
 );
-

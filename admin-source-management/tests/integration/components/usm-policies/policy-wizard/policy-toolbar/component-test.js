@@ -11,18 +11,16 @@ import { patchFlash } from '../../../../../helpers/patch-flash';
 import { throwSocket } from '../../../../../helpers/patch-socket';
 import policyWizardCreators from 'admin-source-management/actions/creators/policy-wizard-creators';
 
-let setState;
-
-const savePolicySpy = sinon.spy(policyWizardCreators, 'savePolicy');
-
-const spys = [
-  savePolicySpy
-];
-
+let setState, savePolicySpy;
+const spys = [];
 
 module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', function(hooks) {
   setupRenderingTest(hooks, {
     resolver: engineResolverFor('admin-source-management')
+  });
+
+  hooks.before(function() {
+    spys.push(savePolicySpy = sinon.spy(policyWizardCreators, 'savePolicy'));
   });
 
   hooks.beforeEach(function() {
@@ -73,8 +71,8 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
     assert.equal(findAll('.cancel-button:not(.is-disabled)').length, 1, 'The Cancel button appears in the DOM and is enabled');
   });
 
-  test('Toolbar actions for Identify Policy step with valid data', async function(assert) {
-    assert.expect(4);
+  test('Toolbar closure actions for Identify Policy step with valid data', async function(assert) {
+    assert.expect(2);
     const state = new ReduxDataHelper(setState)
       .policyWiz()
       .policyWizName('test name')
@@ -98,15 +96,6 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
     const [nextBtnEl] = findAll('.next-button:not(.is-disabled) button');
     await click(nextBtnEl);
 
-    // clicking the save-button should dispatch the savePolicy action
-    const [saveBtnEl] = findAll('.save-button:not(.is-disabled) button');
-    await click(saveBtnEl);
-    settled().then(() => {
-      assert.ok(savePolicySpy.calledOnce, 'The savePolicy action was called once by Save');
-      // only checking first arg as second arg will be a Function that lives in the Component
-      assert.equal(savePolicySpy.getCall(0).args[0], state.usm.policyWizard.policy);
-    });
-
     // clicking the cancel-button should call transitionToClose()
     // update transitionToClose for cancel-button
     this.set('transitionToClose', () => {
@@ -114,6 +103,33 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
     });
     const [cancelBtnEl] = findAll('.cancel-button:not(.is-disabled) button');
     await click(cancelBtnEl);
+  });
+
+  test('Toolbar save action for Identify Policy step with valid data', async function(assert) {
+    assert.expect(2);
+    const state = new ReduxDataHelper(setState)
+      .policyWiz()
+      .policyWizName('test name')
+      .build();
+    this.set('step', state.usm.policyWizard.steps[0]);
+    this.set('transitionToStep', () => {});
+    this.set('transitionToClose', () => {});
+    await render(hbs`{{usm-policies/policy-wizard/policy-toolbar
+      step=step
+      transitionToStep=(action transitionToStep)
+      transitionToClose=(action transitionToClose)}}`
+    );
+
+    // skip prev-button & publish-button since they aren't rendered
+
+    // clicking the save-button should dispatch the savePolicy action
+    const [saveBtnEl] = findAll('.save-button:not(.is-disabled) button');
+    await click(saveBtnEl);
+    return settled().then(() => {
+      assert.ok(savePolicySpy.calledOnce, 'The savePolicy action was called once by Save');
+      // only checking first arg as second arg will be a Function that lives in the Component
+      assert.equal(savePolicySpy.getCall(0).args[0], state.usm.policyWizard.policy);
+    });
   });
 
   test('On failing to save a policy, an error flash message is shown', async function(assert) {

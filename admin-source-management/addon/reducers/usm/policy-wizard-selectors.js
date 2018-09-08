@@ -1,6 +1,9 @@
 import reselect from 'reselect';
 import { isBlank, isPresent } from '@ember/utils';
+import _ from 'lodash';
+import moment from 'moment';
 import { exceedsLength } from './util/selector-helpers';
+import { RADIO_BUTTONS_CONFIG, SCAN_SCHEDULE_CONFIG } from 'admin-source-management/utils/settings';
 
 const { createSelector } = reselect;
 
@@ -62,6 +65,107 @@ export const selectedSourceType = createSelector(
       }
     }
     return selected;
+  }
+);
+
+const availableSettings = (state) => state.usm.policyWizard.availableSettings || {};
+const selectedSettings = (state) => state.usm.policyWizard.selectedSettings || {};
+
+export const enabledAvailableSettings = createSelector(
+  availableSettings,
+  (availableSettings) => {
+    return availableSettings.filter((el) => el.isEnabled);
+  }
+);
+
+export const sortedSelectedSettings = createSelector(
+  selectedSettings,
+  (selectedSettings) => {
+    return _.sortBy(selectedSettings, 'index');
+  }
+);
+
+const weeks = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
+// Key is type
+const COUNTER = {
+  'DAYS': [1, 2, 3, 4, 5, 6, 10, 15, 20],
+  'WEEKS': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
+};
+
+export const scheduleConfig = (state) => state.usm.policyWizard.policy.scheduleConfig || {};
+export const radioButtonConfig = () => RADIO_BUTTONS_CONFIG;
+export const scanScheduleConfig = () => SCAN_SCHEDULE_CONFIG;
+
+export const scheduleOptions = createSelector(
+  scheduleConfig,
+  (scheduleConfig) => _.cloneDeep(scheduleConfig.scheduleOptions) || {}
+);
+
+export const scanOptions = createSelector(
+  scheduleConfig,
+  (scheduleConfig) => scheduleConfig.scanOptions || { cpuMaximum: '80', cpuMaximumOnVirtualMachine: '90' }
+);
+
+/**
+ * The state stores the scanStartDate as a YYYY-MM-DD formatted string,
+ * but the rsa-form-datetime component needs a Date Object, Timestamp, or an ISO 8601 Date String,
+ * so we'll convert it to an ISO 8601 Date String here
+ * @public
+ */
+export const startDate = createSelector(
+  scheduleOptions,
+  (scheduleOptions) => {
+    const scanStartDate = scheduleOptions.scanStartDate ? moment(scheduleOptions.scanStartDate, 'YYYY-MM-DD') : moment().startOf('date');
+    return scanStartDate.toISOString(true);
+  }
+);
+
+export const startTime = createSelector(
+  scheduleOptions,
+  (scheduleOptions) => {
+    return scheduleOptions.scanStartTime ? scheduleOptions.scanStartTime : '10:00';
+  }
+);
+
+const intervalType = createSelector(
+  scheduleOptions,
+  (schedule) => schedule.recurrenceIntervalUnit || 'DAYS'
+);
+
+export const isWeeklyInterval = createSelector(
+  intervalType,
+  (intervalUnit) => intervalUnit === 'WEEKS'
+);
+
+const runOnDaysOfWeek = createSelector(
+  scheduleOptions,
+  (schedule) => schedule.runOnDaysOfWeek || []
+);
+
+export const weekOptions = createSelector(
+  intervalType, runOnDaysOfWeek,
+  (intervalType, runOnDaysOfWeek) => {
+    if (intervalType === 'WEEKS') {
+      const config = weeks.map((week) => {
+        const label = `adminUsm.policy.scheduleConfiguration.recurrenceInterval.week.${week}`;
+        return {
+          label,
+          week,
+          isActive: runOnDaysOfWeek.includes(week)
+        };
+      });
+      return config;
+    }
+    return null;
+  }
+);
+
+export const runIntervalConfig = createSelector(
+  intervalType,
+  (intervalType) => {
+    const runLabel = `adminUsm.policy.scheduleConfiguration.recurrenceInterval.intervalText.${intervalType}`;
+    const options = COUNTER[intervalType];
+    return { runLabel, options };
   }
 );
 

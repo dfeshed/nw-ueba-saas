@@ -1,4 +1,4 @@
-import { module, test } from 'qunit';
+import { module, /* test, */ skip } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { findAll, render, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
@@ -7,6 +7,11 @@ import { patchReducer } from '../../../../../helpers/vnext-patch';
 import Immutable from 'seamless-immutable';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+
+// ****************************************************************************
+// skipping all tests as the create policy component is being replaced...
+// we'll delete this once the new policy wizard is finished and is fully tested
+// ****************************************************************************
 
 let setState, redux;
 const initialState = {
@@ -48,12 +53,12 @@ module('Integration | Component | usm-policies/policy/schedule-config', function
     this.owner.lookup('service:timeFormat').set('selected', 'HR12');
   });
 
-  test('should render the schedule date and time field', async function(assert) {
+  skip('should render the schedule date and time field', async function(assert) {
     await render(hbs`{{usm-policies/policy/schedule-config}}`);
     assert.equal(findAll('.schedule-time').length, 2, 'date and time field present');
   });
 
-  test('toggling the enable schedule button', async function(assert) {
+  skip('toggling the enable schedule button', async function(assert) {
     new ReduxDataHelper(setState)
       .policy(initialState.policy)
       .fetchPolicyStatus('complete')

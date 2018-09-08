@@ -1,4 +1,4 @@
-import { module, test, skip } from 'qunit';
+import { module, /* test, */ skip } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
 import { click, findAll, render } from '@ember/test-helpers';
@@ -8,6 +8,11 @@ import Immutable from 'seamless-immutable';
 import { patchReducer } from '../../../../helpers/vnext-patch';
 import { patchFlash } from '../../../../helpers/patch-flash';
 import { throwSocket } from '../../../../helpers/patch-socket';
+
+// ****************************************************************************
+// skipping all tests as the create policy component is being replaced...
+// we'll delete this once the new policy wizard is finished and is fully tested
+// ****************************************************************************
 
 const initialState = {
   policy: {
@@ -71,13 +76,13 @@ module('Integration | Component | usm-policies/policy', function(hooks) {
 
   });
 
-  test('Save button is disabled when there is no policy name', async function(assert) {
+  skip('Save button is disabled when there is no policy name', async function(assert) {
     setState({ ...initialState });
     await render(hbs`{{usm-policies/policy}}`);
     assert.equal(findAll('.confirm-button.is-disabled').length, 1, 'The Save button is disabled when there is no policy name');
   });
 
-  test('On failing to save a policy, an error flash message is shown', async function(assert) {
+  skip('On failing to save a policy, an error flash message is shown', async function(assert) {
     assert.expect(2);
     setState({ ...initialState, policy: policyData });
     this.set('transitionToPolicies', () => {}); // avoid annoying console error
@@ -117,19 +122,19 @@ module('Integration | Component | usm-policies/policy', function(hooks) {
     await click(el);
   });
 
-  test('A loading spinner is displayed if the policyStatus property is "wait"', async function(assert) {
+  skip('A loading spinner is displayed if the policyStatus property is "wait"', async function(assert) {
     setState({ ...initialState, policyStatus: 'wait' });
     await render(hbs`{{usm-policies/policy}}`);
     assert.equal(findAll('.loading-overlay .rsa-loader').length, 1, 'A loading spinner appears');
   });
 
-  test('All the components in the available settings is rendered on the UI', async function(assert) {
+  skip('All the components in the available settings is rendered on the UI', async function(assert) {
     setState({ ...initialState });
     await render(hbs`{{usm-policies/policy}}`);
     assert.equal(findAll('.available-settings .available-setting').length, 6, 'All available settings rendered on the UI');
   });
 
-  test('All the components in the selected settings is rendered on the UI ', async function(assert) {
+  skip('All the components in the selected settings is rendered on the UI ', async function(assert) {
     const newSelectedSettings = [
       { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
       { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: false, isGreyedOut: true, callback: 'usm-policies/policy/schedule-config/effective-date' }
@@ -139,37 +144,37 @@ module('Integration | Component | usm-policies/policy', function(hooks) {
     assert.equal(findAll('.selected-settings .selected-setting').length, 2, 'All selected settings rendered on the UI');
   });
 
-  test('Effective date component should be greyed out by default', async function(assert) {
+  skip('Effective date component should be greyed out by default', async function(assert) {
     setState({ ...initialState });
     await render(hbs`{{usm-policies/policy}}`);
     assert.equal(findAll('.available-settings .effectiveDate')[0].classList.contains('is-greyed-out'), true, 'Effective date component should be greyed out by default');
   });
 
-  test('Scan frequency component greyed out by default', async function(assert) {
+  skip('Scan frequency component greyed out by default', async function(assert) {
     setState({ ...initialState });
     await render(hbs`{{usm-policies/policy}}`);
     assert.equal(findAll('.available-settings .recurrenceInterval')[0].classList.contains('is-greyed-out'), true, 'Scan frequency component should be greyed out by default');
   });
 
-  test('Start Time component greyed out by default', async function(assert) {
+  skip('Start Time component greyed out by default', async function(assert) {
     setState({ ...initialState });
     await render(hbs`{{usm-policies/policy}}`);
     assert.equal(findAll('.available-settings .startTime')[0].classList.contains('is-greyed-out'), true, 'Start Time component should be greyed out by default');
   });
 
-  test('CPU Maximum component greyed out by default', async function(assert) {
+  skip('CPU Maximum component greyed out by default', async function(assert) {
     setState({ ...initialState });
     await render(hbs`{{usm-policies/policy}}`);
     assert.equal(findAll('.available-settings .cpuMax')[0].classList.contains('is-greyed-out'), true, 'CPU Maximum component should be greyed out by default');
   });
 
-  test('Virtual Machine Maximum component greyed out by default', async function(assert) {
+  skip('Virtual Machine Maximum component greyed out by default', async function(assert) {
     setState({ ...initialState });
     await render(hbs`{{usm-policies/policy}}`);
     assert.equal(findAll('.available-settings .vmMax')[0].classList.contains('is-greyed-out'), true, 'Virtual Machine Maximum component should be greyed out by default');
   });
 
-  test('No available settings should be rendered when isEnabled flag is false', async function(assert) {
+  skip('No available settings should be rendered when isEnabled flag is false', async function(assert) {
     const newAvailableSettings = [
       { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: false, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
       { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: false, isGreyedOut: true, callback: 'usm-policies/policy/schedule-config/effective-date' }
@@ -179,7 +184,7 @@ module('Integration | Component | usm-policies/policy', function(hooks) {
     assert.equal(findAll('.available-settings .available-setting').length, 0, 'No available settings should be rendered when isEnabled flag is false');
   });
 
-  test('No other selected settings should be rendered when scanScheduleId is not in the selected settings ', async function(assert) {
+  skip('No other selected settings should be rendered when scanScheduleId is not in the selected settings ', async function(assert) {
     const newSelectedSettings = [
       { index: 0, id: 'schedOrManScan', label: 'Scheduled or Manual Scan', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/scan-schedule' },
       { index: 1, id: 'effectiveDate', label: 'Effective Date', isEnabled: true, isGreyedOut: false, callback: 'usm-policies/policy/schedule-config/effective-date' }
