@@ -335,7 +335,7 @@ const applySavedFilters = (filter) => {
 
 const fetchMachineCount = (checksums) => ({ type: ACTION_TYPES.GET_AGENTS_COUNT_SAGA, payload: checksums });
 
-const _getMetaValues = (dispatch, { queryNode, metaName, checksum, size = 1, onComplete }) => {
+const _getMetaValues = (dispatch, { filter, queryNode, metaName, size = 1, onComplete }) => {
   const query = { ...queryNode };
   query.metaFilter = {
     conditions: [
@@ -344,8 +344,7 @@ const _getMetaValues = (dispatch, { queryNode, metaName, checksum, size = 1, onC
         operator: '=',
         value: '\'nwendpoint\''
       },
-
-      { value: `(checksum = \'${checksum}\')` }
+      filter
     ]
   };
 
@@ -384,12 +383,30 @@ const fetchHostNameList = (checksum) => {
     const { fileList: { agentCountMapping } } = getState().files;
     const size = agentCountMapping && agentCountMapping[checksum] ? agentCountMapping[checksum] : 20;
     const input = {
+      filter: { value: `(checksum = \'${checksum}\')` },
       queryNode,
-      checksum,
       size,
       metaName: 'alias.host',
       onComplete: (data) => {
         dispatch({ type: ACTION_TYPES.SET_HOST_NAME_LIST, payload: data });
+      }
+    };
+    _getMetaValues(dispatch, input);
+  };
+};
+
+const fetchAgentId = (hostName, callBack) => {
+  return (dispatch, getState) => {
+    const queryNode = getState().investigateQuery;
+    const input = {
+      queryNode,
+      filter: { value: `(alias.host = \'${hostName}\')` },
+      size: 1,
+      metaName: 'agent.id',
+      onComplete: (data) => {
+        if (callBack) {
+          callBack(data);
+        }
       }
     };
     _getMetaValues(dispatch, input);
@@ -420,5 +437,6 @@ export {
   applySavedFilters,
   fetchMachineCount,
   getSavedFileStatus,
-  fetchHostNameList
+  fetchHostNameList,
+  fetchAgentId
 };
