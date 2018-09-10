@@ -15,3 +15,15 @@ test('creates proper query hash', function(assert) {
     'hash is created properly'
   );
 });
+test('creates proper query hash for values which are null or undefined', function(assert) {
+  const pills = [
+    { meta: 'a', operator: 'b', value: null, complexFilterText: undefined },
+    { meta: 'e', operator: 'f', value: 'g', complexFilterText: 'h' }
+  ];
+  const hash = createQueryHash('service', 'sTime', 'eTime', pills);
+  assert.equal(
+    hash,
+    'service-sTime-eTime-a-b-undefined-undefined-e-f-g-h',
+    'hash is created properly'
+  );
+});
