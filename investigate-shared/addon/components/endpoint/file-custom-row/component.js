@@ -24,6 +24,7 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
       {
         label: 'Pivot to Investigate',
         icon: 'expand-6',
+        iconStyle: 'lined',
         disabled() {
           return (cntx.get('selections').length > 1);
         },
@@ -34,21 +35,25 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
       {
         label: 'Edit File Status',
         icon: 'pencil-write-2',
+        iconStyle: 'lined',
         action() {
           cntx.editFileStatus(cntx.get('item'));
         }
       },
       {
         label: 'Watch',
-        icon: 'binoculars'
+        icon: 'binoculars',
+        iconStyle: 'lined'
       },
       {
         label: 'Download',
-        icon: 'download-2'
+        icon: 'download-2',
+        iconStyle: 'lined'
       },
       {
         label: 'More',
-        icon: 'navigation-show-more-1'
+        icon: 'navigation-show-more-1',
+        iconStyle: 'lined'
       }
     ];
   },
