@@ -548,13 +548,15 @@ export default {
       }
     },
     queryStats: {
-      header: "Queried <strong class='service'>{{service}}</strong> for events that occurred between <strong class='start-date'>{{startDate}}</strong> and <strong class='end-date'>{{endDate}}</strong>",
+      queried: 'Service queried:',
+      between: 'Time range:',
       progress: 'Progress:',
       complete: 'Complete',
       closedLabel: 'Click to open or close the query console.',
       disabledLabel: 'The query console will become available once a query is initiated.',
       copy: 'Click to copy query filters:',
-      disabledCopy: 'Click to copy will become available when filters are present.'
+      disabledCopy: 'Click to copy will become available when filters are present.',
+      warning: 'Warning'
     },
     generic: {
       loading: 'Loading data...',

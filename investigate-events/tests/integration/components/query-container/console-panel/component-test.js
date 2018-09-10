@@ -46,12 +46,11 @@ module('Integration | Component | Console Panel', function(hooks) {
       {{query-container/console-panel timeFormat=timeFormat dateFormat=dateFormat}}
     `);
 
+    assert.equal(findAll('.console-panel .warnings .warning').length, 0);
     assert.equal(findAll('.console-panel .console-content').length, 1);
-    assert.equal(findAll('.console-panel .console-content h3 .service').length, 1);
-    assert.equal(findAll('.console-panel .console-content h3 .start-date').length, 1);
-    assert.equal(find('.console-panel .console-content h3 .start-date').textContent, moment(sDate).format(format));
-    assert.equal(findAll('.console-panel .console-content h3 .end-date').length, 1);
-    assert.equal(find('.console-panel .console-content h3 .end-date').textContent, moment(eDate).format(format));
+    assert.equal(findAll('.console-panel .console-content .service').length, 1);
+    assert.equal(findAll('.console-panel .console-content .timerange').length, 1);
+    assert.equal(find('.console-panel .console-content .timerange .value').textContent, `${moment(sDate).format(format)} - ${moment(eDate).format(format)}`);
     assert.equal(find('.console-panel .console-content .progress .value').textContent, 'foo');
   });
 
@@ -72,5 +71,15 @@ module('Integration | Component | Console Panel', function(hooks) {
     assert.equal(findAll('.console-panel.has-error .console-content').length, 1);
     assert.equal(find('.console-panel .console-content .progress .value').textContent, 'error');
   });
+
+  test('renders warnings', async function(assert) {
+    new ReduxDataHelper(setState).hasRequiredValuesToQuery(true).queryStats().queryStatsHasWarning().build();
+    await render(hbs`
+      {{query-container/console-panel}}
+    `);
+    assert.equal(findAll('.console-panel .warnings .warning').length, 1);
+    assert.equal(find('.console-panel .console-content .progress .value').textContent, 'warning');
+  });
+
 
 });

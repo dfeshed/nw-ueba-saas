@@ -38,7 +38,7 @@ export default {
     //     percent: 100,
     //     completed: true,
     //     devices: [{
-    //       serviceId: 'foo',
+    //       serviceId: '555d9a6fe4b0d37c827d402e',
     //       on: false,
     //       elapsedTime: 2000
     //     }]
@@ -61,7 +61,7 @@ export default {
     //   data: [],
     //   meta: {
     //     completed: false,
-    //     fatal: 'Syntax Error'
+    //     error: 'Syntax Error'
     //   }
     // }];
 
@@ -95,11 +95,11 @@ export default {
     //     description: 'Deduplicating and sorting 0 results',
     //     percent: 100,
     //     devices: [{
-    //       serviceId: 'foo',
+    //       serviceId: '555d9a6fe4b0d37c827d402e',
     //       on: true,
     //       elapsedTime: 2000
     //     }, {
-    //       serviceId: 'bar',
+    //       serviceId: '555d9a6fe4b0d37c827d402d',
     //       on: false,
     //       elapsedTime: 2000
     //     }]
@@ -122,15 +122,17 @@ export default {
     //   data: [],
     //   meta: {
     //     description: 'Collecting index summaries',
-    //     percent: 33
-    //   },
+    //     percent: 33,
+    //     serviceId: '555d9a6fe4b0d37c827d402e',
+    //     warning: 'some error message'
+    //   }
     // }, {
     //   data: [],
     //   meta: {
     //     description: 'Scanning index pages',
     //     percent: 66,
-    //     serviceId: 'foo',
-    //     error: 'some error message about foo'
+    //     serviceId: '555d9a6fe4b0d37c827d402d',
+    //     warning: 'some error message'
     //   }
     // }, {
     //   data: [],

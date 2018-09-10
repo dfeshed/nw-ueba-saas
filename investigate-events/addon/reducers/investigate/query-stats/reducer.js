@@ -29,17 +29,17 @@ export default handleActions({
       devices: payload.devices
     };
 
-    if (payload.fatal) {
+    if (payload.error) {
       updatedState.errors = [{
         serviceId: payload.serviceId,
-        error: payload.fatal
+        error: payload.error
       }, ...state.errors];
     }
 
-    if (payload.error) {
+    if (payload.warning) {
       updatedState.warnings = [{
         serviceId: payload.serviceId,
-        warning: payload.error
+        warning: payload.warning
       }, ...state.warnings];
     }
 

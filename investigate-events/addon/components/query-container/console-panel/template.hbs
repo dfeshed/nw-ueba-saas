@@ -1,14 +1,24 @@
 <div class="console-content">
-  <h3>
-    {{t 'investigate.queryStats.header'
-      service=selectedService.displayName
-      startDate=formattedStartDate
-      endDate=formattedEndDate
-    }}
-  </h3>
+  <div class="service">
+    <span class="label">{{t 'investigate.queryStats.queried'}}</span>
+    <span class="value">{{selectedService.displayName}}</span>
+  </div>
 
-  {{#if filters}}
+  <div class="timerange">
+    <span class="label">{{t 'investigate.queryStats.between'}}</span>
+    <span class="value">{{formattedStartDate}} - {{formattedEndDate}}</span>
+  </div>
+
+  {{#if filters.length}}
     <code>{{filters}}</code>
+  {{/if}}
+
+  {{#if warnings.length}}
+    <ul class="warnings">
+      {{#each warnings as |w|}}
+        {{query-container/console-panel/warning message=w.warning service=w.serviceName}}
+      {{/each}}
+    </ul>
   {{/if}}
 
   {{#if description}}

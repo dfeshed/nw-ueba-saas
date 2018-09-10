@@ -163,17 +163,17 @@
       .query-bar-options {
         @include border(1px, solid, secondary);
       }
+    }
 
-      &.console-has-error {
-        .query-bar-options {
-          @include border(1px, solid, accentOne);
-        }
+    &.console-has-error {
+      .query-bar-options {
+        @include border(1px, solid, accentOne);
       }
+    }
 
-      &.console-has-warning {
-        .query-bar-options {
-          @include border(1px, solid, accentThree);
-        }
+    &.console-has-warning {
+      .query-bar-options {
+        @include border(1px, solid, accentThree);
       }
     }
 
@@ -197,31 +197,75 @@
         box-shadow: 1px 1px 1px background-color(neutral, dark);
 
         h3 {
-          color: text-color(primary, light);
+          color: text-color(primary, lightest);
           margin: rsa-whitespace();
-
-          strong {
-            color: text-color(primary, lightest);
-            font-weight: bold;
-          }
         }
 
         code {
-          margin: rsa-whitespace();
+          margin: 0 rsa-whitespace() rsa-whitespace();
           color: text-color(primary, light);
           font-size: .85rem;
         }
 
-        .progress {
-          margin: rsa-whitespace() rsa-whitespace(most) rsa-whitespace() rsa-whitespace();
+        &.has-error {
+          .console-content {
+            border: 1px solid border-color(accentOne);
+            border-top: 1px solid border-color(primary, dark);
+          }
+        }
+
+        &.has-warning {
+          .console-content {
+            border: 1px solid border-color(accentThree);
+            border-top: 1px solid border-color(primary, dark);
+          }
+        }
+
+        .warnings {
+          margin: 0 rsa-whitespace();
+          position: relative;
+          top: calc(#{rsa-whitespace(less)} * -1);
+
+          li {
+            color: text-color(primary, light);
+            line-height: 1.75rem;
+
+            strong {
+              font-weight: bold;
+              color: text-color(primary, lightest);
+            }
+
+            i {
+              color: text-color(accentThree);
+              margin-right: rsa-whitespace(least);
+              position: relative;
+              top: 3px;
+            }
+
+            .message {
+              margin-left: rsa-whitespace(less);
+            }
+          }
+        }
+
+        .progress, .service, .timerange {
+          margin: rsa-whitespace(least) rsa-whitespace(most) rsa-whitespace() rsa-whitespace();
+          color: text-color(primary, light);
 
           .label {
             font-weight: bold;
+            color: text-color(primary, lightest);
           }
 
           .value {
             margin-left: rsa-whitespace(less);
           }
+        }
+
+        .service,
+        .timerange {
+          margin: rsa-whitespace();
+          display: inline-block;
         }
 
         .console-content {
@@ -231,21 +275,7 @@
           max-height: 20rem;
           height: auto;
           border: 1px solid border-color(secondary);
-
-          &.has-error {
-            border: 1px solid border-color(accentOne);
-          }
-
-          &.has-warning {
-            border: 1px solid border-color(accentThree);
-          }
-
           border-top: 1px solid border-color(primary, dark);
-
-          .console-content {
-            height: auto;
-            overflow: auto;
-          }
         }
       }
 
@@ -286,20 +316,37 @@
           color: text-color(secondary);
         }
 
-        &.has-warning {
-          color: text-color(accentThree);
-        }
-
-        &.has-error {
-          color: text-color(accentOne);
-        }
-
         &:hover:not(.is-disabled) {
           color: text-color(secondary, lighter);
         }
 
         &:active:not(.is-disabled) {
           color: text-color(secondary);
+        }
+
+        &.has-warning {
+          top: rsa-whitespace(less);
+          color: text-color(accentThree);
+
+          &:hover {
+            color: text-color(accentThree, lighter);
+          }
+
+          &:active {
+            color: text-color(accentThree);
+          }
+        }
+
+        &.has-error {
+          top: rsa-whitespace(less);
+          color: text-color(accentOne);
+          &:hover {
+            color: text-color(accentOne, lighter);
+          }
+
+          &:active {
+            color: text-color(accentOne);
+          }
         }
       }
     }

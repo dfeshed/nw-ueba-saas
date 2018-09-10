@@ -9,6 +9,7 @@ const _deviceStats = (state) => state.investigate.queryStats.devices;
 const _percent = (state) => state.investigate.queryStats.percent;
 const _errors = (state) => state.investigate.queryStats.errors;
 const _warnings = (state) => state.investigate.queryStats.warnings;
+const _services = (state) => state.investigate.services.serviceData;
 
 // SELECTOR FUNCTIONS
 
@@ -75,5 +76,21 @@ export const isProgressBarDisabled = createSelector(
   [_percent, _description],
   (percent, description) => {
     return (percent === 0) && description === 'Queued';
+  }
+);
+
+export const warningsWithServiceName = createSelector(
+  [_warnings, _services],
+  (warnings, services) => {
+    if (!warnings || !services) {
+      return;
+    } else {
+      return warnings.map((w) => {
+        return {
+          ...w,
+          serviceName: services.findBy('id', w.serviceId).displayName
+        };
+      });
+    }
   }
 );

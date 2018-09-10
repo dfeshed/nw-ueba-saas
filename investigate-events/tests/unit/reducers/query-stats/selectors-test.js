@@ -7,7 +7,8 @@ import {
   hasWarning,
   hasError,
   serviceshasErrorOrWarning,
-  isConsoleEmpty
+  isConsoleEmpty,
+  warningsWithServiceName
 } from 'investigate-events/reducers/investigate/query-stats/selectors';
 
 module('Unit | Selectors | queryStats');
@@ -183,4 +184,29 @@ test('isProgressBarDisabled', function(assert) {
       }
     }
   }), false);
+});
+
+test('warningsWithServiceName', function(assert) {
+  const decoratedWarnings = warningsWithServiceName({
+    investigate: {
+      queryStats: {
+        warnings: [{
+          serviceId: 'foo',
+          warning: 'warning'
+        }]
+      },
+      services: {
+        serviceData: [{
+          id: 'foo',
+          displayName: 'foo'
+        }]
+      }
+
+    }
+  });
+
+  assert.equal(decoratedWarnings.length, 1);
+  assert.equal(decoratedWarnings[0].serviceName, 'foo');
+  assert.equal(decoratedWarnings[0].warning, 'warning');
+  assert.equal(decoratedWarnings[0].serviceId, 'foo');
 });

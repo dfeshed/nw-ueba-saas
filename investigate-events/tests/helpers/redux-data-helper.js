@@ -221,7 +221,7 @@ export default class DataHelper {
     _set(this.state, 'queryNode.queryView', 'guided');
     _set(this.state, 'queryNode.pillsData', []);
     if (flag) {
-      _set(this.state, 'services.serviceData', [{ id: '1' }]);
+      _set(this.state, 'services.serviceData', [{ id: '1', displayName: 'concentrator' }]);
       _set(this.state, 'services.summaryData', { startTime: 1506537600 });
     } else {
       _set(this.state, 'services.serviceData', undefined);
@@ -390,7 +390,10 @@ export default class DataHelper {
   queryStatsHasWarning() {
     _set(this.state, 'queryStats', {
       description: 'warning',
-      warnings: ['warning']
+      warnings: [{
+        serviceId: '1',
+        warning: 'warning'
+      }]
     });
     return this;
   }

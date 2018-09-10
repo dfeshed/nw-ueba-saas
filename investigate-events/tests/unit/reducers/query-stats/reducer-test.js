@@ -32,9 +32,9 @@ test('QUERY_STATS reducer updates stats', function(assert) {
     payload: {
       description: 'foo',
       percent: 50,
-      fatal: 'error',
+      error: 'error',
       serviceId: 'bar',
-      error: 'warning',
+      warning: 'warning',
       devices: [{
         serviceId: 'baz'
       }]
