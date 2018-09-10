@@ -48,7 +48,7 @@ const items = [ {
   orig_ip: '8.202.108.50'
 }];
 
-const renderDifferentColumns = function(_this, width = null) {
+const renderDifferentColumns = function(_this, width = null, addCheckbox = false) {
 
   const columnsConfig = [
     {
@@ -70,6 +70,15 @@ const renderDifferentColumns = function(_this, width = null) {
       title: 'TCP Destination Port'
     }
   ];
+
+  if (addCheckbox) {
+    columnsConfig[0] = {
+      field: 'checkbox',
+      dataType: 'checkbox',
+      width: '40px'
+    };
+  }
+
   _this.set('items', items);
   _this.set('columnsConfig', columnsConfig);
   _this.render(hbs`
@@ -141,6 +150,26 @@ test('when the width of ViewPort of data-table changes, it needs to recalculate 
     done();
   });
 });
+
+test('when the width of ViewPort of data-table changes, it needs to recalculate the width for columns', function(assert) {
+  renderDifferentColumns(this, null, true);
+  $('.rsa-data-table').width(1000);
+  const match = $('.rsa-data-table-body-cell').attr('style').match(/([\d\.]+)([^\d]*)/);
+  const columnWidth = match && Number(match[1]);
+  $('.rsa-data-table').width(3000);
+  const done = assert.async();
+  return wait().then(() => {
+    const firstMatch = $('.rsa-data-table-body-cell:first').attr('style').match(/([\d\.]+)([^\d]*)/);
+    const firstColumnWidth = firstMatch && Number(firstMatch[1]);
+    assert.ok(columnWidth === firstColumnWidth, 'the first cell is same width');
+
+    const lastMatch = $('.rsa-data-table-body-cell:last').attr('style').match(/([\d\.]+)([^\d]*)/);
+    const lastColumnWidth = lastMatch && Number(lastMatch[1]);
+    assert.ok(columnWidth != lastColumnWidth, 'the last cell is a different width');
+    done();
+  });
+});
+
 
 test('it renders declaratively with the correct number of expected elements.', function(assert) {
   this.set('items', mockItems);

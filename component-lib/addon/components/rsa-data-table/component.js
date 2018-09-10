@@ -365,17 +365,20 @@ export default Component.extend(DomWatcher, EKMixin, {
     this.set('currentClientWidth', w);
     const columnWidth = this.get('columnWidths');
     const sum = columnWidth.reduce((a, b) => a + b, 0);
-    const noOfColumns = columns.length;
+    const hasCheckbox = columns.any((c) => c.dataType === 'checkbox');
+    const noOfColumns = hasCheckbox ? columns.length - 1 : columns.length;
     const resizedColumns = columns.filterBy('resizedOnce', true).length;
     // Get view port width.
     const rowWidth = this.$().width();
     const diff = rowWidth - sum;
     // Need to adjust width only if view port is more than total cell width.
-
     if (diff > 0) {
       // Need to adjust only difference from view port.
       const len = noOfColumns > resizedColumns ? (noOfColumns - resizedColumns) : 1;
       columns.forEach((column, index) => {
+        if (column.dataType === 'checkbox') {
+          return;
+        }
         const adjustWidth = Math.ceil(diff / len - this.whitespace) + 1;
         // Every time cell width will be addition of original width + adjustWidth.
         if (!get(column, 'resizedOnce')) {
