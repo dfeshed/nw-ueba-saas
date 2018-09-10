@@ -30,6 +30,13 @@ const _initialState = Immutable.from({
 
 export default handleActions({
 
+  [ACTION_TYPES.INITIALIZE_INVESTIGATE]: (state) => {
+    return state.merge({
+      allEventsSelected: false,
+      selectedEventIds: []
+    });
+  },
+
   [ACTION_TYPES.TOGGLE_SELECT_ALL_EVENTS]: (state) => {
     return state.merge({
       allEventsSelected: !state.allEventsSelected,

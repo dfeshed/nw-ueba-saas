@@ -16,6 +16,11 @@ const stateWithSelections = Immutable.from({
   selectedEventIds: ['foo']
 });
 
+const stateWithAllSelected = Immutable.from({
+  allEventsSelected: true,
+  selectedEventIds: ['foo', 'bar']
+});
+
 test('ACTION_TYPES.TOGGLE_SELECT_ALL_EVENTS reducer', function(assert) {
   const toggle = {
     type: ACTION_TYPES.TOGGLE_SELECT_ALL_EVENTS
@@ -47,3 +52,15 @@ test('ACTION_TYPES.DESELECT_EVENT reducer', function(assert) {
 
   assert.equal(result.selectedEventIds.length, 0);
 });
+
+test('ACTION_TYPES.INITIALIZE_INVESTIGATE reducer', function(assert) {
+  const action = {
+    type: ACTION_TYPES.INITIALIZE_INVESTIGATE
+  };
+
+  const result = reducer(stateWithAllSelected, action);
+
+  assert.equal(result.allEventsSelected, false);
+  assert.equal(result.selectedEventIds.length, 0);
+});
+
