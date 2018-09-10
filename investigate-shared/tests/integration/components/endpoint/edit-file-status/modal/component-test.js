@@ -41,15 +41,4 @@ module('Integration | Component | endpoint/edit-file-status/modal', function(hoo
     assert.equal(findAll('.black-list-options').length, 1, 'blacklist options have been rendered');
   });
 
-  test('on click of save button calls the onSaveFileStatus method', async function(assert) {
-    assert.expect(1);
-    this.set('itemList', itemList);
-    this.set('onSaveFileStatus', function() {
-      assert.equal(arguments.length, 2, 'onSaveFileStatus called with two arguments');
-    });
-    this.set('data', { comment: 'Test' });
-    await render(hbs`{{endpoint/edit-file-status/modal data=data onSaveFileStatus=onSaveFileStatus itemList=itemList}}`);
-    await click(document.querySelector('.save-file-status button'));
-  });
-
 });

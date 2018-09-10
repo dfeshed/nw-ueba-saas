@@ -31,7 +31,7 @@ const getFileStatus = (selections) => {
         'value': 'FileStatus'
       },
       {
-        'field': 'id',
+        'field': '_id',
         'values': selections.mapBy('id')
       }
     ]

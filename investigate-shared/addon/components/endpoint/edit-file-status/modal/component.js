@@ -1,8 +1,9 @@
 import Component from '@ember/component';
 import layout from './template';
-import { success } from 'investigate-shared/utils/flash-messages';
+import { success, failure } from 'investigate-shared/utils/flash-messages';
 import { isEmpty } from '@ember/utils';
 import computed from 'ember-computed-decorators';
+import { lookup } from 'ember-dependency-lookup';
 
 const STATUS_WITH_REMEDIATION = ['Blacklist', 'Graylist'];
 
@@ -53,16 +54,24 @@ export default Component.extend({
 
   actions: {
     saveFileStatus() {
-      const callback = {
-        onSuccess: () => {
-          this._closeModal();
-          success('investigateFiles.editFileStatus.successMessage');
-        }
-      };
-      if (!STATUS_WITH_REMEDIATION.includes(this.get('data').fileStatus)) {
-        this.set('data.remediationAction', null);
-      }
-      this.onSaveFileStatus(this.get('data'), callback);
+      const request = lookup('service:request');
+      return request.ping('contexthub-server-ping')
+        .then(() => {
+          const callback = {
+            onSuccess: () => {
+              this._closeModal();
+              success('investigateFiles.editFileStatus.successMessage');
+            }
+          };
+          if (!STATUS_WITH_REMEDIATION.includes(this.get('data').fileStatus)) {
+            this.set('data.remediationAction', null);
+          }
+          this.onSaveFileStatus(this.get('data'), callback);
+        })
+        .catch(() => {
+          this.set('isSaveButtonDisabled', true);
+          failure('investigateFiles.editFileStatus.contexthubServerOffline');
+        });
     },
 
     onCancel() {

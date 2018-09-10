@@ -16,6 +16,9 @@ const filesConfigGen = function(environment) {
     'endpoint-server-ping': {
       socketUrl
     },
+    'contexthub-server-ping': {
+      socketUrl: contextSocketUrl
+    },
     'investigate-service': {
       socketUrl,
       findAll: {

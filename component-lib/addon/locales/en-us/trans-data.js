@@ -2157,7 +2157,8 @@ export default {
       saveBtn: 'Save',
       cancelBtn: 'Cancel',
       blacklistCertificate: 'Blacklist Certificate',
-      blacklistAllFiles: 'Blacklist all files signed by this certificate'
+      blacklistAllFiles: 'Blacklist all files signed by this certificate',
+      contexthubServerOffline: 'An error has occurred. The Contexthub server may be offline or inaccessible. '
     },
     tabs: {
       riskProperties: 'Risk Properties',
