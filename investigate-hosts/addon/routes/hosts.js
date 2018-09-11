@@ -4,7 +4,7 @@ import { inject as service } from '@ember/service';
 import { initializeHostPage, getAllSchemas } from 'investigate-hosts/actions/data-creators/host';
 import { userLeftListPage } from 'investigate-hosts/actions/ui-state-creators';
 import { run } from '@ember/runloop';
-import { getEndpointServers } from 'investigate-hosts/actions/data-creators/endpoint-server';
+import { getEndpointServers, isEndpointServerOffline } from 'investigate-hosts/actions/data-creators/endpoint-server';
 
 const HELP_ID_MAPPING = {
   'OVERVIEW': 'contextualHelp.invHostsOverview',
@@ -51,25 +51,31 @@ export default Route.extend({
 
   model(params) {
     const redux = this.get('redux');
-    run.next(() => {
-      redux.dispatch(getEndpointServers());
-    });
+    const { serverId } = redux.getState().endpointQuery;
     const request = lookup('service:request');
-    return request.ping('endpoint-server-ping')
-      .then(() => {
-        const { machineId, tabName = 'OVERVIEW' } = params;
-        if (machineId) {
-          this.set('contextualHelp.topic', this.get(HELP_ID_MAPPING[tabName]));
-        } else {
-          this.set('contextualHelp.topic', this.get('contextualHelp.invHosts'));
-        }
-        run.next(() => {
-          redux.dispatch(initializeHostPage(params));
+    run.next(() => {
+      if (!serverId) {
+        redux.dispatch(getEndpointServers());
+      } else {
+        request.registerPersistentStreamOptions({ socketUrlPostfix: serverId, requiredSocketUrl: 'endpoint/socket' });
+        return request.ping('endpoint-server-ping')
+        .then(() => {
+          const { machineId, tabName = 'OVERVIEW' } = params;
+          if (machineId) {
+            this.set('contextualHelp.topic', this.get(HELP_ID_MAPPING[tabName]));
+          } else {
+            this.set('contextualHelp.topic', this.get('contextualHelp.invHosts'));
+          }
+          redux.dispatch(isEndpointServerOffline(false));
+          run.next(() => {
+            redux.dispatch(initializeHostPage(params));
+          });
+        })
+        .catch(function() {
+          redux.dispatch(isEndpointServerOffline(true));
         });
-      })
-      .catch(function() {
-        return { endpointServerOffline: true };
-      });
+      }
+    });
   },
 
   resetController(controller, isExiting) {
@@ -84,13 +90,19 @@ export default Route.extend({
   // On activating the route get the all the schema, schema response is used to build the column configuration and filter
   activate() {
     run.next(() => {
-      this.get('redux').dispatch(getAllSchemas());
+      const redux = this.get('redux');
+      const { serverId } = redux.getState().endpointQuery;
+      if (serverId) {
+        redux.dispatch(getAllSchemas());
+      }
     });
   },
 
   // On deactivating the route send the user left page action to cleanup the state if any
   deactivate() {
+    const request = lookup('service:request');
     this.get('redux').dispatch(userLeftListPage());
+    request.clearPersistentStreamOptions(['socketUrlPostfix', 'requiredSocketUrl']);
     this.set('contextualHelp.topic', null);
   }
 });

@@ -1,30 +1,33 @@
 {{#rsa-page-layout showRightZone=false as |layout|}}
-
   {{#layout.left as |leftPanel|}}
     {{leftPanel.header iconName='filter-2' title=(t 'investigateFiles.filter.filter')}}
     {{filters-wrapper}}
   {{/layout.left}}
-
   {{#layout.center}}
     <section class="rsa-files-toolbar flexi-fit">
       {{files-toolbar openFilterPanel=(action layout.open 'left')}}
     </section>
-    <box class="files-body">
-      {{#if (eq areFilesLoading 'wait')}}
-        <centered>
-          {{rsa-loader size='larger'}}
-        </centered>
-      {{else}}
-        {{#if isSchemaLoaded}}
-          {{file-list openRiskPanel=(action layout.open 'right') closeRiskPanel=(action layout.close 'right')}}
+    {{#if isEndpointServerOnline}}
+      <box class="files-body">
+        {{#if (eq areFilesLoading 'wait')}}
+          <centered>
+            {{rsa-loader size='larger'}}
+          </centered>
+        {{else}}
+          {{#if isSchemaLoaded}}
+            {{file-list openRiskPanel=(action layout.open 'right') closeRiskPanel=(action layout.close 'right')}}
+          {{/if}}
         {{/if}}
-      {{/if}}
-    </box>
-    <box class="files-footer">
-      {{file-pager}}
-    </box>
+      </box>
+      <box class="files-footer">
+        {{file-pager}}
+      </box>
+    {{else}}
+      {{error-page
+        errorDescription=(t 'investigateFiles.errorPage.serviceDownDescription')
+        title=(t 'investigateFiles.errorPage.serviceDown')}}
+    {{/if}}
   {{/layout.center}}
-
   {{#layout.right as |rightPanel|}}
     {{#rightPanel.header class="investigate-file-tab"}}
       {{#title-bar tabs=dataSourceTabs defaultAction=(action 'setDataSourceTab') as |tab|}}

@@ -6,7 +6,6 @@ let mergedConfig;
 const hostsConfigGen = function(env) {
 
   const socketUrl = common.determineSocketUrl(env, '/endpoint/socket');
-  const investigateSocketUrl = common.determineSocketUrl(env, '/investigate/socket');
 
   return {
     'endpoint-server-ping': {
@@ -20,10 +19,10 @@ const hostsConfigGen = function(env) {
       }
     },
     'endpoint-server': {
-      socketUrl: investigateSocketUrl,
+      socketUrl,
       findAll: {
-        subscriptionDestination: '/user/queue/investigate/endpointservers',
-        requestDestination: '/ws/investigate/endpointservers'
+        subscriptionDestination: '/user/queue/endpoint/server/get-all',
+        requestDestination: '/ws/endpoint/server/get-all'
       }
     },
     endpoint: {

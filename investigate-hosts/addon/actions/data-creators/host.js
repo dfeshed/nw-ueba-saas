@@ -236,7 +236,7 @@ const _stringifyObject = (data) => {
   return JSON.stringify(data);
 };
 
-const initializeHostPage = ({ machineId, filterId, tabName = 'OVERVIEW', query }) => {
+const initializeHostPage = ({ machineId, filterId, tabName = 'OVERVIEW', query } = {}) => {
   return (dispatch) => {
     // On clicking the host name setting the machineId in the URL, on close removing the it from url
     if (machineId && !isEmpty(machineId)) {

@@ -86,10 +86,10 @@ const filesConfigGen = function(environment) {
       }
     },
     'endpoint-server': {
-      socketUrl: investigateSocketUrl,
+      socketUrl,
       findAll: {
-        subscriptionDestination: '/user/queue/investigate/endpointservers',
-        requestDestination: '/ws/investigate/endpointservers'
+        subscriptionDestination: '/user/queue/endpoint/server/get-all',
+        requestDestination: '/ws/endpoint/server/get-all'
       }
     }
   };

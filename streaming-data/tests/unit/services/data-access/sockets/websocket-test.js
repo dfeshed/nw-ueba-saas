@@ -35,3 +35,10 @@ test('the socket client\'s subscribe method returns a promise that is resolved o
   assert.equal(subscription.destination, subscriptionDestination, 'The subscription destination matches the one used in the subscribe call');
   assert.ok(typeof subscription.send === 'function', 'The subscription has a send function');
 });
+
+test('it returns an updated url based on socketUrlPostfix', function(assert) {
+  assert.expect(1);
+  const stream = Socket._findSocketConfig('test', 'promise/_1', '/123', '/socket');
+  assert.deepEqual(stream.socketUrl.endsWith('/123'), true, 'socketUrl got updated');
+});
+

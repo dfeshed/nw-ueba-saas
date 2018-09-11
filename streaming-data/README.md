@@ -38,6 +38,8 @@ socketRoutes: {
 * [.streamRequest(opts)](#streamrequestopts-undefined)
 * [.pagedStreamRequest(opts)](#pagedstreamrequestopts-cursor)
 * [.promiseRequest(opts)](#promiserequestopts-rsvppromise)
+* [.registerPersistentStreamOptions(opts)](#registerpersistentstreamoptions-undefined)
+* [.clearPersistentStreamOptions(opts)](#clearpersistentstreamoptions-undefined)
 
 ## `.streamRequest(opts): undefined`
 
@@ -199,7 +201,47 @@ if (cursor.canLast) {
   cursor.last();
 }
 ```
+## `registerPersistentStreamOptions: undefined`
 
+`registerPersistentStreamOptions` provides a way to add additional options to `persistentStreamOptions`.
+
+### When to use
+
+Use `registerPersistentStreamOptions` when you need to:
+
+* persist additional stream options so that we don't need to pass again the same options in every request.
+
+
+### Parameters
+
+* `options` `Object` stream options you want to persist across the app.
+
+### Example
+
+```javascript
+request.registerPersistentStreamOptions({ socketUrlPostfix, requiredSocketUrl });
+```
+
+## `clearPersistentStreamOptions: undefined`
+
+`clearPersistentStreamOptions` provides a way to remove some or all options from `persistentStreamOptions`.
+
+### When to use
+
+Use `clearPersistentStreamOptions` when you need to :
+
+* remove some or all persisted stream options which are no longer required to be persisted.
+
+
+### Parameters
+
+* `options` `Array` stream options you no longer want to persist across the app.
+
+### Example
+
+```javascript
+request.clearPersistentStreamOptions(['socketUrlPostfix', 'requiredSocketUrl']);
+```
 ## TODO
 
 * The `itemTooLarge` implementation needs to be included.
@@ -266,6 +308,13 @@ Each API request takes a `streamOptions` object.
   * When `true`, if an API call using the same `method`/`modelName` is executed while the previous has not finished or is still open, the previous will be effectively cancelled.
     * For stream requests, no callback will be called.
     * For promise requests, the promise will neither be `resolve`d nor `reject`ed.
+* `socketUrlPostfix`, `String`, optional
+  * Defaults to `undefined`
+  * When provided, and when requiredSocketUrl matches the configured socket URL, the socketUrlPostfix will be added to the end of the socket URL
+* `requiredSocketUrl`, `String`, optional
+  * Defaults to `undefined`
+  * Mandatory if socketUrlPostfix is defined
+  * The requiredSocketUrl is compared to the socket URL to determine whether or not to apply the socketUrlPostfix. If the socket URL contains the requiredSocketUrl, the socketUrlPostfix is applied.
 
 # Development
 

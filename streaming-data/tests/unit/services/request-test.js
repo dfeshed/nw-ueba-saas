@@ -322,3 +322,62 @@ test('ping resolves to failure', function(assert) {
       done();
     });
 });
+
+test('clearPersistentStreamOptions to remove socketUrlPostfix', function(assert) {
+  assert.expect(2);
+  const router = EmberObject.create({ currentRouteName: 'foo' });
+  const requestService = Request.create({ router, persistentStreamOptions: {} });
+  requestService.registerPersistentStreamOptions({
+    socketUrlPostfix: '123'
+  });
+  assert.equal(requestService.get('persistentStreamOptions').socketUrlPostfix, '123', 'socketUrlPostfix got added');
+  requestService.clearPersistentStreamOptions(['socketUrlPostfix']);
+  assert.equal(requestService.get('persistentStreamOptions').socketUrlPostfix, undefined, 'socketUrlPostfix got removed');
+});
+
+test('added and deleted two properties in persistentStreamOptions', function(assert) {
+  assert.expect(2);
+  const router = EmberObject.create({ currentRouteName: 'foo' });
+  const requestService = Request.create({ router, persistentStreamOptions: {} });
+  requestService.registerPersistentStreamOptions({
+    socketUrlPostfix: '123',
+    requiredSocketUrl: 'endpoint/socket'
+  });
+  assert.equal(Object.keys(requestService.get('persistentStreamOptions')).length, 2, 'persistentStreamOptions has two properties');
+  requestService.clearPersistentStreamOptions(['socketUrlPostfix', 'requiredSocketUrl']);
+  assert.equal(Object.keys(requestService.get('persistentStreamOptions')).length, 0, 'persistentStreamOptions is empty');
+});
+
+test('testing updateOpts', function(assert) {
+  assert.expect(2);
+  const router = EmberObject.create({ currentRouteName: 'foo' });
+  const requestService = Request.create({ router, persistentStreamOptions: {} });
+  const opts = {
+    method: 'test',
+    modelName: 'foo',
+    query: {},
+    streamOptions: {
+      id: '123'
+    }
+  };
+  requestService.registerPersistentStreamOptions({
+    socketUrlPostfix: '123',
+    requiredSocketUrl: 'endpoint/'
+  });
+  const updateOpts = requestService._updateOpts(opts);
+  assert.equal(Object.keys(updateOpts.streamOptions).length, 3, 'persistentStreamOptions is added to opts streamOptions');
+  assert.equal(Object.keys(updateOpts).length, 4, 'streamOptions is added to opts');
+});
+
+test('added a property in persistentStreamOptions', function(assert) {
+  assert.expect(2);
+  const router = EmberObject.create({ currentRouteName: 'foo' });
+  const requestService = Request.create({ router, persistentStreamOptions: {} });
+  requestService.registerPersistentStreamOptions({
+    socketUrlPostfix: '123',
+    requiredSocketUrl: 'endpoint/socket'
+  });
+  assert.equal(Object.keys(requestService.get('persistentStreamOptions')).length, 2, 'persistentStreamOptions has two properties');
+  requestService.registerPersistentStreamOptions({ param: 'userMode' });
+  assert.equal(Object.keys(requestService.get('persistentStreamOptions')).length, 3, 'an extra property got added');
+});

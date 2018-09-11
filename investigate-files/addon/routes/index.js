@@ -1,8 +1,8 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-import { lookup } from 'ember-dependency-lookup';
 import { getEndpointServers } from 'investigate-files/actions/endpoint-server-creators';
 import { run } from '@ember/runloop';
+import { lookup } from 'ember-dependency-lookup';
 
 export default Route.extend({
 
@@ -15,14 +15,11 @@ export default Route.extend({
     run.next(() => {
       redux.dispatch(getEndpointServers());
     });
-    const request = lookup('service:request');
-    return request.ping('endpoint-server-ping')
-      .catch(function() {
-        return { endpointServerOffline: true };
-      });
   },
   // On deactivating the route send the user left page action to cleanup the state if any
   deactivate() {
+    const request = lookup('service:request');
+    request.clearPersistentStreamOptions(['socketUrlPostfix', 'requiredSocketUrl']);
     this.set('contextualHelp.topic', null);
   },
   activate() {

@@ -7,7 +7,8 @@ import * as ACTION_TYPES from 'investigate-files/actions/types';
 const initialState = Immutable.from({
   serviceData: undefined,
   isServicesLoading: undefined,
-  isServicesRetrieveError: undefined
+  isServicesRetrieveError: undefined,
+  isSummaryRetrieveError: undefined
 });
 
 const endpointServer = handleActions({
@@ -23,6 +24,9 @@ const endpointServer = handleActions({
         return s.merge({ serviceData: sortedServices, isServicesLoading: false, isServicesRetrieveError: false });
       }
     });
+  },
+  [ACTION_TYPES.ENDPOINT_SERVER_STATUS]: (state, { payload }) => {
+    return state.set('isSummaryRetrieveError', payload);
   }
 }, initialState);
 

@@ -31,3 +31,18 @@ test('Investigate files container, when files are available', function(assert) {
 
   assert.equal(this.$('.files-body .rsa-data-table').length, 1, 'file-list called.');
 });
+
+test('it renders error page when endpointserver is offline', function(assert) {
+  new ReduxDataHelper(setState).isEndpointServerOffline(true).build();
+  this.render(hbs`{{investigate-files-container}}`);
+  assert.equal(this.$('.files-body').length, 0, 'file list is not rendered');
+  assert.equal(this.$('.error-page').length, 1, 'endpoint server is offline');
+});
+
+test('it renders file list when endpointserver is online', function(assert) {
+  const { files: { schema: { schema } } } = files;
+  new ReduxDataHelper(setState).schema(schema).fileCount(3).setSelectedFileList([]).isEndpointServerOffline(false).build();
+  this.render(hbs`{{investigate-files-container}}`);
+  assert.equal(this.$('.error-page').length, 0, 'endpoint server is online');
+  assert.equal(this.$('.files-body').length, 1, 'file list is rendered');
+});

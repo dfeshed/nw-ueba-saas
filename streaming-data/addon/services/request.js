@@ -18,6 +18,39 @@ export default Service.extend({
     this.get('router').addObserver('currentRouteName', this, '_routeCleanup');
   },
 
+  /**
+   * @public
+   * stores the socketurl prefix
+  */
+  persistentStreamOptions: {},
+
+  /**
+   * @public
+   * setter to sets the persistentStreamOptions
+  */
+  registerPersistentStreamOptions(options) {
+    const persistentStreamOptions = this.get('persistentStreamOptions');
+    this.set('persistentStreamOptions', { ...persistentStreamOptions, ...options });
+  },
+
+  /**
+   * @public
+   * clear properties from the persisted streamOptions
+   * @param {Array} [options] persistent options
+  */
+  clearPersistentStreamOptions(options) {
+    const persistentStreamOptions = this.get('persistentStreamOptions') || {};
+    const newStreamOptions = { ...persistentStreamOptions };
+    if (Array.isArray(options)) {
+      options.forEach((option) => {
+        if (Object.keys(persistentStreamOptions).some((opt) => option === opt)) {
+          delete newStreamOptions[option];
+        }
+      });
+    }
+    this.set('persistentStreamOptions', newStreamOptions);
+  },
+
   /*
    * Retrieves the current route name from the routing service. If called while
    * in mid-transition (e.g., from the `model()` hook of a Route) returns the
@@ -49,23 +82,42 @@ export default Service.extend({
     StreamCache.cleanUpRouteStreams(routeName);
   },
 
+   /*
+   * updates the request opts
+   * @private
+   */
+  _updateOpts(opts) {
+    const persistentStreamOptions = this.get('persistentStreamOptions');
+    if (!persistentStreamOptions) {
+      return opts;
+    }
+
+    return {
+      ...opts,
+      streamOptions: {
+        ...(opts.streamOptions || {}),
+        ...persistentStreamOptions
+      }
+    };
+  },
+
   promiseRequest(opts) {
     const routeName = this._currentRouteName();
-    return promiseRequest(opts, routeName);
+    return promiseRequest(this._updateOpts(opts), routeName);
   },
 
   streamRequest(opts) {
     const routeName = this._currentRouteName();
-    streamRequest(opts, routeName);
+    streamRequest(this._updateOpts(opts), routeName);
   },
 
   pagedStreamRequest(opts) {
     const routeName = this._currentRouteName();
-    return pagedStreamRequest(opts, routeName);
+    return pagedStreamRequest(this._updateOpts(opts), routeName);
   },
 
   ping(modelName) {
-    return ping(modelName);
+    return ping(modelName, this.get('persistentStreamOptions'));
   },
 
   /*

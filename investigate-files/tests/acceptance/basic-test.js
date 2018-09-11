@@ -1,5 +1,5 @@
 import rsvp from 'rsvp';
-import { test } from 'qunit';
+import { test, skip } from 'qunit';
 import moduleForAcceptance from '../helpers/module-for-acceptance';
 import { selectorToExist } from 'ember-wait-for-test-helper/wait-for';
 import $ from 'jquery';
@@ -31,7 +31,7 @@ test('visiting /investigate-files', function(assert) {
 
 });
 
-test('visiting /investigate-files shows server down message', function(assert) {
+skip('visiting /investigate-files shows server down message', function(assert) {
   const request = lookup('service:request');
   sinon.stub(request, 'ping', () => {
     return new rsvp.Promise((resolve, reject) => reject());

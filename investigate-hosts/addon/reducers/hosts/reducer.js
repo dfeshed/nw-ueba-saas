@@ -163,7 +163,9 @@ const hosts = reduxActions.handleActions({
     });
   },
 
-  [ACTION_TYPES.RESET_HOST_DOWNLOAD_LINK]: (state) => state.set('hostExportLinkId', null)
+  [ACTION_TYPES.RESET_HOST_DOWNLOAD_LINK]: (state) => state.set('hostExportLinkId', null),
+
+  [ACTION_TYPES.RESET_HOSTS]: (state) => state.merge(initialState)
 
 }, initialState);
 

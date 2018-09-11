@@ -128,4 +128,8 @@ export default class DataHelper {
     _set(this.state, 'files.fileList.selectedFileList', list);
     return this;
   }
+  isEndpointServerOffline(status) {
+    _set(this.state, 'endpointServer.isSummaryRetrieveError', status);
+    return this;
+  }
 }

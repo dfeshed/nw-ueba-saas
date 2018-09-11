@@ -43,7 +43,8 @@ export default class DataHelper {
             ]
           }
         }
-      }
+      },
+      endpointServer: this.state.endpointServer
     });
     this.setState(state);
     return state.asMutable();
@@ -292,6 +293,11 @@ export default class DataHelper {
 
   anomalies(data) {
     _set(this.state, 'anomalies', data);
+    return this;
+  }
+
+  isEndpointServerOffline(status) {
+    _set(this.state, 'endpointServer.isSummaryRetrieveError', status);
     return this;
   }
 }

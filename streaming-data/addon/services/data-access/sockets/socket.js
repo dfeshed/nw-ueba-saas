@@ -10,6 +10,7 @@ import { Stream } from '../streams';
 import config from 'ember-get-config';
 import { warn } from '@ember/debug';
 
+import { buildBaseUrl } from '../utils/util';
 /**
  * Hash of requested socket server clients. The hash keys are socket URLs. The hash values
  * are arrays, where each array item is an instance of Client class (imported).
@@ -81,7 +82,7 @@ function disconnectAll() {
  * @public
  */
 function createStream(method, modelName, query, streamOptions = {}) {
-  const cfg = _findSocketConfig(modelName, method);
+  const cfg = _findSocketConfig(modelName, method, (streamOptions ? streamOptions.socketUrlPostfix : ''), (streamOptions ? streamOptions.requiredSocketUrl : ''));
   const allStreamOptions = {
     ...streamOptions,
     socketConfig: cfg,
@@ -99,14 +100,15 @@ function createStream(method, modelName, query, streamOptions = {}) {
  *
  * @param modelName {string}
  * @param method {string}
+ * @param socketUrlPostfix {string}
+ * @param requiredSocketUrl {string}
  * @private
  */
-function _findSocketConfig(modelName, method) {
+function _findSocketConfig(modelName, method, socketUrlPostfix, requiredSocketUrl) {
   const modelConfig = ((config.socketRoutes || {})[modelName] || {});
   const cfg = modelConfig[method];
-
   if (cfg) {
-    cfg.socketUrl = modelConfig.socketUrl;
+    cfg.socketUrl = buildBaseUrl(modelConfig.socketUrl, socketUrlPostfix, requiredSocketUrl);
   }
 
   // no config? eject!

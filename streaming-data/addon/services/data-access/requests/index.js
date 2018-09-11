@@ -6,6 +6,7 @@ import { StreamCache } from '../streams';
 import Socket from '../sockets';
 import $ from 'jquery';
 import config from 'ember-get-config';
+import { buildBaseUrl } from '../utils/util';
 
 /*
   * Base set of asserts for calls into promiseRequest and streamRequest
@@ -330,9 +331,9 @@ const promiseRequest = ({
  * @method _findPingUrl
  * @private
  */
-const _findPingUrl = (modelName) => {
+const _findPingUrl = (modelName, socketUrlPostfix, requiredSocketUrl) => {
   const pingConfig = config.socketRoutes[modelName];
-  return `${pingConfig.socketUrl}/info`;
+  return `${buildBaseUrl(pingConfig.socketUrl, socketUrlPostfix, requiredSocketUrl)}/info`;
 };
 
 /**
@@ -348,11 +349,11 @@ const _findPingUrl = (modelName) => {
  * @returns {RSVP.Promise}
  * @public
  */
-const ping = (modelName) => {
+const ping = (modelName, streamOptions = {}) => {
 
   assert('Cannot call ping without modelName', modelName);
 
-  const url = _findPingUrl(modelName);
+  const url = _findPingUrl(modelName, (streamOptions ? streamOptions.socketUrlPostfix : ''), (streamOptions ? streamOptions.requiredSocketUrl : ''));
   return new RSVP.Promise((resolve, reject) => {
     $.ajax({ url, cache: false })
       .done((response) => {

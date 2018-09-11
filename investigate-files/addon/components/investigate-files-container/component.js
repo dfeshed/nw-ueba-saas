@@ -25,7 +25,8 @@ const stateToComputed = (state) => ({
   incidentsCount: getIncidentsCount(state),
   activeDataSourceTab: state.files.fileList.activeDataSourceTab,
   activeAlertTab: state.files.fileList.activeAlertTab,
-  contextLoadingStatus: state.files.fileList.contextLoadingStatus
+  contextLoadingStatus: state.files.fileList.contextLoadingStatus,
+  isEndpointServerOnline: !state.endpointServer.isSummaryRetrieveError
 });
 
 const dispatchToActions = {

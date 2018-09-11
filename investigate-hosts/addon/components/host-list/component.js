@@ -10,7 +10,8 @@ import { setEndpointServer } from 'investigate-hosts/actions/data-creators/endpo
 const stateToComputed = (state) => ({
   schemaLoading: state.endpoint.schema.schemaLoading,
   servers: state.endpointServer,
-  serverId: state.endpointQuery.serverId
+  serverId: state.endpointQuery.serverId,
+  isEndpointServerOnline: !state.endpointServer.isSummaryRetrieveError
 });
 
 const dispatchToActions = {
