@@ -198,7 +198,7 @@
 
         .progress-bar {
           box-sizing: border-box;
-          border: 1px solid border-color(primary, lightest);
+          @include border(1px, solid, primary, lightest);
           width: 15rem;
           height: 1rem;
           display: inline-block;
@@ -206,7 +206,7 @@
           top: rsa-whitespace(least);
 
           &.is-disabled {
-            border: 1px solid border-color(primary, dark);
+            @include border(1px, solid, primary, dark);
 
             .current-progress {
               display: none;
@@ -232,15 +232,15 @@
 
         &.has-error {
           .console-content {
-            border: 1px solid border-color(accentOne);
-            border-top: 1px solid border-color(primary, dark);
+            @include border(1px, solid, accentOne);
+            @include border-top(1px, solid, primary, dark);
           }
         }
 
         &.has-warning {
           .console-content {
-            border: 1px solid border-color(accentThree);
-            border-top: 1px solid border-color(primary, dark);
+            @include border(1px, solid, accentThree);
+            @include border-top(1px, solid, primary, dark);
           }
         }
 
@@ -301,8 +301,8 @@
           height: 0;
           max-height: 20rem;
           height: auto;
-          border: 1px solid border-color(secondary);
-          border-top: 1px solid border-color(primary, dark);
+          @include border(1px, solid, secondary);
+          @include border-top(1px, solid, primary, dark);
         }
       }
 
