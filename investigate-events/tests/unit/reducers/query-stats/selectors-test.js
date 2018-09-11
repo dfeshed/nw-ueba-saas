@@ -8,7 +8,8 @@ import {
   hasError,
   serviceshasErrorOrWarning,
   isConsoleEmpty,
-  warningsWithServiceName
+  warningsWithServiceName,
+  isComplete
 } from 'investigate-events/reducers/investigate/query-stats/selectors';
 
 module('Unit | Selectors | queryStats');
@@ -156,6 +157,35 @@ test('isConsoleEmpty', function(assert) {
     }
   }), false);
 });
+
+test('isComplete', function(assert) {
+  assert.equal(isComplete({
+    investigate: {
+      queryStats: {
+        percent: 100,
+        devices: [{}]
+      }
+    }
+  }), true);
+
+  assert.equal(isComplete({
+    investigate: {
+      queryStats: {
+        percent: 100,
+        devices: []
+      }
+    }
+  }), false);
+
+  assert.equal(isComplete({
+    investigate: {
+      queryStats: {
+        percent: 99
+      }
+    }
+  }), false);
+});
+
 
 test('isProgressBarDisabled', function(assert) {
   assert.equal(isProgressBarDisabled({

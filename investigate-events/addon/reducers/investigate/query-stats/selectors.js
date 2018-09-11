@@ -75,7 +75,15 @@ export const isConsoleEmpty = createSelector(
 export const isProgressBarDisabled = createSelector(
   [_percent, _description],
   (percent, description) => {
-    return (percent === 0) && description === 'Queued';
+    return (percent === 0) && description && description.toLowerCase() === 'queued';
+  }
+);
+
+// references devices because we only receive devices data when the query isComplete
+export const isComplete = createSelector(
+  [_percent, _deviceStats],
+  (percent, devices) => {
+    return (percent === 100) && devices && devices.length > 0;
   }
 );
 

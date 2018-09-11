@@ -196,6 +196,29 @@
         @include rsa-font(body, small);
         box-shadow: 1px 1px 1px background-color(neutral, dark);
 
+        .progress-bar {
+          box-sizing: border-box;
+          border: 1px solid border-color(primary, lightest);
+          width: 15rem;
+          height: 1rem;
+          display: inline-block;
+          position: relative;
+          top: rsa-whitespace(least);
+
+          &.is-disabled {
+            border: 1px solid border-color(primary, dark);
+
+            .current-progress {
+              display: none;
+            }
+          }
+
+          .current-progress {
+            height: calc(1rem - 2px);
+            background: background-color(secondary);
+          }
+        }
+
         h3 {
           color: text-color(primary, lightest);
           margin: rsa-whitespace();
@@ -246,6 +269,10 @@
               margin-left: rsa-whitespace(less);
             }
           }
+        }
+
+        .progress {
+          display: inline-block;
         }
 
         .progress, .service, .timerange {

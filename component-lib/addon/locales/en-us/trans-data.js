@@ -556,7 +556,8 @@ export default {
       disabledLabel: 'The query console will become available once a query is initiated.',
       copy: 'Click to copy query filters:',
       disabledCopy: 'Click to copy will become available when filters are present.',
-      warning: 'Warning'
+      warning: 'Warning',
+      percentCompleted: '{{progress}} percent completed'
     },
     generic: {
       loading: 'Loading data...',

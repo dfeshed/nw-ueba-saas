@@ -1,12 +1,14 @@
 <div class="console-content">
-  <div class="service">
-    <span class="label">{{t 'investigate.queryStats.queried'}}</span>
-    <span class="value">{{selectedService.displayName}}</span>
-  </div>
+  <div>
+    <div class="service">
+      <span class="label">{{t 'investigate.queryStats.queried'}}</span>
+      <span class="value">{{selectedService.displayName}}</span>
+    </div>
 
-  <div class="timerange">
-    <span class="label">{{t 'investigate.queryStats.between'}}</span>
-    <span class="value">{{formattedStartDate}} - {{formattedEndDate}}</span>
+    <div class="timerange">
+      <span class="label">{{t 'investigate.queryStats.between'}}</span>
+      <span class="value">{{formattedStartDate}} - {{formattedEndDate}}</span>
+    </div>
   </div>
 
   {{#if filters.length}}
@@ -21,10 +23,21 @@
     </ul>
   {{/if}}
 
-  {{#if description}}
+  <div>
     <div class="progress">
       <span class="label">{{t 'investigate.queryStats.progress'}}</span>
-      <span class="value">{{description}}</span>
+      <span class="value">
+        {{#if isComplete}}
+          {{t 'investigate.queryStats.complete'}}
+        {{else}}
+          {{description}}
+        {{/if}}
+      </span>
     </div>
-  {{/if}}
+
+    {{#unless isComplete}}
+      {{query-container/console-panel/progress-bar}}
+    {{/unless}}
+  </div>
+
 </div>

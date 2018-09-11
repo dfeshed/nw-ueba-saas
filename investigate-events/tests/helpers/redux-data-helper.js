@@ -387,6 +387,21 @@ export default class DataHelper {
     return this;
   }
 
+  queryStatsIsPartiallyComplete() {
+    _set(this.state, 'queryStats', {
+      percent: 50
+    });
+    return this;
+  }
+
+  queryStatsIsComplete() {
+    _set(this.state, 'queryStats', {
+      percent: 100,
+      devices: [{}]
+    });
+    return this;
+  }
+
   queryStatsHasWarning() {
     _set(this.state, 'queryStats', {
       description: 'warning',
@@ -394,6 +409,14 @@ export default class DataHelper {
         serviceId: '1',
         warning: 'warning'
       }]
+    });
+    return this;
+  }
+
+  queryIsQueued() {
+    _set(this.state, 'queryStats', {
+      description: 'queued',
+      percent: 0
     });
     return this;
   }

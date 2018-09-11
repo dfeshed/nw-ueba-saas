@@ -1,7 +1,7 @@
 import Component from '@ember/component';
 import { connect } from 'ember-redux';
 import moment from 'moment';
-import { hasError, hasWarning, warningsWithServiceName } from 'investigate-events/reducers/investigate/query-stats/selectors';
+import { hasError, hasWarning, warningsWithServiceName, isComplete } from 'investigate-events/reducers/investigate/query-stats/selectors';
 import { selectedService } from 'investigate-events/reducers/investigate/services/selectors';
 import { inject as service } from '@ember/service';
 import computed from 'ember-computed-decorators';
@@ -17,7 +17,8 @@ const stateToComputed = (state) => ({
   warnings: warningsWithServiceName(state),
   hasError: hasError(state),
   hasWarning: hasWarning(state),
-  selectedService: selectedService(state)
+  selectedService: selectedService(state),
+  isComplete: isComplete(state)
 });
 
 const ConsolePanel = Component.extend({

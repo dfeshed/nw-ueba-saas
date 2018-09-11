@@ -17,6 +17,7 @@ module('Integration | Component | Console Panel', function(hooks) {
   });
 
   hooks.beforeEach(function() {
+    this.owner.inject('component', 'i18n', 'service:i18n');
     setState = (state) => {
       patchReducer(this, state);
     };
@@ -51,7 +52,7 @@ module('Integration | Component | Console Panel', function(hooks) {
     assert.equal(findAll('.console-panel .console-content .service').length, 1);
     assert.equal(findAll('.console-panel .console-content .timerange').length, 1);
     assert.equal(find('.console-panel .console-content .timerange .value').textContent, `${moment(sDate).format(format)} - ${moment(eDate).format(format)}`);
-    assert.equal(find('.console-panel .console-content .progress .value').textContent, 'foo');
+    assert.equal(find('.console-panel .console-content .progress .value').textContent.trim(), 'foo');
   });
 
   test('renders the correct dom hasWarning', async function(assert) {
@@ -60,7 +61,7 @@ module('Integration | Component | Console Panel', function(hooks) {
       {{query-container/console-panel}}
     `);
     assert.equal(findAll('.console-panel.has-warning .console-content').length, 1);
-    assert.equal(find('.console-panel .console-content .progress .value').textContent, 'warning');
+    assert.equal(find('.console-panel .console-content .progress .value').textContent.trim(), 'warning');
   });
 
   test('renders the correct dom hasError', async function(assert) {
@@ -69,7 +70,7 @@ module('Integration | Component | Console Panel', function(hooks) {
       {{query-container/console-panel}}
     `);
     assert.equal(findAll('.console-panel.has-error .console-content').length, 1);
-    assert.equal(find('.console-panel .console-content .progress .value').textContent, 'error');
+    assert.equal(find('.console-panel .console-content .progress .value').textContent.trim(), 'error');
   });
 
   test('renders warnings', async function(assert) {
@@ -78,8 +79,23 @@ module('Integration | Component | Console Panel', function(hooks) {
       {{query-container/console-panel}}
     `);
     assert.equal(findAll('.console-panel .warnings .warning').length, 1);
-    assert.equal(find('.console-panel .console-content .progress .value').textContent, 'warning');
+    assert.equal(find('.console-panel .console-content .progress .value').textContent.trim(), 'warning');
   });
 
+  test('renders progress-bar', async function(assert) {
+    new ReduxDataHelper(setState).queryStats().queryStatsIsOpen().build();
+    await render(hbs`
+      {{query-container/console-panel}}
+    `);
+    assert.equal(findAll('.console-panel .progress-bar').length, 1);
+  });
+
+  test('does not renders progress-bar when complete', async function(assert) {
+    new ReduxDataHelper(setState).queryStats().queryStatsIsOpen().queryStatsIsComplete().build();
+    await render(hbs`
+      {{query-container/console-panel}}
+    `);
+    assert.equal(findAll('.console-panel .progress-bar').length, 0);
+  });
 
 });
