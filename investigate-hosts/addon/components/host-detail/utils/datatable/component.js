@@ -48,6 +48,12 @@ const HostDetailsDataTable = Component.extend({
         table.set('selectedIndex', -1);
       }
 
+    },
+    onCloseServiceModal() {
+      this.set('showServiceModal', false);
+    },
+    onCloseEditFileStatus() {
+      this.set('showFileStatusModal', false);
     }
   }
 });

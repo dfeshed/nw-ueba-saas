@@ -11,7 +11,9 @@ const hostFilesState = Immutable.from({
   sortField: 'fileName',
   isDescOrder: false,
   filesLoadingStatus: 'wait',
-  filesLoadMoreStatus: 'stopped'
+  filesLoadMoreStatus: 'stopped',
+  selectedFileList: [],
+  fileStatusData: {}
 });
 
 const _handleAppendFiles = (action) => {
@@ -28,6 +30,21 @@ const _handleAppendFiles = (action) => {
   };
 };
 
+const _toggleSelectedFile = (state, payload) => {
+  const { selectedFileList } = state;
+  const { id, checksumSha256, signature, size } = payload;
+  let selectedList = [];
+  // Previously selected file
+
+  if (selectedFileList.some((file) => file.id === id)) {
+    selectedList = selectedFileList.filter((file) => file.id !== id);
+  } else {
+    selectedList = [...selectedFileList, { id, checksumSha256, signature, size }];
+  }
+  return state.merge({ 'selectedFileList': selectedList, 'fileStatusData': {} });
+
+};
+
 const hostFilesReducer = handleActions({
 
   [ACTION_TYPES.RESET_HOST_DETAILS]: (state) => state.merge(hostFilesState),
@@ -37,6 +54,24 @@ const hostFilesReducer = handleActions({
   [ACTION_TYPES.RESET_HOST_FILES]: (state) => state.merge({ pageNumber: -1, files: [] }),
 
   [ACTION_TYPES.SET_SELECTED_FILE]: (state, { payload: { id } }) => state.set('selectedFileId', id),
+
+  [ACTION_TYPES.TOGGLE_SELECTED_FILE]: (state, { payload }) => _toggleSelectedFile(state, payload),
+
+  [ACTION_TYPES.SELECT_ALL_FILES]: (state) => state.set('selectedFileList', Object.values(state.files).map((file) => ({ id: file.id, checksumSha256: file.checksumSha256 }))),
+
+  [ACTION_TYPES.DESELECT_ALL_FILES]: (state) => state.set('selectedFileList', []),
+
+  [ACTION_TYPES.GET_FILE_STATUS]: (state, action) => {
+    return handle(state, action, {
+      success: (s) => {
+        const [payLoadData] = action.payload.data;
+        if (payLoadData && payLoadData.resultList.length) {
+          return s.set('fileStatusData', payLoadData.resultList[0].data);
+        }
+        return s;
+      }
+    });
+  },
 
   [ACTION_TYPES.GET_HOST_FILES]: (state, action) => {
     return handle(state, action, {

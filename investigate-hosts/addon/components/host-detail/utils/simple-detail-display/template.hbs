@@ -1,4 +1,14 @@
 <box class="{{datatableWidth}}">
+  <box class="host-details-file-actionbar">
+  {{endpoint/file-actionbar
+    onSaveFileStatus = detailDisplayInputs.onSaveFileStatus
+    getSavedFileStatus = detailDisplayInputs.getSavedFileStatus
+    serviceList=serviceList
+    metaName='checksumSha256'
+    itemList=detailDisplayInputs.selectedFiles
+    fileStatusData=detailDisplayInputs.fileStatusData
+    selectedFileCount=detailDisplayInputs.selectedFileCount}}
+  </box>
   {{host-detail/utils/datatable
     status=detailDisplayInputs.status
     items=detailDisplayInputs.tableItems
@@ -10,7 +20,27 @@
     loadMoreStatus=detailDisplayInputs.loadMoreStatus
     customSort=detailDisplayInputs.customSort
     selectedIndex=selectedIndex
-    getPagedItems=detailDisplayInputs.getPagedItems}}
+    getPagedItems=detailDisplayInputs.getPagedItems
+    isAllSelected=detailDisplayInputs.isAllSelected
+    toggleAllItemSelectionAction=detailDisplayInputs.toggleAllItemSelectionAction
+    toggleOneItemSelectionAction=detailDisplayInputs.toggleOneItemSelectionAction
+    getPagedItems=detailDisplayInputs.getPagedItems
+    onSaveFileStatus=detailDisplayInputs.onSaveFileStatus
+    serviceList=detailDisplayInputs.serviceList
+    showFileStatusModal=showFileStatusModal
+    selectedItemList=detailDisplayInputs.selectedFiles
+    onCloseEditFileStatus=(action 'onCloseEditFileStatus')
+    statusData=detailsDispllayInputs.statusData
+    fileStatusData=detailDisplayInputs.fileStatusData
+    rowComponentClass=(
+      component 'endpoint/file-custom-row'
+      serviceList=detailDisplayInputs.serviceList
+      selections=detailDisplayInputs.selectedFiles
+      beforeContextMenuShow=(action 'beforeContextMenuShow')
+      editFileStatus=(action 'showEditFileStatus')
+      showPivotToInvestigate=detailDisplayInputs.showPivotToInvestigate
+      onSaveFileStatus = detailDisplayInputs.onSaveFileStatus
+    )}}
 </box>
 {{#if detailDisplayInputs.propertyConfig}}
   <box xs='3'>

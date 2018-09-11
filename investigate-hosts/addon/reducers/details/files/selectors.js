@@ -4,6 +4,7 @@ const { createSelector } = reselect;
 const _filesData = (state) => state.endpoint.hostFiles.files || [];
 const _selectedFileId = (state) => state.endpoint.hostFiles.selectedFileId;
 const _filesLoadingStatus = (state) => state.endpoint.hostFiles.filesLoadingStatus;
+const _selectedFileList = (state) => state.endpoint.hostFiles.selectedFileList || [];
 
 export const isDataLoading = createSelector(
   _filesLoadingStatus,
@@ -44,4 +45,41 @@ export const fileProperty = createSelector(
       return filesData.find((item) => item.id === selectedFileId);
     }
   }
+);
+
+/**
+ * selector to know all rows selected
+ * @public
+ */
+export const isAllSelected = createSelector(
+  [_filesData, _selectedFileList],
+  (filesData, selectedFileList) => {
+    if (selectedFileList && selectedFileList.length) {
+      return filesData.length === selectedFileList.length;
+    }
+    return false;
+  }
+);
+
+/**
+ * selector for get selected row count.
+ * @public
+ */
+export const selectedFileCount = createSelector(
+  [_selectedFileList],
+  (selectedFileList) => {
+    if (selectedFileList) {
+      return selectedFileList.length;
+    }
+    return 0;
+  }
+);
+
+/**
+ * Selector for list or checksums of all selected files.
+ * @public
+ */
+export const checksums = createSelector(
+  [_selectedFileList],
+  (selectedFileList) => selectedFileList.map((file) => file.checksumSha256)
 );

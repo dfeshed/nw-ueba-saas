@@ -1,4 +1,4 @@
-{{host-detail/utils/simple-detail-display
+ {{host-detail/utils/simple-detail-display
   detailDisplayInputs=(hash
     localeNameSpace='investigateHosts.property.file'
     status=status
@@ -12,7 +12,16 @@
     isPaginated=true
     totalItems=totalItems
     loadMoreStatus=filesLoadMoreStatus
+    isAllSelected=isAllSelected
     getPagedItems=(action 'getHostFiles')
+    toggleAllItemSelectionAction=(action 'toggleAllSelection')
+    toggleOneItemSelectionAction=(action 'toggleFileSelection')
     customSort=(action 'sort')
+    saveFileStatus = (action 'saveFileStatus' checksums)
+    onCloseEditFileStatus=(action 'onCloseEditFileStatus')
+    selectedFiles=selectedFileList
+    selectedFileCount=selectedFileCount
+    getSavedFileStatus=(action 'getSavedFileStatus' selectedFileList)
+    fileStatusData=statusData
   )
 }}

@@ -55,6 +55,15 @@ let columnsConfig = {
 };
 const defaultColumns = [
   {
+    'dataType': 'checkbox',
+    'width': 20,
+    'class': 'rsa-form-row-checkbox',
+    'componentClass': 'rsa-form-checkbox',
+    'visible': true,
+    'disableSort': true,
+    'headerComponentClass': 'rsa-form-checkbox'
+  },
+  {
     'field': 'fileName',
     'label': 'investigateHosts.files.fields.fileName',
     'title': 'Filename',
@@ -73,6 +82,13 @@ const defaultColumns = [
     'label': 'investigateHosts.files.fields.entropy',
     'disableSort': true,
     'format': 'DECIMAL',
+    'width': 53
+  },
+  {
+    'field': 'fileProperties.fileStatus',
+    'title': 'File Status',
+    'label': 'investigateHosts.files.fields.fileStatus',
+    'disableSort': true,
     'width': 53
   },
   {

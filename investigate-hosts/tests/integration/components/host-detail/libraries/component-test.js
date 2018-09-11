@@ -62,7 +62,7 @@ test('it renders data and property panel in libraries', function(assert) {
     const tableRows = this.$('.rsa-data-table-body-row').length;
     const fileInfoText = this.$('.file-info').text().trim();
     const firstRowPathText = this.$('.rsa-data-table-body-row').first().find('.rsa-data-table-body-cell').first().text().trim();
-    assert.equal(tableRows, 49, 'number of rows of data');
+    assert.equal(tableRows, 48, 'number of rows of data');
     assert.equal(fileInfoText, '49 of 49 libraries', 'number of rows of data in pager');
     assert.equal(firstRowPathText, 'vmtoolsd.exe: 1380', 'first row Process Context');
 

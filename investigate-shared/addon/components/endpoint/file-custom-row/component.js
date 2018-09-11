@@ -20,18 +20,7 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
   @computed('item')
   contextItems() {
     const cntx = this;
-    return [
-      {
-        label: 'Pivot to Investigate',
-        icon: 'expand-6',
-        iconStyle: 'lined',
-        disabled() {
-          return (cntx.get('selections').length > 1);
-        },
-        action() {
-          cntx.pivotToInvestigate(cntx.get('item'));
-        }
-      },
+    const contextConf = [
       {
         label: 'Edit File Status',
         icon: 'pencil-write-2',
@@ -56,6 +45,22 @@ export default DataTableBodyRow.extend(contextMenuMixin, {
         iconStyle: 'lined'
       }
     ];
+
+    if (cntx.get('showPivotToInvestigate') != false) {
+      const pivot = {
+        label: 'Pivot to Investigate',
+        icon: 'expand-6',
+        disabled() {
+          return (cntx.get('selections').length > 1);
+        },
+        action() {
+          cntx.pivotToInvestigate(cntx.get('item'));
+        }
+      };
+      contextConf.push(pivot);
+    }
+
+    return contextConf;
   },
 
   actions: {

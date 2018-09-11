@@ -35,7 +35,7 @@ module('Integration | Component | Anomalies/Threads', function(hooks) {
     await click('.rsa-nav-tab:nth-child(3)');
 
     assert.equal(findAll('.simple-detail-display-wrapper').length, 1, 'Threads content loaded');
-    assert.equal(findAll('.rsa-data-table-body-rows .rsa-data-table-body-row').length, 2, 'Threads data loaded');
+    assert.equal(findAll('.rsa-data-table-body-rows .rsa-data-table-body-row').length, 1, 'Threads data loaded');
   });
 
   test('Threads column names', async function(assert) {

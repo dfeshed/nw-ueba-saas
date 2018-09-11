@@ -6,7 +6,17 @@
   columnsConfig=columnsConfig
   onRowClick=(action 'toggleSelectedRow')}}
     {{#rsa-data-table/header as |column|}}
-      {{column.title}}
+      {{#if (eq column.dataType "checkbox")}}
+        <label class="rsa-form-checkbox-label {{concat 'column-selection-' column.field}} {{if isAllSelected 'checked'}}">
+          {{rsa-form-checkbox
+            checked=isAllSelected
+            change=toggleAllItemSelectionAction}}
+        </label>
+      {{else}}
+        <span class='js-move-handle'>
+          {{column.title}}
+        </span>
+      {{/if}}
       {{#unless column.disableSort}}
         {{rsa-icon
           click=(action 'sort' column)
@@ -19,11 +29,39 @@
         {{rsa-loader size="larger"}}
       </centered>
     {{else}}
-      {{#rsa-data-table/body noResultsMessage=(t 'investigateHosts.hosts.list.noResultsMessage') as |item index column|}}
-        {{#rsa-data-table/body-cell item=item column=column}}
-          {{host-detail/utils/table-cell item=item column=column}}
-        {{/rsa-data-table/body-cell}}
-      {{/rsa-data-table/body}}
+      {{#if rowComponentClass}}
+        {{#rsa-data-table/body
+          rowComponentClass=rowComponentClass
+          noResultsMessage=(t 'investigateHosts.hosts.list.noResultsMessage') as |item index column|}}
+          {{#if column.componentClass}}
+            {{#rsa-data-table/body-cell item=item column=column}}
+              <label class="rsa-form-checkbox-label {{if (is-selected selectedItemList item) 'checked'}}">
+                {{rsa-form-checkbox checked=false change=toggleOneItemSelectionAction}}
+              </label>
+            {{/rsa-data-table/body-cell}}
+          {{else}}
+            {{#rsa-data-table/body-cell item=item column=column}}
+              {{host-detail/utils/table-cell item=item column=column}}
+            {{/rsa-data-table/body-cell}}
+          {{/if}}
+        {{/rsa-data-table/body}}
+      {{else}}
+        {{#rsa-data-table/body
+          noResultsMessage=(t 'investigateHosts.hosts.list.noResultsMessage') as |item index column|}}
+          {{#if column.componentClass}}
+            {{#rsa-data-table/body-cell item=item column=column}}
+              <label class="rsa-form-checkbox-label {{if (is-selected selectedItemList item) 'checked'}}">
+                {{rsa-form-checkbox checked=false change=toggleOneItemSelectionAction}}
+              </label>
+            {{/rsa-data-table/body-cell}}
+          {{else}}
+            {{#rsa-data-table/body-cell item=item column=column}}
+              {{host-detail/utils/table-cell item=item column=column}}
+            {{/rsa-data-table/body-cell}}
+          {{/if}}
+        {{/rsa-data-table/body}}
+      {{/if}}
+
       {{#if isPaginated}}
         {{rsa-data-table/load-more status=loadMoreStatus click=getPagedItems}}
       {{/if}}
@@ -33,3 +71,18 @@
 <box class="files-footer" fit>
   {{host-table-footer index=items.length total=total label=type}}
 </box>
+{{#if showServiceModal}}
+  {{endpoint/pivot-to-investigate/modal
+    serviceList=serviceList
+    metaName='checksumSha256'
+    item=item
+    closeModal=(action 'onCloseServiceModal')}}
+{{/if}}
+{{#if showFileStatusModal}}
+  {{endpoint/edit-file-status/modal
+    itemList=selectedItemList
+    onSaveFileStatus=onSaveFileStatus
+    item=item
+    data=fileStatusData
+    closeModal=(action 'onCloseEditFileStatus')}}
+{{/if}}

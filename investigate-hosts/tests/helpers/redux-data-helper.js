@@ -114,6 +114,14 @@ export default class DataHelper {
     _set(this.state, 'hostFiles.totalItems', fileCount);
     return this;
   }
+  initialSelectedFileList(data) {
+    _set(this.state, 'hostFiles.selectedFileList', data);
+    return this;
+  }
+  initialFileStatusData(data) {
+    _set(this.state, 'hostFiles.fileStatusData', data);
+    return this;
+  }
 
   // Host Details
   selectedTabComponent(tabName) {

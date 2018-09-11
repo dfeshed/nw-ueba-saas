@@ -35,7 +35,7 @@ module('Integration | Component | Anomalies/kernel-hooks', function(hooks) {
     await click('.rsa-nav-tab:nth-child(2)');
 
     assert.equal(findAll('.simple-detail-display-wrapper').length, 1, 'Kernel Hooks content loaded');
-    assert.equal(findAll('.rsa-data-table-body-rows .rsa-data-table-body-row').length, 3, 'Kernel Hooks data loaded');
+    assert.equal(findAll('.rsa-data-table-body-rows .rsa-data-table-body-row').length, 1, 'Kernel Hooks data loaded');
   });
 
   test('Kernel Hooks column names', async function(assert) {
