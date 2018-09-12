@@ -73,7 +73,8 @@ test('should return the initial state', function(assert) {
     agentCountMapping: {},
     fileStatusData: {},
     hostNameList: [],
-    fetchHostNameListError: false
+    fetchHostNameListError: false,
+    fetchMetaValueLoading: false
   });
 });
 
@@ -383,4 +384,12 @@ test('Fetch host name error is set to false', function(assert) {
   });
   const newEndState = reducer(previous, { type: ACTION_TYPES.SET_HOST_NAME_LIST, payload: new Array(10) });
   assert.equal(newEndState.hostNameList.length, 10);
+});
+
+test('Fetch Complete will set to false', function(assert) {
+  const previous = Immutable.from({
+    fetchMetaValueLoading: true
+  });
+  const newEndState = reducer(previous, { type: ACTION_TYPES.META_VALUE_COMPLETE });
+  assert.equal(newEndState.fetchMetaValueLoading, false);
 });

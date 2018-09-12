@@ -39,6 +39,8 @@
     {{/rightPanel.header}}
     {{#if (eq activeDataSourceTab 'RISK_PROPERTIES')}}
       {{endpoint/risk-properties defaultAction=(action 'setAlertTab') activeAlertTab=activeAlertTab}}
+    {{else if (eq activeDataSourceTab 'HOSTS')}}
+      {{file-found-on-hosts}}
     {{else}}
       {{endpoint/file-details-panel activeDataSourceTab=activeDataSourceTab data=context errorMessage=false}}
     {{/if}}

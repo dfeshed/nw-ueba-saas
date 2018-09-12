@@ -97,13 +97,13 @@ page.investigate-files-engine {
     @include rsa-vendor-prefix(transition-property, max-width, min-width, padding, opacity);
     @include rsa-vendor-prefix(transition-duration, 0.3s, 0.3s, 0.3s, 0.1s);
 
-    .rsa-nav-tab  .label{
+    .rsa-nav-tab .label {
       @include rsa-font(header, small);
       text-transform: capitalize;
       color: text-color(primary, lighter);
       font-size: 0.85rem;
     }
-    .rsa-nav-tab.is-active .label{
+    .rsa-nav-tab.is-active .label {
       color: text-color(secondary, light);
     }
     .rsa-nav-tab.is-left-aligned-primary {
@@ -162,7 +162,7 @@ page.investigate-files-engine {
 
   .file-list, .rsa-data-table {
     height: 100%;
-    .rsa-data-table-body-row .rsa-form-checkbox{
+    .rsa-data-table-body-row .rsa-form-checkbox {
       position: inherit;
     }
   }
@@ -216,5 +216,30 @@ page.investigate-files-engine {
     padding-left: rsa-whitespace(more);
   }
 
+  .files-host-list {
+    color: text-color(primary, lightest);
+    padding: rsa-whitespace();
+    display: inline-block;
+    .divider {
+      @include border-left(1px, solid, primary);
+      border-top: 0;
+      height: 2rem;
+      margin: .1rem 0 .25rem 0;
+    }
+    .rsa-form-button {
+      .rsa-icon-expand-6-filled, .rsa-icon-download-2-filled {
+        cursor: pointer;
+        padding-bottom: rsa-whitespace(less);
+      }
+    }
+    .host_details_link {
+      display: inline-block;
+      width: 150px;
+      padding-left: rsa-whitespace(less);
+      a {
+        color: text-color(secondary);
+      }
+    }
+  }
 }
 

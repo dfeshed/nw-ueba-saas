@@ -355,6 +355,7 @@ const _getMetaValues = (dispatch, { filter, queryNode, metaName, size = 1, onCom
     onError(dispatch) {
       dispatch({ type: ACTION_TYPES.FETCH_HOST_NAME_LIST_ERROR });
     },
+
     onResponse(response) {
       if (response) {
         const { data: _payload, meta } = response || {};
@@ -365,8 +366,10 @@ const _getMetaValues = (dispatch, { filter, queryNode, metaName, size = 1, onCom
           return;
         } else {
           if (response.data && response.data.length) {
+            dispatch({ type: ACTION_TYPES.META_VALUE_COMPLETE });
             onComplete(response.data);
           }
+
         }
       }
     }

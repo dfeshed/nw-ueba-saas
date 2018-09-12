@@ -27,7 +27,8 @@ const fileListState = Immutable.from({
   agentCountMapping: {},
   fileStatusData: {},
   hostNameList: [],
-  fetchHostNameListError: false
+  fetchHostNameListError: false,
+  fetchMetaValueLoading: false
 });
 
 const _handleAppendFiles = (action) => {
@@ -154,7 +155,7 @@ const fileListReducer = handleActions({
 
   [ACTION_TYPES.FETCH_HOST_NAME_LIST_ERROR]: (state) => state.set('fetchHostNameListError', true),
 
-  [ACTION_TYPES.INIT_FETCH_HOST_NAME_LIST]: (state) => state.set('fetchHostNameListError', false),
+  [ACTION_TYPES.INIT_FETCH_HOST_NAME_LIST]: (state) => state.merge({ fetchHostNameListError: false, fetchMetaValueLoading: true }),
 
   [ACTION_TYPES.SET_HOST_NAME_LIST]: (state, { payload }) => state.set('hostNameList', payload),
 
@@ -162,7 +163,9 @@ const fileListReducer = handleActions({
 
   [ACTION_TYPES.SELECT_ALL_FILES]: (state) => state.set('selectedFileList', Object.values(state.fileData).map((file) => ({ id: file.id, checksumSha256: file.checksumSha256 }))),
 
-  [ACTION_TYPES.DESELECT_ALL_FILES]: (state) => state.set('selectedFileList', [])
+  [ACTION_TYPES.DESELECT_ALL_FILES]: (state) => state.set('selectedFileList', []),
+
+  [ACTION_TYPES.META_VALUE_COMPLETE]: (state) => state.set('fetchMetaValueLoading', false)
 }, fileListState);
 
 export default fileListReducer;

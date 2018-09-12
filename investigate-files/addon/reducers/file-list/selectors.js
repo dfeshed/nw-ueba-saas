@@ -11,6 +11,10 @@ const DATASOURCE_TABS = [
   {
     label: 'investigateFiles.tabs.fileDetails',
     name: 'FILE_DETAILS'
+  },
+  {
+    label: 'investigateFiles.tabs.hosts',
+    name: 'HOSTS'
   }
 ];
 
@@ -23,6 +27,7 @@ const _context = (state) => state.files.fileList.lookupData;
 const _activeDataSourceTab = (state) => state.files.fileList.activeDataSourceTab || 'RISK_PROPERTIES';
 const _selectedFileList = (state) => state.files.fileList.selectedFileList || [];
 const _selectedFileStatusHistory = (state) => state.files.fileList.selectedFileStatusHistory || [];
+const _hostList = (state) => state.files.fileList.hostNameList;
 
 export const fileCount = createSelector(
   files,
@@ -111,4 +116,14 @@ export const checksums = createSelector(
 export const selectedFileStatusHistory = createSelector(
     _selectedFileStatusHistory,
     (selectedFileStatusHistory) => selectedFileStatusHistory
+);
+
+export const hostList = createSelector(
+  _hostList,
+  (hostList) => {
+    const hosts = hostList.map((host) => {
+      return host.value;
+    });
+    return hosts;
+  }
 );

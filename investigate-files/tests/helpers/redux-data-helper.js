@@ -132,4 +132,8 @@ export default class DataHelper {
     _set(this.state, 'endpointServer.isSummaryRetrieveError', status);
     return this;
   }
+  hostNameList(hosts) {
+    _set(this.state, 'files.fileList.hostNameList', hosts);
+    return this;
+  }
 }
