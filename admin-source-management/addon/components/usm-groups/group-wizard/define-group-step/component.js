@@ -1,4 +1,17 @@
 import Component from '@ember/component';
+import { connect } from 'ember-redux';
+
+import {
+  groupCriteria
+} from 'admin-source-management/reducers/usm/group-wizard-selectors';
+
+const stateToComputed = (state) => ({
+  groupCriteria: groupCriteria(state)
+});
+
+const dispatchToActions = {
+  // selectParserRule
+};
 
 const DefineGroupStep = Component.extend({
   tagName: 'vbox',
@@ -7,5 +20,4 @@ const DefineGroupStep = Component.extend({
   actions: {
   }
 });
-
-export default DefineGroupStep;
+export default connect(stateToComputed, dispatchToActions)(DefineGroupStep);

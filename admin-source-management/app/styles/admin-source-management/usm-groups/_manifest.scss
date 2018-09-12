@@ -1,1 +1,27 @@
 @import "group-wizard/manifest";
+
+
+.group-attributes {
+    margin-top: rsa-whitespace(more);
+    margin-bottom: rsa-whitespace(more);
+    .group-criterias {
+        margin-left: rsa-whitespace(more);
+        margin-top: rsa-whitespace(more);
+        margin-bottom: rsa-whitespace(more);
+        border: 1px solid border-color(primary);
+        vertical-align: text-bottom;
+    }
+    .group-criteria {
+        vertical-align: text-bottom;
+        label {
+            display: inline-block;
+            margin-right: rsa-whitespace(more);
+            width: 150px;
+            vertical-align: text-bottom;
+        }
+    }
+    .between-inputs, .textarea-input {
+        width: 400px;
+    }
+
+}

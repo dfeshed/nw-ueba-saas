@@ -4,8 +4,12 @@ import { exceedsLength } from './util/selector-helpers';
 
 const { createSelector } = reselect;
 
-const groupWizardState = (state) => state.usm.groupWizard;
-
+const _groupWizardState = (state) => state.usm.groupWizard;
+export const group = (state) => _groupWizardState(state).group;
+export const groupCriteria = (state) => _groupWizardState(state).group.groupCriteria.criteria;
+export const visited = (state) => _groupWizardState(state).visited;
+export const steps = (state) => _groupWizardState(state).steps;
+export const groupAttributesMap = (state) => _groupWizardState(state).groupAttributesMap;
 const isExistingName = (name) => {
   if (isPresent(name)) {
     // This will be added when backend api is in master. Separate PR
@@ -14,29 +18,19 @@ const isExistingName = (name) => {
   }
 };
 
-/**
- * the group object to be created/updated/saved
- * @public
- */
-export const group = createSelector(
-  groupWizardState,
-  (groupWizardState) => groupWizardState.group
-);
-
 export const isGroupLoading = createSelector(
-  groupWizardState,
+  _groupWizardState,
   (groupWizardState) => {
     return groupWizardState.groupStatus === 'wait' ||
       groupWizardState.initGroupFetchPoliciesStatus === 'wait';
   }
 );
-/**
- * form fields visited by the user
- * @public
- */
-export const visited = createSelector(
-  groupWizardState,
-  (groupWizardState) => groupWizardState.visited
+
+export const hasMissingRequiredData = createSelector(
+  group,
+  (group) => {
+    return isBlank(group.name);
+  }
 );
 
 /**
@@ -96,11 +90,6 @@ export const descriptionValidator = createSelector(
       errorMessage: message
     };
   }
-);
-
-export const steps = createSelector(
-  groupWizardState,
-  (groupWizardState) => groupWizardState.steps
 );
 
 export const isIdentifyGroupStepValid = createSelector(

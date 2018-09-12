@@ -72,6 +72,18 @@ const editGroup = (field, value) => {
   };
 };
 
+const updateGroupCriteria = (criteriaPath, value, fieldIndex) => {
+  const payload = {
+    criteriaPath,
+    value,
+    fieldIndex
+  };
+  return {
+    type: ACTION_TYPES.UPDATE_GROUP_CRITERIA,
+    payload
+  };
+};
+
 const saveGroup = (group, callbacks = callbacksDefault) => {
   return {
     type: ACTION_TYPES.SAVE_GROUP,
@@ -92,5 +104,6 @@ export {
   newGroup,
   getGroup,
   editGroup,
-  saveGroup
+  saveGroup,
+  updateGroupCriteria
 };
