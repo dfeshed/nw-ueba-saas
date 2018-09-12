@@ -20,7 +20,7 @@ const defaultSummaryConfig = [
   },
   {
     label: 'investigateHosts.process.signature',
-    field: 'process.signature',
+    field: 'fileProperties.signature.features',
     format: 'SIGNATURE'
   },
   {

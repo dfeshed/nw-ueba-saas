@@ -15,9 +15,6 @@ const fileProperty = [
         field: 'process.integrityLevel'
       },
       {
-        field: 'process.parentPath'
-      },
-      {
         field: 'process.threadCount'
       },
       {

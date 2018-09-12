@@ -1,7 +1,8 @@
 import moment from 'moment';
 
 // Converts the date time selected into the expected application timezone format.
-export const getTimezoneTime = (browserTime, zoneId) => {
+export const getTimezoneTime = (time, zoneId) => {
+  const browserTime = Array.isArray(time) ? time[0] : time;
   const timeWithoutZone = moment(browserTime).parseZone(browserTime).format('YYYY-MM-DD HH:mm:ss'); // Removing browser timezone information
   const timeInUserTimeZone = moment.tz(timeWithoutZone, zoneId);
   return timeInUserTimeZone.valueOf();

@@ -1,22 +1,12 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
-import $ from 'jquery';
+
+import engineResolver from 'ember-engines/test-support/engine-resolver-for';
+import { findAll, find, render, click } from '@ember/test-helpers';
 import { patchSocket } from '../../../../../helpers/patch-socket';
 import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
 
-import wait from 'ember-test-helpers/wait';
-
-moduleForComponent('host-list/content-filter/datetime-filter', 'Integration | Component | host list/content filter/datetime filter', {
-  integration: true,
-  resolver: engineResolverFor('investigate-hosts'),
-  beforeEach() {
-    initialize(this);
-    this.registry.injection('component', 'i18n', 'service:i18n');
-    this.inject.service('timezone');
-    this.inject.service('redux');
-  }
-});
 
 const filterConfig = {
   'propertyName': 'machine.scanStartTime',
@@ -42,31 +32,43 @@ const filterConfig = {
   'showRadioButtons': true
 };
 
-test('Datetime filter renders', function(assert) {
-  // Setting configuration to the component
-  this.set('config', filterConfig);
-  this.render(hbs`{{host-list/content-filter/datetime-filter config=config}}`);
-  assert.equal(this.$().text().trim(), 'Last Scan Time: All');
-});
 
-test('Datetime filter clicking on trigger filter', function(assert) {
-  // Setting configuration to the component
-  this.set('config', filterConfig);
-  this.render(hbs`{{host-list/content-filter/datetime-filter config=config}}`);
-  this.$('.filter-trigger-button').trigger('click');
-  return wait().then(() => {
-    assert.equal($('.datetime-filter__content').length, 1);
+module('host-list/content-filter/datetime-filter', 'Integration | Component | host list/content filter/datetime filter', function(hooks) {
+  setupRenderingTest(hooks, {
+    resolver: engineResolver('investigate-hosts')
   });
-});
 
-test('Datetime filter clicking on update filter', function(assert) {
-  assert.expect(3);
-  this.get('timezone').set('selected', { zoneId: 'Kwajalein' });
-  // Setting configuration to the component
-  this.set('config', filterConfig);
-  this.render(hbs`{{host-list/content-filter/datetime-filter config=config}}`);
-  this.$('.filter-trigger-button').trigger('click');
-  return wait().then(() => {
+  hooks.beforeEach(function() {
+    initialize(this.owner);
+    this.owner.inject('component', 'i18n', 'service:i18n');
+  });
+
+
+  test('Datetime filter renders', async function(assert) {
+    // Setting configuration to the component
+    this.set('config', filterConfig);
+    await render(hbs`{{host-list/content-filter/datetime-filter config=config}}`);
+    assert.equal(find('.filter-trigger-button span').textContent.trim(), 'Last Scan Time: All');
+  });
+
+  test('Datetime filter clicking on trigger filter', async function(assert) {
+    // Setting configuration to the component
+    this.set('config', filterConfig);
+    await render(hbs`{{host-list/content-filter/datetime-filter config=config}}`);
+    await click('.filter-trigger-button');
+    assert.equal(findAll('.datetime-filter__content').length, 1);
+  });
+
+  test('Datetime filter clicking on update filter', async function(assert) {
+    assert.expect(3);
+    const timezone = this.owner.lookup('service:timezone');
+    timezone.set('selected', { zoneId: 'Kwajalein' });
+    // Setting configuration to the component
+    this.set('config', filterConfig);
+    await render(hbs`{{host-list/content-filter/datetime-filter config=config}}`);
+
+    await click(find('.filter-trigger-button'));
+
     patchSocket((method, model, query) => {
       assert.equal(method, 'machines');
       assert.deepEqual(query.data.criteria.expressionList, [{
@@ -83,20 +85,21 @@ test('Datetime filter clicking on update filter', function(assert) {
         'restrictionType': 'GREATER_THAN'
       }]);
     });
-    $('.rsa-form-button')[1].click();
-    assert.equal($('.datetime-filter__content').length, 1);
+
+    await click(find('.footer .rsa-form-button'));
+
+    assert.equal(findAll('.datetime-filter__content').length, 1);
   });
-});
 
-test('Datetime filter clicking on NOT IN', function(assert) {
-  assert.expect(3);
-  this.get('timezone').set('selected', { zoneId: 'Kwajalein' });
-  // Setting configuration to the component
-  this.set('config', filterConfig);
+  test('Datetime filter clicking on NOT IN', async function(assert) {
+    assert.expect(3);
+    const timezone = this.owner.lookup('service:timezone');
+    timezone.set('selected', { zoneId: 'Kwajalein' });
+    // Setting configuration to the component
+    this.set('config', filterConfig);
 
-  this.render(hbs`{{host-list/content-filter/datetime-filter config=config}}`);
-  this.$('.filter-trigger-button').trigger('click');
-  return wait().then(() => {
+    await render(hbs`{{host-list/content-filter/datetime-filter config=config }}`);
+    await click(find('.filter-trigger-button'));
     patchSocket((method, model, query) => {
       assert.equal(method, 'machines');
       assert.deepEqual(query.data.criteria.expressionList, [{
@@ -113,8 +116,11 @@ test('Datetime filter clicking on NOT IN', function(assert) {
         'restrictionType': 'LESS_THAN'
       }]);
     });
-    $('.rsa-form-radio-label')[1].click();
-    $('.rsa-form-button')[1].click();
-    assert.equal($('.datetime-filter__content').length, 1);
+
+    await click(find('.rsa-form-radio-label:nth-child(2)'));
+    await click(find('.footer .rsa-form-button'));
+
+    assert.equal(findAll('.datetime-filter__content').length, 1);
   });
+
 });

@@ -49,6 +49,8 @@ const DateTimeFilter = Component.extend(FilterMixin, {
 
   eventBus: service(),
 
+  i18n: service(),
+
   classNames: ['datetime-filter'],
 
   showListOptions: true,
@@ -64,6 +66,16 @@ const DateTimeFilter = Component.extend(FilterMixin, {
   selectedDateRangeOption: {},
 
   timezone: service(),
+
+  dateValue: null,
+
+  dateStartValue: null,
+
+  dateEndValue: null,
+
+  isError: false,
+
+  errorMessage: '',
 
    /**
    * Restriction type for the list filter
@@ -222,17 +234,26 @@ const DateTimeFilter = Component.extend(FilterMixin, {
         this.send('updateFilter', { propertyName, restrictionType, isCustom: false, propertyValues });
       } else {
         if (type === 'BETWEEN') {
-          const startTime = getTimezoneTime(dateStartValue[0], zoneId);
-          const endTime = getTimezoneTime(dateEndValue[0], zoneId);
+          const startTime = getTimezoneTime(dateStartValue, zoneId);
+          const endTime = getTimezoneTime(dateEndValue, zoneId);
           propertyValues = [
             { value: startTime, displayValue: this._getDisplayTime(startTime) },
             { value: endTime, displayValue: this._getDisplayTime(endTime) }
           ];
+          if (startTime > endTime) {
+            this.set('isError', true);
+            this.set('errorMessage', this.get('i18n').t('investigateHosts.hosts.filters.startDateAfterEndDate'));
+          } else {
+            this.set('isError', false);
+            this.set('errorMessage', '');
+            this.send('updateFilter', { propertyName, restrictionType: type, isCustom: true, propertyValues });
+          }
         } else {
-          const time = getTimezoneTime(dateValue[0], zoneId);
+          const time = getTimezoneTime(dateValue, zoneId);
           propertyValues = [{ value: time, displayValue: this._getDisplayTime(time) }];
+          this.send('updateFilter', { propertyName, restrictionType: type, isCustom: true, propertyValues });
         }
-        this.send('updateFilter', { propertyName, restrictionType: type, isCustom: true, propertyValues });
+
       }
     },
     toggleIsChecked() {

@@ -74,6 +74,8 @@
             placeholder=(t 'investigateHosts.hosts.filters.customStartDate')
             onChange=(action (mut dateStartValue))
             maxDate=currentDate
+            isError=isError
+            errorMessage=errorMessage
             }}
         </div>
         <div class='body__input col-xs-6'>

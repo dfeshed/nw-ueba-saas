@@ -21,9 +21,7 @@ let columnsConfig = {
     {
       'field': 'fileProperties.signature.features',
       title: 'Signature',
-      'signer': 'fileProperties.signature.signer',
       'label': 'investigateHosts.files.fields.signature.features',
-      'dataType': 'STRING',
       'format': 'SIGNATURE',
       'disableSort': true
     },
@@ -39,7 +37,6 @@ let columnsConfig = {
     {
       'field': 'fileProperties.signature.features',
       'title': 'Signature',
-      'signer': 'fileProperties.signature.signer',
       'label': 'investigateHosts.files.fields.signature.features',
       'format': 'SIGNATURE',
       'disableSort': true

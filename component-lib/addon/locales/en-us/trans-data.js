@@ -2627,6 +2627,7 @@ export default {
         invalidCharsAlphaNumericOnly: 'Special characters are not allowed',
         inTimeRange: 'In',
         notInTimeRange: 'Not In',
+        startDateAfterEndDate: 'Start date needs to be before End date.',
         agentStatus: {
           lastSeenTime: 'Agent Not Seen Since'
         }
