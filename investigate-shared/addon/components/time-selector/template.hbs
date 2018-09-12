@@ -2,6 +2,9 @@
   start=(readonly _startTimeMilli)
   end=(readonly _endTimeMilli)
   includeSeconds=false
+  timezone=timezone.selected.zoneId
+  dateFormat=dateFormat.selected.format
+  use12HourClock=use12HourClock
   onChange=(action 'setCustomTimeRange')
   onError=(action 'timeRangeError')
 }}

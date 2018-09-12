@@ -1,12 +1,19 @@
 import Component from '@ember/component';
 import moment from 'moment';
 import computed from 'ember-computed-decorators';
+import { inject as service } from '@ember/service';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
 import layout from './template';
 
 const TimeSelector = Component.extend({
 
   layout,
+
+  timezone: service(),
+
+  timeFormat: service(),
+
+  dateFormat: service(),
 
   classNames: ['rsa-investigate-query-container__time-selector'],
   // using the 'timeRangeInvalid' to toggle the red border on the time ranges dropdown. This flag is from the state
@@ -45,6 +52,12 @@ const TimeSelector = Component.extend({
   @computed('endTime')
   _endTimeMilli(endTime) {
     return !endTime ? moment().endOf('minute').valueOf() : endTime * 1000;
+  },
+
+  @computed('timeFormat.selected.key')
+  use12HourClock(timeFormat) {
+    // timeFormat can be either HR12 or HR24
+    return timeFormat === 'HR12';
   },
 
   actions: {

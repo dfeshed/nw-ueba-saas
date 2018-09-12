@@ -169,7 +169,9 @@ export default Component.extend({
    */
   @computed('dateFormat')
   dateFormatValues(dateFormat) {
-    return dateFormat.toLowerCase().split('/');
+    if (dateFormat) {
+      return dateFormat.toLowerCase().split('/');
+    }
   },
 
   @computed('year', 'month', 'date', 'hour', 'minute', 'second')
