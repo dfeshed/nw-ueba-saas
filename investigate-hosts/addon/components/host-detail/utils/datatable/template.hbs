@@ -36,7 +36,7 @@
           {{#if column.componentClass}}
             {{#rsa-data-table/body-cell item=item column=column}}
               <label class="rsa-form-checkbox-label {{if (is-selected selectedItemList item) 'checked'}}">
-                {{rsa-form-checkbox checked=false change=toggleOneItemSelectionAction}}
+                {{rsa-form-checkbox checked=false change=(action toggleOneItemSelectionAction item)}}
               </label>
             {{/rsa-data-table/body-cell}}
           {{else}}
@@ -51,7 +51,7 @@
           {{#if column.componentClass}}
             {{#rsa-data-table/body-cell item=item column=column}}
               <label class="rsa-form-checkbox-label {{if (is-selected selectedItemList item) 'checked'}}">
-                {{rsa-form-checkbox checked=false change=toggleOneItemSelectionAction}}
+                {{rsa-form-checkbox checked=false change=(action toggleOneItemSelectionAction item) }}
               </label>
             {{/rsa-data-table/body-cell}}
           {{else}}

@@ -34,7 +34,7 @@ module('Integration | Component | Anomalies/Hooks', function(hooks) {
     await render(hbs`{{host-detail/anomalies}}`);
 
     assert.equal(findAll('.simple-detail-display-wrapper').length, 1, 'Image Hooks content loaded');
-    assert.equal(findAll('.rsa-data-table-body-rows .rsa-data-table-body-row').length, 1, 'Hooks data loaded');
+    assert.equal(findAll('.rsa-data-table-body-rows .rsa-data-table-body-row').length, 2, 'Hooks data loaded');
   });
 
   test('Image Hooks column names', async function(assert) {

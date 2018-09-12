@@ -53,6 +53,7 @@ const selectAllFiles = () => ({ type: ACTION_TYPES.SELECT_ALL_FILES });
 const deSelectAllFiles = () => ({ type: ACTION_TYPES.DESELECT_ALL_FILES });
 
 const saveFileStatus = (checksums, data, callbacks = callbacksDefault) => ({
+  type: ACTION_TYPES.SAVE_FILE_STATUS,
   promise: setFileStatus({ ...data, checksums }),
   meta: {
     onSuccess: (response) => {

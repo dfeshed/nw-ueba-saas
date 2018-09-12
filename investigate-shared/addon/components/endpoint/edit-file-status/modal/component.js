@@ -73,7 +73,6 @@ export default Component.extend({
           failure('investigateFiles.editFileStatus.contexthubServerOffline');
         });
     },
-
     onCancel() {
       this._closeModal();
     }

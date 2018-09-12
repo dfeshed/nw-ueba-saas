@@ -1,7 +1,7 @@
 <box class="{{datatableWidth}}">
   <box class="host-details-file-actionbar">
   {{endpoint/file-actionbar
-    onSaveFileStatus = detailDisplayInputs.onSaveFileStatus
+    onSaveFileStatus = detailDisplayInputs.saveFileStatus
     getSavedFileStatus = detailDisplayInputs.getSavedFileStatus
     serviceList=serviceList
     metaName='checksumSha256'
@@ -25,7 +25,7 @@
     toggleAllItemSelectionAction=detailDisplayInputs.toggleAllItemSelectionAction
     toggleOneItemSelectionAction=detailDisplayInputs.toggleOneItemSelectionAction
     getPagedItems=detailDisplayInputs.getPagedItems
-    onSaveFileStatus=detailDisplayInputs.onSaveFileStatus
+    onSaveFileStatus=detailDisplayInputs.saveFileStatus
     serviceList=detailDisplayInputs.serviceList
     showFileStatusModal=showFileStatusModal
     selectedItemList=detailDisplayInputs.selectedFiles
@@ -39,7 +39,7 @@
       beforeContextMenuShow=(action 'beforeContextMenuShow')
       editFileStatus=(action 'showEditFileStatus')
       showPivotToInvestigate=detailDisplayInputs.showPivotToInvestigate
-      onSaveFileStatus = detailDisplayInputs.onSaveFileStatus
+      onSaveFileStatus = detailDisplayInputs.saveFileStatus
     )}}
 </box>
 {{#if detailDisplayInputs.propertyConfig}}

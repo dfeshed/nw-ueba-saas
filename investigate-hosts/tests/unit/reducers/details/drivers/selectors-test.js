@@ -9,7 +9,10 @@ module('Unit | Selectors | overview');
 import {
   drivers,
   isDataLoading,
-  selectedDriverFileProperty
+  selectedDriverFileProperty,
+  isAllSelected,
+  selectedDriverCount,
+  driverChecksums
 } from 'investigate-hosts/reducers/details/drivers/selectors';
 
 test('drivers', function(assert) {
@@ -134,4 +137,58 @@ test('selectedDriverFileProperty when selectedRowId is empty', function(assert) 
   }));
   assert.equal(result.fileName, 'crc-t10dif.ko', 'file name ');
   assert.equal(result.fileProperties.checksumSha256, '3afe70ba0a58cb15a456d8d2e748a6a4bedcb59b2663fa711227b97fa2105a5f', 'fileproperties checksum');
+});
+test('isAllSelected if all drivers selected', function(assert) {
+  const normalizedData = normalize(driversData, fileContextListSchema);
+  const result1 = isAllSelected(Immutable.from({
+    endpoint: {
+      drivers: {
+        driver: normalizedData.entities.driver,
+        selectedRowId: '',
+        selectedDriverList: []
+      },
+      explore: {
+      },
+      datatable: {
+      }
+    }
+  }));
+
+  const result2 = isAllSelected(Immutable.from({
+    endpoint: {
+      drivers: {
+        driver: new Array(3),
+        selectedRowId: '',
+        selectedDriverList: new Array(3)
+      },
+      explore: {
+      },
+      datatable: {
+      }
+    }
+  }));
+  assert.equal(result1, false, 'isAllSelected should false ');
+  assert.equal(result2, true, 'isAllSelected should true ');
+});
+test('selectedDriverCount', function(assert) {
+  const result = selectedDriverCount(Immutable.from({
+    endpoint: {
+      drivers: {
+        selectedRowId: '',
+        selectedDriverList: new Array(3)
+      }
+    }
+  }));
+  assert.equal(result, 3, 'selected driver count should be 3');
+});
+test('driverChecksums to get all selected driver checksums', function(assert) {
+  const result = driverChecksums(Immutable.from({
+    endpoint: {
+      drivers: {
+        selectedRowId: '',
+        selectedDriverList: [ { checksumSha256: 0 }, { checksumSha256: 1 }, { checksumSha256: 3 } ]
+      }
+    }
+  }));
+  assert.equal(result.length, 3, 'Three checksumSha256 count should be 3');
 });

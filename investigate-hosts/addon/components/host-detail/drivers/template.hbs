@@ -9,5 +9,15 @@
     propertyConfig=propertyConfig
     propertyData=fileProperty
     propertyPanelTitle=(t 'investigateHosts.hosts.propertyPanelTitles.drivers')
+    toggleOneItemSelectionAction=(action 'toggleDriverSelection')
+    toggleAllItemSelectionAction=(action 'toggleAllDriverSelection')
+    selectedFiles=selectedDriverList
+    isAllSelected=isAllSelected
+    selectedFileCount=selectedDriverCount
+    onSaveFileStatus = (action 'saveDriverStatus' checksums)
+    showPivotToInvestigate=false
+    fileStatusData=statusData
+    saveFileStatus = (action 'saveDriverStatus' checksums)
+    getSavedFileStatus=(action 'getSavedDriverStatus' selectedDriverList)
   )
 }}

@@ -12,7 +12,9 @@ module('Unit | Reducers | drivers');
 const initialState = {
   driver: null,
   driverLoadingStatus: null,
-  selectedRowId: null
+  selectedRowId: null,
+  selectedDriverList: [],
+  driverStatusData: {}
 };
 
 test('should return the initial state', function(assert) {
@@ -63,4 +65,66 @@ test('The HOST_DETAILS_DATATABLE_SORT_CONFIG resets the selected row id', functi
   });
   const result = reducer(previous, { type: ACTION_TYPES.CHANGE_AUTORUNS_TAB });
   assert.equal(result.selectedFileId, null);
+});
+test('TOGGLE_SELECTED_DRIVER should toggle the selected driver', function(assert) {
+  const previous = Immutable.from({
+    selectedRowId: '123',
+    selectedDriverList: []
+  });
+  const driver = {
+    id: 0,
+    checksumSha256: 0,
+    signature: '',
+    size: 0 };
+  let result = reducer(previous, { type: ACTION_TYPES.TOGGLE_SELECTED_DRIVER, payload: driver });
+  assert.equal(result.selectedDriverList.length, 1);
+  assert.equal(result.selectedDriverList[0].id, 0);
+  const next = Immutable.from({
+    selectedRowId: '123',
+    selectedDriverList: [driver]
+  });
+  result = reducer(next, { type: ACTION_TYPES.TOGGLE_SELECTED_DRIVER, payload: driver });
+  assert.equal(result.selectedDriverList.length, 0);
+});
+test('TOGGLE_ALL_DRIVER_SELECTION should toggle the selected driver', function(assert) {
+  const previous = Immutable.from({
+    selectedRowId: '123',
+    selectedDriverList: [],
+    driver: {
+      drivers_61: {
+        id: '0'
+      }
+    }
+  });
+  const driver = {
+    id: 0,
+    checksumSha256: 0,
+    signature: '',
+    size: 0 };
+  let result = reducer(previous, { type: ACTION_TYPES.TOGGLE_ALL_DRIVER_SELECTION });
+  assert.equal(result.selectedDriverList.length, 1);
+  assert.equal(result.selectedDriverList[0].id, 0);
+  const next = Immutable.from({
+    selectedRowId: '123',
+    selectedDriverList: [driver]
+  });
+  result = reducer(next, { type: ACTION_TYPES.TOGGLE_ALL_DRIVER_SELECTION, payload: driver });
+  assert.equal(result.selectedDriverList.length, 0);
+});
+test('The GET_DRIVER_STATUS set server response to state', function(assert) {
+  const previous = Immutable.from({
+    driverStatusData: {}
+  });
+
+  const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.GET_DRIVER_STATUS });
+  const startEndState = reducer(previous, startAction);
+
+  assert.deepEqual(startEndState.driverStatusData, {});
+
+  const action = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.GET_DRIVER_STATUS,
+    payload: { data: [ { resultList: [ { data: 'Whitelist' } ] } ] }
+  });
+  const endState = reducer(previous, action);
+  assert.equal(endState.driverStatusData, 'Whitelist');
 });

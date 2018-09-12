@@ -123,6 +123,19 @@ export default class DataHelper {
     _set(this.state, 'hostFiles.fileStatusData', data);
     return this;
   }
+  // Host drivers
+  drivers(drivers) {
+    _set(this.state, 'drivers.driver.', drivers);
+    return this;
+  }
+  initialSelectedDriverList(selectedDrivers) {
+    _set(this.state, 'drivers.selectedDriverList', selectedDrivers);
+    return this;
+  }
+  initialDriverStatusData(data) {
+    _set(this.state, 'hostFiles.driverStatusData', data);
+    return this;
+  }
 
   // Host Details
   selectedTabComponent(tabName) {
