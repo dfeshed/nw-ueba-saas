@@ -3,6 +3,8 @@ import { connect } from 'ember-redux';
 import { success, failure } from 'admin-source-management/utils/flash-messages';
 
 import {
+  hasSelectedEditItem,
+  selectedEditItem,
   hasSelectedDeleteItems,
   selectedDeleteItems,
   hasSelectedPublishItems,
@@ -15,6 +17,8 @@ import {
 } from 'admin-source-management/actions/creators/policies-creators';
 
 const stateToComputed = (state) => ({
+  hasSelectedEditItem: hasSelectedEditItem(state),
+  selectedEditItem: selectedEditItem(state),
   hasSelectedDeleteItems: hasSelectedDeleteItems(state),
   selectedDeleteItems: selectedDeleteItems(state),
   hasSelectedPublishItems: hasSelectedPublishItems(state),

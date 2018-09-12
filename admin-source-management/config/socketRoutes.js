@@ -44,7 +44,11 @@ const adminUsmConfigGen = function(environment) {
         subscriptionDestination: '/user/queue/usm/policies/publish',
         requestDestination: '/ws/usm/policies/publish'
       },
-      saveRecord: {
+      getPolicy: {
+        subscriptionDestination: '/user/queue/usm/policy/get',
+        requestDestination: '/ws/usm/policy/get'
+      },
+      savePolicy: {
         subscriptionDestination: '/user/queue/usm/policy/set',
         requestDestination: '/ws/usm/policy/set'
       }

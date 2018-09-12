@@ -1,6 +1,6 @@
 <hbox>
   <div class="action-control policies-create-new-button">
-    {{#link-to 'policy-wizard'}}
+    {{#link-to 'policy-wizard' 'create-new'}}
       {{#rsa-form-button}}
         {{rsa-icon name='add-1' style='lined'}}{{t 'adminUsm.button.createNew'}}
       {{/rsa-form-button}}
@@ -27,5 +27,13 @@
       onConfirm=(action 'handleDeletePolicies')}}
       {{t 'adminUsm.button.delete'}}
     {{/rsa-button-with-confirmation}}
+  </div>
+  <div class="action-control policies-edit-button">
+    {{#link-to 'policy-wizard' selectedEditItem}}
+      {{#rsa-form-button
+        isDisabled=(not hasSelectedEditItem)}}
+        {{t 'adminUsm.button.edit'}}
+      {{/rsa-form-button}}
+    {{/link-to}}
   </div>
 </hbox>

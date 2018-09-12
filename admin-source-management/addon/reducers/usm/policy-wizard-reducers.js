@@ -8,9 +8,13 @@ import * as ACTION_TYPES from 'admin-source-management/actions/types';
 export const initialState = {
   // the policy object to be created/updated/saved
   policy: {
-    policyType: 'edrPolicy',
+    id: null,
     name: '',
     description: '',
+    dirty: true,
+    lastPublishedCopy: null,
+    lastPublishedOn: 0,
+    policyType: 'edrPolicy',
     scheduleConfig: {
       scanType: 'MANUAL',
       enabledScheduledScan: false,
@@ -98,13 +102,34 @@ export default reduxActions.handleActions({
   [ACTION_TYPES.NEW_POLICY]: (state /* , action */) => {
     // reset everything
     const newState = state.merge({
-      ...initialState
+      ...initialState,
+      policyStatus: 'complete'
     });
     // set default scanStartDate to today
     const fields = 'policy.scheduleConfig.scheduleOptions.scanStartDate'.split('.');
     const scanStartDateToday = moment().format('YYYY-MM-DD');
     return newState.setIn(fields, scanStartDateToday);
   },
+
+  [ACTION_TYPES.GET_POLICY]: (state, action) => (
+    handle(state, action, {
+      start: (state) => {
+        return state.merge({
+          ...initialState,
+          policyStatus: 'wait'
+        });
+      },
+      failure: (state) => {
+        return state.set('policyStatus', 'error');
+      },
+      success: (state) => {
+        return state.merge({
+          policy: action.payload.data,
+          policyStatus: 'complete'
+        });
+      }
+    })
+  ),
 
   // define-policy-step - add an available setting (left col) as a selected setting (right col)
   [ACTION_TYPES.ADD_TO_SELECTED_SETTINGS]: (state, { payload }) => {

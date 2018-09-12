@@ -18,6 +18,19 @@ function fetchPolicies(/* filters, sort */) {
 }
 
 /**
+ * Gets a single policy.
+ * @public
+ */
+function getPolicy(id) {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    modelName: 'policy',
+    method: 'getPolicy',
+    query: { data: id }
+  });
+}
+
+/**
  * Deletes one or more polices from list of policy IDs.
  * The server API is the same for both...
  * @param {*} ids
@@ -57,7 +70,7 @@ function savePolicy(policy) {
   const request = lookup('service:request');
   return request.promiseRequest({
     modelName: 'policy',
-    method: 'saveRecord',
+    method: 'savePolicy',
     query: {
       data: flattenObject(policy)
     }
@@ -67,6 +80,7 @@ function savePolicy(policy) {
 export default {
   deletePolicies,
   fetchPolicies,
+  getPolicy,
   publishPolicies,
   savePolicy
 };

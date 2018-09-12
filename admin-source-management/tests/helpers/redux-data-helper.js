@@ -81,8 +81,18 @@ export default class DataHelper {
     return this;
   }
 
+  policyWizPolicy(policy) {
+    _set(this.state, 'usm.policyWizard.policy', policy);
+    return this;
+  }
+
   policyWizPolicyStatus(status) {
     _set(this.state, 'usm.policyWizard.policyStatus', status);
+    return this;
+  }
+
+  policyWizScanStartDate(startDate) {
+    _set(this.state, 'usm.policyWizard.policy.scheduleConfig.scheduleOptions.scanStartDate', startDate);
     return this;
   }
 

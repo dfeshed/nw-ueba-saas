@@ -7,10 +7,10 @@ const callbacksDefault = { onSuccess() {}, onFailure() {} };
 const initializePolicy = (policyId) => {
   return (dispatch /* , getState */) => {
     // const state = getState();
-    if (policyId) {
-      // TODO for edit
-    } else {
+    if (policyId === 'create-new') {
       dispatch(newPolicy());
+    } else {
+      dispatch(getPolicy(policyId));
     }
   };
 };
@@ -20,6 +20,25 @@ const initializePolicy = (policyId) => {
  * @public
  */
 const newPolicy = () => ({ type: ACTION_TYPES.NEW_POLICY });
+
+/**
+ * Fetches a single policy for edit
+ * @public
+ */
+const getPolicy = (id, callbacks = callbacksDefault) => {
+  return {
+    type: ACTION_TYPES.GET_POLICY,
+    promise: policyAPI.getPolicy(id),
+    meta: {
+      onSuccess: (response) => {
+        callbacks.onSuccess(response);
+      },
+      onFailure: (response) => {
+        callbacks.onFailure(response);
+      }
+    }
+  };
+};
 
 /**
  * define-policy-step...
@@ -145,6 +164,7 @@ const savePolicy = (policy, callbacks = callbacksDefault) => {
 export {
   initializePolicy,
   newPolicy,
+  getPolicy,
   addToSelectedSettings,
   removeFromSelectedSettings,
   editPolicy,

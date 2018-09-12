@@ -20,17 +20,13 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
   });
 
   test('on NEW_POLICY, state should be reset to the initial state', function(assert) {
-    const nameModified = 'test name';
-    const modifiedState = new ReduxDataHelper()
+    const expectedEndState = new ReduxDataHelper()
       .policyWiz()
-      .policyWizName(nameModified)
-      .policyWizVisited(['policy.name'])
+      .policyWizPolicyStatus('complete')
+      .policyWizScanStartDate(moment().format('YYYY-MM-DD'))
       .build().usm.policyWizard;
-    const expectedEndState = _.cloneDeep(policyWizInitialState);
-    // the reducer copies initialState with a policy.scheduleConfig.scheduleOptions.scanStartDate of today
-    expectedEndState.policy.scheduleConfig.scheduleOptions.scanStartDate = moment().format('YYYY-MM-DD');
     const action = { type: ACTION_TYPES.NEW_POLICY };
-    const endState = reducers(Immutable.from(modifiedState), action);
+    const endState = reducers(Immutable.from(policyWizInitialState), action);
     assert.deepEqual(endState, expectedEndState, 'state reset to the initial state');
   });
 
@@ -66,6 +62,41 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
     assert.deepEqual(descEndState1, descExpectedEndState, `policy desc is ${descExpected}`);
     const descEndState2 = reducers(Immutable.from(_.cloneDeep(policyWizInitialState)), descAction);
     assert.deepEqual(descEndState2, descExpectedEndState, `policy desc is ${descExpected} visited state contains no duplicates`);
+  });
+
+  test('on GET_POLICY start, policy is reset and itemsStatus is properly set', function(assert) {
+    const getPolicyEndState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPolicyStatus('wait')
+      .build().usm.policyWizard;
+    const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.GET_POLICY });
+    const endState = reducers(Immutable.from(_.cloneDeep(policyWizInitialState)), action);
+    assert.deepEqual(endState, getPolicyEndState, 'policy is not-set and policyStatus is wait');
+  });
+
+  test('on GET_POLICY success, policy & itemsStatus are properly set', function(assert) {
+    const getPolicyPayload = {
+      data: [
+        {
+          'id': 'policy_001',
+          'name': 'EMC 001',
+          'description': 'EMC 001 of policy policy_001',
+          'dirty': false
+        }
+      ]
+    };
+
+    const getPolicyEndState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPolicy(getPolicyPayload.data)
+      .policyWizPolicyStatus('complete')
+      .build().usm.policyWizard;
+    const action = makePackAction(LIFECYCLE.SUCCESS, {
+      type: ACTION_TYPES.GET_POLICY,
+      payload: getPolicyPayload
+    });
+    const endState = reducers(Immutable.from(_.cloneDeep(policyWizInitialState)), action);
+    assert.deepEqual(endState, getPolicyEndState, 'policy is not-set and policyStatus is complete');
   });
 
   test('on UPDATE_POLICY_PROPERTY policy is updated', function(assert) {
