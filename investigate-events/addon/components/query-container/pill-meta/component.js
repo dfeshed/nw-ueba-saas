@@ -143,6 +143,7 @@ export default Component.extend({
         }
       } else if (input.length === 0) {
         this.set('selection', null);
+        this._broadcast(MESSAGE_TYPES.META_SELECTED, null);
         // Set the power-select highlight on the next runloop so that the
         // power-select has time to render the full list of options.
         next(this, () => powerSelectAPI.actions.highlight(null));

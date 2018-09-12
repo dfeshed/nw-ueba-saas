@@ -480,18 +480,26 @@ export default Component.extend({
   },
 
   /**
-   * Handles selected pill meta.
+   * Handles selected pill meta. If no selected meta is supplied, reset meta
+   * properties to an appropriate state.
    * @param {Object} selectedMeta The selected meta value
    * @private
    */
   _metaSelected(selectedMeta) {
-    this.setProperties({
-      selectedMeta,
-      isMetaActive: false,
-      isMetaAutoFocused: true,
-      isOperatorActive: true,
-      isValueActive: false
-    });
+    if (selectedMeta) {
+      this.setProperties({
+        selectedMeta,
+        isMetaActive: false,
+        isMetaAutoFocused: true,
+        isOperatorActive: true,
+        isValueActive: false
+      });
+    } else {
+      this.setProperties({
+        selectedMeta: null,
+        isMetaAutoFocused: false
+      });
+    }
   },
 
   // ************************ OPERATOR FUNCTIONALITY ************************ //
