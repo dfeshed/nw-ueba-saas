@@ -1735,4 +1735,35 @@ module('Integration | Component | query-pills', function(hooks) {
       assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'should have no focused pill');
     });
   });
+
+  test('Right clicking anywhere on the window dom should remove focus(if any) from a pill', async function(assert) {
+    new ReduxDataHelper(setState)
+      .language()
+      .canQueryGuided()
+      .pillsDataPopulated()
+      .build();
+
+    await render(hbs`
+      <div class='outside'></div>
+      <div class='rsa-investigate-query-container'>
+        {{query-container/query-pills isActive=true}}
+      </div>
+    `);
+
+    await leaveNewPillTemplate();
+
+    const metas = findAll(PILL_SELECTORS.meta);
+    await click(`#${metas[0].id}`);
+    assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 1, 'should have 1 focused pill');
+
+    this.$('.outside').trigger('click', {
+      button: 2,
+      ctrlKey: true
+    });
+
+
+    return settled().then(() => {
+      assert.equal(findAll(PILL_SELECTORS.focusedPill).length, 0, 'should have no focused pill');
+    });
+  });
 });

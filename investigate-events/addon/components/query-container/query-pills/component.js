@@ -54,6 +54,18 @@ const dispatchToActions = {
   selectAllPillsTowardsDirection
 };
 
+const isEventFiredFromQueryPill = (event) => {
+  const { target: clickedElement } = event;
+  const { parentElement } = clickedElement;
+  let includesQueryPillClass = true;
+  if (parentElement) {
+    const parentClickedClass = parentElement.className;
+    const classNameIsString = (typeof parentClickedClass === 'string');
+    includesQueryPillClass = parentClickedClass && classNameIsString && parentClickedClass.includes('query-pill');
+  }
+  return includesQueryPillClass;
+};
+
 const QueryPills = RsaContextMenu.extend({
   tagName: null,
 
@@ -66,8 +78,6 @@ const QueryPills = RsaContextMenu.extend({
   ],
 
   i18n: service(),
-
-  eventBus: service(),
 
   // whether or not this component's children should take
   // focus if they are so inclined.
@@ -121,7 +131,7 @@ const QueryPills = RsaContextMenu.extend({
         return _this.get('hasInvalidSelectedPill');
       },
       action() {
-        // Delete all selected pills first
+        // Delete all deselected pills first
         // submit query with remaining selected pills
         _this.send('deleteGuidedPill', { pillData: _this.get('deselectedPills') });
         _this._submitQuery();
@@ -173,29 +183,29 @@ const QueryPills = RsaContextMenu.extend({
 
   didInsertElement() {
     this._super(...arguments);
+
+    // escape
     const _boundEscapeListener = this._escapeListener.bind(this);
     // saving the event handler fn so that it can be removed later
     this.set('_boundEscapeListener', _boundEscapeListener);
     window.addEventListener('keydown', _boundEscapeListener);
-    this.get('eventBus').on('rsa-application-click', this, 'clickOutside');
+
+    // click
+    const _boundClickListener = this._clickListener.bind(this);
+    this.set('_boundClickListener', _boundClickListener);
+    window.addEventListener('click', _boundClickListener);
+
+    // right-click
+    const _boundRightClickListener = this._rightClickListener.bind(this);
+    this.set('_boundRightClickListener', _boundRightClickListener);
+    window.addEventListener('contextmenu', _boundRightClickListener);
   },
 
   willDestroyElement() {
     this._super(...arguments);
     window.removeEventListener('keydown', this.get('_boundEscapeListener'));
-    this.get('eventBus').off('rsa-application-click', this, 'clickOutside');
-  },
-
-  clickOutside(element) {
-    const { parentElement } = element;
-    if (parentElement) {
-      const parentClickedClass = parentElement.className;
-      const classNameIsString = (typeof parentClickedClass === 'string');
-      const includesQueryPillClass = parentClickedClass && classNameIsString && parentClickedClass.includes('query-pill');
-      if (!includesQueryPillClass) {
-        this.send('removeGuidedPillFocus');
-      }
-    }
+    window.removeEventListener('click', this.get('_boundClickListener'));
+    window.removeEventListener('contextmenu', this.get('_boundRightClickListener'));
   },
 
   actions: {
@@ -416,6 +426,20 @@ const QueryPills = RsaContextMenu.extend({
         // remove focus
         this.set('isPillEditCancelled', false);
       }
+    }
+  },
+
+  _clickListener(e) {
+    if (!isEventFiredFromQueryPill(e)) {
+      this.send('removeGuidedPillFocus');
+    }
+  },
+
+  // Right clicking anywhere on the window should remove
+  // focus from a pill
+  _rightClickListener(e) {
+    if (!isEventFiredFromQueryPill(e)) {
+      this.send('removeGuidedPillFocus');
     }
   }
 });
