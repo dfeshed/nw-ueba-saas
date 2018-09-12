@@ -16,6 +16,12 @@ export default handleActions({
     return state.merge(_initialState);
   },
 
+  [ACTION_TYPES.DELETE_GUIDED_PILLS]: (state) => {
+    return state.merge({
+      isConsoleOpen: false
+    });
+  },
+
   [ACTION_TYPES.TOGGLE_QUERY_CONSOLE]: (state) => {
     return state.merge({
       isConsoleOpen: !state.isConsoleOpen

@@ -128,6 +128,25 @@ module('Integration | Component | Console Trigger', function(hooks) {
     assert.equal(find('.console-trigger i').getAttribute('title'), 'The query console will become available once a query is initiated.');
   });
 
+  test('renders the correct title when hasWarning', async function(assert) {
+    new ReduxDataHelper(setState).queryStats().queryStatsIsEmpty().queryStatsHasWarning().build();
+    await render(hbs`
+      {{query-container/console-trigger}}
+    `);
+
+    assert.equal(find('.console-trigger i').getAttribute('title'), 'This query returned a warning.');
+  });
+
+  test('renders the correct title when hasError', async function(assert) {
+    new ReduxDataHelper(setState).queryStats().queryStatsIsEmpty().queryStatsHasError().build();
+    await render(hbs`
+      {{query-container/console-trigger}}
+    `);
+
+    assert.equal(find('.console-trigger i').getAttribute('title'), 'This query returned an error.');
+  });
+
+
   test('renders the correct title when closed', async function(assert) {
     new ReduxDataHelper(setState).queryStats().build();
     await render(hbs`

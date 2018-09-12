@@ -19,6 +19,19 @@ test('TOGGLE_QUERY_CONSOLE reducer toggles isConsoleOpen', function(assert) {
   assert.equal(nextResult.isConsoleOpen, false);
 });
 
+test('DELETE_GUIDED_PILLS reducer closes isConsoleOpen', function(assert) {
+  const prevState = Immutable.from({
+    isConsoleOpen: true
+  });
+  const action = {
+    type: ACTION_TYPES.DELETE_GUIDED_PILLS
+  };
+  const result = reducer(prevState, action);
+  assert.equal(result.isConsoleOpen, false);
+  const nextResult = reducer(result, action);
+  assert.equal(nextResult.isConsoleOpen, false);
+});
+
 test('QUERY_STATS reducer updates stats', function(assert) {
   const prevState = Immutable.from({
     description: null,

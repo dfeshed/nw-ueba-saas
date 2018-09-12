@@ -1,4 +1,3 @@
-import moment from 'moment';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
@@ -37,26 +36,29 @@ module('Integration | Component | Console Panel', function(hooks) {
       }
     });
 
-    const sDate = Date.now();
-    const eDate = Date.now();
-    const format = `${this.get('dateFormat.selected.format')} ${this.get('timeFormat.selected.format')}`;
+    this.set('timezone', {
+      selected: {
+        zoneId: 'America/Los_Angeles'
+      }
+    });
 
-    new ReduxDataHelper(setState).serviceId().startTime(sDate).endTime(eDate).pillsDataPopulated().queryStats().queryStatsIsOpen().build();
+    new ReduxDataHelper(setState).withPreviousQuery().queryStats().queryStatsIsOpen().build();
 
     await render(hbs`
-      {{query-container/console-panel timeFormat=timeFormat dateFormat=dateFormat}}
+      {{query-container/console-panel timeFormat=timeFormat dateFormat=dateFormat timezone=timezone}}
     `);
 
     assert.equal(findAll('.console-panel .warnings .warning').length, 0);
     assert.equal(findAll('.console-panel .console-content').length, 1);
     assert.equal(findAll('.console-panel .console-content .service').length, 1);
     assert.equal(findAll('.console-panel .console-content .timerange').length, 1);
-    assert.equal(find('.console-panel .console-content .timerange .value').textContent, `${moment(sDate).format(format)} - ${moment(eDate).format(format)}`);
+    assert.equal(find('.console-panel .console-content .timerange .value .start').textContent.trim(), '11/11/49682 03:20pm');
+    assert.equal(find('.console-panel .console-content .timerange .value .end').textContent.trim(), '11/11/49682 03:20pm');
     assert.equal(find('.console-panel .console-content .progress .value').textContent.trim(), 'foo');
   });
 
   test('renders the correct dom hasWarning', async function(assert) {
-    new ReduxDataHelper(setState).queryStats().queryStatsHasWarning().build();
+    new ReduxDataHelper(setState).withPreviousQuery().queryStats().queryStatsHasWarning().build();
     await render(hbs`
       {{query-container/console-panel}}
     `);
@@ -65,7 +67,7 @@ module('Integration | Component | Console Panel', function(hooks) {
   });
 
   test('renders the correct dom hasError', async function(assert) {
-    new ReduxDataHelper(setState).queryStats().queryStatsHasError().build();
+    new ReduxDataHelper(setState).withPreviousQuery().queryStats().queryStatsHasError().build();
     await render(hbs`
       {{query-container/console-panel}}
     `);
@@ -74,7 +76,7 @@ module('Integration | Component | Console Panel', function(hooks) {
   });
 
   test('renders warnings', async function(assert) {
-    new ReduxDataHelper(setState).hasRequiredValuesToQuery(true).queryStats().queryStatsHasWarning().build();
+    new ReduxDataHelper(setState).withPreviousQuery().hasRequiredValuesToQuery(true).queryStats().queryStatsHasWarning().build();
     await render(hbs`
       {{query-container/console-panel}}
     `);
@@ -83,7 +85,7 @@ module('Integration | Component | Console Panel', function(hooks) {
   });
 
   test('renders progress-bar', async function(assert) {
-    new ReduxDataHelper(setState).queryStats().queryStatsIsOpen().build();
+    new ReduxDataHelper(setState).withPreviousQuery().queryStats().queryStatsIsOpen().build();
     await render(hbs`
       {{query-container/console-panel}}
     `);
@@ -91,7 +93,7 @@ module('Integration | Component | Console Panel', function(hooks) {
   });
 
   test('does not renders progress-bar when complete', async function(assert) {
-    new ReduxDataHelper(setState).queryStats().queryStatsIsOpen().queryStatsIsComplete().build();
+    new ReduxDataHelper(setState).withPreviousQuery().queryStats().queryStatsIsOpen().queryStatsIsComplete().build();
     await render(hbs`
       {{query-container/console-panel}}
     `);

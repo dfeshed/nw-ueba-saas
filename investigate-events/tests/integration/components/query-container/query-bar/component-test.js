@@ -244,7 +244,7 @@ module('Integration | Component | query-bar', function(hooks) {
   });
 
   test('renders the correct dom isOpen', async function(assert) {
-    new ReduxDataHelper(setState).pillsDataPopulated().queryStats().queryStatsIsOpen().build();
+    new ReduxDataHelper(setState).withPreviousQuery().queryStats().queryStatsIsOpen().build();
     this.set('executeQuery', () => {});
     await render(hbs`
       {{query-container/query-bar executeQuery=executeQuery}}

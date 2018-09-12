@@ -375,6 +375,21 @@ export default class DataHelper {
     return this;
   }
 
+  withPreviousQuery(
+    metaFilter = DEFAULT_PILLS_DATA,
+    serviceId = '123',
+    startTime = 1505672580000,
+    endTime = 1505672580000
+  ) {
+    _set(this.state, 'queryNode.previousQueryParams', {
+      serviceId,
+      startTime,
+      endTime,
+      metaFilter
+    });
+    return this;
+  }
+
   queryStats() {
     _set(this.state, 'queryStats', {
       isConsoleOpen: false,

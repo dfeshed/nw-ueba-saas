@@ -7,7 +7,21 @@
 
     <div class="timerange">
       <span class="label">{{t 'investigate.queryStats.between'}}</span>
-      <span class="value">{{formattedStartDate}} - {{formattedEndDate}}</span>
+      <span class="value">
+        <span class="start">
+          {{moment-format formattedStartDate format
+            locale=i18n.locale
+            timeZone=timezone.selected.zoneId
+          }}
+        </span>
+        -
+        <span class="end">
+          {{moment-format formattedEndDate format
+            locale=i18n.locale
+            timeZone=timezone.selected.zoneId
+          }}
+        </span>
+      </span>
     </div>
   </div>
 

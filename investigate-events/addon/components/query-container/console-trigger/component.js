@@ -30,15 +30,19 @@ const ConsoleTrigger = Component.extend({
     'hasWarning'
   ],
 
-  @computed('description', 'isDisabled', 'isOpen', 'i18n')
-  label: (description, isDisabled, isOpen, i18n) => {
+  @computed('description', 'isDisabled', 'isOpen', 'hasError', 'hasWarning', 'i18n')
+  label: (description, isDisabled, isOpen, hasError, hasWarning, i18n) => {
     let label;
     if (isDisabled) {
       label = i18n.t('investigate.queryStats.disabledLabel');
-    } else if (!isOpen) {
-      label = i18n.t('investigate.queryStats.closedLabel');
-    } else {
+    } else if (hasError) {
+      label = i18n.t('investigate.queryStats.hasError');
+    } else if (hasWarning) {
+      label = i18n.t('investigate.queryStats.hasWarning');
+    } else if (description && isOpen) {
       label = description;
+    } else {
+      label = i18n.t('investigate.queryStats.openCloseLabel');
     }
     return label;
   },
@@ -64,7 +68,13 @@ const ConsoleTrigger = Component.extend({
 
   _appClick(e) {
     const clickedEl = e.target;
-    const parentClass = clickedEl.parentElement.className;
+    let parentClass;
+    if (clickedEl && clickedEl.parentElement) {
+      parentClass = clickedEl.parentElement.className;
+    } else {
+      parentClass = '';
+    }
+
     const triggerClicked = parentClass && parentClass.includes('console-trigger');
     const consoleClicked = this.$().closest('.query-bar-selection').find('.console-panel').find(clickedEl).length > 0;
     const isOpen = this.get('isOpen');

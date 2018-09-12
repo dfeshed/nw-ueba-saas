@@ -146,6 +146,12 @@ export const eventsGetMore = () => {
       onResponse(response) {
         const { data, goal } = getState().investigate.eventResults;
         const payload = response && response.data;
+        const meta = response && response.data;
+
+        if (meta) {
+          dispatch({ type: ACTION_TYPES.QUERY_STATS, payload: meta });
+        }
+
         if (Array.isArray(payload) && payload.length) {
           payload.forEach(_hasherizeEventMeta);
           const count = data.length + payload.length;
