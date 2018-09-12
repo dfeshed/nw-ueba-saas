@@ -4,6 +4,8 @@ import { success, failure } from 'admin-source-management/utils/flash-messages';
 
 import {
   hasSelectedApplyPoliciesItems,
+  hasSelectedEditItem,
+  selectedEditItem,
   hasSelectedDeleteItems,
   selectedDeleteItems,
   hasSelectedPublishItems,
@@ -17,6 +19,8 @@ import {
 
 const stateToComputed = (state) => ({
   hasSelectedApplyPoliciesItems: hasSelectedApplyPoliciesItems(state),
+  hasSelectedEditItem: hasSelectedEditItem(state),
+  selectedEditItem: selectedEditItem(state),
   hasSelectedDeleteItems: hasSelectedDeleteItems(state),
   selectedDeleteItems: selectedDeleteItems(state),
   hasSelectedPublishItems: hasSelectedPublishItems(state),

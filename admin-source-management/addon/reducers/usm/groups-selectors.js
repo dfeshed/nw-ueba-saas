@@ -1,10 +1,17 @@
 import reselect from 'reselect';
+import { isPresent } from '@ember/utils';
 
 const { createSelector } = reselect;
 
 const _groupsState = (state) => state.usm.groups;
 const _allItems = (state) => state.usm.groups.items;
 const _selectedItems = (state) => state.usm.groups.itemsSelected;
+
+export const groups = createSelector(
+  _allItems,
+  (_allItems) => _allItems
+);
+
 
 export const isGroupsLoading = createSelector(
   _groupsState,
@@ -26,6 +33,25 @@ export const hasSelectedApplyPoliciesItems = createSelector(
   }
 );
 
+export const selectedEditItem = createSelector(
+  _selectedItems,
+  (items) => {
+    if (isPresent(items) && items.length == 1) {
+      const [item] = items;
+      return item;
+    } else {
+      return 'none';
+    }
+  }
+);
+
+export const hasSelectedEditItem = createSelector(
+  selectedEditItem,
+  (item) => {
+    return (isPresent(item) && (item !== 'none'));
+  }
+);
+
 export const selectedDeleteItems = createSelector(
   _selectedItems,
   (items) => {
@@ -38,9 +64,7 @@ export const selectedDeleteItems = createSelector(
 export const hasSelectedDeleteItems = createSelector(
   selectedDeleteItems,
   (items) => {
-    if (items) {
-      return (items.length > 0);
-    }
+    return (isPresent(items) && (items.length > 0));
   }
 );
 
@@ -56,8 +80,6 @@ export const selectedPublishItems = createSelector(
 export const hasSelectedPublishItems = createSelector(
   selectedPublishItems,
   (items) => {
-    if (items) {
-      return (items.length > 0);
-    }
+    return (isPresent(items) && (items.length > 0));
   }
 );

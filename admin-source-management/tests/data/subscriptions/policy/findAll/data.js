@@ -63,7 +63,7 @@ export default [
     policyType: 'edrPolicy',
     name: 'EMC Reston! 012',
     description: 'EMC Reston 012 of policy policy_012',
-    dirty: false,
+    dirty: true,
     defaultPolicy: false,
     lastPublishedCopy: null,
     lastPublishedOn: 0,

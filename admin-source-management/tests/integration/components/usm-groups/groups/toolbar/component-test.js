@@ -151,7 +151,7 @@ module('Integration | Component | USM Groups Toolbar', function(hooks) {
     await render(hbs`{{usm-groups/groups usm-groups/groups/toolbar}}`);
     assert.equal(findAll(`${selectors.deleteButton} .rsa-form-button-wrapper:not(.is-disabled)`).length, 1, 'The Publish button is enabled');
     await click(`${selectors.publishButton} button`);
-    const expectedMessage = translation.t('adminUsm.groups.modals.publishGroups.confirm', { numItems: '2' });
+    const expectedMessage = translation.t('adminUsm.groups.modals.publishGroups.confirm', { numItems: '1' });
     assert.ok(find('.confirmation-modal'), 'Modal Confirmation is not showing');
     assert.equal(find('.confirmation-modal .modal-content p').textContent.trim(), expectedMessage, 'Confirm message is incorrect');
     patchSocket((method, modelName, query) => {

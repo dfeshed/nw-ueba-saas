@@ -62,7 +62,7 @@ module('Integration | Component | USM Policies Toolbar', function(hooks) {
     assert.expect(3);
     new ReduxDataHelper(setState)
       .getPolicies()
-      .selectedPolicies(['policy_002'])
+      .selectedPolicies(['policy_014'])
       .build();
     await render(hbs`{{usm-policies/policies/toolbar}}`);
     assert.equal(findAll(`${selectors.createNewButton} .rsa-form-button-wrapper:not(.is-disabled)`).length, 1, 'The Create New button is enabled');
@@ -176,7 +176,7 @@ module('Integration | Component | USM Policies Toolbar', function(hooks) {
       assert.equal(method, 'publish');
       assert.equal(modelName, 'policy');
       assert.deepEqual(query, {
-        data: ['policy_001']
+        data: ['policy_001', 'policy_002']
       });
     });
     patchFlash((flash) => {

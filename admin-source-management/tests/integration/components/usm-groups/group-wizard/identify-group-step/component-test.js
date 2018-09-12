@@ -73,7 +73,7 @@ module('Integration | Component | usm-groups/group-wizard/identify-group-step', 
     // await triggerKeyEvent(el, 'keyup', 'e'); // might go back to this with debounce
     await blur(el);
     return settled().then(() => {
-      assert.ok(editGroupSpy.calledOnce, 'The editGroup action was called once');
+      assert.ok((editGroupSpy.calledOnce), 'The editGroup action was called once');
       assert.ok(editGroupSpy.calledWith('group.name', expectedTestName), `The editGroup action was called with trimmed "${testName}"`);
     });
   });

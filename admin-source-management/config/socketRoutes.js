@@ -21,7 +21,11 @@ const adminUsmConfigGen = function(environment) {
         subscriptionDestination: '/user/queue/usm/groups/publish',
         requestDestination: '/ws/usm/groups/publish'
       },
-      updateRecord: {
+      getGroup: {
+        subscriptionDestination: '/user/queue/usm/group/get',
+        requestDestination: '/ws/usm/group/get'
+      },
+      saveGroup: {
         subscriptionDestination: '/user/queue/usm/group/set',
         requestDestination: '/ws/usm/group/set'
       }

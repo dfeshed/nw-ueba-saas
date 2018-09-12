@@ -79,7 +79,7 @@ module('Integration | Component | usm-policies/policy-wizard/identify-policy-ste
     // await triggerKeyEvent(el, 'keyup', 'e'); // might go back to this with debounce
     await blur(el);
     return settled().then(() => {
-      assert.ok(editPolicySpy.calledOnce, 'The editPolicy action was called once');
+      assert.ok((editPolicySpy.calledOnce), 'The editPolicy action was called once');
       assert.ok(editPolicySpy.calledWith('policy.name', expectedTestName), `The editPolicy action was called with trimmed "${testName}"`);
     });
   });

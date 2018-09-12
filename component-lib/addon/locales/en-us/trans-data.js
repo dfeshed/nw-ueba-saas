@@ -3446,6 +3446,7 @@ export default {
       addNew: 'Add New',
       createNew: 'Create New',
       delete: 'Delete',
+      edit: 'Edit',
       publish: 'Publish',
       applyGroups: 'Apply To Groups',
       applyPolicies: 'Apply Policy(ies)',
@@ -3483,7 +3484,7 @@ export default {
         },
         publishGroups: {
           title: 'Publish Group(s)',
-          confirm: 'Are you sure you want to publish the selected Group(s)?',
+          confirm: 'Are you sure you want to publish the {{numItems}} selected UnPublished Group(s)?',
           ok: 'Publish Group(s)',
           success: 'Successfully published selected Group(s)',
           failure: 'There was an unexpected problem publishing the Group(s)'
@@ -3540,7 +3541,7 @@ export default {
         },
         publishPolicies: {
           title: 'Publish Policy(ies)',
-          confirm: 'Are you sure you want to publish the selected Policy(ies)?',
+          confirm: 'Are you sure you want to publish the {{numItems}} selected UnPublished Policy(ies)?',
           ok: 'Publish Policy(ies)',
           success: 'Successfully published selected Policy(ies)',
           failure: 'There was an unexpected problem publishing the Policy(ies)'

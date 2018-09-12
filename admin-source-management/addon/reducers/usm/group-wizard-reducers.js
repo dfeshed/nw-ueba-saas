@@ -10,10 +10,10 @@ export const initialState = {
     id: null,
     name: '',
     description: '',
-    createdBy: null,
-    createdOn: null,
-    lastModifiedBy: null,
-    lastModifiedOn: null
+    dirty: true,
+    lastPublishedCopy: null,
+    lastPublishedOn: 0,
+    assignedPolicies: {}
   },
 
   // the policies objects to fill the group select/dropdown
@@ -83,13 +83,32 @@ export default reduxActions.handleActions({
   ),
 
   [ACTION_TYPES.NEW_GROUP]: (state /* , action */) => {
-    return state.merge({
-      group: { ...initialState.group },
-      groupStatus: null,
-      visited: [],
-      initGroupFetchPoliciesStatus: null
+    const newState = state.merge({
+      ...initialState,
+      groupStatus: 'complete'
     });
+    return newState;
   },
+
+  [ACTION_TYPES.GET_GROUP]: (state, action) => (
+    handle(state, action, {
+      start: (state) => {
+        return state.merge({
+          ...initialState,
+          groupStatus: 'wait'
+        });
+      },
+      failure: (state) => {
+        return state.set('groupStatus', 'error');
+      },
+      success: (state) => {
+        return state.merge({
+          group: action.payload.data,
+          groupStatus: 'complete'
+        });
+      }
+    })
+  ),
 
   [ACTION_TYPES.EDIT_GROUP]: (state, action) => {
     const { field, value } = action.payload;

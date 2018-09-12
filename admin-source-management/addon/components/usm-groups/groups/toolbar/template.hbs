@@ -1,6 +1,6 @@
 <hbox>
   <div class="action-control groups-create-new-button">
-    {{#link-to 'group-wizard'}}
+    {{#link-to 'group-wizard' 'create-new'}}
       {{#rsa-form-button}}
         {{rsa-icon size='small' name='add-1' style='lined'}}{{t 'adminUsm.button.createNew'}}
       {{/rsa-form-button}}
@@ -34,5 +34,12 @@
       {{t 'adminUsm.button.delete'}}
     {{/rsa-button-with-confirmation}}
   </div>
+  <div class="action-control groups-edit-button">
+    {{#link-to 'group-wizard' selectedEditItem}}
+      {{#rsa-form-button
+        isDisabled=(not hasSelectedEditItem)}}
+        {{t 'adminUsm.button.edit'}}
+      {{/rsa-form-button}}
+    {{/link-to}}
+  </div>
 </hbox>
-

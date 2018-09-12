@@ -17,6 +17,20 @@ function fetchGroups(/* filters, sort */) {
 }
 
 /**
+ * Gets a single group.
+ * @public
+ */
+function getGroup(id) {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    modelName: 'groups',
+    method: 'getGroup',
+    query: { data: id }
+  });
+}
+
+
+/**
  * Deletes one or more groups from list of group IDs.
  * The server API is the same for both...
  * @param {*} ids
@@ -56,7 +70,7 @@ function saveGroup(group) {
   const request = lookup('service:request');
   return request.promiseRequest({
     modelName: 'groups',
-    method: 'updateRecord',
+    method: 'saveGroup',
     query: {
       data: group
     }
@@ -66,6 +80,7 @@ function saveGroup(group) {
 export default {
   deleteGroups,
   fetchGroups,
+  getGroup,
   publishGroups,
   saveGroup
 };
