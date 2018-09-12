@@ -42,6 +42,8 @@ module.exports = EngineAddon.extend({
     subscriptionPath
   ],
 
+  dataPath: `${subscriptionPath}/presidio`,
+
   // See ../common.js for details on this function
   isDevelopingAddon: common.isDevelopingAddon(projectName),
 

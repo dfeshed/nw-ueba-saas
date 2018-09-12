@@ -23,7 +23,7 @@ import {
   dirListing
 } from './util';
 
-const start = function({ subscriptionLocations, routes }, cb) {
+const start = function({ subscriptionLocations, routes }, cb, { urlPattern, customData } = {}) {
 
   // dynamically build subscription configuration based on user location input
   discoverSubscriptions(subscriptionLocations);
@@ -62,6 +62,18 @@ const start = function({ subscriptionLocations, routes }, cb) {
   });
   app.use('/admin/contextmenu/configuration.json', actionRoute);
 
+  // Rest endpoints for all custom server requests.
+  if (urlPattern) {
+    const datafun = require(customData);
+    // eslint-disable-next-line new-cap
+    const customRoute = express.Router();
+    customRoute.get('/', function(req, res) {
+      console.log(req.originalUrl);
+      res.json(datafun.default(req.originalUrl));
+    });
+    app.use(urlPattern, customRoute);
+  }
+
   // auth route which delivers a fake auth token response for login simulation
   // eslint-disable-next-line new-cap
   const authRoute = express.Router();
@@ -97,21 +109,23 @@ const start = function({ subscriptionLocations, routes }, cb) {
         case 'CONNECT':
           ws.send(createConnectMessage());
           break;
-        case 'SUBSCRIBE': {
-          ws.send(createSubscriptionReceiptMessage(frame.headers));
-          break;
-        }
-        case 'SEND': {
-          // get list of subscriptions and see if subscription being used is present
-          const subscriptions = subscriptionList();
-          if (subscriptions[frame.headers.destination]) {
-            const subscriptionHandler = subscriptions[frame.headers.destination];
-            _handleMessage(ws, frame, subscriptionHandler);
-          } else {
-            console.error(chalk.red(`No handler exists for [[ ${frame.headers.destination} ]]`));
+        case 'SUBSCRIBE':
+          {
+            ws.send(createSubscriptionReceiptMessage(frame.headers));
+            break;
           }
-          break;
-        }
+        case 'SEND':
+          {
+            // get list of subscriptions and see if subscription being used is present
+            const subscriptions = subscriptionList();
+            if (subscriptions[frame.headers.destination]) {
+              const subscriptionHandler = subscriptions[frame.headers.destination];
+              _handleMessage(ws, frame, subscriptionHandler);
+            } else {
+              console.error(chalk.red(`No handler exists for [[ ${frame.headers.destination} ]]`));
+            }
+            break;
+          }
         case 'DISCONNECT':
           // DISCONNECT means the client has disconnected
           // so terminating should not be necessary
