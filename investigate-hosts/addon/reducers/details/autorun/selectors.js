@@ -11,6 +11,9 @@ const _taskObject = (state) => state.endpoint.autoruns.task;
 const _selectedRowId = (state) => state.endpoint.autoruns.selectedRowId;
 const _selectedTab = (state) => state.endpoint.explore.selectedTab;
 const _sortConfig = (state) => state.endpoint.datatable.sortConfig;
+const _selectedAutorunList = (state) => state.endpoint.autoruns.selectedAutorunList || [];
+const _selectedServiceList = (state) => state.endpoint.autoruns.selectedServiceList || [];
+const _selectedTaskList = (state) => state.endpoint.autoruns.selectedTaskList || [];
 
 export const isAutorunDataLoading = createSelector(
   _autorunLoadingStatus,
@@ -47,3 +50,111 @@ export const selectedAutorunFileProperties = createSelector([ _selectedRowId, au
 export const selectedServiceFileProperties = createSelector([ _selectedRowId, services, _serviceObject], getProperties);
 
 export const selectedTaskFileProperties = createSelector([ _selectedRowId, tasks, _taskObject], getProperties);
+/**
+ * selector to know all rows selected
+ * @public
+ */
+export const isAllSelected = createSelector(
+  [autoruns, _selectedAutorunList],
+  (autoruns, selectedAutorunList) => {
+    if (selectedAutorunList && selectedAutorunList.length) {
+      return autoruns.length === selectedAutorunList.length;
+    }
+    return false;
+  }
+);
+
+/**
+ * selector for get selected row count.
+ * @public
+ */
+export const selectedAutorunCount = createSelector(
+  [_selectedAutorunList],
+  (selectedAutorunList) => {
+    if (selectedAutorunList) {
+      return selectedAutorunList.length;
+    }
+    return 0;
+  }
+);
+
+/**
+ * Selector for list of checksums of all selected autoruns.
+ * @public
+ */
+export const autorunChecksums = createSelector(
+  [_selectedAutorunList],
+  (selectedAutorunList) => selectedAutorunList.map((autorun) => autorun.checksumSha256)
+);
+/**
+ * selector to know all rows selected
+ * @public
+ */
+export const isAllServiceSelected = createSelector(
+  [services, _selectedServiceList],
+  (services, selectedServiceList) => {
+    if (selectedServiceList && selectedServiceList.length) {
+      return services.length === selectedServiceList.length;
+    }
+    return false;
+  }
+);
+
+/**
+ * selector for get selected row count.
+ * @public
+ */
+export const selectedServiceCount = createSelector(
+  [_selectedServiceList],
+  (selectedServiceList) => {
+    if (selectedServiceList) {
+      return selectedServiceList.length;
+    }
+    return 0;
+  }
+);
+
+/**
+ * Selector for list of checksums of all selected services.
+ * @public
+ */
+export const serviceChecksums = createSelector(
+  [_selectedServiceList],
+  (selectedServiceList) => selectedServiceList.map((service) => service.checksumSha256)
+);
+/**
+ * selector to know all rows selected
+ * @public
+ */
+export const isAllTaskSelected = createSelector(
+  [tasks, _selectedTaskList],
+  (tasks, selectedTaskList) => {
+    if (selectedTaskList && selectedTaskList.length) {
+      return tasks.length === selectedTaskList.length;
+    }
+    return false;
+  }
+);
+
+/**
+ * selector for get selected row count.
+ * @public
+ */
+export const selectedTaskCount = createSelector(
+  [_selectedTaskList],
+  (selectedTaskList) => {
+    if (selectedTaskList) {
+      return selectedTaskList.length;
+    }
+    return 0;
+  }
+);
+
+/**
+ * Selector for list of checksums of all selected task.
+ * @public
+ */
+export const taskChecksums = createSelector(
+  [_selectedTaskList],
+  (selectedTaskList) => selectedTaskList.map((task) => task.checksumSha256)
+);

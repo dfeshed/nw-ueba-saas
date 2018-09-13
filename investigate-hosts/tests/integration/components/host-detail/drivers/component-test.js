@@ -51,7 +51,7 @@ module('Integration | Component | Drivers', function(hooks) {
     const selected = [ {}, {}, {} ];
     new ReduxDataHelper(initState)
     .drivers(driversState)
-    .initialSelectedDriverList(selected)
+    .selectedDriverList(selected)
     .build();
 
     await render(hbs`{{host-detail/drivers}}`);

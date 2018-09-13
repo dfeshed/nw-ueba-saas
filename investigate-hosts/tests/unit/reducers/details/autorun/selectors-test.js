@@ -16,7 +16,16 @@ import {
   services,
   isAutorunDataLoading,
   isTaskDataLoading,
-  isServiceDataLoading
+  isServiceDataLoading,
+  autorunChecksums,
+  selectedAutorunCount,
+  isAllSelected,
+  isAllServiceSelected,
+  serviceChecksums,
+  selectedServiceCount,
+  isAllTaskSelected,
+  selectedTaskCount,
+  taskChecksums
 } from 'investigate-hosts/reducers/details/autorun/selectors';
 
 test('autoruns', function(assert) {
@@ -308,4 +317,175 @@ test('isServiceDataLoading is set to true when serviceLoadingStatus is wait', fu
     }
   }));
   assert.deepEqual(result, true);
+});
+test('isAllSelected if all autorun selected', function(assert) {
+
+  const normalizedData = normalize(autorunsData, fileContextAutorunsSchema);
+  const { autorun } = normalizedData.entities;
+
+  const result1 = isAllSelected(Immutable.from({
+    endpoint: {
+      autoruns: {
+        autorun,
+        selectedRowId: '',
+        selectedAutorunList: []
+      },
+      explore: {
+      },
+      datatable: {
+      }
+    }
+  }));
+
+  const result2 = isAllSelected(Immutable.from({
+    endpoint: {
+      autoruns: {
+        autorun: new Array(3),
+        selectedRowId: '',
+        selectedAutorunList: new Array(3)
+      },
+      explore: {
+      },
+      datatable: {
+      }
+    }
+  }));
+  assert.equal(result1, false, 'isAllSelected should false ');
+  assert.equal(result2, true, 'isAllSelected should true ');
+});
+test('selectedAutorunCount', function(assert) {
+  const result = selectedAutorunCount(Immutable.from({
+    endpoint: {
+      autoruns: {
+        selectedRowId: '',
+        selectedAutorunList: new Array(3)
+      }
+    }
+  }));
+  assert.equal(result, 3, 'selected autorun count should be 3');
+});
+test('autorunChecksums to get all selected autorun checksums', function(assert) {
+  const result = autorunChecksums(Immutable.from({
+    endpoint: {
+      autoruns: {
+        selectedRowId: '',
+        selectedAutorunList: [ { checksumSha256: 0 }, { checksumSha256: 1 }, { checksumSha256: 3 } ]
+      }
+    }
+  }));
+  assert.equal(result.length, 3, 'Three checksumSha256 count should be 3');
+});
+test('isAllServiceSelected if all service selected', function(assert) {
+
+  const normalizedData = normalize(autorunsData, fileContextAutorunsSchema);
+  const { autorun } = normalizedData.entities;
+
+  const result1 = isAllServiceSelected(Immutable.from({
+    endpoint: {
+      autoruns: {
+        service: autorun,
+        selectedRowId: '',
+        selectedServiceList: []
+      },
+      explore: {
+      },
+      datatable: {
+      }
+    }
+  }));
+
+  const result2 = isAllServiceSelected(Immutable.from({
+    endpoint: {
+      autoruns: {
+        service: new Array(3),
+        selectedRowId: '',
+        selectedServiceList: new Array(3)
+      },
+      explore: {
+      },
+      datatable: {
+      }
+    }
+  }));
+  assert.equal(result1, false, 'isAllServiceSelected should false ');
+  assert.equal(result2, true, 'isAllServiceSelected should true ');
+});
+test('selectedServiceCount', function(assert) {
+  const result = selectedServiceCount(Immutable.from({
+    endpoint: {
+      autoruns: {
+        selectedRowId: '',
+        selectedServiceList: new Array(3)
+      }
+    }
+  }));
+  assert.equal(result, 3, 'selected service count should be 3');
+});
+test('serviceChecksums to get all selected service checksums', function(assert) {
+  const result = serviceChecksums(Immutable.from({
+    endpoint: {
+      autoruns: {
+        selectedRowId: '',
+        selectedServiceList: [ { checksumSha256: 0 }, { checksumSha256: 1 }, { checksumSha256: 3 } ]
+      }
+    }
+  }));
+  assert.equal(result.length, 3, 'Three checksumSha256 count should be 3');
+});
+test('isAllTaskeSelected if all task selected', function(assert) {
+
+  const normalizedData = normalize(autorunsData, fileContextAutorunsSchema);
+  const { autorun } = normalizedData.entities;
+
+  const result1 = isAllTaskSelected(Immutable.from({
+    endpoint: {
+      autoruns: {
+        task: autorun,
+        selectedRowId: '',
+        selectedTaskList: []
+      },
+      explore: {
+      },
+      datatable: {
+      }
+    }
+  }));
+
+  const result2 = isAllTaskSelected(Immutable.from({
+    endpoint: {
+      autoruns: {
+        task: new Array(3),
+        selectedRowId: '',
+        selectedTaskList: new Array(3)
+      },
+      explore: {
+      },
+      datatable: {
+      }
+    }
+  }));
+  assert.equal(result1, false, 'isAllTaskSelected should false ');
+  assert.equal(result2, true, 'isAllTaskSelected should true ');
+});
+test('selectedTaskCount', function(assert) {
+  const result = selectedTaskCount(Immutable.from({
+    endpoint: {
+      autoruns: {
+        selectedRowId: '',
+        selectedTaskList: new Array(3)
+      }
+    }
+  }));
+  assert.equal(result, 3, 'selected task count should be 3');
+});
+test('taskChecksums to get all selected task checksums', function(assert) {
+  const result = taskChecksums(Immutable.from({
+    endpoint: {
+      autoruns: {
+        selectedRowId: '',
+        selectedTaskList: [ { checksumSha256: 0 }, { checksumSha256: 1 }, { checksumSha256: 3 } ]
+      }
+    }
+  }));
+  assert.equal(result.length, 3, 'Three checksumSha256 count should be 3');
 });

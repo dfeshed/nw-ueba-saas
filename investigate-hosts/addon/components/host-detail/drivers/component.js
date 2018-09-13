@@ -12,7 +12,7 @@ import {
   isDataLoading,
   drivers,
   selectedDriverFileProperty,
-  _selectedDriverList,
+  selectedDriverList,
   isAllSelected,
   selectedDriverCount,
   driverChecksums
@@ -26,7 +26,7 @@ const stateToComputed = (state) => ({
   fileProperty: selectedDriverFileProperty(state),
   status: isDataLoading(state),
   columnsConfig: getColumnsConfig(state, columnsConfig),
-  selectedDriverList: _selectedDriverList(state),
+  selectedDriverList: selectedDriverList(state),
   isAllSelected: isAllSelected(state),
   selectedDriverCount: selectedDriverCount(state),
   driverStatusData: state.endpoint.drivers.driverStatusData,

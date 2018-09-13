@@ -1,9 +1,22 @@
 const defaultColumns = [
   {
+    'dataType': 'checkbox',
+    'width': 20,
+    'class': 'rsa-form-row-checkbox',
+    'componentClass': 'rsa-form-checkbox',
+    'visible': true,
+    'disableSort': true,
+    'headerComponentClass': 'rsa-form-checkbox'
+  },
+  {
     field: 'signature',
     title: 'SIGNATURE',
     format: 'SIGNATURE',
     width: '10%'
+  },
+  {
+    field: 'fileProperties.fileStatus',
+    title: 'File Status'
   },
   {
     field: 'path',
@@ -70,7 +83,7 @@ let columnsConfig = {
 const _generateColumns = function(columns) {
   for (const key in columns) {
     if (columns.hasOwnProperty(key)) {
-      columns[key] = [...columns[key], ...defaultColumns];
+      columns[key] = [...defaultColumns, ...columns[key]];
     }
   }
   return columns;

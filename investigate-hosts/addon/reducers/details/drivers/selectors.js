@@ -7,7 +7,7 @@ const _driverObject = (state) => state.endpoint.drivers.driver;
 const _selectedRowId = (state) => state.endpoint.drivers.selectedRowId;
 const _selectedTab = (state) => state.endpoint.explore.selectedTab;
 const _sortConfig = (state) => state.endpoint.datatable.sortConfig;
-export const _selectedDriverList = (state) => state.endpoint.drivers.selectedDriverList || [];
+export const selectedDriverList = (state) => state.endpoint.drivers.selectedDriverList || [];
 
 export const isDataLoading = createSelector(
   _driverLoadingStatus,
@@ -30,7 +30,7 @@ export const selectedDriverFileProperty = createSelector([_selectedRowId, driver
  * @public
  */
 export const isAllSelected = createSelector(
-  [drivers, _selectedDriverList],
+  [drivers, selectedDriverList],
   (drivers, selectedDriverList) => {
     if (selectedDriverList && selectedDriverList.length) {
       return drivers.length === selectedDriverList.length;
@@ -44,7 +44,7 @@ export const isAllSelected = createSelector(
  * @public
  */
 export const selectedDriverCount = createSelector(
-  [_selectedDriverList],
+  [selectedDriverList],
   (selectedDriverList) => {
     if (selectedDriverList) {
       return selectedDriverList.length;
@@ -58,6 +58,6 @@ export const selectedDriverCount = createSelector(
  * @public
  */
 export const driverChecksums = createSelector(
-  [_selectedDriverList],
+  [selectedDriverList],
   (selectedDriverList) => selectedDriverList.map((file) => file.checksumSha256)
 );

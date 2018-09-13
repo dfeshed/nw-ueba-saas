@@ -115,11 +115,11 @@ export default class DataHelper {
     _set(this.state, 'hostFiles.totalItems', fileCount);
     return this;
   }
-  initialSelectedFileList(data) {
+  selectedFileList(data) {
     _set(this.state, 'hostFiles.selectedFileList', data);
     return this;
   }
-  initialFileStatusData(data) {
+  fileStatusData(data) {
     _set(this.state, 'hostFiles.fileStatusData', data);
     return this;
   }
@@ -128,11 +128,11 @@ export default class DataHelper {
     _set(this.state, 'drivers.driver.', drivers);
     return this;
   }
-  initialSelectedDriverList(selectedDrivers) {
+  selectedDriverList(selectedDrivers) {
     _set(this.state, 'drivers.selectedDriverList', selectedDrivers);
     return this;
   }
-  initialDriverStatusData(data) {
+  driverStatusData(data) {
     _set(this.state, 'hostFiles.driverStatusData', data);
     return this;
   }

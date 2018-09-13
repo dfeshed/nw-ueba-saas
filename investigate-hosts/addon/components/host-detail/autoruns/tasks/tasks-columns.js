@@ -1,5 +1,14 @@
 const defaultColumns = [
   {
+    'dataType': 'checkbox',
+    'width': 20,
+    'class': 'rsa-form-row-checkbox',
+    'componentClass': 'rsa-form-checkbox',
+    'visible': true,
+    'disableSort': true,
+    'headerComponentClass': 'rsa-form-checkbox'
+  },
+  {
     field: 'fileName',
     title: 'NAME',
     width: '15%'
@@ -8,6 +17,10 @@ const defaultColumns = [
     field: 'checksumSha256',
     title: 'HASH',
     width: '10%'
+  },
+  {
+    field: 'fileProperties.fileStatus',
+    title: 'File Status'
   }
 ];
 let columnsConfig = {

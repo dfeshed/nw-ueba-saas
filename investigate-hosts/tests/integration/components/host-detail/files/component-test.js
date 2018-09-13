@@ -31,8 +31,8 @@ test('table still loading', function(assert) {
   this.render(hbs`{{host-detail/files}}`);
   new ReduxDataHelper(setState)
     .filesLoadMoreStatus('wait')
-    .initialSelectedFileList([])
-    .initialFileStatusData({})
+    .selectedFileList([])
+    .fileStatusData({})
     .build();
   assert.equal(this.$('.rsa-data-table div.rsa-loader').length, 1, 'RSA loader displayed');
 });
@@ -40,8 +40,8 @@ test('table still loading', function(assert) {
 test('table with no data', function(assert) {
   new ReduxDataHelper(setState)
     .filesLoadMoreStatus('completed')
-    .initialSelectedFileList([])
-    .initialFileStatusData({})
+    .selectedFileList([])
+    .fileStatusData({})
     .files([]).build();
   this.render(hbs`{{host-detail/files}}`);
 
@@ -51,8 +51,8 @@ test('table with no data', function(assert) {
 test('windows specific columns are rendered', function(assert) {
   new ReduxDataHelper(setState)
     .columnsConfig('windows')
-    .initialSelectedFileList([])
-    .initialFileStatusData({})
+    .selectedFileList([])
+    .fileStatusData({})
     .build();
   this.render(hbs`{{host-detail/files}}`);
   return wait().then(() => {
@@ -64,8 +64,8 @@ test('windows specific columns are rendered', function(assert) {
 test('mac specific columns are rendered', function(assert) {
   new ReduxDataHelper(setState)
     .columnsConfig('mac')
-    .initialSelectedFileList([])
-    .initialFileStatusData({})
+    .selectedFileList([])
+    .fileStatusData({})
     .build();
   this.render(hbs`{{host-detail/files}}`);
 
@@ -78,8 +78,8 @@ test('mac specific columns are rendered', function(assert) {
 test('linux specific columns are rendered', function(assert) {
   new ReduxDataHelper(setState)
     .columnsConfig('linux')
-    .initialSelectedFileList([])
-    .initialFileStatusData({})
+    .selectedFileList([])
+    .fileStatusData({})
     .build();
   this.render(hbs`{{host-detail/files}}`);
 
@@ -93,8 +93,8 @@ test('check sortyBy action is called', function(assert) {
   new ReduxDataHelper(setState)
     .filesLoadMoreStatus('stopped')
     .files(hostFiles.files)
-    .initialSelectedFileList([])
-    .initialFileStatusData({})
+    .selectedFileList([])
+    .fileStatusData({})
     .build();
   this.render(hbs`{{host-detail/files}}`);
 
@@ -125,8 +125,8 @@ test('load more calls getHostFiles', function(assert) {
   new ReduxDataHelper(setState)
     .filesLoadMoreStatus('stopped')
     .files(hostFiles.files)
-    .initialSelectedFileList([])
-    .initialFileStatusData({})
+    .selectedFileList([])
+    .fileStatusData({})
     .build();
   this.render(hbs`{{host-detail/files}}`);
   patchSocket((method, modelName, query) => {
@@ -157,8 +157,8 @@ test('table with data', function(assert) {
     .filesLoadMoreStatus('stopped')
     .totalItems(500)
     .columnsConfig('linux')
-    .initialSelectedFileList([])
-    .initialFileStatusData({})
+    .selectedFileList([])
+    .fileStatusData({})
     .files(hostFiles.files).build();
 
   // set height to get all lazy rendered items on the page
@@ -186,8 +186,8 @@ test('Changing file status action bar', function(assert) {
     .filesLoadMoreStatus('stopped')
     .totalItems(500)
     .columnsConfig('linux')
-    .initialSelectedFileList([])
-    .initialFileStatusData({})
+    .selectedFileList([])
+    .fileStatusData({})
     .files(hostFiles.files).build();
 
   // set height to get all lazy rendered items on the page
@@ -215,8 +215,8 @@ test('Property panel is rendered', function(assert) {
   new ReduxDataHelper(setState)
     .filesLoadMoreStatus('stopped')
     .files(hostFiles.files)
-    .initialSelectedFileList([])
-    .initialFileStatusData({})
+    .selectedFileList([])
+    .fileStatusData({})
     .build();
   this.render(hbs`{{host-detail/files}}`);
 

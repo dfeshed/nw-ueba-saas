@@ -635,6 +635,7 @@ export default {
       }
     },
     autorunLoadingStatus: 'completed',
-    selectedRowId: null
+    selectedRowId: null,
+    selectedServiceList: []
   }
 };

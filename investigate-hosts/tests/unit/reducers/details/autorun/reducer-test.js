@@ -16,7 +16,13 @@ const initialState = {
   autorunLoadingStatus: null,
   serviceLoadingStatus: null,
   taskLoadingStatus: null,
-  selectedRowId: null
+  selectedRowId: null,
+  selectedAutorunList: [],
+  autorunStatusData: {},
+  selectedServiceList: [],
+  serviceStatusData: {},
+  selectedTaskList: [],
+  taskStatusData: {}
 };
 
 test('should return the initial state', function(assert) {
@@ -111,4 +117,191 @@ test('The SET_AUTORUN_SELECTED_ROW set the selected row id to state', function(a
   });
   const result = reducer(previous, { type: ACTION_TYPES.CHANGE_AUTORUNS_TAB, payload: { id: '123' } });
   assert.equal(result.selectedFileId, null);
+});
+test('TOGGLE_SELECTED_AUTORUN should toggle the selected autorn', function(assert) {
+  const previous = Immutable.from({
+    selectedRowId: '123',
+    selectedAutorunList: []
+  });
+  const autorun = {
+    id: 0,
+    checksumSha256: 0,
+    signature: '',
+    size: 0 };
+  let result = reducer(previous, { type: ACTION_TYPES.TOGGLE_SELECTED_AUTORUN, payload: autorun });
+  assert.equal(result.selectedAutorunList.length, 1);
+  assert.equal(result.selectedAutorunList[0].id, 0);
+  const next = Immutable.from({
+    selectedRowId: '123',
+    selectedAutorunList: [autorun]
+  });
+  result = reducer(next, { type: ACTION_TYPES.TOGGLE_SELECTED_AUTORUN, payload: autorun });
+  assert.equal(result.selectedAutorunList.length, 0);
+});
+test('TOGGLE_ALL_AUTORUN_SELECTION should toggle the selected autorun', function(assert) {
+  const previous = Immutable.from({
+    selectedRowId: '123',
+    selectedAutorunList: [],
+    autorun: {
+      auto_1: {
+        id: '0'
+      }
+    }
+  });
+  const autorun = {
+    id: 0,
+    checksumSha256: 0,
+    signature: '',
+    size: 0 };
+  let result = reducer(previous, { type: ACTION_TYPES.TOGGLE_ALL_AUTORUN_SELECTION });
+  assert.equal(result.selectedAutorunList.length, 1);
+  assert.equal(result.selectedAutorunList[0].id, 0);
+  const next = Immutable.from({
+    selectedRowId: '123',
+    selectedAutorunList: [autorun]
+  });
+  result = reducer(next, { type: ACTION_TYPES.TOGGLE_ALL_AUTORUN_SELECTION, payload: autorun });
+  assert.equal(result.selectedAutorunList.length, 0);
+});
+test('The GET_AUTORUN_STATUS set server response to state', function(assert) {
+  const previous = Immutable.from({
+    autorunStatusData: {}
+  });
+
+  const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.GET_AUTORUN_STATUS });
+  const startEndState = reducer(previous, startAction);
+
+  assert.deepEqual(startEndState.autorunStatusData, {});
+
+  const action = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.GET_AUTORUN_STATUS,
+    payload: { data: [ { resultList: [ { data: 'Whitelist' } ] } ] }
+  });
+  const endState = reducer(previous, action);
+  assert.equal(endState.autorunStatusData, 'Whitelist');
+});
+
+test('TOGGLE_SELECTED_SERVICE should toggle the selected service', function(assert) {
+  const previous = Immutable.from({
+    selectedRowId: '123',
+    selectedServiceList: []
+  });
+  const service = {
+    id: 0,
+    checksumSha256: 0,
+    signature: '',
+    size: 0 };
+  let result = reducer(previous, { type: ACTION_TYPES.TOGGLE_SELECTED_SERVICE, payload: service });
+  assert.equal(result.selectedServiceList.length, 1);
+  assert.equal(result.selectedServiceList[0].id, 0);
+  const next = Immutable.from({
+    selectedRowId: '123',
+    selectedServiceList: [service]
+  });
+  result = reducer(next, { type: ACTION_TYPES.TOGGLE_SELECTED_SERVICE, payload: service });
+  assert.equal(result.selectedServiceList.length, 0);
+});
+test('TOGGLE_ALL_SERVICE_SELECTION should toggle the selected service', function(assert) {
+  const previous = Immutable.from({
+    selectedRowId: '123',
+    selectedServiceList: [],
+    service: {
+      service_1: {
+        id: '0'
+      }
+    }
+  });
+  const service = {
+    id: 0,
+    checksumSha256: 0,
+    signature: '',
+    size: 0 };
+  let result = reducer(previous, { type: ACTION_TYPES.TOGGLE_ALL_SERVICE_SELECTION });
+  assert.equal(result.selectedServiceList.length, 1);
+  assert.equal(result.selectedServiceList[0].id, 0);
+  const next = Immutable.from({
+    selectedRowId: '123',
+    selectedServiceList: [service]
+  });
+  result = reducer(next, { type: ACTION_TYPES.TOGGLE_ALL_SERVICE_SELECTION, payload: service });
+  assert.equal(result.selectedServiceList.length, 0);
+});
+test('The GET_SERVICE_STATUS set server response to state', function(assert) {
+  const previous = Immutable.from({
+    autorunStatusData: {}
+  });
+
+  const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.GET_SERVICE_STATUS });
+  const startEndState = reducer(previous, startAction);
+
+  assert.deepEqual(startEndState.autorunStatusData, {});
+
+  const action = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.GET_SERVICE_STATUS,
+    payload: { data: [ { resultList: [ { data: 'Whitelist' } ] } ] }
+  });
+  const endState = reducer(previous, action);
+  assert.equal(endState.serviceStatusData, 'Whitelist');
+});
+test('TOGGLE_SELECTED_TASK should toggle the selected task', function(assert) {
+  const previous = Immutable.from({
+    selectedRowId: '123',
+    selectedTaskList: []
+  });
+  const task = {
+    id: 0,
+    checksumSha256: 0,
+    signature: '',
+    size: 0 };
+  let result = reducer(previous, { type: ACTION_TYPES.TOGGLE_SELECTED_TASK, payload: task });
+  assert.equal(result.selectedTaskList.length, 1);
+  assert.equal(result.selectedTaskList[0].id, 0);
+  const next = Immutable.from({
+    selectedRowId: '123',
+    selectedTaskList: [task]
+  });
+  result = reducer(next, { type: ACTION_TYPES.TOGGLE_SELECTED_TASK, payload: task });
+  assert.equal(result.selectedTaskList.length, 0);
+});
+test('TOGGLE_ALL_TASK_SELECTION should toggle the selected task', function(assert) {
+  const previous = Immutable.from({
+    selectedRowId: '123',
+    selectedTaskList: [],
+    task: {
+      task_1: {
+        id: '0'
+      }
+    }
+  });
+  const task = {
+    id: 0,
+    checksumSha256: 0,
+    signature: '',
+    size: 0 };
+  let result = reducer(previous, { type: ACTION_TYPES.TOGGLE_ALL_TASK_SELECTION });
+  assert.equal(result.selectedTaskList.length, 1);
+  assert.equal(result.selectedTaskList[0].id, 0);
+  const next = Immutable.from({
+    selectedRowId: '123',
+    selectedTaskList: [task]
+  });
+  result = reducer(next, { type: ACTION_TYPES.TOGGLE_ALL_TASK_SELECTION, payload: task });
+  assert.equal(result.selectedTaskList.length, 0);
+});
+test('The GET_TASK_STATUS set server response to state', function(assert) {
+  const previous = Immutable.from({
+    taskStatusData: {}
+  });
+
+  const startAction = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.GET_TASK_STATUS });
+  const startEndState = reducer(previous, startAction);
+
+  assert.deepEqual(startEndState.taskStatusData, {});
+
+  const action = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.GET_TASK_STATUS,
+    payload: { data: [ { resultList: [ { data: 'Whitelist' } ] } ] }
+  });
+  const endState = reducer(previous, action);
+  assert.equal(endState.taskStatusData, 'Whitelist');
 });
