@@ -146,24 +146,26 @@ const _handleInitializationError = (dispatch) => {
   };
 };
 
-const _handleParamsInURL = ({ pillData, pillDataHashes }, hashNavigateCallback) => {
+const _handleSearchParamsInQueryParams = ({ pillData, pillDataHashes }, hashNavigateCallback, isInternalQuery) => {
   return (dispatch, getState) => {
-    const hasHashInURL = pillDataHashes !== undefined;
+    const hasHashInInputParams = pillDataHashes !== undefined;
 
-    if (!hasHashInURL) {
-      const hasPillDataInURL = pillData !== undefined;
+    if (!hasHashInInputParams) {
+      const hasPillDataInInputParams = pillData !== undefined;
 
       // If no hash but also no pill data, we are cool, do nothing
-      if (hasPillDataInURL) {
+      if (hasPillDataInInputParams) {
 
-        // Go ahead and take params pill data and insert into
-        // state, we can use that immediately
-        dispatch({
-          type: ACTION_TYPES.REPLACE_ALL_GUIDED_PILLS,
-          payload: {
-            pillData: parsePillDataFromUri(pillData, metaKeySuggestionsForQueryBuilder(getState()))
-          }
-        });
+        // If this is an internal query, then the pills are already
+        // set up and we do not need to set them up again.
+        if (!isInternalQuery) {
+          dispatch({
+            type: ACTION_TYPES.REPLACE_ALL_GUIDED_PILLS,
+            payload: {
+              pillData: parsePillDataFromUri(pillData, metaKeySuggestionsForQueryBuilder(getState()))
+            }
+          });
+        }
 
         // If we have pill data, we need to create/fetch a hash
         // for that pill data and execute a navigation callback
@@ -195,7 +197,7 @@ const _handleParamsInURL = ({ pillData, pillDataHashes }, hashNavigateCallback) 
   };
 };
 
-const _handleHashInURL = ({ pillDataHashes }, dispatch, getState) => {
+const _handleHashInQueryParams = ({ pillDataHashes }, dispatch, getState) => {
   const hasHashInURL = pillDataHashes !== undefined;
 
   if (hasHashInURL) {
@@ -237,10 +239,18 @@ const _handleHashInURL = ({ pillDataHashes }, dispatch, getState) => {
  *   hash processing needs to update the URL hash
  * @param {boolean} hardReset - Whether or not we are starting
  *   from scratch or if we should use any state already there
+ * @param {boolean} isInternalQuery - Whether or not we are
+ *   starting from a query run inside the app or one launched
+ *   via a URL change or page load
  * @return {function} A Redux thunk
  * @public
  */
-export const initializeInvestigate = function(queryParams, hashNavigateCallback, hardReset = false) {
+export const initializeInvestigate = function(
+  queryParams,
+  hashNavigateCallback,
+  hardReset = false,
+  isInternalQuery
+) {
   return async function(dispatch, getState) {
     const parsedQueryParams = parseBasicQueryParams(queryParams);
     const errorHandler = _handleInitializationError(dispatch);
@@ -287,14 +297,14 @@ export const initializeInvestigate = function(queryParams, hashNavigateCallback,
     //    params, and if we do, wait for that retrieval to finish.
     //    This must be done after the previous promises because
     //    fetching/creating pills relies on languages being in place
-    const fetchPillDataPromise = _handleHashInURL(parsedQueryParams, dispatch, getState);
+    const fetchPillDataPromise = _handleHashInQueryParams(parsedQueryParams, dispatch, getState);
     if (fetchPillDataPromise) {
       await fetchPillDataPromise.catch(errorHandler);
     }
 
-    // 7) If there was no hash in the URL, do checking to see if we
-    //    need to create one and update the URL with a new hash.
-    dispatch(_handleParamsInURL(parsedQueryParams, hashNavigateCallback));
+    // 7) If there was no hash in the incoming params, do checking to
+    //    see if we need to create one and update the URL with a new hash.
+    dispatch(_handleSearchParamsInQueryParams(parsedQueryParams, hashNavigateCallback, isInternalQuery));
 
     // 8) Initialize the querying state so we can get going
     dispatch(_intializeQuerying(hardReset));

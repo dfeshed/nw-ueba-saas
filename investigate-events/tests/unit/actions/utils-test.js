@@ -37,6 +37,18 @@ module('Unit | Helper | query utils', function(hooks) {
     assert.deepEqual(result.pillDataHashes, ['foo', 'bar', 'baz'], '"pdhash" was not parsed to proper hashes');
   });
 
+  test('parseBasicQueryParams correctly parses URI', function(assert) {
+    assert.expect(1);
+
+    const modParams = {
+      ...params,
+      pdhash: ['foo', 'a', 'z']
+    };
+
+    const result = queryUtils.parseBasicQueryParams(modParams, DEFAULT_LANGUAGES);
+    assert.deepEqual(result.pillDataHashes, ['foo', 'a', 'z'], '"pdhash" handled array');
+  });
+
   test('parseBasicQueryParams leaves hashes undefined if there are none', function(assert) {
     const result = queryUtils.parseBasicQueryParams({ rs: 'max' }, DEFAULT_LANGUAGES);
     assert.equal(result.pillDataHashes, undefined, '"pdhash" was not parsed to proper hashes');

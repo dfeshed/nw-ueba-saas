@@ -1,6 +1,6 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-import { later, run } from '@ember/runloop';
+import { later } from '@ember/runloop';
 import { initializeInvestigate, queryIsRunning } from 'investigate-events/actions/initialization-creators';
 import { updateSummaryData } from 'investigate-events/actions/data-creators';
 import {
@@ -19,18 +19,6 @@ import { hasInvalidPill, isPillValidationInProgress } from '../reducers/investig
 
 const SUMMARY_CALL_INTERVAL = 60000;
 let timerId;
-
-// Have to straight up remove dnr by hand
-// or else route gets re-evalulated,
-// refreshModel be damned
-const removeDnr = () => {
-  // run.next because ACTUAL URL update happens
-  // after all hooks process
-  run.next(function() {
-    const newUrl = window.location.href.replace(/dnr=1&/g, '');
-    window.history.replaceState({}, document.title, newUrl);
-  });
-};
 
 export default Route.extend({
   contextualHelp: service(),
@@ -54,10 +42,6 @@ export default Route.extend({
     // so need to re-run
     // TODO: at least for now
     pdhash: { refreshModel: true },
-
-    // do not reload, when set, model
-    // hook is exited
-    dnr: { refreshModel: false, replace: true },
     sid: { refreshModel: true }, // serviceId
     st: { refreshModel: true },  // startTime
     et: { refreshModel: true },  // endTime
@@ -65,6 +49,11 @@ export default Route.extend({
     mps: { replace: true },      // metaPanelSize
     rs: { replace: true }        // reconSize
   },
+
+  // Params used to update URL when hash comes in.
+  // Presence of nextQueryParams means we need to
+  // update the URL, but not re-run the query
+  nextQueryParams: null,
 
   activate() {
     this.set('contextualHelp.module', this.get('contextualHelp.investigateModule'));
@@ -84,36 +73,41 @@ export default Route.extend({
   },
 
   model(params) {
-    // If DNR set, then do NOT want
-    // to reload model, but want to
-    // remove DNR so a refresh will
-    // actually do something
-    if (params.dnr === '1') {
-      removeDnr();
-      return;
+    // If nextQueryParams is present, we got here via internal
+    // querying and do not need to re-run the query. Do need to
+    // clean up nextQueryParams though.
+    if (this.get('nextQueryParams')) {
+      this.set('nextQueryParams', null);
+    } else {
+      this.runInvestigateQuery(params, false);
     }
+  },
 
+  // Massages params and then kicks off the intialization of the
+  // investigate query. isInternalQuery is an indication that this
+  // query was kicked off via internal action, not via URL update
+  runInvestigateQuery(params, isInternalQuery) {
     // If all the key values of 'params' are 'undefined',
     // then hardReset is set to true and initial state is set.
     const uniqParamValues = Object.values(params).uniq();
     const hardReset = uniqParamValues.length === 1 && uniqParamValues[0] === undefined;
 
-    this.get('redux').dispatch(initializeInvestigate(params, this.replacePillHash.bind(this), hardReset));
+    this.get('redux').dispatch(initializeInvestigate(params, this.transitionToPillHash.bind(this), hardReset, isInternalQuery));
   },
 
-  // removes any pill data in the URL and
-  // inserts a pill hash, and does not
-  // leave the URL with pill data in history
-  replacePillHash(newHash) {
-    this.replaceWith(
-      {
-        queryParams: {
-          pdhash: newHash,
-          mf: undefined,
-          dnr: 1
-        }
+  // Pulls stored query params and merges with
+  // query hash, then transitions to new URL.
+  // Ensures meta filter params are not in the URL
+  transitionToPillHash(newHash) {
+    const nextQueryParams = this.get('nextQueryParams') || {};
+
+    this.transitionTo({
+      queryParams: {
+        ...nextQueryParams,
+        pdhash: newHash,
+        mf: undefined
       }
-    );
+    });
   },
 
   actions: {
@@ -147,8 +141,7 @@ export default Route.extend({
         rs: reconSize,
         sid: serviceId,
         st: startTime,
-        pdhash: undefined,
-        dnr: 0
+        pdhash: undefined
       };
 
       if (externalLink) {
@@ -164,7 +157,8 @@ export default Route.extend({
         }
       } else {
         this.send('reconClose');
-        this.transitionTo({ queryParams: qp });
+        this.set('nextQueryParams', qp);
+        this.runInvestigateQuery(qp, true);
       }
     },
 

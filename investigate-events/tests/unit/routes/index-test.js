@@ -48,38 +48,13 @@ module('Unit | Route | investigate-events.index', function(hooks) {
       redux: computed(function() {
         return redux;
       }),
-      replacePillHash() {
+      transitionToPillHash() {
         // leaving this empty, can't seem to get context right
         // and get failures when called, so stubbing out/removing
       }
     });
     return PatchedRoute.create();
   };
-
-  test('should not initialize investigate if dnr set', async function(assert) {
-    assert.expect(3);
-    const initializationCreatorsMock = sinon.stub(initializationCreators, 'initializeInvestigate');
-
-    // insert dnr into URL so we can verify it gets removed
-    const newUrl = window.location.href.replace(/\?/g, '?dnr=1&');
-    window.history.replaceState({}, document.title, newUrl);
-
-    assert.ok(window.location.href.indexOf('?dnr=1&') > 10, 'url has dnr variable in it');
-
-    // setup reducer and route
-    patchReducer(this, Immutable.from({}));
-    const route = setupRoute.call(this);
-
-    // execute model hook
-    await route.model({ dnr: '1' });
-
-    await settled();
-
-    assert.equal(initializationCreatorsMock.callCount, 0, 'should not call intializationCreators because dnr is set');
-    assert.equal(window.location.href.indexOf('?dnr=1&'), -1, 'dnr was removed from URL');
-
-    initializationCreatorsMock.restore();
-  });
 
   test('should call initializeInvestigate with hardReset if nothing defined', async function(assert) {
     assert.expect(3);
@@ -96,7 +71,7 @@ module('Unit | Route | investigate-events.index', function(hooks) {
 
     await settled();
 
-    assert.equal(initializationCreatorsMock.callCount, 1, 'should not call intializationCreators because dnr is set');
+    assert.equal(initializationCreatorsMock.callCount, 1, 'should call intializationCreators');
     assert.deepEqual(initializationCreatorsMock.args[0][0], params, 'params should be passed into initialize');
     assert.equal(initializationCreatorsMock.args[0][2], true, 'hardReset should be true when no populated values present');
 

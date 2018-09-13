@@ -220,9 +220,14 @@ function executeMetaValuesRequest(request, inputs, values) {
 function parseBasicQueryParams(params) {
 
   // hashes are comma-separated if there are many
-  let pillDataHashes;
+  let pillDataHashes = params.pdhash;
   if (params.pdhash) {
-    pillDataHashes = params.pdhash.split(',');
+    // pdhash can either be string or array of strings
+    // if array of strings, leave it alone, otherwise
+    // convert to array
+    if (typeof params.pdhash === 'string') {
+      pillDataHashes = params.pdhash.split(',');
+    }
   }
 
   return {

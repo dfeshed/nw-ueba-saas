@@ -139,13 +139,20 @@ export const setReconOpen = (event = {}) => {
   };
 };
 
-export const setReconClosed = () => ({
-  type: ACTION_TYPES.SET_RECON_VIEWABLE,
-  payload: {
-    eventData: { eventMetas: undefined, sessionId: undefined },
-    isReconOpen: false
-  }
-});
+export const setReconClosed = () => {
+  return (dispatch, getState) => {
+    const { isReconOpen } = getState().investigate.data;
+    if (isReconOpen) {
+      dispatch({
+        type: ACTION_TYPES.SET_RECON_VIEWABLE,
+        payload: {
+          eventData: { eventMetas: undefined, sessionId: undefined },
+          isReconOpen: false
+        }
+      });
+    }
+  };
+};
 
 export const setQueryView = (queryView) => ({
   type: ACTION_TYPES.SET_QUERY_VIEW,
