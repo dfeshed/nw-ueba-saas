@@ -10,6 +10,7 @@ const stateToComputed = (state) => ({
 
 const QueryButton = Component.extend({
   tagName: 'span',
+  classNames: ['query-button-wrapper'],
 
   click() {
     this.get('executeQuery')();

@@ -515,7 +515,7 @@ const reconPreferencesUpdated = (preferences) => {
      * If its a packet event, we need to update the currentReconView to be same as the one selected in Preferences Panel..
      * But for Log/Endpoint Event , it needs to remain 'Text Analysis' always.
      */
-    if (reconViewChanged && !(isLogEvent(getState().recon) || isEndpointEvent(getState().recon))) {
+    if (newReconView && reconViewChanged && !(isLogEvent(getState().recon) || isEndpointEvent(getState().recon))) {
       dispatch(setNewReconView(RECON_VIEW_TYPES_BY_NAME[newReconView]));
     }
   };
