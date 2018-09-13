@@ -234,8 +234,10 @@ export const steps = createSelector(
 );
 
 export const isIdentifyPolicyStepValid = createSelector(
-  nameValidator,
-  (nameValidator) => nameValidator.isError === false
+  nameValidator, descriptionValidator,
+  (nameValidator, descriptionValidator) => {
+    return nameValidator.isError === false && descriptionValidator.isError === false;
+  }
 );
 
 // TODO implement real check

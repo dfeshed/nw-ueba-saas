@@ -182,7 +182,7 @@ module('Unit | Selectors | Group Wizard Selectors', function() {
   });
 
   test('isIdentifyGroupStepValid selector', function(assert) {
-    // invalid
+    // invalid name
     let nameExpected = '';
     let visitedExpected = ['group.name'];
     let fullState = new ReduxDataHelper()
@@ -192,6 +192,44 @@ module('Unit | Selectors | Group Wizard Selectors', function() {
       .build();
     let isIdentifyGroupStepValidExpected = false;
     let isIdentifyGroupStepValidSelected = isIdentifyGroupStepValid(Immutable.from(fullState));
+    assert.deepEqual(isIdentifyGroupStepValidSelected, isIdentifyGroupStepValidExpected, 'The returned value from the isIdentifyGroupStepValid selector is as expected');
+
+    // valid name and invalid desc
+    nameExpected = 'test';
+    visitedExpected = ['group.name', 'group.description'];
+    let descExpected = '';
+    for (let index = 0; index < 220; index++) {
+      descExpected += 'the-description-is-greater-than-8000-';
+    }
+    fullState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizName(nameExpected)
+      .groupWizDescription(descExpected)
+      .groupWizVisited(visitedExpected)
+      .build();
+    isIdentifyGroupStepValidExpected = false;
+    isIdentifyGroupStepValidSelected = isIdentifyGroupStepValid(Immutable.from(fullState));
+    assert.deepEqual(isIdentifyGroupStepValidSelected, isIdentifyGroupStepValidExpected, 'The returned value from the isIdentifyGroupStepValid selector is as expected');
+
+    // invalid name and invalid desc
+    nameExpected = '';
+    for (let index = 0; index < 10; index++) {
+      nameExpected += 'the-name-is-greater-than-256-';
+    }
+    visitedExpected = ['group.name', 'group.description'];
+    descExpected = '';
+    for (let index = 0; index < 220; index++) {
+      descExpected += 'the-description-is-greater-than-8000-';
+    }
+
+    fullState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizName(nameExpected)
+      .groupWizDescription(descExpected)
+      .groupWizVisited(visitedExpected)
+      .build();
+    isIdentifyGroupStepValidExpected = false;
+    isIdentifyGroupStepValidSelected = isIdentifyGroupStepValid(Immutable.from(fullState));
     assert.deepEqual(isIdentifyGroupStepValidSelected, isIdentifyGroupStepValidExpected, 'The returned value from the isIdentifyGroupStepValid selector is as expected');
 
     // valid

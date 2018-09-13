@@ -315,6 +315,24 @@ export default reduxActions.handleActions({
         });
       }
     })
+  ),
+
+  [ACTION_TYPES.SAVE_PUBLISH_POLICY]: (state, action) => (
+    handle(state, action, {
+      start: (state) => {
+        return state.set('policyStatus', 'wait');
+      },
+      failure: (state) => {
+        return state.set('policyStatus', 'error');
+      },
+      success: (state) => {
+        return state.merge({
+          policy: action.payload.data,
+          policyStatus: 'complete'
+        });
+      }
+    })
   )
+
 
 }, Immutable.from(initialState));

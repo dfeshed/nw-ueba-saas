@@ -99,11 +99,27 @@ const saveGroup = (group, callbacks = callbacksDefault) => {
   };
 };
 
+const savePublishGroup = (group, callbacks = callbacksDefault) => {
+  return {
+    type: ACTION_TYPES.SAVE_PUBLISH_GROUP,
+    promise: groupsAPI.savePublishGroup(group),
+    meta: {
+      onSuccess: (response) => {
+        callbacks.onSuccess(response);
+      },
+      onFailure: (response) => {
+        callbacks.onFailure(response);
+      }
+    }
+  };
+};
+
 export {
   initializeGroup,
   newGroup,
   getGroup,
   editGroup,
   saveGroup,
-  updateGroupCriteria
+  updateGroupCriteria,
+  savePublishGroup
 };

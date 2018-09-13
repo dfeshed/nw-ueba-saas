@@ -299,4 +299,33 @@ module('Unit | Reducers | Policy Wizard Reducers', function() {
     assert.deepEqual(endState, expectedEndState, `policy populated & policyStatus is ${policyStatusExpected}`);
   });
 
+  test('on SAVE_PUBLISH_POLICY start, policyStatus is properly set', function(assert) {
+    const policyStatusExpected = 'wait';
+    const expectedEndState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizPolicyStatus(policyStatusExpected)
+      .build().usm.policyWizard;
+    const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.SAVE_PUBLISH_POLICY });
+    const endState = reducers(Immutable.from(_.cloneDeep(policyWizInitialState)), action);
+    assert.deepEqual(endState, expectedEndState, `policyStatus is ${policyStatusExpected}`);
+  });
+
+  test('on SAVE_PUBLISH_POLICY success, policy & policyStatus are properly set', function(assert) {
+    const nameExpected = 'test name';
+    const descExpected = 'test description';
+    const policyStatusExpected = 'complete';
+    const expectedEndState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizName(nameExpected)
+      .policyWizDescription(descExpected)
+      .policyWizPolicyStatus(policyStatusExpected)
+      .build().usm.policyWizard;
+    const action = makePackAction(LIFECYCLE.SUCCESS, {
+      type: ACTION_TYPES.SAVE_PUBLISH_POLICY,
+      payload: { data: _.cloneDeep(expectedEndState.policy) }
+    });
+    const endState = reducers(Immutable.from(_.cloneDeep(policyWizInitialState)), action);
+    assert.deepEqual(endState, expectedEndState, `policy populated & policyStatus is ${policyStatusExpected}`);
+  });
+
 });

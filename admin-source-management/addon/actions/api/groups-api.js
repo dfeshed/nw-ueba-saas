@@ -77,10 +77,28 @@ function saveGroup(group) {
   });
 }
 
+/**
+ * Saves and Publishes the passed group.
+ * Published group is visible in the group policy document
+ * @param {*} group
+ * @public
+ */
+function savePublishGroup(group) {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    modelName: 'groups',
+    method: 'savePublishRecord',
+    query: {
+      data: group
+    }
+  });
+}
+
 export default {
   deleteGroups,
   fetchGroups,
   getGroup,
   publishGroups,
-  saveGroup
+  saveGroup,
+  savePublishGroup
 };

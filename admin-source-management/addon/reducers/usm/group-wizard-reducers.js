@@ -198,6 +198,23 @@ export default reduxActions.handleActions({
         });
       }
     })
+  ),
+
+  [ACTION_TYPES.SAVE_PUBLISH_GROUP]: (state, action) => (
+    handle(state, action, {
+      start: (state) => {
+        return state.set('groupStatus', 'wait');
+      },
+      failure: (state) => {
+        return state.set('groupStatus', 'error');
+      },
+      success: (state) => {
+        return state.merge({
+          group: action.payload.data,
+          groupStatus: 'complete'
+        });
+      }
+    })
   )
 
 }, Immutable.from(initialState));

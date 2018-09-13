@@ -376,7 +376,7 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
   });
 
   test('isIdentifyPolicyStepValid selector', function(assert) {
-    // invalid
+    // invalid name
     let nameExpected = '';
     let visitedExpected = ['policy.name'];
     let fullState = new ReduxDataHelper()
@@ -386,6 +386,44 @@ module('Unit | Selectors | Policy Wizard Selectors', function() {
       .build();
     let isIdentifyPolicyStepValidExpected = false;
     let isIdentifyPolicyStepValidSelected = isIdentifyPolicyStepValid(Immutable.from(fullState));
+    assert.deepEqual(isIdentifyPolicyStepValidSelected, isIdentifyPolicyStepValidExpected, 'The returned value from the isIdentifyPolicyStepValid selector is as expected');
+
+    // valid name and invalid desc
+    nameExpected = 'test';
+    visitedExpected = ['policy.name', 'policy.description'];
+    let descExpected = '';
+    for (let index = 0; index < 220; index++) {
+      descExpected += 'the-description-is-greater-than-8000-';
+    }
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizName(nameExpected)
+      .policyWizDescription(descExpected)
+      .policyWizVisited(visitedExpected)
+      .build();
+    isIdentifyPolicyStepValidExpected = false;
+    isIdentifyPolicyStepValidSelected = isIdentifyPolicyStepValid(Immutable.from(fullState));
+    assert.deepEqual(isIdentifyPolicyStepValidSelected, isIdentifyPolicyStepValidExpected, 'The returned value from the isIdentifyPolicyStepValid selector is as expected');
+
+    // invalid name and invalid desc
+    nameExpected = '';
+    for (let index = 0; index < 10; index++) {
+      nameExpected += 'the-name-is-greater-than-256-';
+    }
+    visitedExpected = ['policy.name', 'policy.description'];
+    descExpected = '';
+    for (let index = 0; index < 220; index++) {
+      descExpected += 'the-description-is-greater-than-8000-';
+    }
+
+    fullState = new ReduxDataHelper()
+      .policyWiz()
+      .policyWizName(nameExpected)
+      .policyWizDescription(descExpected)
+      .policyWizVisited(visitedExpected)
+      .build();
+    isIdentifyPolicyStepValidExpected = false;
+    isIdentifyPolicyStepValidSelected = isIdentifyPolicyStepValid(Immutable.from(fullState));
     assert.deepEqual(isIdentifyPolicyStepValidSelected, isIdentifyPolicyStepValidExpected, 'The returned value from the isIdentifyPolicyStepValid selector is as expected');
 
     // valid

@@ -13,8 +13,9 @@ import {
 } from 'admin-source-management/reducers/usm/group-wizard-selectors';
 
 import {
-  saveGroup
-} from 'admin-source-management/actions/creators/group-creators';
+  saveGroup,
+  savePublishGroup
+} from 'admin-source-management/actions/creators/group-wizard-creators';
 
 const stateToComputed = (state) => ({
   group: group(state),
@@ -26,7 +27,8 @@ const stateToComputed = (state) => ({
 });
 
 const dispatchToActions = {
-  saveGroup
+  saveGroup,
+  savePublishGroup
 };
 
 const GroupWizardToolbar = Component.extend(Notifications, {
@@ -59,15 +61,29 @@ const GroupWizardToolbar = Component.extend(Notifications, {
     transitionToNextStep() {
       this.get('transitionToStep')(this.get('step').nextStepId);
     },  // save changes to the group
-    save() {
+    save(publish) {
+      let successMessage = 'adminUsm.group.saveSuccess';
+      let failureMessage = 'adminUsm.group.saveFailure';
+      let dispatchAction = 'saveGroup';
+
+      if (publish) {
+        successMessage = 'adminUsm.groupWizard.savePublishSuccess';
+        failureMessage = 'adminUsm.groupWizard.savePublishFailure';
+        dispatchAction = 'savePublishGroup';
+      }
+
       const onSuccess = () => {
-        this.send('success', 'adminUsm.group.saveSuccess');
-        this.get('transitionToClose')();
+        if (!this.isDestroyed) {
+          this.send('success', successMessage);
+          this.get('transitionToClose')();
+        }
       };
       const onFailure = () => {
-        this.send('failure', 'adminUsm.group.saveFailure');
+        if (!this.isDestroyed) {
+          this.send('failure', failureMessage);
+        }
       };
-      this.send('saveGroup', this.get('group'), { onSuccess, onFailure });
+      this.send(dispatchAction, this.get('group'), { onSuccess, onFailure });
     },
     // cancel changes to the group
     cancel() {

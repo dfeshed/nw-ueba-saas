@@ -77,10 +77,28 @@ function savePolicy(policy) {
   });
 }
 
+/**
+ * Saves and Publishes the passed policy.
+ * Published policy is visible in the group policy document
+ * @param {*} policy
+ * @public
+ */
+function savePublishPolicy(policy) {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    modelName: 'policy',
+    method: 'savePublishRecord',
+    query: {
+      data: flattenObject(policy)
+    }
+  });
+}
+
 export default {
   deletePolicies,
   fetchPolicies,
   getPolicy,
   publishPolicies,
-  savePolicy
+  savePolicy,
+  savePublishPolicy
 };

@@ -1,9 +1,9 @@
 import Immutable from 'seamless-immutable';
 import _ from 'lodash';
 import { module, test } from 'qunit';
-import ReduxDataHelper from '../../../helpers/redux-data-helper';
-import { LIFECYCLE } from 'redux-pack';
 import makePackAction from '../../../helpers/make-pack-action';
+import { LIFECYCLE } from 'redux-pack';
+import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import * as ACTION_TYPES from 'admin-source-management/actions/types';
 import reducers from 'admin-source-management/reducers/usm/group-wizard-reducers';
 
@@ -259,6 +259,64 @@ module('Unit | Reducers | group Wizard Reducers', function() {
     });
     const endState = reducers(Immutable.from(_.cloneDeep(groupWizInitialState)), action);
     assert.deepEqual(endState, getGroupEndState, 'group is not-set and groupStatus is complete');
+  });
+
+  test('on SAVE_GROUP start, groupStatus is properly set', function(assert) {
+    const groupStatusExpected = 'wait';
+    const expectedEndState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizGroupStatus(groupStatusExpected)
+      .build().usm.groupWizard;
+    const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.SAVE_GROUP });
+    const endState = reducers(Immutable.from(_.cloneDeep(groupWizInitialState)), action);
+    assert.deepEqual(endState, expectedEndState, `groupStatus is ${groupStatusExpected}`);
+  });
+
+  test('on SAVE_GROUP success, group & groupStatus are properly set', function(assert) {
+    const nameExpected = 'test name';
+    const descExpected = 'test description';
+    const groupStatusExpected = 'complete';
+    const expectedEndState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizName(nameExpected)
+      .groupWizDescription(descExpected)
+      .groupWizGroupStatus(groupStatusExpected)
+      .build().usm.groupWizard;
+    const action = makePackAction(LIFECYCLE.SUCCESS, {
+      type: ACTION_TYPES.SAVE_GROUP,
+      payload: { data: _.cloneDeep(expectedEndState.group) }
+    });
+    const endState = reducers(Immutable.from(_.cloneDeep(groupWizInitialState)), action);
+    assert.deepEqual(endState, expectedEndState, `group populated & groupStatus is ${groupStatusExpected}`);
+  });
+
+  test('on SAVE_PUBLISH_GROUP start, groupStatus is properly set', function(assert) {
+    const groupStatusExpected = 'wait';
+    const expectedEndState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizGroupStatus(groupStatusExpected)
+      .build().usm.groupWizard;
+    const action = makePackAction(LIFECYCLE.START, { type: ACTION_TYPES.SAVE_PUBLISH_GROUP });
+    const endState = reducers(Immutable.from(_.cloneDeep(groupWizInitialState)), action);
+    assert.deepEqual(endState, expectedEndState, `groupStatus is ${groupStatusExpected}`);
+  });
+
+  test('on SAVE_PUBLISH_GROUP success, group & groupStatus are properly set', function(assert) {
+    const nameExpected = 'test name';
+    const descExpected = 'test description';
+    const groupStatusExpected = 'complete';
+    const expectedEndState = new ReduxDataHelper()
+      .groupWiz()
+      .groupWizName(nameExpected)
+      .groupWizDescription(descExpected)
+      .groupWizGroupStatus(groupStatusExpected)
+      .build().usm.groupWizard;
+    const action = makePackAction(LIFECYCLE.SUCCESS, {
+      type: ACTION_TYPES.SAVE_PUBLISH_GROUP,
+      payload: { data: _.cloneDeep(expectedEndState.group) }
+    });
+    const endState = reducers(Immutable.from(_.cloneDeep(groupWizInitialState)), action);
+    assert.deepEqual(endState, expectedEndState, `group populated & groupStatus is ${groupStatusExpected}`);
   });
 
 });

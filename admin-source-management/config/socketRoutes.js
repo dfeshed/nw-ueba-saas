@@ -28,6 +28,10 @@ const adminUsmConfigGen = function(environment) {
       saveGroup: {
         subscriptionDestination: '/user/queue/usm/group/set',
         requestDestination: '/ws/usm/group/set'
+      },
+      savePublishRecord: {
+        subscriptionDestination: '/user/queue/usm/group/saveandpublish',
+        requestDestination: '/ws/usm/group/saveandpublish'
       }
     },
     policy: {
@@ -51,6 +55,10 @@ const adminUsmConfigGen = function(environment) {
       savePolicy: {
         subscriptionDestination: '/user/queue/usm/policy/set',
         requestDestination: '/ws/usm/policy/set'
+      },
+      savePublishRecord: {
+        subscriptionDestination: '/user/queue/usm/policy/saveandpublish',
+        requestDestination: '/ws/usm/policy/saveandpublish'
       }
     }
   };

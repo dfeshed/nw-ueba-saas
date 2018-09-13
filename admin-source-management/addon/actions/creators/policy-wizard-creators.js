@@ -166,6 +166,21 @@ const savePolicy = (policy, callbacks = callbacksDefault) => {
   };
 };
 
+const savePublishPolicy = (policy, callbacks = callbacksDefault) => {
+  return {
+    type: ACTION_TYPES.SAVE_PUBLISH_POLICY,
+    promise: policyAPI.savePublishPolicy(policy),
+    meta: {
+      onSuccess: (response) => {
+        callbacks.onSuccess(response);
+      },
+      onFailure: (response) => {
+        callbacks.onFailure(response);
+      }
+    }
+  };
+};
+
 export {
   initializePolicy,
   newPolicy,
@@ -174,5 +189,6 @@ export {
   removeFromSelectedSettings,
   editPolicy,
   updatePolicyProperty,
-  savePolicy
+  savePolicy,
+  savePublishPolicy
 };

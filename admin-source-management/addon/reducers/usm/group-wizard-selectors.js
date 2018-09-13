@@ -93,8 +93,10 @@ export const descriptionValidator = createSelector(
 );
 
 export const isIdentifyGroupStepValid = createSelector(
-  nameValidator,
-  (nameValidator) => nameValidator.isError === false
+  nameValidator, descriptionValidator,
+  (nameValidator, descriptionValidator) => {
+    return nameValidator.isError === false && descriptionValidator.isError === false;
+  }
 );
 
 // TODO implement real check

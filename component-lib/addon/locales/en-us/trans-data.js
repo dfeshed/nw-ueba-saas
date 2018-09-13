@@ -3642,7 +3642,9 @@ export default {
       next: 'Next',
       publishGroup: 'Publish Group',
       saveAndClose: 'Save and Close',
-      cancel: 'Cancel'
+      cancel: 'Cancel',
+      savePublishFailure: 'A problem occurred while trying to save and publish the group.',
+      savePublishSuccess: 'The group has been saved and published successfully.'
     },
     policyWizard: {
       // identify-policy-step
@@ -3674,7 +3676,9 @@ export default {
       cancel: 'Cancel',
       // flash messages
       saveFailure: 'A problem occurred while trying to save the policy.',
-      saveSuccess: 'The policy has been saved successfully.'
+      saveSuccess: 'The policy has been saved successfully.',
+      savePublishFailure: 'A problem occurred while trying to save and publish the policy.',
+      savePublishSuccess: 'The policy has been saved and published successfully.'
     },
     policyTypes: {
       edrPolicy: 'EndPointScan',

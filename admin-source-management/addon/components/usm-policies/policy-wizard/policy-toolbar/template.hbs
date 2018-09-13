@@ -25,7 +25,7 @@
   {{#rsa-form-button
     class='publish-button'
     style='primary'
-    defaultAction='publish'
+    defaultAction=(action 'save' true)
     isDisabled=(not isWizardValid)
   }}
     {{t 'adminUsm.policyWizard.publishPolicy'}}
@@ -35,8 +35,8 @@
 {{!-- save is always visible, and enabled if the current step is valid --}}
 {{#rsa-form-button
   class='save-button'
-  defaultAction='save'
-  isDisabled=(not isStepValid)
+  defaultAction=(action 'save' false)
+  isDisabled=(not isWizardValid)
 }}
   {{t 'adminUsm.policyWizard.saveAndClose'}}
 {{/rsa-form-button}}

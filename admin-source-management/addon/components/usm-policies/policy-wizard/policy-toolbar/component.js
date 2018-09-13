@@ -13,7 +13,8 @@ import {
 } from 'admin-source-management/reducers/usm/policy-wizard-selectors';
 
 import {
-  savePolicy
+  savePolicy,
+  savePublishPolicy
 } from 'admin-source-management/actions/creators/policy-wizard-creators';
 
 const stateToComputed = (state) => ({
@@ -26,7 +27,8 @@ const stateToComputed = (state) => ({
 });
 
 const dispatchToActions = {
-  savePolicy
+  savePolicy,
+  savePublishPolicy
 };
 
 const PolicyWizardToolbar = Component.extend(Notifications, {
@@ -62,25 +64,31 @@ const PolicyWizardToolbar = Component.extend(Notifications, {
       this.get('transitionToStep')(this.get('step').nextStepId);
     },
 
-    publish() {
-      // console.log('PolicyWizardToolbar.publish()');
-    },
+    save(publish) {
+      let successMessage = 'adminUsm.policyWizard.saveSuccess';
+      let failureMessage = 'adminUsm.policyWizard.saveFailure';
+      let dispatchAction = 'savePolicy';
 
-    save() {
+      if (publish) {
+        successMessage = 'adminUsm.policyWizard.savePublishSuccess';
+        failureMessage = 'adminUsm.policyWizard.savePublishFailure';
+        dispatchAction = 'savePublishPolicy';
+      }
+
       const saveCallbacks = {
         onSuccess: () => {
           if (!this.isDestroyed) {
-            this.send('success', 'adminUsm.policyWizard.saveSuccess');
+            this.send('success', successMessage);
             this.get('transitionToClose')();
           }
         },
         onFailure: () => {
           if (!this.isDestroyed) {
-            this.send('failure', 'adminUsm.policyWizard.saveFailure');
+            this.send('failure', failureMessage);
           }
         }
       };
-      this.send('savePolicy', this.get('policy'), saveCallbacks);
+      this.send(dispatchAction, this.get('policy'), saveCallbacks);
     },
 
     cancel() {

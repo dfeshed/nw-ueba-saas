@@ -181,4 +181,74 @@ module('Integration | Component | usm-policies/policy-wizard/policy-toolbar', fu
     await click(saveBtnEl);
   });
 
+  test('On failing to save and publish a policy, an error flash message is shown', async function(assert) {
+    assert.expect(3);
+    const state = new ReduxDataHelper(setState)
+      .policyWiz()
+      .policyWizName('test name')
+      .build();
+    this.set('step', state.usm.policyWizard.steps[3]);
+    await render(hbs`{{usm-policies/policy-wizard/policy-toolbar step=step}}`);
+    assert.equal(findAll('.publish-button').length, 1, 'The Publish button appears in the DOM');
+
+    throwSocket();
+    patchFlash((flash) => {
+      const translation = this.owner.lookup('service:i18n');
+      const expectedMessage = translation.t('adminUsm.policyWizard.savePublishFailure');
+      assert.equal(flash.type, 'error');
+      assert.equal(flash.message.string, expectedMessage);
+    });
+
+    const [savePublishBtnEl] = findAll('.publish-button:not(.is-disabled) button');
+    await click(savePublishBtnEl);
+  });
+
+  test('On successfully saving and publishing a policy, a success flash message is shown, and the transitionToClose action is called', async function(assert) {
+    assert.expect(4);
+    const state = new ReduxDataHelper(setState)
+      .policyWiz()
+      .policyWizName('test name')
+      .build();
+    this.set('step', state.usm.policyWizard.steps[3]);
+    this.set('transitionToClose', () => {
+      assert.ok('transitionToClose() was properly triggered');
+    });
+    await render(hbs`{{usm-policies/policy-wizard/policy-toolbar
+      step=step
+      transitionToClose=(action transitionToClose)}}`
+    );
+    assert.equal(findAll('.publish-button').length, 1, 'The Publish button appears in the DOM');
+
+    const done = assert.async();
+    patchFlash((flash) => {
+      const translation = this.owner.lookup('service:i18n');
+      const expectedMessage = translation.t('adminUsm.policyWizard.savePublishSuccess');
+      assert.equal(flash.type, 'success');
+      assert.equal(flash.message.string, expectedMessage);
+      done();
+    });
+
+    const [savePublishBtnEl] = findAll('.publish-button:not(.is-disabled) button');
+    await click(savePublishBtnEl);
+  });
+
+  test('Name and description errors do not enable Next and Save buttons', async function(assert) {
+    let testDesc = '';
+    for (let index = 0; index < 220; index++) {
+      testDesc += 'the-description-is-greater-than-8000-';
+    }
+    const state = new ReduxDataHelper(setState)
+      .policyWiz()
+      .policyWizName('')
+      .policyWizDescription(testDesc)
+      .build();
+    this.set('step', state.usm.policyWizard.steps[0]);
+    await render(hbs`{{usm-policies/policy-wizard/policy-toolbar step=step}}`);
+    assert.equal(findAll('.prev-button').length, 0, 'The Previous button does NOT appear in the DOM');
+    assert.equal(findAll('.next-button.is-disabled').length, 1, 'The Next button appears in the DOM and is NOT enabled');
+    assert.equal(findAll('.publish-button').length, 0, 'The Publish button does NOT appear in the DOM');
+    assert.equal(findAll('.save-button.is-disabled').length, 1, 'The Save button appears in the DOM and is NOT enabled');
+    assert.equal(findAll('.cancel-button:not(.is-disabled)').length, 1, 'The Cancel button appears in the DOM and is enabled');
+  });
+
 });
