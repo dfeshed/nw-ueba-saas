@@ -37,10 +37,6 @@ const _initialState = Immutable.from({
   // Stores all data for pills
   pillsData: [],
 
-  // Tracks whether or not server side validation is under way
-  serverSideValidationInProcess: false,
-  serverSideValidationFailed: false,
-
   // Is a query in progress. This possibly includes server
   // validation if that is taking a long time to return
   isQueryRunning: false,
@@ -66,10 +62,11 @@ const _initialPillState = {
   value: undefined,
   complexFilterText: undefined,
 
-  isFocused: false,
   isEditing: false,
-  isSelected: false,
+  isFocused: false,
   isInvalid: false,
+  isSelected: false,
+  isValidationInProgress: false,
   validationError: undefined
 };
 
@@ -209,7 +206,7 @@ const _addFocus = (state, needsFocusPill, isSelected) => {
 };
 
 const _deletePills = (state, pillsToBeDeleted) => {
-  // get id'd for pills that need to be deleted
+  // get ids for pills that need to be deleted
   const deleteIds = pillsToBeDeleted.map((pD) => pD.id);
   // remove those pill ids from state
   const newPills = state.pillsData.filter((pD) => !deleteIds.includes(pD.id));
@@ -230,6 +227,16 @@ const _replaceAllPills = (state, pillData) => {
     };
   });
   return state.set('pillsData', newPills);
+};
+
+const _updatePillProperties = (state, position, updatedProperties) => {
+  const { pillsData } = state;
+  const currentPill = pillsData[position];
+  const updatedPill = {
+    ...currentPill,
+    ...updatedProperties
+  };
+  return _replacePill(state, updatedPill);
 };
 
 export default handleActions({
@@ -434,28 +441,36 @@ export default handleActions({
 
   [ACTION_TYPES.VALIDATE_GUIDED_PILL]: (state, action) => {
     return handle(state, action, {
-      start: (s) => s.merge({
-        serverSideValidationInProcess: !!action.meta.isServerSide,
-        serverSideValidationFailed: false
-      }),
-      // TODO: Handle server side failed validation so we can prevent querying.
-      failure: (s) => {
-        const { meta: { position } } = action;
-        const { pillsData } = s;
-        const currentPill = pillsData[position];
-        const validatedPill = {
-          ...currentPill,
-          isInvalid: !!action.payload.meta,
-          validationError: action.payload.meta
-        };
-        const newPillsData = _replacePill(s, validatedPill);
-        return s.merge({
-          pillsData: newPillsData,
-          serverSideValidationInProcess: false,
-          serverSideValidationFailed: true
-        });
+      start: (s) => {
+        if (!action.meta.isServerSide) {
+          const newPillsData = _updatePillProperties(s, action.meta.position, {
+            isValidationInProgress: true
+          });
+          return s.set('pillsData', newPillsData);
+        } else {
+          return s;
+        }
       },
-      success: (s) => s.set('serverSideValidationInProcess', false)
+      failure: (s) => {
+        const newPillsData = _updatePillProperties(s, action.meta.position, {
+          isInvalid: true,
+          isValidationInProgress: false,
+          validationError: action.payload.meta
+        });
+        return s.set('pillsData', newPillsData);
+      },
+      success: (s) => {
+        if (action.meta.isServerSide) {
+          const newPillsData = _updatePillProperties(s, action.meta.position, {
+            isInvalid: false,
+            isValidationInProgress: false,
+            validationError: undefined
+          });
+          return s.set('pillsData', newPillsData);
+        } else {
+          return s;
+        }
+      }
     });
   },
 

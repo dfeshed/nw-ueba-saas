@@ -20,6 +20,12 @@ const noParamsInState = Immutable.from({
   previouslySelectedTimeRanges: {}
 });
 
+const stateWithPills = new ReduxDataHelper()
+  .pillsDataPopulated()
+  .build()
+  .investigate
+  .queryNode;
+
 test('ACTION_TYPES.REHYDRATE reducer when url has a serviceId and localStorage has a different serviceId', function(assert) {
   const action = {
     type: ACTION_TYPES.REHYDRATE,
@@ -179,12 +185,6 @@ test('INITIALIZE_INVESTIGATE reducer sets the correct view from localStorage', f
 
   assert.equal(result.queryView, 'freeForm');
 });
-
-const stateWithPills = new ReduxDataHelper()
-  .pillsDataPopulated()
-  .build()
-  .investigate
-  .queryNode;
 
 test('ADD_GUIDED_PILL adds pill to empty list', function(assert) {
   const emptyState = new ReduxDataHelper().pillsDataEmpty().build().investigate.queryNode;
@@ -362,6 +362,33 @@ test('EDIT_GUIDED_PILL adds focus to the edited pill', function(assert) {
   assert.ok(result.pillsData[1].isFocused == true, 'pill received focus');
 });
 
+test('VALIDATE_GUIDED_PILL reducer updates state when client-side validation starts', function(assert) {
+
+  const startAction = makePackAction(LIFECYCLE.START, {
+    type: ACTION_TYPES.VALIDATE_GUIDED_PILL,
+    meta: {
+      position: 1
+    }
+  });
+  const result = reducer(stateWithPills, startAction);
+
+  assert.ok(result.pillsData[1].isValidationInProgress, 'validation is in progress');
+});
+
+test('VALIDATE_GUIDED_PILL reducer does not update state when server-side validation starts', function(assert) {
+
+  const startAction = makePackAction(LIFECYCLE.START, {
+    type: ACTION_TYPES.VALIDATE_GUIDED_PILL,
+    meta: {
+      position: 1,
+      isServerSide: true
+    }
+  });
+  const result = reducer(stateWithPills, startAction);
+
+  assert.equal(result.pillsData[1], stateWithPills.pillsData[1], 'starting server-side validation does not change state');
+});
+
 test('VALIDATE_GUIDED_PILL reducer updates state when validation fails', function(assert) {
 
   const failureAction = makePackAction(LIFECYCLE.FAILURE, {
@@ -379,38 +406,10 @@ test('VALIDATE_GUIDED_PILL reducer updates state when validation fails', functio
   assert.ok(result.pillsData[1].id !== '2', 'updated pillsData item has updated ID');
   assert.equal(result.pillsData[1].validationError, 'Error in validation', 'pillsData item had its data updated with error');
   assert.ok(result.pillsData[1].isInvalid, 'pill is invalid');
-  assert.notOk(result.serverSideValidationInProcess, 'validation is complete');
+  assert.notOk(result.pillsData[1].isValidationInProgress, 'pill is done validating');
 });
 
-test('VALIDATE_GUIDED_PILL reducer updates state when validation starts', function(assert) {
-
-  const startAction = makePackAction(LIFECYCLE.START, {
-    type: ACTION_TYPES.VALIDATE_GUIDED_PILL,
-    meta: {
-      position: 1,
-      isServerSide: true
-    }
-  });
-  const result = reducer(stateWithPills, startAction);
-
-  assert.ok(result.serverSideValidationInProcess, 'validation is in process');
-});
-
-test('VALIDATE_GUIDED_PILL reducer updates state when validation starts and serverSide flag is not sent', function(assert) {
-  // if isServerSide flag is not sent, can be safely assumed that clientSide called the reducer
-  // So no need to flip the serverSideValidationInProcess flag
-  const startAction = makePackAction(LIFECYCLE.START, {
-    type: ACTION_TYPES.VALIDATE_GUIDED_PILL,
-    meta: {
-      position: 1
-    }
-  });
-  const result = reducer(stateWithPills, startAction);
-
-  assert.notOk(result.serverSideValidationInProcess, 'client side validation');
-});
-
-test('VALIDATE_GUIDED_PILL reducer updates state when validation succeeds', function(assert) {
+test('VALIDATE_GUIDED_PILL reducer does not update state when client-side validation succeeds', function(assert) {
 
   const startAction = makePackAction(LIFECYCLE.SUCCESS, {
     type: ACTION_TYPES.VALIDATE_GUIDED_PILL,
@@ -420,7 +419,25 @@ test('VALIDATE_GUIDED_PILL reducer updates state when validation succeeds', func
   });
   const result = reducer(stateWithPills, startAction);
 
-  assert.notOk(result.serverSideValidationInProcess, 'Flag is switched back to false after the request is completed');
+  assert.equal(result.pillsData[1], stateWithPills.pillsData[1], 'success of client-side validation does not change state');
+});
+
+test('VALIDATE_GUIDED_PILL reducer updates state when server-side validation succeeds', function(assert) {
+
+  const startAction = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.VALIDATE_GUIDED_PILL,
+    meta: {
+      position: 1,
+      isServerSide: true
+    }
+  });
+  const result = reducer(stateWithPills, startAction);
+
+  assert.equal(result.pillsData.length, 2, 'pillsData is the correct length');
+  assert.ok(result.pillsData[1].id !== '2', 'updated pillsData item has updated ID');
+  assert.equal(result.pillsData[1].validationError, undefined, 'pillsData item reset its validation error');
+  assert.notOk(result.pillsData[1].isInvalid, 'pill is invalid');
+  assert.notOk(result.pillsData[1].isValidationInProgress, 'pill is done validating');
 });
 
 test('SELECT_GUIDED_PILLS selects multiple pills', function(assert) {

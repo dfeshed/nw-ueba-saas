@@ -6,16 +6,19 @@ import validateQueryFragment from './fetch/query-validation';
 import { transformTextToPillData, selectPillsFromPosition } from 'investigate-events/actions/utils';
 import { metaKeySuggestionsForQueryBuilder } from 'investigate-events/reducers/investigate/dictionaries/selectors';
 
-
+/**
+ * Client side validation.
+ * - if that fails, no server side validation
+ * - if client side passes, send for server side validation
+ *
+ * If there is no value, no need to validate. The only pills that can be created
+ * without value are exists/!exits, and they have relevant operators logic
+ * behind displaying them.
+ * @private
+ */
 const _validateGuidedPill = (pillData, position) => {
   return (dispatch, getState) => {
-    // client side validation first
-    // if that fails, no server side validation
-    // if client side passes, send for server side validation
     const { meta, value } = pillData;
-    // if there is no value, no need to validate.
-    // The only pills that can be created without value are exists/!exits,
-    // and they have relevant operators logic behind displaying them.
     if (value) {
       const { investigate: { dictionaries: { language } } } = getState();
       const metaFormat = getMetaFormat(meta, language);
@@ -23,7 +26,8 @@ const _validateGuidedPill = (pillData, position) => {
         type: ACTION_TYPES.VALIDATE_GUIDED_PILL,
         promise: clientSideParseAndValidate(metaFormat, value),
         meta: {
-          position, /*  position is needed to update pill in reducer  */
+          position, // position is needed to update pill in reducer
+          isServerSide: false, // sets `isValidationInProgress = true` while the req is being processed
           onSuccess() {
             dispatch(_serverSideValidation(pillData, position));
           }
@@ -38,17 +42,15 @@ export const _serverSideValidation = (pillData, position) => {
     const { meta, operator, value } = pillData;
     // extract stringified pill data
     const stringifiedPill = `${meta || ''} ${operator || ''} ${value || ''}`.trim();
-    const investigateState = getState().investigate;
-
     // encode the string and pull out the service id
     const encodedPill = encodeURIComponent(stringifiedPill);
-    const { serviceId } = investigateState.queryNode;
+    const { serviceId } = getState().investigate.queryNode;
     dispatch({
       type: ACTION_TYPES.VALIDATE_GUIDED_PILL,
       promise: validateQueryFragment(serviceId, encodedPill),
       meta: {
-        position, /*  position is needed to update pill in reducer  */
-        isServerSide: true /*  sets a flag isPillBeingValidated while the req is being processed  */
+        position, // position is needed to update pill in reducer
+        isServerSide: true // sets `isValidationInProgress = false` after the req was processed
       }
     });
   };

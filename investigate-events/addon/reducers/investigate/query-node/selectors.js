@@ -130,11 +130,9 @@ export const getActiveQueryNode = createSelector(
   }
 );
 
-const _hasInvalidPill = createSelector(
+export const hasInvalidPill = createSelector(
   [_pillsData],
-  (pillsData) => {
-    return pillsData.isAny('isInvalid');
-  }
+  (pillsData) => pillsData.isAny('isInvalid')
 );
 
 // This transforms the meta/operator from state, which are just strings,
@@ -157,7 +155,7 @@ export const enrichedPillsData = createSelector(
 // If we have the required values to query and none of the pills are
 // invalid, then we can query guided
 export const canQueryGuided = createSelector(
-  [_hasInvalidPill, hasRequiredValuesToQuery],
+  [hasInvalidPill, hasRequiredValuesToQuery],
   (hasInvalidPill, hasRequiredValuesToQuery) => hasRequiredValuesToQuery && !hasInvalidPill
 );
 
@@ -195,4 +193,9 @@ export const pillBeingEdited = createSelector(
       return pillsBeingEdited[0];
     }
   }
+);
+
+export const isPillValidationInProgress = createSelector(
+  [_pillsData],
+  (pillsData) => pillsData.isAny('isValidationInProgress')
 );

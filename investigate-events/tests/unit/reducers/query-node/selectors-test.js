@@ -1,21 +1,22 @@
 import { module, test } from 'qunit';
 
 import {
+  canQueryGuided,
+  deselectedPills,
+  enrichedPillsData,
+  freeFormText,
+  hasInvalidSelectedPill,
   hasRequiredValuesToQuery,
-  selectedTimeRange,
-  selectedTimeRangeId,
-  selectedTimeRangeName,
-  useDatabaseTime,
   isOnFreeForm,
   isOnGuided,
   isPillBeingEdited,
-  enrichedPillsData,
+  isPillValidationInProgress,
+  pillBeingEdited,
   selectedPills,
-  deselectedPills,
-  canQueryGuided,
-  freeFormText,
-  hasInvalidSelectedPill,
-  pillBeingEdited
+  selectedTimeRange,
+  selectedTimeRangeId,
+  selectedTimeRangeName,
+  useDatabaseTime
 } from 'investigate-events/reducers/investigate/query-node/selectors';
 import ReduxDataHelper from '../../../helpers/redux-data-helper';
 import TIME_RANGES from 'investigate-shared/constants/time-ranges';
@@ -495,4 +496,21 @@ test('determine if a pill is being edited', function(assert) {
     .markEditing([])
     .build();
   assert.notOk(isPillBeingEdited(falsyState), 'pill is properly identified as being edited');
+});
+
+test('determine if a pill is being validated', function(assert) {
+  // Test truthy case
+  const truthyState = new ReduxDataHelper()
+    .language()
+    .pillsDataPopulated()
+    .markValidationInProgress(['1'])
+    .build();
+  assert.ok(isPillValidationInProgress(truthyState), 'validation is properly identified as being in progress');
+
+  // test falsy case
+  const falsyState = new ReduxDataHelper()
+    .language()
+    .pillsDataPopulated()
+    .build();
+  assert.notOk(isPillValidationInProgress(falsyState), 'validation is properly identified as NOT being in progress');
 });

@@ -1,7 +1,7 @@
-import { next, throttle, later } from '@ember/runloop';
 import Component from '@ember/component';
+import { later, next, throttle } from '@ember/runloop';
 import { inject as service } from '@ember/service';
-import computed, { and, empty, alias } from 'ember-computed-decorators';
+import computed, { alias, and, empty } from 'ember-computed-decorators';
 import _ from 'lodash';
 
 import * as MESSAGE_TYPES from '../message-types';
@@ -101,8 +101,8 @@ export default Component.extend({
 
 
   /**
-   * Update the component once validation returns
-   * Is the pill a valid query?
+   * Update the component once validation completes. A pill is valid if both
+   * client and server side validation passes.
    * @type {boolean}
    * @public
    */

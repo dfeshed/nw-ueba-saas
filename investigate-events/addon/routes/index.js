@@ -15,6 +15,7 @@ import {
   META_PANEL_SIZES,
   RECON_PANEL_SIZES
 } from 'investigate-events/constants/panelSizes';
+import { hasInvalidPill, isPillValidationInProgress } from '../reducers/investigate/query-node/selectors';
 
 const SUMMARY_CALL_INTERVAL = 60000;
 let timerId;
@@ -118,38 +119,40 @@ export default Route.extend({
   actions: {
     executeQuery(externalLink) {
       const redux = this.get('redux');
-      const investigateState = redux.getState().investigate;
-      const pillData = investigateState.queryNode.pillsData;
-      const { data, queryNode } = investigateState;
-      const { serverSideValidationInProcess, serverSideValidationFailed } = queryNode;
+      const state = redux.getState();
+      const {
+        data: { metaPanelSize, reconSize },
+        queryNode: { endTime, pillsData, serviceId, startTime }
+      } = state.investigate;
 
       // We've started the querying process. Notify the UI.
       this.get('redux').dispatch(queryIsRunning(true));
 
       // If we're in the middle of validating the pill, let's defer processing
-      // the request to execute the query.
-      if (serverSideValidationInProcess) {
+      // the request to execute the query. If validation has completed, check to
+      // see if there are any invalid pills. Don't transition if this is true.
+      if (isPillValidationInProgress(state)) {
         later(this, this.send, 'executeQuery', externalLink, 50);
         return;
-      } else if (serverSideValidationFailed) {
+      } else if (hasInvalidPill(state)) {
         this.get('redux').dispatch(queryIsRunning(false));
         return;
       }
 
       const qp = {
         eid: undefined,
-        et: queryNode.endTime,
-        mf: uriEncodeMetaFilters(pillData),
-        mps: data.metaPanelSize,
-        rs: data.reconSize,
-        sid: queryNode.serviceId,
-        st: queryNode.startTime,
+        et: endTime,
+        mf: uriEncodeMetaFilters(pillsData),
+        mps: metaPanelSize,
+        rs: reconSize,
+        sid: serviceId,
+        st: startTime,
         pdhash: undefined,
         dnr: 0
       };
 
       if (externalLink) {
-        const selectedPills = pillData.filter((pill) => pill.isSelected);
+        const selectedPills = pillsData.filter((pill) => pill.isSelected);
         if (selectedPills.length > 0) { // if no selected pills in state, exit
           const pillString = uriEncodeMetaFilters(selectedPills);
           qp.mf = encodeURIComponent(pillString);

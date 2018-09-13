@@ -370,6 +370,20 @@ export default class DataHelper {
     return this;
   }
 
+  markValidationInProgress(pillIds = []) {
+    this.state.queryNode.pillsData = this.state.queryNode.pillsData.map((pD) => {
+      if (pillIds.includes(pD.id)) {
+        pD = {
+          ...pD,
+          isValidationInProgress: true
+        };
+      }
+
+      return pD;
+    });
+    return this;
+  }
+
   isQueryRunning(flag = true) {
     _set(this.state, 'queryNode.isQueryRunning', flag);
     return this;

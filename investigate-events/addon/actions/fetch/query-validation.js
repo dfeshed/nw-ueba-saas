@@ -22,6 +22,6 @@ export default function validateQueryFragment(serviceId, filterString) {
   return queryPromiseRequest(
     'core-query-validate',
     query,
-    { cancelPreviouslyExecuting: true }
+    { cancelPreviouslyExecuting: false }
   );
 }
